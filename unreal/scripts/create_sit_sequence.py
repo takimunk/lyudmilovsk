@@ -96,7 +96,7 @@ lt = lamp.get_object_template()
 lt.light_component.set_mobility(unreal.ComponentMobility.MOVABLE)
 lc = lt.light_component
 lc.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
-lc.set_intensity(25.0)
+lc.set_intensity(6.0)
 lc.set_light_color(unreal.LinearColor(1.0, 0.75, 0.5, 1.0))
 lc.set_attenuation_radius(500.0)
 lc.set_editor_property("source_radius", 30.0)
@@ -107,6 +107,11 @@ for c, v in zip(ch, [world(-10, 70, 180).x, world(-10, 70, 180).y, world(-10, 70
 # ---- camera
 cam = seq.add_spawnable_from_class(unreal.CineCameraActor)
 cam.set_name("Camera")
+cc = cam.get_object_template().get_editor_property("camera_component")
+fs = cc.get_editor_property("focus_settings")
+fs.set_editor_property("focus_method", unreal.CameraFocusMethod.DISABLE)   # no depth-of-field blur
+cc.set_editor_property("focus_settings", fs)
+cc.set_editor_property("current_aperture", 16.0)
 ch = tchannels(cam)
 looks = [  # frame, camera pos (forward, right, up), target (forward, right, up)
     (0, (-120, 90, 145), (-5, 25, 105)),
