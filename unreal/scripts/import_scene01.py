@@ -1,15 +1,18 @@
 """Builds /Game/Scene01/Lvl_Scene01 from blender/export/scene01_corridor.glb.
 
-Imports the glTF scene through Interchange, gives every mesh exact collision,
-adds garland lights, spinning vent fans and the ventilation hum,
-replaces the glTF lights with tuned Unreal ones, adds the dark-room exposure,
-the wake-up PlayerStart and the First Person game mode.
+Imports the glTF scene through Interchange, gives every mesh exact collision and
+builds the gameplay layer from blender/export/scene01_layout.json: garland, desk and
+grow-lamp lights (some garland lights flicker), spinning vent and desk fans, fluttering
+vent ribbons, ventilation hum and air hiss, the moving walkway, the hero's seat, the
+dark-room exposure, the wake-up PlayerStart and the First Person game mode.
 
 Run headless (editor closed):
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
+import json
 import math
 import os
+import random
 import unreal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -20,19 +23,23 @@ DEST = "/Game/Scene01/Corridor"
 LEVEL = "/Game/Scene01/Lvl_Scene01"
 GAME_MODE = "/Game/FirstPerson/Blueprints/BP_FirstPersonGameMode.BP_FirstPersonGameMode_C"
 
-# Blender metres (x, y, z) land in Unreal as centimetres (x, -y, z).
-# The hero's screen faces -X toward the chair at (55, -8700); see build_hero() in Blender.
-SCREEN = unreal.Vector(169.4, -8700.0, 114.0)
-WAKE = unreal.Vector(10.0, -8810.0, 100.0)
+AIR_WAV = os.path.join(REPO, "audio", "vent_air.wav")
+SIT_SEQUENCE = "/Game/Characters/Zoomer/LS_SitAtComputer.LS_SitAtComputer"
+
+# Everything positional comes from the Blender build, already in Unreal centimetres.
+with open(os.path.join(REPO, "blender", "export", "scene01_layout.json")) as f:
+    LAYOUT = json.load(f)
+HERO = LAYOUT["hero"]
+
+
+def vec(p):
+    return unreal.Vector(*p)
+
+
+SCREEN = vec(HERO["screen"])
+WAKE = vec(HERO["wake"])
 WARM = unreal.LinearColor(1.0, 0.68, 0.38, 1.0)
-# Must match build_scene01_corridor.py (GARLAND_*, FAN_YS, DUCT_Z), converted to cm.
-GARLAND_X, GARLAND_Z = -340.0, 205.0
 GARLAND_COLORS = [(1.0, 0.62, 0.28), (1.0, 0.55, 0.22), (1.0, 0.7, 0.36)]
-FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
-DUCT_Z = 745.0
-# Walkway belt: Blender x -3.05..-1.35, y 4..82 m. It carries riders toward the near end (+Y here).
-WALKWAY_CENTER = unreal.Vector(-220.0, -4300.0, 75.0)
-WALKWAY_EXTENT = unreal.Vector(75.0, 3900.0, 60.0)
 
 eal = unreal.EditorAssetLibrary
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -172,14 +179,6 @@ for a in eas.get_all_level_actors():
 # glTF punctual lights come in with physical units that read wrong in Unreal; retune them.
 for a in eas.get_all_level_actors():
     label = a.get_actor_label()
-    if isinstance(a, unreal.PointLight) and label.startswith("Corridor_Fill"):
-        c = a.light_component
-        a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-        c.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
-        c.set_intensity(25.0)
-        c.set_light_color(WARM)
-        c.set_attenuation_radius(1800.0)
-        c.set_editor_property("source_radius", 13.0)
     if isinstance(a, unreal.CineCameraActor):
         eas.destroy_actor(a)
 
@@ -194,22 +193,35 @@ rc.set_attenuation_radius(900.0)
 rc.set_editor_property("source_width", 42.0)
 rc.set_editor_property("source_height", 32.0)
 
-# Garland: small warm lights along the wire so it actually tints the wall and table.
-y = 60.0
-k = 0
-while y < 8940.0:
+def point_light(loc, color, intensity, radius, label, folder, shadows=False):
+    pl = spawn(unreal.PointLight, loc, label=label)
+    pl.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    c = pl.light_component
+    c.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
+    c.set_intensity(intensity)
+    c.set_light_color(color)
+    c.set_attenuation_radius(radius)
+    c.set_editor_property("cast_shadows", shadows)
+    pl.set_folder_path(folder)
+    return pl
+
+
+# Garland: the only overhead light. Some bulbs blink now and then (ALightFlicker).
+rng = random.Random(7)
+for k, p in enumerate(LAYOUT["garland_lights"]):
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    gl = spawn(unreal.PointLight, unreal.Vector(GARLAND_X + 15, -y, GARLAND_Z - 10), label="Garland_Light_%02d" % k)
-    glc = gl.light_component
-    gl.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-    glc.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
-    glc.set_intensity(1.2)
-    glc.set_light_color(unreal.LinearColor(col[0], col[1], col[2], 1.0))
-    glc.set_attenuation_radius(320.0)
-    glc.set_editor_property("cast_shadows", False)
-    gl.set_folder_path("Lights/Garland")
-    y += 250.0
-    k += 1
+    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 6.0, 520.0,
+                     "Garland_Light_%02d" % k, "Lights/Garland", shadows=(k % 3 == 0))
+    if rng.random() < 0.2:
+        gl.tags = [unreal.Name("Flicker")]
+spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector(0, 0, 300), label="GarlandFlicker")
+
+# Desk lamps (warm) and the purple grow lamps over the roses.
+for k, p in enumerate(LAYOUT.get("desk_lights", [])):
+    point_light(vec(p), WARM, 3.0, 300.0, "DeskLamp_Light_%02d" % k, "Lights/Desk", shadows=True)
+for k, p in enumerate(LAYOUT.get("grow_lights", [])):
+    point_light(vec(p), unreal.LinearColor(0.55, 0.1, 1.0, 1.0), 2.5, 220.0, "GrowLamp_Light_%02d" % k,
+                "Lights/Desk", shadows=True)
 
 
 # Ventilation: spin the fan blades and make the duct hum.
@@ -229,37 +241,131 @@ def add_rotation(actor, yaw_rate):
 
 spun = 0
 for a in eas.get_all_level_actors():
-    if a.get_actor_label().startswith("VentFan_Blades"):
+    label = a.get_actor_label()
+    if label.startswith("VentFan_Blades") or label.startswith("DeskFan_Blades"):
         a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-        spun += add_rotation(a, 240.0)
+        spun += add_rotation(a, 240.0 if label.startswith("Vent") else 720.0)
 log("spinning fans: %d" % spun)
 
-task = unreal.AssetImportTask()
-task.filename = HUM_WAV
-task.destination_path = "/Game/Scene01/Audio"
-task.automated = True
-task.replace_existing = True
-task.save = True
-unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
-hum = eal.load_asset("/Game/Scene01/Audio/vent_hum")
-hum.set_editor_property("looping", True)
-eal.save_loaded_asset(hum)
-for i, fy in enumerate(FAN_YS):
-    snd = spawn(unreal.AmbientSound, unreal.Vector(0, -fy * 100.0, DUCT_Z - 40), label="VentHum_%d" % i)
-    ac = snd.get_component_by_class(unreal.AudioComponent)
-    ac.set_editor_property("sound", hum)
-    ac.set_editor_property("volume_multiplier", 0.8)
+
+def ribbon_material(top_z):
+    """Pale ribbon that flutters below the vent outlet: world-position wobble growing with depth."""
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "M_VentRibbon", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    m.set_editor_property("two_sided", True)
+    wp = mel.create_material_expression(m, E.MaterialExpressionWorldPosition, -1200, 0)
+
+    def mask(ch, y):
+        e = mel.create_material_expression(m, E.MaterialExpressionComponentMask, -1050, y)
+        for c in "rgba":
+            e.set_editor_property(c, c == ch)
+        mel.connect_material_expressions(wp, "", e, "")
+        return e
+
+    def op(cls, a, b, x, y, const_b=None):
+        e = mel.create_material_expression(m, cls, x, y)
+        mel.connect_material_expressions(a, "", e, "A")
+        if b is not None:
+            mel.connect_material_expressions(b, "", e, "B")
+        elif const_b is not None:
+            e.set_editor_property("const_b", const_b)
+        return e
+
+    def const(v, x, y):
+        e = mel.create_material_expression(m, E.MaterialExpressionConstant, x, y)
+        e.set_editor_property("r", v)
+        return e
+
+    # depth below the outlet, 0 at the top, 1 at the free end (32 cm)
+    z = mask("b", 0)
+    depth = op(E.MaterialExpressionSubtract, const(top_z, -1050, 100), z, -900, 0)
+    depth = op(E.MaterialExpressionDivide, depth, None, -750, 0, const_b=32.0)
+    sat = mel.create_material_expression(m, E.MaterialExpressionSaturate, -600, 0)
+    mel.connect_material_expressions(depth, "", sat, "")
+    # two sines at different rates, phase-shifted along the corridor
+    t = mel.create_material_expression(m, E.MaterialExpressionTime, -1050, 250)
+    y = mask("g", 400)
+    phase = op(E.MaterialExpressionMultiply, y, None, -900, 400, const_b=0.013)
+    fast = op(E.MaterialExpressionMultiply, t, None, -900, 250, const_b=2.3)
+    slow = op(E.MaterialExpressionMultiply, t, None, -900, 320, const_b=0.9)
+    s1 = mel.create_material_expression(m, E.MaterialExpressionSine, -600, 250)
+    mel.connect_material_expressions(op(E.MaterialExpressionAdd, fast, phase, -750, 250), "", s1, "")
+    s2 = mel.create_material_expression(m, E.MaterialExpressionSine, -600, 330)
+    mel.connect_material_expressions(op(E.MaterialExpressionAdd, slow, phase, -750, 330), "", s2, "")
+    swing = op(E.MaterialExpressionAdd, s1, op(E.MaterialExpressionMultiply, s2, None, -450, 330, const_b=0.6),
+               -300, 250)
+    amp = op(E.MaterialExpressionMultiply, swing, sat, -150, 250)
+    # sideways flutter in X and Y plus a steady push outward and down from the airflow
+    wobble = mel.create_material_expression(m, E.MaterialExpressionAppendVector, 0, 250)
+    xy = mel.create_material_expression(m, E.MaterialExpressionAppendVector, -50, 250)
+    mel.connect_material_expressions(op(E.MaterialExpressionMultiply, amp, None, -100, 200, const_b=7.0), "", xy, "A")
+    mel.connect_material_expressions(op(E.MaterialExpressionMultiply, amp, None, -100, 300, const_b=4.0), "", xy, "B")
+    mel.connect_material_expressions(xy, "", wobble, "A")
+    mel.connect_material_expressions(op(E.MaterialExpressionMultiply, sat, None, -100, 380, const_b=-3.0), "",
+                                     wobble, "B")
+    mel.connect_material_property(wobble, "", unreal.MaterialProperty.MP_WORLD_POSITION_OFFSET)
+    col = mel.create_material_expression(m, E.MaterialExpressionConstant3Vector, 0, 0)
+    col.set_editor_property("constant", unreal.LinearColor(0.75, 0.72, 0.62, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+rib = ribbon_material(LAYOUT["ribbon_top_z"])
+for a in eas.get_all_level_actors():
+    if a.get_actor_label() == "Vent_Ribbons":
+        a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+        a.static_mesh_component.set_material(0, rib)
+        a.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+
+
+def import_sound(path, looping=True):
+    task = unreal.AssetImportTask()
+    task.filename = path
+    task.destination_path = "/Game/Scene01/Audio"
+    task.automated = True
+    task.replace_existing = True
+    task.save = True
+    unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+    snd = eal.load_asset("/Game/Scene01/Audio/" + os.path.splitext(os.path.basename(path))[0])
+    snd.set_editor_property("looping", looping)
+    eal.save_loaded_asset(snd)
+    return snd
+
+
+def ambient(sound, loc, label, volume, inner, falloff):
+    a = spawn(unreal.AmbientSound, loc, label=label)
+    ac = a.get_component_by_class(unreal.AudioComponent)
+    ac.set_editor_property("sound", sound)
+    ac.set_editor_property("volume_multiplier", volume)
     ac.set_editor_property("override_attenuation", True)
     att = ac.get_editor_property("attenuation_overrides")
-    att.set_editor_property("attenuation_shape_extents", unreal.Vector(400, 0, 0))
-    att.set_editor_property("falloff_distance", 2200.0)
+    att.set_editor_property("attenuation_shape_extents", unreal.Vector(inner, 0, 0))
+    att.set_editor_property("falloff_distance", falloff)
     ac.set_editor_property("attenuation_overrides", att)
+    a.set_folder_path("Audio")
+    return a
 
-# The moving walkway (C++ AConveyorBelt from Source/Lyudmilovsk).
-conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), WALKWAY_CENTER, label="Walkway_Conveyor")
-conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(WALKWAY_EXTENT)
+hum = import_sound(HUM_WAV)
+air = import_sound(AIR_WAV)
+for i, p in enumerate(LAYOUT["vent_fans"]):
+    ambient(hum, vec(p), "VentHum_%d" % i, 0.8, 300.0, 1800.0)
+for i, p in enumerate(LAYOUT["vent_outlets"]):
+    ambient(air, vec(p), "VentAir_%02d" % i, 0.55, 60.0, 650.0)
+
+# The moving walkway (C++ AConveyorBelt): speeds up while you ride it, toward the hero's PC.
+walk = LAYOUT["walkway"]
+conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), vec(walk["center"]),
+                 label="Walkway_Conveyor")
+conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(vec(walk["extent"]))
 conveyor.set_editor_property("belt_actor", belt_actor)
-conveyor.set_editor_property("direction", unreal.Vector(0, 1, 0))
+conveyor.set_editor_property("direction", unreal.Vector(0, -1, 0))
+conveyor.set_editor_property("max_speed", 900.0)
+conveyor.set_editor_property("acceleration", 80.0)
+conveyor.set_editor_property("deceleration", 400.0)
 conveyor.set_editor_property("motor_sound", hum)
 log("conveyor belt: %s" % (belt_actor.get_actor_label() if belt_actor else "MISSING"))
 
@@ -270,7 +376,7 @@ s = ppv.get_editor_property("settings")
 s.set_editor_property("override_auto_exposure_method", True)
 s.set_editor_property("auto_exposure_method", unreal.AutoExposureMethod.AEM_MANUAL)
 s.set_editor_property("override_auto_exposure_bias", True)
-s.set_editor_property("auto_exposure_bias", 7.5)
+s.set_editor_property("auto_exposure_bias", 8.5)
 s.set_editor_property("override_vignette_intensity", True)
 s.set_editor_property("vignette_intensity", 0.6)
 s.set_editor_property("override_film_grain_intensity", True)
@@ -283,7 +389,20 @@ fc.set_editor_property("fog_density", 0.02)
 fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.012, 0.008, 0.004, 1.0))
 fc.set_editor_property("enable_volumetric_fog", True)
 
-# Wake up next to the chair, facing the glowing screen and the corridor behind it.
+# The hero's seat with the sit-down cutscene (AHeroSeat): origin on the floor at the chair,
+# +X toward the screen.
+seat_cls = unreal.load_class(None, "/Script/Lyudmilovsk.HeroSeat")
+if seat_cls:
+    seat = spawn(seat_cls, vec(HERO["chair"]), unreal.Rotator(0, 0, HERO["chair_yaw"]), "HeroSeat")
+    seq = unreal.load_asset(SIT_SEQUENCE)
+    if seq:
+        seat.set_editor_property("sit_sequence", seq)
+    else:
+        log("sit sequence missing: %s" % SIT_SEQUENCE)
+else:
+    log("HeroSeat class missing: build the C++ module")
+
+# Wake up in the aisle behind the hero's chair, facing the glowing screen.
 yaw = math.degrees(math.atan2(SCREEN.y - WAKE.y, SCREEN.x - WAKE.x))
 spawn(unreal.PlayerStart, WAKE, unreal.Rotator(0, 0, yaw), "PlayerStart_WakeUp")
 

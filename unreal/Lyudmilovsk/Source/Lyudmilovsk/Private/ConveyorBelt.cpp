@@ -61,8 +61,8 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 		}
 	}
 
-	const float Target = Riders.Num() > 0 ? MaxSpeed : 0.f;
-	Speed = FMath::FInterpConstantTo(Speed, Target, DeltaSeconds, Acceleration);
+	const bool bRiding = Riders.Num() > 0;
+	Speed = FMath::FInterpConstantTo(Speed, bRiding ? MaxSpeed : 0.f, DeltaSeconds, bRiding ? Acceleration : Deceleration);
 
 	if (Speed > KINDA_SMALL_NUMBER)
 	{

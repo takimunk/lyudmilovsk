@@ -13,6 +13,7 @@ import math
 import os
 import sys
 
+import json
 import random
 
 import bmesh
@@ -32,29 +33,27 @@ DO_RENDER = "--no-render" not in ARGS
 
 # Corridor dimensions, metres. Corridor runs along +Y.
 L = 90.0            # length
-W = 7.0             # floor width
-WALL_H = 2.4        # vertical part of the wall
-COURSES = 7         # corbel courses above it
-COURSE_H = 0.8
-STEP = 0.25         # each course steps inward this much per side
-CEIL_Z = WALL_H + COURSES * COURSE_H
+W = 5.0             # floor width
+WALL_H = 2.2        # vertical part of the wall
+CEIL_Z = 4.2        # flat ceiling strip; the walls slope up to it
+TOP_HALF = 0.8      # half width of the flat ceiling strip
 
-TABLE_X = 1.55      # table centre line
-TABLE_W = 0.9
-TABLE_H = 0.75
-TABLE_Y0, TABLE_Y1 = 3.0, L - 1.5
-SEAT_X = 0.55
-WALK_X0, WALK_X1 = -3.05, -1.35
-WALK_Y0, WALK_Y1 = 4.0, L - 8.0
+# One long row of desks along the right wall, each station with its own desk.
+DESK_D = 0.8
+TABLE_X = W / 2 - 0.005 - DESK_D / 2  # desk centre line: the desks stand flush against the wall
+TABLE_H = 0.75                        # nominal desk height (each desk varies a little)
+SEAT_X = TABLE_X - DESK_D / 2 - 0.42
+ROW_Y0 = 0.8
+WALK_X0, WALK_X1 = -2.35, -1.2
+WALK_Y0, WALK_Y1 = 3.0, L - 6.0
 
-# The hero's PC is the last station on the long table, set up like all the others.
-HERO_Y = L - 3.0
+LAYOUT = {}         # positions Unreal needs, written to blender/export/scene01_layout.json
 
 PANEL_H = 1.5       # oil-painted lower part of the podyezd wall
 WARM = (1.0, 0.68, 0.38)
-GARLAND_Z = 2.2
+GARLAND_Z = 2.0
 GARLAND_COLORS = [(1.0, 0.62, 0.28), (1.0, 0.55, 0.22), (1.0, 0.7, 0.36)]   # warm incandescent only
-DUCT_Z = 7.45       # ventilation duct under the 8 m ceiling
+DUCT_Z = CEIL_Z - 0.38   # ventilation duct under the ceiling
 FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
 
 
@@ -181,6 +180,39 @@ def sag(a, b, drop, n=8):
     return [a.lerp(b, t / n) - Vector((0, 0, drop * 4 * (t / n) * (1 - t / n))) for t in range(n + 1)]
 
 
+def world_mat(o):
+    m = o.matrix_basis.copy()
+    p = o.parent
+    while p:
+        m = p.matrix_basis @ m
+        p = p.parent
+    return m
+
+
+def descendants(o):
+    out = []
+    for c in o.children:
+        out.append(c)
+        out.extend(descendants(c))
+    return out
+
+
+def collapse(name, root, coll, extra=()):
+    """Merges every mesh under `root` (plus `extra`) into one object and drops the empties."""
+    root.name = name + "_root"    # free the name for the merged object
+    kids = descendants(root)
+    meshes = [o for o in kids if o.type == "MESH"] + [o for o in extra if o]
+    empties = [o for o in [root] + kids if o.type == "EMPTY"]
+    for o in meshes:
+        if o.parent:
+            o.matrix_basis = world_mat(o)
+            o.parent = None
+    obj = join(name, meshes, coll)
+    for o in empties:
+        bpy.data.objects.remove(o)
+    return obj
+
+
 def join(name, objs, coll):
     """Merges many small objects into one mesh (fewer actors in Unreal)."""
     if not objs:
@@ -189,8 +221,7 @@ def join(name, objs, coll):
     mats = []
     for o in objs:
         tmp = o.data.copy()
-        mw = o.matrix_basis if not o.parent else o.parent.matrix_basis @ o.matrix_basis
-        tmp.transform(mw)
+        tmp.transform(world_mat(o))
         for m in tmp.materials:
             if m.name not in [x.name for x in mats]:
                 mats.append(m)
@@ -438,11 +469,11 @@ def build_architecture(coll):
         tbox("Wall_%s" % s_, (1.0, L, WALL_H - PANEL_H), (x, L / 2, (PANEL_H + WALL_H) / 2), white, 1.0, coll=coll)
         box("Wall_%s_Line" % s_, (1.01, L, 0.035), (x, L / 2, PANEL_H), stripe, coll=coll)
         # Smooth sloped upper wall from the top of the vertical wall to the ceiling.
-        top_x = W / 2 - COURSES * STEP
+        top_x = TOP_HALF
         outline = [(W / 2, WALL_H), (W / 2 + 1.0, WALL_H), (W / 2 + 1.0, CEIL_Z + 0.6),
                    (top_x - 0.1, CEIL_Z + 0.6), (top_x, CEIL_Z)]
         prism("Slope_%s" % s_, [(side * x, z) for x, z in outline], 0, L, white, coll)
-    top_w = W - 2 * COURSES * STEP
+    top_w = 2 * TOP_HALF
     tbox("Ceiling", (top_w + 0.2, L, 0.6), (0, L / 2, CEIL_Z + 0.3), ceil, 2.0, coll=coll)
     # end walls: the far one behind the hero, the near one is a dead end too (no exit yet)
     for name, y in (("EndWall_Far", L + 0.5), ("EndWall_Near", -0.5)):
@@ -478,6 +509,7 @@ def build_garland(coll):
                             bulb_ms[k], coll=coll, verts=8, r2=0.006))
     for k, objs in enumerate(bulbs):
         join("Garland_Bulbs_%d" % k, objs, coll)
+    LAYOUT["garland_lights"] = [ue(p[0] + 0.12, p[1], p[2] - 0.08) for p in pts[::15]]
 
 
 def build_ventilation(coll):
@@ -485,32 +517,53 @@ def build_ventilation(coll):
     zinc = mat("Vent_Galvanised", (0.55, 0.56, 0.57), 0.45, 0.9)
     dark = mat("Vent_Grille", (0.05, 0.05, 0.05), 0.6, 0.5)
     rod = mat("Vent_Rod", (0.2, 0.2, 0.2), 0.5, 0.8)
-    parts = [box("Vent_Duct", (0.8, L - 2.0, 0.5), (0, L / 2, DUCT_Z), zinc, coll=coll)]
+    parts = [box("Vent_Duct", (0.6, L - 2.0, 0.36), (0, L / 2, DUCT_Z), zinc, coll=coll)]
     for k in range(int(L / 3)):
         y = 1.5 + k * 3.0
-        parts.append(box("Vent_Seam", (0.84, 0.04, 0.54), (0, y, DUCT_Z), zinc, coll=coll))
-        for dx in (-0.35, 0.35):
-            parts.append(cyl("Vent_Hanger", 0.008, CEIL_Z - DUCT_Z - 0.25, (dx, y, (CEIL_Z + DUCT_Z + 0.25) / 2), rod, coll=coll, verts=6))
+        parts.append(box("Vent_Seam", (0.64, 0.04, 0.4), (0, y, DUCT_Z), zinc, coll=coll))
+        for dx in (-0.26, 0.26):
+            parts.append(cyl("Vent_Hanger", 0.008, CEIL_Z - DUCT_Z - 0.18, (dx, y, (CEIL_Z + DUCT_Z + 0.18) / 2), rod, coll=coll, verts=6))
     for y in range(6, int(L), 9):
-        parts.append(box("Vent_Grille", (0.6, 0.4, 0.03), (0, y, DUCT_Z - 0.26), dark, coll=coll))
+        parts.append(box("Vent_Grille", (0.5, 0.4, 0.03), (0, y, DUCT_Z - 0.19), dark, coll=coll))
         for i in range(7):
-            parts.append(box("Vent_Slat", (0.56, 0.015, 0.04), (0, y - 0.18 + i * 0.06, DUCT_Z - 0.29), zinc, coll=coll))
+            parts.append(box("Vent_Slat", (0.46, 0.015, 0.04), (0, y - 0.18 + i * 0.06, DUCT_Z - 0.22), zinc, coll=coll))
     join("Vent_Duct", parts, coll)
+    # Outlets: angled diffusers on both sides of the duct, each with a few ribbons that Unreal
+    # flutters in the airflow (material wobble) and a hiss of air.
+    ribbon = mat("Vent_Ribbon", (0.8, 0.78, 0.7), 0.7)
+    outlets, ribbons = [], []
+    for k, y in enumerate(range(3, int(L) - 1, 6)):
+        side = 1 if k % 2 else -1
+        x = side * 0.31
+        outlets.append(box("Vent_Outlet", (0.06, 0.45, 0.2), (x + side * 0.03, y, DUCT_Z - 0.05), zinc, coll=coll,
+                           rot=(0, math.radians(side * 30), 0)))
+        for i in range(6):
+            outlets.append(box("Vent_OutletVane", (0.012, 0.42, 0.012), (x + side * 0.065, y, DUCT_Z - 0.13 + i * 0.033),
+                               dark, coll=coll, rot=(0, math.radians(side * 30), 0)))
+        for i in range(4):
+            ribbons.append(plane("Vent_Ribbon", 0.025, 0.32, (x + side * 0.08, y - 0.15 + i * 0.1, DUCT_Z - 0.32),
+                                 ribbon, coll=coll))
+            ribbons[-1].rotation_euler = (0, 0, math.radians(90))
+        LAYOUT.setdefault("vent_outlets", []).append(ue(x + side * 0.1, y, DUCT_Z - 0.15))
+    join("Vent_Outlets", outlets, coll)
+    join("Vent_Ribbons", ribbons, coll)
+    LAYOUT["ribbon_top_z"] = round((DUCT_Z - 0.16) * 100, 1)
     for i, y in enumerate(FAN_YS):
-        housing = [cyl("Fan_Ring", 0.42, 0.25, (0, y, DUCT_Z - 0.38), zinc, coll=coll, verts=32),
-                   cyl("Fan_Hub", 0.06, 0.12, (0, y, DUCT_Z - 0.5), dark, coll=coll)]
+        housing = [cyl("Fan_Ring", 0.3, 0.16, (0, y, DUCT_Z - 0.26), zinc, coll=coll, verts=32),
+                   cyl("Fan_Hub", 0.05, 0.1, (0, y, DUCT_Z - 0.34), dark, coll=coll)]
         join("VentFan_Housing_%d" % i, housing, coll)
         # Blades are their own object with the pivot on the axis, so Unreal can spin them.
-        root = empty("VentFan_%d" % i, (0, y, DUCT_Z - 0.46), coll=coll)
+        root = empty("VentFan_%d" % i, (0, y, DUCT_Z - 0.32), coll=coll)
         blades = []
         for b in range(4):
             a = b * math.pi / 2
-            blades.append(box("Blade", (0.34, 0.1, 0.01), (math.cos(a) * 0.2, math.sin(a) * 0.2, 0), dark,
+            blades.append(box("Blade", (0.24, 0.08, 0.01), (math.cos(a) * 0.14, math.sin(a) * 0.14, 0), dark,
                               root, coll, rot=(math.radians(20), 0, a)))
         bl = join("VentFan_Blades_%d" % i, blades, coll)
         bl.location = (0, 0, 0)
         bl.parent = root
         bl.data.transform(root.matrix_basis.inverted())
+    LAYOUT["vent_fans"] = [ue(0, y, DUCT_Z - 0.3) for y in FAN_YS]
 
 
 def build_podyezd_props(coll):
@@ -520,30 +573,27 @@ def build_podyezd_props(coll):
     door_m = mat("Mailbox_Door", (0.22, 0.3, 0.38), 0.4, 0.3)
     shield = mat("Shield_Grey", (0.32, 0.33, 0.3), 0.5, 0.4)
     pipe = mat("Pipe_Paint", (0.62, 0.58, 0.48), 0.5, 0.2)
-    # Cast-iron radiators in the gap between the left wall and the walkway.
-    for n, y in enumerate(range(8, int(L) - 4, 10)):
-        parts = []
-        for k in range(10):
-            parts.append(tbox("Rad_Section", (0.09, 0.075, 0.55), (-W / 2 + 0.1, y + k * 0.085, 0.42), rad, 0.3,
-                              coll=coll))
-        parts.append(cyl("Rad_Pipe", 0.016, 1.2, (-W / 2 + 0.1, y + 0.4, 0.66), pipe, coll=coll,
-                         rot=(math.radians(90), 0, 0), verts=10))
-        parts.append(cyl("Rad_Pipe", 0.016, 1.2, (-W / 2 + 0.1, y + 0.4, 0.18), pipe, coll=coll,
-                         rot=(math.radians(90), 0, 0), verts=10))
-        join("Radiator_%02d" % n, parts, coll)
+    # Cast-iron radiator on the near end wall, under the mailboxes.
+    parts = []
+    for k in range(12):
+        parts.append(tbox("Rad_Section", (0.075, 0.09, 0.55), (-0.5 + k * 0.085, 0.1, 0.42), rad, 0.3, coll=coll))
+    for z in (0.66, 0.18):
+        parts.append(cyl("Rad_Pipe", 0.016, 1.4, (-0.03, 0.1, z), pipe, coll=coll, rot=(0, math.radians(90), 0),
+                         verts=10))
+    join("Radiator", parts, coll)
     # Mailboxes on the near dead-end wall, facing the hero down the corridor.
     parts = []
     for r in range(3):
         for c in range(5):
-            x, z = -1.0 + c * 0.42, 1.15 + r * 0.32
+            x, z = -0.9 + c * 0.42, 1.15 + r * 0.32
             parts.append(box("Mailbox", (0.4, 0.22, 0.3), (x, 0.11, z), box_m, coll=coll))
             parts.append(box("Mailbox_Door", (0.34, 0.01, 0.24), (x, 0.225, z), door_m, coll=coll))
             parts.append(box("Mailbox_Slot", (0.2, 0.012, 0.02), (x, 0.231, z + 0.07), screen_off(), coll=coll))
     join("Mailboxes", parts, coll)
     # Electrical cabinet (shchitok) on the right wall near the hero's end.
     join("ElectricCabinet", [
-        box("Cab", (0.12, 0.7, 0.9), (W / 2 - 0.06, L - 8.0, 1.6), shield, coll=coll),
-        box("Cab_Lock", (0.02, 0.04, 0.06), (W / 2 - 0.13, L - 7.75, 1.6), pipe, coll=coll)], coll)
+        box("Cab", (0.12, 0.7, 0.9), (W / 2 - 0.06, L - 8.0, 1.65), shield, coll=coll),
+        box("Cab_Lock", (0.02, 0.04, 0.06), (W / 2 - 0.13, L - 7.75, 1.65), pipe, coll=coll)], coll)
 
 
 def build_walkway(coll):
@@ -563,6 +613,7 @@ def build_walkway(coll):
     for yy in (WALK_Y0 - 0.4, WALK_Y1 + 0.4):
         box("Walkway_Comb", (w - 0.1, 0.5, 0.03), (cx, yy, 0.135), comb, parent, coll)
     # No balustrade or handrails: just a low skirt with a warm LED line along both edges.
+    LAYOUT["walkway"] = {"center": ue(cx, cy, 0.75), "extent": [w * 50 - 5, ln * 50, 60.0]}
     for x in (WALK_X0, WALK_X1):
         box("Skirt", (0.1, ln, 0.05), (x, cy, 0.145), housing, parent, coll)
         box("Skirt_LED", (0.012, ln, 0.012), (x + (0.06 if x == WALK_X0 else -0.06), cy, 0.15), led, parent, coll)
@@ -684,18 +735,6 @@ def chair_folding(name, loc, rot_z, coll):
 CHAIRS = [chair, chair_stool, chair_aeron, chair_gaming, chair_wooden, chair_folding]
 
 
-def build_table(coll):
-    top = mat("Table_Top", (0.28, 0.17, 0.10), 0.45)
-    leg = mat("Table_Leg", (0.05, 0.05, 0.05), 0.4, 0.8)
-    ln = TABLE_Y1 - TABLE_Y0
-    box("Table_Top", (TABLE_W, ln, 0.05), (TABLE_X, (TABLE_Y0 + TABLE_Y1) / 2, TABLE_H - 0.025), top, coll=coll)
-    y = TABLE_Y0 + 0.2
-    while y <= TABLE_Y1 - 0.1:
-        for dx in (-TABLE_W / 2 + 0.06, TABLE_W / 2 - 0.06):
-            box("Table_Leg", (0.05, 0.05, TABLE_H - 0.05), (TABLE_X + dx, y, (TABLE_H - 0.05) / 2), leg, coll=coll)
-        y += 3.0
-
-
 # ------------------------------------------------------------ stations
 # Each station is built in local space: the device sits at the origin on the
 # table top and its screen faces local -Y, where the chair is.
@@ -737,35 +776,35 @@ def crt(root, coll, name, w, h, d, shell, screen=None):
 
 def tower(root, coll, name, material, x=0.45, rgb=None):
     """PC case standing on the floor under the table (table top is local z = 0)."""
-    z = -TABLE_H
-    box(name, (0.2, 0.45, 0.44), (x, 0.12, z + 0.22), material, root, coll, bevel=0.005)
+    z = -root.location.z
+    box(name, (0.2, 0.45, 0.44), (x, 0.05, z + 0.22), material, root, coll, bevel=0.005)
     box(name + "_LED", (0.008, 0.004, 0.008), (x + 0.06, -0.103, z + 0.4), led((0.1, 1.0, 0.2)), root, coll)
     box(name + "_Drive", (0.15, 0.004, 0.04), (x, -0.103, z + 0.34), mat("Plastic_Dark", (0.08, 0.08, 0.08), 0.5),
         root, coll)
     if rgb:
-        box(name + "_RGB", (0.004, 0.4, 0.36), (x - 0.102, 0.12, z + 0.22), led(rgb), root, coll)
-    return (x, 0.35, z + 0.3)
+        box(name + "_RGB", (0.004, 0.4, 0.36), (x - 0.102, 0.05, z + 0.22), led(rgb), root, coll)
+    return (x, 0.28, z + 0.3)
 
 
 def cables(root, coll, sources, power_x=-0.35):
     """Cables from the devices over the back edge of the table down to a power strip on the floor."""
     black = mat("Cable", (0.015, 0.015, 0.015), 0.6)
     strip = mat("PowerStrip", (0.85, 0.84, 0.8), 0.5)
-    floor = -TABLE_H + 0.012
-    box("PowerStrip", (0.32, 0.06, 0.04), (power_x, 0.3, floor + 0.01), strip, root, coll)
+    floor = -root.location.z + 0.012
+    box("PowerStrip", (0.32, 0.06, 0.04), (power_x, 0.3, floor + 0.008), strip, root, coll)
     box("PowerStrip_Switch", (0.03, 0.02, 0.012), (power_x - 0.12, 0.3, floor + 0.034), led((1.0, 0.35, 0.05)), root, coll)
     objs = []
     for i, (sx, sy, sz) in enumerate(sources):
         plug = (power_x - 0.1 + 0.06 * (i % 4), 0.3, floor + 0.02)
         if sz > -0.1:     # on the table: over the back edge, then hanging down
-            edge = (sx + 0.03, TABLE_W / 2 + 0.01, 0.0)
-            pts = sag((sx, sy + 0.1, sz + 0.02), edge, 0.0, 2) + sag(edge, (sx + 0.08, 0.42, floor), -0.12, 6)[1:]
+            edge = (sx + 0.03, DESK_D / 2 - 0.01, 0.0)
+            pts = sag((sx, sy + 0.1, sz + 0.02), edge, 0.0, 2) + sag(edge, (sx + 0.08, 0.36, floor), -0.12, 6)[1:]
         else:             # from a tower under the table
             pts = [(sx, sy, sz), (sx, sy + 0.08, floor)]
         pts += sag(pts[-1], plug, 0.0, 2)[1:]
         world = [root.matrix_basis @ Vector(p) for p in pts]
         objs.append(polyline("Cable", world, 0.0045, black, coll))
-    return join("Cables_" + root.name, [o for o in objs if o], coll)
+    return [o for o in objs if o]
 
 
 def st_sega(root, coll):
@@ -919,27 +958,246 @@ def st_modern(root, coll):
 STATIONS = [st_sega, st_spreadsheet, st_ps2, st_gaming, st_vr, st_beige, st_zx, st_laptop, st_imac, st_modern]
 
 
+# ------------------------------------------------------------ desks
+# Desk local frame: x along the row, -y toward the chair, the top surface at z = 0
+# (the station root sits at desk height), the floor at z = -h.
+
+def desk(root, coll, kind, w, h):
+    d = DESK_D
+    if kind == "soviet":          # polished dark wood, drawer pedestal on the left
+        wood = mat("Desk_SovietWood", (0.16, 0.08, 0.04), 0.3)
+        brass = mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0)
+        box("Top", (w, d, 0.03), (0, 0, -0.015), wood, root, coll, bevel=0.004)
+        box("Pedestal", (0.4, d - 0.06, h - 0.03), (-w / 2 + 0.22, 0, -h / 2 - 0.015), wood, root, coll)
+        for k in range(3):
+            z = -0.12 - k * 0.22
+            box("Drawer", (0.36, 0.01, 0.18), (-w / 2 + 0.22, -d / 2 + 0.025, z), wood, root, coll, bevel=0.003)
+            box("Handle", (0.08, 0.015, 0.012), (-w / 2 + 0.22, -d / 2 + 0.015, z), brass, root, coll)
+        for dy in (-1, 1):
+            box("Leg", (0.05, 0.05, h - 0.03), (w / 2 - 0.05, dy * (d / 2 - 0.05), -h / 2 - 0.015), wood, root, coll)
+        box("Modesty", (w - 0.5, 0.02, 0.35), (0.18, d / 2 - 0.05, -0.2), wood, root, coll)
+    elif kind == "white":         # white laminate on thin steel legs
+        white = mat("Desk_White", (0.86, 0.86, 0.84), 0.4)
+        steel = mat("Desk_Steel", (0.75, 0.75, 0.76), 0.3, 1.0)
+        box("Top", (w, d, 0.025), (0, 0, -0.0125), white, root, coll)
+        for dx in (-1, 1):
+            for dy in (-1, 1):
+                cyl("Leg", 0.02, h - 0.025, (dx * (w / 2 - 0.06), dy * (d / 2 - 0.06), -h / 2), steel, root, coll,
+                    verts=10)
+    elif kind == "gaming":        # black top, RGB edge, T-legs
+        black = mat("Desk_Black", (0.02, 0.02, 0.022), 0.35)
+        box("Top", (w, d, 0.025), (0, 0, -0.0125), black, root, coll)
+        box("RGB_Edge", (w, 0.004, 0.012), (0, -d / 2 - 0.002, -0.012), led((0.7, 0.1, 1.0)), root, coll)
+        for dx in (-1, 1):
+            box("Leg", (0.06, 0.06, h - 0.05), (dx * (w / 2 - 0.1), 0.1, -h / 2), black, root, coll)
+            box("Foot", (0.06, d - 0.1, 0.04), (dx * (w / 2 - 0.1), 0, -h + 0.02), black, root, coll)
+        box("Crossbar", (w - 0.2, 0.05, 0.05), (0, 0.1, -h + 0.25), black, root, coll)
+    elif kind == "office":        # grey laminate, panel legs, modesty panel
+        grey = mat("Desk_OfficeGrey", (0.55, 0.55, 0.52), 0.5)
+        frame = mat("Desk_OfficeFrame", (0.22, 0.22, 0.23), 0.4, 0.6)
+        box("Top", (w, d, 0.03), (0, 0, -0.015), grey, root, coll, bevel=0.003)
+        for dx in (-1, 1):
+            box("Panel", (0.025, d - 0.05, h - 0.03), (dx * (w / 2 - 0.02), 0, -h / 2 - 0.015), frame, root, coll)
+        box("Modesty", (w - 0.05, 0.02, 0.4), (0, d / 2 - 0.04, -0.25), frame, root, coll)
+    elif kind == "school":        # birch top on a green tubular frame
+        birch = mat("Desk_Birch", (0.75, 0.6, 0.4), 0.5)
+        green = mat("Desk_GreenFrame", (0.12, 0.3, 0.18), 0.45, 0.5)
+        box("Top", (w, d, 0.028), (0, 0, -0.014), birch, root, coll, bevel=0.004)
+        for dx in (-1, 1):
+            for dy in (-1, 1):
+                box("Leg", (0.03, 0.03, h - 0.03), (dx * (w / 2 - 0.04), dy * (d / 2 - 0.04), -h / 2 - 0.015), green,
+                    root, coll)
+            box("Rail", (0.03, d - 0.08, 0.03), (dx * (w / 2 - 0.04), 0, -h + 0.12), green, root, coll)
+        box("Shelf", (w - 0.1, d - 0.2, 0.015), (0, 0.05, -0.15), birch, root, coll)
+    elif kind == "glass":         # glass top on chrome A-trestles
+        glass = mat("Desk_Glass", (0.3, 0.38, 0.38), 0.05, transmission=1.0, alpha=0.35)
+        chrome = mat("Chrome", (0.8, 0.8, 0.82), 0.12, 1.0)
+        box("Top", (w, d, 0.012), (0, 0, -0.006), glass, root, coll)
+        for dx in (-1, 1):
+            for dy in (-1, 1):
+                box("Trestle", (0.025, 0.025, h + 0.05), (dx * (w / 2 - 0.15), dy * 0.18, -h / 2), chrome, root, coll,
+                    rot=(math.radians(dy * 14), 0, 0))
+            box("TrestleTop", (0.04, d - 0.15, 0.02), (dx * (w / 2 - 0.15), 0, -0.022), chrome, root, coll)
+    else:                         # "pine": plain pine with an X brace
+        pine = mat("Desk_Pine", (0.62, 0.45, 0.26), 0.55)
+        box("Top", (w, d, 0.035), (0, 0, -0.0175), pine, root, coll, bevel=0.005)
+        for dx in (-1, 1):
+            for dy in (-1, 1):
+                box("Leg", (0.06, 0.06, h - 0.035), (dx * (w / 2 - 0.05), dy * (d / 2 - 0.05), -h / 2 - 0.0175),
+                    pine, root, coll)
+        brace = math.degrees(math.atan2(h - 0.25, w - 0.1))
+        for sgn in (-1, 1):
+            box("Brace", (math.hypot(w - 0.1, h - 0.25), 0.03, 0.04), (0, d / 2 - 0.05, -h / 2), pine, root, coll,
+                rot=(0, math.radians(sgn * brace), 0))
+
+
+DESKS = ["soviet", "white", "gaming", "office", "school", "glass", "pine"]
+WIDE = {"st_gaming", "st_vr", "st_modern"}
+
+
+# ------------------------------------------------------------ desk objects
+
+def ext_fan(root, coll, x, y, n):
+    """Small desk fan facing the chair; blades are their own object so Unreal can spin them."""
+    white = mat("Fan_White", (0.82, 0.83, 0.8), 0.4)
+    grille = mat("Fan_Grille", (0.6, 0.62, 0.62), 0.3, 1.0)
+    box("Fan_Base", (0.16, 0.12, 0.03), (x, y, 0.015), white, root, coll, bevel=0.01)
+    cyl("Fan_Stem", 0.012, 0.2, (x, y, 0.13), white, root, coll, verts=10)
+    cyl("Fan_Motor", 0.04, 0.08, (x, y + 0.04, 0.26), white, root, coll, rot=(math.radians(90), 0, 0))
+    cyl("Fan_Guard", 0.12, 0.08, (x, y - 0.03, 0.26), grille, root, coll, rot=(math.radians(90), 0, 0), verts=24,
+        r2=0.11)
+    # Blades: built around local Z, then turned so Z points at the chair (local -Y of the station).
+    me_objs = []
+    for b in range(3):
+        a = b * 2 * math.pi / 3
+        me_objs.append(box("FanBlade", (0.1, 0.04, 0.004), (math.cos(a) * 0.055, math.sin(a) * 0.055, 0),
+                           mat("Fan_Blade", (0.7, 0.75, 0.8), 0.3, transmission=0.5, alpha=0.6), coll=coll,
+                           rot=(math.radians(25), 0, a)))
+    bl = join("DeskFan_Blades_%02d" % n, me_objs, coll)
+    loc = root.matrix_basis @ Vector((x, y - 0.05, 0.26))
+    bl.location = loc
+    # local Z -> station -Y -> world -X (stations are turned -90 degrees)
+    bl.rotation_euler = (0, math.radians(-90), 0)
+    LAYOUT.setdefault("desk_fans", []).append(bl.name)
+
+
+def ext_rose(root, coll, x, y, n):
+    """A single rose in a glass under a purple grow lamp."""
+    glass = mat("Vase_Glass", (0.6, 0.7, 0.7), 0.05, transmission=1.0, alpha=0.3)
+    stem = mat("Rose_Stem", (0.1, 0.3, 0.08), 0.6)
+    petal = mat("Rose_Petal", (0.55, 0.02, 0.06), 0.5)
+    black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
+    purple = mat("GrowLamp_Purple", (0.0, 0.0, 0.0), 0.5, emit=(0.6, 0.1, 1.0), strength=20.0)
+    cyl("Vase", 0.035, 0.18, (x, y, 0.09), glass, root, coll, verts=16, r2=0.03)
+    cyl("Stem", 0.004, 0.3, (x, y, 0.25), stem, root, coll, verts=6)
+    for k in range(3):
+        box("Leaf", (0.05, 0.02, 0.004), (x + 0.02 * (k - 1), y, 0.2 + k * 0.05), stem, root, coll,
+            rot=(0, math.radians(30 * (k - 1)), math.radians(60 * k)))
+    for k in range(5):
+        a = k * 2 * math.pi / 5
+        cyl("Petal", 0.022, 0.03, (x + math.cos(a) * 0.012, y + math.sin(a) * 0.012, 0.415), petal, root, coll,
+            verts=8, r2=0.012, rot=(math.radians(15) * math.cos(a), math.radians(15) * math.sin(a), 0))
+    # clamp lamp: pole, arm, head with a purple LED disc pointing down at the rose
+    cyl("GrowLamp_Pole", 0.008, 0.6, (x + 0.15, y + 0.12, 0.3), black, root, coll, verts=8)
+    box("GrowLamp_Arm", (0.16, 0.015, 0.015), (x + 0.075, y + 0.06, 0.6), black, root, coll,
+        rot=(0, 0, math.radians(38)))
+    cyl("GrowLamp_Head", 0.06, 0.03, (x, y, 0.59), black, root, coll)
+    cyl("GrowLamp_LED", 0.05, 0.004, (x, y, 0.573), purple, root, coll)
+    LAYOUT.setdefault("grow_lights", []).append(ue_from(root, x, y, 0.55))
+
+
+def ext_desk_lamp(root, coll, x, y, n):
+    """Soviet desk lamp with a green metal shade and a warm bulb."""
+    green = mat("Lamp_GreenShade", (0.08, 0.25, 0.12), 0.35, 0.5)
+    bulb = mat("Lamp_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=10.0)
+    cyl("DeskLamp_Base", 0.07, 0.025, (x, y, 0.0125), green, root, coll)
+    box("DeskLamp_Arm1", (0.015, 0.015, 0.3), (x, y + 0.04, 0.16), green, root, coll, rot=(math.radians(15), 0, 0))
+    box("DeskLamp_Arm2", (0.015, 0.25, 0.015), (x, y - 0.03, 0.31), green, root, coll, rot=(math.radians(-20), 0, 0))
+    cyl("DeskLamp_Shade", 0.07, 0.1, (x, y - 0.14, 0.27), green, root, coll, verts=20, r2=0.03,
+        rot=(math.radians(-25), 0, 0))
+    cyl("DeskLamp_Bulb", 0.025, 0.04, (x, y - 0.14, 0.235), bulb, root, coll, verts=10)
+    LAYOUT.setdefault("desk_lights", []).append(ue_from(root, x, y - 0.14, 0.2))
+
+
+def ext_plant(root, coll, x, y, n):
+    pot = mat("Pot_Terracotta", (0.55, 0.25, 0.12), 0.8)
+    leaf = mat("Plant_Leaf", (0.08, 0.32, 0.1), 0.6)
+    cyl("Pot", 0.06, 0.1, (x, y, 0.05), pot, root, coll, verts=14, r2=0.045)
+    if n % 2:
+        cyl("Cactus", 0.03, 0.14, (x, y, 0.16), leaf, root, coll, verts=10, r2=0.025)
+        cyl("Cactus_Arm", 0.015, 0.06, (x + 0.03, y, 0.18), leaf, root, coll, verts=8)
+    else:
+        for k in range(7):
+            a = k * 2 * math.pi / 7
+            box("Leaf", (0.015, 0.008, 0.18), (x + math.cos(a) * 0.03, y + math.sin(a) * 0.03, 0.18), leaf, root, coll,
+                rot=(math.sin(a) * 0.4, -math.cos(a) * 0.4, 0))
+
+
+def ext_books(root, coll, x, y, n):
+    cols = [(0.4, 0.05, 0.05), (0.05, 0.15, 0.35), (0.1, 0.3, 0.12), (0.6, 0.5, 0.2), (0.15, 0.12, 0.1)]
+    z = 0.0
+    for k in range(2 + n % 3):
+        th = 0.025 + 0.012 * ((n + k) % 3)
+        box("Book", (0.17 + 0.02 * (k % 2), 0.24 - 0.02 * (k % 2), th), (x, y, z + th / 2),
+            mat("Book_%d" % ((n + k) % len(cols)), cols[(n + k) % len(cols)], 0.7), root, coll,
+            rot=(0, 0, math.radians(7 * (k - 1))))
+        z += th
+
+
+def ext_tea(root, coll, x, y, n):
+    """Tea glass in a metal holder (podstakannik) with a spoon."""
+    metal = mat("Podstakannik", (0.6, 0.55, 0.45), 0.3, 1.0)
+    glass = mat("Tea_Glass", (0.5, 0.25, 0.08), 0.05, transmission=0.8, alpha=0.6)
+    cyl("Holder", 0.036, 0.06, (x, y, 0.03), metal, root, coll, verts=16)
+    cyl("TeaGlass", 0.033, 0.1, (x, y, 0.08), glass, root, coll, verts=16, r2=0.035)
+    box("Handle", (0.01, 0.04, 0.06), (x + 0.045, y, 0.05), metal, root, coll)
+    cyl("Spoon", 0.003, 0.15, (x - 0.01, y, 0.12), metal, root, coll, verts=6, rot=(0, math.radians(12), 0))
+
+
+def ext_trinkets(root, coll, x, y, n):
+    """Rubik's cube, an alarm clock and a stack of CDs."""
+    cols = [(0.8, 0.05, 0.05), (0.05, 0.5, 0.1), (0.05, 0.15, 0.7), (0.9, 0.8, 0.1), (0.9, 0.9, 0.9), (0.9, 0.4, 0.05)]
+    for i in range(2):
+        for j in range(2):
+            box("Rubik", (0.028, 0.028, 0.056), (x - 0.1 + i * 0.029, y + j * 0.029, 0.028),
+                mat("Rubik_%d" % ((i + 2 * j + n) % 6), cols[(i + 2 * j + n) % 6], 0.4), root, coll)
+    red = mat("Clock_Red", (0.6, 0.05, 0.04), 0.4, 0.5)
+    cyl("Clock", 0.05, 0.035, (x + 0.08, y, 0.06), red, root, coll, rot=(math.radians(90), 0, 0))
+    cyl("Clock_Face", 0.042, 0.002, (x + 0.08, y - 0.019, 0.06), mat("Clock_Face", (0.9, 0.88, 0.8), 0.5), root, coll,
+        rot=(math.radians(90), 0, 0))
+    for k in range(4):
+        box("CD_Case", (0.142, 0.125, 0.01), (x, y + 0.14, 0.005 + k * 0.01), mat("CD_Case", (0.7, 0.75, 0.8), 0.1),
+            root, coll, rot=(0, 0, math.radians(5 * k)))
+
+
+EXTRAS = [ext_desk_lamp, ext_plant, ext_books, ext_tea, ext_trinkets]
+
+
 def build_stations(coll):
-    """Stations along the table, in a shuffled but stable order, each with its own kind of chair."""
+    """One long row: every station has its own desk, the desks butt against each other."""
     rng = random.Random(1987)
     kinds = []
-    spacing = 3.5
-    y = TABLE_Y0 + 1.5
+    y = ROW_Y0
     i = 0
-    while y < HERO_Y - 2.5:
+    roses = 0
+    fans = 0
+    while True:
         if not kinds:
             kinds = STATIONS[:]
             rng.shuffle(kinds)
-        fn = kinds.pop()
-        root = empty("Station_%02d_%s" % (i, fn.__name__[3:]), (TABLE_X + 0.05, y, TABLE_H), math.radians(-90), coll=coll)
+        fn = kinds[-1]
+        w = rng.choice([1.3, 1.45, 1.6]) if fn.__name__ not in WIDE else rng.choice([1.6, 1.75])
+        if y + w > L - 0.8 - 1.6:          # leave the last place for the hero
+            break
+        kinds.pop()
+        h = rng.uniform(0.73, 0.77)
+        cy = y + w / 2
+        root = empty("Station_%02d" % i, (TABLE_X, cy, h), math.radians(-90), coll=coll)
+        desk(root, coll, rng.choice(DESKS), w, h)
         sources = fn(root, coll) or []
-        cables(root, coll, sources, power_x=rng.uniform(-0.6, 0.2))
+        wires = cables(root, coll, sources, power_x=rng.uniform(-0.4, 0.2))
+        # A few objects at the free back corners of the desk.
+        sides = [-1, 1]
+        rng.shuffle(sides)
+        for side in sides[:rng.choice([0, 1, 1, 2])]:
+            ex_x = side * (w / 2 - 0.17)
+            if fn.__name__ != "st_vr" and roses < 4 and rng.random() < 0.12:
+                ext_rose(root, coll, ex_x, 0.18, i)
+                roses += 1
+            elif fans < 10 and rng.random() < 0.25:
+                ext_fan(root, coll, ex_x, 0.15, i)
+                fans += 1
+            else:
+                rng.choice(EXTRAS)(root, coll, ex_x, 0.15, i)
+        trash = litter(coll, rng, root, w) if rng.random() < 0.25 else []
+        collapse("Station_%02d_%s" % (i, fn.__name__[3:]), root, coll, wires + trash)
         make = rng.choice(CHAIRS)
-        c = make("Chair_%02d" % i, (SEAT_X + rng.uniform(-0.1, 0.15), y + rng.uniform(-0.2, 0.2), 0),
-                 math.radians(-90 + rng.uniform(-25, 25)), coll)
-        litter(coll, rng, y)
-        y += spacing
+        c = make("Chair_%02d" % i, (SEAT_X + rng.uniform(-0.08, 0.1), cy + rng.uniform(-0.15, 0.15), 0),
+                 math.radians(-90 + rng.uniform(-20, 20)), coll)
+        collapse("Chair_%02d" % i, c, coll)
+        y += w
         i += 1
+    return y
 
 
 # ------------------------------------------------------------ fast-food litter
@@ -997,23 +1255,32 @@ def fries(coll, loc, rot):
     return parts
 
 
-LITTER_ALL = []
-
-
-def litter(coll, rng, y):
-    """Cups, paper bags, burger boxes and fries around one station: on the table and on the floor."""
+def litter(coll, rng, root, w):
+    """A few traces of food on this desk (and maybe one cup on the floor)."""
     makers = [lambda l, r: cola_cup(coll, l, r), lambda l, r: food_bag(coll, l, r),
               lambda l, r: burger_box(coll, l, r, rng.random() < 0.5), lambda l, r: fries(coll, l, r)]
-    for _ in range(rng.randint(1, 4)):       # on the table, to the sides of the device
-        side = rng.choice((-1, 1))
-        loc = (TABLE_X + rng.uniform(-0.3, 0.2), y + side * rng.uniform(0.55, 1.4), TABLE_H)
-        LITTER_ALL.extend(rng.choice(makers)(loc, rng.uniform(0, 6.28)))
-    for _ in range(rng.randint(0, 3)):       # dropped on the floor near the chair
-        loc = (rng.uniform(-0.9, 1.2), y + rng.uniform(-1.4, 1.4), 0.0)
-        if rng.random() < 0.5:
-            LITTER_ALL.extend(cola_cup(coll, loc, rng.uniform(0, 6.28), lying=True))
-        else:
-            LITTER_ALL.extend(rng.choice(makers)(loc, rng.uniform(0, 6.28)))
+    parts = []
+    for _ in range(rng.randint(1, 3)):
+        lx = rng.choice((-1, 1)) * rng.uniform(0.3, w / 2 - 0.12)
+        loc = root.matrix_basis @ Vector((lx, rng.uniform(-0.3, -0.05), 0.0))
+        parts += rng.choice(makers)(loc, rng.uniform(0, 6.28))
+    if rng.random() < 0.3:
+        loc = (SEAT_X - rng.uniform(0.3, 0.8), root.location.y + rng.uniform(-0.6, 0.6), 0.0)
+        parts += cola_cup(coll, loc, rng.uniform(0, 6.28), lying=True)
+    return parts
+
+
+ROW_END = 0.0
+
+
+def ue(x, y, z):
+    """Blender metres -> Unreal centimetres (Y flips)."""
+    return [round(x * 100, 1), round(-y * 100, 1), round(z * 100, 1)]
+
+
+def ue_from(root, x, y, z):
+    p = root.matrix_basis @ Vector((x, y, z))
+    return ue(p.x, p.y, p.z)
 
 
 def build_hero(coll):
@@ -1033,7 +1300,10 @@ def build_hero(coll):
     bsdf.inputs["Emission Strength"].default_value = 1.1
     bsdf.inputs["Roughness"].default_value = 0.15
 
-    root = empty("HeroStation", (TABLE_X + 0.05, HERO_Y, TABLE_H), math.radians(-90), coll=coll)
+    w, h = 1.6, 0.75
+    hero_y = ROW_END + w / 2
+    root = empty("HeroStation", (TABLE_X, hero_y, h), math.radians(-90), coll=coll)
+    desk(root, coll, "soviet", w, h)
     box("Hero_Monitor", (0.46, 0.05, 0.38), (0, 0.12, 0.38), black, root, coll, bevel=0.01)
     plane("Hero_Screen", 0.42, 0.2625 * 1.2, (0, 0.094, 0.39), scr, root, coll)
     box("Hero_Neck", (0.06, 0.06, 0.2), (0, 0.16, 0.1), black, root, coll)
@@ -1043,8 +1313,19 @@ def build_hero(coll):
     box("Hero_Mouse", (0.06, 0.1, 0.03), (0.32, -0.22, 0.015), beige, root, coll, bevel=0.012)
     cyl("Hero_Mug", 0.04, 0.1, (-0.55, -0.1, 0.05), mat("Mug", (0.6, 0.1, 0.08), 0.4), root, coll)
     t = tower(root, coll, "Hero_Tower", beige, x=0.5)
-    cables(root, coll, [(0, 0.3, 0.1), t], power_x=-0.3)
-    chair("HeroChair", (SEAT_X, HERO_Y, 0), math.radians(-90), coll)
+    wires = cables(root, coll, [(0, 0.3, 0.1), t], power_x=-0.3)
+    LAYOUT["hero"] = {
+        "screen": ue_from(root, 0, 0.094, 0.39),
+        "screen_normal": [-100.0, 0.0, 0.0],
+        "keyboard": ue_from(root, 0, -0.22, 0.03),
+        "chair": ue(SEAT_X, hero_y, 0.0),
+        "seat_height": 47.0,
+        "chair_yaw": 0.0,
+        "wake": ue(SEAT_X - 1.0, hero_y - 1.0, 1.0),
+    }
+    collapse("HeroStation", root, coll, wires)
+    c = chair("HeroChair", (SEAT_X, hero_y, 0), math.radians(-90), coll)
+    collapse("HeroChair", c, coll)
 
     # Light the screen casts on the desk and the sleeper (points -X, toward the chair).
     ld = bpy.data.lights.new("Hero_ScreenGlow", "AREA")
@@ -1054,27 +1335,9 @@ def build_hero(coll):
     ld.color = (0.55, 0.9, 0.8)
     lo = bpy.data.objects.new("Hero_ScreenGlow", ld)
     coll.objects.link(lo)
-    lo.location = (TABLE_X + 0.05 + 0.09, HERO_Y, TABLE_H + 0.39)
+    lo.location = (TABLE_X + 0.09, hero_y, h + 0.39)
     lo.rotation_euler = (0, math.radians(90), 0)
     return root
-
-
-def build_lights(coll):
-    """Warm incandescent globes on long cords from the high ceiling, plus their point lights."""
-    glass = mat("Lamp_Globe", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=8.0)
-    cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
-    for i, y in enumerate(range(8, int(L), 12)):
-        z = 3.9
-        join("Lamp_%d" % i, [
-            cyl("Lamp_Cord", 0.005, CEIL_Z - z - 0.12, (0, y, (CEIL_Z + z + 0.12) / 2), cord, coll=coll, verts=6),
-            uv_sphere("Lamp_Globe", 0.13, (0, y, z), glass, coll)], coll)
-        ld = bpy.data.lights.new("Corridor_Fill_%d" % i, "POINT")
-        ld.energy = 120
-        ld.color = WARM
-        ld.shadow_soft_size = 0.13
-        o = bpy.data.objects.new(ld.name, ld)
-        o.location = (0, y, z - 0.2)
-        coll.objects.link(o)
 
 
 def uv_sphere(name, r, loc, material, coll):
@@ -1095,7 +1358,7 @@ def build_work_lights(coll):
     """Bright temporary lights for layout renders; hidden in the final file."""
     for i, y in enumerate(range(4, int(L), 8)):
         ld = bpy.data.lights.new("Work_%d" % i, "POINT")
-        ld.energy = 900
+        ld.energy = 300
         ld.color = (1.0, 0.85, 0.65)
         ld.shadow_soft_size = 0.8
         o = bpy.data.objects.new(ld.name, ld)
@@ -1157,7 +1420,6 @@ def main():
     walk = collection("Walkway")
     furn = collection("Table_And_Stations")
     hero = collection("Hero")
-    lights = collection("Lights")
     work = collection("WorkLights_LayoutOnly")
 
     build_architecture(arch)
@@ -1165,19 +1427,18 @@ def main():
     build_ventilation(arch)
     build_podyezd_props(arch)
     build_walkway(walk)
-    build_table(furn)
-    build_stations(furn)
-    join("Litter", LITTER_ALL, furn)
+    global ROW_END
+    ROW_END = build_stations(furn)
     build_hero(hero)
-    build_lights(lights)
     build_work_lights(work)
 
-    screen = bpy.data.objects["Hero_Screen"]
+    screen = bpy.data.objects["HeroStation"]
     # First person, slumped in the hero's chair, just woken up, looking at the screen.
-    cam_wake = add_camera(scn, "Cam_WakeUp_FPV", (SEAT_X - 0.05, HERO_Y + 0.15, 1.05), (88, 0, -98),
+    hero_y = -LAYOUT["hero"]["chair"][1] / 100
+    cam_wake = add_camera(scn, "Cam_WakeUp_FPV", (SEAT_X - 0.05, hero_y + 0.15, 1.05), (88, 0, -98),
                           lens=22, dof_target=screen, fstop=1.8)
-    cam_corr = add_camera(scn, "Cam_Layout_Corridor", (-0.6, 1.0, 1.7), (88, 0, -4), lens=20)
-    cam_tbl = add_camera(scn, "Cam_Layout_Stations", (0.1, 2.0, 1.9), (76, 0, -22), lens=28)
+    cam_corr = add_camera(scn, "Cam_Layout_Corridor", (-0.3, 1.0, 1.7), (88, 0, -4), lens=20)
+    cam_tbl = add_camera(scn, "Cam_Layout_Stations", (0.2, 30.0, 1.5), (80, 0, -35), lens=24)
     scn.camera = cam_wake
 
     if DO_RENDER:
@@ -1191,6 +1452,9 @@ def main():
 
     bpy.data.scenes.remove(os_scene)
     bpy.ops.wm.save_as_mainfile(filepath=BLEND_PATH)
+
+    with open(os.path.join(EXPORT_DIR, "scene01_layout.json"), "w") as f:
+        json.dump(LAYOUT, f, indent=1)
 
     # glTF for Unreal (Interchange imports .glb natively). Work lights stay out.
     bpy.ops.export_scene.gltf(filepath=os.path.join(EXPORT_DIR, "scene01_corridor.glb"),

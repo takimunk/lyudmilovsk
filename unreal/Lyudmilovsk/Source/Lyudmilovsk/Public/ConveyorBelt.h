@@ -10,8 +10,8 @@ class UMaterialInstanceDynamic;
 class USoundBase;
 
 /**
- * Moving walkway. Starts when a character steps onto it, carries everyone standing on it
- * along Direction, and slows to a stop once the last one steps off.
+ * Moving walkway. Starts when a character steps onto it and keeps speeding up while someone
+ * rides it, carrying them along Direction; slows to a stop once the last one steps off.
  * The belt mesh scrolls through the "Offset" scalar parameter of its material.
  */
 UCLASS()
@@ -42,9 +42,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
 	float MaxSpeed = 220.f;
 
-	/** How fast it speeds up and slows down, cm/s². */
+	/** How fast it speeds up while someone rides it, cm/s². */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
 	float Acceleration = 160.f;
+
+	/** How fast it slows down once empty, cm/s². */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
+	float Deceleration = 300.f;
 
 	/** Distance between belt treads in the material, cm (must match the material). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
