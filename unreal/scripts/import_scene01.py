@@ -25,8 +25,8 @@ SCREEN = unreal.Vector(100.0, -8690.6, 116.5)
 WAKE = unreal.Vector(170.0, -8840.0, 100.0)
 WARM = unreal.LinearColor(1.0, 0.68, 0.38, 1.0)
 # Must match build_scene01_corridor.py (GARLAND_*, FAN_YS, DUCT_Z), converted to cm.
-GARLAND_X, GARLAND_Z = 340.0, 205.0
-GARLAND_COLORS = [(1.0, 0.12, 0.05), (1.0, 0.75, 0.1), (0.1, 0.9, 0.2), (0.15, 0.35, 1.0), (1.0, 0.4, 0.05)]
+GARLAND_X, GARLAND_Z = -340.0, 205.0
+GARLAND_COLORS = [(1.0, 0.62, 0.28), (1.0, 0.55, 0.22), (1.0, 0.7, 0.36)]
 FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
 DUCT_Z = 745.0
 
@@ -126,12 +126,12 @@ rc.set_attenuation_radius(900.0)
 rc.set_editor_property("source_width", 42.0)
 rc.set_editor_property("source_height", 32.0)
 
-# Garland: small coloured lights along the wire so it actually tints the wall and table.
+# Garland: small warm lights along the wire so it actually tints the wall and table.
 y = 60.0
 k = 0
 while y < 8940.0:
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    gl = spawn(unreal.PointLight, unreal.Vector(GARLAND_X - 15, -y, GARLAND_Z - 10), label="Garland_Light_%02d" % k)
+    gl = spawn(unreal.PointLight, unreal.Vector(GARLAND_X + 15, -y, GARLAND_Z - 10), label="Garland_Light_%02d" % k)
     glc = gl.light_component
     gl.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
     glc.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)

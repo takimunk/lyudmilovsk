@@ -52,7 +52,7 @@ HERO_X = 1.0
 PANEL_H = 1.5       # oil-painted lower part of the podyezd wall
 WARM = (1.0, 0.68, 0.38)
 GARLAND_Z = 2.2
-GARLAND_COLORS = [(1.0, 0.12, 0.05), (1.0, 0.75, 0.1), (0.1, 0.9, 0.2), (0.15, 0.35, 1.0), (1.0, 0.4, 0.05)]
+GARLAND_COLORS = [(1.0, 0.62, 0.28), (1.0, 0.55, 0.22), (1.0, 0.7, 0.36)]   # warm incandescent only
 DUCT_Z = 7.45       # ventilation duct under the 8 m ceiling
 FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
 
@@ -414,10 +414,10 @@ def build_architecture(coll):
 
 
 def build_garland(coll):
-    """Soviet New Year garland sagging along the right wall above the table."""
+    """Warm-white garland sagging along the left wall, above the walkway (not the computers)."""
     wire_m = mat("Garland_Wire", (0.02, 0.05, 0.02), 0.5)
     bulb_ms = [mat("Garland_Bulb_%d" % i, c, 0.3, emit=c, strength=12.0) for i, c in enumerate(GARLAND_COLORS)]
-    x = W / 2 - 0.03
+    x = -W / 2 + 0.03
     hook, sag, step = 1.6, 0.18, 0.32
     pts = []
     y = 0.6
@@ -435,7 +435,7 @@ def build_garland(coll):
     bulbs = [[] for _ in GARLAND_COLORS]
     for i, p in enumerate(pts[::4]):
         k = i % len(GARLAND_COLORS)
-        bulbs[k].append(cyl("Garland_Bulb", 0.014, 0.05, (p[0] - 0.015, p[1], p[2] - 0.03),
+        bulbs[k].append(cyl("Garland_Bulb", 0.014, 0.05, (p[0] + 0.015, p[1], p[2] - 0.03),
                             bulb_ms[k], coll=coll, verts=8, r2=0.006))
     for k, objs in enumerate(bulbs):
         join("Garland_Bulbs_%d" % k, objs, coll)
