@@ -10,8 +10,8 @@ class ULevelSequencePlayer;
 class ALevelSequenceActor;
 
 /**
- * The hero's chair. Place it on the floor at the chair, facing the screen (+X): the keyboard is ~97 cm
- * and the screen ~114 cm ahead of the origin, the cutscene is played in this actor's space.
+ * The hero's chair. Place it on the floor at the chair, facing the screen (+X): the keyboard is ~60 cm
+ * and the screen ~91 cm ahead of the origin, the cutscene is played in this actor's space.
  * Walk into the trigger and press E: the player is taken over by the
  * "sit at the computer" cutscene (hero sits, hands on the keyboard, camera flies to the screen).
  */

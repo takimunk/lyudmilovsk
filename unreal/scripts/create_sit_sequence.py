@@ -2,7 +2,7 @@
 
 The hero (spawnable) steps to the chair, sits down, puts his hands on the keyboard and starts typing;
 the camera follows him and then flies to the monitor until the screen fills the frame.
-Authored in the space of the AHeroSeat actor (placed on the floor at the chair, facing +X towards the screen; the keyboard is ~97 cm and the screen ~114 cm ahead); AHeroSeat sets it as the sequence Transform Origin.
+Authored in the space of the AHeroSeat actor (placed on the floor at the chair, facing +X towards the screen; the keyboard is ~60 cm and the screen ~91 cm ahead); AHeroSeat sets it as the sequence Transform Origin.
 
 Run headless after import_zoomer.py:
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
@@ -18,7 +18,7 @@ IDLE = SK + "character_zoomerZoomer_TypeIdle.character_zoomerZoomer_TypeIdle"
 
 CHAIR = unreal.Vector(0.0, 0.0, 0.0)             # sequence is authored in the AHeroSeat actor space (Transform Origin)
 HERO_YAW = -90.0                    # the imported mesh faces +Y at yaw 0; the sitter looks along +X
-HERO_OFFSET = unreal.Vector(22.0, 0.0, -4.0)   # sits on the front of the seat, keyboard is 97 cm ahead
+HERO_OFFSET = unreal.Vector(-12.0, 0.0, -4.0)  # hips sit slightly behind the chair origin, keyboard is 60 cm ahead
 FPS = 24
 TICKS = 1000                        # tick resolution 24000 / display 24
 
@@ -101,7 +101,7 @@ lc.set_light_color(unreal.LinearColor(1.0, 0.75, 0.5, 1.0))
 lc.set_attenuation_radius(500.0)
 lc.set_editor_property("source_radius", 30.0)
 ch = tchannels(lamp)
-for c, v in zip(ch, [world(0, -70, 180).x, world(0, -70, 180).y, world(0, -70, 180).z, 0, 0, 0, 1, 1, 1]):
+for c, v in zip(ch, [world(-10, 70, 180).x, world(-10, 70, 180).y, world(-10, 70, 180).z, 0, 0, 0, 1, 1, 1]):
     key(c, 0, v)
 
 # ---- camera
@@ -109,11 +109,11 @@ cam = seq.add_spawnable_from_class(unreal.CineCameraActor)
 cam.set_name("Camera")
 ch = tchannels(cam)
 looks = [  # frame, camera pos (forward, right, up), target (forward, right, up)
-    (0, (-150, -120, 145), (22, -30, 105)),
-    (40, (-90, -150, 135), (22, -10, 105)),
-    (110, (20, -190, 125), (60, 0, 95)),
-    (FOCUS_START, (20, -190, 125), (60, 0, 95)),
-    (END, (55, 0, 114), (150, 0, 114)),
+    (0, (-120, 90, 145), (-5, 25, 105)),
+    (40, (-70, 140, 135), (-5, 10, 105)),
+    (110, (0, 185, 125), (35, 0, 95)),
+    (FOCUS_START, (0, 185, 125), (35, 0, 95)),
+    (END, (32, 0, 114), (150, 0, 114)),
 ]
 for f, p, t in looks:
     src, dst = world(*p), world(*t)

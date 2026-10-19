@@ -492,7 +492,7 @@ def lift(p, side, amount):
 def anim_sit_down(rig):
     act = new_action(rig, "Zoomer_SitDown")
     # Key poses. The character starts standing just beside the chair, sidesteps over it, lowers and reaches out.
-    stand = stand_pose(0.55, 0.0)
+    stand = stand_pose(-0.55, 0.0)   # starts on the sitter's right (-X), where the player stands
     over = stand_pose(0.0, 0.09)
     # hunch slightly while going down
     drop = sit_pose(0.0)
