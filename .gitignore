@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Unreal Engine
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+*.xcworkspace
+*.xcodeproj
+unreal/**/Binaries/
+unreal/**/DerivedDataCache/
+unreal/**/Intermediate/
+unreal/**/Saved/
+
+# Blender
+*.blend1
+*.blend2
+__pycache__/
