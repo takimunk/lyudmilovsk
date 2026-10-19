@@ -19,3 +19,11 @@ unreal/**/Saved/
 *.blend1
 *.blend2
 __pycache__/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+.idea/
+unreal/**/Content/Developers/
+unreal/**/Content/Collections/
