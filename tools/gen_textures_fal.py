@@ -31,9 +31,28 @@ TEXTURES = {
                       "drips and lumps of old paint, small rust spots, 30 cm x 30 cm.",
 }
 
+# Screens for the stations: (prompt, aspect ratio). Plain images, not tileable.
+SCREENS = {
+    "screen_spreadsheet": ("Full-screen capture of a late-1990s office spreadsheet program on a 4:3 CRT: grey "
+                           "Windows-98-style toolbars, a grid of cells with column letters and row numbers filled "
+                           "with numbers and totals, a small 3D bar chart, low resolution, no brand names or logos.",
+                           "4:3"),
+    "screen_16bit": ("Full-screen capture of an original 16-bit console platformer, colourful pixel art, an original "
+                     "hero, a small orange fox kid in a red cap, jumping between floating brick platforms over a "
+                     "lake at sunset, collectible stars, score counter in the corner. Not based on any existing "
+                     "game character, no logos or trademarks.", "4:3"),
+    "screen_modern_game": ("Full-screen capture of a modern first-person sci-fi game at night: neon city street in "
+                           "rain, holographic signs in Cyrillic, minimal HUD with ammo counter, cinematic lighting, "
+                           "no real game logos.", "16:9"),
+}
+
 
 def gen(name):
-    body = {"prompt": TEXTURES[name], "resolution": "2K", "aspect_ratio": "1:1",
+    if name in SCREENS:
+        prompt, aspect = SCREENS[name]
+    else:
+        prompt, aspect = TEXTURES[name], "1:1"
+    body = {"prompt": prompt, "resolution": "2K", "aspect_ratio": aspect,
             "output_format": "png", "num_images": 1}
     req = urllib.request.Request("https://fal.run/" + MODEL, json.dumps(body).encode(),
                                  {"Authorization": "Key " + os.environ["FAL_API_KEY"],
@@ -52,7 +71,7 @@ def gen(name):
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    names = sys.argv[1:] or list(TEXTURES)
+    names = sys.argv[1:] or list(TEXTURES) + list(SCREENS)
     with ThreadPoolExecutor(len(names)) as ex:
         for p in ex.map(gen, names):
             print(p)

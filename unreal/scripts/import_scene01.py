@@ -21,14 +21,18 @@ LEVEL = "/Game/Scene01/Lvl_Scene01"
 GAME_MODE = "/Game/FirstPerson/Blueprints/BP_FirstPersonGameMode.BP_FirstPersonGameMode_C"
 
 # Blender metres (x, y, z) land in Unreal as centimetres (x, -y, z).
-SCREEN = unreal.Vector(100.0, -8690.6, 116.5)
-WAKE = unreal.Vector(170.0, -8840.0, 100.0)
+# The hero's screen faces -X toward the chair at (55, -8700); see build_hero() in Blender.
+SCREEN = unreal.Vector(169.4, -8700.0, 114.0)
+WAKE = unreal.Vector(10.0, -8810.0, 100.0)
 WARM = unreal.LinearColor(1.0, 0.68, 0.38, 1.0)
 # Must match build_scene01_corridor.py (GARLAND_*, FAN_YS, DUCT_Z), converted to cm.
 GARLAND_X, GARLAND_Z = -340.0, 205.0
 GARLAND_COLORS = [(1.0, 0.62, 0.28), (1.0, 0.55, 0.22), (1.0, 0.7, 0.36)]
 FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
 DUCT_Z = 745.0
+# Walkway belt: Blender x -3.05..-1.35, y 4..82 m. It carries riders toward the near end (+Y here).
+WALKWAY_CENTER = unreal.Vector(-220.0, -4300.0, 75.0)
+WALKWAY_EXTENT = unreal.Vector(75.0, 3900.0, 60.0)
 
 eal = unreal.EditorAssetLibrary
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -67,23 +71,21 @@ for path in eal.list_assets(DEST, True):
             meshes += 1
 log("collision set on %d meshes" % meshes)
 
-# The OS screen: unlit-looking emissive material built from the Blender texture.
-def screen_material():
-    path = "/Game/Scene01/M_HeroScreen"
-    if eal.does_asset_exist(path):
-        eal.delete_asset(path)
+# Screens that are switched on: emissive materials built from the images Blender used.
+def screen_material(name, tex_name, strength):
+    path = "/Game/Scene01/M_" + name
     mel = unreal.MaterialEditingLibrary
     m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
-        "M_HeroScreen", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+        "M_" + name, "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
     tex = None
     for p in eal.list_assets(DEST, True):
-        if "hero_os_screen" in p:
+        if p.rsplit("/", 1)[-1].split(".")[0] == tex_name:
             tex = eal.load_asset(p)
             break
     sample = mel.create_material_expression(m, unreal.MaterialExpressionTextureSample, -400, 0)
     sample.set_editor_property("texture", tex)
     boost = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -150, 100)
-    boost.set_editor_property("const_b", 4.0)
+    boost.set_editor_property("const_b", strength)
     mel.connect_material_expressions(sample, "RGB", boost, "A")
     mel.connect_material_property(boost, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     mel.connect_material_property(sample, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
@@ -92,14 +94,80 @@ def screen_material():
     mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
-    log("screen texture: %s" % (tex.get_path_name() if tex else None))
+    log("screen %s: %s" % (name, tex.get_path_name() if tex else None))
     return m
 
 
-scr_mat = screen_material()
+# Imported material name -> (texture asset name, emissive boost)
+SCREENS = {
+    "Hero_Screen": ("hero_os_screen", 4.0),
+    "Screen_On_spreadsheet": ("screen_spreadsheet", 3.0),
+    "Screen_On_16bit": ("screen_16bit", 3.0),
+    "Screen_On_modern_game": ("screen_modern_game", 3.0),
+}
+screen_mats = {k: screen_material(k.replace("Screen_On_", "Screen_"), *v) for k, v in SCREENS.items()}
+
+
+def belt_material():
+    """Dark rubber belt with treads every 40 cm; the conveyor scrolls them through 'Offset'."""
+    mel = unreal.MaterialEditingLibrary
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "M_WalkwayBelt", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    E = unreal
+    wp = mel.create_material_expression(m, E.MaterialExpressionWorldPosition, -900, 0)
+    mask = mel.create_material_expression(m, E.MaterialExpressionComponentMask, -750, 0)
+    mask.set_editor_property("r", False)
+    mask.set_editor_property("g", True)
+    mask.set_editor_property("b", False)
+    mask.set_editor_property("a", False)
+    mel.connect_material_expressions(wp, "", mask, "")
+    div = mel.create_material_expression(m, E.MaterialExpressionDivide, -600, 0)
+    div.set_editor_property("const_b", 40.0)
+    mel.connect_material_expressions(mask, "", div, "A")
+    off = mel.create_material_expression(m, E.MaterialExpressionScalarParameter, -600, 150)
+    off.set_editor_property("parameter_name", "Offset")
+    sub = mel.create_material_expression(m, E.MaterialExpressionSubtract, -450, 0)
+    mel.connect_material_expressions(div, "", sub, "A")
+    mel.connect_material_expressions(off, "", sub, "B")
+    frac = mel.create_material_expression(m, E.MaterialExpressionFrac, -300, 0)
+    mel.connect_material_expressions(sub, "", frac, "")
+    # tread = 1 for the first 15 % of each 40 cm period
+    step = mel.create_material_expression(m, E.MaterialExpressionIf, -150, 0)
+    mel.connect_material_expressions(frac, "", step, "A")
+    for pin, val in (("B", 0.15), ("AGreaterThanB", 0.0), ("AEqualsB", 1.0), ("ALessThanB", 1.0)):
+        c = mel.create_material_expression(m, E.MaterialExpressionConstant, -300, 200 + 60 * len(pin))
+        c.set_editor_property("r", val)
+        mel.connect_material_expressions(c, "", step, pin)
+    dark = mel.create_material_expression(m, E.MaterialExpressionConstant3Vector, -150, 300)
+    dark.set_editor_property("constant", unreal.LinearColor(0.018, 0.018, 0.02, 1))
+    light = mel.create_material_expression(m, E.MaterialExpressionConstant3Vector, -150, 400)
+    light.set_editor_property("constant", unreal.LinearColor(0.07, 0.07, 0.075, 1))
+    lerp = mel.create_material_expression(m, E.MaterialExpressionLinearInterpolate, 0, 0)
+    mel.connect_material_expressions(dark, "", lerp, "A")
+    mel.connect_material_expressions(light, "", lerp, "B")
+    mel.connect_material_expressions(step, "", lerp, "Alpha")
+    mel.connect_material_property(lerp, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    rough = mel.create_material_expression(m, E.MaterialExpressionConstant, 0, 200)
+    rough.set_editor_property("r", 0.75)
+    mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+belt_mat = belt_material()
+belt_actor = None
 for a in eas.get_all_level_actors():
-    if a.get_actor_label() == "Hero_Screen":
-        a.static_mesh_component.set_material(0, scr_mat)
+    if not isinstance(a, unreal.StaticMeshActor):
+        continue
+    if a.get_actor_label() == "Walkway_Belt":
+        belt_actor = a
+        a.static_mesh_component.set_material(0, belt_mat)
+        continue
+    comp = a.static_mesh_component
+    for i, mi in enumerate(comp.get_materials()):
+        if mi and mi.get_name() in screen_mats:
+            comp.set_material(i, screen_mats[mi.get_name()])
 
 # glTF punctual lights come in with physical units that read wrong in Unreal; retune them.
 for a in eas.get_all_level_actors():
@@ -116,7 +184,7 @@ for a in eas.get_all_level_actors():
         eas.destroy_actor(a)
 
 # The glow of the hero's monitor on the desk and the sleeper.
-glow = spawn(unreal.RectLight, SCREEN + unreal.Vector(0, -4, 0), unreal.Rotator(0, 0, -90), "Hero_ScreenGlow_UE")
+glow = spawn(unreal.RectLight, SCREEN + unreal.Vector(-4, 0, 0), unreal.Rotator(0, 0, 180), "Hero_ScreenGlow_UE")
 rc = glow.get_component_by_class(unreal.RectLightComponent)
 glow.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
 rc.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
@@ -186,6 +254,14 @@ for i, fy in enumerate(FAN_YS):
     att.set_editor_property("attenuation_shape_extents", unreal.Vector(400, 0, 0))
     att.set_editor_property("falloff_distance", 2200.0)
     ac.set_editor_property("attenuation_overrides", att)
+
+# The moving walkway (C++ AConveyorBelt from Source/Lyudmilovsk).
+conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), WALKWAY_CENTER, label="Walkway_Conveyor")
+conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(WALKWAY_EXTENT)
+conveyor.set_editor_property("belt_actor", belt_actor)
+conveyor.set_editor_property("direction", unreal.Vector(0, 1, 0))
+conveyor.set_editor_property("motor_sound", hum)
+log("conveyor belt: %s" % (belt_actor.get_actor_label() if belt_actor else "MISSING"))
 
 # Darkness: fixed exposure so the eye does not "adapt" the dark corridor into daylight.
 ppv = spawn(unreal.PostProcessVolume, unreal.Vector(0, -4500, 300), label="PP_Darkness")
