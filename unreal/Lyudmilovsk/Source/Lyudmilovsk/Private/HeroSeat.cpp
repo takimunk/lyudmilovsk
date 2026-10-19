@@ -53,6 +53,28 @@ void AHeroSeat::NotifyActorEndOverlap(AActor* OtherActor)
 	}
 }
 
+void AHeroSeat::BeginPlay()
+{
+	Super::BeginPlay();
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		// A key event (not polling) so a short tap is never missed, even at a low frame rate.
+		EnableInput(PC);
+		if (InputComponent)
+		{
+			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &AHeroSeat::OnInteract);
+		}
+	}
+}
+
+void AHeroSeat::OnInteract()
+{
+	if (bInRange && !bSitting)
+	{
+		StartSit(GetWorld()->GetFirstPlayerController());
+	}
+}
+
 void AHeroSeat::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -60,21 +82,10 @@ void AHeroSeat::Tick(float DeltaSeconds)
 	// Polling the trigger box is robust against teleports and missed overlap events.
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
-	if (!Pawn || !Trigger->Bounds.GetBox().IsInside(Pawn->GetActorLocation()))
-	{
-		return;
-	}
-	if (bSitting)
-	{
-		return;
-	}
-	if (GEngine)
+	bInRange = Pawn && Trigger->Bounds.GetBox().IsInside(Pawn->GetActorLocation());
+	if (bInRange && !bSitting && GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(reinterpret_cast<uint64>(this), 0.f, FColor::White, Prompt, true, FVector2D(2.f, 2.f));
-	}
-	if (PC->WasInputKeyJustPressed(EKeys::E))
-	{
-		StartSit(PC);
 	}
 }
 

@@ -33,6 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Seat")
 	void StartSit(APlayerController* PC);
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
@@ -45,6 +46,9 @@ protected:
 	TObjectPtr<ALevelSequenceActor> SequenceActor;
 
 private:
+	void OnInteract();
+
+	bool bInRange = false;
 	TWeakObjectPtr<APlayerController> InRangePC;
 	bool bSitting = false;
 };
