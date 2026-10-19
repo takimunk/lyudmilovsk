@@ -213,11 +213,22 @@ def point_light(loc, color, intensity, radius, label, folder, shadows=False):
     return pl
 
 
-# Garland: the only overhead light. Some bulbs blink now and then (ALightFlicker).
+# Lights only where the player can go (plus a little spill past the invisible wall); the
+# corridor beyond stays dark and fades away in the fog.
+WALL_Y = LAYOUT["invisible_wall_y"]
+
+
+def lit(p):
+    return p[1] > WALL_Y - 400
+
+
+# Garland: the only overhead light, dim. Some bulbs blink now and then (ALightFlicker).
 rng = random.Random(7)
 for k, p in enumerate(LAYOUT["garland_lights"]):
+    if not lit(p):
+        continue
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 6.0, 520.0,
+    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 1.6, 420.0,
                      "Garland_Light_%02d" % k, "Lights/Garland", shadows=(k % 3 == 0))
     if rng.random() < 0.2:
         gl.tags = [unreal.Name("Flicker")]
@@ -225,9 +236,11 @@ spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector
 
 # Desk lamps (warm) and the purple grow lamps over the roses.
 for k, p in enumerate(LAYOUT.get("desk_lights", [])):
-    point_light(vec(p), WARM, 3.0, 300.0, "DeskLamp_Light_%02d" % k, "Lights/Desk", shadows=True)
+    if lit(p):
+        point_light(vec(p), WARM, 3.0, 300.0, "DeskLamp_Light_%02d" % k, "Lights/Desk", shadows=True)
 for k, p in enumerate(LAYOUT.get("grow_lights", [])):
-    point_light(vec(p), unreal.LinearColor(0.55, 0.1, 1.0, 1.0), 2.5, 220.0, "GrowLamp_Light_%02d" % k,
+    if lit(p):
+        point_light(vec(p), unreal.LinearColor(0.55, 0.1, 1.0, 1.0), 2.5, 220.0, "GrowLamp_Light_%02d" % k,
                 "Lights/Desk", shadows=True)
 
 
@@ -364,8 +377,7 @@ for i, p in enumerate(LAYOUT["vent_fans"]):
 for i, p in enumerate(LAYOUT["vent_outlets"]):
     ambient(air, vec(p), "VentAir_%02d" % i, 0.55, 60.0, 650.0)
 
-# Invisible wall right past the hero's desk.
-WALL_Y = LAYOUT["invisible_wall_y"]
+# Invisible wall a few places past the hero's desk.
 wall = spawn(unreal.StaticMeshActor, unreal.Vector(0, WALL_Y, 250), label="InvisibleWall")
 wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube.Cube"))
 wall.set_actor_scale3d(unreal.Vector(6.0, 0.2, 5.0))
@@ -433,7 +445,7 @@ s = ppv.get_editor_property("settings")
 s.set_editor_property("override_auto_exposure_method", True)
 s.set_editor_property("auto_exposure_method", unreal.AutoExposureMethod.AEM_MANUAL)
 s.set_editor_property("override_auto_exposure_bias", True)
-s.set_editor_property("auto_exposure_bias", 8.5)
+s.set_editor_property("auto_exposure_bias", 7.3)
 s.set_editor_property("override_vignette_intensity", True)
 s.set_editor_property("vignette_intensity", 0.6)
 s.set_editor_property("override_film_grain_intensity", True)
@@ -442,12 +454,13 @@ ppv.set_editor_property("settings", s)
 
 fog = spawn(unreal.ExponentialHeightFog, unreal.Vector(0, -4500, 0), label="Fog")
 fc = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
-# Thin near the player, then it eats the corridor: by ~60 m it is all darkness.
-fc.set_editor_property("fog_density", 0.06)
+# Clear around the player, then the corridor sinks into darkness with distance.
+fc.set_editor_property("fog_density", 0.25)
 fc.set_editor_property("fog_height_falloff", 0.001)
-fc.set_editor_property("start_distance", 1200.0)
-fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.004, 0.003, 0.002, 1.0))
-fc.set_editor_property("enable_volumetric_fog", True)
+fc.set_editor_property("start_distance", 1500.0)
+# Black fog: it only takes light away, so the distance goes dark instead of glowing.
+fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.0, 0.0, 0.0, 1.0))
+fc.set_editor_property("enable_volumetric_fog", False)
 
 # The hero's seat with the sit-down cutscene (AHeroSeat): origin on the floor at the chair,
 # +X toward the screen.

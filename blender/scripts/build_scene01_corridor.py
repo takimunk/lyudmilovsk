@@ -47,6 +47,7 @@ ROW_Y0 = 0.8
 WALK_X0, WALK_X1 = -W / 2 + 0.05, -W / 2 + 1.2
 WALK_Y0, WALK_Y1 = 0.5, L      # open at the far end: the belt runs on into the distance
 HERO_INDEX = 10                 # the hero's place is the 11th on the row, ten computers in
+REAL_AFTER_HERO = 4             # real, reachable places after the hero's; then the invisible wall
 
 
 LAYOUT = {}         # positions Unreal needs, written to blender/export/scene01_layout.json
@@ -490,7 +491,7 @@ def build_architecture(coll):
 def build_garland(coll):
     """Warm-white garland sagging along the left wall, above the walkway (not the computers)."""
     wire_m = mat("Garland_Wire", (0.02, 0.05, 0.02), 0.5)
-    bulb_ms = [mat("Garland_Bulb_%d" % i, c, 0.3, emit=c, strength=12.0) for i, c in enumerate(GARLAND_COLORS)]
+    bulb_ms = [mat("Garland_Bulb_%d" % i, c, 0.3, emit=c, strength=4.0) for i, c in enumerate(GARLAND_COLORS)]
     x = -W / 2 + 0.03
     hook, sag, step = 1.6, 0.18, 0.32
     pts = []
@@ -1203,6 +1204,9 @@ def build_stations(coll):
         collapse("Chair_%02d" % i, c, coll)
         y += w
         i += 1
+        if i == HERO_INDEX + REAL_AFTER_HERO:
+            # A few real places past the hero; beyond this the corridor is only to look at.
+            LAYOUT["invisible_wall_y"] = ue(0, y + 0.05, 0)[1]
     return y
 
 
@@ -1326,8 +1330,6 @@ def build_hero(coll, y0):
         "chair_yaw": 0.0,
         "wake": ue(SEAT_X - 0.75, hero_y - 1.0, 1.0),
     }
-    # The player may not go past the hero's desk; beyond it the corridor is only to look at.
-    LAYOUT["invisible_wall_y"] = ue(0, y0 + w + 0.05, 0)[1]
     LAYOUT["chunk_length"] = L * 100
     collapse("HeroStation", root, coll, wires)
     c = chair("HeroChair", (SEAT_X, hero_y, 0), math.radians(-90), coll)
