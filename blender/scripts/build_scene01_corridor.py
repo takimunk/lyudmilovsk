@@ -1,4 +1,4 @@
-"""Scene 01: the pyramid corridor.
+"""Scene 01: the pyramid corridor, dressed as a Soviet apartment stairwell (podyezd).
 
 Builds the whole scene from scratch, renders the hero's OS screen texture,
 saves blender/scene01_corridor.blend, exports blender/export/scene01_corridor.glb
@@ -23,6 +23,7 @@ RENDER_DIR = os.path.join(ROOT, "renders")
 EXPORT_DIR = os.path.join(ROOT, "blender", "export")
 BLEND_PATH = os.path.join(ROOT, "blender", "scene01_corridor.blend")
 SCREEN_PNG = os.path.join(TEX_DIR, "hero_os_screen.png")
+PODYEZD_DIR = os.path.join(TEX_DIR, "podyezd")   # made by tools/gen_textures_fal.py
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 DO_RENDER = "--no-render" not in ARGS
@@ -47,6 +48,13 @@ WALK_Y0, WALK_Y1 = 4.0, L - 8.0
 HERO_DESK_Y = L - 3.0
 HERO_CHAIR_Y = L - 2.1
 HERO_X = 1.0
+
+PANEL_H = 1.5       # oil-painted lower part of the podyezd wall
+WARM = (1.0, 0.68, 0.38)
+GARLAND_Z = 2.2
+GARLAND_COLORS = [(1.0, 0.12, 0.05), (1.0, 0.75, 0.1), (0.1, 0.9, 0.2), (0.15, 0.35, 1.0), (1.0, 0.4, 0.05)]
+DUCT_Z = 7.45       # ventilation duct under the 8 m ceiling
+FAN_YS = [9.0, 27.0, 45.0, 63.0, 81.0]
 
 
 # ---------------------------------------------------------------- helpers
@@ -88,6 +96,79 @@ def mat(name, color=(0.5, 0.5, 0.5), rough=0.5, metal=0.0, emit=None, strength=0
         except AttributeError:
             pass
     return m
+
+
+def tex_mat(name, file, rough=0.8, metal=0.0):
+    """Image-textured material (exported to glTF as a base colour texture)."""
+    m = bpy.data.materials.get(name)
+    if m:
+        return m
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    bsdf.inputs["Roughness"].default_value = rough
+    bsdf.inputs["Metallic"].default_value = metal
+    tex = nt.nodes.new("ShaderNodeTexImage")
+    tex.image = bpy.data.images.load(os.path.join(PODYEZD_DIR, file))
+    nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+    return m
+
+
+def world_uv(obj, tile):
+    """Box-projects UVs in world space so `tile` metres = one texture repeat."""
+    me = obj.data
+    mw = obj.matrix_basis
+    if obj.parent:
+        mw = obj.parent.matrix_basis @ mw
+    uv = me.uv_layers.get("UVMap") or me.uv_layers.new(name="UVMap")
+    for poly in me.polygons:
+        n = (mw.to_3x3() @ poly.normal)
+        ax = max(range(3), key=lambda i: abs(n[i]))
+        for li in poly.loop_indices:
+            co = mw @ me.vertices[me.loops[li].vertex_index].co
+            if ax == 0:
+                u, v = co.y, co.z
+            elif ax == 1:
+                u, v = co.x, co.z
+            else:
+                u, v = co.x, co.y
+            uv.data[li].uv = (u / tile, v / tile)
+    return obj
+
+
+def tbox(name, size, loc, material, tile, **kw):
+    return world_uv(box(name, size, loc, material, **kw), tile)
+
+
+def join(name, objs, coll):
+    """Merges many small objects into one mesh (fewer actors in Unreal)."""
+    if not objs:
+        return None
+    bm = bmesh.new()
+    mats = []
+    for o in objs:
+        tmp = o.data.copy()
+        mw = o.matrix_basis if not o.parent else o.parent.matrix_basis @ o.matrix_basis
+        tmp.transform(mw)
+        for m in tmp.materials:
+            if m.name not in [x.name for x in mats]:
+                mats.append(m)
+        offset = {i: [x.name for x in mats].index(m.name) for i, m in enumerate(tmp.materials)}
+        for p in tmp.polygons:
+            p.material_index = offset.get(p.material_index, 0)
+        bm.from_mesh(tmp)
+        bpy.data.meshes.remove(tmp)
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    for m in mats:
+        me.materials.append(m)
+    for o in objs:
+        bpy.data.objects.remove(o)
+    obj = bpy.data.objects.new(name, me)
+    coll.objects.link(obj)
+    return obj
 
 
 def stone_mat(name, base, alt, axes, brick_w, row_h):
@@ -302,25 +383,128 @@ def render_os_screen():
 # ---------------------------------------------------------- 2. the corridor
 
 def build_architecture(coll):
-    wall = stone_mat("Stone_Wall", (0.55, 0.43, 0.30), (0.47, 0.36, 0.25), ("Y", "Z"), 1.6, COURSE_H)
-    floor = stone_mat("Stone_Floor", (0.42, 0.34, 0.25), (0.36, 0.29, 0.21), ("X", "Y"), 2.0, 1.4)
-    ceil = stone_mat("Stone_Ceiling", (0.45, 0.36, 0.26), (0.40, 0.32, 0.23), ("X", "Y"), 1.2, 3.5)
+    paint = tex_mat("Podyezd_WallPaint", "wall_paint.jpg", 0.35)
+    white = tex_mat("Podyezd_Whitewash", "whitewash.jpg", 0.95)
+    floor = tex_mat("Podyezd_FloorTiles", "floor_tiles.jpg", 0.6)
+    ceil = tex_mat("Podyezd_Ceiling", "ceiling.jpg", 0.95)
+    stripe = mat("Podyezd_PaintLine", (0.16, 0.05, 0.03), 0.4)
 
-    box("Floor", (W + 1, L, 0.4), (0, L / 2, -0.2), floor, coll=coll)
+    tbox("Floor", (W + 1, L, 0.4), (0, L / 2, -0.2), floor, 1.0, coll=coll)
     for side in (-1, 1):
+        s_ = "L" if side < 0 else "R"
         x = side * (W / 2 + 0.5)
-        box("Wall_%s" % ("L" if side < 0 else "R"), (1.0, L, WALL_H), (x, L / 2, WALL_H / 2), wall, coll=coll)
+        # Classic two-tone podyezd wall: oil paint below, whitewash above, a thin dark line between.
+        tbox("Wall_%s_Paint" % s_, (1.0, L, PANEL_H), (x, L / 2, PANEL_H / 2), paint, 1.0, coll=coll)
+        tbox("Wall_%s" % s_, (1.0, L, WALL_H - PANEL_H), (x, L / 2, (PANEL_H + WALL_H) / 2), white, 1.0, coll=coll)
+        box("Wall_%s_Line" % s_, (1.01, L, 0.035), (x, L / 2, PANEL_H), stripe, coll=coll)
         for i in range(COURSES):
             inner = W / 2 - (i + 1) * STEP
             z = WALL_H + i * COURSE_H + COURSE_H / 2
             thick = 1.0 + (i + 1) * STEP
-            box("Course_%s_%d" % ("L" if side < 0 else "R", i), (thick, L, COURSE_H),
-                (side * (inner + thick / 2), L / 2, z), wall, coll=coll)
+            tbox("Course_%s_%d" % (s_, i), (thick, L, COURSE_H),
+                 (side * (inner + thick / 2), L / 2, z), white, 1.0, coll=coll)
     top_w = W - 2 * COURSES * STEP
-    box("Ceiling", (top_w + 0.2, L, 0.6), (0, L / 2, CEIL_Z + 0.3), ceil, coll=coll)
+    tbox("Ceiling", (top_w + 0.2, L, 0.6), (0, L / 2, CEIL_Z + 0.3), ceil, 2.0, coll=coll)
     # end walls: the far one behind the hero, the near one is a dead end too (no exit yet)
     for name, y in (("EndWall_Far", L + 0.5), ("EndWall_Near", -0.5)):
-        box(name, (W + 1, 1.0, CEIL_Z + 0.6), (0, y, (CEIL_Z + 0.6) / 2), wall, coll=coll)
+        h = CEIL_Z + 0.6
+        tbox(name + "_Paint", (W + 1, 1.0, PANEL_H), (0, y, PANEL_H / 2), paint, 1.0, coll=coll)
+        tbox(name, (W + 1, 1.0, h - PANEL_H), (0, y, (h + PANEL_H) / 2), white, 1.0, coll=coll)
+        box(name + "_Line", (W + 1, 1.01, 0.035), (0, y, PANEL_H), stripe, coll=coll)
+
+
+def build_garland(coll):
+    """Soviet New Year garland sagging along the right wall above the table."""
+    wire_m = mat("Garland_Wire", (0.02, 0.05, 0.02), 0.5)
+    bulb_ms = [mat("Garland_Bulb_%d" % i, c, 0.3, emit=c, strength=12.0) for i, c in enumerate(GARLAND_COLORS)]
+    x = W / 2 - 0.03
+    hook, sag, step = 1.6, 0.18, 0.32
+    pts = []
+    y = 0.6
+    while y <= L - 0.6:
+        t = ((y - 0.6) % hook) / hook
+        pts.append((x, y, GARLAND_Z - sag * 4 * t * (1 - t)))
+        y += 0.08
+    wires = []
+    for a, b in zip(pts, pts[1:]):
+        d = Vector(b) - Vector(a)
+        mid = (Vector(a) + Vector(b)) / 2
+        rot = Vector((0, 0, 1)).rotation_difference(d.normalized()).to_euler()
+        wires.append(cyl("Garland_Wire", 0.004, d.length, mid, wire_m, coll=coll, rot=rot, verts=6))
+    join("Garland_Wire", wires, coll)
+    bulbs = [[] for _ in GARLAND_COLORS]
+    for i, p in enumerate(pts[::4]):
+        k = i % len(GARLAND_COLORS)
+        bulbs[k].append(cyl("Garland_Bulb", 0.014, 0.05, (p[0] - 0.015, p[1], p[2] - 0.03),
+                            bulb_ms[k], coll=coll, verts=8, r2=0.006))
+    for k, objs in enumerate(bulbs):
+        join("Garland_Bulbs_%d" % k, objs, coll)
+
+
+def build_ventilation(coll):
+    """Galvanised duct along the high ceiling, grilles and slowly turning exhaust fans."""
+    zinc = mat("Vent_Galvanised", (0.55, 0.56, 0.57), 0.45, 0.9)
+    dark = mat("Vent_Grille", (0.05, 0.05, 0.05), 0.6, 0.5)
+    rod = mat("Vent_Rod", (0.2, 0.2, 0.2), 0.5, 0.8)
+    parts = [box("Vent_Duct", (0.8, L - 2.0, 0.5), (0, L / 2, DUCT_Z), zinc, coll=coll)]
+    for k in range(int(L / 3)):
+        y = 1.5 + k * 3.0
+        parts.append(box("Vent_Seam", (0.84, 0.04, 0.54), (0, y, DUCT_Z), zinc, coll=coll))
+        for dx in (-0.35, 0.35):
+            parts.append(cyl("Vent_Hanger", 0.008, CEIL_Z - DUCT_Z - 0.25, (dx, y, (CEIL_Z + DUCT_Z + 0.25) / 2), rod, coll=coll, verts=6))
+    for y in range(6, int(L), 9):
+        parts.append(box("Vent_Grille", (0.6, 0.4, 0.03), (0, y, DUCT_Z - 0.26), dark, coll=coll))
+        for i in range(7):
+            parts.append(box("Vent_Slat", (0.56, 0.015, 0.04), (0, y - 0.18 + i * 0.06, DUCT_Z - 0.29), zinc, coll=coll))
+    join("Vent_Duct", parts, coll)
+    for i, y in enumerate(FAN_YS):
+        housing = [cyl("Fan_Ring", 0.42, 0.25, (0, y, DUCT_Z - 0.38), zinc, coll=coll, verts=32),
+                   cyl("Fan_Hub", 0.06, 0.12, (0, y, DUCT_Z - 0.5), dark, coll=coll)]
+        join("VentFan_Housing_%d" % i, housing, coll)
+        # Blades are their own object with the pivot on the axis, so Unreal can spin them.
+        root = empty("VentFan_%d" % i, (0, y, DUCT_Z - 0.46), coll=coll)
+        blades = []
+        for b in range(4):
+            a = b * math.pi / 2
+            blades.append(box("Blade", (0.34, 0.1, 0.01), (math.cos(a) * 0.2, math.sin(a) * 0.2, 0), dark,
+                              root, coll, rot=(math.radians(20), 0, a)))
+        bl = join("VentFan_Blades_%d" % i, blades, coll)
+        bl.location = (0, 0, 0)
+        bl.parent = root
+        bl.data.transform(root.matrix_basis.inverted())
+
+
+def build_podyezd_props(coll):
+    """Radiators, a block of mailboxes and an electrical cabinet."""
+    rad = tex_mat("Podyezd_RadiatorPaint", "radiator_paint.jpg", 0.5)
+    box_m = mat("Mailbox_Paint", (0.18, 0.25, 0.32), 0.45, 0.3)
+    door_m = mat("Mailbox_Door", (0.22, 0.3, 0.38), 0.4, 0.3)
+    shield = mat("Shield_Grey", (0.32, 0.33, 0.3), 0.5, 0.4)
+    pipe = mat("Pipe_Paint", (0.62, 0.58, 0.48), 0.5, 0.2)
+    # Cast-iron radiators in the gap between the left wall and the walkway.
+    for n, y in enumerate(range(8, int(L) - 4, 10)):
+        parts = []
+        for k in range(10):
+            parts.append(tbox("Rad_Section", (0.09, 0.075, 0.55), (-W / 2 + 0.1, y + k * 0.085, 0.42), rad, 0.3,
+                              coll=coll))
+        parts.append(cyl("Rad_Pipe", 0.016, 1.2, (-W / 2 + 0.1, y + 0.4, 0.66), pipe, coll=coll,
+                         rot=(math.radians(90), 0, 0), verts=10))
+        parts.append(cyl("Rad_Pipe", 0.016, 1.2, (-W / 2 + 0.1, y + 0.4, 0.18), pipe, coll=coll,
+                         rot=(math.radians(90), 0, 0), verts=10))
+        join("Radiator_%02d" % n, parts, coll)
+    # Mailboxes on the near dead-end wall, facing the hero down the corridor.
+    parts = []
+    for r in range(3):
+        for c in range(5):
+            x, z = -1.0 + c * 0.42, 1.15 + r * 0.32
+            parts.append(box("Mailbox", (0.4, 0.22, 0.3), (x, 0.11, z), box_m, coll=coll))
+            parts.append(box("Mailbox_Door", (0.34, 0.01, 0.24), (x, 0.225, z), door_m, coll=coll))
+            parts.append(box("Mailbox_Slot", (0.2, 0.012, 0.02), (x, 0.231, z + 0.07), screen_off(), coll=coll))
+    join("Mailboxes", parts, coll)
+    # Electrical cabinet (shchitok) on the right wall near the hero's end.
+    join("ElectricCabinet", [
+        box("Cab", (0.12, 0.7, 0.9), (W / 2 - 0.06, L - 8.0, 1.6), shield, coll=coll),
+        box("Cab_Lock", (0.02, 0.04, 0.06), (W / 2 - 0.13, L - 7.75, 1.6), pipe, coll=coll)], coll)
 
 
 def build_walkway(coll):
@@ -573,15 +757,35 @@ def build_hero(coll):
 
 
 def build_lights(coll):
-    # Dim, cold fill so the corridor still reads in the dark.
+    """Warm incandescent globes on long cords from the high ceiling, plus their point lights."""
+    glass = mat("Lamp_Globe", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=8.0)
+    cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
     for i, y in enumerate(range(8, int(L), 12)):
+        z = 3.9
+        join("Lamp_%d" % i, [
+            cyl("Lamp_Cord", 0.005, CEIL_Z - z - 0.12, (0, y, (CEIL_Z + z + 0.12) / 2), cord, coll=coll, verts=6),
+            uv_sphere("Lamp_Globe", 0.13, (0, y, z), glass, coll)], coll)
         ld = bpy.data.lights.new("Corridor_Fill_%d" % i, "POINT")
-        ld.energy = 40
-        ld.color = (0.4, 0.5, 0.8)
-        ld.shadow_soft_size = 1.5
+        ld.energy = 120
+        ld.color = WARM
+        ld.shadow_soft_size = 0.13
         o = bpy.data.objects.new(ld.name, ld)
-        o.location = (0, y, CEIL_Z - 1.0)
+        o.location = (0, y, z - 0.2)
         coll.objects.link(o)
+
+
+def uv_sphere(name, r, loc, material, coll):
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=10, radius=r)
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+    obj = bpy.data.objects.new(name, me)
+    obj.location = loc
+    me.materials.append(material)
+    return _link(obj, None, coll)
 
 
 def build_work_lights(coll):
@@ -654,6 +858,9 @@ def main():
     work = collection("WorkLights_LayoutOnly")
 
     build_architecture(arch)
+    build_garland(arch)
+    build_ventilation(arch)
+    build_podyezd_props(arch)
     build_walkway(walk)
     build_table(furn)
     build_stations(furn)
