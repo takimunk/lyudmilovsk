@@ -34,6 +34,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
 	TObjectPtr<AActor> BeltActor;
 
+	/** More belt meshes that scroll in step (the repeated stretches of corridor in the distance). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
+	TArray<TObjectPtr<AActor>> ExtraBelts;
+
 	/** World direction of travel. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Conveyor")
 	FVector Direction = FVector(0.f, 1.f, 0.f);
@@ -68,5 +72,5 @@ private:
 	float Offset = 0.f;
 
 	UPROPERTY(Transient)
-	TObjectPtr<UMaterialInstanceDynamic> BeltMaterial;
+	TArray<TObjectPtr<UMaterialInstanceDynamic>> BeltMaterials;
 };

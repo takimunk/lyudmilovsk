@@ -33,7 +33,7 @@ DO_RENDER = "--no-render" not in ARGS
 
 # Corridor dimensions, metres. Corridor runs along +Y.
 L = 90.0            # length
-W = 5.0             # floor width
+W = 3.6             # floor width: walkway, a narrow aisle, chairs, desks
 WALL_H = 2.2        # vertical part of the wall
 CEIL_Z = 4.2        # flat ceiling strip; the walls slope up to it
 TOP_HALF = 0.8      # half width of the flat ceiling strip
@@ -44,8 +44,10 @@ TABLE_X = W / 2 - 0.005 - DESK_D / 2  # desk centre line: the desks stand flush 
 TABLE_H = 0.75                        # nominal desk height (each desk varies a little)
 SEAT_X = TABLE_X - DESK_D / 2 - 0.42
 ROW_Y0 = 0.8
-WALK_X0, WALK_X1 = -2.35, -1.2
-WALK_Y0, WALK_Y1 = 3.0, L - 6.0
+WALK_X0, WALK_X1 = -W / 2 + 0.05, -W / 2 + 1.2
+WALK_Y0, WALK_Y1 = 0.5, L      # open at the far end: the belt runs on into the distance
+HERO_INDEX = 10                 # the hero's place is the 11th on the row, ten computers in
+
 
 LAYOUT = {}         # positions Unreal needs, written to blender/export/scene01_layout.json
 
@@ -476,7 +478,9 @@ def build_architecture(coll):
     top_w = 2 * TOP_HALF
     tbox("Ceiling", (top_w + 0.2, L, 0.6), (0, L / 2, CEIL_Z + 0.3), ceil, 2.0, coll=coll)
     # end walls: the far one behind the hero, the near one is a dead end too (no exit yet)
-    for name, y in (("EndWall_Far", L + 0.5), ("EndWall_Near", -0.5)):
+    # Only the near end is closed; past the hero an invisible wall stops the player and Unreal
+    # repeats this whole stretch into the distance.
+    for name, y in (("EndWall_Near", -0.5),):
         h = CEIL_Z + 0.6
         tbox(name + "_Paint", (W + 1, 1.0, PANEL_H), (0, y, PANEL_H / 2), paint, 1.0, coll=coll)
         tbox(name, (W + 1, 1.0, h - PANEL_H), (0, y, (h + PANEL_H) / 2), white, 1.0, coll=coll)
@@ -607,13 +611,12 @@ def build_walkway(coll):
     ln = WALK_Y1 - WALK_Y0
     cy = (WALK_Y0 + WALK_Y1) / 2
     parent = empty("Walkway", (0, 0, 0), coll=coll)
-    box("Walkway_Base", (w + 0.3, ln + 1.2, 0.12), (cx, cy, 0.06), housing, parent, coll)
+    box("Walkway_Base", (w + 0.1, ln, 0.12), (cx, cy, 0.06), housing, parent, coll)
     # Plain belt; Unreal gives it a scrolling tread material driven by the conveyor actor.
     box("Walkway_Belt", (w - 0.2, ln, 0.02), (cx, cy, 0.13), belt, parent, coll)
-    for yy in (WALK_Y0 - 0.4, WALK_Y1 + 0.4):
-        box("Walkway_Comb", (w - 0.1, 0.5, 0.03), (cx, yy, 0.135), comb, parent, coll)
+    box("Walkway_Comb", (w - 0.1, 0.5, 0.03), (cx, WALK_Y0 + 0.25, 0.135), comb, parent, coll)
     # No balustrade or handrails: just a low skirt with a warm LED line along both edges.
-    LAYOUT["walkway"] = {"center": ue(cx, cy, 0.75), "extent": [w * 50 - 5, ln * 50, 60.0]}
+    LAYOUT["walkway"] = {"x": [round(WALK_X0 * 100, 1), round(WALK_X1 * 100, 1)], "y0": ue(0, WALK_Y0, 0)[1]}
     for x in (WALK_X0, WALK_X1):
         box("Skirt", (0.1, ln, 0.05), (x, cy, 0.145), housing, parent, coll)
         box("Skirt_LED", (0.012, ln, 0.012), (x + (0.06 if x == WALK_X0 else -0.06), cy, 0.15), led, parent, coll)
@@ -1167,7 +1170,10 @@ def build_stations(coll):
             rng.shuffle(kinds)
         fn = kinds[-1]
         w = rng.choice([1.3, 1.45, 1.6]) if fn.__name__ not in WIDE else rng.choice([1.6, 1.75])
-        if y + w > L - 0.8 - 1.6:          # leave the last place for the hero
+        if i == HERO_INDEX and "hero" not in LAYOUT:
+            y = build_hero(coll, y)
+            continue
+        if y + w > L - 0.8:
             break
         kinds.pop()
         h = rng.uniform(0.73, 0.77)
@@ -1270,9 +1276,6 @@ def litter(coll, rng, root, w):
     return parts
 
 
-ROW_END = 0.0
-
-
 def ue(x, y, z):
     """Blender metres -> Unreal centimetres (Y flips)."""
     return [round(x * 100, 1), round(-y * 100, 1), round(z * 100, 1)]
@@ -1283,8 +1286,8 @@ def ue_from(root, x, y, z):
     return ue(p.x, p.y, p.z)
 
 
-def build_hero(coll):
-    """The hero's mid-2000s PC: last station on the table, set up like the others, and switched on."""
+def build_hero(coll, y0):
+    """The hero's mid-2000s PC: a place in the row like the others, switched on. Returns the row end."""
     black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
     beige = mat("Plastic_Beige", (0.72, 0.66, 0.53), 0.55)
 
@@ -1301,7 +1304,7 @@ def build_hero(coll):
     bsdf.inputs["Roughness"].default_value = 0.15
 
     w, h = 1.6, 0.75
-    hero_y = ROW_END + w / 2
+    hero_y = y0 + w / 2
     root = empty("HeroStation", (TABLE_X, hero_y, h), math.radians(-90), coll=coll)
     desk(root, coll, "soviet", w, h)
     box("Hero_Monitor", (0.46, 0.05, 0.38), (0, 0.12, 0.38), black, root, coll, bevel=0.01)
@@ -1321,8 +1324,11 @@ def build_hero(coll):
         "chair": ue(SEAT_X, hero_y, 0.0),
         "seat_height": 47.0,
         "chair_yaw": 0.0,
-        "wake": ue(SEAT_X - 1.0, hero_y - 1.0, 1.0),
+        "wake": ue(SEAT_X - 0.75, hero_y - 1.0, 1.0),
     }
+    # The player may not go past the hero's desk; beyond it the corridor is only to look at.
+    LAYOUT["invisible_wall_y"] = ue(0, y0 + w + 0.05, 0)[1]
+    LAYOUT["chunk_length"] = L * 100
     collapse("HeroStation", root, coll, wires)
     c = chair("HeroChair", (SEAT_X, hero_y, 0), math.radians(-90), coll)
     collapse("HeroChair", c, coll)
@@ -1337,7 +1343,7 @@ def build_hero(coll):
     coll.objects.link(lo)
     lo.location = (TABLE_X + 0.09, hero_y, h + 0.39)
     lo.rotation_euler = (0, math.radians(90), 0)
-    return root
+    return y0 + w
 
 
 def uv_sphere(name, r, loc, material, coll):
@@ -1427,9 +1433,7 @@ def main():
     build_ventilation(arch)
     build_podyezd_props(arch)
     build_walkway(walk)
-    global ROW_END
-    ROW_END = build_stations(furn)
-    build_hero(hero)
+    build_stations(furn)
     build_work_lights(work)
 
     screen = bpy.data.objects["HeroStation"]

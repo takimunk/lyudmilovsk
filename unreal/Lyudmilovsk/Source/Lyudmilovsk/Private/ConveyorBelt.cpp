@@ -29,11 +29,17 @@ void AConveyorBelt::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (BeltActor)
+	TArray<AActor*> Belts = {BeltActor.Get()};
+	for (AActor* Extra : ExtraBelts)
 	{
-		if (UStaticMeshComponent* Mesh = BeltActor->FindComponentByClass<UStaticMeshComponent>())
+		Belts.Add(Extra);
+	}
+	for (AActor* Belt : Belts)
+	{
+		UStaticMeshComponent* Mesh = Belt ? Belt->FindComponentByClass<UStaticMeshComponent>() : nullptr;
+		if (Mesh)
 		{
-			BeltMaterial = Mesh->CreateAndSetMaterialInstanceDynamic(0);
+			BeltMaterials.Add(Mesh->CreateAndSetMaterialInstanceDynamic(0));
 		}
 	}
 	if (MotorSound)
@@ -74,9 +80,9 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 	}
 
 	Offset = FMath::Fmod(Offset + Speed * DeltaSeconds / TreadSpacing, 1.f);
-	if (BeltMaterial)
+	for (UMaterialInstanceDynamic* Material : BeltMaterials)
 	{
-		BeltMaterial->SetScalarParameterValue(TEXT("Offset"), Offset);
+		Material->SetScalarParameterValue(TEXT("Offset"), Offset);
 	}
 	if (Motor->IsPlaying())
 	{

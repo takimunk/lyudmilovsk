@@ -6,6 +6,11 @@ grow-lamp lights (some garland lights flicker), spinning vent and desk fans, flu
 vent ribbons, ventilation hum and air hiss, the moving walkway, the hero's seat, the
 dark-room exposure, the wake-up PlayerStart and the First Person game mode.
 
+Endless corridor: past the hero's desk an invisible wall stops the player. The stretch of
+corridor beyond it is real geometry, and Unreal repeats the whole 90 m chunk several times
+further on (unlit copies; only their emissive bulbs and screens glow), while height fog
+swallows the distance into darkness. It reads as a corridor going on forever.
+
 Run headless (editor closed):
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
@@ -99,6 +104,7 @@ def screen_material(name, tex_name, strength):
     rough = mel.create_material_expression(m, unreal.MaterialExpressionConstant, -150, 250)
     rough.set_editor_property("r", 0.15)
     mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     log("screen %s: %s" % (name, tex.get_path_name() if tex else None))
@@ -157,6 +163,7 @@ def belt_material():
     rough = mel.create_material_expression(m, E.MaterialExpressionConstant, 0, 200)
     rough.set_editor_property("r", 0.75)
     mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     return m
@@ -309,6 +316,7 @@ def ribbon_material(top_z):
     col = mel.create_material_expression(m, E.MaterialExpressionConstant3Vector, 0, 0)
     col.set_editor_property("constant", unreal.LinearColor(0.75, 0.72, 0.62, 1))
     mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    m.set_editor_property("used_with_nanite", True)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     return m
@@ -356,15 +364,64 @@ for i, p in enumerate(LAYOUT["vent_fans"]):
 for i, p in enumerate(LAYOUT["vent_outlets"]):
     ambient(air, vec(p), "VentAir_%02d" % i, 0.55, 60.0, 650.0)
 
-# The moving walkway (C++ AConveyorBelt): speeds up while you ride it, toward the hero's PC.
+# Invisible wall right past the hero's desk.
+WALL_Y = LAYOUT["invisible_wall_y"]
+wall = spawn(unreal.StaticMeshActor, unreal.Vector(0, WALL_Y, 250), label="InvisibleWall")
+wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube.Cube"))
+wall.set_actor_scale3d(unreal.Vector(6.0, 0.2, 5.0))
+wall.set_actor_hidden_in_game(True)
+wall.static_mesh_component.set_editor_property("cast_shadow", False)
+wall.static_mesh_component.set_collision_profile_name("BlockAll")
+
+# Repeat the corridor past the wall: every static mesh except the near-end props and the
+# hero's place, shifted by whole chunks (Unreal Y decreases toward the distance).
+CHUNK = LAYOUT["chunk_length"]
+COPIES = 4
+SKIP = ("EndWall_Near", "Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall",
+        "ElectricCabinet")
+originals = [a for a in eas.get_all_level_actors()
+             if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
+extra_belts = []
+
+
+def copy_actor(src, offset, label, folder):
+    """Plain re-spawn (EditorActorSubsystem.duplicate_actors crashes in a commandlet)."""
+    comp = src.static_mesh_component
+    dst = spawn(unreal.StaticMeshActor, src.get_actor_location() + offset, src.get_actor_rotation(), label)
+    dst.set_actor_scale3d(src.get_actor_scale3d())
+    dc = dst.static_mesh_component
+    dc.set_static_mesh(comp.static_mesh)
+    for i, m in enumerate(comp.get_materials()):
+        dc.set_material(i, m)
+    dc.set_editor_property("cast_shadow", False)
+    dc.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    dst.set_folder_path(folder)
+    if src.get_component_by_class(unreal.RotatingMovementComponent):
+        dc.set_mobility(unreal.ComponentMobility.MOVABLE)
+        add_rotation(dst, src.get_component_by_class(unreal.RotatingMovementComponent).rotation_rate.yaw)
+    return dst
+
+
+for n in range(1, COPIES + 1):
+    for a in originals:
+        c = copy_actor(a, unreal.Vector(0, -CHUNK * n, 0), "%s_far%d" % (a.get_actor_label(), n), "Distance/Chunk_%d" % n)
+        if a.get_actor_label().startswith("Walkway_Belt"):
+            extra_belts.append(c)
+log("distance chunks: %d x %d actors" % (COPIES, len(originals)))
+
+# The moving walkway (C++ AConveyorBelt): the belt comes out of the distance toward the player;
+# standing on it in the playable stretch carries you toward the start, faster and faster.
 walk = LAYOUT["walkway"]
-conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), vec(walk["center"]),
-                 label="Walkway_Conveyor")
-conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(vec(walk["extent"]))
+y_near, y_far = walk["y0"], WALL_Y
+zone_center = unreal.Vector((walk["x"][0] + walk["x"][1]) / 2, (y_near + y_far) / 2, 75.0)
+zone_extent = unreal.Vector((walk["x"][1] - walk["x"][0]) / 2 - 5, abs(y_near - y_far) / 2, 60.0)
+conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), zone_center, label="Walkway_Conveyor")
+conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(zone_extent)
 conveyor.set_editor_property("belt_actor", belt_actor)
-conveyor.set_editor_property("direction", unreal.Vector(0, -1, 0))
-conveyor.set_editor_property("max_speed", 900.0)
-conveyor.set_editor_property("acceleration", 80.0)
+conveyor.set_editor_property("extra_belts", extra_belts)
+conveyor.set_editor_property("direction", unreal.Vector(0, 1, 0))
+conveyor.set_editor_property("max_speed", 450.0)
+conveyor.set_editor_property("acceleration", 90.0)
 conveyor.set_editor_property("deceleration", 400.0)
 conveyor.set_editor_property("motor_sound", hum)
 log("conveyor belt: %s" % (belt_actor.get_actor_label() if belt_actor else "MISSING"))
@@ -385,8 +442,11 @@ ppv.set_editor_property("settings", s)
 
 fog = spawn(unreal.ExponentialHeightFog, unreal.Vector(0, -4500, 0), label="Fog")
 fc = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
-fc.set_editor_property("fog_density", 0.02)
-fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.012, 0.008, 0.004, 1.0))
+# Thin near the player, then it eats the corridor: by ~60 m it is all darkness.
+fc.set_editor_property("fog_density", 0.06)
+fc.set_editor_property("fog_height_falloff", 0.001)
+fc.set_editor_property("start_distance", 1200.0)
+fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.004, 0.003, 0.002, 1.0))
 fc.set_editor_property("enable_volumetric_fog", True)
 
 # The hero's seat with the sit-down cutscene (AHeroSeat): origin on the floor at the chair,

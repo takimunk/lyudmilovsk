@@ -43,8 +43,11 @@ iMac G3, современная консоль. Системники стоят 
 После клонирования модуль нужно один раз собрать (нужен Xcode):
 
 ```bash
-"/Users/Shared/Epic Games/UE_5.8/Engine/Build/BatchFiles/Mac/Build.sh" LyudmilovskEditor Mac Development -Project="$PWD/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
+"/Users/Shared/Epic Games/UE_5.8/Engine/Build/BatchFiles/Mac/Build.sh" LyudmilovskEditor Mac Development -Project="$PWD/unreal/Lyudmilovsk/Lyudmilovsk.uproject" -NoHotReloadFromIDE
 ```
+
+`-NoHotReloadFromIDE` нужен, если открыт любой другой редактор Unreal: иначе сборка уйдёт в
+файл с суффиксом `-0001`, и редактор её не подхватит.
 
 В модуле есть `AConveyorBelt`: бегущая дорожка, которая разгоняется, когда на неё встаёшь,
 и плавно останавливается, когда сходишь.
