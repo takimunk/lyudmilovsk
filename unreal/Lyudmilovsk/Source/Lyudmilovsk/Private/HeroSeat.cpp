@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Engine/EngineTypes.h"
 #include "InputCoreTypes.h"
 #include "DefaultLevelSequenceInstanceData.h"
 #include "Engine/World.h"
@@ -18,7 +19,9 @@ AHeroSeat::AHeroSeat()
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Trigger->SetBoxExtent(FVector(110.f, 110.f, 100.f));
-	Trigger->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+	Trigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Trigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Trigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	Trigger->SetGenerateOverlapEvents(true);
 	Trigger->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -54,8 +57,14 @@ void AHeroSeat::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	APlayerController* PC = InRangePC.Get();
-	if (!PC || bSitting)
+	// Polling the trigger box is robust against teleports and missed overlap events.
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	if (!Pawn || !Trigger->Bounds.GetBox().IsInside(Pawn->GetActorLocation()))
+	{
+		return;
+	}
+	if (bSitting)
 	{
 		return;
 	}
