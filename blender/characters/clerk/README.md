@@ -13,3 +13,14 @@ License: CC BY 4.0 (see LICENSE-ASSETS); code MIT.
 - Rest pose = seated pose, character space: origin on the floor under the chair-seat centre,
   facing -Y. In Unreal: SkeletalMeshActor at layout `clerk.chair`, yaw = chair_yaw - 90,
   animation mode single node, `character_clerk_Anim`, looping. The Excel plane is part of the mesh.
+
+## Realistic clerk (current)
+
+The clerk in the level is the MakeHuman-based `SK_Clerk` (blender/humans). This folder adds his
+Station 09 behaviour:
+- `clerk_excel_anim.py` bakes `Sit_Excel` (8 s) on the humans' clerk rig with `seat_anims.py`,
+  fitted to Station 09 → `blender/export/clerk_excel_anim.glb` → `/Game/Characters/Clerk/A_Clerk_Sit_Excel`.
+- `build_clerk.py -- --desk` builds his ball mouse + the animated Excel plane on its own little rig →
+  `clerk_desk.glb` → `/Game/Characters/Clerk/Desk/clerk_desk/...` (mouse path shared via `excel_path.py`).
+- `unreal/scripts/import_clerk.sh` imports both. In the level: two SkeletalMeshActors at
+  `clerk.chair`, yaw chair_yaw - 90, looping single-node anims started together.

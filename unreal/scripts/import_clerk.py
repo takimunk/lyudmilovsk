@@ -1,20 +1,26 @@
-"""Imports the office clerk (blender/export/character_clerk.glb) into /Game/Characters/Clerk:
-skeletal mesh, skeleton, materials, the Clerk_ExcelIdle loop, and M_ClerkExcel, the animated
-Excel picture on the plane in front of the Station 09 CRT (textures/clerk/excel_*.png).
+"""Imports the Station 09 clerk's own assets into /Game/Characters/Clerk:
 
-Run headless (no editor open on this checkout):
-  UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
+  A_Clerk_Sit_Excel   8 s Excel-painting loop for /Game/Characters/Humans/Clerk/SK_Clerk (shared
+                      human skeleton), from blender/export/clerk_excel_anim.glb
+  Desk/clerk_desk/...  his ball mouse (moving with his hand) + the animated Excel plane on the CRT
+                      (skeletal mesh clerk_desk, anim clerk_desk_Anim), from blender/export/clerk_desk.glb
+  M_ClerkExcel        the picture filling in cell by cell (textures/clerk/excel_*.png)
 
-Placing him: a SkeletalMeshActor at the "clerk" chair of blender/export/scene01_layout.json
-(location = chair, yaw = chair_yaw), mesh SK_Clerk... found under DEST, animation mode single node
-playing Clerk_ExcelIdle, looping. See place_clerk() below.
+Run headless (no editor open on this checkout; the humans must be imported already):
+  unreal/scripts/import_clerk.sh
+
+Placing (both actors at layout "clerk".chair, yaw = chair_yaw - 90, animation mode single node,
+looping, started together): SkeletalMeshActor SK_Clerk playing A_Clerk_Sit_Excel, and
+SkeletalMeshActor clerk_desk playing clerk_desk_Anim.
 """
 import os
 import unreal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
-GLB = os.path.join(ROOT, "blender", "export", "character_clerk.glb")
+ANIM_GLB = os.path.join(ROOT, "blender", "export", "clerk_excel_anim.glb")
+DESK_GLB = os.path.join(ROOT, "blender", "export", "clerk_desk.glb")
+HUMANS_PIPELINE = "/Game/Characters/Humans/Import/IP_HumanAssets"
 TEX = os.path.join(ROOT, "textures", "clerk")
 DEST = "/Game/Characters/Clerk"
 eal = unreal.EditorAssetLibrary
@@ -31,15 +37,39 @@ def log(msg):
     unreal.log_warning("CLERK " + msg)
 
 
-def import_glb():
-    if eal.does_directory_exist(DEST):
-        eal.delete_directory(DEST)
-    src = unreal.InterchangeManager.create_source_data(GLB)
+def interchange(glb, dest, pipelines=()):
+    src = unreal.InterchangeManager.create_source_data(glb)
     params = unreal.ImportAssetParameters()
     params.is_automated = True
+    for p in pipelines:
+        params.override_pipelines.append(unreal.SoftObjectPath(p))
     mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
-    mgr.import_asset(DEST, src, params)
+    mgr.import_asset(dest, src, params)
     mgr.wait_until_all_tasks_done(True)
+    return [eal.load_asset(p) for p in eal.list_assets(dest, True)]
+
+
+def import_anim():
+    """Sit_Excel onto the shared human skeleton; everything else the import made is dropped."""
+    tmp = DEST + "/_anim"
+    got = interchange(ANIM_GLB, tmp, ["/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline",
+                                      HUMANS_PIPELINE + "." + HUMANS_PIPELINE.rsplit("/", 1)[1]])
+    anim = next(a for a in got if isinstance(a, unreal.AnimSequence))
+    log("anim skeleton %s" % anim.get_editor_property("skeleton").get_path_name())
+    eal.rename_asset(anim.get_path_name(), DEST + "/A_Clerk_Sit_Excel")
+    anim = unreal.load_asset(DEST + "/A_Clerk_Sit_Excel")
+    anim.set_editor_property("enable_root_motion", False)
+    eal.save_loaded_asset(anim)
+    eal.delete_directory(tmp)
+    return anim
+
+
+def import_desk():
+    """Imported in place (renaming the skeleton afterwards breaks the animation's reference)."""
+    got = interchange(DESK_GLB, DEST + "/Desk")
+    for a in got:
+        log("desk %s %s" % (a.get_class().get_name(), a.get_path_name()))
+    return next(a for a in got if isinstance(a, unreal.SkeletalMesh))
 
 
 def import_texture(name, pixel_art):
@@ -127,26 +157,35 @@ def find(cls):
 
 
 def main():
-    import_glb()
-    for p in eal.list_assets(DEST, True):
-        a = eal.load_asset(p)
-        log("%s  %s" % (a.get_class().get_name(), p))
-    base, art = import_texture("excel_base", False), import_texture("excel_art", True)
-    excel = excel_material(base, art)
-    for sk in find(unreal.SkeletalMesh):
-        mats = sk.get_editor_property("materials")
+    """Two passes, one process each (Interchange only finds a second import's assets reliably in a
+    fresh process): "anim", then "desk" (see unreal/scripts/import_clerk.sh)."""
+    import sys
+    if "anim" in sys.argv[1:]:
+        if eal.does_directory_exist(DEST):
+            eal.delete_directory(DEST)
+        anim = import_anim()
+        log("anim %s %.2fs" % (anim.get_name(), anim.get_play_length()))
+    if "desk" in sys.argv[1:]:
+        for sub in ("/Desk", "/Textures"):
+            if eal.does_directory_exist(DEST + sub):
+                eal.delete_directory(DEST + sub)
+        if eal.does_asset_exist(DEST + "/M_ClerkExcel"):
+            eal.delete_asset(DEST + "/M_ClerkExcel")
+        desk = import_desk()
+        base, art = import_texture("excel_base", False), import_texture("excel_art", True)
+        excel = excel_material(base, art)
+        mats = desk.get_editor_property("materials")
         for i, sm in enumerate(mats):
-            name = str(sm.get_editor_property("material_slot_name"))
-            if "ExcelScreen" in name:
+            if "ExcelScreen" in str(sm.get_editor_property("material_slot_name")):
                 sm.set_editor_property("material_interface", excel)
                 mats[i] = sm
-                log("screen slot %s -> M_ClerkExcel" % name)
-        sk.set_editor_property("materials", mats)
-        eal.save_loaded_asset(sk)
-    for anim in find(unreal.AnimSequence):
-        log("anim %s  %.2fs" % (anim.get_name(), anim.get_play_length()))
+        desk.set_editor_property("materials", mats)
+        eal.save_loaded_asset(desk)
+        anim = next(eal.load_asset(p) for p in eal.list_assets(DEST + "/Desk", True)
+                    if isinstance(eal.load_asset(p), unreal.AnimSequence))
+        log("desk anim %s %.2fs, skeleton %s" % (anim.get_path_name(), anim.get_play_length(),
+                                                 anim.get_editor_property("skeleton").get_path_name()))
     eal.save_directory(DEST)
     log("done")
-
 
 main()

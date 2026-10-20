@@ -1251,6 +1251,74 @@ def build_screen(full):
     return ob
 
 
+# ------------------------------------------------------------------ the desk set for the realistic clerk
+def desk_main():
+    """SK_ClerkDesk: his ball mouse (on bone 'mouse', moved along excel_path like his hand in
+    clerk_excel_anim.py) and the animated Excel plane on the CRT. Same character space and actor
+    transform as the clerk; its 8 s loop starts with his."""
+    global COLL, MOUSE_PIECE
+    import excel_path
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    scn = bpy.context.scene
+    scn.render.fps = FPS
+    COLL = bpy.data.collections.new("ClerkDesk")
+    scn.collection.children.link(COLL)
+    MOUSE_PIECE = build_mouse()
+    mo = build_piece(MOUSE_PIECE, 3000)
+    assign(mo, mat("Clerk_Mouse", (0.72, 0.66, 0.53), 0.5), mat("Clerk_Cable", (0.62, 0.58, 0.48), 0.6))
+    regions(mo, lambda P: ((P[:, 1] < MOUSE[1] - 0.052) | (P[:, 2] < MOUSE[2] + 0.0045)).astype(int))
+    skin(mo, MOUSE_PIECE)
+    screen = build_screen(make_excel_textures())
+    data = bpy.data.armatures.new("ClerkDesk")
+    arm = bpy.data.objects.new("ClerkDesk_Armature", data)
+    COLL.objects.link(arm)
+    bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode="EDIT")
+    r = data.edit_bones.new("root")
+    r.head, r.tail = (0, 0, 0), (0, 0, 0.12)
+    b = data.edit_bones.new("mouse")
+    b.head, b.tail = Vector(MOUSE), Vector(MOUSE + v3((0, -0.06, 0)))
+    b.parent = r
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    for o in (mo, screen):
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = mo
+    bpy.ops.object.join()
+    body = bpy.context.view_layer.objects.active
+    body.name = "ClerkDesk_Mesh"
+    body.parent = arm
+    body.modifiers.new("Armature", "ARMATURE").object = arm
+    ad = arm.animation_data_create()
+    act = bpy.data.actions.new("ClerkDesk_Excel")
+    ad.action = act
+    pb = arm.pose.bones["mouse"]
+    pb.rotation_mode = "QUATERNION"
+    n = int(excel_path.LOOP * FPS)
+    for f in range(n + 1):
+        m, moving, dx = excel_path.mouse_at(f / FPS)
+        yaw = math.radians(2.5) * moving * (1 if dx > 0 else -1 if dx < 0 else 0)
+        # bone space: the bone points along -Y (its local Y), local X = world -X, local Z = world Z
+        pb.location = Vector((-m[0], -m[1], 0.0))
+        pb.rotation_quaternion = Matrix.Rotation(yaw, 4, "Z").to_quaternion()
+        pb.keyframe_insert("location", frame=f + 1)
+        pb.keyframe_insert("rotation_quaternion", frame=f + 1)
+        r = arm.pose.bones["root"]
+        r.keyframe_insert("location", frame=f + 1)
+    act.use_fake_user = True
+    bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, "clerk_desk.blend"))
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    arm.select_set(True)
+    body.select_set(True)
+    out = os.path.join(ROOT, "blender", "export", "clerk_desk.glb")
+    bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", use_selection=True, export_animations=True,
+                              export_animation_mode="ACTIONS", export_skins=True, export_apply=False,
+                              export_force_sampling=True, export_yup=True)
+    print("DESK", out)
+
+
 # ------------------------------------------------------------------ main
 def main():
     global COLL, MOUSE_PIECE
@@ -1381,4 +1449,4 @@ def main():
                     frame=f)
 
 
-main()
+desk_main() if "--desk" in ARGS else main()
