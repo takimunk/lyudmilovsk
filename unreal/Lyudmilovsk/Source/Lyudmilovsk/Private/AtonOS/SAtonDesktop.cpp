@@ -217,11 +217,11 @@ TSharedRef<SWidget> SAtonDesktop::MakeIcons()
 			continue;
 		}
 		const FName Id = App.Id;
-		Box->AddSlot().AutoHeight().Padding(0, 0, 0, 6)
+		Box->AddSlot().AutoHeight().Padding(0, 0, 0, 2)
 		[
 			SNew(SButton)
 			.ButtonStyle(&AtonStyle::Ghost())
-			.ContentPadding(FMargin(4, 6))
+			.ContentPadding(FMargin(4, 4))
 			.OnClicked_Lambda([this, Id] { OpenApp(Id); return FReply::Handled(); })
 			[
 				SNew(SBox).WidthOverride(96)

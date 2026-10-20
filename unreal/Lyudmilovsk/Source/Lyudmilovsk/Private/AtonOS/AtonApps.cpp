@@ -7,6 +7,7 @@
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "SWebBrowser.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SEditableText.h"
 #include "Widgets/Layout/SBorder.h"
@@ -15,6 +16,7 @@
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Layout/SUniformGridPanel.h"
 #include "Widgets/SBoxPanel.h"
+#include "Widgets/SOverlay.h"
 #include "Widgets/Text/SMultiLineEditableText.h"
 #include "Widgets/Text/STextBlock.h"
 
@@ -429,6 +431,7 @@ namespace
 				"Письма: входящая почта.\n"
 				"Калькулятор: считает. Можно с клавиатуры.\n"
 				"Корзина: удалённые заметки, их можно вернуть.\n"
+				"Chosen: дуэль на мечах над пропастью. WASD, мышь с зажатой кнопкой справа: меч, Shift: щит, пробел: прыжок.\n"
 				"---\n"
 				"[На главную](дом.атон)\n") },
 		};
@@ -755,7 +758,7 @@ private:
 		{
 			Print(TEXT("команды:"));
 			Print(TEXT("  помощь            этот список"));
-			Print(TEXT("  открыть <что>     блокнот, сеть, письма, калькулятор, файлы, корзина"));
+			Print(TEXT("  открыть <что>     блокнот, сеть, письма, калькулятор, файлы, корзина, chosen"));
 			Print(TEXT("  заметки           список заметок"));
 			Print(TEXT("  время             который час"));
 			Print(TEXT("  кто               кто здесь"));
@@ -810,6 +813,7 @@ private:
 				{ TEXT("калькулятор"), AtonApps::Calculator }, { TEXT("calc"), AtonApps::Calculator },
 				{ TEXT("файлы"), AtonApps::Computer }, { TEXT("компьютер"), AtonApps::Computer },
 				{ TEXT("корзина"), AtonApps::Trash }, { TEXT("trash"), AtonApps::Trash },
+				{ TEXT("chosen"), AtonApps::Chosen }, { TEXT("игра"), AtonApps::Chosen }, { TEXT("игру"), AtonApps::Chosen },
 			};
 			if (const FName* App = Names.Find(Rest.ToLower()))
 			{
@@ -1219,6 +1223,74 @@ public:
 	}
 };
 
+// ---------------------------------------------------------------- Chosen (the sword-duel game, a web app)
+
+FString AtonApps::ChosenLocalURL = TEXT("http://localhost:8787/");
+FString AtonApps::ChosenURL = TEXT("https://chosen.stickies.fun/");
+
+class SAtonChosen : public SAtonProgram
+{
+public:
+	SLATE_BEGIN_ARGS(SAtonChosen) {}
+	SLATE_END_ARGS()
+
+	void Construct(const FArguments&)
+	{
+		const bool bLocal = !AtonApps::ChosenLocalURL.IsEmpty();
+		bFellBack = !bLocal;
+		ChildSlot
+		[
+			SNew(SOverlay)
+			+ SOverlay::Slot()
+			[
+				Panel(AtonStyle::C(0x09, 0x08, 0x06), SNullWidget::NullWidget)
+			]
+			+ SOverlay::Slot()
+			[
+				SAssignNew(Browser, SWebBrowser)
+				.InitialURL(bLocal ? AtonApps::ChosenLocalURL : AtonApps::ChosenURL)
+				.ShowControls(false)
+				.ShowAddressBar(false)
+				.ShowErrorMessage(false)
+				.ShowInitialThrobber(false)
+				.SupportsTransparency(false)
+				.BackgroundColor(FColor(0x09, 0x08, 0x06))
+				.BrowserFrameRate(60)
+				.OnLoadCompleted_Lambda([this] { bLoaded = true; })
+				.OnLoadError_Lambda([this]
+				{
+					// No local build running: play on the public site.
+					if (!bFellBack)
+					{
+						bFellBack = true;
+						Browser->LoadURL(AtonApps::ChosenURL);
+					}
+					else
+					{
+						bFailed = true;
+					}
+				})
+			]
+			+ SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center)
+			[
+				SNew(STextBlock)
+				.Font(AtonStyle::Mono(16))
+				.ColorAndOpacity(AtonStyle::C(0xD8, 0xC9, 0xA3))
+				.Visibility_Lambda([this] { return bLoaded ? EVisibility::Collapsed : EVisibility::HitTestInvisible; })
+				.Text_Lambda([this] { return T(bFailed ? TEXT("нет связи с Chosen") : TEXT("загрузка Chosen…")); })
+			]
+		];
+	}
+
+	virtual TSharedPtr<SWidget> FocusTarget() const override { return Browser; }
+
+private:
+	TSharedPtr<SWebBrowser> Browser;
+	bool bFellBack = false;
+	bool bLoaded = false;
+	bool bFailed = false;
+};
+
 // ---------------------------------------------------------------- registry
 
 const TArray<FAtonAppInfo>& AtonApps::List()
@@ -1230,6 +1302,7 @@ const TArray<FAtonAppInfo>& AtonApps::List()
 		{ Terminal, T(TEXT("Терминал")), TEXT(">_"), AtonStyle::C(0xB9, 0xE8, 0xC4), FVector2D(680, 440) },
 		{ Mail, T(TEXT("Письма")), TEXT("@"), AtonStyle::C(0xF3, 0xD3, 0xB5), FVector2D(640, 420) },
 		{ Calculator, T(TEXT("Калькулятор")), TEXT("±"), AtonStyle::C(0xD9, 0xD2, 0xF0), FVector2D(280, 380) },
+		{ Chosen, T(TEXT("Chosen")), TEXT("CH"), AtonStyle::C(0xE3, 0xB2, 0x61), FVector2D(896, 560) },
 		{ Trash, T(TEXT("Корзина")), TEXT("×"), AtonStyle::C(0xC3, 0xCA, 0xCC), FVector2D(440, 320) },
 		{ About, T(TEXT("О системе")), TEXT("i"), AtonStyle::Bar, FVector2D(360, 290), false },
 	};
@@ -1250,5 +1323,6 @@ TSharedRef<SAtonProgram> AtonApps::Make(FName Id, IAtonShell& Shell)
 	if (Id == Calculator) return SNew(SAtonCalculator);
 	if (Id == Computer) return SNew(SAtonComputer, &Shell);
 	if (Id == Trash) return SNew(SAtonTrash);
+	if (Id == Chosen) return SNew(SAtonChosen);
 	return SNew(SAtonAbout);
 }

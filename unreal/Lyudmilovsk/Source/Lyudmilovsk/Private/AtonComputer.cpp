@@ -1,5 +1,6 @@
 #include "AtonComputer.h"
 
+#include "AtonOS/AtonApps.h"
 #include "AtonOS/SAtonDesktop.h"
 #include "EngineUtils.h"
 #include "Framework/Application/SlateApplication.h"
@@ -60,6 +61,9 @@ void AAtonComputer::BeginPlay()
 	{
 		Seat = TActorIterator<AHeroSeat>(GetWorld()) ? *TActorIterator<AHeroSeat>(GetWorld()) : nullptr;
 	}
+
+	AtonApps::ChosenLocalURL = ChosenLocalURL;
+	AtonApps::ChosenURL = ChosenURL;
 
 	TWeakObjectPtr<AAtonComputer> Self(this);
 	SAssignNew(Desktop, SAtonDesktop)

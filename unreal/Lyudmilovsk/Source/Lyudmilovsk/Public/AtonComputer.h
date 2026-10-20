@@ -44,9 +44,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "ATON OS")
 	float ScreenWidth = 42.f;
 
-	/** Emissive boost of the screen, like the old screen image (4). */
+	/** Emissive boost of the screen (the old screen image used 4). */
 	UPROPERTY(EditAnywhere, Category = "ATON OS")
-	float Brightness = 4.f;
+	float Brightness = 5.5f;
+
+	/** The Chosen game, built and served locally by tools/chosen_local.sh; empty to skip it. */
+	UPROPERTY(EditAnywhere, Category = "ATON OS")
+	FString ChosenLocalURL = TEXT("http://localhost:8787/");
+
+	/** Where Chosen is played when no local build is running. */
+	UPROPERTY(EditAnywhere, Category = "ATON OS")
+	FString ChosenURL = TEXT("https://chosen.stickies.fun/");
 
 	/** The seat whose cutscene hands the player over to the OS; found in the level when empty. */
 	UPROPERTY(EditAnywhere, Category = "ATON OS")

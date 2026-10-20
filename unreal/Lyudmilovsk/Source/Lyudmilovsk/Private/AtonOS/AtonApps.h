@@ -35,7 +35,15 @@ namespace AtonApps
 	const FName Mail("mail");
 	const FName Calculator("calculator");
 	const FName Trash("trash");
+	const FName Chosen("chosen");
 	const FName About("about");
+
+	/**
+	 * Where the Chosen game is loaded from: a local build first (tools/chosen_local.sh serves it), the
+	 * public site when that is not running. Set by AAtonComputer.
+	 */
+	extern FString ChosenLocalURL;
+	extern FString ChosenURL;
 
 	const TArray<FAtonAppInfo>& List();
 	const FAtonAppInfo* Find(FName Id);
