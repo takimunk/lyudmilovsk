@@ -301,6 +301,8 @@ screen_mats["Garland_Filament"] = garland_filament_material(LAYOUT["invisible_wa
 # Visitors' screens: content matched to who sits there, always in motion.
 LIVE = {
     "Screen_On_live_feed": ("screen_feed", (1, 0.32), (0, 0), (0, 0.018)),
+    "Screen_On_live_video": ("screen_video", (1, 1), (0, 0), (0, 0)),
+    "Screen_On_live_cctv": ("screen_cctv", (1, 1), (0, 0), (0, 0)),
     "Screen_On_live_chat": ("screen_chat", (1, 0.35), (0, 0), (0, 0.012)),
     "Screen_On_live_racing": ("screen_racing", (1, 0.45), (0, 0), (0, -0.45)),
     "Screen_On_live_platformer": ("screen_platformer", (0.4, 1), (0, 0), (0.035, 0)),
@@ -313,6 +315,10 @@ for k, (tex_name, sc_, off_, spd_) in LIVE.items():
         extra = {"sway": (0.02, 0.012), "flicker": 0.08}
     if k.endswith("zx"):
         extra = {"flicker": 0.12}
+    if k.endswith("video"):
+        extra = {"sway": (0.004, 0.003), "flicker": 0.05}
+    if k.endswith("cctv"):
+        extra = {"flicker": 0.15}
     screen_mats[k] = live_screen_material(k.replace("Screen_On_live_", "LiveScreen_"), tex_name, sc_, off_, spd_, **extra)
 
 
@@ -966,14 +972,14 @@ if "owner" in LAYOUT:
     seat_person("Owner", "Sit_Idle", vec(LAYOUT["owner"]["chair"]), LAYOUT["owner"]["sitter_yaw"], "Owner")
 # Visitors sit where the layout put them (their chairs are square and their screens are live);
 # the loop follows the device: gamepad at consoles, keyboard+mouse at PCs, browsing on laptops.
-ANIM_FOR = {"sega": "Sit_Gamepad", "ps2": "Sit_Gamepad", "modern": "Sit_Gamepad", "gaming": "Sit_KeyboardMouse",
-            "beige": "Sit_KeyboardMouse", "spreadsheet": "Sit_KeyboardMouse", "mac": "Sit_KeyboardMouse",
-            "zx": "Sit_KeyboardMouse", "vr": "Sit_KeyboardMouse", "laptop": "Sit_Browse", "imac": "Sit_Browse"}
+# Each person's own loop from the humans thread (poses checked there).
+ANIM = {"Streamer": "Sit_Stream", "Kid_boy": "Sit_Gamepad", "Kid_girl": "Sit_ChinRest", "Guy_a": "Sit_KeyboardMouse",
+        "Guy_b": "Sit_LeanBack", "Girl_a": "Sit_KeyboardMouse", "Girl_b": "Sit_Browse"}
 seats = {st["index"]: st for st in LAYOUT.get("stations", [])}
 for v in LAYOUT.get("visitors", []):
     st = seats.get(v["index"])
     if st:
-        seat_person(v["person"], ANIM_FOR.get(v["kind"], "Sit_Idle"), vec(st["chair"]), st["sitter_yaw"],
+        seat_person(v["person"], ANIM.get(v["person"], "Sit_Idle"), vec(st["chair"]), st["sitter_yaw"],
                     "Visitor_" + v["person"])
         log("%s at station %02d (%s)" % (v["person"], v["index"], v["kind"]))
 

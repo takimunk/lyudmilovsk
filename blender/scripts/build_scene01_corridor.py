@@ -766,8 +766,8 @@ def build_hall(coll):
     for yy in (dy0 - 0.7, dy0 + 0.7):
         parts.append(box("Admin_DeskLeg", (0.6, 0.04, 0.74), (hw - 0.4, yy, 0.37), desk_m, coll=coll))
     parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, dy0 - 0.2, 0.95), beige, coll=coll, bevel=0.015))
-    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("spreadsheet",
-                       "screen_spreadsheet.jpg", 1.1), coll=coll))
+    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("live_cctv",
+                       "screen_cctv.jpg", 1.1), coll=coll))
     parts[-1].rotation_euler = (0, 0, math.radians(-90))
     parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, dy0 - 0.2, 0.795), beige, coll=coll))
     parts.append(box("Admin_Ledger", (0.25, 0.32, 0.03), (bx0 + 0.1, -3.9, wz0 + 0.055), mat("Ledger", (0.1, 0.2, 0.35), 0.6),
@@ -792,9 +792,9 @@ def build_hall(coll):
     place("lamp_soviet", lm, coll, label="Admin_Lamp")
     LAYOUT["hall_lights"].append({"pos": ue(*(anchor("lamp_soviet", lm, "Lamp_Bulb") + Vector((0, 0, -0.03)))),
                                   "color": [1.0, 0.68, 0.38], "cd": 4.0, "radius": 350, "shadows": True})
-    place("chair_stool", floor_at((hw - 0.95, dy0 - 0.2, 0), math.radians(90)), coll, label="Admin_Stool")
-    # the owner sits on the stool facing his window (the desk is in the corner behind him)
-    LAYOUT["owner"] = {"chair": ue(hw - 0.95, dy0 - 0.2, 0), "sitter_yaw": 180.0}
+    place("chair_stool", floor_at((hw - 1.45, dy0 - 0.2, 0), math.radians(-90)), coll, label="Admin_Stool")
+    # the owner sits facing his monitor (CCTV of the hall) about 95 cm away
+    LAYOUT["owner"] = {"chair": ue(hw - 1.45, dy0 - 0.2, 0), "sitter_yaw": 0.0}
     # a warm bare bulb under the booth ceiling, now that it is closed in
     bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
     cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
@@ -990,15 +990,15 @@ PLACED_SCREENS = []
 # Visitors (the humans thread's characters) at reachable places: station -> (person, screen content).
 # Their chairs are set square to the desk and their screens show live content (animated in Unreal).
 VISITORS = {
-    0: ("Guy_b", "feed"),          # laptop, scrolling a social feed
-    1: ("Streamer", "racing"),     # PS2, racing game with a gamepad
-    4: ("Kid_boy", "zx"),          # ZX Spectrum game
+    0: ("Guy_b", "video"),         # laptop, leaning back watching a video
+    1: ("Streamer", "racing"),     # PS2 racing game; chat on a second screen, webcam on the TV
+    4: ("Girl_a", "zx"),           # ZX Spectrum game on the keyboard computer
     5: ("Guy_a", "modern_game"),   # gaming PC, shooter
-    6: ("Kid_girl", "platformer"), # Mega Drive platformer
-    7: ("Girl_b", "chat"),         # iMac, messenger chat
-    8: ("Girl_a", "feed"),         # beige PC, social feed
+    6: ("Kid_boy", "platformer"),  # Mega Drive platformer on the TV, gamepad in hand
+    7: ("Kid_girl", "chat"),       # iMac, chin in hand, reading a chat
+    8: ("Girl_b", "feed"),         # beige PC, social feed
 }
-LIVE_SCREENS = {"feed": "screen_feed.jpg", "chat": "screen_chat.jpg", "racing": "screen_racing.jpg",
+LIVE_SCREENS = {"video": "screen_video.jpg", "cctv": "screen_cctv.jpg", "feed": "screen_feed.jpg", "chat": "screen_chat.jpg", "racing": "screen_racing.jpg",
                 "zx": "screen_zx.jpg", "platformer": "screen_platformer.jpg",
                 "modern_game": "screen_modern_game.jpg"}
 ANCHOR_MATERIALS = ("Lamp_Bulb", "GrowLamp_Purple")   # where lights go, measured on the prop itself
@@ -1415,6 +1415,17 @@ def build_stations(coll):
                 sc.material_slots[0].link = "OBJECT"
                 sc.material_slots[0].material = screen_on("live_" + content, LIVE_SCREENS[content], 1.2)
             LAYOUT.setdefault("visitors", []).append({"index": i, "person": person, "kind": fn.__name__[3:]})
+            if person == "Streamer":
+                # chat on a small second screen to her right (station +x), webcam on top of the TV
+                PLACED_SCREENS.clear()
+                place("monitor_flat", at(root, 0.48, 0.12, 0, -25, scale=(0.6, 0.6, 0.6)), coll)
+                if PLACED_SCREENS:
+                    sc2 = PLACED_SCREENS[0]
+                    sc2.material_slots[0].link = "OBJECT"
+                    sc2.material_slots[0].material = screen_on("live_chat", LIVE_SCREENS["chat"], 1.2)
+                cam_m = mat("Webcam", (0.05, 0.05, 0.06), 0.3)
+                box("Webcam", (0.09, 0.05, 0.05), (0.0, 0.0, 0.505), cam_m, root, coll, bevel=0.01)
+                box("Webcam_Lens", (0.025, 0.006, 0.025), (0.0, -0.028, 0.505), led((0.2, 0.3, 1.0)), root, coll)
         # The desk goes in after the devices: some stations nudge all their children back.
         desk(root, coll, desk_kind, w, h)
         if i == CLERK_INDEX:

@@ -67,6 +67,12 @@ SCREENS = {
     "screen_zx": ("A full-screen ZX Spectrum style 8-bit game screenshot with bright attribute colours on black: "
                   "a maze of platforms, ladders and collectible items, score at the top, low resolution blocky "
                   "pixels, original game, no logos.", "4:3"),
+    "screen_video": ("A full-screen video player in a 2000s web browser showing a funny home video still: a cat "
+                     "jumping into a cardboard box in a kitchen, progress bar and play controls at the bottom, "
+                     "made-up site, no logos.", "4:3"),
+    "screen_cctv": ("A security monitor split into a 3x3 grid of grainy black-and-white CCTV camera views of a "
+                    "small computer club: a corridor with computer desks, an entrance with a heavy door, a lobby "
+                    "with a vending machine; timestamps and camera numbers in the corners.", "4:3"),
     "landscape_1": ("A classic Russian realist oil painting of rolling green hills of Krasnodar Krai at golden "
                     "hour, poplars along a dirt road, wide sky, visible brush strokes, museum quality, no frame.",
                     "3:2"),
