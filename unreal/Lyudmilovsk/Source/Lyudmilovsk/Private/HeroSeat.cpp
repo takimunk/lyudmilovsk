@@ -62,7 +62,8 @@ void AHeroSeat::BeginPlay()
 		EnableInput(PC);
 		if (InputComponent)
 		{
-			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &AHeroSeat::OnInteract);
+			// several actors listen for E (doors, the hero's seat); none may swallow it
+			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &AHeroSeat::OnInteract).bConsumeInput = false;
 		}
 	}
 }

@@ -49,7 +49,8 @@ void ASwingDoor::BeginPlay()
 		EnableInput(PC);
 		if (InputComponent)
 		{
-			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &ASwingDoor::OnInteract);
+			// several actors listen for E (doors, the hero's seat); none may swallow it
+			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &ASwingDoor::OnInteract).bConsumeInput = false;
 		}
 	}
 }
