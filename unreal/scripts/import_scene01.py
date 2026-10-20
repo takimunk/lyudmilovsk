@@ -139,6 +139,183 @@ SCREENS = {
 screen_mats = {k: screen_material(k.replace("Screen_On_", "Screen_"), *v) for k, v in SCREENS.items()}
 
 
+def live_screen_material(name, tex_name, scale, offset, speed, sway=(0.0, 0.0), flicker=0.0, boost=3.0):
+    """A screen that keeps moving: UV = uv*scale + offset + time*speed (+ a little sway), wrapped,
+    so feeds and chats scroll, racing roads rush by, platformer levels slide, shooters sway."""
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "M_" + name, "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    tex = next((eal.load_asset(p) for p in eal.list_assets(DEST, True)
+                if p.rsplit("/", 1)[-1].split(".")[0] == tex_name), None)
+
+    def node(cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    def link(a, b, pin=""):
+        mel.connect_material_expressions(a, "", b, pin)
+
+    def binop(cls, a, b, x, y):
+        e = node(cls, x, y)
+        link(a, e, "A")
+        link(b, e, "B")
+        return e
+
+    uv = node(E.MaterialExpressionTextureCoordinate, -1200, 0)
+    sc = node(E.MaterialExpressionConstant2Vector, -1200, 100, r=scale[0], g=scale[1])
+    off = node(E.MaterialExpressionConstant2Vector, -1200, 200, r=offset[0], g=offset[1])
+    spd = node(E.MaterialExpressionConstant2Vector, -1200, 300, r=speed[0], g=speed[1])
+    t = node(E.MaterialExpressionTime, -1200, 400)
+    a = binop(E.MaterialExpressionMultiply, uv, sc, -1000, 0)
+    b = binop(E.MaterialExpressionAdd, a, off, -850, 0)
+    mv = binop(E.MaterialExpressionMultiply, t, spd, -1000, 300)
+    c = binop(E.MaterialExpressionAdd, b, mv, -700, 0)
+    if sway != (0.0, 0.0):
+        t1 = node(E.MaterialExpressionMultiply, -1000, 500, const_b=1.3)
+        link(t, t1, "A")
+        s1 = node(E.MaterialExpressionSine, -850, 500)
+        link(t1, s1)
+        t2 = node(E.MaterialExpressionMultiply, -1000, 600, const_b=2.1)
+        link(t, t2, "A")
+        s2 = node(E.MaterialExpressionSine, -850, 600)
+        link(t2, s2)
+        sx = node(E.MaterialExpressionMultiply, -700, 500, const_b=sway[0])
+        link(s1, sx, "A")
+        sy = node(E.MaterialExpressionMultiply, -700, 600, const_b=sway[1])
+        link(s2, sy, "A")
+        sv = binop(E.MaterialExpressionAppendVector, sx, sy, -550, 550)
+        c = binop(E.MaterialExpressionAdd, c, sv, -550, 0)
+    w = node(E.MaterialExpressionFrac, -400, 0)
+    link(c, w)
+    sample = node(E.MaterialExpressionTextureSample, -250, 0, texture=tex)
+    link(w, sample, "UVs")
+    em = node(E.MaterialExpressionMultiply, -50, 100, const_b=boost)
+    mel.connect_material_expressions(sample, "RGB", em, "A")
+    if flicker:
+        tf = node(E.MaterialExpressionMultiply, -400, 300, const_b=23.0)
+        link(t, tf, "A")
+        sf = node(E.MaterialExpressionSine, -250, 300)
+        link(tf, sf)
+        fa = node(E.MaterialExpressionMultiply, -100, 300, const_b=flicker)
+        link(sf, fa, "A")
+        f1 = node(E.MaterialExpressionAdd, 0, 300, const_b=1.0)
+        link(fa, f1, "A")
+        em = binop(E.MaterialExpressionMultiply, em, f1, 100, 100)
+    mel.connect_material_property(em, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    mel.connect_material_expressions(sample, "RGB", node(E.MaterialExpressionMultiply, -50, 0, const_b=0.2), "A")
+    r = node(E.MaterialExpressionConstant, 100, 250, r=0.15)
+    mel.connect_material_property(r, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+def garland_filament_material(wall_y):
+    """Glowing filament that, past the invisible wall, flickers more and more the further away it is,
+    each bulb on its own beat, so the far end of the tunnel looks almost dark."""
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "M_GarlandFilament", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+
+    def node(cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    def link(a, b, pin=""):
+        mel.connect_material_expressions(a, "", b, pin)
+
+    def un(cls, a, x, y, **props):
+        e = node(cls, x, y, **props)
+        link(a, e, "A" if "const_b" in props or "const_a" in props else "")
+        return e
+
+    def binop(cls, a, b, x, y):
+        e = node(cls, x, y)
+        link(a, e, "A")
+        link(b, e, "B")
+        return e
+
+    wp = node(E.MaterialExpressionWorldPosition, -1600, 0)
+    wy = node(E.MaterialExpressionComponentMask, -1450, 0, r=False, g=True, b=False, a=False)
+    link(wp, wy)
+    # distance past the wall, 0..1 over 90 m
+    past = node(E.MaterialExpressionSubtract, -1300, 0, const_a=wall_y)
+    link(wy, past, "B")
+    d = un(E.MaterialExpressionDivide, past, -1150, 0, const_b=9000.0)
+    dc = node(E.MaterialExpressionSaturate, -1000, 0)
+    link(d, dc)
+    # per-bulb id from its position along the wire (bulbs are 32 cm apart)
+    idf = un(E.MaterialExpressionDivide, wy, -1300, 200, const_b=32.0)
+    idr = node(E.MaterialExpressionFloor, -1150, 200)
+    link(idf, idr)
+    h1 = un(E.MaterialExpressionMultiply, idr, -1000, 200, const_b=12.9898)
+    h2 = node(E.MaterialExpressionSine, -850, 200)
+    link(h1, h2)
+    h3 = un(E.MaterialExpressionMultiply, h2, -700, 200, const_b=43758.5)
+    hash_ = node(E.MaterialExpressionFrac, -550, 200)
+    link(h3, hash_)
+    # a fresh random draw per bulb six times a second
+    t = node(E.MaterialExpressionTime, -1300, 400)
+    t6 = un(E.MaterialExpressionMultiply, t, -1150, 400, const_b=6.0)
+    tf = node(E.MaterialExpressionFloor, -1000, 400)
+    link(t6, tf)
+    hb = un(E.MaterialExpressionMultiply, hash_, -1000, 500, const_b=100.0)
+    seed = binop(E.MaterialExpressionAdd, tf, hb, -850, 400)
+    r1 = un(E.MaterialExpressionMultiply, seed, -700, 400, const_b=78.233)
+    r2 = node(E.MaterialExpressionSine, -550, 400)
+    link(r1, r2)
+    r3 = un(E.MaterialExpressionMultiply, r2, -400, 400, const_b=12345.6)
+    rnd = node(E.MaterialExpressionFrac, -250, 400)
+    link(r3, rnd)
+    # off when rnd < d * 0.85 (sharp step)
+    th = un(E.MaterialExpressionMultiply, dc, -550, 0, const_b=0.85)
+    diff = binop(E.MaterialExpressionSubtract, th, rnd, -100, 200)
+    sharp = un(E.MaterialExpressionMultiply, diff, 50, 200, const_b=1000.0)
+    off = node(E.MaterialExpressionSaturate, 200, 200)
+    link(sharp, off)
+    on = node(E.MaterialExpressionOneMinus, 350, 200)
+    link(off, on)
+    dim = un(E.MaterialExpressionMultiply, dc, -400, 0, const_b=-0.5)
+    dim1 = un(E.MaterialExpressionAdd, dim, -250, 0, const_b=1.0)
+    k = binop(E.MaterialExpressionMultiply, on, dim1, 500, 100)
+    col = node(E.MaterialExpressionConstant3Vector, 500, 300, constant=unreal.LinearColor(1.0, 0.55, 0.2, 1))
+    em = binop(E.MaterialExpressionMultiply, col, k, 650, 100)
+    em2 = un(E.MaterialExpressionMultiply, em, 800, 100, const_b=40.0)
+    mel.connect_material_property(em2, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    m.set_editor_property("used_with_nanite", True)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+screen_mats["Garland_Filament"] = garland_filament_material(LAYOUT["invisible_wall_y"])
+
+# Visitors' screens: content matched to who sits there, always in motion.
+LIVE = {
+    "Screen_On_live_feed": ("screen_feed", (1, 0.32), (0, 0), (0, 0.018)),
+    "Screen_On_live_chat": ("screen_chat", (1, 0.35), (0, 0), (0, 0.012)),
+    "Screen_On_live_racing": ("screen_racing", (1, 0.45), (0, 0), (0, -0.45)),
+    "Screen_On_live_platformer": ("screen_platformer", (0.4, 1), (0, 0), (0.035, 0)),
+    "Screen_On_live_zx": ("screen_zx", (1, 1), (0, 0), (0, 0)),
+    "Screen_On_live_modern_game": ("screen_modern_game", (0.9, 0.9), (0.05, 0.05), (0, 0)),
+}
+for k, (tex_name, sc_, off_, spd_) in LIVE.items():
+    extra = {}
+    if k.endswith("modern_game"):
+        extra = {"sway": (0.02, 0.012), "flicker": 0.08}
+    if k.endswith("zx"):
+        extra = {"flicker": 0.12}
+    screen_mats[k] = live_screen_material(k.replace("Screen_On_live_", "LiveScreen_"), tex_name, sc_, off_, spd_, **extra)
+
+
 def belt_material():
     """Dark rubber belt with treads every 40 cm; the conveyor scrolls them through 'Offset'."""
     mel = unreal.MaterialEditingLibrary
@@ -244,12 +421,17 @@ def lit(p):
 # Some of them blink now and then (ALightFlicker).
 rng = random.Random(7)
 for k, p in enumerate(LAYOUT["garland_lights"]):
-    if not lit(p):
+    beyond = WALL_Y - p[1]                       # how far past the invisible wall, cm
+    if beyond > 0 and (beyond > 4000 or k % 5):  # past the wall: every 5th bulb, for 40 m
         continue
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 0.35, 160.0,
-                     "Garland_Light_%03d" % k, "Lights/Garland")
+    fade = max(0.25, 1.0 - max(beyond, 0) / 5000.0)
+    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 0.35 * fade * (3 if beyond > 0 else 1),
+                     160.0 if beyond <= 0 else 320.0, "Garland_Light_%03d" % k, "Lights/Garland")
     gl.light_component.set_editor_property("source_radius", 1.0)
+    if beyond > 0 and rng.random() < min(0.9, 0.3 + beyond / 4000.0):
+        gl.tags = [unreal.Name("Flicker")]
+        continue
     if rng.random() < 0.2:
         gl.tags = [unreal.Name("Flicker")]
 spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector(0, 0, 300), label="GarlandFlicker")
@@ -662,26 +844,19 @@ for n in range(1, COPIES + 1):
             extra_belts.append(c)
 log("distance chunks: %d x %d actors" % (COPIES, len(originals)))
 
-# Partition between hall and corridor: a door that starts open (E toggles it) and soft curtain
-# strips that bend away from whoever walks through.
+# Partition between hall and corridor: a wide double door standing open (E swings it shut/open).
 if "door" in LAYOUT:
-    leaf = next((a for a in eas.get_all_level_actors() if a.get_actor_label() == LAYOUT["door"]["leaf"]), None)
-    if leaf:
-        leaf.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    labels = LAYOUT["door"]["leaves"]
+    leaves = [next((x for x in eas.get_all_level_actors() if x.get_actor_label() == l), None) for l in labels]
+    leaves = [x for x in leaves if x]
+    if leaves:
+        for lf in leaves:
+            lf.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
         door = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.SwingDoor"), vec(LAYOUT["door"]["center"]),
-                     label="PartitionDoor")
-        door.set_editor_property("leaf", leaf)
-        door.set_editor_property("open_angle", 90.0)     # swings into the hall
-if "curtain" in LAYOUT:
-    mpc, cmat = curtain_setup(LAYOUT["curtain"]["top_z"])
-    for a in eas.get_all_level_actors():
-        if a.get_actor_label() == "Partition_Curtain":
-            a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-            a.static_mesh_component.set_material(0, cmat)
-            a.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
-    pusher = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.CurtainPusher"), vec(LAYOUT["curtain"]["center"]),
-                   label="CurtainPusher")
-    pusher.set_editor_property("collection", mpc)
+                     label="PartitionDoor_Actor")
+        door.set_editor_property("leaves", leaves)
+        door.set_editor_property("open_angles", LAYOUT["door"]["open_angles"][:len(leaves)])
+        door.set_editor_property("leaves_placed_open", True)
 
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.

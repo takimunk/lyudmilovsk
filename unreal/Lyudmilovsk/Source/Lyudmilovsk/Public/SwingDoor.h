@@ -7,8 +7,9 @@
 class UBoxComponent;
 
 /**
- * Hinged door that swings smoothly between open and closed. Starts open; the player toggles it
- * with E while standing in the Zone. The leaf is a separate actor whose origin is on the hinge.
+ * Hinged door (one or more leaves) that swings smoothly between open and closed. Starts open; the
+ * player toggles it with E while standing in the Zone. Each leaf is a separate actor whose origin is
+ * on its hinge; it may be placed in the level either closed or already open (bLeavesPlacedOpen).
  */
 UCLASS()
 class LYUDMILOVSK_API ASwingDoor : public AActor
@@ -21,13 +22,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
 	TObjectPtr<UBoxComponent> Zone;
 
-	/** The door leaf (pivot on the hinge, placed closed). */
+	/** The door leaves (pivot on the hinge). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-	TObjectPtr<AActor> Leaf;
+	TArray<TObjectPtr<AActor>> Leaves;
 
-	/** Yaw added to the closed pose when open, degrees. */
+	/** Yaw added to each leaf's closed pose when open, degrees (one per leaf). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-	float OpenAngle = 90.f;
+	TArray<float> OpenAngles;
+
+	/** True if the leaves stand open in the level as placed. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
+	bool bLeavesPlacedOpen = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bStartOpen = true;
@@ -45,7 +50,9 @@ public:
 private:
 	void OnInteract();
 
-	FRotator ClosedRotation;
-	float Angle = 0.f;
+	void Apply();
+
+	TArray<FRotator> ClosedRotations;
+	float Openness = 1.f;   // 0 closed .. 1 open
 	bool bOpen = true;
 };

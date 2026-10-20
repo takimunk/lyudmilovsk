@@ -52,6 +52,21 @@ SCREENS = {
                       "(Буратино, Тархун, Байкал, Дюшес, Колокольчик), price tags in roubles, coin slot and "
                       "buttons on the right, scratched red body. Absolutely no real-world brands: no Coca-Cola, "
                       "Fanta, Sprite, Pepsi or any existing logo.", "9:16"),
+    "screen_feed": ("A tall full-page screenshot of a 2000s Russian social network news feed in a browser: "
+                    "repeating posts with small avatars, photos of friends, cats, a beach, likes and comments, "
+                    "blue header, made-up site name, readable layout, no real logos.", "9:16"),
+    "screen_chat": ("A tall screenshot of a 2000s instant messenger chat window with a long conversation in "
+                    "Russian, coloured nicknames, timestamps, emoticons, grey window chrome, made-up app, no logos.",
+                    "9:16"),
+    "screen_racing": ("Top-down view of an arcade racing video game road, seamless vertically tileable strip: "
+                      "asphalt with lane markings, roadside grass, trees and a few cars, bright 2000s console "
+                      "graphics, no HUD text, no logos.", "9:16"),
+    "screen_platformer": ("A wide horizontally seamless tileable level strip of a colourful original 2D platformer "
+                          "game: grassy hills, floating brick platforms, coins, clouds, small enemies, pixel art, "
+                          "no player character, no HUD, no logos.", "21:9"),
+    "screen_zx": ("A full-screen ZX Spectrum style 8-bit game screenshot with bright attribute colours on black: "
+                  "a maze of platforms, ladders and collectible items, score at the top, low resolution blocky "
+                  "pixels, original game, no logos.", "4:3"),
     "landscape_1": ("A classic Russian realist oil painting of rolling green hills of Krasnodar Krai at golden "
                     "hour, poplars along a dirt road, wide sky, visible brush strokes, museum quality, no frame.",
                     "3:2"),

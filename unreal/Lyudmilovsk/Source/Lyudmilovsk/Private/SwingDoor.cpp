@@ -23,26 +23,45 @@ ASwingDoor::ASwingDoor()
 void ASwingDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	if (Leaf)
+	for (int32 i = 0; i < Leaves.Num(); ++i)
 	{
-		ClosedRotation = Leaf->GetActorRotation();
-		if (UStaticMeshComponent* Mesh = Leaf->FindComponentByClass<UStaticMeshComponent>())
+		AActor* Leaf = Leaves[i];
+		const float Open = OpenAngles.IsValidIndex(i) ? OpenAngles[i] : 90.f;
+		FRotator Closed = Leaf ? Leaf->GetActorRotation() : FRotator::ZeroRotator;
+		if (bLeavesPlacedOpen)
 		{
-			Mesh->SetMobility(EComponentMobility::Movable);
+			Closed.Yaw -= Open;
+		}
+		ClosedRotations.Add(Closed);
+		if (Leaf)
+		{
+			if (UStaticMeshComponent* Mesh = Leaf->FindComponentByClass<UStaticMeshComponent>())
+			{
+				Mesh->SetMobility(EComponentMobility::Movable);
+			}
 		}
 	}
 	bOpen = bStartOpen;
-	Angle = bOpen ? OpenAngle : 0.f;
-	if (Leaf)
-	{
-		Leaf->SetActorRotation(ClosedRotation + FRotator(0.f, Angle, 0.f));
-	}
+	Openness = bOpen ? 1.f : 0.f;
+	Apply();
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		EnableInput(PC);
 		if (InputComponent)
 		{
 			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &ASwingDoor::OnInteract);
+		}
+	}
+}
+
+void ASwingDoor::Apply()
+{
+	for (int32 i = 0; i < Leaves.Num(); ++i)
+	{
+		if (Leaves[i] && ClosedRotations.IsValidIndex(i))
+		{
+			const float Open = OpenAngles.IsValidIndex(i) ? OpenAngles[i] : 90.f;
+			Leaves[i]->SetActorRotation(ClosedRotations[i] + FRotator(0.f, Open * Openness, 0.f));
 		}
 	}
 }
@@ -64,10 +83,10 @@ void ASwingDoor::Toggle()
 void ASwingDoor::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	const float Target = bOpen ? OpenAngle : 0.f;
-	if (Leaf && !FMath::IsNearlyEqual(Angle, Target))
+	const float Target = bOpen ? 1.f : 0.f;
+	if (!FMath::IsNearlyEqual(Openness, Target))
 	{
-		Angle = FMath::FInterpConstantTo(Angle, Target, DeltaSeconds, SwingSpeed);
-		Leaf->SetActorRotation(ClosedRotation + FRotator(0.f, Angle, 0.f));
+		Openness = FMath::FInterpConstantTo(Openness, Target, DeltaSeconds, SwingSpeed / 90.f);
+		Apply();
 	}
 }

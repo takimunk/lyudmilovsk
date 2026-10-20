@@ -526,7 +526,7 @@ def build_garland(coll):
         g.scale = (1.0, 1.0, 1.45)
         glasses.append(g)
         filaments.append(box("Garland_Filament", (0.007, 0.0012, 0.0012), (bx, by, bz), filament, coll=coll))
-        lights.append(ue(bx + 0.02, by, bz))
+        lights.append(ue(bx + 0.02, by, bz))      # all bulbs, to the far end
     join("Garland_Bulbs", glasses, coll)
     join("Garland_Sockets", sockets, coll)
     join("Garland_Filaments", filaments, coll)
@@ -597,17 +597,17 @@ def build_podyezd_props(coll):
     # Cast-iron radiator on the near end wall, under the mailboxes.
     parts = []
     for k in range(12):
-        parts.append(tbox("Rad_Section", (0.075, 0.09, 0.55), (-0.85 + k * 0.085, HALL_Y0 + 0.1, 0.42), rad, 0.3,
+        parts.append(tbox("Rad_Section", (0.075, 0.09, 0.55), (-0.6 + k * 0.085, HALL_Y0 + 0.1, 0.42), rad, 0.3,
                           coll=coll))
     for z in (0.66, 0.18):
-        parts.append(cyl("Rad_Pipe", 0.016, 1.4, (-0.38, HALL_Y0 + 0.1, z), pipe, coll=coll,
+        parts.append(cyl("Rad_Pipe", 0.016, 1.4, (-0.13, HALL_Y0 + 0.1, z), pipe, coll=coll,
                          rot=(0, math.radians(90), 0), verts=10))
     join("Radiator", parts, coll)
     # Mailboxes on the hall's far wall, next to the exit.
     parts = []
     for r in range(3):
         for c in range(5):
-            x, z = -1.0 + c * 0.38, 1.15 + r * 0.32
+            x, z = -0.75 + c * 0.38, 1.15 + r * 0.32
             parts.append(box("Mailbox", (0.36, 0.22, 0.3), (x, HALL_Y0 + 0.11, z), box_m, coll=coll))
             parts.append(box("Mailbox_Door", (0.3, 0.01, 0.24), (x, HALL_Y0 + 0.225, z), door_m, coll=coll))
             parts.append(box("Mailbox_Slot", (0.2, 0.012, 0.02), (x, HALL_Y0 + 0.231, z + 0.07), screen_off(),
@@ -664,23 +664,17 @@ def build_hall(coll):
         box("Hall_Back_Paint_%s" % side, (hw + 0.5 - W / 2, 0.02, PANEL_H),
             (side * (W / 2 + hw + 0.5) / 2, -0.31, PANEL_H / 2), paint, coll=coll)
     # Far wall with the exit door opening (x -2.3..-1.3, 2.1 m high).
-    dx0, dx1, dh = -2.3, -1.3, 2.1
+    dx0, dx1, dh = -2.55, -1.05, 2.3          # opening for the blast door frame (1.5 x 2.3)
     wall_piece("Hall_Far_A", -hw - 0.5, dx0, y0 - 0.5, y0, 0, h, coll)
     wall_piece("Hall_Far_B", dx1, hw + 0.5, y0 - 0.5, y0, 0, h, coll)
     wall_piece("Hall_Far_C", dx0, dx1, y0 - 0.5, y0, dh, h, coll)
-    door_paint = mat("Door_GreenMetal", (0.12, 0.2, 0.15), 0.4, 0.5)
-    frame = mat("Door_Frame", (0.08, 0.08, 0.08), 0.5, 0.6)
-    steel = mat("Door_Steel", (0.6, 0.6, 0.62), 0.3, 1.0)
-    join("ExitDoor", [
-        box("Door_Leaf", (dx1 - dx0 - 0.04, 0.05, dh - 0.03), ((dx0 + dx1) / 2, y0 - 0.1, (dh - 0.03) / 2), door_paint,
-            coll=coll, bevel=0.005),
-        box("Door_FrameL", (0.05, 0.12, dh), (dx0 + 0.025, y0 - 0.06, dh / 2), frame, coll=coll),
-        box("Door_FrameR", (0.05, 0.12, dh), (dx1 - 0.025, y0 - 0.06, dh / 2), frame, coll=coll),
-        box("Door_FrameT", (dx1 - dx0, 0.12, 0.05), ((dx0 + dx1) / 2, y0 - 0.06, dh - 0.025), frame, coll=coll),
-        box("Door_Handle", (0.14, 0.04, 0.03), (dx1 - 0.15, y0 - 0.055, 1.0), steel, coll=coll),
-        box("Door_Lock", (0.05, 0.02, 0.08), (dx1 - 0.15, y0 - 0.07, 1.12), steel, coll=coll),
-        box("Door_Bar", (dx1 - dx0 - 0.1, 0.05, 0.06), ((dx0 + dx1) / 2, y0 - 0.02, 1.0), steel, coll=coll),
-    ], coll)
+    if have_prop("blastdoor"):
+        # hermetic shelter door in the far wall, closed (the street comes later)
+        place("blastdoor", floor_at(((dx0 + dx1) / 2, y0 - 0.25, 0), math.pi), coll, label="ExitDoor")
+    else:
+        door_paint = mat("Door_GreenMetal", (0.12, 0.2, 0.15), 0.4, 0.5)
+        join("ExitDoor", [box("Door_Leaf", (dx1 - dx0 - 0.04, 0.05, dh - 0.03),
+                              ((dx0 + dx1) / 2, y0 - 0.1, (dh - 0.03) / 2), door_paint, coll=coll)], coll)
     sign = screen_on("exit", "exit_sign.jpg", 2.0)
     join("ExitSign", [box("ExitSign_Box", (0.42, 0.06, 0.16), ((dx0 + dx1) / 2, y0 + 0.03, dh + 0.25),
                           mat("Sign_Case", (0.85, 0.85, 0.85), 0.4), coll=coll),
@@ -880,65 +874,30 @@ def build_hall(coll):
 
 
 def build_partition(coll):
-    """Wall across the corridor mouth with a doorway: a door that stands open (Unreal can swing it
-    shut) and a curtain of fabric strips that Unreal bends away from whoever walks through."""
+    """Wall across the corridor mouth with a wide double door (open by default; Unreal swings the
+    leaves shut with E) and a glass-block panel beside it."""
     white = tex_mat("Podyezd_Whitewash", "whitewash.jpg", 0.95)
     paint = tex_mat("Podyezd_WallPaint", "wall_paint.jpg", 0.35)
     t = 0.12
-    dx, dh = 0.45, 2.1                      # doorway half width and height (in the aisle)
-    dcx = -0.05
-    x0, x1 = dcx - dx, dcx + dx
-    for side, xs in (("L", (-W / 2 - 0.01, x0)), ("R", (x1, W / 2 + 0.01))):
-        a, b = xs
-        outline = [(a, 0), (b, 0)]
-        if side == "L":
-            outline += [(b, CEIL_Z), (-TOP_HALF, CEIL_Z), (-W / 2, WALL_H)]
-        else:
-            outline += [(b, WALL_H), (TOP_HALF, CEIL_Z), (a, CEIL_Z)]
-        prism("Partition_" + side, outline, -t, 0.0, white, coll)
-        tbox("Partition_Paint_" + side, (abs(b - a), t + 0.02, PANEL_H), ((a + b) / 2, -t / 2, PANEL_H / 2), paint, 1.0,
-             coll=coll)
+    dcx, dw, dh = -0.4, 2.1, 2.37            # door_double: 2.1 m wide frame, 1.8 m clear opening
+    x0, x1 = dcx - dw / 2, dcx + dw / 2
+    gx0, gx1, gh = x1, W / 2 + 0.01, WALL_H  # glass-block panel to the right of the door, under the slope
+    outline_l = [(-W / 2 - 0.01, 0), (x0, 0), (x0, CEIL_Z), (-TOP_HALF, CEIL_Z), (-W / 2, WALL_H)]
+    prism("Partition_L", outline_l, -t, 0.0, white, coll)
+    tbox("Partition_Paint_L", (abs(x0 + W / 2), t + 0.02, PANEL_H), ((x0 - W / 2) / 2, -t / 2, PANEL_H / 2), paint, 1.0,
+         coll=coll)
+    prism("Partition_R", [(gx0, gh), (W / 2, gh), (TOP_HALF, CEIL_Z), (gx0, CEIL_Z)], -t, 0.0, white, coll)
     prism("Partition_Top", [(x0, dh), (x1, dh), (x1, CEIL_Z), (x0, CEIL_Z)], -t, 0.0, white, coll)
-    frame = mat("Door_Frame", (0.08, 0.08, 0.08), 0.5, 0.6)
-    join("Partition_DoorFrame", [box("Jamb", (0.05, t + 0.02, dh), (x0 + 0.025, -t / 2, dh / 2), frame, coll=coll),
-                                 box("Jamb", (0.05, t + 0.02, dh), (x1 - 0.025, -t / 2, dh / 2), frame, coll=coll),
-                                 box("Head", (2 * dx, t + 0.02, 0.05), (dcx, -t / 2, dh - 0.025), frame, coll=coll)], coll)
-    # door leaf, built closed with its origin on the hinge (Unreal swings it open on play)
-    leaf_m = mat("PartitionDoor_Paint", (0.28, 0.16, 0.1), 0.45)
-    steel = mat("Door_Steel", (0.6, 0.6, 0.62), 0.3, 1.0)
-    lw, lh = 2 * dx - 0.06, dh - 0.04
-    hinge = Vector((x0 + 0.03, -t - 0.03, 0.01))
-    leaf = join("PartitionDoor_Leaf", [
-        box("Leaf", (lw, 0.045, lh), (lw / 2, 0, lh / 2), leaf_m, coll=coll, bevel=0.004),
-        box("Panel", (lw - 0.2, 0.05, lh * 0.35), (lw / 2, 0, lh * 0.72), leaf_m, coll=coll, bevel=0.01),
-        box("Panel", (lw - 0.2, 0.05, lh * 0.35), (lw / 2, 0, lh * 0.28), leaf_m, coll=coll, bevel=0.01),
-        box("Handle", (0.12, 0.07, 0.025), (lw - 0.1, 0, 1.0), steel, coll=coll)], coll)
-    leaf.location = hinge
-    LAYOUT["door"] = {"leaf": "PartitionDoor_Leaf", "center": ue(dcx, -t / 2, 1.0)}
-    # curtain of soft strips on the corridor side
-    cloth = mat("Partition_Curtain", (0.32, 0.06, 0.07), 0.9)
-    strips = []
-    n = 7
-    sw = (2 * dx - 0.04) / n + 0.02
-    for i in range(n):
-        me = bpy.data.meshes.new("Strip")
-        bm = bmesh.new()
-        rows = 12
-        verts = []
-        for r in range(rows + 1):
-            z = (dh - 0.04) * (1 - r / rows)
-            verts.append((bm.verts.new((-sw / 2, 0, z)), bm.verts.new((sw / 2, 0, z))))
-        for r in range(rows):
-            bm.faces.new((verts[r][0], verts[r][1], verts[r + 1][1], verts[r + 1][0]))
-        bm.to_mesh(me)
-        bm.free()
-        o = bpy.data.objects.new("Strip", me)
-        me.materials.append(cloth)
-        o.location = (x0 + 0.02 + sw / 2 - 0.01 + i * (sw - 0.02), 0.06 + 0.012 * (i % 2), 0.0)
-        coll.objects.link(o)
-        strips.append(o)
-    join("Partition_Curtain", strips, coll)
-    LAYOUT["curtain"] = {"top_z": round((dh - 0.04) * 100, 1), "center": ue(dcx, 0.06, 1.0)}
+    m = floor_at((dcx, -t / 2, 0), 0.0)
+    if have_prop("door_double"):
+        # leaves stand open toward the hall (-Y): LeafL turns negative, LeafR positive about Z
+        place("door_double", m, coll, label="PartitionDoor", hinge_angles={"LeafL": -95.0, "LeafR": 95.0})
+    if have_prop("glassblock_panel"):
+        place("glassblock_panel", floor_at(((gx0 + gx1) / 2, -t / 2, 0), 0.0) @ Matrix.Diagonal(
+            ((gx1 - gx0) / 1.30, 1.0, gh / 2.44, 1.0)), coll, label="Partition_GlassBlocks")
+    # Unreal yaw flips sign against Blender's Z rotation
+    LAYOUT["door"] = {"leaves": ["PartitionDoor_LeafL", "PartitionDoor_LeafR"], "open_angles": [95.0, -95.0],
+                      "center": ue(dcx, -t / 2, 1.0)}
 
 
 def build_chandelier(coll):
@@ -1026,6 +985,22 @@ def build_walkway(coll):
 
 PROPS = {}
 PROP_COUNT = {}
+PLACED_SCREENS = []
+
+# Visitors (the humans thread's characters) at reachable places: station -> (person, screen content).
+# Their chairs are set square to the desk and their screens show live content (animated in Unreal).
+VISITORS = {
+    0: ("Guy_b", "feed"),          # laptop, scrolling a social feed
+    1: ("Streamer", "racing"),     # PS2, racing game with a gamepad
+    4: ("Kid_boy", "zx"),          # ZX Spectrum game
+    5: ("Guy_a", "modern_game"),   # gaming PC, shooter
+    6: ("Kid_girl", "platformer"), # Mega Drive platformer
+    7: ("Girl_b", "chat"),         # iMac, messenger chat
+    8: ("Girl_a", "feed"),         # beige PC, social feed
+}
+LIVE_SCREENS = {"feed": "screen_feed.jpg", "chat": "screen_chat.jpg", "racing": "screen_racing.jpg",
+                "zx": "screen_zx.jpg", "platformer": "screen_platformer.jpg",
+                "modern_game": "screen_modern_game.jpg"}
 ANCHOR_MATERIALS = ("Lamp_Bulb", "GrowLamp_Purple")   # where lights go, measured on the prop itself
 
 
@@ -1059,26 +1034,44 @@ def prop(name):
                     anchors[m.name] = sum(pts, Vector()) / len(pts)
     for e in empties:
         anchors[e.name] = world_mat(e).translation.copy()
-    out = {"anchors": anchors}
+    out = {"anchors": anchors, "pivots": {}}
     groups = {"Screen": [o for o in meshes if "Screen" in o.name],
               "Blades": [o for o in meshes if "Blades" in o.name]}
-    groups["body"] = [o for o in meshes if o not in groups["Screen"] and o not in groups["Blades"]]
+    # Hinged parts: everything under a top-level node named <prop>_Leaf*/_Wheel stays separate and
+    # keeps that node's position as its pivot (doors swing about it in Unreal).
+    tops = {}
+    for o in meshes:
+        top = o
+        while top.parent is not None and top.parent.parent is not None:
+            top = top.parent
+        tops[o] = top
+    for o in meshes:
+        top = tops[o]
+        key = top.name[len(name) + 1:] if top.name.startswith(name + "_") else ""
+        if key.startswith("Leaf") or key.startswith("Wheel"):
+            groups.setdefault(key, []).append(o)
+            out["pivots"][key] = world_mat(top).translation.copy()
+    hinged = {o for k, v in groups.items() if k not in ("Screen", "Blades") for o in v}
+    groups["body"] = [o for o in meshes if o not in groups["Screen"] and o not in groups["Blades"] and o not in hinged]
     scratch = bpy.context.scene.collection
     for key, part in groups.items():
         if not part:
             out[key] = None
             continue
         merged = join(name if key == "body" else "%s_%s" % (name, key), part, scratch)
+        if key in out["pivots"]:                  # mesh relative to its hinge
+            merged.data.transform(Matrix.Translation(-out["pivots"][key]))
         merged.data.use_fake_user = True
         out[key] = merged.data
         bpy.data.objects.remove(merged)
     for o in empties:
-        bpy.data.objects.remove(o)
+        if o.name in bpy.data.objects:
+            bpy.data.objects.remove(o)
     PROPS[name] = out
     return out
 
 
-def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None):
+def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None, hinge_angles=None):
     """Puts a linked copy of a prop at `matrix`; returns the body object."""
     p = prop(name)
     n = PROP_COUNT[name] = PROP_COUNT.get(name, 0) + 1
@@ -1090,6 +1083,7 @@ def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None):
         so = bpy.data.objects.new(label + "_Screen", p["Screen"])
         so.matrix_basis = matrix
         coll.objects.link(so)
+        PLACED_SCREENS.append(so)
         if screen_mat:
             so.material_slots[0].link = "OBJECT"
             so.material_slots[0].material = screen_mat
@@ -1097,6 +1091,11 @@ def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None):
         bo = bpy.data.objects.new(blades_label or label + "_Blades", p["Blades"])
         bo.matrix_basis = matrix
         coll.objects.link(bo)
+    for key, piv in p["pivots"].items():                 # hinged parts, placed at their pivot
+        part = bpy.data.objects.new("%s_%s" % (label, key), p[key])
+        swing = (hinge_angles or {}).get(key, 0.0)
+        part.matrix_basis = matrix @ Matrix.Translation(piv) @ Matrix.Rotation(math.radians(swing), 4, "Z")
+        coll.objects.link(part)
     return obj
 
 
@@ -1404,7 +1403,15 @@ def build_stations(coll):
         if i in EXTRA_STATIONS and fn.__name__ not in WIDE and i != CLERK_INDEX:
             fn = EXTRA_STATIONS[i]
             root.name = "Station_%02d" % i
+        PLACED_SCREENS.clear()
         sources = fn(root, coll) or []
+        if i in VISITORS:
+            person, content = VISITORS[i]
+            if PLACED_SCREENS:
+                sc = PLACED_SCREENS[0]
+                sc.material_slots[0].link = "OBJECT"
+                sc.material_slots[0].material = screen_on("live_" + content, LIVE_SCREENS[content], 1.2)
+            LAYOUT.setdefault("visitors", []).append({"index": i, "person": person, "kind": fn.__name__[3:]})
         # The desk goes in after the devices: some stations nudge all their children back.
         desk(root, coll, desk_kind, w, h)
         if i == CLERK_INDEX:
@@ -1441,7 +1448,7 @@ def build_stations(coll):
         chair_kind = rng.choice(CHAIRS)
         loc = (SEAT_X + rng.uniform(-0.08, 0.1), cy + rng.uniform(-0.15, 0.15), 0)
         yaw = -90 + rng.uniform(-20, 20)
-        if i == CLERK_INDEX:                                 # squarely at the desk for the clerk
+        if i == CLERK_INDEX or i in VISITORS:               # squarely at the desk for people who sit here
             loc, yaw = (SEAT_X, cy, 0), -90
         place(chair_kind, floor_at(loc, math.radians(yaw)), coll, label="Chair_%02d" % i)
         # Unreal yaw the sitter faces (0 = +X, toward the desk); Blender rotations flip with Y.
