@@ -1373,8 +1373,10 @@ def build_stations(coll):
         h = rng.uniform(0.73, 0.77)
         cy = y + w / 2
         root = empty("Station_%02d" % i, (TABLE_X, cy, h), math.radians(-90), coll=coll)
-        desk(root, coll, rng.choice(DESKS), w, h)
+        desk_kind = rng.choice(DESKS)
         sources = fn(root, coll) or []
+        # The desk goes in after the devices: some stations nudge all their children back.
+        desk(root, coll, desk_kind, w, h)
         if i == CLERK_INDEX:
             LAYOUT["clerk"] = {
                 "station": ue_from(root, 0, 0, 0),           # desk-top centre
