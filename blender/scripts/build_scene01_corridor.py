@@ -464,8 +464,9 @@ def render_os_screen():
 # ---------------------------------------------------------- 2. the corridor
 
 def build_architecture(coll):
-    paint = tex_mat("Podyezd_WallPaint", "wall_paint.jpg", 0.35)
-    white = tex_mat("Podyezd_Whitewash", "whitewash.jpg", 0.95)
+    # Same textures as the hall, separate materials: Unreal tints the corridor walls dark.
+    paint = tex_mat("Corridor_WallPaint", "wall_paint.jpg", 0.35)
+    white = tex_mat("Corridor_Wash", "whitewash.jpg", 0.95)
     floor = tex_mat("Podyezd_FloorTiles", "floor_tiles.jpg", 0.6)
     ceil = tex_mat("Podyezd_Ceiling", "ceiling.jpg", 0.95)
     stripe = mat("Podyezd_PaintLine", (0.16, 0.05, 0.03), 0.4)
@@ -693,11 +694,8 @@ def build_hall(coll):
     # Bare pendant bulb in the middle of the hall.
     cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
     bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
-    join("Hall_Pendant", [cyl("Cord", 0.004, 0.7, (-0.5, -3.5, h - 0.35), cord, coll=coll, verts=6),
-                          cyl("Socket", 0.02, 0.06, (-0.5, -3.5, h - 0.72), cord, coll=coll),
-                          uv_sphere("Bulb", 0.035, (-0.5, -3.5, h - 0.79), bulb, coll)], coll)
-    LAYOUT["hall_lights"].append({"pos": ue(-0.5, -3.5, h - 0.85), "color": [1.0, 0.68, 0.38], "cd": 18.0,
-                                  "radius": 900, "shadows": True})
+    build_chandelier(coll)
+    build_partition(coll)
 
     # ---- the owner's booth: the whole right side of the hall (x 1.0..hw), closed off by a
     # podyezd-style wall with a counter and two sliding windows, and a doorway with a curtain.
@@ -708,15 +706,35 @@ def build_hall(coll):
     rail_m = mat("Booth_Rail", (0.1, 0.1, 0.1), 0.4, 0.8)
     bx0, bt = 1.0, 0.12                      # front wall line and thickness
     by_far, by_near = y0, -0.3               # from the far wall to the back wall of the hall
-    win0, win1, wz0, wz1 = -4.4, -2.6, 1.05, 2.0
+    win0, win1, wz0, wz1 = -5.9, -1.9, 0.95, 2.1          # big sliding windows along most of the wall
+    gb0, gb1 = 2.3, 2.9                                    # decorative glass-block band, full width
     door0, door1, dz = -1.4, -0.6, 2.1
     xa, xb = bx0 - bt / 2, bx0 + bt / 2
-    wall_piece("Booth_Wall_A", xa, xb, by_far, win0, 0, h, coll)
-    wall_piece("Booth_Wall_B", xa, xb, win1, door0, 0, h, coll)
-    wall_piece("Booth_Wall_C", xa, xb, door1, by_near, 0, h, coll)
+    # below the glass-block band: piers, counter wall, the doorway
+    wall_piece("Booth_Wall_A", xa, xb, by_far, win0, 0, gb0, coll)
+    wall_piece("Booth_Wall_B", xa, xb, win1, door0, 0, gb0, coll)
+    wall_piece("Booth_Wall_C", xa, xb, door1, by_near, 0, gb0, coll)
     wall_piece("Booth_Wall_Counter", xa, xb, win0, win1, 0, wz0, coll)
-    wall_piece("Booth_Wall_OverWindow", xa, xb, win0, win1, wz1, h, coll)
-    wall_piece("Booth_Wall_OverDoor", xa, xb, door0, door1, dz, h, coll)
+    wall_piece("Booth_Wall_OverWindow", xa, xb, win0, win1, wz1, gb0, coll)
+    wall_piece("Booth_Wall_OverDoor", xa, xb, door0, door1, dz, gb0, coll)
+    wall_piece("Booth_Wall_Top", xa, xb, by_far, by_near, gb1, h, coll)
+    # close the corner where the hall meets the corridor (the corridor starts at x = W/2)
+    wall_piece("Booth_Wall_Corner", xa, W / 2 + 0.05, by_near - bt, by_near, 0, h, coll)
+    # glass blocks: a band of 19 cm blocks set in the whitewashed upper wall
+    gblock = mat("GlassBlock", (0.75, 0.85, 0.85), 0.08, transmission=0.9, alpha=0.55)
+    mortar = mat("GlassBlock_Mortar", (0.7, 0.68, 0.62), 0.9)
+    blocks = [box("GB_Frame", (bt, by_near - by_far, gb1 - gb0), (bx0, (by_far + by_near) / 2, (gb0 + gb1) / 2), mortar,
+                  coll=coll)]
+    blocks[0].scale = (0.4, 1.0, 1.0)
+    rows = 3
+    step = (gb1 - gb0) / rows
+    y = by_far + 0.02
+    while y + 0.19 <= by_near:
+        for r in range(rows):
+            blocks.append(box("GlassBlock", (bt + 0.01, 0.18, step - 0.012), (bx0, y + 0.095, gb0 + step * (r + 0.5)),
+                              gblock, coll=coll, bevel=0.01))
+        y += 0.195
+    join("Booth_GlassBlocks", blocks, coll)
     parts = []
     # counter board through the window, outside and in
     parts.append(box("Booth_CounterTop", (0.5, win1 - win0 + 0.2, 0.04), (bx0, (win0 + win1) / 2, wz0 + 0.02), ply,
@@ -729,7 +747,7 @@ def build_hall(coll):
         parts.append(box("Window_Jamb", (0.1, 0.04, wz1 - wz0), (bx0, y, (wz0 + wz1) / 2), frame_m, coll=coll))
     pane_w, pane_h = ww / 2 + 0.04, wz1 - wz0 - 0.08
     for k, (px, py) in enumerate(((bx0 - 0.02, win1 - pane_w / 2 - 0.03),            # closed, right half
-                                  (bx0 + 0.02, win1 - pane_w / 2 - 0.25))):          # slid over it, left half open
+                                  (bx0 + 0.02, win1 - pane_w / 2 - 0.9))):           # slid most of the way over it
         cz = (wz0 + wz1) / 2 + 0.01
         parts.append(box("Pane_Glass", (0.006, pane_w - 0.06, pane_h - 0.06), (px, py, cz), glass_m, coll=coll))
         for dy in (-1, 1):
@@ -749,14 +767,15 @@ def build_hall(coll):
     # inside: desk with an old PC behind the window, shelves along the back, a stool, a lamp
     desk_m = mat("Desk_SovietWood", (0.16, 0.08, 0.04), 0.3)
     beige = mat("Plastic_Beige", (0.72, 0.66, 0.53), 0.55)
-    parts.append(box("Admin_Desk", (0.7, 1.6, 0.04), (hw - 0.4, -3.5, 0.76), desk_m, coll=coll))
-    for yy in (-4.2, -2.8):
+    dy0 = by_far + 0.8                       # desk tucked into the far corner
+    parts.append(box("Admin_Desk", (0.7, 1.6, 0.04), (hw - 0.4, dy0, 0.76), desk_m, coll=coll))
+    for yy in (dy0 - 0.7, dy0 + 0.7):
         parts.append(box("Admin_DeskLeg", (0.6, 0.04, 0.74), (hw - 0.4, yy, 0.37), desk_m, coll=coll))
-    parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, -3.7, 0.95), beige, coll=coll, bevel=0.015))
-    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, -3.7, 0.97), screen_on("spreadsheet",
+    parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, dy0 - 0.2, 0.95), beige, coll=coll, bevel=0.015))
+    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("spreadsheet",
                        "screen_spreadsheet.jpg", 1.1), coll=coll))
     parts[-1].rotation_euler = (0, 0, math.radians(-90))
-    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, -3.7, 0.795), beige, coll=coll))
+    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, dy0 - 0.2, 0.795), beige, coll=coll))
     parts.append(box("Admin_Ledger", (0.25, 0.32, 0.03), (bx0 + 0.1, -3.9, wz0 + 0.055), mat("Ledger", (0.1, 0.2, 0.35), 0.6),
                      coll=coll, rot=(0, 0, math.radians(8))))
     parts.append(cyl("Admin_Bell", 0.04, 0.03, (bx0 - 0.12, -2.9, wz0 + 0.055), mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0),
@@ -765,30 +784,30 @@ def build_hall(coll):
     cols = [(0.5, 0.1, 0.05), (0.15, 0.35, 0.12), (0.6, 0.5, 0.2), (0.2, 0.2, 0.45), (0.55, 0.55, 0.5)]
     for lvl in range(4):
         z = 0.5 + lvl * 0.45
-        parts.append(box("Shelf", (0.35, 1.4, 0.02), (hw - 0.18, -5.8, z), shelf, coll=coll))
+        parts.append(box("Shelf", (0.35, 1.4, 0.02), (hw - 0.18, -2.9, z), shelf, coll=coll))
         for j in range(5):
             c = cols[(lvl + j) % len(cols)]
             if (lvl + j) % 3 == 0:
-                parts.append(cyl("Jar", 0.05, 0.16, (hw - 0.2, -6.4 + j * 0.28, z + 0.09),
+                parts.append(cyl("Jar", 0.05, 0.16, (hw - 0.2, -3.5 + j * 0.28, z + 0.09),
                                  mat("Jar_%d" % ((lvl + j) % 5), c, 0.2, transmission=0.6, alpha=0.7), coll=coll))
             else:
-                parts.append(box("Box", (0.22, 0.2, 0.16 + 0.05 * (j % 2)), (hw - 0.2, -6.4 + j * 0.28, z + 0.1),
+                parts.append(box("Box", (0.22, 0.2, 0.16 + 0.05 * (j % 2)), (hw - 0.2, -3.5 + j * 0.28, z + 0.1),
                                  mat("Crate_%d" % ((lvl + j) % 5), c, 0.8), coll=coll))
     join("AdminBooth", parts, coll)
-    lm = floor_at((hw - 0.3, -2.95, 0.78), math.radians(90))
+    lm = floor_at((hw - 0.3, dy0 + 0.55, 0.78), math.radians(90))
     place("lamp_soviet", lm, coll, label="Admin_Lamp")
     LAYOUT["hall_lights"].append({"pos": ue(*(anchor("lamp_soviet", lm, "Lamp_Bulb") + Vector((0, 0, -0.03)))),
                                   "color": [1.0, 0.68, 0.38], "cd": 4.0, "radius": 350, "shadows": True})
-    place("chair_stool", floor_at((hw - 0.95, -3.6, 0), math.radians(90)), coll, label="Admin_Stool")
+    place("chair_stool", floor_at((hw - 0.95, dy0 - 0.2, 0), math.radians(90)), coll, label="Admin_Stool")
     # a warm bare bulb under the booth ceiling, now that it is closed in
     bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
     cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
-    join("Booth_Pendant", [cyl("Cord", 0.004, 0.5, (2.0, -3.8, h - 0.25), cord, coll=coll, verts=6),
-                           uv_sphere("Bulb", 0.03, (2.0, -3.8, h - 0.53), bulb, coll)], coll)
-    LAYOUT["hall_lights"].append({"pos": ue(2.0, -3.8, h - 0.6), "color": [1.0, 0.68, 0.38], "cd": 10.0,
+    join("Booth_Pendant", [cyl("Cord", 0.004, 0.5, (2.0, -4.2, h - 0.25), cord, coll=coll, verts=6),
+                           uv_sphere("Bulb", 0.03, (2.0, -4.2, h - 0.53), bulb, coll)], coll)
+    LAYOUT["hall_lights"].append({"pos": ue(2.0, -4.2, h - 0.6), "color": [1.0, 0.68, 0.38], "cd": 10.0,
                                   "radius": 600, "shadows": True})
     # air humidifier puffing steam (Unreal draws the steam on the cards above it)
-    hx, hy = hw - 0.3, -1.1
+    hx, hy = hw - 0.3, -0.75
     hm = floor_at((hx, hy, 0), math.radians(90))
     if have_prop("humidifier"):
         place("humidifier", hm, coll, label="Humidifier")
@@ -810,7 +829,7 @@ def build_hall(coll):
     # framed landscapes in gilded baguette frames
     if have_prop("frame_large"):
         # frames hang with their back on a wall at +Y and the picture facing -Y
-        place("frame_large", floor_at((hw - 0.045, -4.6, 1.75), math.radians(-90)), coll, label="Painting_0")
+        place("frame_large", floor_at((hw - 0.045, -4.4, 1.6), math.radians(-90)), coll, label="Painting_0")
         place("frame_medium", floor_at((2.0, by_far + 0.04, 1.75), math.radians(180)), coll, label="Painting_1")
         place("frame_small", floor_at((2.1, by_near - 0.04, 1.7), 0.0), coll, label="Painting_2")
         PAINTINGS = []
@@ -856,6 +875,101 @@ def build_hall(coll):
     n2 = box("Newspaper_Fold", (0.28, 0.4, 0.004), (-hw + 0.47, -5.18, 0.48), paper, coll=coll,
              rot=(0, 0, math.radians(15)))
     join("Hall_Newspaper", [n1, n2], coll)
+
+
+def build_partition(coll):
+    """Wall across the corridor mouth with a doorway: a door that stands open (Unreal can swing it
+    shut) and a curtain of fabric strips that Unreal bends away from whoever walks through."""
+    white = tex_mat("Podyezd_Whitewash", "whitewash.jpg", 0.95)
+    paint = tex_mat("Podyezd_WallPaint", "wall_paint.jpg", 0.35)
+    t = 0.12
+    dx, dh = 0.45, 2.1                      # doorway half width and height (in the aisle)
+    dcx = -0.05
+    x0, x1 = dcx - dx, dcx + dx
+    for side, xs in (("L", (-W / 2 - 0.01, x0)), ("R", (x1, W / 2 + 0.01))):
+        a, b = xs
+        outline = [(a, 0), (b, 0)]
+        if side == "L":
+            outline += [(b, CEIL_Z), (-TOP_HALF, CEIL_Z), (-W / 2, WALL_H)]
+        else:
+            outline += [(b, WALL_H), (TOP_HALF, CEIL_Z), (a, CEIL_Z)]
+        prism("Partition_" + side, outline, -t, 0.0, white, coll)
+        tbox("Partition_Paint_" + side, (abs(b - a), t + 0.02, PANEL_H), ((a + b) / 2, -t / 2, PANEL_H / 2), paint, 1.0,
+             coll=coll)
+    prism("Partition_Top", [(x0, dh), (x1, dh), (x1, CEIL_Z), (x0, CEIL_Z)], -t, 0.0, white, coll)
+    frame = mat("Door_Frame", (0.08, 0.08, 0.08), 0.5, 0.6)
+    join("Partition_DoorFrame", [box("Jamb", (0.05, t + 0.02, dh), (x0 + 0.025, -t / 2, dh / 2), frame, coll=coll),
+                                 box("Jamb", (0.05, t + 0.02, dh), (x1 - 0.025, -t / 2, dh / 2), frame, coll=coll),
+                                 box("Head", (2 * dx, t + 0.02, 0.05), (dcx, -t / 2, dh - 0.025), frame, coll=coll)], coll)
+    # door leaf, built closed with its origin on the hinge (Unreal swings it open on play)
+    leaf_m = mat("PartitionDoor_Paint", (0.28, 0.16, 0.1), 0.45)
+    steel = mat("Door_Steel", (0.6, 0.6, 0.62), 0.3, 1.0)
+    lw, lh = 2 * dx - 0.06, dh - 0.04
+    hinge = Vector((x0 + 0.03, -t - 0.03, 0.01))
+    leaf = join("PartitionDoor_Leaf", [
+        box("Leaf", (lw, 0.045, lh), (lw / 2, 0, lh / 2), leaf_m, coll=coll, bevel=0.004),
+        box("Panel", (lw - 0.2, 0.05, lh * 0.35), (lw / 2, 0, lh * 0.72), leaf_m, coll=coll, bevel=0.01),
+        box("Panel", (lw - 0.2, 0.05, lh * 0.35), (lw / 2, 0, lh * 0.28), leaf_m, coll=coll, bevel=0.01),
+        box("Handle", (0.12, 0.07, 0.025), (lw - 0.1, 0, 1.0), steel, coll=coll)], coll)
+    leaf.location = hinge
+    LAYOUT["door"] = {"leaf": "PartitionDoor_Leaf", "center": ue(dcx, -t / 2, 1.0)}
+    # curtain of soft strips on the corridor side
+    cloth = mat("Partition_Curtain", (0.32, 0.06, 0.07), 0.9)
+    strips = []
+    n = 7
+    sw = (2 * dx - 0.04) / n + 0.02
+    for i in range(n):
+        me = bpy.data.meshes.new("Strip")
+        bm = bmesh.new()
+        rows = 12
+        verts = []
+        for r in range(rows + 1):
+            z = (dh - 0.04) * (1 - r / rows)
+            verts.append((bm.verts.new((-sw / 2, 0, z)), bm.verts.new((sw / 2, 0, z))))
+        for r in range(rows):
+            bm.faces.new((verts[r][0], verts[r][1], verts[r + 1][1], verts[r + 1][0]))
+        bm.to_mesh(me)
+        bm.free()
+        o = bpy.data.objects.new("Strip", me)
+        me.materials.append(cloth)
+        o.location = (x0 + 0.02 + sw / 2 - 0.01 + i * (sw - 0.02), 0.06 + 0.012 * (i % 2), 0.0)
+        coll.objects.link(o)
+        strips.append(o)
+    join("Partition_Curtain", strips, coll)
+    LAYOUT["curtain"] = {"top_z": round((dh - 0.04) * 100, 1), "center": ue(dcx, 0.06, 1.0)}
+
+
+def build_chandelier(coll):
+    """Crystal chandelier in the middle of the hall (stand-in until the detailed prop arrives)."""
+    h = CEIL_Z
+    cx, cy = 0.0, -2.4
+    if have_prop("chandelier"):
+        m = floor_at((cx, cy, h), 0.0)
+        place("chandelier", m, coll, label="Chandelier")
+        for k in range(0, 24, 4):             # a few of its candle bulbs actually light the room
+            p = anchor("chandelier", m, "chandelier_Light_%02d" % k)
+            LAYOUT["hall_lights"].append({"pos": ue(*p), "color": [1.0, 0.75, 0.5], "cd": 2.0, "radius": 350})
+    else:
+        brass = mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0)
+        crystal = mat("Crystal", (0.95, 0.97, 1.0), 0.02, transmission=1.0, alpha=0.35)
+        candle = mat("Chandelier_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=18.0)
+        parts = [cyl("Ch_Rod", 0.012, 0.5, (cx, cy, h - 0.25), brass, coll=coll, verts=8),
+                 cyl("Ch_Ring", 0.38, 0.03, (cx, cy, h - 0.75), brass, coll=coll, verts=32),
+                 cyl("Ch_Ring", 0.2, 0.03, (cx, cy, h - 0.6), brass, coll=coll, verts=24)]
+        for k in range(10):
+            a = k * 2 * math.pi / 10
+            px, py = cx + math.cos(a) * 0.38, cy + math.sin(a) * 0.38
+            parts.append(cyl("Ch_Candle", 0.012, 0.06, (px, py, h - 0.7), candle, coll=coll, verts=8))
+            for j in range(3):
+                parts.append(cyl("Ch_Drop", 0.015, 0.06, (px + math.cos(a) * 0.04 * j, py + math.sin(a) * 0.04 * j,
+                                                         h - 0.82 - 0.07 * j), crystal, coll=coll, verts=6, r2=0.003))
+        for k in range(16):
+            a = k * 2 * math.pi / 16
+            parts.append(cyl("Ch_Drop", 0.012, 0.09, (cx + math.cos(a) * 0.2, cy + math.sin(a) * 0.2, h - 0.68),
+                             crystal, coll=coll, verts=6, r2=0.002))
+        join("Chandelier", parts, coll)
+    LAYOUT["hall_lights"].append({"pos": ue(cx, cy, h - 0.6), "color": [1.0, 0.72, 0.45], "cd": 30.0,
+                                  "radius": 1100, "shadows": True})
 
 
 def food_vending_placeholder(coll, fx, fy):

@@ -433,6 +433,137 @@ def steam_material(base_z, top_z):
     return m
 
 
+def tinted_material(name, tex_name, tint, rough):
+    """Texture times a colour: the corridor walls use the hall's textures, painted darker."""
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        name, "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    tex = next((eal.load_asset(p) for p in eal.list_assets(DEST, True)
+                if p.rsplit("/", 1)[-1].split(".")[0] == tex_name), None)
+    sample = mel.create_material_expression(m, E.MaterialExpressionTextureSample, -400, 0)
+    sample.set_editor_property("texture", tex)
+    col = mel.create_material_expression(m, E.MaterialExpressionConstant3Vector, -400, 200)
+    col.set_editor_property("constant", unreal.LinearColor(*tint, 1.0))
+    mul = mel.create_material_expression(m, E.MaterialExpressionMultiply, -150, 0)
+    mel.connect_material_expressions(sample, "RGB", mul, "A")
+    mel.connect_material_expressions(col, "", mul, "B")
+    mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    r = mel.create_material_expression(m, E.MaterialExpressionConstant, -150, 200)
+    r.set_editor_property("r", rough)
+    mel.connect_material_property(r, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+# Dark corridor: deep brown-olive above, darker green oil paint below.
+DARK = {"Corridor_Wash": tinted_material("M_CorridorWash", "whitewash", (0.16, 0.12, 0.09), 0.9),
+        "Corridor_WallPaint": tinted_material("M_CorridorPaint", "wall_paint", (0.5, 0.5, 0.5), 0.4)}
+for a in eas.get_all_level_actors():
+    if isinstance(a, unreal.StaticMeshActor):
+        comp = a.static_mesh_component
+        for i, mi in enumerate(comp.get_materials()):
+            if mi and mi.get_name() in DARK:
+                comp.set_material(i, DARK[mi.get_name()])
+
+
+def curtain_setup(top_z):
+    """Fabric strips bend away from up to two nearby characters (positions from ACurtainPusher)."""
+    tools = unreal.AssetToolsHelpers.get_asset_tools()
+    mpc = tools.create_asset("MPC_Curtain", "/Game/Scene01", unreal.MaterialParameterCollection,
+                             unreal.MaterialParameterCollectionFactoryNew())
+    params = []
+    for n in ("Pusher0", "Pusher1"):
+        p = unreal.CollectionVectorParameter()
+        p.set_editor_property("parameter_name", n)
+        p.set_editor_property("default_value", unreal.LinearColor(0, 0, -100000, 0))
+        params.append(p)
+    mpc.set_editor_property("vector_parameters", params)
+    eal.save_loaded_asset(mpc)
+
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = tools.create_asset("M_PartitionCurtain", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    m.set_editor_property("two_sided", True)
+
+    def node(cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    def link(a, b, pin=""):
+        mel.connect_material_expressions(a, "", b, pin)
+
+    def binop(cls, a, b, x, y):
+        e = node(cls, x, y)
+        link(a, e, "A")
+        link(b, e, "B")
+        return e
+
+    wp = node(E.MaterialExpressionWorldPosition, -1600, 0)
+    wxy = node(E.MaterialExpressionComponentMask, -1450, 0, r=True, g=True, b=False, a=False)
+    link(wp, wxy)
+    wz = node(E.MaterialExpressionComponentMask, -1450, 300, r=False, g=False, b=True, a=False)
+    link(wp, wz)
+    # sag: 0 at the rail, 1 at the bottom, so the strips bend more the lower they go
+    depth = node(E.MaterialExpressionSubtract, -1300, 300, const_a=top_z)
+    link(wz, depth, "B")
+    sag = node(E.MaterialExpressionDivide, -1150, 300, const_b=top_z)
+    link(depth, sag, "A")
+    sag_c = node(E.MaterialExpressionSaturate, -1000, 300)
+    link(sag, sag_c)
+    pushes = []
+    for k, name in enumerate(("Pusher0", "Pusher1")):
+        y0 = 600 + k * 400
+        cp = node(E.MaterialExpressionCollectionParameter, -1600, y0, collection=mpc, parameter_name=name)
+        cxy = node(E.MaterialExpressionComponentMask, -1450, y0, r=True, g=True, b=False, a=False)
+        link(cp, cxy)
+        d = binop(E.MaterialExpressionSubtract, wxy, cxy, -1300, y0)          # away from the character
+        dist = node(E.MaterialExpressionLength, -1150, y0 + 50)
+        link(d, dist)
+        fall = node(E.MaterialExpressionDivide, -1000, y0 + 50, const_b=70.0)
+        link(dist, fall, "A")
+        fs = node(E.MaterialExpressionSaturate, -900, y0 + 50)
+        link(fall, fs)
+        near = node(E.MaterialExpressionOneMinus, -800, y0 + 50)
+        link(fs, near)
+        safe = node(E.MaterialExpressionAdd, -1000, y0 + 150, const_b=1.0)
+        link(dist, safe, "A")
+        dirv = binop(E.MaterialExpressionDivide, d, safe, -850, y0)
+        amt = node(E.MaterialExpressionMultiply, -700, y0 + 50, const_b=55.0)
+        link(near, amt, "A")
+        pushes.append(binop(E.MaterialExpressionMultiply, dirv, amt, -550, y0))
+    both = binop(E.MaterialExpressionAdd, pushes[0], pushes[1], -400, 700)
+    bent = binop(E.MaterialExpressionMultiply, both, sag_c, -250, 700)
+    # a gentle idle sway so the strips are never perfectly still
+    t = node(E.MaterialExpressionTime, -700, 1300)
+    tt = node(E.MaterialExpressionMultiply, -550, 1300, const_b=0.7)
+    link(t, tt, "A")
+    sw = node(E.MaterialExpressionSine, -400, 1300)
+    link(tt, sw)
+    swa = binop(E.MaterialExpressionMultiply, sw, sag_c, -250, 1300)
+    swc = node(E.MaterialExpressionMultiply, -100, 1300, const_b=1.5)
+    link(swa, swc, "A")
+    swv = node(E.MaterialExpressionAppendVector, 50, 1300)
+    link(swc, swv, "A")
+    link(node(E.MaterialExpressionConstant, -100, 1400, r=0.0), swv, "B")
+    xy = binop(E.MaterialExpressionAdd, bent, swv, 150, 700)
+    wpo = node(E.MaterialExpressionAppendVector, 300, 700)
+    link(xy, wpo, "A")
+    link(node(E.MaterialExpressionConstant, 150, 850, r=0.0), wpo, "B")
+    mel.connect_material_property(wpo, "", unreal.MaterialProperty.MP_WORLD_POSITION_OFFSET)
+    col = node(E.MaterialExpressionConstant3Vector, 150, 0, constant=unreal.LinearColor(0.32, 0.05, 0.06, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    rough = node(E.MaterialExpressionConstant, 150, 150, r=0.9)
+    mel.connect_material_property(rough, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return mpc, m
+
+
 if "steam" in LAYOUT:
     st = steam_material(LAYOUT["steam"]["base_z"], LAYOUT["steam"]["top_z"])
     for a in eas.get_all_level_actors():
@@ -499,7 +630,7 @@ CHUNK = LAYOUT["chunk_length"]
 COPIES = 4
 SKIP = ("Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall", "ElectricCabinet",
         "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign", "Booth_", "Humidifier",
-        "Painting_", "FoodVending", "Clerk")
+        "Painting_", "FoodVending", "Clerk", "Partition", "Chandelier")
 originals = [a for a in eas.get_all_level_actors()
              if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
 extra_belts = []
@@ -530,6 +661,27 @@ for n in range(1, COPIES + 1):
         if a.get_actor_label().startswith("Walkway_Belt"):
             extra_belts.append(c)
 log("distance chunks: %d x %d actors" % (COPIES, len(originals)))
+
+# Partition between hall and corridor: a door that starts open (E toggles it) and soft curtain
+# strips that bend away from whoever walks through.
+if "door" in LAYOUT:
+    leaf = next((a for a in eas.get_all_level_actors() if a.get_actor_label() == LAYOUT["door"]["leaf"]), None)
+    if leaf:
+        leaf.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+        door = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.SwingDoor"), vec(LAYOUT["door"]["center"]),
+                     label="PartitionDoor")
+        door.set_editor_property("leaf", leaf)
+        door.set_editor_property("open_angle", 90.0)     # swings into the hall
+if "curtain" in LAYOUT:
+    mpc, cmat = curtain_setup(LAYOUT["curtain"]["top_z"])
+    for a in eas.get_all_level_actors():
+        if a.get_actor_label() == "Partition_Curtain":
+            a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+            a.static_mesh_component.set_material(0, cmat)
+            a.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    pusher = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.CurtainPusher"), vec(LAYOUT["curtain"]["center"]),
+                   label="CurtainPusher")
+    pusher.set_editor_property("collection", mpc)
 
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.
