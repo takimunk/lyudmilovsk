@@ -215,8 +215,8 @@ def live_screen_material(name, tex_name, scale, offset, speed, sway=(0.0, 0.0), 
 
 
 def garland_filament_material(wall_y):
-    """Glowing filament that, past the invisible wall, flickers more and more the further away it is,
-    each bulb on its own beat, so the far end of the tunnel looks almost dark."""
+    """Glowing filament that is lit like on our side at the wall and, the further down the tunnel, flickers
+    more and more and glows less, every bulb on its own beat, so the far end barely glows."""
     mel = unreal.MaterialEditingLibrary
     E = unreal
     m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
@@ -246,12 +246,14 @@ def garland_filament_material(wall_y):
     wp = node(E.MaterialExpressionWorldPosition, -1600, 0)
     wy = node(E.MaterialExpressionComponentMask, -1450, 0, r=False, g=True, b=False, a=False)
     link(wp, wy)
-    # distance past the wall, 0..1 over 90 m
+    # distance past the wall, 0..1 over the whole tunnel (the real stretch plus the repeated chunks)
     past = node(E.MaterialExpressionSubtract, -1300, 0, const_a=wall_y)
     link(wy, past, "B")
-    d = un(E.MaterialExpressionDivide, past, -1150, 0, const_b=9000.0)
-    dc = node(E.MaterialExpressionSaturate, -1000, 0)
-    link(d, dc)
+    d = un(E.MaterialExpressionDivide, past, -1150, 0, const_b=FAR_LEN)
+    dc0 = node(E.MaterialExpressionSaturate, -1000, 0)
+    link(d, dc0)
+    dc = node(E.MaterialExpressionPower, -900, 0, const_exponent=0.6)   # trouble starts early, then grows
+    link(dc0, dc, "Base")
     # per-bulb id from its position along the wire (bulbs are 32 cm apart)
     idf = un(E.MaterialExpressionDivide, wy, -1300, 200, const_b=32.0)
     idr = node(E.MaterialExpressionFloor, -1150, 200)
@@ -264,7 +266,7 @@ def garland_filament_material(wall_y):
     link(h3, hash_)
     # a fresh random draw per bulb six times a second
     t = node(E.MaterialExpressionTime, -1300, 400)
-    t6 = un(E.MaterialExpressionMultiply, t, -1150, 400, const_b=6.0)
+    t6 = un(E.MaterialExpressionMultiply, t, -1150, 400, const_b=9.0)
     tf = node(E.MaterialExpressionFloor, -1000, 400)
     link(t6, tf)
     hb = un(E.MaterialExpressionMultiply, hash_, -1000, 500, const_b=100.0)
@@ -275,15 +277,15 @@ def garland_filament_material(wall_y):
     r3 = un(E.MaterialExpressionMultiply, r2, -400, 400, const_b=12345.6)
     rnd = node(E.MaterialExpressionFrac, -250, 400)
     link(r3, rnd)
-    # off when rnd < d * 0.85 (sharp step)
-    th = un(E.MaterialExpressionMultiply, dc, -550, 0, const_b=0.85)
+    # a bulb is off while its draw is below d * 0.7 (sharp step): all lit at the wall, most blinking at the end
+    th = un(E.MaterialExpressionMultiply, dc, -550, 0, const_b=0.7)
     diff = binop(E.MaterialExpressionSubtract, th, rnd, -100, 200)
     sharp = un(E.MaterialExpressionMultiply, diff, 50, 200, const_b=1000.0)
     off = node(E.MaterialExpressionSaturate, 200, 200)
     link(sharp, off)
     on = node(E.MaterialExpressionOneMinus, 350, 200)
     link(off, on)
-    dim = un(E.MaterialExpressionMultiply, dc, -400, 0, const_b=-0.5)
+    dim = un(E.MaterialExpressionMultiply, dc, -400, 0, const_b=-0.94)
     dim1 = un(E.MaterialExpressionAdd, dim, -250, 0, const_b=1.0)
     k = binop(E.MaterialExpressionMultiply, on, dim1, 500, 100)
     col = node(E.MaterialExpressionConstant3Vector, 500, 300, constant=unreal.LinearColor(1.0, 0.55, 0.2, 1))
@@ -296,6 +298,7 @@ def garland_filament_material(wall_y):
     return m
 
 
+FAR_LEN = LAYOUT["chunk_length"] * 5 - abs(LAYOUT["invisible_wall_y"])   # wall to the end of the last repeated chunk
 screen_mats["Garland_Filament"] = garland_filament_material(LAYOUT["invisible_wall_y"])
 
 
@@ -568,24 +571,22 @@ def lit(p):
     return p[1] > WALL_Y - 400
 
 
-# Garland: every little bulb is its own light (tiny radius, no shadows, so dozens stay cheap).
-# Some of them blink now and then (ALightFlicker).
+# Garland: every little bulb is its own light (tiny radius, no shadows, so dozens stay cheap), on both sides
+# of the invisible wall. Beyond it the bulbs carry FarFlicker, which makes them glow less and blink more and
+# more toward the end of the tunnel; on our side some of them blink now and then (ALightFlicker).
 rng = random.Random(7)
 for k, p in enumerate(LAYOUT["garland_lights"]):
-    beyond = WALL_Y - p[1]                       # how far past the invisible wall, cm
-    if beyond > 0 and (beyond > 4000 or k % 5):  # past the wall: every 5th bulb, for 40 m
-        continue
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    fade = max(0.25, 1.0 - max(beyond, 0) / 5000.0)
-    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 0.35 * fade * (3 if beyond > 0 else 1),
-                     160.0 if beyond <= 0 else 320.0, "Garland_Light_%03d" % k, "Lights/Garland")
+    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 0.35, 160.0,
+                     "Garland_Light_%03d" % k, "Lights/Garland")
     gl.light_component.set_editor_property("source_radius", 1.0)
-    if beyond > 0 and rng.random() < min(0.9, 0.3 + beyond / 4000.0):
+    if p[1] < WALL_Y:
+        gl.tags = [unreal.Name("FarFlicker")]
+    elif rng.random() < 0.2:
         gl.tags = [unreal.Name("Flicker")]
-        continue
-    if rng.random() < 0.2:
-        gl.tags = [unreal.Name("Flicker")]
-spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector(0, 0, 300), label="GarlandFlicker")
+flicker = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector(0, 0, 300), label="GarlandFlicker")
+flicker.set_editor_property("far_start_y", WALL_Y)
+flicker.set_editor_property("far_end_y", WALL_Y - FAR_LEN)
 
 # Desk lamps (warm) and the purple grow lamps over the roses.
 for k, p in enumerate(LAYOUT.get("desk_lights", [])):

@@ -22,6 +22,8 @@ import bpy
 from mathutils import Euler, Matrix, Vector
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+from character_standard import MIN_DOOR_CLEAR_HEIGHT_M, MIN_DOOR_CLEAR_WIDTH_M   # noqa: E402
 TEX_DIR = os.path.join(ROOT, "textures")
 RENDER_DIR = os.path.join(ROOT, "renders")
 EXPORT_DIR = os.path.join(ROOT, "blender", "export")
@@ -766,13 +768,22 @@ def build_hall(coll):
         box("Hall_Back_Paint_%s" % side, (hw + 0.5 - W / 2, 0.02, PANEL_H),
             (side * (W / 2 + hw + 0.5) / 2, -0.31, PANEL_H / 2), paint, coll=coll)
     # Far wall with the exit door opening (x -2.3..-1.3, 2.1 m high).
-    dx0, dx1, dh = -2.55, -1.05, 2.3          # opening for the blast door frame (1.5 x 2.3)
+    # The blast door prop is stretched until the doorway, with the leaf swung open, passes the character
+    # standard (tools/character_standard.py): frame clear 1.3 x 2.03 m, hinge 0.52 m inside the opening,
+    # the open leaf's 0.32 m thickness stands in the way.
+    bd_sx = max(1.0, (MIN_DOOR_CLEAR_WIDTH_M + 0.32) / 1.17 * 1.04)
+    bd_sz = max(1.0, (MIN_DOOR_CLEAR_HEIGHT_M + 0.03) / 2.03)
+    half_open = 0.75 * bd_sx + 0.02
+    assert half_open <= 1.15, "blast door too wide for the hall wall: %.2f" % half_open
+    dcx_ = -hw + 0.12 + half_open + 0.0
+    dx0, dx1, dh = dcx_ - half_open, dcx_ + half_open, 2.3 * bd_sz + 0.02   # frame opening in the far wall
     wall_piece("Hall_Far_A", -hw - 0.5, dx0, y0 - 0.5, y0, 0, h, coll)
     wall_piece("Hall_Far_B", dx1, hw + 0.5, y0 - 0.5, y0, 0, h, coll)
     wall_piece("Hall_Far_C", dx0, dx1, y0 - 0.5, y0, dh, h, coll)
     if have_prop("blastdoor"):
         # hermetic shelter door in the far wall, closed (the street comes later)
-        place("blastdoor", floor_at(((dx0 + dx1) / 2, y0 - 0.25, 0), math.pi), coll, label="ExitDoor")
+        place("blastdoor", floor_at(((dx0 + dx1) / 2, y0 - 0.25, 0), math.pi) @ Matrix.Diagonal((bd_sx, 1.0, bd_sz, 1.0)),
+              coll, label="ExitDoor")
         LAYOUT["exit_door"] = {"leaves": ["ExitDoor_Leaf"], "riders": ["ExitDoor_Wheel"], "open_angles": [-100.0],
                                "center": ue((dx0 + dx1) / 2, y0 - 0.25, 1.0)}
     else:
@@ -871,7 +882,7 @@ def build_hall(coll):
     for yy in (dy0 - 0.7, dy0 + 0.7):
         parts.append(box("Admin_DeskLeg", (0.6, 0.04, 0.74), (hw - 0.4, yy, 0.37), desk_m, coll=coll))
     parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, dy0 - 0.2, 0.95), beige, coll=coll, bevel=0.015))
-    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("live_glitch",
+    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.495, dy0 - 0.2, 0.97), screen_on("live_glitch",
                        "screen_cctv.jpg", 1.1), coll=coll))
     parts[-1].rotation_euler = (0, 0, math.radians(-90))
     parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.7, dy0 - 0.2, 0.795), beige, coll=coll))
@@ -1173,6 +1184,10 @@ def prop(name):
         merged = join(name if key == "body" else "%s_%s" % (name, key), part, scratch)
         if key in out["pivots"]:                  # mesh relative to its hinge
             merged.data.transform(Matrix.Translation(-out["pivots"][key]))
+        if key == "Blades":                       # origin on the hub (centroid of the blades), so Unreal spins them about it
+            hub = sum((v.co for v in merged.data.vertices), Vector()) / len(merged.data.vertices)
+            merged.data.transform(Matrix.Translation(-hub))
+            out["blades_pivot"] = hub
         merged.data.use_fake_user = True
         out[key] = merged.data
         bpy.data.objects.remove(merged)
@@ -1201,7 +1216,7 @@ def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None, hi
             so.material_slots[0].material = screen_mat
     if p["Blades"]:
         bo = bpy.data.objects.new(blades_label or label + "_Blades", p["Blades"])
-        bo.matrix_basis = matrix
+        bo.matrix_basis = matrix @ Matrix.Translation(p["blades_pivot"])
         coll.objects.link(bo)
     for key, piv in p["pivots"].items():                 # hinged parts, placed at their pivot
         part = bpy.data.objects.new("%s_%s" % (label, key), p[key])

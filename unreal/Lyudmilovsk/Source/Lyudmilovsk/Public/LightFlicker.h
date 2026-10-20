@@ -29,6 +29,27 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
 	float DimTo = 0.25f;
 
+	/**
+	 * Lights on actors tagged FarTag fade and flicker harder the further they are along Y from
+	 * FarStartY toward FarEndY (the endless corridor): at the end they barely glow and blink all the time.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	FName FarTag = TEXT("FarFlicker");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	float FarStartY = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	float FarEndY = -40000.f;
+
+	/** Seconds between blinks of one light at the far end. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	FVector2D FarInterval = FVector2D(0.15f, 0.9f);
+
+	/** Brightness of a far-end light when it is on, as a fraction of its normal intensity. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	float FarGlow = 0.06f;
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -38,6 +59,7 @@ private:
 		TWeakObjectPtr<ULightComponent> Light;
 		float BaseIntensity = 0.f;
 		float NextBlink = 0.f;
+		float Far = 0.f;           // 0 near, 1 at the far end
 		TArray<FVector2f> Dips;   // (start, end) times of the current blink pattern
 	};
 	TArray<FFlickeringLight> Lights;
