@@ -1220,7 +1220,10 @@ def build_stations(coll):
                 fans += 1
             else:
                 rng.choice(EXTRAS)(root, coll, ex_x, 0.15, i)
+        global NO_LITTER
+        NO_LITTER = i == CLERK_INDEX         # keep the clerk's mousepad clear (same random draws)
         trash = litter(coll, rng, root, w) if rng.random() < 0.25 else []
+        NO_LITTER = False
         collapse("Station_%02d_%s" % (i, fn.__name__[3:]), root, coll, wires + trash)
         chair_kind = rng.choice(CHAIRS)
         loc = (SEAT_X + rng.uniform(-0.08, 0.1), cy + rng.uniform(-0.15, 0.15), 0)
@@ -1238,8 +1241,12 @@ def build_stations(coll):
 
 # ------------------------------------------------------------ fast-food litter
 
+NO_LITTER = False
+
+
 def drop(name, coll, loc, rot):
-    place(name, floor_at(loc, rot), coll)
+    if not NO_LITTER:
+        place(name, floor_at(loc, rot), coll)
     return []
 
 

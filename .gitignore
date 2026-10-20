@@ -28,3 +28,4 @@ __pycache__/
 unreal/**/Content/Developers/
 unreal/**/Content/Collections/
 unreal/**/editor_*.log
+unreal/Lyudmilovsk/Content/Scene01/

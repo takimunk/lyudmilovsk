@@ -505,6 +505,30 @@ if seat_cls:
 else:
     log("HeroSeat class missing: build the C++ module")
 
+# The clerk NPC at Station 09, painting in a spreadsheet (mesh + looping animation from the clerk
+# thread; the animated Excel picture is part of his mesh). The mesh faces +Y at yaw 0.
+CLERK = LAYOUT.get("clerk")
+CLERK_MESH = "/Game/Characters/Clerk/character_clerk/SkeletalMeshes/character_clerk"
+if CLERK and eal.does_asset_exist(CLERK_MESH):
+    clerk = spawn(unreal.SkeletalMeshActor, vec(CLERK["chair"]), unreal.Rotator(0, 0, CLERK["chair_yaw"] - 90), "Clerk")
+    sk = clerk.skeletal_mesh_component
+    sk.set_skeletal_mesh_asset(eal.load_asset(CLERK_MESH))
+    sk.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+    sk.override_animation_data(eal.load_asset(CLERK_MESH + "_Anim"), True, True)
+    sk.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    cglow = spawn(unreal.RectLight, vec(CLERK["screen"]) + unreal.Vector(-4, 0, 0), unreal.Rotator(0, 0, 180),
+                  "Clerk_ScreenGlow")
+    cglow.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    crc = cglow.get_component_by_class(unreal.RectLightComponent)
+    crc.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
+    crc.set_intensity(2.5)
+    crc.set_light_color(unreal.LinearColor(0.75, 0.85, 1.0, 1.0))
+    crc.set_attenuation_radius(500.0)
+    crc.set_editor_property("source_width", CLERK["screen_size"][0])
+    crc.set_editor_property("source_height", CLERK["screen_size"][1])
+else:
+    log("clerk mesh missing: %s" % CLERK_MESH)
+
 # Wake up in the aisle behind the hero's chair, facing the glowing screen.
 yaw = math.degrees(math.atan2(SCREEN.y - WAKE.y, SCREEN.x - WAKE.x))
 spawn(unreal.PlayerStart, WAKE, unreal.Rotator(0, 0, yaw), "PlayerStart_WakeUp")
