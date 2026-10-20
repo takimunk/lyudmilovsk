@@ -6,7 +6,8 @@ the bounding boxes. Textures: `textures/props/` (fal.ai, `tools/fal_prop_texture
 Dimensions are metres in **Blender axes** (X right, Y depth, Z up); glTF import turns this into Y-up as for the corridor.
 
 Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC cases, laptops, mice), `build_consoles.py`
-(consoles and pads), `build_desks.py` (7 kinds x 4 widths), `build_chairs.py`.
+(consoles and pads), `build_desks.py` (7 kinds x 4 widths), `build_chairs.py`, `build_small.py` (cups, cans, bottles, fast-food
+litter, desk fan, lamps, rose, plants, books, tea glass, trinkets, vending machine). `make_readme.py` rebuilds this file.
 
 ## Pivot conventions (same as `build_scene01_corridor.py`)
 
@@ -20,8 +21,23 @@ Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC case
 
 ## Props
 
+* `fan_desk`: blades are a separate mesh `fan_desk_Blades`, origin at the hub, spin it about the Blender Y axis (the fan blows toward -Y).
+* `vending_machine`: same footprint as the scene's own (0.95 wide x 0.75 deep x 1.85 high), origin on the floor, front toward -Y.
+
 | name | size X x Y x Z (m) | Z range | tris |
 |---|---|---|---|
+| `alarm_clock` | 0.10 x 0.05 x 0.14 | -0.00..0.13 | 1444 |
+| `books_2` | 0.19 x 0.25 x 0.06 | 0.00..0.06 | 304 |
+| `books_3` | 0.19 x 0.25 x 0.11 | 0.00..0.11 | 456 |
+| `books_4` | 0.23 x 0.25 x 0.14 | 0.00..0.14 | 608 |
+| `bottle_cola` | 0.07 x 0.07 x 0.23 | 0.00..0.23 | 1168 |
+| `bottle_water` | 0.07 x 0.07 x 0.23 | 0.00..0.23 | 1168 |
+| `burger_box_closed` | 0.13 x 0.13 x 0.07 | 0.00..0.07 | 400 |
+| `burger_box_open` | 0.13 x 0.17 x 0.15 | 0.00..0.15 | 1180 |
+| `can_cola` | 0.07 x 0.07 x 0.11 | 0.00..0.11 | 944 |
+| `can_energy` | 0.07 x 0.07 x 0.11 | 0.00..0.11 | 944 |
+| `can_lemon` | 0.07 x 0.07 x 0.11 | 0.00..0.11 | 944 |
+| `cd_stack` | 0.16 x 0.15 x 0.04 | -0.00..0.04 | 544 |
 | `chair_aeron` | 0.65 x 0.68 x 0.97 | 0.00..0.97 | 8188 |
 | `chair_bentwood` | 0.43 x 0.46 x 1.02 | -0.00..1.01 | 3660 |
 | `chair_folding` | 0.42 x 0.46 x 0.87 | -0.00..0.87 | 1076 |
@@ -34,6 +50,8 @@ Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC case
 | `console_ps5` | 0.14 x 0.26 x 0.39 | 0.00..0.39 | 7700 |
 | `crt_beige14` | 0.37 x 0.43 x 0.38 | 0.00..0.38 | 1732 |
 | `crt_grey17` | 0.42 x 0.49 x 0.43 | 0.00..0.43 | 1732 |
+| `cup_cola` | 0.09 x 0.09 x 0.27 | 0.00..0.27 | 1416 |
+| `cup_cola_lying` | 0.09 x 0.27 x 0.09 | -0.01..0.09 | 1416 |
 | `desk_gaming_130` | 1.38 x 0.80 x 0.76 | -0.75..0.01 | 2840 |
 | `desk_gaming_145` | 1.53 x 0.80 x 0.76 | -0.75..0.01 | 2840 |
 | `desk_gaming_160` | 1.68 x 0.80 x 0.76 | -0.75..0.01 | 2840 |
@@ -62,6 +80,9 @@ Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC case
 | `desk_white_145` | 1.45 x 0.80 x 0.75 | -0.75..0.00 | 2384 |
 | `desk_white_160` | 1.60 x 0.80 x 0.75 | -0.75..0.00 | 2384 |
 | `desk_white_175` | 1.75 x 0.80 x 0.75 | -0.75..0.00 | 2384 |
+| `fan_desk` | 0.28 x 0.16 x 0.40 | 0.00..0.40 | 5016 |
+| `food_bag` | 0.15 x 0.09 x 0.26 | 0.00..0.26 | 788 |
+| `fries` | 0.12 x 0.06 x 0.16 | 0.00..0.16 | 824 |
 | `imac_g3` | 0.40 x 0.39 x 0.45 | 0.00..0.45 | 3936 |
 | `keyboard_gaming` | 0.45 x 0.54 x 0.05 | -0.00..0.05 | 50986 |
 | `keyboard_imac` | 0.37 x 0.54 x 0.04 | -0.00..0.04 | 33304 |
@@ -70,6 +91,8 @@ Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC case
 | `keyboard_modern` | 0.45 x 0.54 x 0.04 | -0.00..0.04 | 54304 |
 | `keyboard_tkl` | 0.36 x 0.54 x 0.03 | -0.00..0.03 | 46022 |
 | `keyboard_zx` | 0.23 x 0.43 x 0.03 | 0.00..0.03 | 12040 |
+| `lamp_grow` | 0.31 x 0.14 x 0.65 | 0.00..0.65 | 1240 |
+| `lamp_soviet` | 0.27 x 0.49 x 0.39 | 0.00..0.39 | 1776 |
 | `laptop_black` | 0.31 x 0.29 x 0.24 | -0.00..0.23 | 7608 |
 | `laptop_silver` | 0.34 x 0.30 x 0.25 | -0.00..0.24 | 7608 |
 | `mac_classic` | 0.24 x 0.28 x 0.35 | -0.00..0.35 | 2700 |
@@ -86,8 +109,13 @@ Groups: `build_keyboards.py`, `build_computers.py` (monitors, TVs, Macs, PC case
 | `pc_tower_beige` | 0.20 x 0.47 x 0.44 | -0.00..0.44 | 1840 |
 | `pc_tower_black` | 0.20 x 0.47 x 0.44 | -0.00..0.44 | 1840 |
 | `pc_tower_rgb` | 0.20 x 0.46 x 0.44 | -0.00..0.44 | 2232 |
+| `plant_cactus` | 0.15 x 0.13 x 0.24 | 0.00..0.24 | 1996 |
+| `plant_leafy` | 0.29 x 0.35 x 0.37 | 0.00..0.37 | 2870 |
+| `rose_vase` | 0.10 x 0.10 x 0.45 | 0.00..0.45 | 3608 |
+| `rubik_cube` | 0.07 x 0.07 x 0.06 | -0.00..0.06 | 2484 |
+| `tea_glass` | 0.11 x 0.08 x 0.14 | 0.00..0.14 | 2472 |
 | `tv_silver` | 0.62 x 0.54 x 0.48 | 0.00..0.48 | 1516 |
 | `tv_small` | 0.36 x 0.38 x 0.30 | 0.00..0.30 | 1516 |
+| `vending_machine` | 0.96 x 0.78 x 1.85 | 0.00..1.85 | 36378 |
 
-Keyboards include their cable (it leaves at +Y and lies on the table), so their Y size is bigger than the board.
-Licence: code MIT, assets CC BY 4.0 (see LICENSE-ASSETS).
+Keyboards include their cable (it leaves at +Y and lies on the table). Licence: code MIT, assets CC BY 4.0 (see LICENSE-ASSETS).
