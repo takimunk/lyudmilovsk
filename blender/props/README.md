@@ -85,11 +85,16 @@ litter, desk fan, lamps, rose, plants, books, tea glass, trinkets, vending machi
 | `fries` | 0.12 x 0.06 x 0.16 | 0.00..0.16 | 824 |
 | `imac_g3` | 0.40 x 0.39 x 0.45 | 0.00..0.45 | 3936 |
 | `keyboard_gaming` | 0.45 x 0.54 x 0.05 | -0.00..0.05 | 50986 |
+| `keyboard_gaming_lite` | 0.45 x 0.54 x 0.05 | -0.00..0.05 | 2820 |
 | `keyboard_imac` | 0.37 x 0.54 x 0.04 | -0.00..0.04 | 33304 |
+| `keyboard_imac_lite` | 0.37 x 0.54 x 0.04 | -0.00..0.04 | 2448 |
 | `keyboard_macext` | 0.49 x 0.56 x 0.05 | -0.00..0.04 | 53258 |
+| `keyboard_macext_lite` | 0.49 x 0.56 x 0.05 | -0.00..0.04 | 2772 |
 | `keyboard_modelm` | 0.46 x 0.58 x 0.06 | -0.00..0.06 | 52926 |
 | `keyboard_modern` | 0.45 x 0.54 x 0.04 | -0.00..0.04 | 54304 |
+| `keyboard_modern_lite` | 0.45 x 0.54 x 0.04 | -0.00..0.04 | 2772 |
 | `keyboard_tkl` | 0.36 x 0.54 x 0.03 | -0.00..0.03 | 46022 |
+| `keyboard_tkl_lite` | 0.36 x 0.54 x 0.03 | -0.00..0.03 | 2568 |
 | `keyboard_zx` | 0.23 x 0.43 x 0.03 | 0.00..0.03 | 12040 |
 | `lamp_grow` | 0.31 x 0.14 x 0.65 | 0.00..0.65 | 1240 |
 | `lamp_soviet` | 0.27 x 0.49 x 0.39 | 0.00..0.39 | 1776 |

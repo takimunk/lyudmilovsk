@@ -162,8 +162,10 @@ def materials(style):
     return M
 
 
-def build_full(name, sty):
-    s = STYLES[sty]
+def build_full(name, sty, lite=False):
+    s = dict(STYLES[sty])
+    if lite:
+        s.update(dish=0, bev=0)
     M = materials(s)
     root = P.empty(name)
     rows = full_layout(win=s["win"])
@@ -243,6 +245,8 @@ def build_full(name, sty):
     # caps in a frame tilted like the case top
     board = P.empty("Board", (0, -D / 2, hf), (math.radians(angle), 0, 0), root)
     legends = Legends()
+    if lite:
+        legends.add = lambda *a, **k: None
     cap_bm = {"cap": bmesh.new(), "mod": bmesh.new()}
     leg_bm = bmesh.new()
     lamp_bm = bmesh.new()
@@ -386,6 +390,11 @@ BUILDERS = {
     "keyboard_imac": lambda n: build_full(n, "imac"),
     "keyboard_tkl": lambda n: build_full(n, "tkl"),
     "keyboard_zx": build_zx,
+    "keyboard_modern_lite": lambda n: build_full(n, "modern", True),
+    "keyboard_gaming_lite": lambda n: build_full(n, "gaming", True),
+    "keyboard_tkl_lite": lambda n: build_full(n, "tkl", True),
+    "keyboard_macext_lite": lambda n: build_full(n, "macext", True),
+    "keyboard_imac_lite": lambda n: build_full(n, "imac", True),
 }
 
 
