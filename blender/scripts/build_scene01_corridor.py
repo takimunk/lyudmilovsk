@@ -596,19 +596,19 @@ def build_podyezd_props(coll):
     # Cast-iron radiator on the near end wall, under the mailboxes.
     parts = []
     for k in range(12):
-        parts.append(tbox("Rad_Section", (0.075, 0.09, 0.55), (0.0 + k * 0.085, HALL_Y0 + 0.1, 0.42), rad, 0.3,
+        parts.append(tbox("Rad_Section", (0.075, 0.09, 0.55), (-0.85 + k * 0.085, HALL_Y0 + 0.1, 0.42), rad, 0.3,
                           coll=coll))
     for z in (0.66, 0.18):
-        parts.append(cyl("Rad_Pipe", 0.016, 1.4, (0.47, HALL_Y0 + 0.1, z), pipe, coll=coll,
+        parts.append(cyl("Rad_Pipe", 0.016, 1.4, (-0.38, HALL_Y0 + 0.1, z), pipe, coll=coll,
                          rot=(0, math.radians(90), 0), verts=10))
     join("Radiator", parts, coll)
     # Mailboxes on the hall's far wall, next to the exit.
     parts = []
     for r in range(3):
         for c in range(5):
-            x, z = -0.35 + c * 0.42, 1.15 + r * 0.32
-            parts.append(box("Mailbox", (0.4, 0.22, 0.3), (x, HALL_Y0 + 0.11, z), box_m, coll=coll))
-            parts.append(box("Mailbox_Door", (0.34, 0.01, 0.24), (x, HALL_Y0 + 0.225, z), door_m, coll=coll))
+            x, z = -1.0 + c * 0.38, 1.15 + r * 0.32
+            parts.append(box("Mailbox", (0.36, 0.22, 0.3), (x, HALL_Y0 + 0.11, z), box_m, coll=coll))
+            parts.append(box("Mailbox_Door", (0.3, 0.01, 0.24), (x, HALL_Y0 + 0.225, z), door_m, coll=coll))
             parts.append(box("Mailbox_Slot", (0.2, 0.012, 0.02), (x, HALL_Y0 + 0.231, z + 0.07), screen_off(),
                              coll=coll))
     join("Mailboxes", parts, coll)
@@ -699,95 +699,186 @@ def build_hall(coll):
     LAYOUT["hall_lights"].append({"pos": ue(-0.5, -3.5, h - 0.85), "color": [1.0, 0.68, 0.38], "cd": 18.0,
                                   "radius": 900, "shadows": True})
 
-    # ---- the admin's booth on the right: x 1.0..hw, y -5.6..-1.4
+    # ---- the owner's booth: the whole right side of the hall (x 1.0..hw), closed off by a
+    # podyezd-style wall with a counter and two sliding windows, and a doorway with a curtain.
     ply = mat("Booth_Plywood", (0.42, 0.3, 0.18), 0.6)
-    ply_paint = mat("Booth_PaintBlue", (0.2, 0.3, 0.38), 0.5)
-    bars_m = mat("Booth_Bars", (0.1, 0.1, 0.1), 0.4, 0.8)
+    frame_m = mat("Booth_WindowFrame", (0.55, 0.42, 0.28), 0.5)
     glass_m = mat("Booth_Glass", (0.6, 0.7, 0.7), 0.05, transmission=1.0, alpha=0.2)
     curtain_m = mat("Booth_Curtain", (0.35, 0.05, 0.06), 0.9)
-    bx0, by0, by1, bh = 1.0, -5.6, -1.4, 2.5
+    rail_m = mat("Booth_Rail", (0.1, 0.1, 0.1), 0.4, 0.8)
+    bx0, bt = 1.0, 0.12                      # front wall line and thickness
+    by_far, by_near = y0, -0.3               # from the far wall to the back wall of the hall
+    win0, win1, wz0, wz1 = -4.4, -2.6, 1.05, 2.0
+    door0, door1, dz = -1.4, -0.6, 2.1
+    xa, xb = bx0 - bt / 2, bx0 + bt / 2
+    wall_piece("Booth_Wall_A", xa, xb, by_far, win0, 0, h, coll)
+    wall_piece("Booth_Wall_B", xa, xb, win1, door0, 0, h, coll)
+    wall_piece("Booth_Wall_C", xa, xb, door1, by_near, 0, h, coll)
+    wall_piece("Booth_Wall_Counter", xa, xb, win0, win1, 0, wz0, coll)
+    wall_piece("Booth_Wall_OverWindow", xa, xb, win0, win1, wz1, h, coll)
+    wall_piece("Booth_Wall_OverDoor", xa, xb, door0, door1, dz, h, coll)
     parts = []
-    # side partitions
-    for y in (by0, by1):
-        parts.append(box("Booth_Side", (hw - bx0, 0.05, bh), ((bx0 + hw) / 2, y, bh / 2), ply_paint, coll=coll))
-    # front: counter below, barred window above, header; an entrance gap with a curtain near by1
-    gy = by1 - 0.75
-    parts.append(box("Booth_Counter", (0.05, gy - by0, 1.05), (bx0, (by0 + gy) / 2, 0.525), ply_paint, coll=coll))
-    parts.append(box("Booth_CounterTop", (0.4, gy - by0 + 0.1, 0.04), (bx0 - 0.05, (by0 + gy) / 2, 1.07), ply,
+    # counter board through the window, outside and in
+    parts.append(box("Booth_CounterTop", (0.5, win1 - win0 + 0.2, 0.04), (bx0, (win0 + win1) / 2, wz0 + 0.02), ply,
                      coll=coll, bevel=0.005))
-    parts.append(box("Booth_Header", (0.05, by1 - by0, 0.3), (bx0, (by0 + by1) / 2, bh - 0.15), ply_paint, coll=coll))
-    for y in (by0, gy):
-        parts.append(box("Booth_Post", (0.07, 0.07, bh), (bx0, y, bh / 2), ply, coll=coll))
-    parts.append(box("Booth_Glass", (0.01, gy - by0, bh - 0.3 - 1.09), (bx0 + 0.02, (by0 + gy) / 2, (1.09 + bh - 0.3) / 2),
-                     glass_m, coll=coll))
-    k = by0 + 0.12
-    while k < gy - 0.05:
-        if not (-4.0 < k < -3.45):            # leave a hatch to pass things through
-            parts.append(cyl("Booth_Bar", 0.008, bh - 0.3 - 1.09, (bx0 - 0.03, k, (1.09 + bh - 0.3) / 2), bars_m,
-                             coll=coll, verts=6))
-        k += 0.11
-    parts.append(box("Booth_HatchFrame", (0.03, 0.6, 0.03), (bx0 - 0.03, -3.72, 1.55), bars_m, coll=coll))
-    # curtain on a rail across the entrance gap
-    parts.append(cyl("Curtain_Rail", 0.01, by1 - gy, (bx0, (gy + by1) / 2, 2.15), bars_m, coll=coll,
-                     rot=(math.radians(90), 0, 0), verts=8))
+    # window frame and two sliding glass panes on a track; the left one is pushed open
+    wcy, ww = (win0 + win1) / 2, win1 - win0
+    for z in (wz0 + 0.03, wz1 - 0.02):
+        parts.append(box("Window_Track", (0.1, ww, 0.04), (bx0, wcy, z), frame_m, coll=coll))
+    for y in (win0 + 0.02, win1 - 0.02):
+        parts.append(box("Window_Jamb", (0.1, 0.04, wz1 - wz0), (bx0, y, (wz0 + wz1) / 2), frame_m, coll=coll))
+    pane_w, pane_h = ww / 2 + 0.04, wz1 - wz0 - 0.08
+    for k, (px, py) in enumerate(((bx0 - 0.02, win1 - pane_w / 2 - 0.03),            # closed, right half
+                                  (bx0 + 0.02, win1 - pane_w / 2 - 0.25))):          # slid over it, left half open
+        cz = (wz0 + wz1) / 2 + 0.01
+        parts.append(box("Pane_Glass", (0.006, pane_w - 0.06, pane_h - 0.06), (px, py, cz), glass_m, coll=coll))
+        for dy in (-1, 1):
+            parts.append(box("Pane_Stile", (0.03, 0.03, pane_h), (px, py + dy * (pane_w / 2 - 0.015), cz), frame_m,
+                             coll=coll))
+        for dz_ in (-1, 1):
+            parts.append(box("Pane_Rail", (0.03, pane_w, 0.03), (px, py, cz + dz_ * (pane_h / 2 - 0.015)), frame_m,
+                             coll=coll))
+        parts.append(box("Pane_Handle", (0.02, 0.02, 0.08), (px - 0.02, py - pane_w / 2 + 0.06, cz), rail_m, coll=coll))
+    # curtain across the doorway
+    parts.append(cyl("Curtain_Rail", 0.01, door1 - door0, (bx0 - 0.08, (door0 + door1) / 2, dz - 0.05), rail_m,
+                     coll=coll, rot=(math.radians(90), 0, 0), verts=8))
     for i in range(9):
-        yy = gy + 0.04 + i * (by1 - gy - 0.08) / 8
-        parts.append(box("Curtain_Fold", (0.03, 0.1, 1.95), (bx0 + (0.02 if i % 2 else -0.02), yy, 1.16), curtain_m,
-                         coll=coll))
-    # inside: desk with an old PC, shelves with stuff, a stool, a lamp
+        yy = door0 + 0.04 + i * (door1 - door0 - 0.08) / 8
+        parts.append(box("Curtain_Fold", (0.03, 0.1, dz - 0.1), (bx0 - 0.08 + (0.02 if i % 2 else -0.02), yy,
+                                                                    (dz - 0.1) / 2), curtain_m, coll=coll))
+    # inside: desk with an old PC behind the window, shelves along the back, a stool, a lamp
     desk_m = mat("Desk_SovietWood", (0.16, 0.08, 0.04), 0.3)
     beige = mat("Plastic_Beige", (0.72, 0.66, 0.53), 0.55)
-    parts.append(box("Admin_Desk", (0.7, 1.6, 0.04), (hw - 0.4, -4.3, 0.76), desk_m, coll=coll))
-    for yy in (-5.0, -3.6):
+    parts.append(box("Admin_Desk", (0.7, 1.6, 0.04), (hw - 0.4, -3.5, 0.76), desk_m, coll=coll))
+    for yy in (-4.2, -2.8):
         parts.append(box("Admin_DeskLeg", (0.6, 0.04, 0.74), (hw - 0.4, yy, 0.37), desk_m, coll=coll))
-    parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, -4.5, 0.95), beige, coll=coll, bevel=0.015))
-    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, -4.5, 0.97), screen_on("spreadsheet",
+    parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, -3.7, 0.95), beige, coll=coll, bevel=0.015))
+    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, -3.7, 0.97), screen_on("spreadsheet",
                        "screen_spreadsheet.jpg", 1.1), coll=coll))
     parts[-1].rotation_euler = (0, 0, math.radians(-90))
-    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, -4.5, 0.795), beige, coll=coll))
-    parts.append(box("Admin_Ledger", (0.25, 0.32, 0.03), (bx0 - 0.02, -4.6, 1.105), mat("Ledger", (0.1, 0.2, 0.35), 0.6),
+    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, -3.7, 0.795), beige, coll=coll))
+    parts.append(box("Admin_Ledger", (0.25, 0.32, 0.03), (bx0 + 0.1, -3.9, wz0 + 0.055), mat("Ledger", (0.1, 0.2, 0.35), 0.6),
                      coll=coll, rot=(0, 0, math.radians(8))))
-    parts.append(cyl("Admin_Bell", 0.04, 0.03, (bx0 - 0.05, -3.2, 1.105), mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0),
+    parts.append(cyl("Admin_Bell", 0.04, 0.03, (bx0 - 0.12, -2.9, wz0 + 0.055), mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0),
                      coll=coll, verts=16, r2=0.015))
     shelf = mat("Shelf_Metal", (0.3, 0.3, 0.28), 0.5, 0.6)
     cols = [(0.5, 0.1, 0.05), (0.15, 0.35, 0.12), (0.6, 0.5, 0.2), (0.2, 0.2, 0.45), (0.55, 0.55, 0.5)]
     for lvl in range(4):
         z = 0.5 + lvl * 0.45
-        parts.append(box("Shelf", (0.35, 1.4, 0.02), (hw - 0.18, -2.3, z), shelf, coll=coll))
+        parts.append(box("Shelf", (0.35, 1.4, 0.02), (hw - 0.18, -5.8, z), shelf, coll=coll))
         for j in range(5):
             c = cols[(lvl + j) % len(cols)]
             if (lvl + j) % 3 == 0:
-                parts.append(cyl("Jar", 0.05, 0.16, (hw - 0.2, -2.9 + j * 0.28, z + 0.09),
+                parts.append(cyl("Jar", 0.05, 0.16, (hw - 0.2, -6.4 + j * 0.28, z + 0.09),
                                  mat("Jar_%d" % ((lvl + j) % 5), c, 0.2, transmission=0.6, alpha=0.7), coll=coll))
             else:
-                parts.append(box("Box", (0.22, 0.2, 0.16 + 0.05 * (j % 2)), (hw - 0.2, -2.9 + j * 0.28, z + 0.1),
+                parts.append(box("Box", (0.22, 0.2, 0.16 + 0.05 * (j % 2)), (hw - 0.2, -6.4 + j * 0.28, z + 0.1),
                                  mat("Crate_%d" % ((lvl + j) % 5), c, 0.8), coll=coll))
-    lamp_m = mat("Lamp_GreenShade", (0.08, 0.25, 0.12), 0.35, 0.5)
-    lamp_b = mat("Lamp_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=10.0)
-    parts += [cyl("Admin_LampBase", 0.07, 0.025, (hw - 0.3, -3.8, 0.79), lamp_m, coll=coll),
-              box("Admin_LampArm", (0.015, 0.015, 0.35), (hw - 0.3, -3.8, 0.97), lamp_m, coll=coll),
-              cyl("Admin_LampShade", 0.08, 0.1, (hw - 0.38, -3.8, 1.12), lamp_m, coll=coll, r2=0.03),
-              cyl("Admin_LampBulb", 0.025, 0.04, (hw - 0.38, -3.8, 1.08), lamp_b, coll=coll)]
     join("AdminBooth", parts, coll)
-    place("chair_stool", floor_at((hw - 0.9, -4.4, 0), math.radians(90)), coll, label="Admin_Stool")
-    LAYOUT["hall_lights"].append({"pos": ue(hw - 0.38, -3.8, 1.02), "color": [1.0, 0.68, 0.38], "cd": 4.0,
-                                  "radius": 350, "shadows": True})
+    lm = floor_at((hw - 0.3, -2.95, 0.78), math.radians(90))
+    place("lamp_soviet", lm, coll, label="Admin_Lamp")
+    LAYOUT["hall_lights"].append({"pos": ue(*(anchor("lamp_soviet", lm, "Lamp_Bulb") + Vector((0, 0, -0.03)))),
+                                  "color": [1.0, 0.68, 0.38], "cd": 4.0, "radius": 350, "shadows": True})
+    place("chair_stool", floor_at((hw - 0.95, -3.6, 0), math.radians(90)), coll, label="Admin_Stool")
+    # a warm bare bulb under the booth ceiling, now that it is closed in
+    bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
+    cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
+    join("Booth_Pendant", [cyl("Cord", 0.004, 0.5, (2.0, -3.8, h - 0.25), cord, coll=coll, verts=6),
+                           uv_sphere("Bulb", 0.03, (2.0, -3.8, h - 0.53), bulb, coll)], coll)
+    LAYOUT["hall_lights"].append({"pos": ue(2.0, -3.8, h - 0.6), "color": [1.0, 0.68, 0.38], "cd": 10.0,
+                                  "radius": 600, "shadows": True})
+    # air humidifier puffing steam (Unreal draws the steam on the cards above it)
+    hx, hy = hw - 0.3, -1.1
+    hm = floor_at((hx, hy, 0), math.radians(90))
+    if have_prop("humidifier"):
+        place("humidifier", hm, coll, label="Humidifier")
+        nozzle = anchor("humidifier", hm, "humidifier_SteamPoint")
+    else:
+        hum_body = mat("Humidifier_White", (0.85, 0.87, 0.86), 0.35)
+        join("Humidifier", [cyl("Hum_Base", 0.13, 0.12, (hx, hy, 0.06), hum_body, coll=coll, verts=24),
+                            cyl("Hum_Nozzle", 0.025, 0.36, (hx, hy, 0.3), hum_body, coll=coll, verts=12)], coll)
+        nozzle = Vector((hx, hy, 0.46))
+    hx, hy, hz = nozzle
+    steam = mat("Humidifier_Steam", (1, 1, 1), 1.0)
+    cards = []
+    for k in range(3):
+        c = plane("Steam_Card", 0.35, 0.8, (hx, hy, hz + 0.4), steam, coll=coll)
+        c.rotation_euler = (0, 0, math.radians(60 * k))
+        cards.append(c)
+    join("Humidifier_Steam", cards, coll)
+    LAYOUT["steam"] = {"base_z": round(hz * 100, 1), "top_z": round((hz + 0.8) * 100, 1), "pos": ue(hx, hy, hz)}
+    # framed landscapes in gilded baguette frames
+    if have_prop("frame_large"):
+        # frames hang with their back on a wall at +Y and the picture facing -Y
+        place("frame_large", floor_at((hw - 0.045, -4.6, 1.75), math.radians(-90)), coll, label="Painting_0")
+        place("frame_medium", floor_at((2.0, by_far + 0.04, 1.75), math.radians(180)), coll, label="Painting_1")
+        place("frame_small", floor_at((2.1, by_near - 0.04, 1.7), 0.0), coll, label="Painting_2")
+        PAINTINGS = []
+    else:
+        PAINTINGS = None
+    gold = mat("Frame_Gilt", (0.75, 0.55, 0.2), 0.3, 1.0)
+    for k, (px, py, rz, w_, h_, img) in ([] if PAINTINGS is not None else enumerate([
+            (hw - 0.02, -4.6, 90, 0.9, 0.6, "landscape_1.jpg"),
+            (2.0, by_far + 0.02, 0, 0.7, 0.5, "landscape_2.jpg"),
+            (2.1, by_near - 0.02, 180, 0.6, 0.8, "landscape_3.jpg")])):
+        canvas = tex_mat("Landscape_%d" % k, img, 0.8) if os.path.exists(os.path.join(PODYEZD_DIR, img)) else \
+            mat("Landscape_%d" % k, (0.35, 0.4, 0.3), 0.8)
+        root = empty("Painting_%d" % k, (px, py, 1.75), math.radians(rz), coll=coll)
+        box("Frame_Top", (w_ + 0.1, 0.05, 0.06), (0, 0.025, h_ / 2 + 0.03), gold, root, coll, bevel=0.01)
+        box("Frame_Bottom", (w_ + 0.1, 0.05, 0.06), (0, 0.025, -h_ / 2 - 0.03), gold, root, coll, bevel=0.01)
+        box("Frame_L", (0.06, 0.05, h_), (-w_ / 2 - 0.03, 0.025, 0), gold, root, coll, bevel=0.01)
+        box("Frame_R", (0.06, 0.05, h_), (w_ / 2 + 0.03, 0.025, 0), gold, root, coll, bevel=0.01)
+        cv = plane("Canvas", w_, h_, (0, 0.04, 0), canvas, root, coll)
+        cv.rotation_euler = (0, 0, math.pi)          # face back out of the frame, into the room
+        collapse("Painting_%d" % k, root, coll)
 
     # ---- opposite: drinks vending machine, a chair with a newspaper
-    vx, vy = -hw + 0.4, -3.2
+    vx, vy = -hw + 0.4, -2.2
     # front (-Y on the prop) turned to face +X, into the hall
     place("vending_machine", floor_at((vx, vy, 0), math.radians(90)), coll, label="VendingMachine")
     LAYOUT["hall_lights"].append({"pos": ue(vx + 0.75, vy, 1.2), "color": [0.85, 0.9, 1.0], "cd": 3.0, "radius": 300})
     LAYOUT["vending"] = ue(vx, vy, 1.0)
-    place("chair_bentwood", floor_at((-hw + 0.45, -4.7, 0), math.radians(-90)), coll, label="Hall_Chair")
+    # wide snack machine
+    fx, fy = -hw + 0.42, -3.75
+    if have_prop("vending_snacks"):
+        place("vending_snacks", floor_at((fx, fy, 0), math.radians(90)), coll, label="FoodVendingMachine")
+        LAYOUT["hall_lights"].append({"pos": ue(fx + 0.8, fy, 1.2), "color": [0.85, 0.92, 1.0], "cd": 2.5,
+                                      "radius": 300})
+    else:
+        food_vending_placeholder(coll, fx, fy)
+    # a chair with today's newspaper by the exit
+    place("chair_bentwood", floor_at((-hw + 0.45, -5.2, 0), math.radians(-90)), coll, label="Hall_Chair")
     paper = mat("Newspaper", (0.8, 0.8, 0.75), 0.9)
     news = tex_mat("Newspaper_Print", "newspaper.jpg", 0.9)
     n1 = plane("Newspaper", 0.3, 0.42, (0, 0, 0), news, coll=coll)
     n1.rotation_euler = (math.radians(-90), 0, math.radians(15))
-    n1.location = (-hw + 0.45, -4.7, 0.485)
-    n2 = box("Newspaper_Fold", (0.28, 0.4, 0.004), (-hw + 0.47, -4.68, 0.48), paper, coll=coll,
+    n1.location = (-hw + 0.45, -5.2, 0.485)
+    n2 = box("Newspaper_Fold", (0.28, 0.4, 0.004), (-hw + 0.47, -5.18, 0.48), paper, coll=coll,
              rot=(0, 0, math.radians(15)))
     join("Hall_Newspaper", [n1, n2], coll)
+
+
+def food_vending_placeholder(coll, fx, fy):
+    """Blocky stand-in for the snack machine, used if blender/props has no vending_snacks yet."""
+    food_body = mat("FoodVending_Body", (0.15, 0.17, 0.2), 0.4, 0.4)
+    food_glass = mat("FoodVending_Glass", (0.6, 0.7, 0.75), 0.05, transmission=1.0, alpha=0.2)
+    food_lit = mat("FoodVending_Light", (0.9, 0.95, 1.0), 0.3, emit=(0.85, 0.92, 1.0), strength=3.0)
+    fparts = [box("Food_Body", (0.8, 1.3, 1.85), (fx, fy, 0.925), food_body, coll=coll, bevel=0.01),
+              box("Food_Window", (0.02, 0.95, 1.3), (fx + 0.41, fy - 0.12, 1.1), food_glass, coll=coll),
+              box("Food_Back", (0.02, 0.95, 1.3), (fx + 0.1, fy - 0.12, 1.1), food_lit, coll=coll),
+              box("Food_Panel", (0.03, 0.25, 0.6), (fx + 0.41, fy + 0.5, 1.2), mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4),
+                  coll=coll),
+              box("Food_Flap", (0.03, 0.8, 0.2), (fx + 0.41, fy - 0.1, 0.3), mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4),
+                  coll=coll)]
+    snack_cols = [(0.8, 0.1, 0.05), (0.9, 0.7, 0.1), (0.1, 0.4, 0.8), (0.1, 0.6, 0.2), (0.6, 0.2, 0.6)]
+    for r in range(5):
+        z = 0.55 + r * 0.25
+        fparts.append(box("Food_Shelf", (0.3, 0.95, 0.01), (fx + 0.25, fy - 0.12, z), food_body, coll=coll))
+        for cidx in range(6):
+            fparts.append(box("Snack", (0.06, 0.12, 0.15), (fx + 0.33, fy - 0.52 + cidx * 0.16, z + 0.08),
+                              mat("Snack_%d" % ((r + cidx) % 5), snack_cols[(r + cidx) % 5], 0.5), coll=coll))
+    join("FoodVendingMachine", fparts, coll)
+    LAYOUT["hall_lights"].append({"pos": ue(fx + 0.8, fy, 1.2), "color": [0.85, 0.92, 1.0], "cd": 2.5, "radius": 300})
 
 
 def build_walkway(coll):
@@ -850,6 +941,8 @@ def prop(name):
                 if vs:
                     pts = [o.matrix_basis @ o.data.vertices[v].co for v in vs]
                     anchors[m.name] = sum(pts, Vector()) / len(pts)
+    for e in empties:
+        anchors[e.name] = world_mat(e).translation.copy()
     out = {"anchors": anchors}
     groups = {"Screen": [o for o in meshes if "Screen" in o.name],
               "Blades": [o for o in meshes if "Blades" in o.name]}
@@ -889,6 +982,10 @@ def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None):
         bo.matrix_basis = matrix
         coll.objects.link(bo)
     return obj
+
+
+def have_prop(name):
+    return os.path.exists(os.path.join(PROPS_DIR, name + ".glb"))
 
 
 def anchor(name, matrix, material):

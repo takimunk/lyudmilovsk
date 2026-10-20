@@ -362,6 +362,85 @@ def ribbon_material(top_z):
     return m
 
 
+def steam_material(base_z, top_z):
+    """Soft rising mist: 3D noise drifting upward, fading in above the nozzle and out at the top."""
+    mel = unreal.MaterialEditingLibrary
+    E = unreal
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "M_HumidifierSteam", "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("two_sided", True)
+
+    def node(cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    def link(a, b, pin=""):
+        mel.connect_material_expressions(a, "", b, pin)
+
+    wp = node(E.MaterialExpressionWorldPosition, -1200, 0)
+    t = node(E.MaterialExpressionTime, -1200, 200)
+    rise = node(E.MaterialExpressionMultiply, -1050, 200, const_b=18.0)
+    link(t, rise, "A")
+    up = node(E.MaterialExpressionAppendVector, -900, 200)
+    zero2 = node(E.MaterialExpressionConstant2Vector, -1050, 300, r=0.0, g=0.0)
+    link(zero2, up, "A")
+    link(rise, up, "B")
+    drift = node(E.MaterialExpressionSubtract, -750, 0)
+    link(wp, drift, "A")
+    link(up, drift, "B")
+    noise = node(E.MaterialExpressionNoise, -550, 0, scale=0.06, quality=2, levels=4, output_min=0.0, output_max=1.0)
+    link(drift, noise, "Position")
+    # vertical fade: 0 at the nozzle, peak a little above, 0 at the top
+    z = node(E.MaterialExpressionComponentMask, -1050, 450, r=False, g=False, b=True, a=False)
+    link(wp, z)
+    rel = node(E.MaterialExpressionSubtract, -900, 450, const_b=base_z)
+    link(z, rel, "A")
+    h = node(E.MaterialExpressionDivide, -750, 450, const_b=top_z - base_z)
+    link(rel, h, "A")
+    hs = node(E.MaterialExpressionSaturate, -600, 450)
+    link(h, hs)
+    bell = node(E.MaterialExpressionSine, -450, 450, period=2.0)   # sin(pi * h): 0 -> 1 -> 0
+    link(hs, bell)
+    # horizontal fade toward the card edges keeps it from looking like a sheet
+    uv = node(E.MaterialExpressionTextureCoordinate, -1050, 650)
+    u = node(E.MaterialExpressionComponentMask, -900, 650, r=True, g=False, b=False, a=False)
+    link(uv, u)
+    centred = node(E.MaterialExpressionSubtract, -750, 650, const_b=0.5)
+    link(u, centred, "A")
+    ab = node(E.MaterialExpressionAbs, -600, 650)
+    link(centred, ab)
+    edge = node(E.MaterialExpressionOneMinus, -450, 650)
+    two = node(E.MaterialExpressionMultiply, -500, 650, const_b=2.0)
+    link(ab, two, "A")
+    link(two, edge)
+    a1 = node(E.MaterialExpressionMultiply, -300, 100)
+    link(noise, a1, "A")
+    link(bell, a1, "B")
+    a2 = node(E.MaterialExpressionMultiply, -150, 100)
+    link(a1, a2, "A")
+    link(edge, a2, "B")
+    a3 = node(E.MaterialExpressionMultiply, 0, 100, const_b=0.45)
+    link(a2, a3, "A")
+    mel.connect_material_property(a3, "", unreal.MaterialProperty.MP_OPACITY)
+    col = node(E.MaterialExpressionConstant3Vector, 0, 0, constant=unreal.LinearColor(0.6, 0.62, 0.65, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+if "steam" in LAYOUT:
+    st = steam_material(LAYOUT["steam"]["base_z"], LAYOUT["steam"]["top_z"])
+    for a in eas.get_all_level_actors():
+        if a.get_actor_label() == "Humidifier_Steam":
+            a.static_mesh_component.set_material(0, st)
+            a.static_mesh_component.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+            a.static_mesh_component.set_editor_property("cast_shadow", False)
+
 rib = ribbon_material(LAYOUT["ribbon_top_z"])
 for a in eas.get_all_level_actors():
     if a.get_actor_label() == "Vent_Ribbons":
@@ -419,7 +498,8 @@ wall.static_mesh_component.set_collision_profile_name("BlockAll")
 CHUNK = LAYOUT["chunk_length"]
 COPIES = 4
 SKIP = ("Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall", "ElectricCabinet",
-        "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign")
+        "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign", "Booth_", "Humidifier",
+        "Painting_", "FoodVending", "Clerk")
 originals = [a for a in eas.get_all_level_actors()
              if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
 extra_belts = []

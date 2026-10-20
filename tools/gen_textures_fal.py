@@ -52,6 +52,13 @@ SCREENS = {
                       "(Буратино, Тархун, Байкал, Дюшес, Колокольчик), price tags in roubles, coin slot and "
                       "buttons on the right, scratched red body. Absolutely no real-world brands: no Coca-Cola, "
                       "Fanta, Sprite, Pepsi or any existing logo.", "9:16"),
+    "landscape_1": ("A classic Russian realist oil painting of rolling green hills of Krasnodar Krai at golden "
+                    "hour, poplars along a dirt road, wide sky, visible brush strokes, museum quality, no frame.",
+                    "3:2"),
+    "landscape_2": ("A classic oil painting of the Black Sea coast near Gelendzhik: cliffs, calm sea, a small "
+                    "white sail, warm evening light, visible brush strokes, no frame.", "4:3"),
+    "landscape_3": ("A classic Russian oil painting of a birch grove in early autumn with a narrow path, soft "
+                    "light, in the style of nineteenth-century realists, visible brush strokes, no frame.", "3:4"),
     "exit_sign": ("A glowing green emergency exit sign with the Cyrillic word ВЫХОД and a running-man pictogram, "
                   "flat front view filling the frame, dark background.", "16:9"),
 }
