@@ -18,7 +18,7 @@ for p in makehuman_system_assets/makehuman_system_assets_cc0 faceunits01 visemes
          hair01/hair01_cc0 hair02/hair02_ccby hair03/hair03_ccby \
          shirts01/shirts01_cc0 shirts02/shirts02_ccby shirts03/shirts03_ccby \
          pants01/pants01_cc0 pants02/pants02_ccby shoes01/shoes01_cc0 shoes02/shoes02_ccby \
-         glasses01/glasses01_cc0 skins01/skins01_cc0 eyebrows01/eyebrows01_cc0 eyelashes01/eyelashes01_cc0; do
+         glasses01/glasses01_cc0 bodyparts05/bodyparts05_cc0 skins01/skins01_cc0 eyebrows01/eyebrows01_cc0 eyelashes01/eyelashes01_cc0; do
     case $p in faceunits01|visemes01) url=https://files.makehumancommunity.org/functional/$p.zip ;;
                *) url=https://files.makehumancommunity.org/asset_packs/$p.zip ;; esac
     z="$V/zips/$(basename $url)"
