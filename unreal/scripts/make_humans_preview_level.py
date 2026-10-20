@@ -10,11 +10,15 @@ LEVEL = "/Game/Characters/Humans/L_HumansPreview"
 CAST = [("Zoomer", "Sit_KeyboardMouse"), ("Clerk", "Sit_KeyboardMouse"), ("Owner", "Sit_Idle"),
         ("Streamer", "Sit_Stream"), ("Kid_boy", "Sit_Gamepad"), ("Kid_girl", "Sit_ChinRest"),
         ("Guy_a", "Sit_KeyboardMouse"), ("Guy_b", "Sit_LeanBack"), ("Girl_a", "Sit_KeyboardMouse"),
-        ("Girl_b", "Sit_Browse")]
+        ("Girl_b", "Sit_Browse"), ("Owner", "StandLook"), ("Owner", "Walk"), ("Owner", "StandUp")]
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+import os
+_umap = os.path.join(unreal.Paths.project_content_dir(), "Characters/Humans/L_HumansPreview.umap")
 if eal.does_asset_exist(LEVEL):
     eal.delete_asset(LEVEL)
+if os.path.exists(_umap):                  # the registry may not know a level saved by another process
+    os.remove(_umap)
 if not les.new_level(LEVEL):
     raise RuntimeError("could not create " + LEVEL)
 cube = unreal.load_asset("/Engine/BasicShapes/Cube")
@@ -38,7 +42,7 @@ for i, (name, anim) in enumerate(CAST):
     box((x, 60, 74), (120, 60, 4), "Desk_" + name)
     box((x, 95, 112), (55, 3, 33), "Monitor_" + name)
     act = eas.spawn_actor_from_class(unreal.SkeletalMeshActor, unreal.Vector(x, 0, 0), unreal.Rotator(0, 0, 0))
-    act.set_actor_label("Human_" + name)
+    act.set_actor_label("Human_%s_%s" % (name, anim))
     comp = act.skeletal_mesh_component
     comp.set_skeletal_mesh_asset(unreal.load_asset("/Game/Characters/Humans/%s/SK_%s" % (name, name)))
     comp.set_editor_property("animation_mode", unreal.AnimationMode.ANIMATION_SINGLE_NODE)

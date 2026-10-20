@@ -98,6 +98,21 @@ class Rig:
             self.con("eye_" + s, "DAMPED_TRACK", target=self.t_look, track_axis="TRACK_Y")
         self.rest = {b.name: (a.matrix_world @ b.matrix_local) for b in a.data.bones}
 
+    def seated_layout(self, hip_back, feet_fwd, feet_out):
+        """Pelvis target and foot targets of the seated pose (style applied), for blending."""
+        st, k = self.style, self.k
+        hip_back += st.get("hip_back", 0.0)
+        if st.get("feet") == "stretched":
+            feet_fwd += 0.18
+        elif st.get("feet") == "tucked":
+            feet_fwd -= 0.12
+        elif st.get("feet") == "wide":
+            feet_out += 0.08
+        thigh, pel = _w(self.arm, "thigh_l"), _w(self.arm, "pelvis")
+        pelvis = Vector((0, hip_back + (pel.y - thigh.y), self.hip_z + (pel.z - thigh.z)))
+        feet = {s: Vector((sx * feet_out * k, -feet_fwd * k, 0.075 * k)) for s, sx in (("l", 1), ("r", -1))}
+        return pelvis, feet
+
     def teardown(self):
         for bone, c in self.cons:
             self.pb[bone].constraints.remove(c)
@@ -142,7 +157,9 @@ class Rig:
 
     def place(self, frame, *, hip_back=0.03, tilt=0.0, feet_fwd=0.42, feet_out=0.13,
               wrists=None, hands=None, elbows_out=0.22, look=SCREEN, lean=0.1, twist=0.0, breath=0.0,
-              curls=None, jaw_open=0.0):
+              curls=None, jaw_open=0.0, pelvis=None, feet_at=None, knees=None, elbows=None):
+        """Keys one frame. Seated layout by default; pelvis / feet_at / knees / elbows (world
+        positions, dicts by side) override it for standing and walking."""
         self.frame = frame
         k = self.k
         st = self.style
@@ -160,7 +177,8 @@ class Rig:
         look = look + Vector(st.get("look", (0, 0, 0)))
         thigh = _w(self.arm, "thigh_l")
         pel = _w(self.arm, "pelvis")
-        self.t_pelvis.location = Vector((0, hip_back + (pel.y - thigh.y), self.hip_z + (pel.z - thigh.z)))
+        self.t_pelvis.location = pelvis if pelvis is not None else \
+            Vector((0, hip_back + (pel.y - thigh.y), self.hip_z + (pel.z - thigh.z)))
         pb = self.pb["pelvis"]
         pb.rotation_mode = "XYZ"
         pb.rotation_euler = (tilt, 0, 0)
@@ -170,10 +188,12 @@ class Rig:
             if feet == "crossed":                      # ankles crossed under the chair
                 fx = -sx * 0.03
             fy = -feet_fwd * k + (0.06 if (feet == "crossed" and s == "l") else 0)
-            self.t_foot[s].location = (fx, fy, 0.075 * k + (0.03 if (feet == "crossed" and s == "l") else 0))
-            self.t_knee[s].location = (sx * feet_out * k * 1.1, -1.5, self.hip_z)
+            self.t_foot[s].location = feet_at[s] if feet_at else \
+                (fx, fy, 0.075 * k + (0.03 if (feet == "crossed" and s == "l") else 0))
+            self.t_knee[s].location = knees[s] if knees else (sx * feet_out * k * 1.1, -1.5, self.hip_z)
             self.t_wrist[s].location = wrists[s]
-            self.t_elbow[s].location = (sx * (0.2 + elbows_out), 0.45, self.hip_z + 0.05)
+            self.t_elbow[s].location = elbows[s] if elbows else \
+                (sx * (0.2 + elbows_out), 0.45, self.hip_z + 0.05)
             f, p = hands[s]
             self.t_hand[s].rotation_euler = self.hand_rot(s, f, p)
         self.t_look.location = look

@@ -22,6 +22,7 @@ import mpfb_pipeline as P  # noqa: E402
 import tailor  # noqa: E402
 import preview  # noqa: E402
 import seat_anims  # noqa: E402
+import stand_anims  # noqa: E402,F401  (registers the owner's standing loops)
 
 EXPORT = os.path.join(HERE, "export")
 PRESETS = os.path.join(HERE, "presets")
@@ -46,6 +47,13 @@ def _z(co):
 
 
 # ------------------------------------------------------------------ garment rules (metres)
+
+def wild_hair(co, w):
+    """Hair standing out every which way: distance from the scalp varies in lumpy tufts."""
+    x, y, z = co[:, 0], co[:, 1], co[:, 2]
+    n = (np.sin(x * 61 + 1.3) * np.sin(y * 53 + 0.7) + np.sin(z * 47 + 2.1) * np.sin((x + y) * 39)) * 0.5
+    return 0.012 + 0.05 * np.clip(n, 0, None) ** 0.7
+
 
 def oversized_hoodie(co, w):
     torso, arms, head = wsum(w, TORSO), wsum(w, ARMS), wsum(w, HEAD)
@@ -105,14 +113,18 @@ CHARACTERS = {
         height=1.68),
     # Club owner: grey-haired Japanese man ~70 with a full head of hair, sits in his booth
     "owner": dict(
-        loops=["Sit_Idle", "Sit_LeanBack"], style={"feet": "wide"},
+        loops=["Sit_Idle", "Sit_LeanBack", "StandUp", "SitDown", "Walk", "StandLook"],
+        style={"feet": "wide"},
         macro=dict(gender=1.0, age=0.86, muscle=0.35, weight=0.5, height=0.42, proportions=0.45,
                    race=dict(asian=0.95, caucasian=0.05, african=0.0)),
         targets={"head/head-age-incr": 1.0, "eyes/l-eye-bag-incr": 0.7, "eyes/r-eye-bag-incr": 0.7,
                  "head/head-square": 0.3},
-        skin="old_asian_male", hair="culturalibre_hair_05", eyebrows="eyebrow006",
-        clothes=["toigo_fisherman_sweater", "elvs_male_trouser", "mindfront_shoes_monk_strap_male"],
+        skin="old_asian_male", hair="afro01", eyebrows="eyebrow006",
+        clothes=["toigo_fisherman_sweater", "elvs_male_trouser", "mindfront_shoes_monk_strap_male",
+                 "rehmanpolanski_beard_viking"],
+        tailor={"hair": (wild_hair, None)},
         tint={"toigo_fisherman_sweater": ((0.17, 0.13, 0.10), 1.0, 0.8),
+              "rehmanpolanski_beard_viking": ((0.82, 0.81, 0.79), 1.0, 0.9),
               "elvs_male_trouser": ((0.32, 0.30, 0.26), 0.9, 1.0),
               "hair": ((0.80, 0.80, 0.78), 1.0, 0.9), "eyebrows": ((0.75, 0.74, 0.72), 1.0, 1.0)}),
     # --- the crowd at the other computers (a few bodies x outfits) ---
@@ -236,7 +248,9 @@ def finish_materials(bm, objs, spec):
         r = spec.get("rough", {}).get(key, ROUGH.get(key))
         if r is None:                    # garments: matte cloth unless the spec says otherwise
             r = 0.3 if "glasses" in key else 0.88
-            if "glasses" not in key:
+            if "beard" in key or "moustache" in key:       # hair cards: keep the alpha
+                r = 0.6
+            elif "glasses" not in key:
                 tailor.opaque(ob)
             tailor.set_roughness(ob, r, sheen=0.0 if "glasses" in key else 0.25)
         else:

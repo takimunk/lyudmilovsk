@@ -129,7 +129,7 @@ def build_masters():
 
 # ------------------------------------------------------------------------------- import
 
-HAIR_WORDS = ("eyebrow", "eyelash", "hair", "short0", "long0", "bob0", "ponytail", "braid", "afro")
+HAIR_WORDS = ("eyebrow", "eyelash", "hair", "beard", "moustache", "short0", "long0", "bob0", "ponytail", "braid", "afro")
 
 
 def kind_of(slot_name):
@@ -279,6 +279,7 @@ def import_glb(name):
             eal.rename_asset(p, "%s/SK_%s_PhysicsAsset" % (dest, title))
         elif isinstance(a, unreal.AnimSequence):
             nm = a.get_name()
+            nm = nm.replace("human_" + name, "").lstrip("_")     # Interchange prefixes the file name
             if "Sit_" in nm:
                 nm = nm[nm.find("Sit_"):]
             elif len(gltf_anims) == 1:              # a lone animation is named after the file

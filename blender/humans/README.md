@@ -55,6 +55,15 @@ top 76 cm, keyboard 55 cm in front, mouse 26 cm to the right of it, monitor ~95 
 | `Sit_Stream` | 14 s | streamer: plays, glances at the chat screen to her right, talks (jaw) and waves to the webcam on top of the monitor |
 | `Sit_Idle` | 12 s | the owner: leaning back, hands on the desk, slowly looking around |
 
+Owner only (`stand_anims.py`, all in place, the level moves/turns the actor):
+
+| Anim | Length | What |
+|---|---|---|
+| `StandUp` | 2.4 s | from `Sit_Idle` to standing; ends 12 cm in front of the chair point (toward the desk) |
+| `SitDown` | 2.4 s | exact reverse of `StandUp` |
+| `Walk` | 1.4 s loop | in place, 0.75 m/s along the mesh's +Y; translate the actor at that speed, turn it while walking |
+| `StandLook` | 8 s loop | standing at the booth window, hands clasped, looking straight ahead, small nods |
+
 Every character bakes only its own loops (spec `loops`) with its own `style` (lean, pelvis tilt,
 feet apart/crossed/tucked/stretched/wide, elbows, twist, gaze), so no two people sit alike. The bake
 prints `ANIM <rig> <loop>: clean` or the frames where forearms/hands come closer than 7-9 cm to each
