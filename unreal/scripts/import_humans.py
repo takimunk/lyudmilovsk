@@ -84,19 +84,12 @@ def _tinted_base(m):
 
 
 def build_masters():
-    # skin: subsurface profile (screen-space SSS keeps the texture detail, unlike MSM_SUBSURFACE)
-    prof_path = MATS + "/SP_HumanSkin"
-    if not eal.does_asset_exist(prof_path):
-        fac = unreal.SubsurfaceProfileFactory() if hasattr(unreal, "SubsurfaceProfileFactory") else None
-        prof = tools.create_asset("SP_HumanSkin", MATS, unreal.SubsurfaceProfile, fac)
-        eal.save_loaded_asset(prof)
+    # skin: default lit. Screen-space subsurface (profile) showed red-orange speckle noise on the
+    # MakeHuman textures in the editor, so skin stays opaque lit with soft specular.
     m = _new_material("M_HumanSkin")
-    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE_PROFILE)
-    m.set_editor_property("subsurface_profile", unreal.load_asset(prof_path))
     _tinted_base(m)
-    mel.connect_material_property(_scalar(m, "Roughness", 0.5, -400, 100), "", MP.MP_ROUGHNESS)
-    mel.connect_material_property(_scalar(m, "Specular", 0.4, -400, 180), "", MP.MP_SPECULAR)
-    mel.connect_material_property(_scalar(m, "Scatter", 0.6, -400, 380), "", MP.MP_OPACITY)
+    mel.connect_material_property(_scalar(m, "Roughness", 0.55, -400, 100), "", MP.MP_ROUGHNESS)
+    mel.connect_material_property(_scalar(m, "Specular", 0.35, -400, 180), "", MP.MP_SPECULAR)
     mel.connect_material_property(_tex(m, "Normal", -700, 300, normal=True), "RGB", MP.MP_NORMAL)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
