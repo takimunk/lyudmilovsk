@@ -737,17 +737,22 @@ if seat_cls:
 else:
     log("HeroSeat class missing: build the C++ module")
 
-# The clerk NPC at Station 09, painting in a spreadsheet (mesh + looping animation from the clerk
-# thread; the animated Excel picture is part of his mesh). The mesh faces +Y at yaw 0.
+# The clerk NPC at Station 09, painting in a spreadsheet: his body and an animated desk rig (mouse
+# with its cable and the Excel picture on the CRT) run the same 8 s loop from 0, so they stay in step.
+# The meshes face +Y at yaw 0.
 CLERK = LAYOUT.get("clerk")
-CLERK_MESH = "/Game/Characters/Clerk/character_clerk/SkeletalMeshes/character_clerk"
-if CLERK and eal.does_asset_exist(CLERK_MESH):
-    clerk = spawn(unreal.SkeletalMeshActor, vec(CLERK["chair"]), unreal.Rotator(0, 0, CLERK["chair_yaw"] - 90), "Clerk")
-    sk = clerk.skeletal_mesh_component
-    sk.set_skeletal_mesh_asset(eal.load_asset(CLERK_MESH))
-    sk.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
-    sk.override_animation_data(eal.load_asset(CLERK_MESH + "_Anim"), True, True)
-    sk.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+CLERK_PARTS = [("Clerk", "/Game/Characters/Humans/Clerk/SK_Clerk", "/Game/Characters/Clerk/A_Clerk_Sit_Excel"),
+               ("ClerkDesk", "/Game/Characters/Clerk/Desk/clerk_desk/SkeletalMeshes/clerk_desk",
+                "/Game/Characters/Clerk/Desk/clerk_desk/SkeletalMeshes/clerk_desk_Anim")]
+if CLERK and all(eal.does_asset_exist(m) and eal.does_asset_exist(a_) for _, m, a_ in CLERK_PARTS):
+    for label, mesh, anim in CLERK_PARTS:
+        act = spawn(unreal.SkeletalMeshActor, vec(CLERK["chair"]), unreal.Rotator(0, 0, CLERK["chair_yaw"] - 90), label)
+        sk = act.skeletal_mesh_component
+        sk.set_skeletal_mesh_asset(eal.load_asset(mesh))
+        sk.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+        sk.override_animation_data(eal.load_asset(anim), True, True, 0.0, 1.0)
+        sk.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+        act.set_folder_path("People")
     cglow = spawn(unreal.RectLight, vec(CLERK["screen"]) + unreal.Vector(-4, 0, 0), unreal.Rotator(0, 0, 180),
                   "Clerk_ScreenGlow")
     cglow.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
@@ -759,7 +764,7 @@ if CLERK and eal.does_asset_exist(CLERK_MESH):
     crc.set_editor_property("source_width", CLERK["screen_size"][0])
     crc.set_editor_property("source_height", CLERK["screen_size"][1])
 else:
-    log("clerk mesh missing: %s" % CLERK_MESH)
+    log("clerk assets missing")
 
 # People: the owner in his booth and a crowd at the reachable stations (meshes and loops from
 # the humans thread; each mesh faces +Y at yaw 0 and stands on the floor under the seat centre).
@@ -806,7 +811,7 @@ GLOW = {"gaming": (0.55, 0.6, 1.0), "sega": (0.9, 0.7, 0.6), "spreadsheet": (0.8
         "modern": (0.6, 0.7, 1.0), "ps2": (0.6, 0.7, 0.9), "beige": (0.75, 0.85, 1.0), "zx": (0.7, 0.8, 0.9),
         "laptop": (0.85, 0.9, 1.0), "imac": (0.7, 0.9, 1.0), "mac": (0.9, 0.9, 0.85)}
 for st in LAYOUT.get("stations", []):
-    if not st["reachable"]:
+    if not st["reachable"] or (CLERK and st["chair"][1] == CLERK["chair"][1]):   # the clerk has his own glow
         continue
     c = GLOW.get(st["kind"], (0.8, 0.85, 1.0))
     g = spawn(unreal.RectLight, vec(st["desk"]) + unreal.Vector(-28, 0, 32), unreal.Rotator(0, 0, 180),
