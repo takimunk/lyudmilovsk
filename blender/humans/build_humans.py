@@ -24,6 +24,8 @@ import preview  # noqa: E402
 import seat_anims  # noqa: E402
 
 EXPORT = os.path.join(HERE, "export")
+PRESETS = os.path.join(HERE, "presets")
+RULES = os.path.join(HERE, "cast_rules.json")
 RENDERS = os.path.join(ROOT, "renders", "humans")
 
 TORSO = ["pelvis", "spine_01", "spine_02", "spine_03", "clavicle_l", "clavicle_r"]
@@ -72,6 +74,7 @@ def baggy_tee(co, w):
 CHARACTERS = {
     # Hero: Russian gen-z guy, ~20, oversized hoodie, wide jeans, chunky white sneakers
     "zoomer": dict(
+        loops=["Sit_KeyboardMouse", "Sit_Gamepad", "Sit_Browse", "Sit_Idle"], style={},
         macro=dict(gender=1.0, age=0.47, muscle=0.45, weight=0.42, height=0.53, proportions=0.6,
                    race=dict(caucasian=0.95, asian=0.05, african=0.0)),
         targets={"head/head-square": 0.35, "chin/chin-width-incr": 0.4, "chin/chin-prominent-incr": 0.3,
@@ -86,6 +89,7 @@ CHARACTERS = {
         height=1.80),
     # Station 09 clerk: Japanese office worker ~45, shirt + tie, black arm covers, glasses
     "clerk": dict(
+        loops=["Sit_KeyboardMouse"], style={"lean": 0.05, "feet": "tucked", "hip_back": 0.03},
         macro=dict(gender=1.0, age=0.655, muscle=0.35, weight=0.58, height=0.5, proportions=0.45,
                    race=dict(asian=0.95, caucasian=0.05, african=0.0)),
         targets={"stomach/stomach-pregnant-incr": 0.25, "head/head-age-incr": 0.6,
@@ -101,6 +105,7 @@ CHARACTERS = {
         height=1.68),
     # Club owner: grey-haired Japanese man ~70 with a full head of hair, sits in his booth
     "owner": dict(
+        loops=["Sit_Idle", "Sit_LeanBack"], style={"feet": "wide"},
         macro=dict(gender=1.0, age=0.86, muscle=0.35, weight=0.5, height=0.42, proportions=0.45,
                    race=dict(asian=0.95, caucasian=0.05, african=0.0)),
         targets={"head/head-age-incr": 1.0, "eyes/l-eye-bag-incr": 0.7, "eyes/r-eye-bag-incr": 0.7,
@@ -112,6 +117,7 @@ CHARACTERS = {
               "hair": ((0.80, 0.80, 0.78), 1.0, 0.9), "eyebrows": ((0.75, 0.74, 0.72), 1.0, 1.0)}),
     # --- the crowd at the other computers (a few bodies x outfits) ---
     "streamer": dict(
+        loops=["Sit_Stream"], style={"feet": "crossed"},
         macro=dict(gender=0.0, age=0.44, muscle=0.4, weight=0.45, height=0.5, proportions=0.6,
                    race=dict(asian=0.5, caucasian=0.5, african=0.0)),
         skin="young_asian_female", hair="o4saken_long01", eyebrows="eyebrow009", eyelashes="eyelashes02",
@@ -120,6 +126,7 @@ CHARACTERS = {
               "punkduck_female_tight_jeans": ((0.12, 0.12, 0.14), 0.9, 1.0)},
         headset=True),
     "kid_boy": dict(
+        loops=["Sit_Gamepad"], style={"feet": "tucked", "lean": 0.05},
         macro=dict(gender=1.0, age=0.235, muscle=0.45, weight=0.45, height=0.5,
                    race=dict(caucasian=0.95, asian=0.05, african=0.0)),
         skin="young_caucasian_male", hair="short02", eyebrows="eyebrow001",
@@ -128,6 +135,7 @@ CHARACTERS = {
         tint={"toigo_basic_tucked_t-shirt": ((0.75, 0.20, 0.18), 1.0, 0.6),
               "hair": ((0.35, 0.24, 0.14), 0.8, 1.0)}),
     "kid_girl": dict(
+        loops=["Sit_ChinRest"], style={"feet": "crossed"},
         macro=dict(gender=0.0, age=0.225, muscle=0.45, weight=0.45, height=0.5,
                    race=dict(caucasian=0.9, asian=0.1, african=0.0)),
         skin="young_caucasian_female", hair="ponytail01", eyebrows="eyebrow003",
@@ -135,6 +143,7 @@ CHARACTERS = {
         tint={"joepal_crude_t-shirt_female": ((0.55, 0.65, 0.85), 1.0, 0.6),
               "hair": ((0.55, 0.40, 0.22), 0.8, 1.0)}),
     "guy_a": dict(
+        loops=["Sit_KeyboardMouse"], style={"lean": 0.12, "elbows_out": 0.05, "feet": "wide"},
         macro=dict(gender=1.0, age=0.48, muscle=0.5, weight=0.55, height=0.5,
                    race=dict(caucasian=0.9, asian=0.1, african=0.0)),
         targets={"head/head-round": 0.3},
@@ -142,6 +151,7 @@ CHARACTERS = {
         clothes=["elvs_male_logo_tshirt1", "mindfront_male_trousers_1", "shoes05"],
         tailor={"elvs_male_logo_tshirt1": (baggy_tee, None)}),
     "guy_b": dict(
+        loops=["Sit_LeanBack"], style={"feet": "stretched"},
         macro=dict(gender=1.0, age=0.5, muscle=0.45, weight=0.4, height=0.55,
                    race=dict(asian=0.85, caucasian=0.15, african=0.0)),
         skin="young_asian_male", hair="short02", eyebrows="eyebrow002",
@@ -149,6 +159,7 @@ CHARACTERS = {
         tint={"namuhekam_male_polo_shirt": ((0.12, 0.14, 0.18), 1.0, 0.6),
               "hair": ((0.06, 0.05, 0.05), 0.9, 1.0)}),
     "girl_a": dict(
+        loops=["Sit_KeyboardMouse"], style={"lean": -0.04, "feet": "crossed", "twist": 0.04},
         macro=dict(gender=0.0, age=0.46, muscle=0.4, weight=0.5, height=0.45,
                    race=dict(caucasian=0.95, asian=0.05, african=0.0)),
         skin="young_caucasian_female2", hair="toigo_blunt_bob_with_bangs", eyebrows="eyebrow008",
@@ -157,6 +168,7 @@ CHARACTERS = {
         tint={"punkduck_off-shoulder_long-sleeve_top": ((0.85, 0.82, 0.75), 0.8, 0.8),
               "hair": ((0.10, 0.07, 0.05), 0.9, 1.0)}),
     "girl_b": dict(
+        loops=["Sit_Browse"], style={"feet": "tucked", "look": (0, 0, -0.03)},
         macro=dict(gender=0.0, age=0.5, muscle=0.4, weight=0.55, height=0.5,
                    race=dict(caucasian=0.8, asian=0.2, african=0.0)),
         skin="young_caucasian_female", hair="long01", eyebrows="eyebrow007",
@@ -298,11 +310,101 @@ def headset(bm, arm, name, rgb=(0.05, 0.05, 0.06)):
     return ob
 
 
+def gamepad_prop(bm, arm, name, action):
+    """A gamepad rigidly skinned to hand_r, placed where the hands hold it in `action` (frame 1)."""
+    import bmesh
+    from mathutils import Matrix, Vector
+    arm.animation_data.action = action
+    bpy.context.scene.frame_set(1)
+    pl, pr = arm.pose.bones["hand_l"], arm.pose.bones["hand_r"]
+    mw = arm.matrix_world
+    centre = (mw @ pl.head + mw @ pr.head) / 2
+    tips = (mw @ arm.pose.bones["middle_01_l"].head + mw @ arm.pose.bones["middle_01_r"].head) / 2
+    across = (mw @ pl.head - mw @ pr.head).normalized()
+    fwd = (tips - centre)
+    fwd = (fwd - across * fwd.dot(across)).normalized()
+    up = across.cross(fwd).normalized()
+    if up.z < 0:
+        up = -up
+    pos = centre + fwd * 0.035 + up * 0.01
+    rot = Matrix((across, fwd, up)).transposed().to_4x4()
+    pose_m = Matrix.Translation(pos) @ rot                  # pad in world, posed
+    hand_pose = mw @ pr.matrix
+    hand_rest = mw @ arm.data.bones["hand_r"].matrix_local
+    rest_m = hand_rest @ hand_pose.inverted() @ pose_m      # same pad relative to hand_r, at rest
+    arm.animation_data.action = None
+    bpy.context.scene.frame_set(1)
+    bmh = bmesh.new()
+    bmesh.ops.create_cube(bmh, size=1.0, matrix=Matrix.Diagonal((0.15, 0.055, 0.03, 1)))
+    for sx in (-1, 1):
+        bmesh.ops.create_cone(bmh, cap_ends=True, segments=16, radius1=0.026, radius2=0.022, depth=0.07,
+                              matrix=Matrix.Translation((sx * 0.06, -0.03, -0.004)) @
+                              Matrix.Rotation(math.radians(-70), 4, "X"))
+    bmesh.ops.transform(bmh, matrix=rest_m, verts=bmh.verts)
+    me = bpy.data.meshes.new(name)
+    bmh.to_mesh(me)
+    bmh.free()
+    ob = bpy.data.objects.new(name, me)
+    bm.users_collection[0].objects.link(ob)
+    ob.parent = arm
+    ob.matrix_parent_inverse = arm.matrix_world.inverted()
+    ob.vertex_groups.new(name="hand_r").add(list(range(len(me.vertices))), 1.0, "REPLACE")
+    ob.modifiers.new("Armature", "ARMATURE").object = arm
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    b = mat.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = (0.03, 0.03, 0.035, 1)
+    b.inputs["Roughness"].default_value = 0.45
+    me.materials.append(mat)
+    return ob
+
+
+def apply_preset_and_rules(name, spec):
+    """Body shape: presets/<name>.mpfb.json (edited in MPFB's UI) overrides the spec's macros and
+    modelling targets; then cast_rules.json clamps everything into the house style."""
+    import json
+    spec = dict(spec)
+    preset = os.path.join(PRESETS, name + ".mpfb.json")
+    if os.path.isfile(preset):
+        d = json.load(open(preset))
+        spec["macro"] = dict(d["phenotype"])
+        spec["targets"] = {t["target"]: t["value"] for t in d.get("targets", [])
+                           if t["value"] and not P.is_face_key(t["target"])}
+        print("HUMAN %s: body from %s" % (name, os.path.relpath(preset, ROOT)))
+    rules = json.load(open(RULES))
+    macro = dict(spec.get("macro", {}))
+    macro.update(rules["fixed"])
+    grp = rules["groups"][rules["cast"][name]]
+    for k, (lo, hi) in grp.items():
+        v = macro.get(k, 0.5)
+        if not lo <= v <= hi:
+            print("HUMAN %s: %s %.2f clamped to [%.2f, %.2f] (%s)" % (name, k, v, lo, hi, rules["cast"][name]))
+        macro[k] = min(hi, max(lo, v))
+    spec["macro"] = macro
+    lim, exc = rules["target_limit"], rules["target_limit_exceptions"]
+    spec["targets"] = {t: max(-exc.get(t.split("/")[-1], lim), min(exc.get(t.split("/")[-1], lim), v))
+                       for t, v in spec.get("targets", {}).items()}
+    return spec
+
+
+def save_preset(name, bm):
+    """Writes presets/<name>.mpfb.json: open it in MPFB (Blender sidebar > MPFB > Presets / Load
+    human), change sliders, save it back over the same file, rebuild."""
+    import json
+    os.makedirs(PRESETS, exist_ok=True)
+    d = json.loads(P.services()["HumanService"].serialize_to_json_string(bm))
+    d["targets"] = [t for t in d.get("targets", []) if not P.is_face_key(t["target"])]
+    path = os.path.join(PRESETS, name + ".mpfb.json")
+    if not os.path.isfile(path):
+        json.dump(d, open(path, "w"), indent=1, sort_keys=True)
+
+
 def build_one(name, spec, do_preview, do_export):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.preferences.addon_enable(module="bl_ext.user_default.mpfb")
-    s = dict(spec, name=name)
+    s = dict(apply_preset_and_rules(name, spec), name=name)
     bm, arm, objs = P.build(s)
+    save_preset(name, bm)
     for folder, (rule, blend_rule) in spec.get("tailor", {}).items():
         g = objs[folder]
         blend = None
@@ -327,7 +429,9 @@ def build_one(name, spec, do_preview, do_export):
     if spec.get("arm_covers"):
         objs["arm_covers"] = arm_covers(objs[spec["arm_covers"]], name + ".arm_covers")
     if "--no-anims" not in sys.argv:
-        seat_anims.bake_all(arm)
+        acts = seat_anims.bake_all(arm, spec.get("loops"), spec.get("style"))
+        if spec.get("loops") == ["Sit_Gamepad"]:                # only gamers hold a pad all the time
+            objs["gamepad"] = gamepad_prop(bm, arm, name + ".gamepad", acts[0])
     os.makedirs(HERE, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, name + ".blend"))
     if do_preview:

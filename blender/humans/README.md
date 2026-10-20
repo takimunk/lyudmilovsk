@@ -39,7 +39,7 @@ Morph targets on every mesh section that moves with the face: 52 ARKit face unit
 Rest pose: standing A-pose, origin on the floor between the feet. **In UE the meshes face +Y**, so
 an actor faces +X at yaw -90 (same as the mannequin).
 
-## Seated loops (per character, `A_<Name>_Sit_*`)
+## Seated loops (`A_<Name>_Sit_*`)
 
 Origin = the floor under the chair-seat centre; the character faces its desk. Seat top 47 cm, desk
 top 76 cm, keyboard 55 cm in front, mouse 26 cm to the right of it, monitor ~95 cm in front at
@@ -47,12 +47,27 @@ top 76 cm, keyboard 55 cm in front, mouse 26 cm to the right of it, monitor ~95 
 
 | Anim | Length | What |
 |---|---|---|
-| `Sit_KeyboardMouse` | 4 s | playing: left hand on WASD, right hand flicks/clicks the mouse, leaning in |
-| `Sit_Gamepad` | 6 s | playing with a gamepad held over the lap, thumbs and triggers moving |
+| `Sit_KeyboardMouse` | 4 s | playing: left hand on WASD, right hand flicks/clicks the mouse |
+| `Sit_Gamepad` | 6 s | gamepad over the lap (the pad is part of the mesh of characters that only game on it) |
 | `Sit_Browse` | 8 s | surfing: right hand scrolls and clicks, left forearm on the desk |
+| `Sit_ChinRest` | 9 s | reading with the chin on the left hand, right hand scrolls |
+| `Sit_LeanBack` | 10 s | slouched back, legs stretched, lazy mouse |
+| `Sit_Stream` | 14 s | streamer: plays, glances at the chat screen to her right, talks (jaw) and waves to the webcam on top of the monitor |
 | `Sit_Idle` | 12 s | the owner: leaning back, hands on the desk, slowly looking around |
 
-Each character's loops were baked on its own body, so play a character's own `A_<Name>_*`.
+Every character bakes only its own loops (spec `loops`) with its own `style` (lean, pelvis tilt,
+feet apart/crossed/tucked/stretched/wide, elbows, twist, gaze), so no two people sit alike. The bake
+prints `ANIM <rig> <loop>: clean` or the frames where forearms/hands come closer than 7-9 cm to each
+other or to the spine.
+
+## Character editor (MakeHuman sliders + house rules)
+
+MPFB2 is the editor: Sims-style sliders (gender, age, weight, height, ethnicity) plus ~1000 face and
+body morphs, skins, hair, clothes. Each character's body lives in `presets/<name>.mpfb.json`
+(written on the first build). To edit: Blender > sidebar > MPFB > load that human preset, move the
+sliders, save it back to the same file, rebuild. `cast_rules.json` then clamps everyone into one
+style: the same proportions model, age/height/weight/muscle ranges per group (kid, young, adult,
+elder) and a cap on single morphs, so characters differ but stay in one family.
 
 ## Characters
 

@@ -8,8 +8,8 @@ import unreal
 eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Characters/Humans/L_HumansPreview"
 CAST = [("Zoomer", "Sit_KeyboardMouse"), ("Clerk", "Sit_KeyboardMouse"), ("Owner", "Sit_Idle"),
-        ("Streamer", "Sit_Gamepad"), ("Kid_boy", "Sit_KeyboardMouse"), ("Kid_girl", "Sit_Browse"),
-        ("Guy_a", "Sit_Gamepad"), ("Guy_b", "Sit_Browse"), ("Girl_a", "Sit_KeyboardMouse"),
+        ("Streamer", "Sit_Stream"), ("Kid_boy", "Sit_Gamepad"), ("Kid_girl", "Sit_ChinRest"),
+        ("Guy_a", "Sit_KeyboardMouse"), ("Guy_b", "Sit_LeanBack"), ("Girl_a", "Sit_KeyboardMouse"),
         ("Girl_b", "Sit_Browse")]
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -29,7 +29,7 @@ def box(loc, size, label):
 
 box((0, 0, -5), (3000, 3000, 10), "Floor")
 light = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 500), unreal.Rotator(-40, 0, 60))
-light.light_component.set_intensity(4.0)
+light.light_component.set_intensity(2.0)
 eas.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 300)).light_component.set_intensity(1.0)
 for i, (name, anim) in enumerate(CAST):
     x = i * 140.0

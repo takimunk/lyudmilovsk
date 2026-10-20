@@ -24,7 +24,8 @@ KEYS = Vector((0.0, -0.55, DESK + 0.015))
 MOUSE = Vector((-0.26, -0.52, DESK + 0.02))   # right hand: the character's right is -X
 SCREEN = Vector((0.0, -0.95, 1.12))
 
-LOOPS = {"Sit_KeyboardMouse": 4.0, "Sit_Gamepad": 6.0, "Sit_Browse": 8.0, "Sit_Idle": 12.0}
+LOOPS = {"Sit_KeyboardMouse": 4.0, "Sit_Gamepad": 6.0, "Sit_Browse": 8.0, "Sit_Idle": 12.0,
+         "Sit_LeanBack": 10.0, "Sit_ChinRest": 9.0, "Sit_Stream": 14.0}
 FINGERS = ["thumb", "index", "middle", "ring", "pinky"]
 
 
@@ -44,8 +45,9 @@ def _wave(t, period, phase=0.0):
 
 
 class Rig:
-    def __init__(self, arm):
+    def __init__(self, arm, style=None):
         self.arm = arm
+        self.style = dict(style or {})
         self.pb = arm.pose.bones
         self.height = _w(arm, "head").z + 0.12
         self.k = self.height / 1.75                         # body scale vs an adult man
@@ -140,9 +142,22 @@ class Rig:
 
     def place(self, frame, *, hip_back=0.03, tilt=0.0, feet_fwd=0.42, feet_out=0.13,
               wrists=None, hands=None, elbows_out=0.22, look=SCREEN, lean=0.1, twist=0.0, breath=0.0,
-              curls=None):
+              curls=None, jaw_open=0.0):
         self.frame = frame
         k = self.k
+        st = self.style
+        lean += st.get("lean", 0.0)
+        tilt += st.get("tilt", 0.0)
+        hip_back += st.get("hip_back", 0.0)
+        elbows_out += st.get("elbows_out", 0.0)
+        feet = st.get("feet", "apart")
+        if feet == "stretched":
+            feet_fwd += 0.18
+        elif feet == "tucked":
+            feet_fwd -= 0.12
+        elif feet == "wide":
+            feet_out += 0.08
+        look = look + Vector(st.get("look", (0, 0, 0)))
         thigh = _w(self.arm, "thigh_l")
         pel = _w(self.arm, "pelvis")
         self.t_pelvis.location = Vector((0, hip_back + (pel.y - thigh.y), self.hip_z + (pel.z - thigh.z)))
@@ -151,7 +166,11 @@ class Rig:
         pb.rotation_euler = (tilt, 0, 0)
         pb.keyframe_insert("rotation_euler", frame=frame)
         for s, sx in (("l", 1), ("r", -1)):
-            self.t_foot[s].location = (sx * feet_out * k, -feet_fwd * k, 0.075 * k)
+            fx = sx * feet_out * k
+            if feet == "crossed":                      # ankles crossed under the chair
+                fx = -sx * 0.03
+            fy = -feet_fwd * k + (0.06 if (feet == "crossed" and s == "l") else 0)
+            self.t_foot[s].location = (fx, fy, 0.075 * k + (0.03 if (feet == "crossed" and s == "l") else 0))
             self.t_knee[s].location = (sx * feet_out * k * 1.1, -1.5, self.hip_z)
             self.t_wrist[s].location = wrists[s]
             self.t_elbow[s].location = (sx * (0.2 + elbows_out), 0.45, self.hip_z + 0.05)
@@ -161,7 +180,11 @@ class Rig:
         for e in self.helpers:
             e.keyframe_insert("location", frame=frame)
             e.keyframe_insert("rotation_euler", frame=frame)
-        self.spine(lean, twist, breath)
+        self.spine(lean, twist + st.get("twist", 0.0), breath)
+        jaw = self.pb["jaw"]
+        jaw.rotation_mode = "XYZ"
+        jaw.rotation_euler = (jaw_open, 0, 0)
+        jaw.keyframe_insert("rotation_euler", frame=frame)
         for s in "lr":
             for fi, fin in enumerate(FINGERS):
                 self.finger_curl(s, fin, (curls or {}).get((s, fin), 0.35))
@@ -190,18 +213,83 @@ def keyboard_mouse(r, t, T):
 
 
 def gamepad(r, t, T):
+    """Gamepad held over the lap: hands 22 cm apart, palms facing each other and slightly up."""
     k = r.k
-    c = Vector((0, -0.2 * k, r.hip_z + 0.2 * k + 0.01 * _wave(t, T / 3)))
-    wr = {"l": c + Vector((0.075, 0.07, 0)), "r": c + Vector((-0.075, 0.07, 0))}
-    hands = {"l": (Vector((-0.5, -1, 0.1)), Vector((-1, 0, 0.6))),
-             "r": (Vector((0.5, -1, 0.1)), Vector((1, 0, 0.6)))}
-    curls = {(s, f): 0.9 for s in "lr" for f in ("middle", "ring", "pinky")}
+    c = Vector((0, -0.3 * k, r.hip_z + 0.25 * k + 0.012 * _wave(t, T / 3)))
+    c.x += 0.012 * _wave(t, T / 2, 0.3)                 # steering with the whole pad
+    wr = {"l": c + Vector((0.11, 0.06, -0.01)), "r": c + Vector((-0.11, 0.06, -0.01))}
+    hands = {"l": (Vector((-0.35, -1, 0.15)), Vector((-1, 0, 0.8))),
+             "r": (Vector((0.35, -1, 0.15)), Vector((1, 0, 0.8)))}
+    curls = {(s, f): 0.95 for s in "lr" for f in ("middle", "ring", "pinky")}
     for s, ph in (("l", 0.0), ("r", 0.4)):
-        curls[(s, "index")] = 0.5 + 0.2 * max(0, _wave(t, T / 3, ph)) ** 4
-        curls[(s, "thumb")] = 0.25 + 0.2 * _wave(t, T / 5, ph)
+        curls[(s, "index")] = 0.45 + 0.25 * max(0, _wave(t, T / 3, ph)) ** 4
+        curls[(s, "thumb")] = 0.15 + 0.2 * _wave(t, T / 5, ph)
     look = SCREEN + Vector((0.06 * _wave(t, T / 2), 0, 0.02 * _wave(t, T, 0.3)))
-    r.place(r.f, wrists=wr, hands=hands, lean=-0.04, tilt=-0.12, hip_back=0.06, look=look, curls=curls,
-            elbows_out=0.12, breath=0.02 * _wave(t, T / 3))
+    r.place(r.f, wrists=wr, hands=hands, lean=0.02, tilt=-0.1, hip_back=0.04, look=look, curls=curls,
+            elbows_out=0.2, breath=0.02 * _wave(t, T / 3))
+
+
+def lean_back(r, t, T):
+    """Slouched far back, legs stretched, right hand lazily on the mouse, left hand on the thigh."""
+    k = r.k
+    wr = {"l": Vector((0.24, -0.36, DESK + 0.035)),
+          "r": MOUSE + Vector((0.04, 0.14, 0.03)) + Vector((0.008 * _wave(t, T, 0.2), 0.008 * _wave(t, T / 2), 0))}
+    hands = {"l": (Vector((-0.5, -1, -0.1)), DOWN), "r": (FWD + Vector((0.15, 0, -0.1)), DOWN)}
+    click = max(0, _wave(t, T / 3, 0.4)) ** 10
+    curls = {("r", "index"): 0.3 + 0.3 * click, ("r", "middle"): 0.4, ("r", "thumb"): 0.2,
+             ("r", "ring"): 0.6, ("r", "pinky"): 0.7}
+    curls.update({("l", f): 0.3 for f in FINGERS})
+    look = SCREEN + Vector((0.05 * _wave(t, T, 0.4), 0, 0.03 * _wave(t, T / 2)))
+    r.place(r.f, wrists=wr, hands=hands, lean=-0.1, tilt=-0.16, hip_back=0.0, look=look, curls=curls,
+            feet_fwd=0.55, breath=0.02 * _wave(t, T / 3))
+
+
+def chin_rest(r, t, T):
+    """Reading: left elbow on the desk, chin on the left hand, right hand scrolls."""
+    k = r.k
+    scroll = max(0, _wave(t, T / 4)) ** 4
+    # provisional wrist; the real one is set under the chin once the head is posed
+    wr = {"l": Vector((0.06, -0.3, DESK + 0.2)),
+          "r": MOUSE + Vector((0.02, 0.1, 0.03)) + Vector((0.006 * _wave(t, T, 0.2), 0.008 * _wave(t, T / 2), 0))}
+    hands = {"l": (Vector((-0.3, -0.3, 1)), Vector((0.2, -1, 0))), "r": (FWD + Vector((0.1, 0, -0.15)), DOWN)}
+    curls = {("r", "index"): 0.3 + 0.3 * scroll, ("r", "middle"): 0.35, ("r", "thumb"): 0.2,
+             ("r", "ring"): 0.6, ("r", "pinky"): 0.7}
+    curls.update({("l", f): 0.8 for f in FINGERS})
+    look = SCREEN + Vector((0.03 * _wave(t, T, 0.5), 0, -0.08 + 0.04 * _wave(t, T / 2)))
+    r.place(r.f, wrists=wr, hands=hands, lean=0.32, tilt=0.06, hip_back=0.0, look=look, curls=curls,
+            twist=-0.08, breath=0.015 * _wave(t, T / 2))
+    bpy.context.view_layer.update()
+    a = r.arm
+    head = a.matrix_world @ a.pose.bones["head"].head
+    chin = head + Vector((0.02, -0.085, -0.075 * k))
+    r.t_wrist["l"].location = chin + Vector((0.015, 0.03, -0.06 * k))
+    r.t_wrist["l"].keyframe_insert("location", frame=r.f)
+
+
+STREAM_CAM = Vector((0.0, -0.9, 1.33))          # webcam on top of the monitor
+STREAM_CHAT = Vector((0.42, -0.82, 1.08))       # second screen with the chat
+
+
+def stream(r, t, T):
+    """Streamer: plays on keyboard + mouse, glances at the chat, talks to the webcam and waves."""
+    k = r.k
+    talk = max(0.0, _wave(t, T, 0.15))            # talking half of the loop
+    wave = max(0.0, _wave(t, T, 0.05)) ** 3       # left hand lifts towards the camera
+    aim = Vector((0.012 * _wave(t, T / 4), 0.006 * _wave(t, T / 3, 0.25), 0))
+    kb_l = KEYS + Vector((0.11, 0.095, 0.035))
+    up = Vector((0.16, -0.36, 1.08 + 0.03 * _wave(t, T / 10)))
+    wr = {"l": kb_l.lerp(up, wave), "r": MOUSE + Vector((0.0, 0.1, 0.03)) + aim}
+    hands = {"l": ((FWD + Vector((-0.3, 0, -0.15))).lerp(Vector((0, -0.2, 1)), wave),
+                   DOWN.lerp(Vector((0, -1, 0)), wave)),
+             "r": (FWD + Vector((0.1, 0, -0.15)), DOWN)}
+    curls = {("l", f): 0.35 * (1 - wave) + 0.05 for f in FINGERS}
+    curls.update({("r", "index"): 0.3, ("r", "middle"): 0.35, ("r", "thumb"): 0.2, ("r", "ring"): 0.6,
+                  ("r", "pinky"): 0.7})
+    chat = max(0.0, _wave(t, T, 0.6)) ** 2
+    look = SCREEN.lerp(STREAM_CAM, talk).lerp(STREAM_CHAT, chat)
+    jaw = 0.06 * talk * max(0.0, _wave(t, T / 14)) * (0.6 + 0.4 * _wave(t, T / 9, 0.3))
+    r.place(r.f, wrists=wr, hands=hands, lean=0.1, tilt=0.02, look=look, curls=curls, jaw_open=jaw,
+            breath=0.02 * _wave(t, T / 3))
 
 
 def browse(r, t, T):
@@ -227,10 +315,46 @@ def idle(r, t, T):
             elbows_out=0.18, breath=0.025 * _wave(t, T / 3))
 
 
-MAKERS = {"Sit_KeyboardMouse": keyboard_mouse, "Sit_Gamepad": gamepad, "Sit_Browse": browse, "Sit_Idle": idle}
+MAKERS = {"Sit_KeyboardMouse": keyboard_mouse, "Sit_Gamepad": gamepad, "Sit_Browse": browse, "Sit_Idle": idle,
+          "Sit_LeanBack": lean_back, "Sit_ChinRest": chin_rest, "Sit_Stream": stream}
 
 
-def bake_all(arm, names=None):
+def check(arm, action, frames):
+    """Clearance problems of a baked loop: forearms/hands through each other or into the torso.
+    Returns a list of strings (empty = clean)."""
+    from mathutils.geometry import intersect_line_line
+    arm.animation_data.action = action
+    bad = []
+
+    def seg(b):
+        pb = arm.pose.bones[b]
+        return arm.matrix_world @ pb.head, arm.matrix_world @ pb.tail
+
+    def dist(s1, s2):
+        best = 1e9
+        for i in range(11):
+            p = s1[0].lerp(s1[1], i / 10)
+            for j in range(11):
+                best = min(best, (p - s2[0].lerp(s2[1], j / 10)).length)
+        return best
+    for f in frames:
+        bpy.context.scene.frame_set(f)
+        fa = dist(seg("lowerarm_l"), seg("lowerarm_r"))
+        if fa < 0.07:
+            bad.append("f%d forearms %.3f m apart" % (f, fa))
+        for s in "lr":
+            sp = (seg("spine_01")[0], seg("spine_03")[1])
+            d = dist(seg("lowerarm_" + s), sp)
+            if d < 0.1:
+                bad.append("f%d lowerarm_%s %.3f m from the spine" % (f, s, d))
+            d = dist(seg("hand_" + s), sp)
+            if d < 0.09:
+                bad.append("f%d hand_%s %.3f m from the spine" % (f, s, d))
+    arm.animation_data.action = None
+    return bad
+
+
+def bake_all(arm, names=None, style=None):
     """Creates one baked action per loop on `arm`; returns the actions."""
     sc = bpy.context.scene
     sc.render.fps = FPS
@@ -238,7 +362,7 @@ def bake_all(arm, names=None):
     for name in names or list(MAKERS):
         T = LOOPS[name]
         n = int(T * FPS)
-        r = Rig(arm)
+        r = Rig(arm, style)
         r.setup()
         arm.animation_data_create()
         arm.animation_data.action = bpy.data.actions.new(name + "_keys")
@@ -266,6 +390,8 @@ def bake_all(arm, names=None):
             if h.name.startswith(arm.name + "_") and h.users == 0:
                 bpy.data.actions.remove(h)
         out.append(baked)
+        problems = check(arm, baked, range(1, n + 2, 6))
+        print("ANIM %s %s: %s" % (arm.name, name, "; ".join(problems[:4]) if problems else "clean"))
     arm.animation_data.action = None
     for pb in arm.pose.bones:
         pb.location = (0, 0, 0)

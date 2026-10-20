@@ -167,7 +167,10 @@ def build(spec):
 
     troot = s["LocationService"].get_mpfb_data("targets")
     for rel, wgt in spec.get("targets", {}).items():
-        s["TargetService"].load_target(basemesh, os.path.join(troot, rel + ".target.gz"), weight=wgt)
+        path = os.path.join(troot, rel + ".target.gz") if "/" in rel else s["TargetService"].target_full_path(rel)
+        if not path or not os.path.isfile(path):
+            raise FileNotFoundError("modelling target %s not found" % rel)
+        s["TargetService"].load_target(basemesh, path, weight=wgt)
 
     # face shape keys before rig/assets, so proxies can get them interpolated
     s["FaceService"].load_targets(basemesh, load_microsoft_visemes=True, load_arkit_faceunits=True)

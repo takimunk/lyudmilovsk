@@ -180,6 +180,16 @@ def gltf_material_textures(glb):
     return out
 
 
+def gltf_animation_names(glb):
+    import json
+    import struct
+    with open(glb, "rb") as f:
+        f.read(12)
+        n, _ = struct.unpack("<II", f.read(8))
+        g = json.loads(f.read(n))
+    return [a.get("name", "") for a in g.get("animations", [])]
+
+
 def _ue_name(s):
     import re
     return re.sub(r"[^A-Za-z0-9_]", "_", s or "")
@@ -216,6 +226,7 @@ def import_glb(name):
         raise RuntimeError("no skeletal mesh in " + glb)
 
     texmap = gltf_material_textures(glb)
+    gltf_anims = gltf_animation_names(glb)
     by_name = {}
     for t in textures:
         nm = _ue_name(t.get_name())
@@ -268,7 +279,10 @@ def import_glb(name):
             eal.rename_asset(p, "%s/SK_%s_PhysicsAsset" % (dest, title))
         elif isinstance(a, unreal.AnimSequence):
             nm = a.get_name()
-            nm = nm[nm.find("Sit_"):] if "Sit_" in nm else nm
+            if "Sit_" in nm:
+                nm = nm[nm.find("Sit_"):]
+            elif len(gltf_anims) == 1:              # a lone animation is named after the file
+                nm = gltf_anims[0]
             new = "%s/Anims/A_%s_%s" % (dest, title, nm)
             eal.rename_asset(p, new)
             anim = unreal.load_asset(new)
