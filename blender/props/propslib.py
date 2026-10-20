@@ -63,7 +63,7 @@ def led(name, color, strength=6.0):
     return mat("LED_" + name, (0, 0, 0), 1.0, emit=color, strength=strength)
 
 
-def tex(name, file, rough=0.6, metal=0.0, size=1024, tint=None, fallback=(0.5, 0.5, 0.5), tilemult=1.0):
+def tex(name, file, rough=0.6, metal=0.0, size=1024, tint=None, fallback=(0.5, 0.5, 0.5), tilemult=1.0, grain=False):
     """Image-textured material from textures/props/<file> (falls back to a flat colour if the file is missing)."""
     m = bpy.data.materials.get(name)
     if m:
@@ -73,6 +73,7 @@ def tex(name, file, rough=0.6, metal=0.0, size=1024, tint=None, fallback=(0.5, 0
         print("WARN missing texture", path)
         return mat(name, fallback, rough, metal)
     m = bpy.data.materials.new(name)
+    m["grain"] = grain
     m["tile_mult"] = tilemult      # UV tile size multiplier (a bigger value = larger pattern on the object)
     m.use_nodes = True
     nt = m.node_tree
@@ -111,13 +112,20 @@ def _autosmooth(bm, angle=38):
             e.smooth = False
 
 
-def _uv_box(bm, tile):
-    """Box-projected UVs in object space, `tile` metres = one texture repeat."""
+def _uv_box(bm, tile, grain=False):
+    """Box-projected UVs in object space, `tile` metres = one texture repeat.
+    grain=True lays the texture's vertical grain along the object's longest axis."""
     uv = bm.loops.layers.uv.verify()
+    longest = None
+    if grain and bm.verts:
+        ext = [max(v.co[i] for v in bm.verts) - min(v.co[i] for v in bm.verts) for i in range(3)]
+        longest = max(range(3), key=lambda i: ext[i])
     for f in bm.faces:
         n = f.normal
         ax = max(range(3), key=lambda i: abs(n[i]))
         a, b = [(1, 2), (0, 2), (0, 1)][ax]
+        if longest is not None and longest in (a, b):
+            a, b = (b, a) if longest == a else (a, b)      # make v follow the longest axis
         for l in f.loops:
             p = l.vert.co
             l[uv].uv = (p[a] / tile, p[b] / tile)
@@ -126,7 +134,8 @@ def _uv_box(bm, tile):
 def _make(name, bm, material, parent, tile=0.5, smooth=38):
     if smooth is not None:
         _autosmooth(bm, smooth)
-    _uv_box(bm, tile * (material.get("tile_mult", 1.0) if material is not None else 1.0))
+    _uv_box(bm, tile * (material.get("tile_mult", 1.0) if material is not None else 1.0),
+            bool(material.get("grain", False)) if material is not None else False)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
@@ -378,7 +387,7 @@ def stats(root):
     return n, tris
 
 
-def setup_studio(scn, res=(900, 700)):
+def setup_studio(scn, res=(900, 700), ground_z=0.0):
     scn.render.engine = "CYCLES"
     scn.cycles.samples = 24
     scn.cycles.use_denoising = True
@@ -388,15 +397,15 @@ def setup_studio(scn, res=(900, 700)):
     w.node_tree.nodes["Background"].inputs["Color"].default_value = (0.42, 0.42, 0.44, 1)
     w.node_tree.nodes["Background"].inputs["Strength"].default_value = 1.0
     scn.world = w
-    ground = rbox("_ground", (6, 6, 0.01), (0, 0, -0.005), mat("_g", (0.35, 0.35, 0.35), 0.9))
-    for loc, e in (((1.5, -2.5, 2.5), 250), ((-2.5, -1.0, 1.5), 90)):
+    ground = rbox("_ground", (6, 6, 0.01), (0, 0, ground_z - 0.005), mat("_g", (0.35, 0.35, 0.35), 0.9))
+    for loc, e in (((1.5, -2.5, 2.5 + ground_z), 250), ((-2.5, -1.0, 1.5 + ground_z), 90)):
         ld = bpy.data.lights.new("L", "AREA")
         ld.energy = e
         ld.size = 1.5
         lo = bpy.data.objects.new("L", ld)
         bpy.context.scene.collection.objects.link(lo)
         lo.location = loc
-        d = Vector((0, 0, 0.2)) - Vector(loc)
+        d = Vector((0, 0, 0.2 + ground_z)) - Vector(loc)
         lo.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
     return ground
 
@@ -414,6 +423,26 @@ def render(scn, path, target=(0, 0, 0.15), loc=(0.8, -1.2, 0.7), lens=60):
     bpy.ops.render.render(write_still=True)
 
 
+def write_manifest(root, name):
+    """Adds the prop's bounding box (Blender axes, metres, relative to its origin) to export/manifest.json."""
+    import json
+    bpy.context.view_layer.update()
+    lo, hi = [1e9] * 3, [-1e9] * 3
+    tris = 0
+    for o in bpy.data.objects:
+        if o.type == "MESH" and o.name != "_ground" and not o.name.startswith("_"):
+            tris += sum(len(p.vertices) - 2 for p in o.data.polygons)
+            for c in o.bound_box:
+                w = o.matrix_world @ Vector(c)
+                for i in range(3):
+                    lo[i], hi[i] = min(lo[i], w[i]), max(hi[i], w[i])
+    path = os.path.join(EXPORT_DIR, "manifest.json")
+    data = json.load(open(path)) if os.path.exists(path) else {}
+    data[name] = {"size_xyz_m": [round(hi[i] - lo[i], 3) for i in range(3)],
+                  "min_xyz_m": [round(v, 3) for v in lo], "max_xyz_m": [round(v, 3) for v in hi], "tris": tris}
+    json.dump(dict(sorted(data.items())), open(path, "w"), indent=1)
+
+
 def export(root, name, blend=True):
     """Saves blender/props/<name>.blend and exports blender/props/export/<name>.glb for the root and its children."""
     os.makedirs(EXPORT_DIR, exist_ok=True)
@@ -425,5 +454,6 @@ def export(root, name, blend=True):
     bpy.ops.export_scene.gltf(filepath=os.path.join(EXPORT_DIR, name + ".glb"), export_format="GLB",
                               use_selection=True, export_apply=True, export_image_format="JPEG",
                               export_jpeg_quality=88, export_cameras=False, export_lights=False)
+    write_manifest(root, name)
     if blend:
         bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, name + ".blend"), compress=True)

@@ -145,11 +145,10 @@ def materials(style):
     s = style
     M = {}
     M["black"] = P.mat("KB_PlasticBlack", (0.025, 0.025, 0.028), 0.42)
-    M["grey"] = P.tex("KB_PlasticGrey", "plastic_grey.png", 0.5, size=256, fallback=(0.4, 0.4, 0.4))
+    M["grey"] = P.tex("KB_PlasticGrey", "laminate_white.png", 0.5, size=256, tint=(0.45, 0.45, 0.46), tilemult=2.0)
     M["beige"] = P.tex("KB_PlasticBeige", "plastic_beige.png", 0.5, size=512, tint=(0.66, 0.67, 0.62),
                        fallback=(0.72, 0.66, 0.53), tilemult=4.0)
-    M["platinum"] = P.tex("KB_Platinum", "plastic_grey.png", 0.45, size=256, tint=(0.82, 0.8, 0.74),
-                          fallback=(0.7, 0.68, 0.62))
+    M["platinum"] = P.tex("KB_Platinum", "laminate_white.png", 0.45, size=256, tint=(0.9, 0.88, 0.82), tilemult=2.0)
     M["teal"] = P.mat("KB_Teal", (0.02, 0.3, 0.38), 0.12)
     M["tealglass"] = P.mat("KB_TealGlass", (0.55, 0.72, 0.75), 0.18)
     M["dkcap"] = P.mat("KB_DarkKey", (0.12, 0.12, 0.13), 0.45)

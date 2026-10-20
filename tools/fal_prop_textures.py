@@ -17,13 +17,11 @@ PROMPTS = {
     "wood_pine": "Plain light pine boards with knots and straight grain, matte. ",
     "wood_birch": "Pale birch plywood, tight fine grain, slight yellowing. ",
     "laminate_white": "Off-white melamine laminate, very subtle fine speckle, slight yellow aging. ",
-    "laminate_grey": "Mid-grey matte desk surface with fine pebbled grain. ",
     "fabric_black": "Black woven office chair upholstery fabric, tight small herringbone weave, slightly faded. ",
     "mesh_black": "Black elastic breathable mesh fabric of an ergonomic chair, fine diamond lattice weave. ",
     "leatherette_black": "Black synthetic leatherette with fine pebbled grain, slightly worn, subtle sheen. ",
     "leatherette_red": "Deep red synthetic leatherette with fine pebbled grain, slightly worn, subtle sheen. ",
     "plastic_beige": "Yellowed beige ABS computer plastic from the nineties, very fine matte grain with faint mottled aging. ",
-    "plastic_grey": "Light grey matte plastic surface with very fine grain. ",
     "metal_brushed": "Brushed aluminium with fine horizontal scratches, neutral grey. ",
     "metal_painted_grey": "Grey hammered-finish painted steel, small chips of paint worn off at random. ",
 }
