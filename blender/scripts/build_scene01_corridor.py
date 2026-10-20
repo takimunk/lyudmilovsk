@@ -643,6 +643,108 @@ def flip(obj):
     return obj
 
 
+def terrain_height(x, d):
+    """Ground outside, d metres out from the portal face: the club is dug into a mound on a hilltop
+    (6 m of earth over it, flush with the portal top); in front a grassy crown, then the slope falls from 9 m out,
+    ~45 m to the sea."""
+    mound = 6.0 + min(max(-d, 0.0), 30.0) * 0.08
+    if abs(x) <= 6.2:                                # behind the portal / the open ground in front of it
+        h = mound if d <= 0.0 else 0.0
+    else:
+        front = min((abs(x) - 6.2) * 1.1, 4.0)       # the mound's face curves away from the portal
+        k = min(1.0, max(0.0, (abs(x) - 12.0) / 25.0))
+        mound *= 1 - k * k * (3 - 2 * k)
+        t = min(1.0, max(0.0, (d - front) / 7.0))
+        h = mound * (1 - t * t * (3 - 2 * t))
+    if d > 9.0:                                      # the hill falls away toward the sea
+        u = d - 9.0
+        h -= 46.0 * (1 - math.exp(-0.9 * u / 46.0))  # steepest at the brow, so the sea shows below it
+    if abs(x) > 40.0:
+        h -= (abs(x) - 40.0) * 0.12
+    n = math.sin(x * 0.21 + d * 0.13) * 0.25 + math.sin(x * 0.07 - d * 0.05) * 0.6
+    return h + n * min(1.0, max(0.0, (d - 3.0) / 10.0))
+
+
+def build_outside(coll, dx0, dx1, dh, face_y):
+    """Concrete portal around the blast door, the grassy hill, the sea below and a sky dome."""
+    conc = tex_mat("Outside_Concrete", "ceiling.jpg", 0.9)
+    t = 0.4
+    fy = face_y - t / 2
+    px0, px1, ph = -6.2, 6.2, 6.0
+    o0, o1, oh = dx0 - 0.25, dx1 + 0.25, dh + 0.1    # a little wider than the door, so the leaf swings clear
+    tbox("Outside_Portal_L", (o0 - px0, t, ph + 0.5), ((px0 + o0) / 2, fy, ph / 2 - 0.25), conc, 2.0, coll=coll)
+    tbox("Outside_Portal_R", (px1 - o1, t, ph + 0.5), ((o1 + px1) / 2, fy, ph / 2 - 0.25), conc, 2.0, coll=coll)
+    tbox("Outside_Portal_Top", (o1 - o0, t, ph - oh), ((o0 + o1) / 2, fy, (oh + ph) / 2), conc, 2.0, coll=coll)
+    tbox("Outside_Threshold", (o1 - o0, t + 0.1, 0.3), ((o0 + o1) / 2, fy, -0.15), conc, 2.0, coll=coll)
+    tbox("Outside_Apron", (6.0, 3.0, 0.3), ((o0 + o1) / 2, face_y - t - 1.5, -0.13), conc, 2.0, coll=coll)
+    # reveals between the hall wall and the portal so the doorway has depth, and a lintel
+    tbox("Outside_Reveal_L", (0.25, t, oh), (o0 + 0.125, fy, oh / 2), conc, 2.0, coll=coll)
+    tbox("Outside_Reveal_R", (0.25, t, oh), (o1 - 0.125, fy, oh / 2), conc, 2.0, coll=coll)
+    # ground: a height grid, finer near the door
+    grass = tex_mat("Outside_Grass", "grass.jpg", 0.95)
+    face = fy - t / 2                                  # Blender y of the portal face
+    ds = [-60, -40, -25, -15, -8, -4, -2, -1, -0.3, 0.0, 0.01]
+    d = 0.5
+    while d < 420:
+        ds.append(round(d, 2))
+        d += 0.5 if d < 10 else (1.5 if d < 40 else (6 if d < 150 else 20))
+    xs = sorted({round(v, 2) for v in [i * 0.5 for i in range(-30, 31)] + [i * 2.0 for i in range(-30, 31)] +
+                 [i * 10.0 for i in range(-25, 26)] + [-6.2, 6.2]})
+    me = bpy.data.meshes.new("Outside_Ground")
+    bm = bmesh.new()
+    grid = [[bm.verts.new((x, face - dd, terrain_height(x, dd))) for x in xs] for dd in ds]
+    for i in range(len(ds) - 1):
+        for j in range(len(xs) - 1):
+            if ds[i] == 0.0 and abs(xs[j]) <= 6.2 and abs(xs[j + 1]) <= 6.2:
+                continue                             # the portal stands in the drop from the mound
+            bm.faces.new((grid[i][j], grid[i + 1][j], grid[i + 1][j + 1], grid[i][j + 1]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    uvl = bm.loops.layers.uv.new()
+    for f in bm.faces:
+        if f.normal.z < 0:
+            f.normal_flip()
+        for lp in f.loops:
+            lp[uvl].uv = (lp.vert.co.x / 3.0, lp.vert.co.y / 3.0)
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(grass)
+    g = bpy.data.objects.new("Outside_Ground", me)
+    coll.objects.link(g)
+    # the sea, far below
+    sea = tex_mat("Outside_Sea", "sea_water.jpg", 0.08)
+    sme = bpy.data.meshes.new("Outside_Sea")
+    bm = bmesh.new()
+    vs = [bm.verts.new((x, face - y, -43.0)) for x, y in ((-3000, 90), (3000, 90), (3000, 3000), (-3000, 3000))]
+    f = bm.faces.new(vs)
+    if f.normal.z < 0:
+        f.normal_flip()
+    uvl = bm.loops.layers.uv.new()
+    for lp in f.loops:
+        lp[uvl].uv = (lp.vert.co.x / 20.0, lp.vert.co.y / 20.0)
+    bm.to_mesh(sme)
+    bm.free()
+    sme.materials.append(sea)
+    so = bpy.data.objects.new("Outside_Sea", sme)
+    coll.objects.link(so)
+    # sky dome (Unreal renders it as unlit sky): equirect panorama, horizon on the equator
+    sky = screen_on("sky", "sky_panorama.jpg", 1.0)
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=2800.0,
+                                         location=(0.0, face - 40.0, 0.0))
+    dome = bpy.context.active_object
+    dome.name = "Outside_SkyDome"
+    for c in list(dome.users_collection):
+        c.objects.unlink(dome)
+    coll.objects.link(dome)
+    dome.data.materials.append(sky)
+    bm = bmesh.new()
+    bm.from_mesh(dome.data)
+    bmesh.ops.reverse_faces(bm, faces=bm.faces)       # seen from inside
+    bm.to_mesh(dome.data)
+    bm.free()
+    LAYOUT["outside"] = {"portal_face_y": ue(0, face, 0)[1], "center": ue(0, face - 25.0, 0),
+                         "sea_z": -4300.0, "starlings_hint": ue(0, face - 120.0, 10.0)}
+
+
 def build_hall(coll):
     """Square-ish hall at the start: the admin's booth (a partition with a barred window and a
     curtain, like a stalker trader's corner), a chair with a newspaper and a drinks vending
@@ -671,10 +773,13 @@ def build_hall(coll):
     if have_prop("blastdoor"):
         # hermetic shelter door in the far wall, closed (the street comes later)
         place("blastdoor", floor_at(((dx0 + dx1) / 2, y0 - 0.25, 0), math.pi), coll, label="ExitDoor")
+        LAYOUT["exit_door"] = {"leaves": ["ExitDoor_Leaf"], "riders": ["ExitDoor_Wheel"], "open_angles": [-100.0],
+                               "center": ue((dx0 + dx1) / 2, y0 - 0.25, 1.0)}
     else:
         door_paint = mat("Door_GreenMetal", (0.12, 0.2, 0.15), 0.4, 0.5)
         join("ExitDoor", [box("Door_Leaf", (dx1 - dx0 - 0.04, 0.05, dh - 0.03),
                               ((dx0 + dx1) / 2, y0 - 0.1, (dh - 0.03) / 2), door_paint, coll=coll)], coll)
+    build_outside(coll, dx0, dx1, dh, y0 - 0.5)
     sign = screen_on("exit", "exit_sign.jpg", 2.0)
     join("ExitSign", [box("ExitSign_Box", (0.42, 0.06, 0.16), ((dx0 + dx1) / 2, y0 + 0.03, dh + 0.25),
                           mat("Sign_Case", (0.85, 0.85, 0.85), 0.4), coll=coll),
@@ -766,10 +871,10 @@ def build_hall(coll):
     for yy in (dy0 - 0.7, dy0 + 0.7):
         parts.append(box("Admin_DeskLeg", (0.6, 0.04, 0.74), (hw - 0.4, yy, 0.37), desk_m, coll=coll))
     parts.append(box("Admin_CRT", (0.38, 0.36, 0.34), (hw - 0.3, dy0 - 0.2, 0.95), beige, coll=coll, bevel=0.015))
-    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("live_cctv",
+    parts.append(plane("Admin_Screen", 0.28, 0.21, (hw - 0.49, dy0 - 0.2, 0.97), screen_on("live_glitch",
                        "screen_cctv.jpg", 1.1), coll=coll))
     parts[-1].rotation_euler = (0, 0, math.radians(-90))
-    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.62, dy0 - 0.2, 0.795), beige, coll=coll))
+    parts.append(box("Admin_Keyboard", (0.16, 0.44, 0.03), (hw - 0.7, dy0 - 0.2, 0.795), beige, coll=coll))
     parts.append(box("Admin_Ledger", (0.25, 0.32, 0.03), (bx0 + 0.1, -3.9, wz0 + 0.055), mat("Ledger", (0.1, 0.2, 0.35), 0.6),
                      coll=coll, rot=(0, 0, math.radians(8))))
     parts.append(cyl("Admin_Bell", 0.04, 0.03, (bx0 - 0.12, -2.9, wz0 + 0.055), mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0),
@@ -792,9 +897,13 @@ def build_hall(coll):
     place("lamp_soviet", lm, coll, label="Admin_Lamp")
     LAYOUT["hall_lights"].append({"pos": ue(*(anchor("lamp_soviet", lm, "Lamp_Bulb") + Vector((0, 0, -0.03)))),
                                   "color": [1.0, 0.68, 0.38], "cd": 4.0, "radius": 350, "shadows": True})
-    place("chair_stool", floor_at((hw - 1.45, dy0 - 0.2, 0), math.radians(-90)), coll, label="Admin_Stool")
+    place("chair_stool", floor_at((hw - 1.3, dy0 - 0.2, 0), math.radians(-90)), coll, label="Admin_Stool")
     # the owner sits facing his monitor (CCTV of the hall) about 95 cm away
-    LAYOUT["owner"] = {"chair": ue(hw - 1.45, dy0 - 0.2, 0), "sitter_yaw": 0.0}
+    # He gets up when someone stands at the window and comes over to it (Unreal yaw 180 faces the hall).
+    LAYOUT["owner"] = {"chair": ue(hw - 1.3, dy0 - 0.2, 0), "sitter_yaw": 0.0,
+                       "window": ue(bx0 + 0.42, (win0 + win1) / 2, 0), "window_yaw": 180.0,
+                       "zone_center": ue(bx0 - 0.6, (win0 + win1) / 2, 0.9),
+                       "zone_extent": [55.0, abs(win1 - win0) * 50, 90.0]}
     # a warm bare bulb under the booth ceiling, now that it is closed in
     bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
     cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)

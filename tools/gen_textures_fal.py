@@ -29,6 +29,11 @@ TEXTURES = {
                 "patchy flaking whitewash, faint grey soot and rust-brown leak stains, 2 m x 2 m.",
     "radiator_paint": COMMON + "Cast iron surface painted with many layers of cream-beige oil paint, "
                       "drips and lumps of old paint, small rust spots, 30 cm x 30 cm.",
+    "grass": COMMON + "Short wild meadow grass on a windy southern Russian seaside hill, dense green and "
+             "sun-dried yellow blades, a few clover leaves and tiny wildflowers, small patches of bare earth, "
+             "2 m x 2 m area.",
+    "sea_water": COMMON + "Calm open sea surface seen from high above, deep blue-green water with gentle small "
+                 "waves and soft sparkle, uniform, 20 m x 20 m area.",
 }
 
 # Screens for the stations: (prompt, aspect ratio). Plain images, not tileable.
@@ -80,6 +85,10 @@ SCREENS = {
                     "white sail, warm evening light, visible brush strokes, no frame.", "4:3"),
     "landscape_3": ("A classic Russian oil painting of a birch grove in early autumn with a narrow path, soft "
                     "light, in the style of nineteenth-century realists, visible brush strokes, no frame.", "3:4"),
+    "sky_panorama": ("Equirectangular 360 degree panorama of a sky only, seamless left and right edges: soft late "
+                     "afternoon sky over the Black Sea, pale blue at the top fading to warm hazy peach at the "
+                     "horizon line exactly in the middle, scattered fluffy cumulus clouds, the lower half a smooth "
+                     "hazy sea-blue gradient, no land, no sun disc, no text.", "21:9"),
     "exit_sign": ("A glowing green emergency exit sign with the Cyrillic word ВЫХОД and a running-man pictogram, "
                   "flat front view filling the frame, dark background.", "16:9"),
 }

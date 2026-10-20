@@ -89,7 +89,7 @@ OPAQUE = (unreal.BlendMode.BLEND_OPAQUE, unreal.BlendMode.BLEND_MASKED)
 nanite = 0
 for path in eal.list_assets(DEST, True):
     sm = eal.load_asset(path)
-    if not isinstance(sm, unreal.StaticMesh) or sm.get_num_vertices(0) < 3000:
+    if not isinstance(sm, unreal.StaticMesh) or sm.get_num_vertices(0) < 3000 or "SkyDome" in sm.get_name():
         continue
     mats = [m.material_interface for m in sm.static_materials]
     if all(m and m.get_base_material().get_editor_property("blend_mode") in OPAQUE for m in mats):
@@ -297,6 +297,151 @@ def garland_filament_material(wall_y):
 
 
 screen_mats["Garland_Filament"] = garland_filament_material(LAYOUT["invisible_wall_y"])
+
+
+# Outside: sun (lux) and sky brightness, matched to the club's fixed dark-room exposure.
+SUN_LUX = 25.0
+SKY_BOOST = 4.0
+
+
+def graph(name, shading=None):
+    """New material plus small helpers for building its node graph."""
+    mel = unreal.MaterialEditingLibrary
+    m = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        name, "/Game/Scene01", unreal.Material, unreal.MaterialFactoryNew())
+    if shading is not None:
+        m.set_editor_property("shading_model", shading)
+
+    def node(cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    def un(cls, src, x, y, pin="", **props):
+        e = node(cls, x, y, **props)
+        mel.connect_material_expressions(src, pin, e, "A" if ("const_b" in props or "const_a" in props) else "")
+        return e
+
+    def bi(cls, a, b, x, y):
+        e = node(cls, x, y)
+        mel.connect_material_expressions(a, "", e, "A")
+        mel.connect_material_expressions(b, "", e, "B")
+        return e
+
+    def done(out, prop=unreal.MaterialProperty.MP_EMISSIVE_COLOR, pin=""):
+        mel.connect_material_property(out, pin, prop)
+    return m, node, un, bi, done
+
+
+def texture(tex_name):
+    return next((eal.load_asset(p) for p in eal.list_assets(DEST, True)
+                 if p.rsplit("/", 1)[-1].split(".")[0] == tex_name), None)
+
+
+def finish(m):
+    unreal.MaterialEditingLibrary.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+def hash_(un, bi, node, a, b, x, y):
+    """frac(sin(a*12.9898 + b*78.233) * 43758.5): a fresh pseudo-random 0..1 for each (a, b)."""
+    ha = un(E_.MaterialExpressionMultiply, a, x, y, const_b=12.9898)
+    hb = un(E_.MaterialExpressionMultiply, b, x, y + 60, const_b=78.233)
+    sn = un(E_.MaterialExpressionSine, bi(E_.MaterialExpressionAdd, ha, hb, x + 150, y), x + 300, y)
+    return un(E_.MaterialExpressionFrac, un(E_.MaterialExpressionMultiply, sn, x + 450, y, const_b=43758.5), x + 600, y)
+
+
+E_ = unreal
+
+
+def glitch_material():
+    """The owner's broken CCTV monitor: rows tear sideways, the picture jumps and rolls, the
+    brightness stutters and now and then it blacks out for a moment."""
+    m, node, un, bi, done = graph("M_LiveScreen_Glitch", unreal.MaterialShadingModel.MSM_UNLIT)
+    uv = node(E_.MaterialExpressionTextureCoordinate, -2000, 0)
+    u = un(E_.MaterialExpressionComponentMask, uv, -1850, 0, r=True, g=False, b=False, a=False)
+    v = un(E_.MaterialExpressionComponentMask, uv, -1850, 100, r=False, g=True, b=False, a=False)
+    t = node(E_.MaterialExpressionTime, -2000, 300)
+    step = un(E_.MaterialExpressionFloor, un(E_.MaterialExpressionMultiply, t, -1850, 300, const_b=12.0), -1700, 300)
+    row = un(E_.MaterialExpressionFloor, un(E_.MaterialExpressionMultiply, v, -1700, 100, const_b=24.0), -1550, 100)
+    h_row = hash_(un, bi, node, row, step, -1400, 100)
+    h_row2 = un(E_.MaterialExpressionFrac, un(E_.MaterialExpressionMultiply, h_row, -750, 200, const_b=91.7), -600, 200)
+    # tearing rows (about one in six, each step): shift sideways
+    gate = un(E_.MaterialExpressionSaturate, un(E_.MaterialExpressionMultiply,
+              un(E_.MaterialExpressionSubtract, h_row, -750, 100, const_b=0.83), -600, 100, const_b=100.0), -450, 100)
+    amt = un(E_.MaterialExpressionMultiply, un(E_.MaterialExpressionSubtract, h_row2, -450, 200, const_b=0.5),
+             -300, 200, const_b=0.35)
+    du = bi(E_.MaterialExpressionMultiply, gate, amt, -150, 100)
+    # whole picture: slow roll plus sudden vertical jumps
+    zero = node(E_.MaterialExpressionConstant, -1550, 500, r=3.0)
+    h_step = hash_(un, bi, node, zero, step, -1400, 500)
+    jump = un(E_.MaterialExpressionMultiply, un(E_.MaterialExpressionSaturate, un(E_.MaterialExpressionMultiply,
+              un(E_.MaterialExpressionSubtract, h_step, -750, 500, const_b=0.85), -600, 500, const_b=100.0),
+              -450, 500), -300, 500, const_b=0.27)
+    roll = un(E_.MaterialExpressionMultiply, t, -450, 600, const_b=0.03)
+    dv = bi(E_.MaterialExpressionAdd, jump, roll, -150, 500)
+    nu = un(E_.MaterialExpressionFrac, bi(E_.MaterialExpressionAdd, u, du, 0, 0), 150, 0)
+    nv = un(E_.MaterialExpressionFrac, bi(E_.MaterialExpressionAdd, v, dv, 0, 300), 150, 300)
+    sample = node(E_.MaterialExpressionTextureSample, 450, 0, texture=texture("screen_cctv"))
+    unreal.MaterialEditingLibrary.connect_material_expressions(bi(E_.MaterialExpressionAppendVector, nu, nv, 300, 100),
+                                                               "", sample, "UVs")
+    # brightness stutter with blackouts, and scanlines
+    one = node(E_.MaterialExpressionConstant, -1550, 800, r=7.0)
+    h_b = hash_(un, bi, node, one, step, -1400, 800)
+    on = un(E_.MaterialExpressionSaturate, un(E_.MaterialExpressionMultiply,
+            un(E_.MaterialExpressionSubtract, h_b, -750, 800, const_b=0.15), -600, 800, const_b=100.0), -450, 800)
+    lvl = un(E_.MaterialExpressionAdd, un(E_.MaterialExpressionMultiply, h_b, -450, 900, const_b=0.8), -300, 900,
+             const_b=0.4)
+    scan = un(E_.MaterialExpressionAdd, un(E_.MaterialExpressionMultiply, un(E_.MaterialExpressionSine,
+              un(E_.MaterialExpressionMultiply, v, -600, 1000, const_b=700.0), -450, 1000), -300, 1000, const_b=0.18),
+              -150, 1000, const_b=0.82)
+    k = bi(E_.MaterialExpressionMultiply, bi(E_.MaterialExpressionMultiply, on, lvl, -150, 850), scan, 0, 900)
+    tint = node(E_.MaterialExpressionConstant3Vector, 450, 300, constant=unreal.LinearColor(0.75, 1.0, 0.8, 1))
+    rgb = un(E_.MaterialExpressionMultiply, sample, 600, 0, pin="RGB", const_b=1.0)
+    col = bi(E_.MaterialExpressionMultiply, rgb, tint, 650, 100)
+    em = un(E_.MaterialExpressionMultiply, bi(E_.MaterialExpressionMultiply, col, k, 800, 300), 950, 300, const_b=3.0)
+    done(em)
+    m.set_editor_property("used_with_nanite", True)
+    return finish(m)
+
+
+def sky_material():
+    """The sky dome: unlit panorama, rendered as sky (no fog, no shadows)."""
+    m, node, un, bi, done = graph("M_SkyDome", unreal.MaterialShadingModel.MSM_UNLIT)
+    sample = node(E_.MaterialExpressionTextureSample, -400, 0, texture=texture("sky_panorama"))
+    done(un(E_.MaterialExpressionMultiply, sample, -150, 0, pin="RGB", const_b=SKY_BOOST))
+    m.set_editor_property("is_sky", True)
+    return finish(m)
+
+
+def sea_material():
+    """Sea far below: the water texture drifting two ways at once, glossy."""
+    m, node, un, bi, done = graph("M_Sea")
+    uv = node(E_.MaterialExpressionTextureCoordinate, -900, 0)
+    t = node(E_.MaterialExpressionTime, -900, 200)
+    tex = texture("sea_water")
+    outs = []
+    for i, (sp, sc) in enumerate((((0.004, 0.002), 1.0), ((-0.003, 0.0035), 0.63))):
+        a = un(E_.MaterialExpressionMultiply, uv, -750, i * 300, const_b=sc)
+        mv = un(E_.MaterialExpressionMultiply, t, -750, i * 300 + 100, const_b=1.0)
+        spd = node(E_.MaterialExpressionConstant2Vector, -750, i * 300 + 200, r=sp[0], g=sp[1])
+        b = bi(E_.MaterialExpressionAdd, a, bi(E_.MaterialExpressionMultiply, mv, spd, -600, i * 300 + 100), -450, i * 300)
+        smp = node(E_.MaterialExpressionTextureSample, -300, i * 300, texture=tex)
+        unreal.MaterialEditingLibrary.connect_material_expressions(b, "", smp, "UVs")
+        outs.append(un(E_.MaterialExpressionMultiply, smp, -150, i * 300, pin="RGB", const_b=1.0))
+    avg = un(E_.MaterialExpressionMultiply, bi(E_.MaterialExpressionAdd, outs[0], outs[1], -100, 100), 50, 100,
+             const_b=0.5)
+    done(avg, unreal.MaterialProperty.MP_BASE_COLOR)
+    done(node(E_.MaterialExpressionConstant, 50, 300, r=0.12), unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
+    return finish(m)
+
+
+screen_mats["Screen_On_live_glitch"] = glitch_material()
+screen_mats["Screen_On_sky"] = sky_material()
+screen_mats["Outside_Sea"] = sea_material()
 
 # Visitors' screens: content matched to who sits there, always in motion.
 LIVE = {
@@ -818,7 +963,7 @@ CHUNK = LAYOUT["chunk_length"]
 COPIES = 4
 SKIP = ("Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall", "ElectricCabinet",
         "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign", "Booth_", "Humidifier",
-        "Painting_", "FoodVending", "Clerk", "Partition", "Chandelier", "Owner", "Visitor_")
+        "Painting_", "FoodVending", "Clerk", "Partition", "Chandelier", "Owner", "Visitor_", "Outside_")
 originals = [a for a in eas.get_all_level_actors()
              if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
 extra_belts = []
@@ -864,6 +1009,49 @@ if "door" in LAYOUT:
         door.set_editor_property("open_angles", LAYOUT["door"]["open_angles"][:len(leaves)])
         door.set_editor_property("leaves_placed_open", True)
 
+if "exit_door" in LAYOUT:
+    ed = LAYOUT["exit_door"]
+    by_label = {x.get_actor_label(): x for x in eas.get_all_level_actors()}
+    leaves = [by_label[l] for l in ed["leaves"] if l in by_label]
+    for lf in leaves:
+        lf.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    for r in ed.get("riders", []):
+        if r in by_label and leaves:
+            by_label[r].root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+            by_label[r].attach_to_actor(leaves[0], "", unreal.AttachmentRule.KEEP_WORLD,
+                                        unreal.AttachmentRule.KEEP_WORLD, unreal.AttachmentRule.KEEP_WORLD, False)
+    if leaves:
+        xd = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.SwingDoor"), vec(ed["center"]), label="ExitDoor_Actor")
+        xd.set_editor_property("leaves", leaves)
+        xd.set_editor_property("open_angles", ed["open_angles"][:len(leaves)])
+        xd.set_editor_property("leaves_placed_open", False)
+        xd.set_editor_property("start_open", False)
+        xd.set_editor_property("swing_speed", 55.0)
+    log("exit door: %d leaves" % len(leaves))
+
+# Outside: a grassy hilltop over the sea under a late afternoon sun. The sun and its fill only
+# light lighting channel 1 (the outside), so nothing of it reaches the dark club inside.
+if "outside" in LAYOUT:
+    for a in eas.get_all_level_actors():
+        lab = a.get_actor_label()
+        if isinstance(a, unreal.StaticMeshActor) and lab.startswith(("Outside_", "ExitDoor")):
+            c = a.static_mesh_component
+            c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
+            if lab == "Outside_SkyDome":
+                c.set_editor_property("cast_shadow", False)
+                c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    for label, rot, lux, shadows in (("Sun", unreal.Rotator(0, -40, 60), SUN_LUX, True),
+                                     ("Sun_Fill", unreal.Rotator(0, -40, -160), SUN_LUX * 0.3, False)):
+        sun = spawn(unreal.DirectionalLight, vec(LAYOUT["outside"]["center"]) + unreal.Vector(0, 0, 800), rot, label)
+        dl = sun.get_component_by_class(unreal.DirectionalLightComponent)
+        dl.set_mobility(unreal.ComponentMobility.MOVABLE)
+        dl.set_intensity(lux)
+        dl.set_light_color(unreal.LinearColor(1.0, 0.86, 0.7, 1) if shadows else unreal.LinearColor(0.6, 0.75, 1.0, 1))
+        dl.set_editor_property("lighting_channels", unreal.LightingChannels(False, True, False))
+        dl.set_editor_property("cast_shadows", shadows)
+        dl.set_editor_property("forward_shading_priority", 1 if shadows else 0)
+        sun.set_folder_path("Outside")
+
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.
 walk = LAYOUT["walkway"]
@@ -895,10 +1083,24 @@ s.set_editor_property("override_film_grain_intensity", True)
 s.set_editor_property("film_grain_intensity", 0.15)
 ppv.set_editor_property("settings", s)
 
+FOG_EXTINCTION = 10.0
+LFV = getattr(unreal, "LocalFogVolume", None)
+if LFV:
+    # A long black fog volume over the corridor beyond the wall: the further, the darker.
+    span = CHUNK * (COPIES + 1)
+    lfv = spawn(LFV, unreal.Vector(0, WALL_Y - span * 0.42, 150), label="Fog_Corridor")
+    lfv.set_actor_scale3d(unreal.Vector(4.0, span * 0.5 / 500.0, 4.0))
+    lc = lfv.get_component_by_class(unreal.LocalFogVolumeComponent)
+    for k, v in (("radial_fog_extinction", FOG_EXTINCTION), ("height_fog_extinction", 0.0),
+                 ("fog_albedo", unreal.LinearColor(0, 0, 0, 1)), ("fog_emissive", unreal.LinearColor(0, 0, 0, 1))):
+        try:
+            lc.set_editor_property(k, v)
+        except Exception as e:
+            log("fog volume: %s: %s" % (k, e))
 fog = spawn(unreal.ExponentialHeightFog, unreal.Vector(0, -4500, 0), label="Fog")
 fc = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
 # Clear around the player, then the corridor slowly sinks into darkness with distance.
-fc.set_editor_property("fog_density", 0.08)
+fc.set_editor_property("fog_density", 0.0 if LFV else 0.08)
 fc.set_editor_property("fog_height_falloff", 0.001)
 fc.set_editor_property("start_distance", 3500.0)
 # Black fog: it only takes light away, so the distance goes dark instead of glowing.
@@ -968,8 +1170,30 @@ def seat_person(name, anim, loc, facing_yaw, label):
     return p
 
 
-if "owner" in LAYOUT:
-    seat_person("Owner", "Sit_Idle", vec(LAYOUT["owner"]["chair"]), LAYOUT["owner"]["sitter_yaw"], "Owner")
+OWNER_ANIMS = {"sit_anim": "Sit_Idle", "stand_up_anim": "StandUp", "walk_anim": "Walk", "stand_anim": "StandLook",
+               "sit_down_anim": "SitDown"}
+owner_cls = unreal.load_class(None, "/Script/Lyudmilovsk.BoothOwner")
+if "owner" in LAYOUT and owner_cls and eal.does_asset_exist(HUMANS + "Owner/SK_Owner"):
+    o = LAYOUT["owner"]
+    owner = spawn(owner_cls, vec(o["zone_center"]), label="Owner")
+    owner.get_component_by_class(unreal.BoxComponent).set_box_extent(unreal.Vector(*o["zone_extent"]))
+    body = owner.get_component_by_class(unreal.SkeletalMeshComponent)
+    body.set_skeletal_mesh_asset(eal.load_asset(HUMANS + "Owner/SK_Owner"))
+    owner.set_editor_property("seat_location", vec(o["chair"]))
+    owner.set_editor_property("seat_yaw", o["sitter_yaw"])
+    owner.set_editor_property("window_location", vec(o["window"]))
+    owner.set_editor_property("window_yaw", o["window_yaw"])
+    found = []
+    for prop_name, anim in OWNER_ANIMS.items():
+        path = HUMANS + "Owner/Anims/A_Owner_" + anim
+        if eal.does_asset_exist(path):
+            owner.set_editor_property(prop_name, eal.load_asset(path))
+            found.append(anim)
+    body.set_world_location_and_rotation(vec(o["chair"]), unreal.Rotator(0, 0, o["sitter_yaw"] - 90.0), False, True)
+    body.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+    body.override_animation_data(eal.load_asset(HUMANS + "Owner/Anims/A_Owner_Sit_Idle"), True, True)
+    owner.set_folder_path("People")
+    log("owner: anims %s" % found)
 # Visitors sit where the layout put them (their chairs are square and their screens are live);
 # the loop follows the device: gamepad at consoles, keyboard+mouse at PCs, browsing on laptops.
 # Each person's own loop from the humans thread (poses checked there).
