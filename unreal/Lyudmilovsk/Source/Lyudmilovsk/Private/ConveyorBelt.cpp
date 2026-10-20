@@ -67,12 +67,30 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 		}
 	}
 
-	const bool bRiding = Riders.Num() > 0;
-	Speed = FMath::FInterpConstantTo(Speed, bRiding ? MaxSpeed : 0.f, DeltaSeconds, bRiding ? Acceleration : Deceleration);
-
-	if (Speed > KINDA_SMALL_NUMBER)
+	// How the riders themselves walk along the belt (their own movement, not the belt's push).
+	const FVector Axis = Direction.GetSafeNormal();
+	float Walk = 0.f;
+	for (ACharacter* Rider : Riders)
 	{
-		const FVector Step = Direction.GetSafeNormal() * Speed * DeltaSeconds;
+		Walk += FVector::DotProduct(Rider->GetCharacterMovement()->Velocity, Axis);
+	}
+	Walk = Riders.Num() > 0 ? Walk / Riders.Num() : 0.f;
+
+	if (FMath::Abs(Walk) > WalkThreshold)
+	{
+		// Speed up the way they walk, harder the faster they go; walking against it brakes and reverses it.
+		const float Push = FMath::Clamp(Walk / RunSpeed, -1.f, 1.f);
+		Speed = FMath::Clamp(Speed + Push * Acceleration * DeltaSeconds, -MaxSpeed, MaxSpeed);
+	}
+	else
+	{
+		// Nobody on it, or they stopped: ease to a halt.
+		Speed = FMath::FInterpConstantTo(Speed, 0.f, DeltaSeconds, Deceleration);
+	}
+
+	if (FMath::Abs(Speed) > KINDA_SMALL_NUMBER)
+	{
+		const FVector Step = Axis * Speed * DeltaSeconds;
 		for (ACharacter* Rider : Riders)
 		{
 			Rider->AddActorWorldOffset(Step, true);
@@ -86,7 +104,8 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 	}
 	if (Motor->IsPlaying())
 	{
-		Motor->SetVolumeMultiplier(0.6f * Speed / MaxSpeed);
-		Motor->SetPitchMultiplier(0.8f + 0.6f * Speed / MaxSpeed);
+		const float Load = FMath::Abs(Speed) / MaxSpeed;
+		Motor->SetVolumeMultiplier(0.6f * Load);
+		Motor->SetPitchMultiplier(0.8f + 0.6f * Load);
 	}
 }

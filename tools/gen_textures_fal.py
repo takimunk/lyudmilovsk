@@ -44,6 +44,16 @@ SCREENS = {
     "screen_modern_game": ("Full-screen capture of a modern first-person sci-fi game at night: neon city street in "
                            "rain, holographic signs in Cyrillic, minimal HUD with ammo counter, cinematic lighting, "
                            "no real game logos.", "16:9"),
+    "newspaper": ("Front page of a Russian regional newspaper from 2004, black and white print on slightly "
+                  "yellowed paper, Cyrillic masthead, columns of small text, two grainy photos, flat scan, "
+                  "no real newspaper names or logos.", "3:4"),
+    "vending_front": ("Front panel of a worn early-2000s drinks vending machine, seen straight on, flat: a lit "
+                      "glass window with rows of colourful soda cans and bottles with made-up Russian names "
+                      "(Буратино, Тархун, Байкал, Дюшес, Колокольчик), price tags in roubles, coin slot and "
+                      "buttons on the right, scratched red body. Absolutely no real-world brands: no Coca-Cola, "
+                      "Fanta, Sprite, Pepsi or any existing logo.", "9:16"),
+    "exit_sign": ("A glowing green emergency exit sign with the Cyrillic word ВЫХОД and a running-man pictogram, "
+                  "flat front view filling the frame, dark background.", "16:9"),
 }
 
 

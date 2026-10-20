@@ -117,6 +117,8 @@ SCREENS = {
     "Screen_On_spreadsheet": ("screen_spreadsheet", 3.0),
     "Screen_On_16bit": ("screen_16bit", 3.0),
     "Screen_On_modern_game": ("screen_modern_game", 3.0),
+    "Screen_On_exit": ("exit_sign", 6.0),
+    "Screen_On_vending": ("vending_front", 2.5),
 }
 screen_mats = {k: screen_material(k.replace("Screen_On_", "Screen_"), *v) for k, v in SCREENS.items()}
 
@@ -222,14 +224,16 @@ def lit(p):
     return p[1] > WALL_Y - 400
 
 
-# Garland: the only overhead light, dim. Some bulbs blink now and then (ALightFlicker).
+# Garland: every little bulb is its own light (tiny radius, no shadows, so dozens stay cheap).
+# Some of them blink now and then (ALightFlicker).
 rng = random.Random(7)
 for k, p in enumerate(LAYOUT["garland_lights"]):
     if not lit(p):
         continue
     col = GARLAND_COLORS[k % len(GARLAND_COLORS)]
-    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 1.6, 420.0,
-                     "Garland_Light_%02d" % k, "Lights/Garland", shadows=(k % 3 == 0))
+    gl = point_light(vec(p), unreal.LinearColor(col[0], col[1], col[2], 1.0), 0.35, 160.0,
+                     "Garland_Light_%03d" % k, "Lights/Garland")
+    gl.light_component.set_editor_property("source_radius", 1.0)
     if rng.random() < 0.2:
         gl.tags = [unreal.Name("Flicker")]
 spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector(0, 0, 300), label="GarlandFlicker")
@@ -238,6 +242,10 @@ spawn(unreal.load_class(None, "/Script/Lyudmilovsk.LightFlicker"), unreal.Vector
 for k, p in enumerate(LAYOUT.get("desk_lights", [])):
     if lit(p):
         point_light(vec(p), WARM, 3.0, 300.0, "DeskLamp_Light_%02d" % k, "Lights/Desk", shadows=True)
+for k, hl in enumerate(LAYOUT.get("hall_lights", [])):
+    c = hl["color"]
+    point_light(vec(hl["pos"]), unreal.LinearColor(c[0], c[1], c[2], 1.0), hl["cd"], hl["radius"],
+                "Hall_Light_%02d" % k, "Lights/Hall", shadows=hl.get("shadows", False))
 for k, p in enumerate(LAYOUT.get("grow_lights", [])):
     if lit(p):
         point_light(vec(p), unreal.LinearColor(0.55, 0.1, 1.0, 1.0), 2.5, 220.0, "GrowLamp_Light_%02d" % k,
@@ -376,6 +384,8 @@ for i, p in enumerate(LAYOUT["vent_fans"]):
     ambient(hum, vec(p), "VentHum_%d" % i, 0.8, 300.0, 1800.0)
 for i, p in enumerate(LAYOUT["vent_outlets"]):
     ambient(air, vec(p), "VentAir_%02d" % i, 0.55, 60.0, 650.0)
+if "vending" in LAYOUT:   # the drinks machine's compressor
+    ambient(hum, vec(LAYOUT["vending"]), "VendingHum", 0.25, 50.0, 400.0)
 
 # Invisible wall a few places past the hero's desk.
 wall = spawn(unreal.StaticMeshActor, unreal.Vector(0, WALL_Y, 250), label="InvisibleWall")
@@ -389,8 +399,8 @@ wall.static_mesh_component.set_collision_profile_name("BlockAll")
 # hero's place, shifted by whole chunks (Unreal Y decreases toward the distance).
 CHUNK = LAYOUT["chunk_length"]
 COPIES = 4
-SKIP = ("EndWall_Near", "Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall",
-        "ElectricCabinet")
+SKIP = ("Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall", "ElectricCabinet",
+        "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign")
 originals = [a for a in eas.get_all_level_actors()
              if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
 extra_belts = []
@@ -421,8 +431,8 @@ for n in range(1, COPIES + 1):
             extra_belts.append(c)
 log("distance chunks: %d x %d actors" % (COPIES, len(originals)))
 
-# The moving walkway (C++ AConveyorBelt): the belt comes out of the distance toward the player;
-# standing on it in the playable stretch carries you toward the start, faster and faster.
+# The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
+# as they keep going and easing off when they stop. Works for NPCs too.
 walk = LAYOUT["walkway"]
 y_near, y_far = walk["y0"], WALL_Y
 zone_center = unreal.Vector((walk["x"][0] + walk["x"][1]) / 2, (y_near + y_far) / 2, 75.0)
@@ -431,10 +441,10 @@ conveyor = spawn(unreal.load_class(None, "/Script/Lyudmilovsk.ConveyorBelt"), zo
 conveyor.get_component_by_class(unreal.BoxComponent).set_box_extent(zone_extent)
 conveyor.set_editor_property("belt_actor", belt_actor)
 conveyor.set_editor_property("extra_belts", extra_belts)
-conveyor.set_editor_property("direction", unreal.Vector(0, 1, 0))
-conveyor.set_editor_property("max_speed", 450.0)
-conveyor.set_editor_property("acceleration", 90.0)
-conveyor.set_editor_property("deceleration", 400.0)
+conveyor.set_editor_property("direction", unreal.Vector(0, 1, 0))   # axis; riders choose the way
+conveyor.set_editor_property("max_speed", 900.0)
+conveyor.set_editor_property("acceleration", 260.0)
+conveyor.set_editor_property("deceleration", 220.0)
 conveyor.set_editor_property("motor_sound", hum)
 log("conveyor belt: %s" % (belt_actor.get_actor_label() if belt_actor else "MISSING"))
 
@@ -454,10 +464,10 @@ ppv.set_editor_property("settings", s)
 
 fog = spawn(unreal.ExponentialHeightFog, unreal.Vector(0, -4500, 0), label="Fog")
 fc = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
-# Clear around the player, then the corridor sinks into darkness with distance.
-fc.set_editor_property("fog_density", 0.25)
+# Clear around the player, then the corridor slowly sinks into darkness with distance.
+fc.set_editor_property("fog_density", 0.08)
 fc.set_editor_property("fog_height_falloff", 0.001)
-fc.set_editor_property("start_distance", 1500.0)
+fc.set_editor_property("start_distance", 3500.0)
 # Black fog: it only takes light away, so the distance goes dark instead of glowing.
 fc.set_editor_property("fog_inscattering_luminance", unreal.LinearColor(0.0, 0.0, 0.0, 1.0))
 fc.set_editor_property("enable_volumetric_fog", False)
