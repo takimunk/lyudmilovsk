@@ -630,7 +630,7 @@ CHUNK = LAYOUT["chunk_length"]
 COPIES = 4
 SKIP = ("Mailboxes", "Radiator", "HeroStation", "HeroChair", "Walkway_Comb", "InvisibleWall", "ElectricCabinet",
         "Hall_", "AdminBooth", "Admin_", "VendingMachine", "ExitDoor", "ExitSign", "Booth_", "Humidifier",
-        "Painting_", "FoodVending", "Clerk", "Partition", "Chandelier")
+        "Painting_", "FoodVending", "Clerk", "Partition", "Chandelier", "Owner", "Visitor_")
 originals = [a for a in eas.get_all_level_actors()
              if isinstance(a, unreal.StaticMeshActor) and not a.get_actor_label().startswith(SKIP)]
 extra_belts = []
@@ -760,6 +760,67 @@ if CLERK and eal.does_asset_exist(CLERK_MESH):
     crc.set_editor_property("source_height", CLERK["screen_size"][1])
 else:
     log("clerk mesh missing: %s" % CLERK_MESH)
+
+# People: the owner in his booth and a crowd at the reachable stations (meshes and loops from
+# the humans thread; each mesh faces +Y at yaw 0 and stands on the floor under the seat centre).
+HUMANS = "/Game/Characters/Humans/"
+CROWD = [("Streamer", "Sit_Gamepad", ("sega", "ps2", "modern")),
+         ("Guy_a", "Sit_KeyboardMouse", ("gaming", "beige", "spreadsheet", "mac")),
+         ("Guy_b", "Sit_Browse", ("laptop", "imac", "vr", "beige")),
+         ("Girl_a", "Sit_KeyboardMouse", ("gaming", "spreadsheet", "mac", "beige")),
+         ("Girl_b", "Sit_Browse", ("imac", "laptop", "zx")),
+         ("Kid_boy", "Sit_KeyboardMouse", ("gaming", "beige", "mac", "zx")),
+         ("Kid_girl", "Sit_Browse", ("laptop", "imac", "sega", "zx"))]
+
+
+def seat_person(name, anim, loc, facing_yaw, label):
+    mesh = HUMANS + "%s/SK_%s" % (name, name)
+    seq = HUMANS + "%s/Anims/A_%s_%s" % (name, name, anim)
+    if not (eal.does_asset_exist(mesh) and eal.does_asset_exist(seq)):
+        log("missing person %s / %s" % (mesh, seq))
+        return None
+    p = spawn(unreal.SkeletalMeshActor, loc, unreal.Rotator(0, 0, facing_yaw - 90), label)
+    sk = p.skeletal_mesh_component
+    sk.set_skeletal_mesh_asset(eal.load_asset(mesh))
+    sk.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+    sk.override_animation_data(eal.load_asset(seq), True, True)
+    sk.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    p.set_folder_path("People")
+    return p
+
+
+if "owner" in LAYOUT:
+    seat_person("Owner", "Sit_Idle", vec(LAYOUT["owner"]["chair"]), LAYOUT["owner"]["sitter_yaw"], "Owner")
+taken = {CLERK["chair"][1] if CLERK else None}
+free = [st for st in LAYOUT.get("stations", []) if st["reachable"] and st["chair"][1] not in taken]
+for name, anim, kinds in CROWD:
+    pick = next((st for st in free if st["kind"] in kinds), None) or (free[0] if free else None)
+    if not pick:
+        break
+    free.remove(pick)
+    seat_person(name, anim, vec(pick["chair"]), pick["sitter_yaw"], "Visitor_" + name)
+    log("%s at station %02d (%s)" % (name, pick["index"], pick["kind"]))
+
+# Screens light their users: a soft glow in front of each reachable station's display.
+GLOW = {"gaming": (0.55, 0.6, 1.0), "sega": (0.9, 0.7, 0.6), "spreadsheet": (0.8, 0.9, 1.0), "vr": (0.5, 0.8, 1.0),
+        "modern": (0.6, 0.7, 1.0), "ps2": (0.6, 0.7, 0.9), "beige": (0.75, 0.85, 1.0), "zx": (0.7, 0.8, 0.9),
+        "laptop": (0.85, 0.9, 1.0), "imac": (0.7, 0.9, 1.0), "mac": (0.9, 0.9, 0.85)}
+for st in LAYOUT.get("stations", []):
+    if not st["reachable"]:
+        continue
+    c = GLOW.get(st["kind"], (0.8, 0.85, 1.0))
+    g = spawn(unreal.RectLight, vec(st["desk"]) + unreal.Vector(-28, 0, 32), unreal.Rotator(0, 0, 180),
+              "ScreenGlow_%02d" % st["index"])
+    g.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    rc_ = g.get_component_by_class(unreal.RectLightComponent)
+    rc_.set_editor_property("intensity_units", unreal.LightUnits.CANDELAS)
+    rc_.set_intensity(1.6)
+    rc_.set_light_color(unreal.LinearColor(c[0], c[1], c[2], 1.0))
+    rc_.set_attenuation_radius(320.0)
+    rc_.set_editor_property("source_width", 40.0)
+    rc_.set_editor_property("source_height", 30.0)
+    rc_.set_editor_property("cast_shadows", False)
+    g.set_folder_path("Lights/Screens")
 
 # Wake up in the aisle behind the hero's chair, facing the glowing screen.
 yaw = math.degrees(math.atan2(SCREEN.y - WAKE.y, SCREEN.x - WAKE.x))

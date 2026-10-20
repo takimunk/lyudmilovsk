@@ -799,6 +799,8 @@ def build_hall(coll):
     LAYOUT["hall_lights"].append({"pos": ue(*(anchor("lamp_soviet", lm, "Lamp_Bulb") + Vector((0, 0, -0.03)))),
                                   "color": [1.0, 0.68, 0.38], "cd": 4.0, "radius": 350, "shadows": True})
     place("chair_stool", floor_at((hw - 0.95, dy0 - 0.2, 0), math.radians(90)), coll, label="Admin_Stool")
+    # the owner sits on the stool facing his window (the desk is in the corner behind him)
+    LAYOUT["owner"] = {"chair": ue(hw - 0.95, dy0 - 0.2, 0), "sitter_yaw": 180.0}
     # a warm bare bulb under the booth ceiling, now that it is closed in
     bulb = mat("Hall_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=25.0)
     cord = mat("Lamp_Cord", (0.02, 0.02, 0.02), 0.6)
@@ -1442,6 +1444,11 @@ def build_stations(coll):
         if i == CLERK_INDEX:                                 # squarely at the desk for the clerk
             loc, yaw = (SEAT_X, cy, 0), -90
         place(chair_kind, floor_at(loc, math.radians(yaw)), coll, label="Chair_%02d" % i)
+        # Unreal yaw the sitter faces (0 = +X, toward the desk); Blender rotations flip with Y.
+        LAYOUT.setdefault("stations", []).append({
+            "index": i, "kind": fn.__name__[3:], "chair": ue(*loc), "chair_kind": chair_kind,
+            "desk": ue(TABLE_X, cy, h),
+            "sitter_yaw": round(-(yaw + 90), 1), "reachable": "invisible_wall_y" not in LAYOUT})
         y += w
         i += 1
         if i == HERO_INDEX + REAL_AFTER_HERO:
