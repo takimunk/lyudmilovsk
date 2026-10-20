@@ -1,9 +1,9 @@
 """Creates /Game/Characters/Zoomer/LS_SitAtComputer: the first-person "sit at the computer" cutscene.
 
-The camera is the hero's eyes (the "eye" bone track exported by blender/scripts/build_character_zoomer.py):
+The camera is the hero's eyes (the eye_l/eye_r track baked by blender/scripts/build_zoomer_fp_sit.py):
 he steps to the chair, sits down, his hands come out onto the keyboard and start typing, then the camera
 flies to the monitor until the screen fills the frame. The head is hidden by the animation itself, so
-only the sleeves and hands are seen. One skeletal-animation section plays once (no second section).
+only the sleeves and hands are seen. The hero is the realistic SK_Zoomer on the shared human skeleton. One skeletal-animation section plays once (no second section).
 
 Authored in the space of the AHeroSeat actor (on the floor at the chair, +X towards the screen; the keyboard
 is ~60 cm and the screen ~91 cm ahead); AHeroSeat sets it as the sequence Transform Origin.
@@ -17,16 +17,15 @@ import os
 import unreal
 
 DEST = "/Game/Characters/Zoomer"
-SK = DEST + "/character_zoomer/SkeletalMeshes/"
-MESH = SK + "character_zoomer.character_zoomer"
-ANIM = SK + "character_zoomerZoomer_SitAtComputer_FP.character_zoomerZoomer_SitAtComputer_FP"
+MESH = "/Game/Characters/Humans/Zoomer/SK_Zoomer.SK_Zoomer"
+ANIM = DEST + "/A_Zoomer_FP_SitAtComputer.A_Zoomer_FP_SitAtComputer"
 HERE = os.path.dirname(os.path.abspath(__file__))
-EYE_JSON = os.path.normpath(os.path.join(HERE, "..", "..", "blender", "export", "zoomer_eye_track.json"))
+EYE_JSON = os.path.normpath(os.path.join(HERE, "..", "..", "blender", "humans_local", "zoomer_eye_track.json"))
 
 HERO_YAW = -90.0                    # the imported mesh faces +Y at yaw 0; the sitter looks along +X
 FPS = 24
 TICKS = 1000                        # tick resolution 24000 / display 24
-FOCUS_START, END = 150, 210         # camera leaves the eyes and flies to the monitor between these frames
+FOCUS_START, END = 144, 204         # 6.0 s .. 8.5 s: the camera leaves the eyes and flies to the monitor
 SCREEN_CAM = unreal.Vector(32.0, 0.0, 114.0)     # screen centre is 91 cm ahead at z 114
 SCREEN_TARGET = unreal.Vector(150.0, 0.0, 114.0)
 
@@ -112,9 +111,10 @@ cc.set_editor_property("current_aperture", 16.0)
 cc.set_editor_property("current_focal_length", 20.0)                        # wide, like the player camera
 ch = tchannels(cam)
 with open(EYE_JSON) as fh:
-    eye = json.load(fh)["frames"]
+    eye_doc = json.load(fh)
+eye, eye_fps = eye_doc["frames"], eye_doc["fps"]
 for f in range(0, FOCUS_START + 1, 2):
-    e = eye[str(f)]
+    e = eye[str(min(int(round(f / FPS * eye_fps)), len(eye) - 1))]
     pos = to_local(e["pos"])
     pitch, yaw = look(dir_local(e["fwd"]))
     for c, v in zip(ch, [pos.x, pos.y, pos.z, 0.0, pitch, yaw, 1, 1, 1]):
