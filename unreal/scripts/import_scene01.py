@@ -1052,6 +1052,14 @@ if "outside" in LAYOUT:
         dl.set_editor_property("forward_shading_priority", 1 if shadows else 0)
         sun.set_folder_path("Outside")
 
+# Starlings (the murmuration thread's AStarlingMurmuration): a flock over the sea 300 m out from
+# the portal; it builds its meshes at runtime and traces the hill and sea under it at BeginPlay.
+flock_cls = unreal.load_class(None, "/Script/Lyudmilovsk.StarlingMurmuration")
+if "outside" in LAYOUT and flock_cls:
+    spawn(flock_cls, unreal.Vector(0, LAYOUT["outside"]["portal_face_y"] + 30000, LAYOUT["outside"]["sea_z"]),
+          label="Starlings").set_folder_path("Outside")
+    log("starlings placed")
+
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.
 walk = LAYOUT["walkway"]
