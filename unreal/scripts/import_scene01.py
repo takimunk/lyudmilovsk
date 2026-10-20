@@ -83,6 +83,22 @@ for path in eal.list_assets(DEST, True):
             meshes += 1
 log("collision set on %d meshes" % meshes)
 
+# Nanite for the dense props (keyboards with real keycaps etc.), so ~60 stations plus the
+# repeated corridor stay cheap. Meshes with see-through materials keep the classic path.
+OPAQUE = (unreal.BlendMode.BLEND_OPAQUE, unreal.BlendMode.BLEND_MASKED)
+nanite = 0
+for path in eal.list_assets(DEST, True):
+    sm = eal.load_asset(path)
+    if not isinstance(sm, unreal.StaticMesh) or sm.get_num_vertices(0) < 3000:
+        continue
+    mats = [m.material_interface for m in sm.static_materials]
+    if all(m and m.get_base_material().get_editor_property("blend_mode") in OPAQUE for m in mats):
+        settings = sm.get_editor_property("nanite_settings")
+        settings.enabled = True
+        sm.set_editor_property("nanite_settings", settings)   # rebuilds the mesh with Nanite data
+        nanite += 1
+log("nanite on %d meshes" % nanite)
+
 # Screens that are switched on: emissive materials built from the images Blender used.
 def screen_material(name, tex_name, strength):
     path = "/Game/Scene01/M_" + name
@@ -253,14 +269,14 @@ for k, p in enumerate(LAYOUT.get("grow_lights", [])):
 
 
 # Ventilation: spin the fan blades and make the duct hum.
-def add_rotation(actor, yaw_rate):
+def add_rotation(actor, yaw_rate, pitch_rate=0.0):
     sds = unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)
     root = sds.k2_gather_subobject_data_for_instance(actor)[0]
     handle, fail = sds.add_new_subobject(unreal.AddNewSubobjectParams(
         parent_handle=root, new_class=unreal.RotatingMovementComponent))
     if fail.is_empty():
         comp = actor.get_component_by_class(unreal.RotatingMovementComponent)
-        comp.set_editor_property("rotation_rate", unreal.Rotator(0, 0, yaw_rate))
+        comp.set_editor_property("rotation_rate", unreal.Rotator(0, pitch_rate, yaw_rate))
         comp.set_editor_property("rotation_in_local_space", True)
         return True
     log("could not add rotation to %s: %s" % (actor.get_actor_label(), fail))
@@ -272,7 +288,10 @@ for a in eas.get_all_level_actors():
     label = a.get_actor_label()
     if label.startswith("VentFan_Blades") or label.startswith("DeskFan_Blades"):
         a.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-        spun += add_rotation(a, 240.0 if label.startswith("Vent") else 720.0)
+        if label.startswith("Vent"):
+            spun += add_rotation(a, 240.0)
+        else:                       # desk fan blades turn about the fan's own axis (local Y)
+            spun += add_rotation(a, 0.0, 900.0)
 log("spinning fans: %d" % spun)
 
 
@@ -420,7 +439,8 @@ def copy_actor(src, offset, label, folder):
     dst.set_folder_path(folder)
     if src.get_component_by_class(unreal.RotatingMovementComponent):
         dc.set_mobility(unreal.ComponentMobility.MOVABLE)
-        add_rotation(dst, src.get_component_by_class(unreal.RotatingMovementComponent).rotation_rate.yaw)
+        r = src.get_component_by_class(unreal.RotatingMovementComponent).rotation_rate
+        add_rotation(dst, r.yaw, r.pitch)
     return dst
 
 

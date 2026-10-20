@@ -15,10 +15,11 @@ import sys
 
 import json
 import random
+import re
 
 import bmesh
 import bpy
-from mathutils import Euler, Vector
+from mathutils import Euler, Matrix, Vector
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 TEX_DIR = os.path.join(ROOT, "textures")
@@ -27,6 +28,7 @@ EXPORT_DIR = os.path.join(ROOT, "blender", "export")
 BLEND_PATH = os.path.join(ROOT, "blender", "scene01_corridor.blend")
 SCREEN_PNG = os.path.join(TEX_DIR, "hero_os_screen.png")
 PODYEZD_DIR = os.path.join(TEX_DIR, "podyezd")   # made by tools/gen_textures_fal.py
+PROPS_DIR = os.path.join(ROOT, "blender", "props", "export")   # detailed props (blender/props/README.md)
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 DO_RENDER = "--no-render" not in ARGS
@@ -767,22 +769,17 @@ def build_hall(coll):
               cyl("Admin_LampShade", 0.08, 0.1, (hw - 0.38, -3.8, 1.12), lamp_m, coll=coll, r2=0.03),
               cyl("Admin_LampBulb", 0.025, 0.04, (hw - 0.38, -3.8, 1.08), lamp_b, coll=coll)]
     join("AdminBooth", parts, coll)
-    c = chair_stool("Admin_Stool", (hw - 0.9, -4.4, 0), math.radians(90), coll)
-    collapse("Admin_Stool", c, coll)
+    place("chair_stool", floor_at((hw - 0.9, -4.4, 0), math.radians(90)), coll, label="Admin_Stool")
     LAYOUT["hall_lights"].append({"pos": ue(hw - 0.38, -3.8, 1.02), "color": [1.0, 0.68, 0.38], "cd": 4.0,
                                   "radius": 350, "shadows": True})
 
     # ---- opposite: drinks vending machine, a chair with a newspaper
-    red = mat("Vending_Red", (0.5, 0.04, 0.03), 0.4, 0.3)
-    front = screen_on("vending", "vending_front.jpg", 1.6)
     vx, vy = -hw + 0.4, -3.2
-    vend = [box("Vending_Body", (0.75, 0.95, 1.85), (vx, vy, 0.925), red, coll=coll, bevel=0.01),
-            plane("Vending_Front", 0.9, 1.75, (vx + 0.38, vy, 0.95), front, coll=coll)]
-    vend[1].rotation_euler = (0, 0, math.radians(90))
-    join("VendingMachine", vend, coll)
+    # front (-Y on the prop) turned to face +X, into the hall
+    place("vending_machine", floor_at((vx, vy, 0), math.radians(90)), coll, label="VendingMachine")
     LAYOUT["hall_lights"].append({"pos": ue(vx + 0.75, vy, 1.2), "color": [0.85, 0.9, 1.0], "cd": 3.0, "radius": 300})
     LAYOUT["vending"] = ue(vx, vy, 1.0)
-    c = chair_wooden("Hall_Chair", (-hw + 0.45, -4.7, 0), math.radians(-90), coll)
+    place("chair_bentwood", floor_at((-hw + 0.45, -4.7, 0), math.radians(-90)), coll, label="Hall_Chair")
     paper = mat("Newspaper", (0.8, 0.8, 0.75), 0.9)
     news = tex_mat("Newspaper_Print", "newspaper.jpg", 0.9)
     n1 = plane("Newspaper", 0.3, 0.42, (0, 0, 0), news, coll=coll)
@@ -790,7 +787,7 @@ def build_hall(coll):
     n1.location = (-hw + 0.45, -4.7, 0.485)
     n2 = box("Newspaper_Fold", (0.28, 0.4, 0.004), (-hw + 0.47, -4.68, 0.48), paper, coll=coll,
              rot=(0, 0, math.radians(15)))
-    collapse("Hall_Chair", c, coll, [n1, n2])
+    join("Hall_Newspaper", [n1, n2], coll)
 
 
 def build_walkway(coll):
@@ -815,120 +812,102 @@ def build_walkway(coll):
         box("Skirt_LED", (0.012, ln, 0.012), (x + (0.06 if x == WALK_X0 else -0.06), cy, 0.15), led, parent, coll)
 
 
-# ------------------------------------------------------------ chairs
-# Built in local space: the sitter faces +Y, the backrest is at -Y.
+# ------------------------------------------------------------ prop library
+# Each detailed prop is imported once; its parts are merged into one mesh (plus a separate
+# screen mesh) and every placement is a linked copy, so Unreal imports one static mesh per
+# prop and reuses it everywhere, including the repeated corridor in the distance.
 
-def chair(name, loc, rot_z, coll, parent=None):
-    """Plain black office chair on five castors."""
-    fabric = mat("Chair_Fabric", (0.08, 0.08, 0.09), 0.9)
-    metal = mat("Chair_Metal", (0.4, 0.4, 0.42), 0.3, 1.0)
-    root = empty(name, loc, rot_z, parent, coll)
-    box(name + "_Seat", (0.48, 0.46, 0.08), (0, 0, 0.47), fabric, root, coll, bevel=0.02)
-    box(name + "_Back", (0.46, 0.07, 0.5), (0, -0.26, 0.8), fabric, root, coll, rot=(math.radians(-8), 0, 0), bevel=0.02)
-    _star_base(name, root, coll, metal)
-    return root
+PROPS = {}
+PROP_COUNT = {}
+ANCHOR_MATERIALS = ("Lamp_Bulb", "GrowLamp_Purple")   # where lights go, measured on the prop itself
 
 
-def _star_base(name, root, coll, metal, post=0.36):
-    cyl(name + "_Post", 0.025, post, (0, 0, 0.07 + post / 2), metal, root, coll)
-    for i in range(5):
-        a = i * 2 * math.pi / 5
-        box(name + "_Leg", (0.04, 0.3, 0.03), (math.sin(a) * 0.15, math.cos(a) * 0.15, 0.06), metal, root, coll,
-            rot=(0, 0, -a))
-        cyl(name + "_Wheel", 0.03, 0.03, (math.sin(a) * 0.29, math.cos(a) * 0.29, 0.03), metal, root, coll,
-            rot=(0, math.radians(90), 0), verts=12)
+def prop(name):
+    """Imports blender/props/export/<name>.glb once. Returns {"body", "Screen", "Blades": mesh or None,
+    "anchors": {material: local centre}}."""
+    if name in PROPS:
+        return PROPS[name]
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=os.path.join(PROPS_DIR, name + ".glb"))
+    new = [o for o in bpy.data.objects if o not in before]
+    for o in new:                       # the importer suffixes shared materials (.001); reuse the first
+        if o.type != "MESH":
+            continue
+        for i, m in enumerate(o.data.materials):
+            base = re.sub(r"\.\d{3}$", "", m.name) if m else None
+            if m and base != m.name and base in bpy.data.materials:
+                o.data.materials[i] = bpy.data.materials[base]
+    empties = [o for o in new if o.type == "EMPTY"]
+    meshes = [o for o in new if o.type == "MESH"]
+    for o in meshes:
+        o.matrix_basis = world_mat(o)
+        o.parent = None
+    anchors = {}
+    for o in meshes:
+        for slot, m in enumerate(o.data.materials):
+            if m and m.name in ANCHOR_MATERIALS:
+                vs = {v for p in o.data.polygons if p.material_index == slot for v in p.vertices}
+                if vs:
+                    pts = [o.matrix_basis @ o.data.vertices[v].co for v in vs]
+                    anchors[m.name] = sum(pts, Vector()) / len(pts)
+    out = {"anchors": anchors}
+    groups = {"Screen": [o for o in meshes if "Screen" in o.name],
+              "Blades": [o for o in meshes if "Blades" in o.name]}
+    groups["body"] = [o for o in meshes if o not in groups["Screen"] and o not in groups["Blades"]]
+    scratch = bpy.context.scene.collection
+    for key, part in groups.items():
+        if not part:
+            out[key] = None
+            continue
+        merged = join(name if key == "body" else "%s_%s" % (name, key), part, scratch)
+        merged.data.use_fake_user = True
+        out[key] = merged.data
+        bpy.data.objects.remove(merged)
+    for o in empties:
+        bpy.data.objects.remove(o)
+    PROPS[name] = out
+    return out
 
 
-def chair_stool(name, loc, rot_z, coll):
-    """Soviet wooden kitchen stool (taburetka)."""
-    wood = mat("Stool_Wood", (0.45, 0.3, 0.16), 0.6)
-    root = empty(name, loc, rot_z, coll=coll)
-    box(name + "_Seat", (0.34, 0.34, 0.035), (0, 0, 0.46), wood, root, coll, bevel=0.006)
-    for dx in (-0.13, 0.13):
-        for dy in (-0.13, 0.13):
-            box(name + "_Leg", (0.035, 0.035, 0.45), (dx, dy, 0.225), wood, root, coll,
-                rot=(math.radians(-3 if dy > 0 else 3), math.radians(3 if dx > 0 else -3), 0))
-    for dy in (-0.13, 0.13):
-        box(name + "_Rung", (0.27, 0.02, 0.03), (0, dy, 0.16), wood, root, coll)
-    for dx in (-0.13, 0.13):
-        box(name + "_Rung", (0.02, 0.27, 0.03), (dx, 0, 0.12), wood, root, coll)
-    return root
+def place(name, matrix, coll, label=None, screen_mat=None, blades_label=None):
+    """Puts a linked copy of a prop at `matrix`; returns the body object."""
+    p = prop(name)
+    n = PROP_COUNT[name] = PROP_COUNT.get(name, 0) + 1
+    label = label or "%s_%03d" % (name, n)
+    obj = bpy.data.objects.new(label, p["body"])
+    obj.matrix_basis = matrix
+    coll.objects.link(obj)
+    if p["Screen"]:
+        so = bpy.data.objects.new(label + "_Screen", p["Screen"])
+        so.matrix_basis = matrix
+        coll.objects.link(so)
+        if screen_mat:
+            so.material_slots[0].link = "OBJECT"
+            so.material_slots[0].material = screen_mat
+    if p["Blades"]:
+        bo = bpy.data.objects.new(blades_label or label + "_Blades", p["Blades"])
+        bo.matrix_basis = matrix
+        coll.objects.link(bo)
+    return obj
 
 
-def chair_aeron(name, loc, rot_z, coll):
-    """Herman Miller style ergonomic chair: graphite frame, dark mesh seat and back."""
-    frame = mat("Aeron_Frame", (0.05, 0.05, 0.055), 0.35, 0.2)
-    mesh_m = mat("Aeron_Mesh", (0.03, 0.03, 0.035), 0.8)
-    alu = mat("Aeron_Alu", (0.7, 0.7, 0.72), 0.25, 1.0)
-    root = empty(name, loc, rot_z, coll=coll)
-    box(name + "_SeatFrame", (0.5, 0.48, 0.04), (0, 0, 0.47), frame, root, coll, bevel=0.015)
-    box(name + "_SeatMesh", (0.44, 0.42, 0.012), (0, 0, 0.495), mesh_m, root, coll)
-    back = empty(name + "_BackPivot", (0, -0.22, 0.52), 0, root, coll)
-    back.rotation_euler = (math.radians(-12), 0, 0)
-    box(name + "_BackFrameL", (0.03, 0.04, 0.6), (-0.23, 0, 0.3), frame, back, coll)
-    box(name + "_BackFrameR", (0.03, 0.04, 0.6), (0.23, 0, 0.3), frame, back, coll)
-    box(name + "_BackTop", (0.49, 0.04, 0.035), (0, 0, 0.6), frame, back, coll)
-    box(name + "_BackMesh", (0.44, 0.012, 0.56), (0, 0, 0.3), mesh_m, back, coll)
-    box(name + "_Lumbar", (0.4, 0.03, 0.06), (0, 0.02, 0.18), frame, back, coll)
-    for dx in (-0.27, 0.27):
-        box(name + "_ArmPost", (0.03, 0.06, 0.2), (dx, -0.08, 0.58), frame, root, coll)
-        box(name + "_ArmPad", (0.07, 0.26, 0.025), (dx, -0.02, 0.69), frame, root, coll, bevel=0.01)
-    _star_base(name, root, coll, alu, post=0.34)
-    return root
+def anchor(name, matrix, material):
+    """World position of a material's centre (e.g. a lamp's bulb) on a placed prop."""
+    return matrix @ prop(name)["anchors"][material]
 
 
-def chair_gaming(name, loc, rot_z, coll):
-    """Racing-style gaming chair, red and black."""
-    black = mat("Gaming_Black", (0.02, 0.02, 0.022), 0.5)
-    red = mat("Gaming_Red", (0.55, 0.03, 0.03), 0.45)
-    metal = mat("Chair_Metal", (0.4, 0.4, 0.42), 0.3, 1.0)
-    root = empty(name, loc, rot_z, coll=coll)
-    box(name + "_Seat", (0.52, 0.5, 0.1), (0, 0, 0.48), black, root, coll, bevel=0.03)
-    for dx in (-0.24, 0.24):
-        box(name + "_SeatWing", (0.06, 0.48, 0.08), (dx, 0, 0.55), red, root, coll, bevel=0.025)
-    back = empty(name + "_BackPivot", (0, -0.25, 0.55), 0, root, coll)
-    back.rotation_euler = (math.radians(-10), 0, 0)
-    box(name + "_Back", (0.5, 0.1, 0.85), (0, 0, 0.42), black, back, coll, bevel=0.03)
-    for dx in (-0.22, 0.22):
-        box(name + "_BackWing", (0.07, 0.12, 0.6), (dx, 0.03, 0.35), red, back, coll, bevel=0.025)
-    box(name + "_Pillow", (0.26, 0.08, 0.12), (0, 0.08, 0.72), red, back, coll, bevel=0.04)
-    for dx in (-0.29, 0.29):
-        box(name + "_Arm", (0.07, 0.25, 0.03), (dx, -0.02, 0.7), black, root, coll, bevel=0.01)
-        box(name + "_ArmPost", (0.04, 0.05, 0.18), (dx, -0.06, 0.6), metal, root, coll)
-    _star_base(name, root, coll, metal)
-    return root
+def at(root, x, y, z, rot_deg=0.0, scale=(1, 1, 1)):
+    """Matrix for something placed in a station's local frame."""
+    return (root.matrix_basis @ Matrix.Translation((x, y, z)) @ Matrix.Rotation(math.radians(rot_deg), 4, "Z")
+            @ Matrix.Diagonal((*scale, 1.0)))
 
 
-def chair_wooden(name, loc, rot_z, coll):
-    """Old bentwood (Viennese) chair."""
-    wood = mat("Bentwood", (0.25, 0.13, 0.06), 0.45)
-    root = empty(name, loc, rot_z, coll=coll)
-    cyl(name + "_Seat", 0.21, 0.035, (0, 0, 0.46), wood, root, coll, verts=24)
-    for i in range(4):
-        a = math.pi / 4 + i * math.pi / 2
-        cyl(name + "_Leg", 0.015, 0.46, (math.cos(a) * 0.16, math.sin(a) * 0.16, 0.23), wood, root, coll, verts=8)
-    for dx in (-0.15, 0.15):
-        cyl(name + "_BackPost", 0.015, 0.5, (dx, -0.19, 0.7), wood, root, coll, verts=8, rot=(math.radians(-8), 0, 0))
-    for z in (0.72, 0.86):
-        box(name + "_BackRail", (0.32, 0.02, 0.05), (0, -0.21 - (z - 0.7) * 0.14, z), wood, root, coll)
-    cyl(name + "_Ring", 0.14, 0.02, (0, 0, 0.22), wood, root, coll, verts=16)
-    return root
+def floor_at(loc, yaw_rad):
+    return Matrix.Translation(loc) @ Matrix.Rotation(yaw_rad, 4, "Z")
 
 
-def chair_folding(name, loc, rot_z, coll):
-    """Grey metal folding chair."""
-    metal = mat("Folding_Metal", (0.35, 0.36, 0.37), 0.4, 0.8)
-    seat = mat("Folding_Seat", (0.25, 0.26, 0.27), 0.5, 0.5)
-    root = empty(name, loc, rot_z, coll=coll)
-    box(name + "_Seat", (0.42, 0.4, 0.025), (0, 0.02, 0.45), seat, root, coll, bevel=0.01)
-    box(name + "_Back", (0.4, 0.02, 0.2), (0, -0.21, 0.78), seat, root, coll, rot=(math.radians(-8), 0, 0))
-    for dx in (-0.2, 0.2):
-        box(name + "_LegBack", (0.025, 0.025, 0.9), (dx, -0.17, 0.45), metal, root, coll, rot=(math.radians(-10), 0, 0))
-        box(name + "_LegFront", (0.025, 0.025, 0.47), (dx, 0.12, 0.23), metal, root, coll, rot=(math.radians(12), 0, 0))
-    return root
-
-
-CHAIRS = [chair, chair_stool, chair_aeron, chair_gaming, chair_wooden, chair_folding]
+# Chair props, in the same order as the old procedural set (the shuffled layout stays the same).
+CHAIRS = ["chair_office", "chair_stool", "chair_aeron", "chair_gaming", "chair_bentwood", "chair_folding"]
 
 
 # ------------------------------------------------------------ stations
@@ -970,16 +949,10 @@ def crt(root, coll, name, w, h, d, shell, screen=None):
     box(name + "_LED", (0.012, 0.005, 0.012), (w * 0.4, -d * 0.226, h * 0.08), led((0.9, 0.15, 0.05)), root, coll)
 
 
-def tower(root, coll, name, material, x=0.45, rgb=None):
-    """PC case standing on the floor under the table (table top is local z = 0)."""
-    z = -root.location.z
-    box(name, (0.2, 0.45, 0.44), (x, 0.05, z + 0.22), material, root, coll, bevel=0.005)
-    box(name + "_LED", (0.008, 0.004, 0.008), (x + 0.06, -0.103, z + 0.4), led((0.1, 1.0, 0.2)), root, coll)
-    box(name + "_Drive", (0.15, 0.004, 0.04), (x, -0.103, z + 0.34), mat("Plastic_Dark", (0.08, 0.08, 0.08), 0.5),
-        root, coll)
-    if rgb:
-        box(name + "_RGB", (0.004, 0.4, 0.36), (x - 0.102, 0.05, z + 0.22), led(rgb), root, coll)
-    return (x, 0.28, z + 0.3)
+def tower(root, coll, kind, x=0.45):
+    """PC case on the floor under the desk (station root sits at desk height)."""
+    place("pc_tower_" + kind, at(root, x, 0.05, -root.location.z), coll)
+    return (x, 0.28, -root.location.z + 0.3)
 
 
 def cables(root, coll, sources, power_x=-0.35):
@@ -1003,80 +976,68 @@ def cables(root, coll, sources, power_x=-0.35):
     return [o for o in objs if o]
 
 
+def kb(name, root):
+    """Full keyboards (real keycap legends) near the hero, lite ones elsewhere."""
+    i = int(root.name.split("_")[1]) if root.name.startswith("Station_") else HERO_INDEX
+    lite = name + "_lite"
+    if abs(i - HERO_INDEX) > 3 and os.path.exists(os.path.join(PROPS_DIR, lite + ".glb")):
+        return lite
+    return name
+
+
 def st_sega(root, coll):
-    shell = mat("Plastic_Grey", (0.42, 0.42, 0.40), 0.5)
-    black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    crt(root, coll, "SegaCRT", 0.40, 0.36, 0.40, shell, screen_on("16bit", "screen_16bit.jpg"))
-    for c in root.children:
-        c.location.y += 0.1
-    box("MegaDrive", (0.28, 0.21, 0.06), (0.05, -0.22, 0.03), black, root, coll, bevel=0.01)
-    cyl("MegaDrive_Ring", 0.07, 0.008, (0.0, -0.22, 0.064), mat("Plastic_Red_Ring", (0.5, 0.05, 0.03), 0.4), root, coll, verts=32)
-    box("MegaDrive_Cart", (0.13, 0.02, 0.07), (0.0, -0.21, 0.1), black, root, coll)
-    box("Pad", (0.16, 0.08, 0.025), (-0.15, -0.3, 0.013), black, root, coll, bevel=0.012)
-    return [(0, 0.3, 0.1), (0.05, -0.12, 0.03)]
+    """Small TV with a 16-bit game, Mega Drive with a cartridge, pad."""
+    place("tv_small", at(root, 0, 0.12, 0), coll, screen_mat=screen_on("16bit", "screen_16bit.jpg"))
+    place("console_megadrive", at(root, 0.05, -0.2, 0, 5), coll)
+    place("pad_mega", at(root, -0.32, -0.28, 0, 15), coll)
+    return [(0, 0.29, 0.1), (0.05, -0.1, 0.03)]
 
 
 def st_ps2(root, coll):
-    shell = mat("Plastic_TV_Silver", (0.55, 0.55, 0.56), 0.35, 0.3)
-    black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    crt(root, coll, "TV", 0.62, 0.48, 0.48, shell)
-    for c in root.children:
-        c.location.y += 0.12
-    box("PS2", (0.30, 0.18, 0.078), (0.0, -0.22, 0.039), black, root, coll)
-    box("PS2_Stripe", (0.30, 0.004, 0.006), (0.0, -0.311, 0.05), mat("PS2_Stripe", (0.1, 0.1, 0.12), 0.3), root, coll)
-    box("PS2_LED", (0.008, 0.004, 0.008), (0.12, -0.312, 0.06), led((0.1, 0.3, 1.0)), root, coll)
-    box("DualShock", (0.15, 0.09, 0.03), (0.2, -0.32, 0.015), black, root, coll, bevel=0.015)
-    return [(0, 0.35, 0.1), (0.0, -0.13, 0.04)]
+    place("tv_silver", at(root, 0, 0.12, 0), coll)
+    place("console_ps2", at(root, 0, -0.25, 0), coll)
+    place("pad_dualshock", at(root, 0.32, -0.3, 0, -20), coll)
+    return [(0, 0.36, 0.1), (0.0, -0.16, 0.04)]
 
 
 def st_gaming(root, coll):
-    """Modern gaming setup: two monitors, RGB tower under the table, headset."""
+    """Two monitors, RGB keyboard and mouse, RGB tower under the table, headset."""
     black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    for i, (dx, ang, scr) in enumerate([(-0.33, 12, screen_on("modern_game", "screen_modern_game.jpg", 1.4)),
-                                         (0.36, -18, screen_off())]):
-        m = empty("Monitor_%d" % i, (dx, 0.05, 0), math.radians(ang), root, coll)
-        box("Monitor_Panel", (0.62, 0.03, 0.36), (0, 0.03, 0.42), black, m, coll)
-        plane("Monitor_Screen", 0.6, 0.34, (0, 0.014, 0.42), scr, m, coll)
-        box("Monitor_Neck", (0.05, 0.05, 0.25), (0, 0.08, 0.16), black, m, coll)
-        box("Monitor_Foot", (0.25, 0.2, 0.015), (0, 0.05, 0.008), black, m, coll)
-    box("Keyboard", (0.44, 0.14, 0.025), (-0.02, -0.25, 0.013), black, root, coll)
-    box("Keyboard_Glow", (0.44, 0.14, 0.003), (-0.02, -0.25, 0.0015), led((1.0, 0.2, 0.6)), root, coll)
+    place("monitor_flat", at(root, -0.33, 0.12, 0, 12), coll,
+          screen_mat=screen_on("modern_game", "screen_modern_game.jpg", 1.4))
+    place("monitor_flat", at(root, 0.36, 0.12, 0, -18), coll)
+    place(kb("keyboard_gaming", root), at(root, -0.02, -0.24, 0), coll)
+    place("mouse_rgb", at(root, 0.34, -0.24, 0), coll)
     box("Mousepad", (0.9, 0.38, 0.004), (0.05, -0.27, 0.002), mat("Mousepad", (0.03, 0.03, 0.04), 0.9), root, coll)
-    box("Mouse", (0.06, 0.11, 0.035), (0.33, -0.25, 0.018), black, root, coll, bevel=0.015)
-    cyl("Headset_Band", 0.09, 0.03, (-0.5, -0.1, 0.09), black, root, coll, rot=(math.radians(90), 0, 0), verts=16)
+    cyl("Headset_Band", 0.09, 0.03, (-0.55, -0.1, 0.09), black, root, coll, rot=(math.radians(90), 0, 0), verts=16)
     for dx in (-0.09, 0.09):
-        cyl("Headset_Cup", 0.045, 0.04, (-0.5 + dx, -0.1, 0.045), black, root, coll, rot=(0, math.radians(90), 0))
-    t = tower(root, coll, "GamingTower", black, x=0.5, rgb=(0.6, 0.1, 1.0))
-    return [(-0.33, 0.12, 0.1), (0.36, 0.12, 0.1), t]
+        cyl("Headset_Cup", 0.045, 0.04, (-0.55 + dx, -0.1, 0.045), black, root, coll, rot=(0, math.radians(90), 0))
+    t = tower(root, coll, "rgb", x=0.5)
+    return [(-0.33, 0.2, 0.1), (0.36, 0.2, 0.1), t]
 
 
 def st_beige(root, coll):
-    beige = mat("Plastic_Beige", (0.72, 0.66, 0.53), 0.55)
-    box("Case_Desktop", (0.44, 0.40, 0.15), (0, 0.06, 0.075), beige, root, coll, bevel=0.005)
-    box("Floppy", (0.12, 0.005, 0.015), (0.1, -0.142, 0.1), mat("Plastic_Dark", (0.08, 0.08, 0.08), 0.5), root, coll)
-    box("Power_LED", (0.008, 0.004, 0.008), (-0.15, -0.142, 0.05), led((0.1, 1.0, 0.2)), root, coll)
-    sub = empty("CRT_Mount", (0, 0.04, 0.15), 0, root, coll)
-    crt(sub, coll, "BeigeCRT", 0.38, 0.34, 0.40, beige)
-    box("Keyboard_Beige", (0.46, 0.17, 0.035), (0, -0.28, 0.018), beige, root, coll, rot=(math.radians(4), 0, 0))
-    return [(0, 0.3, 0.1)]
+    """Nineties desktop case with a 14\" CRT on top, Model M keyboard, ball mouse."""
+    place("pc_desktop_beige", at(root, 0, 0.08, 0), coll)
+    place("crt_beige14", at(root, 0, 0.08, 0.14), coll)
+    place("keyboard_modelm", at(root, 0, -0.27, 0), coll)
+    place("mouse_ball", at(root, 0.33, -0.27, 0), coll)
+    return [(0, 0.29, 0.1)]
 
 
 def st_spreadsheet(root, coll):
-    """Office PC from the late nineties: CRT monitor with a spreadsheet, tower under the table."""
-    beige = mat("Plastic_Beige", (0.72, 0.66, 0.53), 0.55)
-    crt(root, coll, "OfficeCRT", 0.42, 0.38, 0.42, beige, screen_on("spreadsheet", "screen_spreadsheet.jpg", 1.1))
-    for c in root.children:
-        c.location.y += 0.1
-    box("Keyboard_Office", (0.46, 0.17, 0.035), (0, -0.26, 0.018), beige, root, coll, rot=(math.radians(4), 0, 0))
-    if root.name != "Station_%02d" % CLERK_INDEX:     # the clerk brings his own animated mouse
-        box("Mouse_Office", (0.06, 0.1, 0.03), (0.32, -0.26, 0.015), beige, root, coll, bevel=0.012)
+    """Late-nineties office PC: 17\" CRT with a spreadsheet, tower under the table."""
+    place("crt_grey17", at(root, 0, 0.1, 0), coll, screen_mat=screen_on("spreadsheet", "screen_spreadsheet.jpg", 1.1))
+    place(kb("keyboard_modern", root), at(root, 0, -0.26, 0), coll)
     box("Mousepad_Office", (0.22, 0.19, 0.004), (0.32, -0.26, 0.002), mat("Mousepad_Blue", (0.05, 0.12, 0.3), 0.8),
         root, coll)
+    if root.name != "Station_%02d" % CLERK_INDEX:     # the clerk brings his own animated mouse
+        place("mouse_ball", at(root, 0.32, -0.26, 0.004), coll)
     for i in range(3):
         box("Papers", (0.21, 0.297, 0.002), (-0.5, -0.1, 0.002 + i * 0.002), mat("Paper", (0.85, 0.84, 0.8), 0.9),
             root, coll, rot=(0, 0, math.radians(8 * i - 6)))
-    t = tower(root, coll, "OfficeTower", beige, x=0.45)
-    return [(0, 0.35, 0.1), t]
+    t = tower(root, coll, "beige", x=0.45)
+    return [(0, 0.32, 0.1), t]
 
 
 def st_vr(root, coll):
@@ -1088,7 +1049,7 @@ def st_vr(root, coll):
     box("VR_Face", (0.17, 0.02, 0.08), (0, 0.015, 0.06), black, root, coll, bevel=0.01)
     for dx in (-0.035, 0.035):
         cyl("VR_Lens", 0.022, 0.005, (dx, 0.027, 0.06), lens, root, coll, rot=(math.radians(90), 0, 0))
-    cyl("VR_Strap", 0.1, 0.03, (0, 0.11, 0.05), black, root, coll, rot=(0, 0, 0), verts=20, r2=0.1)
+    cyl("VR_Strap", 0.1, 0.03, (0, 0.11, 0.05), black, root, coll, verts=20, r2=0.1)
     for dx in (-0.3, 0.3):
         cyl("VR_Grip", 0.018, 0.12, (dx, -0.2, 0.06), white, root, coll, rot=(math.radians(70), 0, 0), verts=10)
         cyl("VR_Ring", 0.05, 0.015, (dx, -0.24, 0.12), white, root, coll, rot=(math.radians(20), 0, 0), verts=20, r2=0.05)
@@ -1096,63 +1057,50 @@ def st_vr(root, coll):
         cyl("BaseStation_Pole", 0.01, 0.4, (dx, 0.3, 0.2), black, root, coll, verts=8)
         box("BaseStation", (0.08, 0.06, 0.08), (dx, 0.28, 0.43), black, root, coll, bevel=0.01,
             rot=(math.radians(-20), 0, math.radians(15 if dx < 0 else -15)))
-    box("VR_Laptop_Base", (0.34, 0.24, 0.018), (0.45, -0.05, 0.009), black, root, coll)
-    box("VR_Laptop_Lid", (0.34, 0.008, 0.23), (0.45, 0.07, 0.12), black, root, coll, rot=(math.radians(-15), 0, 0))
-    t = tower(root, coll, "VRTower", black, x=0.5, rgb=(0.1, 0.7, 1.0))
+    place("laptop_black", at(root, 0.45, -0.05, 0), coll)
+    t = tower(root, coll, "black", x=0.5)
     return [(0, 0.12, 0.06), (-0.65, 0.3, 0.0), (0.65, 0.3, 0.0), (0.45, 0.07, 0.02), t]
 
 
 def st_zx(root, coll):
-    shell = mat("Plastic_TV_Dark", (0.12, 0.10, 0.09), 0.6)
-    crt(root, coll, "SmallTV", 0.36, 0.30, 0.34, shell)
-    for c in root.children:
-        c.location.y += 0.12
+    """ZX-style home computer (the keyboard is the computer) on a small TV, cassette."""
     black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    box("ZX", (0.31, 0.14, 0.03), (0, -0.24, 0.015), black, root, coll, rot=(math.radians(5), 0, 0))
-    for i, col in enumerate([(0.8, 0.05, 0.05), (0.9, 0.6, 0.05), (0.1, 0.6, 0.1), (0.1, 0.3, 0.9)]):
-        box("ZX_Stripe", (0.012, 0.05, 0.002), (0.11 + i * 0.014, -0.25, 0.032),
-            mat("Stripe_%d" % i, col, 0.4), root, coll, rot=(0, 0, math.radians(-30)))
-    box("Cassette", (0.2, 0.13, 0.05), (-0.25, -0.2, 0.025), black, root, coll)
-    return [(0, 0.3, 0.1), (0, -0.2, 0.02)]
+    place("tv_small", at(root, 0, 0.12, 0), coll)
+    place("keyboard_zx", at(root, 0, -0.24, 0), coll)
+    box("Cassette", (0.2, 0.13, 0.05), (-0.3, -0.2, 0.025), black, root, coll)
+    return [(0, 0.29, 0.1), (0, -0.17, 0.02)]
 
 
 def st_laptop(root, coll):
-    alu = mat("Aluminium", (0.6, 0.6, 0.62), 0.3, 1.0)
-    box("Laptop_Base", (0.34, 0.24, 0.018), (0, -0.12, 0.009), alu, root, coll)
-    lid = empty("Laptop_Hinge", (0, 0.0, 0.018), 0, root, coll)
-    lid.rotation_euler = (math.radians(-15), 0, 0)
-    box("Laptop_Lid", (0.34, 0.008, 0.23), (0, 0.004, 0.115), alu, lid, coll)
-    plane("Laptop_Screen", 0.31, 0.2, (0, -0.0005, 0.118), screen_off(), lid, coll)
-    box("Laptop_LED", (0.006, 0.004, 0.004), (0.15, -0.241, 0.01), led((1.0, 0.6, 0.1)), root, coll)
-    return [(0.15, 0.0, 0.01)]
+    place("laptop_silver", at(root, 0, -0.1, 0), coll)
+    return [(0.15, 0.02, 0.01)]
 
 
 def st_imac(root, coll):
     teal = mat("iMac_Teal", (0.1, 0.55, 0.6), 0.15, transmission=0.6, alpha=0.85)
-    white = mat("Plastic_White", (0.85, 0.86, 0.86), 0.35)
-    box("iMac_Front", (0.40, 0.18, 0.38), (0, 0.0, 0.25), white, root, coll, bevel=0.04)
-    box("iMac_Back", (0.36, 0.26, 0.34), (0, 0.18, 0.25), teal, root, coll, bevel=0.08)
-    box("iMac_Foot", (0.18, 0.2, 0.06), (0, 0.06, 0.03), teal, root, coll, bevel=0.02)
-    plane("iMac_Screen", 0.28, 0.21, (0, -0.091, 0.28), screen_off(), root, coll)
-    box("iMac_Keyboard", (0.35, 0.13, 0.025), (0, -0.28, 0.013), teal, root, coll, bevel=0.01)
-    cyl("iMac_Puck", 0.035, 0.02, (0.26, -0.27, 0.01), teal, root, coll)
-    return [(0, 0.3, 0.1)]
+    place("imac_g3", at(root, 0, 0.05, 0), coll)
+    place(kb("keyboard_imac", root), at(root, 0, -0.28, 0), coll)
+    cyl("iMac_Puck", 0.035, 0.02, (0.27, -0.27, 0.01), teal, root, coll)
+    return [(0, 0.25, 0.1)]
 
 
 def st_modern(root, coll):
-    black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    white = mat("Plastic_White", (0.85, 0.86, 0.86), 0.35)
-    box("FlatTV", (0.9, 0.04, 0.52), (0, 0.12, 0.34), black, root, coll)
-    plane("FlatTV_Screen", 0.88, 0.5, (0, 0.099, 0.34), screen_off(), root, coll)
-    box("FlatTV_Stand", (0.35, 0.18, 0.02), (0, 0.12, 0.01), black, root, coll)
-    box("PS5", (0.1, 0.26, 0.39), (0.6, 0.05, 0.195), white, root, coll, bevel=0.03)
-    box("PS5_Core", (0.07, 0.25, 0.37), (0.6, 0.05, 0.195), black, root, coll)
-    box("PS5_LED", (0.07, 0.003, 0.004), (0.6, -0.082, 0.36), led((0.2, 0.5, 1.0)), root, coll)
-    box("DualSense", (0.16, 0.1, 0.035), (-0.1, -0.25, 0.018), white, root, coll, bevel=0.015)
-    return [(0, 0.14, 0.05), (0.6, 0.18, 0.05)]
+    place("monitor_flat", at(root, 0, 0.12, 0), coll)
+    place("console_ps5", at(root, 0.55, 0.1, 0), coll)
+    place("pad_dualsense", at(root, -0.1, -0.25, 0, 10), coll)
+    return [(0, 0.2, 0.05), (0.55, 0.23, 0.05)]
+
+
+def st_mac(root, coll):
+    """Classic all-in-one Macintosh with its keyboard and one-button mouse."""
+    place("mac_classic", at(root, 0, 0.1, 0), coll)
+    place(kb("keyboard_macext", root), at(root, 0, -0.25, 0), coll)
+    place("mouse_mac", at(root, 0.3, -0.25, 0), coll)
+    return [(0, 0.24, 0.1)]
 
 
 STATIONS = [st_sega, st_spreadsheet, st_ps2, st_gaming, st_vr, st_beige, st_zx, st_laptop, st_imac, st_modern]
+EXTRA_STATIONS = {3: st_mac, 17: st_mac, 29: st_mac}   # a few classic Macs dropped into the row
 
 
 # ------------------------------------------------------------ desks
@@ -1160,72 +1108,8 @@ STATIONS = [st_sega, st_spreadsheet, st_ps2, st_gaming, st_vr, st_beige, st_zx, 
 # (the station root sits at desk height), the floor at z = -h.
 
 def desk(root, coll, kind, w, h):
-    d = DESK_D
-    if kind == "soviet":          # polished dark wood, drawer pedestal on the left
-        wood = mat("Desk_SovietWood", (0.16, 0.08, 0.04), 0.3)
-        brass = mat("Brass", (0.7, 0.55, 0.25), 0.3, 1.0)
-        box("Top", (w, d, 0.03), (0, 0, -0.015), wood, root, coll, bevel=0.004)
-        box("Pedestal", (0.4, d - 0.06, h - 0.03), (-w / 2 + 0.22, 0, -h / 2 - 0.015), wood, root, coll)
-        for k in range(3):
-            z = -0.12 - k * 0.22
-            box("Drawer", (0.36, 0.01, 0.18), (-w / 2 + 0.22, -d / 2 + 0.025, z), wood, root, coll, bevel=0.003)
-            box("Handle", (0.08, 0.015, 0.012), (-w / 2 + 0.22, -d / 2 + 0.015, z), brass, root, coll)
-        for dy in (-1, 1):
-            box("Leg", (0.05, 0.05, h - 0.03), (w / 2 - 0.05, dy * (d / 2 - 0.05), -h / 2 - 0.015), wood, root, coll)
-        box("Modesty", (w - 0.5, 0.02, 0.35), (0.18, d / 2 - 0.05, -0.2), wood, root, coll)
-    elif kind == "white":         # white laminate on thin steel legs
-        white = mat("Desk_White", (0.86, 0.86, 0.84), 0.4)
-        steel = mat("Desk_Steel", (0.75, 0.75, 0.76), 0.3, 1.0)
-        box("Top", (w, d, 0.025), (0, 0, -0.0125), white, root, coll)
-        for dx in (-1, 1):
-            for dy in (-1, 1):
-                cyl("Leg", 0.02, h - 0.025, (dx * (w / 2 - 0.06), dy * (d / 2 - 0.06), -h / 2), steel, root, coll,
-                    verts=10)
-    elif kind == "gaming":        # black top, RGB edge, T-legs
-        black = mat("Desk_Black", (0.02, 0.02, 0.022), 0.35)
-        box("Top", (w, d, 0.025), (0, 0, -0.0125), black, root, coll)
-        box("RGB_Edge", (w, 0.004, 0.012), (0, -d / 2 - 0.002, -0.012), led((0.7, 0.1, 1.0)), root, coll)
-        for dx in (-1, 1):
-            box("Leg", (0.06, 0.06, h - 0.05), (dx * (w / 2 - 0.1), 0.1, -h / 2), black, root, coll)
-            box("Foot", (0.06, d - 0.1, 0.04), (dx * (w / 2 - 0.1), 0, -h + 0.02), black, root, coll)
-        box("Crossbar", (w - 0.2, 0.05, 0.05), (0, 0.1, -h + 0.25), black, root, coll)
-    elif kind == "office":        # grey laminate, panel legs, modesty panel
-        grey = mat("Desk_OfficeGrey", (0.55, 0.55, 0.52), 0.5)
-        frame = mat("Desk_OfficeFrame", (0.22, 0.22, 0.23), 0.4, 0.6)
-        box("Top", (w, d, 0.03), (0, 0, -0.015), grey, root, coll, bevel=0.003)
-        for dx in (-1, 1):
-            box("Panel", (0.025, d - 0.05, h - 0.03), (dx * (w / 2 - 0.02), 0, -h / 2 - 0.015), frame, root, coll)
-        box("Modesty", (w - 0.05, 0.02, 0.4), (0, d / 2 - 0.04, -0.25), frame, root, coll)
-    elif kind == "school":        # birch top on a green tubular frame
-        birch = mat("Desk_Birch", (0.75, 0.6, 0.4), 0.5)
-        green = mat("Desk_GreenFrame", (0.12, 0.3, 0.18), 0.45, 0.5)
-        box("Top", (w, d, 0.028), (0, 0, -0.014), birch, root, coll, bevel=0.004)
-        for dx in (-1, 1):
-            for dy in (-1, 1):
-                box("Leg", (0.03, 0.03, h - 0.03), (dx * (w / 2 - 0.04), dy * (d / 2 - 0.04), -h / 2 - 0.015), green,
-                    root, coll)
-            box("Rail", (0.03, d - 0.08, 0.03), (dx * (w / 2 - 0.04), 0, -h + 0.12), green, root, coll)
-        box("Shelf", (w - 0.1, d - 0.2, 0.015), (0, 0.05, -0.15), birch, root, coll)
-    elif kind == "glass":         # glass top on chrome A-trestles
-        glass = mat("Desk_Glass", (0.3, 0.38, 0.38), 0.05, transmission=1.0, alpha=0.35)
-        chrome = mat("Chrome", (0.8, 0.8, 0.82), 0.12, 1.0)
-        box("Top", (w, d, 0.012), (0, 0, -0.006), glass, root, coll)
-        for dx in (-1, 1):
-            for dy in (-1, 1):
-                box("Trestle", (0.025, 0.025, h + 0.05), (dx * (w / 2 - 0.15), dy * 0.18, -h / 2), chrome, root, coll,
-                    rot=(math.radians(dy * 14), 0, 0))
-            box("TrestleTop", (0.04, d - 0.15, 0.02), (dx * (w / 2 - 0.15), 0, -0.022), chrome, root, coll)
-    else:                         # "pine": plain pine with an X brace
-        pine = mat("Desk_Pine", (0.62, 0.45, 0.26), 0.55)
-        box("Top", (w, d, 0.035), (0, 0, -0.0175), pine, root, coll, bevel=0.005)
-        for dx in (-1, 1):
-            for dy in (-1, 1):
-                box("Leg", (0.06, 0.06, h - 0.035), (dx * (w / 2 - 0.05), dy * (d / 2 - 0.05), -h / 2 - 0.0175),
-                    pine, root, coll)
-        brace = math.degrees(math.atan2(h - 0.25, w - 0.1))
-        for sgn in (-1, 1):
-            box("Brace", (math.hypot(w - 0.1, h - 0.25), 0.03, 0.04), (0, d / 2 - 0.05, -h / 2), pine, root, coll,
-                rot=(0, math.radians(sgn * brace), 0))
+    """Detailed desk prop of this kind and width, stretched to this station's height."""
+    place("desk_%s_%d" % (kind, round(w * 100)), at(root, 0, 0, 0, scale=(1, 1, h / 0.75)), coll)
 
 
 DESKS = ["soviet", "white", "gaming", "office", "school", "glass", "pine"]
@@ -1235,116 +1119,46 @@ WIDE = {"st_gaming", "st_vr", "st_modern"}
 # ------------------------------------------------------------ desk objects
 
 def ext_fan(root, coll, x, y, n):
-    """Small desk fan facing the chair; blades are their own object so Unreal can spin them."""
-    white = mat("Fan_White", (0.82, 0.83, 0.8), 0.4)
-    grille = mat("Fan_Grille", (0.6, 0.62, 0.62), 0.3, 1.0)
-    box("Fan_Base", (0.16, 0.12, 0.03), (x, y, 0.015), white, root, coll, bevel=0.01)
-    cyl("Fan_Stem", 0.012, 0.2, (x, y, 0.13), white, root, coll, verts=10)
-    cyl("Fan_Motor", 0.04, 0.08, (x, y + 0.04, 0.26), white, root, coll, rot=(math.radians(90), 0, 0))
-    cyl("Fan_Guard", 0.12, 0.08, (x, y - 0.03, 0.26), grille, root, coll, rot=(math.radians(90), 0, 0), verts=24,
-        r2=0.11)
-    # Blades: built around local Z, then turned so Z points at the chair (local -Y of the station).
-    me_objs = []
-    for b in range(3):
-        a = b * 2 * math.pi / 3
-        me_objs.append(box("FanBlade", (0.1, 0.04, 0.004), (math.cos(a) * 0.055, math.sin(a) * 0.055, 0),
-                           mat("Fan_Blade", (0.7, 0.75, 0.8), 0.3, transmission=0.5, alpha=0.6), coll=coll,
-                           rot=(math.radians(25), 0, a)))
-    bl = join("DeskFan_Blades_%02d" % n, me_objs, coll)
-    loc = root.matrix_basis @ Vector((x, y - 0.05, 0.26))
-    bl.location = loc
-    # local Z -> station -Y -> world -X (stations are turned -90 degrees)
-    bl.rotation_euler = (0, math.radians(-90), 0)
-    LAYOUT.setdefault("desk_fans", []).append(bl.name)
+    """Desk fan blowing at the chair; the blades are their own actor so Unreal can spin them."""
+    place("fan_desk", at(root, x, y, 0, rng_turn(n, 25)), coll, blades_label="DeskFan_Blades_%02d" % n)
+    LAYOUT.setdefault("desk_fans", []).append("DeskFan_Blades_%02d" % n)
 
 
 def ext_rose(root, coll, x, y, n):
-    """A single rose in a glass under a purple grow lamp."""
-    glass = mat("Vase_Glass", (0.6, 0.7, 0.7), 0.05, transmission=1.0, alpha=0.3)
-    stem = mat("Rose_Stem", (0.1, 0.3, 0.08), 0.6)
-    petal = mat("Rose_Petal", (0.55, 0.02, 0.06), 0.5)
-    black = mat("Plastic_Black", (0.02, 0.02, 0.02), 0.4)
-    purple = mat("GrowLamp_Purple", (0.0, 0.0, 0.0), 0.5, emit=(0.6, 0.1, 1.0), strength=20.0)
-    cyl("Vase", 0.035, 0.18, (x, y, 0.09), glass, root, coll, verts=16, r2=0.03)
-    cyl("Stem", 0.004, 0.3, (x, y, 0.25), stem, root, coll, verts=6)
-    for k in range(3):
-        box("Leaf", (0.05, 0.02, 0.004), (x + 0.02 * (k - 1), y, 0.2 + k * 0.05), stem, root, coll,
-            rot=(0, math.radians(30 * (k - 1)), math.radians(60 * k)))
-    for k in range(5):
-        a = k * 2 * math.pi / 5
-        cyl("Petal", 0.022, 0.03, (x + math.cos(a) * 0.012, y + math.sin(a) * 0.012, 0.415), petal, root, coll,
-            verts=8, r2=0.012, rot=(math.radians(15) * math.cos(a), math.radians(15) * math.sin(a), 0))
-    # clamp lamp: pole, arm, head with a purple LED disc pointing down at the rose
-    cyl("GrowLamp_Pole", 0.008, 0.6, (x + 0.15, y + 0.12, 0.3), black, root, coll, verts=8)
-    box("GrowLamp_Arm", (0.16, 0.015, 0.015), (x + 0.075, y + 0.06, 0.6), black, root, coll,
-        rot=(0, 0, math.radians(38)))
-    cyl("GrowLamp_Head", 0.06, 0.03, (x, y, 0.59), black, root, coll)
-    cyl("GrowLamp_LED", 0.05, 0.004, (x, y, 0.573), purple, root, coll)
-    LAYOUT.setdefault("grow_lights", []).append(ue_from(root, x, y, 0.55))
+    """A rose in a vase under a purple grow lamp (its head hangs 18 cm off the pole)."""
+    place("rose_vase", at(root, x, y, 0), coll)
+    m = at(root, x + 0.18, y, 0)
+    place("lamp_grow", m, coll)
+    LAYOUT.setdefault("grow_lights", []).append(ue(*(anchor("lamp_grow", m, "GrowLamp_Purple") + Vector((0, 0, -0.04)))))
 
 
 def ext_desk_lamp(root, coll, x, y, n):
-    """Soviet desk lamp with a green metal shade and a warm bulb."""
-    green = mat("Lamp_GreenShade", (0.08, 0.25, 0.12), 0.35, 0.5)
-    bulb = mat("Lamp_Bulb", (1.0, 0.85, 0.6), 0.2, emit=WARM, strength=10.0)
-    cyl("DeskLamp_Base", 0.07, 0.025, (x, y, 0.0125), green, root, coll)
-    box("DeskLamp_Arm1", (0.015, 0.015, 0.3), (x, y + 0.04, 0.16), green, root, coll, rot=(math.radians(15), 0, 0))
-    box("DeskLamp_Arm2", (0.015, 0.25, 0.015), (x, y - 0.03, 0.31), green, root, coll, rot=(math.radians(-20), 0, 0))
-    cyl("DeskLamp_Shade", 0.07, 0.1, (x, y - 0.14, 0.27), green, root, coll, verts=20, r2=0.03,
-        rot=(math.radians(-25), 0, 0))
-    cyl("DeskLamp_Bulb", 0.025, 0.04, (x, y - 0.14, 0.235), bulb, root, coll, verts=10)
-    LAYOUT.setdefault("desk_lights", []).append(ue_from(root, x, y - 0.14, 0.2))
+    m = at(root, x, y + 0.05, 0, rng_turn(n, 20))
+    place("lamp_soviet", m, coll)
+    LAYOUT.setdefault("desk_lights", []).append(ue(*(anchor("lamp_soviet", m, "Lamp_Bulb") + Vector((0, 0, -0.03)))))
 
 
 def ext_plant(root, coll, x, y, n):
-    pot = mat("Pot_Terracotta", (0.55, 0.25, 0.12), 0.8)
-    leaf = mat("Plant_Leaf", (0.08, 0.32, 0.1), 0.6)
-    cyl("Pot", 0.06, 0.1, (x, y, 0.05), pot, root, coll, verts=14, r2=0.045)
-    if n % 2:
-        cyl("Cactus", 0.03, 0.14, (x, y, 0.16), leaf, root, coll, verts=10, r2=0.025)
-        cyl("Cactus_Arm", 0.015, 0.06, (x + 0.03, y, 0.18), leaf, root, coll, verts=8)
-    else:
-        for k in range(7):
-            a = k * 2 * math.pi / 7
-            box("Leaf", (0.015, 0.008, 0.18), (x + math.cos(a) * 0.03, y + math.sin(a) * 0.03, 0.18), leaf, root, coll,
-                rot=(math.sin(a) * 0.4, -math.cos(a) * 0.4, 0))
+    place("plant_cactus" if n % 2 else "plant_leafy", at(root, x, y, 0, rng_turn(n, 180)), coll)
 
 
 def ext_books(root, coll, x, y, n):
-    cols = [(0.4, 0.05, 0.05), (0.05, 0.15, 0.35), (0.1, 0.3, 0.12), (0.6, 0.5, 0.2), (0.15, 0.12, 0.1)]
-    z = 0.0
-    for k in range(2 + n % 3):
-        th = 0.025 + 0.012 * ((n + k) % 3)
-        box("Book", (0.17 + 0.02 * (k % 2), 0.24 - 0.02 * (k % 2), th), (x, y, z + th / 2),
-            mat("Book_%d" % ((n + k) % len(cols)), cols[(n + k) % len(cols)], 0.7), root, coll,
-            rot=(0, 0, math.radians(7 * (k - 1))))
-        z += th
+    place("books_%d" % (2 + n % 3), at(root, x, y, 0, rng_turn(n, 12)), coll)
 
 
 def ext_tea(root, coll, x, y, n):
-    """Tea glass in a metal holder (podstakannik) with a spoon."""
-    metal = mat("Podstakannik", (0.6, 0.55, 0.45), 0.3, 1.0)
-    glass = mat("Tea_Glass", (0.5, 0.25, 0.08), 0.05, transmission=0.8, alpha=0.6)
-    cyl("Holder", 0.036, 0.06, (x, y, 0.03), metal, root, coll, verts=16)
-    cyl("TeaGlass", 0.033, 0.1, (x, y, 0.08), glass, root, coll, verts=16, r2=0.035)
-    box("Handle", (0.01, 0.04, 0.06), (x + 0.045, y, 0.05), metal, root, coll)
-    cyl("Spoon", 0.003, 0.15, (x - 0.01, y, 0.12), metal, root, coll, verts=6, rot=(0, math.radians(12), 0))
+    place("tea_glass", at(root, x, y - 0.05, 0, rng_turn(n, 60)), coll)
 
 
 def ext_trinkets(root, coll, x, y, n):
-    """Rubik's cube, an alarm clock and a stack of CDs."""
-    cols = [(0.8, 0.05, 0.05), (0.05, 0.5, 0.1), (0.05, 0.15, 0.7), (0.9, 0.8, 0.1), (0.9, 0.9, 0.9), (0.9, 0.4, 0.05)]
-    for i in range(2):
-        for j in range(2):
-            box("Rubik", (0.028, 0.028, 0.056), (x - 0.1 + i * 0.029, y + j * 0.029, 0.028),
-                mat("Rubik_%d" % ((i + 2 * j + n) % 6), cols[(i + 2 * j + n) % 6], 0.4), root, coll)
-    red = mat("Clock_Red", (0.6, 0.05, 0.04), 0.4, 0.5)
-    cyl("Clock", 0.05, 0.035, (x + 0.08, y, 0.06), red, root, coll, rot=(math.radians(90), 0, 0))
-    cyl("Clock_Face", 0.042, 0.002, (x + 0.08, y - 0.019, 0.06), mat("Clock_Face", (0.9, 0.88, 0.8), 0.5), root, coll,
-        rot=(math.radians(90), 0, 0))
-    for k in range(4):
-        box("CD_Case", (0.142, 0.125, 0.01), (x, y + 0.14, 0.005 + k * 0.01), mat("CD_Case", (0.7, 0.75, 0.8), 0.1),
-            root, coll, rot=(0, 0, math.radians(5 * k)))
+    place("rubik_cube", at(root, x - 0.08, y - 0.05, 0, rng_turn(n, 40)), coll)
+    place("alarm_clock", at(root, x + 0.06, y, 0, rng_turn(n + 1, 20)), coll)
+    place("cd_stack", at(root, x, y + 0.1, 0, rng_turn(n + 2, 15)), coll)
+
+
+def rng_turn(n, spread):
+    """Stable little rotation per station, without touching the layout's random stream."""
+    return ((n * 37) % 100 / 100.0 - 0.5) * 2 * spread
 
 
 EXTRAS = [ext_desk_lamp, ext_plant, ext_books, ext_tea, ext_trinkets]
@@ -1374,6 +1188,9 @@ def build_stations(coll):
         cy = y + w / 2
         root = empty("Station_%02d" % i, (TABLE_X, cy, h), math.radians(-90), coll=coll)
         desk_kind = rng.choice(DESKS)
+        if i in EXTRA_STATIONS and fn.__name__ not in WIDE and i != CLERK_INDEX:
+            fn = EXTRA_STATIONS[i]
+            root.name = "Station_%02d" % i
         sources = fn(root, coll) or []
         # The desk goes in after the devices: some stations nudge all their children back.
         desk(root, coll, desk_kind, w, h)
@@ -1384,8 +1201,8 @@ def build_stations(coll):
                 "desk_height": round(h * 100, 1),
                 "chair": ue(SEAT_X, cy, 0.0),
                 "chair_yaw": 0.0,                            # sitter faces +X, toward the desk
-                "screen": ue_from(root, 0, 0.005, 0.198),     # CRT screen centre (spreadsheet station)
-                "screen_size": [32.8, 27.4],
+                "screen": ue_from(root, 0, -0.126, 0.251),    # CRT screen centre (crt_grey17)
+                "screen_size": [33.6, 31.2],
                 "screen_normal": [-100.0, 0.0, 0.0],
                 "mousepad": ue_from(root, 0.32, -0.26, 0.0),
             }
@@ -1405,13 +1222,12 @@ def build_stations(coll):
                 rng.choice(EXTRAS)(root, coll, ex_x, 0.15, i)
         trash = litter(coll, rng, root, w) if rng.random() < 0.25 else []
         collapse("Station_%02d_%s" % (i, fn.__name__[3:]), root, coll, wires + trash)
-        make = rng.choice(CHAIRS)
+        chair_kind = rng.choice(CHAIRS)
         loc = (SEAT_X + rng.uniform(-0.08, 0.1), cy + rng.uniform(-0.15, 0.15), 0)
         yaw = -90 + rng.uniform(-20, 20)
         if i == CLERK_INDEX:                                 # squarely at the desk for the clerk
             loc, yaw = (SEAT_X, cy, 0), -90
-        c = make("Chair_%02d" % i, loc, math.radians(yaw), coll)
-        collapse("Chair_%02d" % i, c, coll)
+        place(chair_kind, floor_at(loc, math.radians(yaw)), coll, label="Chair_%02d" % i)
         y += w
         i += 1
         if i == HERO_INDEX + REAL_AFTER_HERO:
@@ -1422,57 +1238,25 @@ def build_stations(coll):
 
 # ------------------------------------------------------------ fast-food litter
 
+def drop(name, coll, loc, rot):
+    place(name, floor_at(loc, rot), coll)
+    return []
+
+
 def cola_cup(coll, loc, rot, lying=False):
-    red = mat("Cup_Red", (0.62, 0.04, 0.04), 0.6)
-    white = mat("Cup_White", (0.9, 0.9, 0.88), 0.5)
-    straw = mat("Straw", (0.95, 0.95, 0.95), 0.4)
-    h = 0.16
-    r_ = (math.radians(90), 0, rot) if lying else (0, 0, rot)
-    o = cyl("Cup", 0.045, h, (0, 0, 0), red, coll=coll, verts=16, r2=0.035)
-    lid = cyl("Cup_Lid", 0.047, 0.01, (0, 0, h / 2 + 0.005), white, coll=coll, verts=16)
-    st = cyl("Cup_Straw", 0.004, 0.12, (0.01, 0, h / 2 + 0.05), straw, coll=coll, verts=6, rot=(0, math.radians(8), 0))
-    for p in (o, lid, st):
-        p.location = Vector(p.location)
-    parts = [o, lid, st]
-    m = Euler(r_).to_matrix().to_4x4()
-    m.translation = Vector(loc) + Vector((0, 0, 0.045 if lying else h / 2))
-    for p in parts:
-        p.matrix_basis = m @ p.matrix_basis
-    return parts
+    return drop("cup_cola_lying" if lying else "cup_cola", coll, loc, rot)
 
 
 def food_bag(coll, loc, rot):
-    kraft = mat("Kraft_Paper", (0.55, 0.4, 0.24), 0.9)
-    b = box("FoodBag", (0.15, 0.09, 0.2), (loc[0], loc[1], loc[2] + 0.1), kraft, coll=coll, rot=(0, 0, rot))
-    t = box("FoodBag_Fold", (0.15, 0.03, 0.04), (loc[0], loc[1], loc[2] + 0.21), kraft, coll=coll,
-            rot=(math.radians(25), 0, rot))
-    return [b, t]
+    return drop("food_bag", coll, loc, rot)
 
 
 def burger_box(coll, loc, rot, open_=False):
-    card = mat("Burger_Box", (0.85, 0.75, 0.55), 0.8)
-    stripe = mat("Burger_Box_Print", (0.75, 0.18, 0.05), 0.7)
-    parts = [box("BurgerBox", (0.13, 0.13, 0.04), (loc[0], loc[1], loc[2] + 0.02), card, coll=coll, rot=(0, 0, rot))]
-    if open_:
-        dx, dy = math.sin(rot) * 0.07, -math.cos(rot) * 0.07
-        parts.append(box("BurgerBox_Lid", (0.13, 0.13, 0.03), (loc[0] - dx, loc[1] - dy, loc[2] + 0.07), card,
-                         coll=coll, rot=(math.radians(-70), 0, rot)))
-    else:
-        parts.append(box("BurgerBox_Lid", (0.132, 0.132, 0.03), (loc[0], loc[1], loc[2] + 0.055), card, coll=coll,
-                         rot=(0, 0, rot)))
-        parts.append(box("BurgerBox_Print", (0.133, 0.02, 0.005), (loc[0], loc[1], loc[2] + 0.07), stripe, coll=coll,
-                         rot=(0, 0, rot)))
-    return parts
+    return drop("burger_box_open" if open_ else "burger_box_closed", coll, loc, rot)
 
 
 def fries(coll, loc, rot):
-    red = mat("Fries_Box", (0.7, 0.05, 0.04), 0.6)
-    yellow = mat("Fries", (0.9, 0.7, 0.2), 0.7)
-    parts = [box("FriesBox", (0.09, 0.04, 0.11), (loc[0], loc[1], loc[2] + 0.055), red, coll=coll, rot=(0, 0, rot))]
-    for k in range(5):
-        parts.append(box("Fry", (0.008, 0.008, 0.08), (loc[0] + (k - 2) * 0.012, loc[1], loc[2] + 0.12), yellow,
-                         coll=coll, rot=(math.radians(8 * (k - 2)), 0, rot)))
-    return parts
+    return drop("fries", coll, loc, rot)
 
 
 def litter(coll, rng, root, w):
@@ -1526,10 +1310,10 @@ def build_hero(coll, y0):
     box("Hero_Neck", (0.06, 0.06, 0.2), (0, 0.16, 0.1), black, root, coll)
     box("Hero_Foot", (0.24, 0.18, 0.015), (0, 0.13, 0.008), black, root, coll)
     box("Hero_PowerLED", (0.008, 0.004, 0.008), (0.2, 0.094, 0.2), led((0.1, 1.0, 0.2)), root, coll)
-    box("Hero_Keyboard", (0.44, 0.15, 0.03), (0, -0.22, 0.015), beige, root, coll, rot=(math.radians(4), 0, 0))
-    box("Hero_Mouse", (0.06, 0.1, 0.03), (0.32, -0.22, 0.015), beige, root, coll, bevel=0.012)
+    place(kb("keyboard_modern", root), at(root, 0, -0.22, 0), coll, label="Hero_Keyboard")
+    place("mouse_optical", at(root, 0.32, -0.22, 0), coll, label="Hero_Mouse")
     cyl("Hero_Mug", 0.04, 0.1, (-0.55, -0.1, 0.05), mat("Mug", (0.6, 0.1, 0.08), 0.4), root, coll)
-    t = tower(root, coll, "Hero_Tower", beige, x=0.5)
+    t = tower(root, coll, "beige", x=0.5)
     wires = cables(root, coll, [(0, 0.3, 0.1), t], power_x=-0.3)
     LAYOUT["hero"] = {
         "screen": ue_from(root, 0, 0.094, 0.39),
@@ -1542,8 +1326,7 @@ def build_hero(coll, y0):
     }
     LAYOUT["chunk_length"] = L * 100
     collapse("HeroStation", root, coll, wires)
-    c = chair("HeroChair", (SEAT_X, hero_y, 0), math.radians(-90), coll)
-    collapse("HeroChair", c, coll)
+    place("chair_office", floor_at((SEAT_X, hero_y, 0), math.radians(-90)), coll, label="HeroChair")
 
     # Light the screen casts on the desk and the sleeper (points -X, toward the chair).
     ld = bpy.data.lights.new("Hero_ScreenGlow", "AREA")
