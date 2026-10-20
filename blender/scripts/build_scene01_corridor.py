@@ -1021,6 +1021,14 @@ def prop(name):
                 o.data.materials[i] = bpy.data.materials[base]
     empties = [o for o in new if o.type == "EMPTY"]
     meshes = [o for o in new if o.type == "MESH"]
+    # which top-level node each mesh hangs under (hinged parts are found by it), before unparenting
+    TOPS = {}
+    for o in meshes:
+        top = o
+        while top.parent is not None and top.parent.parent is not None:
+            top = top.parent
+        TOPS[o] = top
+    top_pivots = {t: world_mat(t).translation.copy() for t in set(TOPS.values())}
     for o in meshes:
         o.matrix_basis = world_mat(o)
         o.parent = None
@@ -1039,18 +1047,13 @@ def prop(name):
               "Blades": [o for o in meshes if "Blades" in o.name]}
     # Hinged parts: everything under a top-level node named <prop>_Leaf*/_Wheel stays separate and
     # keeps that node's position as its pivot (doors swing about it in Unreal).
-    tops = {}
-    for o in meshes:
-        top = o
-        while top.parent is not None and top.parent.parent is not None:
-            top = top.parent
-        tops[o] = top
+    tops = TOPS
     for o in meshes:
         top = tops[o]
         key = top.name[len(name) + 1:] if top.name.startswith(name + "_") else ""
         if key.startswith("Leaf") or key.startswith("Wheel"):
             groups.setdefault(key, []).append(o)
-            out["pivots"][key] = world_mat(top).translation.copy()
+            out["pivots"][key] = top_pivots[top]
     hinged = {o for k, v in groups.items() if k not in ("Screen", "Blades") for o in v}
     groups["body"] = [o for o in meshes if o not in groups["Screen"] and o not in groups["Blades"] and o not in hinged]
     scratch = bpy.context.scene.collection

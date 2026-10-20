@@ -944,13 +944,6 @@ else:
 # People: the owner in his booth and a crowd at the reachable stations (meshes and loops from
 # the humans thread; each mesh faces +Y at yaw 0 and stands on the floor under the seat centre).
 HUMANS = "/Game/Characters/Humans/"
-CROWD = [("Streamer", "Sit_Gamepad", ("sega", "ps2", "modern")),
-         ("Guy_a", "Sit_KeyboardMouse", ("gaming", "beige", "spreadsheet", "mac")),
-         ("Guy_b", "Sit_Browse", ("laptop", "imac", "vr", "beige")),
-         ("Girl_a", "Sit_KeyboardMouse", ("gaming", "spreadsheet", "mac", "beige")),
-         ("Girl_b", "Sit_Browse", ("imac", "laptop", "zx")),
-         ("Kid_boy", "Sit_KeyboardMouse", ("gaming", "beige", "mac", "zx")),
-         ("Kid_girl", "Sit_Browse", ("laptop", "imac", "sega", "zx"))]
 
 
 def seat_person(name, anim, loc, facing_yaw, label):
@@ -971,15 +964,19 @@ def seat_person(name, anim, loc, facing_yaw, label):
 
 if "owner" in LAYOUT:
     seat_person("Owner", "Sit_Idle", vec(LAYOUT["owner"]["chair"]), LAYOUT["owner"]["sitter_yaw"], "Owner")
-taken = {CLERK["chair"][1] if CLERK else None}
-free = [st for st in LAYOUT.get("stations", []) if st["reachable"] and st["chair"][1] not in taken]
-for name, anim, kinds in CROWD:
-    pick = next((st for st in free if st["kind"] in kinds), None) or (free[0] if free else None)
-    if not pick:
-        break
-    free.remove(pick)
-    seat_person(name, anim, vec(pick["chair"]), pick["sitter_yaw"], "Visitor_" + name)
-    log("%s at station %02d (%s)" % (name, pick["index"], pick["kind"]))
+# Visitors sit where the layout put them (their chairs are square and their screens are live);
+# the loop follows the device: gamepad at consoles, keyboard+mouse at PCs, browsing on laptops.
+ANIM_FOR = {"sega": "Sit_Gamepad", "ps2": "Sit_Gamepad", "modern": "Sit_Gamepad", "gaming": "Sit_KeyboardMouse",
+            "beige": "Sit_KeyboardMouse", "spreadsheet": "Sit_KeyboardMouse", "mac": "Sit_KeyboardMouse",
+            "zx": "Sit_KeyboardMouse", "vr": "Sit_KeyboardMouse", "laptop": "Sit_Browse", "imac": "Sit_Browse"}
+seats = {st["index"]: st for st in LAYOUT.get("stations", [])}
+for v in LAYOUT.get("visitors", []):
+    st = seats.get(v["index"])
+    if st:
+        seat_person(v["person"], ANIM_FOR.get(v["kind"], "Sit_Idle"), vec(st["chair"]), st["sitter_yaw"],
+                    "Visitor_" + v["person"])
+        log("%s at station %02d (%s)" % (v["person"], v["index"], v["kind"]))
+
 
 # Screens light their users: a soft glow in front of each reachable station's display.
 GLOW = {"gaming": (0.55, 0.6, 1.0), "sega": (0.9, 0.7, 0.6), "spreadsheet": (0.8, 0.9, 1.0), "vr": (0.5, 0.8, 1.0),
