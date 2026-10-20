@@ -55,15 +55,15 @@ def import_texture(name, pixel_art):
     t = unreal.load_asset(paths[0]) if paths else None
     log("texture %s -> %s" % (name, paths))
     t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_EDITOR_ICON)
-    t.set_editor_property("mip_gen_settings", unreal.TextureMipGenSettings.TMGS_NO_MIPMAPS)
-    if pixel_art:
+    if pixel_art:      # cells are looked up exactly; the window image keeps mips against moire
+        t.set_editor_property("mip_gen_settings", unreal.TextureMipGenSettings.TMGS_NO_MIPMAPS)
         t.set_editor_property("filter", unreal.TextureFilter.TF_NEAREST)
     eal.save_loaded_asset(t)
     return t
 
 
 HLSL = """
-float3 base = Texture2DSampleLevel(Base, BaseSampler, UV, 0).rgb;
+float3 base = Texture2DSample(Base, BaseSampler, UV).rgb;
 float2 c = (UV - G0) / GS;
 if (c.x < 0 || c.y < 0 || c.x >= 1 || c.y >= 1) return base;
 float2 n = float2(%(cols)d, %(rows)d);
@@ -71,7 +71,7 @@ float2 cell = floor(c * n);
 float4 art = Texture2DSampleLevel(Art, ArtSampler, (cell + 0.5) / n, 0);
 float prog = saturate(fmod(T, %(cycle).1f) / %(paint).1f);
 float2 f = frac(c * n);
-float edge = (f.x > 0.93 || f.y > 0.92) ? 0.8 : 1.0;
+float edge = 1.0 - 0.15 * saturate((max(f.x - 0.9, f.y - 0.9)) * 10.0);
 if (art.a < prog) return art.rgb * edge;
 if (art.a < prog + 0.012) return lerp(base, float3(0.32, 0.42, 0.85), 0.5);
 return base;

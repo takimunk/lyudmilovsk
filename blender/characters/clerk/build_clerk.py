@@ -389,14 +389,14 @@ def build_shirt():
     p.add(ellipsoid((0, -0.02, 0.69), (0.150, 0.110, 0.075)), 0, "spine")
     p.add(ellipsoid((0, -0.072, 0.748), (0.130, 0.083, 0.095)), 0.04, "spine")          # middle-aged belly
     p.add(ellipsoid((0, -0.03, 0.86), (0.150, 0.103, 0.11)), 0.05, "chest")
-    p.add(ellipsoid((0, -0.052, 0.958), (0.160, 0.090, 0.082)), 0.04, "chest")
+    p.add(ellipsoid((0, -0.045, 0.955), (0.150, 0.085, 0.080)), 0.05, "chest")
     p.add(ellipsoid((0, 0.008, 0.945), (0.143, 0.068, 0.10)), 0.04, "chest")             # back
     for s, sx in ((".L", 1), (".R", -1)):
-        p.add(ellipsoid((0.058 * sx, -0.100, 0.952), (0.056, 0.035, 0.045)), 0.03, "chest")
+        p.add(ellipsoid((0.055 * sx, -0.085, 0.950), (0.050, 0.030, 0.040)), 0.05, "chest")
         p.add(round_cone(J["neck"] + v3((0.03 * sx, 0.012, -0.01)), J["upper_arm" + s] + v3((-0.015 * sx, 0.004, 0.012)),
-                         0.042, 0.048), 0.03, "clavicle" + s)
-        p.add(sphere(J["upper_arm" + s] + v3((0.0, 0.0, -0.004)), 0.046), 0.035, "upper_arm" + s)
-        p.add(round_cone(J["upper_arm" + s], J["forearm" + s], 0.046, 0.042), 0.02, "upper_arm" + s)
+                         0.038, 0.042), 0.04, "clavicle" + s)
+        p.add(sphere(J["upper_arm" + s] + v3((-0.01 * sx, 0.0, -0.012)), 0.040), 0.05, "upper_arm" + s)
+        p.add(round_cone(J["upper_arm" + s], J["forearm" + s], 0.041, 0.041), 0.045, "upper_arm" + s)
         p.add(sphere(J["forearm" + s], 0.043), 0.012, "forearm" + s)
         F, _, _ = hand_axes(s)
         fdir = norm(J["hand" + s] - J["forearm" + s])
@@ -1264,7 +1264,7 @@ def main():
         "skin": mat("Clerk_Skin", (0.70, 0.52, 0.41), 0.5, sss=0.15),
         "lips": mat("Clerk_Lips", (0.60, 0.37, 0.32), 0.45, sss=0.15),
         "nail": mat("Clerk_Nail", (0.78, 0.62, 0.55), 0.3),
-        "hair": mat("Clerk_Hair", (0.035, 0.032, 0.03), 0.45),
+        "hair": mat("Clerk_Hair", (0.035, 0.032, 0.03), 0.62),
         "shirt": mat("Clerk_Shirt", (0.80, 0.81, 0.79), 0.75),
         "cover": mat("Clerk_ArmCover", (0.025, 0.025, 0.03), 0.35),
         "trousers": mat("Clerk_Trousers", (0.10, 0.10, 0.11), 0.8),
