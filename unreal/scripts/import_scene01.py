@@ -83,13 +83,13 @@ for path in eal.list_assets(DEST, True):
             meshes += 1
 log("collision set on %d meshes" % meshes)
 
-# Nanite for the dense props (keyboards with real keycaps etc.), so ~60 stations plus the
-# repeated corridor stay cheap. Meshes with see-through materials keep the classic path.
+# Nanite for every opaque mesh, so ~60 stations plus the repeated corridor stay cheap and the
+# virtual shadow maps don't drown in non-Nanite casters (VSM "Non-Nanite Marking Job Queue overflow"). Meshes with see-through materials keep the classic path.
 OPAQUE = (unreal.BlendMode.BLEND_OPAQUE, unreal.BlendMode.BLEND_MASKED)
 nanite = 0
 for path in eal.list_assets(DEST, True):
     sm = eal.load_asset(path)
-    if not isinstance(sm, unreal.StaticMesh) or sm.get_num_vertices(0) < 3000 or "SkyDome" in sm.get_name():
+    if not isinstance(sm, unreal.StaticMesh) or "SkyDome" in sm.get_name():
         continue
     mats = [m.material_interface for m in sm.static_materials]
     # the instance's own blend mode (glTF glass is a translucent instance of an opaque parent)
