@@ -3,17 +3,31 @@
  "lang": "ja",
  "text": "こんにちは。あなたも迎えを待ってるの？",
  "speaker": "kid_girl",
- "voice": "Laura",
- "voice_id": "FGY2WhTYpPnrIDTdsKH5",
- "direction": "[a little girl, earnest, a bit lonely]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a little girl, earnest, a bit lonely] こんにちは。あなたも迎えを待ってるの？",
-  "voice": "Laura",
-  "language_code": "ja"
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
  },
- "fal_request_id": "01a15ed9-86d1-7792-a746-98678591f73a",
- "hash": "ad88a3d17ea6"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "こんにちは。あなたも迎えを待ってるの？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f93-7dcf-7670-94e9-27fa34da28de",
+ "hash": "f51a5b3a31ed"
 }

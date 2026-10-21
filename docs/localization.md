@@ -54,6 +54,11 @@ localization/voice.json  (speakers: voice + direction, per-line directions, TTS 
   the language code is the table's language. Each take's sidecar `audio/voice/<lang>/<key>.json` keeps the exact request body, the
   fal request id and a hash of endpoint + body. The endpoint has no seed, so a re-run gives the same voice and delivery but not a
   byte-identical take: the committed wav is canonical, and a line is re-voiced only when its hash goes stale (`--list` shows it).
+  ElevenLabs' premade voices are all adults, so the teenage hero and the children (`engine: "minimax"` in `voice.json`) use MiniMax
+  `speech-2.6-hd` with a voice designed once by `fal-ai/minimax/voice-design` from the speaker's `design.prompt` (fal's content checker
+  rejects ages and words like "puberty" in that prompt: describe the voice, "small boy, primary school kid, very high light voice").
+  The designed `voice_id` lives in the fal/MiniMax account; if it is lost, design again from the same prompt and re-voice that speaker.
+  Check a new voice by its pitch (median F0: men ~100-130 Hz, women ~220, children 250-300) before voicing all lines.
   Regenerate: `export FAL_API_KEY=…` (from `~/projects/asmrx3000/.env`, never committed), then
   `python3 tools/gen_voice.py --lang ru --stale` (one line: add its key and `--force`), the same for `en` and `ja`, then
   `unreal/scripts/import_voice.py`. Cost: about 0.1 $ per 1000 characters, the whole NPC set (83 lines, about 20 000 characters with the direction tags) is roughly 2 $ for all three languages.

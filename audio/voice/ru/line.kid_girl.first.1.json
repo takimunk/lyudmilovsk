@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Привет. Ты тоже ждёшь, пока за тобой придут?",
  "speaker": "kid_girl",
- "voice": "Laura",
- "voice_id": "FGY2WhTYpPnrIDTdsKH5",
- "direction": "[a little girl, earnest, a bit lonely]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a little girl, earnest, a bit lonely] Привет. Ты тоже ждёшь, пока за тобой придут?",
-  "voice": "Laura",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
  },
- "fal_request_id": "01a15ecc-8fdc-70c0-b272-3d9eaa9c3891",
- "hash": "992557b28f0f"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Привет. Ты тоже ждёшь, пока за тобой придут?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8e-7960-73a1-b5ef-47cbabc21557",
+ "hash": "d954e820f1a6"
 }

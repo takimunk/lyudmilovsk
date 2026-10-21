@@ -3,17 +3,31 @@
  "lang": "en",
  "text": "If you want a turn after me, you can call it. I won't be done soon though.",
  "speaker": "kid_boy",
- "voice": "Charlie",
- "voice_id": "IKne3meq5aSn9XLyUdCD",
- "direction": "[a bored teenage boy, distracted by his game]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a bored teenage boy, distracted by his game] If you want a turn after me, you can call it. I won't be done soon though.",
-  "voice": "Charlie",
-  "language_code": "en"
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
  },
- "fal_request_id": "01a15ed2-c548-7221-a952-193901562883",
- "hash": "b39c08a4b508"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "If you want a turn after me, you can call it. I won't be done soon though.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f90-a4b8-75d3-b074-65de4bc52837",
+ "hash": "1ade60ad99ec"
 }
