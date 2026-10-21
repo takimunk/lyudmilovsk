@@ -78,13 +78,17 @@ void UTreeBakeCache::Finish(FJob& Job)
 		A.Albedo = Albedo;
 		A.Normal = Normal;
 		A.Detail = PlantMeshes::BuildLeafDetail(this, S.Leaf);
+		// the maps here are not reflected, so the garbage collector cannot see what they hold: keep it alive by hand
+		KeepAlive.Add(A.Albedo);
+		KeepAlive.Add(A.Normal);
+		KeepAlive.Add(A.Detail);
 	}
 	const double MeshStart = FPlatformTime::Seconds();
 	const FVector* L = LodsOf.Find(Job.Key);
 	const FVector Lods = L ? *L : FVector(45.0, 120.0, 300.0);
 	PlantMeshes::FTreeBake Bake = PlantMeshes::FinishTreeBake(this, S, Job.Key.Seed, MoveTemp(Job.Prep), FVector3f(Lods));
 	const double MeshMs = (FPlatformTime::Seconds() - MeshStart) * 1000.0;
-	UE_LOG(LogTemp, Display, TEXT("TREEBAKE %s: prepare %.0f ms (worker), textures %.0f ms, mesh %.0f ms (%d/%d/%d/%d tris)"), *S.Name.ToString(), Job.Prep.Ms, (MeshStart - TexStart) * 1000.0, MeshMs, Bake.Triangles[0], Bake.Triangles[1], Bake.Triangles[2], Bake.Triangles[3]);
+	UE_LOG(LogTemp, Verbose, TEXT("TREEBAKE %s: prepare %.0f ms (worker), textures %.0f ms, mesh %.0f ms (%d/%d/%d/%d tris)"), *S.Name.ToString(), Job.Prep.Ms, (MeshStart - TexStart) * 1000.0, MeshMs, Bake.Triangles[0], Bake.Triangles[1], Bake.Triangles[2], Bake.Triangles[3]);
 	KeepAlive.Add(Bake.Mesh); // an older bake stays alive while some component still draws it
 
 	FTreeBaked& Out = Baked.FindOrAdd(Job.Key);
@@ -92,6 +96,8 @@ void UTreeBakeCache::Finish(FJob& Job)
 	{
 		Out.Wood = UMaterialInstanceDynamic::Create(BarkMaterial, this);
 		Out.Leaf = UMaterialInstanceDynamic::Create(S.Leaf.Form == EPlantLeafForm::Needle ? NeedleMaterial.Get() : LeafMaterial.Get(), this);
+		KeepAlive.Add(Out.Wood);
+		KeepAlive.Add(Out.Leaf);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkAlbedo"), A.Albedo);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkNormal"), A.Normal);
 		Out.Wood->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour);

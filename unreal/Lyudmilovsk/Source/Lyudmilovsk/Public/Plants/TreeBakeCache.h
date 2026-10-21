@@ -74,6 +74,7 @@ private:
 	void Finish(FJob& Job);
 	void Launch(const TSharedPtr<FJob>& Job);
 
+	// not reflected: everything it points to is kept alive through KeepAlive
 	TMap<FTreeBakeKey, FTreeBaked> Baked;
 	TMap<FTreeBakeKey, FVector> LodsOf;
 	TArray<TSharedPtr<FJob>> Wanted;
