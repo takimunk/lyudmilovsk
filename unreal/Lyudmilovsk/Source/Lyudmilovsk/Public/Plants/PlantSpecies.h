@@ -104,7 +104,6 @@ struct FPlantSpecies
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") FName Name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") FText DisplayName;
 
 	// --- Height: Chapman-Richards curve H(age) = MaxHeight * (1 - exp(-GrowthRate * age))^GrowthShape
 
@@ -263,4 +262,6 @@ namespace PlantSpeciesLibrary
 	/** nullptr when there is no such species. */
 	LYUDMILOVSK_API const FPlantSpecies* Find(FName Name);
 	LYUDMILOVSK_API TArray<FName> Names();
+	/** The species' name in the player's language (plant.<name, lower case>.name in the string tables). */
+	LYUDMILOVSK_API FText DisplayName(const FPlantSpecies& S);
 }

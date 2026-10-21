@@ -645,12 +645,16 @@ void AProceduralPlant::Refresh()
 FString AProceduralPlant::DescribeState() const
 {
 	const FDateTime Date = FDateTime(CurrentDate().GetYear(), 1, 1) + FTimespan::FromDays(CurrentDay() - 1.f);
-	const float Life = PlantModel::Lifespan(GetSpecies(), (uint32)Seed);
+	const FPlantSpecies& S = GetSpecies();
+	const float Life = PlantModel::Lifespan(S, (uint32)Seed);
 	const float Age = GetAge();
-	const TCHAR* Stage = PlantModel::IsGone(GetSpecies(), (uint32)Seed, Age) ? TEXT("gone") : Age >= Life ? TEXT("dead, standing") : PlantModel::Vigour(GetSpecies(), (uint32)Seed, Age) < 1.f ? TEXT("declining") : TEXT("alive");
-	return FString::Printf(TEXT("%s, seed %d: %.1f of %.0f years (%s), %s | %.1f m tall, %.1f m wide | %d leaf clusters, %d leaves on the ground, %d falling | fruit: %d hanging, %d on the ground, %d picked"),
-		*GetSpecies().DisplayName.ToString(), Seed, Age, Life, Stage, *Date.ToString(TEXT("%d.%m %H:%M")), LastHeight, LastReach * 2.f,
-		LastLeaves, LastLitter, Falling.Num(), LastFruit, GroundFruit.Num(), FruitPicked);
+	const TCHAR* Stage = PlantModel::IsGone(S, (uint32)Seed, Age) ? TEXT("ui.plants.stage.gone") : Age >= Life ? TEXT("ui.plants.stage.dead")
+		: PlantModel::Vigour(S, (uint32)Seed, Age) < 1.f ? TEXT("ui.plants.stage.declining") : TEXT("ui.plants.stage.alive");
+	auto One = [](float V) { return FString::Printf(TEXT("%.1f"), V); };
+	return LyudText::Get(TEXT("ui.plants.state"), {
+		PlantSpeciesLibrary::DisplayName(S).ToString(), Seed, One(Age), FMath::RoundToInt(Life), LyudText::Get(Stage).ToString(),
+		Date.ToString(TEXT("%d.%m %H:%M")), One(LastHeight), One(LastReach * 2.f), LastLeaves, LastLitter, Falling.Num(),
+		LastFruit, GroundFruit.Num(), FruitPicked }).ToString();
 }
 
 void AProceduralPlant::ClearFallenFruit()

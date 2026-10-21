@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudText.h"
 #include "Plants/PlantSpecies.h"
 #include "Plants/ProceduralPlant.h"
 #include "Styling/CoreStyle.h"
@@ -181,44 +182,44 @@ void APlantDevTool::Open()
 			[
 				SNew(SVerticalBox)
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 8)
-				[SNew(STextBlock).Text(LOCTEXT("Title", "Растения: режим разработчика (F7)")).Font(Font(14)).ColorAndOpacity(FLinearColor::White)]
+				[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.plants.title"))).Font(Font(14)).ColorAndOpacity(FLinearColor::White)]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 2)
 				[
 					SNew(SHorizontalBox)
 					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("Prev", "◀"), [Self]() { if (Self.IsValid()) Self->Step(-1); })]
 					+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center).Padding(8, 0)
 					[SNew(STextBlock).Font(Font(12)).ColorAndOpacity(FLinearColor::White).Text_Lambda([P]()
-						{ return P() ? FText::FromString(P()->GetActorNameOrLabel()) : LOCTEXT("None", "нет деревьев"); })]
+						{ return P() ? FText::FromString(P()->GetActorNameOrLabel()) : LyudText::Get(TEXT("ui.plants.none")); })]
 					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("Next", "▶"), [Self]() { if (Self.IsValid()) Self->Step(1); })]
-					+ SHorizontalBox::Slot().AutoWidth().Padding(6, 0, 0, 0)[Button(LOCTEXT("InView", "В прицеле"), [Self]() { if (Self.IsValid()) Self->SelectInView(); })]
+					+ SHorizontalBox::Slot().AutoWidth().Padding(6, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.plants.in_view")), [Self]() { if (Self.IsValid()) Self->SelectInView(); })]
 				]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 6)
 				[SNew(STextBlock).AutoWrapText(true).Font(Font(10)).ColorAndOpacity(FLinearColor(0.85f, 0.9f, 0.8f)).Text_Lambda([P]()
 					{ return P() ? FText::FromString(P()->DescribeState()) : FText::GetEmpty(); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
-				[SliderRow(LOCTEXT("Age", "Возраст, лет"), 0.f, 500.f,
+				[SliderRow(LyudText::Get(TEXT("ui.plants.age")), 0.f, 500.f,
 					[P]() { return P() ? P()->GetAge() : 0.f; },
 					[P](float V) { if (P()) P()->DevAge = V; },
 					[P]() { return FText::AsNumber(P() ? FMath::RoundToInt(P()->GetAge() * 10.f) / 10.f : 0.f); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
-				[SliderRow(LOCTEXT("AgeSpeed", "Рост, лет в секунду"), 0.f, 5.f,
+				[SliderRow(LyudText::Get(TEXT("ui.plants.age_speed")), 0.f, 5.f,
 					[Self]() { return Self.IsValid() ? Self->AgeSpeed : 0.f; },
 					[Self](float V) { if (Self.IsValid()) Self->AgeSpeed = V; },
 					[Self]() { return FText::AsNumber(Self.IsValid() ? FMath::RoundToInt(Self->AgeSpeed * 100.f) / 100.f : 0.f); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
-				[SliderRow(LOCTEXT("Day", "День года"), 1.f, 365.f,
+				[SliderRow(LyudText::Get(TEXT("ui.plants.day")), 1.f, 365.f,
 					[P]() { return P() ? P()->CurrentDay() : 1.f; },
 					[P](float V) { if (P()) P()->DevDay = V; },
 					[P]() { return P() ? DayText(P()->CurrentDay()) : FText::GetEmpty(); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
-				[SliderRow(LOCTEXT("DaySpeed", "Календарь, дней в секунду"), 0.f, 10.f,
+				[SliderRow(LyudText::Get(TEXT("ui.plants.day_speed")), 0.f, 10.f,
 					[Self]() { return Self.IsValid() ? Self->DaySpeed : 0.f; },
 					[Self](float V) { if (Self.IsValid()) Self->DaySpeed = V; },
 					[Self]() { return FText::AsNumber(Self.IsValid() ? FMath::RoundToInt(Self->DaySpeed * 100.f) / 100.f : 0.f); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 6)
 				[
 					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth()[Label(LOCTEXT("Species", "Вид"), 190.f)]
+					+ SHorizontalBox::Slot().AutoWidth()[Label(LyudText::Get(TEXT("ui.plants.species")), 190.f)]
 					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("SpPrev", "◀"), [P, SpeciesNames]()
 						{
 							if (!P()) return;
@@ -230,7 +231,7 @@ void APlantDevTool::Open()
 					[SNew(STextBlock).Font(Font()).ColorAndOpacity(FLinearColor::White).Text_Lambda([P]()
 						{
 							const FPlantSpecies* S = P() ? PlantSpeciesLibrary::Find(P()->Species) : nullptr;
-							return S ? S->DisplayName : FText::GetEmpty();
+							return S ? PlantSpeciesLibrary::DisplayName(*S) : FText::GetEmpty();
 						})]
 					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("SpNext", "▶"), [P, SpeciesNames]()
 						{
@@ -243,7 +244,7 @@ void APlantDevTool::Open()
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
 				[
 					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth()[Label(LOCTEXT("Seed", "Seed"), 190.f)]
+					+ SHorizontalBox::Slot().AutoWidth()[Label(LyudText::Get(TEXT("ui.plants.seed")), 190.f)]
 					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("SeedMinus", "−"), [P]() { if (P()) { P()->Seed = FMath::Max(0, P()->Seed - 1); P()->Refresh(); } })]
 					+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center).Padding(8, 0)
 					[SNew(STextBlock).Font(Font()).ColorAndOpacity(FLinearColor::White).Text_Lambda([P]() { return FText::AsNumber(P() ? P()->Seed : 0); })]
@@ -254,21 +255,21 @@ void APlantDevTool::Open()
 					SNew(SCheckBox).IsFocusable(false)
 					.IsChecked_Lambda([P]() { return P() && P()->bForceSummary ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
 					.OnCheckStateChanged_Lambda([P](ECheckBoxState State) { if (P()) { P()->bForceSummary = State == ECheckBoxState::Checked; P()->Refresh(); } })
-					[SNew(STextBlock).Font(Font()).ColorAndOpacity(FLinearColor::White).Text(LOCTEXT("Summary", "Дальний вид (уровень 0: только высота и цвет)"))]
+					[SNew(STextBlock).Font(Font()).ColorAndOpacity(FLinearColor::White).Text(LyudText::Get(TEXT("ui.plants.summary")))]
 				]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 8, 0, 0)
 				[
 					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth()[Button(LOCTEXT("Live", "Вернуть игровое время"), [Self, P]()
+					+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.plants.live")), [Self, P]()
 						{
 							if (Self.IsValid()) { Self->AgeSpeed = 0.f; Self->DaySpeed = 0.f; }
 							if (P()) { P()->DevAge = -1.f; P()->DevDay = -1.f; P()->Refresh(); }
 						})]
-					+ SHorizontalBox::Slot().AutoWidth().Padding(6, 0, 0, 0)[Button(LOCTEXT("Close", "Закрыть"), [Self]() { if (Self.IsValid()) Self->Toggle(); })]
+					+ SHorizontalBox::Slot().AutoWidth().Padding(6, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.plants.close")), [Self]() { if (Self.IsValid()) Self->Toggle(); })]
 				]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 8, 0, 0)
 				[SNew(STextBlock).AutoWrapText(true).Font(Font(9)).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
-					.Text(LOCTEXT("Hint", "Пока панель открыта, видна мышь: ходить можно как обычно, обзор мышью работает с зажатой кнопкой. F7 закрывает."))]
+					.Text(LyudText::Get(TEXT("ui.plants.hint")))]
 			]
 		]
 	];

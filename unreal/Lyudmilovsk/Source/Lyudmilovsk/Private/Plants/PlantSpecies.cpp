@@ -1,5 +1,7 @@
 #include "Plants/PlantSpecies.h"
 
+#include "LyudText.h"
+
 namespace
 {
 	FLinearColor C(float R, float G, float B) { return FLinearColor(R, G, B); }
@@ -9,7 +11,6 @@ namespace
 	{
 		FPlantSpecies S; // the struct defaults are this species' growth and season
 		S.Name = TEXT("PyramidalPoplar");
-		S.DisplayName = NSLOCTEXT("Plants", "PyramidalPoplar", "Pyramidal poplar");
 		// rhombic-deltoid blade, broadest near the base, on a long flat stalk that lets it flutter
 		S.Leaf.Length = 0.085f;
 		S.Leaf.Width = 1.0f;
@@ -36,7 +37,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("BlackPoplar");
-		S.DisplayName = NSLOCTEXT("Plants", "BlackPoplar", "Black poplar");
 		S.MaxHeight = 26.f;
 		S.GrowthRate = 0.07f;
 		S.TrunkRadiusPerHeight = 0.018f;
@@ -84,7 +84,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("Apple");
-		S.DisplayName = NSLOCTEXT("Plants", "Apple", "Apple tree");
 		S.MaxHeight = 7.f;
 		S.GrowthRate = 0.15f;
 		S.GrowthShape = 1.4f;
@@ -166,7 +165,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("Maple");
-		S.DisplayName = NSLOCTEXT("Plants", "Maple", "Norway maple");
 		S.MaxHeight = 26.f;
 		S.GrowthRate = 0.07f;
 		S.GrowthShape = 1.5f;
@@ -228,7 +226,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("SwampWhiteOak");
-		S.DisplayName = NSLOCTEXT("Plants", "SwampWhiteOak", "Swamp white oak");
 		S.MaxHeight = 21.f;
 		S.GrowthRate = 0.035f;
 		S.GrowthShape = 1.3f;
@@ -324,7 +321,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("SilverBirch");
-		S.DisplayName = NSLOCTEXT("Plants", "SilverBirch", "Silver birch");
 		S.MaxHeight = 22.f;
 		S.GrowthRate = 0.07f;
 		S.GrowthShape = 1.4f;
@@ -394,7 +390,6 @@ namespace
 	{
 		FPlantSpecies S = SilverBirch();
 		S.Name = TEXT("DownyBirch");
-		S.DisplayName = NSLOCTEXT("Plants", "DownyBirch", "Downy birch");
 		S.MaxHeight = 18.f;
 		S.GrowthRate = 0.06f;
 		S.CrownWidth = 0.6f;
@@ -431,7 +426,6 @@ namespace
 	{
 		FPlantSpecies S = SilverBirch();
 		S.Name = TEXT("WeepingBirch");
-		S.DisplayName = NSLOCTEXT("Plants", "WeepingBirch", "Weeping birch");
 		S.MaxHeight = 14.f;
 		S.LeaderFraction = 0.7f;
 		S.CrownBase = 0.2f;
@@ -460,7 +454,6 @@ namespace
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("DwarfBirch");
-		S.DisplayName = NSLOCTEXT("Plants", "DwarfBirch", "Dwarf birch");
 		S.MaxHeight = 0.9f;
 		S.GrowthRate = 0.15f;
 		S.GrowthShape = 1.2f;
@@ -529,7 +522,6 @@ namespace
 	{
 		FPlantSpecies S = SilverBirch();
 		S.Name = TEXT("StoneBirch");
-		S.DisplayName = NSLOCTEXT("Plants", "StoneBirch", "Stone birch");
 		S.MaxHeight = 12.f;
 		S.GrowthRate = 0.05f;
 		S.LeaderFraction = 0.35f;
@@ -573,6 +565,11 @@ const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 const FPlantSpecies* PlantSpeciesLibrary::Find(FName Name)
 {
 	return All().FindByPredicate([Name](const FPlantSpecies& S) { return S.Name == Name; });
+}
+
+FText PlantSpeciesLibrary::DisplayName(const FPlantSpecies& S)
+{
+	return LyudText::Get(FString::Printf(TEXT("plant.%s.name"), *S.Name.ToString().ToLower()));
 }
 
 TArray<FName> PlantSpeciesLibrary::Names()
