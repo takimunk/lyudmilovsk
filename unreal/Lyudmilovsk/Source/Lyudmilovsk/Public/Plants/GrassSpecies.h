@@ -3,6 +3,17 @@
 #include "CoreMinimal.h"
 #include "GrassSpecies.generated.h"
 
+UENUM(BlueprintType)
+enum class EGrassHabitat : uint8
+{
+	/** Meadow and forest floor: follows the terrain's grass density, thinner in wet hollows. */
+	Meadow,
+	/** The dry upper beach and foredune: follows the terrain's dune grass density. */
+	Dune,
+	/** Gullies, hollows and ruts where water stands: follows the terrain's wetness. */
+	Wet,
+};
+
 /**
  * The rules one kind of grass is built by: a tuft of curved blades (a mesh made in code), scattered by
  * AProceduralGrass. Like FPlantSpecies a new kind is a new set of these numbers (GrassSpeciesLibrary),
@@ -16,6 +27,9 @@ struct FGrassSpecies
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") FName Name;
+
+	/** Where it grows on the terrain (ULyudTerrainMask). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") EGrassHabitat Habitat = EGrassHabitat::Meadow;
 
 	// --- Tuft
 

@@ -10,6 +10,7 @@
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
 #include "Plants/ProceduralPlant.h"
+#include "Terrain/LyudTerrain.h"
 #include "StaticMeshResources.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -204,6 +205,7 @@ void AProceduralGrass::Scatter()
 		return Samples.Add(FIntPoint(Ix, Iy), Gd);
 	};
 
+	const ULyudTerrainMask* Mask = bUseTerrainMask ? ULyudTerrainMask::Get() : nullptr;
 	TArray<FTransform> Near, Far;
 	TArray<float> NearDry, FarDry;
 	const int32 X0 = FMath::FloorToInt(Reach.Min.X / Cell), X1 = FMath::CeilToInt(Reach.Max.X / Cell);
@@ -254,6 +256,22 @@ void AProceduralGrass::Scatter()
 			if (Z < MinWorldZ || Z > MaxWorldZ)
 			{
 				continue;
+			}
+			if (Mask)
+			{
+				// the terrain says how much grass of this kind grows here; each tuft is kept with that chance
+				const FVector At(X, Y, Z);
+				float Density = 0.f;
+				switch (G.Habitat)
+				{
+				case EGrassHabitat::Dune: Density = Mask->GetDuneGrassDensity(At); break;
+				case EGrassHabitat::Wet: Density = Mask->GetWetness(At); break;
+				default: Density = Mask->GetGrassDensity(At) * (1.f - 0.6f * Mask->GetWetness(At)); break;
+				}
+				if (Hash01(U, (uint32)Cx, (uint32)Cy, 8) >= Density)
+				{
+					continue;
+				}
 			}
 			const float Yaw = Hash01(U, (uint32)Cx, (uint32)Cy, 4) * 360.f;
 			const float Wide = 0.8f + 0.45f * Hash01(U, (uint32)Cx, (uint32)Cy, 5);

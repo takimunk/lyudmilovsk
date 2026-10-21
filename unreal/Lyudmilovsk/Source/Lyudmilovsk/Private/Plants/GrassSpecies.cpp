@@ -55,6 +55,7 @@ namespace
 	{
 		FGrassSpecies S;
 		S.Name = TEXT("MarramGrass");
+		S.Habitat = EGrassHabitat::Dune;
 		S.Height = 0.8f;
 		S.HeightVariation = 0.25f;
 		S.BladeWidth = 0.007f;
@@ -81,6 +82,7 @@ namespace
 	{
 		FGrassSpecies S;
 		S.Name = TEXT("SeaLymeGrass");
+		S.Habitat = EGrassHabitat::Dune;
 		S.Height = 1.0f;
 		S.BladeWidth = 0.016f;
 		S.Blades = 9;
@@ -106,6 +108,7 @@ namespace
 	{
 		FGrassSpecies S;
 		S.Name = TEXT("CommonReed");
+		S.Habitat = EGrassHabitat::Wet;
 		S.Height = 2.3f;
 		S.HeightVariation = 0.2f;
 		S.BladeWidth = 0.025f;
@@ -130,6 +133,7 @@ namespace
 	{
 		FGrassSpecies S;
 		S.Name = TEXT("SandSedge");
+		S.Habitat = EGrassHabitat::Wet;
 		S.Height = 0.28f;
 		S.BladeWidth = 0.005f;
 		S.Blades = 10;

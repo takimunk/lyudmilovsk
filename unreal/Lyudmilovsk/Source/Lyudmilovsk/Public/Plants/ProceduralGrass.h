@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") float MaxWorldZ = 100000.f;
 	/** Ground that belongs to an actor with this tag (a path, a beach, a yard) stays bare. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") FName BareGroundTag = TEXT("NoGrass");
+	/** Thin and place the tufts by the outdoor terrain's grass, dune grass and wetness masks (ULyudTerrainMask), by the species' habitat; off, or with no mask built, the whole patch is grown. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") bool bUseTerrainMask = true;
 	/** How far above and below the actor the ground is searched, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") float TraceUp = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") float TraceDown = 6000.f;
