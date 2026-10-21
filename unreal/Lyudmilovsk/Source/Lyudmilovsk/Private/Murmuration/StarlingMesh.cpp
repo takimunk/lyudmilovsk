@@ -109,10 +109,10 @@ namespace
 		S.Poly(Last);
 	}
 
-	void BuildTail(FShell& S)
+	void BuildTail(FShell& S, float Droop = 0.f)
 	{
 		// short, square tail: z, half-width, thickness, y
-		const float ST[][4] = { { -0.040f, 0.012f, 0.0035f, 0.004f }, { -0.072f, 0.019f, 0.0025f, 0.002f }, { -0.101f, 0.0235f, 0.0016f, 0.f } };
+		const float ST[][4] = { { -0.040f, 0.012f, 0.0035f, 0.004f }, { -0.072f, 0.019f, 0.0025f, 0.002f - Droop * 0.5f }, { -0.101f, 0.0235f, 0.0016f, -Droop } };
 		TArray<TArray<FP>> Secs;
 		for (const auto& T : ST)
 		{
@@ -139,6 +139,67 @@ namespace
 		Loft(S, Secs);
 	}
 
+	/** Folded wings lie along the upper flank, the primaries crossing over the tail base. */
+	void BuildFoldedWing(FShell& S, float Side)
+	{
+		// z, inner-top (x, y), outer (x, y), lower (x, y)
+		const float ST[][7] = {
+			{ 0.034f, 0.011f, 0.018f, 0.020f, 0.012f, 0.019f, 0.002f },
+			{ 0.010f, 0.010f, 0.022f, 0.026f, 0.012f, 0.024f, -0.006f },
+			{ -0.025f, 0.007f, 0.018f, 0.022f, 0.012f, 0.019f, -0.002f },
+			{ -0.062f, 0.004f, 0.010f, 0.011f, 0.008f, 0.009f, 0.005f },
+			{ -0.082f, 0.002f, 0.007f, 0.004f, 0.0065f, 0.003f, 0.006f },
+		};
+		TArray<TArray<FP>> Secs;
+		for (const auto& T : ST)
+		{
+			const float Z = T[0];
+			const FVector2f A(T[1], T[2]), B(T[3], T[4]), C(T[5], T[6]);
+			const FVector2f Inner(A.X * 0.9f, (A.Y + C.Y) / 2.f);
+			TArray<FP> Sec = { FP(A.X * Side, A.Y, Z), FP(B.X * Side, B.Y, Z), FP(C.X * Side, C.Y, Z), FP(Inner.X * Side, Inner.Y, Z) };
+			if (Side < 0.f) Algo::Reverse(Sec);
+			Secs.Add(Sec);
+		}
+		Loft(S, Secs);
+	}
+
+	/** A closed thin prism (n sides) between two points. */
+	void Prism(FShell& S, const FP& P0, const FP& P1, float R, int32 N = 3)
+	{
+		const FP D = (P1 - P0).GetSafeNormal();
+		FP Side = FP::CrossProduct(D, FP(0.f, 1.f, 0.f));
+		if (Side.SizeSquared() < 1e-6f) Side = FP(1.f, 0.f, 0.f);
+		Side.Normalize();
+		const FP Up = FP::CrossProduct(Side, D);
+		TArray<TArray<FP>> Secs;
+		for (const FP& At : { P0, P1 })
+		{
+			TArray<FP>& Sec = Secs.AddDefaulted_GetRef();
+			for (int32 K = 0; K < N; K++)
+			{
+				const float A = 2.f * PI * K / N;
+				Sec.Add(At + Side * (FMath::Cos(A) * R) + Up * (FMath::Sin(A) * R));
+			}
+		}
+		Loft(S, Secs);
+	}
+
+	void BuildLegs(TArray<FShell>& Shells)
+	{
+		for (const float Side : { 1.f, -1.f })
+		{
+			const float X = 0.007f * Side;
+			const FP Top(X, -0.012f, -0.002f), Knee(X, -0.030f, 0.002f), Foot(X, -0.046f, 0.004f);
+			Prism(Shells.AddDefaulted_GetRef(), Top, Knee, 0.0016f);
+			Prism(Shells.AddDefaulted_GetRef(), Knee, Foot, 0.0016f);
+			// toes: forward and back
+			for (const FP& D : { FP(0.f, 0.f, 0.018f), FP(0.004f * Side, 0.f, 0.014f), FP(0.f, 0.f, -0.012f) })
+			{
+				Prism(Shells.AddDefaulted_GetRef(), Foot, Foot + D, 0.001f);
+			}
+		}
+	}
+
 	/** The flap vertex shader of birds.ts, with the folded share at 0. */
 	FP Flap(FP P, float Beat, float Amp)
 	{
@@ -161,6 +222,11 @@ namespace
 	FVector3f ToUnreal(const FP& P) { return FVector3f(P.X, P.Z, P.Y) * 100.f; }
 }
 
+namespace
+{
+	UStaticMesh* MakeMesh(UObject* Outer, FName Name, const TArray<FShell>& Shells, UMaterialInterface* Material);
+}
+
 UStaticMesh* StarlingMesh::Build(UObject* Outer, FName Name, float Beat, float Amp, UMaterialInterface* Material)
 {
 	TArray<FShell> Shells;
@@ -168,13 +234,45 @@ UStaticMesh* StarlingMesh::Build(UObject* Outer, FName Name, float Beat, float A
 	BuildTail(Shells.AddDefaulted_GetRef());
 	BuildWing(Shells.AddDefaulted_GetRef(), 1.f);
 	BuildWing(Shells.AddDefaulted_GetRef(), -1.f);
-
-	TArray<FVector3f> Pos;
-	TArray<FIntVector3> Tris;
 	for (FShell& S : Shells)
 	{
+		for (FP& V : S.V) V = Flap(V, Beat, Amp);
+	}
+	return MakeMesh(Outer, Name, Shells, Material);
+}
+
+UStaticMesh* StarlingMesh::BuildPerched(UObject* Outer, FName Name, UMaterialInterface* Material)
+{
+	// body pitched nose-up 18 degrees, wings folded, legs (starling.py's perched variant)
+	TArray<FShell> Shells;
+	BuildBody(Shells.AddDefaulted_GetRef());
+	BuildTail(Shells.AddDefaulted_GetRef(), 0.006f);
+	BuildFoldedWing(Shells.AddDefaulted_GetRef(), 1.f);
+	BuildFoldedWing(Shells.AddDefaulted_GetRef(), -1.f);
+	const float A = FMath::DegreesToRadians(18.f), C = FMath::Cos(A), Sn = FMath::Sin(A);
+	for (FShell& S : Shells)
+	{
+		for (FP& V : S.V) V = FP(V.X, V.Y * C + V.Z * Sn, -V.Y * Sn + V.Z * C);
+	}
+	BuildLegs(Shells);
+	// stand on the origin: feet at y = 0
+	for (FShell& S : Shells)
+	{
+		for (FP& V : S.V) V.Y += 0.0466f;
+	}
+	return MakeMesh(Outer, Name, Shells, Material);
+}
+
+namespace
+{
+UStaticMesh* MakeMesh(UObject* Outer, FName Name, const TArray<FShell>& Shells, UMaterialInterface* Material)
+{
+	TArray<FVector3f> Pos;
+	TArray<FIntVector3> Tris;
+	for (const FShell& S : Shells)
+	{
 		const int32 Base = Pos.Num();
-		for (const FP& P : S.V) Pos.Add(ToUnreal(Flap(P, Beat, Amp)));
+		for (const FP& P : S.V) Pos.Add(ToUnreal(P));
 		// every part is a closed shell: orient it so that (P2 - P0) x (P1 - P0), Unreal's front
 		// face normal, points out (negative signed volume)
 		double Vol = 0.0;
@@ -239,4 +337,5 @@ UStaticMesh* StarlingMesh::Build(UObject* Outer, FName Name, float Beat, float A
 		Body->CollisionTraceFlag = CTF_UseSimpleAsComplex;
 	}
 	return Mesh;
+}
 }

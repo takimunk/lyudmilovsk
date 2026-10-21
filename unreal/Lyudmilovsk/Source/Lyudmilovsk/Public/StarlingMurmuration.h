@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InputCoreTypes.h"
 #include "Templates/PimplPtr.h"
 #include "StarlingMurmuration.generated.h"
 
@@ -71,6 +72,13 @@ struct FMurmurationParams
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Area") float SkimHeight = 0.8f;
 	/** Height the birds keep over land (the hill, people's heads), m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Area") float LandClearance = 15.f;
+	/** At dusk the flocks are pulled toward the roost from beyond this distance, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Area") float RoostRadius = 120.f;
+
+	/** Birds farther than this from the food in the hand don't notice it, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Feeding") float NoticeRange = 40.f;
+	/** Most birds that come down to the food at once. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Feeding") int32 LureMax = 60;
 
 	/** Spread of each bird's cruise speed, fraction of CruiseSpeed. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Individuality") float SpeedSpread = 0.07f;
@@ -95,8 +103,11 @@ struct FMurmurationParams
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leading") float SpontaneousTurns = 4.f;
 	/** How often the flock takes on formations (streams, balls, sheets): 0 never, 1 the default mix. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leading") float Formations = 1.f;
-	/** How gathered the murmuration is, 0..1 (1 holds together better, shears less). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leading") float Gather = 0.8f;
+	/**
+	 * How gathered the birds are: -1 = from the time of day (scattered groups by day, one huge
+	 * murmuration at sunset, with natural swings); 0..1 = fixed, 0 small groups, 1 one murmuration.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leading") float Gather = -1.f;
 
 	/** Large-scale flow field (artistic): 0 off, 1 up to +-15% speed, +-20 m altitude, +-0.8 m/s2 turning. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flow") float Flow = 1.f;
@@ -112,12 +123,20 @@ struct FMurmurationParams
  * informed leaders, spontaneous turns, a flow field, formations and a peregrine falcon whose
  * attacks spread as escape waves.
  *
+ * The birds live by the game clock (UGameCalendar): they leave inland at dawn, a few loaf along
+ * the shore by day, the rest come back in the afternoon, murmurate at sunset and drop into the
+ * roost at dusk. The roost is the land nearest the flock at dusk, found from the ground.
+ *
+ * Hand-feeding: the player presses FeedKey (F) to hold out food. Starlings within NoticeRange of
+ * the hand come down onto the ground around the player, hop, peck and watch the hand, and leave
+ * after a while; walking at them flushes them. Roosting birds flush too if the player walks up.
+ *
  * Place the actor on the sea surface, in the middle of the area the flock should roam;
  * its rotation turns the area. The birds keep over water and well above land: the actor
- * samples the ground under the area with line traces when it starts.
+ * samples the ground under and around the area with line traces when it starts.
  *
- * The starling is the low-poly flight model from Murmuration's tools/blender/starling.py,
- * built in code (no assets), in a few wing-beat poses.
+ * The starling is the low-poly model from Murmuration's tools/blender/starling.py, built in
+ * code (no assets): nine wing-beat poses in flight and a perched one, standing.
  */
 UCLASS()
 class LYUDMILOVSK_API AStarlingMurmuration : public AActor
@@ -161,6 +180,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Look")
 	FLinearColor PeregrineColor = FLinearColor(0.06f, 0.065f, 0.075f);
 
+	/** Latitude for the sun's times (sunrise, sunset, dusk), degrees north. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Day")
+	float Latitude = 51.f;
+
+	/** Clock time of the sun's highest point, hours. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Day")
+	float SolarNoon = 12.f;
+
+	/** >= 0: use this time of day (hours) instead of the game calendar (for tests). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Day")
+	float ClockOverride = -1.f;
+
+	/** The key that holds out food for the starlings, and puts it away again. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Feeding")
+	FKey FeedKey = EKeys::F;
+
 	/** Run the flock in the editor viewport too (not only in play). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration")
 	bool bSimulateInEditor = false;
@@ -168,9 +203,27 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Murmuration")
 	void Restart();
 
-	/** Runs the flock headless for a while, logging its extent every 5 s (for tuning from scripts). */
+	/** Is the player holding out food? */
+	UFUNCTION(BlueprintPure, Category = "Murmuration")
+	bool IsFeeding() const { return bFeeding; }
+
 	UFUNCTION(BlueprintCallable, Category = "Murmuration")
-	void DebugRun(float Seconds);
+	void SetFeeding(bool bOn);
+
+	/**
+	 * Runs the flock headless for a while, logging it every LogEvery seconds (for tuning from
+	 * scripts). StartHour >= 0 runs it on its own clock from that hour at HoursPerSecond.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Murmuration")
+	void DebugRun(float Seconds, float StartHour = -1.f, float HoursPerSecond = 0.f, float LogEvery = 5.f);
+
+	/**
+	 * Headless: a person stands still at Feet (world X, Y, Z) holding out food for Seconds, then puts it
+	 * away; from WalkAtBirdsAfter s on (>= 0) they walk at the birds on the ground for 4 s.
+	 * NoticeRange >= 0 overrides Params.NoticeRange for the run.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Murmuration")
+	void DebugFeed(float FeetX, float FeetY, float FeetZ, float Seconds, float WalkAtBirdsAfter = -1.f, float NoticeRange = -1.f);
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
@@ -185,6 +238,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Murmuration")
 	TObjectPtr<UStaticMeshComponent> PeregrineComponent;
+
+	/** Birds standing on the ground or the roost. */
+	UPROPERTY(VisibleAnywhere, Category = "Murmuration")
+	TObjectPtr<UInstancedStaticMeshComponent> PerchedComponent;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> BaseMaterial;
@@ -204,8 +261,21 @@ private:
 	float PeregrineNext = 0.f;
 	float PeregrineUntil = -1.f;
 	TArray<TArray<FTransform>> PoseTransforms;
+	TArray<FTransform> PerchedTransforms;
+	float ClockTimer = 0.f;
+	float ViewerTimer = 0.f;
+	bool bFeeding = false;
+	FVector LureFeet = FVector(1e30);
+	float DebugHours = -1.f, DebugRate = 0.f;
 
 	void EnsureMeshes();
+	void UpdateClock(float DeltaSeconds, bool bForce);
+	void UpdateViewer(bool bForce);
+	void FeedViewer(const FVector& Feet, const FVector& Velocity, const FVector& Hand, bool bForce);
+	TArray<FVector3f> MakeLureSpots(const FVector& Feet) const;
+	float ProbeGround(float X, float Z) const;
+	void OnFeedKey();
+	void SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr);
 	void StartFlock();
 	void SampleGround();
 	void UpdateInstances(float Ahead);

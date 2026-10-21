@@ -16,4 +16,6 @@ class UMaterialInterface;
 namespace StarlingMesh
 {
 	UStaticMesh* Build(UObject* Outer, FName Name, float Beat, float Amp, UMaterialInterface* Material);
+	/** The starling standing on the ground or the roost, wings folded, feet at the origin. */
+	UStaticMesh* BuildPerched(UObject* Outer, FName Name, UMaterialInterface* Material);
 }
