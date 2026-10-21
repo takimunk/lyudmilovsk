@@ -62,11 +62,13 @@ AProceduralPlant::AProceduralPlant()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Basic(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> BarkMat(TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> LeafMat(TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> FruitMat(TEXT("/Game/Plants/M_PlantFruit.M_PlantFruit"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cylinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
 	BaseMaterial = Basic.Object;
 	BarkMaterialAsset = BarkMat.Object ? BarkMat.Object : Basic.Object;
 	LeafMaterialAsset = LeafMat.Object ? LeafMat.Object : Basic.Object;
+	FruitMaterialAsset = FruitMat.Object ? FruitMat.Object : Basic.Object;
 
 	Wood = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wood"));
 	Wood->SetupAttachment(RootComponent);
@@ -79,6 +81,16 @@ AProceduralPlant::AProceduralPlant()
 	}
 	FruitComponent = MakeInstanced(this, TEXT("Fruit"), RootComponent);
 	FruitComponent->SetStaticMesh(Sphere.Object);
+	FruitComponent->NumCustomDataFloats = FPlantSkeleton::FInstances::FruitDataFloats;
+	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+	{
+		UInstancedStaticMeshComponent* Litter = MakeInstanced(this, *FString::Printf(TEXT("Litter%d"), K), RootComponent);
+		Litter->SetCastShadow(false);
+		LitterComponents.Add(Litter);
+		UInstancedStaticMeshComponent* Air = MakeInstanced(this, *FString::Printf(TEXT("Falling%d"), K), RootComponent);
+		Air->SetCastShadow(false);
+		FallingComponents.Add(Air);
+	}
 
 	SummaryTrunk = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryTrunk"));
 	SummaryCrown = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryCrown"));
@@ -114,6 +126,10 @@ const FPlantSpecies& AProceduralPlant::GetSpecies() const
 
 float AProceduralPlant::GetAge() const
 {
+	if (DevAge >= 0.f)
+	{
+		return DevAge;
+	}
 	const UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld())
 	{
@@ -137,6 +153,10 @@ FDateTime AProceduralPlant::CurrentDate() const
 
 float AProceduralPlant::CurrentDay() const
 {
+	if (DevDay >= 0.f)
+	{
+		return DevDay;
+	}
 	const UWorld* World = GetWorld();
 	if ((!World || !World->IsGameWorld()) && EditorPreviewDay >= 0.f)
 	{
@@ -177,8 +197,15 @@ void AProceduralPlant::EnsureMeshes()
 		{
 			LeafMaterials.Add(UMaterialInstanceDynamic::Create(LeafMaterialAsset, this));
 		}
-		FruitMaterial = UMaterialInstanceDynamic::Create(LeafMaterialAsset, this);
+		FruitMaterial = UMaterialInstanceDynamic::Create(FruitMaterialAsset, this);
 		FruitComponent->SetMaterial(0, FruitMaterial);
+		LitterMaterials.Reset();
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+		{
+			LitterMaterials.Add(UMaterialInstanceDynamic::Create(LeafMaterialAsset, this));
+			LitterComponents[K]->SetMaterial(0, LitterMaterials[K]);
+			FallingComponents[K]->SetMaterial(0, LeafMaterials[K]);
+		}
 		CrownMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 		CrownMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.85f);
 		SummaryCrown->SetMaterial(0, CrownMaterial);
@@ -194,6 +221,22 @@ void AProceduralPlant::EnsureMeshes()
 		BarkNormal = Normal;
 		LeafDetail = PlantMeshes::BuildLeafDetail(this, S.Leaf);
 		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
+		SingleLeafMesh = PlantMeshes::BuildSingleLeaf(this, S);
+		if (!FruitDetail)
+		{
+			FruitDetail = PlantMeshes::BuildFruitDetail(this);
+		}
+		if (S.FruitSize > 0.f)
+		{
+			FruitMesh = PlantMeshes::BuildFruit(this, S);
+			FruitComponent->SetStaticMesh(FruitMesh);
+		}
+		FruitMaterial->SetTextureParameterValue(TEXT("FruitDetail"), FruitDetail);
+		FruitMaterial->SetVectorParameterValue(TEXT("GroundUnripe"), S.FruitUnripeColour);
+		FruitMaterial->SetVectorParameterValue(TEXT("GroundRipe"), S.FruitGroundColour);
+		FruitMaterial->SetVectorParameterValue(TEXT("BlushColour"), S.FruitColour);
+		GroundGrid.Reset();
+		Falling.Reset();
 
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkAlbedo"), BarkAlbedo);
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
@@ -203,6 +246,9 @@ void AProceduralPlant::EnsureMeshes()
 			LeafMaterials[K]->SetTextureParameterValue(TEXT("LeafDetail"), LeafDetail);
 			LeafComponents[K]->SetStaticMesh(LeafMesh);
 			LeafComponents[K]->SetMaterial(0, LeafMaterials[K]);
+			LitterMaterials[K]->SetTextureParameterValue(TEXT("LeafDetail"), LeafDetail);
+			LitterComponents[K]->SetStaticMesh(SingleLeafMesh);
+			FallingComponents[K]->SetStaticMesh(SingleLeafMesh);
 		}
 		BuiltSpecies = Species;
 		BuiltSeed = Seed;
@@ -224,6 +270,13 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		LeafComponents[K]->SetVisibility(!bSummary);
 	}
 	FruitMaterial->SetVectorParameterValue(TEXT("Color"), Season.FruitColour);
+	FruitMaterial->SetScalarParameterValue(TEXT("Ripeness"), Season.FruitRipeness);
+	const FLinearColor Brown(0.1f, 0.06f, 0.025f);
+	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+	{
+		LitterMaterials[K]->SetVectorParameterValue(TEXT("Color"), FMath::Lerp(Season.Colour[K], Brown, 0.35f));
+		LitterComponents[K]->SetVisibility(!bSummary);
+	}
 	Wood->SetVisibility(!bSummary);
 	FruitComponent->SetVisibility(!bSummary);
 	SummaryTrunk->SetVisibility(bSummary);
@@ -233,6 +286,7 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	{
 		// level 0: no branches at all, just the summary's height, width and colour
 		for (UInstancedStaticMeshComponent* L : LeafComponents) SetInstances(L, {});
+		for (UInstancedStaticMeshComponent* L : LitterComponents) SetInstances(L, {});
 		SetInstances(FruitComponent, {});
 		const float TrunkH = FMath::Max(Sum.CrownBaseHeight, Sum.Height * 0.3f);
 		SummaryTrunk->SetRelativeLocation(FVector(0, 0, TrunkH * 50.f));
@@ -244,17 +298,35 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	}
 	else
 	{
+		// in play, leaves that let go since the last re-shape fly down as falling leaves
+		const bool bGame = GetWorld() && GetWorld()->IsGameWorld();
+		const bool bSincePrev = bGame && Day > LastSeasonDay && Day - LastSeasonDay < 10.f && FMath::Abs(Age - ShownAge) < 1.f;
 		FPlantSkeleton::FInstances Out;
-		Skeleton.Evaluate(Age, Season, Out);
+		Skeleton.Evaluate(Age, Season, Out, bSincePrev ? &LastSeason : nullptr);
+		LastSeason = Season;
+		LastSeasonDay = Day;
+		int32 NumLeaves = 0;
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			SetInstances(LeafComponents[K], Out.Leaves[K]);
+			NumLeaves += Out.Leaves[K].Num();
 		}
 		SetInstances(FruitComponent, Out.Fruit);
-		if (GetWorld() && GetWorld()->IsGameWorld())
+		for (int32 F = 0; F < Out.Fruit.Num(); F++)
 		{
+			FruitComponent->SetCustomData(F, TArrayView<const float>(&Out.FruitData[F * FPlantSkeleton::FInstances::FruitDataFloats], FPlantSkeleton::FInstances::FruitDataFloats), false);
+		}
+		FruitComponent->MarkRenderStateDirty();
+		UpdateLitter(Out, Season);
+		if (bGame)
+		{
+			SpawnFallingLeaves(Out);
 			SyncFallenFruit(Out);
 		}
+		LastLeaves = NumLeaves;
+		LastFruit = Out.Fruit.Num();
+		LastHeight = Out.Height;
+		LastReach = Out.Reach;
 		if (bWood || WoodAge < 0.f)
 		{
 			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
@@ -313,9 +385,7 @@ void AProceduralPlant::SyncFallenFruit(const FPlantSkeleton::FInstances& Out)
 		if (!Fruit) continue;
 		Fruit->Tree = this;
 		Fruit->Key = Key;
-		Fruit->SetActorScale3D(FVector(S.FruitSize, S.FruitSize, S.FruitSize * 0.92f));
-		Fruit->Mesh->SetMaterial(0, FruitMaterial);
-		Fruit->Mesh->SetSimulatePhysics(true);
+		Fruit->Init(FruitMesh, FruitMaterial, S.FruitSize * 100.f, F.Data, FPlantSkeleton::FInstances::FruitDataFloats);
 		GroundFruit.Add(Key, Fruit);
 	}
 	// rotted away, or a new year
@@ -332,6 +402,153 @@ void AProceduralPlant::SyncFallenFruit(const FPlantSkeleton::FInstances& Out)
 	{
 		HangingFruit.Add(Year + Id);
 	}
+}
+
+float AProceduralPlant::GroundAt(float X, float Y)
+{
+	if (GroundGrid.IsEmpty())
+	{
+		// one trace per metre around the trunk, as far as the crown and its litter reach
+		const FPlantSpecies& S = GetSpecies();
+		const float R = 50.f * FMath::Max(S.CrownWidth * S.MaxHeight, 2.f * S.Branch1MaxLength) + 400.f;
+		GroundN = FMath::Clamp(2 * FMath::CeilToInt(R / 100.f) + 1, 3, 61);
+		GroundCell = 2.f * R / (GroundN - 1);
+		GroundGrid.Init(0.f, GroundN * GroundN);
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			const FTransform& Xf = GetActorTransform();
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(PlantLitterGround), false, this);
+			for (int32 J = 0; J < GroundN; J++)
+			{
+				for (int32 I = 0; I < GroundN; I++)
+				{
+					const FVector Local(-R + I * GroundCell, -R + J * GroundCell, 0.f);
+					const FVector At = Xf.TransformPosition(Local);
+					FHitResult Hit;
+					if (World->LineTraceSingleByObjectType(Hit, At + FVector(0, 0, 1500), At - FVector(0, 0, 3000), FCollisionObjectQueryParams(ECC_WorldStatic), Q))
+					{
+						GroundGrid[J * GroundN + I] = (float)Xf.InverseTransformPosition(Hit.ImpactPoint).Z;
+					}
+				}
+			}
+		}
+	}
+	const float R = 0.5f * GroundCell * (GroundN - 1);
+	const float Fx = FMath::Clamp((X + R) / GroundCell, 0.f, GroundN - 1.001f), Fy = FMath::Clamp((Y + R) / GroundCell, 0.f, GroundN - 1.001f);
+	const int32 I = FMath::FloorToInt(Fx), J = FMath::FloorToInt(Fy);
+	const float A = Fx - I, B = Fy - J;
+	auto G = [&](int32 Ii, int32 Jj) { return GroundGrid[Jj * GroundN + Ii]; };
+	return FMath::Lerp(FMath::Lerp(G(I, J), G(I + 1, J), A), FMath::Lerp(G(I, J + 1), G(I + 1, J + 1), A), B);
+}
+
+void AProceduralPlant::UpdateLitter(const FPlantSkeleton::FInstances& Out, const FPlantSeason& Season)
+{
+	// no more than a few thousand leaves on the ground per tree: thin evenly beyond that
+	constexpr int32 MaxLitter = 5000;
+	const int32 Stride = FMath::Max(1, FMath::DivideAndRoundUp(Out.Litter.Num(), MaxLitter));
+	TArray<FTransform> Lying[FPlantSeason::NumBuckets];
+	for (int32 I = 0; I < Out.Litter.Num(); I += Stride)
+	{
+		const FPlantSkeleton::FInstances::FLitter& L = Out.Litter[I];
+		const float X = L.At.X * 100.f, Y = L.At.Y * 100.f;
+		const FRotator Rot(FMath::Sin(L.Yaw) * 12.f, L.Yaw, FMath::Cos(L.Yaw * 1.7f) * 12.f);
+		Lying[L.Bucket].Emplace(Rot, FVector(X, Y, GroundAt(X, Y) + 1.5f), FVector(L.Size));
+	}
+	LastLitter = 0;
+	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+	{
+		SetInstances(LitterComponents[K], Lying[K]);
+		LastLitter += Lying[K].Num();
+		bLandedChanged |= !Landed[K].IsEmpty();
+		Landed[K].Reset();
+	}
+	bLitterDirty = false;
+}
+
+void AProceduralPlant::SpawnFallingLeaves(const FPlantSkeleton::FInstances& Out)
+{
+	// the leaves that let go between two re-shapes take to the air evenly over the time until the
+	// next one: a single leaf now and then at the real calendar's pace, a flurry when it is sped up
+	const double Now = GetWorld()->GetTimeSeconds();
+	const double Interval = LastDropTime < 0.0 ? 1.0 : FMath::Clamp(Now - LastDropTime, 0.2, 6.0 * 3600.0);
+	LastDropTime = Now;
+	PendingDrops.Append(Out.Dropped);
+	ReleaseRate = PendingDrops.Num() / (float)Interval;
+}
+
+void AProceduralPlant::TickFallingLeaves(float DeltaSeconds)
+{
+	constexpr int32 MaxFalling = 400;
+	ReleaseAcc += ReleaseRate * DeltaSeconds;
+	while (ReleaseAcc >= 1.f && !PendingDrops.IsEmpty())
+	{
+		ReleaseAcc -= 1.f;
+		const FPlantSkeleton::FInstances::FDrop D = PendingDrops.Pop(EAllowShrinking::No);
+		if (Falling.Num() >= MaxFalling)
+		{
+			continue; // too many in the air: this one is already in the litter
+		}
+		FFallingLeaf& F = Falling.AddDefaulted_GetRef();
+		F.P = D.From.GetLocation();
+		F.Rot = D.From.Rotator();
+		F.Spin = FRotator(FMath::FRandRange(-240.f, 240.f), FMath::FRandRange(-90.f, 90.f), FMath::FRandRange(-300.f, 300.f));
+		F.Target = FVector2D(D.To.At.X * 100.f, D.To.At.Y * 100.f);
+		F.GroundZ = GroundAt(F.Target.X, F.Target.Y) + 1.5f;
+		F.Speed = FMath::FRandRange(60.f, 120.f);
+		F.Phase = FMath::FRandRange(0.f, 2.f * PI);
+		F.Size = D.To.Size;
+		F.Bucket = D.To.Bucket;
+	}
+	if (PendingDrops.IsEmpty())
+	{
+		ReleaseAcc = 0.f;
+	}
+	if (Falling.IsEmpty() && !bLandedChanged)
+	{
+		return;
+	}
+	bLandedChanged = false;
+	TArray<FTransform> Air[FPlantSeason::NumBuckets];
+	for (int32 I = Falling.Num() - 1; I >= 0; I--)
+	{
+		FFallingLeaf& F = Falling[I];
+		// a leaf rocks and sideslips down, drifting toward where it will lie
+		const float Left = FMath::Max(F.P.Z - F.GroundZ, 0.f);
+		const FVector2D ToTarget = (F.Target - FVector2D(F.P.X, F.P.Y)) / FMath::Max(Left / F.Speed, 0.3f);
+		const FVector2D Flutter(FMath::Cos(F.Phase * 1.7f), FMath::Sin(F.Phase * 1.3f));
+		F.P.X += (ToTarget.X + Flutter.X * 45.f) * DeltaSeconds;
+		F.P.Y += (ToTarget.Y + Flutter.Y * 45.f) * DeltaSeconds;
+		F.P.Z -= F.Speed * (0.7f + 0.4f * FMath::Sin(F.Phase * 2.1f)) * DeltaSeconds;
+		F.Phase += DeltaSeconds * 2.f * PI * 0.8f;
+		F.Rot += F.Spin * DeltaSeconds;
+		if (F.P.Z <= F.GroundZ)
+		{
+			// it lies down where the litter will have it
+			Landed[F.Bucket].Emplace(FRotator(FMath::Sin(F.Rot.Yaw) * 12.f, F.Rot.Yaw, 0.f), FVector(F.P.X, F.P.Y, F.GroundZ), FVector(F.Size));
+			Falling.RemoveAtSwap(I);
+			continue;
+		}
+		Air[F.Bucket].Emplace(F.Rot, F.P, FVector(F.Size));
+	}
+	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+	{
+		Air[K].Append(Landed[K]);
+		SetInstances(FallingComponents[K], Air[K]);
+	}
+}
+
+void AProceduralPlant::Refresh()
+{
+	Apply(GetAge(), CurrentDay(), WantsSummary(), true);
+}
+
+FString AProceduralPlant::DescribeState() const
+{
+	const FDateTime Date = FDateTime(CurrentDate().GetYear(), 1, 1) + FTimespan::FromDays(CurrentDay() - 1.f);
+	return FString::Printf(TEXT("%s, seed %d: %.1f years, %s | %.1f m tall, %.1f m wide | %d leaf clusters, %d leaves on the ground, %d falling | fruit: %d hanging, %d on the ground, %d picked"),
+		*GetSpecies().DisplayName.ToString(), Seed, GetAge(), *Date.ToString(TEXT("%d.%m %H:%M")), LastHeight, LastReach * 2.f,
+		LastLeaves, LastLitter, Falling.Num(), LastFruit, GroundFruit.Num(), FruitPicked);
 }
 
 void AProceduralPlant::ClearFallenFruit()
@@ -375,6 +592,9 @@ void AProceduralPlant::OnGameLoaded_Implementation()
 {
 	// the picked list came back with the save: lay the ground out again from it
 	ClearFallenFruit();
+	Falling.Reset();
+	PendingDrops.Reset();
+	LastSeasonDay = -1000.f;
 	Apply(GetAge(), CurrentDay(), WantsSummary());
 }
 
@@ -427,6 +647,7 @@ void AProceduralPlant::EndPlay(const EEndPlayReason::Type Reason)
 void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	TickFallingLeaves(DeltaSeconds);
 	SinceUpdate += DeltaSeconds;
 	SinceWood += DeltaSeconds;
 	if (SinceUpdate < UpdateInterval)
@@ -437,7 +658,7 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	const float Age = GetAge(), Day = CurrentDay();
 	const bool bSummary = WantsSummary();
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
-	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f;
+	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f || bLitterDirty;
 	const bool bWoodDue = !bSummary && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
 	if (bChanged || bWoodDue)
 	{

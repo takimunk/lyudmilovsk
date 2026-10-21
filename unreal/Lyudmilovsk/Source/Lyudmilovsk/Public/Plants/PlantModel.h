@@ -40,9 +40,12 @@ struct FPlantSeason
 	FLinearColor Colour[NumBuckets];
 	/** This tree's own day of the year (the calendar's, shifted by its seed). */
 	float Day = 0.f;
-	/** Fruit size 0..1 (0: no fruit this time of year) and colour. */
+	/** Fruit size 0..1 (0: no fruit this time of year), colour (one plain colour, for far away) and ripeness 0..1. */
 	float FruitScale = 0.f;
 	FLinearColor FruitColour;
+	float FruitRipeness = 0.f;
+	/** Per colour bucket: the fraction that had fallen LitterDays ago (older litter has rotted away). */
+	float LitterFrom[NumBuckets] = {};
 	/** Snow lying on the branches, 0..1. */
 	float Snow = 0.f;
 };
@@ -103,9 +106,18 @@ public:
 		/** Fruit still hanging, and its ids (stable: the twig it grows on). */
 		TArray<FTransform> Fruit;
 		TArray<int32> FruitIds;
-		/** Fruit that has dropped and not yet rotted: id and where it hung (m). */
-		struct FFallen { int32 Id; FVector3f At; };
+		/** Each hanging fruit's skin, FruitDataFloats per fruit (blush, blush side, stripes, tint, ripeness shift). */
+		static constexpr int32 FruitDataFloats = 5;
+		TArray<float> FruitData;
+		/** Fruit that has dropped and not yet rotted: id, where it hung (m) and its skin. */
+		struct FFallen { int32 Id; FVector3f At; float Data[FruitDataFloats]; };
 		TArray<FFallen> FallenFruit;
+		/** Fallen leaves lying under the tree: where (m, the ground's height is the caller's), turn, size, bucket. */
+		struct FLitter { FVector2f At; float Yaw; float Size; int32 Bucket; };
+		TArray<FLitter> Litter;
+		/** Leaves that let go since the previous season given to Evaluate: where they hung (cm) and where they land. */
+		struct FDrop { FTransform From; FLitter To; };
+		TArray<FDrop> Dropped;
 		/** Height and widest reach of what was drawn, m. */
 		float Height = 0.f;
 		float Reach = 0.f;
@@ -115,7 +127,8 @@ public:
 
 	void Build(const FPlantSpecies& Species, uint32 Seed);
 	bool IsBuilt() const { return !Branches.IsEmpty(); }
-	void Evaluate(float Age, const FPlantSeason& Season, FInstances& Out) const;
+	/** Prev (optional): the season at the last evaluation, to list the leaves that dropped since. */
+	void Evaluate(float Age, const FPlantSeason& Season, FInstances& Out, const FPlantSeason* Prev = nullptr) const;
 	const TArray<FBranch>& GetBranches() const { return Branches; }
 
 private:

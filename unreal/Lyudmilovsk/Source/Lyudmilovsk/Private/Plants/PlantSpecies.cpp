@@ -64,9 +64,11 @@ namespace
 	}
 
 	/**
-	 * Malus domestica, an old orchard apple: a short trunk forking into a few scaffold limbs, a low crown
-	 * wider than tall. Its shoots end in flower clusters every year and a side bud carries on (sympodial),
-	 * so the limbs zigzag, and they sag under the fruit. Apples ripen in September and drop through October.
+	 * Malus domestica, an old orchard apple: a short trunk forking into three or four scaffold limbs that
+	 * arch outward, a low crown wider than tall. Shoots end in flower clusters and a side bud carries on
+	 * (sympodial), so the limbs zigzag and sag under the fruit; the old wood is crowded with spurs, short
+	 * shoots that carry the leaf rosettes and the apples. Grey bark flaking in small plates, rusty under.
+	 * Apples ripen in September, yellow-green with a striped red blush, and drop through October.
 	 */
 	FPlantSpecies Apple()
 	{
@@ -77,22 +79,22 @@ namespace
 		S.GrowthRate = 0.15f;
 		S.GrowthShape = 1.4f;
 		S.LeaderFraction = 0.3f;
-		S.TrunkRadiusPerHeight = 0.015f;
+		S.TrunkRadiusPerHeight = 0.012f;
 		S.CrownBase = 0.12f;
-		S.TrunkNodeSpacing = 0.18f;
-		S.Branch1Angle = 60.f;
-		S.Branch1MaxLength = 5.5f;
+		S.TrunkNodeSpacing = 0.3f;
+		S.Branch1Angle = 55.f;
+		S.Branch1MaxLength = 5.f;
 		S.Branch1Profile = FVector(1.0, 1.0, 0.9);
 		S.LengthTau = 6.f;
-		S.Tropism = 0.05f;
-		S.Wobble = 0.3f;
+		S.Tropism = 0.07f;
+		S.Wobble = 0.15f;
 		S.Branch2Spacing = 0.15f;
 		S.Branch2Angle = 55.f;
-		S.Branch2MaxLength = 1.2f;
-		S.Branch2LengthRatio = 0.45f;
-		S.Branch2ShadeDepth = 3.5f;
+		S.Branch2MaxLength = 1.6f;
+		S.Branch2LengthRatio = 0.4f;
+		S.Branch2ShadeDepth = 4.f;
 		S.BranchRadiusPerLength = 0.012f;
-		S.LeafyTipLength = 3.f;
+		S.LeafyTipLength = 2.5f;
 		S.LeafSpacing = 0.07f;
 		S.LeafClusterSize = 0.3f;
 		// elliptic, finely serrate, short-stalked
@@ -104,11 +106,11 @@ namespace
 		S.Leaf.Fold = 0.2f;
 		S.Leaf.PerCluster = 6;
 		S.Bark.Pattern = EPlantBarkPattern::Plates;
-		S.Bark.TileWidth = 0.2f;
-		S.Bark.TileHeight = 0.3f;
-		S.Bark.Depth = 1.8f;
-		S.Bark.RidgeColour = C(0.07f, 0.0575f, 0.045f);
-		S.Bark.FurrowColour = C(0.02f, 0.016f, 0.0125f);
+		S.Bark.TileWidth = 0.16f;
+		S.Bark.TileHeight = 0.22f;
+		S.Bark.Depth = 2.f;
+		S.Bark.RidgeColour = C(0.075f, 0.068f, 0.06f);
+		S.Bark.FurrowColour = C(0.02f, 0.017f, 0.014f);
 		S.BudBreakDay = 115.f;
 		S.FullLeafDay = 140.f;
 		S.ColourStartDay = 285.f;
@@ -119,18 +121,27 @@ namespace
 		S.AutumnLeafColour = C(0.30f, 0.30f, 0.05f);
 		S.AutumnLeafColourLate = C(0.45f, 0.32f, 0.05f);
 		S.FruitSize = 0.075f;
-		S.FruitChance = 0.6f;
+		S.FruitChance = 0.15f;
 		S.FruitingAge = 4.f;
 		S.FruitSetDay = 160.f;
 		S.FruitRipeDay = 245.f;
 		S.FruitFallDay = 305.f;
-		S.FruitColour = C(0.42f, 0.04f, 0.02f);
-		S.RingWidth = 0.0035f;
+		S.FruitColour = C(0.38f, 0.03f, 0.02f);
+		S.RingWidth = 0.0018f;
 		S.CrownWidth = 1.25f;
-		S.Branch1AngleTop = 35.f;
-		S.Kink = 0.55f;
-		S.KinkSpacing = 0.35f;
-		S.Droop = 0.025f;
+		S.Branch1AngleTop = 40.f;
+		S.Kink = 0.3f;
+		S.KinkSpacing = 0.45f;
+		S.Droop = 0.02f;
+		S.SpurSpacing = 0.06f;
+		S.SpurLength = 0.08f;
+		S.SpurAge = 2.f;
+		S.Bark.FlakeChance = 0.12f;
+		S.Bark.UnderColour = C(0.055f, 0.036f, 0.022f);
+		S.FruitUnripeColour = C(0.12f, 0.28f, 0.04f);
+		S.FruitGroundColour = C(0.45f, 0.42f, 0.08f);
+		S.FruitBlush = 1.f;
+		S.FruitStripes = 0.7f;
 		return S;
 	}
 
@@ -257,6 +268,8 @@ namespace
 		S.Droop = 0.004f;
 		S.Branch2ShadeDepth = 8.f;
 		S.BranchRadiusPerLength = 0.009f;
+		S.FruitUnripeColour = C(0.12f, 0.2f, 0.04f);
+		S.FruitGroundColour = C(0.17f, 0.09f, 0.03f);
 		return S;
 	}
 }

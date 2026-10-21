@@ -258,8 +258,9 @@ namespace
 	}
 
 	/** Bark relief 0 (furrow bottom) .. 1 (ridge top) at (U around, V along). */
-	float BarkHeight(const FPlantBark& B, uint32 Seed, float U, float V)
+	float BarkHeight(const FPlantBark& B, uint32 Seed, float U, float V, float& OutFlake)
 	{
+		OutFlake = 0.f;
 		const float Warp = (Fbm(Seed + 1, U, V, 4, 2, 3) - 0.5f) * 0.12f;
 		const float Fine = Fbm(Seed + 2, U, V, 24, 48, 3);
 		switch (B.Pattern)
@@ -280,9 +281,18 @@ namespace
 		}
 		case EPlantBarkPattern::Plates:
 		{
+			// irregular scales, longer than wide, cracked apart; each a little cupped and lifting at its
+			// edges, and some already flaked off, baring the smoother, warmer bark under them
 			float Cell = 0.f;
-			const float E = Voronoi(Seed + 6, U + Warp, V, 5, 9, B.TileHeight / B.TileWidth, Cell);
-			return FMath::Clamp((0.45f + 0.45f * Cell) * Smooth(0.f, 0.12f, E) + 0.15f * (Fine - 0.5f), 0.f, 1.f);
+			const float E = Voronoi(Seed + 6, U + Warp * 1.5f, V + Warp, 7, 7, B.TileHeight / B.TileWidth * 0.6f, Cell);
+			const float Crack = Smooth(0.f, 0.06f, E);
+			if (Cell < B.FlakeChance)
+			{
+				OutFlake = Crack;
+				return FMath::Clamp(0.25f + 0.1f * Fine, 0.f, 1.f) * Crack;
+			}
+			const float Cup = 0.55f + 0.3f * Cell + 0.15f * (1.f - Smooth(0.06f, 0.3f, E));
+			return FMath::Clamp(Cup * Crack + 0.18f * (Fine - 0.5f), 0.f, 1.f);
 		}
 		default:
 		{
@@ -391,10 +401,11 @@ void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint
 		for (int32 X = 0; X < W; X++)
 		{
 			const float U = (X + 0.5f) / W, V = (Y + 0.5f) / H;
-			const float Hh = BarkHeight(B, TexSeed, U, V);
+			float Flake = 0.f;
+			const float Hh = BarkHeight(B, TexSeed, U, V, Flake);
 			Hgt[Y * W + X] = Hh;
 			const float Mottle = 0.8f + 0.4f * Fbm(TexSeed + 20, U, V, 6, 10, 3);
-			const FLinearColor C = FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh) * Mottle;
+			const FLinearColor C = FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
 			Albedo[Y * W + X] = FLinearColor(C.R, C.G, C.B, 1.f).ToFColor(true);
 		}
 	}
@@ -449,6 +460,109 @@ UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& 
 			const float G = FMath::Clamp(0.84f + 0.16f * Vein + 0.08f * (Mottle - 0.5f), 0.f, 1.f);
 			const uint8 C = (uint8)FMath::RoundToInt(G * 255.f);
 			Px[Y * W + X] = FColor(C, C, C, 255);
+		}
+	}
+	return MakeTexture(Outer, W, W, MoveTemp(Px), true, false);
+}
+
+UStaticMesh* PlantMeshes::BuildSingleLeaf(UObject* Outer, const FPlantSpecies& S)
+{
+	FMeshData D;
+	FPlantLeafShape L = S.Leaf;
+	L.Fold *= 0.5f;
+	// centred on the blade, so it spins about its middle as it falls
+	BuildBlade(L, L.Length, D, FTransform3f(FVector3f(0.f, -0.5f * L.Length, 0.f)));
+	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaf_%s"), *S.Name.ToString()), D);
+}
+
+UStaticMesh* PlantMeshes::BuildFruit(UObject* Outer, const FPlantSpecies& S)
+{
+	// an apple: 100 units across (scaled like the engine sphere), broad shoulders, a dimple at the
+	// stalk and at the eye, a short stalk; UV u around, v from the stalk (0) to the eye (1); the
+	// stalk is at v < 0 (the material browns it)
+	FMeshData D;
+	constexpr int32 Around = 20, Down = 14;
+	const bool bApple = S.FruitBlush > 0.f;
+	auto Radius = [&](float Th) { return 50.f * FMath::Sin(Th) * (bApple ? 1.f - 0.08f * FMath::Cos(Th) : 1.f); };
+	auto Height = [&](float Th)
+	{
+		float Z = 50.f * FMath::Cos(Th) * (bApple ? 0.88f : 1.15f);
+		if (bApple)
+		{
+			Z -= 9.f * FMath::Exp(-FMath::Square(Th / 0.32f));
+			Z += 6.f * FMath::Exp(-FMath::Square((PI - Th) / 0.3f));
+		}
+		return Z;
+	};
+	for (int32 J = 0; J <= Down; J++)
+	{
+		const float Th = PI * J / Down;
+		for (int32 I = 0; I <= Around; I++)
+		{
+			const float A = 2.f * PI * I / Around;
+			const FVector3f P(FMath::Cos(A) * Radius(Th), FMath::Sin(A) * Radius(Th), Height(Th));
+			D.Add(P, P.GetSafeNormal(), FVector3f(-FMath::Sin(A), FMath::Cos(A), 0.f), FVector2f((float)I / Around, (float)J / Down));
+		}
+	}
+	for (int32 J = 0; J < Down; J++)
+	{
+		for (int32 I = 0; I < Around; I++)
+		{
+			const int32 A = J * (Around + 1) + I, B = A + 1, C = A + Around + 1, E = C + 1;
+			D.Tris.Add(FIntVector3(A, B, C));
+			D.Tris.Add(FIntVector3(B, E, C));
+		}
+	}
+	// smooth normals from the faces, so the dimples shade
+	TArray<FVector3f> N;
+	N.SetNumZeroed(D.Pos.Num());
+	for (FIntVector3& T : D.Tris)
+	{
+		FVector3f Fn = FVector3f::CrossProduct(D.Pos[T.Z] - D.Pos[T.X], D.Pos[T.Y] - D.Pos[T.X]);
+		const FVector3f Mid = (D.Pos[T.X] + D.Pos[T.Y] + D.Pos[T.Z]) / 3.f;
+		if (FVector3f::DotProduct(Fn, Mid) < 0.f) { Swap(T.Y, T.Z); Fn = -Fn; }
+		N[T.X] += Fn; N[T.Y] += Fn; N[T.Z] += Fn;
+	}
+	for (int32 I = 0; I < N.Num(); I++) D.Nrm[I] = N[I].GetSafeNormal(UE_SMALL_NUMBER, D.Nrm[I]);
+	// the stalk: a thin, slightly bent stick out of the top dimple
+	const float Top = Height(0.f);
+	const int32 Base = D.Pos.Num();
+	for (int32 K = 0; K <= 1; K++)
+	{
+		for (int32 I = 0; I < 5; I++)
+		{
+			const float A = 2.f * PI * I / 5.f;
+			const FVector3f Nr(FMath::Cos(A), FMath::Sin(A), 0.f);
+			const FVector3f C = K == 0 ? FVector3f(0.f, 0.f, Top - 2.f) : FVector3f(5.f, 0.f, Top + (bApple ? 24.f : 8.f));
+			D.Add(C + Nr * 1.6f, Nr, FVector3f::UpVector, FVector2f(0.f, -0.5f));
+		}
+	}
+	for (int32 I = 0; I < 5; I++)
+	{
+		const int32 A = Base + I, B = Base + (I + 1) % 5, C = A + 5, E = B + 5;
+		D.Tris.Add(FIntVector3(A, C, B));
+		D.Tris.Add(FIntVector3(B, C, E));
+	}
+	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Fruit_%s"), *S.Name.ToString()), D);
+}
+
+UTexture2D* PlantMeshes::BuildFruitDetail(UObject* Outer)
+{
+	// R: soft noise that breaks up the blush and its stripes; G: lenticels, the pale dots on an apple's skin
+	// (sRGB like every other plant texture, so the material samples it as a plain colour)
+	constexpr int32 W = 128;
+	TArray<FColor> Px;
+	Px.SetNumUninitialized(W * W);
+	for (int32 Y = 0; Y < W; Y++)
+	{
+		for (int32 X = 0; X < W; X++)
+		{
+			const float U = (X + 0.5f) / W, V = (Y + 0.5f) / W;
+			const float N = Fbm(91, U, V, 4, 4, 4);
+			const float Dx = FMath::Frac(U * 24.f) - 0.5f, Dy = FMath::Frac(V * 24.f) - 0.5f;
+			const bool bCell = Hash01(92, FMath::FloorToInt(U * 24.f), FMath::FloorToInt(V * 24.f)) < 0.35f;
+			const float Dot = bCell ? FMath::Clamp(1.f - FMath::Sqrt(Dx * Dx + Dy * Dy) / 0.18f, 0.f, 1.f) : 0.f;
+			Px[Y * W + X] = FColor((uint8)FMath::RoundToInt(N * 255.f), (uint8)FMath::RoundToInt(Dot * 255.f), 0, 255);
 		}
 	}
 	return MakeTexture(Outer, W, W, MoveTemp(Px), true, false);

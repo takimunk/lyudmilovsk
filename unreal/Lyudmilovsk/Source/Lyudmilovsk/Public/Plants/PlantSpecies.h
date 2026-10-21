@@ -68,6 +68,9 @@ struct FPlantBark
 	/** Ridge tops and furrow bottoms (linear). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor RidgeColour = FLinearColor(0.16f, 0.15f, 0.13f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor FurrowColour = FLinearColor(0.035f, 0.03f, 0.025f);
+	/** Plates pattern: share of plates already flaked off, showing the younger bark under them in UnderColour. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float FlakeChance = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor UnderColour = FLinearColor(0.08f, 0.045f, 0.02f);
 };
 
 /**
@@ -145,6 +148,14 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch2MaxLength = 1.6f;
 	/** Order-2 twigs this far inside the parent's tip are shaded out and shed, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch2ShadeDepth = 4.f;
+	/**
+	 * Spurs: short, slow shoots every SpurSpacing metres along order-1 and order-2 wood older than
+	 * SpurAge years, each ending in a rosette of leaves and, on fruit trees, the flowers and fruit
+	 * (apple). 0 = none.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float SpurSpacing = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float SpurLength = 0.1f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float SpurAge = 2.f;
 	/** Branch base radius = BranchRadiusBase + BranchRadiusPerLength * length, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float BranchRadiusBase = 0.003f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float BranchRadiusPerLength = 0.008f;
@@ -178,8 +189,13 @@ struct FPlantSpecies
 	/** Fruit drops one by one over the 35 days up to FruitFallDay, then lies on the ground this long. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitFallDay = 310.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRotDays = 25.f;
+	/** Fruit skin: unripe ground colour, ripe ground colour, and the blush that develops over it (red on apples). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitUnripeColour = FLinearColor(0.15f, 0.3f, 0.04f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitGroundColour = FLinearColor(0.45f, 0.42f, 0.06f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitColour = FLinearColor(0.5f, 0.04f, 0.02f);
+	/** How much of a fruit's skin can blush (0 = never, acorns), and how striped the blush is. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitBlush = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitStripes = 0.f;
 
 	// --- Phenology, day of the year. Each tree shifts these by up to +-PhenologyJitter days (its seed).
 
@@ -192,6 +208,8 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Season") float LeafDropStartDay = 288.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Season") float BareDay = 318.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Season") float PhenologyJitter = 5.f;
+	/** Fallen leaves lie under the tree this long, days. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Season") float LitterDays = 50.f;
 
 	// --- Colours (linear)
 

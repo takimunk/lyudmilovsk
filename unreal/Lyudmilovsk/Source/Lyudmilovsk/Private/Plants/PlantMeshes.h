@@ -24,6 +24,13 @@ namespace PlantMeshes
 	/** Bark colour (sRGB) and normal map tiles for the species' pattern; tileable both ways. */
 	void BuildBarkTextures(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, UTexture2D*& OutAlbedo, UTexture2D*& OutNormal);
 
+	/** One leaf, centred on its blade: falling leaves and the litter under the tree. */
+	UStaticMesh* BuildSingleLeaf(UObject* Outer, const FPlantSpecies& Species);
+	/** The species' fruit, 100 units across like the engine sphere (an apple, or an acorn when it never blushes). */
+	UStaticMesh* BuildFruit(UObject* Outer, const FPlantSpecies& Species);
+	/** Noise (R) and lenticel dots (G) for the fruit skin. */
+	UTexture2D* BuildFruitDetail(UObject* Outer);
+
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);
 }

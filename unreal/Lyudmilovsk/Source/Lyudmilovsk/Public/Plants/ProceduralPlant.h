@@ -81,6 +81,15 @@ public:
 	UFUNCTION() TArray<FName> GetSpeciesNames() const;
 	/** The calendar's date as this plant sees it (with DemoDaysPerSecond). */
 	UFUNCTION(BlueprintCallable, Category = "Plant") FDateTime CurrentDate() const;
+	UFUNCTION(BlueprintCallable, Category = "Plant") float CurrentDay() const;
+
+	/** Developer mode: hold the plant at an age / day of the year (below 0: back to the calendar). */
+	UPROPERTY(Transient, BlueprintReadWrite, Category = "Plant|Dev") float DevAge = -1.f;
+	UPROPERTY(Transient, BlueprintReadWrite, Category = "Plant|Dev") float DevDay = -1.f;
+	/** Re-shape now (wood included), e.g. after changing species, seed or a developer override. */
+	UFUNCTION(BlueprintCallable, Category = "Plant") void Refresh();
+	/** One line of what is drawn now: size, leaves, litter, fruit. */
+	UFUNCTION(BlueprintCallable, Category = "Plant") FString DescribeState() const;
 
 	virtual void OnGameLoaded_Implementation() override;
 
@@ -91,17 +100,24 @@ public:
 
 private:
 	const FPlantSpecies& GetSpecies() const;
-	float CurrentDay() const;
 	void EnsureMeshes();
 	void Apply(float Age, float Day, bool bSummary, bool bWood = true);
 	bool WantsSummary() const;
 	void SyncFallenFruit(const FPlantSkeleton::FInstances& Out);
+	void UpdateLitter(const FPlantSkeleton::FInstances& Out, const FPlantSeason& Season);
+	void SpawnFallingLeaves(const FPlantSkeleton::FInstances& Out);
+	void TickFallingLeaves(float DeltaSeconds);
+	/** Height of the ground under a point of the plant's space (cm, relative to the plant), from a grid of traces. */
+	float GroundAt(float X, float Y);
 	void ClearFallenFruit();
 	void OnInteract();
 
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Wood;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> FruitComponent;
+	/** Fallen leaves on the ground, and leaves in the air, per colour bucket. */
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LitterComponents;
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> FallingComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryTrunk;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryCrown;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UCapsuleComponent> TrunkCollision;
@@ -109,6 +125,11 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BaseMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterialAsset;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> FruitMaterialAsset;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SingleLeafMesh;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> FruitMesh;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> FruitDetail;
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LitterMaterials;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> WoodMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> LeafMesh;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> BarkAlbedo;
@@ -123,6 +144,33 @@ private:
 	UPROPERTY(SaveGame) TArray<int32> PickedFruit;
 	TMap<int32, TWeakObjectPtr<AFallenFruit>> GroundFruit;
 	TSet<int32> HangingFruit;
+
+	struct FFallingLeaf
+	{
+		FVector P;
+		FRotator Rot, Spin;
+		FVector2D Target;
+		float GroundZ = 0.f, Speed = 90.f, Phase = 0.f, Size = 1.f;
+		int32 Bucket = 0;
+	};
+	TArray<FFallingLeaf> Falling;
+	/** Leaves that let go at the last re-shape, released into the air one by one until the next. */
+	TArray<FPlantSkeleton::FInstances::FDrop> PendingDrops;
+	float ReleaseRate = 0.f, ReleaseAcc = 0.f;
+	/** Leaves that have landed since the litter was last laid out (it includes them from then on). */
+	TArray<FTransform> Landed[FPlantSeason::NumBuckets];
+	double LastDropTime = -1.0;
+	bool bLitterDirty = false;
+	bool bLandedChanged = false;
+	FPlantSeason LastSeason;
+	float LastSeasonDay = -1000.f;
+	int32 LastLeaves = 0, LastLitter = 0, LastFruit = 0;
+	float LastHeight = 0.f, LastReach = 0.f;
+
+	/** Ground heights around the trunk (cm, relative to the plant), GroundN x GroundN cells of GroundCell cm. */
+	TArray<float> GroundGrid;
+	int32 GroundN = 0;
+	float GroundCell = 100.f;
 
 	FPlantSkeleton Skeleton;
 	FName BuiltSpecies;
