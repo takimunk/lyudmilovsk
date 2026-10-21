@@ -88,9 +88,14 @@ void ULyudGameMenuSubsystem::OnWorldBeginPlay(UWorld& World)
 		Saves->bMainMenuShown = true;
 		Open(true);
 	}
-	else if (Saves)
+	else
 	{
-		Saves->bMainMenuShown = true;
+		if (Saves)
+		{
+			Saves->bMainMenuShown = true;
+		}
+		// The viewport outlives the level: after a load from the menu it would still be in the menu's UI-only mode.
+		RestoreGameInput();
 	}
 }
 
