@@ -1,9 +1,9 @@
 """The outdoor map (tools/world_map.py) in an Unreal level: generates the placeholder geometry
-(tools/world_mesh.py: ground, beach, slab path, the club's entrance, promenade, town, cable car)
+(tools/world_mesh.py: slab path, the club's entrance, promenade, town, cable car)
 into Saved/World/world_coast.glb, imports it, plants the poplars and maples along the path and the
 Baltic trees and shrubs around the club, lays the forests (AProceduralForest) and the grass.
 
-Run as a script it adds all that to Lvl_Scene01 (build_scene01.sh runs it after import_scene01.py,
+Run as a script it adds all that to Lvl_Scene01 (build_scene01.sh runs it after import_terrain.py,
 in a process of its own: Interchange skips a second scene import in one process);
 make_world_preview_level.py imports build() for a level with only the map. Nothing here is
 committed content, the build makes it every time.
@@ -16,6 +16,7 @@ import unreal
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools"))
+import terrain as T  # noqa: E402
 import world_map as W  # noqa: E402
 import world_mesh  # noqa: E402
 
@@ -65,14 +66,6 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
         settings = sm.get_editor_property("nanite_settings")
         settings.enabled = True
-        if sm.get_name() == "World_Ground":
-            # complex collision is built from the Nanite fallback mesh: keep it at full resolution, or
-            # the walkable surface drifts from the drawn one and the player falls through in places
-            try:
-                settings.fallback_target = unreal.NaniteFallbackTarget.PERCENT_TRIANGLES
-                settings.fallback_percent_triangles = 1.0
-            except Exception as e:  # noqa: BLE001
-                _log("nanite fallback: %s" % e)
         sm.set_editor_property("nanite_settings", settings)
     eal.save_directory(DEST)                         # meshes, their materials and textures
 
@@ -83,8 +76,7 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             c = a.static_mesh_component
             # the outdoor sun lights only channel 1; channel 0 keeps Lumen and the sky lighting it
             c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
-            if a.get_actor_label() != "World_Ground":
-                a.tags = list(a.tags) + ["NoGrass", "NoTree"]   # nothing grows on slabs, roofs or stations
+            a.tags = list(a.tags) + ["NoGrass", "NoTree"]   # nothing grows on slabs, roofs or stations
         a.set_folder_path("Outside/World")
     _log("imported %d actors" % len(actors))
 
@@ -92,7 +84,7 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
         for group, items in (("Alley", W.alley_trees()), ("Coast", W.coast_plants())):
             for i, (x, y, species, seed, age) in enumerate(items):
-                p = eas.spawn_actor_from_class(plant_cls, to_ue(x, y, W.height(x, y), face_y))
+                p = eas.spawn_actor_from_class(plant_cls, to_ue(x, y, T.ground_z(x, y), face_y))
                 p.set_actor_label("%s_%02d_%s" % (group, i, species))
                 for k, v in (("species", species), ("seed", seed), ("age_at_start", age), ("demo_growth", False),
                              ("summary_distance", SUMMARY_DISTANCE.get(species, 15000.0))):
@@ -103,7 +95,7 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             _log("%s: %d plants" % (group, len(items)))
         grass_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralGrass")
         for i, (x, y, hx, hy, species, seed, density, zmin, zmax) in enumerate(W.grass_patches()):
-            g = eas.spawn_actor_from_class(grass_cls, to_ue(x, y, W.height(x, y), face_y))
+            g = eas.spawn_actor_from_class(grass_cls, to_ue(x, y, T.ground_z(x, y), face_y))
             g.set_actor_label("Grass_%02d_%s" % (i, species))
             for k, v in (("species", species), ("seed", seed), ("half_extent", unreal.Vector2D(hx * 100, hy * 100)),
                          ("density_scale", density), ("min_world_z", zmin * 100), ("max_world_z", zmax * 100),
@@ -114,7 +106,7 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
         total = 0
         for i, (x, y, hx, hy, mix, count, spacing, zmin, zmax, seed) in enumerate(W.forests() if FORESTS else ()):
-            f = eas.spawn_actor_from_class(forest_cls, to_ue(x, y, W.height(x, y), face_y))
+            f = eas.spawn_actor_from_class(forest_cls, to_ue(x, y, T.ground_z(x, y), face_y))
             f.set_actor_label("Forest_%02d_%s" % (i, mix))
             f.set_editor_property("mix", [unreal.ForestMix(species=sp, weight=w, young_age=ya, mature_age=ma)
                                           for sp, w, ya, ma in W.FOREST_MIX[mix]])

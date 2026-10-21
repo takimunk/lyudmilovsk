@@ -1,4 +1,5 @@
-"""Builds /Game/Scene01/Lvl_WorldPreview: only the outdoor map (import_world.py) under a late
+"""Builds /Game/Scene01/Lvl_WorldPreview: only the outdoor map (import_terrain.py's ground, then
+import_world.py on it) under a late
 afternoon sun with a plain sea, for checking the map without rebuilding the club (not committed).
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
@@ -9,6 +10,7 @@ import sys
 import unreal
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import import_terrain  # noqa: E402
 import import_world  # noqa: E402
 
 LEVEL = "/Game/Scene01/Lvl_WorldPreview"
@@ -23,6 +25,7 @@ if eal.does_asset_exist(LEVEL):
 if not les.new_level(LEVEL):
     raise RuntimeError("could not create " + LEVEL)
 
+import_terrain.build(FACE_Y)
 import_world.build(FACE_Y, report=True)
 
 sun = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 800), unreal.Rotator(0, -18, 200))

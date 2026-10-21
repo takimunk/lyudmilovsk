@@ -1,6 +1,7 @@
-"""Builds the outdoor map's placeholder geometry (tools/world_map.py) as one .glb: the ground with
-its beach, the concrete-slab path, the club's entrance, the beach promenade, the town's houses and
-the cable car (the trees are AProceduralForest actors). Pure Python (no bpy, no numpy), so the
+"""Builds the outdoor map's placeholder geometry (tools/world_map.py) as one .glb: the concrete-slab
+path, the club's entrance, the beach promenade, the town's houses and
+the cable car (the trees are AProceduralForest actors, the ground is the landscape from
+tools/terrain.py and unreal/scripts/import_terrain.py; everything here stands on terrain.ground_z). Pure Python (no bpy, no numpy), so the
 Unreal build can run it itself and the .glb never needs committing.
 
   python3 tools/world_mesh.py out.glb [textures_dir]
@@ -19,6 +20,7 @@ import struct
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import terrain as T  # noqa: E402
 import world_map as W  # noqa: E402
 
 # Materials: name -> (rgb, roughness, texture file or None, uv metres per tile)
@@ -188,50 +190,6 @@ def axis(lo, hi, steps):
     return sorted(x for x in out if lo <= x <= hi)
 
 
-def ground(meshes):
-    """Height grid over the whole map, finer at the club and along the shore."""
-    xs = set(axis(W.X_MIN, W.X_MAX, [(20, 0.5), (60, 2.0), (450, 4.0), (1e9, 20.0)]))
-    xs |= {W.DOOR_X - 6.2, 6.2, -6.2}
-    xs = sorted(xs)
-    ys = set(axis(W.Y_MIN, W.Y_MAX, [(15, 0.5), (200, 2.0), (2000, 4.0), (1e9, 20.0)]))
-    ys |= {0.01, -0.3}
-    ys = sorted(y for y in ys if not (-0.3 < y < 0.0))   # the portal face: the mound drops at 0.0 / 0.01
-    # Behind the portal the ground stays fine only over the corridor; coarse elsewhere is fine.
-    m_grass, m_sand = meshes.p("World_Grass"), meshes.p("World_Sand")
-    rows = []
-    for y in ys:
-        row = []
-        for x in xs:
-            z = W.height(x, y) if not (y == 0.0 and abs(x) <= 6.2) else W.height(x, -0.001)
-            if y == 0.01 and abs(x) <= 6.2:
-                z = W.height(x, 0.02)
-            row.append((x, y, z))
-        rows.append(row)
-    # one shared vertex per grid point per material
-    idmap = [{}, {}]
-
-    def vid(i, j, sand):
-        d = idmap[sand]
-        k = (i, j)
-        if k not in d:
-            x, y, z = rows[i][j]
-            pr = m_sand if sand else m_grass
-            tile = MATERIALS["World_Sand" if sand else "World_Grass"][3]
-            d[k] = pr.vert((x, y, z), W.normal(x, y), (x / tile, y / tile))
-        return d[k]
-
-    for i in range(len(ys) - 1):
-        for j in range(len(xs) - 1):
-            if ys[i] == 0.0 and abs(xs[j]) <= 6.2 and abs(xs[j + 1]) <= 6.2:
-                continue                              # the portal stands in the drop from the mound
-            cx, cy = (xs[j] + xs[j + 1]) / 2, (ys[i] + ys[i + 1]) / 2
-            sand = 1 if W.is_beach(cx, cy) else 0
-            pr = m_sand if sand else m_grass
-            a, b, c, d = vid(i, j, sand), vid(i, j + 1, sand), vid(i + 1, j + 1, sand), vid(i + 1, j, sand)
-            pr.tri(a, b, c)
-            pr.tri(a, c, d)
-
-
 def path(mesh):
     """Soviet concrete slabs, 2 x 3 m, laid along the path a little crooked."""
     rnd = random.Random(3)
@@ -252,7 +210,7 @@ def path(mesh):
                 yaw = math.atan2(y1 - y0, x1 - x0) - math.pi / 2
                 break
             acc += l
-        z = min(W.height(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1.5, 0, 1.5))
+        z = min(T.ground_z(x + dx, y + dy) for dx in (-1, 0, 1) for dy in (-1.5, 0, 1.5))
         box(pr, (x, y, z - 0.12), (2.0, 2.95, 0.2 + rnd.uniform(0, 0.04)), yaw + rnd.uniform(-0.03, 0.03), tile=2.0)
         s += 3.05
 
@@ -263,7 +221,7 @@ def promenade(mesh):
     y = W.PROMENADE_Y[0]
     while y < W.PROMENADE_Y[1]:
         x = W.shore_x(y + 5) - W.BEACH_W + 5.0
-        z = W.height(x, y + 5)
+        z = T.ground_z(x, y + 5)
         box(pr, (x, y + 5, z - 0.6), (8.0, 10.2, 1.0), math.atan2(W.shore_x(y + 10) - W.shore_x(y), 10.0) * -1,
             tile=2.0)
         y += 10.0
@@ -292,7 +250,7 @@ def town(mesh):
     houses = W.town()
     walls = ["World_Plaster_White", "World_Plaster_Yellow", "World_Brick", "World_Plaster_White"]
     for x, y, yaw, w, d, fl, kind in houses:
-        z = min(W.height(x + dx, y + dy) for dx in (-w / 2, 0, w / 2) for dy in (-d / 2, 0, d / 2))
+        z = min(T.ground_z(x + dx, y + dy) for dx in (-w / 2, 0, w / 2) for dy in (-d / 2, 0, d / 2))
         if kind == "block":
             h = fl * 2.8 + 0.6
             box(mesh.p("World_Panel_Grey"), (x, y, z - 0.5), (w, d, h + 0.5), yaw, top=False)
@@ -340,7 +298,7 @@ def cable_car(mesh):
     nx, ny = -sa, ca                                 # across it
     conc, steel = mesh.p("World_SlabConcrete"), mesh.p("World_Steel")
     for (sx, sy), back in ((cc["upper"], -1), (cc["lower"], 1)):
-        z = W.height(sx, sy)
+        z = T.ground_z(sx, sy)
         # a concrete hall with a flat roof, open toward the line; the bull wheel's housing on top
         box(conc, (sx + back * 3 * ca, sy + back * 3 * sa, z - 1.0), (14, 12, 1.2), yaw, tile=2.0)
         for side in (-1, 1):
@@ -350,7 +308,7 @@ def cable_car(mesh):
         box(mesh.p("World_Roof_Flat"), (sx + back * 3 * ca, sy + back * 3 * sa, z + 5.6), (15, 13, 0.5), yaw)
         box(steel, (sx, sy, z + W.ROPE_Z - 0.4), (5.0, 7.0, 0.4), yaw)
     for tx, ty in cc["towers"]:
-        tz = W.height(tx, ty)
+        tz = T.ground_z(tx, ty)
         box(steel, (tx, ty, tz - 0.5), (1.2, 1.2, W.TOWER_H + 0.5), yaw)
         box(steel, (tx, ty, tz + W.TOWER_H - 0.3), (1.0, 7.4, 0.6), yaw)
     for side in (-3.0, 3.0):
@@ -448,7 +406,7 @@ def write_glb(out, meshes, tex_dir):
 
 def build(out, tex_dir=None):
     meshes = []
-    for name, fn in (("World_Ground", ground), ("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade),
+    for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade),
                      ("World_Town", town), ("World_CableCar", cable_car)):
         m = Mesh(name)
         fn(m)

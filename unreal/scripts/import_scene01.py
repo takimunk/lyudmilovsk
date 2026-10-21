@@ -304,6 +304,11 @@ FAR_LEN = LAYOUT["chunk_length"] * 5 - abs(LAYOUT["invisible_wall_y"])   # wall 
 screen_mats["Garland_Filament"] = garland_filament_material(LAYOUT["invisible_wall_y"])
 
 
+# Outside: sun (lux) and sky brightness, matched to the club's fixed dark-room exposure.
+SUN_LUX = 25.0
+SKY_BOOST = 4.0
+
+
 def graph(name, shading=None):
     """New material plus small helpers for building its node graph."""
     mel = unreal.MaterialEditingLibrary
@@ -407,7 +412,42 @@ def glitch_material():
     return finish(m)
 
 
+def sky_material():
+    """The sky dome: unlit panorama, rendered as sky (no fog, no shadows)."""
+    m, node, un, bi, done = graph("M_SkyDome", unreal.MaterialShadingModel.MSM_UNLIT)
+    sample = node(E_.MaterialExpressionTextureSample, -400, 0, texture=texture("sky_panorama"))
+    done(un(E_.MaterialExpressionMultiply, sample, -150, 0, pin="RGB", const_b=SKY_BOOST))
+    m.set_editor_property("is_sky", True)
+    m.set_editor_property("used_with_nanite", True)
+    return finish(m)
+
+
+def sea_material():
+    """Sea far below: the water texture drifting two ways at once, glossy."""
+    m, node, un, bi, done = graph("M_Sea")
+    uv = node(E_.MaterialExpressionTextureCoordinate, -900, 0)
+    t = node(E_.MaterialExpressionTime, -900, 200)
+    tex = texture("sea_water")
+    outs = []
+    for i, (sp, sc) in enumerate((((0.004, 0.002), 1.0), ((-0.003, 0.0035), 0.63))):
+        a = un(E_.MaterialExpressionMultiply, uv, -750, i * 300, const_b=sc)
+        mv = un(E_.MaterialExpressionMultiply, t, -750, i * 300 + 100, const_b=1.0)
+        spd = node(E_.MaterialExpressionConstant2Vector, -750, i * 300 + 200, r=sp[0], g=sp[1])
+        b = bi(E_.MaterialExpressionAdd, a, bi(E_.MaterialExpressionMultiply, mv, spd, -600, i * 300 + 100), -450, i * 300)
+        smp = node(E_.MaterialExpressionTextureSample, -300, i * 300, texture=tex)
+        unreal.MaterialEditingLibrary.connect_material_expressions(b, "", smp, "UVs")
+        outs.append(un(E_.MaterialExpressionMultiply, smp, -150, i * 300, pin="RGB", const_b=1.0))
+    avg = un(E_.MaterialExpressionMultiply, bi(E_.MaterialExpressionAdd, outs[0], outs[1], -100, 100), 50, 100,
+             const_b=0.5)
+    done(avg, unreal.MaterialProperty.MP_BASE_COLOR)
+    done(node(E_.MaterialExpressionConstant, 50, 300, r=0.12), unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_nanite", True)
+    return finish(m)
+
+
 screen_mats["Screen_On_live_glitch"] = glitch_material()
+screen_mats["Screen_On_sky"] = sky_material()
+screen_mats["Outside_Sea"] = sea_material()
 
 # Visitors' screens: content matched to who sits there, always in motion.
 LIVE = {
@@ -1000,8 +1040,8 @@ if "exit_door" in LAYOUT:
         xd.set_editor_property("swing_speed", 55.0)
     log("exit door: %d leaves" % len(leaves))
 
-# Outside: the outdoor meshes take lighting channel 1 too; the sun, sky and sea come from
-# import_sky.py (a third pass in build_scene01.sh).
+# Outside: a grassy hilltop over the sea under a late afternoon sun. The sun and its fill only
+# light lighting channel 1 (the outside), so nothing of it reaches the dark club inside.
 if "outside" in LAYOUT:
     for a in eas.get_all_level_actors():
         lab = a.get_actor_label()
@@ -1016,6 +1056,17 @@ if "outside" in LAYOUT:
     # scene import in one process
     sys.path.insert(0, HERE)
     import import_world
+    for label, rot, lux, shadows in (("Sun", unreal.Rotator(0, -40, 60), SUN_LUX, True),
+                                     ("Sun_Fill", unreal.Rotator(0, -40, -160), SUN_LUX * 0.3, False)):
+        sun = spawn(unreal.DirectionalLight, vec(LAYOUT["outside"]["center"]) + unreal.Vector(0, 0, 800), rot, label)
+        dl = sun.get_component_by_class(unreal.DirectionalLightComponent)
+        dl.set_mobility(unreal.ComponentMobility.MOVABLE)
+        dl.set_intensity(lux)
+        dl.set_light_color(unreal.LinearColor(1.0, 0.86, 0.7, 1) if shadows else unreal.LinearColor(0.6, 0.75, 1.0, 1))
+        dl.set_editor_property("lighting_channels", unreal.LightingChannels(False, True, False))
+        dl.set_editor_property("cast_shadows", shadows)
+        dl.set_editor_property("forward_shading_priority", 1 if shadows else 0)
+        sun.set_folder_path("Outside")
 
 # Starlings (the murmuration thread's AStarlingMurmuration): a flock over the sea 300 m off the beach,
 # on the left of the door; it builds its meshes at runtime and traces the hill and sea under it at BeginPlay.

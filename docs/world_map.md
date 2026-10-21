@@ -39,9 +39,8 @@ height must stay: the apron and forecourt, the path, the stations and towers, th
 
 ## Performance notes
 
-- The ground is one Nanite mesh for now (~0.7M triangles, 0.5 m cells at the door, 4 m along the
-  shore, 20 m far inland), complex-as-simple collision from a full-resolution Nanite fallback; the
-  terrain thread replaces it with a Landscape.
+- The ground is a Landscape (docs/terrain.md): 1 m grid over the whole map, heightfield collision that
+  is exactly the drawn surface, a small mesh patch in its hole at the portal.
 - Procedural trees are expensive up close: the 31 plants around the club add up to ~11M leaf
   triangles, all casting (non-Nanite) shadows; shrubs and dune pines switch to their summary at
   50..80 m. Every other tree is in a forest (baked 4-LOD instances, each actor bakes its own kinds,
