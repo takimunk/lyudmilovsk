@@ -10,6 +10,9 @@ namespace
 	const FName Hand(TEXT("hand_r"));
 	const FName Thumb[] = { TEXT("thumb_01_r"), TEXT("thumb_02_r"), TEXT("thumb_03_r") };
 	const FName Pinky(TEXT("pinky_01_r"));
+	/** From the bones to the skin of the hero's palm and fingers, cm (SK_Hero's MakeHuman hand). */
+	constexpr float PalmSkin = 1.7f;
+	constexpr float FingerSkin = 0.9f;
 	const FName Middle[] = { TEXT("middle_01_r"), TEXT("middle_02_r"), TEXT("middle_03_r") };
 
 	/** The fingers: bones from the knuckle out and how far each joint folds at a full closure (degrees). */
@@ -266,6 +269,16 @@ namespace HandReach
 		}
 		Fd = Fd.GetSafeNormal();
 		Pn = (Pn - Fd * FVector::DotProduct(Pn, Fd)).GetSafeNormal();
+		// the palm frame runs along the bones, inside the hand: its skin is PalmSkin further out. Keep that
+		// skin on the item's surface, never in it (else the hand sinks into the bottle)
+		if (Reach.bHasShape)
+		{
+			const float D = DistanceToShape(Reach.Shape, Palm + Pn * PalmSkin);
+			if (D < 0.f)
+			{
+				Palm -= Pn * (-D);
+			}
+		}
 
 		// arm: the wrist goes where the palm minus the half-palm is; the elbow bends out and down
 		const float PalmReach = 0.6f * (float)(Loc(Pose, H.MiddleKnuckle) - Loc(Pose, H.Wrist)).Size();
@@ -315,7 +328,7 @@ namespace HandReach
 					bool bTouch = false;
 					for (int32 K = 1; K < Pts.Num(); ++K)
 					{
-						bTouch |= DistanceToShape(Reach.Shape, Pts[K]) <= 0.3f;
+						bTouch |= DistanceToShape(Reach.Shape, Pts[K]) <= FingerSkin;   // the bone line is FingerSkin inside the finger's skin
 					}
 					if (bTouch)
 					{
