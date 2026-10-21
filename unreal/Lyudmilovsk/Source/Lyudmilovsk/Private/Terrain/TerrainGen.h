@@ -26,6 +26,8 @@ namespace LyudTerrain
 		std::vector<uint8_t> Kind;               // EKind
 		std::vector<uint8_t> Forest;             // 255 = forest floor
 		std::vector<uint8_t> Hole;               // 255 = quad cut out of the landscape (the portal)
+		std::vector<uint8_t> Cliff;              // 255 = on the face of the coastal bluff (the map's own hint; slope adds to it)
+		std::vector<uint8_t> RaiseOnly;          // 255 = the detail may raise the ground here, never lower it (over the corridor)
 		std::vector<std::vector<std::pair<float, float>>> Tracks;   // dirt tracks, map metres
 	};
 

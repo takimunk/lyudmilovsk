@@ -36,7 +36,7 @@ LOOK = {
     "Dirt": ((0.6, 0.55, 0.52), 0.88, 0.5),
     "Mud": ((0.6, 0.58, 0.56), 0.62, 0.2),
     "Sand": ((0.74, 0.69, 0.6), 0.82, 0.3),
-    "Rock": ((0.78, 0.78, 0.78), 0.8, 0.9),
+    "Rock": ((0.56, 0.56, 0.57), 0.8, 0.9),
     "Forest": ((0.72, 0.72, 0.68), 0.9, 0.5),
 }
 NEAR_TILE = 2.6       # metres per texture repeat up close
@@ -148,6 +148,64 @@ return col;
     return "\n".join(lines)
 
 
+# Layers that cover steep faces (the bluff) are projected from the sides as well as from above, so
+# their photo is not stretched down a cliff: metres per repeat.
+TRIPLANAR = {"Rock": 6.0}
+
+TRIPLANAR_UV_HLSL = """
+float s = 1.0 / (Tile * 100.0);
+UVX = float2(P.y, -P.z) * s;
+UVY = float2(P.x, -P.z) * s;
+return float2(P.x, P.y) * s;
+"""
+
+TRIPLANAR_MIX_HLSL = """
+// the facing from the pixel's own slope (a landscape's vertex normal is not reliable in its pixel shader)
+float3 Nw = normalize(cross(ddx(P), ddy(P)));
+float3 w = pow(abs(Nw), 4.0);
+w /= (w.x + w.y + w.z);
+// the side views' tangent space is only roughly the landscape's: their bumps at half strength
+Nrm = normalize(NZ * w.z + float3(NX.xy * 0.5, 1) * w.x + float3(NY.xy * 0.5, 1) * w.y);
+float3 c = CX * w.x + CY * w.y + CZ * w.z;
+// strata on the side views: wavy bands of pale sand and dark silt through the clay, a metre or two apart
+float side = saturate(1.0 - w.z * 2.0);
+float wav = sin(P.x * 0.0007 + P.y * 0.0005) * 140.0 + sin(P.x * 0.0031 - P.y * 0.0023) * 35.0;
+float sand = smoothstep(0.55, 0.95, sin((P.z + wav) * 0.0042));
+float silt = smoothstep(0.75, 0.98, sin((P.z + wav * 0.7) * 0.0097 + 1.3));
+c = lerp(c, c * float3(1.35, 1.22, 0.92), sand * 0.7 * side);
+c = lerp(c, c * 0.55, silt * 0.6 * side);
+return c;
+"""
+
+
+def _triplanar(m, d, nm, tile, x, y, shared):
+    """Colour and normal of a photo projected along world X, Y and Z, mixed by the surface's facing."""
+    pos = _node(m, unreal.MaterialExpressionWorldPosition, x - 700, y)
+    uv = _node(m, unreal.MaterialExpressionCustom, x - 450, y, code=TRIPLANAR_UV_HLSL,
+               output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT2, description="TriplanarUV",
+               inputs=[_custom_input("P"), _custom_input("Tile")],
+               additional_outputs=[_custom_output("UVX", unreal.CustomMaterialOutputType.CMOT_FLOAT2),
+                                   _custom_output("UVY", unreal.CustomMaterialOutputType.CMOT_FLOAT2)])
+    tile_c = _node(m, unreal.MaterialExpressionConstant, x - 700, y + 300, r=tile)
+    _link(pos, "", uv, "P")
+    _link(tile_c, "", uv, "Tile")
+    mix = _node(m, unreal.MaterialExpressionCustom, x + 300, y, code=TRIPLANAR_MIX_HLSL,
+                output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description="TriplanarMix",
+                inputs=[_custom_input(n) for n in ("CX", "CY", "CZ", "NX", "NY", "NZ", "P")],
+                additional_outputs=[_custom_output("Nrm", unreal.CustomMaterialOutputType.CMOT_FLOAT3)])
+    for k, out in enumerate(("UVX", "UVY", "")):
+        axis = "XYZ"[k]
+        c = _node(m, unreal.MaterialExpressionTextureSample, x, y + k * 90, texture=d, sampler_source=shared)
+        t = _node(m, unreal.MaterialExpressionTextureSample, x, y + 270 + k * 90, texture=nm, sampler_source=shared,
+                  sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+        _link(uv, out, c, "UVs")
+        _link(uv, out, t, "UVs")
+        _link(c, "RGB", mix, "C" + axis)
+        _link(t, "RGB", mix, "N" + axis)
+    _link(pos, "", mix, "P")
+    return mix                                        # outputs: "" colour, "Nrm" normal
+
+
 def make_material(layers, textures):
     path = DEST + "/M_Ground"
     if eal.does_asset_exist(path):
@@ -171,6 +229,13 @@ def make_material(layers, textures):
         y = i * 520
         w = _node(m, unreal.MaterialExpressionLandscapeLayerSample, -1200, y, parameter_name=name,
                   preview_weight=1.0 if i == 0 else 0.0)
+        if name in TRIPLANAR:
+            mix = _triplanar(m, d, nm, TRIPLANAR[name], -1800, y, shared)
+            _link(w, "", blend, "W%d" % i)
+            _link(mix, "", blend, "A%d" % i)
+            _link(mix, "", blend, "F%d" % i)
+            _link(mix, "Nrm", blend, "N%d" % i)
+            continue
         a = _node(m, unreal.MaterialExpressionTextureSample, -1800, y + 100, texture=d, sampler_source=shared)
         f = _node(m, unreal.MaterialExpressionTextureSample, -1800, y + 250, texture=d, sampler_source=shared)
         t = _node(m, unreal.MaterialExpressionTextureSample, -1800, y + 400, texture=nm, sampler_source=shared,

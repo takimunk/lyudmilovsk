@@ -16,7 +16,7 @@ from pathlib import Path
 
 ENDPOINT = "google/nano-banana-2.1"
 OUT = Path(__file__).resolve().parent.parent / "textures" / "ground" / "raw"
-STYLE = ("photographed straight down from 1.5 m, a 2 x 2 metre patch filling the whole square edge to edge, "
+STYLE = ("photographed straight on, a 2 x 2 metre patch filling the whole square edge to edge, "
          "soft overcast daylight, no cast shadows, no horizon, no objects, no people, no text, no watermark, "
          "evenly spread detail with no single feature in the middle, photorealistic ground texture for a game, "
          "seamless tileable")
@@ -32,8 +32,9 @@ PROMPTS = {
            "imprints going different ways, small stones pressed in, ",
     "Sand": "fine pale Baltic beach sand, slightly rippled by wind, tiny shell fragments and a few small dark "
             "pebbles, ",
-    "Rock": "a steep eroded Baltic coastal cliff face of grey-brown glacial boulder clay with embedded rounded "
-            "stones and gravel, ",
+    "Rock": "a vertical eroded Baltic coastal cliff face on the Sambian peninsula seen straight on from 2 m: horizontal "
+            "layers of grey-brown glacial till clay with embedded pebbles and small boulders, alternating with thin "
+            "bands of pale yellow sand and darker silt, fine vertical rain rills running down, a few dry roots, ",
     "Forest": "Scots pine forest floor: brown fallen pine needles, a few small pine cones and twigs, patches "
               "of green moss and lingonberry leaves, ",
 }

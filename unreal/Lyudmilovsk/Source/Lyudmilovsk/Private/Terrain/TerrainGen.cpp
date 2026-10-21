@@ -236,6 +236,35 @@ namespace
 		}
 	}
 
+	/** Running maximum over a (2R+1) square window (van Herk / Gil-Werman, separable). */
+	std::vector<float> Dilate(const std::vector<float>& In, int NX, int NY, int R)
+	{
+		auto Pass = [R](const float* Src, float* Dst, int Len, int Stride) {
+			const int W = 2 * R + 1;
+			std::vector<float> G(Len), H(Len);
+			for (int I = 0; I < Len; ++I)
+			{
+				const float V = Src[size_t(I) * Stride];
+				G[I] = (I % W == 0) ? V : std::max(G[I - 1], V);
+			}
+			for (int I = Len - 1; I >= 0; --I)
+			{
+				const float V = Src[size_t(I) * Stride];
+				H[I] = (I % W == W - 1 || I == Len - 1) ? V : std::max(H[I + 1], V);
+			}
+			for (int I = 0; I < Len; ++I)
+			{
+				const int A = std::max(I - R, 0), B = std::min(I + R, Len - 1);
+				// window [A, B] spans at most two blocks: H from A, G at B
+				Dst[size_t(I) * Stride] = (A / W == B / W) ? *std::max_element(&G[A], &G[B] + 1) : std::max(H[A], G[B]);
+			}
+		};
+		std::vector<float> T(In.size()), Out(In.size());
+		for (int Y = 0; Y < NY; ++Y) Pass(&In[size_t(Y) * NX], &T[size_t(Y) * NX], NX, 1);
+		for (int X = 0; X < NX; ++X) Pass(&T[X], &Out[X], NY, NX);
+		return Out;
+	}
+
 	/** Distance (metres) from every vertex to the nearest track, up to MaxD. */
 	std::vector<float> TrackDistance(const FInputs& In, float MaxD)
 	{
@@ -288,7 +317,7 @@ std::string ReadInputs(const std::string& Dir, FInputs& Out)
 		const size_t N = size_t(Out.NX) * Out.NY;
 		Out.Height.resize(N);
 		Ok = Ok && std::fread(Out.Height.data(), 4, N, F) == N;
-		for (std::vector<uint8_t>* A : {&Out.Protect, &Out.Kind, &Out.Forest, &Out.Hole})
+		for (std::vector<uint8_t>* A : {&Out.Protect, &Out.Kind, &Out.Forest, &Out.Hole, &Out.Cliff, &Out.RaiseOnly})
 		{
 			A->resize(N);
 			Ok = Ok && std::fread(A->data(), 1, N, F) == N;
@@ -369,6 +398,76 @@ void Generate(const FInputs& In, FOutputs& Out)
 			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) : 0.f;
 		}
 
+	// --- the coastal bluff: gullies cut down its face, slump benches, landslide scars with their debris,
+	// rills, scree and sand fans at the foot of every gully, the top edge bitten back by the gully heads ---
+	std::vector<float> CliffFace(N, 0.f), Fan(N, 0.f), Scar(N, 0.f);
+	{
+		const float Foot = In.SeaZ + 1.5f;
+		const std::vector<float> Top = Dilate(In.Height, NX, NY, 60);
+		const std::vector<float> Soft = Blur(In.Height, NX, NY, 4, 2);
+		std::vector<uint8_t> FaceSeed(N);
+		for (size_t I = 0; I < N; ++I)
+		{
+			const float C = std::max(In.Cliff[I] / 255.f, Smooth(0.55f, 1.1f, MacroSlope[I]));
+			CliffFace[I] = In.Kind[I] == Land ? C * (1.f - In.Protect[I] / 255.f) : 0.f;
+			FaceSeed[I] = CliffFace[I] > 0.4f;
+		}
+		const std::vector<float> ToFace = Distance(NX, NY, FaceSeed, 40.f);
+		int Touched = 0;
+		float Deepest = 0.f;
+		for (int Y = 2; Y < NY - 2; ++Y)
+			for (int X = 2; X < NX - 2; ++X)
+			{
+				const size_t I = size_t(Y) * NX + X;
+				if (ToFace[I] >= 25.f || In.Kind[I] == Seabed || In.Hole[I] || In.Protect[I] == 255) continue;
+				// local frame: V down the bluff, U along it
+				float GX = (Soft[I + 1] - Soft[I - 1]) * 0.5f, GY = (Soft[I + NX] - Soft[I - NX]) * 0.5f;
+				const float GL = std::sqrt(GX * GX + GY * GY);
+				if (GL < 1e-4f) continue;
+				GX /= GL; GY /= GL;
+				const double WX = MX(X), WY = MY(Y);
+				const double U = -WX * GY + WY * GX, V = WX * GX + WY * GY;
+				const float Span = std::max(Top[I] - Foot, 6.f);
+				const float TH = (In.Height[I] - Foot) / Span;             // 0 at the foot, 1 at the top edge
+				const float Near = 1.f - Smooth(6.f, 25.f, ToFace[I]);      // fades out away from the face
+				const float Face = std::max(CliffFace[I], Near * 0.6f);
+				// gullies: narrow V valleys running straight down, a few metres deep, their heads biting the edge
+				float G = 0.f, A = 1.f, Nrm = 0.f;
+				for (int O = 0; O < 3; ++O)
+				{
+					G += A * Noise3.Get(float(std::fmod(U / (16.0 / (1 << O)), 256.0)), float(std::fmod(V / (90.0 / (1 << O)), 256.0)) + O * 31.7f);
+					Nrm += A;
+					A *= 0.5f;
+				}
+				G /= Nrm;
+				const float R = 1.f - std::min(std::fabs(G) * 1.8f, 1.f);
+				const float Strength = 0.5f + 0.5f * Smooth(-0.3f, 0.4f, Noise2.Get(float(std::fmod(U / 140.0, 256.0)), 3.3f));
+				const float Along = Smooth(0.02f, 0.25f, TH) * (1.f - Smooth(1.0f, 1.08f, TH) * (1.f - Near * 0.6f));
+				const float GullyDepth = std::pow(R, 3.f) * 8.f * Strength * Along * Face;
+				// slump benches: a few bulges and ledges stepping down the face, in stretches of the coast
+				const float Slump = Smooth(0.1f, 0.45f, Noise2.Fbm(U, 0.0, 160.f, 2)) * std::sin(TH * 3.14159f * 5.f + Noise.Get(float(std::fmod(U / 40.0, 256.0)), 7.1f) * 2.f)
+					* 1.6f * Smooth(0.1f, 0.3f, TH) * (1.f - Smooth(0.85f, 1.f, TH)) * CliffFace[I];
+				// landslide scars: the upper face slid away, its debris lies as a lobe at the foot
+				const float Slide = Smooth(0.38f, 0.55f, Noise.Fbm(U + 900.0, 0.0, 120.f, 2));
+				const float ScarCut = Slide * 3.5f * Smooth(0.5f, 0.85f, TH) * (1.f - Smooth(0.97f, 1.06f, TH)) * Face;
+				const float Lobe = Slide * 3.f * Smooth(-0.12f, 0.05f, TH) * (1.f - Smooth(0.08f, 0.35f, TH)) * Near;
+				// fans of scree and sand where each gully opens onto the beach
+				const float Mouth = std::pow(1.f - std::min(std::fabs(G) * 2.f, 1.f), 3.f) * Strength;
+				const float FanH = Mouth * 2.6f * Smooth(-0.15f, 0.02f, TH) * (1.f - Smooth(0.05f, 0.25f, TH)) * Near;
+				// fine rills on the bare face
+				const float Rill = Noise2.Get(float(std::fmod(U / 2.5, 256.0)), float(std::fmod(V / 18.0, 256.0))) * 0.3f * CliffFace[I];
+				const float D = -GullyDepth + Slump - ScarCut + Lobe + FanH + Rill;
+				Out.Height[I] += D;
+				Fan[I] = Clamp01(std::max(FanH / 1.2f, Lobe / 2.f));
+				Scar[I] = Clamp01(ScarCut / 2.f + GullyDepth / 3.f);
+				++Touched;
+				Deepest = std::max(Deepest, GullyDepth + ScarCut);
+			}
+		char Buf[160];
+		std::snprintf(Buf, sizeof(Buf), "bluff: %d vertices shaped, deepest gully or scar %.1f m\n", Touched, Deepest);
+		Out.Report += Buf;
+	}
+
 	// --- erosion: gullies down the slopes, silt in the hollows ---
 	std::vector<float> Visits(N, 0.f);
 	{
@@ -405,9 +504,16 @@ void Generate(const FInputs& In, FOutputs& Out)
 			Out.Height[I] = Lerp(Out.Height[I], Lerp(Smoothed[I], Out.Height[I], P), Flat) - Trough * (1.f - P);
 		}
 	}
-	// the portal hole and every protected vertex keep the macro height exactly
+	// the portal hole and every protected vertex keep the macro height exactly; over the corridor the
+	// ground may rise but not sink
 	for (size_t I = 0; I < N; ++I)
+	{
+		if (In.RaiseOnly[I])
+		{
+			Out.Height[I] = Lerp(Out.Height[I], std::max(Out.Height[I], In.Height[I]), In.RaiseOnly[I] / 255.f);
+		}
 		if (In.Protect[I] == 255 || In.Hole[I]) Out.Height[I] = In.Height[I];
+	}
 
 	// --- where water gathers ---
 	Out.Wetness.assign(N, 0);
@@ -436,8 +542,10 @@ void Generate(const FInputs& In, FOutputs& Out)
 			const float Fine = Noise2.Fbm(WX, WY, 7.f, 2);
 			const float Patch = Noise3.Fbm(WX + 300.0, WY, 26.f, 3) + 0.25f * Fine;
 
-			float SandV = In.Kind[I] != Land ? 1.f : (1.f - Smooth(0.f, 3.5f + 2.f * Fine, ToShore[I])) * 0.9f;
-			const float RockV = Smooth(40.f, 52.f, Slope + Fine * 7.f);
+			float SandV = In.Kind[I] != Land ? 1.f : std::max((1.f - Smooth(0.f, 3.5f + 2.f * Fine, ToShore[I])) * 0.9f, Fan[I] * 0.75f);
+			// bare clay on the bluff wherever it is steep, in fresh scars and gullies; grass holds on the gentler bits
+			const float RockV = std::max({Smooth(40.f, 52.f, Slope + Fine * 7.f), CliffFace[I] * Smooth(30.f, 42.f, Slope + Fine * 8.f),
+			                              Scar[I] * 0.9f});
 			const float Steep = Smooth(33.f, 43.f, Slope + Fine * 6.f);
 			const float Bare = Smooth(0.2f, 0.34f, Patch) * (1.f - P);                // bald patches in the grass
 			const float Gully = Smooth(0.45f, 0.8f, Wet[I]) * Smooth(6.f, 14.f, Slope);

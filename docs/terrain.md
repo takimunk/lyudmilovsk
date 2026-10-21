@@ -20,6 +20,20 @@ makes it every time.
 - `unreal/scripts/import_terrain.py`: textures, material, layer infos, the landscape and the portal patch;
   `build_scene01.sh` runs it before `import_world.py`.
 
+## The coastal bluff
+
+Where the map says the sea cliff is (`W.cliff`) or the macro slope passes ~30 degrees, TerrainGen shapes the face
+in its own frame (along the bluff / down it): V-shaped gullies up to 8 m deep running straight down, their heads
+biting back into the top edge; slump benches in stretches of the coast; landslide scars (the upper face slid
+away) with their debris lobe at the foot; fine rain rills; fans of scree and sand where each gully opens onto
+the beach. The face is bare clay (the Rock layer) wherever it is steep, grass holds on the gentler benches.
+Rock is projected from the sides as well as from above (triplanar, facing from the pixel's own slope) with wavy
+strata of pale sand and dark silt, so a 50-60 degree face is not stretched. The 1 m landscape and its collision
+take such faces fine; the map keeps W.height free of overhangs.
+
+Over the buried corridor (|X| < 12, Y -470..-30) the detail may raise the ground but never lower it
+(`raise_only`); the map keeps the ground at least 5 m over it (the build warns if not).
+
 ## Surface layers
 
 Grass, Meadow (dry grass), Dirt (bare patches, steep ground, track edges, gullies), Mud (track centres, wet

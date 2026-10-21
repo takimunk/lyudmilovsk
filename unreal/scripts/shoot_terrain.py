@@ -27,9 +27,16 @@ SPOTS = [
     ("flank_beach", 95.0, 20.0, 1.0, -10, 100),
     ("overview", 30.0, -250.0, 90.0, -18, 100),
     ("ground_close", -40.0, 60.0, 1.0, -55, 130),
+    ("bluff_from_beach", 125.0, -60.0, 1.0, 12, 160),
+    ("bluff_along", 118.0, 80.0, 1.0, 8, -100),
+    ("bluff_top_edge", 70.0, -150.0, 1.0, -25, 20),
+    ("escarpment", 60.0, 230.0, 2.0, 0, 120),
 ]
+# TERRAIN_SHOTS=bluff_along,portal runs just those spots
+if os.environ.get("TERRAIN_SHOTS"):
+    SPOTS = [s for s in SPOTS if s[0] in os.environ["TERRAIN_SHOTS"].split(",")]
 WAIT = 4.0
-st = {"t": 0.0, "i": -1, "phase": 0}
+st = {"t": 0.0, "i": -1, "phase": 0, "frames": []}
 
 
 def world():
@@ -56,6 +63,7 @@ def tick(dt):
             st["phase"] = 9
             return
         name, x, y, up, pitch, yaw = SPOTS[st["i"]]
+        cmd(w, "t.MaxFPS 0")
         if hasattr(pawn, "character_movement"):
             pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
         ux, uy, uz = T.to_unreal(x, y, T.ground_z(x, y) + up, FACE_Y)
@@ -63,8 +71,14 @@ def tick(dt):
         pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
         st["t0"] = st["t"]
         st["phase"] = 1
-    elif st["phase"] == 1 and st["t"] - st["t0"] > WAIT:
-        unreal.log_warning("TERRAINSHOT %s at %s" % (SPOTS[st["i"]][0], pawn.get_actor_location()))
+    elif st["phase"] == 1 and st["t"] - st["t0"] <= WAIT:
+        if st["t"] - st["t0"] > 1.5:
+            st["frames"].append(dt)                   # frame times once the spot has streamed in
+    elif st["phase"] == 1:
+        f = sorted(st["frames"]) or [0.0]
+        unreal.log_warning("TERRAINSHOT %s at %s: %d frames, median %.1f ms, worst %.1f ms" % (
+            SPOTS[st["i"]][0], pawn.get_actor_location(), len(f), 1000 * f[len(f) // 2], 1000 * f[-1]))
+        st["frames"] = []
         cmd(w, "HighResShot 1600x900")
         st["phase"] = 2
         st["t0"] = st["t"]

@@ -43,11 +43,23 @@ HOLE_Y = (-2, 7)
 
 
 def _club_footprint(x, y):
-    """1 over the club's hall, corridor and the mound/rampart above them: the ground there must stay
-    exactly the macro height (any dip would open the ceiling)."""
-    if y > 8.0 or y < W.CORRIDOR_END_Y - 60.0:
+    """1 over the club's hall and the mound above it: the ground there must stay exactly the macro
+    height (any dip would open the ceiling)."""
+    if y > 8.0 or y < -60.0:
         return 0.0
-    return 1.0 - min(1.0, max(0.0, (abs(x) - 24.0) / 16.0))
+    k = min(1.0, max(0.0, (-40.0 - y) / 20.0))        # the hall is ~40 m deep; past it only raise_only holds
+    return (1.0 - min(1.0, max(0.0, (abs(x) - 24.0) / 16.0))) * (1.0 - k)
+
+
+CORRIDOR_FLOOR = 5.0                  # the ground stays this high over the corridor (slab top ~4 m)
+
+
+def raise_only(x, y):
+    """0..1 over the buried corridor: the natural detail may raise the ground there, never lower it,
+    so nothing cuts into the corridor and its line leaves no mark on the hill."""
+    if y > -30.0 or y < W.CORRIDOR_END_Y - 40.0:
+        return 0.0
+    return 1.0 - min(1.0, max(0.0, (abs(x) - 12.0) / 10.0))
 
 
 def _path_dist(x, y, pts):
@@ -196,17 +208,21 @@ def tracks():
 def _woods():
     """The pine forests' rectangles (W.forests(): x, y, half x, half y, ...), grown by a soft edge."""
     if not hasattr(W, "forests"):
-        return [(-1050.0, 600.0, 250.0, 900.0), (-450.0, 2000.0, 600.0, 200.0), (-450.0, -720.0, 600.0, 160.0)]
-    return [(f[0], f[1], f[2], f[3]) for f in W.forests() if f[4] == "pine"]
+        return [(-1050.0, 600.0, 250.0, 900.0, -100.0, 100.0), (-450.0, 2000.0, 600.0, 200.0, -100.0, 100.0),
+                (-450.0, -720.0, 600.0, 160.0, -100.0, 100.0)]
+    return [(f[0], f[1], f[2], f[3], f[7], f[8]) for f in W.forests() if f[4] in ("pine", "old")]
 
 
 EDGE = 30.0                           # metres over which the forest floor gives way to the meadow
 
 
-def _forest(x, y, woods):
-    """0..1 forest floor (needles, cones, moss) under the pine woods, with a wavy edge."""
+def _forest(x, y, z, woods):
+    """0..1 forest floor (needles, cones, moss) under the pine woods, with a wavy edge; only between
+    the heights the forest grows at (macro height z)."""
     best = 0.0
-    for cx, cy, hx, hy in woods:
+    for cx, cy, hx, hy, z0, z1 in woods:
+        if not (z0 - 3.0 <= z <= z1 + 3.0):
+            continue
         dx, dy = abs(x - cx) - hx, abs(y - cy) - hy
         if dx > EDGE or dy > EDGE:
             continue
@@ -248,6 +264,9 @@ def _write_inputs(out_dir, log):
     prot = bytearray()
     kind = bytearray()
     forest = bytearray()
+    cliff = bytearray()
+    raise_ = bytearray()
+    has_cliff = hasattr(W, "cliff")
     hpack = struct.Struct("<f")
     woods = _woods()
     # protect() on a 4 m lattice first: exact per metre only in cells where it changes
@@ -284,7 +303,12 @@ def _write_inputs(out_dir, log):
                 prot.append(255)
             else:
                 prot.append(int(round(255 * protect(x, y, path))))
-            forest.append(int(255 * _forest(x, y, row_woods)) if near_woods else 0)
+            forest.append(int(255 * _forest(x, y, z, row_woods)) if near_woods else 0)
+            cliff.append(int(255 * min(1.0, max(0.0, W.cliff(x, y)))) if has_cliff and 0 < s < 250 else 0)
+            raise_.append(int(round(255 * raise_only(x, y))) if abs(x) < 25 and y < -25 else 0)
+    low = [(x, y) for y in range(int(W.CORRIDOR_END_Y), 1, 10) for x in (-8, 0, 8) if W.height(x, y) < CORRIDOR_FLOOR]
+    if low:
+        log("terrain: WARNING the map's ground is under %.0f m over the corridor at %s" % (CORRIDOR_FLOOR, low[:6]))
     hole = bytearray(GRID_NX * GRID_NY)
     for j in range(HOLE_Y[0], HOLE_Y[1]):
         for i in range(HOLE_X[0], HOLE_X[1]):
@@ -295,12 +319,12 @@ def _write_inputs(out_dir, log):
         for t in tr:
             f.write(struct.pack("<i", len(t)))
             f.write(struct.pack("<%df" % (2 * len(t)), *[c for p in t for c in p]))
-        for blob in (height, prot, kind, forest, hole):
+        for blob in (height, prot, kind, forest, hole, cliff, raise_):
             f.write(blob)
     meta = {"nx": GRID_NX, "ny": GRID_NY, "x0": GRID_X0, "y0": GRID_Y0, "cell": 1.0, "seed": SEED,
             "sea_z": W.SEA_Z, "beach_w": W.BEACH_W, "tracks": [[list(p) for p in t] for t in tr],
             "components": list(COMPONENTS), "component_quads": COMPONENT_QUADS,
-            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8"]}
+            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8"]}
     with open(os.path.join(out_dir, "terrain_in.json"), "w") as f:
         json.dump(meta, f)
     return meta
