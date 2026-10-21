@@ -163,6 +163,8 @@ def do_import():
             eal.delete_asset(p)
     eal.delete_directory(tmp)
     mesh = unreal.load_asset(DEST + "/SK_Hero")
+    mesh.set_editor_property("physics_asset", unreal.load_asset(DEST + "/SK_Hero_PhysicsAsset"))
+    eal.save_loaded_asset(mesh)
     log("SK_Hero: %d materials, %d morphs, bounds %s" % (len(mesh.materials), len(mesh.morph_targets), mesh.get_bounds().box_extent))
     eal.save_directory(DEST)
 

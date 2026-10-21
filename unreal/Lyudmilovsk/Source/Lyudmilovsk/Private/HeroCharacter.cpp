@@ -48,17 +48,12 @@ AHeroCharacter::AHeroCharacter()
 	USkeletalMeshComponent* Body = GetMesh();
 	Body->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -LyudmilovskCharacter::PlayerCapsuleHalfHeight + SoleDrop), FRotator(0.f, -90.f, 0.f));
 	Body->SetAnimInstanceClass(UHeroAnimInstance::StaticClass());
-	Body->SetCastShadow(false);
+	// the body casts its own shadow (headless: a hidden full copy for the shadow darkened the chest
+	// under the invisible head and doubled the skinning cost)
+	Body->SetCastShadow(true);
 	Body->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	Body->bEnableUpdateRateOptimizations = false;
 
-	ShadowMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShadowMesh"));
-	ShadowMesh->SetupAttachment(Body);
-	ShadowMesh->SetAnimInstanceClass(UHeroAnimInstance::StaticClass());
-	ShadowMesh->SetRenderInMainPass(false);
-	ShadowMesh->SetCastShadow(true);
-	ShadowMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	ShadowMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(GetCapsuleComponent());
@@ -73,18 +68,11 @@ void AHeroCharacter::BeginPlay()
 	if (USkeletalMesh* Mesh = BodyMesh.LoadSynchronous())
 	{
 		GetMesh()->SetSkeletalMesh(Mesh);
-		ShadowMesh->SetSkeletalMesh(Mesh);
 		GetMesh()->HideBoneByName(HeadBone, PBO_None);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hero: %s not found (import it with unreal/scripts/import_hero.sh)"), *BodyMesh.ToString());
-	}
-	for (UHeroAnimInstance* Anim : { Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance()), Cast<UHeroAnimInstance>(ShadowMesh->GetAnimInstance()) })
-	{
-		if (Anim)
-		{
-		}
 	}
 	if (GEngine && !FMath::IsNearlyEqual(GNearClippingPlane, NearClip))
 	{
@@ -204,12 +192,9 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	S.LookPitch = Wrap180(Look.Pitch);
 	S.Distance = Distance;
 	S.IdleTime = IdleTime;
-	for (USkeletalMeshComponent* M : { GetMesh(), ShadowMesh.Get() })
+	if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
-		if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(M->GetAnimInstance()))
-		{
-			Anim->State = S;
-		}
+		Anim->State = S;
 	}
 }
 
