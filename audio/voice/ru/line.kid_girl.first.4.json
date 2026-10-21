@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Зато здесь есть интернет. Правда, всего одна страница.",
  "speaker": "kid_girl",
- "voice": "Laura",
- "voice_id": "FGY2WhTYpPnrIDTdsKH5",
- "direction": "[a little girl, earnest, a bit lonely]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a little girl, earnest, a bit lonely] Зато здесь есть интернет. Правда, всего одна страница.",
-  "voice": "Laura",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
  },
- "fal_request_id": "01a15ecc-b7b6-7fd0-bddb-2f2eb45e1788",
- "hash": "7a7f41c255f7"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Зато здесь есть интернет. Правда, всего одна страница.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8e-a162-7ab2-b14f-674411f537b7",
+ "hash": "a8796e3eb2a7"
 }

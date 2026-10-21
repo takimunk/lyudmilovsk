@@ -31,24 +31,36 @@ def speaker_of(key):
     return key.split(".")[1]
 
 
+LANG_NAMES = {"ru": "Russian", "en": "English", "ja": "Japanese"}
+
+
 def plan(man, lang, key, text):
-    """Everything the take depends on: the request body, and a hash of it with the endpoint."""
+    """Everything the take depends on: the endpoint, the request body, and a hash of both.
+    A speaker is voiced by ElevenLabs v3 (the default model, a premade voice, a direction tag in front of the text) or, with
+    "engine": "minimax", by MiniMax speech with a voice designed from a prompt (children and the teenage hero)."""
     sp = man["speakers"].get(speaker_of(key), man["speakers"]["default"])
     line = man.get("lines", {}).get(key, {})
-    voice = sp.get("voice_" + lang, sp["voice"])
     direction = line.get("direction") or sp.get("direction", "")
-    spoken = (direction + " " + text).strip()
-    settings = dict(man.get("settings", {}), **sp.get("settings", {}), **line.get("settings", {}))
-    body = dict(settings, text=spoken, voice=voice, language_code=lang)
-    digest = hashlib.sha1(json.dumps([man["model"], body], ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:12]
-    return voice, direction, body, digest
+    if sp.get("engine") == "minimax":
+        model = sp["model"]
+        voice = sp["voice_id"]
+        setting = dict(sp.get("voice_setting", {}), **line.get("voice_setting", {}), voice_id=voice)
+        body = {"prompt": text, "voice_setting": setting, "language_boost": LANG_NAMES.get(lang, "auto"),
+                "audio_setting": {"sample_rate": 24000, "format": "mp3", "channel": 1}, "output_format": "url"}
+    else:
+        model = man["model"]
+        voice = sp.get("voice_" + lang, sp["voice"])
+        settings = dict(man.get("settings", {}), **sp.get("settings", {}), **line.get("settings", {}))
+        body = dict(settings, text=(direction + " " + text).strip(), voice=voice, language_code=lang)
+    digest = hashlib.sha1(json.dumps([model, body], ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:12]
+    return model, voice, direction, body, digest
 
 
 def generate(man, lang, key, text):
-    voice, direction, body, digest = plan(man, lang, key, text)
+    model, voice, direction, body, digest = plan(man, lang, key, text)
     out = OUT % lang
     os.makedirs(out, exist_ok=True)
-    req = urllib.request.Request("https://fal.run/" + man["model"], json.dumps(body).encode(),
+    req = urllib.request.Request("https://fal.run/" + model, json.dumps(body).encode(),
                                  {"Authorization": "Key " + os.environ["FAL_API_KEY"], "Content-Type": "application/json"})
     res = urllib.request.urlopen(req, timeout=600)
     request_id = res.headers.get("x-fal-request-id", "")
@@ -60,8 +72,8 @@ def generate(man, lang, key, text):
     os.remove(mp3)
     sp = man["speakers"].get(speaker_of(key), man["speakers"]["default"])
     with open(os.path.join(out, key + ".json"), "w", encoding="utf-8") as f:
-        json.dump({"key": key, "lang": lang, "text": text, "speaker": speaker_of(key), "voice": voice, "voice_id": sp.get("voice_id", ""),
-                   "direction": direction, "model": man["model"], "request": body, "fal_request_id": request_id,
+        json.dump({"key": key, "lang": lang, "text": text, "speaker": speaker_of(key), "voice": voice, "voice_id": sp.get("voice_id", ""), "voice_design": sp.get("design"),
+                   "direction": direction, "model": model, "request": body, "fal_request_id": request_id,
                    "hash": digest}, f, ensure_ascii=False, indent=1)
     return wav
 
@@ -71,7 +83,7 @@ def state(man, lang, key, text):
     if not os.path.exists(os.path.join(OUT % lang, key + ".wav")) or not os.path.exists(meta):
         return "missing"
     with open(meta, encoding="utf-8") as f:
-        return "ok" if json.load(f).get("hash") == plan(man, lang, key, text)[3] else "stale"
+        return "ok" if json.load(f).get("hash") == plan(man, lang, key, text)[4] else "stale"
 
 
 def main():

@@ -3,17 +3,31 @@
  "lang": "ja",
  "text": "まあね。朝から。それとも昨日から。窓がないからわかんない。",
  "speaker": "kid_boy",
- "voice": "Charlie",
- "voice_id": "IKne3meq5aSn9XLyUdCD",
- "direction": "[a bored teenage boy, distracted by his game]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a bored teenage boy, distracted by his game] まあね。朝から。それとも昨日から。窓がないからわかんない。",
-  "voice": "Charlie",
-  "language_code": "ja"
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
  },
- "fal_request_id": "01a15ed8-f8d1-7ac0-a44f-527f8741fed3",
- "hash": "3f03fd975b0f"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "まあね。朝から。それとも昨日から。窓がないからわかんない。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f93-0545-72c1-a2cf-deb348f7650d",
+ "hash": "0ca18af3a0c9"
 }

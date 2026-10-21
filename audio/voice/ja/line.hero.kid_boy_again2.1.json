@@ -3,17 +3,31 @@
  "lang": "ja",
  "text": "お父さんとお母さんは？",
  "speaker": "hero",
- "voice": "Brian",
- "voice_id": "nPczCjzI2devNBz1zQrb",
- "direction": "[quiet, uncertain]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[quiet, uncertain] お父さんとお母さんは？",
-  "voice": "Brian",
-  "language_code": "ja"
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
  },
- "fal_request_id": "01a15ed7-eff2-7571-8493-50d36b9b86ab",
- "hash": "473751133f49"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "お父さんとお母さんは？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f92-0c61-7d11-8804-5ea3e2141f2b",
+ "hash": "180ca96273ce"
 }

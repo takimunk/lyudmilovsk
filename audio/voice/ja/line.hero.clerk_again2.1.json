@@ -3,17 +3,31 @@
  "lang": "ja",
  "text": "今日は何を描いてるんですか？",
  "speaker": "hero",
- "voice": "Brian",
- "voice_id": "nPczCjzI2devNBz1zQrb",
- "direction": "[quiet, uncertain]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[quiet, uncertain] 今日は何を描いてるんですか？",
-  "voice": "Brian",
-  "language_code": "ja"
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
  },
- "fal_request_id": "01a15ed7-39f6-7e02-a316-875cbcb4780b",
- "hash": "d853248e4454"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "今日は何を描いてるんですか？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f91-4600-74e1-89ec-f4cb81b02fe8",
+ "hash": "94acb575811d"
 }

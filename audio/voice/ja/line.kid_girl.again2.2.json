@@ -3,17 +3,31 @@
  "lang": "ja",
  "text": "ねこ。動かないけど、ときどきまばたきするの。誰も見てないときに。",
  "speaker": "kid_girl",
- "voice": "Laura",
- "voice_id": "FGY2WhTYpPnrIDTdsKH5",
- "direction": "[a little girl, earnest, a bit lonely]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a little girl, earnest, a bit lonely] ねこ。動かないけど、ときどきまばたきするの。誰も見てないときに。",
-  "voice": "Laura",
-  "language_code": "ja"
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
  },
- "fal_request_id": "01a15ed9-4106-7ba2-963b-793a08871c55",
- "hash": "284da5a3e23f"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ねこ。動かないけど、ときどきまばたきするの。誰も見てないときに。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f93-4164-79c2-894c-5b5a80586b0c",
+ "hash": "20946db5e67b"
 }

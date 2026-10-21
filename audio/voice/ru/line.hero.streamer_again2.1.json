@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Во что играешь?",
  "speaker": "hero",
- "voice": "Brian",
- "voice_id": "nPczCjzI2devNBz1zQrb",
- "direction": "[quiet, uncertain]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[quiet, uncertain] Во что играешь?",
-  "voice": "Brian",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
  },
- "fal_request_id": "01a15ecb-95ae-7420-80ba-58b5b4f9c7cf",
- "hash": "818730ccfb5b"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Во что играешь?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8d-80fa-7bb3-b676-82054fb1910d",
+ "hash": "262eea6ef02b"
 }

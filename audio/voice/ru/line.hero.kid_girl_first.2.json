@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Кто придёт?",
  "speaker": "hero",
- "voice": "Brian",
- "voice_id": "nPczCjzI2devNBz1zQrb",
- "direction": "[quiet, uncertain]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[quiet, uncertain] Кто придёт?",
-  "voice": "Brian",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
  },
- "fal_request_id": "01a15ecb-5a5b-7431-a202-01303d7aa16e",
- "hash": "68f65355008d"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Кто придёт?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8d-3066-7600-bc30-7006ecb7d791",
+ "hash": "af6697abe304"
 }

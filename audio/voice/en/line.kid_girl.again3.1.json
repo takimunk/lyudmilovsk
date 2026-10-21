@@ -3,17 +3,31 @@
  "lang": "en",
  "text": "Tyoma thinks he's cool. But he keeps losing to the same boss.",
  "speaker": "kid_girl",
- "voice": "Laura",
- "voice_id": "FGY2WhTYpPnrIDTdsKH5",
- "direction": "[a little girl, earnest, a bit lonely]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a little girl, earnest, a bit lonely] Tyoma thinks he's cool. But he keeps losing to the same boss.",
-  "voice": "Laura",
-  "language_code": "en"
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
  },
- "fal_request_id": "01a15ed2-fd63-7a70-a895-4424337865a0",
- "hash": "3e5a2550c8b8"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Tyoma thinks he's cool. But he keeps losing to the same boss.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f90-dc08-7eb2-a8b1-45dcd4bbbdc2",
+ "hash": "5e9be54f4034"
 }

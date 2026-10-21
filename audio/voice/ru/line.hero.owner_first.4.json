@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Где здесь выход?",
  "speaker": "hero",
- "voice": "Brian",
- "voice_id": "nPczCjzI2devNBz1zQrb",
- "direction": "[quiet, uncertain]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[quiet, uncertain] Где здесь выход?",
-  "voice": "Brian",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
  },
- "fal_request_id": "01a15ecb-860f-7830-aa61-91a95d3ddd1d",
- "hash": "9cc586e29e95"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Где здесь выход?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8d-712b-76e3-a279-c61763fb53f2",
+ "hash": "8357a38f4111"
 }

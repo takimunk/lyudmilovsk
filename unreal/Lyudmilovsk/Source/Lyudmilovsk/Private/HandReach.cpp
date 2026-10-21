@@ -10,6 +10,9 @@ namespace
 	const FName Hand(TEXT("hand_r"));
 	const FName Thumb[] = { TEXT("thumb_01_r"), TEXT("thumb_02_r"), TEXT("thumb_03_r") };
 	const FName Pinky(TEXT("pinky_01_r"));
+	/** From the bones to the skin of the hero's palm and fingers, cm (SK_Hero's MakeHuman hand). */
+	constexpr float PalmSkin = 1.7f;
+	constexpr float FingerSkin = 0.9f;
 	const FName Middle[] = { TEXT("middle_01_r"), TEXT("middle_02_r"), TEXT("middle_03_r") };
 
 	/** The fingers: bones from the knuckle out and how far each joint folds at a full closure (degrees). */
@@ -154,11 +157,13 @@ namespace HandReach
 		{
 			return FPalmFrame();
 		}
-		// in the animation the arms hang or swing with the palms toward the thighs: that fixes which way "out of the palm" is
+		// "out of the palm" is the side the thumb tip sits on (the thumb folds in front of the palm in any
+		// relaxed hand). Judging it by where the palm faces in the animation flipped with the clip, and then
+		// the hand turned its back to the item and the fingers folded the wrong way.
 		FPalmFrame F = PalmOf(Pose, H, 1.f);
-		const FVector Wrist = Loc(Pose, H.Wrist);
-		const FVector Midline = FVector(-Wrist.X, 0.f, 0.f).GetSafeNormal();
-		if (FVector::DotProduct(F.PalmNormal, Midline) < 0.f)
+		const FCompactPoseBoneIndex ThumbTip = Find(Pose.GetBoneContainer(), Thumb[2]);
+		const FVector Tip = ThumbTip.IsValid() ? Loc(Pose, ThumbTip) : Loc(Pose, H.ThumbBase);
+		if (FVector::DotProduct(Tip - F.Palm, F.PalmNormal) < 0.f)
 		{
 			F = PalmOf(Pose, H, -1.f);
 		}
@@ -179,7 +184,7 @@ namespace HandReach
 		{
 			return;
 		}
-		// only the upper body bends: the hips and the feet stay as the animation has them (Dima: just lean
+		// only the body above the legs bends: the feet stay where they stand, no crouch (Dima: just lean
 		// and reach). The least forward bend about the lower spine that brings the shoulder within the arm's
 		// length of the wrist target, the head not ending up over the hand.
 		const FVector Shoulder = Loc(Pose, H.Upper);
@@ -189,7 +194,7 @@ namespace HandReach
 		const FVector WristTarget = Reach.Palm - Reach.FingerDir * PalmReach;
 		const FCompactPoseBoneIndex HeadBone = Find(Bones, TEXT("head"));
 		const FVector Head = HeadBone.IsValid() ? Loc(Pose, HeadBone) : Shoulder + FVector(0.f, 0.f, 20.f);
-		constexpr float MaxLeanDeg = 70.f, HeadClear = 10.f;
+		constexpr float MaxLeanDeg = 100.f, HeadClear = 10.f;
 		float Best = MaxLeanDeg, BestDist = TNumericLimits<float>::Max();
 		for (float A = 0.f; A <= MaxLeanDeg; A += 2.f)
 		{
@@ -214,11 +219,28 @@ namespace HandReach
 		{
 			return;
 		}
-		// spread over the three spine bones, each about its own joint
+		// a hinge at the hips takes most of it (the thighs turned back so the legs stay where they stand,
+		// down to the floor), the back the rest, spread over the spine bones about their own joints
+		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
+		const FCompactPoseBoneIndex Thighs[] = { Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("thigh_r")) };
+		float Back = Lean;
+		if (Pel.IsValid() && Thighs[0].IsValid() && Thighs[1].IsValid())
+		{
+			const float Hips = 0.55f * Lean;
+			TArray<FTransform, TInlineAllocator<2>> ThighCS = { ComponentSpace(Pose, Thighs[0]), ComponentSpace(Pose, Thighs[1]) };
+			RotateBone(Pose, Pel, FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(Hips)));
+			for (int32 i = 0; i < 2; ++i)
+			{
+				FTransform T = ComponentSpace(Pose, Thighs[i]);
+				T.SetRotation(ThighCS[i].GetRotation());
+				SetComponentSpace(Pose, Thighs[i], T);
+			}
+			Back = Lean - Hips;
+		}
 		const float Share[] = { 0.45f, 0.3f, 0.25f };
 		for (int32 i = 0; i < 3; ++i)
 		{
-			RotateBone(Pose, Spine[i], FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(Lean * Share[i])));
+			RotateBone(Pose, Spine[i], FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(Back * Share[i])));
 		}
 	}
 
@@ -247,6 +269,16 @@ namespace HandReach
 		}
 		Fd = Fd.GetSafeNormal();
 		Pn = (Pn - Fd * FVector::DotProduct(Pn, Fd)).GetSafeNormal();
+		// the palm frame runs along the bones, inside the hand: its skin is PalmSkin further out. Keep that
+		// skin on the item's surface, never in it (else the hand sinks into the bottle)
+		if (Reach.bHasShape)
+		{
+			const float D = DistanceToShape(Reach.Shape, Palm + Pn * PalmSkin);
+			if (D < 0.f)
+			{
+				Palm -= Pn * (-D);
+			}
+		}
 
 		// arm: the wrist goes where the palm minus the half-palm is; the elbow bends out and down
 		const float PalmReach = 0.6f * (float)(Loc(Pose, H.MiddleKnuckle) - Loc(Pose, H.Wrist)).Size();
@@ -296,7 +328,7 @@ namespace HandReach
 					bool bTouch = false;
 					for (int32 K = 1; K < Pts.Num(); ++K)
 					{
-						bTouch |= DistanceToShape(Reach.Shape, Pts[K]) <= 0.3f;
+						bTouch |= DistanceToShape(Reach.Shape, Pts[K]) <= FingerSkin;   // the bone line is FingerSkin inside the finger's skin
 					}
 					if (bTouch)
 					{

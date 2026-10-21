@@ -89,7 +89,7 @@
  "grass.commonreed.name": "ヨシ",
  "grass.sandsedge.name": "砂地のスゲ",
  "grass.wavyhairgrass.name": "コメススキ",
- "ui.plants.title": "植物：開発者モード（F7）",
+ "ui.plants.title": "選択した木",
  "ui.plants.none": "木がありません",
  "ui.plants.in_view": "視線の先",
  "ui.plants.age": "樹齢（年）",
@@ -340,5 +340,12 @@
  "ui.aton.about.user": "ユーザー：見つかりません",
  "ui.aton.about.copyright": "(c) リュドミロフスク",
  "ui.aton.chosen.loading": "Chosenを読み込み中…",
- "ui.aton.chosen.offline": "Chosenに接続できません"
+ "ui.aton.chosen.offline": "Chosenに接続できません",
+ "ui.dev.title": "開発者モード（F7）",
+ "ui.dev.world": "ワールド：日付と時刻",
+ "ui.dev.date": "日付",
+ "ui.dev.hour": "時刻",
+ "ui.dev.speed": "時間の速さ",
+ "ui.dev.speed_value": "×{0}",
+ "ui.dev.speed_real": "通常の速さ"
 }

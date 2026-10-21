@@ -89,7 +89,7 @@
  "grass.commonreed.name": "Common reed",
  "grass.sandsedge.name": "Sand sedge",
  "grass.wavyhairgrass.name": "Wavy hair-grass",
- "ui.plants.title": "Plants: developer mode (F7)",
+ "ui.plants.title": "Selected tree",
  "ui.plants.none": "no trees",
  "ui.plants.in_view": "In view",
  "ui.plants.age": "Age, years",
@@ -340,5 +340,12 @@
  "ui.aton.about.user": "user: not found",
  "ui.aton.about.copyright": "(c) Lyudmilovsk",
  "ui.aton.chosen.loading": "loading Chosen…",
- "ui.aton.chosen.offline": "no connection to Chosen"
+ "ui.aton.chosen.offline": "no connection to Chosen",
+ "ui.dev.title": "Developer mode (F7)",
+ "ui.dev.world": "World: date and time",
+ "ui.dev.date": "Date",
+ "ui.dev.hour": "Time of day",
+ "ui.dev.speed": "Time speed",
+ "ui.dev.speed_value": "×{0}",
+ "ui.dev.speed_real": "Normal speed"
 }

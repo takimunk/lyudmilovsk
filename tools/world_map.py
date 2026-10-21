@@ -375,6 +375,16 @@ def forests():
     out = []
 
     def add(x, y, hx, hy, mix, z0, z1, density=1.0):
+        # never in the sea or on the beach: the tile stops short of the beach on its seaward side, and
+        # trees only stand above the beach's top
+        land = min(shore_x(y - hy + k * hy / 4.0) for k in range(9)) - BEACH_W - 3.0
+        if x + hx > land:
+            x1 = land
+            x0 = x - hx
+            if x1 - x0 < 20.0:
+                return
+            x, hx = (x0 + x1) / 2, (x1 - x0) / 2
+        z0 = max(z0, BEACH_TOP + 1.0)
         count = int(4 * hx * hy / FOREST_SPACING ** 2 * 0.8 * density)
         out.append((x, y, hx, hy, mix, count, FOREST_SPACING, z0, z1, 1 + len(out)))
 
@@ -390,7 +400,8 @@ def forests():
     for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
         add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
     # the dune bank along the valley's beach
-    add(shore_x(900) - BEACH_W - 15, 900, 25, 600, "dune", SEA_Z + 2.0, LOW_Z + 3.0, 0.5)
+    for yc in range(400, 1401, 200):
+        add(shore_x(yc) - BEACH_W - 25, yc, 25, 100, "dune", SEA_Z + 2.0, LOW_Z + 3.0, 0.5)
     # wet copses on the valley floor, and trees between the houses (the houses are NoTree)
     add(-760, 900, 110, 330, "wet", -100.0, LOW_Z + 3.0, 0.5)
     add(-120, 1380, 260, 80, "wet", -100.0, LOW_Z + 3.0, 0.5)

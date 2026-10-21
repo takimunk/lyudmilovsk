@@ -3,17 +3,31 @@
  "lang": "ru",
  "text": "Слышал, как дверь скрипит в конце? Значит, кто-то ушёл. Или пришёл.",
  "speaker": "kid_boy",
- "voice": "Charlie",
- "voice_id": "IKne3meq5aSn9XLyUdCD",
- "direction": "[a bored teenage boy, distracted by his game]",
- "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "request": {
-  "stability": 0.5,
-  "apply_text_normalization": "auto",
-  "text": "[a bored teenage boy, distracted by his game] Слышал, как дверь скрипит в конце? Значит, кто-то ушёл. Или пришёл.",
-  "voice": "Charlie",
-  "language_code": "ru"
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
  },
- "fal_request_id": "01a15ecb-d812-7d22-a281-ae27e4f5094b",
- "hash": "a018bcc4d715"
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Слышал, как дверь скрипит в конце? Значит, кто-то ушёл. Или пришёл.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a15f8d-d221-7a03-b093-88b9cd2bff9e",
+ "hash": "2b2e99ed3d53"
 }

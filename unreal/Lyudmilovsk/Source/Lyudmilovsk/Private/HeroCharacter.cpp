@@ -19,6 +19,7 @@
 #include "HeroAnimInstance.h"
 #include "HeroReachComponent.h"
 #include "HeroSeat.h"
+#include "LyudInventory.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
@@ -348,4 +349,18 @@ static FAutoConsoleCommandWithWorldAndArgs GHeroSideCam(TEXT("Hero.SideCam"),
 			GHeroSideCamera->SetActorLocationAndRotation(At, (Target - At).Rotation());
 		}
 		PC->SetViewTarget(GHeroSideCamera.Get());
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GHeroTestDrink(TEXT("Hero.TestDrink"),
+	TEXT("Hero.TestDrink [item id, default drink_baikal]: puts the item in the inventory and uses it (the drink animation)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		const FName Id(Args.Num() > 0 ? *Args[0] : TEXT("drink_baikal"));
+		ULyudInventory* Inv = ULyudInventory::Get(World);
+		ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+		if (Inv && UI)
+		{
+			Inv->Add(Id);
+			UI->Use(Id);
+		}
 	}));
