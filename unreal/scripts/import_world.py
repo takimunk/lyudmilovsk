@@ -24,9 +24,8 @@ DEST = "/Game/Scene01/World"
 # Shrubs and the low dune pines turn into their level-0 summary sooner than trees (cm): a sea buckthorn
 # is ~650k leaf triangles up close, and every leaf casts a (non-Nanite) shadow.
 SUMMARY_DISTANCE = {"SeaBuckthorn": 5000.0, "Juniper": 5000.0, "DunePine": 8000.0}
-# The forests (world_map.forests) stay out of the level until AProceduralForest stops crashing play
-# ("Assertion failed: InstanceParams.LODs <= 8" in the HISM scene proxy, first PIE in Lvl_Scene01).
-FORESTS = os.environ.get("LYUD_FORESTS") == "1"
+# The forests (world_map.forests); LYUD_FORESTS=0 leaves them out (a quick build).
+FORESTS = os.environ.get("LYUD_FORESTS", "1") != "0"
 eal = unreal.EditorAssetLibrary
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 
@@ -64,9 +63,8 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         body = sm.get_editor_property("body_setup")
         if body:
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
-        settings = sm.get_editor_property("nanite_settings")
-        settings.enabled = True
-        sm.set_editor_property("nanite_settings", settings)
+        # no Nanite: the glTF materials' parent (Interchange's M_Default) lacks the Nanite usage flag,
+        # so outside the editor Nanite meshes would draw with the default material; these are small
     eal.save_directory(DEST)                         # meshes, their materials and textures
 
     actors = [a for a in eas.get_all_level_actors() if a.get_name() not in before]
@@ -111,13 +109,13 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             f.set_editor_property("mix", [unreal.ForestMix(species=sp, weight=w, young_age=ya, mature_age=ma)
                                           for sp, w, ya, ma in W.FOREST_MIX[mix]])
             for k, v in (("seed", seed), ("count", count), ("spacing", spacing * 100),
-                         ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 3),
+                         ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 2),
                          ("min_world_z", zmin * 100), ("max_world_z", zmax * 100),
                          ("trace_up", 8000.0), ("trace_down", 10000.0), ("preview_in_editor", False)):
                 f.set_editor_property(k, v)
             f.set_folder_path("Outside/Forest")
             total += count
-        _log("forests: ~%d trees%s" % (total, "" if FORESTS else " (off: set LYUD_FORESTS=1)"))
+        _log("forests: ~%d trees%s" % (total, "" if FORESTS else " (off: LYUD_FORESTS=0)"))
 
 
 def starlings_location(face_y):

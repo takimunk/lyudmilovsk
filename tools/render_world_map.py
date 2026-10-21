@@ -38,12 +38,12 @@ def main(out):
                 nx, ny, nz = W.normal(x, y, 1.5)
                 shade = max(0.35, min(1.2, 0.75 + 0.9 * (nx * 0.5 + ny * 0.5)))
                 t = max(0.0, min(1.0, (z - W.SEA_Z) / 70.0))
-                base = (int(110 + 40 * t), int(150 + 20 * t), int(80 + 10 * t))
+                base = (int(90 + 90 * t), int(140 + 40 * t), int(70 + 30 * t))
                 c = tuple(min(255, int(v * shade)) for v in base)
             pix[i, j] = c
     d = ImageDraw.Draw(img)
     for x, y, hx, hy, mix, *_ in W.forests():     # forest patches (trees only where the ground allows)
-        col = {"pine": (45, 85, 45), "dune": (90, 120, 70), "wet": (70, 105, 60), "town": (95, 130, 75)}[mix]
+        col = {"old": (35, 70, 40), "dune": (90, 120, 70), "wet": (70, 105, 60), "town": (95, 130, 75)}[mix]
         d.rectangle((*px(x + hx, y + hy), *px(x - hx, y - hy)), outline=col, width=3)
     houses = W.town()
     for x, y, yaw, hw, hd, fl, kind in houses:

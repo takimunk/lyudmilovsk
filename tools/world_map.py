@@ -2,14 +2,15 @@
 things stand, read by the Unreal build (unreal/scripts/import_world.py) and the map render
 (tools/render_world_map.py). Pure Python, no bpy or unreal.
 
-Frame: metres, origin on the club's portal face at floor level (the hilltop), X to the left of
+Frame: metres, origin on the club's portal face at floor level (the spur), X to the left of
 someone walking out of the club (west, the sea), Y straight out of the door (north), Z up.
 Unreal: (X * 100, portal_face_y + Y * 100, Z * 100) cm; Blender: (X, face_y - Y, Z).
 
-The place is a Baltic coast: the club is dug into the top of a hill whose west flank runs down
-to a sand beach. A short path from the door crosses the hilltop to the upper cable-car station
-on the brow, where the town shows below: it lies in the coastal lowland to the north, 37 m
-lower, and the cable car runs down into it. Ridges close the map inland and at both ends.
+The place is the Sambian coast of the Baltic: a high upland under an old pine and spruce forest
+ends at the sea in a steep clay and sand cliff over a narrow beach. The club is dug into the
+upland's north slope; its door opens on a terrace at the club's floor level (the spur), where a
+short path with an alley leads to the upper cable-car station on the spur's brow. Below lies the
+valley with the town, 37 m lower and open to the sea; wooded hills close it in the north and inland.
 
 The macro shape lives here (height, keep_flat); tools/terrain.py (the terrain thread) adds the
 natural detail on top of it.
@@ -19,7 +20,7 @@ import math
 import random
 
 SEA_Z = -43.0                 # sea level below the club floor (Unreal -4300 cm)
-BEACH_W = 35.0                # sand from the water line to the foot of the slope
+BEACH_W = 25.0                # sand from the water line to the foot of the cliff
 DOOR_X = -1.93                # the blast door's centre (layout exit_door.center)
 
 # Map extents (the sky dome is 2800 m around the portal).
@@ -49,18 +50,62 @@ def shore_x(y):
     return _catmull(SHORE, y)
 
 
-def _club(y):
-    """1 at the club, fading to 0 a few hundred metres along the shore."""
-    return math.exp(-(y / 220.0) ** 2)
+# The coast is a Sambian one: a forested upland ~60 m over the sea ends at the sea in a steep clay
+# and sand cliff over a narrow beach. The club is dug into the upland's north slope; its door opens
+# on a terrace (the spur) at the club's floor level, from which the cable car goes down into the
+# valley with the town. Hills close the valley in the north. The club's corridor plays no part in
+# any of it: it runs under the upland, which is high over it everywhere.
+
+TOP_Z = 18.0                      # the upland, over the club's floor (61 m over the sea)
+LOW_Z = SEA_Z + 6.0               # the valley floor with the town
+NORTH_Z = 12.0                    # the hills beyond the town
+CORRIDOR_END_Y = -470.0           # the club's corridor runs this far back under the upland (repeated chunks)
+SPUR_C = (-25.0, 75.0)            # the terrace in front of the door: centre, half widths east and north
+SPUR_RX, SPUR_RY = 75.0, 105.0
+SPUR_FALL = 45.0                  # metres its east and north sides take down to the valley
 
 
-def slope_width(y):
-    """Horizontal width of the land falling from the top to the beach: a long grassy flank at the
-    club, a steep bluff along the town."""
-    return 55.0 + 37.0 * _club(y)
+def _smooth(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
 
 
-# The entrance: a forecourt cut into the mound in front of the portal, held by two concrete wing
+def escarpment_y(x):
+    """Y of the middle of the upland's north slope: just behind the door, swinging north inland in
+    broad lobes."""
+    lobes = 35.0 * math.sin((x + 40.0) / 170.0) * min(1.0, max(-x - 80.0, 0.0) / 200.0)
+    return -30.0 + 0.00045 * max(-x - 40.0, 0.0) ** 2 + lobes
+
+
+def valley(x, y):
+    """The valley floor: a few metres over the sea, rising a little inland and into a ridge on the map's
+    inland edge."""
+    h = LOW_Z + 0.006 * max(-x - 100.0, 0.0)
+    if x < -800.0:
+        h += ((-x - 800.0) / 500.0) ** 2 * 30.0
+    return h
+
+
+def spur(x, y):
+    """0..1: the terrace in front of the door (open to the sea in the west; its east and north
+    sides fall to the valley)."""
+    dx = max(SPUR_C[0] - x, 0.0) / SPUR_RX           # only the east side is bounded
+    dy = (y - SPUR_C[1]) / SPUR_RY if y > SPUR_C[1] else 0.0
+    d = math.hypot(dx, dy)
+    return 1.0 - _smooth((d - 1.0) * SPUR_RY / SPUR_FALL)
+
+
+def north_hills(x, y):
+    """0..1: the hills beyond the town, rising from Y ~1450."""
+    return _smooth((y - 1450.0) / 260.0)
+
+
+def upland(x, y):
+    """0..1: on the upland south of its north slope (80 m wide, steepest in the middle)."""
+    return 1.0 - _smooth((y - escarpment_y(x) + 40.0) / 80.0)
+
+
+# The entrance: a forecourt cut into the hillside in front of the portal, held by two concrete wing
 # walls that flare out from the portal's ends (world_mesh.portal draws them).
 FORECOURT_LEN = 6.5               # metres out from the portal face
 WING_SPLAY = math.tan(math.radians(29.0))
@@ -73,15 +118,19 @@ def forecourt_half(d):
     return 6.2 + d * WING_SPLAY
 
 
+def raised(x, y):
+    """Metres the land stands over the valley floor here (0 in the valley)."""
+    return max(0.0, plateau(x, y) - valley(x, y))
+
+
 def mound(x, d):
-    """The club's hilltop near the portal (ported from the scene build): 6 m of earth over the
-    club, flush with the portal top, and a grassy crown in front of it, cut by the forecourt."""
+    """The hillside right round the portal (ported from the scene build): 6 m of earth over the door,
+    flush with the portal top, falling away on both sides, cut by the forecourt."""
     if 0.0 < d <= FORECOURT_LEN and abs(x) <= forecourt_half(d) + 0.5:
         return 0.0                                   # the drop hides behind the wall (0.45 m thick)
+    if d < -60.0 or abs(x) > 37.0:
+        return 0.0
     m = 6.0 + min(max(-d, 0.0), 30.0) * 0.08
-    if d < -60.0:                                    # the hill over the far corridor settles into the land
-        k = min(1.0, (-60.0 - d) / 60.0)
-        m *= 1 - k * k * (3 - 2 * k)
     if abs(x) <= 6.2:
         return m if d <= 0.0 else 0.0
     front = min((abs(x) - 6.2) * 1.1, 4.0)
@@ -91,57 +140,14 @@ def mound(x, d):
     return m * (1 - t * t * (3 - 2 * t))
 
 
-CORRIDOR_END_Y = -470.0            # the club's corridor runs this far back under the hill (repeated chunks)
-
-
-def berm(x, y):
-    """A long grassy rampart over the buried corridor (above the land around), so the land never cuts into it."""
-    if y >= -40.0 or y < CORRIDOR_END_Y - 40.0:
-        return 0.0                                   # by the portal the mound covers the hall and the corridor
-    k = min(1.0, max(0.0, (abs(x) - 8.0) / 12.0))
-    e = min(1.0, max(0.0, (y - CORRIDOR_END_Y + 40.0) / 40.0))
-    e *= min(1.0, (-40.0 - y) / 20.0)               # rises out of the mound 40..60 m behind the portal
-    return 7.5 * (1 - k * k * (3 - 2 * k)) * e * e * (3 - 2 * e)
-
-
-LOW_Z = SEA_Z + 6.0               # the coastal lowland with the town
-HILL_C = (-20.0, -80.0)           # the club's hill: centre, half widths across and to the north / south
-HILL_RX, HILL_RY_N, HILL_RY_S = 260.0, 380.0, 800.0
-
-
-def hill(x, y):
-    """1 on the hilltop, 0 in the lowland: flat top out to 55 % of the radii (the brow is ~130 m
-    north of the door), then down to the lowland by 105 %."""
-    ry = HILL_RY_N if y > HILL_C[1] else HILL_RY_S
-    d = math.hypot((x - HILL_C[0]) / HILL_RX, (y - HILL_C[1]) / ry)
-    t = min(1.0, max(0.0, (1.05 - d) / 0.5))
-    return t * t * (3 - 2 * t)
-
-
-def lowland(x, y):
-    """The land below the hill: a few metres over the sea, rising gently inland and into wooded
-    ridges at the map's inland and far ends."""
-    h = LOW_Z + 0.006 * max(-x - 100.0, 0.0)
-    if x < -800.0:
-        h += ((-x - 800.0) / 500.0) ** 2 * 30.0
-    if y > 1850.0:
-        h += ((y - 1850.0) / 350.0) ** 2 * 25.0
-    if y < -500.0:
-        h += ((-y - 500.0) / 400.0) ** 2 * 20.0
-    return h
-
-
-def hilltop(x, y):
-    """The top of the club's hill, at the club's floor level (the bumps are tools/terrain.py's)."""
-    return 0.0
-
-
 def plateau(x, y):
-    """The land before the shore cuts it: the hill (with the mound and the rampart over the club)
-    blended into the lowland."""
-    low = lowland(x, y)
-    top = hilltop(x, y) + max(mound(x, y), berm(x, y))
-    return low + (top - low) * hill(x, y)
+    """The land before the sea cuts it: the valley, raised to the spur, the north hills and the upland."""
+    low = valley(x, y)
+    z = max(low, low + (0.0 - low) * spur(x, y), low + (NORTH_Z - low) * north_hills(x, y))
+    z = z + (TOP_Z - z) * upland(x, y) if TOP_Z > z else z
+    if abs(x) <= 37.0 and -60.0 <= y <= 12.0:        # the hillside right round the portal
+        z = max(z, mound(x, y))
+    return z
 
 
 def inland(x, y):
@@ -149,22 +155,49 @@ def inland(x, y):
     return shore_x(y) - x
 
 
+BEACH_TOP = SEA_Z + 1.5
+
+
+def cliff_width(top):
+    """Horizontal width of the fall from the land's edge to the beach: a steep face (~53 degrees on
+    average, under 60 at its steepest) where the land is high, a low dune bank where it is not."""
+    return max(25.0, (top - BEACH_TOP) * 0.75)
+
+
+def _edge_top(y):
+    """The land's height just inside the coast at Y (sets how high and wide the cliff is)."""
+    x = shore_x(y) - BEACH_W - 30.0
+    return plateau(x, y)
+
+
 def height(x, y):
-    """Ground height at (X, Y)."""
-    top = plateau(x, y)
+    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's)."""
     s = inland(x, y)
-    beach_top = SEA_Z + 1.5
     if s <= 0.0:                                     # sea bed: shallow, like the Baltic
         return SEA_Z - 0.3 - min(-s * 0.06, 9.0)
     if s <= BEACH_W:
         return SEA_Z - 0.3 + (s / BEACH_W) * 1.8
-    w = slope_width(y)
+    top = plateau(x, y)
+    w = cliff_width(_edge_top(y))
     if s >= BEACH_W + w:
         return top
     t = (s - BEACH_W) / w
-    g = _club(y)
-    f = g * (0.6 * t + 0.4 * t * t) + (1 - g) * t * t   # a walkable flank at the club, a cliff further on
-    return beach_top + (top - beach_top) * f
+    f = 0.5 * t + 0.5 * t * t * (3 - 2 * t)          # talus at the foot, a rounded brow
+    return BEACH_TOP + (top - BEACH_TOP) * f
+
+
+def cliff(x, y):
+    """0..1: 1 on the sea cliff's face, from the top edge to the foot, where the land is high."""
+    s = inland(x, y)
+    top = _edge_top(y)
+    w = cliff_width(top)
+    on = 1.0 - _smooth(abs(s - BEACH_W - w / 2) - w / 2 + 2.0) if BEACH_W - 2 < s < BEACH_W + w + 2 else 0.0
+    return on * _smooth((top - BEACH_TOP - 12.0) / 15.0)
+
+
+def cliff_top(y):
+    """X of the sea cliff's top edge at Y."""
+    return shore_x(y) - BEACH_W - cliff_width(_edge_top(y))
 
 
 def is_beach(x, y):
@@ -180,8 +213,8 @@ def normal(x, y, e=0.5):
 
 
 def edge_x(y):
-    """X where the top ends and the land starts falling to the beach."""
-    return shore_x(y) - BEACH_W - slope_width(y)
+    """X where the land ends and starts falling to the beach (the cliff top)."""
+    return cliff_top(y)
 
 
 # --- the short path out of the club, lined with poplars and maples ---------------------------
@@ -216,7 +249,7 @@ def alley_trees():
     return out
 
 
-# --- the cable car from the hill down into the town ---------------------------------------------
+# --- the cable car from the spur down into the town ---------------------------------------------
 
 STATION_UP = (-15.0, 133.0)       # on the brow, where the path ends
 STATION_DOWN = (-255.0, 520.0)    # on the town's south edge
@@ -229,7 +262,7 @@ CLEARANCE = 6.0                   # least height of the rope over the ground bet
 def cable_car():
     """Stations and towers: {'upper': (x, y), 'lower': (x, y), 'towers': [(x, y), ...],
     'supports': [(x, y, rope_z), ...] from the top down}. Towers go where a straight rope would
-    come closer than CLEARANCE to the ground (the hill's brow first)."""
+    come closer than CLEARANCE to the ground (the spur's brow first)."""
     (x0, y0), (x1, y1) = STATION_UP, STATION_DOWN
     sup = [(0.0, height(x0, y0) + ROPE_Z), (1.0, height(x1, y1) + ROPE_Z)]
     for _ in range(6):
@@ -297,8 +330,8 @@ def town():
                         continue
                     if math.hypot(x - cx, y - cy) > TOWN_R + rnd.uniform(-80, 60):
                         continue
-                    if hill(x, y) > 0.02 or near_cable(x, y, 14.0) or math.hypot(x - STATION_DOWN[0], y - STATION_DOWN[1]) < 25:
-                        continue                     # not up the hill, not under the rope
+                    if raised(x, y) > 1.0 or near_cable(x, y, 14.0) or math.hypot(x - STATION_DOWN[0], y - STATION_DOWN[1]) < 25:
+                        continue                     # not up the slopes, not under the rope
                     if rnd.random() < 0.12:
                         continue                     # an empty lot, a garden
                     central = math.hypot(x - cx, y - cy) < 260
@@ -314,46 +347,65 @@ def town():
 # Forests: AProceduralForest actors (the plants thread). Each actor bakes its own trees, so the map
 # has a dozen big ones rather than many small. mix -> [(species, weight, young age, mature age)].
 FOREST_MIX = {
-    "pine": [("ScotsPine", 0.6, 15, 60), ("NorwaySpruce", 0.15, 12, 50), ("SilverBirch", 0.15, 10, 35),
-             ("Rowan", 0.1, 8, 20)],
+    # an old, wild Baltic forest: tall pines and spruce over birch and rowan
+    "old": [("ScotsPine", 0.45, 20, 80), ("NorwaySpruce", 0.3, 15, 70), ("SilverBirch", 0.15, 12, 45),
+            ("Rowan", 0.1, 8, 25)],
     "dune": [("DunePine", 0.7, 10, 35), ("Juniper", 0.2, 10, 30), ("SeaBuckthorn", 0.1, 6, 12)],
     "wet": [("BlackAlder", 0.5, 10, 35), ("Aspen", 0.25, 10, 30), ("DownyBirch", 0.25, 10, 30)],
     "town": [("Maple", 0.25, 12, 40), ("Apple", 0.2, 10, 30), ("SilverBirch", 0.2, 10, 35),
              ("PyramidalPoplar", 0.15, 12, 35), ("Rowan", 0.2, 8, 25)],
 }
+FOREST_TILE = (260.0, 240.0)      # one AProceduralForest per tile (each actor bakes its own trees)
+FOREST_SPACING = 5.0              # an old forest: a tree every ~5 m
+
+
+def _tiles(x0, x1, y0, y1):
+    nx = max(1, round((x1 - x0) / FOREST_TILE[0]))
+    ny = max(1, round((y1 - y0) / FOREST_TILE[1]))
+    hx, hy = (x1 - x0) / nx / 2, (y1 - y0) / ny / 2
+    for i in range(nx):
+        for j in range(ny):
+            yield x0 + hx * (2 * i + 1), y0 + hy * (2 * j + 1), hx, hy
 
 
 def forests():
     """(x, y, half_x, half_y, mix, count, spacing, min_z, max_z, seed) in metres. The trees are traced
-    onto the ground, skip steep ground, anything outside min_z..max_z and actors tagged NoTree."""
-    hz = HILL_C
-    return [
-        # the club hill's slopes (between the lowland and the open hilltop), west, south, east
-        (hz[0] + 60, hz[1] - 330, 220, 260, "pine", 2200, 7.0, LOW_Z + 1.5, -2.5, 1),
-        (hz[0] - 230, hz[1] + 60, 110, 300, "pine", 1600, 7.0, LOW_Z + 1.5, -2.5, 2),
-        (112, hz[1] + 330, 120, 90, "pine", 700, 7.0, LOW_Z + 1.5, -2.5, 3),   # east of the cable car
-        # the dune bank north along the shore, above the beach
-        (shore_x(900) - BEACH_W - 30, 900, 45, 650, "dune", 1200, 8.0, SEA_Z + 2.5, LOW_Z + 4.0, 4),
-        # the inland ridge and the two ends of the map
-        (-1050, 600, 220, 900, "pine", 3000, 8.0, -100.0, 100.0, 5),
-        (-450, 2000, 600, 180, "pine", 2600, 8.0, -100.0, 100.0, 6),
-        (-450, -720, 600, 160, "pine", 2400, 8.0, -100.0, 100.0, 7),
-        # wet copses in the lowland around the town
-        (-760, 700, 120, 300, "wet", 900, 7.0, -100.0, LOW_Z + 5.0, 8),
-        (-330, 1560, 350, 110, "wet", 900, 7.0, -100.0, LOW_Z + 5.0, 9),
-        # trees between the houses (the houses are NoTree), north of the cable car's low end
-        (TOWN_CENTER[0], STATION_DOWN[1] + 270, TOWN_R, 260, "town", 1400, 14.0, -100.0, LOW_Z + 6.0, 10),
-        (TOWN_CENTER[0], STATION_DOWN[1] + 790, TOWN_R, 260, "town", 1400, 14.0, -100.0, LOW_Z + 6.0, 11),
-    ]
+    onto the ground, skip steep ground, anything outside min_z..max_z and actors tagged NoTree, so the
+    tiles can overlap the open ground around them."""
+    out = []
+
+    def add(x, y, hx, hy, mix, z0, z1, density=1.0):
+        count = int(4 * hx * hy / FOREST_SPACING ** 2 * 0.8 * density)
+        out.append((x, y, hx, hy, mix, count, FOREST_SPACING, z0, z1, 1 + len(out)))
+
+    # the upland: thick old forest from the cliff top inland, over the club and up its north slope
+    for x, y, hx, hy in _tiles(X_MIN, cliff_top(-300) - 5, Y_MIN, -40.0):
+        add(x, y, hx, hy, "old", TOP_Z - 14.0, 100.0)
+    for x, y, hx, hy in _tiles(X_MIN, -560.0, -40.0, 400.0):     # its north slope swings north inland
+        add(x, y, hx, hy, "old", LOW_Z + 8.0, 100.0)
+    # the hills beyond the town
+    for x, y, hx, hy in _tiles(X_MIN, cliff_top(1800) - 5, 1480.0, Y_MAX):
+        add(x, y, hx, hy, "old", LOW_Z + 6.0, 100.0)
+    # the inland ridge closing the valley
+    for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
+        add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
+    # the dune bank along the valley's beach
+    add(shore_x(900) - BEACH_W - 15, 900, 25, 600, "dune", SEA_Z + 2.0, LOW_Z + 3.0, 0.5)
+    # wet copses on the valley floor, and trees between the houses (the houses are NoTree)
+    add(-760, 900, 110, 330, "wet", -100.0, LOW_Z + 3.0, 0.5)
+    add(-120, 1380, 260, 80, "wet", -100.0, LOW_Z + 3.0, 0.5)
+    add(TOWN_CENTER[0], STATION_DOWN[1] + 270, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
+    add(TOWN_CENTER[0], STATION_DOWN[1] + 790, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
+    return out
 
 
 # --- Baltic plants and grass near the club (the plants thread's AProceduralPlant / AProceduralGrass) ---
 
 def coast_plants():
     """(x, y, species, seed, age) of the real trees and shrubs around the club: Scots pines on the
-    rampart behind the portal, dune pines and juniper down the west flank, sea buckthorn at the foot
-    of the slope over the beach, a rowan and an aspen past the alley, before the station. Few on purpose: every
-    procedural tree is up to ~1.5M triangles up close; further off the forests take over."""
+    hillside over the portal, dune pines and juniper on the spur toward the cliff, sea buckthorn on
+    the beach at the cliff's foot, a rowan and an aspen past the alley, before the station. Few on
+    purpose: every procedural tree is up to ~1.5M triangles up close; further off the forests take over."""
     rnd = random.Random(21)
     out = []
 
@@ -367,7 +419,7 @@ def coast_plants():
     for x, y in ((26, 20), (30, 55), (44, -12), (52, 85)):
         add(x, y, "Juniper", 25)
     for y in (-30, 40, 110):
-        add(shore_x(y) - BEACH_W - 4 + rnd.uniform(-2, 2), y + rnd.uniform(-4, 4), "SeaBuckthorn", 12)
+        add(shore_x(y) - BEACH_W + 3 + rnd.uniform(-1, 1), y + rnd.uniform(-4, 4), "SeaBuckthorn", 12)
     end = path_points()[-1]
     add(end[0] - 7, end[1] - 14, "Rowan", 18)
     add(end[0] + 7, end[1] - 20, "Aspen", 25)
@@ -375,25 +427,27 @@ def coast_plants():
 
 
 def grass_patches():
-    """(x, y, half_x, half_y, species, seed, density, min_z, max_z) in metres: a meadow around the
-    club and down its west flank, dune grasses on the beach below. 60 x 60 m patches (~20 000 tufts
-    each); the tufts are drawn only within 90 m of the camera."""
+    """(x, y, half_x, half_y, species, seed, density, min_z, max_z) in metres, one habitat per patch
+    (the terrain's masks decide where each species actually grows): meadow on the spur and the
+    hillside over the door, dune grass on the beach under the cliff, reed and sedge on the wet valley
+    floor by the cable car's lower station. 60 x 60 m patches (~20 000 tufts each), drawn only
+    within 90 m of the camera."""
     out = []
     seed = 500
-    for gx in range(-2, 3):                            # the hilltop and the flank, -110..190 m across
+    meadow = ("RedFescue", "MeadowGrass", "WavyHairGrass")
+    for gx in range(-2, 2):                            # the spur and the hillside, -140..100 m across
         for gy in range(-1, 3):                        # -60..180 m along
             x, y = -50 + gx * 60.0, 30 + gy * 60.0
-            if x > shore_x(y) - BEACH_W:
-                continue
-            on_flank = x > edge_x(y) + 10
-            sp = ("WavyHairGrass" if (gx + gy) % 2 else "RedFescue") if on_flank else \
-                ("MeadowGrass" if (gx + gy) % 2 else "RedFescue")
-            out.append((x, y, 30.0, 30.0, sp, seed, 1.0, SEA_Z + 3.0, 50.0))
+            out.append((x, y, 30.0, 30.0, meadow[(gx + gy) % 3], seed, 1.0, LOW_Z - 1.0, 50.0))
             seed += 1
-    for y in range(-60, 181, 60):                      # the beach: marram and lyme grass up the dune foot
-        x = shore_x(y) - BEACH_W * 0.45
-        out.append((x, y, BEACH_W * 0.55, 30.0, "MarramGrass" if y % 120 else "SeaLymeGrass", seed, 0.8,
-                    SEA_Z + 0.4, SEA_Z + 6.0))
+    for y in range(-60, 181, 60):                      # the beach under the cliff
+        x = shore_x(y) - BEACH_W * 0.5
+        out.append((x, y, BEACH_W * 0.5, 30.0, "MarramGrass" if y % 120 else "SeaLymeGrass", seed, 0.8,
+                    SEA_Z + 0.4, SEA_Z + 8.0))
+        seed += 1
+    for dx, dy in ((-60, 0), (0, 60), (60, -30)):     # the wet valley floor by the lower station
+        out.append((STATION_DOWN[0] + dx, STATION_DOWN[1] + dy, 30.0, 30.0,
+                    "CommonReed" if dx < 0 else "SandSedge", seed, 1.0, -100.0, LOW_Z + 2.0))
         seed += 1
     return out
 
@@ -422,7 +476,7 @@ def keep_flat(x, y):
         k = max(k, _ramp(math.hypot(x - tx, y - ty), 3.0, 3.0))
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
-    k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - hill(x, y)))
+    k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))
     return k
 
 
