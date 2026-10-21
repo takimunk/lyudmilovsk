@@ -30,3 +30,7 @@ unreal/**/Content/Collections/
 unreal/**/editor_*.log
 unreal/Lyudmilovsk/Content/Scene01/
 blender/humans_local/
+
+blender/hero/export/
+blender/hero/*.blend
+unreal/Lyudmilovsk/Content/Characters/Hero/
