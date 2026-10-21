@@ -92,7 +92,8 @@ for path in eal.list_assets(DEST, True):
     if not isinstance(sm, unreal.StaticMesh) or sm.get_num_vertices(0) < 3000 or "SkyDome" in sm.get_name():
         continue
     mats = [m.material_interface for m in sm.static_materials]
-    if all(m and m.get_base_material().get_editor_property("blend_mode") in OPAQUE for m in mats):
+    # the instance's own blend mode (glTF glass is a translucent instance of an opaque parent)
+    if all(m and m.get_blend_mode() in OPAQUE for m in mats):
         settings = sm.get_editor_property("nanite_settings")
         settings.enabled = True
         sm.set_editor_property("nanite_settings", settings)   # rebuilds the mesh with Nanite data
@@ -416,6 +417,7 @@ def sky_material():
     sample = node(E_.MaterialExpressionTextureSample, -400, 0, texture=texture("sky_panorama"))
     done(un(E_.MaterialExpressionMultiply, sample, -150, 0, pin="RGB", const_b=SKY_BOOST))
     m.set_editor_property("is_sky", True)
+    m.set_editor_property("used_with_nanite", True)
     return finish(m)
 
 
@@ -762,6 +764,7 @@ def steam_material(base_z, top_z):
     mel.connect_material_property(a3, "", unreal.MaterialProperty.MP_OPACITY)
     col = node(E.MaterialExpressionConstant3Vector, 0, 0, constant=unreal.LinearColor(0.6, 0.62, 0.65, 1))
     mel.connect_material_property(col, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    m.set_editor_property("used_with_nanite", True)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     return m
