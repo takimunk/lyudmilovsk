@@ -7,21 +7,23 @@
 #include "NpcDialogue.generated.h"
 
 class SWidget;
+class UAudioComponent;
 class USkeletalMeshComponent;
 struct FNpcTalkView;
 
-/** One line of a conversation: who says it and what. */
+/** One line of a conversation: who says it and its string key (line.<speaker>.<scene>.<n>). */
 struct FNpcLine
 {
 	bool bHero = false;
-	FText Text;
+	FString Key;
 };
 
-/** Everything one character can say, read from Content/Dialogue/npc_dialogue.txt. */
+/** How one character's conversations go, read from Content/Dialogue/npc_dialogue.txt; the words are in the string tables. */
 struct FNpcLines
 {
-	FText Name;
-	FText Role;
+	/** npc.<id>.name / npc.<id>.role */
+	FString NameKey;
+	FString RoleKey;
 	/** The first conversation, in order. */
 	TArray<FNpcLine> First;
 	/** Short exchanges for every later conversation, taken in turn. */
@@ -30,8 +32,8 @@ struct FNpcLines
 
 /**
  * Who the people in the club are and what they say, plus how many times the player has talked to each.
- * The lines live in Content/Dialogue/npc_dialogue.txt (re-read at every level start, so text edits show up
- * on the next Play). TalkCounts is the whole dialogue state; ULyudSaveSubsystem saves it as "NpcDialogue"
+ * The order of the lines lives in Content/Dialogue/npc_dialogue.txt, the words in the string tables (LyudText), both
+ * re-read at every level start, so edits show up on the next Play. TalkCounts is the whole dialogue state; ULyudSaveSubsystem saves it as "NpcDialogue"
  * and it starts from zero at every level start (new game), unless a load restores it.
  */
 UCLASS()
@@ -116,6 +118,8 @@ private:
 	void FindPeople();
 	void Close();
 	void ShowLine();
+	void UpdateLineText();
+	void StopVoice();
 	FVector HeadOf(const FNpc& Npc) const;
 	bool CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const FVector& CamDir) const;
 	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
@@ -130,6 +134,10 @@ private:
 
 	TSharedPtr<FNpcTalkView> View;
 	TSharedPtr<SWidget> Overlay;
+
+	/** The voice of the line on screen, if it has one. */
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> Voice;
 };
 
 /** Spawns the ANpcTalkDirector when a game world starts. */

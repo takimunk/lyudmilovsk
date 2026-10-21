@@ -16,6 +16,9 @@
 #include "GameFramework/PlayerController.h"
 #include "HeroSeat.h"
 #include "LyudSave.h"
+#include "LyudText.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
@@ -36,17 +39,13 @@
 
 namespace
 {
-	// "> text" is the hero speaking; " | " splits one exchange into lines
+	// "hero.owner_first.2" -> line.hero.owner_first.2, said by the player
 	FNpcLine ParseLine(FString S)
 	{
 		S.TrimStartAndEndInline();
 		FNpcLine Line;
-		if (S.StartsWith(TEXT(">")))
-		{
-			Line.bHero = true;
-			S = S.Mid(1).TrimStart();
-		}
-		Line.Text = FText::FromString(S);
+		Line.bHero = S.StartsWith(TEXT("hero."));
+		Line.Key = TEXT("line.") + S;
 		return Line;
 	}
 
@@ -94,7 +93,10 @@ void UNpcDialogueSubsystem::Reload()
 		}
 		if (Raw.StartsWith(TEXT("[")) && Raw.EndsWith(TEXT("]")))
 		{
-			Current = &Characters.Add(FName(Raw.Mid(1, Raw.Len() - 2).TrimStartAndEnd()));
+			const FString Id = Raw.Mid(1, Raw.Len() - 2).TrimStartAndEnd();
+			Current = &Characters.Add(FName(Id));
+			Current->NameKey = FString::Printf(TEXT("npc.%s.name"), *Id.ToLower());
+			Current->RoleKey = FString::Printf(TEXT("npc.%s.role"), *Id.ToLower());
 			continue;
 		}
 		FString Key, Value;
@@ -104,15 +106,7 @@ void UNpcDialogueSubsystem::Reload()
 		}
 		Key.TrimStartAndEndInline();
 		Value.TrimStartAndEndInline();
-		if (Key == TEXT("name"))
-		{
-			Current->Name = FText::FromString(Value);
-		}
-		else if (Key == TEXT("role"))
-		{
-			Current->Role = FText::FromString(Value);
-		}
-		else if (Key == TEXT("first"))
+		if (Key == TEXT("first"))
 		{
 			Current->First.Append(ParseExchange(Value));
 		}
@@ -200,7 +194,7 @@ namespace
 			const FSlateFontInfo NameFont = FCoreStyle::GetDefaultFontStyle("Bold", 15);
 			const FSlateFontInfo RoleFont = FCoreStyle::GetDefaultFontStyle("Regular", 11);
 			const FSlateFontInfo HintFont = FCoreStyle::GetDefaultFontStyle("Bold", 12);
-			const FText HintText = FText::FromString(TEXT("[E]  Поговорить"));
+			const FText HintText = LyudText::Get(TEXT("ui.talk.prompt"));
 			const FVector2D Scale = Geometry.GetLocalSize() / View->ViewportSize;
 
 			for (const FNpcTalkView::FLabel& L : View->Labels)
@@ -508,8 +502,8 @@ void ANpcTalkDirector::Tick(float DeltaSeconds)
 		const FNpcLines* Info = D->Find(Npc.Id);
 		FNpcTalkView::FLabel& L = View->Labels.AddDefaulted_GetRef();
 		L.Pixel = Pixel;
-		L.Name = Info->Name;
-		L.Role = Info->Role;
+		L.Name = LyudText::Get(Info->NameKey);
+		L.Role = LyudText::Get(Info->RoleKey);
 		L.bTarget = i == TargetIndex && TalkingIndex == INDEX_NONE;
 		L.Alpha = FMath::Clamp((LabelRange - Dist) / 120.f, 0.f, 1.f);
 		if (bTalking || L.bTarget)
@@ -521,6 +515,7 @@ void ANpcTalkDirector::Tick(float DeltaSeconds)
 	// walked away mid-sentence
 	if (TalkingIndex != INDEX_NONE)
 	{
+		UpdateLineText();
 		const FNpc& Npc = People[TalkingIndex];
 		const bool bOwner = Cast<ABoothOwner>(Npc.Actor.Get()) != nullptr;
 		const APawn* Pawn = PC->GetPawn();
@@ -578,19 +573,40 @@ void ANpcTalkDirector::Interact()
 	}
 }
 
-void ANpcTalkDirector::ShowLine()
+void ANpcTalkDirector::UpdateLineText()
 {
+	// every frame, so a language switch shows at once
 	const FNpcLines* Info = Dialogue()->Find(People[TalkingIndex].Id);
 	const FNpcLine& Line = Lines[LineIndex];
-	View->bTalking = true;
 	View->bHeroSpeaks = Line.bHero;
-	View->Speaker = Line.bHero ? FText::FromString(TEXT("Ты")) : Info->Name;
-	View->Text = Line.Text;
-	View->Hint = FText::FromString(LineIndex + 1 < Lines.Num() ? TEXT("E  дальше") : TEXT("E  закончить"));
+	View->Speaker = LyudText::Get(Line.bHero ? FString(TEXT("ui.talk.you")) : Info->NameKey);
+	View->Text = LyudText::Get(Line.Key);
+	View->Hint = LyudText::Get(LineIndex + 1 < Lines.Num() ? TEXT("ui.talk.next") : TEXT("ui.talk.end"));
+}
+
+void ANpcTalkDirector::ShowLine()
+{
+	View->bTalking = true;
+	UpdateLineText();
+	StopVoice();
+	if (USoundBase* Sound = LyudText::LoadVoice(Lines[LineIndex].Key))
+	{
+		Voice = UGameplayStatics::SpawnSound2D(this, Sound);
+	}
+}
+
+void ANpcTalkDirector::StopVoice()
+{
+	if (Voice)
+	{
+		Voice->Stop();
+		Voice = nullptr;
+	}
 }
 
 void ANpcTalkDirector::Close()
 {
+	StopVoice();
 	TalkingIndex = INDEX_NONE;
 	Lines.Reset();
 	if (View.IsValid())

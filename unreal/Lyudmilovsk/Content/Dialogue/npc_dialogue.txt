@@ -1,118 +1,71 @@
-# Кто сидит в клубе и что говорит. Файл перечитывается при каждом запуске уровня (Play).
+# Who sits in the club and how their conversations go. Only structure: the words are in
+# Content/Localization/strings_<lang>.json (npc.<id>.name / npc.<id>.role, line.<speaker>.<scene>.<n>).
+# Re-read at every level start (Play).
 #
-# [Id]        имя меша без SK_ (SK_Streamer -> Streamer), хозяин клуба: Owner
-# name =      имя над головой
-# role =      мелкая подпись под именем (можно пусто)
-# first =     первый разговор, строки по порядку; строк first может быть несколько
-# again =     каждый следующий разговор берёт следующую строку again по кругу
-# В одной строке реплики разделяются " | ", а "> " в начале значит, что говорит герой.
+# [Id]      the mesh name without SK_ (SK_Streamer -> Streamer); the owner is Owner. Its keys use the id in lowercase.
+# first =   the first conversation: line keys in order, without the 'line.' prefix (there may be several first lines)
+# again =   every later conversation takes the next 'again' line, round and round
+# Keys are separated by ' | '; a key whose speaker is 'hero' is said by the player.
 
 [Owner]
-name = Кэндзи Огава
-role = хозяин клуба
-first = А, проснулся. Хорошо. Место за тобой, как всегда.
-first = > Как всегда? Я здесь впервые.
-first = Все так говорят. Время платное, но ты не переживай, у тебя пока ещё есть.
-first = > Где здесь выход?
-first = Выход есть у всех. Просто не все до него досиживают.
-again = Свет не трогай. Он сам знает, когда гореть.
-again = > Сколько у меня осталось? | Посмотри на экран. Он тебе честнее, чем я.
-again = Камеры сегодня опять рябят. Значит, кто-то из вас думает слишком громко.
-again = Чай кончился. Приходи позже, может, появится.
+first = owner.first.1 | hero.owner_first.2 | owner.first.3 | hero.owner_first.4 | owner.first.5
+again = owner.again1.1
+again = hero.owner_again2.1 | owner.again2.2
+again = owner.again3.1
+again = owner.again4.1
 
 [Clerk]
-name = Ямада Хироси
-role = рисует в Excel
-first = Тихо, пожалуйста. Я заливаю ячейку D-сорок-семь.
-first = > Вы что, рисуете в таблице?
-first = Это гора. Тридцать один лист. Каждая клетка нужного цвета.
-first = > Зачем?
-first = Фотоаппарат стоит денег. Excel уже был на рабочем компьютере.
-again = Не наклоняйся так. От тебя тень на мониторе.
-again = > Что сегодня рисуете? | Сакуру. Ей нужно шестьсот розовых клеток. Пока сорок.
-again = Если закрыть файл без сохранения, гора пропадёт. Я однажды проверил.
-again = Твоё место рядом с моим. Ты всё время печатаешь одно и то же, знаешь?
+first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
+again = clerk.again1.1
+again = hero.clerk_again2.1 | clerk.again2.2
+again = clerk.again3.1
+again = clerk.again4.1
 
 [Streamer]
-name = Ника
-role = стримит на PS2
-first = Ой, привет, ты в кадре! Чат, поздоровайтесь.
-first = > Тебя кто-то смотрит?
-first = Трое. Нет, уже двое. Один пишет, что у тебя странное лицо, не обращай внимания.
-first = Встань чуть левее, там свет теплее.
-again = Чат спрашивает, ты живой или NPC. Я сказала, что сама не уверена.
-again = > Во что играешь? | Не скажу, это сюрприз для зрителей. Их сейчас ноль, так что сюрприз удался.
-again = Не стой за спиной, у меня камера ловит каждое движение.
-again = Донат пришёл! Сорок рублей и подпись «выпусти нас». Смешные они.
+first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
+again = streamer.again1.1
+again = hero.streamer_again2.1 | streamer.again2.2
+again = streamer.again3.1
+again = streamer.again4.1
 
 [Kid_boy]
-name = Тёма
-role = залип в Сегу
-first = Не загораживай, я на боссе.
-first = > Давно сидишь?
-first = Ну, норм так. С утра. Или со вчера. Тут окон нет, не поймёшь.
-first = Если хочешь после меня, занимай. Только я не скоро.
-again = Этот уровень я прохожу уже раз сорок. Он каждый раз немного другой, прикинь.
-again = > Где твои родители? | Кринж вопрос. Они наверху. Наверное.
-again = Слышал, как дверь скрипит в конце? Значит, кто-то ушёл. Или пришёл.
-again = Соня врёт, что у неё рекорд. У неё вообще другая игра.
+first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
+again = kid_boy.again1.1
+again = hero.kid_boy_again2.1 | kid_boy.again2.2
+again = kid_boy.again3.1
+again = kid_boy.again4.1
 
 [Kid_girl]
-name = Соня
-role = сидит за iMac
-first = Привет. Ты тоже ждёшь, пока за тобой придут?
-first = > Кто придёт?
-first = Ну кто-нибудь. Мама сказала, посиди тут часик. Это было давно.
-first = Зато здесь есть интернет. Правда, всего одна страница.
-again = Я посчитала лампочки в гирлянде. Каждый раз выходит разное число.
-again = > Что за страница? | Там кот. Он не двигается, но иногда моргает. Когда никто не смотрит.
-again = Тёма думает, что он крутой. А он проигрывает одному и тому же боссу.
-again = У тебя на экране тоже буквы? У меня только синие.
+first = kid_girl.first.1 | hero.kid_girl_first.2 | kid_girl.first.3 | kid_girl.first.4
+again = kid_girl.again1.1
+again = hero.kid_girl_again2.1 | kid_girl.again2.2
+again = kid_girl.again3.1
+again = kid_girl.again4.1
 
 [Guy_a]
-name = Стас
-role = катка на двух мониках
-first = Брат, не сейчас, у меня рейтинговая.
-first = > Я просто спросить.
-first = Спрашивай быстро. Пинг тут адский, но я привык.
-first = Совет: у хозяина можно взять энергетик в долг. Только он помнит все долги.
-again = Опять кикнуло. Третий раз за катку. Сервер, кажется, где-то в соседней комнате.
-again = > Кто выигрывает? | Никто. Тут вообще никто не выигрывает, только время идёт.
-again = Если увидишь, что у меня экран погас, разбуди. Я не сплю, я в лобби.
-again = Тот японец с таблицей реально легенда. Я видел его гору. Она красивее, чем в игре.
+first = guy_a.first.1 | hero.guy_a_first.2 | guy_a.first.3 | guy_a.first.4
+again = guy_a.again1.1
+again = hero.guy_a_again2.1 | guy_a.again2.2
+again = guy_a.again3.1
+again = guy_a.again4.1
 
 [Guy_b]
-name = Тимур
-role = смотрит видосы
-first = О, новенький. Садись, где хочешь, всё равно никто не уходит.
-first = > В смысле не уходит?
-first = Ну уходит, но потом возвращается. Я вот третий раз прихожу. Или первый.
-first = Да расслабься. Тут тепло, сеть есть, что ещё нужно.
-again = Смотрю ролик про то, как люди строят дома из бутылок. Уже шестой час.
-again = > Как ты тут оказался? | Шёл с работы, захотел зарядить телефон. Телефон, кстати, так и не зарядился.
-again = Вентиляция гудит в ля-миноре. Я проверил по тюнеру.
-again = Отдыхай, брат. Конвейер всё равно никуда не везёт.
+first = guy_b.first.1 | hero.guy_b_first.2 | guy_b.first.3 | guy_b.first.4
+again = guy_b.again1.1
+again = hero.guy_b_again2.1 | guy_b.again2.2
+again = guy_b.again3.1
+again = guy_b.again4.1
 
 [Girl_a]
-name = Вера
-role = пишет на Спектруме
-first = Тсс. Я набираю программу из журнала, сбиваться нельзя.
-first = > Что за программа?
-first = Не знаю. Журнал без обложки. Строк уже на четыреста.
-first = Если в конце получится игра, позову тебя. Если не игра, тоже позову.
-again = Двести десятая строка: PRINT «ЛЮДМИЛОВСК». Странно, правда?
-again = > Работает? | Пишет «Ошибка в строке ноль». Такой строки вообще нет.
-again = Здесь всё старее меня, кроме тебя. Ты какой-то слишком новый.
-again = Не трогай провод. На магнитофоне вся моя жизнь за вечер.
+first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
+again = girl_a.again1.1
+again = hero.girl_a_again2.1 | girl_a.again2.2
+again = girl_a.again3.1
+again = girl_a.again4.1
 
 [Girl_b]
-name = Оля
-role = листает форумы
-first = Привет. Ты не из чата про Людмиловск случайно?
-first = > Про что?
-first = Есть форум, там пишут, что этот клуб снился куче людей. Я думала, шутка.
-first = А потом я сюда пришла.
-again = Новый пост: «если хозяин встал из-за стола, сразу говори с ним». Не знаю, почему.
-again = > Что ещё пишут? | Что за последним местом есть ещё одно. Но никто не дошёл.
-again = Модератор опять удалил всё про дверь в конце. Подозрительно.
-again = Я сохраняю каждую страницу. Вдруг потом их больше не будет.
+first = girl_b.first.1 | hero.girl_b_first.2 | girl_b.first.3 | girl_b.first.4
+again = girl_b.again1.1
+again = hero.girl_b_again2.1 | girl_b.again2.2
+again = girl_b.again3.1
+again = girl_b.again4.1

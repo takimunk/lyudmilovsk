@@ -13,6 +13,38 @@
   "hero": {
    "voice": "Brian",
    "direction": "[quiet, uncertain]"
+  },
+  "clerk": {
+   "voice": "Callum",
+   "direction": "[polite, quiet, precise, absorbed in his work]"
+  },
+  "streamer": {
+   "voice": "Jessica",
+   "direction": "[bright, fast, half talking to her chat]"
+  },
+  "kid_boy": {
+   "voice": "Charlie",
+   "direction": "[a bored teenage boy, distracted by his game]"
+  },
+  "kid_girl": {
+   "voice": "Laura",
+   "direction": "[a little girl, earnest, a bit lonely]"
+  },
+  "guy_a": {
+   "voice": "Will",
+   "direction": "[a young gamer in a hurry, mid-match]"
+  },
+  "guy_b": {
+   "voice": "Chris",
+   "direction": "[relaxed, lazy, friendly]"
+  },
+  "girl_a": {
+   "voice": "Matilda",
+   "direction": "[whispering, concentrated]"
+  },
+  "girl_b": {
+   "voice": "Sarah",
+   "direction": "[curious, slightly uneasy, conspiratorial]"
   }
  },
  "lines": {
