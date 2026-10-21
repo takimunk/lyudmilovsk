@@ -261,14 +261,14 @@ void AProceduralGrass::Scatter()
 			{
 				// the terrain says how much grass of this kind grows here; each tuft is kept with that chance
 				const FVector At(X, Y, Z);
-				float Density = 0.f;
+				float Allowed = 0.f;
 				switch (G.Habitat)
 				{
-				case EGrassHabitat::Dune: Density = Mask->GetDuneGrassDensity(At); break;
-				case EGrassHabitat::Wet: Density = Mask->GetWetness(At); break;
-				default: Density = Mask->GetGrassDensity(At) * (1.f - 0.6f * Mask->GetWetness(At)); break;
+				case EGrassHabitat::Dune: Allowed = Mask->GetDuneGrassDensity(At); break;
+				case EGrassHabitat::Wet: Allowed = Mask->GetWetness(At); break;
+				default: Allowed = Mask->GetGrassDensity(At) * (1.f - 0.6f * Mask->GetWetness(At)); break;
 				}
-				if (Hash01(U, (uint32)Cx, (uint32)Cy, 8) >= Density)
+				if (Hash01(U, (uint32)Cx, (uint32)Cy, 8) >= Allowed)
 				{
 					continue;
 				}
