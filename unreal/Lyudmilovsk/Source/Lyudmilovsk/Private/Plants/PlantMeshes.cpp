@@ -789,6 +789,43 @@ void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint
 	OutNormal = MakeTexture(Outer, W, H, MoveTemp(Normal), false, true);
 }
 
+UTexture2D* PlantMeshes::BuildFoliageCard(UObject* Outer, const FPlantLeafShape& L)
+{
+	if (L.Form == EPlantLeafForm::Needle)
+	{
+		return BuildLeafDetail(Outer, L);
+	}
+	// a spray of leaves seen from the side: alpha 255 on a leaf, a grey shade, the shapes of this species' blades
+	constexpr int32 W = 128;
+	TArray<FColor> Img;
+	Img.Init(FColor(0, 0, 0, 0), W * W);
+	const int32 Leaves = 70;
+	for (int32 N = 0; N < Leaves; N++)
+	{
+		const float Cx = (0.12f + 0.76f * Hash01(41, N, 1)) * W, Cy = (0.1f + 0.85f * Hash01(41, N, 2)) * W;
+		const float Ang = (Hash01(41, N, 3) - 0.5f) * 2.4f + (Cx / W - 0.5f) * 1.2f;
+		const float Len = (0.16f + 0.1f * Hash01(41, N, 4)) * W, Wid = Len * FMath::Clamp(L.Width, 0.35f, 1.1f) * 0.5f;
+		const float Shade = 0.7f + 0.3f * Hash01(41, N, 5);
+		const float Ca = FMath::Cos(Ang), Sa = FMath::Sin(Ang);
+		for (int32 Y = -(int32)Len; Y <= (int32)Len; Y++)
+		{
+			for (int32 X = -(int32)Len; X <= (int32)Len; X++)
+			{
+				// leaf space: along the leaf (u from the base) and across it
+				const float U = (X * Sa - Y * Ca) / Len + 0.5f, Vv = (X * Ca + Y * Sa) / Wid;
+				if (U < 0.f || U > 1.f) continue;
+				const float Half = FMath::Pow(FMath::Sin(PI * FMath::Clamp(U, 0.f, 1.f)), 0.8f);
+				if (FMath::Abs(Vv) > Half) continue;
+				const int32 Ix = FMath::RoundToInt(Cx) + X, Iy = FMath::RoundToInt(Cy) + Y;
+				if (Ix < 0 || Ix >= W || Iy < 0 || Iy >= W) continue;
+				const uint8 C = (uint8)FMath::RoundToInt(255.f * Shade * (0.75f + 0.25f * U));
+				Img[Iy * W + Ix] = FColor(C, C, C, 255);
+			}
+		}
+	}
+	return MakeTexture(Outer, W, W, MoveTemp(Img), true, false);
+}
+
 UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& L)
 {
 	if (L.Form == EPlantLeafForm::Needle)
@@ -1040,7 +1077,7 @@ UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 namespace
 {
 	/** The data of one LOD as two sections, wood and leaves, in a mesh description. */
-	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf, const FMeshData& Blob)
+	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf, const FMeshData& Card)
 	{
 		FStaticMeshAttributes Attr(MD);
 		Attr.Register();
@@ -1051,8 +1088,8 @@ namespace
 		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
 		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
 		VUV.SetNumChannels(2);
-		const FMeshData* Parts[3] = { &Wood, &Leaf, &Blob };
-		const TCHAR* Slots[3] = { TEXT("Wood"), TEXT("Leaf"), TEXT("Blob") };
+		const FMeshData* Parts[3] = { &Wood, &Leaf, &Card };
+		const TCHAR* Slots[3] = { TEXT("Wood"), TEXT("Leaf"), TEXT("Card") };
 		for (int32 Part = 0; Part < 3; Part++)
 		{
 			const FMeshData& D = *Parts[Part];
@@ -1095,15 +1132,23 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 	Skeleton.Build(S, Seed);
 	FPlantSkeleton::FInstances Out;
 	Skeleton.Evaluate(Age, PlantModel::Season(S, Seed, Day), Out);
-	FMeshData Cluster, Simple;
+	FMeshData Cluster, Simple, CardCluster;
 	LeafClusterData(S, Cluster);
 	LeafClusterData(S, Simple, true);
+	{
+		FPlantSpecies SC = S;
+		SC.Leaf.Form = EPlantLeafForm::Needle;
+		SC.Leaf.Cards = 3;
+		SC.Leaf.Width = 0.9f;
+		SC.Leaf.Length = S.Leaf.Form == EPlantLeafForm::Needle ? S.Leaf.Length : FMath::Max(S.LeafClusterSize * 1.1f, 0.3f);
+		LeafClusterData(SC, CardCluster);
+	}
 
 	struct FLod { int32 MaxOrder; int32 Stride; float Scale; };
 	// needle clusters are already 6 triangles; a blade cluster is cut to a fifth in every LOD (simple blades) and thinned out.
-	// LOD3, from far away, is the trunk and one low-poly crown (the "Blob" section, no leaf shapes at all)
+	// From LOD2 the leaves are cards (the "Card" section): three crossed quads per cluster, each with a spray of real leaves or needles painted in its alpha, so the silhouette stays a tree's
 	const bool bNeedle = S.Leaf.Form == EPlantLeafForm::Needle;
-	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.25f }, { 1, bNeedle ? 3 : 6, bNeedle ? 1.7f : 2.2f }, { 1, bNeedle ? 8 : 20, bNeedle ? 2.8f : 3.8f }, { 0, 0, 1.f } };
+	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.25f }, { 1, bNeedle ? 3 : 6, bNeedle ? 1.7f : 2.2f }, { 1, 6, 2.f }, { 1, 20, 3.6f } };
 	TArray<FMeshDescription>& Descriptions = Result.Lods;
 	Descriptions.SetNum(4);
 	for (int32 L = 0; L < 4; L++)
@@ -1113,7 +1158,7 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 		{
 			if (T.Order <= Lods[L].MaxOrder) Tubes.Add(T);
 		}
-		FMeshData Wood, Leaf, Blob;
+		FMeshData Wood, Leaf, Card;
 		if (!Tubes.IsEmpty())
 		{
 			BuildWoodImpl(nullptr, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
@@ -1123,66 +1168,27 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 		{
 			for (const FTransform& Xf0 : Out.Leaves[K])
 			{
-				if (Lods[L].Stride <= 0 || Count++ % Lods[L].Stride != 0) continue;
+				if (Count++ % Lods[L].Stride != 0) continue;
 				FTransform Xf = Xf0;
 				Xf.SetScale3D(Xf.GetScale3D() * Lods[L].Scale);
-				const int32 Base = Leaf.Pos.Num();
-				const FMeshData& Src = bNeedle ? Cluster : Simple;
+				FMeshData& Dst = L >= 2 ? Card : Leaf;
+				const int32 Base = Dst.Pos.Num();
+				const FMeshData& Src = L >= 2 ? CardCluster : (bNeedle ? Cluster : Simple);
 				for (int32 V = 0; V < Src.Pos.Num(); V++)
 				{
-					Leaf.Add(FVector3f(Xf.TransformPosition(FVector(Src.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(Src.Nrm[V]))),
+					Dst.Add(FVector3f(Xf.TransformPosition(FVector(Src.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(Src.Nrm[V]))),
 					         FVector3f(Xf.TransformVectorNoScale(FVector(Src.Tan[V]))), Src.UV[V]);
 				}
-				for (const FIntVector3& T : Src.Tris) Leaf.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
+				for (const FIntVector3& T : Src.Tris) Dst.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
 			}
 		}
-		if (L >= 2)
-		{
-			// LOD2 has the crown under its few clusters, LOD3 is only the crown
-			int32 Leaves = 0;
-			for (int32 K = 0; K < FPlantSeason::NumBuckets; K++) Leaves += Out.Leaves[K].Num();
-			if (Leaves > 20)
-			{
-				// an ellipsoid (a cone for the conifers) over the crown: from the lowest leaf to the top
-				float Low = TNumericLimits<float>::Max();
-				for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
-				{
-					for (const FTransform& Xf : Out.Leaves[K]) Low = FMath::Min(Low, (float)Xf.GetLocation().Z * 0.01f);
-				}
-				const float Top = Out.Height, Base = FMath::Clamp(Low, 0.f, Top * 0.8f), Mid = 0.5f * (Top + Base), Half = 0.5f * (Top - Base);
-				const float Radius = FMath::Max(Out.Reach * 0.85f, 0.3f);
-				constexpr int32 Sides = 10, Rings = 6;
-				for (int32 R = 0; R <= Rings; R++)
-				{
-					const float V = (float)R / Rings;
-					const float Z = Base + V * (Top - Base);
-					const float Rad = S.bConicalCrown ? Radius * (1.f - V) : Radius * FMath::Sqrt(FMath::Max(0.f, 1.f - FMath::Square((Z - Mid) / FMath::Max(Half, 0.01f))));
-					for (int32 I = 0; I < Sides; I++)
-					{
-						const float A = 2.f * PI * I / Sides;
-						const FVector3f P(FMath::Cos(A) * Rad, FMath::Sin(A) * Rad, Z);
-						const FVector3f N = S.bConicalCrown ? FVector3f(FMath::Cos(A), FMath::Sin(A), 0.4f) : FVector3f(FMath::Cos(A) * Rad / Radius, FMath::Sin(A) * Rad / Radius, (Z - Mid) / FMath::Max(Half, 0.01f));
-						Blob.Add(P * 100.f, N.GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector), FVector3f(-FMath::Sin(A), FMath::Cos(A), 0.f), FVector2f(0.5f, 0.5f));
-					}
-				}
-				for (int32 R = 0; R < Rings; R++)
-				{
-					for (int32 I = 0; I < Sides; I++)
-					{
-						const int32 A0 = R * Sides + I, B0 = R * Sides + (I + 1) % Sides, C0 = A0 + Sides, E0 = B0 + Sides;
-						Blob.Tris.Add(FIntVector3(A0, C0, B0));
-						Blob.Tris.Add(FIntVector3(B0, C0, E0));
-					}
-				}
-			}
-		}
-		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty() && Blob.Tris.IsEmpty())
+		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty() && Card.Tris.IsEmpty())
 		{
 			for (int32 I = 0; I < 3; I++) Wood.Add(FVector3f::ZeroVector, FVector3f::UpVector, FVector3f::XAxisVector, FVector2f::ZeroVector);
 			Wood.Tris.Add(FIntVector3(0, 1, 2));
 		}
-		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Blob.Tris.Num();
-		FillTreeLod(Descriptions[L], Wood, Leaf, Blob);
+		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Card.Tris.Num();
+		FillTreeLod(Descriptions[L], Wood, Leaf, Card);
 	}
 	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
 	Result.Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
@@ -1197,7 +1203,7 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed)), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Leaf")));
-	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Blob")));
+	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Card")));
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
 	Params.bMarkPackageDirty = false;
 	Params.bBuildSimpleCollision = false;

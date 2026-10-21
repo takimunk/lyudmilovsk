@@ -22,7 +22,7 @@ struct FTreeBakeKey
 struct FTreeBaked
 {
 	TObjectPtr<UStaticMesh> Mesh;
-	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf, Blob;
+	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf, Card;
 	/** The day of the year it was baked for. */
 	float Day = -1000.f;
 	/** Counts up every time the mesh is replaced by a newer bake; a user of it compares. */
@@ -69,7 +69,7 @@ private:
 	struct FJob;
 	struct FSpeciesAssets
 	{
-		TObjectPtr<UTexture2D> Albedo, Normal, Detail;
+		TObjectPtr<UTexture2D> Albedo, Normal, Detail, Card;
 	};
 	void Finish(FJob& Job);
 	void Launch(const TSharedPtr<FJob>& Job);
@@ -87,6 +87,7 @@ private:
 	double NextFinishTime = 0.0;
 	double PrepareMs = 0.0, FinishMs = 0.0, WorstFinishMs = 0.0;
 	int32 Done = 0;
+	int64 TotalTris[4] = {};
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> KeepAlive;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterial;

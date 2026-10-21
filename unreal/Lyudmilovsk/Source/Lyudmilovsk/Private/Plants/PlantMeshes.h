@@ -71,6 +71,9 @@ namespace PlantMeshes
 	/** The second half, on the game thread: the static mesh from the descriptions. */
 	FTreeBake FinishTreeBake(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, FTreePrep&& Prep, const FVector3f& LodDistances);
 
+	/** The alpha-masked texture of a foliage card (from LOD2 of a baked tree): a spray of the species' leaves, or its needles. */
+	UTexture2D* BuildFoliageCard(UObject* Outer, const FPlantLeafShape& Leaf);
+
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);
 }

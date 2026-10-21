@@ -218,7 +218,7 @@ void AProceduralForest::SyncBakes(float Day)
 		G.Comp->SetStaticMesh(B->Mesh);
 		G.Comp->SetMaterial(0, B->Wood);
 		G.Comp->SetMaterial(1, B->Leaf);
-		G.Comp->SetMaterial(2, B->Blob);
+		G.Comp->SetMaterial(2, B->Card);
 		G.Comp->SetCullDistances(0, (int32)CullDistance);
 		if (!G.bInstancesAdded)
 		{

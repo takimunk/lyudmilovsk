@@ -82,6 +82,8 @@ void UTreeBakeCache::Finish(FJob& Job)
 		KeepAlive.Add(A.Albedo);
 		KeepAlive.Add(A.Normal);
 		KeepAlive.Add(A.Detail);
+		A.Card = PlantMeshes::BuildFoliageCard(this, S.Leaf);
+		KeepAlive.Add(A.Card);
 	}
 	const double MeshStart = FPlatformTime::Seconds();
 	const FVector* L = LodsOf.Find(Job.Key);
@@ -98,11 +100,12 @@ void UTreeBakeCache::Finish(FJob& Job)
 		Out.Leaf = UMaterialInstanceDynamic::Create(S.Leaf.Form == EPlantLeafForm::Needle ? NeedleMaterial.Get() : LeafMaterial.Get(), this);
 		KeepAlive.Add(Out.Wood);
 		KeepAlive.Add(Out.Leaf);
-		// the far crown is a closed low-poly shape: the plain leaf material (never the needle cards' masked one), darkened
-		Out.Blob = UMaterialInstanceDynamic::Create(LeafMaterial, this);
-		KeepAlive.Add(Out.Blob);
-		Out.Blob->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
-		Out.Blob->SetScalarParameterValue(TEXT("Flutter"), 0.f);
+		// from LOD2 on, leaves are cards cut out by their alpha: the needle material with the species' spray
+		Out.Card = UMaterialInstanceDynamic::Create(NeedleMaterial, this);
+		KeepAlive.Add(Out.Card);
+		Out.Card->SetTextureParameterValue(TEXT("LeafDetail"), A.Card);
+		Out.Card->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		Out.Card->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkAlbedo"), A.Albedo);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkNormal"), A.Normal);
 		Out.Wood->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour);
@@ -117,7 +120,7 @@ void UTreeBakeCache::Finish(FJob& Job)
 	const FPlantSeason Season = PlantModel::Season(S, Job.Key.Seed, Job.Day);
 	Out.Wood->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
 	Out.Leaf->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
-	Out.Blob->SetVectorParameterValue(TEXT("Color"), Season.Colour[1] * 0.45f);
+	Out.Card->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
 	Out.Mesh = Bake.Mesh;
 	Out.Day = Job.Day;
 	Out.Version++;
@@ -129,6 +132,7 @@ void UTreeBakeCache::Finish(FJob& Job)
 	PrepareMs += Job.Prep.Ms;
 	WorstFinishMs = FMath::Max(WorstFinishMs, Ms);
 	Done++;
+	for (int32 I = 0; I < 4; I++) TotalTris[I] += Bake.Triangles[I];
 	// the next one waits eight times as long as this took
 	NextFinishTime = FPlatformTime::Seconds() + Ms * 8.0 * 0.001;
 }
@@ -191,6 +195,6 @@ void UTreeBakeCache::BakeAllNow()
 
 FString UTreeBakeCache::DescribeStats() const
 {
-	return FString::Printf(TEXT("%d kinds baked (%d queued or running); avg %.0f ms on a worker, %.0f ms on the game thread (worst %.0f)"), Done, NumPending(),
-		Done ? PrepareMs / Done : 0.0, Done ? FinishMs / Done : 0.0, WorstFinishMs);
+	return FString::Printf(TEXT("%d kinds baked (%d queued or running); avg %.0f ms on a worker, %.0f ms on the game thread (worst %.0f); triangles in all kinds by LOD %dk/%dk/%dk/%dk"), Done, NumPending(),
+		Done ? PrepareMs / Done : 0.0, Done ? FinishMs / Done : 0.0, WorstFinishMs, TotalTris[0] / 1000, TotalTris[1] / 1000, TotalTris[2] / 1000, TotalTris[3] / 1000);
 }

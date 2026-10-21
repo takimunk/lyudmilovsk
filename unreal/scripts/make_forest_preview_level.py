@@ -23,7 +23,7 @@ plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
 
 ground = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, -50))
 ground.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))
-ground.set_actor_scale3d(unreal.Vector(400, 400, 1))
+ground.set_actor_scale3d(unreal.Vector(1500, 1500, 1))
 ground.set_actor_label("Ground")
 ground.static_mesh_component.set_material(0, unreal.load_asset("/Engine/EngineMaterials/DefaultMaterial"))
 

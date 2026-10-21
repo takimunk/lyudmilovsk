@@ -4,12 +4,17 @@ tools-style command line:
   UnrealEditor <uproject> /Game/Dev/L_ForestPreview -game -RenderOffscreen -ResX=1280 -ResY=720 -windowed
       -dpcvars=lyud.MainMenuOnStart=0 -abslog=<log> "-ExecCmds=py <this file>"
 """
+import os
 import statistics
 import unreal
 
+SHOTS = os.environ.get("FOREST_SHOTS", "/tmp/shots")
+SHOT_PREFIX = os.environ.get("FOREST_SHOT_PREFIX", "shot")
+
 WARMUP = 1500
 SAMPLE = 300
-VIEWS = [("inside", (-1200, 0, 170), (0, 0, 0)), ("edge", (-5200, 0, 170), (0, 0, 0)), ("high", (-9000, 0, 1500), (-8, 0, 0))]
+# the forest's western edge is at x = -6000 cm; the camera stands D metres out from it, eye height, looking east into it
+VIEWS = [("d%03dm" % d, (-6000 - d * 100, 0, 170), (0, 0, 0)) for d in (10, 30, 80, 200)] + [("inside", (-1200, 0, 170), (0, 0, 0)), ("end", (-1200, 0, 170), (0, 0, 0))]
 state = {"t": 0, "view": -1, "dts": [], "phase": "warm"}
 
 
@@ -39,21 +44,19 @@ def tick(dt):
             place(0)
             state["dts"] = []
         return
-    if t % 100 == 1:
+    if t == 1 or t % 100 == 1:
         place(state["view"])
     if t > 60:
         state["dts"].append(dt * 1000.0)
     if t == SAMPLE + 60:
         d = state["dts"]
         unreal.log_warning("FORESTBENCH %s median %.2f ms (p90 %.2f)" % (VIEWS[state["view"]][0], statistics.median(d), sorted(d)[int(len(d) * 0.9)]))
-        unreal.SystemLibrary.execute_console_command(world(), "HighResShot 1280x720")   # Saved/Screenshots/Mac, in view order
+        unreal.SystemLibrary.execute_console_command(world(), "HighResShot 1280x720 filename=%s/%s_%s.png" % (SHOTS, SHOT_PREFIX, VIEWS[state["view"]][0]))
         state["view"] += 1
-        state["t"] = -40
+        state["t"] = -60
         state["dts"] = []
         if state["view"] >= len(VIEWS):
             unreal.SystemLibrary.execute_console_command(world(), "QUIT")
-        else:
-            place(state["view"])
 
 
 unreal.register_slate_post_tick_callback(tick)

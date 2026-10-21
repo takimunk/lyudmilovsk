@@ -69,7 +69,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveDistance = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") int32 MaxLive = 10;
 	/** Camera distances where the baked trees drop to LOD1, LOD2 and LOD3, cm. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(1500.0, 4500.0, 11000.0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(1500.0, 5500.0, 15000.0);
 	/** Trees farther than this are not drawn, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float CullDistance = 50000.f;
 	/** The baked trees are redone when the date has moved this many days. */
