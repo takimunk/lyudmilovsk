@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Anim")
 	TObjectPtr<UAnimSequence> SitDownAnim;
 
+	/** Standing at the window, ready to talk. */
+	bool IsAtWindow() const { return State == EState::AtWindow; }
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 

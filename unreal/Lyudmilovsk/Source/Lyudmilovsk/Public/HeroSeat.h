@@ -40,6 +40,9 @@ public:
 
 	virtual void OnGameLoaded_Implementation() override;
 
+	/** The player stands by the chair and E would sit him down. */
+	bool IsPlayerInRange() const { return bInRange && !bSitting; }
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
