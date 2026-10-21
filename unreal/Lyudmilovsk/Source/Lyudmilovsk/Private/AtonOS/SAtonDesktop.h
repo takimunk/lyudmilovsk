@@ -73,6 +73,9 @@ public:
 	/** The player sat down: give the keyboard to the front window. */
 	void FocusFrontWindow();
 
+	/** The start menu is open (Esc closes it). */
+	bool IsMenuOpen() const { return bMenuOpen; }
+
 	// IAtonShell
 	virtual void OpenApp(FName AppId, const FString& Arg = FString()) override;
 	virtual void CloseApp(FName AppId) override;

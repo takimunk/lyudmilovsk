@@ -76,6 +76,12 @@ void ASwingDoor::OnInteract()
 	}
 }
 
+void ASwingDoor::OnGameLoaded_Implementation()
+{
+	Openness = bOpen ? 1.f : 0.f;
+	Apply();
+}
+
 void ASwingDoor::Toggle()
 {
 	bOpen = !bOpen;

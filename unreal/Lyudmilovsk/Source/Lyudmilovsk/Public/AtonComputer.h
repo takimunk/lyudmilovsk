@@ -82,6 +82,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "ATON OS")
 	bool IsActive() const { return bActive; }
 
+	/** The OS start menu is open, so Esc belongs to the OS. */
+	bool IsOSMenuOpen() const;
+
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 	virtual void Tick(float DeltaSeconds) override;

@@ -112,9 +112,19 @@ void AAtonComputer::Tick(float DeltaSeconds)
 		{
 			Player->OnFinished.AddUniqueDynamic(this, &AAtonComputer::OnSitFinished);
 			WatchedPlayer = Player;
+			// A loaded save skips the cutscene to its end, which may finish before this tick sees it.
+			if (!Player->IsPlaying() && Player->GetCurrentTime().Time.FrameNumber >= Player->GetEndTime().Time.FrameNumber - 1)
+			{
+				OnSitFinished();
+			}
 			break;
 		}
 	}
+}
+
+bool AAtonComputer::IsOSMenuOpen() const
+{
+	return Desktop.IsValid() && Desktop->IsMenuOpen();
 }
 
 void AAtonComputer::OnSitFinished()

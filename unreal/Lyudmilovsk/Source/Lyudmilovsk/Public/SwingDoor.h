@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LyudSave.h"
 #include "SwingDoor.generated.h"
 
 class UBoxComponent;
@@ -12,7 +13,7 @@ class UBoxComponent;
  * on its hinge; it may be placed in the level either closed or already open (bLeavesPlacedOpen).
  */
 UCLASS()
-class LYUDMILOVSK_API ASwingDoor : public AActor
+class LYUDMILOVSK_API ASwingDoor : public AActor, public ILyudSaveable
 {
 	GENERATED_BODY()
 
@@ -47,6 +48,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void OnGameLoaded_Implementation() override;
+
 private:
 	void OnInteract();
 
@@ -54,5 +57,6 @@ private:
 
 	TArray<FRotator> ClosedRotations;
 	float Openness = 1.f;   // 0 closed .. 1 open
+	UPROPERTY(SaveGame)
 	bool bOpen = true;
 };

@@ -90,7 +90,16 @@ void AHeroSeat::Tick(float DeltaSeconds)
 	}
 }
 
-void AHeroSeat::StartSit(APlayerController* PC)
+void AHeroSeat::OnGameLoaded_Implementation()
+{
+	if (bSitting)
+	{
+		bSitting = false;
+		StartSit(GetWorld()->GetFirstPlayerController(), true);
+	}
+}
+
+void AHeroSeat::StartSit(APlayerController* PC, bool bSkipToEnd)
 {
 	ULevelSequence* Sequence = SitSequence.LoadSynchronous();
 	if (!Sequence || bSitting)
@@ -118,5 +127,9 @@ void AHeroSeat::StartSit(APlayerController* PC)
 	if (ULevelSequencePlayer* Player = SequenceActor->GetSequencePlayer())
 	{
 		Player->Play();
+		if (bSkipToEnd)
+		{
+			Player->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(Player->GetEndTime().Time, EUpdatePositionMethod::Jump));
+		}
 	}
 }

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LyudSave.h"
 #include "HeroSeat.generated.h"
 
 class UBoxComponent;
@@ -16,7 +17,7 @@ class ALevelSequenceActor;
  * "sit at the computer" cutscene (hero sits, hands on the keyboard, camera flies to the screen).
  */
 UCLASS()
-class LYUDMILOVSK_API AHeroSeat : public AActor
+class LYUDMILOVSK_API AHeroSeat : public AActor, public ILyudSaveable
 {
 	GENERATED_BODY()
 
@@ -30,8 +31,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Seat")
 	FString Prompt = TEXT("[E]  Сесть за компьютер");
 
+	/** bSkipToEnd: the hero is seated at once (a loaded save), the cutscene jumps to its last frame. */
 	UFUNCTION(BlueprintCallable, Category = "Seat")
-	void StartSit(APlayerController* PC);
+	void StartSit(APlayerController* PC, bool bSkipToEnd = false);
+
+	UFUNCTION(BlueprintPure, Category = "Seat")
+	bool IsSitting() const { return bSitting; }
+
+	virtual void OnGameLoaded_Implementation() override;
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -50,5 +57,6 @@ private:
 
 	bool bInRange = false;
 	TWeakObjectPtr<APlayerController> InRangePC;
+	UPROPERTY(SaveGame)
 	bool bSitting = false;
 };
