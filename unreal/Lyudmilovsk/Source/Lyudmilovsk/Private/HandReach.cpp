@@ -189,7 +189,7 @@ namespace HandReach
 		// ending up over the hand: the hips drop and go back a little, the back tips forward about the hips
 		const FCompactPoseBoneIndex HeadBone = Find(Bones, TEXT("head"));
 		const FVector Head = HeadBone.IsValid() ? Loc(Pose, HeadBone) : Shoulder + FVector(0.f, 0.f, 20.f);
-		constexpr float MaxCrouch = 56.f, MaxLeanDeg = 55.f, HipsBack = 0.3f, HeadClear = 14.f;
+		constexpr float MaxCrouch = 64.f, MaxLeanDeg = 75.f, HipsBack = 0.3f, HeadClear = 10.f;
 		float BestCost = TNumericLimits<float>::Max(), BestC = 0.f, BestA = 0.f, BestDist = TNumericLimits<float>::Max();
 		bool bFound = false;
 		for (float C = 0.f; C <= MaxCrouch; C += 2.f)
@@ -203,7 +203,7 @@ namespace HandReach
 				const float D = (float)(WristTarget - Sh).Size();
 				const float HeadToPalm = (float)FVector::Dist2D(Hd, Reach.Palm);
 				const float Cost = 0.6f * C + 1.0f * A;
-				if (D <= 0.9f * ArmLength && HeadToPalm >= HeadClear)
+				if (D <= 0.95f * ArmLength && HeadToPalm >= HeadClear)
 				{
 					if (!bFound || Cost < BestCost)
 					{
