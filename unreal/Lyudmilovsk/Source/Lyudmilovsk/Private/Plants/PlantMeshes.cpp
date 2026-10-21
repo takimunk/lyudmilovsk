@@ -122,6 +122,21 @@ namespace
 				if (I > 0) B.Tris.Add(FIntVector3(C, C + I, C + I + 1));
 			}
 		}
+		else if (L.Form == EPlantLeafForm::Needle)
+		{
+			// a stiff, slightly curved spike: broad at the base, three triangles to the point
+			const float HalfW = 0.5f * W;
+			const float Y[3] = { 0.f, 0.45f * Length, Length }, Zs[3] = { 0.f, -0.02f * Length, -0.09f * Length }, Hw[3] = { HalfW, 0.7f * HalfW, 0.f };
+			for (int32 I = 0; I < 3; I++)
+			{
+				const float T = Y[I] / Length;
+				B.Add(FVector3f(-Hw[I], Y[I], Zs[I]), FVector3f::UpVector, FVector3f::XAxisVector, FVector2f(0.5f - Hw[I] / W, 1.f - T));
+				if (I < 2) B.Add(FVector3f(Hw[I], Y[I], Zs[I]), FVector3f::UpVector, FVector3f::XAxisVector, FVector2f(0.5f + Hw[I] / W, 1.f - T));
+			}
+			B.Tris.Add(FIntVector3(0, 2, 1));
+			B.Tris.Add(FIntVector3(1, 2, 3));
+			B.Tris.Add(FIntVector3(2, 4, 3));
+		}
 		else
 		{
 			const bool bTeeth = L.Teeth > 0 && L.Teeth <= 8;
@@ -559,6 +574,31 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 	const FPlantLeafShape& L = S.Leaf;
 	FMeshData D;
 	const int32 Count = FMath::Max(L.PerCluster, 1);
+	if (L.Form == EPlantLeafForm::Needle)
+	{
+		// a tuft: needles fan out from a short shoot (along Z), up and out, the whole tuft shaded as one soft ball
+		const int32 Group = FMath::Max(L.Lobes, 1); // 2 for a pine's paired needles
+		for (int32 I = 0; I < Count; I++)
+		{
+			const int32 G = I / Group, M = I % Group;
+			const float Phi = G * GoldenAngle + Hash01(77, G, 1) * 0.6f;
+			const float Theta = FMath::DegreesToRadians(15.f + 95.f * FMath::Sqrt(Hash01(77, G, 2))) + M * 0.2f;
+			const FVector3f Dir(FMath::Cos(Phi) * FMath::Sin(Theta), FMath::Sin(Phi) * FMath::Sin(Theta), FMath::Cos(Theta));
+			const FVector3f Node(0.f, 0.f, S.LeafClusterSize * 0.25f * (Hash01(77, G, 3) - 0.3f));
+			const float Length = L.Length * (0.75f + 0.5f * Hash01(77, I, 4));
+			// blade along +Y facing +Z -> along Dir with the broad side to the tuft's outside
+			const FVector3f Side = FVector3f::CrossProduct(Dir, FVector3f::UpVector).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::XAxisVector);
+			const FVector3f Face = FVector3f::CrossProduct(Side, Dir);
+			const FMatrix44f Basis(FPlane4f(Side, 0.f), FPlane4f(Dir, 0.f), FPlane4f(Face, 0.f), FPlane4f(0.f, 0.f, 0.f, 1.f));
+			const int32 Base = D.Pos.Num();
+			BuildBlade(L, Length, D, FTransform3f(Basis.ToQuat(), Node));
+			for (int32 V = Base; V < D.Pos.Num(); V++)
+			{
+				D.Nrm[V] = (D.Pos[V] - FVector3f(0.f, 0.f, 0.f)).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector);
+			}
+		}
+		return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaves_%s"), *S.Name.ToString()), D);
+	}
 	for (int32 I = 0; I < Count; I++)
 	{
 		const float Phi = I * GoldenAngle + Hash01(77, I, 1) * 0.5f;
@@ -769,4 +809,72 @@ UTexture2D* PlantMeshes::BuildFruitDetail(UObject* Outer)
 		}
 	}
 	return MakeTexture(Outer, W, W, MoveTemp(Px), true, false);
+}
+
+UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
+{
+	FMeshData D;
+	constexpr int32 Rows = 5;
+	const int32 Count = FMath::Clamp(G.Blades, 3, 40);
+	for (int32 B = 0; B < Count; B++)
+	{
+		// where it stands in the tuft, which way it leans, how long, how far it arches, how it twists
+		const float Around = B * GoldenAngle;
+		const float R0 = G.TuftRadius * FMath::Sqrt((B + 0.5f) / Count) * (0.6f + 0.4f * Hash01(5, B, 1));
+		const float Heading = Around + (Hash01(5, B, 2) - 0.5f) * 1.4f;
+		const float Len = G.Height * (0.55f + 0.45f * Hash01(5, B, 3));
+		const float Lean0 = FMath::DegreesToRadians(G.Lean * (0.4f + 0.9f * Hash01(5, B, 4)));
+		const float Arch = FMath::DegreesToRadians(G.Arch * (0.4f + 0.8f * Hash01(5, B, 5)));
+		const float Width = G.BladeWidth * (0.8f + 0.4f * Hash01(5, B, 6));
+		const float Twist = (Hash01(5, B, 7) - 0.5f) * 1.6f;
+		const float Shade = Hash01(5, B, 8);
+		const FVector3f Out(FMath::Cos(Heading), FMath::Sin(Heading), 0.f);
+		FVector3f P = FVector3f(FMath::Cos(Around) * R0, FMath::Sin(Around) * R0, 0.f);
+		const int32 Base = D.Pos.Num();
+		FVector3f Face = FVector3f::ZeroVector;
+		for (int32 K = 0; K < Rows; K++)
+		{
+			const float T = (float)K / (Rows - 1);
+			const float A = Lean0 + Arch * FMath::Pow(T, 1.5f);
+			const FVector3f Dir(Out.X * FMath::Sin(A), Out.Y * FMath::Sin(A), FMath::Cos(A));
+			// across the blade: horizontal and square to its heading, twisting a little along its length
+			const FVector3f Flat(-Out.Y, Out.X, 0.f);
+			const FVector3f Normal0 = FVector3f::CrossProduct(Flat, Dir).GetSafeNormal();
+			const float Tw = Twist * T;
+			const FVector3f Side = Flat * FMath::Cos(Tw) + Normal0 * FMath::Sin(Tw);
+			const float Half = 0.5f * Width * (K == Rows - 1 ? 0.f : 1.f - FMath::Pow(T, 1.4f));
+			Face = FVector3f::CrossProduct(Side, Dir).GetSafeNormal();
+			if (FVector3f::DotProduct(Face, Out) < 0.f) Face = -Face;
+			// shaded as a soft, upward-looking surface rather than a hard flat strip
+			const FVector3f Nrm = (Face + FVector3f::UpVector * 0.8f).GetSafeNormal();
+			const FVector4f Col(T, Shade, 0.f, 1.f);
+			if (K == Rows - 1)
+			{
+				D.Add(P * 100.f, Nrm, Side, FVector2f(0.5f, 1.f - T), Col);
+			}
+			else
+			{
+				D.Add((P - Side * Half) * 100.f, Nrm, Side, FVector2f(0.5f - Half / Width, 1.f - T), Col);
+				D.Add((P + Side * Half) * 100.f, Nrm, Side, FVector2f(0.5f + Half / Width, 1.f - T), Col);
+			}
+			const FVector3f Next = Dir; // the step to the next row follows this row's direction
+			P += Next * (Len / (Rows - 1));
+		}
+		// strip of quads from the root, then one triangle to the tip; wound to face along Face (either side draws)
+		auto Tri = [&](int32 A, int32 B2, int32 C2)
+		{
+			const FVector3f N = FVector3f::CrossProduct(D.Pos[C2] - D.Pos[A], D.Pos[B2] - D.Pos[A]);
+			if (FVector3f::DotProduct(N, D.Nrm[A]) >= 0.f) D.Tris.Add(FIntVector3(A, B2, C2));
+			else D.Tris.Add(FIntVector3(A, C2, B2));
+		};
+		for (int32 K = 0; K + 2 < Rows; K++)
+		{
+			const int32 L0 = Base + 2 * K, R1 = L0 + 1, L1 = L0 + 2, R2 = L0 + 3;
+			Tri(L0, R1, L1);
+			Tri(R1, R2, L1);
+		}
+		const int32 Last = Base + 2 * (Rows - 2);
+		Tri(Last, Last + 1, Last + 2);
+	}
+	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Grass_%s"), *G.Name.ToString()), D);
 }

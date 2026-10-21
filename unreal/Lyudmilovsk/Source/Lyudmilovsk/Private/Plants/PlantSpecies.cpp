@@ -553,12 +553,571 @@ namespace
 		S.Branch2LengthRatio = 0.5f;
 		return S;
 	}
+
+	// ---- The Baltic coast: dune pine, spruce, alder carr, rowan, sea buckthorn, juniper, aspen.
+
+	/** Cone colours shared by the conifers: green in the first summer, brown once ripe. */
+	void ConeColours(FPlantSpecies& S)
+	{
+		S.FruitUnripeColour = C(0.08f, 0.16f, 0.035f);
+		S.FruitGroundColour = C(0.1f, 0.06f, 0.03f);
+		S.FruitColour = C(0.1f, 0.06f, 0.03f);
+		S.FruitBlush = 0.f;
+	}
+
+	/**
+	 * Pinus sylvestris, Scots pine (сосна обыкновенная), the tree of the Baltic dunes. One straight trunk and
+	 * a whorl of four branches each year; the lower limbs die in the shade and drop, so a stand is bare for
+	 * the first half of its height and the crown goes flat-topped with age as the leader gives way to the top
+	 * limbs. Bark orange and papery on the upper trunk, grey-brown and deeply plated toward the foot. Paired
+	 * blue-green needles kept three years, so they grow only on the youngest shoots, in brush-like tufts at
+	 * the ends of crooked limbs; new shoots light green in May, the needles bronze in winter. Cones hang on
+	 * for a year.
+	 */
+	FPlantSpecies ScotsPine()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("ScotsPine");
+		S.bEvergreen = true;
+		S.MaxHeight = 24.f;
+		S.GrowthRate = 0.045f;
+		S.GrowthShape = 1.4f;
+		S.LeaderFraction = 0.82f;
+		S.TrunkRadiusPerHeight = 0.006f;
+		S.RingWidth = 0.0012f;
+		S.CrownBase = 0.42f;
+		S.TrunkNodeSpacing = 0.55f;
+		S.WhorlSize = 4;
+		S.Branch1Angle = 78.f;
+		S.Branch1AngleTop = 40.f;
+		S.Branch1MaxLength = 5.f;
+		S.Branch1Profile = FVector(0.55, 1.0, 0.4);
+		S.LengthTau = 10.f;
+		S.Tropism = 0.06f;
+		S.Wobble = 0.2f;
+		S.Kink = 0.35f;
+		S.KinkSpacing = 0.7f;
+		S.CrownWidth = 0.55f;
+		S.Branch2Spacing = 0.3f;
+		S.Branch2Angle = 55.f;
+		S.Branch2MaxLength = 1.3f;
+		S.Branch2LengthRatio = 0.3f;
+		S.Branch2ShadeDepth = 2.5f;
+		S.BranchRadiusPerLength = 0.007f;
+		S.LeafyTipLength = 1.4f;
+		S.LeafSpacing = 0.1f;
+		S.LeafClusterSize = 0.3f;
+		S.Sway = 4.f;
+		// two needles to a bundle, stiff and twisted, blue-green
+		S.Leaf.Form = EPlantLeafForm::Needle;
+		S.Leaf.Length = 0.08f;
+		S.Leaf.Width = 0.05f;
+		S.Leaf.Lobes = 2;
+		S.Leaf.PerCluster = 14;
+		S.Bark.Pattern = EPlantBarkPattern::Plates;
+		S.Bark.TileWidth = 0.22f;
+		S.Bark.TileHeight = 0.4f;
+		S.Bark.Depth = 2.4f;
+		S.Bark.RidgeColour = C(0.36f, 0.13f, 0.045f);
+		S.Bark.FurrowColour = C(0.1f, 0.035f, 0.015f);
+		S.Bark.FlakeChance = 0.22f;
+		S.Bark.UnderColour = C(0.5f, 0.2f, 0.07f);
+		S.Bark.DarkBaseRate = 0.2f;
+		S.Bark.DarkBaseMax = 9.f;
+		S.Bark.BaseRidgeColour = C(0.07f, 0.055f, 0.045f);
+		S.Bark.BaseFurrowColour = C(0.012f, 0.01f, 0.008f);
+		S.BudBreakDay = 118.f;
+		S.FullLeafDay = 150.f;
+		S.ColourStartDay = 285.f;
+		S.ColourFullDay = 335.f;
+		S.SpringLeafColour = C(0.17f, 0.28f, 0.05f);
+		S.SummerLeafColour = C(0.035f, 0.085f, 0.045f);
+		S.AutumnLeafColour = C(0.075f, 0.1f, 0.03f);
+		S.AutumnLeafColourLate = C(0.075f, 0.1f, 0.03f);
+		S.FruitSize = 0.045f;
+		S.FruitAspect = 1.5f;
+		S.FruitChance = 0.1f;
+		S.FruitingAge = 15.f;
+		S.FruitSetDay = 140.f;
+		S.FruitRipeDay = 280.f;
+		S.FruitFallDay = 385.f;
+		ConeColours(S);
+		S.LifeMedian = 200.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 400.f;
+		S.DeclineYears = 25.f;
+		S.SnagYears = 25.f;
+		return S;
+	}
+
+	/**
+	 * The same pine on the open dune: shaped by the wind and sand blast into a low, crooked tree, the trunk
+	 * leaning and forking early into a few long limbs under a wide, flat crown.
+	 */
+	FPlantSpecies DunePine()
+	{
+		FPlantSpecies S = ScotsPine();
+		S.Name = TEXT("DunePine");
+		S.MaxHeight = 11.f;
+		S.GrowthRate = 0.035f;
+		S.LeaderFraction = 0.5f;
+		S.TrunkRadiusPerHeight = 0.011f;
+		S.RingWidth = 0.0022f;
+		S.CrownBase = 0.18f;
+		S.TrunkNodeSpacing = 0.45f;
+		S.WhorlSize = 3;
+		S.Branch1Angle = 68.f;
+		S.Branch1AngleTop = 55.f;
+		S.Branch1MaxLength = 6.f;
+		S.Branch1Profile = FVector(0.9, 1.0, 0.8);
+		S.Wobble = 0.34f;
+		S.Kink = 0.6f;
+		S.KinkSpacing = 0.5f;
+		S.Tropism = 0.025f;
+		S.CrownWidth = 1.4f;
+		S.Bark.DarkBaseMax = 4.f;
+		S.LifeMedian = 250.f;
+		S.LifeMax = 450.f;
+		return S;
+	}
+
+	/**
+	 * Picea abies, Norway spruce (ель обыкновенная): a monopodial cone, one leader and a whorl of five
+	 * branches a year, the limbs held out nearly flat and sagging, their tips turned up, hung with
+	 * branchlets that drip straight down. Needles stay six or seven years, so every shoot is clothed to its
+	 * base and the tree is a dark, dense wall to the ground. Scaly red-brown bark. Long cones hang at the top.
+	 */
+	FPlantSpecies NorwaySpruce()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("NorwaySpruce");
+		S.bEvergreen = true;
+		S.bConicalCrown = true;
+		S.MaxHeight = 26.f;
+		S.GrowthRate = 0.04f;
+		S.GrowthShape = 1.8f;
+		S.LeaderFraction = 1.f;
+		S.TrunkRadiusPerHeight = 0.0085f;
+		S.RingWidth = 0.0012f;
+		S.CrownBase = 0.08f;
+		S.TrunkNodeSpacing = 0.5f;
+		S.WhorlSize = 5;
+		S.Branch1Angle = 84.f;
+		S.Branch1AngleTop = 36.f;
+		S.Branch1MaxLength = 3.8f;
+		S.Branch1Profile = FVector(1.0, 0.62, 0.06);
+		S.LengthTau = 9.f;
+		S.Tropism = 0.07f;
+		S.Droop = 0.02f;
+		S.Wobble = 0.08f;
+		S.Branch2Spacing = 0.18f;
+		S.Branch2Angle = 70.f;
+		S.Branch2MaxLength = 0.9f;
+		S.Branch2LengthRatio = 0.3f;
+		S.Branch2ShadeDepth = 6.f;
+		S.TwigHang = 0.55f;
+		S.TwigRadiusScale = 0.5f;
+		S.LeafyTipLength = 6.f;
+		S.LeafSpacing = 0.12f;
+		S.LeafClusterSize = 0.24f;
+		S.Sway = 3.f;
+		S.Leaf.Form = EPlantLeafForm::Needle;
+		S.Leaf.Length = 0.05f;
+		S.Leaf.Width = 0.07f;
+		S.Leaf.Lobes = 1;
+		S.Leaf.PerCluster = 16;
+		S.Bark.Pattern = EPlantBarkPattern::Plates;
+		S.Bark.TileWidth = 0.18f;
+		S.Bark.TileHeight = 0.26f;
+		S.Bark.Depth = 2.2f;
+		S.Bark.RidgeColour = C(0.15f, 0.065f, 0.032f);
+		S.Bark.FurrowColour = C(0.04f, 0.02f, 0.012f);
+		S.Bark.FlakeChance = 0.25f;
+		S.Bark.UnderColour = C(0.25f, 0.1f, 0.05f);
+		S.BudBreakDay = 125.f;
+		S.FullLeafDay = 155.f;
+		S.ColourStartDay = 290.f;
+		S.ColourFullDay = 340.f;
+		S.SpringLeafColour = C(0.14f, 0.28f, 0.05f);
+		S.SummerLeafColour = C(0.015f, 0.055f, 0.028f);
+		S.AutumnLeafColour = C(0.02f, 0.05f, 0.035f);
+		S.AutumnLeafColourLate = C(0.02f, 0.05f, 0.035f);
+		S.FruitSize = 0.05f;
+		S.FruitAspect = 2.6f;
+		S.FruitChance = 0.18f;
+		S.FruitingAge = 25.f;
+		S.FruitSetDay = 150.f;
+		S.FruitRipeDay = 265.f;
+		S.FruitFallDay = 395.f;
+		ConeColours(S);
+		S.LifeMedian = 250.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 400.f;
+		S.DeclineYears = 25.f;
+		S.SnagYears = 15.f;
+		return S;
+	}
+
+	/**
+	 * Alnus glutinosa, black alder (ольха чёрная) of the wet hollows behind the dunes: a fast, short-lived
+	 * tree with a conical, later oval crown, and dark, blocky bark. Round leaves with a notched tip that
+	 * stay dark green and fall green in November, without any autumn colour.
+	 */
+	FPlantSpecies BlackAlder()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("BlackAlder");
+		S.MaxHeight = 22.f;
+		S.GrowthRate = 0.075f;
+		S.GrowthShape = 1.4f;
+		S.LeaderFraction = 0.7f;
+		S.TrunkRadiusPerHeight = 0.011f;
+		S.RingWidth = 0.002f;
+		S.CrownBase = 0.25f;
+		S.TrunkNodeSpacing = 0.4f;
+		S.Branch1Angle = 55.f;
+		S.Branch1AngleTop = 35.f;
+		S.Branch1MaxLength = 5.5f;
+		S.Branch1Profile = FVector(0.7, 1.0, 0.5);
+		S.LengthTau = 8.f;
+		S.Tropism = 0.05f;
+		S.Wobble = 0.18f;
+		S.Kink = 0.15f;
+		S.KinkSpacing = 0.6f;
+		S.Branch2Spacing = 0.2f;
+		S.Branch2Angle = 50.f;
+		S.Branch2MaxLength = 1.8f;
+		S.Branch2LengthRatio = 0.4f;
+		S.LeafyTipLength = 3.f;
+		S.LeafSpacing = 0.1f;
+		S.LeafClusterSize = 0.4f;
+		S.Leaf.Length = 0.085f;
+		S.Leaf.Width = 0.85f;
+		S.Leaf.WidestAt = 0.62f;
+		S.Leaf.Teeth = 14;
+		S.Leaf.Petiole = 0.25f;
+		S.Leaf.Fold = 0.1f;
+		S.Leaf.PerCluster = 6;
+		S.Bark.Pattern = EPlantBarkPattern::Blocks;
+		S.Bark.TileWidth = 0.22f;
+		S.Bark.TileHeight = 0.3f;
+		S.Bark.Depth = 2.4f;
+		S.Bark.RidgeColour = C(0.055f, 0.045f, 0.038f);
+		S.Bark.FurrowColour = C(0.01f, 0.009f, 0.008f);
+		S.BudBreakDay = 116.f;
+		S.FullLeafDay = 140.f;
+		S.ColourStartDay = 292.f;
+		S.ColourFullDay = 315.f;
+		S.LeafDropStartDay = 302.f;
+		S.BareDay = 336.f;
+		S.SpringLeafColour = C(0.16f, 0.3f, 0.05f);
+		S.SummerLeafColour = C(0.03f, 0.09f, 0.02f);
+		S.AutumnLeafColour = C(0.055f, 0.1f, 0.025f);
+		S.AutumnLeafColourLate = C(0.1f, 0.12f, 0.03f);
+		S.LifeMedian = 90.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 160.f;
+		S.DeclineYears = 12.f;
+		S.SnagYears = 10.f;
+		return S;
+	}
+
+	/**
+	 * Sorbus aucuparia, rowan (рябина): a slender tree of 8-12 m with smooth grey bark and a loose, oval crown.
+	 * Compound leaves of 13 leaflets, red and orange in autumn. Flat heads of small berries ripen orange-red
+	 * in September and hang into the new year, until the birds have had them.
+	 */
+	FPlantSpecies Rowan()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("Rowan");
+		S.MaxHeight = 11.f;
+		S.GrowthRate = 0.1f;
+		S.GrowthShape = 1.3f;
+		S.LeaderFraction = 0.55f;
+		S.TrunkRadiusPerHeight = 0.012f;
+		S.RingWidth = 0.0015f;
+		S.CrownBase = 0.2f;
+		S.TrunkNodeSpacing = 0.3f;
+		S.Branch1Angle = 50.f;
+		S.Branch1MaxLength = 4.f;
+		S.Branch1Profile = FVector(0.7, 1.0, 0.6);
+		S.LengthTau = 7.f;
+		S.Tropism = 0.05f;
+		S.Wobble = 0.2f;
+		S.Branch2Spacing = 0.18f;
+		S.Branch2Angle = 55.f;
+		S.Branch2MaxLength = 1.4f;
+		S.Branch2LengthRatio = 0.4f;
+		S.LeafyTipLength = 2.5f;
+		S.LeafSpacing = 0.13f;
+		S.LeafClusterSize = 0.5f;
+		// a pinnate leaf as one blade: rounded leaflets down both sides of the rachis
+		S.Leaf.Length = 0.18f;
+		S.Leaf.Width = 0.42f;
+		S.Leaf.WidestAt = 0.5f;
+		S.Leaf.Lobes = 7;
+		S.Leaf.LobeDepth = 0.85f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.15f;
+		S.Leaf.Fold = 0.12f;
+		S.Leaf.PerCluster = 4;
+		S.Bark.Pattern = EPlantBarkPattern::Smooth;
+		S.Bark.TileWidth = 0.15f;
+		S.Bark.TileHeight = 0.4f;
+		S.Bark.Depth = 0.6f;
+		S.Bark.RidgeColour = C(0.13f, 0.11f, 0.095f);
+		S.Bark.FurrowColour = C(0.05f, 0.04f, 0.035f);
+		S.BudBreakDay = 112.f;
+		S.FullLeafDay = 135.f;
+		S.ColourStartDay = 268.f;
+		S.ColourFullDay = 292.f;
+		S.LeafDropStartDay = 285.f;
+		S.BareDay = 315.f;
+		S.SummerLeafColour = C(0.045f, 0.12f, 0.03f);
+		S.AutumnLeafColour = C(0.5f, 0.1f, 0.02f);
+		S.AutumnLeafColourLate = C(0.55f, 0.3f, 0.03f);
+		S.FruitSize = 0.0095f;
+		S.FruitCluster = 14;
+		S.FruitChance = 0.45f;
+		S.FruitingAge = 5.f;
+		S.FruitSetDay = 150.f;
+		S.FruitRipeDay = 240.f;
+		S.FruitFallDay = 385.f;
+		S.FruitUnripeColour = C(0.12f, 0.25f, 0.04f);
+		S.FruitGroundColour = C(0.6f, 0.13f, 0.012f);
+		S.FruitColour = C(0.6f, 0.13f, 0.012f);
+		S.LifeMedian = 80.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 150.f;
+		S.DeclineYears = 10.f;
+		S.SnagYears = 8.f;
+		return S;
+	}
+
+	/**
+	 * Hippophae rhamnoides, sea buckthorn (облепиха крушиновая), the thorny thicket that holds the dunes
+	 * together: a dense shrub of 3-5 m, twisted twigs ending in thorns, narrow silver-green leaves that go
+	 * olive and drop without a show. Bright orange berries sit packed along the bare twigs through the winter.
+	 */
+	FPlantSpecies SeaBuckthorn()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("SeaBuckthorn");
+		S.MaxHeight = 4.5f;
+		S.GrowthRate = 0.18f;
+		S.GrowthShape = 1.2f;
+		S.LeaderFraction = 0.4f;
+		S.TrunkRadiusPerHeight = 0.015f;
+		S.RingWidth = 0.002f;
+		S.MinRadius = 0.01f;
+		S.CrownBase = 0.03f;
+		S.TrunkNodeSpacing = 0.15f;
+		S.Branch1Angle = 48.f;
+		S.Branch1MaxLength = 2.4f;
+		S.Branch1Profile = FVector(0.9, 1.0, 0.8);
+		S.LengthTau = 5.f;
+		S.Tropism = 0.04f;
+		S.Wobble = 0.3f;
+		S.Kink = 0.4f;
+		S.KinkSpacing = 0.35f;
+		S.Branch2Spacing = 0.1f;
+		S.Branch2Angle = 60.f;
+		S.Branch2MaxLength = 0.9f;
+		S.Branch2LengthRatio = 0.5f;
+		S.Branch2ShadeDepth = 2.5f;
+		S.BranchRadiusPerLength = 0.01f;
+		S.LeafyTipLength = 3.f;
+		S.LeafSpacing = 0.045f;
+		S.LeafClusterSize = 0.12f;
+		S.Sway = 6.f;
+		S.Leaf.Length = 0.065f;
+		S.Leaf.Width = 0.1f;
+		S.Leaf.WidestAt = 0.5f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.05f;
+		S.Leaf.Fold = 0.2f;
+		S.Leaf.PerCluster = 8;
+		S.Bark.Pattern = EPlantBarkPattern::Furrows;
+		S.Bark.TileWidth = 0.1f;
+		S.Bark.TileHeight = 0.3f;
+		S.Bark.Depth = 1.4f;
+		S.Bark.RidgeColour = C(0.075f, 0.062f, 0.05f);
+		S.Bark.FurrowColour = C(0.015f, 0.012f, 0.01f);
+		S.BudBreakDay = 105.f;
+		S.FullLeafDay = 130.f;
+		S.ColourStartDay = 285.f;
+		S.ColourFullDay = 305.f;
+		S.LeafDropStartDay = 295.f;
+		S.BareDay = 335.f;
+		S.SpringLeafColour = C(0.13f, 0.22f, 0.09f);
+		S.SummerLeafColour = C(0.09f, 0.15f, 0.08f);
+		S.AutumnLeafColour = C(0.18f, 0.19f, 0.08f);
+		S.AutumnLeafColourLate = C(0.18f, 0.19f, 0.08f);
+		S.FruitSize = 0.008f;
+		S.FruitCluster = 6;
+		S.FruitChance = 0.85f;
+		S.FruitingAge = 4.f;
+		S.FruitSetDay = 170.f;
+		S.FruitRipeDay = 245.f;
+		S.FruitFallDay = 420.f;
+		S.FruitUnripeColour = C(0.2f, 0.3f, 0.05f);
+		S.FruitGroundColour = C(0.9f, 0.22f, 0.008f);
+		S.FruitColour = C(0.9f, 0.22f, 0.008f);
+		S.LifeMedian = 40.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 90.f;
+		S.DeclineYears = 8.f;
+		S.SnagYears = 6.f;
+		return S;
+	}
+
+	/**
+	 * Juniperus communis, common juniper (можжевельник обыкновенный): a dense, dark column or shrub of 2-5 m
+	 * in the dune heath. Prickly blue-green needles in whorls of three, kept all year; reddish bark that
+	 * shreds in strips; berry-cones green the first year, blue-black the second.
+	 */
+	FPlantSpecies Juniper()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("Juniper");
+		S.bEvergreen = true;
+		S.bConicalCrown = true;
+		S.MaxHeight = 4.f;
+		S.GrowthRate = 0.08f;
+		S.GrowthShape = 1.3f;
+		S.TrunkRadiusPerHeight = 0.025f;
+		S.RingWidth = 0.002f;
+		S.MinRadius = 0.01f;
+		S.CrownBase = 0.03f;
+		S.TrunkNodeSpacing = 0.15f;
+		S.WhorlSize = 3;
+		S.Branch1Angle = 35.f;
+		S.Branch1AngleTop = 25.f;
+		S.Branch1MaxLength = 1.4f;
+		S.Branch1Profile = FVector(0.9, 1.0, 0.5);
+		S.LengthTau = 6.f;
+		S.Tropism = 0.06f;
+		S.Wobble = 0.25f;
+		S.Branch2Spacing = 0.1f;
+		S.Branch2Angle = 45.f;
+		S.Branch2MaxLength = 0.6f;
+		S.Branch2LengthRatio = 0.45f;
+		S.Branch2ShadeDepth = 3.f;
+		S.BranchRadiusPerLength = 0.01f;
+		S.LeafyTipLength = 3.f;
+		S.LeafSpacing = 0.07f;
+		S.LeafClusterSize = 0.14f;
+		S.Sway = 2.f;
+		S.Leaf.Form = EPlantLeafForm::Needle;
+		S.Leaf.Length = 0.025f;
+		S.Leaf.Width = 0.14f;
+		S.Leaf.Lobes = 3;
+		S.Leaf.PerCluster = 18;
+		S.Bark.Pattern = EPlantBarkPattern::Furrows;
+		S.Bark.TileWidth = 0.1f;
+		S.Bark.TileHeight = 0.4f;
+		S.Bark.Depth = 1.6f;
+		S.Bark.RidgeColour = C(0.14f, 0.06f, 0.032f);
+		S.Bark.FurrowColour = C(0.035f, 0.016f, 0.01f);
+		S.BudBreakDay = 120.f;
+		S.FullLeafDay = 150.f;
+		S.ColourStartDay = 290.f;
+		S.ColourFullDay = 330.f;
+		S.SpringLeafColour = C(0.07f, 0.15f, 0.08f);
+		S.SummerLeafColour = C(0.02f, 0.06f, 0.045f);
+		S.AutumnLeafColour = C(0.035f, 0.06f, 0.04f);
+		S.AutumnLeafColourLate = C(0.035f, 0.06f, 0.04f);
+		S.FruitSize = 0.009f;
+		S.FruitCluster = 3;
+		S.FruitChance = 0.5f;
+		S.FruitingAge = 6.f;
+		S.FruitSetDay = 120.f;
+		S.FruitRipeDay = 265.f;
+		S.FruitFallDay = 420.f;
+		S.FruitUnripeColour = C(0.05f, 0.15f, 0.04f);
+		S.FruitGroundColour = C(0.03f, 0.035f, 0.07f);
+		S.FruitColour = C(0.03f, 0.035f, 0.07f);
+		S.LifeMedian = 120.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 300.f;
+		S.DeclineYears = 15.f;
+		S.SnagYears = 20.f;
+		return S;
+	}
+
+	/**
+	 * Populus tremula, aspen (осина): a straight, fast pioneer with smooth green-grey bark, black diamond
+	 * scars and a light, rounded crown. Round leaves on long flattened stalks tremble in the faintest air;
+	 * they turn clear yellow to red-orange.
+	 */
+	FPlantSpecies Aspen()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("Aspen");
+		S.MaxHeight = 24.f;
+		S.GrowthRate = 0.085f;
+		S.GrowthShape = 1.4f;
+		S.LeaderFraction = 0.9f;
+		S.TrunkRadiusPerHeight = 0.01f;
+		S.RingWidth = 0.0018f;
+		S.CrownBase = 0.35f;
+		S.TrunkNodeSpacing = 0.4f;
+		S.Branch1Angle = 48.f;
+		S.Branch1AngleTop = 30.f;
+		S.Branch1MaxLength = 4.5f;
+		S.Branch1Profile = FVector(0.6, 1.0, 0.4);
+		S.LengthTau = 8.f;
+		S.Tropism = 0.06f;
+		S.Wobble = 0.14f;
+		S.Branch2Spacing = 0.22f;
+		S.Branch2MaxLength = 1.7f;
+		S.Branch2LengthRatio = 0.4f;
+		S.LeafyTipLength = 3.f;
+		S.LeafSpacing = 0.11f;
+		S.LeafClusterSize = 0.4f;
+		S.Sway = 9.f;
+		S.Leaf.Length = 0.075f;
+		S.Leaf.Width = 1.0f;
+		S.Leaf.WidestAt = 0.5f;
+		S.Leaf.Teeth = 12;
+		S.Leaf.TeethDepth = 0.05f;
+		S.Leaf.Petiole = 1.1f;
+		S.Leaf.Fold = 0.05f;
+		S.Leaf.PerCluster = 6;
+		S.Bark.Pattern = EPlantBarkPattern::Smooth;
+		S.Bark.TileWidth = 0.2f;
+		S.Bark.TileHeight = 0.5f;
+		S.Bark.Depth = 0.8f;
+		S.Bark.RidgeColour = C(0.17f, 0.18f, 0.12f);
+		S.Bark.FurrowColour = C(0.06f, 0.06f, 0.04f);
+		S.Bark.DarkBaseRate = 0.25f;
+		S.Bark.DarkBaseMax = 3.f;
+		S.Bark.BaseRidgeColour = C(0.06f, 0.055f, 0.045f);
+		S.Bark.BaseFurrowColour = C(0.012f, 0.011f, 0.01f);
+		S.BudBreakDay = 114.f;
+		S.FullLeafDay = 138.f;
+		S.ColourStartDay = 270.f;
+		S.ColourFullDay = 294.f;
+		S.LeafDropStartDay = 282.f;
+		S.BareDay = 312.f;
+		S.SummerLeafColour = C(0.045f, 0.13f, 0.03f);
+		S.AutumnLeafColour = C(0.6f, 0.3f, 0.03f);
+		S.AutumnLeafColourLate = C(0.62f, 0.45f, 0.04f);
+		S.LifeMedian = 90.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 200.f;
+		S.DeclineYears = 12.f;
+		S.SnagYears = 12.f;
+		return S;
+	}
 }
 
 const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 {
 	static const TArray<FPlantSpecies> Species = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak(),
-		SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch() };
+		SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch(),
+		ScotsPine(), DunePine(), NorwaySpruce(), BlackAlder(), Rowan(), SeaBuckthorn(), Juniper(), Aspen() };
 	return Species;
 }
 

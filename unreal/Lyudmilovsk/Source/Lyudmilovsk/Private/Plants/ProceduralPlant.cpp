@@ -69,6 +69,9 @@ AProceduralPlant::AProceduralPlant()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> FruitMat(TEXT("/Game/Plants/M_PlantFruit.M_PlantFruit"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cylinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cone(TEXT("/Engine/BasicShapes/Cone.Cone"));
+	CrownEllipsoid = Sphere.Object;
+	CrownCone = Cone.Object;
 	BaseMaterial = Basic.Object;
 	BarkMaterialAsset = BarkMat.Object ? BarkMat.Object : Basic.Object;
 	LeafMaterialAsset = LeafMat.Object ? LeafMat.Object : Basic.Object;
@@ -226,6 +229,7 @@ void AProceduralPlant::EnsureMeshes()
 		BarkNormal = Normal;
 		LeafDetail = PlantMeshes::BuildLeafDetail(this, S.Leaf);
 		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
+		SummaryCrown->SetStaticMesh(S.bConicalCrown && CrownCone ? CrownCone.Get() : CrownEllipsoid.Get());
 		SingleLeafMesh = PlantMeshes::BuildSingleLeaf(this, S);
 		if (!FruitDetail)
 		{

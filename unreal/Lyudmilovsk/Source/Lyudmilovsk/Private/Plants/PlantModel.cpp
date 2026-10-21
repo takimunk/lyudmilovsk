@@ -99,6 +99,16 @@ float PlantModel::Hash01(uint32 Seed, uint32 A, uint32 B, uint32 C)
 	return (float)(H >> 40) * (1.f / 16777216.f);
 }
 
+float PlantModel::SnowCover(float Day)
+{
+	return FMath::Max(Smooth(325.f, 345.f, Day), 1.f - Smooth(65.f, 90.f, Day));
+}
+
+float PlantModel::SmoothStep(float E0, float E1, float X)
+{
+	return Smooth(E0, E1, X);
+}
+
 float PlantModel::Height(const FPlantSpecies& S, float Age)
 {
 	return Age <= 0.f ? 0.f : S.MaxHeight * FMath::Pow(1.f - FMath::Exp(-S.GrowthRate * Age), S.GrowthShape);
@@ -118,12 +128,21 @@ FPlantSeason PlantModel::Season(const FPlantSpecies& S, uint32 Seed, float Day)
 	// this tree's own calendar: some trees are always a few days ahead of their neighbours
 	const float D = Day - (Hash01(Seed, 0x5EA5u) * 2.f - 1.f) * S.PhenologyJitter;
 	const float Unfold = Smooth(S.BudBreakDay, S.FullLeafDay, D);
-	Out.LeafScale = Unfold > 0.f ? 0.25f + 0.75f * Unfold : 0.f;
-	const FLinearColor Base = FMath::Lerp(S.SummerLeafColour, S.SpringLeafColour, 1.f - Smooth(S.FullLeafDay, S.FullLeafDay + 35.f, D));
+	Out.LeafScale = S.bEvergreen ? 1.f : (Unfold > 0.f ? 0.25f + 0.75f * Unfold : 0.f);
+	// an evergreen's new shoots are light in May; the rest of the year it wears its summer or, from autumn to
+	// spring, its winter colour (AutumnLeafColour) and nothing falls
+	const float NewShoots = S.bEvergreen ? Unfold * (1.f - Smooth(S.FullLeafDay, S.FullLeafDay + 35.f, D)) : 1.f - Smooth(S.FullLeafDay, S.FullLeafDay + 35.f, D);
+	const FLinearColor Base = FMath::Lerp(S.SummerLeafColour, S.SpringLeafColour, NewShoots);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		const float Off = (K - 1) * 6.f; // bucket 0 turns and falls first
 		const FLinearColor Autumn = FMath::Lerp(S.AutumnLeafColour, S.AutumnLeafColourLate, K / (FPlantSeason::NumBuckets - 1.f));
+		if (S.bEvergreen)
+		{
+			const float Winter = FMath::Max(Smooth(S.ColourStartDay + Off, S.ColourFullDay + Off, D), 1.f - Unfold);
+			Out.Colour[K] = FMath::Lerp(Base, Autumn, Winter);
+			continue;
+		}
 		Out.Colour[K] = FMath::Lerp(Base, Autumn, Smooth(S.ColourStartDay + Off, S.ColourFullDay + Off, D));
 		// a few leaves let go first, then more and more
 		auto FallenOn = [&](float Dd) { return Smooth(S.BudBreakDay, S.FullLeafDay, Dd) <= 0.f ? 1.f : FMath::Pow(Smooth(S.LeafDropStartDay + Off, S.BareDay + Off, Dd), 1.6f); };
@@ -131,14 +150,20 @@ FPlantSeason PlantModel::Season(const FPlantSpecies& S, uint32 Seed, float Day)
 		Out.LitterFrom[K] = D - S.LitterDays < S.BudBreakDay ? 0.f : FallenOn(D - S.LitterDays);
 	}
 	Out.Day = D;
-	if (S.FruitSize > 0.f && D >= S.FruitSetDay && D < S.FruitFallDay + S.FruitRotDays)
+	if (S.FruitSize > 0.f)
 	{
-		Out.FruitScale = 0.3f + 0.7f * Smooth(S.FruitSetDay, S.FruitRipeDay, D);
-		Out.FruitRipeness = Smooth(S.FruitRipeDay - 40.f, S.FruitRipeDay, D);
-		Out.FruitColour = FMath::Lerp(S.FruitUnripeColour, S.FruitColour, Out.FruitRipeness);
+		// fruit kept into the next year (FruitFallDay past 366) is on the tree from its set day to that day of the year after
+		const bool bKept = S.FruitFallDay > 366.f;
+		const float Df = bKept && D < S.FruitSetDay ? D + 366.f : D;
+		if (Df >= S.FruitSetDay && Df < S.FruitFallDay + (bKept ? 0.f : S.FruitRotDays))
+		{
+			Out.FruitScale = 0.3f + 0.7f * Smooth(S.FruitSetDay, S.FruitRipeDay, Df);
+			Out.FruitRipeness = Smooth(S.FruitRipeDay - 40.f, S.FruitRipeDay, Df);
+			Out.FruitColour = FMath::Lerp(S.FruitUnripeColour, S.FruitColour, Out.FruitRipeness);
+		}
 	}
 	// snow on the branches from late November to the March thaw (the calendar's climate, not the tree's)
-	Out.Snow = FMath::Max(Smooth(325.f, 345.f, Day), 1.f - Smooth(65.f, 90.f, Day));
+	Out.Snow = PlantModel::SnowCover(Day);
 	return Out;
 }
 
@@ -244,66 +269,70 @@ void FPlantSkeleton::Build(const FPlantSpecies& Species, uint32 InSeed)
 	int32 Node = 0;
 	for (float Z = S.TrunkNodeSpacing * 0.5f; Z < Leader * 0.97f; Z += S.TrunkNodeSpacing * (0.7f + 0.6f * Hash01(Seed, 1, Node, 9)), Node++)
 	{
-		const uint32 Key1 = 1000 + Node;
-		FBranch B;
-		B.Parent = 0;
-		B.Order = 1;
-		B.BaseS = Z;
-		// a node buds the season after the leader's tip passed it
-		B.Birth = PlantModel::AgeAtHeight(S, Z) + 0.25f;
-		// and is shed once the crown base climbs past it
-		B.Death = Z / S.CrownBase < S.MaxHeight * 0.999f ? PlantModel::AgeAtHeight(S, Z / S.CrownBase) : Never;
-		if (B.Birth == Never || B.Death < B.Birth + 0.5f)
+		for (int32 Whorl = 0; Whorl < FMath::Max(S.WhorlSize, 1); Whorl++)
 		{
-			continue;
-		}
-		B.MaxLength = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / Leader) * (0.8f + 0.4f * Hash01(Seed, Key1, 1));
-		B.Tau = S.LengthTau * (0.85f + 0.3f * Hash01(Seed, Key1, 2));
-		B.Step = 0.35f;
-		const FVector3f TrunkDir = Branches[0].DirAt(Z);
-		const float AngleHere = S.Branch1AngleTop < 0.f ? S.Branch1Angle : FMath::Lerp(S.Branch1Angle, S.Branch1AngleTop, Z / Leader);
-		const float Angle = FMath::DegreesToRadians(AngleHere * (0.85f + 0.3f * Hash01(Seed, Key1, 3)));
-		const FVector3f Dir0 = TrunkDir * FMath::Cos(Angle) + Perp(TrunkDir, Node * GoldenAngle + Hash01(Seed, Key1, 4) * 0.4f) * FMath::Sin(Angle);
-		B.Points = GrowCurve(Branches[0].At(Z), Dir0, B.MaxLength + B.Step, B.Step, Shoot1, Seed, Key1);
-		B.MaxLength = FMath::Min(B.MaxLength, EnvelopeLength(S, B.Points, B.Step));
-		if (B.MaxLength < 0.3f)
-		{
-			continue;
-		}
-		const int32 Index1 = Branches.Add(MoveTemp(B));
+			const int32 Branch = Node * FMath::Max(S.WhorlSize, 1) + Whorl;
+			const uint32 Key1 = 1000 + Branch;
+			FBranch B;
+			B.Parent = 0;
+			B.Order = 1;
+			B.BaseS = Z;
+			// a node buds the season after the leader's tip passed it
+			B.Birth = PlantModel::AgeAtHeight(S, Z) + 0.25f;
+			// and is shed once the crown base climbs past it
+			B.Death = Z / S.CrownBase < S.MaxHeight * 0.999f ? PlantModel::AgeAtHeight(S, Z / S.CrownBase) : Never;
+			if (B.Birth == Never || B.Death < B.Birth + 0.5f)
+			{
+				continue;
+			}
+			B.MaxLength = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / Leader) * (0.8f + 0.4f * Hash01(Seed, Key1, 1));
+			B.Tau = S.LengthTau * (0.85f + 0.3f * Hash01(Seed, Key1, 2));
+			B.Step = 0.35f;
+			const FVector3f TrunkDir = Branches[0].DirAt(Z);
+			const float AngleHere = S.Branch1AngleTop < 0.f ? S.Branch1Angle : FMath::Lerp(S.Branch1Angle, S.Branch1AngleTop, Z / Leader);
+			const float Angle = FMath::DegreesToRadians(AngleHere * (0.85f + 0.3f * Hash01(Seed, Key1, 3)));
+			const FVector3f Dir0 = TrunkDir * FMath::Cos(Angle) + Perp(TrunkDir, Node * GoldenAngle + Whorl * (2.f * PI / S.WhorlSize) + Hash01(Seed, Key1, 4) * 0.4f) * FMath::Sin(Angle);
+			B.Points = GrowCurve(Branches[0].At(Z), Dir0, B.MaxLength + B.Step, B.Step, Shoot1, Seed, Key1);
+			B.MaxLength = FMath::Min(B.MaxLength, EnvelopeLength(S, B.Points, B.Step));
+			if (B.MaxLength < 0.3f)
+			{
+				continue;
+			}
+			const int32 Index1 = Branches.Add(MoveTemp(B));
 
-		int32 Twig = 0;
-		// small plants (dwarf birch) start their twigs close to the limb's base
-		const float TwigStart = FMath::Min(0.45f, S.Branch2Spacing * 1.5f), TwigEnd = FMath::Min(0.35f, 0.25f * Branches[Index1].MaxLength);
-		for (float S2 = TwigStart; S2 < Branches[Index1].MaxLength - TwigEnd; S2 += S.Branch2Spacing * (0.7f + 0.6f * Hash01(Seed, Key1, Twig, 5)), Twig++)
-		{
-			const FBranch& P = Branches[Index1];
-			const uint32 Key2 = 100000 + Node * 256 + Twig;
-			FBranch C;
-			C.Parent = Index1;
-			C.Order = 2;
-			C.BaseS = S2;
-			C.Birth = P.Birth + P.TimeAtLength(S2) + 0.3f;
-			// shaded out once the parent's tip has grown ShadeDepth past it
-			const float Shade = P.TimeAtLength(S2 + S.Branch2ShadeDepth);
-			C.Death = FMath::Min(P.Death, Shade == Never ? Never : P.Birth + Shade);
-			C.MaxLength = FMath::Min(S.Branch2MaxLength, S.Branch2LengthRatio * (P.MaxLength - S2)) * (0.7f + 0.6f * Hash01(Seed, Key2, 1));
-			if (P.Birth + P.TimeAtLength(S2) >= Never * 0.5f || C.Death < C.Birth + 0.3f || C.MaxLength < 0.12f)
+			int32 Twig = 0;
+			// small plants (dwarf birch) start their twigs close to the limb's base
+			const float TwigStart = FMath::Min(0.45f, S.Branch2Spacing * 1.5f), TwigEnd = FMath::Min(0.35f, 0.25f * Branches[Index1].MaxLength);
+			for (float S2 = TwigStart; S2 < Branches[Index1].MaxLength - TwigEnd; S2 += S.Branch2Spacing * (0.7f + 0.6f * Hash01(Seed, Key1, Twig, 5)), Twig++)
 			{
-				continue;
+				const FBranch& P = Branches[Index1];
+				const uint32 Key2 = 100000 + Branch * 256 + Twig;
+				FBranch C;
+				C.Parent = Index1;
+				C.Order = 2;
+				C.BaseS = S2;
+				C.Birth = P.Birth + P.TimeAtLength(S2) + 0.3f;
+				// shaded out once the parent's tip has grown ShadeDepth past it
+				const float Shade = P.TimeAtLength(S2 + S.Branch2ShadeDepth);
+				C.Death = FMath::Min(P.Death, Shade == Never ? Never : P.Birth + Shade);
+				C.MaxLength = FMath::Min(S.Branch2MaxLength, S.Branch2LengthRatio * (P.MaxLength - S2)) * (0.7f + 0.6f * Hash01(Seed, Key2, 1));
+				if (P.Birth + P.TimeAtLength(S2) >= Never * 0.5f || C.Death < C.Birth + 0.3f || C.MaxLength < 0.12f)
+				{
+					continue;
+				}
+				C.Tau = P.Tau * 0.45f;
+				C.Step = S.TwigHang > 0.5f ? 0.4f : 0.25f;
+				const FVector3f PDir = P.DirAt(S2);
+				const float Angle2 = FMath::DegreesToRadians(S.Branch2Angle * (0.8f + 0.4f * Hash01(Seed, Key2, 2)));
+				const FVector3f Dir2 = PDir * FMath::Cos(Angle2) + Perp(PDir, Twig * GoldenAngle + Branch + Hash01(Seed, Key2, 3)) * FMath::Sin(Angle2);
+				C.Points = GrowCurve(P.At(S2), Dir2, C.MaxLength + C.Step, C.Step, Shoot2, Seed, Key2);
+				C.MaxLength = FMath::Min(C.MaxLength, EnvelopeLength(S, C.Points, C.Step));
+				if (C.MaxLength < 0.12f)
+				{
+					continue;
+				}
+				Branches.Add(MoveTemp(C));
 			}
-			C.Tau = P.Tau * 0.45f;
-			C.Step = S.TwigHang > 0.5f ? 0.4f : 0.25f;
-			const FVector3f PDir = P.DirAt(S2);
-			const float Angle2 = FMath::DegreesToRadians(S.Branch2Angle * (0.8f + 0.4f * Hash01(Seed, Key2, 2)));
-			const FVector3f Dir2 = PDir * FMath::Cos(Angle2) + Perp(PDir, Twig * GoldenAngle + Node + Hash01(Seed, Key2, 3)) * FMath::Sin(Angle2);
-			C.Points = GrowCurve(P.At(S2), Dir2, C.MaxLength + C.Step, C.Step, Shoot2, Seed, Key2);
-			C.MaxLength = FMath::Min(C.MaxLength, EnvelopeLength(S, C.Points, C.Step));
-			if (C.MaxLength < 0.12f)
-			{
-				continue;
-			}
-			Branches.Add(MoveTemp(C));
 		}
 	}
 
@@ -446,28 +475,35 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 		const int32 FruitOrder = S.SpurSpacing > 0.f ? 3 : 2;
 		if (bFruit && B.Order == FruitOrder && L > (FruitOrder == 3 ? 0.02f : 0.2f) && Hash01(Seed, I, 0, 21) < S.FruitChance)
 		{
-			// hanging under the twig, two thirds of the way out (a spur's tip), until its own day to drop
-			const FVector3f P = B.At(FruitOrder == 3 ? L : L * 0.66f) - FVector3f(0.f, 0.f, S.FruitSize * 0.6f);
-			// its skin: how much it blushes and on which side, how striped, its tint, how early it ripens
-			const float Data[FInstances::FruitDataFloats] = {
-				S.FruitBlush * (0.25f + 0.75f * Hash01(Seed, I, 0, 41)), Hash01(Seed, I, 0, 42),
-				S.FruitStripes * Hash01(Seed, I, 0, 43), Hash01(Seed, I, 0, 44), (Hash01(Seed, I, 0, 45) - 0.5f) * 0.3f };
-			const float FallDay = S.FruitFallDay - 35.f * Hash01(Seed, I, 0, 22);
-			const float Size = S.FruitSize * 100.f * Season.FruitScale * (0.85f + 0.3f * Hash01(Seed, I, 0, 23));
-			const FTransform Hung(FRotator(0.f, Hash01(Seed, I, 0, 24) * 360.f, 0.f).Quaternion(), FVector(P) * 100.0, FVector(Size, Size, Size * 0.92f) / 100.f);
-			if (Season.Day < FallDay)
+			// berries and cones hang for good and are simply gone when their time is up; apples and acorns fall
+			const bool bFalls = S.FruitCluster <= 1 && S.FruitFallDay <= 366.f;
+			for (int32 Fr = 0; Fr < FMath::Max(S.FruitCluster, 1); Fr++)
 			{
-				Out.Fruit.Add(Hung);
-				Out.FruitIds.Add(I);
-				Out.FruitData.Append(Data, FInstances::FruitDataFloats);
-			}
-			else if (Season.Day < FallDay + S.FruitRotDays)
-			{
-				FInstances::FFallen& F = Out.FallenFruit.AddDefaulted_GetRef();
-				F.Id = I;
-				F.At = P;
-				F.Hung = Hung;
-				FMemory::Memcpy(F.Data, Data, sizeof(Data));
+				const int32 Id = Fr == 0 ? I : I + 20000 * Fr;
+				// hanging under the twig, two thirds of the way out (a spur's tip), until its own day to drop; a cluster is spread along the twig
+				const float Along = FruitOrder == 3 ? L : (S.FruitCluster > 1 ? L * (0.25f + 0.75f * (Fr + Hash01(Seed, Id, 0, 25)) / S.FruitCluster) : L * 0.66f);
+				const FVector3f P = B.At(Along) - FVector3f(0.f, 0.f, S.FruitSize * 0.6f);
+				// its skin: how much it blushes and on which side, how striped, its tint, how early it ripens
+				const float Data[FInstances::FruitDataFloats] = {
+					S.FruitBlush * (0.25f + 0.75f * Hash01(Seed, Id, 0, 41)), Hash01(Seed, Id, 0, 42),
+					S.FruitStripes * Hash01(Seed, Id, 0, 43), Hash01(Seed, Id, 0, 44), (Hash01(Seed, Id, 0, 45) - 0.5f) * 0.3f };
+				const float FallDay = S.FruitFallDay - 35.f * Hash01(Seed, Id, 0, 22);
+				const float Size = S.FruitSize * 100.f * Season.FruitScale * (0.85f + 0.3f * Hash01(Seed, Id, 0, 23));
+				const FTransform Hung(FRotator(0.f, Hash01(Seed, Id, 0, 24) * 360.f, 0.f).Quaternion(), FVector(P) * 100.0, FVector(Size, Size, Size * S.FruitAspect) / 100.f);
+				if (Season.Day < FallDay || !bFalls)
+				{
+					Out.Fruit.Add(Hung);
+					Out.FruitIds.Add(Id);
+					Out.FruitData.Append(Data, FInstances::FruitDataFloats);
+				}
+				else if (Season.Day < FallDay + S.FruitRotDays)
+				{
+					FInstances::FFallen& F = Out.FallenFruit.AddDefaulted_GetRef();
+					F.Id = Id;
+					F.At = P;
+					F.Hung = Hung;
+					FMemory::Memcpy(F.Data, Data, sizeof(Data));
+				}
 			}
 		}
 

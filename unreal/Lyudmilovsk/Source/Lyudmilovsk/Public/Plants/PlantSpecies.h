@@ -10,6 +10,11 @@ enum class EPlantLeafForm : uint8
 	Pinnate,
 	/** Lobes radiating from the petiole (maple). */
 	Palmate,
+	/**
+	 * A needle (pine, spruce, juniper): Length and Width as for a blade, PerCluster needles in a tuft that
+	 * radiates from the shoot; pine needles come in pairs (Lobes = 2: a fascicle).
+	 */
+	Needle,
 };
 
 /** A leaf blade's outline, built into the leaf mesh in code. */
@@ -104,6 +109,8 @@ struct FPlantSpecies
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") FName Name;
+	/** The level-0 crown from afar is a cone (spruce, pine) instead of an ellipsoid. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") bool bConicalCrown = false;
 
 	// --- Height: Chapman-Richards curve H(age) = MaxHeight * (1 - exp(-GrowthRate * age))^GrowthShape
 
@@ -142,6 +149,8 @@ struct FPlantSpecies
 
 	/** Spacing of order-1 branches up the trunk, m (one per node, golden-angle phyllotaxis). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TrunkNodeSpacing = 0.28f;
+	/** Order-1 branches per node: above 1 they leave the trunk at one height, evenly around it, in a whorl (pine, spruce). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches", meta = (ClampMin = "1")) int32 WhorlSize = 1;
 	/** Order-1 angle off the trunk, degrees (pyramidal poplar: steep, nearly along the trunk). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch1Angle = 26.f;
 	/** Order-1 angle at the top of the trunk; below 0 the same as Branch1Angle. */
@@ -195,6 +204,8 @@ struct FPlantSpecies
 
 	// --- Leaves
 
+	/** Keeps its leaves all year (conifers, juniper): no bud break, no leaf fall; the autumn colours become its winter colour. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") bool bEvergreen = false;
 	/**
 	 * Leaves grow on every order-2 twig and on the last LeafyTipLength of the trunk and of order-1
 	 * branches: twigs inside the crown are shed (Branch2ShadeDepth), so the leaves form its outer shell.
@@ -214,6 +225,10 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FName FruitItem;
 	/** Fruit diameter, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSize = 0.f;
+	/** Fruit per bearing twig (rowan and sea buckthorn berries, a juniper's), spread along the twig. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") int32 FruitCluster = 1;
+	/** Height / width of a fruit (a spruce cone is long). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitAspect = 0.92f;
 	/** Chance that a twig bears one. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitChance = 0.3f;
 	/** Trees bear fruit from this age, years. */
@@ -221,7 +236,12 @@ struct FPlantSpecies
 	/** Fruit set (small and green), fully grown and coloured, and fallen. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSetDay = 160.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRipeDay = 250.f;
-	/** Fruit drops one by one over the 35 days up to FruitFallDay, then lies on the ground this long. */
+	/**
+	 * Fruit drops one by one over the 35 days up to FruitFallDay, then lies on the ground this long. A
+	 * FruitFallDay past 366 keeps the fruit on the tree into the next year (berries, cones) until that day
+	 * of the year; berry clusters (FruitCluster > 1) and fruit kept that long just go (eaten, withered)
+	 * and are not simulated on the ground.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitFallDay = 310.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRotDays = 25.f;
 	/** Fruit skin: unripe ground colour, ripe ground colour, and the blush that develops over it (red on apples). */

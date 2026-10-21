@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Plants/GrassSpecies.h"
 #include "Plants/PlantModel.h"
 
 class UStaticMesh;
@@ -33,6 +34,13 @@ namespace PlantMeshes
 	UStaticMesh* BuildFruit(UObject* Outer, const FPlantSpecies& Species);
 	/** Noise (R) and lenticel dots (G) for the fruit skin. */
 	UTexture2D* BuildFruitDetail(UObject* Outer);
+
+	/**
+	 * A tuft of the grass's blades about the origin (cm, Z up), at the species' height: each blade a tapering,
+	 * curved strip leaving the ground at Lean and arching over by Arch. Vertex colour R = how far up the
+	 * blade (0 root .. 1 tip: sway and tint), G = a random per blade. Two-sided material.
+	 */
+	UStaticMesh* BuildGrassTuft(UObject* Outer, const FGrassSpecies& Grass);
 
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);

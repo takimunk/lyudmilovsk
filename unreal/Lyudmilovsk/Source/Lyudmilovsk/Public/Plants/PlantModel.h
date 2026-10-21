@@ -60,6 +60,11 @@ namespace PlantModel
 	/** 0..1 from a seed and up to three keys; the same inputs give the same number on every machine. */
 	LYUDMILOVSK_API float Hash01(uint32 Seed, uint32 A, uint32 B = 0, uint32 C = 0);
 
+	/** Snow lying on the ground and the branches, 0..1: late November to the March thaw (the calendar's climate, not any plant's). */
+	LYUDMILOVSK_API float SnowCover(float DayOfYear);
+	/** Smoothstep. */
+	LYUDMILOVSK_API float SmoothStep(float E0, float E1, float X);
+
 	/** Height at an age, m. */
 	LYUDMILOVSK_API float Height(const FPlantSpecies& S, float Age);
 	/** Age at which the tree reaches a height (inverse of Height); infinity if it never does. */

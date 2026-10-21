@@ -125,6 +125,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryCrown;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UCapsuleComponent> TrunkCollision;
 
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> CrownEllipsoid;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> CrownCone;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BaseMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterialAsset;
