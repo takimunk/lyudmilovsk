@@ -1,0 +1,121 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Sky/Ephemeris.h"
+#include "LyudSky.generated.h"
+
+class UDirectionalLightComponent;
+class UMaterialInterface;
+class UPostProcessComponent;
+class USkyAtmosphereComponent;
+class USkyLightComponent;
+class UStaticMeshComponent;
+class UVolumetricCloudComponent;
+
+/**
+ * The sky over the outdoor world: the sun and the moon where they really stand over the Baltic coast at
+ * the game's date and hour (UGameCalendar, ephemeris in LyudEphemeris), a physical atmosphere (blue day,
+ * red sunset, dark night, haze over the distance), volumetric clouds, a sky light captured from all of it
+ * in real time, and a star dome.
+ *
+ * Indoors stays separate: the sun and the moon light only lighting channel 1, which outdoor meshes add to
+ * the default channel 0, so the club's own lamps keep it lit as before. The player's pawn gets channel 1
+ * only while it stands under the open sky (nothing but outdoor meshes above its head), so the hero is
+ * sunlit outside and not inside.
+ *
+ * Outside, the eye adapts: as the light fails after sunset the exposure opens up by up to NightExposureEV
+ * stops over the club's fixed one, eased in over EyeAdaptSeconds as the player walks out (and back as
+ * they walk in), so dusk and moonlit nights read instead of going black.
+ *
+ * In the editor the sky shows EditorPreviewTime; in play it follows the calendar. The console variable
+ * lyud.SkyHourOffset shifts either by some hours (look at a sunset or a night without waiting for it).
+ */
+UCLASS()
+class LYUDMILOVSK_API ALyudSky : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudSky();
+
+	/** Where the world is on Earth (default: the Sambian coast west of Zelenogradsk). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Place") double LatitudeDeg = 54.96;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Place") double LongitudeDeg = 20.40;
+	/** The calendar's clock is local time; Kaliningrad is UTC+2 all year. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Place") double UtcOffsetHours = 2.0;
+	/** Compass yaw of the world: 0 = north is world +Y (out of the club's door), east is world -X. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Place") double NorthYawDeg = 0.0;
+
+	/** The local date and hour the sky shows outside play. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Time") FDateTime EditorPreviewTime = FDateTime(2026, 10, 20, 16, 0, 0);
+	/** Shift the shown hour, for looking at the sky at another time without touching the calendar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Time") float HourOffset = 0.f;
+
+	/** Sunlight above the atmosphere, in the scene's lux (the club runs a fixed dark-room exposure); the atmosphere dims and reddens it near the horizon. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SunIlluminance = 40.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor SunColor = FLinearColor(1.f, 0.96f, 0.9f);
+	/** Full moon light, scene lux: far brighter than real moonlight so nights read as moonlit rather than black. Scaled by the phase. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float FullMoonIlluminance = 0.6f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor MoonColor = FLinearColor(0.62f, 0.72f, 1.f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SkyLightIntensity = 1.f;
+	/** Star dome brightness at full dark (the day sky outshines it on its own). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float StarBrightness = 1.f;
+
+	/** Unlit is-sky material on the dome: atmosphere luminance, sun and moon disks, stars (unreal/scripts/import_sky.py). Without one the atmosphere draws the sky itself. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") TObjectPtr<UMaterialInterface> SkyMaterial;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") TObjectPtr<UMaterialInterface> CloudMaterial;
+
+	/** How many stops the exposure opens outdoors at full night over the club's own (a day sky adds none). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Exposure") float NightExposureEV = 3.5f;
+	/** Seconds the eye takes to adapt walking out of or into the club. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Exposure") float EyeAdaptSeconds = 1.5f;
+
+	/** Switch the player pawn's lighting channel 1 by whether it stands under the open sky. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Player") bool bLightPlayerOutdoors = true;
+	/** How far above the pawn a roof is looked for, cm. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Player") float RoofSearchHeight = 5000.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<UDirectionalLightComponent> SunLight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<UDirectionalLightComponent> MoonLight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<USkyAtmosphereComponent> Atmosphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<USkyLightComponent> SkyLight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<UVolumetricCloudComponent> Clouds;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<UStaticMeshComponent> Dome;
+	/** The outdoor exposure, blended in by how far the player is outside. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sky") TObjectPtr<UPostProcessComponent> OutdoorExposure;
+
+	/** The local date and hour the sky shows now. */
+	UFUNCTION(BlueprintCallable, Category = "Sky") FDateTime ShownTime() const;
+	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAltitude() const { return SunPos.AltitudeDeg; }
+	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
+	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
+	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
+
+	/** Move the sun and moon to the shown time. */
+	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
+	/** Text for logs and tests: time, sun and moon altitude/azimuth, phase. */
+	FString DebugReport() const;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual bool ShouldTickIfViewportsOnly() const override { return true; }
+
+private:
+	/** Local east, north, up to world. */
+	FVector WorldDirection(const FVector& Enu) const;
+	void UpdatePlayerChannels(float DeltaSeconds);
+	void UpdateExposure(float DeltaSeconds);
+
+	FSkyPosition SunPos;
+	FSkyPosition MoonPos;
+	double MoonPhase = 0.0;
+	bool bPlayerOutdoors = false;
+	float OutdoorsVote = 0.f;
+	float LastShift = 0.f;
+	/** The level's own exposure bias (the club's post process volume), read at BeginPlay. */
+	float BaseExposureBias = 0.f;
+	float OutdoorWeight = 0.f;
+	TWeakObjectPtr<APawn> LitPawn;
+};
