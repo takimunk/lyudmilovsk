@@ -1,14 +1,17 @@
 """Imports the first-person hero (blender/hero/export/human_hero.glb: the Zoomer body in Murmuration's
-clothes) onto the shared human skeleton, with Murmuration's idle and walk baked onto it.
+clothes) onto the shared human skeleton and retargets the template's locomotion onto it.
 
   /Game/Characters/Hero/SK_Hero                 skeletal mesh on /Game/Characters/Humans/SK_Human_Skeleton
   /Game/Characters/Hero/Materials/MI_Hero_*     on the human masters (Humans/Materials/M_Human*)
-  /Game/Characters/Hero/Anims/A_Hero_Idle, A_Hero_Walk   in place (Walk: one gait cycle)
+  /Game/Characters/Hero/Anims/A_Hero_*          the template's locomotion retargeted (Idle, Walk_*, Jog_*,
+                                                8 directions each; root motion kept, the pawn plays them by distance)
+  /Game/Characters/Hero/Anims/Murmuration/      Murmuration's own idle and walk (not used in game now)
+  /Game/Characters/Hero/Rig/IK_Manny, IK_Hero, RTG_MannyToHero
 
 Needs the humans content (Humans/SK_Human_Skeleton, Materials, Import/IP_HumanAssets). Run headless
 with no editor open on this checkout:
-  UnrealEditor <uproject> -run=pythonscript -script="<this file> [import|masters]"
-(or unreal/scripts/import_hero.sh)
+  UnrealEditor <uproject> -run=pythonscript -script="<this file> [import|retarget|masters]"
+(unreal/scripts/import_hero.sh runs import and retarget, one process each)
 """
 import json
 import os
@@ -23,6 +26,8 @@ ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
 GLB = os.path.join(ROOT, "blender", "hero", "export", "human_hero.glb")
 DEST = "/Game/Characters/Hero"
 HUMANS = "/Game/Characters/Humans"
+MANNY = "/Game/Characters/Mannequins/Meshes/SKM_Manny_Simple"
+MM = "/Game/Characters/Mannequins/Anims/Unarmed"
 SKELETON = HUMANS + "/SK_Human_Skeleton"
 PIPELINE = HUMANS + "/Import/IP_HumanAssets"
 HAIR_WORDS = ("hair", "eyebrow", "eyelash")
@@ -146,14 +151,14 @@ def do_import():
             if clip is None:
                 eal.delete_asset(p)
                 continue
-            new = "%s/Anims/A_Hero_%s" % (DEST, clip)
+            new = "%s/Anims/Murmuration/A_Hero_Murm_%s" % (DEST, clip)
             if eal.does_asset_exist(new):
                 eal.delete_asset(new)
             eal.rename_asset(p, new)
             anim = unreal.load_asset(new)
             anim.set_editor_property("enable_root_motion", False)
             eal.save_loaded_asset(anim)
-            log("anim A_Hero_%s %.2f s" % (clip, anim.get_play_length()))
+            log("anim A_Hero_Murm_%s %.2f s" % (clip, anim.get_play_length()))
         else:
             eal.delete_asset(p)
     eal.delete_directory(tmp)
@@ -162,6 +167,68 @@ def do_import():
     eal.save_directory(DEST)
 
 
+def get_or_create(name, folder, cls, factory):
+    """Reuses an existing asset (deleting and recreating one in the same process fails)."""
+    path = "%s/%s" % (folder, name)
+    if eal.does_asset_exist(path):
+        return unreal.load_asset(path)
+    return tools.create_asset(name, folder, cls, factory)
+
+
+def ik_rig(name, mesh):
+    rig = get_or_create(name, DEST + "/Rig", unreal.IKRigDefinition, unreal.IKRigDefinitionFactory())
+    c = unreal.IKRigController.get_controller(rig)
+    c.set_skeletal_mesh(mesh)
+    c.apply_auto_generated_retarget_definition()
+    c.apply_auto_fbik()
+    eal.save_loaded_asset(rig)
+    return rig
+
+
+def do_retarget():
+    """The template's own locomotion (mannequin idle, 8-way walk and jog) onto SK_Hero."""
+    manny = unreal.load_asset(MANNY)
+    hero = unreal.load_asset(DEST + "/SK_Hero")
+    src, dst = ik_rig("IK_Manny", manny), ik_rig("IK_Hero", hero)
+    rtg = get_or_create("RTG_MannyToHero", DEST + "/Rig", unreal.IKRetargeter, unreal.IKRetargetFactory())
+    c = unreal.IKRetargeterController.get_controller(rtg)
+    c.remove_all_ops()
+    S, T = unreal.RetargetSourceOrTarget.SOURCE, unreal.RetargetSourceOrTarget.TARGET
+    c.set_ik_rig(S, src)
+    c.set_ik_rig(T, dst)
+    c.set_preview_mesh(S, manny)
+    c.set_preview_mesh(T, hero)
+    c.add_default_ops()
+    c.assign_ik_rig_to_all_ops(S, src)
+    c.assign_ik_rig_to_all_ops(T, dst)
+    c.auto_map_chains(unreal.AutoMapChainType.FUZZY, True)
+    c.auto_align_all_bones(T)
+    eal.save_loaded_asset(rtg)
+
+    paths = [MM + "/MM_Idle"]
+    for gait in ("Walk", "Jog"):
+        for d in ("Fwd", "Bwd", "Left", "Right", "Fwd_Left", "Fwd_Right", "Bwd_Left", "Bwd_Right"):
+            paths.append("%s/%s/MF_Unarmed_%s_%s" % (MM, gait, gait, d))
+    reg = unreal.AssetRegistryHelpers.get_asset_registry()
+    inputs = unreal.IKRetargetBatchOperationInputs()
+    inputs.set_editor_property("assets_to_retarget", [reg.get_asset_by_object_path(p + "." + p.split("/")[-1]) for p in paths])
+    inputs.set_editor_property("source_mesh", manny)
+    inputs.set_editor_property("target_mesh", hero)
+    inputs.set_editor_property("ik_retarget_asset", rtg)
+    inputs.set_editor_property("target_path", DEST + "/Anims/_retarget")
+    inputs.set_editor_property("include_referenced_assets", False)
+    inputs.set_editor_property("overwrite_existing_files", True)
+    for a in unreal.IKRetargetBatchOperation.run_batch_retarget(inputs):
+        p = str(a.package_name)
+        new = DEST + "/Anims/A_Hero_" + p.split("/")[-1].replace("MF_Unarmed_", "").replace("MM_", "")
+        if eal.does_asset_exist(new):
+            eal.delete_asset(new)
+        eal.rename_asset(p, new)
+        seq = unreal.load_asset(new)
+        log("anim %s %.2f s" % (new.split("/")[-1], seq.get_play_length()))
+    eal.save_directory(DEST)
+
+
 step = (sys.argv[1:] or ["import"])[0]
-{"import": do_import, "masters": skeletal_usage}[step]()
+{"import": do_import, "retarget": do_retarget, "masters": skeletal_usage}[step]()
 log("done " + step)

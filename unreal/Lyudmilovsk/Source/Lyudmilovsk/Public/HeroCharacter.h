@@ -14,7 +14,8 @@ class USkeletalMeshComponent;
  * hidden (a second, invisible copy of the body still casts the full shadow), looking down shows your
  * chest, arms, trousers and shoes. The body turns with the look the way a person does: standing
  * still the head and chest turn first and the feet follow past ~35 degrees, walking it faces where
- * you look. WASD / arrows walk (1.4 m/s), Shift runs (2.6 m/s), the mouse looks.
+ * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
+ * looks; the template's locomotion clips animate the body.
  *
  * Input is read straight from the keys (no Enhanced Input actions), so interactables that bind E
  * and the game menu work as before.
@@ -35,14 +36,14 @@ public:
 	float SoleDrop = 4.4f;
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
-	float WalkSpeed = 140.f;
+	float WalkSpeed = 290.f;
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
-	float RunSpeed = 260.f;
+	float RunSpeed = 600.f;
 
 	/** Degrees of turn per mouse count. */
 	UPROPERTY(EditAnywhere, Config, Category = "Hero|Look")
-	float LookSensitivity = 0.15f;
+	float LookSensitivity = 0.175f;
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Look")
 	float PitchMin = -80.f;
@@ -82,5 +83,6 @@ private:
 	float BodyYaw = 0.f;
 	double Distance = 0.0;
 	double IdleTime = 0.0;
-	bool bWantsRun = false;
+	bool bWantsWalk = false;
+	bool bJumpHeld = false;
 };

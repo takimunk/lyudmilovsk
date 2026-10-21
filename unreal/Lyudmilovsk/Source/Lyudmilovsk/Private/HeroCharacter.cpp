@@ -40,10 +40,10 @@ AHeroCharacter::AHeroCharacter()
 	bUseControllerRotationRoll = false;
 	UCharacterMovementComponent* Move = GetCharacterMovement();
 	Move->bOrientRotationToMovement = false;
-	Move->MaxWalkSpeed = WalkSpeed;
-	Move->MaxAcceleration = 700.f;            // ~0.2 s to full walking pace, like Murmuration
-	Move->BrakingDecelerationWalking = 900.f;
-	Move->GroundFriction = 8.f;
+	// the template's movement (character movement defaults + its falling settings)
+	Move->MaxWalkSpeed = RunSpeed;
+	Move->BrakingDecelerationFalling = 1500.f;
+	Move->AirControl = 0.5f;
 
 	USkeletalMeshComponent* Body = GetMesh();
 	Body->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -LyudmilovskCharacter::PlayerCapsuleHalfHeight + SoleDrop), FRotator(0.f, -90.f, 0.f));
@@ -84,7 +84,6 @@ void AHeroCharacter::BeginPlay()
 	{
 		if (Anim)
 		{
-			Anim->WalkSpeed = WalkSpeed;
 		}
 	}
 	if (GEngine && !FMath::IsNearlyEqual(GNearClippingPlane, NearClip))
@@ -144,9 +143,19 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 		auto Down = [PC](const FKey& K) { return PC->IsInputKeyDown(K) ? 1.f : 0.f; };
 		Fwd = Down(EKeys::W) + Down(EKeys::Up) - Down(EKeys::S) - Down(EKeys::Down) + PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftY);
 		Side = Down(EKeys::D) + Down(EKeys::Right) - Down(EKeys::A) - Down(EKeys::Left) + PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftX);
-		bWantsRun = PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift);
+		bWantsWalk = PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift);
+		const bool bJump = PC->IsInputKeyDown(EKeys::SpaceBar) || PC->IsInputKeyDown(EKeys::Gamepad_FaceButton_Bottom);
+		if (bJump && !bJumpHeld)
+		{
+			Jump();
+		}
+		else if (!bJump && bJumpHeld)
+		{
+			StopJumping();
+		}
+		bJumpHeld = bJump;
 	}
-	GetCharacterMovement()->MaxWalkSpeed = bWantsRun ? RunSpeed : WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
 	const FRotator Yaw(0.f, PC->GetControlRotation().Yaw, 0.f);
 	FVector Wish = Yaw.RotateVector(FVector(Fwd, Side, 0.f));
 	if (Wish.SizeSquared() > 1.f)
@@ -162,7 +171,7 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 void AHeroCharacter::TurnBody(float DeltaSeconds)
 {
 	// Murmuration: standing still the head and chest take the first ~35 degrees, then the feet step
-	// round; walking, the body faces where you look
+	// round; moving, the body faces where you look at once (the 8-way clips do the strafing)
 	const float LookYaw = GetControlRotation().Yaw;
 	const bool bMoving = GetVelocity().Size2D() > 5.f;
 	const float Dead = bMoving ? 7.f : 34.f;
@@ -174,7 +183,7 @@ void AHeroCharacter::TurnBody(float DeltaSeconds)
 	}
 	if (bMoving)
 	{
-		BodyYaw += Wrap180(LookYaw - BodyYaw) * FMath::Min(1.f, DeltaSeconds * 6.f);
+		BodyYaw += Wrap180(LookYaw - BodyYaw) * FMath::Min(1.f, DeltaSeconds * 15.f);
 	}
 	BodyYaw = Wrap180(BodyYaw);
 	SetActorRotation(FRotator(0.f, BodyYaw, 0.f));
@@ -188,9 +197,7 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	S.Speed = Speed;
 	const FVector Local = GetActorRotation().UnrotateVector(Vel);
 	S.MoveAngle = Speed > 1.f ? FMath::RadiansToDegrees(FMath::Atan2(Local.Y, Local.X)) : 0.f;
-	// stepping backwards plays the gait backwards (sideways counts as forward)
-	const bool bBack = Speed > 1.f && Local.X < -0.3f * Speed;
-	Distance += (bBack ? -1.0 : 1.0) * Speed * DeltaSeconds;
+	Distance += Speed * DeltaSeconds;
 	IdleTime += DeltaSeconds;
 	const FRotator Look = GetControlRotation();
 	S.LookYaw = Wrap180(Look.Yaw - BodyYaw);

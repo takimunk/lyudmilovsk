@@ -18,7 +18,9 @@ unreal/scripts/import_hero.sh            # editor closed on this checkout
   (a smooth push field, so pockets and collars move with their panel), reskinned from the body; body
   skin under the clothes is cut away. The soles reach 4.4 cm below the body's floor
   (`AHeroCharacter::SoleDrop` lifts the mesh).
-- Clips: `Idle` (4 s) and `Walk` (1.1 s, one gait cycle, in place, the planted foot moves back 90 cm
-  per cycle: `UHeroAnimInstance::WalkStride`).
+- Clips: Murmuration's `Idle` and `Walk` are baked too (`Anims/Murmuration`, unused now). In game the
+  body plays the template's mannequin locomotion retargeted onto SK_Hero (idle, 8-way walk 2.9 m/s
+  and jog 5.8 m/s, by distance over each clip's root-motion stride), with the template's movement:
+  6 m/s, Shift walks, Space jumps (Dima found Murmuration's 1.4 m/s too heavy).
 - In game: `AHeroCharacter` (default pawn of `BP_FirstPersonGameMode`; `unreal/scripts/set_hero_pawn.py
   template` switches back to the template character).
