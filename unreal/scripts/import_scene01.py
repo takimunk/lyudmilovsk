@@ -1060,6 +1060,13 @@ if "outside" in LAYOUT and flock_cls:
     spawn(flock_cls, unreal.Vector(0, LAYOUT["outside"]["portal_face_y"] + 30000, LAYOUT["outside"]["sea_z"]),
           label="Starlings").set_folder_path("Outside")
     log("starlings placed")
+# A poplar (the plants thread's AProceduralPlant) on the grass beside the path from the door; it grows
+# from a sprout with the game clock and snaps to the hill at BeginPlay.
+plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
+if "outside" in LAYOUT and plant_cls:
+    spawn(plant_cls, unreal.Vector(-450, LAYOUT["outside"]["portal_face_y"] + 650, 0),
+          label="Poplar").set_folder_path("Outside")
+    log("poplar placed")
 
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.
