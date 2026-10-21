@@ -42,6 +42,22 @@ namespace PlantMeshes
 	 */
 	UStaticMesh* BuildGrassTuft(UObject* Outer, const FGrassSpecies& Grass);
 
+	/** A whole tree frozen at one age and day as a static mesh with four LODs, for forests (slot 0 wood, slot 1 leaves). */
+	struct FTreeBake
+	{
+		UStaticMesh* Mesh = nullptr;
+		/** Bounding radius, m. */
+		float Radius = 0.f;
+		int32 Triangles[4] = {};
+	};
+	/**
+	 * The tree AProceduralPlant would draw at (Age, Day), merged into one mesh: LOD0 every branch and leaf cluster,
+	 * LOD1 limbs only and every 2nd cluster (larger), LOD2 every 5th, LOD3 trunk and every 14th. Switch distances
+	 * are fractions of its size (FarLodDistances, m times Radius is not needed: pass the camera distances in
+	 * LodDistances, m). The bark and leaf textures are not made here; the caller gives the materials.
+	 */
+	FTreeBake BuildTreeBake(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, float Age, float Day, const FVector3f& LodDistances);
+
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);
 }

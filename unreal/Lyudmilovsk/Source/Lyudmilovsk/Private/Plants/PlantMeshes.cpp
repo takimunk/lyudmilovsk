@@ -6,6 +6,7 @@
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "StaticMeshAttributes.h"
+#include "StaticMeshResources.h"
 #include "TextureResource.h"
 
 namespace
@@ -364,7 +365,7 @@ namespace
 	}
 }
 
-UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age, uint32 Seed, UTexture2D** OutScarMask)
+static UStaticMesh* BuildWoodImpl(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age, uint32 Seed, UTexture2D** OutScarMask, FMeshData* OutData)
 {
 	FMeshData D;
 	const float DarkBase = FMath::Min(Bark.DarkBaseRate * Age, Bark.DarkBaseMax);
@@ -566,13 +567,22 @@ UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TAr
 		}
 		*OutScarMask = MakeTexture(Outer, MaskSize, MaskSize, MoveTemp(Px), true, false);
 	}
+	if (OutData)
+	{
+		*OutData = MoveTemp(D);
+		return nullptr;
+	}
 	return BuildMesh(Outer, Mesh, TEXT("SM_PlantWood"), D);
 }
 
-UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& S)
+UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age, uint32 Seed, UTexture2D** OutScarMask)
+{
+	return BuildWoodImpl(Outer, Mesh, Tubes, Bark, Age, Seed, OutScarMask, nullptr);
+}
+
+static void LeafClusterData(const FPlantSpecies& S, FMeshData& D)
 {
 	const FPlantLeafShape& L = S.Leaf;
-	FMeshData D;
 	const int32 Count = FMath::Max(L.PerCluster, 1);
 	if (L.Form == EPlantLeafForm::Needle)
 	{
@@ -599,7 +609,7 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 			D.Tris.Add(FIntVector3(Base, Base + 2, Base + 1));
 			D.Tris.Add(FIntVector3(Base, Base + 3, Base + 2));
 		}
-		return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaves_%s"), *S.Name.ToString()), D);
+		return;
 	}
 	for (int32 I = 0; I < Count; I++)
 	{
@@ -619,6 +629,12 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 		const FRotator Rot(-(8.f + 22.f * Hash01(77, I, 4)), FMath::RadiansToDegrees(Phi) - 90.f, (Hash01(77, I, 5) - 0.5f) * 40.f);
 		BuildBlade(L, Length, D, FTransform3f(FRotator3f(Rot), Node + Stalk));
 	}
+}
+
+UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& S)
+{
+	FMeshData D;
+	LeafClusterData(S, D);
 	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaves_%s"), *S.Name.ToString()), D);
 }
 
@@ -916,4 +932,129 @@ UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 		Tri(Last, Last + 1, Last + 2);
 	}
 	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Grass_%s"), *G.Name.ToString()), D);
+}
+
+namespace
+{
+	/** The data of one LOD as two sections, wood and leaves, in a mesh description. */
+	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf)
+	{
+		FStaticMeshAttributes Attr(MD);
+		Attr.Register();
+		TVertexAttributesRef<FVector3f> VPos = Attr.GetVertexPositions();
+		TVertexInstanceAttributesRef<FVector3f> VNrm = Attr.GetVertexInstanceNormals();
+		TVertexInstanceAttributesRef<FVector3f> VTan = Attr.GetVertexInstanceTangents();
+		TVertexInstanceAttributesRef<float> VSign = Attr.GetVertexInstanceBinormalSigns();
+		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
+		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
+		VUV.SetNumChannels(2);
+		const FMeshData* Parts[2] = { &Wood, &Leaf };
+		const TCHAR* Slots[2] = { TEXT("Wood"), TEXT("Leaf") };
+		for (int32 Part = 0; Part < 2; Part++)
+		{
+			const FMeshData& D = *Parts[Part];
+			const FPolygonGroupID PG = MD.CreatePolygonGroup();
+			Attr.GetPolygonGroupMaterialSlotNames()[PG] = Slots[Part];
+			TArray<FVertexInstanceID> Inst;
+			Inst.Reserve(D.Pos.Num());
+			for (int32 I = 0; I < D.Pos.Num(); I++)
+			{
+				const FVertexID V = MD.CreateVertex();
+				VPos[V] = D.Pos[I];
+				const FVertexInstanceID VI = MD.CreateVertexInstance(V);
+				const FVector3f N = D.Nrm[I].GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector);
+				VNrm[VI] = N;
+				FVector3f T = (D.Tan[I] - N * FVector3f::DotProduct(D.Tan[I], N)).GetSafeNormal();
+				if (T.IsNearlyZero())
+				{
+					T = FVector3f::CrossProduct(FMath::Abs(N.Z) < 0.9f ? FVector3f::UpVector : FVector3f::XAxisVector, N).GetSafeNormal();
+				}
+				VTan[VI] = T;
+				VSign[VI] = 1.f;
+				VUV.Set(VI, 0, D.UV[I]);
+				VUV.Set(VI, 1, D.UV1[I]);
+				VCol[VI] = D.Col[I];
+				Inst.Add(VI);
+			}
+			for (const FIntVector3& T : D.Tris)
+			{
+				MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+			}
+		}
+	}
+}
+
+PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSpecies& S, uint32 Seed, float Age, float Day, const FVector3f& LodDistances)
+{
+	FTreeBake Result;
+	FPlantSkeleton Skeleton;
+	Skeleton.Build(S, Seed);
+	FPlantSkeleton::FInstances Out;
+	Skeleton.Evaluate(Age, PlantModel::Season(S, Seed, Day), Out);
+	FMeshData Cluster;
+	LeafClusterData(S, Cluster);
+
+	struct FLod { int32 MaxOrder; int32 Stride; float Scale; };
+	const FLod Lods[4] = { { 3, 1, 1.f }, { 1, 2, 1.35f }, { 1, 5, 2.1f }, { 0, 14, 3.4f } };
+	TArray<FMeshDescription> Descriptions;
+	Descriptions.SetNum(4);
+	for (int32 L = 0; L < 4; L++)
+	{
+		TArray<FPlantSkeleton::FTube> Tubes;
+		for (const FPlantSkeleton::FTube& T : Out.Tubes)
+		{
+			if (T.Order <= Lods[L].MaxOrder) Tubes.Add(T);
+		}
+		FMeshData Wood, Leaf;
+		if (!Tubes.IsEmpty())
+		{
+			BuildWoodImpl(Outer, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
+		}
+		int32 Count = 0;
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+		{
+			for (const FTransform& Xf0 : Out.Leaves[K])
+			{
+				if (Count++ % Lods[L].Stride != 0) continue;
+				FTransform Xf = Xf0;
+				Xf.SetScale3D(Xf.GetScale3D() * Lods[L].Scale);
+				const int32 Base = Leaf.Pos.Num();
+				for (int32 V = 0; V < Cluster.Pos.Num(); V++)
+				{
+					Leaf.Add(FVector3f(Xf.TransformPosition(FVector(Cluster.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(Cluster.Nrm[V]))),
+					         FVector3f(Xf.TransformVectorNoScale(FVector(Cluster.Tan[V]))), Cluster.UV[V]);
+				}
+				for (const FIntVector3& T : Cluster.Tris) Leaf.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
+			}
+		}
+		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty())
+		{
+			for (int32 I = 0; I < 3; I++) Wood.Add(FVector3f::ZeroVector, FVector3f::UpVector, FVector3f::XAxisVector, FVector2f::ZeroVector);
+			Wood.Tris.Add(FIntVector3(0, 1, 2));
+		}
+		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num();
+		FillTreeLod(Descriptions[L], Wood, Leaf);
+	}
+	// the same rules as every runtime-built mesh here: never saved, never copied into a PIE world
+	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
+	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
+	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Leaf")));
+	UStaticMesh::FBuildMeshDescriptionsParams Params;
+	Params.bMarkPackageDirty = false;
+	Params.bBuildSimpleCollision = false;
+	Params.bCommitMeshDescription = false;
+	Params.bFastBuild = true;
+	Mesh->BuildFromMeshDescriptions({ &Descriptions[0], &Descriptions[1], &Descriptions[2], &Descriptions[3] }, Params);
+	Result.Mesh = Mesh;
+	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
+	// LOD switch by camera distance: a sphere of radius R fills about R / d of a 90 degree view
+	if (FStaticMeshRenderData* RD = Mesh->GetRenderData())
+	{
+		const float R = FMath::Max(Result.Radius, 0.3f);
+		RD->ScreenSize[0] = 1.f;
+		RD->ScreenSize[1] = FMath::Min(R / LodDistances.X, 0.9f);
+		RD->ScreenSize[2] = FMath::Min(R / LodDistances.Y, 0.5f);
+		RD->ScreenSize[3] = FMath::Min(R / LodDistances.Z, 0.25f);
+	}
+	return Result;
 }
