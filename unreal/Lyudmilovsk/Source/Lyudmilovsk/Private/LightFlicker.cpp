@@ -21,13 +21,22 @@ void ALightFlicker::BeginPlay()
 		}
 		const float Far = bFar ? FMath::Clamp((FarStartY - It->GetActorLocation().Y) / (FarStartY - FarEndY), 0.f, 1.f) : 0.f;
 		const float Curve = FMath::Pow(Far, 0.6f);
+		// The deeper in the tunnel, the more bulbs are dead for good; the survivors blink harder, the sparser they are.
+		const float DeadChance = bFar ? FMath::Clamp(FMath::Pow(Far, 0.8f) * MaxDeadFraction, 0.f, 1.f) : 0.f;
+		const bool bDead = FMath::FRand() < DeadChance;
 		TArray<ULightComponent*> Found;
 		It->GetComponents(Found);
 		for (ULightComponent* Light : Found)
 		{
 			FFlickeringLight& F = Lights.AddDefaulted_GetRef();
 			F.Light = Light;
-			F.Far = Curve;
+			F.Far = FMath::Clamp(Curve + (1.f - Curve) * DeadChance * 0.8f, 0.f, 1.f);
+			F.bDead = bDead;
+			if (bDead)
+			{
+				Light->SetIntensity(0.f);
+				continue;
+			}
 			F.BaseIntensity = Light->Intensity * FMath::Lerp(1.f, FarGlow, Curve);
 			F.NextBlink = FMath::FRandRange(0.5f, FMath::Lerp(Interval.Y, FarInterval.Y, Curve));
 		}
@@ -42,7 +51,7 @@ void ALightFlicker::Tick(float DeltaSeconds)
 	for (FFlickeringLight& F : Lights)
 	{
 		ULightComponent* Light = F.Light.Get();
-		if (!Light)
+		if (!Light || F.bDead)
 		{
 			continue;
 		}

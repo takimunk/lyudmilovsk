@@ -79,6 +79,7 @@ void FHeroAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	JogStride = Hero->JogStride;
 	WalkClipSpeed = Hero->WalkClipSpeed;
 	JogClipSpeed = Hero->JogClipSpeed;
+	Reach = Hero->Reach;
 }
 
 bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
@@ -157,6 +158,13 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	const FCompactPoseBoneIndex RootIndex(0);
 	Output.Pose[RootIndex].SetTranslation(FVector::ZeroVector);
 
+	// reaching for something: the body crouches and leans to it first (the look builds on that)
+	const FPalmFrame AnimPalm = Reach.IsActive() ? HandReach::CurrentPalm(Output.Pose) : FPalmFrame();
+	if (Reach.IsActive())
+	{
+		HandReach::ApplyPosture(Output.Pose, Reach);
+	}
+
 	// the spine, neck and head follow the look (component space: the mesh faces +Y, up is +Z,
 	// so look-right is +Z yaw and look-up a rotation about +X)
 	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
@@ -194,6 +202,10 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 		const FQuat NewLocal = (ParentCS.Inverse() * Q * ParentCS * Local).GetNormalized();
 		Output.Pose[B].SetRotation(NewLocal);
 		ParentCS = ParentCS * NewLocal;
+	}
+	if (Reach.IsActive())
+	{
+		HandReach::ApplyArm(Output.Pose, Reach, AnimPalm);
 	}
 	return true;
 }

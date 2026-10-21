@@ -949,6 +949,12 @@ for i, p in enumerate(LAYOUT["vent_outlets"]):
     ambient(air, vec(p), "VentAir_%02d" % i, 0.55, 60.0, 650.0)
 if "vending" in LAYOUT:   # the drinks machine's compressor
     ambient(hum, vec(LAYOUT["vending"]), "VendingHum", 0.25, 50.0, 400.0)
+    # the machine itself: its tray and the buy / take / drink behaviour (the model's front faces +X)
+    vend_cls = unreal.load_class(None, "/Script/Lyudmilovsk.VendingMachine")
+    if vend_cls:
+        v = LAYOUT["vending"]
+        vm = spawn(vend_cls, unreal.Vector(v[0], v[1], 0.0), label="VendingMachine_Logic")
+        vm.set_folder_path("Props")
 
 # Invisible wall a few places past the hero's desk.
 wall = spawn(unreal.StaticMeshActor, unreal.Vector(0, WALL_Y, 250), label="InvisibleWall")
@@ -1223,12 +1229,16 @@ if "owner" in LAYOUT and owner_cls and eal.does_asset_exist(HUMANS + "Owner/SK_O
 # Each person's own loop from the humans thread (poses checked there).
 ANIM = {"Streamer": "Sit_Stream", "Kid_boy": "Sit_Gamepad", "Kid_girl": "Sit_ChinRest", "Guy_a": "Sit_KeyboardMouse",
         "Guy_b": "Sit_LeanBack", "Girl_a": "Sit_KeyboardMouse", "Girl_b": "Sit_Browse"}
+CROWD_ANIM = {11: "Sit_Browse", 12: "Sit_KeyboardMouse", 13: "Sit_Browse"}
 seats = {st["index"]: st for st in LAYOUT.get("stations", [])}
 for v in LAYOUT.get("visitors", []):
     st = seats.get(v["index"])
     if st:
-        seat_person(v["person"], ANIM.get(v["person"], "Sit_Idle"), vec(st["chair"]), st["sitter_yaw"],
-                    "Visitor_" + v["person"])
+        crowd = v["index"] > 10     # extra people past the hero (HERO_INDEX) hide the invisible wall
+        p = seat_person(v["person"], CROWD_ANIM.get(v["index"], ANIM.get(v["person"], "Sit_Idle")), vec(st["chair"]),
+                        st["sitter_yaw"], "Visitor_" + v["person"] + ("_%02d" % v["index"] if crowd else ""))
+        if p and crowd:
+            p.tags = [unreal.Name("NoTalk")]
         log("%s at station %02d (%s)" % (v["person"], v["index"], v["kind"]))
 
 

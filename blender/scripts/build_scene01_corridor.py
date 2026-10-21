@@ -1023,7 +1023,7 @@ def build_partition(coll):
 def build_chandelier(coll):
     """Crystal chandelier in the middle of the hall (stand-in until the detailed prop arrives)."""
     h = CEIL_Z
-    cx, cy = 0.0, -2.4
+    cx, cy = -1.0, HALL_Y0 / 2 - 0.15       # middle of the free part of the hall (the owner's booth takes x 1..3)
     if have_prop("chandelier"):
         m = floor_at((cx, cy, h), 0.0)
         place("chandelier", m, coll, label="Chandelier")
@@ -1051,6 +1051,23 @@ def build_chandelier(coll):
         join("Chandelier", parts, coll)
     LAYOUT["hall_lights"].append({"pos": ue(cx, cy, h - 0.6), "color": [1.0, 0.72, 0.45], "cd": 30.0,
                                   "radius": 1100, "shadows": True})
+
+
+def build_posters(coll):
+    """ATON computer club posters (the Eye of Horus logo) taped to the whitewash: two designs, over the desks
+    on the right wall, on the aisle wall opposite and in the hall."""
+    pw, ph = 0.55, 0.73
+    mats = [tex_mat("Poster_Aton_1", "poster_aton_1.jpg", 0.7), tex_mat("Poster_Aton_2", "poster_aton_2.jpg", 0.7)]
+    spots = [  # (x, y, z centre, wall faces +x (1) or -x (-1), design)
+        (W / 2 - 0.012, 3.1, 1.74, -1, 0), (W / 2 - 0.012, 9.6, 1.74, -1, 1), (W / 2 - 0.012, 18.7, 1.74, -1, 0),
+        (W / 2 - 0.012, 21.6, 1.74, -1, 1),
+        (-W / 2 + 0.012, 1.6, 1.55, 1, 1), (-W / 2 + 0.012, 12.2, 1.55, 1, 0), (-W / 2 + 0.012, 21.0, 1.55, 1, 1),
+        (-HALL_HW + 0.012, HALL_Y0 / 2 - 2.0, 1.55, 1, 0), (-HALL_HW + 0.012, HALL_Y0 + 1.3, 1.55, 1, 1),
+    ]
+    for k, (x, y, z, face, design) in enumerate(spots):
+        # plane() faces -Y: a quarter turn about Z points it along +X or -X
+        pl = plane("Poster_Aton_%d" % k, pw, ph, (x, y, z), mats[design], coll=coll)
+        pl.rotation_euler = (0, 0, face * math.pi / 2)
 
 
 def food_vending_placeholder(coll, fx, fy):
@@ -1117,6 +1134,10 @@ VISITORS = {
     6: ("Kid_boy", "platformer"),  # Mega Drive platformer on the TV, gamepad in hand
     7: ("Kid_girl", "chat"),       # iMac, chin in hand, reading a chat
     8: ("Girl_b", "feed"),         # beige PC, social feed
+    # past the hero, in front of the invisible wall: more people so the wall looks like a crowd, not a barrier
+    11: ("Guy_b", "feed"),
+    12: ("Girl_a", "video"),
+    13: ("Guy_a", "chat"),
 }
 LIVE_SCREENS = {"video": "screen_video.jpg", "cctv": "screen_cctv.jpg", "feed": "screen_feed.jpg", "chat": "screen_chat.jpg", "racing": "screen_racing.jpg",
                 "zx": "screen_zx.jpg", "platformer": "screen_platformer.jpg",
@@ -1798,6 +1819,7 @@ def main():
     build_ventilation(arch)
     build_podyezd_props(arch)
     build_hall(arch)
+    build_posters(arch)
     build_walkway(walk)
     build_stations(furn)
     build_work_lights(work)

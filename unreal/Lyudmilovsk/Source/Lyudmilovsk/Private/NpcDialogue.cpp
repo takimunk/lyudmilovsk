@@ -346,6 +346,10 @@ void ANpcTalkDirector::FindPeople()
 	}
 	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
+		if (It->ActorHasTag(TEXT("NoTalk")))   // background people (the crowd before the invisible wall)
+		{
+			continue;
+		}
 		USkeletalMeshComponent* Mesh = nullptr;
 		if (const ABoothOwner* Owner = Cast<ABoothOwner>(*It))
 		{

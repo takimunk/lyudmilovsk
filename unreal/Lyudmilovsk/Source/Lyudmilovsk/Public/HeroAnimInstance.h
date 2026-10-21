@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
+#include "HandReach.h"
 #include "HeroAnimInstance.generated.h"
 
 class UAnimSequence;
@@ -50,6 +51,7 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	TArray<TObjectPtr<UAnimSequence>> Jog;
 	TArray<float> WalkStride, JogStride;       // cm per clip loop
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
+	FHeroReachPose Reach;
 };
 
 UCLASS(Transient, NotBlueprintable)
@@ -65,6 +67,9 @@ public:
 	float JogClipSpeed = 580.f;
 
 	virtual void NativeInitializeAnimation() override;
+
+	/** Where the right hand goes (UHeroReachComponent sets it every frame; Weight 0 leaves the animation alone). */
+	FHeroReachPose Reach;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimSequence> Idle;

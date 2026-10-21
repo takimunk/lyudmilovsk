@@ -1,0 +1,567 @@
+#include "HeroReachComponent.h"
+
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "HeroAnimInstance.h"
+#include "HeroCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
+namespace
+{
+	/** Where the item rests in the hand in front of the eyes, in the yaw frame (forward, right, up) from the eye, cm. */
+	const FVector CarryPos(38.f, 14.f, -17.f);
+	const FVector PocketPos(6.f, 25.f, -55.f);
+	const FVector MouthPos(8.f, 1.5f, -8.5f);
+	const FVector NeckUpright = FVector(-0.1f, -0.5f, 0.85f).GetSafeNormal();
+	const FVector NeckTipped = FVector(-0.25f, -0.55f, -0.8f).GetSafeNormal();
+
+	float Ease(float T)
+	{
+		return FMath::SmoothStep(0.f, 1.f, FMath::Clamp(T, 0.f, 1.f));
+	}
+}
+
+UHeroReachComponent::UHeroReachComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.TickGroup = TG_PrePhysics;
+}
+
+UHeroReachComponent* UHeroReachComponent::Get(AHeroCharacter* InHero)
+{
+	if (!InHero)
+	{
+		return nullptr;
+	}
+	UHeroReachComponent* C = InHero->FindComponentByClass<UHeroReachComponent>();
+	if (!C)
+	{
+		C = NewObject<UHeroReachComponent>(InHero, TEXT("HeroReach"));
+		C->Hero = InHero;
+		C->RegisterComponent();
+	}
+	C->Hero = InHero;
+	return C;
+}
+
+UHeroReachComponent* UHeroReachComponent::GetForPlayer(const UObject* WorldContext)
+{
+	return Get(Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(WorldContext, 0)));
+}
+
+FTransform UHeroReachComponent::YawFrame() const
+{
+	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
+	const float Yaw = PC ? PC->GetControlRotation().Yaw : Hero->GetActorRotation().Yaw;
+	return FTransform(FRotator(0.f, Yaw, 0.f), Hero->EyeLocation());
+}
+
+FTransform UHeroReachComponent::ItemFrame(const FVector& Pos, const FQuat& Rot) const
+{
+	return FTransform(Rot, Pos);
+}
+
+FQuat UHeroReachComponent::HeldRotation(const FReachItem& It, const FVector& NewUp, const FVector& FaceDir) const
+{
+	FVector Face = FaceDir - NewUp * FVector::DotProduct(FaceDir, NewUp);
+	if (Face.SizeSquared() < 1e-4f)
+	{
+		Face = FVector::CrossProduct(NewUp, FVector::RightVector);
+	}
+	// the item's own front is its local X; the item stays turned the way it was gripped, only its top changes
+	return FRotationMatrix::MakeFromZX(NewUp, Face.GetSafeNormal()).ToQuat();
+}
+
+void UHeroReachComponent::EvalKey(const FKey& K, FVector& OutPos, FQuat& OutRot) const
+{
+	if (!K.bHead)
+	{
+		OutPos = K.Pos;
+		OutRot = K.Rot;
+		return;
+	}
+	const FTransform Frame = YawFrame();
+	OutPos = Frame.TransformPosition(K.Pos);
+	OutRot = Frame.GetRotation() * K.Rot;
+}
+
+UHeroReachComponent::FKey UHeroReachComponent::CarryKey(const FReachItem& It, float Weight) const
+{
+	FKey K;
+	K.bHead = true;
+	K.Pos = CarryPos;
+	// neck up, the front turned back at the viewer (the yaw frame's -X)
+	K.Rot = HeldRotation(It, FVector::UpVector, -FVector::ForwardVector);
+	K.Weight = Weight;
+	K.Curl = 1.f;
+	return K;
+}
+
+UHeroReachComponent::FKey UHeroReachComponent::MouthKey(const FReachItem& It, float Tilt, float Weight) const
+{
+	FKey K;
+	K.bHead = true;
+	const FVector Neck = FMath::Lerp(NeckUpright, NeckTipped, Tilt).GetSafeNormal();
+	K.Pos = MouthPos - Neck * FMath::Max((It.MouthDistance > 0.f ? It.MouthDistance : It.HalfLength) - 1.f, 0.f);
+	K.Rot = HeldRotation(It, Neck, -FVector::ForwardVector);
+	K.Weight = Weight;
+	K.Curl = 1.f;
+	return K;
+}
+
+UHeroReachComponent::FKey UHeroReachComponent::PocketKey(const FReachItem& It) const
+{
+	FKey K = CarryKey(It);
+	K.Pos = PocketPos;
+	return K;
+}
+
+void UHeroReachComponent::PlanGrip(const FReachItem& It)
+{
+	const FVector Z = FVector::UpVector;
+	FVector H = (It.Center - Hero->GetActorLocation()).GetSafeNormal2D();
+	if (H.IsNearlyZero())
+	{
+		H = Hero->GetActorForwardVector();
+	}
+	const FVector R = FVector::CrossProduct(Z, H);   // the hero's right when facing the item
+	const bool bVertical = It.HalfLength > 0.5f && FMath::Abs(FVector::DotProduct(It.Axis, Z)) > 0.75f;
+	FVector Palm, Fd, Pn;
+	if (bVertical)
+	{
+		// a standing bottle: the hand comes from its right side, palm toward it, fingers forward round it, thumb up
+		Pn = -R;
+		Fd = H;
+		Palm = It.Center + R * (It.Radius + 0.8f);
+	}
+	else
+	{
+		// lying or round: from above, palm down, the fingers across the item
+		Pn = -Z;
+		Fd = H;
+		if (It.HalfLength > 0.5f)
+		{
+			const FVector A2 = (It.Axis - Z * FVector::DotProduct(It.Axis, Z)).GetSafeNormal();
+			Fd = FVector::CrossProduct(A2, Z).GetSafeNormal();
+			if (FVector::DotProduct(Fd, H) < -0.2f || (FMath::Abs(FVector::DotProduct(Fd, H)) < 0.25f && FVector::DotProduct(Fd, R) > 0.f))
+			{
+				Fd = -Fd;
+			}
+		}
+		Palm = It.Center + Z * (It.Radius + 0.8f) - Fd * (0.25f * It.Radius);
+	}
+	const FTransform Frame(Item0Rot, It.Center);
+	Grip.PalmLocal = Frame.InverseTransformPosition(Palm);
+	Grip.FingerLocal = Frame.InverseTransformVectorNoScale(Fd);
+	Grip.NormalLocal = Frame.InverseTransformVectorNoScale(Pn);
+}
+
+void UHeroReachComponent::Begin(const FReachItem& It, bool bFromPocket)
+{
+	Item = It;
+	Item0Rot = FRotationMatrix::MakeFromZX(It.Axis.GetSafeNormal(), It.Front).ToQuat();
+	PlanGrip(It);
+	Steps.Reset();
+	Current = 0;
+	StepTime = 0.f;
+	From = FKey();
+	From.Weight = 0.f;
+	if (!bLocked)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
+		{
+			PC->SetIgnoreLookInput(true);
+			PC->SetIgnoreMoveInput(true);
+		}
+		bLocked = true;
+	}
+}
+
+bool UHeroReachComponent::Pick(const FReachItem& It, TFunction<void()> OnHeld)
+{
+	if (!Hero || IsBusy() || !It.Actor.IsValid())
+	{
+		return false;
+	}
+	Begin(It, false);
+	FKey Reach;
+	Reach.Pos = It.Center;
+	Reach.Rot = Item0Rot;
+	Reach.Curl = 0.05f;
+	{
+		FStep S; S.Duration = 0.8f; S.Target = Reach; S.Target.HandBack = 11.f; S.bAimCamera = true;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.4f; S.Target = Reach; S.bAimCamera = true;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.35f; S.Target = Reach; S.Target.Curl = 1.f; S.bAimCamera = true;
+		S.OnEnd = [this] { AttachHeld(); };
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.8f; S.Target = CarryKey(It);
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.3f; S.Target = CarryKey(It);
+		S.OnEnd = OnHeld;
+		Steps.Add(S);
+	}
+	return true;
+}
+
+bool UHeroReachComponent::Take(const FReachItem& It, TFunction<void()> OnStowed)
+{
+	return Pick(It, [this, OnStowed] { Stow(OnStowed); });
+}
+
+void UHeroReachComponent::Stow(TFunction<void()> OnStowed)
+{
+	const FReachItem It = Item;
+	{
+		FStep S; S.Duration = 0.55f; S.Target = PocketKey(It);
+		S.OnEnd = [this]
+		{
+			if (AActor* A = Held.Get())
+			{
+				A->Destroy();
+			}
+			Held.Reset();
+		};
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.5f; S.Target = PocketKey(It); S.Target.Weight = 0.f; S.Target.Curl = 0.f;
+		S.OnEnd = OnStowed;
+		Steps.Add(S);
+	}
+}
+
+bool UHeroReachComponent::Drink(const FReachItem& It, float Seconds, TFunction<void(float)> OnLevel, TFunction<void()> OnDone)
+{
+	if (!Hero || IsBusy() || !It.Actor.IsValid())
+	{
+		return false;
+	}
+	Begin(It, true);
+	FKey Reach;
+	Reach.Pos = It.Center;
+	Reach.Rot = Item0Rot;
+	Reach.Curl = 0.05f;
+	{
+		FStep S; S.Duration = 0.55f; S.Target = Reach; S.Target.HandBack = 8.f;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.25f; S.Target = Reach;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.25f; S.Target = Reach; S.Target.Curl = 1.f;
+		S.OnEnd = [this] { AttachHeld(); };
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.75f; S.Target = MouthKey(It, 0.f);
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.9f; S.Target = MouthKey(It, 1.f);
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = FMath::Max(Seconds, 0.5f); S.Target = MouthKey(It, 1.f);
+		S.OnProgress = [OnLevel](float T) { if (OnLevel) { OnLevel(1.f - T); } };
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.7f; S.Target = MouthKey(It, 0.f);
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.6f; S.Target = CarryKey(It);
+		S.OnEnd = OnDone;
+		Steps.Add(S);
+	}
+	return true;
+}
+
+bool UHeroReachComponent::Eat(const FReachItem& It, int32 Bites, TFunction<void(float)> OnBite, TFunction<void()> OnDone)
+{
+	if (!Hero || IsBusy() || !It.Actor.IsValid())
+	{
+		return false;
+	}
+	Begin(It, true);
+	FKey Reach;
+	Reach.Pos = It.Center;
+	Reach.Rot = Item0Rot;
+	Reach.Curl = 0.05f;
+	{
+		FStep S; S.Duration = 0.55f; S.Target = Reach; S.Target.HandBack = 8.f;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.25f; S.Target = Reach;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.25f; S.Target = Reach; S.Target.Curl = 1.f;
+		S.OnEnd = [this] { AttachHeld(); };
+		Steps.Add(S);
+	}
+	FKey Near = MouthKey(It, 0.f);
+	Near.Pos = MouthPos + FVector(5.f, 0.f, -3.f);
+	Near.Rot = HeldRotation(It, FVector(0.f, -0.3f, 0.95f).GetSafeNormal(), -FVector::ForwardVector);
+	FKey At = Near;
+	At.Pos = MouthPos + FVector(0.f, 0.f, -1.f);
+	{
+		FStep S; S.Duration = 0.7f; S.Target = Near;
+		Steps.Add(S);
+	}
+	for (int32 B = 0; B < FMath::Max(Bites, 1); ++B)
+	{
+		{ FStep S; S.Duration = 0.3f; S.Target = At; Steps.Add(S); }
+		{
+			FStep S; S.Duration = 0.4f; S.Target = Near;
+			const float Left = 1.f - float(B + 1) / FMath::Max(Bites, 1);
+			S.OnStart = [OnBite, Left] { if (OnBite) { OnBite(Left); } };
+			Steps.Add(S);
+		}
+	}
+	{
+		FStep S; S.Duration = 0.6f; S.Target = CarryKey(It);
+		S.OnEnd = OnDone;
+		Steps.Add(S);
+	}
+	return true;
+}
+
+void UHeroReachComponent::AttachHeld()
+{
+	AActor* A = Item.Actor.Get();
+	USkeletalMeshComponent* Body = Hero ? Hero->GetMesh() : nullptr;
+	if (A && Body)
+	{
+		if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(A->GetRootComponent()))
+		{
+			Prim->SetSimulatePhysics(false);
+			Prim->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+		A->AttachToComponent(Body, FAttachmentTransformRules::KeepWorldTransform, TEXT("hand_r"));
+		Held = A;
+	}
+}
+
+void UHeroReachComponent::Drop()
+{
+	if (AActor* A = Held.Get())
+	{
+		A->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		if (UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(A->GetRootComponent()))
+		{
+			Prim->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			Prim->SetSimulatePhysics(true);
+		}
+	}
+	Held.Reset();
+}
+
+void UHeroReachComponent::Finish()
+{
+	Steps.Reset();
+	Current = 0;
+	Pose = FHeroReachPose();
+	PushPose();
+	if (bLocked)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
+		{
+			PC->SetIgnoreLookInput(false);
+			PC->SetIgnoreMoveInput(false);
+		}
+		bLocked = false;
+	}
+}
+
+void UHeroReachComponent::PushPose()
+{
+	if (!Hero)
+	{
+		return;
+	}
+	USkeletalMeshComponent* Body = Hero->GetMesh();
+	TArray<USkeletalMeshComponent*, TInlineAllocator<2>> Meshes;
+	Meshes.Add(Body);
+	for (USceneComponent* Child : Body->GetAttachChildren())
+	{
+		if (USkeletalMeshComponent* M = Cast<USkeletalMeshComponent>(Child))
+		{
+			Meshes.Add(M);
+		}
+	}
+	for (USkeletalMeshComponent* M : Meshes)
+	{
+		if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(M->GetAnimInstance()))
+		{
+			Anim->Reach = Pose;
+		}
+	}
+}
+
+void UHeroReachComponent::DebugForcePose(const FHeroReachPose& InPose)
+{
+	bPoseForced = true;
+	Pose = InPose;
+	PushPose();
+}
+
+void UHeroReachComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!Hero || bPoseForced || Steps.Num() == 0)
+	{
+		return;
+	}
+	if (!Steps.IsValidIndex(Current))
+	{
+		Finish();
+		return;
+	}
+	FStep& Step = Steps[Current];
+	if (StepTime == 0.f && Step.OnStart)
+	{
+		TFunction<void()> Start = Step.OnStart;
+		Start();
+	}
+	StepTime += DeltaTime;
+	const float T = Step.Duration > 0.f ? FMath::Clamp(StepTime / Step.Duration, 0.f, 1.f) : 1.f;
+	const float S = Ease(T);
+
+	FVector P0, P1;
+	FQuat R0, R1;
+	EvalKey(From, P0, R0);
+	EvalKey(Step.Target, P1, R1);
+	// the first move has no earlier key: it starts where it ends, only the weight (and so the blend with the animation) grows
+	if (Current == 0 && From.Weight == 0.f && From.Pos.IsZero())
+	{
+		P0 = P1;
+		R0 = R1;
+	}
+	const FVector ItemPos = FMath::Lerp(P0, P1, S);
+	const FQuat ItemRot = FQuat::Slerp(R0, R1, S).GetNormalized();
+	const float HandBack = FMath::Lerp(From.HandBack, Step.Target.HandBack, S);
+
+	const FTransform Frame(ItemRot, ItemPos);
+	const FVector PalmW = Frame.TransformPosition(Grip.PalmLocal);
+	const FVector FingerW = Frame.TransformVectorNoScale(Grip.FingerLocal);
+	const FVector NormalW = Frame.TransformVectorNoScale(Grip.NormalLocal);
+
+	USkeletalMeshComponent* Body = Hero->GetMesh();
+	const FTransform ToMesh = Body->GetComponentTransform().Inverse();
+	Pose.Weight = FMath::Lerp(From.Weight, Step.Target.Weight, S);
+	Pose.Palm = ToMesh.TransformPosition(PalmW - NormalW * HandBack);
+	Pose.FingerDir = ToMesh.TransformVectorNoScale(FingerW).GetSafeNormal();
+	Pose.PalmNormal = ToMesh.TransformVectorNoScale(NormalW).GetSafeNormal();
+	Pose.Curl = FMath::Lerp(From.Curl, Step.Target.Curl, S);
+	Pose.bHasShape = true;
+	Pose.Shape.Center = ToMesh.TransformPosition(ItemPos);
+	Pose.Shape.Axis = ToMesh.TransformVectorNoScale(Frame.GetRotation().GetUpVector()).GetSafeNormal();
+	Pose.Shape.HalfLength = Item.HalfLength;
+	Pose.Shape.Radius = Item.Radius;
+	Pose.PostureWeight = 1.f;
+	PushPose();
+
+	if (Step.bAimCamera)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
+		{
+			const FRotator Want = (Item.Center - Hero->EyeLocation()).Rotation();
+			FRotator Now = PC->GetControlRotation();
+			Now = FMath::RInterpTo(Now, FRotator(FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -75.f, 75.f), Want.Yaw, 0.f), DeltaTime, 2.2f);
+			PC->SetControlRotation(Now);
+		}
+	}
+	if (Step.OnProgress)
+	{
+		Step.OnProgress(T);
+	}
+	if (T >= 1.f)
+	{
+		TFunction<void()> End = Step.OnEnd;
+		From = Step.Target;
+		StepTime = 0.f;
+		++Current;
+		if (End)
+		{
+			End();
+		}
+		if (Current >= Steps.Num())
+		{
+			Finish();
+		}
+	}
+}
+
+FString UHeroReachComponent::DebugReachTest(AHeroCharacter* InHero, FVector Palm, FVector FingerDir, FVector PalmNormal, float Curl,
+	FVector ShapeCenter, FVector ShapeAxis, float ShapeHalfLength, float ShapeRadius, float LookPitch)
+{
+	if (!InHero)
+	{
+		return TEXT("no hero");
+	}
+	USkeletalMeshComponent* Body = InHero->GetMesh();
+	if (!Body->GetSkeletalMeshAsset())
+	{
+		Body->SetSkeletalMesh(InHero->BodyMesh.LoadSynchronous());
+	}
+	Body->bEnableUpdateRateOptimizations = false;
+	Body->InitAnim(true);
+	UHeroReachComponent* C = Get(InHero);
+	FString Out;
+	auto Dump = [&](const TCHAR* Label)
+	{
+		Out += Label;
+		Out += TEXT("\n");
+		for (const TCHAR* Name : { TEXT("pelvis"), TEXT("spine_03"), TEXT("neck_01"), TEXT("head"), TEXT("eye_l"), TEXT("eye_r"), TEXT("clavicle_r"), TEXT("upperarm_r"), TEXT("lowerarm_r"), TEXT("hand_r"),
+			TEXT("thumb_01_r"), TEXT("thumb_02_r"), TEXT("thumb_03_r"), TEXT("index_01_r"), TEXT("index_02_r"), TEXT("index_03_r"),
+			TEXT("middle_01_r"), TEXT("middle_02_r"), TEXT("middle_03_r"), TEXT("ring_01_r"), TEXT("pinky_01_r"),
+			TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l"), TEXT("ball_l"), TEXT("thigh_r"), TEXT("calf_r"), TEXT("foot_r"), TEXT("ball_r") })
+		{
+			const FVector P = Body->GetBoneLocation(Name, EBoneSpaces::WorldSpace);
+			Out += FString::Printf(TEXT("%s %.2f %.2f %.2f\n"), Name, P.X, P.Y, P.Z);
+		}
+	};
+	const FTransform ToMesh = Body->GetComponentTransform().Inverse();
+	FHeroReachPose P;
+	P.Weight = 1.f;
+	P.Palm = ToMesh.TransformPosition(Palm);
+	P.FingerDir = ToMesh.TransformVectorNoScale(FingerDir).GetSafeNormal();
+	P.PalmNormal = ToMesh.TransformVectorNoScale(PalmNormal).GetSafeNormal();
+	P.Curl = Curl;
+	P.bHasShape = ShapeRadius > 0.f;
+	P.Shape.Center = ToMesh.TransformPosition(ShapeCenter);
+	P.Shape.Axis = ToMesh.TransformVectorNoScale(ShapeAxis).GetSafeNormal();
+	P.Shape.HalfLength = ShapeHalfLength;
+	P.Shape.Radius = ShapeRadius;
+	for (int32 Pass = 0; Pass < 2; ++Pass)
+	{
+		if (Pass == 1)
+		{
+			P = FHeroReachPose();
+		}
+		C->DebugForcePose(P);
+		if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(Body->GetAnimInstance()))
+		{
+			Anim->State.LookPitch = LookPitch;
+		}
+		Body->TickAnimation(0.f, false);
+		Body->RefreshBoneTransforms();
+		Dump(Pass == 0 ? TEXT("reach") : TEXT("---\nplain"));
+	}
+	return Out;
+}

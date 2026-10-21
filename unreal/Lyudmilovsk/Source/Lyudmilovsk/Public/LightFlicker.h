@@ -50,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
 	float FarGlow = 0.06f;
 
+	/** Fraction of far-tagged lights that are dead at the very end of the tunnel (it grows with the distance). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	float MaxDeadFraction = 0.92f;
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -59,6 +63,7 @@ private:
 		TWeakObjectPtr<ULightComponent> Light;
 		float BaseIntensity = 0.f;
 		float NextBlink = 0.f;
+		bool bDead = false;
 		float Far = 0.f;           // 0 near, 1 at the far end
 		TArray<FVector2f> Dips;   // (start, end) times of the current blink pattern
 	};
