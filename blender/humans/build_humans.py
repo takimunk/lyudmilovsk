@@ -55,6 +55,10 @@ def wild_hair(co, w):
     return 0.012 + 0.05 * np.clip(n, 0, None) ** 0.7
 
 
+def snug_knit(co, w):
+    return 0.012 + 0.006 * wsum(w, ARMS)
+
+
 def oversized_hoodie(co, w):
     torso, arms, head = wsum(w, TORSO), wsum(w, ARMS), wsum(w, HEAD)
     z = _z(co)
@@ -119,12 +123,14 @@ CHARACTERS = {
                    race=dict(asian=0.95, caucasian=0.05, african=0.0)),
         targets={"head/head-age-incr": 1.0, "eyes/l-eye-bag-incr": 0.7, "eyes/r-eye-bag-incr": 0.7,
                  "head/head-square": 0.3},
-        skin="old_asian_male", hair="afro01", eyebrows="eyebrow006",
+        skin="old_asian_male", hair="short02", eyebrows="eyebrow006",
         clothes=["toigo_fisherman_sweater", "elvs_male_trouser", "mindfront_shoes_monk_strap_male",
-                 "rehmanpolanski_beard_viking"],
-        tailor={"hair": (wild_hair, None)},
+                 "elvs_scruffy_beard1"],
+        trim={"elvs_scruffy_beard1": (0.085, 0.28)},
+        tailor={"toigo_fisherman_sweater": (snug_knit, None)},      # no skin poking through at the shoulders          # short beard: keep 28% below the chin
+        skin_tint=((0.97, 0.88, 0.82), 0.45),                   # pale
         tint={"toigo_fisherman_sweater": ((0.17, 0.13, 0.10), 1.0, 0.8),
-              "rehmanpolanski_beard_viking": ((0.82, 0.81, 0.79), 1.0, 0.9),
+              "elvs_scruffy_beard1": ((0.70, 0.69, 0.67), 1.0, 1.2),
               "elvs_male_trouser": ((0.32, 0.30, 0.26), 0.9, 1.0),
               "hair": ((0.80, 0.80, 0.78), 1.0, 0.9), "eyebrows": ((0.75, 0.74, 0.72), 1.0, 1.0)}),
     # --- the crowd at the other computers (a few bodies x outfits) ---
@@ -378,7 +384,8 @@ def apply_preset_and_rules(name, spec):
     modelling targets; then cast_rules.json clamps everything into the house style."""
     import json
     spec = dict(spec)
-    preset = os.path.join(PRESETS, name + ".mpfb.json")
+    base = name.split("__")[0]                  # "<name>__<variant>" = a look-dev variant of <name>
+    preset = os.path.join(PRESETS, base + ".mpfb.json")
     if os.path.isfile(preset):
         d = json.load(open(preset))
         spec["macro"] = dict(d["phenotype"])
@@ -388,11 +395,11 @@ def apply_preset_and_rules(name, spec):
     rules = json.load(open(RULES))
     macro = dict(spec.get("macro", {}))
     macro.update(rules["fixed"])
-    grp = rules["groups"][rules["cast"][name]]
+    grp = rules["groups"][rules["cast"][base]]
     for k, (lo, hi) in grp.items():
         v = macro.get(k, 0.5)
         if not lo <= v <= hi:
-            print("HUMAN %s: %s %.2f clamped to [%.2f, %.2f] (%s)" % (name, k, v, lo, hi, rules["cast"][name]))
+            print("HUMAN %s: %s %.2f clamped to [%.2f, %.2f] (%s)" % (name, k, v, lo, hi, rules["cast"][base]))
         macro[k] = min(hi, max(lo, v))
     spec["macro"] = macro
     lim, exc = rules["target_limit"], rules["target_limit_exceptions"]
@@ -409,7 +416,7 @@ def save_preset(name, bm):
     d = json.loads(P.services()["HumanService"].serialize_to_json_string(bm))
     d["targets"] = [t for t in d.get("targets", []) if not P.is_face_key(t["target"])]
     path = os.path.join(PRESETS, name + ".mpfb.json")
-    if not os.path.isfile(path):
+    if "__" not in name and not os.path.isfile(path):
         json.dump(d, open(path, "w"), indent=1, sort_keys=True)
 
 
@@ -427,6 +434,11 @@ def build_one(name, spec, do_preview, do_export):
             w = {gr.name: tailor.group_weights(g, [gr.name]) for gr in g.vertex_groups}
             blend = blend_rule(co, w)
         tailor.loosen(g, bm, rule, blend=blend)
+    for key, (dz, factor) in spec.get("trim", {}).items():
+        tailor.compress_below(objs[key], dz, factor)
+    if spec.get("skin_tint"):
+        rgb, strength = spec["skin_tint"]
+        tailor.tint_object(bm, rgb, strength, 1.0, name=name + "_skin", lo=0.2, hi=2.0)
     for key, (rgb, strength, contrast) in spec.get("tint", {}).items():
         tailor.tint_object(objs[key], rgb, strength, contrast, name="%s_%s" % (name, key))
         tailor.drop_normal_maps(objs[key])          # their baked wear/fold maps read as dirt

@@ -35,6 +35,7 @@ box((0, 0, -5), (3000, 3000, 10), "Floor")
 light = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 500), unreal.Rotator(-40, 0, 60))
 light.light_component.set_intensity(2.0)
 eas.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 300)).light_component.set_intensity(1.0)
+eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(700, 400, 120))   # for offscreen shots
 for i, (name, anim) in enumerate(CAST):
     x = i * 140.0
     # chair at (x, 0), desk toward +Y (the meshes face +Y, so yaw 0)

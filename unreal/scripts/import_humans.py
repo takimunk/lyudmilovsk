@@ -44,7 +44,11 @@ def _new_material(name):
     path = MATS + "/" + name
     if eal.does_asset_exist(path):
         eal.delete_asset(path)
-    return tools.create_asset(name, MATS, unreal.Material, unreal.MaterialFactoryNew())
+    m = tools.create_asset(name, MATS, unreal.Material, unreal.MaterialFactoryNew())
+    # without these usage flags a packaged/-game run silently falls back to the default material
+    m.set_editor_property("used_with_skeletal_mesh", True)
+    m.set_editor_property("used_with_morph_targets", True)
+    return m
 
 
 def _tex(m, name, x, y, normal=False):

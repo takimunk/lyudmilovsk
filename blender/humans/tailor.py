@@ -309,3 +309,26 @@ def drop_normal_maps(obj):
                 if n.type == "NORMAL_MAP":
                     for l in list(n.outputs[0].links):
                         nt.links.remove(l)
+
+
+def compress_below(obj, z_from_top=0.09, factor=0.3):
+    """Shortens a hanging garment/beard: everything lower than (top - z_from_top) is squeezed up
+    toward that level by `factor` (0.3 = keeps 30% of the length). Applies to every shape key."""
+    me = obj.data
+    mw = obj.matrix_world
+    inv = mw.inverted()
+    zs = [(mw @ v.co).z for v in me.vertices]
+    cut = max(zs) - z_from_top
+    delta = {}
+    for v, z in zip(me.vertices, zs):
+        if z < cut:
+            w = mw @ v.co
+            w.z = cut + (z - cut) * factor
+            delta[v.index] = (inv @ w) - v.co
+    for i, d in delta.items():
+        me.vertices[i].co += d
+    if me.shape_keys:
+        for kb in me.shape_keys.key_blocks:
+            for i, d in delta.items():
+                kb.data[i].co += d
+    me.update()
