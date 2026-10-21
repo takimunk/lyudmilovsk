@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Materials/MaterialInstance.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 AFallenFruit::AFallenFruit()
@@ -60,7 +61,13 @@ void AFallenFruit::Init(UStaticMesh* FruitMesh, UMaterialInterface* Material, fl
 	Body->SetSphereRadius(Diameter * 0.45f);
 	Mesh->SetStaticMesh(FruitMesh);
 	Mesh->SetRelativeScale3D(FVector(Diameter / 100.f));
-	UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Material, this);
+	// the tree hands over its own dynamic instance, which cannot be a parent: make ours from the base material and copy what the tree set
+	UMaterialInterface* Base = Material ? Material->GetMaterial() : nullptr;
+	UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Base ? Base : Material, this);
+	if (const UMaterialInstance* From = Cast<UMaterialInstance>(Material))
+	{
+		M->CopyParameterOverrides(const_cast<UMaterialInstance*>(From));
+	}
 	for (int32 I = 0; I < NumData; I++)
 	{
 		M->SetScalarParameterValue(*FString::Printf(TEXT("Fruit%d"), I), Data[I]);
