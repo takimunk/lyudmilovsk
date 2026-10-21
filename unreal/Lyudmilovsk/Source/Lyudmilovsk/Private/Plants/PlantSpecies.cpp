@@ -358,9 +358,9 @@ namespace
 		S.Leaf.Petiole = 0.45f;
 		S.Leaf.PerCluster = 3;
 		S.Bark.Pattern = EPlantBarkPattern::Birch;
-		S.Bark.TileWidth = 0.25f;
-		S.Bark.TileHeight = 0.5f;
-		S.Bark.Depth = 0.6f;
+		S.Bark.TileWidth = 0.5f;
+		S.Bark.TileHeight = 1.0f;
+		S.Bark.Depth = 1.4f;
 		S.Bark.RidgeColour = C(0.62f, 0.62f, 0.58f);
 		S.Bark.FurrowColour = C(0.015f, 0.015f, 0.015f);
 		S.Bark.TwigRadius = 0.025f;

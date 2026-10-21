@@ -318,28 +318,6 @@ namespace
 			const float Cup = 0.55f + 0.3f * Cell + 0.15f * (1.f - Smooth(0.06f, 0.3f, E));
 			return FMath::Clamp(Cup * Crack + 0.18f * (Fine - 0.5f), 0.f, 1.f);
 		}
-		case EPlantBarkPattern::Birch:
-		{
-			// chalk-white bark peeling in thin horizontal strips (soft light and grey bands), and
-			// lenticels: short black dashes running around the trunk, longer and denser on old bark
-			const float Band = Noise(Seed + 9, U * 0.3f, V, 2, 40);
-			float H = 0.82f + 0.1f * (Band - 0.5f) + 0.06f * (Fine - 0.5f);
-			const int32 Rows = 22; // the tile's own fine lenticels; the tree's big ones come from its mark mask
-			const int32 Row = FMath::FloorToInt(V * Rows);
-			for (int32 Dash = 0; Dash < 2; Dash++)
-			{
-				const float Y0 = (Row + Hash01(Seed + 10, Row % Rows, Dash, 1)) / Rows;
-				const float Thick = (0.004f + 0.01f * Hash01(Seed + 10, Row % Rows, Dash, 2)) * (1.f + 2.f * Warp);
-				const float X0 = Hash01(Seed + 10, Row % Rows, Dash, 3), Len = 0.03f + 0.12f * FMath::Square(Hash01(Seed + 10, Row % Rows, Dash, 4));
-				const float Dx = FMath::Abs(FMath::Frac(U - X0 + 0.5f) - 0.5f);
-				if (Dx < Len * 0.5f && FMath::Abs(V - Y0) < Thick * (1.f - FMath::Square(Dx / (Len * 0.5f))))
-				{
-					H = 0.08f;
-					OutFlake = 1.f;
-				}
-			}
-			return FMath::Clamp(H, 0.f, 1.f);
-		}
 		default:
 		{
 			const float Grain = Noise(Seed + 7, U + Warp, V, 22, 2);
@@ -348,6 +326,133 @@ namespace
 			const bool bDash = Hash01(Seed + 8, FMath::FloorToInt(Lx) % 40, FMath::FloorToInt(Ly) % 70) < 0.06f && FMath::Abs(FMath::Frac(Ly) - 0.5f) < 0.18f;
 			return FMath::Clamp(0.6f + 0.25f * (Grain - 0.5f) + 0.15f * (Fine - 0.5f) - (bDash ? 0.25f : 0.f), 0.f, 1.f);
 		}
+		}
+	}
+}
+
+namespace
+{
+	/**
+	 * Birch bark tile (U around, V along; tileTW x TH metres), painted from the tree's seed instead of
+	 * sampled from noise: chalk-white peeling in thin horizontal strips, big black torn patches (some
+	 * chevron-shaped), long black bands that run around the trunk, clusters of horizontal lenticel
+	 * dashes. Black = 0..1 (how black), Hgt = relief 0 (cracked, sunk) .. 1 (raised), Tone = brightness of the white.
+	 */
+	void PaintBirchTile(const FPlantBark& B, uint32 Seed, int32 W, int32 H, TArray<float>& Hgt, TArray<float>& Black, TArray<float>& Tone)
+	{
+		// a small tile (dwarf birch) is a smaller bark, not a few huge marks: sizes below are for a 0.5 m tile
+		const float Sc = FMath::Min(1.f, B.TileWidth / 0.5f), TW = B.TileWidth / Sc, TH = B.TileHeight / Sc;
+		const float Mx = TW / W, My = TH / H; // metres per texel, at full size
+		Black.SetNumZeroed(W * H);
+		Hgt.SetNumUninitialized(W * H);
+		Tone.SetNumUninitialized(W * H);
+		auto At = [&](int32 X, int32 Y) { return ((Y % H + H) % H) * W + ((X % W) + W) % W; };
+
+		// peeling strips: streaks stretched around the trunk, and thin papery curls whose edges catch the light
+		for (int32 Y = 0; Y < H; Y++)
+		{
+			for (int32 X = 0; X < W; X++)
+			{
+				const float U = (X + 0.5f) / W, V = (Y + 0.5f) / H;
+				const float Streak = 0.6f * Noise(Seed + 21, U, V, 3, 70) + 0.4f * Noise(Seed + 22, U, V, 6, 200);
+				const float Blot = Noise(Seed + 23, U, V, 2, 4);
+				const int32 I = At(X, Y);
+				Tone[I] = 0.94f + 0.16f * (Streak - 0.5f) + 0.08f * (Blot - 0.5f);
+				Hgt[I] = 0.72f + 0.14f * (Streak - 0.5f) + 0.06f * (Noise(Seed + 24, U, V, 24, 48) - 0.5f);
+			}
+		}
+		const int32 Curls = FMath::RoundToInt(TW * TH * 70.f);
+		for (int32 K = 0; K < Curls; K++)
+		{
+			const float Cx = Hash01(Seed, K, 0, 31) * W, Cy = Hash01(Seed, K, 0, 32) * H;
+			const float Half = (0.04f + 0.14f * Hash01(Seed, K, 0, 33)) / Mx;
+			const float Bend = (Hash01(Seed, K, 0, 34) - 0.5f) * 0.012f / My;
+			for (int32 X = -FMath::CeilToInt(Half); X <= FMath::CeilToInt(Half); X++)
+			{
+				const float T = X / Half;
+				const int32 Y = FMath::RoundToInt(Cy + Bend * T * T + X * 0.03f * (Hash01(Seed, K, 0, 35) - 0.5f));
+				const float Fall = 1.f - Smooth(0.5f, 1.f, FMath::Abs(T));
+				for (int32 Dy = 0; Dy < 2; Dy++)
+				{
+					const int32 I = At(FMath::RoundToInt(Cx) + X, Y + Dy);
+					if (Dy == 0) { Tone[I] *= 1.f - 0.2f * Fall; Hgt[I] -= 0.2f * Fall; }
+					else { Tone[I] = FMath::Min(Tone[I] * (1.f + 0.05f * Fall), 1.1f); Hgt[I] += 0.28f * Fall; }
+				}
+			}
+		}
+
+		// one black mark: a torn lens or chevron, Ax / Ay half sizes and Bend (arms droop) in texels
+		auto Mark = [&](float Cx, float Cy, float Ax, float Ay, float Bend, float Rough, float Strength, uint32 Salt)
+		{
+			const int32 Ex = FMath::CeilToInt(Ax * 1.5f), Ey = FMath::CeilToInt(Ay * 1.6f + FMath::Abs(Bend) * 1.5f);
+			for (int32 Y = -Ey; Y <= Ey; Y++)
+			{
+				for (int32 X = -Ex; X <= Ex; X++)
+				{
+					const float Dx = FMath::Abs((float)X) / Ax;
+					const float Dy = (Y - Bend * Dx) / Ay;
+					const int32 Px = FMath::RoundToInt(Cx) + X, Py = FMath::RoundToInt(Cy) + Y;
+					const float U = (float)(((Px % W) + W) % W) / W, V = (float)(((Py % H) + H) % H) / H;
+					// the edge is torn: noise squeezed along the trunk, and ragged rows
+					const float Tear = (Noise(Seed + Salt, U, V, 24, 160) - 0.5f) * Rough + (Hash01(Seed, ((Py % H) + H) % H, Salt, 36) - 0.5f) * 0.25f * Rough;
+					const float D = (Dx > 1.f ? Dx * Dx : Dx) + FMath::Abs(Dy) + Tear;
+					const float V1 = Strength * (1.f - Smooth(0.82f, 1.06f, D));
+					if (V1 <= 0.f) continue;
+					const int32 I = At(Px, Py);
+					Black[I] = FMath::Max(Black[I], V1);
+				}
+			}
+		};
+		// big patches: where a limb was, or the bark has split. About 14 per square metre, every kind different
+		const int32 Patches = FMath::Max(2, FMath::RoundToInt(TW * TH * 14.f));
+		for (int32 K = 0; K < Patches; K++)
+		{
+			const float Cx = Hash01(Seed, K, 0, 41) * W, Cy = Hash01(Seed, K, 0, 42) * H;
+			const float Shape = Hash01(Seed, K, 0, 43);
+			const float Size = 0.4f + 1.2f * Hash01(Seed, K, 0, 44) * Hash01(Seed, K, 0, 45);
+			if (Shape < 0.2f)
+			{
+				// a chevron / diamond like the scar of a shed branch: wide, with arms that droop, one side often longer
+				const float A = (0.03f + 0.05f * Size) / Mx, Hh = (0.012f + 0.016f * Size) / My;
+				Mark(Cx, Cy, A, Hh, (0.8f + 1.2f * Hash01(Seed, K, 0, 46)) * Hh, 0.9f, 1.f, 50 + K);
+			}
+			else if (Shape < 0.6f)
+			{
+				// a torn lens, longer than tall
+				Mark(Cx, Cy, (0.03f + 0.07f * Size) / Mx, (0.006f + 0.013f * Size) / My, 0.f, 0.9f, 1.f, 90 + K);
+			}
+			else if (Shape < 0.8f)
+			{
+				// a band that runs far around the trunk
+				Mark(Cx, Cy, (0.08f + 0.15f * Size) / Mx, (0.003f + 0.006f * Size) / My, 0.f, 0.8f, 0.95f, 130 + K);
+			}
+			else
+			{
+				// a ragged blotch where the white has split away
+				Mark(Cx, Cy, (0.035f + 0.045f * Size) / Mx, (0.02f + 0.025f * Size) / My, 0.f, 1.6f, 1.f, 150 + K);
+			}
+		}
+		// lenticels: short black dashes in clusters (bands of them, bare bark between)
+		const int32 Bands = FMath::Max(3, FMath::RoundToInt(TH * 7.f));
+		const int32 Dashes = FMath::RoundToInt(TW * TH * 520.f);
+		for (int32 K = 0; K < Dashes; K++)
+		{
+			const int32 Band = FMath::FloorToInt(Hash01(Seed, K, 0, 61) * Bands);
+			const float BandY = (Band + 0.15f + 0.7f * Hash01(Seed, Band, 0, 62)) / Bands;
+			// a band is dense somewhere around the trunk and thin elsewhere
+			const float BandX = Hash01(Seed, Band, 0, 63);
+			const float Spread = 0.12f + 0.4f * Hash01(Seed, Band, 0, 64);
+			const float Around = BandX + (Hash01(Seed, K, 0, 65) - 0.5f) * 2.f * Spread;
+			const float Cy = (BandY + (Hash01(Seed, K, 0, 66) - 0.5f) * 0.012f / TH * 4.f) * H;
+			const float Len = 0.012f + 0.05f * FMath::Pow(Hash01(Seed, K, 0, 67), 1.6f);
+			const float Thick = 0.0014f + 0.0026f * Hash01(Seed, K, 0, 68);
+			Mark(Around * W, Cy, FMath::Max(Len / Mx, 1.5f), FMath::Max(Thick / My, 1.f), 0.f, 0.3f, 0.55f + 0.45f * Hash01(Seed, K, 0, 69), 170 + K % 7);
+		}
+		// relief: black marks are sunk and split
+		for (int32 I = 0; I < W * H; I++)
+		{
+			const float Bk = Black[I];
+			Hgt[I] = FMath::Clamp(FMath::Lerp(Hgt[I], 0.3f + 0.25f * Hgt[I], Bk), 0.f, 1.f);
 		}
 	}
 }
@@ -467,8 +572,9 @@ static UStaticMesh* BuildWoodImpl(UObject* Outer, UStaticMesh* Mesh, const TArra
 				float Dark = 0.f;
 				if (DarkBase > 0.f && T.Order <= 1)
 				{
-					const float Edge = DarkBase * (0.65f + 0.7f * Noise(17 + T.Key, (float)S / Sides, T.P[I].Z * 0.15f, 1, 1) * Noise(18 + T.Key, (float)S / Sides, 0.5f, Sides, 1));
-					Dark = FMath::Clamp((Edge - T.P[I].Z) / 0.25f, 0.f, 1.f);
+					// black tongues run up the trunk between white ones, with a ragged edge
+					const float Edge = DarkBase * (0.35f + 1.1f * Noise(17 + T.Key, (float)S / Sides, T.P[I].Z * 0.15f, 7, 1) * Noise(18 + T.Key, (float)S / Sides, 0.5f, Sides, 1));
+					Dark = FMath::Clamp((Edge - T.P[I].Z) / 0.09f, 0.f, 1.f);
 				}
 				const float Twig = Bark.TwigRadius > 0.f ? FMath::Clamp((Bark.TwigRadius - T.R[I]) / (0.5f * Bark.TwigRadius), 0.f, 1.f) : 0.f;
 				const int32 Vi = D.Add((T.P[I] + Nrm * T.R[I]) * 100.f, Nrm, Tan, FVector2f(U0 + (float)S / Sides * Repeats, -V), FVector4f(Dark, Twig, Sway, 1.f));
@@ -524,24 +630,6 @@ static UStaticMesh* BuildWoodImpl(UObject* Outer, UStaticMesh* Mesh, const TArra
 					if (Ly < Crest && Ly > Crest - 1.1f && Ax < 1.6f) Val = FMath::Max(Val, 0.9f * (1.f - Smooth(1.f, 1.6f, Ax)));
 					if (J.bShed && FMath::Square(Lx / 1.6f) + FMath::Square(Ly / 0.9f) < 1.f) Val = 1.f;
 					PaintTexel(Mask, MaskSize, Rect, FMath::RoundToInt(Cx) + X, FMath::RoundToInt(Cy) + Y, Val * Strength);
-				}
-			}
-		}
-		// the tree's own lenticels: dark dashes across the bark, a few big ones, many small
-		const int32 Count = FMath::RoundToInt(2.f * PI * R0 * Len * 9.f * Bark.Scars);
-		for (int32 K2 = 0; K2 < Count; K2++)
-		{
-			const float At = PlantModel::Hash01(Seed, T.Key, K2, 65) * Len;
-			const float Around = PlantModel::Hash01(Seed, T.Key, K2, 66) * Rect.W;
-			const float Big = FMath::Pow(PlantModel::Hash01(Seed, T.Key, K2, 67), 2.f);
-			const float HalfLen = (0.015f + 0.1f * Big) * PerM_X(At), HalfThick = FMath::Max((0.003f + 0.01f * Big) * PerM_Y, 0.7f);
-			const float Shade = Bark.Scars * (0.55f + 0.45f * PlantModel::Hash01(Seed, T.Key, K2, 68));
-			for (int32 Y = -FMath::CeilToInt(HalfThick); Y <= FMath::CeilToInt(HalfThick); Y++)
-			{
-				for (int32 X = -FMath::CeilToInt(HalfLen); X <= FMath::CeilToInt(HalfLen); X++)
-				{
-					const float E = FMath::Square(X / FMath::Max(HalfLen, 0.5f)) + FMath::Square(Y / HalfThick);
-					PaintTexel(Mask, MaskSize, Rect, FMath::RoundToInt(Around) + X, FMath::RoundToInt(At * PerM_Y) + Y, Shade * (1.f - Smooth(0.6f, 1.f, E)));
 				}
 			}
 		}
@@ -642,31 +730,44 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 
 void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint32 Seed, UTexture2D*& OutAlbedo, UTexture2D*& OutNormal)
 {
-	constexpr int32 W = 256, H = 512;
 	const FPlantBark& B = S.Bark;
-	TArray<float> Hgt;
+	const bool bBirch = B.Pattern == EPlantBarkPattern::Birch;
+	const int32 W = bBirch ? 512 : 256, H = bBirch ? 1024 : 512;
+	TArray<float> Hgt, BirchBlack, BirchTone;
 	Hgt.SetNumUninitialized(W * H);
 	TArray<FColor> Albedo, Normal;
 	Albedo.SetNumUninitialized(W * H);
 	Normal.SetNumUninitialized(W * H);
 	const uint32 TexSeed = Seed * 131u + GetTypeHash(S.Name);
+	if (bBirch)
+	{
+		PaintBirchTile(B, TexSeed, W, H, Hgt, BirchBlack, BirchTone);
+	}
 	for (int32 Y = 0; Y < H; Y++)
 	{
 		for (int32 X = 0; X < W; X++)
 		{
 			const float U = (X + 0.5f) / W, V = (Y + 0.5f) / H;
-			float Flake = 0.f;
-			const float Hh = BarkHeight(B, TexSeed, U, V, Flake);
-			Hgt[Y * W + X] = Hh;
-			const float Mottle = 0.8f + 0.4f * Fbm(TexSeed + 20, U, V, 6, 10, 3);
-			const FLinearColor C = B.Pattern == EPlantBarkPattern::Birch
-				? FMath::Lerp(B.RidgeColour * (0.92f + 0.16f * Mottle), B.FurrowColour, Flake)
-				: FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
+			FLinearColor C;
+			if (bBirch)
+			{
+				// chalk white (no mottling: the marks are all there is), black where a mark is
+				C = FMath::Lerp(B.RidgeColour * BirchTone[Y * W + X], B.FurrowColour, FMath::Clamp(BirchBlack[Y * W + X] * 1.15f, 0.f, 1.f));
+			}
+			else
+			{
+				float Flake = 0.f;
+				const float Hh = BarkHeight(B, TexSeed, U, V, Flake);
+				Hgt[Y * W + X] = Hh;
+				const float Mottle = 0.8f + 0.4f * Fbm(TexSeed + 20, U, V, 6, 10, 3);
+				C = FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
+			}
 			// alpha: the deep fissures of an old, dark trunk base (where the vertex colour asks for it)
 			float Unused = 0.f;
 			FPlantBark Rough = B;
 			Rough.Pattern = EPlantBarkPattern::Blocks;
-			const float Fissure = BarkHeight(Rough, TexSeed + 77, U, V, Unused);
+			// a birch tile is two to four times the size of the other barks': its fissures run at their own scale
+			const float Fissure = bBirch ? BarkHeight(Rough, TexSeed + 77, FMath::Frac(2.f * U), FMath::Frac(3.f * V), Unused) : BarkHeight(Rough, TexSeed + 77, U, V, Unused);
 			FColor Px = FLinearColor(C.R, C.G, C.B, 1.f).ToFColor(true);
 			Px.A = (uint8)FMath::RoundToInt(Fissure * 255.f);
 			Albedo[Y * W + X] = Px;
