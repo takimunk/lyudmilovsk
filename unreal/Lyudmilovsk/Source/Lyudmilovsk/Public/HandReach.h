@@ -18,9 +18,8 @@ struct FReachShape
 
 /**
  * Where the hero's right hand should be, in the mesh component space (the animation thread reads it).
- * The hand is pulled to Palm with Weight (0 = the animation's own hand); the body crouches and leans
- * (Posture) as far as the arm needs to get there, so the same call picks a bottle off a vending machine's
- * tray or an apple off the grass.
+ * The hand is pulled to Palm with Weight (0 = the animation's own hand); the upper body leans forward
+ * (Posture) as far as the arm needs to get there, the hips and feet stay put.
  */
 struct FHeroReachPose
 {
@@ -33,7 +32,7 @@ struct FHeroReachPose
 	float Curl = 0.f;
 	bool bHasShape = false;
 	FReachShape Shape;
-	/** How much the body may crouch and lean to get the hand there (0 stand still). */
+	/** How much the upper body may lean to get the hand there (0 stand still). */
 	float PostureWeight = 1.f;
 
 	bool IsActive() const { return Weight > 0.001f; }
@@ -52,7 +51,7 @@ struct FPalmFrame
 /** The hero's reach, solved on the animation pose (the bone names are the hero's skeleton: UE mannequin style). */
 namespace HandReach
 {
-	/** Crouch and lean the body so the right shoulder can reach Reach.Palm, the feet stay where they are. Call before the look. */
+	/** Bend the upper body forward so the right shoulder can reach Reach.Palm; hips and feet stay put. Call before the look. */
 	void ApplyPosture(FCompactPose& Pose, const FHeroReachPose& Reach);
 
 	/** Right arm to the palm, the hand turned to the palm frame, the fingers closed on the shape. Call after the look. */

@@ -174,79 +174,51 @@ namespace HandReach
 		}
 		const FBoneContainer& Bones = Pose.GetBoneContainer();
 		const FHand H(Bones);
-		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
-		if (!H.IsValid() || !Pel.IsValid())
+		const FCompactPoseBoneIndex Spine[] = { Find(Bones, TEXT("spine_01")), Find(Bones, TEXT("spine_02")), Find(Bones, TEXT("spine_03")) };
+		if (!H.IsValid() || !Spine[0].IsValid() || !Spine[1].IsValid() || !Spine[2].IsValid())
 		{
 			return;
 		}
+		// only the upper body bends: the hips and the feet stay as the animation has them (Dima: just lean
+		// and reach). The least forward bend about the lower spine that brings the shoulder within the arm's
+		// length of the wrist target, the head not ending up over the hand.
 		const FVector Shoulder = Loc(Pose, H.Upper);
 		const float ArmLength = (float)((Loc(Pose, H.Lower) - Shoulder).Size() + (Loc(Pose, H.Wrist) - Loc(Pose, H.Lower)).Size());
-		const FVector Pivot = Loc(Pose, Pel);
+		const FVector Pivot = Loc(Pose, Spine[0]);
 		const float PalmReach = 0.6f * (float)(Loc(Pose, H.MiddleKnuckle) - Loc(Pose, H.Wrist)).Size();
 		const FVector WristTarget = Reach.Palm - Reach.FingerDir * PalmReach;
-
-		// the least crouch and lean that bring the shoulder within the arm's length of the wrist target, without the head
-		// ending up over the hand: the hips drop and go back a little, the back tips forward about the hips
 		const FCompactPoseBoneIndex HeadBone = Find(Bones, TEXT("head"));
 		const FVector Head = HeadBone.IsValid() ? Loc(Pose, HeadBone) : Shoulder + FVector(0.f, 0.f, 20.f);
-		constexpr float MaxCrouch = 64.f, MaxLeanDeg = 75.f, HipsBack = 0.3f, HeadClear = 10.f;
-		float BestCost = TNumericLimits<float>::Max(), BestC = 0.f, BestA = 0.f, BestDist = TNumericLimits<float>::Max();
-		bool bFound = false;
-		for (float C = 0.f; C <= MaxCrouch; C += 2.f)
+		constexpr float MaxLeanDeg = 70.f, HeadClear = 10.f;
+		float Best = MaxLeanDeg, BestDist = TNumericLimits<float>::Max();
+		for (float A = 0.f; A <= MaxLeanDeg; A += 2.f)
 		{
-			for (float A = 0.f; A <= MaxLeanDeg; A += 3.f)
+			// the mesh faces +Y: a negative angle about +X tips the back forward
+			const FQuat Tip(FVector::XAxisVector, -FMath::DegreesToRadians(A));
+			const FVector Sh = Pivot + Tip.RotateVector(Shoulder - Pivot);
+			const FVector Hd = Pivot + Tip.RotateVector(Head - Pivot);
+			const float D = (float)(WristTarget - Sh).Size();
+			if (D <= 0.95f * ArmLength && FVector::Dist2D(Hd, Reach.Palm) >= HeadClear)
 			{
-				const FVector P2 = Pivot + FVector(0.f, -HipsBack * C, -C);
-				const FQuat Tip(FVector::XAxisVector, -FMath::DegreesToRadians(A));
-				const FVector Sh = P2 + Tip.RotateVector(Shoulder - Pivot);
-				const FVector Hd = P2 + Tip.RotateVector(Head - Pivot);
-				const float D = (float)(WristTarget - Sh).Size();
-				const float HeadToPalm = (float)FVector::Dist2D(Hd, Reach.Palm);
-				const float Cost = 0.6f * C + 1.0f * A;
-				if (D <= 0.95f * ArmLength && HeadToPalm >= HeadClear)
-				{
-					if (!bFound || Cost < BestCost)
-					{
-						BestCost = Cost; BestC = C; BestA = A; bFound = true;
-					}
-				}
-				else if (!bFound && D < BestDist)
-				{
-					BestDist = D; BestC = C; BestA = A;
-				}
+				Best = A;
+				break;
+			}
+			if (D < BestDist)
+			{
+				BestDist = D;
+				Best = A;
 			}
 		}
-		const float Crouch = BestC * W, Lean = BestA * W;
-		if (Crouch < 0.01f && Lean < 0.01f)
+		const float Lean = Best * W;
+		if (Lean < 0.01f)
 		{
 			return;
 		}
-
-		// the feet stay where they stand
-		struct FLeg { FCompactPoseBoneIndex Thigh, Calf, Foot; FTransform FootCS; };
-		FLeg Legs[2] = {
-			{ Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("calf_l")), Find(Bones, TEXT("foot_l")), FTransform::Identity },
-			{ Find(Bones, TEXT("thigh_r")), Find(Bones, TEXT("calf_r")), Find(Bones, TEXT("foot_r")), FTransform::Identity },
-		};
-		for (FLeg& L : Legs)
+		// spread over the three spine bones, each about its own joint
+		const float Share[] = { 0.45f, 0.3f, 0.25f };
+		for (int32 i = 0; i < 3; ++i)
 		{
-			if (L.Foot.IsValid())
-			{
-				L.FootCS = ComponentSpace(Pose, L.Foot);
-			}
-		}
-		FTransform PelCS = ComponentSpace(Pose, Pel);
-		PelCS.AddToTranslation(FVector(0.f, -HipsBack * Crouch, -Crouch));
-		SetComponentSpace(Pose, Pel, PelCS);
-		// lean forward (the mesh faces +Y: about +X a positive angle tips the spine backwards)
-		RotateBone(Pose, Pel, FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(Lean)));
-		for (const FLeg& L : Legs)
-		{
-			if (L.Thigh.IsValid() && L.Calf.IsValid() && L.Foot.IsValid())
-			{
-				TwoBoneIK(Pose, L.Thigh, L.Calf, L.Foot, L.FootCS.GetLocation(), FVector(0.f, 1.f, 0.f));
-				SetComponentSpace(Pose, L.Foot, FTransform(L.FootCS.GetRotation(), ComponentSpace(Pose, L.Foot).GetLocation()));
-			}
+			RotateBone(Pose, Spine[i], FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(Lean * Share[i])));
 		}
 	}
 
