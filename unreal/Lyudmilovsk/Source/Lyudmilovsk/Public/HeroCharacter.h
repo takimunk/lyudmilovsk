@@ -5,6 +5,9 @@
 #include "HeroCharacter.generated.h"
 
 class UCameraComponent;
+class UInputAction;
+class UInputMappingContext;
+struct FInputActionValue;
 class USkeletalMesh;
 class USkeletalMeshComponent;
 
@@ -17,8 +20,9 @@ class USkeletalMeshComponent;
  * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
  * looks; the template's locomotion clips animate the body.
  *
- * Input is read straight from the keys (no Enhanced Input actions), so interactables that bind E
- * and the game menu work as before.
+ * Look, move and jump use the template's own Enhanced Input actions and mapping contexts exactly as
+ * TP_FirstPersonCharacter does (same scaling, no smoothing); Shift is read from the key. Other
+ * actors' key bindings (E, F, Tab...) keep working alongside.
  */
 UCLASS(config = Game)
 class LYUDMILOVSK_API AHeroCharacter : public ACharacter
@@ -41,9 +45,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
 	float RunSpeed = 600.f;
 
-	/** Degrees of turn per mouse count. */
-	UPROPERTY(EditAnywhere, Config, Category = "Hero|Look")
-	float LookSensitivity = 0.175f;
+	UPROPERTY(EditAnywhere, Category = "Hero|Input")
+	TSoftObjectPtr<UInputAction> MoveAction;
+	UPROPERTY(EditAnywhere, Category = "Hero|Input")
+	TSoftObjectPtr<UInputAction> LookAction;
+	UPROPERTY(EditAnywhere, Category = "Hero|Input")
+	TSoftObjectPtr<UInputAction> MouseLookAction;
+	UPROPERTY(EditAnywhere, Category = "Hero|Input")
+	TSoftObjectPtr<UInputAction> JumpAction;
+	/** Added if the player controller hasn't already. */
+	UPROPERTY(EditAnywhere, Category = "Hero|Input")
+	TArray<TSoftObjectPtr<UInputMappingContext>> MappingContexts;
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Look")
 	float PitchMin = -80.f;
@@ -66,6 +78,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult) override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Hero")
@@ -73,6 +86,9 @@ protected:
 
 private:
 	void ReadInput(float DeltaSeconds);
+	void AddMappingContexts();
+	void OnMove(const FInputActionValue& Value);
+	void OnLook(const FInputActionValue& Value);
 	void TurnBody(float DeltaSeconds);
 	void FeedAnimation(float DeltaSeconds);
 
@@ -80,5 +96,4 @@ private:
 	double Distance = 0.0;
 	double IdleTime = 0.0;
 	bool bWantsWalk = false;
-	bool bJumpHeld = false;
 };

@@ -7,7 +7,13 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/Engine.h"
+#include "Engine/LocalPlayer.h"
 #include "Engine/SkeletalMesh.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
+#include "InputMappingContext.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "HeroAnimInstance.h"
@@ -31,6 +37,13 @@ AHeroCharacter::AHeroCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	BodyMesh = TSoftObjectPtr<USkeletalMesh>(FSoftObjectPath(TEXT("/Game/Characters/Hero/SK_Hero.SK_Hero")));
+	// the template character's input
+	MoveAction = TSoftObjectPtr<UInputAction>(FSoftObjectPath(TEXT("/Game/Input/Actions/IA_Move.IA_Move")));
+	LookAction = TSoftObjectPtr<UInputAction>(FSoftObjectPath(TEXT("/Game/Input/Actions/IA_Look.IA_Look")));
+	MouseLookAction = TSoftObjectPtr<UInputAction>(FSoftObjectPath(TEXT("/Game/Input/Actions/IA_MouseLook.IA_MouseLook")));
+	JumpAction = TSoftObjectPtr<UInputAction>(FSoftObjectPath(TEXT("/Game/Input/Actions/IA_Jump.IA_Jump")));
+	MappingContexts.Add(TSoftObjectPtr<UInputMappingContext>(FSoftObjectPath(TEXT("/Game/Input/IMC_Default.IMC_Default"))));
+	MappingContexts.Add(TSoftObjectPtr<UInputMappingContext>(FSoftObjectPath(TEXT("/Game/Input/IMC_MouseLook.IMC_MouseLook"))));
 
 	GetCapsuleComponent()->InitCapsuleSize(LyudmilovskCharacter::PlayerCapsuleRadius, LyudmilovskCharacter::PlayerCapsuleHalfHeight);
 
@@ -85,6 +98,68 @@ void AHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	BodyYaw = GetActorRotation().Yaw;
+	AddMappingContexts();
+}
+
+void AHeroCharacter::AddMappingContexts()
+{
+	const APlayerController* PC = Cast<APlayerController>(GetController());
+	const ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr;
+	UEnhancedInputLocalPlayerSubsystem* Input = LP ? LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>() : nullptr;
+	if (!Input)
+	{
+		return;
+	}
+	for (const TSoftObjectPtr<UInputMappingContext>& Soft : MappingContexts)
+	{
+		if (UInputMappingContext* IMC = Soft.LoadSynchronous(); IMC && !Input->HasMappingContext(IMC))
+		{
+			Input->AddMappingContext(IMC, 0);
+		}
+	}
+}
+
+void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!Input)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hero: no Enhanced Input component, no look or move"));
+		return;
+	}
+	if (UInputAction* A = JumpAction.LoadSynchronous())
+	{
+		Input->BindAction(A, ETriggerEvent::Started, this, &ACharacter::Jump);
+		Input->BindAction(A, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	}
+	if (UInputAction* A = MoveAction.LoadSynchronous())
+	{
+		Input->BindAction(A, ETriggerEvent::Triggered, this, &AHeroCharacter::OnMove);
+	}
+	for (const TSoftObjectPtr<UInputAction>& Soft : { LookAction, MouseLookAction })
+	{
+		if (UInputAction* A = Soft.LoadSynchronous())
+		{
+			Input->BindAction(A, ETriggerEvent::Triggered, this, &AHeroCharacter::OnLook);
+		}
+	}
+}
+
+void AHeroCharacter::OnMove(const FInputActionValue& Value)
+{
+	// as the template, but along the look (the body turns on its own)
+	const FVector2D V = Value.Get<FVector2D>();
+	const FRotator Yaw(0.f, GetControlRotation().Yaw, 0.f);
+	AddMovementInput(Yaw.RotateVector(FVector::ForwardVector), V.Y);
+	AddMovementInput(Yaw.RotateVector(FVector::RightVector), V.X);
+}
+
+void AHeroCharacter::OnLook(const FInputActionValue& Value)
+{
+	const FVector2D V = Value.Get<FVector2D>();
+	AddControllerYawInput(V.X);
+	AddControllerPitchInput(V.Y);
 }
 
 void AHeroCharacter::Tick(float DeltaSeconds)
@@ -108,52 +183,8 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 		Cam->ViewPitchMax = PitchMax;
 	}
 
-	if (!PC->IsLookInputIgnored())
-	{
-		float DX = 0.f, DY = 0.f;
-		PC->GetInputMouseDelta(DX, DY);
-		const float PadSpeed = 140.f * DeltaSeconds;
-		DX = DX * LookSensitivity + PC->GetInputAnalogKeyState(EKeys::Gamepad_RightX) * PadSpeed;
-		DY = DY * LookSensitivity + PC->GetInputAnalogKeyState(EKeys::Gamepad_RightY) * PadSpeed;
-		if (DX != 0.f || DY != 0.f)
-		{
-			FRotator R = PC->GetControlRotation();
-			R.Yaw = Wrap180(R.Yaw + DX);
-			R.Pitch = FMath::Clamp(Wrap180(R.Pitch + DY), PitchMin, PitchMax);
-			R.Roll = 0.f;
-			PC->SetControlRotation(R);
-		}
-	}
-
-	float Fwd = 0.f, Side = 0.f;
-	if (!PC->IsMoveInputIgnored())
-	{
-		auto Down = [PC](const FKey& K) { return PC->IsInputKeyDown(K) ? 1.f : 0.f; };
-		Fwd = Down(EKeys::W) + Down(EKeys::Up) - Down(EKeys::S) - Down(EKeys::Down) + PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftY);
-		Side = Down(EKeys::D) + Down(EKeys::Right) - Down(EKeys::A) - Down(EKeys::Left) + PC->GetInputAnalogKeyState(EKeys::Gamepad_LeftX);
-		bWantsWalk = PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift);
-		const bool bJump = PC->IsInputKeyDown(EKeys::SpaceBar) || PC->IsInputKeyDown(EKeys::Gamepad_FaceButton_Bottom);
-		if (bJump && !bJumpHeld)
-		{
-			Jump();
-		}
-		else if (!bJump && bJumpHeld)
-		{
-			StopJumping();
-		}
-		bJumpHeld = bJump;
-	}
+	bWantsWalk = !PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift));
 	GetCharacterMovement()->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
-	const FRotator Yaw(0.f, PC->GetControlRotation().Yaw, 0.f);
-	FVector Wish = Yaw.RotateVector(FVector(Fwd, Side, 0.f));
-	if (Wish.SizeSquared() > 1.f)
-	{
-		Wish.Normalize();
-	}
-	if (!Wish.IsNearlyZero())
-	{
-		AddMovementInput(Wish);
-	}
 }
 
 void AHeroCharacter::TurnBody(float DeltaSeconds)
