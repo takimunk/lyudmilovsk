@@ -111,6 +111,9 @@ private:
 	float GroundAt(float X, float Y);
 	void ClearFallenFruit();
 	void OnInteract();
+	/** The fallen fruit of this tree the player looks at, within PickDistance; null if none. */
+	AFallenFruit* AimedFruit() const;
+	bool bPickPrompt = false;
 
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Wood;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;

@@ -2,6 +2,7 @@
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -9,7 +10,9 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "HeroReachComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudInventory.h"
 #include "Plants/FallenFruit.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
@@ -663,13 +666,13 @@ void AProceduralPlant::ClearFallenFruit()
 	FruitReleaseRate = FruitReleaseAcc = 0.f;
 }
 
-void AProceduralPlant::OnInteract()
+AFallenFruit* AProceduralPlant::AimedFruit() const
 {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 	if (!Pawn || !PC->PlayerCameraManager || GroundFruit.IsEmpty())
 	{
-		return;
+		return nullptr;
 	}
 	const FVector From = PC->PlayerCameraManager->GetCameraLocation();
 	const FVector To = From + PC->PlayerCameraManager->GetCameraRotation().Vector() * (PickDistance + 100.f);
@@ -677,17 +680,53 @@ void AProceduralPlant::OnInteract()
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(FruitPick), false, Pawn);
 	if (!GetWorld()->LineTraceSingleByChannel(Hit, From, To, ECC_Visibility, Q))
 	{
-		return;
+		return nullptr;
 	}
 	AFallenFruit* Fruit = Cast<AFallenFruit>(Hit.GetActor());
 	if (!Fruit || Fruit->Tree.Get() != this || FVector::Dist(Pawn->GetActorLocation(), Fruit->GetActorLocation()) > PickDistance)
 	{
+		return nullptr;
+	}
+	return Fruit;
+}
+
+void AProceduralPlant::OnInteract()
+{
+	const FName Item = GetSpecies().FruitItem;
+	AFallenFruit* Fruit = Item.IsNone() ? nullptr : AimedFruit();
+	UHeroReachComponent* Reach = UHeroReachComponent::GetForPlayer(this);
+	if (!Fruit || !Reach || Reach->IsBusy())
+	{
 		return;
 	}
+	// it is the hero's now: the tree forgets it (and won't lay it out again after a load)
 	PickedFruit.AddUnique(Fruit->Key);
-	FruitPicked++;
 	GroundFruit.Remove(Fruit->Key);
-	Fruit->Destroy();
+	Fruit->Body->SetSimulatePhysics(false);
+	Fruit->Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FReachItem Grab;
+	Grab.Actor = Fruit;
+	Grab.Center = Fruit->GetActorLocation();
+	Grab.Radius = Fruit->Body->GetScaledSphereRadius();
+	Grab.Front = Fruit->GetActorForwardVector();
+	// the hand reaches down, the fingers close on it, it goes into the pocket (the reach destroys it there)
+	TWeakObjectPtr<AProceduralPlant> Self(this);
+	if (!Reach->Take(Grab, [Self, Item]()
+		{
+			if (!Self.IsValid()) return;
+			Self->FruitPicked++;
+			if (ULyudInventory* Inv = ULyudInventory::Get(Self.Get()))
+			{
+				Inv->Add(Item);
+			}
+		}))
+	{
+		// the hand could not take it: it stays on the ground
+		PickedFruit.Remove(Fruit->Key);
+		GroundFruit.Add(Fruit->Key, Fruit);
+		Fruit->Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		Fruit->Body->SetSimulatePhysics(true);
+	}
 }
 
 void AProceduralPlant::OnGameLoaded_Implementation()
@@ -750,6 +789,20 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	TickFallingLeaves(DeltaSeconds);
+	// "[E] pick up the apple" while one lies in reach and in view
+	if (!GroundFruit.IsEmpty() || bPickPrompt)
+	{
+		const bool bAimed = !GetSpecies().FruitItem.IsNone() && AimedFruit() != nullptr;
+		if (bAimed != bPickPrompt)
+		{
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			{
+				const FLyudItemDef* Def = ULyudInventory::FindDef(GetSpecies().FruitItem);
+				UI->SetPrompt(this, bAimed && Def ? FText::Format(NSLOCTEXT("Plants", "PickFruit", "[E] Поднять: {0}"), Def->Name) : FText::GetEmpty());
+			}
+			bPickPrompt = bAimed;
+		}
+	}
 	FruitReleaseAcc += FruitReleaseRate * DeltaSeconds;
 	while (FruitReleaseAcc >= 1.f && !PendingFruit.IsEmpty())
 	{

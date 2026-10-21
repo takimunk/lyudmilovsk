@@ -211,6 +211,8 @@ struct FPlantSpecies
 
 	// --- Fruit (apples, acorns): on order-2 twigs from FruitDay until FruitFallDay; none if FruitSize is 0.
 
+	/** The inventory item a picked-up fruit becomes (ULyudInventory's table); None: it can't be picked up. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FName FruitItem;
 	/** Fruit diameter, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSize = 0.f;
 	/** Chance that a twig bears one. */

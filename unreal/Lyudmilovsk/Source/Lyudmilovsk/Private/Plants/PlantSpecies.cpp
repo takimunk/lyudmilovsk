@@ -157,6 +157,7 @@ namespace
 		S.LifeMax = 150.f;
 		S.DeclineYears = 10.f;
 		S.SnagYears = 6.f;
+		S.FruitItem = TEXT("apple");
 		return S;
 	}
 
