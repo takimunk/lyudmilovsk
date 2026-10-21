@@ -3,6 +3,9 @@
 #include "AtonStyle.h"
 #include "SAtonDesktop.h"
 #include "Algo/AllOf.h"
+#include "Algo/AnyOf.h"
+#include "Algo/Find.h"
+#include "LyudText.h"
 #include "Framework/Application/SlateApplication.h"
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
@@ -23,6 +26,9 @@
 namespace
 {
 	FText T(const FString& S) { return FText::FromString(S); }
+
+	/** ui.* text in the current language. */
+	FString L(const TCHAR* Key, const TArray<FStringFormatArg>& Args = {}) { return LyudText::Get(Key, Args).ToString(); }
 
 	TSharedRef<SWidget> Label(const FString& Text, int32 Size = 15, FLinearColor Color = AtonStyle::Ink, bool bBold = false)
 	{
@@ -106,7 +112,7 @@ FString AtonApps::NoteTitle(const FString& Dir, const FString& File)
 	First = First.TrimStartAndEnd();
 	if (First.IsEmpty())
 	{
-		return TEXT("без названия");
+		return L(TEXT("ui.aton.notes.untitled"));
 	}
 	return First.Len() > 22 ? First.Left(21) + TEXT("…") : First;
 }
@@ -135,7 +141,7 @@ public:
 		IFileManager::Get().MakeDirectory(*Dir, true);
 		if (AtonApps::ListNotes(Dir).Num() == 0)
 		{
-			WriteNote(Dir, TEXT("note_001.txt"), TEXT("Привет\n\nЭто Блокнот АТОН OS.\nВсё, что здесь написано, сохраняется само."));
+			WriteNote(Dir, TEXT("note_001.txt"), L(TEXT("ui.aton.notes.first")));
 		}
 
 		TSharedRef<SScrollBar> Scroll = SNew(SScrollBar).Thickness(FVector2D(8, 8));
@@ -150,7 +156,7 @@ public:
 						SNew(SVerticalBox)
 						+ SVerticalBox::Slot().AutoHeight().Padding(8)
 						[
-							Button(TEXT("+ Новая заметка"), [this] { CreateNote(); })
+							Button(L(TEXT("ui.aton.notes.new")), [this] { CreateNote(); })
 						]
 						+ SVerticalBox::Slot().FillHeight(1)
 						[
@@ -158,7 +164,7 @@ public:
 						]
 						+ SVerticalBox::Slot().AutoHeight().Padding(8)
 						[
-							Button(TEXT("В корзину"), [this] { DeleteNote(); })
+							Button(L(TEXT("ui.aton.notes.delete")), [this] { DeleteNote(); })
 						])
 				]
 			]
@@ -313,7 +319,7 @@ public:
 				+ SVerticalBox::Slot().AutoHeight()[Divider()]
 				+ SVerticalBox::Slot().AutoHeight().Padding(10).HAlign(HAlign_Right)
 				[
-					Button(TEXT("Очистить корзину"), [this]
+					Button(L(TEXT("ui.aton.trash.empty_all")), [this]
 					{
 						for (const FString& F : AtonApps::ListNotes(AtonApps::TrashDir()))
 						{
@@ -347,7 +353,7 @@ private:
 		List->ClearChildren();
 		if (Shown.Num() == 0)
 		{
-			List->AddSlot().AutoHeight().Padding(10)[Label(TEXT("Корзина пуста."), 15, AtonStyle::InkSoft)];
+			List->AddSlot().AutoHeight().Padding(10)[Label(L(TEXT("ui.aton.trash.is_empty")), 15, AtonStyle::InkSoft)];
 			return;
 		}
 		for (const FString& File : Shown)
@@ -361,7 +367,7 @@ private:
 				]
 				+ SHorizontalBox::Slot().AutoWidth()
 				[
-					Button(TEXT("Вернуть"), [this, File]
+					Button(L(TEXT("ui.aton.trash.restore")), [this, File]
 					{
 						const FString Notes = AtonApps::NotesDir();
 						FString Target = File;
@@ -387,68 +393,143 @@ private:
 namespace
 {
 	/**
-	 * Pages of the local network. One line per block:
-	 *   "# Title", "## Subtitle", "[link text](address)", "---" rule, "?search" a search box, anything else a paragraph.
+	 * Pages of the local network, by page id. One line per block:
+	 *   "# Title", "## Subtitle", "[link text](page id)", "---" rule, "?search" a search box, anything else a paragraph.
+	 * "@name" is the string ui.aton.web.<name> in the current language. The address shown for a page is ui.aton.web.addr.<id>.
 	 */
-	const TMap<FString, FString>& Pages()
+	const TMap<FString, FString>& PageTemplates()
 	{
 		static const TMap<FString, FString> P = {
-			{ TEXT("дом.атон"), TEXT(
-				"# Добро пожаловать в Сеть\n"
-				"Домашняя страница АТОН OS.\n"
+			{ TEXT("home"), TEXT(
+				"# @home.title\n"
+				"@home.text\n"
 				"?search\n"
 				"---\n"
-				"## Куда пойти\n"
-				"[Новости Людмиловска](новости.лм)\n"
-				"[Погода](погода.лм)\n"
-				"[Справка АТОН OS](справка.атон)\n") },
-			{ TEXT("новости.лм"), TEXT(
-				"# Новости Людмиловска\n"
+				"## @home.where\n"
+				"[@link.news](news)\n"
+				"[@link.weather](weather)\n"
+				"[@link.help](help)\n") },
+			{ TEXT("news"), TEXT(
+				"# @news.title\n"
 				"---\n"
-				"## В подъезде снова поменяли лампочку\n"
-				"Жильцы просят её не выкручивать. Предыдущую так и не нашли.\n"
-				"## Движущаяся дорожка работает круглосуточно\n"
-				"Администрация напоминает: дорожка не выключается. Так задумано.\n"
-				"## Перепись жильцов перенесена\n"
-				"Новую дату сообщат тем, кого найдут.\n"
+				"## @news.1.title\n"
+				"@news.1.text\n"
+				"## @news.2.title\n"
+				"@news.2.text\n"
+				"## @news.3.title\n"
+				"@news.3.text\n"
 				"---\n"
-				"[На главную](дом.атон)\n") },
-			{ TEXT("погода.лм"), TEXT(
-				"# Погода в Людмиловске\n"
-				"## Сейчас: +4°, туман\n"
-				"Ночью: туман.\n"
-				"Завтра: туман.\n"
-				"Послезавтра: данных нет.\n"
+				"[@link.home](home)\n") },
+			{ TEXT("weather"), TEXT(
+				"# @weather.title\n"
+				"## @weather.now\n"
+				"@weather.night\n"
+				"@weather.tomorrow\n"
+				"@weather.after\n"
 				"---\n"
-				"[На главную](дом.атон)\n") },
-			{ TEXT("справка.атон"), TEXT(
-				"# Справка АТОН OS\n"
-				"Программы открываются одним щелчком по значку на рабочем столе. Окно можно перетащить за заголовок, а закрыть крестиком.\n"
-				"## Программы\n"
-				"Блокнот: заметки, которые сохраняются сами.\n"
-				"Сеть: этот браузер. Адрес можно набрать в строке сверху.\n"
-				"Терминал: команды. Наберите «помощь».\n"
-				"Письма: входящая почта.\n"
-				"Калькулятор: считает. Можно с клавиатуры.\n"
-				"Корзина: удалённые заметки, их можно вернуть.\n"
-				"Chosen: дуэль на мечах над пропастью. WASD, мышь с зажатой кнопкой справа: меч, Shift: щит, пробел: прыжок.\n"
+				"[@link.home](home)\n") },
+			{ TEXT("help"), TEXT(
+				"# @help.title\n"
+				"@help.intro\n"
+				"## @help.programs\n"
+				"@help.notes\n"
+				"@help.web\n"
+				"@help.terminal\n"
+				"@help.mail\n"
+				"@help.calculator\n"
+				"@help.trash\n"
+				"@help.chosen\n"
 				"---\n"
-				"[На главную](дом.атон)\n") },
+				"[@link.home](home)\n") },
 		};
 		return P;
 	}
 
-	const FString HomePage = TEXT("дом.атон");
-	const FString SearchPage = TEXT("поиск.атон");
+	const FString HomePage = TEXT("home");
+	const FString SearchPage = TEXT("search");
 
-	FString Normalize(FString Address)
+	FString WebText(const FString& Name, const TArray<FStringFormatArg>& Args = {})
 	{
-		Address = Address.TrimStartAndEnd().ToLower();
-		Address.RemoveFromStart(TEXT("http://"));
-		Address.RemoveFromStart(TEXT("https://"));
-		Address.RemoveFromStart(TEXT("www."));
-		Address.RemoveFromEnd(TEXT("/"));
-		return Address;
+		return LyudText::Get(TEXT("ui.aton.web.") + Name, Args).ToString();
+	}
+
+	/** A page template with its @names replaced by the words of the current language. */
+	FString Expand(const FString& Template)
+	{
+		TArray<FString> Lines;
+		Template.ParseIntoArrayLines(Lines, false);
+		FString Out;
+		for (const FString& Line : Lines)
+		{
+			FString Prefix, Rest;
+			if (Line.Split(TEXT("@"), &Prefix, &Rest))
+			{
+				FString Name = Rest, Suffix;
+				const int32 End = Rest.Find(TEXT("]("));
+				if (End != INDEX_NONE)
+				{
+					Name = Rest.Left(End);
+					Suffix = Rest.Mid(End);
+				}
+				Out += Prefix + WebText(Name) + Suffix + TEXT("\n");
+			}
+			else
+			{
+				Out += Line + TEXT("\n");
+			}
+		}
+		return Out;
+	}
+
+	/** The address a page goes by in the current language ("дом.атон", "home.aton"). */
+	FString Address(const FString& PageId)
+	{
+		return WebText(TEXT("addr.") + PageId).ToLower();
+	}
+
+	FString Normalize(FString Addr)
+	{
+		Addr = Addr.TrimStartAndEnd().ToLower();
+		Addr.RemoveFromStart(TEXT("http://"));
+		Addr.RemoveFromStart(TEXT("https://"));
+		Addr.RemoveFromStart(TEXT("www."));
+		Addr.RemoveFromEnd(TEXT("/"));
+		return Addr;
+	}
+
+	/** A typed address (in any form) to "pageid" or "pageid?query"; unknown addresses stay as they are. */
+	FString Resolve(const FString& Typed)
+	{
+		FString Path = Normalize(Typed), Query;
+		Path.Split(TEXT("?"), &Path, &Query);
+		if (Path.IsEmpty())
+		{
+			return HomePage;
+		}
+		FString Id;
+		if (PageTemplates().Contains(Path) || Path == SearchPage)
+		{
+			Id = Path;
+		}
+		else if (Path == Address(SearchPage))
+		{
+			Id = SearchPage;
+		}
+		else
+		{
+			for (const TPair<FString, FString>& P : PageTemplates())
+			{
+				if (Path == Address(P.Key))
+				{
+					Id = P.Key;
+				}
+			}
+		}
+		if (Id.IsEmpty())
+		{
+			return Normalize(Typed);
+		}
+		return Query.IsEmpty() ? Id : Id + TEXT("?") + Query;
 	}
 }
 
@@ -467,8 +548,8 @@ public:
 			[
 				Panel(AtonStyle::C(0xE9, 0xE5, 0xD8),
 					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 6, 0)[Button(TEXT("‹ Назад"), [this] { Back(); }, 13)]
-					+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 8, 0)[Button(TEXT("Домой"), [this] { Navigate(HomePage); }, 13)]
+					+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 6, 0)[Button(L(TEXT("ui.aton.web.back")), [this] { Back(); }, 13)]
+					+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 8, 0)[Button(L(TEXT("ui.aton.web.home")), [this] { Navigate(HomePage); }, 13)]
 					+ SHorizontalBox::Slot().FillWidth(1)
 					[
 						Panel(AtonStyle::White,
@@ -499,15 +580,19 @@ public:
 	virtual void HandleArg(const FString& Arg) override { Navigate(Arg); }
 
 private:
-	void Navigate(const FString& Address, bool bRemember = true)
+	void Navigate(const FString& Typed, bool bRemember = true)
 	{
-		const FString Addr = Normalize(Address).IsEmpty() ? HomePage : Normalize(Address);
-		if (bRemember && (History.Num() == 0 || History.Last() != Addr))
+		const FString Where = Resolve(Typed);
+		if (bRemember && (History.Num() == 0 || History.Last() != Where))
 		{
-			History.Add(Addr);
+			History.Add(Where);
 		}
-		AddressBar->SetText(T(Addr));
-		Render(Addr);
+		FString Path = Where, Query;
+		Where.Split(TEXT("?"), &Path, &Query);
+		const bool bKnown = PageTemplates().Contains(Path) || Path == SearchPage;
+		const FString Shown = bKnown ? Address(Path) : Path;
+		AddressBar->SetText(T(Query.IsEmpty() ? Shown : Shown + TEXT("?") + Query));
+		Render(Path, Query, bKnown);
 	}
 
 	void Back()
@@ -519,27 +604,23 @@ private:
 		}
 	}
 
-	void Render(const FString& Addr)
+	void Render(const FString& Path, const FString& Query, bool bKnown)
 	{
 		Page->ClearChildren();
-		FString Path, Query;
-		if (!Addr.Split(TEXT("?"), &Path, &Query))
-		{
-			Path = Addr;
-		}
-
 		FString Markup;
 		if (Path == SearchPage)
 		{
-			Markup = SearchResults(FGenericPlatformHttpDecode(Query));
+			Markup = SearchResults(DecodeQuery(Query));
 		}
-		else if (const FString* Found = Pages().Find(Path))
+		else if (bKnown)
 		{
-			Markup = *Found;
+			Markup = Expand(PageTemplates()[Path]);
 		}
 		else
 		{
-			Markup = FString::Printf(TEXT("# Страница не найдена\nАдрес «%s» не отвечает. Проверьте, правильно ли он набран.\n?search\n[На главную](дом.атон)\n"), *Addr);
+			Markup = TEXT("# ") + WebText(TEXT("notfound.title")) + TEXT("\n")
+				+ WebText(TEXT("notfound.text"), { FStringFormatArg(Path) }) + TEXT("\n?search\n[")
+				+ WebText(TEXT("link.home")) + TEXT("](home)\n");
 		}
 
 		TArray<FString> Lines;
@@ -552,31 +633,32 @@ private:
 		Page->ScrollToStart();
 	}
 
-	static FString FGenericPlatformHttpDecode(const FString& Query)
+	static FString DecodeQuery(const FString& Query)
 	{
 		FString Q = Query;
 		Q.RemoveFromStart(TEXT("q="));
 		return Q.Replace(TEXT("+"), TEXT(" "));
 	}
 
-	/** Searches the text of every page; every word of the query must be on a page. */
+	/** Searches the text of every page in the current language; every word of the query must be on a page. */
 	static FString SearchResults(const FString& Query)
 	{
 		TArray<FString> Words;
 		Query.ToLower().ParseIntoArrayWS(Words);
-		FString Out = FString::Printf(TEXT("# Поиск\n?search\n---\n"));
+		FString Out = TEXT("# ") + WebText(TEXT("search.title")) + TEXT("\n?search\n---\n");
 		if (Words.Num() == 0)
 		{
-			return Out + TEXT("Наберите, что искать.\n");
+			return Out + WebText(TEXT("search.empty")) + TEXT("\n");
 		}
 		int32 Hits = 0;
-		for (const TPair<FString, FString>& P : Pages())
+		for (const TPair<FString, FString>& P : PageTemplates())
 		{
-			const FString Body = P.Value.ToLower();
+			const FString Text = Expand(P.Value);
+			const FString Body = Text.ToLower();
 			if (Algo::AllOf(Words, [&Body](const FString& W) { return Body.Contains(W); }))
 			{
 				FString Title;
-				P.Value.Split(TEXT("\n"), &Title, nullptr);
+				Text.Split(TEXT("\n"), &Title, nullptr);
 				Title.RemoveFromStart(TEXT("# "));
 				Out += FString::Printf(TEXT("[%s](%s)\n"), *Title, *P.Key);
 				Hits++;
@@ -584,7 +666,7 @@ private:
 		}
 		if (Hits == 0)
 		{
-			Out += FString::Printf(TEXT("По запросу «%s» ничего не найдено.\n"), *Query);
+			Out += WebText(TEXT("search.nothing"), { FStringFormatArg(Query) }) + TEXT("\n");
 		}
 		return Out;
 	}
@@ -613,7 +695,7 @@ private:
 						Panel(AtonStyle::White,
 							SAssignNew(Box, SEditableText)
 							.Style(&AtonStyle::EditText(false))
-							.HintText(T(TEXT("искать в Сети")))
+							.HintText(LyudText::Get(TEXT("ui.aton.web.search.hint")))
 							.OnTextCommitted_Lambda([this](const FText& Text, ETextCommit::Type How)
 							{
 								if (How == ETextCommit::OnEnter)
@@ -626,22 +708,22 @@ private:
 				]
 				+ SHorizontalBox::Slot().AutoWidth().Padding(8, 0, 0, 0)
 				[
-					Button(TEXT("Найти"), [this, Box] { Navigate(SearchPage + TEXT("?q=") + Box->GetText().ToString().TrimStartAndEnd()); })
+					Button(L(TEXT("ui.aton.web.search.go")), [this, Box] { Navigate(SearchPage + TEXT("?q=") + Box->GetText().ToString().TrimStartAndEnd()); })
 				];
 			return SNew(SBox).Padding(FMargin(0, 8)).MaxDesiredWidth(520)[Bar];
 		}
-		FString Text, Address;
-		if (Line.StartsWith(TEXT("[")) && Line.EndsWith(TEXT(")")) && Line.Split(TEXT("]("), &Text, &Address))
+		FString Text, Target;
+		if (Line.StartsWith(TEXT("[")) && Line.EndsWith(TEXT(")")) && Line.Split(TEXT("]("), &Text, &Target))
 		{
 			Text.RemoveFromStart(TEXT("["));
-			Address.RemoveFromEnd(TEXT(")"));
+			Target.RemoveFromEnd(TEXT(")"));
 			return SNew(SHorizontalBox)
 				+ SHorizontalBox::Slot().AutoWidth()
 				[
 					SNew(SButton)
 					.ButtonStyle(&AtonStyle::Ghost())
 					.ContentPadding(FMargin(0, 2))
-					.OnClicked_Lambda([this, Address] { Navigate(Address); return FReply::Handled(); })
+					.OnClicked_Lambda([this, Target] { Navigate(Target); return FReply::Handled(); })
 					[
 						SNew(STextBlock).Text(T(TEXT("› ") + Text)).Font(AtonStyle::Font(16)).ColorAndOpacity(AtonStyle::Link)
 					]
@@ -703,19 +785,33 @@ public:
 				FMargin(18, 14))
 		];
 
-		Print(TEXT("АТОН OS v1.0  (c) Людмиловск"));
-		Print(TEXT(""));
-		Print(TEXT("> проверка памяти ........ ОК"));
-		Print(TEXT("> проверка памяти ........ ??"));
-		Print(TEXT("> последний вход: никогда"));
-		Print(TEXT("> пользователь не найден"));
-		Print(TEXT(""));
-		Print(TEXT("> ты проснулся?"));
+		// An empty name is a blank line.
+		for (const TCHAR* Key : { TEXT("boot.1"), TEXT(""), TEXT("boot.2"), TEXT("boot.3"), TEXT("boot.4"), TEXT("boot.5"), TEXT(""), TEXT("boot.6") })
+		{
+			Print(*Key ? TermText(Key) : FString());
+		}
 	}
 
 	virtual TSharedPtr<SWidget> FocusTarget() const override { return Input; }
 
 private:
+	static FString TermText(const FString& Name, const TArray<FStringFormatArg>& Args = {})
+	{
+		return LyudText::Get(TEXT("ui.aton.term.") + Name, Args).ToString();
+	}
+
+	/** Words that mean Name: ui.aton.term.<Name> is a comma-separated list in the current language, plus the English ones given here. */
+	static bool Means(const FString& Word, const FString& Name, const TArray<const TCHAR*>& English = {})
+	{
+		TArray<FString> Words;
+		TermText(Name).ToLower().ParseIntoArray(Words, TEXT(","));
+		for (const TCHAR* E : English)
+		{
+			Words.Add(E);
+		}
+		return Algo::AnyOf(Words, [&Word](const FString& W) { return W.TrimStartAndEnd() == Word; });
+	}
+
 	void Print(const FString& Line)
 	{
 		Output->AddSlot().AutoHeight()
@@ -736,95 +832,87 @@ private:
 		Line.Split(TEXT(" "), &Cmd, &Rest);
 		Cmd = Cmd.ToLower();
 		Rest = Rest.TrimStartAndEnd();
-		auto Is = [&Cmd](std::initializer_list<const TCHAR*> Names)
+		auto Is = [&Cmd](const TCHAR* Name, std::initializer_list<const TCHAR*> English)
 		{
-			for (const TCHAR* N : Names)
-			{
-				if (Cmd == N)
-				{
-					return true;
-				}
-			}
-			return false;
+			return Means(Cmd, FString(TEXT("cmd.")) + Name, English);
 		};
 
-		if (!bAnswered && Is({ TEXT("да"), TEXT("ага"), TEXT("yes"), TEXT("нет"), TEXT("no") }))
+		if (!bAnswered && (Is(TEXT("yes"), { TEXT("yes"), TEXT("y") }) || Is(TEXT("no"), { TEXT("no"), TEXT("n") })))
 		{
 			bAnswered = true;
-			Print(Is({ TEXT("нет"), TEXT("no") }) ? TEXT("странно. ты же печатаешь.") : TEXT("хорошо. тогда начнём."));
-			Print(TEXT("набери «помощь», если не знаешь, что делать."));
+			Print(TermText(Is(TEXT("no"), { TEXT("no"), TEXT("n") }) ? TEXT("answer.no") : TEXT("answer.yes")));
+			Print(TermText(TEXT("answer.hint")));
 		}
-		else if (Is({ TEXT("помощь"), TEXT("help"), TEXT("?") }))
+		else if (Is(TEXT("help"), { TEXT("help"), TEXT("?") }))
 		{
-			Print(TEXT("команды:"));
-			Print(TEXT("  помощь            этот список"));
-			Print(TEXT("  открыть <что>     блокнот, сеть, письма, калькулятор, файлы, корзина, chosen"));
-			Print(TEXT("  заметки           список заметок"));
-			Print(TEXT("  время             который час"));
-			Print(TEXT("  кто               кто здесь"));
-			Print(TEXT("  эхо <текст>       повторить"));
-			Print(TEXT("  атон              о системе"));
-			Print(TEXT("  очистить          очистить экран"));
+			for (const TCHAR* Key : { TEXT("help.title"), TEXT("help.help"), TEXT("help.open"), TEXT("help.notes"), TEXT("help.time"),
+			                          TEXT("help.who"), TEXT("help.echo"), TEXT("help.aton"), TEXT("help.clear") })
+			{
+				Print(TermText(Key));
+			}
 			if (Shell->CanLeave())
 			{
-				Print(TEXT("  встать            встать из-за компьютера"));
+				Print(TermText(TEXT("help.leave")));
 			}
 		}
-		else if (Is({ TEXT("очистить"), TEXT("clear"), TEXT("cls") }))
+		else if (Is(TEXT("clear"), { TEXT("clear"), TEXT("cls") }))
 		{
 			Output->ClearChildren();
 		}
-		else if (Is({ TEXT("время"), TEXT("time"), TEXT("date") }))
+		else if (Is(TEXT("time"), { TEXT("time"), TEXT("date") }))
 		{
 			Print(Shell->Clock());
 		}
-		else if (Is({ TEXT("кто"), TEXT("whoami") }))
+		else if (Is(TEXT("who"), { TEXT("whoami") }))
 		{
-			Print(TEXT("пользователь не найден"));
+			Print(TermText(TEXT("who")));
 		}
-		else if (Is({ TEXT("эхо"), TEXT("echo") }))
+		else if (Is(TEXT("echo"), { TEXT("echo") }))
 		{
 			Print(Rest);
 		}
-		else if (Is({ TEXT("атон"), TEXT("aton"), TEXT("ver"), TEXT("uname") }))
+		else if (Is(TEXT("aton"), { TEXT("aton"), TEXT("ver"), TEXT("uname") }))
 		{
-			Print(TEXT("АТОН OS v1.0"));
-			Print(TEXT("память: 640 КБ (?\?)"));
-			Print(TEXT("сеть: Людмиловск"));
+			Print(TermText(TEXT("aton.1")));
+			Print(TermText(TEXT("aton.2")));
+			Print(TermText(TEXT("aton.3")));
 		}
-		else if (Is({ TEXT("заметки"), TEXT("ls"), TEXT("dir") }))
+		else if (Is(TEXT("notes"), { TEXT("ls"), TEXT("dir"), TEXT("notes") }))
 		{
 			const TArray<FString> Notes = AtonApps::ListNotes(AtonApps::NotesDir());
 			if (Notes.Num() == 0)
 			{
-				Print(TEXT("заметок нет"));
+				Print(TermText(TEXT("notes.none")));
 			}
 			for (const FString& F : Notes)
 			{
 				Print(TEXT("  ") + AtonApps::NoteTitle(AtonApps::NotesDir(), F));
 			}
 		}
-		else if (Is({ TEXT("открыть"), TEXT("open"), TEXT("start") }))
+		else if (Is(TEXT("open"), { TEXT("open"), TEXT("start") }))
 		{
-			static const TMap<FString, FName> Names = {
-				{ TEXT("блокнот"), AtonApps::Notes }, { TEXT("заметки"), AtonApps::Notes }, { TEXT("notes"), AtonApps::Notes },
-				{ TEXT("сеть"), AtonApps::Browser }, { TEXT("браузер"), AtonApps::Browser }, { TEXT("browser"), AtonApps::Browser },
-				{ TEXT("письма"), AtonApps::Mail }, { TEXT("почта"), AtonApps::Mail }, { TEXT("mail"), AtonApps::Mail },
-				{ TEXT("калькулятор"), AtonApps::Calculator }, { TEXT("calc"), AtonApps::Calculator },
-				{ TEXT("файлы"), AtonApps::Computer }, { TEXT("компьютер"), AtonApps::Computer },
-				{ TEXT("корзина"), AtonApps::Trash }, { TEXT("trash"), AtonApps::Trash },
-				{ TEXT("chosen"), AtonApps::Chosen }, { TEXT("игра"), AtonApps::Chosen }, { TEXT("игру"), AtonApps::Chosen },
+			struct FProgramName { FName App; const TCHAR* Name; TArray<const TCHAR*> English; };
+			const FProgramName Names[] = {
+				{ AtonApps::Notes, TEXT("app.notes"), { TEXT("notes"), TEXT("notepad") } },
+				{ AtonApps::Browser, TEXT("app.browser"), { TEXT("browser"), TEXT("web"), TEXT("net") } },
+				{ AtonApps::Mail, TEXT("app.mail"), { TEXT("mail") } },
+				{ AtonApps::Calculator, TEXT("app.calculator"), { TEXT("calc"), TEXT("calculator") } },
+				{ AtonApps::Computer, TEXT("app.computer"), { TEXT("files"), TEXT("computer") } },
+				{ AtonApps::Trash, TEXT("app.trash"), { TEXT("trash") } },
+				{ AtonApps::Chosen, TEXT("app.chosen"), { TEXT("chosen"), TEXT("game") } },
 			};
-			if (const FName* App = Names.Find(Rest.ToLower()))
+			const FString Want = Rest.ToLower();
+			const FProgramName* Found = Algo::FindByPredicate(Names, [&Want](const FProgramName& P) { return Means(Want, P.Name, P.English); });
+			if (Found)
 			{
-				Shell->OpenApp(*App);
+				Shell->OpenApp(Found->App);
 			}
 			else
 			{
-				Print(Rest.IsEmpty() ? TEXT("что открыть?") : TEXT("нет такой программы: ") + Rest);
+				Print(Rest.IsEmpty() ? TermText(TEXT("open.what")) : TermText(TEXT("open.unknown"), { FStringFormatArg(Rest) }));
 			}
 		}
-		else if (Is({ TEXT("встать"), TEXT("exit"), TEXT("выход") }))
+		else if (Is(TEXT("leave"), { TEXT("exit"), TEXT("quit"), TEXT("leave") }))
 		{
 			if (Shell->CanLeave())
 			{
@@ -832,12 +920,12 @@ private:
 			}
 			else
 			{
-				Print(TEXT("встать не получается."));
+				Print(TermText(TEXT("leave.cannot")));
 			}
 		}
 		else
 		{
-			Print(TEXT("команда не найдена: ") + Cmd + TEXT(". набери «помощь»."));
+			Print(TermText(TEXT("unknown"), { FStringFormatArg(Cmd) }));
 		}
 	}
 
@@ -863,18 +951,11 @@ public:
 
 	void Construct(const FArguments&)
 	{
-		Letters = {
-			{ TEXT("АТОН"), TEXT("Добро пожаловать"), TEXT("сегодня, 03:12"), TEXT(
-				"Здравствуйте!\n\n"
-				"Это ваш компьютер с АТОН OS. На рабочем столе: Блокнот для заметок, Сеть для страниц Людмиловска, "
-				"Терминал, Письма, Калькулятор и Корзина.\n\n"
-				"Меню «АТОН OS» в левом верхнем углу.\n\n"
-				"Хорошей работы.\nАТОН") },
-			{ TEXT("Служба поддержки"), TEXT("Пароль не нужен"), TEXT("сегодня, 03:13"), TEXT(
-				"Вход в систему выполнен автоматически.\n\n"
-				"Пользователь не найден, поэтому вы вошли как Гость.\n\n"
-				"Если это не вы, ничего не делайте.") },
-		};
+		for (const TCHAR* Id : { TEXT("1"), TEXT("2") })
+		{
+			auto Part = [Id](const TCHAR* What) { return ::L(*FString::Printf(TEXT("ui.aton.mail.%s.%s"), Id, What)); };
+			Letters.Add({ Part(TEXT("from")), Part(TEXT("subject")), Part(TEXT("date")), Part(TEXT("body")) });
+		}
 		Read.Init(false, Letters.Num());
 
 		TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
@@ -933,7 +1014,7 @@ private:
 		const FLetter& L = Letters[i];
 		Body->ClearChildren();
 		Body->AddSlot().AutoHeight()[Label(L.Subject, 20, AtonStyle::Ink, true)];
-		Body->AddSlot().AutoHeight().Padding(0, 4, 0, 0)[Label(TEXT("от: ") + L.From + TEXT("   ·   ") + L.Date, 13, AtonStyle::InkSoft)];
+		Body->AddSlot().AutoHeight().Padding(0, 4, 0, 0)[Label(::L(TEXT("ui.aton.mail.from_line"), { FStringFormatArg(L.From), FStringFormatArg(L.Date) }), 13, AtonStyle::InkSoft)];
 		Body->AddSlot().AutoHeight().Padding(0, 10)[Divider()];
 		Body->AddSlot().AutoHeight()[Label(L.Body, 15)];
 	}
@@ -1039,7 +1120,7 @@ private:
 	{
 		if (!FMath::IsFinite(V))
 		{
-			return TEXT("ошибка");
+			return L(TEXT("ui.aton.calc.error"));
 		}
 		FString S = FString::Printf(TEXT("%.10g"), V);
 		return S == TEXT("-0") ? TEXT("0") : S;
@@ -1130,11 +1211,11 @@ public:
 				[
 					Panel(AtonStyle::C(0xE9, 0xE5, 0xD8),
 						SNew(SHorizontalBox)
-						+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[Button(TEXT("‹ Вверх"), [this] { Open(TEXT("")); }, 13)]
+						+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 10, 0)[Button(L(TEXT("ui.aton.files.up")), [this] { Open(TEXT("")); }, 13)]
 						+ SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center)
 						[
 							SNew(STextBlock).Font(AtonStyle::Mono(14)).ColorAndOpacity(AtonStyle::Ink)
-							.Text_Lambda([this] { return T(Folder.IsEmpty() ? TEXT("C:\\") : TEXT("C:\\") + Folder); })
+							.Text_Lambda([this] { return T(Folder.IsEmpty() ? TEXT("C:\\") : TEXT("C:\\") + L(*(TEXT("ui.aton.files.") + Folder))); })
 						],
 						FMargin(8))
 				]
@@ -1162,16 +1243,16 @@ private:
 	{
 		Folder = InFolder;
 		List->ClearChildren();
-		Status = TEXT("Диск C:   свободно 12 МБ из 40 МБ");
+		Status = L(TEXT("ui.aton.files.disk"), { FStringFormatArg(12), FStringFormatArg(40) });
 		if (Folder.IsEmpty())
 		{
-			Add(TEXT("[ ]  Заметки"), [this] { Open(TEXT("Заметки")); });
-			Add(TEXT("[ ]  Система"), [this] { Open(TEXT("Система")); });
-			Add(TEXT("  @  Письма"), [this] { Shell->OpenApp(AtonApps::Mail); });
-			Add(TEXT("  ×  Корзина"), [this] { Shell->OpenApp(AtonApps::Trash); });
-			Add(TEXT("www  Сеть"), [this] { Shell->OpenApp(AtonApps::Browser); });
+			Add(TEXT("[ ]  ") + L(TEXT("ui.aton.files.notes")), [this] { Open(TEXT("notes")); });
+			Add(TEXT("[ ]  ") + L(TEXT("ui.aton.files.system")), [this] { Open(TEXT("system")); });
+			Add(TEXT("  @  ") + L(TEXT("ui.aton.app.mail")), [this] { Shell->OpenApp(AtonApps::Mail); });
+			Add(TEXT("  ×  ") + L(TEXT("ui.aton.app.trash")), [this] { Shell->OpenApp(AtonApps::Trash); });
+			Add(TEXT("www  ") + L(TEXT("ui.aton.app.browser")), [this] { Shell->OpenApp(AtonApps::Browser); });
 		}
-		else if (Folder == TEXT("Заметки"))
+		else if (Folder == TEXT("notes"))
 		{
 			const FString Dir = AtonApps::NotesDir();
 			for (const FString& F : AtonApps::ListNotes(Dir))
@@ -1179,14 +1260,14 @@ private:
 				Add(TEXT("  ≡  ") + AtonApps::NoteTitle(Dir, F), [this, F] { Shell->OpenApp(AtonApps::Notes, F); });
 			}
 		}
-		else if (Folder == TEXT("Система"))
+		else if (Folder == TEXT("system"))
 		{
 			for (const TCHAR* F : { TEXT("aton.sys"), TEXT("boot.cfg"), TEXT("user.dat") })
 			{
 				const FString Name = F;
 				Add(TEXT("     ") + Name, [this, Name]
 				{
-					Status = Name == TEXT("user.dat") ? TEXT("user.dat: файл пуст. Пользователь не найден.") : Name + TEXT(": системный файл, доступ запрещён.");
+					Status = L(Name == TEXT("user.dat") ? TEXT("ui.aton.files.userdat") : TEXT("ui.aton.files.denied"), { FStringFormatArg(Name) });
 				});
 			}
 		}
@@ -1212,12 +1293,12 @@ public:
 		[
 			Panel(AtonStyle::Paper,
 				SNew(SVerticalBox)
-				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(TEXT("АТОН OS"), 34, AtonStyle::Ink, true)]
-				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)[Label(TEXT("версия 1.0"), 15, AtonStyle::InkSoft)]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(L(TEXT("ui.aton.os")), 34, AtonStyle::Ink, true)]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)[Label(L(TEXT("ui.aton.about.version")), 15, AtonStyle::InkSoft)]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 12)[Divider()]
-				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(TEXT("память: 640 КБ (?\?)"), 14)]
-				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(TEXT("пользователь: не найден"), 14)]
-				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)[Label(TEXT("(c) Людмиловск"), 13, AtonStyle::InkSoft)],
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(L(TEXT("ui.aton.about.memory")), 14)]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Label(L(TEXT("ui.aton.about.user")), 14)]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)[Label(L(TEXT("ui.aton.about.copyright")), 13, AtonStyle::InkSoft)],
 				FMargin(20, 18))
 		];
 	}
@@ -1277,7 +1358,7 @@ public:
 				.Font(AtonStyle::Mono(16))
 				.ColorAndOpacity(AtonStyle::C(0xD8, 0xC9, 0xA3))
 				.Visibility_Lambda([this] { return bLoaded ? EVisibility::Collapsed : EVisibility::HitTestInvisible; })
-				.Text_Lambda([this] { return T(bFailed ? TEXT("нет связи с Chosen") : TEXT("загрузка Chosen…")); })
+				.Text_Lambda([this] { return LyudText::Get(bFailed ? TEXT("ui.aton.chosen.offline") : TEXT("ui.aton.chosen.loading")); })
 			]
 		];
 	}
@@ -1296,15 +1377,15 @@ private:
 const TArray<FAtonAppInfo>& AtonApps::List()
 {
 	static const TArray<FAtonAppInfo> Apps = {
-		{ Computer, T(TEXT("Мой компьютер")), TEXT("C:"), AtonStyle::C(0xEF, 0xDB, 0x8A), FVector2D(480, 380) },
-		{ Notes, T(TEXT("Блокнот")), TEXT("Аа"), AtonStyle::C(0xF7, 0xF6, 0xF0), FVector2D(660, 470) },
-		{ Browser, T(TEXT("Сеть")), TEXT("www"), AtonStyle::C(0xBF, 0xD9, 0xEE), FVector2D(720, 520) },
-		{ Terminal, T(TEXT("Терминал")), TEXT(">_"), AtonStyle::C(0xB9, 0xE8, 0xC4), FVector2D(680, 440) },
-		{ Mail, T(TEXT("Письма")), TEXT("@"), AtonStyle::C(0xF3, 0xD3, 0xB5), FVector2D(640, 420) },
-		{ Calculator, T(TEXT("Калькулятор")), TEXT("±"), AtonStyle::C(0xD9, 0xD2, 0xF0), FVector2D(280, 380) },
-		{ Chosen, T(TEXT("Chosen")), TEXT("CH"), AtonStyle::C(0xE3, 0xB2, 0x61), FVector2D(896, 560) },
-		{ Trash, T(TEXT("Корзина")), TEXT("×"), AtonStyle::C(0xC3, 0xCA, 0xCC), FVector2D(440, 320) },
-		{ About, T(TEXT("О системе")), TEXT("i"), AtonStyle::Bar, FVector2D(360, 290), false },
+		{ Computer, TEXT("ui.aton.app.computer"), TEXT("C:"), AtonStyle::C(0xEF, 0xDB, 0x8A), FVector2D(480, 380) },
+		{ Notes, TEXT("ui.aton.app.notes"), TEXT("Aa"), AtonStyle::C(0xF7, 0xF6, 0xF0), FVector2D(660, 470) },
+		{ Browser, TEXT("ui.aton.app.browser"), TEXT("www"), AtonStyle::C(0xBF, 0xD9, 0xEE), FVector2D(720, 520) },
+		{ Terminal, TEXT("ui.aton.app.terminal"), TEXT(">_"), AtonStyle::C(0xB9, 0xE8, 0xC4), FVector2D(680, 440) },
+		{ Mail, TEXT("ui.aton.app.mail"), TEXT("@"), AtonStyle::C(0xF3, 0xD3, 0xB5), FVector2D(640, 420) },
+		{ Calculator, TEXT("ui.aton.app.calculator"), TEXT("±"), AtonStyle::C(0xD9, 0xD2, 0xF0), FVector2D(280, 380) },
+		{ Chosen, TEXT("ui.aton.app.chosen"), TEXT("CH"), AtonStyle::C(0xE3, 0xB2, 0x61), FVector2D(896, 560) },
+		{ Trash, TEXT("ui.aton.app.trash"), TEXT("×"), AtonStyle::C(0xC3, 0xCA, 0xCC), FVector2D(440, 320) },
+		{ About, TEXT("ui.aton.app.about"), TEXT("i"), AtonStyle::Bar, FVector2D(360, 290), false },
 	};
 	return Apps;
 }

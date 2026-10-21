@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LyudText.h"
 #include "Widgets/SCompoundWidget.h"
 
 class IAtonShell;
@@ -18,7 +19,9 @@ public:
 struct FAtonAppInfo
 {
 	FName Id;
-	FText Title;
+	/** String key of the program name, ui.aton.app.<id>. */
+	const TCHAR* TitleKey = nullptr;
+	FText Title() const { return LyudText::Get(TitleKey); }
 	/** Drawn on the desktop icon tile. */
 	FString Glyph;
 	FLinearColor Tile;

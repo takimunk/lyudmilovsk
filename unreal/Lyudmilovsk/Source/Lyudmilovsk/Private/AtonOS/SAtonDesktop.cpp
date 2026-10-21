@@ -182,7 +182,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
 					.VAlign(VAlign_Center)
 					.OnClicked_Lambda([this] { bMenuOpen = !bMenuOpen; return FReply::Handled(); })
 					[
-						SNew(STextBlock).Text(FText::FromString(TEXT("АТОН OS"))).Font(AtonStyle::Font(14, true)).ColorAndOpacity(AtonStyle::Ink)
+						SNew(STextBlock).Text(LyudText::Get(TEXT("ui.aton.os"))).Font(AtonStyle::Font(14, true)).ColorAndOpacity(AtonStyle::Ink)
 					]
 				]
 				+ SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center).Padding(14, 0)
@@ -193,7 +193,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
 					.Text_Lambda([this]
 					{
 						const FAtonAppInfo* Info = AtonApps::Find(FrontApp());
-						return Info ? Info->Title : FText::GetEmpty();
+						return Info ? Info->Title() : FText::GetEmpty();
 					})
 				]
 				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
@@ -244,7 +244,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeIcons()
 					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 5, 0, 0)
 					[
 						SNew(STextBlock)
-						.Text(App.Title)
+						.Text(App.Title())
 						.Font(AtonStyle::Font(12))
 						.ColorAndOpacity(AtonStyle::White)
 						.Justification(ETextJustify::Center)
@@ -260,7 +260,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeIcons()
 
 TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
 {
-	auto Item = [this](const TCHAR* Label, TFunction<void()> Action, TAttribute<EVisibility> Visible = EVisibility::Visible) -> TSharedRef<SWidget>
+	auto Item = [this](const TCHAR* LabelKey, TFunction<void()> Action, TAttribute<EVisibility> Visible = EVisibility::Visible) -> TSharedRef<SWidget>
 	{
 		return SNew(SButton)
 			.ButtonStyle(&AtonStyle::Ghost())
@@ -268,7 +268,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
 			.ContentPadding(FMargin(14, 6, 30, 6))
 			.OnClicked_Lambda([this, Action] { bMenuOpen = false; Action(); return FReply::Handled(); })
 			[
-				SNew(STextBlock).Text(FText::FromString(Label)).Font(AtonStyle::Font(14)).ColorAndOpacity(AtonStyle::Ink)
+				SNew(STextBlock).Text(LyudText::Get(LabelKey)).Font(AtonStyle::Font(14)).ColorAndOpacity(AtonStyle::Ink)
 			];
 	};
 
@@ -281,12 +281,12 @@ TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
 			SNew(SBorder).BorderImage(AtonStyle::Flat()).BorderBackgroundColor(AtonStyle::Bar).Padding(FMargin(0, 4))
 			[
 				SNew(SVerticalBox)
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("О системе"), [this] { OpenApp(AtonApps::About); })]
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("Мой компьютер"), [this] { OpenApp(AtonApps::Computer); })]
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("Терминал"), [this] { OpenApp(AtonApps::Terminal); })]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.about"), [this] { OpenApp(AtonApps::About); })]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.computer"), [this] { OpenApp(AtonApps::Computer); })]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.terminal"), [this] { OpenApp(AtonApps::Terminal); })]
 				+ SVerticalBox::Slot().AutoHeight()
 				[
-					Item(TEXT("Встать из-за компьютера"), [this] { Leave(); },
+					Item(TEXT("ui.aton.menu.leave"), [this] { Leave(); },
 						TAttribute<EVisibility>::CreateLambda([this] { return CanLeave() ? EVisibility::Visible : EVisibility::Collapsed; }))
 				]
 			]
@@ -345,7 +345,7 @@ void SAtonDesktop::OpenApp(FName AppId, const FString& Arg)
 		W.Program = AtonApps::Make(AppId, *this);
 		W.Z = NextZ++;
 		SAssignNew(W.Window, SAtonWindow)
-			.Title(Info->Title)
+			.Title(Info->Title())
 			.IsActive_Lambda([this, AppId] { return FrontApp() == AppId; })
 			.OnActivate_Lambda([this, AppId] { BringToFront(AppId); })
 			.OnClose_Lambda([this, AppId] { CloseApp(AppId); })
