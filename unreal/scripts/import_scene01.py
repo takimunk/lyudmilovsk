@@ -18,6 +18,7 @@ import json
 import math
 import os
 import random
+import sys
 import unreal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -1050,6 +1051,11 @@ if "outside" in LAYOUT:
             if lab == "Outside_SkyDome":
                 c.set_editor_property("cast_shadow", False)
                 c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
+    # the land, beach, path, town and cable car of the whole map (tools/world_map.py) and the plants near
+    # the club are added by import_world.py in a second pass (build_scene01.sh): Interchange skips a second
+    # scene import in one process
+    sys.path.insert(0, HERE)
+    import import_world
     for label, rot, lux, shadows in (("Sun", unreal.Rotator(0, -40, 60), SUN_LUX, True),
                                      ("Sun_Fill", unreal.Rotator(0, -40, -160), SUN_LUX * 0.3, False)):
         sun = spawn(unreal.DirectionalLight, vec(LAYOUT["outside"]["center"]) + unreal.Vector(0, 0, 800), rot, label)
@@ -1062,11 +1068,11 @@ if "outside" in LAYOUT:
         dl.set_editor_property("forward_shading_priority", 1 if shadows else 0)
         sun.set_folder_path("Outside")
 
-# Starlings (the murmuration thread's AStarlingMurmuration): a flock over the sea 300 m out from
-# the portal; it builds its meshes at runtime and traces the hill and sea under it at BeginPlay.
+# Starlings (the murmuration thread's AStarlingMurmuration): a flock over the sea 300 m off the beach,
+# on the left of the door; it builds its meshes at runtime and traces the hill and sea under it at BeginPlay.
 flock_cls = unreal.load_class(None, "/Script/Lyudmilovsk.StarlingMurmuration")
 if "outside" in LAYOUT and flock_cls:
-    spawn(flock_cls, unreal.Vector(0, LAYOUT["outside"]["portal_face_y"] + 30000, LAYOUT["outside"]["sea_z"]),
+    spawn(flock_cls, import_world.starlings_location(LAYOUT["outside"]["portal_face_y"]),
           label="Starlings").set_folder_path("Outside")
     log("starlings placed")
 # A poplar (the plants thread's AProceduralPlant) on the grass beside the path from the door; it grows
