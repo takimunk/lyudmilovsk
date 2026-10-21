@@ -1,6 +1,8 @@
 #include "HeroReachComponent.h"
 
+#include "Components/PrimitiveComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "PhysicsEngine/BodySetup.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "HeroAnimInstance.h"
@@ -121,6 +123,96 @@ UHeroReachComponent::FKey UHeroReachComponent::PocketKey(const FReachItem& It) c
 	return K;
 }
 
+FReachShape UHeroReachComponent::ShapeOf(const FReachItem& It)
+{
+	if (!It.Shape.IsEmpty())
+	{
+		return It.Shape;
+	}
+	FReachShape Out;
+	TArray<UPrimitiveComponent*> Comps;
+	if (AActor* A = It.Actor.Get())
+	{
+		A->GetComponents<UPrimitiveComponent>(Comps);
+	}
+	// 1. the item's own simple collision: spheres, capsules, boxes (a convex hull as its oriented box)
+	for (UPrimitiveComponent* C : Comps)
+	{
+		const UBodySetup* BS = C ? C->GetBodySetup() : nullptr;
+		if (!BS || !C->IsVisible())
+		{
+			continue;
+		}
+		const FTransform CT = C->GetComponentTransform();
+		const FVector S = CT.GetScale3D().GetAbs();
+		const FKAggregateGeom& G = BS->AggGeom;
+		for (const FKSphereElem& E : G.SphereElems)
+		{
+			FReachPrim Pr;
+			Pr.Kind = FReachPrim::EKind::Sphere;
+			Pr.Xf = FTransform(CT.GetRotation(), CT.TransformPosition(E.Center));
+			Pr.Radius = E.Radius * S.GetMax();
+			Out.Prims.Add(Pr);
+		}
+		for (const FKSphylElem& E : G.SphylElems)
+		{
+			FReachPrim Pr;
+			Pr.Kind = FReachPrim::EKind::Capsule;
+			Pr.Xf = FTransform(CT.GetRotation() * E.Rotation.Quaternion(), CT.TransformPosition(E.Center));
+			Pr.Radius = E.Radius * FMath::Max(S.X, S.Y);
+			Pr.HalfLength = 0.5f * E.Length * S.Z;
+			Out.Prims.Add(Pr);
+		}
+		for (const FKBoxElem& E : G.BoxElems)
+		{
+			FReachPrim Pr;
+			Pr.Kind = FReachPrim::EKind::Box;
+			Pr.Xf = FTransform(CT.GetRotation() * E.Rotation.Quaternion(), CT.TransformPosition(E.Center));
+			Pr.Extent = 0.5f * FVector(E.X, E.Y, E.Z) * S;
+			Out.Prims.Add(Pr);
+		}
+		for (const FKConvexElem& E : G.ConvexElems)
+		{
+			const FTransform ET = E.GetTransform();
+			FReachPrim Pr;
+			Pr.Kind = FReachPrim::EKind::Box;
+			Pr.Xf = FTransform(CT.GetRotation() * ET.GetRotation(), CT.TransformPosition(ET.TransformPosition(E.ElemBox.GetCenter())));
+			Pr.Extent = E.ElemBox.GetExtent() * S;
+			Out.Prims.Add(Pr);
+		}
+	}
+	if (!Out.IsEmpty())
+	{
+		return Out;
+	}
+	// 2. the shape the caller described
+	if (It.Radius > 0.f)
+	{
+		Out.AddCapsule(It.Center, It.Axis, It.HalfLength, It.Radius);
+		return Out;
+	}
+	// 3. the visible parts' own (local, oriented) bounds
+	for (UPrimitiveComponent* C : Comps)
+	{
+		if (!C || !C->IsVisible())
+		{
+			continue;
+		}
+		const FTransform CT = C->GetComponentTransform();
+		const FBox L = C->CalcBounds(FTransform::Identity).GetBox();
+		FReachPrim Pr;
+		Pr.Kind = FReachPrim::EKind::Box;
+		Pr.Xf = FTransform(CT.GetRotation(), CT.TransformPosition(L.GetCenter()));
+		Pr.Extent = L.GetExtent() * CT.GetScale3D().GetAbs();
+		Out.Prims.Add(Pr);
+	}
+	if (Out.IsEmpty())
+	{
+		Out.AddCapsule(It.Center, It.Axis, 0.f, 4.f);
+	}
+	return Out;
+}
+
 void UHeroReachComponent::PlanGrip(const FReachItem& It)
 {
 	const FVector Z = FVector::UpVector;
@@ -130,32 +222,43 @@ void UHeroReachComponent::PlanGrip(const FReachItem& It)
 		H = Hero->GetActorForwardVector();
 	}
 	const FVector R = FVector::CrossProduct(Z, H);   // the hero's right when facing the item
-	const bool bVertical = It.HalfLength > 0.5f && FMath::Abs(FVector::DotProduct(It.Axis, Z)) > 0.75f;
-	FVector Palm, Fd, Pn;
-	if (bVertical)
+	const FTransform Frame(Item0Rot, It.Center);
+	const FReachShape World = LocalShape.Transformed(Frame);
+	const FBox B = World.Bounds();
+	const FVector Ext = B.GetExtent();
+	// tall things (a bottle, a can) are taken from the right side, palm toward them; low or flat ones
+	// (an apple, a book, a box) from above, palm down. Either way the palm goes onto the real surface.
+	const bool bSide = Ext.Z > 1.25f * FMath::Max(Ext.X, Ext.Y);
+	const FVector Approach = bSide ? R : Z;
+	FVector Hit;
+	if (!World.Trace(It.Center + Approach * 60.f, It.Center, Hit))
 	{
-		// a standing bottle: the hand comes from its right side, palm toward it, fingers forward round it, thumb up
-		Pn = -R;
-		Fd = H;
-		Palm = It.Center + R * (It.Radius + 0.8f);
+		Hit = It.Center + Approach * FMath::Max(It.Radius, 3.f);
 	}
-	else
+	const FVector Out = World.Normal(Hit);
+	const FVector Pn = -Out;
+	FVector Fd = H;
+	if (!bSide)
 	{
-		// lying or round: from above, palm down, the fingers across the item
-		Pn = -Z;
-		Fd = H;
-		if (It.HalfLength > 0.5f)
+		// fingers across a long item (a book, a stick), along the approach for a round one
+		const FVector Long = Ext.X > 1.3f * Ext.Y ? FVector::XAxisVector : Ext.Y > 1.3f * Ext.X ? FVector::YAxisVector : FVector::ZeroVector;
+		if (!Long.IsZero())
 		{
-			const FVector A2 = (It.Axis - Z * FVector::DotProduct(It.Axis, Z)).GetSafeNormal();
-			Fd = FVector::CrossProduct(A2, Z).GetSafeNormal();
-			if (FVector::DotProduct(Fd, H) < -0.2f || (FMath::Abs(FVector::DotProduct(Fd, H)) < 0.25f && FVector::DotProduct(Fd, R) > 0.f))
+			Fd = FVector::CrossProduct(Long, Z).GetSafeNormal();
+			if (FVector::DotProduct(Fd, H) < 0.f)
 			{
 				Fd = -Fd;
 			}
 		}
-		Palm = It.Center + Z * (It.Radius + 0.8f) - Fd * (0.25f * It.Radius);
 	}
-	const FTransform Frame(Item0Rot, It.Center);
+	Fd = (Fd - Pn * FVector::DotProduct(Fd, Pn)).GetSafeNormal(UE_SMALL_NUMBER, H);
+	// the palm frame's point sits on the item's surface; the hand's own skin is kept outside by HandReach.
+	// From above, the palm lies a little behind the centre so the fingers wrap over it.
+	FVector Palm = Hit + Out * 0.8f;
+	if (!bSide)
+	{
+		Palm -= Fd * (0.3f * FMath::Min(Ext.X, Ext.Y));
+	}
 	Grip.PalmLocal = Frame.InverseTransformPosition(Palm);
 	Grip.FingerLocal = Frame.InverseTransformVectorNoScale(Fd);
 	Grip.NormalLocal = Frame.InverseTransformVectorNoScale(Pn);
@@ -165,6 +268,7 @@ void UHeroReachComponent::Begin(const FReachItem& It, bool bFromPocket)
 {
 	Item = It;
 	Item0Rot = FRotationMatrix::MakeFromZX(It.Axis.GetSafeNormal(), It.Front).ToQuat();
+	LocalShape = ShapeOf(It).Transformed(FTransform(Item0Rot, It.Center).Inverse());
 	PlanGrip(It);
 	Steps.Reset();
 	Current = 0;
@@ -477,10 +581,7 @@ void UHeroReachComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Pose.PalmNormal = ToMesh.TransformVectorNoScale(NormalW).GetSafeNormal();
 	Pose.Curl = FMath::Lerp(From.Curl, Step.Target.Curl, S);
 	Pose.bHasShape = true;
-	Pose.Shape.Center = ToMesh.TransformPosition(ItemPos);
-	Pose.Shape.Axis = ToMesh.TransformVectorNoScale(Frame.GetRotation().GetUpVector()).GetSafeNormal();
-	Pose.Shape.HalfLength = Item.HalfLength;
-	Pose.Shape.Radius = Item.Radius;
+	Pose.Shape = LocalShape.Transformed(Frame).Transformed(ToMesh);
 	Pose.PostureWeight = 1.f;
 	PushPose();
 
@@ -552,10 +653,11 @@ FString UHeroReachComponent::DebugReachTest(AHeroCharacter* InHero, FVector Palm
 	P.PalmNormal = ToMesh.TransformVectorNoScale(PalmNormal).GetSafeNormal();
 	P.Curl = Curl;
 	P.bHasShape = ShapeRadius > 0.f;
-	P.Shape.Center = ToMesh.TransformPosition(ShapeCenter);
-	P.Shape.Axis = ToMesh.TransformVectorNoScale(ShapeAxis).GetSafeNormal();
-	P.Shape.HalfLength = ShapeHalfLength;
-	P.Shape.Radius = ShapeRadius;
+	P.Shape.Prims.Reset();
+	if (P.bHasShape)
+	{
+		P.Shape.AddCapsule(ToMesh.TransformPosition(ShapeCenter), ToMesh.TransformVectorNoScale(ShapeAxis), ShapeHalfLength, ShapeRadius);
+	}
 	for (int32 Pass = 0; Pass < 2; ++Pass)
 	{
 		if (Pass == 1)

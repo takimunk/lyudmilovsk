@@ -22,10 +22,13 @@ struct FReachItem
 	float MouthDistance = 0.f;
 	/** The item's own direction that faces out of its front (a bottle's label); turned toward the viewer when held. */
 	FVector Front = FVector::ForwardVector;
+	/** Its solid shape in the world, if the caller knows it; otherwise it is taken from the actor's collision,
+	 *  else the capsule above (Radius > 0), else the actor's bounds. Center stays where the hand aims. */
+	FReachShape Shape;
 };
 
 /**
- * The hero's arm: reaches for any item, closes the fingers on it and carries it, then does something with
+ * The hero's arm: reaches for any item (its shape from its collision or bounds), closes the fingers on it and carries it, then does something with
  * it. The hand is placed by the animation (HandReach: arm IK, crouch and lean, fingers that stop on the
  * item's surface), so a bottle on a vending machine's tray, an apple in the grass and a book on a desk all
  * use the same calls:
@@ -136,6 +139,9 @@ private:
 	float StepTime = 0.f;
 	FKey From;
 	FReachItem Item;
+	/** The item's shape in its own frame (Item0Rot at Center), moved with the item every frame. */
+	FReachShape LocalShape;
+	static FReachShape ShapeOf(const FReachItem& Item);
 	FGrip Grip;
 	FQuat Item0Rot;
 	TWeakObjectPtr<AActor> Held;

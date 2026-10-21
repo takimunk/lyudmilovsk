@@ -113,11 +113,9 @@ namespace
 		return F;
 	}
 
-	/** Distance from P to the surface of the shape (negative inside). */
 	float DistanceToShape(const FReachShape& S, const FVector& P)
 	{
-		const float T = FMath::Clamp((float)FVector::DotProduct(P - S.Center, S.Axis), -S.HalfLength, S.HalfLength);
-		return (float)(P - (S.Center + S.Axis * T)).Size() - S.Radius;
+		return S.Distance(P);
 	}
 
 	/** A finger bent by Fold (0..1 of its full curl) about Axis: joints and tip in component space. */
@@ -146,6 +144,95 @@ namespace
 		}
 		Out = Pos;
 	}
+}
+
+float FReachPrim::Distance(const FVector& P) const
+{
+	const FVector L = Xf.InverseTransformPositionNoScale(P);
+	switch (Kind)
+	{
+	case EKind::Sphere:
+		return (float)L.Size() - Radius;
+	case EKind::Capsule:
+		return (float)(L - FVector(0.f, 0.f, FMath::Clamp((float)L.Z, -HalfLength, HalfLength))).Size() - Radius;
+	default:
+	{
+		const FVector Q = L.GetAbs() - Extent;
+		const FVector Outside(FMath::Max(Q.X, 0.0), FMath::Max(Q.Y, 0.0), FMath::Max(Q.Z, 0.0));
+		return (float)Outside.Size() + FMath::Min((float)Q.GetMax(), 0.f);
+	}
+	}
+}
+
+float FReachShape::Distance(const FVector& P) const
+{
+	float D = TNumericLimits<float>::Max();
+	for (const FReachPrim& Pr : Prims)
+	{
+		D = FMath::Min(D, Pr.Distance(P));
+	}
+	return D;
+}
+
+FVector FReachShape::Normal(const FVector& P) const
+{
+	constexpr float E = 0.2f;
+	const FVector G(Distance(P + FVector(E, 0, 0)) - Distance(P - FVector(E, 0, 0)),
+		Distance(P + FVector(0, E, 0)) - Distance(P - FVector(0, E, 0)),
+		Distance(P + FVector(0, 0, E)) - Distance(P - FVector(0, 0, E)));
+	return G.GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
+}
+
+bool FReachShape::Trace(const FVector& Start, const FVector& Target, FVector& OutHit) const
+{
+	const FVector Dir = (Target - Start).GetSafeNormal();
+	const float Len = (float)(Target - Start).Size() + 50.f;
+	float T = 0.f;
+	for (int32 i = 0; i < 128 && T < Len; ++i)
+	{
+		const FVector P = Start + Dir * T;
+		const float D = Distance(P);
+		if (D < 0.05f)
+		{
+			OutHit = P;
+			return true;
+		}
+		T += FMath::Max(D, 0.05f);
+	}
+	return false;
+}
+
+FReachShape FReachShape::Transformed(const FTransform& T) const
+{
+	FReachShape Out;
+	for (FReachPrim Pr : Prims)
+	{
+		Pr.Xf = Pr.Xf * FTransform(T.GetRotation(), T.GetTranslation());
+		Out.Prims.Add(Pr);
+	}
+	return Out;
+}
+
+FBox FReachShape::Bounds() const
+{
+	FBox B(ForceInit);
+	for (const FReachPrim& Pr : Prims)
+	{
+		const FVector E = Pr.Kind == FReachPrim::EKind::Box ? Pr.Extent
+			: Pr.Kind == FReachPrim::EKind::Capsule ? FVector(Pr.Radius, Pr.Radius, Pr.HalfLength + Pr.Radius) : FVector(Pr.Radius);
+		B += FBox(-E, E).TransformBy(Pr.Xf);
+	}
+	return B;
+}
+
+void FReachShape::AddCapsule(const FVector& Center, const FVector& Axis, float HalfLength, float Radius)
+{
+	FReachPrim Pr;
+	Pr.Kind = HalfLength > 0.01f ? FReachPrim::EKind::Capsule : FReachPrim::EKind::Sphere;
+	Pr.Xf = FTransform(FRotationMatrix::MakeFromZ(Axis.GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector)).ToQuat(), Center);
+	Pr.HalfLength = HalfLength;
+	Pr.Radius = Radius;
+	Prims.Add(Pr);
 }
 
 namespace HandReach
@@ -271,7 +358,7 @@ namespace HandReach
 		Pn = (Pn - Fd * FVector::DotProduct(Pn, Fd)).GetSafeNormal();
 		// the palm frame runs along the bones, inside the hand: its skin is PalmSkin further out. Keep that
 		// skin on the item's surface, never in it (else the hand sinks into the bottle)
-		if (Reach.bHasShape)
+		if (Reach.bHasShape && !Reach.Shape.IsEmpty())
 		{
 			const float D = DistanceToShape(Reach.Shape, Palm + Pn * PalmSkin);
 			if (D < 0.f)

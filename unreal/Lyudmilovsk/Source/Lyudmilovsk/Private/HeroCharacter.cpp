@@ -268,14 +268,18 @@ void AHeroCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 
 // --- dev commands for headless checks (offscreen -game runs): reach for a test item, sit down ---
 static FAutoConsoleCommandWithWorldAndArgs GHeroTestTake(TEXT("Hero.TestTake"),
-	TEXT("Hero.TestTake [forward cm] [up cm from the eyes]: spawns a bottle-sized cylinder in front of the hero and takes it"),
+	TEXT("Hero.TestTake [forward cm] [up cm from the eyes] [cylinder|cube|sphere|book]: spawns a test item in front of the hero and takes it; ")
+	TEXT("the hand takes its shape from the item's own collision"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
 		AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 		UHeroReachComponent* Reach = Hero ? UHeroReachComponent::Get(Hero) : nullptr;
-		UStaticMesh* Cylinder = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-		if (!Reach || !Cylinder)
+		const FString Kind = Args.Num() > 2 ? Args[2] : TEXT("cylinder");
+		const bool bCube = Kind == TEXT("cube") || Kind == TEXT("book");
+		const TCHAR* Path = bCube ? TEXT("/Engine/BasicShapes/Cube.Cube") : Kind == TEXT("sphere") ? TEXT("/Engine/BasicShapes/Sphere.Sphere") : TEXT("/Engine/BasicShapes/Cylinder.Cylinder");
+		UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, Path);
+		if (!Reach || !Mesh)
 		{
 			return;
 		}
@@ -283,19 +287,18 @@ static FAutoConsoleCommandWithWorldAndArgs GHeroTestTake(TEXT("Hero.TestTake"),
 		const float Up = Args.Num() > 1 ? FCString::Atof(*Args[1]) : -45.f;
 		const FRotator Yaw(0.f, PC->GetControlRotation().Yaw, 0.f);
 		const FVector At = Hero->EyeLocation() + Yaw.Vector() * Fwd + FVector(0.f, 0.f, Up) + Yaw.RotateVector(FVector(0.f, 12.f, 0.f));
-		AStaticMeshActor* Item = World->SpawnActor<AStaticMeshActor>(At, FRotator::ZeroRotator);
+		AStaticMeshActor* Item = World->SpawnActor<AStaticMeshActor>(At, Yaw + FRotator(0.f, 20.f, 0.f));
 		Item->SetMobility(EComponentMobility::Movable);
-		Item->GetStaticMeshComponent()->SetStaticMesh(Cylinder);
+		Item->GetStaticMeshComponent()->SetStaticMesh(Mesh);
 		Item->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		Item->SetActorScale3D(FVector(0.07f, 0.07f, 0.25f));    // 7 cm across, 25 cm tall
+		// the basic shapes are 1 m: a 7 x 25 cm bottle, an 8 cm cube or apple, a 15 x 21 x 3 cm book
+		Item->SetActorScale3D(Kind == TEXT("book") ? FVector(0.15f, 0.21f, 0.03f) : bCube || Kind == TEXT("sphere") ? FVector(0.08f) : FVector(0.07f, 0.07f, 0.25f));
 		FReachItem R;
 		R.Actor = Item;
-		R.Center = At - FVector(0.f, 0.f, 3.6f);
+		R.Center = At;
 		R.Axis = FVector::UpVector;
-		R.HalfLength = 6.f;
-		R.Radius = 3.5f;
-		R.MouthDistance = 12.f;
 		R.Front = -Yaw.Vector();
+		R.MouthDistance = 12.f;
 		Reach->Take(R, []() { UE_LOG(LogTemp, Log, TEXT("Hero.TestTake: stowed")); });
 	}));
 

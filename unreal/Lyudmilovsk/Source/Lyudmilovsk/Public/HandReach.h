@@ -4,16 +4,39 @@
 
 struct FCompactPose;
 
+/** One solid piece of an item: a sphere, a capsule (along its local Z) or a box, posed by Xf (no scale), cm. */
+struct FReachPrim
+{
+	enum class EKind : uint8 { Sphere, Capsule, Box };
+	EKind Kind = EKind::Sphere;
+	FTransform Xf;
+	float Radius = 4.f;
+	float HalfLength = 0.f;
+	FVector Extent = FVector(4.f);
+
+	float Distance(const FVector& P) const;
+};
+
 /**
- * What a hand closes on: a capsule (a sphere when HalfLength is 0), in the hero mesh's component space, cm.
- * A bottle is a capsule along its axis, an apple a sphere, a book a flat capsule: the fingers stop on its surface.
+ * What a hand closes on: the item's own solid shape, any item, as the union of a few primitives (taken
+ * from its collision, or its bounds when it has none). The palm finds its real surface and each finger
+ * folds until its skin touches it, so a bottle, an apple, a box or a book are held as they are shaped.
  */
 struct FReachShape
 {
-	FVector Center = FVector::ZeroVector;
-	FVector Axis = FVector::UpVector;
-	float HalfLength = 0.f;
-	float Radius = 4.f;
+	TArray<FReachPrim, TInlineAllocator<4>> Prims;
+
+	bool IsEmpty() const { return Prims.Num() == 0; }
+	/** Distance from P to the surface (negative inside). */
+	float Distance(const FVector& P) const;
+	/** Outward surface normal near P (the distance's gradient). */
+	FVector Normal(const FVector& P) const;
+	/** Where a ray from Start toward Target first meets the surface (sphere tracing); false if it misses. */
+	bool Trace(const FVector& Start, const FVector& Target, FVector& OutHit) const;
+	FReachShape Transformed(const FTransform& T) const;
+	FBox Bounds() const;
+
+	void AddCapsule(const FVector& Center, const FVector& Axis, float HalfLength, float Radius);
 };
 
 /**
