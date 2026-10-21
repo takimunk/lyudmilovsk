@@ -463,6 +463,10 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 			if (B.Order == 0)
 			{
 				R *= 1.f + 0.5f * FMath::Exp(-P.Z / 0.35f); // root flare
+				// a trunk that forked stays thick up to its fork, then runs out to a point within the crown
+				// (never a cut-off cylinder sticking out of the top)
+				const float TaperLen = FMath::Clamp(0.2f * L, 0.3f, 4.f);
+				R = FMath::Max(Tip, R * FMath::Clamp((L - At) / TaperLen, 0.f, 1.f));
 			}
 			T.P.Add(P);
 			T.R.Add(R);

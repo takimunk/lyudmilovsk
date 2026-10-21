@@ -17,6 +17,7 @@
 #include "Plants/FallenFruit.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
+#include "Plants/TreeBakeCache.h"
 #include "StaticMeshResources.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -102,6 +103,12 @@ AProceduralPlant::AProceduralPlant()
 		FallingComponents.Add(Air);
 	}
 
+	FarTree = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FarTree"));
+	FarTree->SetupAttachment(RootComponent);
+	FarTree->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	FarTree->SetMobility(EComponentMobility::Movable);
+	FarTree->SetVisibility(false);
+	OutdoorLighting(FarTree);
 	SummaryTrunk = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryTrunk"));
 	SummaryCrown = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryCrown"));
 	for (UStaticMeshComponent* C : { SummaryTrunk.Get(), SummaryCrown.Get() })
@@ -291,6 +298,27 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	const FPlantSpecies& S = GetSpecies();
 	const FPlantSeason Season = PlantModel::Season(S, (uint32)Seed, Day);
 	const FPlantSummary Sum = PlantModel::Summary(S, (uint32)Seed, Age, Day);
+	// far away the tree is its bake (the forests' kind): real branches and, further off, cards of its
+	// own leaves; until the bake is ready it stays in full detail
+	const FTreeBaked* Far = nullptr;
+	if (bSummary)
+	{
+		if (UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr)
+		{
+			const float BakeAge = FMath::Max(1.f, FMath::RoundToFloat(Age));
+			Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+			if (!Far && !GetWorld()->IsGameWorld())
+			{
+				Cache->BakeAllNow();
+				Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+			}
+		}
+		if (!Far || !Far->Mesh)
+		{
+			Far = nullptr;
+			bSummary = false;
+		}
+	}
 
 	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
 	// a dead tree's wood greys as it stands
@@ -314,8 +342,9 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	}
 	Wood->SetVisibility(!bSummary);
 	FruitComponent->SetVisibility(!bSummary);
-	SummaryTrunk->SetVisibility(bSummary);
-	SummaryCrown->SetVisibility(bSummary && Sum.LeafAmount > 0.05f);
+	SummaryTrunk->SetVisibility(false);
+	SummaryCrown->SetVisibility(false);
+	FarTree->SetVisibility(bSummary);
 
 	if (bSummary)
 	{
@@ -323,13 +352,14 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		for (UInstancedStaticMeshComponent* L : LeafComponents) SetInstances(L, {});
 		for (UInstancedStaticMeshComponent* L : LitterComponents) SetInstances(L, {});
 		SetInstances(FruitComponent, {});
-		const float TrunkH = FMath::Max(Sum.CrownBaseHeight, Sum.Height * 0.3f);
-		SummaryTrunk->SetRelativeLocation(FVector(0, 0, TrunkH * 50.f));
-		SummaryTrunk->SetRelativeScale3D(FVector(Sum.TrunkRadius * 2.f, Sum.TrunkRadius * 2.f, TrunkH));
-		SummaryCrown->SetRelativeLocation(FVector(0, 0, (Sum.CrownBaseHeight + Sum.Height) * 50.f));
-		SummaryCrown->SetRelativeScale3D(FVector(Sum.CrownRadius * 2.f, Sum.CrownRadius * 2.f, FMath::Max(Sum.Height - Sum.CrownBaseHeight, 0.05f)));
-		// a solid ellipsoid has none of the crown's self-shadowing: darken it to match from afar
-		CrownMaterial->SetVectorParameterValue(TEXT("Color"), Sum.LeafColour * FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+		if (Far->Version != FarVersion || FarTree->GetStaticMesh() != Far->Mesh)
+		{
+			FarTree->SetStaticMesh(Far->Mesh);
+			FarTree->SetMaterial(0, Far->Wood);
+			FarTree->SetMaterial(1, Far->Leaf);
+			FarTree->SetMaterial(2, Far->Card);
+			FarVersion = Far->Version;
+		}
 	}
 	else
 	{
@@ -836,7 +866,14 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	}
 	SinceUpdate = 0.f;
 	const float Age = GetAge(), Day = CurrentDay();
-	const bool bSummary = WantsSummary();
+	bool bSummary = WantsSummary();
+	if (bSummary && !bShownSummary)
+	{
+		// far, but its bake is not ready yet: stay as it is rather than re-shape in full every time
+		UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
+		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FVector(15.0, 55.0, 150.0)) : nullptr;
+		bSummary = Far && Far->Mesh;
+	}
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
 	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f || bLitterDirty;
 	const bool bWoodDue = !bSummary && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;

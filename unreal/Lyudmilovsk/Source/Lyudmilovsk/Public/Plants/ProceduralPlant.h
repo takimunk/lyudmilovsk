@@ -121,6 +121,9 @@ private:
 	/** Fallen leaves on the ground, and leaves in the air, per colour bucket. */
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LitterComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> FallingComponents;
+	/** Far away: the same tree baked into one mesh (UTreeBakeCache, shared with forests): LODs end in leaf cards. */
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> FarTree;
+	int32 FarVersion = -1;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryTrunk;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryCrown;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UCapsuleComponent> TrunkCollision;
