@@ -1,7 +1,7 @@
 """Builds the outdoor map's placeholder geometry (tools/world_map.py) as one .glb: the ground with
-its beach, the concrete-slab path, the beach promenade, the town's houses, placeholder trees and
-the cable car. Pure Python (no bpy, no numpy), so the Unreal build can run it itself and the .glb
-never needs committing.
+its beach, the concrete-slab path, the club's entrance, the beach promenade, the town's houses and
+the cable car (the trees are AProceduralForest actors). Pure Python (no bpy, no numpy), so the
+Unreal build can run it itself and the .glb never needs committing.
 
   python3 tools/world_mesh.py out.glb [textures_dir]
 
@@ -32,10 +32,6 @@ MATERIALS = {
     "World_Panel_Grey": ((0.6, 0.6, 0.58), 0.85, None, 1.0),
     "World_Roof_Tile": ((0.55, 0.2, 0.12), 0.7, None, 1.0),
     "World_Roof_Flat": ((0.25, 0.25, 0.26), 0.9, None, 1.0),
-    "World_Bark": ((0.25, 0.19, 0.14), 0.95, None, 1.0),
-    "World_Crown": ((0.2, 0.33, 0.14), 0.9, None, 1.0),
-    "World_Crown_Autumn": ((0.55, 0.4, 0.12), 0.9, None, 1.0),
-    "World_Pine": ((0.12, 0.24, 0.13), 0.9, None, 1.0),
     "World_Steel": ((0.35, 0.36, 0.38), 0.5, None, 1.0),
     "World_Cabin_Red": ((0.7, 0.08, 0.06), 0.5, None, 1.0),
 }
@@ -161,43 +157,6 @@ def gable_roof(prim, gable_prim, c, w, d, z, yaw, pitch=math.radians(42), over=0
         gable_prim.poly(tri, n)
 
 
-def icosphere():
-    t = (1 + 5 ** 0.5) / 2
-    v = [_norm(p) for p in [(-1, t, 0), (1, t, 0), (-1, -t, 0), (1, -t, 0), (0, -1, t), (0, 1, t), (0, -1, -t),
-                            (0, 1, -t), (t, 0, -1), (t, 0, 1), (-t, 0, -1), (-t, 0, 1)]]
-    f = [(0, 11, 5), (0, 5, 1), (0, 1, 7), (0, 7, 10), (0, 10, 11), (1, 5, 9), (5, 11, 4), (11, 10, 2), (10, 7, 6),
-         (7, 1, 8), (3, 9, 4), (3, 4, 2), (3, 2, 6), (3, 6, 8), (3, 8, 9), (4, 9, 5), (2, 4, 11), (6, 2, 10),
-         (8, 6, 7), (9, 8, 1)]
-    mid = {}
-
-    def m(a, b):
-        k = (min(a, b), max(a, b))
-        if k not in mid:
-            v.append(_norm(tuple((v[a][i] + v[b][i]) / 2 for i in range(3))))
-            mid[k] = len(v) - 1
-        return mid[k]
-
-    f2 = []
-    for a, b, c in f:
-        ab, bc, ca = m(a, b), m(b, c), m(c, a)
-        f2 += [(a, ab, ca), (b, bc, ab), (c, ca, bc), (ab, bc, ca)]
-    return v, f2
-
-
-ICO = icosphere()
-
-
-def blob(prim, c, r, squash=1.0, rnd=None):
-    vs, fs = ICO
-    base = len(prim.pos) // 3
-    for p in vs:
-        k = 1.0 + (rnd.uniform(-0.12, 0.12) if rnd else 0.0)
-        prim.vert((c[0] + p[0] * r * k, c[1] + p[1] * r * k, c[2] + p[2] * r * squash * k), p,
-                  (p[0] * 0.5 + 0.5, p[2] * 0.5 + 0.5))
-    for a, b, cc in fs:
-        prim.tri(base + a, base + b, base + cc)
-
-
 def cone(prim, c, r, h, n=8):
     base = len(prim.pos) // 3
     for i in range(n):
@@ -207,18 +166,6 @@ def cone(prim, c, r, h, n=8):
     tip = prim.vert((c[0], c[1], c[2] + h), (0, 0, 1), (0.5, 1))
     for i in range(n):
         prim.tri(base + i, base + (i + 1) % n, tip)
-
-
-def tree(mesh, x, y, r, h, rnd, autumn=False, pine=False):
-    z = W.height(x, y)
-    trunk_h = h * (0.55 if pine else 0.35)
-    box(mesh.p("World_Bark"), (x, y, z - 0.3), (0.35 + h * 0.012, 0.35 + h * 0.012, trunk_h + 0.3), rnd.uniform(0, 3), top=False)
-    if pine:
-        cone(mesh.p("World_Pine"), (x, y, z + trunk_h * 0.6), r * 0.9, h - trunk_h * 0.6)
-    else:
-        mat = "World_Crown_Autumn" if autumn else "World_Crown"
-        cr = (h - trunk_h) / 2
-        blob(mesh.p(mat), (x, y, z + trunk_h + cr * 0.9), r, squash=cr / r, rnd=rnd)
 
 
 # --- the pieces ------------------------------------------------------------------------------
@@ -311,22 +258,38 @@ def path(mesh):
 
 
 def promenade(mesh):
-    """Concrete promenade at the foot of the bluff under the town, from the cable car both ways."""
+    """Concrete promenade along the beach in front of the town."""
     pr = mesh.p("World_SlabConcrete")
-    y = 640.0
-    while y < 1320.0:
+    y = W.PROMENADE_Y[0]
+    while y < W.PROMENADE_Y[1]:
         x = W.shore_x(y + 5) - W.BEACH_W + 5.0
         z = W.height(x, y + 5)
-        x2 = W.shore_x(y + 5)
         box(pr, (x, y + 5, z - 0.6), (8.0, 10.2, 1.0), math.atan2(W.shore_x(y + 10) - W.shore_x(y), 10.0) * -1,
             tile=2.0)
-        _ = x2
         y += 10.0
+
+
+def portal(mesh):
+    """Makes the club's entrance read as a bunker door in the hillside (the scene's concrete portal
+    wall stays as it is): stepped retaining walls holding the mound on both sides, a concrete
+    canopy over the door, a kerb along the apron."""
+    conc = mesh.p("World_SlabConcrete")
+    n = 13
+    for side in (-1, 1):
+        for i in range(n):
+            d = (i + 0.5) / n * W.FORECOURT_LEN
+            x = side * (W.forecourt_half(d) + 0.22)
+            top = max(W.mound(x + side * 0.6, d) + 0.25, 0.6)   # a little over the earth it holds
+            box(conc, (x, d, -0.4), (0.45, W.FORECOURT_LEN / n / math.cos(math.atan(W.WING_SPLAY)) + 0.02,
+                                     top + 0.4), side * -math.atan(W.WING_SPLAY), tile=2.0)
+    box(conc, (W.DOOR_X, 0.95, 2.85), (3.6, 1.9, 0.22), 0.0, tile=2.0, bottom=True)
+    for side in (-1, 1):
+        box(conc, (W.DOOR_X + side * 3.15, 1.55, -0.2), (0.25, 3.1, 0.32), 0.0, tile=2.0)
 
 
 def town(mesh):
     rnd = random.Random(11)
-    houses, trees = W.town()
+    houses = W.town()
     walls = ["World_Plaster_White", "World_Plaster_Yellow", "World_Brick", "World_Plaster_White"]
     for x, y, yaw, w, d, fl, kind in houses:
         z = min(W.height(x + dx, y + dy) for dx in (-w / 2, 0, w / 2) for dy in (-d / 2, 0, d / 2))
@@ -346,65 +309,67 @@ def town(mesh):
             wall = rnd.choice(walls)
             box(mesh.p(wall), (x, y, z - 0.5), (w, d, h + 0.5), yaw, top=False)
             gable_roof(mesh.p("World_Roof_Tile"), mesh.p(wall), (x, y), w, d, z + h, yaw)
-    for x, y, r, h in trees:
-        tree(mesh, x, y, r, h, rnd, autumn=rnd.random() < 0.3)
 
 
-def woods(mesh):
-    rnd = random.Random(12)
-    for x, y, r, h in W.woods():
-        pine = rnd.random() < 0.6                     # Baltic: pines on the ridges, broadleaf between
-        tree(mesh, x, y, r, h, rnd, autumn=(not pine and rnd.random() < 0.35), pine=pine)
+def rope(prim, p0, p1, r=0.04):
+    """Thin 4-sided tube from p0 to p1 (map metres)."""
+    d = [p1[i] - p0[i] for i in range(3)]
+    l = math.sqrt(sum(v * v for v in d))
+    f = [v / l for v in d]
+    up = (0.0, 0.0, 1.0)
+    side = _norm(_cross(f, up))
+    up = _cross(side, f)
+    for i in range(4):
+        a0, a1 = i * math.pi / 2, (i + 1) * math.pi / 2
+
+        def at(p, aa):
+            return tuple(p[k] + r * (math.cos(aa) * side[k] + math.sin(aa) * up[k]) for k in range(3))
+
+        am = (a0 + a1) / 2
+        n = tuple(math.cos(am) * side[k] + math.sin(am) * up[k] for k in range(3))
+        prim.quad([at(p0, a0), at(p1, a0), at(p1, a1), at(p0, a1)], n)
 
 
 def cable_car(mesh):
+    """Two stations, the towers, two ropes (up and down line) sagging between supports, red cabins."""
     cc = W.cable_car()
-    y = W.CABLE_Y
-    (ux, _), (lx, _), (tx, _) = cc["upper"], cc["lower"], cc["tower"]
-    uz, lz, tz = W.height(ux, y), W.height(lx, y), W.height(tx, y)
+    sup = cc["supports"]
+    (x0, y0), (x1, y1) = cc["upper"], cc["lower"]
+    yaw = math.atan2(y1 - y0, x1 - x0)               # along the line
+    ca, sa = math.cos(yaw), math.sin(yaw)
+    nx, ny = -sa, ca                                 # across it
     conc, steel = mesh.p("World_SlabConcrete"), mesh.p("World_Steel")
-    # stations: a concrete hall with a flat roof, open toward the line
-    box(conc, (ux - 4, y, uz - 1), (14, 12, 7), 0.0, tile=2.0)
-    box(mesh.p("World_Roof_Flat"), (ux - 4, y, uz + 6), (15, 13, 0.4), 0.0)
-    box(conc, (lx - 2, y, lz - 0.5), (12, 12, 6), 0.0, tile=2.0)
-    box(mesh.p("World_Roof_Flat"), (lx - 2, y, lz + 5.5), (13, 13, 0.4), 0.0)
-    # tower at the bluff edge
-    th = 14.0
-    box(steel, (tx, y, tz - 0.5), (1.2, 1.2, th + 0.5), 0.0)
-    box(steel, (tx, y, tz + th), (1.0, 7.0, 0.6), 0.0)
-    # two ropes (up and down line) sagging between stations over the tower, a cabin on each
-    a = (ux + 3, uz + 5.0)
-    b = (tx, tz + th + 0.3)
-    c = (lx + 4, lz + 4.5)
+    for (sx, sy), back in ((cc["upper"], -1), (cc["lower"], 1)):
+        z = W.height(sx, sy)
+        # a concrete hall with a flat roof, open toward the line; the bull wheel's housing on top
+        box(conc, (sx + back * 3 * ca, sy + back * 3 * sa, z - 1.0), (14, 12, 1.2), yaw, tile=2.0)
+        for side in (-1, 1):
+            box(conc, (sx + back * 3 * ca + side * 5.6 * nx, sy + back * 3 * sa + side * 5.6 * ny, z), (14, 0.8, 5.6),
+                yaw, tile=2.0)
+        box(conc, (sx + back * 9.6 * ca, sy + back * 9.6 * sa, z), (0.8, 12, 5.6), yaw, tile=2.0)
+        box(mesh.p("World_Roof_Flat"), (sx + back * 3 * ca, sy + back * 3 * sa, z + 5.6), (15, 13, 0.5), yaw)
+        box(steel, (sx, sy, z + W.ROPE_Z - 0.4), (5.0, 7.0, 0.4), yaw)
+    for tx, ty in cc["towers"]:
+        tz = W.height(tx, ty)
+        box(steel, (tx, ty, tz - 0.5), (1.2, 1.2, W.TOWER_H + 0.5), yaw)
+        box(steel, (tx, ty, tz + W.TOWER_H - 0.3), (1.0, 7.4, 0.6), yaw)
     for side in (-3.0, 3.0):
         pts = []
-        for (x0, z0), (x1, z1) in ((a, b), (b, c)):
-            for k in range(12):
-                t = k / 12
-                sag = 4 * 0.6 * t * (1 - t) * (abs(x1 - x0) / 40.0)
-                pts.append((x0 + (x1 - x0) * t, z0 + (z1 - z0) * t - sag))
-        pts.append(c)
-        for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
-            l = math.hypot(x1 - x0, z1 - z0)
-            mid = ((x0 + x1) / 2, (z0 + z1) / 2)
-            ang = math.atan2(z1 - z0, x1 - x0)
-            # thin rope as a 4-sided tube along X
-            r = 0.04
-            for i in range(4):
-                a0, a1 = i * math.pi / 2, (i + 1) * math.pi / 2
-                def at(u, aa):
-                    dy, dz = r * math.cos(aa), r * math.sin(aa)
-                    return (mid[0] + u * math.cos(ang) - dz * math.sin(ang), y + side + dy,
-                            mid[1] + u * math.sin(ang) + dz * math.cos(ang))
-                ps = [at(-l / 2, a0), at(l / 2, a0), at(l / 2, a1), at(-l / 2, a1)]
-                am = (a0 + a1) / 2
-                n = (-math.sin(am) * math.sin(ang), math.cos(am), math.sin(am) * math.cos(ang))
-                steel.quad(ps, n)
-        # a cabin hanging from this rope, a third of the way down (the other line's further on)
-        k = int(len(pts) * (0.3 if side < 0 else 0.62))
-        cx_, cz_ = pts[k]
-        box(steel, (cx_, y + side, cz_ - 1.2), (0.12, 0.12, 1.2), 0.0)
-        box(mesh.p("World_Cabin_Red"), (cx_, y + side, cz_ - 3.4), (1.9, 1.7, 2.2), 0.0, bottom=True)
+        for (ax, ay, az), (bx, by, bz) in zip(sup, sup[1:]):
+            span = math.hypot(bx - ax, by - ay)
+            n = max(2, int(span / 8))
+            for k in range(n):
+                t = k / n
+                sag = 4 * t * (1 - t) * span * 0.012
+                pts.append((ax + (bx - ax) * t + side * nx, ay + (by - ay) * t + side * ny, az + (bz - az) * t - sag))
+        bx, by, bz = sup[-1]
+        pts.append((bx + side * nx, by + side * ny, bz))
+        for p0, p1 in zip(pts, pts[1:]):
+            rope(steel, p0, p1)
+        for f in ((0.2, 0.55, 0.85) if side < 0 else (0.35, 0.7)):
+            cx, cy, cz = pts[int(len(pts) * f)]
+            box(steel, (cx, cy, cz - 1.2), (0.12, 0.12, 1.2), yaw)
+            box(mesh.p("World_Cabin_Red"), (cx, cy, cz - 3.4), (1.9, 1.7, 2.2), yaw, bottom=True)
 
 
 # --- glb writer --------------------------------------------------------------------------------
@@ -483,8 +448,8 @@ def write_glb(out, meshes, tex_dir):
 
 def build(out, tex_dir=None):
     meshes = []
-    for name, fn in (("World_Ground", ground), ("World_Path", path), ("World_Promenade", promenade),
-                     ("World_Town", town), ("World_Woods", woods), ("World_CableCar", cable_car)):
+    for name, fn in (("World_Ground", ground), ("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade),
+                     ("World_Town", town), ("World_CableCar", cable_car)):
         m = Mesh(name)
         fn(m)
         meshes.append(m)
