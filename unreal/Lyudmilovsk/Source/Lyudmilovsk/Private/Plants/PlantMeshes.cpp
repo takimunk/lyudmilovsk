@@ -66,7 +66,10 @@ namespace
 		}
 		if (!Mesh)
 		{
-			Mesh = NewObject<UStaticMesh>(Outer, Name, RF_Transient);
+			// never saved and never copied: a duplicate (Play In Editor copies the editor's world) would
+			// have no mesh description to rebuild from and PIE would wait on it forever; the copy builds
+			// its own meshes at BeginPlay
+			Mesh = NewObject<UStaticMesh>(Outer, Name, RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 			Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
 		}
 		UStaticMesh::FBuildMeshDescriptionsParams Params;
