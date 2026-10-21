@@ -134,6 +134,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> LeafMesh;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> BarkAlbedo;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> BarkNormal;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> ScarMask;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> LeafDetail;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WoodMaterial;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LeafMaterials;
@@ -143,7 +144,17 @@ private:
 	/** Keys (year * 100000 + twig) of fruit picked up, so it does not come back after a load. */
 	UPROPERTY(SaveGame) TArray<int32> PickedFruit;
 	TMap<int32, TWeakObjectPtr<AFallenFruit>> GroundFruit;
-	TSet<int32> HangingFruit;
+	/** Fruit drawn on the tree now (keys), with its transforms and skins (FruitDataFloats each). */
+	TArray<int32> HangingKeys;
+	TArray<FTransform> HangingXf;
+	TArray<float> HangingData;
+	/** Fruit whose day to drop has come but that still hangs, waiting its turn to fall. */
+	struct FPendingFruit { int32 Key; FPlantSkeleton::FInstances::FFallen F; };
+	TArray<FPendingFruit> PendingFruit;
+	float FruitReleaseRate = 0.f, FruitReleaseAcc = 0.f;
+	double LastFruitTime = -1.0;
+	void DrawHangingFruit();
+	void DropFruit(const FPendingFruit& P);
 
 	struct FFallingLeaf
 	{

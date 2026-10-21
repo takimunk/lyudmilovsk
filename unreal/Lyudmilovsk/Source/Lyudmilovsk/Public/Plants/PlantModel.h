@@ -25,6 +25,10 @@ struct FPlantSummary
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Plant") float TrunkRadius = 0.f;
 	/** 0 bare .. 1 full summer foliage. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Plant") float LeafAmount = 0.f;
+	/** 1 in its prime .. 0 dead (a standing snag). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Plant") float Vigour = 1.f;
+	/** Its lifespan, years. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Plant") float Lifespan = 0.f;
 	/** Mean colour of the leaves on the tree (linear). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Plant") FLinearColor LeafColour = FLinearColor::Black;
 };
@@ -61,6 +65,12 @@ namespace PlantModel
 	/** Age at which the tree reaches a height (inverse of Height); infinity if it never does. */
 	LYUDMILOVSK_API float AgeAtHeight(const FPlantSpecies& S, float H);
 	LYUDMILOVSK_API FPlantSeason Season(const FPlantSpecies& S, uint32 Seed, float DayOfYear);
+	/** This tree's own lifespan, years (from its seed). */
+	LYUDMILOVSK_API float Lifespan(const FPlantSpecies& S, uint32 Seed);
+	/** 1 in its prime, falling to 0 over its decline; 0 dead. */
+	LYUDMILOVSK_API float Vigour(const FPlantSpecies& S, uint32 Seed, float Age);
+	/** Dead and gone (past its snag years). */
+	LYUDMILOVSK_API bool IsGone(const FPlantSpecies& S, uint32 Seed, float Age);
 	LYUDMILOVSK_API FPlantSummary Summary(const FPlantSpecies& S, uint32 Seed, float Age, float DayOfYear);
 }
 
@@ -94,8 +104,13 @@ public:
 	struct FTube
 	{
 		int32 Order = 0;
+		/** The branch it draws (stable across ages: a key for anything seeded on it). */
+		int32 Key = 0;
 		TArray<FVector3f> P;
 		TArray<float> R;
+		/** Where branches leave it (or left it, shed): arc length on it, the branch's direction, its radius (m). */
+		struct FJunction { float S; FVector3f Dir; float R; bool bShed; };
+		TArray<FJunction> Junctions;
 	};
 
 	/** What to draw at one age: the wood, and leaf clusters per colour bucket and fruit (instances, cm). */
@@ -103,14 +118,16 @@ public:
 	{
 		TArray<FTube> Tubes;
 		TArray<FTransform> Leaves[FPlantSeason::NumBuckets];
+		/** Per leaf cluster: how much it swings with its twig, 0 (on a limb) .. 1 (at a twig's tip). */
+		TArray<float> LeafSway[FPlantSeason::NumBuckets];
 		/** Fruit still hanging, and its ids (stable: the twig it grows on). */
 		TArray<FTransform> Fruit;
 		TArray<int32> FruitIds;
 		/** Each hanging fruit's skin, FruitDataFloats per fruit (blush, blush side, stripes, tint, ripeness shift). */
 		static constexpr int32 FruitDataFloats = 5;
 		TArray<float> FruitData;
-		/** Fruit that has dropped and not yet rotted: id, where it hung (m) and its skin. */
-		struct FFallen { int32 Id; FVector3f At; float Data[FruitDataFloats]; };
+		/** Fruit that has dropped and not yet rotted: id, where it hung (m), how it hung (cm, as on the tree) and its skin. */
+		struct FFallen { int32 Id; FVector3f At; FTransform Hung; float Data[FruitDataFloats]; };
 		TArray<FFallen> FallenFruit;
 		/** Fallen leaves lying under the tree: where (m, the ground's height is the caller's), turn, size, bucket. */
 		struct FLitter { FVector2f At; float Yaw; float Size; int32 Bucket; };

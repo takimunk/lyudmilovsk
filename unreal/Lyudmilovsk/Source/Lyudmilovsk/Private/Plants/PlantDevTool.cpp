@@ -196,7 +196,7 @@ void APlantDevTool::Open()
 				[SNew(STextBlock).AutoWrapText(true).Font(Font(10)).ColorAndOpacity(FLinearColor(0.85f, 0.9f, 0.8f)).Text_Lambda([P]()
 					{ return P() ? FText::FromString(P()->DescribeState()) : FText::GetEmpty(); })]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
-				[SliderRow(LOCTEXT("Age", "Возраст, лет"), 0.f, 150.f,
+				[SliderRow(LOCTEXT("Age", "Возраст, лет"), 0.f, 500.f,
 					[P]() { return P() ? P()->GetAge() : 0.f; },
 					[P](float V) { if (P()) P()->DevAge = V; },
 					[P]() { return FText::AsNumber(P() ? FMath::RoundToInt(P()->GetAge() * 10.f) / 10.f : 0.f); })]

@@ -23,6 +23,11 @@ namespace
 		S.Bark.Depth = 2.8f;
 		S.Bark.RidgeColour = C(0.085f, 0.08f, 0.07f);
 		S.Bark.FurrowColour = C(0.015f, 0.014f, 0.012f);
+		S.LifeMedian = 70.f;
+		S.LifeSpread = 0.25f;
+		S.LifeMax = 120.f;
+		S.DeclineYears = 12.f;
+		S.SnagYears = 8.f;
 		return S;
 	}
 
@@ -60,6 +65,11 @@ namespace
 		S.AutumnLeafColour = S.AutumnLeafColourLate = C(0.55f, 0.40f, 0.05f);
 		S.ColourStartDay = 276.f;
 		S.BareDay = 322.f;
+		S.LifeMedian = 160.f;
+		S.LifeSpread = 0.35f;
+		S.LifeMax = 400.f;
+		S.DeclineYears = 15.f;
+		S.SnagYears = 10.f;
 		return S;
 	}
 
@@ -142,6 +152,11 @@ namespace
 		S.FruitGroundColour = C(0.45f, 0.42f, 0.08f);
 		S.FruitBlush = 1.f;
 		S.FruitStripes = 0.7f;
+		S.LifeMedian = 70.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 150.f;
+		S.DeclineYears = 10.f;
+		S.SnagYears = 6.f;
 		return S;
 	}
 
@@ -195,6 +210,11 @@ namespace
 		S.SummerLeafColour = C(0.05f, 0.14f, 0.025f);
 		S.AutumnLeafColour = C(0.50f, 0.07f, 0.02f);
 		S.AutumnLeafColourLate = C(0.66f, 0.45f, 0.03f);
+		S.LifeMedian = 150.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 300.f;
+		S.DeclineYears = 15.f;
+		S.SnagYears = 10.f;
 		return S;
 	}
 
@@ -270,6 +290,11 @@ namespace
 		S.BranchRadiusPerLength = 0.009f;
 		S.FruitUnripeColour = C(0.12f, 0.2f, 0.04f);
 		S.FruitGroundColour = C(0.17f, 0.09f, 0.03f);
+		S.LifeMedian = 250.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 400.f;
+		S.DeclineYears = 25.f;
+		S.SnagYears = 20.f;
 		return S;
 	}
 
@@ -318,23 +343,23 @@ namespace
 		S.Kink = 0.15f;
 		S.KinkSpacing = 0.6f;
 		S.Droop = 0.01f;
-		S.Branch2Spacing = 0.18f;
-		S.Branch2Angle = 50.f;
-		S.Branch2MaxLength = 2.2f;
-		S.Branch2LengthRatio = 0.5f;
-		S.Branch2ShadeDepth = 3.5f;
-		S.TwigHang = 0.8f;
+		S.Branch2Spacing = 0.12f;
+		S.Branch2Angle = 35.f;
+		S.Branch2MaxLength = 3.f;
+		S.Branch2LengthRatio = 0.9f;
+		S.Branch2ShadeDepth = 6.f;
+		S.TwigHang = 1.f;
 		S.BranchRadiusPerLength = 0.007f;
-		S.LeafyTipLength = 2.5f;
-		S.LeafSpacing = 0.08f;
-		S.LeafClusterSize = 0.3f;
+		S.LeafyTipLength = 1.5f;
+		S.LeafSpacing = 0.1f;
+		S.LeafClusterSize = 0.12f;
 		S.Leaf.Length = 0.055f;
 		S.Leaf.Width = 0.8f;
 		S.Leaf.WidestAt = 0.3f;
 		S.Leaf.Teeth = 12; // doubly toothed: finer than the mesh draws, the veins carry it
 		S.Leaf.TeethDepth = 0.06f;
 		S.Leaf.Petiole = 0.45f;
-		S.Leaf.PerCluster = 5;
+		S.Leaf.PerCluster = 3;
 		S.Bark.Pattern = EPlantBarkPattern::Birch;
 		S.Bark.TileWidth = 0.25f;
 		S.Bark.TileHeight = 0.5f;
@@ -348,6 +373,14 @@ namespace
 		S.Bark.BaseRidgeColour = C(0.08f, 0.08f, 0.075f);
 		S.Bark.BaseFurrowColour = C(0.01f, 0.01f, 0.01f);
 		BirchSeason(S);
+		S.LifeMedian = 90.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 200.f;
+		S.DeclineYears = 10.f;
+		S.SnagYears = 6.f;
+		S.TwigRadiusScale = 0.3f;
+		S.Sway = 25.f;
+		S.Bark.Scars = 1.f;
 		return S;
 	}
 
@@ -380,6 +413,15 @@ namespace
 		S.Bark.DarkBaseMax = 0.5f;
 		S.Bark.BaseRidgeColour = C(0.16f, 0.15f, 0.13f);
 		S.Bark.BaseFurrowColour = C(0.04f, 0.035f, 0.03f);
+		S.LifeMedian = 90.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 200.f;
+		S.DeclineYears = 10.f;
+		S.SnagYears = 6.f;
+		S.Sway = 12.f;
+		S.TwigRadiusScale = 0.5f;
+		S.Branch2MaxLength = 1.8f;
+		S.Branch2LengthRatio = 0.5f;
 		return S;
 	}
 
@@ -398,8 +440,14 @@ namespace
 		S.Tropism = 0.02f;
 		S.Droop = 0.06f;
 		S.TwigHang = 1.f;
-		S.Branch2MaxLength = 3.f;
-		S.Branch2LengthRatio = 0.7f;
+		S.Branch2MaxLength = 4.f;
+		S.Branch2LengthRatio = 1.f;
+		S.LifeMedian = 70.f;
+		S.LifeSpread = 0.25f;
+		S.LifeMax = 120.f;
+		S.DeclineYears = 8.f;
+		S.SnagYears = 5.f;
+		S.Sway = 35.f;
 		return S;
 	}
 
@@ -463,6 +511,12 @@ namespace
 		S.SummerLeafColour = C(0.04f, 0.1f, 0.02f);
 		S.AutumnLeafColour = C(0.5f, 0.07f, 0.03f);
 		S.AutumnLeafColourLate = C(0.6f, 0.25f, 0.04f);
+		S.LifeMedian = 60.f;
+		S.LifeSpread = 0.4f;
+		S.LifeMax = 150.f;
+		S.DeclineYears = 8.f;
+		S.SnagYears = 3.f;
+		S.Sway = 2.f;
 		return S;
 	}
 
@@ -495,6 +549,15 @@ namespace
 		S.Leaf.WidestAt = 0.4f;
 		S.Bark.RidgeColour = C(0.5f, 0.42f, 0.38f);
 		S.Bark.DarkBaseRate = 0.f;
+		S.LifeMedian = 300.f;
+		S.LifeSpread = 0.3f;
+		S.LifeMax = 500.f;
+		S.DeclineYears = 25.f;
+		S.SnagYears = 15.f;
+		S.Sway = 10.f;
+		S.TwigRadiusScale = 0.5f;
+		S.Branch2MaxLength = 1.8f;
+		S.Branch2LengthRatio = 0.5f;
 		return S;
 	}
 }

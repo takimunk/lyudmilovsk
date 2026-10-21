@@ -38,6 +38,35 @@ def link(a, a_out, b, b_in):
         raise RuntimeError("could not connect %s.%s -> %s.%s" % (a.get_name(), a_out, b.get_name(), b_in))
 
 
+def custom_input(name):
+    c = unreal.CustomInput()
+    c.set_editor_property("input_name", name)
+    return c
+
+
+# Wind for swinging twigs and their leaves: a smooth field over the world, so a twig and the leaves on
+# it move together; W is how far this point swings (cm at full gust).
+WIND_HLSL = """
+float a = sin(T * 1.3 + P.x * 0.011 + P.y * 0.007);
+float b = sin(T * 0.83 + P.y * 0.013 - P.x * 0.005);
+float g = 0.55 + 0.45 * sin(T * 0.31 + (P.x + P.y) * 0.002);
+return float3(0.5 + 0.7 * a, 0.6 * b, -0.15 * abs(a)) * g * W;
+"""
+
+
+def wind(m, weight, x, y):
+    """World position offset node: WIND_HLSL at this vertex, scaled by the expression weight."""
+    pos = node(m, unreal.MaterialExpressionWorldPosition, x - 300, y,
+               world_position_shader_offset=unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS)
+    time = node(m, unreal.MaterialExpressionTime, x - 300, y + 120)
+    c = node(m, unreal.MaterialExpressionCustom, x, y, code=WIND_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+             description="Wind", inputs=[custom_input(n) for n in ("P", "T", "W")])
+    link(pos, "", c, "P")
+    link(time, "", c, "T")
+    link(weight, "", c, "W")
+    return c
+
+
 # --- bark
 m = new_material("/Game/Plants/M_PlantBark")
 albedo = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, -200, parameter_name="BarkAlbedo",
@@ -62,9 +91,25 @@ bark = node(m, unreal.MaterialExpressionLinearInterpolate, -800, -600)
 link(twig, "", bark, "A")
 link(rough_base, "", bark, "B")
 link(vc, "R", bark, "Alpha")
+# the tree's own birch marks (chevrons, shed-branch eyes, lenticels) from its mask, mapped by UV 1
+uv1 = node(m, unreal.MaterialExpressionTextureCoordinate, -1300, -1500, coordinate_index=1)
+scars = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -1000, -1500, parameter_name="ScarMask",
+             texture=unreal.load_asset("/Engine/EngineResources/Black"))
+link(uv1, "", scars, "UVs")
+scar_col = node(m, unreal.MaterialExpressionVectorParameter, -1000, -1700, parameter_name="ScarColour", default_value=unreal.LinearColor(0.012, 0.011, 0.01, 1))
+marked = node(m, unreal.MaterialExpressionLinearInterpolate, -700, -800)
+link(bark, "", marked, "A")
+link(scar_col, "", marked, "B")
+link(scars, "R", marked, "Alpha")
 wood = node(m, unreal.MaterialExpressionMultiply, -600, -300)
-link(bark, "", wood, "A")
+link(marked, "", wood, "A")
 link(tint, "", wood, "B")
+# thin twigs swing (vertex colour B: 0 at a twig's base .. 1 at its tip) by SwayAmp cm
+sway_amp = node(m, unreal.MaterialExpressionScalarParameter, -1300, 900, parameter_name="SwayAmp", default_value=0.0)
+sway_w = node(m, unreal.MaterialExpressionMultiply, -1000, 900)
+link(vc, "B", sway_w, "A")
+link(sway_amp, "", sway_w, "B")
+mel.connect_material_property(wind(m, sway_w, -700, 900), "", MP.MP_WORLD_POSITION_OFFSET)
 # snow lies on faces that look up: saturate((N.z - 0.3) * 4) * Snow
 nrm = node(m, unreal.MaterialExpressionVertexNormalWS, -900, 650)
 nz = node(m, unreal.MaterialExpressionComponentMask, -700, 650, r=False, g=False, b=True, a=False)
@@ -117,16 +162,31 @@ link(leaf, "", sss, "A")
 mel.connect_material_property(sss, "", MP.MP_SUBSURFACE_COLOR)
 rough = node(m, unreal.MaterialExpressionConstant, -300, 400, r=0.55)
 mel.connect_material_property(rough, "", MP.MP_ROUGHNESS)
+# swinging with the twig (per-instance data 0, set by the tree) and a little flutter of its own
+leaf_amp = node(m, unreal.MaterialExpressionScalarParameter, -1500, 800, parameter_name="SwayAmp", default_value=0.0)
+leaf_w = node(m, unreal.MaterialExpressionPerInstanceCustomData, -1300, 700, data_index=0)
+zero = node(m, unreal.MaterialExpressionConstant, -1500, 700, r=0.0)
+link(zero, "", leaf_w, "DefaultValue")
+leaf_sw = node(m, unreal.MaterialExpressionMultiply, -1100, 750)
+link(leaf_w, "", leaf_sw, "A")
+link(leaf_amp, "", leaf_sw, "B")
+swing = wind(m, leaf_sw, -800, 750)
+FLUTTER_HLSL = """
+return float3(0.4 * sin(T * 5.3 + R * 17.0), 0.3 * sin(T * 6.1 + R * 29.0), 0.6 * sin(T * 7.0 + R * 40.0)) * F;
+"""
+flut = node(m, unreal.MaterialExpressionCustom, -800, 1000, code=FLUTTER_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+            description="Flutter", inputs=[custom_input(n) for n in ("T", "R", "F")])
+link(node(m, unreal.MaterialExpressionTime, -1100, 1000), "", flut, "T")
+link(node(m, unreal.MaterialExpressionPerInstanceRandom, -1100, 1100), "", flut, "R")
+link(node(m, unreal.MaterialExpressionScalarParameter, -1100, 1200, parameter_name="Flutter", default_value=0.0), "", flut, "F")
+wpo = node(m, unreal.MaterialExpressionAdd, -500, 850)
+link(swing, "", wpo, "A")
+link(flut, "", wpo, "B")
+mel.connect_material_property(wpo, "", MP.MP_WORLD_POSITION_OFFSET)
 m.set_editor_property("used_with_instanced_static_meshes", True)
 mel.recompile_material(m)
 eal.save_asset(m.get_path_name())
 # --- fruit
-def custom_input(name):
-    c = unreal.CustomInput()
-    c.set_editor_property("input_name", name)
-    return c
-
-
 
 FRUIT_HLSL = """
 if (UV.y < 0) return float3(0.05, 0.035, 0.018);

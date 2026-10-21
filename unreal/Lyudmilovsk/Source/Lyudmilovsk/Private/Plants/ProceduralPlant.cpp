@@ -78,6 +78,7 @@ AProceduralPlant::AProceduralPlant()
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		LeafComponents.Add(MakeInstanced(this, *FString::Printf(TEXT("Leaves%d"), K), RootComponent));
+		LeafComponents[K]->NumCustomDataFloats = 1;
 	}
 	FruitComponent = MakeInstanced(this, TEXT("Fruit"), RootComponent);
 	FruitComponent->SetStaticMesh(Sphere.Object);
@@ -242,6 +243,15 @@ void AProceduralPlant::EnsureMeshes()
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
 		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing
 		WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), S.Bark.TwigColour);
+		WoodMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+		{
+			// leaves on the tree swing with their twigs and flutter; the litter lies still
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), 1.f);
+			LitterMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+			LitterMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), 0.f);
+		}
 		WoodMaterial->SetVectorParameterValue(TEXT("BaseRidge"), S.Bark.BaseRidgeColour);
 		WoodMaterial->SetVectorParameterValue(TEXT("BaseFurrow"), S.Bark.BaseFurrowColour);
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
@@ -267,6 +277,12 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	const FPlantSummary Sum = PlantModel::Summary(S, (uint32)Seed, Age, Day);
 
 	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
+	// a dead tree's wood greys as it stands
+	WoodMaterial->SetVectorParameterValue(TEXT("Tint"), FMath::Lerp(FLinearColor(0.82f, 0.82f, 0.86f, 1.f), FLinearColor::White, Sum.Vigour > 0.f ? 1.f : 0.f));
+	// past its snag years it is gone
+	const bool bGone = PlantModel::IsGone(S, (uint32)Seed, Age);
+	SetActorHiddenInGame(bGone);
+	TrunkCollision->SetCollisionEnabled(bGone ? ECollisionEnabled::NoCollision : ECollisionEnabled::QueryAndPhysics);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		LeafMaterials[K]->SetVectorParameterValue(TEXT("Color"), Season.Colour[K]);
@@ -312,27 +328,40 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			SetInstances(LeafComponents[K], Out.Leaves[K]);
+			// how far each cluster swings with its twig (M_PlantLeaf's per-instance data)
+			for (int32 L = 0; L < Out.LeafSway[K].Num(); L++)
+			{
+				LeafComponents[K]->SetCustomDataValue(L, 0, Out.LeafSway[K][L], false);
+			}
+			LeafComponents[K]->MarkRenderStateDirty();
 			NumLeaves += Out.Leaves[K].Num();
 		}
-		SetInstances(FruitComponent, Out.Fruit);
-		for (int32 F = 0; F < Out.Fruit.Num(); F++)
-		{
-			FruitComponent->SetCustomData(F, TArrayView<const float>(&Out.FruitData[F * FPlantSkeleton::FInstances::FruitDataFloats], FPlantSkeleton::FInstances::FruitDataFloats), false);
-		}
-		FruitComponent->MarkRenderStateDirty();
 		UpdateLitter(Out, Season);
 		if (bGame)
 		{
 			SpawnFallingLeaves(Out);
 			SyncFallenFruit(Out);
 		}
+		else
+		{
+			HangingKeys = Out.FruitIds;
+			HangingXf = Out.Fruit;
+			HangingData = Out.FruitData;
+			DrawHangingFruit();
+		}
 		LastLeaves = NumLeaves;
-		LastFruit = Out.Fruit.Num();
+		LastFruit = HangingKeys.Num();
 		LastHeight = Out.Height;
 		LastReach = Out.Reach;
 		if (bWood || WoodAge < 0.f)
 		{
-			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age);
+			UTexture2D* Marks = nullptr;
+			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age, (uint32)Seed, &Marks);
+			if (Marks)
+			{
+				ScarMask = Marks;
+				WoodMaterial->SetTextureParameterValue(TEXT("ScarMask"), ScarMask);
+			}
 			if (Wood->GetStaticMesh() != WoodMesh)
 			{
 				Wood->SetStaticMesh(WoodMesh);
@@ -351,12 +380,35 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	bShownSummary = bSummary;
 }
 
+void AProceduralPlant::DrawHangingFruit()
+{
+	SetInstances(FruitComponent, HangingXf);
+	constexpr int32 N = FPlantSkeleton::FInstances::FruitDataFloats;
+	for (int32 F = 0; F < HangingXf.Num(); F++)
+	{
+		FruitComponent->SetCustomData(F, TArrayView<const float>(&HangingData[F * N], N), false);
+	}
+	FruitComponent->MarkRenderStateDirty();
+}
+
 void AProceduralPlant::SyncFallenFruit(const FPlantSkeleton::FInstances& Out)
 {
+	constexpr int32 N = FPlantSkeleton::FInstances::FruitDataFloats;
 	const FPlantSpecies& S = GetSpecies();
 	const int32 Year = CurrentDate().GetYear() * 100000;
 	const FTransform& Xf = GetActorTransform();
+	TSet<int32> WasHanging(HangingKeys);
+	TArray<int32> Keys;
+	TArray<FTransform> Hung;
+	TArray<float> Data;
+	for (int32 F = 0; F < Out.FruitIds.Num(); F++)
+	{
+		Keys.Add(Year + Out.FruitIds[F]);
+		Hung.Add(Out.Fruit[F]);
+		Data.Append(&Out.FruitData[F * N], N);
+	}
 	TSet<int32> Want;
+	TArray<FPendingFruit> StillPending;
 	for (const FPlantSkeleton::FInstances::FFallen& F : Out.FallenFruit)
 	{
 		const int32 Key = Year + F.Id;
@@ -370,41 +422,81 @@ void AProceduralPlant::SyncFallenFruit(const FPlantSkeleton::FInstances& Out)
 		{
 			continue;
 		}
-		// one that drops while we watch falls from its twig; older ones already lie in the grass under it
-		FVector At = Xf.TransformPosition(FVector(F.At) * 100.0);
-		if (!HangingFruit.Contains(Key))
+		if (WasHanging.Contains(Key))
 		{
-			const FVector Scatter((PlantModel::Hash01(Seed, F.Id, 0, 31) - 0.5f) * 120.f, (PlantModel::Hash01(Seed, F.Id, 0, 32) - 0.5f) * 120.f, 0.f);
-			FHitResult Hit;
-			FCollisionQueryParams Q(SCENE_QUERY_STAT(FruitGround), false, this);
-			if (GetWorld()->LineTraceSingleByChannel(Hit, At + Scatter, At + Scatter - FVector(0, 0, 3000), ECC_Visibility, Q))
-			{
-				At = Hit.ImpactPoint + FVector(0, 0, S.FruitSize * 50.f);
-			}
+			// its day has come while we watch: it stays on its twig until its turn to fall, then that very
+			// fruit lets go (DropFruit)
+			StillPending.Add({ Key, F });
+			Keys.Add(Key);
+			Hung.Add(F.Hung);
+			Data.Append(F.Data, N);
+			continue;
+		}
+		// fell before we came: it lies in the grass under its twig
+		FVector At = Xf.TransformPosition(FVector(F.At) * 100.0);
+		const FVector Scatter((PlantModel::Hash01(Seed, F.Id, 0, 31) - 0.5f) * 120.f, (PlantModel::Hash01(Seed, F.Id, 0, 32) - 0.5f) * 120.f, 0.f);
+		FHitResult Hit;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(FruitGround), false, this);
+		if (GetWorld()->LineTraceSingleByChannel(Hit, At + Scatter, At + Scatter - FVector(0, 0, 3000), ECC_Visibility, Q))
+		{
+			At = Hit.ImpactPoint + FVector(0, 0, S.FruitSize * 50.f);
 		}
 		FActorSpawnParameters P;
 		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		AFallenFruit* Fruit = GetWorld()->SpawnActor<AFallenFruit>(At, FRotator(0.f, PlantModel::Hash01(Seed, F.Id, 0, 24) * 360.f, 0.f), P);
+		AFallenFruit* Fruit = GetWorld()->SpawnActor<AFallenFruit>(At, F.Hung.Rotator(), P);
 		if (!Fruit) continue;
 		Fruit->Tree = this;
 		Fruit->Key = Key;
-		Fruit->Init(FruitMesh, FruitMaterial, S.FruitSize * 100.f, F.Data, FPlantSkeleton::FInstances::FruitDataFloats);
+		Fruit->Init(FruitMesh, FruitMaterial, F.Hung.GetScale3D().X * 100.f, F.Data, N);
 		GroundFruit.Add(Key, Fruit);
 	}
-	// rotted away, or a new year
+	// rotted (it sinks into the grass), or the calendar went back
 	for (auto It = GroundFruit.CreateIterator(); It; ++It)
 	{
 		if (!Want.Contains(It.Key()))
 		{
-			if (AFallenFruit* F = It.Value().Get()) F->Destroy();
+			if (AFallenFruit* F = It.Value().Get()) F->Rot();
 			It.RemoveCurrent();
 		}
 	}
-	HangingFruit.Reset();
-	for (const int32 Id : Out.FruitIds)
+	// the ripe ones fall one by one over the time until the next re-shape
+	const double Now = GetWorld()->GetTimeSeconds();
+	const double Interval = LastFruitTime < 0.0 ? 1.0 : FMath::Clamp(Now - LastFruitTime, 0.2, 6.0 * 3600.0);
+	LastFruitTime = Now;
+	PendingFruit = MoveTemp(StillPending);
+	FruitReleaseRate = PendingFruit.Num() / (float)Interval;
+	HangingKeys = MoveTemp(Keys);
+	HangingXf = MoveTemp(Hung);
+	HangingData = MoveTemp(Data);
+	DrawHangingFruit();
+}
+
+void AProceduralPlant::DropFruit(const FPendingFruit& P)
+{
+	constexpr int32 N = FPlantSkeleton::FInstances::FruitDataFloats;
+	const int32 At = HangingKeys.IndexOfByKey(P.Key);
+	if (At == INDEX_NONE)
 	{
-		HangingFruit.Add(Year + Id);
+		return;
 	}
+	// take that fruit off the tree and let the same one fall: same place, size, turn and skin
+	const FTransform World = HangingXf[At] * GetActorTransform();
+	HangingKeys.RemoveAt(At);
+	HangingXf.RemoveAt(At);
+	HangingData.RemoveAt(At * N, N);
+	DrawHangingFruit();
+	FActorSpawnParameters Sp;
+	Sp.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AFallenFruit* Fruit = GetWorld()->SpawnActor<AFallenFruit>(World.GetLocation(), World.Rotator(), Sp);
+	if (!Fruit)
+	{
+		return;
+	}
+	Fruit->Tree = this;
+	Fruit->Key = P.Key;
+	Fruit->Init(FruitMesh, FruitMaterial, World.GetScale3D().X * 100.f, P.F.Data, N);
+	GroundFruit.Add(P.Key, Fruit);
+	LastFruit = HangingKeys.Num();
 }
 
 float AProceduralPlant::GroundAt(float X, float Y)
@@ -549,8 +641,11 @@ void AProceduralPlant::Refresh()
 FString AProceduralPlant::DescribeState() const
 {
 	const FDateTime Date = FDateTime(CurrentDate().GetYear(), 1, 1) + FTimespan::FromDays(CurrentDay() - 1.f);
-	return FString::Printf(TEXT("%s, seed %d: %.1f years, %s | %.1f m tall, %.1f m wide | %d leaf clusters, %d leaves on the ground, %d falling | fruit: %d hanging, %d on the ground, %d picked"),
-		*GetSpecies().DisplayName.ToString(), Seed, GetAge(), *Date.ToString(TEXT("%d.%m %H:%M")), LastHeight, LastReach * 2.f,
+	const float Life = PlantModel::Lifespan(GetSpecies(), (uint32)Seed);
+	const float Age = GetAge();
+	const TCHAR* Stage = PlantModel::IsGone(GetSpecies(), (uint32)Seed, Age) ? TEXT("gone") : Age >= Life ? TEXT("dead, standing") : PlantModel::Vigour(GetSpecies(), (uint32)Seed, Age) < 1.f ? TEXT("declining") : TEXT("alive");
+	return FString::Printf(TEXT("%s, seed %d: %.1f of %.0f years (%s), %s | %.1f m tall, %.1f m wide | %d leaf clusters, %d leaves on the ground, %d falling | fruit: %d hanging, %d on the ground, %d picked"),
+		*GetSpecies().DisplayName.ToString(), Seed, Age, Life, Stage, *Date.ToString(TEXT("%d.%m %H:%M")), LastHeight, LastReach * 2.f,
 		LastLeaves, LastLitter, Falling.Num(), LastFruit, GroundFruit.Num(), FruitPicked);
 }
 
@@ -561,7 +656,11 @@ void AProceduralPlant::ClearFallenFruit()
 		if (AFallenFruit* A = F.Value.Get()) A->Destroy();
 	}
 	GroundFruit.Reset();
-	HangingFruit.Reset();
+	HangingKeys.Reset();
+	HangingXf.Reset();
+	HangingData.Reset();
+	PendingFruit.Reset();
+	FruitReleaseRate = FruitReleaseAcc = 0.f;
 }
 
 void AProceduralPlant::OnInteract()
@@ -651,6 +750,14 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	TickFallingLeaves(DeltaSeconds);
+	FruitReleaseAcc += FruitReleaseRate * DeltaSeconds;
+	while (FruitReleaseAcc >= 1.f && !PendingFruit.IsEmpty())
+	{
+		FruitReleaseAcc -= 1.f;
+		const FPendingFruit P = PendingFruit[0];
+		PendingFruit.RemoveAt(0);
+		DropFruit(P);
+	}
 	SinceUpdate += DeltaSeconds;
 	SinceWood += DeltaSeconds;
 	if (SinceUpdate < UpdateInterval)
@@ -683,13 +790,15 @@ FString AProceduralPlant::DebugReport(float Age, float DayOfYear)
 	const double T0 = FPlatformTime::Seconds();
 	Skeleton.Evaluate(Age, Season, Out);
 	const double T1 = FPlatformTime::Seconds();
-	WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age);
+	WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age, (uint32)Seed);
 	Wood->SetStaticMesh(WoodMesh);
 	WoodAge = Age;
 	const double T2 = FPlatformTime::Seconds();
 	const int32 Leaves = Out.Leaves[0].Num() + Out.Leaves[1].Num() + Out.Leaves[2].Num();
-	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: %d/%d branches, %d rings, wood %d tris, %d leaf clusters x %d tris, %d fruit, drawn h %.2f reach %.2f | summary h %.2f crown r %.2f leaves %.2f | evaluate %.2f ms, wood mesh %.1f ms"),
-		*S.Name.ToString(), Seed, Age, DayOfYear, Out.LiveBranches, Skeleton.GetBranches().Num(), Out.NumRings(), NumTriangles(WoodMesh),
+	const FStaticMeshRenderData* RD = WoodMesh ? WoodMesh->GetRenderData() : nullptr;
+	const int32 WoodUVs = RD && RD->LODResources.Num() ? RD->LODResources[0].GetNumTexCoords() : 0;
+	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: wood UVs %d, mask %s: %d/%d branches, %d rings, wood %d tris, %d leaf clusters x %d tris, %d fruit, drawn h %.2f reach %.2f | summary h %.2f crown r %.2f leaves %.2f | evaluate %.2f ms, wood mesh %.1f ms"),
+		*S.Name.ToString(), Seed, Age, DayOfYear, WoodUVs, ScarMask ? TEXT("yes") : TEXT("no"), Out.LiveBranches, Skeleton.GetBranches().Num(), Out.NumRings(), NumTriangles(WoodMesh),
 		Leaves, NumTriangles(LeafMesh), Out.Fruit.Num(), Out.Height, Out.Reach, Sum.Height, Sum.CrownRadius, Sum.LeafAmount,
 		(T1 - T0) * 1000.0, (T2 - T1) * 1000.0);
 }

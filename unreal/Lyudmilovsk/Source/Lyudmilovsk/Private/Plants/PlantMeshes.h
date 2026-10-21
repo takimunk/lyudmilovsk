@@ -11,9 +11,12 @@ namespace PlantMeshes
 {
 	/**
 	 * The tree's wood as one mesh: a tapered tube along every branch, its UVs in bark tiles (U around,
-	 * V along). Rebuilds Mesh in place when given one.
+	 * V along). Rebuilds Mesh in place when given one. Vertex colour: R dark base, G young twig, B how
+	 * much it sways. Species with bark Scars also get OutScarMask: the tree's own marks (chevrons over
+	 * branches, shed-branch eyes, lenticels) in an atlas the mesh maps with UV channel 1.
 	 */
-	UStaticMesh* BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age = 0.f);
+	UStaticMesh* BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age = 0.f,
+	                       uint32 Seed = 0, UTexture2D** OutScarMask = nullptr);
 
 	/**
 	 * A cluster of the species' leaves about the origin (a short twig along Z, blades facing up),

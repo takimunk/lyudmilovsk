@@ -74,6 +74,10 @@ for i, age in enumerate((5, 12, 25, 50)):
 for i, (species, age) in enumerate((("SilverBirch", 8), ("SilverBirch", 45), ("DownyBirch", 40), ("WeepingBirch", 30), ("StoneBirch", 60))):
     plant(i * 1500 - 3000, 18000, age, "%s_%02d" % (species, age), species=species, seed=7 + i)
 plant(0, 16500, 12, "DwarfBirch_12", species="DwarfBirch", seed=12)
+for i, species in enumerate(("SilverBirch", "WeepingBirch")):
+    p = plant(4200 + i * 1600, 16000, 45 if i == 0 else 30, species + "_July", species=species, seed=8 + 2 * i)
+    p.set_editor_property("editor_preview_day", 195)
+    p.show_at(45 if i == 0 else 30, 195, False)
 
 cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, -4200, 900), unreal.Rotator(-2, 90, 0))
 cam.set_actor_label("SeriesView")

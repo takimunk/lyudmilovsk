@@ -84,6 +84,11 @@ struct FPlantBark
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float DarkBaseMax = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor BaseRidgeColour = FLinearColor(0.06f, 0.06f, 0.055f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor BaseFurrowColour = FLinearColor(0.01f, 0.01f, 0.01f);
+	/**
+	 * Birch marks, unique to each tree (its seed): black chevrons over every branch and over the scars
+	 * of shed ones, and large dark lenticels, drawn into a mask laid over the trunk and limbs. 0 = none.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float Scars = 0.f;
 };
 
 /**
@@ -120,6 +125,16 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float RingWidth = 0.f;
 	/** Trunk radius never goes below this, m (a sprout's stem). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float MinRadius = 0.004f;
+	/**
+	 * Lifespan: each tree draws its own from its seed, log-normal about LifeMedian years (LifeSpread is
+	 * the log-sd), never past LifeMax. Over its last DeclineYears the crown thins; dead, it stands as a
+	 * bleached snag for SnagYears, then is gone.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life") float LifeMedian = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life") float LifeSpread = 0.3f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life") float LifeMax = 300.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life") float DeclineYears = 12.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life") float SnagYears = 8.f;
 	/** Branches on the trunk below CrownBase * height are shed (self-pruning). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float CrownBase = 0.12f;
 
@@ -147,6 +162,10 @@ struct FPlantSpecies
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Kink = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float KinkSpacing = 0.5f;
+	/** Order-2 twig thickness, times the branch rule (birch twigs are hair-thin). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TwigRadiusScale = 1.f;
+	/** How far the tips of twigs swing in the wind, cm (and the leaves with them). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Sway = 8.f;
 	/** Order-2 twigs hang: 0 they grow like the limbs, 1 they hang straight down (silver birch's weeping twigs). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TwigHang = 0.f;
 	/** Long limbs sag under their own weight and fruit: downward pull growing with the distance out, 1/m^2. */

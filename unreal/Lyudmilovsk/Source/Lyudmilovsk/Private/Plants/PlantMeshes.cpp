@@ -1,6 +1,7 @@
 #include "Plants/PlantMeshes.h"
 
 #include "Engine/StaticMesh.h"
+#include "Misc/FileHelper.h"
 #include "Engine/Texture2D.h"
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
@@ -15,14 +16,14 @@ namespace
 	struct FMeshData
 	{
 		TArray<FVector3f> Pos, Nrm, Tan;
-		TArray<FVector2f> UV;
+		TArray<FVector2f> UV, UV1;
 		/** Vertex colour: on wood, R = rough dark base, G = young twig bark (M_PlantBark). */
 		TArray<FVector4f> Col;
 		TArray<FIntVector3> Tris;
 
 		int32 Add(const FVector3f& P, const FVector3f& N, const FVector3f& T, const FVector2f& U, const FVector4f& C = FVector4f(0.f, 0.f, 0.f, 1.f))
 		{
-			Nrm.Add(N); Tan.Add(T); UV.Add(U); Col.Add(C);
+			Nrm.Add(N); Tan.Add(T); UV.Add(U); UV1.Add(FVector2f::ZeroVector); Col.Add(C);
 			return Pos.Add(P);
 		}
 	};
@@ -38,7 +39,7 @@ namespace
 		TVertexInstanceAttributesRef<float> VSign = Attr.GetVertexInstanceBinormalSigns();
 		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
 		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
-		VUV.SetNumChannels(1);
+		VUV.SetNumChannels(2);
 		const FPolygonGroupID PG = MD.CreatePolygonGroup();
 		Attr.GetPolygonGroupMaterialSlotNames()[PG] = Name;
 		MD.ReserveNewVertices(D.Pos.Num());
@@ -61,6 +62,7 @@ namespace
 			VTan[VI] = T;
 			VSign[VI] = 1.f;
 			VUV.Set(VI, 0, D.UV[I]);
+			VUV.Set(VI, 1, D.UV1[I]);
 			VCol[VI] = D.Col[I];
 			Inst.Add(VI);
 		}
@@ -304,13 +306,13 @@ namespace
 			// lenticels: short black dashes running around the trunk, longer and denser on old bark
 			const float Band = Noise(Seed + 9, U * 0.3f, V, 2, 40);
 			float H = 0.82f + 0.1f * (Band - 0.5f) + 0.06f * (Fine - 0.5f);
-			const int32 Rows = 34;
+			const int32 Rows = 22; // the tile's own fine lenticels; the tree's big ones come from its mark mask
 			const int32 Row = FMath::FloorToInt(V * Rows);
-			for (int32 Dash = 0; Dash < 3; Dash++)
+			for (int32 Dash = 0; Dash < 2; Dash++)
 			{
 				const float Y0 = (Row + Hash01(Seed + 10, Row % Rows, Dash, 1)) / Rows;
 				const float Thick = (0.004f + 0.01f * Hash01(Seed + 10, Row % Rows, Dash, 2)) * (1.f + 2.f * Warp);
-				const float X0 = Hash01(Seed + 10, Row % Rows, Dash, 3), Len = 0.04f + 0.3f * FMath::Square(Hash01(Seed + 10, Row % Rows, Dash, 4));
+				const float X0 = Hash01(Seed + 10, Row % Rows, Dash, 3), Len = 0.03f + 0.12f * FMath::Square(Hash01(Seed + 10, Row % Rows, Dash, 4));
 				const float Dx = FMath::Abs(FMath::Frac(U - X0 + 0.5f) - 0.5f);
 				if (Dx < Len * 0.5f && FMath::Abs(V - Y0) < Thick * (1.f - FMath::Square(Dx / (Len * 0.5f))))
 				{
@@ -332,48 +334,134 @@ namespace
 	}
 }
 
-UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age)
+namespace
+{
+	/** The trunk's and limbs' own patch of the birch-mark mask: where it sits and how many texels per metre. */
+	struct FAtlasRect { int32 X = 0, Y = 0, W = 0, H = 0; };
+
+	/** Adds Value (0..1, max-blended) to one texel of a tube's patch; X wraps around the tube. */
+	void PaintTexel(TArray<uint8>& Mask, int32 Size, const FAtlasRect& R, int32 X, int32 Y, float Value)
+	{
+		if (Y < 0 || Y >= R.H || Value <= 0.f) return;
+		X = ((X % R.W) + R.W) % R.W;
+		uint8& Px = Mask[(R.Y + Y) * Size + R.X + X];
+		Px = FMath::Max(Px, (uint8)FMath::RoundToInt(FMath::Clamp(Value, 0.f, 1.f) * 255.f));
+	}
+}
+
+UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age, uint32 Seed, UTexture2D** OutScarMask)
 {
 	FMeshData D;
 	const float DarkBase = FMath::Min(Bark.DarkBaseRate * Age, Bark.DarkBaseMax);
-	for (const FPlantSkeleton::FTube& T : Tubes)
+
+	// --- the mark mask's atlas: one patch per trunk and limb, sized by its bark area, shelf-packed
+	constexpr int32 MaskSize = 1024;
+	const bool bMarks = Bark.Scars > 0.f && OutScarMask;
+	TArray<FAtlasRect> Rects;
+	Rects.SetNum(Tubes.Num());
+	TArray<float> Lengths;
+	Lengths.SetNumZeroed(Tubes.Num());
+	for (int32 Ti = 0; Ti < Tubes.Num(); Ti++)
 	{
+		for (int32 I = 1; I < Tubes[Ti].P.Num(); I++) Lengths[Ti] += FVector3f::Dist(Tubes[Ti].P[I], Tubes[Ti].P[I - 1]);
+	}
+	if (bMarks)
+	{
+		TArray<int32> Order;
+		double Area = 0.0;
+		float LongestLen = 1.f;
+		for (int32 Ti = 0; Ti < Tubes.Num(); Ti++)
+		{
+			if (Tubes[Ti].Order <= 1 && Tubes[Ti].P.Num() > 1 && Tubes[Ti].R[0] > 0.01f)
+			{
+				Order.Add(Ti);
+				Area += 2.0 * PI * Tubes[Ti].R[0] * Lengths[Ti];
+				LongestLen = FMath::Max(LongestLen, Lengths[Ti]);
+			}
+		}
+		Order.Sort([&](int32 A, int32 B) { return Lengths[A] > Lengths[B]; });
+		float Density = FMath::Min3(120.f, (float)FMath::Sqrt(0.7 * MaskSize * MaskSize / FMath::Max(Area, 1e-3)), (MaskSize - 8) / LongestLen);
+		for (int32 Try = 0; Try < 8; Try++, Density *= 0.85f)
+		{
+			bool bFits = true;
+			int32 X = 2, Y = 2, RowH = 0;
+			for (const int32 Ti : Order)
+			{
+				FAtlasRect& R = Rects[Ti];
+				R.W = FMath::Max(4, FMath::CeilToInt(2.f * PI * Tubes[Ti].R[0] * Density));
+				R.H = FMath::Max(4, FMath::CeilToInt(Lengths[Ti] * Density));
+				if (X + R.W + 2 > MaskSize) { X = 2; Y += RowH + 2; RowH = 0; }
+				if (Y + R.H + 2 > MaskSize || R.W + 4 > MaskSize) { bFits = false; break; }
+				R.X = X; R.Y = Y;
+				X += R.W + 2;
+				RowH = FMath::Max(RowH, R.H);
+			}
+			if (bFits) break;
+		}
+	}
+	TArray<uint8> Mask;
+	if (bMarks) Mask.SetNumZeroed(MaskSize * MaskSize);
+
+	for (int32 Ti = 0; Ti < Tubes.Num(); Ti++)
+	{
+		const FPlantSkeleton::FTube& T = Tubes[Ti];
 		const int32 N = T.P.Num();
 		if (N < 2) continue;
 		const float R0 = T.R[0];
-		const int32 Sides = R0 > 0.12f ? 14 : R0 > 0.04f ? 10 : R0 > 0.012f ? 6 : 4;
-		// the bark tiles a whole number of times around, scaled down on thin twigs
+		const int32 Sides = R0 > 0.12f ? 14 : R0 > 0.04f ? 10 : R0 > 0.012f ? 6 : R0 > 0.005f ? 4 : 3;
+		// the bark tiles a whole number of times around, scaled down on thin twigs; each branch starts the
+		// tile somewhere else, so neighbours never line up
 		const float Circ = 2.f * PI * R0;
 		const int32 Repeats = FMath::Max(1, FMath::RoundToInt(Circ / Bark.TileWidth));
 		const float K = FMath::Max(Circ / (Repeats * Bark.TileWidth), 0.08f);
+		const float U0 = PlantModel::Hash01(Seed, T.Key, 0, 61), V0 = PlantModel::Hash01(Seed, T.Key, 0, 62) * 13.f;
+		const FAtlasRect& Rect = Rects[Ti];
+		const bool bInAtlas = bMarks && Rect.W > 0;
+		const float Len = FMath::Max(Lengths[Ti], 1e-3f);
+		// ring frames by parallel transport: they turn with the branch but never twist
+		TArray<FVector3f> Dirs, Nfs, Bfs;
+		TArray<float> Arc;
 		FVector3f Dir = (T.P[1] - T.P[0]).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector);
 		FVector3f Nf = AnyPerp(Dir);
-		float V = 0.f;
-		const int32 Base = D.Pos.Num();
+		float Sum = 0.f;
 		for (int32 I = 0; I < N; I++)
 		{
 			if (I > 0)
 			{
-				V += FVector3f::Dist(T.P[I], T.P[I - 1]) / (Bark.TileHeight * K);
+				Sum += FVector3f::Dist(T.P[I], T.P[I - 1]);
 				Dir = (T.P[FMath::Min(I + 1, N - 1)] - T.P[I - 1]).GetSafeNormal(UE_SMALL_NUMBER, Dir);
-				// parallel transport: the ring's frame turns with the branch but never twists
 				Nf = (Nf - Dir * FVector3f::DotProduct(Nf, Dir)).GetSafeNormal(UE_SMALL_NUMBER, AnyPerp(Dir));
 			}
-			const FVector3f Bf = FVector3f::CrossProduct(Dir, Nf);
+			Dirs.Add(Dir); Nfs.Add(Nf); Bfs.Add(FVector3f::CrossProduct(Dir, Nf)); Arc.Add(Sum);
+		}
+		const int32 Base = D.Pos.Num();
+		for (int32 I = 0; I < N; I++)
+		{
+			const float V = V0 + Arc[I] / (Bark.TileHeight * K);
+			// twigs swing in the wind, more toward their tips (M_PlantBark's world offset)
+			const float Sway = T.Order == 2 ? FMath::Pow(Arc[I] / Len, 1.3f) : 0.f;
 			for (int32 S = 0; S <= Sides; S++)
 			{
 				const float A = 2.f * PI * S / Sides;
-				const FVector3f Nrm = Nf * FMath::Cos(A) + Bf * FMath::Sin(A);
-				const FVector3f Tan = Bf * FMath::Cos(A) - Nf * FMath::Sin(A);
+				const FVector3f Nrm = Nfs[I] * FMath::Cos(A) + Bfs[I] * FMath::Sin(A);
+				const FVector3f Tan = Bfs[I] * FMath::Cos(A) - Nfs[I] * FMath::Sin(A);
 				// the dark rough base climbs the trunk unevenly, in tongues; thin twigs keep their young bark
 				float Dark = 0.f;
 				if (DarkBase > 0.f && T.Order <= 1)
 				{
-					const float Edge = DarkBase * (0.65f + 0.7f * Noise(17, (float)S / Sides, T.P[I].Z * 0.15f, 1, 1) * Noise(18, (float)S / Sides, 0.5f, Sides, 1));
+					const float Edge = DarkBase * (0.65f + 0.7f * Noise(17 + T.Key, (float)S / Sides, T.P[I].Z * 0.15f, 1, 1) * Noise(18 + T.Key, (float)S / Sides, 0.5f, Sides, 1));
 					Dark = FMath::Clamp((Edge - T.P[I].Z) / 0.25f, 0.f, 1.f);
 				}
 				const float Twig = Bark.TwigRadius > 0.f ? FMath::Clamp((Bark.TwigRadius - T.R[I]) / (0.5f * Bark.TwigRadius), 0.f, 1.f) : 0.f;
-				D.Add((T.P[I] + Nrm * T.R[I]) * 100.f, Nrm, Tan, FVector2f((float)S / Sides * Repeats, -V), FVector4f(Dark, Twig, 0.f, 1.f));
+				const int32 Vi = D.Add((T.P[I] + Nrm * T.R[I]) * 100.f, Nrm, Tan, FVector2f(U0 + (float)S / Sides * Repeats, -V), FVector4f(Dark, Twig, Sway, 1.f));
+				if (bInAtlas)
+				{
+					D.UV1[Vi] = FVector2f((Rect.X + (float)S / Sides * Rect.W) / MaskSize, (Rect.Y + Arc[I] / Len * Rect.H) / MaskSize);
+				}
+				else if (bMarks)
+				{
+					D.UV1[Vi] = FVector2f(0.5f / MaskSize, 0.5f / MaskSize); // an unmarked texel
+				}
 			}
 		}
 		for (int32 I = 0; I + 1 < N; I++)
@@ -385,12 +473,83 @@ UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TAr
 				D.Tris.Add(FIntVector3(B, C, E));
 			}
 		}
+		if (!bInAtlas) continue;
+
+		// --- this tube's marks, in metres along it and around it, so they stay put as it grows
+		const float PerM_Y = Rect.H / Len;
+		auto RingAt = [&](float At) { int32 I = 0; while (I + 1 < N && Arc[I + 1] <= At) I++; return I; };
+		auto PerM_X = [&](float At) { return Rect.W / (2.f * PI * FMath::Max(T.R[RingAt(At)], 0.005f)); };
+		// black chevrons over every branch (and the eyes of shed ones): a Λ whose arms run down either side
+		for (int32 Jk = 0; Jk < T.Junctions.Num(); Jk++)
+		{
+			const FPlantSkeleton::FTube::FJunction& J = T.Junctions[Jk];
+			if (J.R < 0.006f || J.S > Len) continue;
+			const int32 Ri = RingAt(J.S);
+			const FVector3f Dp = J.Dir - Dirs[Ri] * FVector3f::DotProduct(J.Dir, Dirs[Ri]);
+			const float Theta = FMath::Atan2(FVector3f::DotProduct(Dp, Bfs[Ri]), FVector3f::DotProduct(Dp, Nfs[Ri]));
+			const float Strength = Bark.Scars * (0.8f + 0.2f * PlantModel::Hash01(Seed, T.Key, Jk, 63));
+			const float Arms = 0.7f + 0.6f * PlantModel::Hash01(Seed, T.Key, Jk, 64);
+			const float Rc = J.R * (J.bShed ? 1.6f : 2.2f);
+			const float Cx = (Theta < 0.f ? Theta + 2.f * PI : Theta) / (2.f * PI) * Rect.W, Cy = J.S * PerM_Y;
+			const float Mx = PerM_X(J.S);
+			const int32 Ex = FMath::CeilToInt(3.6f * Arms * Rc * Mx), EyLo = FMath::CeilToInt(1.6f * Rc * PerM_Y), EyHi = FMath::CeilToInt(2.2f * Rc * PerM_Y);
+			for (int32 Y = -EyLo; Y <= EyHi; Y++)
+			{
+				for (int32 X = -FMath::Min(Ex, Rect.W / 2); X <= FMath::Min(Ex, Rect.W / 2); X++)
+				{
+					const float Lx = X / (Mx * Rc), Ly = Y / (PerM_Y * Rc);
+					const float Ax = FMath::Abs(Lx) / Arms;
+					const float Crest = 1.3f - 0.65f * Ax;
+					// a bold black brow, thickest over the branch, filled in underneath toward the branch
+					const float Band = 0.55f - 0.08f * Ax;
+					float Val = (1.f - Smooth(Band * 0.55f, Band, FMath::Abs(Ly - Crest))) * (1.f - Smooth(2.6f, 3.4f, Ax));
+					if (Ly < Crest && Ly > Crest - 1.1f && Ax < 1.6f) Val = FMath::Max(Val, 0.9f * (1.f - Smooth(1.f, 1.6f, Ax)));
+					if (J.bShed && FMath::Square(Lx / 1.6f) + FMath::Square(Ly / 0.9f) < 1.f) Val = 1.f;
+					PaintTexel(Mask, MaskSize, Rect, FMath::RoundToInt(Cx) + X, FMath::RoundToInt(Cy) + Y, Val * Strength);
+				}
+			}
+		}
+		// the tree's own lenticels: dark dashes across the bark, a few big ones, many small
+		const int32 Count = FMath::RoundToInt(2.f * PI * R0 * Len * 9.f * Bark.Scars);
+		for (int32 K2 = 0; K2 < Count; K2++)
+		{
+			const float At = PlantModel::Hash01(Seed, T.Key, K2, 65) * Len;
+			const float Around = PlantModel::Hash01(Seed, T.Key, K2, 66) * Rect.W;
+			const float Big = FMath::Pow(PlantModel::Hash01(Seed, T.Key, K2, 67), 2.f);
+			const float HalfLen = (0.015f + 0.1f * Big) * PerM_X(At), HalfThick = FMath::Max((0.003f + 0.01f * Big) * PerM_Y, 0.7f);
+			const float Shade = Bark.Scars * (0.55f + 0.45f * PlantModel::Hash01(Seed, T.Key, K2, 68));
+			for (int32 Y = -FMath::CeilToInt(HalfThick); Y <= FMath::CeilToInt(HalfThick); Y++)
+			{
+				for (int32 X = -FMath::CeilToInt(HalfLen); X <= FMath::CeilToInt(HalfLen); X++)
+				{
+					const float E = FMath::Square(X / FMath::Max(HalfLen, 0.5f)) + FMath::Square(Y / HalfThick);
+					PaintTexel(Mask, MaskSize, Rect, FMath::RoundToInt(Around) + X, FMath::RoundToInt(At * PerM_Y) + Y, Shade * (1.f - Smooth(0.6f, 1.f, E)));
+				}
+			}
+		}
 	}
 	if (D.Tris.IsEmpty())
 	{
 		// an empty mesh can't be built: one degenerate triangle
 		for (int32 I = 0; I < 3; I++) D.Add(FVector3f::ZeroVector, FVector3f::UpVector, FVector3f::XAxisVector, FVector2f::ZeroVector);
 		D.Tris.Add(FIntVector3(0, 1, 2));
+	}
+	if (bMarks)
+	{
+		TArray<FColor> Px;
+		Px.SetNumUninitialized(MaskSize * MaskSize);
+		for (int32 I = 0; I < Mask.Num(); I++) Px[I] = FColor(Mask[I], Mask[I], Mask[I], 255);
+		// PLANT_MASK_DUMP=<dir>: write each mark mask as a PGM there (for checking it without a renderer)
+		const FString Dump = FPlatformMisc::GetEnvironmentVariable(TEXT("PLANT_MASK_DUMP"));
+		if (!Dump.IsEmpty())
+		{
+			TArray<uint8> File;
+			const FString Header = FString::Printf(TEXT("P5 %d %d 255\n"), MaskSize, MaskSize);
+			File.Append((const uint8*)TCHAR_TO_ANSI(*Header), Header.Len());
+			File.Append(Mask);
+			FFileHelper::SaveArrayToFile(File, *FString::Printf(TEXT("%s/mask_%u.pgm"), *Dump, Seed));
+		}
+		*OutScarMask = MakeTexture(Outer, MaskSize, MaskSize, MoveTemp(Px), true, false);
 	}
 	return BuildMesh(Outer, Mesh, TEXT("SM_PlantWood"), D);
 }

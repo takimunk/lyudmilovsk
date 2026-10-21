@@ -25,6 +25,9 @@ public:
 
 	/** Diameter in cm; Data: the fruit's five skin numbers (M_PlantFruit's Fruit0..4). */
 	void Init(UStaticMesh* FruitMesh, UMaterialInterface* Material, float Diameter, const float* Data, int32 NumData);
+	/** Rots away: sinks into the grass and shrinks over a few seconds, then is gone. */
+	void Rot();
+	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(VisibleAnywhere, Category = "Fruit") TObjectPtr<USphereComponent> Body;
 	UPROPERTY(VisibleAnywhere, Category = "Fruit") TObjectPtr<UStaticMeshComponent> Mesh;
@@ -32,4 +35,8 @@ public:
 	/** The tree it fell from and its key there (year and twig). */
 	UPROPERTY(Transient) TWeakObjectPtr<AProceduralPlant> Tree;
 	int32 Key = 0;
+
+private:
+	float RotTime = -1.f;
+	FVector RotFrom = FVector::ZeroVector;
 };
