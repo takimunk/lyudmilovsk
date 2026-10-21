@@ -11,6 +11,7 @@ class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UStaticMesh;
 class UStaticMeshComponent;
+class UTexture2D;
 
 /**
  * One plant, entirely described by (Species, Seed, its age at the calendar's start). Its shape at
@@ -53,8 +54,10 @@ public:
 	/** Beyond this camera distance only the level-0 summary is drawn, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") float SummaryDistance = 15000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") bool bForceSummary = false;
-	/** Seconds between re-shapes while it is visibly growing. */
+	/** Seconds between re-shapes of the leaves while it is visibly growing. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") float UpdateInterval = 0.2f;
+	/** Seconds between rebuilds of the wood mesh while it grows (the costlier part). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") float WoodUpdateInterval = 0.5f;
 	/** Put the plant on the ground under it when play begins. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") bool bSnapToGround = true;
 
@@ -74,26 +77,35 @@ private:
 	const FPlantSpecies& GetSpecies() const;
 	float CurrentDay() const;
 	void EnsureMeshes();
-	void Apply(float Age, float Day, bool bSummary);
+	void Apply(float Age, float Day, bool bSummary, bool bWood = true);
 	bool WantsSummary() const;
 
-	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> Bark;
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Wood;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> FruitComponent;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryTrunk;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> SummaryCrown;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UCapsuleComponent> TrunkCollision;
 
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BaseMaterial;
-	UPROPERTY(Transient) TObjectPtr<UStaticMesh> BarkMesh;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterialAsset;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterialAsset;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> WoodMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> LeafMesh;
-	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> BarkMaterial;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> BarkAlbedo;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> BarkNormal;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> LeafDetail;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WoodMaterial;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LeafMaterials;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> FruitMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CrownMaterial;
 
 	FPlantSkeleton Skeleton;
 	FName BuiltSpecies;
 	int32 BuiltSeed = 0;
 	float ShownAge = -1.f;
+	float WoodAge = -1.f;
+	float SinceWood = 0.f;
 	float ShownDay = -1.f;
 	bool bShownSummary = false;
 	float SinceUpdate = 0.f;

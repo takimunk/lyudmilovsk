@@ -3,6 +3,73 @@
 #include "CoreMinimal.h"
 #include "PlantSpecies.generated.h"
 
+UENUM(BlueprintType)
+enum class EPlantLeafForm : uint8
+{
+	/** One midrib, the blade's half-width a function of the distance along it (poplar, apple, oak). */
+	Pinnate,
+	/** Lobes radiating from the petiole (maple). */
+	Palmate,
+};
+
+/** A leaf blade's outline, built into the leaf mesh in code. */
+USTRUCT(BlueprintType)
+struct FPlantLeafShape
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") EPlantLeafForm Form = EPlantLeafForm::Pinnate;
+	/** Blade length, base to tip, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Length = 0.09f;
+	/** Widest width / length. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Width = 0.95f;
+	/** Where along the midrib it is widest, 0 base .. 1 tip (pinnate). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float WidestAt = 0.3f;
+	/** Pinnate: rounded lobes per side; palmate: number of lobes. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") int32 Lobes = 0;
+	/** Sinus depth between lobes, fraction of the width. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float LobeDepth = 0.f;
+	/** Marginal teeth per side, and their depth (fraction of the width). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") int32 Teeth = 12;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float TeethDepth = 0.03f;
+	/** Leaf stalk, fraction of the blade length. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Petiole = 0.6f;
+	/** How far the halves fold up along the midrib, fraction of the width. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Fold = 0.12f;
+	/** Leaves in one cluster (one instance). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") int32 PerCluster = 6;
+};
+
+UENUM(BlueprintType)
+enum class EPlantBarkPattern : uint8
+{
+	/** Long ridges and deep furrows along the trunk (poplar). */
+	Furrows,
+	/** Furrows broken across into blocks (oak). */
+	Blocks,
+	/** Flaking plates (apple). */
+	Plates,
+	/** Smooth with fine ridges and lenticels (maple). */
+	Smooth,
+};
+
+/** The bark texture, generated in code per species. */
+USTRUCT(BlueprintType)
+struct FPlantBark
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") EPlantBarkPattern Pattern = EPlantBarkPattern::Furrows;
+	/** One texture tile across and along the trunk, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float TileWidth = 0.3f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float TileHeight = 0.8f;
+	/** Relief strength of the normal map. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float Depth = 1.f;
+	/** Ridge tops and furrow bottoms (linear). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor RidgeColour = FLinearColor(0.16f, 0.15f, 0.13f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor FurrowColour = FLinearColor(0.035f, 0.03f, 0.025f);
+};
+
 /**
  * The rules one plant species grows by. Every tree of a species is the same function of
  * (seed, age, day of year); a new species is a new set of these numbers (PlantSpeciesLibrary),
@@ -26,6 +93,8 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float GrowthRate = 0.08f;
 	/** Above 1 the first years are slow (a sprout), then it shoots up. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float GrowthShape = 1.6f;
+	/** The trunk (leader) grows to this fraction of the height; the crown above is its branches (apple, oak). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float LeaderFraction = 1.f;
 	/** Trunk base radius per metre of height. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float TrunkRadiusPerHeight = 0.012f;
 	/** Trunk radius never goes below this, m (a sprout's stem). */
@@ -69,8 +138,26 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") float LeafyTipLength = 3.5f;
 	/** One leaf cluster per this much shoot, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") float LeafSpacing = 0.11f;
-	/** Leaf cluster size, m. */
+	/** How far a cluster's leaves spread about its twig, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") float LeafClusterSize = 0.42f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") FPlantLeafShape Leaf;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FPlantBark Bark;
+
+	// --- Fruit (apples, acorns): on order-2 twigs from FruitDay until FruitFallDay; none if FruitSize is 0.
+
+	/** Fruit diameter, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSize = 0.f;
+	/** Chance that a twig bears one. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitChance = 0.3f;
+	/** Trees bear fruit from this age, years. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitingAge = 5.f;
+	/** Fruit set (small and green), fully grown and coloured, and fallen. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSetDay = 160.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRipeDay = 250.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitFallDay = 310.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitUnripeColour = FLinearColor(0.15f, 0.3f, 0.04f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitColour = FLinearColor(0.5f, 0.04f, 0.02f);
 
 	// --- Phenology, day of the year. Each tree shifts these by up to +-PhenologyJitter days (its seed).
 
@@ -86,10 +173,11 @@ struct FPlantSpecies
 
 	// --- Colours (linear)
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Colour") FLinearColor BarkColour = FLinearColor(0.035f, 0.032f, 0.027f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Colour") FLinearColor SpringLeafColour = FLinearColor(0.20f, 0.36f, 0.06f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Colour") FLinearColor SummerLeafColour = FLinearColor(0.07f, 0.17f, 0.03f);
+	/** Autumn colour of the first leaves to turn, and of the last (maple: red to yellow). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Colour") FLinearColor AutumnLeafColour = FLinearColor(0.62f, 0.42f, 0.04f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Colour") FLinearColor AutumnLeafColourLate = FLinearColor(0.62f, 0.42f, 0.04f);
 };
 
 /** The built-in species. Add a species: write its preset in PlantSpecies.cpp and list it in All(). */

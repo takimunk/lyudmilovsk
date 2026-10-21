@@ -55,15 +55,16 @@ def plant(x, y, age, label, species="PyramidalPoplar", seed=1, summary=False):
 # a growth series of one tree (same seed): sprout to 30 years
 for i, age in enumerate((1, 2, 4, 7, 11, 16, 22, 30)):
     plant(i * 900 - 3150, 0, age, "Poplar_age%02d" % age)
-# the same 30-year tree through the year
-for i, day in enumerate((100, 125, 180, 280, 293.67, 305, 320)):
-    p = plant(i * 900 - 2700, 2500, 30, "Poplar_day%03d" % int(day))
+# a maple through the year, 15 January (snow) to late November
+for i, day in enumerate((15, 125, 180, 280, 293.67, 305, 320)):
+    p = plant(i * 1300 - 3900, 2500, 25, "Maple_day%03d" % int(day), species="Maple", seed=4)
     p.set_editor_property("editor_preview_day", day)
-    p.show_at(30, day, False)
-    unreal.log_warning("PLANT day %.0f: %s" % (day, p.debug_report(30, day)))
-plant(-3600, 5200, 30, "BlackPoplar_30", species="BlackPoplar", seed=3)
-plant(-600, 5200, 30, "Poplar_seed2", seed=2)
-plant(2400, 5200, 30, "Poplar_summary", summary=True)
+    p.show_at(25, day, False)
+    unreal.log_warning("PLANT day %.0f: %s" % (day, p.debug_report(25, day)))
+# every species on 20 October
+for i, (species, age) in enumerate((("PyramidalPoplar", 30), ("BlackPoplar", 30), ("Apple", 15), ("Maple", 30), ("SwampWhiteOak", 40))):
+    plant(i * 1600 - 3200, 5600, age, species, species=species, seed=3)
+plant(4800, 5600, 30, "Poplar_summary", summary=True)
 
 cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, -4200, 900), unreal.Rotator(-2, 90, 0))
 cam.set_actor_label("SeriesView")

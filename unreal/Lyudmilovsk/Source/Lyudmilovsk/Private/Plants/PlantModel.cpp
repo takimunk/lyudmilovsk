@@ -53,10 +53,6 @@ namespace
 		return P;
 	}
 
-	FQuat RandomRotation(uint32 Seed, uint32 A, uint32 B)
-	{
-		return FRotator(PlantModel::Hash01(Seed, A, B, 11) * 360.f - 180.f, PlantModel::Hash01(Seed, A, B, 12) * 360.f, PlantModel::Hash01(Seed, A, B, 13) * 360.f).Quaternion();
-	}
 }
 
 float PlantModel::Hash01(uint32 Seed, uint32 A, uint32 B, uint32 C)
@@ -89,23 +85,34 @@ FPlantSeason PlantModel::Season(const FPlantSpecies& S, uint32 Seed, float Day)
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		const float Off = (K - 1) * 6.f; // bucket 0 turns and falls first
-		Out.Colour[K] = FMath::Lerp(Base, S.AutumnLeafColour, Smooth(S.ColourStartDay + Off, S.ColourFullDay + Off, D));
+		const FLinearColor Autumn = FMath::Lerp(S.AutumnLeafColour, S.AutumnLeafColourLate, K / (FPlantSeason::NumBuckets - 1.f));
+		Out.Colour[K] = FMath::Lerp(Base, Autumn, Smooth(S.ColourStartDay + Off, S.ColourFullDay + Off, D));
 		Out.Fallen[K] = Unfold <= 0.f ? 1.f : Smooth(S.LeafDropStartDay + Off, S.BareDay + Off, D);
 	}
+	if (S.FruitSize > 0.f && D >= S.FruitSetDay && D < S.FruitFallDay)
+	{
+		Out.FruitScale = 0.3f + 0.7f * Smooth(S.FruitSetDay, S.FruitRipeDay, D);
+		Out.FruitColour = FMath::Lerp(S.FruitUnripeColour, S.FruitColour, Smooth(S.FruitRipeDay - 40.f, S.FruitRipeDay, D));
+		Out.FruitFallen = Smooth(S.FruitFallDay - 35.f, S.FruitFallDay, D);
+	}
+	// snow on the branches from late November to the March thaw (the calendar's climate, not the tree's)
+	Out.Snow = FMath::Max(Smooth(325.f, 345.f, Day), 1.f - Smooth(65.f, 90.f, Day));
 	return Out;
 }
 
 FPlantSummary PlantModel::Summary(const FPlantSpecies& S, uint32 Seed, float Age, float Day)
 {
 	FPlantSummary Out;
-	Out.Height = Height(S, Age);
+	// the crown of a tree whose trunk stops short (LeaderFraction) tops out a little above the trunk
+	Out.Height = Height(S, Age) * (S.LeaderFraction + 0.4f * (1.f - S.LeaderFraction));
 	Out.CrownBaseHeight = S.CrownBase * Out.Height;
 	Out.TrunkRadius = FMath::Max(S.MinRadius, S.TrunkRadiusPerHeight * Out.Height);
 	// the widest branches sit about a third of the way up the crown; their reach follows from
 	// when the trunk passed them
-	const float Z = Out.CrownBaseHeight + 0.35f * (Out.Height - Out.CrownBaseHeight);
-	const float T = FMath::Max(0.f, Age - AgeAtHeight(S, Z));
-	const float L = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / S.MaxHeight) * (1.f - FMath::Exp(-T / S.LengthTau));
+	const float Trunk = Height(S, Age) * S.LeaderFraction;
+	const float Z = FMath::Min(Out.CrownBaseHeight + 0.35f * (Out.Height - Out.CrownBaseHeight), Trunk * 0.9f);
+	const float T = FMath::Max(0.f, Age - AgeAtHeight(S, Z / S.LeaderFraction));
+	const float L = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / (S.MaxHeight * S.LeaderFraction)) * (1.f - FMath::Exp(-T / S.LengthTau));
 	Out.CrownRadius = L * FMath::Sin(FMath::DegreesToRadians(S.Branch1Angle) * 0.8f) + FMath::Min(L, 1.f) * S.Branch2MaxLength * 0.3f + S.LeafClusterSize * 0.5f;
 
 	const FPlantSeason Sn = Season(S, Seed, Day);
@@ -117,7 +124,7 @@ FPlantSummary PlantModel::Summary(const FPlantSpecies& S, uint32 Seed, float Age
 		C += Sn.Colour[K] * (1.f - Sn.Fallen[K]);
 	}
 	Out.LeafAmount = Sn.LeafScale * On / FPlantSeason::NumBuckets;
-	Out.LeafColour = On > 0.f ? C / On : S.BarkColour;
+	Out.LeafColour = On > 0.f ? C / On : S.Bark.RidgeColour;
 	Out.LeafColour.A = 1.f;
 	return Out;
 }
@@ -150,11 +157,12 @@ void FPlantSkeleton::Build(const FPlantSpecies& Species, uint32 InSeed)
 	FBranch& Trunk = Branches.AddDefaulted_GetRef();
 	Trunk.Order = 0;
 	Trunk.Step = 0.25f;
-	Trunk.MaxLength = S.MaxHeight;
-	Trunk.Points = GrowCurve(FVector3f::ZeroVector, Up, S.MaxHeight * 1.02f, Trunk.Step, 0.5f, S.Wobble * 0.3f, Seed, 0);
+	const float Leader = S.MaxHeight * S.LeaderFraction;
+	Trunk.MaxLength = Leader;
+	Trunk.Points = GrowCurve(FVector3f::ZeroVector, Up, Leader * 1.02f, Trunk.Step, 0.5f, S.Wobble * 0.3f, Seed, 0);
 
 	int32 Node = 0;
-	for (float Z = S.TrunkNodeSpacing * 0.5f; Z < S.MaxHeight * 0.97f; Z += S.TrunkNodeSpacing * (0.7f + 0.6f * Hash01(Seed, 1, Node, 9)), Node++)
+	for (float Z = S.TrunkNodeSpacing * 0.5f; Z < Leader * 0.97f; Z += S.TrunkNodeSpacing * (0.7f + 0.6f * Hash01(Seed, 1, Node, 9)), Node++)
 	{
 		const uint32 Key1 = 1000 + Node;
 		FBranch B;
@@ -162,14 +170,14 @@ void FPlantSkeleton::Build(const FPlantSpecies& Species, uint32 InSeed)
 		B.Order = 1;
 		B.BaseS = Z;
 		// a node buds the season after the leader's tip passed it
-		B.Birth = PlantModel::AgeAtHeight(S, Z) + 0.25f;
+		B.Birth = PlantModel::AgeAtHeight(S, Z / S.LeaderFraction) + 0.25f;
 		// and is shed once the crown base climbs past it
 		B.Death = Z / S.CrownBase < S.MaxHeight * 0.999f ? PlantModel::AgeAtHeight(S, Z / S.CrownBase) : Never;
 		if (B.Birth == Never || B.Death < B.Birth + 0.5f)
 		{
 			continue;
 		}
-		B.MaxLength = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / S.MaxHeight) * (0.8f + 0.4f * Hash01(Seed, Key1, 1));
+		B.MaxLength = S.Branch1MaxLength * Profile(S.Branch1Profile, Z / Leader) * (0.8f + 0.4f * Hash01(Seed, Key1, 1));
 		B.Tau = S.LengthTau * (0.85f + 0.3f * Hash01(Seed, Key1, 2));
 		B.Step = 0.35f;
 		const FVector3f TrunkDir = Branches[0].DirAt(Z);
@@ -215,25 +223,36 @@ float FPlantSkeleton::LengthAt(const FBranch& B, float Age) const
 	}
 	if (B.Order == 0)
 	{
-		return FMath::Min(PlantModel::Height(S, Age), (B.Points.Num() - 1) * B.Step);
+		return FMath::Min(PlantModel::Height(S, Age) * S.LeaderFraction, (B.Points.Num() - 1) * B.Step);
 	}
 	return B.MaxLength * (1.f - FMath::Exp(-(Age - B.Birth) / B.Tau));
 }
 
+int32 FPlantSkeleton::FInstances::NumRings() const
+{
+	int32 N = 0;
+	for (const FTube& T : Tubes) N += T.P.Num();
+	return N;
+}
+
 void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances& Out) const
 {
-	Out.Bark.Reset();
+	Out.Tubes.Reset();
 	for (TArray<FTransform>& L : Out.Leaves) L.Reset();
+	Out.Fruit.Reset();
 	Out.Height = Out.Reach = 0.f;
 	Out.LiveBranches = 0;
+	using PlantModel::Hash01;
 
 	const int32 N = Branches.Num();
 	TArray<float> Len, Rad;
 	Len.Init(-1.f, N);
 	Rad.Init(0.f, N);
-	const float Tip = S.MinRadius * 0.4f;
+	const float Tip = S.MinRadius * 0.3f;
 	auto RadiusAt = [&](int32 I, float L) { return Tip + (Rad[I] - Tip) * FMath::Pow(FMath::Max(0.f, 1.f - L / Len[I]), 0.8f); };
-	const float LeafSize = S.LeafClusterSize * 100.f * Season.LeafScale * FMath::Clamp(PlantModel::Height(S, Age) / 4.f, 0.35f, 1.f);
+	const float H = PlantModel::Height(S, Age);
+	const float LeafScale = Season.LeafScale * FMath::Clamp(H / 4.f, 0.5f, 1.f);
+	const bool bFruit = Season.FruitScale > 0.f && Age >= S.FruitingAge;
 
 	for (int32 I = 0; I < N; I++)
 	{
@@ -244,37 +263,53 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 			continue;
 		}
 		Len[I] = L;
-		Rad[I] = B.Order == 0 ? FMath::Max(S.MinRadius, S.TrunkRadiusPerHeight * PlantModel::Height(S, Age))
+		Rad[I] = B.Order == 0 ? FMath::Max(S.MinRadius, S.TrunkRadiusPerHeight * H)
 		                      : FMath::Min(S.BranchRadiusBase + S.BranchRadiusPerLength * L, 0.65f * RadiusAt(B.Parent, B.BaseS));
 		Out.LiveBranches++;
 
-		for (float S0 = 0.f; S0 < L; S0 += B.Step)
+		FTube& T = Out.Tubes.AddDefaulted_GetRef();
+		T.Order = B.Order;
+		for (float S0 = 0.f;; S0 += B.Step)
 		{
-			const FVector3f P0 = B.At(S0), P1 = B.At(FMath::Min(L, S0 + B.Step));
-			const FVector3f D = P1 - P0;
-			const float SegLen = D.Size();
-			if (SegLen < 1e-4f) continue;
-			const float R = RadiusAt(I, S0) * 100.f;
-			Out.Bark.Emplace(FQuat::FindBetweenNormals(FVector::UpVector, FVector(D / SegLen)), FVector(P0) * 100.0, FVector(R, R, SegLen * 105.f));
-			Out.Height = FMath::Max(Out.Height, P1.Z);
-			Out.Reach = FMath::Max(Out.Reach, FVector2f(P1.X, P1.Y).Size());
+			const float At = FMath::Min(S0, L);
+			const FVector3f P = B.At(At);
+			float R = RadiusAt(I, At);
+			if (B.Order == 0)
+			{
+				R *= 1.f + 0.5f * FMath::Exp(-P.Z / 0.35f); // root flare
+			}
+			T.P.Add(P);
+			T.R.Add(R);
+			Out.Height = FMath::Max(Out.Height, P.Z);
+			Out.Reach = FMath::Max(Out.Reach, FVector2f(P.X, P.Y).Size());
+			if (At >= L) break;
 		}
 
-		if (LeafSize <= 0.f) continue;
+		if (bFruit && B.Order == 2 && L > 0.2f && Hash01(Seed, I, 0, 21) < S.FruitChance && Hash01(Seed, I, 0, 22) >= Season.FruitFallen)
+		{
+			// hanging under the twig, two thirds of the way out
+			const FVector3f P = B.At(L * 0.66f) - FVector3f(0.f, 0.f, S.FruitSize * 0.6f);
+			const float Size = S.FruitSize * 100.f * Season.FruitScale * (0.85f + 0.3f * Hash01(Seed, I, 0, 23));
+			Out.Fruit.Emplace(FRotator(0.f, Hash01(Seed, I, 0, 24) * 360.f, 0.f).Quaternion(), FVector(P) * 100.0, FVector(Size, Size, Size * 0.92f) / 100.f);
+		}
+
+		if (LeafScale <= 0.f) continue;
 		// leaves sit at fixed places along the shoot, so they never slide as it grows
 		const float From = B.Order == 2 ? 0.08f : FMath::Max(B.Order == 0 ? S.CrownBase * L + 0.1f : 0.3f, L - S.LeafyTipLength);
 		for (int32 K = FMath::CeilToInt(From / S.LeafSpacing); K * S.LeafSpacing <= L; K++)
 		{
-			const float At = FMath::Min(L, (K + 0.5f * PlantModel::Hash01(Seed, I, K, 3)) * S.LeafSpacing);
-			const int32 Bucket = FMath::Min((int32)(PlantModel::Hash01(Seed, I, K, 2) * FPlantSeason::NumBuckets), FPlantSeason::NumBuckets - 1);
-			if (PlantModel::Hash01(Seed, I, K, 1) < Season.Fallen[Bucket])
+			const float At = FMath::Min(L, (K + 0.5f * Hash01(Seed, I, K, 3)) * S.LeafSpacing);
+			const int32 Bucket = FMath::Min((int32)(Hash01(Seed, I, K, 2) * FPlantSeason::NumBuckets), FPlantSeason::NumBuckets - 1);
+			if (Hash01(Seed, I, K, 1) < Season.Fallen[Bucket])
 			{
 				continue;
 			}
-			const FVector3f Off(PlantModel::Hash01(Seed, I, K, 4) - 0.5f, PlantModel::Hash01(Seed, I, K, 5) - 0.5f, PlantModel::Hash01(Seed, I, K, 6) - 0.5f);
+			const FVector3f Off(Hash01(Seed, I, K, 4) - 0.5f, Hash01(Seed, I, K, 5) - 0.5f, Hash01(Seed, I, K, 6) - 0.5f);
 			// the newest leaves at a shoot's tip are still small
-			const float Size = LeafSize * FMath::Clamp(0.35f + (L - At) / 0.4f, 0.35f, 1.f) * (0.8f + 0.4f * PlantModel::Hash01(Seed, I, K, 7));
-			Out.Leaves[Bucket].Emplace(RandomRotation(Seed, I, K), FVector(B.At(At) + Off * (S.LeafClusterSize * 0.4f)) * 100.0, FVector(Size));
+			const float Size = LeafScale * FMath::Clamp(0.45f + (L - At) / 0.4f, 0.45f, 1.f) * (0.85f + 0.3f * Hash01(Seed, I, K, 7));
+			// blades face the sky, give or take
+			const FRotator Rot((Hash01(Seed, I, K, 11) - 0.5f) * 50.f, Hash01(Seed, I, K, 12) * 360.f, (Hash01(Seed, I, K, 13) - 0.5f) * 50.f);
+			Out.Leaves[Bucket].Emplace(Rot.Quaternion(), FVector(B.At(At) + Off * (S.LeafClusterSize * 0.4f)) * 100.0, FVector(Size));
 		}
 	}
 }

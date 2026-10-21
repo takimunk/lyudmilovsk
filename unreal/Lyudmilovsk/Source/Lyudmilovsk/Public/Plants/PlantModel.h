@@ -38,6 +38,12 @@ struct FPlantSeason
 	/** Per colour bucket: fraction of its leaves already fallen, and its colour. Bucket 0 turns first. */
 	float Fallen[NumBuckets] = {};
 	FLinearColor Colour[NumBuckets];
+	/** Fruit size 0..1 (0: none on the tree), colour, and the fraction already fallen. */
+	float FruitScale = 0.f;
+	FLinearColor FruitColour;
+	float FruitFallen = 0.f;
+	/** Snow lying on the branches, 0..1. */
+	float Snow = 0.f;
 };
 
 /** Pure functions of the species: no state, no randomness beyond the seed. */
@@ -80,15 +86,25 @@ public:
 		FVector3f DirAt(float S) const;
 	};
 
-	/** What to draw at one age: bark segments and leaf clusters per colour bucket, in cm. */
+	/** One branch's wood as drawn: points along its axis and the radius there (m). */
+	struct FTube
+	{
+		int32 Order = 0;
+		TArray<FVector3f> P;
+		TArray<float> R;
+	};
+
+	/** What to draw at one age: the wood, and leaf clusters per colour bucket and fruit (instances, cm). */
 	struct FInstances
 	{
-		TArray<FTransform> Bark;
+		TArray<FTube> Tubes;
 		TArray<FTransform> Leaves[FPlantSeason::NumBuckets];
+		TArray<FTransform> Fruit;
 		/** Height and widest reach of what was drawn, m. */
 		float Height = 0.f;
 		float Reach = 0.f;
 		int32 LiveBranches = 0;
+		int32 NumRings() const;
 	};
 
 	void Build(const FPlantSpecies& Species, uint32 Seed);

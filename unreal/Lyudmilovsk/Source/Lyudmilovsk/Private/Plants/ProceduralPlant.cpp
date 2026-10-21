@@ -5,11 +5,13 @@
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
+#include "StaticMeshResources.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -41,6 +43,12 @@ namespace
 			ISM->AddInstances(T, false, false, false);
 		}
 	}
+
+	int32 NumTriangles(const UStaticMesh* Mesh)
+	{
+		const FStaticMeshRenderData* RD = Mesh ? Mesh->GetRenderData() : nullptr;
+		return RD && RD->LODResources.Num() ? RD->LODResources[0].GetNumTriangles() : 0;
+	}
 }
 
 AProceduralPlant::AProceduralPlant()
@@ -50,15 +58,26 @@ AProceduralPlant::AProceduralPlant()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Basic(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> BarkMat(TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> LeafMat(TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cylinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
 	BaseMaterial = Basic.Object;
+	BarkMaterialAsset = BarkMat.Object ? BarkMat.Object : Basic.Object;
+	LeafMaterialAsset = LeafMat.Object ? LeafMat.Object : Basic.Object;
 
-	Bark = MakeInstanced(this, TEXT("Bark"), RootComponent);
+	Wood = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wood"));
+	Wood->SetupAttachment(RootComponent);
+	Wood->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Wood->SetMobility(EComponentMobility::Movable);
+	OutdoorLighting(Wood);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		LeafComponents.Add(MakeInstanced(this, *FString::Printf(TEXT("Leaves%d"), K), RootComponent));
 	}
+	FruitComponent = MakeInstanced(this, TEXT("Fruit"), RootComponent);
+	FruitComponent->SetStaticMesh(Sphere.Object);
+
 	SummaryTrunk = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryTrunk"));
 	SummaryCrown = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SummaryCrown"));
 	for (UStaticMeshComponent* C : { SummaryTrunk.Get(), SummaryCrown.Get() })
@@ -140,78 +159,99 @@ bool AProceduralPlant::WantsSummary() const
 
 void AProceduralPlant::EnsureMeshes()
 {
-	if (!BarkMesh)
+	if (!CrownMaterial)
 	{
-		BarkMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
-		BarkMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.95f);
-		BarkMesh = PlantMeshes::BuildBark(this, BarkMaterial);
-		Bark->SetStaticMesh(BarkMesh);
-		Bark->SetMaterial(0, BarkMaterial);
-		SummaryTrunk->SetMaterial(0, BarkMaterial);
-
+		WoodMaterial = UMaterialInstanceDynamic::Create(BarkMaterialAsset, this);
+		Wood->SetMaterial(0, WoodMaterial);
+		SummaryTrunk->SetMaterial(0, WoodMaterial);
 		LeafMaterials.Reset();
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
-			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(BaseMaterial, this);
-			M->SetScalarParameterValue(TEXT("Roughness"), 0.75f);
-			LeafMaterials.Add(M);
-			if (K == 0)
-			{
-				LeafMesh = PlantMeshes::BuildLeafCluster(this, M);
-			}
-			LeafComponents[K]->SetStaticMesh(LeafMesh);
-			LeafComponents[K]->SetMaterial(0, M);
+			LeafMaterials.Add(UMaterialInstanceDynamic::Create(LeafMaterialAsset, this));
 		}
+		FruitMaterial = UMaterialInstanceDynamic::Create(LeafMaterialAsset, this);
+		FruitComponent->SetMaterial(0, FruitMaterial);
 		CrownMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 		CrownMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.85f);
 		SummaryCrown->SetMaterial(0, CrownMaterial);
 	}
-	if (BuiltSpecies != Species || BuiltSeed != Seed || !Skeleton.IsBuilt())
+	if (BuiltSpecies != Species || BuiltSeed != Seed || !Skeleton.IsBuilt() || !LeafMesh)
 	{
-		Skeleton.Build(GetSpecies(), (uint32)Seed);
+		const FPlantSpecies& S = GetSpecies();
+		Skeleton.Build(S, (uint32)Seed);
+		UTexture2D* Albedo = nullptr;
+		UTexture2D* Normal = nullptr;
+		PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+		BarkAlbedo = Albedo;
+		BarkNormal = Normal;
+		LeafDetail = PlantMeshes::BuildLeafDetail(this, S.Leaf);
+		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
+
+		WoodMaterial->SetTextureParameterValue(TEXT("BarkAlbedo"), BarkAlbedo);
+		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
+		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+		{
+			LeafMaterials[K]->SetTextureParameterValue(TEXT("LeafDetail"), LeafDetail);
+			LeafComponents[K]->SetStaticMesh(LeafMesh);
+			LeafComponents[K]->SetMaterial(0, LeafMaterials[K]);
+		}
 		BuiltSpecies = Species;
 		BuiltSeed = Seed;
+		WoodAge = -1.f;
 	}
 }
 
-void AProceduralPlant::Apply(float Age, float Day, bool bSummary)
+void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 {
 	EnsureMeshes();
 	const FPlantSpecies& S = GetSpecies();
 	const FPlantSeason Season = PlantModel::Season(S, (uint32)Seed, Day);
 	const FPlantSummary Sum = PlantModel::Summary(S, (uint32)Seed, Age, Day);
-	BarkMaterial->SetVectorParameterValue(TEXT("Color"), S.BarkColour);
 
-	Bark->SetVisibility(!bSummary);
+	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		LeafMaterials[K]->SetVectorParameterValue(TEXT("Color"), Season.Colour[K]);
 		LeafComponents[K]->SetVisibility(!bSummary);
 	}
+	FruitMaterial->SetVectorParameterValue(TEXT("Color"), Season.FruitColour);
+	Wood->SetVisibility(!bSummary);
+	FruitComponent->SetVisibility(!bSummary);
 	SummaryTrunk->SetVisibility(bSummary);
 	SummaryCrown->SetVisibility(bSummary && Sum.LeafAmount > 0.05f);
 
 	if (bSummary)
 	{
 		// level 0: no branches at all, just the summary's height, width and colour
-		SetInstances(Bark, {});
 		for (UInstancedStaticMeshComponent* L : LeafComponents) SetInstances(L, {});
+		SetInstances(FruitComponent, {});
 		const float TrunkH = FMath::Max(Sum.CrownBaseHeight, Sum.Height * 0.3f);
 		SummaryTrunk->SetRelativeLocation(FVector(0, 0, TrunkH * 50.f));
 		SummaryTrunk->SetRelativeScale3D(FVector(Sum.TrunkRadius * 2.f, Sum.TrunkRadius * 2.f, TrunkH));
 		SummaryCrown->SetRelativeLocation(FVector(0, 0, (Sum.CrownBaseHeight + Sum.Height) * 50.f));
 		SummaryCrown->SetRelativeScale3D(FVector(Sum.CrownRadius * 2.f, Sum.CrownRadius * 2.f, FMath::Max(Sum.Height - Sum.CrownBaseHeight, 0.05f)));
 		// a solid ellipsoid has none of the crown's self-shadowing: darken it to match from afar
-		CrownMaterial->SetVectorParameterValue(TEXT("Color"), Sum.LeafColour * FLinearColor(0.6f, 0.6f, 0.6f, 1.f));
+		CrownMaterial->SetVectorParameterValue(TEXT("Color"), Sum.LeafColour * FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 	}
 	else
 	{
 		FPlantSkeleton::FInstances Out;
 		Skeleton.Evaluate(Age, Season, Out);
-		SetInstances(Bark, Out.Bark);
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			SetInstances(LeafComponents[K], Out.Leaves[K]);
+		}
+		SetInstances(FruitComponent, Out.Fruit);
+		if (bWood || WoodAge < 0.f)
+		{
+			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
+			if (Wood->GetStaticMesh() != WoodMesh)
+			{
+				Wood->SetStaticMesh(WoodMesh);
+			}
+			Wood->MarkRenderStateDirty();
+			WoodAge = Age;
 		}
 	}
 	const float R = FMath::Max(Sum.TrunkRadius * 100.f, 2.f);
@@ -238,7 +278,7 @@ void AProceduralPlant::OnConstruction(const FTransform& Transform)
 void AProceduralPlant::BeginPlay()
 {
 	Super::BeginPlay();
-	SinceUpdate = 0.f;
+	SinceUpdate = SinceWood = 0.f;
 	if (bSnapToGround)
 	{
 		FHitResult Hit;
@@ -256,6 +296,7 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	SinceUpdate += DeltaSeconds;
+	SinceWood += DeltaSeconds;
 	if (SinceUpdate < UpdateInterval)
 	{
 		return;
@@ -263,10 +304,16 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	SinceUpdate = 0.f;
 	const float Age = GetAge(), Day = CurrentDay();
 	const bool bSummary = WantsSummary();
-	// a tree grows a few mm a day: re-shape only when the change is visible
-	if (bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f)
+	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
+	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f;
+	const bool bWoodDue = !bSummary && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
+	if (bChanged || bWoodDue)
 	{
-		Apply(Age, Day, bSummary);
+		Apply(Age, Day, bSummary, bWoodDue);
+		if (bWoodDue)
+		{
+			SinceWood = 0.f;
+		}
 	}
 }
 
@@ -279,10 +326,14 @@ FString AProceduralPlant::DebugReport(float Age, float DayOfYear)
 	FPlantSkeleton::FInstances Out;
 	const double T0 = FPlatformTime::Seconds();
 	Skeleton.Evaluate(Age, Season, Out);
-	const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+	const double T1 = FPlatformTime::Seconds();
+	WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
+	Wood->SetStaticMesh(WoodMesh);
+	WoodAge = Age;
+	const double T2 = FPlatformTime::Seconds();
 	const int32 Leaves = Out.Leaves[0].Num() + Out.Leaves[1].Num() + Out.Leaves[2].Num();
-	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: %d/%d branches live, %d bark, %d leaves (%d/%d/%d), drawn h %.2f reach %.2f | summary h %.2f crown r %.2f base %.2f trunk r %.3f leaves %.2f colour %s | %.2f ms"),
-		*S.Name.ToString(), Seed, Age, DayOfYear, Out.LiveBranches, Skeleton.GetBranches().Num(), Out.Bark.Num(), Leaves,
-		Out.Leaves[0].Num(), Out.Leaves[1].Num(), Out.Leaves[2].Num(), Out.Height, Out.Reach,
-		Sum.Height, Sum.CrownRadius, Sum.CrownBaseHeight, Sum.TrunkRadius, Sum.LeafAmount, *Sum.LeafColour.ToString(), Ms);
+	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: %d/%d branches, %d rings, wood %d tris, %d leaf clusters x %d tris, %d fruit, drawn h %.2f reach %.2f | summary h %.2f crown r %.2f leaves %.2f | evaluate %.2f ms, wood mesh %.1f ms"),
+		*S.Name.ToString(), Seed, Age, DayOfYear, Out.LiveBranches, Skeleton.GetBranches().Num(), Out.NumRings(), NumTriangles(WoodMesh),
+		Leaves, NumTriangles(LeafMesh), Out.Fruit.Num(), Out.Height, Out.Reach, Sum.Height, Sum.CrownRadius, Sum.LeafAmount,
+		(T1 - T0) * 1000.0, (T2 - T1) * 1000.0);
 }
