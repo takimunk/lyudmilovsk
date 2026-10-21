@@ -101,13 +101,13 @@ namespace
 	// --- leaves
 
 	/** A blade in leaf space (m): base at the origin, midrib along +Y, facing +Z. */
-	void BuildBlade(const FPlantLeafShape& L, float Length, FMeshData& Out, const FTransform3f& Xf)
+	void BuildBlade(const FPlantLeafShape& L, float Length, FMeshData& Out, const FTransform3f& Xf, bool bSimple = false)
 	{
 		FMeshData B;
 		const float W = L.Width * Length;
 		if (L.Form == EPlantLeafForm::Palmate)
 		{
-			const int32 N = 48;
+			const int32 N = bSimple ? 10 : 48;
 			const int32 Lobes = FMath::Max(L.Lobes, 1);
 			const float Spread = 0.72f * PI, Spacing = Lobes > 1 ? 2.f * Spread / (Lobes - 1) : 2.f * Spread;
 			const float Mid = (Lobes - 1) * 0.5f;
@@ -142,7 +142,8 @@ namespace
 		else
 		{
 			const bool bTeeth = L.Teeth > 0 && L.Teeth <= 8;
-			const int32 N = L.Lobes > 0 ? L.Lobes * 2 + 4 : (bTeeth ? L.Teeth * 4 : 8);
+			// a far-away blade (bSimple) is a few triangles: just its outline's widest part
+			const int32 N = bSimple ? 2 : (L.Lobes > 0 ? L.Lobes * 2 + 4 : (bTeeth ? L.Teeth * 4 : 8));
 			const float A = FMath::Clamp(L.WidestAt, 0.05f, 0.95f), Al = 2.2f * A, Be = 2.2f * (1.f - A);
 			const float Norm = FMath::Pow(A, Al) * FMath::Pow(1.f - A, Be);
 			for (int32 I = 0; I <= N; I++)
@@ -581,7 +582,7 @@ UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TAr
 	return BuildWoodImpl(Outer, Mesh, Tubes, Bark, Age, Seed, OutScarMask, nullptr);
 }
 
-static void LeafClusterData(const FPlantSpecies& S, FMeshData& D)
+static void LeafClusterData(const FPlantSpecies& S, FMeshData& D, bool bSimple = false)
 {
 	const FPlantLeafShape& L = S.Leaf;
 	const int32 Count = FMath::Max(L.PerCluster, 1);
@@ -628,7 +629,7 @@ static void LeafClusterData(const FPlantSpecies& S, FMeshData& D)
 		D.Tris.Add(FIntVector3(P0, P0 + 2, P0 + 1));
 		D.Tris.Add(FIntVector3(P0, P0 + 3, P0 + 2));
 		const FRotator Rot(-(8.f + 22.f * Hash01(77, I, 4)), FMath::RadiansToDegrees(Phi) - 90.f, (Hash01(77, I, 5) - 0.5f) * 40.f);
-		BuildBlade(L, Length, D, FTransform3f(FRotator3f(Rot), Node + Stalk));
+		BuildBlade(L, Length, D, FTransform3f(FRotator3f(Rot), Node + Stalk), bSimple);
 	}
 }
 
@@ -985,19 +986,23 @@ namespace
 	}
 }
 
-PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSpecies& S, uint32 Seed, float Age, float Day, const FVector3f& LodDistances)
+PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint32 Seed, float Age, float Day)
 {
-	FTreeBake Result;
+	const double T0 = FPlatformTime::Seconds();
+	FTreePrep Result;
 	FPlantSkeleton Skeleton;
 	Skeleton.Build(S, Seed);
 	FPlantSkeleton::FInstances Out;
 	Skeleton.Evaluate(Age, PlantModel::Season(S, Seed, Day), Out);
-	FMeshData Cluster;
+	FMeshData Cluster, Simple;
 	LeafClusterData(S, Cluster);
+	LeafClusterData(S, Simple, true);
 
 	struct FLod { int32 MaxOrder; int32 Stride; float Scale; };
-	const FLod Lods[4] = { { 3, 1, 1.f }, { 1, 2, 1.35f }, { 1, 5, 2.1f }, { 0, 14, 3.4f } };
-	TArray<FMeshDescription> Descriptions;
+	// needle clusters are already 6 triangles; a blade cluster is cut to a fifth in every LOD (simple blades) and thinned out
+	const bool bNeedle = S.Leaf.Form == EPlantLeafForm::Needle;
+	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.3f }, { 1, bNeedle ? 2 : 5, bNeedle ? 1.35f : 2.f }, { 1, bNeedle ? 5 : 14, bNeedle ? 2.1f : 3.2f }, { 0, bNeedle ? 14 : 40, bNeedle ? 3.4f : 5.f } };
+	TArray<FMeshDescription>& Descriptions = Result.Lods;
 	Descriptions.SetNum(4);
 	for (int32 L = 0; L < 4; L++)
 	{
@@ -1009,7 +1014,7 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 		FMeshData Wood, Leaf;
 		if (!Tubes.IsEmpty())
 		{
-			BuildWoodImpl(Outer, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
+			BuildWoodImpl(nullptr, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
 		}
 		int32 Count = 0;
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
@@ -1020,12 +1025,13 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 				FTransform Xf = Xf0;
 				Xf.SetScale3D(Xf.GetScale3D() * Lods[L].Scale);
 				const int32 Base = Leaf.Pos.Num();
-				for (int32 V = 0; V < Cluster.Pos.Num(); V++)
+				const FMeshData& Src = bNeedle ? Cluster : Simple;
+				for (int32 V = 0; V < Src.Pos.Num(); V++)
 				{
-					Leaf.Add(FVector3f(Xf.TransformPosition(FVector(Cluster.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(Cluster.Nrm[V]))),
-					         FVector3f(Xf.TransformVectorNoScale(FVector(Cluster.Tan[V]))), Cluster.UV[V]);
+					Leaf.Add(FVector3f(Xf.TransformPosition(FVector(Src.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(Src.Nrm[V]))),
+					         FVector3f(Xf.TransformVectorNoScale(FVector(Src.Tan[V]))), Src.UV[V]);
 				}
-				for (const FIntVector3& T : Cluster.Tris) Leaf.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
+				for (const FIntVector3& T : Src.Tris) Leaf.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
 			}
 		}
 		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty())
@@ -1036,6 +1042,15 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num();
 		FillTreeLod(Descriptions[L], Wood, Leaf);
 	}
+	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
+	Result.Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+	return Result;
+}
+
+PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantSpecies& S, uint32 Seed, FTreePrep&& Prep, const FVector3f& LodDistances)
+{
+	FTreeBake Result;
+	for (int32 L = 0; L < 4; L++) Result.Triangles[L] = Prep.Triangles[L];
 	// the same rules as every runtime-built mesh here: never saved, never copied into a PIE world
 	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed)), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
@@ -1045,9 +1060,9 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 	Params.bBuildSimpleCollision = false;
 	Params.bCommitMeshDescription = false;
 	Params.bFastBuild = true;
-	Mesh->BuildFromMeshDescriptions({ &Descriptions[0], &Descriptions[1], &Descriptions[2], &Descriptions[3] }, Params);
+	Mesh->BuildFromMeshDescriptions({ &Prep.Lods[0], &Prep.Lods[1], &Prep.Lods[2], &Prep.Lods[3] }, Params);
 	Result.Mesh = Mesh;
-	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
+	Result.Radius = Prep.Radius;
 	// LOD switch by camera distance: a sphere of radius R fills about R / d of a 90 degree view
 	if (FStaticMeshRenderData* RD = Mesh->GetRenderData())
 	{
@@ -1058,4 +1073,9 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 		RD->ScreenSize[3] = FMath::Min(R / LodDistances.Z, 0.25f);
 	}
 	return Result;
+}
+
+PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSpecies& S, uint32 Seed, float Age, float Day, const FVector3f& LodDistances)
+{
+	return FinishTreeBake(Outer, S, Seed, PrepareTreeBake(S, Seed, Age, Day), LodDistances);
 }

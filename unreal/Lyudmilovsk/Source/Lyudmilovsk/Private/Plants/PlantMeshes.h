@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MeshDescription.h"
 #include "Plants/GrassSpecies.h"
 #include "Plants/PlantModel.h"
 
@@ -57,6 +58,18 @@ namespace PlantMeshes
 	 * LodDistances, m). The bark and leaf textures are not made here; the caller gives the materials.
 	 */
 	FTreeBake BuildTreeBake(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, float Age, float Day, const FVector3f& LodDistances);
+
+	/** The first, heavy half of BuildTreeBake: the four LODs as mesh descriptions. Touches no UObject: run it on any thread. */
+	struct FTreePrep
+	{
+		TArray<FMeshDescription> Lods;
+		float Radius = 0.f;
+		int32 Triangles[4] = {};
+		double Ms = 0.0;
+	};
+	FTreePrep PrepareTreeBake(const FPlantSpecies& Species, uint32 Seed, float Age, float Day);
+	/** The second half, on the game thread: the static mesh from the descriptions. */
+	FTreeBake FinishTreeBake(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, FTreePrep&& Prep, const FVector3f& LodDistances);
 
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);

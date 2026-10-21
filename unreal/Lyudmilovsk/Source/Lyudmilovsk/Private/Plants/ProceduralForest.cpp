@@ -14,6 +14,7 @@
 #include "Plants/PlantModel.h"
 #include "Plants/ProceduralGrass.h"
 #include "Plants/ProceduralPlant.h"
+#include "Plants/TreeBakeCache.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -26,13 +27,6 @@ AProceduralForest::AProceduralForest()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 0.25f;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Basic(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> BarkMat(TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> LeafMat(TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> NeedleMat(TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
-	BarkMaterialAsset = BarkMat.Object ? BarkMat.Object : Basic.Object;
-	LeafMaterialAsset = LeafMat.Object ? LeafMat.Object : Basic.Object;
-	NeedleMaterialAsset = NeedleMat.Object ? NeedleMat.Object : LeafMaterialAsset;
 	Mix = { FForestMix() };
 }
 
@@ -48,13 +42,14 @@ float AProceduralForest::CurrentDay() const
 
 uint32 AProceduralForest::BakeSeedFor(FName Species, int32 Variant) const
 {
-	return (uint32)Seed * 7919u + (uint32)Variant * 977u + (GetTypeHash(Species) & 0xFFFFu) + 1u;
+	// the same for every forest, so their kinds are shared in the cache
+	return (uint32)Variant * 977u + (GetTypeHash(Species) & 0xFFFFu) + 1u;
 }
 
 int32 AProceduralForest::NumBaked() const
 {
 	int32 N = 0;
-	for (const FGroup& G : Groups) N += G.bBaked ? G.TreeIds.Num() : 0;
+	for (const FGroup& G : Groups) N += G.Version >= 0 ? G.TreeIds.Num() : 0;
 	return N;
 }
 
@@ -62,7 +57,8 @@ FString AProceduralForest::DescribeState() const
 {
 	int32 Drawn = 0;
 	for (const FGroup& G : Groups) Drawn += G.Comp ? G.Comp->GetInstanceCount() : 0;
-	return FString::Printf(TEXT("%d trees in %d baked kinds, %d drawn as instances, %d live, last bake %.0f ms"), Trees.Num(), Groups.Num(), Drawn, LiveCount, BakeMs);
+	const UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
+	return FString::Printf(TEXT("%d trees in %d kinds, %d drawn as instances, %d live; %s"), Trees.Num(), Groups.Num(), Drawn, LiveCount, Cache ? *Cache->DescribeStats() : TEXT("no bake cache"));
 }
 
 int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
@@ -98,7 +94,6 @@ void AProceduralForest::AddTree(FName Species, FVector Location, float Age, int3
 	T.Xf = FTransform(FRotator(0.f, Yaw, 0.f), Location, FVector(Scale));
 	T.Group = GroupFor(Species, T.BakeSeed, Age);
 	Groups[T.Group].TreeIds.Add(Trees.Num());
-	Groups[T.Group].bBaked = false; // a group that gains trees is baked or its instances added again
 	Groups[T.Group].bInstancesAdded = false;
 	Trees.Add(MoveTemp(T));
 }
@@ -177,7 +172,6 @@ void AProceduralForest::Rebuild()
 	const FVector Home = GetActorLocation();
 	Clear();
 	Scatter();
-	BakedDay = -1000.f;
 	(void)Home;
 }
 
@@ -204,81 +198,39 @@ void AProceduralForest::EndPlay(const EEndPlayReason::Type Reason)
 	Super::EndPlay(Reason);
 }
 
-void AProceduralForest::Bake(FGroup& G, float Day)
+void AProceduralForest::SyncBakes(float Day)
 {
-	const double T0 = FPlatformTime::Seconds();
-	const FPlantSpecies* S = PlantSpeciesLibrary::Find(G.Species);
-	if (!S) { G.bBaked = true; return; }
-	const FVector3f Lods(LodDistances.X * 0.01f, LodDistances.Y * 0.01f, LodDistances.Z * 0.01f);
-	const PlantMeshes::FTreeBake Bake = PlantMeshes::BuildTreeBake(this, *S, G.BakeSeed, G.Age, Day, Lods);
-	Keep.Add(Bake.Mesh);
-	if (!G.WoodMaterial)
-	{
-		G.WoodMaterial = UMaterialInstanceDynamic::Create(BarkMaterialAsset, this);
-		G.LeafMaterial = UMaterialInstanceDynamic::Create(S->Leaf.Form == EPlantLeafForm::Needle ? NeedleMaterialAsset.Get() : LeafMaterialAsset.Get(), this);
-		UTexture2D *Albedo = nullptr, *Normal = nullptr;
-		PlantMeshes::BuildBarkTextures(this, *S, G.BakeSeed, Albedo, Normal);
-		UTexture2D* Detail = PlantMeshes::BuildLeafDetail(this, S->Leaf);
-		Keep.Add(Albedo); Keep.Add(Normal); Keep.Add(Detail);
-		G.WoodMaterial->SetTextureParameterValue(TEXT("BarkAlbedo"), Albedo);
-		G.WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), Normal);
-		G.WoodMaterial->SetVectorParameterValue(TEXT("Color"), S->Bark.RidgeColour);
-		G.WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), S->Bark.TwigColour);
-		G.WoodMaterial->SetVectorParameterValue(TEXT("BaseRidge"), S->Bark.BaseRidgeColour);
-		G.WoodMaterial->SetVectorParameterValue(TEXT("BaseFurrow"), S->Bark.BaseFurrowColour);
-		G.WoodMaterial->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
-		G.LeafMaterial->SetTextureParameterValue(TEXT("LeafDetail"), Detail);
-		G.LeafMaterial->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
-		G.LeafMaterial->SetScalarParameterValue(TEXT("Flutter"), 0.f);
-	}
-	const FPlantSeason Season = PlantModel::Season(*S, G.BakeSeed, Day);
-	G.WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
-	G.LeafMaterial->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
-	G.Comp->SetStaticMesh(Bake.Mesh);
-	G.Comp->SetMaterial(0, G.WoodMaterial);
-	G.Comp->SetMaterial(1, G.LeafMaterial);
-	G.Comp->SetCullDistances(0, (int32)CullDistance);
-	if (!G.bInstancesAdded)
-	{
-		TArray<FTransform> Xfs;
-		for (const int32 Id : G.TreeIds) Xfs.Add(Trees[Id].Xf);
-		G.Comp->ClearInstances();
-		const TArray<int32> Indices = G.Comp->AddInstances(Xfs, true, true);
-		for (int32 K = 0; K < G.TreeIds.Num(); K++) Trees[G.TreeIds[K]].Instance = Indices.IsValidIndex(K) ? Indices[K] : INDEX_NONE;
-		G.bInstancesAdded = true;
-	}
-	G.bBaked = true;
-	G.BakedDay = Day;
-	BakeMs = (FPlatformTime::Seconds() - T0) * 1000.0;
-}
-
-void AProceduralForest::BakeNext(float Day)
-{
-	// a group not baked yet first; then, once the date has moved on, the oldest bake
-	FGroup* Next = nullptr;
+	UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
+	if (!Cache) return;
 	for (FGroup& G : Groups)
 	{
-		if (!G.bBaked) { Next = &G; break; }
-	}
-	if (!Next)
-	{
-		float Worst = RebakeDays;
-		for (FGroup& G : Groups)
+		const FTreeBaked* B = Cache->Request(G.Species, G.BakeSeed, G.Age, Day, RebakeDays, LodDistances * 0.01);
+		if (!B || B->Version == G.Version || !B->Mesh) continue;
+		G.Comp->SetStaticMesh(B->Mesh);
+		G.Comp->SetMaterial(0, B->Wood);
+		G.Comp->SetMaterial(1, B->Leaf);
+		G.Comp->SetCullDistances(0, (int32)CullDistance);
+		if (!G.bInstancesAdded)
 		{
-			const float Gap = FMath::Abs(Day - G.BakedDay);
-			if (Gap > Worst) { Worst = Gap; Next = &G; }
+			TArray<FTransform> Xfs;
+			for (const int32 Id : G.TreeIds) Xfs.Add(Trees[Id].Xf);
+			G.Comp->ClearInstances();
+			const TArray<int32> Indices = G.Comp->AddInstances(Xfs, true, true);
+			for (int32 K = 0; K < G.TreeIds.Num(); K++) Trees[G.TreeIds[K]].Instance = Indices.IsValidIndex(K) ? Indices[K] : INDEX_NONE;
+			G.bInstancesAdded = true;
 		}
+		G.Version = B->Version;
+		Applied++;
 	}
-	if (Next) Bake(*Next, Day);
 }
 
 void AProceduralForest::BakeAll()
 {
-	const float Day = CurrentDay();
-	for (FGroup& G : Groups)
-	{
-		if (!G.bBaked) Bake(G, Day);
-	}
+	UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
+	if (!Cache) return;
+	SyncBakes(CurrentDay()); // asks for every kind
+	Cache->BakeAllNow();
+	SyncBakes(CurrentDay());
 }
 
 void AProceduralForest::SetHidden(FTree& T, bool bHidden)
@@ -307,7 +259,7 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 				SetHidden(T, false);
 			}
 		}
-		else if (D2 < Near2 && Groups[T.Group].bBaked && T.Instance != INDEX_NONE)
+		else if (D2 < Near2 && Groups[T.Group].Version >= 0 && T.Instance != INDEX_NONE)
 		{
 			Wanted.Emplace(D2, I);
 		}
@@ -338,7 +290,7 @@ void AProceduralForest::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	const UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld()) return;
-	BakeNext(CurrentDay());
+	SyncBakes(CurrentDay());
 	const APlayerController* PC = World->GetFirstPlayerController();
 	if (PC && PC->PlayerCameraManager && !Trees.IsEmpty())
 	{

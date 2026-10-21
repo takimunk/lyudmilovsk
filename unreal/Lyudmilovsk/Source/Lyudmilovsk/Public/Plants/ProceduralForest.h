@@ -36,7 +36,7 @@ struct FForestMix
  * again when it has shifted by a couple of weeks.
  *
  * Place it with Mix, Count and HalfExtent, or add trees one by one with AddTree. Bake and layout take a
- * few seconds at BeginPlay, one bake per quarter second, trees appearing as their bake finishes.
+ * few seconds at BeginPlay, trees appearing as their bake finishes. The bakes are shared by every forest of the world (UTreeBakeCache), made on worker threads.
  */
 UCLASS()
 class LYUDMILOVSK_API AProceduralForest : public AActor
@@ -69,7 +69,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveDistance = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") int32 MaxLive = 10;
 	/** Camera distances where the baked trees drop to LOD1, LOD2 and LOD3, cm. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(4500.0, 12000.0, 30000.0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(3000.0, 8000.0, 22000.0);
 	/** Trees farther than this are not drawn, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float CullDistance = 120000.f;
 	/** The baked trees are redone when the date has moved this many days. */
@@ -114,11 +114,10 @@ private:
 		uint32 BakeSeed = 0;
 		float Age = 0.f;
 		TObjectPtr<UInstancedStaticMeshComponent> Comp;
-		TObjectPtr<UMaterialInstanceDynamic> WoodMaterial, LeafMaterial;
 		TArray<int32> TreeIds;
-		bool bBaked = false;
+		/** The version of the shared bake the component shows now (-1: none yet). */
+		int32 Version = -1;
 		bool bInstancesAdded = false;
-		float BakedDay = -1000.f;
 	};
 
 	float CurrentDay() const;
@@ -126,18 +125,12 @@ private:
 	int32 GroupFor(FName Species, uint32 BakeSeed, float Age);
 	void Clear();
 	void Scatter();
-	void BakeNext(float Day);
-	void Bake(FGroup& G, float Day);
+	void SyncBakes(float Day);
 	void UpdateLive(const FVector& Camera);
 	void SetHidden(FTree& T, bool bHidden);
 
 	TArray<FTree> Trees;
 	TArray<FGroup> Groups;
 	int32 LiveCount = 0;
-	float BakedDay = -1000.f;
-	double BakeMs = 0.0;
-	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterialAsset;
-	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterialAsset;
-	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> NeedleMaterialAsset;
-	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> Keep;
+	int32 Applied = 0;
 };
