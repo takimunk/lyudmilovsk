@@ -76,7 +76,8 @@ namespace
 			// never saved and never copied: a duplicate (Play In Editor copies the editor's world) would
 			// have no mesh description to rebuild from and PIE would wait on it forever; the copy builds
 			// its own meshes at BeginPlay
-			Mesh = NewObject<UStaticMesh>(Outer, Name, RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
+			// a fresh name every time: building over an existing object of the same name would free the render data a live component still draws
+			Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), Name), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 			Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
 		}
 		UStaticMesh::FBuildMeshDescriptionsParams Params;
@@ -1036,7 +1037,7 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 		FillTreeLod(Descriptions[L], Wood, Leaf);
 	}
 	// the same rules as every runtime-built mesh here: never saved, never copied into a PIE world
-	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
+	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed)), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Leaf")));
 	UStaticMesh::FBuildMeshDescriptionsParams Params;

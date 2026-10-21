@@ -52,24 +52,34 @@ def plant(x, y, age, label, species="PyramidalPoplar", seed=1, summary=False):
 
 
 
+import os
 forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
-f = eas.spawn_actor_from_class(forest_cls, unreal.Vector(0, 0, 0))
-f.set_actor_label("Forest")
-f.set_editor_property("half_extent", unreal.Vector2D(6000, 6000))
-f.set_editor_property("count", 700)
-f.set_editor_property("spacing", 450)
-f.set_editor_property("snap_to_ground", True)
-f.set_editor_property("preview_in_editor", True)
-mix = []
-for sp, w, y, m in (("ScotsPine", 3, 12, 45), ("NorwaySpruce", 2, 12, 40), ("SilverBirch", 1.5, 8, 30), ("BlackAlder", 1, 10, 35), ("Rowan", 0.5, 8, 25)):
-    e = unreal.ForestMix()
-    e.set_editor_property("species", sp); e.set_editor_property("weight", w)
-    e.set_editor_property("young_age", y); e.set_editor_property("mature_age", m)
-    mix.append(e)
-f.set_editor_property("mix", mix)
-f.rebuild()
-f.bake_all()
-unreal.log_warning("FOREST " + f.describe_state())
+PATCHES = int(os.environ.get("FOREST_PATCHES", "1"))
+COUNT = int(os.environ.get("FOREST_COUNT", "700"))
+total = 0
+for patch in range(PATCHES):
+    f = eas.spawn_actor_from_class(forest_cls, unreal.Vector((patch % 4) * 13000, (patch // 4) * 13000, 0))
+    f.set_actor_label("Forest%d" % patch)
+    f.set_editor_property("half_extent", unreal.Vector2D(6000, 6000))
+    f.set_editor_property("count", COUNT)
+    f.set_editor_property("spacing", 450)
+    f.set_editor_property("seed", patch + 1)
+    f.set_editor_property("snap_to_ground", True)
+    f.set_editor_property("preview_in_editor", True)
+    mix = []
+    for sp, w, y, m in (("ScotsPine", 3, 12, 45), ("NorwaySpruce", 2, 12, 40), ("SilverBirch", 1.5, 8, 30), ("BlackAlder", 1, 10, 35), ("Rowan", 0.5, 8, 25)):
+        e = unreal.ForestMix()
+        e.set_editor_property("species", sp); e.set_editor_property("weight", w)
+        e.set_editor_property("young_age", y); e.set_editor_property("mature_age", m)
+        mix.append(e)
+    f.set_editor_property("mix", mix)
+    f.rebuild()
+    f.bake_all()
+    f.rebuild()   # a second layout over the first: the meshes of the old one must be left alone while it is torn down
+    f.bake_all()
+    total += f.num_trees()
+    unreal.log_warning("FOREST %d %s" % (patch, f.describe_state()))
+unreal.log_warning("FOREST total %d trees" % total)
 cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(-7000, 0, 600), unreal.Rotator(-3, 0, 0))
 cam.set_actor_label("SeriesView")
 les.save_current_level()

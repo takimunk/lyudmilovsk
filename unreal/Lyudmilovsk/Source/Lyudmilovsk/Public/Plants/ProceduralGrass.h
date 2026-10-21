@@ -5,7 +5,7 @@
 #include "Plants/GrassSpecies.h"
 #include "ProceduralGrass.generated.h"
 
-class UHierarchicalInstancedStaticMeshComponent;
+class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UStaticMesh;
@@ -82,8 +82,8 @@ private:
 	void Scatter();
 	void ApplySeason(float Day);
 
-	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UHierarchicalInstancedStaticMeshComponent> NearTufts;
-	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UHierarchicalInstancedStaticMeshComponent> FarTufts;
+	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> NearTufts;
+	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> FarTufts;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> TuftMesh;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> MaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> Material;

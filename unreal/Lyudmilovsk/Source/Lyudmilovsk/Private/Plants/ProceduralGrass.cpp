@@ -1,6 +1,6 @@
 #include "Plants/ProceduralGrass.h"
 
-#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -31,10 +31,10 @@ namespace
 
 	constexpr float GroundCell = 200.f;
 
-	UHierarchicalInstancedStaticMeshComponent* MakeTufts(AActor* Owner, FName Name, USceneComponent* Parent)
+	UInstancedStaticMeshComponent* MakeTufts(AActor* Owner, FName Name, USceneComponent* Parent)
 	{
 		// transient: the tufts are laid out again at BeginPlay (and in the editor on load), never saved in the level
-		UHierarchicalInstancedStaticMeshComponent* C = Owner->CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(Name, true);
+		UInstancedStaticMeshComponent* C = Owner->CreateDefaultSubobject<UInstancedStaticMeshComponent>(Name, true);
 		C->SetupAttachment(Parent);
 		C->SetMobility(EComponentMobility::Movable);
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -115,7 +115,7 @@ void AProceduralGrass::EnsureAssets()
 	Material->SetVectorParameterValue(TEXT("DryTip"), G.DryTip);
 	Material->SetVectorParameterValue(TEXT("Color"), G.GreenTip); // when the grass material is missing
 	Material->SetScalarParameterValue(TEXT("SwayAmp"), G.Sway);
-	for (UHierarchicalInstancedStaticMeshComponent* C : { NearTufts.Get(), FarTufts.Get() })
+	for (UInstancedStaticMeshComponent* C : { NearTufts.Get(), FarTufts.Get() })
 	{
 		C->SetStaticMesh(TuftMesh);
 		C->SetMaterial(0, Material);
@@ -268,7 +268,7 @@ void AProceduralGrass::Scatter()
 			}
 		}
 	}
-	auto Fill = [](UHierarchicalInstancedStaticMeshComponent* C, const TArray<FTransform>& T, const TArray<float>& Dry)
+	auto Fill = [](UInstancedStaticMeshComponent* C, const TArray<FTransform>& T, const TArray<float>& Dry)
 	{
 		if (T.IsEmpty()) return;
 		C->AddInstances(T, false, true);

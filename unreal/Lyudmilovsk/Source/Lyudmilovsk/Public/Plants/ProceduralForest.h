@@ -5,7 +5,7 @@
 #include "ProceduralForest.generated.h"
 
 class AProceduralPlant;
-class UHierarchicalInstancedStaticMeshComponent;
+class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 
@@ -113,7 +113,7 @@ private:
 		FName Species;
 		uint32 BakeSeed = 0;
 		float Age = 0.f;
-		TObjectPtr<UHierarchicalInstancedStaticMeshComponent> Comp;
+		TObjectPtr<UInstancedStaticMeshComponent> Comp;
 		TObjectPtr<UMaterialInstanceDynamic> WoodMaterial, LeafMaterial;
 		TArray<int32> TreeIds;
 		bool bBaked = false;

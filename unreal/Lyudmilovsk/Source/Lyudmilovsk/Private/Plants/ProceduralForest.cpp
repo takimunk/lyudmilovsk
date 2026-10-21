@@ -1,7 +1,7 @@
 #include "Plants/ProceduralForest.h"
 
 #include "Camera/PlayerCameraManager.h"
-#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
@@ -75,7 +75,7 @@ int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
 	G.Species = Species;
 	G.BakeSeed = BakeSeed;
 	G.Age = Age;
-	G.Comp = NewObject<UHierarchicalInstancedStaticMeshComponent>(this, NAME_None, RF_Transient);
+	G.Comp = NewObject<UInstancedStaticMeshComponent>(this, NAME_None, RF_Transient);
 	G.Comp->SetMobility(EComponentMobility::Movable);
 	G.Comp->SetupAttachment(RootComponent);
 	G.Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
