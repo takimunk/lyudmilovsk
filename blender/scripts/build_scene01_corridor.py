@@ -873,7 +873,7 @@ def build_hall(coll):
     # the owner sits facing his monitor (CCTV of the hall) about 95 cm away
     # He gets up when someone stands at the window and comes over to it (Unreal yaw 180 faces the hall).
     LAYOUT["owner"] = {"chair": ue(hw - 1.3, dy0 - 0.2, 0), "sitter_yaw": 0.0,
-                       "window": ue(bx0 + 0.42, (win0 + win1) / 2, 0), "window_yaw": 180.0,
+                       "window": ue(bx0 + 0.7, (win0 + win1) / 2, 0), "window_yaw": 180.0,  # clear of the counter and glass
                        "zone_center": ue(bx0 - 0.6, (win0 + win1) / 2, 0.9),
                        "zone_extent": [55.0, abs(win1 - win0) * 50, 90.0]}
     # a warm bare bulb under the booth ceiling, now that it is closed in
