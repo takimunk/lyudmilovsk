@@ -63,31 +63,35 @@ namespace
 		return S;
 	}
 
-	/** Malus domestica, an orchard apple: a low, wide, gnarled crown; red and yellow apples into late October. */
+	/**
+	 * Malus domestica, an old orchard apple: a short trunk forking into a few scaffold limbs, a low crown
+	 * wider than tall. Its shoots end in flower clusters every year and a side bud carries on (sympodial),
+	 * so the limbs zigzag, and they sag under the fruit. Apples ripen in September and drop through October.
+	 */
 	FPlantSpecies Apple()
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("Apple");
 		S.DisplayName = NSLOCTEXT("Plants", "Apple", "Apple tree");
-		S.MaxHeight = 9.f;
+		S.MaxHeight = 7.f;
 		S.GrowthRate = 0.15f;
 		S.GrowthShape = 1.4f;
-		S.LeaderFraction = 0.45f;
-		S.TrunkRadiusPerHeight = 0.024f;
-		S.CrownBase = 0.15f;
-		S.TrunkNodeSpacing = 0.15f;
-		S.Branch1Angle = 52.f;
-		S.Branch1MaxLength = 4.6f;
-		S.Branch1Profile = FVector(0.85, 1.0, 0.8);
-		S.LengthTau = 4.f;
-		S.Tropism = 0.03f;
-		S.Wobble = 0.4f;
+		S.LeaderFraction = 0.3f;
+		S.TrunkRadiusPerHeight = 0.015f;
+		S.CrownBase = 0.12f;
+		S.TrunkNodeSpacing = 0.18f;
+		S.Branch1Angle = 60.f;
+		S.Branch1MaxLength = 5.5f;
+		S.Branch1Profile = FVector(1.0, 1.0, 0.9);
+		S.LengthTau = 6.f;
+		S.Tropism = 0.05f;
+		S.Wobble = 0.3f;
 		S.Branch2Spacing = 0.15f;
-		S.Branch2Angle = 50.f;
+		S.Branch2Angle = 55.f;
 		S.Branch2MaxLength = 1.2f;
 		S.Branch2LengthRatio = 0.45f;
 		S.Branch2ShadeDepth = 3.5f;
-		S.BranchRadiusPerLength = 0.013f;
+		S.BranchRadiusPerLength = 0.012f;
 		S.LeafyTipLength = 3.f;
 		S.LeafSpacing = 0.07f;
 		S.LeafClusterSize = 0.3f;
@@ -121,6 +125,12 @@ namespace
 		S.FruitRipeDay = 245.f;
 		S.FruitFallDay = 305.f;
 		S.FruitColour = C(0.42f, 0.04f, 0.02f);
+		S.RingWidth = 0.0035f;
+		S.CrownWidth = 1.25f;
+		S.Branch1AngleTop = 35.f;
+		S.Kink = 0.55f;
+		S.KinkSpacing = 0.35f;
+		S.Droop = 0.025f;
 		return S;
 	}
 
@@ -177,32 +187,36 @@ namespace
 		return S;
 	}
 
-	/** Quercus bicolor, the swamp white oak: crooked limbs, a broad crown, scalloped leaves held late, acorns. */
+	/**
+	 * Quercus bicolor, the swamp white oak, grown in the open: pyramidal while young, then the trunk stops at
+	 * ~8 m and forks into massive crooked limbs under a broad, regular, rounded crown as wide as it is tall
+	 * (15-21 m); the trunk keeps thickening for a century (to ~1 m across). Scalloped leaves held late, acorns.
+	 */
 	FPlantSpecies SwampWhiteOak()
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("SwampWhiteOak");
 		S.DisplayName = NSLOCTEXT("Plants", "SwampWhiteOak", "Swamp white oak");
-		S.MaxHeight = 27.f;
-		S.GrowthRate = 0.06f;
-		S.GrowthShape = 1.5f;
-		S.LeaderFraction = 0.6f;
-		S.TrunkRadiusPerHeight = 0.022f;
-		S.CrownBase = 0.22f;
-		S.TrunkNodeSpacing = 0.42f;
-		S.Branch1Angle = 60.f;
-		S.Branch1MaxLength = 9.f;
-		S.Branch1Profile = FVector(0.85, 1.0, 0.55);
-		S.LengthTau = 11.f;
-		S.Tropism = 0.025f;
-		S.Wobble = 0.32f;
+		S.MaxHeight = 21.f;
+		S.GrowthRate = 0.035f;
+		S.GrowthShape = 1.3f;
+		S.LeaderFraction = 0.4f;
+		S.TrunkRadiusPerHeight = 0.012f;
+		S.CrownBase = 0.14f;
+		S.TrunkNodeSpacing = 0.3f;
+		S.Branch1Angle = 72.f;
+		S.Branch1MaxLength = 16.f;
+		S.Branch1Profile = FVector(1.0, 1.0, 0.9);
+		S.LengthTau = 22.f;
+		S.Tropism = 0.04f;
+		S.Wobble = 0.12f;
 		S.Branch2Spacing = 0.2f;
 		S.Branch2Angle = 50.f;
-		S.Branch2MaxLength = 2.2f;
-		S.Branch2LengthRatio = 0.4f;
-		S.LeafyTipLength = 4.f;
-		S.LeafSpacing = 0.08f;
-		S.LeafClusterSize = 0.4f;
+		S.Branch2MaxLength = 4.5f;
+		S.Branch2LengthRatio = 0.5f;
+		S.LeafyTipLength = 6.f;
+		S.LeafSpacing = 0.11f;
+		S.LeafClusterSize = 0.45f;
 		// obovate, widest past the middle, with shallow rounded lobes
 		S.Leaf.Length = 0.14f;
 		S.Leaf.Width = 0.6f;
@@ -212,7 +226,7 @@ namespace
 		S.Leaf.Teeth = 0;
 		S.Leaf.Petiole = 0.12f;
 		S.Leaf.Fold = 0.1f;
-		S.Leaf.PerCluster = 7;
+		S.Leaf.PerCluster = 5;
 		S.Bark.Pattern = EPlantBarkPattern::Blocks;
 		S.Bark.TileWidth = 0.35f;
 		S.Bark.TileHeight = 0.5f;
@@ -230,11 +244,19 @@ namespace
 		S.AutumnLeafColourLate = C(0.36f, 0.26f, 0.07f);
 		S.FruitSize = 0.025f;
 		S.FruitChance = 0.25f;
-		S.FruitingAge = 12.f;
+		S.FruitingAge = 20.f;
 		S.FruitSetDay = 170.f;
 		S.FruitRipeDay = 262.f;
 		S.FruitFallDay = 300.f;
 		S.FruitColour = C(0.17f, 0.09f, 0.03f);
+		S.RingWidth = 0.0028f;
+		S.CrownWidth = 1.05f;
+		S.Branch1AngleTop = 45.f;
+		S.Kink = 0.3f;
+		S.KinkSpacing = 0.9f;
+		S.Droop = 0.004f;
+		S.Branch2ShadeDepth = 8.f;
+		S.BranchRadiusPerLength = 0.009f;
 		return S;
 	}
 }

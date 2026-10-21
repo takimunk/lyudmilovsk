@@ -2,9 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LyudSave.h"
 #include "Plants/PlantModel.h"
 #include "ProceduralPlant.generated.h"
 
+class AFallenFruit;
 class UCapsuleComponent;
 class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
@@ -22,7 +24,7 @@ class UTexture2D;
  * level-0 summary: a trunk and a crown of the right height and leaf colour.
  */
 UCLASS()
-class LYUDMILOVSK_API AProceduralPlant : public AActor
+class LYUDMILOVSK_API AProceduralPlant : public AActor, public ILyudSaveable
 {
 	GENERATED_BODY()
 
@@ -43,6 +45,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Demo") bool bDemoGrowth = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Demo", meta = (EditCondition = "bDemoGrowth")) float DemoSeconds = 120.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Demo", meta = (EditCondition = "bDemoGrowth")) float DemoTargetAge = 30.f;
+	/**
+	 * Time-lapse of the calendar for this plant only: in-game days added per second of play (0 = the
+	 * real calendar). 0.5 shows a month of leaf fall and dropping apples in a minute.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Demo") float DemoDaysPerSecond = 0.f;
 	/** Game-clock seconds before the time-lapse starts. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Demo", meta = (EditCondition = "bDemoGrowth")) float DemoDelay = 3.f;
 
@@ -58,6 +65,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") float UpdateInterval = 0.2f;
 	/** Seconds between rebuilds of the wood mesh while it grows (the costlier part). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Detail") float WoodUpdateInterval = 0.5f;
+	/** How close the player must be to pick up a fallen fruit, cm. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") float PickDistance = 250.f;
+	/** Fruit picked up from under this tree, all time. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "Plant") int32 FruitPicked = 0;
 	/** Put the plant on the ground under it when play begins. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") bool bSnapToGround = true;
 
@@ -68,9 +79,14 @@ public:
 	/** Branch and leaf counts and sizes at an age, against the level-0 summary. */
 	UFUNCTION(BlueprintCallable, Category = "Plant") FString DebugReport(float Age, float DayOfYear);
 	UFUNCTION() TArray<FName> GetSpeciesNames() const;
+	/** The calendar's date as this plant sees it (with DemoDaysPerSecond). */
+	UFUNCTION(BlueprintCallable, Category = "Plant") FDateTime CurrentDate() const;
+
+	virtual void OnGameLoaded_Implementation() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
@@ -79,6 +95,9 @@ private:
 	void EnsureMeshes();
 	void Apply(float Age, float Day, bool bSummary, bool bWood = true);
 	bool WantsSummary() const;
+	void SyncFallenFruit(const FPlantSkeleton::FInstances& Out);
+	void ClearFallenFruit();
+	void OnInteract();
 
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Wood;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;
@@ -99,6 +118,11 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LeafMaterials;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> FruitMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CrownMaterial;
+
+	/** Keys (year * 100000 + twig) of fruit picked up, so it does not come back after a load. */
+	UPROPERTY(SaveGame) TArray<int32> PickedFruit;
+	TMap<int32, TWeakObjectPtr<AFallenFruit>> GroundFruit;
+	TSet<int32> HangingFruit;
 
 	FPlantSkeleton Skeleton;
 	FName BuiltSpecies;

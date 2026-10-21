@@ -9,6 +9,8 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Kismet/GameplayStatics.h"
+#include "Plants/FallenFruit.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
 #include "StaticMeshResources.h"
@@ -127,6 +129,12 @@ float AProceduralPlant::GetAge() const
 	return AgeAtStart + (float)UGameCalendar::YearsBetween(Start, UGameCalendar::NowIn(World));
 }
 
+FDateTime AProceduralPlant::CurrentDate() const
+{
+	const UWorld* World = GetWorld();
+	return UGameCalendar::NowIn(World) + FTimespan::FromDays(DemoDaysPerSecond * UGameCalendar::GameSeconds(World));
+}
+
 float AProceduralPlant::CurrentDay() const
 {
 	const UWorld* World = GetWorld();
@@ -134,7 +142,7 @@ float AProceduralPlant::CurrentDay() const
 	{
 		return EditorPreviewDay;
 	}
-	return UGameCalendar::DayOfYear(UGameCalendar::NowIn(World));
+	return UGameCalendar::DayOfYear(CurrentDate());
 }
 
 FPlantSummary AProceduralPlant::GetSummary() const
@@ -243,6 +251,10 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 			SetInstances(LeafComponents[K], Out.Leaves[K]);
 		}
 		SetInstances(FruitComponent, Out.Fruit);
+		if (GetWorld() && GetWorld()->IsGameWorld())
+		{
+			SyncFallenFruit(Out);
+		}
 		if (bWood || WoodAge < 0.f)
 		{
 			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
@@ -262,6 +274,108 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	ShownAge = Age;
 	ShownDay = Day;
 	bShownSummary = bSummary;
+}
+
+void AProceduralPlant::SyncFallenFruit(const FPlantSkeleton::FInstances& Out)
+{
+	const FPlantSpecies& S = GetSpecies();
+	const int32 Year = CurrentDate().GetYear() * 100000;
+	const FTransform& Xf = GetActorTransform();
+	TSet<int32> Want;
+	for (const FPlantSkeleton::FInstances::FFallen& F : Out.FallenFruit)
+	{
+		const int32 Key = Year + F.Id;
+		if (PickedFruit.Contains(Key))
+		{
+			continue;
+		}
+		Want.Add(Key);
+		const TWeakObjectPtr<AFallenFruit>* Have = GroundFruit.Find(Key);
+		if (Have && Have->IsValid())
+		{
+			continue;
+		}
+		// one that drops while we watch falls from its twig; older ones already lie in the grass under it
+		FVector At = Xf.TransformPosition(FVector(F.At) * 100.0);
+		if (!HangingFruit.Contains(Key))
+		{
+			const FVector Scatter((PlantModel::Hash01(Seed, F.Id, 0, 31) - 0.5f) * 120.f, (PlantModel::Hash01(Seed, F.Id, 0, 32) - 0.5f) * 120.f, 0.f);
+			FHitResult Hit;
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(FruitGround), false, this);
+			if (GetWorld()->LineTraceSingleByChannel(Hit, At + Scatter, At + Scatter - FVector(0, 0, 3000), ECC_Visibility, Q))
+			{
+				At = Hit.ImpactPoint + FVector(0, 0, S.FruitSize * 50.f);
+			}
+		}
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AFallenFruit* Fruit = GetWorld()->SpawnActor<AFallenFruit>(At, FRotator(0.f, PlantModel::Hash01(Seed, F.Id, 0, 24) * 360.f, 0.f), P);
+		if (!Fruit) continue;
+		Fruit->Tree = this;
+		Fruit->Key = Key;
+		Fruit->SetActorScale3D(FVector(S.FruitSize, S.FruitSize, S.FruitSize * 0.92f));
+		Fruit->Mesh->SetMaterial(0, FruitMaterial);
+		Fruit->Mesh->SetSimulatePhysics(true);
+		GroundFruit.Add(Key, Fruit);
+	}
+	// rotted away, or a new year
+	for (auto It = GroundFruit.CreateIterator(); It; ++It)
+	{
+		if (!Want.Contains(It.Key()))
+		{
+			if (AFallenFruit* F = It.Value().Get()) F->Destroy();
+			It.RemoveCurrent();
+		}
+	}
+	HangingFruit.Reset();
+	for (const int32 Id : Out.FruitIds)
+	{
+		HangingFruit.Add(Year + Id);
+	}
+}
+
+void AProceduralPlant::ClearFallenFruit()
+{
+	for (const TPair<int32, TWeakObjectPtr<AFallenFruit>>& F : GroundFruit)
+	{
+		if (AFallenFruit* A = F.Value.Get()) A->Destroy();
+	}
+	GroundFruit.Reset();
+	HangingFruit.Reset();
+}
+
+void AProceduralPlant::OnInteract()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	if (!Pawn || !PC->PlayerCameraManager || GroundFruit.IsEmpty())
+	{
+		return;
+	}
+	const FVector From = PC->PlayerCameraManager->GetCameraLocation();
+	const FVector To = From + PC->PlayerCameraManager->GetCameraRotation().Vector() * (PickDistance + 100.f);
+	FHitResult Hit;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(FruitPick), false, Pawn);
+	if (!GetWorld()->LineTraceSingleByChannel(Hit, From, To, ECC_Visibility, Q))
+	{
+		return;
+	}
+	AFallenFruit* Fruit = Cast<AFallenFruit>(Hit.GetActor());
+	if (!Fruit || Fruit->Tree.Get() != this || FVector::Dist(Pawn->GetActorLocation(), Fruit->GetActorLocation()) > PickDistance)
+	{
+		return;
+	}
+	PickedFruit.AddUnique(Fruit->Key);
+	FruitPicked++;
+	GroundFruit.Remove(Fruit->Key);
+	Fruit->Destroy();
+}
+
+void AProceduralPlant::OnGameLoaded_Implementation()
+{
+	// the picked list came back with the save: lay the ground out again from it
+	ClearFallenFruit();
+	Apply(GetAge(), CurrentDay(), WantsSummary());
 }
 
 void AProceduralPlant::ShowAt(float Age, float DayOfYear, bool bSummary)
@@ -289,7 +403,25 @@ void AProceduralPlant::BeginPlay()
 			SetActorLocation(Hit.ImpactPoint - FVector(0, 0, 3)); // the trunk goes into the soil a little
 		}
 	}
+	if (GetSpecies().FruitSize > 0.f)
+	{
+		if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+		{
+			EnableInput(PC);
+			if (InputComponent)
+			{
+				// several actors listen for E (doors, seats, people); none may swallow it
+				InputComponent->BindKey(EKeys::E, IE_Pressed, this, &AProceduralPlant::OnInteract).bConsumeInput = false;
+			}
+		}
+	}
 	Apply(GetAge(), CurrentDay(), WantsSummary());
+}
+
+void AProceduralPlant::EndPlay(const EEndPlayReason::Type Reason)
+{
+	ClearFallenFruit();
+	Super::EndPlay(Reason);
 }
 
 void AProceduralPlant::Tick(float DeltaSeconds)

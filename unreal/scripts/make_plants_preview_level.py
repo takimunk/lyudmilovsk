@@ -62,9 +62,14 @@ for i, day in enumerate((15, 125, 180, 280, 293.67, 305, 320)):
     p.show_at(25, day, False)
     unreal.log_warning("PLANT day %.0f: %s" % (day, p.debug_report(25, day)))
 # every species on 20 October
-for i, (species, age) in enumerate((("PyramidalPoplar", 30), ("BlackPoplar", 30), ("Apple", 15), ("Maple", 30), ("SwampWhiteOak", 40))):
+for i, (species, age) in enumerate((("PyramidalPoplar", 30), ("BlackPoplar", 30), ("Apple", 25), ("Maple", 30), ("SwampWhiteOak", 80))):
     plant(i * 1600 - 3200, 5600, age, species, species=species, seed=3)
 plant(4800, 5600, 30, "Poplar_summary", summary=True)
+# an open-grown oak from sapling to old age, and an orchard apple
+for i, age in enumerate((8, 20, 40, 80, 140)):
+    plant(i * 2600 - 5200, 10000, age, "Oak_age%03d" % age, species="SwampWhiteOak", seed=5)
+for i, age in enumerate((5, 12, 25, 50)):
+    plant(i * 1300 - 2000, 14000, age, "Apple_age%02d" % age, species="Apple", seed=6)
 
 cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, -4200, 900), unreal.Rotator(-2, 90, 0))
 cam.set_actor_label("SeriesView")

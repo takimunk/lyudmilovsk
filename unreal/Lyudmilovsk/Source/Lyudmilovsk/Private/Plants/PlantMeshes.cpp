@@ -116,7 +116,7 @@ namespace
 		else
 		{
 			const bool bTeeth = L.Teeth > 0 && L.Teeth <= 8;
-			const int32 N = L.Lobes > 0 ? L.Lobes * 4 + 4 : (bTeeth ? L.Teeth * 4 : 8);
+			const int32 N = L.Lobes > 0 ? L.Lobes * 2 + 4 : (bTeeth ? L.Teeth * 4 : 8);
 			const float A = FMath::Clamp(L.WidestAt, 0.05f, 0.95f), Al = 2.2f * A, Be = 2.2f * (1.f - A);
 			const float Norm = FMath::Pow(A, Al) * FMath::Pow(1.f - A, Be);
 			for (int32 I = 0; I <= N; I++)

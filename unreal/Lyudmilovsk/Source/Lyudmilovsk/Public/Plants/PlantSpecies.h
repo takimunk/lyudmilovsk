@@ -93,10 +93,15 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float GrowthRate = 0.08f;
 	/** Above 1 the first years are slow (a sprout), then it shoots up. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float GrowthShape = 1.6f;
-	/** The trunk (leader) grows to this fraction of the height; the crown above is its branches (apple, oak). */
+	/**
+	 * The trunk (leader) stops at this fraction of MaxHeight and its top limbs take over: young trees
+	 * have a central leader, old oaks and apples fork into a few big limbs.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float LeaderFraction = 1.f;
 	/** Trunk base radius per metre of height. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float TrunkRadiusPerHeight = 0.012f;
+	/** Wood added to the trunk's radius every year on top of the height rule, m (an annual ring): old trees keep thickening after they stop growing up. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float RingWidth = 0.f;
 	/** Trunk radius never goes below this, m (a sprout's stem). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Growth") float MinRadius = 0.004f;
 	/** Branches on the trunk below CrownBase * height are shed (self-pruning). */
@@ -109,6 +114,8 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TrunkNodeSpacing = 0.28f;
 	/** Order-1 angle off the trunk, degrees (pyramidal poplar: steep, nearly along the trunk). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch1Angle = 26.f;
+	/** Order-1 angle at the top of the trunk; below 0 the same as Branch1Angle. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch1AngleTop = -1.f;
 	/** Longest an order-1 branch gets, m; scaled by Branch1Profile along the trunk. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch1MaxLength = 6.f;
 	/** Order-1 length cap at the bottom / middle / top of the mature trunk (crown silhouette). */
@@ -118,6 +125,19 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Tropism = 0.06f;
 	/** Random bend of shoots, radians per metre. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Wobble = 0.12f;
+	/**
+	 * Sympodial kinks: every KinkSpacing metres the shoot's tip flowered or died and a side bud took
+	 * over, turning it by up to Kink radians (apple, oak: crooked limbs). 0 = none.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Kink = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float KinkSpacing = 0.5f;
+	/** Long limbs sag under their own weight and fruit: downward pull growing with the distance out, 1/m^2. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Droop = 0.f;
+	/**
+	 * The mature crown's width / MaxHeight; branches stop where they would leave that dome (a regular,
+	 * rounded crown, as in open-grown oaks). 0 = no envelope.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float CrownWidth = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch2Spacing = 0.3f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Branch2Angle = 38.f;
 	/** Order-2 cap as a fraction of the parent's remaining length past the bud. */
@@ -155,7 +175,9 @@ struct FPlantSpecies
 	/** Fruit set (small and green), fully grown and coloured, and fallen. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitSetDay = 160.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRipeDay = 250.f;
+	/** Fruit drops one by one over the 35 days up to FruitFallDay, then lies on the ground this long. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitFallDay = 310.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") float FruitRotDays = 25.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitUnripeColour = FLinearColor(0.15f, 0.3f, 0.04f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fruit") FLinearColor FruitColour = FLinearColor(0.5f, 0.04f, 0.02f);
 

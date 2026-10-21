@@ -38,10 +38,11 @@ struct FPlantSeason
 	/** Per colour bucket: fraction of its leaves already fallen, and its colour. Bucket 0 turns first. */
 	float Fallen[NumBuckets] = {};
 	FLinearColor Colour[NumBuckets];
-	/** Fruit size 0..1 (0: none on the tree), colour, and the fraction already fallen. */
+	/** This tree's own day of the year (the calendar's, shifted by its seed). */
+	float Day = 0.f;
+	/** Fruit size 0..1 (0: no fruit this time of year) and colour. */
 	float FruitScale = 0.f;
 	FLinearColor FruitColour;
-	float FruitFallen = 0.f;
 	/** Snow lying on the branches, 0..1. */
 	float Snow = 0.f;
 };
@@ -99,7 +100,12 @@ public:
 	{
 		TArray<FTube> Tubes;
 		TArray<FTransform> Leaves[FPlantSeason::NumBuckets];
+		/** Fruit still hanging, and its ids (stable: the twig it grows on). */
 		TArray<FTransform> Fruit;
+		TArray<int32> FruitIds;
+		/** Fruit that has dropped and not yet rotted: id and where it hung (m). */
+		struct FFallen { int32 Id; FVector3f At; };
+		TArray<FFallen> FallenFruit;
 		/** Height and widest reach of what was drawn, m. */
 		float Height = 0.f;
 		float Reach = 0.f;
