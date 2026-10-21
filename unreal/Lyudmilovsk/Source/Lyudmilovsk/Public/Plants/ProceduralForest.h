@@ -55,7 +55,7 @@ public:
 	/** Grid cell of the scatter, cm: trees stand at least a third of it apart. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest", meta = (ClampMin = "50")) float Spacing = 450.f;
 	/** Trees of a kind are baked in this many seeds, so no two neighbours are twins. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest", meta = (ClampMin = "1", ClampMax = "8")) int32 Variants = 4;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest", meta = (ClampMin = "1", ClampMax = "8")) int32 Variants = 3;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") bool bSnapToGround = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest", meta = (ClampMin = "0", ClampMax = "1")) float MinSlopeNormalZ = 0.75f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") float MinWorldZ = -100000.f;
@@ -69,9 +69,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveDistance = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") int32 MaxLive = 10;
 	/** Camera distances where the baked trees drop to LOD1, LOD2 and LOD3, cm. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(3000.0, 8000.0, 22000.0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") FVector LodDistances = FVector(1500.0, 4500.0, 11000.0);
 	/** Trees farther than this are not drawn, cm. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float CullDistance = 120000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float CullDistance = 50000.f;
 	/** The baked trees are redone when the date has moved this many days. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float RebakeDays = 14.f;
 	/** Lay the forest out and bake it when the level opens in the editor (a few seconds per thousand trees; off for big levels). */

@@ -22,7 +22,7 @@ struct FTreeBakeKey
 struct FTreeBaked
 {
 	TObjectPtr<UStaticMesh> Mesh;
-	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf;
+	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf, Blob;
 	/** The day of the year it was baked for. */
 	float Day = -1000.f;
 	/** Counts up every time the mesh is replaced by a newer bake; a user of it compares. */

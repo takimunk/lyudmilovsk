@@ -98,6 +98,11 @@ void UTreeBakeCache::Finish(FJob& Job)
 		Out.Leaf = UMaterialInstanceDynamic::Create(S.Leaf.Form == EPlantLeafForm::Needle ? NeedleMaterial.Get() : LeafMaterial.Get(), this);
 		KeepAlive.Add(Out.Wood);
 		KeepAlive.Add(Out.Leaf);
+		// the far crown is a closed low-poly shape: the plain leaf material (never the needle cards' masked one), darkened
+		Out.Blob = UMaterialInstanceDynamic::Create(LeafMaterial, this);
+		KeepAlive.Add(Out.Blob);
+		Out.Blob->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		Out.Blob->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkAlbedo"), A.Albedo);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkNormal"), A.Normal);
 		Out.Wood->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour);
@@ -112,6 +117,7 @@ void UTreeBakeCache::Finish(FJob& Job)
 	const FPlantSeason Season = PlantModel::Season(S, Job.Key.Seed, Job.Day);
 	Out.Wood->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
 	Out.Leaf->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
+	Out.Blob->SetVectorParameterValue(TEXT("Color"), Season.Colour[1] * 0.45f);
 	Out.Mesh = Bake.Mesh;
 	Out.Day = Job.Day;
 	Out.Version++;

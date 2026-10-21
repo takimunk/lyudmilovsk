@@ -15,7 +15,11 @@
 #include "Plants/ProceduralGrass.h"
 #include "Plants/ProceduralPlant.h"
 #include "Plants/TreeBakeCache.h"
+#include "HAL/IConsoleManager.h"
 #include "UObject/ConstructorHelpers.h"
+
+static TAutoConsoleVariable<int32> CVarForestMaxLive(TEXT("lyud.Forest.MaxLive"), -1,
+	TEXT("Live plants a forest swaps in near the camera at most (below 0: the actor's MaxLive). 0 draws baked trees only."), ECVF_Default);
 
 namespace
 {
@@ -78,7 +82,12 @@ int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
 	G.Comp->bDisableCollision = true;
 	G.Comp->SetCanEverAffectNavigation(false);
 	G.Comp->bAffectDistanceFieldLighting = false;
-	G.Comp->LightingChannels.bChannel0 = true;
+	// trees take Lumen's light but do not bounce it: a forest in the Lumen scene costs more than it adds
+	G.Comp->bAffectDynamicIndirectLighting = false;
+	G.Comp->bReceivesDecals = false;
+	G.Comp->bUseAsOccluder = false;
+	// the outdoor sun lights channel 1 only; channel 0 is the club's lights, whose shadow work the forests' huge bounds would join
+	G.Comp->LightingChannels.bChannel0 = false;
 	G.Comp->LightingChannels.bChannel1 = true;
 	G.Comp->SetCullDistances(0, (int32)CullDistance);
 	G.Comp->RegisterComponent();
@@ -209,6 +218,7 @@ void AProceduralForest::SyncBakes(float Day)
 		G.Comp->SetStaticMesh(B->Mesh);
 		G.Comp->SetMaterial(0, B->Wood);
 		G.Comp->SetMaterial(1, B->Leaf);
+		G.Comp->SetMaterial(2, B->Blob);
 		G.Comp->SetCullDistances(0, (int32)CullDistance);
 		if (!G.bInstancesAdded)
 		{
@@ -267,7 +277,7 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 	Wanted.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key < B.Key; });
 	for (const TPair<double, int32>& W : Wanted)
 	{
-		if (LiveCount >= MaxLive) break;
+		if (LiveCount >= (CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive)) break;
 		FTree& T = Trees[W.Value];
 		FActorSpawnParameters Params;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

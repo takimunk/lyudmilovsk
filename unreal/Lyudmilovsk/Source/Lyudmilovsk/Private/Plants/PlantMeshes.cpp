@@ -1040,7 +1040,7 @@ UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 namespace
 {
 	/** The data of one LOD as two sections, wood and leaves, in a mesh description. */
-	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf)
+	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf, const FMeshData& Blob)
 	{
 		FStaticMeshAttributes Attr(MD);
 		Attr.Register();
@@ -1051,9 +1051,9 @@ namespace
 		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
 		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
 		VUV.SetNumChannels(2);
-		const FMeshData* Parts[2] = { &Wood, &Leaf };
-		const TCHAR* Slots[2] = { TEXT("Wood"), TEXT("Leaf") };
-		for (int32 Part = 0; Part < 2; Part++)
+		const FMeshData* Parts[3] = { &Wood, &Leaf, &Blob };
+		const TCHAR* Slots[3] = { TEXT("Wood"), TEXT("Leaf"), TEXT("Blob") };
+		for (int32 Part = 0; Part < 3; Part++)
 		{
 			const FMeshData& D = *Parts[Part];
 			const FPolygonGroupID PG = MD.CreatePolygonGroup();
@@ -1100,9 +1100,10 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 	LeafClusterData(S, Simple, true);
 
 	struct FLod { int32 MaxOrder; int32 Stride; float Scale; };
-	// needle clusters are already 6 triangles; a blade cluster is cut to a fifth in every LOD (simple blades) and thinned out
+	// needle clusters are already 6 triangles; a blade cluster is cut to a fifth in every LOD (simple blades) and thinned out.
+	// LOD3, from far away, is the trunk and one low-poly crown (the "Blob" section, no leaf shapes at all)
 	const bool bNeedle = S.Leaf.Form == EPlantLeafForm::Needle;
-	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.3f }, { 1, bNeedle ? 2 : 5, bNeedle ? 1.35f : 2.f }, { 1, bNeedle ? 5 : 14, bNeedle ? 2.1f : 3.2f }, { 0, bNeedle ? 14 : 40, bNeedle ? 3.4f : 5.f } };
+	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.25f }, { 1, bNeedle ? 3 : 6, bNeedle ? 1.7f : 2.2f }, { 1, bNeedle ? 8 : 20, bNeedle ? 2.8f : 3.8f }, { 0, 0, 1.f } };
 	TArray<FMeshDescription>& Descriptions = Result.Lods;
 	Descriptions.SetNum(4);
 	for (int32 L = 0; L < 4; L++)
@@ -1112,7 +1113,7 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 		{
 			if (T.Order <= Lods[L].MaxOrder) Tubes.Add(T);
 		}
-		FMeshData Wood, Leaf;
+		FMeshData Wood, Leaf, Blob;
 		if (!Tubes.IsEmpty())
 		{
 			BuildWoodImpl(nullptr, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
@@ -1122,7 +1123,7 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 		{
 			for (const FTransform& Xf0 : Out.Leaves[K])
 			{
-				if (Count++ % Lods[L].Stride != 0) continue;
+				if (Lods[L].Stride <= 0 || Count++ % Lods[L].Stride != 0) continue;
 				FTransform Xf = Xf0;
 				Xf.SetScale3D(Xf.GetScale3D() * Lods[L].Scale);
 				const int32 Base = Leaf.Pos.Num();
@@ -1135,13 +1136,53 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 				for (const FIntVector3& T : Src.Tris) Leaf.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
 			}
 		}
-		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty())
+		if (L >= 2)
+		{
+			// LOD2 has the crown under its few clusters, LOD3 is only the crown
+			int32 Leaves = 0;
+			for (int32 K = 0; K < FPlantSeason::NumBuckets; K++) Leaves += Out.Leaves[K].Num();
+			if (Leaves > 20)
+			{
+				// an ellipsoid (a cone for the conifers) over the crown: from the lowest leaf to the top
+				float Low = TNumericLimits<float>::Max();
+				for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+				{
+					for (const FTransform& Xf : Out.Leaves[K]) Low = FMath::Min(Low, (float)Xf.GetLocation().Z * 0.01f);
+				}
+				const float Top = Out.Height, Base = FMath::Clamp(Low, 0.f, Top * 0.8f), Mid = 0.5f * (Top + Base), Half = 0.5f * (Top - Base);
+				const float Radius = FMath::Max(Out.Reach * 0.85f, 0.3f);
+				constexpr int32 Sides = 10, Rings = 6;
+				for (int32 R = 0; R <= Rings; R++)
+				{
+					const float V = (float)R / Rings;
+					const float Z = Base + V * (Top - Base);
+					const float Rad = S.bConicalCrown ? Radius * (1.f - V) : Radius * FMath::Sqrt(FMath::Max(0.f, 1.f - FMath::Square((Z - Mid) / FMath::Max(Half, 0.01f))));
+					for (int32 I = 0; I < Sides; I++)
+					{
+						const float A = 2.f * PI * I / Sides;
+						const FVector3f P(FMath::Cos(A) * Rad, FMath::Sin(A) * Rad, Z);
+						const FVector3f N = S.bConicalCrown ? FVector3f(FMath::Cos(A), FMath::Sin(A), 0.4f) : FVector3f(FMath::Cos(A) * Rad / Radius, FMath::Sin(A) * Rad / Radius, (Z - Mid) / FMath::Max(Half, 0.01f));
+						Blob.Add(P * 100.f, N.GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector), FVector3f(-FMath::Sin(A), FMath::Cos(A), 0.f), FVector2f(0.5f, 0.5f));
+					}
+				}
+				for (int32 R = 0; R < Rings; R++)
+				{
+					for (int32 I = 0; I < Sides; I++)
+					{
+						const int32 A0 = R * Sides + I, B0 = R * Sides + (I + 1) % Sides, C0 = A0 + Sides, E0 = B0 + Sides;
+						Blob.Tris.Add(FIntVector3(A0, C0, B0));
+						Blob.Tris.Add(FIntVector3(B0, C0, E0));
+					}
+				}
+			}
+		}
+		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty() && Blob.Tris.IsEmpty())
 		{
 			for (int32 I = 0; I < 3; I++) Wood.Add(FVector3f::ZeroVector, FVector3f::UpVector, FVector3f::XAxisVector, FVector2f::ZeroVector);
 			Wood.Tris.Add(FIntVector3(0, 1, 2));
 		}
-		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num();
-		FillTreeLod(Descriptions[L], Wood, Leaf);
+		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Blob.Tris.Num();
+		FillTreeLod(Descriptions[L], Wood, Leaf, Blob);
 	}
 	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
 	Result.Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
@@ -1156,6 +1197,7 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), *FString::Printf(TEXT("SM_Tree_%s_%u"), *S.Name.ToString(), Seed)), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Leaf")));
+	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Blob")));
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
 	Params.bMarkPackageDirty = false;
 	Params.bBuildSimpleCollision = false;
@@ -1164,6 +1206,14 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	Mesh->BuildFromMeshDescriptions({ &Prep.Lods[0], &Prep.Lods[1], &Prep.Lods[2], &Prep.Lods[3] }, Params);
 	Result.Mesh = Mesh;
 	Result.Radius = Prep.Radius;
+	// the two farthest LODs cast no shadow (the shadow of a tree 60 m away is a few pixels of a shadow map page)
+	if (FStaticMeshRenderData* Data = Mesh->GetRenderData())
+	{
+		for (int32 L = 2; L < Data->LODResources.Num(); L++)
+		{
+			for (FStaticMeshSection& Section : Data->LODResources[L].Sections) Section.bCastShadow = false;
+		}
+	}
 	// LOD switch by camera distance: a sphere of radius R fills about R / d of a 90 degree view
 	if (FStaticMeshRenderData* RD = Mesh->GetRenderData())
 	{
