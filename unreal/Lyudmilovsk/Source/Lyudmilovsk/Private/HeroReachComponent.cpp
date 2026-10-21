@@ -54,7 +54,8 @@ FTransform UHeroReachComponent::YawFrame() const
 {
 	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
 	const float Yaw = PC ? PC->GetControlRotation().Yaw : Hero->GetActorRotation().Yaw;
-	return FTransform(FRotator(0.f, Yaw, 0.f), Hero->EyeLocation());
+	// the upright eye point: the reach's own crouch moves the real eyes, and keys placed by them would chase it
+	return FTransform(FRotator(0.f, Yaw, 0.f), Hero->StandingEyeLocation());
 }
 
 FTransform UHeroReachComponent::ItemFrame(const FVector& Pos, const FQuat& Rot) const

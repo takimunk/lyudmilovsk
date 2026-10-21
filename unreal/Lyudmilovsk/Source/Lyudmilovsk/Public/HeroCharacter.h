@@ -74,6 +74,10 @@ public:
 	/** The eye point in the world (between the eyes, after the animation). */
 	FVector EyeLocation() const;
 
+	/** Where the eyes are when the hero stands upright, whatever the body does now (a reach's crouch
+	 *  and lean move EyeLocation; anything placed relative to the head uses this, or it chases itself). */
+	FVector StandingEyeLocation() const;
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void CalcCamera(float DeltaTime, struct FMinimalViewInfo& OutResult) override;
@@ -93,6 +97,8 @@ private:
 	void FeedAnimation(float DeltaSeconds);
 
 	float BodyYaw = 0.f;
+	/** Eyes relative to the actor while standing upright (cached when no reach bends the body). */
+	FVector StandEyeOffset = FVector(10.f, 0.f, 66.f);
 	double Distance = 0.0;
 	double IdleTime = 0.0;
 	bool bWantsWalk = false;
