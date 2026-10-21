@@ -1067,6 +1067,14 @@ if "outside" in LAYOUT and plant_cls:
     spawn(plant_cls, unreal.Vector(-450, LAYOUT["outside"]["portal_face_y"] + 650, 0),
           label="Poplar").set_folder_path("Outside")
     log("poplar placed")
+    # An old apple tree on the other side of the path; its calendar runs fast (a month in ~100 s)
+    # so the leaves turn and the ripe apples drop (pick them up with E).
+    apple = spawn(plant_cls, unreal.Vector(450, LAYOUT["outside"]["portal_face_y"] + 900, 0), label="AppleTree")
+    for k, v in (("species", "Apple"), ("seed", 6), ("age_at_start", 25.0), ("demo_growth", False),
+                 ("demo_days_per_second", 0.3)):
+        apple.set_editor_property(k, v)
+    apple.set_folder_path("Outside")
+    log("apple tree placed")
 
 # The moving walkway (C++ AConveyorBelt): it runs whichever way its riders walk, speeding up
 # as they keep going and easing off when they stop. Works for NPCs too.
