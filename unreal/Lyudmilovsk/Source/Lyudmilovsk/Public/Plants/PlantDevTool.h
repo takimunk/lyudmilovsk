@@ -9,9 +9,10 @@ class AProceduralPlant;
 class SWidget;
 
 /**
- * Plants developer mode, in play: F7 (fn+F7 on a Mac keyboard) opens a panel over the game to pick a
- * tree (the one in view, or step through them) and drive it: age, day of the year, how fast each
- * runs, species, seed, the far-away summary. Overrides live on the tree (DevAge / DevDay) and are
+ * Developer mode, in play: F7 (fn+F7 on a Mac keyboard) opens a panel over the game. The world: the
+ * calendar's date, time of day and time speed (UGameCalendar; plants, sky and sun, starlings and grass
+ * all follow it). A tree (the one in view, or step through them): its age, day of the year, how fast
+ * each runs, species, seed, the far-away summary. Overrides live on the tree (DevAge / DevDay) and are
  * not saved. F7 is not consumed, and the game keeps its keyboard while the panel is open.
  */
 UCLASS(NotPlaceable)

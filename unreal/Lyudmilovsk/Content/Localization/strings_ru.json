@@ -89,7 +89,7 @@
  "grass.commonreed.name": "Тростник",
  "grass.sandsedge.name": "Осока песчаная",
  "grass.wavyhairgrass.name": "Луговик извилистый",
- "ui.plants.title": "Растения: режим разработчика (F7)",
+ "ui.plants.title": "Выбранное дерево",
  "ui.plants.none": "нет деревьев",
  "ui.plants.in_view": "В прицеле",
  "ui.plants.age": "Возраст, лет",
@@ -340,5 +340,12 @@
  "ui.aton.about.user": "пользователь: не найден",
  "ui.aton.about.copyright": "(c) Людмиловск",
  "ui.aton.chosen.loading": "загрузка Chosen…",
- "ui.aton.chosen.offline": "нет связи с Chosen"
+ "ui.aton.chosen.offline": "нет связи с Chosen",
+ "ui.dev.title": "Режим разработчика (F7)",
+ "ui.dev.world": "Мир: дата и время",
+ "ui.dev.date": "Дата",
+ "ui.dev.hour": "Время суток",
+ "ui.dev.speed": "Скорость времени",
+ "ui.dev.speed_value": "×{0}",
+ "ui.dev.speed_real": "Обычная скорость"
 }

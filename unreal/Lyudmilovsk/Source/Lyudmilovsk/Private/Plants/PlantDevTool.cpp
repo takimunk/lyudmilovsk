@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudText.h"
+#include "Plants/GameCalendar.h"
 #include "Plants/PlantSpecies.h"
 #include "Plants/ProceduralPlant.h"
 #include "Styling/CoreStyle.h"
@@ -172,6 +173,7 @@ void APlantDevTool::Open()
 	SelectInView();
 	TWeakObjectPtr<APlantDevTool> Self(this);
 	auto P = [Self]() -> AProceduralPlant* { return Self.IsValid() ? Self->Selected() : nullptr; };
+	auto Cal = [Self]() -> UGameCalendar* { return Self.IsValid() && Self->GetWorld() ? Self->GetWorld()->GetSubsystem<UGameCalendar>() : nullptr; };
 	TArray<FName> SpeciesNames = PlantSpeciesLibrary::Names();
 
 	Panel = SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(FMargin(24.f, 24.f))
@@ -182,7 +184,38 @@ void APlantDevTool::Open()
 			[
 				SNew(SVerticalBox)
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 8)
-				[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.plants.title"))).Font(Font(14)).ColorAndOpacity(FLinearColor::White)]
+				[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.dev.title"))).Font(Font(14)).ColorAndOpacity(FLinearColor::White)]
+				// the world's date, time of day and how fast time runs: everything that reads the calendar follows
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 4, 0, 2)
+				[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.dev.world"))).Font(Font(12)).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.5f))]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
+				[SliderRow(LyudText::Get(TEXT("ui.dev.date")), 1.f, 365.f,
+					[Cal]() { return Cal() ? (float)Cal()->Now().GetDayOfYear() : 1.f; },
+					[Cal](float V)
+					{
+						if (!Cal()) return;
+						const FDateTime Now = Cal()->Now();
+						Cal()->SetNow(FDateTime(Now.GetYear(), 1, 1) + FTimespan::FromDays(FMath::FloorToInt(V) - 1) + Now.GetTimeOfDay());
+					},
+					[Cal]() { return Cal() ? FText::FromString(Cal()->Now().ToString(TEXT("%d.%m.%Y"))) : FText::GetEmpty(); })]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
+				[SliderRow(LyudText::Get(TEXT("ui.dev.hour")), 0.f, 23.99f,
+					[Cal]() { return Cal() ? (float)Cal()->Now().GetTimeOfDay().GetTotalHours() : 0.f; },
+					[Cal](float V) { if (Cal()) Cal()->SetNow(Cal()->Now().GetDate() + FTimespan::FromHours(V)); },
+					[Cal]() { return Cal() ? FText::FromString(Cal()->Now().ToString(TEXT("%H:%M"))) : FText::GetEmpty(); })]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
+				[SliderRow(LyudText::Get(TEXT("ui.dev.speed")), 0.f, 1.f,
+					// one to a hundred thousand game seconds per second, on a log scale
+					[Cal]() { return Cal() ? FMath::LogX(10.f, FMath::Max(Cal()->TimeScale, 1.f)) / 5.f : 0.f; },
+					[Cal](float V) { if (Cal()) Cal()->SetTimeScale(FMath::Pow(10.f, V * 5.f)); },
+					[Cal]() { return Cal() ? LyudText::Get(TEXT("ui.dev.speed_value"), { FStringFormatArg(FText::AsNumber(FMath::RoundToInt(Cal()->TimeScale)).ToString()) }) : FText::GetEmpty(); })]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 3)
+				[
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.speed_real")), [Cal]() { if (Cal()) Cal()->SetTimeScale(1.f); })]
+				]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 2)
+				[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.plants.title"))).Font(Font(12)).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.5f))]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 2)
 				[
 					SNew(SHorizontalBox)
