@@ -1,0 +1,19 @@
+{
+ "key": "line.girl_a.again3.1",
+ "lang": "en",
+ "text": "Everything here is older than me, except you. You're somehow too new.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Everything here is older than me, except you. You're somehow too new.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ece-f4c1-7040-af2d-1ede00313b2b",
+ "hash": "7b1ecf49c515"
+}

@@ -1,0 +1,19 @@
+{
+ "key": "line.hero.clerk_first.2",
+ "lang": "ja",
+ "text": "え、表計算で絵を描いてるんですか？",
+ "speaker": "hero",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "direction": "[quiet, uncertain]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, uncertain] え、表計算で絵を描いてるんですか？",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed7-4c06-7ab1-b23d-75b8ea3af8c6",
+ "hash": "8d8f52b31d0b"
+}

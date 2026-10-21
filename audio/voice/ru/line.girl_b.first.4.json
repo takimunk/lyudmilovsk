@@ -1,0 +1,19 @@
+{
+ "key": "line.girl_b.first.4",
+ "lang": "ru",
+ "text": "А потом я сюда пришла.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] А потом я сюда пришла.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ec9-546d-74e0-880b-970d0b3af5a7",
+ "hash": "520ca7182970"
+}

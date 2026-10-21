@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_a.first.1",
+ "lang": "ru",
+ "text": "Брат, не сейчас, у меня рейтинговая.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Брат, не сейчас, у меня рейтинговая.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ec9-c15c-7543-a458-0146128c5a64",
+ "hash": "d02260942c77"
+}

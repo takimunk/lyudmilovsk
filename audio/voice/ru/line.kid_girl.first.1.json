@@ -1,0 +1,19 @@
+{
+ "key": "line.kid_girl.first.1",
+ "lang": "ru",
+ "text": "Привет. Ты тоже ждёшь, пока за тобой придут?",
+ "speaker": "kid_girl",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "direction": "[a little girl, earnest, a bit lonely]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a little girl, earnest, a bit lonely] Привет. Ты тоже ждёшь, пока за тобой придут?",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ecc-8fdc-70c0-b272-3d9eaa9c3891",
+ "hash": "992557b28f0f"
+}

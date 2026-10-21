@@ -1,50 +1,66 @@
 {
  "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "engine": "ElevenLabs eleven_v3 behind fal's endpoint; the endpoint has no seed and no other voice settings than below",
+ "settings": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto"
+ },
  "format": "wav 24 kHz mono 16-bit (afconvert), one file per line",
  "speakers": {
   "default": {
    "voice": "Daniel",
-   "direction": ""
+   "direction": "",
+   "voice_id": "onwK4e9ZLuTAKqWW03F9"
   },
   "owner": {
    "voice": "Daniel",
-   "direction": "[calm, tired, slow, a little ironic]"
+   "direction": "[calm, tired, slow, a little ironic]",
+   "voice_id": "onwK4e9ZLuTAKqWW03F9"
   },
   "hero": {
    "voice": "Brian",
-   "direction": "[quiet, uncertain]"
+   "direction": "[quiet, uncertain]",
+   "voice_id": "nPczCjzI2devNBz1zQrb"
   },
   "clerk": {
    "voice": "Callum",
-   "direction": "[polite, quiet, precise, absorbed in his work]"
+   "direction": "[polite, quiet, precise, absorbed in his work]",
+   "voice_id": "N2lVS1w4EtoT3dr4eOWO"
   },
   "streamer": {
    "voice": "Jessica",
-   "direction": "[bright, fast, half talking to her chat]"
+   "direction": "[bright, fast, half talking to her chat]",
+   "voice_id": "cgSgspJ2msm6clMCkdW9"
   },
   "kid_boy": {
    "voice": "Charlie",
-   "direction": "[a bored teenage boy, distracted by his game]"
+   "direction": "[a bored teenage boy, distracted by his game]",
+   "voice_id": "IKne3meq5aSn9XLyUdCD"
   },
   "kid_girl": {
    "voice": "Laura",
-   "direction": "[a little girl, earnest, a bit lonely]"
+   "direction": "[a little girl, earnest, a bit lonely]",
+   "voice_id": "FGY2WhTYpPnrIDTdsKH5"
   },
   "guy_a": {
    "voice": "Will",
-   "direction": "[a young gamer in a hurry, mid-match]"
+   "direction": "[a young gamer in a hurry, mid-match]",
+   "voice_id": "bIHbv24MWmeRgasZH58o"
   },
   "guy_b": {
    "voice": "Chris",
-   "direction": "[relaxed, lazy, friendly]"
+   "direction": "[relaxed, lazy, friendly]",
+   "voice_id": "iP95p4xoKVk53GoZ742B"
   },
   "girl_a": {
    "voice": "Matilda",
-   "direction": "[whispering, concentrated]"
+   "direction": "[whispering, concentrated]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX"
   },
   "girl_b": {
    "voice": "Sarah",
-   "direction": "[curious, slightly uneasy, conspiratorial]"
+   "direction": "[curious, slightly uneasy, conspiratorial]",
+   "voice_id": "EXAVITQu4vr4xnSDxMaL"
   }
  },
  "lines": {
@@ -52,5 +68,5 @@
    "direction": ""
   }
  },
- "notes": "A line key is line.<speaker>.<scene>.<n>; its text is in strings_<lang>.json. The speaker's voice and direction apply to every language; override per line under 'lines' or per language with speakers.<id>.voice_<lang>."
+ "notes": "A line key is line.<speaker>.<scene>.<n>; its text is in strings_<lang>.json. Everything sent to the TTS is pinned here: endpoint (model), voice preset name (voice_id is ElevenLabs' id of that premade voice, for the record), settings (stability, text normalization, overridable per speaker or per line), the direction tag put in front of the text, and language_code = the table's language. The request body of every take is kept in its sidecar audio/voice/<lang>/<key>.json. The endpoint has no seed, so a re-run gives the same voice and delivery but not a byte-identical take: the committed wav is the canonical one; regenerate only when its hash goes stale."
 }

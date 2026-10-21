@@ -1,0 +1,19 @@
+{
+ "key": "line.girl_b.first.3",
+ "lang": "ja",
+ "text": "掲示板があって、このクラブを夢で見た人がたくさんいるって。冗談だと思ってた。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 掲示板があって、このクラブを夢で見た人がたくさんいるって。冗談だと思ってた。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed5-ea8a-79d3-875c-6d65059d58a4",
+ "hash": "56a88553cda4"
+}

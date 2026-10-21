@@ -1,0 +1,19 @@
+{
+ "key": "line.kid_girl.first.1",
+ "lang": "ja",
+ "text": "こんにちは。あなたも迎えを待ってるの？",
+ "speaker": "kid_girl",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "direction": "[a little girl, earnest, a bit lonely]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a little girl, earnest, a bit lonely] こんにちは。あなたも迎えを待ってるの？",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed9-86d1-7792-a746-98678591f73a",
+ "hash": "ad88a3d17ea6"
+}

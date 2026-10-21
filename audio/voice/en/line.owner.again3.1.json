@@ -1,0 +1,19 @@
+{
+ "key": "line.owner.again3.1",
+ "lang": "en",
+ "text": "The cameras are rippling again today. Someone here is thinking too loudly.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] The cameras are rippling again today. Someone here is thinking too loudly.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ed3-8559-74a3-a05b-75b853cef02c",
+ "hash": "671a0739633c"
+}

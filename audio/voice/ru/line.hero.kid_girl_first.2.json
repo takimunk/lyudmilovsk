@@ -1,0 +1,19 @@
+{
+ "key": "line.hero.kid_girl_first.2",
+ "lang": "ru",
+ "text": "Кто придёт?",
+ "speaker": "hero",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "direction": "[quiet, uncertain]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, uncertain] Кто придёт?",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ecb-5a5b-7431-a202-01303d7aa16e",
+ "hash": "68f65355008d"
+}

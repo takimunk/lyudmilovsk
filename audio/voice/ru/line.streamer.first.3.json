@@ -1,0 +1,19 @@
+{
+ "key": "line.streamer.first.3",
+ "lang": "ru",
+ "text": "Трое. Нет, уже двое. Один пишет, что у тебя странное лицо, не обращай внимания.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Трое. Нет, уже двое. Один пишет, что у тебя странное лицо, не обращай внимания.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ecd-a6eb-7c61-aa0f-94295529a2c3",
+ "hash": "821480e6738d"
+}

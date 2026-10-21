@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_b.again2.2",
+ "lang": "ja",
+ "text": "仕事帰りにスマホを充電したくなってさ。ちなみに、結局充電されなかった。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 仕事帰りにスマホを充電したくなってさ。ちなみに、結局充電されなかった。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed6-bcf3-7761-ae05-9a7d7225f885",
+ "hash": "f3b735a87734"
+}

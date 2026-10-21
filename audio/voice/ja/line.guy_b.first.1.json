@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_b.first.1",
+ "lang": "ja",
+ "text": "お、新入りか。好きなとこに座りなよ。どうせ誰も出ていかないし。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] お、新入りか。好きなとこに座りなよ。どうせ誰も出ていかないし。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed6-f84f-70e0-8ac3-962b63e74261",
+ "hash": "3616723e9506"
+}

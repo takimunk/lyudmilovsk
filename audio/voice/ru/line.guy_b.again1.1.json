@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_b.again1.1",
+ "lang": "ru",
+ "text": "Смотрю ролик про то, как люди строят дома из бутылок. Уже шестой час.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Смотрю ролик про то, как люди строят дома из бутылок. Уже шестой час.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ec9-f48f-7490-b265-edcc6ae384e7",
+ "hash": "c33f912ddaa2"
+}

@@ -1,0 +1,19 @@
+{
+ "key": "line.kid_boy.again2.2",
+ "lang": "ja",
+ "text": "その質問、イタい。上にいるよ。たぶん。",
+ "speaker": "kid_boy",
+ "voice": "Charlie",
+ "voice_id": "IKne3meq5aSn9XLyUdCD",
+ "direction": "[a bored teenage boy, distracted by his game]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a bored teenage boy, distracted by his game] その質問、イタい。上にいるよ。たぶん。",
+  "voice": "Charlie",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed8-a354-7a23-8f0d-6dfc722551c5",
+ "hash": "7be5e53abc70"
+}

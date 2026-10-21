@@ -4,7 +4,16 @@
  "text": "А, проснулся. Хорошо. Место за тобой, как всегда.",
  "speaker": "owner",
  "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
  "direction": "[calm, tired, slow, a little ironic]",
  "model": "fal-ai/elevenlabs/tts/eleven-v3",
- "hash": "561c03b60993"
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] А, проснулся. Хорошо. Место за тобой, как всегда.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ecd-156b-72b3-b43b-c9a79c54ae88",
+ "hash": "0d892886a00d"
 }

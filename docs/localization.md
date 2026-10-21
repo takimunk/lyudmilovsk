@@ -43,12 +43,20 @@ localization/voice.json  (speakers: voice + direction, per-line directions, TTS 
 ## 3. Dialogue, names and voice-over
 * Lines are `line.<speaker>.<scene>.<n>` in the string tables, names `npc.<id>.name|role`. The dialogue *structure* (who talks to whom,
   in which order, what repeats) is language-neutral and refers to keys; the lines of every language live only in the tables.
-  (`npc_dialogue.txt` is Russian-only today: the dialogue thread should keep its structure, replace the text by the keys, and read the
-  names/lines through `LyudText`; speakers are the NPC ids, `hero` for the player.)
+  `Content/Dialogue/npc_dialogue.txt` holds only that structure (line keys in order); speakers are the NPC ids, `hero` for the player.
 * `localization/voice.json`: per speaker a voice id and a direction ("[calm, tired, slow]", an audio tag the TTS acts out), optional
   `voice_<lang>`, optional per-line direction. `python3 tools/gen_voice.py --lang <lang>` voices what is missing, `--stale` also what changed
   (hash of model + voice + direction + text is kept in the sidecar), then `unreal/scripts/import_voice.py` imports the wavs as
   `/Game/Voice/<lang>/V_<key_with_underscores>`; the game plays `LyudText::LoadVoice(key)` with the subtitle `LyudText::Get(key)`.
+* **Reproducible voices.** Everything sent to the TTS is pinned in committed files: `voice.json` holds the endpoint
+  (`fal-ai/elevenlabs/tts/eleven-v3`, ElevenLabs eleven_v3), each speaker's premade voice (name sent to fal, plus its ElevenLabs
+  `voice_id` for the record), the settings (`stability`, `apply_text_normalization`; global, per speaker or per line) and the direction tag;
+  the language code is the table's language. Each take's sidecar `audio/voice/<lang>/<key>.json` keeps the exact request body, the
+  fal request id and a hash of endpoint + body. The endpoint has no seed, so a re-run gives the same voice and delivery but not a
+  byte-identical take: the committed wav is canonical, and a line is re-voiced only when its hash goes stale (`--list` shows it).
+  Regenerate: `export FAL_API_KEY=…` (from `~/projects/asmrx3000/.env`, never committed), then
+  `python3 tools/gen_voice.py --lang ru --stale` (one line: add its key and `--force`), the same for `en` and `ja`, then
+  `unreal/scripts/import_voice.py`. Cost: about 0.1 $ per 1000 characters, the whole NPC set (83 lines, about 20 000 characters with the direction tags) is roughly 2 $ for all three languages.
 * Money, dates and numbers in text: pass as arguments, format per language in the string (`{0} руб.` / `{0} rub.` / `{0}ルーブル`).
 
 ## 4. What not to do

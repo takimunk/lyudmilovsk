@@ -1,0 +1,19 @@
+{
+ "key": "line.owner.again2.2",
+ "lang": "ru",
+ "text": "Посмотри на экран. Он тебе честнее, чем я.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Посмотри на экран. Он тебе честнее, чем я.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15ecc-df8a-7972-adb0-a5a08323feb8",
+ "hash": "816b796ae7bc"
+}

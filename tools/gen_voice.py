@@ -10,6 +10,8 @@
     python3 tools/gen_voice.py --lang en line.owner.first.1 --force
 
 FAL_API_KEY in the environment. The direction goes in front of the text as an audio tag ("[calm, tired]"), which eleven-v3 acts out.
+The request body (text with direction, voice, language_code and the pinned settings of voice.json) is hashed with the endpoint
+and stored in the sidecar, so a take is stale exactly when anything that shaped it changed.
 Then unreal/scripts/import_voice.py imports audio/voice/<lang>/*.wav as /Game/Voice/<lang>/V_<key with dots as underscores>.
 """
 import argparse
@@ -30,30 +32,37 @@ def speaker_of(key):
 
 
 def plan(man, lang, key, text):
+    """Everything the take depends on: the request body, and a hash of it with the endpoint."""
     sp = man["speakers"].get(speaker_of(key), man["speakers"]["default"])
+    line = man.get("lines", {}).get(key, {})
     voice = sp.get("voice_" + lang, sp["voice"])
-    direction = man.get("lines", {}).get(key, {}).get("direction") or sp.get("direction", "")
+    direction = line.get("direction") or sp.get("direction", "")
     spoken = (direction + " " + text).strip()
-    digest = hashlib.sha1(("%s|%s|%s" % (man["model"], voice, spoken)).encode("utf-8")).hexdigest()[:12]
-    return voice, direction, spoken, digest
+    settings = dict(man.get("settings", {}), **sp.get("settings", {}), **line.get("settings", {}))
+    body = dict(settings, text=spoken, voice=voice, language_code=lang)
+    digest = hashlib.sha1(json.dumps([man["model"], body], ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:12]
+    return voice, direction, body, digest
 
 
 def generate(man, lang, key, text):
-    voice, direction, spoken, digest = plan(man, lang, key, text)
+    voice, direction, body, digest = plan(man, lang, key, text)
     out = OUT % lang
     os.makedirs(out, exist_ok=True)
-    body = {"text": spoken, "voice": voice, "language_code": lang}
     req = urllib.request.Request("https://fal.run/" + man["model"], json.dumps(body).encode(),
                                  {"Authorization": "Key " + os.environ["FAL_API_KEY"], "Content-Type": "application/json"})
-    res = json.load(urllib.request.urlopen(req, timeout=600))
+    res = urllib.request.urlopen(req, timeout=600)
+    request_id = res.headers.get("x-fal-request-id", "")
+    res = json.load(res)
     mp3 = os.path.join(out, key + ".mp3")
     urllib.request.urlretrieve(res["audio"]["url"], mp3)
     wav = os.path.join(out, key + ".wav")
     subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16@24000", "-c", "1", mp3, wav], check=True, capture_output=True)
     os.remove(mp3)
+    sp = man["speakers"].get(speaker_of(key), man["speakers"]["default"])
     with open(os.path.join(out, key + ".json"), "w", encoding="utf-8") as f:
-        json.dump({"key": key, "lang": lang, "text": text, "speaker": speaker_of(key), "voice": voice, "direction": direction,
-                   "model": man["model"], "hash": digest}, f, ensure_ascii=False, indent=1)
+        json.dump({"key": key, "lang": lang, "text": text, "speaker": speaker_of(key), "voice": voice, "voice_id": sp.get("voice_id", ""),
+                   "direction": direction, "model": man["model"], "request": body, "fal_request_id": request_id,
+                   "hash": digest}, f, ensure_ascii=False, indent=1)
     return wav
 
 

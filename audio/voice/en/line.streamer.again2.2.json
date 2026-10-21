@@ -1,0 +1,19 @@
+{
+ "key": "line.streamer.again2.2",
+ "lang": "en",
+ "text": "Not telling, it's a surprise for the viewers. There are zero right now, so the surprise worked.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Not telling, it's a surprise for the viewers. There are zero right now, so the surprise worked.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ed3-f8ce-76c3-8b4e-ec9f09419b35",
+ "hash": "648a37cf8a06"
+}

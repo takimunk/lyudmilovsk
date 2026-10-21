@@ -1,0 +1,19 @@
+{
+ "key": "line.girl_b.again1.1",
+ "lang": "ja",
+ "text": "新しい書き込み：「オーナーが席を立ったら、すぐ話しかけろ」。理由はわからない。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 新しい書き込み：「オーナーが席を立ったら、すぐ話しかけろ」。理由はわからない。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed5-8496-7340-b5a4-da86ca38df7d",
+ "hash": "dae5ad1164ff"
+}

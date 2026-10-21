@@ -1,0 +1,19 @@
+{
+ "key": "line.hero.streamer_first.2",
+ "lang": "ja",
+ "text": "誰か見てるの？",
+ "speaker": "hero",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "direction": "[quiet, uncertain]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, uncertain] 誰か見てるの？",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a15ed8-75be-7302-ab2d-216996c2a0da",
+ "hash": "6fe1455d4020"
+}

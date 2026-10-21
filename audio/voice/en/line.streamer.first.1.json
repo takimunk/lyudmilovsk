@@ -1,0 +1,19 @@
+{
+ "key": "line.streamer.first.1",
+ "lang": "en",
+ "text": "Oh, hi, you're on camera! Chat, say hello.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Oh, hi, you're on camera! Chat, say hello.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ed4-33b7-7971-b58c-63af03493607",
+ "hash": "608bb85f3204"
+}

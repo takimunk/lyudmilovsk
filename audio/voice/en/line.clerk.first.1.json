@@ -1,0 +1,19 @@
+{
+ "key": "line.clerk.first.1",
+ "lang": "en",
+ "text": "Quiet, please. I'm filling cell D-forty-seven.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Quiet, please. I'm filling cell D-forty-seven.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ece-9885-7b92-982e-4d9a19b36062",
+ "hash": "d1b4f23aab06"
+}

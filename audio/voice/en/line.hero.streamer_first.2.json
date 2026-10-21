@@ -1,0 +1,19 @@
+{
+ "key": "line.hero.streamer_first.2",
+ "lang": "en",
+ "text": "Is anyone watching you?",
+ "speaker": "hero",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "direction": "[quiet, uncertain]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, uncertain] Is anyone watching you?",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ed2-21c6-75b3-95bd-30825a5926d8",
+ "hash": "89d9783be990"
+}

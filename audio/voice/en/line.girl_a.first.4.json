@@ -1,0 +1,19 @@
+{
+ "key": "line.girl_a.first.4",
+ "lang": "en",
+ "text": "If it turns out to be a game, I'll call you. If it isn't, I'll call you anyway.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] If it turns out to be a game, I'll call you. If it isn't, I'll call you anyway.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ecf-4584-7e02-bbf9-9e8fb69227f8",
+ "hash": "1b244eacd26b"
+}

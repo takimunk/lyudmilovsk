@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_b.first.4",
+ "lang": "ru",
+ "text": "Да расслабься. Тут тепло, сеть есть, что ещё нужно.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Да расслабься. Тут тепло, сеть есть, что ещё нужно.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15eca-6a78-75c2-97f5-55cdb72468a4",
+ "hash": "cf1f6c4a6f67"
+}

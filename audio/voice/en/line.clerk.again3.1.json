@@ -1,0 +1,19 @@
+{
+ "key": "line.clerk.again3.1",
+ "lang": "en",
+ "text": "Close the file without saving and the mountain is gone. I checked once.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Close the file without saving and the mountain is gone. I checked once.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ece-6cbc-7330-83e1-84ff0a3f604d",
+ "hash": "f17885d35acd"
+}

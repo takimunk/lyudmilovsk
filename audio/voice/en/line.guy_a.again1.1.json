@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_a.again1.1",
+ "lang": "en",
+ "text": "Kicked again. Third time this match. The server must be in the next room.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Kicked again. Third time this match. The server must be in the next room.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a15ecf-eaa3-7b81-9194-fd3db83af4fc",
+ "hash": "bf8b51ebed57"
+}

@@ -1,0 +1,19 @@
+{
+ "key": "line.guy_b.again4.1",
+ "lang": "ru",
+ "text": "Отдыхай, брат. Конвейер всё равно никуда не везёт.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Отдыхай, брат. Конвейер всё равно никуда не везёт.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a15eca-3133-74a1-b2e4-9d434bf82f94",
+ "hash": "f89d9e6b8ec0"
+}
