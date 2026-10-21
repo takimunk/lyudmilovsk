@@ -576,26 +576,28 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 	const int32 Count = FMath::Max(L.PerCluster, 1);
 	if (L.Form == EPlantLeafForm::Needle)
 	{
-		// a tuft: needles fan out from a short shoot (along Z), up and out, the whole tuft shaded as one soft ball
-		const int32 Group = FMath::Max(L.Lobes, 1); // 2 for a pine's paired needles
-		for (int32 I = 0; I < Count; I++)
+		// a spray of needles as a few crossed cards (a fan of needles painted on each, see BuildLeafDetail), up and
+		// out from a short shoot along Z; shaded as one soft ball
+		const int32 Cards = FMath::Clamp(L.Cards, 1, 8);
+		for (int32 I = 0; I < Cards; I++)
 		{
-			const int32 G = I / Group, M = I % Group;
-			const float Phi = G * GoldenAngle + Hash01(77, G, 1) * 0.6f;
-			const float Theta = FMath::DegreesToRadians(15.f + 95.f * FMath::Sqrt(Hash01(77, G, 2))) + M * 0.2f;
+			const float Phi = I * GoldenAngle * 2.f + Hash01(77, I, 1) * 0.5f;
+			const float Theta = FMath::DegreesToRadians(25.f + 70.f * Hash01(77, I, 2));
 			const FVector3f Dir(FMath::Cos(Phi) * FMath::Sin(Theta), FMath::Sin(Phi) * FMath::Sin(Theta), FMath::Cos(Theta));
-			const FVector3f Node(0.f, 0.f, S.LeafClusterSize * 0.25f * (Hash01(77, G, 3) - 0.3f));
-			const float Length = L.Length * (0.75f + 0.5f * Hash01(77, I, 4));
-			// blade along +Y facing +Z -> along Dir with the broad side to the tuft's outside
 			const FVector3f Side = FVector3f::CrossProduct(Dir, FVector3f::UpVector).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::XAxisVector);
-			const FVector3f Face = FVector3f::CrossProduct(Side, Dir);
-			const FMatrix44f Basis(FPlane4f(Side, 0.f), FPlane4f(Dir, 0.f), FPlane4f(Face, 0.f), FPlane4f(0.f, 0.f, 0.f, 1.f));
+			const FVector3f Root(0.f, 0.f, S.LeafClusterSize * 0.25f * (Hash01(77, I, 3) - 0.3f));
+			const float Length = L.Length * (0.85f + 0.3f * Hash01(77, I, 4));
+			const float Half = 0.5f * Length * L.Width;
+			const FVector3f Tip = Root + Dir * Length;
 			const int32 Base = D.Pos.Num();
-			BuildBlade(L, Length, D, FTransform3f(Basis.ToQuat(), Node));
-			for (int32 V = Base; V < D.Pos.Num(); V++)
+			const FVector3f Pts[4] = { Root - Side * (Half * 0.12f), Root + Side * (Half * 0.12f), Tip + Side * Half, Tip - Side * Half };
+			const FVector2f Uvs[4] = { FVector2f(0.44f, 1.f), FVector2f(0.56f, 1.f), FVector2f(1.f, 0.f), FVector2f(0.f, 0.f) };
+			for (int32 V = 0; V < 4; V++)
 			{
-				D.Nrm[V] = (D.Pos[V] - FVector3f(0.f, 0.f, 0.f)).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector);
+				D.Add(Pts[V] * 100.f, (Pts[V] - FVector3f(0.f, 0.f, 0.f)).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::UpVector), Side, Uvs[V]);
 			}
+			D.Tris.Add(FIntVector3(Base, Base + 2, Base + 1));
+			D.Tris.Add(FIntVector3(Base, Base + 3, Base + 2));
 		}
 		return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaves_%s"), *S.Name.ToString()), D);
 	}
@@ -670,6 +672,43 @@ void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint
 
 UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& L)
 {
+	if (L.Form == EPlantLeafForm::Needle)
+	{
+		// a fan of needles from the bottom middle, alpha 255 on a needle: M_PlantNeedle cuts the card out by it
+		constexpr int32 NW = 128, NH = 128;
+		TArray<FColor> Img;
+		Img.Init(FColor(0, 0, 0, 0), NW * NH);
+		const int32 Needles = FMath::Clamp(L.PerCluster * 2, 12, 120);
+		const int32 Group = FMath::Max(L.Lobes, 1);
+		for (int32 N = 0; N < Needles; N++)
+		{
+			const int32 G = N / Group, M = N % Group;
+			const float A = ((Hash01(31, G, 1) - 0.5f) * 2.f) * 0.95f + M * 0.07f;
+			const float Len = (0.55f + 0.45f * Hash01(31, G, 2)) * NH * 0.97f;
+			const float Bend = (Hash01(31, G, 3) - 0.5f) * 0.5f;
+			const float Shade = 0.8f + 0.2f * Hash01(31, G, 4);
+			const int32 Steps = FMath::CeilToInt(Len * 1.5f);
+			for (int32 K = 0; K <= Steps; K++)
+			{
+				const float T = (float)K / Steps;
+				const float Ang = A + Bend * T * T;
+				const float X = NW * 0.5f + FMath::Sin(Ang) * Len * T, Y = NH - 1.f - FMath::Cos(Ang) * Len * T;
+				const float Thick = 1.4f * (1.f - 0.7f * T);
+				const uint8 V = (uint8)FMath::RoundToInt(255.f * Shade * (0.7f + 0.3f * T));
+				for (int32 Dy = -1; Dy <= 1; Dy++)
+				{
+					for (int32 Dx = -1; Dx <= 1; Dx++)
+					{
+						if (Dx * Dx + Dy * Dy > Thick * Thick) continue;
+						const int32 Ix = FMath::RoundToInt(X) + Dx, Iy = FMath::RoundToInt(Y) + Dy;
+						if (Ix < 0 || Ix >= NW || Iy < 0 || Iy >= NH) continue;
+						Img[Iy * NW + Ix] = FColor(V, V, V, 255);
+					}
+				}
+			}
+		}
+		return MakeTexture(Outer, NW, NH, MoveTemp(Img), true, false);
+	}
 	constexpr int32 W = 128;
 	TArray<FColor> Px;
 	Px.SetNumUninitialized(W * W);

@@ -66,6 +66,7 @@ AProceduralPlant::AProceduralPlant()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Basic(TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> BarkMat(TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> LeafMat(TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> NeedleMat(TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> FruitMat(TEXT("/Game/Plants/M_PlantFruit.M_PlantFruit"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cylinder(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
@@ -75,6 +76,7 @@ AProceduralPlant::AProceduralPlant()
 	BaseMaterial = Basic.Object;
 	BarkMaterialAsset = BarkMat.Object ? BarkMat.Object : Basic.Object;
 	LeafMaterialAsset = LeafMat.Object ? LeafMat.Object : Basic.Object;
+	NeedleMaterialAsset = NeedleMat.Object ? NeedleMat.Object : LeafMaterialAsset;
 	FruitMaterialAsset = FruitMat.Object ? FruitMat.Object : Basic.Object;
 
 	Wood = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wood"));
@@ -247,6 +249,12 @@ void AProceduralPlant::EnsureMeshes()
 		GroundGrid.Reset();
 		Falling.Reset();
 
+		// needle cards are masked by their texture's alpha; blades are cut out in the geometry
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+		{
+			LeafMaterials[K] = UMaterialInstanceDynamic::Create(S.Leaf.Form == EPlantLeafForm::Needle ? NeedleMaterialAsset.Get() : LeafMaterialAsset.Get(), this);
+			FallingComponents[K]->SetMaterial(0, LeafMaterials[K]);
+		}
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkAlbedo"), BarkAlbedo);
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
 		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing

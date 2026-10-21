@@ -11,8 +11,9 @@ enum class EPlantLeafForm : uint8
 	/** Lobes radiating from the petiole (maple). */
 	Palmate,
 	/**
-	 * A needle (pine, spruce, juniper): Length and Width as for a blade, PerCluster needles in a tuft that
-	 * radiates from the shoot; pine needles come in pairs (Lobes = 2: a fascicle).
+	 * Needles (pine, spruce, juniper), never modelled one by one: a cluster is Cards flat cards, each a fan
+	 * of PerCluster needles painted into an alpha-masked texture (M_PlantNeedle), Length long. Lobes = 2
+	 * pairs the needles (a pine's fascicles), Lobes = 3 gives a juniper's whorls of three.
 	 */
 	Needle,
 };
@@ -41,7 +42,9 @@ struct FPlantLeafShape
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Petiole = 0.6f;
 	/** How far the halves fold up along the midrib, fraction of the width. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") float Fold = 0.12f;
-	/** Leaves in one cluster (one instance). */
+	/** Needle: flat cards in one cluster (a card is about 2 triangles however many needles it shows). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") int32 Cards = 3;
+	/** Leaves in one cluster (one instance); needles: needles painted on each card. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaf") int32 PerCluster = 6;
 };
 

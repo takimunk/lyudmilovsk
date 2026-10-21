@@ -130,6 +130,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BaseMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> BarkMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> LeafMaterialAsset;
+	/** Needle cards: the leaf material with its shape cut out of the texture's alpha. */
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> NeedleMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> FruitMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SingleLeafMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> FruitMesh;
