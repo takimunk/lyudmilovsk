@@ -51,6 +51,8 @@ enum class EPlantBarkPattern : uint8
 	Plates,
 	/** Smooth with fine ridges and lenticels (maple). */
 	Smooth,
+	/** White, peeling in thin horizontal strips, with black lenticel dashes (birch). */
+	Birch,
 };
 
 /** The bark texture, generated in code per species. */
@@ -71,6 +73,17 @@ struct FPlantBark
 	/** Plates pattern: share of plates already flaked off, showing the younger bark under them in UnderColour. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float FlakeChance = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor UnderColour = FLinearColor(0.08f, 0.045f, 0.02f);
+	/** Twigs thinner than TwigRadius (m) keep their young bark, TwigColour (birch: red-brown). 0 = none. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float TwigRadius = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor TwigColour = FLinearColor(0.08f, 0.035f, 0.02f);
+	/**
+	 * Old trunks go rough and dark from the ground up (silver birch): DarkBaseRate metres a year, up to
+	 * DarkBaseMax, deeply fissured between BaseFurrowColour and BaseRidgeColour. 0 = none.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float DarkBaseRate = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float DarkBaseMax = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor BaseRidgeColour = FLinearColor(0.06f, 0.06f, 0.055f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FLinearColor BaseFurrowColour = FLinearColor(0.01f, 0.01f, 0.01f);
 };
 
 /**
@@ -134,6 +147,8 @@ struct FPlantSpecies
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Kink = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float KinkSpacing = 0.5f;
+	/** Order-2 twigs hang: 0 they grow like the limbs, 1 they hang straight down (silver birch's weeping twigs). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TwigHang = 0.f;
 	/** Long limbs sag under their own weight and fruit: downward pull growing with the distance out, 1/m^2. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Droop = 0.f;
 	/**

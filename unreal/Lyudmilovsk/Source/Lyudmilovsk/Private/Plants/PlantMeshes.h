@@ -13,7 +13,7 @@ namespace PlantMeshes
 	 * The tree's wood as one mesh: a tapered tube along every branch, its UVs in bark tiles (U around,
 	 * V along). Rebuilds Mesh in place when given one.
 	 */
-	UStaticMesh* BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark);
+	UStaticMesh* BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age = 0.f);
 
 	/**
 	 * A cluster of the species' leaves about the origin (a short twig along Z, blades facing up),

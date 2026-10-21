@@ -241,6 +241,9 @@ void AProceduralPlant::EnsureMeshes()
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkAlbedo"), BarkAlbedo);
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
 		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing
+		WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), S.Bark.TwigColour);
+		WoodMaterial->SetVectorParameterValue(TEXT("BaseRidge"), S.Bark.BaseRidgeColour);
+		WoodMaterial->SetVectorParameterValue(TEXT("BaseFurrow"), S.Bark.BaseFurrowColour);
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			LeafMaterials[K]->SetTextureParameterValue(TEXT("LeafDetail"), LeafDetail);
@@ -329,7 +332,7 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		LastReach = Out.Reach;
 		if (bWood || WoodAge < 0.f)
 		{
-			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
+			WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age);
 			if (Wood->GetStaticMesh() != WoodMesh)
 			{
 				Wood->SetStaticMesh(WoodMesh);
@@ -680,7 +683,7 @@ FString AProceduralPlant::DebugReport(float Age, float DayOfYear)
 	const double T0 = FPlatformTime::Seconds();
 	Skeleton.Evaluate(Age, Season, Out);
 	const double T1 = FPlatformTime::Seconds();
-	WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark);
+	WoodMesh = PlantMeshes::BuildWood(this, WoodMesh, Out.Tubes, S.Bark, Age);
 	Wood->SetStaticMesh(WoodMesh);
 	WoodAge = Age;
 	const double T2 = FPlatformTime::Seconds();

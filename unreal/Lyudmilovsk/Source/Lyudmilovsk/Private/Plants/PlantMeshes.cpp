@@ -16,11 +16,13 @@ namespace
 	{
 		TArray<FVector3f> Pos, Nrm, Tan;
 		TArray<FVector2f> UV;
+		/** Vertex colour: on wood, R = rough dark base, G = young twig bark (M_PlantBark). */
+		TArray<FVector4f> Col;
 		TArray<FIntVector3> Tris;
 
-		int32 Add(const FVector3f& P, const FVector3f& N, const FVector3f& T, const FVector2f& U)
+		int32 Add(const FVector3f& P, const FVector3f& N, const FVector3f& T, const FVector2f& U, const FVector4f& C = FVector4f(0.f, 0.f, 0.f, 1.f))
 		{
-			Nrm.Add(N); Tan.Add(T); UV.Add(U);
+			Nrm.Add(N); Tan.Add(T); UV.Add(U); Col.Add(C);
 			return Pos.Add(P);
 		}
 	};
@@ -35,6 +37,7 @@ namespace
 		TVertexInstanceAttributesRef<FVector3f> VTan = Attr.GetVertexInstanceTangents();
 		TVertexInstanceAttributesRef<float> VSign = Attr.GetVertexInstanceBinormalSigns();
 		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
+		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
 		VUV.SetNumChannels(1);
 		const FPolygonGroupID PG = MD.CreatePolygonGroup();
 		Attr.GetPolygonGroupMaterialSlotNames()[PG] = Name;
@@ -58,6 +61,7 @@ namespace
 			VTan[VI] = T;
 			VSign[VI] = 1.f;
 			VUV.Set(VI, 0, D.UV[I]);
+			VCol[VI] = D.Col[I];
 			Inst.Add(VI);
 		}
 		for (const FIntVector3& T : D.Tris)
@@ -294,6 +298,28 @@ namespace
 			const float Cup = 0.55f + 0.3f * Cell + 0.15f * (1.f - Smooth(0.06f, 0.3f, E));
 			return FMath::Clamp(Cup * Crack + 0.18f * (Fine - 0.5f), 0.f, 1.f);
 		}
+		case EPlantBarkPattern::Birch:
+		{
+			// chalk-white bark peeling in thin horizontal strips (soft light and grey bands), and
+			// lenticels: short black dashes running around the trunk, longer and denser on old bark
+			const float Band = Noise(Seed + 9, U * 0.3f, V, 2, 40);
+			float H = 0.82f + 0.1f * (Band - 0.5f) + 0.06f * (Fine - 0.5f);
+			const int32 Rows = 34;
+			const int32 Row = FMath::FloorToInt(V * Rows);
+			for (int32 Dash = 0; Dash < 3; Dash++)
+			{
+				const float Y0 = (Row + Hash01(Seed + 10, Row % Rows, Dash, 1)) / Rows;
+				const float Thick = (0.004f + 0.01f * Hash01(Seed + 10, Row % Rows, Dash, 2)) * (1.f + 2.f * Warp);
+				const float X0 = Hash01(Seed + 10, Row % Rows, Dash, 3), Len = 0.04f + 0.3f * FMath::Square(Hash01(Seed + 10, Row % Rows, Dash, 4));
+				const float Dx = FMath::Abs(FMath::Frac(U - X0 + 0.5f) - 0.5f);
+				if (Dx < Len * 0.5f && FMath::Abs(V - Y0) < Thick * (1.f - FMath::Square(Dx / (Len * 0.5f))))
+				{
+					H = 0.08f;
+					OutFlake = 1.f;
+				}
+			}
+			return FMath::Clamp(H, 0.f, 1.f);
+		}
 		default:
 		{
 			const float Grain = Noise(Seed + 7, U + Warp, V, 22, 2);
@@ -306,9 +332,10 @@ namespace
 	}
 }
 
-UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark)
+UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TArray<FPlantSkeleton::FTube>& Tubes, const FPlantBark& Bark, float Age)
 {
 	FMeshData D;
+	const float DarkBase = FMath::Min(Bark.DarkBaseRate * Age, Bark.DarkBaseMax);
 	for (const FPlantSkeleton::FTube& T : Tubes)
 	{
 		const int32 N = T.P.Num();
@@ -338,7 +365,15 @@ UStaticMesh* PlantMeshes::BuildWood(UObject* Outer, UStaticMesh* Mesh, const TAr
 				const float A = 2.f * PI * S / Sides;
 				const FVector3f Nrm = Nf * FMath::Cos(A) + Bf * FMath::Sin(A);
 				const FVector3f Tan = Bf * FMath::Cos(A) - Nf * FMath::Sin(A);
-				D.Add((T.P[I] + Nrm * T.R[I]) * 100.f, Nrm, Tan, FVector2f((float)S / Sides * Repeats, -V));
+				// the dark rough base climbs the trunk unevenly, in tongues; thin twigs keep their young bark
+				float Dark = 0.f;
+				if (DarkBase > 0.f && T.Order <= 1)
+				{
+					const float Edge = DarkBase * (0.65f + 0.7f * Noise(17, (float)S / Sides, T.P[I].Z * 0.15f, 1, 1) * Noise(18, (float)S / Sides, 0.5f, Sides, 1));
+					Dark = FMath::Clamp((Edge - T.P[I].Z) / 0.25f, 0.f, 1.f);
+				}
+				const float Twig = Bark.TwigRadius > 0.f ? FMath::Clamp((Bark.TwigRadius - T.R[I]) / (0.5f * Bark.TwigRadius), 0.f, 1.f) : 0.f;
+				D.Add((T.P[I] + Nrm * T.R[I]) * 100.f, Nrm, Tan, FVector2f((float)S / Sides * Repeats, -V), FVector4f(Dark, Twig, 0.f, 1.f));
 			}
 		}
 		for (int32 I = 0; I + 1 < N; I++)
@@ -405,8 +440,17 @@ void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint
 			const float Hh = BarkHeight(B, TexSeed, U, V, Flake);
 			Hgt[Y * W + X] = Hh;
 			const float Mottle = 0.8f + 0.4f * Fbm(TexSeed + 20, U, V, 6, 10, 3);
-			const FLinearColor C = FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
-			Albedo[Y * W + X] = FLinearColor(C.R, C.G, C.B, 1.f).ToFColor(true);
+			const FLinearColor C = B.Pattern == EPlantBarkPattern::Birch
+				? FMath::Lerp(B.RidgeColour * (0.92f + 0.16f * Mottle), B.FurrowColour, Flake)
+				: FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
+			// alpha: the deep fissures of an old, dark trunk base (where the vertex colour asks for it)
+			float Unused = 0.f;
+			FPlantBark Rough = B;
+			Rough.Pattern = EPlantBarkPattern::Blocks;
+			const float Fissure = BarkHeight(Rough, TexSeed + 77, U, V, Unused);
+			FColor Px = FLinearColor(C.R, C.G, C.B, 1.f).ToFColor(true);
+			Px.A = (uint8)FMath::RoundToInt(Fissure * 255.f);
+			Albedo[Y * W + X] = Px;
 		}
 	}
 	// relief: Depth cm between furrow and ridge

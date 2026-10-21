@@ -272,11 +272,237 @@ namespace
 		S.FruitGroundColour = C(0.17f, 0.09f, 0.03f);
 		return S;
 	}
+
+	/** Birch leaf colours and calendar: early to turn, clear yellow by mid October, mostly down by early November. */
+	void BirchSeason(FPlantSpecies& S)
+	{
+		S.BudBreakDay = 115.f;
+		S.FullLeafDay = 138.f;
+		S.ColourStartDay = 262.f;
+		S.ColourFullDay = 285.f;
+		S.LeafDropStartDay = 272.f;
+		S.BareDay = 306.f;
+		S.SpringLeafColour = C(0.22f, 0.4f, 0.06f);
+		S.SummerLeafColour = C(0.07f, 0.17f, 0.03f);
+		S.AutumnLeafColour = C(0.72f, 0.55f, 0.04f);
+		S.AutumnLeafColourLate = C(0.6f, 0.47f, 0.06f);
+	}
+
+	/**
+	 * Betula pendula, silver birch (берёза повислая): a pioneer that shoots up fast to 15-25 m on a
+	 * straight trunk, an open oval crown of ascending limbs with long, thin twigs hanging from them.
+	 * Chalk-white bark with black lenticels; old trunks go black and deeply fissured from the ground up.
+	 * Small triangular, doubly toothed leaves on long stalks.
+	 */
+	FPlantSpecies SilverBirch()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("SilverBirch");
+		S.DisplayName = NSLOCTEXT("Plants", "SilverBirch", "Silver birch");
+		S.MaxHeight = 22.f;
+		S.GrowthRate = 0.07f;
+		S.GrowthShape = 1.4f;
+		S.LeaderFraction = 0.85f;
+		S.TrunkRadiusPerHeight = 0.011f;
+		S.RingWidth = 0.0015f;
+		S.CrownBase = 0.28f;
+		S.CrownWidth = 0.55f;
+		S.TrunkNodeSpacing = 0.35f;
+		S.Branch1Angle = 50.f;
+		S.Branch1AngleTop = 32.f;
+		S.Branch1MaxLength = 6.f;
+		S.Branch1Profile = FVector(0.8, 1.0, 0.5);
+		S.LengthTau = 6.f;
+		S.Tropism = 0.06f;
+		S.Wobble = 0.15f;
+		S.Kink = 0.15f;
+		S.KinkSpacing = 0.6f;
+		S.Droop = 0.01f;
+		S.Branch2Spacing = 0.18f;
+		S.Branch2Angle = 50.f;
+		S.Branch2MaxLength = 2.2f;
+		S.Branch2LengthRatio = 0.5f;
+		S.Branch2ShadeDepth = 3.5f;
+		S.TwigHang = 0.8f;
+		S.BranchRadiusPerLength = 0.007f;
+		S.LeafyTipLength = 2.5f;
+		S.LeafSpacing = 0.08f;
+		S.LeafClusterSize = 0.3f;
+		S.Leaf.Length = 0.055f;
+		S.Leaf.Width = 0.8f;
+		S.Leaf.WidestAt = 0.3f;
+		S.Leaf.Teeth = 12; // doubly toothed: finer than the mesh draws, the veins carry it
+		S.Leaf.TeethDepth = 0.06f;
+		S.Leaf.Petiole = 0.45f;
+		S.Leaf.PerCluster = 5;
+		S.Bark.Pattern = EPlantBarkPattern::Birch;
+		S.Bark.TileWidth = 0.25f;
+		S.Bark.TileHeight = 0.5f;
+		S.Bark.Depth = 0.6f;
+		S.Bark.RidgeColour = C(0.62f, 0.62f, 0.58f);
+		S.Bark.FurrowColour = C(0.015f, 0.015f, 0.015f);
+		S.Bark.TwigRadius = 0.025f;
+		S.Bark.TwigColour = C(0.07f, 0.03f, 0.018f);
+		S.Bark.DarkBaseRate = 0.04f;
+		S.Bark.DarkBaseMax = 2.f;
+		S.Bark.BaseRidgeColour = C(0.08f, 0.08f, 0.075f);
+		S.Bark.BaseFurrowColour = C(0.01f, 0.01f, 0.01f);
+		BirchSeason(S);
+		return S;
+	}
+
+	/**
+	 * Betula pubescens, downy birch (берёза пушистая), of wet ground and the north: smaller (to ~18 m),
+	 * a denser, more upright crown, twigs that do not hang; duller white bark without the black
+	 * fissured base; rounder, singly toothed leaves.
+	 */
+	FPlantSpecies DownyBirch()
+	{
+		FPlantSpecies S = SilverBirch();
+		S.Name = TEXT("DownyBirch");
+		S.DisplayName = NSLOCTEXT("Plants", "DownyBirch", "Downy birch");
+		S.MaxHeight = 18.f;
+		S.GrowthRate = 0.06f;
+		S.CrownWidth = 0.6f;
+		S.Branch1Angle = 40.f;
+		S.Branch1AngleTop = 28.f;
+		S.Branch2Spacing = 0.14f;
+		S.TwigHang = 0.15f;
+		S.Tropism = 0.09f;
+		S.Leaf.Length = 0.05f;
+		S.Leaf.Width = 0.78f;
+		S.Leaf.WidestAt = 0.42f;
+		S.Leaf.Teeth = 10;
+		S.Leaf.TeethDepth = 0.04f;
+		S.Bark.RidgeColour = C(0.5f, 0.48f, 0.44f);
+		S.Bark.TwigColour = C(0.05f, 0.025f, 0.018f);
+		S.Bark.DarkBaseRate = 0.01f;
+		S.Bark.DarkBaseMax = 0.5f;
+		S.Bark.BaseRidgeColour = C(0.16f, 0.15f, 0.13f);
+		S.Bark.BaseFurrowColour = C(0.04f, 0.035f, 0.03f);
+		return S;
+	}
+
+	/** A weeping silver birch (Betula pendula 'Tristis'/'Youngii'): limbs arching over and twigs curtaining to the ground. */
+	FPlantSpecies WeepingBirch()
+	{
+		FPlantSpecies S = SilverBirch();
+		S.Name = TEXT("WeepingBirch");
+		S.DisplayName = NSLOCTEXT("Plants", "WeepingBirch", "Weeping birch");
+		S.MaxHeight = 14.f;
+		S.LeaderFraction = 0.7f;
+		S.CrownBase = 0.2f;
+		S.CrownWidth = 0.85f;
+		S.Branch1Angle = 70.f;
+		S.Branch1AngleTop = 55.f;
+		S.Tropism = 0.02f;
+		S.Droop = 0.06f;
+		S.TwigHang = 1.f;
+		S.Branch2MaxLength = 3.f;
+		S.Branch2LengthRatio = 0.7f;
+		return S;
+	}
+
+	/**
+	 * Betula nana, dwarf birch (берёза карликовая, ерник) of the tundra and bogs: a sprawling shrub knee-high,
+	 * many crooked stems from the base, red-brown bark, tiny round scalloped leaves turning red in September.
+	 */
+	FPlantSpecies DwarfBirch()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("DwarfBirch");
+		S.DisplayName = NSLOCTEXT("Plants", "DwarfBirch", "Dwarf birch");
+		S.MaxHeight = 0.9f;
+		S.GrowthRate = 0.15f;
+		S.GrowthShape = 1.2f;
+		S.LeaderFraction = 0.2f;
+		S.TrunkRadiusPerHeight = 0.02f;
+		S.MinRadius = 0.003f;
+		S.CrownBase = 0.f;
+		S.CrownWidth = 2.f;
+		S.TrunkNodeSpacing = 0.025f;
+		S.Branch1Angle = 75.f;
+		S.Branch1AngleTop = 55.f;
+		S.Branch1MaxLength = 0.8f;
+		S.Branch1Profile = FVector(1.0, 1.0, 0.8);
+		S.LengthTau = 5.f;
+		S.Tropism = 0.4f;
+		S.Wobble = 0.5f;
+		S.Kink = 0.4f;
+		S.KinkSpacing = 0.08f;
+		S.Branch2Spacing = 0.05f;
+		S.Branch2Angle = 50.f;
+		S.Branch2MaxLength = 0.2f;
+		S.Branch2LengthRatio = 0.5f;
+		S.Branch2ShadeDepth = 0.4f;
+		S.BranchRadiusBase = 0.002f;
+		S.BranchRadiusPerLength = 0.01f;
+		S.LeafyTipLength = 0.5f;
+		S.LeafSpacing = 0.025f;
+		S.LeafClusterSize = 0.06f;
+		S.Leaf.Length = 0.015f;
+		S.Leaf.Width = 1.1f;
+		S.Leaf.WidestAt = 0.5f;
+		S.Leaf.Lobes = 4;
+		S.Leaf.LobeDepth = 0.15f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.2f;
+		S.Leaf.PerCluster = 3;
+		S.Bark.Pattern = EPlantBarkPattern::Smooth;
+		S.Bark.TileWidth = 0.05f;
+		S.Bark.TileHeight = 0.1f;
+		S.Bark.Depth = 0.3f;
+		S.Bark.RidgeColour = C(0.07f, 0.035f, 0.02f);
+		S.Bark.FurrowColour = C(0.03f, 0.015f, 0.01f);
+		S.BudBreakDay = 140.f;
+		S.FullLeafDay = 160.f;
+		S.ColourStartDay = 240.f;
+		S.ColourFullDay = 265.f;
+		S.LeafDropStartDay = 268.f;
+		S.BareDay = 300.f;
+		S.SummerLeafColour = C(0.04f, 0.1f, 0.02f);
+		S.AutumnLeafColour = C(0.5f, 0.07f, 0.03f);
+		S.AutumnLeafColourLate = C(0.6f, 0.25f, 0.04f);
+		return S;
+	}
+
+	/**
+	 * Betula ermanii, stone birch (берёза каменная) of Kamchatka and the Far East: a crooked, leaning trunk
+	 * and a broad, low crown shaped by wind and snow; creamy, pinkish-grey bark peeling in strips.
+	 */
+	FPlantSpecies StoneBirch()
+	{
+		FPlantSpecies S = SilverBirch();
+		S.Name = TEXT("StoneBirch");
+		S.DisplayName = NSLOCTEXT("Plants", "StoneBirch", "Stone birch");
+		S.MaxHeight = 12.f;
+		S.GrowthRate = 0.05f;
+		S.LeaderFraction = 0.35f;
+		S.TrunkRadiusPerHeight = 0.02f;
+		S.RingWidth = 0.002f;
+		S.CrownBase = 0.15f;
+		S.CrownWidth = 1.f;
+		S.TrunkNodeSpacing = 0.3f;
+		S.Branch1Angle = 60.f;
+		S.Branch1AngleTop = 45.f;
+		S.Branch1MaxLength = 7.f;
+		S.Wobble = 0.3f;
+		S.Kink = 0.4f;
+		S.KinkSpacing = 0.5f;
+		S.TwigHang = 0.2f;
+		S.Leaf.Length = 0.07f;
+		S.Leaf.Width = 0.75f;
+		S.Leaf.WidestAt = 0.4f;
+		S.Bark.RidgeColour = C(0.5f, 0.42f, 0.38f);
+		S.Bark.DarkBaseRate = 0.f;
+		return S;
+	}
 }
 
 const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 {
-	static const TArray<FPlantSpecies> Species = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak() };
+	static const TArray<FPlantSpecies> Species = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak(),
+		SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch() };
 	return Species;
 }
 

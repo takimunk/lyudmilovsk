@@ -70,6 +70,10 @@ for i, age in enumerate((8, 20, 40, 80, 140)):
     plant(i * 2600 - 5200, 10000, age, "Oak_age%03d" % age, species="SwampWhiteOak", seed=5)
 for i, age in enumerate((5, 12, 25, 50)):
     plant(i * 1300 - 2000, 14000, age, "Apple_age%02d" % age, species="Apple", seed=6)
+# birches
+for i, (species, age) in enumerate((("SilverBirch", 8), ("SilverBirch", 45), ("DownyBirch", 40), ("WeepingBirch", 30), ("StoneBirch", 60))):
+    plant(i * 1500 - 3000, 18000, age, "%s_%02d" % (species, age), species=species, seed=7 + i)
+plant(0, 16500, 12, "DwarfBirch_12", species="DwarfBirch", seed=12)
 
 cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, -4200, 900), unreal.Rotator(-2, 90, 0))
 cam.set_actor_label("SeriesView")

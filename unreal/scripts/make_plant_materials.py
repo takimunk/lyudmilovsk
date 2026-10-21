@@ -1,7 +1,9 @@
 """Builds the two materials AProceduralPlant draws with (their textures are generated in code per
 species at runtime, so these are the only plant assets):
 
-  /Game/Plants/M_PlantBark  BarkAlbedo (colour) x Tint, BarkNormal (normal map), snow on upward faces by Snow
+  /Game/Plants/M_PlantBark  BarkAlbedo (colour) x Tint, BarkNormal (normal map), snow on upward faces by Snow;
+                            vertex colour G turns thin twigs TwigColour, R the old trunk base rough and dark
+                            (BaseFurrow..BaseRidge by the albedo's alpha)
   /Game/Plants/M_PlantLeaf  two-sided foliage: Color x LeafDetail (veins) with a per-instance shade
   /Game/Plants/M_PlantFruit a fruit's skin from five numbers per fruit (per-instance custom data on the
                             tree, scalar parameters Fruit0..4 on a fallen one): ground colour by Ripeness,
@@ -44,8 +46,24 @@ normal = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, 200, p
               texture=unreal.load_asset("/Engine/EngineMaterials/DefaultNormal"), sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
 tint = node(m, unreal.MaterialExpressionVectorParameter, -900, -450, parameter_name="Tint", default_value=unreal.LinearColor(1, 1, 1, 1))
 snow = node(m, unreal.MaterialExpressionScalarParameter, -900, 500, parameter_name="Snow", default_value=0.0)
+vc = node(m, unreal.MaterialExpressionVertexColor, -1300, -700)
+twig_col = node(m, unreal.MaterialExpressionVectorParameter, -1300, -900, parameter_name="TwigColour", default_value=unreal.LinearColor(0.08, 0.035, 0.02, 1))
+twig = node(m, unreal.MaterialExpressionLinearInterpolate, -1000, -600)
+link(albedo, "RGB", twig, "A")
+link(twig_col, "", twig, "B")
+link(vc, "G", twig, "Alpha")
+base_r = node(m, unreal.MaterialExpressionVectorParameter, -1300, -1100, parameter_name="BaseRidge", default_value=unreal.LinearColor(0.06, 0.06, 0.055, 1))
+base_f = node(m, unreal.MaterialExpressionVectorParameter, -1300, -1250, parameter_name="BaseFurrow", default_value=unreal.LinearColor(0.01, 0.01, 0.01, 1))
+rough_base = node(m, unreal.MaterialExpressionLinearInterpolate, -1000, -1100)
+link(base_f, "", rough_base, "A")
+link(base_r, "", rough_base, "B")
+link(albedo, "A", rough_base, "Alpha")
+bark = node(m, unreal.MaterialExpressionLinearInterpolate, -800, -600)
+link(twig, "", bark, "A")
+link(rough_base, "", bark, "B")
+link(vc, "R", bark, "Alpha")
 wood = node(m, unreal.MaterialExpressionMultiply, -600, -300)
-link(albedo, "RGB", wood, "A")
+link(bark, "", wood, "A")
 link(tint, "", wood, "B")
 # snow lies on faces that look up: saturate((N.z - 0.3) * 4) * Snow
 nrm = node(m, unreal.MaterialExpressionVertexNormalWS, -900, 650)

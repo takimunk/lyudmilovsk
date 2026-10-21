@@ -218,6 +218,7 @@ void FPlantSkeleton::Build(const FPlantSpecies& Species, uint32 InSeed)
 	Shoot1.Droop = S.Droop;
 	FShoot Shoot2 = Shoot1;
 	Shoot2.Wobble = S.Wobble * 1.5f;
+	Shoot2.Tropism = FMath::Lerp(S.Tropism, -2.5f, S.TwigHang);
 
 	int32 Node = 0;
 	for (float Z = S.TrunkNodeSpacing * 0.5f; Z < Leader * 0.97f; Z += S.TrunkNodeSpacing * (0.7f + 0.6f * Hash01(Seed, 1, Node, 9)), Node++)
@@ -251,7 +252,9 @@ void FPlantSkeleton::Build(const FPlantSpecies& Species, uint32 InSeed)
 		const int32 Index1 = Branches.Add(MoveTemp(B));
 
 		int32 Twig = 0;
-		for (float S2 = 0.45f; S2 < Branches[Index1].MaxLength - 0.35f; S2 += S.Branch2Spacing * (0.7f + 0.6f * Hash01(Seed, Key1, Twig, 5)), Twig++)
+		// small plants (dwarf birch) start their twigs close to the limb's base
+		const float TwigStart = FMath::Min(0.45f, S.Branch2Spacing * 1.5f), TwigEnd = FMath::Min(0.35f, 0.25f * Branches[Index1].MaxLength);
+		for (float S2 = TwigStart; S2 < Branches[Index1].MaxLength - TwigEnd; S2 += S.Branch2Spacing * (0.7f + 0.6f * Hash01(Seed, Key1, Twig, 5)), Twig++)
 		{
 			const FBranch& P = Branches[Index1];
 			const uint32 Key2 = 100000 + Node * 256 + Twig;
