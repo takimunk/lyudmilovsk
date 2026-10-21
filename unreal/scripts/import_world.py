@@ -1,7 +1,7 @@
 """The outdoor map (tools/world_map.py) in an Unreal level: generates the placeholder geometry
-(tools/world_mesh.py: ground, beach, slab path, promenade, town, woods, cable car) into
-Saved/World/world_coast.glb, imports it, and plants the poplars and maples along the path, the
-Baltic trees and shrubs around the club and the grass.
+(tools/world_mesh.py: ground, beach, slab path, the club's entrance, promenade, town, cable car)
+into Saved/World/world_coast.glb, imports it, plants the poplars and maples along the path and the
+Baltic trees and shrubs around the club, lays the forests (AProceduralForest) and the grass.
 
 Run as a script it adds all that to Lvl_Scene01 (build_scene01.sh runs it after import_scene01.py,
 in a process of its own: Interchange skips a second scene import in one process);
@@ -23,6 +23,9 @@ DEST = "/Game/Scene01/World"
 # Shrubs and the low dune pines turn into their level-0 summary sooner than trees (cm): a sea buckthorn
 # is ~650k leaf triangles up close, and every leaf casts a (non-Nanite) shadow.
 SUMMARY_DISTANCE = {"SeaBuckthorn": 5000.0, "Juniper": 5000.0, "DunePine": 8000.0}
+# The forests (world_map.forests) stay out of the level until AProceduralForest stops crashing play
+# ("Assertion failed: InstanceParams.LODs <= 8" in the HISM scene proxy, first PIE in Lvl_Scene01).
+FORESTS = os.environ.get("LYUD_FORESTS") == "1"
 eal = unreal.EditorAssetLibrary
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 
@@ -62,6 +65,14 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
         settings = sm.get_editor_property("nanite_settings")
         settings.enabled = True
+        if sm.get_name() == "World_Ground":
+            # complex collision is built from the Nanite fallback mesh: keep it at full resolution, or
+            # the walkable surface drifts from the drawn one and the player falls through in places
+            try:
+                settings.fallback_target = unreal.NaniteFallbackTarget.PERCENT_TRIANGLES
+                settings.fallback_percent_triangles = 1.0
+            except Exception as e:  # noqa: BLE001
+                _log("nanite fallback: %s" % e)
         sm.set_editor_property("nanite_settings", settings)
     eal.save_directory(DEST)                         # meshes, their materials and textures
 
@@ -72,10 +83,8 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             c = a.static_mesh_component
             # the outdoor sun lights only channel 1; channel 0 keeps Lumen and the sky lighting it
             c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
-            if a.get_actor_label() == "World_Woods":
-                c.set_collision_enabled(unreal.CollisionEnabled.NO_COLLISION)
             if a.get_actor_label() != "World_Ground":
-                a.tags = list(a.tags) + ["NoGrass"]   # no tufts on the slabs, roofs or stations
+                a.tags = list(a.tags) + ["NoGrass", "NoTree"]   # nothing grows on slabs, roofs or stations
         a.set_folder_path("Outside/World")
     _log("imported %d actors" % len(actors))
 
@@ -102,6 +111,21 @@ def build(face_y, textures_dir=None, plants=True, report=False):
                 g.set_editor_property(k, v)
             g.set_folder_path("Outside/Grass")
         _log("grass: %d patches" % len(W.grass_patches()))
+        forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
+        total = 0
+        for i, (x, y, hx, hy, mix, count, spacing, zmin, zmax, seed) in enumerate(W.forests() if FORESTS else ()):
+            f = eas.spawn_actor_from_class(forest_cls, to_ue(x, y, W.height(x, y), face_y))
+            f.set_actor_label("Forest_%02d_%s" % (i, mix))
+            f.set_editor_property("mix", [unreal.ForestMix(species=sp, weight=w, young_age=ya, mature_age=ma)
+                                          for sp, w, ya, ma in W.FOREST_MIX[mix]])
+            for k, v in (("seed", seed), ("count", count), ("spacing", spacing * 100),
+                         ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 3),
+                         ("min_world_z", zmin * 100), ("max_world_z", zmax * 100),
+                         ("trace_up", 8000.0), ("trace_down", 10000.0), ("preview_in_editor", False)):
+                f.set_editor_property(k, v)
+            f.set_folder_path("Outside/Forest")
+            total += count
+        _log("forests: ~%d trees%s" % (total, "" if FORESTS else " (off: set LYUD_FORESTS=1)"))
 
 
 def starlings_location(face_y):

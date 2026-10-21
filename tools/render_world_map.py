@@ -1,4 +1,4 @@
-"""Top-down picture of the outdoor map (tools/world_map.py): relief, beach, sea, town, woods,
+"""Top-down picture of the outdoor map (tools/world_map.py): relief, beach, sea, town, forests,
 the path with its alley, the cable car and the starlings.
 
   python3 tools/render_world_map.py [out.png]
@@ -42,10 +42,10 @@ def main(out):
                 c = tuple(min(255, int(v * shade)) for v in base)
             pix[i, j] = c
     d = ImageDraw.Draw(img)
-    for x, y, r, _ in W.woods():
-        a, b = px(x, y)
-        d.ellipse((a - r / PX, b - r / PX, a + r / PX, b + r / PX), fill=(55, 95, 50))
-    houses, trees = W.town()
+    for x, y, hx, hy, mix, *_ in W.forests():     # forest patches (trees only where the ground allows)
+        col = {"pine": (45, 85, 45), "dune": (90, 120, 70), "wet": (70, 105, 60), "town": (95, 130, 75)}[mix]
+        d.rectangle((*px(x + hx, y + hy), *px(x - hx, y - hy)), outline=col, width=3)
+    houses = W.town()
     for x, y, yaw, hw, hd, fl, kind in houses:
         ca, sa = math.cos(yaw), math.sin(yaw)
         pts = []
@@ -53,9 +53,6 @@ def main(out):
             pts.append(px(x + u * ca - v * sa, y + u * sa + v * ca))
         col = {"house": (170, 70, 50), "block": (150, 150, 155), "kirche": (90, 60, 50)}[kind]
         d.polygon(pts, fill=col)
-    for x, y, r, _ in trees:
-        a, b = px(x, y)
-        d.ellipse((a - r / PX, b - r / PX, a + r / PX, b + r / PX), fill=(60, 110, 55))
     path = [px(x, y) for x, y in W.path_points()]
     d.line(path, fill=(200, 200, 195), width=3)
     for x, y, sp, *_ in W.alley_trees():
@@ -63,6 +60,9 @@ def main(out):
         d.ellipse((a - 3, b - 3, a + 3, b + 3), fill=(30, 80, 30) if sp == "Maple" else (20, 60, 20))
     cc = W.cable_car()
     d.line([px(*cc["upper"]), px(*cc["lower"])], fill=(200, 30, 30), width=3)
+    for t in cc["towers"]:
+        a, b = px(*t)
+        d.ellipse((a - 3, b - 3, a + 3, b + 3), fill=(60, 60, 60))
     for k in ("upper", "lower"):
         a, b = px(*cc[k])
         d.rectangle((a - 6, b - 4, a + 6, b + 4), fill=(200, 30, 30))
@@ -76,7 +76,7 @@ def main(out):
     except OSError:
         font = ImageFont.load_default()
     labels = [((0, -25), "Клуб"), ((sx, sy - 40), "Скворцы над морем"), (W.TOWN_CENTER, "Людмиловск"),
-              ((cc["lower"][0] + 10, cc["lower"][1] + 30), "Канатка"), ((-60, 60), "Аллея"),
+              ((cc["lower"][0] + 60, cc["lower"][1] - 120), "Канатка"), ((-70, 60), "Аллея"),
               ((W.shore_x(-200) - 15, -200), "Пляж"), ((700, 1500), "Балтийское море")]
     for (x, y), text in labels:
         a, b = px(x, y)
