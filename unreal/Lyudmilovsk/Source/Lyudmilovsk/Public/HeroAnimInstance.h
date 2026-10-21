@@ -52,6 +52,12 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	TArray<float> WalkStride, JogStride;       // cm per clip loop
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
 	FHeroReachPose Reach;
+
+	/** The clothes around the torso, cm from the mesh's midline / front-back centre (SK_Hero: oversized overshirt). */
+	static constexpr float ClothesHalfWidth = 30.f;
+	static constexpr float ClothesHalfDepth = 20.f;
+	/** Swings each arm out from the shoulder just enough that the hand stays outside the clothes. */
+	void KeepHandsOutsideClothes(FCompactPose& Pose);
 };
 
 UCLASS(Transient, NotBlueprintable)

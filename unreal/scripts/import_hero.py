@@ -203,6 +203,11 @@ def do_retarget():
     c.add_default_ops()
     c.assign_ik_rig_to_all_ops(S, src)
     c.assign_ik_rig_to_all_ops(T, dst)
+    # FK only: the default "Run IK Rig" op pulled the hands and feet to IK goals that the hero's
+    # proportions don't match, and in the jog an arm swung through the body and in front of the eyes
+    for i in range(c.get_num_retarget_ops()):
+        if "IK" in str(c.get_op_name(i)):
+            c.set_retarget_op_enabled(i, False)
     c.auto_map_chains(unreal.AutoMapChainType.FUZZY, True)
     c.auto_align_all_bones(T)
     eal.save_loaded_asset(rtg)

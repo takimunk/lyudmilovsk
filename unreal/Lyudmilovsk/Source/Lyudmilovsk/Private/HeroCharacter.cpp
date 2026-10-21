@@ -319,7 +319,7 @@ static FAutoConsoleCommandWithWorld GHeroSit(TEXT("Hero.Sit"), TEXT("Sits the he
 
 static TWeakObjectPtr<ACameraActor> GHeroSideCamera;
 static FAutoConsoleCommandWithWorldAndArgs GHeroSideCam(TEXT("Hero.SideCam"),
-	TEXT("Hero.SideCam [right cm] [forward cm] [up cm] | off: view the hero from a camera beside him (headless checks)"),
+	TEXT("Hero.SideCam [right cm] [forward cm] [up cm] [follow] | off: view the hero from a camera beside him (headless checks)"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
@@ -338,10 +338,14 @@ static FAutoConsoleCommandWithWorldAndArgs GHeroSideCam(TEXT("Hero.SideCam"),
 		const float U = Args.Num() > 2 ? FCString::Atof(*Args[2]) : 30.f;
 		const FVector Target = Pawn->GetActorLocation() + Pawn->GetActorForwardVector() * 30.f;
 		const FVector At = Pawn->GetActorLocation() + Pawn->GetActorRightVector() * R + Pawn->GetActorForwardVector() * F + FVector(0.f, 0.f, U);
-		// placed once: later calls just look through it again
+		// placed once (later calls just look through it again), unless asked to follow the hero
 		if (!GHeroSideCamera.IsValid())
 		{
 			GHeroSideCamera = World->SpawnActor<ACameraActor>(At, (Target - At).Rotation());
+		}
+		else if (Args.Num() > 3 && Args[3] == TEXT("follow"))
+		{
+			GHeroSideCamera->SetActorLocationAndRotation(At, (Target - At).Rotation());
 		}
 		PC->SetViewTarget(GHeroSideCamera.Get());
 	}));

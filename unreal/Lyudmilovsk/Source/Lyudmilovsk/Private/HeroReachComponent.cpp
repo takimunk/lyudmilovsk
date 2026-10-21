@@ -11,7 +11,10 @@ namespace
 {
 	/** Where the item rests in the hand in front of the eyes, in the yaw frame (forward, right, up) from the eye, cm. */
 	const FVector CarryPos(38.f, 14.f, -17.f);
-	const FVector PocketPos(6.f, 25.f, -55.f);
+	// the cargo pocket on the right thigh, outside the oversized overshirt; the hand gets there round the
+	// side (PocketWay), not straight down through the clothes
+	const FVector PocketPos(-2.f, 33.f, -72.f);
+	const FVector PocketWay(14.f, 37.f, -46.f);
 	const FVector MouthPos(8.f, 1.5f, -8.5f);
 	const FVector NeckUpright = FVector(-0.1f, -0.5f, 0.85f).GetSafeNormal();
 	const FVector NeckTipped = FVector(-0.25f, -0.55f, -0.8f).GetSafeNormal();
@@ -224,7 +227,11 @@ void UHeroReachComponent::Stow(TFunction<void()> OnStowed)
 {
 	const FReachItem It = Item;
 	{
-		FStep S; S.Duration = 0.55f; S.Target = PocketKey(It);
+		FStep S; S.Duration = 0.3f; S.Target = PocketKey(It); S.Target.Pos = PocketWay;
+		Steps.Add(S);
+	}
+	{
+		FStep S; S.Duration = 0.35f; S.Target = PocketKey(It);
 		S.OnEnd = [this]
 		{
 			if (AActor* A = Held.Get())

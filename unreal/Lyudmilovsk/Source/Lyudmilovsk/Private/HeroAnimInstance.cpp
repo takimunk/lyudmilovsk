@@ -40,6 +40,61 @@ namespace
 	};
 }
 
+void FHeroAnimProxy::KeepHandsOutsideClothes(FCompactPose& Pose)
+{
+	const FBoneContainer& Bones = Pose.GetBoneContainer();
+	auto Find = [&](const TCHAR* Name)
+	{
+		const int32 M = Bones.GetPoseBoneIndexForBoneName(Name);
+		return M == INDEX_NONE ? FCompactPoseBoneIndex(INDEX_NONE) : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(M));
+	};
+	auto CS = [&](FCompactPoseBoneIndex B)
+	{
+		FTransform T = Pose[B];
+		for (FCompactPoseBoneIndex Up = Pose.GetParentBoneIndex(B); Up.IsValid(); Up = Pose.GetParentBoneIndex(Up))
+		{
+			T = T * Pose[Up];
+		}
+		return T;
+	};
+	const FCompactPoseBoneIndex Pelvis = Find(TEXT("pelvis")), Chest = Find(TEXT("spine_03"));
+	if (!Pelvis.IsValid() || !Chest.IsValid())
+	{
+		return;
+	}
+	const float ZLow = (float)CS(Pelvis).GetLocation().Z - 25.f, ZHigh = (float)CS(Chest).GetLocation().Z + 15.f;
+	for (const TCHAR* Side : { TEXT("l"), TEXT("r") })
+	{
+		const FCompactPoseBoneIndex Upper = Find(*FString::Printf(TEXT("upperarm_%s"), Side));
+		const FCompactPoseBoneIndex Hand = Find(*FString::Printf(TEXT("hand_%s"), Side));
+		if (!Upper.IsValid() || !Hand.IsValid())
+		{
+			continue;
+		}
+		const FTransform UpperCS = CS(Upper);
+		const FVector Shoulder = UpperCS.GetLocation();
+		const FVector H = CS(Hand).GetLocation();
+		const float HZ = (float)H.Z, HY = (float)H.Y;
+		const float Sign = Shoulder.X >= 0.f ? 1.f : -1.f;     // the mesh faces +Y: its left is +X
+		// how much the hand is in the clothes' way: by height along the torso and depth in front of / behind it
+		const float InBand = FMath::SmoothStep(ZLow - 10.f, ZLow, HZ) * (1.f - FMath::SmoothStep(ZHigh, ZHigh + 10.f, HZ));
+		const float InDepth = 1.f - FMath::SmoothStep(ClothesHalfDepth, ClothesHalfDepth + 12.f, FMath::Abs(HY));
+		const float Want = ClothesHalfWidth * InBand * InDepth;
+		const float Out = Sign * (float)H.X;
+		if (Want <= Out)
+		{
+			continue;
+		}
+		const FVector From = H - Shoulder;
+		const FVector To = FVector(Sign * Want, H.Y, H.Z) - Shoulder;
+		const FQuat Delta = FQuat::FindBetweenVectors(From, To.GetSafeNormal() * From.Size());
+		FTransform NewCS = UpperCS;
+		NewCS.SetRotation((Delta * UpperCS.GetRotation()).GetNormalized());
+		const FCompactPoseBoneIndex Parent = Pose.GetParentBoneIndex(Upper);
+		Pose[Upper] = Parent.IsValid() ? NewCS.GetRelativeTransform(CS(Parent)) : NewCS;
+	}
+}
+
 void UHeroAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -157,6 +212,10 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	// in place: the capsule moves the body
 	const FCompactPoseBoneIndex RootIndex(0);
 	Output.Pose[RootIndex].SetTranslation(FVector::ZeroVector);
+
+	// the mannequin's arms swing close to its slim body; the hero's oversized overshirt and hoodie are
+	// far wider, so the hands would pass through the clothes (and, running, in front of the eyes)
+	KeepHandsOutsideClothes(Output.Pose);
 
 	// reaching for something: the body crouches and leans to it first (the look builds on that)
 	const FPalmFrame AnimPalm = Reach.IsActive() ? HandReach::CurrentPalm(Output.Pose) : FPalmFrame();
