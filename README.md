@@ -110,3 +110,9 @@ unreal/scripts/build_scene01.sh
 - Контент из шаблонов Epic (`unreal/Lyudmilovsk/Content/Characters`, `Input`,
   `LevelPrototyping`, `FirstPerson`) остаётся под лицензией Unreal Engine EULA
   и под эти лицензии не подпадает.
+
+## Локализация
+
+Языки: ru (основной), en, ja. Все слова игры лежат в `unreal/Lyudmilovsk/Content/Localization/strings_<lang>.json`; картинки с текстом и озвучка
+генерируются из этих текстов и промптов отдельно по языкам (`tools/gen_localized.py`, `tools/gen_voice.py`). Схема: `docs/localization.md`,
+инструкция для агентов: `.claude/skills/localization/SKILL.md`.

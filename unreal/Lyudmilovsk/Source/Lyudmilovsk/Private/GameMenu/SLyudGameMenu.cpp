@@ -5,6 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
+#include "LyudText.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SEditableTextBox.h"
@@ -16,7 +17,6 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Widgets/Text/STextBlock.h"
 
-#define LOCTEXT_NAMESPACE "LyudGameMenu"
 
 namespace LyudMenuStyle
 {
@@ -59,12 +59,12 @@ namespace LyudMenuStyle
 static FText GameTimeText(double Seconds)
 {
 	const int32 Minutes = FMath::FloorToInt32(Seconds / 60.0);
-	return FText::Format(LOCTEXT("GameTime", "в игре {0} ч {1} мин"), FText::AsNumber(Minutes / 60), FText::FromString(FString::Printf(TEXT("%02d"), Minutes % 60)));
+	return LyudText::Get(TEXT("ui.menu.game_time"), { FStringFormatArg(Minutes / 60), FStringFormatArg(FString::Printf(TEXT("%02d"), Minutes % 60)) });
 }
 
 static FText SlotSubtitle(const FLyudSlotInfo& Info)
 {
-	return FText::Format(LOCTEXT("SlotSubtitle", "{0}  ·  {1}"), FText::FromString(Info.SavedAt.ToString(TEXT("%d.%m.%Y %H:%M"))), GameTimeText(Info.GameTimeSeconds));
+	return LyudText::Get(TEXT("ui.menu.slot_subtitle"), { FStringFormatArg(Info.SavedAt.ToString(TEXT("%d.%m.%Y %H:%M"))), FStringFormatArg(GameTimeText(Info.GameTimeSeconds).ToString()) });
 }
 
 void SLyudGameMenu::Construct(const FArguments& InArgs)
@@ -92,7 +92,7 @@ void SLyudGameMenu::Construct(const FArguments& InArgs)
 					+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 0.f, 0.f, 18.f)
 					[
 						SNew(STextBlock)
-						.Text(LOCTEXT("Title", "ЛЮДМИЛОВСК"))
+						.Text(LyudText::Get(TEXT("ui.menu.title")))
 						.Font(Font(30, "Bold"))
 						.ColorAndOpacity(Text)
 						.Justification(ETextJustify::Center)
@@ -132,7 +132,7 @@ void SLyudGameMenu::SetStatus(const FString& Text)
 
 FString SLyudGameMenu::DefaultTitle() const
 {
-	return FDateTime::Now().ToString(TEXT("Сохранение %d.%m %H:%M"));
+	return LyudText::Get(TEXT("ui.menu.default_title"), { FStringFormatArg(FDateTime::Now().ToString(TEXT("%d.%m %H:%M"))) }).ToString();
 }
 
 TSharedRef<SWidget> SLyudGameMenu::MakeButton(const FText& Label, TFunction<void()> OnClick, TAttribute<EVisibility> Visible)
@@ -159,7 +159,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeMain()
 	return SNew(SVerticalBox)
 		+ SVerticalBox::Slot().AutoHeight()
 		[
-			MakeButton(LOCTEXT("Continue", "Продолжить"), [this]
+			MakeButton(LyudText::Get(TEXT("ui.menu.continue")), [this]
 			{
 				const TArray<FLyudSlotInfo> Slots = Saves() ? Saves()->GetSlots() : TArray<FLyudSlotInfo>();
 				if (Slots.Num() > 0)
@@ -171,7 +171,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeMain()
 		]
 		+ SVerticalBox::Slot().AutoHeight()
 		[
-			MakeButton(LOCTEXT("NewGame", "Новая игра"), [this, O]
+			MakeButton(LyudText::Get(TEXT("ui.menu.new_game")), [this, O]
 			{
 				if (bStartup)
 				{
@@ -183,10 +183,10 @@ TSharedRef<SWidget> SLyudGameMenu::MakeMain()
 				}
 			})
 		]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Load", "Загрузить"), [this] { Show(EScreen::Load); })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.load")), [this] { Show(EScreen::Load); })]
 		+ SVerticalBox::Slot().AutoHeight()
 		[
-			MakeButton(LOCTEXT("Quit", "Выйти из игры"), [O]
+			MakeButton(LyudText::Get(TEXT("ui.menu.quit")), [O]
 			{
 				if (O.IsValid())
 				{
@@ -200,10 +200,10 @@ TSharedRef<SWidget> SLyudGameMenu::MakePause()
 {
 	TWeakObjectPtr<ULyudGameMenuSubsystem> O = Owner;
 	return SNew(SVerticalBox)
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Resume", "Продолжить"), [O] { if (O.IsValid()) { O->Close(); } })]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Save", "Сохранить"), [this] { Show(EScreen::Save); })]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Load", "Загрузить"), [this] { Show(EScreen::Load); })]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("MainMenu", "Главное меню"), [this] { Show(EScreen::Main); })];
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.resume")), [O] { if (O.IsValid()) { O->Close(); } })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.save")), [this] { Show(EScreen::Save); })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.load")), [this] { Show(EScreen::Load); })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.main_menu")), [this] { Show(EScreen::Main); })];
 }
 
 TSharedRef<SWidget> SLyudGameMenu::MakeSave()
@@ -212,7 +212,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSave()
 	return SNew(SVerticalBox)
 		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 0.f, 0.f, 6.f)
 		[
-			SNew(STextBlock).Text(LOCTEXT("SaveName", "Название сохранения")).Font(Font(14)).ColorAndOpacity(Dim)
+			SNew(STextBlock).Text(LyudText::Get(TEXT("ui.menu.save_name"))).Font(Font(14)).ColorAndOpacity(Dim)
 		]
 		+ SVerticalBox::Slot().AutoHeight()
 		[
@@ -225,14 +225,14 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSave()
 				{
 					const FString Title = TitleBox->GetText().ToString().TrimStartAndEnd();
 					const FString Slot = Saves()->SaveToSlot(Title.IsEmpty() ? DefaultTitle() : Title);
-					SetStatus(Slot.IsEmpty() ? TEXT("Не удалось сохранить") : TEXT("Сохранено: ") + (Title.IsEmpty() ? DefaultTitle() : Title));
+					SetStatus(Slot.IsEmpty() ? LyudText::Get(TEXT("ui.menu.save_failed")).ToString() : LyudText::Get(TEXT("ui.menu.saved"), { FStringFormatArg(Title.IsEmpty() ? DefaultTitle() : Title) }).ToString());
 					Back();
 				}
 			})
 		]
 		+ SVerticalBox::Slot().AutoHeight()
 		[
-			MakeButton(LOCTEXT("SaveNew", "Сохранить в новый слот"), [this]
+			MakeButton(LyudText::Get(TEXT("ui.menu.save_new")), [this]
 			{
 				if (!Saves())
 				{
@@ -244,19 +244,19 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSave()
 					Title = DefaultTitle();
 				}
 				const FString Slot = Saves()->SaveToSlot(Title);
-				SetStatus(Slot.IsEmpty() ? TEXT("Не удалось сохранить") : TEXT("Сохранено: ") + Title);
+				SetStatus(Slot.IsEmpty() ? LyudText::Get(TEXT("ui.menu.save_failed")).ToString() : LyudText::Get(TEXT("ui.menu.saved"), { FStringFormatArg(Title) }).ToString());
 				Back();
 			})
 		]
 		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 12.f, 0.f, 4.f)
 		[
-			SNew(STextBlock).Text(LOCTEXT("Overwrite", "Или перезаписать:")).Font(Font(14)).ColorAndOpacity(Dim)
+			SNew(STextBlock).Text(LyudText::Get(TEXT("ui.menu.overwrite"))).Font(Font(14)).ColorAndOpacity(Dim)
 		]
 		+ SVerticalBox::Slot().FillHeight(1.f)
 		[
 			SNew(SScrollBox) + SScrollBox::Slot()[SAssignNew(SaveList, SVerticalBox)]
 		]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Back", "Назад"), [this] { Back(); })];
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 }
 
 TSharedRef<SWidget> SLyudGameMenu::MakeLoad()
@@ -266,7 +266,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeLoad()
 		[
 			SNew(SScrollBox) + SScrollBox::Slot()[SAssignNew(LoadList, SVerticalBox)]
 		]
-		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LOCTEXT("Back", "Назад"), [this] { Back(); })];
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 }
 
 void SLyudGameMenu::RebuildSlots()
@@ -282,7 +282,7 @@ void SLyudGameMenu::RebuildSlots()
 		{
 			List->AddSlot().AutoHeight().Padding(0.f, 8.f)
 			[
-				SNew(STextBlock).Text(LOCTEXT("NoSaves", "Сохранений пока нет")).Font(Font(16)).ColorAndOpacity(Dim).Justification(ETextJustify::Center)
+				SNew(STextBlock).Text(LyudText::Get(TEXT("ui.menu.no_saves"))).Font(Font(16)).ColorAndOpacity(Dim).Justification(ETextJustify::Center)
 			];
 		}
 		for (const FLyudSlotInfo& Info : Slots)
@@ -303,12 +303,12 @@ void SLyudGameMenu::RebuildSlots()
 							if (bSaving)
 							{
 								const bool bOk = !Saves()->SaveToSlot(Title, Slot).IsEmpty();
-								SetStatus(bOk ? TEXT("Перезаписано: ") + Title : TEXT("Не удалось сохранить"));
+								SetStatus(bOk ? LyudText::Get(TEXT("ui.menu.overwritten"), { FStringFormatArg(Title) }).ToString() : LyudText::Get(TEXT("ui.menu.save_failed")).ToString());
 								Back();
 							}
 							else if (!Saves()->LoadSlot(Slot))
 							{
-								SetStatus(TEXT("Не удалось загрузить: ") + Title);
+								SetStatus(LyudText::Get(TEXT("ui.menu.load_failed"), { FStringFormatArg(Title) }).ToString());
 							}
 						}
 						return FReply::Handled();
@@ -341,7 +341,7 @@ void SLyudGameMenu::RebuildSlots()
 					})
 					[
 						SNew(STextBlock)
-						.Text_Lambda([this, Slot] { return ArmedDelete == Slot ? LOCTEXT("DeleteSure", "Точно?") : LOCTEXT("Delete", "Удалить"); })
+						.Text_Lambda([this, Slot] { return ArmedDelete == Slot ? LyudText::Get(TEXT("ui.menu.delete_sure")) : LyudText::Get(TEXT("ui.menu.delete")); })
 						.Font(Font(14))
 						.ColorAndOpacity(Dim)
 					]
@@ -406,4 +406,3 @@ TSharedPtr<SWidget> SLyudGameMenu::GetFocusTarget() const
 	}
 }
 
-#undef LOCTEXT_NAMESPACE

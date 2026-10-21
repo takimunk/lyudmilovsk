@@ -21,12 +21,10 @@ enum class ELyudItemKind : uint8
 	Food,
 };
 
-/** One kind of item (the table is in LyudInventory.cpp): its names, icon (/Game/Inventory/T_Icon_<Id>) and what it leaves behind. */
+/** One kind of item (the table is in LyudInventory.cpp): its icon (/Game/Inventory/Localized/<lang>/T_Icon_<Id>) and what it leaves behind. The words are in the string tables (item.<Id>.name / .desc). */
 struct FLyudItemDef
 {
 	FName Id;
-	FText Name;
-	FText Description;
 	ELyudItemKind Kind = ELyudItemKind::Misc;
 	/** What is left in the inventory after it is used (an empty bottle). */
 	FName Leaves;
@@ -61,6 +59,8 @@ public:
 
 	/** The item table; null for an unknown id. */
 	static const FLyudItemDef* FindDef(FName Id);
+	static FText ItemName(FName Id);
+	static FText ItemDescription(FName Id);
 	static const TArray<FLyudItemDef>& AllDefs();
 
 	void Add(FName Id, int32 Count = 1);

@@ -11,6 +11,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
+#include "LyudText.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBox.h"
@@ -75,7 +76,7 @@ void ULyudGameMenuSubsystem::OnWorldBeginPlay(UWorld& World)
 				SNew(SButton)
 				.OnClicked_Lambda([Self] { if (Self.IsValid() && !Self->IsOpen()) { Self->Open(false); } return FReply::Handled(); })
 				[
-					SNew(STextBlock).Text(FText::FromString(TEXT("Меню"))).Font(FCoreStyle::GetDefaultFontStyle("Regular", 20))
+					SNew(STextBlock).Text(LyudText::Get(TEXT("ui.menu.button"))).Font(FCoreStyle::GetDefaultFontStyle("Regular", 20))
 				]
 			];
 		Viewport->AddViewportWidgetContent(MenuButton.ToSharedRef(), 90);

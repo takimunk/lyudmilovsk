@@ -453,10 +453,7 @@ def build_vending(n):
         z = 0.5 + s_ * 0.22
         P.rbox(n + "_Shelf", (cw - 0.02, D - 0.2, 0.008), (cxm, 0.02, z), shelf, root, r=0.002, seg=1)
         P.rbox(n + "_ShelfLip", (cw - 0.02, 0.008, 0.02), (cxm, fy + 0.1, z + 0.01), shelf, root, r=0.002, seg=1)
-        main, acc = colors[s_ % len(colors)]
-        for c in range(8):
-            for row in range(4):
-                can(n, root, cxm - 0.26 + c * 0.0745, fy + 0.15 + row * 0.07, z + 0.004, P.mat("VCan_%d" % s_, main, 0.3, 0.6), P.mat("VCanAcc_%d" % s_, acc, 0.4), tab=False, lo=True)
+        # the shelves are stocked in Unreal (AVendingMachine::StockShelves) with the very bottles the player buys
     # header sign (lit) and side panels
     P.rbox(n + "_HeaderSign", (0.84, 0.03, 0.2), (0.0, fy - 0.002, 1.72), lit, root, r=0.004)
     P.text_mesh(n + "_HeaderText", "НАПИТКИ", 0.075, (0.0, fy - 0.019, 1.72), P.mat("Vending_Text", (0.55, 0.03, 0.03), 0.5), root, rot=(RADS(90), 0, 0), extrude=0.002)

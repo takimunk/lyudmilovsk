@@ -1,0 +1,11 @@
+{
+ "id": "newspaper",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "3:4",
+ "prompt": "Front page of a regional Russian newspaper from 2004, black and white print on slightly yellowed paper, masthead and columns of small Cyrillic text, two grainy photos, flat scan, no real newspaper names or logos.",
+ "strings": {
+  "lang.name": "Russian",
+  "lang.script": "Cyrillic"
+ }
+}

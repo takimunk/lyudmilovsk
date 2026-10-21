@@ -1,0 +1,11 @@
+{
+ "id": "exit_sign",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "16:9",
+ "prompt": "A glowing green emergency exit sign, flat front view filling the frame, dark background. The word is exactly as given, in Cyrillic letters, with a running-man pictogram. The word on the sign: \"ВЫХОД\".",
+ "strings": {
+  "lang.script": "Cyrillic",
+  "sign.exit": "ВЫХОД"
+ }
+}

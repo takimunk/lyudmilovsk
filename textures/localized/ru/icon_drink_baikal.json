@@ -1,0 +1,10 @@
+{
+ "id": "icon_drink_baikal",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "1:1",
+ "prompt": "Inventory icon for a moody adventure game set in a computer club in 2004: the object centred and filling most of a square frame, softly lit from the upper left, painterly realistic style, plain dark warm-grey background with a faint vignette, no frame, no UI elements, no text except what is printed on the object itself. A half-litre glass bottle of dark green fizzy herbal drink with a green pine-and-herbs label reading \"БАЙКАЛ\".",
+ "strings": {
+  "label.baikal.title": "БАЙКАЛ"
+ }
+}

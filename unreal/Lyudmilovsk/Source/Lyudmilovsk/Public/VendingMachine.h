@@ -33,6 +33,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Vending")
 	float UseDistance = 140.f;
 
+	/** Lay the shelves with bottles (the same labelled ones the player buys) when play begins. */
+	UPROPERTY(EditAnywhere, Category = "Vending")
+	bool bStockShelves = true;
+
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
@@ -41,12 +45,14 @@ private:
 	enum class EState : uint8 { Idle, Dispensing, Taking };
 
 	void Buy();
+	void StockShelves();
 	FVector TrayRest() const;
 	FText PromptFor(int32 Flavor) const;
 
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Tray;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> TrayBack;
 	UPROPERTY() TObjectPtr<ABottleItem> Bottle;
+	UPROPERTY() TArray<TObjectPtr<ABottleItem>> Stock;
 
 	EState State = EState::Idle;
 	int32 Flavor = 0;

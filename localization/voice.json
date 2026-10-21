@@ -1,0 +1,24 @@
+{
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "format": "wav 24 kHz mono 16-bit (afconvert), one file per line",
+ "speakers": {
+  "default": {
+   "voice": "Daniel",
+   "direction": ""
+  },
+  "owner": {
+   "voice": "Daniel",
+   "direction": "[calm, tired, slow, a little ironic]"
+  },
+  "hero": {
+   "voice": "Brian",
+   "direction": "[quiet, uncertain]"
+  }
+ },
+ "lines": {
+  "line.owner.first.1": {
+   "direction": ""
+  }
+ },
+ "notes": "A line key is line.<speaker>.<scene>.<n>; its text is in strings_<lang>.json. The speaker's voice and direction apply to every language; override per line under 'lines' or per language with speakers.<id>.voice_<lang>."
+}

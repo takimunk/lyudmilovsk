@@ -30,6 +30,16 @@ EXPORT_DIR = os.path.join(ROOT, "blender", "export")
 BLEND_PATH = os.path.join(ROOT, "blender", "scene01_corridor.blend")
 SCREEN_PNG = os.path.join(TEX_DIR, "hero_os_screen.png")
 PODYEZD_DIR = os.path.join(TEX_DIR, "podyezd")   # made by tools/gen_textures_fal.py
+LANG = os.environ.get("LYUD_LANG", "ru")          # textures with words come from textures/localized/<lang> (tools/gen_localized.py)
+
+
+def tex_path(file):
+    """Textures that carry words are generated per language (localization/assets.json); the rest live in podyezd/."""
+    for lang in (LANG, "ru"):
+        p = os.path.join(TEX_DIR, "localized", lang, file)
+        if os.path.exists(p):
+            return p
+    return os.path.join(PODYEZD_DIR, file)
 PROPS_DIR = os.path.join(ROOT, "blender", "props", "export")   # detailed props (blender/props/README.md)
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -122,7 +132,7 @@ def tex_mat(name, file, rough=0.8, metal=0.0):
     bsdf.inputs["Roughness"].default_value = rough
     bsdf.inputs["Metallic"].default_value = metal
     tex = nt.nodes.new("ShaderNodeTexImage")
-    tex.image = bpy.data.images.load(os.path.join(PODYEZD_DIR, file))
+    tex.image = bpy.data.images.load(tex_path(file))
     nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     return m
 
@@ -1062,12 +1072,41 @@ def build_posters(coll):
         (W / 2 - 0.012, 3.1, 1.74, -1, 0), (W / 2 - 0.012, 9.6, 1.74, -1, 1), (W / 2 - 0.012, 18.7, 1.74, -1, 0),
         (W / 2 - 0.012, 21.6, 1.74, -1, 1),
         (-W / 2 + 0.012, 1.6, 1.55, 1, 1), (-W / 2 + 0.012, 12.2, 1.55, 1, 0), (-W / 2 + 0.012, 21.0, 1.55, 1, 1),
-        (-HALL_HW + 0.012, HALL_Y0 / 2 - 2.0, 1.55, 1, 0), (-HALL_HW + 0.012, HALL_Y0 + 1.3, 1.55, 1, 1),
+        (-HALL_HW + 0.012, -2.2, 2.6, 1, 0), (-HALL_HW + 0.012, -3.75, 2.6, 1, 1),     # above the two vending machines
     ]
     for k, (x, y, z, face, design) in enumerate(spots):
         # plane() faces -Y: a quarter turn about Z points it along +X or -X
         pl = plane("Poster_Aton_%d" % k, pw, ph, (x, y, z), mats[design], coll=coll)
         pl.rotation_euler = (0, 0, face * math.pi / 2)
+        POSTERS.append(pl)
+
+
+POSTERS = []
+
+
+def check_posters():
+    """Reports every poster that overlaps another poster or anything else standing against its wall."""
+    bpy.context.view_layer.update()
+    corners = lambda o: [o.matrix_world @ Vector(c) for c in o.bound_box]
+
+    def box_of(o):
+        cs = corners(o)
+        return [min(c[i] for c in cs) for i in range(3)], [max(c[i] for c in cs) for i in range(3)]
+
+    bad = 0
+    for pl in POSTERS:
+        lo, hi = box_of(pl)
+        for o in bpy.data.objects:
+            if o is pl or o.type != "MESH" or o.hide_render:
+                continue
+            if any(t in o.name for t in ("Wall", "Slope", "Floor", "Ceiling", "Partition_L", "Partition_R", "Partition_Top", "Hall_Back", "Hall_Far", "Booth_Wall", "Outside")):
+                continue
+            lo2, hi2 = box_of(o)
+            if all(lo[i] < hi2[i] - 0.01 and hi[i] > lo2[i] + 0.01 for i in range(3)) or \
+                    (o.name.startswith("Poster") and all(lo[i] <= hi2[i] and hi[i] >= lo2[i] for i in range(3))):
+                print("POSTER OVERLAP:", pl.name, "with", o.name)
+                bad += 1
+    print("posters checked: %d, overlaps: %d" % (len(POSTERS), bad))
 
 
 def food_vending_placeholder(coll, fx, fy):
@@ -1294,7 +1333,7 @@ def screen_on(name, file, strength=1.2):
     nt = m.node_tree
     bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
     tex = nt.nodes.new("ShaderNodeTexImage")
-    tex.image = bpy.data.images.load(os.path.join(PODYEZD_DIR, file))
+    tex.image = bpy.data.images.load(tex_path(file))
     nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     nt.links.new(tex.outputs["Color"], bsdf.inputs["Emission Color"])
     bsdf.inputs["Emission Strength"].default_value = strength
@@ -1823,6 +1862,7 @@ def main():
     build_walkway(walk)
     build_stations(furn)
     build_work_lights(work)
+    check_posters()
 
     screen = bpy.data.objects["HeroStation"]
     # First person, slumped in the hero's chair, just woken up, looking at the screen.

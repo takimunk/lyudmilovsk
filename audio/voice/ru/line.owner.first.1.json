@@ -1,0 +1,10 @@
+{
+ "key": "line.owner.first.1",
+ "lang": "ru",
+ "text": "А, проснулся. Хорошо. Место за тобой, как всегда.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "hash": "561c03b60993"
+}

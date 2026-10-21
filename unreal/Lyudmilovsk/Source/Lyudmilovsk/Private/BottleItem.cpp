@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
@@ -197,7 +198,7 @@ void ABottleItem::Init(FName InFlavor, float InLevel)
 	LiquidMaterial = Tinted(Liquid, TEXT("/Game/Hall/M_BottleLiquid.M_BottleLiquid"), Look.Liquid);
 	Tinted(Cap, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"), Look.Cap);
 	UMaterialInstanceDynamic* LabelMat = Tinted(Label, TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel"), FLinearColor::White);
-	if (UTexture2D* Tex = LoadObject<UTexture2D>(nullptr, *FString::Printf(TEXT("/Game/Hall/T_Label_%s.T_Label_%s"), *Flavor.ToString(), *Flavor.ToString())))
+	if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("Hall"), FString(TEXT("T_Label_")) + Flavor.ToString()))
 	{
 		LabelMat->SetTextureParameterValue(TEXT("Label"), Tex);
 	}

@@ -10,7 +10,7 @@ class UStaticMeshComponent;
 
 /**
  * A 0.5 l glass bottle of Soviet-style fizzy drink: a lathe-turned glass body, the liquid inside (its level
- * can fall), a label with the drink's name (/Game/Hall/T_Label_<flavor>) and a crown cap, built in code.
+ * can fall), a label with the drink's name (/Game/Hall/Localized/<lang>/T_Label_<flavor>) and a crown cap, built in code.
  * Origin at the middle of the bottle, local Z toward the neck, local X out of the label. NotPlaceable: the
  * vending machine and the inventory spawn it.
  */

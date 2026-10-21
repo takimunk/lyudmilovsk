@@ -1,10 +1,10 @@
 """Imports the bottle labels and the inventory icons, and builds the bottle materials:
 
-  /Game/Hall/T_Label_<flavor>        textures/podyezd/label_<flavor>.jpg
+  /Game/Hall/Localized/<lang>/T_Label_<flavor>   textures/localized/<lang>/label_<flavor>.jpg (every language there is; tools/gen_localized.py)
   /Game/Hall/M_BottleLabel           Label (texture) x Color, glossy paper
   /Game/Hall/M_BottleGlass           translucent glass tinted by Color
   /Game/Hall/M_BottleLiquid          translucent drink tinted by Color
-  /Game/Inventory/T_Icon_<item id>   textures/inventory/icon_<item id>.jpg  (UI textures, no mips)
+  /Game/Inventory/Localized/<lang>/T_Icon_<item id>   textures/localized/<lang>/icon_<item id>.jpg  (UI textures, no mips)
 
 Run with the editor closed:
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_hall_assets.py
@@ -47,14 +47,16 @@ def import_texture(src, folder, name, ui=False):
     return tex
 
 
-for path in sorted(glob.glob(os.path.join(ROOT, "textures", "podyezd", "label_*.jpg"))):
-    flavor = os.path.basename(path)[len("label_"):-4]
-    import_texture(path, "/Game/Hall", "T_Label_" + flavor)
-    log("label " + flavor)
-for path in sorted(glob.glob(os.path.join(ROOT, "textures", "inventory", "icon_*.jpg"))):
-    item = os.path.basename(path)[len("icon_"):-4]
-    import_texture(path, "/Game/Inventory", "T_Icon_" + item, ui=True)
-    log("icon " + item)
+for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"))):
+    lang = os.path.basename(lang_dir)
+    for path in sorted(glob.glob(os.path.join(lang_dir, "label_*.jpg"))):
+        flavor = os.path.basename(path)[len("label_"):-4]
+        import_texture(path, "/Game/Hall/Localized/" + lang, "T_Label_" + flavor)
+        log("label %s %s" % (lang, flavor))
+    for path in sorted(glob.glob(os.path.join(lang_dir, "icon_*.jpg"))):
+        item = os.path.basename(path)[len("icon_"):-4]
+        import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Icon_" + item, ui=True)
+        log("icon %s %s" % (lang, item))
 
 
 def new_material(path):

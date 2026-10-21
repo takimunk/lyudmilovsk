@@ -13,6 +13,7 @@
 #include "HeroReachComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
+#include "LyudText.h"
 #include "Plants/FallenFruit.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
@@ -798,7 +799,7 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 			{
 				const FLyudItemDef* Def = ULyudInventory::FindDef(GetSpecies().FruitItem);
-				UI->SetPrompt(this, bAimed && Def ? FText::Format(NSLOCTEXT("Plants", "PickFruit", "[E] Поднять: {0}"), Def->Name) : FText::GetEmpty());
+				UI->SetPrompt(this, bAimed && Def ? LyudText::Get(TEXT("ui.pick"), { FStringFormatArg(ULyudInventory::ItemName(Def->Id).ToString()) }) : FText::GetEmpty());
 			}
 			bPickPrompt = bAimed;
 		}

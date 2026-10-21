@@ -1,0 +1,19 @@
+{
+ "id": "poster_aton_2",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "3:4",
+ "prompt": "Vertical advertising poster for the computer club ATON, one poster of a series sharing the same art direction: a deep navy night sky with stars, a dark pyramid in a desert at the bottom, a large glowing golden Eye of Horus (Egyptian pharaoh style) as the club's logo, gold and cyan neon lettering with a chrome bevel, a worn, creased 1990s-2000s paper print with torn edges. Every word on the poster is exactly the text given below, spelled exactly, in Cyrillic letters. Flat front view filling the frame. Text on the poster: the huge name \"АТОН\" at the top with the eye logo under it, then the heading \"ПРАЙС-ЛИСТ\" and three price lines \"1 час — 30 руб.\", \"3 часа — 80 руб.\", \"Ночь 23:00–07:00 — 150 руб.\", then the heading \"ПРАВИЛА\" with three short lines \"Не шуметь\", \"Еду не приносить\", \"Чужие настройки не трогать\".",
+ "strings": {
+  "lang.script": "Cyrillic",
+  "poster.aton.name": "АТОН",
+  "poster.price.title": "ПРАЙС-ЛИСТ",
+  "poster.price.hour": "1 час — 30 руб.",
+  "poster.price.three": "3 часа — 80 руб.",
+  "poster.price.night": "Ночь 23:00–07:00 — 150 руб.",
+  "poster.rules.title": "ПРАВИЛА",
+  "poster.rules.1": "Не шуметь",
+  "poster.rules.2": "Еду не приносить",
+  "poster.rules.3": "Чужие настройки не трогать"
+ }
+}

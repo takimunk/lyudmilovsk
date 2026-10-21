@@ -1,0 +1,12 @@
+{
+ "id": "label_tarkhun",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "3:2",
+ "prompt": "A flat rectangular label for a half-litre glass soda bottle, flat front view filling the frame, vintage Soviet-era printed paper label, an original illustration, no real brand logos. All words exactly as given, spelled exactly, in Cyrillic letters. The label is bright green, original illustration of tarragon leaves. Words: the name \"ТАРХУН\" in big lettering and the small line \"газированный напиток 0,5 л\".",
+ "strings": {
+  "lang.script": "Cyrillic",
+  "label.tarkhun.title": "ТАРХУН",
+  "label.sub": "газированный напиток 0,5 л"
+ }
+}

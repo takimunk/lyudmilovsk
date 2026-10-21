@@ -10,16 +10,17 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
+#include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 namespace
 {
-	struct FDrink { const TCHAR* Item; const TCHAR* Flavor; const TCHAR* Name; };
+	struct FDrink { const TCHAR* Item; const TCHAR* Flavor; };
 	const FDrink Drinks[] = {
-		{ TEXT("drink_baikal"), TEXT("baikal"), TEXT("Байкал") },
-		{ TEXT("drink_dyushes"), TEXT("dyushes"), TEXT("Дюшес") },
-		{ TEXT("drink_buratino"), TEXT("buratino"), TEXT("Буратино") },
-		{ TEXT("drink_tarkhun"), TEXT("tarkhun"), TEXT("Тархун") },
+		{ TEXT("drink_baikal"), TEXT("baikal") },
+		{ TEXT("drink_dyushes"), TEXT("dyushes") },
+		{ TEXT("drink_buratino"), TEXT("buratino") },
+		{ TEXT("drink_tarkhun"), TEXT("tarkhun") },
 	};
 	constexpr float DispenseTime = 0.7f;
 }
@@ -53,6 +54,10 @@ AVendingMachine::AVendingMachine()
 void AVendingMachine::BeginPlay()
 {
 	Super::BeginPlay();
+	if (bStockShelves)
+	{
+		StockShelves();
+	}
 	UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	if (Base)
 	{
@@ -61,6 +66,43 @@ void AVendingMachine::BeginPlay()
 			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
 			MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.025f, 0.025f, 0.03f));
 			C->SetMaterial(0, MID);
+		}
+	}
+}
+
+void AVendingMachine::StockShelves()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	// five glass shelves behind the window (the model's own: 5 shelves 22 cm apart from 50 cm up, window 65 cm wide, centred 11.75 cm
+	// to the machine's right); the bottles lie across them three high and three wide, labels out toward the glass
+	constexpr float Scale = 0.9f, ShelfZ0 = 50.4f, ShelfPitch = 22.f, FrontX = 24.2f, MidY = 11.75f;
+	const float Len = 2.f * ABottleItem::BottleHalfLength * Scale, R = ABottleItem::BodyRadius * Scale;
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	for (int32 Shelf = 0; Shelf < 5; ++Shelf)
+	{
+		const TCHAR* Kind = Drinks[(Shelf % 4)].Flavor;
+		for (int32 Level = 0; Level < 3; ++Level)
+		{
+			for (int32 Col = -1; Col <= 1; ++Col)
+			{
+				const FVector Local(FrontX + (Level % 2) * 1.2f, MidY + Col * (Len + 0.4f), ShelfZ0 + Shelf * ShelfPitch + R + 0.2f + Level * 2.f * R * 0.96f);
+				ABottleItem* B = World->SpawnActor<ABottleItem>(GetActorTransform().TransformPosition(Local), FRotator::ZeroRotator, Params);
+				if (!B)
+				{
+					continue;
+				}
+				B->Init(Kind, 1.f);
+				const FVector Neck = GetActorRightVector() * ((Shelf + Col + Level) % 2 ? 1.f : -1.f);
+				B->SetActorRotation(FRotationMatrix::MakeFromZX(Neck, GetActorForwardVector()).Rotator());
+				B->SetActorScale3D(FVector(Scale));
+				B->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+				Stock.Add(B);
+			}
 		}
 	}
 }
@@ -85,9 +127,15 @@ FText AVendingMachine::PromptFor(int32 Sel) const
 	const ULyudInventory* Inv = ULyudInventory::Get(this);
 	if (Inv && Inv->Rubles < Price)
 	{
-		return FText::FromString(FString::Printf(TEXT("Не хватает денег: бутылка стоит %d руб., у тебя %d"), Price, Inv->Rubles));
+		return LyudText::Get(TEXT("ui.vending.nomoney"), { FStringFormatArg(Price), FStringFormatArg(Inv->Rubles) });
 	}
-	return FText::FromString(FString::Printf(TEXT("E — купить «%s», %d руб.     [1 Байкал   2 Дюшес   3 Буратино   4 Тархун]"), Drinks[Sel].Name, Price));
+	TArray<FStringFormatArg> Names;
+	for (const FDrink& D : Drinks)
+	{
+		Names.Add(FStringFormatArg(ULyudInventory::ItemName(D.Item).ToString()));
+	}
+	return FText::FromString(LyudText::Get(TEXT("ui.vending.buy"), { FStringFormatArg(ULyudInventory::ItemName(Drinks[Sel].Item).ToString()), FStringFormatArg(Price) }).ToString()
+		+ TEXT("     ") + LyudText::Get(TEXT("ui.vending.choose"), Names).ToString());
 }
 
 void AVendingMachine::Buy()

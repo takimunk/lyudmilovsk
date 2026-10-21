@@ -1,0 +1,14 @@
+{
+ "id": "poster_aton_1",
+ "lang": "ru",
+ "model": "google/nano-banana-2.1",
+ "aspect": "3:4",
+ "prompt": "Vertical advertising poster for the computer club ATON, one poster of a series sharing the same art direction: a deep navy night sky with stars, a dark pyramid in a desert at the bottom, a large glowing golden Eye of Horus (Egyptian pharaoh style) as the club's logo, gold and cyan neon lettering with a chrome bevel, a worn, creased 1990s-2000s paper print with torn edges. Every word on the poster is exactly the text given below, spelled exactly, in Cyrillic letters. Flat front view filling the frame. Text on the poster: the title \"КОМПЬЮТЕРНЫЙ КЛУБ\" at the top, the huge name \"АТОН\" below it, the line \"Игры • Интернет • Принтер\" and, in a red-and-yellow banner at the bottom, \"Ночной тариф с 23:00\".",
+ "strings": {
+  "lang.script": "Cyrillic",
+  "poster.aton.club": "КОМПЬЮТЕРНЫЙ КЛУБ",
+  "poster.aton.name": "АТОН",
+  "poster.aton.line": "Игры • Интернет • Принтер",
+  "poster.aton.night": "Ночной тариф с 23:00"
+ }
+}

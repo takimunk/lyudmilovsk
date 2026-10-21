@@ -1,0 +1,97 @@
+{
+ "model": "google/nano-banana-2.1",
+ "resolution": "2K",
+ "styles": {
+  "poster": "Vertical advertising poster for the computer club ATON, one poster of a series sharing the same art direction: a deep navy night sky with stars, a dark pyramid in a desert at the bottom, a large glowing golden Eye of Horus (Egyptian pharaoh style) as the club's logo, gold and cyan neon lettering with a chrome bevel, a worn, creased 1990s-2000s paper print with torn edges. Every word on the poster is exactly the text given below, spelled exactly, in <<lang.script>> letters. Flat front view filling the frame. ",
+  "label": "A flat rectangular label for a half-litre glass soda bottle, flat front view filling the frame, vintage Soviet-era printed paper label, an original illustration, no real brand logos. All words exactly as given, spelled exactly, in <<lang.script>> letters. ",
+  "icon": "Inventory icon for a moody adventure game set in a computer club in 2004: the object centred and filling most of a square frame, softly lit from the upper left, painterly realistic style, plain dark warm-grey background with a faint vignette, no frame, no UI elements, no text except what is printed on the object itself. ",
+  "sign": "A glowing green emergency exit sign, flat front view filling the frame, dark background. The word is exactly as given, in <<lang.script>> letters, with a running-man pictogram. ",
+  "newspaper": "Front page of a regional <<lang.name>> newspaper from 2004, black and white print on slightly yellowed paper, masthead and columns of small <<lang.script>> text, two grainy photos, flat scan, no real newspaper names or logos. "
+ },
+ "assets": {
+  "poster_aton_1": {
+   "kind": "poster",
+   "style": "poster",
+   "aspect": "3:4",
+   "prompt": "Text on the poster: the title \"<<poster.aton.club>>\" at the top, the huge name \"<<poster.aton.name>>\" below it, the line \"<<poster.aton.line>>\" and, in a red-and-yellow banner at the bottom, \"<<poster.aton.night>>\"."
+  },
+  "poster_aton_2": {
+   "kind": "poster",
+   "style": "poster",
+   "aspect": "3:4",
+   "prompt": "Text on the poster: the huge name \"<<poster.aton.name>>\" at the top with the eye logo under it, then the heading \"<<poster.price.title>>\" and three price lines \"<<poster.price.hour>>\", \"<<poster.price.three>>\", \"<<poster.price.night>>\", then the heading \"<<poster.rules.title>>\" with three short lines \"<<poster.rules.1>>\", \"<<poster.rules.2>>\", \"<<poster.rules.3>>\"."
+  },
+  "label_baikal": {
+   "kind": "label",
+   "style": "label",
+   "aspect": "3:2",
+   "prompt": "The label is dark green, original illustration of pine branches and herbs. Words: the name \"<<label.baikal.title>>\" in big lettering and the small line \"<<label.sub>>\"."
+  },
+  "label_dyushes": {
+   "kind": "label",
+   "style": "label",
+   "aspect": "3:2",
+   "prompt": "The label is pale yellow-green, original illustration of a pear. Words: the name \"<<label.dyushes.title>>\" in big lettering and the small line \"<<label.sub>>\"."
+  },
+  "label_buratino": {
+   "kind": "label",
+   "style": "label",
+   "aspect": "3:2",
+   "prompt": "The label is brown and orange, original cartoon of a wooden puppet with a long nose. Words: the name \"<<label.buratino.title>>\" in big lettering and the small line \"<<label.sub>>\"."
+  },
+  "label_tarkhun": {
+   "kind": "label",
+   "style": "label",
+   "aspect": "3:2",
+   "prompt": "The label is bright green, original illustration of tarragon leaves. Words: the name \"<<label.tarkhun.title>>\" in big lettering and the small line \"<<label.sub>>\"."
+  },
+  "icon_drink_baikal": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A half-litre glass bottle of dark green fizzy herbal drink with a green pine-and-herbs label reading \"<<label.baikal.title>>\"."
+  },
+  "icon_drink_dyushes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A half-litre glass bottle of pale yellow pear lemonade with a light yellow-green label reading \"<<label.dyushes.title>>\"."
+  },
+  "icon_drink_buratino": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A half-litre glass bottle of dark brown citrus fizzy drink with a brown and orange label reading \"<<label.buratino.title>>\"."
+  },
+  "icon_drink_tarkhun": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A half-litre glass bottle of bright green tarragon fizzy drink with a green label reading \"<<label.tarkhun.title>>\"."
+  },
+  "icon_empty_bottle": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "An empty half-litre glass soda bottle, greenish clear glass, a faded peeling blank label, a crown cap."
+  },
+  "icon_apple": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A single ripe red-green apple with a short stem and one leaf, small blemishes, like a garden apple."
+  },
+  "exit_sign": {
+   "kind": "sign",
+   "style": "sign",
+   "aspect": "16:9",
+   "prompt": "The word on the sign: \"<<sign.exit>>\"."
+  },
+  "newspaper": {
+   "kind": "newspaper",
+   "style": "newspaper",
+   "aspect": "3:4",
+   "prompt": ""
+  }
+ }
+}

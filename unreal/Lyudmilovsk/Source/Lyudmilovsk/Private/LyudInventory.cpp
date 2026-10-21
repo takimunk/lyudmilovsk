@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
+#include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Styling/CoreStyle.h"
 #include "Styling/SlateBrush.h"
@@ -32,12 +33,10 @@ namespace
 	TArray<FLyudItemDef> MakeDefs()
 	{
 		TArray<FLyudItemDef> D;
-		auto Drink = [&D](const TCHAR* Id, const TCHAR* Name, const TCHAR* Desc, const TCHAR* Flavor)
+		auto Drink = [&D](const TCHAR* Id, const TCHAR* Flavor)
 		{
 			FLyudItemDef I;
 			I.Id = Id;
-			I.Name = FText::FromString(Name);
-			I.Description = FText::FromString(Desc);
 			I.Kind = ELyudItemKind::Drink;
 			I.Leaves = TEXT("empty_bottle");
 			I.Flavor = Flavor;
@@ -45,20 +44,16 @@ namespace
 			I.HalfLength = 6.f;
 			D.Add(I);
 		};
-		Drink(TEXT("drink_baikal"), TEXT("Байкал"), TEXT("Газировка на травах, холодная из автомата. Пахнет хвоей."), TEXT("baikal"));
-		Drink(TEXT("drink_dyushes"), TEXT("Дюшес"), TEXT("Грушевый лимонад. Липкий и сладкий, как в детстве."), TEXT("dyushes"));
-		Drink(TEXT("drink_buratino"), TEXT("Буратино"), TEXT("Тёмный лимонад с цитрусами. Щиплет язык."), TEXT("buratino"));
-		Drink(TEXT("drink_tarkhun"), TEXT("Тархун"), TEXT("Зелёная газировка на эстрагоне."), TEXT("tarkhun"));
+		Drink(TEXT("drink_baikal"), TEXT("baikal"));
+		Drink(TEXT("drink_dyushes"), TEXT("dyushes"));
+		Drink(TEXT("drink_buratino"), TEXT("buratino"));
+		Drink(TEXT("drink_tarkhun"), TEXT("tarkhun"));
 		FLyudItemDef Empty;
 		Empty.Id = TEXT("empty_bottle");
-		Empty.Name = FText::FromString(TEXT("Пустая бутылка"));
-		Empty.Description = FText::FromString(TEXT("Стеклянная, пол-литра. Когда-то за неё давали деньги."));
 		Empty.Flavor = TEXT("baikal");
 		D.Add(Empty);
 		FLyudItemDef Apple;
 		Apple.Id = TEXT("apple");
-		Apple.Name = FText::FromString(TEXT("Яблоко"));
-		Apple.Description = FText::FromString(TEXT("С яблони у выхода. Кисло-сладкое."));
 		Apple.Kind = ELyudItemKind::Food;
 		Apple.Radius = 3.8f;
 		D.Add(Apple);
@@ -70,6 +65,16 @@ const TArray<FLyudItemDef>& ULyudInventory::AllDefs()
 {
 	static const TArray<FLyudItemDef> Defs = MakeDefs();
 	return Defs;
+}
+
+FText ULyudInventory::ItemName(FName Id)
+{
+	return LyudText::Get(FString::Printf(TEXT("item.%s.name"), *Id.ToString()));
+}
+
+FText ULyudInventory::ItemDescription(FName Id)
+{
+	return LyudText::Get(FString::Printf(TEXT("item.%s.desc"), *Id.ToString()));
 }
 
 const FLyudItemDef* ULyudInventory::FindDef(FName Id)
@@ -261,7 +266,7 @@ public:
 						]
 						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
 						[
-							SNew(STextBlock).Font(Small).Text(Def ? Def->Name : FText::FromName(Id)).AutoWrapText(true)
+							SNew(STextBlock).Font(Small).Text(Def ? ULyudInventory::ItemName(Id) : FText::FromName(Id)).AutoWrapText(true)
 							.Justification(ETextJustify::Center)
 						]
 						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
@@ -280,11 +285,11 @@ public:
 		{
 			Detail->AddSlot().AutoHeight().Padding(0, 0, 0, 6)
 			[
-				SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 22)).Text(SelDef->Name)
+				SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 22)).Text(ULyudInventory::ItemName(SelDef->Id))
 			];
 			Detail->AddSlot().AutoHeight().Padding(0, 0, 0, 10)
 			[
-				SNew(STextBlock).Font(Body).Text(SelDef->Description).AutoWrapText(true).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
+				SNew(STextBlock).Font(Body).Text(ULyudInventory::ItemDescription(SelDef->Id)).AutoWrapText(true).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
 			];
 			if (SelDef->Kind != ELyudItemKind::Misc)
 			{
@@ -301,7 +306,7 @@ public:
 						return FReply::Handled();
 					})
 					[
-						SNew(STextBlock).Font(Body).Text(FText::FromString(SelDef->Kind == ELyudItemKind::Drink ? TEXT("  Выпить  ") : TEXT("  Съесть  ")))
+						SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(SelDef->Kind == ELyudItemKind::Drink ? TEXT("ui.use.drink") : TEXT("ui.use.eat")).ToString() + TEXT("  ")))
 					]
 				];
 			}
@@ -310,7 +315,7 @@ public:
 		{
 			Detail->AddSlot().AutoHeight()
 			[
-				SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("В карманах пусто."))).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
+				SNew(STextBlock).Font(Body).Text(LyudText::Get(TEXT("ui.inventory.empty"))).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
 			];
 		}
 
@@ -331,12 +336,12 @@ public:
 							SNew(SHorizontalBox)
 							+ SHorizontalBox::Slot().FillWidth(1.f)
 							[
-								SNew(STextBlock).Font(Title).Text(FText::FromString(TEXT("Инвентарь")))
+								SNew(STextBlock).Font(Title).Text(LyudText::Get(TEXT("ui.inventory.title")))
 							]
 							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 							[
 								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
-								.Text(FText::FromString(FString::Printf(TEXT("Деньги: %d руб."), Inv->Rubles)))
+								.Text(LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv->Rubles) }))
 							]
 						]
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
@@ -350,7 +355,7 @@ public:
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 0)
 						[
 							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f))
-							.Text(FText::FromString(TEXT("Tab или I — закрыть")))
+							.Text(LyudText::Get(TEXT("ui.inventory.close")))
 						]
 					]
 				]
@@ -373,6 +378,7 @@ ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
 void ULyudInventoryUI::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
+	LyudText::Reload();
 	// every level start is a new game unless a load restores the pocket right after
 	if (ULyudInventory* Inv = ULyudInventory::Get(&InWorld))
 	{
@@ -537,7 +543,7 @@ const FSlateBrush* ULyudInventoryUI::IconBrush(FName Id)
 	}
 	TSharedPtr<FSlateBrush> Brush = MakeShared<FSlateBrush>();
 	Brush->ImageSize = FVector2D(80.f, 80.f);
-	UTexture2D* Tex = LoadObject<UTexture2D>(nullptr, *FString::Printf(TEXT("/Game/Inventory/T_Icon_%s.T_Icon_%s"), *Id.ToString(), *Id.ToString()));
+	UTexture2D* Tex = LyudText::LoadTexture(TEXT("Inventory"), FString(TEXT("T_Icon_")) + Id.ToString());
 	if (Tex)
 	{
 		Icons.Add(Id, Tex);
