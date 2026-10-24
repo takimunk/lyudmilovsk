@@ -33,7 +33,7 @@ namespace
 		GLoaded = true;
 		GSpecies.Reset();
 		FString Text;
-		const FString Path = FPaths::ProjectContentDir() / TEXT("Birds/species.json");
+		const FString Path = FPaths::ProjectContentDir() / TEXT("BirdsData/species.json");
 		if (!FFileHelper::LoadFileToString(Text, *Path))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Birds: no %s"), *Path);

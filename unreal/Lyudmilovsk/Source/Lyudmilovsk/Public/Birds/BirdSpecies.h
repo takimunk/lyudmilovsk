@@ -8,7 +8,7 @@ class USkeletalMesh;
 class UStaticMesh;
 class UAnimSequence;
 
-/** How a species flies (Content/Birds/species.json "flight"). */
+/** How a species flies (Content/BirdsData/species.json "flight"). */
 UENUM(BlueprintType)
 enum class EBirdFlightStyle : uint8
 {
@@ -49,7 +49,7 @@ enum class EBirdState : uint8
 	Sleep,        // head tucked, fluffed up (clip Sleep)
 };
 
-/** One row of Content/Birds/species.json. */
+/** One row of Content/BirdsData/species.json. */
 USTRUCT(BlueprintType)
 struct LYUDMILOVSK_API FBirdSpecies
 {
@@ -96,7 +96,7 @@ struct LYUDMILOVSK_API FBirdSpecies
 };
 
 /**
- * Reads Content/Birds/species.json once (Reload() re-reads it) and finds each species' assets:
+ * Reads Content/BirdsData/species.json once (Reload() re-reads it) and finds each species' assets:
  *   /Game/Birds/<Id>/SK_<Id>               skeletal mesh, forward +X, up +Z, origin between the feet (perched)
  *   /Game/Birds/<Id>/Anims/A_<Id>_<Clip>   Idle Look Alert Hop Walk Peck Eat Preen Call Takeoff Flap Glide Bound Land Sleep
  *   /Game/Birds/<Id>/SM_<Id>_<Pose>        static poses for instanced far birds: Perch Peck Hop Walk Glide Sleep Flap0..Flap3
