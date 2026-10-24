@@ -153,7 +153,7 @@ private:
 	FVector HopVel = FVector::ZeroVector;
 	bool bHopping = false, bAnchored = false;
 	float StepPhase = 0.f, Fold = 0.f, LegsDown = 0.f;
-	float Stun = 0.f, Ruffle = 0.f;
+	float Stun = 0.f, Ruffle = 0.f, StuckTime = 0.f;
 	FVector LandingSpot = FVector::ZeroVector;
 	bool bLandingSpot = false;
 	float ReturnHeld = 0.f;

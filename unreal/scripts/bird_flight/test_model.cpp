@@ -87,7 +87,14 @@ int main()
 			double Next = 0, MinZ = 0;
 			Run(P, S, 3, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = 0.45; });
 			MinZ = S.Pos.Z;
-			Check(MinZ > 1.5, F("take-off: %.1f m up, %.1f m/s after 3 s", S.Pos.Z, BirdFlight::Speed(S)));
+			Check(MinZ > 1.5 && BirdFlight::Speed(S) > P.Stall, F("take-off: %.1f m up, %.1f m/s after 3 s (stall %.1f)", S.Pos.Z, BirdFlight::Speed(S), P.Stall));
+		}
+		// 3b. the same with the gaze only a little up (a player looking ahead): flying speed within 2.5 s
+		{
+			FState S; S.Vel = V3(0.6, 0, 1.8);
+			double Next = 0;
+			Run(P, S, 2.5, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = 0.2; });
+			Check(S.Pos.Z > 0.5 && BirdFlight::Speed(S) > P.Stall, F("take-off, level gaze: %.1f m up, %.1f m/s after 2.5 s", S.Pos.Z, BirdFlight::Speed(S)));
 		}
 		// 4. wings in, gaze down: speeds up to a fast dive but not past the dive limit
 		{

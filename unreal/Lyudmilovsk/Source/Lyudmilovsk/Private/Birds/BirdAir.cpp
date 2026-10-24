@@ -8,7 +8,7 @@
 
 namespace
 {
-	TAutoConsoleVariable<float> CVarWindSpeed(TEXT("lyud.Bird.WindSpeed"), 5.f, TEXT("Sea wind for the player bird, m/s."));
+	TAutoConsoleVariable<float> CVarWindSpeed(TEXT("lyud.Bird.WindSpeed"), 3.5f, TEXT("Sea wind for the player bird, m/s."));
 	TAutoConsoleVariable<float> CVarWindFrom(TEXT("lyud.Bird.WindFrom"), 247.5f, TEXT("Compass bearing the wind blows from, degrees (247.5 = west-south-west)."));
 	TAutoConsoleVariable<float> CVarThermals(TEXT("lyud.Bird.Thermals"), 1.f, TEXT("Thermal strength scale for the player bird (0 = none)."));
 
@@ -91,7 +91,12 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 	const float OverTop = (PosCm.Z - CacheTop) / 100.f;
 	const float Fade = OverTop < 0.f ? 1.f : FMath::Exp(-OverTop / (1.4f * Relief));
 	const float Slope = FMath::Clamp(CacheSlope, -0.6f, 1.3f);
-	S.Ridge = Speed * Slope * Fade * (Slope < 0.f ? 0.35f : 1.f) * Near;
+	S.Ridge = Speed * Slope * Fade * Near;
+	if (S.Ridge < 0.f)
+	{
+		// behind a crest the air sinks a little, never enough to pin a bird to the ground
+		S.Ridge = FMath::Max(S.Ridge * 0.25f, -0.4f) * FMath::SmoothStep(5.f, 20.f, Agl);
+	}
 
 	// thermals: columns over land by day, ~250 m apart, drifting with the wind
 	const float Hour = (float)UGameCalendar::NowIn(World.Get()).GetTimeOfDay().GetTotalHours();

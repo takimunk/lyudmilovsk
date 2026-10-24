@@ -404,13 +404,13 @@ void UBirdSelfBody::BuildFeathers(const FLook& Look)
 		{
 			const float Len = Primary * PrimaryProfile(Wing, I);
 			// fingered wings: the outer primaries narrow (emarginated)
-			const float W = Primary * (bSlots && I >= 6 ? 0.13f : Wing == EWing::Sickle ? 0.12f : 0.17f);
+			const float W = Primary * (bSlots && I >= 6 ? 0.16f : Wing == EWing::Sickle ? 0.16f : 0.25f);
 			Add(FFeather::Primary, Side, I, 10, Len, W, I / 9.f, -I * Lay * 0.25f, Look.Primaries.For(I, 10));
 		}
 		const int32 NS = Wing == EWing::Sickle ? 7 : Wing == EWing::Broad ? 14 : 11;
 		for (int32 J = 0; J < NS; J++)
 		{
-			Add(FFeather::Secondary, Side, J, NS, Secondary * (1.f + 0.04f * J / NS), Secondary * 0.42f, J / (NS - 1.f), J * Lay * 0.2f, Look.Secondaries.For(J, NS));
+			Add(FFeather::Secondary, Side, J, NS, Secondary * (1.f + 0.04f * J / NS), Secondary * 0.5f, J / (NS - 1.f), J * Lay * 0.2f, Look.Secondaries.For(J, NS));
 		}
 		for (int32 K = 0; K < 3; K++)
 		{
@@ -576,7 +576,7 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 		case FFeather::Primary:
 		{
 			// fanned from pointing back (P1) to along the hand (P10) when spread; stacked when folded
-			const float Fan = FMath::Lerp(78.f, 3.f, FMath::Pow(F.Along, 0.85f)) * EHand + (2.f + F.Index * 0.4f) * (1.f - EHand);
+			const float Fan = FMath::Lerp(62.f, 3.f, FMath::Pow(F.Along, 0.8f)) * EHand + (2.f + F.Index * 0.4f) * (1.f - EHand);
 			const FVector Root = FMath::Lerp(Joint[2], Joint[3], 0.12f + 0.88f * F.Along);
 			Place(F, Root, Dir[2].RotateAngleAxis(Side * Fan, FVector::UpVector), 0.4f + 0.6f * F.Along);
 			break;

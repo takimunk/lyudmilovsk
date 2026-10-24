@@ -51,7 +51,7 @@ namespace BirdFlight
 		P.Cruise = Clamp(CruiseMs, 4.0, 40.0);
 		P.GlideRatio = R.Glide;
 		P.BestGlide = P.Cruise * R.BestOverCruise;
-		P.Stall = P.BestGlide * 0.55;
+		P.Stall = P.BestGlide * 0.45;
 		P.MaxSpeed = P.Cruise * 2.3;
 		// small birds turn tighter
 		P.TurnRate = R.Turn * Clamp(std::pow(0.075 / P.Mass, 0.12), 0.75, 1.3);
@@ -160,8 +160,19 @@ namespace BirdFlight
 		const V3 ThrustDir = V > 0.5 ? D : V3(std::cos(In.AimYaw) * 0.87, std::sin(In.AimYaw) * 0.87, 0.5);
 		const double SlowLift = 1.0 - 0.7 * std::min(V / P.Stall, 1.0);
 		const int Beats = (BeatL ? 1 : 0) + (BeatR ? 1 : 0);
-		const V3 Thrust = ThrustDir * (0.5 * Beats * P.ClickThrust / Click);
-		const double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift;
+		// the flight muscles give power, not force: slow, the same beats drive the bird forward far harder
+		// (a take-off reaches flying speed in a second or two)
+		const double Launch = Clamp(P.Cruise / std::max(V, 0.5 * P.Stall), 1.0, 4.0);
+		double ThrustAcc = 0.5 * Beats * P.ClickThrust / Click * Launch;
+		double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift;
+		// the beats lift no more than the course needs (and a little to climb); the rest drives the bird on
+		const double Need = std::max(0.0, V * GammaDot + G * std::cos(Gamma));
+		if (BeatLift > Need + 0.3 * G)
+		{
+			ThrustAcc += (BeatLift - Need - 0.3 * G) * 0.6;
+			BeatLift = Need + 0.3 * G;
+		}
+		const V3 Thrust = ThrustDir * ThrustAcc;
 
 		// lift: what the course needs, less what the beats already give, up to what the wings can make
 		double NVert = V * GammaDot + G * std::cos(Gamma) - BeatLift * std::cos(Gamma);
@@ -183,8 +194,8 @@ namespace BirdFlight
 		// drag on the glide polar (parasite ~V^2, induced ~load^2/V^2), the air brake, the dive limit
 		const double Q = G / (2.0 * P.GlideRatio);
 		const double Vr = V / P.BestGlide;
-		const double Dp = Q * Vr * Vr * (0.3 + 0.7 * Spread) * (1.0 + 10.0 * Flare);
-		const double Di = std::min(1.5 * G, Q * S.Load * S.Load / std::max(Vr * Vr, 0.12));
+		const double Dp = Q * Vr * Vr * (0.3 + 0.7 * Spread) * (1.0 + 14.0 * Flare);
+		const double Di = std::min(1.5 * G, Q * S.Load * S.Load / std::max(Vr * Vr, 0.25));
 		const double Dhi = G * std::pow(V / P.MaxSpeed, 6.0);
 		Acc += D * -(Dp + Di + Dhi);
 

@@ -510,6 +510,20 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 		Flight->Vel.Z = FMath::Abs(Flight->Vel.Z) * 0.3 + 0.5;
 		Ruffle = 0.6f;
 	}
+	// held against the ground (a slope, a kerb) with no way on: it stands there
+	const bool bStuck = FVector::DistSquared(GetActorLocation(), Loc) < FMath::Square(20.f * Dt) && TakeoffAssist <= 0.f;
+	StuckTime = bStuck ? StuckTime + Dt : 0.f;
+	if (StuckTime > 0.4f)
+	{
+		FHitResult Ground;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdStuck), false, this);
+		if (GetWorld()->LineTraceSingleByChannel(Ground, GetActorLocation(), GetActorLocation() - FVector(0, 0, Body->StandHeight() + 20.f), ECC_Visibility, Q))
+		{
+			StuckTime = 0.f;
+			Land(Ground.ImpactPoint, Ground.ImpactNormal);
+			return;
+		}
+	}
 	Flight->Pos = ToM(GetActorLocation());
 }
 
@@ -728,8 +742,12 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	{
 		const FRotator Raw = Tracker->Head();
 		FRotator Rel = (Raw - TrackZero).GetNormalized();
-		// the neck's centre follows the head very slowly (CoreMotion's yaw drifts)
-		TrackZero = (TrackZero + (Raw - TrackZero).GetNormalized() * FMath::Min(1.f, Dt / 14.f)).GetNormalized();
+		// CoreMotion's yaw drifts: while the head is near straight ahead, the neck's centre follows it slowly
+		// (a held look over the shoulder stays where it is)
+		if (FMath::Abs(Rel.Yaw) < 25.f && FMath::Abs(Rel.Pitch) < 20.f)
+		{
+			TrackZero = (TrackZero + (Raw - TrackZero).GetNormalized() * FMath::Min(1.f, Dt / 20.f)).GetNormalized();
+		}
 		Rel.Yaw = FMath::Clamp(Rel.Yaw, -110.f, 110.f);
 		Rel.Pitch = FMath::Clamp(Rel.Pitch, -60.f, 50.f);
 		Rel.Roll = FMath::Clamp(Rel.Roll, -35.f, 35.f);
@@ -746,8 +764,8 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	FRotator Gaze = Aim;
 	Gaze.Yaw += FreeHead.Yaw + TrackHead.Yaw * TrackWeight;
 	Gaze.Pitch = FMath::Clamp(FRotator::NormalizeAxis(Aim.Pitch) + FreeHead.Pitch + TrackHead.Pitch * TrackWeight, -88.f, 88.f);
-	// a bird holds its head level: only a third of the body's roll reaches the eye
-	Gaze.Roll = (Mode == EBirdMode::Air ? BodyRot.Roll * 0.33f : 0.f) + TrackHead.Roll * TrackWeight;
+	// a bird holds its head level: only a quarter of the body's roll reaches the eye
+	Gaze.Roll = (Mode == EBirdMode::Air ? BodyRot.Roll * 0.25f : 0.f) + TrackHead.Roll * TrackWeight;
 	const float Peck = FMath::Sin(PI * FMath::Clamp(PeckT / 0.35f, 0.f, 1.f));
 	Gaze.Pitch -= Peck * 55.f;
 	if (Jolt > 0.f)
@@ -757,7 +775,9 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	}
 
 	// the eye on the body (the neck is short); walking pigeons nod, hopping birds bob
-	FVector Eye = BodyRot.RotateVector(Body->EyeOffset());
+	// the neck stretches the head up as it turns round, so a look over the shoulder sees the wing from above
+	const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gaze.Yaw - BodyRot.Yaw)) / 90.f, 0.f, 1.f);
+	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 0.9f * Turn);
 	if (Mode == EBirdMode::Ground)
 	{
 		const float Nod = Params->Hops ? 0.f : FMath::Sin(StepPhase * 2.f * PI) * Body->BodyRadius() * 0.35f;

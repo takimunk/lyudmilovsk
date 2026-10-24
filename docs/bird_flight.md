@@ -12,7 +12,7 @@ Two ideas, both taken from how a real bird flies.
 rolls and bobs under it. So the mouse is the bird's head. Where you look is where the bird wants to go:
 the body banks and climbs or dives toward the gaze with a lag that depends on the species (a swallow
 follows in a blink, a gull swings round slowly). The camera is the head, so it keeps the horizon nearly
-level however hard the body banks (only a third of the body's roll reaches the eye), and the wingbeats
+level however hard the body banks (only a quarter of the body's roll reaches the eye), and the wingbeats
 never shake it.
 
 **The wings row.** The two mouse buttons are your two wings, like the two oars of a boat.
@@ -79,7 +79,7 @@ The bird is a point mass with an airspeed vector, a body orientation and two win
   and to climb slowly); a beat faster than the species' wingbeat rate is folded into the next one. A
   one-wing beat adds roll and yaw instead of much thrust.
 - **Air.** The bird moves with the air: ground velocity = airspeed + wind + updraft. A steady sea wind
-  (from the west-south-west, 5 m/s by default) blows against the sea cliff and the upland's slopes; where
+  (from the west-south-west, 3.5 m/s by default) blows against the sea cliff and the upland's slopes; where
   it meets rising ground it rises (`w = wind · ∇ground`, fading out a few cliff heights above it), so you
   can hang in front of the cliff without a beat, as the gulls do. On sunny days thermals rise over open
   land and drift downwind.

@@ -124,7 +124,13 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		Start(*S, Species);
 		S->Add(2.6f, [](FCtx& X) { X.bAim = true; X.AimRate = 90.f; X.Aim = X.T < 1.3f ? FRotator(-8.f, 240.f, 0.f) : FRotator(-4.f, 0.f, 0.f); return false; });
 		S->Add(3.2f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(14.f, 0.f, 0.f); return false; });
-		S->Add(9.f, [](FCtx& X) { X.bAim = true; X.Aim = FRotator(-4.f, 0.f, 0.f); return X.Bird && X.Bird->GetActorLocation().X > 8600.f; });
+		S->Add(25.f, [](FCtx& X)
+		{
+			// out to the cliff edge into the sea wind: flapping in the species' rhythm, then a glide
+			X.bAim = true; X.Aim = FRotator(X.Bird->GetAirspeed() > 11.f ? -6.f : 3.f, 0.f, 0.f);
+			X.C.Space = X.Bird->GetActorLocation().X < 6000.f || X.Bird->GetAirspeed() < 9.f;
+			return X.Bird && X.Bird->GetActorLocation().X > 8600.f;
+		});
 		S->Add(1.6f, [](FCtx& X) { Rhythm(X, 0.32f); X.bAim = true; X.Aim = FRotator(4.f, 20.f, 0.f); return false; });
 		S->Add(4.5f, [](FCtx& X) { X.bAim = true; X.AimRate = 60.f; X.Aim = FRotator(-2.f, 90.f, 0.f); return false; });
 		S->Add(3.f, [](FCtx& X)
@@ -135,7 +141,7 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			return false;
 		});
 		S->Add(1.6f, [](FCtx& X) { X.C.Left = FMath::Fmod(X.T, 0.5f) < 0.12f; X.bAim = true; X.Aim = FRotator(-2.f, 110.f, 0.f); return false; });
-		S->Add(2.f, [](FCtx& X) { X.C.Left = X.C.Right = true; X.bAim = true; X.Aim = FRotator(-35.f, 150.f, 0.f); return false; });
+		S->Add(1.3f, [](FCtx& X) { X.C.Left = X.C.Right = true; X.bAim = true; X.Aim = FRotator(-35.f, 150.f, 0.f); return false; });
 		S->Add(2.2f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(12.f, 170.f, 0.f); return false; });
 		S->Add(20.f, [](FCtx& X)
 		{
@@ -146,8 +152,8 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			const FVector To = Spot - X.Bird->GetActorLocation();
 			X.bAim = true; X.AimRate = 160.f;
 			X.Aim = To.Rotation();
-			X.Aim.Pitch = FMath::Clamp(X.Aim.Pitch, -30.f, 20.f);
-			X.C.Space = To.Size() > 1800.f && FMath::Fmod(X.T, 3.f) < 1.2f;
+			X.Aim.Pitch = FMath::Clamp(X.Aim.Pitch, To.Size2D() > 2500.f && To.Z > -300.f ? 2.f : -30.f, 20.f);
+			X.C.Space = To.Size() > 1800.f && (X.Bird->GetAirspeed() < 10.f || FMath::Fmod(X.T, 3.f) < 1.2f);
 			X.C.Shift = To.Size() < 1200.f;
 			return X.Bird->GetMode() == EBirdMode::Ground;
 		});
@@ -565,6 +571,10 @@ void UBirdFlightSubsystem::Tick(float DeltaTime)
 			X.C.Look = FVector2D(FMath::Clamp(DYaw, -Max, Max), FMath::Clamp(DPitch, -Max, Max));
 		}
 		B->Script = X.C;
+	}
+	if (ABirdPawn* B = Bird.Get(); B && FMath::Fmod(S.Clock, 0.5f) < DeltaTime)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BIRD t=%.1f step %d %s at %s"), S.Clock, S.Index, *B->DebugLine(), *B->GetActorLocation().ToCompactString());
 	}
 	if (!RecordDir.IsEmpty())
 	{

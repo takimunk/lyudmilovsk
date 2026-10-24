@@ -14,12 +14,14 @@ grep -E "BIRD (saving|loaded)" "$LOG" | sed 's/^.*BIRD/BIRD/'
 python3 - "$LOG" <<'PY'
 import re, sys
 t = open(sys.argv[1], errors="replace").read()
-s = re.search(r"BIRD saving as (\w+) at X=(\S+) Y=(\S+) Z=(\S+), hero at X=(\S+) Y=(\S+) Z=(\S+)", t)
-l = re.search(r"BIRD loaded as (\w+) at X=(\S+) Y=(\S+) Z=(\S+), hero at X=(\S+) Y=(\S+) Z=(\S+)", t)
-ok = bool(s and l and s.group(1) == l.group(1))
-if ok:
-    a = [float(v) for v in s.groups()[1:]]; b = [float(v) for v in l.groups()[1:]]
-    ok = all(abs(x - y) < 5 for x, y in zip(a, b))
+def vec(v):
+    d = dict((k, float(x)) for k, x in re.findall(r"([XYZ])=(-?[\d.]+)", v))
+    return [d.get(k, 0.0) for k in "XYZ"]
+def find(kind):
+    m = re.search(r"BIRD %s as (\w+) at (V\([^)]*\)), hero at (V\([^)]*\))" % kind, t)
+    return (m.group(1), vec(m.group(2)), vec(m.group(3))) if m else None
+s, l = find("saving"), find("loaded")
+ok = bool(s and l and s[0] == l[0]) and all(abs(a - b) < 5 for a, b in zip(s[1] + s[2], l[1] + l[2]))
 print("save/load as a bird: " + ("ok" if ok else "FAIL"))
 sys.exit(0 if ok else 1)
 PY
