@@ -16,6 +16,7 @@ import unreal
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools"))
+sys.path.insert(0, HERE)
 import terrain as T  # noqa: E402
 import world_map as W  # noqa: E402
 import world_mesh  # noqa: E402
@@ -77,6 +78,11 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             a.tags = list(a.tags) + ["NoGrass", "NoTree"]   # nothing grows on slabs, roofs or stations
         a.set_folder_path("Outside/World")
     _log("imported %d actors" % len(actors))
+
+    # the Academgorodok before the town (its meshes are committed: unreal/scripts/import_academgorodok.py)
+    if unreal.EditorAssetLibrary.does_directory_exist("/Game/Academgorodok/Meshes"):
+        import import_academgorodok
+        import_academgorodok.place(face_y)
 
     if plants:
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")

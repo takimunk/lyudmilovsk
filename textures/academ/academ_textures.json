@@ -1,0 +1,106 @@
+{
+ "academ_grime_mask": {
+  "kind": "grime",
+  "size": 1024,
+  "tile_m": 4.0
+ },
+ "asphalt": {
+  "kind": "photo",
+  "mean_hex": "#4A4A48",
+  "raw": "asphalt",
+  "roughness": 0.95,
+  "size": 1024,
+  "target_hex": "#4A4A48",
+  "tile_m": 2.0
+ },
+ "brick_red": {
+  "kind": "brick",
+  "mean_hex": "#A16050",
+  "raw": "brick_face",
+  "roughness": 0.85,
+  "size": 2048,
+  "target_hex": "#9C5040",
+  "tile_m": 1.0
+ },
+ "concrete": {
+  "kind": "photo",
+  "mean_hex": "#9A9690",
+  "raw": "concrete",
+  "roughness": 0.9,
+  "size": 1024,
+  "target_hex": "#9A9690",
+  "tile_m": 2.0
+ },
+ "plaster_ochre": {
+  "kind": "photo",
+  "mean_hex": "#E1D4A0",
+  "raw": "plaster_ochre",
+  "roughness": 0.9,
+  "size": 2048,
+  "target_hex": "#E2D3A0",
+  "tile_m": 2.0
+ },
+ "plaster_white": {
+  "kind": "photo",
+  "mean_hex": "#F6F2E2",
+  "raw": "plaster_white",
+  "roughness": 0.8,
+  "size": 2048,
+  "target_hex": "#F1EEE4",
+  "tile_m": 1.0
+ },
+ "quoin_vermiculated": {
+  "kind": "photo",
+  "mean_hex": "#A39C8E",
+  "raw": "quoin_vermiculated",
+  "roughness": 0.85,
+  "size": 2048,
+  "target_hex": "#A39C8E",
+  "tile_m": 1.0
+ },
+ "roof_steel": {
+  "kind": "roof",
+  "mean_hex": "#8E969C",
+  "raw": "steel_paint",
+  "roughness": 0.45,
+  "size": 2048,
+  "target_hex": "#8E959A",
+  "tile_m": 1.2
+ },
+ "rustic_dark": {
+  "kind": "rustic",
+  "mean_hex": "#3A3532",
+  "raw": "rustic_rock",
+  "roughness": 0.85,
+  "size": 2048,
+  "target_hex": "#3A3532",
+  "tile_m": 1.0
+ },
+ "soil_bed": {
+  "kind": "photo",
+  "mean_hex": "#4B3B2C",
+  "raw": "soil_bed",
+  "roughness": 1.0,
+  "size": 1024,
+  "target_hex": "#4B3B2C",
+  "tile_m": 1.0
+ },
+ "stone_cast": {
+  "kind": "photo",
+  "mean_hex": "#D9D6CE",
+  "raw": "stone_cast",
+  "roughness": 0.8,
+  "size": 2048,
+  "target_hex": "#D9D6CE",
+  "tile_m": 1.0
+ },
+ "timber_stained": {
+  "kind": "photo",
+  "mean_hex": "#6A4A2E",
+  "raw": "timber_stained",
+  "roughness": 0.7,
+  "size": 2048,
+  "target_hex": "#6A4A2E",
+  "tile_m": 1.0
+ }
+}

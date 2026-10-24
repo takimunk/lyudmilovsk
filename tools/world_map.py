@@ -171,7 +171,14 @@ def _edge_top(y):
 
 
 def height(x, y):
-    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's)."""
+    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); level under the
+    Academgorodok."""
+    z = _height(x, y)
+    k = academ_flat(x, y)
+    return z + (academ_z() - z) * k if k > 0.0 else z
+
+
+def _height(x, y):
     s = inland(x, y)
     if s <= 0.0:                                     # sea bed: shallow, like the Baltic
         return SEA_Z - 0.3 - min(-s * 0.06, 9.0)
@@ -291,6 +298,55 @@ def near_cable(x, y, r):
     return math.hypot(x - x0 - dx * t, y - y0 - dy * t) < r
 
 
+# --- the Academgorodok before the town (blender/academgorodok, docs/academgorodok) ----------------
+# The ensemble of Laboratory No. 2 (Moscow, 1945-48) stands where the cable car brings you down: its
+# square opens towards the lower station, its two gates lead on into the town. Its own frame (the
+# Blender build's): x east, y north, origin at the middle house's centre; here its "east" (the
+# square) faces the station.
+
+ACADEM_SQUARE_END = 80.0          # the ensemble's x where its square meets the street
+ACADEM_GAP = 26.0                 # from the street in front of the square to the lower station
+ACADEM_YAW = math.radians(-8.0)   # turn of the ensemble's x axis from map -Y (south), with the town grid
+ACADEM_RECT = (-60.0, 110.0, -115.0, 115.0)     # ensemble x0, x1, y0, y1 kept free of houses and level
+
+
+def academ():
+    """(X, Y, yaw) of the ensemble's origin; yaw turns its x axis (east) onto the map: x -> map
+    (sin yaw, -cos yaw), its y axis (north) -> (-cos yaw, -sin yaw), both in map X (west), Y (north)."""
+    sx, sy = STATION_DOWN
+    ex, ey = math.sin(ACADEM_YAW), -math.cos(ACADEM_YAW)
+    d = ACADEM_SQUARE_END + ACADEM_GAP
+    return (sx - ex * d, sy - ey * d, ACADEM_YAW)
+
+
+def academ_local(x, y):
+    """Map (X, Y) -> the ensemble's (x east, y north)."""
+    ox, oy, yaw = academ()
+    dx, dy = x - ox, y - oy
+    ex, ey = math.sin(yaw), -math.cos(yaw)
+    nx, ny = -math.cos(yaw), -math.sin(yaw)
+    return (dx * ex + dy * ey, dx * nx + dy * ny)
+
+
+def academ_to_map(lx, ly):
+    ox, oy, yaw = academ()
+    return (ox + lx * math.sin(yaw) - ly * math.cos(yaw), oy - lx * math.cos(yaw) - ly * math.sin(yaw))
+
+
+def academ_flat(x, y):
+    """1 on the ensemble's ground (its rectangle), falling to 0 over 25 m."""
+    lx, ly = academ_local(x, y)
+    x0, x1, y0, y1 = ACADEM_RECT
+    d = max(x0 - lx, lx - x1, y0 - ly, ly - y1)
+    return _ramp(d, 0.0, 25.0)
+
+
+@functools.lru_cache(maxsize=1)
+def academ_z():
+    ox, oy, _ = academ()
+    return round(_height(ox, oy), 2)
+
+
 # --- the town in the lowland ------------------------------------------------------------------
 
 TOWN_CENTER = (-330.0, 900.0)     # the square
@@ -332,6 +388,8 @@ def town():
                         continue
                     if raised(x, y) > 1.0 or near_cable(x, y, 14.0) or math.hypot(x - STATION_DOWN[0], y - STATION_DOWN[1]) < 25:
                         continue                     # not up the slopes, not under the rope
+                    if academ_flat(x, y) > 0.0:
+                        continue                     # the Academgorodok's ground
                     if rnd.random() < 0.12:
                         continue                     # an empty lot, a garden
                     central = math.hypot(x - cx, y - cy) < 260
@@ -488,6 +546,7 @@ def keep_flat(x, y):
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
     k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))
+    k = max(k, academ_flat(x, y))
     return k
 
 

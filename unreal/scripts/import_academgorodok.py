@@ -1,0 +1,180 @@
+"""The Academgorodok of Laboratory No. 2 (Moscow, 1945-48) in Unreal.
+
+  import: blender/export/academgorodok/academgorodok.glb (built by
+          blender/academgorodok/build_academgorodok.py) -> /Game/Academgorodok/Meshes/SM_<part>,
+          one static mesh per house, the gates and the square; Nanite, exact collision, the
+          materials of unreal/scripts/academ_materials.py by slot name (AC_*).
+  place:  place(face_y) puts them on the map (tools/world_map.py academ()), tagged "Academ"
+          (console lyud.Academ 0/1 hides them), with the square's trees.
+
+Headless, one process for the import (Interchange), then the placement into Lvl_Scene01:
+  UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script="unreal/scripts/import_academgorodok.py import"
+  UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script="unreal/scripts/import_academgorodok.py place"
+(unreal/scripts/import_academgorodok.sh runs both.) import_world.py calls place() too, so a full
+build_scene01.sh keeps the ensemble.
+"""
+import json
+import math
+import os
+import sys
+
+import unreal
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import world_map as W  # noqa: E402
+
+EXPORT = os.path.join(REPO, "blender", "export", "academgorodok")
+GLB = os.path.join(EXPORT, "academgorodok.glb")
+LAYOUT = os.path.join(EXPORT, "layout.json")
+DEST = "/Game/Academgorodok"
+MESHES = DEST + "/Meshes"
+TAG = "Academ"
+# trees of the square: the real ones are small-leaved limes, spruces and birches; the plant library
+# has no lime yet, Norway maple stands in (same round crown at this age)
+SUMMARY_DISTANCE = 6000.0
+
+eal = unreal.EditorAssetLibrary
+
+
+def log(msg):
+    unreal.log_warning("ACADEM " + msg)
+
+
+def _extra_materials():
+    """Flat slots beyond common.MATERIALS: (hex, roughness, emissive)."""
+    sys.path.insert(0, os.path.join(REPO, "blender", "academgorodok"))
+    out = {"AC_Room": ("#8C7A62", 0.9, 0.35), "AC_Curtain": ("#D8CDB4", 0.9, 0.2), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
+    try:
+        import gastronom
+        for k, (hx, rough, _) in gastronom.GASTRONOM_MATERIALS.items():
+            out[k] = (hx, rough, 6.0 if "Opal" in k else 0.0)
+    except Exception as e:  # noqa: BLE001
+        log("no gastronom materials: %s" % e)
+    return out
+
+
+def import_meshes():
+    if eal.does_directory_exist(MESHES):
+        eal.delete_directory(MESHES)
+    tmp = DEST + "/_import"
+    src = unreal.InterchangeManager.create_source_data(GLB)
+    params = unreal.ImportAssetParameters()
+    params.is_automated = True
+    mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
+    mgr.import_asset(tmp, src, params)
+    mgr.wait_until_all_tasks_done(True)
+    try:
+        import academ_materials
+        mats = academ_materials.make_materials(DEST + "/Materials", os.path.join(REPO, "textures", "academ"),
+                                               extra=_extra_materials())
+    except Exception as e:  # noqa: BLE001
+        log("materials from the glTF (academ_materials failed: %s)" % e)
+        mats = {}
+    count = 0
+    for path in eal.list_assets(tmp, True):
+        sm = eal.load_asset(path)
+        if not isinstance(sm, unreal.StaticMesh):
+            continue
+        name = sm.get_name()
+        for i, sl in enumerate(sm.get_editor_property("static_materials")):
+            key = str(sl.material_slot_name)
+            mi = mats.get(key)
+            if mi is None:
+                # Interchange names the slot after the glTF material, sometimes with a suffix
+                mi = next((v for k, v in mats.items() if key.startswith(k)), None)
+            if mi is not None:
+                sm.set_material(i, mi)
+            else:
+                log("no material for slot %s on %s" % (key, name))
+        body = sm.get_editor_property("body_setup")
+        if body:
+            body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
+        settings = sm.get_editor_property("nanite_settings")
+        settings.enabled = True
+        sm.set_editor_property("nanite_settings", settings)
+        target = MESHES + "/SM_" + name.replace("SM_", "")
+        eal.save_loaded_asset(sm)
+        eal.rename_asset(sm.get_path_name(), target)
+        count += 1
+    if not mats:
+        raise RuntimeError("no materials: the meshes would keep the glTF placeholders")
+    eal.delete_directory(tmp)                     # the glTF placeholder materials
+    eal.save_directory(DEST)
+    log("imported %d meshes" % count)
+
+
+def _ue_yaw():
+    """Unreal yaw (degrees) of the ensemble: Blender x (east) is Unreal +X in the mesh, y (north) -Y;
+    world_map.academ() turns east onto the map's (sin a, -cos a)."""
+    return math.degrees(W.academ()[2]) - 90.0
+
+
+def place(face_y, report=False):
+    """Spawns the ensemble in the open level (face_y: the portal face, Unreal Y cm)."""
+    eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    for a in eas.get_all_level_actors():
+        if TAG in [str(t) for t in a.tags]:
+            eas.destroy_actor(a)
+    with open(LAYOUT) as f:
+        layout = json.load(f)
+    z0 = W.academ_z()
+    yaw = _ue_yaw()
+    n = 0
+    for name, part in layout["parts"].items():
+        sm = unreal.load_asset(MESHES + "/SM_" + name)
+        if sm is None:
+            log("missing mesh SM_%s" % name)
+            continue
+        lx, ly, lz = part["location"]
+        x, y = W.academ_to_map(lx, ly)
+        loc = unreal.Vector(*W.to_unreal(x, y, z0 + lz, face_y))
+        a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc, unreal.Rotator(0.0, 0.0, yaw))
+        a.static_mesh_component.set_static_mesh(sm)
+        a.set_actor_label("Academ_" + name)
+        a.tags = [TAG, "NoGrass", "NoTree"]
+        a.set_folder_path("Outside/Academgorodok")
+        c = a.static_mesh_component
+        c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
+        n += 1
+    plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
+    for i, (lx, ly, species, seed, age) in enumerate(layout.get("trees", [])):
+        x, y = W.academ_to_map(lx, ly)
+        p = eas.spawn_actor_from_class(plant_cls, unreal.Vector(*W.to_unreal(x, y, z0, face_y)))
+        p.set_actor_label("Academ_Tree_%02d_%s" % (i, species))
+        for k, v in (("species", species), ("seed", seed), ("age_at_start", age), ("demo_growth", False),
+                     ("summary_distance", SUMMARY_DISTANCE)):
+            p.set_editor_property(k, v)
+        p.tags = [TAG]
+        p.set_folder_path("Outside/Academgorodok")
+    for i, l in enumerate(layout.get("lights", [])):      # the Gastronom's pendant lamps
+        lx, ly, lz = l["at"]
+        x, y = W.academ_to_map(lx, ly)
+        a = eas.spawn_actor_from_class(unreal.PointLight, unreal.Vector(*W.to_unreal(x, y, z0 + lz - 0.25, face_y)))
+        a.set_actor_label("Academ_Lamp_%02d" % i)
+        c = a.point_light_component
+        c.set_editor_property("intensity_units", unreal.LightUnits.LUMENS)
+        c.set_editor_property("intensity", float(l["lumens"]))
+        hx = l["colour"].lstrip("#")
+        c.set_editor_property("light_color", unreal.Color(int(hx[4:6], 16), int(hx[2:4], 16), int(hx[0:2], 16), 255))
+        c.set_editor_property("attenuation_radius", 700.0)
+        c.set_editor_property("cast_shadows", False)
+        a.tags = [TAG]
+        a.set_folder_path("Outside/Academgorodok")
+    log("placed %d parts, %d trees at map %s, yaw %.1f" % (n, len(layout.get("trees", [])), W.academ()[:2], yaw))
+
+
+if __name__ == "__main__":
+    if "import" in sys.argv[1:]:
+        import_meshes()
+    if "place" in sys.argv[1:]:
+        with open(os.path.join(REPO, "blender", "export", "scene01_layout.json")) as f:
+            face_y = json.load(f).get("outside", {}).get("portal_face_y", 790.0)
+        les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
+        if not les.load_level("/Game/Scene01/Lvl_Scene01"):
+            raise RuntimeError("no /Game/Scene01/Lvl_Scene01")
+        place(face_y)
+        les.save_current_level()
+        log("done")
