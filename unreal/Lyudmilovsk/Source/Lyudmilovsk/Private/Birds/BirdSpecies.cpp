@@ -88,6 +88,27 @@ namespace
 					S.Diet.Add(FName(C->AsString()));
 				}
 			}
+			auto Ints = [&O](const TCHAR* Field, TArray<int32>& Out)
+			{
+				const TArray<TSharedPtr<FJsonValue>>* Arr;
+				if (O->TryGetArrayField(Field, Arr))
+				{
+					for (const TSharedPtr<FJsonValue>& C : *Arr)
+					{
+						Out.Add((int32)C->AsNumber());
+					}
+				}
+			};
+			Ints(TEXT("months"), S.Months);
+			Ints(TEXT("winterMonths"), S.WinterMonths);
+			const TArray<TSharedPtr<FJsonValue>>* Winter;
+			if (O->TryGetArrayField(TEXT("winterPalette"), Winter))
+			{
+				for (const TSharedPtr<FJsonValue>& C : *Winter)
+				{
+					S.WinterPalette.Add(FromHex(C->AsString()));
+				}
+			}
 			GSpecies.Add(MoveTemp(S));
 		}
 	}

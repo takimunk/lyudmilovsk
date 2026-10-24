@@ -82,6 +82,14 @@ struct LYUDMILOVSK_API FBirdSpecies
 	/** Call ids (sound assets /Game/Birds/<Id>/Sounds/S_<Id>_<call>, when there are any). */
 	UPROPERTY(BlueprintReadOnly) TArray<FName> Calls;
 	UPROPERTY(BlueprintReadOnly) TArray<FName> Diet;
+	/** Months (1-12) the species is in the Baltic; migrants leave. */
+	UPROPERTY(BlueprintReadOnly) TArray<int32> Months;
+	/** Months it wears its winter plumage (gulls without hoods, spangled starlings), and that plumage's colours; empty if it doesn't change. */
+	UPROPERTY(BlueprintReadOnly) TArray<int32> WinterMonths;
+	UPROPERTY(BlueprintReadOnly) TArray<FLinearColor> WinterPalette;
+
+	bool IsPresentIn(int32 Month) const { return Months.Num() == 0 || Months.Contains(Month); }
+	bool InWinterPlumage(int32 Month) const { return WinterMonths.Contains(Month); }
 
 	FText DisplayName() const;
 	float LengthM() const { return LengthCm * 0.01f; }
