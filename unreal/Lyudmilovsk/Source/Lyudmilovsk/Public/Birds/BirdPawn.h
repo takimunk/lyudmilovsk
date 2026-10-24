@@ -80,6 +80,7 @@ public:
 	bool HasLandingSpot(FVector& Out) const { Out = LandingSpot; return bLandingSpot; }
 	bool IsHeadTracked() const;
 	FString DebugLine() const;
+	UPrimitiveComponent* GetRootPrimitive() const;
 	/** Seconds since the bird was possessed (the control hints fade out). */
 	float TimeAsBird() const { return Age; }
 

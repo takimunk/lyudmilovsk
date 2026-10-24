@@ -25,6 +25,10 @@ namespace
 {
 	TAutoConsoleVariable<int32> CVarHeadSteer(TEXT("lyud.Bird.HeadSteer"), 0, TEXT("1: tilting your head (AirPods) banks the bird."));
 	TAutoConsoleVariable<int32> CVarChase(TEXT("lyud.Bird.ChaseCam"), 0, TEXT("1: watch the player bird from behind (recordings, checks)."));
+	TAutoConsoleVariable<int32> CVarFreeze(TEXT("lyud.Bird.Freeze"), 0, TEXT("1: the player bird holds still in the air, wings and tail still move (pictures)."));
+	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
+	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
+	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -201,6 +205,11 @@ void ABirdPawn::OnLook(const FInputActionValue& Value)
 void ABirdPawn::SetFakeHead(const FRotator& FakeHead, bool bOn)
 {
 	Tracker->SetFake(FakeHead, bOn);
+}
+
+UPrimitiveComponent* ABirdPawn::GetRootPrimitive() const
+{
+	return Collision;
 }
 
 bool ABirdPawn::IsHeadTracked() const
@@ -425,11 +434,21 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	LastUpdraft = A.Updraft;
 
 	// fixed small steps, whatever the frame rate
+	const BirdFlight::FState Before = *Flight;
 	const int32 N = FMath::Clamp(FMath::CeilToInt(Dt / (1.f / 120.f)), 1, 12);
 	for (int32 K = 0; K < N; K++)
 	{
 		BirdFlight::Step(P, In, Wind, *Flight, Dt / N);
 		In.ClickL = In.ClickR = false;
+	}
+	if (CVarFreeze.GetValueOnGameThread())
+	{
+		// posing for pictures: the wings and tail move, the bird stays where it is
+		Flight->Pos = Before.Pos;
+		Flight->Vel = Before.Vel;
+		Flight->Ground = BirdFlight::V3();
+		Flight->Bank = Before.Bank;
+		return;
 	}
 
 	// the edges of the map and the sky turn the bird back with a headwind
@@ -460,7 +479,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 		{
 			SetActorLocation(GetActorLocation() + Hit.Normal * (Hit.PenetrationDepth + 0.5f));
 		}
-		else if (Nrm.Z > 0.6f && ((Speed < P.Stall * 1.9f && Into < 4.5f) || Flare > 0.5f))
+		else if (Nrm.Z > 0.6f && TakeoffAssist <= 0.f && Flight->Vel.Z < 0.3 && ((Speed < P.Stall * 1.9f && Into < 4.5f) || Flare > 0.5f))
 		{
 			Land(Hit.ImpactPoint, Nrm);
 			return;
@@ -762,8 +781,8 @@ FMinimalViewInfo ABirdPawn::BirdView() const
 FMinimalViewInfo ABirdPawn::ChaseView() const
 {
 	FMinimalViewInfo V = BirdView();
-	const float Back = Body->BodyRadius() * 14.f + 30.f;
-	const FRotator Look(FMath::Clamp(V.Rotation.Pitch, -40.f, 40.f) - 12.f, V.Rotation.Yaw, 0.f);
+	const float Back = (Body->BodyRadius() * 14.f + 30.f) * CVarChaseDist.GetValueOnGameThread();
+	const FRotator Look(FMath::Clamp(V.Rotation.Pitch, -40.f, 40.f) - CVarChasePitch.GetValueOnGameThread(), BodyRot.Yaw + CVarChaseYaw.GetValueOnGameThread(), 0.f);
 	V.Location = GetActorLocation() - Look.Vector() * Back;
 	V.Rotation = Look;
 	V.FOV = 70.f;
@@ -798,6 +817,9 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
 	Body->SetShown(true, Inside < 0.5f);
+	OutResult.PostProcessSettings.bOverride_MotionBlurAmount = true;
+	OutResult.PostProcessSettings.MotionBlurAmount = 0.08f;
+	OutResult.PostProcessBlendWeight = 1.f;
 }
 
 void ABirdPawn::PlayCall()

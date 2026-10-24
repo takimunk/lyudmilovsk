@@ -2,7 +2,7 @@
   /Game/Birds/Flight/M_BirdFeather  one feather painted from per-instance custom data 0..12 (BirdLook::FPaint):
                                     base, accent at the tip / root / fringe / bars, a pale spot, an iridescent sheen;
                                     barbs and the shaft drawn from the UV, the vane's edges frayed by the mask
-  /Game/Birds/Flight/M_BirdBody     vertex colour (the body under the feathers, the beak, the legs)
+  /Game/Birds/Flight/M_BirdBody     Top/Bottom colours by Mode: the shells round the body and head, the beak root to tip, the legs
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
@@ -69,7 +69,7 @@ float shaft = (1.0 - smoothstep(0.015, 0.05, a)) * step(0.04, u) * (1.0 - u * 0.
 col = lerp(col, col * 0.55 + 0.12, shaft * 0.7);
 // gloss: a sheen whose hue turns with the angle to the eye (starlings, crows, swallows)
 float3 sheen = lerp(float3(0.05, 0.35, 0.18), float3(0.32, 0.08, 0.45), saturate(c12 + (1.0 - nv) * 0.6 - 0.3));
-col += sheen * c11 * (pow(1.0 - nv, 1.5) * 0.9 + 0.15);
+col += sheen * c11 * (pow(1.0 - nv, 2.0) * 0.35 + 0.04);
 return col * (0.9 + 0.2 * r);
 """
 
@@ -123,10 +123,25 @@ m.set_editor_property("used_with_instanced_static_meshes", True)
 mel.recompile_material(m)
 eal.save_asset(m.get_path_name())
 
+BODY_HLSL = """
+// 0: the body and head shells, Top above and Bottom below (the mesh's U goes round it)
+// 1: the beak, Top at the root and Bottom at the tip (U along it); 2: one colour (legs)
+float k = Mode < 0.5 ? saturate(sin(uv.x * 6.2832) * 2.0 + 0.3) : Mode < 1.5 ? 1.0 - smoothstep(0.15, 0.7, uv.x) : 1.0;
+return lerp(Bottom, Top, k);
+"""
 b = new_material("/Game/Birds/Flight/M_BirdBody")
-vc = node(b, unreal.MaterialExpressionVertexColor, -500, 0)
-mel.connect_material_property(vc, "", MP.MP_BASE_COLOR)
-r = node(b, unreal.MaterialExpressionConstant, -300, 200, r=0.5)
+buv = node(b, unreal.MaterialExpressionTextureCoordinate, -900, 0)
+top = node(b, unreal.MaterialExpressionVectorParameter, -900, 100, parameter_name="Top", default_value=unreal.LinearColor(0.2, 0.15, 0.1, 1))
+bot = node(b, unreal.MaterialExpressionVectorParameter, -900, 300, parameter_name="Bottom", default_value=unreal.LinearColor(0.5, 0.45, 0.4, 1))
+mode = node(b, unreal.MaterialExpressionScalarParameter, -900, 500, parameter_name="Mode", default_value=0.0)
+bc = node(b, unreal.MaterialExpressionCustom, -500, 100, code=BODY_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+          description="Body", inputs=[custom_input(n) for n in ("uv", "Top", "Bottom", "Mode")])
+link(buv, "", bc, "uv")
+link(top, "", bc, "Top")
+link(bot, "", bc, "Bottom")
+link(mode, "", bc, "Mode")
+mel.connect_material_property(bc, "", MP.MP_BASE_COLOR)
+r = node(b, unreal.MaterialExpressionScalarParameter, -300, 300, parameter_name="Roughness", default_value=0.6)
 mel.connect_material_property(r, "", MP.MP_ROUGHNESS)
 mel.recompile_material(b)
 eal.save_asset(b.get_path_name())

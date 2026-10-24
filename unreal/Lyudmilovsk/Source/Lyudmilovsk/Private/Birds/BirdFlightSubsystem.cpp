@@ -25,6 +25,7 @@
 
 namespace
 {
+	TAutoConsoleVariable<int32> CVarQuitAfterLoad(TEXT("lyud.Bird.QuitAfterLoad"), 0, TEXT("1: quit two seconds after a save is loaded (the save test)."));
 	const FName SaveKey(TEXT("BirdFlight"));
 	const FName HeadBone(TEXT("head"));
 	/** The hero's view (AHeroCharacter::Fov). */
@@ -92,6 +93,11 @@ namespace
 			return true;
 		});
 		S.Add(UBirdFlightSubsystem::ArrivalSeconds + 0.3f, [](FCtx&) { return false; });
+	}
+
+	void CVar(const TCHAR* Name, float Value)
+	{
+		if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(Name)) V->Set(Value);
 	}
 
 	/** Clicking both buttons in a steady rhythm (a player flapping by hand). */
@@ -180,7 +186,7 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		// each flight style from behind: flapping by Space, a glide, an oar turn
 		static const TCHAR* Ids[] = { TEXT("HouseSparrow"), TEXT("Goldfinch"), TEXT("GreatTit"), TEXT("Starling"), TEXT("SongThrush"), TEXT("FeralPigeon"),
 		                              TEXT("Rook"), TEXT("Magpie"), TEXT("HerringGull"), TEXT("CommonSwift"), TEXT("BarnSwallow"), TEXT("Cormorant") };
-		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bird.ChaseCam"))->Set(1); return true; });
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); CVar(TEXT("lyud.Bird.ChaseCam"), 1); return true; });
 		for (const TCHAR* Id : Ids)
 		{
 			const FName Sp(Id);
@@ -195,7 +201,52 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			S->Add(1.5f, [](FCtx& X) { X.bAim = true; X.Aim = FRotator(-6.f, 0.f, 0.f); return false; });
 			S->Add(1.2f, [](FCtx& X) { X.C.Left = FMath::Fmod(X.T, 0.6f) < 0.12f; return false; });
 		}
-		S->Add(0.1f, [](FCtx& X) { X.Sys->ReturnToHero(true); IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bird.ChaseCam"))->Set(0); return true; });
+		S->Add(0.1f, [](FCtx& X) { X.Sys->ReturnToHero(true); CVar(TEXT("lyud.Bird.ChaseCam"), 0); return true; });
+	}
+	else if (Kind == TEXT("pose"))
+	{
+		// the bird held still in the air: round it from outside, then its own wings from its eye
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			X.Sys->ReturnToHero(true);
+			X.Sys->BecomeSpecies(X.PC, Species, FVector(0.f, 0.f, 600.f), 0.f, FVector(1000.f, 0, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator::ZeroRotator);
+			CVar(TEXT("lyud.Bird.Freeze"), 1); CVar(TEXT("lyud.Bird.ChaseCam"), 1); CVar(TEXT("lyud.Bird.ChasePitch"), 12); CVar(TEXT("lyud.Bird.ChaseDist"), 0.6f);
+			return true;
+		});
+		S->Add(4.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseYaw"), X.T / 4.f * 360.f); return false; });
+		S->Add(3.f, [](FCtx& X) { X.C.Space = true; CVar(TEXT("lyud.Bird.ChaseYaw"), X.T / 3.f * 180.f); return false; });
+		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.C.Right = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 90.f); return false; });
+		S->Add(1.5f, [](FCtx& X) { X.C.Shift = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 60.f); return false; });
+		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.T > 0.2f && X.T < 0.3f; CVar(TEXT("lyud.Bird.ChaseYaw"), 180.f); CVar(TEXT("lyud.Bird.ChasePitch"), 25); return false; });
+		S->Add(3.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseCam"), 0); X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
+		S->Add(3.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
+		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator(-70.f, 0.f, 0.f), true); return false; });
+		S->Add(2.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-10.f, 100.f, 0.f), true); return false; });
+		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator::ZeroRotator, false); return false; });
+		S->Add(0.1f, [](FCtx&) { CVar(TEXT("lyud.Bird.Freeze"), 0); CVar(TEXT("lyud.Bird.ChaseYaw"), 0); CVar(TEXT("lyud.Bird.ChaseDist"), 1); CVar(TEXT("lyud.Bird.ChasePitch"), 12); return true; });
+	}
+	else if (Kind == TEXT("savetest"))
+	{
+		// G7: save as a bird in the air, load, and be that bird again where it was (the log says)
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			X.Sys->PlaceHero(0.f, 30.f, 0.f);
+			const APawn* H = X.PC ? X.PC->GetPawn() : nullptr;
+			if (!H) return true;
+			X.Sys->BecomeSpecies(X.PC, Species, H->GetActorLocation() + FVector(300.f, 0.f, 400.f), 0.f, FVector(900.f, 0, 0), false, nullptr, true);
+			return true;
+		});
+		S->Add(1.5f, [](FCtx& X) { X.C.Space = true; return false; });
+		S->Add(0.1f, [](FCtx& X)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("BIRD saving as %s at %s, hero at %s"), *X.Bird->GetSpecies().ToString(), *X.Bird->FeetLocation().ToCompactString(),
+				X.Sys->GetHero() ? *X.Sys->GetHero()->GetActorLocation().ToCompactString() : TEXT("-"));
+			GEngine->Exec(X.Sys->GetWorld(), TEXT("lyud.Save birdflight_test"));
+			return true;
+		});
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [](FCtx& X) { CVar(TEXT("lyud.Bird.QuitAfterLoad"), 1); GEngine->Exec(X.Sys->GetWorld(), TEXT("lyud.Load 0")); return true; });
 	}
 	else if (Kind == TEXT("look"))
 	{
@@ -323,8 +374,20 @@ bool UBirdFlightSubsystem::BecomeSpecies(APlayerController* PC, FName Species, c
 		ShownActor = Shown;
 	}
 	Bird = B;
+	if (Hero.IsValid())
+	{
+		// the bird flies past the hero, never into him
+		B->GetRootPrimitive()->IgnoreActorWhenMoving(Hero.Get(), true);
+	}
 	PC->Possess(B);
-	PC->SetControlRotation(FRotator(bStanding ? -6.f : 0.f, Yaw, 0.f));
+	FRotator Look(0.f, Yaw, 0.f);
+	if (bStanding && Hero.IsValid())
+	{
+		// on the hand it looks up at the face that fed it
+		Look = (HeroView().Location - B->BirdView().Location).Rotation();
+		Look.Pitch = FMath::Clamp(Look.Pitch, -30.f, 50.f);
+	}
+	PC->SetControlRotation(Look);
 	SetHeroHeadShown(true);
 	if (bInstant || !Hero.IsValid())
 	{
@@ -423,7 +486,7 @@ void UBirdFlightSubsystem::RunScript(const FString& Name, const FString& Record,
 	Script = FScript::Make(Name);
 	if (!Script)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bird flight: no script %s (showcase[:Species], ridge[:Species], styles, look[:Species])"), *Name);
+		UE_LOG(LogTemp, Warning, TEXT("Bird flight: no script %s (showcase|ridge|look|pose|savetest[:Species], styles)"), *Name);
 		return;
 	}
 	RecordDir = Record;
@@ -555,6 +618,10 @@ void UBirdFlightSubsystem::OnBeforeSave(ULyudSaveGame* Save)
 
 void UBirdFlightSubsystem::OnAfterLoad(ULyudSaveGame* Save)
 {
+	if (IConsoleVariable* Q = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bird.QuitAfterLoad")); Q && Q->GetInt())
+	{
+		QuitIn = 2.f;
+	}
 	if (!Save->ReadObject(SaveKey, this) || !bSavedAsBird)
 	{
 		return;
@@ -566,6 +633,8 @@ void UBirdFlightSubsystem::OnAfterLoad(ULyudSaveGame* Save)
 		{
 			HeroControl = Save->ControlRotation;
 			PC->SetControlRotation(Aim);
+			UE_LOG(LogTemp, Warning, TEXT("BIRD loaded as %s at %s, hero at %s"), *SavedSpecies.ToString(), *SavedLocation.ToCompactString(),
+				Hero.IsValid() ? *Hero->GetActorLocation().ToCompactString() : TEXT("-"));
 		}
 	}
 }
@@ -599,7 +668,7 @@ namespace
 		{
 			if (UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World)) S->ReturnToHero(Args.Contains(TEXT("now")));
 		}));
-	FAutoConsoleCommandWithWorldAndArgs CmdScript(TEXT("Bird.Script"), TEXT("Bird.Script <showcase|ridge|styles|look>[:Species] [record=<folder>] [warm=<s>] [quit]: a scripted flight."),
+	FAutoConsoleCommandWithWorldAndArgs CmdScript(TEXT("Bird.Script"), TEXT("Bird.Script <showcase|ridge|look|pose|savetest>[:Species]|styles [record=<folder>] [warm=<s>] [quit]: a scripted flight."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World);

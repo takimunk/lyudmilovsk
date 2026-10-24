@@ -25,6 +25,8 @@ scene.render.fps = fps
 img = bpy.data.images.load(os.path.join(src, frames[0]))
 scene.render.resolution_x, scene.render.resolution_y = img.size[0], img.size[1]
 scene.render.resolution_percentage = 100
+if hasattr(scene.render.image_settings, "media_type"):
+    scene.render.image_settings.media_type = "VIDEO"
 scene.render.image_settings.file_format = "FFMPEG"
 scene.render.ffmpeg.format = "MPEG4"
 scene.render.ffmpeg.codec = "H264"
