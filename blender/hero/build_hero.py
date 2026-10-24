@@ -549,12 +549,18 @@ def build():
         layers.append((co, polys(o.data)))
 
     bvh = {n: mesh_bvh(c, f) for n, (c, f) in zip(GARMENTS, layers[1:])}
+    # the clothes take their skin weights from the whole body, before the skin under them is cut away: from the cut
+    # body the trouser legs and shoes found only the thighs' weights (no knee or ankle bent in game)
+    whole = body.copy()
+    whole.data = body.data.copy()
+    bpy.context.scene.collection.objects.link(whole)
     cut_covered(body, list(bvh.values()))
     cut_covered(garments["Trousers"], [bvh["Hoodie"]])     # whatever of the waistband still pokes
     cut_covered(garments["Hoodie"], [bvh["Overshirt"]])    # the hood and back under the overshirt
     for n in GARMENTS:
-        skin_from_body(garments[n], body, zr)
+        skin_from_body(garments[n], whole, zr)
         garments[n].name = "hero." + n.lower()
+    bpy.data.objects.remove(whole)
     sole = min((garments["Shoes"].matrix_world @ v.co).z for v in garments["Shoes"].data.vertices)
     log("shoe soles at z = %.3f (pawn lifts the mesh by %.1f cm)" % (sole, -sole * 100))
     zr.name = "hero.rig"
