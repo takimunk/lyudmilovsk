@@ -25,11 +25,11 @@ namespace BirdFlight
 	};
 
 	/** The species table's flight styles (Content/Birds/species.json, FlightStyle). */
-	enum class EStyle : uint8_t { Flapping, Bounding, Gliding, Soaring, Clapping, Flicker };
+	enum class EStyle : uint8_t { Flapping, Bounding, Undulating, Clapping, Soaring, Flicker };
 
 	struct FParams
 	{
-		EStyle Style = EStyle::Gliding;
+		EStyle Style = EStyle::Undulating;
 		double Mass = 0.075;          // kg
 		double Span = 0.38;           // m
 		double BeatHz = 12.0;         // the species' wingbeat rate

@@ -17,9 +17,10 @@ namespace
 	const FSpecies Species[] = {
 		{ "HouseSparrow", EStyle::Bounding, 30, 23, 15, 9 },
 		{ "Goldfinch", EStyle::Bounding, 16, 23, 18, 9 },
-		{ "Starling", EStyle::Gliding, 75, 38, 12, 17 },
+		{ "Starling", EStyle::Flapping, 75, 38, 12, 17 },
+		{ "SongThrush", EStyle::Undulating, 70, 34, 10, 13 },
 		{ "RockDove", EStyle::Clapping, 330, 65, 7, 17 },
-		{ "Rook", EStyle::Flapping, 450, 90, 4, 13 },
+		{ "Rook", EStyle::Flapping, 450, 90, 3.4, 12 },
 		{ "HerringGull", EStyle::Soaring, 1000, 140, 3, 12 },
 		{ "CommonSwift", EStyle::Flicker, 40, 42, 8, 20 },
 	};

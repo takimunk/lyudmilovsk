@@ -271,6 +271,11 @@ void ULyudBenchmark::BuildRoute()
 		{ Map(10, -45, 2500), FRotator(-8, 90, 0), 0.f },
 		{ Map(10, -45, 2500), FRotator(-8, 45, 0), 5.f },
 		{ Map(10, -45, 2500), FRotator(-8, 135, 0), 10.f } });
+	// a bird's flight 25 m over the ground: over the upland's old forest, down the slope, across the town
+	Seg(TEXT("flight"), true, {
+		{ Map(-60, -120, 2500), FRotator(-12, 100, 0), 0.f },
+		{ Map(-160, 250, 2500), FRotator(-15, 110, 0), 14.f },
+		{ Map(-330, 900, 2500), FRotator(-20, 80, 0), 30.f } });
 }
 
 bool ULyudBenchmark::ForestsBaked(int32& OutTrees, int32& OutBaked) const

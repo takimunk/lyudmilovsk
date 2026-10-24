@@ -16,9 +16,9 @@ namespace BirdFlight
 			static const FStyleRow Rows[] = {
 				/* Flapping */ { 7.0, 0.80, 1.7, 3.8, 0.30, 1.15, 1, 0.0, false },
 				/* Bounding */ { 5.0, 0.80, 2.8, 4.0, 0.18, 1.10, 3, 0.35, true },
-				/* Gliding  */ { 8.0, 0.78, 2.2, 3.8, 0.25, 0.95, 4, 0.9, false },
-				/* Soaring  */ { 14.0, 0.70, 1.1, 3.0, 0.50, 0.95, 3, 1.6, false },
+				/* Undulating */ { 8.0, 0.78, 2.2, 3.8, 0.25, 0.95, 4, 0.9, false },
 				/* Clapping */ { 7.0, 0.80, 1.7, 3.8, 0.30, 1.20, 1, 0.0, false },
+				/* Soaring  */ { 14.0, 0.70, 1.1, 3.0, 0.50, 0.95, 3, 1.6, false },
 				/* Flicker  */ { 11.0, 0.72, 3.6, 5.0, 0.12, 1.05, 3, 0.5, false },
 			};
 			return Rows[(int)S];
@@ -67,7 +67,7 @@ namespace BirdFlight
 		// clicking without pause at zero airspeed lifts HoverG (a take-off; pigeons and finches can hover a moment)
 		P.ClickLift = P.Gravity * R.HoverG * P.ClickTime();
 		P.OarKick = Style == EStyle::Flicker ? 0.45 : Style == EStyle::Soaring ? 0.22 : 0.35;
-		P.Hops = Style == EStyle::Bounding || Style == EStyle::Gliding;
+		P.Hops = Style == EStyle::Bounding || Style == EStyle::Undulating;
 		return P;
 	}
 

@@ -22,6 +22,7 @@ never shake it.
 | Click LMB and RMB together | One wingbeat: down on press, up on release. Clicking rhythmically is flapping; the species' own wingbeat rate is the fastest that helps |
 | Click one button | One beat of that wing only: a hard roll and turn away from it (rowing with one oar) |
 | Hold both | Wings pulled in to the body: you fall and gain speed (a dive, or the "bound" of a finch between bursts) |
+| Hold one | That wing pulled in: a hard roll and a tight turn toward it |
 | Nothing pressed | Wings spread: you glide |
 | Mouse | The head: look, and the body steers after the look |
 | Space | Both wings beat; hold it to flap at the species' natural rhythm and pattern (keyboard-only play) |
@@ -48,7 +49,8 @@ back to centre over half a second instead of snapping. Without AirPods, C / midd
 with the mouse. Optional (console `lyud.Bird.HeadSteer 1`): tilting your head banks the bird, for hands-free
 gliding.
 
-**What you see of yourself.** The beak tip at the bottom of the view (a bird sees its own beak), the
+**What you see of yourself.** The beak tip at the bottom of the view (a bird sees its own beak; it
+moves with the head, so it is also the bird's natural sight: the beak points where you go), the
 leading edges of both wings at the screen edges when they are spread, the primaries sweeping through the
 lower corners on each downstroke, your breast and folded feet when you look down, the feet coming out on a
 flare. Turn the head (C or AirPods) and you see the whole wing: separate primaries, secondaries and
