@@ -111,5 +111,19 @@ for sid in ids:
             cam.set_actor_label("Dist_%s_%06.1fm" % (sid, dm))
             cam.camera_component.set_editor_property("field_of_view", 50.0)
     x += max(span, 60) * 1.6
+# a lineup at true scale, one camera on all of it (each species' own cameras frame it to its size)
+LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Jackdaw", "Rook", "HoodedCrow",
+          "HerringGull", "Cormorant"]
+lx = 0.0
+for sid in [i for i in LINEUP if i in ids]:
+    L = TABLE[sid]["lengthCm"]
+    a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(lx + L * 0.5, 1500, 0), unreal.Rotator(0, 0, 0))
+    a.set_actor_label("Lineup_" + sid)
+    a.set_editor_property("species", sid)
+    a.get_editor_property("body").set_skinned_asset_and_update(unreal.load_asset("/Game/Birds/%s/SK_%s" % (sid, sid)))
+    lx += L + 12.0
+cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(lx * 0.5, 1500 - lx * 0.72, 45), unreal.Rotator(0, -3, 90))
+cam.set_actor_label("Lineup_all")
+cam.camera_component.set_editor_property("field_of_view", 70.0)
 les.save_current_level()
 unreal.log_warning("BIRDS level saved with %d species" % len(ids))
