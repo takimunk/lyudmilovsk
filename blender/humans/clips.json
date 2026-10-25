@@ -1,0 +1,102 @@
+{
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) and our own older clips (life_anims.py). pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
+ "target": "blender/characters/guy_a/export/human_guy_a.glb",
+ "sources": {
+  "ual1": {
+   "file": "Saved/ClipSources/ual1/Animation Library[Standard]/Unreal Engine/AL_Standard.fbx",
+   "ref": "A_TPose"
+  },
+  "ual2": {
+   "file": "Saved/ClipSources/ual2/Universal Animation Library 2 [Standard]/Unreal-Godot/UAL2_Standard.glb",
+   "ref": "A_TPose"
+  },
+  "old": {
+   "file": "Saved/ClipSources/life_anims_v1.glb",
+   "ref": "rest"
+  }
+ },
+ "clips": {
+  "Walk": {
+   "source": "ual1",
+   "action": "Walk_Loop",
+   "walk": true
+  },
+  "StandIdle": {
+   "source": "ual1",
+   "action": "Idle_Loop"
+  },
+  "Talk": {
+   "source": "ual1",
+   "action": "Idle_Talking_Loop",
+   "calm": [
+    "Idle_Loop",
+    0.55
+   ]
+  },
+  "SitDown": {
+   "source": "ual1",
+   "action": "Sitting_Enter",
+   "pelvis": "seat"
+  },
+  "SitIdle": {
+   "source": "ual1",
+   "action": "Sitting_Idle_Loop",
+   "pelvis": "seat"
+  },
+  "SitTalk": {
+   "source": "ual1",
+   "action": "Sitting_Talking_Loop",
+   "pelvis": "seat",
+   "calm": [
+    "Sitting_Idle_Loop",
+    0.55
+   ]
+  },
+  "StandUp": {
+   "source": "ual1",
+   "action": "Sitting_Exit",
+   "pelvis": "seat"
+  },
+  "Nod": {
+   "source": "ual2",
+   "action": "Yes"
+  },
+  "ShakeHead": {
+   "source": "ual2",
+   "action": "Idle_No_Loop"
+  },
+  "FoldArms": {
+   "source": "ual2",
+   "action": "Idle_FoldArms_Loop"
+  },
+  "Phone": {
+   "source": "ual2",
+   "action": "Idle_TalkingPhone_Loop"
+  },
+  "Eat": {
+   "source": "old",
+   "action": "Life_Eat",
+   "pelvis": "seat"
+  },
+  "Read": {
+   "source": "old",
+   "action": "Life_Read",
+   "pelvis": "seat"
+  },
+  "LieDown": {
+   "source": "old",
+   "action": "Life_LieDown",
+   "pelvis": "abs"
+  },
+  "Sleep": {
+   "source": "old",
+   "action": "Life_Sleep",
+   "pelvis": "abs"
+  },
+  "GetUp": {
+   "source": "old",
+   "action": "Life_GetUp",
+   "pelvis": "abs"
+  }
+ }
+}

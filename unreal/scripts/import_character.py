@@ -59,6 +59,38 @@ def gltf_texture_roles(glb):
     return out
 
 
+FACE_CURVES = ["eyeBlinkLeft", "eyeBlinkRight", "jawOpen", "mouthFunnel", "mouthSmile", "browUp"]
+
+
+def face_curves():
+    """face_rig.py's morph targets as morph target curves on SK_Human_Skeleton: ULyudBodyAnimInstance drives them."""
+    skel = unreal.load_asset(SKELETON)
+    AL = unreal.AnimationLibrary
+    have = [str(n) for n in AL.get_curve_meta_data_names(skel)] if hasattr(AL, "get_curve_meta_data_names") else []
+    for c in FACE_CURVES:
+        if c not in have:
+            AL.add_curve_meta_data(skel, c)
+        AL.set_curve_meta_data_morph_target(skel, c, True)
+    eal.save_loaded_asset(skel)
+
+
+def eye_params(mi, cid):
+    """EyeL_C/J, EyeR_C/J of M_HumanFace from blender/characters/<id>/face_marks.json (face_rig.py)."""
+    import json
+    path = os.path.join(ROOT, "blender", "characters", cid, "face_marks.json")
+    if not os.path.isfile(path):
+        return
+    for side, e in zip("LR", json.load(open(path))["eyes"]):
+        uv = e.get("uv")
+        if not uv:
+            continue
+        (a, b), (c, d) = uv["j"]
+        mel.set_material_instance_vector_parameter_value(
+            mi, "Eye%s_C" % side, unreal.LinearColor(uv["centre"][0], uv["centre"][1], e["w"] / 2, e["h"] / 2))
+        mel.set_material_instance_vector_parameter_value(mi, "Eye%s_J" % side, unreal.LinearColor(a, b, c, d))
+    log("  eyes: opening parameters from face_marks.json")
+
+
 def import_character(cid):
     glb = os.path.join(ROOT, "blender", "characters", cid, "export", "human_%s.glb" % cid)
     title = cid.capitalize()
@@ -110,7 +142,10 @@ def import_character(cid):
         sm = mats[i]
         mi = tools.create_asset("MI_%s_body%s" % (title, "" if i == 0 else i), dest + "/Materials",
                                 unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
-        mi.set_editor_property("parent", unreal.load_asset(BASE + "/Materials/M_HumanSkin"))
+        face = unreal.load_asset(BASE + "/Materials/M_HumanFace")             # M_HumanSkin + eyes that look about
+        mi.set_editor_property("parent", face or unreal.load_asset(BASE + "/Materials/M_HumanSkin"))
+        if face and i == 0:
+            eye_params(mi, cid)
         if "BaseColor" in tex:
             mel.set_material_instance_texture_parameter_value(mi, "BaseColor", tex["BaseColor"])
         if "Normal" in tex:
@@ -150,6 +185,7 @@ def import_character(cid):
 def main():
     for cid in [a for a in sys.argv[1:] if not a.startswith("-")]:
         import_character(cid)
+    face_curves()
     log("done")
 
 

@@ -77,6 +77,21 @@ community files are skipped). CC-BY requires attribution, which this table provi
 | clothes/rehmanpolanski_beard_viking | bodyparts05_cc0.zip | CC0 | Rehman Polanski |
 | hair/afro01 | makehuman_system_assets_cc0.zip | (pack licence) | MakeHuman team |
 
+## Animation clips
+
+The shared human clips (`/Game/Characters/Humans/Anims/A_Human_*`) are retargeted by `retarget_clips.py` from
+`clips.json`; the downloads are fetched by `fetch_clips.sh` and never committed (only our retargeted clips are).
+
+| Clips | Source | Licence | Author |
+|---|---|---|---|
+| Walk (Walk_Loop), StandIdle (Idle_Loop), Talk (Idle_Talking_Loop), SitDown (Sitting_Enter), SitIdle (Sitting_Idle_Loop), SitTalk (Sitting_Talking_Loop), StandUp (Sitting_Exit) | Universal Animation Library, Standard: https://quaternius.com/packs/universalanimationlibrary.html (OpenGameArt: https://opengameart.org/content/universal-animation-library) | CC0 1.0 | Quaternius |
+| Nod (Yes), ShakeHead (Idle_No_Loop), FoldArms (Idle_FoldArms_Loop), Phone (Idle_TalkingPhone_Loop) | Universal Animation Library 2, Standard: https://opengameart.org/content/universal-animation-library-2 | CC0 1.0 | Quaternius |
+| Eat, Read, LieDown, Sleep, GetUp | our own (`life_anims.py`), carried over to the generated bodies by `retarget_clips.py` | CC BY 4.0 (this repo) | Lyudmilovsk |
+| each person's seated computer loops (`A_<Name>_Sit_*`) | our own (`seat_anims.py`), baked by `bake_own_clips.py`, carried over by `retarget_clips.py --own` | CC BY 4.0 (this repo) | Lyudmilovsk |
+
+CC0 asks for nothing; Quaternius is credited here anyway. The lip-sync curves (`tools/lipsync.py`) are computed
+from our own voice lines.
+
 ## Our own additions (CC BY 4.0 with the rest of this repo's assets)
 
 Garment re-tailoring (oversized hoodie, wide jeans, baggy tees), recolours, the striped tie texture,

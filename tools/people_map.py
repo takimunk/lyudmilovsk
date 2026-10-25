@@ -906,6 +906,20 @@ def build_outdoor(grid):
     cd = stand("club_door", "club_door", p[:2], -90.0, grid, n=1, tag="spur")
     cd["portal"] = [r2(W.DOOR_X), r2(fy), 0.0]
     places.append(cd)
+    # the forecourt in front of the club's door: spots the door-watcher (Nao) paces between, looking round
+    pts = W.path_points(1.0)
+    fc = {"id": "club_forecourt", "kind": "club_forecourt", "slots": [], "tag": "spur"}
+    for y, side, face in ((7.0, 1, 60.0), (7.0, -1, 120.0), (10.5, 1, 160.0), (13.5, -1, 20.0), (17.0, 1, -90.0),
+                          (21.0, -1, -70.0)):
+        cx = min(pts, key=lambda q: abs(q[1] - y))[0] if y > 8.0 else W.DOOR_X
+        x, yy, _ = map_to_ue(cx + side * 1.6, y, 0.0)
+        if not grid.walkable(x, yy):
+            continue
+        fc["slots"].append({"kind": "stand", "pos": [r2(x), r2(yy), r2(grid.ground(x, yy))], "yaw": ang(face),
+                            "capacity": 1, "height": 0.0, "approach": [r2(x), r2(yy), r2(grid.ground(x, yy))]})
+    fc["pos"] = cd["pos"]
+    fc["yaw"] = -90.0
+    places.append(fc)
     # the spur's lookout over the sea (west = +X), and benches along the alley between its tree pairs
     p = map_to_ue(W.DOOR_X - 8.0, 60.0, 0.0)
     places.append(stand("spur_lookout", "lookout", p[:2], 0.0, grid, n=3, tag="spur"))

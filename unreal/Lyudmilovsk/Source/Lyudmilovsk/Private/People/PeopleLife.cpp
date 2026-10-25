@@ -1,4 +1,5 @@
 #include "People/PeopleLife.h"
+#include "People/LyudBodyAnim.h"
 #include "Transport/LyudTransport.h"
 
 #include "PeopleSim.h"
@@ -675,7 +676,9 @@ ANpcBody::ANpcBody()
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+	// clips cross-fade (ULyudBodyAnimInstance) instead of popping from one to the next
+	Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	Mesh->SetAnimInstanceClass(ULyudBodyAnimInstance::StaticClass());
 	Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 	// outdoors the sun lights channel 1 (ALyudSky), indoors the lamps channel 0
 	Mesh->LightingChannels.bChannel0 = true;
@@ -694,7 +697,8 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 		return false;
 	}
 	Mesh->SetSkeletalMeshAsset(Asset);
-	// the shared clips were made on a 1.69 m adult (pelvis 91.7 cm over the floor): the pelvis moves scale with the body
+	// the shared clips are baked on Guy_a (pelvis 93.7 cm over the floor, blender/humans/clips.json): the pelvis moves scale
+	// with the body
 	const FReferenceSkeleton& Ref = Asset->GetRefSkeleton();
 	int32 Bone = Ref.FindBoneIndex(TEXT("pelvis"));
 	FTransform T = FTransform::Identity;
@@ -703,7 +707,8 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 		T = T * Ref.GetRefBonePose()[Bone];
 		Bone = Ref.GetParentIndex(Bone);
 	}
-	BodyScale = FMath::Clamp((float)T.GetLocation().Z / 91.7f, 0.5f, 1.3f);
+	BodyScale = FMath::Clamp((float)T.GetLocation().Z / 93.7f, 0.5f, 1.3f);
+	Seed = GetTypeHash(InMesh) ^ (uint32)GetUniqueID();
 	return true;
 }
 
@@ -767,15 +772,57 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 
 void ANpcBody::Play(FName Name, bool bLoop, float Rate)
 {
+	ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance());
 	if (Playing != Name)
 	{
 		Playing = Name;
 		if (UAnimSequence* A = Clip(Name))
 		{
-			Mesh->PlayAnimation(A, bLoop);
+			if (Anim)
+			{
+				Anim->PlayClip(A, bLoop, Rate);
+			}
+			else
+			{
+				Mesh->PlayAnimation(A, bLoop);
+			}
 		}
 	}
-	Mesh->SetPlayRate(Rate);
+	if (Anim)
+	{
+		Anim->SetClipRate(Rate);
+	}
+	else
+	{
+		Mesh->SetPlayRate(Rate);
+	}
+}
+
+void ANpcBody::PlayVaried(FName InRole, std::initializer_list<FName> Variants, float Rate)
+{
+	// a new role, or back from another clip (a walk, sitting down) into the same role
+	bool bOurs = false;
+	for (const FName& V : Variants)
+	{
+		bOurs |= V == Playing;
+	}
+	if (Role != InRole || !bOurs || Clock >= VariantUntil)
+	{
+		const bool bNew = Role != InRole || !bOurs;
+		Role = InRole;
+		Seed = Seed * 1664525u + 1013904223u;
+		const int32 N = (int32)Variants.size();
+		// a fresh role starts with its own clip; later ones pick among all
+		const int32 I = bNew ? 0 : (int32)((Seed >> 8) % (uint32)N);
+		const FName Pick = *(Variants.begin() + I);
+		VariantUntil = Clock + 6.f + 6.f * (float)((Seed >> 16) & 1023) / 1023.f;
+		if (Clip(Pick))
+		{
+			Play(Pick, true, Rate);
+			return;
+		}
+	}
+	Play(bOurs && Clip(Playing) ? Playing : *Variants.begin(), true, Rate);
 }
 
 void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
@@ -791,6 +838,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		Facing += FMath::Clamp(D, -240.f * DeltaTime, 240.f * DeltaTime);
 	}
 	bPlaced = true;
+	Clock += DeltaTime;
 	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
 	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
 		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
@@ -817,6 +865,11 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// the model faces +Y at yaw 0
 		SetActorLocationAndRotation(At, FRotator(0.f, Facing - 90.f, 0.f));
 	}
+	if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+	{
+		Anim->SetEyesShut(Pose == EPersonPose::Sleep && Transit == 0);
+		Anim->SetChatter(Pose == EPersonPose::Talk && Transit == 0);
+	}
 	switch (Transit)
 	{
 	case 1: Play(TEXT("SitDown"), false); return;
@@ -829,20 +882,21 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	{
 	case EPersonPose::Walk:
 	{
-		// the shared walk is one stride at ~125 cm/s; the owner's (the fallback) at 75
+		// the shared walk (Quaternius UAL Walk_Loop on Guy_a) covers ~93 cm/s at rate 1 (life_anims_report.json speed_m_s);
+		// the owner's (the fallback) 75
 		const bool bShared = Clip(TEXT("Walk")) && Clip(TEXT("Walk"))->GetName().StartsWith(TEXT("A_Human"));
-		Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 125.f * S : 75.f), 0.3f, 2.5f));
+		Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 93.f * S : 75.f), 0.3f, 2.5f));
 		break;
 	}
-	case EPersonPose::Talk: Play(TEXT("Talk"), true); break;
-	case EPersonPose::Look: Play(TEXT("StandIdle"), true, 0.7f); break;
-	case EPersonPose::Sit: Play(TEXT("SitIdle"), true); break;
+	case EPersonPose::Talk: PlayVaried(TEXT("Talk"), { TEXT("Talk"), TEXT("Talk"), TEXT("Nod"), TEXT("Talk"), TEXT("FoldArms") }); break;
+	case EPersonPose::Look: PlayVaried(TEXT("Look"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") }, 0.8f); break;
+	case EPersonPose::Sit: PlayVaried(TEXT("Sit"), { TEXT("SitIdle"), TEXT("SitIdle"), TEXT("SitTalk") }); break;
 	case EPersonPose::Computer: Play(TEXT("Computer"), true); break;
 	case EPersonPose::Eat: Play(TEXT("Eat"), true); break;
 	case EPersonPose::Read: Play(TEXT("Read"), true); break;
 	case EPersonPose::Sleep: Play(TEXT("Sleep"), true); break;
 	case EPersonPose::Work: Play(TEXT("Computer"), true); break;
-	default: Play(TEXT("StandIdle"), true); break;
+	default: PlayVaried(TEXT("Stand"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") }); break;
 	}
 }
 

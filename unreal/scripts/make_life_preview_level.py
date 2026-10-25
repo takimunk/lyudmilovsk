@@ -16,7 +16,8 @@ eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Characters/Humans/L_LifeAnimsPreview"
 CAST = os.environ.get("LIFE_CAST", "Guy_a,Kid_boy,Girl_b").split(",")     # LIFE_CAST=Nao,Guy_a for a new character
 ALL_CLIPS = [("Seat", "chair", 1.0), ("Walk", None, 0.3), ("Talk", None, 1.2), ("SitIdle", "chair", 0.5), ("Eat", "table", 1.25),
-         ("Read", "chair", 1.0), ("Sleep", "bed", 0.5), ("LieDown", "bed", 1.5), ("SitDown", "chair", 1.0)]
+         ("Read", "chair", 1.0), ("Sleep", "bed", 0.5), ("LieDown", "bed", 1.5), ("SitDown", "chair", 1.0),
+         ("StandIdle", None, 1.0), ("FoldArms", None, 1.0), ("Nod", None, 1.2), ("SitTalk", "chair", 1.0), ("StandUp", "chair", 0.6)]
 # Seat = the person's own seated clip at a computer (people.json computer_clip); LIFE_CLIPS=Seat,Walk picks some
 CLIPS = [c for c in ALL_CLIPS if c[0] in os.environ.get("LIFE_CLIPS", ",".join(c[0] for c in ALL_CLIPS[1:])).split(",")]
 

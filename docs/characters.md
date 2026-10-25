@@ -43,10 +43,15 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
 
 1. The donor's pose is reset to rest (the importer leaves the first clip's frame on it).
 2. Each arm chain is **rotated rigidly** to point straight out along X, and that pose is applied as the new rest pose
-   (body and bones together). Frames and rolls ride along, so a clip (local rotations) moves the new body exactly as it
-   moves the donor. Never move bones by their heads/tails to re-aim them: that recomputes the roll.
+   (body and bones together). Frames and rolls ride along. Never move bones by their heads/tails to re-aim them: that
+   recomputes the roll. **This changes the arms' rest rotations**, so a clip made on an A-pose body must not be played
+   as is (its local rotations are absolute: the wrists roll, the legs cross); clips are carried over in world space
+   (see "Clips" below).
 3. The donor is fitted to the model: uniform scale to the height (`donor_height_share`, hair stands a little higher),
-   then each arm stretched along X to the model's span and lifted to its arm height.
+   then each arm stretched along X to the model's span and lifted to its arm height; the whole donor shifted so its
+   hips' cross-section has the model's middle (the model is centred on its bounding box, hair and all); knees and
+   ankles moved into the middle of the model's legs (`fit_legs`: the generated stance is narrower than MakeHuman's,
+   by 5-12 cm at the ankle).
 4. The model (one mesh, centred, feet at 0, facing −Y in Blender = +Y in UE like every human) is **optimized**
    (Dima's rule: generated models are far too detailed): duplicates welded and specks removed, decimated to `faces`
    (24k triangles for an adult, 18k for a child), smooth shaded, the lost detail baked from a 400k copy into a 2048
@@ -55,6 +60,10 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.
+6. **Loose hems** (every character): cloth round the hips standing off the skin moves from the thighs to the pelvis
+   (`relax_hem`), or sitting drags a shirt's back out like a bag; the **shoulders'** weights are smoothed within 13 cm
+   of each shoulder joint, so arms hanging down don't pinch the sleeve into a ridge; the head is locked (`lock_head`).
+7. **Face** (`blender/characters/face_rig.py`, below).
 
 `--preview` renders `renders/characters/<id>_front|side|posed|posed_side.png` (arms down, a step) to check the
 weights before importing.
@@ -67,9 +76,62 @@ weights before importing.
 - **Retargeting**: the skeleton plays the shared clips with root = Animation, pelvis = AnimationScaled, every other bone
   = Skeleton (the mesh's own lengths), `unreal/scripts/life_retarget.py`. A character's own clips (`A_<Id>_*`) get
   their own mesh as retarget source. The shared `A_Human_*` clips keep `SK_Guy_a` as source.
-- No face morph targets yet (the MakeHuman cast has 52 ARKit + 15 visemes); talking uses the body clip only.
+- `MI_<Id>_body` is on `M_HumanFace` (`unreal/scripts/make_face_material.py`: M_HumanSkin plus the eyes' slide),
+  its `EyeL_C/J`, `EyeR_C/J` set from `face_marks.json` by `import_character.py`.
+- Bodies play through `ULyudBodyAnimInstance` (`Public/People/LyudBodyAnim.h`): clips cross-fade, the face lives (below).
+  `ANpcBody` uses it; `ULyudFaceSubsystem` switches the level's placed people (SkeletalMeshActors on the human skeleton
+  playing one clip) to it at begin play.
 - `ANpcBody` finds the mesh by `people.json` `mesh` (`/Game/Characters/Humans/<mesh>/SK_<mesh>`); talking finds a
   person by the mesh name `SK_<Id>` → `[<Id>]` in `npc_dialogue.txt`.
+
+## Clips
+
+- **Shared clips** `A_Human_*` (walk, idle, talk, sit down, sit idle, sit and talk, stand up, nod, head shake, folded
+  arms, phone, eat, read, lie down, sleep, get up): `blender/humans/clips.json` says which clip comes from where,
+  `blender/humans/retarget_clips.py` bakes them on Guy_a's body (`Saved/LifeAnims/life_anims.glb`, a contact sheet with
+  `--preview`), `unreal/scripts/import_life_anims.py` imports them, `life_retarget.py` sets the retarget sources.
+  Sources: Quaternius' Universal Animation Library 1 and 2 (CC0, `blender/humans/fetch_clips.sh`) and our own older
+  clips; licences in `blender/humans/SOURCES.md`. Only CC0 / CC BY clips.
+- **How they're carried over**: in world space. Every bone takes the source's rotation relative to the source's
+  reference pose (UAL: its `A_TPose`; ours: the rig's rest) and applies it to the target's rest turned to point where
+  the source's reference bone points (joint to joint, so FBX and glTF bone frames don't matter). Bone lengths stay the
+  target's; the pelvis moves `scale` (standing), `seat` (onto the house chair: pelvis (0, 1, 56.7) cm, seat 47) or `abs`
+  (the bed layout). The wrists: a hand twisted past 120 degrees against the forearm is turned back (seat_anims' mouse
+  hand was baked upside down) and half of the remaining twist goes to the forearm (no twist bones). `calm` tones a
+  clip down toward another (Talk at 55% of UAL's gesturing).
+- **Walk speed**: the walk covers 0.92 m/s at rate 1 on Guy_a (`life_anims_report.json` `speed_m_s`); `ANpcBody` plays
+  it at the person's speed / (93 cm/s x body scale). Body scale = pelvis height / 93.7 cm (Guy_a).
+- **A person's own clips** (`A_<Name>_Sit_*`, the club's computers): `bake_own_clips.py` bakes seat_anims' loops on the
+  person's old MakeHuman body (`<humans worktree>/blender/humans/<id>.blend`), `retarget_clips.py --own <id>` carries
+  them onto the generated body, `LIFE_OWNER=<Name> LIFE_GLB=Saved/LifeAnims/own_<id>.glb import_life_anims.py`.
+- Check without the engine: `retarget_clips.py --preview` renders each clip on the target body
+  (`Saved/LifeAnims/frames`).
+
+## Face
+
+`blender/characters/face_rig.py` (called by `rig_character.py`; `character.json` `face`: `{"rig": false}` skips it,
+`{"eyes": false}` leaves the eyes alone (glasses: Clerk, Crowd_13), `{"marks": {...}}` overrides the landmarks):
+
+1. **Landmarks**: the face rendered front-on and unlit; `face_marks.py` (numpy/scipy, system python) finds the irises
+   (dark iris-sized blobs, a difference of Gaussians), the openings (how far the colour stays off the cheeks'), the lip
+   line (the darkest row under the nose) and the iris colour -> `blender/characters/<id>/face_marks.json`, debug
+   picture `renders/characters/<id>_face.png`. Glasses fool it: give `marks` by hand.
+2. The face round the eyes and the mouth is subdivided twice (+3-8k triangles).
+3. **Lips**: the face is cut along the lip line across the mouth and split; a dark sheet behind (UV on the texture's
+   darkest 9x9 block, skinned to the head, always behind the skin) is the inside of the mouth.
+4. **Morph targets**: `eyeBlinkLeft/Right` (the painted eye squeezed into the lower lid line, the upper lid's skin
+   following), `jawOpen` (14 deg about a hinge under the ears; the lower lip drops most in the middle), `mouthFunnel`,
+   `mouthSmile`, `browUp`.
+5. **Eyes look about** in the material: `M_HumanFace` reads the texture shifted inside each opening (fading out toward
+   the lids), so the painted iris slides. Real eyeballs cut into the paint were tried and looked like ping-pong balls.
+
+At run time (`ULyudBodyAnimInstance`): blinks every 2-6 s (sometimes double, more while talking), eyes shut in sleep;
+looks at the player now and then (2-6 s on, 3-8 s off, within 6 m and 70 deg), otherwise about; the head turns part of
+the way on top of the clip (neck 35%, head 65%), the eyes the rest with saccades; **lip-sync**: `tools/lipsync.py` turns
+every `audio/voice/<lang>/*.wav` into 30 fps curves (`Content/Dialogue/lipsync_<lang>.json`: loudness -> jaw, a low
+spectral centroid -> funnel, a high one -> smile), `ANpcTalkDirector` calls `ULyudBodyAnimInstance::SpeakLine` with
+the line; NPCs chatting without a voice (`EPersonPose::Talk`) move their mouths in syllable bursts with pauses. Rerun
+`tools/lipsync.py` after new voice lines.
 
 ## Life, words and voice
 

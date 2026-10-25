@@ -128,6 +128,9 @@ namespace LyudPeople
 		bool bSunset = false;               // only around sunset (see the sun go down)
 		bool bTalk = false;                 // looks for somebody to talk to there
 		bool bWander = false;               // a walk: goes on round the place's spots
+		float WanderNear = 15.f, WanderFar = 220.f;     // how far the next spot is (m)
+		float PauseMin = 40.f, PauseMax = 130.f;       // how long they stay at a spot (s)
+		bool bPauseSet = false;                         // wander_pause given (else the first stop is 30-90 s)
 		bool bAway = false;                 // leaves the world (town, school)
 		bool bFree = true;                  // chosen in free time (false: only by a duty: sleep, work, school)
 	};

@@ -20,6 +20,7 @@
 #include "LyudText.h"
 #include "Sky/LyudSky.h"
 #include "Components/AudioComponent.h"
+#include "People/LyudBodyAnim.h"
 #include "Sound/SoundBase.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
@@ -657,11 +658,20 @@ void ANpcTalkDirector::ShowLine()
 	if (USoundBase* Sound = LyudText::LoadVoice(Lines[LineIndex].Key))
 	{
 		Voice = UGameplayStatics::SpawnSound2D(this, Sound);
+		// the person's lips move with the line (tools/lipsync.py curves, People/LyudBodyAnim.h)
+		if (!Lines[LineIndex].bHero && People.IsValidIndex(TalkingIndex))
+		{
+			ULyudBodyAnimInstance::SpeakLine(People[TalkingIndex].Mesh.Get(), Lines[LineIndex].Key);
+		}
 	}
 }
 
 void ANpcTalkDirector::StopVoice()
 {
+	if (People.IsValidIndex(TalkingIndex))
+	{
+		ULyudBodyAnimInstance::StopLine(People[TalkingIndex].Mesh.Get());
+	}
 	if (Voice)
 	{
 		Voice->Stop();

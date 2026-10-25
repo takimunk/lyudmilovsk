@@ -1,13 +1,11 @@
 """Imports the shared human life clips (Saved/LifeAnims/life_anims.glb, made by
-blender/humans/life_anims.py) as /Game/Characters/Humans/Anims/A_Human_<Clip> on SK_Human_Skeleton.
+blender/humans/retarget_clips.py from blender/humans/clips.json) as /Game/Characters/Humans/Anims/A_Human_<Clip> on SK_Human_Skeleton.
 
   UnrealEditor <uproject> -run=pythonscript -script="<this file>" -unattended -nullrhi -nosplash
 
 One import per process (Interchange misses a second import in the same process). The glb carries a
 one-triangle proxy mesh bound to the shared skeleton; it is deleted after the import. Root motion off.
-Each clip's retarget source is SK_Guy_a (the rig they were baked on). Eye curves (eyeBlinkLeft/Right,
-morph targets of every human) are added: blinks in the awake loops, eyes closing in LieDown, shut in
-Sleep, opening in GetUp.
+Each clip's retarget source is SK_Guy_a (the body they are baked on).
 """
 import os
 
@@ -15,21 +13,23 @@ import unreal
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
-GLB = os.path.join(ROOT, "Saved", "LifeAnims", "life_anims.glb")
+# LIFE_OWNER=<Name> LIFE_GLB=Saved/LifeAnims/own_<id>.glb: a person's own clips -> /Game/Characters/Humans/<Name>/Anims/
+# A_<Name>_<Clip>, retarget source SK_<Name> (blender/humans/bake_own_clips.py + retarget_clips.py --own)
+OWNER = os.environ.get("LIFE_OWNER", "")
+GLB = os.path.join(ROOT, os.environ.get("LIFE_GLB", os.path.join("Saved", "LifeAnims", "life_anims.glb")))
 BASE = "/Game/Characters/Humans"
-DEST = BASE + "/Anims"
+DEST = BASE + ("/%s/Anims" % OWNER if OWNER else "/Anims")
+PREFIX = "A_%s_" % OWNER if OWNER else "A_Human_"
 TMP = DEST + "/_import"
 SKELETON = BASE + "/SK_Human_Skeleton"
-SOURCE_MESH = BASE + "/Guy_a/SK_Guy_a"
+SOURCE_MESH = BASE + ("/%s/SK_%s" % (OWNER, OWNER) if OWNER else "/Guy_a/SK_Guy_a")
 PIPELINE = BASE + "/Import/IP_LifeAnims"
 eal = unreal.EditorAssetLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 AL = unreal.AnimationLibrary
 
-# seconds of blinks per clip (each blink 0.16 s), or ("close", t0, t1) / ("open", t0, t1) / "shut"
-EYES = {"StandIdle": [0.9, 3.7, 6.3], "Talk": [0.5, 2.6, 4.9], "Walk": [0.3], "SitIdle": [1.4, 4.8, 8.1],
-        "Eat": [2.2, 5.1], "Read": [3.0, 7.6], "SitDown": [0.3], "StandUp": [1.9],
-        "LieDown": ("close", 2.4, 2.95), "Sleep": "shut", "GetUp": ("open", 0.05, 0.6)}
+# Blinks are no longer keyed into the clips: ULyudBodyAnimInstance blinks (and shuts the eyes in sleep) at run time.
+EYES = {}
 
 
 def log(msg):
@@ -112,7 +112,7 @@ def main():
             log("  skipping %s" % nm)
             continue
         clip = nm[nm.find("Life_") + 5:]
-        new = "%s/A_Human_%s" % (DEST, clip)
+        new = "%s/%s%s" % (DEST, PREFIX, clip)
         if eal.does_asset_exist(new):
             eal.delete_asset(new)
         eal.rename_asset(p, new)

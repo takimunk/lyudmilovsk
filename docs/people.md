@@ -44,7 +44,9 @@ be changed in `people.json` freely.
 
 Everybody here is made to the character standard (docs/characters.md, 2026-10-25): a generated model (hi3d) rigged on
 the shared skeleton, at the same paths `/Game/Characters/Humans/<Mesh>/SK_<Mesh>` as the MakeHuman cast it replaced
-(their own seated clips kept). Nao was the first. She stands where the hero first comes out of the club, at the `club_door` place.
+(their own seated clips kept). Nao was the first. She keeps the door where the hero first comes out of the club: her
+`watch_door` wanders between the `club_door` spot and the `club_forecourt` spots (`tools/people_map.py`, six standing
+spots along the alley 1.5-15 m from the door), 2.5-20 m at a time, pausing 20-70 s at each and looking about.
 
 Temper (0..1: social, active, studious, gamer, nature, sun) weighs their choices; `friends` draws them to places where
 friends are. Everybody's `sun` is there because people in this world are drawn to the sun (docs/story/motifs.md): the
@@ -65,7 +67,8 @@ eat and goes back.
 
 **Activities** (`activities.json`, one row each): `places` (place kinds, `home` = their own flat), `slots` (slot
 kinds), `pose`, `minutes`, `hours`, `ages`, `meets`, `costs`, `base`, `trait`, and flags `daylight`, `sunset`, `talk`
-(looks for somebody to talk to there), `wander` (a walk from spot to spot), `away` (leaves the world: town, school,
+(looks for somebody to talk to there), `wander` (a walk from spot to spot; `wander_m` [near, far] metres to the next
+spot, default 15-220, `wander_pause` [min, max] seconds at each, default 40-130), `away` (leaves the world: town, school,
 work), `free` (0 = only a duty). To add one, add a row; if it needs a new kind of place or seat, add it to
 `tools/people_map.py`. Reading in the library is `read_library` (the 23 seats of the reading hall).
 

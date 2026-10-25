@@ -197,9 +197,16 @@ private:
 	FName Playing;
 	float Facing = 0.f;
 	bool bPlaced = false;
-	/** Body size against the clips' 1.69 m adult (pelvis height / 91.7 cm). */
+	/** Body size against the body the shared clips are baked on (Guy_a: pelvis height / 93.7 cm). */
 	float BodyScale = 1.f;
+	/** Standing, looking and talking take turns among a few clips (a nod, folded arms) so nobody loops one gesture. */
+	FName Role;
+	float Clock = 0.f;
+	float VariantUntil = 0.f;
+	uint32 Seed = 0;
 
 	class UAnimSequence* Clip(FName Name);
 	void Play(FName Name, bool bLoop, float Rate = 1.f);
+	/** Plays one of the role's variants (the role's own clip most of the time), picking again every 6-12 s. */
+	void PlayVaried(FName InRole, std::initializer_list<FName> Variants, float Rate = 1.f);
 };

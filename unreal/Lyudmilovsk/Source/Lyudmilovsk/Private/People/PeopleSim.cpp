@@ -186,6 +186,17 @@ namespace LyudPeople
 			A.bSunset = V["sunset"].F() > 0.f;
 			A.bTalk = V["talk"].F() > 0.f;
 			A.bWander = V["wander"].F() > 0.f;
+			if (V["wander_m"].Items.size() == 2)
+			{
+				A.WanderNear = V["wander_m"].Items[0].F();
+				A.WanderFar = V["wander_m"].Items[1].F();
+			}
+			if (V["wander_pause"].Items.size() == 2)
+			{
+				A.PauseMin = V["wander_pause"].Items[0].F();
+				A.PauseMax = V["wander_pause"].Items[1].F();
+				A.bPauseSet = true;
+			}
 			A.bAway = V["away"].F() > 0.f;
 			A.bFree = V.Find("free") ? V["free"].F() > 0.f : true;
 			if (!A.Id.empty())
@@ -1529,7 +1540,7 @@ namespace LyudPeople
 		P.bIndoors = Places[Sl.Place].bIndoor;
 		P.Until = Time + P.Minutes * 60.0;
 		P.StateStart = Time;
-		P.WanderAt = Time + 30.0 + 60.0 * Rand(P.Rng);
+		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
 		Emit(EEvent::Arrive, P);
 		if (A.bAway)
 		{
@@ -1599,7 +1610,7 @@ namespace LyudPeople
 
 	void FWorld::Wander(FPerson& P)
 	{
-		// a walk: on to another spot of the same kinds within ~200 m on this side of the cable car
+		// a walk: on to another spot of the same kinds (within ~200 m, or the activity's wander_m) on this side of the cable car
 		if (Time < P.WanderAt)
 		{
 			return;
@@ -1616,7 +1627,7 @@ namespace LyudPeople
 				continue;
 			}
 			const float D = (Sl.Approach - P.Pos).Len2D();
-			if (D > 15.f && D < 220.f)
+			if (D > A.WanderNear && D < A.WanderFar)
 			{
 				Options.push_back(S);
 			}
@@ -1800,7 +1811,7 @@ namespace LyudPeople
 						{
 							P.Pose = EPose::Look;
 							P.Yaw = bSunUp && Rand(P.Rng) < 0.5f ? SunYaw : Slots[P.Slot].Yaw;
-							P.WanderAt = Time + 40.0 + 90.0 * Rand(P.Rng);
+							P.WanderAt = Time + A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng);
 						}
 						else if (P.Partner >= 0)
 						{

@@ -12,7 +12,7 @@ How (the standard, docs/characters.md):
   2. The donor's arms are posed into the generated T-pose by rotating the bones rigidly (frames and rolls kept, so every
      shared clip, which stores local rotations, moves the new body the same way) and that pose becomes the rest pose.
   3. The donor (bones and body) is fitted to the model: uniform scale to the height, then the arm chains stretched along
-     X to the model's arm span, the legs' stance matched.
+     X to the model's arm span; knees and ankles moved into the middle of the model's legs (fit_legs).
   4. The model is cleaned (one mesh, feet on the floor at the origin, facing -Y) and decimated to the face budget, then
      takes the donor's weights (nearest surface). Cloth far from the body below the hips (a skirt) is blended toward
      the pelvis so it doesn't split between the legs.
@@ -28,6 +28,7 @@ import numpy as np
 from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 ARM_CHAINS = {s: ["upperarm_" + s, "lowerarm_" + s, "hand_" + s] for s in ("l", "r")}
 
@@ -286,6 +287,64 @@ def fit_donor(arm, body, target):
         log("arm %s: span %.3f -> %.3f (x%.3f), height %+.3f" % (side, src["span_" + side], target["span_" + side], k, dz))
 
 
+def leg_centre(co, z, sign, h):
+    """The middle of one leg's cross-section at height z (bounding box centre, x, y), or None where it isn't a
+    clean leg (a skirt or a coat joins both legs there)."""
+    s = co[(np.abs(co[:, 2] - z) < 0.012) & (co[:, 0] * sign > 0.012)]
+    if len(s) < 12:
+        return None
+    w = s[:, 0].max() - s[:, 0].min()
+    if w > 0.13 * h or s[:, 0].min() * sign < 0.0:
+        return None
+    return np.array([(s[:, 0].max() + s[:, 0].min()) / 2, (s[:, 1].max() + s[:, 1].min()) / 2])
+
+
+def centre_body(arm, body, mco):
+    """The generated model is centred on its bounding box (hair, a bag, the arms' T), the donor on its own feet: shift
+    the donor so its hips' cross-section has the same middle as the model's (front/back and sideways)."""
+    z = bone_points(arm)["thigh_l"][0].z + 0.03
+    dco = world_co(body)
+    ms, ds = (c[np.abs(c[:, 2] - z) < 0.015] for c in (mco, dco))
+    ms = ms[np.abs(ms[:, 0]) < 0.3]
+    d = np.array([(ms[:, i].max() + ms[:, i].min() - ds[:, i].max() - ds[:, i].min()) / 2 for i in (0, 1)] + [0.0])
+    warp_donor(arm, body, lambda p: p + d)
+    log("body centred on the model's hips: %+.3f %+.3f m" % (d[0], d[1]))
+
+
+def fit_legs(arm, body, mco, h):
+    """Moves the donor's knees and ankles into the middle of the model's legs (the generated stance is wider than
+    the MakeHuman donor's): rotations then swing the model's legs about their own joints, so they don't cross.
+    The hip joint stays; below it each leg is shifted sideways and front/back, growing to the knee's and the ankle's
+    offsets, faded out toward the body's midline."""
+    pts = bone_points(arm)
+    dco = world_co(body)
+    for side, sign in (("l", 1), ("r", -1)):
+        hip, knee, ankle = (pts[b + "_" + side][0].z for b in ("thigh", "calf", "foot"))
+        off = {}
+        for nm, z in (("knee", knee), ("ankle", ankle + 0.02)):
+            m, d = leg_centre(mco, z, sign, h), leg_centre(dco, z, sign, h)
+            off[nm] = None if m is None or d is None else m - d
+        if off["ankle"] is None:
+            log("legs %s: no clean ankle section, kept" % side)
+            continue
+        if off["knee"] is None:                                  # under a skirt: halfway, as a straight leg would be
+            off["knee"] = off["ankle"] * (hip - knee) / (hip - ankle)
+        dk, da = off["knee"], off["ankle"]
+
+        def f(p, hip=hip, knee=knee, ankle=ankle, dk=dk, da=da, sign=sign):
+            q = p.copy()
+            z = q[:, 2]
+            t_k = np.clip((hip - z) / (hip - knee), 0, 1)
+            t_a = np.clip((knee - z) / (knee - ankle), 0, 1)
+            d = dk[None, :] * t_k[:, None] + (da - dk)[None, :] * t_a[:, None]
+            fade = np.clip(q[:, 0] * sign / 0.05, 0, 1) * (z < hip)
+            q[:, 0] += d[:, 0] * fade
+            q[:, 1] += d[:, 1] * fade
+            return q
+        warp_donor(arm, body, f)
+        log("legs %s: knee %+.3f %+.3f, ankle %+.3f %+.3f m" % (side, dk[0], dk[1], da[0], da[1]))
+
+
 # ---------------------------------------------------------------------------------------------- weights
 
 def transfer_weights(model, body, arm, skirt):
@@ -303,6 +362,8 @@ def transfer_weights(model, body, arm, skirt):
     bpy.ops.object.modifier_apply(modifier=mod.name)
     if skirt:
         relax_skirt(model, body, arm, skirt)
+    relax_hem(model, body, arm)
+    smooth_shoulders(model, arm)
     lock_head(model, arm)
     bpy.ops.object.vertex_group_limit_total(group_select_mode="ALL", limit=4)
     bpy.ops.object.vertex_group_normalize_all(group_select_mode="ALL", lock_active=False)
@@ -341,6 +402,66 @@ def lock_head(model, arm):
                 model.vertex_groups[k].remove([v.index])
         n += 1
     log("head locked: %d vertices follow the head bone" % n)
+
+
+def smooth_shoulders(model, arm, radius=0.13):
+    """Arms come down 60-80 degrees from the T-pose in every clip; the donor's shoulder weights, copied onto a thicker
+    clothed shell, pinch it into a ridge there. Smoothing the weights round each shoulder joint spreads the turn over
+    the deltoid and the shirt's yoke."""
+    pts = bone_points(arm)
+    co = world_co(model)
+    sel = np.zeros(len(co), bool)
+    for s in "lr":
+        sel |= np.linalg.norm(co - np.array(pts["upperarm_" + s][0]), axis=1) < radius
+    model.data.vertices.foreach_set("select", sel)
+    bpy.context.view_layer.objects.active = model
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_mode(type="VERT")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    model.data.vertices.foreach_set("select", sel)
+    bpy.ops.object.mode_set(mode="WEIGHT_PAINT")
+    model.data.use_paint_mask_vertex = True
+    bpy.ops.object.vertex_group_smooth(group_select_mode="ALL", factor=0.5, repeat=6, expand=0.0)
+    model.data.use_paint_mask_vertex = False
+    bpy.ops.object.mode_set(mode="OBJECT")
+    log("shoulders: weights of %d vertices smoothed" % int(sel.sum()))
+
+
+def relax_hem(model, body, arm, gap=0.015, blend=0.04):
+    """Loose cloth round the hips (a shirt's or a jacket's hem standing off the body) follows the pelvis, not the
+    thighs: nearest-surface weights gave the hem the buttocks' thigh share, so sitting dragged the shirt's back out
+    like a bag. Only cloth farther than `gap` from the donor's skin, from 12 cm under the hip joints up."""
+    from mathutils.bvhtree import BVHTree
+    dg = bpy.context.evaluated_depsgraph_get()
+    tree = BVHTree.FromObject(body, dg)
+    co = world_co(model)
+    hip = bone_points(arm)["thigh_l"][0].z
+    names = [g.name for g in model.vertex_groups]
+    legs = [n for n in names if n.split("_")[0] in ("thigh", "calf", "foot", "ball")]
+    n = 0
+    for v, p in zip(model.data.vertices, co):
+        if not (hip - 0.12 < p[2] < hip + 0.2):
+            continue
+        w = {names[g.group]: g.weight for g in v.groups}
+        leg = sum(w.get(k, 0) for k in legs)
+        if leg <= 0:
+            continue
+        hit = tree.find_nearest(Vector(p))
+        if hit[0] is None:
+            continue
+        t = min(1.0, max(0.0, (hit[3] - gap) / blend))
+        if t <= 0:
+            continue
+        for k in legs:
+            if k in w:
+                x = w[k] * (1 - t)
+                if x > 1e-4:
+                    model.vertex_groups[k].add([v.index], x, "REPLACE")
+                else:
+                    model.vertex_groups[k].remove([v.index])
+        model.vertex_groups["pelvis"].add([v.index], w.get("pelvis", 0) + leg * t, "REPLACE")
+        n += 1
+    log("hem: %d loose cloth vertices moved from the thighs to the pelvis" % n)
 
 
 def relax_skirt(model, body, arm, skirt):
@@ -397,7 +518,7 @@ def finish(model, arm, cid):
     model.select_set(True)
     bpy.context.view_layer.objects.active = arm
     bpy.ops.export_scene.gltf(filepath=out, use_selection=True, export_format="GLB", export_skins=True,
-                              export_morph=False, export_animations=False, export_def_bones=False, export_yup=True,
+                              export_morph=True, export_morph_normal=True, export_animations=False, export_def_bones=False, export_yup=True,
                               export_apply=False, export_image_format="AUTO", export_jpeg_quality=90)
     log("wrote %s (%d verts, %d faces, %d groups)" % (os.path.relpath(out, ROOT), len(model.data.vertices),
                                                         len(model.data.polygons), len(model.vertex_groups)))
@@ -475,7 +596,12 @@ def main():
     BODY_NAME = body.name
     t_pose(arm, body)
     fit_donor(arm, body, target)
+    centre_body(arm, body, world_co(model))
+    fit_legs(arm, body, world_co(model), target["height"])
     transfer_weights(model, body, arm, spec.get("skirt"))
+    if spec.get("face", {}).get("rig", True):
+        import face_rig
+        face_rig.build(model, arm, cid, spec)
     if "--preview" in argv:
         body.hide_render = True
         preview(model, arm, cid)
