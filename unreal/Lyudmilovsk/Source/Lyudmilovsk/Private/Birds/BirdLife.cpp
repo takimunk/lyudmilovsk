@@ -253,15 +253,16 @@ void UBirdLifeSubsystem::AddDoorFlock()
 	{
 		return;
 	}
-	// the lawn left of the slab path, ~14 m out of the door (map X +6, Y +13.6; the portal face at Unreal Y 790)
-	FVector At(407.0, 2150.0, 0.0);
+	// on the slab path ~14 m out of the door, where they show against the pale concrete (the grass beside it hides
+	// them); map X -1.93, Y +13.6, the portal face at Unreal Y 790
+	FVector At(-193.0, 2150.0, 0.0);
 	FHitResult Hit;
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdDoorFlock), false);
 	if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 3000.0), At - FVector(0.0, 0.0, 3000.0), ECC_Visibility, Q))
 	{
 		At = Hit.ImpactPoint;
 	}
-	const int32 First = Sim->AddFlock(Sp, FromUE(At), Count, 2.f);
+	const int32 First = Sim->AddFlock(Sp, FromUE(At), Count, 1.1f);
 	UE_LOG(LogTemp, Display, TEXT("BirdLife: %d pigeons by the club's door (ids %d..%d) at %s"), Count, First, First + Count - 1, *At.ToString());
 }
 

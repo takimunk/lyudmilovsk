@@ -379,8 +379,8 @@ namespace
 			F.Opt.PopulationScale = 0.f;
 			F.Opt.bPredators = false;
 			F.Populate();
-			const V3 Lawn(4.07f, 21.5f, F.GroundZ(4.07f, 21.5f));
-			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 2.f);
+			const V3 Lawn(-1.93f, 21.5f, F.GroundZ(-1.93f, 21.5f));
+			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 1.1f);
 			F.Camera = Lawn;
 			for (int K = 0; K < 600 * 60 / 10; K++)
 			{
@@ -389,7 +389,7 @@ namespace
 			}
 			// someone standing at the door looking at them, then walking out along the path past them
 			F.Player.bPresent = true;
-			F.Player.Feet = V3(-1.93f, 11.5f + 3.f, 0.f);
+			F.Player.Feet = V3(-1.93f - 2.5f, 11.5f + 3.f, 0.f);
 			F.Player.Eye = F.Player.Feet + V3(0.f, 0.f, 1.65f);
 			F.Player.Facing = (Lawn - F.Player.Eye).Norm();
 			int Fled = 0;
@@ -412,7 +412,7 @@ namespace
 				}
 				F.Events.clear();
 			}
-			std::printf("door pigeons: %d flushes while someone stood at the door 10 s and walked past on the path (6 m off)\n", Fled);
+			std::printf("door pigeons: %d flushes while someone stood at the door 10 s and walked past them on the grass 2.5 m off the path\n", Fled);
 			Check(R, Fled == 0, "the door pigeons let you walk past on the path");
 			F.Player.bPresent = false;
 			float Far = 0.f;

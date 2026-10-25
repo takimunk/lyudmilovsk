@@ -104,12 +104,12 @@ def s_start(w):
 def s_door_flock(w):
     # the pigeons that always feed on the lawn just out of the club's door
     near = []
-    for i in birds(w).find_birds_near(unreal.Vector(407.0, 2150.0, 0.0), 800.0):
+    for i in birds(w).find_birds_near(unreal.Vector(-193.0, 2150.0, 0.0), 800.0):
         b = bird(w, i)
         if b and str(b.species_id) == "FeralPigeon":
             near.append("%d:%s" % (i, str(b.activity).split(".")[-1].split(":")[0]))
     log("door flock: %d pigeons within 8 m of the lawn: %s" % (len(near), " ".join(near)))
-    place(w, (-193.0, 1300.0, 190.0), -12, 75)
+    place(w, (-193.0, 1350.0, 190.0), -14, 90)
     st["eye"] = None
 
 
