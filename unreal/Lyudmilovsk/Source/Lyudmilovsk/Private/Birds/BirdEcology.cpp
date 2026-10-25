@@ -97,7 +97,7 @@ namespace LyudBirds
 			{ "Fieldfare",    0.26f, 0.1f,  60, 10, 40, 1000, "Meadow 1, Garden .6, Broadleaf .5",           "Broadleaf 1, Conifer .5",                     "Conifer 1",              false, EFlight::Flap,      11.f, 12.f, true,  1.0f, 22.f, 70.f, 0.15f,0.2f, 38, false, true,  false, 0.5f, -10.f, -10.f,0.3f, 5.f,  1.f,  0x7a5a40, false },
 			{ "Blackbird",    0.25f, 0.1f,  30, 1, 2,   250,  "Garden 1, ForestFloor 1, Meadow .3",          "Garden 1, Broadleaf .8, Roof .4",             "Conifer 1, Garden 1",    false, EFlight::Flap,       9.f,  6.f, true,  1.2f, 10.f, 50.f, 0.4f, 0.4f, 35, false, true,  false, 0.5f, -40.f, 15.f, 0.3f, 0.7f, 3.f,  0x101010, false },
 			{ "Robin",        0.14f, 0.018f,24, 1, 1,   120,  "ForestFloor 1, Garden 1",                     "Broadleaf 1, Garden 1, Conifer .6",           "Broadleaf 1, Conifer 1", false, EFlight::Flap,       8.f,  4.f, true,  0.8f,  4.f, 30.f, 1.0f, 1.0f, 20, false, true,  false, 0.8f, -45.f, 20.f, 0.3f, 1.5f, 4.f,  0xc0703a, false },
-			{ "CommonSwift",  0.17f, 0.04f, 40, 5, 20,  1600, "Street 1, Meadow 1, Sea .6, Cliff .5",        "Tower 1, Cliff .6",                           "Tower 1, Cliff 1, Roof .4", false, EFlight::Aerial, 18.f, 30.f, false, 0.f,  10.f, 80.f, 0.f,  0.f,  30, false, false, false, 0.3f, 10.f,  -15.f,0.f,  5.f,  0.f,  0x2a2622, true  },
+			{ "CommonSwift",  0.17f, 0.04f, 40, 5, 20,  1600, "Street 1, Meadow 1, Sea .6, Cliff .5",        "Tower 1, Cliff .6",                           "Tower 1, Cliff 1",          false, EFlight::Aerial, 18.f, 30.f, false, 0.f,  10.f, 80.f, 0.f,  0.f,  30, false, false, false, 0.3f, 10.f,  -15.f,0.f,  5.f,  0.f,  0x2a2622, true  },
 			{ "BarnSwallow",  0.18f, 0.02f, 40, 4, 20,  1200, "Meadow 1, Reed 1, Sea .6, Beach .5",          "Wire 1, Roof .6",                             "Reed 1",                 true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 50.f, 0.2f, 0.3f, 25, false, true,  false, 0.4f, 0.f,   -10.f,0.f,  6.f,  2.f,  0x1a2440, true  },
 			{ "SandMartin",   0.12f, 0.014f,40, 10, 30, 1200, "Sea 1, Beach 1, Reed .8, Meadow .4",          "Wire 1, Cliff 1",                             "Cliff 1, Reed .6",       true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 40.f, 0.1f, 0.2f, 15, false, true,  false, 0.5f, 0.f,   -10.f,0.f,  6.f,  0.f,  0x8a7a66, true  },
 			{ "Sparrowhawk",  0.33f, 0.2f,   2, 1, 1,   1400, "Garden 1, Street .6, Broadleaf .5, Meadow .3","Conifer 1, Broadleaf 1",                      "Conifer 1",              false, EFlight::FlapGlide, 12.f, 14.f, false, 0.6f, 35.f, 150.f,0.f,  0.1f, 90, false, false, true,  0.f,  0.f,   -10.f,0.4f, 0.1f, 0.f,  0x6a6660, false },
@@ -127,6 +127,7 @@ namespace LyudBirds
 				S.FlightClearance = D.Clearance;
 				S.HawkAlt = D.Id == std::string("CommonSwift") ? 35.f : 4.f;
 				S.bHops = D.bHops;
+				S.bClings = S.Id == "CommonSwift";
 				S.Gait = D.Gait;
 				S.FleeDistance = D.FleeDistance;
 				S.SightRange = D.SightRange;

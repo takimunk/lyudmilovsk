@@ -257,6 +257,18 @@ namespace LyudBirds
 		{
 			W *= 0.02f;
 		}
+		// a single point (the spire's tip) holds a bird or two, and never a swift (it needs a wall)
+		if ((Site.B - Site.A).Len() < 0.01f && Site.Radius <= 0.f)
+		{
+			if (S.bClings)
+			{
+				return 0.f;
+			}
+			if (Site.Occupants + Size > 2)
+			{
+				W *= 0.05f;
+			}
+		}
 		return W;
 	}
 
@@ -404,7 +416,8 @@ namespace LyudBirds
 				float BestW = 0.f;
 				for (int I = 0; I < (int)Sites.size(); I++)
 				{
-					const float W = S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
+					const bool bPoint = (Sites[I].B - Sites[I].A).Len() < 0.01f && Sites[I].Radius <= 0.f;
+					const float W = bPoint ? 0.f : S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
 					if (W > BestW)
 					{
 						BestW = W;
@@ -423,7 +436,9 @@ namespace LyudBirds
 				float BestW = 0.f;
 				for (int I = 0; I < (int)Sites.size(); I++)
 				{
-					const float W = S.Roost[(int)Sites[I].Kind] / (1.f + (Sites[I].Center() - G.Home).Len2D() / 150.f) * (0.7f + 0.6f * Rand(R));
+					const bool bPoint = (Sites[I].B - Sites[I].A).Len() < 0.01f && Sites[I].Radius <= 0.f;
+					const float W = bPoint && (S.bClings || G.Members.size() > 2) ? 0.f
+						: S.Roost[(int)Sites[I].Kind] / (1.f + (Sites[I].Center() - G.Home).Len2D() / 150.f) * (0.7f + 0.6f * Rand(R));
 					if (W > BestW)
 					{
 						BestW = W;
@@ -706,6 +721,29 @@ namespace LyudBirds
 		B.bLook = false;
 	}
 
+	/** A swift on a wall: just below the ledge or on the cliff face, body against the side where the wall rises, facing it. */
+	void FWorld::Cling(FBird& B, const FSite& Site)
+	{
+		V3 Along = (Site.B - Site.A).Flat();
+		if (Along.Len2D() < 0.1f)
+		{
+			Along = V3(1.f, 0.f, 0.f);
+		}
+		Along = Along.Norm();
+		V3 N(-Along.Y, Along.X, 0.f);
+		const V3 P = B.Spot;
+		if (TopZ(P.X - N.X * 4.f, P.Y - N.Y * 4.f) > TopZ(P.X + N.X * 4.f, P.Y + N.Y * 4.f))
+		{
+			N = N * -1.f;          // N points at the wall
+		}
+		if (Site.Kind == EHabitat::Tower || Site.Kind == EHabitat::Roof)
+		{
+			B.Spot = P - N * 0.12f - V3(0.f, 0.f, 0.8f);   // under the ledge, on the outside of the wall
+		}
+		B.Pos = B.Spot;
+		B.Yaw = std::atan2(N.Y, N.X);
+	}
+
 	/** Arrived on a site: what it does there. */
 	void FWorld::Settle(FBird& B)
 	{
@@ -713,6 +751,10 @@ namespace LyudBirds
 		B.Vel = V3();
 		B.Pos = B.Spot;
 		B.Target = -1;
+		if (S.bClings && B.Site >= 0 && !IsGroundHabitat(Sites[B.Site].Kind))
+		{
+			Cling(B, Sites[B.Site]);
+		}
 		if (B.Site < 0)
 		{
 			SetAct(B, EAct::Perch, 3.f);

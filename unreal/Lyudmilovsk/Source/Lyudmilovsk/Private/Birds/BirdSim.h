@@ -94,6 +94,7 @@ namespace LyudBirds
 		float FlightClearance = 12.f;    // m over the tallest thing under it
 		float HawkAlt = 15.f;            // aerial feeders: height over the ground they hunt at
 		bool bHops = true;               // hops (sparrow) or walks (pigeon, gull)
+		bool bClings = false;            // swifts: never perch, cling to walls, eaves and the cliff face
 		float Gait = 0.6f;               // m/s on the ground
 		// the player
 		float FleeDistance = 10.f;       // m: flushes when a person walks at it closer than this
@@ -321,6 +322,7 @@ namespace LyudBirds
 		void SetAct(FBird& B, EAct A, float Len);
 		void Flush(FBird& B, const V3& From, int Cause);
 		void Settle(FBird& B);
+		void Cling(FBird& B, const FSite& Site);
 		void Emit(EEvent E, const FBird& B) { Events.push_back({ E, B.Id, B.Pos }); }
 		void Alarm(const FBird& From, float Radius, float Strength);
 		float Rand(uint32_t& S) const;
