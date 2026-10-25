@@ -50,6 +50,10 @@ materials' own wind, and NPC lines that read `lyud.Overcast` (weather beyond win
   `LandSideX`.
 - **Mesh**: rings round the camera built in code, ~26 k vertices (desktop) / 6.5 k (phone), fine near the eye and
   coarse to 30 km.
+- **Swimming**: in play a water `APhysicsVolume` covers the sea (from `LandSideX` out, 30 m under sea level up to
+  it; its brush is a box body built at runtime), so a character that falls in goes to `MOVE_Swimming` (checked
+  offscreen: dropped in the shallows it swims, on the beach it walks). `IsSwimmable(Location)` asks the same of a
+  point; `SampleSurface` gives the wavy surface to float at. The hero's own swim tuning lives with the hero.
 - **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour and dims it with depth.
 - **Buoyancy**: `ULyudBuoyancyComponent` on a simulating body (points, volume, drag). `lyud.Sea.SpawnFloat` drops
   a 1 m crate on the water to watch it ride.
