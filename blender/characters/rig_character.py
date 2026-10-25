@@ -303,11 +303,44 @@ def transfer_weights(model, body, arm, skirt):
     bpy.ops.object.modifier_apply(modifier=mod.name)
     if skirt:
         relax_skirt(model, body, arm, skirt)
+    lock_head(model, arm)
     bpy.ops.object.vertex_group_limit_total(group_select_mode="ALL", limit=4)
     bpy.ops.object.vertex_group_normalize_all(group_select_mode="ALL", lock_active=False)
     model.parent = arm
     md = model.modifiers.new("Armature", "ARMATURE")
     md.object = arm
+
+
+def lock_head(model, arm):
+    """The generated head is one shell (hair, bangs, face): it must turn with the head bone as a whole. Nearest-surface
+    weights give the bangs and the bob some neck/spine (from the donor's own hair) and the eyelids the donor's eye bones,
+    so a nod slid the bangs down over the eyes. Above the jaw everything goes to `head` (eyes merged in), with a 6 cm
+    blend down to the neck."""
+    pts = bone_points(arm)
+    top = pts["head"][0].z                      # the head joint (skull base)
+    names = [g.name for g in model.vertex_groups]
+    head = model.vertex_groups["head"]
+    co = world_co(model)
+    n = 0
+    for v, p in zip(model.data.vertices, co):
+        t = min(1.0, max(0.0, (p[2] - (top - 0.06)) / 0.06))
+        w = {names[g.group]: g.weight for g in v.groups}
+        eyes = w.pop("eye_l", 0.0) + w.pop("eye_r", 0.0)
+        if t <= 0 and not eyes:
+            continue
+        keep = 1.0 - t
+        new = {k: x * keep for k, x in w.items()}
+        new["head"] = new.get("head", 0.0) + eyes * keep + t * (sum(w.values()) + eyes)
+        for k in ("eye_l", "eye_r"):
+            if k in model.vertex_groups:
+                model.vertex_groups[k].remove([v.index])
+        for k, x in new.items():
+            if x > 1e-4:
+                model.vertex_groups[k].add([v.index], x, "REPLACE")
+            elif k in w:
+                model.vertex_groups[k].remove([v.index])
+        n += 1
+    log("head locked: %d vertices follow the head bone" % n)
 
 
 def relax_skirt(model, body, arm, skirt):
@@ -419,6 +452,7 @@ def preview(model, arm, cid):
     turn("thigh_r", 12, "X")
     turn("spine_02", 8, "Z")
     turn("head", -15, "Z")
+    turn("head", 20, "X")                # a nod: the bangs must stay on the forehead
     shot("posed", 30)
     shot("posed_side", 90)
 
