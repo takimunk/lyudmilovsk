@@ -948,7 +948,7 @@ namespace LyudAnimals
 				C.Bold = 0.7f;
 				C.Friendly = 0.9f;
 				C.Social = 0.4f;
-				C.Hunter = 0.8f;
+				C.Hunter = 0.35f;              // the door's pigeons are for the player's feed: it stalks them only now and then
 				C.Playfulness = 0.4f;
 				C.Lively = 0.7f;
 			}
