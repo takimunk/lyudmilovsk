@@ -638,7 +638,7 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 	{
 		return;
 	}
-	TArray<TObjectPtr<USoundBase>>* Found = Sounds.Find(R->Id);
+	TArray<USoundBase*>* Found = Sounds.Find(R->Id);
 	if (!Found)
 	{
 		Found = &Sounds.Add(R->Id);
@@ -648,6 +648,7 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 			if (USoundBase* Sound = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
 			{
 				Found->Add(Sound);
+				SoundRefs.Add(Sound);      // or the garbage collector unloads it under us
 			}
 		}
 	}

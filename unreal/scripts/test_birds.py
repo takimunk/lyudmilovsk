@@ -120,6 +120,17 @@ def s_door_shot(w):
 
 
 @step
+def s_gc(w):
+    # a garbage collection with birds calling: everything the bird life plays must survive it
+    cmd(w, "obj gc")
+    log("gc after %d s of play" % int(st["t"]))
+
+
+step(lambda w: cmd(w, "obj gc"), 20.0)
+step(lambda w: log("still running after two collections: " + birds(w).report()[:120]), 1.0)
+
+
+@step
 def s_quick_quit(w):
     if os.environ.get("BIRDTEST_QUICK"):
         log("done")
