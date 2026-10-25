@@ -677,7 +677,8 @@ namespace LyudAnimals
 				(bAcadem ? Academ : Town).push_back(I);
 			}
 		}
-		const int NCats = std::max(0, (int)std::lround(Opt.Cats * Opt.PopulationScale));
+		// with the town's houses gone only the Academgorodok's stairs are left: a colony of ~20 there
+		const int NCats = std::max(0, (int)std::lround((Town.empty() ? std::min(Opt.Cats, 22) : Opt.Cats) * Opt.PopulationScale));
 		std::vector<int> CatHomes;
 		// coats: 0 tabby, 1 ginger, 2 black, 3 black-and-white, 4 grey, 5 tortoiseshell (females), 6 white-and-tabby
 		static const float CoatW[7] = { 0.26f, 0.13f, 0.14f, 0.15f, 0.09f, 0.11f, 0.12f };
@@ -701,7 +702,7 @@ namespace LyudAnimals
 		};
 		for (int C = 0; C < NCats; C++)
 		{
-			const bool bAcadem = C < NCats * 0.36f;
+			const bool bAcadem = Town.empty() || C < NCats * 0.36f;
 			int Home = -1;
 			for (int Try = 0; Try < 30; Try++)
 			{
@@ -719,12 +720,12 @@ namespace LyudAnimals
 					{
 						Crowd++;
 					}
-					if (D < 6.f && Places[H].Kind == EPlace::Doorstep)
+					if (D < 6.f && Places[H].Kind == EPlace::Doorstep && !Town.empty())
 					{
 						bFree = false;
 					}
 				}
-				if (bFree && Crowd < (Places[H].Kind == EPlace::Doorstep ? 2 : 4))
+				if (bFree && Crowd < (Places[H].Kind == EPlace::Doorstep ? (Town.empty() ? 3 : 2) : 4))
 				{
 					Home = H;
 					break;
@@ -806,7 +807,7 @@ namespace LyudAnimals
 				if (P.Tag == "academ" && P.Kind == EPlace::Doorstep) { AcademC += P.Pos; NA++; }
 				if (P.Kind == EPlace::Square && P.Tag == "town") { TownC += P.Pos; NT++; }
 				if (P.Kind == EPlace::Beach) { BeachC += P.Pos; NB++; }
-				if (P.Kind == EPlace::Doorstep && P.Pos.Y > MaxY) { MaxY = P.Pos.Y; NorthC = P.Pos; }
+				if ((P.Kind == EPlace::Doorstep || (Town.empty() && P.Kind == EPlace::Den)) && P.Pos.Y > MaxY) { MaxY = P.Pos.Y; NorthC = P.Pos; }
 			}
 			AcademC = NA ? AcademC * (1.f / NA) : V3();
 			TownC = NT ? TownC * (1.f / NT) : V3();
@@ -969,7 +970,7 @@ namespace LyudAnimals
 				}
 				else if (IsCat(A) != IsCat(B))
 				{
-					F = std::max(F, Clamp01(0.85f - D / 300.f) * (0.5f + 0.5f * Rand(R)));
+					F = std::max(F, Clamp01(0.9f - D / 650.f) * (0.55f + 0.45f * Rand(R)));   // one small town: they know each other
 				}
 				else
 				{
@@ -1971,7 +1972,7 @@ namespace LyudAnimals
 					&& !(O.Act == EAct::Sleep && (GroundAt(O.Pos.X, O.Pos.Y) == EGround::Yard) && D > 5.f))
 				{
 					const float Drive = A.Hunter * (1.f - F) * (0.4f + A.Excite) * (O.Act == EAct::Flee || O.Speed > 2.f ? 2.f : 1.f);
-					if (Rand(A.Rng) < Dt * Drive * 0.07f)
+					if (Rand(A.Rng) < Dt * Drive * 0.035f)
 					{
 						StartChase(A, I);
 						bTook = true;
@@ -2083,6 +2084,15 @@ namespace LyudAnimals
 				if (A.Act == EAct::Flee)
 				{
 					return false;
+				}
+				if (Chaser < 0)
+				{
+					// a strange dog only coming its way: it walks off out of its road (and keeps an eye on it)
+					if (A.Act != EAct::Walk || A.Goal != EGoal::Roam)
+					{
+						GiveWay(A, Dg.Pos);
+					}
+					return true;
 				}
 				StartFlee(A, Dg.Pos, From);
 				return true;
@@ -2211,7 +2221,15 @@ namespace LyudAnimals
 		{
 			// up the tree until the dog is gone (and a while more), then down
 			bool bDog = false;
-			ForNear(A.Pos, 15.f, [&](int I) { if (IsDog(Animals[I]) && Fam(A.Id, I) < 0.5f) bDog = true; });
+			// a strange dog right under the tree, or one still barking at it
+			ForNear(A.Pos, 15.f, [&](int I)
+			{
+				const FAnimal& D = Animals[I];
+				if (IsDog(D) && Fam(A.Id, I) < 0.5f && ((D.Pos - A.Pos).Len2D() < 7.f || (D.Act == EAct::Bark && D.Target == A.Id)))
+				{
+					bDog = true;
+				}
+			});
 			if (bDog)
 			{
 				A.ActTime = std::min(A.ActTime, 0.f);

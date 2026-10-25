@@ -59,6 +59,10 @@ static int Day(int Argc, char** Argv)
 		}
 	}
 	std::printf("%d animals, %d packs, %d places\n", (int)W.Animals.size(), (int)W.Packs.size(), (int)W.Places.size());
+	for (const FPack& P : W.Packs)
+	{
+		std::printf("  pack of %d at (%.0f %.0f) %s\n", (int)P.Members.size(), P.Home.X, P.Home.Y, W.Places[P.Den].Tag.c_str());
+	}
 	FILE* F = std::fopen("Saved/AnimalSim/day.csv", "w");
 	std::fprintf(F, "hour,id,kind,act,goal,x,y\n");
 	float Hour = Start;
@@ -167,6 +171,10 @@ static void TestChaseAndTree()
 	Run(W, 400.f, 0.05f, H, [&](float T)
 	{
 		if (getenv("ANIM_DEBUG") && std::fmod(T, 2.f) < 0.05f) std::printf("    %.1f %s | %s\n", T, W.Describe(Cat).c_str(), W.Describe(Dog).c_str());
+		if (!bChase)
+		{
+			W.Animals[Dog].Excite = 1.f;      // a dog in the mood for it, until it goes
+		}
 		const FAnimal& C = W.Animals[Cat];
 		const FAnimal& D = W.Animals[Dog];
 		bChase |= D.Act == EAct::Chase && D.Target == Cat;
@@ -377,9 +385,9 @@ static void TestMap()
 			Academ++;
 		}
 	}
-	CHECK(Cats >= 35 && Dogs >= 15, "%d cats and %d dogs (%d packs)", Cats, Dogs, (int)W.Packs.size());
+	CHECK(Cats >= 18 && Dogs >= 15, "%d cats and %d dogs (%d packs)", Cats, Dogs, (int)W.Packs.size());
 	CHECK(OnGround == (int)W.Animals.size(), "%d of %d on walkable ground", OnGround, (int)W.Animals.size());
-	CHECK(Academ >= Cats / 4, "%d cats live at the Academgorodok", Academ);
+	CHECK(Academ >= Cats / 3, "%d cats live at the Academgorodok", Academ);
 	{
 		V3 Door;
 		for (const FPlace& P : W.Places)
