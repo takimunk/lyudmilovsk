@@ -19,6 +19,8 @@ enum class ELyudItemKind : uint8
 	Misc,
 	Drink,
 	Food,
+	/** Carried in the hand (Tab: "Взять в руку"): bird feed. One unit is one handful. */
+	Feed,
 };
 
 /** One kind of item (the table is in LyudInventory.cpp): its icon (/Game/Inventory/Localized/<lang>/T_Icon_<Id>) and what it leaves behind. The words are in the string tables (item.<Id>.name / .desc). */
@@ -57,6 +59,10 @@ public:
 	UPROPERTY(SaveGame)
 	int32 Rubles = 100;
 
+	/** The item in the hero's hand (none: the hand is free). It goes when the last one is used up. */
+	UPROPERTY(SaveGame)
+	FName Equipped;
+
 	/** The item table; null for an unknown id. */
 	static const FLyudItemDef* FindDef(FName Id);
 	static FText ItemName(FName Id);
@@ -67,6 +73,10 @@ public:
 	bool Remove(FName Id, int32 Count = 1);
 	int32 Count(FName Id) const;
 	bool Spend(int32 Amount);
+	/** Put the item in the hand (it must be held); NAME_None empties the hand. */
+	void Equip(FName Id);
+	/** The item in the hand and how many of it are left (none when the hand is free). */
+	FName EquippedItem() const { return Count(Equipped) > 0 ? Equipped : FName(); }
 	void Earn(int32 Amount);
 
 	/** A new game: the pocket as it starts. */

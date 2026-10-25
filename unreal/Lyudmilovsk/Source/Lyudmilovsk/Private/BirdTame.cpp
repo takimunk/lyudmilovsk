@@ -1,0 +1,920 @@
+#include "BirdTame.h"
+
+#include "BirdFeedItem.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Containers/Ticker.h"
+#include "Engine/Engine.h"
+#include "Engine/GameViewportClient.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "HAL/IConsoleManager.h"
+#include "HeroCharacter.h"
+#include "HeroReachComponent.h"
+#include "InputCoreTypes.h"
+#include "Kismet/GameplayStatics.h"
+#include "LyudGameMenu.h"
+#include "LyudInventory.h"
+#include "LyudText.h"
+#include "StarlingMurmuration.h"
+#include "Styling/CoreStyle.h"
+#include "Widgets/Images/SImage.h"
+#include "Widgets/Notifications/SProgressBar.h"
+#include "Widgets/Layout/SBorder.h"
+#include "Widgets/Layout/SBox.h"
+#include "Widgets/SBoxPanel.h"
+#include "Widgets/SCompoundWidget.h"
+#include "Widgets/Text/STextBlock.h"
+
+// the wild birds (bird-life thread) and playing as a bird (bird-flight thread): wired in when their code is in the build
+#if __has_include("Birds/BirdLife.h")
+#include "Birds/BirdLife.h"
+#define LYUD_HAS_BIRDLIFE 1
+#else
+#define LYUD_HAS_BIRDLIFE 0
+#endif
+#if __has_include("Birds/BirdFlightSubsystem.h")
+#include "Birds/BirdFlightSubsystem.h"
+#define LYUD_HAS_BIRDFLIGHT 1
+#else
+#define LYUD_HAS_BIRDFLIGHT 0
+#endif
+
+const FName UBirdTameSubsystem::FeedId(TEXT("bird_feed"));
+
+namespace
+{
+	TAutoConsoleVariable<int32> CVarTame(TEXT("lyud.Tame"), 1,
+		TEXT("Befriending birds with feed (hold out the hand, crouch). 0 switches it off: no hand, no offer to the birds."));
+
+	/** The open palm held out with the seeds: well in front, a little right, below the eyes; it follows a look down. */
+	FHeroHoldPose OfferPose()
+	{
+		FHeroHoldPose P;
+		P.Pos = FVector(50.f, 9.f, -27.f);
+		P.FingerDir = FVector(1.f, -0.12f, -0.1f);
+		P.PalmNormal = FVector(0.05f, -0.12f, 1.f);
+		P.Curl = 0.22f;
+		P.PitchFollow = 0.55f;
+		P.BlendTime = 0.8f;
+		return P;
+	}
+
+	/** The bag carried at the right hip, gripped across its waist, the palm on its broad side. */
+	FHeroHoldPose CarryPose()
+	{
+		FHeroHoldPose P;
+		P.Pos = FVector(16.f, 25.f, -72.f);
+		P.FingerDir = FVector(1.f, 0.f, -0.35f);
+		P.PalmNormal = FVector(0.f, -1.f, 0.f);
+		P.Curl = 1.f;
+		P.PitchFollow = 0.f;
+		P.BlendTime = 0.6f;
+		// the bag in the palm's frame (X the fingers, Z out of the palm): its thickness along Z, its width along X
+		FReachPrim Box;
+		Box.Kind = FReachPrim::EKind::Box;
+		Box.Xf = FTransform(FVector(1.5f, 0.f, ABirdFeedBag::HalfDepth + 1.7f));
+		Box.Extent = FVector(ABirdFeedBag::HalfWidth, ABirdFeedBag::HalfHeight, ABirdFeedBag::HalfDepth);
+		P.Shape.Prims.Add(Box);
+		return P;
+	}
+
+	/** "HerringGull" -> "herring_gull" (the string tables' bird.<id>.name). */
+	FString Snake(const FString& Camel)
+	{
+		FString Out;
+		for (int32 I = 0; I < Camel.Len(); ++I)
+		{
+			const TCHAR C = Camel[I];
+			if (FChar::IsUpper(C) && I > 0)
+			{
+				Out.AppendChar(TEXT('_'));
+			}
+			Out.AppendChar(FChar::ToLower(C));
+		}
+		return Out;
+	}
+
+	/** The palm's centre on the skin from the hand's bones (as HandReach measures it), world. */
+	bool PalmFromBones(const AHeroCharacter* Hero, FVector& OutPalm)
+	{
+		const USkeletalMeshComponent* Body = Hero ? Hero->GetMesh() : nullptr;
+		if (!Body || Body->GetBoneIndex(TEXT("hand_r")) == INDEX_NONE || Body->GetBoneIndex(TEXT("middle_01_r")) == INDEX_NONE)
+		{
+			return false;
+		}
+		const FVector Wrist = Body->GetBoneLocation(TEXT("hand_r"));
+		const FVector Knuckle = Body->GetBoneLocation(TEXT("middle_01_r"));
+		OutPalm = Wrist + (Knuckle - Wrist) * 0.6f;
+		return true;
+	}
+}
+
+/** Bottom left: what is in the hand, how much is left and what the keys do with it. */
+class SLyudHeldItem : public SCompoundWidget
+{
+public:
+	SLATE_BEGIN_ARGS(SLyudHeldItem) {}
+	SLATE_END_ARGS()
+
+	void Construct(const FArguments&)
+	{
+		ChildSlot
+		[
+			SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(FMargin(36.f, 0.f, 0.f, 36.f))
+			[
+				SNew(SBorder)
+				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+				.BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.45f))
+				.Padding(FMargin(10.f, 8.f, 16.f, 8.f))
+				[
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 10, 0)
+					[
+						SNew(SBox).WidthOverride(48.f).HeightOverride(48.f)
+						[
+							SAssignNew(Icon, SImage)
+						]
+					]
+					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+					[
+						SNew(SVerticalBox)
+						+ SVerticalBox::Slot().AutoHeight()
+						[
+							SAssignNew(Title, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 16)).ColorAndOpacity(FLinearColor(1.f, 0.9f, 0.7f))
+						]
+						+ SVerticalBox::Slot().AutoHeight()
+						[
+							SAssignNew(Hint, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 13)).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
+						]
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 6, 0, 0)
+						[
+							SAssignNew(Meters, SVerticalBox).Visibility(EVisibility::Collapsed)
+							+ SVerticalBox::Slot().AutoHeight()
+							[
+								SAssignNew(BirdLabel, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 13)).ColorAndOpacity(FLinearColor(1.f, 0.9f, 0.7f))
+							]
+							+ SVerticalBox::Slot().AutoHeight().Padding(0, 2)
+							[
+								Meter(AlertLabel, Alert, FLinearColor(0.9f, 0.3f, 0.2f))
+							]
+							+ SVerticalBox::Slot().AutoHeight().Padding(0, 2)
+							[
+								Meter(TrustLabel, Trust, FLinearColor(0.4f, 0.85f, 0.4f))
+							]
+						]
+					]
+				]
+			]
+		];
+	}
+
+	/** The bird the palm is held out to: its name, how alarmed it is and how much it trusts the hero (0..1); Bird empty hides it. */
+	void SetBird(const FText& Bird, float InAlert, float InTrust)
+	{
+		Meters->SetVisibility(Bird.IsEmpty() ? EVisibility::Collapsed : EVisibility::HitTestInvisible);
+		BirdLabel->SetText(Bird);
+		AlertLabel->SetText(LyudText::Get(TEXT("ui.tame.alert")));
+		TrustLabel->SetText(LyudText::Get(TEXT("ui.tame.trust")));
+		Alert->SetPercent(FMath::Clamp(InAlert, 0.f, 1.f));
+		Trust->SetPercent(FMath::Clamp(InTrust, 0.f, 1.f));
+	}
+
+	void Set(const FSlateBrush* Brush, const FText& InTitle, const FText& InHint)
+	{
+		Icon->SetImage(Brush);
+		Title->SetText(InTitle);
+		Hint->SetText(InHint);
+	}
+
+private:
+	static TSharedRef<SWidget> Meter(TSharedPtr<STextBlock>& Label, TSharedPtr<SProgressBar>& Bar, const FLinearColor& Color)
+	{
+		return SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+			[
+				SNew(SBox).WidthOverride(80.f)
+				[
+					SAssignNew(Label, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 12)).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
+				]
+			]
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+			[
+				SNew(SBox).WidthOverride(140.f).HeightOverride(7.f)
+				[
+					SAssignNew(Bar, SProgressBar).FillColorAndOpacity(Color).BarFillType(EProgressBarFillType::LeftToRight)
+				]
+			];
+	}
+
+	TSharedPtr<SVerticalBox> Meters;
+	TSharedPtr<STextBlock> BirdLabel, AlertLabel, TrustLabel;
+	TSharedPtr<SProgressBar> Alert, Trust;
+	TSharedPtr<SImage> Icon;
+	TSharedPtr<STextBlock> Title;
+	TSharedPtr<STextBlock> Hint;
+};
+
+UBirdTameSubsystem* UBirdTameSubsystem::Get(const UObject* WorldContext)
+{
+	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+	return World ? World->GetSubsystem<UBirdTameSubsystem>() : nullptr;
+}
+
+void UBirdTameSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+	Reset();
+}
+
+void UBirdTameSubsystem::Deinitialize()
+{
+	UnbindBirds();
+	if (UWorld* World = GetWorld())
+	{
+		if (UGameViewportClient* Viewport = World->GetGameViewport(); Viewport && Hud)
+		{
+			Viewport->RemoveViewportWidgetContent(Hud.ToSharedRef());
+		}
+	}
+	Hud.Reset();
+	Super::Deinitialize();
+}
+
+void UBirdTameSubsystem::Reset()
+{
+	bWantOffer = false;
+	Phase = EPhase::Idle;
+	PhaseTime = 0.f;
+	Focus = -1;
+	TellBirds(false);
+	if (Bag)
+	{
+		Bag->Destroy();
+		Bag = nullptr;
+	}
+	if (Handful)
+	{
+		Handful->Destroy();
+		Handful = nullptr;
+	}
+}
+
+// ------------------------------------------------------------------ the birds' side
+
+void UBirdTameSubsystem::BindBirds()
+{
+#if LYUD_HAS_BIRDLIFE
+	if (bBound)
+	{
+		return;
+	}
+	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		Life->OnBirdNotice.AddDynamic(this, &UBirdTameSubsystem::HandleNotice);
+		Life->OnBirdTurn.AddDynamic(this, &UBirdTameSubsystem::HandleTurn);
+		Life->OnBirdWatch.AddDynamic(this, &UBirdTameSubsystem::HandleWatch);
+		Life->OnBirdCall.AddDynamic(this, &UBirdTameSubsystem::HandleCall);
+		Life->OnBirdApproach.AddDynamic(this, &UBirdTameSubsystem::HandleApproach);
+		Life->OnBirdEat.AddDynamic(this, &UBirdTameSubsystem::HandleEat);
+		Life->OnBirdFlee.AddDynamic(this, &UBirdTameSubsystem::HandleFlee);
+		bBound = true;
+	}
+#endif
+#if LYUD_HAS_BIRDFLIGHT
+	if (UBirdFlightSubsystem* Flight = UBirdFlightSubsystem::Get(this); Flight && !bFlightBound)
+	{
+		Flight->OnReturnedToHero.AddUObject(this, &UBirdTameSubsystem::HandleReturnedToHero);
+		bFlightBound = true;
+	}
+#endif
+}
+
+void UBirdTameSubsystem::UnbindBirds()
+{
+#if LYUD_HAS_BIRDLIFE
+	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		Life->OnBirdNotice.RemoveAll(this);
+		Life->OnBirdTurn.RemoveAll(this);
+		Life->OnBirdWatch.RemoveAll(this);
+		Life->OnBirdCall.RemoveAll(this);
+		Life->OnBirdApproach.RemoveAll(this);
+		Life->OnBirdEat.RemoveAll(this);
+		Life->OnBirdFlee.RemoveAll(this);
+	}
+#endif
+	bBound = false;
+}
+
+void UBirdTameSubsystem::TellBirds(bool bOn)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+#if LYUD_HAS_BIRDLIFE
+	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && (bOn || bTold))
+	{
+		// every frame while the palm is out: the birds read the hand's speed from the successive points
+		Life->SetOffer(OfferAt, FeedId, bOn);
+	}
+#endif
+	if (bOn != bTold)
+	{
+		for (TActorIterator<AStarlingMurmuration> It(World); It; ++It)
+		{
+			It->SetFeeding(bOn);
+		}
+	}
+	if (bOn)
+	{
+		for (TActorIterator<AStarlingMurmuration> It(World); It; ++It)
+		{
+			It->SetFeedHand(OfferAt);
+		}
+	}
+	bTold = bOn;
+}
+
+FText UBirdTameSubsystem::BirdName(int32 BirdId) const
+{
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		FBirdLifeInfo Info;
+		if (Life->GetBird(BirdId, Info))
+		{
+			return LyudText::Get(FString::Printf(TEXT("bird.%s.name"), *Snake(Info.SpeciesId.ToString())));
+		}
+	}
+#endif
+	return LyudText::Get(TEXT("ui.tame.a_bird"));
+}
+
+bool UBirdTameSubsystem::IsNearOffer(int32 BirdId) const
+{
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		FBirdLifeInfo Info;
+		// the events of birds far off (another flock across the bay) are not the player's business
+		return Life->GetBird(BirdId, Info) && FVector::Dist(Info.Location, OfferAt) < 2500.f;
+	}
+#endif
+	return false;
+}
+
+void UBirdTameSubsystem::Say(const TCHAR* Key, int32 BirdId, float Seconds)
+{
+	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+	{
+		UI->SetPrompt(this, BirdId >= 0 ? LyudText::Get(Key, { FStringFormatArg(BirdName(BirdId).ToString()) }) : LyudText::Get(Key));
+		SayLeft = Seconds;
+	}
+}
+
+void UBirdTameSubsystem::HandleNotice(int32 BirdId)
+{
+	if (IsOffering() && Focus < 0 && IsNearOffer(BirdId))
+	{
+		Focus = BirdId;
+		Say(TEXT("ui.tame.notice"), BirdId);
+	}
+}
+
+void UBirdTameSubsystem::HandleTurn(int32 BirdId)
+{
+	if (IsOffering() && (Focus < 0 || Focus == BirdId) && IsNearOffer(BirdId))
+	{
+		Focus = BirdId;
+		Say(TEXT("ui.tame.turn"), BirdId);
+	}
+}
+
+void UBirdTameSubsystem::HandleWatch(int32 BirdId)
+{
+	if (IsOffering() && Focus == BirdId)
+	{
+		Say(TEXT("ui.tame.watch"), BirdId, 4.f);
+	}
+}
+
+void UBirdTameSubsystem::HandleCall(int32 BirdId)
+{
+	if (IsOffering() && Focus == BirdId)
+	{
+		Say(TEXT("ui.tame.call"), BirdId);
+	}
+}
+
+void UBirdTameSubsystem::HandleApproach(int32 BirdId)
+{
+	if (IsOffering() && IsNearOffer(BirdId))
+	{
+		Focus = BirdId;
+		Say(TEXT("ui.tame.approach"), BirdId);
+	}
+}
+
+void UBirdTameSubsystem::HandleEat(int32 BirdId)
+{
+	if (!IsOffering() || Phase != EPhase::Idle)
+	{
+		return;
+	}
+	Focus = BirdId;
+	Phase = EPhase::Eating;
+	PhaseTime = 0.f;
+	Say(TEXT("ui.tame.eat"), BirdId);
+}
+
+void UBirdTameSubsystem::HandleFlee(int32 BirdId)
+{
+	if (Focus == BirdId && Phase == EPhase::Idle)
+	{
+		Say(TEXT("ui.tame.flee"), BirdId);
+		Focus = -1;
+	}
+}
+
+void UBirdTameSubsystem::HandleReturnedToHero(APawn* Pawn)
+{
+	// back in the hero, where he crouched: he stands up with an empty palm
+	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn))
+	{
+		Hero->SetCrouchToggled(false);
+		if (UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero))
+		{
+			Reach->ClearHold();
+		}
+	}
+	Phase = EPhase::Idle;
+	bWantOffer = false;
+	Focus = -1;
+}
+
+void UBirdTameSubsystem::Eaten()
+{
+	// one handful is gone; the camera goes into the bird
+	if (ULyudInventory* Inv = ULyudInventory::Get(this))
+	{
+		Inv->Remove(FeedId);
+	}
+	const int32 Bird = Focus;
+	bWantOffer = false;
+	TellBirds(false);
+	if (Handful)
+	{
+		Handful->Destroy();
+		Handful = nullptr;
+	}
+	UE_LOG(LogTemp, Log, TEXT("Tame: bird %d befriended"), Bird);
+	bool bBird = false;
+#if LYUD_HAS_BIRDFLIGHT
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	bBird = PC && UBirdFlightSubsystem::BecomeBird(PC, Bird);
+#endif
+	Phase = bBird ? EPhase::Bird : EPhase::Idle;
+	if (!bBird)
+	{
+		Focus = -1;
+	}
+}
+
+// ------------------------------------------------------------------ the hero's side
+
+bool UBirdTameSubsystem::IsOffering() const
+{
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	const UHeroReachComponent* Reach = Hero ? Hero->FindComponentByClass<UHeroReachComponent>() : nullptr;
+	return bWantOffer && Handful && Reach && Reach->IsHolding() && Reach->HoldWeight() > 0.95f && !Reach->IsBusy();
+}
+
+bool UBirdTameSubsystem::SetOffering(bool bOn)
+{
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	if (bOn && (!Inv || Inv->Count(FeedId) < 1))
+	{
+		Say(TEXT("ui.tame.nofeed"), -1);
+		return false;
+	}
+	if (bOn && Inv->EquippedItem() != FeedId)
+	{
+		Inv->Equip(FeedId);
+	}
+	bWantOffer = bOn;
+	return true;
+}
+
+void UBirdTameSubsystem::DebugGiveFeed(int32 Handfuls)
+{
+	if (ULyudInventory* Inv = ULyudInventory::Get(this))
+	{
+		Inv->Add(FeedId, FMath::Max(Handfuls, 1));
+		Inv->Equip(FeedId);
+	}
+}
+
+void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
+{
+	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	if (!Reach || !Inv)
+	{
+		return;
+	}
+	const bool bEquipped = Inv->EquippedItem() == FeedId;
+	if (!bEquipped)
+	{
+		bWantOffer = false;
+	}
+	UWorld* World = GetWorld();
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// a move of the hand (buying a drink, drinking) takes it over; the feed waits in the pocket meanwhile
+	const bool bFree = !Reach->IsBusy();
+	const bool bOffer = bEquipped && bWantOffer && bFree;
+	const bool bCarry = bEquipped && !bWantOffer && bFree;
+	if (bOffer)
+	{
+		Reach->SetHold(OfferPose());
+	}
+	else if (bCarry)
+	{
+		Reach->SetHold(CarryPose());
+	}
+	else
+	{
+		Reach->ClearHold();
+	}
+
+	// what the hand shows: the bag while carried, the handful while held out; each appears once the hand is mostly there
+	const bool bInPose = Reach->IsHolding() && Reach->HoldWeight() > 0.6f;
+	const bool bShowBag = bCarry && bInPose;
+	const bool bShowSeeds = bOffer && bInPose;
+	if (bShowBag && !Bag)
+	{
+		Bag = World->SpawnActor<ABirdFeedBag>(Reach->HoldPalm(), FRotator::ZeroRotator, Params);
+	}
+	else if (!bShowBag && Bag)
+	{
+		Bag->Destroy();
+		Bag = nullptr;
+	}
+	if (bShowSeeds && !Handful)
+	{
+		Handful = World->SpawnActor<ASeedHandful>(Reach->HoldPalm(), FRotator::ZeroRotator, Params);
+	}
+	else if (!bShowSeeds && Handful && Phase != EPhase::Eating)
+	{
+		Handful->Destroy();
+		Handful = nullptr;
+	}
+
+	FVector Palm = Reach->HoldPalm();
+	PalmFromBones(Hero, Palm);
+	const FVector N = Reach->HoldNormal();
+	const FVector F = Reach->HoldFinger();
+	if (Bag)
+	{
+		// across the palm: its thickness out of the palm, its width along the fingers, its top up
+		const FMatrix M = FRotationMatrix::MakeFromXY(N, F);
+		Bag->SetActorLocationAndRotation(Palm + N * (ABirdFeedBag::HalfDepth + 1.7f) + F * 1.5f, M.Rotator());
+	}
+	if (Handful)
+	{
+		OfferAt = Palm + N * 1.7f;
+		Handful->SetActorLocationAndRotation(OfferAt, FRotationMatrix::MakeFromZX(N, F).Rotator());
+	}
+
+	if (Phase == EPhase::Eating)
+	{
+		// the bird pecks the heap down for a moment, then the view goes into it
+		PhaseTime += DeltaTime;
+		if (Handful)
+		{
+			Handful->SetLeft(1.f - 0.5f * FMath::Clamp(PhaseTime / 1.6f, 0.f, 1.f));
+		}
+		TellBirds(true);
+		if (PhaseTime >= 1.6f)
+		{
+			Eaten();
+		}
+		return;
+	}
+	TellBirds(IsOffering());
+	if (!IsOffering() && Phase == EPhase::Idle)
+	{
+		Focus = -1;
+	}
+}
+
+void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
+{
+	UWorld* World = GetWorld();
+	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	const bool bShow = Hero && Inv && UI && !UI->IsOpen() && !Inv->EquippedItem().IsNone() && Phase != EPhase::Bird;
+	if (!Viewport)
+	{
+		return;
+	}
+	if (!bShow)
+	{
+		if (Hud)
+		{
+			Viewport->RemoveViewportWidgetContent(Hud.ToSharedRef());
+			Hud.Reset();
+		}
+		return;
+	}
+	if (!Hud)
+	{
+		Hud = SNew(SLyudHeldItem);
+		Viewport->AddViewportWidgetContent(Hud.ToSharedRef(), 55);
+	}
+	const FName Id = Inv->EquippedItem();
+	const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Inv->Count(Id)) });
+	const TCHAR* HintKey = bWantOffer ? TEXT("ui.held.hint_out") : Hero->bIsCrouched ? TEXT("ui.held.hint_crouched") : TEXT("ui.held.hint");
+	Hud->Set(UI->IconBrush(Id), Title, LyudText::Get(HintKey));
+	// the bird the palm is held out to: how it feels about the hero, so creeping can be judged
+	FText Bird;
+	float Alert = 0.f, Trust = 0.f;
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && bWantOffer && Focus >= 0)
+	{
+		FBirdLifeInfo Info;
+		if (Life->GetBird(Focus, Info))
+		{
+			Bird = BirdName(Focus);
+			Alert = Info.Alertness;
+			Trust = Info.Trust;
+		}
+	}
+#endif
+	Hud->SetBird(Bird, Alert, Trust);
+}
+
+void UBirdTameSubsystem::Tick(float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+	if (!PC)
+	{
+		return;
+	}
+	if (CVarTame.GetValueOnGameThread() == 0)
+	{
+		if (bWantOffer || Bag || Handful || bTold)
+		{
+			Reset();
+			if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+			{
+				UHeroReachComponent::Get(Hero)->ClearHold();
+			}
+		}
+		UpdateHud(nullptr);
+		return;
+	}
+	BindBirds();
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(PC->GetPawn());
+	if (!Hero || Hero->IsHidden())
+	{
+		// flying as the bird (or sitting at the computer): the hero's hand waits as it was
+		UpdateHud(nullptr);
+		return;
+	}
+	if (Phase == EPhase::Bird)
+	{
+		// back in the hero without the flight's event (the flight code went another way)
+		HandleReturnedToHero(Hero);
+	}
+
+	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
+	const bool bInUI = (UI && UI->IsOpen()) || (Menu && Menu->IsOpen());
+	if (!bInUI && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::F) && Phase == EPhase::Idle)
+	{
+		SetOffering(!bWantOffer);
+	}
+	DriveDebugWalk(Hero, DeltaTime);
+	UpdateHand(Hero, DeltaTime);
+	UpdateHud(Hero);
+	if (SayLeft > 0.f)
+	{
+		SayLeft -= DeltaTime;
+		if (SayLeft <= 0.f)
+		{
+			if (ULyudInventoryUI* UI2 = ULyudInventoryUI::Get(this))
+			{
+				UI2->SetPrompt(this, FText::GetEmpty());
+			}
+		}
+	}
+}
+
+// ------------------------------------------------------------------ scripted approach (offscreen recordings, tests)
+
+void UBirdTameSubsystem::DebugWalkTo(const FVector& Target, float Speed, bool bCrouch, float TurnRate, float StopAt)
+{
+	bDebugWalk = true;
+	DebugTarget = Target;
+	DebugSpeed = Speed;
+	DebugTurnRate = TurnRate;
+	DebugStopAt = StopAt;
+	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+	{
+		Hero->SetCrouchToggled(bCrouch);
+	}
+}
+
+void UBirdTameSubsystem::DebugStop()
+{
+	bDebugWalk = false;
+}
+
+void UBirdTameSubsystem::DriveDebugWalk(AHeroCharacter* Hero, float DeltaTime)
+{
+	if (!bDebugWalk)
+	{
+		return;
+	}
+	APlayerController* PC = Cast<APlayerController>(Hero->GetController());
+	if (!PC)
+	{
+		return;
+	}
+	const float Left = FVector::Dist2D(Hero->GetActorLocation(), DebugTarget) - DebugStopAt;
+	if (Left <= 0.f)
+	{
+		return;
+	}
+	// the view turns toward the target (eyes on its ground point, pitched down at it) at the given rate
+	const FVector Eye = Hero->EyeLocation();
+	const FRotator Want = (DebugTarget - Eye).Rotation();
+	const FRotator Now = PC->GetControlRotation();
+	const FRotator Next(FMath::FixedTurn(Now.Pitch, FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -60.f, 30.f), DebugTurnRate * DeltaTime),
+		FMath::FixedTurn(Now.Yaw, Want.Yaw, DebugTurnRate * DeltaTime), 0.f);
+	PC->SetControlRotation(Next);
+	const UCharacterMovementComponent* Move = Hero->GetCharacterMovement();
+	const float Max = FMath::Max(Hero->bIsCrouched ? Move->MaxWalkSpeedCrouched : Move->MaxWalkSpeed, 1.f);
+	Hero->AddMovementInput((DebugTarget - Hero->GetActorLocation()).GetSafeNormal2D(), FMath::Clamp(DebugSpeed / Max, 0.f, 1.f) * FMath::Clamp(Left / 30.f, 0.2f, 1.f));
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GTameGive(TEXT("Tame.Give"), TEXT("Tame.Give [handfuls=5]: bird feed into the pocket and the hand"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UBirdTameSubsystem* T = UBirdTameSubsystem::Get(World))
+		{
+			T->DebugGiveFeed(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 5);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GTameOffer(TEXT("Tame.Offer"), TEXT("Tame.Offer 1|0: hold the palm with feed out (as F), or take it back"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UBirdTameSubsystem* T = UBirdTameSubsystem::Get(World))
+		{
+			T->SetOffering(Args.Num() == 0 || FCString::Atoi(*Args[0]) != 0);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GTameWalk(TEXT("Tame.Walk"),
+	TEXT("Tame.Walk x y z speed crouch(0|1) turnrate stopat | off: the hero walks to a world point (scripted approach)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UBirdTameSubsystem* T = UBirdTameSubsystem::Get(World);
+		if (!T)
+		{
+			return;
+		}
+		if (Args.Num() < 3)
+		{
+			T->DebugStop();
+			return;
+		}
+		auto F = [&Args](int32 I, float Def) { return Args.IsValidIndex(I) ? FCString::Atof(*Args[I]) : Def; };
+		T->DebugWalkTo(FVector(F(0, 0.f), F(1, 0.f), F(2, 0.f)), F(3, 80.f), F(4, 1.f) != 0.f, F(5, 60.f), F(6, 90.f));
+	}));
+
+// ------------------------------------------------------------------ headless self-test (unreal/scripts/test_tame.py)
+
+namespace
+{
+	/** Steps run one after another on the game's ticker, each after its delay; each logs TAMETEST PASS|FAIL <what>. */
+	struct FTameTest
+	{
+		TWeakObjectPtr<UWorld> World;
+		TArray<TPair<float, TFunction<void()>>> Steps;
+		int32 Next = 0;
+		float Wait = 0.f;
+		int32 Fails = 0;
+		float EyeStanding = 0.f;
+	};
+	TSharedPtr<FTameTest> GTameTest;
+
+	void Check(bool bOk, const FString& What)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TAMETEST %s %s"), bOk ? TEXT("PASS") : TEXT("FAIL"), *What);
+		if (!bOk && GTameTest)
+		{
+			++GTameTest->Fails;
+		}
+	}
+}
+
+static FAutoConsoleCommandWithWorld GTameSelfTest(TEXT("Tame.SelfTest"),
+	TEXT("Runs the befriending checks in the running game (vending machine sells feed, Tab equips it, F offers it, C crouches, lyud.Tame 0 switches off); logs TAMETEST lines"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		GTameTest = MakeShared<FTameTest>();
+		FTameTest& T = *GTameTest;
+		T.World = World;
+		auto Hero = [&T]() { return T.World.IsValid() ? Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(T.World.Get(), 0)) : nullptr; };
+		auto Inv = [&T]() { return ULyudInventory::Get(T.World.Get()); };
+		auto Tame = [&T]() { return UBirdTameSubsystem::Get(T.World.Get()); };
+		auto Run = [&T](const TCHAR* Cmd) { GEngine->Exec(T.World.Get(), Cmd); };
+		T.Steps.Add({ 0.5f, [Inv, Tame, Run]()
+		{
+			Inv()->Reset();
+			Check(!Tame()->SetOffering(true), TEXT("no feed: the palm stays in"));
+			Run(TEXT("Vending.Buy 5"));
+		} });
+		T.Steps.Add({ 6.f, [Inv]()
+		{
+			Check(Inv()->Count(UBirdTameSubsystem::FeedId) == 5, FString::Printf(TEXT("bought a bag: 5 handfuls (%d)"), Inv()->Count(UBirdTameSubsystem::FeedId)));
+			Check(Inv()->Rubles == 85, FString::Printf(TEXT("paid 15 roubles (%d left)"), Inv()->Rubles));
+			Inv()->Equip(UBirdTameSubsystem::FeedId);
+			Check(Inv()->EquippedItem() == UBirdTameSubsystem::FeedId, TEXT("equipped from the inventory"));
+		} });
+		T.Steps.Add({ 1.5f, [Hero, &T]()
+		{
+			const UHeroReachComponent* R = Hero()->FindComponentByClass<UHeroReachComponent>();
+			Check(R && R->IsHolding() && R->HoldWeight() > 0.99f && !R->IsBusy(), TEXT("the bag is carried at the hip (hold, nothing locked)"));
+			T.EyeStanding = Hero()->EyeLocation().Z - (Hero()->GetActorLocation().Z - Hero()->GetSimpleCollisionHalfHeight());
+			Hero()->SetCrouchToggled(true);
+		} });
+		T.Steps.Add({ 1.5f, [Hero, Tame, &T]()
+		{
+			const float Eye = Hero()->EyeLocation().Z - (Hero()->GetActorLocation().Z - Hero()->GetSimpleCollisionHalfHeight());
+			Check(Hero()->bIsCrouched && Hero()->GetCrouchAlpha() > 0.99f, TEXT("C crouches"));
+			Check(T.EyeStanding - Eye > 30.f, FString::Printf(TEXT("the eyes went down %.0f cm"), T.EyeStanding - Eye));
+			Check(Hero()->GetCharacterMovement()->MaxWalkSpeedCrouched <= 110.f, TEXT("crouched speed is a creep"));
+			Check(Tame()->SetOffering(true), TEXT("F with feed: the palm goes out"));
+		} });
+		T.Steps.Add({ 1.5f, [Hero, Tame]()
+		{
+			UBirdTameSubsystem* S = Tame();
+			Check(S->IsOffering(), TEXT("offering once the hand is out"));
+			const FVector Eye = Hero()->EyeLocation();
+			const FVector At = S->OfferLocation();
+			const FVector Local = FRotator(0.f, Hero()->GetControlRotation().Yaw, 0.f).UnrotateVector(At - Eye);
+			Check(Local.X > 15.f && Local.X < 75.f && Local.Z < -5.f && Local.Z > -70.f && FMath::Abs(Local.Y) < 30.f,
+				FString::Printf(TEXT("the palm is in front, below the eyes (fwd %.0f right %.0f up %.0f)"), Local.X, Local.Y, Local.Z));
+			FVector Palm;
+			Check(PalmFromBones(Hero(), Palm) && FVector::Dist(Palm, At) < 6.f, FString::Printf(TEXT("the seeds lie on the hand (%.1f cm off the palm)"), FVector::Dist(Palm, At)));
+			S->SetOffering(false);
+		} });
+		T.Steps.Add({ 1.5f, [Hero, Tame, Run]()
+		{
+			Check(!Tame()->IsOffering(), TEXT("F again: the palm comes back"));
+			Run(TEXT("lyud.Tame 0"));
+		} });
+		T.Steps.Add({ 1.f, [Hero, Run]()
+		{
+			const UHeroReachComponent* R = Hero()->FindComponentByClass<UHeroReachComponent>();
+			Check(R && !R->IsHolding(), TEXT("lyud.Tame 0: the hand is free"));
+			Run(TEXT("lyud.Tame 1"));
+			Hero()->SetCrouchToggled(false);
+		} });
+		T.Steps.Add({ 1.f, []()
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TAMETEST DONE %d failed"), GTameTest ? GTameTest->Fails : -1);
+		} });
+		T.Wait = T.Steps[0].Key;
+		FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([](float Dt)
+		{
+			if (!GTameTest || !GTameTest->World.IsValid())
+			{
+				return false;
+			}
+			FTameTest& X = *GTameTest;
+			X.Wait -= Dt;
+			if (X.Wait > 0.f)
+			{
+				return true;
+			}
+			X.Steps[X.Next].Value();
+			if (++X.Next >= X.Steps.Num())
+			{
+				return false;
+			}
+			X.Wait = X.Steps[X.Next].Key;
+			return true;
+		}));
+	}));

@@ -18,7 +18,7 @@ class USkeletalMeshComponent;
  * chest, arms, trousers and shoes. The body turns with the look the way a person does: standing
  * still the head and chest turn first and the feet follow past ~35 degrees, walking it faces where
  * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
- * looks; the template's locomotion clips animate the body.
+ * looks; the template's locomotion clips animate the body. C (toggle) or Ctrl (held) crouches.
  *
  * Look, move and jump use the template's own Enhanced Input actions and mapping contexts exactly as
  * TP_FirstPersonCharacter does (same scaling, no smoothing); Shift is read from the key. Other
@@ -44,6 +44,23 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
 	float RunSpeed = 600.f;
+
+	/** Crouched (C toggles, Ctrl held): down on the haunches for sneaking up on birds; Shift creeps slower still. */
+	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
+	float CrouchSpeed = 110.f;
+
+	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
+	float CrouchCreepSpeed = 55.f;
+
+	/** The capsule's half height crouched (standing: CharacterStandard's), cm. */
+	UPROPERTY(EditAnywhere, Category = "Hero|Movement")
+	float CrouchHalfHeight = 72.f;
+
+	/** How far into the crouch the body is (0 standing, 1 down), eased toward bIsCrouched. */
+	float GetCrouchAlpha() const { return CrouchAlpha; }
+	/** Crouch or stand up as if C was pressed (tests, and the way back from being a bird). */
+	void SetCrouchToggled(bool bOn) { bCrouchToggled = bOn; }
+	bool IsCrouchToggled() const { return bCrouchToggled; }
 
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
 	TSoftObjectPtr<UInputAction> MoveAction;
@@ -102,4 +119,6 @@ private:
 	double Distance = 0.0;
 	double IdleTime = 0.0;
 	bool bWantsWalk = false;
+	bool bCrouchToggled = false;
+	float CrouchAlpha = 0.f;
 };

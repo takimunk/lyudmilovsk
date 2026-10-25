@@ -27,9 +27,11 @@
 #include "Camera/CameraActor.h"
 #include "HAL/IConsoleManager.h"
 #include "InputCoreTypes.h"
+#include "DrawDebugHelpers.h"
 
 namespace
 {
+	TAutoConsoleVariable<int32> CVarHeroDebugBones(TEXT("lyud.HeroDebugBones"), 0, TEXT("Draws the hero's leg bones over the body (checks of the crouch and the skin)"));
 	const FName EyeL(TEXT("eye_l"));
 	const FName EyeR(TEXT("eye_r"));
 	const FName HeadBone(TEXT("head"));
@@ -66,6 +68,11 @@ AHeroCharacter::AHeroCharacter()
 	Move->MaxWalkSpeed = RunSpeed;
 	Move->BrakingDecelerationFalling = 1500.f;
 	Move->AirControl = 0.5f;
+	Move->NavAgentProps.bCanCrouch = true;
+	Move->SetCrouchedHalfHeight(CrouchHalfHeight);
+	Move->MaxWalkSpeedCrouched = CrouchSpeed;
+	// leaving a crouch under a low ceiling waits (the engine's own check), it never pops through
+	Move->bCanWalkOffLedgesWhenCrouching = true;
 
 	USkeletalMeshComponent* Body = GetMesh();
 	Body->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -LyudmilovskCharacter::PlayerCapsuleHalfHeight + SoleDrop), FRotator(0.f, -90.f, 0.f));
@@ -177,6 +184,26 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 	ReadInput(DeltaSeconds);
 	TurnBody(DeltaSeconds);
 	FeedAnimation(DeltaSeconds);
+	if (CVarHeroDebugBones.GetValueOnGameThread())
+	{
+		const FColor Colors[] = { FColor::Red, FColor::Yellow, FColor::Green, FColor::Cyan };
+		for (const TCHAR* Side : { TEXT("l"), TEXT("r") })
+		{
+			int32 K = 0;
+			FVector Prev = FVector::ZeroVector;
+			for (const TCHAR* B : { TEXT("thigh"), TEXT("calf"), TEXT("foot"), TEXT("ball") })
+			{
+				const FVector P = GetMesh()->GetBoneLocation(*FString::Printf(TEXT("%s_%s"), B, Side));
+				DrawDebugPoint(GetWorld(), P, 14.f, Colors[K], false, -1.f, 100);
+				if (K > 0)
+				{
+					DrawDebugLine(GetWorld(), Prev, P, Colors[K], false, -1.f, 100, 1.5f);
+				}
+				Prev = P;
+				++K;
+			}
+		}
+	}
 	const UHeroReachComponent* Reach = FindComponentByClass<UHeroReachComponent>();
 	if (!Reach || !Reach->IsBusy())
 	{
@@ -198,7 +225,26 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 	}
 
 	bWantsWalk = !PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift));
-	GetCharacterMovement()->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	Move->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
+	Move->MaxWalkSpeedCrouched = bWantsWalk ? CrouchCreepSpeed : CrouchSpeed;
+
+	// crouch: C toggles it, Ctrl held crouches while it is down (polled: other systems may read the same keys)
+	if (!PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::C))
+	{
+		bCrouchToggled = !bCrouchToggled;
+	}
+	const bool bWantCrouch = bCrouchToggled || (!PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftControl) || PC->IsInputKeyDown(EKeys::RightControl)));
+	if (bWantCrouch && !bIsCrouched && Move->IsMovingOnGround())
+	{
+		Crouch();
+	}
+	else if (!bWantCrouch && bIsCrouched)
+	{
+		UnCrouch();
+	}
+	// the body goes down and comes up in about half a second (the capsule changes at once, the mesh stays on the floor)
+	CrouchAlpha = FMath::FInterpConstantTo(CrouchAlpha, bIsCrouched ? 1.f : 0.f, DeltaSeconds, 2.2f);
 }
 
 void AHeroCharacter::TurnBody(float DeltaSeconds)
@@ -237,6 +283,7 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	S.LookPitch = Wrap180(Look.Pitch);
 	S.Distance = Distance;
 	S.IdleTime = IdleTime;
+	S.Crouch = FMath::SmoothStep(0.f, 1.f, CrouchAlpha);
 	if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		Anim->State = S;
@@ -365,5 +412,34 @@ static FAutoConsoleCommandWithWorldAndArgs GHeroTestDrink(TEXT("Hero.TestDrink")
 		{
 			Inv->Add(Id);
 			UI->Use(Id);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorld GHeroDumpBones(TEXT("Hero.DumpBones"), TEXT("Logs the hero's main bones (world, cm) and the capsule (headless checks of the body's pose)"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+		const AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+		if (!Hero)
+		{
+			return;
+		}
+		const USkeletalMeshComponent* Body = Hero->GetMesh();
+		const FVector A = Hero->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("HEROBONES yaw %.0f actor %.1f %.1f %.1f half %.1f crouched %d alpha %.2f mesh %.1f %.1f %.1f"), Hero->GetActorRotation().Yaw, A.X, A.Y, A.Z,
+			Hero->GetSimpleCollisionHalfHeight(), Hero->bIsCrouched ? 1 : 0, Hero->GetCrouchAlpha(),
+			Body->GetComponentLocation().X, Body->GetComponentLocation().Y, Body->GetComponentLocation().Z);
+		static bool bListed = false;
+		for (int32 I = 0; I < Body->GetNumBones() && !bListed; ++I)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HEROBONELIST %d %s <- %s"), I, *Body->GetBoneName(I).ToString(), *Body->GetParentBone(Body->GetBoneName(I)).ToString());
+		}
+		bListed = true;
+		for (const TCHAR* Name : { TEXT("pelvis"), TEXT("spine_03"), TEXT("head"), TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l"), TEXT("ball_l"),
+			TEXT("thigh_r"), TEXT("calf_r"), TEXT("foot_r"), TEXT("hand_r") })
+		{
+			// in the hero's own frame: forward, right, up from the capsule's centre
+			const FVector P = Hero->GetActorTransform().InverseTransformPositionNoScale(Body->GetBoneLocation(Name, EBoneSpaces::WorldSpace));
+			UE_LOG(LogTemp, Warning, TEXT("HEROBONES %s fwd %.1f right %.1f up %.1f"), Name, P.X, P.Y, P.Z);
 		}
 	}));

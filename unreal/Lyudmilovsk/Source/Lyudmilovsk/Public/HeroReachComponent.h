@@ -28,6 +28,25 @@ struct FReachItem
 };
 
 /**
+ * A pose the right hand keeps while the hero walks and looks around (nothing is locked): a bag carried at the hip, an
+ * open palm with feed held out to a bird. Placed from the eyes in the look's frame (forward, right, up, cm), the frame
+ * turning with the look's yaw and PitchFollow of its pitch.
+ */
+struct FHeroHoldPose
+{
+	FVector Pos = FVector(55.f, 10.f, -35.f);
+	/** Fingers' direction and the way out of the palm, in the same frame. */
+	FVector FingerDir = FVector::ForwardVector;
+	FVector PalmNormal = FVector::UpVector;
+	float Curl = 0.1f;
+	float PitchFollow = 0.f;
+	/** What the fingers close on, in the palm's frame (X the fingers, Z out of the palm, origin the palm), if anything. */
+	FReachShape Shape;
+	/** Seconds to blend in or out. */
+	float BlendTime = 0.6f;
+};
+
+/**
  * The hero's arm: reaches for any item (its shape from its collision or bounds), closes the fingers on it and carries it, then does something with
  * it. The hand is placed by the animation (HandReach: arm IK, crouch and lean, fingers that stop on the
  * item's surface), so a bottle on a vending machine's tray, an apple in the grass and a book on a desk all
@@ -76,6 +95,17 @@ public:
 	void Drop();
 
 	AActor* HeldItem() const { return Held.Get(); }
+
+	/** Keep the hand in Hold (blending over its BlendTime) until ClearHold; a reach (Take, Drink...) runs over it and the hold comes back after. */
+	void SetHold(const FHeroHoldPose& Hold);
+	void ClearHold();
+	bool IsHolding() const { return bHold; }
+	/** How far the hand is in the hold (0 the animation's own hand, 1 there). */
+	float HoldWeight() const { return HoldW; }
+	/** The palm frame the hold puts the hand in this frame (world): the palm's centre on the skin, out of the palm. */
+	FVector HoldPalm() const { return HoldPalmW; }
+	FVector HoldNormal() const { return HoldNormalW; }
+	FVector HoldFinger() const { return HoldFingerW; }
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -148,5 +178,13 @@ private:
 	FHeroReachPose Pose;
 	bool bLocked = false;
 	bool bPoseForced = false;
+	void TickHold(float DeltaTime);
+	FHeroHoldPose Hold;
+	bool bHold = false;
+	float HoldW = 0.f;
+	FVector HoldEye = FVector::ZeroVector;
+	FVector HoldPalmW = FVector::ZeroVector;
+	FVector HoldNormalW = FVector::UpVector;
+	FVector HoldFingerW = FVector::ForwardVector;
 	float PoseWeight = 0.f;
 };

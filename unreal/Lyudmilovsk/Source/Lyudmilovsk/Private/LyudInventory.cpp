@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "HeroCharacter.h"
 #include "HeroReachComponent.h"
+#include "HAL/IConsoleManager.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudGameMenu.h"
@@ -57,6 +58,12 @@ namespace
 		Apple.Kind = ELyudItemKind::Food;
 		Apple.Radius = 3.8f;
 		D.Add(Apple);
+		// a paper bag of seeds and millet from the vending machine; each unit is one handful for one bird
+		FLyudItemDef Feed;
+		Feed.Id = TEXT("bird_feed");
+		Feed.Kind = ELyudItemKind::Feed;
+		Feed.Radius = 4.f;
+		D.Add(Feed);
 		return D;
 	}
 }
@@ -105,6 +112,7 @@ void ULyudInventory::Reset()
 {
 	Counts.Reset();
 	Rubles = 100;
+	Equipped = NAME_None;
 	OnChanged.Broadcast();
 }
 
@@ -128,6 +136,10 @@ bool ULyudInventory::Remove(FName Id, int32 N)
 	if (*C <= 0)
 	{
 		Counts.Remove(Id);
+		if (Equipped == Id)
+		{
+			Equipped = NAME_None;
+		}
 	}
 	OnChanged.Broadcast();
 	return true;
@@ -148,6 +160,16 @@ bool ULyudInventory::Spend(int32 Amount)
 	Rubles -= Amount;
 	OnChanged.Broadcast();
 	return true;
+}
+
+void ULyudInventory::Equip(FName Id)
+{
+	const FName New = Id.IsNone() || Count(Id) > 0 ? Id : FName();
+	if (New != Equipped)
+	{
+		Equipped = New;
+		OnChanged.Broadcast();
+	}
 }
 
 void ULyudInventory::Earn(int32 Amount)
@@ -274,6 +296,11 @@ public:
 							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.8f, 0.8f, 0.8f))
 							.Text(P.Value > 1 ? FText::FromString(FString::Printf(TEXT("x%d"), P.Value)) : FText::GetEmpty())
 						]
+						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
+						[
+							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
+							.Text(Inv->EquippedItem() == Id ? LyudText::Get(TEXT("ui.inventory.inhand")) : FText::GetEmpty())
+						]
 					]
 				]
 			];
@@ -291,7 +318,31 @@ public:
 			[
 				SNew(STextBlock).Font(Body).Text(ULyudInventory::ItemDescription(SelDef->Id)).AutoWrapText(true).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
 			];
-			if (SelDef->Kind != ELyudItemKind::Misc)
+			if (SelDef->Kind == ELyudItemKind::Feed)
+			{
+				const FName Id = SelDef->Id;
+				const bool bInHand = Inv->EquippedItem() == Id;
+				Detail->AddSlot().AutoHeight().HAlign(HAlign_Left)
+				[
+					SNew(SButton)
+					.OnClicked_Lambda([this, Id, bInHand]()
+					{
+						if (ULyudInventory* I = Inventory.Get())
+						{
+							I->Equip(bInHand ? FName() : Id);
+						}
+						if (ULyudInventoryUI* UI2 = Owner.Get(); UI2 && !bInHand)
+						{
+							UI2->Close();
+						}
+						return FReply::Handled();
+					})
+					[
+						SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(bInHand ? TEXT("ui.use.unequip") : TEXT("ui.use.equip")).ToString() + TEXT("  ")))
+					]
+				];
+			}
+			else if (SelDef->Kind != ELyudItemKind::Misc)
 			{
 				const FName Id = SelDef->Id;
 				Detail->AddSlot().AutoHeight().HAlign(HAlign_Left)
@@ -603,7 +654,7 @@ void ULyudInventoryUI::Use(FName Id)
 	const FLyudItemDef* Def = ULyudInventory::FindDef(Id);
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
-	if (!Inv || !Def || !Reach || Reach->IsBusy() || Inv->Count(Id) < 1 || Def->Kind == ELyudItemKind::Misc)
+	if (!Inv || !Def || !Reach || Reach->IsBusy() || Inv->Count(Id) < 1 || Def->Kind == ELyudItemKind::Misc || Def->Kind == ELyudItemKind::Feed)
 	{
 		return;
 	}
@@ -665,3 +716,29 @@ void ULyudInventoryUI::Use(FName Id)
 		Reach->Eat(Item, 3, [WeakHeld, Scale0](float Left) { if (AActor* A = WeakHeld.Get()) { A->SetActorScale3D(Scale0 * FMath::Lerp(0.55f, 1.f, Left)); } }, Consumed);
 	}
 }
+
+// --- dev commands for headless checks: the screen and the hand without the keyboard ---
+static FAutoConsoleCommandWithWorldAndArgs GInvOpen(TEXT("Inventory.Open"), TEXT("Inventory.Open [0]: opens (or with 0 closes) the inventory screen"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World))
+		{
+			if (Args.Num() > 0 && FCString::Atoi(*Args[0]) == 0)
+			{
+				UI->Close();
+			}
+			else
+			{
+				UI->Open();
+			}
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TEXT("Inventory.Equip <item id> | none: puts the item in the hero's hand"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventory* Inv = ULyudInventory::Get(World))
+		{
+			Inv->Equip(Args.Num() > 0 && Args[0] != TEXT("none") ? FName(*Args[0]) : FName());
+		}
+	}));

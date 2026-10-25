@@ -331,6 +331,55 @@ namespace HandReach
 		}
 	}
 
+	void ApplyCrouch(FCompactPose& Pose, float Alpha, float Drop)
+	{
+		const float A = FMath::Clamp(Alpha, 0.f, 1.f);
+		if (A < 0.001f)
+		{
+			return;
+		}
+		const FBoneContainer& Bones = Pose.GetBoneContainer();
+		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
+		const FCompactPoseBoneIndex Spine1 = Find(Bones, TEXT("spine_01"));
+		struct FLeg { FCompactPoseBoneIndex Thigh, Calf, Foot; float Side; };
+		const FLeg Legs[] = {
+			{ Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("calf_l")), Find(Bones, TEXT("foot_l")), 1.f },
+			{ Find(Bones, TEXT("thigh_r")), Find(Bones, TEXT("calf_r")), Find(Bones, TEXT("foot_r")), -1.f },
+		};
+		if (!Pel.IsValid())
+		{
+			return;
+		}
+		for (const FLeg& L : Legs)
+		{
+			if (!L.Thigh.IsValid() || !L.Calf.IsValid() || !L.Foot.IsValid())
+			{
+				return;
+			}
+		}
+		const FTransform Feet[] = { ComponentSpace(Pose, Legs[0].Foot), ComponentSpace(Pose, Legs[1].Foot) };
+		// the mesh faces +Y, its left is +X: hips down and a little back, tipped forward about +X (a negative angle)
+		FTransform P = ComponentSpace(Pose, Pel);
+		P.AddToTranslation(FVector(0.f, -0.5f * Drop, -Drop) * A);
+		P.SetRotation((FQuat(FVector::XAxisVector, -FMath::DegreesToRadians(34.f * A)) * P.GetRotation()).GetNormalized());
+		SetComponentSpace(Pose, Pel, P);
+		// the back takes some of the lean back again, so the head stays over the feet and the eyes look ahead
+		if (Spine1.IsValid())
+		{
+			RotateBone(Pose, Spine1, FQuat(FVector::XAxisVector, FMath::DegreesToRadians(10.f * A)));
+		}
+		for (int32 I = 0; I < 2; ++I)
+		{
+			const FLeg& L = Legs[I];
+			// knees forward and a little apart
+			const FVector Pole = FVector(0.15f * L.Side, 1.f, 0.f).GetSafeNormal();
+			TwoBoneIK(Pose, L.Thigh, L.Calf, L.Foot, Feet[I].GetLocation(), Pole);
+			FTransform F = ComponentSpace(Pose, L.Foot);
+			F.SetRotation(Feet[I].GetRotation());
+			SetComponentSpace(Pose, L.Foot, F);
+		}
+	}
+
 	void ApplyArm(FCompactPose& Pose, const FHeroReachPose& Reach, const FPalmFrame& AnimPalm)
 	{
 		const float W = FMath::Clamp(Reach.Weight, 0.f, 1.f);

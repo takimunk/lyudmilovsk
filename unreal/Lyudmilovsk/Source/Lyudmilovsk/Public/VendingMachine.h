@@ -8,7 +8,7 @@ class ABottleItem;
 class UStaticMeshComponent;
 
 /**
- * The drinks machine in the hall. Look at it from about a metre away: 1..4 choose a drink, E pays and the machine
+ * The drinks machine in the hall. Look at it from about a metre away: 1..4 choose a drink, 5 a bag of bird feed, E pays and the machine
  * pushes a bottle onto its tray; the hero's hand takes it (UHeroReachComponent) and it goes into the pocket
  * (ULyudInventory), from where it can be drunk (Tab, then "Выпить"). The model is part of the scene; this actor adds the
  * tray and the behaviour. Its +X is the machine's front. It reads E and the number keys by polling and never takes them.
@@ -21,7 +21,7 @@ class LYUDMILOVSK_API AVendingMachine : public AActor
 public:
 	AVendingMachine();
 
-	/** Price of a bottle, roubles. */
+	/** Price of a bottle, roubles (the bird feed in slot 5 has its own). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vending")
 	int32 Price = 25;
 
@@ -38,6 +38,9 @@ public:
 	bool bStockShelves = true;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	/** Sell slot Slot (0-based) to the hero now, as choosing it and pressing E does (tests). */
+	void DebugBuy(int32 Slot);
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 
@@ -48,11 +51,14 @@ private:
 	void StockShelves();
 	FVector TrayRest() const;
 	FText PromptFor(int32 Flavor) const;
+	int32 PriceOf(int32 Slot) const;
+	FVector TrayRestFor(const AActor* Item) const;
 
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Tray;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> TrayBack;
-	UPROPERTY() TObjectPtr<ABottleItem> Bottle;
-	UPROPERTY() TArray<TObjectPtr<ABottleItem>> Stock;
+	/** What was just bought, on its way to the tray: a bottle or a bag of bird feed. */
+	UPROPERTY() TObjectPtr<AActor> Goods;
+	UPROPERTY() TArray<TObjectPtr<AActor>> Stock;
 
 	EState State = EState::Idle;
 	int32 Flavor = 0;

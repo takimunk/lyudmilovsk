@@ -92,6 +92,12 @@
    "style": "newspaper",
    "aspect": "3:4",
    "prompt": ""
+  },
+  "icon_bird_feed": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small brown kraft-paper bag of bird feed, its top rolled over twice, a pale printed paper band round its middle with a simple drawing of a small songbird and no lettering, a few striped sunflower seeds and pale millet grains spilled in front of it."
   }
  }
 }
