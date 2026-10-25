@@ -68,14 +68,16 @@ for sid in ids:
     L = TABLE[sid]["lengthCm"]
     span = TABLE[sid]["wingspanCm"]
     for kind, z, state in (("Perched", 0.0, unreal.BirdState.PERCH), ("Flying", 60.0 + span, unreal.BirdState.FLY)):
-        a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x, 0, z), unreal.Rotator(0, 0, 0))
+        cling = TABLE[sid]["gait"] == "Cling" and kind == "Perched"
+        # a clinging swift faces away from the sun (-X), its wall on that side, so its back and wings are lit
+        a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x, 0, z), unreal.Rotator(0, 180 if cling else 0, 0))
         a.set_actor_label("%s_%s" % (kind, sid))
         a.set_editor_property("species", sid)
         a.set_editor_property("initial_state", state)
         a.set_editor_property("seed", len(sid) * 7 + int(z))
         a.get_editor_property("body").set_skinned_asset_and_update(mesh)
     if TABLE[sid]["gait"] == "Cling":   # a swift clings to a wall, belly to it
-        wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x + L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
+        wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x - L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
         wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))
         wall.set_actor_scale3d(unreal.Vector(0.03, 0.8, 0.6))
         wall.static_mesh_component.set_material(0, grass)
