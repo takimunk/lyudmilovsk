@@ -98,6 +98,42 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small brown kraft-paper bag of bird feed, its top rolled over twice, a pale printed paper band round its middle with a simple drawing of a small songbird and no lettering, a few striped sunflower seeds and pale millet grains spilled in front of it."
+  },
+  "icon_head_lamp": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small 2000s head lamp: a round black plastic lamp housing with a clear lens on a black elastic head strap, the strap loosely coiled."
+  },
+  "icon_binoculars": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Old Soviet field binoculars in dark green-black crinkle paint with worn edges and a brown leather neck strap."
+  },
+  "icon_overshirt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A neatly folded loose camel-coloured corduroy overshirt with two chest pockets and buttons, the sleeves rolled."
+  },
+  "icon_hoodie": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A neatly folded soft sage green hoodie with its hood and drawstrings on top."
+  },
+  "icon_cargo_trousers": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Neatly folded baggy black cargo trousers with big side pockets and a belt loop."
+  },
+  "icon_sneakers": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A pair of chunky off-white sneakers with thick soles, slightly scuffed, one turned to show the side."
   }
  }
 }

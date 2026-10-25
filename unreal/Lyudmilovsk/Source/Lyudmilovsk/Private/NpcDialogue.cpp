@@ -1,4 +1,5 @@
 #include "NpcDialogue.h"
+#include "UI/LyudQuests.h"
 
 #include "BoothOwner.h"
 #include "Camera/PlayerCameraManager.h"
@@ -154,6 +155,7 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 	}
 	int32& Count = TalkCounts.FindOrAdd(Id);
 	const int32 Held = Count++;
+	ULyudQuests::Notify(this, TEXT("talk"), Id.ToString());
 	if (Held == 0 && Npc->First.Num() > 0)
 	{
 		return Npc->First;

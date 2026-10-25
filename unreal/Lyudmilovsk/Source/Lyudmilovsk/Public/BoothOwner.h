@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LyudInventory.h"
 #include "BoothOwner.generated.h"
 
 class UAnimSequence;
@@ -88,6 +89,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
 	int32 FeedCount = 5;
+
+	/** Things to wear he sells too (the game screen's inventory puts them on). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
+	int32 HeadLampPrice = 40;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
+	int32 BinocularsPrice = 60;
+
+	/** What he sells, as the trade screen lists it. */
+	TArray<FLyudShopGood> Goods() const;
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;

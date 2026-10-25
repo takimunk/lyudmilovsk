@@ -1,6 +1,8 @@
 #include "LyudInventory.h"
 
+#include "BoothOwner.h"
 #include "BottleItem.h"
+#include "EngineUtils.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -15,6 +17,8 @@
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "UI/LyudGameScreen.h"
+#include "UI/LyudQuests.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Styling/CoreStyle.h"
 #include "Styling/SlateBrush.h"
@@ -63,7 +67,23 @@ namespace
 		Feed.Id = TEXT("bird_feed");
 		Feed.Kind = ELyudItemKind::Feed;
 		Feed.Radius = 4.f;
+		Feed.Slot = ELyudEquipSlot::Hand;
 		D.Add(Feed);
+		// things to wear: the clothes the hero woke up in (blender/hero/build_hero.py), a head lamp and binoculars from the club owner
+		auto Wear = [&D](const TCHAR* Id, ELyudEquipSlot Slot)
+		{
+			FLyudItemDef I;
+			I.Id = Id;
+			I.Kind = ELyudItemKind::Wear;
+			I.Slot = Slot;
+			D.Add(I);
+		};
+		Wear(TEXT("head_lamp"), ELyudEquipSlot::Head);
+		Wear(TEXT("binoculars"), ELyudEquipSlot::Neck);
+		Wear(TEXT("overshirt"), ELyudEquipSlot::Outer);
+		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
+		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
+		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
 		return D;
 	}
 }
@@ -121,6 +141,12 @@ void ULyudInventory::Reset()
 	Counts.Reset();
 	Rubles = 100;
 	Equipped = NAME_None;
+	Worn.Reset();
+	for (const TCHAR* Clothes : { TEXT("overshirt"), TEXT("hoodie"), TEXT("cargo_trousers"), TEXT("sneakers") })
+	{
+		Counts.Add(Clothes, 1);
+		Worn.Add(Clothes);
+	}
 	if (const int32 Feed = CVarStartFeed.GetValueOnGameThread(); Feed > 0)
 	{
 		Counts.Add(TEXT("bird_feed"), Feed);
@@ -135,6 +161,8 @@ void ULyudInventory::Add(FName Id, int32 N)
 	{
 		Counts.FindOrAdd(Id) += N;
 		OnChanged.Broadcast();
+		OnAdded.Broadcast(Id, N);
+		ULyudQuests::Notify(this, TEXT("get"), Id.ToString(), N);
 	}
 }
 
@@ -153,8 +181,10 @@ bool ULyudInventory::Remove(FName Id, int32 N)
 		{
 			Equipped = NAME_None;
 		}
+		Worn.Remove(Id);
 	}
 	OnChanged.Broadcast();
+	ULyudQuests::Notify(this, TEXT("use"), Id.ToString(), N);
 	return true;
 }
 
@@ -181,6 +211,81 @@ void ULyudInventory::Equip(FName Id)
 	if (New != Equipped)
 	{
 		Equipped = New;
+		OnChanged.Broadcast();
+		if (!New.IsNone())
+		{
+			ULyudQuests::Notify(this, TEXT("wear"), New.ToString());
+		}
+	}
+}
+
+ELyudEquipSlot ULyudInventory::SlotOf(FName Id)
+{
+	const FLyudItemDef* D = FindDef(Id);
+	return D ? D->Slot : ELyudEquipSlot::None;
+}
+
+const TArray<ELyudEquipSlot>& ULyudInventory::Slots()
+{
+	static const TArray<ELyudEquipSlot> All = { ELyudEquipSlot::Head, ELyudEquipSlot::Neck, ELyudEquipSlot::Outer, ELyudEquipSlot::Body,
+		ELyudEquipSlot::Legs, ELyudEquipSlot::Feet, ELyudEquipSlot::Hand };
+	return All;
+}
+
+FText ULyudInventory::SlotName(ELyudEquipSlot Slot)
+{
+	static const TCHAR* Keys[] = { TEXT("none"), TEXT("head"), TEXT("neck"), TEXT("outer"), TEXT("body"), TEXT("legs"), TEXT("feet"), TEXT("hand") };
+	return LyudText::Get(FString(TEXT("ui.slot.")) + Keys[(int32)Slot]);
+}
+
+FName ULyudInventory::InSlot(ELyudEquipSlot Slot) const
+{
+	if (Slot == ELyudEquipSlot::Hand)
+	{
+		return EquippedItem();
+	}
+	for (const FName& W : Worn)
+	{
+		if (SlotOf(W) == Slot && Count(W) > 0)
+		{
+			return W;
+		}
+	}
+	return FName();
+}
+
+bool ULyudInventory::Wear(FName Id)
+{
+	const ELyudEquipSlot Slot = SlotOf(Id);
+	if (Slot == ELyudEquipSlot::None || Count(Id) < 1)
+	{
+		return false;
+	}
+	if (Slot == ELyudEquipSlot::Hand)
+	{
+		Equip(Id);
+		return true;
+	}
+	if (Worn.Contains(Id))
+	{
+		return true;
+	}
+	Worn.RemoveAll([Slot](const FName& W) { return SlotOf(W) == Slot; });
+	Worn.Add(Id);
+	OnChanged.Broadcast();
+	ULyudQuests::Notify(this, TEXT("wear"), Id.ToString());
+	return true;
+}
+
+void ULyudInventory::TakeOff(ELyudEquipSlot Slot)
+{
+	if (Slot == ELyudEquipSlot::Hand)
+	{
+		Equip(FName());
+		return;
+	}
+	if (Worn.RemoveAll([Slot](const FName& W) { return SlotOf(W) == Slot; }) > 0)
+	{
 		OnChanged.Broadcast();
 	}
 }
@@ -242,195 +347,6 @@ public:
 
 private:
 	TSharedPtr<STextBlock> Label;
-};
-
-class SLyudInventory : public SCompoundWidget
-{
-public:
-	SLATE_BEGIN_ARGS(SLyudInventory) {}
-		SLATE_ARGUMENT(ULyudInventoryUI*, Owner)
-		SLATE_ARGUMENT(ULyudInventory*, Inventory)
-	SLATE_END_ARGS()
-
-	void Construct(const FArguments& InArgs)
-	{
-		Owner = InArgs._Owner;
-		Inventory = InArgs._Inventory;
-		Rebuild();
-	}
-
-	void Rebuild()
-	{
-		ULyudInventory* Inv = Inventory.Get();
-		ULyudInventoryUI* UI = Owner.Get();
-		if (!Inv || !UI)
-		{
-			return;
-		}
-		const FSlateFontInfo Title = FCoreStyle::GetDefaultFontStyle("Bold", 28);
-		const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 18);
-		const FSlateFontInfo Small = FCoreStyle::GetDefaultFontStyle("Regular", 14);
-
-		TSharedRef<SWrapBox> Grid = SNew(SWrapBox).UseAllottedSize(true).InnerSlotPadding(FVector2D(8.f, 8.f));
-		const TArray<TPair<FName, int32>> Held = Inv->Held();
-		if (Selected.IsNone() || !Inv->Count(Selected))
-		{
-			Selected = Held.Num() ? Held[0].Key : FName();
-		}
-		for (const TPair<FName, int32>& P : Held)
-		{
-			const FLyudItemDef* Def = ULyudInventory::FindDef(P.Key);
-			const FName Id = P.Key;
-			const bool bSel = Id == Selected;
-			TWeakObjectPtr<ULyudInventoryUI> WeakUI = Owner;
-			Grid->AddSlot()
-			[
-				SNew(SButton)
-				.ButtonColorAndOpacity(bSel ? FLinearColor(1.f, 0.75f, 0.35f, 1.f) : FLinearColor(0.35f, 0.35f, 0.4f, 1.f))
-				.OnClicked_Lambda([this, Id]() { Selected = Id; Rebuild(); return FReply::Handled(); })
-				[
-					SNew(SBox).WidthOverride(104.f)
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
-						[
-							SNew(SBox).WidthOverride(80.f).HeightOverride(80.f)
-							[
-								SNew(SImage).Image(UI->IconBrush(Id))
-							]
-						]
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
-						[
-							SNew(STextBlock).Font(Small).Text(Def ? ULyudInventory::ItemName(Id) : FText::FromName(Id)).AutoWrapText(true)
-							.Justification(ETextJustify::Center)
-						]
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
-						[
-							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.8f, 0.8f, 0.8f))
-							.Text(P.Value > 1 ? FText::FromString(FString::Printf(TEXT("x%d"), P.Value)) : FText::GetEmpty())
-						]
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
-						[
-							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
-							.Text(Inv->EquippedItem() == Id ? LyudText::Get(TEXT("ui.inventory.inhand")) : FText::GetEmpty())
-						]
-					]
-				]
-			];
-		}
-
-		const FLyudItemDef* SelDef = ULyudInventory::FindDef(Selected);
-		TSharedRef<SVerticalBox> Detail = SNew(SVerticalBox);
-		if (SelDef)
-		{
-			Detail->AddSlot().AutoHeight().Padding(0, 0, 0, 6)
-			[
-				SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 22)).Text(ULyudInventory::ItemName(SelDef->Id))
-			];
-			Detail->AddSlot().AutoHeight().Padding(0, 0, 0, 10)
-			[
-				SNew(STextBlock).Font(Body).Text(ULyudInventory::ItemDescription(SelDef->Id)).AutoWrapText(true).ColorAndOpacity(FLinearColor(0.85f, 0.85f, 0.8f))
-			];
-			if (SelDef->Kind == ELyudItemKind::Feed)
-			{
-				const FName Id = SelDef->Id;
-				const bool bInHand = Inv->EquippedItem() == Id;
-				Detail->AddSlot().AutoHeight().HAlign(HAlign_Left)
-				[
-					SNew(SButton)
-					.OnClicked_Lambda([this, Id, bInHand]()
-					{
-						if (ULyudInventory* I = Inventory.Get())
-						{
-							I->Equip(bInHand ? FName() : Id);
-						}
-						if (ULyudInventoryUI* UI2 = Owner.Get(); UI2 && !bInHand)
-						{
-							UI2->Close();
-						}
-						return FReply::Handled();
-					})
-					[
-						SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(bInHand ? TEXT("ui.use.unequip") : TEXT("ui.use.equip")).ToString() + TEXT("  ")))
-					]
-				];
-			}
-			else if (SelDef->Kind != ELyudItemKind::Misc)
-			{
-				const FName Id = SelDef->Id;
-				Detail->AddSlot().AutoHeight().HAlign(HAlign_Left)
-				[
-					SNew(SButton)
-					.OnClicked_Lambda([this, Id]()
-					{
-						if (ULyudInventoryUI* UI2 = Owner.Get())
-						{
-							UI2->Use(Id);
-						}
-						return FReply::Handled();
-					})
-					[
-						SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(SelDef->Kind == ELyudItemKind::Drink ? TEXT("ui.use.drink") : TEXT("ui.use.eat")).ToString() + TEXT("  ")))
-					]
-				];
-			}
-		}
-		else
-		{
-			Detail->AddSlot().AutoHeight()
-			[
-				SNew(STextBlock).Font(Body).Text(LyudText::Get(TEXT("ui.inventory.empty"))).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
-			];
-		}
-
-		ChildSlot
-		[
-			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center)
-			[
-				SNew(SBorder)
-				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
-				.BorderBackgroundColor(FLinearColor(0.03f, 0.03f, 0.04f, 0.93f))
-				.Padding(24.f)
-				[
-					SNew(SBox).WidthOverride(680.f).MinDesiredHeight(380.f)
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
-						[
-							SNew(SHorizontalBox)
-							+ SHorizontalBox::Slot().FillWidth(1.f)
-							[
-								SNew(STextBlock).Font(Title).Text(LyudText::Get(TEXT("ui.inventory.title")))
-							]
-							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-							[
-								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
-								.Text(LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv->Rubles) }))
-							]
-						]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
-						[
-							Grid
-						]
-						+ SVerticalBox::Slot().FillHeight(1.f)
-						[
-							Detail
-						]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 0)
-						[
-							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f))
-							.Text(LyudText::Get(TEXT("ui.inventory.close")))
-						]
-					]
-				]
-			]
-		];
-	}
-
-private:
-	TWeakObjectPtr<ULyudInventoryUI> Owner;
-	TWeakObjectPtr<ULyudInventory> Inventory;
-	FName Selected;
 };
 
 /** A trader's screen: the goods with their icons, price and a buy button; the hero's money on top. */
@@ -581,7 +497,6 @@ void ULyudInventoryUI::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudInventoryUI::Deinitialize()
 {
-	Close();
 	CloseShop();
 	if (UWorld* World = GetWorld())
 	{
@@ -594,15 +509,22 @@ void ULyudInventoryUI::Deinitialize()
 	Super::Deinitialize();
 }
 
-bool ULyudInventoryUI::CanOpen() const
+bool ULyudInventoryUI::IsOpen() const
+{
+	const ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this);
+	return bShop || (GameScreen && GameScreen->IsOpen());
+}
+
+bool ULyudInventoryUI::CanOpen(bool bNeedHero) const
 {
 	const UWorld* World = GetWorld();
-	if (!World || bOpen || bShop || bUsing)
+	if (!World || IsOpen() || bUsing || ShopClosedFrame == GFrameCounter)
 	{
 		return false;
 	}
-	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
-	if (!Hero || Hero->IsHidden() || UGameplayStatics::IsGamePaused(World))
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn);
+	if (!Pawn || (bNeedHero && (!Hero || Hero->IsHidden())) || UGameplayStatics::IsGamePaused(World))
 	{
 		return false;
 	}
@@ -610,7 +532,7 @@ bool ULyudInventoryUI::CanOpen() const
 	{
 		return false;
 	}
-	const UHeroReachComponent* Reach = Hero->FindComponentByClass<UHeroReachComponent>();
+	const UHeroReachComponent* Reach = Hero ? Hero->FindComponentByClass<UHeroReachComponent>() : nullptr;
 	return !(Reach && Reach->IsBusy());
 }
 
@@ -622,26 +544,15 @@ void ULyudInventoryUI::Tick(float)
 	{
 		return;
 	}
-	const bool bToggle = PC->WasInputKeyJustPressed(EKeys::Tab) || PC->WasInputKeyJustPressed(EKeys::I);
-	if (bOpen)
+	// Tab / I / J / M for the game screen are read by ULyudGameScreen
+	if (bShop)
 	{
-		const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
-		if (bToggle || PC->WasInputKeyJustPressed(EKeys::Escape) || (Menu && Menu->IsOpen()))
-		{
-			Close();
-		}
-	}
-	else if (bShop)
-	{
+		const bool bToggle = PC->WasInputKeyJustPressed(EKeys::Tab) || PC->WasInputKeyJustPressed(EKeys::I);
 		const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 		if (bToggle || PC->WasInputKeyJustPressed(EKeys::T) || PC->WasInputKeyJustPressed(EKeys::Escape) || (Menu && Menu->IsOpen()))
 		{
 			CloseShop();
 		}
-	}
-	else if (bToggle && CanOpen())
-	{
-		Open();
 	}
 	if (bUsing)
 	{
@@ -674,18 +585,14 @@ void ULyudInventoryUI::Lock(bool bLock)
 
 void ULyudInventoryUI::Open()
 {
-	UWorld* World = GetWorld();
-	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
-	ULyudInventory* Inv = ULyudInventory::Get(World);
-	if (!Viewport || !Inv || bOpen)
+	if (bShop)
 	{
 		return;
 	}
-	Screen = SNew(SLyudInventory).Owner(this).Inventory(Inv);
-	Viewport->AddViewportWidgetContent(Screen.ToSharedRef(), 70);
-	Inv->OnChanged.AddWeakLambda(this, [this] { if (Screen) { Screen->Rebuild(); } });
-	bOpen = true;
-	Lock(true);
+	if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this))
+	{
+		GameScreen->Open(ELyudScreenTab::Inventory);
+	}
 }
 
 void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>& Goods)
@@ -693,7 +600,7 @@ void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>&
 	UWorld* World = GetWorld();
 	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
 	ULyudInventory* Inv = ULyudInventory::Get(World);
-	if (!Viewport || !Inv || bOpen || bShop || !CanOpen())
+	if (!Viewport || !Inv || !CanOpen())
 	{
 		return;
 	}
@@ -735,29 +642,16 @@ void ULyudInventoryUI::CloseShop()
 		}
 	}
 	Shop.Reset();
+	ShopClosedFrame = GFrameCounter;
 	Lock(false);
 }
 
 void ULyudInventoryUI::Close()
 {
-	if (!bOpen)
+	if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this))
 	{
-		return;
+		GameScreen->Close();
 	}
-	bOpen = false;
-	if (UWorld* World = GetWorld())
-	{
-		if (UGameViewportClient* Viewport = World->GetGameViewport(); Viewport && Screen)
-		{
-			Viewport->RemoveViewportWidgetContent(Screen.ToSharedRef());
-		}
-		if (ULyudInventory* Inv = ULyudInventory::Get(World))
-		{
-			Inv->OnChanged.RemoveAll(this);
-		}
-	}
-	Screen.Reset();
-	Lock(false);
 }
 
 void ULyudInventoryUI::SetPrompt(const UObject* Key, const FText& Text)
@@ -944,12 +838,17 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TE
 		}
 	}));
 
-static FAutoConsoleCommandWithWorldAndArgs GShopOpen(TEXT("Shop.Open"), TEXT("Shop.Open [buy index]: opens the club owner's trade screen (headless checks); with an index, buys that good first"),
+static FAutoConsoleCommandWithWorldAndArgs GShopOpen(TEXT("Shop.Open"), TEXT("Shop.Open [buy index | close]: opens the club owner's trade screen (headless checks); with an index, buys that good; close closes it"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 		if (!UI)
 		{
+			return;
+		}
+		if (Args.Num() > 0 && Args[0] == TEXT("close"))
+		{
+			UI->CloseShopForTest();
 			return;
 		}
 		if (Args.Num() > 0 && UI->IsShopOpen())
@@ -958,6 +857,13 @@ static FAutoConsoleCommandWithWorldAndArgs GShopOpen(TEXT("Shop.Open"), TEXT("Sh
 				ULyudInventory::Get(World)->Rubles, ULyudInventory::Get(World)->Count(TEXT("bird_feed")));
 			return;
 		}
-		UI->OpenShop(LyudText::Get(TEXT("ui.shop.title"), { FStringFormatArg(LyudText::Get(TEXT("npc.owner.name")).ToString()) }), { FLyudShopGood{ TEXT("bird_feed"), 12, 5 } });
+		// the club owner's goods, as he sells them at his window
+		TActorIterator<ABoothOwner> Owner(World);
+		TArray<FLyudShopGood> Goods = { FLyudShopGood{ TEXT("bird_feed"), 12, 5 } };
+		if (Owner)
+		{
+			Goods = (*Owner)->Goods();
+		}
+		UI->OpenShop(LyudText::Get(TEXT("ui.shop.title"), { FStringFormatArg(LyudText::Get(TEXT("npc.owner.name")).ToString()) }), Goods);
 		UE_LOG(LogTemp, Warning, TEXT("SHOPTEST open -> %d"), UI->IsShopOpen() ? 1 : 0);
 	}));

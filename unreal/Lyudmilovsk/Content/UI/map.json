@@ -1,0 +1,125 @@
+{
+ "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",
+ "frame": {
+  "x_min": -1300.0,
+  "x_max": 1300.0,
+  "y_min": -900.0,
+  "y_max": 2200.0,
+  "portal_face_y": 790.0,
+  "metres_per_pixel": 1.25
+ },
+ "places": [
+  {
+   "id": "club",
+   "x": -1.9,
+   "y": -110.0,
+   "r": 0.0,
+   "kind": "building",
+   "known": true
+  },
+  {
+   "id": "club_door",
+   "x": -1.9,
+   "y": 6.0,
+   "r": 7.0,
+   "kind": "building",
+   "known": true
+  },
+  {
+   "id": "alley",
+   "x": -4.1,
+   "y": 63.0,
+   "r": 18.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "cable_upper",
+   "x": -15.0,
+   "y": 133.0,
+   "r": 16.0,
+   "kind": "transport",
+   "known": false
+  },
+  {
+   "id": "cable_lower",
+   "x": -255.0,
+   "y": 520.0,
+   "r": 20.0,
+   "kind": "transport",
+   "known": false
+  },
+  {
+   "id": "academ",
+   "x": -240.2,
+   "y": 625.0,
+   "r": 70.0,
+   "kind": "building",
+   "known": false
+  },
+  {
+   "id": "town",
+   "x": -330.0,
+   "y": 900.0,
+   "r": 260.0,
+   "kind": "town",
+   "known": false
+  },
+  {
+   "id": "promenade",
+   "x": 142.0,
+   "y": 850.0,
+   "r": 40.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "beach",
+   "x": 118.5,
+   "y": 60.0,
+   "r": 25.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "starlings",
+   "x": 433.3,
+   "y": 250.0,
+   "r": 150.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "valley",
+   "x": -620.0,
+   "y": 560.0,
+   "r": 0.0,
+   "kind": "land",
+   "known": true
+  },
+  {
+   "id": "upland",
+   "x": -300.0,
+   "y": -450.0,
+   "r": 0.0,
+   "kind": "land",
+   "known": true
+  },
+  {
+   "id": "north_hills",
+   "x": -400.0,
+   "y": 1850.0,
+   "r": 0.0,
+   "kind": "land",
+   "known": true
+  },
+  {
+   "id": "sea",
+   "x": 900.0,
+   "y": 1200.0,
+   "r": 0.0,
+   "kind": "water",
+   "known": true
+  }
+ ]
+}

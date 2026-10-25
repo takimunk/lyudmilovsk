@@ -152,7 +152,7 @@ void ABoothOwner::TickTrade()
 		UI->SetPrompt(this, FText::GetEmpty());
 		bTradePrompt = false;
 		UI->OpenShop(LyudText::Get(TEXT("ui.shop.title"), { FStringFormatArg(LyudText::Get(TEXT("npc.owner.name")).ToString()) }),
-			{ FLyudShopGood{ TEXT("bird_feed"), FeedPrice, FeedCount } });
+			Goods());
 	}
 }
 
@@ -221,4 +221,10 @@ void ABoothOwner::Tick(float DeltaSeconds)
 		break;
 	}
 	TickTrade();
+}
+
+TArray<FLyudShopGood> ABoothOwner::Goods() const
+{
+	return { FLyudShopGood{ TEXT("bird_feed"), FeedPrice, FeedCount }, FLyudShopGood{ TEXT("head_lamp"), HeadLampPrice, 1 },
+		FLyudShopGood{ TEXT("binoculars"), BinocularsPrice, 1 } };
 }

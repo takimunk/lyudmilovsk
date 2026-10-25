@@ -29,7 +29,9 @@ public:
 	TSoftObjectPtr<ULevelSequence> SitSequence;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Seat")
-	FString Prompt = TEXT("[E]  Сесть за компьютер");
+	FString PromptKey = TEXT("ui.seat.prompt");
+
+	bool bPromptShown = false;
 
 	/** bSkipToEnd: the hero is seated at once (a loaded save), the cutscene jumps to its last frame. */
 	UFUNCTION(BlueprintCallable, Category = "Seat")

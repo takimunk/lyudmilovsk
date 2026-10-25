@@ -1,0 +1,46 @@
+{
+ "comment": "The quests (docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird. A target ending in * matches by prefix.",
+ "quests": [
+  {
+   "id": "awakening",
+   "kind": "main",
+   "auto_start": true,
+   "stages": [
+    {"id": "wake", "objectives": [{"id": "leave_pc", "event": "leave_computer", "place": "club"}]},
+    {"id": "owner", "objectives": [{"id": "talk_owner", "event": "talk", "target": "owner", "place": "club"}]},
+    {"id": "outside", "objectives": [{"id": "go_out", "event": "reach", "target": "club_door"}]},
+    {"id": "cable", "objectives": [{"id": "reach_cable", "event": "reach", "target": "cable_upper"}],
+     "reward": {"start": ["explore"]}}
+   ]
+  },
+  {
+   "id": "birds",
+   "kind": "side",
+   "start_on": {"event": "reach", "target": "club_door"},
+   "stages": [
+    {"id": "feed", "objectives": [{"id": "feed_hand", "event": "use", "target": "bird_feed", "need": 3, "place": "club_door"}]}
+   ]
+  },
+  {
+   "id": "soda",
+   "kind": "side",
+   "start_on": {"event": "leave_computer"},
+   "stages": [
+    {"id": "drink", "objectives": [{"id": "drink_any", "event": "use", "target": "drink_*", "place": "club"}]}
+   ]
+  },
+  {
+   "id": "explore",
+   "kind": "side",
+   "stages": [
+    {"id": "walk", "objectives": [
+     {"id": "see_beach", "event": "reach", "target": "beach"},
+     {"id": "see_lower", "event": "reach", "target": "cable_lower"},
+     {"id": "see_academ", "event": "reach", "target": "academ"},
+     {"id": "see_promenade", "event": "reach", "target": "promenade"}
+    ],
+     "reward": {"rubles": 50}}
+   ]
+  }
+ ]
+}
