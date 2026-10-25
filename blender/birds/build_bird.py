@@ -42,6 +42,11 @@ M = dict(ART.MORPH_DEFAULTS, **A["morph"])
 PLUM = A["plumage"]
 rng = random.Random(zlib.crc32(SPECIES.encode()))   # stable across runs (hash() is salted)
 OUTDIR = os.path.join(C.OUT, SPECIES)
+# --hero: the body the player flies in: ~3-4x the feathers, a 4096 atlas, the same skeleton (SK_<Id>_Hero on SKEL_<Id>)
+HERO = "--hero" in FLAGS
+TAG = SPECIES + ("_Hero" if HERO else "")
+if HERO:
+    PL.CELL = {k: (w * 2, h * 2) for k, (w, h) in PL.CELL.items()}
 os.makedirs(os.path.join(OUTDIR, "previews"), exist_ok=True)
 
 
@@ -400,7 +405,7 @@ def tract(name, i=None):
 
 
 # ====================================================================== atlas
-ATL = PL.Atlas(2048)
+ATL = PL.Atlas(4096 if HERO else 2048)
 SHAPE = M.get("feather_shapes", {})
 
 
@@ -465,13 +470,13 @@ def paint_atlas(variant=""):
     col = bleed(col, alpha)
     srgb = C.lin_to_srgb(col)
     rgba = np.concatenate([srgb, alpha[..., None]], axis=2).astype(np.float32)
-    albedo = save_image(f"T_{SPECIES}_Albedo" + (f"_{variant}" if variant else ""), rgba, alpha=True)
+    albedo = save_image(f"T_{TAG}_Albedo" + (f"_{variant}" if variant else ""), rgba, alpha=True)
     if variant:
         return albedo
     nmap = C.normal_from_height(height, 0.35)
-    normal = save_image(f"T_{SPECIES}_Normal", np.concatenate([nmap, np.ones((n, n, 1))], axis=2).astype(np.float32), data=True)
+    normal = save_image(f"T_{TAG}_Normal", np.concatenate([nmap, np.ones((n, n, 1))], axis=2).astype(np.float32), data=True)
     params = np.stack([rough, irid, alpha, np.ones((n, n))], axis=2).astype(np.float32)
-    par = save_image(f"T_{SPECIES}_Params", params, data=True)
+    par = save_image(f"T_{TAG}_Params", params, data=True)
     return albedo, normal, par
 
 
@@ -506,7 +511,7 @@ def save_image(name, rgba, alpha=False, data=False):
     return im
 
 
-NZ_BODY, NA_BODY = 44, 28
+NZ_BODY, NA_BODY = (66, 42) if HERO else (44, 28)
 
 
 def body_zs():
@@ -650,6 +655,9 @@ def surf(z, th):
     kb = 1 - smooth(-0.03, -0.012, z)     # and the belly, over the rear body (no steps: a step stands feathers up)
     hd *= 1 + (M["throat"] - 1) * kh + (M["belly"] - 1) * kb + M["keel"] * math.exp(-((z - 0.008) / 0.024) ** 2)
     hu *= 1 + (M["crown_h"] - 1) * kh
+    if M["neck_thin"]:   # a slender neck between body and head (swan, cormorant)
+        kn = M["neck_thin"] * math.exp(-((z - 0.043) / 0.008) ** 2)
+        hw, hu, hd = hw * (1 - kn), hu * (1 - kn), hd * (1 - kn)
     if M["rear_taper"]:   # a slim, tapering rear (swift, cormorant)
         kr = 1 - M["rear_taper"] * smooth(-0.012, -0.05, z)
         hw, hu, hd = hw * kr, hu * kr, hd * kr
@@ -702,6 +710,8 @@ def beak_section(t):
     hu = (0.0072 * taper + 0.0002) * M["beak_depth"] * 0.55
     hd = (0.0072 * taper + 0.0002) * M["beak_depth"] * 0.45
     cy = 0.0577 - 0.0016 * t - 0.0006 * t * t - M["beak_curve"] * t ** 2.2
+    if M["beak_knob"] > 0:   # the mute swan's black knob on top of the bill at its base
+        hu *= 1 + M["beak_knob"] * math.exp(-((t - 0.1) / 0.11) ** 2)
     if M["beak_gonys"] > 0:  # gulls: the lower mandible deepens to an angle near the tip
         hd *= 1 + M["beak_gonys"] * math.exp(-((t - 0.72) / 0.12) ** 2)
     return hw, hu, hd, cy, z
@@ -927,12 +937,12 @@ def build_wing(sb, lod=0):
     for i in range(P_N):
         Lp = W["P_LEN"][i]
         wc = max(Lp * 96 / 576 * 1.05 * pw, spacing(proots, i) * 2.0)
-        card(sb, proots[i], p_dir(i), up, Lp, wc, cell("primary", tract("primary", i)), {f"p{i + 1}.L": 1}, camber=-0.004 * k, segs=fseg or 6)
+        card(sb, proots[i], p_dir(i), up, Lp, wc, cell("primary", tract("primary", i)), {f"p{i + 1}.L": 1}, camber=-0.004 * k, segs=fseg or (9 if HERO else 6))
     for i in range(S_TOTAL):
         kind = "tertial" if i >= S_N else "secondary"
         cw = max(W["S_LEN"][i] * (96 / 416 if kind == "tertial" else 96 / 480) * 1.08 * M["sec_width"], spacing(sroots, i) * 2.2)
         nm = tract(kind, i - S_N if kind == "tertial" else i)
-        card(sb, sroots[i], s_dir(i), up, W["S_LEN"][i], cw, cell(kind, nm), {f"s{i + 1}.L": 1}, camber=-0.002 * k, segs=fseg or 5)
+        card(sb, sroots[i], s_dir(i), up, W["S_LEN"][i], cw, cell(kind, nm), {f"s{i + 1}.L": 1}, camber=-0.002 * k, segs=fseg or (8 if HERO else 5))
     ck = k * M["sec"]
     for i in range(S_TOTAL):
         r, d = sroots[i], s_dir(i)
@@ -1008,7 +1018,7 @@ def build_contour(sb, lod=0):
         hw, hu, hd, cy = station(z)
         per = math.pi * (hw + (hu + hd) / 2)
         Wc = Lc * 0.8
-        kk = max(6, int(per / (Wc * 0.45)))
+        kk = max(6, int(per / (Wc * (0.22 if HERO else 0.45))))
         phase = rng.uniform(0, 1)
         for j in range(kk):
             th = 2 * math.pi * (j + phase + rng.uniform(-0.2, 0.2)) / kk
@@ -1035,7 +1045,7 @@ def build_contour(sb, lod=0):
             s0 = len(sb.verts)
             card(sb, root, flow, nn, Ls, Wc * rng.uniform(0.9, 1.1), key, w, segs=2, lift=(0.0005 + 0.0003 * rng.random()) * st.get("loft", 1.0),
                  flip=rng.random() < 0.5)
-            if lod == 0 and zz < 0.070 and rng.random() < M["fluff_layer"]:
+            if lod == 0 and zz < 0.070 and rng.random() < min(1.0, M["fluff_layer"] * (1.4 if HERO else 1.0)):
                 # a plume over it: mostly loose barbs, lifted and turned a little, so the surface reads soft and
                 # the silhouette fuzzy (the down and semiplumes showing between contour feathers)
                 turn = rot_axis(nn, rng.uniform(-0.45, 0.45))
@@ -1045,7 +1055,7 @@ def build_contour(sb, lod=0):
             for vi in range(s0, len(sb.verts)):
                 sb.verts[vi] = tuple(warp(sb.verts[vi]))
             n += 1
-        z += Lc * (0.33 if lod == 0 else 0.6)
+        z += Lc * ((0.19 if HERO else 0.33) if lod == 0 else 0.6)
     # crest (waxwing): long lanceolate feathers from the crown, swept back and up
     if M["crest"] > 0:
         for j in range(9):
@@ -1685,7 +1695,7 @@ def main():
     rig = {"species": SPECIES, "scale": S, "eye_l": ue(warp(EYE_T)), "eye_r": ue(warp(EYE_T * V(-1, 1, 1))),
            "head": ue(BONES["head"][0]), "lengthCm": SP["lengthCm"], "wingspanCm": SP["wingspanCm"], "tris": len(ob.data.loop_triangles),
            "atlas": ATL.size, "clips": sorted(Acts), "gloss_hue": M.get("gloss_hue", 0.0)}
-    json.dump(rig, open(os.path.join(OUTDIR, f"{SPECIES}_rig.json"), "w"), indent=1)
+    json.dump(rig, open(os.path.join(OUTDIR, f"{TAG}_rig.json"), "w"), indent=1)
     if "--debug-top" in FLAGS:
         show(arm, Acts["Idle"], 0)
         dg = bpy.context.evaluated_depsgraph_get()
@@ -1725,6 +1735,20 @@ def main():
         pb.location = (0, 0, 0)
         pb.rotation_quaternion = (1, 0, 0, 0)
         pb.scale = (1, 1, 1)
+    if HERO:   # one mesh, no LODs, no clips (it plays SKEL_<Id>'s) and no far poses
+        ob.name = f"SK_{SPECIES}_Hero"
+        bpy.ops.object.select_all(action="DESELECT")
+        ob.select_set(True)
+        arm.select_set(True)
+        bpy.context.view_layer.objects.active = arm
+        path = os.path.join(OUTDIR, f"{SPECIES}_Hero.glb")
+        kw = dict(filepath=path, export_format="GLB", use_selection=True, export_yup=True, export_apply=False, export_normals=True,
+                  export_texcoords=True, export_materials="EXPORT", export_skins=True, export_animations=False, export_vertex_color="NONE",
+                  export_def_bones=False, export_image_format="NONE")
+        props = bpy.ops.export_scene.gltf.get_rna_type().properties
+        bpy.ops.export_scene.gltf(**{k: v for k, v in kw.items() if k in props or k == "filepath"})
+        print("EXPORTED", path, os.path.getsize(path), "bytes")
+        return
     lods = build_lods(arm, mats)
     # one glb, the LODs named LODn_<mesh>: Interchange folds them into one skeletal mesh with LODs (a second
     # Interchange import in the same Unreal process comes back empty, so everything rides in this one)

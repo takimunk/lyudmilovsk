@@ -168,6 +168,13 @@ USkeletalMesh* UBirdSpeciesLibrary::LoadSkeletalMesh(FName Id)
 	return LoadObject<USkeletalMesh>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/SK_%s.SK_%s"), *N, *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet);
 }
 
+USkeletalMesh* UBirdSpeciesLibrary::LoadHeroMesh(FName Id)
+{
+	const FString N = Id.ToString();
+	return LoadObject<USkeletalMesh>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/SK_%s_Hero.SK_%s_Hero"), *N, *N, *N), nullptr,
+		LOAD_NoWarn | LOAD_Quiet);
+}
+
 UAnimSequence* UBirdSpeciesLibrary::LoadClip(FName Id, FName Clip)
 {
 	const FString N = Id.ToString(), C = Clip.ToString();

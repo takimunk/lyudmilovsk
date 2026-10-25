@@ -13,7 +13,7 @@ plumage:
 
 MORPH_DEFAULTS = dict(
     body_len=1.0, body_w=1.0, body_h=1.0, belly=1.0, head=1.0, neck=1.0, neck_up=0.0, throat=1.0, crown_h=1.0, flat_crown=0.3,
-    eye=1.15, eyering_w=0.0, beak_round=1.0, trousers=1.0,
+    eye=1.15, eyering_w=0.0, beak_round=1.0, trousers=1.0, beak_knob=0.0, neck_thin=0.0,
     beak_len=1.0, beak_depth=1.0, beak_width=1.0, beak_taper=0.85, beak_curve=0.0, beak_hook=0.0, beak_gonys=0.0,
     arm=1.0, hand=1.0, prim=1.0, prim_profile=[1.0] * 9, prim_width=1.0, prim_angle0=70.0, prim_fan=60.0, sec=1.0, sec_width=1.0, covert=1.0,
     tail=1.0, tail_shape="square", fork=0.0, streamer=0.0, tail_width=1.0, tail_fan=1.0,
@@ -757,7 +757,7 @@ SPECIES["FeralPigeon"]["morph"].update(body_h=1.22, belly=1.05)
 SPECIES["WoodPigeon"]["morph"].update(body_h=1.22, belly=1.05)
 
 # perched poses (QA): the cormorant upright with the bill level, aerial birds on their short legs, not on their bellies
-SPECIES["Cormorant"]["morph"].update(body_w=1.15, body_h=1.1, perch_pitch=40, perch_neck=-14, perch_head=-28, neck=2.2)
+SPECIES["Cormorant"]["morph"].update(neck_thin=0.3, body_w=1.15, body_h=1.1, perch_pitch=40, perch_neck=-14, perch_head=-28, neck=2.2)
 for _n in ("CommonSwift", "BarnSwallow", "SandMartin"):
     SPECIES[_n]["morph"]["perch_low"] = 0.0015
 SPECIES["CommonSwift"]["morph"].update(prim=1.5, perch_neck=-30, perch_head=-34)
@@ -828,3 +828,26 @@ for _n, _f in FEMALE.items():
     SPECIES[_n]["plumage"]["female"] = _f
 SPECIES["Cormorant"]["morph"]["perch_low"] = 0.012     # short legs set far back: the body sits low on them
 SPECIES["CommonSwift"]["morph"]["perch_low"] = 0.007
+
+
+# ---------------------------------------------------------------- Mute swan (Cygnus olor)
+species("MuteSwan", dict(body_len=1.3, body_w=1.45, body_h=1.2, belly=1.05, head=0.9, neck=4.2, n_neck=3, neck_s=-12.0, neck_up=0.004,
+                         crown_h=1.0, flat_crown=0.6, throat=1.0, beak_len=1.2, beak_depth=0.95, beak_width=1.5, beak_round=1.2, beak_taper=0.5,
+                         beak_hook=0.3, beak_knob=2.2, beak_curve=-0.0006, eye=0.9, neck_thin=0.5,
+                         arm=1.2, hand=1.0, prim=1.0, prim_profile=FINGERED, n_prim=10, p_outer=0.9, n_sec=20, sec=1.05, fingers=0.5,
+                         tail=0.7, tail_shape="wedge", fork=0.25, n_tail=7, tarsus=0.75, leg_thick=2.0, toes=1.6, webbed=True, foot="aniso",
+                         hallux=0.4, fluff=1.1, fluff_layer=0.3, keel=0.1, perch_pitch=4, perch_neck=66, perch_head=-34, perch_tail=6,
+                         perch_low=0.012, glide_elev=4, glide_sweep=-4, call_gape=24, gloss_hue=0.0), dict(
+    styles={
+        "white": st("#f6f6f2", ("down", "#e4e2dc"), rough=0.7),
+        "head": st("#f4f2ea", ("down", "#e2dccc")),
+        "flight": st("#f2f2ee", ("shaft", "#e0e0dc")),
+        "lore": st("#141414", bare=True, skin="#141414"),
+        "under": st("#ecece8"),
+    },
+    regions={"upper": "white", "under": "white", "head": "head", "primary": "flight", "secondary": "flight", "tertial": "white",
+             "tail": "white", "underwing": "under"},
+    rules=[(lambda q: q.head and q.region == "lore" and q.dz > 0.0015, "lore")],
+    bare=dict(beak="#141414", beak_tip="#e86a2a", lower="#e06a2a", lower_tip="#e06a2a", tip_from=0.18, base_skin="#141414", base_skin_len=0.2,
+              legs="#2a2a2a", iris="#1a120c", eyering="#2a2a2a", mouth="#c86a5a", beak_rough=0.55),
+))
