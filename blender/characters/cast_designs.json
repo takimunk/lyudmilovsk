@@ -1,0 +1,90 @@
+{
+ "_doc": "Design sheets for the club cast remade to the character standard (docs/characters.md): the front T-pose picture of each, Higgsfield nano_banana_2_1 2k 1:1 thinking high. Shown to Dima before any 3D. job = Higgsfield job id.",
+ "pose": "Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic.",
+ "cast": [
+  {
+   "id": "owner",
+   "seed": 3001,
+   "job": "d33927ea-1ab3-42e8-a335-604eb0eff499",
+   "look": "a 61-year-old Japanese man, owner of a small computer club: pale skin, tired calm kind eyes with bags under them, short grey hair, short trimmed grey scruffy beard, a dark brown chunky fisherman knit sweater, grey-brown wool trousers, black leather monk-strap shoes.",
+   "prompt": "Full-body character reference for 3D modelling of a 61-year-old Japanese man, owner of a small computer club: pale skin, tired calm kind eyes with bags under them, short grey hair, short trimmed grey scruffy beard, a dark brown chunky fisherman knit sweater, grey-brown wool trousers, black leather monk-strap shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "clerk",
+   "seed": 3002,
+   "job": "0ed0628e-595d-477b-b5f3-14801084b9a7",
+   "look": "a 46-year-old Japanese office clerk: slightly heavy build with a small belly, short neat black hair, thin silver metal-rimmed glasses, tired eyes, a white long-sleeve shirt tucked in with a navy tie with thin dark red stripes, dark grey suit trousers with a black belt, black polished oxford shoes.",
+   "prompt": "Full-body character reference for 3D modelling of a 46-year-old Japanese office clerk: slightly heavy build with a small belly, short neat black hair, thin silver metal-rimmed glasses, tired eyes, a white long-sleeve shirt tucked in with a navy tie with thin dark red stripes, dark grey suit trousers with a black belt, black polished oxford shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "streamer",
+   "seed": 3003,
+   "job": "37d9bd5d-5ae7-465c-bba7-6188b9a4f8b0",
+   "look": "a 23-year-old woman streamer, half East Asian half Slavic: long straight hair dyed pastel pink-lilac, a black gaming headset resting around her neck, a fitted black high-neck crop top, black skinny jeans, white chunky sneakers.",
+   "prompt": "Full-body character reference for 3D modelling of a 23-year-old woman streamer, half East Asian half Slavic: long straight hair dyed pastel pink-lilac, a black gaming headset resting around her neck, a fitted black high-neck crop top, black skinny jeans, white chunky sneakers. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "kid_boy",
+   "seed": 3004,
+   "job": "d6498298-cf5d-4688-8600-8f602cb64214",
+   "look": "an 11-year-old Russian schoolboy: short messy light brown hair, freckles, a slightly oversized plain red t-shirt, straight blue jeans, grey-and-white running shoes.",
+   "prompt": "Full-body character reference for 3D modelling of an 11-year-old Russian schoolboy: short messy light brown hair, freckles, a slightly oversized plain red t-shirt, straight blue jeans, grey-and-white running shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "kid_girl",
+   "seed": 3005,
+   "job": "6749ee57-3d20-4e06-aed1-794508b63251",
+   "look": "a 9-year-old Russian schoolgirl: light brown hair in a high ponytail, a plain light blue t-shirt, straight blue jeans, white sneakers with pink laces.",
+   "prompt": "Full-body character reference for 3D modelling of a 9-year-old Russian schoolgirl: light brown hair in a high ponytail, a plain light blue t-shirt, straight blue jeans, white sneakers with pink laces. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "guy_a",
+   "seed": 3006,
+   "job": "0c256e6a-2300-4c75-a491-13abf7a326b8",
+   "look": "a 19-year-old Russian male student and gamer: round face, short dark blond hair, a slightly loose plain heather grey t-shirt without any print, dark grey straight trousers, black skate shoes.",
+   "prompt": "Full-body character reference for 3D modelling of a 19-year-old Russian male student and gamer: round face, short dark blond hair, a slightly loose plain heather grey t-shirt without any print, dark grey straight trousers, black skate shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "guy_b",
+   "seed": 3007,
+   "job": "ec88e68b-8eca-415f-b1ca-7f7ed6c82c62",
+   "look": "a 27-year-old Kazakh man, a warehouse worker: lean, short black hair, relaxed friendly face, a dark navy polo shirt, faded blue jeans, brown leather work boots.",
+   "prompt": "Full-body character reference for 3D modelling of a 27-year-old Kazakh man, a warehouse worker: lean, short black hair, relaxed friendly face, a dark navy polo shirt, faded blue jeans, brown leather work boots. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "girl_a",
+   "seed": 3008,
+   "job": "25f69148-4e8f-4a6a-a2f0-f83d427a3b65",
+   "look": "a 36-year-old Russian woman, an engineer at a research laboratory: dark brown blunt bob with bangs, attentive grey eyes, a cream long-sleeve knit top, dark blue straight jeans, white leather sneakers, a simple wristwatch.",
+   "prompt": "Full-body character reference for 3D modelling of a 36-year-old Russian woman, an engineer at a research laboratory: dark brown blunt bob with bangs, attentive grey eyes, a cream long-sleeve knit top, dark blue straight jeans, white leather sneakers, a simple wristwatch. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "girl_b",
+   "seed": 3009,
+   "job": "9e1bb29f-7a7f-4ac2-831f-d1729a21bbd9",
+   "look": "a 25-year-old Russian woman, a librarian: long straight light brown hair, curious eyes, an oversized soft lilac zip-up hoodie, slim black jeans, grey running shoes.",
+   "prompt": "Full-body character reference for 3D modelling of a 25-year-old Russian woman, a librarian: long straight light brown hair, curious eyes, an oversized soft lilac zip-up hoodie, slim black jeans, grey running shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "crowd_11",
+   "seed": 3010,
+   "job": "cba9a312-2658-4158-bccc-7b533a78a96f",
+   "look": "a 31-year-old Russian fisherman from the Baltic coast: weathered sunburnt face, short dark stubble, a dark navy knit watch cap, a thick dark green wool jumper, dark canvas work trousers, black rubber boots to mid-calf.",
+   "prompt": "Full-body character reference for 3D modelling of a 31-year-old Russian fisherman from the Baltic coast: weathered sunburnt face, short dark stubble, a dark navy knit watch cap, a thick dark green wool jumper, dark canvas work trousers, black rubber boots to mid-calf. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the cap to the soles of the boots, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "crowd_12",
+   "seed": 3011,
+   "job": "f9b8addb-5646-46c3-bfec-b6399298238f",
+   "look": "a 28-year-old Russian woman, a school teacher: auburn hair in a low neat bun, a beige button cardigan over a white blouse, a grey A-line skirt to mid-calf, black tights, brown leather ankle boots.",
+   "prompt": "Full-body character reference for 3D modelling of a 28-year-old Russian woman, a school teacher: auburn hair in a low neat bun, a beige button cardigan over a white blouse, a grey A-line skirt to mid-calf, black tights, brown leather ankle boots. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  },
+  {
+   "id": "crowd_13",
+   "seed": 3012,
+   "job": "d9f2e432-8678-44bd-b166-6deb3d51d86a",
+   "look": "a 21-year-old Russian male student: thin, curly dark brown hair, black plastic-rimmed glasses, an unbuttoned green-and-navy flannel shirt over a plain white t-shirt, light blue jeans, dark grey sneakers.",
+   "prompt": "Full-body character reference for 3D modelling of a 21-year-old Russian male student: thin, curly dark brown hair, black plastic-rimmed glasses, an unbuttoned green-and-navy flannel shirt over a plain white t-shirt, light blue jeans, dark grey sneakers. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+  }
+ ]
+}

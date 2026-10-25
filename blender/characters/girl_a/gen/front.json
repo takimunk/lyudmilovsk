@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "25f69148-4e8f-4a6a-a2f0-f83d427a3b65",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3008,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 36-year-old Russian woman, an engineer at a research laboratory: dark brown blunt bob with bangs, attentive grey eyes, a cream long-sleeve knit top, dark blue straight jeans, white leather sneakers, a simple wristwatch. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200734_25f69148-4e8f-4a6a-a2f0-f83d427a3b65.png",
+ "output_file": "front.png",
+ "sha256": "4fd06d7e0da3d9c04fab27dbc44cabe5793db518e4486afc053133c7c1368460",
+ "credits": 2
+}

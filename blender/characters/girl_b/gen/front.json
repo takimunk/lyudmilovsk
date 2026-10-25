@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "9e1bb29f-7a7f-4ac2-831f-d1729a21bbd9",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3009,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 25-year-old Russian woman, a librarian: long straight light brown hair, curious eyes, an oversized soft lilac zip-up hoodie, slim black jeans, grey running shoes. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_9e1bb29f-7a7f-4ac2-831f-d1729a21bbd9.png",
+ "output_file": "front.png",
+ "sha256": "3abab38d0ce42f63f50bed4a8b46c98f355c08c263d5480b65ae130f43aef2e9",
+ "credits": 2
+}

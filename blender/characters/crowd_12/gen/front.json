@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "f9b8addb-5646-46c3-bfec-b6399298238f",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3011,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 28-year-old Russian woman, a school teacher: auburn hair in a low neat bun, a beige button cardigan over a white blouse, a grey A-line skirt to mid-calf, black tights, brown leather ankle boots. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200733_f9b8addb-5646-46c3-bfec-b6399298238f.png",
+ "output_file": "front.png",
+ "sha256": "15cdb5a91a956b46e37062577f8b9a0143b816d124c66f5beaa0ad3a8e967580",
+ "credits": 2
+}

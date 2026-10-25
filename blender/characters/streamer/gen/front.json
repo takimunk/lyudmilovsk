@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "37d9bd5d-5ae7-465c-bba7-6188b9a4f8b0",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3003,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 23-year-old woman streamer, half East Asian half Slavic: long straight hair dyed pastel pink-lilac, a black gaming headset resting around her neck, a fitted black high-neck crop top, black skinny jeans, white chunky sneakers. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_37d9bd5d-5ae7-465c-bba7-6188b9a4f8b0.png",
+ "output_file": "front.png",
+ "sha256": "8ad86e751e557ef3ea6f80463368696b8a2667e3d4c65fced06ba8eebf528669",
+ "credits": 2
+}

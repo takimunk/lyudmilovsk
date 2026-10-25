@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "6749ee57-3d20-4e06-aed1-794508b63251",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3005,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 9-year-old Russian schoolgirl: light brown hair in a high ponytail, a plain light blue t-shirt, straight blue jeans, white sneakers with pink laces. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_6749ee57-3d20-4e06-aed1-794508b63251.png",
+ "output_file": "front.png",
+ "sha256": "674fbee7e8d6d7eecded6f152f08e54ca539f5e76ed8aad62b7cf95264300ea8",
+ "credits": 2
+}
