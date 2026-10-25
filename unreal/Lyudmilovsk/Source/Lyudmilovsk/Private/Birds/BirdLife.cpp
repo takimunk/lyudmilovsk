@@ -2,6 +2,7 @@
 
 #include "BirdSim.h"
 #include "Birds/BirdActor.h"
+#include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -436,13 +437,13 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	P.Feet = FromUE(Pawn->GetActorLocation() - FVector(0.0, 0.0, Half));
 	P.Vel = FromUE(Pawn->GetVelocity());
 	P.bCrouched = Char && Char->bIsCrouched;
-	FVector Eye = Pawn->GetActorLocation() + FVector(0.0, 0.0, Half * 0.8);
-	FRotator View = Pawn->GetControlRotation();
-	if (PC && PC->PlayerCameraManager)
+	// the hero's own eyes and look, never the camera's (a side camera, a camera flight or a cut is not the hero turning)
+	FVector Eye = Pawn->GetPawnViewLocation();
+	if (const AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn))
 	{
-		Eye = PC->PlayerCameraManager->GetCameraLocation();
-		View = PC->PlayerCameraManager->GetCameraRotation();
+		Eye = Hero->EyeLocation();
 	}
+	const FRotator View = Pawn->GetControlRotation();
 	P.Eye = FromUE(Eye);
 	P.Facing = FromUE(View.Vector() * 100.0);
 	// how fast the view turns (deg/s), smoothed a little so a single jerky frame doesn't count
@@ -463,7 +464,8 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	P.bOffer = bOffer;
 	P.Palm = FromUE(LastPalm);
 	P.HandSpeed = HandSpeed;
-	S.Camera = P.Eye;
+	// LOD and drawing follow the real camera; perception the hero's eyes (the bird near the hero thinks every frame too)
+	S.Camera = PC && PC->PlayerCameraManager ? FromUE(PC->PlayerCameraManager->GetCameraLocation()) : P.Eye;
 	P.bClaimedBird = false;
 	for (const FBird& B : S.Birds)
 	{

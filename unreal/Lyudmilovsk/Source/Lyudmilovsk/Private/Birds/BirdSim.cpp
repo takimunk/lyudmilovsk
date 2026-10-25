@@ -1320,7 +1320,7 @@ namespace LyudBirds
 		}
 		for (FBird& B : Birds)
 		{
-			const float D = (B.Pos - Camera).Len();
+			const float D = std::min((B.Pos - Camera).Len(), Player.bPresent ? (B.Pos - Player.Eye).Len() : 1e9f);
 			B.Tier = D < Opt.NearDist ? 0 : (D < Opt.MidDist ? 1 : (D < Opt.FarDist ? 2 : 3));
 			if (B.Act == EAct::Approach || B.Act == EAct::Eat || B.Id == Approacher)
 			{
