@@ -154,6 +154,53 @@ if PART in ("all", "life"):
         step(_watch, 2.5)
 
 
+if PART == "town":
+    SQ = (-25159.0, 61341.0, -3616.0)
+
+    def animal(w, i):
+        r = life(w).get_animal(i)
+        if isinstance(r, tuple):
+            return r[1] if r[0] else None
+        return r
+
+    @step
+    def s_town(w):
+        cmd(w, "lyud.Birds.Time %s" % os.environ.get("ANIMTEST_TIME", "15 40"))
+        place(w, (SQ[0], SQ[1], SQ[2] + 170.0), -10.0, 0.0)
+        log("town " + life(w).report())
+    step(lambda w: log("town later " + life(w).report()), 20.0)
+    for k in range(4):
+        def _near(w, k=k):
+            ids = list(life(w).find_animals_near(unreal.Vector(SQ[0], SQ[1], SQ[2]), 9000.0))
+            if k < len(ids):
+                a = animal(w, ids[k])
+                log("near %d: %s" % (ids[k], life(w).describe(ids[k])))
+                t = a.location
+                look(w, (t.x - 260.0, t.y - 160.0, t.z + 110.0), (t.x, t.y, t.z + 20.0))
+                st["shoot"] = True
+            else:
+                st["shoot"] = False
+        step(_near, 2.0)
+        step(lambda w, k=k: shot(w, "town_%d" % k) if st.get("shoot") else None, 2.0)
+
+    @step
+    def s_perf_on(w):
+        place(w, (SQ[0] - 1500.0, SQ[1] - 800.0, SQ[2] + 400.0), -12.0, 30.0)
+        cmd(w, "csvprofile start")
+        log("perf on " + life(w).report())
+    STEPS[-1] = (STEPS[-1][0], 14.0)
+    step(lambda w: (cmd(w, "csvprofile stop"), log("perf on stop")), 2.0)
+
+    @step
+    def s_perf_off(w):
+        cmd(w, "lyud.Animals 0")
+        cmd(w, "csvprofile start")
+        log("perf off")
+    STEPS[-1] = (STEPS[-1][0], 14.0)
+    step(lambda w: (cmd(w, "csvprofile stop"), log("perf off stop")), 2.0)
+    step(lambda w: cmd(w, "lyud.Animals 1"), 2.0)
+
+
 @step
 def s_end(w):
     log("done")

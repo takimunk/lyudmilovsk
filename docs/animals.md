@@ -97,6 +97,10 @@ Animals within 50 m of the camera think every 0.15 s and see with line-of-sight 
 costs 0.008 ms a step. Drawn: the nearest 20 (lyud.Animals.Bodies) within 110 m (cats) or 176 m (dogs) as AAnimalActor
 bodies from a reused pool; shadows only within 50 m; no instanced far animals (they're a few pixels).
 
+Measured 2026-10-25 offscreen at 1600x900 Epic on the Academgorodok's square at 15:40 (20 bodies drawn, 10 animals in the
+near tier), one process, 12 s each: frame 23.99 ms with the animals, 23.75 ms without (lyud.Animals 0), game thread 6.32 vs
+6.25 ms. The benchmark route (tools/bench.sh 3, passes on/off, a busy Mac): 51.57 vs 51.21 ms, within the noise.
+
 ## API
 
 `UAnimalLifeSubsystem::Get(World)`: `GetAnimal(Id, Info)` (breed, coat, place, what it does and why, needs, fear, trust,
