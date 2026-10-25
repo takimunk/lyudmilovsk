@@ -230,4 +230,5 @@ private:
 	float SavedNearClip = -1.f;
 	bool bOwnOutsideBody = false;
 	bool bInsideView = true;
+	bool bFirstPersonBody = false;
 };

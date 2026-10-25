@@ -15,8 +15,10 @@
 #include "BirdSelfBody.h"
 #include "Birds/BirdActor.h"
 #include "Birds/BirdSpecies.h"
+#include "Plants/GameCalendar.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
@@ -46,7 +48,10 @@ namespace
 	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
 	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
 	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
-	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 150.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
+	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 118.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
+	TAutoConsoleVariable<int32> CVarEngineFP(TEXT("lyud.Bird.EngineFirstPerson"), 1, TEXT("First-person species body drawn through the engine's first-person view (1) or as it is (0)."));
+	TAutoConsoleVariable<int32> CVarBodyDebug(TEXT("lyud.Bird.BodyDebug"), 0, TEXT("Log the first-person body's place against the camera."));
+	TAutoConsoleVariable<float> CVarBodySweep(TEXT("lyud.Bird.BodySweep"), 60.f, TEXT("First-person species body: degrees the wings are drawn swept forward (ABirdActor::ViewSweepDeg)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -503,6 +508,12 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	UpdateBody(Dt);
 	UpdateHead(C, Dt);
 	UpdateOutsideBody(Dt);
+	{
+		// the sky lights the top of the wings by day, hardly at all at night
+		const float Hour = (float)UGameCalendar::NowIn(GetWorld()).GetTimeOfDay().GetTotalHours();
+		const float Day = FMath::SmoothStep(6.5f, 8.5f, Hour) * (1.f - FMath::SmoothStep(16.5f, 18.5f, Hour));
+		Body->SetSkyFill(0.03f + 0.17f * Day);
+	}
 }
 
 void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
@@ -969,7 +980,16 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 		Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Nod;
 		Eye += Gaze.Vector() * Peck * Body->BodyRadius() * 0.8f;
 	}
-	Head->SetWorldLocationAndRotation(GetActorLocation() + Eye, Gaze);
+	FVector EyeWorld = GetActorLocation() + Eye;
+	if (bFirstPersonBody && OutsideBody)
+	{
+		// the camera sits between the body's own eyes
+		// turning round or looking down, the neck lifts and draws the head back over the body (the wing, the breast in view)
+		const float Bend = FMath::Max(Turn, Down);
+		EyeWorld = OutsideBody->GetEyeTransform().GetLocation() + FVector(0, 0, Body->BodyRadius() * (0.6f * Turn + 1.4f * Down))
+			- FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Body->TorsoLength() * 0.45f * Bend;
+	}
+	Head->SetWorldLocationAndRotation(EyeWorld, Gaze);
 }
 
 FMinimalViewInfo ABirdPawn::BirdView() const
@@ -1025,12 +1045,32 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const float ToEye = FVector::Dist(P, Head->GetComponentLocation());
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
-	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird
+	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird. A species with a
+	// first-person body (the detailed pigeon) is that body inside too: skull hidden, bill kept, wings swept into view.
 	bInsideView = Inside > 0.5f;
-	Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
-	if (OutsideBody)
+	const bool bOwnBody = OutsideBody && UBirdSpeciesLibrary::HasFirstPersonBody(Species);
+	if (bOwnBody)
 	{
-		OutsideBody->SetActorHiddenInGame(bInsideView);
+		Body->SetShown(false, false);
+		OutsideBody->SetActorHiddenInGame(false);
+		if (bInsideView != bFirstPersonBody)
+		{
+			OutsideBody->ViewSweepDeg = CVarBodySweep.GetValueOnGameThread();
+			OutsideBody->SetFirstPerson(bInsideView);
+			if (USkeletalMeshComponent* M = OutsideBody->Body)
+			{
+				M->SetFirstPersonPrimitiveType(bInsideView && CVarEngineFP.GetValueOnGameThread() ? EFirstPersonPrimitiveType::FirstPerson : EFirstPersonPrimitiveType::None);
+			}
+			bFirstPersonBody = bInsideView;
+		}
+	}
+	else
+	{
+		Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
+		if (OutsideBody)
+		{
+			OutsideBody->SetActorHiddenInGame(bInsideView);
+		}
 	}
 	if (Inside > 0.5f)
 	{
@@ -1040,6 +1080,31 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const float LookDown = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gz.Pitch) - 30.f) / 30.f, 0.f, 1.f);
 		const float Turn = FMath::Max(FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gz.Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f), LookDown);
 		const float WideFov = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
+		if (bOwnBody)
+		{
+			// turning the head to a wing (or looking down) brings back its true shape and place
+			const float Sweep = FMath::Lerp(CVarBodySweep.GetValueOnGameThread(), 0.f, Turn);
+			if (FMath::Abs(Sweep - OutsideBody->ViewSweepDeg) > 1.5f || (Turn >= 1.f && OutsideBody->ViewSweepDeg != 0.f))
+			{
+				// ABirdActor takes the sweep in SetFirstPerson
+				OutsideBody->ViewSweepDeg = Sweep;
+				OutsideBody->ViewDroopRad = FMath::Lerp(0.2f, 0.f, Turn);
+				OutsideBody->SetFirstPerson(true);
+			}
+			// the engine's first-person view for the body: drawn with a wider field of view than the scene's
+			OutResult.bUseFirstPersonParameters = true;
+			OutResult.FirstPersonFOV = WideFov;
+			OutResult.FirstPersonScale = 1.f;
+			static double Last = 0;
+			if (CVarBodyDebug.GetValueOnGameThread() && FPlatformTime::Seconds() - Last > 0.5)
+			{
+				Last = FPlatformTime::Seconds();
+				const USkeletalMeshComponent* M = OutsideBody->Body;
+				UE_LOG(LogTemp, Warning, TEXT("BIRDFP turn %.2f cam %s actor %s eye %s bounds %s hidden %d vis %d"), Turn,
+					*OutResult.Location.ToCompactString(), *OutsideBody->GetActorLocation().ToCompactString(), *OutsideBody->GetEyeTransform().GetLocation().ToCompactString(),
+					M ? *M->Bounds.GetBox().ToString() : TEXT("-"), OutsideBody->IsHidden() ? 1 : 0, M && M->IsVisible() ? 1 : 0);
+			}
+		}
 		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation,
 			FMath::Tan(FMath::DegreesToRadians(OutResult.FOV * 0.5f)) / FMath::Tan(FMath::DegreesToRadians(FMath::Min(WideFov, 170.f) * 0.5f)));
 		Body->SetViewForward((1.f - Turn) * (Mode == EBirdMode::Air ? 1.f : 0.f));
@@ -1091,6 +1156,14 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 	if (Want != A->GetState())
 	{
 		A->SetState(Want);
+	}
+	if (Mode == EBirdMode::Air || bFirstPersonBody)
+	{
+		// the wings, tail and legs exactly as the flight has them
+		const bool bBeat = S.BurstL > 0 || S.BurstR > 0 || S.PhaseL > 0 || S.PhaseR > 0;
+		const float Fold01 = Mode == EBirdMode::Air ? 0.f : Fold;
+		A->SetWingPose((float)S.SpreadL * (1.f - Fold01), (float)S.SpreadR * (1.f - Fold01), (float)S.PhaseL, (float)S.PhaseR, bBeat ? 1.f : 0.f, Flare,
+			FMath::Clamp(FMath::Max(Flare, FMath::Abs((float)S.Bank) * 0.5f), 0.f, 1.f) * (1.f - Fold01), LegsDown);
 	}
 }
 

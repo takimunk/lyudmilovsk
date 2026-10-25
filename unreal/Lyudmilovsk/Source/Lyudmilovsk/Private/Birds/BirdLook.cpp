@@ -180,7 +180,7 @@ namespace BirdLook
 			// --- starling: black with a green and purple sheen and pale autumn spots
 			{
 				const P Body = P(TEXT("1a1c1e"), TEXT("c8ac78")).Sp(0.08f).Gl(0.8f, 0.4f);
-				FLook L = Plain(P(TEXT("24262a"), TEXT("b89a6a")).Fr(0.1f).Gl(0.4f, 0.3f), Body, P(TEXT("26282c"), TEXT("b89a6a")).Fr(0.1f), Body, Body);
+				FLook L = Plain(P(TEXT("2c2e33"), TEXT("c4a674")).Fr(0.2f).Gl(0.4f, 0.3f), Body, P(TEXT("2e3034"), TEXT("c4a674")).Fr(0.18f), Body, Body);
 				L.Beak = L.BeakBase = C(TEXT("3a3530")); L.Legs = C(TEXT("b0706a"));
 				L.BeakCm = 2.6f; L.BeakDepth = 0.32f; L.Wing = EWing::Pointed; L.TailFrac = 0.28f;
 				Add(TEXT("Starling"), L);

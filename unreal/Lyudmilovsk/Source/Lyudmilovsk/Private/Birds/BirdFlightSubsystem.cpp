@@ -238,8 +238,8 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.C.Right = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 90.f); return false; });
 		S->Add(1.5f, [](FCtx& X) { X.C.Shift = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 60.f); return false; });
 		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.T > 0.2f && X.T < 0.3f; CVar(TEXT("lyud.Bird.ChaseYaw"), 180.f); CVar(TEXT("lyud.Bird.ChasePitch"), 25); return false; });
-		S->Add(3.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseCam"), 0); X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
-		S->Add(3.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
+		S->Add(3.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseCam"), 0); X.Bird->SetFakeHead(FRotator(-30.f, -95.f, 0.f), true); return false; });
+		S->Add(3.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-30.f, -95.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator(-70.f, 0.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-10.f, 100.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator::ZeroRotator, false); return false; });
