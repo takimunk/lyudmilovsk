@@ -154,6 +154,27 @@ if PART in ("all", "life"):
         step(_watch, 2.5)
 
 
+if PART == "door":
+    DOOR = (-193.0, 1150.0, 190.0)
+
+    @step
+    def s_door(w):
+        place(w, DOOR, -8.0, 90.0)
+        log("door " + life(w).report())
+    for k in range(3):
+        def _door(w, k=k):
+            ids = list(life(w).find_animals_near(unreal.Vector(DOOR[0], DOOR[1], 0.0), 2500.0))
+            log("door t%d near: %s" % (k, " | ".join(life(w).describe(i) for i in ids)))
+            if k == 2 and ids:
+                r = life(w).get_animal(ids[0])
+                a = r[1] if isinstance(r, tuple) else r
+                t = a.location
+                look(w, (t.x - 250.0, t.y - 250.0, t.z + 140.0), (t.x, t.y, t.z + 20.0))
+        step(_door, 6.0)
+    step(lambda w: shot(w, "door_animal"), 2.0)
+    step(lambda w: (look(w, (-193.0, 1100.0, 200.0), (-193.0, 2200.0, 0.0))), 2.0)
+    step(lambda w: shot(w, "door_view"), 2.0)
+
 if PART == "town":
     SQ = (-25159.0, 61341.0, -3616.0)
 
