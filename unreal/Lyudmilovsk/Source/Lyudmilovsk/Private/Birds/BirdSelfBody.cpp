@@ -267,7 +267,7 @@ UBirdSelfBody::UBirdSelfBody()
 namespace
 {
 	/** M_BirdBody painted: Mode 0 a shell (Top above, Bottom below), 1 a beak (root to tip), 2 one colour. */
-	UMaterialInterface* Paint(UObject* Outer, UMaterialInterface* Base, const FLinearColor& Top, const FLinearColor& Bottom, float Mode, float Roughness = 0.6f)
+	UMaterialInterface* Paint(UObject* Outer, UMaterialInterface* Base, const FLinearColor& Top, const FLinearColor& Bottom, float Mode, float Roughness = 0.6f, float Specular = 0.1f)
 	{
 		if (!Base)
 		{
@@ -278,6 +278,7 @@ namespace
 		M->SetVectorParameterValue(TEXT("Bottom"), Bottom);
 		M->SetScalarParameterValue(TEXT("Mode"), Mode);
 		M->SetScalarParameterValue(TEXT("Roughness"), Roughness);
+		M->SetScalarParameterValue(TEXT("Specular"), Specular);
 		return M;
 	}
 }
@@ -359,16 +360,16 @@ void UBirdSelfBody::Build(FName SpeciesId, float LengthCm, float WingspanCm, USc
 	BuildBodyFeathers(Look);
 
 	// --- the body under the feathers, the head (shown from outside), the beak on the head
-	Shell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfShell"), FVector3f(A * 0.92f, HalfW * 0.9f, HalfH * 0.9f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), this, TEXT("Shell"));
-	Shell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.75f));
+	Shell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfShell"), FVector3f(A * 0.88f, HalfW * 0.84f, HalfH * 0.84f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), this, TEXT("Shell"));
+	Shell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.95f, 0.08f));
 	if (Head)
 	{
 		UStaticMeshComponent* HeadShell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfHead"), FVector3f(HeadR * 1.1f, HeadR * 0.85f, HeadR * 0.9f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), Head, TEXT("HeadShell"));
 		HeadShell->SetRelativeLocation(HeadCentre - Eye);
-		HeadShell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.75f));
+		HeadShell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.95f, 0.08f));
 		HeadShell->ComponentTags.Add(TEXT("BirdHead"));
 		Beak = AddPart(BeakMesh(this, Look.BeakCm, Look.BeakCm * Look.BeakDepth, Look.BeakHook, Look.BeakBase, Look.Beak, BodyMaterial), Head, TEXT("Beak"));
-		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.28f));
+		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.35f, 0.35f));
 		// below the eye line, so it sits at the bottom of the view like a bird's own beak
 		Beak->SetRelativeLocationAndRotation(HeadCentre - Eye + FVector(HeadR * 0.75f, 0.f, -HeadR * 0.55f), FRotator(-24.f, 0.f, 0.f));
 	}
@@ -554,6 +555,8 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	Th[2] = FMath::Lerp(Th[2], 2.f, Pose.Flare * E);
 
 	FVector P0 = Shoulder * FVector(1, Side, 1);
+	// seen from its own eye, the wing is drawn from beside the head (a view of it, not its anatomy)
+	P0.X += ViewForward * (Eye.X - Shoulder.X + L * 0.55f);
 	// folded, the wing lies on the flank, a little lower
 	P0.Z -= (1.f - E) * HalfH * 0.25f;
 	FVector Dir[3], Joint[4];

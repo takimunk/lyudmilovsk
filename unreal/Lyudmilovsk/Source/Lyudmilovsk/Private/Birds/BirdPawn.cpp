@@ -4,6 +4,7 @@
 #include "BirdFlightModel.h"
 #include "BirdHud.h"
 #include "BirdSelfBody.h"
+#include "Birds/BirdActor.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
@@ -82,8 +83,28 @@ ABirdPawn::ABirdPawn()
 
 ABirdPawn::~ABirdPawn() = default;
 
-void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding)
+void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding, ABirdActor* Outside)
 {
+	OutsideBody = Outside;
+	bOwnOutsideBody = Outside == nullptr;
+	if (!OutsideBody && GetWorld())
+	{
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		P.bDeferConstruction = true;
+		if (ABirdActor* A = GetWorld()->SpawnActor<ABirdActor>(ABirdActor::StaticClass(), FTransform(FRotator(0.f, Yaw, 0.f), Location), P))
+		{
+			A->Species = InSpecies;
+			A->InitialState = bStanding ? EBirdState::Perch : EBirdState::Fly;
+			A->FinishSpawning(FTransform(FRotator(0.f, Yaw, 0.f), Location));
+			OutsideBody = A;
+		}
+	}
+	if (OutsideBody)
+	{
+		OutsideBody->SetSpecies(InSpecies);
+		OutsideBody->SetActorEnableCollision(false);
+	}
 	Species = InSpecies;
 	FBirdSpecies Row;
 	if (const FBirdSpecies* Found = UBirdSpeciesLibrary::Find(InSpecies))
@@ -176,6 +197,11 @@ void ABirdPawn::UnPossessed()
 
 void ABirdPawn::EndPlay(const EEndPlayReason::Type Reason)
 {
+	if (OutsideBody && bOwnOutsideBody)
+	{
+		OutsideBody->Destroy();
+	}
+	OutsideBody = nullptr;
 	SBirdHud::Remove(Hud);
 	Hud.Reset();
 	Tracker->Stop();
@@ -352,6 +378,7 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	Ruffle = FMath::Max(0.f, Ruffle - Dt * 0.8f);
 	UpdateBody(Dt);
 	UpdateHead(C, Dt);
+	UpdateOutsideBody(Dt);
 }
 
 void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
@@ -839,21 +866,68 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const float ToEye = FVector::Dist(P, Head->GetComponentLocation());
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
-	Body->SetShown(true, Inside < 0.5f);
-	Body->SetFirstPerson(Inside > 0.5f);
+	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird
+	bInsideView = Inside > 0.5f;
+	Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
+	Body->SetFirstPerson(bInsideView);
+	if (OutsideBody)
+	{
+		OutsideBody->SetActorHiddenInGame(bInsideView);
+	}
 	if (Inside > 0.5f)
 	{
 		// the bird's own body with a far wider view than the screen's: the wings beside it reach into the
 		// screen's edges; turning the head to look at a wing brings back its true shape
-		const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Head->GetComponentRotation().Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f);
+		const FRotator Gz = Head->GetComponentRotation();
+		const float LookDown = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gz.Pitch) - 30.f) / 30.f, 0.f, 1.f);
+		const float Turn = FMath::Max(FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gz.Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f), LookDown);
 		OutResult.bUseFirstPersonParameters = true;
 		OutResult.FirstPersonFOV = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
 		OutResult.FirstPersonScale = 1.f;
+		Body->SetViewForward((1.f - Turn) * (Mode == EBirdMode::Air ? 1.f : 0.f));
+	}
+	else
+	{
+		Body->SetViewForward(0.f);
 	}
 	// no motion blur: the wings and the ground smear at a bird's speeds
 	OutResult.PostProcessSettings.bOverride_MotionBlurAmount = true;
 	OutResult.PostProcessSettings.MotionBlurAmount = 0.f;
 	OutResult.PostProcessBlendWeight = 1.f;
+}
+
+void ABirdPawn::UpdateOutsideBody(float Dt)
+{
+	ABirdActor* A = OutsideBody.Get();
+	if (!A)
+	{
+		return;
+	}
+	// the actor's origin is between its feet: below the body's centre along its up
+	const FQuat Q = BodyRot.Quaternion();
+	A->SetActorLocationAndRotation(GetActorLocation() - Q.GetUpVector() * Body->StandHeight(), Q);
+	A->SetVelocity(GetVelocityCm());
+	A->SetLookTarget(Head->GetComponentLocation() + Head->GetForwardVector() * 500.f, true);
+	const BirdFlight::FState& S = *Flight;
+	EBirdState Want = A->GetState();
+	if (Mode == EBirdMode::Air)
+	{
+		const bool bBeat = S.BurstL > 0 || S.BurstR > 0;
+		Want = bBeat ? EBirdState::Fly : EBirdState::Glide;
+		A->SetFlightInput(bBeat ? 1.f : 0.f, 1.f - 0.5f * (float)(S.SpreadL + S.SpreadR), FMath::Clamp((float)S.Bank / 1.2f, -1.f, 1.f),
+		                  FMath::Clamp(-BodyRot.Pitch / 60.f + Flare, -1.f, 1.f), true);
+	}
+	else if (Mode == EBirdMode::Ground)
+	{
+		A->SetFlightInput(0.f, 1.f, 0.f, 0.f, false);
+		if (PeckT > 0.3f) Want = EBirdState::Peck;
+		else if (bHopping || !GetVelocityCm().IsNearlyZero()) Want = Params->Hops ? EBirdState::Hop : EBirdState::Walk;
+		else if (A->GetState() != EBirdState::Peck) Want = EBirdState::Perch;
+	}
+	if (Want != A->GetState())
+	{
+		A->SetState(Want);
+	}
 }
 
 void ABirdPawn::PlayCall()

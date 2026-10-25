@@ -58,6 +58,11 @@ public:
 	/** Seen from its own eye: the body is drawn with the camera's first-person field of view, wide enough
 	 *  that wings beside the bird reach into the screen's edges (a bird sees nearly all round). */
 	void SetFirstPerson(bool bFirstPerson);
+	/** 0..1: in first person, how far the wings are drawn forward of their roots, beside the eye instead of
+	 *  behind it (with the wide first-person view that puts them at the screen's edges). */
+	void SetViewForward(float Amount) { ViewForward = FMath::Clamp(Amount, 0.f, 1.f); }
+	/** Torso length, cm. */
+	float TorsoLength() const { return L; }
 
 	static const FName FeatherMaterialPath;
 	static const FName BodyMaterialPath;
@@ -105,4 +110,5 @@ private:
 	float Stand = 3.f, Radius = 2.f;
 	TArray<FVector> LegRest;
 	bool bFirstPersonNow = false;
+	float ViewForward = 0.f;
 };

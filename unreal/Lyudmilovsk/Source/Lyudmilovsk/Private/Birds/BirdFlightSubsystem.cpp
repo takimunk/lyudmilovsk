@@ -1,6 +1,7 @@
 #include "Birds/BirdFlightSubsystem.h"
 
 #include "BirdAir.h"
+#include "Birds/BirdActor.h"
 #include "Birds/BirdPawn.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -374,12 +375,9 @@ bool UBirdFlightSubsystem::BecomeSpecies(APlayerController* PC, FName Species, c
 	{
 		return false;
 	}
-	B->Setup(Species, Where, Yaw, VelocityCm, bStanding);
-	if (Shown)
-	{
-		Shown->SetActorHiddenInGame(true);
-		ShownActor = Shown;
-	}
+	// bird life's own body for this bird stays its body seen from outside
+	B->Setup(Species, Where, Yaw, VelocityCm, bStanding, Cast<ABirdActor>(Shown));
+	ShownActor = Shown;
 	Bird = B;
 	if (Hero.IsValid())
 	{
