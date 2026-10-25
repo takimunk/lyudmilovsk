@@ -30,7 +30,7 @@ namespace
 	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
 	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
 	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
-	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 140.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
+	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 150.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -808,6 +808,9 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	// the neck stretches the head up as it turns round, so a look over the shoulder sees the wing from above
 	const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gaze.Yaw - BodyRot.Yaw)) / 90.f, 0.f, 1.f);
 	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 1.4f * Turn);
+	// looking down, the head draws back and up over the breast, so the bird sees its own breast and feet
+	const float Down = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gaze.Pitch) - 30.f) / 40.f, 0.f, 1.f);
+	Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * (-Body->TorsoLength() * 0.5f * Down) + FVector(0, 0, Body->BodyRadius() * 0.8f * Down);
 	if (Mode == EBirdMode::Ground)
 	{
 		const float Nod = Params->Hops ? 0.f : FMath::Sin(StepPhase * 2.f * PI) * Body->BodyRadius() * 0.35f;
@@ -873,7 +876,6 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird
 	bInsideView = Inside > 0.5f;
 	Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
-	Body->SetFirstPerson(bInsideView);
 	if (OutsideBody)
 	{
 		OutsideBody->SetActorHiddenInGame(bInsideView);
@@ -885,14 +887,15 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const FRotator Gz = Head->GetComponentRotation();
 		const float LookDown = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gz.Pitch) - 30.f) / 30.f, 0.f, 1.f);
 		const float Turn = FMath::Max(FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gz.Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f), LookDown);
-		OutResult.bUseFirstPersonParameters = true;
-		OutResult.FirstPersonFOV = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
-		OutResult.FirstPersonScale = 1.f;
+		const float WideFov = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
+		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation,
+			FMath::Tan(FMath::DegreesToRadians(OutResult.FOV * 0.5f)) / FMath::Tan(FMath::DegreesToRadians(FMath::Min(WideFov, 170.f) * 0.5f)));
 		Body->SetViewForward((1.f - Turn) * (Mode == EBirdMode::Air ? 1.f : 0.f));
 	}
 	else
 	{
 		Body->SetViewForward(0.f);
+		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation, 1.f);
 	}
 	// no motion blur: the wings and the ground smear at a bird's speeds
 	OutResult.PostProcessSettings.bOverride_MotionBlurAmount = true;
@@ -952,7 +955,7 @@ void ABirdPawn::PlayCall()
 FString ABirdPawn::DebugLine() const
 {
 	const TCHAR* ModeName = Mode == EBirdMode::Air ? TEXT("air") : Mode == EBirdMode::Ground ? TEXT("ground") : Mode == EBirdMode::Arriving ? TEXT("arriving") : TEXT("leaving");
-	return FString::Printf(TEXT("%s %s  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s"),
+	return FString::Printf(TEXT("%s %s  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
 		*Species.ToString(), ModeName, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
-		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State());
+		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
 }

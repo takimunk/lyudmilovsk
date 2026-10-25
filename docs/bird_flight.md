@@ -58,7 +58,7 @@ coverts, the tips bending up under load and fluttering at speed, the wing foldin
 buttons. The view is wide (100 degrees, up to 108 at speed), because a bird's is.
 
 **Seeing your wings.** A bird sees almost all the way round; a 100 degree screen does not. So the
-bird's own body is drawn with a far wider first-person field of view (140 degrees, `lyud.Bird.WingFov`):
+bird's own body is drawn with a far wider first-person field of view (150 degrees, `lyud.Bird.WingFov`), and the spread wings are drawn swept a little forward from beside the eye:
 the spread wings beside you reach into the left and right edges of the screen and sweep through them
 with every beat. Turning the head toward a wing eases that back to the true view.
 

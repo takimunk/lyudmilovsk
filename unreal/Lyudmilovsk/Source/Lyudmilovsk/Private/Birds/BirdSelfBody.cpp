@@ -494,24 +494,6 @@ void UBirdSelfBody::BuildBodyFeathers(const FLook& Look)
 	}
 }
 
-void UBirdSelfBody::SetFirstPerson(bool bFirstPerson)
-{
-	if (bFirstPerson == bFirstPersonNow)
-	{
-		return;
-	}
-	bFirstPersonNow = bFirstPerson;
-	TArray<USceneComponent*> Children;
-	GetChildrenComponents(true, Children);
-	for (USceneComponent* C : Children)
-	{
-		if (UPrimitiveComponent* P = Cast<UPrimitiveComponent>(C))
-		{
-			P->SetFirstPersonPrimitiveType(bFirstPerson ? EFirstPersonPrimitiveType::FirstPerson : EFirstPersonPrimitiveType::None);
-		}
-	}
-}
-
 void UBirdSelfBody::SetShown(bool bShown, bool bWithHead)
 {
 	TArray<USceneComponent*> Children;
@@ -555,8 +537,9 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	Th[2] = FMath::Lerp(Th[2], 2.f, Pose.Flare * E);
 
 	FVector P0 = Shoulder * FVector(1, Side, 1);
-	// seen from its own eye, the wing is drawn from beside the head (a view of it, not its anatomy)
-	P0.X += ViewForward * (Eye.X - Shoulder.X + L * 0.55f);
+	// seen from its own eye, the wing is drawn from beside the head and swept forward (a view of it, not its
+	// anatomy): its outer half then reaches into the screen's left and right edges and beats through them
+	P0 = FMath::Lerp(P0, FVector(Eye.X, Side * HalfW, Eye.Z - HalfH * 0.35f), ViewForward);
 	// folded, the wing lies on the flank, a little lower
 	P0.Z -= (1.f - E) * HalfH * 0.25f;
 	FVector Dir[3], Joint[4];
@@ -575,7 +558,7 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	}
 	Phi += Pose.Flare * 0.45f;
 	const float Elev = Side * Phi;
-	const FQuat Raise(FVector::XAxisVector, Elev);
+	const FQuat Raise = FQuat(FVector::XAxisVector, Elev) * FQuat(FVector::ZAxisVector, FMath::DegreesToRadians(-Side * 32.f * ViewForward));
 	// the downstroke pitches the leading edge down a little (pronation)
 	const float Twist = bBeat ? -0.18f * FMath::Sin(2.f * PI * Phase) : 0.f;
 	auto ToBody = [&](const FVector& Flat) { return P0 + Raise.RotateVector(Flat - P0); };
@@ -592,8 +575,19 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 		const float Flutter = (Speed01 * Speed01 * 0.05f + Pose.Ruffle * 0.25f) * (0.3f + Outerness) * FMath::Sin(Time * (26.f + 9.f * F.Phase) + F.Phase * 7.f);
 		D = D.RotateAngleAxis(FMath::RadiansToDegrees(Bend + Flutter), Span);
 		N = N.RotateAngleAxis(FMath::RadiansToDegrees(Twist * Outerness), D);
-		const FVector Root = ToBody(FlatRoot) + Normal * F.Layer;
-		Out[F.Instance] = FTransform(FRotationMatrix::MakeFromXZ(D, N).ToQuat(), Root, FVector(F.Length, F.Width, F.Width));
+		FVector Root = ToBody(FlatRoot) + Normal * F.Layer;
+		float Len = F.Length, Wid = F.Width;
+		if (ViewK < 0.999f)
+		{
+			// the wide first-person view: root and tip pulled toward the line of sight like a wider lens would
+			const FVector Tip = Squeeze(Root + D * Len);
+			Root = Squeeze(Root);
+			const FVector Along = Tip - Root;
+			Len = FMath::Max(Along.Size(), 0.01f);
+			D = Along / Len;
+			Wid *= FMath::Lerp(ViewK, 1.f, 0.35f);
+		}
+		Out[F.Instance] = FTransform(FRotationMatrix::MakeFromXZ(D, N).ToQuat(), Root, FVector(Len, Wid, Wid));
 	};
 
 	const FVector Back(-1, 0, 0);
@@ -717,4 +711,18 @@ void UBirdSelfBody::ApplyPose(const FBirdBodyPose& Pose, float Time)
 			Toe->SetRelativeTransform(FTransform(FRotationMatrix::MakeFromX(D).ToQuat(), Foot, Toe->GetRelativeScale3D()));
 		}
 	}
+}
+
+FVector UBirdSelfBody::Squeeze(const FVector& Local) const
+{
+	// in the body's own space (the eye rides with it, so a frame's lag never shakes the wings): the
+	// sideways offset from the line of sight scaled by ViewK
+	const FVector C = Local - ViewLoc;
+	const FVector Fwd = ViewRot.Vector();
+	const float Ahead = FVector::DotProduct(C, Fwd);
+	if (Ahead <= 0.f)
+	{
+		return Local;
+	}
+	return ViewLoc + Fwd * Ahead + (C - Fwd * Ahead) * ViewK;
 }
