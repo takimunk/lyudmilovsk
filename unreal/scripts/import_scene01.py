@@ -1201,8 +1201,9 @@ else:
 HUMANS = "/Game/Characters/Humans/"
 
 
-def seat_person(name, anim, loc, facing_yaw, label):
-    mesh = HUMANS + "%s/SK_%s" % (name, name)
+def seat_person(name, anim, loc, facing_yaw, label, body=None):
+    """body: a different character's mesh on the same skeleton playing <name>'s loop (the crowd)."""
+    mesh = HUMANS + "%s/SK_%s" % (body or name, body or name)
     seq = HUMANS + "%s/Anims/A_%s_%s" % (name, name, anim)
     if not (eal.does_asset_exist(mesh) and eal.does_asset_exist(seq)):
         log("missing person %s / %s" % (mesh, seq))
@@ -1247,13 +1248,29 @@ if "owner" in LAYOUT and owner_cls and eal.does_asset_exist(HUMANS + "Owner/SK_O
 ANIM = {"Streamer": "Sit_Stream", "Kid_boy": "Sit_Gamepad", "Kid_girl": "Sit_ChinRest", "Guy_a": "Sit_KeyboardMouse",
         "Guy_b": "Sit_LeanBack", "Girl_a": "Sit_KeyboardMouse", "Girl_b": "Sit_Browse"}
 CROWD_ANIM = {11: "Sit_Browse", 12: "Sit_KeyboardMouse", 13: "Sit_Browse"}
+# people.json (the people-life thread): which seated clip each body plays at a computer
+PEOPLE_CLIPS = {}
+try:
+    with open(os.path.join(HERE, "..", "Lyudmilovsk", "Content", "PeopleData", "people.json")) as f:
+        _people = json.load(f)
+    for _p in (_people if isinstance(_people, list) else _people.get("people", [])):
+        if isinstance(_p, dict) and "/" in str(_p.get("computer_clip", "")):
+            PEOPLE_CLIPS[_p.get("mesh") or _p.get("body")] = _p["computer_clip"]
+except Exception as e:
+    log("people.json: %s" % e)
 seats = {st["index"]: st for st in LAYOUT.get("stations", [])}
 for v in LAYOUT.get("visitors", []):
     st = seats.get(v["index"])
     if st:
         crowd = v["index"] > 10     # extra people past the hero (HERO_INDEX) hide the invisible wall
-        p = seat_person(v["person"], CROWD_ANIM.get(v["index"], ANIM.get(v["person"], "Sit_Idle")), vec(st["chair"]),
-                        st["sitter_yaw"], "Visitor_" + v["person"] + ("_%02d" % v["index"] if crowd else ""))
+        # the crowd has its own bodies (Crowd_11..13, people.json crowd_11..13) on the seated loops it borrows
+        body = "Crowd_%02d" % v["index"] if crowd and eal.does_asset_exist(HUMANS + "Crowd_%02d/SK_Crowd_%02d" % (
+            v["index"], v["index"])) else None
+        who, clip = v["person"], CROWD_ANIM.get(v["index"], ANIM.get(v["person"], "Sit_Idle"))
+        if body and body in PEOPLE_CLIPS:      # the clip people.json gives that body ("<Owner>/<Clip>")
+            who, clip = PEOPLE_CLIPS[body].split("/", 1)
+        p = seat_person(who, clip, vec(st["chair"]), st["sitter_yaw"],
+                        "Visitor_" + v["person"] + ("_%02d" % v["index"] if crowd else ""), body)
         if p and crowd:
             p.tags = [unreal.Name("NoTalk")]
         log("%s at station %02d (%s)" % (v["person"], v["index"], v["kind"]))
