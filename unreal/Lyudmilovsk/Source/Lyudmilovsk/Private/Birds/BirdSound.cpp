@@ -63,7 +63,7 @@ void FBirdSound::Generate(int32 Samples)
 	const float Dt = 1.f / Rate;
 	// the rush of air: noise through a low-pass that opens with speed, and a rumble under it
 	const float V = FMath::Max(Speed, 0.f);
-	const float WindAmp = FMath::Clamp(FMath::Square(V / 22.f), 0.f, 1.f) * 0.55f + 0.02f;
+	const float WindAmp = bAirRush ? FMath::Clamp(FMath::Square(V / 22.f), 0.f, 1.f) * 0.55f + 0.02f : 0.f;
 	const float Fc = FMath::Min(250.f + 140.f * V, 5000.f);
 	const float A1 = 1.f - FMath::Exp(-2.f * PI * Fc * Dt);
 	const float ARumble = 1.f - FMath::Exp(-2.f * PI * 90.f * Dt);

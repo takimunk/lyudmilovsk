@@ -150,6 +150,7 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<ABirdActor> OutsideBody;
 	UPROPERTY(VisibleAnywhere, Category = "Bird") TObjectPtr<UBirdWindStreaks> WindStreaks;
 	UPROPERTY(Transient) TObjectPtr<class UAudioComponent> SoundOut;
+	UPROPERTY(Transient) TObjectPtr<class ULyudWindAudioComponent> WindVoice;
 
 private:
 	void ReadControls(float Dt, FBirdControls& C);

@@ -5,6 +5,8 @@
 #include "BirdSound.h"
 #include "BirdWindStreaks.h"
 #include "Components/AudioComponent.h"
+#include "Audio/LyudWindAudio.h"
+#include "Weather/LyudWind.h"
 #include "GameFramework/PhysicsVolume.h"
 #include "Sea/LyudSea.h"
 #include "Sound/SoundWaveProcedural.h"
@@ -151,6 +153,12 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 		SoundOut->RegisterComponent();
 		SoundOut->Play();
 	}
+	// the air past the head: the soundscape's own wind voice, fed with the bird's airspeed
+	WindVoice = NewObject<ULyudWindAudioComponent>(this, TEXT("FlightWind"));
+	WindVoice->SetupAttachment(Head);
+	WindVoice->RegisterComponent();
+	WindVoice->Start();
+	Sound->bAirRush = false;
 	Params->Hops = Row.Gait == EBirdGait::Hop || Row.Gait == EBirdGait::Both;
 	Body->Build(InSpecies, Row.LengthCm, Row.WingspanCm, Head);
 	Collision->SetSphereRadius(FMath::Max(Body->BodyRadius() * 0.85f, 1.5f));
@@ -473,7 +481,16 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		const bool bInside = Mode != EBirdMode::Leaving && Mode != EBirdMode::Arriving;
 		const FVector AirVel = LastAir + FVector(0, 0, LastUpdraft);
 		const float Rel = Mode == EBirdMode::Air ? GetAirspeed() : (Mode == EBirdMode::Leaving ? 0.f : (float)LastAir.Size() * 0.5f);
-		if (Sound) Sound->Tick(Dt, Rel, 1.f + 0.4f * FMath::Sin(Time * 0.7f), bInside ? 1.f : FMath::Clamp(1.f - TransT / FMath::Max(TransDur, 0.1f), 0.f, 1.f));
+		const float Fade = bInside ? 1.f : FMath::Clamp(1.f - TransT / FMath::Max(TransDur, 0.1f), 0.f, 1.f);
+		if (Sound) Sound->Tick(Dt, Rel, 1.f + 0.4f * FMath::Sin(Time * 0.7f), Fade);
+		if (WindVoice)
+		{
+			const ULyudWindSubsystem* W = ULyudWindSubsystem::Get(this);
+			const float Gusty = W ? W->GetGustiness() : 0.25f;
+			const float YawTo = LastAir.SizeSquared2D() > 0.01f ? FRotator::NormalizeAxis((-LastAir).Rotation().Yaw - Head->GetComponentRotation().Yaw) : 0.f;
+			WindVoice->Gain = Fade;
+			WindVoice->SetWind(LastAir.Size(), Gusty, YawTo, Rel);
+		}
 		if (WindStreaks && Controller)
 		{
 			WindStreaks->UpdateStreaks(Head->GetComponentLocation(), AirVel, bInside && Mode != EBirdMode::Ground ? 1.f : 0.35f, Dt);

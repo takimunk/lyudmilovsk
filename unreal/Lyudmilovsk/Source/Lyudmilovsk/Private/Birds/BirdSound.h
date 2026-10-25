@@ -18,6 +18,8 @@ public:
 
 	/** Once per frame: Airspeed m/s through the air, Gust 0..2, Volume 0..1 (the camera flights fade it). */
 	void Tick(float Dt, float Airspeed, float Gust, float Volume);
+	/** Off: only the wingbeats (the rush of air comes from ULyudWindAudioComponent). */
+	bool bAirRush = true;
 	/** A downstroke starts; Strength 0..1 (a spent bird beats weakly), bTakeoff for the clap. */
 	void Beat(float Strength, bool bTakeoff);
 
