@@ -918,7 +918,9 @@ namespace LyudBirds
 				K = (B.Species == From.Species ? 0.9f : 0.6f) * Clamp(0.8f + (S.Length - T.Length) * 2.f, 0.5f, 1.4f);
 			}
 			const float D = (B.Pos - From.Pos).Len();
-			B.Alert += Strength * K * (B.Group == From.Group ? 1.f : 1.f - D / (Radius * 1.2f));
+			const float Add = Strength * K * (B.Group == From.Group ? 1.f : 1.f - D / (Radius * 1.2f));
+			// an alarm call makes the others look up and get uneasy, but only a bird actually flying off sends them up
+			B.Alert = Strength < 0.5f ? std::min(B.Alert + Add, std::max(B.Alert, 0.7f)) : B.Alert + Add;
 			B.Habituation = 0.f;
 			if (B.Alert >= 1.f && B.Delay <= 0.f)
 			{
@@ -1117,7 +1119,31 @@ namespace LyudBirds
 			SetAct(B, EAct::Forage, 0.f);
 			B.bWatching = false;
 		}
-		if (B.Alert >= 1.f && B.Delay <= 0.f && B.Act != EAct::Flee)
+		// town birds (pigeons, sparrows) walk out of the way of someone strolling past rather than fly
+		// passing by = their straight line misses the bird by a metre or more
+		const V3 ToBird = (B.Pos - Body).Flat();
+		const V3 Heading = Player.Vel.Flat().Norm();
+		const float Miss = std::fabs(Heading.X * ToBird.Y - Heading.Y * ToBird.X);
+		const bool bPassing = Speed < 0.3f || Heading.Dot(ToBird) < 0.f || Miss > 1.f;
+		const bool bOnFoot = S.FleeDistance <= 6.f && S.Forage[(int)EHabitat::Street] >= 0.8f && Speed < 2.f && bPassing && B.Alert < 1.25f && !IsAirborne(B.Act) && B.Act != EAct::Eat
+			&& B.Site >= 0 && IsGroundHabitat(Sites[B.Site].Kind) && Sites[B.Site].Kind != EHabitat::Sea && Dist > 0.8f;
+		if (B.Alert >= 1.f && bOnFoot && B.Act != EAct::Forage)
+		{
+			const V3 Away = (B.Pos - Body).Flat().Norm();
+			B.Spot = B.Pos + Away * (1.2f + Rand(B.Rng) * 1.2f);
+			if (Probe)
+			{
+				float Z;
+				if (Probe(B.Spot.X, B.Spot.Y, Z))
+				{
+					B.Spot.Z = Z;
+				}
+			}
+			SetAct(B, EAct::Forage, 0.f);
+			B.bWatching = false;
+			B.Alert = 0.85f;
+		}
+		else if (B.Alert >= 1.f && !bOnFoot && B.Delay <= 0.f && B.Act != EAct::Flee)
 		{
 			B.Delay = 0.05f + Rand(B.Rng) * 0.2f;
 			B.FlyFrom = Body;

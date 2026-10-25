@@ -379,14 +379,42 @@ namespace
 			F.Opt.PopulationScale = 0.f;
 			F.Opt.bPredators = false;
 			F.Populate();
-			const V3 Lawn(2.07f, 21.5f, F.GroundZ(2.07f, 21.5f));
-			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 2.5f);
+			const V3 Lawn(4.07f, 21.5f, F.GroundZ(4.07f, 21.5f));
+			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 2.f);
 			F.Camera = Lawn;
 			for (int K = 0; K < 600 * 60 / 10; K++)
 			{
 				F.Step(1.f / 6.f);
 				F.Events.clear();
 			}
+			// someone standing at the door looking at them, then walking out along the path past them
+			F.Player.bPresent = true;
+			F.Player.Feet = V3(-1.93f, 11.5f + 3.f, 0.f);
+			F.Player.Eye = F.Player.Feet + V3(0.f, 0.f, 1.65f);
+			F.Player.Facing = (Lawn - F.Player.Eye).Norm();
+			int Fled = 0;
+			for (int K = 0; K < 30 * 60; K++)
+			{
+				const float T = K / 60.f;
+				F.Player.Vel = T > 10.f && T < 20.f ? V3(0.f, 1.4f, 0.f) : V3();
+				F.Player.Feet += F.Player.Vel * (1.f / 60.f);
+				F.Player.Eye = F.Player.Feet + V3(0.f, 0.f, 1.65f);
+				F.Camera = F.Player.Eye;
+				F.Step(1.f / 60.f);
+				for (const FEvent& E : F.Events)
+				{
+					Fled += E.Kind == EEvent::Flee && E.Bird >= First;
+					if (E.Kind == EEvent::Flee && E.Bird >= First && std::getenv("BIRD_TRACE"))
+					{
+						const FBird& Bd = F.Birds[E.Bird];
+						std::printf("    t %.1f bird %d flees at %.1f m from the person, alert %.2f target %d\n", T, E.Bird, (Bd.Pos - F.Player.Feet).Len2D(), Bd.Alert, Bd.Target);
+					}
+				}
+				F.Events.clear();
+			}
+			std::printf("door pigeons: %d flushes while someone stood at the door 10 s and walked past on the path (6 m off)\n", Fled);
+			Check(R, Fled == 0, "the door pigeons let you walk past on the path");
+			F.Player.bPresent = false;
 			float Far = 0.f;
 			for (int I = First; I < First + 6; I++)
 			{

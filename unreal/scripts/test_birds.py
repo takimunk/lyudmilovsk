@@ -104,7 +104,7 @@ def s_start(w):
 def s_door_flock(w):
     # the pigeons that always feed on the lawn just out of the club's door
     near = []
-    for i in birds(w).find_birds_near(unreal.Vector(207.0, 2150.0, 0.0), 800.0):
+    for i in birds(w).find_birds_near(unreal.Vector(407.0, 2150.0, 0.0), 800.0):
         b = bird(w, i)
         if b and str(b.species_id) == "FeralPigeon":
             near.append("%d:%s" % (i, str(b.activity).split(".")[-1].split(":")[0]))
@@ -117,6 +117,10 @@ def s_door_flock(w):
 def s_door_shot(w):
     if SHOTS:
         cmd(w, "HighResShot 1600x900")
+
+
+@step
+def s_quick_quit(w):
     if os.environ.get("BIRDTEST_QUICK"):
         log("done")
         cmd(w, "quit")
