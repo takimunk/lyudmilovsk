@@ -24,9 +24,12 @@ def main():
     ap.add_argument("--every", type=int, default=10)
     ap.add_argument("--cols", type=int, default=6)
     ap.add_argument("--width", type=int, default=640)
+    ap.add_argument("--from", dest="first", type=int, default=0, help="skip the first N screenshots")
+    ap.add_argument("--step", type=int, default=1, help="every N-th screenshot (2: one view of a dual recording)")
     a = ap.parse_args()
     shots = sorted((p for p in glob.glob(os.path.join(ROOT, "unreal/Lyudmilovsk/Saved/Screenshots/*/ScreenShot*.png"))
                     if os.path.getmtime(p) >= a.since), key=os.path.getmtime)
+    shots = shots[a.first::a.step]
     if not shots:
         raise SystemExit("no screenshots")
     os.makedirs(a.out_dir, exist_ok=True)

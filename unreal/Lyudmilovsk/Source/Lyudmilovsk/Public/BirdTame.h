@@ -81,6 +81,7 @@ private:
 	void TellBirds(bool bOn);
 	void Say(const TCHAR* Key, int32 BirdId, float Seconds = 3.f);
 	FText BirdName(int32 BirdId) const;
+	void LogEvent(const TCHAR* What, int32 BirdId) const;
 	bool IsNearOffer(int32 BirdId) const;
 	void Eaten();
 	void Reset();
@@ -91,6 +92,7 @@ private:
 	TSharedPtr<SLyudHeldItem> Hud;
 
 	bool bWantOffer = false;
+	bool bApproaching = false;
 	bool bTold = false;
 	bool bBound = false;
 	bool bFlightBound = false;
@@ -98,7 +100,9 @@ private:
 	float PhaseTime = 0.f;
 	int32 Focus = -1;
 	FVector OfferAt = FVector::ZeroVector;
+	FVector BirdOfferAt = FVector::ZeroVector;
 	float SayLeft = 0.f;
+	float LogTimer = 0.f;
 
 	bool bDebugWalk = false;
 	FVector DebugTarget = FVector::ZeroVector;
