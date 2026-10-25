@@ -455,6 +455,15 @@ def export(parts):
                                     "out": [p1[0] - p0[0], p1[1] - p0[1]], "hole": d["hole"], "wall": d["wall"],
                                     "leaves": d["leaves"], "hinge": "left", "frame": False,
                                     "open": d["open"], "locked": d["locked"]})
+    # every plant is an AProceduralPlant: the square's beds and hedges, the library's pots
+    layout["plants"] = [dict(pl) for pl in plan.SQUARE_PLANTS]
+    for name, h in HOUSES.items():
+        for pl in getattr(h, "plants", []):
+            p0 = h.frame(tuple(pl["at"]))
+            a = math.radians(pl["yaw"])
+            p1 = h.frame((pl["at"][0] + math.cos(a), pl["at"][1] + math.sin(a), pl["at"][2]))
+            layout["plants"].append(dict(pl, at=list(p0), yaw=math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0])),
+                                         indoor=True))
     layout["walks"] = []
     for name, h in HOUSES.items():
         for label, pts in getattr(h, "walks", []):

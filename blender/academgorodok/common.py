@@ -23,6 +23,8 @@ MATERIALS = {
     "AC_Iron":      ("#2B2B2B", 0.6, "painted iron: railings, bars, downpipe brackets"),
     "AC_IronWhite": ("#ECECEA", 0.6, "white painted iron: flowerbed railing"),
     "AC_Zinc":      ("#B9BDBF", 0.4, "galvanised downpipes, gutters, chimney hoods"),
+    "AC_Granite":   ("#5E4A44", 0.45, "polished red-brown granite slabs of the gate plinths (refs/dima/arch2.jpg)"),
+    "AC_RoofDark":  ("#3A3E42", 0.4, "dark grey sheet steel: the gates' caps and cornice flashings"),
     "AC_Pylon":     ("#A3A1A0", 0.9, "grey plastered gate scroll pylons"),
     "AC_Stone":     ("#D9D6CE", 0.8, "white cast stone: fountain, kerbs, steps"),
     "AC_Asphalt":   ("#4A4A48", 0.95, "asphalt drives and paths"),

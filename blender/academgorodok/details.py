@@ -956,15 +956,16 @@ def window(w=1.5, h=1.95, kind='double', reveal=True):
         hub = _arc(0.0, zs + tb / 2, 0.12, 0.0, math.pi, 8)
         b.ring_prism(hub, _arc(0.0, zs + tb / 2, 0.09, 0.0, math.pi, 8), -0.15, -0.09, "AC_Frame")
     elif kind == 'shop':
-        zt = iz0 + (iz1 - iz0) * 0.74
-        b.box((ix0, -0.17, zt - 0.045), (ix1, -0.08, zt + 0.045), "AC_Frame")
-        b.box((-0.04, -0.17, iz0), (0.04, -0.08, zt), "AC_Frame")
-        xs = [ix0 + (ix1 - ix0) * k / 3 for k in range(4)]
-        for k in (1, 2):
-            b.box((xs[k] - 0.035, -0.165, zt), (xs[k] + 0.035, -0.085, iz1), "AC_Frame")
-        # glazing beads around the big lights
-        for x0, x1 in ((ix0, -0.04), (0.04, ix1)):
-            _sash(b, x0, iz0, x1, zt - 0.045, sw=0.03, y0=-0.135, y1=-0.105)
+        # refs/dima/shop.jpg: a narrow top light (the blind box behind it), below it four big lights
+        # on a thin cross
+        zt = iz0 + (iz1 - iz0) * 0.86
+        zm = iz0 + (zt - iz0) * 0.5
+        b.box((ix0, -0.17, zt - 0.04), (ix1, -0.08, zt + 0.04), "AC_Frame")
+        b.box((-0.03, -0.17, iz0), (0.03, -0.08, zt), "AC_Frame")
+        b.box((ix0, -0.165, zm - 0.03), (ix1, -0.085, zm + 0.03), "AC_Frame")
+        for x0, x1 in ((ix0, -0.03), (0.03, ix1)):
+            for z0_, z1_ in ((iz0, zm - 0.03), (zm + 0.03, zt - 0.04)):
+                _sash(b, x0, z0_, x1, z1_, sw=0.025, y0=-0.135, y1=-0.105)
     else:
         raise ValueError(kind)
     if kind != 'french_door':

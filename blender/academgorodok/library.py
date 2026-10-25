@@ -1270,15 +1270,39 @@ def _plants():
 PLANTS = _plants()
 
 
+# The plants are AProceduralPlant in Unreal (the plants thread's indoor species, Dima: every plant goes
+# through our plant system): build() leaves them out of the mesh and procedural_plants() lists them.
+# PROCEDURAL = False brings back the modelled ones (houseplants.py) for Blender previews.
+PROCEDURAL = True
+SPECIES = {"ficus_elastica": "RubberPlant", "ficus_benjamina": "WeepingFig", "lemon": "Lemon", "dracaena": "Dracaena",
+           "monstera": "Monstera", "sansevieria": "SnakePlant", "aspidistra": "Aspidistra", "chlorophytum": "SpiderPlant",
+           "tradescantia": "Tradescantia", "geranium": "Geranium", "begonia": "Begonia", "african_violet": "AfricanViolet",
+           "palm": "KentiaPalm", "aloe": "Aloe", "cactus": "Cactus", "dieffenbachia": "Dieffenbachia",
+           "asparagus": "AsparagusFern"}
+
+
 def plants(m):
     for idx, (kind, x, y, z, yaw, seed, size) in enumerate(PLANTS):
-        part = plant_mesh(kind, seed, size)
-        if idx in PLANT_EDGES:
-            part = overhang(part, *PLANT_EDGES[idx])
         if abs(z - Z0) < 1e-6 or (abs(z - Z0 - 0.85) < 1e-6 and abs(y - (HALL[3] - 0.25)) < 1e-6):
             r = pot_radius(kind, size) + 0.05                  # floor plants: the pot is the footprint
             fp("plant", x - r, x + r, y - r, y + r)
+        if PROCEDURAL:
+            continue
+        part = plant_mesh(kind, seed, size)
+        if idx in PLANT_EDGES:
+            part = overhang(part, *PLANT_EDGES[idx])
         m.extend(Frame(x, y, yaw, z).apply(part))
+
+
+def procedural_plants():
+    """PLANTS for AProceduralPlant (Novikova 1's frame): species, the pot's base (the plant snaps down
+    onto the shelf or floor within 30 cm), yaw in degrees, seed, age 4-6 by size, pot diameter in cm."""
+    out = []
+    for kind, x, y, z, yaw, seed, size in PLANTS:
+        out.append({"species": SPECIES[kind], "at": [x, y, z + 0.03], "yaw": math.degrees(yaw), "seed": seed,
+                    "age": round(min(6.0, max(4.0, 4.0 + 2.0 * (size - 0.8) / 0.5)), 2),
+                    "pot_cm": round(200.0 * pot_radius(kind, size), 1)})
+    return out
 
 
 # --- signs -------------------------------------------------------------------------------------------------
