@@ -8,6 +8,8 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$HERE/../.."
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 CMD="$UE/Engine/Binaries/Mac/UnrealEditor-Cmd"
+# the network resolved against this checkout's terrain (Content/Transport/network_built.json, not committed)
+python3 "$ROOT/tools/transport.py" > /dev/null
 "$ROOT/tools/wait_ue_queue.sh" 7200
 "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_transport.py" -unattended -nosplash -stdout | grep -E "TRANSPORT|Error" | grep -v LogInit || true
 IMPORT_ONLY=sfx/transport/ "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_audio.py" -unattended -nosplash -stdout | grep -E "AUDIO|Error" | grep -v LogInit || true

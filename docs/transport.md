@@ -31,7 +31,7 @@ Authored in `unreal/Lyudmilovsk/Content/Transport/network.json` (map frame of `t
 stations (where, the deck's height over the map's zero or `"ground"`, the crown style, the place on the route diagram),
 lines (stops in order, corner pylons between two stops as `"via"`, the depot), the cabins, the club's route board.
 
-`python3 tools/transport.py` resolves it against the terrain (`terrain.ground_z`) into `network_built.json`; **run it after any
+`python3 tools/transport.py` resolves it against the terrain (`terrain.ground_z`) into `network_built.json` (not committed: each checkout makes its own from its terrain); **run it after any
 change of the relief, the map or the network** (build_scene01.sh does, after the terrain):
 
 - A station's deck stays at its fixed height; the lift and the stair are as long as the ground under it leaves (raise the

@@ -81,7 +81,9 @@ def glow(m):
 
 def import_kit():
     if not os.path.isfile(KIT):
-        raise RuntimeError("no %s: run blender/transport/optimize.py and pack.py first" % KIT)
+        # the meshes are committed (LFS); the .glb is only where they were made (blender/transport/optimize.py, pack.py)
+        log("no %s: keeping the committed meshes" % KIT)
+        return 0
     if eal.does_directory_exist(MESHES):
         eal.delete_directory(MESHES)
     src = unreal.InterchangeManager.create_source_data(KIT)
@@ -127,11 +129,19 @@ def import_kit():
     return n
 
 
-if __name__ == "__main__":
+def main():
+    if not os.path.isfile(KIT) and eal.does_directory_exist(MATS):
+        # a checkout without the generated kit: the committed meshes and materials stay as they are
+        log("no %s: the committed meshes and materials stay" % KIT)
+        return
     for name, blend, build in (("M_TR_Paint", unreal.BlendMode.BLEND_OPAQUE, paint),
                                ("M_TR_Glass", unreal.BlendMode.BLEND_TRANSLUCENT, glass),
                                ("M_TR_Glow", unreal.BlendMode.BLEND_OPAQUE, glow)):
         material(name, blend, build)
         log("material " + name)
     log("meshes: %d" % import_kit())
+
+
+if __name__ == "__main__":
+    main()
     log("done")

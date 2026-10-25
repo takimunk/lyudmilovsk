@@ -20,7 +20,7 @@ from it. Never place cable-car meshes in a level and never hand-edit heights.
 3. `tools/transportsim/run.sh test` (the simulation on the real network) and `tools/peoplesim/run.sh test`.
 4. New words: add rows to `localization/transport_strings.py` (ru/en/ja) and run it; voices for new announcements:
    `python3 tools/gen_voice.py --lang <l> line.transport.<what>.1` (fal), then `unreal/scripts/import_transport.sh`.
-5. Commit `network.json` and `network_built.json` together.
+5. Commit `network.json`; `network_built.json` is made per checkout from its terrain (not committed; build_scene01.sh and import_transport.sh run transport.py).
 
 ## The relief or the map changed (or the club moved)
 
