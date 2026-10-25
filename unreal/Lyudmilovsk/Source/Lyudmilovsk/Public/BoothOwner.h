@@ -82,7 +82,15 @@ public:
 	/** Standing at the window, ready to talk. */
 	bool IsAtWindow() const { return State == EState::AtWindow; }
 
+	/** What he sells at the window (T): bird feed, one bag of Count handfuls for Price roubles. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
+	int32 FeedPrice = 12;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
+	int32 FeedCount = 5;
+
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
@@ -94,6 +102,9 @@ private:
 	bool TurnTo(float Yaw, float DeltaSeconds);
 	bool WalkTo(const FVector& Target, float DeltaSeconds);
 	void SetPose(const FVector& Loc, float Yaw);
+	void TickTrade();
+
+	bool bTradePrompt = false;
 
 	EState State = EState::Seated;
 	float StateTime = 0.f;
