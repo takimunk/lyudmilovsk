@@ -168,6 +168,7 @@ namespace LyudBirds
 		uint8_t Tier = 3;           // LOD: 0 near .. 3 far
 		bool bNoticed = false, bTurned = false, bWatching = false, bAte = false;
 		bool bGone = false;         // away (migrated); not drawn
+		bool bFemale = false;       // half of each species (its own seed), for the female plumage and size
 		uint32_t Rng = 1;
 	};
 

@@ -39,6 +39,8 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 	/** Has it noticed the player (and is it watching them)? */
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bNoticed = false;
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bWatching = false;
+	/** Half the birds of each species are females (fixed per bird). */
+	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bFemale = false;
 	/** The bird's body near the player (the species thread's ABirdActor), when it has one; null far away. */
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") TObjectPtr<AActor> Actor = nullptr;
 };

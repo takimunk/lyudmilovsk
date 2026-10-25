@@ -715,6 +715,7 @@ bool UBirdLifeSubsystem::GetBird(int32 Id, FBirdLifeInfo& Out) const
 	Out.Trust = B.Trust;
 	Out.bNoticed = B.bNoticed;
 	Out.bWatching = B.bWatching;
+	Out.bFemale = B.bFemale;
 	Out.Actor = Renderer ? Renderer->BodyOf(Id) : nullptr;
 	return true;
 }
