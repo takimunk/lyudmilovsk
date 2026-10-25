@@ -1708,7 +1708,11 @@ namespace LyudBirds
 				{
 					// feed: on the ground walk to a new spot, in a crown flit to another twig
 					B.Spot = SpotOn(Sites[B.Site], B.Rng);
-					if (bGround)
+					if (bGround && Sites[B.Site].Kind == EHabitat::Sea)
+					{
+						SetAct(B, EAct::Swim, 3.f + Rand(B.Rng) * 6.f);     // paddles about
+					}
+					else if (bGround)
 					{
 						SetAct(B, EAct::Forage, 0.f);
 					}

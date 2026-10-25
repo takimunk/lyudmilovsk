@@ -241,6 +241,10 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 			Sp.Wingbeat = R->WingbeatHz;
 			Sp.bMigrant = !R->IsPresentIn(Now.GetMonth());
 		}
+		else
+		{
+			Sp.Population = 0;      // not in species.json (yet): no body to draw it with
+		}
 	}
 }
 
