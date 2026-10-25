@@ -19,6 +19,7 @@ MORPH_DEFAULTS = dict(
     tail=1.0, tail_shape="square", fork=0.0, streamer=0.0, tail_width=1.0, tail_fan=1.0,
     shin=1.0, tarsus=1.0, leg_thick=1.0, toes=1.0, hallux=1.0, claw=1.0, webbed=False,
     fluff=1.0, crest=0.0, fluff_layer=0.55,
+    n_prim=9, n_sec=6, n_tail=6, p_outer=1.0, n_neck=1, neck_s=0.0, foot="aniso", keel=0.0, rear_taper=0.0,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
     call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0,
     feather_shapes={},
@@ -80,6 +81,7 @@ species("GreatTit", dict(body_len=0.82, body_w=1.08, body_h=1.08, head=1.32, nec
                          leg_thick=0.9, fluff=1.25, perch_pitch=28, perch_neck=-8, peck_depth=36, tail_flick=1.4, flat_crown=0.4),
         dict(styles={
             "black": st("#0d0e12", ("down", "#2a2a30"), gloss=0.2, rough=0.4),
+            "tie_edge": st("#0d0e12", ("down", "#2a2a30"), gloss=0.2, rough=0.4),
             "white": st("#f0f0ea", ("down", "#8a8a88")),
             "yellow": st("#e2cd3a", ("down", "#5a5a50"), ("grad", "#e8d850", 0.3)),
             "mantle": st("#7c9a4c", ("down", "#4a4a42")),
@@ -100,7 +102,8 @@ species("GreatTit", dict(body_len=0.82, body_w=1.08, body_h=1.08, head=1.32, nec
                      "underwing": "underwing", "undertail": "vent", "trousers": "rump", "scapular": "mantle"},
             rules=[(lambda q: q.region in ("ear", "eyestripe", "malar") and q.dy > -0.0080 and q.dy < 0.0010 and q.dz < 0.002 and q.dz > -0.0105, "white"),
                    (lambda q: q.region == "nape" and q.s > 0.85 and q.z < 0.056 and q.z > 0.048, "nape_spot"),
-                   (lambda q: q.z < 0.052 and q.z > -0.03 and q.s < -0.55 and q.c < 0.32, "black"),   # the tie
+                   (lambda q: q.z < 0.052 and q.z > -0.03 and q.s < -0.55 and q.c < 0.17, "black"),   # the tie
+                   (lambda q: q.z < 0.052 and q.z > -0.03 and q.s < -0.55 and q.c < 0.32, "tie_edge"),   # its edge (wider in males)
                    (lambda q: q.region in ("neckside",) and q.z > 0.045, "black")],
             tracts={"tail": ["tail", "tail", "tail", "tail", "tail", "tail_outer"]},
             bare=dict(beak="#141416", beak_tip="#1c1c20", legs="#5a6a7a", iris="#120c0a", eyering="#16161a", mouth="#d07a6a")))
@@ -529,10 +532,11 @@ species("Fieldfare", dict(THRUSH, body_len=1.04, tail=1.2), dict(
 species("Blackbird", dict(THRUSH, body_len=1.02, tail=1.3, tail_shape="round", perch_tail=-6, tail_flick=1.6, eyering_w=0.9, beak_depth=1.0), dict(
     styles={
         "black": st("#0e0d0d", ("down", "#1a1a1a"), gloss=0.15, rough=0.5),
+        "throat": st("#0e0d0d", ("down", "#1a1a1a"), gloss=0.15, rough=0.5),
         "flight": st("#0e0d0d", ("fringe", "#1e1c1a", 0.12, "outer"), gloss=0.1),
         "under": st("#1a1818"),
     },
-    regions={"upper": "black", "under": "black", "primary": "flight", "tail": "flight", "underwing": "under"},
+    regions={"upper": "black", "under": "black", "throat": "throat", "chin": "throat", "primary": "flight", "tail": "flight", "underwing": "under"},
     bare=dict(beak="#f0a020", beak_tip="#f4b030", legs="#3a2e26", iris="#1a120c", eyering="#f0a020", mouth="#e8a030"),
 ))
 species("Robin", dict(THRUSH, body_len=0.82, body_w=1.08, body_h=1.08, head=1.15, neck=0.7, beak_len=0.68, beak_depth=0.85, beak_width=0.8,
@@ -567,6 +571,7 @@ species("WhiteWagtail", dict(body_len=0.95, body_w=0.85, body_h=0.92, head=0.95,
     styles={
         "grey": st("#8e939a", ("down", "#5a5e66")),
         "black": st("#0e0e10", ("down", "#2a2a2c")),
+        "cap": st("#0e0e10", ("down", "#2a2a2c")),
         "white": st("#f6f6f2", ("down", "#b8b8b4")),
         "prim": st("#1e1e22", ("fringe", "#d8d8d4", 0.08, "outer")),
         "sec": st("#1e1e22", ("fringe", "#e8e8e4", 0.2, "all")),
@@ -575,7 +580,7 @@ species("WhiteWagtail", dict(body_len=0.95, body_w=0.85, body_h=0.92, head=0.95,
         "tail_outer": st("#f6f6f2"),
         "under": st("#e8e8e4"),
     },
-    regions={"upper": "grey", "under": "white", "head": "white", "crown": "black", "nape": "black", "neckside": "black", "chin": "black",
+    regions={"upper": "grey", "under": "white", "head": "white", "crown": "cap", "nape": "cap", "neckside": "black", "chin": "black",
              "throat": "black", "lcovert": "grey", "mcovert": "gcovert", "gcovert": "gcovert", "pcovert": "prim", "primary": "prim",
              "secondary": "sec", "tertial": "sec", "tail": ["tail", "tail", "tail", "tail", "tail_outer", "tail_outer"], "underwing": "under",
              "rump": "black", "uppertail": "black"},
@@ -769,3 +774,57 @@ for _n, _f in {"Rook": 0.15, "HoodedCrow": 0.2, "Jackdaw": 0.25, "Magpie": 0.15,
                "Starling": 0.3, "Peregrine": 0.3, "Sparrowhawk": 0.4, "Waxwing": 0.9, "GreatTit": 0.8, "BlueTit": 0.85,
                "Robin": 0.85, "Bullfinch": 0.85, "HouseSparrow": 0.7, "TreeSparrow": 0.7, "Goldfinch": 0.7, "Chaffinch": 0.6}.items():
     SPECIES[_n]["morph"]["fluff_layer"] = _f
+
+
+# ---------------------------------------------------------------- anatomy by family (feather counts, neck, foot, body)
+ANATOMY = {
+    # crows: 10 primaries, the outermost short; 9 secondaries
+    "Rook": dict(n_prim=10, p_outer=0.62, n_sec=9), "HoodedCrow": dict(n_prim=10, p_outer=0.62, n_sec=9),
+    "Jackdaw": dict(n_prim=10, p_outer=0.6, n_sec=9), "Magpie": dict(n_prim=10, p_outer=0.55, n_sec=9),
+    # pigeons: 10 primaries, 11 secondaries, a deep keel, a 2-joint neck (the walking nod)
+    "FeralPigeon": dict(n_prim=10, p_outer=0.92, n_sec=11, n_neck=2, keel=0.25),
+    "WoodPigeon": dict(n_prim=10, p_outer=0.92, n_sec=11, n_neck=2, keel=0.25),
+    # gulls: 10 primaries, a long arm with many secondaries, a 2-joint neck
+    "HerringGull": dict(n_prim=10, p_outer=0.97, n_sec=16, n_neck=2, keel=0.1),
+    "CommonGull": dict(n_prim=10, p_outer=0.97, n_sec=15, n_neck=2, keel=0.08),
+    "BlackHeadedGull": dict(n_prim=10, p_outer=0.97, n_sec=14, n_neck=2, keel=0.06),
+    # the cormorant: 10 primaries, ~17 secondaries, 14 tail feathers, a long S-neck, all four toes webbed, a slim rear
+    "Cormorant": dict(n_prim=10, p_outer=0.9, n_sec=17, n_tail=7, n_neck=3, neck_s=12.0, foot="toti", rear_taper=0.15),
+    # the swift: 10 primaries (the outer longest), few short secondaries, 10 tail feathers, four forward toes, a cigar body
+    "CommonSwift": dict(n_prim=10, n_sec=8, n_tail=5, foot="pampro", rear_taper=0.25),
+    # raptors: 10 primaries, ~13 secondaries
+    "Sparrowhawk": dict(n_prim=10, p_outer=0.78, n_sec=12, keel=0.08), "Peregrine": dict(n_prim=10, p_outer=0.95, n_sec=13, keel=0.12),
+}
+for _n, _a in ANATOMY.items():
+    SPECIES[_n]["morph"].update(_a)
+
+# ---------------------------------------------------------------- females (species_art "female": the same styles recoloured)
+FEMALE = {
+    "GreatTit": dict(styles={"tie_edge": st("#e2cd3a", ("down", "#5a5a50"), ("grad", "#e8d850", 0.3))}),
+    "BlueTit": dict(styles={"blue": st("#5a86bc", ("down", "#2a3a5a"), rough=0.5), "yellow": st("#d8c84a", ("down", "#5a5a48"))}),
+    "Goldfinch": dict(styles={"red": st("#b83038", ("down", "#6a2a2a"), rough=0.5)}),
+    "Chaffinch": dict(styles={"bluegrey": st("#8a8a7c", ("down", "#5a5a50")), "pink": st("#c4b49c", ("down", "#7a6e60")),
+                              "mantle": st("#7a6c56"), "rump": st("#7a9060"), "belly": st("#e8e2d6")},
+                      bare=dict(beak="#9a8a78", beak_tip="#7a6a58")),
+    "Bullfinch": dict(styles={"red": st("#a8907e", ("down", "#6a5a50")), "grey": st("#8a7e72", ("down", "#5a544c"))}),
+    "HouseSparrow": dict(styles={"crown": st("#8a7a64", ("down", "#5a4e40")), "chestnut": st("#b8a688", ("down", "#6a5a48")),
+                                 "black": st("#b0a48e"), "cheek": st("#bcb09c"), "lcovert": st("#8a6a4a")},
+                         bare=dict(beak="#a89070", beak_tip="#7a6a50")),
+    "Blackbird": dict(styles={"black": st("#43352a", ("down", "#2a221c"), rough=0.6), "flight": st("#3a2e26", ("fringe", "#4a3c30", 0.12, "outer")),
+                              "under": st("#5a4a3e"), "throat": st("#6e5a48", ("streak", "#3a2e24", 0.35))},
+                      bare=dict(beak="#6a5a40", beak_tip="#5a4a34", eyering="#4a3c30")),
+    "Starling": dict(bare=dict(iris="#6a4a2a")),
+    "WhiteWagtail": dict(styles={"cap": st("#55575c", ("down", "#3a3a3e"))}),
+    "Waxwing": dict(styles={"sec": st("#2a2a2e", ("tip", "#c8202a", 0.035), ("fringe", "#f2f0ea", 0.08, "tip")),
+                            "tail": st("#5a5a60", ("tip", "#f0d030", 0.1), ("band", "#16161a", 0.1, 0.28))}),
+    "BarnSwallow": dict(styles={"red": st("#a83a2a", ("down", "#5a2a24")), "cream": st("#f4ece2")}),
+    "Sparrowhawk": dict(styles={"slate": st("#6a6658", ("down", "#4a4840")), "barred": st("#f2eee6", ("bars", "#6e5c4e", 3, 0.38), ("down", "#b8b0a8")),
+                                "cheek": st("#c8a080"), "flight": st("#6a6658", ("bars", "#4a4438", 4, 0.2)),
+                                "tail": st("#6a6658", ("bars", "#3a342c", 4, 0.22), ("tip", "#e8e4dc", 0.04))}),
+    "Peregrine": dict(styles={"slate": st("#4a4c50", ("bars", "#2e3034", 2, 0.25), ("down", "#3a3c40")),
+                              "barred": st("#e8e0d2", ("bars", "#2a2622", 3, 0.28))}),
+}
+for _n, _f in FEMALE.items():
+    SPECIES[_n]["plumage"]["female"] = _f
+SPECIES["Cormorant"]["morph"]["perch_low"] = 0.012     # short legs set far back: the body sits low on them
+SPECIES["CommonSwift"]["morph"]["perch_low"] = 0.007

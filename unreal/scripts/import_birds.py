@@ -238,7 +238,7 @@ def do_hues(ids):
     table = json.load(open(os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData", "species.json")))["species"]
     for sid in ids or [t["id"] for t in table]:
         hue = art.get(sid)["morph"].get("gloss_hue", 0.0) if sid in art.SPECIES else 0.0
-        for suffix in ("", "_Winter"):
+        for suffix in ("", "_Winter", "_Female", "_FemaleWinter"):
             p = "%s/%s/MI_%s_Plumage%s" % (BIRDS, sid, sid, suffix)
             if eal.does_asset_exist(p):
                 mi = unreal.load_asset(p)
@@ -247,7 +247,8 @@ def do_hues(ids):
         log("hue %s %.2f" % (sid, hue))
 
 
-TEX = (("albedo", "Albedo"), ("normal", "Normal"), ("params", "Params"), ("winter", "Albedo_Winter"))
+VARIANTS = ("Winter", "Female", "FemaleWinter")
+TEX = (("albedo", "Albedo"), ("normal", "Normal"), ("params", "Params")) + tuple((v, "Albedo_" + v) for v in VARIANTS)
 
 
 def do_textures(sid):
@@ -259,7 +260,7 @@ def do_textures(sid):
     for kind, suffix in TEX:
         f = os.path.join(src_dir, "T_%s_%s.png" % (sid, suffix))
         if os.path.exists(f):
-            import_texture(f, dest, "T_%s_%s" % (sid, suffix), "albedo" if kind == "winter" else kind)
+            import_texture(f, dest, "T_%s_%s" % (sid, suffix), "albedo" if kind in VARIANTS else kind)
     eal.save_directory(dest)
 
 
@@ -289,15 +290,17 @@ def do_import(sid):
             anims.append(a)
     if mesh is None:
         raise RuntimeError("no skeletal mesh in %s.glb" % sid)
-    tex = {kind: unreal.load_asset("%s/T_%s_%s" % (dest, sid, suffix)) for kind, suffix in TEX}
+    tex = {kind: unreal.load_asset("%s/T_%s_%s" % (dest, sid, suffix)) for kind, suffix in TEX
+           if eal.does_asset_exist("%s/T_%s_%s" % (dest, sid, suffix))}
     hue = rig.get("gloss_hue", 0.0)
     masters = {"Plumage": unreal.load_asset(MATS + "/M_BirdPlumage"), "Bare": unreal.load_asset(MATS + "/M_BirdBare"),
                "Eye": unreal.load_asset(MATS + "/M_BirdEye")}
     mis = {k: material_instance("MI_%s_%s" % (sid, k), dest, v, tex, hue) for k, v in masters.items()}
-    if tex["winter"]:
-        wt = dict(tex, albedo=tex["winter"])
-        for k, v in masters.items():
-            material_instance("MI_%s_%s_Winter" % (sid, k), dest, v, wt, hue)
+    for var in VARIANTS:   # MI_<Id>_<Kind>_<Variant>: the same mesh in winter / female plumage
+        if tex.get(var):
+            vt = dict(tex, albedo=tex[var])
+            for k, v in masters.items():
+                material_instance("MI_%s_%s_%s" % (sid, k, var), dest, v, vt, hue)
     mats = mesh.get_editor_property("materials")
     for i in range(len(mats)):
         sm = mats[i]

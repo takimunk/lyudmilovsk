@@ -76,6 +76,18 @@ for sid in ids:
         a.set_editor_property("initial_state", state)
         a.set_editor_property("seed", len(sid) * 7 + int(z))
         a.get_editor_property("body").set_skinned_asset_and_update(mesh)
+    sp = TABLE[sid]
+    if sp.get("dimorphism") == "plumage" or sp.get("femaleScale", 1.0) != 1.0 or sp.get("femaleStreamer", 1.0) != 1.0:
+        # the female beside the male, and a camera on the pair
+        f = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x + L * 1.15, 0, 0), unreal.Rotator(0, 0, 0))
+        f.set_actor_label("Female_%s" % sid)
+        f.set_editor_property("species", sid)
+        f.set_editor_property("sex", unreal.BirdSex.FEMALE)
+        f.set_editor_property("seed", len(sid) * 11)
+        f.get_editor_property("body").set_skinned_asset_and_update(mesh)
+        cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x + L * 0.55, -L * 3.4, L * 0.55), unreal.Rotator(0, -6, 90))
+        cam.set_actor_label("Pair_%s" % sid)
+        cam.camera_component.set_editor_property("field_of_view", 40.0)
     if TABLE[sid]["gait"] == "Cling":   # a swift clings to a wall, belly to it
         wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x - L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
         wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))

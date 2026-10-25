@@ -144,13 +144,23 @@ def bone(name, head, tail, parent):
     BONES[name] = (V(*head), V(*tail), parent)
 
 
-TF_N = 6
+NECKS = ["neck", "neck2", "neck3"][:max(1, min(3, M["n_neck"]))]
+
+
+def resample(arr, n):
+    """A per-feather list (lengths, a profile) stretched to n feathers."""
+    return list(np.interp(np.linspace(0, 1, n), np.linspace(0, 1, len(arr)), arr))
+
+
+# feather counts by family (species_art morph): songbirds 9 visible primaries, crows, gulls, pigeons, swifts, raptors and
+# the cormorant 10; true secondaries 6 in songbirds up to ~17 in gulls and the cormorant; tail feather pairs 5 (swift) to 7
+TF_N = M["n_tail"]
 WING = {}       # SHOULDER ELBOW WRIST HANDTIP, P_LEN S_LEN
-P_N = 9
-S_N = 6         # true secondaries; + 3 tertials + 3 humerals
+P_N = M["n_prim"]
+S_N = M["n_sec"]         # true secondaries; + 3 tertials + 3 humerals
 S_TOTAL = S_N + 6
-P_LEN_T = [0.056, 0.058, 0.061, 0.064, 0.067, 0.070, 0.073, 0.075, 0.072]
-S_LEN_T = [0.054, 0.053, 0.052, 0.051, 0.050, 0.049, 0.045, 0.041, 0.037, 0.034, 0.031, 0.027]
+P_LEN_T = resample([0.056, 0.058, 0.061, 0.064, 0.067, 0.070, 0.073, 0.075, 0.072], P_N)
+S_LEN_T = resample([0.054, 0.049], S_N) + [0.045, 0.041, 0.037, 0.034, 0.031, 0.027]
 SHOULDER_T, ELBOW_T, WRIST_T, HANDTIP_T = V(0.016, 0.057, 0.020), V(0.050, 0.058, 0.012), V(0.098, 0.059, 0.020), V(0.130, 0.059, 0.012)
 
 
@@ -201,8 +211,13 @@ def build_skeleton(wk):
     BONES.clear()
     bone("root", (0, 0, 0), (0, 0.012, 0), None)
     bone("body", warp((0, 0.046, -0.018)), warp((0, 0.050, 0.028)), "root")
-    bone("neck", warp((0, 0.054, 0.034)), warp((0, 0.059, 0.052)), "body")
-    bone("head", warp((0, 0.059, 0.053)), warp((0, 0.062, 0.078)), "neck")
+    # the neck: one bone, or a chain of 2-3 for long-necked birds (an S-curve needs more than one joint)
+    a, b = V(0, 0.054, 0.034), V(0, 0.059, 0.052)
+    parent = "body"
+    for j, nm in enumerate(NECKS):
+        bone(nm, warp(a + (b - a) * j / len(NECKS)), warp(a + (b - a) * (j + 1) / len(NECKS)), parent)
+        parent = nm
+    bone("head", warp((0, 0.059, 0.053)), warp((0, 0.062, 0.078)), parent)
     bone("jaw", warp((0, 0.0566, BEAK_Z0 - 0.002)), warp((0, 0.0560, BEAK_Z0 + 0.027 * M["beak_len"])), "head")
     # the eyes as bones: GetSocketLocation("eye_l") works on them (the bird's own camera)
     bone("eye_l", warp(EYE_T), warp(EYE_T + V(0.004, 0, 0)), "head")
@@ -210,8 +225,8 @@ def build_skeleton(wk):
     bone("tail", warp((0, 0.050, -0.040)), warp((0, 0.050, -0.058)), "body")
     for k in range(TF_N):
         for side, sx in (("L", 1), ("R", -1)):
-            a = math.radians((1.5 + 2.4 * k) * M["tail_fan"]) * sx
-            h = warp((sx * (0.0015 + 0.0019 * k) * M["tail_width"], 0.0492 - 0.0003 * k, -0.043))
+            a = math.radians((1.5 + 2.4 * k * 5.0 / (TF_N - 1)) * M["tail_fan"]) * sx
+            h = warp((sx * (0.0015 + 0.0019 * k * 5.0 / (TF_N - 1)) * M["tail_width"], 0.0492 - 0.0003 * k, -0.043))
             d = V(math.sin(a), 0, -math.cos(a))
             bone(f"tf.{side}.{k + 1}", h, h + d * tail_len(k), "tail")
     W = WING
@@ -220,7 +235,9 @@ def build_skeleton(wk):
     W["ELBOW"] = W["SHOULDER"] + (ELBOW_T - SHOULDER_T) * M["arm"] * wk
     W["WRIST"] = W["ELBOW"] + (WRIST_T - ELBOW_T) * M["arm"] * wk
     W["HANDTIP"] = W["WRIST"] + (HANDTIP_T - WRIST_T) * M["hand"] * wk
-    prof = M["prim_profile"]
+    prof = resample(M["prim_profile"], P_N)
+    if M["p_outer"] != 1.0:    # the outermost primary (p10) of crows, pigeons and gulls: shorter than the next
+        prof[-1] *= M["p_outer"]
     W["P_LEN"] = [P_LEN_T[i] * M["prim"] * wk * prof[i] for i in range(P_N)]
     W["S_LEN"] = [S_LEN_T[i] * M["sec"] * wk for i in range(S_TOTAL)]
     for side, sx in (("L", 1), ("R", -1)):
@@ -262,7 +279,8 @@ def setup_legs():
         bone(f"shin.{side}", knee, ankle, f"thigh.{side}")
         bone(f"tarsus.{side}", ankle, foot, f"shin.{side}")
         bone(f"toes.{side}", foot, foot + V(0, -0.0004, 0.019 * M["toes"]), f"tarsus.{side}")
-        bone(f"hallux.{side}", foot, foot + V(0, -0.0004, -0.011 * M["toes"] * M["hallux"]), f"tarsus.{side}")
+        hd = FEET[M["foot"]](sx)[3][0]
+        bone(f"hallux.{side}", foot, foot + V(math.sin(hd), -0.04, math.cos(hd)) * 0.011 * M["toes"] * M["hallux"], f"tarsus.{side}")
 
 
 def order():
@@ -373,7 +391,11 @@ def tract(name, i=None):
     if v is None:
         raise KeyError(f"{SPECIES}: no style for tract {name}")
     if isinstance(v, (list, tuple)):
-        return v[min(i or 0, len(v) - 1)]
+        # a list describes the tract feather by feather (p1 -> outermost, tail centre -> outer): stretch it over the
+        # species' own feather count
+        n = {"primary": P_N, "secondary": S_N, "tail": TF_N}.get(name, len(v))
+        j = int(round((i or 0) * (len(v) - 1) / max(n - 1, 1))) if n != len(v) else (i or 0)
+        return v[min(j, len(v) - 1)]
     return v
 
 
@@ -401,8 +423,8 @@ def bare_cells():
         ATL.request(k, k, None, w, h, 0, {})
 
 
-def paint_atlas(winter=False):
-    if not winter:
+def paint_atlas(variant=""):
+    if not variant:
         ATL.pack()
     n = ATL.size
     col = np.zeros((n, n, 3))
@@ -443,8 +465,8 @@ def paint_atlas(winter=False):
     col = bleed(col, alpha)
     srgb = C.lin_to_srgb(col)
     rgba = np.concatenate([srgb, alpha[..., None]], axis=2).astype(np.float32)
-    albedo = save_image(f"T_{SPECIES}_Albedo" + ("_Winter" if winter else ""), rgba, alpha=True)
-    if winter:
+    albedo = save_image(f"T_{SPECIES}_Albedo" + (f"_{variant}" if variant else ""), rgba, alpha=True)
+    if variant:
         return albedo
     nmap = C.normal_from_height(height, 0.35)
     normal = save_image(f"T_{SPECIES}_Normal", np.concatenate([nmap, np.ones((n, n, 1))], axis=2).astype(np.float32), data=True)
@@ -581,9 +603,19 @@ def blend_w(z):
     wh = t_head
     wn = t_neck * (1 - t_head)
     wb = max(0.0, 1 - wt - wn - wh)
-    for k, val in (("tail", wt), ("neck", wn), ("head", wh), ("body", wb)):
+    for k, val in (("tail", wt), ("head", wh), ("body", wb)):
         if val > 1e-3:
             w[k] = val
+    if wn > 1e-3:   # shared out along the neck chain by where along the neck the point is
+        u = min(max((z - 0.034) / 0.018, 0.0), 0.9999) * len(NECKS) - 0.5
+        for j, nm in enumerate(NECKS):
+            share = max(0.0, 1.0 - abs(u - j)) if len(NECKS) > 1 else 1.0
+            if j == 0 and u < 0:
+                share = 1.0
+            if j == len(NECKS) - 1 and u > j:
+                share = 1.0
+            if share > 1e-3:
+                w[nm] = w.get(nm, 0.0) + wn * share
     return w
 
 
@@ -616,8 +648,11 @@ def surf(z, th):
     c, s = math.cos(th), math.sin(th)
     kh = smooth(0.044, 0.056, z)          # the species' throat / crown fullness, blended in over the neck
     kb = 1 - smooth(-0.03, -0.012, z)     # and the belly, over the rear body (no steps: a step stands feathers up)
-    hd *= 1 + (M["throat"] - 1) * kh + (M["belly"] - 1) * kb
+    hd *= 1 + (M["throat"] - 1) * kh + (M["belly"] - 1) * kb + M["keel"] * math.exp(-((z - 0.008) / 0.024) ** 2)
     hu *= 1 + (M["crown_h"] - 1) * kh
+    if M["rear_taper"]:   # a slim, tapering rear (swift, cormorant)
+        kr = 1 - M["rear_taper"] * smooth(-0.012, -0.05, z)
+        hw, hu, hd = hw * kr, hu * kr, hd * kr
     hh = hu if s > 0 else hd
     ex = 2.3
     x = hw * np.sign(c) * abs(c) ** (2 / ex)
@@ -779,6 +814,16 @@ def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True, uv_const=No
             sb.f((c1, rings[-1][k], rings[-1][k + 1]), e1, mat)
 
 
+FEET = {   # (angle from forward, length, bone) per toe; the order is middle, inner, outer, then the fourth
+    # most birds: three toes forward, the hallux back (anisodactyl)
+    "aniso": lambda sx: [(0.0, 0.021, "toes"), (-sx * 0.42, 0.0155, "toes"), (sx * 0.45, 0.0165, "toes"), (math.pi, 0.0145 * M["hallux"], "hallux")],
+    # swifts: four short toes that all reach forward, for clinging to walls (pamprodactyl)
+    "pampro": lambda sx: [(sx * 0.12, 0.016, "toes"), (-sx * 0.25, 0.014, "toes"), (sx * 0.5, 0.0135, "toes"), (-sx * 0.62, 0.012, "hallux")],
+    # cormorants: the hallux turned forward and inward, all four joined by webs (totipalmate)
+    "toti": lambda sx: [(sx * 0.05, 0.021, "toes"), (-sx * 0.38, 0.018, "toes"), (sx * 0.45, 0.022, "toes"), (-sx * 0.95, 0.016, "hallux")],
+}
+
+
 def build_legs(sb, lod=0):
     lt = M["leg_thick"]
     for side, sx in (("L", 1), ("R", -1)):
@@ -803,7 +848,7 @@ def build_legs(sb, lod=0):
         pts = [ankle + (foot - ankle) * t for t in np.linspace(0, 1, 9)]
         rad = [(0.0021 - 0.0003 * t + 0.00018 * (i % 2)) * lt for i, t in enumerate(np.linspace(0, 1, 9))]
         tube(sb, pts, rad, [{f"tarsus.{side}": 1}] * 9, BARE, n=8, uv_key="legs")
-        toes = [(0.0, 0.021, "toes"), (-sx * 0.42, 0.0155, "toes"), (sx * 0.45, 0.0165, "toes"), (math.pi, 0.0145 * M["hallux"], "hallux")]
+        toes = FEET[M["foot"]](sx)
         tips = []
         for (ang, Lt, bn) in toes:
             d = V(math.sin(ang), 0, math.cos(ang))
@@ -814,8 +859,9 @@ def build_legs(sb, lod=0):
             tips.append(tipp)
             cl = [tipp, tipp + d * 0.0022 * M["claw"] + V(0, -0.0006, 0), tipp + d * 0.0038 * M["claw"] + V(0, -0.0016, 0)]
             tube(sb, cl, [0.0009 * lt, 0.0006 * lt, 0.0001], [{f"{bn}.{side}": 1}] * 3, BARE, n=5, uv_key="eyering")
-        if M["webbed"]:  # webs between the three front toes, both faces
-            for a_, b_ in ((1, 0), (0, 2)):
+        if M["webbed"] or M["foot"] == "toti":  # webs between the front toes (the cormorant: all four), both faces
+            pairs = ((3, 1), (1, 0), (0, 2)) if M["foot"] == "toti" else ((1, 0), (0, 2))
+            for a_, b_ in pairs:
                 for t0, t1 in ((0.0, 0.5), (0.5, 0.95)):
                     pa0, pa1 = foot + (tips[a_] - foot) * t0, foot + (tips[a_] - foot) * t1
                     pb0, pb1 = foot + (tips[b_] - foot) * t0, foot + (tips[b_] - foot) * t1
@@ -1017,6 +1063,7 @@ def build_contour(sb, lod=0):
 
 # ====================================================================== assemble
 S = 1.0   # global scale (species space -> metres)
+EXT = 1.0
 
 
 def solve_size():
@@ -1028,6 +1075,8 @@ def solve_size():
     tip = warp((0, 0.056, BEAK_Z0 + 0.027 * M["beak_len"] + 0.0007))[2]
     tail = min(BONES[f"tf.L.{k + 1}"][1][2] for k in range(TF_N))
     S = SP["lengthCm"] / 100.0 / (tip - tail)
+    global EXT
+    EXT = (tip - tail) / 0.20   # template length relative to the starling's: preview cameras step back by it
     reach1 = max((p_root(i) + p_dir(i) * WING["P_LEN"][i])[0] for i in range(P_N)) - WING["SHOULDER"][0]
     half = SP["wingspanCm"] / 100.0 / 2 / S
     wk = (half - WING["SHOULDER"][0]) / reach1
@@ -1196,8 +1245,14 @@ def solve_pose(P):
     Rb = nose_up(P.get("pitch", 0.0)) @ rz(math.radians(P.get("roll", 0.0))) @ ry(math.radians(P.get("bodyyaw", 0.0)))
     deform("body", Rb, head=BONES["body"][0] + V(0, P.get("lift", 0.0), P.get("fwd", 0.0)))
     yaw = math.radians(P.get("yaw", 0.0))
-    deform("neck", Rb @ ry(yaw * 0.45) @ nose_up(P.get("neck", 0.0)))
-    hd = D["neck"](BONES["head"][0]) + Rb @ V(0, P.get("headup", 0.0), P.get("headfwd", 0.0))
+    # the neck's bend is shared along the chain; neck_s curls it into an S (back at the base, forward above)
+    n = len(NECKS)
+    curl = [0.0] if n == 1 else ([-1.0, 1.0] if n == 2 else [-1.0, 2.0, -1.0])
+    Rn = Rb
+    for j, nm in enumerate(NECKS):
+        Rn = Rn @ ry(yaw * 0.45 / n) @ nose_up(P.get("neck", 0.0) / n + P.get("neck_s", M["neck_s"]) * curl[j])
+        deform(nm, Rn)
+    hd = D[NECKS[-1]](BONES["head"][0]) + Rb @ V(0, P.get("headup", 0.0), P.get("headfwd", 0.0))
     deform("head", Rb @ ry(yaw) @ nose_up(P.get("head", 0.0)) @ rz(math.radians(P.get("tilt", 0.0))), head=hd)
     deform("jaw", R["head"] @ nose_up(-P.get("gape", 0.0)))
     deform("eye_l", R["head"])
@@ -1569,6 +1624,7 @@ def render(name, cam, tgt, lens=50, res=(900, 700), bg=(0.55, 0.6, 0.7)):
     co = bpy.data.objects.get("PCam") or bpy.data.objects.new("PCam", cd)
     if co.name not in sc.collection.objects:
         sc.collection.objects.link(co)
+    cam = np.asarray(tgt) + (np.asarray(cam) - np.asarray(tgt)) * EXT
     co.location = C.to_blender(tuple(np.asarray(cam) * S))
     d = mathutils.Vector(C.to_blender(tuple(np.asarray(tgt) * S))) - co.location
     co.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
@@ -1598,12 +1654,16 @@ def main():
     bare_cells()
     sb = build_mesh(None, 0)
     albedo, normal, params = paint_atlas()
-    if PLUM.get("winter"):  # the same cells recoloured: a second albedo for the winter material set
-        summer = (dict(PLUM["styles"]), dict(PLUM["bare"]))
-        PLUM["styles"].update(PLUM["winter"].get("styles", {}))
-        PLUM["bare"].update(PLUM["winter"].get("bare", {}))
-        paint_atlas(winter=True)
-        PLUM["styles"], PLUM["bare"] = summer
+    # the same cells recoloured: an albedo per plumage variant (winter, female, female in winter)
+    for suffix, parts in (("Winter", ["winter"]), ("Female", ["female"]), ("FemaleWinter", ["female", "winter"])):
+        if not all(PLUM.get(p) for p in parts):
+            continue
+        base = (dict(PLUM["styles"]), dict(PLUM["bare"]))
+        for p in parts:
+            PLUM["styles"].update(PLUM[p].get("styles", {}))
+            PLUM["bare"].update(PLUM[p].get("bare", {}))
+        paint_atlas(variant=suffix)
+        PLUM["styles"], PLUM["bare"] = base
     mats = make_materials(albedo, normal, params)
     ob = bake_mesh(sb, mats, f"SK_{SPECIES}")
     arm = build_armature()

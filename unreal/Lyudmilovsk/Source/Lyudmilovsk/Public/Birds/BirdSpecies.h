@@ -31,6 +31,13 @@ enum class EBirdGait : uint8
 
 /** What a bird's body is doing: ABirdActor plays the clip for it (A_<Id>_<Clip>). */
 UENUM(BlueprintType)
+enum class EBirdSex : uint8
+{
+	Male,
+	Female,
+};
+
+UENUM(BlueprintType)
 enum class EBirdState : uint8
 {
 	Perch,        // standing still, breathing, the odd tail flick (clip Idle)
@@ -90,6 +97,13 @@ struct LYUDMILOVSK_API FBirdSpecies
 
 	bool IsPresentIn(int32 Month) const { return Months.Num() == 0 || Months.Contains(Month); }
 	bool InWinterPlumage(int32 Month) const { return WinterMonths.Contains(Month); }
+
+	/** The female looks different (her own material set: MI_<Id>_*_Female, MI_<Id>_*_FemaleWinter). */
+	UPROPERTY(BlueprintReadOnly) bool bFemalePlumage = false;
+	/** Her length relative to the male's (raptor females are larger, most others a touch smaller). */
+	UPROPERTY(BlueprintReadOnly) float FemaleScale = 1.f;
+	/** Her outermost tail feathers relative to his (the swallow's streamers). */
+	UPROPERTY(BlueprintReadOnly) float FemaleStreamer = 1.f;
 
 	FText DisplayName() const;
 	float LengthM() const { return LengthCm * 0.01f; }

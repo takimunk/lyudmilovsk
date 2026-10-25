@@ -143,6 +143,7 @@ void FBirdAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	Look = Bird->Look;
 	BankDeg = Bird->BankDeg;
 	TailPitchDeg = Bird->TailPitchDeg;
+	StreamerScale = Bird->StreamerScale;
 }
 
 namespace
@@ -225,6 +226,26 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 	if (!Head.IsValid() || !Neck.IsValid())
 	{
 		return true;
+	}
+	// the outermost tail feather pair, shorter or longer (its bone scales along with the card)
+	if (FMath::Abs(StreamerScale - 1.f) > 1e-3)
+	{
+		for (int32 K = 7; K >= 1; --K)
+		{
+			const FCompactPoseBoneIndex L = FindBone(Bones, *FString::Printf(TEXT("tf.L.%d"), K));
+			if (L.IsValid())
+			{
+				for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
+				{
+					const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf.%s.%d"), Side, K));
+					if (B.IsValid())
+					{
+						Output.Pose[B].SetScale3D(FVector(StreamerScale));
+					}
+				}
+				break;
+			}
+		}
 	}
 	FCSPose<FCompactPose> CS;
 	CS.InitPose(Output.Pose);

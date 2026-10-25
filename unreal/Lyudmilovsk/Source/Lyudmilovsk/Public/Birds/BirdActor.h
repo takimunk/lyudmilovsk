@@ -23,7 +23,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBirdActionFinished, ABirdActor*,
  *   (Takeoff -> Fly, Land -> Perch, the rest back to what the bird was doing).
  *   SetFlightInput is for a bird the player flies: wings and tail follow the controls instead of the flight style.
  *
- * Winter plumage (species.json winterMonths) is picked from the game calendar on SetSpecies.
+ * Winter plumage (species.json winterMonths) is picked from the game calendar on SetSpecies; Sex picks the female's plumage,
+ * size and tail where they differ.
  * Console: Bird.Spawn <Id> [state] spawns one in front of the camera (testing).
  */
 UCLASS()
@@ -44,6 +45,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	EBirdState InitialState = EBirdState::Perch;
 
+	/** Male or female: her plumage where it differs (species.json dimorphism), her size, a swallow's shorter streamers. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
+	EBirdSex Sex = EBirdSex::Male;
+
 	/** Random phase / pauses (birds of one flock must not move in lockstep). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	int32 Seed = 0;
@@ -53,6 +58,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	bool SetSpecies(FName Id);
+
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetSex(EBirdSex NewSex);
 
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	void SetState(EBirdState NewState, float BlendTime = 0.15f);
@@ -110,6 +118,8 @@ private:
 
 	UBirdAnimInstance* Anim() const;
 	UAnimSequence* Clip(FName Name) const;
+	/** The species' materials for this sex and season (MI_<Id>_<Kind>[_Female][Winter] when there are such). */
+	void ApplyPlumage();
 	void StartClip(EBirdState S, float BlendTime);
 	void TickFlight(float DeltaSeconds);
 	static bool IsOneShot(EBirdState S);
