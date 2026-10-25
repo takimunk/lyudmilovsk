@@ -15,7 +15,9 @@ Full standard and the reasoning: `docs/characters.md` (Nao is the worked example
    `python3 tools/gen_character.py <id> front` → look at it → `back left right` → look → `model`.
    Sidecars `gen/*.json` are committed; pictures and `model.glb` are not.
    Check before modelling: T-pose, whole body, same scale in all views, details on the right side (earring, braid).
-3. **Rig**: `Blender -b -P blender/characters/rig_character.py -- <id> --preview` and look at
+3. **Optimize + rig** (one script): budget 24k triangles (kids 18k), 2048 base colour + baked 2048 normal map
+   (`character.json` `faces`, `texture`, `bake_normal`); check the close-ups of face and **hands**: fused or broken fingers
+   get replaced by the donor's MakeHuman hands. Then: `Blender -b -P blender/characters/rig_character.py -- <id> --preview` and look at
    `renders/characters/<id>_posed*.png` (arms down, a step): no tearing at the skirt, hands and feet follow.
    The donor glb (`blender/humans/export/human_<donor>.glb`) comes from `blender/humans/build_humans.py`.
 4. **Import** (editor closed on this checkout, nothing running `-game` while Dima plays):

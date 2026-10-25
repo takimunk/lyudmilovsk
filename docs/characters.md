@@ -11,7 +11,7 @@ made this way and is the worked example below.
 | 1. Look | a reference (photo, sketch, description) | `blender/characters/<id>/source/` |
 | 2. Full-body T-pose, then back, left and right views | image model (`game-assets` skill: Higgsfield, else fal Nano Banana 2.1) | `gen/front|back|left|right.png` |
 | 3. 3D model from the four views | hi3d (Hi3D v3.0 multi-view, 2048quality, textured, PBR) | `gen/model.glb` (~2M faces) |
-| 4. Rig on the shared skeleton | `blender/characters/rig_character.py <id>` | `export/human_<id>.glb` (60k faces, 56 bones) |
+| 4. Rig on the shared skeleton | `blender/characters/rig_character.py <id>` | `export/human_<id>.glb` (24k triangles, 2K textures, 56 bones) |
 | 5. Import | `unreal/scripts/import_character.py <id>` (UnrealEditor-Cmd, headless) | `/Game/Characters/Humans/<Id>/SK_<Id>` |
 | 6. Life, words, voice | `people.json`, `npc_dialogue.txt`, `strings_*.json`, `voice.json` | the NPC in the game |
 | 7. Check | `make_life_preview_level.py` + `shoot_life_anims.py` with `LIFE_CAST=<Id>,...`; `tools/peoplesim/run.sh test` | shots, sim checks |
@@ -47,8 +47,11 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
    moves the donor. Never move bones by their heads/tails to re-aim them: that recomputes the roll.
 3. The donor is fitted to the model: uniform scale to the height (`donor_height_share`, hair stands a little higher),
    then each arm stretched along X to the model's span and lifted to its arm height.
-4. The model (one mesh, centred, feet at 0, facing −Y in Blender = +Y in UE like every human) is decimated to `faces`
-   (60k) and takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
+4. The model (one mesh, centred, feet at 0, facing −Y in Blender = +Y in UE like every human) is **optimized**
+   (Dima's rule: generated models are far too detailed): duplicates welded and specks removed, decimated to `faces`
+   (24k triangles for an adult, 18k for a child), smooth shaded, the lost detail baked from a 400k copy into a 2048
+   tangent normal map, the 8K base colour scaled to `texture` (2048), metal/roughness dropped (the master sets them).
+   Hands are checked in close-ups; fused or broken fingers are replaced by the donor's hands. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.
@@ -85,7 +88,9 @@ weights before importing.
 ## Nao (the example)
 
 - Reference `blender/characters/nao/source/nao_reference.webp`; spec `gen.json` (Nano Banana 2.1 edit, seeds
-  2660–2663, 2K; Hi3D v3.0 multi-view 2048quality); `character.json` (1.60 m, donor girl_a, 60k faces, skirt hem 0.42).
+  2660–2663, 2K; Hi3D v3.0 multi-view 2048quality); `character.json` (1.60 m, donor girl_a, 24k triangles, 2K textures + baked normal, skirt hem 0.42).
+  Dima asked for a shorter skirt: `front_short` (Higgsfield edit of `front`), `*_short` views and `model_short` are what
+  the game uses (`character.json` `model`).
 - 19, "watches the door": a duty `watch_door` at the club's door on the forecourt (where the hero first comes out),
   10:00–21:00 every day; a new game finds her there. Lines `line.nao.*` (first, four agains, all four sun states),
   voice: MiniMax designed "young Japanese woman, soft, calm, a little dreamy".

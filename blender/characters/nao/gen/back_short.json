@@ -1,0 +1,24 @@
+{
+ "step": "back_short",
+ "model": "google/nano-banana-2.1/edit",
+ "request_id": "01a174a7-223d-72d1-82b3-53bd7bc6e125",
+ "seconds": 32,
+ "inputs": {
+  "resolution": "2K",
+  "aspect_ratio": "1:1",
+  "output_format": "png",
+  "num_images": 1,
+  "seed": 2671,
+  "thinking_level": "high",
+  "prompt": "The same woman in the same T-pose seen exactly from behind (back view, camera rotated 180 degrees around her). Same black bob haircut seen from the back, same short black dress ending at mid-thigh (back of the collar, back of the bodice, skirt), black tights, black Mary Jane shoes. Arms stretched horizontally at shoulder height, same scale and position in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text.",
+  "image_urls": [
+   "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195917_fff0eeb7-a70d-40c1-9c2e-0d94619affee.png"
+  ]
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd667/onzFAc81-NlLTzC289FYA_vh25Jx7d.png",
+ "output_file": "back_short.png",
+ "sha256": "83134b9629054dc078c5d72f583688a38df4a496663083c6d1d648a9cb0c3143",
+ "response": {
+  "description": ""
+ }
+}

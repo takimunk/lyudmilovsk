@@ -66,6 +66,10 @@ def import_character(cid):
     tmp = dest + "/_import"
     if eal.does_directory_exist(dest):
         eal.delete_directory(dest)
+    disk = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Characters", "Humans", title)
+    if os.path.isdir(disk):                       # delete_directory leaves renamed files behind on disk
+        import shutil
+        shutil.rmtree(disk)
     params = unreal.ImportAssetParameters()
     params.is_automated = True
     params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
@@ -121,6 +125,11 @@ def import_character(cid):
         eal.delete_asset(p)
     eal.delete_directory(tmp)
     mesh = unreal.load_asset("%s/SK_%s" % (dest, title))
+    # LOD1/LOD2 at 50 % and 25 % of the triangles (the game-assets budget)
+    sme = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
+    sme.regenerate_lod(mesh, 3, True, False)
+    eal.save_loaded_asset(mesh)
+    log("  LODs %d" % sme.get_lod_count(mesh))
     log("%s: %d materials, extent %s, skeleton %s" % (title, len(mesh.materials), mesh.get_bounds().box_extent,
                                                      mesh.skeleton.get_path_name()))
     eal.save_directory(dest)

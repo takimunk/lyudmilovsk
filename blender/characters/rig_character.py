@@ -91,6 +91,91 @@ def decimate(m, faces):
     log("decimated %d -> %d faces" % (n, len(m.data.polygons)))
 
 
+def clean(m, min_island=40):
+    """Welds duplicate vertices and drops tiny loose islands (specks the generator leaves around the model)."""
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(m.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0005)
+    bm.verts.ensure_lookup_table()
+    seen, drop = set(), []
+    for v in bm.verts:
+        if v.index in seen:
+            continue
+        stack, island = [v], []
+        seen.add(v.index)
+        while stack:
+            a = stack.pop()
+            island.append(a)
+            for e in a.link_edges:
+                b = e.other_vert(a)
+                if b.index not in seen:
+                    seen.add(b.index)
+                    stack.append(b)
+        if len(island) < min_island:
+            drop.extend(island)
+    bmesh.ops.delete(bm, geom=drop, context="VERTS")
+    bm.to_mesh(m.data)
+    bm.free()
+    log("cleaned: %d specks' vertices removed, %d verts left" % (len(drop), len(m.data.vertices)))
+
+
+def optimize(m, spec):
+    """Game budget (docs/characters.md): the generator's ~2M faces become `faces` triangles, smooth shaded; the detail
+    lost is baked from a 400k copy into a `texture`-sized normal map; the base colour is scaled to the same size."""
+    clean(m)
+    tex = spec.get("texture", 2048)
+    high = None
+    if spec.get("bake_normal", True):
+        decimate(m, 400000)
+        high = m.copy()
+        high.data = m.data.copy()
+        bpy.context.scene.collection.objects.link(high)
+        high.data.materials[0] = m.data.materials[0].copy()      # the bake target lives only in the low one's material
+    decimate(m, spec.get("faces", 24000))
+    for p in m.data.polygons:
+        p.use_smooth = True
+    mat = m.data.materials[0]
+    nodes = mat.node_tree.nodes
+    bsdf = next(n for n in nodes if n.type == "BSDF_PRINCIPLED")
+    base = next((l.from_node for l in mat.node_tree.links if l.to_socket == bsdf.inputs["Base Color"]), None)
+    if base is not None and base.image and base.image.size[0] > tex:
+        base.image.scale(tex, tex)
+        log("base colour scaled to %d" % tex)
+    for l in list(mat.node_tree.links):                      # metal/roughness: the master has fixed values
+        if l.to_socket in (bsdf.inputs["Metallic"], bsdf.inputs["Roughness"]):
+            mat.node_tree.links.remove(l)
+    bsdf.inputs["Metallic"].default_value = 0.0
+    if high is not None:
+        bake_normal(m, high, mat, bsdf, tex)
+        bpy.data.objects.remove(high)
+
+
+def bake_normal(low, high, mat, bsdf, size):
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.samples = 1
+    sc.cycles.device = "CPU"
+    img = bpy.data.images.new(low.name + "_normal", size, size, alpha=False, float_buffer=False)
+    img.colorspace_settings.name = "Non-Color"
+    nodes = mat.node_tree.nodes
+    tn = nodes.new("ShaderNodeTexImage")
+    tn.image = img
+    nodes.active = tn
+    bpy.ops.object.select_all(action="DESELECT")
+    high.select_set(True)
+    low.select_set(True)
+    bpy.context.view_layer.objects.active = low
+    bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True, cage_extrusion=0.006, max_ray_distance=0.02,
+                        margin=8, normal_space="TANGENT")
+    img.file_format = "PNG"
+    nm = nodes.new("ShaderNodeNormalMap")
+    mat.node_tree.links.new(tn.outputs["Color"], nm.inputs["Color"])
+    mat.node_tree.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
+    img.pack()
+    log("normal map baked %dx%d" % (size, size))
+
+
 def silhouette(co):
     """Arm span at shoulder height, and the stance: what the fit needs from the model."""
     h = co[:, 2].max()
@@ -347,8 +432,8 @@ def main():
     cid = [a for a in argv if not a.startswith("--")][0]
     spec = json.load(open(os.path.join(HERE, cid, "character.json")))
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    model = load_model(os.path.join(HERE, cid, "gen", "model.glb"), spec["height"])
-    decimate(model, spec.get("faces", 60000))
+    model = load_model(os.path.join(HERE, cid, "gen", spec.get("model", "model") + ".glb"), spec["height"])
+    optimize(model, spec)
     target = silhouette(world_co(model))
     target["donor_height_share"] = spec.get("donor_height_share", 0.985)
     log("model silhouette %s" % {k: round(v, 3) for k, v in target.items()})

@@ -32,6 +32,28 @@ then `media_confirm`) or `media_import_url` for a file that is already online. A
 - MCP runs have no script: write the sidecar yourself (`<asset>.json`: service, tool, all arguments, task id, outputs).
 - Most endpoints have no seed (TTS, 3D): the committed output is canonical; regenerate only when its spec changed.
 
+## Every generated model is optimized before it goes in (Dima's rule, 2026-10-25)
+hi3d gives ~2M triangles and 8K textures: never import that. In Blender, before the game:
+1. **Clean**: weld duplicates (0.5 mm), drop loose specks, fix obvious defects (bumpy relief, holes, fused or extra
+   parts, wrong-side details). Parts that must move on their own are cut off and made procedurally or taken from a
+   template rig (bird legs; people's hands when the generated ones are fused or broken).
+2. **Decimate to the budget** (triangles, LOD0), smooth shading, and **bake the lost detail** from a ~400k copy into a
+   tangent normal map (Cycles, selected-to-active).
+3. **Textures** scaled to the budget; metal/roughness maps dropped unless the material uses them.
+4. In UE: LOD1/LOD2 generated (50 %, 25 %).
+
+| What | LOD0 triangles | Textures |
+|---|---|---|
+| Person, NPC (adult) | 24k | base colour 2048 + normal 2048, one material |
+| Child | 18k | 2048 + 2048 |
+| Animal or bird seen close (the player's bird, pets) | 20k | 2048 + 2048 |
+| Animal or bird at a distance, crowds | 3–5k | 1024 |
+| Large prop (furniture, machine) | 8k | 2048 |
+| Small prop (cup, bottle, item) | 1–2k | 512–1024 |
+
+Characters: `blender/characters/rig_character.py` does steps 1–3 (`faces`, `texture`, `bake_normal` in
+`character.json`); `unreal/scripts/import_character.py` does 4.
+
 ## Storage (git LFS budget)
 - Raw outputs (multi-view images, 2M-face models, previews) stay local, ignored, refetchable from the sidecar's URL.
 - Push to LFS only what ships: the finished, decimated asset and its uassets (and a small jpg preview when useful).

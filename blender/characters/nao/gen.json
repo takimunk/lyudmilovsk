@@ -1,35 +1,159 @@
 {
- "_doc": "Nao (Нао): every paid generation that makes her, in order. tools/gen_character.py nao <step> runs a step and writes gen/<step>.json (request id, inputs, output URL, sha256). Images and the raw model stay local (gen/ is ignored); the sidecars are committed.",
+ "_doc": "Nao (Нао): every paid generation that makes her, in order. tools/gen_character.py nao <step> runs a step and writes gen/<step>.json (request id, inputs, output URL, sha256). Images and the raw model stay local (gen/ is ignored); the sidecars are committed. Dima asked for a shorter skirt (2026-10-25): v2 steps start from front_short (a Higgsfield edit of front, sidecar written by hand) and the game uses model_short.",
  "reference": "source/nao_reference.webp",
  "steps": {
   "front": {
    "model": "google/nano-banana-2.1/edit",
-   "images": ["@reference"],
-   "args": {"resolution": "2K", "aspect_ratio": "1:1", "output_format": "png", "num_images": 1, "seed": 2660, "thinking_level": "high"},
+   "images": [
+    "@reference"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2660,
+    "thinking_level": "high"
+   },
    "prompt": "Full-body character reference of the same young woman as in the photo, for 3D modelling. Keep her face, her straight black chin-length bob with blunt bangs, the thin braid hanging at her right temple and the small silver horse earring on her left ear exactly as in the photo. She wears the same plain black dress with the white rounded collar: fitted black bodice, short slightly puffed sleeves, A-line skirt to just below the knee, matte black opaque tights and black leather Mary Jane shoes with a strap. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Calm neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
   },
   "back": {
    "model": "google/nano-banana-2.1/edit",
-   "images": ["@front"],
-   "args": {"resolution": "2K", "aspect_ratio": "1:1", "output_format": "png", "num_images": 1, "seed": 2661, "thinking_level": "high"},
+   "images": [
+    "@front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2661,
+    "thinking_level": "high"
+   },
    "prompt": "The same woman in the same T-pose seen exactly from behind (back view, camera rotated 180 degrees around her). Same black bob haircut seen from the back, same black dress (back of the collar, back of the bodice, skirt), black tights, black Mary Jane shoes. Arms stretched horizontally at shoulder height, same scale and position in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
   },
   "left": {
    "model": "google/nano-banana-2.1/edit",
-   "images": ["@front"],
-   "args": {"resolution": "2K", "aspect_ratio": "1:1", "output_format": "png", "num_images": 1, "seed": 2662, "thinking_level": "high"},
+   "images": [
+    "@front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2662,
+    "thinking_level": "high"
+   },
    "prompt": "The same woman in the same T-pose seen exactly from her left side (profile view, camera rotated 90 degrees around her so she faces the right edge of the picture). Her left arm points straight at the camera and is foreshortened, the right arm is hidden behind her body. Same black bob with bangs, the silver horse earring on the visible left ear, same black dress with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
   },
   "right": {
    "model": "google/nano-banana-2.1/edit",
-   "images": ["@front"],
-   "args": {"resolution": "2K", "aspect_ratio": "1:1", "output_format": "png", "num_images": 1, "seed": 2663, "thinking_level": "high"},
+   "images": [
+    "@front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2663,
+    "thinking_level": "high"
+   },
    "prompt": "The same woman in the same T-pose seen exactly from her right side (profile view, camera rotated 90 degrees around her so she faces the left edge of the picture). Her right arm points straight at the camera and is foreshortened, the left arm is hidden behind her body. Same black bob with bangs, the thin braid at her right temple visible, same black dress with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
   },
   "model": {
    "model": "hitem3d/hi3d/v3.0/multi-view-to-3d",
-   "images": {"front_image_url": "@front", "back_image_url": "@back", "left_image_url": "@left", "right_image_url": "@right"},
-   "args": {"resolution": "2048quality", "export_format": "glb", "enable_texture": true, "enable_pbr": true, "shading": 0.5, "face_count": 2000000}
+   "images": {
+    "front_image_url": "@front",
+    "back_image_url": "@back",
+    "left_image_url": "@left",
+    "right_image_url": "@right"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 2000000
+   }
+  },
+  "front_short": {
+   "service": "higgsfield",
+   "model": "nano_banana_2_1",
+   "images": [
+    "@front"
+   ],
+   "args": {
+    "resolution": "2k",
+    "aspect_ratio": "1:1",
+    "seed": 2670,
+    "thinking_level": "high"
+   },
+   "prompt": "Edit this picture: make her dress shorter, the skirt now ends at mid-thigh, about a hand's width above the knee, still a flared A-line skirt; more of her black opaque tights shows. Keep everything else exactly the same: her face, hair with bangs, the braid, the horse earring, the white collar, the short puffed sleeves, the strict T-pose, the shoes, the framing, scale and position, the plain light grey background and the soft even shadowless light."
+  },
+  "back_short": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@front_short"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2671,
+    "thinking_level": "high"
+   },
+   "prompt": "The same woman in the same T-pose seen exactly from behind (back view, camera rotated 180 degrees around her). Same black bob haircut seen from the back, same short black dress ending at mid-thigh (back of the collar, back of the bodice, skirt), black tights, black Mary Jane shoes. Arms stretched horizontally at shoulder height, same scale and position in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "left_short": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@front_short"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2672,
+    "thinking_level": "high"
+   },
+   "prompt": "The same woman in the same T-pose seen exactly from her left side (profile view, camera rotated 90 degrees around her so she faces the right edge of the picture). Her left arm points straight at the camera and is foreshortened, the right arm is hidden behind her body. Same black bob with bangs, the silver horse earring on the visible left ear, same short black dress ending at mid-thigh with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "right_short": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@front_short"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 2673,
+    "thinking_level": "high"
+   },
+   "prompt": "The same woman in the same T-pose seen exactly from her right side (profile view, camera rotated 90 degrees around her so she faces the left edge of the picture). Her right arm points straight at the camera and is foreshortened, the left arm is hidden behind her body. Same black bob with bangs, the thin braid at her right temple visible, same short black dress ending at mid-thigh with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "model_short": {
+   "model": "hitem3d/hi3d/v3.0/multi-view-to-3d",
+   "images": {
+    "front_image_url": "@front_short",
+    "back_image_url": "@back_short",
+    "left_image_url": "@left_short",
+    "right_image_url": "@right_short"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 2000000
+   }
   }
  }
 }
