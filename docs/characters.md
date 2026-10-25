@@ -9,7 +9,7 @@ made this way and is the worked example below.
 | Step | Tool | In → out |
 |---|---|---|
 | 1. Look | a reference (photo, sketch, description) | `blender/characters/<id>/source/` |
-| 2. Full-body T-pose, then back, left and right views | image model (`game-assets` skill: Higgsfield, else fal Nano Banana 2.1) | `gen/front|back|left|right.png` |
+| 2. Full-body T-pose, then back, left and right views, always as grids (4 people x 3 views in one picture) cut by `tools/characters/cut_grid.py` | Higgsfield `gpt_image_2_5` sunburst, medium, 4K, transparent background (`game-assets` skill) | `gen/front|back|left|right.png` |
 | 3. 3D model from the four views | hi3d (Hi3D v3.0 multi-view, 2048quality, textured, PBR) | `gen/model.glb` (~2M faces) |
 | 4. Rig on the shared skeleton | `blender/characters/rig_character.py <id>` | `export/human_<id>.glb` (24k triangles, 2K textures, 56 bones) |
 | 5. Import | `unreal/scripts/import_character.py <id>` (UnrealEditor-Cmd, headless) | `/Game/Characters/Humans/<Id>/SK_<Id>` |

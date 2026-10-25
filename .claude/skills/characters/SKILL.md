@@ -11,7 +11,7 @@ Full standard and the reasoning: `docs/characters.md` (Nao is the worked example
 1. **Folder** `blender/characters/<id>/`: `source/` (reference), `gen.json` (steps: front T-pose, back, left, right
    views from `@front`, then the hi3d model; seeds pinned), `character.json` (height m, donor, faces, skirt).
    Copy Nao's and change the prompt, never the pose/background/light wording.
-2. **Generate**: pictures through Higgsfield (fallback fal), the model through hi3d. With fal:
+2. **Generate**: pictures through Higgsfield as grids (fronts of several people in one picture, then a 4x3 turnaround grid of 4 people x back/left/right; `gpt_image_2_5` sunburst, medium, 4K, transparent background; cut with `tools/characters/cut_grid.py`), the model through hi3d. With fal:
    `python3 tools/gen_character.py <id> front` → look at it → `back left right` → look → `model`.
    Sidecars `gen/*.json` are committed; pictures and `model.glb` are not.
    Check before modelling: T-pose, whole body, same scale in all views, details on the right side (earring, braid).

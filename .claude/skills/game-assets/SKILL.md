@@ -9,13 +9,26 @@ description: Which service makes which generated asset for Lyudmilovsk (pictures
 
 | Asset | Service | Fallback |
 |---|---|---|
-| Pictures, textures, icons, posters, concept and reference images | **Higgsfield MCP** (`generate_image`, `generate_image_batch`, `upscale_image`, `remove_background`; Dima's subscription with credits; check `balance` first) | **fal** (`FAL_API_KEY`, e.g. `google/nano-banana-2.1/edit`, `fal-ai/nano-banana-2`) when Higgsfield's credits run out or it lacks the model |
+| Pictures, textures, icons, posters, concept and reference images (always as grids, see below; for 3D inputs `gpt_image_2_5` sunburst medium 4K transparent) | **Higgsfield MCP** (`generate_image`, `generate_image_batch`, `upscale_image`, `remove_background`; Dima's subscription with credits; check `balance` first) | **fal** (`FAL_API_KEY`, e.g. `google/nano-banana-2.1/edit`, `fal-ai/nano-banana-2`) when Higgsfield's credits run out or it lacks the model |
 | Text to speech (NPC lines, the hero) | **fal** always (`tools/gen_voice.py`: ElevenLabs v3 or a MiniMax designed voice, see `localization/voice.json`) | none |
 | Sound effects, music | fal (`tools/gen_sounds.py`) | none |
 | Any 3D model (props, characters, animals) | **hi3d** (the `hi3d` MCP at agent.hi3d.ai: `quote_generation` then `create_generation`; also does 2D on Nano-Banana 2 / Pro) | Hi3D v3.0 on fal (`hitem3d/hi3d/v3.0/image-to-3d`, `.../multi-view-to-3d`), scriptable |
 
 The fal key is in `~/projects/asmrx3000/.env` (`FAL_API_KEY`). Never commit it, never print it.
 Dima approves the spend of a task when he asks for it; ask before a run much bigger than the task (dozens of models, a full reshoot).
+
+## Always a grid, never one picture per object (Dima, 2026-10-25)
+Credits go fast. Put several objects or views in **one** picture as a grid and cut it into frames
+(`tools/characters/cut_grid.py`; equal cells, no borders/lines/text, one subject per cell, same scale, nothing crossing
+a cell edge). Examples: 4 people x (back, left, right) in a 4x3 grid at 3:4; 12 props in a 4x3 grid; 9 icons 3x3.
+Say in the prompt which reference image belongs to which row. Check the cells before using them (side views often
+come out three-quarter: then that person's model uses front + back only). One picture per object only when a grid
+truly can't work (a single huge object), and say why in the sidecar.
+
+**Pictures that will go to 3D generation** (fronts, turnaround grids): Higgsfield `gpt_image_2_5` with
+`variant: sunburst`, `quality: medium`, `resolution: 4k`, `background: transparent`. Other pictures (textures,
+posters, icons) may use other models, still as grids. Preflight the cost with `get_cost: true` and keep a run's spend
+in the sidecars (`credits`).
 
 ## MCP gotcha: getting a local file in
 MCP uploads (`hi3d upload_input`, Higgsfield `media_upload`) take the file through the tool call, so a big local picture is
