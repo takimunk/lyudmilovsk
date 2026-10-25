@@ -2,6 +2,7 @@
 
 #include "BirdAir.h"
 #include "BirdBio.h"
+#include "BirdPerches.h"
 #include "BirdSound.h"
 #include "BirdWindStreaks.h"
 #include "Components/AudioComponent.h"
@@ -101,6 +102,7 @@ ABirdPawn::ABirdPawn()
 	Params = MakeShared<BirdFlight::FParams>();
 	Flight = MakeShared<BirdFlight::FState>();
 	Air = MakeShared<FBirdAir>();
+	Perches = MakeShared<FBirdPerches>();
 	Tracker = MakeShared<FHeadTracker>();
 }
 
@@ -343,6 +345,7 @@ void ABirdPawn::ReadControls(float Dt, FBirdControls& C)
 		C.Ctrl = Down(EKeys::LeftControl) || Down(EKeys::RightControl);
 		C.FreeLook = Down(EKeys::C) || Down(EKeys::MiddleMouseButton);
 		C.Return = Down(EKeys::R);
+		C.Magnet = Down(EKeys::Q);
 		C.Peck = PC->WasInputKeyJustPressed(EKeys::E);
 		C.Call = PC->WasInputKeyJustPressed(EKeys::F);
 		C.Move = FVector2D((Down(EKeys::D) ? 1 : 0) - (Down(EKeys::A) ? 1 : 0), (Down(EKeys::W) ? 1 : 0) - (Down(EKeys::S) ? 1 : 0));
@@ -579,8 +582,82 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
 	In.AimYaw = FMath::DegreesToRadians(Aim.Yaw);
 	In.AimPitch = FMath::DegreesToRadians(FRotator::NormalizeAxis(Aim.Pitch));
-	FindLandingSpot(Flare);
-	if (bLandingSpot)
+	// Q held: the landing magnet. The nearest perch ahead (a twig in a crown, a treetop, a roof) pulls the bird in;
+	// it brakes and beats by itself as it needs, and lands there
+	if (C.Magnet && Fate == EBirdFate::None)
+	{
+		MagnetSearch -= Dt;
+		const FVector Here = GetActorLocation();
+		// it latches on once, like a web line, and only looks again if there was nothing
+		if (!bMagnet && MagnetSearch <= 0.f)
+		{
+			MagnetSearch = 0.4f;
+			FBirdPerches::FPerch Perch;
+			const FRotator Look = Head->GetComponentRotation();
+			if (Perches->Find(GetWorld(), Here, Look.Vector(), 3500.f, this, Perch))
+			{
+				MagnetBest = 1e9f;
+				MagnetStall = 0.f;
+				bMagnet = true;
+				MagnetPoint = Perch.Point;
+				bMagnetBranch = Perch.bBranch;
+			}
+		}
+	}
+	else
+	{
+		bMagnet = false;
+	}
+	if (bMagnet)
+	{
+		const FVector To = MagnetPoint + FVector(0, 0, Body->StandHeight()) - GetActorLocation();
+		const float Dist = To.Size() / 100.f;
+		const FRotator Want = To.Rotation();
+		In.AimYaw = FMath::DegreesToRadians(Want.Yaw);
+		In.AimPitch = FMath::DegreesToRadians(FMath::Clamp(Want.Pitch, -70.f, 60.f));
+		// arrive slowly: brake with the tail and wings when too fast, beat when too slow or below the perch
+		const float V = (float)BirdFlight::Speed(*Flight);
+		const float VWant = FMath::Clamp(Dist * 1.2f, (float)P.Stall * 0.8f, (float)P.Cruise * 1.4f);
+		Flare = FMath::FInterpTo(Flare, Dist > 6.f ? 0.f : FMath::Clamp((V - VWant) / 2.5f, 0.f, 1.f), Dt, 10.f);
+		// the pull itself: the line draws the bird in (and holds it against the wind) until the last metres
+		if (Dist > 2.f)
+		{
+			const FVector Pull = To.GetSafeNormal() * FMath::Clamp(Dist * 0.6f, 2.f, 9.f) * Dt;
+			Flight->Vel += BirdFlight::V3(Pull.X, Pull.Y, Pull.Z);
+			// the wind is cancelled on the way in, or a headwind would hold the bird off its perch
+			Flight->Vel += BirdFlight::V3(-LastAir.X, -LastAir.Y, 0) * FMath::Min(1.0, 3.0 * Dt);
+		}
+		In.Flare = Flare;
+		In.TuckL = In.TuckR = 0.f;
+		if ((V < VWant * 0.9f || (To.Z > 60.f && V < P.Cruise)) && TakeoffAssist <= 0.f)
+		{
+			AssistClock -= Dt;
+			if (AssistClock <= 0.f)
+			{
+				In.ClickL = In.ClickR = true;
+				AssistClock = (float)P.ClickTime();
+			}
+		}
+		LandingSpot = MagnetPoint;
+		bLandingSpot = true;
+		// close and no longer getting closer (twigs of a live tree in the way): it hops the last bit
+		MagnetBest = FMath::Min(MagnetBest, To.Size());
+		MagnetStall = To.Size() > MagnetBest - 5.f ? MagnetStall + Dt : 0.f;
+		if (To.Size() < FMath::Max(40.f, V * 100.f * Dt * 2.f) || (To.Size() < 500.f && MagnetStall > 0.5f))
+		{
+			const bool bTwig = bMagnetBranch;
+			Land(MagnetPoint, FVector::UpVector);
+			// a twig has no collision under it: the bird holds on where it is
+			bAnchored = bTwig;
+			bMagnet = false;
+			return;
+		}
+	}
+	else
+	{
+		FindLandingSpot(Flare);
+	}
+	if (bLandingSpot && !bMagnet)
 	{
 		const FVector To = LandingSpot + FVector(0, 0, Body->StandHeight()) - GetActorLocation();
 		const FRotator Want = To.Rotation();
@@ -749,6 +826,8 @@ void ABirdPawn::Land(const FVector& Point, const FVector& Normal)
 	Mode = EBirdMode::Ground;
 	Feet = Point;
 	bAnchored = false;
+	// a key still held from the flight (Q) doesn't take off again at once
+	bMagnetHeldOnGround = true;
 	bHopping = false;
 	HopVel = FVector::ZeroVector;
 	Flight->Vel = BirdFlight::V3();
@@ -779,11 +858,13 @@ void ABirdPawn::TakeOff()
 void ABirdPawn::StepGround(const FBirdControls& C, float Dt)
 {
 	const bool PressL = C.Left && !bPrevL, PressR = C.Right && !bPrevR;
-	if (PressL || PressR || (C.Space && !bPrevSpace))
+	if (PressL || PressR || (C.Space && !bPrevSpace) || (C.Magnet && !bMagnetHeldOnGround))
 	{
 		TakeOff();
+		bMagnetHeldOnGround = C.Magnet;
 		return;
 	}
+	bMagnetHeldOnGround = C.Magnet;
 	UWorld* W = GetWorld();
 	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
 	const FVector Fwd = FRotator(0.f, Aim.Yaw, 0.f).Vector();

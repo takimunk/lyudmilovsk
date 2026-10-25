@@ -6,6 +6,7 @@
  "bird.hint.beat": "Both buttons: flap · one: turn",
  "bird.hint.tuck": "Hold: dive · nothing: glide",
  "bird.hint.flare": "Shift: land · Space: flap",
+ "bird.hint.magnet": "Hold Q: land on the nearest branch, treetop or roof",
  "bird.hint.return": "Hold R: back to the hero",
  "bird.hint.airpods": "AirPods: the bird's head turns with yours",
  "bird.hud.returning": "Back to the hero…",

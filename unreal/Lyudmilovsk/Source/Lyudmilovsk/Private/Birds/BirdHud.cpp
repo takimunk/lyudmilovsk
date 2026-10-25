@@ -43,7 +43,7 @@ void SBirdHud::Construct(const FArguments&, ABirdPawn* InPawn)
 {
 	Pawn = InPawn;
 	SetVisibility(EVisibility::HitTestInvisible);
-	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.actions"), TEXT("bird.hint.return") })
+	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.magnet"), TEXT("bird.hint.actions"), TEXT("bird.hint.return") })
 	{
 		Hints.Add(LyudText::Get(K));
 	}
@@ -124,6 +124,13 @@ int32 SBirdHud::OnPaint(const FPaintArgs&, const FGeometry& Geo, const FSlateRec
 		{
 			const FVector2D C = Px * (Size / Vp);
 			Ring(Out, Layer, Geo, C, 14.f, 0.f, 1.f, FLinearColor(1.f, 0.95f, 0.8f, 0.55f), 1.5f);
+			if (P->IsPulledToPerch())
+			{
+				// the pull: a faint thread from the bird to the perch it is drawn to
+				TArray<FVector2D> Line = { FVector2D(Size.X * 0.5f, Size.Y * 0.62f), C };
+				FSlateDrawElement::MakeLines(Out, Layer, Geo.ToPaintGeometry(), Line, ESlateDrawEffect::None, FLinearColor(1.f, 0.95f, 0.8f, 0.35f), true, 1.5f);
+				Ring(Out, Layer, Geo, C, 22.f, 0.f, 1.f, FLinearColor(1.f, 0.95f, 0.8f, 0.3f), 1.f);
+			}
 		}
 	}
 

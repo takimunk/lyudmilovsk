@@ -6,6 +6,7 @@
  "bird.hint.beat": "左右同時：羽ばたき・片方：旋回",
  "bird.hint.tuck": "押し続け：急降下・何もしない：滑空",
  "bird.hint.flare": "Shift：着地・スペース：羽ばたき",
+ "bird.hint.magnet": "Qを長押し：近くの枝・木のてっぺん・屋根に止まる",
  "bird.hint.return": "Rを長押し：主人公に戻る",
  "bird.hint.airpods": "AirPods：鳥の頭があなたの頭と一緒に動く",
  "bird.hud.returning": "主人公に戻っています…",

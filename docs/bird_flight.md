@@ -27,6 +27,7 @@ never shake it.
 | Mouse | The head: look, and the body steers after the look |
 | Space | Both wings beat; hold it to flap at the species' natural rhythm and pattern (keyboard-only play) |
 | Shift | Flare: tail fanned, wings forward, feet down. Brakes, and lands on whatever is under or in front of you |
+| Q (hold) | The landing magnet: the nearest perch ahead (a twig in a crown, a treetop, a roof, a rail) pulls you in like a web line; the bird beats and brakes by itself and lands there. From the ground it takes off and goes for the next one |
 | Ctrl | Wings pulled in, same as holding both buttons |
 | A / D | Roll with the tail (fine trim, keyboard-only turns) |
 | C (hold) or middle mouse | Free look: the head turns, the course stays |
@@ -58,7 +59,7 @@ coverts, the tips bending up under load and fluttering at speed, the wing foldin
 buttons. The view is wide (100 degrees, up to 108 at speed), because a bird's is.
 
 **Seeing your wings.** A bird sees almost all the way round; a 100 degree screen does not. So the
-bird's own body is drawn with a far wider first-person field of view (150 degrees, `lyud.Bird.WingFov`), and the spread wings are drawn swept a little forward from beside the eye:
+bird's own body is drawn with a far wider first-person field of view (118 degrees, `lyud.Bird.WingFov`), and the spread wings are drawn swept a little forward from beside the eye:
 the spread wings beside you reach into the left and right edges of the screen and sweep through them
 with every beat. Turning the head toward a wing eases that back to the true view.
 

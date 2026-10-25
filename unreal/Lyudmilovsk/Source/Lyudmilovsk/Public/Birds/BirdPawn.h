@@ -16,6 +16,7 @@ class FHeadTracker;
 class SBirdHud;
 class FBirdSound;
 class UBirdWindStreaks;
+class FBirdPerches;
 namespace BirdFlight { struct FParams; struct FState; }
 
 /** What the player bird is doing. */
@@ -50,6 +51,7 @@ struct FBirdControls
 	bool FreeLook = false;                // C or the middle button
 	bool Return = false;                  // R
 	bool Peck = false, Call = false;      // E, F (pressed this frame)
+	bool Magnet = false;                  // Q held: pulled to the nearest perch
 	FVector2D Move = FVector2D::ZeroVector;   // WASD, -1..1 (X right, Y forward)
 	float Roll = 0.f;                     // A / D in the air
 	FVector2D Look = FVector2D::ZeroVector;   // degrees this frame (yaw, pitch)
@@ -95,6 +97,8 @@ public:
 	/** 0..1 while R is held, 1 starts the way back. */
 	float ReturnProgress() const { return ReturnHeld / ReturnHoldSeconds; }
 	bool HasLandingSpot(FVector& Out) const { Out = LandingSpot; return bLandingSpot; }
+	/** Q held and a perch picked: the HUD draws the pull to it. */
+	bool IsPulledToPerch() const { return bMagnet; }
 	bool IsHeadTracked() const;
 	FString DebugLine() const;
 	UPrimitiveComponent* GetRootPrimitive() const;
@@ -182,6 +186,11 @@ private:
 	TSharedPtr<FHeadTracker> Tracker;
 	TSharedPtr<SBirdHud> Hud;
 	TSharedPtr<FBirdSound> Sound;
+	TSharedPtr<FBirdPerches> Perches;
+	bool bMagnet = false, bMagnetBranch = false;
+	FVector MagnetPoint = FVector::ZeroVector;
+	float MagnetSearch = 0.f, MagnetBest = 1e9f, MagnetStall = 0.f;
+	bool bMagnetHeldOnGround = true;
 	bool bSwims = false;
 	float RunUp = 0.f;
 	EBirdFate Fate = EBirdFate::None;

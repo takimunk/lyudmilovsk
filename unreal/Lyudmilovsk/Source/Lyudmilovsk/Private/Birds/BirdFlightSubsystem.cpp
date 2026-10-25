@@ -324,6 +324,31 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			return !X.Bird || X.Bird->GetEnergy() < 0.01f;
 		});
 	}
+	else if (Kind == TEXT("magnet"))
+	{
+		// over the upland's forest, then Q held: pulled onto the nearest twig or treetop; off again, Q onto the next
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const FVector At(-6000.f, PortalFaceY - 9000.f, 0.f);
+			FBirdAir A; A.Init(X.Sys->GetWorld());
+			X.Sys->BecomeSpecies(X.PC, Species, At + FVector(0, 0, A.GroundZ(FVector2D(At)) + 2500.f), -100.f, FVector(-200.f, -1000.f, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-20.f, -100.f, 0.f));
+			return true;
+		});
+		for (int32 K = 0; K < 3; K++)
+		{
+			S->Add(15.f, [](FCtx& X)
+			{
+				X.C.Magnet = true;
+				if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD magnet t=%.0f %s at %s"), X.T, *X.Bird->DebugLine().Left(60), *X.Bird->GetActorLocation().ToCompactString());
+				return X.Bird->GetMode() == EBirdMode::Ground;
+			});
+			S->Add(2.f, [](FCtx& X) { if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD perched at %s"), *X.Bird->FeetLocation().ToCompactString()); return false; });
+			S->Add(1.5f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(10.f, -100.f + 60.f * FMath::FRand(), 0.f); return false; });
+		}
+	}
 	else if (Kind == TEXT("call"))
 	{
 		// on the ground among birds of the kind (lyud.Birds.SpawnNear puts them there): call, three times
