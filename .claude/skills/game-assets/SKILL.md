@@ -30,11 +30,22 @@ truly can't work (a single huge object), and say why in the sidecar.
 posters, icons) may use other models, still as grids. Preflight the cost with `get_cost: true` and keep a run's spend
 in the sidecars (`credits`).
 
-## MCP gotcha: getting a local file in
-MCP uploads (`hi3d upload_input`, Higgsfield `media_upload`) take the file through the tool call, so a big local picture is
-impractical to pass inline. Prefer chains that stay inside one service: make the image in hi3d (`create_image_generation`)
-and model it with `source_task_id`/`source_images`; in Higgsfield use `media_upload` (it returns a PUT URL: upload with curl,
-then `media_confirm`) or `media_import_url` for a file that is already online. A fal output URL is online and can be passed on.
+## 3D through hi3d (the MCP), step by step
+`upload_input` takes the picture as base64 text inside the tool call, so a real view (megabytes) cannot be uploaded from a
+file or URL. Keep the whole chain inside hi3d instead:
+1. `quote_image_generation` then `create_image_generation`: `operation: text_to_image`, `multi_view: true`,
+   `model_name: "Nano-Banana 2"` (or Pro), the description and the house pose/background wording; it returns separate
+   view images in one task (front, back, left, right).
+2. Look at them (`get_task_outputs`); if a view is wrong, `operation: edit` with `source_task_id` + `source_image_index`.
+3. `quote_generation` with `source_images: [{task_id, image_index}...]` in view order (front, back, left, right),
+   `version: v3.0`, `model_type: high_quality`, `generation_type: model_with_texture`, `pbr: true`; show the quote,
+   then `create_generation` with that `quote_id` and `confirmed: true`.
+4. `get_task` until done, `get_task_outputs` for the GLB URL, download it to `blender/characters/<id>/gen/model.glb`
+   and write the sidecar (task ids, arguments, quote, URL, sha256).
+A picture made elsewhere (Higgsfield sheets) can only reach hi3d through `upload_input`, which is impractical; then hi3d
+re-draws from the description, so it looks close to the sheet, not identical. Hi3D v3.0 on fal
+(`hitem3d/hi3d/v3.0/multi-view-to-3d`, `tools/gen_character.py`) takes URLs, but is billed by fal, not Dima's hi3d
+subscription: use it only when Dima says so.
 
 ## Pin every generation
 - The request lives in a committed spec (prompt, model/endpoint, seed, every argument), never only in a chat:
