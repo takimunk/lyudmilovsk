@@ -13,7 +13,7 @@
 namespace
 {
 	TAutoConsoleVariable<int32> CVarDebug(TEXT("lyud.Bird.Debug"), 0, TEXT("1: the player bird's flight numbers on screen."));
-	TAutoConsoleVariable<float> CVarHints(TEXT("lyud.Bird.HintSeconds"), 16.f, TEXT("How long the bird's controls stay on screen after becoming a bird."));
+	TAutoConsoleVariable<float> CVarHints(TEXT("lyud.Bird.HintSeconds"), 12.f, TEXT("How long the bird's controls stay on screen after becoming a bird."));
 
 	void Ring(FSlateWindowElementList& Out, int32 Layer, const FGeometry& Geo, const FVector2D& C, float R, float From, float To, const FLinearColor& Col, float Thick)
 	{
@@ -40,8 +40,7 @@ void SBirdHud::Construct(const FArguments&, ABirdPawn* InPawn)
 {
 	Pawn = InPawn;
 	SetVisibility(EVisibility::HitTestInvisible);
-	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.oar"), TEXT("bird.hint.tuck"), TEXT("bird.hint.glide"),
-	                        TEXT("bird.hint.flare"), TEXT("bird.hint.free_look"), TEXT("bird.hint.ground"), TEXT("bird.hint.return") })
+	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.return") })
 	{
 		Hints.Add(LyudText::Get(K));
 	}
@@ -76,21 +75,22 @@ int32 SBirdHud::OnPaint(const FPaintArgs&, const FGeometry& Geo, const FSlateRec
 		return Layer;
 	}
 	const FVector2D Size = FVector2D(Geo.GetLocalSize());
-	const FSlateFontInfo Title = FCoreStyle::GetDefaultFontStyle("Bold", 20);
-	const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 15);
+	const FSlateFontInfo Title = FCoreStyle::GetDefaultFontStyle("Bold", 30);
+	const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 22);
+	const FSlateFontInfo Small = FCoreStyle::GetDefaultFontStyle("Regular", 15);
 
 	// the controls, fading out after a while
 	const float Hold = CVarHints.GetValueOnGameThread();
 	const float Alpha = 1.f - FMath::Clamp((P->TimeAsBird() - Hold) / 3.f, 0.f, 1.f);
 	if (Alpha > 0.f && P->GetMode() != EBirdMode::Leaving)
 	{
-		FVector2D At(40.f, Size.Y - 40.f - 24.f * (Hints.Num() + 2));
+		FVector2D At(48.f, Size.Y - 56.f - 34.f * (Hints.Num() + 2));
 		Text(Out, Layer, Geo, At, LyudText::Get(TEXT("bird.hint.title")), Title, FLinearColor(1.f, 0.92f, 0.75f, Alpha));
-		At.Y += 34.f;
+		At.Y += 48.f;
 		for (const FText& T : Hints)
 		{
-			Text(Out, Layer, Geo, At, T, Body, FLinearColor(1.f, 1.f, 1.f, 0.88f * Alpha));
-			At.Y += 24.f;
+			Text(Out, Layer, Geo, At, T, Body, FLinearColor(1.f, 1.f, 1.f, 0.9f * Alpha));
+			At.Y += 34.f;
 		}
 		if (P->IsHeadTracked())
 		{
@@ -125,7 +125,7 @@ int32 SBirdHud::OnPaint(const FPaintArgs&, const FGeometry& Geo, const FSlateRec
 
 	if (CVarDebug.GetValueOnGameThread())
 	{
-		Text(Out, Layer, Geo, FVector2D(40.f, 40.f), FText::FromString(P->DebugLine()), Body, FLinearColor(0.8f, 1.f, 0.8f, 1.f));
+		Text(Out, Layer, Geo, FVector2D(40.f, 40.f), FText::FromString(P->DebugLine()), Small, FLinearColor(0.8f, 1.f, 0.8f, 1.f));
 	}
 	return Layer + 3;
 }

@@ -860,7 +860,11 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		// the view turns early and settles: the eye finds the target first
 		const float R = Ease(FMath::Clamp(T * 1.35f, 0.f, 1.f));
 		OutResult.Location = P;
-		OutResult.Rotation = FQuat::Slerp(A.Rotation.Quaternion(), B.Rotation.Quaternion(), R).Rotator();
+		// yaw and pitch turn separately, so the horizon stays level all the way (a quaternion slerp between
+		// two views rolls through a Dutch tilt)
+		OutResult.Rotation = FRotator(FMath::Lerp(FRotator::NormalizeAxis(A.Rotation.Pitch), FRotator::NormalizeAxis(B.Rotation.Pitch), R),
+		                              A.Rotation.Yaw + FRotator::NormalizeAxis(B.Rotation.Yaw - A.Rotation.Yaw) * R,
+		                              FMath::Lerp(FRotator::NormalizeAxis(A.Rotation.Roll), FRotator::NormalizeAxis(B.Rotation.Roll), R));
 		OutResult.FOV = FMath::Lerp(A.FOV, B.FOV, E);
 		OutResult.PerspectiveNearClipPlane = FMath::Lerp(bIn ? 4.f : NearClip, bIn ? NearClip : 4.f, E);
 		const float ToEye = FVector::Dist(P, Head->GetComponentLocation());

@@ -307,7 +307,10 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 		return false;
 	}
 	AActor* Actor = Life->ClaimBird(BirdId);
-	const bool bStanding = Info.Velocity.Size() < 30.f;
+	// a bird that has just eaten from the palm stands on it (the palm is Info.Location), even if bird life still
+	// gives it a little speed from the approach
+	const bool bStanding = Info.Activity == EBirdActivity::Eat || Info.Activity == EBirdActivity::Approach || Info.Activity == EBirdActivity::Perch
+		|| Info.Activity == EBirdActivity::Peck || Info.Velocity.Size() < 30.f;
 	// standing (on the palm), it turns round after eating and faces the way the hero looks
 	const float Yaw = bStanding ? PC->GetControlRotation().Yaw : Info.Velocity.Rotation().Yaw;
 	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, Actor))
