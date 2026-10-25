@@ -123,11 +123,12 @@ def const(m, v, x, y):
 
 
 FUR_HLSL = """
-// a fur shell: this texel shows if its strand reaches the shell's height (vertex colour R, 0 at the skin .. 1 at the tips);
+// a fur shell: this texel shows if its strand reaches the shell's height (TexCoord 1 x, 0 at the skin .. 1 at the tips);
 // the strand's random (G) tints it; roots are shaded by the hairs over them, tips catch the light
 float h = saturate(H);
 float reach = S.r;
-float mask = saturate((reach - h) * 12.0 + 0.5);
+// the lower shells are nearly full (the undercoat), the strands thin out toward the tips
+float mask = saturate((reach + 0.18 * (1.0 - h) * (1.0 - h) - h) * 14.0 + 0.5);
 float3 col = Albedo * lerp(RootDark, 1.06, smoothstep(0.0, 1.0, h)) * lerp(0.86, 1.14, S.g) * Tint;
 Mask = mask;
 return col;
@@ -165,7 +166,8 @@ def make_masters():
     mel.connect_material_expressions(scalar(f, "StrandScale", 8.0, -1200, 300), "", uvs, "B")
     st = tex_param(f, "Strands", -900, 150, unreal.MaterialSamplerType.SAMPLERTYPE_MASKS)
     mel.connect_material_expressions(uvs, "", st, "UVs")
-    vc = node(f, unreal.MaterialExpressionVertexColor, -900, 450)
+    vc = node(f, unreal.MaterialExpressionTextureCoordinate, -900, 450)    # TexCoord 1 .x = the shell's height
+    vc.set_editor_property("coordinate_index", 1)
     tint = node(f, unreal.MaterialExpressionVectorParameter, -900, 600)
     tint.set_editor_property("parameter_name", "Tint")
     tint.set_editor_property("default_value", unreal.LinearColor(1, 1, 1, 1))
@@ -184,8 +186,14 @@ def make_masters():
     cu.set_editor_property("additional_outputs", [out])
     mel.connect_material_expressions(alb, "RGB", cu, "Albedo")
     mel.connect_material_expressions(st, "RGB", cu, "S")
-    mel.connect_material_expressions(vc, "R", cu, "H")
-    mel.connect_material_expressions(scalar(f, "RootDark", 0.55, -900, 750), "", cu, "RootDark")
+    hm = node(f, unreal.MaterialExpressionComponentMask, -700, 450)
+    hm.set_editor_property("r", True)
+    hm.set_editor_property("g", False)
+    hm.set_editor_property("b", False)
+    hm.set_editor_property("a", False)
+    mel.connect_material_expressions(vc, "", hm, "")
+    mel.connect_material_expressions(hm, "", cu, "H")
+    mel.connect_material_expressions(scalar(f, "RootDark", 0.74, -900, 750), "", cu, "RootDark")
     mel.connect_material_expressions(tint, "", cu, "Tint")
     mel.connect_material_property(cu, "", unreal.MaterialProperty.MP_BASE_COLOR)
     mel.connect_material_property(cu, "Mask", unreal.MaterialProperty.MP_OPACITY_MASK)
@@ -270,7 +278,7 @@ def do_import(breed):
     for coat in rig["coats"]:
         alb = unreal.load_asset("%s/T_%s_%s" % (dest, breed, coat))
         b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, {"Albedo": alb})
-        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, {"Albedo": alb, "Strands": strands}, {"StrandScale": float(rig["strand_scale"])})
+        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, {"Albedo": alb, "Strands": strands}, {"StrandScale": float(rig["strand_scale"]) * 1.6})
         first.setdefault("Body", b)
         first.setdefault("Fur", f)
     for i in range(rig["eyes"]):

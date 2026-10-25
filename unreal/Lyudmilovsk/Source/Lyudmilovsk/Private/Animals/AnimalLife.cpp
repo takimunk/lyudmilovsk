@@ -30,7 +30,7 @@ static TAutoConsoleVariable<int32> CVarAnimals(TEXT("lyud.Animals"), 1,
 static TAutoConsoleVariable<float> CVarAnimalsPopulation(TEXT("lyud.Animals.Population"), 1.f,
 	TEXT("Share of the cats and dogs to create (read when the animal life starts)."));
 static TAutoConsoleVariable<int32> CVarAnimalsAnyMap(TEXT("lyud.Animals.AnyMap"), 0,
-	TEXT("Start the animal life in any game map, not only Lvl_Scene01 (empty, for lyud.Animals.SpawnNear)."));
+	TEXT("1: allow the animal life in any game map, empty until lyud.Animals.SpawnNear; 2: the town's whole population in any map."));
 static TAutoConsoleVariable<int32> CVarAnimalsBodies(TEXT("lyud.Animals.Bodies"), 20,
 	TEXT("Most cats and dogs drawn as furred bodies (AAnimalActor) at once, the nearest first."));
 static TAutoConsoleVariable<float> CVarAnimalsDrawCat(TEXT("lyud.Animals.DrawDistance"), 110.f,
@@ -119,7 +119,8 @@ TStatId UAnimalLifeSubsystem::GetStatId() const
 void UAnimalLifeSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	bWantStart = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarAnimalsAnyMap.GetValueOnGameThread() != 0;
+	// the town's animals live in Lvl_Scene01 (or anywhere with AnyMap 2); AnyMap 1 starts empty on the first SpawnAnimal
+	bWantStart = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarAnimalsAnyMap.GetValueOnGameThread() >= 2;
 	StartDelay = 0.6f;     // after the forests have scattered their trees
 }
 

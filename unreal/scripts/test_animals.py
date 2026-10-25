@@ -108,13 +108,28 @@ if PART in ("all", "lineup"):
     step(lambda w: look(w, (790.0, -170.0, 75.0), (660.0, -85.0, 60.0)), 2.0)
     step(lambda w: shot(w, "laika_face"), 2.0)
 
+if PART in ("all", "close"):
+    @step
+    def s_close(w):
+        cmd(w, "Animal.Spawn Cat 0 Sit 3000 0 0 180")
+        cmd(w, "Animal.Spawn Laika 0 Stand 3000 300 0 180")
+        cmd(w, "Animal.Spawn Cat 1 Rest 3000 -250 0 150")
+    step(lambda w: look(w, (2930.0, -15.0, 32.0), (3000.0, 0.0, 26.0)), 4.0)
+    step(lambda w: shot(w, "cat_face_close"), 2.0)
+    step(lambda w: look(w, (2880.0, -60.0, 60.0), (3000.0, 0.0, 18.0)), 2.0)
+    step(lambda w: shot(w, "cat_sit_1m"), 2.0)
+    step(lambda w: look(w, (2850.0, 230.0, 75.0), (3000.0, 300.0, 50.0)), 2.0)
+    step(lambda w: shot(w, "laika_1m"), 2.0)
+    step(lambda w: look(w, (2900.0, -330.0, 45.0), (3000.0, -250.0, 15.0)), 2.0)
+    step(lambda w: shot(w, "ginger_rest"), 2.0)
+
 if PART in ("all", "poses"):
     @step
     def s_poses(w):
         for i, c in enumerate(CLIPS_CAT):
-            cmd(w, "Animal.Spawn Cat %d %s %.0f %.0f 0 90" % (i % 7, c, -2000.0 + (i % 6) * 140.0, 1200.0 + (i // 6) * 180.0))
+            cmd(w, "Animal.Spawn Cat %d %s %.0f %.0f 0 -60" % (i % 7, c, -2000.0 + (i % 6) * 140.0, 1200.0 + (i // 6) * 180.0))
         for i, c in enumerate(CLIPS_DOG):
-            cmd(w, "Animal.Spawn Laika %d %s %.0f %.0f 0 90" % (i % 2, c, -2000.0 + (i % 6) * 220.0, 1700.0 + (i // 6) * 260.0))
+            cmd(w, "Animal.Spawn Laika %d %s %.0f %.0f 0 -60" % (i % 2, c, -2000.0 + (i % 6) * 220.0, 1700.0 + (i // 6) * 260.0))
         log("poses spawned")
     step(lambda w: look(w, (-1650.0, 700.0, 260.0), (-1650.0, 1300.0, 20.0)), 5.0)
     step(lambda w: shot(w, "cat_poses"), 2.0)

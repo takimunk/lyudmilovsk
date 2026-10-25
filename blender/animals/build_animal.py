@@ -504,8 +504,11 @@ def add_shells(ob, n, L, C, W):
     bm.from_mesh(me)
     uv_layer = bm.loops.layers.uv.active
     col = bm.loops.layers.color.get("FurH") or bm.loops.layers.color.new("FurH")
+    # the shell's height also rides in a second UV set (glTF drops a corner colour; Unreal reads TexCoord 1 .x)
+    huv = bm.loops.layers.uv.get("FurUV") or bm.loops.layers.uv.new("FurUV")
     for lp in (l for f in bm.faces for l in f.loops):
         lp[col] = (0, 0, 0, 1)
+        lp[huv].uv = (0.0, 0.0)
     shell_verts = []
     for i in range(1, n + 1):
         h = i / n
@@ -522,8 +525,11 @@ def add_shells(ob, n, L, C, W):
             for li, lp in enumerate(f.loops):
                 lp[uv_layer].uv = tuple(uv[loop_starts[pi] + li])
                 lp[col] = (h, h, h, 1)
+                lp[huv].uv = (h, 0.0)
     bm.to_mesh(me)
     bm.free()
+    me.uv_layers.active = me.uv_layers[0]
+    me.uv_layers[0].active_render = True
     # skin weights: the same as the vertex the shell grew from
     Wn = {k: np.tile(v, n + 1) for k, v in W.items()}
     return Wn
@@ -790,6 +796,8 @@ def export(arm, lods, acts, lib, eye_mat):
         parts = [o]
         for e in eyes_src:
             c = copy_object(e, e.name + "_LOD%d" % li)
+            if not c.data.uv_layers.get("FurUV"):
+                c.data.uv_layers.new(name="FurUV")
             parts.append(c)
         for o2 in bpy.context.selected_objects:
             o2.select_set(False)
