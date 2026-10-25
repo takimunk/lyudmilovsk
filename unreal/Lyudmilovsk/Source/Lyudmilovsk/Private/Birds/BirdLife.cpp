@@ -958,7 +958,6 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		const FName Id(SpeciesTable()[I].Id.c_str());
 		const FBirdSpecies* R = UBirdSpeciesLibrary::Find(Id);
 		const float Length = R ? R->LengthM() : SpeciesTable()[I].Length;
-		D.Xf.SetNum(NumPoses);
 		UMaterialInstanceDynamic* Mat = UMaterialInstanceDynamic::Create(Base, this);
 		const FLinearColor Colour = R && R->Palette.Num() ? R->Palette[0] : FLinearColor(FColor((SpeciesTable()[I].Color >> 16) & 255, (SpeciesTable()[I].Color >> 8) & 255, SpeciesTable()[I].Color & 255));
 		Mat->SetVectorParameterValue(TEXT("Color"), Colour);
@@ -966,30 +965,73 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		D.bOwnMeshes = UBirdSpeciesLibrary::LoadPose(Id, TEXT("Perch")) != nullptr;
 		D.bHasBody = UBirdSpeciesLibrary::LoadSkeletalMesh(Id) != nullptr;
 		D.Scale = D.bOwnMeshes ? 1.f : Length / 0.215f;
-		for (int32 P = 0; P < NumPoses; P++)
+		D.FemaleScale = R ? R->FemaleScale : 1.f;
+		const bool bWinter = R && R->InWinterPlumage(UGameCalendar::NowIn(GetWorld()).GetMonth());
+		// females get their own components where the species' female plumage differs (same poses, female materials)
+		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
+		D.Xf.SetNum(NumPoses * Sets);
+		for (int32 Set = 0; Set < Sets; Set++)
 		{
-			UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, *FString::Printf(TEXT("ISM_%s_%s"), *Id.ToString(), PoseNames[P]));
-			ISM->SetupAttachment(RootComponent);
-			ISM->SetMobility(EComponentMobility::Movable);
-			ISM->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			ISM->SetCastShadow(Length > 0.3f);
-			ISM->bDisableCollision = true;
-			ISM->SetCanEverAffectNavigation(false);
-			ISM->LightingChannels.bChannel1 = true;     // Scene 01's outdoor sun and moon light channel 1 only
-			ISM->NumCustomDataFloats = 0;
-			UStaticMesh* Mesh = nullptr;
-			if (D.bOwnMeshes)
+			TArray<FString> Suffixes;
+			if (Set == 1 && bWinter)
 			{
-				Mesh = UBirdSpeciesLibrary::LoadPose(Id, PoseNames[P]);
+				Suffixes.Add(TEXT("_FemaleWinter"));
 			}
-			if (!Mesh)
+			if (Set == 1)
 			{
-				Mesh = PlaceholderMeshes[P <= 2 ? 0 : P - 2];
-				ISM->SetMaterial(0, Mat);
+				Suffixes.Add(TEXT("_Female"));
 			}
-			ISM->SetStaticMesh(Mesh);
-			ISM->RegisterComponent();
-			D.Poses.Add(ISM);
+			if (bWinter)
+			{
+				Suffixes.Add(TEXT("_Winter"));
+			}
+			for (int32 P = 0; P < NumPoses; P++)
+			{
+				UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, *FString::Printf(TEXT("ISM_%s_%s%s"), *Id.ToString(), PoseNames[P], Set ? TEXT("_F") : TEXT("")));
+				ISM->SetupAttachment(RootComponent);
+				ISM->SetMobility(EComponentMobility::Movable);
+				ISM->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				ISM->SetCastShadow(Length > 0.3f);
+				ISM->bDisableCollision = true;
+				ISM->SetCanEverAffectNavigation(false);
+				ISM->LightingChannels.bChannel1 = true;     // Scene 01's outdoor sun and moon light channel 1 only
+				ISM->NumCustomDataFloats = 0;
+				UStaticMesh* Mesh = nullptr;
+				if (D.bOwnMeshes)
+				{
+					Mesh = UBirdSpeciesLibrary::LoadPose(Id, PoseNames[P]);
+				}
+				if (!Mesh)
+				{
+					Mesh = PlaceholderMeshes[P <= 2 ? 0 : P - 2];
+					ISM->SetMaterial(0, Mat);
+				}
+				ISM->SetStaticMesh(Mesh);
+				if (D.bOwnMeshes && Suffixes.Num())
+				{
+					// the most specific material set that exists, as ABirdActor::ApplyPlumage picks it
+					const TArray<FStaticMaterial>& Slots = Mesh->GetStaticMaterials();
+					for (int32 Slot = 0; Slot < Slots.Num(); Slot++)
+					{
+						const UMaterialInterface* BaseMat = Slots[Slot].MaterialInterface;
+						for (const FString& Sfx : Suffixes)
+						{
+							if (!BaseMat)
+							{
+								break;
+							}
+							const FString Name = BaseMat->GetName() + Sfx;
+							if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/%s.%s"), *Id.ToString(), *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet))
+							{
+								ISM->SetMaterial(Slot, M);
+								break;
+							}
+						}
+					}
+				}
+				ISM->RegisterComponent();
+				D.Poses.Add(ISM);
+			}
 		}
 	}
 }
@@ -1057,7 +1099,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		// far birds keep at least ~1.2 px so they don't flicker away (1080 px, 90 degrees)
 		const float Px = S.Length / FMath::Max(Dist, 0.1f) * 540.f * PixelScale;
 		const float Grow = FMath::Max(1.f, 1.2f / FMath::Max(Px, 0.01f));
-		const float Scale = D.Scale * FMath::Min(Grow, 3.f);
+		const float Scale = D.Scale * FMath::Min(Grow, 3.f) * (B.bFemale ? D.FemaleScale : 1.f);
 		int32 Pose = 0;
 		float Pitch = 0.f, Roll = 0.f;
 		const bool bAir = IsAirborne(B.Act);
@@ -1098,7 +1140,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 			At.Z -= S.Length * 12.0;   // the species' poses stand on their feet; in the air the bird's position is its body
 		}
 		const FVector S3 = !D.bOwnMeshes && B.Act == EAct::Sleep ? FVector(Scale, Scale, Scale * 0.85f) : FVector(Scale);
-		D.Xf[Pose].Emplace(Rot, At, S3);
+		D.Xf[Pose + (B.bFemale && D.Xf.Num() > NumPoses ? NumPoses : 0)].Emplace(Rot, At, S3);
 		DrawnLastFrame++;
 	}
 	// bodies
@@ -1210,6 +1252,7 @@ AActor* ABirdLifeRenderer::EnsureBody(const FWorld& World, int32 Id)
 		Body->InitialState = BodyState(B, SpeciesTable()[B.Species]);
 		Body->SetFlags(RF_Transient);
 		Body->FinishSpawning(At);
+		Body->SetSex(B.bFemale ? EBirdSex::Female : EBirdSex::Male);
 		Bodies.Add(Id, Body);
 		BodyActs.Add(Id, -1.f);
 	}

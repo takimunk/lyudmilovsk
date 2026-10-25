@@ -222,6 +222,7 @@ public:
 private:
 	struct FSpeciesDraw
 	{
+		/** NumPoses components for males, then (species with a female plumage) NumPoses for females. */
 		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Poses;
 		TArray<TArray<FTransform>> Xf;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
@@ -230,6 +231,7 @@ private:
 		float CenterUp = 0.f;
 		bool bOwnMeshes = false;
 		bool bHasBody = false;
+		float FemaleScale = 1.f;
 	};
 	TArray<FSpeciesDraw> Species;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> PlaceholderMeshes;
