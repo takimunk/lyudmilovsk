@@ -1,0 +1,24 @@
+{
+ "step": "front",
+ "model": "google/nano-banana-2.1/edit",
+ "request_id": "01a1748a-648a-7050-9040-d1488293cd7a",
+ "seconds": 33,
+ "inputs": {
+  "resolution": "2K",
+  "aspect_ratio": "1:1",
+  "output_format": "png",
+  "num_images": 1,
+  "seed": 2660,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference of the same young woman as in the photo, for 3D modelling. Keep her face, her straight black chin-length bob with blunt bangs, the thin braid hanging at her right temple and the small silver horse earring on her left ear exactly as in the photo. She wears the same plain black dress with the white rounded collar: fitted black bodice, short slightly puffed sleeves, A-line skirt to just below the knee, matte black opaque tights and black leather Mary Jane shoes with a strap. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Calm neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic.",
+  "image_urls": [
+   "@reference"
+  ]
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd5aa/zOg_plYK1we_myFU6ixIm_OACUUvc2.png",
+ "output_file": "front.png",
+ "sha256": "6affc34e99edf3a6e6af6e4a35f1844291c0599719975c5cc49b6e4bcb003476",
+ "response": {
+  "description": ""
+ }
+}

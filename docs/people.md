@@ -40,6 +40,10 @@ be changed in `people.json` freely.
 | crowd_11 | Гоша | 31 | fisherman | alone | at sea 6–12, Monday to Saturday |
 | crowd_12 | Лиза | 28 | teacher | alone | school 8–14:30 |
 | crowd_13 | Кирилл | 21 | student | alone | lectures 10–15, Monday to Thursday |
+| nao | Нао | 19 | watches the club's door (`watch_door`) | alone | at the club's door on the forecourt 10:00–21:00 every day (a new game finds her there) |
+
+Nao is the first person made to the character standard (docs/characters.md): a generated model rigged on the shared
+skeleton. She stands where the hero first comes out of the club, at the `club_door` place.
 
 Temper (0..1: social, active, studious, gamer, nature, sun) weighs their choices; `friends` draws them to places where
 friends are. Everybody's `sun` is there because people in this world are drawn to the sun (docs/story/motifs.md): the
@@ -79,7 +83,7 @@ between them people ride the cable car (`RideSeconds`, 150 s, hidden in the cabi
 stops).
 
 **A new game** (the clock at the start date, Tuesday 20 October 16:00) begins as the club scene always has: the 11
-regulars at their own stations, the owner in his booth, the clerk at work. Each regular plays a while (`start.minutes`)
+regulars at their own stations, the owner in his booth, the clerk at work, Nao at the club's door. Each regular plays a while (`start.minutes`)
 and then their life goes on. A clock jump (a load, `lyud.Birds.Time`, developer tools) puts everybody where they would
 be at that hour.
 

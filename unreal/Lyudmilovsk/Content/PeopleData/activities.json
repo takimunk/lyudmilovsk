@@ -20,6 +20,7 @@
     {"id": "work_clerk", "places": ["club"], "slots": ["club_seat"], "pose": "computer", "minutes": [60, 60], "meets": {"mind": 0.2}, "costs": {"fun": 0.02}, "free": 0},
     {"id": "work_library", "places": ["library"], "slots": ["staff_seat"], "pose": "sit", "minutes": [60, 60], "meets": {"mind": 0.3, "social": 0.2}, "free": 0},
     {"id": "work_away", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.2, "hunger": 0.3}, "free": 0, "away": 1},
-    {"id": "school", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "away": 1}
+    {"id": "school", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "away": 1},
+    {"id": "watch_door", "places": ["club_door"], "slots": ["stand"], "pose": "look", "minutes": [60, 60], "meets": {"sun": 0.6, "nature": 0.4, "social": 0.1}, "free": 0}
   ]
 }

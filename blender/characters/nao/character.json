@@ -1,0 +1,8 @@
+{
+ "_doc": "Nao (Нао): how blender/characters/rig_character.py turns gen/model.glb into a game character (docs/characters.md).",
+ "id": "nao",
+ "height": 1.60,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 60000,
+ "skirt": {"hem_z": 0.42, "gap": 0.02, "blend": 0.06, "pelvis": 0.5}
+}

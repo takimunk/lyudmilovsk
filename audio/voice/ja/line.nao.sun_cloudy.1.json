@@ -1,0 +1,33 @@
+{
+ "key": "line.nao.sun_cloudy.1",
+ "lang": "ja",
+ "text": "雲だね。でも大丈夫、ちゃんとそこにいる。感じるの。",
+ "speaker": "nao",
+ "voice": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_id": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Young Japanese woman, about twenty: a soft, light, calm and clear voice, quiet and unhurried, a little dreamy and distant, gentle, natural everyday speech",
+  "preview_text": "Вышел. Я так и думала, что сегодня кто-нибудь выйдет."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "雲だね。でも大丈夫、ちゃんとそこにいる。感じるの。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102603333026-QqUMP15a"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a17490-e610-77d2-8c62-8a8ce73b548b",
+ "hash": "c23403528d87"
+}

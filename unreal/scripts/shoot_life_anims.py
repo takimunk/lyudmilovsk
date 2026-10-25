@@ -13,7 +13,7 @@ import unreal
 EYE = 64.0                           # camera above the pawn origin
 # (name, camera x, y, z, pitch, yaw); band i (Guy_a, Kid_boy, Girl_b) at y = -800 i, clips at x = 260 j
 SPOTS = []          # must match make_life_preview_level.py: camera at (x + 120, y + 265)
-for _i, _who in enumerate(["Guy_a", "Kid_boy", "Girl_b"]):
+for _i, _who in enumerate(os.environ.get("LIFE_CAST", "Guy_a,Kid_boy,Girl_b").split(",")):
     for _j, _clip in enumerate(["Walk", "Talk", "SitIdle", "Eat", "Read", "Sleep", "LieDown", "SitDown"]):
         SPOTS.append(("%s_%s" % (_who, _clip), 260.0 * _j + 120.0, -800.0 * _i + 245.0, 0, 0, 0))
 if os.environ.get("LIFESHOT_SPOTS"):

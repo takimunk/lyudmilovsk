@@ -84,3 +84,14 @@ again = girl_b.again3.1
 again = girl_b.again4.1
 
 sun.day = girl_b.sun_day.1
+
+[Nao]
+first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
+again = nao.again1.1
+again = hero.nao_again2.1 | nao.again2.2
+again = nao.again3.1
+again = nao.again4.1
+sun.day = nao.sun_day.1
+sun.low = nao.sun_low.1
+sun.night = nao.sun_night.1
+sun.cloudy = nao.sun_cloudy.1

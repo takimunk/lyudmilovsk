@@ -1,0 +1,24 @@
+{
+ "step": "left",
+ "model": "google/nano-banana-2.1/edit",
+ "request_id": "01a1748b-0b6e-7df3-8673-139e0f3dcbee",
+ "seconds": 45,
+ "inputs": {
+  "resolution": "2K",
+  "aspect_ratio": "1:1",
+  "output_format": "png",
+  "num_images": 1,
+  "seed": 2662,
+  "thinking_level": "high",
+  "prompt": "The same woman in the same T-pose seen exactly from her left side (profile view, camera rotated 90 degrees around her so she faces the right edge of the picture). Her left arm points straight at the camera and is foreshortened, the right arm is hidden behind her body. Same black bob with bangs, the silver horse earring on the visible left ear, same black dress with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text.",
+  "image_urls": [
+   "https://v3b.fal.media/files/b/0aafd5aa/zOg_plYK1we_myFU6ixIm_OACUUvc2.png"
+  ]
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd5af/t4aoWaCaxqO2nkW60dqFX_8qnezDIk.png",
+ "output_file": "left.png",
+ "sha256": "3657458093edf4845b3b8b805e1c80d54ffbf989581c3d55c8bc3206a17ee9df",
+ "response": {
+  "description": ""
+ }
+}

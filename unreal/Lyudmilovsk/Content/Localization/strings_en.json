@@ -609,5 +609,20 @@
  "bird.note.tired": "Your wings are tired: glide and rest",
  "bird.note.danger": "Danger: a predator nearby!",
  "bird.hero.swim_ashore": "Swim ashore: on land you can call your bird again",
- "bird.hero.call_bird": "Hold R: call your bird"
+ "bird.hero.call_bird": "Hold R: call your bird",
+ "npc.nao.name": "Nao",
+ "npc.nao.role": "standing by the exit",
+ "line.nao.first.1": "You came out. I had a feeling someone would come out today.",
+ "line.hero.nao_first.2": "Are you waiting for someone?",
+ "line.nao.first.3": "No. I just stand where the outside begins.",
+ "line.nao.first.4": "I'm Nao. If you forget, that's fine, I'll remind you.",
+ "line.nao.again1.1": "The sea is the same as yesterday. Or maybe I am.",
+ "line.hero.nao_again2.1": "Nice earring.",
+ "line.nao.again2.2": "It's a horse. It's always running and never gets anywhere.",
+ "line.nao.again3.1": "Inside, everyone looks at screens. I'd rather stand out here, in the light.",
+ "line.nao.again4.1": "If you stand by a door long enough, you start hearing it breathe.",
+ "line.nao.sun_day.1": "It's warm. As if the sun were looking right at us today.",
+ "line.nao.sun_low.1": "Wait, don't go. It's about to touch the water.",
+ "line.nao.sun_night.1": "At night you can't see it, but I know where it is. Like it's behind a door.",
+ "line.nao.sun_cloudy.1": "Clouds. It's fine, it's still up there. I can feel it."
 }

@@ -14,7 +14,7 @@ import unreal
 
 eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Characters/Humans/L_LifeAnimsPreview"
-CAST = ["Guy_a", "Kid_boy", "Girl_b"]
+CAST = os.environ.get("LIFE_CAST", "Guy_a,Kid_boy,Girl_b").split(",")     # LIFE_CAST=Nao,Guy_a for a new character
 CLIPS = [("Walk", None, 0.3), ("Talk", None, 1.2), ("SitIdle", "chair", 0.5), ("Eat", "table", 1.25),
          ("Read", "chair", 1.0), ("Sleep", "bed", 0.5), ("LieDown", "bed", 1.5), ("SitDown", "chair", 1.0)]
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)

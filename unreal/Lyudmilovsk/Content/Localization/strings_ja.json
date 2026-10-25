@@ -609,5 +609,20 @@
  "bird.note.tired": "翼が疲れた。滑空して休もう",
  "bird.note.danger": "危険：近くに捕食者！",
  "bird.hero.swim_ashore": "岸まで泳ごう。陸に上がれば鳥をまた呼べる",
- "bird.hero.call_bird": "Rを長押し：鳥を呼ぶ"
+ "bird.hero.call_bird": "Rを長押し：鳥を呼ぶ",
+ "npc.nao.name": "ナオ",
+ "npc.nao.role": "出口のそばに立っている",
+ "line.nao.first.1": "出てきたね。今日は誰か出てくると思ってた。",
+ "line.hero.nao_first.2": "誰か待ってるの？",
+ "line.nao.first.3": "ううん。外が始まるところに立ってるだけ。",
+ "line.nao.first.4": "わたしはナオ。忘れても大丈夫、また教えてあげる。",
+ "line.nao.again1.1": "海は昨日と同じ。それとも、同じなのはわたしのほう？",
+ "line.hero.nao_again2.1": "そのピアス、きれいだね。",
+ "line.nao.again2.2": "馬だよ。ずっと走ってるのに、どこにも行かないの。",
+ "line.nao.again3.1": "中ではみんな画面を見てる。わたしはここで、光の中に立っていたい。",
+ "line.nao.again4.1": "ドアのそばに長く立っていると、ドアが息をしているのが聞こえてくるの。",
+ "line.nao.sun_day.1": "あたたかい。今日の太陽は、まっすぐわたしたちを見てるみたい。",
+ "line.nao.sun_low.1": "待って、まだ行かないで。もうすぐ水にふれるから。",
+ "line.nao.sun_night.1": "夜は見えないけど、どこにあるかはわかる。ドアの向こうにいるみたいに。",
+ "line.nao.sun_cloudy.1": "雲だね。でも大丈夫、ちゃんとそこにいる。感じるの。"
 }
