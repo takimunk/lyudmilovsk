@@ -33,8 +33,8 @@ static TAutoConsoleVariable<int32> CVarBirds(TEXT("lyud.Birds"), 1,
 	TEXT("The wild birds of the outdoor map (UBirdLifeSubsystem): 1 on, 0 off (removes them at once)."));
 static TAutoConsoleVariable<float> CVarBirdsPopulation(TEXT("lyud.Birds.Population"), 1.f,
 	TEXT("Share of each species' population to create (read when the birds start)."));
-static TAutoConsoleVariable<int32> CVarBirdsMigration(TEXT("lyud.Birds.Migration"), 0,
-	TEXT("1: species away in this month (Content/BirdsData/species.json months) are not there; 0: everybody stays."));
+static TAutoConsoleVariable<int32> CVarBirdsMigration(TEXT("lyud.Birds.Migration"), 1,
+	TEXT("1 (default): species away in this month (Content/BirdsData/species.json months) are not there, e.g. no swifts in October; 0: everybody stays."));
 static TAutoConsoleVariable<int32> CVarBirdsAnyMap(TEXT("lyud.Birds.AnyMap"), 0,
 	TEXT("Start the bird life in any game map, not only Lvl_Scene01."));
 static TAutoConsoleVariable<int32> CVarBirdsBodies(TEXT("lyud.Birds.Bodies"), 12,
@@ -445,6 +445,20 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	}
 	const FRotator View = Pawn->GetControlRotation();
 	P.Eye = FromUE(Eye);
+	// a scripted run (lyud.Birds.TestRun): the birds see the player run, whatever the pawn does
+	if (TestRunUntil > World->GetTimeSeconds())
+	{
+		const FVector To = TestRunTarget - TestRunFeet;
+		const FVector Dir = FVector(To.X, To.Y, 0.0).GetSafeNormal();
+		if (To.Size2D() > 50.0)
+		{
+			TestRunFeet += Dir * TestRunSpeed * DeltaTime;
+		}
+		P.Feet = FromUE(TestRunFeet);
+		P.Eye = FromUE(TestRunFeet + FVector(0.0, 0.0, 165.0));
+		P.Vel = To.Size2D() > 50.0 ? FromUE(Dir * TestRunSpeed) : V3();
+		P.bCrouched = false;
+	}
 	P.Facing = FromUE(View.Vector() * 100.0);
 	// how fast the view turns (deg/s), smoothed a little so a single jerky frame doesn't count
 	if (DeltaTime > 0.f)
@@ -764,6 +778,14 @@ void UBirdLifeSubsystem::Scare(FVector Location, float Radius, float Strength)
 	}
 }
 
+void UBirdLifeSubsystem::TestRun(FVector From, FVector To, float Speed, float Seconds)
+{
+	TestRunFeet = From;
+	TestRunTarget = To;
+	TestRunSpeed = Speed;
+	TestRunUntil = (GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0) + Seconds;
+}
+
 int32 UBirdLifeSubsystem::NumBirds() const
 {
 	return Sim ? (int32)Sim->Birds.size() : 0;
@@ -882,6 +904,18 @@ static FAutoConsoleCommandWithWorldAndArgs GBirdsSpawnCmd(TEXT("lyud.Birds.Spawn
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&SpawnNearCmd));
 static FAutoConsoleCommandWithWorldAndArgs GBirdsSpawnAliasCmd(TEXT("Birds.SpawnNear"), TEXT("Same as lyud.Birds.SpawnNear."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&SpawnNearCmd));
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdsTestRunCmd(TEXT("lyud.Birds.TestRun"),
+	TEXT("lyud.Birds.TestRun <from x y z> <to x y> <speed cm/s> <seconds>: birds see the player run from one point to another (tests)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UBirdLifeSubsystem* B = UBirdLifeSubsystem::Get(World);
+		if (B && Args.Num() >= 7)
+		{
+			B->TestRun(FVector(FCString::Atof(*Args[0]), FCString::Atof(*Args[1]), FCString::Atof(*Args[2])),
+				FVector(FCString::Atof(*Args[3]), FCString::Atof(*Args[4]), FCString::Atof(*Args[2])), FCString::Atof(*Args[5]), FCString::Atof(*Args[6]));
+		}
+	}));
 
 static FAutoConsoleCommandWithWorldAndArgs GBirdsScareCmd(TEXT("lyud.Birds.Scare"), TEXT("lyud.Birds.Scare [radius m]: a bang at the player."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)

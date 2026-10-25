@@ -161,6 +161,7 @@ namespace LyudBirds
 		float Seen = 0.f;           // how long it has watched the player
 		float Unseen = 0.f;         // s since it last perceived the player
 		float Habituation = 0.f;    // 0..1 used to the player standing still near it
+		float Wary = 0.f;           // s it stays watchful after a fright (alert fades slowly)
 		float Delay = 0.f;          // reaction delay before a flush
 		int Target = -1;            // a bird it chases / mobs / flees from (-1 = the player)
 		uint8_t Tier = 3;           // LOD: 0 near .. 3 far
@@ -181,6 +182,11 @@ namespace LyudBirds
 		float FlushedAt = -1e9f;
 		bool bMoving = false;
 		bool bStayPut = false;      // a test bird: keeps to its spot (AddBird)
+		// after a fright: keep away from where it came from (or from the player, who may follow) until then
+		double AvoidUntil = -1.0;
+		V3 Avoid;
+		float AvoidR = 0.f;
+		bool bAvoidPlayer = false;
 	};
 
 	/** The player, as birds perceive them (filled by the wrapper ~every frame). */
@@ -310,6 +316,7 @@ namespace LyudBirds
 		float SiteScore(const FGroup& G, const FSite& Site, int Plan) const;
 		V3 SpotOn(const FSite& Site, uint32_t& Rng) const;
 		void SendGroup(FGroup& G, int Site);
+		bool Avoided(const FGroup& G, const V3& P) const;
 		void FlyTo(FBird& B, int Site, const V3& Spot);
 		void SetAct(FBird& B, EAct A, float Len);
 		void Flush(FBird& B, const V3& From, int Cause);
