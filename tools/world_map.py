@@ -426,11 +426,51 @@ def _tiles(x0, x1, y0, y1):
             yield x0 + hx * (2 * i + 1), y0 + hy * (2 * j + 1), hx, hy
 
 
+FOREST_CELL = 40.0                # carving grid for keeping trees out of places (metres)
+
+
+def _tree_free(x, y):
+    """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
+    free = globals().get("academ_tree_free")
+    return bool(free and free(x, y))
+
+
+def _carve(x, y, hx, hy):
+    """The tile as rectangles (x, y, hx, hy) without the cells where trees must not stand: the tile
+    itself when nothing in it is kept free, else row runs of FOREST_CELL cells."""
+    nx = max(1, int(round(2 * hx / FOREST_CELL)))
+    ny = max(1, int(round(2 * hy / FOREST_CELL)))
+    cw, ch = 2 * hx / nx, 2 * hy / ny
+    x0, y0 = x - hx, y - hy
+
+    def blocked(i, j):
+        return any(_tree_free(x0 + (i + fu) * cw, y0 + (j + fv) * ch)
+                   for fu in (0.0, 0.5, 1.0) for fv in (0.0, 0.5, 1.0))
+
+    grid = [[blocked(i, j) for i in range(nx)] for j in range(ny)]
+    if not any(any(r) for r in grid):
+        return [(x, y, hx, hy)]
+    rects = []
+    for j, row in enumerate(grid):
+        i = 0
+        while i < nx:
+            if row[i]:
+                i += 1
+                continue
+            k = i
+            while k < nx and not row[k]:
+                k += 1
+            rects.append((x0 + (i + k) * cw / 2, y0 + (j + 0.5) * ch, (k - i) * cw / 2, ch / 2))
+            i = k
+    return rects
+
+
 def forests():
     """(x, y, half_x, half_y, mix, count, spacing, min_z, max_z, seed) in metres. The trees are traced
     onto the ground, skip steep ground, anything outside min_z..max_z and actors tagged NoTree, so the
     tiles can overlap the open ground around them."""
     out = []
+    seed = [0]                                       # one per tile as laid out, however it is carved
 
     def add(x, y, hx, hy, mix, z0, z1, density=1.0):
         # never in the sea or on the beach: the tile stops short of the beach on its seaward side, and
@@ -443,8 +483,10 @@ def forests():
                 return
             x, hx = (x0 + x1) / 2, (x1 - x0) / 2
         z0 = max(z0, BEACH_TOP + 1.0)
-        count = int(4 * hx * hy / FOREST_SPACING ** 2 * 0.8 * density)
-        out.append((x, y, hx, hy, mix, count, FOREST_SPACING, z0, z1, 1 + len(out)))
+        seed[0] += 1
+        for cx, cy, chx, chy in _carve(x, y, hx, hy):
+            count = int(4 * chx * chy / FOREST_SPACING ** 2 * 0.8 * density)
+            out.append((cx, cy, chx, chy, mix, count, FOREST_SPACING, z0, z1, seed[0]))
 
     # the upland: thick old forest from the cliff top inland, over the club and up its north slope
     for x, y, hx, hy in _tiles(X_MIN, cliff_top(-300) - 5, Y_MIN, -40.0):
