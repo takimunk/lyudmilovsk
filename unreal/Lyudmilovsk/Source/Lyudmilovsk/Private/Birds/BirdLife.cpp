@@ -463,7 +463,6 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	P.bOffer = bOffer;
 	P.Palm = FromUE(LastPalm);
 	P.HandSpeed = HandSpeed;
-	HandSpeed = FMath::Max(0.f, HandSpeed - DeltaTime * 4.f);
 	S.Camera = P.Eye;
 	P.bClaimedBird = false;
 	for (const FBird& B : S.Birds)
@@ -656,8 +655,17 @@ void UBirdLifeSubsystem::SetOffer(FVector PalmLocation, FName Food, bool bOn)
 	{
 		if (bOffer && Now > LastOfferTime)
 		{
-			const float Speed = (float)((PalmLocation - LastPalm).Size() * 0.01 / (Now - LastOfferTime));
-			HandSpeed = FMath::Max(HandSpeed, Speed);
+			// the hand's own motion: relative to the body (a creeping hero's palm moves with them), smoothed over
+			// ~0.1 s so an uneven frame doesn't read as a jerk
+			const double Dt = FMath::Max(Now - LastOfferTime, 1.0 / 120.0);
+			const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+			const FVector Raw = (PalmLocation - LastPalm) / Dt - (Pawn ? Pawn->GetVelocity() : FVector::ZeroVector);
+			HandVelocity = FMath::Lerp(HandVelocity, Raw, (float)FMath::Min(1.0, Dt / 0.1));
+			HandSpeed = (float)HandVelocity.Size() * 0.01f;
+		}
+		else
+		{
+			HandVelocity = FVector::ZeroVector;
 		}
 		LastPalm = PalmLocation;
 		LastOfferTime = Now;

@@ -164,6 +164,7 @@ private:
 	double LastOfferTime = -1.0;
 	bool bOffer = false;
 	float HandSpeed = 0.f;
+	FVector HandVelocity = FVector::ZeroVector;
 	float SaveTimer = 0.f;
 	struct FSightCache { double Time = -1.0; bool bClear = true; };
 	TMap<int32, FSightCache> Sight;
