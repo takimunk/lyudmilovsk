@@ -112,7 +112,7 @@ Console: `lyud.People 0|1`, `lyud.People.Report [key]`, `lyud.People.Order <key>
 
 ## Cost
 
-Outside the engine a day of the 12 people costs ~0.01 ms a step; a decision scores ~20 activities over their slots. In
+Outside the engine a step of the 12 people costs well under 0.001 ms; a decision scores ~20 activities over their slots. In
 the game the bodies (12 at most) tick their animation only when rendered.
 
 ## Known gaps

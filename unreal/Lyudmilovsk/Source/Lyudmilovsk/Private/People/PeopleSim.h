@@ -86,6 +86,7 @@ namespace LyudPeople
 		float Height = 0.f;         // seat or mattress top over the floor, m
 		int Capacity = 1;
 		std::string Tag;            // club seats: the station index; flats: the room kind
+		std::vector<V3> Spots;      // a double bed: where each sleeper lies
 		std::vector<V3> Inside;     // the way from the place's door (Portal) to Approach; empty outdoors
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
@@ -281,6 +282,8 @@ namespace LyudPeople
 		float Trait(const FPerson& P, const std::string& T) const;
 		V3 Where(const FPerson& P) const;
 		void Reserve(FPerson& P, int Slot);
+		V3 SpotOf(const FPerson& P, int Slot) const;
+		float YawAt(const FPerson& P, int Slot, EPose Pose) const;
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;

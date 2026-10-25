@@ -154,9 +154,9 @@ if PART in ("all", "town"):
     # a night: asleep at home
     step(lambda w: cmd(w, "lyud.Birds.Time 23 50"), 4.0)
     step(report("night 23:50"), 1.0)
-    step(lambda w: look_at_person(w, "kid_girl", 230.0, 160.0, 0.9), 2.0)
+    step(lambda w: look_at_person(w, "kid_girl", 200.0, 190.0, 1.0), 2.0)
     step(lambda w: shot(w, "kid_girl_asleep"), 2.0)
-    step(lambda w: look_at_person(w, "girl_a", 230.0, 160.0, 0.9), 2.0)
+    step(lambda w: look_at_person(w, "girl_a", 200.0, 190.0, 1.0), 2.0)
     step(lambda w: shot(w, "vera_asleep"), 2.0)
 
     # a morning: breakfast, off to school and work
@@ -177,8 +177,19 @@ if PART in ("all", "town"):
         log("order crowd_12 read_library: %s" % ok)
         look_at_person(w, "girl_b", 320.0, 130.0, 0.4)
     step(lambda w: shot(w, "library_olya"), 50.0)
-    step(lambda w: look_at_person(w, "crowd_12", 260.0, 110.0, 0.5), 2.0)
-    step(lambda w: shot(w, "library_reader"), 2.0)
+    step(lambda w: look_at_person(w, "crowd_12", 520.0, 260.0, 0.5), 2.0)
+    step(lambda w: shot(w, "walking_to_library"), 2.0)
+
+    # an afternoon walk on the square
+    step(lambda w: cmd(w, "lyud.Birds.Time 14 30"), 4.0)
+
+    @step
+    def s_walk(w):
+        ok = life(w).order(life(w).find_person("streamer"), "walk", "academ_square")
+        log("order streamer walk: %s" % ok)
+    step(lambda w: look_at_person(w, "streamer", 450.0, 200.0, 0.6), 25.0)
+    step(lambda w: look_at_person(w, "streamer", 450.0, 200.0, 0.6), 1.0)
+    step(lambda w: shot(w, "streamer_walking"), 2.0)
     step(report("later"), 1.0)
 
 

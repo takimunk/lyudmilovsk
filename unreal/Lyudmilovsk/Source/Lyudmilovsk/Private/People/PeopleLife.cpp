@@ -448,7 +448,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				At.Z = Hit.ImpactPoint.Z;
 			}
 		}
-		Body->Drive(At, P.Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, DeltaTime, bWasHidden);
+		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
+		Body->Drive(At, P.Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
 	}
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
@@ -672,6 +673,16 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 		return false;
 	}
 	Mesh->SetSkeletalMeshAsset(Asset);
+	// the shared clips were made on a 1.69 m adult (pelvis 91.7 cm over the floor): the pelvis moves scale with the body
+	const FReferenceSkeleton& Ref = Asset->GetRefSkeleton();
+	int32 Bone = Ref.FindBoneIndex(TEXT("pelvis"));
+	FTransform T = FTransform::Identity;
+	while (Bone != INDEX_NONE)
+	{
+		T = T * Ref.GetRefBonePose()[Bone];
+		Bone = Ref.GetParentIndex(Bone);
+	}
+	BodyScale = FMath::Clamp((float)T.GetLocation().Z / 91.7f, 0.5f, 1.3f);
 	return true;
 }
 
@@ -740,7 +751,7 @@ void ANpcBody::Play(FName Name, bool bLoop, float Rate)
 	Mesh->SetPlayRate(Rate);
 }
 
-void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float DeltaTime, bool bSnap)
+void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
 {
 	// turn smoothly, except into a seat or a bed (the clip starts from the slot's facing)
 	if (bSnap || Transit != 0 || !bPlaced)
@@ -753,8 +764,32 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		Facing += FMath::Clamp(D, -240.f * DeltaTime, 240.f * DeltaTime);
 	}
 	bPlaced = true;
-	// the model faces +Y at yaw 0
-	SetActorLocationAndRotation(Location, FRotator(0.f, Facing - 90.f, 0.f));
+	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
+	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
+		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
+	const float S = BodyScale;
+	if (bBed)
+	{
+		// the lying clips: the actor stands beside the bed facing away from it (+Y), the mattress (top 50 cm) behind it,
+		// its middle at local (-5, -55) cm, the head toward local +X. Location is the floor under the mattress's middle and
+		// Yaw the bed's head-to-foot: the actor turns so local -X runs head to foot.
+		const float MeshYaw = Yaw + 180.f;
+		const FRotator R(0.f, MeshYaw, 0.f);
+		FVector At = Location - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
+		At.Z += (SeatHeight > 0.f ? SeatHeight : 50.f) - 50.f * S;
+		SetActorLocationAndRotation(At, R);
+	}
+	else
+	{
+		// seated clips: the origin under the seat's centre (top 47 cm), facing local +Y; a smaller body sits higher
+		FVector At = Location;
+		if (bSeat)
+		{
+			At.Z += (SeatHeight > 0.f ? SeatHeight : 47.f) - 47.f * S;
+		}
+		// the model faces +Y at yaw 0
+		SetActorLocationAndRotation(At, FRotator(0.f, Facing - 90.f, 0.f));
+	}
 	switch (Transit)
 	{
 	case 1: Play(TEXT("SitDown"), false); return;
@@ -769,7 +804,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	{
 		// the shared walk is one stride at ~125 cm/s; the owner's (the fallback) at 75
 		const bool bShared = Clip(TEXT("Walk")) && Clip(TEXT("Walk"))->GetName().StartsWith(TEXT("A_Human"));
-		Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 125.f : 75.f), 0.3f, 2.5f));
+		Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 125.f * S : 75.f), 0.3f, 2.5f));
 		break;
 	}
 	case EPersonPose::Talk: Play(TEXT("Talk"), true); break;

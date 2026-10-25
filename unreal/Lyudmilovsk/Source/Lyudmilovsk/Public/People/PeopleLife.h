@@ -184,8 +184,10 @@ public:
 
 	/** Loads the model and remembers whose clips to use. False if the model is missing. */
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
-	/** Pose this frame: where (cm), facing (deg), the pose, the transition (sit down / stand up) and the walking speed (cm/s). */
-	void Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float DeltaTime, bool bSnap);
+	/** Pose this frame: where (cm; seated: the floor under the seat, lying: under the mattress's middle), facing (deg; lying:
+	 *  the bed's head to foot), the pose, the transition (1 sit down, 2 stand up, 3 lie down, 4 get up), the walking speed
+	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). */
+	void Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap);
 
 	FString MeshName;
 
@@ -195,6 +197,8 @@ private:
 	FName Playing;
 	float Facing = 0.f;
 	bool bPlaced = false;
+	/** Body size against the clips' 1.69 m adult (pelvis height / 91.7 cm). */
+	float BodyScale = 1.f;
 
 	class UAnimSequence* Clip(FName Name);
 	void Play(FName Name, bool bLoop, float Rate = 1.f);

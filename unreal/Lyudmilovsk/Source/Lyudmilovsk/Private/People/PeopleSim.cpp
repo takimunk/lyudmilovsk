@@ -314,6 +314,13 @@ namespace LyudPeople
 				}
 			}
 			const LyudJson::FValue& Spots = S["spots"];
+			if (Sl.Kind == "bed")
+			{
+				for (const LyudJson::FValue& Spot : Spots.Items)
+				{
+					Sl.Spots.push_back(Vec(Spot));
+				}
+			}
 			if (Spots.Size() > 1 && Sl.Kind != "bed")
 			{
 				// one slot per sitter, side by side, each with the same way in (a double bed stays one: they share it)
@@ -691,7 +698,8 @@ namespace LyudPeople
 			}
 		}
 		ReserveOwnSlots();
-		// beds: children their own, a couple may share a double one; the rest a sofa
+		// beds: one each while there are beds; a double bed takes two of a household (a couple, a mother and her
+		// child); the rest sleep on a sofa
 		for (FPlace& Flat : Places)
 		{
 			if (Flat.Kind != "flat")
@@ -703,24 +711,54 @@ namespace LyudPeople
 				Slots[S].Owner = -1;
 				Slots[S].Users.clear();
 			}
-			for (const int Id : Flat.Residents)
+			std::vector<int> Taken(Flat.Slots.size(), 0);
+			for (int Pass = 0; Pass < 2; Pass++)
 			{
-				FPerson& P = People[Id];
-				P.BedSlot = -1;
-				for (const char* Kind : { "bed", "sofa" })
+				for (const int Id : Flat.Residents)
 				{
-					for (const int S : Flat.Slots)
+					FPerson& P = People[Id];
+					if (Pass == 0)
 					{
-						if (Slots[S].Kind == Kind && Slots[S].Owner < 0)
-						{
-							P.BedSlot = S;
-							Slots[S].Owner = Id;
-							break;
-						}
+						P.BedSlot = -1;
 					}
 					if (P.BedSlot >= 0)
 					{
-						break;
+						continue;
+					}
+					// pass 0: an empty bed (single beds first); pass 1: the free half of a double one, else a sofa
+					for (size_t K = 0; K < Flat.Slots.size() && P.BedSlot < 0; K++)
+					{
+						const FSlot& Sl = Slots[Flat.Slots[K]];
+						const bool bFits = Pass == 0 ? Sl.Kind == "bed" && Taken[K] == 0 && Sl.Capacity == 1
+							: Sl.Kind == "bed" && Taken[K] < Sl.Capacity;
+						if (bFits)
+						{
+							P.BedSlot = Flat.Slots[K];
+							Taken[K]++;
+						}
+					}
+					if (Pass == 0)
+					{
+						for (size_t K = 0; K < Flat.Slots.size() && P.BedSlot < 0; K++)
+						{
+							if (Slots[Flat.Slots[K]].Kind == "bed" && Taken[K] == 0)
+							{
+								P.BedSlot = Flat.Slots[K];
+								Taken[K]++;
+							}
+						}
+					}
+					for (size_t K = 0; Pass == 1 && K < Flat.Slots.size() && P.BedSlot < 0; K++)
+					{
+						if (Slots[Flat.Slots[K]].Kind == "sofa" && Taken[K] == 0)
+						{
+							P.BedSlot = Flat.Slots[K];
+							Taken[K]++;
+						}
+					}
+					if (P.BedSlot >= 0 && Slots[P.BedSlot].Owner < 0 && Slots[P.BedSlot].Kind == "bed")
+					{
+						Slots[P.BedSlot].Owner = Id;
 					}
 				}
 			}
@@ -1004,6 +1042,26 @@ namespace LyudPeople
 		return P.Pos;
 	}
 
+	float FWorld::YawAt(const FPerson& P, int Slot, EPose Pose) const
+	{
+		// lying on a sofa: along it, head to the sofa's left end (a bed's yaw is already head to foot)
+		const FSlot& Sl = Slots[Slot];
+		return Pose == EPose::Sleep && Sl.Kind != "bed" ? Sl.Yaw + 90.f : Sl.Yaw;
+	}
+
+	V3 FWorld::SpotOf(const FPerson& P, int Slot) const
+	{
+		// a double bed: each sleeper their own half
+		const FSlot& Sl = Slots[Slot];
+		if (Sl.Spots.size() > 1)
+		{
+			const auto It = std::find(Sl.Users.begin(), Sl.Users.end(), P.Id);
+			const size_t I = It == Sl.Users.end() ? 0 : (size_t)(It - Sl.Users.begin());
+			return Sl.Spots[std::min(I, Sl.Spots.size() - 1)];
+		}
+		return Sl.Pos;
+	}
+
 	void FWorld::Reserve(FPerson& P, int Slot)
 	{
 		Unreserve(P);
@@ -1150,8 +1208,8 @@ namespace LyudPeople
 		{
 			P.Path.clear();
 			P.PathI = 0;
-			P.Pos = IsSeated(A.Pose) || A.Pose == EPose::Sleep || A.Pose == EPose::Work ? Sl.Pos : Sl.Approach;
-			P.Yaw = Sl.Yaw;
+			P.Pos = IsSeated(A.Pose) || A.Pose == EPose::Sleep || A.Pose == EPose::Work ? SpotOf(P, Slot) : Sl.Approach;
+			P.Yaw = YawAt(P, Slot, A.Pose);
 			P.bIndoors = Places[Sl.Place].bIndoor;
 			P.Island = std::max(0, Places[Sl.Place].Island);
 			P.Until = Time + Minutes * 60.0;
@@ -1456,8 +1514,8 @@ namespace LyudPeople
 		{
 			P.State = EState::Settling;
 			P.Transit = A.Pose == EPose::Sleep ? LieSeconds : (A.Pose == EPose::Work ? 0.5f : SitSeconds);
-			P.Pos = Sl.Pos;
-			P.Yaw = Sl.Yaw;
+			P.Pos = SpotOf(P, P.Slot);
+			P.Yaw = YawAt(P, P.Slot, A.Pose);
 			P.Pose = A.Pose;
 			return;
 		}
