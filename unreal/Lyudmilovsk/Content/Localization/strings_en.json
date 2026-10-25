@@ -404,5 +404,17 @@
  "ui.tame.flee": "{0} takes fright and flies off",
  "ui.tame.nofeed": "Nothing to offer: bird feed is sold in the vending machine",
  "ui.tame.alert": "Alarm",
- "ui.tame.trust": "Trust"
+ "ui.tame.trust": "Trust",
+ "line.owner.sun_day.1": "The sun is high up there now. I can feel it on the back of my neck, even from in here.",
+ "line.owner.sun_low.1": "Sunset soon. Around this time my chest always gets warm. I don't know why.",
+ "line.owner.sun_night.1": "The sun is on the other side of the earth now. That's all right. It always comes back.",
+ "line.owner.sun_cloudy.1": "Clouds have covered it today. Can you feel it? Everything seems thinner.",
+ "line.clerk.sun_day.1": "I painted the sun once. Nine hundred yellow cells. Afterwards the sheet felt warm.",
+ "line.clerk.sun_cloudy.1": "It's overcast today. The yellow fill doesn't go on as well. Don't ask.",
+ "line.streamer.sun_low.1": "Chat says the sun is setting. I feel it every time, honestly. Right on my skin.",
+ "line.kid_girl.sun_day.1": "Can the sun see us? Even from here?",
+ "line.kid_girl.sun_night.1": "Mum says the sun sleeps at night. I think it's just looking at other people.",
+ "line.guy_b.sun_day.1": "Oh, it's so warm. Like the sun is warming my skin. Though there aren't even any windows here.",
+ "line.guy_b.sun_cloudy.1": "Too bad the sun's gone behind the clouds. I can actually feel it, don't laugh.",
+ "line.girl_b.sun_day.1": "On the forum they write: as long as the sun shines, we are remembered. Strange thing to say, right?"
 }
