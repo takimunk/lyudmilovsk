@@ -129,6 +129,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static UStaticMesh* LoadPose(FName Id, FName Pose);
 
+	/** Import tooling (unreal/scripts/import_birds.py): screen size per LOD, persisted in the mesh. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	static void SetLODScreenSizes(USkeletalMesh* Mesh, const TArray<float>& ScreenSizes);
+
 	/** The clip that shows a state (Perch -> Idle, Fly -> Flap ...). */
 	static FName ClipForState(EBirdState State);
 };

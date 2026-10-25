@@ -178,6 +178,22 @@ UStaticMesh* UBirdSpeciesLibrary::LoadPose(FName Id, FName Pose)
 		LOAD_NoWarn | LOAD_Quiet);
 }
 
+void UBirdSpeciesLibrary::SetLODScreenSizes(USkeletalMesh* Mesh, const TArray<float>& ScreenSizes)
+{
+	if (!Mesh)
+	{
+		return;
+	}
+	Mesh->Modify();
+	for (int32 i = 0; i < Mesh->GetLODNum() && i < ScreenSizes.Num(); ++i)
+	{
+		if (FSkeletalMeshLODInfo* Info = Mesh->GetLODInfo(i))
+		{
+			Info->ScreenSize = ScreenSizes[i];
+		}
+	}
+}
+
 FName UBirdSpeciesLibrary::ClipForState(EBirdState State)
 {
 	switch (State)
