@@ -408,5 +408,14 @@
  "ui.tame.flee": "{0} пугается и улетает",
  "ui.tame.nofeed": "Нечего протянуть: корм для птиц продаётся в автомате",
  "ui.tame.alert": "Тревога",
- "ui.tame.trust": "Доверие"
+ "ui.tame.trust": "Доверие",
+ "sign.academ.library": "БИБЛИОТЕКА",
+ "sign.academ.library.sub": "читальный зал · абонемент",
+ "sign.academ.library.hours": "Часы работы с 10.00 до 20.00",
+ "sign.academ.library.reading_room": "Читальный зал",
+ "sign.academ.library.issue_desk": "Выдача книг",
+ "sign.academ.library.catalogue": "Каталог",
+ "sign.academ.library.silence": "Соблюдайте тишину",
+ "sign.academ.library.cloakroom": "Гардероб",
+ "sign.academ.library.periodicals": "Периодика"
 }

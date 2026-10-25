@@ -408,5 +408,14 @@
  "ui.tame.flee": "{0}が驚いて飛び去る",
  "ui.tame.nofeed": "差し出すものがない：鳥のえさは自動販売機で売っている",
  "ui.tame.alert": "警戒",
- "ui.tame.trust": "信頼"
+ "ui.tame.trust": "信頼",
+ "sign.academ.library": "図書館",
+ "sign.academ.library.sub": "閲覧室・貸出",
+ "sign.academ.library.hours": "開館時間 10:00-20:00",
+ "sign.academ.library.reading_room": "閲覧室",
+ "sign.academ.library.issue_desk": "貸出カウンター",
+ "sign.academ.library.catalogue": "蔵書目録",
+ "sign.academ.library.silence": "お静かに",
+ "sign.academ.library.cloakroom": "クローク",
+ "sign.academ.library.periodicals": "新聞・雑誌"
 }

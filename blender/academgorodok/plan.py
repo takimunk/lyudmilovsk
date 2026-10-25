@@ -213,9 +213,9 @@ def novikova1():
     door_us = {cu(N1_BAYS[1] - N1_BAY_W / 2 - N1_BAY_GAP), cu(N1_BAYS[1] + N1_BAY_W / 2 + N1_BAY_GAP)}
     for u in win_us:
         if any(abs(u - d) < 0.1 for d in door_us):
-            ops.append(Opening(u, floor_z(0) - 0.15, 1.5, 2.65, kind="door", unit="double", room=False))
+            ops.append(Opening(u, floor_z(0) - 0.15, 1.5, 2.65, kind="door", unit="double", room=False, surround=None))
         else:
-            ops.append(Opening(u, floor_z(0) + 0.55, 2.0, 2.25, unit="shop"))
+            ops.append(Opening(u, floor_z(0) + 0.55, 2.0, 2.25, unit="shop", surround=None))
     # the Gastronom (gastronom.py) fills the ground floor from the central entrance to the north bay:
     # no room boxes behind its windows, the central entrance stands open
     for o in ops:
@@ -225,12 +225,29 @@ def novikova1():
             if o.kind == "door" and abs(bx) < 0.1:
                 o.fill = False
     h.stairs = list(N1_BAYS)
-    build_facade(h, fac, ez, ops)
+    ground = [o for o in ops if o.z0 < floor_z(1) and (o.unit == "shop" or (o.kind == "door" and o.surround is None
+                                                                            and o.w < 1.55))]
+    lib_door = min((o.uc for o in ground if o.kind == "door"), key=lambda u: abs(u + x0 - 4.35))
+    build_facade(h, fac, ez, ops, extra=lambda m: _n1_ground_details(m, ground, lib_door))
     for b in N1_BAYS:
         _n1_bay_details(h, fac, cu(b), ez)
-    import gastronom
-    h.inside.extend(gastronom.build())
-    h.lights = list(gastronom.LIGHTS)
+    # the shop of old is a library now (Dima, 2026-10-25): library.py, the Gastronom as a fallback
+    try:
+        import library as shop
+    except ImportError:
+        import gastronom as shop
+    h.inside.extend(shop.build())
+    h.lights = list(shop.LIGHTS)
+    # its boards: a picture per language on a quad over each label (AcademToggle.cpp, make_academ_signs.py)
+    for (key, lx, ly, lz, lw, lh), nrm in zip(getattr(shop, "LABELS", []), getattr(shop, "LABEL_NORMALS", [])):
+        if not key.startswith("sign.academ.library."):
+            continue
+        nx, ny = nrm[0], nrm[1]
+        tx, ty = -ny, nx                        # along the board, to the viewer's right when facing it
+        c = (lx + nx * 0.006, ly + ny * 0.006)
+        pts = [(c[0] - tx * lw / 2, c[1] - ty * lw / 2, lz - lh / 2), (c[0] + tx * lw / 2, c[1] + ty * lw / 2, lz - lh / 2),
+               (c[0] + tx * lw / 2, c[1] + ty * lw / 2, lz + lh / 2), (c[0] - tx * lw / 2, c[1] - ty * lw / 2, lz + lh / 2)]
+        h.inside.face("AC_Sign_" + key.split(".")[-1], pts, [(0, 0), (1, 0), (1, 1), (0, 1)])
     for u in win_us:
         if not any(abs(u - d) < 0.1 for d in door_us):
             continue
@@ -303,6 +320,39 @@ def _n1_bay_openings(bu):
     return ops
 
 
+def _n1_ground_details(m, ground, sign_door_u):
+    """The square facade's ground floor (Dima's photo docs/academgorodok/refs/dima/shop.jpg): wide white
+    architraves round the doors and the big windows, a light well with a grate in front of each window,
+    a globe lamp over each door, and the library's enamel sign beside its door (facade-local frame)."""
+    for o in ground:
+        u0, u1, z0, z1 = o.rect
+        bw = 0.3
+        box(m, "AC_Trim", u0 - bw, u0, 0.0, 0.05, max(z0 - (0.12 if o.kind != "door" else 0.0), PLINTH_H - 0.3), z1 + bw)
+        box(m, "AC_Trim", u1, u1 + bw, 0.0, 0.05, max(z0 - (0.12 if o.kind != "door" else 0.0), PLINTH_H - 0.3), z1 + bw)
+        box(m, "AC_Trim", u0 - bw, u1 + bw, 0.0, 0.05, z1, z1 + bw)
+        if o.kind != "door":
+            box(m, "AC_Trim", u0 - bw, u1 + bw, 0.0, 0.05, z0 - 0.12 - bw * 0.4, z0 - 0.12)
+            box(m, "AC_FrameGreen", u0, u1, 0.0, 0.12, z0 - 0.04, z0)                  # green-painted sill
+            # light well: a low concrete box with a grate, out from the wall
+            box(m, "AC_Concrete", u0 - 0.25, u1 + 0.25, 0.0, 0.9, -0.2, 0.3, faces="xXyYZ")
+            for i in range(int((u1 - u0 + 0.3) / 0.06)):
+                gx = u0 - 0.15 + i * 0.06
+                box(m, "AC_Iron", gx, gx + 0.012, 0.06, 0.84, 0.3, 0.32)
+        else:
+            # a globe lamp on a bracket over the door
+            cu_ = u0 - 0.55
+            box(m, "AC_Iron", cu_ - 0.02, cu_ + 0.02, 0.0, 0.22, z1 + 0.5, z1 + 0.54)
+            box(m, "AC_LampGlobe", cu_ - 0.12, cu_ + 0.12, 0.1, 0.34, z1 + 0.3, z1 + 0.54)
+    for o in ground:
+        if o.kind == "door" and abs(o.uc - sign_door_u) < 0.01:
+            u1 = o.rect[1] + 0.3 + 0.35
+            box(m, "AC_Trim", u1, u1 + 0.82, 0.0, 0.015, PLINTH_H + 1.55, PLINTH_H + 2.12)
+            # the enamel board: its picture comes per language (sign.academ.library, AcademToggle.cpp)
+            m.face("AC_Sign_library", [(u1 + 0.81, 0.02, PLINTH_H + 1.56), (u1 + 0.01, 0.02, PLINTH_H + 1.56),
+                                      (u1 + 0.01, 0.02, PLINTH_H + 2.11), (u1 + 0.81, 0.02, PLINTH_H + 2.11)],
+                   [(1, 0), (0, 0), (0, 1), (1, 1)])
+
+
 def _n1_bay_details(h, fac, bu, ez):
     """The loggia stack in front of a bay: dark portal, four consoles, two loggias on columns with
     a solid parapet below and bars above, the top balcony; facade_notes.md section 2."""
@@ -324,6 +374,23 @@ def _n1_bay_details(h, fac, bu, ez):
     for s in (-1, 1):                                     # side returns of the loggias
         for k in (1, 2):
             h.detail(fac, "railing_side", bu + s * (w / 2 - 0.15), 0.0, floor_z(k), length=depth, h=1.0)
+    # over the top floor's window a lunette under a white archivolt, and piers at the top balcony's
+    # corners (docs/academgorodok/refs/dima/bay.jpg)
+    lm = Mesh()
+    r0, r1 = 0.95, 1.13
+    zc = floor_z(3) + 0.05 + 2.95 - 0.25
+    pts = []
+    for k in range(13):
+        a = math.pi * k / 12
+        pts.append((bu + r1 * math.cos(a), zc + r1 * math.sin(a)))
+    for k in range(12, -1, -1):
+        a = math.pi * k / 12
+        pts.append((bu + r0 * math.cos(a), zc + r0 * math.sin(a)))
+    geom.extrude_profile(lm, "AC_Trim", "AC_Trim", pts, -0.06, 0.0, lambda u, v, t: (u, -t, v))
+    for sgn in (-1, 1):
+        box(lm, "AC_Trim", bu + sgn * (w / 2 - 0.3) - 0.14, bu + sgn * (w / 2 - 0.3) + 0.14, depth - 0.26, depth,
+            floor_z(3), floor_z(3) + 1.12)
+    h.add(fac, lm)
     h.detail(fac, "oculus", bu, 0.0, ez + 0.9, d=0.95)
     for s in (-1, 1):
         h.detail(fac, "swag", bu + s * 1.55, 0.0, ez + 0.75, length=1.3)
@@ -561,31 +628,97 @@ class _Proxy:
 # Gates and the square
 # ============================================================================================
 
+# A gate (Dima's photos docs/academgorodok/refs/dima/arch1.jpg, arch2.jpg): on each side of the drive an
+# ochre block against the house, with an arched passage for people under a white archivolt, a white band
+# and cornice and a low hipped cap; from each block a scrolled wing (ochre, its S-curved edge white)
+# steps down towards the drive; a concrete plinth under both.
+GATE_BLOCK_W, GATE_BLOCK_D, GATE_BLOCK_H = 3.0, 1.1, 5.0
+GATE_ARCH_W, GATE_ARCH_H = 1.5, 3.1
+GATE_WING = [(0.0, 3.45), (0.25, 3.52), (0.5, 3.44), (0.62, 3.22), (0.58, 2.97), (0.42, 2.82), (0.34, 2.56),
+             (0.42, 2.27), (0.66, 2.02), (0.95, 1.77), (1.07, 1.63), (1.22, 1.56), (1.45, 1.32), (1.56, 1.02),
+             (1.52, 0.72), (1.37, 0.52), (1.22, 0.46), (1.22, 0.35), (0.0, 0.35)]
+GATE_WING_T = 0.5
+
+
 def gates(houses):
-    """The two gates: an arched wicket block on the side house, two scroll pylons, the drive.
-    Returns [(name, kwargs, (x, y, z), yaw)] in the ensemble frame and the line of each gate."""
+    """The two gates. Returns ([], lines, mesh): the gates' geometry in the ensemble frame (no detail
+    pieces any more) and each gate's line from the side house's corner to Novikova 1's."""
     n1 = houses["Novikova1"]
-    out = []
+    m = Mesh()
     lines = []
     for name, n1_corner in (("Novikova3", (N1_L / 2, -N1_D / 2)), ("Maksimova8", (-N1_L / 2, -N1_D / 2))):
         s = houses[name]
-        a = s.frame(s.gate_corner)                              # side house's courtyard corner of its gate end
-        b = n1.frame((n1_corner[0], n1_corner[1], 0.0))         # Novikova 1's square corner
+        a = s.frame(s.gate_corner)
+        b = n1.frame((n1_corner[0], n1_corner[1], 0.0))
         dx, dy = b[0] - a[0], b[1] - a[1]
         L = math.hypot(dx, dy)
         d = (dx / L, dy / L)
-        n = (d[1], -d[0])
-        # the street side of the gate line is where the square is (east, +x)
-        if n[0] < 0:
-            n = (-n[0], -n[1])
-        yaw = math.atan2(n[1], n[0]) - math.pi / 2
-        P = lambda t, o=0.0: (a[0] + d[0] * t + n[0] * o, a[1] + d[1] * t + n[1] * o, 0.0)
-        out.append(("wicket_block", {}, P(1.9), yaw, d))
-        # the scroll pylons stand about as high as the wicket's arch (commons_Marshal_Novikov_str._1_gates.jpg)
-        out.append(("scroll_pylon", {"flip": False, "h": 3.4, "t": 0.7}, P(4.5), yaw, d))
-        out.append(("scroll_pylon", {"flip": True, "h": 3.4, "t": 0.7}, P(8.8), yaw, d))
+        nl = (-d[1], d[0])                      # left of the gate line: (u along it, y, z) is right-handed
+        loc = Mesh()
+        W = GATE_BLOCK_W
+        _gate_block(loc, 0.0, W, +1)            # against the side house, its wing towards the drive
+        _gate_block(loc, L - W, L, -1)          # against Novikova 1
+        m.extend(loc.transformed(lambda p, a=a, d=d, nl=nl: (a[0] + d[0] * p[0] + nl[0] * p[1],
+                                                             a[1] + d[1] * p[0] + nl[1] * p[1], p[2])))
         lines.append((a, b))
-    return out, lines
+    return [], lines, m
+
+
+def _gate_block(m, u0, u1, wing_dir):
+    """One block of a gate in the gate's local frame (u along the line, y across it, z up), its wing
+    on the side wing_dir (+1: towards +u)."""
+    D, H = GATE_BLOCK_D, GATE_BLOCK_H
+    y0, y1 = -D / 2, D / 2
+    uc = (u0 + u1) / 2
+    aw, ah = GATE_ARCH_W, GATE_ARCH_H
+    r = aw / 2
+    ua0, ua1, zs = uc - r, uc + r, ah - r
+    pl = 0.35
+    # plinth (split at the passage) and the piers, the wall over the arch, the spandrels and the soffit
+    box(m, "AC_Concrete", u0 - 0.03, ua0, y0 - 0.03, y1 + 0.03, -0.4, pl)
+    box(m, "AC_Concrete", ua1, u1 + 0.03, y0 - 0.03, y1 + 0.03, -0.4, pl)
+    box(m, "AC_Wall", u0, ua0, y0, y1, pl, ah, faces="xXyY")
+    box(m, "AC_Wall", ua1, u1, y0, y1, pl, ah, faces="xXyY")
+    box(m, "AC_Wall", u0, u1, y0, y1, ah, H - 0.2, faces="xXyY")
+    seg = 14
+    arc = [(uc + r * math.cos(math.pi * k / seg), zs + r * math.sin(math.pi * k / seg)) for k in range(seg + 1)]
+    half = seg // 2
+    right = [(ua1, zs), (ua1, ah)] + [(uc, ah)] + arc[half - 1:0:-1]
+    left = [(uc, ah), (ua0, ah), (ua0, zs)] + arc[seg - 1:half:-1]
+    to3d = lambda u, v, t: (u, -t, v)          # profile (u, z) solid across y
+    for poly in (right, left):
+        geom.extrude_profile(m, "AC_Wall", "AC_Wall", poly, -y1, -y0, to3d)
+    # the archivolt (a white U round the passage) on both faces
+    band = 0.18
+    outer = [(uc + (r + band) * math.cos(math.pi * k / seg), zs + (r + band) * math.sin(math.pi * k / seg)) for k in range(seg + 1)]
+    inner = [(uc + r * math.cos(math.pi * k / seg), zs + r * math.sin(math.pi * k / seg)) for k in range(seg + 1)]
+    u_ring = [(ua1 + band, pl), (ua1 + band, zs)] + outer[1:-1] + [(ua0 - band, zs), (ua0 - band, pl), (ua0, pl), (ua0, zs)] + \
+        inner[-2:0:-1] + [(ua1, zs), (ua1, pl)]
+    for t0, t1 in ((-y0, -y0 + 0.035), (-y1 - 0.035, -y1)):
+        geom.extrude_profile(m, "AC_Trim", "AC_Trim", u_ring, t0, t1, to3d)
+    # a white band at 4 m, the cornice and the low hipped cap
+    box(m, "AC_Trim", u0 - 0.06, u1 + 0.06, y0 - 0.06, y1 + 0.06, 3.95, 4.12)
+    box(m, "AC_Trim", u0 - 0.03, u1 + 0.03, y0 - 0.03, y1 + 0.03, 4.12, 4.2)
+    box(m, "AC_Trim", u0 - 0.2, u1 + 0.2, y0 - 0.2, y1 + 0.2, H - 0.2, H)
+    geom.hip_roof(m, "AC_Roof", "AC_Trim", "AC_Trim", u0, u1, y0, y1, H, math.radians(14), 0.25, fascia_h=0.06)
+    # the scrolled wing, its S-curved edge white, and a white band along the curve on both faces
+    uf = u1 if wing_dir > 0 else u0
+    prof = [(uf + wing_dir * p[0], p[1]) for p in GATE_WING]
+    t = GATE_WING_T / 2
+    geom.extrude_profile(m, "AC_Wall", "AC_Trim", prof, -t, t, to3d)
+    curve = GATE_WING[:-2]
+    for i in range(len(curve) - 1):
+        (s0, z0), (s1, z1) = curve[i], curve[i + 1]
+        ln = math.hypot(s1 - s0, z1 - z0) or 1.0
+        nx, nz = (z1 - z0) / ln, -(s1 - s0) / ln          # into the wing
+        q = [(s0, z0), (s1, z1), (s1 + nx * 0.2, z1 + nz * 0.2), (s0 + nx * 0.2, z0 + nz * 0.2)]
+        q = [(uf + wing_dir * qq[0], qq[1]) for qq in q]
+        for yy, flip in ((-t - 0.008, False), (t + 0.008, True)):
+            pts = [(p[0], yy, p[1]) for p in q]
+            if (wing_dir > 0) != flip:
+                pts = pts[::-1]
+            m.face("AC_Trim", pts)
+    box(m, "AC_Concrete", min(uf, uf + wing_dir * 1.3), max(uf, uf + wing_dir * 1.3), -t - 0.05, t + 0.05, -0.4, 0.35)
 
 
 SQUARE = {
@@ -726,6 +859,6 @@ if __name__ == "__main__":
     hs = ensemble()
     for k, h in hs.items():
         print(k, "tris", h.mesh.tri_count(), "details", len(h.details))
-    g, lines = gates(hs)
+    g, lines, gm = gates(hs)
     for a, b in lines:
         print("gate", [round(v, 1) for v in a], [round(v, 1) for v in b], round(math.dist(a[:2], b[:2]), 1))

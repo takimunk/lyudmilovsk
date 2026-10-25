@@ -14,6 +14,9 @@
 #include "Sky/LyudSky.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
+#include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "LyudText.h"
 
 namespace
 {
@@ -67,6 +70,48 @@ namespace
 	const float NearLampCm = 650.f;
 	bool bNight = false;
 
+	// Signs: a material slot named AC_Sign_<name> on an Academ mesh shows the picture
+	// /Game/Academgorodok/Localized/<lang>/T_Sign_<name> of the player's language (tools/make_academ_signs.py).
+	FString SignLanguage;
+
+	void ApplySigns(UWorld* World)
+	{
+		for (TActorIterator<AActor> It(World); It; ++It)
+		{
+			if (!It->ActorHasTag(AcademTag))
+			{
+				continue;
+			}
+			TInlineComponentArray<UStaticMeshComponent*> Meshes(*It);
+			for (UStaticMeshComponent* C : Meshes)
+			{
+				const TArray<FName> Slots = C->GetMaterialSlotNames();
+				for (const FName& Slot : Slots)
+				{
+					const FString S = Slot.ToString();
+					if (!S.StartsWith(TEXT("AC_Sign_")))
+					{
+						continue;
+					}
+					UTexture2D* Tex = LyudText::LoadTexture(TEXT("Academgorodok"), TEXT("T_Sign_") + S.Mid(8));
+					const int32 Index = C->GetMaterialIndex(Slot);
+					UMaterialInterface* Base = C->GetMaterial(Index);
+					if (!Tex || !Base)
+					{
+						continue;
+					}
+					UMaterialInstanceDynamic* MID = Cast<UMaterialInstanceDynamic>(Base);
+					if (!MID)
+					{
+						MID = UMaterialInstanceDynamic::Create(Base, C);
+						C->SetMaterial(Index, MID);
+					}
+					MID->SetTextureParameterValue(TEXT("Image"), Tex);
+				}
+			}
+		}
+	}
+
 	bool LampTick(float)
 	{
 		if (!GEngine)
@@ -79,6 +124,11 @@ namespace
 			if (!World || !World->IsGameWorld())
 			{
 				continue;
+			}
+			if (SignLanguage != LyudText::Language())          // first tick on a map, or lyud.Language changed
+			{
+				SignLanguage = LyudText::Language();
+				ApplySigns(World);
 			}
 			TActorIterator<ALyudSky> Sky(World);
 			if (Sky)
@@ -118,6 +168,7 @@ namespace
 			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&LampTick), 0.5f);
 			FCoreUObjectDelegates::PostLoadMapWithWorld.AddLambda([](UWorld* World)
 			{
+				SignLanguage.Reset();                    // the new map's signs get their language on the next tick
 				if (!IsOn())
 				{
 					ApplyToWorld(World, false);

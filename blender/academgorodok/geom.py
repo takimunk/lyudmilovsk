@@ -237,3 +237,54 @@ def roof_z(x, y, x0, x1, y0, y1, z, pitch, over, fascia_h=0.25):
     X0, X1, Y0, Y1 = x0 - over, x1 + over, y0 - over, y1 + over
     d = min(x - X0, X1 - x, y - Y0, Y1 - y)
     return z + fascia_h + max(0.0, d) * math.tan(pitch)
+
+
+def triangulate(poly):
+    """Ear clipping of a simple 2D polygon [(x, y)] (either winding) -> triangles as index triples,
+    counter-clockwise."""
+    n = len(poly)
+    area = sum(poly[i][0] * poly[(i + 1) % n][1] - poly[(i + 1) % n][0] * poly[i][1] for i in range(n))
+    idx = list(range(n)) if area > 0 else list(range(n))[::-1]
+    tris = []
+
+    def inside(p, a, b, c):
+        def s(p1, p2, p3):
+            return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1])
+        d1, d2, d3 = s(p, a, b), s(p, b, c), s(p, c, a)
+        return not ((d1 < 0 or d2 < 0 or d3 < 0) and (d1 > 0 or d2 > 0 or d3 > 0))
+
+    guard = 0
+    while len(idx) > 3 and guard < 10000:
+        guard += 1
+        for k in range(len(idx)):
+            i0, i1, i2 = idx[k - 1], idx[k], idx[(k + 1) % len(idx)]
+            a, b, c = poly[i0], poly[i1], poly[i2]
+            if (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) <= 1e-12:
+                continue                      # reflex
+            if any(inside(poly[j], a, b, c) for j in idx if j not in (i0, i1, i2)):
+                continue
+            tris.append((i0, i1, i2))
+            idx.pop(k)
+            break
+    if len(idx) == 3:
+        tris.append(tuple(idx))
+    return tris
+
+
+def extrude_profile(m, mat, side_mat, poly, t0, t1, to3d):
+    """A flat shape poly [(u, v)] given in a plane, made solid between depths t0 < t1: faces at t0
+    (facing -t) and t1 (facing +t) and the sides. to3d(u, v, t) -> (x, y, z) must be a rotation
+    (right-handed: u x v = t)."""
+    tris = triangulate(poly)
+    for a, b, c in tris:
+        pa, pb, pc = poly[a], poly[b], poly[c]
+        m.face(mat, [to3d(*pa, t1), to3d(*pb, t1), to3d(*pc, t1)], [pa, pb, pc])
+        m.face(mat, [to3d(*pa, t0), to3d(*pc, t0), to3d(*pb, t0)], [pa, pc, pb])
+    n = len(poly)
+    area = sum(poly[i][0] * poly[(i + 1) % n][1] - poly[(i + 1) % n][0] * poly[i][1] for i in range(n))
+    order = list(range(n)) if area > 0 else list(range(n))[::-1]
+    for k in range(n):
+        p, q = poly[order[k]], poly[order[(k + 1) % n]]
+        L = math.hypot(q[0] - p[0], q[1] - p[1])
+        m.face(side_mat, [to3d(*p, t0), to3d(*q, t0), to3d(*q, t1), to3d(*p, t1)],
+               [(0, t0), (L, t0), (L, t1), (0, t1)])

@@ -44,13 +44,32 @@ def log(msg):
     unreal.log_warning("ACADEM " + msg)
 
 
+SIGNS = ("library", "reading_room", "issue_desk", "catalogue", "silence", "hours", "cloakroom", "periodicals")
+
+
 def _pictures():
+    """{material slot: image}: the paintings (furniture.PAINTINGS) and the signs (their Russian picture;
+    AcademToggle.cpp swaps in the player's language from /Game/Academgorodok/Localized/<lang>)."""
+    out = {"AC_Sign_" + n: os.path.join(REPO, "textures", "localized", "ru", "academ_sign_%s.png" % n) for n in SIGNS}
     try:
         import furniture
-        return {k: os.path.join(REPO, v) for k, v in getattr(furniture, "PAINTINGS", {}).items()}
+        out.update({k: os.path.join(REPO, v) for k, v in getattr(furniture, "PAINTINGS", {}).items()})
     except Exception as e:  # noqa: BLE001
         log("no paintings: %s" % e)
-        return {}
+    return out
+
+
+def _import_signs():
+    import academ_materials
+    loc = os.path.join(REPO, "textures", "localized")
+    n = 0
+    for lang in sorted(os.listdir(loc)):
+        for name in SIGNS:
+            f = os.path.join(loc, lang, "academ_sign_%s.png" % name)
+            if os.path.exists(f):
+                academ_materials.import_image(f, DEST + "/Localized/" + lang, "T_Sign_" + name, sub="")
+                n += 1
+    log("signs: %d pictures" % n)
 
 
 def _extra_materials():
@@ -76,6 +95,14 @@ def _extra_materials():
             out[k] = (hx, rough, 6.0 if "Opal" in k else 0.0)
     except Exception as e:  # noqa: BLE001
         log("no gastronom materials: %s" % e)
+    for mod, table in (("houseplants", "PLANT_MATERIALS"), ("library", "LIBRARY_MATERIALS")):
+        try:
+            mm = __import__(mod)
+            for k, (hx, rough, _) in getattr(mm, table).items():
+                if k != "AC_PLeafCards":                       # masked cards: academ_materials (foliage)
+                    out[k] = (hx, rough, 0.6 if "Opal" in k else 0.0)
+        except Exception as e:  # noqa: BLE001
+            log("no %s materials: %s" % (mod, e))
     return out
 
 
@@ -136,6 +163,7 @@ def import_meshes():
         count += 1
     if not mats:
         raise RuntimeError("no materials: the meshes would keep the glTF placeholders")
+    _import_signs()
     eal.delete_directory(tmp)                     # the glTF placeholder materials
     eal.save_directory(DEST)
     log("imported %d meshes" % count)

@@ -345,16 +345,16 @@ def build_picture(path, tex):
     return m
 
 
-def import_image(path_file, dest, asset):
+def import_image(path_file, dest, asset, sub="/Textures"):
     t = unreal.AssetImportTask()
     t.filename = path_file
-    t.destination_path = dest + "/Textures"
+    t.destination_path = dest + sub
     t.destination_name = asset
     t.automated = True
     t.replace_existing = True
     t.save = False
     tools.import_asset_tasks([t])
-    path = "%s/Textures/%s" % (dest, asset)
+    path = "%s%s/%s" % (dest, sub, asset)
     tex = eal.load_asset(path) if eal.does_asset_exist(path) else None
     if tex is None:
         got = list(t.get_editor_property("imported_object_paths") or [])
@@ -366,7 +366,7 @@ def import_image(path_file, dest, asset):
 
 def import_foliage(tex_dir, dest):
     out = {}
-    for name in ("foliage_hedge", "foliage_flowers"):
+    for name in ("foliage_hedge", "foliage_flowers", "foliage_houseplants"):
         t = unreal.AssetImportTask()
         t.filename = os.path.join(tex_dir, name + ".png")
         t.destination_path = dest + "/Textures"
@@ -462,7 +462,8 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None, pictures=None):
         eal.save_loaded_asset(mi, False)
         out[slot] = mi
     fol = import_foliage(tex_dir, dest)
-    for slot, name in (("AC_Foliage", "foliage_hedge"), ("AC_FlowerCards", "foliage_flowers")):
+    for slot, name in (("AC_Foliage", "foliage_hedge"), ("AC_FlowerCards", "foliage_flowers"),
+                       ("AC_PLeafCards", "foliage_houseplants")):
         mf = build_foliage("%s/M_Academ_%s" % (dest, slot), fol[name])
         out[slot] = mf
     # the flats' paintings and photographs: {slot: image file} (furniture.PAINTINGS)

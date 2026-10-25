@@ -44,6 +44,9 @@ SLOTS = {
     "AC_Concrete":   ("concrete", 0.2, 0.0, 0.5),
     "AC_Soil":       ("soil_bed", 0.0, 0.0, 0.6),
     "AC_Hedge":      (None, 0.0, 0.0, 0.0),
+    "AC_FrameGreen": (None, 0.0, 0.0, 0.0),
+    "AC_LampGlobe":  (None, 0.0, 0.0, 0.0),
+    "AC_Sign_library": (None, 0.0, 0.0, 0.0),
     "AC_Foliage":    (None, 0.0, 0.0, 0.0),      # masked cards: unreal/scripts/academ_materials.py build_foliage
     "AC_FlowerCards": (None, 0.0, 0.0, 0.0),
 }

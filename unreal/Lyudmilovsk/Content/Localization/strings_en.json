@@ -408,5 +408,14 @@
  "ui.tame.flee": "{0} takes fright and flies off",
  "ui.tame.nofeed": "Nothing to offer: bird feed is sold in the vending machine",
  "ui.tame.alert": "Alarm",
- "ui.tame.trust": "Trust"
+ "ui.tame.trust": "Trust",
+ "sign.academ.library": "LIBRARY",
+ "sign.academ.library.sub": "reading room · lending",
+ "sign.academ.library.hours": "Open 10:00 to 20:00",
+ "sign.academ.library.reading_room": "Reading room",
+ "sign.academ.library.issue_desk": "Book issue",
+ "sign.academ.library.catalogue": "Catalogue",
+ "sign.academ.library.silence": "Please keep quiet",
+ "sign.academ.library.cloakroom": "Cloakroom",
+ "sign.academ.library.periodicals": "Periodicals"
 }

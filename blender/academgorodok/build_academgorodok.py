@@ -77,6 +77,12 @@ def materials():
         pass
     if FURN is not None:
         extra += list(FURN.FURNITURE_MATERIALS.items())
+    for mod in ("houseplants", "library"):
+        try:
+            mm = __import__(mod)
+            extra += list(getattr(mm, {"houseplants": "PLANT_MATERIALS", "library": "LIBRARY_MATERIALS"}[mod]).items())
+        except Exception:  # noqa: BLE001
+            pass
     for name, (hx, rough, _) in list(common.MATERIALS.items()) + list(EXTRA_MATS.items()) + extra:
         mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
         if not mat.use_nodes or "Principled BSDF" not in mat.node_tree.nodes or not mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].is_linked:
@@ -101,7 +107,7 @@ def mesh_object(name, m, coll):
         for k, loop in enumerate(poly.loop_indices):
             uv.data[loop].uv = uvs[k]
     for mn in mats:
-        me.materials.append(bpy.data.materials[mn])
+        me.materials.append(bpy.data.materials.get(mn) or bpy.data.materials.new(mn))   # e.g. the AC_Sign_* boards
     ob = bpy.data.objects.new(name, me)
     coll.objects.link(ob)
     bm = bmesh.new()
@@ -110,7 +116,12 @@ def mesh_object(name, m, coll):
     bm.to_mesh(me)
     bm.free()
     # soft and turned furniture is smooth-shaded with its creases kept (furniture.SMOOTH_MATERIALS)
-    smooth = getattr(FURN, "SMOOTH_MATERIALS", set()) if FURN is not None else set()
+    smooth = set(getattr(FURN, "SMOOTH_MATERIALS", set()) if FURN is not None else set())
+    for mod in ("houseplants", "library"):
+        try:
+            smooth |= set(__import__(mod).SMOOTH_MATERIALS)
+        except Exception:  # noqa: BLE001
+            pass
     if smooth and any(mt.name in smooth for mt in me.materials):
         for p in me.polygons:
             p.use_smooth = me.materials[p.material_index].name in smooth
@@ -397,8 +408,8 @@ def build():
             coll.objects.link(far)
             parts[name + "_GlassFar"] = far
 
-    gate_dets, lines = plan.gates(houses)
-    gate_ob = mesh_object("Gates", plan.Mesh(), coll)
+    gate_dets, lines, gate_mesh = plan.gates(houses)
+    gate_ob = mesh_object("Gates", gate_mesh, coll)
     copies = []
     for name, kw, pos, yaw, d in gate_dets:
         t = detail_object(name, kw)
