@@ -1,0 +1,27 @@
+{
+ "id": "dusk_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/dusk_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Ambient, soft cello drone and felt piano, D minor, 60 BPM, golden-hour melancholy by the sea, slow and warm, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 14101
+ },
+ "hash": "2e0481ace9dd",
+ "fal_request_id": "01a173f4-98fc-7832-988c-b14478d3569f",
+ "seed": 14101,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1d5/P1bt6XUPF03m5UNlYMbm6_qAkKmILB.wav",
+ "created": "2026-10-25T16:46:27Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "dc9446aaf4607644eaac3f33128dd81c716e3df67a20e552aae4435347f112be",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "dusk"
+ ]
+}

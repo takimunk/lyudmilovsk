@@ -195,9 +195,12 @@ private:
 	float SaveTimer = 0.f;
 	struct FSightCache { double Time = -1.0; bool bClear = true; };
 	TMap<int32, FSightCache> Sight;
-	TMap<FName, TArray<TObjectPtr<USoundBase>>> Sounds;
+	/** Per species, its calls (raw pointers, kept alive by SoundRefs: a TMap of arrays can't be a UPROPERTY). */
+	TMap<FName, TArray<USoundBase*>> Sounds;
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
 	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> Attenuation;
 	int32 SoundsThisSecond = 0;
+	int32 CallsPlayed = 0;
 	double SoundSecond = 0.0;
 
 	bool Start();

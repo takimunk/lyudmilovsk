@@ -6,9 +6,11 @@
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "UI/LyudSettings.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SEditableTextBox.h"
+#include "Widgets/Input/SSlider.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Layout/SScrollBox.h"
@@ -69,9 +71,14 @@ static FText SlotSubtitle(const FLyudSlotInfo& Info)
 
 void SLyudGameMenu::Construct(const FArguments& InArgs)
 {
-	using namespace LyudMenuStyle;
 	Owner = InArgs._Owner;
+	BuildContent();
+}
 
+void SLyudGameMenu::BuildContent()
+{
+	using namespace LyudMenuStyle;
+	BuiltLanguage = LyudText::Language();
 	ChildSlot
 	[
 		SNew(SBorder)
@@ -104,6 +111,7 @@ void SLyudGameMenu::Construct(const FArguments& InArgs)
 						+ SWidgetSwitcher::Slot()[MakePause()]
 						+ SWidgetSwitcher::Slot()[MakeSave()]
 						+ SWidgetSwitcher::Slot()[MakeLoad()]
+						+ SWidgetSwitcher::Slot()[MakeSettings()]
 					]
 					+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 14.f, 0.f, 0.f)
 					[
@@ -184,6 +192,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeMain()
 			})
 		]
 		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.load")), [this] { Show(EScreen::Load); })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.settings")), [this] { Show(EScreen::Settings); })]
 		+ SVerticalBox::Slot().AutoHeight()
 		[
 			MakeButton(LyudText::Get(TEXT("ui.menu.quit")), [O]
@@ -203,7 +212,87 @@ TSharedRef<SWidget> SLyudGameMenu::MakePause()
 		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.resume")), [O] { if (O.IsValid()) { O->Close(); } })]
 		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.save")), [this] { Show(EScreen::Save); })]
 		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.load")), [this] { Show(EScreen::Load); })]
+		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.settings")), [this] { Show(EScreen::Settings); })]
 		+ SVerticalBox::Slot().AutoHeight()[MakeButton(LyudText::Get(TEXT("ui.menu.main_menu")), [this] { Show(EScreen::Main); })];
+}
+
+TSharedRef<SWidget> SLyudGameMenu::MakeSettings()
+{
+	using namespace LyudMenuStyle;
+	// the language: each named in itself, the current one lit
+	TSharedRef<SHorizontalBox> Langs = SNew(SHorizontalBox);
+	for (const TCHAR* Lang : { TEXT("ru"), TEXT("en"), TEXT("ja") })
+	{
+		const FString L = Lang;
+		const bool bOn = LyudText::Language() == L;
+		Langs->AddSlot().FillWidth(1.f).Padding(4.f, 0.f)
+		[
+			SNew(SButton)
+			.ButtonStyle(&Button())
+			.HAlign(HAlign_Center)
+			.OnClicked_Lambda([this, L]
+			{
+				LyudSettings::SetLanguage(L);
+				// every screen's words again, staying here
+				BuildContent();
+				Activate(EScreen::Settings);
+				return FReply::Handled();
+			})
+			[
+				SNew(STextBlock).Text(LyudText::Get(TEXT("ui.settings.lang.") + L)).Font(Font(18, bOn ? "Bold" : "Regular")).ColorAndOpacity(bOn ? Text : Dim)
+			]
+		];
+	}
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox)
+		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 0.f, 0.f, 6.f)
+		[
+			SNew(STextBlock).Text(LyudText::Get(TEXT("ui.settings.language"))).Font(Font(14)).ColorAndOpacity(Dim)
+		]
+		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 0.f, 0.f, 14.f)[Langs];
+
+	// the volumes: a slider each, applied and stored as it moves
+	TWeakObjectPtr<ULyudGameMenuSubsystem> O = Owner;
+	const TCHAR* VolumeNames[] = { TEXT("ui.settings.volume.master"), TEXT("ui.settings.volume.ambience"), TEXT("ui.settings.volume.music"), TEXT("ui.settings.volume.effects") };
+	for (int32 I = 0; I < static_cast<int32>(LyudSettings::EVolume::Count); ++I)
+	{
+		const LyudSettings::EVolume Which = static_cast<LyudSettings::EVolume>(I);
+		Box->AddSlot().AutoHeight().Padding(0.f, 3.f)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(0.42f).VAlign(VAlign_Center)
+			[
+				SNew(STextBlock).Text(LyudText::Get(VolumeNames[I])).Font(Font(16)).ColorAndOpacity(Text)
+			]
+			+ SHorizontalBox::Slot().FillWidth(0.46f).VAlign(VAlign_Center)
+			[
+				SNew(SSlider)
+				.Value_Lambda([Which] { return LyudSettings::Volume(Which); })
+				.SliderBarColor(Dim)
+				.SliderHandleColor(Text)
+				.OnValueChanged_Lambda([O, Which](float V) { LyudSettings::SetVolume(O.IsValid() ? O->GetWorld() : nullptr, Which, V); })
+			]
+			+ SHorizontalBox::Slot().FillWidth(0.12f).VAlign(VAlign_Center)
+			[
+				SNew(STextBlock).Font(Font(15)).ColorAndOpacity(Dim).Justification(ETextJustify::Right)
+				.Text_Lambda([Which] { return FText::AsPercent(LyudSettings::Volume(Which)); })
+			]
+		];
+	}
+
+	// the HUD on or off
+	Box->AddSlot().AutoHeight().Padding(0.f, 12.f, 0.f, 0.f)
+	[
+		SNew(SButton)
+		.ButtonStyle(&Button())
+		.HAlign(HAlign_Center)
+		.OnClicked_Lambda([] { LyudSettings::SetHudShown(!LyudSettings::HudShown()); return FReply::Handled(); })
+		[
+			SNew(STextBlock).Font(Font(18)).ColorAndOpacity(Text)
+			.Text_Lambda([] { return LyudText::Get(LyudSettings::HudShown() ? TEXT("ui.settings.hud_on") : TEXT("ui.settings.hud_off")); })
+		]
+	];
+	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
+	return Box;
 }
 
 TSharedRef<SWidget> SLyudGameMenu::MakeSave()
@@ -380,6 +469,10 @@ void SLyudGameMenu::Activate(EScreen NewScreen)
 void SLyudGameMenu::ShowRoot(EScreen Root, bool bInStartup)
 {
 	bStartup = bInStartup;
+	if (BuiltLanguage != LyudText::Language())
+	{
+		BuildContent();
+	}
 	bHasSaves = Saves() && Saves()->GetSlots().Num() > 0;
 	Status = FText::GetEmpty();
 	History.Reset();

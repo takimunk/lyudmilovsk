@@ -1,0 +1,23 @@
+{
+ "id": "ship_horn_far",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/far/ship_horn_far_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water",
+  "duration_seconds": 9.0
+ },
+ "hash": "0f2e92296e42",
+ "fal_request_id": "01a173f1-459a-7e83-a0c5-bc8ab0eaf520",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1bf/t8_bDTIJol6ZHa6i_T_Nx_sound_effect.mp3",
+ "created": "2026-10-25T16:42:39Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "de3d15275ba5dbaf33e3586e865f5f42c13570cb1de9430e15b9bdb391cd8e23",
+ "seconds": 5.7,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "far"
+}

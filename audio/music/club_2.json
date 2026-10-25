@@ -1,0 +1,27 @@
+{
+ "id": "club_2",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/club_2.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Dreamy chiptune-tinged ambient, soft square-wave arpeggio far in the background, warm pad, gentle electric piano, D minor, 76 BPM, cozy retro computers, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 11202
+ },
+ "hash": "c55cab59e9be",
+ "fal_request_id": "01a173f3-0afb-77f3-a999-4f4fc374e5f5",
+ "seed": 11202,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1cb/QCjpGNS_5psyfXRLyoGTx_4F7peQDt.wav",
+ "created": "2026-10-25T16:44:44Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "7ef88e674421cd0c645a2e76898089b2161ad363478a28c4bcbf300b4fd2a076",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "club"
+ ]
+}

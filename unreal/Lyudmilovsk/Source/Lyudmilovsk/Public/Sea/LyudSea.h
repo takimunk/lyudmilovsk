@@ -7,6 +7,7 @@
 #include "Templates/PimplPtr.h"
 #include "LyudSea.generated.h"
 
+class APhysicsVolume;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UMaterialParameterCollection;
@@ -48,6 +49,9 @@ struct LYUDMILOVSK_API FLyudSeaSample
  * a small float texture, so SampleSurface (buoyancy, swimmers, splashes) sees exactly the waves on
  * screen. The water depth comes from the ground (the landscape's heights, sampled once into a texture).
  *
+ * In play a water physics volume covers the sea (from LandSideX out to sea, WaterVolumeDepth under sea
+ * level up to it), so a character that falls in swims (MOVE_Swimming); IsSwimmable asks the same of a point.
+ *
  * Under the surface a post process takes over (fog of the water's colour by distance, darker with
  * depth): the start of diving. The seabed and its life are ULyudSeabedComponent.
  *
@@ -86,6 +90,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast") float OpenSeaDepthM = 25.f;
 	/** Cell of the depth map read from the ground, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast", meta = (ClampMin = "1")) float DepthCellM = 6.f;
+	/** Spawn a water physics volume over the sea in play, so characters swim in it (MOVE_Swimming). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") bool bWaterVolume = true;
+	/** How deep the water volume reaches under sea level, cm, and its fluid friction. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float WaterVolumeDepth = 3000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float FluidFriction = 0.6f;
 	/** How far the surface mesh reaches from the camera, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Detail") float OuterRadius = 3.0e6f;
 
@@ -104,6 +113,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WaveHeight() const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaWindSpeed() const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsCameraUnderwater() const { return bCameraUnder; }
+	/** Is this point in the sea's water (under the wavy surface, over the bed, on the sea side)? */
+	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsSwimmable(const FVector& Location) const;
+	/** The water physics volume over the sea in play (null outside play or with bWaterVolume off). */
+	UFUNCTION(BlueprintCallable, Category = "Sea") APhysicsVolume* GetWaterVolume() const { return WaterVolume; }
 	/** Is the ground's depth map read in yet? */
 	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsDepthReady() const { return DepthRow >= DepthH && DepthH > 0; }
 	UFUNCTION(BlueprintCallable, Category = "Sea") FString GetDebugReport() const;
@@ -135,6 +148,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> DepthTex;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SurfaceMesh;
 	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> Collection;
+	UPROPERTY(Transient) TObjectPtr<APhysicsVolume> WaterVolume;
+	void SpawnWaterVolume();
 
 	int32 AppliedQuality = -2;
 	int32 Segments = 128;

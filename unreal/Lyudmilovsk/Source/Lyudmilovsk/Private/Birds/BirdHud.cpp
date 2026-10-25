@@ -9,6 +9,9 @@
 #include "LyudText.h"
 #include "Rendering/DrawElements.h"
 #include "Styling/CoreStyle.h"
+#include "Fonts/FontMeasure.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Rendering/SlateRenderer.h"
 
 namespace
 {
@@ -40,12 +43,13 @@ void SBirdHud::Construct(const FArguments&, ABirdPawn* InPawn)
 {
 	Pawn = InPawn;
 	SetVisibility(EVisibility::HitTestInvisible);
-	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.return") })
+	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.actions"), TEXT("bird.hint.return") })
 	{
 		Hints.Add(LyudText::Get(K));
 	}
 	Returning = LyudText::Get(TEXT("bird.hud.returning"));
 	AirPods = LyudText::Get(TEXT("bird.hint.airpods"));
+	EnergyLabel = LyudText::Get(TEXT("bird.hud.energy"));
 }
 
 TSharedPtr<SBirdHud> SBirdHud::AddTo(ABirdPawn* InPawn)
@@ -123,6 +127,32 @@ int32 SBirdHud::OnPaint(const FPaintArgs&, const FGeometry& Geo, const FSlateRec
 		}
 	}
 
+	if (P->GetMode() != EBirdMode::Leaving && P->GetMode() != EBirdMode::Arriving)
+	{
+		// strength: a thin bar at the bottom, warm when the wings tire
+		const float E = P->GetEnergy();
+		const FVector2D BarSize(240.f, 6.f);
+		const FVector2D At((Size.X - BarSize.X) * 0.5f, Size.Y - 64.f);
+		const FLinearColor Col = FMath::Lerp(FLinearColor(1.f, 0.45f, 0.2f, 0.9f), FLinearColor(1.f, 1.f, 1.f, 0.75f), FMath::Clamp(E / 0.4f, 0.f, 1.f));
+		FSlateDrawElement::MakeBox(Out, Layer, Geo.ToPaintGeometry(FVector2f(BarSize), FSlateLayoutTransform(FVector2f(At))), FCoreStyle::Get().GetBrush("WhiteBrush"), ESlateDrawEffect::None, FLinearColor(0, 0, 0, 0.35f));
+		FSlateDrawElement::MakeBox(Out, Layer + 1, Geo.ToPaintGeometry(FVector2f(BarSize.X * E, BarSize.Y), FSlateLayoutTransform(FVector2f(At))), FCoreStyle::Get().GetBrush("WhiteBrush"), ESlateDrawEffect::None, Col);
+		Text(Out, Layer + 2, Geo, At + FVector2D(-70.f, -10.f), EnergyLabel, Small, FLinearColor(1, 1, 1, 0.7f));
+	}
+	// a note in the middle: what just happened (a fight, the sea, a cat...)
+	const FString& Note = P->GetNote();
+	if (!Note.IsEmpty() && P->GetNoteTime() > 0.f)
+	{
+		const float A = FMath::Clamp(P->GetNoteTime() / 0.6f, 0.f, 1.f);
+		const FText T = LyudText::Get(Note);
+		const FVector2D TextSize = FSlateApplication::Get().GetRenderer()->GetFontMeasureService()->Measure(T, Body);
+		Text(Out, Layer + 2, Geo, FVector2D((Size.X - TextSize.X) * 0.5f, Size.Y * 0.28f), T, Body, FLinearColor(1.f, 0.95f, 0.8f, A));
+	}
+	if (P->IsInDanger())
+	{
+		const FText T = LyudText::Get(TEXT("bird.note.danger"));
+		const FVector2D TextSize = FSlateApplication::Get().GetRenderer()->GetFontMeasureService()->Measure(T, Body);
+		Text(Out, Layer + 2, Geo, FVector2D((Size.X - TextSize.X) * 0.5f, Size.Y * 0.2f), T, Body, FLinearColor(1.f, 0.45f, 0.35f, 0.95f));
+	}
 	if (CVarDebug.GetValueOnGameThread())
 	{
 		Text(Out, Layer, Geo, FVector2D(40.f, 40.f), FText::FromString(P->DebugLine()), Small, FLinearColor(0.8f, 1.f, 0.8f, 1.f));

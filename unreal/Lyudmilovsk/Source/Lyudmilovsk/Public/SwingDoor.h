@@ -1,19 +1,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "LyudSave.h"
+#include "Doors/LyudDoor.h"
 #include "SwingDoor.generated.h"
 
 class UBoxComponent;
 
 /**
- * Hinged door (one or more leaves) that swings smoothly between open and closed. Starts open; the
- * player toggles it with E while standing in the Zone. Each leaf is a separate actor whose origin is
- * on its hinge; it may be placed in the level either closed or already open (bLeavesPlacedOpen).
+ * A door whose leaves are separate actors placed in the level, each with its origin on its hinge (the club's blast
+ * door, the hall's partition): everything else (E, NPCs, saving, not shutting on anyone) is ALyudDoorBase's. The Zone
+ * is the doorway: the player uses the door with E from inside it. The leaves may be placed closed or already open
+ * (bLeavesPlacedOpen). New doors should be ALyudDoor; this one is for unique doors modelled with their building.
  */
 UCLASS()
-class LYUDMILOVSK_API ASwingDoor : public AActor, public ILyudSaveable
+class LYUDMILOVSK_API ASwingDoor : public ALyudDoorBase
 {
 	GENERATED_BODY()
 
@@ -35,28 +35,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bLeavesPlacedOpen = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-	bool bStartOpen = true;
+	virtual FBox GetDoorwayLocalBox() const override;
+	/** Where the leaves move between closed and open, measured from them at BeginPlay. */
+	virtual FBox GetSweepLocalBox() const override { return SweepBox.IsValid ? SweepBox : GetDoorwayLocalBox(); }
+	virtual bool PlayerCanUse(const APawn* Pawn, const FVector& Eye, const FVector& Dir, float& OutDistance) const override;
 
-	/** Swing speed, degrees per second. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-	float SwingSpeed = 160.f;
-
-	UFUNCTION(BlueprintCallable, Category = "Door")
-	void Toggle();
-
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
-
-	virtual void OnGameLoaded_Implementation() override;
+protected:
+	virtual void PrepareLeaves() override;
+	virtual void ApplyOpenness(float InOpenness) override;
+	virtual void GetLeafPrimitives(TArray<UPrimitiveComponent*>& Out) const override;
 
 private:
-	void OnInteract();
-
-	void Apply();
-
 	TArray<FRotator> ClosedRotations;
-	float Openness = 1.f;   // 0 closed .. 1 open
-	UPROPERTY(SaveGame)
-	bool bOpen = true;
+	FBox SweepBox = FBox(ForceInit);
 };

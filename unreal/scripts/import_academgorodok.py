@@ -277,6 +277,18 @@ def place(face_y, report=False):
             c.set_editor_property("attenuation_radius", 450.0)
             c.set_editor_property("cast_shadows", kind != "stair")     # no light through the partitions
         a.set_folder_path("Outside/Academgorodok")
+    # real doors in the doorways the builder lists (ALyudDoor fitted to each hole; docs/doors.md): flat entrances shut,
+    # room doors open, as the builder sets "open"
+    if layout.get("doors"):
+        sys.path.insert(0, HERE)
+        import place_doors
+
+        def to_ue(lx, ly, lz):
+            x, y = W.academ_to_map(lx, ly)
+            return W.to_unreal(x, y, z0 + lz, face_y)
+        place_doors.spawn_doors(layout["doors"], to_ue, tags=[TAG], folder="Outside/Academgorodok/Doors",
+                                label_prefix="Academ_Door_", leaf_material=unreal.load_asset(DEST + "/Materials/MI_AC_ILeaf"),
+                                log=log)
     log("placed %d parts, %d trees, %d plants at map %s, yaw %.1f" % (n, len(layout.get("trees", [])),
                                                                   len(layout.get("plants", [])), W.academ()[:2], yaw))
 

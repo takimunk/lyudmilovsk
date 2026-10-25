@@ -1,6 +1,7 @@
 // Headless checks of the player bird's flight model (Private/Birds/BirdFlightModel.*), no engine.
 // Built and run by unreal/scripts/test_bird_flight.sh; prints one line per check and exits 1 on a failure.
 #include "BirdFlightModel.h"
+#include "BirdBio.h"
 
 #include <cstdio>
 #include <cstring>
@@ -19,10 +20,13 @@ namespace
 		{ "Goldfinch", EStyle::Bounding, 16, 23, 18, 9 },
 		{ "Starling", EStyle::Flapping, 75, 38, 12, 17 },
 		{ "SongThrush", EStyle::Undulating, 70, 34, 10, 13 },
-		{ "RockDove", EStyle::Clapping, 330, 65, 7, 17 },
+		{ "FeralPigeon", EStyle::Clapping, 330, 65, 7, 17 },
 		{ "Rook", EStyle::Flapping, 450, 90, 3.4, 12 },
 		{ "HerringGull", EStyle::Soaring, 1000, 140, 3, 12 },
-		{ "CommonSwift", EStyle::Flicker, 40, 42, 8, 20 },
+		{ "CommonSwift", EStyle::Flicker, 40, 42, 8, 15 },
+		{ "Peregrine", EStyle::Flapping, 900, 100, 4.5, 18 },
+		{ "BlueTit", EStyle::Bounding, 11, 19, 27, 8 },
+		{ "MuteSwan", EStyle::Flapping, 10000, 220, 3.0, 17 },
 	};
 	int Failures = 0;
 	void Check(bool Ok, const std::string& What)
@@ -57,7 +61,7 @@ int main()
 {
 	for (const FSpecies& Sp : Species)
 	{
-		const FParams P = MakeParams(Sp.Style, Sp.MassG, Sp.SpanCm, Sp.Hz, Sp.Cruise);
+		const FParams P = MakeSpeciesParams(Sp.Id, Sp.Style, Sp.MassG, Sp.SpanCm, Sp.Hz, Sp.Cruise);
 		std::printf("-- %s: best glide %.1f m/s, stall %.1f, glide %.0f:1, %d beats/click, click %.2f m/s %.2f up\n",
 			Sp.Id, P.BestGlide, P.Stall, P.GlideRatio, P.BeatsPerClick, P.ClickThrust, P.ClickLift);
 
@@ -154,6 +158,20 @@ int main()
 				FInput In; In.Flare = 1; In.AimPitch = 0.1; Step(P, In, FAir(), S, Dt);
 			}
 			Check(T < 2.0, F("flare: %.1f -> %.1f m/s in %.2f s, %+.1f m", P.Cruise, BirdFlight::Speed(S), T, S.Pos.Z - 100));
+		}
+		// 10. stamina: Space held level; how long until the bird is spent, and it still comes down flying
+		{
+			FState S = Flying(P, P.Cruise);
+			double Clock = 0, Tuck = 0, Spent = -1;
+			for (double T = 0; T < 600 && Spent < 0; T += Dt)
+			{
+				FInput In; const bool C = AutoFlap(P, Dt, Clock, Tuck); In.ClickL = In.ClickR = C; In.TuckL = In.TuckR = Tuck;
+				In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05));
+				Step(P, In, FAir(), S, Dt);
+				if (S.Energy <= 0.01) Spent = T;
+			}
+			const double Want = BirdBio::Get(Sp.Id).StaminaS;
+			Check(Spent < 0 ? Want > 500 : std::fabs(Spent - Want) < Want * 0.2, F("stamina: spent after %s s (biology %.0f s)", Spent < 0 ? ">600" : F("%.0f", Spent).c_str(), Want));
 		}
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);

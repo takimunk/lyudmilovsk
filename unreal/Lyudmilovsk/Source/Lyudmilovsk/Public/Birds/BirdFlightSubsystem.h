@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraTypes.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Birds/BirdPawn.h"
 #include "BirdFlightSubsystem.generated.h"
 
 class ABirdPawn;
@@ -77,6 +78,14 @@ public:
 
 private:
 	void FinishReturn();
+	void HandleFate(EBirdFate Fate, const FVector& At);
+	void HandleCall();
+	void TickEncounter(float Dt);
+	void TickHero(float Dt);
+	/** The befriended bird comes back to the hero's hand (R held on dry land). */
+	bool RecallBird();
+	bool IsHeroInWater() const;
+	void SetHeroHint(const FText& Text);
 	void OnBeforeSave(ULyudSaveGame* Save);
 	void OnAfterLoad(ULyudSaveGame* Save);
 	void SetHeroHeadShown(bool bShown);
@@ -89,6 +98,27 @@ private:
 	int32 ClaimedId = -1;
 	FRotator HeroControl = FRotator::ZeroRotator;
 	FDelegateHandle SaveHandle, LoadHandle;
+
+	// the befriended bird, for calling it back once you are the hero again
+	FName LastSpecies;
+	int32 LastClaimId = -1;
+	bool bOurFemale = false;
+	float RecallHeld = 0.f, HintShowT = 0.f;
+	TSharedPtr<class SWidget> HeroHint;
+	TSharedPtr<class STextBlock> HeroHintText;
+
+	// another bird answering the player's call
+	enum class EAnswer : uint8 { None, Look, Court, Fight, CallBack };
+	struct FEncounter
+	{
+		int32 Id = -1;
+		TWeakObjectPtr<AActor> Actor;
+		EAnswer Kind = EAnswer::None;
+		float T = 0.f, NextPeck = 0.f;
+		int32 Pecks = 0;
+		FName Species;
+	};
+	FEncounter Meet;
 
 	// a script playing
 	TSharedPtr<FScript> Script;

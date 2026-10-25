@@ -1,0 +1,27 @@
+{
+ "id": "day_2",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/day_2.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Ambient felt piano and soft strings, sparse nostalgic melody, D minor, 68 BPM, overcast autumn day in a quiet Baltic town, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 13102
+ },
+ "hash": "a4081658e8b9",
+ "fal_request_id": "01a173f4-45cf-7dd0-ae98-420603862b5d",
+ "seed": 13102,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1d3/tDyV-oftpZjc3Hm9bpaTz_Qxlchdab.wav",
+ "created": "2026-10-25T16:46:00Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "34394e96c20ccbbc074b105e85a6aaad3522b852f39e8752d9dd2b8489ba1595",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "day"
+ ]
+}

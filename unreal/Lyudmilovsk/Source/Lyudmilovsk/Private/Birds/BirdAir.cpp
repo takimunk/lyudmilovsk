@@ -5,10 +5,13 @@
 #include "HAL/IConsoleManager.h"
 #include "LandscapeProxy.h"
 #include "Plants/GameCalendar.h"
+#include "Weather/LyudWind.h"
+#include "GameFramework/PhysicsVolume.h"
+#include "Sea/LyudSea.h"
 
 namespace
 {
-	TAutoConsoleVariable<float> CVarWindSpeed(TEXT("lyud.Bird.WindSpeed"), 3.5f, TEXT("Sea wind for the player bird, m/s."));
+	TAutoConsoleVariable<float> CVarWindSpeed(TEXT("lyud.Bird.WindSpeed"), -1.f, TEXT("Wind for the player bird, m/s; below 0 the world's (ULyudWindSubsystem)."));
 	TAutoConsoleVariable<float> CVarWindFrom(TEXT("lyud.Bird.WindFrom"), 247.5f, TEXT("Compass bearing the wind blows from, degrees (247.5 = west-south-west)."));
 	TAutoConsoleVariable<float> CVarThermals(TEXT("lyud.Bird.Thermals"), 1.f, TEXT("Thermal strength scale for the player bird (0 = none)."));
 
@@ -41,15 +44,26 @@ void FBirdAir::Init(UWorld* InWorld)
 
 float FBirdAir::GroundZ(const FVector2D& XY) const
 {
-	float Z = SeaZ;
+	return FMath::Max(SeaZ, SolidZ(XY));
+}
+
+float FBirdAir::SolidZ(const FVector2D& XY) const
+{
+	float Z = SeaZ - 2000.f;
 	if (UWorld* W = World.Get())
 	{
 		FHitResult Hit;
 		FCollisionObjectQueryParams Objects(ECC_WorldStatic);
 		FCollisionQueryParams Params(SCENE_QUERY_STAT(BirdAirGround), false);
+		// the sea's surface and its water volume are not ground
+		if (ALyudSea* Sea = ALyudSea::Get(W))
+		{
+			Params.AddIgnoredActor(Sea);
+			if (AActor* Vol = Sea->GetWaterVolume()) Params.AddIgnoredActor(Vol);
+		}
 		if (W->LineTraceSingleByObjectType(Hit, FVector(XY, 60000.f), FVector(XY, SeaZ - 2000.f), Objects, Params))
 		{
-			Z = FMath::Max(Z, (float)Hit.ImpactPoint.Z);
+			Z = (float)Hit.ImpactPoint.Z;
 		}
 	}
 	return Z;
@@ -59,11 +73,24 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 {
 	Clock += Dt;
 	FSample S;
-	const float From = FMath::DegreesToRadians(CVarWindFrom.GetValueOnGameThread() + 180.f);
-	// compass to world: north = +Y, east = -X (ALyudSky)
-	const FVector Dir(-FMath::Sin(From), FMath::Cos(From), 0.f);
-	const float Gust = 1.f + 0.22f * FMath::Sin(Clock * 0.37) + 0.12f * FMath::Sin(Clock * 1.13 + 1.7);
-	const float Speed = FMath::Max(0.f, CVarWindSpeed.GetValueOnGameThread()) * Gust;
+	// the world's wind (ULyudWindSubsystem) where there is one; else this one's own cvars
+	FVector Dir;
+	float Speed;
+	const ULyudWindSubsystem* World_Wind = World.IsValid() ? ULyudWindSubsystem::Get(World.Get()) : nullptr;
+	if (World_Wind && CVarWindSpeed.GetValueOnGameThread() < 0.f)
+	{
+		const FLyudWindSample W = World_Wind->GetWindAt(PosCm, FMath::Max(10.f, (PosCm.Z - CacheGround) / 100.f), CacheGround <= SeaZ + 1.f);
+		Speed = W.Speed;
+		Dir = W.Speed > 0.01f ? W.Velocity / W.Speed : FVector(-1, 0, 0);
+	}
+	else
+	{
+		const float From = FMath::DegreesToRadians(CVarWindFrom.GetValueOnGameThread() + 180.f);
+		// compass to world: north = +Y, east = -X (ALyudSky)
+		Dir = FVector(-FMath::Sin(From), FMath::Cos(From), 0.f);
+		const float Gust = 1.f + 0.22f * FMath::Sin(Clock * 0.37) + 0.12f * FMath::Sin(Clock * 1.13 + 1.7);
+		Speed = (CVarWindSpeed.GetValueOnGameThread() < 0.f ? 3.5f : CVarWindSpeed.GetValueOnGameThread()) * Gust;
+	}
 	// over the ground the wind drops off (a bird near the grass is in calm air)
 	CacheAge += Dt;
 	if (CacheAge > 0.15f || FVector::Dist2D(CachePos, PosCm) > 600.f)

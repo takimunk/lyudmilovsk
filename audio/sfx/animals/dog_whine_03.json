@@ -1,0 +1,23 @@
+{
+ "id": "dog_whine",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_whine_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A friendly dog whining and whimpering softly, begging for food, close, no other sounds",
+  "duration_seconds": 2.5
+ },
+ "hash": "ef98d3f9baf4",
+ "fal_request_id": "01a173f0-7c5b-7572-aacf-992a78042725",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1ba/lfRgUVXRyaPA1ETDZ0Zsq_sound_effect.mp3",
+ "created": "2026-10-25T16:41:46Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "0d1d79d9985f6af053da9e65fc9fcdba2716409b3d2e358f546880988a9b6258",
+ "seconds": 2.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

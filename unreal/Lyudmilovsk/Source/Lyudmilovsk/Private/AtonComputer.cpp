@@ -1,4 +1,5 @@
 #include "AtonComputer.h"
+#include "UI/LyudQuests.h"
 
 #include "AtonOS/AtonApps.h"
 #include "AtonOS/SAtonDesktop.h"
@@ -75,6 +76,7 @@ void AAtonComputer::BeginPlay()
 			{
 				APlayerController* PC = Me->ActivePC.Get();
 				Me->Deactivate();
+				ULyudQuests::Notify(Me, TEXT("leave_computer"));
 				Me->OnLeave.Broadcast(PC);
 			}
 		});

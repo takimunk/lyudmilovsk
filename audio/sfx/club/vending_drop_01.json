@@ -1,0 +1,23 @@
+{
+ "id": "vending_drop",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/club/vending_drop_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud",
+  "duration_seconds": 2.5
+ },
+ "hash": "0504d263865f",
+ "fal_request_id": "01a173f2-be67-7f81-a8d3-bd059b629add",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c9/jDd83EX8Yp10nro61AKRb_sound_effect.mp3",
+ "created": "2026-10-25T16:44:14Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "27615d34d4b89c9a181cc25793bfafd36c5b138be3719ee82a31c730c07f3956",
+ "seconds": 2.25,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club"
+}

@@ -42,7 +42,11 @@ void ABirdActor::BeginPlay()
 bool ABirdActor::SetSpecies(FName Id)
 {
 	const FBirdSpecies* S = UBirdSpeciesLibrary::Find(Id);
-	USkeletalMesh* Mesh = UBirdSpeciesLibrary::LoadSkeletalMesh(Id);
+	USkeletalMesh* Mesh = bHeroBody ? UBirdSpeciesLibrary::LoadHeroMesh(Id) : nullptr;
+	if (!Mesh)
+	{
+		Mesh = UBirdSpeciesLibrary::LoadSkeletalMesh(Id);
+	}
 	if (!S || !Mesh)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bird: no species or mesh for %s"), *Id.ToString());

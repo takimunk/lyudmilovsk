@@ -1,5 +1,6 @@
 #include "Sea/LyudSea.h"
 
+#include "Components/BrushComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -10,6 +11,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Camera/PlayerCameraManager.h"
+#include "GameFramework/PhysicsVolume.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/KismetMaterialLibrary.h"
@@ -17,6 +19,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "MeshDescription.h"
+#include "PhysicsEngine/BodySetup.h"
 #include "Sea/LyudSeabed.h"
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
@@ -523,6 +526,53 @@ void ALyudSea::BeginPlay()
 	}
 	ApplyQuality(CVarSeaQuality.GetValueOnGameThread());
 	Collection = LoadObject<UMaterialParameterCollection>(nullptr, CollectionPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (bWaterVolume)
+	{
+		SpawnWaterVolume();
+	}
+}
+
+void ALyudSea::SpawnWaterVolume()
+{
+	UWorld* World = GetWorld();
+	if (!World || WaterVolume)
+	{
+		return;
+	}
+	// a box of water from the land side out to the edge of the sea, sea level down to WaterVolumeDepth;
+	// the volume's brush is a simple box body built here (no editor brush in a game)
+	const double East = FMath::Max<double>(LandSideX, -OuterRadius), West = OuterRadius;
+	const FVector Size(West - East, OuterRadius * 2.0, WaterVolumeDepth);
+	const FVector Center((East + West) * 0.5, GetActorLocation().Y, GetActorLocation().Z - WaterVolumeDepth * 0.5);
+	FActorSpawnParameters P;
+	P.Name = TEXT("LyudSeaWater");
+	APhysicsVolume* V = World->SpawnActor<APhysicsVolume>(Center, FRotator::ZeroRotator, P);
+	if (!V)
+	{
+		return;
+	}
+	V->bWaterVolume = true;
+	V->FluidFriction = FluidFriction;
+	V->Priority = 10;
+	UBrushComponent* B = V->GetBrushComponent();
+	UBodySetup* Body = NewObject<UBodySetup>(B, TEXT("SeaWaterBody"), RF_Transient);
+	Body->CollisionTraceFlag = CTF_UseSimpleAsComplex;
+	Body->AggGeom.BoxElems.Add(FKBoxElem(Size.X, Size.Y, Size.Z));
+	Body->CreatePhysicsMeshes();
+	B->BrushBodySetup = Body;
+	B->SetMobility(EComponentMobility::Movable);
+	B->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	B->SetGenerateOverlapEvents(true);
+	B->RecreatePhysicsState();
+	B->UpdateBounds();
+	WaterVolume = V;
+	UE_LOG(LogTemp, Log, TEXT("LyudSea: water volume %s, %.0f x %.0f x %.0f m"), *Center.ToString(), Size.X * 0.01, Size.Y * 0.01, Size.Z * 0.01);
+}
+
+bool ALyudSea::IsSwimmable(const FVector& Location) const
+{
+	const FLyudSeaSample S = SampleSurface(Location);
+	return S.bIsSea && S.Immersion > 0.f && Location.Z > SeaLevel() - S.Depth;
 }
 
 void ALyudSea::EndPlay(const EEndPlayReason::Type Reason)
@@ -530,6 +580,11 @@ void ALyudSea::EndPlay(const EEndPlayReason::Type Reason)
 	if (GSea.Get() == this)
 	{
 		GSea.Reset();
+	}
+	if (WaterVolume)
+	{
+		WaterVolume->Destroy();
+		WaterVolume = nullptr;
 	}
 	Super::EndPlay(Reason);
 }

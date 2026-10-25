@@ -52,11 +52,15 @@ namespace BirdFlight
 		/** Seconds for the body to catch up with the gaze (the head-to-body lag). */
 		double Follow = 0.25;
 		bool Hops = true;             // on the ground: hops (sparrow) or walks (pigeon)
+		/** Seconds of steady flapping from rested to spent (BirdBio); gliding and soaring rest the wings. */
+		double Stamina = 150.0;
 		double Gravity = 9.81;
 	};
 
 	/** Flight parameters from the species table's numbers. */
 	FParams MakeParams(EStyle Style, double MassG, double SpanCm, double BeatHz, double CruiseMs);
+	/** The same, then the species' biology (BirdBio: stamina, dive speed, agility, cruise) on top. */
+	FParams MakeSpeciesParams(const char* Id, EStyle Style, double MassG, double SpanCm, double BeatHz, double CruiseMs);
 
 	struct FInput
 	{
@@ -89,6 +93,8 @@ namespace BirdFlight
 		/** Wing stroke phase 0..1 per wing (0..0.5 down, 0.5..1 up); for the animation. */
 		double PhaseL = 0, PhaseR = 0;
 		double YawKick = 0;        // rad of oar turn still to apply
+		/** 1 rested .. 0 spent: a spent bird's beats barely lift it, it must glide down and rest. */
+		double Energy = 1;
 	};
 
 	void Step(const FParams& P, const FInput& In, const FAir& Air, FState& S, double Dt);

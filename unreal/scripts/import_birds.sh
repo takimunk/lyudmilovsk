@@ -11,9 +11,13 @@ run() {
         | grep -E "BIRDS|Error:|Traceback|  File|Exception" | grep -v LogInit
 }
 for s in "$@"; do
-    if [ "$s" = masters ]; then run masters; else run textures "$s"; run import "$s"; fi
+    case "$s" in
+        masters) run masters ;;
+        hero:*) run herotextures "${s#hero:}"; run hero "${s#hero:}" ;;   # hero:<Id>: the player's detailed body
+        *) run textures "$s"; run import "$s" ;;
+    esac
 done
 git -C "$ROOT" checkout -q -- unreal/Lyudmilovsk/Lyudmilovsk.uproject 2>/dev/null || true
 # every species' gloss hue from blender/birds/species_art.py
-[ "$#" -gt 0 ] && run hues "$(echo "$@" | sed 's/masters//')"
+[ "$#" -gt 0 ] && run hues "$(echo "$@" | sed 's/masters//; s/hero:[A-Za-z]*//g')"
 git -C "$ROOT" checkout -q -- unreal/Lyudmilovsk/Lyudmilovsk.uproject 2>/dev/null || true

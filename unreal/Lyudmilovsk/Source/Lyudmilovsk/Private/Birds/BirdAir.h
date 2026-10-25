@@ -27,6 +27,8 @@ public:
 
 	/** The highest static surface under (X, Y), or the sea, cm. */
 	float GroundZ(const FVector2D& XY) const;
+	/** The highest static surface under (X, Y) even below the sea (the seabed), cm. */
+	float SolidZ(const FVector2D& XY) const;
 	/** The playable box (the landscape's extent), cm. */
 	const FBox& Bounds() const { return WorldBounds; }
 

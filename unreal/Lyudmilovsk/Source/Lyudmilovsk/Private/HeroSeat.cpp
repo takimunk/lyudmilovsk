@@ -1,4 +1,6 @@
 #include "HeroSeat.h"
+#include "LyudInventory.h"
+#include "LyudText.h"
 
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
@@ -84,9 +86,16 @@ void AHeroSeat::Tick(float DeltaSeconds)
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 	bInRange = Pawn && Trigger->Bounds.GetBox().IsInside(Pawn->GetActorLocation());
-	if (bInRange && !bSitting && GEngine)
+	// the prompt line the other interactables use (it goes under the game screen and the menu)
+	const bool bPrompt = bInRange && !bSitting;
+	if (bPrompt || bPromptShown)
 	{
-		GEngine->AddOnScreenDebugMessage(reinterpret_cast<uint64>(this), 0.f, FColor::White, Prompt, true, FVector2D(2.f, 2.f));
+		// set every frame while up, so a language switch shows at once
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+		{
+			UI->SetPrompt(this, bPrompt ? LyudText::Get(PromptKey) : FText::GetEmpty());
+			bPromptShown = bPrompt;
+		}
 	}
 }
 

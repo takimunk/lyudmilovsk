@@ -400,11 +400,85 @@ def import_pose(path, dest, sid, pose, mis):
     return 1
 
 
+def do_hero_textures(sid):
+    """The hero body's own atlas (T_<Id>_Hero_*), next to the species' assets (own process, like do_textures)."""
+    src_dir = os.path.join(EXPORT, sid)
+    dest = "%s/%s" % (BIRDS, sid)
+    for kind, suffix in TEX:
+        f = os.path.join(src_dir, "T_%s_Hero_%s.png" % (sid, suffix))
+        if os.path.exists(f):
+            import_texture(f, dest, "T_%s_Hero_%s" % (sid, suffix), "albedo" if kind in VARIANTS else kind)
+    eal.save_directory(dest)
+
+
+def do_hero(sid):
+    """SK_<Id>_Hero: the player's body, bound to the species' own SKEL_<Id> (same clips), with MI_<Id>_<Kind>_Hero[_<Variant>]."""
+    src_dir = os.path.join(EXPORT, sid)
+    dest = "%s/%s" % (BIRDS, sid)
+    base = unreal.load_asset("%s/SK_%s" % (dest, sid))
+    if base is None:
+        raise RuntimeError("import %s first" % sid)
+    path = dest + "/_pipe/IP_BirdHero"
+    if eal.does_asset_exist(path):
+        eal.delete_asset(path)
+    pipe = tools.duplicate_asset("IP_BirdHero", dest + "/_pipe", unreal.load_asset("/Interchange/Pipelines/DefaultGLTFAssetsPipeline"))
+    pipe.get_editor_property("common_skeletal_meshes_and_animations_properties").set_editor_property("skeleton", base.skeleton)
+    eal.save_loaded_asset(pipe)
+    tmp = dest + "/_hero"
+    src = unreal.InterchangeManager.create_source_data(os.path.join(src_dir, sid + "_Hero.glb"))
+    params = unreal.ImportAssetParameters()
+    params.is_automated = True
+    params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
+    params.override_pipelines.append(unreal.SoftObjectPath(pipe.get_path_name()))
+    mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
+    mgr.import_asset(tmp, src, params)
+    mgr.wait_until_all_tasks_done(True)
+    sk = next((eal.load_asset(p) for p in eal.list_assets(tmp, True) if isinstance(eal.load_asset(p), unreal.SkeletalMesh)), None)
+    if sk is None:
+        raise RuntimeError("no skeletal mesh in %s_Hero.glb" % sid)
+    tex = {kind: unreal.load_asset("%s/T_%s_Hero_%s" % (dest, sid, suffix)) for kind, suffix in TEX
+           if eal.does_asset_exist("%s/T_%s_Hero_%s" % (dest, sid, suffix))}
+    hue = json.load(open(os.path.join(src_dir, "%s_rig.json" % sid))).get("gloss_hue", 0.0)
+    masters = {"Plumage": unreal.load_asset(MATS + "/M_BirdPlumage"), "Bare": unreal.load_asset(MATS + "/M_BirdBare"),
+               "Eye": unreal.load_asset(MATS + "/M_BirdEye")}
+    mis = {k: material_instance("MI_%s_%s_Hero" % (sid, k), dest, v, tex, hue) for k, v in masters.items()}
+    for var in VARIANTS:
+        if tex.get(var):
+            vt = dict(tex, albedo=tex[var])
+            for k, v in masters.items():
+                material_instance("MI_%s_%s_Hero_%s" % (sid, k, var), dest, v, vt, hue)
+    mats = sk.get_editor_property("materials")
+    for i in range(len(mats)):
+        sm = mats[i]
+        sm.material_interface = mis[next((k for k in mis if k in str(sm.material_slot_name)), "Plumage")]
+        mats[i] = sm
+    sk.set_editor_property("materials", mats)
+    sk.set_editor_property("physics_asset", base.get_editor_property("physics_asset"))
+    if eal.does_asset_exist("%s/SK_%s_Hero" % (dest, sid)):
+        eal.delete_asset("%s/SK_%s_Hero" % (dest, sid))
+    tools.rename_assets([unreal.AssetRenameData(sk, dest, "SK_%s_Hero" % sid)])
+    eal.save_asset("%s/SK_%s_Hero" % (dest, sid), only_if_is_dirty=False)
+    for p in eal.list_assets(tmp, True):
+        eal.delete_asset(p)
+    for d in (tmp, dest + "/_pipe"):
+        if eal.does_directory_exist(d):
+            eal.delete_directory(d)
+    eal.save_directory(dest)
+    b = unreal.load_asset("%s/SK_%s_Hero" % (dest, sid)).get_bounds().box_extent
+    log("%s hero: bounds %.1f x %.1f x %.1f cm" % (sid, b.x * 2, b.y * 2, b.z * 2))
+
+
 step = (sys.argv[1:] or ["masters"])
 if step[0] == "masters":
     do_masters()
 elif step[0] == "hues":
     do_hues(step[1:])
+elif step[0] == "herotextures":
+    for sid in step[1:]:
+        do_hero_textures(sid)
+elif step[0] == "hero":
+    for sid in step[1:]:
+        do_hero(sid)
 elif step[0] == "textures":
     for sid in step[1:]:
         do_textures(sid)

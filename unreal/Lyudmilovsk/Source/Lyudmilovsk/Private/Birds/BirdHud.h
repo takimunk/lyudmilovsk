@@ -31,5 +31,5 @@ protected:
 private:
 	TWeakObjectPtr<ABirdPawn> Pawn;
 	TArray<FText> Hints;
-	FText Returning, AirPods;
+	FText Returning, AirPods, EnergyLabel;
 };

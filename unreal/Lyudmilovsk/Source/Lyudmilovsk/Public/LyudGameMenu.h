@@ -25,6 +25,8 @@ public:
 	/** Opens the main menu (bMain) or the pause menu. */
 	void Open(bool bMain);
 	void Close();
+	/** The pause menu's Settings page (headless checks: lyud.Menu settings). */
+	void OpenSettings();
 	bool IsOpen() const { return bOpen; }
 
 	/** A key reached the game before anything else; true if the menu took it. */

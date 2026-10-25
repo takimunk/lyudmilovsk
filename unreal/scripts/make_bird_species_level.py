@@ -111,9 +111,24 @@ for sid in ids:
             cam.set_actor_label("Dist_%s_%06.1fm" % (sid, dm))
             cam.camera_component.set_editor_property("field_of_view", 50.0)
     x += max(span, 60) * 1.6
+# the player's detailed bodies, close (the palm range), next to the normal one
+hx = 0.0
+for sid in ids:
+    if not eal.does_asset_exist("/Game/Birds/%s/SK_%s_Hero" % (sid, sid)):
+        continue
+    L = TABLE[sid]["lengthCm"]
+    a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(hx, 3000, 0), unreal.Rotator(0, 0, 0))
+    a.set_actor_label("Hero_" + sid)
+    a.set_editor_property("species", sid)
+    a.set_editor_property("hero_body", True)
+    cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(hx + L * 0.55, 3000 - L * 0.75, L * 0.5), unreal.Rotator(0, -12, 125))
+    cam.set_actor_label("HeroClose_" + sid)
+    cam.camera_component.set_editor_property("field_of_view", 40.0)
+    hx += max(TABLE[sid]["wingspanCm"], 60) * 1.6
+
 # a lineup at true scale, one camera on all of it (each species' own cameras frame it to its size)
 LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Jackdaw", "Rook", "HoodedCrow",
-          "HerringGull", "Cormorant"]
+          "HerringGull", "Cormorant", "MuteSwan"]
 lx = 0.0
 for sid in [i for i in LINEUP if i in ids]:
     L = TABLE[sid]["lengthCm"]

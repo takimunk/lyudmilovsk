@@ -1,0 +1,25 @@
+{
+ "id": "cat_purr",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/cat_purr_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A contented cat purring steadily, very close, seamless loop, no other sounds",
+  "duration_seconds": 8.0,
+  "loop": true
+ },
+ "hash": "91f88f5350ca",
+ "fal_request_id": "01a173f0-d694-7d22-8117-bd7ee2db9119",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1bc/o3xl_9Otqmhszt7_SNSyW_sound_effect.mp3",
+ "created": "2026-10-25T16:42:11Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "37e286007fd6187d998066e55f93c24edfc532b2fe1439dbf205e2033a581d80",
+ "seconds": 7.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals",
+ "loop": true
+}

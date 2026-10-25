@@ -38,6 +38,8 @@ STEPS = [
     ("open_storm", at(1500, 0, SEA_Z + 400), -10, 10, 0.0, 14, []),
     ("open_storm_foam", at(1500, 0, SEA_Z + 400), -10, 10, 0.0, 14, ["lyud.Sea.DebugFoam 5"]),
     ("beach_foam", at(118, 5, SEA_Z + 180), -4, 0, 0.0, -1, ["lyud.Sea.DebugFoam 5"]),
+    ("swim_sea", at(190, 0, SEA_Z - 100), -10, 0, 0.0, -1, []),
+    ("swim_beach", at(118, 5, SEA_Z + 250), -10, 0, 0.0, -1, []),
     ("phone_quality", at(190, 0, SEA_Z + 300), -12, 10, 0.0, -1, ["lyud.Sea.Quality 0"]),
 ]
 if os.environ.get("SEATEST_ONLY"):
@@ -66,6 +68,11 @@ def report(w, name):
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
     eye = pc.player_camera_manager.get_camera_location()
     log("%s eye %s" % (name, eye))
+    pawn = pc.get_controlled_pawn()
+    cm = getattr(pawn, "character_movement", None)
+    sea = unreal.LyudSea.get_sea(w)
+    log("  pawn at %s, movement %s, swimmable %s" % (pawn.get_actor_location(), cm.movement_mode if cm else None,
+        sea.is_swimmable(pawn.get_actor_location()) if sea else None))
     if wind:
         log("  " + wind.debug_report())
         s = wind.get_wind_at(eye, 2.0, True)
@@ -99,10 +106,18 @@ def tick(dt):
             st["phase"] = 9
             return
         name, loc, pitch, yaw, hours, wind, extra = STEPS[st["i"]]
-        if getattr(pawn, "character_movement", None):
-            pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
-            pawn.character_movement.gravity_scale = 0.0
-        pawn.set_actor_enable_collision(False)
+        cm = getattr(pawn, "character_movement", None)
+        if name.startswith("swim"):
+            # a body dropped where it stands: the sea's water volume should make it swim, the beach not
+            pawn.set_actor_enable_collision(True)
+            if cm:
+                cm.gravity_scale = 1.0
+                cm.set_movement_mode(unreal.MovementMode.MOVE_FALLING)
+        else:
+            if cm:
+                cm.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
+                cm.gravity_scale = 0.0
+            pawn.set_actor_enable_collision(False)
         cmd(w, "lyud.SkyHourOffset %f" % hours)
         cmd(w, "lyud.Wind.Speed %f" % wind)
         cmd(w, "lyud.Sea.DebugFoam 0")
@@ -122,7 +137,8 @@ def tick(dt):
         st["phase"] = 1
     elif st["phase"] == 1:
         # keep it still against any drift
-        pawn.set_actor_location(unreal.Vector(*st["loc"]), False, True)
+        if not STEPS[st["i"]][0].startswith("swim"):
+            pawn.set_actor_location(unreal.Vector(*st["loc"]), False, True)
         if st["t"] - st["t0"] > WAIT:
             report(w, STEPS[st["i"]][0])
             cmd(w, "HighResShot 1600x900")

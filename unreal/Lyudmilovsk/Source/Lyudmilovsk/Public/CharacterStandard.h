@@ -24,4 +24,16 @@ namespace LyudmilovskCharacter
 
 	/** Lowest clear height of any doorway: the taller of the capsule and the tallest NPC, plus headroom. */
 	constexpr float MinDoorClearHeight = (2.f * PlayerCapsuleHalfHeight > MaxNpcHeight ? 2.f * PlayerCapsuleHalfHeight : MaxNpcHeight) + 15.f;
+
+	/** How ALyudDoor is built (Doors/LyudDoor.h): a lining inside the wall hole, the leaf in it flush with the face it swings to.
+	 *  The open leaf stands across the opening by its thickness, so a hole is clear width + lining on both sides + leaf per leaf. */
+	constexpr float DoorLeafThickness = 4.f;
+	constexpr float DoorLiningThickness = 3.f;
+
+	/** Standard doorways (clear sizes, leaves open). Builders cut holes from them (tools/character_standard.py door_hole). */
+	constexpr float StandardDoorClearWidth = 110.f;
+	constexpr float StandardDoorClearHeight = 215.f;
+	constexpr float WideDoorClearWidth = 130.f;
+	constexpr float DoubleDoorClearWidth = 150.f;
+	constexpr float DoubleDoorClearHeight = 230.f;
 }

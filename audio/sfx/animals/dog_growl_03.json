@@ -1,0 +1,23 @@
+{
+ "id": "dog_growl",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_growl_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A dog growling low and warningly, close, outdoors, no barking, no other sounds",
+  "duration_seconds": 3.0
+ },
+ "hash": "6da354d7e25a",
+ "fal_request_id": "01a173f0-4d9e-7463-829e-44e443dd0a11",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1b9/GLePjoEqo2joZHltSS6eI_sound_effect.mp3",
+ "created": "2026-10-25T16:41:34Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "49a4495040c0471c8a029862055002772cbdd3cfbd4cafadb398966abd298e41",
+ "seconds": 3.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

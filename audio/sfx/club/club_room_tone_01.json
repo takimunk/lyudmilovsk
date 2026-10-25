@@ -1,0 +1,25 @@
+{
+ "id": "club_room_tone",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/club/club_room_tone_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Room tone of a dim basement computer club: many desktop PC fans whirring, soft electrical hum of old monitors, quiet, no voices, no music, seamless loop",
+  "duration_seconds": 20.0,
+  "loop": true
+ },
+ "hash": "72d3fb7e5bfd",
+ "fal_request_id": "01a173f1-ea05-70f1-90de-f360857e6cfd",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c4/5U3-Mm2pjYkkeCR2_f8Sl_sound_effect.mp3",
+ "created": "2026-10-25T16:43:22Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "4eecb722d235392578ee577cb11816f42c0a02de30580aa446c10d0c34f40a92",
+ "seconds": 19.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club",
+ "loop": true
+}

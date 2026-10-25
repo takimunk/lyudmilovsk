@@ -1,0 +1,3 @@
+# The cues are seeded (audio/sounds.json): their WAVs are rebuilt with tools/gen_sounds.py --music; the imported
+# uassets under /Game/Audio/Music are committed. Sidecars (.json) are committed.
+*.wav

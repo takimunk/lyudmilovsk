@@ -137,6 +137,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static USkeletalMesh* LoadSkeletalMesh(FName Id);
+	/** SK_<Id>_Hero (the player's detailed body, on the same skeleton and clips), or null if the species has none. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	static USkeletalMesh* LoadHeroMesh(FName Id);
 	/** Clip is one of the names above (Idle, Flap, ...); null if that species has none. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static UAnimSequence* LoadClip(FName Id, FName Clip);

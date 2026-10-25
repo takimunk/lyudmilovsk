@@ -49,6 +49,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	EBirdSex Sex = EBirdSex::Male;
 
+	/** The player's bird: the detailed body SK_<Id>_Hero (~3x the feathers, 4096 atlas) when the species has one. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
+	bool bHeroBody = false;
+
 	/** Random phase / pauses (birds of one flock must not move in lockstep). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	int32 Seed = 0;

@@ -1,0 +1,27 @@
+{
+ "id": "night_2",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/night_2.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Nocturnal ambient, soft sub drone, distant music box fragments, D minor, 56 BPM, sleeping town under the moon, mysterious and gentle, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 15102
+ },
+ "hash": "634ad0d04819",
+ "fal_request_id": "01a173f5-68d8-7950-908c-0285bf0d0e8b",
+ "seed": 15102,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1da/GnLjEHkYihGkMXfq_5qF4_tahK1PVc.wav",
+ "created": "2026-10-25T16:47:19Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "790d5d66958732951f5bc7f2c6b915ed7d5ec4b5b566ace453c7ff43f4ae8f53",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "night"
+ ]
+}
