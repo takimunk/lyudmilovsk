@@ -1,6 +1,12 @@
 #include "Birds/BirdPawn.h"
 
 #include "BirdAir.h"
+#include "BirdBio.h"
+#include "BirdSound.h"
+#include "BirdWindStreaks.h"
+#include "Components/AudioComponent.h"
+#include "Sea/LyudSea.h"
+#include "Sound/SoundWaveProcedural.h"
 #include "BirdFlightModel.h"
 #include "BirdHud.h"
 #include "BirdSelfBody.h"
@@ -21,6 +27,13 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+
+#if __has_include("Animals/AnimalLife.h")
+#include "Animals/AnimalLife.h"
+#define LYUD_HAS_ANIMALS 1
+#else
+#define LYUD_HAS_ANIMALS 0
+#endif
 
 namespace
 {
@@ -74,6 +87,8 @@ ABirdPawn::ABirdPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(Head);
 	Camera->bUsePawnControlRotation = false;
+	WindStreaks = CreateDefaultSubobject<UBirdWindStreaks>(TEXT("WindStreaks"));
+	WindStreaks->SetupAttachment(Collision);
 	bUseControllerRotationYaw = bUseControllerRotationPitch = bUseControllerRotationRoll = false;
 	Params = MakeShared<BirdFlight::FParams>();
 	Flight = MakeShared<BirdFlight::FState>();
@@ -115,7 +130,23 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bird flight: species %s not in species.json, flying a generic bird"), *InSpecies.ToString());
 	}
-	*Params = BirdFlight::MakeParams(StyleOf(Row.Flight), Row.MassG, Row.WingspanCm, Row.WingbeatHz, Row.CruiseMs);
+	*Params = BirdFlight::MakeSpeciesParams(TCHAR_TO_ANSI(*InSpecies.ToString()), StyleOf(Row.Flight), Row.MassG, Row.WingspanCm, Row.WingbeatHz, Row.CruiseMs);
+	const BirdBio::FBio& Bio = BirdBio::Get(TCHAR_TO_ANSI(*InSpecies.ToString()));
+	bSwims = Bio.Swims;
+	RunUp = (float)Bio.RunUpS;
+	// its own sound: the air past it and its wingbeats
+	Sound = MakeShared<FBirdSound>();
+	if (USoundWaveProcedural* Wave = Sound->Init(this, Row.MassG / 1000.0, Row.Flight == EBirdFlightStyle::Clapping, InSpecies == FName(TEXT("MuteSwan"))))
+	{
+		SoundOut = NewObject<UAudioComponent>(this, TEXT("BirdSound"));
+		SoundOut->bAutoActivate = false;
+		SoundOut->bAllowSpatialization = false;
+		SoundOut->bIsUISound = false;
+		SoundOut->SetSound(Wave);
+		SoundOut->SetupAttachment(Head);
+		SoundOut->RegisterComponent();
+		SoundOut->Play();
+	}
 	Params->Hops = Row.Gait == EBirdGait::Hop || Row.Gait == EBirdGait::Both;
 	Body->Build(InSpecies, Row.LengthCm, Row.WingspanCm, Head);
 	Collision->SetSphereRadius(FMath::Max(Body->BodyRadius() * 0.85f, 1.5f));
@@ -168,6 +199,16 @@ void ABirdPawn::SkipArrival()
 	if (Mode == EBirdMode::Arriving)
 	{
 		Mode = bAnchored || Flight->Vel.Size() < 0.5 ? EBirdMode::Ground : EBirdMode::Air;
+		if (bDescendFirst && Mode == EBirdMode::Ground)
+		{
+			// off the palm and down onto the ground in front of the hero: a hop out, two beats, a flare
+			bDescendFirst = false;
+			TakeOff();
+			const FVector Fwd = FRotator(0.f, BodyRot.Yaw, 0.f).Vector();
+			Flight->Vel = ToM((Fwd * 1.3f + FVector(0, 0, 0.6f)) * 100.f);
+			TakeoffAssist = 0.25f;
+			bAutoDescend = true;
+		}
 	}
 	Body->SetShown(true, false);
 }
@@ -246,7 +287,7 @@ bool ABirdPawn::IsHeadTracked() const
 
 FVector ABirdPawn::GetVelocityCm() const
 {
-	return ToCm(Mode == EBirdMode::Air ? Flight->Ground : BirdFlight::V3());
+	return Mode == EBirdMode::Swimming ? SwimVel : ToCm(Mode == EBirdMode::Air ? Flight->Ground : BirdFlight::V3());
 }
 
 float ABirdPawn::GetAirspeed() const
@@ -361,8 +402,34 @@ void ABirdPawn::Tick(float DeltaSeconds)
 			ReturnHeld = FMath::Max(0.f, ReturnHeld - 2.f * Dt);
 		}
 		Stun = FMath::Max(0.f, Stun - Dt);
-		if (C.Peck && Mode == EBirdMode::Ground) PeckT = 0.35f;
-		if (C.Call) PlayCall();
+		if (C.Peck && (Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming)) PeckT = 0.35f;
+		if (C.Call)
+		{
+			PlayCall();
+			if (OnCall) OnCall();
+		}
+		if (bAutoDescend)
+		{
+			// the hop down from the palm plays by itself
+			C = FBirdControls();
+			C.Shift = TakeoffAssist <= 0.f;
+			if (Mode != EBirdMode::Air)
+			{
+				bAutoDescend = false;
+			}
+		}
+		if (Fate != EBirdFate::None)
+		{
+			// knocked out or caught: a moment's tumble, then the subsystem takes over
+			FateT -= Dt;
+			C = FBirdControls();
+			if (FateT <= 0.f && OnFate)
+			{
+				TFunction<void(EBirdFate, const FVector&)> Cb = MoveTemp(OnFate);
+				OnFate = nullptr;
+				Cb(Fate, GetActorLocation());
+			}
+		}
 		if (Mode == EBirdMode::Air)
 		{
 			StepAir(C, Dt);
@@ -370,6 +437,36 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		else if (Mode == EBirdMode::Ground)
 		{
 			StepGround(C, Dt);
+			// standing, the wings rest fast
+			Flight->Energy = FMath::Min(1.0, Flight->Energy + Dt / FMath::Clamp(Params->Stamina * 0.12, 6.0, 30.0));
+		}
+		else if (Mode == EBirdMode::Swimming)
+		{
+			StepSwim(C, Dt);
+			Flight->Energy = FMath::Min(1.0, Flight->Energy + Dt / FMath::Clamp(Params->Stamina * 0.15, 6.0, 40.0));
+		}
+		CheckDanger(Dt);
+		if (Mode == EBirdMode::Air && Flight->Energy < 0.12 && NoteT <= 0.f)
+		{
+			ShowNote(TEXT("bird.note.tired"), 3.f);
+		}
+	}
+	NoteT = FMath::Max(0.f, NoteT - Dt);
+	// the beats heard, the air heard and seen
+	{
+		const double PhaseNow = FMath::Max(Flight->PhaseL, Flight->PhaseR);
+		if (PhaseNow > 0.0 && PhaseNow < PrevPhase - 0.3 || (PrevPhase == 0.0 && PhaseNow > 0.0))
+		{
+			if (Sound) Sound->Beat(0.2f + 0.8f * FMath::Min(1.f, (float)Flight->Energy / 0.15f), TakeoffAssist > 0.3f);
+		}
+		PrevPhase = PhaseNow;
+		const bool bInside = Mode != EBirdMode::Leaving && Mode != EBirdMode::Arriving;
+		const FVector AirVel = LastAir + FVector(0, 0, LastUpdraft);
+		const float Rel = Mode == EBirdMode::Air ? GetAirspeed() : (Mode == EBirdMode::Leaving ? 0.f : (float)LastAir.Size() * 0.5f);
+		if (Sound) Sound->Tick(Dt, Rel, 1.f + 0.4f * FMath::Sin(Time * 0.7f), bInside ? 1.f : FMath::Clamp(1.f - TransT / FMath::Max(TransDur, 0.1f), 0.f, 1.f));
+		if (WindStreaks && Controller)
+		{
+			WindStreaks->UpdateStreaks(Head->GetComponentLocation(), AirVel, bInside && Mode != EBirdMode::Ground ? 1.f : 0.35f, Dt);
 		}
 	}
 	bPrevL = C.Left;
@@ -512,6 +609,16 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 			Land(Hit.ImpactPoint, Nrm);
 			return;
 		}
+		else if (Into > FMath::Max(8.f, (float)P.Cruise * 0.75f) && Fate == EBirdFate::None)
+		{
+			// too fast into something: knocked out of the sky
+			FVector Out = V - Nrm * (1.4f * FVector::DotProduct(V, Nrm));
+			Flight->Vel = ToM(Out * 30.f);
+			Stun = 2.f;
+			Ruffle = 1.f;
+			Jolt = 1.f;
+			SetFate(EBirdFate::Crash);
+		}
 		else if (Into > 0.f)
 		{
 			// a knock: bounce off, lose most of the speed, a moment's daze
@@ -523,20 +630,35 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 			Jolt = FMath::Clamp(Into / 6.f, 0.3f, 1.f);
 		}
 	}
-	// the sea: gulls and cormorants settle on it, the rest skip off it
-	if (GetActorLocation().Z < FBirdAir::SeaZ + Collision->GetScaledSphereRadius())
+	// the sea: water birds settle on it (not while pattering off it); a land bird that falls in is done
 	{
-		FVector L2 = GetActorLocation();
-		L2.Z = FBirdAir::SeaZ + Collision->GetScaledSphereRadius();
-		SetActorLocation(L2);
-		const bool bSwims = Params->Style == BirdFlight::EStyle::Soaring || Species == FName(TEXT("Cormorant"));
-		if (bSwims && BirdFlight::Speed(*Flight) < P.Stall * 1.9f)
+		const FVector L2 = GetActorLocation();
+		const float Surface = WaterZ(L2);
+		if (L2.Z < Surface + Collision->GetScaledSphereRadius() && IsWaterBelow(L2))
 		{
-			Land(FVector(L2.X, L2.Y, FBirdAir::SeaZ), FVector::UpVector);
-			return;
+			if (bSwims)
+			{
+				if (TakeoffAssist > 0.f || BirdFlight::Speed(*Flight) > P.Stall * 2.2f)
+				{
+					// skimming: the water holds it up
+					SetActorLocation(FVector(L2.X, L2.Y, Surface + Collision->GetScaledSphereRadius()));
+					Flight->Vel.Z = FMath::Max(Flight->Vel.Z, 0.0);
+				}
+				else
+				{
+					EnterSwim(L2);
+					return;
+				}
+			}
+			else if (Fate == EBirdFate::None)
+			{
+				SetActorLocation(FVector(L2.X, L2.Y, Surface));
+				Flight->Vel = BirdFlight::V3();
+				Ruffle = 1.f;
+				SetFate(EBirdFate::Drowned);
+				return;
+			}
 		}
-		Flight->Vel.Z = FMath::Abs(Flight->Vel.Z) * 0.3 + 0.5;
-		Ruffle = 0.6f;
 	}
 	// held against the ground (a slope, a kerb) with no way on: it stands there
 	const bool bStuck = FVector::DistSquared(GetActorLocation(), Loc) < FMath::Square(20.f * Dt) && TakeoffAssist <= 0.f;
@@ -735,7 +857,7 @@ void ABirdPawn::UpdateBody(float Dt)
 	BodyRot.Yaw = Mode == EBirdMode::Air && Dt > 0.f ? FMath::FixedTurn(BodyRot.Yaw, Want.Yaw, 720.f * Dt) : BodyRot.Yaw;
 	Body->SetWorldRotation(BodyRot);
 
-	const bool bGround = Mode == EBirdMode::Ground || (Mode == EBirdMode::Arriving && bAnchored);
+	const bool bGround = Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming || (Mode == EBirdMode::Arriving && bAnchored);
 	Fold = Dt > 0.f ? FMath::FInterpTo(Fold, bGround ? 1.f : 0.f, Dt, bGround ? 5.f : 9.f) : (bGround ? 1.f : 0.f);
 	const bool bLegs = bGround || Flare > 0.4f || TakeoffAssist > 0.3f;
 	LegsDown = Dt > 0.f ? FMath::FInterpTo(LegsDown, bLegs ? 1.f : 0.f, Dt, 7.f) : (bLegs ? 1.f : 0.f);
@@ -811,7 +933,7 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	// looking down, the head draws back and up over the breast, so the bird sees its own breast and feet
 	const float Down = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gaze.Pitch) - 30.f) / 40.f, 0.f, 1.f);
 	Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * (-Body->TorsoLength() * 0.5f * Down) + FVector(0, 0, Body->BodyRadius() * 0.8f * Down);
-	if (Mode == EBirdMode::Ground)
+	if (Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming)
 	{
 		const float Nod = Params->Hops ? 0.f : FMath::Sin(StepPhase * 2.f * PI) * Body->BodyRadius() * 0.35f;
 		Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Nod;
@@ -924,6 +1046,11 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 		A->SetFlightInput(bBeat ? 1.f : 0.f, 1.f - 0.5f * (float)(S.SpreadL + S.SpreadR), FMath::Clamp((float)S.Bank / 1.2f, -1.f, 1.f),
 		                  FMath::Clamp(-BodyRot.Pitch / 60.f + Flare, -1.f, 1.f), true);
 	}
+	else if (Mode == EBirdMode::Swimming)
+	{
+		A->SetFlightInput(0.f, 1.f, 0.f, 0.f, false);
+		Want = PeckT > 0.3f ? EBirdState::Peck : EBirdState::Perch;
+	}
 	else if (Mode == EBirdMode::Ground)
 	{
 		A->SetFlightInput(0.f, 1.f, 0.f, 0.f, false);
@@ -937,6 +1064,152 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 	}
 }
 
+float ABirdPawn::GetEnergy() const
+{
+	return (float)Flight->Energy;
+}
+
+float ABirdPawn::WaterZ(const FVector& At) const
+{
+	if (const ALyudSea* Sea = ALyudSea::Get(this))
+	{
+		return Sea->SurfaceZ(At);
+	}
+	return FBirdAir::SeaZ;
+}
+
+bool ABirdPawn::IsWaterBelow(const FVector& At) const
+{
+	// open water: the ground under it lies below the sea's surface
+	return Air->GroundZ(FVector2D(At)) < WaterZ(At) - 15.f;
+}
+
+void ABirdPawn::EnterSwim(const FVector& At)
+{
+	Mode = EBirdMode::Swimming;
+	SwimVel = ToCm(Flight->Vel) * FVector(0.25f, 0.25f, 0.f);
+	Flight->Vel = BirdFlight::V3();
+	Flight->BurstL = Flight->BurstR = 0;
+	Flare = 0.f;
+	bLandingSpot = false;
+	BodyRot.Pitch = BodyRot.Roll = 0.f;
+	Feet = FVector(At.X, At.Y, WaterZ(At));
+	Jolt = FMath::Max(Jolt, 0.3f);
+	Ruffle = FMath::Max(Ruffle, 0.4f);
+	ShowNote(TEXT("bird.note.swimming"), 4.f);
+}
+
+void ABirdPawn::StepSwim(const FBirdControls& C, float Dt)
+{
+	const bool PressL = C.Left && !bPrevL, PressR = C.Right && !bPrevR;
+	if (PressL || PressR || (C.Space && !bPrevSpace))
+	{
+		// off the water: a swan patters along it for seconds before it lifts, a gull jumps off
+		TakeOff();
+		TakeoffAssist = 0.6f + RunUp;
+		const FVector Fwd = FRotator(0.f, BodyRot.Yaw, 0.f).Vector();
+		Flight->Vel = ToM((Fwd * (RunUp > 0.f ? 1.5f : 1.f) + FVector(0, 0, RunUp > 0.f ? 0.3f : 1.6f)) * 100.f);
+		return;
+	}
+	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
+	const FVector Fwd = FRotator(0.f, Aim.Yaw, 0.f).Vector();
+	const FVector Right = FRotator(0.f, Aim.Yaw + 90.f, 0.f).Vector();
+	const FVector Move = (Fwd * C.Move.Y + Right * C.Move.X).GetClampedToMaxSize(1.f);
+	// paddling: about 0.6 m/s for a gull, 1 m/s for a swan
+	const float Paddle = FMath::Clamp((float)Params->Cruise * 5.f, 35.f, 110.f);
+	SwimVel = FMath::VInterpTo(SwimVel, Move * Paddle + LastAir * 4.f, Dt, 2.f);
+	if (!Move.IsNearlyZero())
+	{
+		BodyRot.Yaw = FMath::FixedTurn(BodyRot.Yaw, Move.Rotation().Yaw, 200.f * Dt);
+		StepPhase += Dt * 2.f;
+	}
+	Feet += SwimVel * Dt;
+	// riding the waves
+	Feet.Z = WaterZ(Feet);
+	// ashore: paddling into the beach it stands up and walks
+	const float Ground = Air->GroundZ(FVector2D(Feet));
+	if (Ground > Feet.Z - 3.f)
+	{
+		Land(FVector(Feet.X, Feet.Y, Ground), FVector::UpVector);
+		return;
+	}
+	SetActorLocation(Feet + FVector(0, 0, Body->StandHeight() * 0.35f));
+	Flight->Pos = ToM(GetActorLocation());
+}
+
+void ABirdPawn::SetFate(EBirdFate F)
+{
+	if (Fate != EBirdFate::None)
+	{
+		return;
+	}
+	Fate = F;
+	FateT = F == EBirdFate::Drowned ? 0.6f : 0.9f;
+	ShowNote(F == EBirdFate::Crash ? TEXT("bird.note.crash") : F == EBirdFate::Caught ? TEXT("bird.note.caught") : TEXT("bird.note.drowned"), 4.f);
+	UE_LOG(LogTemp, Warning, TEXT("BIRD fate %d at %s"), (int32)F, *GetActorLocation().ToCompactString());
+}
+
+void ABirdPawn::TakePeck(const FVector& From)
+{
+	const FVector Away = (GetActorLocation() - From).GetSafeNormal2D();
+	if (Mode == EBirdMode::Ground && !bAnchored)
+	{
+		Feet += Away * 6.f;
+	}
+	Jolt = FMath::Max(Jolt, 0.6f);
+	Ruffle = 1.f;
+	Flight->Energy = FMath::Max(0.0, Flight->Energy - 0.06);
+}
+
+void ABirdPawn::CheckDanger(float Dt)
+{
+#if LYUD_HAS_ANIMALS
+	DangerT = FMath::Max(0.f, DangerT - Dt);
+	DangerCheck -= Dt;
+	if (DangerCheck > 0.f || Fate != EBirdFate::None)
+	{
+		return;
+	}
+	DangerCheck = 0.1f;
+	UAnimalLifeSubsystem* Life = UAnimalLifeSubsystem::Get(this);
+	if (!Life)
+	{
+		return;
+	}
+	const FVector At = FeetLocation();
+	// up in the air it's safe; on the ground, a branch-less perch low down or the water's edge, not
+	const float Over = Mode == EBirdMode::Air ? At.Z - Air->GroundZ(FVector2D(At)) : 0.f;
+	if (Over > 120.f)
+	{
+		return;
+	}
+	for (int32 Id : Life->FindAnimalsNear(At, 500.f))
+	{
+		FAnimalInfo A;
+		if (!Life->GetAnimal(Id, A))
+		{
+			continue;
+		}
+		const float D = FVector::Dist2D(A.Location, At);
+		const bool bHunting = A.Activity == EAnimalActivity::Stalk || A.Activity == EAnimalActivity::Crouch || A.Activity == EAnimalActivity::Pounce
+			|| A.Activity == EAnimalActivity::Chase || A.Activity == EAnimalActivity::Approach || A.Activity == EAnimalActivity::Run;
+		if (bHunting || D < 200.f)
+		{
+			DangerT = 1.f;
+		}
+		const float Reach = A.Kind == EAnimalKind::Cat ? 45.f : 60.f;
+		if (D < Reach && (bHunting || D < Reach * 0.6f) && FMath::Abs(A.Location.Z - At.Z) < 60.f)
+		{
+			Stun = 2.f;
+			Ruffle = 1.f;
+			Jolt = 1.f;
+			SetFate(EBirdFate::Caught);
+			return;
+		}
+	}
+#endif
+}
+
 void ABirdPawn::PlayCall()
 {
 	const FBirdSpecies* Row = UBirdSpeciesLibrary::Find(Species);
@@ -946,16 +1219,16 @@ void ABirdPawn::PlayCall()
 	}
 	const FName Call = Row->Calls[FMath::RandRange(0, Row->Calls.Num() - 1)];
 	const FString Path = FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Species.ToString(), *Species.ToString(), *Call.ToString(), *Species.ToString(), *Call.ToString());
-	if (USoundBase* Sound = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+	if (USoundBase* CallSound = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, Sound, Head->GetComponentLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, CallSound, Head->GetComponentLocation());
 	}
 }
 
 FString ABirdPawn::DebugLine() const
 {
-	const TCHAR* ModeName = Mode == EBirdMode::Air ? TEXT("air") : Mode == EBirdMode::Ground ? TEXT("ground") : Mode == EBirdMode::Arriving ? TEXT("arriving") : TEXT("leaving");
-	return FString::Printf(TEXT("%s %s  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
-		*Species.ToString(), ModeName, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
+	const TCHAR* ModeName = Mode == EBirdMode::Air ? TEXT("air") : Mode == EBirdMode::Ground ? TEXT("ground") : Mode == EBirdMode::Swimming ? TEXT("swimming") : Mode == EBirdMode::Arriving ? TEXT("arriving") : TEXT("leaving");
+	return FString::Printf(TEXT("%s %s  energy %.2f  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
+		*Species.ToString(), ModeName, (float)Flight->Energy, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
 		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
 }

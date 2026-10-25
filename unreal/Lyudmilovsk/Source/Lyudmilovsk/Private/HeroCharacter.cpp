@@ -68,6 +68,11 @@ AHeroCharacter::AHeroCharacter()
 	Move->MaxWalkSpeed = RunSpeed;
 	Move->BrakingDecelerationFalling = 1500.f;
 	Move->AirControl = 0.5f;
+	// in the sea's water volume (ALyudSea): a calm breaststroke, floating with the head out; out of it on a beach
+	Move->MaxSwimSpeed = 160.f;
+	Move->Buoyancy = 1.06f;
+	Move->GetNavAgentPropertiesRef().bCanSwim = true;
+	Move->OutofWaterZ = 520.f;
 	Move->NavAgentProps.bCanCrouch = true;
 	Move->SetCrouchedHalfHeight(CrouchHalfHeight);
 	Move->MaxWalkSpeedCrouched = CrouchSpeed;

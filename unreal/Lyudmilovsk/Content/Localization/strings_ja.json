@@ -590,5 +590,20 @@
  "ui.settings.volume.music": "音楽",
  "ui.settings.volume.effects": "効果音",
  "ui.settings.hud_on": "日付と任務の表示：オン",
- "ui.settings.hud_off": "日付と任務の表示：オフ"
+ "ui.settings.hud_off": "日付と任務の表示：オフ",
+ "bird.hint.actions": "E：ついばむ・F：仲間を呼ぶ",
+ "bird.hud.energy": "体力",
+ "bird.note.swimming": "水の上：WASDで泳ぐ、羽ばたきで助走して飛び立つ",
+ "bird.note.crash": "衝突！鳥は気を失った",
+ "bird.note.caught": "捕食者に捕まった！",
+ "bird.note.drowned": "鳥は海に落ちた。人間に戻った",
+ "bird.note.fight": "オスが挑戦と受け取り、つついてくる！",
+ "bird.note.court": "返事がきた",
+ "bird.note.callback": "仲間が鳴き返した",
+ "bird.note.look": "仲間がこちらを見ている",
+ "bird.note.nobody": "近くに仲間はいない",
+ "bird.note.tired": "翼が疲れた。滑空して休もう",
+ "bird.note.danger": "危険：近くに捕食者！",
+ "bird.hero.swim_ashore": "岸まで泳ごう。陸に上がれば鳥をまた呼べる",
+ "bird.hero.call_bird": "Rを長押し：鳥を呼ぶ"
 }

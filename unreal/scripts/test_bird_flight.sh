@@ -5,5 +5,5 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds"
 OUT="${TMPDIR:-/tmp}/lyud_bird_flight_test"
-clang++ -std=c++17 -O2 -Wall -I"$SRC" "$SRC/BirdFlightModel.cpp" "$ROOT/unreal/scripts/bird_flight/test_model.cpp" -o "$OUT"
+clang++ -std=c++17 -O2 -Wall -I"$SRC" "$SRC/BirdFlightModel.cpp" "$SRC/BirdBio.cpp" "$ROOT/unreal/scripts/bird_flight/test_model.cpp" -o "$OUT"
 "$OUT"

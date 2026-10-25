@@ -2,6 +2,7 @@
   /Game/Birds/Flight/M_BirdFeather  one feather painted from per-instance custom data 0..12 (BirdLook::FPaint):
                                     base, accent at the tip / root / fringe / bars, a pale spot, an iridescent sheen;
                                     barbs and the shaft drawn from the UV, the vane's edges frayed by the mask
+  /Game/Birds/Flight/M_WindStreak   the wind seen in flight: an additive streak, faded by custom data 0
   /Game/Birds/Flight/M_BirdBody     Top/Bottom colours by Mode: the shells round the body and head, the beak root to tip, the legs
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
@@ -148,4 +149,24 @@ sp = node(b, unreal.MaterialExpressionScalarParameter, -300, 400, parameter_name
 mel.connect_material_property(sp, "", MP.MP_SPECULAR)
 mel.recompile_material(b)
 eal.save_asset(b.get_path_name())
+# --- the wind made visible: a faint additive streak, tapered at both ends, its fade in custom data 0
+w = new_material("/Game/Birds/Flight/M_WindStreak")
+w.set_editor_property("two_sided", True)
+w.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+w.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+STREAK_HLSL = """
+float along = sin(3.14159 * saturate(uv.x));
+float across = 1.0 - abs(uv.y * 2.0 - 1.0);
+return float3(0.85, 0.9, 1.0) * along * along * across * fade * 0.22;
+"""
+wuv = node(w, unreal.MaterialExpressionTextureCoordinate, -700, 0)
+wfade = node(w, unreal.MaterialExpressionPerInstanceCustomData, -700, 120, data_index=0)
+wc = node(w, unreal.MaterialExpressionCustom, -400, 0, code=STREAK_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+          description="Streak", inputs=[custom_input(n) for n in ("uv", "fade")])
+link(wuv, "", wc, "uv")
+link(wfade, "", wc, "fade")
+mel.connect_material_property(wc, "", MP.MP_EMISSIVE_COLOR)
+w.set_editor_property("used_with_instanced_static_meshes", True)
+mel.recompile_material(w)
+eal.save_asset(w.get_path_name())
 unreal.log_warning("BIRD FLIGHT materials saved")

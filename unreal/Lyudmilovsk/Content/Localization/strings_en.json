@@ -590,5 +590,20 @@
  "ui.settings.volume.music": "Music",
  "ui.settings.volume.effects": "Effects",
  "ui.settings.hud_on": "Date and quest on screen: on",
- "ui.settings.hud_off": "Date and quest on screen: off"
+ "ui.settings.hud_off": "Date and quest on screen: off",
+ "bird.hint.actions": "E: peck · F: call to your kind",
+ "bird.hud.energy": "Strength",
+ "bird.note.swimming": "On the water: WASD to paddle, a wingbeat to take off",
+ "bird.note.crash": "Smack! The bird is stunned",
+ "bird.note.caught": "A predator caught the bird!",
+ "bird.note.drowned": "The bird fell into the sea: you are human again",
+ "bird.note.fight": "A male takes it as a challenge and fights!",
+ "bird.note.court": "Someone answered you",
+ "bird.note.callback": "One of your kind calls back",
+ "bird.note.look": "One of your kind is watching you",
+ "bird.note.nobody": "None of your kind nearby",
+ "bird.note.tired": "Your wings are tired: glide and rest",
+ "bird.note.danger": "Danger: a predator nearby!",
+ "bird.hero.swim_ashore": "Swim ashore: on land you can call your bird again",
+ "bird.hero.call_bird": "Hold R: call your bird"
 }

@@ -1,5 +1,7 @@
 #include "BirdFlightModel.h"
 
+#include "BirdBio.h"
+
 #include <algorithm>
 
 namespace BirdFlight
@@ -32,11 +34,67 @@ namespace BirdFlight
 		}
 	}
 
+	namespace
+	{
+		/** Scales the wingbeat thrust until holding Space flies level at the table's cruise speed. */
+		void FitCruise(FParams& P)
+		{
+			// (fitted rested: the tuning flight must not tire)
+			// the estimate above ignores the bounding finches' closed-wing dips and the rest of the pattern:
+			// fly the pattern level for a while and scale the thrust until it settles at the table's cruise speed
+			const double KeepStamina = P.Stamina;
+			P.Stamina = 1e9;
+			for (int K = 0; K < 4; K++)
+			{
+				FState S;
+				S.Pos = V3(0, 0, 100);
+				S.Vel = V3(P.Cruise, 0, 0);
+				double Clock = 0, Sum = 0;
+				int N = 0;
+				const double Dt = 1.0 / 60.0;
+				for (double T = 0; T < 16.0; T += Dt)
+				{
+					FInput In;
+					double Tuck = 0;
+					In.ClickL = In.ClickR = AutoFlap(P, Dt, Clock, Tuck);
+					In.TuckL = In.TuckR = Tuck;
+					In.AimPitch = Clamp((100.0 - S.Pos.Z) * 0.05, -0.3, 0.3);
+					Step(P, In, FAir(), S, Dt);
+					if (T > 8.0) { Sum += S.Vel.Size(); N++; }
+				}
+				const double Got = Sum / std::max(N, 1);
+				P.ClickThrust *= Clamp(std::pow(P.Cruise / std::max(Got, 1.0), 2.0), 0.5, 2.0);
+			}
+			P.Stamina = KeepStamina;
+		}
+
+		/** Seconds holding Space until the bird is spent, from rested. */
+		double TimeToSpent(const FParams& P)
+		{
+			FState S;
+			S.Pos = V3(0, 0, 100);
+			S.Vel = V3(P.Cruise, 0, 0);
+			double Clock = 0;
+			const double Dt = 1.0 / 30.0;
+			for (double T = 0; T < 3600.0; T += Dt)
+			{
+				FInput In;
+				double Tuck = 0;
+				In.ClickL = In.ClickR = AutoFlap(P, Dt, Clock, Tuck);
+				In.TuckL = In.TuckR = Tuck;
+				In.AimPitch = Clamp((100.0 - S.Pos.Z) * 0.05, -0.3, 0.3);
+				Step(P, In, FAir(), S, Dt);
+				if (S.Energy <= 0.01) return T;
+			}
+			return 3600.0;
+		}
+	}
+
 	double GlideSink(const FParams& P, double V)
 	{
 		// drag over weight at load 1 on the polar, times speed
 		const double Vr = std::max(V / P.BestGlide, 0.35);
-		const double DoverW = (Vr * Vr + 1.0 / (Vr * Vr)) / (2.0 * P.GlideRatio) + std::pow(V / P.MaxSpeed, 6.0);
+		const double DoverW = (Vr * Vr + 1.0 / (Vr * Vr)) / (2.0 * P.GlideRatio) + std::pow(V / P.MaxSpeed, 10.0);
 		return V * DoverW;
 	}
 
@@ -67,30 +125,27 @@ namespace BirdFlight
 		// clicking without pause at zero airspeed lifts HoverG (a take-off; pigeons and finches can hover a moment)
 		P.ClickLift = P.Gravity * R.HoverG * P.ClickTime();
 		P.OarKick = Style == EStyle::Flicker ? 0.45 : Style == EStyle::Soaring ? 0.22 : 0.35;
-		// the estimate above ignores the bounding finches' closed-wing dips and the rest of the pattern:
-		// fly the pattern level for a while and scale the thrust until it settles at the table's cruise speed
-		for (int K = 0; K < 4; K++)
-		{
-			FState S;
-			S.Pos = V3(0, 0, 100);
-			S.Vel = V3(P.Cruise, 0, 0);
-			double Clock = 0, Sum = 0;
-			int N = 0;
-			const double Dt = 1.0 / 60.0;
-			for (double T = 0; T < 16.0; T += Dt)
-			{
-				FInput In;
-				double Tuck = 0;
-				In.ClickL = In.ClickR = AutoFlap(P, Dt, Clock, Tuck);
-				In.TuckL = In.TuckR = Tuck;
-				In.AimPitch = Clamp((100.0 - S.Pos.Z) * 0.05, -0.3, 0.3);
-				Step(P, In, FAir(), S, Dt);
-				if (T > 8.0) { Sum += S.Vel.Size(); N++; }
-			}
-			const double Got = Sum / std::max(N, 1);
-			P.ClickThrust *= Clamp(std::pow(P.Cruise / std::max(Got, 1.0), 2.0), 0.5, 2.0);
-		}
+		FitCruise(P);
 		P.Hops = Style == EStyle::Bounding || Style == EStyle::Undulating;
+		return P;
+	}
+
+	FParams MakeSpeciesParams(const char* Id, EStyle Style, double MassG, double SpanCm, double BeatHz, double CruiseMs)
+	{
+		const BirdBio::FBio& B = BirdBio::Get(Id);
+		FParams P = MakeParams(Style, MassG, SpanCm, BeatHz, B.CruiseMs > 0 ? B.CruiseMs : CruiseMs);
+		P.Stamina = B.StaminaS;
+		P.MaxSpeed = std::max(B.DiveMs, P.Cruise * 1.3);
+		P.TurnRate *= B.Agility;
+		P.OarKick *= B.Agility;
+		P.Follow /= std::max(B.Agility, 0.3);
+		FitCruise(P);
+		// the biology's seconds are of the species' own flight (a finch's bursts and dips): fit the drain to them
+		if (P.Stamina < 1000.0)
+		{
+			const double Got = TimeToSpent(P);
+			P.Stamina *= Clamp(B.StaminaS / std::max(Got, 1.0), 0.2, 5.0);
+		}
 		return P;
 	}
 
@@ -186,8 +241,14 @@ namespace BirdFlight
 		// the flight muscles give power, not force: slow, the same beats drive the bird forward far harder
 		// (a take-off reaches flying speed in a second or two)
 		const double Launch = Clamp(std::pow(P.Cruise / std::max(V, 0.5 * P.Stall), 1.25), 1.0, 5.0);
-		double ThrustAcc = 0.5 * Beats * P.ClickThrust / Click * Launch;
-		double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift;
+		// the flight muscles tire: every beat spends, gliding rests them (a spent bird's beats are weak)
+		const double Effort = 0.5 * Beats * (1.0 + 0.6 * SlowLift);
+		if (Beats > 0) S.Energy -= Dt * Effort / std::max(P.Stamina, 1.0);
+		else S.Energy += Dt * (0.25 + 0.5 * (1.0 - Spread)) / std::max(P.Stamina, 1.0) * 1.5;
+		S.Energy = Clamp(S.Energy, 0.0, 1.0);
+		const double Strength = 0.2 + 0.8 * std::min(1.0, S.Energy / 0.15);
+		double ThrustAcc = 0.5 * Beats * P.ClickThrust / Click * Launch * Strength;
+		double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift * Strength;
 		// the beats lift no more than the course needs (and a little to climb); the rest drives the bird on
 		const double Need = std::max(0.0, V * GammaDot + G * std::cos(Gamma));
 		if (BeatLift > Need + 0.3 * G)
@@ -219,7 +280,7 @@ namespace BirdFlight
 		const double Vr = V / P.BestGlide;
 		const double Dp = Q * Vr * Vr * (0.3 + 0.7 * Spread) * (1.0 + 14.0 * Flare);
 		const double Di = std::min(1.5 * G, Q * S.Load * S.Load / std::max(Vr * Vr, 0.25));
-		const double Dhi = G * std::pow(V / P.MaxSpeed, 6.0);
+		const double Dhi = G * std::pow(V / P.MaxSpeed, 10.0);
 		Acc += D * -(Dp + Di + Dhi);
 
 		Acc.Z -= G;
