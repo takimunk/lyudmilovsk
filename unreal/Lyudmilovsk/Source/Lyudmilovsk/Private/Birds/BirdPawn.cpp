@@ -1083,14 +1083,7 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		if (bOwnBody)
 		{
 			// turning the head to a wing (or looking down) brings back its true shape and place
-			const float Sweep = FMath::Lerp(CVarBodySweep.GetValueOnGameThread(), 0.f, Turn);
-			if (FMath::Abs(Sweep - OutsideBody->ViewSweepDeg) > 1.5f || (Turn >= 1.f && OutsideBody->ViewSweepDeg != 0.f))
-			{
-				// ABirdActor takes the sweep in SetFirstPerson
-				OutsideBody->ViewSweepDeg = Sweep;
-				OutsideBody->ViewDroopRad = FMath::Lerp(0.2f, 0.f, Turn);
-				OutsideBody->SetFirstPerson(true);
-			}
+			OutsideBody->SetViewSweep(FMath::Lerp(CVarBodySweep.GetValueOnGameThread(), 0.f, Turn), FMath::Lerp(0.2f, 0.f, Turn));
 			// the engine's first-person view for the body: drawn with a wider field of view than the scene's
 			OutResult.bUseFirstPersonParameters = true;
 			OutResult.FirstPersonFOV = WideFov;
