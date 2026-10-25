@@ -12,13 +12,13 @@
   ],
   "eyes": 7,
   "speeds_cms": {
-   "Walk": 49.3,
-   "Trot": 150.6,
-   "Run": 399.6,
-   "Stalk": 25.0
+   "Walk": 55.6,
+   "Trot": 169.7,
+   "Run": 450.3,
+   "Stalk": 28.1
   },
-  "height_cm": 24.7,
-  "length_cm": 47.4,
+  "height_cm": 27.835853385803183,
+  "length_cm": 39.55292309902387,
   "clips": [
    "Climb",
    "Crouch",
@@ -48,12 +48,12 @@
   ],
   "eyes": 2,
   "speeds_cms": {
-   "Walk": 103.6,
-   "Trot": 213.2,
-   "Run": 490.0
+   "Walk": 121.0,
+   "Trot": 249.0,
+   "Run": 572.3
   },
-  "height_cm": 55.50000000000001,
-  "length_cm": 88.99999999999999,
+  "height_cm": 64.82637360863028,
+  "length_cm": 85.5049122028018,
   "clips": [
    "Bark",
    "Beg",
@@ -83,12 +83,12 @@
   ],
   "eyes": 2,
   "speeds_cms": {
-   "Walk": 54.7,
-   "Trot": 112.6,
-   "Run": 258.7
+   "Walk": 76.1,
+   "Trot": 156.5,
+   "Run": 359.8
   },
-  "height_cm": 30.162000000000006,
-  "length_cm": 57.1460736,
+  "height_cm": 41.94645194875164,
+  "length_cm": 57.97636135349611,
   "clips": [
    "Bark",
    "Beg",
@@ -118,12 +118,12 @@
   ],
   "eyes": 2,
   "speeds_cms": {
-   "Walk": 114.0,
-   "Trot": 234.5,
-   "Run": 539.0
+   "Walk": 124.4,
+   "Trot": 256.0,
+   "Run": 588.3
   },
-  "height_cm": 61.05000000000002,
-  "length_cm": 113.4738,
+  "height_cm": 66.63838627539424,
+  "length_cm": 95.53149849316614,
   "clips": [
    "Bark",
    "Beg",

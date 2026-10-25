@@ -1,0 +1,46 @@
+{
+ "breed": "Cat",
+ "date": "2026-10-25",
+ "requested_by": "Dima (replace the cat and dog models with hi3d ones)",
+ "views": {
+  "service": "hi3d MCP",
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Photorealistic adult domestic shorthair cat, brown mackerel tabby (narrow dark stripes on the flanks, barred legs, ringed tail, M on the forehead), green eyes, short dense fur. Neutral rigging pose: standing squarely on all four legs, legs straight and vertical, slightly apart, paws flat on the ground, back level, head straight forward looking ahead, mouth closed, ears upright, tail held straight out behind, horizontal, not curled. Full body in frame, orthographic-like view, even soft studio light, no shadows, plain pure white background, nothing else in the picture.",
+  "task_id": "3cfc0b582c7143e5b758996232cfbf88",
+  "credits": 8
+ },
+ "edits": [],
+ "model": {
+  "service": "hi3d MCP",
+  "tool": "quote_generation + create_generation",
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "source_images": [
+   {
+    "task_id": "3cfc0b582c7143e5b758996232cfbf88",
+    "image_index": 0
+   },
+   {
+    "task_id": "3cfc0b582c7143e5b758996232cfbf88",
+    "image_index": 1
+   },
+   {
+    "task_id": "3cfc0b582c7143e5b758996232cfbf88",
+    "image_index": 2
+   },
+   {
+    "task_id": "3cfc0b582c7143e5b758996232cfbf88",
+    "image_index": 3
+   }
+  ],
+  "task_id": "f90a0c85ce9e424fa426ee1aa63e2e19",
+  "credits": 65
+ },
+ "note": "Grid rule exception: hi3d's own multi-view task returns four separate views per animal, the only upload-free way into its 3D (game-assets skill)."
+}

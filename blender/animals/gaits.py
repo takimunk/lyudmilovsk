@@ -428,7 +428,8 @@ class Library:
             p["tail_lift"] = 1.05
             p["tail_curl"] = 2.4 if breed == "Laika" else 1.2
         else:
-            p["tail_lift"] = -0.55
+            # a shepherd's tail hangs low (a generated body's rest tail already hangs: lift it a little off the legs)
+            p["tail_lift"] = 0.35 if self.r.b.get("gen") else -0.55
             p["tail_curl"] = -0.4
         p["tail_wave"] = wag
         p["tail_phase"] = w * 1.5

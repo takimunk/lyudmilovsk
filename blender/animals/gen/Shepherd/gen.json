@@ -1,0 +1,75 @@
+{
+ "breed": "Shepherd",
+ "date": "2026-10-25",
+ "requested_by": "Dima (replace the cat and dog models with hi3d ones)",
+ "views": {
+  "service": "hi3d MCP",
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Photorealistic large German shepherd mongrel stray dog: black-and-tan coat with a black saddle and black muzzle, tan legs and cheeks, erect ears, medium-long dense coat, 60 cm at the withers, a little scruffy. Neutral rigging pose: standing squarely on all four legs, legs straight and vertical, slightly apart, paws flat, back level, head straight forward, mouth closed, ears up, bushy tail held straight out behind horizontally. Full body in frame, orthographic-like view, even soft studio light, no shadows, plain pure white background, nothing else in the picture.",
+  "task_id": "6f96e49c9bfd428ca0032efccf9cf0f2",
+  "credits": 8
+ },
+ "edits": [
+  {
+   "task": "6ec798bfce2549a3ba3fc8c28c0fd074",
+   "of": [
+    "6f96e49c9bfd428ca0032efccf9cf0f2",
+    1
+   ],
+   "prompt": "The same German shepherd mongrel seen exactly from behind (a straight rear view, camera centred behind the tail, both hind legs symmetric, the head straight ahead seen from behind with both ears), the bushy tail hanging straight down behind between the hind legs. Same coat, same lighting, plain pure white background.",
+   "why": "the back view came out three-quarter",
+   "service": "hi3d MCP",
+   "tool": "create_image_generation",
+   "operation": "edit",
+   "model_name": "Nano-Banana 2",
+   "credits": 4
+  },
+  {
+   "task": "97bc170d79fc4028bc5f1c43f44b7435",
+   "of": [
+    "6f96e49c9bfd428ca0032efccf9cf0f2",
+    0
+   ],
+   "prompt": "The same German shepherd mongrel seen exactly from the front (a straight front view, symmetric, the head straight at the camera), standing squarely with both front legs vertical; the tail hangs straight down behind the dog and is not visible from the front. Same coat, same lighting, plain pure white background.",
+   "why": "the front view showed the tail out sideways",
+   "service": "hi3d MCP",
+   "tool": "create_image_generation",
+   "operation": "edit",
+   "model_name": "Nano-Banana 2",
+   "credits": 4
+  }
+ ],
+ "model": {
+  "service": "hi3d MCP",
+  "tool": "quote_generation + create_generation",
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "source_images": [
+   {
+    "task_id": "97bc170d79fc4028bc5f1c43f44b7435",
+    "image_index": 0
+   },
+   {
+    "task_id": "6ec798bfce2549a3ba3fc8c28c0fd074",
+    "image_index": 0
+   },
+   {
+    "task_id": "6f96e49c9bfd428ca0032efccf9cf0f2",
+    "image_index": 2
+   },
+   {
+    "task_id": "6f96e49c9bfd428ca0032efccf9cf0f2",
+    "image_index": 3
+   }
+  ],
+  "task_id": "b350be400e9841e9ab5a93f87b42c022",
+  "credits": 65
+ },
+ "note": "Grid rule exception: hi3d's own multi-view task returns four separate views per animal, the only upload-free way into its 3D (game-assets skill)."
+}

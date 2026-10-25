@@ -27,6 +27,7 @@ import mathutils  # noqa: E402
 import numpy as np  # noqa: E402
 
 import anatomy as AN  # noqa: E402
+import gen_fit as GF  # noqa: E402
 import coats as CO  # noqa: E402
 import gaits as GA  # noqa: E402
 import sdf  # noqa: E402
@@ -46,6 +47,14 @@ CAT = B["kind"] == "cat"
 LOD_TRIS = [11000, 4600, 1700, 650] if CAT else [12000, 5000, 1900, 700]
 LOD_SHELLS = [B["shells"], max(6, B["shells"] // 2), 3, 0]
 TEX = 1024
+# a generated body (hi3d, blender/animals/gen/<Breed>/model.glb, gen.json): its own shape and texture, the breed's
+# skeleton fitted onto it; the fur shells grow from a coarse copy (the budget is ~20k triangles up close)
+GEN = "--gen" in FLAGS
+GEN_GLB = os.path.join(ROOT, "blender", "animals", "gen", BREED, "model.glb")
+if GEN:
+    LOD_TRIS = [14000, 5000, 1800, 700]
+    LOD_SHELLS = [6, 4, 0, 0]
+    TEX = 2048
 
 
 def log(*a):
@@ -92,6 +101,7 @@ def decimate(ob, tris):
         mod = ob.modifiers.new("Decimate", "DECIMATE")
         mod.ratio = tris / n
         mod.use_collapse_triangulate = True
+        mod.delimit = set()            # a generated body's many UV islands must not stop the collapse
         apply_mods(ob)
     for poly in ob.data.polygons:
         poly.use_smooth = True
@@ -134,6 +144,12 @@ def normals_np(ob):
 def weights_for(P, piece):
     """bone -> weights (N) from the distance to each bone's primitives; the mouth's two lips are split by the slit."""
     d = piece.bone_distances(P)
+    if GEN:
+        # a generated tail often hangs close by the hind legs: the legs' skin must not follow the tail
+        H = float(B["joints"]["chest"][2])
+        for k in d:
+            if k.startswith("tail_"):
+                d[k] = d[k] + H * 0.035
     fall = B["voxel"] * (4.0 if CAT else 3.2)
     W = sdf.skin_weights(d, falloff=fall, keep=4)
     # the lips: above the slit -> head, below -> jaw (no blend across the mouth)
@@ -223,6 +239,72 @@ def build_body():
     ob = to_object("Body", v, q, tr)
     decimate(ob, LOD_TRIS[0] if not QUICK else 6000)
     return ob, piece
+
+
+def build_body_gen():
+    """The generated body: cleaned, turned and scaled into the breed's frame, the skeleton fitted onto it; a ~400k copy
+    kept for baking the normal map; LOD0 decimated to the budget (the generated UVs and texture kept)."""
+    t0 = time.time()
+    ob = GF.import_glb(GEN_GLB)
+    GF.clean(ob)
+    img = GF.base_color_image(ob)
+    ob.data.materials.clear()
+    for poly in ob.data.polygons:
+        poly.material_index = 0
+    Q = GF.orient(ob, B)
+    facts = GF.fit(B, Q)
+    B["gen"] = True
+    log("fitted", facts)
+    ob.name = "Body"
+    high = copy_object(ob, "High")
+    decimate(high, 400000)
+    decimate(ob, LOD_TRIS[0])
+    piece = AN.body_piece(B)          # only for the skin weights (and the mouth, nose and eye places)
+    log("generated body %d tris, %.1fs" % (sum(len(p.vertices) - 2 for p in ob.data.polygons), time.time() - t0))
+    return ob, piece, high, img
+
+
+def bake_normal(high, low, size, name):
+    """The high copy's detail into a tangent-space normal map on the low mesh's UVs (Cycles, selected to active)."""
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.samples = 1
+    sc.cycles.device = "CPU"
+    im = bpy.data.images.new(name, size, size, alpha=False, float_buffer=False)
+    im.colorspace_settings.name = "Non-Color"
+    m = bpy.data.materials.new("BakeTarget")
+    m.use_nodes = True
+    t = m.node_tree.nodes.new("ShaderNodeTexImage")
+    t.image = im
+    m.node_tree.nodes.active = t
+    saved = list(low.data.materials)
+    low.data.materials.clear()
+    low.data.materials.append(m)
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    high.hide_render = False
+    high.select_set(True)
+    low.select_set(True)
+    bpy.context.view_layer.objects.active = low
+    H = float(B["joints"]["chest"][2])
+    bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True, cage_extrusion=H * 0.03, max_ray_distance=H * 0.06,
+                        normal_space="TANGENT", margin=8)
+    im.filepath_raw = os.path.join(OUT, name + ".png")
+    im.file_format = "PNG"
+    im.save()
+    low.data.materials.clear()
+    for mm in saved:
+        low.data.materials.append(mm)
+    return im
+
+
+def image_array(img, size):
+    """An image as a (size x size x 3) linear array (row 0 = v 0)."""
+    im = img.copy()
+    im.scale(size, size)
+    px = np.array(im.pixels[:]).reshape(size, size, 4)[..., :3]
+    bpy.data.images.remove(im)
+    return px
 
 
 def preview_material(name, color, rough=0.6):
@@ -535,6 +617,48 @@ def add_shells(ob, n, L, C, W):
     return Wn
 
 
+def add_shells_from(ob, src, n, L, C, W, Wsrc):
+    """Shells grown from a coarser copy src (its own fur field and weights), appended to ob: the shells' cost is the
+    coarse mesh's, the body under them keeps its detail. Returns ob's weights extended by the shells'."""
+    tmp = copy_object(src, "ShellTmp")
+    tmp.data.materials.clear()
+    for mm in ob.data.materials:
+        tmp.data.materials.append(mm)
+    for poly in tmp.data.polygons:
+        poly.material_index = 0
+    Ws = add_shells(tmp, n, L, C, Wsrc)
+    # drop the copy's own body faces: keep only the shells (material 1)
+    bm = bmesh.new()
+    bm.from_mesh(tmp.data)
+    nv0 = len(src.data.vertices)
+    bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.material_index == 0], context="FACES_ONLY")
+    bm.verts.ensure_lookup_table()
+    loose = [v for v in bm.verts if not v.link_faces]
+    keep_idx = [v.index for v in bm.verts if v.link_faces]
+    bmesh.ops.delete(bm, geom=loose, context="VERTS")
+    bm.to_mesh(tmp.data)
+    bm.free()
+    Ws = {k: v[keep_idx] for k, v in Ws.items()}
+    nv = len(ob.data.vertices)
+    for o2 in bpy.context.selected_objects:
+        o2.select_set(False)
+    ob.select_set(True)
+    tmp.select_set(True)
+    bpy.context.view_layer.objects.active = ob
+    if not tmp.data.uv_layers.get("FurUV") or not ob.data.uv_layers.get("FurUV"):
+        for o3 in (ob, tmp):
+            if not o3.data.uv_layers.get("FurUV"):
+                o3.data.uv_layers.new(name="FurUV")
+    bpy.ops.object.join()
+    ob.data.uv_layers.active = ob.data.uv_layers[0]
+    ob.data.uv_layers[0].active_render = True
+    names = set(W) | set(Ws)
+    zeros_a = np.zeros(nv)
+    zeros_b = np.zeros(len(keep_idx))
+    del nv0
+    return {k: np.concatenate([W.get(k, zeros_a), Ws.get(k, zeros_b)]) for k in names}
+
+
 # ====================================================================== the armature
 def build_armature(name="Armature"):
     arm_data = bpy.data.armatures.new(name)
@@ -681,13 +805,18 @@ def main():
     reset()
     bpy.context.scene.render.fps = FPS
     t0 = time.time()
-    body, piece = build_body()
+    high = gen_img = None
+    if GEN:
+        body, piece, high, gen_img = build_body_gen()
+    else:
+        body, piece = build_body()
+        smart_uv(body)
     H = B["joints"]["chest"][2]
-    smart_uv(body)
     # LODs: decimated copies (they keep the UVs)
     lods = [body]
     for li in (1, 2, 3):
-        o = copy_object(body, "LOD%d" % li)
+        # a generated body's open seams stop a second collapse early: its LODs come straight from the 400k copy
+        o = copy_object(high if GEN else body, "LOD%d" % li)
         decimate(o, LOD_TRIS[li])
         lods.append(o)
     # weights and attributes per LOD
@@ -715,12 +844,34 @@ def main():
     scale = H / 0.25
     coat_imgs = []
     ncoats = len(CO.COATS[BREED]) if not QUICK else 1
+    gen_px = detail = None
+    if GEN and gen_img is not None:
+        # the generated texture is the first coat; the others are painted and take its fine detail (the hairs, the
+        # shading between them) as a high-pass of its brightness
+        gen_px = image_array(gen_img, TEX)
+        if gen_img.colorspace_settings.name == "sRGB":
+            gen_px = np.where(gen_px <= 0.04045, gen_px / 12.92, ((gen_px + 0.055) / 1.055) ** 2.4)
+        lum = gen_px @ np.array([0.2126, 0.7152, 0.0722])
+        k = 9
+        pad = np.pad(lum, k, mode="edge")
+        cs = pad.cumsum(0).cumsum(1)
+        box = (cs[2 * k:, 2 * k:] - cs[:-2 * k, 2 * k:] - cs[2 * k:, :-2 * k] + cs[:-2 * k, :-2 * k]) / (2 * k) ** 2
+        detail = np.clip(lum / np.maximum(box[:TEX, :TEX], 1e-3), 0.55, 1.6)
     for ci in range(ncoats):
-        rgb = np.zeros((TEX, TEX, 3))
-        rgb[m] = CO.paint(BREED, ci, At, scale)
-        rgb = bleed(rgb, cov)
+        if gen_px is not None and ci == 0:
+            rgb = gen_px.copy()
+        else:
+            rgb = np.zeros((TEX, TEX, 3))
+            rgb[m] = CO.paint(BREED, ci, At, scale)
+            rgb = bleed(rgb, cov)
+            if detail is not None:
+                rgb = rgb * detail[..., None]
         coat_imgs.append(save_png("T_%s_%s" % (BREED, CO.COATS[BREED][ci]), rgb))
         log("coat", CO.COATS[BREED][ci])
+    if GEN and high is not None:
+        bake_normal(high, body, TEX, "T_%s_Normal" % BREED)
+        bpy.data.objects.remove(high)
+        log("normal baked %.1fs" % (time.time() - t0))
     for ci in range(len(CO.EYES[BREED]) if not QUICK else 1):
         save_png("T_%s_Eye_%d" % (BREED, ci), CO.eye_texture(BREED, ci))
     R, G = strand_texture()
@@ -731,12 +882,19 @@ def main():
     mat_body = body_material(coat_imgs[0])
     strand_scale = B.get("strand_scale", 9.0 if CAT else 7.0)
     mat_fur = fur_material(coat_imgs[0], strands, strand_scale)
+    proxy = None
+    if GEN:
+        proxy = copy_object(lods[2], "ShellProxy")
+        proxy_W, proxy_A = WL[2], AL[2]
     for li, o in enumerate(lods):
         o.data.materials.append(mat_body)
         o.data.materials.append(mat_fur)
         L, Cc = fur_field(AL[li])
         W = WL[li]
-        if LOD_SHELLS[li]:
+        if LOD_SHELLS[li] and proxy is not None:
+            Lp, Cp = fur_field(proxy_A)
+            W = add_shells_from(o, proxy, LOD_SHELLS[li], Lp, Cp, W, proxy_W)
+        elif LOD_SHELLS[li]:
             W = add_shells(o, LOD_SHELLS[li], L, Cc, W)
         skin_to(o, arm, W)
         o.name = "LOD%d_SK_%s" % (li, BREED)
@@ -746,7 +904,9 @@ def main():
     eye_img = bpy.data.images.load(os.path.join(OUT, "T_%s_Eye_0.png" % BREED))
     eye_mat = body_material(eye_img)
     eye_mat.name = "Eye"
-    for ob, bone in eyes():
+    if proxy is not None:
+        bpy.data.objects.remove(proxy)
+    for ob, bone in ([] if GEN else eyes()):
         ob.data.materials.append(eye_mat)
         skin_to(ob, arm, {bone: np.ones(len(ob.data.vertices))})
     log("built %.1fs" % (time.time() - t0), "LOD0 with shells", sum(len(p.vertices) - 2 for p in lods[0].data.polygons), "tris")

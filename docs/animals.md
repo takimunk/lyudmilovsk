@@ -74,6 +74,15 @@ when they frighten it; it is kept with the save.
 
 ## Looks
 
+**Since 2026-10-25 the bodies are generated** (Dima's ask): hi3d multi-view pictures and v3.0 models, the requests and
+outputs pinned in `blender/animals/gen/<Breed>/gen.json` and `model.json` (the raw 2M-triangle `model.glb` stays local).
+`build_animal.py <Breed> --gen` cleans the model (welds, cuts fins, fills holes), turns and scales it into the breed's
+frame and fits the breed's skeleton onto it (`gen_fit.py`: the paws, the leg columns, the nose, the tail along its own
+centre line), decimates it to 14k (LODs 12k with shells, 1.8k, 0.7k from a 400k copy), bakes that copy's detail into a
+normal map, keeps the generated texture as the first coat and paints the others carrying its fine detail, and grows 6
+fur shells from the 1.8k copy. The clips, the simulation and the sculpted fallback (without `--gen`) are unchanged.
+
+
 Bodies are sculpted from signed-distance primitives over each breed's skeleton (a lofted trunk, a thigh mass, the
 shank, paws with four toes; the cat's round head with whisker pads; a dog's head as a lofted wedge; eyes in sockets,
 ears with a hollow, a mouth slit so the jaw can open), meshed with OpenVDB and decimated to four LODs sharing one UV

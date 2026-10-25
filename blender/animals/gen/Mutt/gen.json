@@ -1,0 +1,46 @@
+{
+ "breed": "Mutt",
+ "date": "2026-10-25",
+ "requested_by": "Dima (replace the cat and dog models with hi3d ones)",
+ "views": {
+  "service": "hi3d MCP",
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Photorealistic small mongrel dog, 35 cm at the withers: short legs, compact body, ginger-red short coat with white chest, white paws and a white muzzle blaze, soft half-drop ears folded at the tips, dark eyes, black nose. Neutral rigging pose: standing squarely on all four legs, legs straight and vertical, slightly apart, paws flat, back level, head straight forward, mouth closed, tail held straight out behind horizontally. Full body in frame, orthographic-like view, even soft studio light, no shadows, plain pure white background, nothing else in the picture.",
+  "task_id": "1683212af0c34de79692d89dc3850c86",
+  "credits": 8
+ },
+ "edits": [],
+ "model": {
+  "service": "hi3d MCP",
+  "tool": "quote_generation + create_generation",
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "source_images": [
+   {
+    "task_id": "1683212af0c34de79692d89dc3850c86",
+    "image_index": 0
+   },
+   {
+    "task_id": "1683212af0c34de79692d89dc3850c86",
+    "image_index": 1
+   },
+   {
+    "task_id": "1683212af0c34de79692d89dc3850c86",
+    "image_index": 2
+   },
+   {
+    "task_id": "1683212af0c34de79692d89dc3850c86",
+    "image_index": 3
+   }
+  ],
+  "task_id": "622a217ab7f94f418162e267e6505236",
+  "credits": 65
+ },
+ "note": "Grid rule exception: hi3d's own multi-view task returns four separate views per animal, the only upload-free way into its 3D (game-assets skill)."
+}

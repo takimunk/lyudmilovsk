@@ -79,7 +79,11 @@ def import_texture(path, dest, name, linear=False):
     t = unreal.load_asset("%s/%s" % (dest, name))
     if t is None:
         raise RuntimeError("texture import failed: " + path)
-    if linear:
+    if linear == "normal":
+        t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+        t.set_editor_property("srgb", False)
+        t.set_editor_property("flip_green_channel", True)   # Blender (OpenGL) -> Unreal (DirectX)
+    elif linear:
         t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_MASKS)
         t.set_editor_property("srgb", False)
     else:
@@ -95,7 +99,8 @@ DEFAULTS = {}
 def default_textures():
     tmp = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Saved", "animals_defaults")
     os.makedirs(tmp, exist_ok=True)
-    for name, rgba, linear in (("Albedo", (128, 110, 90, 255), False), ("Strands", (200, 128, 0, 255), True)):
+    for name, rgba, linear in (("Albedo", (128, 110, 90, 255), False), ("Strands", (200, 128, 0, 255), True),
+                               ("Normal", (128, 128, 255, 255), "normal")):
         f = os.path.join(tmp, "T_AnimalDefault_%s.png" % name)
         png_rgba(f, 4, 4, rgba)
         DEFAULTS[name] = import_texture(f, MATS, "T_AnimalDefault_%s" % name, linear)
@@ -147,6 +152,8 @@ def make_masters():
     mel.connect_material_expressions(alb, "RGB", mul, "A")
     mel.connect_material_expressions(scalar(m, "SkinDark", 0.72, -700, 250), "", mul, "B")
     mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    nrm = tex_param(m, "Normal", -700, 450, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(const(m, 0.9, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(m, 0.25, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
     mel.recompile_material(m)
@@ -197,6 +204,8 @@ def make_masters():
     mel.connect_material_expressions(tint, "", cu, "Tint")
     mel.connect_material_property(cu, "", unreal.MaterialProperty.MP_BASE_COLOR)
     mel.connect_material_property(cu, "Mask", unreal.MaterialProperty.MP_OPACITY_MASK)
+    fn = tex_param(f, "Normal", -900, 900, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    mel.connect_material_property(fn, "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(const(f, 0.82, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(f, 0.22, -500, 400), "", unreal.MaterialProperty.MP_SPECULAR)
     mel.recompile_material(f)
@@ -229,6 +238,9 @@ def do_textures(breed):
     for i in range(rig["eyes"]):
         import_texture(os.path.join(src, "T_%s_Eye_%d.png" % (breed, i)), dest, "T_%s_Eye_%d" % (breed, i))
     import_texture(os.path.join(src, "T_%s_Strands.png" % breed), dest, "T_%s_Strands" % breed, linear=True)
+    nf = os.path.join(src, "T_%s_Normal.png" % breed)
+    if os.path.exists(nf):
+        import_texture(nf, dest, "T_%s_Normal" % breed, linear="normal")
     eal.save_directory(dest)
     log("%s textures: %d coats, %d eyes" % (breed, len(rig["coats"]), rig["eyes"]))
 
@@ -275,10 +287,12 @@ def do_import(breed):
     eye_m = unreal.load_asset(MATS + "/M_AnimalEye")
     strands = unreal.load_asset("%s/T_%s_Strands" % (dest, breed))
     first = {}
+    nrm = unreal.load_asset("%s/T_%s_Normal" % (dest, breed)) if eal.does_asset_exist("%s/T_%s_Normal" % (dest, breed)) else None
+    extra = {"Normal": nrm} if nrm else {}
     for coat in rig["coats"]:
         alb = unreal.load_asset("%s/T_%s_%s" % (dest, breed, coat))
-        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, {"Albedo": alb})
-        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, {"Albedo": alb, "Strands": strands}, {"StrandScale": float(rig["strand_scale"]) * 1.6})
+        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, dict({"Albedo": alb}, **extra))
+        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, dict({"Albedo": alb, "Strands": strands}, **extra), {"StrandScale": float(rig["strand_scale"]) * 1.6})
         first.setdefault("Body", b)
         first.setdefault("Fur", f)
     for i in range(rig["eyes"]):

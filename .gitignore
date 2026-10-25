@@ -47,3 +47,5 @@ blender/characters/_grids/
 
 # the cable car resolved against this checkout's terrain (python3 tools/transport.py; build_scene01.sh makes it)
 unreal/Lyudmilovsk/Content/Transport/network_built.json
+blender/animals/gen/*/model.glb
+blender/animals/gen/*/views/
