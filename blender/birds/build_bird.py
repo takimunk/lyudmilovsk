@@ -663,9 +663,9 @@ def beak_section(t):
     Lb = 0.027 * M["beak_len"]
     z = BEAK_Z0 + t * Lb
     taper = max(0.0, 1 - t ** M["beak_round"]) ** M["beak_taper"]   # beak_round > 1: a fuller, convex bill
-    hw = (0.0060 * taper + 0.0002) * M["beak_width"]
-    hu = (0.0062 * taper + 0.0002) * M["beak_depth"] * 0.55
-    hd = (0.0062 * taper + 0.0002) * M["beak_depth"] * 0.45
+    hw = (0.0064 * taper + 0.0002) * M["beak_width"]
+    hu = (0.0072 * taper + 0.0002) * M["beak_depth"] * 0.55
+    hd = (0.0072 * taper + 0.0002) * M["beak_depth"] * 0.45
     cy = 0.0577 - 0.0016 * t - 0.0006 * t * t - M["beak_curve"] * t ** 2.2
     if M["beak_gonys"] > 0:  # gulls: the lower mandible deepens to an angle near the tip
         hd *= 1 + M["beak_gonys"] * math.exp(-((t - 0.72) / 0.12) ** 2)
@@ -743,7 +743,14 @@ def build_beak_eyes(sb, lod=0):
     sb.w = {"body": 1.0}
 
 
-def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True):
+def body_uv_at(z, th):
+    """The body cell's texel for a spot on the body (template z, angle): tubes that should look like that plumage."""
+    zs = body_zs()
+    v = float(np.interp(z, zs, np.linspace(0, 1, len(zs))))
+    return ATL.uv_rect("body", (th % (2 * math.pi)) / (2 * math.pi), v)
+
+
+def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True, uv_const=None):
     rings = []
     for i, p in enumerate(pts):
         d = nrm(pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)])
@@ -756,15 +763,17 @@ def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True):
     for i in range(len(rings) - 1):
         for k in range(n):
             uv = None
-            if uv_key:
+            if uv_const is not None:
+                uv = [uv_const] * 4
+            elif uv_key:
                 uv = [ATL.uv_rect(uv_key, k / n, i / len(rings)), ATL.uv_rect(uv_key, k / n, (i + 1) / len(rings)),
                       ATL.uv_rect(uv_key, (k + 1) / n, (i + 1) / len(rings)), ATL.uv_rect(uv_key, (k + 1) / n, i / len(rings))]
             sb.f((rings[i][k], rings[i + 1][k], rings[i + 1][k + 1], rings[i][k + 1]), uv, mat)
     if close:
         c0 = sb.v(pts[0], weights[0])
         c1 = sb.v(pts[-1], weights[-1])
-        e0 = [ATL.uv_rect(uv_key or "legs", 0.5, 0.0)] * 3
-        e1 = [ATL.uv_rect(uv_key or "legs", 0.5, 1.0)] * 3
+        e0 = [uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 0.0)] * 3
+        e1 = [uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 1.0)] * 3
         for k in range(n):
             sb.f((c0, rings[0][k + 1], rings[0][k]), e0, mat)
             sb.f((c1, rings[-1][k], rings[-1][k + 1]), e1, mat)
@@ -783,13 +792,14 @@ def build_legs(sb, lod=0):
                 tube(sb, [foot, foot + d * 0.018 * M["toes"]], [0.0013 * lt, 0.001 * lt], [{f"toes.{side}": 1}] * 2, BARE, n=3, uv_key="legs", close=False)
             continue
         tube(sb, [hip, knee, ankle + V(0, 0.002, 0) * M["shin"]], [0.006, 0.0052 * lt, 0.0034 * lt],
-             [{f"thigh.{side}": 1}, {f"thigh.{side}": 0.5, f"shin.{side}": 0.5}, {f"shin.{side}": 1}], PLUMAGE, n=10, uv_key="body")
+             [{f"thigh.{side}": 1}, {f"thigh.{side}": 0.5, f"shin.{side}": 0.5}, {f"shin.{side}": 1}], PLUMAGE, n=10,
+             uv_const=body_uv_at(-0.012, -math.pi * 0.35))   # the flank's plumage
         # feather fringe over the knee so the "trousers" read as feathers
         for k in range(5):
             a = 2 * math.pi * k / 5
             r = knee + V(sx * 0.004 * math.cos(a), -0.001, 0.004 * math.sin(a))
-            card(sb, r, nrm(ankle - knee + V(0, 0, 0)), nrm(V(sx * math.cos(a), 0, math.sin(a))), 0.010 * M["shin"] ** 0.5, 0.008, tro,
-                 {f"shin.{side}": 1}, segs=2, lift=0.0006)
+            card(sb, r, nrm(ankle - knee + V(0, 0, 0)), nrm(V(sx * math.cos(a), 0, math.sin(a))), 0.010 * M["shin"] ** 0.5 * M["trousers"],
+                 0.008 * M["trousers"] ** 0.5, tro, {f"shin.{side}": 1}, segs=2, lift=0.0006 * M["trousers"])
         pts = [ankle + (foot - ankle) * t for t in np.linspace(0, 1, 9)]
         rad = [(0.0021 - 0.0003 * t + 0.00018 * (i % 2)) * lt for i, t in enumerate(np.linspace(0, 1, 9))]
         tube(sb, pts, rad, [{f"tarsus.{side}": 1}] * 9, BARE, n=8, uv_key="legs")
@@ -817,7 +827,12 @@ def build_legs(sb, lod=0):
 
 
 # ---------------------------------------------------------------- feather cards
+SKIP = set(os.environ.get("BIRD_SKIP", "").split(","))   # debugging: leave out cards of these kinds
+
+
 def card(sb, root, d, up, Lc, Wc, key, weights, segs=5, camber=0.0, flip=False, lift=0.0, tw=0.0, mat=PLUMAGE):
+    if key.split(":")[0] in SKIP:
+        return
     d, up = nrm(d), nrm(up)
     side = nrm(np.cross(d, up))
     up = nrm(np.cross(side, d))
@@ -856,7 +871,9 @@ def build_wing(sb, lod=0):
            {"forearm.L": 0.5, "hand.L": 0.5}, {"hand.L": 1}, {"hand.L": 1}]
     kr = k ** 0.6
     rad = [(0.0055, 0.004), (0.0058, 0.0042), (0.006, 0.004), (0.0055, 0.0036), (0.005, 0.0033), (0.0045, 0.003), (0.0035, 0.0026), (0.0012, 0.0012)]
-    tube(sb, chain, [(r[1] * kr, r[0] * kr) for r in rad], wts, PLUMAGE, n=4 if lod >= 3 else 10, uv_key="body")
+    chain = [c + V(0, -0.0012, 0) * kr for c in chain]
+    tube(sb, chain, [(r[1] * kr * 0.62, r[0] * kr * 0.62) for r in rad], wts, PLUMAGE, n=4 if lod >= 3 else 10,
+         uv_const=body_uv_at(0.015, math.pi * 0.3))   # the arm wears the shoulder's plumage
     fseg = 2 if lod >= 3 else None
     proots = [p_root(i) for i in range(P_N)]
     sroots = [s_root(i) for i in range(S_TOTAL)]
@@ -903,8 +920,8 @@ def build_wing(sb, lod=0):
     for row in range(2 if lod < 3 else 0):   # scapulars: two overlapping rows from the shoulder back over the folded wing's base
         for j in range(5):
             r = W["SHOULDER"] + V(-0.006 + 0.0035 * j + 0.002 * row, 0.0058 - 0.0008 * row, 0.006 - 0.007 * row) * M["body_w"]
-            card(sb, r, nrm(V(0.04 * j - 0.06, -0.06, -1)), V(0.25, 1, 0), (0.020 - 0.002 * row) * M["body_len"] * M["fluff"],
-                 0.0095 * M["body_w"], cell("scapular", tract("scapular"), j % 2), {"body": 1.0}, camber=-0.001, segs=2)
+            card(sb, r, nrm(V(0.04 * j - 0.06, -0.06 - 0.03 * row, -1)), V(0.35 + 0.1 * j, 1, 0), (0.018 - 0.002 * row) * M["body_len"] * M["fluff"],
+                 0.0085 * M["body_w"], cell("contour", tract("scapular"), j % 2), {"body": 1.0}, camber=-0.0035, tw=0.0008 * (j - 2), segs=3)
     sb.mirror_from(sv, sf, swap_side)
 
 
@@ -951,7 +968,7 @@ def build_contour(sb, lod=0):
             th = 2 * math.pi * (j + phase + rng.uniform(-0.2, 0.2)) / kk
             zz = z + rng.uniform(-0.15, 0.15) * Lc
             p = surf(zz, th)
-            if any(np.linalg.norm(p - V(sx * EYE_T[0], EYE_T[1], EYE_T[2])) < 0.0037 * M["eye"] for sx in (1, -1)):
+            if any(np.linalg.norm(p - V(sx * EYE_T[0], EYE_T[1], EYE_T[2])) < 0.0050 * M["eye"] for sx in (1, -1)):   # keep the eye clear
                 continue
             if zz > 0.0785:
                 continue
@@ -1600,7 +1617,7 @@ def main():
         return [b[0] * 100, -b[1] * 100, b[2] * 100]
     rig = {"species": SPECIES, "scale": S, "eye_l": ue(warp(EYE_T)), "eye_r": ue(warp(EYE_T * V(-1, 1, 1))),
            "head": ue(BONES["head"][0]), "lengthCm": SP["lengthCm"], "wingspanCm": SP["wingspanCm"], "tris": len(ob.data.loop_triangles),
-           "atlas": ATL.size, "clips": sorted(Acts)}
+           "atlas": ATL.size, "clips": sorted(Acts), "gloss_hue": M.get("gloss_hue", 0.0)}
     json.dump(rig, open(os.path.join(OUTDIR, f"{SPECIES}_rig.json"), "w"), indent=1)
     if "--debug-top" in FLAGS:
         show(arm, Acts["Idle"], 0)

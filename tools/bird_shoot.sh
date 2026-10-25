@@ -5,7 +5,7 @@ set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
 OUT="${1:?out dir}"
-while pgrep -f "UnrealEditor.*-game" >/dev/null; do sleep 5; done
+while pgrep -f "MacOS/UnrealEditor .*-game" >/dev/null; do sleep 5; done
 mkdir -p "$OUT"
 BIRD_SHOTS="$OUT" BIRD_CAMS="${2:-}" "$UE" "$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject" /Game/Dev/L_BirdSpecies -game -RenderOffscreen \
     -ResX=1280 -ResY=720 -windowed -dpcvars=lyud.MainMenuOnStart=0 -abslog="$OUT/shoot.log" \

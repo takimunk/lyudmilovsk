@@ -12,8 +12,8 @@ plumage:
 """
 
 MORPH_DEFAULTS = dict(
-    body_len=1.0, body_w=1.0, body_h=1.0, belly=1.0, head=1.0, neck=1.0, neck_up=0.0, throat=1.0, crown_h=1.0, flat_crown=1.0,
-    eye=1.0, eyering_w=0.0, beak_round=1.0,
+    body_len=1.0, body_w=1.0, body_h=1.0, belly=1.0, head=1.0, neck=1.0, neck_up=0.0, throat=1.0, crown_h=1.0, flat_crown=0.3,
+    eye=1.15, eyering_w=0.0, beak_round=1.0, trousers=1.0,
     beak_len=1.0, beak_depth=1.0, beak_width=1.0, beak_taper=0.85, beak_curve=0.0, beak_hook=0.0, beak_gonys=0.0,
     arm=1.0, hand=1.0, prim=1.0, prim_profile=[1.0] * 9, prim_width=1.0, prim_angle0=70.0, prim_fan=60.0, sec=1.0, sec_width=1.0, covert=1.0,
     tail=1.0, tail_shape="square", fork=0.0, streamer=0.0, tail_width=1.0, tail_fan=1.0,
@@ -88,7 +88,7 @@ species("GreatTit", dict(body_len=0.82, body_w=1.08, body_h=1.08, head=1.32, nec
             "nape_spot": st("#e8ebe4"),
             "flight": st("#3a434c", ("fringe", "#8fa2a8", 0.14, "outer")),
             "tert": st("#3a434c", ("fringe", "#d8e0dc", 0.12, "all")),
-            "gcovert": st("#3e4a56", ("tip", "#f2f2ee", 0.32)),
+            "gcovert": st("#3e4a56", ("tip", "#f2f2ee", 0.22)),
             "covert": st("#56708a", ("fringe", "#62809a", 0.15, "all")),
             "tail": st("#3c4652", ("fringe", "#7e94a8", 0.12, "outer")),
             "tail_outer": st("#3c4652", ("outer", "#f2f2ee")),
@@ -127,7 +127,7 @@ species("Rook", dict(CORVID, beak_len=1.45, beak_depth=1.6, beak_width=1.2, beak
     },
     regions={"upper": "black", "under": "black_dull", "head": "black", "underwing": "under", "primary": "flight", "tail": "flight",
              "trousers": "trousers", "flank": "black_dull"},
-    rules=[(lambda q: q.head and q.region in ("lore", "chin", "malar") and q.dz > 0.0005 and q.dy < 0.001, "face"),
+    rules=[(lambda q: q.head and q.region in ("lore", "chin", "malar") and q.dz > 0.0028 and q.dy < 0.0, "face"),
            (lambda q: q.head and q.region == "throat" and q.z > 0.068, "face")],
     bare=dict(beak="#3a3a40", beak_tip="#2a2a30", lower="#3a3a40", base_skin="#b4aea8", base_skin_len=0.22, mouth="#6a4a50",
               legs="#18181c", iris="#120e0c", eyering="#18181c", beak_rough=0.4),
@@ -147,7 +147,7 @@ species("HoodedCrow", dict(CORVID, body_w=1.12, beak_len=1.3, beak_depth=2.0, be
     bare=dict(beak="#141416", legs="#141416", iris="#120e0c", eyering="#141416", mouth="#5a4048"),
 ))
 species("Jackdaw", dict(CORVID, body_len=0.96, head=1.18, crown_h=1.08, flat_crown=0.2, beak_len=0.82, beak_depth=1.5, beak_width=1.25,
-                        beak_curve=0.0008, tail=1.05, eye=1.1, gloss_hue=0.6, tarsus=1.1), dict(
+                        beak_curve=0.0008, tail=1.05, eye=1.25, gloss_hue=0.6, tarsus=1.1), dict(
     styles={
         "black": st("#121216", gloss=0.45, rough=0.4),
         "slate": st("#2c2d33", ("down", "#1c1c22"), gloss=0.15, rough=0.5),
@@ -485,12 +485,12 @@ species("TreeSparrow", dict(SPARROW, body_len=0.86, head=1.12), dict(
 # ---------------------------------------------------------------- Thrushes and chats
 THRUSH = dict(body_len=1.0, body_w=1.0, head=1.02, beak_len=0.95, beak_depth=0.9, beak_width=0.85, beak_curve=0.0004, arm=0.95, hand=0.92,
               prim_profile=ROUNDED, tail=1.12, tail_shape="square", tarsus=1.25, leg_thick=1.0, toes=1.05, fluff=1.05, perch_pitch=30,
-              perch_neck=-4, perch_tail=-14, peck_depth=46, eye=1.12, call_gape=26)
+              perch_neck=-4, perch_tail=-14, peck_depth=46, eye=1.3, call_gape=26)
 species("SongThrush", dict(THRUSH), dict(
     styles={
         "brown": st("#8a6c4e", ("down", "#5a4a3a")),
-        "breast": st("#ead3a0", ("spot", "#3a2a1c", 0.3, 0.7), ("down", "#8a8070")),
-        "belly": st("#f4ecdc", ("spot", "#3a2a1c", 0.26, 0.72)),
+        "breast": st("#ead3a0", ("spot", "#3a2a1c", 0.17, 0.8), ("down", "#8a8070")),
+        "belly": st("#f4ecdc", ("spot", "#3a2a1c", 0.14, 0.82)),
         "vent": st("#f4ecdc"),
         "face": st("#c8a878", ("streak", "#6a5038", 0.3)),
         "malar": st("#3a2a1c"),
@@ -536,7 +536,7 @@ species("Blackbird", dict(THRUSH, body_len=1.02, tail=1.3, tail_shape="round", p
     bare=dict(beak="#f0a020", beak_tip="#f4b030", legs="#3a2e26", iris="#1a120c", eyering="#f0a020", mouth="#e8a030"),
 ))
 species("Robin", dict(THRUSH, body_len=0.82, body_w=1.08, body_h=1.08, head=1.15, neck=0.7, beak_len=0.68, beak_depth=0.85, beak_width=0.8,
-                      tail=1.05, tarsus=1.2, eye=1.25, fluff=1.25, perch_pitch=28), dict(
+                      tail=1.05, tarsus=1.2, eye=1.42, fluff=1.25, perch_pitch=28), dict(
     styles={
         "orange": st("#e2702e", ("down", "#8a5a3a"), ("grad", "#e8803a", 0.3)),
         "olive": st("#7e6a4c", ("down", "#5a4a3a")),
@@ -689,3 +689,60 @@ species("Peregrine", dict(RAPTOR, body_w=1.12, arm=1.1, hand=1.15, prim_profile=
     rules=[(lambda q: q.head and q.region == "ear" and q.dz > -0.004 and q.dy > -0.004, "hood")],
     bare=dict(beak="#4a5a6a", beak_tip="#1a1a1e", cere="#e8b828", legs="#e8b828", iris="#1a120c", eyering="#e8c040", mouth="#e8a0a0"),
 ))
+
+
+# ---------------------------------------------------------------- bills and heads, calibrated against photos (bill length to head length)
+# (beak_len, beak_depth, beak_width, beak_round, extra)
+BILLS = {
+    "Starling": (1.0, 0.8, 0.8, 1.0, {}),
+    "Rook": (1.12, 1.7, 1.3, 1.25, dict(beak_curve=0.0008, beak_taper=0.9)),
+    "HoodedCrow": (1.05, 2.0, 1.4, 1.3, dict(beak_curve=0.0018)),
+    "Jackdaw": (0.62, 1.6, 1.3, 1.4, dict(beak_curve=0.0008)),
+    "Magpie": (0.82, 1.7, 1.3, 1.3, dict(beak_curve=0.0014)),
+    "FeralPigeon": (0.5, 0.95, 0.9, 1.2, {}),
+    "WoodPigeon": (0.5, 0.95, 0.9, 1.2, {}),
+    "HerringGull": (1.12, 2.0, 1.15, 1.3, dict(beak_hook=0.9, beak_gonys=0.8)),
+    "CommonGull": (0.82, 1.3, 1.0, 1.3, dict(beak_hook=0.5, beak_gonys=0.3)),
+    "BlackHeadedGull": (0.92, 1.1, 0.9, 1.2, dict(beak_hook=0.3, beak_gonys=0.1)),
+    "GreatTit": (0.36, 1.35, 1.2, 1.8, {}),
+    "BlueTit": (0.28, 1.35, 1.2, 1.8, {}),
+    "Goldfinch": (0.5, 1.5, 1.3, 1.6, dict(beak_taper=0.8)),
+    "Chaffinch": (0.5, 1.5, 1.35, 1.6, {}),
+    "Bullfinch": (0.38, 2.2, 1.9, 2.2, {}),
+    "HouseSparrow": (0.46, 1.9, 1.6, 2.0, {}),
+    "TreeSparrow": (0.42, 1.8, 1.5, 2.0, {}),
+    "SongThrush": (0.6, 1.1, 1.0, 1.2, {}),
+    "Fieldfare": (0.64, 1.2, 1.05, 1.2, {}),
+    "Blackbird": (0.64, 1.25, 1.1, 1.2, {}),
+    "Robin": (0.44, 1.0, 1.0, 1.2, {}),
+    "WhiteWagtail": (0.55, 0.85, 0.85, 1.1, {}),
+    "Waxwing": (0.42, 1.4, 1.5, 1.6, {}),
+    "CommonSwift": (0.2, 1.0, 2.0, 1.4, {}),
+    "BarnSwallow": (0.22, 1.0, 1.9, 1.4, {}),
+    "SandMartin": (0.22, 0.9, 1.6, 1.4, {}),
+    "Cormorant": (1.7, 1.0, 0.9, 1.1, dict(beak_hook=1.0)),
+    "Sparrowhawk": (0.55, 1.9, 1.4, 1.3, dict(beak_curve=0.003, beak_hook=1.4)),
+    "Peregrine": (0.55, 2.0, 1.5, 1.3, dict(beak_curve=0.003, beak_hook=1.4)),
+}
+# (head, neck, crown_h, throat): small birds round, big-headed and neckless; pigeons a small head on a plump breast
+HEADS = {
+    "GreatTit": (1.42, 0.45, 1.15, 1.2), "BlueTit": (1.45, 0.42, 1.15, 1.2),
+    "Goldfinch": (1.3, 0.5, 1.12, 1.15), "Chaffinch": (1.25, 0.55, 1.1, 1.12), "Bullfinch": (1.35, 0.45, 1.12, 1.2),
+    "HouseSparrow": (1.32, 0.5, 1.12, 1.15), "TreeSparrow": (1.32, 0.5, 1.12, 1.15), "Robin": (1.32, 0.5, 1.1, 1.18),
+    "SongThrush": (1.15, 0.72, 1.08, 1.1), "Fieldfare": (1.15, 0.72, 1.08, 1.1), "Blackbird": (1.15, 0.72, 1.08, 1.1),
+    "Rook": (1.18, 0.75, 1.12, 1.15), "HoodedCrow": (1.2, 0.75, 1.12, 1.15), "Jackdaw": (1.22, 0.7, 1.12, 1.12), "Magpie": (1.15, 0.72, 1.1, 1.1),
+    "FeralPigeon": (1.05, 0.95, 1.08, 1.3), "WoodPigeon": (1.02, 0.95, 1.08, 1.3),
+    "HerringGull": (1.18, 0.8, 1.08, 1.2), "CommonGull": (1.2, 0.8, 1.12, 1.15), "BlackHeadedGull": (1.12, 0.8, 1.08, 1.12),
+    "WhiteWagtail": (1.12, 0.68, 1.05, 1.08), "Waxwing": (1.15, 0.6, 1.08, 1.12),
+    "CommonSwift": (1.2, 0.45, 1.05, 1.12), "BarnSwallow": (1.2, 0.45, 1.05, 1.12), "SandMartin": (1.2, 0.45, 1.05, 1.12),
+    "Starling": (1.05, 0.85, 1.02, 1.05), "Sparrowhawk": (1.15, 0.6, 1.05, 1.12), "Peregrine": (1.18, 0.6, 1.05, 1.15),
+}
+for _n, (_l, _d, _w, _r, _x) in BILLS.items():
+    SPECIES[_n]["morph"].update(dict(beak_len=_l, beak_depth=_d, beak_width=_w, beak_round=_r, **_x))
+for _n, (_h, _k, _c, _t) in HEADS.items():
+    SPECIES[_n]["morph"].update(dict(head=_h, neck=_k, crown_h=_c, throat=_t))
+SPECIES["Rook"]["morph"]["trousers"] = 2.2
+SPECIES["Magpie"]["morph"].update(tail=3.0)
+SPECIES["CommonSwift"]["morph"].update(perch_pitch=78, perch_neck=8, perch_tail=-28)
+SPECIES["FeralPigeon"]["morph"].update(body_h=1.22, belly=1.05)
+SPECIES["WoodPigeon"]["morph"].update(body_h=1.22, belly=1.05)

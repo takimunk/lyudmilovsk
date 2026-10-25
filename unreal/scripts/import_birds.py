@@ -82,7 +82,7 @@ GLOSS_HLSL = """
 float f = saturate(1 - abs(dot(normalize(N), normalize(V))));
 float ph = Hue + f * 0.45;
 float3 film = 0.5 + 0.5 * cos(6.2831853 * (ph + float3(0.0, 0.33, 0.67)));
-return Base + film * saturate(Gloss) * (0.035 + 0.16 * f * f);
+return Base + film * saturate(Gloss) * (0.004 + 0.07 * f * f * f);
 """
 
 
@@ -100,7 +100,7 @@ def make_master(name, plumage, eye=False):
         m.set_editor_property("dithered_lod_transition", True)
     else:
         m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_OPAQUE)
-        m.set_editor_property("two_sided", False)
+        m.set_editor_property("two_sided", True)   # bill halves and toe webs are open shells; the eyeball faces either way
         m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
     alb = tex_param(m, "Albedo", -900, -200, unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
     nrm = tex_param(m, "Normal", -900, 150, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
@@ -202,6 +202,22 @@ def material_instance(name, folder, parent, tex, hue):
         mel.set_material_instance_scalar_parameter_value(mi, "GlossHue", hue)
     eal.save_loaded_asset(mi)
     return mi
+
+
+def do_hues(ids):
+    """GlossHue on every species' plumage instances, from blender/birds/species_art.py (morph gloss_hue)."""
+    sys.path.insert(0, os.path.join(ROOT, "blender", "birds"))
+    import species_art as art
+    table = json.load(open(os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData", "species.json")))["species"]
+    for sid in ids or [t["id"] for t in table]:
+        hue = art.get(sid)["morph"].get("gloss_hue", 0.0) if sid in art.SPECIES else 0.0
+        for suffix in ("", "_Winter"):
+            p = "%s/%s/MI_%s_Plumage%s" % (BIRDS, sid, sid, suffix)
+            if eal.does_asset_exist(p):
+                mi = unreal.load_asset(p)
+                mel.set_material_instance_scalar_parameter_value(mi, "GlossHue", hue)
+                eal.save_loaded_asset(mi)
+        log("hue %s %.2f" % (sid, hue))
 
 
 TEX = (("albedo", "Albedo"), ("normal", "Normal"), ("params", "Params"), ("winter", "Albedo_Winter"))
@@ -357,6 +373,8 @@ def import_pose(path, dest, sid, pose, mis):
 step = (sys.argv[1:] or ["masters"])
 if step[0] == "masters":
     do_masters()
+elif step[0] == "hues":
+    do_hues(step[1:])
 elif step[0] == "textures":
     for sid in step[1:]:
         do_textures(sid)

@@ -197,8 +197,9 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
     else:
         shaft_c_arr = np.broadcast_to(shaft_c, col.shape)
     col = np.where(rach[..., None], shaft_c_arr, col)
-    height = np.where(rach, 1.4 if contour else 1.6, 0.0) + 0.25 * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
-    rough = np.full((h, w), max(0.5, style.get("rough", 0.62)))   # feathers are never mirror-like; gloss is the film tint
+    # a low shaft ridge (a tall one glints along the whole card: a white streak down the back)
+    height = np.where(rach, 0.45 if contour else 0.6, 0.0) + 0.25 * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
+    rough = np.full((h, w), max(0.6, style.get("rough", 0.74)))   # feathers are never mirror-like; gloss is the film tint
     irid = np.full((h, w), style.get("gloss", 0.0)) * np.clip(t * 1.4, 0, 1) * (a > 0)
     return np.clip(col, 0, 1), height, rough, irid
 

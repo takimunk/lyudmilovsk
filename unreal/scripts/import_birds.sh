@@ -14,3 +14,6 @@ for s in "$@"; do
     if [ "$s" = masters ]; then run masters; else run textures "$s"; run import "$s"; fi
 done
 git -C "$ROOT" checkout -q -- unreal/Lyudmilovsk/Lyudmilovsk.uproject 2>/dev/null || true
+# every species' gloss hue from blender/birds/species_art.py
+[ "$#" -gt 0 ] && run hues "$(echo "$@" | sed 's/masters//')"
+git -C "$ROOT" checkout -q -- unreal/Lyudmilovsk/Lyudmilovsk.uproject 2>/dev/null || true

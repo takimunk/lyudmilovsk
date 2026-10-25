@@ -25,10 +25,21 @@ if eal.does_asset_exist(LEVEL):
 elif not les.new_level(LEVEL):
     raise RuntimeError("could not create " + LEVEL)
 
+def get_ground():
+    """A lawn-coloured matte ground (BasicShapeMaterial tinted)."""
+    path = "/Game/Dev/MI_BirdGround"
+    mi = unreal.load_asset(path) if eal.does_asset_exist(path) else unreal.AssetToolsHelpers.get_asset_tools().create_asset(
+        "MI_BirdGround", "/Game/Dev", unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+    mi.set_editor_property("parent", unreal.load_asset("/Engine/BasicShapes/BasicShapeMaterial"))
+    unreal.MaterialEditingLibrary.set_material_instance_vector_parameter_value(mi, "Color", unreal.LinearColor(0.10, 0.13, 0.06, 1))
+    eal.save_loaded_asset(mi)
+    return mi
+
+
 ground = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, -50))
 ground.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))
 ground.set_actor_scale3d(unreal.Vector(400, 400, 1))
-grass = unreal.load_asset("/Engine/BasicShapes/BasicShapeMaterial")
+grass = get_ground()
 ground.static_mesh_component.set_material(0, grass)
 sun = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 800), unreal.Rotator(0, -38, 125))
 sun.set_actor_label("Sun")
@@ -42,10 +53,8 @@ eas.spawn_actor_from_class(unreal.ExponentialHeightFog, unreal.Vector(0, 0, 0))
 pp = eas.spawn_actor_from_class(unreal.PostProcessVolume, unreal.Vector(0, 0, 0))
 pp.set_editor_property("unbound", True)
 s = pp.get_editor_property("settings")
-s.set_editor_property("override_auto_exposure_method", True)
-s.set_editor_property("auto_exposure_method", unreal.AutoExposureMethod.AEM_MANUAL)
 s.set_editor_property("override_auto_exposure_bias", True)
-s.set_editor_property("auto_exposure_bias", 10.5)
+s.set_editor_property("auto_exposure_bias", -0.6)
 pp.set_editor_property("settings", s)
 eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(-500, 0, 100))
 
@@ -70,10 +79,17 @@ for sid in ids:
     for label, loc, rot in (("Side", (x, -d, L * 0.35), (0, -4, 90)),
                             ("Q34", (x + d * 0.75, -d * 0.75, L * 0.6), (0, -12, 135)),
                             ("Close", (x + L * 0.55, -L * 0.75, L * 0.5), (0, -12, 125)),
-                            ("Fly", (x - span * 0.2, -span * 1.6, 60.0 + span * 1.9), (0, -29, 90))):
+                            ("Fly", (x - span * 0.2, -span * 2.4, 60.0 + span * 2.2), (0, -26, 90))):
         cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(*loc), unreal.Rotator(*rot))
         cam.set_actor_label("%s_%s" % (label, sid))
         cam.camera_component.set_editor_property("field_of_view", 40.0)
+    if sid in ("Starling", "HouseSparrow", "HerringGull"):   # LOD check: the same bird from 0.5 to 100 m
+        for dm in (0.5, 2, 5, 15, 40, 100):
+            d = dm * 100.0
+            cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x + d * 0.5, -d * 0.866, L * 0.4 + d * 0.06),
+                                             unreal.Rotator(0, -3.4, 120))
+            cam.set_actor_label("Dist_%s_%06.1fm" % (sid, dm))
+            cam.camera_component.set_editor_property("field_of_view", 50.0)
     x += max(span, 60) * 1.6
 les.save_current_level()
 unreal.log_warning("BIRDS level saved with %d species" % len(ids))
