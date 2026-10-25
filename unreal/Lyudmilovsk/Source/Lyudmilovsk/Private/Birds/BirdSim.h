@@ -206,6 +206,14 @@ namespace LyudBirds
 		bool bClaimedBird = false;       // the player is a bird now: birds treat them as one
 	};
 
+	/** A ground animal birds watch out for: the animal life's cats and dogs (docs/animals.md), filled by the game every frame. */
+	struct FBeast
+	{
+		V3 Pos, Vel;
+		bool bCat = false;
+		bool bStalking = false;          // a cat creeping up low: hardly noticed until it is close
+	};
+
 	enum class EEvent : uint8_t { Notice, Turn, Watch, Call, Approach, Eat, Flee, Alarm, Song, Supplant, ChaseStart, Num };
 	const char* EventName(EEvent E);
 
@@ -245,6 +253,8 @@ namespace LyudBirds
 		std::vector<FGroup> Groups;
 		std::vector<FEvent> Events;     // this step's events (cleared by the caller)
 		FPlayer Player;
+		/** Cats and dogs (cleared and refilled by the game each frame); empty = none. */
+		std::vector<FBeast> Beasts;
 		FSightFn Sight;
 		/** Exact ground height at (X, Y) from the wrapper (a line trace); false = use the grid. */
 		std::function<bool(float X, float Y, float& Z)> Probe;
@@ -269,6 +279,8 @@ namespace LyudBirds
 		void Populate();
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
+		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */
+		int AddFlock(int Species, const V3& P, int Count, float Radius);
 		/** Ground height where there is no grid (a test level): flights keep above it. */
 		float NoGridZ = -43.f;
 		/** The clock jumped (developer mode, a loaded save): every group goes straight to where it would be now. */
@@ -311,6 +323,7 @@ namespace LyudBirds
 		void Move(FBird& B, float Dt);
 		void PerceivePlayer(FBird& B, float Dt);
 		void PerceiveBirds(FBird& B, float Dt);
+		void PerceiveBeasts(FBird& B, float Dt);
 		void GroupThink(FGroup& G, float Dt);
 		void PredatorThink(FPredator& P, float Dt);
 		void ScheduleOf(const FSpecies& S, float& Forage, int& Plan) const;

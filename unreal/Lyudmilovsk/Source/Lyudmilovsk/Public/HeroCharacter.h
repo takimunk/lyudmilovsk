@@ -65,6 +65,10 @@ public:
 	/** How far a reach wants the body down (0..1, UHeroReachComponent for low items); the body crouches to the deeper of this and the crouch. */
 	void SetReachCrouch(float Target) { ReachCrouchTarget = FMath::Clamp(Target, 0.f, 1.f); }
 
+	/** Narrows the view toward Zoom (1 the normal field of view, 0.6 a third closer), eased over a second or so: a bird
+	 *  eating from the palm is looked at closely. */
+	void SetViewZoom(float Zoom) { ViewZoomTarget = FMath::Clamp(Zoom, 0.3f, 1.f); }
+
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
 	TSoftObjectPtr<UInputAction> MoveAction;
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
@@ -126,4 +130,6 @@ private:
 	float CrouchAlpha = 0.f;
 	float ReachCrouchTarget = 0.f;
 	float ReachCrouch = 0.f;
+	float ViewZoomTarget = 1.f;
+	float ViewZoom = 1.f;
 };

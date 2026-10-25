@@ -558,15 +558,26 @@ void UHeroReachComponent::TickHold(float DeltaTime)
 			PushPose();
 		}
 		HoldEye = FVector::ZeroVector;
+		HoldLookValid = false;
 		return;
 	}
 	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
 	const FRotator Look = PC ? PC->GetControlRotation() : Hero->GetActorRotation();
 	const float Pitch = FMath::Clamp(FRotator::NormalizeAxis(Look.Pitch), -45.f, 20.f) * Hold.PitchFollow;
 	// the eyes bob with the walk; the hand follows them softly, as an arm held out does
-	const FVector Eye = Hero->EyeLocation();
-	HoldEye = HoldEye.IsZero() ? Eye : FMath::VInterpTo(HoldEye, Eye, DeltaTime, 6.f);
-	const FTransform Frame(FRotator(Pitch, Look.Yaw, 0.f), HoldEye);
+	// (relative to the body: the arm keeps up with a walk or a run, only the head's bob is smoothed)
+	const FTransform Self = Hero->GetActorTransform();
+	const FVector EyeLocal = Self.InverseTransformPositionNoScale(Hero->EyeLocation());
+	HoldEye = HoldEye.IsZero() ? EyeLocal : FMath::VInterpTo(HoldEye, EyeLocal, DeltaTime, 6.f);
+	// the arm swings after a turn of the view instead of jumping with it (a jerk of the mouse would throw the hand, and what
+	// lies on it, half a metre in one frame)
+	const FRotator Want(Pitch, Look.Yaw, 0.f);
+	// it swings fast and never trails the view by more than ~25 degrees, so the palm stays in sight
+	HoldLook = HoldLookValid ? FMath::RInterpTo(HoldLook, Want, DeltaTime, 12.f) : Want;
+	const FRotator Lag = (Want - HoldLook).GetNormalized();
+	HoldLook = Want - FRotator(FMath::Clamp(Lag.Pitch, -25.f, 25.f), FMath::Clamp(Lag.Yaw, -25.f, 25.f), 0.f);
+	HoldLookValid = true;
+	const FTransform Frame(HoldLook, Self.TransformPositionNoScale(HoldEye));
 	HoldPalmW = Frame.TransformPosition(Hold.Pos);
 	HoldFingerW = Frame.TransformVectorNoScale(Hold.FingerDir).GetSafeNormal();
 	HoldNormalW = Frame.TransformVectorNoScale(Hold.PalmNormal).GetSafeNormal();

@@ -8,7 +8,7 @@ Lvl_Scene01 in a second editor process (import_world.py); `make_world_preview_le
 with only the map.
 
 **Biome: the Sambian coast of the Baltic** (a forested upland ending in steep clay cliffs over narrow
-sand beaches, a small town with old tiled roofs and Soviet five-storey blocks in a valley). Earlier notes said Krasnodar
+sand beaches, the Academgorodok in a valley where the town will be). Earlier notes said Krasnodar
 Krai; the map follows the Baltic now.
 
 ## Frame
@@ -31,7 +31,7 @@ Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..
 | Beach under the club | X 110..135 | sand at the cliff's foot; dune pines and juniper on the spur by the cliff, sea buckthorn at its foot; meadow grass on the spur, dune grass on the beach | boats |
 | Starlings | 430, 250 | the murmuration over the sea, left of the door | |
 | Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge by the lower station | |
-| Lyudmilovsk (town) | centre -330, 900, ~1.1 km across, in the valley | ~700 houses with tiled roofs, five-storey blocks round the square, the old church tower, trees between the houses | streets, shops, the station, people |
+| Lyudmilovsk (town) | centre -330, 900, ~1.1 km across, in the valley | only the Academgorodok (north of the lower station); the placeholder houses are gone (2026-10-25), the ground stays level, trees grow sparse over it | whatever Dima decides |
 | Promenade | along the valley's beach, Y 450..1250 | a concrete strip | kiosks, railings, a pier |
 | North hills | beyond the town, from Y 1450 up to +12 m | old forest | |
 | Forests | upland, north hills, inland ridge, dune bank, valley copses, the town | 57 AProceduralForest actors, ~100k real trees (shared bakes) | |

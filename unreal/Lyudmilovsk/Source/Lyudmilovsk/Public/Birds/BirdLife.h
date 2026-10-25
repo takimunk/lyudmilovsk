@@ -47,6 +47,19 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBirdLifeEvent, int32, BirdId);
 
+/** A cat or dog the birds watch out for (the animal life's, docs/animals.md). */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FBirdBeast
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category = "Birds") FVector Location = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Birds") FVector Velocity = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadWrite, Category = "Birds") bool bCat = false;
+	/** A cat creeping up low: hardly noticed until it is close. */
+	UPROPERTY(BlueprintReadWrite, Category = "Birds") bool bStalking = false;
+};
+
 /**
  * The wild birds of the outdoor map (docs/bird_life.md): ~1100 birds of 29 species that live where their
  * species would (gulls on the sea and the beach, pigeons and sparrows in the town, tits and robins in the
@@ -102,6 +115,11 @@ public:
 	/** Gives the bird back to the wild (it flies to its flock). */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	void ReleaseBird(int32 Id);
+
+	/** The cats and dogs near the birds (cm, cm/s), every frame: birds flee them as they would a person, by how they move
+	 *  (a running dog from far off, a stalking cat only when it is close), and tits and blackbirds scold a cat. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void SetBeasts(const TArray<FBirdBeast>& Beasts);
 
 	/** A sudden noise at Location (cm): birds within Radius (cm) start, the nearest fly. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
@@ -184,6 +202,7 @@ private:
 
 	bool Start();
 	bool StartEmpty(float GroundZ);
+	void AddDoorFlock();
 	void FillSpeciesFromTable();
 	void Stop();
 	void AddRealTrees();

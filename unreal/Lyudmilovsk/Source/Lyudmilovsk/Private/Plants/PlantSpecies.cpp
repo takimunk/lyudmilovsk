@@ -1,6 +1,7 @@
 #include "Plants/PlantSpecies.h"
 
 #include "LyudText.h"
+#include "Plants/PlantHerb.h"
 
 namespace
 {
@@ -1118,9 +1119,14 @@ namespace
 
 const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 {
-	static const TArray<FPlantSpecies> Species = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak(),
-		SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch(),
-		ScotsPine(), DunePine(), NorwaySpruce(), BlackAlder(), Rowan(), SeaBuckthorn(), Juniper(), Aspen() };
+	static const TArray<FPlantSpecies> Species = []
+	{
+		TArray<FPlantSpecies> Out = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak(),
+			SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch(),
+			ScotsPine(), DunePine(), NorwaySpruce(), BlackAlder(), Rowan(), SeaBuckthorn(), Juniper(), Aspen() };
+		Out.Append(PlantHerbs::Species());
+		return Out;
+	}();
 	return Species;
 }
 

@@ -105,6 +105,11 @@ CROUCH = [
     (4.1, "Hero.SideCam -150 20 0 follow"),
     (6.0, "Tame.Walk -600 0 0 100 1 90 0"),
     (11.0, "Tame.Offer 1"),
+    (11.5, "lyud.HeroDebugBones 1"),
+    (12.0, "Hero.SideCam 0 110 -10 follow"),
+    (12.3, "Hero.SideCam 110 40 0 follow"),
+    (12.5, "Hero.DumpBones"),
+    (12.6, "Hero.SideCam off"),
     (13.0, "Tame.Walk -600 300 0 50 1 30 0"),
     (18.0, "Tame.Walk -600 300 0 50 0 30 0"),
     (21.0, None),
@@ -174,7 +179,9 @@ def tick(dt):
                 crouched = pawn.get_editor_property("is_crouched")
             except Exception:
                 crouched = "?"
-            unreal.log_warning("TAME t=%.2f hero %.0f %.0f %.0f crouched=%s" % (t, p.x, p.y, p.z, crouched))
+            pc = unreal.GameplayStatics.get_player_controller(w, 0)
+            r = pc.get_control_rotation() if pc else unreal.Rotator()
+            unreal.log_warning("TAME t=%.2f hero %.0f %.0f %.0f crouched=%s pitch %.0f yaw %.0f" % (t, p.x, p.y, p.z, crouched, r.pitch, r.yaw))
 
 
 unreal.register_slate_post_tick_callback(tick)

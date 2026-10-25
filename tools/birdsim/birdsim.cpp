@@ -369,6 +369,81 @@ namespace
 			Check(R, MinAlert > 0.3f, "a frightened bird stays alert for tens of seconds");
 			Check(R, !bLandedNear, "and doesn't settle near the person again");
 		}
+		// the pigeons by the door: they keep to their lawn, come back after a scare, and one comes to the hand
+		{
+			FWorld F;
+			F.LoadHabitats(Dir());
+			F.DayOfYear = 297.f;
+			SunTimes(F.DayOfYear, F.Sunrise, F.Sunset);
+			F.Hour = 11.f;
+			F.Opt.PopulationScale = 0.f;
+			F.Opt.bPredators = false;
+			F.Populate();
+			const V3 Lawn(-1.93f, 21.5f, F.GroundZ(-1.93f, 21.5f));
+			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 1.1f);
+			F.Camera = Lawn;
+			for (int K = 0; K < 600 * 60 / 10; K++)
+			{
+				F.Step(1.f / 6.f);
+				F.Events.clear();
+			}
+			// someone standing at the door looking at them, then walking out along the path past them
+			F.Player.bPresent = true;
+			F.Player.Feet = V3(-1.93f - 2.5f, 11.5f + 3.f, 0.f);
+			F.Player.Eye = F.Player.Feet + V3(0.f, 0.f, 1.65f);
+			F.Player.Facing = (Lawn - F.Player.Eye).Norm();
+			int Fled = 0;
+			for (int K = 0; K < 30 * 60; K++)
+			{
+				const float T = K / 60.f;
+				F.Player.Vel = T > 10.f && T < 20.f ? V3(0.f, 1.4f, 0.f) : V3();
+				F.Player.Feet += F.Player.Vel * (1.f / 60.f);
+				F.Player.Eye = F.Player.Feet + V3(0.f, 0.f, 1.65f);
+				F.Camera = F.Player.Eye;
+				F.Step(1.f / 60.f);
+				for (const FEvent& E : F.Events)
+				{
+					Fled += E.Kind == EEvent::Flee && E.Bird >= First;
+					if (E.Kind == EEvent::Flee && E.Bird >= First && std::getenv("BIRD_TRACE"))
+					{
+						const FBird& Bd = F.Birds[E.Bird];
+						std::printf("    t %.1f bird %d flees at %.1f m from the person, alert %.2f target %d\n", T, E.Bird, (Bd.Pos - F.Player.Feet).Len2D(), Bd.Alert, Bd.Target);
+					}
+				}
+				F.Events.clear();
+			}
+			std::printf("door pigeons: %d flushes while someone stood at the door 10 s and walked past them on the grass 2.5 m off the path\n", Fled);
+			Check(R, Fled == 0, "the door pigeons let you walk past on the path");
+			F.Player.bPresent = false;
+			float Far = 0.f;
+			for (int I = First; I < First + 6; I++)
+			{
+				Far = std::max(Far, (F.Birds[I].Pos - Lawn).Len2D());
+			}
+			std::printf("door pigeons after 10 min alone: farthest %.1f m from their lawn\n", Far);
+			Check(R, Far < 4.f, "the door pigeons stay on their lawn");
+			F.Scare(Lawn, 20.f, 2.f);
+			float Away = 0.f;
+			for (int K = 0; K < 150 * 6; K++)
+			{
+				F.Step(1.f / 6.f);
+				F.Events.clear();
+				if (K == 20 * 6)
+				{
+					for (int I = First; I < First + 6; I++)
+					{
+						Away = std::max(Away, (F.Birds[I].Pos - Lawn).Len2D());
+					}
+				}
+			}
+			Far = 0.f;
+			for (int I = First; I < First + 6; I++)
+			{
+				Far = std::max(Far, (F.Birds[I].Pos - Lawn).Len2D());
+			}
+			std::printf("door pigeons after a bang: up to %.1f m away at 20 s, back within %.1f m at 150 s\n", Away, Far);
+			Check(R, Away > 15.f && Away < 300.f && Far < 4.f, "they fly off from a bang, stay near, and come back");
+		}
 		// a flock: one flushes, the others follow
 		{
 			FWorld F;
@@ -423,6 +498,41 @@ namespace
 				std::printf("pigeon flock of %zu (%d on the ground): %d fled within 2 s of a run into it\n", G.Members.size(), OnGround, Fled);
 				Check(R, Fled >= (int)(OnGround * 0.7f), "the flock goes up together");
 			}
+		}
+		// cats and dogs (the animal life): no player, an animal coming straight at a lone bird
+		{
+			auto Beast = [&](const char* Sp, bool bCat, bool bStalk, float Speed)
+			{
+				Lone(W, Sp, P);
+				W.Player.bPresent = false;
+				V3 M = P + V3(-40.f, 0.f, 0.f);
+				for (float T = 0.f; T < 40.f / Speed + 3.f; T += 1.f / 60.f)
+				{
+					W.Beasts.assign(1, FBeast{ M, V3(Speed, 0.f, 0.f), bCat, bStalk });
+					W.Camera = M;
+					W.Step(1.f / 60.f);
+					for (const FEvent& E : W.Events)
+					{
+						if (E.Kind == EEvent::Flee && E.Bird == 0)
+						{
+							return (P - M).Len2D();
+						}
+					}
+					W.Events.clear();
+					M.X += Speed / 60.f;
+				}
+				return -1.f;
+			};
+			const float PigeonDog = Beast("FeralPigeon", false, false, 5.f);
+			const float PigeonCat = Beast("FeralPigeon", true, false, 0.7f);
+			const float SparrowDog = Beast("HouseSparrow", false, false, 5.f);
+			const float SparrowCat = Beast("HouseSparrow", true, false, 0.7f);
+			const float SparrowStalk = Beast("HouseSparrow", true, true, 0.28f);
+			std::printf("animals at a bird: pigeon flushes from a running dog at %.1f m, a walking cat %.1f m; sparrow dog %.1f, cat %.1f, stalking cat %.1f m\n",
+				PigeonDog, PigeonCat, SparrowDog, SparrowCat, SparrowStalk);
+			Check(R, PigeonDog > 3.f && SparrowDog > 5.f, "a running dog puts birds up from well off");
+			Check(R, SparrowCat > 2.f && SparrowCat < SparrowDog, "a walking cat puts a sparrow up nearer");
+			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
 		}
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;

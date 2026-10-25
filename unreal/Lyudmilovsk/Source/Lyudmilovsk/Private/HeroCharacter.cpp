@@ -187,6 +187,11 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 	if (CVarHeroDebugBones.GetValueOnGameThread())
 	{
 		const FColor Colors[] = { FColor::Red, FColor::Yellow, FColor::Green, FColor::Cyan };
+		// the right hand: wrist to the middle knuckle (yellow), thumb base to little finger base (cyan)
+		auto BoneAt = [this](const TCHAR* N) { return GetMesh()->GetBoneLocation(N); };
+		DrawDebugLine(GetWorld(), BoneAt(TEXT("hand_r")), BoneAt(TEXT("middle_01_r")), FColor::Yellow, false, -1.f, 100, 1.f);
+		DrawDebugLine(GetWorld(), BoneAt(TEXT("thumb_01_r")), BoneAt(TEXT("pinky_01_r")), FColor::Cyan, false, -1.f, 100, 1.f);
+		DrawDebugLine(GetWorld(), BoneAt(TEXT("middle_01_r")), BoneAt(TEXT("middle_03_r")), FColor::Magenta, false, -1.f, 100, 1.f);
 		for (const TCHAR* Side : { TEXT("l"), TEXT("r") })
 		{
 			int32 K = 0;
@@ -311,7 +316,8 @@ void AHeroCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 	Super::CalcCamera(DeltaTime, OutResult);
 	OutResult.Location = EyeLocation();
 	const float Down = -Wrap180(OutResult.Rotation.Pitch);
-	OutResult.FOV = Fov + FovLookDownExtra * FMath::SmoothStep(40.f, 80.f, Down);
+	ViewZoom = FMath::FInterpTo(ViewZoom, ViewZoomTarget, DeltaTime, 2.f);
+	OutResult.FOV = (Fov + FovLookDownExtra * FMath::SmoothStep(40.f, 80.f, Down)) * ViewZoom;
 }
 
 // --- dev commands for headless checks (offscreen -game runs): reach for a test item, sit down ---
@@ -446,6 +452,17 @@ static FAutoConsoleCommandWithWorld GHeroDumpBones(TEXT("Hero.DumpBones"), TEXT(
 			UE_LOG(LogTemp, Warning, TEXT("HEROBONELIST %d %s <- %s"), I, *Body->GetBoneName(I).ToString(), *Body->GetParentBone(Body->GetBoneName(I)).ToString());
 		}
 		bListed = true;
+		if (const UHeroReachComponent* R = Hero->FindComponentByClass<UHeroReachComponent>(); R && R->HoldWeight() > 0.f)
+		{
+			const FTransform A2 = Hero->GetActorTransform();
+			const FVector F = A2.InverseTransformVectorNoScale(R->HoldFinger()), N = A2.InverseTransformVectorNoScale(R->HoldNormal());
+			const FVector W = Body->GetBoneLocation(TEXT("hand_r")), K = Body->GetBoneLocation(TEXT("middle_01_r"));
+			const FVector T = Body->GetBoneLocation(TEXT("thumb_01_r")), P = Body->GetBoneLocation(TEXT("pinky_01_r"));
+			const FVector Fd = A2.InverseTransformVectorNoScale((K - W).GetSafeNormal());
+			const FVector Across = A2.InverseTransformVectorNoScale((T - P).GetSafeNormal());
+			UE_LOG(LogTemp, Warning, TEXT("HEROBONES hold w %.2f want finger %s normal %s | bones finger %s thumb-pinky %s"), R->HoldWeight(),
+				*F.ToCompactString(), *N.ToCompactString(), *Fd.ToCompactString(), *Across.ToCompactString());
+		}
 		for (const TCHAR* Name : { TEXT("pelvis"), TEXT("spine_03"), TEXT("head"), TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l"), TEXT("ball_l"),
 			TEXT("thigh_r"), TEXT("calf_r"), TEXT("foot_r"), TEXT("hand_r") })
 		{

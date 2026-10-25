@@ -1236,3 +1236,8 @@ PlantMeshes::FTreeBake PlantMeshes::BuildTreeBake(UObject* Outer, const FPlantSp
 {
 	return FinishTreeBake(Outer, S, Seed, PrepareTreeBake(S, Seed, Age, Day), LodDistances);
 }
+
+UTexture2D* PlantMeshes::MakeTextureFromPixels(UObject* Outer, int32 W, int32 H, TArray<FColor> Pixels, bool bSRGB)
+{
+	return MakeTexture(Outer, W, H, MoveTemp(Pixels), bSRGB, false);
+}

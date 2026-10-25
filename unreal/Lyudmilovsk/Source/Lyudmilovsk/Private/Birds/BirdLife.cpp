@@ -35,6 +35,8 @@ static TAutoConsoleVariable<float> CVarBirdsPopulation(TEXT("lyud.Birds.Populati
 	TEXT("Share of each species' population to create (read when the birds start)."));
 static TAutoConsoleVariable<int32> CVarBirdsMigration(TEXT("lyud.Birds.Migration"), 1,
 	TEXT("1 (default): species away in this month (Content/BirdsData/species.json months) are not there, e.g. no swifts in October; 0: everybody stays."));
+static TAutoConsoleVariable<int32> CVarBirdsDoorFlock(TEXT("lyud.Birds.DoorFlock"), 6,
+	TEXT("Town pigeons that always feed on the terrace just out of the club's door (read when the birds start; 0: none)."));
 static TAutoConsoleVariable<int32> CVarBirdsAnyMap(TEXT("lyud.Birds.AnyMap"), 0,
 	TEXT("Start the bird life in any game map, not only Lvl_Scene01."));
 static TAutoConsoleVariable<int32> CVarBirdsBodies(TEXT("lyud.Birds.Bodies"), 12,
@@ -207,6 +209,7 @@ bool UBirdLifeSubsystem::Start()
 	};
 	UpdateClock();
 	S.Populate();
+	AddDoorFlock();
 	SyncTrust(false);
 
 	FActorSpawnParameters P;
@@ -239,6 +242,28 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 			Sp.bMigrant = !R->IsPresentIn(Now.GetMonth());
 		}
 	}
+}
+
+/** Town pigeons that always feed on the terrace a few steps out of the club's door (to try the feed on). */
+void UBirdLifeSubsystem::AddDoorFlock()
+{
+	const int32 Count = CVarBirdsDoorFlock.GetValueOnGameThread();
+	const int32 Sp = FindSpecies("FeralPigeon");
+	if (Count <= 0 || Sp < 0)
+	{
+		return;
+	}
+	// on the slab path ~14 m out of the door, where they show against the pale concrete (the grass beside it hides
+	// them); map X -1.93, Y +13.6, the portal face at Unreal Y 790
+	FVector At(-193.0, 2150.0, 0.0);
+	FHitResult Hit;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdDoorFlock), false);
+	if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 3000.0), At - FVector(0.0, 0.0, 3000.0), ECC_Visibility, Q))
+	{
+		At = Hit.ImpactPoint;
+	}
+	const int32 First = Sim->AddFlock(Sp, FromUE(At), Count, 1.1f);
+	UE_LOG(LogTemp, Display, TEXT("BirdLife: %d pigeons by the club's door (ids %d..%d) at %s"), Count, First, First + Count - 1, *At.ToString());
 }
 
 /** A bird life with no birds and no map (a test level), for SpawnBird. */
@@ -530,6 +555,19 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	{
 		SaveTimer = 2.f;
 		SyncTrust(true);
+	}
+}
+
+void UBirdLifeSubsystem::SetBeasts(const TArray<FBirdBeast>& Beasts)
+{
+	if (!Sim)
+	{
+		return;
+	}
+	Sim->Beasts.clear();
+	for (const FBirdBeast& B : Beasts)
+	{
+		Sim->Beasts.push_back(FBeast{ FromUE(B.Location), FromUE(B.Velocity), B.bCat, B.bStalking });
 	}
 }
 

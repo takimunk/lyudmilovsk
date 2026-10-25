@@ -74,6 +74,9 @@ namespace PlantMeshes
 	/** The alpha-masked texture of a foliage card (from LOD2 of a baked tree): a spray of the species' leaves, or its needles. */
 	UTexture2D* BuildFoliageCard(UObject* Outer, const FPlantLeafShape& Leaf);
 
+	/** A texture with mips from pixels (row by row), for other generators (herbs, flowers). */
+	UTexture2D* MakeTextureFromPixels(UObject* Outer, int32 W, int32 H, TArray<FColor> Pixels, bool bSRGB);
+
 	/** Veins and margin of the species' leaf blade, a greyscale multiplier on the leaf colour. */
 	UTexture2D* BuildLeafDetail(UObject* Outer, const FPlantLeafShape& Leaf);
 }

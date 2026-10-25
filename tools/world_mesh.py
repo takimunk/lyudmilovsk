@@ -1,8 +1,8 @@
 """Builds the outdoor map's placeholder geometry (tools/world_map.py) as one .glb: the concrete-slab
-path, the club's entrance, the beach promenade, the town's houses and
-the cable car (the trees are AProceduralForest actors, the ground is the landscape from
-tools/terrain.py and unreal/scripts/import_terrain.py; everything here stands on terrain.ground_z). Pure Python (no bpy, no numpy), so the
-Unreal build can run it itself and the .glb never needs committing.
+path, the club's entrance, the beach promenade and the cable car (the trees are AProceduralForest
+actors, the ground is the landscape from tools/terrain.py and unreal/scripts/import_terrain.py;
+everything here stands on terrain.ground_z). Pure Python (no bpy, no numpy), so the Unreal build can
+run it itself and the .glb never needs committing.
 
   python3 tools/world_mesh.py out.glb [textures_dir]
 
@@ -28,11 +28,6 @@ MATERIALS = {
     "World_Grass": ((0.32, 0.42, 0.2), 0.95, "grass.jpg", 3.0),
     "World_Sand": ((0.52, 0.45, 0.33), 0.9, None, 1.0),
     "World_SlabConcrete": ((0.55, 0.54, 0.5), 0.9, "ceiling.jpg", 2.0),
-    "World_Plaster_White": ((0.78, 0.76, 0.7), 0.85, None, 1.0),
-    "World_Plaster_Yellow": ((0.78, 0.66, 0.42), 0.85, None, 1.0),
-    "World_Brick": ((0.5, 0.25, 0.18), 0.9, None, 1.0),
-    "World_Panel_Grey": ((0.6, 0.6, 0.58), 0.85, None, 1.0),
-    "World_Roof_Tile": ((0.55, 0.2, 0.12), 0.7, None, 1.0),
     "World_Roof_Flat": ((0.25, 0.25, 0.26), 0.9, None, 1.0),
     "World_Steel": ((0.35, 0.36, 0.38), 0.5, None, 1.0),
     "World_Cabin_Red": ((0.7, 0.08, 0.06), 0.5, None, 1.0),
@@ -133,63 +128,6 @@ def box(prim, c, size, yaw=0.0, tile=1.0, top=True, bottom=False):
         prim.quad([P(u, v, 0) for u, v in corners], (0, 0, -1), tile)
 
 
-def gable_roof(prim, gable_prim, c, w, d, z, yaw, pitch=math.radians(42), over=0.4):
-    """Steep gable roof over a w x d footprint at height z, ridge along the longer side."""
-    if w < d:
-        w, d, yaw = d, w, yaw + math.pi / 2
-    ca, sa = math.cos(yaw), math.sin(yaw)
-
-    def P(u, v, zz):
-        return (c[0] + u * ca - v * sa, c[1] + u * sa + v * ca, zz)
-
-    rh = (d / 2) * math.tan(pitch)
-    hw, hd = w / 2 + over, d / 2 + over
-    ridge0, ridge1 = P(-hw, 0, z + rh), P(hw, 0, z + rh)
-    drop = over * math.tan(pitch)
-    for side in (-1, 1):
-        e0, e1 = P(-hw, side * hd, z - drop), P(hw, side * hd, z - drop)
-        n = _norm(_cross((e1[0] - e0[0], e1[1] - e0[1], 0), (ridge0[0] - e0[0], ridge0[1] - e0[1], ridge0[2] - e0[2])))
-        if n[2] < 0:
-            n = tuple(-x for x in n)
-        prim.quad([e0, e1, ridge1, ridge0], n, 1.0)
-    for end in (-1, 1):
-        u = end * w / 2
-        tri = [P(u, -d / 2, z), P(u, d / 2, z), P(u, 0, z + rh)]
-        n = (end * ca, end * sa, 0.0)
-        gable_prim.poly(tri, n)
-
-
-def cone(prim, c, r, h, n=8):
-    base = len(prim.pos) // 3
-    for i in range(n):
-        a = 2 * math.pi * i / n
-        prim.vert((c[0] + r * math.cos(a), c[1] + r * math.sin(a), c[2]), _norm((math.cos(a), math.sin(a), r / h)),
-                  (i / n, 0))
-    tip = prim.vert((c[0], c[1], c[2] + h), (0, 0, 1), (0.5, 1))
-    for i in range(n):
-        prim.tri(base + i, base + (i + 1) % n, tip)
-
-
-# --- the pieces ------------------------------------------------------------------------------
-
-def axis(lo, hi, steps):
-    """Coordinates from lo to hi; steps = [(until, step), ...] for the absolute value of the
-    coordinate (fine near 0, coarse far away)."""
-    out = set()
-    for sign in (-1, 1):
-        v = 0.0
-        while True:
-            st = next(s for u, s in steps if abs(v) < u)
-            v += st
-            if sign * v < lo or sign * v > hi:
-                break
-            out.add(round(sign * v, 2))
-    out.add(0.0)
-    out.add(lo)
-    out.add(hi)
-    return sorted(x for x in out if lo <= x <= hi)
-
-
 def path(mesh):
     """Soviet concrete slabs, 2 x 3 m, laid along the path a little crooked."""
     rnd = random.Random(3)
@@ -243,30 +181,6 @@ def portal(mesh):
     box(conc, (W.DOOR_X, 0.95, 2.85), (3.6, 1.9, 0.22), 0.0, tile=2.0, bottom=True)
     for side in (-1, 1):
         box(conc, (W.DOOR_X + side * 3.15, 1.55, -0.2), (0.25, 3.1, 0.32), 0.0, tile=2.0)
-
-
-def town(mesh):
-    rnd = random.Random(11)
-    houses = W.town()
-    walls = ["World_Plaster_White", "World_Plaster_Yellow", "World_Brick", "World_Plaster_White"]
-    for x, y, yaw, w, d, fl, kind in houses:
-        z = min(T.ground_z(x + dx, y + dy) for dx in (-w / 2, 0, w / 2) for dy in (-d / 2, 0, d / 2))
-        if kind == "block":
-            h = fl * 2.8 + 0.6
-            box(mesh.p("World_Panel_Grey"), (x, y, z - 0.5), (w, d, h + 0.5), yaw, top=False)
-            box(mesh.p("World_Roof_Flat"), (x, y, z + h), (w + 0.3, d + 0.3, 0.3), yaw)
-        elif kind == "kirche":
-            box(mesh.p("World_Brick"), (x, y, z - 0.5), (w, d, 30.5), yaw, top=False)
-            box(mesh.p("World_Brick"), (x - 14 * math.cos(yaw), y - 14 * math.sin(yaw), z - 0.5), (22, 14, 14.5), yaw,
-                top=False)
-            gable_roof(mesh.p("World_Roof_Tile"), mesh.p("World_Brick"),
-                       (x - 14 * math.cos(yaw), y - 14 * math.sin(yaw)), 22, 14, z + 14, yaw)
-            cone(mesh.p("World_Roof_Flat"), (x, y, z + 30), w * 0.72, 16, n=4)
-        else:
-            h = fl * 3.0 + 0.4
-            wall = rnd.choice(walls)
-            box(mesh.p(wall), (x, y, z - 0.5), (w, d, h + 0.5), yaw, top=False)
-            gable_roof(mesh.p("World_Roof_Tile"), mesh.p(wall), (x, y), w, d, z + h, yaw)
 
 
 def rope(prim, p0, p1, r=0.04):
@@ -407,7 +321,7 @@ def write_glb(out, meshes, tex_dir):
 def build(out, tex_dir=None):
     meshes = []
     for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade),
-                     ("World_Town", town), ("World_CableCar", cable_car)):
+                     ("World_CableCar", cable_car)):
         m = Mesh(name)
         fn(m)
         meshes.append(m)

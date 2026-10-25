@@ -101,6 +101,32 @@ def s_start(w):
 
 
 @step
+def s_door_flock(w):
+    # the pigeons that always feed on the lawn just out of the club's door
+    near = []
+    for i in birds(w).find_birds_near(unreal.Vector(-193.0, 2150.0, 0.0), 800.0):
+        b = bird(w, i)
+        if b and str(b.species_id) == "FeralPigeon":
+            near.append("%d:%s" % (i, str(b.activity).split(".")[-1].split(":")[0]))
+    log("door flock: %d pigeons within 8 m of the lawn: %s" % (len(near), " ".join(near)))
+    place(w, (-193.0, 1350.0, 190.0), -14, 90)
+    st["eye"] = None
+
+
+@step
+def s_door_shot(w):
+    if SHOTS:
+        cmd(w, "HighResShot 1600x900")
+
+
+@step
+def s_quick_quit(w):
+    if os.environ.get("BIRDTEST_QUICK"):
+        log("done")
+        cmd(w, "quit")
+
+
+@step
 def s_spawn(w):
     cmd(w, "lyud.Birds.IgnorePlayer 1")
     # obvious birds right in front: a gull 4 m ahead on the path, a rook 7 m, a sparrow 2.5 m

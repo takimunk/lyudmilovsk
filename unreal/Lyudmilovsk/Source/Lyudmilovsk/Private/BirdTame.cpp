@@ -45,6 +45,9 @@ const FName UBirdTameSubsystem::FeedId(TEXT("bird_feed"));
 
 namespace
 {
+	/** How long the bird pecks from the palm before the view goes into it, s. */
+	constexpr float EatSeconds = 2.4f;
+
 	TAutoConsoleVariable<int32> CVarTame(TEXT("lyud.Tame"), 1,
 		TEXT("Befriending birds with feed (hold out the hand, crouch). 0 switches it off: no hand, no offer to the birds."));
 
@@ -56,7 +59,8 @@ namespace
 		P.Pos = FVector(54.f, 8.f, -30.f);
 		P.FingerDir = FVector(1.f, -0.1f, 0.05f);
 		P.PalmNormal = FVector(-0.05f, -0.1f, 1.f);
-		P.Curl = 0.22f;
+		// the fingers as the animation holds them (relaxed, a little cupped): any fold on top bent them up into a "stop"
+		P.Curl = 0.f;
 		P.PitchFollow = 0.25f;
 		P.BlendTime = 0.8f;
 		return P;
@@ -108,6 +112,31 @@ namespace
 		const FVector Wrist = Body->GetBoneLocation(TEXT("hand_r"));
 		const FVector Knuckle = Body->GetBoneLocation(TEXT("middle_01_r"));
 		OutPalm = Wrist + (Knuckle - Wrist) * 0.6f;
+		return true;
+	}
+}
+
+namespace
+{
+	/** The right palm's frame from the hand's bones (X the fingers, Z out of the palm the way Normal points, origin the palm's
+	 *  middle on the bones), world; false without the bones. */
+	bool HandPalm(const USkeletalMeshComponent* Body, const FVector& Normal, const FVector& Finger, FTransform& Out)
+	{
+		if (!Body || Body->GetBoneIndex(TEXT("hand_r")) == INDEX_NONE || Body->GetBoneIndex(TEXT("middle_01_r")) == INDEX_NONE)
+		{
+			return false;
+		}
+		const FVector Wrist = Body->GetBoneLocation(TEXT("hand_r")), Knuckle = Body->GetBoneLocation(TEXT("middle_01_r"));
+		const FVector Fd = (Knuckle - Wrist).GetSafeNormal(UE_SMALL_NUMBER, Finger);
+		FVector Across = Body->GetBoneLocation(TEXT("thumb_01_r")) - Body->GetBoneLocation(TEXT("pinky_01_r"));
+		FVector Pn = FVector::CrossProduct(Across, Fd).GetSafeNormal(UE_SMALL_NUMBER, Normal);
+		// out of the palm is the side the thumb tip is on (as HandReach measures it), whatever way the hand is turned now
+		const FVector Palm = Wrist + (Knuckle - Wrist) * 0.6f;
+		if (Body->GetBoneIndex(TEXT("thumb_03_r")) != INDEX_NONE && FVector::DotProduct(Body->GetBoneLocation(TEXT("thumb_03_r")) - Palm, Pn) < 0.f)
+		{
+			Pn = -Pn;
+		}
+		Out = FTransform(FRotationMatrix::MakeFromZX(Pn, Fd).ToQuat(), Palm);
 		return true;
 	}
 }
@@ -477,6 +506,7 @@ void UBirdTameSubsystem::HandleReturnedToHero(APawn* Pawn)
 	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn))
 	{
 		Hero->SetCrouchToggled(false);
+		Hero->SetViewZoom(1.f);
 		if (UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero))
 		{
 			Reach->ClearHold();
@@ -588,10 +618,13 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		Reach->ClearHold();
 	}
 
-	// what the hand shows: the bag while carried, the handful while held out; each appears once the hand is mostly there
-	const bool bInPose = Reach->IsHolding() && Reach->HoldWeight() > 0.6f;
-	const bool bShowBag = bCarry && bInPose;
-	const bool bShowSeeds = bOffer && bInPose;
+	// what the hand shows: the bag while carried, the handful while held out
+	// (they are fixed on the hand where its palm is when they appear)
+	FTransform PalmNow;
+	const bool bPalmUp = HandPalm(Hero->GetMesh(), Reach->HoldNormal(), Reach->HoldFinger(), PalmNow) && PalmNow.GetUnitAxis(EAxis::Z).Z > 0.5f;
+	const bool bShowBag = bCarry && Reach->IsHolding() && Reach->HoldWeight() > 0.95f;
+	// the seeds as soon as the palm, coming out, is turned up
+	const bool bShowSeeds = bOffer && Reach->IsHolding() && Reach->HoldWeight() > 0.5f && (Handful || bPalmUp);
 	if (bShowBag && !Bag)
 	{
 		Bag = World->SpawnActor<ABirdFeedBag>(Reach->HoldPalm(), FRotator::ZeroRotator, Params);
@@ -601,7 +634,8 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		Bag->Destroy();
 		Bag = nullptr;
 	}
-	if (bShowSeeds && !Handful)
+	SpillCooldown = FMath::Max(0.f, SpillCooldown - DeltaTime);
+	if (bShowSeeds && !Handful && SpillCooldown <= 0.f)
 	{
 		Handful = World->SpawnActor<ASeedHandful>(Reach->HoldPalm(), FRotator::ZeroRotator, Params);
 	}
@@ -616,20 +650,41 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		OfferAt = FVector::ZeroVector;
 	}
 
-	FVector Palm = Reach->HoldPalm();
-	PalmFromBones(Hero, Palm);
+	// the bag and the seeds ride on the hand bone (attached once, where the hand's own palm is), so they move with the hand
+	// in the same frame: placed from last frame's bones they trailed a fast hand by a frame and vanished from it on a jerk
 	const FVector N = Reach->HoldNormal();
 	const FVector F = Reach->HoldFinger();
+	USkeletalMeshComponent* Body = Hero->GetMesh();
+	auto AttachToPalm = [Body, N, F](AActor* Item, const FVector& Offset, bool bAcross)
+	{
+		FTransform PalmXf;
+		if (!Item || Item->GetAttachParentActor() || !HandPalm(Body, N, F, PalmXf))
+		{
+			return;
+		}
+		// Offset: the item's middle in the palm's frame (fingers, across, out of the palm). A bag lies across the palm: its
+		// thickness (X) out of the palm, its width (Y) along the fingers, its top (Z) across
+		const FQuat Rot = bAcross ? FRotationMatrix::MakeFromXY(PalmXf.GetUnitAxis(EAxis::Z), PalmXf.GetUnitAxis(EAxis::X)).ToQuat() : PalmXf.GetRotation();
+		Item->SetActorTransform(FTransform(Rot, PalmXf.TransformPosition(Offset)));
+		Item->AttachToComponent(Body, FAttachmentTransformRules::KeepWorldTransform, TEXT("hand_r"));
+	};
 	if (Bag)
 	{
-		// across the palm: its thickness out of the palm, its width along the fingers, its top up
-		const FMatrix M = FRotationMatrix::MakeFromXY(N, F);
-		Bag->SetActorLocationAndRotation(Palm + N * (ABirdFeedBag::HalfDepth + 1.7f) + F * 1.5f, M.Rotator());
+		AttachToPalm(Bag, FVector(1.5f, 0.f, ABirdFeedBag::HalfDepth + 1.7f), true);
+	}
+	// a palm turned over (a jerk of the hand, the arm swung round) spills what is on it; a fresh handful from the bag
+	// appears once it is up again (the bag holds plenty: no handful is used up)
+	if (Handful && Phase != EPhase::Eating && Handful->GetAttachParentActor() && Handful->GetActorUpVector().Z < 0.25f)
+	{
+		Handful->Spill();
+		Handful = nullptr;
+		BirdOfferAt = FVector::ZeroVector;
+		SpillCooldown = 0.6f;
 	}
 	if (Handful)
 	{
-		OfferAt = Palm + N * 1.7f;
-		Handful->SetActorLocationAndRotation(OfferAt, FRotationMatrix::MakeFromZX(N, F).Rotator());
+		AttachToPalm(Handful, FVector(0.f, 0.f, 1.7f), false);
+		OfferAt = Handful->GetActorLocation();
 		// what the birds are told: the palm smoothed over ~0.1 s, so the frame-to-frame wobble of the bones and uneven frame
 		// times (a 3 ms frame after a 100 ms one) don't read as a hand jerked at the bird; a steady move keeps its speed
 		BirdOfferAt = BirdOfferAt.IsZero() ? OfferAt : FMath::VInterpTo(BirdOfferAt, OfferAt, DeltaTime, 10.f);
@@ -655,17 +710,23 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 	{
 		bApproaching = false;
 	}
+	if (Phase != EPhase::Eating)
+	{
+		Hero->SetViewZoom(1.f);
+	}
 
 	if (Phase == EPhase::Eating)
 	{
-		// the bird pecks the heap down for a moment, then the view goes into it
+		// the bird pecks the heap down for a moment, looked at closely (the view narrows onto the palm), then the view
+		// goes into it
 		PhaseTime += DeltaTime;
+		Hero->SetViewZoom(0.55f);
 		if (Handful)
 		{
-			Handful->SetLeft(1.f - 0.5f * FMath::Clamp(PhaseTime / 1.6f, 0.f, 1.f));
+			Handful->SetLeft(1.f - 0.5f * FMath::Clamp(PhaseTime / EatSeconds, 0.f, 1.f));
 		}
 		TellBirds(true);
-		if (PhaseTime >= 1.6f)
+		if (PhaseTime >= EatSeconds)
 		{
 			Eaten();
 		}
@@ -915,7 +976,10 @@ static FAutoConsoleCommandWithWorld GTameSelfTest(TEXT("Tame.SelfTest"),
 		auto Run = [&T](const TCHAR* Cmd) { GEngine->Exec(T.World.Get(), Cmd); };
 		T.Steps.Add({ 0.5f, [Inv, Tame, Run]()
 		{
+			// empty pockets for the test (a new game starts with feed while lyud.StartFeed is on)
+			Run(TEXT("lyud.StartFeed 0"));
 			Inv()->Reset();
+			Run(TEXT("lyud.StartFeed 5"));
 			Check(!Tame()->SetOffering(true), TEXT("no feed: the palm stays in"));
 			Run(TEXT("Vending.Buy 5"));
 		} });

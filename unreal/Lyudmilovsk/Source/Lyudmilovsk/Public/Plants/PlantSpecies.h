@@ -99,6 +99,152 @@ struct FPlantBark
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") float Scars = 0.f;
 };
 
+UENUM(BlueprintType)
+enum class EPlantHerbForm : uint8
+{
+	/** Not a herb: a tree or shrub of trunk and branches (the rest of FPlantSpecies). */
+	None,
+	/**
+	 * Leaves from the base: a rosette (violet, aloe), a clump of fans of strap leaves (day lily, sansevieria) or
+	 * long-stalked blades (aspidistra, monstera); flower scapes rise above it.
+	 */
+	Rosette,
+	/** Stems from the base, branching, leaves along them and flowers at their tips (marigold, aster, geranium; a cane: dracaena). */
+	Bush,
+	/** Stems that leave over the pot's rim and hang (tradescantia, asparagus fern). */
+	Trailing,
+	/** A ribbed column, with arms (cactus). */
+	Column,
+};
+
+UENUM(BlueprintType)
+enum class EPlantFlowerForm : uint8
+{
+	None,
+	/** A disc and a ring of rays (aster, cosmos). */
+	Daisy,
+	/** Six tepals flaring from a tube (day lily). */
+	Trumpet,
+	/** A ball of ruffled petals (marigold). */
+	Pompon,
+	/** Five round petals (begonia, violet, lemon blossom). */
+	Five,
+	/** A head of small five-petalled florets (geranium). */
+	Umbel,
+};
+
+UENUM(BlueprintType)
+enum class EPlantVariegation : uint8
+{
+	None,
+	/** A pale band down the middle (chlorophytum). */
+	CentralStripe,
+	/** Pale edges (sansevieria 'Laurentii', dracaena marginata red edge). */
+	Margin,
+	/** Wavy dark bands across (sansevieria). */
+	Bands,
+	/** Pale blotches between the veins (dieffenbachia). */
+	Blotches,
+	/** Lengthwise stripes, silver on purple underneath (tradescantia). */
+	Stripes,
+};
+
+UENUM(BlueprintType)
+enum class EPlantPot : uint8
+{
+	/** The species' own (a house plant's: terracotta; outdoor plants: none). */
+	Auto,
+	None,
+	Terracotta,
+	/** Glazed, dark green. */
+	Ceramic,
+	/** Plain white plastic. */
+	White,
+};
+
+/**
+ * A herbaceous plant or house plant: what grows from the ground (or the pot) is generated from these
+ * numbers, the leaf blades from the species' Leaf shape. Everything scales with its maturity, 0 (a seedling)
+ * .. 1 (MatureYears old; an annual: grown up two months after its sowing day).
+ */
+USTRUCT(BlueprintType)
+struct FPlantHerb
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") EPlantHerbForm Form = EPlantHerbForm::None;
+	/** Mature height (without flowers) and width, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float Height = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float Spread = 0.4f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float MatureYears = 2.f;
+	/** Sown in spring and killed by the first frost (marigold, cosmos); its age counts within the year. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") bool bAnnual = false;
+	/** A shrub: its stems stand through the winter (only the leaves come and go). With CrownBox: a clipped hedge. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") bool bWoody = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float SowDay = 135.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float FrostDay = 290.f;
+
+	// --- Leaves (blade outline: the species' Leaf)
+
+	/** Rosette: leaves of a mature plant; Bush / Trailing: leaves per stem. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") int32 Leaves = 12;
+	/** Rosette: fans (clumps of two-ranked strap leaves, as a day lily or sansevieria); 0 = one spiral rosette. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") int32 Fans = 0;
+	/** Angle off the vertical a leaf leaves at, inner (young) and outer (old) leaves, degrees. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") FVector2D Rise = FVector2D(20.0, 60.0);
+	/** How much a leaf bends down along its length, degrees from base to tip. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") float Arch = 30.f;
+	/** Twist along the leaf, degrees. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") float Twist = 0.f;
+	/** 1: the Leaf outline's taper; below 1 flatter (strap leaves), above sharper. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") float ProfilePower = 1.f;
+	/** Succulent: the blade's thickness as a fraction of its width (aloe); 0 = thin. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") float Thickness = 0.f;
+	/** Compound leaves: leaflet pairs along the rachis (palm frond, fern, cosmos); 0 = simple. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") int32 Leaflets = 0;
+	/** Leaflet length / leaf length, and leaflet width / leaflet length. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") FVector2D Leaflet = FVector2D(0.3, 0.12);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") EPlantVariegation Variegation = EPlantVariegation::None;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Leaves") FLinearColor VariegationColour = FLinearColor(0.75f, 0.75f, 0.55f);
+
+	// --- Stems (Bush, Trailing)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") int32 Stems = 5;
+	/** Side branches per stem. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") int32 Branches = 2;
+	/** Lean of the stems off the vertical, degrees. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") float Lean = 15.f;
+	/** Base radius of a stem, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") float StemRadius = 0.004f;
+	/** The lower part of a stem without leaves, fraction (a dracaena's cane: 0.85). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") float BareStem = 0.15f;
+	/** Leaves in a whorl at each node (1 alternate, 2 opposite). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") int32 PerNode = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Stems") FLinearColor StemColour = FLinearColor(0.08f, 0.14f, 0.03f);
+
+	// --- Column (cactus)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Column") int32 Ribs = 8;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Column") int32 Arms = 0;
+
+	// --- Flowers
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") EPlantFlowerForm Flower = EPlantFlowerForm::None;
+	/** Flower diameter, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float FlowerSize = 0.05f;
+	/** Rosette: flower scapes (stalks) and their height above the leaves, m; Bush: flowers per stem. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") int32 Flowers = 3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float ScapeHeight = 0.2f;
+	/** Petals (rays of a daisy). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") int32 Petals = 12;
+	/** Petal colours: each flower takes one of them (by seed); and the centre. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") TArray<FLinearColor> FlowerColours;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") FLinearColor CentreColour = FLinearColor(0.6f, 0.4f, 0.02f);
+	/** In bloom between these days of the year; BloomStart <= 0: all year (a house plant). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float BloomStart = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float BloomEnd = 0.f;
+};
+
 /**
  * The rules one plant species grows by. Every tree of a species is the same function of
  * (seed, age, day of year); a new species is a new set of these numbers (PlantSpeciesLibrary),
@@ -209,6 +355,20 @@ struct FPlantSpecies
 
 	/** Keeps its leaves all year (conifers, juniper): no bud break, no leaf fall; the autumn colours become its winter colour. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") bool bEvergreen = false;
+	/** A house plant: indoors, no seasons (always in summer leaf), no wind, no snow, nothing falls. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") bool bIndoor = false;
+	/** A herb or house plant (Herb.Form != None): the herb generator draws it instead of trunk and branches. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") FPlantHerb Herb;
+	/** Its pot (house plants), diameter m; 0 = in the ground. An actor can choose another pot or none. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") float PotDiameter = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") EPlantPot Pot = EPlantPot::Terracotta;
+	/**
+	 * Clipped to a box (a hedge): width along the row, depth, height, m; 0 = grows free. Branches stop at it,
+	 * so shrubs planted in a row a little closer than their width make one wall.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") FVector CrownBox = FVector::ZeroVector;
+	/** Drawn as its bake (UTreeBakeCache: one mesh shared by every plant of the same kind) at every distance: hedges, house trees. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Species") bool bPreferBake = false;
 	/**
 	 * Leaves grow on every order-2 twig and on the last LeafyTipLength of the trunk and of order-1
 	 * branches: twigs inside the crown are shed (Branch2ShadeDepth), so the leaves form its outer shell.
