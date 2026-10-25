@@ -1,0 +1,114 @@
+{
+ "_doc": "Every image generation behind the cable-car metro's look (Higgsfield MCP, model nano_banana_2_1, enable_image_search on: the model looked up the named real references). Full-size PNGs stay local (.gitignore); the .jpg next to each is a 1200 px preview. The full prompts are kept in the Higgsfield jobs; the gist is here.",
+ "references": [
+  "Soviet: Moscow Vorobyovy Gory chairlift (1953), Chiatura cable cars (Georgia, 1954), VDNKh Kosmos pavilion, Tbilisi Ministry of Highways, Druzhba sanatorium (Yalta), Ostankino tower restaurant, Pitsunda, Sputnik and Vostok, Technika Molodezhi covers",
+  "American: Disneyland Skyway (Von Roll, 1956), Seattle Century 21 Expo and Space Needle (1962), Palm Springs Aerial Tramway (1963), LAX Theme Building, Sugarloaf (Rio) bubble cabins, Googie architecture"
+ ],
+ "chosen": {
+  "cabin": "cabin_c",
+  "stations": "stations_b (one family, seven roofs)",
+  "pylons": "pylons_b (rocket line pylon, A-frame lattice corner pylon, sawtooth depot)"
+ },
+ "jobs": {
+  "cabin_a": {
+   "job": "fb93dfa6-2864-4e81-9df7-0368b43b3865",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195720_fb93dfa6-2864-4e81-9df7-0368b43b3865.png",
+   "prompt": "Industrial design concept sheet for a 4-passenger aerial gondola cabin of a fictional Baltic seaside town's cable-car metro, retro-futurism of the late 1950s-60s, a blend of Soviet space-age design (Sputnik, Vostok capsule, VDNKh pavilions, Technika Molodezhi magazine covers, Moscow Vorobyovy Gory chairlift 1953, Chiatura cable cars) and American Googie (Disneyland Skyway 1956 Von Roll cabins, Seattle Century 21 Expo 1962, Palm Springs Aerial Tramway 1963, Sugarloaf Rio bubble cabins). [...full prompt in the Higgsfield job]"
+  },
+  "cabin_b": {
+   "job": "f029e65a-ac29-4ce6-8a91-0ccdbaf547c4",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195720_f029e65a-ac29-4ce6-8a91-0ccdbaf547c4.png",
+   "prompt": "Industrial design concept sheet for a 4-passenger aerial gondola cabin of a fictional Baltic seaside town's cable-car metro, retro-futurism of the late 1950s-60s, a blend of Soviet space-age design (Sputnik, Vostok capsule, VDNKh pavilions, Technika Molodezhi magazine covers, Moscow Vorobyovy Gory chairlift 1953, Chiatura cable cars) and American Googie (Disneyland Skyway 1956 Von Roll cabins, Seattle Century 21 Expo 1962, Palm Springs Aerial Tramway 1963, Sugarloaf Rio bubble cabins). [...full prompt in the Higgsfield job]"
+  },
+  "cabin_c": {
+   "job": "ea51f492-ce17-46ad-a10b-d0539389d50b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195720_ea51f492-ce17-46ad-a10b-d0539389d50b.png",
+   "prompt": "Industrial design concept sheet for a 4-passenger aerial gondola cabin of a fictional Baltic seaside town's cable-car metro, retro-futurism of the late 1950s-60s, a blend of Soviet space-age design (Sputnik, Vostok capsule, VDNKh pavilions, Technika Molodezhi magazine covers, Moscow Vorobyovy Gory chairlift 1953, Chiatura cable cars) and American Googie (Disneyland Skyway 1956 Von Roll cabins, Seattle Century 21 Expo 1962, Palm Springs Aerial Tramway 1963, Sugarloaf Rio bubble cabins). [...full prompt in the Higgsfield job]"
+  },
+  "cabin_d": {
+   "job": "c86b3121-3ee9-40a5-8812-ff1f978f4b06",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195720_c86b3121-3ee9-40a5-8812-ff1f978f4b06.png",
+   "prompt": "Industrial design concept sheet for a 4-passenger aerial gondola cabin of a fictional Baltic seaside town's cable-car metro, retro-futurism of the late 1950s-60s, a blend of Soviet space-age design (Sputnik, Vostok capsule, VDNKh pavilions, Technika Molodezhi magazine covers, Moscow Vorobyovy Gory chairlift 1953, Chiatura cable cars) and American Googie (Disneyland Skyway 1956 Von Roll cabins, Seattle Century 21 Expo 1962, Palm Springs Aerial Tramway 1963, Sugarloaf Rio bubble cabins). [...full prompt in the Higgsfield job]"
+  },
+  "stations_a": {
+   "job": "1b6e6f21-ffce-4a66-9397-21b85497dc85",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195737_1b6e6f21-ffce-4a66-9397-21b85497dc85.png",
+   "prompt": "Architectural concept sheet: seven unique small stations of one cable-car metro ... each roof different: flying saucer, parabolic arches, folded hyperbolic paraboloid, star spire, ribbed dome, amber glass lantern, wing canopy; one on a grassy hilltop with no tower"
+  },
+  "stations_b": {
+   "job": "e7645cd2-7a67-4a95-bb6b-3c324ea3960f",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195737_e7645cd2-7a67-4a95-bb6b-3c324ea3960f.png",
+   "prompt": "(same as stations_a)"
+  },
+  "pylons_a": {
+   "job": "b8f72655-49d3-4c22-83ab-674be6724f05",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195740_b8f72655-49d3-4c22-83ab-674be6724f05.png",
+   "prompt": "Industrial design concept sheet for the pylons and depot ... straight line pylon, corner pylon with a curved deflection sheave and starburst, sawtooth depot hangar with parked egg cabins"
+  },
+  "pylons_b": {
+   "job": "126aa04c-ff03-4de0-a867-928ef0ca6bf7",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195740_126aa04c-ff03-4de0-a867-928ef0ca6bf7.png",
+   "prompt": "(same as pylons_a)"
+  },
+  "iso_cabin": {
+   "job": "db78e52a-db2d-4cff-8920-2fc6d1d6a77e",
+   "from": "cabin_c",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_db78e52a-db2d-4cff-8920-2fc6d1d6a77e.png",
+   "prompt": "single clean 3D product render of the egg cabin, three-quarter front, hanger and grip, no rope, no text, pure white background"
+  },
+  "iso_pylon_line": {
+   "job": "8c3bfbf5-8d98-42a6-8585-25f6927defd6",
+   "from": "pylons_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200049_8c3bfbf5-8d98-42a6-8585-25f6927defd6.png",
+   "prompt": "the tall straight line pylon alone, pure white background"
+  },
+  "iso_pylon_corner": {
+   "job": "98c9b5fe-2dfa-41c8-a669-0e8064553f1e",
+   "from": "pylons_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_98c9b5fe-2dfa-41c8-a669-0e8064553f1e.png",
+   "prompt": "the corner pylon alone, pure white background"
+  },
+  "iso_top_saucer": {
+   "job": "8eff7e0e-3b36-47b8-bc02-e55b37f96b5c",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_8eff7e0e-3b36-47b8-bc02-e55b37f96b5c.png",
+   "prompt": "only the upper part (deck and roof) of the flying-saucer station"
+  },
+  "iso_top_arches": {
+   "job": "9edd42ce-9882-4def-be3c-19890c272460",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200524_9edd42ce-9882-4def-be3c-19890c272460.png",
+   "prompt": "only the upper part of the parabolic-arches station"
+  },
+  "iso_top_folded": {
+   "job": "bedfa951-6c34-4a35-bc37-f8fecf27b8de",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_bedfa951-6c34-4a35-bc37-f8fecf27b8de.png",
+   "prompt": "only the upper part of the folded zigzag roof station"
+  },
+  "iso_top_star": {
+   "job": "a9291471-a42e-4616-a41c-46610473b7d6",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200523_a9291471-a42e-4616-a41c-46610473b7d6.png",
+   "prompt": "only the upper part of the star spire station"
+  },
+  "iso_top_dome": {
+   "job": "39abbb72-43ba-4df2-8254-683bdf25d89b",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200540_39abbb72-43ba-4df2-8254-683bdf25d89b.png",
+   "prompt": "only the upper part of the ribbed dome station"
+  },
+  "iso_top_lantern": {
+   "job": "b44a0878-a46a-4b29-9161-6d9f728ceef9",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200051_b44a0878-a46a-4b29-9161-6d9f728ceef9.png",
+   "prompt": "only the upper part of the amber glass lantern station"
+  },
+  "iso_top_wing": {
+   "job": "ade33b0e-9e75-4369-ab6f-7c40a3b36c07",
+   "from": "stations_b",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200051_ade33b0e-9e75-4369-ab6f-7c40a3b36c07.png",
+   "prompt": "the hilltop pavilion with the swept wing canopy, flat base, no ground"
+  }
+ }
+}

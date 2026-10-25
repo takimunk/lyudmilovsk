@@ -1,0 +1,97 @@
+{
+ "_doc": "Made by blender/transport/optimize.py: sizes of the game meshes (metres, Blender frame). Copied to Content/Transport/kit.json.",
+ "cabin": {
+  "body_top": 2.3,
+  "door_faces_cut": 25547,
+  "door_half": 0.42,
+  "door_top": 2.1,
+  "floor": 0.22,
+  "grip": 3.863,
+  "length": 3.9,
+  "tris": 14000,
+  "width": 2.224
+ },
+ "pylon_corner": {
+  "height": 1.0,
+  "rope_axis": "X",
+  "saddle": 0.8,
+  "size": [
+   0.454,
+   0.432
+  ],
+  "tris": 9000
+ },
+ "pylon_line": {
+  "feet": 3.985,
+  "head": 4.599,
+  "height": 30.657,
+  "parts_tris": [
+   2602,
+   1649,
+   2749
+  ],
+  "rope_axis": "Y",
+  "saddle": 26.928,
+  "saddle_over_head_base": 0.869,
+  "shaft": 22.073,
+  "tris": 7000
+ },
+ "tops": {
+  "arches": {
+   "size": [
+    20.999,
+    21.0,
+    13.164
+   ],
+   "tris": 21999
+  },
+  "dome": {
+   "size": [
+    20.208,
+    21.0,
+    10.598
+   ],
+   "tris": 22000
+  },
+  "folded": {
+   "size": [
+    19.636,
+    21.0,
+    14.924
+   ],
+   "tris": 22000
+  },
+  "lantern": {
+   "size": [
+    20.619,
+    21.0,
+    12.765
+   ],
+   "tris": 22000
+  },
+  "saucer": {
+   "size": [
+    20.993,
+    21.0,
+    18.106
+   ],
+   "tris": 22000
+  },
+  "star": {
+   "size": [
+    19.972,
+    21.0,
+    18.445
+   ],
+   "tris": 22000
+  },
+  "wing": {
+   "size": [
+    18.818,
+    21.0,
+    9.517
+   ],
+   "tris": 22000
+  }
+ }
+}
