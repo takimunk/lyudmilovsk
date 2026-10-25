@@ -285,6 +285,34 @@ def build_glass(path):
     return m
 
 
+def build_glass_clear(path):
+    """See-through window glass (the houses are walkable inside): translucent, lit, a faint tint and a
+    Fresnel-weighted opacity so it reads as glass from the street yet lets the rooms show. Its own
+    non-Nanite mesh, no shadows (unreal/scripts/import_academgorodok.py)."""
+    m = master(path)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
+    try:
+        m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_SURFACE)
+    except Exception:  # noqa: BLE001
+        pass
+    colr = vec(m, "Color", -700, -200, (0.05, 0.07, 0.07))
+    mel.connect_material_property(colr, "", MP.MP_BASE_COLOR)
+    fres = node(m, unreal.MaterialExpressionFresnel, -700, 0)
+    fres.set_editor_property("exponent", 3.0)
+    op = node(m, unreal.MaterialExpressionLinearInterpolate, -400, 50)
+    link(scalar(m, "Opacity", -700, 120, 0.18), "", op, "A")
+    link(scalar(m, "OpacityGrazing", -700, 200, 0.75), "", op, "B")
+    link(fres, "", op, "Alpha")
+    mel.connect_material_property(op, "", MP.MP_OPACITY)
+    mel.connect_material_property(scalar(m, "Roughness", -400, 250, 0.03), "", MP.MP_ROUGHNESS)
+    mel.connect_material_property(scalar(m, "Specular", -400, 330, 0.9), "", MP.MP_SPECULAR)
+    mel.layout_material_expressions(m)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m, False)
+    return m
+
+
 # ------------------------------------------------------------------------------------------- instances
 
 def instance(path, parent):
@@ -329,6 +357,7 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
                          mp.GRIME_TILE_M)
     m_flat = build_flat(dest + "/M_Academ_Flat")
     m_glass = build_glass(dest + "/M_Academ_Glass")
+    m_clear = build_glass_clear(dest + "/M_Academ_GlassClear")
     out = {}
     for slot, (hexcol, rough, what) in common.MATERIALS.items():
         texname, grime, metallic, ao = mp.SLOTS[slot]
@@ -357,6 +386,17 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
         mel.update_material_instance(mi)
         eal.save_loaded_asset(mi, False)
         out[slot] = mi
+    out["LACE"] = instance("%s/MI_AC_Lace" % dest, m_clear)
+    _set(out["LACE"], "v", "Color", unreal.LinearColor(0.8, 0.78, 0.72, 1))
+    _set(out["LACE"], "s", "Opacity", 0.35)
+    _set(out["LACE"], "s", "OpacityGrazing", 0.6)
+    _set(out["LACE"], "s", "Roughness", 0.9)
+    _set(out["LACE"], "s", "Specular", 0.2)
+    mel.update_material_instance(out["LACE"])
+    eal.save_loaded_asset(out["LACE"], False)
+    out["GLASS_CLEAR"] = instance("%s/MI_AC_GlassClear" % dest, m_clear)
+    mel.update_material_instance(out["GLASS_CLEAR"])
+    eal.save_loaded_asset(out["GLASS_CLEAR"], False)
     for slot, (hexcol, rough, emissive) in (extra or {}).items():
         mi = instance("%s/MI_%s" % (dest, slot), m_flat)
         c = _srgb_to_linear(hexcol)

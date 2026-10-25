@@ -57,6 +57,9 @@ class House:
         self.mesh = Mesh()
         self.details = []
         self.rnd = random.Random(name)
+        self.facades = []            # (Facade, [Opening], wall top) for interiors.py
+        self.interiors = True        # walkable inside: interiors.py builds the stairs and flats
+        self.stairs = []             # stair axes (house x)
 
     # facade-local helpers -----------------------------------------------------------------
     def detail(self, fac, name, u, y, z, at=None, **kw):
@@ -93,7 +96,7 @@ def build_facade(house, fac, z_top, openings, extra=None, wall_mat="AC_Wall", pl
         geom.reveal(m, "AC_Wall", u0, u1, z0, z1, WALL_T, arch=o.arch)
         if o.arch:
             pass  # the hole is square; the unit and its surround fill the spandrels (see below)
-        if o.room and o.kind == "window":
+        if o.room and o.kind == "window" and not house.interiors:
             _room(m, house.rnd, u0, u1, z0, z1, fac.length)
         if o.fill:
             house.detail(fac, o.kind, o.uc, 0.0, z0, w=o.w, h=o.h, unit=o.unit)
@@ -110,6 +113,7 @@ def build_facade(house, fac, z_top, openings, extra=None, wall_mat="AC_Wall", pl
     if extra:
         extra(m)
     house.add(fac, m)
+    house.facades.append((fac, openings, z_top))
 
 
 def _split_by_doors(length, doors):
@@ -175,6 +179,8 @@ N1_BAY_W = 5.4
 N1_WIN_STEP = 4.05
 N1_BAY_GAP = 1.65                  # bay edge to the next window's axis
 GASTRONOM_X = (-2.5, 18.2)         # the shop's ground floor (house x), gastronom.py
+STAIR_WIN_Z = FLOOR_H / 2 + 0.8     # stair window sill over its storey's floor: 0.8 m over the half landing
+SIDE_STAIRS = (-20.7, 0.0, 20.7)    # side houses: stair axes behind the street portals
 
 
 def novikova1():
@@ -217,6 +223,7 @@ def novikova1():
             o.room = False
             if o.kind == "door" and abs(bx) < 0.1:
                 o.fill = False
+    h.stairs = list(N1_BAYS)
     build_facade(h, fac, ez, ops)
     for b in N1_BAYS:
         _n1_bay_details(h, fac, cu(b), ez)
@@ -235,9 +242,9 @@ def novikova1():
     ops = []
     entr = [cu(-u) for u in N1_BAYS]               # the stairs sit behind the bays (?)
     for e in entr:
-        ops.append(Opening(e, floor_z(0) - 0.15, 1.4, 2.6, kind="door", unit="double", room=False))
-        for k in range(F):                         # stair windows between the floors
-            ops.append(Opening(e, floor_z(k) + 1.0 + FLOOR_H / 2 - 1.0, 1.9, 1.7, unit="triple"))
+        ops.append(Opening(e, floor_z(0) - 0.15, 1.4, 2.6, kind="door", unit="double", room=False, fill=False))
+        for k in range(F - 1):                     # stair windows over the half landings
+            ops.append(Opening(e, floor_z(k) + STAIR_WIN_Z, 1.9, 1.7, unit="triple"))
     wus = []
     for e0, e1 in zip([0.0] + entr, entr + [L]):
         a, b = (e0 + 2.0 if e0 else 1.4), (e1 - 2.0 if e1 < L else L - 1.4)
@@ -246,7 +253,6 @@ def novikova1():
     for k in range(F):
         for u in wus:
             ops.append(Opening(u, floor_z(k) + SILL_H, WIN_W, WIN_H))
-    ops = [o for o in ops if not (o.unit == "triple" and o.z0 + o.h > ez - 0.6)]
     build_facade(h, fac, ez, ops)
     for e in entr:
         h.detail(fac, "oculus", e, 0.0, ez - 1.25, d=0.75)
@@ -287,9 +293,9 @@ def novikova1():
 
 
 def _n1_bay_openings(bu):
-    """Openings of one loggia bay (facade u of its axis): the portal door, two loggia doors,
-    the Palladian window on the top floor."""
-    ops = [Opening(bu, floor_z(0) - 0.15, 1.6, 2.6, kind="door", unit="double", room=False, surround=None)]
+    """Openings of one loggia bay (facade u of its axis): the portal door (open: the stair hall or
+    the Gastronom behind it), two loggia doors, the Palladian window on the top floor."""
+    ops = [Opening(bu, floor_z(0) - 0.15, 1.6, 2.6, kind="door", unit="double", room=False, surround=None, fill=False)]
     for k in (1, 2):
         ops.append(Opening(bu, floor_z(k) + 0.05, 2.4, 2.75, unit="french_door", surround=None))
     ops.append(Opening(bu, floor_z(3) + 0.05, 2.6, 2.95, unit="palladian", surround=None))
@@ -417,7 +423,7 @@ def side_house(name):
                 ops.append(Opening(uc, floor_z(k) + SILL_H, 1.35, 1.85, surround=sur))
         else:
             ops.append(Opening(uc, floor_z(0) - 0.15, 1.3, 2.6, kind="door", unit="arched", arch=True,
-                               room=False, surround=None))
+                               room=False, surround=None, fill=False))
             ops.append(Opening(uc, floor_z(1) + 0.05, 1.3, 2.6, unit="french_door", surround="pediment"))
             ops.append(Opening(uc, floor_z(2) + SILL_H, 1.35, 1.85, surround="ears"))
     build_facade(h, fac, ez, ops)
@@ -462,29 +468,33 @@ def side_house(name):
         fac = Facade(pa, pb)
         Lf = fac.length
         ops = []
-        if i in (0, 4):                    # wing ends facing the courtyard
+        balc = []
+        if i in (0, 4):                    # wing ends facing the courtyard; the axis next to the stair is its entrance
             us = axes(1.0, Lf - 1.0, 3)
-            ops += windows_on_axes(us, F)
+            su = min(us, key=lambda u: min(abs(fac.to_building((u, 0, 0))[0] - sx) for sx in SIDE_STAIRS))
+            ops += windows_on_axes([u for u in us if u != su], F)
+            ops += _stair_entrance(su, F)
         elif i in (1, 3):                  # wing side faces: paired windows with a colonnette
             for k in range(F):
                 ops.append(Opening(Lf / 2, floor_z(k) + SILL_H, 2.3, 1.85, unit="paired"))
-        else:                              # the recess: three entrances, stacked balconies
-            ent = [Lf * 0.17, Lf * 0.5, Lf * 0.83]
-            for e in ent:
-                ops.append(Opening(e, floor_z(0) - 0.15, 1.3, 2.45, kind="door", unit="double", room=False))
+        else:                              # the recess: the middle entrance, windows, two balconies
+            ops += _stair_entrance(Lf / 2, F)
+            for a0, b0 in ((1.2, Lf / 2 - 1.8), (Lf / 2 + 1.8, Lf - 1.2)):
+                us = axes(a0, b0, max(1, round((b0 - a0) / 3.6)))
+                mid = us[len(us) // 2]
+                balc.append(mid)
+                ops += windows_on_axes([u for u in us if u != mid], F)
+                ops.append(Opening(mid, floor_z(0) + SILL_H, WIN_W, WIN_H))
                 for k in (1, 2):
-                    ops.append(Opening(e, floor_z(k) - 0.6, 1.9, 1.6, unit="triple"))
-            for a, b in zip([0] + ent, ent + [Lf]):
-                us = axes(a + 1.2, b - 1.2, max(1, round((b - a - 2.4) / 3.9)))
-                ops += windows_on_axes(us, F)
+                    ops.append(Opening(mid, floor_z(k) + 0.05, 1.3, 2.6, unit="french_door"))
         build_facade(h, fac, ez, ops)
-        if i == 2:
-            for e in ent:
-                h.detail(fac, "steps", e, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
-            for a, b in zip(ent, ent[1:]):
-                mid = (a + b) / 2
-                for k in (1, 2):
-                    h.detail(fac, "balcony", mid, 0.0, floor_z(k), length=4.5, depth=1.2, style="ornamental", consoles=True)
+        for o in ops:
+            if o.kind == "door":
+                h.detail(fac, "steps", o.uc, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
+        for mid in balc:
+            for k in (1, 2):
+                h.detail(fac, "balcony", mid, 0.0, floor_z(k), length=3.2, depth=1.2, style="ornamental", consoles=True)
+    h.stairs = list(SIDE_STAIRS)
 
     # --- roof: the main hip over the full-depth part, the wings' own hips into it -------------------
     over = 1.1
@@ -520,6 +530,14 @@ def side_house(name):
         h.detail(Facade((x1, y1), (x0, y1)), "downpipe", u, 0.12, 0.0, h=ez)
     h.roof_top = zr
     return h
+
+
+def _stair_entrance(u, F):
+    """A yard entrance (open) with the stair's windows over the half landings above it."""
+    ops = [Opening(u, floor_z(0) - 0.15, 1.4, 2.5, kind="door", unit="double", room=False, fill=False)]
+    for k in range(F - 1):
+        ops.append(Opening(u, floor_z(k) + STAIR_WIN_Z, 1.7, 1.6, unit="triple"))
+    return ops
 
 
 def _gable_side(h, u, wall_v, ez, w, rise, back):

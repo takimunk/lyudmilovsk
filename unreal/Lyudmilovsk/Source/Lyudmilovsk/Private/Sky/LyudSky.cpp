@@ -243,7 +243,8 @@ void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Head, Head + FVector(0, 0, RoofSearchHeight), ECC_Visibility, Params))
 	{
 		const UPrimitiveComponent* C = Hit.GetComponent();
-		bOpen = C && C->LightingChannels.bChannel1;
+		// an outdoor mesh that is a building with rooms (tag "Roof", e.g. the Academgorodok's houses) is a roof
+		bOpen = C && C->LightingChannels.bChannel1 && !(C->GetOwner() && C->GetOwner()->ActorHasTag(TEXT("Roof")));
 	}
 	// a short vote so a gap between ceiling tiles or a door frame overhead does not flicker the light
 	OutdoorsVote = FMath::FInterpConstantTo(OutdoorsVote, bOpen ? 1.f : 0.f, DeltaSeconds, 5.f);

@@ -14,6 +14,19 @@ import unreal
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "..", "tools"))
 import world_map as W  # noqa: E402
+sys.path.insert(0, os.path.join(HERE, "..", "..", "blender", "academgorodok"))
+import plan as P  # noqa: E402
+_HOUSES = {}
+
+
+def inside(house, cam, tgt):
+    """A spot given in a house's own frame (plan.py) -> the ensemble frame."""
+    if not _HOUSES:
+        for n, (cx, cy, yaw, mirror) in P.FRAMES.items():
+            import math as _m
+            _HOUSES[n] = P.Frame(cx, cy, _m.radians(yaw), mirror=mirror)
+    f = _HOUSES[house]
+    return f(cam), f(tgt)
 
 FACE_Y = float(os.environ.get("ACADEM_FACE_Y", "790"))
 RES = os.environ.get("ACADEM_RES", "1600x900")
@@ -32,7 +45,17 @@ SPOTS = [
     ("d300", (300.0, 90.0, 6.0), (0.0, 0.0, 8.0)),
     ("cable_car", (330.0, 170.0, 30.0), (0.0, 0.0, 6.0)),        # from the cabin, coming down
     ("yard", (-40.0, 10.0, 1.6), (0.0, 0.0, 8.0)),
-    ("gastronom", (1.0, -5.5, 2.3), (12.0, -1.0, 1.5)),          # inside, through the open portal
+    ("gastronom",) + inside("Novikova1", (0.5, -5.5, 2.3), (12.0, -1.0, 1.6)),   # through the open portal
+    ("n1_lobby",) + inside("Novikova1", (20.85, -5.5, 2.3), (20.85, 4.0, 2.0)),
+    ("n1_flight",) + inside("Novikova1", (20.4, -0.2, 2.3), (20.3, 4.0, 3.6)),
+    ("n1_landing",) + inside("Novikova1", (20.85, -0.3, 6.1), (14.0, 0.0, 5.6)),
+    ("n1_corridor",) + inside("Novikova1", (18.6, 0.0, 6.1), (11.0, 0.0, 5.6)),
+    ("n1_living",) + inside("Novikova1", (26.0, -2.5, 6.1), (26.5, -7.3, 5.6)),
+    ("n1_loggia",) + inside("Novikova1", (0.0, -3.0, 6.1), (0.0, -9.0, 5.4)),
+    ("n3_stair",) + inside("Novikova3", (0.0, 7.5, 2.3), (0.0, -3.0, 2.2)),
+    ("n3_room",) + inside("Novikova3", (-9.0, 4.5, 6.1), (-9.0, 9.4, 5.6)),
+    ("n3_door",) + inside("Novikova3", (3.44, 1.6, 2.3), (3.44, 6.0, 1.9)),
+    ("n3_corr",) + inside("Novikova3", (2.0, 2.15, 2.3), (9.0, 2.15, 2.0)),
 ]
 if os.environ.get("ACADEM_SHOTS"):
     SPOTS = [s for s in SPOTS if s[0] in os.environ["ACADEM_SHOTS"].split(",")]
@@ -69,7 +92,8 @@ def tick(dt):
             st["phase"] = 9
             return
         name, cam, tgt = SPOTS[st["i"]][:3]
-        for c in ["t.MaxFPS 0"] + list(SPOTS[st["i"]][3] if len(SPOTS[st["i"]]) > 3 else []):
+        first = [c for c in os.environ.get("ACADEM_CMDS", "").split(";") if c] if st["i"] == 0 else []
+        for c in ["t.MaxFPS 0"] + first + list(SPOTS[st["i"]][3] if len(SPOTS[st["i"]]) > 3 else []):
             cmd(w, c)
         if hasattr(pawn, "character_movement"):
             pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)

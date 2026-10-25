@@ -22,6 +22,7 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import common  # noqa: E402
+import interiors  # noqa: E402
 import plan  # noqa: E402
 from character_standard import MIN_DOOR_CLEAR_HEIGHT_M, MIN_DOOR_CLEAR_WIDTH_M  # noqa: E402
 
@@ -31,6 +32,15 @@ except Exception as e:          # noqa: BLE001  - details.py still being written
     print("ACADEM details.py unavailable:", e)
     DET = None
 
+try:
+    import furniture as FURN
+except Exception as e:          # noqa: BLE001  - furniture.py still being written: bare rooms
+    print("ACADEM furniture.py unavailable:", e)
+    FURN = None
+
+# see-through: a separate translucent, shadowless mesh (glass, and the tulle that hangs over every window,
+# which as an opaque sheet would shut the daylight out of the rooms)
+GLASS = {"AC_Glass", "AC_GGlass", "AC_FGlass", "AC_FLace"}
 EXPORT_DIR = os.path.join(ROOT, "blender", "export", "academgorodok")
 RENDER_DIR = os.path.join(ROOT, "renders", "academgorodok")
 TEX_DIR = os.path.join(ROOT, "textures", "academ")
@@ -58,11 +68,14 @@ def materials():
         MAT.build_materials(TEX_DIR)
     except Exception as e:  # noqa: BLE001
         print("ACADEM materials.py unavailable, flat colours:", e)
+    extra = list(interiors.INTERIOR_MATERIALS.items())
     try:
         import gastronom
-        extra = list(gastronom.GASTRONOM_MATERIALS.items())
+        extra += list(gastronom.GASTRONOM_MATERIALS.items())
     except Exception:  # noqa: BLE001
-        extra = []
+        pass
+    if FURN is not None:
+        extra += list(FURN.FURNITURE_MATERIALS.items())
     for name, (hx, rough, _) in list(common.MATERIALS.items()) + list(EXTRA_MATS.items()) + extra:
         mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
         if not mat.use_nodes or "Principled BSDF" not in mat.node_tree.nodes or not mat.node_tree.nodes["Principled BSDF"].inputs["Base Color"].is_linked:
@@ -266,6 +279,26 @@ def join(target, obs):
     return target
 
 
+def split_glass(ob, coll):
+    """Moves the glass faces of ob into their own object <name>_Glass (same transform)."""
+    idx = [i for i, mt in enumerate(ob.data.materials) if mt and mt.name in GLASS]
+    if not idx:
+        return None
+    g = ob.copy()
+    g.data = ob.data.copy()
+    g.name = ob.name + "_Glass"
+    coll.objects.link(g)
+    for o, keep in ((ob, False), (g, True)):
+        bm = bmesh.new()
+        bm.from_mesh(o.data)
+        kill = [f for f in bm.faces if (f.material_index in idx) != keep]
+        bmesh.ops.delete(bm, geom=kill, context="FACES")
+        bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+        bm.to_mesh(o.data)
+        bm.free()
+    return g
+
+
 def apply_notches(ob, notches):
     """Cuts the roof's overhang away in front of gabled bays (house frame boxes, x0 x1 y0 y1)."""
     if not notches:
@@ -303,6 +336,24 @@ def build():
     for name, h in houses.items():
         f = h.frame
         m = h.mesh
+        if h.interiors:
+            m_in, rooms = interiors.build(h)
+            m.extend(m_in)
+            h.rooms = rooms
+            if FURN is not None:
+                for r in rooms:
+                    if r["kind"] != "stair":
+                        try:
+                            parts_ = FURN.furnish_parts(r)
+                            for key in ("finish", "furniture", "curtains"):
+                                m.extend(parts_[key])
+                            # one lamp per lived-in room (the ceiling fitting): the rooms are dark at night
+                            if r["kind"] in ("living", "study", "bedroom", "kitchen", "corridor") and parts_["lights"]:
+                                x, y, z, col, lm = parts_["lights"][0]
+                                h.lights = getattr(h, "lights", []) + [(x, y, z, col, min(lm, 1200))]
+                        except Exception as e:  # noqa: BLE001
+                            print("ACADEM furnish failed for %s: %s" % (r["kind"], e))
+            print("ACADEM %s: %d rooms inside" % (name, len(rooms)))
         if f.mirror:
             m = m.transformed(lambda p: (-p[0], p[1], p[2]))
             m.faces = [(mt, list(reversed(i)), list(reversed(uv))) for mt, i, uv in m.faces]
@@ -312,6 +363,9 @@ def build():
         join(ob, place_details(h.details, f.mirror, coll))
         ob.matrix_world = Matrix.Translation((f.ox, f.oy, f.oz)) @ Matrix.Rotation(f.yaw, 4, "Z")
         parts[name] = ob
+        glass = split_glass(ob, coll)
+        if glass is not None:
+            parts[name + "_Glass"] = glass
 
     gate_dets, lines = plan.gates(houses)
     gate_ob = mesh_object("Gates", plan.Mesh(), coll)
@@ -350,7 +404,11 @@ def export(parts):
     os.makedirs(EXPORT_DIR, exist_ok=True)
     layout = {"frame": "ensemble metres: x east, y north, z up; origin = Novikova 1 footprint centre at ground",
               "parts": {}, "trees": plan.square_trees(), "lights": []}
+    layout["walks"] = []
     for name, h in HOUSES.items():
+        for label, pts in getattr(h, "walks", []):
+            f = h.frame
+            layout["walks"].append({"house": name, "label": label, "points": [list(f(p)) for p in pts]})
         for x, y, z, col, lm in getattr(h, "lights", []):
             p = h.frame((x, y, z))
             layout["lights"].append({"at": list(p), "colour": col, "lumens": lm})

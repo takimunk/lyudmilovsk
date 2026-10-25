@@ -47,6 +47,15 @@ def _extra_materials():
     """Flat slots beyond common.MATERIALS: (hex, roughness, emissive)."""
     sys.path.insert(0, os.path.join(REPO, "blender", "academgorodok"))
     out = {"AC_Room": ("#8C7A62", 0.9, 0.35), "AC_Curtain": ("#D8CDB4", 0.9, 0.2), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
+    import interiors
+    for k, (hx, rough, _) in interiors.INTERIOR_MATERIALS.items():
+        out[k] = (hx, rough, 0.0)
+    try:
+        import furniture
+        for k, (hx, rough, _) in furniture.FURNITURE_MATERIALS.items():
+            out[k] = (hx, rough, 4.0 if "Opal" in k else 0.0)
+    except Exception as e:  # noqa: BLE001
+        log("no furniture materials: %s" % e)
     try:
         import gastronom
         for k, (hx, rough, _) in gastronom.GASTRONOM_MATERIALS.items():
@@ -79,7 +88,11 @@ def import_meshes():
         if not isinstance(sm, unreal.StaticMesh):
             continue
         name = sm.get_name()
+        glass = name.endswith("_Glass")
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
+            if glass:
+                sm.set_material(i, mats["LACE"] if str(sl.material_slot_name).startswith("AC_FLace") else mats["GLASS_CLEAR"])
+                continue
             key = str(sl.material_slot_name)
             mi = mats.get(key)
             if mi is None:
@@ -93,7 +106,11 @@ def import_meshes():
         if body:
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
         settings = sm.get_editor_property("nanite_settings")
-        settings.enabled = True
+        settings.enabled = not glass                    # translucent glass stays a classic mesh
+        # the fallback mesh is what complex collision uses: keep it full resolution, or steps turn
+        # into ramps and doorways close up (the walking test, test_academ_walk.py, failed on them)
+        settings.fallback_target = unreal.NaniteFallbackTarget.PERCENT_TRIANGLES
+        settings.fallback_percent_triangles = 1.0
         sm.set_editor_property("nanite_settings", settings)
         target = MESHES + "/SM_" + name.replace("SM_", "")
         eal.save_loaded_asset(sm)
@@ -134,10 +151,12 @@ def place(face_y, report=False):
         a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc, unreal.Rotator(0.0, 0.0, yaw))
         a.static_mesh_component.set_static_mesh(sm)
         a.set_actor_label("Academ_" + name)
-        a.tags = [TAG, "NoGrass", "NoTree"]
+        a.tags = [TAG, "NoGrass", "NoTree"] + (["Roof"] if name in ("Novikova1", "Novikova3", "Maksimova8") else [])
         a.set_folder_path("Outside/Academgorodok")
         c = a.static_mesh_component
         c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
+        if name.endswith("_Glass"):
+            c.set_editor_property("cast_shadow", False)
         n += 1
     plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
     for i, (lx, ly, species, seed, age) in enumerate(layout.get("trees", [])):
@@ -149,7 +168,7 @@ def place(face_y, report=False):
             p.set_editor_property(k, v)
         p.tags = [TAG]
         p.set_folder_path("Outside/Academgorodok")
-    for i, l in enumerate(layout.get("lights", [])):      # the Gastronom's pendant lamps
+    for i, l in enumerate(layout.get("lights", [])):      # the Gastronom's pendants and a lamp in each room
         lx, ly, lz = l["at"]
         x, y = W.academ_to_map(lx, ly)
         a = eas.spawn_actor_from_class(unreal.PointLight, unreal.Vector(*W.to_unreal(x, y, z0 + lz - 0.25, face_y)))
@@ -159,8 +178,10 @@ def place(face_y, report=False):
         c.set_editor_property("intensity", float(l["lumens"]))
         hx = l["colour"].lstrip("#")
         c.set_editor_property("light_color", unreal.Color(int(hx[4:6], 16), int(hx[2:4], 16), int(hx[0:2], 16), 255))
-        c.set_editor_property("attenuation_radius", 700.0)
+        c.set_editor_property("attenuation_radius", 650.0)
         c.set_editor_property("cast_shadows", False)
+        c.set_editor_property("max_draw_distance", 4000.0)      # ~300 lamps in the flats: only the near ones
+        c.set_editor_property("max_distance_fade_range", 500.0)
         a.tags = [TAG]
         a.set_folder_path("Outside/Academgorodok")
     log("placed %d parts, %d trees at map %s, yaw %.1f" % (n, len(layout.get("trees", [])), W.academ()[:2], yaw))
