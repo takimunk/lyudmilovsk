@@ -127,7 +127,8 @@ struct FMurmurationParams
  * the shore by day, the rest come back in the afternoon, murmurate at sunset and drop into the
  * roost at dusk. The roost is the land nearest the flock at dusk, found from the ground.
  *
- * Hand-feeding: the player presses FeedKey (F) to hold out food. Starlings within NoticeRange of
+ * Hand-feeding: the player holds out feed (F with bird feed in the hand: UBirdTameSubsystem calls SetFeeding and
+ * SetFeedHand). Starlings within NoticeRange of
  * the hand come down onto the ground around the player, hop, peck and watch the hand, and leave
  * after a while; walking at them flushes them. Roosting birds flush too if the player walks up.
  *
@@ -192,10 +193,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Day")
 	float ClockOverride = -1.f;
 
-	/** The key that holds out food for the starlings, and puts it away again. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration|Feeding")
-	FKey FeedKey = EKeys::F;
-
 	/** Run the flock in the editor viewport too (not only in play). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Murmuration")
 	bool bSimulateInEditor = false;
@@ -209,6 +206,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Murmuration")
 	void SetFeeding(bool bOn);
+
+	/** Where the food is (the hero's open palm), world; until it is set the hand is guessed in front of the camera. */
+	void SetFeedHand(const FVector& World) { FeedHand = World; bFeedHand = true; }
 
 	/**
 	 * Runs the flock headless for a while, logging it every LogEvery seconds (for tuning from
@@ -265,6 +265,8 @@ private:
 	float ClockTimer = 0.f;
 	float ViewerTimer = 0.f;
 	bool bFeeding = false;
+	FVector FeedHand = FVector::ZeroVector;
+	bool bFeedHand = false;
 	FVector LureFeet = FVector(1e30);
 	float DebugHours = -1.f, DebugRate = 0.f;
 
@@ -274,7 +276,7 @@ private:
 	void FeedViewer(const FVector& Feet, const FVector& Velocity, const FVector& Hand, bool bForce);
 	TArray<FVector3f> MakeLureSpots(const FVector& Feet) const;
 	float ProbeGround(float X, float Z) const;
-	void OnFeedKey();
+
 	void SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr);
 	void StartFlock();
 	void SampleGround();

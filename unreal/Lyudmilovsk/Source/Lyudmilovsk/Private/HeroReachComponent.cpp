@@ -270,9 +270,15 @@ void UHeroReachComponent::Begin(const FReachItem& It, bool bFromPocket)
 	Item0Rot = FRotationMatrix::MakeFromZX(It.Axis.GetSafeNormal(), It.Front).ToQuat();
 	LocalShape = ShapeOf(It).Transformed(FTransform(Item0Rot, It.Center).Inverse());
 	PlanGrip(It);
+	// something low (a vending machine's tray, an apple in the grass): the hero goes down on his haunches for it instead of
+	// folding over it, which put the upper arm and the sleeve in front of the eyes
+	const float Floor = Hero->GetActorLocation().Z - Hero->GetSimpleCollisionHalfHeight();
+	Hero->SetReachCrouch(FMath::GetMappedRangeValueClamped(FVector2f(70.f, 35.f), FVector2f(0.f, 1.f), float(It.Center.Z - Floor)));
 	Steps.Reset();
 	Current = 0;
 	StepTime = 0.f;
+	// a hold the hand was in blends back in after the move
+	HoldW = 0.f;
 	From = FKey();
 	From.Weight = 0.f;
 	if (!bLocked)
@@ -466,6 +472,8 @@ void UHeroReachComponent::AttachHeld()
 		}
 		A->AttachToComponent(Body, FAttachmentTransformRules::KeepWorldTransform, TEXT("hand_r"));
 		Held = A;
+		// up again with it in the hand
+		Hero->SetReachCrouch(0.f);
 	}
 }
 
@@ -489,6 +497,7 @@ void UHeroReachComponent::Finish()
 	Current = 0;
 	Pose = FHeroReachPose();
 	PushPose();
+	Hero->SetReachCrouch(0.f);
 	if (bLocked)
 	{
 		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
@@ -525,6 +534,67 @@ void UHeroReachComponent::PushPose()
 	}
 }
 
+void UHeroReachComponent::SetHold(const FHeroHoldPose& InHold)
+{
+	Hold = InHold;
+	bHold = true;
+}
+
+void UHeroReachComponent::ClearHold()
+{
+	bHold = false;
+}
+
+void UHeroReachComponent::TickHold(float DeltaTime)
+{
+	const float Rate = DeltaTime / FMath::Max(Hold.BlendTime, 0.05f);
+	const float Was = HoldW;
+	HoldW = FMath::Clamp(HoldW + (bHold ? Rate : -Rate), 0.f, 1.f);
+	if (HoldW <= 0.f)
+	{
+		if (Was > 0.f)
+		{
+			Pose = FHeroReachPose();
+			PushPose();
+		}
+		HoldEye = FVector::ZeroVector;
+		return;
+	}
+	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
+	const FRotator Look = PC ? PC->GetControlRotation() : Hero->GetActorRotation();
+	const float Pitch = FMath::Clamp(FRotator::NormalizeAxis(Look.Pitch), -45.f, 20.f) * Hold.PitchFollow;
+	// the eyes bob with the walk; the hand follows them softly, as an arm held out does
+	const FVector Eye = Hero->EyeLocation();
+	HoldEye = HoldEye.IsZero() ? Eye : FMath::VInterpTo(HoldEye, Eye, DeltaTime, 6.f);
+	const FTransform Frame(FRotator(Pitch, Look.Yaw, 0.f), HoldEye);
+	HoldPalmW = Frame.TransformPosition(Hold.Pos);
+	HoldFingerW = Frame.TransformVectorNoScale(Hold.FingerDir).GetSafeNormal();
+	HoldNormalW = Frame.TransformVectorNoScale(Hold.PalmNormal).GetSafeNormal();
+	HoldFingerW = (HoldFingerW - HoldNormalW * FVector::DotProduct(HoldFingerW, HoldNormalW)).GetSafeNormal();
+
+	USkeletalMeshComponent* Body = Hero->GetMesh();
+	const FTransform ToMesh = Body->GetComponentTransform().Inverse();
+	const float W = FMath::SmoothStep(0.f, 1.f, HoldW);
+	Pose.Weight = W;
+	Pose.Palm = ToMesh.TransformPosition(HoldPalmW);
+	Pose.FingerDir = ToMesh.TransformVectorNoScale(HoldFingerW).GetSafeNormal();
+	Pose.PalmNormal = ToMesh.TransformVectorNoScale(HoldNormalW).GetSafeNormal();
+	Pose.Curl = Hold.Curl * W;
+	Pose.bHasShape = !Hold.Shape.IsEmpty();
+	if (Pose.bHasShape)
+	{
+		const FTransform PalmFrame(FRotationMatrix::MakeFromXZ(HoldFingerW, HoldNormalW).ToQuat(), HoldPalmW);
+		Pose.Shape = Hold.Shape.Transformed(PalmFrame).Transformed(ToMesh);
+	}
+	else
+	{
+		Pose.Shape = FReachShape();
+	}
+	// the arm alone: the body does not lean while walking with it
+	Pose.PostureWeight = 0.f;
+	PushPose();
+}
+
 void UHeroReachComponent::DebugForcePose(const FHeroReachPose& InPose)
 {
 	bPoseForced = true;
@@ -535,8 +605,13 @@ void UHeroReachComponent::DebugForcePose(const FHeroReachPose& InPose)
 void UHeroReachComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (!Hero || bPoseForced || Steps.Num() == 0)
+	if (!Hero || bPoseForced)
 	{
+		return;
+	}
+	if (Steps.Num() == 0)
+	{
+		TickHold(DeltaTime);
 		return;
 	}
 	if (!Steps.IsValidIndex(Current))

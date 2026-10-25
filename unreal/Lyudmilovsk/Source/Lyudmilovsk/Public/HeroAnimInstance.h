@@ -24,6 +24,8 @@ struct FHeroBodyState
 	/** Ground covered, cm (drives the locomotion clips, so feet don't slip). */
 	double Distance = 0.0;
 	double IdleTime = 0.0;
+	/** 0 standing, 1 in a deep crouch (HandReach::ApplyCrouch). */
+	float Crouch = 0.f;
 };
 
 /**
@@ -52,6 +54,8 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	TArray<float> WalkStride, JogStride;       // cm per clip loop
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
 	FHeroReachPose Reach;
+	/** How far the hips go down in a full crouch, cm. */
+	static constexpr float CrouchDrop = 34.f;
 
 	/** The clothes around the torso, cm from the mesh's midline / front-back centre (SK_Hero: oversized overshirt). */
 	static constexpr float ClothesHalfWidth = 30.f;

@@ -80,6 +80,10 @@ namespace HandReach
 	/** Right arm to the palm, the hand turned to the palm frame, the fingers closed on the shape. Call after the look. */
 	void ApplyArm(FCompactPose& Pose, const FHeroReachPose& Reach, const FPalmFrame& AnimPalm);
 
+	/** A deep crouch on the pose as it is (standing or walking): the hips go down Drop cm and back, the back leans
+	 *  forward, the legs bend so each foot stays where the animation put it, flat. Alpha 0 leaves the pose alone. */
+	void ApplyCrouch(FCompactPose& Pose, float Alpha, float Drop);
+
 	/** The right hand's palm in the pose as it is now (the animation's own): what a reach blends in from and out to. */
 	FPalmFrame CurrentPalm(const FCompactPose& Pose);
 }

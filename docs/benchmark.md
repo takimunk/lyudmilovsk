@@ -46,6 +46,7 @@ The route (`ULyudBenchmark::BuildRoute`), about 66 s per preset:
 | terrace | standing on the terrace, looking back up at the upland forest, panning | 8 |
 | forest | a walk inside the old forest on the upland (eye height over the landscape) | 16 |
 | overlook | 25 m over the upland's edge, panning over the valley, the town and the far forests | 10 |
+| flight | a bird's line 25 m over the ground: over the old forest on the upland, down the slope and across the town | 30 |
 
 Outdoor keys are given in outdoor-map metres (`tools/world_map.py`) and follow the landscape. If the map moves,
 fix the keys there and check them with `-LyudBenchShots` (a screenshot per segment in `Saved/Benchmark/`).

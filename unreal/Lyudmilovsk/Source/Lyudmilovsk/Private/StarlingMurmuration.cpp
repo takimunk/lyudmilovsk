@@ -104,14 +104,6 @@ void AStarlingMurmuration::BeginPlay()
 {
 	Super::BeginPlay();
 	StartFlock();
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
-	{
-		EnableInput(PC);
-		if (InputComponent && FeedKey.IsValid())
-		{
-			InputComponent->BindKey(FeedKey, IE_Pressed, this, &AStarlingMurmuration::OnFeedKey).bConsumeInput = false;
-		}
-	}
 }
 
 void AStarlingMurmuration::EndPlay(const EEndPlayReason::Type Reason)
@@ -303,11 +295,6 @@ void AStarlingMurmuration::Tick(float DeltaSeconds)
 
 // --- the player and hand-feeding ------------------------------------------------------------------
 
-void AStarlingMurmuration::OnFeedKey()
-{
-	SetFeeding(!bFeeding);
-}
-
 void AStarlingMurmuration::SetFeeding(bool bOn)
 {
 	bFeeding = bOn;
@@ -326,7 +313,11 @@ void AStarlingMurmuration::UpdateViewer(bool bForce)
 	}
 	const FVector Feet = Pawn->GetActorLocation() - FVector(0.f, 0.f, Pawn->GetSimpleCollisionHalfHeight());
 	FVector Hand = Feet + FVector(0.f, 0.f, 120.f);
-	if (PC && PC->PlayerCameraManager)
+	if (bFeedHand)
+	{
+		Hand = FeedHand;
+	}
+	else if (PC && PC->PlayerCameraManager)
 	{
 		const FRotator View = PC->PlayerCameraManager->GetCameraRotation();
 		// the palm held out in front, a little below the eyes

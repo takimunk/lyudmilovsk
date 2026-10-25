@@ -150,7 +150,9 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	struct FEntry { const UAnimSequence* Seq; double Time; float Weight; };
 	TArray<FEntry, TInlineAllocator<5>> Entries;
 	const bool bLoco = Walk.Num() == 8 && Jog.Num() == 8;
-	const float Moving = bLoco ? FMath::Clamp(State.Speed / WalkClipSpeed, 0.f, 1.f) : 0.f;
+	// crouched the steps are short and slow: the walk plays in full from a slow creep on (played by distance its feet stay planted),
+	// not half-blended with the idle, which would slide them
+	const float Moving = bLoco ? FMath::Lerp(FMath::Clamp(State.Speed / WalkClipSpeed, 0.f, 1.f), FMath::Clamp(State.Speed / 30.f, 0.f, 1.f), State.Crouch) : 0.f;
 	const float Run = FMath::Clamp((State.Speed - WalkClipSpeed) / (JogClipSpeed - WalkClipSpeed), 0.f, 1.f);
 	if (Moving < 1.f)
 	{
@@ -216,6 +218,9 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	// the mannequin's arms swing close to its slim body; the hero's oversized overshirt and hoodie are
 	// far wider, so the hands would pass through the clothes (and, running, in front of the eyes)
 	KeepHandsOutsideClothes(Output.Pose);
+
+	// sneaking up on a bird: down on the haunches, the walk's feet kept where they step
+	HandReach::ApplyCrouch(Output.Pose, State.Crouch, CrouchDrop);
 
 	// reaching for something: the body crouches and leans to it first (the look builds on that)
 	const FPalmFrame AnimPalm = Reach.IsActive() ? HandReach::CurrentPalm(Output.Pose) : FPalmFrame();
