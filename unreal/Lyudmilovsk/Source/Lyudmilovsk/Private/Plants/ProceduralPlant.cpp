@@ -16,6 +16,7 @@
 #include "LyudText.h"
 #include "Plants/FallenFruit.h"
 #include "Plants/GameCalendar.h"
+#include "Plants/PlantHerb.h"
 #include "Plants/PlantMeshes.h"
 #include "Plants/TreeBakeCache.h"
 #include "StaticMeshResources.h"
@@ -80,17 +81,19 @@ AProceduralPlant::AProceduralPlant()
 	NeedleMaterialAsset = NeedleMat.Object ? NeedleMat.Object : LeafMaterialAsset;
 	FruitMaterialAsset = FruitMat.Object ? FruitMat.Object : Basic.Object;
 
+	Body = CreateDefaultSubobject<USceneComponent>(TEXT("Body"));
+	Body->SetupAttachment(RootComponent);
 	Wood = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wood"));
-	Wood->SetupAttachment(RootComponent);
+	Wood->SetupAttachment(Body);
 	Wood->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Wood->SetMobility(EComponentMobility::Movable);
 	OutdoorLighting(Wood);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
-		LeafComponents.Add(MakeInstanced(this, *FString::Printf(TEXT("Leaves%d"), K), RootComponent));
+		LeafComponents.Add(MakeInstanced(this, *FString::Printf(TEXT("Leaves%d"), K), Body));
 		LeafComponents[K]->NumCustomDataFloats = 1;
 	}
-	FruitComponent = MakeInstanced(this, TEXT("Fruit"), RootComponent);
+	FruitComponent = MakeInstanced(this, TEXT("Fruit"), Body);
 	FruitComponent->SetStaticMesh(Sphere.Object);
 	FruitComponent->NumCustomDataFloats = FPlantSkeleton::FInstances::FruitDataFloats;
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
@@ -104,7 +107,7 @@ AProceduralPlant::AProceduralPlant()
 	}
 
 	FarTree = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FarTree"));
-	FarTree->SetupAttachment(RootComponent);
+	FarTree->SetupAttachment(Body);
 	FarTree->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	FarTree->SetMobility(EComponentMobility::Movable);
 	FarTree->SetVisibility(false);
@@ -120,6 +123,17 @@ AProceduralPlant::AProceduralPlant()
 		OutdoorLighting(C);
 	}
 	SummaryTrunk->SetStaticMesh(Cylinder.Object);
+	Herb = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Herb"));
+	Herb->SetupAttachment(Body);
+	PotMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pot"));
+	PotMesh->SetupAttachment(RootComponent);
+	for (UStaticMeshComponent* C : { Herb.Get(), PotMesh.Get() })
+	{
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetMobility(EComponentMobility::Movable);
+		C->SetVisibility(false);
+		OutdoorLighting(C);
+	}
 	SummaryCrown->SetStaticMesh(Sphere.Object);
 
 	TrunkCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("TrunkCollision"));
@@ -139,6 +153,62 @@ const FPlantSpecies& AProceduralPlant::GetSpecies() const
 {
 	const FPlantSpecies* S = PlantSpeciesLibrary::Find(Species);
 	return S ? *S : PlantSpeciesLibrary::All()[0];
+}
+
+bool AProceduralPlant::IsHerb() const
+{
+	return GetSpecies().Herb.Form != EPlantHerbForm::None;
+}
+
+EPlantPot AProceduralPlant::PotKind() const
+{
+	if (Pot != EPlantPot::Auto) return Pot;
+	// outdoors a plant grows in the ground unless it is given a pot
+	const FPlantSpecies& S = GetSpecies();
+	return !S.bIndoor ? EPlantPot::None : S.Pot != EPlantPot::Auto ? S.Pot : EPlantPot::Terracotta;
+}
+
+float AProceduralPlant::PotSize() const
+{
+	if (PotDiameter > 0.f) return PotDiameter;
+	const FPlantSpecies& S = GetSpecies();
+	return S.PotDiameter > 0.f ? S.PotDiameter * 100.f : FMath::Clamp(S.Herb.Spread * 60.f, 12.f, 40.f);
+}
+
+void AProceduralPlant::ApplyPot()
+{
+	const EPlantPot Kind = PotKind();
+	const float D = PotSize();
+	if (Kind == BuiltPot && D == BuiltPotSize && (Kind == EPlantPot::None || PotStaticMesh))
+	{
+		return;
+	}
+	BuiltPot = Kind;
+	BuiltPotSize = D;
+	if (Kind == EPlantPot::None)
+	{
+		PotMesh->SetVisibility(false);
+		Body->SetRelativeLocation(FVector::ZeroVector);
+		return;
+	}
+	if (!PotMaterial)
+	{
+		PotMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+		SoilMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+		SoilMaterial->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.035f, 0.025f, 0.018f));
+		SoilMaterial->SetScalarParameterValue(TEXT("Roughness"), 0.95f);
+	}
+	const FLinearColor Colour = Kind == EPlantPot::Ceramic ? FLinearColor(0.025f, 0.09f, 0.06f) : Kind == EPlantPot::White ? FLinearColor(0.75f, 0.75f, 0.72f)
+		: FLinearColor(0.33f, 0.11f, 0.05f);
+	PotMaterial->SetVectorParameterValue(TEXT("Color"), Colour);
+	PotMaterial->SetScalarParameterValue(TEXT("Roughness"), Kind == EPlantPot::Ceramic ? 0.25f : Kind == EPlantPot::White ? 0.5f : 0.9f);
+	PotStaticMesh = PlantHerbs::BuildPot(this, D);
+	PotMesh->SetStaticMesh(PotStaticMesh);
+	PotMesh->SetMaterial(0, PotMaterial);
+	PotMesh->SetMaterial(1, SoilMaterial);
+	PotMesh->SetMaterial(2, SoilMaterial);
+	PotMesh->SetVisibility(true);
+	Body->SetRelativeLocation(FVector(0.f, 0.f, PlantHerbs::PotSoilZ(D)));
 }
 
 float AProceduralPlant::GetAge() const
@@ -189,7 +259,11 @@ FPlantSummary AProceduralPlant::GetSummary() const
 
 bool AProceduralPlant::WantsSummary() const
 {
-	if (bForceSummary)
+	if (IsHerb())
+	{
+		return false;
+	}
+	if (bForceSummary || GetSpecies().bPreferBake)
 	{
 		return true;
 	}
@@ -274,12 +348,12 @@ void AProceduralPlant::EnsureMeshes()
 		WoodMaterial->SetTextureParameterValue(TEXT("BarkNormal"), BarkNormal);
 		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing
 		WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), S.Bark.TwigColour);
-		WoodMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		WoodMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.bIndoor ? 0.f : S.Sway);
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			// leaves on the tree swing with their twigs and flutter; the litter lies still
-			LeafMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
-			LeafMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), 1.f);
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), S.bIndoor ? 0.f : S.Sway);
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), S.bIndoor ? 0.f : 1.f);
 			LitterMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
 			LitterMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		}
@@ -300,8 +374,112 @@ void AProceduralPlant::EnsureMeshes()
 	}
 }
 
+void AProceduralPlant::ApplyHerb(float Age, float Day)
+{
+	const FPlantSpecies& S = GetSpecies();
+	if (BuiltSpecies != Species || BuiltSeed != Seed || HerbMaterials.Num() != PlantHerbs::NumSlots)
+	{
+		// the tree's parts stay empty; its textures and materials are made once for the species
+		for (UInstancedStaticMeshComponent* L : LeafComponents) SetInstances(L, {});
+		for (UInstancedStaticMeshComponent* L : LitterComponents) SetInstances(L, {});
+		for (UInstancedStaticMeshComponent* L : FallingComponents) SetInstances(L, {});
+		SetInstances(FruitComponent, {});
+		Falling.Reset();
+		PendingDrops.Reset();
+		Skeleton = FPlantSkeleton();
+		LeafMesh = nullptr;
+		HerbLeafTexture = PlantHerbs::BuildLeafTexture(this, S);
+		HerbFlowerAtlas = S.Herb.Flower != EPlantFlowerForm::None ? PlantHerbs::BuildFlowerAtlas(this, S) : nullptr;
+		HerbMaterials.Reset();
+		for (int32 K = 0; K < PlantHerbs::NumSlots; K++)
+		{
+			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(LeafMaterialAsset, this);
+			// a herb outdoors stirs in the wind a little (the leaf material's own flutter); indoors it is still
+			M->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+			M->SetScalarParameterValue(TEXT("Flutter"), S.bIndoor || S.Herb.Form == EPlantHerbForm::Column ? 0.f : 0.25f);
+			HerbMaterials.Add(M);
+		}
+		HerbMaterials[PlantHerbs::Leaves]->SetTextureParameterValue(TEXT("LeafDetail"), HerbLeafTexture ? HerbLeafTexture.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf));
+		HerbMaterials[PlantHerbs::Stems]->SetVectorParameterValue(TEXT("Color"), S.Herb.StemColour);
+		if (HerbFlowerAtlas)
+		{
+			HerbMaterials[PlantHerbs::Flowers]->SetTextureParameterValue(TEXT("LeafDetail"), HerbFlowerAtlas);
+		}
+		for (int32 K = 0; K < PlantHerbs::NumSlots; K++)
+		{
+			Herb->SetMaterial(K, HerbMaterials[K]);
+		}
+		// beds and pots are small: gone beyond the distance they would be a few pixels
+		// a hedge is part of the street and stays
+		const float Cull = S.CrownBox.X > 0.f ? 0.f : S.bIndoor ? 4000.f : 9000.f;
+		Herb->SetCullDistance(Cull);
+		Herb->LDMaxDrawDistance = Cull;
+		Herb->SetCastShadow(true);
+		BuiltSpecies = Species;
+		BuiltSeed = Seed;
+		HerbKey = 0;
+	}
+	Wood->SetVisibility(false);
+	FarTree->SetVisibility(false);
+	FruitComponent->SetVisibility(false);
+	for (UInstancedStaticMeshComponent* L : LeafComponents) L->SetVisibility(false);
+	SetActorHiddenInGame(false);
+
+	const PlantHerbs::FState St = PlantHerbs::State(S, (uint32)Seed, Age, Day);
+	// frost browns the leaves; a patterned blade keeps its pattern under the browning
+	const FLinearColor Frost(0.12f, 0.07f, 0.03f);
+	const FLinearColor Leaf = PlantHerbs::LeafTextureCarriesColour(S) ? FLinearColor::White : St.LeafColour;
+	HerbMaterials[PlantHerbs::Leaves]->SetVectorParameterValue(TEXT("Color"), FMath::Lerp(Leaf, Frost, St.Wither));
+	HerbMaterials[PlantHerbs::Stems]->SetVectorParameterValue(TEXT("Color"), FMath::Lerp(S.Herb.StemColour, Frost, St.Wither));
+	// a hedge's flower section is its shaded inside
+	HerbMaterials[PlantHerbs::Flowers]->SetVectorParameterValue(TEXT("Color"), S.CrownBox.X > 0.f ? St.LeafColour * 0.3f
+		: FMath::Lerp(FLinearColor::White, Frost * 2.f, St.Wither));
+	if (St.Key != HerbKey || !HerbMesh)
+	{
+		const double T0 = FPlatformTime::Seconds();
+		PlantHerbs::FHerbGeometry G;
+		float Height = 0.f, Radius = 0.f;
+		PlantHerbs::Build(S, (uint32)Seed, St, G, Height, Radius);
+		HerbMesh = PlantHerbs::BuildMesh(this, HerbMesh, *FString::Printf(TEXT("SM_Herb_%s"), *S.Name.ToString()), G);
+		if (Herb->GetStaticMesh() != HerbMesh)
+		{
+			Herb->SetStaticMesh(HerbMesh);
+		}
+		Herb->MarkRenderStateDirty();
+		HerbBuildMs = (float)((FPlatformTime::Seconds() - T0) * 1000.0);
+		HerbKey = St.Key;
+		LastHeight = Height;
+		LastReach = Radius;
+		LastLeaves = G.Tris[PlantHerbs::Leaves].Num();
+		LastLitter = 0;
+		LastFruit = 0;
+	}
+	Herb->SetVisibility(St.bAlive);
+	// a pot and a hedge are solid; a herb in a bed is walked through
+	const bool bPot = PotKind() != EPlantPot::None;
+	const bool bHedge = S.CrownBox.X > 0.f;
+	const float D = bHedge ? 100.f * FMath::Min(S.CrownBox.X, S.CrownBox.Y) * FMath::Clamp(LastReach / (0.5f * S.CrownBox.Y), 0.3f, 1.f) : PotSize();
+	TrunkCollision->SetCollisionEnabled(bPot || bHedge ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+	if (bPot || bHedge)
+	{
+		const float HalfH = FMath::Max(0.5f * ((bPot ? PlantHerbs::PotSoilZ(D) : 0.f) + LastHeight * 100.f), 0.5f * D);
+		TrunkCollision->SetCapsuleSize(0.5f * D, HalfH);
+		TrunkCollision->SetRelativeLocation(FVector(0, 0, HalfH));
+	}
+	ShownAge = Age;
+	ShownDay = Day;
+	bShownSummary = false;
+}
+
 void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 {
+	ApplyPot();
+	if (IsHerb())
+	{
+		ApplyHerb(Age, Day);
+		return;
+	}
+	Herb->SetVisibility(false);
 	EnsureMeshes();
 	const FPlantSpecies& S = GetSpecies();
 	const FPlantSeason Season = PlantModel::Season(S, (uint32)Seed, Day);
@@ -424,7 +602,10 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 			WoodAge = Age;
 		}
 	}
-	const float R = FMath::Max(Sum.TrunkRadius * 100.f, 2.f);
+	// a hedge stops you at its leaves, a tree at its trunk, a potted tree at its pot
+	float R = FMath::Max(Sum.TrunkRadius * 100.f, 2.f);
+	if (S.CrownBox.X > 0.f) R = FMath::Max(R, 45.f * FMath::Min(S.CrownBox.X, S.CrownBox.Y) * FMath::Clamp(Sum.Height / FMath::Max(S.CrownBox.Z, 0.1f), 0.2f, 1.f));
+	if (PotKind() != EPlantPot::None) R = FMath::Max(R, 0.5f * PotSize());
 	const float HalfH = FMath::Clamp(Sum.Height * 50.f, R, 150.f);
 	TrunkCollision->SetCapsuleSize(R, HalfH);
 	TrunkCollision->SetRelativeLocation(FVector(0, 0, HalfH));
@@ -687,6 +868,13 @@ void AProceduralPlant::TickFallingLeaves(float DeltaSeconds)
 	}
 }
 
+void AProceduralPlant::SetDevTime(float Age, float Day)
+{
+	DevAge = Age;
+	DevDay = Day;
+	Refresh();
+}
+
 void AProceduralPlant::Refresh()
 {
 	Apply(GetAge(), CurrentDay(), WantsSummary(), true);
@@ -809,14 +997,22 @@ void AProceduralPlant::BeginPlay()
 {
 	Super::BeginPlay();
 	SinceUpdate = SinceWood = 0.f;
+	if (IsHerb())
+	{
+		// a herb changes by the day: its state is checked twice a second, the mesh rebuilt only when it changes
+		UpdateInterval = FMath::Max(UpdateInterval, 0.5f);
+	}
 	if (bSnapToGround)
 	{
 		FHitResult Hit;
 		const FVector At = GetActorLocation();
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(PlantGround), false, this);
-		if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0, 0, 500), At - FVector(0, 0, 3000), ECC_Visibility, Q))
+		// a pot or a herb looks just under itself (a sill, a table, a bed), not on the floor above
+		const bool bSmall = IsHerb() || PotKind() != EPlantPot::None;
+		if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0, 0, bSmall ? 30 : 500), At - FVector(0, 0, bSmall ? 300 : 3000), ECC_Visibility, Q))
 		{
-			SetActorLocation(Hit.ImpactPoint - FVector(0, 0, 3)); // the trunk goes into the soil a little
+			// the trunk goes into the soil a little; a pot stands on it
+			SetActorLocation(Hit.ImpactPoint - FVector(0, 0, PotKind() != EPlantPot::None ? 0 : 3));
 		}
 	}
 	if (GetSpecies().FruitSize > 0.f)
@@ -897,6 +1093,15 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 
 FString AProceduralPlant::DebugReport(float Age, float DayOfYear)
 {
+	if (IsHerb())
+	{
+		HerbKey = 0;
+		Apply(Age, DayOfYear, false);
+		const PlantHerbs::FState St = PlantHerbs::State(GetSpecies(), (uint32)Seed, Age, DayOfYear);
+		return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: herb %d tris (%d leaf), h %.2f r %.2f, maturity %.2f bloom %.2f present %.2f alive %d | mesh %.2f ms"),
+			*GetSpecies().Name.ToString(), Seed, Age, DayOfYear, NumTriangles(HerbMesh), LastLeaves, LastHeight, LastReach, St.Maturity, St.Bloom, St.Present,
+			St.bAlive ? 1 : 0, HerbBuildMs);
+	}
 	EnsureMeshes();
 	const FPlantSpecies& S = GetSpecies();
 	const FPlantSeason Season = PlantModel::Season(S, (uint32)Seed, DayOfYear);

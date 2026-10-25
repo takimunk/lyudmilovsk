@@ -76,8 +76,12 @@ public:
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedBarkAlbedo;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedBarkNormal;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedLeafDetail;
-	/** Put the plant on the ground under it when play begins. */
+	/** Put the plant on the ground under it when play begins (a pot or a herb: on the floor, table or sill just under it). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") bool bSnapToGround = true;
+	/** Its pot: Auto = the species' own (house plants have one, outdoor plants none). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Pot") EPlantPot Pot = EPlantPot::Auto;
+	/** The pot's diameter at the rim, cm; 0 = the species'. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant|Pot", meta = (ClampMin = "0")) float PotDiameter = 0.f;
 
 	UFUNCTION(BlueprintCallable, Category = "Plant") float GetAge() const;
 	UFUNCTION(BlueprintCallable, Category = "Plant") FPlantSummary GetSummary() const;
@@ -93,6 +97,8 @@ public:
 	/** Developer mode: hold the plant at an age / day of the year (below 0: back to the calendar). */
 	UPROPERTY(Transient, BlueprintReadWrite, Category = "Plant|Dev") float DevAge = -1.f;
 	UPROPERTY(Transient, BlueprintReadWrite, Category = "Plant|Dev") float DevDay = -1.f;
+	/** Developer mode from scripts: hold at an age and day of the year (below 0: back to the calendar), re-shaped now. */
+	UFUNCTION(BlueprintCallable, Category = "Plant") void SetDevTime(float Age, float Day);
 	/** Re-shape now (wood included), e.g. after changing species, seed or a developer override. */
 	UFUNCTION(BlueprintCallable, Category = "Plant") void Refresh();
 	/** One line of what is drawn now: size, leaves, litter, fruit. */
@@ -107,6 +113,12 @@ public:
 
 private:
 	const FPlantSpecies& GetSpecies() const;
+	bool IsHerb() const;
+	/** The pot it stands in now (None: in the ground) and its diameter, cm. */
+	EPlantPot PotKind() const;
+	float PotSize() const;
+	void ApplyPot();
+	void ApplyHerb(float Age, float Day);
 	void EnsureMeshes();
 	void Apply(float Age, float Day, bool bSummary, bool bWood = true);
 	bool WantsSummary() const;
@@ -122,7 +134,12 @@ private:
 	AFallenFruit* AimedFruit() const;
 	bool bPickPrompt = false;
 
+	/** Everything that grows, raised to the pot's soil when it has one. */
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<USceneComponent> Body;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Wood;
+	/** A herb or house plant (FPlantSpecies::Herb): one mesh, sections leaves, stems, flowers. */
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> Herb;
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> PotMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> FruitComponent;
 	/** Fallen leaves on the ground, and leaves in the air, per colour bucket. */
@@ -157,6 +174,18 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LeafMaterials;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> FruitMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CrownMaterial;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> HerbMesh;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> HerbLeafTexture;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> HerbFlowerAtlas;
+	/** Leaves, stems, flowers. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> HerbMaterials;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> PotStaticMesh;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> PotMaterial;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SoilMaterial;
+	uint32 HerbKey = 0;
+	float HerbBuildMs = 0.f;
+	EPlantPot BuiltPot = EPlantPot::Auto;
+	float BuiltPotSize = -1.f;
 
 	/** Keys (year * 100000 + twig) of fruit picked up, so it does not come back after a load. */
 	UPROPERTY(SaveGame) TArray<int32> PickedFruit;

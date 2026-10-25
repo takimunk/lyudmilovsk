@@ -73,6 +73,18 @@ namespace
 	/** Arc length at which a curve first leaves the species' crown dome (or its full length when it never does). */
 	float EnvelopeLength(const FPlantSpecies& S, const TArray<FVector3f>& P, float Step)
 	{
+		if (S.CrownBox.X > 0.f)
+		{
+			// a clipped hedge: a box, width along X, depth along Y
+			for (int32 I = 1; I < P.Num(); I++)
+			{
+				if (FMath::Abs(P[I].X) > 0.5f * S.CrownBox.X || FMath::Abs(P[I].Y) > 0.5f * S.CrownBox.Y || P[I].Z > S.CrownBox.Z)
+				{
+					return (I - 1) * Step;
+				}
+			}
+			return TNumericLimits<float>::Max();
+		}
 		if (S.CrownWidth <= 0.f)
 		{
 			return TNumericLimits<float>::Max();
@@ -125,6 +137,20 @@ float PlantModel::AgeAtHeight(const FPlantSpecies& S, float H)
 FPlantSeason PlantModel::Season(const FPlantSpecies& S, uint32 Seed, float Day)
 {
 	FPlantSeason Out;
+	if (S.bIndoor)
+	{
+		// a house plant knows no seasons: always in summer leaf, nothing falls, no snow
+		Out.Day = Day;
+		Out.LeafScale = 1.f;
+		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++) Out.Colour[K] = S.SummerLeafColour;
+		if (S.FruitSize > 0.f)
+		{
+			Out.FruitScale = 1.f;
+			Out.FruitRipeness = 1.f;
+			Out.FruitColour = S.FruitColour;
+		}
+		return Out;
+	}
 	// this tree's own calendar: some trees are always a few days ahead of their neighbours
 	const float D = Day - (Hash01(Seed, 0x5EA5u) * 2.f - 1.f) * S.PhenologyJitter;
 	const float Unfold = Smooth(S.BudBreakDay, S.FullLeafDay, D);
@@ -477,7 +503,7 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 
 		// fruit grows on the spurs where a species has them (apple), else on the twigs
 		const int32 FruitOrder = S.SpurSpacing > 0.f ? 3 : 2;
-		if (bFruit && B.Order == FruitOrder && L > (FruitOrder == 3 ? 0.02f : 0.2f) && Hash01(Seed, I, 0, 21) < S.FruitChance)
+		if (bFruit && B.Order == FruitOrder && L > (FruitOrder == 3 ? 0.02f : FMath::Min(0.2f, 0.08f * S.MaxHeight)) && Hash01(Seed, I, 0, 21) < S.FruitChance)
 		{
 			// berries and cones hang for good and are simply gone when their time is up; apples and acorns fall
 			const bool bFalls = S.FruitCluster <= 1 && S.FruitFallDay <= 366.f;
