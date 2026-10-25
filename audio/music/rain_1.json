@@ -1,0 +1,27 @@
+{
+ "id": "rain_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/rain_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Minimal ambient piano with soft reverb, slow melancholic chords in the style of Erik Satie, D minor, 64 BPM, rainy afternoon, no drums, no vocals",
+  "seconds_total": 110,
+  "seed": 16101
+ },
+ "hash": "e44da7a4b069",
+ "fal_request_id": "01a173f5-a512-7130-9632-541f6a7a5cd4",
+ "seed": 16101,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1dc/Fn3YG0smmOTd29kakLVPk_I4NlUJin.wav",
+ "created": "2026-10-25T16:47:32Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "d1953fb28fac94bcd9d80315c3dd676dadbf3549bdff393064d96752b3d2ca98",
+ "seconds": 110.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "rain"
+ ]
+}

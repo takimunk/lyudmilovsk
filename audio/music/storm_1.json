@@ -1,0 +1,27 @@
+{
+ "id": "storm_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/storm_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Brooding dark ambient, low strings swelling, distant timpani rolls, D minor, 60 BPM, storm coming in from the sea, tense but restrained, no vocals",
+  "seconds_total": 100,
+  "seed": 17101
+ },
+ "hash": "1eda02859250",
+ "fal_request_id": "01a173f6-001f-7453-88c3-a804b974a3fa",
+ "seed": 17101,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1de/zQKAz_48FFJlRQkqnO5Mv_KcbHhazc.wav",
+ "created": "2026-10-25T16:51:07Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "15a94a462e07ace0693ac8f234b8656ed6778b6a67ba356cec10d893343586d5",
+ "seconds": 100.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "storm"
+ ]
+}

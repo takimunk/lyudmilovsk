@@ -1,0 +1,23 @@
+{
+ "id": "dog_bark_medium",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_bark_medium_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds",
+  "duration_seconds": 2.0
+ },
+ "hash": "b73a54540cf1",
+ "fal_request_id": "01a173ef-c416-7f81-8c4e-a4ae75f3249e",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1b5/LCtDN9C71mjAmA1SfJryI_sound_effect.mp3",
+ "created": "2026-10-25T16:41:01Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "34d7756f65abd958cc9b046445de8399711c407ce40786b63febc7425fe1cc1d",
+ "seconds": 1.78,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

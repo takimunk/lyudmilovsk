@@ -1,0 +1,23 @@
+{
+ "id": "cat_meow",
+ "variant": 4,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/cat_meow_04.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A single domestic cat meowing once, close, outdoors, clear, no other sounds",
+  "duration_seconds": 1.5
+ },
+ "hash": "29fa8d9b5fac",
+ "fal_request_id": "01a173ef-2e1e-7e62-9a99-781faf9c8646",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1b1/cCp3itrEvCdkT6GOaoO-7_sound_effect.mp3",
+ "created": "2026-10-25T16:40:21Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "401a4090af95f9116bd9c868b565d539b98a55d5bb2a70ea7c3a55576b00a764",
+ "seconds": 1.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

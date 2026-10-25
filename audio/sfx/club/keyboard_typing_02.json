@@ -1,0 +1,23 @@
+{
+ "id": "keyboard_typing",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/club/keyboard_typing_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds",
+  "duration_seconds": 6.0
+ },
+ "hash": "9681247a1417",
+ "fal_request_id": "01a173f2-1855-7d50-b9d5-1df578b977e0",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c5/lZ-n3jStjMPFnxxVuiqTS_sound_effect.mp3",
+ "created": "2026-10-25T16:43:31Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "e53ab85d62dbf7ce12df90a8fb1a4a4c5341c0fb96c682e9c24ed5b9d510db2a",
+ "seconds": 5.26,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club"
+}

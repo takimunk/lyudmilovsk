@@ -1,0 +1,27 @@
+{
+ "id": "club_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/club_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Lo-fi ambient, warm detuned analog synth pads, soft Rhodes chords, faint tape hiss, D minor, 72 BPM, nostalgic late-night computer club, slow, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 11201
+ },
+ "hash": "34bf14724ba1",
+ "fal_request_id": "01a173f2-e252-7072-83c3-c6003bd30a80",
+ "seed": 11201,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1ca/c2lZNkZy7NgoGfCJp5tKq_eeFsXBYy.wav",
+ "created": "2026-10-25T16:44:29Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "3ed8def0ad51ba2269027218f37c8005b459ad069ab7fb3cad3a4c55a3abc3d1",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "club"
+ ]
+}

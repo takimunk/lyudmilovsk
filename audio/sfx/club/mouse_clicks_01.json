@@ -1,0 +1,23 @@
+{
+ "id": "mouse_clicks",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/club/mouse_clicks_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds",
+  "duration_seconds": 5.0
+ },
+ "hash": "c870606f0283",
+ "fal_request_id": "01a173f2-49ea-75a1-b7bc-e265fdec41b1",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c6/0wc05-UbnwkwNIv4aVIWV_sound_effect.mp3",
+ "created": "2026-10-25T16:43:45Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "b0d9433bf82a10a89bcb7a44bbb5e8482d24b4c9399bc1cb1ab5d96fe624b121",
+ "seconds": 5.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club"
+}

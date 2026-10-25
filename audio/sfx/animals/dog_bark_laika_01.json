@@ -1,0 +1,23 @@
+{
+ "id": "dog_bark_laika",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_bark_laika_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds",
+  "duration_seconds": 2.0
+ },
+ "hash": "cb430931316e",
+ "fal_request_id": "01a173ef-ed95-70d1-ad62-004126ee81c0",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1b6/9liSB9oSLPudrNHVn8o9L_sound_effect.mp3",
+ "created": "2026-10-25T16:41:10Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "4fa6ff58d3382a8c4f649294e033481e602bbdd4ef0c2bc1b87599e3c94f6acf",
+ "seconds": 2.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

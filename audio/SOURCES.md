@@ -1,0 +1,100 @@
+# Sound sources
+
+Every sound in the game and where it comes from. All of it is the project's own work or generated for it, released
+under CC BY 4.0 (LICENSE-ASSETS). Generated sounds are pinned in audio/sounds.json; each file's .json sidecar holds
+the exact request, the fal request id, the seed (music) and the sha256 of the committed file. Regenerate with
+tools/gen_sounds.py.
+
+## Procedural (code, no recordings)
+
+| Sound | Made by |
+|---|---|
+| Wind (rumble, whoosh, aeolian whistle, flight rush) | Private/Audio/AmbienceDSP.cpp FWindVoice |
+| Leaves rustling, pine needles | AmbienceDSP.cpp FAmbience::RenderLeaves (noise grains) |
+| Surf: breaking waves, wash, roar of the shore, calm-water slaps | AmbienceDSP.cpp FAmbience::RenderSurf |
+| Rain: bed, ticks, puddle plips, roof drumming; snow hush | AmbienceDSP.cpp FAmbience::RenderRain |
+| Field crickets (Dolbear's law) | AmbienceDSP.cpp FAmbience::RenderCrickets |
+| Thunder: crack and rolling rumble | AmbienceDSP.cpp FAmbience::RenderThunder |
+| Ventilation hum and air | tools/gen_vent_hum.py, tools/gen_vent_air.py |
+| Bird calls (29 species) | tools/birdsim/bird_calls.py |
+
+## Generated
+
+| File | Model | Seed | fal request | Prompt |
+|---|---|---|---|---|
+| audio/sfx/animals/dog_bark_big_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-83f2-75b0-b8f2-b8e48cfb789b | A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds |
+| audio/sfx/animals/dog_bark_big_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-9c66-71f0-ad64-11fa01bef987 | A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds |
+| audio/sfx/animals/dog_bark_big_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-ba60-7c42-961d-4c083998dec7 | A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds |
+| audio/sfx/animals/dog_bark_big_04.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-d247-7980-b0dd-f7a8b7e10282 | A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds |
+| audio/sfx/animals/dog_bark_medium_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-a1e2-73f2-8dc3-33acfd780565 | A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds |
+| audio/sfx/animals/dog_bark_medium_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-b51e-70f1-a6f6-5d4be7764d9a | A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds |
+| audio/sfx/animals/dog_bark_medium_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-c416-7f81-8c4e-a4ae75f3249e | A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds |
+| audio/sfx/animals/dog_bark_medium_04.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-dc03-7f02-a743-519c417b73e5 | A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds |
+| audio/sfx/animals/dog_bark_laika_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-ed95-70d1-ad62-004126ee81c0 | A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds |
+| audio/sfx/animals/dog_bark_laika_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-fecf-7de1-ab16-7ec5c9917381 | A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds |
+| audio/sfx/animals/dog_bark_laika_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-110d-71e1-a506-8adf68b3cd8e | A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds |
+| audio/sfx/animals/dog_growl_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-26ce-71e2-8011-bfc8e6bacc1b | A dog growling low and warningly, close, outdoors, no barking, no other sounds |
+| audio/sfx/animals/dog_growl_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-3bd2-7a60-a88a-899b2c91da35 | A dog growling low and warningly, close, outdoors, no barking, no other sounds |
+| audio/sfx/animals/dog_growl_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-4d9e-7463-829e-44e443dd0a11 | A dog growling low and warningly, close, outdoors, no barking, no other sounds |
+| audio/sfx/animals/dog_whine_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-5c70-7ce2-b5fd-f8573387d136 | A friendly dog whining and whimpering softly, begging for food, close, no other sounds |
+| audio/sfx/animals/dog_whine_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-6b67-7d13-b16d-ab2c2d39fb62 | A friendly dog whining and whimpering softly, begging for food, close, no other sounds |
+| audio/sfx/animals/dog_whine_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-7c5b-7572-aacf-992a78042725 | A friendly dog whining and whimpering softly, begging for food, close, no other sounds |
+| audio/sfx/animals/dog_bark_far_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-8d1d-76e2-8570-fb76a689e1e0 | A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air |
+| audio/sfx/animals/dog_bark_far_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-9e4e-7261-95b9-70ff43e32102 | A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air |
+| audio/sfx/animals/dog_bark_far_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-b11b-77d2-9390-fa93f46fc774 | A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air |
+| audio/sfx/animals/dog_bark_far_04.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-c5eb-7c22-ada5-e431e4e6aae6 | A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air |
+| audio/sfx/animals/cat_meow_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-e3b2-7c60-8c60-857136c0264d | A single domestic cat meowing once, close, outdoors, clear, no other sounds |
+| audio/sfx/animals/cat_meow_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ee-f342-78c0-a143-124ee5dc89fb | A single domestic cat meowing once, close, outdoors, clear, no other sounds |
+| audio/sfx/animals/cat_meow_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-1a48-75c0-9fa2-62ba532e8104 | A single domestic cat meowing once, close, outdoors, clear, no other sounds |
+| audio/sfx/animals/cat_meow_04.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-2e1e-7e62-9a99-781faf9c8646 | A single domestic cat meowing once, close, outdoors, clear, no other sounds |
+| audio/sfx/animals/cat_meow_05.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173ef-414a-7af0-a9d3-abab1ce0447a | A single domestic cat meowing once, close, outdoors, clear, no other sounds |
+| audio/sfx/animals/cat_purr_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-d694-7d22-8117-bd7ee2db9119 | A contented cat purring steadily, very close, seamless loop, no other sounds |
+| audio/sfx/animals/cat_hiss_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-ef48-7122-a405-75e7086fa8c2 | An angry cat hissing and spitting at a dog, close, no other sounds |
+| audio/sfx/animals/cat_hiss_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f0-feb2-77e2-bdb8-0cac36efe050 | An angry cat hissing and spitting at a dog, close, no other sounds |
+| audio/sfx/animals/cat_hiss_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-1009-7d51-a4c7-82b3018b3add | An angry cat hissing and spitting at a dog, close, no other sounds |
+| audio/sfx/far/ship_horn_far_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-212a-7ae3-94c2-589272b6c5e3 | A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water |
+| audio/sfx/far/ship_horn_far_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-459a-7e83-a0c5-bc8ab0eaf520 | A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water |
+| audio/sfx/far/ship_horn_far_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-5b13-76b3-ba9d-47c0819905c7 | A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water |
+| audio/sfx/far/foghorn_far_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-6ebf-7f92-bd44-cab6296c2f68 | A distant lighthouse foghorn in thick sea fog, one long low moan, far away over the water |
+| audio/sfx/far/foghorn_far_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-84c5-7b12-a6e1-d50f5d1af0c9 | A distant lighthouse foghorn in thick sea fog, one long low moan, far away over the water |
+| audio/sfx/far/buoy_bell_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-986e-76a0-b652-c6e124267873 | A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic |
+| audio/sfx/far/buoy_bell_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-a863-7f40-af6d-3196bf68fc36 | A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic |
+| audio/sfx/far/buoy_bell_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-bcd4-7df3-be73-4ce7ab0ad708 | A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic |
+| audio/sfx/far/town_far_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-ce8d-7ae1-b302-75f13d60a525 | Distant small town ambience heard from a hill: faint cars far off, a moped, muffled voices very far, quiet, seamless loop, no music |
+| audio/sfx/club/club_room_tone_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f1-ea05-70f1-90de-f360857e6cfd | Room tone of a dim basement computer club: many desktop PC fans whirring, soft electrical hum of old monitors, quiet, no voices, no music, seamless loop |
+| audio/sfx/club/keyboard_typing_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-04a6-7282-8d72-c18a3f85ef5e | Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds |
+| audio/sfx/club/keyboard_typing_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-1855-7d50-b9d5-1df578b977e0 | Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds |
+| audio/sfx/club/keyboard_typing_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-28bb-78e0-9c73-f65164cbafd9 | Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds |
+| audio/sfx/club/keyboard_typing_04.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-39b4-7722-b546-4227fa03eb86 | Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds |
+| audio/sfx/club/mouse_clicks_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-49ea-75a1-b7bc-e265fdec41b1 | Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds |
+| audio/sfx/club/mouse_clicks_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-5dd5-7423-9497-b30ec8dab4d9 | Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds |
+| audio/sfx/club/console_game_far_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-714f-7513-ad60-517152cb1d61 | Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet |
+| audio/sfx/club/console_game_far_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-858a-76e2-bd88-f626364f240f | Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet |
+| audio/sfx/club/console_game_far_03.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-97e5-7391-a6b2-a45158eb73de | Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet |
+| audio/sfx/club/vending_hum_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-a7aa-70f2-b9a1-81bba038bba8 | A snack vending machine humming with its compressor and fluorescent light, close, indoors, seamless loop |
+| audio/sfx/club/vending_drop_01.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-be67-7f81-a8d3-bd059b629add | A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud |
+| audio/sfx/club/vending_drop_02.wav | fal-ai/elevenlabs/sound-effects/v2 |  | 01a173f2-d0c3-7022-b6f2-72d7f5590589 | A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud |
+| audio/music/club_1.wav | fal-ai/stable-audio-25/text-to-audio | 11201 | 01a173f2-e252-7072-83c3-c6003bd30a80 | Lo-fi ambient, warm detuned analog synth pads, soft Rhodes chords, faint tape hiss, D minor, 72 BPM, nostalgic late-night computer club, slow, no drums, no vocals |
+| audio/music/club_2.wav | fal-ai/stable-audio-25/text-to-audio | 11202 | 01a173f3-0afb-77f3-a999-4f4fc374e5f5 | Dreamy chiptune-tinged ambient, soft square-wave arpeggio far in the background, warm pad, gentle electric piano, D minor, 76 BPM, cozy retro computers, no drums, no vocals |
+| audio/music/club_3.wav | fal-ai/stable-audio-25/text-to-audio | 11203 | 01a173f3-448d-7c73-a174-c27fcf831ea8 | Minimal ambient, warm sub pad and soft glassy synth bells, slow chord changes, D minor, 70 BPM, quiet glow of old monitors in the dark, no drums, no vocals |
+| audio/music/dawn_1.wav | fal-ai/stable-audio-25/text-to-audio | 12101 | 01a173f3-7696-7b60-b965-be124125b604 | Slow ambient swell, warm string pad rising, distant bell-like synth notes, D major, 60 BPM, cold Baltic dawn over the sea, hopeful and quiet, no drums, no vocals |
+| audio/music/dawn_2.wav | fal-ai/stable-audio-25/text-to-audio | 12102 | 01a173f3-aee3-7871-963a-a4d54ed1d890 | Ambient felt piano, sparse gentle melody, soft airy pad, D major, 66 BPM, early morning by a northern sea, delicate, no drums, no vocals |
+| audio/music/day_1.wav | fal-ai/stable-audio-25/text-to-audio | 13101 | 01a173f3-fad6-7680-a0cb-e336b9230178 | Ambient acoustic guitar harmonics and soft glockenspiel, light warm pad, F major, 80 BPM, breezy seaside town afternoon, wistful, no drums, no vocals |
+| audio/music/day_2.wav | fal-ai/stable-audio-25/text-to-audio | 13102 | 01a173f4-45cf-7dd0-ae98-420603862b5d | Ambient felt piano and soft strings, sparse nostalgic melody, D minor, 68 BPM, overcast autumn day in a quiet Baltic town, no drums, no vocals |
+| audio/music/day_3.wav | fal-ai/stable-audio-25/text-to-audio | 13103 | 01a173f4-7034-7510-9587-29ab173749fa | Airy ambient, slow evolving synth pads like waves, soft kalimba notes, F major, 72 BPM, wide sky over dunes and pines, no drums, no vocals |
+| audio/music/dusk_1.wav | fal-ai/stable-audio-25/text-to-audio | 14101 | 01a173f4-98fc-7832-988c-b14478d3569f | Ambient, soft cello drone and felt piano, D minor, 60 BPM, golden-hour melancholy by the sea, slow and warm, no drums, no vocals |
+| audio/music/dusk_2.wav | fal-ai/stable-audio-25/text-to-audio | 14102 | 01a173f4-d6ad-7fa0-80cb-2356b7e8d0c6 | Ambient, warm analog pads and a lonely clarinet-like synth lead, D minor, 62 BPM, the last light over a Soviet seaside town, tender, no drums, no vocals |
+| audio/music/night_1.wav | fal-ai/stable-audio-25/text-to-audio | 15101 | 01a173f5-178e-75b3-8117-803c496b1fb8 | Dark ambient, deep slow pads, sparse celesta notes with long reverb, D minor, 54 BPM, cold starry night by the sea, calm, no drums, no vocals |
+| audio/music/night_2.wav | fal-ai/stable-audio-25/text-to-audio | 15102 | 01a173f5-68d8-7950-908c-0285bf0d0e8b | Nocturnal ambient, soft sub drone, distant music box fragments, D minor, 56 BPM, sleeping town under the moon, mysterious and gentle, no drums, no vocals |
+| audio/music/rain_1.wav | fal-ai/stable-audio-25/text-to-audio | 16101 | 01a173f5-a512-7130-9632-541f6a7a5cd4 | Minimal ambient piano with soft reverb, slow melancholic chords in the style of Erik Satie, D minor, 64 BPM, rainy afternoon, no drums, no vocals |
+| audio/music/rain_2.wav | fal-ai/stable-audio-25/text-to-audio | 16102 | 01a173f5-d6ff-7b01-89b8-8785c0e88008 | Ambient, muted electric piano and warm pad, gentle tape wobble, D minor, 66 BPM, rain on the windows, cozy and sad, no drums, no vocals |
+| audio/music/storm_1.wav | fal-ai/stable-audio-25/text-to-audio | 17101 | 01a173f6-001f-7453-88c3-a804b974a3fa | Brooding dark ambient, low strings swelling, distant timpani rolls, D minor, 60 BPM, storm coming in from the sea, tense but restrained, no vocals |
+| audio/music/sea_1.wav | fal-ai/stable-audio-25/text-to-audio | 18101 | 01a173f9-1c8e-7e40-9524-503bec5d1279 | Oceanic ambient, slow swelling synth pads like breathing waves, soft choir-like texture without words, D major, 58 BPM, standing at the shore of the Baltic sea, vast and calm, no drums |
+| audio/music/flight_1.wav | fal-ai/stable-audio-25/text-to-audio | 19101 | 01a173f9-4f2a-74a2-88e2-d9b24883c6dc | Uplifting ambient, airy pads and shimmering arpeggios, light soft percussion, D major, 92 BPM, soaring over the sea and pine forest as a bird, free and joyful, no vocals |
+| audio/music/flight_2.wav | fal-ai/stable-audio-25/text-to-audio | 19102 | 01a173f9-70f5-7ad1-8cf1-5955334eb8d1 | Ambient post-rock, gentle delayed guitar arpeggios, warm pads, soft brushes, D major, 96 BPM, gliding high over a seaside town, wonder, no vocals |
+| audio/music/snow_1.wav | fal-ai/stable-audio-25/text-to-audio | 20101 | 01a173f9-9466-7361-bf2c-17c0f2585ee6 | Crystalline ambient, music box and soft glass pads, slow, D minor, 60 BPM, snow falling on a quiet northern town, no drums, no vocals |
+
+## Licenses of the generators
+
+- sfx (fal-ai/elevenlabs/sound-effects/v2): Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.
+- music (fal-ai/stable-audio-25/text-to-audio): Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.

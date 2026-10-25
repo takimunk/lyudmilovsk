@@ -1,0 +1,27 @@
+{
+ "id": "flight_2",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/flight_2.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Ambient post-rock, gentle delayed guitar arpeggios, warm pads, soft brushes, D major, 96 BPM, gliding high over a seaside town, wonder, no vocals",
+  "seconds_total": 100,
+  "seed": 19102
+ },
+ "hash": "ee3fe28675ee",
+ "fal_request_id": "01a173f9-70f5-7ad1-8cf1-5955334eb8d1",
+ "seed": 19102,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1f5/-rCZ7qfdkew_oLlk33kS1_kXzIgGUx.wav",
+ "created": "2026-10-25T16:51:37Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "d1df92bf72676b9b3e5222bb3bba21df625e8cce93d9301373b5cc44d8288178",
+ "seconds": 100.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "flight"
+ ]
+}

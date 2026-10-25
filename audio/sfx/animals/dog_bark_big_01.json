@@ -1,0 +1,23 @@
+{
+ "id": "dog_bark_big",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_bark_big_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds",
+  "duration_seconds": 2.0
+ },
+ "hash": "13f79046559e",
+ "fal_request_id": "01a173ee-83f2-75b0-b8f2-b8e48cfb789b",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1ad/WTNG9zNJLy0nQ3iT89NNu_sound_effect.mp3",
+ "created": "2026-10-25T16:39:39Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "d4d63869558224a89702daccd9e64210f8fd683d7d7a7222cf6df3c1a417d5e2",
+ "seconds": 1.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

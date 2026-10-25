@@ -1,0 +1,27 @@
+{
+ "id": "flight_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/flight_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Uplifting ambient, airy pads and shimmering arpeggios, light soft percussion, D major, 92 BPM, soaring over the sea and pine forest as a bird, free and joyful, no vocals",
+  "seconds_total": 100,
+  "seed": 19101
+ },
+ "hash": "7ab4672c35c9",
+ "fal_request_id": "01a173f9-4f2a-74a2-88e2-d9b24883c6dc",
+ "seed": 19101,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1f4/hJWTqF2TTHej0QmZa26LF_xLCEZ0vx.wav",
+ "created": "2026-10-25T16:51:28Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "63b141aa3c13de0b19f66397e7bee062a6ffd924e7cde93e183ff39609de8b8a",
+ "seconds": 100.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "flight"
+ ]
+}

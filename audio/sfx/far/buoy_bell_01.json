@@ -1,0 +1,23 @@
+{
+ "id": "buoy_bell",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/far/buoy_bell_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic",
+  "duration_seconds": 7.0
+ },
+ "hash": "f5512532b364",
+ "fal_request_id": "01a173f1-986e-76a0-b652-c6e124267873",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c1/Kq6PgNSqTxmxXvMJDVpY4_sound_effect.mp3",
+ "created": "2026-10-25T16:42:59Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "42cb16cbe33ab9c100f94614d973383d6223da9cc9dc67a2030fe84f40784d70",
+ "seconds": 6.99,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "far"
+}

@@ -1,0 +1,23 @@
+{
+ "id": "foghorn_far",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/far/foghorn_far_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A distant lighthouse foghorn in thick sea fog, one long low moan, far away over the water",
+  "duration_seconds": 9.0
+ },
+ "hash": "f314c8387b0b",
+ "fal_request_id": "01a173f1-84c5-7b12-a6e1-d50f5d1af0c9",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c1/Y_-Zq_ZJCIUSG2S_Wrg3-_sound_effect.mp3",
+ "created": "2026-10-25T16:42:54Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "4262f6c24b81090a3d002b890061a47b2ef87541e600ba347aa95e9f3ae90135",
+ "seconds": 6.6,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "far"
+}

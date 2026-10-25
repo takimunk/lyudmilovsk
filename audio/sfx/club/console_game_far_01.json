@@ -1,0 +1,23 @@
+{
+ "id": "console_game_far",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/club/console_game_far_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet",
+  "duration_seconds": 8.0
+ },
+ "hash": "70e4d2795024",
+ "fal_request_id": "01a173f2-714f-7513-ad60-517152cb1d61",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c7/xXtxTCbJbYv2XqVAZceI-_sound_effect.mp3",
+ "created": "2026-10-25T16:43:55Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "56875040f00351af76dcf73e77188026546aa9636f2c9105a7988cc46025378a",
+ "seconds": 8.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club"
+}

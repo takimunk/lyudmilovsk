@@ -1,0 +1,23 @@
+{
+ "id": "dog_bark_far",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_bark_far_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air",
+  "duration_seconds": 5.0
+ },
+ "hash": "be044d1a5379",
+ "fal_request_id": "01a173f0-b11b-77d2-9390-fa93f46fc774",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1bb/eN3GYQGEJl7bqdutC7GkW_sound_effect.mp3",
+ "created": "2026-10-25T16:42:01Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "a6a145da176f9c268b494d6448cf4ccce9663bd068e65c20eb3093920cb0547d",
+ "seconds": 4.31,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

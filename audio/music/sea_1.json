@@ -1,0 +1,27 @@
+{
+ "id": "sea_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/sea_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Oceanic ambient, slow swelling synth pads like breathing waves, soft choir-like texture without words, D major, 58 BPM, standing at the shore of the Baltic sea, vast and calm, no drums",
+  "seconds_total": 120,
+  "seed": 18101
+ },
+ "hash": "3e496bb04116",
+ "fal_request_id": "01a173f9-1c8e-7e40-9524-503bec5d1279",
+ "seed": 18101,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1f3/hJ35Gm79fokyWfojrflHJ_rxhUq3R5.wav",
+ "created": "2026-10-25T16:51:20Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "ab77022940199f4e91fd1495fd881a9097faf761bec0d208eeb979674a548e1b",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "sea"
+ ]
+}

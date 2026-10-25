@@ -1,0 +1,25 @@
+{
+ "id": "vending_hum",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/club/vending_hum_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A snack vending machine humming with its compressor and fluorescent light, close, indoors, seamless loop",
+  "duration_seconds": 10.0,
+  "loop": true
+ },
+ "hash": "9cc81e2bc056",
+ "fal_request_id": "01a173f2-a7aa-70f2-b9a1-81bba038bba8",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c8/_qtjZDpd31fIXaXKCvqp5_sound_effect.mp3",
+ "created": "2026-10-25T16:44:10Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "d9028381a5b96996c0a1c9dd2c5db50a662be70fefa9ffcc6c8578f3ee696a4c",
+ "seconds": 9.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "club",
+ "loop": true
+}

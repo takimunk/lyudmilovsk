@@ -1,0 +1,25 @@
+{
+ "id": "town_far",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/far/town_far_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Distant small town ambience heard from a hill: faint cars far off, a moped, muffled voices very far, quiet, seamless loop, no music",
+  "duration_seconds": 20.0,
+  "loop": true
+ },
+ "hash": "225fe2a49f1b",
+ "fal_request_id": "01a173f1-ce8d-7ae1-b302-75f13d60a525",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1c3/pNyXyUi5CXfbUrtBUocTe_sound_effect.mp3",
+ "created": "2026-10-25T16:43:15Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "7073392ae4aaee945d9f3b5fc04ae7f0e496c6cd48a87b28509ffa5c7a2a07d5",
+ "seconds": 19.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "far",
+ "loop": true
+}

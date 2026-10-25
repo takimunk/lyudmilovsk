@@ -1,0 +1,28 @@
+{
+ "id": "day_3",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/day_3.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Airy ambient, slow evolving synth pads like waves, soft kalimba notes, F major, 72 BPM, wide sky over dunes and pines, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 13103
+ },
+ "hash": "d5b0e6b13af9",
+ "fal_request_id": "01a173f4-7034-7510-9587-29ab173749fa",
+ "seed": 13103,
+ "source_url": "https://v3b.fal.media/files/b/0aafd1d4/41ggPFu6Nnj7B1bxgiXFd_zQ5zxGgT.wav",
+ "created": "2026-10-25T16:46:10Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "e2ef9ee8022741a2e05d5942295902ef55c782b28187643270c9b429a46ac72e",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "day",
+  "sea"
+ ]
+}
