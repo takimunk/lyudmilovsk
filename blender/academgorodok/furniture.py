@@ -7,6 +7,14 @@ sizes; photos in docs/academgorodok/refs/interior/ (m24_2016_flat_04/05/07/09/10
 commons_Museum_of_everyday_life_of_soviet_scientists_02/03/04/07/08, aif_2019_02,
 m24_2015_museum_02/06).
 
+Shapes: soft pieces are rounded boxes (rbox: domed seats, puffed pillows, the eiderdown) and swept
+sections (sweep: padded and rolled arms, the club chair's tub back, sofa backs, picture frames);
+cabinet work has moulded tops and cornices (moulded_top / cornice_prof), frame-and-panel doors and
+bevelled drawer fronts; legs are turned (turned_leg). SMOOTH_MATERIALS lists the materials to
+smooth-shade (creases above SMOOTH_ANGLE kept). Pictures carry images: material AC_FPaint_<name>
+on 0..1 UVs, image file in PAINTINGS (made by tools/make_academ_paintings.py); each room picks
+them from its seed (Layout.painting).
+
 Props (PROPS below): built at the origin, floor at z = 0, front facing -y, centred in x (and in y).
 Ceiling fittings (chandelier, ceiling_rose, pendant, ceiling_globe) hang from z = 0 downwards.
 Wall-hung props (pictures, clocks, wall cupboard, mirror) have their back at +y and their bottom
@@ -76,7 +84,29 @@ FURNITURE_MATERIALS = {
     "AC_FBlackLacquer":  ("#121110", 0.15, "black polish / carbolite: piano, telephone, typewriter, photo prints"),
     "AC_FCanvas":        ("#6B5A3A", 0.70, "dark varnished oil paintings"),
     "AC_FOilcloth":      ("#C9D7C4", 0.35, "pale green checked oilcloth on the kitchen table"),
+    # framed pictures: the image textures/academ/paintings/<name>.jpg (PAINTINGS) on UVs 0..1 across the
+    # canvas (u right, v up = top of the image); the colour is the image's mean, for flat stand-ins
+    "AC_FPaint_birch_grove":         ("#918F66", 0.55, "picture: spring birch grove, oil (varnished)"),
+    "AC_FPaint_winter_village":      ("#968C80", 0.55, "picture: winter village at dusk, oil (varnished)"),
+    "AC_FPaint_lilac_still_life":    ("#725D4B", 0.55, "picture: still life with lilac, oil (varnished)"),
+    "AC_FPaint_harbour_1950s":       ("#847F71", 0.55, "picture: northern harbour of the 1950s, oil (varnished)"),
+    "AC_FPaint_family_portrait":     ("#70583F", 0.70, "picture: sepia studio photograph of a scientist (matte print)"),
+    "AC_FPaint_engraving_monastery": ("#ACA48F", 0.80, "picture: engraving of a monastery over a river (paper)"),
 }
+
+# image of each picture material, relative to the repo root (for the Unreal import and previews)
+PAINTINGS = {k: "textures/academ/paintings/%s.jpg" % k[len("AC_FPaint_"):] for k in FURNITURE_MATERIALS if k.startswith("AC_FPaint_")}
+PAINTING_ASPECT = {"birch_grove": 1024 / 768, "winter_village": 1024 / 683, "lilac_still_life": 819 / 1024,
+                   "harbour_1950s": 1024 / 683, "family_portrait": 819 / 1024, "engraving_monastery": 1024 / 768}
+PICTURE_KINDS = {"oil": ["birch_grove", "winter_village", "lilac_still_life", "harbour_1950s"],
+                 "portrait": ["family_portrait"], "photo": ["family_portrait"], "print": ["engraving_monastery"]}
+
+# materials whose faces should be smooth-shaded (upholstery, bedding, turned metal and porcelain);
+# edges sharper than SMOOTH_ANGLE degrees stay creased. The meshes carry no normals: the importer
+# (preview_furniture.mesh_object; the house build should do the same) applies this.
+SMOOTH_MATERIALS = {"AC_FLeather", "AC_FDamaskRed", "AC_FPlushGold", "AC_FLinen", "AC_FWool", "AC_FBrass", "AC_FChrome",
+                    "AC_FPorcelain", "AC_FOpalGlass", "AC_FGreenGlass", "AC_FCastIron"}
+SMOOTH_ANGLE = 50.0
 
 WAL, OAK, BEECH = "AC_FWalnut", "AC_FOak", "AC_FBeech"
 LEA, LEAG, DAM, PLUSH = "AC_FLeather", "AC_FLeatherGreen", "AC_FDamaskRed", "AC_FPlushGold"
@@ -345,6 +375,214 @@ def _rng(rnd, seed=0):
     return rnd if rnd is not None else random.Random(seed)
 
 
+# --- soft shapes and joinery ---------------------------------------------------------------------------
+def _axis_samples(lo, hi, r, k, n):
+    """Grid lines along one axis of a rounded box: k lines in each rounded band (even in angle once
+    rounded), n spans across the flat middle."""
+    if k <= 0:
+        return [lo + (hi - lo) * i / n for i in range(n + 1)]
+    mid = [lo + r + (hi - lo - 2 * r) * i / n for i in range(n + 1)]
+    a = [lo + r - r * math.tan(math.pi / 4 * (1 - j / k)) for j in range(k)]
+    b = [hi - r + r * math.tan(math.pi / 4 * (1 - j / k)) for j in range(k - 1, -1, -1)]
+    return a + mid + b
+
+
+def rbox(m, mat, x0, x1, y0, y1, z0, z1, r, k=1, n=(1, 1, 1), dome=None, skip="", xf=None):
+    """Rounded box (a box grown by a sphere of radius r): soft cushions, mattresses, padded arms.
+    k: segments per 45 deg of each rounded edge; n: spans across the flat middle per axis (x, y, z);
+    dome: {face letter (xXyYzZ): bulge} pushes that face out by bulge * (1-u^2)(1-v^2) (a domed seat,
+    a puffed pillow); skip: faces to leave out; xf: optional point transform (a proper rotation +
+    translation) applied to the result."""
+    lo, hi = (min(x0, x1), min(y0, y1), min(z0, z1)), (max(x0, x1), max(y0, y1), max(z0, z1))
+    r = max(1e-4, min(r, (hi[0] - lo[0]) * 0.45, (hi[1] - lo[1]) * 0.45, (hi[2] - lo[2]) * 0.45))
+    S = [_axis_samples(lo[a], hi[a], r, k, n[a]) for a in range(3)]
+    ilo = [lo[a] + r for a in range(3)]
+    ihi = [hi[a] - r for a in range(3)]
+    c = [(lo[a] + hi[a]) / 2 for a in range(3)]
+    domes = []
+    for key, amt in (dome or {}).items():
+        a = "xyz".index(key.lower())
+        domes.append((a, 1 if key.isupper() else -1, amt))
+
+    def P(q):
+        inner = [min(max(q[a], ilo[a]), ihi[a]) for a in range(3)]
+        d = [q[a] - inner[a] for a in range(3)]
+        ln = math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2])
+        p = [inner[a] + (d[a] / ln * r if ln > 1e-12 else 0.0) for a in range(3)]
+        for a, s, amt in domes:
+            if (q[a] - c[a]) * s <= 0:
+                continue
+            o1, o2 = [i for i in range(3) if i != a]
+            u = (q[o1] - c[o1]) / max(1e-6, (ihi[o1] - ilo[o1]) / 2)
+            v = (q[o2] - c[o2]) / max(1e-6, (ihi[o2] - ilo[o2]) / 2)
+            if abs(u) < 1 and abs(v) < 1:
+                p[a] += s * amt * (1 - u * u) * (1 - v * v)
+        return tuple(p)
+
+    out = m if xf is None else Mesh()
+    letters = "xyz"
+    for a in range(3):
+        o1, o2 = [i for i in range(3) if i != a]
+        for s in (-1, 1):
+            if (letters[a].upper() if s > 0 else letters[a]) in skip:
+                continue
+            nrm = [0.0, 0.0, 0.0]
+            nrm[a] = float(s)
+            A, B = S[o1], S[o2]
+            for i in range(len(A) - 1):
+                for j in range(len(B) - 1):
+                    pts = []
+                    for ii, jj in ((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)):
+                        q = [0.0, 0.0, 0.0]
+                        q[a] = hi[a] if s > 0 else lo[a]
+                        q[o1], q[o2] = A[ii], B[jj]
+                        pts.append(P(q))
+                    face_n(out, mat, pts, nrm)
+    if xf is not None:
+        m.extend(out.transformed(xf))
+
+
+def tilt_x(ang, dx=0.0, dy=0.0, dz=0.0):
+    """Point transform: rotate about the x axis by ang (ang > 0 tips the top towards -y, the front;
+    ang < 0 leans it back), then move."""
+    c, s = math.cos(ang), math.sin(ang)
+    return lambda p: (p[0] + dx, p[1] * c - p[2] * s + dy, p[1] * s + p[2] * c + dz)
+
+
+def sweep(m, mat, path, prof, closed=False, caps=True, cap_mat=None):
+    """Sweeps a closed cross-section along a horizontal path [(x, y)] (mitred at the corners).
+    prof(i) -> [(off, z)]: the section at path point i (same point count everywhere); off runs to the
+    right of the direction of travel. Padded arms, the horseshoe of a club chair, mouldings."""
+    n = len(path)
+    segs = n if closed else n - 1
+    rights = []
+    for i in range(segs):
+        (ax, ay), (bx_, by) = path[i], path[(i + 1) % n]
+        ln = math.hypot(bx_ - ax, by - ay) or 1.0
+        rights.append(((by - ay) / ln, -(bx_ - ax) / ln))
+    lat = []
+    for i in range(n):
+        if closed:
+            ra, rb = rights[i - 1], rights[i % segs]
+        else:
+            ra, rb = rights[max(0, i - 1)], rights[min(segs - 1, i)]
+        bxv, byv = ra[0] + rb[0], ra[1] + rb[1]
+        ln = math.hypot(bxv, byv) or 1.0
+        bxv, byv = bxv / ln, byv / ln
+        k = 1.0 / max(0.3, bxv * rb[0] + byv * rb[1])
+        lat.append((bxv * k, byv * k))
+    rings, profs = [], []
+    for i in range(n):
+        pr = prof(i)
+        profs.append(pr)
+        x, y = path[i]
+        rings.append([(x + lat[i][0] * o, y + lat[i][1] * o, z) for o, z in pr])
+    pr0 = profs[0]
+    area = sum(pr0[j][0] * pr0[(j + 1) % len(pr0)][1] - pr0[(j + 1) % len(pr0)][0] * pr0[j][1] for j in range(len(pr0)))
+    sg = 1.0 if area > 0 else -1.0
+    np_ = len(pr0)
+    for i in range(segs):
+        i2 = (i + 1) % n
+        R = rights[i]
+        for j in range(np_):
+            j2 = (j + 1) % np_
+            (oa, za), (ob, zb) = profs[i][j], profs[i][j2]
+            n2 = (sg * (zb - za), -sg * (ob - oa))
+            nrm = (R[0] * n2[0], R[1] * n2[0], n2[1])
+            pts = [rings[i][j], rings[i][j2], rings[i2][j2], rings[i2][j]]
+            if _dot(_newell(pts), _newell(pts)) > 1e-14:
+                face_n(m, mat, pts, nrm)
+    if caps and not closed:
+        for i, sgn in ((0, -1), (n - 1, 1)):
+            j = 0 if i == 0 else segs - 1
+            (ax, ay), (bx_, by) = path[j], path[j + 1]
+            t = (sgn * (bx_ - ax), sgn * (by - ay), 0.0)
+            face_n(m, cap_mat or mat, rings[i], t)
+    return rings
+
+
+def turned_leg(m, mat, x, y, h, r=0.022, seg=6, style="taper"):
+    """A lathe-turned leg from the floor (z=0) up to h: taper (dining chairs, tables), baluster
+    (vase and rings: tables, desk), bun (low feet of cabinets and armchairs)."""
+    if style == "bun":
+        prof = [(0, 0), (r * 0.7, 0), (r, h * 0.35), (r * 0.8, h * 0.8), (r * 0.9, h), (0, h)]
+    elif style == "baluster":
+        prof = [(0, 0), (r * 0.8, 0), (r * 0.9, h * 0.06), (r * 0.65, h * 0.12), (r * 1.25, h * 0.38), (r * 0.7, h * 0.6),
+                (r * 1.0, h * 0.66), (r * 0.9, h * 0.72), (r * 1.1, h), (0, h)]
+    else:
+        prof = [(0, 0), (r * 0.7, 0), (r * 0.95, h * 0.62), (r * 1.15, h * 0.67), (r * 1.0, h), (0, h)]
+    lathe(m, mat, prof, seg, (x, y, 0.0), phase=math.pi / seg)
+
+
+def cornice_prof(h, proj, back=0.02, kind="ogee"):
+    """Section (off, z) of a moulding from the carcass face (off=0) out to proj, z from 0 up to h,
+    closed back into the carcass. ogee: cyma recta with a fillet; thumb: a thumbnail-edged slab."""
+    if kind == "thumb":
+        r = h * 0.5
+        return [(-back, 0.0), (proj - 0.006, 0.0), (proj, 0.006), (proj, h - r),
+                (proj - r + r * math.cos(math.pi / 4), h - r + r * math.sin(math.pi / 4)), (proj - r, h), (-back, h)]
+    pts = [(-back, 0.0), (0.0, 0.0)]
+    for t in (0.2, 0.4, 0.6, 0.8, 1.0):
+        pts.append((proj * 0.85 * (0.5 - 0.5 * math.cos(math.pi * t)), h * 0.72 * t))
+    pts += [(proj, h * 0.74), (proj, h), (-back, h)]
+    return pts
+
+
+def moulded_top(m, mat, x0, x1, y0, y1, z0, prof, sides=3):
+    """A moulding (prof from cornice_prof) run round the front and sides (sides=3, back against the
+    wall at +y) or all four sides of the rectangle x0..x1, y0..y1 (the carcass faces), from z0, with
+    a flat top. The ring is built off the carcass faces."""
+    if sides == 3:
+        path = [(x0, y1), (x0, y0), (x1, y0), (x1, y1)]
+        sweep(m, mat, path, lambda i: [(o, z0 + z) for o, z in prof])
+        b = -prof[-1][0]
+        zt = z0 + prof[-1][1]
+        face_n(m, mat, [(x0 + b, y1, zt), (x0 + b, y0 + b, zt), (x1 - b, y0 + b, zt), (x1 - b, y1, zt)], (0, 0, 1))
+    else:
+        path = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+        sweep(m, mat, path, lambda i: [(o, z0 + z) for o, z in prof], closed=True)
+        b = -prof[-1][0]
+        zt = z0 + prof[-1][1]
+        face_n(m, mat, [(x0 + b, y0 + b, zt), (x1 - b, y0 + b, zt), (x1 - b, y1 - b, zt), (x0 + b, y1 - b, zt)], (0, 0, 1))
+
+
+def panel_door(m, mat, a, b, z0, z1, yf, t=0.02, mg=0.06, bev=0.018, dep=0.007, field=None):
+    """A frame-and-panel door (front at yf facing -y, back at yf + t): the stiles and rails at the
+    front, a bevelled edge down to a sunk panel `dep` deep. field: material of the panel (glass,
+    mirror) or None for wood."""
+    a, b = min(a, b), max(a, b)
+    bx(m, mat, a, b, yf, yf + t, z0, z1, faces="xXzZ")
+    mg = min(mg, (b - a) * 0.3, (z1 - z0) * 0.3)
+    R = [(a, z0), (b, z0), (b, z1), (a, z1)]
+    R1 = [(a + mg, z0 + mg), (b - mg, z0 + mg), (b - mg, z1 - mg), (a + mg, z1 - mg)]
+    bv = min(bev, (b - a - 2 * mg) * 0.3, (z1 - z0 - 2 * mg) * 0.3)
+    R2 = [(a + mg + bv, z0 + mg + bv), (b - mg - bv, z0 + mg + bv), (b - mg - bv, z1 - mg - bv), (a + mg + bv, z1 - mg - bv)]
+    for k in range(4):
+        j = (k + 1) % 4
+        face_n(m, mat, [(R[k][0], yf, R[k][1]), (R[j][0], yf, R[j][1]), (R1[j][0], yf, R1[j][1]), (R1[k][0], yf, R1[k][1])], (0, -1, 0))
+        face_n(m, mat, [(R1[k][0], yf, R1[k][1]), (R1[j][0], yf, R1[j][1]), (R2[j][0], yf + dep, R2[j][1]), (R2[k][0], yf + dep, R2[k][1])], (0, -1, 0))
+    face_n(m, field or mat, [(p[0], yf + dep, p[1]) for p in R2], (0, -1, 0))
+
+
+def drawer_front(m, mat, a, b, z0, z1, yf, t=0.016, bev=0.008):
+    """A drawer front (front at yf facing -y) with bevelled edges."""
+    a, b = min(a, b), max(a, b)
+    bx(m, mat, a, b, yf + bev, yf + t, z0, z1, faces="xXzZ")
+    o = [(a, z0), (b, z0), (b, z1), (a, z1)]
+    i = [(a + bev, z0 + bev), (b - bev, z0 + bev), (b - bev, z1 - bev), (a + bev, z1 - bev)]
+    for k in range(4):
+        j = (k + 1) % 4
+        face_n(m, mat, [(o[k][0], yf + bev, o[k][1]), (o[j][0], yf + bev, o[j][1]), (i[j][0], yf, i[j][1]), (i[k][0], yf, i[k][1])], (0, -1, 0))
+    face_n(m, mat, [(p[0], yf, p[1]) for p in i], (0, -1, 0))
+
+
+def knob(m, x, y, z, r=0.012):
+    """A small turned brass knob on a front facing -y."""
+    p = Mesh()
+    lathe(p, BRASS, [(0, 0), (r * 0.45, 0), (r, r * 1.5), (r * 0.6, r * 2.2), (0, r * 2.3)], 4, phase=math.pi / 4)
+    m.extend(rot_x90(p).transformed(lambda q: (q[0] + x, q[1] + y, q[2] + z)))
+
+
 # --- small clutter ----------------------------------------------------------------------------------
 def books_row(m, rnd, x0, x1, yf, yb, z, hmax, mats=None):
     """A shelf of books standing between x0 and x1, spines at the front (yf)."""
@@ -456,7 +694,7 @@ def plate_stack(n=6, r=0.12):
 
 def cup(r=0.04):
     m = Mesh()
-    lathe(m, PORC, [(0, 0), (r * 1.6, 0), (r * 1.5, 0.008), (r * 0.6, 0.008), (r, 0.06), (r * 0.9, 0.06), (0, 0.025)], 6)
+    lathe(m, PORC, [(0, 0), (r * 1.6, 0), (r * 0.6, 0.008), (r, 0.06), (r * 0.9, 0.06), (0, 0.025)], 5)
     return m
 
 
@@ -534,47 +772,60 @@ def mantel_clock(rnd=None):
     return m
 
 
-def picture(rnd=None, w=0.6, h=0.45, kind="oil"):
-    """Framed picture, back at y=+0.015, bottom at z=0. kind: oil | photo | print | portrait | rug."""
+def _frame_prof(fr, gilt):
+    """Section (off out from the sight edge, depth z towards the viewer) of a picture frame."""
+    if gilt:                                    # gilt frame: sight-edge bead, a cove, a raised outer bead
+        return [(0.0, 0.0), (fr, 0.0), (fr, 0.03), (fr - 0.008, 0.042), (fr - 0.02, 0.046), (fr * 0.55, 0.031),
+                (fr * 0.3, 0.024), (0.014, 0.03), (0.005, 0.03), (0.0, 0.024)]
+    return [(0.0, 0.0), (fr, 0.0), (fr, 0.022), (fr - 0.007, 0.027), (0.006, 0.027), (0.0, 0.02)]
+
+
+def picture(rnd=None, w=0.6, h=0.45, kind="oil", image=None):
+    """Framed picture, back at y=+0.015, bottom at z=0. kind: oil (gilt moulded frame) | photo |
+    print | portrait (moulded wooden frame and a paper mount) | rug (a wall carpet). image: one of
+    PAINTING_ASPECT (else picked with rnd); the canvas/print is material AC_FPaint_<image> with UVs
+    0..1 across it, and the frame keeps the image's aspect ratio (w x h is the size it aims at)."""
     rnd = _rng(rnd, 11)
     m = Mesh()
     if kind == "rug":                                  # wall carpet
         bx(m, rnd.choice([RUGR, RUGB]), -w / 2, w / 2, -0.005, 0.015, 0.0, h)
         rug_pattern(m, rnd, -w / 2, w / 2, 0.0, h, -0.0055, plane="xz")
         return m
-    fr = 0.06 if kind == "oil" else 0.035
-    fmat = BRASS if kind == "oil" else rnd.choice([OAK, WAL, BLACK])
-    d0, d1 = -0.015, 0.015
-    bx(m, fmat, -w / 2, w / 2, d0, d1, 0, fr)
-    bx(m, fmat, -w / 2, w / 2, d0, d1, h - fr, h)
-    bx(m, fmat, -w / 2, -w / 2 + fr, d0, d1, fr, h - fr)
-    bx(m, fmat, w / 2 - fr, w / 2, d0, d1, fr, h - fr)
-    y = d0 + 0.008
-    iw, ih = w / 2 - fr, h - fr
-    if kind == "oil":
-        face_n(m, CANVAS, [(-iw, y, fr), (iw, y, fr), (iw, y, ih), (-iw, y, ih)], (0, -1, 0))
-        for _ in range(rnd.randint(3, 6)):                 # a still life of flowers: a few blobs
-            cx, cz, r = rnd.uniform(-iw * 0.5, iw * 0.5), rnd.uniform(fr + (ih - fr) * 0.35, ih - 0.05), rnd.uniform(0.03, 0.07)
-            disc_y(m, rnd.choice([RUGR, PLUSH, LIN, BGREEN]), cx, y - 0.001, cz, r, 6)
-        bxc(m, BRASS, 0, y, 0.08, 0.002, fr + 0.03, fr + (ih - fr) * 0.4, faces="y")
-    else:
-        face_n(m, PAPER, [(-iw, y, fr), (iw, y, fr), (iw, y, ih), (-iw, y, ih)], (0, -1, 0))
-        ex, ez = iw * (0.55 if kind != "print" else 0.8), (ih - fr) * (0.32 if kind != "print" else 0.4)
-        zc = (fr + ih) / 2
-        mat = BLACK if kind in ("photo", "portrait") else rnd.choice([BBLUE, BGREEN, CANVAS])
-        face_n(m, mat, [(-ex, y - 0.001, zc - ez), (ex, y - 0.001, zc - ez), (ex, y - 0.001, zc + ez), (-ex, y - 0.001, zc + ez)], (0, -1, 0))
-        if kind == "portrait":
-            disc_y(m, PAPER, 0, y - 0.002, zc + ez * 0.25, ex * 0.35, 8)
+    image = image or rnd.choice(PICTURE_KINDS.get(kind, PICTURE_KINDS["oil"]))
+    gilt = kind == "oil"
+    fr = 0.07 if gilt else 0.032
+    mount = 0.0 if gilt else min(w, h) * 0.12
+    fmat = BRASS if gilt else rnd.choice([OAK, WAL, BLACK])
+    a = PAINTING_ASPECT[image]
+    area = max(0.01, (w - 2 * fr - 2 * mount) * (h - 2 * fr - 2 * mount))
+    pw, ph = math.sqrt(area * a), math.sqrt(area / a)
+    iw, ih = pw + 2 * mount, ph + 2 * mount              # the sight opening
+    f = Mesh()                                           # built lying down, front up (+z), then stood up
+    path = [(-iw / 2, fr), (iw / 2, fr), (iw / 2, fr + ih), (-iw / 2, fr + ih)]
+    sweep(f, fmat, path, lambda i: _frame_prof(fr, gilt), closed=True)
+    zc = 0.01
+    if mount:
+        f.face(PAPER, [(-iw / 2, fr, zc), (iw / 2, fr, zc), (iw / 2, fr + ih, zc), (-iw / 2, fr + ih, zc)])
+        zc += 0.0015
+    x0, y0 = -pw / 2, fr + mount
+    f.face("AC_FPaint_" + image, [(x0, y0, zc), (x0 + pw, y0, zc), (x0 + pw, y0 + ph, zc), (x0, y0 + ph, zc)],
+           [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)])
+    m.extend(rot_x90(f).transformed(lambda p: (p[0], p[1] + 0.015, p[2])))
     return m
 
 
 def photo_frame(rnd=None):
-    """Small standing photo frame for chests and shelves."""
+    """Small standing photo frame for chests and shelves (a sepia photograph in it)."""
     rnd = _rng(rnd, 13)
     m = Mesh()
     w, h = rnd.uniform(0.1, 0.16), rnd.uniform(0.14, 0.2)
-    obox(m, rnd.choice([OAK, WAL, BRASS]), (0, 0, h / 2), (1, 0, 0), (0, 0.96, 0.28), (0, -0.28, 0.96), w / 2, 0.006, h / 2)
-    obox(m, BLACK, (0, -0.007, h / 2 + 0.003), (1, 0, 0), (0, 0.96, 0.28), (0, -0.28, 0.96), w / 2 - 0.015, 0.002, h / 2 - 0.02, faces="y")
+    ax, ay, az = (1, 0, 0), (0, 0.96, 0.28), (0, -0.28, 0.96)
+    c = (0, 0, h / 2)
+    obox(m, rnd.choice([OAK, WAL, BRASS]), c, ax, ay, az, w / 2, 0.006, h / 2)
+    hx, hz = w / 2 - 0.015, h / 2 - 0.02
+    P = lambda i, k: tuple(c[t] - 0.0065 * ay[t] + i * hx * ax[t] + k * hz * az[t] for t in range(3))
+    face_n(m, "AC_FPaint_family_portrait", [P(-1, -1), P(1, -1), P(1, 1), P(-1, 1)], (0, -0.96, -0.28),
+           [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)])
     return m
 
 
@@ -670,79 +921,158 @@ def bentwood_chair(rnd=None):
 
 
 def dining_chair(rnd=None, uph=DAM, wood=BEECH):
-    """Light-wood dining chair with upholstered seat and back panel (0.45 x 0.5 x 0.95)."""
+    """Light-wood dining chair (museum, commons_..._02): turned front legs, raked back legs running up
+    into the back posts, a domed upholstered seat, a padded back panel under a curved top rail
+    (0.45 x 0.5 x 0.95)."""
     m = Mesh()
     w, d = 0.44, 0.46
     for sx in (-1, 1):
-        bxc(m, wood, sx * (w / 2 - 0.02), -d / 2 + 0.02, 0.035, 0.035, 0.0, 0.44)
+        turned_leg(m, wood, sx * (w / 2 - 0.028), -d / 2 + 0.03, 0.4, 0.019, 5)
         obox(m, wood, (sx * (w / 2 - 0.02), d / 2 - 0.03, 0.47), (1, 0, 0), (0, 0.995, -0.1), (0, 0.1, 0.995), 0.018, 0.02, 0.47)
-    bx(m, wood, -w / 2, w / 2, -d / 2, d / 2, 0.38, 0.44)
-    cbox(m, uph, -w / 2 + 0.01, w / 2 - 0.01, -d / 2 + 0.01, d / 2 - 0.02, 0.44, 0.5, 0.02)
-    bx(m, wood, -w / 2 + 0.02, w / 2 - 0.02, d / 2 - 0.0, d / 2 + 0.06, 0.88, 0.93)
-    cbox(m, uph, -w / 2 + 0.04, w / 2 - 0.04, d / 2 - 0.01, d / 2 + 0.06, 0.56, 0.88, 0.015)
-    for sx in (-1, 1):
-        bx(m, wood, sx * (w / 2 - 0.035), sx * (w / 2 - 0.005), -d / 2 + 0.03, d / 2 - 0.03, 0.12, 0.15)
+    bx(m, wood, -w / 2 + 0.01, w / 2 - 0.01, -d / 2 + 0.01, d / 2 - 0.03, 0.34, 0.41, faces="xXyY")             # seat rails
+    rbox(m, uph, -w / 2 + 0.004, w / 2 - 0.004, -d / 2 - 0.004, d / 2 - 0.035, 0.4, 0.47, 0.028, 1, (2, 2, 1),
+         {"Z": 0.016}, skip="z")
+    yr = lambda x: d / 2 + 0.013 + 0.022 * (1 - (x / (w / 2)) ** 2)
+    path = [(x, yr(x)) for x in (-w / 2 + 0.005, 0.0, w / 2 - 0.005)]
+    sweep(m, wood, path, lambda i: [(-0.012, 0.85), (0.012, 0.85), (0.012, 0.915), (0.005, 0.932), (-0.006, 0.932), (-0.012, 0.92)])
+    back = Mesh()
+    cbox(back, uph, -w / 2 + 0.035, w / 2 - 0.035, -0.018, 0.018, 0.0, 0.29, 0.014)
+    m.extend(back.transformed(tilt_x(-0.1, 0.0, d / 2 - 0.0, 0.54)))
     return m
 
 
 def leather_armchair(rnd=None):
-    """Buttoned leather club armchair (0.66 x 0.66 x 0.95)."""
+    """Buttoned leather club armchair of Kurchatov's study (m24_2016_flat_05): a horseshoe of padded
+    arms rising into a round tub back with a rolled top edged in piping, deep buttons inside the
+    back, a domed seat cushion, bun feet (0.7 x 0.7 x 0.86)."""
     m = Mesh()
-    w, d, h = 0.66, 0.66, 0.95
+    W, Dh, H, ZA, R = 0.34, 0.35, 0.86, 0.62, 0.068
     for sx in (-1, 1):
         for sy in (-1, 1):
-            bxc(m, WAL, sx * (w / 2 - 0.05), sy * (d / 2 - 0.05), 0.05, 0.05, 0.0, 0.1)
-    cbox(m, LEA, -w / 2 + 0.1, w / 2 - 0.1, -d / 2 + 0.02, d / 2 - 0.12, 0.1, 0.45, 0.05)
-    for sx in (-1, 1):
-        cbox(m, LEA, sx * (w / 2 - 0.12), sx * w / 2, -d / 2, d / 2, 0.1, 0.62, 0.04)
-        tube(m, LEA, (sx * (w / 2 - 0.06), -d / 2 + 0.0, 0.62), (sx * (w / 2 - 0.06), d / 2, 0.62), 0.065, 0.065, 8, LEA, LEA)
-    cbox(m, LEA, -w / 2 + 0.08, w / 2 - 0.08, d / 2 - 0.17, d / 2, 0.4, h, 0.06)
-    tube(m, LEA, (-w / 2 + 0.08, d / 2 - 0.09, h - 0.04), (w / 2 - 0.08, d / 2 - 0.09, h - 0.04), 0.08, 0.08, 8, LEA, LEA)
-    yb = d / 2 - 0.172
-    for i in range(4):
-        for j in range(3):
-            x, z = -0.15 + i * 0.1 + (j % 2) * 0.05, 0.56 + j * 0.11
-            if abs(x) < 0.2:
-                face_n(m, BLACK, [(x - 0.012, yb, z - 0.012), (x + 0.012, yb, z - 0.012), (x + 0.012, yb, z + 0.012), (x - 0.012, yb, z + 0.012)], (0, -1, 0))
+            turned_leg(m, WAL, sx * (W - 0.08), sy * (Dh - 0.08), 0.08, 0.04, 6, "bun")
+    rbox(m, LEA, -W + 0.025, W - 0.025, -Dh, Dh - 0.07, 0.08, 0.41, 0.07, 1, skip="z")             # body
+    rbox(m, LEA, -0.212, 0.212, -Dh - 0.012, 0.2, 0.38, 0.5, 0.045, 1, (2, 2, 1), {"Z": 0.022}, skip="z")
+    rx, ry, yc = W - R, 0.235, 0.05
+    path = [(-rx, -Dh + 0.004), (-rx, -Dh + 0.045), (-rx, -0.12)] + [(rx * math.cos(a), yc + ry * math.sin(a))
+                                                  for a in [math.pi - math.pi * k / 8 for k in range(9)]] + [(rx, -0.12), (rx, -Dh + 0.045), (rx, -Dh + 0.004)]
+
+    def back_of(i):
+        t = max(0.0, min(1.0, (path[i][1] + 0.12) / (yc + ry + 0.12)))
+        return t * t * (3 - 2 * t)
+
+    def prof(i):                                       # off > 0 towards the sitter
+        b = back_of(i)
+        top = ZA + (H - ZA) * b
+        inner = 0.05 + 0.06 * b
+        pts = [(-0.05, 0.1)]
+        pts += [(R * math.cos(math.pi * (1 - k / 6)), top - R + R * math.sin(math.pi * (1 - k / 6))) for k in range(7)]
+        pts += [(R * 0.75, top - R * 1.7), (inner, 0.48), (inner * 0.6, 0.4)]
+        if i in (0, len(path) - 1):                    # the rounded nose of the arm
+            pts = [(o * 0.55, 0.1 + (z - 0.1) * 0.92) for o, z in pts]
+        return pts
+
+    rings = sweep(m, LEA, path, prof)
+    chain(m, LEA, [r[1] for r in rings], 0.007, 3)                                                   # piping
+    for i in range(4, len(path) - 5):                                                                # buttons
+        for row, f in enumerate((0.2, 0.5, 0.8)):
+            j = i + (0.5 if row % 2 else 0.0)
+            ia, ib = int(j), min(len(path) - 1, int(j) + 1)
+            fr = j - ia
+            pa = [rings[ia][8][q] * (1 - f) + rings[ia][9][q] * f for q in range(3)]
+            pb = [rings[ib][8][q] * (1 - f) + rings[ib][9][q] * f for q in range(3)]
+            c = [pa[q] * (1 - fr) + pb[q] * fr for q in range(3)]
+            if row % 2 and ib == len(path) - 5:
+                continue
+            sphere(m, BLACK, (c[0] * 0.97, (c[1] - yc) * 0.97 + yc, c[2]), 0.011, 4, 2)
     return m
 
 
 def armchair(rnd=None, uph=DAM):
-    """Upholstered 1950s armchair with high rounded back and wooden arm fronts (0.75 x 0.8 x 1.0)."""
+    """Upholstered 1950s armchair (museum, commons_..._02/03): padded arms with rolled tops ending in
+    shaped wooden arm fronts, a domed loose seat cushion, a tall slightly reclined back with rounded
+    shoulders, short turned legs (0.76 x 0.8 x 1.0)."""
     m = Mesh()
-    w, d, h = 0.74, 0.78, 1.0
+    W, D, H = 0.38, 0.4, 1.0
     for sx in (-1, 1):
         for sy in (-1, 1):
-            lathe(m, WAL, [(0, 0), (0.025, 0), (0.035, 0.1), (0, 0.1)], 6, (sx * (w / 2 - 0.06), sy * (d / 2 - 0.06), 0))
-    cbox(m, uph, -w / 2 + 0.14, w / 2 - 0.14, -d / 2 + 0.03, d / 2 - 0.15, 0.1, 0.46, 0.06)
+            turned_leg(m, WAL, sx * (W - 0.07), sy * (D - 0.08), 0.11, 0.024, 5)
+    rbox(m, uph, -W + 0.1, W - 0.1, -D + 0.02, D - 0.1, 0.1, 0.4, 0.03, 1, skip="z")                  # seat base
+    rbox(m, uph, -W + 0.142, W - 0.142, -D, D - 0.15, 0.38, 0.49, 0.045, 1, (2, 2, 1), {"Z": 0.022}, skip="z")
+    cx, cz, r = 0.02, 0.575, 0.08                     # the arm's section, "out" away from the seat
+    arm = [(0.06, 0.1), (0.062, 0.47)] + [(cx + r * math.cos(t), cz + r * math.sin(t))
+                                          for t in [math.radians(-50 + 260 * k / 8) for k in range(9)]] + [(-0.056, 0.44), (-0.056, 0.1)]
     for sx in (-1, 1):
-        cbox(m, uph, sx * (w / 2 - 0.15), sx * w / 2, -d / 2 + 0.02, d / 2, 0.1, 0.66, 0.06)
-        bx(m, WAL, sx * (w / 2 - 0.13), sx * (w / 2 - 0.02), -d / 2 + 0.01, -d / 2 + 0.03, 0.12, 0.62)
-    cbox(m, uph, -w / 2 + 0.06, w / 2 - 0.06, d / 2 - 0.2, d / 2, 0.42, h - 0.06, 0.08)
-    tube(m, uph, (-w / 2 + 0.12, d / 2 - 0.1, h - 0.08), (w / 2 - 0.12, d / 2 - 0.1, h - 0.08), 0.085, 0.085, 8, uph, uph)
+        xa = sx * (W - 0.1)
+        sweep(m, uph, [(xa, -D + 0.012), (xa, D - 0.06)], lambda i, sx=sx: [(sx * o, z) for o, z in arm])
+        cbox(m, WAL, xa - 0.055, xa + 0.055, -D - 0.006, -D + 0.014, 0.1, 0.43, 0.008)            # wooden arm front
+    e = W - 0.015
+    Rc = 0.15
+    xs = [-e, -e + 0.04, -e + 0.11, -0.1, 0.1, e - 0.11, e - 0.04, e]
+    path = [(x, D - 0.11 + 0.03 * (1 - (x / e) ** 2)) for x in xs]
+
+    def prof(i):                                       # off > 0 to the front
+        x = abs(path[i][0])
+        top = H - Rc + math.sqrt(max(0.0, Rc * Rc - max(0.0, x - (e - Rc)) ** 2))
+        lean = lambda z: -(z - 0.4) * 0.17
+        r2 = 0.065
+        cz = top - r2
+        co = 0.01 + lean(cz)
+        pts = [(-0.06, 0.36)]
+        pts += [(co + r2 * math.cos(math.pi * (1 - k / 5)), cz + r2 * math.sin(math.pi * (1 - k / 5))) for k in range(6)]
+        return pts + [(0.08 + lean(0.55), 0.55), (0.1, 0.44), (0.1, 0.36)]
+
+    sweep(m, uph, path, prof)
     return m
 
 
 def sofa(rnd=None, w=1.9, d=0.85, uph=DAM):
-    """Divan with bolsters (валики) at the ends and a high back with a shaped top (1.9 x 0.85 x 0.95)."""
+    """Divan with bolsters (валики): moulded wooden ends, a long domed seat cushion, a high padded
+    back with a raised centre, loose back cushions, round bolsters with pleated buttoned ends lying
+    against the ends (1.9 x 0.85 x 0.98)."""
     rnd = _rng(rnd, 19)
     m = Mesh()
+    hw, hd = w / 2, d / 2
     for sx in (-1, 1):
-        bx(m, WAL, sx * (w / 2 - 0.05), sx * w / 2, -d / 2, d / 2, 0.0, 0.55)               # wooden ends
-        cbox(m, WAL, sx * (w / 2 - 0.06), sx * (w / 2 + 0.01), -d / 2 - 0.01, d / 2, 0.55, 0.6, 0.015)
-    bx(m, WAL, -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.04, d / 2, 0.06, 0.2)
-    cbox(m, uph, -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.02, d / 2 - 0.15, 0.2, 0.44, 0.05)
-    # high back with a shaped top
-    poly = [(-w / 2 + 0.05, 0.42), (w / 2 - 0.05, 0.42), (w / 2 - 0.05, 0.86), (w * 0.25, 0.92), (0, 0.98), (-w * 0.25, 0.92), (-w / 2 + 0.05, 0.86)]
-    prism_y(m, uph, poly, d / 2 - 0.16, d / 2)
-    for k in range(3):
-        x0 = -w / 2 + 0.07 + k * (w - 0.14) / 3
-        cbox(m, uph, x0 + 0.01, x0 + (w - 0.14) / 3 - 0.01, d / 2 - 0.3, d / 2 - 0.15, 0.44, 0.8, 0.06)
+        cbox(m, WAL, sx * (hw - 0.055), sx * hw, -hd, hd, 0.0, 0.56, 0.016)
+        moulded_top(m, WAL, *sorted((sx * (hw - 0.055), sx * hw)), -hd, hd, 0.56, cornice_prof(0.045, 0.014, kind="thumb"), sides=4)
+    drawer_front(m, WAL, -hw + 0.055, hw - 0.055, 0.05, 0.2, -hd + 0.02, 0.02, 0.01)
+    bx(m, WAL, -hw + 0.055, hw - 0.055, -hd + 0.04, hd, 0.05, 0.2, faces="Y")
+    rbox(m, uph, -hw + 0.056, hw - 0.056, -hd + 0.005, hd - 0.17, 0.19, 0.45, 0.05, 1, (4, 2, 1), {"Z": 0.03}, skip="z")
+    e = hw - 0.056
+    xs = [-e + (2 * e) * k / 8 for k in range(9)]
+    path = [(x, hd - 0.09) for x in xs]
+
+    def prof(i):
+        x = path[i][0]
+        top = 0.84 + 0.13 * math.cos(math.pi / 2 * x / e) ** 2
+        lean = lambda z: -(z - 0.45) * 0.12
+        r2 = 0.06
+        cz = top - r2
+        co = lean(cz)
+        pts = [(-0.08, 0.2)]
+        pts += [(co + r2 * math.cos(math.pi * (1 - k / 5)), cz + r2 * math.sin(math.pi * (1 - k / 5))) for k in range(6)]
+        return pts + [(0.05 + lean(0.55), 0.55), (0.07, 0.45), (0.07, 0.2)]
+
+    sweep(m, uph, path, prof)
+    nc = 3 if w > 1.7 else 2
+    cw = (2 * e - 0.5) / nc
+    for k in range(nc):
+        xc = -e + 0.25 + cw * (k + 0.5)
+        rbox(m, uph, xc - cw / 2 + 0.01, xc + cw / 2 - 0.01, -0.07, 0.07, 0.0, 0.34, 0.05, 1, (2, 1, 1), {"y": 0.035},
+             skip="Yz", xf=tilt_x(-0.22, 0.0, hd - 0.24, 0.47))
+    Lb, rb = d - 0.28, 0.1
     for sx in (-1, 1):                                  # bolsters
-        tube(m, uph, (sx * (w / 2 - 0.15), -d / 2 + 0.03, 0.55), (sx * (w / 2 - 0.15), d / 2 - 0.16, 0.55), 0.1, 0.1, 10, uph, uph)
+        b = Mesh()
+        lathe(b, uph, [(0, 0.014), (rb * 0.55, 0.0), (rb * 0.95, 0.012), (rb, 0.045), (rb, Lb - 0.045), (rb * 0.95, Lb - 0.012),
+                       (rb * 0.55, Lb), (0, Lb - 0.014)], 8)
+        sphere(b, uph, (0, 0, 0.012), 0.016, 4, 2)
+        sphere(b, uph, (0, 0, Lb - 0.012), 0.016, 4, 2)
+        m.extend(rot_x90(b).transformed(lambda p, sx=sx: (p[0] + sx * (e - rb - 0.005), p[1] + hd - 0.2, p[2] + 0.46 + rb)))
     if rnd.random() < 0.6:                              # a cushion and a plaid
-        cbox(m, rnd.choice([PLUSH, BGREEN, RUGR]), w * 0.12, w * 0.12 + 0.36, d / 2 - 0.4, d / 2 - 0.28, 0.44, 0.76, 0.05)
-        cbox(m, WOOL, -w / 2 + 0.3, -w / 2 + 0.75, -d / 2 + 0.05, d / 2 - 0.32, 0.44, 0.5, 0.02)
+        cx = w * 0.12 + 0.18
+        rbox(m, rnd.choice([PLUSH, BGREEN, RUGR]), -0.19, 0.19, -0.06, 0.06, -0.19, 0.19, 0.05, 1, (2, 1, 2),
+             {"y": 0.035, "Y": 0.035}, xf=lambda p: tilt_x(-0.35, cx, hd - 0.33, 0.66)((p[0] * 0.98 + p[2] * 0.2, p[1], p[2] * 0.98 - p[0] * 0.2)))
+        cbox(m, WOOL, -hw + 0.3, -hw + 0.75, -hd + 0.05, hd - 0.32, 0.47, 0.53, 0.02)
     return m
 
 
@@ -778,21 +1108,28 @@ def writing_desk(rnd=None, w=1.6, d=0.85, h=0.78):
     for s in (-1, 1):
         a, b = sorted((s * (w / 2 - 0.03), s * (w / 2 - 0.03 - pw)))
         bx(m, WAL, a, b, -d / 2 + 0.03, d / 2 - 0.03, 0.04, zt)
-        bx(m, WAL, a + 0.02, b - 0.02, -d / 2 + 0.05, d / 2 - 0.05, 0.0, 0.04)
         nd = 4 if s < 0 else 3
         dh = (zt - 0.08) / nd
         for k in range(nd):
             z0, z1 = 0.07 + k * dh + 0.01, 0.07 + (k + 1) * dh - 0.01
-            bx(m, WAL, a + 0.025, b - 0.025, -d / 2 + 0.015, -d / 2 + 0.03, z0, z1, faces="yxXzZ")
-            bxc(m, BRASS, (a + b) / 2, -d / 2 + 0.008, 0.06, 0.014, (z0 + z1) / 2 - 0.008, (z0 + z1) / 2 + 0.008)
-        bx(m, WAL, a + 0.03, b - 0.03, d / 2 - 0.03, d / 2 - 0.015, 0.1, zt - 0.05, faces="Y")   # visitor-side panels
+            drawer_front(m, WAL, a + 0.025, b - 0.025, z0, z1, -d / 2 + 0.012, 0.018)
+            bxc(m, BRASS, (a + b) / 2, -d / 2 + 0.004, 0.06, 0.014, (z0 + z1) / 2 - 0.008, (z0 + z1) / 2 + 0.008)
+        add(m, _panel_back(WAL, a + 0.03, b - 0.03, 0.1, zt - 0.05), 0, d / 2 - 0.03)                # visitor-side panels
+        moulded_top(m, WAL, a + 0.01, b - 0.01, -d / 2 + 0.04, d / 2 - 0.04, 0.0, cornice_prof(0.05, 0.012, kind="thumb"), sides=4)
     bx(m, WAL, -w / 2 + pw + 0.03, w / 2 - pw - 0.03, -d / 2 + 0.03, d / 2 - 0.03, zt - 0.1, zt)
-    bx(m, WAL, -w / 2 + pw + 0.06, w / 2 - pw - 0.06, -d / 2 + 0.015, -d / 2 + 0.03, zt - 0.09, zt - 0.015, faces="yxXzZ")
+    drawer_front(m, WAL, -w / 2 + pw + 0.06, w / 2 - pw - 0.06, zt - 0.09, zt - 0.015, -d / 2 + 0.014, 0.016)
     bx(m, WAL, -w / 2 + pw + 0.03, w / 2 - pw - 0.03, d / 2 - 0.06, d / 2 - 0.04, 0.2, zt - 0.1)          # modesty panel
     bx(m, WAL, -w / 2 + pw + 0.03, w / 2 - pw - 0.03, d / 2 - 0.4, d / 2 - 0.06, 0.22, 0.24)              # visitor shelf
-    cbox(m, WAL, -w / 2, w / 2, -d / 2, d / 2, zt, h, 0.01)
+    moulded_top(m, WAL, -w / 2 + 0.022, w / 2 - 0.022, -d / 2 + 0.022, d / 2 - 0.022, zt, cornice_prof(h - zt, 0.022, kind="thumb"), sides=4)
     bx(m, LEAG, -w / 2 + 0.07, w / 2 - 0.07, -d / 2 + 0.07, d / 2 - 0.07, h, h + 0.002, faces="Z")
     return m
+
+
+def _panel_back(mat, a, b, z0, z1):
+    """A frame-and-panel facing +y (the back of a desk pedestal), its back face at y=0."""
+    p = Mesh()
+    panel_door(p, mat, -b, -a, z0, z1, -0.02, 0.02, 0.05)
+    return p.transformed(lambda q: (-q[0], -q[1], q[2]))
 
 
 def desk_lamp(kind="banker"):
@@ -827,7 +1164,7 @@ def desk_set(rnd=None, chair="leather", w=1.6, d=0.85):
     rnd = _rng(rnd, 23)
     m = writing_desk(rnd, w, d)
     k = w / 1.6
-    add(m, leather_armchair(rnd) if chair == "leather" else bentwood_chair(rnd), 0.0, -d / 2 - 0.2, 0.0, math.pi)
+    add(m, leather_armchair(rnd) if chair == "leather" else bentwood_chair(rnd), 0.0, -d / 2 - (0.3 if chair == "leather" else 0.2), 0.0, math.pi)
     side = rnd.choice([-1, 1])
     add(m, desk_lamp(rnd.choice(["banker", "banker", "dome"])), side * 0.55 * k, 0.22, 0.782)
     add(m, telephone(), -side * 0.6 * k, 0.18, 0.782, rnd.uniform(-0.3, 0.3))
@@ -845,14 +1182,14 @@ def oval_table(w=1.8, d=1.1, h=0.76, cloth=True, oval=True):
     m = Mesh()
     sx, sy = w / 2, d / 2
     if oval:
-        lathe(m, WAL, [(0, h - 0.04), (1.0, h - 0.04), (1.0, h), (0, h)], 32, sx=sx, sy=sy)
+        lathe(m, WAL, [(0, h - 0.04), (1.0, h - 0.04), (1.0, h), (0, h)], 24, sx=sx, sy=sy)
     else:
         cbox(m, WAL, -sx, sx, -sy, sy, h - 0.04, h, 0.01)
     for px, py in ((-sx * 0.6, -sy * 0.55), (sx * 0.6, -sy * 0.55), (-sx * 0.6, sy * 0.55), (sx * 0.6, sy * 0.55)):
         lathe(m, WAL, [(0, 0), (0.035, 0), (0.025, 0.15), (0.045, 0.3), (0.03, 0.55), (0.035, h - 0.04), (0, h - 0.04)], 6, (px, py, 0))
     if cloth:
         if oval:
-            lathe(m, LIN, [(1.0 + 0.2 / sx, h - 0.3), (1.0 + 0.05 / sx, h - 0.06), (1.0 + 0.01 / sx, h + 0.004), (0, h + 0.006)], 32, sx=sx, sy=sy)
+            lathe(m, LIN, [(1.0 + 0.2 / sx, h - 0.3), (1.0 + 0.05 / sx, h - 0.06), (1.0 + 0.01 / sx, h + 0.004), (0, h + 0.006)], 24, sx=sx, sy=sy)
         else:
             cbox(m, LIN, -sx - 0.02, sx + 0.02, -sy - 0.02, sy + 0.02, h - 0.24, h + 0.006, 0.01, skip="z")
     return m
@@ -955,7 +1292,8 @@ def sectional_bookcase(rnd=None, w=0.9, d=0.38, sections=5, mat=None):
     x0, x1, y0, y1 = -w / 2, w / 2, -d / 2, d / 2
     pl, sh, top = 0.1, 0.34, 0.06
     H = pl + sections * sh + top
-    bx(m, mat, x0 + 0.01, x1 - 0.01, y0 + 0.02, y1, 0, pl)
+    bx(m, mat, x0 + 0.01, x1 - 0.01, y0 + 0.02, y1, 0, pl - 0.03, faces="yxXZ")
+    moulded_top(m, mat, x0 + 0.01, x1 - 0.01, y0 + 0.02, y1, pl - 0.03, cornice_prof(0.03, 0.01, kind="thumb"))
     bx(m, mat, x0, x0 + 0.02, y0, y1, pl, H - top)
     bx(m, mat, x1 - 0.02, x1, y0, y1, pl, H - top)
     bx(m, mat, x0 + 0.02, x1 - 0.02, y1 - 0.012, y1, pl, H - top, faces="yY")
@@ -970,7 +1308,7 @@ def sectional_bookcase(rnd=None, w=0.9, d=0.38, sections=5, mat=None):
             on_top(m, rnd, x0 + 0.03, x1 - 0.03, 0.0, zb + 0.025, ["photo", "box", "cup", "clock"])
         else:
             books_row(m, rnd, x0 + 0.03, x1 - 0.03, y0 + 0.03, y1 - 0.02, zb + 0.025, sh - 0.085)
-    cbox(m, mat, x0 - 0.015, x1 + 0.015, y0 - 0.015, y1, H - top, H, 0.01)
+    moulded_top(m, mat, x0, x1, y0, y1, H - top, cornice_prof(top, 0.022))
     return m
 
 
@@ -991,13 +1329,14 @@ def two_door_bookcase(rnd=None, w=1.1, d=0.45, h=1.9, mat=None):
             face_out(m, mat, [(ax, ay, 0.08), (bxx, by, 0.08), (bxx, by, h), (ax, ay, h)], (cx, y0 + r, (h + 0.08) / 2))
     bx(m, mat, x0 + r, x1 - r, y0, y0 + 0.03, 0.08, 0.5, faces="y")
     bx(m, mat, x0 + r, x1 - r, y0, y0 + 0.03, h - 0.12, h, faces="y")
-    cbox(m, mat, x0 - 0.01, x1 + 0.01, y0 - 0.01, y1, h, h + 0.04, 0.012)
+    moulded_top(m, mat, x0, x1, y0, y1, h, cornice_prof(0.05, 0.02))
     bx(m, mat, x0 + 0.02, x1 - 0.02, y1 - 0.012, y1, 0.08, h, faces="yY")
     bx(m, mat, -0.008, 0.008, y0, y0 + 0.03, 0.5, h - 0.12, faces="yxX")
     face_n(m, GLASS, [(x0 + r, y0 + 0.012, 0.5), (x1 - r, y0 + 0.012, 0.5), (x1 - r, y0 + 0.012, h - 0.12), (x0 + r, y0 + 0.012, h - 0.12)], (0, -1, 0))
     for s in (-1, 1):
-        bxc(m, BRASS, s * 0.03, y0 - 0.005, 0.015, 0.012, 1.0, 1.05)
-        bx(m, mat, s * 0.02, s * (w / 2 - r), y0 - 0.005, y0 + 0.0, 0.15, 0.43, faces="yZz")
+        knob(m, s * 0.03, y0, 1.0, 0.009)
+        panel_door(m, mat, s * 0.01, s * (w / 2 - r + 0.01), 0.1, 0.47, y0 - 0.008, 0.012, 0.05)
+        knob(m, s * 0.04, y0 - 0.008, 0.36, 0.009)
     n = 4
     sh = (h - 0.12 - 0.5) / n
     for k in range(n):
@@ -1008,7 +1347,7 @@ def two_door_bookcase(rnd=None, w=1.1, d=0.45, h=1.9, mat=None):
         else:
             on_top(m, rnd, x0 + 0.04, x1 - 0.04, 0.02, zb + 0.02, ["photo", "cup", "vase", "box", "plates"])
     if rnd.random() < 0.6:
-        on_top(m, rnd, x0 + 0.02, x1 - 0.02, 0.0, h + 0.04, ["globe", "clock", "box", "vase", "photo", "radio"], 0.5)
+        on_top(m, rnd, x0 + 0.02, x1 - 0.02, 0.0, h + 0.05, ["globe", "clock", "box", "vase", "photo", "radio"], 0.5)
     return m
 
 
@@ -1020,21 +1359,21 @@ def sideboard(rnd=None, w=1.6, d=0.5, h=1.9, mat=None, clutter=True):
     m = Mesh()
     x0, x1, y0, y1 = -w / 2, w / 2, -d / 2, d / 2
     zl = 0.88
-    bx(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0, 0.1)
+    bx(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0, 0.07, faces="yxXZ")
+    moulded_top(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0.07, cornice_prof(0.03, 0.012, kind="thumb"))
     bx(m, mat, x0, x1, y0 + 0.01, y1, 0.1, zl - 0.03)
-    cbox(m, mat, x0 - 0.02, x1 + 0.02, y0 - 0.01, y1, zl - 0.03, zl, 0.01)
+    moulded_top(m, mat, x0, x1, y0 + 0.01, y1, zl - 0.035, cornice_prof(0.035, 0.022, kind="thumb"))
     for k in range(2):                                     # drawers
         a = x0 + 0.03 + k * (w - 0.06) / 2
         b = a + (w - 0.06) / 2 - 0.02
-        bx(m, mat, a, b, y0 - 0.005, y0 + 0.01, zl - 0.2, zl - 0.06, faces="yxXzZ")
+        drawer_front(m, mat, a, b, zl - 0.2, zl - 0.06, y0 - 0.005, 0.015)
         bxc(m, BRASS, (a + b) / 2, y0 - 0.01, 0.08, 0.012, zl - 0.14, zl - 0.12)
     for k in range(3 if w > 1.3 else 2):                   # doors
         nn = 3 if w > 1.3 else 2
         a = x0 + 0.03 + k * (w - 0.06) / nn
         b = a + (w - 0.06) / nn - 0.02
-        bx(m, mat, a, b, y0 - 0.005, y0 + 0.01, 0.14, zl - 0.24, faces="yxXzZ")
-        bx(m, mat, a + 0.05, b - 0.05, y0 - 0.012, y0 - 0.005, 0.2, zl - 0.3, faces="yxXzZ")
-        bxc(m, BRASS, b - 0.04 if k % 2 == 0 else a + 0.04, y0 - 0.012, 0.015, 0.012, 0.45, 0.5)
+        panel_door(m, mat, a, b, 0.12, zl - 0.24, y0 - 0.005, 0.015, 0.055)
+        knob(m, b - 0.04 if k % 2 == 0 else a + 0.04, y0 - 0.005, 0.47, 0.01)
     # niche and upper glazed cabinet
     du = 0.34
     yu0 = y1 - du
@@ -1046,7 +1385,7 @@ def sideboard(rnd=None, w=1.6, d=0.5, h=1.9, mat=None, clutter=True):
     bx(m, mat, x0, x0 + 0.03, yu0, y1, zn, h - 0.06)
     bx(m, mat, x1 - 0.03, x1, yu0, y1, zn, h - 0.06)
     bx(m, mat, x0 + 0.03, x1 - 0.03, y1 - 0.012, y1, zn, h - 0.06, faces="yY")
-    cbox(m, mat, x0 - 0.03, x1 + 0.03, yu0 - 0.03, y1, h - 0.06, h, 0.015)
+    moulded_top(m, mat, x0, x1, yu0 - 0.01, y1, h - 0.07, cornice_prof(0.07, 0.035))
     wb = (w - 0.06) / 3
     for k in range(3):
         a, b = x0 + 0.03 + k * wb, x0 + 0.03 + (k + 1) * wb
@@ -1065,7 +1404,7 @@ def sideboard(rnd=None, w=1.6, d=0.5, h=1.9, mat=None, clutter=True):
         while x < x1 - 0.12:
             if rnd.random() < 0.45:                                  # a plate standing up
                 p = Mesh()
-                lathe(p, PORC, [(0, 0), (0.11, 0.0), (0.11, 0.012), (0, 0.012)], 8)
+                lathe(p, PORC, [(0, 0), (0.11, 0.0), (0.11, 0.012), (0, 0.012)], 6)
                 m.extend(rot_x90(p).transformed(lambda q, x=x, zz=zz: (q[0] + x, q[1] + y1 - 0.03, q[2] + zz + 0.11)))
                 x += 0.07
             else:
@@ -1092,16 +1431,16 @@ def wardrobe(rnd=None, w=1.2, d=0.6, h=2.1, mirror=True):
     m = Mesh()
     x0, x1, y0, y1 = -w / 2, w / 2, -d / 2, d / 2
     bx(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0, 0.1)
-    bx(m, mat, x0, x1, y0 + 0.02, y1, 0.1, h - 0.07)
-    cbox(m, mat, x0 - 0.03, x1 + 0.03, y0 - 0.03, y1, h - 0.07, h, 0.015)
+    bx(m, mat, x0, x1, y0 + 0.02, y1, 0.1, h - 0.08)
+    moulded_top(m, mat, x0, x1, y0 + 0.02, y1, h - 0.08, cornice_prof(0.08, 0.04))
     side = rnd.choice([-1, 1])
     for s in (-1, 1):
         a, b = (x0 + 0.02, -0.005) if s < 0 else (0.005, x1 - 0.02)
-        bx(m, mat, a, b, y0, y0 + 0.02, 0.12, h - 0.1, faces="yxXzZ")
         if mirror and s == side:
-            face_n(m, MIR, [(a + 0.07, y0 - 0.002, 0.45), (b - 0.07, y0 - 0.002, 0.45), (b - 0.07, y0 - 0.002, h - 0.25), (a + 0.07, y0 - 0.002, h - 0.25)], (0, -1, 0))
+            panel_door(m, mat, a, b, 0.12, h - 0.1, y0, 0.02, 0.07, 0.012, 0.004, MIR)
         else:
-            bx(m, mat, a + 0.07, b - 0.07, y0 - 0.01, y0, 0.3, h - 0.3, faces="yxXzZ")
+            panel_door(m, mat, a, b, 0.12, (h - 0.1 + 0.12) / 2 - 0.005, y0, 0.02, 0.07)
+            panel_door(m, mat, a, b, (h - 0.1 + 0.12) / 2 + 0.005, h - 0.1, y0, 0.02, 0.07)
         hx = b - 0.05 if s < 0 else a + 0.05
         bxc(m, BRASS, hx, y0 - 0.01, 0.015, 0.02, 1.05, 1.12)
     bx(m, mat, x0 + 0.04, x1 - 0.04, y0, y0 + 0.02, 0.12, 0.1 + 0.0, faces="y")
@@ -1123,13 +1462,13 @@ def chest_of_drawers(rnd=None, w=1.0, d=0.5, h=0.9):
     m = Mesh()
     x0, x1, y0, y1 = -w / 2, w / 2, -d / 2, d / 2
     bx(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0, 0.08)
-    bx(m, mat, x0, x1, y0 + 0.015, y1, 0.08, h - 0.03)
-    cbox(m, mat, x0 - 0.02, x1 + 0.02, y0 - 0.01, y1, h - 0.03, h, 0.01)
+    bx(m, mat, x0, x1, y0 + 0.015, y1, 0.08, h - 0.035)
+    moulded_top(m, mat, x0, x1, y0 + 0.015, y1, h - 0.035, cornice_prof(0.035, 0.025, kind="thumb"))
     n = 4
     dh = (h - 0.13) / n
     for k in range(n):
         z0, z1 = 0.1 + k * dh + 0.008, 0.1 + (k + 1) * dh - 0.008
-        bx(m, mat, x0 + 0.03, x1 - 0.03, y0, y0 + 0.016, z0, z1, faces="yxXzZ")
+        drawer_front(m, mat, x0 + 0.03, x1 - 0.03, z0, z1, y0, 0.016)
         for s in (-1, 1):
             bxc(m, BRASS, s * w * 0.25, y0 - 0.006, 0.07, 0.012, (z0 + z1) / 2 - 0.007, (z0 + z1) / 2 + 0.007)
     bx(m, LACE, -w * 0.38, w * 0.38, y0 + 0.05, y1 - 0.08, h, h + 0.002, faces="Z")
@@ -1144,10 +1483,10 @@ def nightstand(rnd=None, w=0.45, d=0.4, h=0.62, top=None):
     bx(m, WAL, -w / 2, w / 2, -d / 2, d / 2, 0.05, h - 0.02)
     for sx in (-1, 1):
         for sy in (-1, 1):
-            bxc(m, WAL, sx * (w / 2 - 0.03), sy * (d / 2 - 0.03), 0.04, 0.04, 0.0, 0.05)
-    cbox(m, WAL, -w / 2 - 0.01, w / 2 + 0.01, -d / 2 - 0.01, d / 2, h - 0.025, h, 0.008)
-    bx(m, WAL, -w / 2 + 0.02, w / 2 - 0.02, -d / 2 - 0.012, -d / 2, h - 0.15, h - 0.04, faces="yxXzZ")
-    bx(m, WAL, -w / 2 + 0.02, w / 2 - 0.02, -d / 2 - 0.012, -d / 2, 0.08, h - 0.17, faces="yxXzZ")
+            turned_leg(m, WAL, sx * (w / 2 - 0.04), sy * (d / 2 - 0.04), 0.05, 0.03, 6, "bun")
+    moulded_top(m, WAL, -w / 2, w / 2, -d / 2, d / 2, h - 0.025, cornice_prof(0.025, 0.015, kind="thumb"))
+    drawer_front(m, WAL, -w / 2 + 0.02, w / 2 - 0.02, h - 0.15, h - 0.04, -d / 2 - 0.012, 0.012)
+    panel_door(m, WAL, -w / 2 + 0.02, w / 2 - 0.02, 0.08, h - 0.17, -d / 2 - 0.012, 0.012, 0.045)
     bxc(m, BRASS, 0, -d / 2 - 0.018, 0.05, 0.012, h - 0.1, h - 0.088)
     top = top or rnd.choice(["lamp", "clock", "books", "lamp"])
     if top == "lamp":
@@ -1167,13 +1506,13 @@ def trumo(rnd=None, w=1.0, d=0.42, h=0.72):
     x0, x1, y0, y1 = -w / 2, w / 2, -d / 2, d / 2
     bx(m, mat, x0 + 0.02, x1 - 0.02, y0 + 0.03, y1, 0, 0.08)
     bx(m, mat, x0, x1, y0 + 0.01, y1, 0.08, h - 0.03)
-    cbox(m, mat, x0 - 0.02, x1 + 0.02, y0 - 0.01, y1, h - 0.03, h, 0.01)
+    moulded_top(m, mat, x0, x1, y0 + 0.01, y1, h - 0.03, cornice_prof(0.03, 0.022, kind="thumb"))
     for k in range(3):
         a = x0 + 0.03 + k * (w - 0.06) / 3
         b = a + (w - 0.06) / 3 - 0.015
-        bx(m, mat, a, b, y0 - 0.005, y0 + 0.01, h - 0.15, h - 0.05, faces="yxXzZ")
+        drawer_front(m, mat, a, b, h - 0.15, h - 0.05, y0 - 0.005, 0.015)
         bxc(m, BRASS, (a + b) / 2, y0 - 0.01, 0.05, 0.01, h - 0.105, h - 0.095)
-    bx(m, mat, -0.18, 0.18, y0 - 0.005, y0 + 0.01, 0.12, h - 0.18, faces="yxXzZ")
+    panel_door(m, mat, -0.18, 0.18, 0.12, h - 0.18, y0 - 0.005, 0.015, 0.045)
     yc = y1 - 0.06
     bx(m, mat, -0.28, 0.28, yc - 0.015, yc + 0.015, h, h + 1.0)
     face_n(m, MIR, [(-0.25, yc - 0.016, h + 0.04), (0.25, yc - 0.016, h + 0.04), (0.25, yc - 0.016, h + 0.96), (-0.25, yc - 0.016, h + 0.96)], (0, -1, 0))
@@ -1219,14 +1558,23 @@ def bed(rnd=None, w=1.4, L=2.0, iron=None):
     else:
         mat = rnd.choice([WAL, OAK])
         for yy, hh in ((y1 - 0.03, 1.15), (y0 + 0.03, 0.8)):
-            bx(m, mat, x0, x1, yy - 0.03, yy + 0.03, 0.0, hh - 0.08)
-            cbox(m, mat, x0 - 0.02, x1 + 0.02, yy - 0.045, yy + 0.045, hh - 0.08, hh, 0.02)
-            bx(m, mat, x0 + 0.08, x1 - 0.08, yy - 0.04 if yy < 0 else yy + 0.03, yy - 0.03 if yy < 0 else yy + 0.04, 0.3, hh - 0.16)
+            for s in (-1, 1):                                    # turned corner posts
+                turned_leg(m, mat, s * (w / 2 - 0.035), yy, hh + 0.05, 0.04, 6, "baluster")
+            e = w / 2 - 0.07
+            arch = [(-e, 0.24), (e, 0.24)] + [(e * math.cos(math.pi * k / 6), hh - 0.1 + 0.09 * math.sin(math.pi * k / 6)) for k in range(7)]
+            prism_y(m, mat, arch, yy - 0.022, yy + 0.022)
+            sd = -1 if yy > 0 else 1                             # a sunk panel on the face towards the room
+            if sd > 0:
+                panel_door(m, mat, -e + 0.06, e - 0.06, 0.3, hh - 0.2, yy - 0.032, 0.01, 0.05)
+            else:
+                add(m, _panel_back(mat, -e + 0.06, e - 0.06, 0.3, hh - 0.2), 0, yy + 0.022)
         for s in (-1, 1):
-            bx(m, mat, s * (w / 2 - 0.03), s * w / 2, y0 + 0.06, y1 - 0.06, 0.28, 0.45)
-    cbox(m, LIN, x0 + 0.03, x1 - 0.03, y0 + 0.06, y1 - 0.06, 0.42, zm, 0.04)
+            cbox(m, mat, s * (w / 2 - 0.035), s * (w / 2 - 0.005), y0 + 0.06, y1 - 0.06, 0.28, 0.45, 0.008)
+    rbox(m, LIN, x0 + 0.03, x1 - 0.03, y0 + 0.06, y1 - 0.06, 0.4, zm, 0.05, 1, (2, 3, 1), skip="z")      # mattress
     cover = rnd.choice([LIN, LIN, WOOL, PLUSH])
-    cbox(m, cover, x0 + 0.015, x1 - 0.015, y0 + 0.05, y1 - 0.5, zm - 0.05, zm + 0.04, 0.03)
+    rbox(m, cover, x0 + 0.012, x1 - 0.012, y0 + 0.045, y1 - 0.5, zm - 0.09, zm + 0.06, 0.06, 1, (3, 4, 1),
+         {"Z": 0.05}, skip="z")                                                                         # eiderdown
+    cbox(m, LIN, x0 + 0.02, x1 - 0.02, y1 - 0.6, y1 - 0.46, zm + 0.03, zm + 0.1, 0.03)                 # turned-down sheet
     for s in (-1, 1):                                    # lace valance on the sides and the foot
         face_n(m, LACE, [(s * (w / 2 - 0.005), y0 + 0.06, 0.06), (s * (w / 2 - 0.005), y1 - 0.06, 0.06),
                          (s * (w / 2 - 0.005), y1 - 0.06, 0.44), (s * (w / 2 - 0.005), y0 + 0.06, 0.44)], (s, 0, 0))
@@ -1237,7 +1585,10 @@ def bed(rnd=None, w=1.4, L=2.0, iron=None):
         pw = min(0.65, w / npw - 0.06)
         z = zm
         for j, sc in enumerate((1.0, 0.85, 0.7)[:rnd.randint(2, 3)]):
-            obox(m, LIN, (xc, y1 - 0.25 + j * 0.03, z + 0.1 * sc), (1, 0, 0), (0, 0.94, 0.34), (0, -0.34, 0.94), pw / 2 * sc, 0.08 * sc, 0.22 * sc)
+            c = (xc, y1 - 0.25 + j * 0.03, z + 0.1 * sc)
+            rbox(m, LIN, -pw / 2 * sc, pw / 2 * sc, -0.065 * sc, 0.065 * sc, -0.21 * sc, 0.21 * sc, 0.05 * sc, 1, (2, 1, 2),
+                 {"y": 0.065 * sc, "Y": 0.045 * sc},
+                 xf=lambda p, c=c: (c[0] + p[0], c[1] + 0.94 * p[1] - 0.34 * p[2], c[2] + 0.34 * p[1] + 0.94 * p[2]))
             z += 0.17 * sc
         obox(m, LACE, (xc, y1 - 0.34, z - 0.02), (1, 0, 0), (0, 0.94, 0.34), (0, -0.34, 0.94), pw / 2 * 0.72, 0.003, 0.14, faces="y")
     return m
@@ -1271,7 +1622,7 @@ def piano(rnd=None):
         if k % 7 in (2, 6):
             continue
         x = -w / 2 + 0.06 + (k + 1) * kw
-        bx(m, BLACK, x - kw * 0.3, x + kw * 0.3, -d / 2 + 0.1, yf - 0.02, 0.7, 0.715, faces="yZxX")
+        bx(m, BLACK, x - kw * 0.3, x + kw * 0.3, -d / 2 + 0.1, yf - 0.02, 0.7, 0.715, faces="yZ")
     bx(m, BLACK, -w / 2 + 0.05, w / 2 - 0.05, yf - 0.06, yf, 0.72, 0.84)               # fallboard
     bx(m, WAL, -0.45, 0.45, yf - 0.01, yf, 0.86, 1.15, faces="y")                       # inlay panel
     bx(m, BLACK, -0.35, 0.35, yf - 0.04, yf, 0.85, 0.88)                                 # music desk ledge
@@ -1405,11 +1756,11 @@ def chandelier(rnd=None, arms=5, drop=0.9, style="globe"):
         a = 2 * math.pi * k / arms
         ca, sa = math.cos(a), math.sin(a)
         path = [(0.1, zc - 0.03), (0.22, zc - 0.08), (R, zc - 0.04), (R + 0.04, zc + 0.04), (R + 0.04, zc + 0.08)]
-        chain(m, BRASS, [(r * ca, r * sa, z) for r, z in path], 0.011, 5)
+        chain(m, BRASS, [(r * ca, r * sa, z) for r, z in path], 0.011, 4)
         cx, cy, cz = (R + 0.04) * ca, (R + 0.04) * sa, zc + 0.08
         lathe(m, BRASS, [(0, 0), (0.025, 0), (0.045, 0.035), (0.04, 0.04), (0, 0.02)], 8, (cx, cy, cz))
         if style == "globe":
-            sphere(m, OPAL, (cx, cy, cz + 0.03 + 0.075), 0.075, 8, 5)
+            sphere(m, OPAL, (cx, cy, cz + 0.03 + 0.075), 0.075, 8, 4)
         else:
             lathe(m, OPAL, [(0, 0.0), (0.03, 0.01), (0.07, 0.07), (0.075, 0.13), (0.06, 0.13), (0.0, 0.05)], 8, (cx, cy, cz + 0.02))
     return m
@@ -2433,7 +2784,30 @@ class Layout:
         for _ in range(n):
             kind = rnd.choice(kinds)
             w, hh = (rnd.uniform(0.5, 0.9), rnd.uniform(0.4, 0.7)) if kind == "oil" else (rnd.uniform(0.25, 0.45), rnd.uniform(0.3, 0.5))
-            self.wall(picture(rnd, w, hh, kind), "picture", "any", "random", gap=0.006, zoff=rnd.uniform(*zoff), route=False, margin=0.05)
+            pic = self.picture(w, hh, kind)
+            if self.fits(pic, 1200):
+                self.wall(pic, "picture", "any", "random", gap=0.006, zoff=rnd.uniform(*zoff), route=False, margin=0.05)
+
+    def painting(self, kind):
+        """The image for the next picture of this kind: the room's seed shuffles the images, and a
+        room repeats one only when it has used up the others of that kind."""
+        if not hasattr(self, "_paint_pool"):
+            self._paint_pool = sorted(PAINTING_ASPECT)
+            random.Random(self.seed * 7919 + KIND_SALT.get(self.kind, 0)).shuffle(self._paint_pool)
+            self._paint_used = []
+        fits = [n for n in self._paint_pool if n in PICTURE_KINDS.get(kind, PICTURE_KINDS["oil"])]
+        n = ([f for f in fits if f not in self._paint_used] or fits)[0]
+        self._paint_used.append(n)
+        return n
+
+    def fits(self, part, reserve=2300):
+        """True if `part` still fits the room's triangle budget, keeping `reserve` for what the
+        recipe adds after it (ceiling light, lamps, pictures): optional extras ask this first."""
+        tris = self.finish.tri_count() + self.furniture.tri_count() + self.curtain_mesh.tri_count()
+        return tris + part.tri_count() <= TRI_BUDGET - reserve
+
+    def picture(self, w, h, kind):
+        return picture(self.rnd, w, h, kind, None if kind == "rug" else self.painting(kind))
 
     def above(self, p, part, name, dz=0.3, zmin=1.2):
         """Hangs a wall prop above a placed wall item p (centred on it)."""
@@ -2450,7 +2824,7 @@ def _living(L):
     uph = rnd.choice([DAM, DAM, PLUSH])
     L.wall(sideboard(rnd), "sideboard", "nowin", "centre") or L.wall(sideboard(rnd, 1.2), "sideboard", "nowin", "centre")
     ps = L.wall(sofa(rnd, 1.9, 0.85, uph), "sofa", "nowin", "centre") or L.wall(sofa(rnd, 1.6, 0.8, uph), "sofa", "any", "centre")
-    L.above(ps, picture(rnd, rnd.uniform(0.8, 1.1), rnd.uniform(0.55, 0.75), "oil"), "picture", 0.35)
+    L.above(ps, L.picture(rnd.uniform(0.8, 1.1), rnd.uniform(0.55, 0.75), "oil"), "picture", 0.35)
     cx, cy = (L.x0 + L.x1) / 2, (L.y0 + L.y1) / 2
     tgt = (cx + rnd.uniform(-0.4, 0.4), cy + rnd.uniform(-0.4, 0.4))
     t, dining = None, False
@@ -2478,16 +2852,22 @@ def _living(L):
             L.rug(focus[0], focus[1], 2.4, 1.8)
     if rnd.random() < 0.65:
         pp = L.wall(piano(rnd), "piano", "nowin", "corner")
-        L.above(pp, picture(rnd, 0.7, 0.5, rnd.choice(["oil", "portrait"])), "picture", 0.45)
+        L.above(pp, L.picture(0.7, 0.5, rnd.choice(["oil", "portrait"])), "picture", 0.45)
     L.wall(two_door_bookcase(rnd), "bookcase", "any", "corner")
     for k in range(rnd.choice([1, 2, 2])):
-        L.wall(armchair(rnd, uph), "armchair", "any", "corner")
+        a = armchair(rnd, uph)
+        if k == 0 or L.fits(a):
+            L.wall(a, "armchair", "any", "corner")
     if dining and area > 22 and rnd.random() < 0.6:
-        L.wall(round_table(rnd, 0.45, rnd.choice([WOOL, RUGR, BGREEN]), 2), "round_table", "any", "corner")
+        t2 = round_table(rnd, 0.45, rnd.choice([WOOL, RUGR, BGREEN]), 2)
+        if L.fits(t2):
+            L.wall(t2, "round_table", "any", "corner")
     r = rnd.random()
     L.wall(tv_kvn(rnd) if r < 0.35 else (radiogram(rnd) if r < 0.6 else radio_on_stand(rnd)), "radio", "any", "corner")
     if rnd.random() < 0.4:
-        L.wall(sewing_machine(rnd), "sewing_machine", "any", "random")
+        sm = sewing_machine(rnd)
+        if L.fits(sm):
+            L.wall(sm, "sewing_machine", "any", "random")
     L.wall(floor_lamp(rnd), "floor_lamp", "any", "corner", gap=0.1)
     L.wall(wall_clock(), "wall_clock", "any", "random", gap=0.006, zoff=1.6, route=False)
     L.pictures(rnd.randint(2, 3))
@@ -2552,16 +2932,16 @@ def _bedroom(L):
         or L.wall(bed(rnd, 0.9, 1.9), "bed", "any", "corner")
     if pb:
         if rnd.random() < 0.4:
-            L.above(pb, picture(rnd, min(1.6, pb["wa"] - 0.2), 1.0, "rug"), "wall_rug", 0.1, 1.25)
+            L.above(pb, L.picture(min(1.6, pb["wa"] - 0.2), 1.0, "rug"), "wall_rug", 0.1, 1.25)
         else:
-            L.above(pb, picture(rnd, 0.6, 0.45, rnd.choice(["oil", "print"])), "picture", 0.35)
+            L.above(pb, L.picture(0.6, 0.45, rnd.choice(["oil", "print"])), "picture", 0.35)
         a = pb["aabb"]
         s = pb["side"]
         fx, fy = L.pt(s, pb["u"], (a[1] - a[0] if s in ("x0", "x1") else a[3] - a[2]) + 0.45)
         L.rug(fx, fy, 1.8, 1.0)
     L.wall(wardrobe(rnd), "wardrobe", "nowin", "corner")
     pc = L.wall(chest_of_drawers(rnd), "chest", "any", "centre")
-    L.above(pc, picture(rnd, 0.5, 0.4, rnd.choice(["photo", "portrait", "print"])), "picture", 0.4)
+    L.above(pc, L.picture(0.5, 0.4, rnd.choice(["photo", "portrait", "print"])), "picture", 0.4)
     L.wall(trumo(rnd), "trumo", "any", "random")
     L.wall(bentwood_chair(rnd), "chair", "any", "corner")
     if rnd.random() < 0.4:
@@ -2831,7 +3211,8 @@ def check_room(room, parts=None, verbose=True):
 
 
 def self_test():
-    assert len(FURNITURE_MATERIALS) <= 40, len(FURNITURE_MATERIALS)
+    assert len([k for k in FURNITURE_MATERIALS if k not in PAINTINGS]) <= 40, len(FURNITURE_MATERIALS)
+    assert len(PAINTINGS) == 6 and all(v.endswith(".jpg") for v in PAINTINGS.values()), PAINTINGS
     assert all(k.startswith("AC_F") for k in FURNITURE_MATERIALS)
     assert any("Opal" in k for k in FURNITURE_MATERIALS)
     print("props:")

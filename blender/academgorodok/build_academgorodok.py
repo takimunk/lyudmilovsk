@@ -48,6 +48,7 @@ ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 DO_RENDER = "--no-render" not in ARGS
 
 HOUSES = {}
+LAMP_RND = __import__("random").Random(1951)
 EXTRA_MATS = {
     "AC_Room": ("#8C7A62", 0.9, "lit room behind a window"),
     "AC_Curtain": ("#D8CDB4", 0.9, "net curtain"),
@@ -108,6 +109,13 @@ def mesh_object(name, m, coll):
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0005)
     bm.to_mesh(me)
     bm.free()
+    # soft and turned furniture is smooth-shaded with its creases kept (furniture.SMOOTH_MATERIALS)
+    smooth = getattr(FURN, "SMOOTH_MATERIALS", set()) if FURN is not None else set()
+    if smooth and any(mt.name in smooth for mt in me.materials):
+        for p in me.polygons:
+            p.use_smooth = me.materials[p.material_index].name in smooth
+        if hasattr(me, "set_sharp_from_angle"):
+            me.set_sharp_from_angle(angle=math.radians(getattr(FURN, "SMOOTH_ANGLE", 50.0)))
     return ob
 
 
@@ -336,9 +344,10 @@ def build():
     for name, h in houses.items():
         f = h.frame
         m = h.mesh
+        mi = h.inside
         if h.interiors:
             m_in, rooms = interiors.build(h)
-            m.extend(m_in)
+            mi.extend(m_in)
             h.rooms = rooms
             if FURN is not None:
                 for r in rooms:
@@ -346,17 +355,33 @@ def build():
                         try:
                             parts_ = FURN.furnish_parts(r)
                             for key in ("finish", "furniture", "curtains"):
-                                m.extend(parts_[key])
+                                mi.extend(parts_[key])
                             # one lamp per lived-in room (the ceiling fitting): the rooms are dark at night
+                            # at night a lamp burns in about a quarter of the rooms (AcademToggle.cpp lights
+                            # them from dusk); the others stay dark
+                            # by day only the room the player is in; the rest stay dark from outside
                             if r["kind"] in ("living", "study", "bedroom", "kitchen", "corridor") and parts_["lights"]:
                                 x, y, z, col, lm = parts_["lights"][0]
-                                h.lights = getattr(h, "lights", []) + [(x, y, z, col, min(lm, 1200))]
+                                lit = r["kind"] != "corridor" and LAMP_RND.random() < 0.27
+                                h.lights = getattr(h, "lights", []) + [(x, y, z, col, min(lm, 1000), "room_lit" if lit else "room")]
                         except Exception as e:  # noqa: BLE001
                             print("ACADEM furnish failed for %s: %s" % (r["kind"], e))
             print("ACADEM %s: %d rooms inside" % (name, len(rooms)))
         if f.mirror:
             m = m.transformed(lambda p: (-p[0], p[1], p[2]))
             m.faces = [(mt, list(reversed(i)), list(reversed(uv))) for mt, i, uv in m.faces]
+            mi = mi.transformed(lambda p: (-p[0], p[1], p[2]))
+            mi.faces = [(mt, list(reversed(i)), list(reversed(uv))) for mt, i, uv in mi.faces]
+        if mi.faces:
+            # the insides (flats, stairs, the shop, their furniture) are drawn only near by (Unreal:
+            # import_academgorodok.py); far away dark opaque glass closes the windows instead
+            obi = mesh_object(name + "_Inside", mi, coll)
+            obi.matrix_world = Matrix.Translation((f.ox, f.oy, f.oz)) @ Matrix.Rotation(f.yaw, 4, "Z")
+            parts[name + "_Inside"] = obi
+            gi = split_glass(obi, coll)
+            if gi is not None:
+                gi.name = name + "_InsideGlass"
+                parts[name + "_InsideGlass"] = gi
         ob = mesh_object(name, m, coll)
         notches = [(-b, -a, c, d) if f.mirror else (a, b, c, d) for a, b, c, d in getattr(h, "notches", [])]
         apply_notches(ob, notches)
@@ -366,6 +391,11 @@ def build():
         glass = split_glass(ob, coll)
         if glass is not None:
             parts[name + "_Glass"] = glass
+            far = glass.copy()                       # same panes, opaque dark glass, from 55 m on
+            far.data = glass.data.copy()
+            far.name = name + "_GlassFar"
+            coll.objects.link(far)
+            parts[name + "_GlassFar"] = far
 
     gate_dets, lines = plan.gates(houses)
     gate_ob = mesh_object("Gates", plan.Mesh(), coll)
@@ -409,9 +439,11 @@ def export(parts):
         for label, pts in getattr(h, "walks", []):
             f = h.frame
             layout["walks"].append({"house": name, "label": label, "points": [list(f(p)) for p in pts]})
-        for x, y, z, col, lm in getattr(h, "lights", []):
+        for l in getattr(h, "lights", []):
+            x, y, z, col, lm = l[:5]
+            kind = l[5] if len(l) > 5 else "shop"
             p = h.frame((x, y, z))
-            layout["lights"].append({"at": list(p), "colour": col, "lumens": lm})
+            layout["lights"].append({"at": list(p), "colour": col, "lumens": lm, "kind": kind})
     bpy.ops.object.select_all(action="DESELECT")
     for name, ob in parts.items():
         loc = ob.matrix_world.translation.copy()

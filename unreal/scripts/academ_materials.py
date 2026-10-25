@@ -335,6 +335,35 @@ def build_foliage(path, tex):
     return m
 
 
+def build_picture(path, tex):
+    """A painting's canvas (or a photograph): its image, a little sheen of varnish."""
+    m = master(path)
+    t = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -500, -100, parameter_name="Image", texture=tex)
+    mel.connect_material_property(t, "RGB", MP.MP_BASE_COLOR)
+    mel.connect_material_property(scalar(m, "Roughness", -400, 150, 0.55), "", MP.MP_ROUGHNESS)
+    finish(m)
+    return m
+
+
+def import_image(path_file, dest, asset):
+    t = unreal.AssetImportTask()
+    t.filename = path_file
+    t.destination_path = dest + "/Textures"
+    t.destination_name = asset
+    t.automated = True
+    t.replace_existing = True
+    t.save = False
+    tools.import_asset_tasks([t])
+    path = "%s/Textures/%s" % (dest, asset)
+    tex = eal.load_asset(path) if eal.does_asset_exist(path) else None
+    if tex is None:
+        got = list(t.get_editor_property("imported_object_paths") or [])
+        tex = eal.load_asset(got[0]) if got else None
+    if tex is None:
+        raise RuntimeError("import failed: " + path_file)
+    return tex
+
+
 def import_foliage(tex_dir, dest):
     out = {}
     for name in ("foliage_hedge", "foliage_flowers"):
@@ -388,7 +417,7 @@ def _srgb_to_linear(hx):
     return [x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
 
 
-def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
+def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None, pictures=None):
     """Imports the textures, (re)builds the masters and one MI_AC_<slot> per common.MATERIALS key under dest.
     extra: {slot: (hex, roughness, emissive)} more flat-colour slots (rooms behind windows, the shop).
     Returns {slot name: MaterialInterface}."""
@@ -436,6 +465,10 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
     for slot, name in (("AC_Foliage", "foliage_hedge"), ("AC_FlowerCards", "foliage_flowers")):
         mf = build_foliage("%s/M_Academ_%s" % (dest, slot), fol[name])
         out[slot] = mf
+    # the flats' paintings and photographs: {slot: image file} (furniture.PAINTINGS)
+    for slot, img in (pictures or {}).items():
+        tex_ = import_image(img, dest, "T_" + slot)
+        out[slot] = build_picture("%s/M_%s" % (dest, slot), tex_)
     out["LACE"] = instance("%s/MI_AC_Lace" % dest, m_clear)
     _set(out["LACE"], "v", "Color", unreal.LinearColor(0.8, 0.78, 0.72, 1))
     _set(out["LACE"], "s", "Opacity", 0.35)

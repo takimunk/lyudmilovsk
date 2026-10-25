@@ -35,6 +35,7 @@ TAG = "Academ"
 # trees of the square: the real ones are small-leaved limes, spruces and birches; the plant library
 # has no lime yet, Norway maple stands in (same round crown at this age)
 SUMMARY_DISTANCE = 6000.0
+NEAR_CM = 6000.0       # insides and clear glass are drawn up to this far
 
 eal = unreal.EditorAssetLibrary
 
@@ -43,19 +44,30 @@ def log(msg):
     unreal.log_warning("ACADEM " + msg)
 
 
+def _pictures():
+    try:
+        import furniture
+        return {k: os.path.join(REPO, v) for k, v in getattr(furniture, "PAINTINGS", {}).items()}
+    except Exception as e:  # noqa: BLE001
+        log("no paintings: %s" % e)
+        return {}
+
+
 def _extra_materials():
     """Flat slots beyond common.MATERIALS: (hex, roughness, emissive)."""
     sys.path.insert(0, os.path.join(REPO, "blender", "academgorodok"))
-    out = {"AC_Room": ("#8C7A62", 0.9, 0.35), "AC_Curtain": ("#D8CDB4", 0.9, 0.2), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
+    # rooms nobody enters (behind a few windows) and the lamps' glass stay unlit in daylight
+    out = {"AC_Room": ("#8C7A62", 0.9, 0.0), "AC_Curtain": ("#D8CDB4", 0.9, 0.0), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
     import interiors
     grain = {"AC_IWall": "plaster_white", "AC_IDado": "plaster_white", "AC_ICeil": "plaster_white",
              "AC_IStep": "stone_cast", "AC_ITread": "stone_cast", "AC_ITile": "concrete"}
     for k, (hx, rough, _) in interiors.INTERIOR_MATERIALS.items():
-        out[k] = (hx, rough, 5.0 if "Opal" in k else 0.0, grain.get(k))
+        out[k] = (hx, rough, 0.6 if "Opal" in k else 0.0, grain.get(k))
     try:
         import furniture
         for k, (hx, rough, _) in furniture.FURNITURE_MATERIALS.items():
-            out[k] = (hx, rough, 4.0 if "Opal" in k else 0.0)
+            if k not in getattr(furniture, "PAINTINGS", {}):          # pictures get their image (_pictures)
+                out[k] = (hx, rough, 0.6 if "Opal" in k else 0.0)
     except Exception as e:  # noqa: BLE001
         log("no furniture materials: %s" % e)
     try:
@@ -80,7 +92,7 @@ def import_meshes():
     try:
         import academ_materials
         mats = academ_materials.make_materials(DEST + "/Materials", os.path.join(REPO, "textures", "academ"),
-                                               extra=_extra_materials())
+                                               extra=_extra_materials(), pictures=_pictures())
     except Exception as e:  # noqa: BLE001
         log("materials from the glTF (academ_materials failed: %s)" % e)
         mats = {}
@@ -90,10 +102,14 @@ def import_meshes():
         if not isinstance(sm, unreal.StaticMesh):
             continue
         name = sm.get_name()
-        glass = name.endswith("_Glass")
+        glass = name.endswith("_Glass") or name.endswith("_InsideGlass")      # translucent, near only
+        far_glass = name.endswith("_GlassFar")                               # opaque dark panes, far only
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
             if glass:
                 sm.set_material(i, mats["LACE"] if str(sl.material_slot_name).startswith("AC_FLace") else mats["GLASS_CLEAR"])
+                continue
+            if far_glass:
+                sm.set_material(i, mats["AC_Glass"])
                 continue
             key = str(sl.material_slot_name)
             mi = mats.get(key)
@@ -153,12 +169,19 @@ def place(face_y, report=False):
         a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc, unreal.Rotator(0.0, 0.0, yaw))
         a.static_mesh_component.set_static_mesh(sm)
         a.set_actor_label("Academ_" + name)
-        a.tags = [TAG, "NoGrass", "NoTree"] + (["Roof"] if name in ("Novikova1", "Novikova3", "Maksimova8") else [])
+        house = name.split("_")[0] in ("Novikova1", "Novikova3", "Maksimova8")
+        a.tags = [TAG, "NoGrass", "NoTree"] + (["Roof"] if house and not name.endswith(("Glass", "GlassFar")) else [])
         a.set_folder_path("Outside/Academgorodok")
         c = a.static_mesh_component
         c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
-        if name.endswith("_Glass"):
+        if name.endswith(("_Glass", "_InsideGlass", "_GlassFar")):
             c.set_editor_property("cast_shadow", False)
+        # Near only: the insides and the clear glass (60 m); from 55 m on the opaque panes close the windows
+        # (QA's A/B: the furnished flats seen through clear glass cost ~1.7 ms on views of the town)
+        if name.endswith(("_Inside", "_InsideGlass", "_Glass")):
+            c.set_editor_property("ld_max_draw_distance", NEAR_CM)      # "Desired Max Draw Distance"
+        if name.endswith("_GlassFar"):
+            c.set_editor_property("min_draw_distance", NEAR_CM - 500.0)
         n += 1
     plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
     for i, (lx, ly, species, seed, age) in enumerate(layout.get("trees", [])):
@@ -170,19 +193,20 @@ def place(face_y, report=False):
             p.set_editor_property(k, v)
         p.tags = [TAG]
         p.set_folder_path("Outside/Academgorodok")
-    g = layout.get("garden")
-    if g:
-        # the square's garden: a dense planting of old maples (for the limes), birches and spruces; the
-        # trees keep off the paths, hedges and beds (the Square mesh is tagged NoTree)
+    gardens = layout.get("garden") or []
+    for gi, g in enumerate(gardens if isinstance(gardens, list) else [gardens]):
+        # the square's garden: old maples (for the limes), birches and spruces either side of the axis;
+        # the trees keep off the paths, hedges and beds (the Square mesh is tagged NoTree)
         forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
         x, y = W.academ_to_map(*g["centre"])
         f = eas.spawn_actor_from_class(forest_cls, unreal.Vector(*W.to_unreal(x, y, z0, face_y)))
-        f.set_actor_label("Academ_Garden")
+        f.set_actor_label("Academ_Garden_%d" % gi)
         f.set_editor_property("mix", [unreal.ForestMix(species=sp, weight=wt, young_age=ya, mature_age=ma)
                                       for sp, wt, ya, ma in g["mix"]])
         hx, hy = g["half"]
-        for k, v in (("seed", 1947), ("count", g["count"]), ("spacing", 700.0),
-                     ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 2),
+        for k, v in (("seed", 1947 + gi), ("count", g["count"]), ("spacing", 700.0),
+                     # the ensemble's x runs along the map's -Y: swap the half extents
+                     ("half_extent", unreal.Vector2D(hy * 100, hx * 100)), ("variants", 2),
                      ("min_world_z", (z0 - 3) * 100), ("max_world_z", (z0 + 3) * 100),
                      ("trace_up", 3000.0), ("trace_down", 3000.0), ("preview_in_editor", False)):
             f.set_editor_property(k, v)
@@ -202,7 +226,13 @@ def place(face_y, report=False):
         c.set_editor_property("cast_shadows", False)
         c.set_editor_property("max_draw_distance", 4000.0)      # ~300 lamps in the flats: only the near ones
         c.set_editor_property("max_distance_fade_range", 500.0)
-        a.tags = [TAG]
+        # the flats' and the landings' lamps burn from dusk (AcademToggle.cpp); the shop's are always on
+        kind = l.get("kind", "shop")
+        a.tags = [TAG] + (["AcademLamp"] if kind != "shop" else []) + (["AcademLit"] if kind in ("room_lit", "stair") else [])
+        if kind != "shop":
+            c.set_editor_property("visible", False)
+            c.set_editor_property("attenuation_radius", 450.0)
+            c.set_editor_property("cast_shadows", kind != "stair")     # no light through the partitions
         a.set_folder_path("Outside/Academgorodok")
     log("placed %d parts, %d trees at map %s, yaw %.1f" % (n, len(layout.get("trees", [])), W.academ()[:2], yaw))
 

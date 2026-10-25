@@ -160,3 +160,26 @@ contributors, ODbL), used as numbers in `blender/academgorodok/plan.py`.
 | fochkin2021_p17.jpg | Олег Фочкин, «Жизнь в окружении истории» (Лингва-Ф, 2021) | unknown – reference only | https://rg-dev.ru/okp_dost_book.pdf |
 | fochkin2021_p18.jpg | Олег Фочкин, «Жизнь в окружении истории» (Лингва-Ф, 2021) | unknown – reference only | https://rg-dev.ru/okp_dost_book.pdf |
 | schukino_moi_raion_2020_058_p36-37.jpg | Ольга Катасонова, «Щукино. Мой район» 2020 №058 | unknown – reference only | https://www.mos.ru/upload/moi-raion/press/schukino/pdf/schukino.pdf |
+
+## Paintings: `textures/academ/paintings/`
+
+Pictures hung in the flats (`blender/academgorodok/furniture.py`: materials `AC_FPaint_<name>`, image paths in
+`PAINTINGS`). All six are **procedural**: drawn in code by `tools/make_academ_paintings.py` (pure Python + Pillow,
+fixed seeds, `python3 tools/make_academ_paintings.py`); no third-party image, photograph or AI model was used as
+input. Oil pictures are drawn as a flat scene, then re-painted with oriented brush strokes coarse to fine and given a
+canvas weave, yellowed varnish, a vignette and craquelure; the photograph is a blurred, grainy sepia print of a
+generic faceless sitter (no real person); the engraving is cross-hatching laid over a tone map on foxed paper. No
+text, signatures or watermarks.
+
+* **Date generated:** 2026-10-24.
+* **Format:** JPEG quality 90, 1024 px on the long side.
+* **Licence:** the project's own assets under CC BY 4.0 (`LICENSE-ASSETS`), like the other textures.
+
+| File | Size | What it shows | Mean colour (material stand-in) |
+|---|---|---|---|
+| `birch_grove.jpg` | 1024 x 768 | Spring birch grove with long blue shadows, in the manner of Levitan | `#918F66` |
+| `winter_village.jpg` | 1024 x 683 | Winter village of log houses at dusk, smoke, pines, in the manner of Shishkin / Yuon | `#968C80` |
+| `lilac_still_life.jpg` | 819 x 1024 | 1950s still life: lilac in a glass jar, white cloth, two apples | `#725D4B` |
+| `harbour_1950s.jpg` | 1024 x 683 | Socialist-realist northern harbour: white steamship, portal cranes, timber, gulls | `#847F71` |
+| `family_portrait.jpg` | 819 x 1024 | Sepia 1940s studio photograph of a generic scientist (soft, faceless) | `#70583F` |
+| `engraving_monastery.jpg` | 1024 x 768 | Reproduction of a steel engraving: monastery with onion domes over a river | `#ACA48F` |

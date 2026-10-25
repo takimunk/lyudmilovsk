@@ -9,6 +9,11 @@
 #include "GameFramework/Actor.h"
 #include "HAL/IConsoleManager.h"
 #include "UObject/UObjectGlobals.h"
+#include "Containers/Ticker.h"
+#include "Components/LightComponent.h"
+#include "Sky/LyudSky.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/Pawn.h"
 
 namespace
 {
@@ -54,11 +59,63 @@ namespace
 		return CVarAcadem.GetValueOnGameThread() != 0;
 	}
 
+	// The flats' and the landings' lamps (tag "AcademLamp", import_academgorodok.py): from dusk to dawn those
+	// tagged "AcademLit" burn (about a quarter of the rooms and every landing); by day only the lamps near
+	// the player (the room they walk in), so from outside the windows of empty rooms stay dark.
+	const FName LampTag(TEXT("AcademLamp"));
+	const FName LitTag(TEXT("AcademLit"));
+	const float NearLampCm = 650.f;
+	bool bNight = false;
+
+	bool LampTick(float)
+	{
+		if (!GEngine)
+		{
+			return true;
+		}
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			UWorld* World = Context.World();
+			if (!World || !World->IsGameWorld())
+			{
+				continue;
+			}
+			TActorIterator<ALyudSky> Sky(World);
+			if (Sky)
+			{
+				const float Alt = Sky->SunAltitude();
+				bNight = bNight ? Alt < 3.f : Alt < 0.5f;     // a little hysteresis round sunset
+			}
+			const APlayerController* PC = World->GetFirstPlayerController();
+			const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+			const FVector Eye = Pawn ? Pawn->GetActorLocation() : FVector(1e12);
+			for (TActorIterator<AActor> It(World); It; ++It)
+			{
+				if (!It->ActorHasTag(LampTag))
+				{
+					continue;
+				}
+				const bool bWant = IsOn() && ((bNight && It->ActorHasTag(LitTag)) ||
+					FVector::DistSquared(It->GetActorLocation(), Eye) < NearLampCm * NearLampCm);
+				TInlineComponentArray<ULightComponent*> Lights(*It);
+				for (ULightComponent* L : Lights)
+				{
+					if (L->IsVisible() != bWant)
+					{
+						L->SetVisibility(bWant);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	// a value set before the level loads (-dpcvars) applies once the map is there
 	struct FAcademOnLoad
 	{
 		FAcademOnLoad()
 		{
+			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&LampTick), 0.5f);
 			FCoreUObjectDelegates::PostLoadMapWithWorld.AddLambda([](UWorld* World)
 			{
 				if (!IsOn())

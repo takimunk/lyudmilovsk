@@ -341,6 +341,26 @@ def academ_flat(x, y):
     return _ramp(d, 0.0, 25.0)
 
 
+def academ_tree_free(x, y):
+    """True where forest trees must not stand: the ensemble's ground (its own garden is planted by
+    import_academgorodok.py) and a 45 m wide sight line from the cable car's descent over the lower
+    station to the middle house's front, so the ensemble shows as you arrive."""
+    if academ_flat(x, y) > 0.0:
+        return True
+    (ax, ay), (sx, sy) = ACADEM_VIEW_FROM, STATION_DOWN
+    nx, ny = academ_to_map(7.25, 1.5)
+    for (px, py), (qx, qy) in (((ax, ay), (sx, sy)), ((sx, sy), (nx, ny))):
+        dx, dy = qx - px, qy - py
+        t = max(0.0, min(1.0, ((x - px) * dx + (y - py) * dy) / (dx * dx + dy * dy)))
+        if math.hypot(x - px - dx * t, y - py - dy * t) < ACADEM_VIEW_HALF:
+            return True
+    return False
+
+
+ACADEM_VIEW_FROM = (-147.0, 346.0)    # half way down the rope
+ACADEM_VIEW_HALF = 45.0
+
+
 @functools.lru_cache(maxsize=1)
 def academ_z():
     ox, oy, _ = academ()

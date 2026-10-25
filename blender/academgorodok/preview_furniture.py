@@ -169,10 +169,17 @@ def materials():
             mat.surface_render_method = "BLENDED"
         elif name in ("AC_FMirror", "AC_FChrome", "AC_FBrass"):
             b.inputs["Metallic"].default_value = 1.0
+        elif name in getattr(F, "PAINTINGS", {}):                    # the picture image on the 0..1 UVs
+            path = os.path.join(ROOT, F.PAINTINGS[name])
+            if os.path.exists(path):
+                tx = nt.nodes.new("ShaderNodeTexImage")
+                tx.image = bpy.data.images.load(path)
+                nt.links.new(nt.nodes.new("ShaderNodeTexCoord").outputs["UV"], tx.inputs["Vector"])
+                nt.links.new(tx.outputs["Color"], b.inputs["Base Color"])
         elif "Opal" in name:
             b.inputs["Emission Color"].default_value = hex_rgb(F.LIGHT_WARM)
             b.inputs["Emission Strength"].default_value = 4.0
-        mat.use_backface_culling = False
+        mat.use_backface_culling = bool(os.environ.get("FURN_CULL"))
 
 
 def mesh_object(name, m, coll):
@@ -193,8 +200,13 @@ def mesh_object(name, m, coll):
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.0003)
     bm.to_mesh(me)
     bm.free()
+    # soft and turned materials are smooth-shaded with the creases kept (furniture.SMOOTH_MATERIALS,
+    # SMOOTH_ANGLE: what the build should do too); everything else stays flat
+    smooth = getattr(F, "SMOOTH_MATERIALS", set())
     for p in me.polygons:
-        p.use_smooth = False
+        p.use_smooth = me.materials[p.material_index].name in smooth
+    if smooth and hasattr(me, "set_sharp_from_angle"):
+        me.set_sharp_from_angle(angle=math.radians(getattr(F, "SMOOTH_ANGLE", 50.0)))
     return ob
 
 
@@ -363,9 +375,66 @@ def render(scene, names, built):
         print("FURNITURE render", scene.render.filepath)
 
 
+SHOWROOMS = {
+    # name: [(prop, x, y, yaw)], camera position, target, lens
+    "chairs": ([("leather_armchair", -1.15, 0.0, 0.35), ("armchair", 0.0, 0.0, 0.0), ("dining_chair", 1.05, 0.0, -0.45)],
+               (0.1, -2.7, 1.35), (0.0, 0.0, 0.5), 32),
+    "sofa_bed": ([("sofa", -1.25, 0.3, 0.0), ("bed", 1.35, 0.6, 0.25)], (0.1, -3.6, 1.7), (0.15, 0.3, 0.55), 30),
+    "wood": ([("sectional_bookcase", -2.9, 0.4, 0.0), ("two_door_bookcase", -1.75, 0.4, 0.0), ("sideboard", 0.0, 0.4, 0.0),
+              ("wardrobe", 1.8, 0.4, 0.0), ("chest_of_drawers", 3.25, 0.4, 0.0), ("nightstand", 4.2, 0.4, 0.0)],
+             (0.6, -5.2, 1.3), (0.6, 0.4, 1.0), 28),
+    "desk": ([("desk_set", -0.9, 0.3, 0.6), ("picture", 1.1, 1.0, 0.0)], (0.0, -2.6, 1.6), (0.1, 0.5, 0.85), 30),
+}
+
+
+def showroom(name):
+    """Props in a row on a floor against a wall, lit from the front, to judge their shapes."""
+    import random
+    props, cpos, tgt, lens = SHOWROOMS[name]
+    scene = setup_scene()
+    coll = bpy.data.collections.new("show_" + name)
+    scene.collection.children.link(coll)
+    m = geom.Mesh()
+    geom.box(m, "AC_FParquet", -8, 8, -8, 2.0, -0.02, 0.0)
+    geom.box(m, "AC_FWallpaperCream", -8, 8, 2.0, 2.1, 0.0, 3.2)
+    for prop, x, y, yaw in props:
+        if prop == "picture":
+            for k, (img, kind) in enumerate((("birch_grove", "oil"), ("lilac_still_life", "oil"), ("family_portrait", "photo"),
+                                             ("harbour_1950s", "oil"), ("engraving_monastery", "print"), ("winter_village", "oil"))):
+                part = F.picture(random.Random(k), 0.7 if kind == "oil" else 0.42, 0.55 if kind == "oil" else 0.5, kind, img)
+                F.add(m, part, x + (k % 3 - 1) * 0.85, 2.0 - 0.016, 0.9 + (k // 3) * 0.75)
+            continue
+        F.add(m, F.PROPS[prop](random.Random(3)), x, y, 0.0, yaw)
+    mesh_object("show_" + name, m, coll)
+    li = bpy.data.lights.new("Key", "AREA")
+    li.size, li.energy = 4.0, 380.0
+    ob = bpy.data.objects.new("Key", li)
+    ob.location = (cpos[0] - 1.5, cpos[1] + 0.5, 3.2)
+    ob.rotation_euler = (Vector(tgt) - Vector(ob.location)).to_track_quat("-Z", "Y").to_euler()
+    scene.collection.objects.link(ob)
+    cam = bpy.data.objects.new("Cam", bpy.data.cameras.new("Cam"))
+    scene.collection.objects.link(cam)
+    scene.camera = cam
+    cam.data.sensor_width = 36.0
+    cam.data.lens = lens
+    cam.location = cpos
+    cam.rotation_euler = (Vector(tgt) - Vector(cpos)).to_track_quat("-Z", "Y").to_euler()
+    os.makedirs(RENDER_DIR, exist_ok=True)
+    scene.render.filepath = os.path.join(RENDER_DIR, "furniture_props_%s.png" % name)
+    bpy.ops.render.render(write_still=True)
+    print("FURNITURE render", scene.render.filepath)
+
+
 def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     materials()
+    for a in ARGS:
+        if a.startswith("--props="):                 # close-up line-ups instead of the rooms
+            for name in a.split("=", 1)[1].split(","):
+                for ob in list(bpy.data.objects):
+                    bpy.data.objects.remove(ob)
+                showroom(name)
+            return
     names = list(VIEWS)
     for a in ARGS:
         if a.startswith("--views="):

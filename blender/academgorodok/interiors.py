@@ -415,7 +415,7 @@ def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
         lz = fz + CEIL
         box(m, "AC_Iron", sx - 0.01, sx + 0.01, spec.yc - 0.01, spec.yc + 0.01, lz - 0.35, lz)
         box(m, "AC_IOpal", sx - 0.13, sx + 0.13, spec.yc - 0.13, spec.yc + 0.13, lz - 0.62, lz - 0.35)
-        lights.append((sx, spec.yc, lz - 0.7, "#FFE2B8", 350))
+        lights.append((sx, spec.yc, lz - 0.7, "#FFE2B8", 350, "stair"))
         # side walls (two storeys of wall per storey: full height) with the flat doors at the band
         glo = lo
         if k == 0 and spec.gastronom and spec.gastronom[0] < sx < spec.gastronom[1]:

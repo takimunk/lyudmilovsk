@@ -55,6 +55,7 @@ class House:
         self.name = name
         self.frame = frame
         self.mesh = Mesh()
+        self.inside = Mesh()         # what is only seen from close by or from within (a separate, near-only mesh)
         self.details = []
         self.rnd = random.Random(name)
         self.facades = []            # (Facade, [Opening], wall top) for interiors.py
@@ -228,7 +229,7 @@ def novikova1():
     for b in N1_BAYS:
         _n1_bay_details(h, fac, cu(b), ez)
     import gastronom
-    h.mesh.extend(gastronom.build())
+    h.inside.extend(gastronom.build())
     h.lights = list(gastronom.LIGHTS)
     for u in win_us:
         if not any(abs(u - d) < 0.1 for d in door_us):
@@ -643,7 +644,7 @@ def square_trees():
     for dx, dy, sp, age in ((-6.5, 11.5, "Maple", 55), (-6.5, -11.5, "Maple", 55),
                             (14.0, 21.0, "SilverBirch", 45), (14.0, -21.0, "SilverBirch", 45),
                             (34.0, 24.0, "NorwaySpruce", 60), (34.0, -24.0, "NorwaySpruce", 60),
-                            (46.0, 9.0, "Maple", 50), (46.0, -9.0, "Maple", 50)):
+                            (46.0, 14.0, "Maple", 50), (46.0, -14.0, "Maple", 50)):
         out.append((fx + dx, fy + dy, sp, seed, age))
         seed += 1
     return out
@@ -702,8 +703,14 @@ def _flower_clump(m, cx, cy, rnd, w=0.6, h=0.6):
         m.face("AC_FlowerCards", p, [(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
-SQUARE_GARDEN = {"centre": (48.0, 6.0), "half": (30.0, 36.0), "count": 34,
-                 "mix": [("Maple", 0.5, 30, 70), ("SilverBirch", 0.25, 25, 55), ("NorwaySpruce", 0.25, 30, 70)]}
+# Two plantings either side of the square's axis: the view from the lower station along the axis to the
+# middle house and its fountain stays open (QA: arriving by cable car you must see the ensemble).
+SQUARE_GARDEN = [
+    {"centre": (48.0, 25.5), "half": (30.0, 13.0), "count": 16,
+     "mix": [("Maple", 0.5, 30, 70), ("SilverBirch", 0.25, 25, 55), ("NorwaySpruce", 0.25, 30, 70)]},
+    {"centre": (48.0, -22.5), "half": (30.0, 13.0), "count": 16,
+     "mix": [("Maple", 0.5, 30, 70), ("SilverBirch", 0.25, 25, 55), ("NorwaySpruce", 0.25, 30, 70)]},
+]
 
 
 def _flat(m, mat, poly, z):
