@@ -27,7 +27,8 @@ INTERIOR_MATERIALS = {
     "AC_ISlab":     ("#8E8A82", 0.95, "bare concrete under the finishes (rarely seen)"),
     "AC_IDado":     ("#6F7F6A", 0.6, "green-grey oil-paint dado of the stair halls"),
     "AC_ITile":     ("#B98E6A", 0.7, "metlakh tiles of the landings and lobbies"),
-    "AC_IStep":     ("#B7B2A6", 0.6, "terrazzo steps"),
+    "AC_IStep":     ("#B7B2A6", 0.6, "terrazzo steps: risers"),
+    "AC_ITread":    ("#C9C3B5", 0.45, "terrazzo treads with their nosing"),
     "AC_IHandrail": ("#5A3A22", 0.4, "varnished wooden handrail"),
     "AC_IDoorCase": ("#EDE9DF", 0.5, "painted door cases (architraves)"),
     "AC_ILeaf":     ("#D9D2C0", 0.5, "painted panelled door leaves, standing open"),
@@ -148,7 +149,16 @@ def steps_flight(m, x0, x1, y_start, sgn, z_start, n=RISERS, rise=None, tread=TR
     for i in range(1, n):
         ya, yb = y_start + sgn * (i - 1) * tread, y_start + sgn * i * tread
         top = z_start + i * rise
-        box(m, "AC_IStep", x0, x1, min(ya, yb), max(ya, yb), top - 0.32, top)
+        # riser block, and the terrazzo tread on it with a rounded-off nosing over the riser below
+        box(m, "AC_IStep", x0, x1, min(ya, yb), max(ya, yb), top - 0.32, top - 0.04)
+        yn = ya - sgn * 0.035
+        box(m, "AC_ITread", x0, x1, min(yn, yb), max(yn, yb), top - 0.04, top - 0.008)
+        y0n, y1n = (yn + sgn * 0.008, yb) if sgn > 0 else (yb, yn + sgn * 0.008)
+        box(m, "AC_ITread", x0, x1, min(y0n, y1n), max(y0n, y1n), top - 0.008, top, faces="Z")
+        # the nose's rounded edge: a bevel strip between the tread's top and its front
+        fa, fb = (yn, yn + sgn * 0.008)
+        q = [(x0, fa, top - 0.008), (x1, fa, top - 0.008), (x1, fb, top), (x0, fb, top)]
+        m.face("AC_ITread", q if sgn > 0 else q[::-1])
     # soffit under the flight: a sloped plate
     ya, yb = y_start, y_start + sgn * (n - 1) * tread
     za, zb = z_start - 0.3, z_start + (n - 1) * rise - 0.3
@@ -405,7 +415,7 @@ def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
         lz = fz + CEIL
         box(m, "AC_Iron", sx - 0.01, sx + 0.01, spec.yc - 0.01, spec.yc + 0.01, lz - 0.35, lz)
         box(m, "AC_IOpal", sx - 0.13, sx + 0.13, spec.yc - 0.13, spec.yc + 0.13, lz - 0.62, lz - 0.35)
-        lights.append((sx, spec.yc, lz - 0.7, "#FFE2B8", 900))
+        lights.append((sx, spec.yc, lz - 0.7, "#FFE2B8", 350))
         # side walls (two storeys of wall per storey: full height) with the flat doors at the band
         glo = lo
         if k == 0 and spec.gastronom and spec.gastronom[0] < sx < spec.gastronom[1]:
@@ -441,8 +451,11 @@ def _dado(m, x, facing, lo, hi, fz, holes):
     for a, b in segs:
         if b - a < 0.05:
             continue
-        pts = [(x, b, fz), (x, a, fz), (x, a, fz + 1.5), (x, b, fz + 1.5)]
-        m.face("AC_IDado", pts if facing > 0 else pts[::-1])
+        pts = [(x, b, fz), (x, a, fz), (x, a, fz + 1.5), (x, b, fz + 1.5)]      # faces -x as listed
+        m.face("AC_IDado", pts if facing < 0 else pts[::-1])
+        # a painted line (dado rail) on top of it
+        q = [(x, b, fz + 1.5), (x, a, fz + 1.5), (x, a, fz + 1.53), (x, b, fz + 1.53)]
+        m.face("AC_IHandrail", q if facing < 0 else q[::-1])
 
 
 def _flat(m, spec, k, fx0, fx1, side, sx, band, wins, rooms, closed):

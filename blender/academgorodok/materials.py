@@ -44,7 +44,8 @@ SLOTS = {
     "AC_Concrete":   ("concrete", 0.2, 0.0, 0.5),
     "AC_Soil":       ("soil_bed", 0.0, 0.0, 0.6),
     "AC_Hedge":      (None, 0.0, 0.0, 0.0),
-    "AC_Flowers":    (None, 0.0, 0.0, 0.0),
+    "AC_Foliage":    (None, 0.0, 0.0, 0.0),      # masked cards: unreal/scripts/academ_materials.py build_foliage
+    "AC_FlowerCards": (None, 0.0, 0.0, 0.0),
 }
 GRIME_COLOUR = (0.055, 0.05, 0.042)    # linear: sooty grey-brown
 GRIME_MULT = tuple(c / 0.25 for c in GRIME_COLOUR)   # multiplier on the base colour where the mask is 1

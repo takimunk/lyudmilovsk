@@ -28,8 +28,9 @@ MATERIALS = {
     "AC_Asphalt":   ("#4A4A48", 0.95, "asphalt drives and paths"),
     "AC_Concrete":  ("#9A9690", 0.9, "concrete steps, slabs, kerbs"),
     "AC_Soil":      ("#4B3B2C", 1.0, "flowerbed soil"),
-    "AC_Hedge":     ("#3F5A2C", 0.95, "clipped hedges and shrubs of the square"),
-    "AC_Flowers":   ("#B8743A", 0.9, "flowers in the beds (day lilies, marigolds)"),
+    "AC_Hedge":     ("#22331A", 0.95, "the dark inside of the clipped hedges"),
+    "AC_Foliage":   ("#3F6A2C", 0.8, "alpha leaf cards of the hedges (foliage_hedge.png, masked)"),
+    "AC_FlowerCards": ("#4E7A34", 0.8, "alpha cards of the flower beds (foliage_flowers.png, masked)"),
 }
 
 # Storey grid (estimates, docs/academgorodok/facade_notes.md)

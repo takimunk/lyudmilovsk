@@ -313,6 +313,52 @@ def build_glass_clear(path):
     return m
 
 
+def build_foliage(path, tex):
+    """Alpha leaf cards (the square's hedges and flower beds): masked, two-sided, lit; Nanite usage so the
+    cards can stay in the Square's Nanite mesh."""
+    m = master(path)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    m.set_editor_property("two_sided", True)
+    m.set_editor_property("opacity_mask_clip_value", 0.4)
+    t = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, -100, parameter_name="Leaves", texture=tex)
+    mul = node(m, unreal.MaterialExpressionMultiply, -400, -150)
+    link(t, "RGB", mul, "A")
+    link(vec(m, "Tint", -700, 100, (1.0, 1.0, 1.0)), "", mul, "B")
+    mel.connect_material_property(mul, "", MP.MP_BASE_COLOR)
+    mel.connect_material_property(t, "A", MP.MP_OPACITY_MASK)
+    mel.connect_material_property(scalar(m, "Roughness", -400, 150, 0.8), "", MP.MP_ROUGHNESS)
+    mel.connect_material_property(scalar(m, "Specular", -400, 230, 0.25), "", MP.MP_SPECULAR)
+    set_usage(m)
+    mel.layout_material_expressions(m)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m, False)
+    return m
+
+
+def import_foliage(tex_dir, dest):
+    out = {}
+    for name in ("foliage_hedge", "foliage_flowers"):
+        t = unreal.AssetImportTask()
+        t.filename = os.path.join(tex_dir, name + ".png")
+        t.destination_path = dest + "/Textures"
+        t.destination_name = "T_Academ_" + name
+        t.automated = True
+        t.replace_existing = True
+        t.save = False
+        tools.import_asset_tasks([t])
+        path = "%s/Textures/T_Academ_%s" % (dest, name)
+        tex = eal.load_asset(path) if eal.does_asset_exist(path) else None
+        if tex is None:
+            got = list(t.get_editor_property("imported_object_paths") or [])
+            tex = eal.load_asset(got[0]) if got else None
+        if tex is None:
+            raise RuntimeError("import failed: " + name)
+        tex.set_editor_property("srgb", True)
+        eal.save_loaded_asset(tex, False)
+        out[name] = tex
+    return out
+
+
 # ------------------------------------------------------------------------------------------- instances
 
 def instance(path, parent):
@@ -386,6 +432,10 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
         mel.update_material_instance(mi)
         eal.save_loaded_asset(mi, False)
         out[slot] = mi
+    fol = import_foliage(tex_dir, dest)
+    for slot, name in (("AC_Foliage", "foliage_hedge"), ("AC_FlowerCards", "foliage_flowers")):
+        mf = build_foliage("%s/M_Academ_%s" % (dest, slot), fol[name])
+        out[slot] = mf
     out["LACE"] = instance("%s/MI_AC_Lace" % dest, m_clear)
     _set(out["LACE"], "v", "Color", unreal.LinearColor(0.8, 0.78, 0.72, 1))
     _set(out["LACE"], "s", "Opacity", 0.35)
@@ -397,7 +447,27 @@ def make_materials(dest=DEST, tex_dir=TEX_DIR, extra=None):
     out["GLASS_CLEAR"] = instance("%s/MI_AC_GlassClear" % dest, m_clear)
     mel.update_material_instance(out["GLASS_CLEAR"])
     eal.save_loaded_asset(out["GLASS_CLEAR"], False)
-    for slot, (hexcol, rough, emissive) in (extra or {}).items():
+    for slot, spec in (extra or {}).items():
+        hexcol, rough, emissive = spec[:3]
+        texname = spec[3] if len(spec) > 3 else None
+        if texname:
+            # a flat-coloured slot with a texture's grain under it (inner plaster, terrazzo)
+            mi = instance("%s/MI_%s" % (dest, slot), m_tex)
+            base = mp.hex_lin(info.get(texname, {}).get("target_hex", hexcol))
+            c = mp.hex_lin(hexcol)
+            _set(mi, "t", "BaseColor", tex[(texname, "D")])
+            _set(mi, "t", "Normal", tex[(texname, "N")])
+            _set(mi, "t", "Mask", tex[(texname, "R")])
+            _set(mi, "v", "Tint", unreal.LinearColor(*[a / max(b, 1e-4) for a, b in zip(c, base)], 1))
+            _set(mi, "s", "Tiling", 1.0 / mp.tile_m(texname, info))
+            _set(mi, "s", "RoughnessScale", rough / max(info.get(texname, {}).get("roughness", rough), 0.05))
+            _set(mi, "s", "AOStrength", 0.4)
+            _set(mi, "s", "GrimeAmount", 0.0)
+            _set(mi, "s", "NormalStrength", 0.6)
+            mel.update_material_instance(mi)
+            eal.save_loaded_asset(mi, False)
+            out[slot] = mi
+            continue
         mi = instance("%s/MI_%s" % (dest, slot), m_flat)
         c = _srgb_to_linear(hexcol)
         _set(mi, "v", "Color", unreal.LinearColor(c[0], c[1], c[2], 1))

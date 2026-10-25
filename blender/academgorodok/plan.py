@@ -615,15 +615,14 @@ def square_mesh():
             _hedge(m, 17.0, 17.7, y0, y1)               # behind the apron
             _hedge(m, xe - 1.0, xe - 0.3, y0, y1)       # along the street
     rnd = random.Random(7)
-    for i in range(48):                                 # leafy clumps with flowers inside the fountain's ring
-        t = 2 * math.pi * i / 48
-        r = SQUARE["bed_r"] - rnd.uniform(0.7, 1.6)
-        cx, cy, hh = fx + r * math.cos(t), fy + r * math.sin(t), rnd.uniform(0.35, 0.6)
-        box(m, "AC_Hedge", cx - 0.3, cx + 0.3, cy - 0.3, cy + 0.3, 0.1, hh)
-        if i % 2 == 0:
-            box(m, "AC_Flowers", cx - 0.12, cx + 0.12, cy - 0.12, cy + 0.12, hh, hh + 0.12)
+    for i in range(70):                                 # day lilies and marigolds inside the fountain's ring
+        t = 2 * math.pi * i / 70
+        r = SQUARE["bed_r"] - rnd.uniform(0.6, 2.2)
+        _flower_clump(m, fx + r * math.cos(t), fy + r * math.sin(t), rnd, h=rnd.uniform(0.45, 0.75))
     for y0, y1 in ((-29.5, -16.0), (-12.0, -5.5), (5.5, 12.0), (16.0, 29.5)):   # under the ground-floor windows
-        box(m, "AC_Flowers", 7.45, 8.1, y0, y1, 0.0, 0.45)
+        n = int((y1 - y0) / 0.45)
+        for k in range(n):
+            _flower_clump(m, 7.75 + rnd.uniform(-0.15, 0.15), y0 + (k + 0.5) * (y1 - y0) / n, rnd, w=0.55, h=rnd.uniform(0.4, 0.65))
     # drives through the gates into the yard
     for gy in (38.4, -38.9):
         _flat(m, "AC_Asphalt", [(-35.0, gy - 2.2), (SQUARE["x_end"], gy - 2.2), (SQUARE["x_end"], gy + 2.2), (-35.0, gy + 2.2)], 0.025)
@@ -650,17 +649,57 @@ def square_trees():
     return out
 
 
-def _hedge(m, x0, x1, y0, y1, h=0.95):
-    """A clipped hedge with a slightly rounded (chamfered) top."""
-    box(m, "AC_Hedge", x0, x1, y0, y1, 0.0, h - 0.12, faces="xXyY")
-    c = 0.12
-    m.face("AC_Hedge", [(x0 + c, y0 + c, h), (x1 - c, y0 + c, h), (x1 - c, y1 - c, h), (x0 + c, y1 - c, h)])
-    for (a, b) in (((x0, y0, h - c), (x1, y0, h - c)), ((x1, y1, h - c), (x0, y1, h - c))):
-        pass
-    m.face("AC_Hedge", [(x0, y0, h - c), (x1, y0, h - c), (x1 - c, y0 + c, h), (x0 + c, y0 + c, h)])
-    m.face("AC_Hedge", [(x1, y1, h - c), (x0, y1, h - c), (x0 + c, y1 - c, h), (x1 - c, y1 - c, h)])
-    m.face("AC_Hedge", [(x1, y0, h - c), (x1, y1, h - c), (x1 - c, y1 - c, h), (x1 - c, y0 + c, h)])
-    m.face("AC_Hedge", [(x0, y1, h - c), (x0, y0, h - c), (x0 + c, y0 + c, h), (x0 + c, y1 - c, h)])
+def _hedge(m, x0, x1, y0, y1, h=0.95, seed=0):
+    """A clipped hedge: a dark core and alpha leaf cards over its faces and through it
+    (textures/academ/foliage_hedge.png, tools/make_academ_foliage.py)."""
+    rnd = random.Random(int(abs(x0 * 7 + y0 * 13)) + seed)
+    i = 0.14
+    box(m, "AC_Hedge", x0 + i, x1 - i, y0 + i, y1 - i, 0.0, h - i, faces="xXyYZ")
+    def card(c, u, v, w, hh, uv0):
+        """A card centred at c spanning w along unit vector u and hh along v."""
+        p = [(c[0] - u[0] * w / 2 - v[0] * hh / 2, c[1] - u[1] * w / 2 - v[1] * hh / 2, c[2] - u[2] * w / 2 - v[2] * hh / 2)]
+        p.append((p[0][0] + u[0] * w, p[0][1] + u[1] * w, p[0][2] + u[2] * w))
+        p.append((p[1][0] + v[0] * hh, p[1][1] + v[1] * hh, p[1][2] + v[2] * hh))
+        p.append((p[0][0] + v[0] * hh, p[0][1] + v[1] * hh, p[0][2] + v[2] * hh))
+        a, b = uv0
+        m.face("AC_Foliage", p, [(a, b), (a + 0.5, b), (a + 0.5, b + 0.5), (a, b + 0.5)])
+    uv = lambda: (rnd.choice((0.0, 0.5)), rnd.choice((0.0, 0.5)))
+    L = (x1 - x0, y1 - y0)
+    along_x = L[0] >= L[1]
+    length = max(L)
+    n = max(2, int(length / 0.35))
+    for k in range(n):
+        t = (k + rnd.uniform(0.2, 0.8)) / n
+        if along_x:
+            px = x0 + (x1 - x0) * t
+            for side, yy in ((-1, y0 + rnd.uniform(-0.03, 0.05)), (1, y1 - rnd.uniform(-0.03, 0.05))):
+                for zc in (h * 0.3, h * 0.72):
+                    card((px, yy, zc + rnd.uniform(-0.05, 0.05)), (1, 0, 0), (0, 0, 1), 0.55, 0.55, uv())
+            card((px, (y0 + y1) / 2, h - rnd.uniform(0.0, 0.05)), (1, 0, 0), (0, 1, 0), 0.5, (y1 - y0) + 0.1, uv())
+        else:
+            py = y0 + (y1 - y0) * t
+            for side, xx in ((-1, x0 + rnd.uniform(-0.03, 0.05)), (1, x1 - rnd.uniform(-0.03, 0.05))):
+                for zc in (h * 0.3, h * 0.72):
+                    card((xx, py, zc + rnd.uniform(-0.05, 0.05)), (0, 1, 0), (0, 0, 1), 0.55, 0.55, uv())
+            card(((x0 + x1) / 2, py, h - rnd.uniform(0.0, 0.05)), (0, 1, 0), (1, 0, 0), 0.5, (x1 - x0) + 0.1, uv())
+        # a few tilted cards poking out of the top so the silhouette is not ruler-straight
+        if rnd.random() < 0.5:
+            a_ = rnd.uniform(0, math.pi)
+            card((x0 + (x1 - x0) * (t if along_x else 0.5), y0 + (y1 - y0) * (0.5 if along_x else t), h + 0.02),
+                 (math.cos(a_), math.sin(a_), 0), (0, 0, 1), 0.45, 0.3, uv())
+    for xe in ((x0, x1) if along_x else ()):
+        card((xe, (y0 + y1) / 2, h / 2), (0, 1, 0), (0, 0, 1), (y1 - y0) + 0.08, h, uv())
+    for ye in ((y0, y1) if not along_x else ()):
+        card(((x0 + x1) / 2, ye, h / 2), (1, 0, 0), (0, 0, 1), (x1 - x0) + 0.08, h, uv())
+
+
+def _flower_clump(m, cx, cy, rnd, w=0.6, h=0.6):
+    """Day lilies and marigolds: three crossed cards (textures/academ/foliage_flowers.png)."""
+    for k in range(3):
+        a = math.pi * k / 3 + rnd.uniform(-0.2, 0.2)
+        dx, dy = math.cos(a) * w / 2, math.sin(a) * w / 2
+        p = [(cx - dx, cy - dy, 0.0), (cx + dx, cy + dy, 0.0), (cx + dx, cy + dy, h), (cx - dx, cy - dy, h)]
+        m.face("AC_FlowerCards", p, [(0, 0), (1, 0), (1, 1), (0, 1)])
 
 
 SQUARE_GARDEN = {"centre": (48.0, 6.0), "half": (30.0, 36.0), "count": 34,

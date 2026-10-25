@@ -7,7 +7,7 @@
     0.0,
     0.0
    ],
-   "tris": 892067
+   "tris": 895037
   },
   "Novikova1_Glass": {
    "location": [
@@ -23,7 +23,7 @@
     71.05999755859375,
     0.0
    ],
-   "tris": 789514
+   "tris": 791506
   },
   "Novikova3_Glass": {
    "location": [
@@ -39,7 +39,7 @@
     -73.81999969482422,
     0.0
    ],
-   "tris": 789524
+   "tris": 791516
   },
   "Maksimova8_Glass": {
    "location": [
@@ -63,7 +63,7 @@
     0.0,
     0.0
    ],
-   "tris": 57750
+   "tris": 63982
   }
  },
  "trees": [
@@ -204,7 +204,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -213,7 +213,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -222,7 +222,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -231,7 +231,7 @@
     14.849999999999998
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -240,7 +240,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -249,7 +249,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -258,7 +258,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -267,7 +267,7 @@
     14.849999999999998
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -276,7 +276,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -285,7 +285,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -294,7 +294,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -303,7 +303,7 @@
     14.849999999999998
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1113,7 +1113,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1122,7 +1122,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1131,7 +1131,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1140,7 +1140,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1149,7 +1149,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1158,7 +1158,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1167,7 +1167,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1176,7 +1176,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -1185,7 +1185,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2031,7 +2031,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2040,7 +2040,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2049,7 +2049,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2058,7 +2058,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2067,7 +2067,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2076,7 +2076,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2085,7 +2085,7 @@
     3.45
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2094,7 +2094,7 @@
     7.25
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [
@@ -2103,7 +2103,7 @@
     11.05
    ],
    "colour": "#FFE2B8",
-   "lumens": 900
+   "lumens": 350
   },
   {
    "at": [

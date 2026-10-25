@@ -48,8 +48,10 @@ def _extra_materials():
     sys.path.insert(0, os.path.join(REPO, "blender", "academgorodok"))
     out = {"AC_Room": ("#8C7A62", 0.9, 0.35), "AC_Curtain": ("#D8CDB4", 0.9, 0.2), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
     import interiors
+    grain = {"AC_IWall": "plaster_white", "AC_IDado": "plaster_white", "AC_ICeil": "plaster_white",
+             "AC_IStep": "stone_cast", "AC_ITread": "stone_cast", "AC_ITile": "concrete"}
     for k, (hx, rough, _) in interiors.INTERIOR_MATERIALS.items():
-        out[k] = (hx, rough, 5.0 if "Opal" in k else 0.0)
+        out[k] = (hx, rough, 5.0 if "Opal" in k else 0.0, grain.get(k))
     try:
         import furniture
         for k, (hx, rough, _) in furniture.FURNITURE_MATERIALS.items():

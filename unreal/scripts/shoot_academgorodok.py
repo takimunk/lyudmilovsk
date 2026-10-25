@@ -56,6 +56,9 @@ SPOTS = [
     ("n3_room",) + inside("Novikova3", (-9.0, 4.5, 6.1), (-9.0, 9.4, 5.6)),
     ("n3_door",) + inside("Novikova3", (3.44, 1.6, 2.3), (3.44, 6.0, 1.9)),
     ("n3_corr",) + inside("Novikova3", (2.0, 2.15, 2.3), (9.0, 2.15, 2.0)),
+    ("hedge_close", (22.0, 14.0, 1.4), (30.0, 9.0, 0.5)),         # the hedges and the fountain's flowers
+    ("flowers_close", (13.5, 1.0, 1.4), (22.9, 1.6, 0.3)),
+    ("n1_stair_up",) + inside("Novikova1", (20.4, -0.6, 1.9), (20.3, 3.5, 2.9)),
 ]
 if os.environ.get("ACADEM_SHOTS"):
     SPOTS = [s for s in SPOTS if s[0] in os.environ["ACADEM_SHOTS"].split(",")]
