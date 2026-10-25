@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "UI/LyudSettings.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBox.h"
@@ -49,6 +50,9 @@ private:
 void ULyudGameMenuSubsystem::OnWorldBeginPlay(UWorld& World)
 {
 	Super::OnWorldBeginPlay(World);
+	// the player's settings: the language and the HUD once per run, the volumes into every new world's soundscape
+	LyudSettings::ApplySaved(&World);
+	LyudSettings::ApplyVolumes(&World);
 	ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&World);
 	if (Saves)
 	{
@@ -276,3 +280,35 @@ bool ULyudGameMenuSubsystem::HandleKey(const FKey& Key)
 	Open(false);
 	return true;
 }
+
+void ULyudGameMenuSubsystem::OpenSettings()
+{
+	Open(false);
+	if (Menu && bOpen)
+	{
+		Menu->Push(SLyudGameMenu::EScreen::Settings);
+	}
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GLyudMenuCmd(TEXT("lyud.Menu"), TEXT("lyud.Menu pause|main|settings|close: opens a page of the game menu (headless checks)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudGameMenuSubsystem* Menu = World ? World->GetSubsystem<ULyudGameMenuSubsystem>() : nullptr;
+		const FString Page = Args.Num() ? Args[0] : TEXT("pause");
+		if (!Menu)
+		{
+			return;
+		}
+		if (Page == TEXT("close"))
+		{
+			Menu->Close();
+		}
+		else if (Page == TEXT("settings"))
+		{
+			Menu->OpenSettings();
+		}
+		else
+		{
+			Menu->Open(Page == TEXT("main"));
+		}
+	}));

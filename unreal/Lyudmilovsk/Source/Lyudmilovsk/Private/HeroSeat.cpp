@@ -88,8 +88,9 @@ void AHeroSeat::Tick(float DeltaSeconds)
 	bInRange = Pawn && Trigger->Bounds.GetBox().IsInside(Pawn->GetActorLocation());
 	// the prompt line the other interactables use (it goes under the game screen and the menu)
 	const bool bPrompt = bInRange && !bSitting;
-	if (bPrompt != bPromptShown)
+	if (bPrompt || bPromptShown)
 	{
+		// set every frame while up, so a language switch shows at once
 		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 		{
 			UI->SetPrompt(this, bPrompt ? LyudText::Get(PromptKey) : FText::GetEmpty());

@@ -579,5 +579,16 @@
  "item.sneakers.desc": "Массивные кроссовки, когда-то белые.",
  "ui.inventory.badge_hand": "в руке",
  "ui.inventory.badge_on": "надето",
- "ui.seat.prompt": "[E] Сесть за компьютер"
+ "ui.seat.prompt": "[E] Сесть за компьютер",
+ "ui.menu.settings": "Настройки",
+ "ui.settings.language": "Язык",
+ "ui.settings.lang.ru": "Русский",
+ "ui.settings.lang.en": "English",
+ "ui.settings.lang.ja": "日本語",
+ "ui.settings.volume.master": "Общая громкость",
+ "ui.settings.volume.ambience": "Окружение",
+ "ui.settings.volume.music": "Музыка",
+ "ui.settings.volume.effects": "Звуки",
+ "ui.settings.hud_on": "Дата и задание на экране: да",
+ "ui.settings.hud_off": "Дата и задание на экране: нет"
 }

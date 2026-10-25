@@ -579,5 +579,16 @@
  "item.sneakers.desc": "かつては白かった厚底スニーカー。",
  "ui.inventory.badge_hand": "手",
  "ui.inventory.badge_on": "着用",
- "ui.seat.prompt": "[E] パソコンの前に座る"
+ "ui.seat.prompt": "[E] パソコンの前に座る",
+ "ui.menu.settings": "設定",
+ "ui.settings.language": "言語",
+ "ui.settings.lang.ru": "Русский",
+ "ui.settings.lang.en": "English",
+ "ui.settings.lang.ja": "日本語",
+ "ui.settings.volume.master": "全体の音量",
+ "ui.settings.volume.ambience": "環境音",
+ "ui.settings.volume.music": "音楽",
+ "ui.settings.volume.effects": "効果音",
+ "ui.settings.hud_on": "日付と任務の表示：オン",
+ "ui.settings.hud_off": "日付と任務の表示：オフ"
 }

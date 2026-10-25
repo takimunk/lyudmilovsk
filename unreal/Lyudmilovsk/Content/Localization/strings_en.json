@@ -579,5 +579,16 @@
  "item.sneakers.desc": "Chunky sneakers that were white once.",
  "ui.inventory.badge_hand": "in hand",
  "ui.inventory.badge_on": "worn",
- "ui.seat.prompt": "[E] Sit down at the computer"
+ "ui.seat.prompt": "[E] Sit down at the computer",
+ "ui.menu.settings": "Settings",
+ "ui.settings.language": "Language",
+ "ui.settings.lang.ru": "Русский",
+ "ui.settings.lang.en": "English",
+ "ui.settings.lang.ja": "日本語",
+ "ui.settings.volume.master": "Master volume",
+ "ui.settings.volume.ambience": "Surroundings",
+ "ui.settings.volume.music": "Music",
+ "ui.settings.volume.effects": "Effects",
+ "ui.settings.hud_on": "Date and quest on screen: on",
+ "ui.settings.hud_off": "Date and quest on screen: off"
 }
