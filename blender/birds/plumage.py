@@ -174,8 +174,13 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
             col = col * (1 - k[..., None]) + L(fx[1]) * k[..., None]
             continue
         elif op == "mottle":
-            nz = R.standard_normal((h // 8 + 1, w // 8 + 1))
-            nz = np.kron(nz, np.ones((8, 8)))[:h, :w]
+            nz = R.standard_normal((h // 8 + 2, w // 8 + 2))
+            yi = np.linspace(0, nz.shape[0] - 1.001, h)
+            xi = np.linspace(0, nz.shape[1] - 1.001, w)
+            y0, x0 = yi.astype(int), xi.astype(int)
+            fy, fx_ = (yi - y0)[:, None], (xi - x0)[None, :]
+            nz = (nz[y0][:, x0] * (1 - fy) * (1 - fx_) + nz[y0 + 1][:, x0] * fy * (1 - fx_)
+                  + nz[y0][:, x0 + 1] * (1 - fy) * fx_ + nz[y0 + 1][:, x0 + 1] * fy * fx_)   # smooth blotches, not blocks
             k = np.clip(nz * fx[2], 0, 1)
             col = col * (1 - k[..., None]) + L(fx[1]) * k[..., None]
             continue
@@ -185,11 +190,16 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
             raise ValueError(op)
         col = np.where(m[..., None], L(fx[1]), col)
     # barb texture, darker toward the base of body feathers, the shaft
-    col *= (0.86 + 0.14 * stripes)[..., None]
+    # barbs: a faint texture (strong stripes read as hatching up close), each variant a touch lighter or darker
+    col *= (0.95 + 0.05 * stripes)[..., None] * (1.0 + R.uniform(-0.035, 0.035))
+    if contour:   # a soft darker rim, so overlapping feathers read as feathers, not paint
+        col *= (0.93 + 0.07 * np.clip(e * 2.5, 0, 1))[..., None]
     if contour:
         col *= (0.88 + 0.12 * np.clip(t * 1.7, 0, 1))[..., None]
-        down_c = next((L(f[1]) for f in style.get("fx", []) if f[0] == "down"), base * 0.45 + 0.02)
-        col = np.where((t < 0.22)[..., None], down_c * (0.8 + 0.2 * stripes)[..., None], col)
+        # the fluffy base mostly hides under the feather in front; near the base colour so gaps don't speckle
+        down_c = next((L(f[1]) for f in style.get("fx", []) if f[0] == "down"), base * 0.7)
+        down_c = down_c * 0.35 + base * 0.8 * 0.65
+        col = np.where((t < 0.22)[..., None], down_c * (0.92 + 0.08 * stripes)[..., None], col)
     shaft_c = next((L(f[1]) for f in style.get("fx", []) if f[0] == "shaft"), None)
     rach = np.abs(s) < (0.03 if contour else 0.035)
     if shaft_c is None:
@@ -198,7 +208,7 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
         shaft_c_arr = np.broadcast_to(shaft_c, col.shape)
     col = np.where(rach[..., None], shaft_c_arr, col)
     # a low shaft ridge (a tall one glints along the whole card: a white streak down the back)
-    height = np.where(rach, 0.45 if contour else 0.6, 0.0) + 0.25 * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
+    height = np.where(rach, 0.45 if contour else 0.6, 0.0) + 0.12 * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
     rough = np.full((h, w), max(0.6, style.get("rough", 0.74)))   # feathers are never mirror-like; gloss is the film tint
     irid = np.full((h, w), style.get("gloss", 0.0)) * np.clip(t * 1.4, 0, 1) * (a > 0)
     return np.clip(col, 0, 1), height, rough, irid

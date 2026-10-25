@@ -74,6 +74,12 @@ for sid in ids:
         a.set_editor_property("initial_state", state)
         a.set_editor_property("seed", len(sid) * 7 + int(z))
         a.get_editor_property("body").set_skinned_asset_and_update(mesh)
+    if TABLE[sid]["gait"] == "Cling":   # a swift clings to a wall, belly to it
+        wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x + L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
+        wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))
+        wall.set_actor_scale3d(unreal.Vector(0.03, 0.8, 0.6))
+        wall.static_mesh_component.set_material(0, grass)
+        wall.set_actor_label("Wall_" + sid)
     d = max(L, 12) * 2.6
     # bird faces +X, its left is -Y: side camera on its left
     for label, loc, rot in (("Side", (x, -d, L * 0.35), (0, -4, 90)),

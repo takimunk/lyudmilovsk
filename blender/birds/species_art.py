@@ -553,7 +553,10 @@ species("Robin", dict(THRUSH, body_len=0.82, body_w=1.08, body_h=1.08, head=1.15
              "flank": "flank", "neckside": "grey", "lcovert": "olive", "mcovert": "olive", "gcovert": "gcovert", "primary": "prim", "tertial": "prim",
              "tail": "tail", "underwing": "underwing", "trousers": "flank"},
     rules=[(lambda q: q.head and q.region == "supercilium" and q.dz < -0.004, "grey"),
-           (lambda q: q.region == "breast" and q.z < 0.014, "belly")],
+           (lambda q: q.region == "breast" and q.z < 0.010, "belly"),
+           (lambda q: q.region in ("breastside", "neckside") and q.s < 0.05 and q.z > 0.008, "orange"),
+           (lambda q: q.region in ("breastside", "neckside") and q.s >= 0.05 and q.s < 0.3, "grey"),
+           (lambda q: q.region in ("breastside", "neckside") and q.s >= 0.3, "olive")],
     bare=dict(beak="#2a2420", legs="#b89078", iris="#0c0806", eyering="#2a2420", mouth="#e8b040"),
 ))
 
@@ -704,13 +707,13 @@ BILLS = {
     "HerringGull": (1.12, 2.0, 1.15, 1.3, dict(beak_hook=0.9, beak_gonys=0.8)),
     "CommonGull": (0.82, 1.3, 1.0, 1.3, dict(beak_hook=0.5, beak_gonys=0.3)),
     "BlackHeadedGull": (0.92, 1.1, 0.9, 1.2, dict(beak_hook=0.3, beak_gonys=0.1)),
-    "GreatTit": (0.36, 1.35, 1.2, 1.8, {}),
-    "BlueTit": (0.28, 1.35, 1.2, 1.8, {}),
+    "GreatTit": (0.3, 1.0, 0.95, 1.6, {}),
+    "BlueTit": (0.24, 1.0, 0.95, 1.6, {}),
     "Goldfinch": (0.5, 1.5, 1.3, 1.6, dict(beak_taper=0.8)),
     "Chaffinch": (0.5, 1.5, 1.35, 1.6, {}),
-    "Bullfinch": (0.38, 2.2, 1.9, 2.2, {}),
-    "HouseSparrow": (0.46, 1.9, 1.6, 2.0, {}),
-    "TreeSparrow": (0.42, 1.8, 1.5, 2.0, {}),
+    "Bullfinch": (0.32, 1.75, 1.55, 2.0, {}),
+    "HouseSparrow": (0.42, 1.6, 1.4, 1.9, {}),
+    "TreeSparrow": (0.38, 1.5, 1.35, 1.9, {}),
     "SongThrush": (0.6, 1.1, 1.0, 1.2, {}),
     "Fieldfare": (0.64, 1.2, 1.05, 1.2, {}),
     "Blackbird": (0.64, 1.25, 1.1, 1.2, {}),
@@ -740,9 +743,22 @@ HEADS = {
 for _n, (_l, _d, _w, _r, _x) in BILLS.items():
     SPECIES[_n]["morph"].update(dict(beak_len=_l, beak_depth=_d, beak_width=_w, beak_round=_r, **_x))
 for _n, (_h, _k, _c, _t) in HEADS.items():
+    _k = max(_k, 0.55)   # shorter folds the neck (a seam)
     SPECIES[_n]["morph"].update(dict(head=_h, neck=_k, crown_h=_c, throat=_t))
 SPECIES["Rook"]["morph"]["trousers"] = 2.2
 SPECIES["Magpie"]["morph"].update(tail=3.0)
 SPECIES["CommonSwift"]["morph"].update(perch_pitch=78, perch_neck=8, perch_tail=-28)
 SPECIES["FeralPigeon"]["morph"].update(body_h=1.22, belly=1.05)
 SPECIES["WoodPigeon"]["morph"].update(body_h=1.22, belly=1.05)
+
+# perched poses (QA): the cormorant upright with the bill level, aerial birds on their short legs, not on their bellies
+SPECIES["Cormorant"]["morph"].update(body_w=1.15, body_h=1.1, perch_pitch=40, perch_neck=-14, perch_head=-28, neck=2.2)
+for _n in ("CommonSwift", "BarnSwallow", "SandMartin"):
+    SPECIES[_n]["morph"]["perch_low"] = 0.0015
+SPECIES["CommonSwift"]["morph"].update(prim=1.5, perch_neck=-30, perch_head=-34)
+# gulls in winter: soft grey-brown smudging on the head, not regular streaks
+for _n in ("HerringGull", "CommonGull"):
+    SPECIES[_n]["plumage"]["winter"]["styles"]["head"] = st("#f2f0ec", ("mottle", "#a89a90", 0.45), ("grad", "#e0d8d0", 0.4))
+SPECIES["BarnSwallow"]["morph"].update(tarsus=0.75, shin=0.85, perch_low=0.0, perch_pitch=18)
+SPECIES["Waxwing"]["morph"].update(crest=2.6)
+SPECIES["Waxwing"]["plumage"]["styles"]["pinkbrown"] = st("#b89082", ("mottle", "#a47e72", 0.35), ("down", "#9a786c"))

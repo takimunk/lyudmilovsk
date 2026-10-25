@@ -13,5 +13,6 @@ for s in $IDS; do
     n=$((n + 1)); [ $((n % 3)) = 0 ] && wait
 done
 wait
-while pgrep -f "UnrealEditor.*Lyudmilovsk-wt/birdspecies" >/dev/null; do sleep 5; done
+[ -n "$BIRDS_NO_IMPORT" ] && exit 0   # Blender only (e.g. while the Unreal Mac is held for others)
+while pgrep -f "MacOS/UnrealEditor .*lyudmilovsk-wt/birdspecies" >/dev/null; do sleep 5; done
 "$ROOT/unreal/scripts/import_birds.sh" masters $IDS
