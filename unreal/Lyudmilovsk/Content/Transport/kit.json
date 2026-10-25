@@ -6,8 +6,10 @@
   "door_half": 0.42,
   "door_top": 2.1,
   "floor": 0.22,
+  "glass_faces": 3529,
   "grip": 3.863,
   "length": 3.9,
+  "room_faces": 10471,
   "tris": 14000,
   "width": 2.224
  },
@@ -38,6 +40,8 @@
  },
  "tops": {
   "arches": {
+   "glass_faces": 5247,
+   "room_faces": 16753,
    "size": [
     20.999,
     21.0,
@@ -46,6 +50,8 @@
    "tris": 21999
   },
   "dome": {
+   "glass_faces": 3453,
+   "room_faces": 18548,
    "size": [
     20.208,
     21.0,
@@ -54,6 +60,8 @@
    "tris": 22000
   },
   "folded": {
+   "glass_faces": 4570,
+   "room_faces": 17431,
    "size": [
     19.636,
     21.0,
@@ -62,6 +70,8 @@
    "tris": 22000
   },
   "lantern": {
+   "glass_faces": 3628,
+   "room_faces": 18373,
    "size": [
     20.619,
     21.0,
@@ -70,6 +80,8 @@
    "tris": 22000
   },
   "saucer": {
+   "glass_faces": 6056,
+   "room_faces": 15945,
    "size": [
     20.993,
     21.0,
@@ -78,6 +90,8 @@
    "tris": 22000
   },
   "star": {
+   "glass_faces": 865,
+   "room_faces": 21136,
    "size": [
     19.972,
     21.0,
@@ -86,6 +100,8 @@
    "tris": 22000
   },
   "wing": {
+   "glass_faces": 6117,
+   "room_faces": 15884,
    "size": [
     18.818,
     21.0,

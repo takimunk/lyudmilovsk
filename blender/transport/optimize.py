@@ -78,9 +78,124 @@ def decimate(o, tris):
 
 def shrink_textures(size):
     for img in bpy.data.images:
+        if img.type != "IMAGE":
+            continue
         if img.size[0] > size:
             img.scale(size, size)
         img.pack()
+
+
+GLASS_DARK = 0.32        # a texel this dark (and not a saturated colour) is a window
+GLASS_SAT = 0.45
+
+
+def _texels(o):
+    """The base colour texture of o's first material as (w, h, flat RGBA list)."""
+    for m in o.data.materials:
+        if not m or not m.use_nodes:
+            continue
+        for n in m.node_tree.nodes:
+            if n.type == "BSDF_PRINCIPLED":
+                link = n.inputs["Base Color"].links
+                if link and link[0].from_node.type == "TEX_IMAGE" and link[0].from_node.image:
+                    img = link[0].from_node.image
+                    return img.size[0], img.size[1], list(img.pixels[:])
+    return 0, 0, None
+
+
+def glass_and_rooms(o, floor_z=None, interior=(0.78, 0.74, 0.66), amber=False, dark=GLASS_DARK, dull=GLASS_SAT, zmax=1e9):
+    """Windows out of the texture: faces whose colour is dark and dull become a second material TR_Glass (the game makes
+    it real glass); then a room inside following the model: a copy of the shell, its faces turned inward and drawn a
+    little in, without the windows, in plain plaster (TR_Interior), and a floor at floor_z. Returns (glass faces, room faces)."""
+    w, h, px = _texels(o)
+    if not px:
+        return 0, 0
+    me = o.data
+    uv = me.uv_layers.active.data
+    glass = bpy.data.materials.new("TR_Glass")
+    glass.diffuse_color = (0.3, 0.4, 0.45, 0.25)
+    room = bpy.data.materials.new("TR_Interior")
+    room.diffuse_color = interior + (1.0,)
+    me.materials.append(glass)
+    me.materials.append(room)
+    gi, ri = len(me.materials) - 2, len(me.materials) - 1
+    n = 0
+    for poly in me.polygons:
+        u = sum(uv[l].uv[0] for l in poly.loop_indices) / poly.loop_total
+        v = sum(uv[l].uv[1] for l in poly.loop_indices) / poly.loop_total
+        x, y = min(w - 1, max(0, int(u % 1.0 * w))), min(h - 1, max(0, int(v % 1.0 * h)))
+        k = (y * w + x) * 4
+        r, g, b = px[k], px[k + 1], px[k + 2]
+        hi, lo = max(r, g, b), min(r, g, b)
+        sat = (hi - lo) / hi if hi > 1e-4 else 0.0
+        # amber glass (the lantern station): a bright, strongly orange-yellow texel
+        if poly.center.z > zmax:
+            continue
+        if (hi < dark and sat < dull) or (amber and sat > 0.55 and hi > 0.55 and r >= g > b):
+            poly.material_index = gi
+            n += 1
+    # the room: the shell without its windows, inward
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    keep = [f for f in bm.faces if f.material_index != gi]
+    inner = bmesh.ops.duplicate(bm, geom=keep)
+    faces = [e for e in inner["geom"] if isinstance(e, bmesh.types.BMFace)]
+    verts = list({v for f in faces for v in f.verts})
+    c = sum((v.co for v in verts), Vector()) / max(1, len(verts))
+    for v in verts:
+        d = v.co - c
+        v.co = c + Vector((d.x * 0.985, d.y * 0.985, d.z * 0.985 if v.co.z > c.z else d.z))
+    bmesh.ops.reverse_faces(bm, faces=faces)
+    for f in faces:
+        f.material_index = ri
+    if floor_z is not None:
+        lo, hi = bounds(o)
+        r0 = min(hi.x - lo.x, hi.y - lo.y) * 0.45
+        ring = [bm.verts.new((c.x + r0 * math.cos(a), c.y + r0 * math.sin(a), floor_z)) for a in
+                [2 * math.pi * i / 24 for i in range(24)]]
+        fl = bm.faces.new(ring)
+        fl.material_index = ri
+        fl.normal_update()
+        if fl.normal.z < 0:
+            fl.normal_flip()
+        faces.append(fl)
+    bm.to_mesh(me)
+    bm.free()
+    return n, len(faces)
+
+
+def debug_render(o, name):
+    """TR_DEBUG=<dir>: a workbench picture of o with the windows red and the room blue (to check the glass split)."""
+    out = os.environ.get("TR_DEBUG")
+    if not out:
+        return
+    for m in o.data.materials:
+        if m and m.name.startswith("TR_Glass"):
+            m.diffuse_color = (1, 0, 0, 1)
+        elif m and m.name.startswith("TR_Interior"):
+            m.diffuse_color = (0, 0.3, 1, 1)
+        elif m:
+            m.diffuse_color = (0.8, 0.8, 0.8, 1)
+    sc = bpy.context.scene
+    sc.render.engine = "BLENDER_WORKBENCH"
+    sc.display.shading.color_type = "MATERIAL"
+    sc.render.resolution_x = sc.render.resolution_y = 600
+    cam = bpy.data.objects.new("dbgcam", bpy.data.cameras.new("dbgcam"))
+    sc.collection.objects.link(cam)
+    sc.camera = cam
+    lo, hi = bounds(o)
+    c = (lo + hi) / 2
+    d = max(hi - lo)
+    cam.data.type = "ORTHO"
+    cam.data.ortho_scale = d * 1.2
+    for k, v in (("a", Vector((1, -1, 0.6))), ("b", Vector((-1, 1, 0.6)))):
+        cam.location = c + v.normalized() * d * 3
+        cam.rotation_euler = (-v).to_track_quat("-Z", "Y").to_euler()
+        sc.render.filepath = os.path.join(out, "%s_%s.png" % (name, k))
+        bpy.ops.render.render(write_still=True)
+    for m in o.data.materials:
+        if m:
+            m.diffuse_color = (0.8, 0.8, 0.8, 1)
 
 
 def export(objs, name):
@@ -145,11 +260,13 @@ def cabin(kit):
     bm.to_mesh(o.data)
     bm.free()
     n = decimate(o, BUDGET["cabin"])
+    g, r = glass_and_rooms(o, None, dark=0.46, dull=0.62, zmax=body_top - 0.1)     # its tinted windows are a warm brown
+    debug_render(o, "cabin")
     shrink_textures(TEX["cabin"])
     export([o], "SM_TR_Cabin")
     kit["cabin"] = {"length": round(hi.x - lo.x, 3), "width": round(hi.y - lo.y, 3), "grip": round(grip, 3),
                     "body_top": round(body_top, 3), "floor": floor, "door_half": door_half, "door_top": round(door_top, 3),
-                    "tris": n, "door_faces_cut": len(kill)}
+                    "tris": n, "door_faces_cut": len(kill), "glass_faces": g, "room_faces": r}
 
 
 def pylon(kit, name, arm, rope_axis):
@@ -210,10 +327,13 @@ def top(kit, name):
     transform(o, Matrix.Scale(s, 4) @ Matrix.Translation(-c))
     lo, hi = bounds(o)
     n = decimate(o, BUDGET["top"])
+    g, r = glass_and_rooms(o, floor_z=0.6, amber=name == "top_lantern")
+    debug_render(o, name)
     shrink_textures(TEX["top"])
     style = name[4:]
     export([o], "SM_TR_Top_" + style.capitalize())
-    kit.setdefault("tops", {})[style] = {"size": [round(hi.x - lo.x, 3), round(hi.y - lo.y, 3), round(hi.z, 3)], "tris": n}
+    kit.setdefault("tops", {})[style] = {"size": [round(hi.x - lo.x, 3), round(hi.y - lo.y, 3), round(hi.z, 3)], "tris": n,
+                                         "glass_faces": g, "room_faces": r}
 
 
 def main():

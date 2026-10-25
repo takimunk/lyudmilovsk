@@ -1,6 +1,7 @@
 // The cable-car metro outside the engine: behaviour checks and a busy day (tools/transportsim/run.sh).
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/CablewaySim.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -9,6 +10,7 @@
 #include <string>
 
 using namespace LyudTransport;
+using LT_V3 = LyudTransport::V3;
 
 static int Fails = 0;
 #define CHECK(c, ...) do { if (!(c)) { std::printf("FAIL %s:%d: ", __FILE__, __LINE__); std::printf(__VA_ARGS__); std::printf("\n"); Fails++; } } while (0)
@@ -145,6 +147,31 @@ static int Test()
 	CHECK(Done + Fail == (int)Trips.size(), "trips left unfinished");
 	CHECK(MinGap > 8.0, "cabins came within %.1f m", MinGap);
 	(void)Wait; (void)Polar; (void)Zenit; (void)Mayak;
+
+	// 6. the rope sags under a cabin crossing a span and sways in the wind; the cabin swings when it speeds up
+	N.Reset();
+	RI = N.Travel(PlayerId, Aton, Academ);
+	float MaxSag = 0.f, MaxSway = 0.f, MaxPitch = 0.f;
+	const LT_V3 Wind(0.f, 12.f, 0.f);
+	for (int I = 0; I < 1600; I++)
+	{
+		N.Step(0.05f);
+		N.StepMotion(0.05f, Wind);
+		const FRider& R = N.Riders[RI];
+		if (R.State == ERiderState::Waiting && R.Cabin >= 0 && N.Cabins[R.Cabin].State == ECabinState::Dwelling)
+		{
+			N.PlayerBoard(R.Cabin, Academ);
+		}
+		const int C = R.Cabin >= 0 ? R.Cabin : 0;
+		const LT_V3 O = N.RopeOffset(N.Cabins[C].Line, N.Cabins[C].S);
+		MaxSag = std::max(MaxSag, -O.Z);
+		MaxSway = std::max(MaxSway, std::sqrt(O.X * O.X + O.Y * O.Y));
+		MaxPitch = std::max(MaxPitch, std::fabs(N.Cabins[C].Pitch));
+	}
+	std::printf("rope under the cabin: sag up to %.2f m, sway %.2f m in 12 m/s; cabin pitch up to %.1f deg\n", MaxSag, MaxSway, MaxPitch * 57.3f);
+	CHECK(MaxSag > 0.2f && MaxSag < 4.f, "sag %.2f", MaxSag);
+	CHECK(MaxSway > 0.1f && MaxSway < 5.f, "sway %.2f", MaxSway);
+	CHECK(MaxPitch > 0.002f && MaxPitch < 0.2f, "pitch %.3f", MaxPitch);
 	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
 	return Fails ? 1 : 0;
 }

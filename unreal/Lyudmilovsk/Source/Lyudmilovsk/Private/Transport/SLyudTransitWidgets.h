@@ -150,3 +150,40 @@ private:
 	void OnPick(int32 Station);
 	FText Footer() const;
 };
+
+/** A line of words from the string tables on a plaque (the vestibule's kiosk, its notices). */
+class SLyudLabel : public SLeafWidget
+{
+public:
+	SLATE_BEGIN_ARGS(SLyudLabel) : _Size(FVector2D(600.f, 140.f)) {}
+		SLATE_ARGUMENT(FString, Key)
+		SLATE_ARGUMENT(FVector2D, Size)
+	SLATE_END_ARGS()
+
+	void Construct(const FArguments& InArgs) { Key = InArgs._Key; Size = InArgs._Size; }
+	virtual int32 OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements,
+		int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
+	virtual FVector2D ComputeDesiredSize(float) const override { return Size; }
+
+private:
+	FString Key;
+	FVector2D Size;
+};
+
+/** A round station clock with the game's time (the hands move with the game's calendar). */
+class SLyudClock : public SLeafWidget
+{
+public:
+	SLATE_BEGIN_ARGS(SLyudClock) {}
+		SLATE_ARGUMENT(TWeakObjectPtr<UObject>, WorldContext)
+	SLATE_END_ARGS()
+
+	void Construct(const FArguments& InArgs);
+	virtual int32 OnPaint(const FPaintArgs& Args, const FGeometry& AllottedGeometry, const FSlateRect& MyCullingRect, FSlateWindowElementList& OutDrawElements,
+		int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override;
+	virtual FVector2D ComputeDesiredSize(float) const override { return FVector2D(300.f, 300.f); }
+
+private:
+	TWeakObjectPtr<UObject> Context;
+	EActiveTimerReturnType Repaint(double, float);
+};

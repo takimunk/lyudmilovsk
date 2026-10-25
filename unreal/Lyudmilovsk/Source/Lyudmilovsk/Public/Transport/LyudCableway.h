@@ -27,6 +27,8 @@ struct FLyudBuiltStation
 	TArray<int32> DeckLines;
 	/** The foot of the lift / stair (world cm), the way into the station. */
 	FVector Entrance = FVector::ZeroVector;
+	/** The vestibule's frame: origin on its floor at the stair's middle, -X out of its door. */
+	FTransform Vestibule;
 	/** Where the call panel and the board stand (world), per level. */
 	TArray<FTransform> Panels;
 	UPROPERTY(Transient) TArray<TObjectPtr<UWidgetComponent>> Boards;
@@ -53,6 +55,8 @@ public:
 	ALyudCableway();
 
 	void Build(ULyudTransportSubsystem* Owner, const LyudTransport::FNetwork& Net);
+	/** The ropes near the viewer follow the network's span motion (sag under cabins, sway in the wind). */
+	void UpdateRopes(const LyudTransport::FNetwork& Net, const FVector& Viewer);
 	/** The boards' words (wait times) and the lifts, a few times a second. */
 	void UpdateBoards(const LyudTransport::FNetwork& Net, const FVector& Viewer, float DeltaTime);
 
@@ -66,6 +70,8 @@ public:
 	int32 StationAt(const FVector& P) const;
 
 	UMaterialInterface* Mat(FName Name);
+	/** Real glass and plaster on a kit mesh's TR_Glass / TR_Interior slots. */
+	void KitMaterials(UStaticMeshComponent* C);
 
 private:
 	UPROPERTY(Transient) TObjectPtr<ULyudTransportSubsystem> Transport;
@@ -75,11 +81,26 @@ private:
 	TArray<FVector> StationCentres;
 	TArray<float> StationRadius;
 	UPROPERTY(Transient) TObjectPtr<UWidgetComponent> ClubBoard;
+	/** Per line: the rope, one rod per loop segment, movable. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UInstancedStaticMeshComponent>> RopeIsm;
+	TArray<TArray<bool>> RopeMoved;
 	FTransform ClubBoardAt;
 
 public:
 	/** The route board by the club's exit (where it stands), for the E prompt. */
 	bool ClubBoardNear(const FVector& P, float R) const { return ClubBoard && FVector::Dist(ClubBoardAt.GetLocation() + FVector(0, 0, 150.f), P) < R; }
+	/** The route diagram on a vestibule's wall near P: its station, -1 none. */
+	int32 VestibuleBoardNear(const FVector& P, float R) const
+	{
+		for (int32 I = 0; I < VestBoards.Num(); I++)
+		{
+			if (FVector::Dist(VestBoards[I].GetLocation(), P) < R)
+			{
+				return VestBoardStation[I];
+			}
+		}
+		return -1;
+	}
 
 private:
 
@@ -95,6 +116,9 @@ private:
 
 	void BuildStation(const LyudTransport::FNetwork& Net, int32 S);
 	void BuildStair(const FTransform& Foot, float Height, int32 Station);
+	void BuildVestibule(const FTransform& Foot, int32 Station, bool bLift);
+	TArray<FTransform> VestBoards;
+	TArray<int32> VestBoardStation;
 	void BuildPylons(const LyudTransport::FNetwork& Net, int32 L);
 	void BuildRopes(const LyudTransport::FNetwork& Net, int32 L);
 	void BuildDepot(const LyudTransport::FNetwork& Net, int32 L);
@@ -151,7 +175,7 @@ public:
 
 	void Setup(ALyudCableway* Way, int32 Index, int32 Number, const FText& Name, const FLinearColor& LineColor);
 	/** Grip on the rope at G (world), heading Dir; Door 0..1; the board's text. */
-	void Drive(const FVector& Grip, const FVector& Dir, float Door, float DeltaTime);
+	void Drive(const FVector& Grip, const FVector& Dir, float Door, float DeltaTime, float PitchDeg = 0.f, float RollDeg = 0.f);
 	void SetBoard(const FText& Line1, const FText& Line2);
 	/** Is P inside (the cabin's own volume)? */
 	bool Contains(const FVector& P) const;

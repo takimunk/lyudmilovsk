@@ -184,6 +184,11 @@ namespace LyudTransport
 				Pl.bCorner = Py[K]["kind"].S() == "corner";
 				Ln.Pylons.push_back(Pl);
 			}
+			const LyudJson::FValue& Sp2 = L["spans"];
+			for (size_t K = 0; K < Sp2.Size(); K++)
+			{
+				Ln.Spans.push_back({ Sp2[K][0].F(), Sp2[K][1].F() });
+			}
 			Ln.DepotStop = Ln.StopOf(Ln.Depot, -1);
 			for (int K = 0; K < (int)Ln.Stops.size(); K++)
 			{
@@ -257,6 +262,18 @@ namespace LyudTransport
 		{
 			ClubBoard = V3(B["at"][0].F(), B["at"][1].F(), B["z"].F());
 			ClubBoardYaw = B["yaw"].F();
+		}
+		SpanMotion.clear();
+		for (int L = 0; L < (int)Lines.size(); L++)
+		{
+			for (const auto& Sp : Lines[L].Spans)
+			{
+				FSpanMotion M;
+				M.Line = L;
+				M.S0 = Sp.first;
+				M.S1 = Sp.second;
+				SpanMotion.push_back(M);
+			}
 		}
 		Reset();
 		return true;
@@ -1199,7 +1216,108 @@ namespace LyudTransport
 	V3 FNetwork::CabinAt(int CI, V3* OutDir) const
 	{
 		const FCabin& C = Cabins[CI];
-		return Lines[C.Line].At(C.S, OutDir);
+		return Lines[C.Line].At(C.S, OutDir) + RopeOffset(C.Line, C.S);
+	}
+
+	// the rope: a span of length L under tension behaves like a string; its first modes (sin(k pi x / L)) are springs
+	// with periods of several seconds; a cabin's weight pulls the span down most under itself (~0.6 % of the span at its
+	// middle), the wind pushes it sideways (~1 % of the span in a 10 m/s wind)
+	static const float SagPerCabin = 0.006f;
+	static const float SwayPerWind2 = 0.0001f;
+	static const float WaveSpeed = 70.f;       // m/s along the rope
+	static const float Damping = 0.08f;
+
+	void FNetwork::StepMotion(float Dt, const V3& Wind)
+	{
+		Dt = std::min(Dt, 0.05f);
+		if (Dt <= 0.f)
+		{
+			return;
+		}
+		for (FSpanMotion& M : SpanMotion)
+		{
+			const FLine& L = Lines[M.Line];
+			const float Len = std::max(1.f, M.S1 - M.S0);
+			// what the loads ask for, projected on the modes
+			float Target[2] = { 0.f, 0.f };
+			for (const FCabin& C : Cabins)
+			{
+				if (C.Line != M.Line || C.State == ECabinState::Depot || C.State == ECabinState::Idle)
+				{
+					continue;
+				}
+				const float X = L.Ahead(M.S0, C.S);
+				if (X <= 0.f || X >= Len)
+				{
+					continue;
+				}
+				const float Load = 1.f + 0.25f * (float)C.Riders.size();
+				for (int K = 0; K < 2; K++)
+				{
+					Target[K] += SagPerCabin * Len * Load * std::sin((K + 1) * 3.14159265f * X / Len) / (float)((K + 1) * (K + 1));
+				}
+			}
+			// the wind across this span
+			V3 Dir;
+			L.At(M.S0 + Len * 0.5f, &Dir);
+			const float Across = Wind.X * -Dir.Y + Wind.Y * Dir.X;
+			const float TargetH = SwayPerWind2 * Len * Across * std::fabs(Across);
+			for (int K = 0; K < 2; K++)
+			{
+				const float W = (K + 1) * 3.14159265f * WaveSpeed / Len;
+				const float A = W * W * (Target[K] - M.Qv[K]) - 2.f * Damping * W * M.Vv[K];
+				M.Vv[K] += A * Dt;
+				M.Qv[K] += M.Vv[K] * Dt;
+			}
+			const float W1 = 3.14159265f * WaveSpeed / Len;
+			M.Vh += (W1 * W1 * (TargetH - M.Qh) - 2.f * Damping * W1 * M.Vh) * Dt;
+			M.Qh += M.Vh * Dt;
+		}
+		// the cabins swing on their hangers: back when they speed up, forward when they slow, sideways in the wind
+		const float G = 9.81f, Arm = 3.6f;
+		const float W0 = std::sqrt(G / Arm);
+		for (FCabin& C : Cabins)
+		{
+			const float Acc = (C.Speed - C.LastSpeed) / Dt;
+			C.LastSpeed = C.Speed;
+			V3 Dir;
+			Lines[C.Line].At(C.S, &Dir);
+			const float Across = Wind.X * -Dir.Y + Wind.Y * Dir.X;
+			const float RollTarget = 0.0025f * Across * std::fabs(Across) / G;      // drag on the cabin's side
+			C.PitchV += (-W0 * W0 * C.Pitch - 0.5f * Acc / Arm - 2.f * 0.2f * W0 * C.PitchV) * Dt;
+			C.Pitch += C.PitchV * Dt;
+			C.RollV += (W0 * W0 * (RollTarget - C.Roll) - 2.f * 0.12f * W0 * C.RollV) * Dt;
+			C.Roll += C.RollV * Dt;
+			C.Pitch = std::max(-0.08f, std::min(0.08f, C.Pitch));
+			C.Roll = std::max(-0.08f, std::min(0.08f, C.Roll));
+		}
+	}
+
+	V3 FNetwork::RopeOffset(int Li, float S) const
+	{
+		const FLine& L = Lines[Li];
+		for (const FSpanMotion& M : SpanMotion)
+		{
+			if (M.Line != Li)
+			{
+				continue;
+			}
+			const float Len = M.S1 - M.S0;
+			const float X = L.Ahead(M.S0, S);
+			if (Len <= 0.f || X < 0.f || X > Len)
+			{
+				continue;
+			}
+			const float U = 3.14159265f * X / Len;
+			const float Down = M.Qv[0] * std::sin(U) + M.Qv[1] * std::sin(2.f * U);
+			const float Side = M.Qh * std::sin(U);
+			V3 Dir;
+			L.At(S, &Dir);
+			const float H = std::sqrt(Dir.X * Dir.X + Dir.Y * Dir.Y);
+			const V3 N = H > 1e-4f ? V3(-Dir.Y / H, Dir.X / H, 0.f) : V3(0, 0, 0);
+			return V3(N.X * Side, N.Y * Side, -Down);
+		}
+		return V3();
 	}
 
 	std::string FNetwork::Report() const

@@ -687,5 +687,6 @@
  "line.transport.arrive_polar.1": "Полярная. Просим освободить кабину.",
  "line.transport.arrive_mayak.1": "Маяк. Просим освободить кабину.",
  "line.transport.arrive_amber.1": "Янтарный берег.",
- "line.transport.arrive_horizon.1": "Горизонт. Просим освободить кабину."
+ "line.transport.arrive_horizon.1": "Горизонт. Просим освободить кабину.",
+ "transport.vestibule.kiosk": "Касса"
 }

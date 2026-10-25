@@ -75,6 +75,8 @@ namespace LyudTransport
 		float Length = 0.f;
 		std::vector<FStop> Stops;   // by S
 		std::vector<FPylon> Pylons;
+		/** Free spans of rope between supports, [S0, S1] along the loop (they sag under cabins and sway). */
+		std::vector<std::pair<float, float>> Spans;
 
 		/** Point on the rope at S (wrapped) and the way it goes there (unit, map frame). */
 		V3 At(float S, V3* OutDir = nullptr) const;
@@ -104,9 +106,22 @@ namespace LyudTransport
 		bool bToDepot = false;
 		bool bHold = false;         // somebody in the doorway (the game sets it): the doors stay open
 		bool bPlayerAboard = false; // the game sets it from the cabin's inside volume
+		// the swing of the cabin under its hanger (radians): pitch along the rope, roll across it
+		float Pitch = 0.f, PitchV = 0.f, Roll = 0.f, RollV = 0.f;
+		float LastSpeed = 0.f;
 		float Odometer = 0.f;
 		float EmptyMetres = 0.f;    // run without anybody aboard (tests: no running for nothing)
 		int DepotSlot = 0;
+	};
+
+	/** A free span of rope moving: its first two modes up and down (loaded by the cabins on it), the first sideways
+	 *  (the wind), each a damped spring toward the shape the loads ask for. */
+	struct FSpanMotion
+	{
+		int Line = -1;
+		float S0 = 0.f, S1 = 0.f;
+		float Qv[2] = { 0.f, 0.f }, Vv[2] = { 0.f, 0.f };
+		float Qh = 0.f, Vh = 0.f;
 	};
 
 	enum class ERiderState : uint8_t { Waiting, Riding, Done, Cancelled };
@@ -185,8 +200,15 @@ namespace LyudTransport
 		/** The station the cabin heads for next (-1 none) and the trip's last station of its riders (-1). */
 		int NextStation(int Cabin) const;
 		int Destination(int Cabin) const;
-		/** World point of a cabin's grip on the rope and the way it faces. */
+		/** World point of a cabin's grip on the rope (the rope's sag under it and its sway included) and the way it faces. */
 		V3 CabinAt(int Cabin, V3* OutDir = nullptr) const;
+
+		// --- the ropes' and cabins' motion (looks only: the network's timing doesn't depend on it) ---
+		std::vector<FSpanMotion> SpanMotion;
+		/** Moves the spans and swings the cabins; Wind: the air's velocity over the line, m/s in the map frame. */
+		void StepMotion(float Dt, const V3& Wind);
+		/** How far the moving rope is off its resting shape at S of line L, metres (map frame). */
+		V3 RopeOffset(int Line, float S) const;
 		std::string Report() const;
 
 	private:

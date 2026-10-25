@@ -24,6 +24,7 @@
 #include "Transport/LyudTransport.h"
 #include "Audio/LyudSoundscape.h"
 #include "Doors/LyudDoor.h"
+#include "Plants/ProceduralPlant.h"
 
 namespace
 {
@@ -38,6 +39,7 @@ namespace
 	const float RisePerSide = 125.f;
 	const int32 StepsPerSide = 8;
 	const float LevelLiftMin = 500.f;      // no lift under 5 m (Aton: a stair only)
+	const float VestX = 650.f, VestY = 500.f, VestH = 380.f;   // the vestibule round the foot of the stair and lift
 
 	struct FKit
 	{
@@ -114,6 +116,7 @@ namespace
 			{ TEXT("dark"), { FLinearColor(0.05f, 0.045f, 0.04f), 0.7f, 0.f } },
 			{ TEXT("seat"), { FLinearColor(0.62f, 0.26f, 0.06f), 0.5f, 0.f } },
 			{ TEXT("mosaic"), { FLinearColor(0.15f, 0.36f, 0.42f), 0.5f, 0.f } },
+			{ TEXT("plaster"), { FLinearColor(0.74f, 0.70f, 0.62f), 0.85f, 0.f } },
 		};
 		return P;
 	}
@@ -217,9 +220,31 @@ UStaticMeshComponent* ALyudCableway::Single(UStaticMesh* Mesh, const FTransform&
 	C->SetupAttachment(RootComponent);
 	C->RegisterComponent();
 	C->SetWorldTransform(T);
+	if (MatName.IsNone())
+	{
+		KitMaterials(C);
+	}
 	AddInstanceComponent(C);
 	Singles.Add(C);
 	return C;
+}
+
+void ALyudCableway::KitMaterials(UStaticMeshComponent* C)
+{
+	// the hi3d meshes' windows (TR_Glass*) and the rooms inside them (TR_Interior*, optimize.py): real glass, plaster
+	const TArray<FName> Slots = C ? C->GetMaterialSlotNames() : TArray<FName>();
+	for (int32 I = 0; I < Slots.Num(); I++)
+	{
+		const FString N = Slots[I].ToString();
+		if (N.StartsWith(TEXT("TR_Glass")))
+		{
+			C->SetMaterial(I, Mat(TEXT("glass")));
+		}
+		else if (N.StartsWith(TEXT("TR_Interior")))
+		{
+			C->SetMaterial(I, Mat(TEXT("plaster")));
+		}
+	}
 }
 
 void ALyudCableway::Box(const FTransform& F, const FVector& C, const FVector& Size, FName MatName, bool bCollide, const FRotator& R)
@@ -371,16 +396,20 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 			}
 		}
 		// columns from the ground under the island's ends
+		// (in pairs at the island's edges, so the way to the vestibule's door under the island stays clear)
 		for (const float X : { A0 + 200.f, A1 - 200.f })
 		{
 			if (FMath::Abs(X - CoreL.X) < RingHalf + 150.f)
 			{
 				continue;
 			}
-			const FVector P = F.TransformPosition(FVector(X, 0.f, 0.f));
-			const float G = St.Ground * 100.f - 200.f;
-			Cyl(FTransform::Identity, FVector(P.X, P.Y, G), 70.f, P.Z - DeckThick - G, TEXT("ivory"));
-			Cyl(FTransform::Identity, FVector(P.X, P.Y, P.Z - DeckThick - 120.f), 74.f, 30.f, TEXT("amber"), false);
+			for (const float Y : { -IslandHalf + 70.f, IslandHalf - 70.f })
+			{
+				const FVector P = F.TransformPosition(FVector(X, Y, 0.f));
+				const float G = St.Ground * 100.f - 200.f;
+				Cyl(FTransform::Identity, FVector(P.X, P.Y, G), 45.f, P.Z - DeckThick - G, TEXT("ivory"));
+				Cyl(FTransform::Identity, FVector(P.X, P.Y, P.Z - DeckThick - 120.f), 49.f, 30.f, TEXT("amber"), false);
+			}
 		}
 		// the roof: the crown over the top level, on four columns; a plain canopy under another level
 		if (bTop)
@@ -514,31 +543,183 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 			B.Lift->Setup(Stops, Mat(TEXT("terrazzo")), Mat(TEXT("glass")), Mat(TEXT("chrome")));
 			B.Lift->DoorSides = { GroundSide, TopSide };
 		}
-		B.Entrance = Foot.TransformPosition(FRotator(0.f, GroundSide * 90.f, 0.f).Vector() * (RingHalf + 150.f));
+		B.Entrance = Foot.TransformPosition(FVector(-VestX - 200.f, 0.f, 0.f));
 	}
 	else
 	{
-		B.Entrance = Foot.TransformPosition(FVector(RingHalf + 150.f, -RingHalf, 0.f));
+		B.Entrance = Foot.TransformPosition(FVector(-VestX - 200.f, 0.f, 0.f));
 	}
 
-	// the station's name over the ground entrance, on both sides
-	for (int32 Side = 0; Side < 2; Side++)
+	BuildVestibule(Foot, S, Height > LevelLiftMin);
+}
+
+void ALyudCableway::BuildVestibule(const FTransform& Foot, int32 S, bool bLift)
+{
+	// A glass pavilion round the foot of the stair and the lift: terrazzo floor, ivory pilasters, a flat roof with an amber
+	// edge (the stair rises through a well in it), double doors (ALyudDoor) on the side away from the tracks, and inside,
+	// furnished by hand: the ticket kiosk, benches, the live route diagram, a mosaic of the sun over the sea, a clock, lamps,
+	// a rubber plant in a pot and a bin.
+	FLyudBuiltStation& B = Built[S];
+	B.Vestibule = Foot;
+	const FVector2D Hole = ALyudDoor::HoleForClear(150.f, 230.f, true);
+	Box(Foot, FVector(0.f, 0.f, -10.f), FVector(VestX * 2.f, VestY * 2.f, 22.f), TEXT("terrazzo"));
+	// walls: glass between pilasters; the door's hole in the front (-X)
+	auto Wall = [&](const FVector& A, const FVector& Bv, float Z0, float Z1)
 	{
-		UWidgetComponent* Sign = NewObject<UWidgetComponent>(this);
-		Sign->SetupAttachment(RootComponent);
-		Sign->SetWidgetSpace(EWidgetSpace::World);
-		Sign->SetDrawSize(FVector2D(1000.f, 260.f));
-		Sign->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		Sign->SetBlendMode(EWidgetBlendMode::Transparent);
-		Sign->RegisterComponent();
-		const float Ang = (Side == 0 ? 0.f : 180.f) + 90.f;
-		const FVector At = Foot.TransformPosition(FRotator(0.f, Ang, 0.f).Vector() * (RingHalf + 3.f) + FVector(0, 0, 330.f));
-		Sign->SetWorldLocationAndRotation(At, (Foot.GetRotation() * FRotator(0.f, Ang, 0.f).Quaternion()).Rotator());
-		Sign->SetWorldScale3D(FVector(0.4f));
-		Sign->SetSlateWidget(SNew(SLyudStationSign).Station(S));
-		AddInstanceComponent(Sign);
-		B.Boards.Add(Sign);
+		const FVector M = (A + Bv) * 0.5f;
+		const FVector D = Bv - A;
+		Box(Foot, FVector(M.X, M.Y, (Z0 + Z1) * 0.5f), FVector(D.Size(), 6.f, Z1 - Z0), TEXT("glass"), true, FRotator(0.f, D.Rotation().Yaw, 0.f));
+	};
+	const float HY = Hole.X * 0.5f;
+	Wall(FVector(-VestX, -VestY, 0), FVector(-VestX, -HY, 0), 0.f, VestH);
+	Wall(FVector(-VestX, HY, 0), FVector(-VestX, VestY, 0), 0.f, VestH);
+	Box(Foot, FVector(-VestX, 0.f, Hole.Y + (VestH - Hole.Y) * 0.5f), FVector(10.f, Hole.X, VestH - Hole.Y), TEXT("ivory"));
+	Wall(FVector(VestX, -VestY, 0), FVector(VestX, VestY, 0), 0.f, VestH);
+	Wall(FVector(-VestX, VestY, 0), FVector(VestX, VestY, 0), 0.f, VestH);
+	Wall(FVector(-VestX, -VestY, 0), FVector(VestX, -VestY, 0), 0.f, VestH);
+	// solid ivory wall behind the mosaic and the board (the two long sides' middles)
+	Box(Foot, FVector(150.f, -VestY + 8.f, VestH * 0.5f), FVector(700.f, 12.f, VestH), TEXT("ivory"));
+	Box(Foot, FVector(150.f, VestY - 8.f, VestH * 0.5f), FVector(700.f, 12.f, VestH), TEXT("ivory"));
+	for (float X = -VestX; X <= VestX + 1.f; X += 260.f)
+	{
+		for (const float Y : { -VestY, VestY })
+		{
+			Box(Foot, FVector(X, Y, VestH * 0.5f), FVector(22.f, 22.f, VestH), TEXT("ivory"));
+		}
 	}
+	for (const float Y : { -VestY, -HY - 12.f, HY + 12.f, VestY })
+	{
+		Box(Foot, FVector(-VestX, Y, VestH * 0.5f), FVector(22.f, 22.f, VestH), TEXT("ivory"));
+		Box(Foot, FVector(VestX, Y, VestH * 0.5f), FVector(22.f, 22.f, VestH), TEXT("ivory"));
+	}
+	// the roof round the stair's well, its amber edge, a canopy over the door
+	const float W = RingHalf + 15.f;
+	auto Roof = [&](float X0, float X1, float Y0, float Y1)
+	{
+		Box(Foot, FVector((X0 + X1) * 0.5f, (Y0 + Y1) * 0.5f, VestH + 20.f), FVector(X1 - X0, Y1 - Y0, 40.f), TEXT("ivory"));
+	};
+	Roof(-VestX - 30.f, -W, -VestY - 30.f, VestY + 30.f);
+	Roof(W, VestX + 30.f, -VestY - 30.f, VestY + 30.f);
+	Roof(-W, W, W, VestY + 30.f);
+	Roof(-W, W, -VestY - 30.f, -W);
+	for (const float Y : { -VestY - 30.f, VestY + 30.f })
+	{
+		Box(Foot, FVector(0.f, Y, VestH + 8.f), FVector(VestX * 2.f + 60.f, 6.f, 16.f), TEXT("amber"), false);
+	}
+	Box(Foot, FVector(-VestX - 160.f, 0.f, VestH - 10.f), FVector(320.f, Hole.X + 260.f, 16.f), TEXT("ivory"), false);
+	Box(Foot, FVector(-VestX - 318.f, 0.f, VestH - 10.f), FVector(6.f, Hole.X + 260.f, 18.f), TEXT("amber"), false);
+	// the door
+	const FTransform DoorT(Foot.GetRotation() * FRotator(0.f, 180.f, 0.f).Quaternion(), Foot.TransformPosition(FVector(-VestX, 0.f, 0.f)));
+	if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+	{
+		Door->Size = ELyudDoorSize::FitHole;
+		Door->HoleWidth = Hole.X;
+		Door->HoleHeight = Hole.Y;
+		Door->bDoubleLeaf = true;
+		Door->WallThickness = 10.f;
+		Door->LeafColor = FLinearColor(0.80f, 0.76f, 0.66f);
+		Door->FrameColor = FLinearColor(0.86f, 0.42f, 0.08f);
+		Door->FinishSpawning(DoorT);
+	}
+	auto Widget = [&](const TSharedRef<SWidget>& Slate, const FVector& At, float Yaw, const FVector2D& Draw, float Scale, bool bOpaque)
+	{
+		UWidgetComponent* Wc = NewObject<UWidgetComponent>(this);
+		Wc->SetupAttachment(RootComponent);
+		Wc->SetWidgetSpace(EWidgetSpace::World);
+		Wc->SetDrawSize(Draw);
+		Wc->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Wc->SetBlendMode(bOpaque ? EWidgetBlendMode::Opaque : EWidgetBlendMode::Transparent);
+		Wc->RegisterComponent();
+		Wc->SetWorldLocationAndRotation(Foot.TransformPosition(At), (Foot.GetRotation() * FRotator(0.f, Yaw, 0.f).Quaternion()).Rotator());
+		Wc->SetWorldScale3D(FVector(Scale));
+		Wc->SetSlateWidget(Slate);
+		AddInstanceComponent(Wc);
+		B.Boards.Add(Wc);
+		return Wc;
+	};
+	// the station's name over the door outside, and on the back
+	Widget(SNew(SLyudStationSign).Station(S), FVector(-VestX - 32.f, 0.f, VestH + 120.f), 180.f, FVector2D(1000.f, 260.f), 0.45f, false);
+	Widget(SNew(SLyudStationSign).Station(S), FVector(VestX + 32.f, 0.f, VestH + 120.f), 0.f, FVector2D(1000.f, 260.f), 0.45f, false);
+	Box(Foot, FVector(-VestX - 20.f, 0.f, VestH + 120.f), FVector(10.f, 470.f, 120.f), TEXT("ivory"), false);
+	Box(Foot, FVector(VestX + 20.f, 0.f, VestH + 120.f), FVector(10.f, 470.f, 120.f), TEXT("ivory"), false);
+	// the route diagram on the solid wall (live; E opens it), a clock beside it
+	Widget(SNew(SLyudTransitDiagram).bLive(true).bBoard(false).From(S), FVector(150.f, VestY - 16.f, 185.f), -90.f, FVector2D(1600.f, 900.f), 0.2f, true);
+	Box(Foot, FVector(150.f, VestY - 15.f, 185.f), FVector(4.f, 336.f, 196.f), TEXT("amber"), false);
+	VestBoards.Add(FTransform(Foot.TransformPosition(FVector(150.f, VestY - 120.f, 100.f))));
+	VestBoardStation.Add(S);
+	TWeakObjectPtr<UObject> Ctx(this);
+	Widget(SNew(SLyudClock).WorldContext(Ctx), FVector(-200.f, VestY - 16.f, 300.f), -90.f, FVector2D(300.f, 300.f), 0.22f, false);
+	// the mosaic on the other wall: the sun over the sea, in tiles
+	{
+		const int32 NX = 26, NZ = 12;
+		const float T = 25.f;
+		for (int32 I = 0; I < NX; I++)
+		{
+			for (int32 K = 0; K < NZ; K++)
+			{
+				const float U = (I + 0.5f) / NX - 0.5f, V = (K + 0.5f) / NZ;
+				const float R = FMath::Sqrt(FMath::Square(U * 2.2f) + FMath::Square(V - 0.42f));
+				const float Ray = FMath::Abs(FMath::Sin(FMath::Atan2(V - 0.42f, U * 2.2f) * 7.f));
+				FName M = TEXT("mosaic");                                    // the sea
+				if (V > 0.38f)
+				{
+					M = R < 0.2f ? TEXT("amber") : (R < 0.55f && Ray > 0.7f ? TEXT("#E8B04A") : TEXT("ivory"));
+				}
+				else if ((I + K) % 5 == 0)
+				{
+					M = TEXT("#2E8C9A");
+				}
+				Box(Foot, FVector(150.f - NX * T * 0.5f + (I + 0.5f) * T, -VestY + 16.f, 70.f + (K + 0.5f) * T), FVector(T - 2.f, 4.f, T - 2.f), M, false);
+			}
+		}
+	}
+	// the kiosk: an ivory counter, glass over it, a glowing label
+	Box(Foot, FVector(-430.f, 340.f, 55.f), FVector(160.f, 120.f, 110.f), TEXT("ivory"));
+	Box(Foot, FVector(-430.f, 340.f, 111.f), FVector(166.f, 126.f, 4.f), TEXT("amber"), false);
+	Box(Foot, FVector(-430.f, 340.f, 170.f), FVector(150.f, 110.f, 110.f), TEXT("glass"));
+	Box(Foot, FVector(-430.f, 340.f, 228.f), FVector(166.f, 126.f, 10.f), TEXT("ivory"));
+	Widget(SNew(SLyudLabel).Key(TEXT("transport.vestibule.kiosk")), FVector(-430.f, 276.f, 255.f), -90.f, FVector2D(600.f, 140.f), 0.25f, true);
+	// benches along the walls, a bin, a rubber plant in a pot
+	for (const float X : { 300.f, -60.f })
+	{
+		Box(Foot, FVector(X, -VestY + 70.f, 22.f), FVector(180.f, 48.f, 44.f), TEXT("seat"));
+		Box(Foot, FVector(X, -VestY + 46.f, 70.f), FVector(180.f, 8.f, 50.f), TEXT("seat"), false);
+		for (const float D : { -80.f, 80.f })
+		{
+			Box(Foot, FVector(X + D, -VestY + 70.f, 10.f), FVector(6.f, 44.f, 20.f), TEXT("chrome"), false);
+		}
+	}
+	Cyl(Foot, FVector(-560.f, -420.f, 0.f), 18.f, 70.f, TEXT("steel"));
+	Cyl(Foot, FVector(540.f, 400.f, 0.f), 26.f, 45.f, TEXT("amber"));
+	{
+		const FVector P = Foot.TransformPosition(FVector(540.f, 400.f, 45.f));
+		if (AProceduralPlant* Plant = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), FTransform(P), nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Plant->Species = S % 2 ? TEXT("RubberPlant") : TEXT("Monstera");
+			Plant->Seed = 700 + S;
+			Plant->AgeAtStart = 3.f;
+			Plant->bDemoGrowth = false;
+			Plant->bSnapToGround = false;
+			Plant->FinishSpawning(FTransform(P));
+		}
+	}
+	// lamps: three glowing discs under the roof, one warm light
+	for (const float X : { -420.f, 420.f })
+	{
+		Cyl(Foot, FVector(X, 0.f, VestH - 12.f), 45.f, 10.f, TEXT("glow"), false);
+	}
+	UPointLightComponent* L = NewObject<UPointLightComponent>(this);
+	L->SetupAttachment(RootComponent);
+	L->RegisterComponent();
+	L->SetWorldLocation(Foot.TransformPosition(FVector(-420.f, 0.f, VestH - 60.f)));
+	L->SetIntensity(6000.f);
+	L->SetAttenuationRadius(900.f);
+	L->SetLightColor(FLinearColor(1.f, 0.8f, 0.55f));
+	L->SetCastShadows(false);
+	AddInstanceComponent(L);
+	(void)bLift;
 }
 
 void ALyudCableway::BuildStair(const FTransform& Foot, float Height, int32 Station)
@@ -645,15 +826,83 @@ void ALyudCableway::BuildPylons(const LyudTransport::FNetwork& Net, int32 L)
 	}
 }
 
+namespace
+{
+	FTransform RodTransform(const FVector& A, const FVector& B, float Radius)
+	{
+		const FVector D = B - A;
+		const float L = FMath::Max(1.f, D.Size());
+		return FTransform(FRotationMatrix::MakeFromZ(D / L).ToQuat(), (A + B) * 0.5f, FVector(Radius / 50.f, Radius / 50.f, L / 100.f));
+	}
+}
+
 void ALyudCableway::BuildRopes(const LyudTransport::FNetwork& Net, int32 L)
 {
 	const LyudTransport::FLine& Ln = Net.Lines[L];
+	// its own movable instances: the spans near the viewer move with the network's rope motion
+	UInstancedStaticMeshComponent* C = NewObject<UInstancedStaticMeshComponent>(this);
+	C->SetMobility(EComponentMobility::Movable);
+	C->SetStaticMesh(BasicShape(TEXT("cyl")));
+	C->SetMaterial(0, Mat(TEXT("rope")));
+	C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	C->SetupAttachment(RootComponent);
+	C->RegisterComponent();
+	AddInstanceComponent(C);
+	if (RopeIsm.Num() <= L)
+	{
+		RopeIsm.SetNum(L + 1);
+		RopeMoved.SetNum(L + 1);
+	}
+	RopeIsm[L] = C;
+	TArray<FTransform> Ts;
 	for (int32 I = 0; I + 1 < SimNum(Ln.Loop); I++)
 	{
 		const LyudTransport::V3& A = Ln.Loop[I];
 		const LyudTransport::V3& B = Ln.Loop[I + 1];
 		// thicker than a real 5 cm rope so the line reads from afar
-		Rod(W(A.X, A.Y, A.Z), W(B.X, B.Y, B.Z), 4.5f, TEXT("rope"), false);
+		Ts.Add(RodTransform(W(A.X, A.Y, A.Z), W(B.X, B.Y, B.Z), 4.5f));
+	}
+	C->AddInstances(Ts, false, true);
+	RopeMoved[L].Init(false, Ts.Num());
+}
+
+void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVector& Viewer)
+{
+	for (int32 L = 0; L < RopeIsm.Num() && L < SimNum(Net.Lines); L++)
+	{
+		UInstancedStaticMeshComponent* C = RopeIsm[L];
+		const LyudTransport::FLine& Ln = Net.Lines[L];
+		if (!C)
+		{
+			continue;
+		}
+		bool bAny = false;
+		auto Point = [&](int32 I, bool bMove)
+		{
+			LyudTransport::V3 P = Ln.Loop[I];
+			if (bMove)
+			{
+				P = P + Net.RopeOffset(L, Ln.LoopS[I]);
+			}
+			return W(P.X, P.Y, P.Z);
+		};
+		for (int32 I = 0; I + 1 < SimNum(Ln.Loop); I++)
+		{
+			const FVector A0 = W(Ln.Loop[I].X, Ln.Loop[I].Y, Ln.Loop[I].Z);
+			// only within ~900 m: farther the motion is under a pixel
+			const bool bNear = FVector::DistSquared(A0, Viewer) < FMath::Square(90000.f);
+			if (!bNear && !RopeMoved[L][I])
+			{
+				continue;
+			}
+			C->UpdateInstanceTransform(I, RodTransform(Point(I, bNear), Point(I + 1, bNear), 4.5f), true, false, true);
+			RopeMoved[L][I] = bNear;
+			bAny = true;
+		}
+		if (bAny)
+		{
+			C->MarkRenderStateDirty();
+		}
 	}
 }
 
@@ -994,6 +1243,7 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 	{
 		Shell->SetStaticMesh(M);
 		Shell->SetRelativeLocation(FVector(0, 0, -K.CabinFloor));
+		Way->KitMaterials(Shell);
 	}
 	else
 	{
@@ -1082,7 +1332,7 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 	}
 }
 
-void ALyudCabin::Drive(const FVector& Grip, const FVector& Dir, float InDoor, float DeltaTime)
+void ALyudCabin::Drive(const FVector& Grip, const FVector& Dir, float InDoor, float DeltaTime, float PitchDeg, float RollDeg)
 {
 	const FKit& K = Kit();
 	const float Over = K.CabinGrip - K.CabinFloor;
@@ -1093,7 +1343,9 @@ void ALyudCabin::Drive(const FVector& Grip, const FVector& Dir, float InDoor, fl
 		// round the corners smoothly (the grip turns on the sheaves, the cabin swings after it)
 		Yaw = FMath::FixedTurn(GetActorRotation().Yaw, TargetYaw, 120.f * DeltaTime);
 	}
-	SetActorLocationAndRotation(Grip - FVector(0, 0, Over), FRotator(0.f, Yaw, 0.f));
+	// hanging from the grip: swung by the pitch (along) and the roll (across) round it
+	const FRotator R(PitchDeg, Yaw, RollDeg);
+	SetActorLocationAndRotation(Grip - R.RotateVector(FVector(0, 0, Over)), R);
 	Door = InDoor;
 	const float HW = Width * 0.5f - 20.f;
 	DoorLeaf->SetRelativeLocation(FVector(Door * 92.f, -HW - 6.f, 102.5f));

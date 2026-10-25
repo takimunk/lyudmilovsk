@@ -687,5 +687,6 @@
  "line.transport.arrive_polar.1": "北極星です。キャビンからお降りください。",
  "line.transport.arrive_mayak.1": "灯台です。キャビンからお降りください。",
  "line.transport.arrive_amber.1": "琥珀海岸です。",
- "line.transport.arrive_horizon.1": "地平線です。キャビンからお降りください。"
+ "line.transport.arrive_horizon.1": "地平線です。キャビンからお降りください。",
+ "transport.vestibule.kiosk": "きっぷ売り場"
 }

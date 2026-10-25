@@ -73,11 +73,25 @@ placed in the level), spawns the cabins (`ALyudCabin`) and runs the network:
   moves, doors, the station chime, the lift; voices `line.transport.next_<station>.1`, `arrive_<station>.1` (speaker
   `transport` in localization/voice.json).
 
-Console: `Transport.Report`, `Transport.Ride <from> <to>` (the player onto a platform, a cabin called), `Transport.Call <from>
+- **Motion**: every free span of rope between supports (`network_built.json` `spans`) moves: its first two modes up and down
+  are springs loaded by the cabins on it (a cabin sags its span ~0.6 % of its length, more with people aboard), the first
+  sideways by the wind (`ULyudWindSubsystem`); periods of several seconds, lightly damped. The cabins hang from the moving rope
+  and swing on their hangers (back as they pull away, forward as they stop, sideways in the wind, under 5 degrees). Ropes
+  within ~900 m of the viewer are redrawn every frame. (`FNetwork::StepMotion`, `RopeOffset`; tested in transportsim.)
+- **Vestibules**: at the foot of every station a glass pavilion round the stair and the lift, built in code and furnished by
+  hand: double doors (`ALyudDoor`), the ticket kiosk, benches, the live route diagram (E: pick where to go), a mosaic of the sun
+  over the sea, a station clock with the game's time, lamps, a rubber plant or a monstera (`AProceduralPlant`) in a pot, a bin;
+  the station's name over the door.
+
+Console: `Transport.Report`, `Transport.Goto <station> [vestibule|platform|outside]`, `Transport.Ride <from> <to>` (the player onto a platform, a cabin called), `Transport.Call <from>
 <to> [who]`, `Transport.Diagram [station|close]`, `lyud.Transport.Speedup <x>`.
 
 ## Assets
 
+- Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a
+  second material slot `TR_Glass*`, which the game replaces with real glass (M_TR_Glass); a copy of the shell turned inward,
+  drawn a little in, without the windows, gives the room inside (`TR_Interior*`, plaster) with a floor in the crowns. Check the
+  split with `TR_DEBUG=<dir>` (pictures with the glass red, the room blue).
 - 3D: ten Hi3D v3.0 models from the Nano Banana renders (`design/transport/gen.json`, sidecars `gen/<step>.json`; made on fal,
   see the rule below), optimized by `blender/transport/optimize.py` (cabin 14k triangles with its door side cut open, line
   pylon split into feet / shaft / head so only the shaft stretches, corner pylon scaled whole, crowns 22k at 21 m; 1-2k
@@ -98,5 +112,5 @@ Console: `Transport.Report`, `Transport.Ride <from> <to>` (the player onto a pla
 
 ## Not done yet / ideas
 
-Station interiors (kiosks, benches, mosaics are only on the crowns), a ticket or token, night lighting of the stations,
-cabins swaying in the wind (ULyudWindSubsystem), the depot hall's inside, more lines as the town grows.
+A ticket or token at the kiosk, night lighting of the platforms, furniture in the crowns' rooms (they are reachable only by
+eye now), the depot hall's inside, more lines as the town grows.

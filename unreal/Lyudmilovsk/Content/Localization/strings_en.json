@@ -687,5 +687,6 @@
  "line.transport.arrive_polar.1": "Polar Star. Please leave the cabin.",
  "line.transport.arrive_mayak.1": "Lighthouse. Please leave the cabin.",
  "line.transport.arrive_amber.1": "Amber Shore.",
- "line.transport.arrive_horizon.1": "Horizon. Please leave the cabin."
+ "line.transport.arrive_horizon.1": "Horizon. Please leave the cabin.",
+ "transport.vestibule.kiosk": "Tickets"
 }

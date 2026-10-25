@@ -27,6 +27,7 @@
 #include "Transport/LyudCableway.h"
 #include "TransportStd.h"
 #include "UI/LyudGameScreen.h"
+#include "Weather/LyudWind.h"
 
 namespace LT = LyudTransport;
 
@@ -79,6 +80,34 @@ namespace
 			{
 				T->TestRide(FName(*Args[0]), FName(*Args[1]));
 			}
+		}));
+	FAutoConsoleCommand CmdGoto(TEXT("Transport.Goto"), TEXT("Transport.Goto <station> [vestibule|platform|outside]: puts the player there (tests, looking round)."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			ULyudTransportSubsystem* T = ForConsole();
+			APlayerController* PC = T && T->GetWorld() ? T->GetWorld()->GetFirstPlayerController() : nullptr;
+			if (!T || !PC || !PC->GetPawn() || !Args.Num() || !T->GetCableway())
+			{
+				return;
+			}
+			const int32 S = T->FindStation(FName(*Args[0]));
+			if (!T->GetCableway()->Built.IsValidIndex(S))
+			{
+				return;
+			}
+			const FLyudBuiltStation& B = T->GetCableway()->Built[S];
+			const FString Where = Args.Num() > 1 ? Args[1] : TEXT("vestibule");
+			FTransform At = FTransform(FRotator(0.f, 0.f, 0.f), FVector(-500.f, -250.f, 100.f)) * B.Vestibule;
+			if (Where == TEXT("outside"))
+			{
+				At = FTransform(FRotator(-8.f, 0.f, 0.f), FVector(-1700.f, 0.f, 180.f)) * B.Vestibule;
+			}
+			else if (Where == TEXT("platform") && B.Panels.Num())
+			{
+				At = FTransform(FRotator(0.f, 180.f, 0.f), FVector(-250.f, 0.f, 100.f)) * B.Panels.Last();
+			}
+			PC->GetPawn()->SetActorLocation(At.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+			PC->SetControlRotation(At.Rotator());
 		}));
 	FAutoConsoleCommand CmdCall(TEXT("Transport.Call"), TEXT("Transport.Call <from> <to> [who]: a trip for a person id (default 900) without a body."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
@@ -491,6 +520,19 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 	if (Dt > 0.f)
 	{
 		Net->Step(Dt);
+		// the ropes sag and sway, the cabins swing: in the wind over the viewer
+		FVector Wind = FVector::ZeroVector;
+		if (const ULyudWindSubsystem* WS = ULyudWindSubsystem::Get(this))
+		{
+			FVector V;
+			FRotator R;
+			if (const APlayerController* P = World ? World->GetFirstPlayerController() : nullptr)
+			{
+				P->GetPlayerViewPoint(V, R);
+				Wind = WS->GetWindAt(V, 25.f).Velocity;
+			}
+		}
+		Net->StepMotion(FMath::Min(DeltaTime, 0.05f), LT::V3(Wind.X, Wind.Y, 0.f));
 	}
 	HandleEvents();
 
@@ -529,7 +571,8 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			LT::V3 D;
 			const LT::V3 P = Net->CabinAt(I, &D);
 			const FTransform Before = A->GetActorTransform();
-			A->Drive(MapToWorld(P.X, P.Y, P.Z), FVector(D.X, D.Y, D.Z), C.Door, DeltaTime);
+			A->Drive(MapToWorld(P.X, P.Y, P.Z), FVector(D.X, D.Y, D.Z), C.Door, DeltaTime,
+				FMath::RadiansToDegrees(C.Pitch), FMath::RadiansToDegrees(C.Roll));
 			// the player aboard goes with it (unless the character's own moving base already carries them)
 			if (I == RidingCabin)
 			{
@@ -563,6 +606,7 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 	if (Cableway)
 	{
 		Cableway->UpdateBoards(*Net, View, DeltaTime);
+		Cableway->UpdateRopes(*Net, View);
 	}
 	UpdatePlayer(DeltaTime);
 }
@@ -725,6 +769,11 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		if (S >= 0 && Cableway->PanelNear(S, P, PanelReach) >= 0)
 		{
 			PanelStation = S;
+			Prompt = LyudText::Get(TEXT("transport.prompt.call"));
+		}
+		else if (const int32 V = Cableway->VestibuleBoardNear(P, 250.f); V >= 0)
+		{
+			PanelStation = V;
 			Prompt = LyudText::Get(TEXT("transport.prompt.call"));
 		}
 		else if (Cableway->ClubBoardNear(P, 350.f))

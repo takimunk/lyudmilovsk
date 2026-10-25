@@ -9,6 +9,7 @@
 #include "Rendering/DrawElements.h"
 #include "Transport/LyudTransport.h"
 #include "UI/LyudUIStyle.h"
+#include "Plants/GameCalendar.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
@@ -597,4 +598,59 @@ FReply SLyudTransitScreen::OnKeyDown(const FGeometry& MyGeometry, const FKeyEven
 		return FReply::Handled();
 	}
 	return FReply::Unhandled();
+}
+
+// --- label and clock ---------------------------------------------------------------------------------------
+
+int32 SLyudLabel::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FSlateRect& MyCullingRect, FSlateWindowElementList& Out,
+	int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const
+{
+	FPainter P(G, Out);
+	const FVector2D S = G.GetLocalSize();
+	const float U = S.Y / 140.f;
+	P.Rect(LayerId, FVector2D::ZeroVector, S, FLinearColor(0.035f, 0.03f, 0.025f), 10.f * U);
+	P.Rect(LayerId + 1, FVector2D(0, S.Y - 14.f * U), FVector2D(S.X, 14.f * U), FLinearColor(0.86f, 0.42f, 0.08f));
+	P.Text(LayerId + 2, LyudText::Get(Key).ToString(), FVector2D(S.X * 0.5, S.Y * 0.45), LyudUI::Font(FMath::RoundToInt(56 * U), "Bold"),
+		FLinearColor(1.f, 0.78f, 0.4f), 0.5f);
+	return LayerId + 3;
+}
+
+void SLyudClock::Construct(const FArguments& InArgs)
+{
+	Context = InArgs._WorldContext;
+	RegisterActiveTimer(1.f, FWidgetActiveTimerDelegate::CreateSP(this, &SLyudClock::Repaint));
+}
+
+EActiveTimerReturnType SLyudClock::Repaint(double, float)
+{
+	Invalidate(EInvalidateWidgetReason::Paint);
+	return EActiveTimerReturnType::Continue;
+}
+
+int32 SLyudClock::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FSlateRect& MyCullingRect, FSlateWindowElementList& Out,
+	int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const
+{
+	FPainter P(G, Out);
+	const FVector2D S = G.GetLocalSize();
+	const FVector2D C = S * 0.5;
+	const float R = FMath::Min(S.X, S.Y) * 0.5f;
+	const FLinearColor Ink(0.1f, 0.07f, 0.05f);
+	P.Disc(LayerId, C, R, FLinearColor(0.86f, 0.42f, 0.08f));
+	P.Disc(LayerId + 1, C, R * 0.9f, FLinearColor(0.95f, 0.93f, 0.86f));
+	for (int32 I = 0; I < 12; I++)
+	{
+		const float A = 2.f * PI * I / 12.f;
+		const FVector2D D(FMath::Sin(A), -FMath::Cos(A));
+		P.Lines(LayerId + 2, { C + D * R * 0.72f, C + D * R * (I % 3 ? 0.8f : 0.86f) }, Ink, I % 3 ? 3.f : 7.f);
+	}
+	double Hours = 12.0;
+	if (UObject* W = Context.Get())
+	{
+		Hours = UGameCalendar::NowIn(W->GetWorld()).GetTimeOfDay().GetTotalHours();
+	}
+	const float Hr = 2.f * PI * FMath::Fmod((float)Hours, 12.f) / 12.f, Mn = 2.f * PI * FMath::Fmod((float)Hours * 60.f, 60.f) / 60.f;
+	P.Lines(LayerId + 3, { C, C + FVector2D(FMath::Sin(Hr), -FMath::Cos(Hr)) * R * 0.45f }, Ink, 8.f);
+	P.Lines(LayerId + 3, { C, C + FVector2D(FMath::Sin(Mn), -FMath::Cos(Mn)) * R * 0.7f }, Ink, 5.f);
+	P.Disc(LayerId + 4, C, R * 0.05f, FLinearColor(0.86f, 0.42f, 0.08f));
+	return LayerId + 5;
 }

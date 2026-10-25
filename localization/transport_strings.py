@@ -58,6 +58,8 @@ ROWS = [
     ("transport.cabin.how", "Вызов кабины — у табло на платформе", "Call a cabin at the platform's panel", "キャビンはホームの案内板で呼べます"),
     ("transport.cabin.depot", "В депо", "In the depot", "車庫"),
     ("transport.cabin.welcome", "Кабина «{0}» · до станции «{1}»", "Cabin {0} · to {1}", "キャビン「{0}」・{1}行き"),
+    # the vestibule
+    ("transport.vestibule.kiosk", "Касса", "Tickets", "きっぷ売り場"),
     # prompts
     ("transport.prompt.call", "E — схема и вызов кабины", "E: route map and call a cabin", "E：路線図・キャビンを呼ぶ"),
     ("transport.prompt.board", "E — схема канатных дорог", "E: cable car route map", "E：ロープウェイ路線図"),

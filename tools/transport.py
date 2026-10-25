@@ -274,13 +274,13 @@ def _line(ln, st_by, st_built, D, probs):
         pylons.append({"x": round(s["x"], 3), "y": round(s["y"], 3), "ground": round(g, 3), "top": round(s["z"], 3),
                        "height": round(h, 3), "yaw": round(_yaw_deg(*bis), 3), "turn": round(turn, 2),
                        "kind": "corner" if s["kind"] == "corner" or turn > 2.0 else "line"})
-    loop, stops_s, length = _loop(nodes, sup, D, ln["id"])
+    loop, stops_s, length, spans = _loop(nodes, sup, D, ln["id"])
     stations = [{"id": n["id"], "yaw": round(_yaw_deg(*n["axis"]), 3), "deck": n["deck"], "rope": n["rope"]}
                 for n in nodes if n["kind"] == "station"]
     return {"id": ln["id"], "name": ln["name"], "color": ln["color"], "number": ln.get("number", 0),
             "stops": stops, "depot": ln.get("depot", stops[-1]), "stations": stations,
             "pylons": pylons, "supports": [[round(s["x"], 3), round(s["y"], 3), round(s["z"], 3)] for s in sup],
-            "loop": loop, "loop_length": round(length, 3), "stop_s": stops_s}
+            "loop": loop, "loop_length": round(length, 3), "stop_s": stops_s, "spans": spans}
 
 
 def _dist_along(sup, i, j):
@@ -374,6 +374,7 @@ def _loop(nodes, sup, D, lid):
     gap = D["track_gap"]
     pts = []
     stops = []
+    spans = []          # free spans of rope between supports, [s0, s1] (the game swings and loads them)
 
     def add(p):
         if pts:
@@ -402,6 +403,8 @@ def _loop(nodes, sup, D, lid):
                 add((pa[0] + (pb[0] - pa[0]) * t, pa[1] + (pb[1] - pa[1]) * t, z))
                 if m == 0:
                     s_pa = pts[-1][3]
+            if not same_station and span > 1.0:
+                spans.append([round(s_pa, 3), round(pts[-1][3], 3)])
             if same_station:
                 # the stop: STOP_THROUGH past the station's centre along the line, whichever way the cabin goes
                 along = span / 2.0 + STOP_THROUGH if side > 0 else span / 2.0 - STOP_THROUGH
@@ -444,7 +447,7 @@ def _loop(nodes, sup, D, lid):
     pts[-1][3] = length
     loop = [[round(v, 3) for v in p] for p in pts]
     stops.sort(key=lambda s: s["s"])
-    return loop, stops, length
+    return loop, stops, length, spans
 
 
 def report(b):

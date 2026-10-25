@@ -68,12 +68,18 @@ PLAN = [
     (110.0, lambda w: shot(w, "academ_station")),
     (111.0, lambda w: cmd(w, "BugItGo -42000 86000 2500 -10 -40 0")),
     (115.0, lambda w: shot(w, "zenit_station")),
-    (116.0, lambda w: cmd(w, "lyud.Language en")),
+    (116.0, lambda w: cmd(w, "Transport.Goto academ outside")),
+    (119.0, lambda w: shot(w, "academ_vestibule_out")),
+    (120.0, lambda w: cmd(w, "Transport.Goto academ vestibule")),
+    (123.0, lambda w: shot(w, "academ_vestibule_in")),
+    (124.0, lambda w: cmd(w, "Transport.Goto zenit platform")),
+    (128.0, lambda w: shot(w, "zenit_platform")),
+    (130.0, lambda w: cmd(w, "lyud.Language en")),
     # a person from the club to the library in the Akademgorodok: down the alley to Aton and into a cabin
-    (116.5, lambda w: cmd(w, "lyud.People.Order streamer read_library")),
-    (117.0, lambda w: cmd(w, "Transport.Ride aton academ")),
-    (119.0, lambda w: shot(w, "aton_platform")),
-    (119.5, lambda w: start_ride(w)),
+    (130.5, lambda w: cmd(w, "lyud.People.Order streamer read_library")),
+    (131.0, lambda w: cmd(w, "Transport.Ride aton academ")),
+    (133.0, lambda w: shot(w, "aton_platform")),
+    (133.5, lambda w: start_ride(w)),
 ]
 
 
