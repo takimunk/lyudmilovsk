@@ -23,6 +23,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "Transport/LyudTransport.h"
 #include "Audio/LyudSoundscape.h"
+#include "Doors/LyudDoor.h"
 
 namespace
 {
@@ -458,6 +459,32 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 			{
 				Best = FVector::DotProduct(D, TopDir);
 				TopSide = E;
+			}
+		}
+		// the way in at the ground: a standard wide door (ALyudDoor) in the shaft's glass
+		const FVector2D Hole = ALyudDoor::HoleForClear(130.f, 215.f, false);
+		{
+			const FVector D = FRotator(0.f, GroundSide * 90.f, 0.f).Vector();
+			const FRotator R(0.f, GroundSide * 90.f, 0.f);
+			const float Side = (ShaftHalf * 2.f - Hole.X) * 0.5f;
+			for (const float Sgn : { -1.f, 1.f })
+			{
+				Box(Foot, D * ShaftHalf + R.RotateVector(FVector(0.f, Sgn * (Hole.X * 0.5f + Side * 0.5f), 120.f)), FVector(5.f, Side, 240.f), TEXT("glass"), true, R);
+			}
+			Box(Foot, D * ShaftHalf + FVector(0, 0, Hole.Y + (240.f - Hole.Y) * 0.5f), FVector(5.f, ShaftHalf * 2.f, 240.f - Hole.Y), TEXT("ivory"), true, R);
+			const FTransform DoorT(Foot.GetRotation() * R.Quaternion(), Foot.TransformPosition(D * ShaftHalf));
+			// deferred, so its BeginPlay sizes it from these numbers
+			if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr,
+				ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+			{
+				Door->Size = ELyudDoorSize::FitHole;
+				Door->HoleWidth = Hole.X;
+				Door->HoleHeight = Hole.Y;
+				Door->WallThickness = 8.f;
+				Door->LeafColor = FLinearColor(0.80f, 0.76f, 0.66f);
+				Door->FrameColor = FLinearColor(0.86f, 0.42f, 0.08f);
+				Door->FinishSpawning(DoorT);
+				B.Door = Door;
 			}
 		}
 		for (int32 E = 0; E < 4; E++)
@@ -920,7 +947,7 @@ void ALyudStationLift::Tick(float DeltaTime)
 	// the gates: shut at every stop but where the cab stands
 	for (int32 I = 0; I < Gates.Num() && I < Stops.Num() && I < DoorSides.Num(); I++)
 	{
-		const bool bHere = Target < 0 && FMath::IsNearlyEqual(Z, Stops[I], 1.f);
+		const bool bHere = I == 0 || (Target < 0 && FMath::IsNearlyEqual(Z, Stops[I], 1.f));
 		const FVector D = FRotator(0.f, DoorSides[I] * 90.f, 0.f).Vector();
 		Gates[I]->SetRelativeLocation(D * 122.f + FVector(0, 0, Stops[I] + 115.f));
 		Gates[I]->SetRelativeRotation(FRotator(0.f, DoorSides[I] * 90.f, 0.f));
@@ -950,8 +977,8 @@ ALyudCabin::ALyudCabin()
 	Lamp = CreateDefaultSubobject<UPointLightComponent>(TEXT("Lamp"));
 	Lamp->SetupAttachment(Root);
 	Lamp->SetRelativeLocation(FVector(0, 0, 195.f));
-	Lamp->SetIntensity(1200.f);
-	Lamp->SetAttenuationRadius(380.f);
+	Lamp->SetIntensity(5000.f);
+	Lamp->SetAttenuationRadius(450.f);
 	Lamp->SetLightColor(FLinearColor(1.f, 0.78f, 0.5f));
 	Lamp->SetCastShadows(false);
 	Board = CreateDefaultSubobject<UWidgetComponent>(TEXT("Board"));

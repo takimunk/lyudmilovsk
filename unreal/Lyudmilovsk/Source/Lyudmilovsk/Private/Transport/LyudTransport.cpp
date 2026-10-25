@@ -13,6 +13,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Framework/Application/SlateApplication.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
@@ -434,6 +435,7 @@ bool ULyudTransportSubsystem::BeginRide(int32 Person, const FVector& From, const
 		return false;
 	}
 	PeopleRides.Add(Person, R);
+	UE_LOG(LogTemp, Display, TEXT("Transport: person %d rides %s -> %s (rider %d)"), Person, *StationName(A).ToString(), *StationName(B).ToString(), R);
 	return true;
 }
 
@@ -526,7 +528,13 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 		{
 			LT::V3 D;
 			const LT::V3 P = Net->CabinAt(I, &D);
+			const FTransform Before = A->GetActorTransform();
 			A->Drive(MapToWorld(P.X, P.Y, P.Z), FVector(D.X, D.Y, D.Z), C.Door, DeltaTime);
+			// the player aboard goes with it (unless the character's own moving base already carries them)
+			if (I == RidingCabin)
+			{
+				Carry(Before, A->GetActorTransform(), A);
+			}
 		}
 		// the motor's hum near the player while it moves
 		const float Dist = FVector::Dist(A->GetActorLocation(), View);
@@ -546,12 +554,40 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			A->Hum->SetPitchMultiplier(0.8f + 0.04f * C.Speed);
 		}
 		A->Lamp->SetVisibility(Dist < 8000.f);
+		// from inside, the shell's own faces get in the way of the view: the player aboard sees the inside only
+		if (A->Shell->GetStaticMesh() && A->Shell->IsVisible() == (I == RidingCabin))
+		{
+			A->Shell->SetVisibility(I != RidingCabin);
+		}
 	}
 	if (Cableway)
 	{
 		Cableway->UpdateBoards(*Net, View, DeltaTime);
 	}
 	UpdatePlayer(DeltaTime);
+}
+
+void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& After, AActor* Cabin)
+{
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	ACharacter* Char = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	if (!Char || Before.Equals(After, 0.01f))
+	{
+		return;
+	}
+	const UPrimitiveComponent* Base = Char->GetMovementBase();
+	if (Base && Base->GetOwner() == Cabin)
+	{
+		return;
+	}
+	const FVector P = After.TransformPosition(Before.InverseTransformPosition(Char->GetActorLocation()));
+	const float Turn = After.Rotator().Yaw - Before.Rotator().Yaw;
+	Char->SetActorLocation(P, false, nullptr, ETeleportType::TeleportPhysics);
+	if (FMath::Abs(Turn) > 0.001f)
+	{
+		Char->AddActorWorldRotation(FRotator(0.f, Turn, 0.f));
+		PC->SetControlRotation(PC->GetControlRotation() + FRotator(0.f, Turn, 0.f));
+	}
 }
 
 void ULyudTransportSubsystem::HandleEvents()
@@ -667,7 +703,8 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		}
 		RidingCabin = In;
 	}
-	else if (In >= 0 && Net->FindRider(LT::PlayerId) < 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving)
+	else if (In >= 0 && Net->FindRider(LT::PlayerId) < 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving
+		&& Net->Time > Net->Cabins[In].DwellUntil - 1.0)
 	{
 		// still aboard after their stop: they ride on to the next
 		Net->PlayerBoard(In, -1);

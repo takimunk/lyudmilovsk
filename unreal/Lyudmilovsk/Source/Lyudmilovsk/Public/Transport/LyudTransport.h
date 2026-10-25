@@ -156,4 +156,6 @@ private:
 	void UpdatePlayer(float DeltaTime);
 	void HandleEvents();
 	void Announce(int32 Cabin, FName What, int32 Station);
+	/** Moves the player aboard with their cabin from Before to After. */
+	void Carry(const FTransform& Before, const FTransform& After, AActor* Cabin);
 };

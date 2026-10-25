@@ -694,6 +694,25 @@ namespace LyudTransport
 		Riders[RI].State = ERiderState::Done;
 		Riders[RI].Cabin = -1;
 		Emit(EEvent::Alight, CI, C.AtStop, RI);
+		// the stops nobody needs any more go (the player's own one, if they got out early)
+		std::vector<int> Keep;
+		for (int T : C.Targets)
+		{
+			bool bNeeded = false;
+			for (int R2 : C.Riders)
+			{
+				bNeeded |= Riders[R2].Legs[Riders[R2].LegI].AlightStop == T;
+			}
+			for (const FRider& R2 : Riders)
+			{
+				bNeeded |= R2.State == ERiderState::Waiting && R2.Cabin == CI && R2.Legs[R2.LegI].BoardStop == T;
+			}
+			if (bNeeded)
+			{
+				Keep.push_back(T);
+			}
+		}
+		C.Targets = Keep;
 	}
 
 	// --- running ---------------------------------------------------------------------------------------------

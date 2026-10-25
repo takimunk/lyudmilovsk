@@ -212,8 +212,9 @@ int32 SLyudTransitDiagram::OnPaint(const FPaintArgs& Args, const FGeometry& G, c
 				Home += C.Line == L && C.State == LyudTransport::ECabinState::Depot;
 			}
 			const FString S = LyudText::Get(TEXT("transport.diagram.depot")).ToString() + (bLive ? FString::Printf(TEXT(" · %d"), Home) : FString());
-			P.Rect(LayerId + 4, D + FVector2D(26.f, 22.f) * U, FVector2D(22.f, 22.f) * U, LineColor(Ln) * 0.6f, 3.f * U);
-			P.Text(LayerId + 5, S, D + FVector2D(56.f, 33.f) * U, LyudUI::Font(FMath::RoundToInt(17 * U), "Italic"), Ink * 0.8f);
+			// above and right of the station, clear of its name
+			P.Rect(LayerId + 4, D + FVector2D(22.f, -52.f) * U, FVector2D(20.f, 20.f) * U, LineColor(Ln) * 0.6f, 3.f * U);
+			P.Text(LayerId + 5, S, D + FVector2D(50.f, -42.f) * U, LyudUI::Font(FMath::RoundToInt(17 * U), "Italic"), Ink * 0.8f);
 		}
 	}
 	// live cabins: a dot between the stations they run between

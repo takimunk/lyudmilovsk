@@ -31,6 +31,8 @@ struct FLyudBuiltStation
 	TArray<FTransform> Panels;
 	UPROPERTY(Transient) TArray<TObjectPtr<UWidgetComponent>> Boards;
 	UPROPERTY(Transient) TObjectPtr<class ALyudStationLift> Lift;
+	/** The door into the lift at the ground. */
+	UPROPERTY(Transient) TObjectPtr<class ALyudDoor> Door;
 	float BoardTimer = 0.f;
 };
 

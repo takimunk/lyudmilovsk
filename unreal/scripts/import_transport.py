@@ -102,6 +102,22 @@ def import_kit():
                 body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
             log("mesh %s: %d triangles" % (a.get_name(), a.get_num_triangles(0)))
             n += 1
+    # Hi3D's PBR maps read as metal on these painted surfaces (everything came out near black): paint, not metal
+    for path in eal.list_assets(MESHES, True):
+        a = eal.load_asset(path)
+        if isinstance(a, unreal.MaterialInstanceConstant):
+            done = []
+            for pname in mel.get_scalar_parameter_names(a):
+                pname = str(pname)
+                if "etal" in pname:
+                    mel.set_material_instance_scalar_parameter_value(a, pname, 0.0)
+                    done.append(pname + "=0")
+                elif "oughness" in pname and "Texture" not in pname:
+                    mel.set_material_instance_scalar_parameter_value(a, pname, 0.6)
+                    done.append(pname + "=0.6")
+            mel.update_material_instance(a)
+            log("material %s (%s): %s" % (a.get_name(), a.get_editor_property("parent").get_name() if a.get_editor_property("parent") else "-",
+                                          ", ".join(done) or "no metal / roughness parameters"))
     eal.save_directory(MESHES)
     # the import also spawned actors in the editor's scratch level: never saved
     eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)

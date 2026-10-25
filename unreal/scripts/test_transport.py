@@ -69,6 +69,8 @@ PLAN = [
     (111.0, lambda w: cmd(w, "BugItGo -42000 86000 2500 -10 -40 0")),
     (115.0, lambda w: shot(w, "zenit_station")),
     (116.0, lambda w: cmd(w, "lyud.Language en")),
+    # a person from the club to the library in the Akademgorodok: down the alley to Aton and into a cabin
+    (116.5, lambda w: cmd(w, "lyud.People.Order streamer read_library")),
     (117.0, lambda w: cmd(w, "Transport.Ride aton academ")),
     (119.0, lambda w: shot(w, "aton_platform")),
     (119.5, lambda w: start_ride(w)),
@@ -141,10 +143,14 @@ def ride(w, dt):
             S["phase"] = "outside"
             S["ride_t"] = 0.0
     elif S["phase"] == "outside":
-        if S["ride_t"] > 3.0 and S["ride_t"] - dt <= 3.0:
+        # on the Akademgorodok's platform: the streamer from the club comes by cabin too
+        if S["ride_t"] - S.get("last_out", -100.0) > 20.0:
+            S["last_out"] = S["ride_t"]
             log("player cabin after leaving: %d" % t.player_cabin())
             report(w)
-        if S["ride_t"] > 4.0:
+            cmd(w, "lyud.People.Report streamer")
+            shot(w, "academ_wait_%03d" % int(S["ride_t"]))
+        if S["ride_t"] > float(240):
             log("done")
             cmd(w, "quit")
             S["phase"] = "quit"
