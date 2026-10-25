@@ -15,6 +15,7 @@
 #include "Plants/ProceduralGrass.h"
 #include "Plants/ProceduralPlant.h"
 #include "Plants/TreeBakeCache.h"
+#include "Engine/Texture2D.h"
 #include "HAL/IConsoleManager.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -251,6 +252,12 @@ void AProceduralForest::SetHidden(FTree& T, bool bHidden)
 	Groups[T.Group].Comp->UpdateInstanceTransform(T.Instance, Xf, true, true, true);
 }
 
+bool AProceduralForest::Interactive(FName Species) const
+{
+	const FPlantSpecies* S = PlantSpeciesLibrary::Find(Species);
+	return S && !S->FruitItem.IsNone();
+}
+
 void AProceduralForest::UpdateLive(const FVector& Camera)
 {
 	const double Near2 = FMath::Square((double)LiveDistance), Far2 = FMath::Square((double)LiveDistance * 1.3);
@@ -259,9 +266,10 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 	{
 		FTree& T = Trees[I];
 		const double D2 = FVector::DistSquared(Camera, T.Xf.GetLocation());
+		const double Above = Camera.Z - T.Xf.GetLocation().Z;
 		if (AProceduralPlant* P = T.Live.Get())
 		{
-			if (D2 > Far2)
+			if (D2 > Far2 || Above > LiveMaxHeight * 1.5)
 			{
 				P->Destroy();
 				T.Live.Reset();
@@ -269,14 +277,18 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 				SetHidden(T, false);
 			}
 		}
-		else if (D2 < Near2 && Groups[T.Group].Version >= 0 && T.Instance != INDEX_NONE)
+		else if (D2 < Near2 && Above < LiveMaxHeight && (!bLiveOnlyInteractive || Interactive(T.Species)) && Groups[T.Group].Version >= 0 && T.Instance != INDEX_NONE)
 		{
 			Wanted.Emplace(D2, I);
 		}
 	}
 	Wanted.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key < B.Key; });
+	int32 Built = 0;
+	UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
 	for (const TPair<double, int32>& W : Wanted)
 	{
+		// a live plant builds its skeleton, wood and leaves in this tick: a few at most per tick, the nearest first
+		if (Built >= LivePerTick) break;
 		if (LiveCount >= (CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive)) break;
 		FTree& T = Trees[W.Value];
 		FActorSpawnParameters Params;
@@ -288,7 +300,15 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 		P->AgeAtStart = T.Age;
 		P->bDemoGrowth = false;
 		P->bSnapToGround = false;
+		UTexture2D *Albedo = nullptr, *Normal = nullptr, *Detail = nullptr;
+		if (Cache && Cache->GetSpeciesTextures(T.Species, Albedo, Normal, Detail))
+		{
+			P->SharedBarkAlbedo = Albedo;
+			P->SharedBarkNormal = Normal;
+			P->SharedLeafDetail = Detail;
+		}
 		P->FinishSpawning(T.Xf);
+		Built++;
 		T.Live = P;
 		LiveCount++;
 		SetHidden(T, true);
