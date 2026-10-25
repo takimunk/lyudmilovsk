@@ -31,6 +31,9 @@ struct FGrassSpecies
 	/** Where it grows on the terrain (ULyudTerrainMask). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") EGrassHabitat Habitat = EGrassHabitat::Meadow;
 
+	/** Multiplies the patch's NearDistance and FarDistance (a low carpet is only worth drawing close by). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") float CullScale = 1.f;
+
 	// --- Tuft
 
 	/** Blade length, m; each tuft is scaled by 1 +- HeightVariation. */

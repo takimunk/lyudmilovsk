@@ -27,6 +27,36 @@ namespace
 		return S;
 	}
 
+	/**
+	 * The short, dense turf under the taller grasses: what a bird low over the meadow sees as ground. Lay it
+	 * over the same patches as the tall ones; it is drawn only within ~15 m. Stays green well into autumn.
+	 */
+	FGrassSpecies Turf()
+	{
+		FGrassSpecies S;
+		S.Name = TEXT("Turf");
+		S.Height = 0.16f;
+		S.HeightVariation = 0.35f;
+		S.BladeWidth = 0.004f;
+		S.Blades = 18;
+		S.TuftRadius = 0.065f;
+		S.Lean = 35.f;
+		S.Arch = 95.f;
+		S.Density = 55.f;
+		S.Sway = 2.f;
+		S.WinterHeight = 0.6f;
+		S.CullScale = 0.45f;
+		S.GreenBase = C(0.025f, 0.07f, 0.015f);
+		S.GreenTip = C(0.07f, 0.17f, 0.03f);
+		S.DryBase = C(0.1f, 0.08f, 0.03f);
+		S.DryTip = C(0.26f, 0.2f, 0.08f);
+		S.GreenUpStart = 90.f;
+		S.GreenUpFull = 120.f;
+		S.YellowStart = 285.f;
+		S.YellowFull = 335.f;
+		return S;
+	}
+
 	/** Poa pratensis, meadow-grass (мятлик луговой): a soft green sward in the clearings, bleached to straw by October. */
 	FGrassSpecies MeadowGrass()
 	{
@@ -174,7 +204,7 @@ namespace
 
 const TArray<FGrassSpecies>& GrassSpeciesLibrary::All()
 {
-	static const TArray<FGrassSpecies> Species = { RedFescue(), MeadowGrass(), MarramGrass(), SeaLymeGrass(), CommonReed(), SandSedge(), WavyHairGrass() };
+	static const TArray<FGrassSpecies> Species = { RedFescue(), MeadowGrass(), Turf(), MarramGrass(), SeaLymeGrass(), CommonReed(), SandSedge(), WavyHairGrass() };
 	return Species;
 }
 

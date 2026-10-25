@@ -1009,7 +1009,8 @@ UTexture2D* PlantMeshes::BuildFruitDetail(UObject* Outer)
 UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 {
 	FMeshData D;
-	constexpr int32 Rows = 5;
+	// a short blade needs fewer rows: a carpet of them is many thousands of tufts
+	const int32 Rows = G.Height < 0.3f ? 3 : 5;
 	const int32 Count = FMath::Clamp(G.Blades, 3, 40);
 	for (int32 B = 0; B < Count; B++)
 	{
