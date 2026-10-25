@@ -62,6 +62,9 @@ public:
 	void SetCrouchToggled(bool bOn) { bCrouchToggled = bOn; }
 	bool IsCrouchToggled() const { return bCrouchToggled; }
 
+	/** How far a reach wants the body down (0..1, UHeroReachComponent for low items); the body crouches to the deeper of this and the crouch. */
+	void SetReachCrouch(float Target) { ReachCrouchTarget = FMath::Clamp(Target, 0.f, 1.f); }
+
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
 	TSoftObjectPtr<UInputAction> MoveAction;
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
@@ -121,4 +124,6 @@ private:
 	bool bWantsWalk = false;
 	bool bCrouchToggled = false;
 	float CrouchAlpha = 0.f;
+	float ReachCrouchTarget = 0.f;
+	float ReachCrouch = 0.f;
 };

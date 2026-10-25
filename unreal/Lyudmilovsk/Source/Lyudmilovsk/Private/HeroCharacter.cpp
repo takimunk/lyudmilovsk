@@ -283,7 +283,8 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	S.LookPitch = Wrap180(Look.Pitch);
 	S.Distance = Distance;
 	S.IdleTime = IdleTime;
-	S.Crouch = FMath::SmoothStep(0.f, 1.f, CrouchAlpha);
+	ReachCrouch = FMath::FInterpConstantTo(ReachCrouch, ReachCrouchTarget, DeltaSeconds, 1.6f);
+	S.Crouch = FMath::SmoothStep(0.f, 1.f, FMath::Max(CrouchAlpha, ReachCrouch));
 	if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		Anim->State = S;
@@ -379,10 +380,20 @@ static FAutoConsoleCommandWithWorldAndArgs GHeroSideCam(TEXT("Hero.SideCam"),
 		{
 			return;
 		}
+		// seen from outside the hero has his head (the first-person camera hides it)
+		USkeletalMeshComponent* Body = Cast<ACharacter>(Pawn) ? Cast<ACharacter>(Pawn)->GetMesh() : nullptr;
 		if (Args.Num() > 0 && Args[0] == TEXT("off"))
 		{
+			if (Body)
+			{
+				Body->HideBoneByName(HeadBone, PBO_None);
+			}
 			PC->SetViewTarget(Pawn);
 			return;
+		}
+		if (Body)
+		{
+			Body->UnHideBoneByName(HeadBone);
 		}
 		const float R = Args.Num() > 0 ? FCString::Atof(*Args[0]) : 200.f;
 		const float F = Args.Num() > 1 ? FCString::Atof(*Args[1]) : 120.f;

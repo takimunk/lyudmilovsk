@@ -48,15 +48,16 @@ namespace
 	TAutoConsoleVariable<int32> CVarTame(TEXT("lyud.Tame"), 1,
 		TEXT("Befriending birds with feed (hold out the hand, crouch). 0 switches it off: no hand, no offer to the birds."));
 
-	/** The open palm held out with the seeds: well in front, a little right, below the eyes; it follows a look down. */
+	/** The open palm held out with the seeds: an arm's length in front, a little right, below the eyes, toward the bird;
+	 *  it dips a little with a look down (not much: a palm pulled in toward the shoes offers nothing). */
 	FHeroHoldPose OfferPose()
 	{
 		FHeroHoldPose P;
-		P.Pos = FVector(50.f, 9.f, -27.f);
-		P.FingerDir = FVector(1.f, -0.12f, -0.1f);
-		P.PalmNormal = FVector(0.05f, -0.12f, 1.f);
+		P.Pos = FVector(54.f, 8.f, -30.f);
+		P.FingerDir = FVector(1.f, -0.1f, 0.05f);
+		P.PalmNormal = FVector(-0.05f, -0.1f, 1.f);
 		P.Curl = 0.22f;
-		P.PitchFollow = 0.55f;
+		P.PitchFollow = 0.25f;
 		P.BlendTime = 0.8f;
 		return P;
 	}
@@ -756,9 +757,9 @@ void UBirdTameSubsystem::DriveDebugWalk(AHeroCharacter* Hero, float DeltaTime)
 	}
 	// the view turns toward the target (eyes on its ground point, pitched down at it) at the given rate
 	const FVector Eye = Hero->EyeLocation();
-	const FRotator Want = (DebugTarget - Eye).Rotation();
+	const FRotator Want = (DebugTarget + FVector(0.f, 0.f, 25.f) - Eye).Rotation();
 	const FRotator Now = PC->GetControlRotation();
-	const FRotator Next(FMath::FixedTurn(Now.Pitch, FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -60.f, 30.f), DebugTurnRate * DeltaTime),
+	const FRotator Next(FMath::FixedTurn(Now.Pitch, FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -35.f, 30.f), DebugTurnRate * DeltaTime),
 		FMath::FixedTurn(Now.Yaw, Want.Yaw, DebugTurnRate * DeltaTime), 0.f);
 	PC->SetControlRotation(Next);
 	const UCharacterMovementComponent* Move = Hero->GetCharacterMovement();
@@ -871,11 +872,17 @@ static FAutoConsoleCommandWithWorld GTameSelfTest(TEXT("Tame.SelfTest"),
 		{
 			UBirdTameSubsystem* S = Tame();
 			Check(S->IsOffering(), TEXT("offering once the hand is out"));
+			// out in front of the body (the crouch leans the head forward over the shoulders, so not measured from the eyes),
+			// below the eyes, palm up
 			const FVector Eye = Hero()->EyeLocation();
 			const FVector At = S->OfferLocation();
-			const FVector Local = FRotator(0.f, Hero()->GetControlRotation().Yaw, 0.f).UnrotateVector(At - Eye);
-			Check(Local.X > 15.f && Local.X < 75.f && Local.Z < -5.f && Local.Z > -70.f && FMath::Abs(Local.Y) < 30.f,
-				FString::Printf(TEXT("the palm is in front, below the eyes (fwd %.0f right %.0f up %.0f)"), Local.X, Local.Y, Local.Z));
+			const FRotator Yaw(0.f, Hero()->GetControlRotation().Yaw, 0.f);
+			const FVector Body = Yaw.UnrotateVector(At - Hero()->GetActorLocation());
+			const float Below = float(Eye.Z - At.Z);
+			const UHeroReachComponent* R = Hero()->FindComponentByClass<UHeroReachComponent>();
+			Check(Body.X > 40.f && Body.X < 90.f && Below > 5.f && Below < 70.f && FMath::Abs(Body.Y) < 35.f && R && R->HoldNormal().Z > 0.8f,
+				FString::Printf(TEXT("the palm is out in front of the body, below the eyes, up (fwd %.0f right %.0f, %.0f below the eyes, normal z %.2f)"),
+					Body.X, Body.Y, Below, R ? R->HoldNormal().Z : 0.f));
 			FVector Palm;
 			Check(PalmFromBones(Hero(), Palm) && FVector::Dist(Palm, At) < 6.f, FString::Printf(TEXT("the seeds lie on the hand (%.1f cm off the palm)"), FVector::Dist(Palm, At)));
 			S->SetOffering(false);
