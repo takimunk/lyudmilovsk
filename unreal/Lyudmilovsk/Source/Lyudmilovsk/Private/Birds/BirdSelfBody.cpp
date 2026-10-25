@@ -64,7 +64,18 @@ namespace
 		}
 		for (const FIntVector3& T : D.Tri)
 		{
-			MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+			// Unreal's front face normal is (P2 - P0) x (P1 - P0): wind every triangle to face the way its
+			// authored normals point (a shell seen from inside lights backwards and glows against the sun)
+			const FVector3f Front = FVector3f::CrossProduct(D.Pos[T.Z] - D.Pos[T.X], D.Pos[T.Y] - D.Pos[T.X]);
+			const FVector3f Want = D.Nrm[T.X] + D.Nrm[T.Y] + D.Nrm[T.Z];
+			if (FVector3f::DotProduct(Front, Want) >= 0.f)
+			{
+				MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+			}
+			else
+			{
+				MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Z], Inst[T.Y] });
+			}
 		}
 		UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, Name, RF_Transient);
 		Mesh->GetStaticMaterials().Add(FStaticMaterial(Material, TEXT("Bird")));
@@ -357,9 +368,9 @@ void UBirdSelfBody::Build(FName SpeciesId, float LengthCm, float WingspanCm, USc
 		HeadShell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.75f));
 		HeadShell->ComponentTags.Add(TEXT("BirdHead"));
 		Beak = AddPart(BeakMesh(this, Look.BeakCm, Look.BeakCm * Look.BeakDepth, Look.BeakHook, Look.BeakBase, Look.Beak, BodyMaterial), Head, TEXT("Beak"));
-		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.35f));
+		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.28f));
 		// below the eye line, so it sits at the bottom of the view like a bird's own beak
-		Beak->SetRelativeLocationAndRotation(HeadCentre - Eye + FVector(HeadR * 0.8f, 0.f, -HeadR * 0.3f), FRotator(-14.f, 0.f, 0.f));
+		Beak->SetRelativeLocationAndRotation(HeadCentre - Eye + FVector(HeadR * 0.75f, 0.f, -HeadR * 0.55f), FRotator(-24.f, 0.f, 0.f));
 	}
 
 	// --- legs: tarsus and four toes each side
@@ -478,6 +489,24 @@ void UBirdSelfBody::BuildBodyFeathers(const FLook& Look)
 			(bUnder ? Look.Breast.Paint : Look.Back.Paint).Write(Data.GetData());
 			Data[8] = FMath::Max(Data[8], 0.f);
 			Contour->SetCustomData(Inst, Data);
+		}
+	}
+}
+
+void UBirdSelfBody::SetFirstPerson(bool bFirstPerson)
+{
+	if (bFirstPerson == bFirstPersonNow)
+	{
+		return;
+	}
+	bFirstPersonNow = bFirstPerson;
+	TArray<USceneComponent*> Children;
+	GetChildrenComponents(true, Children);
+	for (USceneComponent* C : Children)
+	{
+		if (UPrimitiveComponent* P = Cast<UPrimitiveComponent>(C))
+		{
+			P->SetFirstPersonPrimitiveType(bFirstPerson ? EFirstPersonPrimitiveType::FirstPerson : EFirstPersonPrimitiveType::None);
 		}
 	}
 }

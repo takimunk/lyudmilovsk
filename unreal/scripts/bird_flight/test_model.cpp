@@ -78,7 +78,7 @@ int main()
 			// the player holds the height with the gaze
 			Run(P, S, 20, [&](double, FInput& In) { const bool C = AutoFlap(P, Dt, Clock, Tuck); In.ClickL = In.ClickR = C; In.TuckL = In.TuckR = Tuck; In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05)); });
 			const double Speed = BirdFlight::Speed(S);
-			Check(S.Pos.Z > 95 && Speed > P.Cruise * 0.85 && Speed < P.Cruise * 1.4,
+			Check(S.Pos.Z > 95 && Speed > P.Cruise * 0.9 && Speed < P.Cruise * 1.1,
 				F("cruise: %.1f m/s, height %+.1f m after 20 s (want ~%.0f m/s)", Speed, S.Pos.Z - 100, P.Cruise));
 		}
 		// 3. take-off from standing: a hop, then clicking without pause, gaze 25 deg up: off the ground and climbing

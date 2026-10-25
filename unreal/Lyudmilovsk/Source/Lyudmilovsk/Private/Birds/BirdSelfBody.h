@@ -55,6 +55,9 @@ public:
 	float BodyRadius() const { return Radius; }
 	/** Show or hide the whole bird (the camera flight in and out shows it from outside). */
 	void SetShown(bool bShown, bool bWithHead);
+	/** Seen from its own eye: the body is drawn with the camera's first-person field of view, wide enough
+	 *  that wings beside the bird reach into the screen's edges (a bird sees nearly all round). */
+	void SetFirstPerson(bool bFirstPerson);
 
 	static const FName FeatherMaterialPath;
 	static const FName BodyMaterialPath;
@@ -101,4 +104,5 @@ private:
 	FVector Eye = FVector::ZeroVector, Neck = FVector::ZeroVector;
 	float Stand = 3.f, Radius = 2.f;
 	TArray<FVector> LegRest;
+	bool bFirstPersonNow = false;
 };

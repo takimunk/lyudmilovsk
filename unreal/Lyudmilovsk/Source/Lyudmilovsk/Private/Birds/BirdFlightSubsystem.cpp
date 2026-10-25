@@ -89,7 +89,7 @@ namespace
 			if (!H || !X.PC) return true;
 			const FRotator Yaw(0.f, X.PC->GetControlRotation().Yaw, 0.f);
 			const FVector Hand = H->EyeLocation() + Yaw.Vector() * 38.f - FVector(0, 0, 32.f);
-			X.Sys->BecomeSpecies(X.PC, Species, Hand, Yaw.Yaw + 180.f, FVector::ZeroVector, true);
+			X.Sys->BecomeSpecies(X.PC, Species, Hand, Yaw.Yaw, FVector::ZeroVector, true);
 			return true;
 		});
 		S.Add(UBirdFlightSubsystem::ArrivalSeconds + 0.3f, [](FCtx&) { return false; });
@@ -122,7 +122,7 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		// everything once: off the hand, out over the cliff, the wind on the cliff, a look at the wing,
 		// rowing, a dive, back to the hero, landing, hopping, home
 		Start(*S, Species);
-		S->Add(2.6f, [](FCtx& X) { X.bAim = true; X.AimRate = 90.f; X.Aim = X.T < 1.3f ? FRotator(-8.f, 240.f, 0.f) : FRotator(-4.f, 0.f, 0.f); return false; });
+		S->Add(2.6f, [](FCtx& X) { X.bAim = true; X.AimRate = 90.f; X.Aim = X.T < 1.3f ? FRotator(-8.f, -70.f, 0.f) : FRotator(-4.f, 0.f, 0.f); return false; });
 		S->Add(3.2f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(14.f, 0.f, 0.f); return false; });
 		S->Add(25.f, [](FCtx& X)
 		{
@@ -307,7 +307,8 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 	}
 	AActor* Actor = Life->ClaimBird(BirdId);
 	const bool bStanding = Info.Velocity.Size() < 30.f;
-	const float Yaw = bStanding ? Info.HeadDirection.Rotation().Yaw : Info.Velocity.Rotation().Yaw;
+	// standing (on the palm), it turns round after eating and faces the way the hero looks
+	const float Yaw = bStanding ? PC->GetControlRotation().Yaw : Info.Velocity.Rotation().Yaw;
 	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, Actor))
 	{
 		Life->ReleaseBird(BirdId);
@@ -386,14 +387,7 @@ bool UBirdFlightSubsystem::BecomeSpecies(APlayerController* PC, FName Species, c
 		B->GetRootPrimitive()->IgnoreActorWhenMoving(Hero.Get(), true);
 	}
 	PC->Possess(B);
-	FRotator Look(0.f, Yaw, 0.f);
-	if (bStanding && Hero.IsValid())
-	{
-		// on the hand it looks up at the face that fed it
-		Look = (HeroView().Location - B->BirdView().Location).Rotation();
-		Look.Pitch = FMath::Clamp(Look.Pitch, -30.f, 50.f);
-	}
-	PC->SetControlRotation(Look);
+	PC->SetControlRotation(FRotator(bStanding ? -4.f : 0.f, Yaw, 0.f));
 	SetHeroHeadShown(true);
 	if (bInstant || !Hero.IsValid())
 	{
@@ -670,7 +664,7 @@ namespace
 			}
 			else
 			{
-				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 38.f - FVector(0, 0, 32.f), Yaw.Yaw + 180.f, FVector::ZeroVector, true);
+				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 38.f - FVector(0, 0, 32.f), Yaw.Yaw, FVector::ZeroVector, true);
 			}
 		}));
 	FAutoConsoleCommandWithWorldAndArgs CmdReturn(TEXT("Bird.Return"), TEXT("Bird.Return [now]: back to the hero."),

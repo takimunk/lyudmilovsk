@@ -29,6 +29,7 @@ namespace
 	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
 	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
 	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
+	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 140.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -764,8 +765,10 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	FRotator Gaze = Aim;
 	Gaze.Yaw += FreeHead.Yaw + TrackHead.Yaw * TrackWeight;
 	Gaze.Pitch = FMath::Clamp(FRotator::NormalizeAxis(Aim.Pitch) + FreeHead.Pitch + TrackHead.Pitch * TrackWeight, -88.f, 88.f);
-	// a bird holds its head level: only a quarter of the body's roll reaches the eye
-	Gaze.Roll = (Mode == EBirdMode::Air ? BodyRot.Roll * 0.25f : 0.f) + TrackHead.Roll * TrackWeight;
+	// a bird holds its head level: only a quarter of the body's roll reaches the eye, at most 8 degrees
+	// (and none while slow: at a take-off the body swings about, the eye stays level)
+	const float RollShare = Mode == EBirdMode::Air ? 0.25f * FMath::Clamp((float)((BirdFlight::Speed(*Flight) - Params->Stall) / Params->Stall), 0.f, 1.f) : 0.f;
+	Gaze.Roll = FMath::Clamp(BodyRot.Roll * RollShare, -8.f, 8.f) + TrackHead.Roll * TrackWeight;
 	const float Peck = FMath::Sin(PI * FMath::Clamp(PeckT / 0.35f, 0.f, 1.f));
 	Gaze.Pitch -= Peck * 55.f;
 	if (Jolt > 0.f)
@@ -777,7 +780,7 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	// the eye on the body (the neck is short); walking pigeons nod, hopping birds bob
 	// the neck stretches the head up as it turns round, so a look over the shoulder sees the wing from above
 	const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gaze.Yaw - BodyRot.Yaw)) / 90.f, 0.f, 1.f);
-	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 0.9f * Turn);
+	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 1.4f * Turn);
 	if (Mode == EBirdMode::Ground)
 	{
 		const float Nod = Params->Hops ? 0.f : FMath::Sin(StepPhase * 2.f * PI) * Body->BodyRadius() * 0.35f;
@@ -837,8 +840,19 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
 	Body->SetShown(true, Inside < 0.5f);
+	Body->SetFirstPerson(Inside > 0.5f);
+	if (Inside > 0.5f)
+	{
+		// the bird's own body with a far wider view than the screen's: the wings beside it reach into the
+		// screen's edges; turning the head to look at a wing brings back its true shape
+		const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Head->GetComponentRotation().Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f);
+		OutResult.bUseFirstPersonParameters = true;
+		OutResult.FirstPersonFOV = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
+		OutResult.FirstPersonScale = 1.f;
+	}
+	// no motion blur: the wings and the ground smear at a bird's speeds
 	OutResult.PostProcessSettings.bOverride_MotionBlurAmount = true;
-	OutResult.PostProcessSettings.MotionBlurAmount = 0.08f;
+	OutResult.PostProcessSettings.MotionBlurAmount = 0.f;
 	OutResult.PostProcessBlendWeight = 1.f;
 }
 
