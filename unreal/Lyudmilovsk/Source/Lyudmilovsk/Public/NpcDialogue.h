@@ -28,6 +28,8 @@ struct FNpcLines
 	TArray<FNpcLine> First;
 	/** Short exchanges for every later conversation, taken in turn. */
 	TArray<TArray<FNpcLine>> Again;
+	/** Now and then a later conversation is about the sun instead, picked by what it is doing now (day, low, night, cloudy). */
+	TMap<FName, TArray<FNpcLine>> Sun;
 };
 
 /**
@@ -63,8 +65,12 @@ public:
 
 	const FNpcLines* Find(FName Id) const { return Characters.Find(Id); }
 
-	/** The lines of the next conversation with Id; counts it as held. */
-	TArray<FNpcLine> StartTalk(FName Id);
+	/** The lines of the next conversation with Id; counts it as held. SunState is NpcSunState() of the world. */
+	TArray<FNpcLine> StartTalk(FName Id, FName SunState = NAME_None);
+
+	/** What the sun is doing over the world now: day, low (sunrise or sunset), night, cloudy; None without a sky.
+	 *  There is no weather yet: "cloudy" is the console variable lyud.Overcast (a weather system will set it). */
+	static FName NpcSunState(const UWorld* World);
 
 private:
 	TMap<FName, FNpcLines> Characters;

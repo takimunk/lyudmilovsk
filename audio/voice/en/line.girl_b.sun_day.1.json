@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_day.1",
+ "lang": "en",
+ "text": "On the forum they write: as long as the sun shines, we are remembered. Strange thing to say, right?",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] On the forum they write: as long as the sun shines, we are remembered. Strange thing to say, right?",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172ca-6c52-7ad3-bb3c-71fb45fa07fe",
+ "hash": "966618ed55b2"
+}

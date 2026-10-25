@@ -67,7 +67,7 @@ for patch in range(PATCHES):
     f.set_editor_property("snap_to_ground", True)
     f.set_editor_property("preview_in_editor", True)
     mix = []
-    for sp, w, y, m in (("ScotsPine", 3, 12, 45), ("NorwaySpruce", 2, 12, 40), ("SilverBirch", 1.5, 8, 30), ("BlackAlder", 1, 10, 35), ("Rowan", 0.5, 8, 25)):
+    for sp, w, y, m in (("ScotsPine", 3, 12, 45), ("NorwaySpruce", 2, 12, 40), ("SilverBirch", 1.5, 8, 30), ("BlackAlder", 1, 10, 35), ("Rowan", 0.5, 8, 25), ("Apple", 1.2, 10, 30)):
         e = unreal.ForestMix()
         e.set_editor_property("species", sp); e.set_editor_property("weight", w)
         e.set_editor_property("young_age", y); e.set_editor_property("mature_age", m)

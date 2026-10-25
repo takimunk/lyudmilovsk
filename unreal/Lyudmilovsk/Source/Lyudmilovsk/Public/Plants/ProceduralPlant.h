@@ -69,6 +69,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") float PickDistance = 250.f;
 	/** Fruit picked up from under this tree, all time. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "Plant") int32 FruitPicked = 0;
+	/**
+	 * Textures made once for its species (a forest's bake cache has them), used instead of building its own at
+	 * BeginPlay: bark colour and normal, leaf detail. Set all three, or none, before it begins play.
+	 */
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedBarkAlbedo;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedBarkNormal;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> SharedLeafDetail;
 	/** Put the plant on the ground under it when play begins. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") bool bSnapToGround = true;
 

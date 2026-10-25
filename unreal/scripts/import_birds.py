@@ -86,6 +86,14 @@ return Base + film * saturate(Gloss) * (0.004 + 0.07 * f * f * f);
 """
 
 
+DITHER_HLSL = """
+// interleaved-gradient noise, moved every frame: soft alpha (strand tips) becomes a dither that temporal AA smooths
+float2 p = Parameters.SvPosition.xy + (float)View.StateFrameIndexMod8 * float2(5.588238, 5.588238);
+float n = frac(52.9829189 * frac(dot(p, float2(0.06711056, 0.00583715))));
+return Alpha + (n - 0.5) * 0.98 * step(0.001, Alpha) * step(Alpha, 0.999);
+"""
+
+
 def make_master(name, plumage, eye=False):
     m = get_or_create(name, MATS, unreal.Material, unreal.MaterialFactoryNew())
     mel.delete_all_material_expressions(m)
@@ -133,7 +141,15 @@ def make_master(name, plumage, eye=False):
         mel.connect_material_expressions(vn, "", cu, "N")
         mel.connect_material_expressions(cam, "", cu, "V")
         base = cu
-        mel.connect_material_property(alb, "A", unreal.MaterialProperty.MP_OPACITY_MASK)
+        # soft strand tips: the alpha is dithered (temporal AA resolves it to soft, fluffy edges)
+        dith = node(m, unreal.MaterialExpressionCustom, -350, 120)
+        dith.set_editor_property("code", DITHER_HLSL)
+        dith.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT1)
+        ci = unreal.CustomInput()
+        ci.set_editor_property("input_name", "Alpha")
+        dith.set_editor_property("inputs", [ci])
+        mel.connect_material_expressions(alb, "A", dith, "Alpha")
+        mel.connect_material_property(dith, "", unreal.MaterialProperty.MP_OPACITY_MASK)
         # feathers let light through: backlit wings glow warm
         sss = node(m, unreal.MaterialExpressionMultiply, -350, 250)
         mel.connect_material_expressions(mul, "", sss, "A")
@@ -150,7 +166,18 @@ def make_master(name, plumage, eye=False):
         mel.connect_material_property(spec, "", unreal.MaterialProperty.MP_SPECULAR)
     mel.connect_material_property(base, "", unreal.MaterialProperty.MP_BASE_COLOR)
     mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
-    mel.connect_material_property(par, "R", unreal.MaterialProperty.MP_ROUGHNESS)
+    if plumage or eye:
+        mel.connect_material_property(par, "R", unreal.MaterialProperty.MP_ROUGHNESS)
+    else:   # bill, legs, bare skin: horn and scales are matte, whatever the texture says
+        mx = node(m, unreal.MaterialExpressionMax, -350, 500)
+        mel.connect_material_expressions(par, "R", mx, "A")
+        lo = node(m, unreal.MaterialExpressionConstant, -500, 560)
+        lo.set_editor_property("r", 0.55)
+        mel.connect_material_expressions(lo, "", mx, "B")
+        mel.connect_material_property(mx, "", unreal.MaterialProperty.MP_ROUGHNESS)
+        sp = node(m, unreal.MaterialExpressionConstant, -350, 620)
+        sp.set_editor_property("r", 0.3)
+        mel.connect_material_property(sp, "", unreal.MaterialProperty.MP_SPECULAR)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     log("master " + name)
@@ -211,7 +238,7 @@ def do_hues(ids):
     table = json.load(open(os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData", "species.json")))["species"]
     for sid in ids or [t["id"] for t in table]:
         hue = art.get(sid)["morph"].get("gloss_hue", 0.0) if sid in art.SPECIES else 0.0
-        for suffix in ("", "_Winter"):
+        for suffix in ("", "_Winter", "_Female", "_FemaleWinter"):
             p = "%s/%s/MI_%s_Plumage%s" % (BIRDS, sid, sid, suffix)
             if eal.does_asset_exist(p):
                 mi = unreal.load_asset(p)
@@ -220,7 +247,8 @@ def do_hues(ids):
         log("hue %s %.2f" % (sid, hue))
 
 
-TEX = (("albedo", "Albedo"), ("normal", "Normal"), ("params", "Params"), ("winter", "Albedo_Winter"))
+VARIANTS = ("Winter", "Female", "FemaleWinter")
+TEX = (("albedo", "Albedo"), ("normal", "Normal"), ("params", "Params")) + tuple((v, "Albedo_" + v) for v in VARIANTS)
 
 
 def do_textures(sid):
@@ -232,7 +260,7 @@ def do_textures(sid):
     for kind, suffix in TEX:
         f = os.path.join(src_dir, "T_%s_%s.png" % (sid, suffix))
         if os.path.exists(f):
-            import_texture(f, dest, "T_%s_%s" % (sid, suffix), "albedo" if kind == "winter" else kind)
+            import_texture(f, dest, "T_%s_%s" % (sid, suffix), "albedo" if kind in VARIANTS else kind)
     eal.save_directory(dest)
 
 
@@ -262,15 +290,17 @@ def do_import(sid):
             anims.append(a)
     if mesh is None:
         raise RuntimeError("no skeletal mesh in %s.glb" % sid)
-    tex = {kind: unreal.load_asset("%s/T_%s_%s" % (dest, sid, suffix)) for kind, suffix in TEX}
+    tex = {kind: unreal.load_asset("%s/T_%s_%s" % (dest, sid, suffix)) for kind, suffix in TEX
+           if eal.does_asset_exist("%s/T_%s_%s" % (dest, sid, suffix))}
     hue = rig.get("gloss_hue", 0.0)
     masters = {"Plumage": unreal.load_asset(MATS + "/M_BirdPlumage"), "Bare": unreal.load_asset(MATS + "/M_BirdBare"),
                "Eye": unreal.load_asset(MATS + "/M_BirdEye")}
     mis = {k: material_instance("MI_%s_%s" % (sid, k), dest, v, tex, hue) for k, v in masters.items()}
-    if tex["winter"]:
-        wt = dict(tex, albedo=tex["winter"])
-        for k, v in masters.items():
-            material_instance("MI_%s_%s_Winter" % (sid, k), dest, v, wt, hue)
+    for var in VARIANTS:   # MI_<Id>_<Kind>_<Variant>: the same mesh in winter / female plumage
+        if tex.get(var):
+            vt = dict(tex, albedo=tex[var])
+            for k, v in masters.items():
+                material_instance("MI_%s_%s_%s" % (sid, k, var), dest, v, vt, hue)
     mats = mesh.get_editor_property("materials")
     for i in range(len(mats)):
         sm = mats[i]

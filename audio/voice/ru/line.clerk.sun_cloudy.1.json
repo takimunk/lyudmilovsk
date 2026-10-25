@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Сегодня пасмурно. Жёлтая заливка ложится хуже. Не спрашивай.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Сегодня пасмурно. Жёлтая заливка ложится хуже. Не спрашивай.",
+  "voice": "Callum",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172c9-2cfe-7c41-a44d-00de7e12f65f",
+ "hash": "1768e98168de"
+}

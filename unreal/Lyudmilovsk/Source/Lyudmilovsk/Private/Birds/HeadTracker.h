@@ -4,7 +4,7 @@
 
 /**
  * AirPods head pose for the player bird. On a Mac the game starts tools/headtracker's helper app
- * (Saved/HeadTracker/LyudHeadTracker.app, built by tools/headtracker/build.sh) and reads the attitude it
+ * (Saved/HeadTracker/LyudHeadTracker.app; the first flight builds it with tools/headtracker/build.sh) and reads the attitude it
  * sends over a localhost UDP socket; anywhere else, or without the helper or AirPods, it simply never
  * tracks. Angles in degrees in Unreal's sense: yaw + right, pitch + up, roll + right ear down.
  */
@@ -29,8 +29,11 @@ public:
 	void SetFake(const FRotator& FakePose, bool bOn) { Fake = FakePose; bFake = bOn; }
 
 private:
+	void Launch();
+
 	int Socket = -1;
-	bool bLaunched = false;
+	bool bLaunched = false, bBuilding = false;
+	double LastLaunchTry = 0.0;
 	FRotator Pose = FRotator::ZeroRotator;
 	double LastSample = -1e9;
 	FString LastState = TEXT("off");

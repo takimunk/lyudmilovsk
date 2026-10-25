@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_girl.sun_day.1",
+ "lang": "ja",
+ "text": "おひさまって、わたしたちのこと見えてるの？ここからでも？",
+ "speaker": "kid_girl",
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "おひさまって、わたしたちのこと見えてるの？ここからでも？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a172cb-9585-74b2-8315-ae113d3ee0b9",
+ "hash": "b32f38e3954e"
+}

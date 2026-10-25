@@ -167,6 +167,16 @@ void UTreeBakeCache::Tick(float DeltaTime)
 	if (Job) Finish(*Job);
 }
 
+bool UTreeBakeCache::GetSpeciesTextures(FName Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail) const
+{
+	const FSpeciesAssets* A = Assets.Find(Species);
+	if (!A || !A->Albedo || !A->Normal || !A->Detail) return false;
+	Albedo = A->Albedo;
+	Normal = A->Normal;
+	LeafDetail = A->Detail;
+	return true;
+}
+
 void UTreeBakeCache::BakeAllNow()
 {
 	while (!Wanted.IsEmpty())

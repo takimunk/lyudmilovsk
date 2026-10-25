@@ -233,10 +233,18 @@ void AProceduralPlant::EnsureMeshes()
 		Skeleton.Build(S, (uint32)Seed);
 		UTexture2D* Albedo = nullptr;
 		UTexture2D* Normal = nullptr;
-		PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+		if (SharedBarkAlbedo && SharedBarkNormal)
+		{
+			Albedo = SharedBarkAlbedo;
+			Normal = SharedBarkNormal;
+		}
+		else
+		{
+			PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+		}
 		BarkAlbedo = Albedo;
 		BarkNormal = Normal;
-		LeafDetail = PlantMeshes::BuildLeafDetail(this, S.Leaf);
+		LeafDetail = SharedLeafDetail ? SharedLeafDetail.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf);
 		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
 		SummaryCrown->SetStaticMesh(S.bConicalCrown && CrownCone ? CrownCone.Get() : CrownEllipsoid.Get());
 		SingleLeafMesh = PlantMeshes::BuildSingleLeaf(this, S);

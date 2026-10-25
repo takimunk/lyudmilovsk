@@ -6,6 +6,7 @@
 #include "BirdPawn.generated.h"
 
 class UBirdSelfBody;
+class ABirdActor;
 class UCameraComponent;
 class USphereComponent;
 class UInputAction;
@@ -56,8 +57,11 @@ public:
 	ABirdPawn();
 	virtual ~ABirdPawn() override;
 
-	/** Before possession: the species, where, which way, and whether it stands (on a hand, a roof) or flies. */
-	void Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding);
+	/** Before possession: the species, where, which way, and whether it stands (on a hand, a roof) or flies.
+	 *  Outside is the bird's body as everyone else sees it (bird life's ABirdActor); null spawns one. */
+	void Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding, ABirdActor* Outside = nullptr);
+	/** The body seen from outside (camera flights, chase camera, the world). */
+	ABirdActor* GetOutsideBody() const { return OutsideBody.Get(); }
 
 	/** The camera flies from From (the hero's view) into the bird's eye over Seconds. */
 	void BeginArrival(const FMinimalViewInfo& From, float Seconds);
@@ -108,6 +112,7 @@ protected:
 	/** The head: the camera and the beak; turns with the gaze. */
 	UPROPERTY(VisibleAnywhere, Category = "Bird") TObjectPtr<USceneComponent> Head;
 	UPROPERTY(VisibleAnywhere, Category = "Bird") TObjectPtr<UCameraComponent> Camera;
+	UPROPERTY(Transient) TObjectPtr<ABirdActor> OutsideBody;
 
 private:
 	void ReadControls(float Dt, FBirdControls& C);
@@ -120,6 +125,7 @@ private:
 	void UpdateHead(const FBirdControls& C, float Dt);
 	void UpdateBody(float Dt);
 	void PlayCall();
+	void UpdateOutsideBody(float Dt);
 	float TrackedBlend() const;
 	FMinimalViewInfo ChaseView() const;
 
@@ -167,4 +173,6 @@ private:
 	float TransT = 0.f, TransDur = 1.f;
 	TFunction<void()> OnLeftCb;
 	float SavedNearClip = -1.f;
+	bool bOwnOutsideBody = false;
+	bool bInsideView = true;
 };

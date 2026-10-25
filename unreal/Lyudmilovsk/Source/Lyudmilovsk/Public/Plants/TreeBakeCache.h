@@ -51,6 +51,8 @@ public:
 	 * LodDistances (m) are taken from the first request of a kind.
 	 */
 	const FTreeBaked* Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances);
+	/** The textures made for a species (null until one of its kinds has been finished). */
+	bool GetSpeciesTextures(FName Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail) const;
 	/** Everything queued is made at once, on this thread (editor, tests). */
 	void BakeAllNow();
 	int32 NumBaked() const { return Baked.Num(); }

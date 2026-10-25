@@ -63,10 +63,33 @@ namespace BirdFlight
 		const double Vr = P.Cruise / P.BestGlide;
 		const double Drag = P.Gravity * (Vr * Vr + 1.0 / (Vr * Vr)) / (2.0 * P.GlideRatio);
 		const double Cps = ClicksPerSecond(P);
-		P.ClickThrust = Drag / Cps * 1.25;
+		P.ClickThrust = Drag / Cps * 1.05;
 		// clicking without pause at zero airspeed lifts HoverG (a take-off; pigeons and finches can hover a moment)
 		P.ClickLift = P.Gravity * R.HoverG * P.ClickTime();
 		P.OarKick = Style == EStyle::Flicker ? 0.45 : Style == EStyle::Soaring ? 0.22 : 0.35;
+		// the estimate above ignores the bounding finches' closed-wing dips and the rest of the pattern:
+		// fly the pattern level for a while and scale the thrust until it settles at the table's cruise speed
+		for (int K = 0; K < 4; K++)
+		{
+			FState S;
+			S.Pos = V3(0, 0, 100);
+			S.Vel = V3(P.Cruise, 0, 0);
+			double Clock = 0, Sum = 0;
+			int N = 0;
+			const double Dt = 1.0 / 60.0;
+			for (double T = 0; T < 16.0; T += Dt)
+			{
+				FInput In;
+				double Tuck = 0;
+				In.ClickL = In.ClickR = AutoFlap(P, Dt, Clock, Tuck);
+				In.TuckL = In.TuckR = Tuck;
+				In.AimPitch = Clamp((100.0 - S.Pos.Z) * 0.05, -0.3, 0.3);
+				Step(P, In, FAir(), S, Dt);
+				if (T > 8.0) { Sum += S.Vel.Size(); N++; }
+			}
+			const double Got = Sum / std::max(N, 1);
+			P.ClickThrust *= Clamp(std::pow(P.Cruise / std::max(Got, 1.0), 2.0), 0.5, 2.0);
+		}
 		P.Hops = Style == EStyle::Bounding || Style == EStyle::Undulating;
 		return P;
 	}
@@ -162,7 +185,7 @@ namespace BirdFlight
 		const int Beats = (BeatL ? 1 : 0) + (BeatR ? 1 : 0);
 		// the flight muscles give power, not force: slow, the same beats drive the bird forward far harder
 		// (a take-off reaches flying speed in a second or two)
-		const double Launch = Clamp(P.Cruise / std::max(V, 0.5 * P.Stall), 1.0, 4.0);
+		const double Launch = Clamp(std::pow(P.Cruise / std::max(V, 0.5 * P.Stall), 1.25), 1.0, 5.0);
 		double ThrustAcc = 0.5 * Beats * P.ClickThrust / Click * Launch;
 		double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift;
 		// the beats lift no more than the course needs (and a little to climb); the rest drives the bird on

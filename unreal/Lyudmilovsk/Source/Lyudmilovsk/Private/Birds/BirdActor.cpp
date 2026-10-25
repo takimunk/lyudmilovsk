@@ -35,6 +35,7 @@ void ABirdActor::BeginPlay()
 	if (SetSpecies(Species))
 	{
 		SetState(InitialState, 0.f);
+		ApplyPlumage();   // now that the anim instance is up (the streamer length lives there)
 	}
 }
 
@@ -59,26 +60,66 @@ bool ABirdActor::SetSpecies(FName Id)
 			Clips.Add(C, Seq);
 		}
 	}
-	// winter plumage: the same mesh with the _Winter material instances
-	const int32 Month = UGameCalendar::NowIn(GetWorld()).GetMonth();
-	if (Data.InWinterPlumage(Month))
+	ApplyPlumage();
+	return true;
+}
+
+void ABirdActor::SetSex(EBirdSex NewSex)
+{
+	Sex = NewSex;
+	ApplyPlumage();
+}
+
+void ABirdActor::ApplyPlumage()
+{
+	USkinnedAsset* Mesh = Body ? Body->GetSkinnedAsset() : nullptr;
+	if (!Mesh)
 	{
-		const FString N = Id.ToString();
-		for (int32 i = 0; i < Body->GetNumMaterials(); ++i)
+		return;
+	}
+	const bool bFemale = Sex == EBirdSex::Female;
+	const bool bWinter = Data.InWinterPlumage(UGameCalendar::NowIn(GetWorld()).GetMonth());
+	// the most specific material set that exists: FemaleWinter, Female or Winter, else the base
+	TArray<FString> Suffixes;
+	if (bFemale && Data.bFemalePlumage && bWinter)
+	{
+		Suffixes.Add(TEXT("_FemaleWinter"));
+	}
+	if (bFemale && Data.bFemalePlumage)
+	{
+		Suffixes.Add(TEXT("_Female"));
+	}
+	if (bWinter)
+	{
+		Suffixes.Add(TEXT("_Winter"));
+	}
+	const FString N = Species.ToString();
+	const TArray<FSkeletalMaterial>& Slots = Mesh->GetMaterials();
+	for (int32 i = 0; i < Slots.Num(); ++i)
+	{
+		UMaterialInterface* Base = Slots[i].MaterialInterface;
+		UMaterialInterface* Use = Base;
+		for (const FString& Sfx : Suffixes)
 		{
-			const UMaterialInterface* Cur = Body->GetMaterial(i);
-			if (!Cur)
+			if (!Base)
 			{
-				continue;
+				break;
 			}
-			const FString W = FString::Printf(TEXT("/Game/Birds/%s/%s_Winter.%s_Winter"), *N, *Cur->GetName(), *Cur->GetName());
-			if (UMaterialInterface* Win = LoadObject<UMaterialInterface>(nullptr, *W, nullptr, LOAD_NoWarn | LOAD_Quiet))
+			const FString P = FString::Printf(TEXT("/Game/Birds/%s/%s%s.%s%s"), *N, *Base->GetName(), *Sfx, *Base->GetName(), *Sfx);
+			if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *P, nullptr, LOAD_NoWarn | LOAD_Quiet))
 			{
-				Body->SetMaterial(i, Win);
+				Use = M;
+				break;
 			}
 		}
+		Body->SetMaterial(i, Use);
 	}
-	return true;
+	Body->SetRelativeScale3D(FVector(bFemale ? Data.FemaleScale : 1.f));
+	UE_LOG(LogTemp, Verbose, TEXT("Bird %s: %s, %d material sets tried"), *N, bFemale ? TEXT("female") : TEXT("male"), Suffixes.Num());
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->StreamerScale = bFemale ? Data.FemaleStreamer : 1.f;
+	}
 }
 
 UBirdAnimInstance* ABirdActor::Anim() const
@@ -305,7 +346,7 @@ void ABirdActor::Tick(float DeltaSeconds)
 namespace
 {
 	FAutoConsoleCommandWithWorldAndArgs GBirdSpawn(TEXT("Bird.Spawn"),
-		TEXT("Bird.Spawn <SpeciesId> [State]: a bird 1.5 m in front of the camera, on the ground (testing)"),
+		TEXT("Bird.Spawn <SpeciesId> [State] [female]: a bird 1.5 m in front of the camera, on the ground (testing)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (!World || Args.Num() < 1)
@@ -335,6 +376,10 @@ namespace
 				{
 					B->InitialState = (EBirdState)V;
 				}
+			}
+			if (Args.Num() > 2 && Args[2].StartsWith(TEXT("f"), ESearchCase::IgnoreCase))
+			{
+				B->Sex = EBirdSex::Female;
 			}
 			B->FinishSpawning(B->GetActorTransform());
 		}));

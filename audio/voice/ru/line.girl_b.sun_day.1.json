@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_day.1",
+ "lang": "ru",
+ "text": "На форуме пишут: пока светит солнце, нас помнят. Странная фраза, да?",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] На форуме пишут: пока светит солнце, нас помнят. Странная фраза, да?",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172c9-5719-7651-8e7a-a3f396b94588",
+ "hash": "771dc406d034"
+}

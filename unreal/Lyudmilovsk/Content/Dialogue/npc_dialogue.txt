@@ -5,6 +5,8 @@
 # [Id]      the mesh name without SK_ (SK_Streamer -> Streamer); the owner is Owner. Its keys use the id in lowercase.
 # first =   the first conversation: line keys in order, without the 'line.' prefix (there may be several first lines)
 # again =   every later conversation takes the next 'again' line, round and round
+# sun.<state> = now and then (every third later talk) a line about what the sun is doing now: day, low (sunrise or
+#             sunset), night, cloudy. The motif: docs/story/motifs.md. Quiet hints, not every character has them.
 # Keys are separated by ' | '; a key whose speaker is 'hero' is said by the player.
 
 [Owner]
@@ -13,6 +15,10 @@ again = owner.again1.1
 again = hero.owner_again2.1 | owner.again2.2
 again = owner.again3.1
 again = owner.again4.1
+sun.day = owner.sun_day.1
+sun.low = owner.sun_low.1
+sun.night = owner.sun_night.1
+sun.cloudy = owner.sun_cloudy.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -20,6 +26,8 @@ again = clerk.again1.1
 again = hero.clerk_again2.1 | clerk.again2.2
 again = clerk.again3.1
 again = clerk.again4.1
+sun.day = clerk.sun_day.1
+sun.cloudy = clerk.sun_cloudy.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -27,6 +35,7 @@ again = streamer.again1.1
 again = hero.streamer_again2.1 | streamer.again2.2
 again = streamer.again3.1
 again = streamer.again4.1
+sun.low = streamer.sun_low.1
 
 [Kid_boy]
 first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
@@ -41,6 +50,8 @@ again = kid_girl.again1.1
 again = hero.kid_girl_again2.1 | kid_girl.again2.2
 again = kid_girl.again3.1
 again = kid_girl.again4.1
+sun.day = kid_girl.sun_day.1
+sun.night = kid_girl.sun_night.1
 
 [Guy_a]
 first = guy_a.first.1 | hero.guy_a_first.2 | guy_a.first.3 | guy_a.first.4
@@ -55,6 +66,8 @@ again = guy_b.again1.1
 again = hero.guy_b_again2.1 | guy_b.again2.2
 again = guy_b.again3.1
 again = guy_b.again4.1
+sun.day = guy_b.sun_day.1
+sun.cloudy = guy_b.sun_cloudy.1
 
 [Girl_a]
 first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
@@ -69,3 +82,5 @@ again = girl_b.again1.1
 again = hero.girl_b_again2.1 | girl_b.again2.2
 again = girl_b.again3.1
 again = girl_b.again4.1
+
+sun.day = girl_b.sun_day.1

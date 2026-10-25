@@ -42,20 +42,40 @@ void FHeadTracker::Start()
 	}
 	if (Socket >= 0 && !bLaunched)
 	{
-		const FString App = FPaths::ConvertRelativePathToFull(FPaths::ProjectSavedDir() / TEXT("HeadTracker/LyudHeadTracker.app"));
-		if (FPaths::DirectoryExists(App))
+		Launch();
+	}
+#endif
+}
+
+void FHeadTracker::Launch()
+{
+#if PLATFORM_MAC
+	const FString App = FPaths::ConvertRelativePathToFull(FPaths::ProjectSavedDir() / TEXT("HeadTracker/LyudHeadTracker.app"));
+	if (FPaths::DirectoryExists(App))
+	{
+		// through LaunchServices, so macOS asks for motion access on the helper's behalf, not the editor's
+		const FString Args = FString::Printf(TEXT("-g -j -n -a \"%s\" --args --port %d --pid %d"), *App, CVarPort.GetValueOnGameThread(), FPlatformProcess::GetCurrentProcessId());
+		FProcHandle H = FPlatformProcess::CreateProc(TEXT("/usr/bin/open"), *Args, true, true, true, nullptr, 0, nullptr, nullptr);
+		FPlatformProcess::CloseProc(H);
+		LastState = TEXT("starting");
+		bLaunched = true;
+		return;
+	}
+	if (!bBuilding)
+	{
+		// first use on this Mac: build the helper from tools/headtracker (a few seconds), then start it
+		const FString Script = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir() / TEXT("../../tools/headtracker/build.sh"));
+		if (FPaths::FileExists(Script))
 		{
-			// through LaunchServices, so macOS asks for motion access on the helper's behalf, not the editor's
-			const FString Args = FString::Printf(TEXT("-g -j -n -a \"%s\" --args --port %d --pid %d"), *App, CVarPort.GetValueOnGameThread(), FPlatformProcess::GetCurrentProcessId());
-			FProcHandle H = FPlatformProcess::CreateProc(TEXT("/usr/bin/open"), *Args, true, true, true, nullptr, 0, nullptr, nullptr);
+			FProcHandle H = FPlatformProcess::CreateProc(TEXT("/bin/sh"), *FString::Printf(TEXT("\"%s\""), *Script), true, true, true, nullptr, 0, nullptr, nullptr);
 			FPlatformProcess::CloseProc(H);
-			LastState = TEXT("starting");
+			LastState = TEXT("building the helper");
 		}
 		else
 		{
-			LastState = TEXT("no helper (tools/headtracker/build.sh)");
+			LastState = TEXT("no helper");
 		}
-		bLaunched = true;
+		bBuilding = true;
 	}
 #endif
 }
@@ -78,6 +98,11 @@ void FHeadTracker::Poll()
 	if (Socket < 0)
 	{
 		return;
+	}
+	if (!bLaunched && bBuilding && FPlatformTime::Seconds() - LastLaunchTry > 1.0)
+	{
+		LastLaunchTry = FPlatformTime::Seconds();
+		Launch();
 	}
 	TArray<FString> Signs;
 	CVarSigns.GetValueOnGameThread().ParseIntoArrayWS(Signs);

@@ -4,6 +4,7 @@
 #include "BirdFlightModel.h"
 #include "BirdHud.h"
 #include "BirdSelfBody.h"
+#include "Birds/BirdActor.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
@@ -29,6 +30,7 @@ namespace
 	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
 	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
 	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
+	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 150.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -81,8 +83,28 @@ ABirdPawn::ABirdPawn()
 
 ABirdPawn::~ABirdPawn() = default;
 
-void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding)
+void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const FVector& VelocityCm, bool bStanding, ABirdActor* Outside)
 {
+	OutsideBody = Outside;
+	bOwnOutsideBody = Outside == nullptr;
+	if (!OutsideBody && GetWorld())
+	{
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		P.bDeferConstruction = true;
+		if (ABirdActor* A = GetWorld()->SpawnActor<ABirdActor>(ABirdActor::StaticClass(), FTransform(FRotator(0.f, Yaw, 0.f), Location), P))
+		{
+			A->Species = InSpecies;
+			A->InitialState = bStanding ? EBirdState::Perch : EBirdState::Fly;
+			A->FinishSpawning(FTransform(FRotator(0.f, Yaw, 0.f), Location));
+			OutsideBody = A;
+		}
+	}
+	if (OutsideBody)
+	{
+		OutsideBody->SetSpecies(InSpecies);
+		OutsideBody->SetActorEnableCollision(false);
+	}
 	Species = InSpecies;
 	FBirdSpecies Row;
 	if (const FBirdSpecies* Found = UBirdSpeciesLibrary::Find(InSpecies))
@@ -175,6 +197,11 @@ void ABirdPawn::UnPossessed()
 
 void ABirdPawn::EndPlay(const EEndPlayReason::Type Reason)
 {
+	if (OutsideBody && bOwnOutsideBody)
+	{
+		OutsideBody->Destroy();
+	}
+	OutsideBody = nullptr;
 	SBirdHud::Remove(Hud);
 	Hud.Reset();
 	Tracker->Stop();
@@ -351,6 +378,7 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	Ruffle = FMath::Max(0.f, Ruffle - Dt * 0.8f);
 	UpdateBody(Dt);
 	UpdateHead(C, Dt);
+	UpdateOutsideBody(Dt);
 }
 
 void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
@@ -764,8 +792,10 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	FRotator Gaze = Aim;
 	Gaze.Yaw += FreeHead.Yaw + TrackHead.Yaw * TrackWeight;
 	Gaze.Pitch = FMath::Clamp(FRotator::NormalizeAxis(Aim.Pitch) + FreeHead.Pitch + TrackHead.Pitch * TrackWeight, -88.f, 88.f);
-	// a bird holds its head level: only a quarter of the body's roll reaches the eye
-	Gaze.Roll = (Mode == EBirdMode::Air ? BodyRot.Roll * 0.25f : 0.f) + TrackHead.Roll * TrackWeight;
+	// a bird holds its head level: only a quarter of the body's roll reaches the eye, at most 8 degrees
+	// (and none while slow: at a take-off the body swings about, the eye stays level)
+	const float RollShare = Mode == EBirdMode::Air ? 0.25f * FMath::Clamp((float)((BirdFlight::Speed(*Flight) - Params->Stall) / Params->Stall), 0.f, 1.f) : 0.f;
+	Gaze.Roll = FMath::Clamp(BodyRot.Roll * RollShare, -8.f, 8.f) + TrackHead.Roll * TrackWeight;
 	const float Peck = FMath::Sin(PI * FMath::Clamp(PeckT / 0.35f, 0.f, 1.f));
 	Gaze.Pitch -= Peck * 55.f;
 	if (Jolt > 0.f)
@@ -777,7 +807,10 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 	// the eye on the body (the neck is short); walking pigeons nod, hopping birds bob
 	// the neck stretches the head up as it turns round, so a look over the shoulder sees the wing from above
 	const float Turn = FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gaze.Yaw - BodyRot.Yaw)) / 90.f, 0.f, 1.f);
-	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 0.9f * Turn);
+	FVector Eye = BodyRot.RotateVector(Body->EyeOffset()) + FVector(0, 0, Body->BodyRadius() * 1.4f * Turn);
+	// looking down, the head draws back and up over the breast, so the bird sees its own breast and feet
+	const float Down = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gaze.Pitch) - 30.f) / 40.f, 0.f, 1.f);
+	Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * (-Body->TorsoLength() * 0.5f * Down) + FVector(0, 0, Body->BodyRadius() * 0.8f * Down);
 	if (Mode == EBirdMode::Ground)
 	{
 		const float Nod = Params->Hops ? 0.f : FMath::Sin(StepPhase * 2.f * PI) * Body->BodyRadius() * 0.35f;
@@ -830,16 +863,78 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		// the view turns early and settles: the eye finds the target first
 		const float R = Ease(FMath::Clamp(T * 1.35f, 0.f, 1.f));
 		OutResult.Location = P;
-		OutResult.Rotation = FQuat::Slerp(A.Rotation.Quaternion(), B.Rotation.Quaternion(), R).Rotator();
+		// yaw and pitch turn separately, so the horizon stays level all the way (a quaternion slerp between
+		// two views rolls through a Dutch tilt)
+		OutResult.Rotation = FRotator(FMath::Lerp(FRotator::NormalizeAxis(A.Rotation.Pitch), FRotator::NormalizeAxis(B.Rotation.Pitch), R),
+		                              A.Rotation.Yaw + FRotator::NormalizeAxis(B.Rotation.Yaw - A.Rotation.Yaw) * R,
+		                              FMath::Lerp(FRotator::NormalizeAxis(A.Rotation.Roll), FRotator::NormalizeAxis(B.Rotation.Roll), R));
 		OutResult.FOV = FMath::Lerp(A.FOV, B.FOV, E);
 		OutResult.PerspectiveNearClipPlane = FMath::Lerp(bIn ? 4.f : NearClip, bIn ? NearClip : 4.f, E);
 		const float ToEye = FVector::Dist(P, Head->GetComponentLocation());
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
-	Body->SetShown(true, Inside < 0.5f);
+	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird
+	bInsideView = Inside > 0.5f;
+	Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
+	if (OutsideBody)
+	{
+		OutsideBody->SetActorHiddenInGame(bInsideView);
+	}
+	if (Inside > 0.5f)
+	{
+		// the bird's own body with a far wider view than the screen's: the wings beside it reach into the
+		// screen's edges; turning the head to look at a wing brings back its true shape
+		const FRotator Gz = Head->GetComponentRotation();
+		const float LookDown = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gz.Pitch) - 30.f) / 30.f, 0.f, 1.f);
+		const float Turn = FMath::Max(FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gz.Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f), LookDown);
+		const float WideFov = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
+		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation,
+			FMath::Tan(FMath::DegreesToRadians(OutResult.FOV * 0.5f)) / FMath::Tan(FMath::DegreesToRadians(FMath::Min(WideFov, 170.f) * 0.5f)));
+		Body->SetViewForward((1.f - Turn) * (Mode == EBirdMode::Air ? 1.f : 0.f));
+	}
+	else
+	{
+		Body->SetViewForward(0.f);
+		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation, 1.f);
+	}
+	// no motion blur: the wings and the ground smear at a bird's speeds
 	OutResult.PostProcessSettings.bOverride_MotionBlurAmount = true;
-	OutResult.PostProcessSettings.MotionBlurAmount = 0.08f;
+	OutResult.PostProcessSettings.MotionBlurAmount = 0.f;
 	OutResult.PostProcessBlendWeight = 1.f;
+}
+
+void ABirdPawn::UpdateOutsideBody(float Dt)
+{
+	ABirdActor* A = OutsideBody.Get();
+	if (!A)
+	{
+		return;
+	}
+	// the actor's origin is between its feet: below the body's centre along its up
+	const FQuat Q = BodyRot.Quaternion();
+	A->SetActorLocationAndRotation(GetActorLocation() - Q.GetUpVector() * Body->StandHeight(), Q);
+	A->SetVelocity(GetVelocityCm());
+	A->SetLookTarget(Head->GetComponentLocation() + Head->GetForwardVector() * 500.f, true);
+	const BirdFlight::FState& S = *Flight;
+	EBirdState Want = A->GetState();
+	if (Mode == EBirdMode::Air)
+	{
+		const bool bBeat = S.BurstL > 0 || S.BurstR > 0;
+		Want = bBeat ? EBirdState::Fly : EBirdState::Glide;
+		A->SetFlightInput(bBeat ? 1.f : 0.f, 1.f - 0.5f * (float)(S.SpreadL + S.SpreadR), FMath::Clamp((float)S.Bank / 1.2f, -1.f, 1.f),
+		                  FMath::Clamp(-BodyRot.Pitch / 60.f + Flare, -1.f, 1.f), true);
+	}
+	else if (Mode == EBirdMode::Ground)
+	{
+		A->SetFlightInput(0.f, 1.f, 0.f, 0.f, false);
+		if (PeckT > 0.3f) Want = EBirdState::Peck;
+		else if (bHopping || !GetVelocityCm().IsNearlyZero()) Want = Params->Hops ? EBirdState::Hop : EBirdState::Walk;
+		else if (A->GetState() != EBirdState::Peck) Want = EBirdState::Perch;
+	}
+	if (Want != A->GetState())
+	{
+		A->SetState(Want);
+	}
 }
 
 void ABirdPawn::PlayCall()
@@ -860,7 +955,7 @@ void ABirdPawn::PlayCall()
 FString ABirdPawn::DebugLine() const
 {
 	const TCHAR* ModeName = Mode == EBirdMode::Air ? TEXT("air") : Mode == EBirdMode::Ground ? TEXT("ground") : Mode == EBirdMode::Arriving ? TEXT("arriving") : TEXT("leaving");
-	return FString::Printf(TEXT("%s %s  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s"),
+	return FString::Printf(TEXT("%s %s  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
 		*Species.ToString(), ModeName, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
-		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State());
+		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
 }

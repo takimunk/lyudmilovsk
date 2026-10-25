@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_night.1",
+ "lang": "ja",
+ "text": "いま太陽は地球の裏側だ。心配いらん。必ず戻ってくる。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] いま太陽は地球の裏側だ。心配いらん。必ず戻ってくる。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-fd71-7792-bc03-546b0443674c",
+ "hash": "aba72c170a18"
+}

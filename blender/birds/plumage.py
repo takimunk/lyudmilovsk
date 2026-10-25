@@ -39,7 +39,7 @@ SHAPES = {
 CELL = {
     "primary": (96, 576), "secondary": (96, 480), "tertial": (96, 416), "tail": (96, 528),
     "gcovert": (80, 256), "pcovert": (64, 224), "underwing": (64, 224), "alula": (48, 192), "scapular": (80, 192),
-    "contour": (96, 96), "crest": (48, 192),
+    "contour": (96, 96), "crest": (48, 192), "plume": (96, 96),
 }
 
 
@@ -98,8 +98,11 @@ def outline_long(w, h, kind, seed, emarg=0.0, narrow=1.0, pointed=0.0):
     return a, s, t, barb, lim
 
 
-def outline_contour(n, seed, w=None, h=None, slim=1.0):
-    """Body (contour) feather: rounded, a fluffy base (Murmuration's paint_contour outline)."""
+def outline_contour(n, seed, w=None, h=None, slim=1.0, core=0.78, reach=1.15):
+    """Body (contour) feather: a closed vane in the middle, then the barbs part toward the margin into separate
+    strands that end at different lengths (what makes plumage read soft, not cut out), and a fluffy base.
+    Alpha is soft (0..1) at the strand tips: the plumage material dithers it. core: where the vane opens into strands
+    (fraction of the outline), reach: how far the longest strands go past it. A plume (fluff) feather is mostly strands."""
     w = w or n
     h = h or n
     R = np.random.default_rng(seed)
@@ -110,7 +113,14 @@ def outline_contour(n, seed, w=None, h=None, slim=1.0):
                   np.sqrt(np.clip(1 - ((t - 0.55) / 0.45) ** 2, 0, 1))) * 0.92 * slim
     barb = (t * h - np.abs(s) * w * 0.7) * 0.6
     lim = wv * (0.9 + 0.1 * np.sin(barb * 1.1 + R.uniform(0, 6)))
-    a = (np.abs(s) < lim).astype(float)
+    rel = np.abs(s) / np.maximum(lim, 1e-4)            # 0 at the shaft, 1 at the outline
+    # strands: one per barb line, each with its own length past the closed vane
+    k = np.floor(barb * 0.9 + 0.5 * (s > 0))
+    strand_len = core + (reach - core) * np.abs(np.sin(k * 12.9898 + seed) * 43758.5453 % 1.0)
+    across = np.abs(np.sin(barb * 0.9 * math.pi))       # 0 between strands, 1 on a strand
+    on_strand = across > 0.35 + 0.4 * np.clip((rel - core) / (reach - core + 1e-6), 0, 1)
+    a = np.where(rel < core, 1.0, np.where(on_strand, np.clip((strand_len - rel) / 0.08, 0, 1), 0.0))
+    a = np.where(wv <= 1e-3, 0.0, a)
     down = t < 0.22
     a = np.where(down, a * (R.random((h, w)) > 0.35), a)
     return a, s, t, barb, lim
@@ -216,8 +226,11 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
 
 def paint_cell(kind, style, w, h, seed, shape):
     """shape: per-species outline knobs for this kind (emarg, narrow, pointed, slim)."""
-    if kind in ("contour", "crest"):
-        a, s, t, barb, lim = outline_contour(w, seed, w, h, slim=shape.get("slim", 1.0 if kind == "contour" else 0.55))
+    if kind in ("contour", "crest", "plume"):
+        if kind == "plume":
+            a, s, t, barb, lim = outline_contour(w, seed, w, h, slim=1.05, core=0.35, reach=1.2)
+        else:
+            a, s, t, barb, lim = outline_contour(w, seed, w, h, slim=shape.get("slim", 1.0 if kind == "contour" else 0.55))
         contour = True
     else:
         a, s, t, barb, lim = outline_long(w, h, kind, seed, emarg=shape.get("emarg", 0.0), narrow=shape.get("narrow", 1.0),

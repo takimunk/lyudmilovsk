@@ -101,6 +101,10 @@ namespace
 			};
 			Ints(TEXT("months"), S.Months);
 			Ints(TEXT("winterMonths"), S.WinterMonths);
+			FString Dimorphism;
+			S.bFemalePlumage = O->TryGetStringField(TEXT("dimorphism"), Dimorphism) && Dimorphism == TEXT("plumage");
+			O->TryGetNumberField(TEXT("femaleScale"), S.FemaleScale);
+			O->TryGetNumberField(TEXT("femaleStreamer"), S.FemaleStreamer);
 			const TArray<TSharedPtr<FJsonValue>>* Winter;
 			if (O->TryGetArrayField(TEXT("winterPalette"), Winter))
 			{

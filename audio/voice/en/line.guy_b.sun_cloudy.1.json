@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_cloudy.1",
+ "lang": "en",
+ "text": "Too bad the sun's gone behind the clouds. I can actually feel it, don't laugh.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Too bad the sun's gone behind the clouds. I can actually feel it, don't laugh.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172ca-8247-7de3-b2db-d1d2e7d3b895",
+ "hash": "30e7405e15e8"
+}

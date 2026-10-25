@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.sun_day.1",
+ "lang": "ja",
+ "text": "一度、太陽を描いたことがあります。黄色いセルが九百個。そのあと、シートがあたたかかった。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] 一度、太陽を描いたことがあります。黄色いセルが九百個。そのあと、シートがあたたかかった。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-4152-7f41-a6ac-6940dd0d11a3",
+ "hash": "ad362f507506"
+}

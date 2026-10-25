@@ -17,6 +17,7 @@
 #include "HeroSeat.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "Sky/LyudSky.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "InputCoreTypes.h"
@@ -114,11 +115,37 @@ void UNpcDialogueSubsystem::Reload()
 		{
 			Current->Again.Add(ParseExchange(Value));
 		}
+		else if (Key.StartsWith(TEXT("sun.")))
+		{
+			Current->Sun.Add(FName(Key.Mid(4)), ParseExchange(Value));
+		}
 	}
 	UE_LOG(LogTemp, Log, TEXT("NpcDialogue: %d characters from %s"), Characters.Num(), *Path);
 }
 
-TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id)
+static TAutoConsoleVariable<int32> CVarOvercast(TEXT("lyud.Overcast"), 0,
+	TEXT("1: the sky counts as overcast for what people say about the sun (until there is weather)"));
+
+FName UNpcDialogueSubsystem::NpcSunState(const UWorld* World)
+{
+	TActorIterator<ALyudSky> Sky(const_cast<UWorld*>(World));
+	if (!Sky)
+	{
+		return NAME_None;
+	}
+	const float Altitude = Sky->SunAltitude();
+	if (Altitude < -4.f)
+	{
+		return TEXT("night");
+	}
+	if (CVarOvercast.GetValueOnGameThread() > 0)
+	{
+		return TEXT("cloudy");
+	}
+	return Altitude < 10.f ? TEXT("low") : TEXT("day");
+}
+
+TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 {
 	const FNpcLines* Npc = Characters.Find(Id);
 	if (!Npc)
@@ -134,6 +161,14 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id)
 	if (Npc->Again.Num() == 0)
 	{
 		return Npc->First;
+	}
+	// every third later talk, if they have something to say about what the sun is doing now (quietly, not every time)
+	if (Held % 3 == 2)
+	{
+		if (const TArray<FNpcLine>* SunLines = Npc->Sun.Find(SunState))
+		{
+			return *SunLines;
+		}
 	}
 	// later talks go through the exchanges in turn (the first talk did not use one)
 	const int32 Skip = Npc->First.Num() > 0 ? 1 : 0;
@@ -562,12 +597,13 @@ void ANpcTalkDirector::Interact()
 	}
 	if (UNpcDialogueSubsystem* D = Dialogue())
 	{
-		Lines = D->StartTalk(People[TargetIndex].Id);
+		const FName SunState = UNpcDialogueSubsystem::NpcSunState(GetWorld());
+		Lines = D->StartTalk(People[TargetIndex].Id, SunState);
 		if (Lines.Num() > 0)
 		{
 			TalkingIndex = TargetIndex;
 			LineIndex = 0;
-			UE_LOG(LogTemp, Log, TEXT("NpcDialogue: talking to %s (%d lines)"), *People[TalkingIndex].Id.ToString(), Lines.Num());
+			UE_LOG(LogTemp, Log, TEXT("NpcDialogue: talking to %s (%d lines, sun %s)"), *People[TalkingIndex].Id.ToString(), Lines.Num(), *SunState.ToString());
 			ShowLine();
 		}
 	}

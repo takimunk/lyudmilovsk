@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_girl.sun_day.1",
+ "lang": "ru",
+ "text": "А солнце нас видит? Даже отсюда?",
+ "speaker": "kid_girl",
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "А солнце нас видит? Даже отсюда?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a172c9-93a8-7210-a92d-a3618da02acf",
+ "hash": "55c64f84f85e"
+}

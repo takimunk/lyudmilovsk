@@ -57,6 +57,8 @@ struct FBirdAnimProxy : public FAnimInstanceProxy
 	/** Body roll / tail twist added on top (player flight), degrees. */
 	float BankDeg = 0.f;
 	float TailPitchDeg = 0.f;
+	/** Length of the outermost tail feathers (a female swallow's shorter streamers). */
+	float StreamerScale = 1.f;
 };
 
 UCLASS(Transient, NotBlueprintable)
@@ -80,6 +82,7 @@ public:
 	FBirdLook Look;
 	float BankDeg = 0.f;
 	float TailPitchDeg = 0.f;
+	float StreamerScale = 1.f;
 
 protected:
 	virtual FAnimInstanceProxy* CreateAnimInstanceProxy() override { return new FBirdAnimProxy(this); }

@@ -393,6 +393,7 @@ namespace LyudBirds
 					B.Rng = (R ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
 					Rand(B.Rng);
 					B.Boldness = 0.6f + 0.8f * Rand(B.Rng);
+					B.bFemale = Rand(B.Rng) < 0.5f;
 					B.Hunger = 0.3f + 0.5f * Rand(B.Rng);
 					B.Phase = Rand(B.Rng) * 10.f;
 					B.CallTimer = 2.f + Rand(B.Rng) * 30.f;
@@ -504,6 +505,7 @@ namespace LyudBirds
 		Rand(B.Rng);
 		B.Boldness = 1.f;
 		B.Hunger = 0.7f;
+		B.bFemale = Rand(B.Rng) < 0.5f;
 		B.Yaw = Rand(B.Rng) * 2.f * Pi;
 		B.CallTimer = 3.f + Rand(B.Rng) * 10.f;
 		SetAct(B, EAct::Peck, 1.f);

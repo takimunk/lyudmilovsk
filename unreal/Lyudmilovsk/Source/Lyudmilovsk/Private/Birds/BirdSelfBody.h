@@ -55,6 +55,21 @@ public:
 	float BodyRadius() const { return Radius; }
 	/** Show or hide the whole bird (the camera flight in and out shows it from outside). */
 	void SetShown(bool bShown, bool bWithHead);
+	/** Seen from its own eye: the wings are drawn as through a wider lens (K = tan(screen half-FOV) /
+	 *  tan(wide half-FOV)), pulled toward the line of sight so the wings beside the bird reach into the
+	 *  screen's edges. K = 1 is the true view. */
+	void SetViewSqueeze(const FVector& CamLoc, const FRotator& CamRot, float K)
+	{
+		// kept in the body's space
+		ViewLoc = GetComponentTransform().InverseTransformPosition(CamLoc);
+		ViewRot = (GetComponentQuat().Inverse() * CamRot.Quaternion()).Rotator();
+		ViewK = FMath::Clamp(K, 0.05f, 1.f);
+	}
+	/** 0..1: in first person, how far the wings are drawn forward of their roots, beside the eye instead of
+	 *  behind it (with the wide first-person view that puts them at the screen's edges). */
+	void SetViewForward(float Amount) { ViewForward = FMath::Clamp(Amount, 0.f, 1.f); }
+	/** Torso length, cm. */
+	float TorsoLength() const { return L; }
 
 	static const FName FeatherMaterialPath;
 	static const FName BodyMaterialPath;
@@ -101,4 +116,9 @@ private:
 	FVector Eye = FVector::ZeroVector, Neck = FVector::ZeroVector;
 	float Stand = 3.f, Radius = 2.f;
 	TArray<FVector> LegRest;
+	float ViewForward = 0.f;
+	FVector ViewLoc = FVector::ZeroVector;
+	FRotator ViewRot = FRotator::ZeroRotator;
+	float ViewK = 1.f;
+	FVector Squeeze(const FVector& Local) const;
 };

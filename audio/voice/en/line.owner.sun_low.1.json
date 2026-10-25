@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_low.1",
+ "lang": "en",
+ "text": "Sunset soon. Around this time my chest always gets warm. I don't know why.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Sunset soon. Around this time my chest always gets warm. I don't know why.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172ca-f0d5-7792-a606-b63b9bfee282",
+ "hash": "d9bb9d1c28b8"
+}

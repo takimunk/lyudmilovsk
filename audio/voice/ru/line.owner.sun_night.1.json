@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_night.1",
+ "lang": "ru",
+ "text": "Солнце сейчас по ту сторону земли. Ничего. Оно всегда возвращается.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Солнце сейчас по ту сторону земли. Ничего. Оно всегда возвращается.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172ca-18a1-7ef2-b02d-96dcdec32890",
+ "hash": "357783c3b510"
+}

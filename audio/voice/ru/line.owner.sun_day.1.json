@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_day.1",
+ "lang": "ru",
+ "text": "Там сейчас солнце высоко. Я чувствую его затылком, даже отсюда.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Там сейчас солнце высоко. Я чувствую его затылком, даже отсюда.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172c9-f142-7d01-9b63-c624e8bb4edf",
+ "hash": "0075bd5fd597"
+}

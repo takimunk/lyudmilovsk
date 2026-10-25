@@ -68,14 +68,28 @@ for sid in ids:
     L = TABLE[sid]["lengthCm"]
     span = TABLE[sid]["wingspanCm"]
     for kind, z, state in (("Perched", 0.0, unreal.BirdState.PERCH), ("Flying", 60.0 + span, unreal.BirdState.FLY)):
-        a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x, 0, z), unreal.Rotator(0, 0, 0))
+        cling = TABLE[sid]["gait"] == "Cling" and kind == "Perched"
+        # a clinging swift faces away from the sun (-X), its wall on that side, so its back and wings are lit
+        a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x, 0, z), unreal.Rotator(0, 180 if cling else 0, 0))
         a.set_actor_label("%s_%s" % (kind, sid))
         a.set_editor_property("species", sid)
         a.set_editor_property("initial_state", state)
         a.set_editor_property("seed", len(sid) * 7 + int(z))
         a.get_editor_property("body").set_skinned_asset_and_update(mesh)
+    sp = TABLE[sid]
+    if sp.get("dimorphism") == "plumage" or sp.get("femaleScale", 1.0) != 1.0 or sp.get("femaleStreamer", 1.0) != 1.0:
+        # the female beside the male, and a camera on the pair
+        f = eas.spawn_actor_from_class(bird_cls, unreal.Vector(x + L * 1.15, 0, 0), unreal.Rotator(0, 0, 0))
+        f.set_actor_label("Female_%s" % sid)
+        f.set_editor_property("species", sid)
+        f.set_editor_property("sex", unreal.BirdSex.FEMALE)
+        f.set_editor_property("seed", len(sid) * 11)
+        f.get_editor_property("body").set_skinned_asset_and_update(mesh)
+        cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x + L * 0.55, -L * 3.4, L * 0.55), unreal.Rotator(0, -6, 90))
+        cam.set_actor_label("Pair_%s" % sid)
+        cam.camera_component.set_editor_property("field_of_view", 40.0)
     if TABLE[sid]["gait"] == "Cling":   # a swift clings to a wall, belly to it
-        wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x + L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
+        wall = eas.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(x - L * 0.32, 0, 15), unreal.Rotator(0, 0, 0))
         wall.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube"))
         wall.set_actor_scale3d(unreal.Vector(0.03, 0.8, 0.6))
         wall.static_mesh_component.set_material(0, grass)
@@ -97,5 +111,19 @@ for sid in ids:
             cam.set_actor_label("Dist_%s_%06.1fm" % (sid, dm))
             cam.camera_component.set_editor_property("field_of_view", 50.0)
     x += max(span, 60) * 1.6
+# a lineup at true scale, one camera on all of it (each species' own cameras frame it to its size)
+LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Jackdaw", "Rook", "HoodedCrow",
+          "HerringGull", "Cormorant"]
+lx = 0.0
+for sid in [i for i in LINEUP if i in ids]:
+    L = TABLE[sid]["lengthCm"]
+    a = eas.spawn_actor_from_class(bird_cls, unreal.Vector(lx + L * 0.5, 1500, 0), unreal.Rotator(0, 0, 0))
+    a.set_actor_label("Lineup_" + sid)
+    a.set_editor_property("species", sid)
+    a.get_editor_property("body").set_skinned_asset_and_update(unreal.load_asset("/Game/Birds/%s/SK_%s" % (sid, sid)))
+    lx += L + 12.0
+cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(lx * 0.5, 1500 - lx * 0.72, 45), unreal.Rotator(0, -3, 90))
+cam.set_actor_label("Lineup_all")
+cam.camera_component.set_editor_property("field_of_view", 70.0)
 les.save_current_level()
 unreal.log_warning("BIRDS level saved with %d species" % len(ids))

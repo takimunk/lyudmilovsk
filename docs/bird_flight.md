@@ -57,8 +57,14 @@ flare. Turn the head (C or AirPods) and you see the whole wing: separate primari
 coverts, the tips bending up under load and fluttering at speed, the wing folding in when you hold both
 buttons. The view is wide (100 degrees, up to 108 at speed), because a bird's is.
 
+**Seeing your wings.** A bird sees almost all the way round; a 100 degree screen does not. So the
+bird's own body is drawn with a far wider first-person field of view (150 degrees, `lyud.Bird.WingFov`), and the spread wings are drawn swept a little forward from beside the eye:
+the spread wings beside you reach into the left and right edges of the screen and sweep through them
+with every beat. Turning the head toward a wing eases that back to the true view.
+
 **Comfort.** The head-stabilised camera is also what keeps this from making anyone sick: the horizon
-stays put, there is no camera bob from the wings, the field of view changes only with airspeed and slowly.
+stays put (at most 8 degrees of the body's roll reach it, none while slow), there is no camera bob from the
+wings, no motion blur, and the field of view changes only with airspeed and slowly.
 
 ## Flight
 
@@ -106,12 +112,13 @@ Space does when held:
 | Clapping | pigeon take-off | loud first beats, a climb at a steep angle |
 | Flicker | swift, swallow, martins | very fast, very agile, flickering beats, sharp turns |
 
-Speeds are real birds' (a sparrow cruises at ~8 m/s, a pigeon at ~17, a swift at ~25).
+Holding Space flies level at the species table's cruise speed (a sparrow 10 m/s, a pigeon 17, a swift 15,
+a gull 11): the model tunes each species' wingbeat thrust to it when the bird is made.
 
 ## Becoming the bird and back
 
 The befriending thread calls `UBirdFlightSubsystem::BecomeBird(PlayerController, BirdId)` after the bird
-has pecked from the hand. It claims the bird from bird life (`UBirdLifeSubsystem::ClaimBird`), and the
+has pecked from the hand; the bird turns round on the palm to face where the hero looks. It claims the bird from bird life (`UBirdLifeSubsystem::ClaimBird`), and the
 camera flies from the hero's eyes along a short arc to the bird's eye (about 1.6 s, eased, the view
 widening to the bird's), with no cut and no black frame. Then the player controls a `ABirdPawn` at the
 bird's place; the hero stays where he crouched.
@@ -141,7 +148,7 @@ Saving while a bird saves the game as the hero standing where he is; loading put
 CoreMotion's headphone motion needs an app whose Info.plist explains why it uses motion
 (`NSMotionUsageDescription`), and the editor's own app has none, so the tracking runs in a tiny helper app,
 `tools/headtracker/` (Swift, builds with `tools/headtracker/build.sh` into
-`Saved/HeadTracker/LyudHeadTracker.app`). The game starts it while you are a bird and reads the head pose
+`Saved/HeadTracker/LyudHeadTracker.app`; the first flight on a Mac runs that build by itself). The game starts it while you are a bird and reads the head pose
 over a localhost UDP socket; the first time macOS asks to allow motion access for it. No AirPods, no
 helper, or another platform: the game simply has no head tracking and C / middle mouse does the looking.
 

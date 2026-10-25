@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_low.1",
+ "lang": "en",
+ "text": "Chat says the sun is setting. I feel it every time, honestly. Right on my skin.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat says the sun is setting. I feel it every time, honestly. Right on my skin.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172cb-143d-7b71-9f73-5a952b935c01",
+ "hash": "1123766e1180"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Жаль, солнце скрылось за облаками. Я это прямо чувствую, не смейся.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Жаль, солнце скрылось за облаками. Я это прямо чувствую, не смейся.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172c9-6cac-7241-950d-a9801fdc5bc4",
+ "hash": "e353d29a4e9f"
+}

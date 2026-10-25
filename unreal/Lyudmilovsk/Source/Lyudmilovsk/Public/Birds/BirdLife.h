@@ -39,6 +39,8 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 	/** Has it noticed the player (and is it watching them)? */
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bNoticed = false;
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bWatching = false;
+	/** Half the birds of each species are females (fixed per bird). */
+	UPROPERTY(BlueprintReadOnly, Category = "Birds") bool bFemale = false;
 	/** The bird's body near the player (the species thread's ABirdActor), when it has one; null far away. */
 	UPROPERTY(BlueprintReadOnly, Category = "Birds") TObjectPtr<AActor> Actor = nullptr;
 };
@@ -220,6 +222,7 @@ public:
 private:
 	struct FSpeciesDraw
 	{
+		/** NumPoses components for males, then (species with a female plumage) NumPoses for females. */
 		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Poses;
 		TArray<TArray<FTransform>> Xf;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
@@ -228,6 +231,7 @@ private:
 		float CenterUp = 0.f;
 		bool bOwnMeshes = false;
 		bool bHasBody = false;
+		float FemaleScale = 1.f;
 	};
 	TArray<FSpeciesDraw> Species;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> PlaceholderMeshes;

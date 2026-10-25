@@ -64,7 +64,18 @@ namespace
 		}
 		for (const FIntVector3& T : D.Tri)
 		{
-			MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+			// Unreal's front face normal is (P2 - P0) x (P1 - P0): wind every triangle to face the way its
+			// authored normals point (a shell seen from inside lights backwards and glows against the sun)
+			const FVector3f Front = FVector3f::CrossProduct(D.Pos[T.Z] - D.Pos[T.X], D.Pos[T.Y] - D.Pos[T.X]);
+			const FVector3f Want = D.Nrm[T.X] + D.Nrm[T.Y] + D.Nrm[T.Z];
+			if (FVector3f::DotProduct(Front, Want) >= 0.f)
+			{
+				MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+			}
+			else
+			{
+				MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Z], Inst[T.Y] });
+			}
 		}
 		UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, Name, RF_Transient);
 		Mesh->GetStaticMaterials().Add(FStaticMaterial(Material, TEXT("Bird")));
@@ -256,7 +267,7 @@ UBirdSelfBody::UBirdSelfBody()
 namespace
 {
 	/** M_BirdBody painted: Mode 0 a shell (Top above, Bottom below), 1 a beak (root to tip), 2 one colour. */
-	UMaterialInterface* Paint(UObject* Outer, UMaterialInterface* Base, const FLinearColor& Top, const FLinearColor& Bottom, float Mode, float Roughness = 0.6f)
+	UMaterialInterface* Paint(UObject* Outer, UMaterialInterface* Base, const FLinearColor& Top, const FLinearColor& Bottom, float Mode, float Roughness = 0.6f, float Specular = 0.1f)
 	{
 		if (!Base)
 		{
@@ -267,6 +278,7 @@ namespace
 		M->SetVectorParameterValue(TEXT("Bottom"), Bottom);
 		M->SetScalarParameterValue(TEXT("Mode"), Mode);
 		M->SetScalarParameterValue(TEXT("Roughness"), Roughness);
+		M->SetScalarParameterValue(TEXT("Specular"), Specular);
 		return M;
 	}
 }
@@ -348,18 +360,18 @@ void UBirdSelfBody::Build(FName SpeciesId, float LengthCm, float WingspanCm, USc
 	BuildBodyFeathers(Look);
 
 	// --- the body under the feathers, the head (shown from outside), the beak on the head
-	Shell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfShell"), FVector3f(A * 0.92f, HalfW * 0.9f, HalfH * 0.9f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), this, TEXT("Shell"));
-	Shell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.75f));
+	Shell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfShell"), FVector3f(A * 0.88f, HalfW * 0.84f, HalfH * 0.84f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), this, TEXT("Shell"));
+	Shell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.95f, 0.08f));
 	if (Head)
 	{
 		UStaticMeshComponent* HeadShell = AddPart(EllipsoidMesh(this, TEXT("SM_SelfHead"), FVector3f(HeadR * 1.1f, HeadR * 0.85f, HeadR * 0.9f), Look.Back.Paint.Base, Look.Breast.Paint.Base, BodyMaterial), Head, TEXT("HeadShell"));
 		HeadShell->SetRelativeLocation(HeadCentre - Eye);
-		HeadShell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.75f));
+		HeadShell->SetMaterial(0, Paint(this, BodyMaterial, Look.Back.Paint.Base, Look.Breast.Paint.Base, 0.f, 0.95f, 0.08f));
 		HeadShell->ComponentTags.Add(TEXT("BirdHead"));
 		Beak = AddPart(BeakMesh(this, Look.BeakCm, Look.BeakCm * Look.BeakDepth, Look.BeakHook, Look.BeakBase, Look.Beak, BodyMaterial), Head, TEXT("Beak"));
-		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.35f));
+		Beak->SetMaterial(0, Paint(this, BodyMaterial, Look.BeakBase, Look.Beak, 1.f, 0.35f, 0.35f));
 		// below the eye line, so it sits at the bottom of the view like a bird's own beak
-		Beak->SetRelativeLocationAndRotation(HeadCentre - Eye + FVector(HeadR * 0.8f, 0.f, -HeadR * 0.3f), FRotator(-14.f, 0.f, 0.f));
+		Beak->SetRelativeLocationAndRotation(HeadCentre - Eye + FVector(HeadR * 0.75f, 0.f, -HeadR * 0.55f), FRotator(-24.f, 0.f, 0.f));
 	}
 
 	// --- legs: tarsus and four toes each side
@@ -525,6 +537,9 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	Th[2] = FMath::Lerp(Th[2], 2.f, Pose.Flare * E);
 
 	FVector P0 = Shoulder * FVector(1, Side, 1);
+	// seen from its own eye, the wing is drawn from beside the head and swept forward (a view of it, not its
+	// anatomy): its outer half then reaches into the screen's left and right edges and beats through them
+	P0 = FMath::Lerp(P0, FVector(Eye.X, Side * HalfW, Eye.Z - HalfH * 0.35f), ViewForward);
 	// folded, the wing lies on the flank, a little lower
 	P0.Z -= (1.f - E) * HalfH * 0.25f;
 	FVector Dir[3], Joint[4];
@@ -543,7 +558,7 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	}
 	Phi += Pose.Flare * 0.45f;
 	const float Elev = Side * Phi;
-	const FQuat Raise(FVector::XAxisVector, Elev);
+	const FQuat Raise = FQuat(FVector::XAxisVector, Elev) * FQuat(FVector::ZAxisVector, FMath::DegreesToRadians(-Side * 32.f * ViewForward));
 	// the downstroke pitches the leading edge down a little (pronation)
 	const float Twist = bBeat ? -0.18f * FMath::Sin(2.f * PI * Phase) : 0.f;
 	auto ToBody = [&](const FVector& Flat) { return P0 + Raise.RotateVector(Flat - P0); };
@@ -560,8 +575,19 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 		const float Flutter = (Speed01 * Speed01 * 0.05f + Pose.Ruffle * 0.25f) * (0.3f + Outerness) * FMath::Sin(Time * (26.f + 9.f * F.Phase) + F.Phase * 7.f);
 		D = D.RotateAngleAxis(FMath::RadiansToDegrees(Bend + Flutter), Span);
 		N = N.RotateAngleAxis(FMath::RadiansToDegrees(Twist * Outerness), D);
-		const FVector Root = ToBody(FlatRoot) + Normal * F.Layer;
-		Out[F.Instance] = FTransform(FRotationMatrix::MakeFromXZ(D, N).ToQuat(), Root, FVector(F.Length, F.Width, F.Width));
+		FVector Root = ToBody(FlatRoot) + Normal * F.Layer;
+		float Len = F.Length, Wid = F.Width;
+		if (ViewK < 0.999f)
+		{
+			// the wide first-person view: root and tip pulled toward the line of sight like a wider lens would
+			const FVector Tip = Squeeze(Root + D * Len);
+			Root = Squeeze(Root);
+			const FVector Along = Tip - Root;
+			Len = FMath::Max(Along.Size(), 0.01f);
+			D = Along / Len;
+			Wid *= FMath::Lerp(ViewK, 1.f, 0.35f);
+		}
+		Out[F.Instance] = FTransform(FRotationMatrix::MakeFromXZ(D, N).ToQuat(), Root, FVector(Len, Wid, Wid));
 	};
 
 	const FVector Back(-1, 0, 0);
@@ -685,4 +711,18 @@ void UBirdSelfBody::ApplyPose(const FBirdBodyPose& Pose, float Time)
 			Toe->SetRelativeTransform(FTransform(FRotationMatrix::MakeFromX(D).ToQuat(), Foot, Toe->GetRelativeScale3D()));
 		}
 	}
+}
+
+FVector UBirdSelfBody::Squeeze(const FVector& Local) const
+{
+	// in the body's own space (the eye rides with it, so a frame's lag never shakes the wings): the
+	// sideways offset from the line of sight scaled by ViewK
+	const FVector C = Local - ViewLoc;
+	const FVector Fwd = ViewRot.Vector();
+	const float Ahead = FVector::DotProduct(C, Fwd);
+	if (Ahead <= 0.f)
+	{
+		return Local;
+	}
+	return ViewLoc + Fwd * Ahead + (C - Fwd * Ahead) * ViewK;
 }
