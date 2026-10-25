@@ -78,7 +78,8 @@ void ABirdFeedBag::LieDown(const FVector& Pos, const FVector& Along)
 
 ASeedHandful::ASeedHandful()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 	Root->SetMobility(EComponentMobility::Movable);
@@ -131,6 +132,39 @@ void ASeedHandful::Build()
 	}
 	SeedCount = Seeds->GetInstanceCount();
 	MilletCount = Millet->GetInstanceCount();
+}
+
+void ASeedHandful::Spill()
+{
+	if (bFalling)
+	{
+		return;
+	}
+	bFalling = true;
+	FallTime = 0.f;
+	FallVelocity = GetVelocity() + FVector(0.f, 0.f, -40.f);
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	SetActorTickEnabled(true);
+}
+
+void ASeedHandful::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (!bFalling)
+	{
+		return;
+	}
+	// down it goes, the heap spreading as the grains part, and the last of it is gone before it lands for long
+	FallTime += DeltaSeconds;
+	FallVelocity.Z -= 980.f * DeltaSeconds;
+	AddActorWorldOffset(FallVelocity * DeltaSeconds);
+	const float Spread = 1.f + 2.5f * FallTime;
+	SetActorScale3D(FVector(Spread, Spread, FMath::Max(0.2f, 1.f - FallTime)));
+	SetLeft(FMath::Clamp(1.f - FallTime * 0.8f, 0.f, 1.f));
+	if (FallTime > 1.2f)
+	{
+		Destroy();
+	}
 }
 
 void ASeedHandful::SetLeft(float Left)

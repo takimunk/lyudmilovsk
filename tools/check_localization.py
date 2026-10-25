@@ -32,18 +32,6 @@ for st in man["styles"].values():
     used |= set(re.findall(r"<<([^>]+)>>", st))
 for k in used - master.keys():
     print("assets.json uses unknown key %s" % k); bad += 1
-# every in-game item has an icon: an item.<id>.name key needs an icon_<id> asset (assets.json) with a picture in every language
-for k in master:
-    m = re.match(r"item\.(\w+)\.name$", k)
-    if not m:
-        continue
-    icon = "icon_" + m.group(1)
-    if icon not in man["assets"]:
-        print("item %s has no icon asset %s in localization/assets.json" % (m.group(1), icon)); bad += 1
-        continue
-    for l in langs:
-        if l == "ru" and not os.path.exists(os.path.join(ROOT, "textures", "localized", "ru", icon + ".jpg")):
-            print("item %s: icon picture textures/localized/ru/%s.jpg is missing (python3 tools/gen_localized.py %s)" % (m.group(1), icon, icon)); bad += 1
 if "--code" in sys.argv:
     cjk = re.compile(r"[Ѐ-ӿ぀-ヿ一-鿿]")
     src = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source")

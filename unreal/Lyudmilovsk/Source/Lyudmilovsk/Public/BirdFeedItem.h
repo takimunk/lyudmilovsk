@@ -58,6 +58,10 @@ public:
 	/** Share of the handful still there, 1 to 0: seeds go from the top of the heap down. */
 	void SetLeft(float Left);
 
+	/** The palm turned over: the heap comes off the hand and falls, scattering, and is gone in a second. */
+	void Spill();
+	virtual void Tick(float DeltaSeconds) override;
+
 	/** Radius of the heap on the palm, cm. */
 	static constexpr float Radius = 3.2f;
 
@@ -68,4 +72,7 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Millet;
 	int32 SeedCount = 0;
 	int32 MilletCount = 0;
+	bool bFalling = false;
+	float FallTime = 0.f;
+	FVector FallVelocity = FVector::ZeroVector;
 };

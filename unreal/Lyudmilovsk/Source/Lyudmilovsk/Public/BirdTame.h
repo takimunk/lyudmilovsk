@@ -103,6 +103,7 @@ private:
 	FVector BirdOfferAt = FVector::ZeroVector;
 	float SayLeft = 0.f;
 	float LogTimer = 0.f;
+	float SpillCooldown = 0.f;
 
 	bool bDebugWalk = false;
 	FVector DebugTarget = FVector::ZeroVector;

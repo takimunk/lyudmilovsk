@@ -27,9 +27,6 @@ textures: every word is a key in `unreal/Lyudmilovsk/Content/Localization/string
 7. **Test**: `lyud.Language en` / `ja` in the console (or `-ExecCmds="lyud.Language ja"`) and look for raw keys on screen: a key shown as
    itself is missing in that table.
 
-## Items
-Every in-game item also needs an icon (`icon_<id>` in `localization/assets.json`): see the `game-items` skill.
-
 ## Never
 Hard-code a word or a number format; reuse a key for different text; put a plural or gendered form inside one string
 (use two keys); edit a generated texture by hand (change the prompt or the strings and regenerate); commit generated images for a

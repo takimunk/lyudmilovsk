@@ -477,12 +477,7 @@ namespace LyudBirds
 
 	int FWorld::AddBird(int Species, const V3& P)
 	{
-		return AddFlock(Species, P, 1, 1.2f);
-	}
-
-	int FWorld::AddFlock(int Species, const V3& P, int Count, float Radius)
-	{
-		if (Species < 0 || Species >= (int)SpeciesTable().size() || Count <= 0)
+		if (Species < 0 || Species >= (int)SpeciesTable().size())
 		{
 			return -1;
 		}
@@ -490,8 +485,8 @@ namespace LyudBirds
 		FSite Site;
 		Site.Kind = S.Forage[(int)EHabitat::ForestFloor] > S.Forage[(int)EHabitat::Meadow] ? EHabitat::ForestFloor : EHabitat::Meadow;
 		Site.A = Site.B = P;
-		Site.Radius = Radius;
-		Site.Capacity = std::max(20, Count * 2);
+		Site.Radius = 1.2f;
+		Site.Capacity = 20;
 		Sites.push_back(Site);
 		FGroup G;
 		G.Species = Species;
@@ -500,30 +495,25 @@ namespace LyudBirds
 		G.Plan = 1;
 		G.StayTimer = 1e9f;
 		G.bStayPut = true;
-		const int First = (int)Birds.size();
-		for (int K = 0; K < Count; K++)
-		{
-			FBird B;
-			B.Id = (int)Birds.size();
-			B.Species = Species;
-			B.Group = (int)Groups.size();
-			B.Site = G.Site;
-			B.Rng = (Opt.Seed ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
-			Rand(B.Rng);
-			B.Pos = B.Spot = Count > 1 ? SpotOn(Sites[G.Site], B.Rng) : P;
-			B.Boldness = Count > 1 ? 0.7f + 0.6f * Rand(B.Rng) : 1.f;
-			B.Hunger = 0.6f + 0.3f * Rand(B.Rng);
-			B.bFemale = Rand(B.Rng) < 0.5f;
-			B.Yaw = Rand(B.Rng) * 2.f * Pi;
-			B.Phase = Rand(B.Rng) * 10.f;
-			B.CallTimer = 3.f + Rand(B.Rng) * 20.f;
-			SetAct(B, EAct::Peck, 0.5f + Rand(B.Rng) * 1.5f);
-			G.Members.push_back(B.Id);
-			Birds.push_back(B);
-		}
+		FBird B;
+		B.Id = (int)Birds.size();
+		B.Species = Species;
+		B.Group = (int)Groups.size();
+		B.Site = G.Site;
+		B.Pos = B.Spot = P;
+		B.Rng = (Opt.Seed ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
+		Rand(B.Rng);
+		B.Boldness = 1.f;
+		B.Hunger = 0.7f;
+		B.bFemale = Rand(B.Rng) < 0.5f;
+		B.Yaw = Rand(B.Rng) * 2.f * Pi;
+		B.CallTimer = 3.f + Rand(B.Rng) * 10.f;
+		SetAct(B, EAct::Peck, 1.f);
+		G.Members.push_back(B.Id);
 		Groups.push_back(G);
+		Birds.push_back(B);
 		BuildHash();
-		return First;
+		return B.Id;
 	}
 
 	void FWorld::Resettle()
@@ -540,10 +530,7 @@ namespace LyudBirds
 			{
 				continue;
 			}
-			if (!G.bStayPut)
-			{
-				G.Site = -1;
-			}
+			G.Site = -1;
 			for (int Id : G.Members)
 			{
 				FBird& B = Birds[Id];
@@ -1192,81 +1179,6 @@ namespace LyudBirds
 		}
 	}
 
-	/** Cats and dogs: a running dog puts a flock up from far off, a walking cat from about where a person would, a stalking
-	 *  cat only when it is almost there; birds up a tree or on a roof hardly mind a dog, but they scold a cat. */
-	void FWorld::PerceiveBeasts(FBird& B, float Dt)
-	{
-		if (Beasts.empty() || IsAirborne(B.Act) || B.Act == EAct::Claimed || B.bGone || B.Act == EAct::Approach || B.Act == EAct::Eat)
-		{
-			return;
-		}
-		const FSpecies& S = SpeciesTable()[B.Species];
-		if (S.bPredator)
-		{
-			return;
-		}
-		const bool bGround = B.Site >= 0 && IsGroundHabitat(Sites[B.Site].Kind) && Sites[B.Site].Kind != EHabitat::Sea;
-		float Worst = 0.f;
-		V3 From;
-		bool bCatNear = false;
-		for (const FBeast& M : Beasts)
-		{
-			const V3 D = B.Pos - M.Pos;
-			const float Dist = D.Len();
-			if (Dist > 45.f)
-			{
-				continue;
-			}
-			const float Speed = M.Vel.Len2D();
-			const float Closing = std::max(0.f, M.Vel.Dot(D.Flat().Norm()));
-			float K = M.bCat ? (M.bStalking ? 0.17f : 0.9f + 0.3f * std::min(Speed / 2.f, 2.f)) : 0.7f + 0.55f * std::min(Speed / 2.5f, 2.5f);
-			K *= 1.f + 0.4f * std::min(Closing / 2.f, 1.f);
-			const float Up = B.Pos.Z - M.Pos.Z;
-			if (!bGround)
-			{
-				K *= Up > 2.5f ? (M.bCat ? 0.35f : 0.12f) : 0.6f;    // a cat climbs; a dog can't
-			}
-			if (B.Act == EAct::Sleep)
-			{
-				K *= 0.6f;
-			}
-			const float FleeD = std::max(0.8f, S.FleeDistance * K) / B.Boldness;
-			const float A = Clamp((FleeD * 2.f - Dist) / FleeD, 0.f, 1.3f);
-			if (A > Worst)
-			{
-				Worst = A;
-				From = M.Pos;
-			}
-			bCatNear |= M.bCat && Dist < 20.f && !M.bStalking;
-		}
-		if (Worst <= 0.f)
-		{
-			return;
-		}
-		if (Worst > B.Alert)
-		{
-			B.Alert += (Worst - B.Alert) * std::min(1.f, Dt / 0.3f);
-		}
-		B.Habituation = 0.f;
-		if (!B.bLook || Worst > 0.3f)
-		{
-			B.Look = From + V3(0.f, 0.f, 0.2f);
-			B.bLook = true;
-		}
-		// tits, blackbirds, robins scold a cat they can see from their twig
-		if (bCatNear && S.bMobs && !bGround && Rand(B.Rng) < Dt * 0.4f)
-		{
-			Emit(EEvent::Call, B);
-			Alarm(B, 20.f, 0.08f);
-		}
-		if (B.Alert >= 1.f && B.Delay <= 0.f && B.Act != EAct::Flee)
-		{
-			B.Delay = 0.04f + Rand(B.Rng) * 0.15f;
-			B.FlyFrom = From;
-			B.Target = -4;
-		}
-	}
-
 	// --- hand feeding ---------------------------------------------------------------------------------
 
 	void FWorld::UpdateApproach(FBird& B, float Dt)
@@ -1612,7 +1524,6 @@ namespace LyudBirds
 		if (B.Tier <= 2)
 		{
 			PerceivePlayer(B, Dt);
-			PerceiveBeasts(B, Dt);
 			if (B.Tier <= 1)
 			{
 				PerceiveBirds(B, Dt);
@@ -2087,9 +1998,8 @@ namespace LyudBirds
 				if (Next >= 0 && Avoided(Grp, Sites[Next].Center()))
 				{
 					// keep circling out here until the danger has gone
-					const V3 Danger = Grp.bAvoidPlayer && Player.bPresent ? Player.Feet : Grp.Avoid;
-					const V3 Off = (B.Pos - Danger).Flat().Norm();
-					B.Spot = Danger + Off * (Grp.AvoidR + 20.f) + V3(Off.Y, -Off.X, 0.f) * 25.f;   // round it, at a distance
+					const V3 Off = (B.Pos - (Grp.bAvoidPlayer && Player.bPresent ? Player.Feet : Grp.Avoid)).Flat().Norm();
+					B.Spot = B.Pos + Off * 25.f + V3(Off.Y, -Off.X, 0.f) * 20.f;
 					B.Spot.Z = std::max(TopZ(B.Spot.X, B.Spot.Y), SeaZ) + S.FlightClearance + 6.f;
 					Next = -2;
 				}

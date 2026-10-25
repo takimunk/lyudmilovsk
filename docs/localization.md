@@ -70,6 +70,3 @@ language (plural forms) in a key (use two keys or rephrase); leave a language's 
 translator sees it); regenerate a text-bearing image by hand instead of through `assets.json`.
 
 See `.claude/skills/localization/SKILL.md` for the checklist agents follow.
-
-## 5. Items
-Every in-game item has an icon (`icon_<id>` in `assets.json`, drawn per language only when it carries words, but present for every item); `tools/check_localization.py` enforces it. How to add an item: `.claude/skills/game-items/SKILL.md`.

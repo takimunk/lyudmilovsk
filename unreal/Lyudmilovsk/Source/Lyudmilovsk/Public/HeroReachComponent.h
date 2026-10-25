@@ -183,6 +183,8 @@ private:
 	bool bHold = false;
 	float HoldW = 0.f;
 	FVector HoldEye = FVector::ZeroVector;
+	FRotator HoldLook = FRotator::ZeroRotator;
+	bool HoldLookValid = false;
 	FVector HoldPalmW = FVector::ZeroVector;
 	FVector HoldNormalW = FVector::UpVector;
 	FVector HoldFingerW = FVector::ForwardVector;

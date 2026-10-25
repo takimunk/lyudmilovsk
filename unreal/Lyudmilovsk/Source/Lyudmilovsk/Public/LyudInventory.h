@@ -9,7 +9,6 @@
 class SWidget;
 class SLyudInventory;
 class SLyudPrompt;
-class SLyudShop;
 class UTexture2D;
 struct FSlateBrush;
 
@@ -35,14 +34,6 @@ struct FLyudItemDef
 	FName Flavor;
 	float Radius = 3.f;
 	float HalfLength = 0.f;
-};
-
-/** One thing a trader sells: Count units of Item for Price roubles. */
-struct FLyudShopGood
-{
-	FName Item;
-	int32 Price = 0;
-	int32 Count = 1;
 };
 
 /**
@@ -116,16 +107,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(ULyudInventoryUI, STATGROUP_Tickables); }
 
-	/** The inventory or a trader's screen is up (the hero can neither walk nor look). */
-	bool IsOpen() const { return bOpen || bShop; }
-	bool IsShopOpen() const { return bShop; }
+	bool IsOpen() const { return bOpen; }
 	void Open();
-
-	/** Pays for and takes shop good Index (the buy button; headless tests); false if the hero cannot pay. */
-	bool BuyShopGood(int32 Index);
-
-	/** A trade screen: Goods to buy with the hero's roubles; Title names the trader. Closed with T, Tab, I or Esc. */
-	void OpenShop(const FText& Title, const TArray<FLyudShopGood>& Goods);
 	void Close();
 
 	/** Uses one of the item (drinks it, eats it): the screen closes and the hero's hand does it. */
@@ -150,12 +133,7 @@ private:
 	void Lock(bool bLock);
 	bool CanOpen() const;
 
-	void CloseShop();
-
 	TSharedPtr<SLyudInventory> Screen;
-	TSharedPtr<SLyudShop> Shop;
-	TArray<FLyudShopGood> ShopGoods;
-	bool bShop = false;
 	TSharedPtr<SLyudPrompt> Prompt;
 	TWeakObjectPtr<const UObject> PromptKey;
 	bool bOpen = false;

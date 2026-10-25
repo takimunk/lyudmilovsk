@@ -108,11 +108,24 @@ void ULyudInventory::Initialize(FSubsystemCollectionBase& Collection)
 	Reset();
 }
 
+namespace
+{
+	// for trying the birds right away (Dima, 2026-10-25), until feed is sold in the game proper: a new game starts with a
+	// bag of feed in the hand. 0 = start with empty pockets.
+	TAutoConsoleVariable<int32> CVarStartFeed(TEXT("lyud.StartFeed"), 5,
+		TEXT("Handfuls of bird feed in the hero's hand when a game starts (a testing aid; 0 = none)."));
+}
+
 void ULyudInventory::Reset()
 {
 	Counts.Reset();
 	Rubles = 100;
 	Equipped = NAME_None;
+	if (const int32 Feed = CVarStartFeed.GetValueOnGameThread(); Feed > 0)
+	{
+		Counts.Add(TEXT("bird_feed"), Feed);
+		Equipped = TEXT("bird_feed");
+	}
 	OnChanged.Broadcast();
 }
 
@@ -420,135 +433,6 @@ private:
 	FName Selected;
 };
 
-/** A trader's screen: the goods with their icons, price and a buy button; the hero's money on top. */
-class SLyudShop : public SCompoundWidget
-{
-public:
-	SLATE_BEGIN_ARGS(SLyudShop) {}
-		SLATE_ARGUMENT(ULyudInventoryUI*, Owner)
-		SLATE_ARGUMENT(ULyudInventory*, Inventory)
-		SLATE_ARGUMENT(FText, Title)
-		SLATE_ARGUMENT(TArray<FLyudShopGood>, Goods)
-	SLATE_END_ARGS()
-
-	void Construct(const FArguments& InArgs)
-	{
-		Owner = InArgs._Owner;
-		Inventory = InArgs._Inventory;
-		Title = InArgs._Title;
-		Goods = InArgs._Goods;
-		Rebuild();
-	}
-
-	void Rebuild()
-	{
-		ULyudInventory* Inv = Inventory.Get();
-		ULyudInventoryUI* UI = Owner.Get();
-		if (!Inv || !UI)
-		{
-			return;
-		}
-		const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 18);
-		const FSlateFontInfo Small = FCoreStyle::GetDefaultFontStyle("Regular", 14);
-		TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
-		for (int32 GoodIndex = 0; GoodIndex < Goods.Num(); ++GoodIndex)
-		{
-			const FLyudShopGood G = Goods[GoodIndex];
-			const bool bCanPay = Inv->Rubles >= G.Price;
-			List->AddSlot().AutoHeight().Padding(0, 0, 0, 8)
-			[
-				SNew(SBorder)
-				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
-				.BorderBackgroundColor(FLinearColor(0.1f, 0.1f, 0.12f, 1.f))
-				.Padding(10.f)
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-					[
-						SNew(SBox).WidthOverride(72.f).HeightOverride(72.f)[SNew(SImage).Image(UI->IconBrush(G.Item))]
-					]
-					+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center).Padding(14, 0)
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight()
-						[
-							SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20))
-							.Text(G.Count > 1 ? FText::FromString(ULyudInventory::ItemName(G.Item).ToString() + TEXT("  ") + LyudText::Get(TEXT("ui.shop.count"), { FStringFormatArg(G.Count) }).ToString())
-							                  : ULyudInventory::ItemName(G.Item))
-						]
-						+ SVerticalBox::Slot().AutoHeight()
-						[
-							SNew(STextBlock).Font(Small).AutoWrapText(true).ColorAndOpacity(FLinearColor(0.8f, 0.8f, 0.75f)).Text(ULyudInventory::ItemDescription(G.Item))
-						]
-					]
-					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 14, 0)
-					[
-						SNew(STextBlock).Font(Body).ColorAndOpacity(bCanPay ? FLinearColor(1.f, 0.85f, 0.45f) : FLinearColor(0.8f, 0.3f, 0.25f))
-						.Text(LyudText::Get(TEXT("ui.shop.price"), { FStringFormatArg(G.Price) }))
-					]
-					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-					[
-						SNew(SButton).IsEnabled(bCanPay)
-						.OnClicked_Lambda([this, G, GoodIndex]()
-						{
-							ULyudInventoryUI* U = Owner.Get();
-							Status = U && U->BuyShopGood(GoodIndex) ? LyudText::Get(TEXT("ui.shop.bought"), { FStringFormatArg(ULyudInventory::ItemName(G.Item).ToString()) })
-							                                         : LyudText::Get(TEXT("ui.shop.nomoney"));
-							Rebuild();
-							return FReply::Handled();
-						})
-						[
-							SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(TEXT("ui.shop.buy")).ToString() + TEXT("  ")))
-						]
-					]
-				]
-			];
-		}
-		ChildSlot
-		[
-			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center)
-			[
-				SNew(SBorder)
-				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
-				.BorderBackgroundColor(FLinearColor(0.03f, 0.03f, 0.04f, 0.93f))
-				.Padding(24.f)
-				[
-					SNew(SBox).WidthOverride(700.f)
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
-						[
-							SNew(SHorizontalBox)
-							+ SHorizontalBox::Slot().FillWidth(1.f)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 26)).Text(Title)]
-							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-							[
-								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
-								.Text(LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv->Rubles) }))
-							]
-						]
-						+ SVerticalBox::Slot().AutoHeight()[List]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 4, 0, 0)
-						[
-							SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(0.6f, 0.9f, 0.6f)).Text(Status)
-						]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 0)
-						[
-							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f)).Text(LyudText::Get(TEXT("ui.shop.close")))
-						]
-					]
-				]
-			]
-		];
-	}
-
-private:
-	TWeakObjectPtr<ULyudInventoryUI> Owner;
-	TWeakObjectPtr<ULyudInventory> Inventory;
-	FText Title;
-	TArray<FLyudShopGood> Goods;
-	FText Status;
-};
-
 ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
 {
 	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
@@ -569,7 +453,6 @@ void ULyudInventoryUI::OnWorldBeginPlay(UWorld& InWorld)
 void ULyudInventoryUI::Deinitialize()
 {
 	Close();
-	CloseShop();
 	if (UWorld* World = GetWorld())
 	{
 		if (UGameViewportClient* Viewport = World->GetGameViewport(); Viewport && Prompt)
@@ -584,7 +467,7 @@ void ULyudInventoryUI::Deinitialize()
 bool ULyudInventoryUI::CanOpen() const
 {
 	const UWorld* World = GetWorld();
-	if (!World || bOpen || bShop || bUsing)
+	if (!World || bOpen || bUsing)
 	{
 		return false;
 	}
@@ -616,14 +499,6 @@ void ULyudInventoryUI::Tick(float)
 		if (bToggle || PC->WasInputKeyJustPressed(EKeys::Escape) || (Menu && Menu->IsOpen()))
 		{
 			Close();
-		}
-	}
-	else if (bShop)
-	{
-		const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
-		if (bToggle || PC->WasInputKeyJustPressed(EKeys::T) || PC->WasInputKeyJustPressed(EKeys::Escape) || (Menu && Menu->IsOpen()))
-		{
-			CloseShop();
 		}
 	}
 	else if (bToggle && CanOpen())
@@ -673,56 +548,6 @@ void ULyudInventoryUI::Open()
 	Inv->OnChanged.AddWeakLambda(this, [this] { if (Screen) { Screen->Rebuild(); } });
 	bOpen = true;
 	Lock(true);
-}
-
-void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>& Goods)
-{
-	UWorld* World = GetWorld();
-	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
-	ULyudInventory* Inv = ULyudInventory::Get(World);
-	if (!Viewport || !Inv || bOpen || bShop || !CanOpen())
-	{
-		return;
-	}
-	ShopGoods = Goods;
-	Shop = SNew(SLyudShop).Owner(this).Inventory(Inv).Title(Title).Goods(Goods);
-	Viewport->AddViewportWidgetContent(Shop.ToSharedRef(), 70);
-	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->Rebuild(); } });
-	bShop = true;
-	Lock(true);
-}
-
-bool ULyudInventoryUI::BuyShopGood(int32 Index)
-{
-	ULyudInventory* Inv = ULyudInventory::Get(GetWorld());
-	if (!Inv || !bShop || !ShopGoods.IsValidIndex(Index) || !Inv->Spend(ShopGoods[Index].Price))
-	{
-		return false;
-	}
-	Inv->Add(ShopGoods[Index].Item, ShopGoods[Index].Count);
-	return true;
-}
-
-void ULyudInventoryUI::CloseShop()
-{
-	if (!bShop)
-	{
-		return;
-	}
-	bShop = false;
-	if (UWorld* World = GetWorld())
-	{
-		if (UGameViewportClient* Viewport = World->GetGameViewport(); Viewport && Shop)
-		{
-			Viewport->RemoveViewportWidgetContent(Shop.ToSharedRef());
-		}
-		if (ULyudInventory* Inv = ULyudInventory::Get(World))
-		{
-			Inv->OnChanged.RemoveAll(this);
-		}
-	}
-	Shop.Reset();
-	Lock(false);
 }
 
 void ULyudInventoryUI::Close()
@@ -929,22 +754,4 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TE
 		{
 			Inv->Equip(Args.Num() > 0 && Args[0] != TEXT("none") ? FName(*Args[0]) : FName());
 		}
-	}));
-
-static FAutoConsoleCommandWithWorldAndArgs GShopOpen(TEXT("Shop.Open"), TEXT("Shop.Open [buy index]: opens the club owner's trade screen (headless checks); with an index, buys that good first"),
-	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
-	{
-		ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
-		if (!UI)
-		{
-			return;
-		}
-		if (Args.Num() > 0 && UI->IsShopOpen())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("SHOPTEST buy %d -> %d, rubles %d, feed %d"), FCString::Atoi(*Args[0]), UI->BuyShopGood(FCString::Atoi(*Args[0])) ? 1 : 0,
-				ULyudInventory::Get(World)->Rubles, ULyudInventory::Get(World)->Count(TEXT("bird_feed")));
-			return;
-		}
-		UI->OpenShop(LyudText::Get(TEXT("ui.shop.title"), { FStringFormatArg(LyudText::Get(TEXT("npc.owner.name")).ToString()) }), { FLyudShopGood{ TEXT("bird_feed"), 12, 5 } });
-		UE_LOG(LogTemp, Warning, TEXT("SHOPTEST open -> %d"), UI->IsShopOpen() ? 1 : 0);
 	}));
