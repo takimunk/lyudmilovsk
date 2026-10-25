@@ -1,16 +1,13 @@
 #include "SwingDoor.h"
 
 #include "Components/BoxComponent.h"
-#include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Pawn.h"
-#include "GameFramework/PlayerController.h"
-#include "InputCoreTypes.h"
-#include "Kismet/GameplayStatics.h"
 
 ASwingDoor::ASwingDoor()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	// the club's doors stood open by default before the shared door core
+	bStartOpen = true;
 	Zone = CreateDefaultSubobject<UBoxComponent>(TEXT("Zone"));
 	Zone->SetBoxExtent(FVector(120.f, 150.f, 110.f));
 	Zone->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -20,9 +17,9 @@ ASwingDoor::ASwingDoor()
 	RootComponent = Zone;
 }
 
-void ASwingDoor::BeginPlay()
+void ASwingDoor::PrepareLeaves()
 {
-	Super::BeginPlay();
+	ClosedRotations.Reset();
 	for (int32 i = 0; i < Leaves.Num(); ++i)
 	{
 		AActor* Leaf = Leaves[i];
@@ -41,59 +38,72 @@ void ASwingDoor::BeginPlay()
 			}
 		}
 	}
-	bOpen = bStartOpen;
-	Openness = bOpen ? 1.f : 0.f;
-	Apply();
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	// the leaves' bounds shut and open (and a little between), in actor space
+	SweepBox = FBox(ForceInit);
+	const FTransform& T = GetActorTransform();
+	TArray<UPrimitiveComponent*> Prims;
+	GetLeafPrimitives(Prims);
+	for (const float O : { 0.f, 0.5f, 1.f })
 	{
-		EnableInput(PC);
-		if (InputComponent)
+		ApplyOpenness(O);
+		for (UPrimitiveComponent* P : Prims)
 		{
-			// several actors listen for E (doors, the hero's seat); none may swallow it
-			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &ASwingDoor::OnInteract).bConsumeInput = false;
+			if (P && P->IsRegistered() && P->GetCollisionEnabled() != ECollisionEnabled::NoCollision)
+			{
+				P->UpdateBounds();
+				SweepBox += P->Bounds.GetBox().InverseTransformBy(T);
+			}
 		}
 	}
 }
 
-void ASwingDoor::Apply()
+void ASwingDoor::ApplyOpenness(float InOpenness)
 {
 	for (int32 i = 0; i < Leaves.Num(); ++i)
 	{
 		if (Leaves[i] && ClosedRotations.IsValidIndex(i))
 		{
 			const float Open = OpenAngles.IsValidIndex(i) ? OpenAngles[i] : 90.f;
-			Leaves[i]->SetActorRotation(ClosedRotations[i] + FRotator(0.f, Open * Openness, 0.f));
+			Leaves[i]->SetActorRotation(ClosedRotations[i] + FRotator(0.f, Open * InOpenness, 0.f));
 		}
 	}
 }
 
-void ASwingDoor::OnInteract()
+void ASwingDoor::GetLeafPrimitives(TArray<UPrimitiveComponent*>& Out) const
 {
-	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (Pawn && Zone->IsOverlappingActor(Pawn))
+	for (AActor* Leaf : Leaves)
 	{
-		Toggle();
+		if (!Leaf)
+		{
+			continue;
+		}
+		// the leaf and what rides on it (the blast door's wheel)
+		TArray<AActor*> Parts;
+		Leaf->GetAttachedActors(Parts, true, true);
+		Parts.Add(Leaf);
+		for (AActor* Part : Parts)
+		{
+			TArray<UPrimitiveComponent*> Prims;
+			Part->GetComponents<UPrimitiveComponent>(Prims);
+			Out.Append(Prims);
+		}
 	}
 }
 
-void ASwingDoor::OnGameLoaded_Implementation()
+FBox ASwingDoor::GetDoorwayLocalBox() const
 {
-	Openness = bOpen ? 1.f : 0.f;
-	Apply();
+	// the Zone is centred on the doorway a metre up; its box stands in for the doorway
+	const FVector E = Zone->GetUnscaledBoxExtent();
+	return FBox(FVector(-E.X, -E.Y, -100.f), FVector(E.X, E.Y, E.Z * 2.f - 100.f));
 }
 
-void ASwingDoor::Toggle()
+bool ASwingDoor::PlayerCanUse(const APawn* Pawn, const FVector& Eye, const FVector& Dir, float& OutDistance) const
 {
-	bOpen = !bOpen;
-}
-
-void ASwingDoor::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	const float Target = bOpen ? 1.f : 0.f;
-	if (!FMath::IsNearlyEqual(Openness, Target))
+	// as before the shared core: anywhere in the Zone
+	if (!bPlayerCanUse || !Pawn || !Zone->IsOverlappingActor(Pawn))
 	{
-		Openness = FMath::FInterpConstantTo(Openness, Target, DeltaSeconds, SwingSpeed / 90.f);
-		Apply();
+		return false;
 	}
+	OutDistance = FVector::Dist(Eye, Zone->GetComponentLocation());
+	return true;
 }
