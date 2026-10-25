@@ -283,6 +283,17 @@ void ABirdActor::SetFirstPerson(bool bOn)
 	}
 }
 
+void ABirdActor::SetViewSweep(float SweepDeg, float DroopRad)
+{
+	ViewSweepDeg = SweepDeg;
+	ViewDroopRad = DroopRad;
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->Wings.SweepDeg = bFirstPerson ? ViewSweepDeg : 0.f;
+		A->Wings.DroopRad = bFirstPerson ? ViewDroopRad : 0.f;
+	}
+}
+
 void ABirdActor::ApplyMorph()
 {
 	// the hero pigeon's colour morphs: MI_FeralPigeon_Plumage_Hero_<Morph>, made from the base albedo by make_morphs.py

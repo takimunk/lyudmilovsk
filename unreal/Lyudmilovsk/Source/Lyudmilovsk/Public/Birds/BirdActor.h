@@ -101,6 +101,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	void SetFirstPerson(bool bOn);
 
+	/** The first-person sweep and droop, changed every frame if need be (cheap: no LOD / section work). */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetViewSweep(float SweepDeg, float DroopRad);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	float ViewSweepDeg = 45.f;
 
