@@ -5,6 +5,10 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "InputCoreTypes.h"
+#include "GameFramework/PlayerController.h"
+#include "LyudInventory.h"
+#include "LyudText.h"
 
 ABoothOwner::ABoothOwner()
 {
@@ -109,6 +113,49 @@ bool ABoothOwner::WalkTo(const FVector& Target, float DeltaSeconds)
 	return false;
 }
 
+void ABoothOwner::EndPlay(const EEndPlayReason::Type Reason)
+{
+	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+	{
+		UI->SetPrompt(this, FText::GetEmpty());
+	}
+	Super::EndPlay(Reason);
+}
+
+void ABoothOwner::TickTrade()
+{
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	const APlayerController* PC = Pawn ? Cast<APlayerController>(Pawn->GetController()) : nullptr;
+	if (!UI || !PC)
+	{
+		return;
+	}
+	// he trades when he stands at the window and the player at it looks at him
+	const FVector Eye = Pawn->GetPawnViewLocation();
+	const FVector ToOwner = (Pos + FVector(0.f, 0.f, 150.f) - Eye).GetSafeNormal();
+	const bool bReady = State == EState::AtWindow && PlayerAtWindow() && !UI->IsOpen() && !Pawn->IsHidden()
+		&& FVector::DotProduct(PC->GetControlRotation().Vector(), ToOwner) > 0.5f;
+	if (!bReady)
+	{
+		if (bTradePrompt)
+		{
+			UI->SetPrompt(this, FText::GetEmpty());
+			bTradePrompt = false;
+		}
+		return;
+	}
+	UI->SetPrompt(this, LyudText::Get(TEXT("ui.shop.prompt")));
+	bTradePrompt = true;
+	if (PC->WasInputKeyJustPressed(EKeys::T))
+	{
+		UI->SetPrompt(this, FText::GetEmpty());
+		bTradePrompt = false;
+		UI->OpenShop(LyudText::Get(TEXT("ui.shop.title"), { FStringFormatArg(LyudText::Get(TEXT("npc.owner.name")).ToString()) }),
+			{ FLyudShopGood{ TEXT("bird_feed"), FeedPrice, FeedCount } });
+	}
+}
+
 void ABoothOwner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -173,4 +220,5 @@ void ABoothOwner::Tick(float DeltaSeconds)
 		}
 		break;
 	}
+	TickTrade();
 }
