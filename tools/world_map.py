@@ -375,51 +375,10 @@ TOWN_ROT = math.radians(8.0)      # street grid turned a little off north
 
 
 def town():
-    """Placeholder town: houses (x, y, yaw, w, d, floors, kind) on a street grid (its trees are
-    the "town" forests).
-    kind: 'house' (1-2 storeys, steep tiled roof), 'block' (five-storey flat-roofed flats),
-    'kirche' (the old church tower on the square)."""
-    rnd = random.Random(1945)
-    houses = []
-    cx, cy = TOWN_CENTER
-    ca, sa = math.cos(TOWN_ROT), math.sin(TOWN_ROT)
-
-    def world(u, v):
-        return cx + u * ca - v * sa, cy + u * sa + v * ca
-
-    def free(x, y, r):
-        return all(math.hypot(x - h[0], y - h[1]) > r + max(h[3], h[4]) * 0.6 for h in houses)
-
-    blocks_u = range(-6, 6)
-    blocks_v = range(-5, 6)
-    for bu in blocks_u:
-        for bv in blocks_v:
-            u0, v0 = bu * 90.0, bv * 75.0           # 90 x 75 m blocks with 12 m streets
-            if bu in (-1, 0) and bv in (-1, 0):
-                continue                             # the square
-            for lu in range(4):
-                for lv in range(2):
-                    u = u0 + 12 + lu * 19.5 + rnd.uniform(-1.5, 1.5)
-                    v = v0 + 12 + 8 + lv * 31.0 + rnd.uniform(-1.0, 1.0)
-                    x, y = world(u, v)
-                    if not (Y_MIN + 50 < y < 1820 and x < edge_x(y) - 25.0 and x > -900):
-                        continue
-                    if math.hypot(x - cx, y - cy) > TOWN_R + rnd.uniform(-80, 60):
-                        continue
-                    if raised(x, y) > 1.0 or near_cable(x, y, 14.0) or math.hypot(x - STATION_DOWN[0], y - STATION_DOWN[1]) < 25:
-                        continue                     # not up the slopes, not under the rope
-                    if academ_flat(x, y) > 0.0:
-                        continue                     # the Academgorodok's ground
-                    if rnd.random() < 0.12:
-                        continue                     # an empty lot, a garden
-                    central = math.hypot(x - cx, y - cy) < 260
-                    if central and rnd.random() < 0.18 and lu % 2 == 0:
-                        houses.append((x, y, TOWN_ROT, 36.0, 12.0, 5, "block"))
-                    else:
-                        houses.append((x, y, TOWN_ROT + (math.pi / 2 if rnd.random() < 0.3 else 0.0),
-                                       rnd.uniform(8, 12), rnd.uniform(9, 13), rnd.choice((1, 1, 2, 2, 2)), "house"))
-    houses.append((cx + 20, cy + 10, TOWN_ROT, 9.0, 9.0, 12, "kirche"))
-    return houses
+    """The town's buildings, (x, y, yaw, w, d, floors, kind). None for now: the placeholder houses
+    are gone (Dima, 2026-10-25) and only the Academgorodok stands in the valley; the town's ground
+    stays level (keep_flat) for whatever replaces them."""
+    return []
 
 
 # Forests: AProceduralForest actors (the plants thread). Each actor bakes its own trees, so the map

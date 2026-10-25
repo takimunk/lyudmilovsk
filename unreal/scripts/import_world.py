@@ -1,5 +1,5 @@
 """The outdoor map (tools/world_map.py) in an Unreal level: generates the placeholder geometry
-(tools/world_mesh.py: slab path, the club's entrance, promenade, town, cable car)
+(tools/world_mesh.py: slab path, the club's entrance, promenade, cable car)
 into Saved/World/world_coast.glb, imports it, plants the poplars and maples along the path and the
 Baltic trees and shrubs around the club, lays the forests (AProceduralForest) and the grass.
 
