@@ -320,7 +320,7 @@ void UBirdTameSubsystem::TellBirds(bool bOn)
 	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && (bOn || bTold))
 	{
 		// every frame while the palm is out: the birds read the hand's speed from the successive points
-		Life->SetOffer(OfferAt, FeedId, bOn);
+		Life->SetOffer(BirdOfferAt.IsZero() ? OfferAt : BirdOfferAt, FeedId, bOn);
 	}
 #endif
 	if (bOn != bTold)
@@ -338,6 +338,21 @@ void UBirdTameSubsystem::TellBirds(bool bOn)
 		}
 	}
 	bTold = bOn;
+}
+
+void UBirdTameSubsystem::LogEvent(const TCHAR* What, int32 BirdId) const
+{
+#if LYUD_HAS_BIRDLIFE
+	// only the birds near the hero (the log is for checking a befriending, not the whole coast)
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
+	FBirdLifeInfo Info;
+	if (Pawn && Life && Life->GetBird(BirdId, Info) && FVector::Dist2D(Info.Location, Pawn->GetActorLocation()) < 3000.f)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Tame: bird %d %s at %.0f cm, alarm %.2f trust %.2f, offering %d"), BirdId, What,
+			FVector::Dist2D(Info.Location, Pawn->GetActorLocation()), Info.Alertness, Info.Trust, IsOffering() ? 1 : 0);
+	}
+#endif
 }
 
 FText UBirdTameSubsystem::BirdName(int32 BirdId) const
@@ -379,6 +394,7 @@ void UBirdTameSubsystem::Say(const TCHAR* Key, int32 BirdId, float Seconds)
 
 void UBirdTameSubsystem::HandleNotice(int32 BirdId)
 {
+	LogEvent(TEXT("notice"), BirdId);
 	if (IsOffering() && Focus < 0 && IsNearOffer(BirdId))
 	{
 		Focus = BirdId;
@@ -388,6 +404,7 @@ void UBirdTameSubsystem::HandleNotice(int32 BirdId)
 
 void UBirdTameSubsystem::HandleTurn(int32 BirdId)
 {
+	LogEvent(TEXT("turn"), BirdId);
 	if (IsOffering() && (Focus < 0 || Focus == BirdId) && IsNearOffer(BirdId))
 	{
 		Focus = BirdId;
@@ -397,6 +414,7 @@ void UBirdTameSubsystem::HandleTurn(int32 BirdId)
 
 void UBirdTameSubsystem::HandleWatch(int32 BirdId)
 {
+	LogEvent(TEXT("watch"), BirdId);
 	if (IsOffering() && Focus == BirdId)
 	{
 		Say(TEXT("ui.tame.watch"), BirdId, 4.f);
@@ -405,6 +423,7 @@ void UBirdTameSubsystem::HandleWatch(int32 BirdId)
 
 void UBirdTameSubsystem::HandleCall(int32 BirdId)
 {
+	LogEvent(TEXT("call"), BirdId);
 	if (IsOffering() && Focus == BirdId)
 	{
 		Say(TEXT("ui.tame.call"), BirdId);
@@ -415,6 +434,11 @@ void UBirdTameSubsystem::HandleApproach(int32 BirdId)
 {
 	if (IsOffering() && IsNearOffer(BirdId))
 	{
+		bApproaching = true;
+	}
+	LogEvent(TEXT("approach"), BirdId);
+	if (IsOffering() && IsNearOffer(BirdId))
+	{
 		Focus = BirdId;
 		Say(TEXT("ui.tame.approach"), BirdId);
 	}
@@ -422,6 +446,7 @@ void UBirdTameSubsystem::HandleApproach(int32 BirdId)
 
 void UBirdTameSubsystem::HandleEat(int32 BirdId)
 {
+	LogEvent(TEXT("eat"), BirdId);
 	if (!IsOffering() || Phase != EPhase::Idle)
 	{
 		return;
@@ -434,6 +459,11 @@ void UBirdTameSubsystem::HandleEat(int32 BirdId)
 
 void UBirdTameSubsystem::HandleFlee(int32 BirdId)
 {
+	if (Focus == BirdId)
+	{
+		bApproaching = false;
+	}
+	LogEvent(TEXT("flee"), BirdId);
 	if (Focus == BirdId && Phase == EPhase::Idle)
 	{
 		Say(TEXT("ui.tame.flee"), BirdId);
@@ -473,6 +503,11 @@ void UBirdTameSubsystem::Eaten()
 		Handful = nullptr;
 	}
 	UE_LOG(LogTemp, Log, TEXT("Tame: bird %d befriended"), Bird);
+	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+	{
+		UI->SetPrompt(this, FText::GetEmpty());
+	}
+	SayLeft = 0.f;
 	bool bBird = false;
 #if LYUD_HAS_BIRDFLIGHT
 	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
@@ -575,6 +610,11 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		Handful->Destroy();
 		Handful = nullptr;
 	}
+	if (!Handful)
+	{
+		BirdOfferAt = FVector::ZeroVector;
+		OfferAt = FVector::ZeroVector;
+	}
 
 	FVector Palm = Reach->HoldPalm();
 	PalmFromBones(Hero, Palm);
@@ -590,6 +630,30 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 	{
 		OfferAt = Palm + N * 1.7f;
 		Handful->SetActorLocationAndRotation(OfferAt, FRotationMatrix::MakeFromZX(N, F).Rotator());
+		// what the birds are told: the palm smoothed over ~0.1 s, so the frame-to-frame wobble of the bones and uneven frame
+		// times (a 3 ms frame after a 100 ms one) don't read as a hand jerked at the bird; a steady move keeps its speed
+		BirdOfferAt = BirdOfferAt.IsZero() ? OfferAt : FMath::VInterpTo(BirdOfferAt, OfferAt, DeltaTime, 10.f);
+	}
+
+	// a bird coming to the palm: the eyes go to the palm, slowly (a slow turn doesn't frighten it), unless the player looks
+	// somewhere himself
+	if ((bApproaching || Phase == EPhase::Eating) && Handful)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
+		{
+			float MouseX = 0.f, MouseY = 0.f;
+			PC->GetInputMouseDelta(MouseX, MouseY);
+			if (FMath::Abs(MouseX) + FMath::Abs(MouseY) < 0.01f)
+			{
+				const FRotator Want = (OfferAt + FVector(0.f, 0.f, 6.f) - Hero->EyeLocation()).Rotation();
+				const FRotator Now = PC->GetControlRotation();
+				PC->SetControlRotation(FMath::RInterpConstantTo(Now, FRotator(FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -70.f, 20.f), Want.Yaw, 0.f), DeltaTime, 35.f));
+			}
+		}
+	}
+	if (!IsOffering() && Phase != EPhase::Eating)
+	{
+		bApproaching = false;
 	}
 
 	if (Phase == EPhase::Eating)
@@ -659,6 +723,15 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 	}
 #endif
 	Hud->SetBird(Bird, Alert, Trust);
+	LogTimer -= World->GetDeltaSeconds();
+	if (bWantOffer && LogTimer <= 0.f)
+	{
+		LogTimer = 1.f;
+		if (!Bird.IsEmpty())
+		{
+			LogEvent(TEXT("focus"), Focus);
+		}
+	}
 }
 
 void UBirdTameSubsystem::Tick(float DeltaTime)

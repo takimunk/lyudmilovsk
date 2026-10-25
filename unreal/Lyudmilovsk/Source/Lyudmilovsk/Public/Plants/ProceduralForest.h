@@ -86,6 +86,8 @@ public:
 	/** Bake every kind now (in the editor, where nothing ticks; in play they are baked one per tick). */
 	UFUNCTION(BlueprintCallable, Category = "Forest") void BakeAll();
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumTrees() const { return Trees.Num(); }
+	/** Every tree: Fn(Species, Transform, Age) (the bird life perches on their crowns). */
+	template <typename FFn> void ForEachTree(FFn&& Fn) const { for (const FTree& T : Trees) Fn(T.Species, T.Xf, T.Age); }
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumBaked() const;
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumLive() const { return LiveCount; }
 	UFUNCTION(BlueprintCallable, Category = "Forest") FString DescribeState() const;
