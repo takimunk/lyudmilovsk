@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_day.1",
+ "lang": "ja",
+ "text": "外はいま、日が高い。ここにいても、うなじで感じるんだ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 外はいま、日が高い。ここにいても、うなじで感じるんだ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-d318-7a61-9a3b-bd14bdeb9883",
+ "hash": "de8d72d666c5"
+}

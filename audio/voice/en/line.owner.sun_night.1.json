@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.sun_night.1",
+ "lang": "en",
+ "text": "The sun is on the other side of the earth now. That's all right. It always comes back.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] The sun is on the other side of the earth now. That's all right. It always comes back.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172cb-0394-7a42-b49b-624864a66e5d",
+ "hash": "5a96fea426f4"
+}

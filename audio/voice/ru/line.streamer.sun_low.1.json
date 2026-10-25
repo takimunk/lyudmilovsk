@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_low.1",
+ "lang": "ru",
+ "text": "Чат пишет, что сейчас закат. Я каждый раз его чувствую, честно. Прямо кожей.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат пишет, что сейчас закат. Я каждый раз его чувствую, честно. Прямо кожей.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172ca-2fda-7ea2-8cc4-29950835363c",
+ "hash": "1a514c3f4d18"
+}

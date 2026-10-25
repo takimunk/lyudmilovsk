@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_low.1",
+ "lang": "ja",
+ "text": "チャットが、いま夕焼けだって。わたし、毎回わかるの。ほんとに。肌で。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャットが、いま夕焼けだって。わたし、毎回わかるの。ほんとに。肌で。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cc-14a1-7671-8fa1-873c8e6f1d96",
+ "hash": "3be1bda71f62"
+}

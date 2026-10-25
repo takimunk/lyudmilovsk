@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_day.1",
+ "lang": "ru",
+ "text": "Ох, как тепло. Будто солнце греет кожу. Хотя тут и окон-то нет.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Ох, как тепло. Будто солнце греет кожу. Хотя тут и окон-то нет.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a172c9-8136-7572-897b-a2066a713539",
+ "hash": "88a5de7767e1"
+}

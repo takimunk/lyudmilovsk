@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.sun_cloudy.1",
+ "lang": "ja",
+ "text": "今日は曇りですね。黄色の塗りつぶしがうまくのりません。理由は聞かないでください。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] 今日は曇りですね。黄色の塗りつぶしがうまくのりません。理由は聞かないでください。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-29d7-7382-b199-ce60803b34fc",
+ "hash": "45e2f0d87f3b"
+}

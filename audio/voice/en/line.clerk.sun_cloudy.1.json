@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.sun_cloudy.1",
+ "lang": "en",
+ "text": "It's overcast today. The yellow fill doesn't go on as well. Don't ask.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] It's overcast today. The yellow fill doesn't go on as well. Don't ask.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172ca-429c-7a43-95ff-3b8160df4769",
+ "hash": "f57a31adbc30"
+}

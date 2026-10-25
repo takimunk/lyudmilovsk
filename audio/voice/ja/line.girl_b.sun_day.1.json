@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_day.1",
+ "lang": "ja",
+ "text": "掲示板に「太陽が照っているあいだは、わたしたちは覚えられている」って。変な言葉だよね？",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 掲示板に「太陽が照っているあいだは、わたしたちは覚えられている」って。変な言葉だよね？",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-5b16-7641-bdcb-4de814f2aa5e",
+ "hash": "36472bd5a6b7"
+}

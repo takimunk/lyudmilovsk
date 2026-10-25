@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_day.1",
+ "lang": "en",
+ "text": "Oh, it's so warm. Like the sun is warming my skin. Though there aren't even any windows here.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Oh, it's so warm. Like the sun is warming my skin. Though there aren't even any windows here.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a172ca-9664-7c00-85ee-cb9296c62e70",
+ "hash": "efa877c6a391"
+}

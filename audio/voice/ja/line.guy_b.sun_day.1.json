@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_day.1",
+ "lang": "ja",
+ "text": "ああ、あったかい。太陽が肌をあたためてるみたいだ。ここ、窓もないのにな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] ああ、あったかい。太陽が肌をあたためてるみたいだ。ここ、窓もないのにな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a172cb-8449-7531-8cf1-66b1ed66ab17",
+ "hash": "5c4985e367d2"
+}
