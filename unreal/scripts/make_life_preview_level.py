@@ -15,8 +15,20 @@ import unreal
 eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Characters/Humans/L_LifeAnimsPreview"
 CAST = os.environ.get("LIFE_CAST", "Guy_a,Kid_boy,Girl_b").split(",")     # LIFE_CAST=Nao,Guy_a for a new character
-CLIPS = [("Walk", None, 0.3), ("Talk", None, 1.2), ("SitIdle", "chair", 0.5), ("Eat", "table", 1.25),
+ALL_CLIPS = [("Seat", "chair", 1.0), ("Walk", None, 0.3), ("Talk", None, 1.2), ("SitIdle", "chair", 0.5), ("Eat", "table", 1.25),
          ("Read", "chair", 1.0), ("Sleep", "bed", 0.5), ("LieDown", "bed", 1.5), ("SitDown", "chair", 1.0)]
+# Seat = the person's own seated clip at a computer (people.json computer_clip); LIFE_CLIPS=Seat,Walk picks some
+CLIPS = [c for c in ALL_CLIPS if c[0] in os.environ.get("LIFE_CLIPS", ",".join(c[0] for c in ALL_CLIPS[1:])).split(",")]
+
+
+def seat_clip(who):
+    import json
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Lyudmilovsk", "Content", "PeopleData", "people.json")
+    clip = next((p.get("computer_clip") for p in json.load(open(root))["people"] if p["mesh"] == who), None) or "Sit_KeyboardMouse"
+    if clip == "Excel":
+        return "/Game/Characters/Clerk/A_Clerk_Sit_Excel"
+    owner, clip = clip.split("/") if "/" in clip else (who, clip)
+    return "/Game/Characters/Humans/%s/Anims/A_%s_%s" % (owner, owner, clip)
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 if eal.does_asset_exist(LEVEL):                 # rebuild in place (re-creating it fails while registered)
@@ -62,7 +74,7 @@ for i, who in enumerate(CAST):
         comp.set_skeletal_mesh_asset(mesh)
         comp.set_editor_property("animation_mode", unreal.AnimationMode.ANIMATION_SINGLE_NODE)
         data = unreal.SingleAnimationPlayData()
-        anim = unreal.load_asset("/Game/Characters/Humans/Anims/A_Human_" + clip)
+        anim = unreal.load_asset(seat_clip(who) if clip == "Seat" else "/Game/Characters/Humans/Anims/A_Human_" + clip)
         data.set_editor_property("anim_to_play", anim)
         data.set_editor_property("saved_looping", True)
         data.set_editor_property("saved_playing", False)          # frozen at `at` seconds

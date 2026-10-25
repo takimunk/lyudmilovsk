@@ -710,7 +710,13 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 		{
 			if (!A && !C.IsEmpty())
 			{
-				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *MeshName, *MeshName, *C));
+				// "Guy_a/Sit_KeyboardMouse" borrows another person's seated clip (the crowd has none of its own)
+				FString Who = MeshName, What = C;
+				if (C.Contains(TEXT("/")))
+				{
+					C.Split(TEXT("/"), &Who, &What);
+				}
+				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *Who, *Who, *What));
 			}
 		}
 		if (!A)
