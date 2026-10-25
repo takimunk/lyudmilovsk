@@ -162,6 +162,7 @@ private:
 	bool IsWaterBelow(const FVector& At) const;
 	void CheckDanger(float Dt);
 	void SetFate(EBirdFate F);
+	void IgnoreWater(struct FCollisionQueryParams& Q) const;
 	void TakeOff();
 	void Land(const FVector& Point, const FVector& Normal);
 	void FindLandingSpot(float Flare);

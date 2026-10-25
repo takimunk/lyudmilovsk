@@ -6,6 +6,8 @@
 #include "LandscapeProxy.h"
 #include "Plants/GameCalendar.h"
 #include "Weather/LyudWind.h"
+#include "GameFramework/PhysicsVolume.h"
+#include "Sea/LyudSea.h"
 
 namespace
 {
@@ -42,15 +44,26 @@ void FBirdAir::Init(UWorld* InWorld)
 
 float FBirdAir::GroundZ(const FVector2D& XY) const
 {
-	float Z = SeaZ;
+	return FMath::Max(SeaZ, SolidZ(XY));
+}
+
+float FBirdAir::SolidZ(const FVector2D& XY) const
+{
+	float Z = SeaZ - 2000.f;
 	if (UWorld* W = World.Get())
 	{
 		FHitResult Hit;
 		FCollisionObjectQueryParams Objects(ECC_WorldStatic);
 		FCollisionQueryParams Params(SCENE_QUERY_STAT(BirdAirGround), false);
+		// the sea's surface and its water volume are not ground
+		if (ALyudSea* Sea = ALyudSea::Get(W))
+		{
+			Params.AddIgnoredActor(Sea);
+			if (AActor* Vol = Sea->GetWaterVolume()) Params.AddIgnoredActor(Vol);
+		}
 		if (W->LineTraceSingleByObjectType(Hit, FVector(XY, 60000.f), FVector(XY, SeaZ - 2000.f), Objects, Params))
 		{
-			Z = FMath::Max(Z, (float)Hit.ImpactPoint.Z);
+			Z = (float)Hit.ImpactPoint.Z;
 		}
 	}
 	return Z;

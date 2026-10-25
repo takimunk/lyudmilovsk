@@ -5,6 +5,7 @@
 #include "BirdSound.h"
 #include "BirdWindStreaks.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/PhysicsVolume.h"
 #include "Sea/LyudSea.h"
 #include "Sound/SoundWaveProcedural.h"
 #include "BirdFlightModel.h"
@@ -110,6 +111,7 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 		if (ABirdActor* A = GetWorld()->SpawnActor<ABirdActor>(ABirdActor::StaticClass(), FTransform(FRotator(0.f, Yaw, 0.f), Location), P))
 		{
 			A->Species = InSpecies;
+			A->bHeroBody = true;
 			A->InitialState = bStanding ? EBirdState::Perch : EBirdState::Fly;
 			A->FinishSpawning(FTransform(FRotator(0.f, Yaw, 0.f), Location));
 			OutsideBody = A;
@@ -117,6 +119,8 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 	}
 	if (OutsideBody)
 	{
+		// the bird you are gets the detailed body (SK_<Id>_Hero) where there is one
+		OutsideBody->bHeroBody = true;
 		OutsideBody->SetSpecies(InSpecies);
 		OutsideBody->SetActorEnableCollision(false);
 	}
@@ -150,6 +154,12 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 	Params->Hops = Row.Gait == EBirdGait::Hop || Row.Gait == EBirdGait::Both;
 	Body->Build(InSpecies, Row.LengthCm, Row.WingspanCm, Head);
 	Collision->SetSphereRadius(FMath::Max(Body->BodyRadius() * 0.85f, 1.5f));
+	// the sea's surface is water, not ground (StepAir and StepSwim deal with it)
+	if (ALyudSea* Sea = ALyudSea::Get(this))
+	{
+		Collision->IgnoreActorWhenMoving(Sea, true);
+		if (AActor* Vol = Sea->GetWaterVolume()) Collision->IgnoreActorWhenMoving(Vol, true);
+	}
 	Air->Init(GetWorld());
 
 	BodyRot = FRotator(0.f, Yaw, 0.f);
@@ -667,6 +677,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	{
 		FHitResult Ground;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdStuck), false, this);
+	IgnoreWater(Q);
 		if (GetWorld()->LineTraceSingleByChannel(Ground, GetActorLocation(), GetActorLocation() - FVector(0, 0, Body->StandHeight() + 20.f), ECC_Visibility, Q))
 		{
 			StuckTime = 0.f;
@@ -689,6 +700,7 @@ void ABirdPawn::FindLandingSpot(float InFlare)
 	const float Speed = V.Size();
 	const FVector Dir = Speed > 30.f ? V / Speed : BodyRot.Vector();
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdLanding), false, this);
+	IgnoreWater(Q);
 	FHitResult Hit;
 	// along the path, then a little below it
 	const float Reach = FMath::Clamp(Speed * 1.2f, 300.f, 1500.f);
@@ -753,6 +765,7 @@ void ABirdPawn::StepGround(const FBirdControls& C, float Dt)
 	const FBirdSpecies* Row = UBirdSpeciesLibrary::Find(Species);
 	const float Stride = FMath::Max(Row ? Row->StrideCm : 5.f, 3.f);
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdGround), false, this);
+	IgnoreWater(Q);
 
 	if (!Move.IsNearlyZero())
 	{
@@ -1064,6 +1077,15 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 	}
 }
 
+void ABirdPawn::IgnoreWater(FCollisionQueryParams& Q) const
+{
+	if (ALyudSea* Sea = ALyudSea::Get(this))
+	{
+		Q.AddIgnoredActor(Sea);
+		if (AActor* Vol = Sea->GetWaterVolume()) Q.AddIgnoredActor(Vol);
+	}
+}
+
 float ABirdPawn::GetEnergy() const
 {
 	return (float)Flight->Energy;
@@ -1081,7 +1103,7 @@ float ABirdPawn::WaterZ(const FVector& At) const
 bool ABirdPawn::IsWaterBelow(const FVector& At) const
 {
 	// open water: the ground under it lies below the sea's surface
-	return Air->GroundZ(FVector2D(At)) < WaterZ(At) - 15.f;
+	return Air->SolidZ(FVector2D(At)) < WaterZ(At) - 15.f;
 }
 
 void ABirdPawn::EnterSwim(const FVector& At)
@@ -1127,7 +1149,7 @@ void ABirdPawn::StepSwim(const FBirdControls& C, float Dt)
 	// riding the waves
 	Feet.Z = WaterZ(Feet);
 	// ashore: paddling into the beach it stands up and walks
-	const float Ground = Air->GroundZ(FVector2D(Feet));
+	const float Ground = Air->SolidZ(FVector2D(Feet));
 	if (Ground > Feet.Z - 3.f)
 	{
 		Land(FVector(Feet.X, Feet.Y, Ground), FVector::UpVector);

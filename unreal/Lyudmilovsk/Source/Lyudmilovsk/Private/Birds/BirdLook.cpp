@@ -247,6 +247,14 @@ namespace BirdLook
 				L.BeakCm = 0.6f; L.BeakDepth = 0.4f; L.Wing = EWing::Sickle; L.TailShape = ETail::Fork; L.TailFrac = 0.34f;
 				Add(TEXT("SandMartin"), L);
 			}
+			// --- the mute swan: all white, an orange bill with a black knob
+			{
+				const P White = P(TEXT("f6f4ef"), TEXT("e2ded6")).Fr(0.04f);
+				FLook L = Plain(White, White, White, White, White);
+				L.Beak = C(TEXT("e06a1e")); L.BeakBase = C(TEXT("141414")); L.Legs = C(TEXT("2a2a2a"));
+				L.BeakCm = 9.f; L.BeakDepth = 0.32f; L.BeakHook = 0.05f; L.Wing = EWing::Broad; L.TailShape = ETail::Wedge; L.TailFrac = 0.14f;
+				Add(TEXT("MuteSwan"), L);
+			}
 			// --- cormorant and the raptors
 			{
 				FLook L = Plain(P(TEXT("1a1a18")).Gl(0.3f, 0.1f), P(TEXT("4a4030"), TEXT("101010")).Fr(0.2f).Gl(0.3f, 0.1f), P(TEXT("141412")), P(TEXT("1a1a18")).Gl(0.4f, 0.2f), P(TEXT("4a4030"), TEXT("101010")).Fr(0.2f));

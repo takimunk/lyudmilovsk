@@ -115,6 +115,32 @@ Space does when held:
 Holding Space flies level at the species table's cruise speed (a sparrow 10 m/s, a pigeon 17, a swift 15,
 a gull 11): the model tunes each species' wingbeat thrust to it when the bird is made.
 
+## A bird's life (round 3)
+
+- **Biology.** Each species has its own stamina, top dive speed and agility (Private/Birds/BirdBio.cpp, from
+  measured flight speeds and ranges): a blue tit manages about 30 s of steady flapping, a starling three minutes,
+  a gull ten, a swift and a peregrine all day; a peregrine stoops at 90 m/s, a magpie at 22. Holding Space or
+  clicking spends strength; gliding, soaring, standing and swimming give it back. A spent bird's beats barely lift
+  it (the strength bar at the bottom turns warm, and a note says to glide down and rest).
+- **Water birds** (swan, cormorant, the gulls) settle on the sea and paddle with WASD; a wingbeat takes off, a swan
+  pattering along the water for seconds first. A land bird that falls into the sea is done: you are the hero again,
+  in the water where it fell, and swim ashore.
+- **Danger.** Flying into something too fast knocks the bird out; a cat or a dog that gets within reach on the
+  ground catches it ("Danger: a predator nearby!" when one is close and hunting). Either way you are the hero again.
+- **Calling the bird back.** As the hero, on dry land, hold R: your bird flies back to your hand.
+- **Your kind.** F calls. A bird of your species nearby answers by chance and by sex: two males fight (it comes at
+  you and pecks, three times), a male and a female court (it answers and comes closer), two females call back;
+  often they only look. E pecks.
+- **Sound and wind.** The bird's own sound is made as you play: the rush of air with speed and gusts, and every
+  downstroke (a sparrow's whirr, a pigeon's take-off clap, the swan's singing wings). The world's wind
+  (ULyudWindSubsystem) blows the bird about and is drawn as faint streaks drifting in the air around you; where they
+  rise (the sea cliff, a thermal) the air lifts you.
+- **The body others see** is the species' detailed hero body (SK_<Id>_Hero), hopping down off the palm onto the
+  ground before you take over.
+
+Dev scripts: `Bird.Script water:MuteSwan | drown:Starling | tire:BlueTit | call:Starling` (with
+`lyud.Birds.AnyMap 1` in a test level; `lyud.Bird.ForceAnswer 3` forces a fight).
+
 ## Becoming the bird and back
 
 The befriending thread calls `UBirdFlightSubsystem::BecomeBird(PlayerController, BirdId)` after the bird

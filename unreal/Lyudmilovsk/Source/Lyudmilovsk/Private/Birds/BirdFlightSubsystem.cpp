@@ -37,6 +37,7 @@
 
 namespace
 {
+	TAutoConsoleVariable<int32> CVarForceAnswer(TEXT("lyud.Bird.ForceAnswer"), 0, TEXT("Tests: how a called bird answers (1 look, 2 court, 3 fight, 4 call back; 0 by chance)."));
 	TAutoConsoleVariable<int32> CVarQuitAfterLoad(TEXT("lyud.Bird.QuitAfterLoad"), 0, TEXT("1: quit two seconds after a save is loaded (the save test)."));
 	const FName SaveKey(TEXT("BirdFlight"));
 	const FName HeadBone(TEXT("head"));
@@ -265,6 +266,83 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		});
 		S->Add(0.5f, [](FCtx&) { return false; });
 		S->Add(0.1f, [](FCtx& X) { CVar(TEXT("lyud.Bird.QuitAfterLoad"), 1); GEngine->Exec(X.Sys->GetWorld(), TEXT("lyud.Load 0")); return true; });
+	}
+	else if (Kind == TEXT("water"))
+	{
+		// over the sea low and slow: settle on the water, paddle, patter off it (swans) and fly
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			X.Sys->BecomeSpecies(X.PC, Species, FVector(40000.f, PortalFaceY + 3000.f, FBirdAir::SeaZ + 300.f), 0.f, FVector(900.f, 0, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-15.f, 0.f, 0.f));
+			return true;
+		});
+		S->Add(8.f, [](FCtx& X) { X.C.Shift = true; X.bAim = true; X.Aim = FRotator(-15.f, 0.f, 0.f); return X.Bird->GetMode() == EBirdMode::Swimming; });
+		S->Add(4.f, [](FCtx& X) { X.C.Move = FVector2D(0.f, 1.f); X.bAim = true; X.Aim = FRotator(-5.f, 60.f, 0.f); return false; });
+		S->Add(10.f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(8.f, 60.f, 0.f); return X.Bird->GetMode() == EBirdMode::Air && X.Bird->GetActorLocation().Z > FBirdAir::SeaZ + 400.f; });
+		S->Add(3.f, [](FCtx& X) { X.C.Space = true; return false; });
+	}
+	else if (Kind == TEXT("drown"))
+	{
+		// a land bird into the sea: the hero is in the water there and swims; ashore he can call the bird back
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			X.Sys->BecomeSpecies(X.PC, Species, FVector(40000.f, PortalFaceY + 3000.f, FBirdAir::SeaZ + 300.f), 0.f, FVector(900.f, 0, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-30.f, 0.f, 0.f));
+			return true;
+		});
+		S->Add(10.f, [](FCtx& X) { X.C.Left = X.C.Right = true; X.bAim = true; X.Aim = FRotator(-40.f, 0.f, 0.f); return X.Bird == nullptr; });
+		S->Add(4.f, [](FCtx& X)
+		{
+			if (FMath::Fmod(X.T, 1.f) < X.Dt && X.Sys->GetHero())
+			{
+				const ACharacter* H = Cast<ACharacter>(X.Sys->GetHero());
+				UE_LOG(LogTemp, Warning, TEXT("BIRD hero at %s swimming %d"), *X.Sys->GetHero()->GetActorLocation().ToCompactString(),
+					H && H->GetCharacterMovement() ? (int32)H->GetCharacterMovement()->IsSwimming() : -1);
+			}
+			return false;
+		});
+	}
+	else if (Kind == TEXT("tire"))
+	{
+		// Space held level until the wings are spent: the bird must glide down
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			X.Sys->BecomeSpecies(X.PC, Species, FVector(-20000.f, PortalFaceY + 60000.f, 3000.f), 90.f, FVector(0, 900.f, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(0.f, 90.f, 0.f));
+			return true;
+		});
+		S->Add(120.f, [](FCtx& X)
+		{
+			X.C.Space = true; X.bAim = true; X.Aim = FRotator(2.f, 90.f, 0.f);
+			if (FMath::Fmod(X.T, 5.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD tire t=%.0f energy %.2f z=%.0f"), X.T, X.Bird ? X.Bird->GetEnergy() : -1.f, X.Bird ? X.Bird->GetActorLocation().Z : 0.f);
+			return !X.Bird || X.Bird->GetEnergy() < 0.01f;
+		});
+	}
+	else if (Kind == TEXT("call"))
+	{
+		// on the ground among birds of the kind (lyud.Birds.SpawnNear puts them there): call, three times
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const APawn* H = X.PC ? X.PC->GetPawn() : nullptr;
+			if (!H) return true;
+			const FVector At = H->GetActorLocation() + FVector(300.f, 0.f, 0.f);
+			for (int32 K = 0; K < 3; K++)
+			{
+				GEngine->Exec(X.Sys->GetWorld(), *FString::Printf(TEXT("lyud.Birds.SpawnNear %s %.0f %.0f %.0f"), *Species.ToString(), At.X + 60.f + 40.f * K, At.Y - 40.f + 40.f * K, At.Z - 90.f));
+			}
+			X.Sys->BecomeSpecies(X.PC, Species, At - FVector(0, 0, 95.f), 0.f, FVector::ZeroVector, true, nullptr, true);
+			return true;
+		});
+		for (int32 K = 0; K < 3; K++)
+		{
+			S->Add(8.f, [](FCtx& X) { X.C.Call = X.T < X.Dt * 1.5f; if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD call t=%.0f energy %.2f note %s"), X.T, X.Bird->GetEnergy(), *X.Bird->GetNote()); return false; });
+		}
 	}
 	else if (Kind == TEXT("look"))
 	{
@@ -516,7 +594,7 @@ void UBirdFlightSubsystem::RunScript(const FString& Name, const FString& Record,
 	Script = FScript::Make(Name);
 	if (!Script)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Bird flight: no script %s (showcase|ridge|look|pose|savetest[:Species], styles)"), *Name);
+		UE_LOG(LogTemp, Warning, TEXT("Bird flight: no script %s (showcase|ridge|look|pose|savetest|water|drown|tire[:Species], styles)"), *Name);
 		return;
 	}
 	RecordDir = Record;
@@ -908,6 +986,10 @@ void UBirdFlightSubsystem::HandleCall()
 		else
 		{
 			K = R < 0.5f ? EAnswer::CallBack : EAnswer::Look;
+		}
+		if (const int32 Force = CVarForceAnswer.GetValueOnGameThread(); Force > 0)
+		{
+			K = (EAnswer)Force;
 		}
 		AActor* A = Life->ClaimBird(Id);
 		if (!A)
