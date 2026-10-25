@@ -403,7 +403,7 @@ def export(parts):
     layout.json says where each goes in the ensemble frame."""
     os.makedirs(EXPORT_DIR, exist_ok=True)
     layout = {"frame": "ensemble metres: x east, y north, z up; origin = Novikova 1 footprint centre at ground",
-              "parts": {}, "trees": plan.square_trees(), "lights": []}
+              "parts": {}, "trees": plan.square_trees(), "lights": [], "garden": plan.SQUARE_GARDEN}
     layout["walks"] = []
     for name, h in HOUSES.items():
         for label, pts in getattr(h, "walks", []):

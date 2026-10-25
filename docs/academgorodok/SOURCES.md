@@ -2,7 +2,7 @@
 
 Every texture, material and render of the Academgorodok build that did not start in this repo is listed here with
 where it came from. Reference photos (not shipped in the game, used only to model and colour-match) are listed
-with author and licence in `docs/academgorodok/refs/exterior/manifest.json` and `refs/interior/`.
+with author and licence in `docs/academgorodok/refs/exterior/manifest.json` and `refs/interior/manifest.json` (committed; the images themselves are not).
 
 ## Textures: `textures/academ/`
 

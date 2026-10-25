@@ -2388,7 +2388,7 @@ def make(name, **kw):
     if name == "wicket_block":
         return wicket_block(**{k: v for k, v in kw.items() if k in ("length", "h", "arch_w", "arch_h", "t")})
     if name == "scroll_pylon":
-        ob = scroll_pylon(g("h", 2.8))
+        ob = scroll_pylon(g("h", 2.8), g("t", 0.5))
         if g("flip", False):
             _xf(ob, Matrix.Scale(-1, 4, (1, 0, 0)))
             ob.name = "scroll_pylon_flip"

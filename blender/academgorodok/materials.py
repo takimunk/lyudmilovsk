@@ -23,15 +23,15 @@ GRIME_TEX = "academ_grime_mask"
 
 # slot -> texture set (None = flat colour), grime amount (0..1, world-aligned streak overlay), metallic, AO strength
 SLOTS = {
-    "AC_Wall":       ("plaster_ochre", 0.4, 0.0, 0.5),
-    "AC_Trim":       ("plaster_white", 0.45, 0.0, 0.5),
+    "AC_Wall":       ("plaster_ochre", 0.15, 0.0, 0.3),
+    "AC_Trim":       ("plaster_white", 0.2, 0.0, 0.4),
     "AC_RusticDark": ("rustic_dark", 0.2, 0.0, 0.8),
     "AC_Quoin":      ("quoin_vermiculated", 0.4, 0.0, 0.8),
     "AC_Plinth":     ("concrete", 0.5, 0.0, 0.5),
     "AC_Roof":       ("roof_steel", 0.3, 0.0, 0.4),
     "AC_RoofBrown":  ("roof_steel", 0.3, 0.0, 0.4),
     "AC_Brick":      ("brick_red", 0.35, 0.0, 0.8),
-    "AC_Timber":     ("timber_stained", 0.0, 0.0, 0.5),
+    "AC_Timber":     ("plaster_white", 0.1, 0.0, 0.5),      # painted timber (the 2025 restoration)
     "AC_Frame":      (None, 0.0, 0.0, 0.0),
     "AC_Glass":      (None, 0.0, 0.0, 0.0),
     "AC_Door":       ("timber_stained", 0.0, 0.0, 0.5),
@@ -43,6 +43,8 @@ SLOTS = {
     "AC_Asphalt":    ("asphalt", 0.0, 0.0, 0.5),
     "AC_Concrete":   ("concrete", 0.2, 0.0, 0.5),
     "AC_Soil":       ("soil_bed", 0.0, 0.0, 0.6),
+    "AC_Hedge":      (None, 0.0, 0.0, 0.0),
+    "AC_Flowers":    (None, 0.0, 0.0, 0.0),
 }
 GRIME_COLOUR = (0.055, 0.05, 0.042)    # linear: sooty grey-brown
 GRIME_MULT = tuple(c / 0.25 for c in GRIME_COLOUR)   # multiplier on the base colour where the mask is 1

@@ -31,6 +31,7 @@ INTERIOR_MATERIALS = {
     "AC_IHandrail": ("#5A3A22", 0.4, "varnished wooden handrail"),
     "AC_IDoorCase": ("#EDE9DF", 0.5, "painted door cases (architraves)"),
     "AC_ILeaf":     ("#D9D2C0", 0.5, "painted panelled door leaves, standing open"),
+    "AC_IOpal":     ("#FFF4DD", 0.3, "opal glass of the stair lamps (emissive)"),
 }
 
 CEIL = 3.45            # clear height of a storey (the slab and floor make up the rest of FLOOR_H)
@@ -395,8 +396,16 @@ def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
     xb0, xb1 = sx + FLIGHT_GAP, sx + CELL_HALF - CELL_T / 2           # flight B (up to the next floor)
     rise = (FLOOR_H / 2) / RISERS
     y_mid0 = yb + s * flight_len                                      # the half landing's edge
+    lights = getattr(spec.h, "lights", None)
+    if lights is None:
+        spec.h.lights = lights = []
     for k in range(F):
         fz = floor_z(k)
+        # a landing lamp: an opal globe on a short rod over the corridor band
+        lz = fz + CEIL
+        box(m, "AC_Iron", sx - 0.01, sx + 0.01, spec.yc - 0.01, spec.yc + 0.01, lz - 0.35, lz)
+        box(m, "AC_IOpal", sx - 0.13, sx + 0.13, spec.yc - 0.13, spec.yc + 0.13, lz - 0.62, lz - 0.35)
+        lights.append((sx, spec.yc, lz - 0.7, "#FFE2B8", 900))
         # side walls (two storeys of wall per storey: full height) with the flat doors at the band
         glo = lo
         if k == 0 and spec.gastronom and spec.gastronom[0] < sx < spec.gastronom[1]:

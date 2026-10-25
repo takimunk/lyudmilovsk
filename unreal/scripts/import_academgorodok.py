@@ -49,7 +49,7 @@ def _extra_materials():
     out = {"AC_Room": ("#8C7A62", 0.9, 0.35), "AC_Curtain": ("#D8CDB4", 0.9, 0.2), "AC_Furniture": ("#3B2C22", 0.8, 0.0)}
     import interiors
     for k, (hx, rough, _) in interiors.INTERIOR_MATERIALS.items():
-        out[k] = (hx, rough, 0.0)
+        out[k] = (hx, rough, 5.0 if "Opal" in k else 0.0)
     try:
         import furniture
         for k, (hx, rough, _) in furniture.FURNITURE_MATERIALS.items():
@@ -168,6 +168,24 @@ def place(face_y, report=False):
             p.set_editor_property(k, v)
         p.tags = [TAG]
         p.set_folder_path("Outside/Academgorodok")
+    g = layout.get("garden")
+    if g:
+        # the square's garden: a dense planting of old maples (for the limes), birches and spruces; the
+        # trees keep off the paths, hedges and beds (the Square mesh is tagged NoTree)
+        forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
+        x, y = W.academ_to_map(*g["centre"])
+        f = eas.spawn_actor_from_class(forest_cls, unreal.Vector(*W.to_unreal(x, y, z0, face_y)))
+        f.set_actor_label("Academ_Garden")
+        f.set_editor_property("mix", [unreal.ForestMix(species=sp, weight=wt, young_age=ya, mature_age=ma)
+                                      for sp, wt, ya, ma in g["mix"]])
+        hx, hy = g["half"]
+        for k, v in (("seed", 1947), ("count", g["count"]), ("spacing", 700.0),
+                     ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 2),
+                     ("min_world_z", (z0 - 3) * 100), ("max_world_z", (z0 + 3) * 100),
+                     ("trace_up", 3000.0), ("trace_down", 3000.0), ("preview_in_editor", False)):
+            f.set_editor_property(k, v)
+        f.tags = [TAG]
+        f.set_folder_path("Outside/Academgorodok")
     for i, l in enumerate(layout.get("lights", [])):      # the Gastronom's pendants and a lamp in each room
         lx, ly, lz = l["at"]
         x, y = W.academ_to_map(lx, ly)

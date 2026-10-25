@@ -499,9 +499,9 @@ def side_house(name):
     # --- roof: the main hip over the full-depth part, the wings' own hips into it -------------------
     over = 1.1
     roof = Mesh()
-    zr = geom.hip_roof(roof, "AC_RoofBrown", "AC_Timber", "AC_Timber", x0, x1, y0 + r, y1, ez, S_PITCH, over)
+    zr = geom.hip_roof(roof, "AC_Roof", "AC_Timber", "AC_Timber", x0, x1, y0 + r, y1, ez, S_PITCH, over)
     for wx0, wx1 in ((x0, -rh), (rh, x1)):
-        geom.hip_roof(roof, "AC_RoofBrown", "AC_Timber", "AC_Timber", wx0, wx1, y0, y0 + r + 4.0, ez, S_PITCH, over)
+        geom.hip_roof(roof, "AC_Roof", "AC_Timber", "AC_Timber", wx0, wx1, y0, y0 + r + 4.0, ez, S_PITCH, over)
     h.mesh.extend(roof)
     h.notches = []
     # the gabled bay on the street side
@@ -580,8 +580,9 @@ def gates(houses):
         yaw = math.atan2(n[1], n[0]) - math.pi / 2
         P = lambda t, o=0.0: (a[0] + d[0] * t + n[0] * o, a[1] + d[1] * t + n[1] * o, 0.0)
         out.append(("wicket_block", {}, P(1.9), yaw, d))
-        out.append(("scroll_pylon", {"flip": False}, P(4.3), yaw, d))
-        out.append(("scroll_pylon", {"flip": True}, P(8.6), yaw, d))
+        # the scroll pylons stand about as high as the wicket's arch (commons_Marshal_Novikov_str._1_gates.jpg)
+        out.append(("scroll_pylon", {"flip": False, "h": 3.4, "t": 0.7}, P(4.5), yaw, d))
+        out.append(("scroll_pylon", {"flip": True, "h": 3.4, "t": 0.7}, P(8.8), yaw, d))
         lines.append((a, b))
     return out, lines
 
@@ -602,6 +603,27 @@ def square_mesh():
     _flat(m, "AC_Asphalt", [(fx, fy - 1.6), (SQUARE["x_end"] + 26.0, fy - 1.6), (SQUARE["x_end"] + 26.0, fy + 1.6), (fx, fy + 1.6)], 0.02)
     # the street along the square (to the lower station and on into the town)
     _flat(m, "AC_Asphalt", [(SQUARE["x_end"], -115.0), (SQUARE["x_end"] + 9.0, -115.0), (SQUARE["x_end"] + 9.0, 115.0), (SQUARE["x_end"], 115.0)], 0.03)
+    # the garden: clipped hedges along the paths (gaps where paths cross), flowers round the fountain
+    # and along the facade (commons_Marshal_Novikov_str._1_1_.jpg, _2_.jpg)
+    xe = SQUARE["x_end"]
+    for side in (-1, 1):
+        y_in = fy + side * 2.4
+        for a, b in ((fx + SQUARE["bed_r"] + 2.6, xe - 1.2),):
+            _hedge(m, a, b, y_in - 0.35, y_in + 0.35)
+        for a, b in ((fy + side * 9.0, fy + side * 34.0),):
+            y0, y1 = sorted((a, b))
+            _hedge(m, 17.0, 17.7, y0, y1)               # behind the apron
+            _hedge(m, xe - 1.0, xe - 0.3, y0, y1)       # along the street
+    rnd = random.Random(7)
+    for i in range(48):                                 # leafy clumps with flowers inside the fountain's ring
+        t = 2 * math.pi * i / 48
+        r = SQUARE["bed_r"] - rnd.uniform(0.7, 1.6)
+        cx, cy, hh = fx + r * math.cos(t), fy + r * math.sin(t), rnd.uniform(0.35, 0.6)
+        box(m, "AC_Hedge", cx - 0.3, cx + 0.3, cy - 0.3, cy + 0.3, 0.1, hh)
+        if i % 2 == 0:
+            box(m, "AC_Flowers", cx - 0.12, cx + 0.12, cy - 0.12, cy + 0.12, hh, hh + 0.12)
+    for y0, y1 in ((-29.5, -16.0), (-12.0, -5.5), (5.5, 12.0), (16.0, 29.5)):   # under the ground-floor windows
+        box(m, "AC_Flowers", 7.45, 8.1, y0, y1, 0.0, 0.45)
     # drives through the gates into the yard
     for gy in (38.4, -38.9):
         _flat(m, "AC_Asphalt", [(-35.0, gy - 2.2), (SQUARE["x_end"], gy - 2.2), (SQUARE["x_end"], gy + 2.2), (-35.0, gy + 2.2)], 0.025)
@@ -626,6 +648,23 @@ def square_trees():
         out.append((fx + dx, fy + dy, sp, seed, age))
         seed += 1
     return out
+
+
+def _hedge(m, x0, x1, y0, y1, h=0.95):
+    """A clipped hedge with a slightly rounded (chamfered) top."""
+    box(m, "AC_Hedge", x0, x1, y0, y1, 0.0, h - 0.12, faces="xXyY")
+    c = 0.12
+    m.face("AC_Hedge", [(x0 + c, y0 + c, h), (x1 - c, y0 + c, h), (x1 - c, y1 - c, h), (x0 + c, y1 - c, h)])
+    for (a, b) in (((x0, y0, h - c), (x1, y0, h - c)), ((x1, y1, h - c), (x0, y1, h - c))):
+        pass
+    m.face("AC_Hedge", [(x0, y0, h - c), (x1, y0, h - c), (x1 - c, y0 + c, h), (x0 + c, y0 + c, h)])
+    m.face("AC_Hedge", [(x1, y1, h - c), (x0, y1, h - c), (x0 + c, y1 - c, h), (x1 - c, y1 - c, h)])
+    m.face("AC_Hedge", [(x1, y0, h - c), (x1, y1, h - c), (x1 - c, y1 - c, h), (x1 - c, y0 + c, h)])
+    m.face("AC_Hedge", [(x0, y1, h - c), (x0, y0, h - c), (x0 + c, y0 + c, h), (x0 + c, y1 - c, h)])
+
+
+SQUARE_GARDEN = {"centre": (48.0, 6.0), "half": (30.0, 36.0), "count": 34,
+                 "mix": [("Maple", 0.5, 30, 70), ("SilverBirch", 0.25, 25, 55), ("NorwaySpruce", 0.25, 30, 70)]}
 
 
 def _flat(m, mat, poly, z):

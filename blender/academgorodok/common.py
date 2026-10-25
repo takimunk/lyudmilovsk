@@ -8,15 +8,15 @@ Unreal import both map these names to real materials (materials.py / unreal/scri
 
 MATERIALS = {
     # name: (base colour sRGB hex, roughness, what it is)
-    "AC_Wall":      ("#E2D3A0", 0.9, "ochre lime plaster of the walls"),
+    "AC_Wall":      ("#EEDFA8", 0.9, "ochre lime plaster of the walls"),
     "AC_Trim":      ("#F1EEE4", 0.8, "off-white plaster: cornices, surrounds, columns, parapets, consoles, swags"),
     "AC_RusticDark":("#3A3532", 0.85, "dark rough-faced rusticated portal of Novikova 1"),
     "AC_Quoin":     ("#A39C8E", 0.85, "vermiculated quoin blocks and portal rustication of the side buildings"),
     "AC_Plinth":    ("#7A6F66", 0.9, "plinth band"),
-    "AC_Roof":      ("#8E959A", 0.45, "painted standing-seam sheet steel roof"),
+    "AC_Roof":      ("#A7ADB0", 0.45, "light grey painted standing-seam sheet steel roof (as restored)"),
     "AC_RoofBrown": ("#4B3329", 0.5, "dark brown painted sheet steel roof (side buildings)"),
     "AC_Brick":     ("#9C5040", 0.85, "red brick chimneys"),
-    "AC_Timber":    ("#6A4A2E", 0.7, "stained timber eaves: rafter tails, brackets, soffit boards"),
+    "AC_Timber":    ("#EAE3CF", 0.7, "the side houses' eaves: rafter tails, brackets, soffit boards, painted cream as restored"),
     "AC_Frame":     ("#F4F3EE", 0.5, "painted wooden window frames and sashes"),
     "AC_Glass":     ("#1E2A30", 0.05, "window glass"),
     "AC_Door":      ("#2A1E18", 0.6, "dark brown panelled entrance doors"),
@@ -28,6 +28,8 @@ MATERIALS = {
     "AC_Asphalt":   ("#4A4A48", 0.95, "asphalt drives and paths"),
     "AC_Concrete":  ("#9A9690", 0.9, "concrete steps, slabs, kerbs"),
     "AC_Soil":      ("#4B3B2C", 1.0, "flowerbed soil"),
+    "AC_Hedge":     ("#3F5A2C", 0.95, "clipped hedges and shrubs of the square"),
+    "AC_Flowers":   ("#B8743A", 0.9, "flowers in the beds (day lilies, marigolds)"),
 }
 
 # Storey grid (estimates, docs/academgorodok/facade_notes.md)
