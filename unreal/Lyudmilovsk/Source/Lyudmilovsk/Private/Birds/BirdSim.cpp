@@ -448,6 +448,26 @@ namespace LyudBirds
 				}
 			}
 		}
+		// no roost of its kind on the map (the town's roofs are being rebuilt): the nearest place it would perch, or feed
+		for (FGroup& G : Groups)
+		{
+			if (G.Roost >= 0)
+			{
+				continue;
+			}
+			const FSpecies& S = SpeciesTable()[G.Species];
+			float BestW = 0.f;
+			for (int I = 0; I < (int)Sites.size(); I++)
+			{
+				const float Taste = S.Perch[(int)Sites[I].Kind] + 0.3f * S.Forage[(int)Sites[I].Kind];
+				const float W = Taste / (1.f + (Sites[I].Center() - G.Home).Len2D() / 100.f);
+				if (W > BestW)
+				{
+					BestW = W;
+					G.Roost = I;
+				}
+			}
+		}
 		// communal roosts hold everybody: widen their capacity
 		for (FGroup& G : Groups)
 		{
@@ -657,7 +677,7 @@ namespace LyudBirds
 		}
 		if (Plan == 2)
 		{
-			if (G.Plan != 2 || G.Site != G.Roost || bScattered)
+			if (G.Roost >= 0 && (G.Plan != 2 || G.Site != G.Roost || bScattered))
 			{
 				G.Plan = 2;
 				SendGroup(G, G.Roost);
