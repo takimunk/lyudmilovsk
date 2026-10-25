@@ -477,7 +477,12 @@ namespace LyudBirds
 
 	int FWorld::AddBird(int Species, const V3& P)
 	{
-		if (Species < 0 || Species >= (int)SpeciesTable().size())
+		return AddFlock(Species, P, 1, 1.2f);
+	}
+
+	int FWorld::AddFlock(int Species, const V3& P, int Count, float Radius)
+	{
+		if (Species < 0 || Species >= (int)SpeciesTable().size() || Count <= 0)
 		{
 			return -1;
 		}
@@ -485,8 +490,8 @@ namespace LyudBirds
 		FSite Site;
 		Site.Kind = S.Forage[(int)EHabitat::ForestFloor] > S.Forage[(int)EHabitat::Meadow] ? EHabitat::ForestFloor : EHabitat::Meadow;
 		Site.A = Site.B = P;
-		Site.Radius = 1.2f;
-		Site.Capacity = 20;
+		Site.Radius = Radius;
+		Site.Capacity = std::max(20, Count * 2);
 		Sites.push_back(Site);
 		FGroup G;
 		G.Species = Species;
@@ -495,25 +500,30 @@ namespace LyudBirds
 		G.Plan = 1;
 		G.StayTimer = 1e9f;
 		G.bStayPut = true;
-		FBird B;
-		B.Id = (int)Birds.size();
-		B.Species = Species;
-		B.Group = (int)Groups.size();
-		B.Site = G.Site;
-		B.Pos = B.Spot = P;
-		B.Rng = (Opt.Seed ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
-		Rand(B.Rng);
-		B.Boldness = 1.f;
-		B.Hunger = 0.7f;
-		B.bFemale = Rand(B.Rng) < 0.5f;
-		B.Yaw = Rand(B.Rng) * 2.f * Pi;
-		B.CallTimer = 3.f + Rand(B.Rng) * 10.f;
-		SetAct(B, EAct::Peck, 1.f);
-		G.Members.push_back(B.Id);
+		const int First = (int)Birds.size();
+		for (int K = 0; K < Count; K++)
+		{
+			FBird B;
+			B.Id = (int)Birds.size();
+			B.Species = Species;
+			B.Group = (int)Groups.size();
+			B.Site = G.Site;
+			B.Rng = (Opt.Seed ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
+			Rand(B.Rng);
+			B.Pos = B.Spot = Count > 1 ? SpotOn(Sites[G.Site], B.Rng) : P;
+			B.Boldness = Count > 1 ? 0.7f + 0.6f * Rand(B.Rng) : 1.f;
+			B.Hunger = 0.6f + 0.3f * Rand(B.Rng);
+			B.bFemale = Rand(B.Rng) < 0.5f;
+			B.Yaw = Rand(B.Rng) * 2.f * Pi;
+			B.Phase = Rand(B.Rng) * 10.f;
+			B.CallTimer = 3.f + Rand(B.Rng) * 20.f;
+			SetAct(B, EAct::Peck, 0.5f + Rand(B.Rng) * 1.5f);
+			G.Members.push_back(B.Id);
+			Birds.push_back(B);
+		}
 		Groups.push_back(G);
-		Birds.push_back(B);
 		BuildHash();
-		return B.Id;
+		return First;
 	}
 
 	void FWorld::Resettle()
@@ -530,7 +540,10 @@ namespace LyudBirds
 			{
 				continue;
 			}
-			G.Site = -1;
+			if (!G.bStayPut)
+			{
+				G.Site = -1;
+			}
 			for (int Id : G.Members)
 			{
 				FBird& B = Birds[Id];
@@ -1998,8 +2011,9 @@ namespace LyudBirds
 				if (Next >= 0 && Avoided(Grp, Sites[Next].Center()))
 				{
 					// keep circling out here until the danger has gone
-					const V3 Off = (B.Pos - (Grp.bAvoidPlayer && Player.bPresent ? Player.Feet : Grp.Avoid)).Flat().Norm();
-					B.Spot = B.Pos + Off * 25.f + V3(Off.Y, -Off.X, 0.f) * 20.f;
+					const V3 Danger = Grp.bAvoidPlayer && Player.bPresent ? Player.Feet : Grp.Avoid;
+					const V3 Off = (B.Pos - Danger).Flat().Norm();
+					B.Spot = Danger + Off * (Grp.AvoidR + 20.f) + V3(Off.Y, -Off.X, 0.f) * 25.f;   // round it, at a distance
 					B.Spot.Z = std::max(TopZ(B.Spot.X, B.Spot.Y), SeaZ) + S.FlightClearance + 6.f;
 					Next = -2;
 				}

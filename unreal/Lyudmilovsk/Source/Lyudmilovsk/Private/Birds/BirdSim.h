@@ -269,6 +269,8 @@ namespace LyudBirds
 		void Populate();
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
+		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */
+		int AddFlock(int Species, const V3& P, int Count, float Radius);
 		/** Ground height where there is no grid (a test level): flights keep above it. */
 		float NoGridZ = -43.f;
 		/** The clock jumped (developer mode, a loaded save): every group goes straight to where it would be now. */

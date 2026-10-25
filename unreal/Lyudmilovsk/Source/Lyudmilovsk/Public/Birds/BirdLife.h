@@ -184,6 +184,7 @@ private:
 
 	bool Start();
 	bool StartEmpty(float GroundZ);
+	void AddDoorFlock();
 	void FillSpeciesFromTable();
 	void Stop();
 	void AddRealTrees();

@@ -369,6 +369,53 @@ namespace
 			Check(R, MinAlert > 0.3f, "a frightened bird stays alert for tens of seconds");
 			Check(R, !bLandedNear, "and doesn't settle near the person again");
 		}
+		// the pigeons by the door: they keep to their lawn, come back after a scare, and one comes to the hand
+		{
+			FWorld F;
+			F.LoadHabitats(Dir());
+			F.DayOfYear = 297.f;
+			SunTimes(F.DayOfYear, F.Sunrise, F.Sunset);
+			F.Hour = 11.f;
+			F.Opt.PopulationScale = 0.f;
+			F.Opt.bPredators = false;
+			F.Populate();
+			const V3 Lawn(2.07f, 21.5f, F.GroundZ(2.07f, 21.5f));
+			const int First = F.AddFlock(FindSpecies("FeralPigeon"), Lawn, 6, 2.5f);
+			F.Camera = Lawn;
+			for (int K = 0; K < 600 * 60 / 10; K++)
+			{
+				F.Step(1.f / 6.f);
+				F.Events.clear();
+			}
+			float Far = 0.f;
+			for (int I = First; I < First + 6; I++)
+			{
+				Far = std::max(Far, (F.Birds[I].Pos - Lawn).Len2D());
+			}
+			std::printf("door pigeons after 10 min alone: farthest %.1f m from their lawn\n", Far);
+			Check(R, Far < 4.f, "the door pigeons stay on their lawn");
+			F.Scare(Lawn, 20.f, 2.f);
+			float Away = 0.f;
+			for (int K = 0; K < 150 * 6; K++)
+			{
+				F.Step(1.f / 6.f);
+				F.Events.clear();
+				if (K == 20 * 6)
+				{
+					for (int I = First; I < First + 6; I++)
+					{
+						Away = std::max(Away, (F.Birds[I].Pos - Lawn).Len2D());
+					}
+				}
+			}
+			Far = 0.f;
+			for (int I = First; I < First + 6; I++)
+			{
+				Far = std::max(Far, (F.Birds[I].Pos - Lawn).Len2D());
+			}
+			std::printf("door pigeons after a bang: up to %.1f m away at 20 s, back within %.1f m at 150 s\n", Away, Far);
+			Check(R, Away > 15.f && Away < 300.f && Far < 4.f, "they fly off from a bang, stay near, and come back");
+		}
 		// a flock: one flushes, the others follow
 		{
 			FWorld F;
