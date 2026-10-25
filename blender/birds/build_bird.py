@@ -989,6 +989,13 @@ def build_contour(sb, lod=0):
             s0 = len(sb.verts)
             card(sb, root, flow, nn, Ls, Wc * rng.uniform(0.9, 1.1), key, w, segs=2, lift=(0.0005 + 0.0003 * rng.random()) * st.get("loft", 1.0),
                  flip=rng.random() < 0.5)
+            if lod == 0 and zz < 0.070 and rng.random() < M["fluff_layer"]:
+                # a plume over it: mostly loose barbs, lifted and turned a little, so the surface reads soft and
+                # the silhouette fuzzy (the down and semiplumes showing between contour feathers)
+                turn = rot_axis(nn, rng.uniform(-0.45, 0.45))
+                card(sb, root + nn * 0.0007 + flow * Ls * 0.15, turn @ flow, nn, Ls * rng.uniform(0.65, 0.85), Wc * rng.uniform(0.85, 1.05),
+                     cell("plume", stname, rng.randrange(2)), w, segs=2, lift=(0.0011 + 0.0006 * rng.random()) * st.get("loft", 1.0),
+                     flip=rng.random() < 0.5)
             for vi in range(s0, len(sb.verts)):
                 sb.verts[vi] = tuple(warp(sb.verts[vi]))
             n += 1

@@ -18,7 +18,7 @@ MORPH_DEFAULTS = dict(
     arm=1.0, hand=1.0, prim=1.0, prim_profile=[1.0] * 9, prim_width=1.0, prim_angle0=70.0, prim_fan=60.0, sec=1.0, sec_width=1.0, covert=1.0,
     tail=1.0, tail_shape="square", fork=0.0, streamer=0.0, tail_width=1.0, tail_fan=1.0,
     shin=1.0, tarsus=1.0, leg_thick=1.0, toes=1.0, hallux=1.0, claw=1.0, webbed=False,
-    fluff=1.0, crest=0.0,
+    fluff=1.0, crest=0.0, fluff_layer=0.55,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
     call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0,
     feather_shapes={},
@@ -762,3 +762,10 @@ for _n in ("HerringGull", "CommonGull"):
 SPECIES["BarnSwallow"]["morph"].update(tarsus=0.75, shin=0.85, perch_low=0.0, perch_pitch=18)
 SPECIES["Waxwing"]["morph"].update(crest=2.6)
 SPECIES["Waxwing"]["plumage"]["styles"]["pinkbrown"] = st("#b89082", ("mottle", "#a47e72", 0.35), ("down", "#9a786c"))
+
+# how much loose plume shows over the contour feathers: sleek crows, gulls and swifts little, fluffy small birds a lot
+for _n, _f in {"Rook": 0.15, "HoodedCrow": 0.2, "Jackdaw": 0.25, "Magpie": 0.15, "HerringGull": 0.35, "CommonGull": 0.35,
+               "BlackHeadedGull": 0.35, "Cormorant": 0.15, "CommonSwift": 0.15, "BarnSwallow": 0.2, "SandMartin": 0.35,
+               "Starling": 0.3, "Peregrine": 0.3, "Sparrowhawk": 0.4, "Waxwing": 0.9, "GreatTit": 0.8, "BlueTit": 0.85,
+               "Robin": 0.85, "Bullfinch": 0.85, "HouseSparrow": 0.7, "TreeSparrow": 0.7, "Goldfinch": 0.7, "Chaffinch": 0.6}.items():
+    SPECIES[_n]["morph"]["fluff_layer"] = _f

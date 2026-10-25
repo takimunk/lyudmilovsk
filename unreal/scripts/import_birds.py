@@ -86,6 +86,14 @@ return Base + film * saturate(Gloss) * (0.004 + 0.07 * f * f * f);
 """
 
 
+DITHER_HLSL = """
+// interleaved-gradient noise, moved every frame: soft alpha (strand tips) becomes a dither that temporal AA smooths
+float2 p = Parameters.SvPosition.xy + (float)View.StateFrameIndexMod8 * float2(5.588238, 5.588238);
+float n = frac(52.9829189 * frac(dot(p, float2(0.06711056, 0.00583715))));
+return Alpha + (n - 0.5) * 0.98 * step(0.001, Alpha) * step(Alpha, 0.999);
+"""
+
+
 def make_master(name, plumage, eye=False):
     m = get_or_create(name, MATS, unreal.Material, unreal.MaterialFactoryNew())
     mel.delete_all_material_expressions(m)
@@ -133,7 +141,15 @@ def make_master(name, plumage, eye=False):
         mel.connect_material_expressions(vn, "", cu, "N")
         mel.connect_material_expressions(cam, "", cu, "V")
         base = cu
-        mel.connect_material_property(alb, "A", unreal.MaterialProperty.MP_OPACITY_MASK)
+        # soft strand tips: the alpha is dithered (temporal AA resolves it to soft, fluffy edges)
+        dith = node(m, unreal.MaterialExpressionCustom, -350, 120)
+        dith.set_editor_property("code", DITHER_HLSL)
+        dith.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT1)
+        ci = unreal.CustomInput()
+        ci.set_editor_property("input_name", "Alpha")
+        dith.set_editor_property("inputs", [ci])
+        mel.connect_material_expressions(alb, "A", dith, "Alpha")
+        mel.connect_material_property(dith, "", unreal.MaterialProperty.MP_OPACITY_MASK)
         # feathers let light through: backlit wings glow warm
         sss = node(m, unreal.MaterialExpressionMultiply, -350, 250)
         mel.connect_material_expressions(mul, "", sss, "A")
