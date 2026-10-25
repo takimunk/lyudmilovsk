@@ -253,7 +253,34 @@ namespace LyudBirds
 		{
 			W *= 0.1f;
 		}
+		if (Avoided(G, C))
+		{
+			W *= 0.02f;
+		}
+		// a single point (the spire's tip) holds a bird or two, and never a swift (it needs a wall)
+		if ((Site.B - Site.A).Len() < 0.01f && Site.Radius <= 0.f)
+		{
+			if (S.bClings)
+			{
+				return 0.f;
+			}
+			if (Site.Occupants + Size > 2)
+			{
+				W *= 0.05f;
+			}
+		}
 		return W;
+	}
+
+	/** Is P too near what frightened the group lately (the player, wherever they are now, or a hawk's attack)? */
+	bool FWorld::Avoided(const FGroup& G, const V3& P) const
+	{
+		if (Time > G.AvoidUntil)
+		{
+			return false;
+		}
+		const V3 From = G.bAvoidPlayer && Player.bPresent ? Player.Feet : G.Avoid;
+		return (P - From).Len2D() < G.AvoidR;
 	}
 
 	int FWorld::ChooseSite(const FGroup& G, int Plan, int Except) const
@@ -389,7 +416,8 @@ namespace LyudBirds
 				float BestW = 0.f;
 				for (int I = 0; I < (int)Sites.size(); I++)
 				{
-					const float W = S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
+					const bool bPoint = (Sites[I].B - Sites[I].A).Len() < 0.01f && Sites[I].Radius <= 0.f;
+					const float W = bPoint ? 0.f : S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
 					if (W > BestW)
 					{
 						BestW = W;
@@ -408,7 +436,9 @@ namespace LyudBirds
 				float BestW = 0.f;
 				for (int I = 0; I < (int)Sites.size(); I++)
 				{
-					const float W = S.Roost[(int)Sites[I].Kind] / (1.f + (Sites[I].Center() - G.Home).Len2D() / 150.f) * (0.7f + 0.6f * Rand(R));
+					const bool bPoint = (Sites[I].B - Sites[I].A).Len() < 0.01f && Sites[I].Radius <= 0.f;
+					const float W = bPoint && (S.bClings || G.Members.size() > 2) ? 0.f
+						: S.Roost[(int)Sites[I].Kind] / (1.f + (Sites[I].Center() - G.Home).Len2D() / 150.f) * (0.7f + 0.6f * Rand(R));
 					if (W > BestW)
 					{
 						BestW = W;
@@ -599,7 +629,7 @@ namespace LyudBirds
 		{
 			// a test bird comes back to its spot a while after a scare, and sleeps there at night
 			G.Plan = Plan == 2 ? 2 : 1;
-			if (bScattered && Time - G.FlushedAt > 20.0)
+			if (bScattered && Time - G.FlushedAt > 20.0 && !Avoided(G, Sites[G.Site].Center()))
 			{
 				SendGroup(G, G.Site);
 			}
@@ -691,6 +721,29 @@ namespace LyudBirds
 		B.bLook = false;
 	}
 
+	/** A swift on a wall: just below the ledge or on the cliff face, body against the side where the wall rises, facing it. */
+	void FWorld::Cling(FBird& B, const FSite& Site)
+	{
+		V3 Along = (Site.B - Site.A).Flat();
+		if (Along.Len2D() < 0.1f)
+		{
+			Along = V3(1.f, 0.f, 0.f);
+		}
+		Along = Along.Norm();
+		V3 N(-Along.Y, Along.X, 0.f);
+		const V3 P = B.Spot;
+		if (TopZ(P.X - N.X * 4.f, P.Y - N.Y * 4.f) > TopZ(P.X + N.X * 4.f, P.Y + N.Y * 4.f))
+		{
+			N = N * -1.f;          // N points at the wall
+		}
+		if (Site.Kind == EHabitat::Tower || Site.Kind == EHabitat::Roof)
+		{
+			B.Spot = P - N * 0.12f - V3(0.f, 0.f, 0.8f);   // under the ledge, on the outside of the wall
+		}
+		B.Pos = B.Spot;
+		B.Yaw = std::atan2(N.Y, N.X);
+	}
+
 	/** Arrived on a site: what it does there. */
 	void FWorld::Settle(FBird& B)
 	{
@@ -698,6 +751,10 @@ namespace LyudBirds
 		B.Vel = V3();
 		B.Pos = B.Spot;
 		B.Target = -1;
+		if (S.bClings && B.Site >= 0 && !IsGroundHabitat(Sites[B.Site].Kind))
+		{
+			Cling(B, Sites[B.Site]);
+		}
 		if (B.Site < 0)
 		{
 			SetAct(B, EAct::Perch, 3.f);
@@ -764,7 +821,7 @@ namespace LyudBirds
 				}
 				const V3 D = C.Center() - B.Pos;
 				const float L = D.Len2D();
-				if (L < 8.f || L > 140.f || D.Flat().Norm().Dot(Away) < 0.2f)
+				if (L < 8.f || L > 140.f || D.Flat().Norm().Dot(Away) < 0.2f || (C.Center() - From).Len2D() < 2.5f * S.FleeDistance + 15.f)
 				{
 					continue;
 				}
@@ -808,6 +865,13 @@ namespace LyudBirds
 		}
 		FGroup& G = Groups[B.Group];
 		G.FlushedAt = Time;
+		// it stays watchful a good while, and the group keeps away from the danger
+		B.Wary = 45.f + Rand(B.Rng) * 45.f;
+		const bool bPlayer = Cause == -1 || (Player.bPresent && (From - Player.Feet).Len() < 3.f);
+		G.AvoidUntil = Time + (bPlayer ? 120.0 : 60.0);
+		G.Avoid = From;
+		G.AvoidR = 2.5f * S.FleeDistance + 15.f;
+		G.bAvoidPlayer = bPlayer;
 		if (G.Site >= 0 && Cause != -3)
 		{
 			Sites[G.Site].Disturbed = (float)Time + 240.f;
@@ -951,7 +1015,7 @@ namespace LyudBirds
 		}
 		else
 		{
-			B.Alert = std::max(Target, B.Alert - Dt / 7.f);
+			B.Alert = std::max(Target, B.Alert - Dt / (B.Wary > 0.f ? 45.f : 7.f));
 		}
 
 		// befriending: food held out by someone who keeps calm and low makes it trust them, slowly
@@ -1466,9 +1530,10 @@ namespace LyudBirds
 		}
 		else
 		{
-			B.Alert = std::max(0.f, B.Alert - Dt / 7.f);
+			B.Alert = std::max(0.f, B.Alert - Dt / (B.Wary > 0.f ? 45.f : 7.f));
 			B.bNoticed = B.bWatching = false;
 		}
+		B.Wary = std::max(0.f, B.Wary - Dt);
 		B.Hunger = Clamp(B.Hunger + Dt * (B.Act == EAct::Peck || B.Act == EAct::Eat || B.Act == EAct::Hawk ? -0.004f : 0.0012f), 0.f, 1.f);
 
 		// voices: contact calls, the dawn song, all at their own times (only heard near the player)
@@ -1927,6 +1992,14 @@ namespace LyudBirds
 				if (Next < 0 || Grp.bStayPut)
 				{
 					Next = Grp.Site;      // nowhere better: back where it was
+				}
+				if (Next >= 0 && Avoided(Grp, Sites[Next].Center()))
+				{
+					// keep circling out here until the danger has gone
+					const V3 Off = (B.Pos - (Grp.bAvoidPlayer && Player.bPresent ? Player.Feet : Grp.Avoid)).Flat().Norm();
+					B.Spot = B.Pos + Off * 25.f + V3(Off.Y, -Off.X, 0.f) * 20.f;
+					B.Spot.Z = std::max(TopZ(B.Spot.X, B.Spot.Y), SeaZ) + S.FlightClearance + 6.f;
+					Next = -2;
 				}
 				if (Next >= 0)
 				{

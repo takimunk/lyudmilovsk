@@ -83,9 +83,14 @@ as a bird (other birds keep seeing it, and don't fear the player while they are 
 ## Console
 
 `lyud.Birds 0|1` (off removes them at once; for A/B in one benchmark process), `lyud.Birds.Population`,
-`lyud.Birds.Migration 1` (species away this month per species.json are not created; off by default, so
-swifts and swallows are there in October), `lyud.Birds.Bodies`, `lyud.Birds.DrawDistance`,
-`lyud.Birds.Report`, `lyud.Birds.Scare [m]`, `lyud.Birds.DumpDay <hour> <hours> [csv]`, `lyud.Birds.AnyMap 1`.
+`lyud.Birds.Migration` (1, the default: species away this month per species.json months are not created, so no
+swifts, swallows or martins in October; 0 keeps everybody), `lyud.Birds.Bodies`, `lyud.Birds.DrawDistance`,
+`lyud.Birds.Report`, `lyud.Birds.Scare [m]`, `lyud.Birds.DumpDay <hour> <hours> [csv]`, `lyud.Birds.AnyMap 1`,
+`lyud.Birds.SpawnNear <Species> [x y z]` (a calm test bird that keeps to its spot, any level), `lyud.Birds.Time <h> [m]`,
+`lyud.Birds.IgnorePlayer 1`, `lyud.Birds.TestRun <from x y z> <to x y> <cm/s> <s>` (tests).
+
+After a fright a bird stays watchful for 45-90 s (its alertness fades over ~45 s instead of ~7) and its group keeps
+away from the danger, or from the player wherever they are, for one to two minutes.
 
 ## Checks
 

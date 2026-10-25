@@ -64,8 +64,12 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         body = sm.get_editor_property("body_setup")
         if body:
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
-        # no Nanite: the glTF materials' parent (Interchange's M_Default) lacks the Nanite usage flag,
-        # so outside the editor Nanite meshes would draw with the default material; these are small
+        # no Nanite (Interchange turns it on by itself): the glTF materials' parent (Interchange's
+        # M_Default) lacks the Nanite usage flag, so the meshes drew their Nanite fallback, decimated to
+        # a third of the triangles, which wrecked the town's houses; these meshes are small
+        settings = sm.get_editor_property("nanite_settings")
+        settings.enabled = False
+        sm.set_editor_property("nanite_settings", settings)
     eal.save_directory(DEST)                         # meshes, their materials and textures
 
     actors = [a for a in eas.get_all_level_actors() if a.get_name() not in before]

@@ -93,12 +93,20 @@ for path in eal.list_assets(DEST, True):
     if not isinstance(sm, unreal.StaticMesh) or "SkyDome" in sm.get_name():
         continue
     mats = [m.material_interface for m in sm.static_materials]
-    # the instance's own blend mode (glTF glass is a translucent instance of an opaque parent)
-    if all(m and m.get_blend_mode() in OPAQUE for m in mats):
-        settings = sm.get_editor_property("nanite_settings")
-        settings.enabled = True
-        sm.set_editor_property("nanite_settings", settings)   # rebuilds the mesh with Nanite data
+    # the instance's own blend mode (glTF glass is a translucent instance of an opaque parent).
+    # Interchange turns Nanite on by itself, so it is set explicitly either way. The glTF parent material
+    # (Interchange's M_Default) lacks the Nanite usage flag, and such meshes draw their Nanite fallback:
+    # keep the fallback at full detail, or it is decimated (the town's tilted houses, 4a57017).
+    settings = sm.get_editor_property("nanite_settings")
+    settings.enabled = all(m and m.get_blend_mode() in OPAQUE for m in mats)
+    if settings.enabled:
+        for k, v in (("fallback_percent_triangles", 1.0), ("fallback_relative_error", 0.0)):
+            try:
+                settings.set_editor_property(k, v)
+            except Exception as e:
+                log("nanite fallback %s: %s" % (k, e))
         nanite += 1
+    sm.set_editor_property("nanite_settings", settings)   # rebuilds the mesh (with Nanite data if enabled)
 log("nanite on %d meshes" % nanite)
 
 # Screens that are switched on: emissive materials built from the images Blender used.

@@ -340,6 +340,35 @@ namespace
 			const FBird& B = W.Birds[0];
 			Check(R, B.Pos.X > P.X - 5.f || B.Site == 1, "the rook flies away from the runner, not past them");
 		}
+		// after a fright it stays wary and keeps away from the person (who stands where the bird was)
+		{
+			Lone(W, "HouseSparrow", P);
+			Run(W, { P + V3(-25.f, 0.f, 0.f), P + V3(-0.5f, 0.f, 0.f), 5.5f, false }, EEvent::Flee, D);
+			// stand still at the spot for 40 s more
+			float MinAlert = 1.f, Closest = 1e9f;
+			bool bLandedNear = false;
+			const V3 Feet = W.Player.Feet;
+			for (int K = 0; K < 40 * 60; K++)
+			{
+				W.Player.Vel = V3();
+				W.Step(1.f / 60.f);
+				W.Events.clear();
+				const FBird& B = W.Birds[0];
+				if (K == 3 * 60 || K == 20 * 60)
+				{
+					MinAlert = std::min(MinAlert, B.Alert);
+				}
+				if (!IsAirborne(B.Act))
+				{
+					const float Dd = (B.Pos - Feet).Len2D();
+					Closest = std::min(Closest, Dd);
+					bLandedNear |= Dd < 15.f;
+				}
+			}
+			std::printf("sparrow after a fright: alert at 3 s and 20 s >= %.2f; nearest it settled to the person: %.1f m\n", MinAlert, Closest);
+			Check(R, MinAlert > 0.3f, "a frightened bird stays alert for tens of seconds");
+			Check(R, !bLandedNear, "and doesn't settle near the person again");
+		}
 		// a flock: one flushes, the others follow
 		{
 			FWorld F;

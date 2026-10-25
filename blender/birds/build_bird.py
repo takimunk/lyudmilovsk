@@ -126,7 +126,7 @@ def warp(p):
     x, y, z = p
     body = V(x * M["body_w"], CYB + (y - CYB) * M["body_h"], z * M["body_len"])
     head = head_centre() + (p - H0) * M["head"]
-    t = smooth(0.030, 0.052, z)
+    t = smooth(0.024, 0.058, z)   # a long blend: a short neck must not crease
     out = body * (1 - t) + head * t
     out[1] += LEGLIFT
     return out
@@ -533,7 +533,7 @@ def paint_beak(w, h, B):
     mouth = u > 0.93
     c = np.where(mouth[..., None], PL.L(B.get("mouth", "#c86a6a")), c)
     c = c * (0.94 + 0.06 * np.sin(v * 40))[..., None]
-    r = np.where(mouth, 0.4, B.get("beak_rough", 0.32))
+    r = np.where(mouth, 0.4, B.get("beak_rough", 0.52))   # horn is matte
     return np.clip(c, 0, 1), np.ones((h, w)), 0.2 * np.sin(v * 40), r, np.zeros((h, w))
 
 

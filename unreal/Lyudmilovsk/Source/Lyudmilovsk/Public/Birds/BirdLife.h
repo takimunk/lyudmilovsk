@@ -119,6 +119,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Birds")
 	int32 NumBirds() const;
 
+	/** Tests: for Seconds the birds see the player run from From to To (cm) at Speed (cm/s), whatever the pawn does. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void TestRun(FVector From, FVector To, float Speed, float Seconds);
+
 	/** It noticed the player (its head comes round). */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdNotice;
 	/** It has turned to look at the player. */
@@ -158,6 +162,9 @@ private:
 	float StartDelay = 0.f;
 	int32 SunDay = -1;
 	bool bClockSeen = false;
+	FVector TestRunFeet = FVector::ZeroVector, TestRunTarget = FVector::ZeroVector;
+	float TestRunSpeed = 0.f;
+	double TestRunUntil = -1.0;
 	FRotator LastView = FRotator::ZeroRotator;
 	float TurnRate = 0.f;
 	FVector LastPalm = FVector::ZeroVector;

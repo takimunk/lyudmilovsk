@@ -161,29 +161,38 @@ def s_close_end(w):
 
 @step
 def s_run(w):
-    # the player runs at the nearest birds on the ground: they flush
-    i, b = nearest(w, DOOR, 30000.0)
+    # the player runs (scripted, 5.5 m/s) from 25 m straight at the nearest bird on the ground near the door
+    i, b = None, None
+    for j in birds(w).find_birds_near(unreal.Vector(*DOOR), 30000.0):
+        c = bird(w, j)
+        if c and c.activity in (unreal.BirdActivity.PECK, unreal.BirdActivity.FORAGE) and c.alertness < 0.1:
+            i, b = j, c
+            break
     if b:
         st["run"] = i
         loc = b.location
-        place(w, (loc.x - 1200.0, loc.y, loc.z + 100.0), 0, 0)
-        cmd(w, "walk")
-        log("run at bird %d %s" % (i, b.species_id))
-        st["flee0"] = birds(w).report()
+        st["run_to"] = unreal.Vector(loc.x, loc.y, loc.z)
+        cmd(w, "lyud.Birds.TestRun %.0f %.0f %.0f %.0f %.0f 550 30" % (loc.x - 2500.0, loc.y, loc.z, loc.x, loc.y))
+        log("run at bird %d %s from 25 m" % (i, b.species_id))
 
 
 @step
 def s_run2(w):
-    pc = unreal.GameplayStatics.get_player_controller(w, 0)
-    pawn = pc.get_controlled_pawn()
-    b = bird(w, st.get("run", 0))
+    b = bird(w, st["run"]) if st.get("run") is not None else None
     if b:
-        # move the pawn straight at it, 6 m/s for 2 s (teleport steps keep velocity at 0, so add input)
-        d = b.location - pawn.get_actor_location()
-        d.z = 0
-        pawn.add_movement_input(d.normal(), 1.0, True)
-        log("after run: bird %d act %s alert %.2f dist %.1f m" % (st["run"], b.activity, b.alertness, d.length() / 100))
-    cmd(w, "lyud.Birds.Scare 30")
+        log("3 s after the run started: bird %d act %s alert %.2f" % (st["run"], b.activity, b.alertness))
+
+
+def _run_check(w, label):
+    b = bird(w, st["run"]) if st.get("run") is not None else None
+    if b:
+        d = (b.location - st["run_to"]).length() / 100.0
+        log("%s: bird %d act %s alert %.2f, %.1f m from where the player stands" % (label, st["run"], b.activity, b.alertness, d))
+
+
+step(lambda w: _run_check(w, "8 s after"), 12.0)
+step(lambda w: _run_check(w, "20 s after"), 10.0)
+step(lambda w: _run_check(w, "30 s after"), 3.0)
 
 
 @step
