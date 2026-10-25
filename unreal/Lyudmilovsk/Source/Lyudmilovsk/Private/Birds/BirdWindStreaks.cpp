@@ -118,7 +118,7 @@ void UBirdWindStreaks::UpdateStreaks(const FVector& CamLoc, const FVector& AirMs
 			Respawn(S, CamLoc, AirMs, S.Life <= 1.f && S.Age == 0.f);
 		}
 		const float Fade = FMath::Sin(PI * FMath::Clamp(S.Age / S.Life, 0.f, 1.f));
-		Xf[I] = FTransform(Q, S.Pos, FVector(LenCm * S.Len, 2.5f, 1.f));
+		Xf[I] = FTransform(Q, S.Pos, FVector(LenCm * S.Len, 7.f, 1.f));
 		Cards->SetCustomDataValue(I, 0, Fade * Show, false);
 	}
 	Cards->BatchUpdateInstancesTransforms(0, Xf, true, true, true);

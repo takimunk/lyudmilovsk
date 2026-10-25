@@ -157,7 +157,7 @@ w.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
 STREAK_HLSL = """
 float along = sin(3.14159 * saturate(uv.x));
 float across = 1.0 - abs(uv.y * 2.0 - 1.0);
-return float3(0.85, 0.9, 1.0) * along * along * across * fade * 0.22;
+return float3(0.85, 0.9, 1.0) * along * along * across * fade * 0.4;
 """
 wuv = node(w, unreal.MaterialExpressionTextureCoordinate, -700, 0)
 wfade = node(w, unreal.MaterialExpressionPerInstanceCustomData, -700, 120, data_index=0)
