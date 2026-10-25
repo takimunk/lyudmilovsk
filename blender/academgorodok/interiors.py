@@ -40,7 +40,7 @@ PART_T = 0.12          # partitions
 CELL_T = 0.2           # stair cell walls
 CELL_HALF = 1.4        # stair cell: centre lines of its walls at sx +- CELL_HALF
 BAND = 0.7             # half width of the corridor band
-DOOR_W, DOOR_H = 1.1, 2.2
+DOOR_W, DOOR_H = 1.16, 2.2   # ALyudDoor's clear width is the hole less 4 cm a leaf: 1.16 -> 1.12 >= 1.08
 FLAT_DOOR_W = 1.2
 RISERS = 11            # per flight; two flights a storey
 TREAD = 0.28
@@ -239,7 +239,7 @@ def build(house):
     voids = []
     for sx in st:
         lo, hi = spec.lo_hi(sx)
-        ye = spec.yard_in(sx)
+        ye = _cell_end(spec, sx, yb, flight_len)
         # the flights and the half landing: open up to the next storey (headroom over the landing)
         voids.append((sx - CELL_HALF + CELL_T / 2, sx + CELL_HALF - CELL_T / 2, min(yb, ye), max(yb, ye)))
 
@@ -290,6 +290,10 @@ def build(house):
     for sx in st:
         _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at[sx])
     house.walks = _walks(spec, rooms, band, yb, flight_len)
+    # the store rooms behind the short wing stairs: their windows get room boxes too
+    for sx, ye, yw in getattr(house, "store_cells", []):
+        for k in range(1, F):
+            closed += [w for w in _windows(house, k) if abs(w["x"] - sx) < 1.5 and _on_wall(w, yw)]
     # closed spaces: a lit room box behind each window so it never reads as a hole
     for w in closed:
         o, fac = w["o"], w["fac"]
@@ -345,6 +349,13 @@ def _walks(spec, rooms, band, yb, flight_len):
     return out
 
 
+def add_door(house, at, out, w, h, wall_t, leaves, opened, locked=False):
+    """A door for unreal/scripts/place_doors.py (layout.json "doors"): house frame, floor point in the
+    middle of the hole and of the wall; out = the side it swings to."""
+    house.__dict__.setdefault("doors", []).append({"at": at, "out": out, "hole": [w, h], "wall": wall_t,
+                                                     "leaves": leaves, "open": opened, "locked": locked})
+
+
 def _clip(holes, x0, x1, y0, y1):
     out = []
     for h in holes:
@@ -396,12 +407,32 @@ def _corner_trim(house, fac):
     return ends[0], fac.length - ends[1]
 
 
+def _cell_end(spec, sx, yb, flight_len):
+    """Where a stair cell ends towards the yard: at the yard wall, whose stair windows light the half
+    landing; a stair standing in a deep wing stops 1.6 m past its flights (a store room beyond), so the
+    shaft is no longer an 8 m void through every storey."""
+    s = spec.yard_sign
+    yw = spec.yard_in(sx)
+    ye = yb + s * (flight_len + 1.6)
+    return yw if abs(yw - yb) < flight_len + 5.0 else ye
+
+
 def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
     """doors_at: {(storey, -1|1)} where a flat opens off this stair's landing."""
     F = spec.F
     s = spec.yard_sign
     lo, hi = spec.lo_hi(sx)
-    ye = spec.yard_in(sx)
+    ye = _cell_end(spec, sx, yb, flight_len)
+    yw = spec.yard_in(sx)
+    if ye != yw:
+        # the cell's end wall over the ground floor (the lobby goes on to the yard door below it), and
+        # the store room's floors and ceilings are the house's (no void there)
+        z0w = floor_z(1) - 0.36
+        wall(m, "AC_IWall", (sx - CELL_HALF, ye - s * CELL_T / 2), (sx + CELL_HALF, ye - s * CELL_T / 2), CELL_T,
+             z0w, floor_z(F - 1) + CEIL)
+        box(m, "AC_IWall", sx - CELL_HALF, sx + CELL_HALF, min(ye, ye - s * 0.35), max(ye, ye - s * 0.35),
+            floor_z(0) + CEIL - 0.02, z0w)
+        spec.h.__dict__.setdefault("store_cells", []).append((sx, ye, yw))
     xa0, xa1 = sx - CELL_HALF + CELL_T / 2, sx - FLIGHT_GAP          # flight A (up from a floor)
     xb0, xb1 = sx + FLIGHT_GAP, sx + CELL_HALF - CELL_T / 2           # flight B (up to the next floor)
     rise = (FLOOR_H / 2) / RISERS
@@ -422,8 +453,19 @@ def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
             glo = VESTIBULE_BACK                 # the Gastronom's vestibule is in front of this lobby
         for sd, xw in ((-1, sx - CELL_HALF), (1, sx + CELL_HALF)):
             holes = [(spec.yc - glo, FLAT_DOOR_W, 2.3)] if (k, sd) in doors_at else []
+            if holes:
+                # the flat's front door (ALyudDoor, docs/doors.md): shut, opening onto the landing
+                add_door(spec.h, (xw, spec.yc, fz), (-sd, 0.0), FLAT_DOOR_W, 2.3, CELL_T, 1, False)
             wall(m, "AC_IWall", (xw, glo), (xw, hi), CELL_T, fz - 0.01, fz + CEIL, holes, ends=False)
+            if k > 0:
+                # the strip of wall through the slab: without it the shaft shows the slab's inside
+                wall(m, "AC_IWall", (xw, glo), (xw, hi), CELL_T, fz - FLOOR_H + CEIL - 0.02, fz - 0.005, ends=False)
             _dado(m, xw - sd * (CELL_T / 2 + 0.003), -sd, glo, hi, fz, holes)
+        if k > 0:
+            # the landing slab's edge over the flights below (concrete faced with plaster), facing the shaft
+            ze0, ze1 = fz - FLOOR_H + CEIL, fz - 0.01
+            pts = [(xa0, yb, ze0), (xb1, yb, ze0), (xb1, yb, ze1), (xa0, yb, ze1)]
+            m.face("AC_IWall", pts if s < 0 else pts[::-1])
         if k < F - 1:
             # flights and the half landing
             steps_flight(m, xa0, xa1, yb, s, fz, rise=rise)
@@ -560,6 +602,9 @@ def _row_rooms(m, spec, k, x0, x1, ylo, yhi, row, wall_y, side, wins, rooms, cor
     # the corridor-side wall of this row, with the doorways
     yw = band_wall_y + (PART_T / 2 if band_wall_y == yhi else -PART_T / 2)
     holes = [(c - x0, dw, DOOR_H) for c, dw in doors]
+    for c, dw in doors:              # the rooms' doors stand open, swinging into the room
+        add_door(spec.h, (c, yw, fz), (0.0, 1.0 if band_wall_y == yhi and False else (-1.0 if yw > (ylo + yhi) / 2 else 1.0)),
+                 dw, DOOR_H, PART_T, 1 if dw < 1.3 else 2, True)
     wall(m, "AC_IWall", (x0, yw), (x1, yw), PART_T, fz - 0.01, cz, holes)
     corr["doors"] += [{"side": "y0" if yw < (corr["y0"] + corr["y1"]) / 2 else "y1", "c": c, "w": dw, "h": DOOR_H}
                       for c, dw in doors]

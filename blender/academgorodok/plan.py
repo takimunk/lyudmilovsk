@@ -99,7 +99,29 @@ def build_facade(house, fac, z_top, openings, extra=None, wall_mat="AC_Wall", pl
             pass  # the hole is square; the unit and its surround fill the spandrels (see below)
         if o.room and o.kind == "window" and not house.interiors:
             _room(m, house.rnd, u0, u1, z0, z1, fac.length)
-        if o.fill:
+        if o.kind == "door":
+            # a real door (ALyudDoor) instead of modelled leaves: shut, swinging out of the house
+            import interiors
+            x_, y_, _ = fac.to_building((o.uc, -WALL_T / 2, 0.0))
+            door_h = o.h
+            if o.arch:
+                # ALyudDoor is rectangular: it fills the hole up to the springing, a fixed glazed
+                # fanlight fills the half round above it
+                r = o.w / 2
+                door_h = o.h - r
+                zs = z0 + door_h
+                fan = [(o.uc + r * math.cos(math.pi * k / 12), zs + r * math.sin(math.pi * k / 12)) for k in range(13)]
+                geom.extrude_profile(m, "AC_Glass", "AC_Frame", fan, 0.24, 0.25, lambda u, v, t: (u, -t, v))
+                box(m, "AC_Frame", u0, u1, -0.28, -0.2, zs - 0.03, zs + 0.03)
+                for a in (math.pi / 3, 2 * math.pi / 3):
+                    for k in range(6):
+                        rr = r * (k + 0.5) / 6
+                        cx, cz = o.uc + rr * math.cos(a), zs + rr * math.sin(a)
+                        box(m, "AC_Frame", cx - 0.02, cx + 0.02, -0.27, -0.21, cz - 0.04, cz + 0.04)
+            locked = house.name == "Novikova1" and -10.4 < x_ < -2.5 and z0 < 1.0      # the shut-off rooms by the library
+            interiors.add_door(house, (x_, y_, max(z0, 0.0)), fac.n, o.w, door_h, WALL_T, 2 if o.w >= 1.3 else 1,
+                               not o.fill and not locked, locked)
+        elif o.fill:
             house.detail(fac, o.kind, o.uc, 0.0, z0, w=o.w, h=o.h, unit=o.unit)
         if o.surround:
             house.detail(fac, "surround", o.uc, 0.0, z0, w=o.w, h=o.h, style=o.surround)
@@ -405,7 +427,7 @@ def _n1_end(h, fac, ez):
     square_first = fac.p0[1] < fac.p1[1]
     def at(t):            # t measured from the square corner
         return t if square_first else L - t
-    ops.append(Opening(at(1.9), floor_z(0) - 0.15, 1.2, 2.6, kind="door", unit="arched", arch=True,
+    ops.append(Opening(at(1.9), floor_z(0) - 0.15, 1.2, 2.7, kind="door", unit="arched", arch=True,
                        room=False, surround="arch"))
     for k in range(4):
         ops.append(Opening(at(5.2), floor_z(k) + SILL_H, 1.3, WIN_H))
@@ -490,7 +512,7 @@ def side_house(name):
                 sur = hood[k] if (k == 0 or near) else "band"
                 ops.append(Opening(uc, floor_z(k) + SILL_H, 1.35, 1.85, surround=sur))
         else:
-            ops.append(Opening(uc, floor_z(0) - 0.15, 1.3, 2.6, kind="door", unit="arched", arch=True,
+            ops.append(Opening(uc, floor_z(0) - 0.15, 1.3, 2.8, kind="door", unit="arched", arch=True,
                                room=False, surround=None, fill=False))
             ops.append(Opening(uc, floor_z(1) + 0.05, 1.3, 2.6, unit="french_door", surround="pediment"))
             ops.append(Opening(uc, floor_z(2) + SILL_H, 1.35, 1.85, surround="ears"))
@@ -541,7 +563,10 @@ def side_house(name):
             us = axes(1.0, Lf - 1.0, 3)
             su = min(us, key=lambda u: min(abs(fac.to_building((u, 0, 0))[0] - sx) for sx in SIDE_STAIRS))
             ops += windows_on_axes([u for u in us if u != su], F)
-            ops += _stair_entrance(su, F)
+            # the wing's stair stops 1.6 m past its flights (interiors.py): its yard door, and ordinary
+            # windows above it (a store room behind them)
+            ops += _stair_entrance(su, 1)
+            ops += [o for o in windows_on_axes([su], F) if o.z0 > floor_z(1) - 0.5]
         elif i in (1, 3):                  # wing side faces: paired windows with a colonnette
             for k in range(F):
                 ops.append(Opening(Lf / 2, floor_z(k) + SILL_H, 2.3, 1.85, unit="paired"))
@@ -753,10 +778,17 @@ def square_mesh():
         t = 2 * math.pi * i / 70
         r = SQUARE["bed_r"] - rnd.uniform(0.6, 2.2)
         _flower_clump(m, fx + r * math.cos(t), fy + r * math.sin(t), rnd, h=rnd.uniform(0.45, 0.75))
-    for y0, y1 in ((-29.5, -16.0), (-12.0, -5.5), (5.5, 12.0), (16.0, 29.5)):   # under the ground-floor windows
+    # under the ground-floor windows, kept 1.7 m clear of every door (Dima: the beds blocked the
+    # stair entrances behind the bays)
+    f1 = Frame(*FRAMES["Novikova1"][:2], math.radians(FRAMES["Novikova1"][2]))
+    doors_y = [f1((bx, 0.0, 0.0))[1] for bx in (-N1_BAYS[2], -4.35, 0.0, 4.35, N1_BAYS[2])]
+    for y0, y1 in ((-29.5, -5.5), (5.5, 29.5)):
         n = int((y1 - y0) / 0.45)
         for k in range(n):
-            _flower_clump(m, 7.75 + rnd.uniform(-0.15, 0.15), y0 + (k + 0.5) * (y1 - y0) / n, rnd, w=0.55, h=rnd.uniform(0.4, 0.65))
+            yy = y0 + (k + 0.5) * (y1 - y0) / n
+            if any(abs(yy - dy) < 1.7 for dy in doors_y):
+                continue
+            _flower_clump(m, 7.75 + rnd.uniform(-0.15, 0.15), yy, rnd, w=0.55, h=rnd.uniform(0.4, 0.65))
     # drives through the gates into the yard
     for gy in (38.4, -38.9):
         _flat(m, "AC_Asphalt", [(-35.0, gy - 2.2), (SQUARE["x_end"], gy - 2.2), (SQUARE["x_end"], gy + 2.2), (-35.0, gy + 2.2)], 0.025)

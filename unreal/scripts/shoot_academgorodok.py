@@ -61,6 +61,12 @@ SPOTS = [
     ("n1_shop_front", (12.0, 4.5, 1.6), (7.25, 4.5, 2.2)),         # .../shop.jpg: the library's door and windows
     ("library_hall",) + inside("Novikova1", (0.4, -5.6, 2.3), (12.0, -2.0, 1.6)),
     ("library_tables",) + inside("Novikova1", (16.8, -5.4, 2.3), (6.0, -3.0, 1.2)),
+    ("floor_down_n3",) + inside("Novikova3", (-9.0, 5.5, 6.1), (-9.0, 7.5, 4.6)),
+    ("floor_up_n3",) + inside("Novikova3", (-9.0, 5.5, 5.0), (-9.0, 7.0, 8.5)),
+    ("floor_down_n1",) + inside("Novikova1", (26.0, -3.0, 9.9), (26.0, -5.0, 8.4)),
+    ("wing_stair_n3",) + inside("Novikova3", (20.7, 2.15, 6.1), (20.7, -4.0, 4.5)),
+    ("n1_beds", (14.0, -26.0, 1.6), (7.5, -20.8, 1.0)),
+    ("floor_corr_n1",) + inside("Novikova1", (12.0, 0.0, 6.1), (6.0, 0.0, 4.6)),
     ("hedge_close", (22.0, 14.0, 1.4), (30.0, 9.0, 0.5)),         # the hedges and the fountain's flowers
     ("flowers_close", (13.5, 1.0, 1.4), (22.9, 1.6, 0.3)),
     ("n1_stair_up",) + inside("Novikova1", (20.4, -0.6, 1.9), (20.3, 3.5, 2.9)),

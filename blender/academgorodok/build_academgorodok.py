@@ -445,6 +445,16 @@ def export(parts):
     os.makedirs(EXPORT_DIR, exist_ok=True)
     layout = {"frame": "ensemble metres: x east, y north, z up; origin = Novikova 1 footprint centre at ground",
               "parts": {}, "trees": plan.square_trees(), "lights": [], "garden": plan.SQUARE_GARDEN}
+    layout["doors"] = []
+    for name, h in HOUSES.items():
+        for i, d in enumerate(getattr(h, "doors", [])):
+            f = h.frame
+            p0 = f(d["at"])
+            p1 = f((d["at"][0] + d["out"][0], d["at"][1] + d["out"][1], d["at"][2]))
+            layout["doors"].append({"name": "%s_Door_%03d" % (name, i), "at": list(p0),
+                                    "out": [p1[0] - p0[0], p1[1] - p0[1]], "hole": d["hole"], "wall": d["wall"],
+                                    "leaves": d["leaves"], "hinge": "left", "frame": False,
+                                    "open": d["open"], "locked": d["locked"]})
     layout["walks"] = []
     for name, h in HOUSES.items():
         for label, pts in getattr(h, "walks", []):
