@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
+#include "BonePose.h"
 #include "BirdAnimInstance.generated.h"
 
 class UAnimSequence;
@@ -36,6 +37,22 @@ struct FBirdLook
 	float Tilt = 0.f;
 };
 
+/** The player's wings set directly each frame (ABirdActor::SetWingPose), instead of from the clips. */
+USTRUCT()
+struct FBirdWingPose
+{
+	GENERATED_BODY()
+
+	/** 0..1 how much of the wings, tail and legs this pose drives (fades in and out). */
+	float Weight = 0.f;
+	float SpreadL = 1.f, SpreadR = 1.f;   // 0 folded on the back .. 1 spread (the bind pose)
+	float StrokeL = 0.f, StrokeR = 0.f;   // phase 0..1, 0..0.5 the downstroke (0 = top)
+	float StrokeAmp = 0.f;                // 0 gliding .. 1 a full beat
+	float Flare = 0.f, TailFan = 0.f, LegsDown = 0.f;
+	/** First person: the wings swept forward (degrees) and drooped (radians), added at the shoulder. */
+	float SweepDeg = 0.f, DroopRad = 0.f;
+};
+
 /**
  * Plays a bird's clips without an anim graph (like the hero's): a few layers cross-faded by weight, then the neck and
  * head turned toward a look target in component space, split between the two bones, within the species' reach.
@@ -51,6 +68,8 @@ struct FBirdAnimProxy : public FAnimInstanceProxy
 
 	virtual void PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds) override;
 	virtual bool Evaluate(FPoseContext& Output) override;
+	void ApplyWingsLocal(FCompactPose& Pose) const;
+	void ApplyWingsCS(FCSPose<FCompactPose>& CS) const;
 
 	TArray<FBirdClipLayer, TInlineAllocator<4>> Layers;
 	FBirdLook Look;
@@ -59,6 +78,10 @@ struct FBirdAnimProxy : public FAnimInstanceProxy
 	float TailPitchDeg = 0.f;
 	/** Length of the outermost tail feathers (a female swallow's shorter streamers). */
 	float StreamerScale = 1.f;
+	FBirdWingPose Wings;
+	/** Where the folded wings and the lowered legs come from (Idle) and the tucked legs (Glide), sampled at 0. */
+	UAnimSequence* FoldSeq = nullptr;
+	UAnimSequence* TuckSeq = nullptr;
 };
 
 UCLASS(Transient, NotBlueprintable)
@@ -83,6 +106,9 @@ public:
 	float BankDeg = 0.f;
 	float TailPitchDeg = 0.f;
 	float StreamerScale = 1.f;
+	FBirdWingPose Wings;
+	UPROPERTY(Transient) TObjectPtr<UAnimSequence> FoldSeq;
+	UPROPERTY(Transient) TObjectPtr<UAnimSequence> TuckSeq;
 
 protected:
 	virtual FAnimInstanceProxy* CreateAnimInstanceProxy() override { return new FBirdAnimProxy(this); }

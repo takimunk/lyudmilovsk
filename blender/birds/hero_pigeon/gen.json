@@ -1,0 +1,94 @@
+{
+ "_doc": "The player's feral pigeon (SK_FeralPigeon_Hero): every paid generation that makes it, in order. Images and raw models stay local in gen/ (ignored); this sidecar is committed. Provider per docs: 3D and its input views through the hi3d MCP (agent.hi3d.ai), textures through Higgsfield.",
+ "steps": {
+  "views": {
+   "provider": "hi3d",
+   "task_id": "4dcc805cdcc24fcebe2437e4f61bd2d1",
+   "points": 10,
+   "args": {
+    "operation": "text_to_image",
+    "multi_view": true,
+    "model_name": "Nano-Banana-Pro",
+    "aspect_ratio": "16:9"
+   },
+   "prompt": "Feral rock pigeon (Columba livia), classic blue-bar wild-type morph, flying with wings fully spread straight out to the sides like a specimen in a T-pose: both wings extended horizontally, level, every primary and secondary feather visible and slightly separated at the tips, primaries fanned, tail fanned open, legs tucked under the belly with pink feet, head level looking forward. Blue-grey body, darker slate head, iridescent green and purple neck sheen, two black wing bars on each wing, black tail band, pale grey underwings, orange eye, dark bill with white cere. Anatomically accurate, real proportions, photorealistic feather detail. Plain light grey seamless studio background, soft even shadowless lighting, centred, whole bird with both wing tips visible, nothing cropped, no motion blur, no text.",
+   "used": "image 0 (front, from slightly below) and 1 (back, from slightly above); 2 and 3 (sides) raised the wings and were dropped"
+  },
+  "side_left_rejected": {
+   "provider": "hi3d",
+   "task_id": "7c2bb025e08343b79dce73f1a587911a",
+   "points": 6,
+   "args": {
+    "operation": "edit",
+    "source_images": [
+     "views:0",
+     "views:1"
+    ],
+    "model_name": "Nano-Banana-Pro"
+   },
+   "note": "wings swept back instead of edge-on; not used"
+  },
+  "side_right_rejected": {
+   "provider": "hi3d",
+   "task_id": "6b73b3ee60f34eccb7f347d7a33aead5",
+   "points": 6,
+   "args": {
+    "operation": "edit",
+    "source_images": [
+     "views:0",
+     "views:1"
+    ],
+    "model_name": "Nano-Banana-Pro"
+   },
+   "note": "same; not used"
+  },
+  "model": {
+   "provider": "hi3d",
+   "task_id": "8ba5f3685f5042899a4119e2611ebcc7",
+   "points": 65,
+   "args": {
+    "source_images": [
+     "views:0",
+     "views:1"
+    ],
+    "version": "v3.0",
+    "model_type": "high_quality (standard)",
+    "generation_type": "model_with_texture",
+    "pbr": true,
+    "license": "private"
+   }
+  },
+  "feathers_wing": {
+   "provider": "higgsfield",
+   "model": "gpt_image_2_5",
+   "args": {
+    "aspect_ratio": "16:9",
+    "resolution": "4k",
+    "quality": "high",
+    "background": "opaque"
+   },
+   "credits": 4.25,
+   "job_id": "b4e3fa2d-f973-4cd4-8035-7272ca3246fc",
+   "output": "gen/feathers_wing.png",
+   "sha256": "fa48f815dcb1fce5a4713dafe7621e011f2df07eca1293a6c4ddf016c93da98b",
+   "prompt": "Museum feather scan, flat lay, photographed straight from above with flat even diffuse light, on a pure white background: the complete set of flight feathers of one left wing of a blue-bar feral rock pigeon (Columba livia), upper side up, each feather separate and not touching. Top row: the 10 primaries in order from the innermost (shortest, rounded tip) to the outermost (long, narrow, pointed, asymmetric vane), lying vertically side by side with the quill at the bottom and the tip at the top. Bottom row: the 12 secondaries in order, shorter and broader with blunt, slightly notched tips, quill at the bottom. Primaries slate grey with darker sooty tips and a pale grey inner vane; secondaries blue-grey with a broad black band near the tip where the rear wing bar shows. Sharp macro detail of barbs, rachis and vane edges, natural colours, no shadows, no labels, no ruler, no text.",
+   "note": "came back with 11 primaries and 12 secondaries; cut by cut_feathers.py"
+  },
+  "feathers_tail": {
+   "provider": "higgsfield",
+   "model": "gpt_image_2_5",
+   "args": {
+    "aspect_ratio": "16:9",
+    "resolution": "4k",
+    "quality": "high",
+    "background": "opaque"
+   },
+   "credits": 4.25,
+   "job_id": "47cc2912-6536-434d-ab5e-41cf6dcaa084",
+   "output": "gen/feathers_tail.png",
+   "sha256": "209e293b471e7e27dd919bca38cc76e127ca1459959bf7314119c4335459a042",
+   "prompt": "Museum feather scan, flat lay, photographed straight from above with flat even diffuse light, on a pure white background: the 12 tail feathers of a blue-bar feral rock pigeon (Columba livia), upper side up, lying vertically side by side in one row, each separate and not touching, quill at the bottom and tip at the top, square-ended tips. Each tail feather is blue-grey with a broad sooty black terminal band across the tip; the outermost pair has a white outer edge on the outer vane. Below them, a row of 12 wing covert feathers: small rounded pale blue-grey feathers, some with a black bar across the tip (the wing bar), and 6 small soft grey body contour feathers with downy bases. Sharp macro detail of barbs and rachis, natural colours, no shadows, no labels, no ruler, no text.",
+   "note": "12 tail, 12 coverts (7 barred), 6 contour"
+  }
+ }
+}

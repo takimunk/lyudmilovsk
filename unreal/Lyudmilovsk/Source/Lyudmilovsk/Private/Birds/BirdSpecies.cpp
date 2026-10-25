@@ -175,6 +175,59 @@ USkeletalMesh* UBirdSpeciesLibrary::LoadHeroMesh(FName Id)
 		LOAD_NoWarn | LOAD_Quiet);
 }
 
+bool UBirdSpeciesLibrary::HasFirstPersonBody(FName Id)
+{
+	const USkeletalMesh* Mesh = LoadHeroMesh(Id);
+	return Mesh && Mesh->GetMaterials().ContainsByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName == FName(TEXT("Skull")); });
+}
+
+namespace
+{
+	// blender/birds/hero_pigeon/morphs.json has the same list (the textures are made from it)
+	struct FPigeonMorph { const TCHAR* Name; float Share; };
+	const FPigeonMorph PigeonMorphs[] = {
+		{ TEXT(""), 0.27f },             // blue bar, the wild type
+		{ TEXT("Checker"), 0.28f },
+		{ TEXT("DarkChecker"), 0.14f },
+		{ TEXT("Spread"), 0.08f },       // melanic, near black-slate all over
+		{ TEXT("Pied"), 0.10f },
+		{ TEXT("AshRed"), 0.05f },
+		{ TEXT("Barless"), 0.03f },
+		{ TEXT("White"), 0.03f },
+		{ TEXT("Brown"), 0.02f },
+	};
+}
+
+int32 UBirdSpeciesLibrary::PigeonMorphCount()
+{
+	return UE_ARRAY_COUNT(PigeonMorphs);
+}
+
+FString UBirdSpeciesLibrary::PigeonMorphName(int32 Morph)
+{
+	return Morph >= 0 && Morph < PigeonMorphCount() ? FString(PigeonMorphs[Morph].Name) : FString();
+}
+
+int32 UBirdSpeciesLibrary::PickPigeonMorph(int32 Seed)
+{
+	FRandomStream R(Seed * 7919 + 17);
+	float U = R.FRand(), Total = 0.f;
+	for (const FPigeonMorph& M : PigeonMorphs)
+	{
+		Total += M.Share;
+	}
+	U *= Total;
+	for (int32 i = 0; i < PigeonMorphCount(); ++i)
+	{
+		U -= PigeonMorphs[i].Share;
+		if (U <= 0.f)
+		{
+			return i;
+		}
+	}
+	return 0;
+}
+
 UAnimSequence* UBirdSpeciesLibrary::LoadClip(FName Id, FName Clip)
 {
 	const FString N = Id.ToString(), C = Clip.ToString();

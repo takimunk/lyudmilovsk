@@ -1,0 +1,14 @@
+{
+ "_doc": "Feral pigeon colour morphs of the player's body, in UBirdSpeciesLibrary::PigeonMorphs order (share = how common in a city flock). name is the texture / material suffix; the first (blue bar, the wild type) is the base itself.",
+ "morphs": [
+  {"name": "", "share": 0.27, "kind": "base"},
+  {"name": "Checker", "share": 0.28, "kind": "checker", "cell": 0.0075, "dark": 0.52},
+  {"name": "DarkChecker", "share": 0.14, "kind": "checker", "cell": 0.0070, "dark": 0.62, "dark_rgb": [0.12, 0.12, 0.14], "body_dim": 0.18},
+  {"name": "Spread", "share": 0.08, "kind": "spread"},
+  {"name": "Pied", "share": 0.10, "kind": "pied"},
+  {"name": "AshRed", "share": 0.05, "kind": "ashred", "ground_rgb": [0.80, 0.72, 0.70], "bar_rgb": [0.50, 0.17, 0.10], "sheen_rgb": [0.62, 0.38, 0.46]},
+  {"name": "Barless", "share": 0.03, "kind": "barless"},
+  {"name": "White", "share": 0.03, "kind": "white", "ground_rgb": [0.96, 0.95, 0.92], "bar_rgb": [0.93, 0.92, 0.89], "sheen_rgb": [0.92, 0.92, 0.90]},
+  {"name": "Brown", "share": 0.02, "kind": "brown", "ground_rgb": [0.56, 0.46, 0.38], "bar_rgb": [0.22, 0.14, 0.10], "sheen_rgb": [0.40, 0.42, 0.28]}
+ ]
+}
