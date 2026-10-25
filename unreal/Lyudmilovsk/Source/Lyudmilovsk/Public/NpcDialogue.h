@@ -109,6 +109,12 @@ public:
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;
 
+	/**
+	 * Someone you can talk to besides the people placed in the level (the people's life: a person walking about town
+	 * as an ANpcBody). Id is the dialogue id (the mesh name without SK_). Hidden meshes are not talked to.
+	 */
+	void AddPerson(FName Id, AActor* Actor, USkeletalMeshComponent* Mesh);
+
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -122,6 +128,7 @@ private:
 	};
 
 	void FindPeople();
+	bool IsThere(const FNpc& Npc) const;
 	void Close();
 	void ShowLine();
 	void UpdateLineText();

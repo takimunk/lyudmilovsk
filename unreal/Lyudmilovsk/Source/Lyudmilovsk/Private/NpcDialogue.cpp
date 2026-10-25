@@ -406,6 +406,29 @@ void ANpcTalkDirector::FindPeople()
 	UE_LOG(LogTemp, Log, TEXT("NpcDialogue: %d people to talk to"), People.Num());
 }
 
+void ANpcTalkDirector::AddPerson(FName Id, AActor* Actor, USkeletalMeshComponent* Mesh)
+{
+	const UNpcDialogueSubsystem* D = Dialogue();
+	if (!Actor || !Mesh || !D || !D->Find(Id))
+	{
+		return;
+	}
+	for (const FNpc& Npc : People)
+	{
+		if (Npc.Actor.Get() == Actor)
+		{
+			return;
+		}
+	}
+	People.Add({ Id, Actor, Mesh });
+}
+
+/** Not there now: the people's life has them elsewhere (the mesh or the actor is hidden). */
+bool ANpcTalkDirector::IsThere(const FNpc& Npc) const
+{
+	return Npc.Actor.IsValid() && Npc.Mesh.IsValid() && Npc.Mesh->IsVisible() && !Npc.Actor->IsHidden();
+}
+
 FVector ANpcTalkDirector::HeadOf(const FNpc& Npc) const
 {
 	const USkeletalMeshComponent* Mesh = Npc.Mesh.Get();
@@ -448,6 +471,10 @@ bool ANpcTalkDirector::InSight(const FVector& From, const FVector& To, const AAc
 
 bool ANpcTalkDirector::CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const FVector& CamDir) const
 {
+	if (!IsThere(Npc))
+	{
+		return false;
+	}
 	const FVector To = HeadOf(Npc) - CamLoc;
 	if (FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(To.GetSafeNormal(), CamDir))) > TalkAngle)
 	{
@@ -516,7 +543,7 @@ void ANpcTalkDirector::Tick(float DeltaSeconds)
 	for (int32 i = 0; i < People.Num(); ++i)
 	{
 		const FNpc& Npc = People[i];
-		if (!Npc.Actor.IsValid())
+		if (!IsThere(Npc))
 		{
 			continue;
 		}
@@ -556,7 +583,7 @@ void ANpcTalkDirector::Tick(float DeltaSeconds)
 		const FNpc& Npc = People[TalkingIndex];
 		const bool bOwner = Cast<ABoothOwner>(Npc.Actor.Get()) != nullptr;
 		const APawn* Pawn = PC->GetPawn();
-		const bool bGone = !Npc.Actor.IsValid() || (bOwner
+		const bool bGone = !IsThere(Npc) || (bOwner
 			? !(Pawn && Cast<ABoothOwner>(Npc.Actor.Get())->CallZone->Bounds.GetBox().ExpandBy(40.f).IsInside(Pawn->GetActorLocation()))
 			: FVector::Dist(HeadOf(Npc), CamLoc) > TalkRange + 120.f);
 		if (bGone)

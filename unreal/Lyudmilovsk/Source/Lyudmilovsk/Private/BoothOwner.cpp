@@ -113,6 +113,25 @@ bool ABoothOwner::WalkTo(const FVector& Target, float DeltaSeconds)
 	return false;
 }
 
+void ABoothOwner::SetAway(bool bInAway)
+{
+	if (bAway == bInAway)
+	{
+		return;
+	}
+	bAway = bInAway;
+	Body->SetVisibility(!bAway, true);
+	if (bAway && bTradePrompt)
+	{
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+		{
+			UI->SetPrompt(this, FText::GetEmpty());
+		}
+		bTradePrompt = false;
+	}
+	Enter(EState::Seated);
+}
+
 void ABoothOwner::EndPlay(const EEndPlayReason::Type Reason)
 {
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
@@ -159,6 +178,10 @@ void ABoothOwner::TickTrade()
 void ABoothOwner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (bAway)
+	{
+		return;
+	}
 	StateTime += DeltaSeconds;
 	const bool bCalled = PlayerAtWindow();
 	AwayTime = bCalled ? 0.f : AwayTime + DeltaSeconds;

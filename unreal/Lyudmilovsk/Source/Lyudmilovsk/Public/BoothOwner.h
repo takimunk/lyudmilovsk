@@ -81,7 +81,14 @@ public:
 	TObjectPtr<UAnimSequence> SitDownAnim;
 
 	/** Standing at the window, ready to talk. */
-	bool IsAtWindow() const { return State == EState::AtWindow; }
+	bool IsAtWindow() const { return State == EState::AtWindow && !bAway; }
+
+	/**
+	 * Out of the club (the people's life, docs/people.md: he goes home at night and on breaks): hidden, nobody at the
+	 * window, no trade. Back: seated at his computer.
+	 */
+	void SetAway(bool bInAway);
+	bool IsAway() const { return bAway; }
 
 	/** What he sells at the window (T): bird feed, one bag of Count handfuls for Price roubles. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Owner|Trade")
@@ -116,6 +123,7 @@ private:
 	void TickTrade();
 
 	bool bTradePrompt = false;
+	bool bAway = false;
 
 	EState State = EState::Seated;
 	float StateTime = 0.f;

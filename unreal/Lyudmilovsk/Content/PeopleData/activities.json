@@ -1,0 +1,25 @@
+{
+  "_doc": "What people can do (docs/people.md). places: place kinds ('home' = their own flat); slots: slot kinds there; pose: the body (stand walk talk look sit computer eat read sleep work hidden); minutes [min, max]; hours [from, to) it can start in; meets: how much of a need it meets per hour; costs: how much it adds per hour; base: liked anyway; trait: the temper drawn to it; daylight/sunset/talk/wander/away: flags; free 0: only as a duty (people.json).",
+  "activities": [
+    {"id": "sleep", "places": ["home"], "slots": ["bed", "sofa"], "pose": "sleep", "minutes": [420, 540], "meets": {"tired": 0.16}, "free": 0},
+    {"id": "nap", "places": ["home"], "slots": ["sofa", "bed"], "pose": "sleep", "minutes": [30, 60], "hours": [13, 18], "meets": {"tired": 0.35}, "base": -0.15, "trait": "", "ages": [30, 200]},
+    {"id": "eat_home", "places": ["home"], "slots": ["kitchen_seat", "dining_seat"], "pose": "eat", "minutes": [20, 35], "hours": [6, 23], "meets": {"hunger": 2.4, "social": 0.1}, "base": 0.02},
+    {"id": "eat_club", "places": ["club"], "slots": ["chair"], "pose": "eat", "minutes": [15, 25], "hours": [11, 2], "ages": [14, 200], "meets": {"hunger": 2.6}, "base": -0.1},
+    {"id": "snack_club", "places": ["club"], "slots": ["vending"], "pose": "stand", "minutes": [3, 6], "hours": [10, 2], "ages": [8, 200], "meets": {"hunger": 5.0, "fun": 0.4}, "base": -0.05, "trait": "gamer"},
+    {"id": "play_club", "places": ["club"], "slots": ["club_seat"], "pose": "computer", "minutes": [60, 170], "hours": [10, 1], "ages": [7, 200], "meets": {"fun": 0.75, "social": 0.12, "mind": 0.05}, "costs": {"tired": 0.02}, "base": 0.08, "trait": "gamer"},
+    {"id": "read_library", "places": ["library"], "slots": ["read_seat"], "pose": "read", "minutes": [40, 120], "hours": [10, 19.5], "ages": [7, 200], "meets": {"mind": 0.7, "fun": 0.15}, "base": 0.02, "trait": "studious"},
+    {"id": "read_home", "places": ["home"], "slots": ["armchair", "sofa", "desk_seat"], "pose": "read", "minutes": [30, 90], "hours": [8, 24], "meets": {"mind": 0.45, "tired": 0.04}, "base": -0.02, "trait": "studious"},
+    {"id": "homework", "places": ["home"], "slots": ["desk_seat", "kitchen_seat"], "pose": "read", "minutes": [30, 60], "hours": [14, 20], "ages": [7, 17], "meets": {"mind": 0.6}, "base": 0.12, "trait": "studious"},
+    {"id": "rest_home", "places": ["home"], "slots": ["sofa", "armchair"], "pose": "sit", "minutes": [30, 60], "hours": [0, 24], "meets": {"tired": 0.12, "fun": 0.1}, "base": -0.05},
+    {"id": "walk", "places": ["square", "beach", "lookout", "bench", "promenade_bench", "town_square", "town_bench"], "pose": "walk", "minutes": [30, 70], "hours": [7, 21.5], "meets": {"nature": 0.9, "sun": 0.2}, "costs": {"hunger": 0.06, "tired": 0.03}, "base": 0.0, "trait": "nature", "wander": 1},
+    {"id": "sit_bench", "places": ["bench", "promenade_bench", "town_bench"], "slots": ["bench"], "pose": "sit", "minutes": [15, 40], "hours": [8, 21], "meets": {"nature": 0.55, "sun": 0.3, "social": 0.05}, "base": -0.02, "trait": "nature"},
+    {"id": "sun_watch", "places": ["lookout", "beach", "promenade_bench", "square"], "pose": "look", "minutes": [20, 35], "meets": {"sun": 1.8, "nature": 0.3}, "base": 0.12, "trait": "sun", "sunset": 1},
+    {"id": "chat", "places": ["square", "club", "bench", "town_square"], "slots": ["stand", "vending", "chair", "bench"], "pose": "stand", "minutes": [15, 40], "hours": [9, 23], "meets": {"social": 1.0, "fun": 0.2}, "base": 0.0, "trait": "social", "talk": 1},
+    {"id": "town", "places": ["town_square"], "pose": "hidden", "minutes": [45, 100], "hours": [10, 19], "ages": [14, 200], "meets": {"hunger": 0.6, "fun": 0.25, "social": 0.2}, "base": -0.12, "trait": "active", "away": 1},
+    {"id": "work_booth", "places": ["club"], "slots": ["booth"], "pose": "work", "minutes": [60, 60], "meets": {"social": 0.15}, "free": 0},
+    {"id": "work_clerk", "places": ["club"], "slots": ["club_seat"], "pose": "computer", "minutes": [60, 60], "meets": {"mind": 0.2}, "costs": {"fun": 0.02}, "free": 0},
+    {"id": "work_library", "places": ["library"], "slots": ["staff_seat"], "pose": "sit", "minutes": [60, 60], "meets": {"mind": 0.3, "social": 0.2}, "free": 0},
+    {"id": "work_away", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.2, "hunger": 0.3}, "free": 0, "away": 1},
+    {"id": "school", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "away": 1}
+  ]
+}
