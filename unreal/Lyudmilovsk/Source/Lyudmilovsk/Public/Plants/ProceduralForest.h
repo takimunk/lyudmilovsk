@@ -66,13 +66,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") float TraceDown = 8000.f;
 
 	/** Trees closer than this to the camera become live plants, cm; at most MaxLive at a time. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveDistance = 3000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveDistance = 1800.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") int32 MaxLive = 10;
 	/**
 	 * Only trees you can do something with are swapped for live plants (fruit to pick up); a pine or a birch looks the same
 	 * as its baked LOD0, and building a live plant is a hitch of tens of milliseconds. Off: every species is swapped in.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") bool bLiveOnlyInteractive = true;
+	/** No live plant is swapped in while the camera moves faster than this, cm/s (a bird in flight passes the trees by; a run is ~600). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveMaxSpeed = 900.f;
 	/** Live plants are only swapped in for a camera at most this high above the tree's foot, cm: from higher up the baked tree is as good. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest|Detail") float LiveMaxHeight = 800.f;
 	/** At most this many live plants are built in one tick of the forest (a plant takes tens of ms to build). */
@@ -141,6 +143,8 @@ private:
 	bool Interactive(FName Species) const;
 	void SetHidden(FTree& T, bool bHidden);
 
+	FVector LastCamera = FVector::ZeroVector;
+	double LastCameraTime = -1.0;
 	TArray<FTree> Trees;
 	TArray<FGroup> Groups;
 	int32 LiveCount = 0;

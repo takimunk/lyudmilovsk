@@ -19,6 +19,8 @@
 #include "HAL/IConsoleManager.h"
 #include "UObject/ConstructorHelpers.h"
 
+static TAutoConsoleVariable<float> CVarForestLiveMaxSpeed(TEXT("lyud.Forest.LiveMaxSpeed"), -2.f,
+	TEXT("No live plant is swapped in while the camera is faster than this, cm/s (below -1: the actor's LiveMaxSpeed; -1 or 0 from the console: no limit)."), ECVF_Default);
 static TAutoConsoleVariable<int32> CVarForestMaxLive(TEXT("lyud.Forest.MaxLive"), -1,
 	TEXT("Live plants a forest swaps in near the camera at most (below 0: the actor's MaxLive). 0 draws baked trees only."), ECVF_Default);
 
@@ -283,6 +285,20 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 		}
 	}
 	Wanted.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key < B.Key; });
+	// a camera that is flying or running past does not need a plant built under it
+	const double Now = GetWorld()->GetTimeSeconds();
+	double Speed = 0.0;
+	if (LastCameraTime >= 0.0 && Now > LastCameraTime)
+	{
+		Speed = FVector::Dist(Camera, LastCamera) / (Now - LastCameraTime);
+	}
+	LastCamera = Camera;
+	LastCameraTime = Now;
+	const float Limit = CVarForestLiveMaxSpeed.GetValueOnGameThread() < -1.f ? LiveMaxSpeed : CVarForestLiveMaxSpeed.GetValueOnGameThread();
+	if (Limit > 0.f && Speed > Limit)
+	{
+		return;
+	}
 	int32 Built = 0;
 	UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
 	for (const TPair<double, int32>& W : Wanted)

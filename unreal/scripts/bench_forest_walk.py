@@ -46,7 +46,7 @@ def tick(dt):
         return
     speed = WALK_SPEED if st["phase"] == "walk" else FLY_SPEED
     st["x"] += speed * dt
-    z = 170.0 if st["phase"] == "walk" else 2500.0
+    z = 170.0 if st["phase"] == "walk" else 600.0
     p.set_actor_location(unreal.Vector(st["x"], 0.0, z), False, False)
     pc.set_control_rotation(unreal.Rotator(0.0, 0.0 if st["phase"] == "walk" else -12.0, 0.0))
     st["dts"].append(dt)
