@@ -42,8 +42,9 @@ be changed in `people.json` freely.
 | crowd_13 | Кирилл | 21 | student | alone | lectures 10–15, Monday to Thursday |
 | nao | Нао | 19 | watches the club's door (`watch_door`) | alone | at the club's door on the forecourt 10:00–21:00 every day (a new game finds her there) |
 
-Nao is the first person made to the character standard (docs/characters.md): a generated model rigged on the shared
-skeleton. She stands where the hero first comes out of the club, at the `club_door` place.
+Everybody here is made to the character standard (docs/characters.md, 2026-10-25): a generated model (hi3d) rigged on
+the shared skeleton, at the same paths `/Game/Characters/Humans/<Mesh>/SK_<Mesh>` as the MakeHuman cast it replaced
+(their own seated clips kept). Nao was the first. She stands where the hero first comes out of the club, at the `club_door` place.
 
 Temper (0..1: social, active, studious, gamer, nature, sun) weighs their choices; `friends` draws them to places where
 friends are. Everybody's `sun` is there because people in this world are drawn to the sun (docs/story/motifs.md): the
@@ -127,4 +128,6 @@ the game the bodies (12 at most) tick their animation only when rendered.
 - 11 of the 57 flats have no bedroom (sofas only); households go to flats with enough beds.
 - The benches round the square, on the spur, the promenade and in town are places in the data, not models yet.
 - The cable car's cabins don't carry people visibly: they're hidden for the ride.
-- Indoors people are drawn only near the camera; the club's crowd at stations 11–13 reuses three regulars' models.
+- Indoors people are drawn only near the camera; the crowd (Гоша, Лиза, Кирилл) have their own models
+  (`SK_Crowd_11..13`, docs/characters.md) as bodies, but the level's placed actors at stations 11–13 still show three
+  regulars' models until the scene is rebuilt with them.

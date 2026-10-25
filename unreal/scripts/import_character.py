@@ -64,12 +64,18 @@ def import_character(cid):
     title = cid.capitalize()
     dest = "%s/%s" % (BASE, title)
     tmp = dest + "/_import"
-    if eal.does_directory_exist(dest):
-        eal.delete_directory(dest)
+    # replacing a person keeps their own clips (<Id>/Anims, e.g. the seated loops); everything else is made anew at
+    # the same paths, so the level's actors and the clips' retarget sources find the new SK_<Id>
+    for p in eal.list_assets(dest, True) if eal.does_directory_exist(dest) else []:
+        if "/Anims/" not in p:
+            eal.delete_asset(p)
     disk = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Characters", "Humans", title)
-    if os.path.isdir(disk):                       # delete_directory leaves renamed files behind on disk
+    if os.path.isdir(disk):                       # delete_asset/delete_directory leave renamed files behind on disk
         import shutil
-        shutil.rmtree(disk)
+        for f in os.listdir(disk):
+            if f != "Anims":
+                q = os.path.join(disk, f)
+                shutil.rmtree(q) if os.path.isdir(q) else os.remove(q)
     params = unreal.ImportAssetParameters()
     params.is_automated = True
     params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
@@ -129,6 +135,12 @@ def import_character(cid):
     sme = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
     sme.regenerate_lod(mesh, 3, True, False)
     eal.save_loaded_asset(mesh)
+    for p in eal.list_assets(dest + "/Anims", True) if eal.does_directory_exist(dest + "/Anims") else []:
+        a = eal.load_asset(p)
+        if isinstance(a, unreal.AnimSequence):
+            a.set_retarget_source_asset(mesh)
+            eal.save_loaded_asset(a)
+            log("  own clip %s -> SK_%s" % (a.get_name(), title))
     log("  LODs %d" % sme.get_lod_count(mesh))
     log("%s: %d materials, extent %s, skeleton %s" % (title, len(mesh.materials), mesh.get_bounds().box_extent,
                                                      mesh.skeleton.get_path_name()))

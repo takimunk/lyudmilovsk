@@ -43,3 +43,4 @@ blender/characters/*/gen/*
 blender/characters/*/export/
 blender/humans/export/
 renders/characters/
+blender/characters/_grids/

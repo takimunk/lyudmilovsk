@@ -1,0 +1,10 @@
+{
+ "_doc": "kid_boy: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
+ "id": "kid_boy",
+ "model": "model",
+ "height": 1.45,
+ "donor": "blender/humans/export/human_kid_boy.glb",
+ "faces": 18000,
+ "texture": 2048,
+ "bake_normal": true
+}

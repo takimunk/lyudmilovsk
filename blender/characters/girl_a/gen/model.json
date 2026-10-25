@@ -1,0 +1,44 @@
+{
+ "service": "hi3d MCP",
+ "why": "fal Hi3D refused the cut views (422); remade inside hi3d per the game-assets skill",
+ "views": {
+  "tool": "create_image_generation",
+  "task_id": "74f56700c9ca489f8ed17fccfa5d81e0",
+  "model_name": "Nano-Banana 2",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "aspect_ratio": "1:1",
+  "points": 8,
+  "prompt": "Full-body character reference for 3D modelling of a 36-year-old Russian woman, an engineer at a research laboratory: dark brown blunt bob with bangs, attentive grey eyes, a cream long-sleeve knit top, dark blue straight jeans, white leather sneakers, a simple wristwatch. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed. Whole body visible from the top of the hair to the soles of the shoes in every view, same scale. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic.",
+  "outputs": [
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/74f56700c9ca489f8ed17fccfa5d81e0/0.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/74f56700c9ca489f8ed17fccfa5d81e0/1.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/74f56700c9ca489f8ed17fccfa5d81e0/2.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/74f56700c9ca489f8ed17fccfa5d81e0/3.png"
+  ]
+ },
+ "model": {
+  "tool": "create_generation",
+  "task_id": "7c72d88b9f3d4afb81eb218ca6c1f976",
+  "source_images": [
+   {
+    "task_id": "74f56700c9ca489f8ed17fccfa5d81e0",
+    "image_index": 0
+   },
+   {
+    "task_id": "74f56700c9ca489f8ed17fccfa5d81e0",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality (standard)",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "points": 65,
+  "note": "side views came out with the arms down, so front + back only",
+  "model_page_url": "https://www.hi3d.ai/3d-model/7c72d88b9f3d4afb81eb218ca6c1f976",
+  "output_file": "model.glb",
+  "sha256": "3c49bdb35cd5d6c4cac95ab3b2de86aff08b0b81ac5996fa9e7200a62c06ff2c",
+  "note_url": "the download URL is signed and expires; get_task_outputs(task_id) refreshes it"
+ }
+}

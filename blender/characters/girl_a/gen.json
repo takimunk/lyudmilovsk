@@ -1,0 +1,22 @@
+{
+ "_doc": "girl_a for the club cast remake: front from the design sheet (blender/characters/cast_designs.json, Higgsfield), back/left/right cut from a Higgsfield 4x3 grid (tools/characters/cut_grid.py), then Hi3D v3.0 multi-view on fal. fal refused these views (422), so the model was remade inside hi3d (views by hi3d's multi-view text-to-image, then 3D from source_images); see gen/model.json. The fal step below is not what the game uses.",
+ "steps": {
+  "model": {
+   "model": "hitem3d/hi3d/v3.0/multi-view-to-3d",
+   "images": {
+    "front_image_url": "@front",
+    "back_image_url": "@back",
+    "left_image_url": "@left",
+    "right_image_url": "@right"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 2000000
+   }
+  }
+ }
+}

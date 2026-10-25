@@ -1,0 +1,10 @@
+{
+ "_doc": "clerk: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
+ "id": "clerk",
+ "model": "model",
+ "height": 1.68,
+ "donor": "blender/humans/export/human_clerk.glb",
+ "faces": 24000,
+ "texture": 2048,
+ "bake_normal": true
+}

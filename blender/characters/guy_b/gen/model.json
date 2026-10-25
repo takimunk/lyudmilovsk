@@ -1,0 +1,35 @@
+{
+ "step": "model",
+ "model": "hitem3d/hi3d/v3.0/multi-view-to-3d",
+ "request_id": "01a174bc-c339-71f3-9c89-40c711a0fcb0",
+ "seconds": 639,
+ "inputs": {
+  "resolution": "2048quality",
+  "export_format": "glb",
+  "enable_texture": true,
+  "enable_pbr": true,
+  "shading": 0.5,
+  "face_count": 2000000,
+  "front_image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_ec88e68b-8eca-415f-b1ca-7f7ed6c82c62.png",
+  "back_image_url": "https://v3b.fal.media/files/b/0aafd6ed/0_TPuz3zXDp75Q18fJhit_back.png",
+  "left_image_url": "https://v3b.fal.media/files/b/0aafd6ee/0d7Fupkb6MF4aquIYogGN_left.png",
+  "right_image_url": "https://v3b.fal.media/files/b/0aafd6ee/LF6KwW66ffprLZDq8krvo_right.png"
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd731/XCFpRSSPsZDzzst6tnVKh_model.glb",
+ "output_file": "model.glb",
+ "sha256": "90e7844bffeff92f49349f1e4a2372326069a72c3c2d43387e03ef21de763e06",
+ "response": {
+  "model_mesh": {
+   "url": "https://v3b.fal.media/files/b/0aafd731/XCFpRSSPsZDzzst6tnVKh_model.glb",
+   "content_type": "model/gltf-binary",
+   "file_name": "model.glb",
+   "file_size": 48330236
+  },
+  "thumbnail": {
+   "url": "https://v3b.fal.media/files/b/0aafd731/GeMtb8K6-xQ_8I5Kb1m9H_preview.webp",
+   "content_type": "image/webp",
+   "file_name": "preview.webp",
+   "file_size": 13316
+  }
+ }
+}
