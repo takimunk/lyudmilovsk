@@ -519,9 +519,9 @@ def coast_plants():
 def grass_patches():
     """(x, y, half_x, half_y, species, seed, density, min_z, max_z) in metres, one habitat per patch
     (the terrain's masks decide where each species actually grows): meadow on the spur and the
-    hillside over the door, dune grass on the beach under the cliff, reed and sedge on the wet valley
-    floor by the cable car's lower station. 60 x 60 m patches (~20 000 tufts each), drawn only
-    within 90 m of the camera."""
+    hillside over the door with a dense low Turf patch under each, dune grass on the beach under the
+    cliff, reed and sedge on the wet valley floor by the cable car's lower station. 60 x 60 m
+    patches (~20 000 tufts each), drawn only within 90 m of the camera."""
     out = []
     seed = 500
     meadow = ("RedFescue", "MeadowGrass", "WavyHairGrass")
@@ -529,6 +529,9 @@ def grass_patches():
         for gy in range(-1, 3):                        # -60..180 m along
             x, y = -50 + gx * 60.0, 30 + gy * 60.0
             out.append((x, y, 30.0, 30.0, meadow[(gx + gy) % 3], seed, 1.0, LOW_Z - 1.0, 50.0))
+            # dense low turf under the meadow grass, for the bird's-eye view from 1-3 m (own seeds, so
+            # the other patches keep theirs)
+            out.append((x, y, 30.0, 30.0, "Turf", 900 + seed, 1.0, LOW_Z - 1.0, 50.0))
             seed += 1
     for y in range(-60, 181, 60):                      # the beach under the cliff
         x = shore_x(y) - BEACH_W * 0.5
