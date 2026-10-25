@@ -234,6 +234,8 @@ namespace LyudAnimals
 		float NearDist = 50.f, MidDist = 160.f, FarDist = 450.f;
 		float ThinkNear = 0.15f, ThinkMid = 0.5f, ThinkFar = 2.f, ThinkDormant = 5.f;
 		float StepFar = 0.25f, StepDormant = 1.f;
+		/** For now (Dima's testing): the club's dog and a cat keep close to the club's door (within ~15 m). */
+		bool bClubPair = true;
 	};
 
 	/** Line of sight from the wrapper (true = clear); null = always clear. */

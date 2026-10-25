@@ -380,6 +380,33 @@ static void TestMap()
 	CHECK(Cats >= 35 && Dogs >= 15, "%d cats and %d dogs (%d packs)", Cats, Dogs, (int)W.Packs.size());
 	CHECK(OnGround == (int)W.Animals.size(), "%d of %d on walkable ground", OnGround, (int)W.Animals.size());
 	CHECK(Academ >= Cats / 4, "%d cats live at the Academgorodok", Academ);
+	{
+		V3 Door;
+		for (const FPlace& P : W.Places)
+		{
+			if (P.Kind == EPlace::ClubDoor)
+			{
+				Door = P.Pos;
+			}
+		}
+		float H = 16.f;
+		int CatNear = 0, DogNear = 0, Samples = 0;
+		Run(W, 1800.f, 0.25f, H, [&](float T)
+		{
+			if (std::fmod(T, 60.f) < 0.25f)
+			{
+				Samples++;
+				for (const FAnimal& A : W.Animals)
+				{
+					if ((A.Pos - Door).Len2D() < 20.f)
+					{
+						(A.Kind == EKind::Cat ? CatNear : DogNear)++;
+					}
+				}
+			}
+		});
+		CHECK(CatNear >= Samples && DogNear >= Samples, "a cat and a dog by the club's door all half an hour (%d / %d of %d looks)", CatNear, DogNear, Samples);
+	}
 	// paths between random places
 	int Ok = 0, N = 0;
 	double Ms = 0.0;

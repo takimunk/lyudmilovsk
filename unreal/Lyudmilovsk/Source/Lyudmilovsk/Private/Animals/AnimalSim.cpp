@@ -924,6 +924,36 @@ namespace LyudAnimals
 			Made++;
 		}
 
+		// for testing (temporary): the club's dog and a friendly cat stay by the club's door
+		if (Opt.bClubPair)
+		{
+			const int Door = NearestPlace(V3(), EPlace::ClubDoor, "club");
+			if (Door >= 0)
+			{
+				for (FAnimal& A : Animals)
+				{
+					if (A.Kind == EKind::Dog && A.Home == Door)
+					{
+						A.Range = 15.f;
+						A.Friendly = 0.95f;
+					}
+				}
+				const int Id = AddAnimal(EKind::Cat, 0, 0, FreeSpot(Places[Door].Pos, 3.f, R));
+				FAnimal& C = Animals[Id];
+				C.Coat = 1;                     // a ginger tom, easy to see
+				C.bFemale = false;
+				C.Home = Door;
+				C.HomePos = Places[Door].Pos;
+				C.Range = 12.f;
+				C.Bold = 0.7f;
+				C.Friendly = 0.9f;
+				C.Social = 0.4f;
+				C.Hunter = 0.8f;
+				C.Playfulness = 0.4f;
+				C.Lively = 0.7f;
+			}
+		}
+
 		// neighbours know each other: cats whose homes are close, cats and dogs of the same yard
 		for (size_t I = 0; I < Animals.size(); I++)
 		{
