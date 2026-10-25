@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_amber.1",
+ "lang": "ja",
+ "text": "琥珀海岸です。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] 琥珀海岸です。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cc-6f17-76b1-9fd2-312ca7900753",
+ "hash": "be8013424f61"
+}

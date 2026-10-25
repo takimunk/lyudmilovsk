@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.next_aton.1",
+ "lang": "ja",
+ "text": "次はアトン。コンピュータークラブ前です。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] 次はアトン。コンピュータークラブ前です。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cb-a63a-7080-911f-fdad91daf4f5",
+ "hash": "0940f4500b16"
+}

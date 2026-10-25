@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_polar.1",
+ "lang": "ru",
+ "text": "Полярная. Просим освободить кабину.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Полярная. Просим освободить кабину.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a174ca-6bf8-7670-a7ae-ad7151569db3",
+ "hash": "90c235a8b6b9"
+}

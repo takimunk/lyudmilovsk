@@ -55,6 +55,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sound") FName GetMusicCue() const { return CurrentCue; }
 	/** Starts a cue for the current mood now (cross-fading any playing one). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayNextCue();
+	/** A one-shot of a pool (audio/sounds.json id) at Where, at the effects volume (the cable car, doors, lifts). */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayEffect(FName Pool, const FVector& Where, float Volume = 1.f);
+	/** A looping sound of a pool attached to Parent at the effects volume (a cabin's motor); null if the pool is empty.
+	 *  The caller keeps it and stops it. */
+	UAudioComponent* AttachLoop(FName Pool, USceneComponent* Parent, float Volume = 1.f);
+	/** A spoken line (LyudText::LoadVoice) at Where, at the effects volume (the cable car's announcements). */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume = 1.f);
 	/** Text for logs and tests: every input of the bed and the music's state. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FString DebugReport() const;
 

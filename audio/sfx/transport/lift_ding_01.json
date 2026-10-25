@@ -1,0 +1,23 @@
+{
+ "id": "lift_ding",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/lift_ding_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A single soft bell ding of an old elevator arriving at a floor, warm, clean",
+  "duration_seconds": 1.5
+ },
+ "hash": "32052bf03855",
+ "fal_request_id": "01a174cb-8725-7f52-92ed-31a93d73edb1",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd756/7mCPX4I4kTRVkT5lO7bn__sound_effect.mp3",
+ "created": "2026-10-25T20:41:02Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "7e28906e75e58736adbacca1482de75768b5967ca0cc95a5f8a1ad0809c3ee32",
+ "seconds": 1.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

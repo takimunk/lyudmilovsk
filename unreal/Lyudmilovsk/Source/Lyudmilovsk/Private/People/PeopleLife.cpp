@@ -1,4 +1,5 @@
 #include "People/PeopleLife.h"
+#include "Transport/LyudTransport.h"
 
 #include "PeopleSim.h"
 #include "Animation/AnimSequence.h"
@@ -376,6 +377,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 {
 	LP::FWorld& S = *Sim;
 	UWorld* World = GetWorld();
+	ULyudTransportSubsystem* Transport = ULyudTransportSubsystem::Get(this);
 	FVector Cam = FVector::ZeroVector;
 	FRotator CamRot;
 	if (const APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
@@ -412,6 +414,25 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				}
 				continue;
 			}
+		}
+		// riding the cable car: on its platform waiting, or seated in a cabin (ULyudTransportSubsystem places them)
+		if (P.State == LP::EState::Riding && P.bRideExternal && Transport)
+		{
+			FVector RideAt;
+			float RideYaw = 0.f;
+			bool bSeated = false;
+			const bool bShowRider = Transport->RiderPose(P.Id, RideAt, RideYaw, bSeated) && FVector::Dist(RideAt, Cam) < Draw;
+			ANpcBody* Body = bShowRider ? BodyFor(P.Id) : (P.Id < Bodies.Num() ? Bodies[P.Id].Get() : nullptr);
+			if (Body)
+			{
+				const bool bWasHidden = Body->IsHidden();
+				Body->SetActorHiddenInGame(!bShowRider);
+				if (bShowRider)
+				{
+					Body->Drive(RideAt, RideYaw, bSeated ? EPersonPose::Sit : EPersonPose::Stand, 0, 0.f, bSeated ? 44.f : 0.f, DeltaTime, bWasHidden || bSeated);
+				}
+			}
+			continue;
 		}
 		const FVector Loc = PeopleToUE(P.Pos);
 		const float Dist = FVector::Dist(Loc, Cam);

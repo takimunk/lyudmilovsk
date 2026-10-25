@@ -1,0 +1,23 @@
+{
+ "id": "cabin_sheave",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/cabin_sheave_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A gondola cabin's grip rolling over the sheave train of a cable car tower: a quick rhythmic clack-clack-clack of steel wheels and a short swing creak, close, outdoors",
+  "duration_seconds": 2.5
+ },
+ "hash": "aad3a00dac72",
+ "fal_request_id": "01a174ca-efe4-7e40-88eb-33fb3b048a0c",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd752/L0asghhqwNjLt9WkQcsVT_sound_effect.mp3",
+ "created": "2026-10-25T20:40:22Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "7f4733654d499183f3e5b05ce69d45d8f2c28964d136e65fa5ae81468cc635ab",
+ "seconds": 2.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

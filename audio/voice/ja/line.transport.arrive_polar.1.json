@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_polar.1",
+ "lang": "ja",
+ "text": "北極星です。キャビンからお降りください。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] 北極星です。キャビンからお降りください。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cc-4e1d-79e1-a6ed-8a78b62c12d7",
+ "hash": "47cc0cdc5151"
+}

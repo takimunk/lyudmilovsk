@@ -553,6 +553,33 @@ namespace LyudPeople
 		return -1;
 	}
 
+	void FWorld::FinishRide(FPerson& P)
+	{
+		// out at the other station
+		P.bRideExternal = false;
+		if (P.PathI < (int)P.Path.size())
+		{
+			P.Pos = P.Path[P.PathI].P;
+			P.PathI++;
+		}
+		P.Island = 1 - P.Island;
+		P.State = EState::Going;
+		P.Pose = EPose::Walk;
+		Emit(EEvent::Back, P);
+		if (P.PathI >= (int)P.Path.size())
+		{
+			Arrive(P);
+		}
+	}
+
+	void FWorld::EndRide(int Person)
+	{
+		if (Person >= 0 && Person < (int)People.size() && People[Person].State == EState::Riding)
+		{
+			FinishRide(People[Person]);
+		}
+	}
+
 	int FWorld::StationOf(int Island) const
 	{
 		const char* Kind = Island == 0 ? "station_lower" : "station_upper";
@@ -1466,6 +1493,7 @@ namespace LyudPeople
 					P.Pose = EPose::Hidden;
 					P.StateStart = Time;
 					P.PathI++;
+					P.bRideExternal = RideHook && P.PathI < (int)P.Path.size() && RideHook(P.Id, P.Pos, P.Path[P.PathI].P);
 					Emit(EEvent::Ride, P);
 					return;
 				}
@@ -1703,22 +1731,10 @@ namespace LyudPeople
 				Move(P, Dt);
 				break;
 			case EState::Riding:
-				if (Time - P.StateStart >= (P.PathI > 0 ? P.Path[P.PathI - 1].Ride : Opt.RideSeconds))
+				if (P.bRideExternal ? Time - P.StateStart >= 3600.0
+					: Time - P.StateStart >= (P.PathI > 0 ? P.Path[P.PathI - 1].Ride : Opt.RideSeconds))
 				{
-					// out at the other station
-					if (P.PathI < (int)P.Path.size())
-					{
-						P.Pos = P.Path[P.PathI].P;
-						P.PathI++;
-					}
-					P.Island = 1 - P.Island;
-					P.State = EState::Going;
-					P.Pose = EPose::Walk;
-					Emit(EEvent::Back, P);
-					if (P.PathI >= (int)P.Path.size())
-					{
-						Arrive(P);
-					}
+					FinishRide(P);
 				}
 				break;
 			case EState::Settling:

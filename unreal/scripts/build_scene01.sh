@@ -11,6 +11,8 @@ rm -rf "$PROJ/Content/Scene01" "$PROJ/Content/__ExternalActors__/Scene01" "$PROJ
 # each in its own process
 "$UE/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PROJ/Lyudmilovsk.uproject" -run=pythonscript \
     -script="$HERE/import_terrain.py" -unattended -nosplash -stdout | grep -E "SCENE01|Error" | grep -v LogInit
+# the cable car follows the new ground: lifts, stairs and pylons from terrain.ground_z (docs/transport.md)
+python3 "$HERE/../../tools/transport.py" > /dev/null || echo "transport.py failed"
 "$UE/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PROJ/Lyudmilovsk.uproject" -run=pythonscript \
     -script="$HERE/import_world.py" -unattended -nosplash -stdout | grep -E "SCENE01|Error" | grep -v LogInit
 # the sky (ALyudSky: sun, moon, atmosphere, clouds, stars) and the Baltic sea, replacing the fixed sun and sea plane

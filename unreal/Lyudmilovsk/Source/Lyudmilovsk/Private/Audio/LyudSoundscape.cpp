@@ -253,6 +253,10 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Far"), TEXT("ship_horn_far") }, { TEXT("Far"), TEXT("foghorn_far") }, { TEXT("Far"), TEXT("buoy_bell") }, { TEXT("Far"), TEXT("town_far") },
 		{ TEXT("Club"), TEXT("club_room_tone") }, { TEXT("Club"), TEXT("keyboard_typing") }, { TEXT("Club"), TEXT("mouse_clicks") },
 		{ TEXT("Club"), TEXT("console_game_far") }, { TEXT("Club"), TEXT("vending_hum") }, { TEXT("Club"), TEXT("vending_drop") },
+		// the cable car (ULyudTransportSubsystem plays them through PlayEffect / AttachLoop)
+		{ TEXT("Transport"), TEXT("cabin_motor") }, { TEXT("Transport"), TEXT("cabin_sheave") }, { TEXT("Transport"), TEXT("cabin_door") },
+		{ TEXT("Transport"), TEXT("station_chime") }, { TEXT("Transport"), TEXT("station_wheel") }, { TEXT("Transport"), TEXT("lift_start") },
+		{ TEXT("Transport"), TEXT("lift_ding") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -322,6 +326,31 @@ void ULyudSoundscapeSubsystem::PlayAt(FName Pool, const FVector& Where, float Vo
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, S, Where, FRotator::ZeroRotator, Volume * MasterVolume * EffectsVolume,
 			FMath::FRandRange(1.f - PitchJitter, 1.f + PitchJitter), 0.f, Attenuation);
+	}
+}
+
+void ULyudSoundscapeSubsystem::PlayEffect(FName Pool, const FVector& Where, float Volume)
+{
+	PlayAt(Pool, Where, Volume, NearAttenuation, 0.03f);
+}
+
+UAudioComponent* ULyudSoundscapeSubsystem::AttachLoop(FName Pool, USceneComponent* Parent, float Volume)
+{
+	USoundBase* S = Pick(Pool);
+	if (!S || !Parent)
+	{
+		return nullptr;
+	}
+	UAudioComponent* A = UGameplayStatics::SpawnSoundAttached(S, Parent, NAME_None, FVector::ZeroVector, EAttachLocation::KeepRelativeOffset,
+		true, Volume * MasterVolume * EffectsVolume, 1.f, 0.f, NearAttenuation, nullptr, false);
+	return A;
+}
+
+void ULyudSoundscapeSubsystem::PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume)
+{
+	if (Voice)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, Voice, Where, FRotator::ZeroRotator, Volume * MasterVolume * EffectsVolume, 1.f, 0.f, NearAttenuation);
 	}
 }
 

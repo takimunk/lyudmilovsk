@@ -16,7 +16,9 @@ The macro shape lives here (height, keep_flat); tools/terrain.py (the terrain th
 natural detail on top of it.
 """
 import functools
+import json
 import math
+import os
 import random
 
 SEA_Z = -43.0                 # sea level below the club floor (Unreal -4300 cm)
@@ -256,46 +258,77 @@ def alley_trees():
     return out
 
 
-# --- the cable car from the spur down into the town ---------------------------------------------
+# --- the cable car (the transport thread's network: tools/transport.py, docs/transport.md) ------------------
+# The metro of cable cars is authored in Content/Transport/network.json and resolved against the terrain by
+# tools/transport.py into network_built.json; here only what the map needs from it: where the stations and pylons stand
+# (kept flat, kept free of trees and houses). STATION_UP is Aton on the spur's brow (the club's station, where the
+# path ends), STATION_DOWN the Akademgorodok's station on the town's south edge.
 
-STATION_UP = (-15.0, 133.0)       # on the brow, where the path ends
-STATION_DOWN = (-255.0, 520.0)    # on the town's south edge
-ROPE_Z = 6.0                      # rope height over a station floor
-TOWER_H = 14.0
-CLEARANCE = 6.0                   # least height of the rope over the ground between supports
+_TRANSPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "unreal", "Lyudmilovsk", "Content", "Transport")
 
 
 @functools.lru_cache(maxsize=1)
+def _network():
+    with open(os.path.join(_TRANSPORT, "network.json")) as f:
+        return json.load(f)
+
+
+@functools.lru_cache(maxsize=1)
+def _network_built():
+    try:
+        with open(os.path.join(_TRANSPORT, "network_built.json")) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def _station_at(sid):
+    return tuple(next(s["at"] for s in _network()["stations"] if s["id"] == sid))
+
+
+STATION_UP = _station_at("aton")
+STATION_DOWN = _station_at("academ")
+STATION_FLAT = 17.0               # metres kept flat round a station (its platform, stair and lift)
+
+
 def cable_car():
-    """Stations and towers: {'upper': (x, y), 'lower': (x, y), 'towers': [(x, y), ...],
-    'supports': [(x, y, rope_z), ...] from the top down}. Towers go where a straight rope would
-    come closer than CLEARANCE to the ground (the spur's brow first)."""
-    (x0, y0), (x1, y1) = STATION_UP, STATION_DOWN
-    sup = [(0.0, height(x0, y0) + ROPE_Z), (1.0, height(x1, y1) + ROPE_Z)]
-    for _ in range(6):
-        worst = None
-        for (ta, za), (tb, zb) in zip(sup, sup[1:]):
-            for k in range(1, 40):
-                t = ta + (tb - ta) * k / 40
-                rz = za + (zb - za) * k / 40
-                gz = height(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t)
-                if rz - gz < CLEARANCE and (worst is None or rz - gz < worst[2]):
-                    worst = (t, gz, rz - gz)
-        if worst is None:
-            break
-        sup.append((worst[0], worst[1] + TOWER_H))
-        sup.sort()
-    pts = [(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, z) for t, z in sup]
-    return {"upper": STATION_UP, "lower": STATION_DOWN, "towers": [(p[0], p[1]) for p in pts[1:-1]],
-            "supports": pts}
+    """The network as the map sees it: {'stations': [(x, y), ...], 'towers': [(x, y), ...] (every pylon),
+    'lines': [[(x, y), ...] per line, its supports from the first stop to the last]}, and for the older readers
+    'upper', 'lower' (STATION_UP, STATION_DOWN) and 'supports' [(x, y, rope z), ...] of the line between them.
+    Pylons come from network_built.json (made by tools/transport.py); before it exists, none."""
+    b = _network_built()
+    stations = [tuple(s["at"]) for s in _network()["stations"]]
+    out = {"stations": stations, "towers": [], "lines": [], "upper": STATION_UP, "lower": STATION_DOWN,
+           "supports": [(STATION_UP[0], STATION_UP[1], 4.0), (STATION_DOWN[0], STATION_DOWN[1], -4.0)]}
+    if not b:
+        return out
+    out["towers"] = [(p["x"], p["y"]) for ln in b["lines"] for p in ln["pylons"]]
+    out["lines"] = [[(p[0], p[1]) for p in ln["supports"]] for ln in b["lines"]]
+    for ln in b["lines"]:
+        sup = [tuple(p) for p in ln["supports"]]
+        ia = min(range(len(sup)), key=lambda i: math.hypot(sup[i][0] - STATION_UP[0], sup[i][1] - STATION_UP[1]))
+        ib = min(range(len(sup)), key=lambda i: math.hypot(sup[i][0] - STATION_DOWN[0], sup[i][1] - STATION_DOWN[1]))
+        if math.hypot(sup[ia][0] - STATION_UP[0], sup[ia][1] - STATION_UP[1]) < 15 and \
+                math.hypot(sup[ib][0] - STATION_DOWN[0], sup[ib][1] - STATION_DOWN[1]) < 15:
+            a, z = sorted((ia, ib))
+            out["supports"] = sup[a:z + 1] if ia < ib else list(reversed(sup[a:z + 1]))
+    return out
 
 
 def near_cable(x, y, r):
-    """Within r metres of the cable car's line."""
-    (x0, y0), (x1, y1) = STATION_UP, STATION_DOWN
-    dx, dy = x1 - x0, y1 - y0
-    t = max(0.0, min(1.0, ((x - x0) * dx + (y - y0) * dy) / (dx * dx + dy * dy)))
-    return math.hypot(x - x0 - dx * t, y - y0 - dy * t) < r
+    """Within r metres of a cable car line (between its supports) or of a station."""
+    cc = cable_car()
+    for sx, sy in cc["stations"]:
+        if math.hypot(x - sx, y - sy) < r + STATION_FLAT:
+            return True
+    for pts in cc["lines"]:
+        for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+            dx, dy = x1 - x0, y1 - y0
+            l2 = dx * dx + dy * dy or 1.0
+            t = max(0.0, min(1.0, ((x - x0) * dx + (y - y0) * dy) / l2))
+            if math.hypot(x - x0 - dx * t, y - y0 - dy * t) < r:
+                return True
+    return False
 
 
 # --- the Academgorodok before the town (blender/academgorodok, docs/academgorodok) ----------------
@@ -563,10 +596,11 @@ def keep_flat(x, y):
     if 0.0 < y < PATH_LEN + 6:
         px = min(path_points(1.0), key=lambda p: abs(p[1] - y))[0]
         k = max(k, _ramp(abs(x - px), 1.8, 2.5))
-    for sx, sy in (STATION_UP, STATION_DOWN):
-        k = max(k, _ramp(math.hypot(x - sx, y - sy), 12.0, 6.0))
-    for tx, ty in cable_car()["towers"] if abs(x) < 400 and -50 < y < 600 else ():
-        k = max(k, _ramp(math.hypot(x - tx, y - ty), 3.0, 3.0))
+    cc = cable_car()
+    for sx, sy in cc["stations"]:
+        k = max(k, _ramp(math.hypot(x - sx, y - sy), STATION_FLAT, 6.0))
+    for tx, ty in cc["towers"]:
+        k = max(k, _ramp(math.hypot(x - tx, y - ty), 4.0, 3.0))
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
     k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))

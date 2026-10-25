@@ -1,0 +1,23 @@
+{
+ "id": "lift_start",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/lift_start_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "An old glass elevator starting to move: a relay click and a rising electric motor whine, close",
+  "duration_seconds": 2.0
+ },
+ "hash": "c62da6633e84",
+ "fal_request_id": "01a174cb-6f3e-7272-8e74-574ca752b0a9",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd755/KSh-ho7iPVBHDnqFfKmiU_sound_effect.mp3",
+ "created": "2026-10-25T20:40:57Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "cdf28e620da289429444e3f5d2b9993169988567fc0a3b93f9fca1fd33d337c4",
+ "seconds": 1.97,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

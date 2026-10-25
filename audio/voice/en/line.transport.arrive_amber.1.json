@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_amber.1",
+ "lang": "en",
+ "text": "Amber Shore.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Amber Shore.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a174cb-8d48-7d33-bb30-f4f80af6f617",
+ "hash": "5e9df57076e1"
+}

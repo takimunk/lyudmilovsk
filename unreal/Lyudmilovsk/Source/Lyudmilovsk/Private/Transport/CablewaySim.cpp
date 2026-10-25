@@ -126,6 +126,9 @@ namespace LyudTransport
 			St.Deck = S["deck"].F();
 			St.Lift = S["lift"].F();
 			St.bOnGround = S["on_ground"].Type == LyudJson::FValue::Bool && S["on_ground"].B;
+			St.CoreX = S["core"][0].F(St.X);
+			St.CoreY = S["core"][1].F(St.Y);
+			St.CoreGround = S["core_ground"].F(St.Ground);
 			const LyudJson::FValue& Sc = S["schema"];
 			if (Sc.Type == LyudJson::FValue::Array && Sc.Size() == 2)
 			{
@@ -196,9 +199,22 @@ namespace LyudTransport
 			}
 			Lines.push_back(Ln);
 		}
-		for (FStation& St : Stations)
+		for (int I = 0; I < (int)Stations.size(); I++)
 		{
+			FStation& St = Stations[I];
 			St.AxisYaw.assign(Lines.size(), 0.f);
+			St.Ends.assign(Lines.size(), 0);
+			for (int L = 0; L < (int)Lines.size(); L++)
+			{
+				if (!Lines[L].Stations.empty() && Lines[L].Stations.front() == I)
+				{
+					St.Ends[L] = 1;
+				}
+				else if (!Lines[L].Stations.empty() && Lines[L].Stations.back() == I)
+				{
+					St.Ends[L] = -1;
+				}
+			}
 		}
 		for (size_t I = 0; I < JS.Size(); I++)
 		{

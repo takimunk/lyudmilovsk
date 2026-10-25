@@ -43,7 +43,9 @@ namespace LyudTransport
 		float Lift = 0.f;           // from the ground to the top deck
 		bool bOnGround = false;     // stands right on the ground (Aton): no tower, no lift
 		std::vector<FLevel> Levels;
-		std::vector<float> AxisYaw; // per line (index = line), degrees in the map frame; NaN-free: 0 if not on it
+		std::vector<float> AxisYaw; // per line (index = line), degrees in the map frame; 0 if not on it
+		std::vector<int> Ends;      // per line: +1 its first stop, -1 its last, 0 a through station (or not on it)
+		float CoreX = 0.f, CoreY = 0.f, CoreGround = 0.f;   // the stair and lift (map), the ground under them
 		int SchemaX = 0, SchemaY = 0; bool bHasSchema = false;
 	};
 

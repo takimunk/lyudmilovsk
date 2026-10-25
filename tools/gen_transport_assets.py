@@ -8,8 +8,10 @@
   FAL_API_KEY=... python3 tools/gen_transport_assets.py <step> [<step> ...] [--force]
   python3 tools/gen_transport_assets.py --list
 
-3D goes through Hi3D v3.0 (the same model as Dima's hi3d subscription, here on fal because its API takes image
-URLs; the hi3d MCP only takes inline base64). The key is in ~/projects/asmrx3000/.env; never commit it.
+These ten models went through Hi3D v3.0 on fal (its API takes image URLs; the hi3d MCP only takes inline base64).
+Dima's rule since (2026-10-25): 3D goes ONLY through the hi3d MCP (shrink the image for upload_input, then
+quote_generation and create_generation), so this script is the record of how they were made, not the way to make
+new ones. The key is in ~/projects/asmrx3000/.env; never commit it.
 """
 import argparse
 import concurrent.futures

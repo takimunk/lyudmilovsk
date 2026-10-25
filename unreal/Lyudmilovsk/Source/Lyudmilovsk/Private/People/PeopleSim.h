@@ -192,6 +192,7 @@ namespace LyudPeople
 		float Recheck = 60.f;       // s till they next look up from what they do
 		bool bBreak = false;        // wants a break from a duty (to eat)
 		bool bOnBreak = false;      // on it: the duty waits till this activity ends
+		bool bRideExternal = false; // the ride is the cable car's (RideHook took it): it ends with EndRide
 		uint32_t Rng = 1;
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
@@ -260,6 +261,13 @@ namespace LyudPeople
 		/** Forces an activity now (tests, console): goes there and does it. */
 		bool Order(int Person, const std::string& Activity, const std::string& PlaceId = std::string());
 
+		/** The cable car (ULyudTransportSubsystem): called when someone gets to the station to ride from From to the station by To
+		 *  (both Unreal metres); true if a real cabin will carry them, and then the ride ends only with EndRide (or after an hour,
+		 *  should the cable car lose them). Unset or false: the ride takes Opt.RideSeconds, hidden, as before. */
+		std::function<bool(int Person, const V3& From, const V3& To)> RideHook;
+		/** Their cable-car ride is over: out at the other station, on along their way. */
+		void EndRide(int Person);
+
 		float Ground_Z(const V3& P) const;
 		int IslandOf(const V3& P) const;
 
@@ -271,6 +279,7 @@ namespace LyudPeople
 		bool Interrupt(FPerson& P, float Dt);
 		void Move(FPerson& P, float Dt);
 		void Arrive(FPerson& P);
+		void FinishRide(FPerson& P);
 		void Leave(FPerson& P);
 		void Finish(FPerson& P);
 		bool Start(FPerson& P, int Activity, int Slot, double Minutes, bool bSnap, const char* Why);

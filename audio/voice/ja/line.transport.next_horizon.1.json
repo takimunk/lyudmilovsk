@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.next_horizon.1",
+ "lang": "ja",
+ "text": "次は終点、地平線です。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] 次は終点、地平線です。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cc-0c5c-7932-b737-31ce61de3d08",
+ "hash": "6155690df343"
+}

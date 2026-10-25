@@ -8,6 +8,7 @@
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
 #include "UI/LyudUIStyle.h"
+#include "Transport/LyudTransport.h"
 
 namespace
 {
@@ -167,6 +168,41 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 			At.Y -= 14.f;
 		}
 		Label(ULyudQuests::PlaceName(P.Id).ToString(), At, PlaceFont(P.Kind), PlaceColor(P.Kind), LayerId + 3);
+	}
+
+	// the cable car (ULyudTransportSubsystem): the lines in their colours, the stations, the cabins on the move
+	if (const ULyudTransportSubsystem* Transport = ULyudTransportSubsystem::Get(Owner.Get()); Transport && Transport->IsRunning())
+	{
+		const TArray<FLyudTransitLine> Lines = Transport->GetLines();
+		for (const FLyudTransitLine& L : Lines)
+		{
+			TArray<FVector2D> Way;
+			for (const FVector2D& M : L.Path)
+			{
+				Way.Add(ToScreen(M, Size));
+			}
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f, 0.7f), true, 5.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, L.Color, true, 3.f);
+		}
+		for (const FLyudTransitCabin& C : Transport->GetCabins())
+		{
+			if (C.State == TEXT("depot") || !Lines.IsValidIndex(C.Line))
+			{
+				continue;
+			}
+			Circle(Pts, ToScreen(C.MapAt, Size), 2.5f, 8);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f), true, 3.f);
+		}
+		for (const FLyudTransitStation& St : Transport->GetStations())
+		{
+			const FVector2D S = ToScreen(St.MapAt, Size);
+			Circle(Pts, S, 5.f, 14);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f), true, 3.5f);
+			if (Zoom > 0.25f)
+			{
+				Label(LyudText::Get(St.NameKey).ToString(), S + FVector2D(0.f, 16.f), LyudUI::Font(12, "Bold"), FLinearColor(0.35f, 0.16f, 0.04f), LayerId + 3);
+			}
+		}
 	}
 
 	// the next steps of the active quests

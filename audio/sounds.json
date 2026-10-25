@@ -25,7 +25,14 @@
   {"id": "mouse_clicks", "group": "club", "variants": 2, "duration": 5.0, "prompt": "Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds"},
   {"id": "console_game_far", "group": "club", "variants": 3, "duration": 8.0, "prompt": "Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet"},
   {"id": "vending_hum", "group": "club", "variants": 1, "duration": 10.0, "loop": true, "prompt": "A snack vending machine humming with its compressor and fluorescent light, close, indoors, seamless loop"},
-  {"id": "vending_drop", "group": "club", "variants": 2, "duration": 2.5, "prompt": "A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud"}
+  {"id": "vending_drop", "group": "club", "variants": 2, "duration": 2.5, "prompt": "A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud"},
+  {"id": "cabin_motor", "group": "transport", "variants": 1, "duration": 12.0, "loop": true, "prompt": "Inside a small aerial gondola cabin gliding along a steel cable: a soft steady electric hum, the low rumble of the haul rope and faint creaking of the hanger, gentle wind outside, seamless loop, no voices, no music"},
+  {"id": "cabin_sheave", "group": "transport", "variants": 3, "duration": 2.5, "prompt": "A gondola cabin's grip rolling over the sheave train of a cable car tower: a quick rhythmic clack-clack-clack of steel wheels and a short swing creak, close, outdoors"},
+  {"id": "cabin_door", "group": "transport", "variants": 2, "duration": 2.0, "prompt": "A small pneumatic sliding door of a 1960s cable car cabin opening with a soft hiss and a rubber thump, close, no voices"},
+  {"id": "station_chime", "group": "transport", "variants": 1, "duration": 2.5, "prompt": "A soft three-note electronic chime of a 1960s Soviet metro station, warm vibraphone-like tones, descending, clean, a little reverb, no voice"},
+  {"id": "station_wheel", "group": "transport", "variants": 1, "duration": 12.0, "loop": true, "prompt": "The big bull wheel of a cable car station turning slowly: a low mechanical drone, a deep gear hum and a slow periodic metal tick, outdoors under a concrete roof, seamless loop"},
+  {"id": "lift_start", "group": "transport", "variants": 1, "duration": 2.0, "prompt": "An old glass elevator starting to move: a relay click and a rising electric motor whine, close"},
+  {"id": "lift_ding", "group": "transport", "variants": 1, "duration": 1.5, "prompt": "A single soft bell ding of an old elevator arriving at a floor, warm, clean"}
  ],
  "music": [
   {"id": "club_1", "mood": ["club"], "seconds": 120, "seed": 11201, "prompt": "Lo-fi ambient, warm detuned analog synth pads, soft Rhodes chords, faint tape hiss, D minor, 72 BPM, nostalgic late-night computer club, slow, no drums, no vocals"},

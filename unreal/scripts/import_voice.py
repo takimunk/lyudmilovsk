@@ -9,8 +9,12 @@ import unreal
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 tools = unreal.AssetToolsHelpers.get_asset_tools()
+# IMPORT_ONLY=<text>: only the files whose path has it (one thread's new sounds, leaving everybody else's assets alone)
+ONLY = os.environ.get("IMPORT_ONLY", "")
 tasks = []
 for path in sorted(glob.glob(os.path.join(ROOT, "audio", "voice", "*", "*.wav"))):
+    if ONLY not in os.path.relpath(path, ROOT):
+        continue
     lang = os.path.basename(os.path.dirname(path))
     key = os.path.basename(path)[:-4].replace(".", "_")
     t = unreal.AssetImportTask()
