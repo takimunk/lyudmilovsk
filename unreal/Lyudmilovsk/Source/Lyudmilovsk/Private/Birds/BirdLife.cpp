@@ -557,6 +557,19 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	}
 }
 
+void UBirdLifeSubsystem::SetBeasts(const TArray<FBirdBeast>& Beasts)
+{
+	if (!Sim)
+	{
+		return;
+	}
+	Sim->Beasts.clear();
+	for (const FBirdBeast& B : Beasts)
+	{
+		Sim->Beasts.push_back(FBeast{ FromUE(B.Location), FromUE(B.Velocity), B.bCat, B.bStalking });
+	}
+}
+
 void UBirdLifeSubsystem::DispatchEvents()
 {
 	FWorld& S = *Sim;

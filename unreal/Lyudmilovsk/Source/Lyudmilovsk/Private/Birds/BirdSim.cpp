@@ -1192,6 +1192,81 @@ namespace LyudBirds
 		}
 	}
 
+	/** Cats and dogs: a running dog puts a flock up from far off, a walking cat from about where a person would, a stalking
+	 *  cat only when it is almost there; birds up a tree or on a roof hardly mind a dog, but they scold a cat. */
+	void FWorld::PerceiveBeasts(FBird& B, float Dt)
+	{
+		if (Beasts.empty() || IsAirborne(B.Act) || B.Act == EAct::Claimed || B.bGone || B.Act == EAct::Approach || B.Act == EAct::Eat)
+		{
+			return;
+		}
+		const FSpecies& S = SpeciesTable()[B.Species];
+		if (S.bPredator)
+		{
+			return;
+		}
+		const bool bGround = B.Site >= 0 && IsGroundHabitat(Sites[B.Site].Kind) && Sites[B.Site].Kind != EHabitat::Sea;
+		float Worst = 0.f;
+		V3 From;
+		bool bCatNear = false;
+		for (const FBeast& M : Beasts)
+		{
+			const V3 D = B.Pos - M.Pos;
+			const float Dist = D.Len();
+			if (Dist > 45.f)
+			{
+				continue;
+			}
+			const float Speed = M.Vel.Len2D();
+			const float Closing = std::max(0.f, M.Vel.Dot(D.Flat().Norm()));
+			float K = M.bCat ? (M.bStalking ? 0.17f : 0.9f + 0.3f * std::min(Speed / 2.f, 2.f)) : 0.7f + 0.55f * std::min(Speed / 2.5f, 2.5f);
+			K *= 1.f + 0.4f * std::min(Closing / 2.f, 1.f);
+			const float Up = B.Pos.Z - M.Pos.Z;
+			if (!bGround)
+			{
+				K *= Up > 2.5f ? (M.bCat ? 0.35f : 0.12f) : 0.6f;    // a cat climbs; a dog can't
+			}
+			if (B.Act == EAct::Sleep)
+			{
+				K *= 0.6f;
+			}
+			const float FleeD = std::max(0.8f, S.FleeDistance * K) / B.Boldness;
+			const float A = Clamp((FleeD * 2.f - Dist) / FleeD, 0.f, 1.3f);
+			if (A > Worst)
+			{
+				Worst = A;
+				From = M.Pos;
+			}
+			bCatNear |= M.bCat && Dist < 20.f && !M.bStalking;
+		}
+		if (Worst <= 0.f)
+		{
+			return;
+		}
+		if (Worst > B.Alert)
+		{
+			B.Alert += (Worst - B.Alert) * std::min(1.f, Dt / 0.3f);
+		}
+		B.Habituation = 0.f;
+		if (!B.bLook || Worst > 0.3f)
+		{
+			B.Look = From + V3(0.f, 0.f, 0.2f);
+			B.bLook = true;
+		}
+		// tits, blackbirds, robins scold a cat they can see from their twig
+		if (bCatNear && S.bMobs && !bGround && Rand(B.Rng) < Dt * 0.4f)
+		{
+			Emit(EEvent::Call, B);
+			Alarm(B, 20.f, 0.08f);
+		}
+		if (B.Alert >= 1.f && B.Delay <= 0.f && B.Act != EAct::Flee)
+		{
+			B.Delay = 0.04f + Rand(B.Rng) * 0.15f;
+			B.FlyFrom = From;
+			B.Target = -4;
+		}
+	}
+
 	// --- hand feeding ---------------------------------------------------------------------------------
 
 	void FWorld::UpdateApproach(FBird& B, float Dt)
@@ -1537,6 +1612,7 @@ namespace LyudBirds
 		if (B.Tier <= 2)
 		{
 			PerceivePlayer(B, Dt);
+			PerceiveBeasts(B, Dt);
 			if (B.Tier <= 1)
 			{
 				PerceiveBirds(B, Dt);

@@ -471,6 +471,41 @@ namespace
 				Check(R, Fled >= (int)(OnGround * 0.7f), "the flock goes up together");
 			}
 		}
+		// cats and dogs (the animal life): no player, an animal coming straight at a lone bird
+		{
+			auto Beast = [&](const char* Sp, bool bCat, bool bStalk, float Speed)
+			{
+				Lone(W, Sp, P);
+				W.Player.bPresent = false;
+				V3 M = P + V3(-40.f, 0.f, 0.f);
+				for (float T = 0.f; T < 40.f / Speed + 3.f; T += 1.f / 60.f)
+				{
+					W.Beasts.assign(1, FBeast{ M, V3(Speed, 0.f, 0.f), bCat, bStalk });
+					W.Camera = M;
+					W.Step(1.f / 60.f);
+					for (const FEvent& E : W.Events)
+					{
+						if (E.Kind == EEvent::Flee && E.Bird == 0)
+						{
+							return (P - M).Len2D();
+						}
+					}
+					W.Events.clear();
+					M.X += Speed / 60.f;
+				}
+				return -1.f;
+			};
+			const float PigeonDog = Beast("FeralPigeon", false, false, 5.f);
+			const float PigeonCat = Beast("FeralPigeon", true, false, 0.7f);
+			const float SparrowDog = Beast("HouseSparrow", false, false, 5.f);
+			const float SparrowCat = Beast("HouseSparrow", true, false, 0.7f);
+			const float SparrowStalk = Beast("HouseSparrow", true, true, 0.28f);
+			std::printf("animals at a bird: pigeon flushes from a running dog at %.1f m, a walking cat %.1f m; sparrow dog %.1f, cat %.1f, stalking cat %.1f m\n",
+				PigeonDog, PigeonCat, SparrowDog, SparrowCat, SparrowStalk);
+			Check(R, PigeonDog > 3.f && SparrowDog > 5.f, "a running dog puts birds up from well off");
+			Check(R, SparrowCat > 2.f && SparrowCat < SparrowDog, "a walking cat puts a sparrow up nearer");
+			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
+		}
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;
 	}
