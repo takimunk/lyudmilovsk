@@ -200,6 +200,7 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
 	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> Attenuation;
 	int32 SoundsThisSecond = 0;
+	int32 CallsPlayed = 0;
 	double SoundSecond = 0.0;
 
 	bool Start();

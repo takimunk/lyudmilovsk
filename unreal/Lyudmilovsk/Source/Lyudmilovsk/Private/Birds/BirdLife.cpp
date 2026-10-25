@@ -675,6 +675,7 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 	const float Loud = SpeciesTable()[B.Species].Length > 0.3f ? 1.f : 0.75f;
 	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(0.94f, 1.06f), 0.f, Attenuation);
 	SoundsThisSecond++;
+	CallsPlayed++;
 }
 
 void UBirdLifeSubsystem::SyncTrust(bool bToSave)
@@ -841,7 +842,7 @@ FString UBirdLifeSubsystem::Report() const
 	{
 		return TEXT("BirdLife: not running");
 	}
-	return FString::Printf(TEXT("BirdLife: %s; drawn %d (%s), bodies %d"), UTF8_TO_TCHAR(Sim->Report().c_str()),
+	return FString::Printf(TEXT("BirdLife: %s; calls played %d, sounds loaded %d; drawn %d (%s), bodies %d"), UTF8_TO_TCHAR(Sim->Report().c_str()), CallsPlayed, SoundRefs.Num(),
 		Renderer ? Renderer->DrawnLastFrame : 0, Renderer ? *Renderer->Describe() : TEXT(""), Renderer ? Renderer->BodiesLastFrame : 0);
 }
 

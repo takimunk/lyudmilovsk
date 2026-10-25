@@ -127,7 +127,7 @@ def s_gc(w):
 
 
 step(lambda w: cmd(w, "obj gc"), 20.0)
-step(lambda w: log("still running after two collections: " + birds(w).report()[:120]), 1.0)
+step(lambda w: log("still running after two collections: " + birds(w).report().split("; drawn")[0][-60:]), 1.0)
 
 
 @step
