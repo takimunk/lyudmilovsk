@@ -1184,7 +1184,8 @@ bool ALyudCableway::StackTowerKit(int32 S, const FString& Style, float Height)
 		const float Floor = Height + D->GetNumberField(TEXT("floor_z"));
 		const FBox Bb = M->GetBoundingBox();
 		Fill(Z, Floor + Bb.Min.Z);
-		Single(M, FTransform(FRotator(0.f, D->GetNumberField(TEXT("axis_yaw")), 0.f), FVector(0, 0, Floor)) * Core, true);
+		// (the mesh is already turned to its line inside: the tower's own yaw)
+		Single(M, FTransform(FVector(0, 0, Floor)) * Core, true);
 		Z = Floor + Bb.Max.Z;
 	}
 	if (NeckTop - NeckH < Z - 1.f)
