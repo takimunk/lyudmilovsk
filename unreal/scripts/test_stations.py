@@ -7,6 +7,7 @@ TRANSPORTTEST lines; screenshots in the order of the 'shot' lines.
   unreal/scripts/test_stations.sh [station ...]
 """
 import json
+import math
 import os
 
 import unreal
@@ -87,6 +88,22 @@ def plan():
         for k, (dx, dy, dz, pitch, yaw) in enumerate([(700, 0, 250, 25, 180), (900, 300, 1200, 5, 198)]):
             add(0.5, lambda w, a=(x + dx, y + dy, z + dz, pitch, yaw): cmd(w, "BugItGo %.0f %.0f %.0f %.0f %.0f 0" % a))
             add(3.0, lambda w, k=k: shot(w, "pylon_%d" % k))
+    # PYLONS=1: every kind of pylon (the corner, a convergence one, the shortest, the tallest) from afar and at its head
+    if os.environ.get("PYLONS"):
+        allp = [p for ln in BUILT["lines"] for p in ln["pylons"]]
+        pick = [p for p in allp if p.get("kind") == "corner"][:1] + [p for p in allp if p.get("converge")][:1]
+        pick += [min(allp, key=lambda p: p["height"]), max(allp, key=lambda p: p["height"])]
+        for k, p in enumerate(pick):
+            x, y = p["x"] * 100.0, FACE_Y + p["y"] * 100.0
+            g, t = p["ground"] * 100.0, p["top"] * 100.0
+            yaw = p.get("yaw", 0.0)
+            for v, (dist, dz, pitch, side) in enumerate([(2600.0, 0.35, 8.0, 70.0), (900.0, 1.0, -4.0, 60.0)]):
+                a = math.radians(yaw + side)
+                cx, cy = x + math.cos(a) * dist, y + math.sin(a) * dist
+                cz = g + (t - g) * dz if v == 0 else t + 150.0
+                look = (math.degrees(math.atan2(y - cy, x - cx)))
+                add(0.5, lambda w, q=(cx, cy, cz, pitch, look): cmd(w, "BugItGo %.0f %.0f %.0f %.0f %.0f 0" % q))
+                add(3.0, lambda w, k=k, v=v, kind=p.get("kind"): shot(w, "pyl%d_%s_%s" % (k, kind, "far" if v == 0 else "head")))
     add(1.0, lambda w: cmd(w, "quit"))
     return out
 

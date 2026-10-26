@@ -1467,79 +1467,34 @@ int32 ALyudCableway::Probe(int32 S) const
 
 void ALyudCableway::BuildPylons(const LyudTransport::FNetwork& Net, int32 L)
 {
-	const FKit& Kt = Kit();
-	UStaticMesh* Feet = LoadMesh(TEXT("SM_TR_PylonLine_Feet"));
-	UStaticMesh* Head = LoadMesh(TEXT("SM_TR_PylonLine_Head"));
-	UStaticMesh* Corner = LoadMesh(TEXT("SM_TR_PylonCorner"));
+	// our own models (blender/transport/pylons.py): one per whole metre of height (the corner's every 2 m), the rope on
+	// the sheaves' tops at that height; the one a pylon needs is the next taller, the extra sunk into the ground (its
+	// pad has a 2.2 m skirt). +X along the line; the corner's shoes are built for a turn to the left (mirrored for a
+	// right one).
 	for (const LyudTransport::FPylon& P : Net.Lines[L].Pylons)
 	{
 		const FVector G = W(P.X, P.Y, P.Ground);
-		const float Top = P.Top * 100.f;
-		const float H = Top - G.Z;
-		if (P.bCorner && Corner)
+		const float H = P.Top * 100.f - G.Z;
+		const bool bCorner = P.bCorner;
+		const int32 Step = bCorner ? 2 : 1;
+		const int32 Hm = FMath::Clamp(FMath::CeilToInt(H / (100.f * Step) - 0.001f) * Step, 8, 46);
+		const float Sink = Hm * 100.f - H;
+		const FString Name = FString::Printf(TEXT("SM_TR_Pylon%s_H%02d"), bCorner ? TEXT("Corner") : TEXT("Line"), Hm);
+		UStaticMesh* M = LoadMesh(Name);
+		if (!M)
 		{
-			// the lattice tower scaled whole: its sheave at the rope
-			const float Sc = H / (100.f * Kt.CornerSaddle);
-			Single(Corner, FTransform(FRotator(0.f, P.Yaw, 0.f), G - FVector(0, 0, 30.f), FVector(Sc)), true);
+			UE_LOG(LogTemp, Error, TEXT("Transport: no pylon mesh %s (blender/transport/pylons.py, import_transport.sh)"), *Name);
 			continue;
 		}
-		const FRotator R(0.f, P.Yaw - 90.f, 0.f);       // the crossarm across the line
-		const float HeadBase = Top - Kt.PylonHeadSaddle;
-		// the shaft: a clean tapered round of painted steel plate from inside the feet' sleeve to inside the head's
-		// collar, the amber bands at fixed heights (never stretched), a little swell (entasis)
-		const float Z0 = Kt.PylonFeet - 120.f, Z1 = HeadBase - G.Z - 25.f;
-		const float R0 = 136.f, R1 = 46.f;
-		auto Rad = [&](float Z) { const float T = FMath::Clamp((Z - Z0) / FMath::Max(1.f, Z1 - Z0), 0.f, 1.f); return FMath::Lerp(R0, R1, T) + 6.f * FMath::Sin(T * PI); };
-		TArray<FVector2D> Prof;
-		TArray<FName> BandMats;
-		TArray<FVector2D> Bands = { FVector2D(Kt.PylonFeet + 90.f, Kt.PylonFeet + 160.f), FVector2D(Kt.PylonFeet + 250.f, Kt.PylonFeet + 320.f), FVector2D(Z1 - 260.f, Z1 - 200.f) };
-		TArray<float> Zs;
-		const int32 Seg = FMath::Clamp(FMath::CeilToInt((Z1 - Z0) / 300.f), 4, 16);
-		for (int32 I = 0; I <= Seg; I++)
+		const FVector Scale(1.f, bCorner && P.Turn < 0.f ? -1.f : 1.f, 1.f);
+		UStaticMeshComponent* C = Single(M, FTransform(FRotator(0.f, P.Yaw, 0.f), G - FVector(0, 0, Sink), Scale), true);
+		const TArray<FName> Slots = C->GetMaterialSlotNames();
+		for (int32 I = 0; I < Slots.Num(); I++)
 		{
-			Zs.Add(FMath::Lerp(Z0, Z1, float(I) / Seg));
-		}
-		for (const FVector2D& Bd : Bands)
-		{
-			if (Bd.X > Z0 + 20.f && Bd.Y < Z1 - 20.f)
+			if (Slots[I].ToString().StartsWith(TEXT("TR_Glow_Red")))
 			{
-				Zs.Append({ Bd.X, Bd.Y });
+				C->SetMaterial(I, Mat(TEXT("glow_red")));
 			}
-		}
-		Zs.Sort();
-		for (int32 I = 0; I < Zs.Num(); I++)
-		{
-			if (I > 0 && Zs[I] - Zs[I - 1] < 1.f)
-			{
-				continue;
-			}
-			bool bBand = false;
-			for (const FVector2D& Bd : Bands)
-			{
-				bBand |= Zs[I] >= Bd.X - 0.5f && Zs[I] < Bd.Y - 0.5f;
-			}
-			if (Prof.Num())
-			{
-				BandMats.Add(bBand ? TEXT("tx_amber") : TEXT("tx_plate"));
-			}
-			Prof.Add(FVector2D(Rad(Zs[I]) + 0.f, Zs[I]));
-		}
-		// a band's material is its segment's; the band stands a hair proud (1.5 cm) so it reads as a ring
-		for (int32 I = 0; I + 1 < Prof.Num(); I++)
-		{
-			if (BandMats[I] == TEXT("tx_amber"))
-			{
-				Prof[I].X += 1.5f;
-				Prof[I + 1].X += 1.5f;
-			}
-		}
-		FLyudMeshKit K;
-		K.Lathe(FTransform::Identity, Prof, BandMats, 40, true, true);
-		KitMesh(K, FTransform(R, G - FVector(0, 0, 20.f)), TEXT("SM_PylonShaft"));
-		if (Feet && Head)
-		{
-			Single(Feet, FTransform(R, G - FVector(0, 0, 20.f)), true);
-			Single(Head, FTransform(R, FVector(G.X, G.Y, HeadBase)), false);
 		}
 	}
 }

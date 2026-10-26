@@ -212,6 +212,19 @@ core_exit, tower {base, foot, shafts, decks, neck, neck_top, door}). The rest is
 - Checks: `unreal/scripts/test_stations.sh` (views, `Transport.Probe` traces at landings and along the edges, a lift
   ride up on every station); `tools/transportsim/run.sh test`, `tools/peoplesim/run.sh test`.
 
+## Pylons (our own models, 2026-10-26)
+
+Dima: the hi3d pylons (design/transport/gen/pylon_*.glb) are only the reference; `blender/transport/pylons.py` builds
+them clean, one mesh per whole metre of height: `SM_TR_PylonLine_H08..H46` (the rocket mast: a concrete pad with a
+2.2 m skirt, four swept fins with amber edges, a tapered plate shaft with amber bands and a ladder, a collar, the
+crossarm across the line with a battery of four sheaves on each end, the rope on their tops at the height, a spire with a
+red beacon) and `SM_TR_PylonCorner_H08..H46` every 2 m (a braced lattice A-frame, a crossarm with a flat shoe of seven
+sheaves on each end the rope bends round in plan, built for a left turn, a golden star). Metre UVs, slots
+`TR_Tx_<Plate|Amber|Steel|Dark|Concrete>`, `TR_Glow_Red`, `TR_Glow`; `Content/Transport/pylons.json` says the heights.
+`ALyudCableway::BuildPylons` takes the next taller mesh and sinks the extra into the ground, yaw along the line, the
+corner mirrored for a right turn. `STATIONS=none PYLONS=1 unreal/scripts/test_stations.sh` shoots the corner, a
+convergence pylon, the shortest and the tallest from afar and at the head.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a
