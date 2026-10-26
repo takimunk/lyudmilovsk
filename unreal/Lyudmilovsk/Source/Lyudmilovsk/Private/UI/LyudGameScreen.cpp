@@ -63,6 +63,8 @@ void ULyudGameScreen::OnWorldBeginPlay(UWorld& InWorld)
 	}
 	QuietFor = 2.f;
 	bAnnounced = false;
+	bWalked = false;
+	bWalkFromSet = false;
 }
 
 void ULyudGameScreen::Deinitialize()
@@ -379,6 +381,20 @@ void ULyudGameScreen::Tick(float DeltaTime)
 			ULyudQuests::Notify(World, TEXT("bird"));
 		}
 		bWasBird = bBird;
+		// the first few steps on foot (the game starts standing in the club; sitting down hides the hero)
+		if (!bWalked && !Pawn->IsHidden())
+		{
+			if (!bWalkFromSet)
+			{
+				WalkFrom = Pawn->GetActorLocation();
+				bWalkFromSet = true;
+			}
+			else if (FVector::Dist2D(WalkFrom, Pawn->GetActorLocation()) > 250.f)
+			{
+				bWalked = true;
+				ULyudQuests::Notify(World, TEXT("walk"));
+			}
+		}
 		if ((PlaceTimer -= DeltaTime) <= 0.f)
 		{
 			PlaceTimer = 0.25f;

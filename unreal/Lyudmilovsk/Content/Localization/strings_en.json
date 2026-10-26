@@ -544,7 +544,7 @@
  "quest.awakening.title": "Awakening",
  "quest.awakening.desc": "I came to in a computer club and remember nothing. I need to find out where I am.",
  "quest.awakening.wake.log": "I opened my eyes in front of a monitor. My heart is pounding. My profile on the computer is deleted, and I don't remember who I am.",
- "quest.awakening.leave_pc.obj": "Get up from the computer",
+ "quest.awakening.leave_pc.obj": "Get up and look around",
  "quest.awakening.owner.log": "The ATON club. Someone must know how I got here. The owner sits in his booth by the entrance.",
  "quest.awakening.talk_owner.obj": "Talk to the club owner",
  "quest.awakening.outside.log": "The owner told me nothing much. Maybe things will be clearer outside.",

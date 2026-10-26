@@ -58,6 +58,11 @@ rewards also give items and roubles. Any system reports events with `ULyudQuests
 | `have` | item id | objective only: counts what is in the pocket |
 | `wear` | item id | `ULyudInventory::Wear` / `Equip` |
 | `bird` | | the game screen, when the player's pawn stops being the hero |
+| `walk` | | the game screen, once per level start, 2.5 m from where the hero stood (the game starts standing) |
+
+An objective's event may list alternatives (`leave_computer|walk`). An event that a later stage of an active quest waits for
+finishes the stages before it, so a teleport, a loaded save or steps done out of order never leave a quest on an old step
+(`unreal/scripts/test_quest_flow.py` checks the normal way, a teleport and a load).
 
 Words: `quest.<id>.title|desc`, `quest.<id>.<stage>.log` (the journal entry when the stage begins), `quest.<id>.<objective>.obj`,
 `quest.<id>.done`. Places: `place.<id>.name`. Progress, the journal, the places found and the followed quest are saved ("Quests").
@@ -84,4 +89,4 @@ binoculars), `Private/UI/SLyudGameScreen.*`, `SLyudMapView.*`, `SLyudHud.*`, `Ly
 `unreal/scripts/test_ui.py` (offscreen `-game` in Lvl_Scene01, see its docstring): quest events, every page in three languages,
 the lamp at night, the binoculars, the shop, a save and a load; QUESTTEST / SHOPTEST lines and screenshots. Dev commands:
 `Screen.Open inventory|journal|diary|map [place]|none`, `Quest.Event <event> [target] [n]`, `Quest.Start|Advance <id>`,
-`Quest.Dump`, `Inventory.Wear <id>` / `-<slot>`, `Screen.Toast <key>`, `lyud.BinocularsHold 1`.
+`Quest.Dump`, `Quest.Reset`, `Inventory.Wear <id>` / `-<slot>`, `Screen.Toast <key>`, `lyud.BinocularsHold 1`.

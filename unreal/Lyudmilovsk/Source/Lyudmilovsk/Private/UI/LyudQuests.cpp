@@ -160,6 +160,18 @@ namespace
 		UE_LOG(LogTemp, Log, TEXT("LyudQuests: %d quests, %d places"), D.Quests.Num(), D.Places.Num());
 	}
 
+	/** An objective's event may list alternatives: "leave_computer|walk". */
+	bool EventMatches(FName Want, FName Got)
+	{
+		if (Want == Got)
+		{
+			return true;
+		}
+		TArray<FString> Alts;
+		Want.ToString().ParseIntoArray(Alts, TEXT("|"));
+		return Alts.Num() > 1 && Alts.Contains(Got.ToString());
+	}
+
 	bool TargetMatches(const FString& Want, const FString& Got)
 	{
 		if (Want.IsEmpty())
@@ -448,6 +460,28 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 			{
 				continue;
 			}
+			// an event a later stage waits for (a teleport, a load, a step done out of order): the stages before it count as done
+			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num(); ++Later)
+			{
+				const bool bWanted = Def->Stages[Later].Objectives.ContainsByPredicate([&E](const FLyudQuestObjective& O)
+				{
+					return O.Event != TEXT("have") && EventMatches(O.Event, E.Get<0>()) && TargetMatches(O.Target, E.Get<1>());
+				});
+				if (bWanted)
+				{
+					UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s skips ahead to stage %d on %s %s"), *Def->Id.ToString(), Later, *E.Get<0>().ToString(), *E.Get<1>());
+					while (Progress[QI].State == ELyudQuestState::Active && Progress[QI].Stage < Later)
+					{
+						FinishStage(Progress[QI], *Def);
+					}
+					bChanged = true;
+					break;
+				}
+			}
+			if (Progress[QI].State != ELyudQuestState::Active)
+			{
+				continue;
+			}
 			const FLyudQuestStage& S = Def->Stages[Progress[QI].Stage];
 			bool bAll = true;
 			for (int32 I = 0; I < S.Objectives.Num(); ++I)
@@ -457,7 +491,7 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				const bool bWas = C >= O.Need;
 				// "have" counts the pocket: items coming in count, "use" of it takes away
 				const bool bHave = O.Event == TEXT("have");
-				if ((O.Event == E.Get<0>() || (bHave && E.Get<0>() == TEXT("get"))) && TargetMatches(O.Target, E.Get<1>()))
+				if ((EventMatches(O.Event, E.Get<0>()) || (bHave && E.Get<0>() == TEXT("get"))) && TargetMatches(O.Target, E.Get<1>()))
 				{
 					C += E.Get<2>();
 					bChanged = true;
@@ -596,6 +630,15 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestAdvance(TEXT("Quest.Advance"), 
 		if (ULyudQuests* Q = ULyudQuests::Get(World); Q && Args.Num() > 0)
 		{
 			Q->Advance(*Args[0]);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GQuestReset(TEXT("Quest.Reset"), TEXT("Quest.Reset: the quests as a new game starts them"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+	{
+		if (ULyudQuests* Q = ULyudQuests::Get(World))
+		{
+			Q->Reset();
 		}
 	}));
 

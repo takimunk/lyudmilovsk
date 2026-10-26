@@ -94,6 +94,10 @@ private:
 	float QuietFor = 2.f;
 	/** The new game's first quest was named on the HUD (or a load made that moot). */
 	bool bAnnounced = false;
+	/** Where the player stood when the level began; "walk" is reported once he is 2.5 m from it. */
+	FVector WalkFrom = FVector::ZeroVector;
+	bool bWalkFromSet = false;
+	bool bWalked = false;
 
 	UPROPERTY(Transient)
 	TObjectPtr<USpotLightComponent> Lamp;

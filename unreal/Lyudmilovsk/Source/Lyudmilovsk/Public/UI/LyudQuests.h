@@ -17,6 +17,9 @@
  *   use <item id>              one was used up: drunk, eaten, a handful of feed given (ULyudInventory::Remove)
  *   wear <item id>             something was put on or put in the hand
  *   bird                       the hero became a bird (any pawn that is not the hero)
+ *   walk                       the hero took his first steps (2.5 m from where the level put him)
+ * An objective's event may list alternatives ("leave_computer|walk"). An event a later stage waits for finishes the stages before
+ * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step).
  * A Target ending in '*' matches by prefix (drink_* is any soda). The words are keys (localization skill):
  *   quest.<id>.title, quest.<id>.desc, quest.<id>.<stage>.log (the journal entry when the stage begins),
  *   quest.<id>.<objective>.obj (the line in the journal and on the HUD), quest.<id>.done (the entry when the quest ends).

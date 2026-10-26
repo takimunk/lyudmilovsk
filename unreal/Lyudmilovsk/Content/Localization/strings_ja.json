@@ -544,7 +544,7 @@
  "quest.awakening.title": "目覚め",
  "quest.awakening.desc": "パソコンクラブで気がついた。何も覚えていない。ここがどこなのか知らなければ。",
  "quest.awakening.wake.log": "モニターの前で目を開けた。心臓がどきどきしている。パソコンの自分のプロフィールは消えていて、自分が誰なのか思い出せない。",
- "quest.awakening.leave_pc.obj": "パソコンから立ち上がる",
+ "quest.awakening.leave_pc.obj": "立ち上がって、あたりを見回す",
  "quest.awakening.owner.log": "クラブ「アトン」。誰か、私がどうやってここに来たか知っているはずだ。入口のブースに店主がいる。",
  "quest.awakening.talk_owner.obj": "クラブの店主と話す",
  "quest.awakening.outside.log": "店主は大したことを教えてくれなかった。外に出れば何かわかるかもしれない。",
