@@ -258,6 +258,58 @@ struct FPlantHerb
  *
  * Units: metres, years, days of the year (1 = 1 January).
  */
+UENUM(BlueprintType)
+enum class EPlantBlossomForm : uint8
+{
+	None,
+	/** Pendulous tassels hanging from the twig tips, PerCluster to an instance (birch, alder, poplar, aspen, oak). */
+	Catkin,
+	/** Clusters of PerCluster small open flowers of Petals petals (apple, rowan, maple, sea buckthorn). */
+	Blossom,
+	/** Upright egg-shaped cones, PerCluster to an instance: pine and spruce flowers, a juniper's. */
+	Cone,
+};
+
+/**
+ * The flowering of a tree or shrub: pollen catkins, blossom, flowering cones. A pure function of the day of
+ * the year (see PlantModel::Season): opens from StartDay, is full at PeakDay and has gone by EndDay, shifted by
+ * the tree's own phenology jitter. Drawn as instances on the twigs near the camera; far away the crown and twigs
+ * only take on its colour (FarTint).
+ */
+USTRUCT(BlueprintType)
+struct FPlantBlossom
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") EPlantBlossomForm Form = EPlantBlossomForm::None;
+	/** Days of the year: first opening, in full bloom, and the last of it fallen. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float StartDay = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float PeakDay = 115.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float EndDay = 135.f;
+	/** Catkin and cone: length; blossom: one flower's diameter. m */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float Size = 0.05f;
+	/** Catkin and cone: width / length. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float Thickness = 0.1f;
+	/** Catkins, cones or flowers in one instance. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") int32 PerCluster = 3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") int32 Petals = 5;
+	/** Blossom: how wide a cluster spreads, in flower diameters. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float Spread = 2.5f;
+	/** How far above the twig it is carried, m (flowers and cones stand clear of the foliage). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float Lift = 0.f;
+	/** Chance that a twig (a spur, on a tree that has them) bears any, and how many instances at most. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float Chance = 0.4f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") int32 PerTwig = 2;
+	/** Trees flower from this age, years. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float MinAge = 5.f;
+	/** Fresh colour (petals; the catkin's or cone's body), the flower's centre, and the tint it ages to (catkin and cone: its aged colour; blossom: a multiplier on the petals). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") FLinearColor FreshColour = FLinearColor(0.9f, 0.8f, 0.8f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") FLinearColor CentreColour = FLinearColor(0.7f, 0.5f, 0.05f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") FLinearColor AgedColour = FLinearColor(0.5f, 0.4f, 0.3f);
+	/** How much it colours the crown and twigs seen from afar (a baked tree), 0..1. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") float FarTint = 0.4f;
+};
+
 USTRUCT(BlueprintType)
 struct FPlantSpecies
 {
@@ -387,6 +439,9 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Leaves") FPlantLeafShape Leaf;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bark") FPlantBark Bark;
+
+	/** Its flowering: catkins, blossom or flowering cones in spring; Form None = none to see. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blossom") FPlantBlossom Blossom;
 
 	// --- Fruit (apples, acorns): on order-2 twigs from FruitDay until FruitFallDay; none if FruitSize is 0.
 

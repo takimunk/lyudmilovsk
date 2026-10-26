@@ -84,6 +84,11 @@ void UTreeBakeCache::Finish(FJob& Job)
 		KeepAlive.Add(A.Detail);
 		A.Card = PlantMeshes::BuildFoliageCard(this, S.Leaf);
 		KeepAlive.Add(A.Card);
+		if (S.Blossom.Form != EPlantBlossomForm::None)
+		{
+			A.Bloom = PlantMeshes::BuildBlossomAtlas(this, S.Blossom);
+			KeepAlive.Add(A.Bloom);
+		}
 	}
 	const double MeshStart = FPlatformTime::Seconds();
 	const FVector* L = LodsOf.Find(Job.Key);
@@ -113,14 +118,30 @@ void UTreeBakeCache::Finish(FJob& Job)
 		Out.Wood->SetVectorParameterValue(TEXT("BaseRidge"), S.Bark.BaseRidgeColour);
 		Out.Wood->SetVectorParameterValue(TEXT("BaseFurrow"), S.Bark.BaseFurrowColour);
 		Out.Wood->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		// the flowers (slot 3): the leaf material with the blossom atlas, still (a baked tree does not sway)
+		Out.Bloom = UMaterialInstanceDynamic::Create(LeafMaterial, this);
+		KeepAlive.Add(Out.Bloom);
+		if (A.Bloom) Out.Bloom->SetTextureParameterValue(TEXT("LeafDetail"), A.Bloom);
+		Out.Bloom->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		Out.Bloom->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		Out.Leaf->SetTextureParameterValue(TEXT("LeafDetail"), A.Detail);
 		Out.Leaf->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
 		Out.Leaf->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 	}
 	const FPlantSeason Season = PlantModel::Season(S, Job.Key.Seed, Job.Day);
 	Out.Wood->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
-	Out.Leaf->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
-	Out.Card->SetVectorParameterValue(TEXT("Color"), Season.Colour[1]);
+	// in bloom, the crown and twigs seen from afar take on the colour of the flowers (the real ones are on the nearest LODs only)
+	FLinearColor LeafColour = Season.Colour[1], TwigColour = S.Bark.TwigColour;
+	if (S.Blossom.Form != EPlantBlossomForm::None && Season.Bloom > 0.f)
+	{
+		const float Mix = S.Blossom.FarTint * Season.Bloom;
+		LeafColour = FMath::Lerp(LeafColour, Season.BloomLook, Mix * 0.8f * Season.BloomOpen);
+		TwigColour = FMath::Lerp(TwigColour, Season.BloomLook, FMath::Min(1.f, Mix * 1.6f));
+		Out.Bloom->SetVectorParameterValue(TEXT("Color"), Season.BloomTint);
+	}
+	Out.Wood->SetVectorParameterValue(TEXT("TwigColour"), TwigColour);
+	Out.Leaf->SetVectorParameterValue(TEXT("Color"), LeafColour);
+	Out.Card->SetVectorParameterValue(TEXT("Color"), LeafColour);
 	Out.Mesh = Bake.Mesh;
 	Out.Day = Job.Day;
 	Out.Version++;

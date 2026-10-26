@@ -142,6 +142,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UStaticMeshComponent> PotMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LeafComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> FruitComponent;
+	/** Catkins, blossom or flowering cones on the twigs (S.Blossom). */
+	UPROPERTY(VisibleAnywhere, Category = "Plant") TObjectPtr<UInstancedStaticMeshComponent> BloomComponent;
 	/** Fallen leaves on the ground, and leaves in the air, per colour bucket. */
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> LitterComponents;
 	UPROPERTY(VisibleAnywhere, Category = "Plant") TArray<TObjectPtr<UInstancedStaticMeshComponent>> FallingComponents;
@@ -162,6 +164,9 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> FruitMaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SingleLeafMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> FruitMesh;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> BloomMesh;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> BloomAtlas;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> BloomMaterial;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> FruitDetail;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LitterMaterials;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> WoodMesh;
@@ -221,7 +226,7 @@ private:
 	bool bLandedChanged = false;
 	FPlantSeason LastSeason;
 	float LastSeasonDay = -1000.f;
-	int32 LastLeaves = 0, LastLitter = 0, LastFruit = 0;
+	int32 LastLeaves = 0, LastLitter = 0, LastFruit = 0, LastBloom = 0;
 	float LastHeight = 0.f, LastReach = 0.f;
 
 	/** Ground heights around the trunk (cm, relative to the plant), GroundN x GroundN cells of GroundCell cm. */

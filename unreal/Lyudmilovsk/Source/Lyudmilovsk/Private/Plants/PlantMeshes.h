@@ -26,6 +26,16 @@ namespace PlantMeshes
 	 */
 	UStaticMesh* BuildLeafCluster(UObject* Outer, const FPlantSpecies& Species);
 
+	/**
+	 * One instance of the species' flowering (Blossom.Form) about the origin, real size (cm): a tuft of catkins hanging from it, a cluster
+	 * of flowers standing on it, or a rosette of cones. UVs sit in BuildBlossomAtlas's halves; shaded with the leaf material.
+	 */
+	UStaticMesh* BuildBlossom(UObject* Outer, const FPlantSpecies& Species);
+	/** The texture they share: petals, centre and stalk, or the scale pattern of a catkin or a cone (tinted by the material's Color). */
+	UTexture2D* BuildBlossomAtlas(UObject* Outer, const FPlantBlossom& Blossom);
+	/** Triangles in one instance. */
+	int32 BlossomTriangles(const FPlantBlossom& Blossom);
+
 	/** Bark colour (sRGB) and normal map tiles for the species' pattern; tileable both ways. */
 	void BuildBarkTextures(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, UTexture2D*& OutAlbedo, UTexture2D*& OutNormal);
 
