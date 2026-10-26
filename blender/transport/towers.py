@@ -21,22 +21,40 @@ SHAFT = (3.0, 1.0)
 CLEAR_SQ = 2.7                 # half the clear square
 CLEAR_R = 3.72                 # the clear circle
 
-# per style: the outline (r_out(phi)), the inner shape, the surfaces, the windows, the details
+# per style: the outline (r_out(phi)), the inner shape, the surfaces, the windows, the details, and what makes it
+# speak its vestibule's language (feature: fins, legs, discs; each with its own shape on the foot, the shaft, the neck)
 STYLES = {
+    # the arches: the shaft stands on four parabolic legs and opens into four corbel arches under the terrace
     "arches":  {"outer": ("square", 3.3), "inner": "square", "wall": "tx_enamel", "band": "tx_amber",
-                "windows": "slits", "detail": "pilasters"},
+                "windows": "slits", "detail": "pilasters", "feature": "legs"},
+    # the dome: a ribbed drum, the ribs flare into buttresses at the foot and corbels under the terrace; portholes
     "dome":    {"outer": ("circle", 4.3), "inner": "circle", "wall": "tx_concrete", "band": "tx_amber",
-                "windows": "portholes", "detail": "ribs"},
+                "windows": "portholes2", "detail": "none",
+                "feature": ("fins", {"n": 12, "phase": math.pi / 12, "t": 0.24, "foot": (1.3, 0.12), "shaft": (0.12, 0.12),
+                                     "neck": (0.12, 1.5)})},
+    # the folded plates: twelve thin plates on the zigzag's ridges, fanning out at the foot and under the terrace
     "folded":  {"outer": ("zigzag", 4.15, 0.45, 12), "inner": "circle", "wall": "tx_enamel", "band": "tx_amber",
-                "windows": "none", "detail": "none"},
-    "lantern": {"outer": ("ngon", 4.4, 12), "inner": "circle", "wall": "glass", "band": "tx_enamel",
-                "windows": "none", "detail": "corner_ribs"},
+                "windows": "none", "detail": "none",
+                "feature": ("fins", {"n": 12, "phase": math.pi / 12, "t": 0.14, "foot": (1.9, 0.35), "shaft": (0.35, 0.35),
+                                     "neck": (0.35, 2.0)})},
+    # the lantern: amber-lit glass facets between ribs, amber bands every metre, a solid plinth; ribs curl out on top
+    "lantern": {"outer": ("ngon", 4.4, 12), "inner": "circle", "wall": "glass", "band": "tx_amber",
+                "windows": "none", "detail": "corner_ribs", "rings_every": 1.0, "plinth": 1.2,
+                "feature": ("fins", {"n": 12, "phase": math.pi / 12, "t": 0.2, "foot": (0.9, 0.18), "shaft": (0.18, 0.18),
+                                     "neck": (0.18, 1.5)})},
+    # the saucer: a ringed column with a small flying saucer round every 3 m and a big one at the foot and the neck
     "saucer":  {"outer": ("circle", 4.3), "inner": "circle", "wall": "tx_enamel", "band": "tx_amber",
-                "windows": "portholes", "detail": "rings"},
+                "windows": "portholes", "detail": "none", "feature": "discs"},
+    # the star: eight star points running up the shaft, growing into big fins at the foot and under the terrace
     "star":    {"outer": ("star", 4.1, 1.0, 8), "inner": "circle", "wall": "tx_enamel", "band": "tx_amber",
-                "windows": "none", "detail": "none"},
+                "windows": "none", "detail": "none",
+                "feature": ("fins", {"n": 8, "phase": math.pi / 8, "t": 0.3, "foot": (2.8, 0.6), "shaft": (0.6, 0.6),
+                                     "neck": (0.6, 2.6)})},
+    # the wing: two swept wings along the sides, wide at the foot, thin up the shaft, sweeping out under the terrace
     "wing":    {"outer": ("square", 3.3), "inner": "square", "wall": "tx_enamel", "band": "tx_mosaic",
-                "windows": "slits", "detail": "fins"},
+                "windows": "slits", "detail": "none",
+                "feature": ("fins", {"n": 2, "phase": math.pi / 2, "t": 0.4, "foot": (3.4, 0.7), "shaft": (0.7, 0.7),
+                                     "neck": (0.7, 3.2), "curve": 2.0})},
 }
 SEG = 48
 
@@ -49,7 +67,7 @@ def r_out(spec, phi):
         return spec[1] / max(abs(math.cos(phi)), abs(math.sin(phi)))
     if kind == "ngon":
         n = spec[2]
-        a = (phi % (2 * math.pi / n)) - math.pi / n
+        a = ((phi - math.pi / n) % (2 * math.pi / n)) - math.pi / n      # the corners at pi/n + k 2pi/n
         return spec[1] * math.cos(math.pi / n) / math.cos(a)
     if kind == "zigzag":
         n = spec[3]
@@ -150,6 +168,119 @@ def details(bm, st, z0, z1, mi_wall, mi_band, beam, box):
         band(bm, spec, z1 - 0.35, z1 - 0.15, 0.25, mi_band)
 
 
+def fins(bm, st, z0, z1, depth, mi, t, n, phase, curve=1.0, K=8, mi_edge=None):
+    """n plates standing out of the wall from z0 to z1, depth(f) out at f = 0..1 up the piece (f**curve between)."""
+    spec = st["outer"]
+    for i in range(n):
+        a = phase + 2 * math.pi * i / n
+        d = Vector((math.cos(a), math.sin(a), 0))
+        u = Vector((-d.y, d.x, 0))
+        rb = r_out(spec, a) - 0.03
+        rows = []
+        for k in range(K + 1):
+            f = k / K
+            dep = depth[0] + (depth[1] - depth[0]) * (f ** curve if depth[1] > depth[0] else 1 - (1 - f) ** curve)
+            z = z0 + (z1 - z0) * f
+            rows.append([bm.verts.new(d * r + u * s + Vector((0, 0, z))) for r in (rb, rb + dep) for s in (-t / 2, t / 2)])
+        # rows: [inner-, inner+, outer-, outer+]
+        for k in range(K):
+            A, B = rows[k], rows[k + 1]
+            for q, m_ in (((A[0], A[2], B[2], B[0]), mi), ((A[3], A[1], B[1], B[3]), mi),
+                          ((A[2], A[3], B[3], B[2]), mi if mi_edge is None else mi_edge)):
+                bm.faces.new(q).material_index = m_
+        bm.faces.new((rows[0][0], rows[0][1], rows[0][3], rows[0][2])).material_index = mi
+        bm.faces.new((rows[-1][2], rows[-1][3], rows[-1][1], rows[-1][0])).material_index = mi
+
+
+def legs(bm, st, z0, z1, up, mi, beam):
+    """The arches' parabolic legs at the four corners: down to the ground from the foot (up=False), or up and out
+    under the terrace from the neck (up=True)."""
+    spec = st["outer"]
+    for i in range(4):
+        a = math.pi / 4 + i * math.pi / 2
+        d = Vector((math.cos(a), math.sin(a), 0))
+        rc = r_out(spec, a) - 0.1
+        pts = []
+        for k in range(11):
+            s = k / 10
+            if up:
+                pts.append(d * (rc + 2.4 * s * s) + Vector((0, 0, z0 + (z1 - z0) * s)))
+            else:
+                pts.append(d * (rc + 2.6 * (1 - s) ** 2) + Vector((0, 0, z0 + (z1 - z0) * s)))
+        for p, q in zip(pts, pts[1:]):
+            beam(bm, p, q, 0.5, 0.42, mi)
+
+
+def disc(bm, st, z, out, thick, mi, mi_edge):
+    """A flying-saucer disc round the shaft at z: thick at the wall, thin at its rim, an amber rim."""
+    spec = st["outer"]
+    ang = angles(spec)
+    n = len(ang)
+    rr = lambda a: r_out(spec, a)
+    rows = []
+    for (rk, dz) in ((0.0, -thick / 2), (0.0, thick / 2), (out, thick * 0.15), (out, -thick * 0.15)):
+        rows.append([bm.verts.new(((rr(a) - 0.02 + rk) * math.cos(a), (rr(a) - 0.02 + rk) * math.sin(a), z + dz)) for a in ang])
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((rows[1][i], rows[1][j], rows[2][j], rows[2][i])).material_index = mi
+        bm.faces.new((rows[3][i], rows[3][j], rows[0][j], rows[0][i])).material_index = mi
+        bm.faces.new((rows[2][i], rows[2][j], rows[3][j], rows[3][i])).material_index = mi_edge
+
+
+def fin_angles(st):
+    f = st.get("feature")
+    if isinstance(f, tuple) and f[0] == "fins":
+        return [f[1]["phase"] + 2 * math.pi * i / f[1]["n"] for i in range(f[1]["n"])]
+    if f == "legs":
+        return [math.pi / 4 + i * math.pi / 2 for i in range(4)]
+    return []
+
+
+def feature(bm, st, piece, z0, z1, mi_w, mi_b, beam):
+    """The style's own expression on a piece: piece is "foot", "shaft" or "neck"."""
+    f = st.get("feature")
+    if isinstance(f, tuple) and f[0] == "fins":
+        c = f[1]
+        fins(bm, st, z0, z1, c[piece], mi_w, c["t"], c["n"], c["phase"], c.get("curve", 1.6), mi_edge=mi_b)
+    elif f == "legs":
+        if piece == "foot":
+            legs(bm, st, z0, z1, False, mi_w, beam)
+        elif piece == "neck":
+            legs(bm, st, z0, z1, True, mi_w, beam)
+    elif f == "discs":
+        if piece == "foot":
+            disc(bm, st, z1 - 0.35, 2.4, 0.5, mi_w, mi_b)
+        elif piece == "neck":
+            disc(bm, st, z0 + 0.4, 2.0, 0.45, mi_w, mi_b)
+        elif z1 - z0 >= 2.5:
+            disc(bm, st, (z0 + z1) / 2 + 0.6, 1.2, 0.3, mi_w, mi_b)
+    if st.get("rings_every") and piece == "shaft":
+        z = z0 + st["rings_every"]
+        while z < z1 - 0.01:
+            band(bm, st["outer"], z - 0.06, z + 0.06, 0.1, mi_b)
+            z += st["rings_every"]
+
+
+def podium(bm, st, steps, mi_top, mi_side, mi_band, skirt=2.0):
+    """The stepped platform the tower stands on: `steps` steps of 15 cm up to its top, a skirt into the ground."""
+    spec = st["outer"]
+    ang = angles(spec)
+    n = len(ang)
+    ext = 0.0
+    for k in range(steps):
+        r_add = 3.0 - 0.45 * k
+        z0 = -skirt if k == 0 else 0.15 * k
+        z1 = 0.15 * (k + 1)
+        b = [bm.verts.new(((r_out(spec, a) + r_add) * math.cos(a), (r_out(spec, a) + r_add) * math.sin(a), z0)) for a in ang]
+        t = [bm.verts.new(((r_out(spec, a) + r_add) * math.cos(a), (r_out(spec, a) + r_add) * math.sin(a), z1)) for a in ang]
+        bm.faces.new(t).material_index = mi_top
+        bm.faces.new(b[::-1]).material_index = mi_side
+        for i in range(n):
+            j = (i + 1) % n
+            bm.faces.new((b[i], b[j], t[j], t[i])).material_index = mi_band if k == steps - 1 else mi_side
+    return 0.15 * steps
+
+
 def window_ops(st, z0, z1):
     """Openings in a shaft piece: (kind, centre, normal, w, h)."""
     ops = []
@@ -158,6 +289,12 @@ def window_ops(st, z0, z1):
     zc = (z0 + z1) / 2
     if z1 - z0 < 2.0:
         return ops
+    if w == "portholes2":
+        for row, zz in ((0, z0 + (z1 - z0) * 0.3), (1, z0 + (z1 - z0) * 0.72)):
+            for i in range(8):
+                a = (i + 0.5 * row) * math.pi / 4 + math.pi / 16
+                n = Vector((math.cos(a), math.sin(a), 0))
+                ops.append(("round", n * (r_out(spec, a) + r_in(st["inner"], a)) / 2 + Vector((0, 0, zz)), n, 0.55, 0.55))
     if w == "portholes":
         for i in range(4):
             a = math.pi / 4 + i * math.pi / 2

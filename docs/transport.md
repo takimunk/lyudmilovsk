@@ -154,12 +154,18 @@ The vestibule (blender/transport/vestibules.py, our own clean model; hi3d only t
    and the tiled surfaces `TR_Tx_<Concrete|Enamel|Amber|Mosaic|Tactile>` on metre UVs (KitMaterials: -> `tx_<name>`).
 
 The tower kit (blender/transport/towers.py, called by vestibules.py; clean meshes, metre UVs): per style
-`SM_TR_Tower_<Style>_Foot` (3.5 m, the street door, a Double hole on `tower.door.side`), `_Shaft3` and `_Shaft1`
+`SM_TR_Tower_<Style>_Base` (a stepped podium, three 15 cm steps round the tower, its origin on the ground, its top at
+`base.h` 45 cm, a `skirt` 2 m into the ground), `SM_TR_Tower_<Style>_Foot` (3.5 m, on the podium's top, the street
+door, a Double hole on `tower.door.side`, between the style's fins), `_Shaft3` and `_Shaft1`
 (stacked, largest first, never stretched), `_Neck` (1.5 m, flares out; its top is the vestibule floor's underside at
 -60 cm). Every piece's origin is on the tower's axis at its own bottom; inside a clear zone of `tower.clear`
-(5.26 m square; the circle styles 7.44 m). Styles: ribbed concrete (dome), 12-sided glass with ribs (lantern), ringed
-with portholes (saucer), zigzag folded plates (folded), an 8-point star (star), square with pilasters and slits
-(arches), square with fins (wing).
+(5.26 m square; the circle styles 7.44 m). Each speaks its vestibule (Dima: expressive, the vestibule's language):
+the arches' square shaft stands on four parabolic legs and opens into four corbel arches under the terrace; the dome's
+ribbed concrete drum with two rows of portholes, the ribs flaring into buttresses and corbels; the folded plates fan
+out at the foot and the top; the lantern's amber-lit glass facets between ribs with amber rings every metre on an
+enamel plinth; the saucer's column carries a small flying saucer every 3 m and big ones at the foot and the neck; the
+star's eight points run up the shaft and grow into big fins at both ends; the wing's two swept wings. The fins' edges
+are amber (the wing's mosaic).
 
 **Zenit**: the saucer's tower carries a second, lower deck for the Sun line (`tower.decks`: `SM_TR_Tower_Saucer_Deck2`,
 a 3.5 m piece of the tower with an opening out onto a ring deck at its own `axis_yaw`, `floor_z` -650 under the

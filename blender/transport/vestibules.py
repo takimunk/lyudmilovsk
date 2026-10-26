@@ -518,7 +518,7 @@ def cutters(bm, ops, depth=1.0):
         u = Vector((0, 0, 1)).cross(n).normalized() if abs(n.z) < 0.95 else Vector((1, 0, 0))
         v = n.cross(u)
         rot = Matrix((n, u, v)).transposed()
-        if kind == "box":
+        if kind in ("box", "door"):
             box(bm, c, (depth, w, h), 0, rot)
         else:
             r = (w + h) / 4
@@ -1349,8 +1349,14 @@ def build_towers(style, cdir, mats):
         mi_in = S["TR_Glass"]
     clear = 2 * T.CLEAR_SQ * 100 if st["inner"] == "square" else round(2 * T.CLEAR_R / math.sqrt(2) * 100, 1)
     out = {"clear": [clear, clear], "shafts": []}
-    # the street door faces away from the room (the side the core's exit doesn't)
-    ddir = -cdir
+    # the street door faces away from the room (the side the core's exit doesn't), between the style's fins and legs
+    fa = T.fin_angles(st)
+    cands = sorted([Vector((1, 0, 0)), Vector((-1, 0, 0)), Vector((0, 1, 0)), Vector((0, -1, 0))],
+                   key=lambda v: -v.dot(-cdir))
+    ft = st["feature"][1]["t"] if isinstance(st.get("feature"), tuple) else 0.5
+    need = lambda v: math.atan((DOOR_W / 2 + ft / 2 + 0.05) / T.r_out(st["outer"], math.atan2(v.y, v.x)))
+    ddir = next(v for v in cands if all(abs(((math.atan2(v.y, v.x) - a + math.pi) % (2 * math.pi)) - math.pi) > need(v)
+                                        for a in fa))
     dyaw = math.atan2(ddir.y, ddir.x)
 
     def part(name, h, build):
@@ -1385,10 +1391,24 @@ def build_towers(style, cdir, mats):
 
     cap = style.capitalize()
 
+    mi_solid = mi_w if st["wall"] != "glass" else S["TR_Tx_Enamel"]
+
+    def base(bm):
+        T.podium(bm, st, 3, S["TR_Terrazzo"], S["TR_Tx_Concrete"], mi_b)
+    part("SM_TR_Tower_%s_Base" % style.capitalize(), 0.45, base)
+    out["base"]["skirt"] = 200.0
+
     def foot(bm):
-        T.ring(bm, st["outer"], st["inner"], 0.0, T.FOOT_H, mi_w, mi_in, mi_b)
+        pl = st.get("plinth", 0.0)
+        if pl:
+            T.ring(bm, st["outer"], st["inner"], 0.0, pl, mi_solid, S["TR_Interior"], mi_b)
+            T.ring(bm, st["outer"], st["inner"], pl, T.FOOT_H, mi_w, mi_in, mi_b)
+            T.band(bm, st["outer"], pl - 0.12, pl, 0.12, mi_b)
+        else:
+            T.ring(bm, st["outer"], st["inner"], 0.0, T.FOOT_H, mi_w, mi_in, mi_b)
         T.band(bm, st["outer"], 0.0, 0.45, 0.12, mi_b)
         T.details(bm, st, 0.45, T.FOOT_H, mi_w, mi_b, beam, box)
+        T.feature(bm, st, "foot", 0.0, T.FOOT_H, mi_solid, mi_b, beam)
         a = dyaw
         n = Vector((math.cos(a), math.sin(a), 0))
         rmid = (T.r_out(st["outer"], a) + T.r_in(st["inner"], a)) / 2
@@ -1400,11 +1420,13 @@ def build_towers(style, cdir, mats):
         def shaft(bm, h=h):
             T.ring(bm, st["outer"], st["inner"], 0.0, h, mi_w, mi_in, mi_w)
             T.details(bm, st, 0.0, h, mi_w, mi_b, beam, box)
+            T.feature(bm, st, "shaft", 0.0, h, mi_solid, mi_b, beam)
             return T.window_ops(st, 0.0, h)
         part("SM_TR_Tower_%s_Shaft%d" % (cap, int(h)), h, shaft)
 
     def neck(bm):
-        T.ring(bm, st["outer"], st["inner"], 0.0, T.NECK_H, mi_w, mi_in, mi_b, 1.0, 1.3)
+        T.ring(bm, st["outer"], st["inner"], 0.0, T.NECK_H, mi_solid, S["TR_Interior"], mi_b, 1.0, 1.3)
+        T.feature(bm, st, "neck", 0.0, T.NECK_H, mi_solid, mi_b, beam)
     part("SM_TR_Tower_%s_Neck" % cap, T.NECK_H, neck)
     if style == "saucer":
         out["decks"] = [lower_deck(st, T, part, mats, mi_w, mi_b, mi_in)]

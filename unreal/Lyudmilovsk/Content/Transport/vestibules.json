@@ -122,14 +122,14 @@
   "panels": [
    {
     "at": [
-     -455.0,
+     -405.0,
      -954.9
     ],
     "yaw": -90.0
    },
    {
     "at": [
-     -455.0,
+     -405.0,
      954.9
     ],
     "yaw": 90.0
@@ -182,8 +182,14 @@
     "yaw": 180.0
    }
   },
-  "stop_x": -50.0,
+  "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Arches_Base",
+    "skirt": 200.0,
+    "tris": 564
+   },
    "clear": [
     540.0,
     540.0
@@ -198,12 +204,12 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Arches_Foot",
-    "tris": 1633
+    "tris": 4436
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Arches_Neck",
-    "tris": 384
+    "tris": 864
    },
    "neck_top": -60.0,
    "shafts": [
@@ -221,7 +227,7 @@
   },
   "tower_x": 0.0,
   "track_gap": 2359.7,
-  "tris": 17063
+  "tris": 17011
  },
  "dome": {
   "bounds": [
@@ -415,6 +421,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Dome_Base",
+    "skirt": 200.0,
+    "tris": 564
+   },
    "clear": [
     526.1,
     526.1
@@ -429,24 +441,24 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Dome_Foot",
-    "tris": 2111
+    "tris": 3703
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Dome_Neck",
-    "tris": 384
+    "tris": 1008
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Dome_Shaft3",
-     "tris": 1544
+     "tris": 4416
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Dome_Shaft1",
-     "tris": 576
+     "tris": 1008
     }
    ]
   },
@@ -662,6 +674,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Folded_Base",
+    "skirt": 200.0,
+    "tris": 564
+   },
    "clear": [
     526.1,
     526.1
@@ -676,24 +694,24 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Folded_Foot",
-    "tris": 1490
+    "tris": 2827
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Folded_Neck",
-    "tris": 384
+    "tris": 1008
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Folded_Shaft3",
-     "tris": 384
+     "tris": 1008
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Folded_Shaft1",
-     "tris": 384
+     "tris": 1008
     }
    ]
   },
@@ -897,6 +915,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Lantern_Base",
+    "skirt": 200.0,
+    "tris": 276
+   },
    "clear": [
     526.1,
     526.1
@@ -911,24 +935,24 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Lantern_Foot",
-    "tris": 933
+    "tris": 8146
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Lantern_Neck",
-    "tris": 192
+    "tris": 816
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Lantern_Shaft3",
-     "tris": 336
+     "tris": 1248
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Lantern_Shaft1",
-     "tris": 336
+     "tris": 960
     }
    ]
   },
@@ -1136,6 +1160,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Saucer_Base",
+    "skirt": 200.0,
+    "tris": 564
+   },
    "clear": [
     526.1,
     526.1
@@ -1143,7 +1173,7 @@
    "deck2": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Saucer_Deck2",
-    "tris": 10530
+    "tris": 9434
    },
    "decks": [
     {
@@ -1192,24 +1222,24 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Saucer_Foot",
-    "tris": 2532
+    "tris": 2423
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Saucer_Neck",
-    "tris": 384
+    "tris": 672
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Saucer_Shaft3",
-     "tris": 1960
+     "tris": 1992
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Saucer_Shaft1",
-     "tris": 672
+     "tris": 384
     }
    ]
   },
@@ -1429,6 +1459,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Star_Base",
+    "skirt": 200.0,
+    "tris": 372
+   },
    "clear": [
     526.1,
     526.1
@@ -1443,24 +1479,24 @@
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Star_Foot",
-    "tris": 1018
+    "tris": 1811
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Star_Neck",
-    "tris": 256
+    "tris": 672
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Star_Shaft3",
-     "tris": 256
+     "tris": 672
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Star_Shaft1",
-     "tris": 256
+     "tris": 672
     }
    ]
   },
@@ -1628,6 +1664,12 @@
   },
   "stop_x": 0.0,
   "tower": {
+   "base": {
+    "h": 45.0,
+    "mesh": "SM_TR_Tower_Wing_Base",
+    "skirt": 200.0,
+    "tris": 564
+   },
    "clear": [
     540.0,
     540.0
@@ -1637,29 +1679,29 @@
      164.0,
      233.0
     ],
-    "side": "+y"
+    "side": "+x"
    },
    "foot": {
     "h": 350.0,
     "mesh": "SM_TR_Tower_Wing_Foot",
-    "tris": 1513
+    "tris": 1752
    },
    "neck": {
     "h": 150.0,
     "mesh": "SM_TR_Tower_Wing_Neck",
-    "tris": 384
+    "tris": 488
    },
    "neck_top": -60.0,
    "shafts": [
     {
      "h": 300.0,
      "mesh": "SM_TR_Tower_Wing_Shaft3",
-     "tris": 728
+     "tris": 972
     },
     {
      "h": 100.0,
      "mesh": "SM_TR_Tower_Wing_Shaft1",
-     "tris": 408
+     "tris": 488
     }
    ]
   },
