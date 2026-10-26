@@ -45,6 +45,10 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	float FootIKAlpha = 0.f;
 	float FootOffset[2] = { 0.f, 0.f };
 	FVector FootNormal[2] = { FVector::UpVector, FVector::UpVector };
+	/** Hands on the desk at a computer: where each hand has to move to rest on the desk (component space, cm): down or
+	 *  up onto the surface under it, forward to it when the chair stands back from the desk. */
+	float HandIKAlpha = 0.f;
+	FVector HandOffset[2] = { FVector::ZeroVector, FVector::ZeroVector };
 
 	virtual void Update(float DeltaSeconds) override;
 	virtual bool Evaluate(FPoseContext& Output) override;
@@ -161,6 +165,8 @@ private:
 	float LastYaw = 0.f;
 	float YawRate = 0.f;
 	float FootAlpha = 0.f;
+	float HandAlpha = 0.f;
+	FVector HandOff[2] = { FVector::ZeroVector, FVector::ZeroVector };
 	float FootOff[2] = { 0.f, 0.f };
 	FVector FootNor[2] = { FVector::UpVector, FVector::UpVector };
 	FVector2D Lean = FVector2D::ZeroVector;

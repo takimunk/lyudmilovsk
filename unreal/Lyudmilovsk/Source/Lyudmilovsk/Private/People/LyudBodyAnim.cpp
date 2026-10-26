@@ -246,6 +246,29 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 			}
 		}
 	}
+	// the hands onto the desk under them (club desks stand at their own heights)
+	if (HandIKAlpha > 0.01f)
+	{
+		const TCHAR* Arms[2][3] = { { TEXT("upperarm_l"), TEXT("lowerarm_l"), TEXT("hand_l") }, { TEXT("upperarm_r"), TEXT("lowerarm_r"), TEXT("hand_r") } };
+		for (int32 S = 0; S < 2; S++)
+		{
+			const FCompactPoseBoneIndex A = Bone(Arms[S][0]), Bi = Bone(Arms[S][1]), C = Bone(Arms[S][2]);
+			if (!A.IsValid() || !Bi.IsValid() || !C.IsValid() || HandOffset[S].SizeSquared() < 0.04f)
+			{
+				continue;
+			}
+			FTransform Up = CS.GetComponentSpaceTransform(A), Lo = CS.GetComponentSpaceTransform(Bi), Ha = CS.GetComponentSpaceTransform(C);
+			const FVector Want = Ha.GetLocation() + HandOffset[S] * HandIKAlpha;
+			const FVector Mid = (Up.GetLocation() + Ha.GetLocation()) * 0.5f;
+			const FVector Pole = Lo.GetLocation() + (Lo.GetLocation() - Mid).GetSafeNormal() * 40.f;
+			const FQuat HandRot = Ha.GetRotation();
+			AnimationCore::SolveTwoBoneIK(Up, Lo, Ha, Pole, Want, false, 1.0, 1.0);
+			Ha.SetRotation(HandRot);
+			CS.SetComponentSpaceTransform(A, Up);
+			CS.SetComponentSpaceTransform(Bi, Lo);
+			CS.SetComponentSpaceTransform(C, Ha);
+		}
+	}
 	// breathing: the chest lifts and opens, the shoulders rise a little, the head keeps still
 	const float B = (Breath - 0.5f) * BreathDepth;
 	Turn(Bone(TEXT("spine_02")), FVector::XAxisVector, -0.9f * B);
@@ -627,10 +650,42 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 		}
 	}
 	P.FootIKAlpha = FootAlpha;
+	// at a computer with the hands on the desk: the surface under each hand
+	const bool bDeskHands = PcClip == TEXT("PC_Type") || PcClip == TEXT("PC_Game") || PcClip == TEXT("PC_Scroll");
+	HandAlpha += ((bDeskHands ? 1.f : 0.f) - HandAlpha) * FMath::Min(1.f, Dt * 3.f);
+	if (HandAlpha > 0.01f && GetWorld())
+	{
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(LyudHands), false, Mesh->GetOwner());
+		const TCHAR* Hands[2] = { TEXT("hand_l"), TEXT("hand_r") };
+		const FVector Fwd = C.GetRotation().RotateVector(FVector::YAxisVector);            // the mesh faces +Y
+		for (int32 S = 0; S < 2; S++)
+		{
+			// where the clip puts the hand (this frame's hand less the shift already applied), then the desk: right under
+			// it, or a little further forward (the chair stands back), its top within a hand's height of the clip's
+			const FVector H = Mesh->GetSocketLocation(Hands[S]) - C.TransformVectorNoScale(HandOff[S]);
+			FVector Off = FVector::ZeroVector;
+			for (float D = 0.f; D <= 30.f; D += 5.f)
+			{
+				const FVector At = H + Fwd * D;
+				FHitResult Hit;
+				if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.f, 0.f, 12.f), At - FVector(0.f, 0.f, 20.f), ECC_Visibility, Q)
+					&& Hit.ImpactNormal.Z > 0.8f)
+				{
+					const FVector World(At.X + Fwd.X * (D > 0.f ? 4.f : 0.f), At.Y + Fwd.Y * (D > 0.f ? 4.f : 0.f), Hit.ImpactPoint.Z + 3.f);
+					Off = C.InverseTransformVectorNoScale(World - H);
+					Off.Z = FMath::Clamp((float)Off.Z, -12.f, 10.f);
+					break;
+				}
+			}
+			HandOff[S] += (Off - HandOff[S]) * FMath::Min(1.f, Dt * 4.f);
+			P.HandOffset[S] = HandOff[S];
+		}
+	}
+	P.HandIKAlpha = HandAlpha;
 	if (CVarFaceLog.GetValueOnAnyThread() && FMath::FloorToInt(Clock) != FMath::FloorToInt(Clock - Dt))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LyudBody %s: feet %.2f (%.1f, %.1f cm), lean (%.1f, %.1f), breath %.2f x%.2f, clip %s"),
-			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), FootAlpha, FootOff[0], FootOff[1], Lean.X, Lean.Y, P.Breath, P.BreathDepth,
+		UE_LOG(LogTemp, Warning, TEXT("LyudBody %s: hands %.2f (%.1f, %.1f cm), feet %.2f (%.1f, %.1f cm), lean (%.1f, %.1f), breath %.2f x%.2f, clip %s"),
+			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), HandAlpha, HandOff[0].Size(), HandOff[1].Size(), FootAlpha, FootOff[0], FootOff[1], Lean.X, Lean.Y, P.Breath, P.BreathDepth,
 			*GetNameSafe(CurrentClip()));
 	}
 }

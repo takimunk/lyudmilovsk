@@ -84,20 +84,22 @@ def step(fn, wait):
 
 step(lambda w: (cmd(w, "ghost"), cmd(w, "r.MotionBlurQuality 0"), cmd(w, "lyud.Face.Log 1")), 2.0)
 for k in KEYS:
-    for n in range(3):
+    for n in range(int(os.environ.get("CLUB_FRAMES", "3"))):
         step(lambda w, k=k: look_at(w, k, -110.0, 1.1, 95.0, 75.0), 0.3)
         step(fix_eye, 0.3)
         step(lambda w, k=k, n=n: shot(w, "%s_%d" % (k, n)), 4.0)
-step(lambda w: log("order kid_boy snack_club: %s" % life(w).order(life(w).find_person("kid_boy"), "snack_club", "")), 0.5)
-for n in range(10):
-    step(lambda w: look_at(w, "kid_boy", 260.0, 0.8, 90.0, 90.0), 0.2)
-    step(fix_eye, 0.15)
-    step(lambda w, n=n: shot(w, "kid_boy_snack_%02d" % n), 0.6)
-step(lambda w: log("order kid_boy town: %s" % life(w).order(life(w).find_person("kid_boy"), "town", "")), 0.5)
-for n in range(14):
-    step(lambda w: look_at(w, "kid_boy", 300.0, -0.9, 120.0, 90.0), 0.2)
-    step(fix_eye, 0.15)
-    step(lambda w, n=n: shot(w, "kid_boy_leaving_%02d" % n), 0.6)
+FLOW = os.environ.get("CLUB_FLOW", "1") != "0"
+if FLOW:
+    step(lambda w: log("order kid_boy snack_club: %s" % life(w).order(life(w).find_person("kid_boy"), "snack_club", "")), 0.5)
+    for n in range(10):
+        step(lambda w: look_at(w, "kid_boy", 260.0, 0.8, 90.0, 90.0), 0.2)
+        step(fix_eye, 0.15)
+        step(lambda w, n=n: shot(w, "kid_boy_snack_%02d" % n), 0.6)
+    step(lambda w: log("order kid_boy town: %s" % life(w).order(life(w).find_person("kid_boy"), "town", "")), 0.5)
+    for n in range(14):
+        step(lambda w: look_at(w, "kid_boy", 300.0, -0.9, 120.0, 90.0), 0.2)
+        step(fix_eye, 0.15)
+        step(lambda w, n=n: shot(w, "kid_boy_leaving_%02d" % n), 0.6)
 step(lambda w: (log("done"), cmd(w, "quit")), 1.0)
 
 

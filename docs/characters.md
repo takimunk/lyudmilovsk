@@ -111,7 +111,9 @@ weights before importing.
   person's own mix (Gamer, Browse, Reader, Office, Idle, Gamepad: `StyleOfClip` of their old seated clip's name),
   6-18 s each with cross-fades; `ANpcBody` (Computer, Work), the club's placed people and `ABoothOwner` use it. While
   `PC_Gamepad` plays, `SM_Gamepad` (`blender/humans/gamepad.py`, `unreal/scripts/import_gamepad.py`) sits between the
-  hands. The old per-person `A_<Name>_Sit_*` clips stay only as the style's name.
+  hands. The old per-person `A_<Name>_Sit_*` clips stay only as the style's name. Club desks stand at their own heights
+  and distances: while a hands-on-desk loop plays (Type, Game, Scroll), a trace under each hand (and up to 30 cm ahead
+  of it, when the chair stands back) finds the desk and two-bone IK puts the hand on it.
 - **Run**: UAL `Jog_Fwd_Loop`, ~2.6 m/s at rate 1; `ANpcBody` runs from 1.9 m/s (back to walking under 1.6).
 - **On top of every clip** (`FLyudBodyAnimProxy::Procedural`): breathing (chest, shoulders; ~4 s, deeper and quicker
   after walking or running), the lean into starts, stops and turns, and on their feet (`SetOnFeet`) the feet on the
