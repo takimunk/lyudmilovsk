@@ -1,0 +1,10 @@
+{
+ "id": "icon_amber_charm",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  2,
+  3
+ ]
+}

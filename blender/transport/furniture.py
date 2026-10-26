@@ -257,16 +257,19 @@ def metre_uv(me):
                 uv.data[li].uv = (co.y / 0.8 + 0.5, co.z / 1.2 + 0.5)
 
 
-def export(made, name):
+def export(made, name, mats=None, col=None, out=None):
+    """mats / col: another material list and its colours (lobby_props.py); out: another folder."""
+    mats = mats or MATS
+    col = col or COL
     bm, m = made if isinstance(made, tuple) else (made, None)
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
     if m is not None:
         me.transform(m)
-    for k in MATS:
+    for k in mats:
         mat = bpy.data.materials.get(k) or bpy.data.materials.new(k)
-        mat.diffuse_color = COL[k] + (1,)
+        mat.diffuse_color = col[k] + (1,)
         me.materials.append(mat)
     me.update()
     metre_uv(me)
@@ -275,7 +278,7 @@ def export(made, name):
     bpy.ops.object.select_all(action="DESELECT")
     o.select_set(True)
     bpy.context.view_layer.objects.active = o
-    bpy.ops.export_scene.gltf(filepath=os.path.join(OUT, name + ".glb"), use_selection=True, export_format="GLB",
+    bpy.ops.export_scene.gltf(filepath=os.path.join(out or OUT, name + ".glb"), use_selection=True, export_format="GLB",
                               export_yup=True, export_apply=True)
     n = sum(len(p.vertices) - 2 for p in me.polygons)
     bpy.data.objects.remove(o)
@@ -293,4 +296,5 @@ def main():
         export(f(), "SM_TR_Furn_" + name)
 
 
-main()
+if __name__ == "__main__":
+    main()

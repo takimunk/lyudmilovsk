@@ -134,6 +134,118 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A pair of chunky off-white sneakers with thick soles, slightly scuffed, one turned to show the side."
+  },
+  "icon_water": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A glass bottle of mineral water with a pale blue label showing a mountain pictogram.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_coffee": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A white paper coffee cup with a brown sleeve and a lid.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_tea": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A tea glass in an ornate metal cup holder with a spoon.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_chips": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A crinkly foil bag of potato chips, orange and silver.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_chocolate": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A chocolate bar half-unwrapped in blue-and-gold foil.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_cookies": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A paper pack of round butter biscuits with a window.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_ice_cream": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A creamy ice cream cone-wafer with a striped paper wrapper.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_pie": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A golden baked pie on a paper napkin.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_seeds": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A paper cone of roasted sunflower seeds.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_candy": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small bag of hard fruit candies with two unwrapped sweets next to it.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_magazine_science": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A retro science magazine with a rocket and the Earth on the cover, no readable words.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_magazine_travel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A retro travel magazine with a lighthouse and sea on the cover, no readable words.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_daily_paper": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A folded newspaper with grey columns and one photo, no readable words.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_postcard": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A vintage postcard of a seaside promenade with a white balustrade.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_badge": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "An enamel pin badge shaped like a red cable car cabin.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_amber_charm": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A polished Baltic amber pendant on a thin chain.",
+   "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
   }
  }
 }

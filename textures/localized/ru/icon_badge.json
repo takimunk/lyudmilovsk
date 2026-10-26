@@ -1,0 +1,10 @@
+{
+ "id": "icon_badge",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  1,
+  3
+ ]
+}

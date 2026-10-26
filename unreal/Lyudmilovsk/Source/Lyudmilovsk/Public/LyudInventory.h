@@ -25,6 +25,26 @@ enum class ELyudItemKind : uint8
 	Wear,
 };
 
+/** How a thing looks in the hand and on a vending machine's tray (ALyudGoodsItem builds it from engine shapes; bottles keep ABottleItem). */
+UENUM()
+enum class ELyudItemLook : uint8
+{
+	/** The default: a bottle when Flavor is set (ABottleItem), else a ball. */
+	Auto,
+	/** A paper or foil packet standing up: Size is depth, width, height (cm). */
+	Pack,
+	/** A thin flat thing (magazine, newspaper, postcard, badge). */
+	Flat,
+	/** A paper cup with a lid. */
+	Cup,
+	/** A glass in a holder. */
+	Glass,
+	/** A glass bottle without a label texture (water). */
+	Bottle,
+	/** A cone with a scoop (ice cream). */
+	Cone,
+};
+
 /** Where a worn thing goes (the inventory's figure, top to bottom). Hand is ULyudInventory::Equipped. */
 UENUM()
 enum class ELyudEquipSlot : uint8
@@ -52,6 +72,11 @@ struct FLyudItemDef
 	float HalfLength = 0.f;
 	/** Worn things and things held in the hand (feed). */
 	ELyudEquipSlot Slot = ELyudEquipSlot::None;
+	/** Vending goods: how it looks (ALyudGoodsItem), its size (X depth, Y width, Z height, cm), its colour, and the usual price in roubles. */
+	ELyudItemLook Look = ELyudItemLook::Auto;
+	FVector Size = FVector(6.f, 6.f, 6.f);
+	FLinearColor Tint = FLinearColor(0.5f, 0.5f, 0.5f);
+	int32 Price = 0;
 };
 
 /** One thing a trader sells: Count units of Item for Price roubles. */
@@ -172,6 +197,9 @@ public:
 
 	/** One line near the bottom of the screen for Key's interactable; an empty line takes it away. */
 	void SetPrompt(const UObject* Key, const FText& Text);
+
+	/** The icon picture of an item for the world (the label on goods), null when it has none. */
+	UTexture2D* IconTexture(FName Id);
 
 	/** The icon of an item (a neutral square when it has none). */
 	const FSlateBrush* IconBrush(FName Id);

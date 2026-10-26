@@ -2,6 +2,7 @@
 
 #include "BoothOwner.h"
 #include "BottleItem.h"
+#include "LyudGoodsItem.h"
 #include "EngineUtils.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/StaticMesh.h"
@@ -69,6 +70,41 @@ namespace
 		Feed.Radius = 4.f;
 		Feed.Slot = ELyudEquipSlot::Hand;
 		D.Add(Feed);
+		// goods sold from the stations' vending machines and kiosks (blender/transport lobby, docs/transport.md "Lobbies"): look, size cm, colour, price
+		auto Good = [&D](const TCHAR* Id, ELyudItemKind Kind, ELyudItemLook Look, FVector Size, FLinearColor Tint, int32 Price, float Radius, const TCHAR* Leaves = nullptr)
+		{
+			FLyudItemDef I;
+			I.Id = Id;
+			I.Kind = Kind;
+			I.Look = Look;
+			I.Size = Size;
+			I.Tint = Tint;
+			I.Price = Price;
+			I.Radius = Radius;
+			if (Leaves)
+			{
+				I.Leaves = Leaves;
+			}
+			D.Add(I);
+		};
+		using K = ELyudItemKind;
+		using L = ELyudItemLook;
+		Good(TEXT("water"), K::Drink, L::Bottle, FVector(6.4f, 6.4f, 22.f), FLinearColor(0.55f, 0.75f, 0.85f), 20, 3.2f);
+		Good(TEXT("coffee"), K::Drink, L::Cup, FVector(7.f, 7.f, 11.f), FLinearColor(0.9f, 0.88f, 0.82f), 30, 3.5f);
+		Good(TEXT("tea"), K::Drink, L::Glass, FVector(6.f, 6.f, 9.f), FLinearColor(0.55f, 0.3f, 0.1f), 15, 3.f);
+		Good(TEXT("chips"), K::Food, L::Pack, FVector(4.f, 13.f, 20.f), FLinearColor(0.85f, 0.45f, 0.12f), 35, 5.f);
+		Good(TEXT("chocolate"), K::Food, L::Flat, FVector(1.2f, 8.f, 16.f), FLinearColor(0.1f, 0.2f, 0.55f), 25, 4.f);
+		Good(TEXT("cookies"), K::Food, L::Pack, FVector(3.f, 8.f, 14.f), FLinearColor(0.78f, 0.6f, 0.28f), 20, 4.f);
+		Good(TEXT("ice_cream"), K::Food, L::Cone, FVector(5.5f, 5.5f, 15.f), FLinearColor(0.95f, 0.9f, 0.75f), 30, 3.f);
+		Good(TEXT("pie"), K::Food, L::Pack, FVector(3.5f, 8.f, 11.f), FLinearColor(0.75f, 0.5f, 0.2f), 18, 4.f);
+		Good(TEXT("seeds"), K::Food, L::Pack, FVector(4.f, 9.f, 15.f), FLinearColor(0.82f, 0.74f, 0.55f), 10, 4.f);
+		Good(TEXT("candy"), K::Food, L::Pack, FVector(2.5f, 9.f, 12.f), FLinearColor(0.7f, 0.15f, 0.2f), 8, 4.f);
+		Good(TEXT("magazine_science"), K::Misc, L::Flat, FVector(0.6f, 20.f, 27.f), FLinearColor(0.2f, 0.3f, 0.55f), 40, 4.f);
+		Good(TEXT("magazine_travel"), K::Misc, L::Flat, FVector(0.6f, 20.f, 27.f), FLinearColor(0.15f, 0.45f, 0.5f), 40, 4.f);
+		Good(TEXT("daily_paper"), K::Misc, L::Flat, FVector(0.5f, 24.f, 32.f), FLinearColor(0.75f, 0.72f, 0.65f), 5, 4.f);
+		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
+		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
+		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
 		// things to wear: the clothes the hero woke up in (blender/hero/build_hero.py), a head lamp and binoculars from the club owner
 		auto Wear = [&D](const TCHAR* Id, ELyudEquipSlot Slot)
 		{
@@ -681,6 +717,13 @@ void ULyudInventoryUI::SetPrompt(const UObject* Key, const FText& Text)
 	Prompt->SetText(Text);
 }
 
+UTexture2D* ULyudInventoryUI::IconTexture(FName Id)
+{
+	IconBrush(Id);
+	const TObjectPtr<UTexture2D>* T = Icons.Find(Id);
+	return T ? T->Get() : nullptr;
+}
+
 const FSlateBrush* ULyudInventoryUI::IconBrush(FName Id)
 {
 	if (const TSharedPtr<FSlateBrush>* B = Brushes.Find(Id))
@@ -722,6 +765,15 @@ AActor* ULyudInventoryUI::SpawnHeld(FName Id, const FVector& Pos)
 			Bottle->Init(Def->Flavor, Def->Id == TEXT("empty_bottle") ? 0.f : 1.f);
 		}
 		return Bottle;
+	}
+	if (Def->Look != ELyudItemLook::Auto)
+	{
+		ALyudGoodsItem* Goods = World->SpawnActor<ALyudGoodsItem>(Pos, FRotator::ZeroRotator, Params);
+		if (Goods)
+		{
+			Goods->Init(Def->Id);
+		}
+		return Goods;
 	}
 	// a plain round item (the apple): an engine sphere
 	AStaticMeshActor* Ball = World->SpawnActor<AStaticMeshActor>(Pos, FRotator::ZeroRotator, Params);
@@ -769,6 +821,11 @@ void ULyudInventoryUI::Use(FName Id)
 	{
 		Bottle->SetActorRotation(Yaw);
 		Item = Bottle->MakeReachItem();
+	}
+	else if (ALyudGoodsItem* Goods = Cast<ALyudGoodsItem>(Held))
+	{
+		Goods->SetActorRotation(Yaw);
+		Item = Goods->MakeReachItem();
 	}
 	else
 	{
