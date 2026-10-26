@@ -8,11 +8,13 @@ eye textures, <Breed>_rig.json).
   /Game/Animals/<Breed>/MI_<Breed>_<coat>_Body|Fur, MI_<Breed>_Eye_<n>
   /Game/Animals/<Breed>/Anims/A_<Breed>_<Clip>
   Content/AnimalsData/animal_bodies.json                             coats, eyes and stride speeds per breed (AAnimalActor)
+  /Game/Animals/<Breed>/SM_<Breed>_Collar, SM_<Breed>_Tag            a breed with a collar (blender/animals/collar.py: Maru)
 
 Headless, no editor open on this checkout, one process per step (Interchange can't re-import in one process):
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> masters"
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> textures <Breed>"
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> import <Breed>"
+  UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> collar <Breed> Collar|Tag"   (when export/<Breed>/<Breed>_Collar.glb exists)
 (unreal/scripts/import_animals.sh does them all for a list of breeds)
 """
 import json
@@ -342,9 +344,95 @@ def do_import(breed):
     log("%s: %d materials, %d LODs, %d clips, bounds %.1f x %.1f x %.1f cm" % (breed, len(mats), n, len(eal.list_assets(dest + "/Anims")), b.x * 2, b.y * 2, b.z * 2))
 
 
+def collar_materials():
+    """The cord (its braid in the vertex colours) and the metal of the ring and the tag (one master, three instances)."""
+    c = get_or_create("M_AnimalCollarCord", MATS, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(c)
+    # dark red and black braid: the strands' colours ride in the vertex colours (white when the importer drops them,
+    # so they only tint a dark maroon base)
+    vc = node(c, unreal.MaterialExpressionVertexColor, -700, 0)
+    base = node(c, unreal.MaterialExpressionConstant3Vector, -700, 200)
+    base.set_editor_property("constant", unreal.LinearColor(0.11, 0.022, 0.025, 1))
+    mul = node(c, unreal.MaterialExpressionMultiply, -450, 0)
+    mel.connect_material_expressions(vc, "", mul, "A")
+    mel.connect_material_expressions(base, "", mul, "B")
+    mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(const(c, 0.85, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(const(c, 0.3, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    mel.recompile_material(c)
+    eal.save_loaded_asset(c)
+    m = get_or_create("M_AnimalCollarMetal", MATS, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(m)
+    col = node(m, unreal.MaterialExpressionVectorParameter, -500, 0)
+    col.set_editor_property("parameter_name", "Color")
+    col.set_editor_property("default_value", unreal.LinearColor(1.0, 0.72, 0.3, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(const(m, 1.0, -400, 200), "", unreal.MaterialProperty.MP_METALLIC)
+    mel.connect_material_property(scalar(m, "Roughness", 0.2, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    out = {"Cord": c}
+    for name, rgb, rough in (("Gold", (1.0, 0.6, 0.16), 0.22), ("Engraved", (0.42, 0.24, 0.06), 0.5), ("Steel", (0.82, 0.82, 0.84), 0.25)):
+        i = get_or_create("MI_Collar_" + name, MATS, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+        i.set_editor_property("parent", m)
+        mel.set_material_instance_vector_parameter_value(i, "Color", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
+        mel.set_material_instance_scalar_parameter_value(i, "Roughness", rough)
+        eal.save_loaded_asset(i)
+        out[name] = i
+    return out
+
+
+def do_collar(breed, parts=("Collar", "Tag")):
+    """The collar's two static meshes (the cord round the neck, the swinging ring and tag) with their materials.
+    Interchange misses a second import in the same process: import_animals.sh runs one part per process."""
+    src = os.path.join(EXPORT, breed)
+    dest = "%s/%s" % (ANIMALS, breed)
+    mats = collar_materials()
+    for part in parts:
+        tmp = "%s/_import_%s" % (dest, part)
+        source = unreal.InterchangeManager.create_source_data(os.path.join(src, "%s_%s.glb" % (breed, part)))
+        params = unreal.ImportAssetParameters()
+        params.is_automated = True
+        params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
+        params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFAssetsPipeline.DefaultGLTFAssetsPipeline"))
+        mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
+        mgr.import_asset(tmp, source, params)
+        mgr.wait_until_all_tasks_done(True)
+        mesh = next((eal.load_asset(p) for p in eal.list_assets(tmp, True) if isinstance(eal.load_asset(p), unreal.StaticMesh)), None)
+        if mesh is None:
+            raise RuntimeError("no static mesh in %s_%s.glb" % (breed, part))
+        sms = mesh.get_editor_property("static_materials")
+        for i in range(len(sms)):
+            sm = sms[i]
+            slot = str(sm.material_slot_name)
+            key = next((k for k in mats if k in slot), "Gold")
+            sm.material_interface = mats[key]
+            sms[i] = sm
+        mesh.set_editor_property("static_materials", sms)
+        # a few thousand triangles: no Nanite (its materials would need the Nanite usage)
+        ns = mesh.get_editor_property("nanite_settings")
+        ns.set_editor_property("enabled", False)
+        mesh.set_editor_property("nanite_settings", ns)
+        name = "SM_%s_%s" % (breed, part)
+        if eal.does_asset_exist("%s/%s" % (dest, name)):
+            eal.delete_asset("%s/%s" % (dest, name))
+        tools.rename_assets([unreal.AssetRenameData(mesh, dest, name)])
+        m = unreal.load_asset("%s/%s" % (dest, name))
+        eal.save_asset("%s/%s" % (dest, name), only_if_is_dirty=False)
+        for p in eal.list_assets(tmp, True):
+            eal.delete_asset(p)
+        if eal.does_directory_exist(tmp):
+            eal.delete_directory(tmp)
+        b = m.get_bounds().box_extent
+        log("%s: %d tris, %d materials, %.1f x %.1f x %.1f cm" % (name, m.get_num_triangles(0), len(sms), b.x * 2, b.y * 2, b.z * 2))
+    eal.save_directory(dest)
+
+
 def do_bodies():
     """Content/AnimalsData/animal_bodies.json from every breed's rig facts (what AAnimalActor reads)."""
-    out = {}
+    # breeds not built in this checkout (blender/animals/export is local) keep their entries
+    path = os.path.join(DATA, "animal_bodies.json")
+    out = json.load(open(path)) if os.path.exists(path) else {}
     for breed in sorted(os.listdir(EXPORT)):
         p = os.path.join(EXPORT, breed, breed + "_rig.json")
         if not os.path.exists(p):
@@ -352,10 +440,15 @@ def do_bodies():
         r = json.load(open(p))
         out[breed] = {"kind": r["kind"], "coats": r["coats"], "eyes": r["eyes"], "speeds_cms": r["speeds_cms"],
                       "height_cm": r["height_cm"], "length_cm": r["length_cm"], "clips": sorted(r["clips"])}
+        c = os.path.join(EXPORT, breed, breed + "_collar.json")
+        if os.path.exists(c):
+            # the collar: the bone it rides, the point the tag hangs from, the chest it rests on (the breed's frame, cm)
+            out[breed]["collar"] = {k: v for k, v in json.load(open(c)).items() if k != "breed"}
     os.makedirs(DATA, exist_ok=True)
     with open(os.path.join(DATA, "animal_bodies.json"), "w") as f:
         json.dump(out, f, indent=1)
-    log("bodies: " + ", ".join(sorted(out)))
+    out = dict(sorted(out.items()))
+    log("bodies: " + ", ".join(out))
 
 
 step = sys.argv[1:] or ["masters"]
@@ -366,6 +459,8 @@ elif step[0] == "textures":
         do_textures(b)
 elif step[0] == "bodies":
     do_bodies()
+elif step[0] == "collar":
+    do_collar(step[1], step[2:] or ("Collar", "Tag"))
 else:
     for b in step[1:]:
         do_import(b)

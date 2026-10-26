@@ -2,6 +2,8 @@
 
 #include "AnimalSim.h"
 #include "Animals/AnimalActor.h"
+#include "Animals/AnimalNameTags.h"
+#include "LyudText.h"
 #include "Birds/BirdLife.h"
 #include "Birds/BirdSpecies.h"
 #include "Engine/World.h"
@@ -51,7 +53,7 @@ namespace
 		{
 			return TEXT("Cat");
 		}
-		return A.Breed == 1 ? TEXT("Shepherd") : (A.Breed == 2 ? TEXT("Mutt") : TEXT("Laika"));
+		return A.Breed == 1 ? TEXT("Shepherd") : (A.Breed == 2 ? TEXT("Mutt") : (A.Breed == 3 ? TEXT("Maru") : TEXT("Laika")));
 	}
 
 	float DayHour(const FDateTime& T) { return T.GetHour() + T.GetMinute() / 60.f + T.GetSecond() / 3600.f; }
@@ -189,6 +191,7 @@ bool UAnimalLifeSubsystem::Start()
 	FActorSpawnParameters P;
 	P.ObjectFlags |= RF_Transient;
 	Renderer = World->SpawnActor<AAnimalLifeRenderer>(P);
+	NameTags = World->SpawnActor<AAnimalNameTags>(P);
 	if (ULyudSaveSubsystem* Save = ULyudSaveSubsystem::Get(World))
 	{
 		Save->RegisterSaveObject(TEXT("AnimalLife"), this);
@@ -216,6 +219,7 @@ bool UAnimalLifeSubsystem::StartEmpty(float GroundZ)
 	FActorSpawnParameters P;
 	P.ObjectFlags |= RF_Transient;
 	Renderer = World->SpawnActor<AAnimalLifeRenderer>(P);
+	NameTags = World->SpawnActor<AAnimalNameTags>(P);
 	bWantStart = false;
 	bStarted = true;
 	UE_LOG(LogTemp, Display, TEXT("AnimalLife: started empty (no town map) for test animals"));
@@ -228,6 +232,11 @@ void UAnimalLifeSubsystem::Stop()
 	{
 		Renderer->Destroy();
 		Renderer = nullptr;
+	}
+	if (NameTags)
+	{
+		NameTags->Destroy();
+		NameTags = nullptr;
 	}
 	if (UBirdLifeSubsystem* Birds = UBirdLifeSubsystem::Get(GetWorld()))
 	{
@@ -566,7 +575,8 @@ bool UAnimalLifeSubsystem::GetAnimal(int32 Id, FAnimalInfo& Out) const
 	Out.Fear = A.Fear;
 	Out.Trust = A.Trust;
 	Out.Bond = A.Bond;
-	Out.Name = UTF8_TO_TCHAR(A.Name.c_str());
+	Out.NameKey = UTF8_TO_TCHAR(A.NameKey.c_str());
+	Out.Name = !A.Name.empty() ? FString(UTF8_TO_TCHAR(A.Name.c_str())) : (!A.NameKey.empty() ? LyudText::Get(Out.NameKey).ToString() : FString());
 	Out.bNoticedPlayer = A.bNoticed;
 	Out.Actor = Renderer ? Renderer->BodyOf(Id) : nullptr;
 	return true;
@@ -604,13 +614,25 @@ int32 UAnimalLifeSubsystem::SpawnAnimal(FName Breed, int32 Coat, FVector Locatio
 	}
 	const FString B = Breed.ToString();
 	const EKind Kind = B.Equals(TEXT("Cat"), ESearchCase::IgnoreCase) ? EKind::Cat : EKind::Dog;
-	const int Br = B.Equals(TEXT("Shepherd"), ESearchCase::IgnoreCase) ? 1 : (B.Equals(TEXT("Mutt"), ESearchCase::IgnoreCase) ? 2 : 0);
+	const int Br = B.Equals(TEXT("Shepherd"), ESearchCase::IgnoreCase) ? 1 : (B.Equals(TEXT("Mutt"), ESearchCase::IgnoreCase) ? 2
+		: (B.Equals(TEXT("Maru"), ESearchCase::IgnoreCase) ? 3 : 0));
 	V3 P = FromUE(Location);
 	const int Id = Sim->AddAnimal(Kind, Br, FMath::Max(0, Coat), P, bYoung);
 	FAnimal& A = Sim->Animals[Id];
 	A.Range = 6.f;           // keeps round its spot
 	A.Friendly = 0.7f;
+	if (Br == 3)
+	{
+		A.NameKey = "animal.maru.name";
+		A.bFemale = true;
+		A.Friendly = 0.95f;
+	}
 	return Id;
+}
+
+bool UAnimalLifeSubsystem::Hail(int32 Id)
+{
+	return Sim && Sim->Hail(Id);
 }
 
 void UAnimalLifeSubsystem::SetAnimalName(int32 Id, const FString& InName)
@@ -727,6 +749,33 @@ static void AnimalsDumpDay(const TArray<FString>& Args, UWorld* World)
 	}
 }
 
+static void AnimalsHail(const TArray<FString>& Args, UWorld* World)
+{
+	UAnimalLifeSubsystem* L = UAnimalLifeSubsystem::Get(World);
+	if (!L || !L->GetSim())
+	{
+		return;
+	}
+	int32 Id = Args.Num() > 0 ? FCString::Atoi(*Args[0]) : -1;
+	if (Id < 0)
+	{
+		// the named animal nearest the player
+		const APlayerController* PC = World->GetFirstPlayerController();
+		const FVector At = PC && PC->GetPawn() ? PC->GetPawn()->GetActorLocation() : FVector::ZeroVector;
+		float Best = 1e12f;
+		for (const FAnimal& A : L->GetSim()->Animals)
+		{
+			const float D = (float)FVector::DistSquared(ToUE(A.Pos), At);
+			if (!A.NameKey.empty() && D < Best)
+			{
+				Best = D;
+				Id = A.Id;
+			}
+		}
+	}
+	UE_LOG(LogTemp, Display, TEXT("AnimalLife: hail %d -> %d"), Id, L->Hail(Id) ? 1 : 0);
+}
+
 static void AnimalsScare(const TArray<FString>& Args, UWorld* World)
 {
 	UAnimalLifeSubsystem* L = UAnimalLifeSubsystem::Get(World);
@@ -739,10 +788,12 @@ static void AnimalsScare(const TArray<FString>& Args, UWorld* World)
 
 static FAutoConsoleCommandWithWorldAndArgs GAnimalsReport(TEXT("lyud.Animals.Report"), TEXT("lyud.Animals.Report [id]: what the cats and dogs do (and one animal's needs)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AnimalsReport));
-static FAutoConsoleCommandWithWorldAndArgs GAnimalsSpawn(TEXT("lyud.Animals.SpawnNear"), TEXT("lyud.Animals.SpawnNear <Cat|Laika|Shepherd|Mutt> [coat] [x y z]: one animal that keeps to its spot (any level)."),
+static FAutoConsoleCommandWithWorldAndArgs GAnimalsSpawn(TEXT("lyud.Animals.SpawnNear"), TEXT("lyud.Animals.SpawnNear <Cat|Laika|Shepherd|Mutt|Maru> [coat] [x y z]: one animal that keeps to its spot (any level)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AnimalsSpawnNear));
 static FAutoConsoleCommandWithWorldAndArgs GAnimalsDump(TEXT("lyud.Animals.DumpDay"), TEXT("lyud.Animals.DumpDay [start_hour hours csv]: the day headless, for tools/animalsim/render_animals.py."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AnimalsDumpDay));
+static FAutoConsoleCommandWithWorldAndArgs GAnimalsHail(TEXT("lyud.Animals.Hail"), TEXT("lyud.Animals.Hail [id]: speak to an animal as E does (default: the named one nearest the player, Maru)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AnimalsHail));
 static FAutoConsoleCommandWithWorldAndArgs GAnimalsScare(TEXT("lyud.Animals.Scare"), TEXT("lyud.Animals.Scare [m]: a loud noise at the player."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AnimalsScare));
 

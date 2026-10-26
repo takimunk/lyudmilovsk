@@ -95,7 +95,9 @@ namespace LyudAnimals
 	const char* GoalName(EGoal G);
 
 	/** Sounds and moments the game shows (calls play at the animal). */
-	enum class EEvent : uint8_t { Notice, Watch, Approach, Flee, Bark, Growl, Whine, Meow, Purr, Hiss, Pounce, ChaseStart, Climb, Greet, PlayStart, Num };
+	enum class EEvent : uint8_t { Notice, Watch, Approach, Flee, Bark, Growl, Whine, Meow, Purr, Hiss, Pounce, ChaseStart, Climb, Greet, PlayStart,
+		BarkHappy,      // a glad bark back at the player who called it (Hail)
+		Num };
 	const char* EventName(EEvent E);
 
 	struct FEvent
@@ -147,12 +149,13 @@ namespace LyudAnimals
 	{
 		int Id = -1;
 		EKind Kind = EKind::Cat;
-		uint8_t Breed = 0;          // dogs: 0 laika-like yard dog, 1 shepherd mix, 2 small mutt; cats: 0
+		uint8_t Breed = 0;          // dogs: 0 laika-like yard dog, 1 shepherd mix, 2 small mutt, 3 Maru (the club's dog); cats: 0
 		uint8_t Coat = 0;           // the coat pattern of its breed (AnimalLife picks the material)
 		bool bFemale = false;
 		bool bYoung = false;        // a kitten or a pup: plays a lot, small
 		float Size = 1.f;           // scale of its breed's model
 		std::string Name;           // reserved: the name the player gives it (taming, later)
+		std::string NameKey;        // a name it already has (a localization key, e.g. animal.maru.name): shown over it
 
 		V3 Pos, Vel;
 		float Yaw = 0.f;
@@ -207,6 +210,8 @@ namespace LyudAnimals
 		uint8_t Tier = 3;
 		float ThinkTimer = 0.f;
 		float BarkTimer = 0.f;
+		float HappyBark = 0.f;      // s left of barking back gladly at the player (Hail)
+		float NextHappy = 0.f;      // s to its next glad bark
 		float CallTimer = 10.f;
 		float Cooldown = 0.f;       // s before it starts another play / chase / hunt
 		uint32_t Rng = 1;
@@ -289,6 +294,8 @@ namespace LyudAnimals
 		/** How well two animals know each other, 0 strangers .. 1 packmates, mother and kittens. */
 		float Familiarity(int A, int B) const { return Fam(A, B); }
 		void SetFamiliarity(int A, int B, float V) { AddFam(A, B, V - Fam(A, B)); }
+		/** The player speaks to it (E): a dog turns to them and barks back gladly (a cat looks and meows). False if it can't. */
+		bool Hail(int Id);
 		/** A loud noise at P: animals within R start (dogs bark, cats flee). */
 		void Scare(const V3& P, float R, float Strength);
 		std::string Report() const;

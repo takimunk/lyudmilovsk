@@ -250,6 +250,7 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Animals"), TEXT("dog_bark_big") }, { TEXT("Animals"), TEXT("dog_bark_medium") }, { TEXT("Animals"), TEXT("dog_bark_laika") },
 		{ TEXT("Animals"), TEXT("dog_growl") }, { TEXT("Animals"), TEXT("dog_whine") }, { TEXT("Animals"), TEXT("dog_bark_far") },
 		{ TEXT("Animals"), TEXT("cat_meow") }, { TEXT("Animals"), TEXT("cat_purr") }, { TEXT("Animals"), TEXT("cat_hiss") },
+		{ TEXT("Animals"), TEXT("dog_bark_happy") }, { TEXT("Animals"), TEXT("collar_jingle") },   // Maru: her glad bark, her tag
 		{ TEXT("Far"), TEXT("ship_horn_far") }, { TEXT("Far"), TEXT("foghorn_far") }, { TEXT("Far"), TEXT("buoy_bell") }, { TEXT("Far"), TEXT("town_far") },
 		{ TEXT("Club"), TEXT("club_room_tone") }, { TEXT("Club"), TEXT("keyboard_typing") }, { TEXT("Club"), TEXT("mouse_clicks") },
 		{ TEXT("Club"), TEXT("console_game_far") }, { TEXT("Club"), TEXT("vending_hum") }, { TEXT("Club"), TEXT("vending_drop") },
@@ -623,7 +624,12 @@ void ULyudSoundscapeSubsystem::OnAnimalEvent(int32 AnimalId, FName Event)
 	{
 		if (Event == TEXT("Bark"))
 		{
-			Pool = A.Breed == TEXT("Shepherd") ? TEXT("dog_bark_big") : (A.Breed == TEXT("Laika") ? TEXT("dog_bark_laika") : TEXT("dog_bark_medium"));
+			Pool = A.Breed == TEXT("Shepherd") ? TEXT("dog_bark_big") : (A.Breed == TEXT("Laika") || A.Breed == TEXT("Maru") ? TEXT("dog_bark_laika") : TEXT("dog_bark_medium"));
+		}
+		else if (Event == TEXT("BarkHappy"))
+		{
+			Pool = TEXT("dog_bark_happy");     // answering the player who called her
+			Volume = 0.9f;
 		}
 		else if (Event == TEXT("Growl"))
 		{

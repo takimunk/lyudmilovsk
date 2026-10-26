@@ -691,5 +691,8 @@
  "transport.vestibule.kiosk": "きっぷ売り場",
  "line.transport.hall_welcome.1": "ご乗車のお客様、リュドミロフスク・ロープウェイへようこそ。キャビンへはホームの両側、黄色い線の内側からご乗車ください。",
  "line.transport.hall_cabin.1": "まもなくキャビンが到着します。黄色い線の内側でお待ちください。",
- "line.transport.hall_lift.1": "エレベーターと階段は乗車ホームへ続いています。階段では手すりにおつかまりください。"
+ "line.transport.hall_lift.1": "エレベーターと階段は乗車ホームへ続いています。階段では手すりにおつかまりください。",
+ "animal.maru.name": "マル",
+ "label.maru.tag": "Мару",
+ "ui.animal.call": "[E]  呼ぶ"
 }

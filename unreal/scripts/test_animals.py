@@ -7,7 +7,9 @@
 order): every breed and coat in a row, close-ups of the faces, the clips on a cat and a laika, then the simulation: a
 laika and a cat meeting (chase, hiss or a tree), a cat and a sparrow (stalk, pounce, the bird flies), a friendly dog and
 the player standing still.
-ANIMTEST_PART=lineup|poses|life picks a part (default all).
+ANIMTEST_PART=lineup|poses|life picks a part (default all); door, town and maru run only when asked.
+maru: Maru up close (the model, the collar, the tag), her name over her, E (lyud.Animals.Hail) and her glad bark, the
+tag swinging as she turns and trots (ANIMTEST lines with the collar's swing and clinks, frames in Saved/Screenshots).
 """
 import os
 
@@ -220,6 +222,156 @@ if PART == "town":
     STEPS[-1] = (STEPS[-1][0], 14.0)
     step(lambda w: (cmd(w, "csvprofile stop"), log("perf off stop")), 2.0)
     step(lambda w: cmd(w, "lyud.Animals 1"), 2.0)
+
+
+if PART == "maru":
+    M = (6000.0, 0.0, 0.0)
+
+    def collar_of(w, actor):
+        c = actor.get_component_by_class(unreal.AnimalCollarComponent) if actor else None
+        return c
+
+    def maru(w):
+        l = life(w)
+        r = l.get_animal(st["maru"])
+        a = r[1] if isinstance(r, tuple) else r
+        return a
+
+    @step
+    def s_maru(w):
+        # a still body for the model shots, and the living one (the animal life) 4 m off for the rest
+        cmd(w, "Animal.Spawn Maru 0 Stand %.0f %.0f 0 0" % (M[0], M[1]))
+        cmd(w, "lyud.Animals.SpawnNear Maru 0 %.0f %.0f 2" % (M[0], M[1] + 900.0))
+        cmd(w, "lyud.Animals.IgnorePlayer 0")
+        log("maru spawned: " + life(w).report())
+    @step
+    def s_parts(w):
+        for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalActor):
+            body = a.get_editor_property("body")
+            for c in a.get_components_by_class(unreal.StaticMeshComponent):
+                log("part %s %s at %s visible %s mesh %s" % (a.get_name(), c.get_name(), c.get_world_location(), c.is_visible(),
+                                                          c.static_mesh.get_name() if c.static_mesh else None))
+            log("neck %s at %s" % (a.get_name(), body.get_socket_location("neck_01")))
+            c = collar_of(w, a)
+            log("clinks so far %s: %s" % (a.get_name(), c.get_editor_property("jingles") if c else "-"))
+    step(lambda w: look(w, (M[0] + 160.0, M[1] - 190.0, 95.0), (M[0], M[1], 40.0)), 5.0)
+    step(lambda w: shot(w, "maru_34"), 2.0)
+    step(lambda w: look(w, (M[0] - 10.0, M[1] - 260.0, 60.0), (M[0], M[1], 45.0)), 2.0)
+    step(lambda w: shot(w, "maru_side"), 2.0)
+    step(lambda w: look(w, (M[0] + 150.0, M[1] - 15.0, 62.0), (M[0] + 30.0, M[1], 52.0)), 2.0)
+    step(lambda w: shot(w, "maru_front"), 2.0)
+    step(lambda w: look(w, (M[0] + 85.0, M[1] - 30.0, 52.0), (M[0] + 38.0, M[1], 50.0)), 2.0)
+    step(lambda w: shot(w, "maru_collar"), 2.0)
+    step(lambda w: look(w, (M[0] + 58.0, M[1] - 6.0, 50.0), (M[0] + 40.0, M[1], 49.0)), 2.0)
+    step(lambda w: shot(w, "maru_tag"), 2.0)
+
+    @step
+    def s_find(w):
+        ids = list(life(w).find_animals_near(unreal.Vector(M[0], M[1] + 900.0, 0.0), 2000.0))
+        st["maru"] = ids[0] if ids else 0
+        a = maru(w)
+        log("living maru %d name '%s' key %s breed %s" % (st["maru"], a.name, a.name_key, a.breed))
+        t = a.location
+        # the player 3 m away, looking at her: her label and the [E] offer
+        look(w, (t.x - 300.0, t.y - 60.0, t.z + 165.0), (t.x, t.y, t.z + 50.0))
+    step(lambda w: (cmd(w, "shot showui"), log("shot maru_label")), 2.0)
+
+    @step
+    def s_rest(w):
+        a = maru(w)
+        c = collar_of(w, a.actor)
+        st["jr"] = c.get_editor_property("jingles") if c else -1
+    step(lambda w: log("at rest 5 s: %s more clinks" % (collar_of(w, maru(w).actor).get_editor_property("jingles") - st["jr"])), 5.0)
+
+    @step
+    def s_target(w):
+        tags = unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalNameTags)
+        tg = tags[0].get_target() if tags else -2
+        log("name tags: %d labels, target %d (maru %d)" % (tags[0].num_labels() if tags else -1, tg, st["maru"]))
+        a = maru(w)
+        c = collar_of(w, a.actor)
+        st["j0"] = c.get_editor_property("jingles") if c else -1
+        cmd(w, "lyud.Animals.Hail %d" % st["maru"])
+        log("hailed: " + life(w).describe(st["maru"]))
+    for k in range(10):
+        def _bark(w, k=k):
+            a = maru(w)
+            c = collar_of(w, a.actor)
+            log("bark t%d act %s swing %.1f jingles %s | %s" % (k, a.activity, c.get_editor_property("swing_deg") if c else -1,
+                                                               c.get_editor_property("jingles") if c else "-", life(w).describe(st["maru"])))
+            cmd(w, "shot showui")
+        step(_bark, 0.35)
+
+    @step
+    def s_trot_still(w):
+        # a body trotting on the spot: the neck bobs, the tag bounces (a burst of frames)
+        cmd(w, "Animal.Spawn Maru 0 Trot %.0f %.0f 0 0" % (M[0] + 2000.0, M[1]))
+    step(lambda w: look(w, (M[0] + 2120.0, M[1] - 110.0, 70.0), (M[0] + 2035.0, M[1], 48.0)), 3.0)
+    for k in range(8):
+        def _burst(w, k=k):
+            for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalActor):
+                c = collar_of(w, a)
+                if c and a.get_actor_location().x > M[0] + 1500.0:
+                    log("burst t%d swing %.1f jingles %d" % (k, c.get_editor_property("swing_deg"), c.get_editor_property("jingles")))
+            shot(w, "maru_trot_burst_%d" % k)
+        step(_burst, 0.25)
+
+    @step
+    def s_run(w):
+        # she trots after the player who walks off: the tag bounces and clinks
+        a = maru(w)
+        t = a.location
+        place(w, (t.x - 900.0, t.y - 300.0, t.z + 170.0), -8.0, 20.0)
+        log("walked off")
+    for k in range(12):
+        def _trot(w, k=k):
+            a = maru(w)
+            c = collar_of(w, a.actor)
+            log("trot t%d act %s v %.0f swing %.1f jingles %s" % (k, a.activity, a.velocity.length(), c.get_editor_property("swing_deg") if c else -1,
+                                                                   c.get_editor_property("jingles") if c else "-"))
+            t = a.location
+            look(w, (t.x + 200.0, t.y - 180.0, t.z + 90.0), (t.x, t.y, t.z + 45.0))
+            if k % 2 == 0:
+                shot(w, "maru_trot_%02d" % k)
+        step(_trot, 0.8)
+
+
+if PART == "clubmaru":
+    # Maru at the computer club's door in the real scene: her label, E, her bark
+    def named(w):
+        l = life(w)
+        for i in list(l.find_animals_near(unreal.Vector(-193.0, 1150.0, 0.0), 4000.0)):
+            r = l.get_animal(i)
+            a = r[1] if isinstance(r, tuple) else r
+            if a.name_key:
+                return i, a
+        return -1, None
+
+    @step
+    def s_club(w):
+        place(w, (-193.0, 1150.0, 190.0), -8.0, 90.0)
+        cmd(w, "lyud.Birds.Time 13 0")
+    step(lambda w: log("club " + life(w).report()), 8.0)
+
+    @step
+    def s_club_find(w):
+        i, a = named(w)
+        st["maru"] = i
+        log("maru at the club: %d %s %s" % (i, a.name if a else "-", life(w).describe(i) if i >= 0 else ""))
+        if a:
+            t = a.location
+            look(w, (t.x - 260.0, t.y - 120.0, t.z + 165.0), (t.x, t.y, t.z + 45.0))
+    step(lambda w: (cmd(w, "shot showui"), log("shot club_maru_label")), 2.0)
+    step(lambda w: (cmd(w, "lyud.Animals.Hail %d" % st["maru"]), log("hail " + life(w).describe(st["maru"]))), 0.3)
+    for k in range(5):
+        step(lambda w, k=k: (cmd(w, "shot showui"), log("club bark t%d %s" % (k, life(w).describe(st["maru"])))), 0.5)
+    @step
+    def s_club_close(w):
+        r = life(w).get_animal(st["maru"])
+        a = r[1] if isinstance(r, tuple) else r
+        t = a.location
+        look(w, (t.x - 120.0, t.y - 70.0, t.z + 80.0), (t.x, t.y, t.z + 45.0))
+    step(lambda w: shot(w, "club_maru_close"), 2.0)
 
 
 @step

@@ -56,6 +56,20 @@
    "prompt": "A friendly dog whining and whimpering softly, begging for food, close, no other sounds"
   },
   {
+   "id": "dog_bark_happy",
+   "group": "animals",
+   "variants": 4,
+   "duration": 1.6,
+   "prompt": "A young medium-sized female laika mix dog answering her owner with two or three happy, excited, friendly barks, bright and playful, tail-wagging mood, close, outdoors, no other sounds"
+  },
+  {
+   "id": "collar_jingle",
+   "group": "animals",
+   "variants": 6,
+   "duration": 0.6,
+   "prompt": "A small brass bone-shaped dog tag clinking once against a steel split ring on a thin rope dog collar, a single light metallic jingle, very close, dry, no other sounds"
+  },
+  {
    "id": "dog_bark_far",
    "group": "animals",
    "variants": 4,

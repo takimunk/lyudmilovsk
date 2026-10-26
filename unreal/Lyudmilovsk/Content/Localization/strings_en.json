@@ -691,5 +691,8 @@
  "transport.vestibule.kiosk": "Tickets",
  "line.transport.hall_welcome.1": "Dear passengers, welcome to the Lyudmilovsk cable car. Cabins board on both sides of the platform, at the yellow line.",
  "line.transport.hall_cabin.1": "Attention, please: a cabin is approaching the station. Please stay behind the yellow line.",
- "line.transport.hall_lift.1": "The lift and the stairs lead up to the boarding platform. Please hold the handrail on the stairs."
+ "line.transport.hall_lift.1": "The lift and the stairs lead up to the boarding platform. Please hold the handrail on the stairs.",
+ "animal.maru.name": "Maru",
+ "label.maru.tag": "Мару",
+ "ui.animal.call": "[E]  Call her"
 }

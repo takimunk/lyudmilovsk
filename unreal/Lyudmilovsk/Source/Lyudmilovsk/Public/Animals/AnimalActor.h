@@ -84,12 +84,17 @@ private:
 	float LookWeight = 0.f;
 	float Excite = 0.f, Fear = 0.f, Friendly = 0.5f;
 	float JawPulse = 0.f, JawHold = 0.f;
+	int32 JawTrain = 0;                // more barks to come in this call (a glad call is two or three)
+	float JawTrainTimer = 0.f;
 	float WagPhase = 0.f;
 	float Pant = 0.f;
 	FRandomStream Rng;
 	TMap<FName, float> ClipSpeeds;     // cm/s of the locomotion clips (stride / cycle)
 
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UAnimSequence>> Clips;
+	/** Her collar, for a breed that wears one (Maru): the cord on the neck and the swinging, jingling tag. */
+	UPROPERTY(Transient) TObjectPtr<class UAnimalCollarComponent> Collar;
+	void UpdateCollar();
 
 	UAnimalAnimInstance* Anim() const;
 	UAnimSequence* Clip(FName Name) const;

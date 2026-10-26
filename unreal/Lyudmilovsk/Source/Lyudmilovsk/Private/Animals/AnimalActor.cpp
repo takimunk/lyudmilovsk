@@ -1,6 +1,7 @@
 #include "Animals/AnimalActor.h"
 
 #include "Animals/AnimalAnimInstance.h"
+#include "Animals/AnimalCollar.h"
 #include "Animation/AnimSequence.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Dom/JsonObject.h"
@@ -28,6 +29,9 @@ namespace
 		TArray<FString> Coats;
 		int32 Eyes = 1;
 		TMap<FName, float> Speeds;
+		/** A collar (blender/animals/collar.py), in the breed's frame (cm). */
+		bool bCollar = false;
+		FAnimalCollarSpec Collar;
 	};
 
 	const TMap<FName, FBreedData>& Breeds()
@@ -71,6 +75,28 @@ namespace
 				{
 					D.Speeds.Add(FName(*S.Key), (float)S.Value->AsNumber());
 				}
+			}
+			const TSharedPtr<FJsonObject>* Co = nullptr;
+			if ((*O)->TryGetObjectField(TEXT("collar"), Co))
+			{
+				auto Vec = [&](const TCHAR* Field, FVector& Out)
+				{
+					const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
+					if ((*Co)->TryGetArrayField(Field, A) && A->Num() == 3)
+					{
+						Out = FVector((*A)[0]->AsNumber(), (*A)[1]->AsNumber(), (*A)[2]->AsNumber());
+					}
+				};
+				FString Bone;
+				(*Co)->TryGetStringField(TEXT("bone"), Bone);
+				D.Collar.Bone = FName(*Bone);
+				Vec(TEXT("hang"), D.Collar.Hang);
+				Vec(TEXT("chest_center"), D.Collar.ChestCenter);
+				Vec(TEXT("forward"), D.Collar.Forward);
+				double V = 0.0;
+				if ((*Co)->TryGetNumberField(TEXT("chest_radius_cm"), V)) { D.Collar.ChestRadius = (float)V; }
+				if ((*Co)->TryGetNumberField(TEXT("com_cm"), V)) { D.Collar.TagLength = (float)V; }
+				D.bCollar = true;
 			}
 			Table.Add(FName(*KV.Key), D);
 		}
@@ -200,9 +226,31 @@ bool AAnimalActor::SetBreed(FName InBreed, int32 InCoat)
 		ClipSpeeds = D->Speeds;
 	}
 	ApplyCoat();
+	UpdateCollar();
 	PlayingClip = NAME_None;
 	UpdateClip(0.f);
 	return true;
+}
+
+void AAnimalActor::UpdateCollar()
+{
+	const FBreedData* D = Breeds().Find(Breed);
+	if (!D || !D->bCollar)
+	{
+		if (Collar)
+		{
+			Collar->DestroyComponent();
+			Collar = nullptr;
+		}
+		return;
+	}
+	if (!Collar)
+	{
+		Collar = NewObject<UAnimalCollarComponent>(this, TEXT("Collar"));
+		Collar->RegisterComponent();
+	}
+	Collar->Setup(Body, D->Collar, Root(Breed) / FString::Printf(TEXT("SM_%s_Collar.SM_%s_Collar"), *Breed.ToString(), *Breed.ToString()),
+		Root(Breed) / FString::Printf(TEXT("SM_%s_Tag.SM_%s_Tag"), *Breed.ToString(), *Breed.ToString()));
 }
 
 void AAnimalActor::ApplyCoat()
@@ -381,6 +429,14 @@ void AAnimalActor::Vocalize(FName Sound)
 		JawPulse = 1.f;
 		JawHold = 0.12f;
 	}
+	else if (Sound == TEXT("BarkHappy"))
+	{
+		// the glad call is two or three quick barks (audio dog_bark_happy): the mouth snaps open with each
+		JawPulse = 1.f;
+		JawHold = 0.1f;
+		JawTrain = 2;
+		JawTrainTimer = 0.32f;
+	}
 	else if (Sound == TEXT("Meow") || Sound == TEXT("Whine"))
 	{
 		JawPulse = 0.55f;
@@ -414,6 +470,13 @@ void AAnimalActor::Tick(float DeltaSeconds)
 		O.Look = Body->GetComponentTransform().InverseTransformPosition(LookWorld);
 	}
 	// the mouth
+	if (JawTrain > 0 && (JawTrainTimer -= DeltaSeconds) <= 0.f)
+	{
+		JawPulse = 0.9f + 0.1f * Rng.FRand();
+		JawHold = 0.1f;
+		JawTrainTimer = 0.28f + 0.1f * Rng.FRand();
+		JawTrain--;
+	}
 	if (JawHold > 0.f)
 	{
 		JawHold -= DeltaSeconds;

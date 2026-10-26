@@ -1,0 +1,23 @@
+{
+ "id": "dog_bark_happy",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/dog_bark_happy_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A young medium-sized female laika mix dog answering her owner with two or three happy, excited, friendly barks, bright and playful, tail-wagging mood, close, outdoors, no other sounds",
+  "duration_seconds": 1.6
+ },
+ "hash": "f5ab2b56c535",
+ "fal_request_id": "01a179fa-9302-7141-a8c3-a39a83c63f35",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aaff94e/aIJ8dbxfctQIJjMKyIabn_sound_effect.mp3",
+ "created": "2026-10-26T20:50:30Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "d9414a4d5b235777217ce629330736d2f727c2dc41725d94363858aa3c1729fa",
+ "seconds": 1.56,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

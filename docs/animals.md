@@ -18,6 +18,7 @@ the hooks for it are listed at the end.
 | Import to Unreal | `unreal/scripts/import_animals.sh` (`import_animals.py`) -> `/Game/Animals/<Breed>`, `Content/AnimalsData/animal_bodies.json` |
 | Offscreen checks | `unreal/scripts/make_animals_test_level.py`, `test_animals.sh` (`test_animals.py`) |
 | Birds fleeing them | `Private/Birds/BirdSim.cpp` `PerceiveBeasts`, `UBirdLifeSubsystem::SetBeasts` |
+| Maru: her collar, her name, E | `blender/animals/collar.py`, `Public/Animals/AnimalCollar.h`, `AnimalNameTags.h` |
 
 Rebuild the walk map whenever `tools/world_map.py`, the terrain or the Academgorodok's layout changes:
 `python3 tools/animal_map.py`.
@@ -125,6 +126,36 @@ for them).
 `lyud.Animals.Birds 0|1`, `lyud.Animals.Report [id]`, `lyud.Animals.SpawnNear <Breed> [coat] [x y z]`,
 `lyud.Animals.DumpDay [hour hours csv]`, `lyud.Animals.Scare [m]`; `Animal.Spawn <Breed> [coat] [activity] [x y z [yaw]]`
 (a body alone, for looking at the models).
+
+## Maru, the club's dog
+
+Dima's own dog (2026-10-26; his sheet and the photo of her collar in `blender/animals/gen/Maru/ref/`). She is the
+club's dog on the spur (dog breed 3, `Maru`, female, the friendliest of all): a slim cream laika mix with folded ear
+tips and a plume tail curled over her back. Her body is a hi3d model (`gen/Maru/gen.json`: the views were drawn by hi3d
+from a description of the sheet, since the sheet itself can't be uploaded) on the laika's skeleton, scaled
+(`anatomy.py` `_derive("Laika", "Maru", ...)`), with all the dog clips; one coat, the generated one (`cream`).
+
+**Her collar** (`collar.py`, run after `build_animal.py Maru --gen`): a 4 mm braided cord, dark red and black, laid
+round her neck along the skin measured by rays (pressed 1.2 cm into the fur), drawn together under the throat by a
+knot; from the knot a steel split ring, and on it a polished brass bone tag, 32 x 18 mm, with «Мару» engraved
+(`label.maru.tag`; the font is Blender's Inter, the letters cut with an exact boolean). Two meshes:
+`SM_Maru_Collar` follows the neck bone; `SM_Maru_Tag` is a pendulum (`UAnimalCollarComponent`, created by
+`AAnimalActor` for a breed with `collar` in `animal_bodies.json`): gravity and the neck's own movement swing it,
+it rests and knocks on her chest (a sphere under the throat), and a knock or a jerk hard enough clinks
+(`collar_jingle`, louder for a harder knock, not beyond 15 m). 240 Hz substeps, nothing worked out when she isn't on
+screen.
+
+**Her name and E** (`AAnimalNameTags`, spawned with the animal life): every animal with a name (her `NameKey`
+`animal.maru.name`, or one the player gives) has it over her head while she's in sight within 35 m, in the people's
+label style; within 4.5 m and looked at it offers `ui.animal.call`, and E speaks to her:
+`UAnimalLifeSubsystem::Hail` -> `FWorld::Hail`: she stops, turns to the player, barks back gladly (one `BarkHappy`
+event: `dog_bark_happy`, two or three barks, the jaw snapping with each), wags, and then usually comes up to them.
+Console `lyud.Animals.Hail [id]`.
+
+Build and import: `Blender -b --python blender/animals/build_animal.py -- Maru --gen`, then
+`Blender -b --python blender/animals/collar.py -- Maru [--preview]`, then `unreal/scripts/import_animals.sh Maru`
+(it imports the collar when `export/Maru/Maru_Collar.glb` is there). Checks: `tools/animalsim/run.sh test` (she
+lives by the club's door, turns and barks once when called), `ANIMTEST_PART=maru unreal/scripts/test_animals.sh`.
 
 ## Taming, later
 

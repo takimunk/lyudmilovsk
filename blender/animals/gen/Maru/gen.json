@@ -1,0 +1,47 @@
+{
+ "breed": "Maru",
+ "date": "2026-10-26",
+ "requested_by": "Dima (the dog Maru by the computer club, his reference sheet blender/animals/gen/Maru/ref/maru_dog_sheet.png)",
+ "views": {
+  "service": "hi3d MCP",
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Photorealistic young medium-sized female mongrel dog named Maru, a laika-type mix, slim and leggy, 50 cm at the withers: wedge-shaped head with a white face and muzzle, light amber-hazel eyes, a brown-pink (liver) nose, semi-erect ears whose tips fold forward, the ears pale apricot-cream. Coat: medium-length soft double coat, white on the face, chest, belly and all four legs, a pale apricot-cream wash over the back, shoulders, the top of the head and the tail; a long fluffy plume tail, cream with a white underside. Neutral rigging pose: standing squarely on all four legs, legs straight and vertical, slightly apart, paws flat, back level, head straight forward, mouth closed, tail held straight out behind horizontally (not curled over the back). No collar. Full body in frame, orthographic-like view, even soft studio light, no shadows, plain pure white background, nothing else in the picture.",
+  "task_id": "89e7948ee323455aba0ca568a8758881",
+  "credits": 8,
+  "note": "Dima's sheet could not reach hi3d (upload_input rejected the inline base64 of a 320 px crop), so hi3d drew the views from the description of the sheet; they match it closely (cream laika mix, folded ear tips, white legs and face)."
+ },
+ "edits": [],
+ "model": {
+  "service": "hi3d MCP",
+  "tool": "quote_generation + create_generation",
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "source_images": [
+   {
+    "task_id": "89e7948ee323455aba0ca568a8758881",
+    "image_index": 0
+   },
+   {
+    "task_id": "89e7948ee323455aba0ca568a8758881",
+    "image_index": 1
+   },
+   {
+    "task_id": "89e7948ee323455aba0ca568a8758881",
+    "image_index": 2
+   },
+   {
+    "task_id": "89e7948ee323455aba0ca568a8758881",
+    "image_index": 3
+   }
+  ],
+  "task_id": "e7de98d615ef45f4b55af4fec5e481e3",
+  "credits": 45
+ },
+ "note": "Grid rule exception: hi3d's own multi-view task returns four separate views per animal, the only upload-free way into its 3D (game-assets skill)."
+}

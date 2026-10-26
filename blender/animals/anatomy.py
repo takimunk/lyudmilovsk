@@ -155,6 +155,10 @@ _derive("Laika", "Shepherd", scale=1.1, body=1.1, legs=1.0, head=1.05, muzzle=1.
 _derive("Laika", "Mutt", scale=0.66, body=0.98, legs=0.8, head=1.18, muzzle=0.82,
         ear=dict(kind="drop", w=0.060), fur=dict(body=2.2, neck=2.8, tail=3.0, belly=2.0, head=1.0, leg=1.3, cheek=1.6),
         shells=12)
+# Maru, the club's dog (Dima's own, 2026-10-26): a slim, leggy cream laika mix, ears with folded tips, a plume tail
+# curled over the back; the generated body (gen/Maru) gives her shape and coat, this only the skeleton and the clips
+_derive("Laika", "Maru", scale=0.92, body=0.98, legs=1.04, head=0.96, muzzle=1.0,
+        fur=dict(body=4.0, neck=5.2, tail=7.5, belly=3.0, head=1.2), shells=14)
 
 
 # ====================================================================== skeleton

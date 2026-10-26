@@ -144,5 +144,60 @@
    "Walk",
    "Watch"
   ]
+ },
+ "Maru": {
+  "kind": "dog",
+  "coats": [
+   "cream"
+  ],
+  "eyes": 1,
+  "speeds_cms": {
+   "Walk": 115.1,
+   "Trot": 236.9,
+   "Run": 544.6
+  },
+  "height_cm": 61.402380489641615,
+  "length_cm": 77.67353643628874,
+  "clips": [
+   "Bark",
+   "Beg",
+   "Crouch",
+   "Eat",
+   "Groom",
+   "Hiss",
+   "Idle",
+   "Play",
+   "PlayBow",
+   "Pounce",
+   "Rest",
+   "Run",
+   "Sit",
+   "Sleep",
+   "Sniff",
+   "Trot",
+   "Walk",
+   "Watch"
+  ],
+  "collar": {
+   "bone": "neck_01",
+   "hang": [
+    41.003,
+    0.0,
+    54.767
+   ],
+   "com_cm": 2.678,
+   "chest_center": [
+    26.41,
+    0.0,
+    54.847
+   ],
+   "chest_radius_cm": 14.19,
+   "forward": [
+    0.95,
+    -0.0,
+    -0.312
+   ],
+   "tris": 6328
+  }
  }
 }
