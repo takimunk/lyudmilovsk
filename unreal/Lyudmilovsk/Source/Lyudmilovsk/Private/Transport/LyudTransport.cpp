@@ -109,8 +109,11 @@ namespace
 			}
 			else if (Where == TEXT("outside"))
 			{
-				const FVector In = (B.Connector.GetLocation() - B.Entrance).GetSafeNormal2D();
-				At = FTransform(FRotator(-6.f, In.Rotation().Yaw, 0.f), B.Entrance - In * 500.f + FVector(0, 0, 180.f));
+				// 9 m out of the street entrance along its way out, looking back at the vestibule's room
+				const FVector Out = B.EntranceOut.IsNearlyZero() ? (B.Entrance - B.Connector.GetLocation()).GetSafeNormal2D() : B.EntranceOut;
+				const FVector Eye = B.Entrance + Out * 900.f + FVector(0, 0, 170.f);
+				const FVector Look = (B.Room.GetLocation().IsZero() ? B.Entrance : B.Room.GetLocation()) - Eye;
+				At = FTransform(FRotator(FMath::Clamp(Look.Rotation().Pitch, -15.f, 10.f), Look.Rotation().Yaw, 0.f), Eye);
 			}
 			else if (Where == TEXT("platform") && B.Panels.Num())
 			{
