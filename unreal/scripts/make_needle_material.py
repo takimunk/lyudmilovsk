@@ -62,7 +62,7 @@ def wind(m, weight, x, y):
 m = new_material("/Game/Plants/M_PlantNeedle")
 m.set_editor_property("two_sided", True)
 m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
-m.set_editor_property("opacity_mask_clip_value", 0.15)
+m.set_editor_property("opacity_mask_clip_value", 0.5)
 m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_TWO_SIDED_FOLIAGE)
 color = node(m, unreal.MaterialExpressionVectorParameter, -900, -300, parameter_name="Color", default_value=unreal.LinearColor(0.1, 0.2, 0.04, 1))
 detail = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, 0, parameter_name="LeafDetail",
@@ -80,7 +80,15 @@ base = node(m, unreal.MaterialExpressionMultiply, -350, -100)
 link(leaf, "", base, "A")
 link(shade1, "", base, "B")
 mel.connect_material_property(base, "", MP.MP_BASE_COLOR)
-mel.connect_material_property(detail, "A", MP.MP_OPACITY_MASK)
+# the alpha is anti-aliased coverage: a blue-noise dither (the temporal AA resolves it) turns it into a soft edge
+# instead of a hard stepped cut: mask = alpha - noise + 0.5, clipped at 0.5
+noise = node(m, unreal.MaterialExpressionScalarBlueNoise, -700, 520)
+diff = node(m, unreal.MaterialExpressionSubtract, -520, 500)
+link(detail, "A", diff, "A")
+link(noise, "", diff, "B")
+dmask = node(m, unreal.MaterialExpressionAdd, -380, 500, const_b=0.5)
+link(diff, "", dmask, "A")
+mel.connect_material_property(dmask, "", MP.MP_OPACITY_MASK)
 # light through the blade: the leaf's own colour, a little deeper
 sss = node(m, unreal.MaterialExpressionMultiply, -350, 150, const_b=0.7)
 link(leaf, "", sss, "A")

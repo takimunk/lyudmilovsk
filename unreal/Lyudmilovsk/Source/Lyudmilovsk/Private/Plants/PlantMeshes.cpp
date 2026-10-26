@@ -795,11 +795,11 @@ UTexture2D* PlantMeshes::BuildFoliageCard(UObject* Outer, const FPlantLeafShape&
 	{
 		return BuildLeafDetail(Outer, L);
 	}
-	// a spray of leaves seen from the side: alpha 255 on a leaf, a grey shade, the shapes of this species' blades
-	constexpr int32 W = 128;
+	// a spray of leaves seen from the side: alpha is the leaf's coverage (soft edge), a grey shade, the shapes of this species' blades
+	constexpr int32 W = 256;
 	TArray<FColor> Img;
 	Img.Init(FColor(0, 0, 0, 0), W * W);
-	const int32 Leaves = 70;
+	const int32 Leaves = 90;
 	for (int32 N = 0; N < Leaves; N++)
 	{
 		const float Cx = (0.12f + 0.76f * Hash01(41, N, 1)) * W, Cy = (0.1f + 0.85f * Hash01(41, N, 2)) * W;
@@ -815,11 +815,15 @@ UTexture2D* PlantMeshes::BuildFoliageCard(UObject* Outer, const FPlantLeafShape&
 				const float U = (X * Sa - Y * Ca) / Len + 0.5f, Vv = (X * Ca + Y * Sa) / Wid;
 				if (U < 0.f || U > 1.f) continue;
 				const float Half = FMath::Pow(FMath::Sin(PI * FMath::Clamp(U, 0.f, 1.f)), 0.8f);
-				if (FMath::Abs(Vv) > Half) continue;
+				// distance to the outline in texels, across the leaf: soft over one texel
+				const float Edge = (Half - FMath::Abs(Vv)) * Wid;
+				const float Cover = FMath::Clamp(Edge + 0.5f, 0.f, 1.f);
+				if (Cover <= 0.f) continue;
 				const int32 Ix = FMath::RoundToInt(Cx) + X, Iy = FMath::RoundToInt(Cy) + Y;
 				if (Ix < 0 || Ix >= W || Iy < 0 || Iy >= W) continue;
 				const uint8 C = (uint8)FMath::RoundToInt(255.f * Shade * (0.75f + 0.25f * U));
-				Img[Iy * W + Ix] = FColor(C, C, C, 255);
+				const uint8 Al = (uint8)FMath::RoundToInt(Cover * 255.f);
+				if (Al >= Img[Iy * W + Ix].A) Img[Iy * W + Ix] = FColor(C, C, C, Al);
 			}
 		}
 	}
@@ -830,8 +834,9 @@ UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& 
 {
 	if (L.Form == EPlantLeafForm::Needle)
 	{
-		// a fan of needles from the bottom middle, alpha 255 on a needle: M_PlantNeedle cuts the card out by it
-		constexpr int32 NW = 128, NH = 128;
+		// a fan of needles from the bottom middle; alpha is the needle's coverage of the texel (anti-aliased, so a magnified card
+		// has soft edges: the material dithers it with the temporal AA instead of cutting it hard)
+		constexpr int32 NW = 256, NH = 256;
 		TArray<FColor> Img;
 		Img.Init(FColor(0, 0, 0, 0), NW * NH);
 		const int32 Needles = FMath::Clamp(L.PerCluster * 2, 12, 120);
@@ -843,22 +848,29 @@ UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& 
 			const float Len = (0.55f + 0.45f * Hash01(31, G, 2)) * NH * 0.97f;
 			const float Bend = (Hash01(31, G, 3) - 0.5f) * 0.5f;
 			const float Shade = 0.8f + 0.2f * Hash01(31, G, 4);
-			const int32 Steps = FMath::CeilToInt(Len * 1.5f);
+			const int32 Steps = FMath::CeilToInt(Len * 2.f);
 			for (int32 K = 0; K <= Steps; K++)
 			{
 				const float T = (float)K / Steps;
 				const float Ang = A + Bend * T * T;
 				const float X = NW * 0.5f + FMath::Sin(Ang) * Len * T, Y = NH - 1.f - FMath::Cos(Ang) * Len * T;
-				const float Thick = 1.4f * (1.f - 0.7f * T);
+				const float Radius = 1.5f * (1.f - 0.7f * T) + 0.3f;
 				const uint8 V = (uint8)FMath::RoundToInt(255.f * Shade * (0.7f + 0.3f * T));
-				for (int32 Dy = -1; Dy <= 1; Dy++)
+				for (int32 Dy = -3; Dy <= 3; Dy++)
 				{
-					for (int32 Dx = -1; Dx <= 1; Dx++)
+					for (int32 Dx = -3; Dx <= 3; Dx++)
 					{
-						if (Dx * Dx + Dy * Dy > Thick * Thick) continue;
 						const int32 Ix = FMath::RoundToInt(X) + Dx, Iy = FMath::RoundToInt(Y) + Dy;
 						if (Ix < 0 || Ix >= NW || Iy < 0 || Iy >= NH) continue;
-						Img[Iy * NW + Ix] = FColor(V, V, V, 255);
+						const float Dist = FVector2f(Ix - X, Iy - Y).Size();
+						const float Cover = FMath::Clamp(Radius + 0.5f - Dist, 0.f, 1.f);
+						if (Cover <= 0.f) continue;
+						FColor& Px = Img[Iy * NW + Ix];
+						const uint8 Al = (uint8)FMath::RoundToInt(Cover * 255.f);
+						if (Al >= Px.A)
+						{
+							Px = FColor(V, V, V, Al);
+						}
 					}
 				}
 			}
