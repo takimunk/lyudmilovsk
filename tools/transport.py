@@ -39,7 +39,7 @@ SOURCE = os.path.join(DATA_DIR, "network.json")
 BUILT = os.path.join(DATA_DIR, "network_built.json")
 LAYOUT = os.path.join(REPO, "blender", "export", "scene01_layout.json")
 
-ON_GROUND_RISE = 3.0     # a station on the ground: its platform this much over the highest ground under it (a stair up)
+ON_GROUND_RISE = 5.0     # a station on the ground: its platform this much over the highest ground under it (the gallery passes under its track)
 STOP_THROUGH = 5.5       # a through station: cabins stop this far along the line past its centre (the stair and lift are in the middle)
 STOP_END = 2.5           # an end station: this far from its centre (before the turn wheel), on the platform's side
 CORE_END = 7.0           # an end station's stair and lift: this far from its centre, away from the wheel
@@ -47,6 +47,14 @@ LEVEL_H = 6.5            # metres between the decks of a station on two lines
 STATION_R = 9.0          # half size of a station's footprint (deck, tower, stair)
 TURN_R = None            # turn wheel radius = track_gap / 2
 STEP = 6.0               # metres between rope samples on a span
+# the vestibule (docs/transport.md "Station layout and the vestibule connector"): beside the line on the ground, its
+# connector this far off the line's axis, joined to the tower by a ground gallery under the track
+VEST_OFF = 9.5
+VEST_DEPTH = 22.0        # the footprint's size away from the connector (X < 0 in its frame), when vestibules.json has none
+VEST_HALF = 11.0         # and across
+VEST_HEIGHT = 16.0
+GALLERY_CLEAR = 4.2      # deck over the gallery's floor at least (its roof 3.4 m, the cabin's floor, a margin)
+VESTIBULES = os.path.join(DATA_DIR, "vestibules.json")
 
 
 def load_source(path=SOURCE):
@@ -152,8 +160,20 @@ def resolve(src=None, log=print):
                 a = math.radians(s["axes"][lid])
                 core = [round(s["at"][0] + e * CORE_END * math.cos(a), 3), round(s["at"][1] + e * CORE_END * math.sin(a), 3)]
         s["core"] = core
-        s["core_ground"] = round(_ground(*core), 3)
+        # the tower's and the gallery's floor 15 cm over the highest ground under them (the terrain never shows
+        # through it): the tower's square and the strip square off the first level's axis either way, to VEST_OFF
+        g = _ground_max(core[0], core[1], 2.7)
+        if s["levels"]:
+            a0 = math.radians(s["axes"][s["levels"][0]["line"]])
+            nx, ny = -math.sin(a0), math.cos(a0)
+            for k in range(-int(VEST_OFF), int(VEST_OFF) + 1):
+                for w in (-1.7, 0.0, 1.7):
+                    g = max(g, _ground(core[0] + nx * k + math.cos(a0) * w, core[1] + ny * k + math.sin(a0) * w))
+        s["core_ground"] = round(g + 0.15, 3)
         s["lift"] = round(max(0.0, s["levels"][-1]["z"] - s["core_ground"]), 3) if s["levels"] else 0.0
+
+    for s in stations:
+        _vestibule(s, st_by[s["id"]], lines, probs)
 
     face_y = None
     try:
@@ -183,6 +203,70 @@ def resolve(src=None, log=print):
     for p in probs:
         log("transport: " + p)
     return built
+
+
+def _vest_box(style):
+    """The vestibule's footprint box in its connector frame (metres): x0, x1, y0, y1, height."""
+    try:
+        with open(VESTIBULES) as f:
+            v = json.load(f)["styles"][style]
+        pts = v["footprint"]
+        xs = [p[0] / 100.0 for p in pts]
+        ys = [p[1] / 100.0 for p in pts]
+        return min(xs), max(xs), min(ys), max(ys), v.get("height", VEST_HEIGHT * 100) / 100.0
+    except (OSError, KeyError, ValueError, TypeError):
+        return -VEST_DEPTH, 0.0, -VEST_HALF, VEST_HALF, VEST_HEIGHT
+
+
+def _vestibule(s, src, lines, probs):
+    """Where the station's vestibule stands: beside the first level's line, the connector VEST_OFF + gap off its axis
+    at the tower's ground, +X of its frame toward the tower. The side: network.json's or the one with the flatter
+    ground and nothing over it."""
+    if not s["levels"]:
+        return
+    lid = s["levels"][0]["line"]
+    a = math.radians(s["axes"][lid])
+    ax, ay = math.cos(a), math.sin(a)
+    nx, ny = -ay, ax                                    # left of the axis
+    want = src.get("vestibule", {})
+    gap = float(want.get("gap", 0.0))
+    x0, x1, y0, y1, height = _vest_box(s["style"])
+    cx, cy = s["core"]
+    choices = []
+    for side in ([want["side"]] if "side" in want else [1, -1]):
+        px, py = cx + nx * side * (VEST_OFF + gap), cy + ny * side * (VEST_OFF + gap)
+        yaw = _yaw_deg(-nx * side, -ny * side)          # toward the tower
+        fx, fy = -nx * side, -ny * side                 # the frame's +X (map)
+        gx, gy = -fy, fx                                # its +Y
+        ground = []
+        for i in range(7):
+            for j in range(7):
+                u = x0 + (x1 - x0) * i / 6.0
+                v = y0 + (y1 - y0) * j / 6.0
+                ground.append(_ground(px + fx * u + gx * v, py + fy * u + gy * v))
+        # ropes over the footprint (another line crossing): their lowest height there
+        low = None
+        for ln in lines:
+            for q in ln["loop"]:
+                dx, dy = q[0] - px, q[1] - py
+                u, v = dx * fx + dy * fy, dx * gx + dy * gy
+                if x0 - 2.0 < u < x1 + 2.0 and y0 - 2.0 < v < y1 + 2.0:
+                    low = q[2] if low is None else min(low, q[2])
+        floor = max(s["core_ground"], max(ground) + 0.1)
+        score = (max(ground) - min(ground)) + (floor - s["core_ground"]) * 2.0
+        if low is not None and low - 4.5 < floor + height:
+            score += 1000.0
+        choices.append((score, side, px, py, yaw, floor, min(ground), max(ground), low))
+    score, side, px, py, yaw, floor, gmin, gmax, low = min(choices)
+    deck = s["levels"][0]["z"]
+    if deck - s["core_ground"] < GALLERY_CLEAR:
+        probs.add("%s: the deck is only %.1f m over the gallery (needs %.1f)" % (s["id"], deck - s["core_ground"], GALLERY_CLEAR))
+    if low is not None and low - 4.5 < floor + height:
+        probs.add("%s: a rope runs %.1f m over the vestibule's floor (it is up to %.0f m tall)" % (s["id"], low - floor, height))
+    if gmax - gmin > 6.0:
+        probs.add("%s: the ground under the vestibule falls %.1f m (a tall podium)" % (s["id"], gmax - gmin))
+    s["vestibule"] = {"at": [round(px, 3), round(py, 3)], "z": round(floor, 3), "yaw": round(yaw, 3), "side": side,
+                      "ground_min": round(gmin, 3), "ground_max": round(gmax, 3), "box": [x0, x1, y0, y1, height]}
 
 
 def _line(ln, st_by, st_built, D, probs):

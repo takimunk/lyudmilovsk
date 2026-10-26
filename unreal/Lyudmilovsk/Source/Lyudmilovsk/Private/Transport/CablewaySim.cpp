@@ -129,6 +129,16 @@ namespace LyudTransport
 			St.CoreX = S["core"][0].F(St.X);
 			St.CoreY = S["core"][1].F(St.Y);
 			St.CoreGround = S["core_ground"].F(St.Ground);
+			const LyudJson::FValue& Ve = S["vestibule"];
+			if (Ve.Type == LyudJson::FValue::Object)
+			{
+				St.bHasVest = true;
+				St.VestX = Ve["at"][0].F(St.X);
+				St.VestY = Ve["at"][1].F(St.Y);
+				St.VestZ = Ve["z"].F(St.CoreGround);
+				St.VestYaw = Ve["yaw"].F();
+				St.VestGroundMin = Ve["ground_min"].F(St.VestZ);
+			}
 			const LyudJson::FValue& Sc = S["schema"];
 			if (Sc.Type == LyudJson::FValue::Array && Sc.Size() == 2)
 			{

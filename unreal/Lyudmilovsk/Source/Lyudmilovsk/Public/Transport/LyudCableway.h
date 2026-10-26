@@ -15,6 +15,7 @@ class UPointLightComponent;
 class UAudioComponent;
 class ULyudTransportSubsystem;
 namespace LyudTransport { class FNetwork; }
+class FLyudMeshKit;
 
 /** One station's parts the game needs again after building (platform frames, lift, call panel). */
 USTRUCT()
@@ -27,8 +28,17 @@ struct FLyudBuiltStation
 	TArray<int32> DeckLines;
 	/** The foot of the lift / stair (world cm), the way into the station. */
 	FVector Entrance = FVector::ZeroVector;
-	/** The vestibule's frame: origin on its floor at the stair's middle, -X out of its door. */
+	/** The gallery's frame: origin on its floor in its middle, +X toward the tower (Transport.Goto "vestibule"). */
 	FTransform Vestibule;
+	/** The vestibule connector (docs/transport.md): origin on the floor in the gallery's end door, +X toward the tower. */
+	FTransform Connector;
+	/** The tower's frame: origin on the ground floor in the middle of the lift shaft, X along the first level's line. */
+	FTransform Core;
+	/** The vestibule's room: its middle at eye height, looking out to the gallery's side (identity: none). */
+	FTransform Room;
+	/** The tower's stops (cm over its ground: the ground, each deck) and the side of each stop's door (0..3). */
+	TArray<float> Stops;
+	TArray<int32> StopSides;
 	/** Where the call panel and the board stand (world), per level. */
 	TArray<FTransform> Panels;
 	UPROPERTY(Transient) TArray<TObjectPtr<UWidgetComponent>> Boards;
@@ -66,10 +76,16 @@ public:
 	FTransform WaitSpot(int32 Station, int32 Line, int32 K) const;
 	/** The call panel of station S nearest to P within R cm: its index into Built[S].Panels, -1 none. */
 	int32 PanelNear(int32 Station, const FVector& P, float R) const;
+	/** A test of station S's walkable parts: traces down at its landings, platforms, gallery and podium (log lines). */
+	int32 Probe(int32 S) const;
+	/** A named view for tests (Transport.Goto): lift, liftin, top, tower, pylon. */
+	bool View(int32 S, const FString& Name, FTransform& Out) const;
 	/** The station whose structure P is on or at the foot of (within its footprint), -1 none. */
 	int32 StationAt(const FVector& P) const;
 
 	UMaterialInterface* Mat(FName Name);
+	/** A built kit (LyudMeshKit.h) as a mesh component at At (world; relative to Parent when given), its materials set. */
+	UStaticMeshComponent* KitMesh(const FLyudMeshKit& K, const FTransform& At, FName Name, bool bMovable = false, USceneComponent* Parent = nullptr);
 	/** Real glass and plaster on a kit mesh's TR_Glass / TR_Interior slots. */
 	void KitMaterials(UStaticMeshComponent* C);
 
@@ -115,8 +131,12 @@ private:
 	void Rod(const FVector& A, const FVector& B, float Radius, FName MatName, bool bCollide = false);
 
 	void BuildStation(const LyudTransport::FNetwork& Net, int32 S);
-	void BuildStair(const FTransform& Foot, float Height, int32 Station);
-	void BuildVestibule(const FTransform& Foot, int32 Station, bool bLift);
+	/** The parts (LyudStationBuild.cpp), into the station's kit in its tower frame (cm). */
+	void BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, const TArray<float>& Stops, const TArray<int32>& Sides);
+	void BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Level);
+	void BuildGallery(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Side, float Length, float Rise);
+	void PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S);
+	UWidgetComponent* Widget(int32 S, const TSharedRef<class SWidget>& Slate, const FTransform& At, const FVector2D& Draw, float Scale, bool bOpaque);
 	TArray<FTransform> VestBoards;
 	TArray<int32> VestBoardStation;
 	void BuildPylons(const LyudTransport::FNetwork& Net, int32 L);
@@ -141,7 +161,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/** Stops (cm over the actor's origin): the ground first. */
-	void Setup(const TArray<float>& InStops, UMaterialInterface* Floor, UMaterialInterface* Glass, UMaterialInterface* Frame);
+	void Setup(ALyudCableway* Way, const TArray<float>& InStops, const TArray<int32>& InSides);
 	void CallTo(int32 Stop);
 	int32 StopNear(float LocalZ) const;
 	bool IsMoving() const { return Target >= 0 && !FMath::IsNearlyEqual(Z, Stops[Target], 1.f); }
@@ -152,7 +172,13 @@ public:
 	TArray<float> Stops;
 	/** Per stop: the side of the shaft its door is on (0..3, quarter turns of the actor's X). */
 	TArray<int32> DoorSides;
-	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Gates;
+	/** Two sliding steel leaves per stop (the landing doors), shut but where the cab stands still. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Leaves;
+	TArray<float> Open;
+	float Dwell = 0.f;
+	float LogT = 0.f;
+	/** The cab brought the player here: it stays until they step out. */
+	bool bRode = false;
 	float Z = 0.f;
 	int32 Target = -1;
 	float Stand = 0.f;
