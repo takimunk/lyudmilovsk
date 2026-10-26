@@ -42,6 +42,7 @@ ALyudCableway::ALyudCableway()
 	RootComponent->SetMobility(EComponentMobility::Static);
 	// AProceduralGrass grows nothing where its ground trace meets this actor (floors, roofs, podiums)
 	Tags.Add(TEXT("NoGrass"));
+	Tags.Add(TEXT("NoTree"));
 }
 
 UMaterialInterface* ALyudCableway::Mat(FName Name)
@@ -270,18 +271,7 @@ void ALyudCableway::Build(ULyudTransportSubsystem* InOwner, const LyudTransport:
 		BuildDepot(Net, L);
 	}
 	BuildClubBoard(Net);
-	// grass scattered before the stations stood: again, so none grows through their floors (NoGrass tag)
-	for (TActorIterator<AProceduralGrass> It(GetWorld()); It; ++It)
-	{
-		for (const FVector& C : StationCentres)
-		{
-			if (FVector::Dist2D(It->GetActorLocation(), C) < 15000.f)
-			{
-				It->Rebuild();
-				break;
-			}
-		}
-	}
+	ClearGround();
 	int32 N = 0;
 	for (const auto& P : Ism)
 	{

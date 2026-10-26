@@ -28,6 +28,8 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Plants/ProceduralPlant.h"
+#include "Plants/ProceduralGrass.h"
+#include "Plants/ProceduralForest.h"
 #include "Transport/LyudTransport.h"
 #include "EngineUtils.h"
 #include "Misc/FileHelper.h"
@@ -238,6 +240,17 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 
 	B.Stops = Stops;
 	B.StopSides = Sides;
+	// bare ground: under each island (and 2 m round it), the tower and the gallery
+	for (const FTransform& D : B.Decks)
+	{
+		const float Mid = (D.GetLocation().Z + CoreW.Z) * 0.5f;
+		BareBoxes.Add({ FTransform(D.GetRotation(), FVector(D.GetLocation().X, D.GetLocation().Y, Mid)), FVector(IslandLen + 200.f, IslandHalf + 200.f, FMath::Abs(D.GetLocation().Z - CoreW.Z) * 0.5f + 2000.f) });
+	}
+	{
+		const FVector GDir0 = SideOut(GroundSide);
+		BareBoxes.Add({ FTransform(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(GDir0 * (TowerOut + GalleryLen) * 0.5f)),
+			FVector((TowerOut + GalleryLen) * 0.5f + 150.f, GalleryHalf + 220.f, 2500.f) });
+	}
 	FLyudMeshKit Kit;
 	BuildTower(Kit, Net, S, Stops, Sides);
 	for (int32 K = 0; K < SimNum(St.Levels); K++)
@@ -950,6 +963,11 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 	{
 		UStaticMeshComponent* M = Single(Mesh, C, true);
 		M->SetCastShadow(true);
+		{
+			// bare ground under it and its terrace, a metre and a half round
+			const FBox Bb = Mesh->GetBoundingBox();
+			BareBoxes.Add({ FTransform(C.GetRotation(), C.TransformPosition(Bb.GetCenter())), Bb.GetExtent() + FVector(150.f, 150.f, 2000.f) });
+		}
 		// the podium: the footprint's hull from 60 cm under the floor down past the lowest ground under it
 		TArray<FVector2D> Pts;
 		const TArray<TSharedPtr<FJsonValue>>* Fp = nullptr;
@@ -984,17 +1002,48 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 		const TSharedPtr<FJsonObject>* Room = nullptr;
 		if (V->TryGetObjectField(TEXT("room"), Room))
 		{
+			// warm lights under the ceiling, one per ~3 m of the room's box, brighter and higher in a tall room
 			const float RoomH = (*Room)->HasField(TEXT("height")) ? (*Room)->GetNumberField(TEXT("height")) : 330.f;
-			const float RoomR = (*Room)->HasField(TEXT("radius")) ? (*Room)->GetNumberField(TEXT("radius")) : 400.f;
-			UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
-			Lt->SetupAttachment(RootComponent);
-			Lt->RegisterComponent();
-			Lt->SetWorldLocation(C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, FMath::Min(RoomH - 60.f, 300.f))));
-			Lt->SetIntensity(9000.f);
-			Lt->SetAttenuationRadius(FMath::Max(800.f, RoomR * 2.2f));
-			Lt->SetLightColor(FLinearColor(1.f, 0.8f, 0.55f));
-			Lt->SetCastShadows(false);
-			AddInstanceComponent(Lt);
+			FVector B0 = JsonXY(*Room, TEXT("centre")) - FVector(300.f, 300.f, 0.f), B1 = JsonXY(*Room, TEXT("centre")) + FVector(300.f, 300.f, 0.f);
+			const TArray<TSharedPtr<FJsonValue>>* RB = nullptr;
+			if ((*Room)->TryGetArrayField(TEXT("box"), RB) && RB->Num() == 2)
+			{
+				const TArray<TSharedPtr<FJsonValue>>& L0 = (*RB)[0]->AsArray();
+				const TArray<TSharedPtr<FJsonValue>>& L1 = (*RB)[1]->AsArray();
+				B0 = FVector(FMath::Min(L0[0]->AsNumber(), L1[0]->AsNumber()), FMath::Min(L0[1]->AsNumber(), L1[1]->AsNumber()), 0.f);
+				B1 = FVector(FMath::Max(L0[0]->AsNumber(), L1[0]->AsNumber()), FMath::Max(L0[1]->AsNumber(), L1[1]->AsNumber()), 0.f);
+			}
+			const int32 Nx = FMath::Clamp(FMath::RoundToInt((B1.X - B0.X) / 300.f), 1, 4), Ny = FMath::Clamp(FMath::RoundToInt((B1.Y - B0.Y) / 300.f), 1, 4);
+			const float LightZ = FMath::Clamp(RoomH - 60.f, 250.f, 450.f);
+			for (int32 Ix = 0; Ix < Nx; Ix++)
+			{
+				for (int32 Iy = 0; Iy < Ny; Iy++)
+				{
+					const FVector At(B0.X + (B1.X - B0.X) * (Ix + 0.5f) / Nx, B0.Y + (B1.Y - B0.Y) * (Iy + 0.5f) / Ny, LightZ);
+					UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
+					Lt->SetupAttachment(RootComponent);
+					Lt->RegisterComponent();
+					Lt->SetWorldLocation(C.TransformPosition(At));
+					Lt->SetIntensity(RoomH > 500.f ? 9000.f : 6000.f);
+					Lt->SetAttenuationRadius(700.f);
+					Lt->SetLightColor(FLinearColor(1.f, 0.8f, 0.55f));
+					Lt->SetCastShadows(false);
+					AddInstanceComponent(Lt);
+				}
+			}
+			if (RoomH > 500.f)
+			{
+				// a lamp high in a tall hall (the dome, the lantern)
+				UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
+				Lt->SetupAttachment(RootComponent);
+				Lt->RegisterComponent();
+				Lt->SetWorldLocation(C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, RoomH * 0.7f)));
+				Lt->SetIntensity(20000.f);
+				Lt->SetAttenuationRadius(RoomH * 1.6f);
+				Lt->SetLightColor(FLinearColor(1.f, 0.82f, 0.6f));
+				Lt->SetCastShadows(false);
+				AddInstanceComponent(Lt);
+			}
 			B.Room = FTransform(C.GetRotation(), C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, 100.f)));
 		}
 		// the door into the room
@@ -1028,6 +1077,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				const FVector Out = JsonXY(O, TEXT("out")).GetSafeNormal2D();
 				const float Wd = O->HasField(TEXT("width")) ? O->GetNumberField(TEXT("width")) : 240.f;
 				B.Entrance = C.TransformPosition(At + Out * 60.f);
+				B.EntranceOut = C.TransformVectorNoScale(Out);
 				const float Drop = -GroundAt(At + Out * 200.f);
 				const int32 N = FMath::Clamp(FMath::CeilToInt((Drop - 2.f) / 16.f), 0, 40);
 				const FRotator R(0.f, Out.Rotation().Yaw, 0.f);
@@ -1103,6 +1153,60 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 		K.BoxIn(TEXT("tx_concrete"), FTransform::Identity, FVector(-220.f, 0.f, -Down * 0.5f), FVector(400.f, 460.f, Down), true, TEXT("tx_terrazzo"));
 	}
 	KitMesh(K, C, FName(*FString::Printf(TEXT("SM_Podium_%d"), S)));
+}
+
+void ALyudCableway::ClearGround()
+{
+	// temporary blockers that only answer Visibility traces (the ones grass and forests scatter with): the scatter's
+	// trace meets them first, sees this actor's NoGrass / NoTree tags and leaves the spot bare
+	TArray<UBoxComponent*> Blockers;
+	for (const TPair<FTransform, FVector>& Bb : BareBoxes)
+	{
+		UBoxComponent* Bx = NewObject<UBoxComponent>(this);
+		Bx->SetupAttachment(RootComponent);
+		Bx->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Bx->SetCollisionResponseToAllChannels(ECR_Ignore);
+		Bx->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		Bx->SetBoxExtent(Bb.Value);
+		Bx->RegisterComponent();
+		Bx->SetWorldTransform(Bb.Key);
+		Blockers.Add(Bx);
+	}
+	auto Overlaps = [&](const FTransform& At, const FVector2D& Half)
+	{
+		for (const TPair<FTransform, FVector>& Bb : BareBoxes)
+		{
+			const FVector L = At.InverseTransformPosition(Bb.Key.GetLocation());
+			const float R = FVector2D(Bb.Value.X, Bb.Value.Y).Size();
+			if (FMath::Abs(L.X) < Half.X + R && FMath::Abs(L.Y) < Half.Y + R)
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+	int32 NGrass = 0, NForest = 0;
+	for (TActorIterator<AProceduralGrass> It(GetWorld()); It; ++It)
+	{
+		if (Overlaps(It->GetActorTransform(), It->HalfExtent))
+		{
+			It->Rebuild();
+			NGrass++;
+		}
+	}
+	for (TActorIterator<AProceduralForest> It(GetWorld()); It; ++It)
+	{
+		if (Overlaps(It->GetActorTransform(), It->HalfExtent))
+		{
+			It->Rebuild();
+			NForest++;
+		}
+	}
+	for (UBoxComponent* Bx : Blockers)
+	{
+		Bx->DestroyComponent();
+	}
+	UE_LOG(LogTemp, Log, TEXT("Transport: ground cleared under %d boxes: %d grass patches, %d forests scattered again"), BareBoxes.Num(), NGrass, NForest);
 }
 
 bool ALyudCableway::View(int32 S, const FString& Name, FTransform& Out) const
@@ -1508,7 +1612,11 @@ void ALyudStationLift::Tick(float DeltaTime)
 	{
 		if (Target == Here && FMath::IsNearlyEqual(Z, Stops[Target], 1.f))
 		{
+			// arrived (within a centimetre: the last step may stop short of the half-centimetre test below)
+			Z = Stops[Target];
 			Target = -1;
+			bRode = bRode || (bIn && Dwell > 0.f);
+			Dwell = 0.f;
 		}
 		else if (bDoorsShut)
 		{

@@ -34,6 +34,8 @@ struct FLyudBuiltStation
 	FTransform Connector;
 	/** The tower's frame: origin on the ground floor in the middle of the lift shaft, X along the first level's line. */
 	FTransform Core;
+	/** The way out of the vestibule's street entrance (world, flat), zero when there is none. */
+	FVector EntranceOut = FVector::ZeroVector;
 	/** The vestibule's room: its middle at eye height, looking out to the gallery's side (identity: none). */
 	FTransform Room;
 	/** The tower's stops (cm over its ground: the ground, each deck) and the side of each stop's door (0..3). */
@@ -136,6 +138,10 @@ private:
 	void BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Level);
 	void BuildGallery(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Side, float Length, float Rise);
 	void PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S);
+	/** Grass and forests scattered before the stations stood: again, with every station's footprint (and a margin) bare. */
+	void ClearGround();
+	/** Per station: boxes (world) the ground must be bare in (the vestibule and its terrace, the gallery, the island). */
+	TArray<TPair<FTransform, FVector>> BareBoxes;
 	UWidgetComponent* Widget(int32 S, const TSharedRef<class SWidget>& Slate, const FTransform& At, const FVector2D& Draw, float Scale, bool bOpaque);
 	TArray<FTransform> VestBoards;
 	TArray<int32> VestBoardStation;
