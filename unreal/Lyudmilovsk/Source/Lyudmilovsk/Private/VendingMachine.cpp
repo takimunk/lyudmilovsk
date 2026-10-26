@@ -357,6 +357,7 @@ void AVendingMachine::Buy()
 		}
 		Goods = Bag;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("VENDING bought %s for %d, rubles left %d"), *Sold.ToString(), PriceOf(Flavor), Inv->Rubles);
 	State = EState::Dispensing;
 	Clock = 0.f;
 }

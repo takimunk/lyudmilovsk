@@ -27,6 +27,8 @@ def apply(style, furniture, table=None):
         return furniture, None
     out = [dict(r) for r in furniture]
     for rep in spec.get("replace", []):
+        if any(r["item"] == rep["item"] for r in out):
+            continue                                       # already done (idempotent)
         for r in out:
             if r["item"] == rep["from"]:
                 dep = DEPTH.get(rep["from"], 0.6)
@@ -43,6 +45,32 @@ def apply(style, furniture, table=None):
     return out, lobby
 
 
+def place_centre(V):
+    """The hall's middle is the glazed core (the stair and the lift), so a hanging piece goes into the ring round it: on the side of the core
+    (one of the four) whose spot is farthest from the door, the stations' own spots and the furniture. Sets V["lobby"]["at"] (station frame, UE cm)."""
+    lobby = V.get("lobby")
+    if not lobby:
+        return
+    x0, y0, x1, y1 = V["floor_hole"]
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    room = V["room"]
+    rc = room["centre"]
+    obstacles = [d["at"] for d in V["doors"]] + [s["at"] for s in V["spots"].values()] + [f["at"] for f in V["furniture"]]
+    best = None
+    ex = V.get("core_exit", "")                                 # the side the core's stair comes out on: keep it free
+    for dx, dy, half in ((1, 0, (x1 - x0) / 2), (-1, 0, (x1 - x0) / 2), (0, 1, (y1 - y0) / 2), (0, -1, (y1 - y0) / 2)):
+        if ex and ex[1] == ("x" if dx else "y") and (ex[0] == "+") == (dx + dy > 0):
+            continue
+        p = (cx + dx * (half + 125), cy + dy * (half + 125))
+        if math.hypot(p[0] - rc[0], p[1] - rc[1]) > room["radius"] - 120:
+            continue
+        score = min(math.hypot(p[0] - o[0], p[1] - o[1]) for o in obstacles)
+        if best is None or score > best[0]:
+            best = (score, p)
+    if best:
+        lobby["at"] = [round(best[1][0], 1), round(best[1][1], 1)]
+
+
 def main():
     with open(VEST, encoding="utf-8") as f:
         text = f.read()
@@ -55,6 +83,7 @@ def main():
         V["furniture"], lobby = apply(style, V.get("furniture", []), table)
         if lobby:
             V["lobby"] = lobby
+            place_centre(V)
         print(style, [r["item"] for r in V["furniture"]], lobby or "")
     with open(VEST, "w") as f:                                  # vestibules.py's own format
         json.dump(d, f, indent=1, sort_keys=True)

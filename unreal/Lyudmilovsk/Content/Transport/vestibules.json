@@ -1020,6 +1020,10 @@
   "height": 867.7,
   "length": 2023.5,
   "lobby": {
+   "at": [
+    385.0,
+    0.0
+   ],
    "centre": "pendulum"
   },
   "mesh": "SM_TR_Vestibule_Dome",
@@ -2402,6 +2406,10 @@
   "height": 1053.1,
   "length": 2059.3,
   "lobby": {
+   "at": [
+    25.0,
+    -385.0
+   ],
    "centre": "beacon"
   },
   "mesh": "SM_TR_Vestibule_Lantern",
@@ -3017,6 +3025,10 @@
   "height": 1531.3,
   "length": 2110.2,
   "lobby": {
+   "at": [
+    335.0,
+    0.0
+   ],
    "centre": "chandelier"
   },
   "mesh": "SM_TR_Vestibule_Saucer",

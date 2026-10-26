@@ -82,9 +82,9 @@ def vending():
     box(bm, (xf + 0.004, 0.39, 1.1), (0.012, 0.12, 0.2), DK)                                  # coin plate
     box(bm, (xf + 0.01, 0.39, 1.14), (0.012, 0.012, 0.09), CH)                                # the slot
     # the header: a lit box over the window
-    box(bm, (xf - 0.03, 0.0, 1.855), (0.06, 0.9, 0.09), GLOW)
+    box(bm, (xf - 0.012, 0.0, 1.855), (0.06, 0.9, 0.09), GLOW)
     for sy in (-1, 1):
-        box(bm, (xf - 0.03, sy * 0.455, 1.855), (0.07, 0.02, 0.1), CH)
+        box(bm, (xf - 0.01, sy * 0.455, 1.855), (0.07, 0.02, 0.1), CH)
     return bm
 
 

@@ -129,6 +129,9 @@ public:
 		float Far = 6000.f;                           // animated only while the viewer is within this (cm) of the prop
 	};
 	TArray<FLobbyAnim> LobbyAnims;
+	/** Where to stand and what to look at for each lobby piece (the console command Lobby.Look <station index> <vending|piece|centre>, headless checks). */
+	struct FLobbyPoint { int32 Station = 0; FName Name; FVector Target = FVector::ZeroVector; FVector Stand = FVector::ZeroVector; };
+	TArray<FLobbyPoint> LobbyPoints;
 	/** The halls' sound: the room's loop, and the announcements while the player is in a hall (now and then, and when a
 	 * cabin comes in). From UpdateBoards. */
 	void UpdateHallSound(const FVector& Viewer, float DeltaTime);

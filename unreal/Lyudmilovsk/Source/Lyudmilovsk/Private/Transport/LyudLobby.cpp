@@ -14,7 +14,15 @@
 #include "Engine/World.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/GameCalendar.h"
+#include "TransportKit.h"
 #include "VendingMachine.h"
+#include "EngineUtils.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/Pawn.h"
+#include "HAL/IConsoleManager.h"
+#include "Kismet/GameplayStatics.h"
+
+using namespace LyudTransportKit;
 
 namespace
 {
@@ -104,7 +112,7 @@ UStaticMeshComponent* ALyudCableway::LobbyMesh(const TCHAR* Name, const FTransfo
 	C->SetMobility(EComponentMobility::Movable);
 	C->SetStaticMesh(M);
 	C->SetCollisionEnabled(bCollide ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
-	C->SetupAttachment(Parent ? Parent : RootComponent);
+	C->SetupAttachment(Parent ? Parent : static_cast<USceneComponent*>(RootComponent));
 	C->RegisterComponent();
 	if (Parent)
 	{
@@ -199,9 +207,14 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 			LobbyMaterials(C, SkinOf(Stock));
 			M->AddInstanceComponent(C);
 		}
+		LobbyPoints.Add({ S, TEXT("vending"), At.TransformPosition(FVector(30.f, 10.f, 70.f)), At.TransformPosition(FVector(230.f, 20.f, 0.f)) });
 		// the machine's own light on the floor and the goods
 		AddLight(this, RootComponent, At.TransformPosition(FVector(40.f, 0.f, 120.f)), 500.f, 280.f, FLinearColor(1.f, 0.92f, 0.8f));
 		return true;
+	}
+	if (Item == TEXT("CoffeeBar") || Item == TEXT("Stove") || Item == TEXT("AmberCase") || Item == TEXT("Aquarium"))
+	{
+		LobbyPoints.Add({ S, TEXT("piece"), At.TransformPosition(FVector(0.f, 0.f, 110.f)), At.TransformPosition(FVector(Item == TEXT("CoffeeBar") ? 340.f : 260.f, 0.f, 0.f)) });
 	}
 	if (Item == TEXT("CoffeeBar"))
 	{
@@ -301,9 +314,24 @@ void ALyudCableway::LobbyCentre(int32 S, const TSharedPtr<FJsonObject>& V, const
 		return;
 	}
 	const TSharedPtr<FJsonObject> Room = V->GetObjectField(TEXT("room"));
-	const FVector Mid = JsonVec3(Room, TEXT("centre"));
-	const float H = Room->GetNumberField(TEXT("height"));
+	// the hall's middle is the glazed core: the piece hangs in the ring beside it (lobby_layout.py place_centre: "at")
+	FVector Mid = JsonVec3(Room, TEXT("centre"));
+	const TArray<TSharedPtr<FJsonValue>>* AtArr = nullptr;
+	if ((*Lobby)->TryGetArrayField(TEXT("at"), AtArr) && AtArr->Num() >= 2)
+	{
+		Mid = FVector((*AtArr)[0]->AsNumber(), (*AtArr)[1]->AsNumber(), 0.f);
+	}
+	float H = Room->GetNumberField(TEXT("height"));
 	const FTransform At(C.GetRotation(), C.TransformPosition(FVector(Mid.X, Mid.Y, 0.f)));
+	// the ceiling over that spot (a dome comes down toward its rim): a trace up from head height
+	{
+		FHitResult Hit;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(LobbyCeiling), true, this);
+		if (GetWorld()->LineTraceSingleByChannel(Hit, At.GetLocation() + FVector(0.f, 0.f, 120.f), At.GetLocation() + FVector(0.f, 0.f, H + 400.f), ECC_Visibility, Q))
+		{
+			H = Hit.ImpactPoint.Z - At.GetLocation().Z - 2.f;
+		}
+	}
 	const FVector Top = At.GetLocation() + FVector(0.f, 0.f, H);
 	auto Anim = [this, S, &At](ELobbyAnim Kind2) -> FLobbyAnim&
 	{
@@ -313,6 +341,7 @@ void ALyudCableway::LobbyCentre(int32 S, const TSharedPtr<FJsonObject>& V, const
 		A.Frame = At;
 		return A;
 	};
+	LobbyPoints.Add({ S, TEXT("centre"), Top - FVector(0.f, 0.f, FMath::Min(H * 0.35f, 260.f)), At.TransformPosition(FVector(0.f, 330.f, 0.f)) });
 	if (Kind == TEXT("chandelier"))
 	{
 		// the sputnik: a hub 55 cm under the ceiling on a rod, turning slowly, a warm light in it
@@ -321,7 +350,7 @@ void ALyudCableway::LobbyCentre(int32 S, const TSharedPtr<FJsonObject>& V, const
 		{
 			(void)Rod;
 		}
-		UStaticMeshComponent* Body = LobbyMesh(TEXT("Chandelier"), FTransform(Hub), false);
+		UStaticMeshComponent* Body = LobbyMesh(TEXT("Chandelier"), FTransform(FRotator::ZeroRotator, Hub, FVector(0.85f)), false);
 		FLobbyAnim& A = Anim(ELobbyAnim::Spin);
 		A.A = Body;
 		A.Base = Hub;
@@ -481,3 +510,32 @@ void ALyudCableway::UpdateLobbies(const FVector& Viewer, float DeltaTime)
 		}
 	}
 }
+
+static FAutoConsoleCommandWithWorldAndArgs GLobbyLook(TEXT("Lobby.Look"),
+	TEXT("Lobby.Look <station index> <vending|piece|centre>: stands the hero in front of that lobby piece, looking at it (headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		APawn* Pawn = World ? UGameplayStatics::GetPlayerPawn(World, 0) : nullptr;
+		if (!Pawn || Args.Num() < 2)
+		{
+			return;
+		}
+		for (TActorIterator<ALyudCableway> It(World); It; ++It)
+		{
+			for (const ALyudCableway::FLobbyPoint& P : It->LobbyPoints)
+			{
+				if (P.Station == FCString::Atoi(*Args[0]) && P.Name == FName(*Args[1]))
+				{
+					Pawn->SetActorLocation(P.Stand + FVector(0.f, 0.f, 92.f), false, nullptr, ETeleportType::TeleportPhysics);
+					const FVector Eye = P.Stand + FVector(0.f, 0.f, 160.f);
+					if (AController* C = Pawn->GetController())
+					{
+						C->SetControlRotation((P.Target - Eye).Rotation());
+					}
+					UE_LOG(LogTemp, Warning, TEXT("LOBBYLOOK %s %s stand %s"), *Args[0], *Args[1], *P.Stand.ToString());
+					return;
+				}
+			}
+		}
+		UE_LOG(LogTemp, Warning, TEXT("LOBBYLOOK %s %s: no such piece"), *Args[0], *Args[1]);
+	}));

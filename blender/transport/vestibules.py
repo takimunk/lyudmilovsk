@@ -1264,6 +1264,7 @@ def finish(style, cfg, parts):
         "furniture": furniture,
         **({"lobby": lobby} if lobby else {}),
     }
+    lobby_layout.place_centre(data)
     data["tower"] = build_towers(style, cdir, mats)
     debug_render(V, style, rc, door_o)
     log(style, json.dumps(data))
