@@ -74,7 +74,11 @@ sound thread, which uses it for rain, thunder and the music's mood; visuals are 
 - **Swimming**: in play a water `APhysicsVolume` covers the sea (from `LandSideX` out, 30 m under sea level up to
   it; its brush is a box body built at runtime), so a character that falls in goes to `MOVE_Swimming` (checked
   offscreen: dropped in the shallows it swims, on the beach it walks). `IsSwimmable(Location)` asks the same of a
-  point; `SampleSurface` gives the wavy surface to float at. The hero's own swim tuning lives with the hero.
+  point; `SampleSurface` gives the wavy surface to float at. While the player's body is in water deeper than
+  `SwimMinDepth` (1.2 m) the sea holds them in its water itself (the volume's flat top would let a wave crest lift
+  them out, drop, swim, pop out again) and keeps the camera `SwimEyeClearance` (22 cm) over the waves, whatever put
+  them in the sea (a fall, the hand-over from a drowned bird); shallower they stand and walk out. Checked offscreen
+  in the shallows, the open sea at 14 m/s and on the beach (`swim_*` steps of test_sea).
 - **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour, dims it with depth,
   lays caustics on the bed and shows the sky through Snell's window overhead (dark by night, from the sun's altitude).
 - **Buoyancy**: `ULyudBuoyancyComponent` on a simulating body (points, volume, drag). `lyud.Sea.SpawnFloat` drops

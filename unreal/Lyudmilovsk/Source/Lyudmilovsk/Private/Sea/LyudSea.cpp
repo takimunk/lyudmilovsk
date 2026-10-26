@@ -7,6 +7,8 @@
 #include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -572,6 +574,68 @@ void ALyudSea::SpawnWaterVolume()
 	UE_LOG(LogTemp, Log, TEXT("LyudSea: water volume %s, %.0f x %.0f x %.0f m"), *Center.ToString(), Size.X * 0.01, Size.Y * 0.01, Size.Z * 0.01);
 }
 
+void ALyudSea::KeepSwimmerHeadUp(float DeltaSeconds)
+{
+	const UWorld* World = GetWorld();
+	const APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+	ACharacter* C = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	UCharacterMovementComponent* Move = C ? C->GetCharacterMovement() : nullptr;
+	USceneComponent* Root = C ? C->GetRootComponent() : nullptr;
+	if (!Move || !Root || !PC->PlayerCameraManager || !WaterVolume)
+	{
+		return;
+	}
+	// The water volume's flat top knows nothing of the waves: a swimmer lifted on a crest would pop out of
+	// it, fall, drop back in. So while the player's body is in the sea and the water is deeper than a
+	// standing man's chest, the sea holds them in its water itself; shallower, they find their feet.
+	const FVector At = C->GetActorLocation();
+	const FLyudSeaSample Here = SampleSurface(At);
+	const float Bottom = At.Z - C->GetSimpleCollisionHalfHeight();
+	const bool bInSea = Here.bIsSea && Here.Depth > SwimMinDepth && Bottom < Here.SurfaceZ - 10.f;
+	if (!bInSea)
+	{
+		if (bHoldingSwimmer && Swimmer.Get() == C)
+		{
+			Root->SetShouldUpdatePhysicsVolume(true);
+			Root->UpdatePhysicsVolume(true);
+		}
+		bHoldingSwimmer = false;
+		return;
+	}
+	if (!bHoldingSwimmer || Swimmer.Get() != C)
+	{
+		bHoldingSwimmer = true;
+		Swimmer = C;
+		Root->SetShouldUpdatePhysicsVolume(false);
+	}
+	if (Root->GetPhysicsVolume() != WaterVolume)
+	{
+		Root->SetPhysicsVolume(WaterVolume, true);
+	}
+	if (!Move->IsSwimming())
+	{
+		Move->SetMovementMode(MOVE_Swimming);
+	}
+	if (SwimEyeClearance <= 0.f)
+	{
+		return;
+	}
+	// the eyes ride the waves: a swimming body floats with its head out, whatever put it in the water
+	// (a fall, the hand-over from a drowned bird)
+	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+	const FLyudSeaSample S = SampleSurface(Eye);
+	const float Want = S.SurfaceZ + SwimEyeClearance;
+	if (Eye.Z >= Want)
+	{
+		return;
+	}
+	const float NewZ = Want - Eye.Z > 40.f ? Want : FMath::FInterpTo(Eye.Z, Want, DeltaSeconds, 12.f);
+	C->AddActorWorldOffset(FVector(0.0, 0.0, NewZ - Eye.Z), false, nullptr, ETeleportType::TeleportPhysics);
+	FVector V = Move->Velocity;
+	V.Z = FMath::Max(V.Z, S.Velocity.Z);
+	Move->Velocity = V;
+}
+
 bool ALyudSea::IsSwimmable(const FVector& Location) const
 {
 	const FLyudSeaSample S = SampleSurface(Location);
@@ -617,6 +681,10 @@ void ALyudSea::Tick(float DeltaSeconds)
 	}
 	EnsureMaterial();
 
+	if (GetWorld() && GetWorld()->IsGameWorld())
+	{
+		KeepSwimmerHeadUp(DeltaSeconds);
+	}
 	FVector Eye;
 	if (ViewLocation(Eye))
 	{
@@ -670,6 +738,22 @@ void ALyudSea::Tick(float DeltaSeconds)
 }
 
 FString ALyudSea::GetDebugReport() const
+{
+	FString Player;
+	if (const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr)
+	{
+		if (const APawn* P = PC->GetPawn())
+		{
+			const APhysicsVolume* V = P->GetRootComponent() ? P->GetRootComponent()->GetPhysicsVolume() : nullptr;
+			const ACharacter* C = Cast<ACharacter>(P);
+			Player = FString::Printf(TEXT(", player in %s (water %d), movement %d"), V ? *V->GetName() : TEXT("none"), V ? (int32)V->bWaterVolume : -1,
+				C && C->GetCharacterMovement() ? (int32)C->GetCharacterMovement()->MovementMode.GetValue() : -1);
+		}
+	}
+	return Player.IsEmpty() ? GetDebugReportCore() : GetDebugReportCore() + Player;
+}
+
+FString ALyudSea::GetDebugReportCore() const
 {
 	return FString::Printf(TEXT("sea: wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s"),
 		Field->WindSpeed, Field->Hs, Field->PeakLambda, Field->Chop, AppliedQuality, (int32)Field->Geo.size(), (int32)Field->Detail.size(), Segments,
