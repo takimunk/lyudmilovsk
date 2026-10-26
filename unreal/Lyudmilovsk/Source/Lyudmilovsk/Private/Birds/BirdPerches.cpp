@@ -9,6 +9,7 @@
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralPlant.h"
 #include "Sea/LyudSea.h"
+#include "Transport/LyudCableway.h"
 
 namespace
 {
@@ -49,6 +50,17 @@ void FBirdPerches::BuildCrowns(UWorld* World)
 	for (TActorIterator<AProceduralPlant> It(World); It; ++It)
 	{
 		Add(It->GetActorLocation(), (float)It->GetActorScale3D().Z, It->GetSummary());
+	}
+	// the cable car's perches (pylons' crossarms, vestibules' railings and roofs): points, as tiny crowns
+	for (TActorIterator<ALyudCableway> It(World); It; ++It)
+	{
+		for (const FVector& P : It->BirdPerches)
+		{
+			FCrown C;
+			C.Centre = FVector3f(P - FVector(0, 0, 9.f));
+			C.Radii = FVector2f(1.f, 1.f);
+			Grid.FindOrAdd(CellOf(P)).Add(C);
+		}
 	}
 }
 

@@ -88,6 +88,41 @@ def plan():
         for k, (dx, dy, dz, pitch, yaw) in enumerate([(700, 0, 250, 25, 180), (900, 300, 1200, 5, 198)]):
             add(0.5, lambda w, a=(x + dx, y + dy, z + dz, pitch, yaw): cmd(w, "BugItGo %.0f %.0f %.0f %.0f %.0f 0" % a))
             add(3.0, lambda w, k=k: shot(w, "pylon_%d" % k))
+    # COLLIDE=1: a horizontal trace into every pylon's shaft and into each vestibule's hall wall: what blocks, and
+    # whether it casts a shadow (COLLIDE lines)
+    if os.environ.get("COLLIDE"):
+        def probe(w, a, b, what):
+            hit = unreal.SystemLibrary.line_trace_single(w, unreal.Vector(*a), unreal.Vector(*b),
+                                                         unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [],
+                                                         unreal.DrawDebugTrace.NONE, True)
+            if not hit:
+                log("COLLIDE %s: nothing" % what)
+                return
+            t = hit.to_tuple()
+            comp = next((x for x in t if isinstance(x, unreal.PrimitiveComponent)), None)
+            info = ""
+            try:
+                info = " %s/%s mesh=%s shadow=%s mob=%s coll=%s" % (comp.get_owner().get_name(), comp.get_name(), comp.static_mesh.get_name() if hasattr(comp, "static_mesh") and comp.static_mesh else "-",
+                                                         comp.get_editor_property("cast_shadow"), comp.get_editor_property("mobility"),
+                                                         comp.get_collision_enabled())
+            except Exception as ex:
+                info = " (%s)" % ex
+            log("COLLIDE %s: hit at %.0f cm%s" % (what, (unreal.Vector(*a) - t[4]).length(), info))
+        allp = [p for ln in BUILT["lines"] for p in ln["pylons"]]
+        for k, p in enumerate(allp[:6]):
+            x, y = p["x"] * 100.0, FACE_Y + p["y"] * 100.0
+            z = p["ground"] * 100.0 + 600.0
+            add(0.2, lambda w, a=(x + 800, y, z), b=(x, y, z), k=k: probe(w, a, b, "pylon %d" % k))
+            add(0.2, lambda w, a=(x, y + 800, z), b=(x, y, z), k=k: probe(w, a, b, "pylon %d across" % k))
+        for st in STATIONS:
+            sid = st["id"]
+            add(0.5, lambda w, s=sid: cmd(w, "Transport.Goto %s vestibule" % s))
+            def into(w, s=sid):
+                pc = unreal.GameplayStatics.get_player_pawn(w, 0)
+                l = pc.get_actor_location()
+                for k, (dx, dy) in enumerate(((1, 0), (0, 1), (-1, 0), (0, -1))):
+                    probe(w, (l.x, l.y, l.z), (l.x + dx * 1500, l.y + dy * 1500, l.z), "%s hall %d" % (s, k))
+            add(1.0, into)
     # PYLONS=1: every kind of pylon (the corner, a convergence one, the shortest, the tallest) from afar and at its head
     if os.environ.get("PYLONS"):
         allp = [p for ln in BUILT["lines"] for p in ln["pylons"]]
@@ -97,6 +132,9 @@ def plan():
             x, y = p["x"] * 100.0, FACE_Y + p["y"] * 100.0
             g, t = p["ground"] * 100.0, p["top"] * 100.0
             yaw = p.get("yaw", 0.0)
+            # straight down from 60 m over it: its shadow on the ground
+            add(0.5, lambda w, q=(x + 1, y, t + 6000.0): cmd(w, "BugItGo %.0f %.0f %.0f -89 0 0" % q))
+            add(3.0, lambda w, k=k, kind=p.get("kind"): shot(w, "pyl%d_%s_down" % (k, kind)))
             for v, (dist, dz, pitch, side) in enumerate([(2600.0, 0.35, 8.0, 70.0), (900.0, 1.0, -4.0, 60.0)]):
                 a = math.radians(yaw + side)
                 cx, cy = x + math.cos(a) * dist, y + math.sin(a) * dist

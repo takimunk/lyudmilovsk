@@ -174,7 +174,8 @@ void ALyudCableway::Add(FName Kind, FName MatName, const FTransform& T, bool bCo
 UStaticMeshComponent* ALyudCableway::Single(UStaticMesh* Mesh, const FTransform& T, bool bCollide, FName MatName)
 {
 	UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
-	C->SetMobility(EComponentMobility::Static);
+	// Movable: a static component registered at play casts no shadow from the moving sun (nothing baked for it)
+	C->SetMobility(EComponentMobility::Movable);
 	C->SetStaticMesh(Mesh);
 	C->SetWorldTransform(T);
 	if (!MatName.IsNone())
@@ -403,6 +404,7 @@ void ALyudCableway::BuildClubBoard(const LyudTransport::FNetwork& Net)
 
 void ALyudCableway::UpdateBoards(const LyudTransport::FNetwork& Net, const FVector& Viewer, float DeltaTime)
 {
+	UpdateHallSound(Viewer, DeltaTime);
 	for (int32 S = 0; S < Built.Num(); S++)
 	{
 		FLyudBuiltStation& B = Built[S];

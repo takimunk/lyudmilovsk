@@ -16,6 +16,7 @@
 #include "TransportKit.h"
 #include "TransportStd.h"
 #include "Audio/LyudSoundscape.h"
+#include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -377,6 +378,9 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		Lt->SetCastShadows(false);
 		AddInstanceComponent(Lt);
 	}
+
+	// posters and sconces up the stair (LyudStationFurnish.cpp)
+	DressCore(S, VestibuleData(Style));
 
 	// the lift
 	if (Top > LevelLiftMin)
@@ -951,6 +955,19 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 	{
 		UStaticMeshComponent* M = Single(Mesh, C, true);
 		M->SetCastShadow(true);
+		// perches for birds (vestibules.py: the railing's top, the roofs' and canopy's tops)
+		const TArray<TSharedPtr<FJsonValue>>* Pr = nullptr;
+		if (V->TryGetArrayField(TEXT("perches"), Pr))
+		{
+			for (const TSharedPtr<FJsonValue>& Pv : *Pr)
+			{
+				const TArray<TSharedPtr<FJsonValue>>& A = Pv->AsArray();
+				if (A.Num() == 3)
+				{
+					BirdPerches.Add(C.TransformPosition(FVector(A[0]->AsNumber(), A[1]->AsNumber(), A[2]->AsNumber())));
+				}
+			}
+		}
 		{
 			// bare ground under it and its terrace, a metre and a half round
 			const FBox Bb = Mesh->GetBoundingBox();
@@ -1122,6 +1139,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 		}
 	}
 	KitMesh(K, C, FName(*FString::Printf(TEXT("SM_VestibuleFurniture_%d"), S)));
+	FurnishVestibule(S, V, C);
 }
 
 bool ALyudCableway::StackTowerKit(int32 S, const FString& Style, float Height)
@@ -1487,7 +1505,15 @@ void ALyudCableway::BuildPylons(const LyudTransport::FNetwork& Net, int32 L)
 			continue;
 		}
 		const FVector Scale(1.f, bCorner && P.Turn < 0.f ? -1.f : 1.f, 1.f);
-		UStaticMeshComponent* C = Single(M, FTransform(FRotator(0.f, P.Yaw, 0.f), G - FVector(0, 0, Sink), Scale), true);
+		const FTransform At(FRotator(0.f, P.Yaw, 0.f), G - FVector(0, 0, Sink), Scale);
+		UStaticMeshComponent* C = Single(M, At, true);
+		// perches for birds: along the crossarm's top (the sheave batteries' frames) and the beacon's spire
+		const float Arm = Hm * 100.f - (bCorner ? 50.f : 60.f);
+		for (const float Y : { -480.f, -250.f, 250.f, 480.f })
+		{
+			BirdPerches.Add(At.TransformPosition(FVector(0.f, Y, Arm + 2.f)));
+		}
+		BirdPerches.Add(At.TransformPosition(FVector(0.f, 0.f, Hm * 100.f + (bCorner ? 160.f : 125.f))));
 		const TArray<FName> Slots = C->GetMaterialSlotNames();
 		for (int32 I = 0; I < Slots.Num(); I++)
 		{
@@ -1591,40 +1617,85 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 	Stops = InStops;
 	DoorSides = InSides;
 	Z = Stops.Num() ? Stops[0] : 0.f;
-	// the cab: a terrazzo floor, a steel ceiling with a lamp, glass walls but on its door sides, a handrail
-	const float H = ShaftHalf - 8.f;
-	FLyudMeshKit K;
-	K.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, -6.f), FVector(H * 2.f, H * 2.f, 12.f), true, TEXT("tx_terrazzo"));
-	K.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, 236.f), FVector(H * 2.f, H * 2.f, 8.f), false);
-	K.BoxIn(TEXT("glow"), FTransform::Identity, FVector(0, 0, 231.f), FVector(80.f, 80.f, 2.f), false);
-	TSet<int32> Doors;
-	for (const int32 D : DoorSides)
+	// the cab (Dima: a new one): furniture.py's floor, coffered ceiling with its lamp ring, panelled walls with a mirror
+	// and a handrail, brass-framed door sides; the kit's plain cab when those meshes are missing
+	UStaticMesh* CabFloor = LoadMesh(TEXT("SM_TR_Furn_LiftCabFloor"));
+	UStaticMesh* CabCeil = LoadMesh(TEXT("SM_TR_Furn_LiftCabCeiling"));
+	UStaticMesh* CabWall = LoadMesh(TEXT("SM_TR_Furn_LiftCabWall"));
+	UStaticMesh* CabDoor = LoadMesh(TEXT("SM_TR_Furn_LiftCabDoor"));
+	if (CabFloor && CabCeil && CabWall && CabDoor)
 	{
-		Doors.Add(D & 3);
-	}
-	for (int32 E = 0; E < 4; E++)
-	{
-		const FRotator R(0.f, E * 90.f, 0.f);
-		const FVector O = SideOut(E);
-		if (!Doors.Contains(E))
+		TSet<int32> DoorSet;
+		for (const int32 D : DoorSides)
 		{
-			K.BoxIn(TEXT("glass"), FTransform::Identity, O * (H - 2.f) + FVector(0, 0, 116.f), FVector(3.f, H * 2.f, 232.f), true, NAME_None, R);
-			K.Rod(TEXT("tx_steel"), O * (H - 8.f) - SideAlong(E) * (H - 20.f) + FVector(0, 0, 92.f), O * (H - 8.f) + SideAlong(E) * (H - 20.f) + FVector(0, 0, 92.f), 2.2f, 8, true);
+			DoorSet.Add(D & 3);
 		}
-		else
+		const float Sc = (ShaftHalf - 8.f) * 2.f / 230.f;
+		auto Part = [&](UStaticMesh* M, float Yaw)
 		{
-			// the cab's own door posts
-			for (const float U : { -H + 15.f, H - 15.f })
+			UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+			C->SetMobility(EComponentMobility::Movable);
+			C->SetStaticMesh(M);
+			C->SetupAttachment(Cab);
+			C->SetRelativeTransform(FTransform(FRotator(0.f, Yaw, 0.f), FVector::ZeroVector, FVector(Sc, Sc, 1.f)));
+			C->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+			C->RegisterComponent();
+			Way->KitMaterials(C);
+			AddInstanceComponent(C);
+		};
+		Part(CabFloor, 0.f);
+		Part(CabCeil, 0.f);
+		for (int32 E = 0; E < 4; E++)
+		{
+			Part(DoorSet.Contains(E) ? CabDoor : CabWall, E * 90.f);
+		}
+		UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
+		Lt->SetupAttachment(Cab);
+		Lt->SetRelativeLocation(FVector(0, 0, 210.f));
+		Lt->SetIntensity(1500.f);
+		Lt->SetAttenuationRadius(300.f);
+		Lt->SetLightColor(FLinearColor(1.f, 0.85f, 0.65f));
+		Lt->SetCastShadows(false);
+		Lt->RegisterComponent();
+		AddInstanceComponent(Lt);
+	}
+	else
+	{
+		// the cab: a terrazzo floor, a steel ceiling with a lamp, glass walls but on its door sides, a handrail
+		const float H = ShaftHalf - 8.f;
+		FLyudMeshKit K;
+		K.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, -6.f), FVector(H * 2.f, H * 2.f, 12.f), true, TEXT("tx_terrazzo"));
+		K.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, 236.f), FVector(H * 2.f, H * 2.f, 8.f), false);
+		K.BoxIn(TEXT("glow"), FTransform::Identity, FVector(0, 0, 231.f), FVector(80.f, 80.f, 2.f), false);
+		TSet<int32> Doors;
+		for (const int32 D : DoorSides)
+		{
+			Doors.Add(D & 3);
+		}
+		for (int32 E = 0; E < 4; E++)
+		{
+			const FRotator R(0.f, E * 90.f, 0.f);
+			const FVector O = SideOut(E);
+			if (!Doors.Contains(E))
 			{
-				K.BoxIn(TEXT("tx_steel"), FTransform::Identity, O * (H - 4.f) + SideAlong(E) * (U > 0 ? U + 7.f : U - 7.f) * 0.f + SideAlong(E) * U + FVector(0, 0, 116.f), FVector(6.f, FMath::Max(2.f, H - 62.f - 2.f) * 0.f + 30.f, 232.f), false, NAME_None, R);
+				K.BoxIn(TEXT("glass"), FTransform::Identity, O * (H - 2.f) + FVector(0, 0, 116.f), FVector(3.f, H * 2.f, 232.f), true, NAME_None, R);
+				K.Rod(TEXT("tx_steel"), O * (H - 8.f) - SideAlong(E) * (H - 20.f) + FVector(0, 0, 92.f), O * (H - 8.f) + SideAlong(E) * (H - 20.f) + FVector(0, 0, 92.f), 2.2f, 8, true);
+			}
+			else
+			{
+				// the cab's own door posts
+				for (const float U : { -H + 15.f, H - 15.f })
+				{
+					K.BoxIn(TEXT("tx_steel"), FTransform::Identity, O * (H - 4.f) + SideAlong(E) * (U > 0 ? U + 7.f : U - 7.f) * 0.f + SideAlong(E) * U + FVector(0, 0, 116.f), FVector(6.f, FMath::Max(2.f, H - 62.f - 2.f) * 0.f + 30.f, 232.f), false, NAME_None, R);
+				}
 			}
 		}
+		for (int32 E = 0; E < 4; E++)
+		{
+			K.BoxIn(TEXT("tx_steel"), FTransform::Identity, CornerAt(E, H - 4.f, 116.f), FVector(8.f, 8.f, 232.f), false);
+		}
+		Way->KitMesh(K, FTransform::Identity, TEXT("SM_LiftCab"), true, Cab);
 	}
-	for (int32 E = 0; E < 4; E++)
-	{
-		K.BoxIn(TEXT("tx_steel"), FTransform::Identity, CornerAt(E, H - 4.f, 116.f), FVector(8.f, 8.f, 232.f), false);
-	}
-	Way->KitMesh(K, FTransform::Identity, TEXT("SM_LiftCab"), true, Cab);
 	// the landing doors: two steel leaves at each stop, sliding apart
 	FLyudMeshKit Lf;
 	Lf.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, 111.f), FVector(4.f, 62.f, 222.f), true);
@@ -1745,6 +1816,15 @@ void ALyudStationLift::Tick(float DeltaTime)
 				if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 				{
 					Sound->PlayEffect(TEXT("lift_start"), Cab->GetComponentLocation() + FVector(0, 0, 120.f), 0.8f);
+					// the motor's hum rides with the cab while it moves
+					if (!Hum)
+					{
+						Hum = Sound->AttachLoop(TEXT("lift_hum"), Cab, 0.55f);
+					}
+					else
+					{
+						Hum->Play();
+					}
 				}
 			}
 			const float Goal = Stops[Target];
@@ -1772,6 +1852,11 @@ void ALyudStationLift::Tick(float DeltaTime)
 				if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 				{
 					Sound->PlayEffect(TEXT("lift_ding"), Cab->GetComponentLocation() + FVector(0, 0, 200.f), 0.7f);
+					Sound->PlayEffect(TEXT("lift_doors"), Cab->GetComponentLocation() + FVector(0, 0, 110.f), 0.7f);
+				}
+				if (Hum)
+				{
+					Hum->Stop();
 				}
 			}
 			Cab->SetRelativeLocation(FVector(0, 0, Z));

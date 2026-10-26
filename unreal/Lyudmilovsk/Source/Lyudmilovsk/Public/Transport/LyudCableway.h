@@ -93,6 +93,25 @@ public:
 	/** Real glass and plaster on a kit mesh's TR_Glass / TR_Interior slots. */
 	void KitMaterials(UStaticMeshComponent* C);
 
+	/** Where a bird can land on the cable car (world, cm): pylons' crossarms and tops, vestibules' railings and roofs
+	 * (vestibules.json "perches"). FBirdPerches reads them (Q, the magnet landing). */
+	TArray<FVector> BirdPerches;
+
+	/** The furnishing (LyudStationFurnish.cpp): a hall's furniture from vestibules.json "furniture" (C: the station
+	 * frame), the tower's stair (posters, sconces), one piece of furniture, a poster's material, a lamp, a live plant. */
+	void FurnishVestibule(int32 S, const TSharedPtr<class FJsonObject>& V, const FTransform& C);
+	void DressCore(int32 S, const TSharedPtr<class FJsonObject>& V);
+	UStaticMeshComponent* Furniture(const FString& Item, const FTransform& At, int32 Poster = 0);
+	UMaterialInterface* PosterMat(int32 K);
+	void Lamp(const FVector& At, float Intensity, float Radius);
+	void Plant(const FVector& At, FName Species, int32 Seed, float Age);
+	/** The halls' sound: the room's loop, and the announcements while the player is in a hall (now and then, and when a
+	 * cabin comes in). From UpdateBoards. */
+	void UpdateHallSound(const FVector& Viewer, float DeltaTime);
+	TArray<float> HallTimer;
+	TArray<bool> CabinNear;
+	int32 HallLine = 0;
+
 private:
 	UPROPERTY(Transient) TObjectPtr<ULyudTransportSubsystem> Transport;
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UInstancedStaticMeshComponent>> Ism;

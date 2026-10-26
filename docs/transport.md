@@ -225,6 +225,29 @@ sheaves on each end the rope bends round in plan, built for a left turn, a golde
 corner mirrored for a right turn. `STATIONS=none PYLONS=1 unreal/scripts/test_stations.sh` shoots the corner, a
 convergence pylon, the shortest and the tallest from afar and at the head.
 
+## Furnishing, birds, sound (2026-10-26, after Dima's feedback)
+
+- **Halls**: `blender/transport/furniture.py` models the furniture (`SM_TR_Furn_*`: bench, egg chair, tulip table,
+  planter, floor lamp, bin, rug, poster frame, sconce, the lift cab's floor / ceiling / wall / door side). `vestibules.py`
+  lays it out round each hall's wall (`vestibules.json` "furniture": item, at, yaw, plant, poster), keeping clear the
+  way from the core's exit to the door, the stations' own spots and a 1.1 m walk; `LyudStationFurnish.cpp`
+  (`FurnishVestibule`) places it: live plants in the planters (`AProceduralPlant`, indoor species, the vegetation rule),
+  a pair of egg chairs with a table on a rug, lamps with a warm light, posters.
+- **Posters**: six textless 1960s travel posters from one Higgsfield grid (`design/transport/posters/grid.json`, cut to
+  `poster_0..5.png`) -> `/Game/Transport/Posters/T_TR_Poster_*`, `M_TR_Poster` (texture parameter `Poster`).
+- **Stairs** (`DressCore`): a poster on the tower's wall at every flight, a sconce with a warm light at every turn.
+- **Lift**: a new cab from the furniture kit (panelled walls, a mirror, a handrail, a coffered ceiling with a lamp ring,
+  brass-framed door sides), its own light; the hum of its motor while it moves (`lift_hum`), its doors (`lift_doors`).
+- **Collision and shadows**: the pylons collide (complex as simple, `import_transport.py`); every placed mesh
+  (`ALyudCableway::Single`) is Movable so the moving sun casts its shadow.
+- **Birds**: `ALyudCableway::BirdPerches` (pylons' crossarms and spires, vestibules' railings and roofs:
+  `vestibules.json` "perches") are read by `FBirdPerches` as points, so Q lands a bird on them.
+- **Sound**: each hall plays `station_hall` (a quiet room, a clock, a far murmur); while the player is in a hall the
+  announcements (`line.transport.hall_welcome|hall_lift|hall_cabin.1`, ru/en/ja, the transport announcer) come every
+  2.5 minutes, and with a chime when a cabin comes within 90 m (`UpdateHallSound`, from `UpdateBoards`).
+- Tests: `test_stations.sh` with `COLLIDE=1` (traces into the pylons and the halls' walls) and `PYLONS=1` (the pylons
+  from afar, at the head and from above).
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

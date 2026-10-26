@@ -1,0 +1,25 @@
+{
+ "id": "lift_hum",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/lift_hum_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Inside an old elevator cab moving smoothly up a shaft: a low steady electric motor hum, soft whir of the cables, faint rattle of the cab walls, seamless loop, no voices, no music",
+  "duration_seconds": 8.0,
+  "loop": true
+ },
+ "hash": "d92de35dd59a",
+ "fal_request_id": "01a179ad-34c2-7601-8f12-5c34c07ad47d",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aaff753/gLR7uvY9PhoMDft5Rms_K_sound_effect.mp3",
+ "created": "2026-10-26T19:26:01Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "100b784cda1425559591fb7da6951b5a16d84b1f76b9ca6e56a450bf25d311eb",
+ "seconds": 7.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport",
+ "loop": true
+}

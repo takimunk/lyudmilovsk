@@ -65,6 +65,16 @@ ROWS = [
     ("transport.prompt.board", "E — схема канатных дорог", "E: cable car route map", "E：ロープウェイ路線図"),
     ("transport.prompt.ride", "Кабина «{0}» → {1}", "Cabin {0} → {1}", "キャビン「{0}」→ {1}"),
     # announcements (spoken: localization/voice.json speaker "transport"; the same words as a note on screen)
+    # the station halls' announcements (LyudStationFurnish.cpp: now and then while the player is in a hall)
+    ("line.transport.hall_welcome.1", "Уважаемые пассажиры! Добро пожаловать на канатную дорогу Людмиловска. Посадка в кабины — по обе стороны платформы, у жёлтой линии.",
+     "Dear passengers, welcome to the Lyudmilovsk cable car. Cabins board on both sides of the platform, at the yellow line.",
+     "ご乗車のお客様、リュドミロフスク・ロープウェイへようこそ。キャビンへはホームの両側、黄色い線の内側からご乗車ください。"),
+    ("line.transport.hall_cabin.1", "Внимание! Кабина подходит к станции. Пожалуйста, не заходите за жёлтую линию.",
+     "Attention, please: a cabin is approaching the station. Please stay behind the yellow line.",
+     "まもなくキャビンが到着します。黄色い線の内側でお待ちください。"),
+    ("line.transport.hall_lift.1", "Лифт и лестница ведут на посадочную платформу. На лестнице, пожалуйста, держитесь за поручень.",
+     "The lift and the stairs lead up to the boarding platform. Please hold the handrail on the stairs.",
+     "エレベーターと階段は乗車ホームへ続いています。階段では手すりにおつかまりください。"),
     ("line.transport.next_aton.1", "Следующая станция — Атон. Компьютерный клуб.", "Next station: Aton. The computer club.", "次はアトン。コンピュータークラブ前です。"),
     ("line.transport.next_academ.1", "Следующая станция — Академгородок.", "Next station: Akademgorodok.", "次はアカデムゴロドクです。"),
     ("line.transport.next_zenit.1", "Следующая станция — Зенит. Переход на другую линию.", "Next station: Zenith. Change here for the other line.", "次は天頂。別の路線へお乗り換えいただけます。"),

@@ -256,7 +256,8 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// the cable car (ULyudTransportSubsystem plays them through PlayEffect / AttachLoop)
 		{ TEXT("Transport"), TEXT("cabin_motor") }, { TEXT("Transport"), TEXT("cabin_sheave") }, { TEXT("Transport"), TEXT("cabin_door") },
 		{ TEXT("Transport"), TEXT("station_chime") }, { TEXT("Transport"), TEXT("station_wheel") }, { TEXT("Transport"), TEXT("lift_start") },
-		{ TEXT("Transport"), TEXT("lift_ding") },
+		{ TEXT("Transport"), TEXT("lift_ding") }, { TEXT("Transport"), TEXT("lift_hum") }, { TEXT("Transport"), TEXT("lift_doors") },
+		{ TEXT("Transport"), TEXT("station_hall") },
 	};
 	for (const auto& G : Groups)
 	{

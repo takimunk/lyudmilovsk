@@ -1,0 +1,23 @@
+{
+ "id": "lift_doors",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/lift_doors_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Old elevator steel doors sliding open with a soft metallic rumble and a gentle stop, close, indoors, no bell, no voices",
+  "duration_seconds": 2.5
+ },
+ "hash": "0eeacbcd7f94",
+ "fal_request_id": "01a179ad-5b2c-7c10-8ea3-4e936f5a7d7b",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aaff754/_5fYUUeCbKDgV0AbQo1pR_sound_effect.mp3",
+ "created": "2026-10-26T19:26:09Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "c80efa6a43ceb3390ccca285460fad8db67fd20e03e95a26161d04241fc9f596",
+ "seconds": 2.44,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.hall_cabin.1",
+ "lang": "ja",
+ "text": "まもなくキャビンが到着します。黄色い線の内側でお待ちください。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] まもなくキャビンが到着します。黄色い線の内側でお待ちください。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a179ae-0f11-7141-a64d-58e6cb192b32",
+ "hash": "f437e6601e67"
+}

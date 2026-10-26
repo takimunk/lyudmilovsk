@@ -155,6 +155,40 @@ def import_textures():
     return len(names)
 
 
+POSTERS = os.path.join(REPO, "design", "transport", "posters")
+POSTER_DIR = "/Game/Transport/Posters"
+
+
+def poster_mat(m):
+    """M_TR_Poster: a printed poster under glass: the picture (texture parameter Poster), a little sheen."""
+    t = mel.create_material_expression(m, unreal.MaterialExpressionTextureSampleParameter2D, -500, 0)
+    t.set_editor_property("parameter_name", "Poster")
+    mel.connect_material_property(t, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(sparam(m, "Roughness", 0.35, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    m.set_editor_property("used_with_instanced_static_meshes", True)
+
+
+def import_posters():
+    """design/transport/posters/poster_<k>.png (the Higgsfield grid cut, grid.json) -> /Game/Transport/Posters/T_TR_Poster_<k>,
+    and M_TR_Poster over them (the game sets the texture per poster)."""
+    if not os.path.isdir(POSTERS):
+        return 0
+    names = sorted(f for f in os.listdir(POSTERS) if f.startswith("poster_") and f.endswith(".png"))
+    tasks = []
+    for f in names:
+        t = unreal.AssetImportTask()
+        t.filename = os.path.join(POSTERS, f)
+        t.destination_path = POSTER_DIR
+        t.destination_name = "T_TR_Poster_" + f[7:-4]
+        t.automated = True
+        t.replace_existing = True
+        t.save = True
+        tasks.append(t)
+    tools.import_asset_tasks(tasks)
+    material("M_TR_Poster", unreal.BlendMode.BLEND_OPAQUE, poster_mat)
+    return len(names)
+
+
 def import_kit():
     if not os.path.isfile(KIT):
         # the meshes are committed (LFS); the .glb is only where they were made (blender/transport/optimize.py, pack.py)
@@ -179,7 +213,7 @@ def import_kit():
             if body:
                 # the vestibules and their towers are walked into and on: their own triangles collide (doors, rooms, decks, railings)
                 body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE
-                                         if a.get_name().startswith(("SM_TR_Vestibule_", "SM_TR_Tower_")) else unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
+                                         if a.get_name().startswith(("SM_TR_Vestibule_", "SM_TR_Tower_", "SM_TR_Pylon", "SM_TR_Furn_")) else unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
             log("mesh %s: %d triangles" % (a.get_name(), a.get_num_triangles(0)))
             n += 1
     # Hi3D's PBR maps read as metal on these painted surfaces (everything came out near black): paint, not metal
@@ -220,6 +254,7 @@ def main():
         material(name, blend, build)
         log("material " + name)
     log("textures: %d" % import_textures())
+    log("posters: %d" % import_posters())
     log("meshes: %d" % import_kit())
 
 

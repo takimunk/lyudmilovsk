@@ -688,5 +688,8 @@
  "line.transport.arrive_mayak.1": "Lighthouse. Please leave the cabin.",
  "line.transport.arrive_amber.1": "Amber Shore.",
  "line.transport.arrive_horizon.1": "Horizon. Please leave the cabin.",
- "transport.vestibule.kiosk": "Tickets"
+ "transport.vestibule.kiosk": "Tickets",
+ "line.transport.hall_welcome.1": "Dear passengers, welcome to the Lyudmilovsk cable car. Cabins board on both sides of the platform, at the yellow line.",
+ "line.transport.hall_cabin.1": "Attention, please: a cabin is approaching the station. Please stay behind the yellow line.",
+ "line.transport.hall_lift.1": "The lift and the stairs lead up to the boarding platform. Please hold the handrail on the stairs."
 }

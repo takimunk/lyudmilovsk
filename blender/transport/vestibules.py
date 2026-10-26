@@ -1205,6 +1205,27 @@ def finish(style, cfg, parts):
     for key, rel, inset in (("diagram", 0.0, 0.15), ("kiosk", 70.0, 0.9), ("bench", -70.0, 0.6)):
         p, yaw = wall_spot(rel, inset)
         spots[key] = {"at": ue(p), "yaw": round((-yaw + 180.0) % 360.0 - 180.0, 1)}
+    furniture = furnish(style, V, rc, core, cdir, door_o, n_out, spots)
+    # perches for birds: the railing's top every ~2.5 m, and the tops of roofs and the canopy (a 2 m grid of traces
+    # down, up-facing and over 2.5 m)
+    perches = []
+    acc = 0.0
+    prev = None
+    for a_, r_ in rail_pts:
+        q = Vector(((r_ - RAIL_IN) * math.cos(math.radians(a_)), (r_ - RAIL_IN) * math.sin(math.radians(a_)), RAIL_H + 0.03))
+        if prev is not None:
+            acc += (q - prev).length
+        prev = q
+        if acc >= 2.5 and not (abs(q.y) > E - EDGE_RAIL - 0.05 and abs(q.x - stop_x) < STOP_HALF):
+            perches.append(ue(q))
+            acc = 0.0
+    vt = bvh_of(V)
+    for ix in range(-11, 12):
+        for iy in range(-11, 12):
+            org = Vector((ix * 2.0, iy * 2.0, 30.0))
+            loc, nor, _, _ = vt.ray_cast(org, Vector((0, 0, -1)), 40.0)
+            if loc is not None and nor.z > 0.5 and loc.z > 2.5 and abs(loc.y) < E - 0.3:
+                perches.append(ue(loc + Vector((0, 0, 0.02))))
     footprint = outline_pts([(v.co.x, v.co.y) for v in V.data.vertices], pad=0.05, clamp=False)
     def side(v):
         # a direction in Blender's frame -> the station frame's side name (UE: y flipped)
@@ -1237,6 +1258,8 @@ def finish(style, cfg, parts):
         "room": {"centre": ue(Vector((rc.x, rc.y, 0))), "radius": round((R - WALL) * 100, 1), "height": round(H * 100, 1),
                  "box": [ue(Vector((rc.x - R, rc.y + R, 0))), ue(Vector((rc.x + R, rc.y - R, H)))]},
         "spots": spots,
+        "perches": perches,
+        "furniture": furniture,
     }
     data["tower"] = build_towers(style, cdir, mats)
     debug_render(V, style, rc, door_o)
@@ -1341,6 +1364,75 @@ def lower_deck(st, T, part, mats, mi_w, mi_b, mi_in):
                         "yaw": round(rel_ue + (90.0 if sy < 0 else -90.0), 1)} for sy in (1, -1)],
             "note": "in the tower frame: its axis, the deck's floor at z=0 of this piece; x' along the lower line "
                     "at axis_yaw (UE degrees) from the station's +X"}
+
+
+PLANTS = ["Monstera", "RubberPlant", "KentiaPalm", "Dracaena", "SnakePlant", "Dieffenbachia", "Aspidistra", "AsparagusFern"]
+# what stands round a hall's wall, in turn: (item, its width along the wall, its depth, needs a solid wall)
+PATTERN = [("Planter", 0.8, 0.8, False), ("Bench", 1.9, 0.6, False), ("Poster", 0.9, 0.06, True),
+           ("Lamp", 0.5, 0.5, False), ("Planter", 0.8, 0.8, False), ("EggPair", 2.4, 0.9, False),
+           ("Poster", 0.9, 0.06, True), ("Bin", 0.45, 0.45, False)]
+
+
+def furnish(style, V, rc, core, cdir, door_o, n_out, spots):
+    """The hall's furniture round its wall (Dima: the interiors are bare): planters with live plants, benches, posters,
+    lamps, a pair of egg chairs with a table, bins. Kept clear: the way between the core's exit and the door, the
+    stations' own spots (kiosk, bench, diagram), a 1.1 m walk in front of everything. Station frame, UE cm and yaw."""
+    t = bvh_of(V)
+    mats = V.data.materials
+    seed = sum(ord(c) for c in style)
+    out = []
+    used = []                                    # angular spans taken (radians)
+    def ang_of(p):
+        return math.atan2(p.y - rc.y, p.x - rc.x)
+    def near_used(a, half):
+        return any(abs(((a - b + math.pi) % (2 * math.pi)) - math.pi) < half + h for b, h in used)
+    for v in (door_o, core + cdir * CORE):
+        used.append((ang_of(v), math.radians(32)))
+    for sp in spots.values():
+        p = Vector((sp["at"][0] / 100.0, -sp["at"][1] / 100.0, 0))
+        used.append((ang_of(p), math.radians(14)))
+    def core_r(a):
+        d = Vector((math.cos(a), math.sin(a), 0))
+        # distance from rc along d to the core square's boundary (rc is about the core's middle)
+        best = 0.0
+        for k in range(1, 400):
+            q = rc + d * (k * 0.02)
+            if abs(q.x - core.x) <= CORE + 0.05 and abs(q.y - core.y) <= CORE + 0.05:
+                best = k * 0.02
+        return best
+    k = 0
+    a0 = ang_of(door_o) + math.pi
+    for step in range(72):
+        a = a0 + 2 * math.pi * step / 72
+        item, w, dep, solid = PATTERN[k % len(PATTERN)]
+        d = Vector((math.cos(a), math.sin(a), 0))
+        loc, nor, idx, dist = t.ray_cast(Vector((rc.x, rc.y, 1.2)), d, 30.0)
+        if loc is None:
+            continue
+        mname = mats[V.data.polygons[idx].material_index].name if idx is not None else ""
+        if solid and (mname.startswith("TR_Glass") or not mname.startswith("TR_Interior")):
+            k += 1                               # no wall to hang it on here: the next thing in turn
+            continue
+        half = math.atan2(w / 2 + 0.15, dist)
+        if near_used(a, half):
+            continue
+        gap = dist - core_r(a)
+        if gap < dep + 1.15:
+            continue
+        r = dist - dep / 2 - 0.04
+        p = Vector((rc.x, rc.y, 0)) + d * r
+        yaw = math.degrees(a) + 180.0                     # the item's +X toward the hall's middle
+        rec = {"item": item, "at": ue(p + Vector((0, 0, 1.55 if item == "Poster" else 0.0))),
+               "yaw": round((-yaw + 180.0) % 360.0 - 180.0, 1)}
+        if item == "Planter":
+            rec["plant"] = PLANTS[(seed + k) % len(PLANTS)]
+        if item == "Poster":
+            rec["poster"] = (seed + k) % 6
+        out.append(rec)
+        used.append((a, half))
+        k += 1
+    log(style, "furniture", len(out), "pieces:", ", ".join(r["item"] for r in out))
+    return out
 
 
 def build_towers(style, cdir, mats):
