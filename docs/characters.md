@@ -99,6 +99,11 @@ weights before importing.
   (the bed layout). The wrists: a hand twisted past 120 degrees against the forearm is turned back (seat_anims' mouse
   hand was baked upside down) and half of the remaining twist goes to the forearm (no twist bones). `calm` tones a
   clip down toward another (Talk at 55% of UAL's gesturing).
+- **Sleeping** (`LieDown`, `Sleep` loop, `GetUp`) is on the side: `blender/humans/sleep_clips.py` poses it on Guy_a
+  (left side, facing out of the bed, knees bent, the lower arm under the pillow, the head ~12 cm over the mattress,
+  5 s breaths; LieDown sits on the edge, props on the elbow and rolls in; GetUp is it backward) into
+  `Saved/ClipSources/sleep_side.glb`, which clips.json carries over like the rest. The bed frame is life_anims.py's
+  (UE: the actor beside the bed facing +Y, mattress top 50 cm, its middle at local (-5, -55), the head toward +X).
 - **Walk speed**: the walk covers 0.92 m/s at rate 1 on Guy_a (`life_anims_report.json` `speed_m_s`); `ANpcBody` plays
   it at the person's speed / (93 cm/s x body scale). Body scale = pelvis height / 93.7 cm (Guy_a).
 - **A person's own clips** (`A_<Name>_Sit_*`, the club's computers): `bake_own_clips.py` bakes seat_anims' loops on the

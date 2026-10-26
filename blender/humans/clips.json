@@ -1,5 +1,5 @@
 {
- "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) and our own older clips (life_anims.py). pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) and the side-sleeping set (sleep_clips.py, posed on the target body). pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
  "target": "blender/characters/guy_a/export/human_guy_a.glb",
  "sources": {
   "ual1": {
@@ -12,6 +12,10 @@
   },
   "old": {
    "file": "Saved/ClipSources/life_anims_v1.glb",
+   "ref": "rest"
+  },
+  "side": {
+   "file": "Saved/ClipSources/sleep_side.glb",
    "ref": "rest"
   }
  },
@@ -84,18 +88,18 @@
    "pelvis": "seat"
   },
   "LieDown": {
-   "source": "old",
-   "action": "Life_LieDown",
+   "source": "side",
+   "action": "Side_LieDown",
    "pelvis": "abs"
   },
   "Sleep": {
-   "source": "old",
-   "action": "Life_Sleep",
+   "source": "side",
+   "action": "Side_Sleep",
    "pelvis": "abs"
   },
   "GetUp": {
-   "source": "old",
-   "action": "Life_GetUp",
+   "source": "side",
+   "action": "Side_GetUp",
    "pelvis": "abs"
   }
  }

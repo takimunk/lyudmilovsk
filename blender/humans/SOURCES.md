@@ -86,7 +86,8 @@ The shared human clips (`/Game/Characters/Humans/Anims/A_Human_*`) are retargete
 |---|---|---|---|
 | Walk (Walk_Loop), StandIdle (Idle_Loop), Talk (Idle_Talking_Loop), SitDown (Sitting_Enter), SitIdle (Sitting_Idle_Loop), SitTalk (Sitting_Talking_Loop), StandUp (Sitting_Exit) | Universal Animation Library, Standard: https://quaternius.com/packs/universalanimationlibrary.html (OpenGameArt: https://opengameart.org/content/universal-animation-library) | CC0 1.0 | Quaternius |
 | Nod (Yes), ShakeHead (Idle_No_Loop), FoldArms (Idle_FoldArms_Loop), Phone (Idle_TalkingPhone_Loop) | Universal Animation Library 2, Standard: https://opengameart.org/content/universal-animation-library-2 | CC0 1.0 | Quaternius |
-| Eat, Read, LieDown, Sleep, GetUp | our own (`life_anims.py`), carried over to the generated bodies by `retarget_clips.py` | CC BY 4.0 (this repo) | Lyudmilovsk |
+| LieDown, Sleep, GetUp (on the side) | our own (`sleep_clips.py`) | CC BY 4.0 (this repo) | Lyudmilovsk |
+| Eat, Read | our own (`life_anims.py`), carried over to the generated bodies by `retarget_clips.py` | CC BY 4.0 (this repo) | Lyudmilovsk |
 | each person's seated computer loops (`A_<Name>_Sit_*`) | our own (`seat_anims.py`), baked by `bake_own_clips.py`, carried over by `retarget_clips.py --own` | CC BY 4.0 (this repo) | Lyudmilovsk |
 
 CC0 asks for nothing; Quaternius is credited here anyway. The lip-sync curves (`tools/lipsync.py`) are computed
