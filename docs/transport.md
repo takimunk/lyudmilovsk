@@ -121,59 +121,60 @@ at the door) is in the platform spec. Budget: shell ~22k triangles with its wall
 2k colour + 2k normal. Check: `TR_DEBUG=<dir>` saves `cabin.blend`; `SCRIPT=test_cabin.py
 unreal/scripts/test_transport.sh` walks the player in through the door, rides, walks out.
 
-## Station layout and the vestibule connector (spec v1.1, 2026-10-26)
+## Station layout v2: the vestibule on its own tower (2026-10-26)
 
-A station is two parts: the **procedural part** (built in code by `ALyudCableway`: the island platform with its canopy,
-the tower with the lift and the stair, the ground gallery, the podium) and a **unique vestibule** (one hi3d model per
-style, `SM_TR_Vestibule_<Style>`, cut in Blender by `blender/transport/vestibules.py`). They meet at one standard
-**connector**. The platform is never under the vestibule. The old crowns (`SM_TR_Top_*` over the platform) are gone.
+Dima (2026-10-26): a station is its unique vestibule up at the platform's height, on a tower in the same style with the
+lift and the stair inside, and a compact boarding platform built into the vestibule. (v1.1, the vestibule on the ground
+beside the line with a gallery under the track, is gone.)
 
 ```
-   track ===============================================  (cabins at deck height)
-   island  [ platform ...... (tower: lift + stair) ...... ]   deck, 6+ m over the ground
-   track ==================|=|==========================
-                           |G|  glazed ground gallery, 3.0 m clear, under the track
-                           |=|  connector (z = 0, ground level)
-                     [ terrace   door ]  vestibule, X < 0 in its own frame
-                     [     room       ]
+   track ==\                                        /==  the two ropes spread round the vestibule (track gap G)
+            \=====[ edge  .. stop ..  edge ]=======/       boarding edge at y = -(G/2 - 1.05 m)
+                  [  terrace   ( room + core )  ]          the vestibule, floor at deck level
+            /=====[ edge  .. stop ..  edge ]=======\       boarding edge at y = +(G/2 - 1.05 m)
+   track ==/                 ||                     \==
+                             ||  the tower: foot, shafts, neck (a kit per style), the lift and the stair inside
+                           [door]  the street door at the foot
 ```
 
-The connector frame: the origin is the middle of the terrace edge's 3.0 m gap, at the vestibule's floor (z = 0); +X
-points out of the vestibule toward the tower; the whole vestibule lies at X < 0. In Unreal the mesh's frame is this frame
-(Blender (x, y, z) m -> UE (x*100, -y*100, z*100), so +X stays +X).
+**Station frame** (UE cm): the origin at the boarding floor (deck level) on the line's centre line midway between the
+tracks; +X the line's way out, +Y right of it, Z up. `SM_TR_Vestibule_<Style>` is authored in it (Blender (x, y, z) m ->
+UE (x*100, -y*100, z*100)).
 
-The vestibule mesh:
-1. The connector gap is 3.0 m clear (Y -150..+150 cm) in the terrace railing, with a straight floor edge at X = 0 over
-   Y -180..+180. Nothing above the floor within X -30..0 cm, |Y| <= 180 cm, up to z = 340 cm (except the railing ends):
-   the gallery's end frame (outer 340 x 340 cm) butts there.
-2. The terrace and the room floor are one level at z = 0 (no step over 2 cm); the room has 2.8 m clear height or more.
-3. The door into the room: a 164 x 233 cm hole (`character_standard.door_hole_for("Double")`), no leaves in the mesh; the
-   game fits an `ALyudDoor` Double (FitHole) at the transform from vestibules.json.
-4. A street entrance: a second railing gap, 2.0 m clear or more, on a side away from +X; the game adds steps down to the
-   terrain from it.
-5. No geometry below z = -60 cm; the game builds a concrete podium under the footprint down to the terrain.
-6. Size: the footprint fits 22 x 22 m in X < 0; at most 16 m tall over z = 0. Budget ~25k triangles, 2k textures.
-7. Collision: complex as simple. Material slots `TR_Glass*` (real glass) and `TR_Interior*` (plaster) as before.
+The vestibule (blender/transport/vestibules.py, our own clean model; hi3d only the shape and the bake source):
+1. Turned so the line runs across its narrowest way (no longer than 22 m along X); the terrace gets a straight
+   **boarding edge** along each track at y = +-(G/2 - 1.05 m), edge_length long, a tactile line along it, the railing
+   0.45 m in and open over the stop zone (4.5 m + 1 m each side round `stop_x`, put where both edges are clear of
+   canopy feet). Nothing above the floor within 1.35 m of a track's centre.
+2. The **tower's core** comes up through `floor_hole` (5.2 x 5.2 m) on the line's axis at `tower_x`: in the middle of
+   the hall (all seven now: the small rooms were made 5.4 m in radius for it), the lift door and the stair landing
+   facing `core_exit`. The core's own walls stand in the hole (the procedural part).
+3. The hall: 20 cm walls, windows, the Double door hole(s) (`doors`), floor, ceiling; at most 16 m tall.
+4. Collision complex as simple; slots: baked outside (slot 0), `TR_Glass*`, `TR_Interior*`, `TR_Terrazzo`, `TR_Chrome`,
+   and the tiled surfaces `TR_Tx_<Concrete|Enamel|Amber|Mosaic|Tactile>` on metre UVs (KitMaterials: -> `tx_<name>`).
 
-Made by blender/transport/vestibules.py (raw hi3d crowns in design/transport/gen, local), checked by
-blender/transport/check_vestibules.py (walk grid + connector box), then pack.py + import_transport.sh.
+The tower kit (blender/transport/towers.py, called by vestibules.py; clean meshes, metre UVs): per style
+`SM_TR_Tower_<Style>_Foot` (3.5 m, the street door, a Double hole on `tower.door.side`), `_Shaft3` and `_Shaft1`
+(stacked, largest first, never stretched), `_Neck` (1.5 m, flares out; its top is the vestibule floor's underside at
+-60 cm). Every piece's origin is on the tower's axis at its own bottom; inside a clear zone of `tower.clear`
+(5.26 m square; the circle styles 7.44 m). Styles: ribbed concrete (dome), 12-sided glass with ribs (lantern), ringed
+with portholes (saucer), zigzag folded plates (folded), an 8-point star (star), square with pilasters and slits
+(arches), square with fins (wing).
 
-`Content/Transport/vestibules.json` (written by the Blender script), per style, UE cm in the connector frame:
-`mesh`, `footprint` (polygon), `height`, `centre`, `door` ({at, yaw, hole}), `entrances` ([{at, out, width}]),
-`room` (box), `spots` (kiosk, bench, diagram wall: where the game puts the furniture; if empty it goes in the gallery).
+**Zenit**: the saucer's tower carries a second, lower deck for the Sun line (`tower.decks`: `SM_TR_Tower_Saucer_Deck2`,
+a 3.5 m piece of the tower with an opening out onto a ring deck at its own `axis_yaw`, `floor_z` -650 under the
+saucer's deck, its own `track_gap`, `edge_length`, `stop_x`, `panels`).
 
-Placement (tools/transport.py, network_built.json `vestibule`): beside the line, perpendicular to the first level's
-axis, on the side of the station given by network.json `"vestibule": {"side": 1|-1, "gap": m}` (default: the side
-with the lower, flatter ground and no rope over the footprint), the connector 9.5 m + `gap` off the axis, its floor at
-the ground there. Every station's deck is 6 m or more over the gallery's ground so the gallery passes under the track
-with room to spare (Aton's platform rises to 6 m on its hill for this). Checks: no rope or cabin within 0.5 m of the
-footprint box, the platform never over it.
+`Content/Transport/vestibules.json` v2, per style (UE cm, station frame): `mesh`, `tris`, `height`, `length`,
+`track_gap`, `edge_length`, `stop_x`, `panels` ([{at, yaw}], one per edge), `tower_x`, `floor_hole` [x0, y0, x1, y1],
+`core_exit` (+x|-x|+y|-y), `core_in_room`, `footprint`, `bounds`, `centre`, `doors` ([{at, yaw, hole}]), `room`
+({centre, radius, height, box}), `spots` (kiosk, bench, diagram), `tower` ({foot, shafts, neck: {mesh, h}, clear,
+door: {side, hole}, neck_top, decks}).
 
-The procedural part (`LyudCableway.cpp`): the platform deck with its own canopy; the tower at the island's middle (end
-station: 7 m from the wheel): a lift shaft and, beside it, a dog-leg stair in a closed core, the lift's doors opening on
-landings and on the platform, never on a stair flight; at the ground a lift lobby and the gallery to the connector,
-with the route diagram, the clock and the kiosk; the station's name on the gallery's end and on the canopy's fascia,
-with nothing in front of it.
+Checks: `blender/transport/check_vestibules.py` floods a player's walk from the core's exit: the hall, the diagram, the
+inside of the door and both edges at the stop must be reached; nothing in a track's keep-clear; 22 m, 16 m.
+`TR_DEBUG=<dir>` pictures. The ropes' spread, the stops and the tower's stacking are the procedural part's
+(tools/transport.py, CablewaySim, LyudStationBuild.cpp).
 
 ## Assets
 

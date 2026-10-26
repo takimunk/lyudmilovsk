@@ -37,6 +37,7 @@ from mathutils.bvhtree import BVHTree
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import character_standard  # noqa: E402
 
 GEN = os.path.join(ROOT, "design", "transport", "gen")
@@ -58,17 +59,23 @@ CANOPY_TRIS = 7000
 # model shows, of the connector and of the street entrance (both moved to where a player walks in clear); ceiling:
 # the room's own ceiling under an open canopy; door_shift: the model's door is that far right of straight out
 STYLES = {
-    "arches":  {"room": "cyl", "door": -90, "conn": -40, "street": 140},
+    "arches":  {"room": "cyl", "door": -90, "conn": -40, "street": 140, "room_r": 5.4},
     "dome":    {"room": "revolve", "door": -90, "conn": -40, "street": 140},
-    "folded":  {"room": "cyl", "door": -90, "conn": 0, "street": 140, "ceiling": 3.35},
+    "folded":  {"room": "cyl", "door": -90, "conn": 0, "street": 140, "ceiling": 3.35, "room_r": 5.4},
     "lantern": {"room": "lantern", "door": 90, "conn": 40, "street": -140, "door_shift": 0.9},
-    "saucer":  {"room": "cyl", "door": -90, "conn": -40, "street": 140, "ceiling": 3.3, "door_shift": 3.0},
-    "star":    {"room": "cyl", "door": -90, "conn": 0, "street": 140, "ceiling": 3.4},
+    "saucer":  {"room": "cyl", "door": -90, "conn": -40, "street": 140, "ceiling": 3.3, "door_shift": 3.0,
+                "room_r": 5.6},
+    "star":    {"room": "cyl", "door": -90, "conn": 0, "street": 140, "ceiling": 3.4, "room_r": 5.4},
     "wing":    {"room": "box", "door": 0, "conn": 0, "street": 90, "trim_y": True, "ceiling": 3.6,
-                "windows": False, "ribbon": (2.55, 3.3)},
+                "windows": False, "ribbon": (2.55, 3.3), "turn": 0, "edge_extra": 1.6,
+                "room_half": (4.95, 4.1)},
 }
 PALETTE = {"TR_Glass": (0.3, 0.4, 0.45, 0.25), "TR_Interior": (0.78, 0.74, 0.66, 1), "TR_Terrazzo": (0.62, 0.58, 0.52, 1),
-           "TR_Chrome": (0.8, 0.8, 0.82, 1)}
+           "TR_Chrome": (0.8, 0.8, 0.82, 1),
+           # the game's tiled surfaces (metre UVs; KitMaterials: TR_Tx_<name> -> tx_<name>)
+           "TR_Tx_Concrete": (0.6, 0.6, 0.58, 1), "TR_Tx_Enamel": (0.9, 0.87, 0.8, 1), "TR_Tx_Amber": (0.85, 0.5, 0.15, 1),
+           "TR_Tx_Mosaic": (0.5, 0.45, 0.6, 1), "TR_Tx_Tactile": (0.9, 0.7, 0.1, 1)}
+SLOT = {k: i + 1 for i, k in enumerate(PALETTE)}       # slot 0: the baked outside
 
 
 def log(*a):
@@ -563,6 +570,8 @@ def build(style, cfg):
     reset()
     M = Model(style, cfg)
     M.measure()
+    if cfg.get("room_r"):
+        M.R = cfg["room_r"]           # a bigger hall than the model's (the tower's core rises in it)
     t, rc = M.t, M.rc
     mats = [material("EXT_" + style)] + [material(k, v) for k, v in PALETTE.items()]
     EXT, GLS, INT, TER, CHR = range(5)
@@ -623,6 +632,8 @@ def build(style, cfg):
                   min(d for a, d in M.walls if abs(((a - 180 + 180) % 360) - 180) < 3)) / 2 + 0.03
             hy = (min(d for a, d in M.walls if abs(((a - 90 + 180) % 360) - 180) < 3) +
                   min(d for a, d in M.walls if abs(((a - 270 + 180) % 360) - 180) < 3)) / 2 + 0.03
+            if cfg.get("room_half"):
+                hx, hy = cfg["room_half"]     # a bigger hall than the model's (the tower's core rises in it)
             R = min(hx, hy)
             outer = [rc + Vector((sx * hx, sy * hy, 0)) for sx, sy in ((1, 1), (-1, 1), (-1, -1), (1, -1))]
             inner = [rc + Vector((sx * (hx - WALL), sy * (hy - WALL), 0)) for sx, sy in ((1, 1), (-1, 1), (-1, -1), (1, -1))]
@@ -743,7 +754,6 @@ def build(style, cfg):
     quad(bm, [door_o + u * su * (DOOR_W / 2 + 0.01) + n_out * sn + Vector((0, 0, 0.01)) for su, sn in
               ((-1, -WALL - 0.3), (1, -WALL - 0.3), (1, 0.3), (-1, 0.3))], TER)
     panes(bm, ops, GLS)
-    terrace(bm, M.outline, EXT)
     base = new_object("base", bm, mats)
 
     # --- the canopy: the model's own parts over the terrace that are neither the room nor the railing
@@ -891,14 +901,65 @@ def bake(style, M, objs):
 
 # --- assembling, the turn, the gaps, the file ----------------------------------------------------------------------
 
+def poly_r(poly, phi):
+    """The distance from the origin to a star-shaped polygon along the direction phi (radians)."""
+    d = Vector((math.cos(phi), math.sin(phi)))
+    best = 0.0
+    n = len(poly)
+    for i in range(n):
+        a, b = Vector(poly[i]), Vector(poly[(i + 1) % n])
+        e = b - a
+        den = d.x * e.y - d.y * e.x
+        if abs(den) < 1e-9:
+            continue
+        t = (a.x * e.y - a.y * e.x) / den
+        u = (a.x * d.y - a.y * d.x) / den
+        if t > 0 and -1e-6 <= u <= 1 + 1e-6:
+            best = max(best, t)
+    return best
+
+
+def inside(poly, p):
+    x, y = p
+    c = False
+    n = len(poly)
+    for i in range(n):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % n]
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            c = not c
+    return c
+
+
+def metre_uv(o, slots):
+    """Metre UVs (a box projection) on the faces of the given material slots."""
+    me = o.data
+    uv = me.uv_layers.get("UVMap") or me.uv_layers.new(name="UVMap")
+    for poly in me.polygons:
+        if poly.material_index not in slots:
+            continue
+        n = poly.normal
+        ax = max(range(3), key=lambda i: abs(n[i]))
+        for li in poly.loop_indices:
+            co = me.vertices[me.loops[li].vertex_index].co
+            if ax == 2:
+                uv.data[li].uv = (co.x, co.y)
+            elif ax == 1:
+                uv.data[li].uv = (co.x, co.z)
+            else:
+                uv.data[li].uv = (co.y, co.z)
+
+
+STOP_HALF = 3.25        # the stop zone: 4.5 m and a metre each side
+EDGE_RAIL = 0.45        # the railing this far in from a boarding edge (nothing within 1.35 m of a track's centre)
+CORE = 2.6              # half the floor opening for the tower's core (5.2 m)
+
+
 def finish(style, cfg, parts):
     M, mats, room, base, canopy, glass, door_o, n_out, R, H = parts
     rc = M.rc
-    t = M.t
-    GLS, INT, TER, CHR = 1, 2, 3, 4
-
+    S = SLOT
     if cfg.get("trim_y"):
-        # the wing's own stairs down off its ends go (the procedural part makes the steps down)
         lim = [M.edge(90), M.edge(-90)]
         out = []
         for a_, r in M.outline:
@@ -907,118 +968,204 @@ def finish(style, cfg, parts):
                 r = min(r, (lim[0] if sn > 0 else lim[1]) / abs(sn))
             out.append((a_, r))
         M.outline = out
+    objs = [o for o in (room, base, canopy, glass) if o]
+    outline = [(r * math.cos(math.radians(a)), r * math.sin(math.radians(a))) for a, r in M.outline if r > 0.5]
+    pts = outline + [(v.co.x, v.co.y) for o in objs for v in o.data.vertices if v.co.z > 0.02]
 
-    def edge_pt(a):
-        r = M.edge(a)
-        return az(a) * r if r else None
-
-    def clear_way(a, half):
-        """Whether a capsule walks in from the terrace edge at azimuth a, 1.5 m deep, anywhere across the gap: what
-        stands there besides the floor and the railing (canopy feet, roof points, a medallion)."""
-        d = az(a)
-        side = Vector((-d.y, d.x, 0))
-        p0 = edge_pt(a)
-        if p0 is None:
-            return False
-        for lat in (-(half - 0.36), 0.0, half - 0.36):
-            for k in range(14):
-                for z in (0.42, 0.8, 1.2, 1.6):
-                    c = p0 - d * (0.1 * k + 0.1) + side * lat + Vector((0, 0, z))
-                    for loc, nor, idx, dist in t.find_nearest_range(c, 0.34):
-                        q = loc - p0
-                        if loc.z < 0.05 or (-q.dot(d) < 1.0 and loc.z < 1.6 and abs(q.dot(side)) < half + 0.15):
-                            continue
-                        return False
-        return True
-
-    xy = [(r * math.cos(math.radians(a)), r * math.sin(math.radians(a))) for a, r in M.outline]
-
-    def fits(a):
-        ca, sa = math.cos(math.radians(a)), math.sin(math.radians(a))
-        xs = [x * ca + y * sa for x, y in xy]
-        ys = [-x * sa + y * ca for x, y in xy]
-        return max(xs) - min(xs) < 21.9 and max(ys) - min(ys) < 21.9
-
-    def pick(a0, half, avoid=None):
-        for da in sorted(range(-90, 95, 5), key=abs):
-            a = a0 + da
-            if avoid is not None and abs(((a - avoid + 180) % 360) - 180) < 60:
-                continue
-            if avoid is None and not fits(a):
-                continue
-            if clear_way(a, half):
-                return a
-        log(style, "no clear way near", a0)
-        return a0
-
-    ca = pick(cfg["conn"], GAP)
-    sa = pick(cfg["street"], ENTRANCE, avoid=ca)
-    conn, street = edge_pt(ca), edge_pt(sa)
-    log(style, "connector at", ca, "street at", sa)
-    rot = Matrix.Rotation(-math.radians(ca), 4, "Z")
-    m = Matrix.Translation(-(rot @ conn)) @ rot
+    # --- the turn: the line along X across the vestibule's narrowest way (no longer than 21.8 m along it)
+    best = None
+    for th in ([cfg["turn"]] if "turn" in cfg else range(0, 180, 5)):
+        c, s_ = math.cos(math.radians(th)), math.sin(math.radians(th))
+        xs = [x * c + y * s_ for x, y in pts]
+        ys = [-x * s_ + y * c for x, y in pts]
+        if max(xs) - min(xs) > 21.8:
+            continue
+        key = max(ys) - min(ys)
+        if best is None or key < best[0]:
+            best = (key, th, (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2)
+    yext, th, cx, cy = best
+    E = yext / 2 + 0.35 + cfg.get("edge_extra", 0.0)      # (edge_extra: a walk along the edge past canopy feet)
+    G = 2 * (E + 1.05)
+    rot = Matrix.Rotation(-math.radians(th), 4, "Z")
+    m = Matrix.Translation((-cx, -cy, 0)) @ rot
     rot3 = rot.to_3x3()
-
-    # the railing, in the turned frame, open at the gap and the street entrance
-    street_at = m @ street
-    street_out = (rot3 @ az(sa)).normalized()
-    s_side = Vector((-street_out.y, street_out.x, 0))
-
-    def skip(p):
-        q = m @ p
-        if q.x > -1.2 and abs(q.y) < GAP:
-            return True
-        d = q - street_at
-        return d.dot(street_out) > -1.2 and abs(d.dot(s_side)) < ENTRANCE
-    bm = bmesh.new()
-    railing(bm, M.outline, skip, CHR)
-    rail = new_object("railing", bm, mats)
-
-    objs = [o for o in (room, base, canopy, glass, rail) if o]
     for o in objs:
         o.data.transform(m)
+        o.data.update()
     M.o.data.transform(m)
     M.o.data.update()
-    # nothing at X>0 or under the base: cut away clean
-    for o in objs:
-        bm = bmesh.new()
-        bm.from_mesh(o.data)
-        for co, no in ((Vector((0, 0, 0)), Vector((1, 0, 0))), (Vector((0, 0, BASE)), Vector((0, 0, -1)))):
-            geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
-            r = bmesh.ops.bisect_plane(bm, geom=geom, plane_co=co, plane_no=no, dist=1e-4, clear_outer=True)
-            if no.x > 0.5:
-                # close the terrace's cut edge at X=0 (the gallery's end butts there)
-                cut_edges = [e for e in r["geom_cut"] if isinstance(e, bmesh.types.BMEdge)]
-                if cut_edges and o is base:
-                    try:
-                        res = bmesh.ops.holes_fill(bm, edges=cut_edges, sides=0)
-                        for f in res["faces"]:
-                            f.material_index = 0
-                    except Exception:
-                        pass
-        bm.to_mesh(o.data)
-        bm.free()
-    # the gallery's end frame stands in X -0.3..0, |Y| <= 1.8, up to 3.4 m: nothing of ours there
-    for o in objs:
-        if o is rail:
-            continue
-        bm = bmesh.new()
-        bm.from_mesh(o.data)
-        for co, no in ((Vector((-0.3, 0, 0)), Vector((-1, 0, 0))), (Vector((0, 1.8, 0)), Vector((0, 1, 0))),
-                       (Vector((0, -1.8, 0)), Vector((0, -1, 0))), (Vector((0, 0, 3.4)), Vector((0, 0, 1))),
-                       (Vector((0, 0, 0.05)), Vector((0, 0, -1)))):
-            geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
-            bmesh.ops.bisect_plane(bm, geom=geom, plane_co=co, plane_no=no, dist=1e-4)
-        kill = [f for f in bm.faces if (lambda p: p.x > -0.3 and abs(p.y) < 1.8 and 0.05 < p.z < 3.4)(f.calc_center_median())]
-        bmesh.ops.delete(bm, geom=kill, context="FACES")
-        bm.to_mesh(o.data)
-        bm.free()
     rc = m @ rc
     door_o = m @ door_o
     n_out = (rot3 @ n_out).normalized()
+    outline = [tuple((m @ Vector((x, y, 0)))[:2]) for x, y in outline]
+    log(style, "turned", th, "half width", round(E, 2), "track gap", round(G, 2))
 
-    E = bake(style, M, [o for o in objs if o is not rail])
-    activate(E)
+    # --- the terrace: the model's outline, widened to a straight boarding edge along each track, cut at |y| = E
+    def terr_r(phi):
+        r = poly_r(outline, phi)
+        c_, s_ = abs(math.cos(phi)), abs(math.sin(phi))
+        rect = min(4.5 / c_ if c_ > 1e-6 else 1e9, E / s_ if s_ > 1e-6 else 1e9)
+        r = max(r, rect)
+        return min(r, E / s_) if s_ > 1e-6 else r
+    P = []
+    for i in range(720):
+        phi = math.radians(i * 0.5)
+        r = terr_r(phi)
+        P.append((r * math.cos(phi), r * math.sin(phi)))
+
+    # --- the tower's core: a 5.2 m opening on the line's axis (y = 0), outside a small room, or in the middle of a big
+    # one (the dome, the lantern: the lift and the stair rise in the hall), clear of anything under 2.9 m
+    blockers = [o for o in (room, canopy, glass) if o]
+    big = R >= 4.8
+    if cfg["room"] == "box":
+        rv = [v.co for v in room.data.vertices if v.co.z < H - 0.05]
+        room_half = ((max(v.x for v in rv) - min(v.x for v in rv)) / 2, (max(v.y for v in rv) - min(v.y for v in rv)) / 2)
+        big = min(room_half) - WALL - 0.9 >= CORE
+    low = [Vector(v.co) for o in (blockers if not big else [o for o in (canopy,) if o]) for v in o.data.vertices
+           if 0.02 < v.co.z < 2.9]
+    cand = None
+    for strict in (True, False):          # first on the terrace as it is, then letting it grow a bay round the core
+        if cand is not None:
+            break
+        for xi in range(0, 45):
+            for sx in (1, -1):
+                xc = sx * xi * 0.25
+                q = Vector((xc, 0.0, 0))
+                if big and cfg["room"] == "box":
+                    if abs(xc - rc.x) + CORE > room_half[0] - WALL - 0.9 or abs(rc.y) + CORE > room_half[1] - WALL - 0.9:
+                        continue
+                    score = abs(xc - rc.x)
+                elif big:
+                    far = max((Vector((xc + dx * CORE, dy * CORE, 0)) - rc).length for dx in (-1, 1) for dy in (-1, 1))
+                    if far > R - WALL - 1.0:
+                        continue
+                    score = (q - rc).length
+                else:
+                    corners = [(xc + dx * (CORE + 0.4), dy * (CORE + 0.4)) for dx in (-1, 0, 1) for dy in (-1, 0, 1)]
+                    if strict and not all(inside(P, c_) for c_ in corners):
+                        continue
+                    if not strict and abs(xc) + CORE + 1.0 > 10.9:
+                        continue                    # the length along the line stays within 22 m
+                    if cfg["room"] == "box":
+                        bx, by_ = room_half
+                        dq = Vector((max(abs(rc.x - xc) - CORE - bx, 0), max(abs(rc.y) - CORE - by_, 0), 0)).length
+                        if dq < 1.6:
+                            continue
+                    else:
+                        dq = Vector((max(abs(rc.x - xc) - CORE, 0), max(abs(rc.y) - CORE, 0), 0)).length
+                        if dq < R + 1.6:
+                            continue                # a 1.6 m way between the core and the room
+                    score = dq
+                if any(abs(v.x - xc) < CORE + 0.2 and abs(v.y) < CORE + 0.2 for v in low):
+                    continue
+                if cand is None or score < cand[0]:
+                    cand = (score, q)
+    if cand is None:
+        raise RuntimeError(style + ": no room for the tower's core on the line's axis")
+    core = cand[1]
+    corners = [(core.x + dx * (CORE + 0.4), dy * (CORE + 0.4)) for dx in (-1, 1) for dy in (-1, 1)]
+    if not all(inside(P, c_) for c_ in corners):
+        # the terrace grows round the core (a bay out at its end)
+        bx0, bx1, by = core.x - CORE - 1.0, core.x + CORE + 1.0, CORE + 1.0
+
+        def bay_r(phi):
+            d = Vector((math.cos(phi), math.sin(phi)))
+            best_ = 0.0
+            for t_ in [k * 0.05 for k in range(1, 500)]:
+                q_ = d * t_
+                if bx0 <= q_.x <= bx1 and -by <= q_.y <= by:
+                    best_ = t_
+            return best_
+        P = []
+        for i in range(720):
+            phi = math.radians(i * 0.5)
+            r = max(terr_r(phi), bay_r(phi))
+            P.append((r * math.cos(phi), r * math.sin(phi)))
+        log(style, "terrace grown round the core")
+    to = (n_out if big else (rc - core))
+    cdir = Vector((1, 0, 0)) * (1 if to.x > 0 else -1) if abs(to.x) >= abs(to.y) else \
+        Vector((0, 1, 0)) * (1 if to.y > 0 else -1)
+    log(style, "core at", tuple(round(v, 2) for v in core), "in the room" if big else "on the terrace", "exit", tuple(cdir))
+
+    # the stops: where both edges are clear of canopy feet for the stop zone (4.5 m and a metre each side)
+    lowv = [Vector(v.co) for o in (canopy, room, glass) if o for v in o.data.vertices if v.co.z < 2.5]
+    stop_x = 0.0
+    for sx_ in sorted([k * 0.25 for k in range(-16, 17)], key=abs):
+        if not any(abs(v.x - sx_) < STOP_HALF + 0.2 and abs(v.y) > E - 1.4 for v in lowv):
+            stop_x = sx_
+            break
+    else:
+        log(style, "no stop clear of the canopy on both edges")
+    log(style, "stop at", stop_x)
+
+    # the slab: top and edge baked from the model, the underside and the core's hole concrete
+    bm = bmesh.new()
+    top = [bm.verts.new((x, y, 0.0)) for x, y in P]
+    bot = [bm.verts.new((x, y, BASE)) for x, y in P]
+    bm.faces.new(top).material_index = 0
+    bm.faces.new(bot[::-1]).material_index = S["TR_Tx_Concrete"]
+    n = len(P)
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((top[j], top[i], bot[i], bot[j])).material_index = 0
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    slabo = new_object("terrace", bm, mats)
+    cb = bmesh.new()
+    box(cb, core + Vector((0, 0, BASE / 2)), (2 * CORE, 2 * CORE, -BASE + 0.4), S["TR_Tx_Concrete"])
+    cut = new_object("corecut", cb, mats)
+    boolean_cut(slabo, cut)
+    if big:
+        boolean_cut(base, cut)
+    bpy.data.objects.remove(cut)
+
+    # the railing: round the outline, in along the boarding edges, open at the stops
+    bm = bmesh.new()
+    rail_pts = []
+    for x, y in P[::2]:
+        r = math.hypot(x, y)
+        k = (r - RAIL_IN) / r
+        qx, qy = x * k, y * k
+        qy = max(-(E - EDGE_RAIL), min(E - EDGE_RAIL, qy))
+        rail_pts.append((math.degrees(math.atan2(qy, qx)), math.hypot(qx, qy) + RAIL_IN))
+    railing(bm, rail_pts, lambda p: abs(p.y) > E - EDGE_RAIL - 0.05 and abs(p.x - stop_x) < STOP_HALF, S["TR_Chrome"])
+    # a rail round the core's hole, open toward the room (the core's own walls stand in the hole)
+    # (none: the procedural core closes its hole)
+    # the tactile line along each boarding edge
+    xs_edge = [x for x, y in P if abs(abs(y) - E) < 1e-3]
+    x0, x1 = (min(xs_edge), max(xs_edge)) if xs_edge else (-4.5, 4.5)
+    for sy in (1, -1):
+        quad(bm, [Vector((xa, sy * yb, 0.004)) for xa, yb in ((x0, E - 0.6), (x1, E - 0.6), (x1, E - 0.1), (x0, E - 0.1))],
+             S["TR_Tx_Tactile"], flip=sy < 0)
+    rail = new_object("railing", bm, mats)
+    for o in (rail,):
+        bm2 = bmesh.new()
+        bm2.from_mesh(o.data)
+        for f in bm2.faces:
+            f.normal_update()
+            if f.material_index == S["TR_Tx_Tactile"] and f.normal.z < 0:
+                f.normal_flip()
+        bm2.to_mesh(o.data)
+        bm2.free()
+
+    # nothing within 1.35 m of a track's centre: cut whatever of ours reaches past E - 0.3 above the floor
+    for o in [room, canopy, glass]:
+        if not o:
+            continue
+        bm = bmesh.new()
+        bm.from_mesh(o.data)
+        for sy in (1, -1):
+            geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
+            bmesh.ops.bisect_plane(bm, geom=geom, plane_co=Vector((0, sy * (E - 0.3), 0)), plane_no=Vector((0, sy, 0)),
+                                   dist=1e-4, clear_outer=True)
+        bm.to_mesh(o.data)
+        bm.free()
+
+    tx = {S[k] for k in S if k.startswith("TR_Tx_")}
+    objs = [o for o in (room, base, canopy, glass, slabo, rail) if o]
+    for o in objs:
+        metre_uv(o, tx)
+    E_ = bake(style, M, [o for o in objs if o is not rail])
+    activate(E_)
     for o in objs:
         o.select_set(True)
     bpy.ops.object.join()
@@ -1028,13 +1175,9 @@ def finish(style, cfg, parts):
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.mesh.remove_doubles(threshold=0.0005)
-    bpy.ops.mesh.normals_make_consistent(inside=False)
     bpy.ops.object.mode_set(mode="OBJECT")
-    # the walls and floor inside keep their own normals (normals_make_consistent may turn the room inside out): redo
-    # inward faces by material
     bm = bmesh.new()
     bm.from_mesh(V.data)
-    idx = {m_.name: i for i, m_ in enumerate(V.data.materials)}
     for f in bm.faces:
         mn = V.data.materials[f.material_index].name
         p = f.calc_center_median()
@@ -1042,17 +1185,15 @@ def finish(style, cfg, parts):
             toward = Vector((rc.x, rc.y, min(max(p.z, 0.5), H - 0.3))) - p
             if f.normal.dot(toward) < 0:
                 f.normal_flip()
-        elif mn.startswith("TR_Terrazzo") and f.normal.z < 0:
+        elif mn.startswith(("TR_Terrazzo", "TR_Tx_Tactile")) and f.normal.z < 0:
             f.normal_flip()
     bm.to_mesh(V.data)
     bm.free()
     V.data.update()
     bpy.data.objects.remove(M.o)
-
     export(V, name)
     lo, hi = bounds(V)
-    n = tris(V)
-    walls = M.walls
+    nt = tris(V)
 
     def wall_spot(rel, inset):
         a_room = math.degrees(math.atan2(-n_out.y, -n_out.x)) + rel
@@ -1064,27 +1205,212 @@ def finish(style, cfg, parts):
     for key, rel, inset in (("diagram", 0.0, 0.15), ("kiosk", 70.0, 0.9), ("bench", -70.0, 0.6)):
         p, yaw = wall_spot(rel, inset)
         spots[key] = {"at": ue(p), "yaw": round((-yaw + 180.0) % 360.0 - 180.0, 1)}
-    footprint = outline_pts([(v.co.x, v.co.y) for v in V.data.vertices])
+    footprint = outline_pts([(v.co.x, v.co.y) for v in V.data.vertices], pad=0.05, clamp=False)
+    def side(v):
+        # a direction in Blender's frame -> the station frame's side name (UE: y flipped)
+        return ("+x" if v.x > 0 else "-x") if abs(v.x) >= abs(v.y) else ("-y" if v.y > 0 else "+y")
+    panels = []
+    for sy in (1, -1):
+        p = Vector((stop_x - (STOP_HALF + 0.8), sy * (E - 1.2), 0))
+        panels.append({"at": ue(p)[:2], "yaw": 90.0 if sy < 0 else -90.0})
     data = {
         "mesh": name,
-        "tris": n,
+        "tris": nt,
+        "frame": "station frame: origin at deck level on the line's centre line midway between the tracks, +X the "
+                 "line's way out, +Y right of it (UE)",
         "height": round(hi.z * 100, 1),
+        "length": round((hi.x - lo.x) * 100, 1),
+        "track_gap": round(G * 100, 1),
+        "edge_length": round((x1 - x0) * 100, 1),
+        "stop_x": round(stop_x * 100, 1),
+        "panels": panels,
+        "tower_x": round(core.x * 100, 1),
+        "floor_hole": [round((core.x - CORE) * 100, 1), round(-(core.y + CORE) * 100, 1),
+                       round((core.x + CORE) * 100, 1), round(-(core.y - CORE) * 100, 1)],
+        "core_exit": side(cdir),
+        "core_in_room": big,
         "footprint": [[round(x * 100, 1), round(-y * 100, 1)] for x, y in footprint],
         "bounds": [ue(lo), ue(hi)],
         "centre": ue(Vector((rc.x, rc.y, 0))),
-        "door": {"at": ue(door_o), "out": [round(n_out.x, 4), round(-n_out.y, 4)],
-                 "yaw": round(-math.degrees(math.atan2(n_out.y, n_out.x)), 1), "size": "Double",
-                 "hole": [round(DOOR_W * 100, 1), round(DOOR_H * 100, 1)]},
+        "doors": [{"at": ue(door_o), "yaw": round(-math.degrees(math.atan2(n_out.y, n_out.x)), 1),
+                   "hole": [round(DOOR_W * 100, 1), round(DOOR_H * 100, 1)]}],
         "room": {"centre": ue(Vector((rc.x, rc.y, 0))), "radius": round((R - WALL) * 100, 1), "height": round(H * 100, 1),
                  "box": [ue(Vector((rc.x - R, rc.y + R, 0))), ue(Vector((rc.x + R, rc.y - R, H)))]},
-        "entrances": [{"at": ue(street_at)[:2], "out": [round(street_out.x, 4), round(-street_out.y, 4)],
-                       "width": round(ENTRANCE * 200, 1)}],
         "spots": spots,
-        "support": None,
     }
+    data["tower"] = build_towers(style, cdir, mats)
     debug_render(V, style, rc, door_o)
     log(style, json.dumps(data))
     return data
+
+
+def lower_deck(st, T, part, mats, mi_w, mi_b, mi_in):
+    """Zenit's second line, 6.5 m under the saucer's deck at its own angle: a piece of the tower (3.5 m) with an
+    opening out onto a ring deck round it, with its two boarding edges along that line."""
+    S = SLOT
+    net = json.load(open(os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Transport", "network_built.json")))
+    st_ = [x for x in net["stations"] if x.get("style") == "saucer"][0]
+    lv = sorted(st_["levels"], key=lambda l: l["z"])
+    up, lo_ = lv[-1], lv[0]
+    rel_ue = ((st_["axes"][lo_["line"]] - st_["axes"][up["line"]] + 180.0) % 360.0) - 180.0
+    if abs(rel_ue) > 90.0:
+        rel_ue -= math.copysign(180.0, rel_ue)          # a deck is the same either way along its line
+    dz = lo_["z"] - up["z"]
+    rot = Matrix.Rotation(math.radians(-rel_ue), 3, "Z")
+    r_t = T.r_out(st["outer"], 0.0)
+    E2 = r_t + 0.15 + 1.6
+    X0, X1 = -5.5, 9.0
+    H2 = 3.5
+    data = {}
+
+    def build(bm):
+        T.ring(bm, st["outer"], st["inner"], 0.0, H2, mi_w, mi_in, mi_w)
+        T.details(bm, st, 0.0, H2, mi_w, mi_b, beam, box)
+        # the deck: a slab round the tower along the lower line, its edges at y' = +-E2
+        pts = []
+        for i in range(64):
+            a = 2 * math.pi * i / 64
+            d = Vector((math.cos(a), math.sin(a), 0))
+            # a rectangle X0..X1 x -E2..E2 with rounded ends (radius E2)
+            rr = []
+            for t_ in [k * 0.02 for k in range(1, 800)]:
+                q = d * t_
+                cx_ = min(max(q.x, X0 + E2), X1 - E2)
+                if (Vector((q.x, q.y, 0)) - Vector((cx_, 0, 0))).length <= E2 and abs(q.y) <= E2:
+                    rr.append(t_)
+            pts.append(rot @ (d * max(rr)))
+        top = [bm.verts.new((p.x, p.y, 0.0)) for p in pts]
+        bot = [bm.verts.new((p.x, p.y, -0.5)) for p in pts]
+        bm.faces.new(top).material_index = S["TR_Terrazzo"]
+        bm.faces.new(bot[::-1]).material_index = S["TR_Tx_Concrete"]
+        for i in range(64):
+            j = (i + 1) % 64
+            bm.faces.new((top[j], top[i], bot[i], bot[j])).material_index = S["TR_Tx_Enamel"]
+        # an amber stripe under the edge, the saucer's belt
+        for i in range(64):
+            j = (i + 1) % 64
+            a_, b_ = pts[i], pts[j]
+            beam(bm, a_ * 1.005 + Vector((0, 0, -0.32)), b_ * 1.005 + Vector((0, 0, -0.32)), 0.06, 0.16, S["TR_Tx_Amber"])
+        # the railing, open at the stops beside the tower
+        rail = []
+        for p in pts:
+            q = rot.transposed() @ p
+            k = (q.length - RAIL_IN) / q.length
+            q = q * k
+            q.y = max(-(E2 - EDGE_RAIL), min(E2 - EDGE_RAIL, q.y))
+            rail.append((math.degrees(math.atan2(q.y, q.x)), q.length + RAIL_IN))
+        rb = bmesh.new()
+        railing(rb, rail, lambda p: abs(p.y) > E2 - EDGE_RAIL - 0.05 and abs(p.x) < STOP_HALF, S["TR_Chrome"])
+        rme = bpy.data.meshes.new("r")
+        rb.to_mesh(rme)
+        rb.free()
+        vs = [bm.verts.new(rot @ v.co) for v in rme.vertices]
+        for f in rme.polygons:
+            try:
+                bm.faces.new([vs[i] for i in f.vertices]).material_index = S["TR_Chrome"]
+            except ValueError:
+                pass
+        bpy.data.meshes.remove(rme)
+        # the tactile lines
+        for sy in (1, -1):
+            ps = [rot @ Vector((xa, sy * yb, 0.004)) for xa, yb in ((-STOP_HALF, E2 - 0.6), (STOP_HALF, E2 - 0.6), (STOP_HALF, E2 - 0.1), (-STOP_HALF, E2 - 0.1))]
+            f = bm.faces.new([bm.verts.new(p) for p in ps])
+            f.material_index = S["TR_Tx_Tactile"]
+            f.normal_update()
+            if f.normal.z < 0:
+                f.normal_flip()
+        # the opening out of the core onto the deck: toward +x' (the deck's long end)
+        n = rot @ Vector((1, 0, 0))
+        a = math.atan2(n.y, n.x)
+        rmid = (T.r_out(st["outer"], a) + T.r_in(st["inner"], a)) / 2
+        return [("door", n * rmid + Vector((0, 0, 1.2)), n, 2.4, 2.4)]
+    part("SM_TR_Tower_Saucer_Deck2", H2, build)
+    side = lambda v: ("+x" if v.x > 0 else "-x") if abs(v.x) >= abs(v.y) else ("-y" if v.y > 0 else "+y")
+    n = rot @ Vector((1, 0, 0))
+    return {"mesh": "SM_TR_Tower_Saucer_Deck2", "h": H2 * 100, "floor_z": round(dz * 100, 1), "line": lo_["line"],
+            "axis_yaw": round(rel_ue, 2), "track_gap": round(2 * (E2 + 1.05) * 100, 1),
+            "edge_length": round(2 * STOP_HALF * 100, 1), "stop_x": 0.0,
+            "deck_x": [X0 * 100, X1 * 100],
+            "core_exit_dir": [round(n.x, 4), round(-n.y, 4)],
+            "panels": [{"at": ue(rot @ Vector((-(STOP_HALF + 0.8), sy * (E2 - 1.2), 0)))[:2],
+                        "yaw": round(rel_ue + (90.0 if sy < 0 else -90.0), 1)} for sy in (1, -1)],
+            "note": "in the tower frame: its axis, the deck's floor at z=0 of this piece; x' along the lower line "
+                    "at axis_yaw (UE degrees) from the station's +X"}
+
+
+def build_towers(style, cdir, mats):
+    """The tower kit of this style (blender/transport/towers.py): foot, shafts, neck (and the saucer's lower deck)."""
+    import towers as T
+    st = T.STYLES[style]
+    S = SLOT
+    surf = lambda k: S["TR_Glass"] if k == "glass" else S["TR_Tx_" + k[3:].capitalize()]
+    mi_w, mi_b, mi_in = surf(st["wall"]), surf(st["band"]), S["TR_Interior"]
+    if st["wall"] == "glass":
+        mi_in = S["TR_Glass"]
+    clear = 2 * T.CLEAR_SQ * 100 if st["inner"] == "square" else round(2 * T.CLEAR_R / math.sqrt(2) * 100, 1)
+    out = {"clear": [clear, clear], "shafts": []}
+    # the street door faces away from the room (the side the core's exit doesn't)
+    ddir = -cdir
+    dyaw = math.atan2(ddir.y, ddir.x)
+
+    def part(name, h, build):
+        bm = bmesh.new()
+        ops = build(bm) or []
+        o = new_object(name, bm, mats)
+        if ops:
+            cb = bmesh.new()
+            cutters(cb, ops, depth=1.4)
+            cut = new_object("cut", cb, mats)
+            for p_ in cut.data.polygons:
+                p_.material_index = mi_w if st["wall"] != "glass" else S["TR_Tx_Enamel"]
+            boolean_cut(o, cut)
+            bpy.data.objects.remove(cut)
+            bm = bmesh.new()
+            panes(bm, [q for q in ops if q[0] != "door"], S["TR_Glass"])
+            p2 = new_object(name + "_panes", bm, mats)
+            activate(o)
+            p2.select_set(True)
+            bpy.ops.object.join()
+            o = bpy.context.view_layer.objects.active
+        metre_uv(o, {S[k] for k in S if k.startswith("TR_Tx_")})
+        o.name = o.data.name = name
+        export(o, name)
+        rec = {"mesh": name, "h": round(h * 100, 1), "tris": tris(o)}
+        kind = name.split("_")[-1].lower()
+        if kind.startswith("shaft"):
+            out["shafts"].append(rec)
+        else:
+            out[kind] = rec
+        bpy.data.objects.remove(o)
+
+    cap = style.capitalize()
+
+    def foot(bm):
+        T.ring(bm, st["outer"], st["inner"], 0.0, T.FOOT_H, mi_w, mi_in, mi_b)
+        T.band(bm, st["outer"], 0.0, 0.45, 0.12, mi_b)
+        T.details(bm, st, 0.45, T.FOOT_H, mi_w, mi_b, beam, box)
+        a = dyaw
+        n = Vector((math.cos(a), math.sin(a), 0))
+        rmid = (T.r_out(st["outer"], a) + T.r_in(st["inner"], a)) / 2
+        return [("door", n * rmid + Vector((0, 0, DOOR_H / 2 - 0.05)), n, DOOR_W, DOOR_H + 0.1)]
+    part("SM_TR_Tower_%s_Foot" % cap, T.FOOT_H, foot)
+    out["door"] = {"side": ("+x" if ddir.x > 0 else "-x") if abs(ddir.x) >= abs(ddir.y) else ("-y" if ddir.y > 0 else "+y"),
+                   "hole": [round(DOOR_W * 100, 1), round(DOOR_H * 100, 1)]}
+    for h in T.SHAFT:
+        def shaft(bm, h=h):
+            T.ring(bm, st["outer"], st["inner"], 0.0, h, mi_w, mi_in, mi_w)
+            T.details(bm, st, 0.0, h, mi_w, mi_b, beam, box)
+            return T.window_ops(st, 0.0, h)
+        part("SM_TR_Tower_%s_Shaft%d" % (cap, int(h)), h, shaft)
+
+    def neck(bm):
+        T.ring(bm, st["outer"], st["inner"], 0.0, T.NECK_H, mi_w, mi_in, mi_b, 1.0, 1.3)
+    part("SM_TR_Tower_%s_Neck" % cap, T.NECK_H, neck)
+    if style == "saucer":
+        out["decks"] = [lower_deck(st, T, part, mats, mi_w, mi_b, mi_in)]
+    out["shafts"].sort(key=lambda r: -r["h"])
+    out["neck_top"] = round(BASE * 100, 1)
+    return out
 
 
 def ue(p):
@@ -1110,7 +1436,7 @@ def hull(pts):
     return lower[:-1] + upper[:-1]
 
 
-def outline_pts(pts, n=32, pad=0.05):
+def outline_pts(pts, n=32, pad=0.05, clamp=True):
     """The footprint: the convex hull's extreme points in n directions, pushed out by pad."""
     h = hull(pts)
     cx = sum(p[0] for p in h) / len(h)
@@ -1121,7 +1447,9 @@ def outline_pts(pts, n=32, pad=0.05):
         d = (math.cos(a), math.sin(a))
         p = max(h, key=lambda q: q[0] * d[0] + q[1] * d[1])
         r = math.hypot(p[0] - cx, p[1] - cy)
-        q = (min(0.0, cx + (p[0] - cx) * (r + pad) / r), cy + (p[1] - cy) * (r + pad) / r) if r > 1e-6 else p
+        q = (cx + (p[0] - cx) * (r + pad) / r, cy + (p[1] - cy) * (r + pad) / r) if r > 1e-6 else p
+        if clamp:
+            q = (min(0.0, q[0]), q[1])
         if not out or out[-1] != q:
             out.append(q)
     return out
@@ -1175,6 +1503,7 @@ def main():
     for style in argv or sorted(STYLES):
         parts = build(style, STYLES[style])
         data[style] = finish(style, STYLES[style], parts)
+        json.dump(data, open(JSON, "w"), indent=1, sort_keys=True)
     data["_doc"] = ("Made by blender/transport/vestibules.py. Unreal cm in the connector frame: the origin is the middle "
                     "of the connector's gap on the terrace floor, +X out of the vestibule to the procedural part. "
                     "Blender (x, y, z) m -> UE (x*100, -y*100, z*100). docs/transport.md, 'Vestibule connector'.")
