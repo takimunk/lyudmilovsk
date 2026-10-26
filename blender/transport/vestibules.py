@@ -1329,7 +1329,10 @@ def lower_deck(st, T, part, mats, mi_w, mi_b, mi_in):
     n = rot @ Vector((1, 0, 0))
     return {"mesh": "SM_TR_Tower_Saucer_Deck2", "h": H2 * 100, "floor_z": round(dz * 100, 1), "line": lo_["line"],
             "axis_yaw": round(rel_ue, 2), "track_gap": round(2 * (E2 + 1.05) * 100, 1),
-            "edge_length": round(2 * STOP_HALF * 100, 1), "stop_x": 0.0,
+            "edge_length": round(2 * STOP_HALF * 100, 1), "edge_x": 0.0, "stop_x": 0.0,
+            "edge_y": round(E2 * 100, 1),
+            "placement": "the mesh is already turned by axis_yaw: place it at the tower's axis, its bottom at "
+                         "floor_z, with the station's own yaw (not + axis_yaw)",
             "deck_x": [X0 * 100, X1 * 100],
             "core_exit_dir": [round(n.x, 4), round(-n.y, 4)],
             "panels": [{"at": ue(rot @ Vector((-(STOP_HALF + 0.8), sy * (E2 - 1.2), 0)))[:2],
@@ -1415,7 +1418,10 @@ def build_towers(style, cdir, mats):
         return [("door", n * rmid + Vector((0, 0, DOOR_H / 2 - 0.05)), n, DOOR_W, DOOR_H + 0.1)]
     part("SM_TR_Tower_%s_Foot" % cap, T.FOOT_H, foot)
     out["door"] = {"side": ("+x" if ddir.x > 0 else "-x") if abs(ddir.x) >= abs(ddir.y) else ("-y" if ddir.y > 0 else "+y"),
-                   "hole": [round(DOOR_W * 100, 1), round(DOOR_H * 100, 1)]}
+                   "hole": [round(DOOR_W * 100, 1), round(DOOR_H * 100, 1)],
+                   # the wall the door is in: its inner and outer face's distance from the axis, and the door's middle
+                   "wall": [round(T.r_in(st["inner"], dyaw) * 100, 1), round(T.r_out(st["outer"], dyaw) * 100, 1)],
+                   "at": round((T.r_in(st["inner"], dyaw) + T.r_out(st["outer"], dyaw)) / 2 * 100, 1)}
     for h in T.SHAFT:
         def shaft(bm, h=h):
             T.ring(bm, st["outer"], st["inner"], 0.0, h, mi_w, mi_in, mi_w)
