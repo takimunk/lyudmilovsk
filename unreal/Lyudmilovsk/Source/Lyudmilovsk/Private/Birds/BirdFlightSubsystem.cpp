@@ -427,7 +427,8 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 		|| Info.Activity == EBirdActivity::Peck || Info.Velocity.Size() < 30.f;
 	// standing (on the palm), it turns round after eating and faces the way the hero looks
 	const float Yaw = bStanding ? PC->GetControlRotation().Yaw : Info.Velocity.Rotation().Yaw;
-	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, Actor))
+	// bird life keeps a claimed bird's own body hidden (it draws nothing for it): the pawn spawns its own
+	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, nullptr))
 	{
 		Life->ReleaseBird(BirdId);
 		return false;
@@ -435,9 +436,10 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 	S->ClaimedId = BirdId;
 	S->LastClaimId = BirdId;
 	S->bOurFemale = Info.bFemale;
-	if (ABirdActor* A = Cast<ABirdActor>(Actor))
+	(void)Actor;
+	if (ABirdPawn* BP = S->Bird.Get(); BP && BP->GetOutsideBody())
 	{
-		A->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
+		BP->GetOutsideBody()->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
 	}
 	return true;
 #else
@@ -992,7 +994,7 @@ bool UBirdFlightSubsystem::RecallBird()
 		FBirdLifeInfo Info;
 		if (Life->GetBird(LastClaimId, Info))
 		{
-			Shown = Life->ClaimBird(LastClaimId);
+			Life->ClaimBird(LastClaimId);
 			Sp = Info.SpeciesId;
 			Id = LastClaimId;
 		}
@@ -1043,13 +1045,22 @@ void UBirdFlightSubsystem::HandleCall()
 		{
 			K = (EAnswer)Force;
 		}
-		AActor* A = Life->ClaimBird(Id);
+		Life->ClaimBird(Id);
+		// bird life hides a claimed bird's body: the answer is played by a body of our own, where that bird is
+		FActorSpawnParameters SP;
+		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SP.bDeferConstruction = true;
+		ABirdActor* A = GetWorld()->SpawnActor<ABirdActor>(ABirdActor::StaticClass(), FTransform(Info.Location), SP);
 		if (!A)
 		{
 			Life->ReleaseBird(Id);
 			continue;
 		}
-		A->SetActorHiddenInGame(false);
+		A->Species = Info.SpeciesId;
+		A->InitialState = EBirdState::Look;
+		A->FinishSpawning(FTransform(FRotator(0.f, (At - Info.Location).Rotation().Yaw, 0.f), Info.Location));
+		A->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
+		A->SetActorEnableCollision(false);
 		Meet = FEncounter();
 		Meet.Id = Id;
 		Meet.Actor = A;
@@ -1078,6 +1089,10 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	const float Length = Meet.Kind == EAnswer::Fight ? 6.f : Meet.Kind == EAnswer::Court ? 4.f : 2.f;
 	auto Release = [&]()
 	{
+		if (A)
+		{
+			A->Destroy();
+		}
 		if (Life)
 		{
 			Life->ReleaseBird(Meet.Id);
@@ -1096,7 +1111,7 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	const FVector Me = B->FeetLocation();
 	FVector P = A->GetActorLocation();
 	// the player sees who answers: the head turns to it for a moment
-	if (APlayerController* PCx = Player.Get(); PCx && Meet.T < 1.6f)
+	if (APlayerController* PCx = Player.Get(); PCx && (Meet.Kind == EAnswer::Fight || Meet.Kind == EAnswer::Court || Meet.T < 1.6f))
 	{
 		const FRotator Want = (P + FVector(0, 0, 8.f) - B->BirdView().Location).Rotation();
 		const FRotator Cur = PCx->GetControlRotation();
@@ -1119,6 +1134,10 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 			}
 		}
 	};
+	if (FMath::Fmod(Meet.T, 0.5f) < Dt)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
+	}
 	switch (Meet.Kind)
 	{
 	case EAnswer::Fight:
