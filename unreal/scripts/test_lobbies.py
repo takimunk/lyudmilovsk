@@ -52,6 +52,7 @@ def plan():
         add(2.0, lambda w, i=i: cmd(w, "Lobby.Look %d vending" % i))
         add(3.0, lambda w, s=sid: shot(w, "%s_vending" % s))
         if os.environ.get("LOBBYBUY"):
+            add(0.5, lambda w: cmd(w, "Inventory.Earn 100"))
             add(0.5, lambda w: cmd(w, "Vending.Buy 1"))
             add(3.0, lambda w, s=sid: shot(w, "%s_buy" % s))
         add(0.5, lambda w, i=i, k=PIECE[st["style"]]: cmd(w, "Lobby.Look %d %s" % (i, k)))

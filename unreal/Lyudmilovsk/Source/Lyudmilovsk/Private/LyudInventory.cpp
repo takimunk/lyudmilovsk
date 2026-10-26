@@ -886,6 +886,15 @@ static FAutoConsoleCommandWithWorldAndArgs GInvOpen(TEXT("Inventory.Open"), TEXT
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GInvEarn(TEXT("Inventory.Earn"), TEXT("Inventory.Earn <roubles>: puts roubles in the pocket (headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventory* Inv = ULyudInventory::Get(World))
+		{
+			Inv->Earn(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 100);
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TEXT("Inventory.Equip <item id> | none: puts the item in the hero's hand"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
