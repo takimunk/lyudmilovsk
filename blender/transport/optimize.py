@@ -1,13 +1,14 @@
 """Turns the raw Hi3D models of the cable-car metro (design/transport/gen/<name>.glb, ~300k triangles and two 8k
 textures each) into game meshes: decimated to a budget, textures cut to 1-2k, set in the game's frame and size, the
-cabin's door side cut open, the pylons split into feet / shaft / head so the game can stretch only the shaft.
+cabin made a room (cabin.py), the pylons split into feet / shaft / head so the game can stretch only the shaft.
 Writes design/transport/game/<part>.glb and design/transport/game/kit.json (sizes the game reads, copied to
 Content/Transport/kit.json).
 
   Blender -b -P blender/transport/optimize.py [-- name ...]
 
 Frame of the output (Blender, Z up; Unreal gets (x, -y, z)): metres; origin on the base's centre.
-  cabin: long side along X, the door on +Y (Unreal: left of the way it goes, -Y), origin under the body's bottom.
+  cabin: long side along X, the door on +Y (Unreal: left of the way it goes, -Y), origin on the floor under the grip
+  (cabin.py: shell, inside, hanger, two door leaves).
   pylon_*: rope across the crossarm: line pylon's rope along Y (crossarm along X), corner pylon's along X.
   top_*: the station crown, base at 0, D_TOP across.
 """
@@ -23,7 +24,6 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 GEN = os.path.join(ROOT, "design", "transport", "gen")
 OUT = os.path.join(ROOT, "design", "transport", "game")
 
-CABIN_LEN = 3.9          # m along the rope (a roomy 4-seat egg: ~2 m of headroom inside)
 PYLON_ARM = 10.0         # m across the line pylon's crossarm (the two ropes are 9 m apart)
 CORNER_ARM = 10.0
 D_TOP = 21.0             # m across a station's crown
@@ -227,46 +227,19 @@ def tri_count(o):
 
 
 def cabin(kit):
+    """The cabin as a room people ride in: blender/transport/cabin.py."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import cabin as cab
     o = load("cabin")
-    lo, hi = bounds(o)
-    # long side along Y in the raw model, the door on +X: turn so the long side is X and the door +Y
-    transform(o, Matrix.Rotation(math.radians(90), 4, "Z"))
-    lo, hi = bounds(o)
-    s = CABIN_LEN / (hi.x - lo.x)
-    c = Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z))
-    transform(o, Matrix.Scale(s, 4) @ Matrix.Translation(-c))
-    lo, hi = bounds(o)
-    # the body: where the shell is wide (the hanger above it is thin)
-    zs = sorted(set(round(v.co.z, 2) for v in o.data.vertices))
-    width_at = {}
-    for v in o.data.vertices:
-        k = round(v.co.z, 1)
-        width_at[k] = max(width_at.get(k, 0.0), abs(v.co.y))
-    body_top = max(k for k, w in width_at.items() if w > (hi.y - lo.y) * 0.3)
-    grip = hi.z
-    # cut the door open: the side faces on +Y in the middle third, from just over the floor to under the roof
-    door_half = 0.42
-    floor = 0.22
-    door_top = min(body_top - 0.2, floor + 2.0)
-    bm = bmesh.new()
-    bm.from_mesh(o.data)
-    bm.normal_update()
-    kill = []
-    for f in bm.faces:
-        p = f.calc_center_median()
-        if abs(p.x) < door_half and floor + 0.05 < p.z < door_top and p.y > 0.0 and f.normal.y > 0.25:
-            kill.append(f)
-    bmesh.ops.delete(bm, geom=kill, context="FACES")
-    bm.to_mesh(o.data)
-    bm.free()
-    n = decimate(o, BUDGET["cabin"])
-    g, r = glass_and_rooms(o, None, dark=0.46, dull=0.62, zmax=body_top - 0.1)     # its tinted windows are a warm brown
-    debug_render(o, "cabin")
+    parts, entry = cab.build(o, {"transform": transform, "bounds": bounds, "decimate": decimate, "texels": _texels})
+    shell = parts["SM_TR_Cabin"]
+    debug_render(shell, "cabin")
     shrink_textures(TEX["cabin"])
-    export([o], "SM_TR_Cabin")
-    kit["cabin"] = {"length": round(hi.x - lo.x, 3), "width": round(hi.y - lo.y, 3), "grip": round(grip, 3),
-                    "body_top": round(body_top, 3), "floor": floor, "door_half": door_half, "door_top": round(door_top, 3),
-                    "tris": n, "door_faces_cut": len(kill), "glass_faces": g, "room_faces": r}
+    for name, ob in parts.items():
+        export([ob], name)
+    if os.environ.get("TR_DEBUG"):
+        bpy.ops.wm.save_as_mainfile(filepath=os.path.join(os.environ["TR_DEBUG"], "cabin.blend"))
+    kit["cabin"] = entry
 
 
 def pylon(kit, name, arm, rope_axis):

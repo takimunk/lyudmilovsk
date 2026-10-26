@@ -17,9 +17,9 @@ for f in sorted(os.listdir(GAME)):
         if o.type == "MESH":
             o.name = o.data.name = f[:-4]
             for m in o.data.materials:
-                # the textured one gets the mesh's name; the glass and the room keep theirs (TR_Glass*, TR_Interior*:
+                # the textured one gets the mesh's name; the glass, the room and the cabin's inside keep theirs (TR_*:
                 # the game puts its own materials on those slots)
-                if m and not m.name.startswith(("TR_Glass", "TR_Interior")):
+                if m and not m.name.startswith("TR_"):
                     m.name = "MI_" + f[3:-4]
 for img in bpy.data.images:
     img.pack()

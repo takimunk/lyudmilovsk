@@ -13,6 +13,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
@@ -576,7 +577,7 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			{
 				const int32 End = SimValid(Net->Stations[Ln.Depot].Ends, C.Line) ? Net->Stations[Ln.Depot].Ends[C.Line] : -1;
 				const float Dir = End == 1 ? -1.f : 1.f;
-				const FVector Grip = B->Decks[K].TransformPosition(FVector(Dir * (650.f + 200.f + 500.f * C.DepotSlot), 0.f, 365.f));
+				const FVector Grip = B->Decks[K].TransformPosition(FVector(Dir * (650.f + 200.f + 560.f * C.DepotSlot), 0.f, ALyudCabin::GripOverFloor()));
 				A->Drive(Grip, B->Decks[K].GetRotation().Vector(), 0.f, 0.f);
 			}
 		}
@@ -611,18 +612,32 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			A->Hum->SetPitchMultiplier(0.8f + 0.04f * C.Speed);
 		}
 		A->Lamp->SetVisibility(Dist < 8000.f);
-		// from inside, the shell's own faces get in the way of the view: the player aboard sees the inside only
-		if (A->Shell->GetStaticMesh() && A->Shell->IsVisible() == (I == RidingCabin))
+		// the box cabin's shell (an old kit) gets in the view from inside: the player aboard sees the boxes only; the
+		// hollow cabin is seen from inside as it is
+		if (!A->bRoom && A->Shell->GetStaticMesh() && A->Shell->IsVisible() == (I == RidingCabin))
 		{
 			A->Shell->SetVisibility(I != RidingCabin);
 		}
 	}
+	RiderIgnoresWay(RidingCabin >= 0 && RidingCabin < SimNum(Net->Cabins) && Net->Cabins[RidingCabin].State == LT::ECabinState::Moving);
 	if (Cableway)
 	{
 		Cableway->UpdateBoards(*Net, View, DeltaTime);
 		Cableway->UpdateRopes(*Net, View);
 	}
 	UpdatePlayer(DeltaTime);
+}
+
+void ULyudTransportSubsystem::RiderIgnoresWay(bool bIgnore)
+{
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	ACharacter* Char = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	if (!Char || !Cableway || bIgnore == bRiderIgnoresWay)
+	{
+		return;
+	}
+	bRiderIgnoresWay = bIgnore;
+	Char->GetCapsuleComponent()->IgnoreActorWhenMoving(Cableway, bIgnore);
 }
 
 void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& After, AActor* Cabin)

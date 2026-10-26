@@ -41,9 +41,27 @@ namespace
 	const float LevelLiftMin = 500.f;      // no lift under 5 m (Aton: a stair only)
 	const float VestX = 650.f, VestY = 500.f, VestH = 380.f;   // the vestibule round the foot of the stair and lift
 
+	/** The cabin as a room (blender/transport/cabin.py, kit.json "cabin"), in the actor's frame (cm, origin on the floor). */
+	struct FCabinKit
+	{
+		bool bRoom = false;                     // the kit has the hollow cabin (its inside, door leaf, hanger)
+		float DoorX = 0.f, DoorW = 110.f, DoorH = 212.f, Slide = -114.f, Out = 8.f, SillY = 104.f;
+		float WallY = 85.f, EndX = 155.f;
+		FVector Lamp = FVector(0, 0, 195.f), Board = FVector(0, -80.f, 224.f), Plate = FVector(150.f, -119.f, 55.f);
+		TArray<FTransform> Seats;
+		TArray<TPair<FVector, FVector>> Collision;   // centre, full size
+	};
+
+	/** Blender metres (x, y, z) -> the actor's centimetres (x, -y, z). */
+	FVector FromBlender(const TArray<TSharedPtr<FJsonValue>>& A)
+	{
+		return A.Num() >= 3 ? FVector(A[0]->AsNumber(), -A[1]->AsNumber(), A[2]->AsNumber()) * 100.f : FVector::ZeroVector;
+	}
+
 	struct FKit
 	{
 		float CabinGrip = 386.3f, CabinFloor = 22.f;
+		FCabinKit Cabin;
 		float PylonFeet = 398.5f, PylonShaft = 2207.3f, PylonHeadSaddle = 86.9f;
 		float CornerSaddle = 0.8f;
 		bool bLoaded = false;
@@ -65,6 +83,38 @@ namespace
 					{
 						K.CabinGrip = (*C)->GetNumberField(TEXT("grip")) * 100.f;
 						K.CabinFloor = (*C)->GetNumberField(TEXT("floor")) * 100.f;
+						const TSharedPtr<FJsonObject>* Door;
+						const TSharedPtr<FJsonObject>* Sockets;
+						const TSharedPtr<FJsonObject>* In;
+						if ((*C)->TryGetObjectField(TEXT("door"), Door) && (*C)->TryGetObjectField(TEXT("sockets"), Sockets)
+							&& (*C)->TryGetObjectField(TEXT("inside"), In))
+						{
+							FCabinKit& R = K.Cabin;
+							R.bRoom = true;
+							R.DoorX = (*Door)->GetNumberField(TEXT("x")) * 100.f;
+							R.DoorW = (*Door)->GetNumberField(TEXT("clear_w")) * 100.f;
+							R.DoorH = (*Door)->GetNumberField(TEXT("clear_h")) * 100.f;
+							R.Slide = (*Door)->GetNumberField(TEXT("slide")) * 100.f;
+							R.Out = (*Door)->GetNumberField(TEXT("out")) * 100.f;
+							R.SillY = (*Door)->GetNumberField(TEXT("sill_y")) * 100.f;
+							R.WallY = (*In)->GetNumberField(TEXT("wall_y")) * 100.f;
+							R.EndX = (*In)->GetNumberField(TEXT("end_x")) * 100.f;
+							R.Lamp = FromBlender((*Sockets)->GetArrayField(TEXT("lamp")));
+							R.Board = FromBlender((*Sockets)->GetArrayField(TEXT("board")));
+							R.Plate = FromBlender((*Sockets)->GetArrayField(TEXT("plate")));
+							for (const TSharedPtr<FJsonValue>& V : (*Sockets)->GetArrayField(TEXT("seats")))
+							{
+								const TSharedPtr<FJsonObject> S = V->AsObject();
+								R.Seats.Add(FTransform(FRotator(0.f, S->GetNumberField(TEXT("yaw")), 0.f), FromBlender(S->GetArrayField(TEXT("at")))));
+							}
+							for (const TSharedPtr<FJsonValue>& V : (*C)->GetArrayField(TEXT("collision")))
+							{
+								const TSharedPtr<FJsonObject> B = V->AsObject();
+								FVector Size = FromBlender(B->GetArrayField(TEXT("s")));
+								Size.Y = FMath::Abs(Size.Y);
+								R.Collision.Add({ FromBlender(B->GetArrayField(TEXT("c"))), Size });
+							}
+						}
 					}
 					if (const TSharedPtr<FJsonObject>* P; J->TryGetObjectField(TEXT("pylon_line"), P))
 					{
@@ -243,6 +293,15 @@ void ALyudCableway::KitMaterials(UStaticMeshComponent* C)
 		else if (N.StartsWith(TEXT("TR_Interior")))
 		{
 			C->SetMaterial(I, Mat(TEXT("plaster")));
+		}
+		else if (N.StartsWith(TEXT("TR_")))
+		{
+			// the cabin's inside (cabin.py): TR_Terrazzo, TR_Seat, TR_Chrome, TR_Glow -> the palette's own
+			const FName Key(*N.Mid(3).ToLower());
+			if (Key == TEXT("glow") || Palette().Contains(Key))
+			{
+				C->SetMaterial(I, Mat(Key));
+			}
 		}
 	}
 }
@@ -1237,6 +1296,100 @@ ALyudCabin::ALyudCabin()
 void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FText& Name, const FLinearColor& LineColor)
 {
 	Index = InIndex;
+	const FCabinKit& R = Kit().Cabin;
+	UStaticMesh* ShellMesh = LoadMesh(TEXT("SM_TR_Cabin"));
+	UStaticMesh* InsideMesh = R.bRoom ? LoadMesh(TEXT("SM_TR_CabinInside")) : nullptr;
+	bRoom = ShellMesh && InsideMesh;
+	if (!bRoom)
+	{
+		SetupBoxes(Way, InIndex, Number, Name, LineColor);
+	}
+	else
+	{
+		// the hollow cabin (blender/transport/cabin.py): every part has its origin on the floor's centre
+		Shell->SetStaticMesh(ShellMesh);
+		Shell->SetRelativeLocation(FVector::ZeroVector);
+		Way->KitMaterials(Shell);
+		auto Mesh = [&](const TCHAR* MeshName)
+		{
+			UStaticMeshComponent* P = NewObject<UStaticMeshComponent>(this);
+			P->SetMobility(EComponentMobility::Movable);
+			P->SetStaticMesh(LoadMesh(MeshName));
+			P->SetupAttachment(Root);
+			P->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+			P->RegisterComponent();
+			AddInstanceComponent(P);
+			Way->KitMaterials(P);
+			return P;
+		};
+		InsideParts = Mesh(TEXT("SM_TR_CabinInside"));
+		InsideParts->SetCastShadow(false);
+		Hanger = Mesh(TEXT("SM_TR_CabinHanger"));
+		DoorLeaf->SetStaticMesh(LoadMesh(TEXT("SM_TR_CabinDoor")));
+		DoorLeaf->SetRelativeScale3D(FVector::OneVector);
+		DoorLeaf->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+		DoorLeaf->SetMobility(EComponentMobility::Movable);
+		Way->KitMaterials(DoorLeaf);
+		// what the player and people bump into: the floor, the walls round the room, the benches (kit.json collision)
+		for (const TPair<FVector, FVector>& B : R.Collision)
+		{
+			UBoxComponent* Wall = NewObject<UBoxComponent>(this);
+			Wall->SetupAttachment(Root);
+			Wall->SetRelativeLocation(B.Key);
+			Wall->SetBoxExtent(B.Value * 0.5f);
+			Wall->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+			Wall->SetCanEverAffectNavigation(false);
+			Wall->RegisterComponent();
+			AddInstanceComponent(Wall);
+		}
+		// the shut door: one box over the opening, out of the way once it's open
+		Gate = NewObject<UBoxComponent>(this);
+		Gate->SetupAttachment(Root);
+		Gate->SetRelativeLocation(FVector(R.DoorX, -R.WallY - 5.f, R.DoorH * 0.5f));
+		Gate->SetBoxExtent(FVector(R.DoorW * 0.5f, 5.f, R.DoorH * 0.5f));
+		Gate->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+		Gate->SetCanEverAffectNavigation(false);
+		Gate->RegisterComponent();
+		AddInstanceComponent(Gate);
+		Lamp->SetRelativeLocation(R.Lamp);
+		Inside->SetBoxExtent(FVector(R.EndX, R.WallY, 105.f));
+	}
+	Drive(GetActorLocation() + FVector(0, 0, Kit().CabinGrip - Kit().CabinFloor), FVector::ForwardVector, 0.f, 0.f);
+
+	// the board over the door inside: where it goes
+	const float HW = Width * 0.5f - 20.f, Top = 205.f;
+	Board->SetWidgetSpace(EWidgetSpace::World);
+	Board->SetDrawSize(FVector2D(600.f, 150.f));
+	Board->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Board->SetBlendMode(EWidgetBlendMode::Opaque);
+	Board->SetRelativeLocation(bRoom ? R.Board + FVector(0, 6.f, 0) : FVector(0.f, -HW + 6.f, Top - 25.f));
+	Board->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	Board->SetRelativeScale3D(FVector(0.13f));
+	Board->SetSlateWidget(SNew(SLyudCabinBoard).Cabin(InIndex));
+	// the number and the name, painted on both sides under the windows
+	for (const float S : { -1.f, 1.f })
+	{
+		UWidgetComponent* P = NewObject<UWidgetComponent>(this);
+		P->SetupAttachment(Root);
+		P->SetWidgetSpace(EWidgetSpace::World);
+		P->SetDrawSize(FVector2D(560.f, 160.f));
+		P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		P->SetBlendMode(EWidgetBlendMode::Transparent);
+		P->RegisterComponent();
+		const FVector At = bRoom ? FVector(S > 0 ? -R.Plate.X : R.Plate.X, S * FMath::Abs(R.Plate.Y), R.Plate.Z)
+			: FVector(S > 0 ? 0.f : 110.f, S * (Width * 0.5f + 4.f), 48.f);
+		P->SetRelativeLocation(At);
+		P->SetRelativeRotation(FRotator(0.f, S > 0 ? 90.f : -90.f, 0.f));
+		P->SetRelativeScale3D(FVector(0.16f));
+		P->SetSlateWidget(SNew(SLyudCabinPlate).Number(Number).Name(Name).Color(LineColor));
+		AddInstanceComponent(P);
+		Plates.Add(P);
+	}
+}
+
+void ALyudCabin::SetupBoxes(ALyudCableway* Way, int32 InIndex, int32 Number, const FText& Name, const FLinearColor& LineColor)
+{
+	// no hollow cabin in the kit (an old kit.json): the hi3d shell round a room of boxes
 	const FKit& K = Kit();
 	UStaticMesh* Cube = BasicShape(TEXT("box"));
 	if (UStaticMesh* M = LoadMesh(TEXT("SM_TR_Cabin")))
@@ -1302,34 +1455,6 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 	DoorLeaf->SetRelativeScale3D(FVector(0.86f, 0.05f, Top / 100.f));
 	DoorLeaf->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
 	DoorLeaf->SetMobility(EComponentMobility::Movable);
-	Drive(GetActorLocation() + FVector(0, 0, Hanger), FVector::ForwardVector, 0.f, 0.f);
-
-	// the board over the door inside: where it goes
-	Board->SetWidgetSpace(EWidgetSpace::World);
-	Board->SetDrawSize(FVector2D(600.f, 150.f));
-	Board->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Board->SetBlendMode(EWidgetBlendMode::Opaque);
-	Board->SetRelativeLocation(FVector(0.f, -HW + 6.f, Top - 25.f));
-	Board->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-	Board->SetRelativeScale3D(FVector(0.13f));
-	Board->SetSlateWidget(SNew(SLyudCabinBoard).Cabin(InIndex));
-	// the number and the name, painted on both sides under the windows
-	for (const float S : { -1.f, 1.f })
-	{
-		UWidgetComponent* P = NewObject<UWidgetComponent>(this);
-		P->SetupAttachment(Root);
-		P->SetWidgetSpace(EWidgetSpace::World);
-		P->SetDrawSize(FVector2D(560.f, 160.f));
-		P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		P->SetBlendMode(EWidgetBlendMode::Transparent);
-		P->RegisterComponent();
-		P->SetRelativeLocation(FVector(S > 0 ? 0.f : 110.f, S * (Width * 0.5f + 4.f), 48.f));
-		P->SetRelativeRotation(FRotator(0.f, S > 0 ? 90.f : -90.f, 0.f));
-		P->SetRelativeScale3D(FVector(0.16f));
-		P->SetSlateWidget(SNew(SLyudCabinPlate).Number(Number).Name(Name).Color(LineColor));
-		AddInstanceComponent(P);
-		Plates.Add(P);
-	}
 }
 
 void ALyudCabin::Drive(const FVector& Grip, const FVector& Dir, float InDoor, float DeltaTime, float PitchDeg, float RollDeg)
@@ -1347,6 +1472,15 @@ void ALyudCabin::Drive(const FVector& Grip, const FVector& Dir, float InDoor, fl
 	const FRotator R(PitchDeg, Yaw, RollDeg);
 	SetActorLocationAndRotation(Grip - R.RotateVector(FVector(0, 0, Over)), R);
 	Door = InDoor;
+	if (bRoom)
+	{
+		// the plug door: out first, then along the side
+		const FCabinKit& Rk = Kit().Cabin;
+		const float OutT = FMath::Clamp(Door / 0.25f, 0.f, 1.f), SlideT = FMath::Clamp((Door - 0.2f) / 0.8f, 0.f, 1.f);
+		DoorLeaf->SetRelativeLocation(FVector(Rk.Slide * FMath::SmoothStep(0.f, 1.f, SlideT), -Rk.Out * OutT, 0.f));
+		Gate->SetCollisionEnabled(Door > 0.85f ? ECollisionEnabled::NoCollision : ECollisionEnabled::QueryAndPhysics);
+		return;
+	}
 	const float HW = Width * 0.5f - 20.f;
 	DoorLeaf->SetRelativeLocation(FVector(Door * 92.f, -HW - 6.f, 102.5f));
 }
@@ -1357,14 +1491,29 @@ void ALyudCabin::SetBoard(const FText& Line1, const FText& Line2)
 	BoardB = Line2;
 }
 
+float ALyudCabin::GripOverFloor()
+{
+	return Kit().CabinGrip - Kit().CabinFloor;
+}
+
 bool ALyudCabin::Contains(const FVector& P) const
 {
 	const FVector L = GetActorTransform().InverseTransformPosition(P);
+	if (bRoom)
+	{
+		const FCabinKit& R = Kit().Cabin;
+		return FMath::Abs(L.X) < R.EndX && FMath::Abs(L.Y) < R.WallY + 5.f && L.Z > -40.f && L.Z < 240.f;
+	}
 	return FMath::Abs(L.X) < Length * 0.5f - 20.f && FMath::Abs(L.Y) < Width * 0.5f - 10.f && L.Z > -40.f && L.Z < 240.f;
 }
 
 FTransform ALyudCabin::Seat(int32 K) const
 {
+	const FCabinKit& R = Kit().Cabin;
+	if (bRoom && R.Seats.Num() > 0)
+	{
+		return R.Seats[K % R.Seats.Num()] * GetActorTransform();
+	}
 	const float HL = Length * 0.5f - 30.f;
 	const float S = K < 2 ? 1.f : -1.f;
 	const float Y = (K % 2 ? 1.f : -1.f) * 45.f;
@@ -1374,5 +1523,10 @@ FTransform ALyudCabin::Seat(int32 K) const
 
 FVector ALyudCabin::DoorPoint() const
 {
+	if (bRoom)
+	{
+		const FCabinKit& R = Kit().Cabin;
+		return GetActorTransform().TransformPosition(FVector(R.DoorX, -R.SillY, 0.f));
+	}
 	return GetActorTransform().TransformPosition(FVector(0.f, -Width * 0.5f, 0.f));
 }

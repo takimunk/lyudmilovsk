@@ -1,7 +1,7 @@
 {
   "comment": "The cable-car metro of Lyudmilovsk (docs/transport.md). Authored data: edit here, then python3 tools/transport.py resolves it against the terrain into network_built.json. Map frame of tools/world_map.py: metres, X west, Y north. Names are string keys (strings_<lang>.json).",
   "defaults": {
-    "rope_over_deck": 3.65,
+    "rope_over_deck": 4.01,
     "min_clearance": 9.0,
     "pylon_min": 8.0,
     "pylon_max": 45.0,

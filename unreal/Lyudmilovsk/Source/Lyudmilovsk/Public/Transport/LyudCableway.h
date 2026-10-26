@@ -161,9 +161,12 @@ public:
 };
 
 /**
- * One cabin: the hi3d shell (its door side cut open) round a simple inside: floor, two benches facing each other,
- * corner posts, a lamp, a small board over the door with where it goes, the number and the cabin's own name on both
- * sides. Driven by ULyudTransportSubsystem along its rope: the player inside rides it as a moving floor.
+ * One cabin: the hi3d egg made a room in Blender (blender/transport/cabin.py): the hollow shell with glass windows and
+ * a door opening, the plug door that steps out and slides along the side, the floor and two benches facing each other
+ * (four seats, kit.json sockets), the hanger and grip plumb over the floor's centre; invisible boxes from kit.json keep
+ * people inside. A small board over the door says where it goes, the number and the cabin's own name on both sides.
+ * Driven by ULyudTransportSubsystem along its rope: the player inside rides it as a moving floor. An old kit without
+ * the room gets the earlier shell round boxes.
  */
 UCLASS(NotPlaceable, Transient)
 class LYUDMILOVSK_API ALyudCabin : public AActor
@@ -177,12 +180,19 @@ public:
 	/** Grip on the rope at G (world), heading Dir; Door 0..1; the board's text. */
 	void Drive(const FVector& Grip, const FVector& Dir, float Door, float DeltaTime, float PitchDeg = 0.f, float RollDeg = 0.f);
 	void SetBoard(const FText& Line1, const FText& Line2);
+	/** The rope's height over the cabin's floor (kit.json cabin.grip; network.json rope_over_deck matches it). */
+	static float GripOverFloor();
 	/** Is P inside (the cabin's own volume)? */
 	bool Contains(const FVector& P) const;
 	/** Seat K's place (world) and facing for a seated person. */
 	FTransform Seat(int32 K) const;
-	/** Where the door is (world), its middle at floor level. */
+	/** Where the door is (world), its middle at floor level, on the hull's outside. */
+	UFUNCTION(BlueprintPure, Category = "Cabin")
 	FVector DoorPoint() const;
+
+private:
+	void SetupBoxes(ALyudCableway* Way, int32 InIndex, int32 Number, const FText& Name, const FLinearColor& LineColor);
+public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Cabin") TObjectPtr<USceneComponent> Root;
 	UPROPERTY(VisibleAnywhere, Category = "Cabin") TObjectPtr<UStaticMeshComponent> Shell;
@@ -192,13 +202,17 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Cabin") TObjectPtr<UPointLightComponent> Lamp;
 	UPROPERTY(Transient) TArray<TObjectPtr<UWidgetComponent>> Plates;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Hum;
+	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> InsideParts;
+	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Hanger;
+	UPROPERTY(Transient) TObjectPtr<UBoxComponent> Gate;
+	bool bRoom = false;                         // the hollow cabin from the kit (else the boxes)
 	int32 Index = -1;
-	float Door = 0.f;
+	/** 0 shut .. 1 open. */
+	UPROPERTY(BlueprintReadOnly, Category = "Cabin") float Door = 0.f;
 	FText BoardA, BoardB;
 	bool bVisibleNear = true;
 
 	static constexpr float Length = 380.f;      // cm, along the rope (the kit's egg is 3.9 x 2.2 m)
 	static constexpr float Width = 210.f;
 	static constexpr float Height = 230.f;
-	static constexpr float Hanger = 390.f;      // rope over the floor (network.json rope_over_deck)
 };

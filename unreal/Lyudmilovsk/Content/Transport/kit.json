@@ -1,17 +1,230 @@
 {
  "_doc": "Made by blender/transport/optimize.py: sizes of the game meshes (metres, Blender frame). Copied to Content/Transport/kit.json.",
  "cabin": {
-  "body_top": 2.3,
-  "door_faces_cut": 25547,
-  "door_half": 0.42,
-  "door_top": 2.1,
-  "floor": 0.22,
-  "glass_faces": 3529,
-  "grip": 3.863,
-  "length": 3.9,
-  "room_faces": 10471,
-  "tris": 14000,
-  "width": 2.224
+  "belly": 0.303,
+  "body_top": 4.212,
+  "collision": [
+   {
+    "c": [
+     0,
+     0,
+     -0.05
+    ],
+    "name": "floor",
+    "s": [
+     3.099,
+     2.23,
+     0.1
+    ]
+   },
+   {
+    "c": [
+     0,
+     0,
+     2.42
+    ],
+    "name": "roof",
+    "s": [
+     3.099,
+     1.63,
+     0.1
+    ]
+   },
+   {
+    "c": [
+     1.599,
+     0,
+     1.185
+    ],
+    "name": "end+",
+    "s": [
+     0.1,
+     1.63,
+     2.37
+    ]
+   },
+   {
+    "c": [
+     -1.599,
+     0,
+     1.185
+    ],
+    "name": "end-",
+    "s": [
+     0.1,
+     1.63,
+     2.37
+    ]
+   },
+   {
+    "c": [
+     0,
+     -0.865,
+     1.185
+    ],
+    "name": "side-",
+    "s": [
+     3.099,
+     0.1,
+     2.37
+    ]
+   },
+   {
+    "c": [
+     -0.815,
+     0.865,
+     1.185
+    ],
+    "name": "side+a",
+    "s": [
+     1.469,
+     0.1,
+     2.37
+    ]
+   },
+   {
+    "c": [
+     1.285,
+     0.865,
+     1.185
+    ],
+    "name": "side+b",
+    "s": [
+     0.529,
+     0.1,
+     2.37
+    ]
+   },
+   {
+    "c": [
+     0.47,
+     0.865,
+     2.245
+    ],
+    "name": "lintel",
+    "s": [
+     1.1,
+     0.1,
+     0.25
+    ]
+   },
+   {
+    "c": [
+     1.527,
+     0,
+     0.2
+    ],
+    "name": "bench+1",
+    "s": [
+     0.5,
+     1.228,
+     0.4
+    ]
+   },
+   {
+    "c": [
+     -1.327,
+     0,
+     0.2
+    ],
+    "name": "bench-1",
+    "s": [
+     0.5,
+     1.212,
+     0.4
+    ]
+   }
+  ],
+  "door": {
+   "clear_h": 2.12,
+   "clear_w": 1.1,
+   "lintel_y": 0.901,
+   "out": 0.08,
+   "side_y": 1.168,
+   "sill_y": 1.037,
+   "slide": -1.14,
+   "x": 0.47
+  },
+  "floor": 0.0,
+  "grip": 4.01,
+  "grip_along_rope": true,
+  "height": 4.515,
+  "inside": {
+   "end_x": 1.549,
+   "headroom": 2.429,
+   "wall_y": 0.815
+  },
+  "length": 4.607,
+  "origin": "floor centre under the grip",
+  "scale_from_raw": 4.5997,
+  "sockets": {
+   "board": [
+    0.47,
+    0.765,
+    2.24
+   ],
+   "grip": [
+    0.0,
+    0.0,
+    4.01
+   ],
+   "hanger_foot": [
+    0.396,
+    -0.437,
+    2.95
+   ],
+   "lamp": [
+    0.0,
+    0.0,
+    2.329
+   ],
+   "plate": [
+    1.77,
+    1.188,
+    0.55
+   ],
+   "seats": [
+    {
+     "at": [
+      1.527,
+      -0.307,
+      0.0
+     ],
+     "yaw": 180.0
+    },
+    {
+     "at": [
+      1.527,
+      0.307,
+      0.0
+     ],
+     "yaw": 180.0
+    },
+    {
+     "at": [
+      -1.327,
+      -0.303,
+      0.0
+     ],
+     "yaw": 0.0
+    },
+    {
+     "at": [
+      -1.327,
+      0.303,
+      0.0
+     ],
+     "yaw": 0.0
+    }
+   ]
+  },
+  "tris": {
+   "SM_TR_Cabin": 12495,
+   "SM_TR_CabinDoor": 4148,
+   "SM_TR_CabinHanger": 796,
+   "SM_TR_CabinInside": 688
+  },
+  "width": 2.631
  },
  "pylon_corner": {
   "height": 1.0,

@@ -1,7 +1,7 @@
 # The cable-car metro of Lyudmilovsk
 
 Cable cars instead of a metro: lines of ropes over the town, stations high on towers with a lift and a stair down, egg-shaped
-four-seat cabins that only run when somebody needs them and go home to their depot after. Built 2026-10-25 (worktree
+four-seat cabins (people really ride inside them) that only run when somebody needs them and go home to their depot after. Built 2026-10-25 (worktree
 `transport`, branch `wt/transport`). The skill for working on it: `.claude/skills/transport/SKILL.md`.
 
 ## The look
@@ -86,6 +86,28 @@ placed in the level), spawns the cabins (`ALyudCabin`) and runs the network:
 Console: `Transport.Report`, `Transport.Goto <station> [vestibule|platform|outside]`, `Transport.Ride <from> <to>` (the player onto a platform, a cabin called), `Transport.Call <from>
 <to> [who]`, `Transport.Diagram [station|close]`, `lyud.Transport.Speedup <x>`.
 
+## The cabin
+
+The hi3d egg is made a room people really ride in by `blender/transport/cabin.py` (run by `optimize.py -- cabin`, no new
+generation): the raw model is cut to its outer skin (Hi3D leaves bits inside), scaled to 4.64 m so the standard door fits
+under its roof, decimated; a door opening is cut on the door painted in its texture (found by its frame stripes) with
+straight edges, clear 1.10 x 2.12 m (`CharacterStandard`); the dark, dull texels are the windows, taken out and glazed both
+ways (`TR_Glass`); the rest gets a 4.5 cm wall whose inner face is plaster (`TR_Interior`) and whose reveals keep the
+paint. Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends
+(fitted by rays, wide enough for two each), a ceiling lamp, chrome grab rails. The piece cut out of the side is the plug
+door (`SM_TR_CabinDoor`): it steps out 8 cm, then slides 1.14 m back along the side over the window. The hanger and grip
+are their own mesh (`SM_TR_CabinHanger`), bent so the grip is plumb over the floor's centre.
+
+Every part has its origin on the floor's centre under the grip (rope along X, door on Blender +Y = Unreal -Y, the left of
+the way it goes). `kit.json` `cabin` holds what the game needs: `grip` (rope over the floor, 4.01 m = `network.json`
+`rope_over_deck`, keep them equal), `door` (x = +0.47 m ahead of the centre, clear size, `sill_y` 1.037 m = the hull at
+floor level by the door, slide, out), `sockets` (four seats with their facing, lamp, board, name plates), `collision`
+(floor, walls round the room with the door gap, lintel, roof, benches: invisible boxes in `ALyudCabin`). The platform
+side of this (island edge 3.43 m from the station's centre, nothing over the deck between 3.13 and 3.43 m, stop marks
+at the door) is in the platform spec. Budget: shell ~20k triangles with its wall, door 4k, hanger 0.8k, inside 0.7k;
+2k texture. Check: `TR_DEBUG=<dir>` saves `cabin.blend` and the glass/room pictures; `SCRIPT=test_cabin.py
+unreal/scripts/test_transport.sh` walks the player in through the door, rides, walks out.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a
@@ -93,7 +115,7 @@ Console: `Transport.Report`, `Transport.Goto <station> [vestibule|platform|outsi
   drawn a little in, without the windows, gives the room inside (`TR_Interior*`, plaster) with a floor in the crowns. Check the
   split with `TR_DEBUG=<dir>` (pictures with the glass red, the room blue).
 - 3D: ten Hi3D v3.0 models from the Nano Banana renders (`design/transport/gen.json`, sidecars `gen/<step>.json`; made on fal,
-  see the rule below), optimized by `blender/transport/optimize.py` (cabin 14k triangles with its door side cut open, line
+  see the rule below), optimized by `blender/transport/optimize.py` (the cabin made a room by `cabin.py`, see above, line
   pylon split into feet / shaft / head so only the shaft stretches, corner pylon scaled whole, crowns 22k at 21 m; 1-2k
   textures) and packed by `pack.py` into `design/transport/game/transport_kit.glb` (local), sizes in `Content/Transport/kit.json`.
 - `unreal/scripts/import_transport.sh`: the meshes and materials (`import_transport.py` -> /Game/Transport), the sounds

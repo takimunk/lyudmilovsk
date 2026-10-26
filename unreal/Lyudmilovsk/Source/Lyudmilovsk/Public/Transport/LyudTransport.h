@@ -148,6 +148,10 @@ private:
 	TSharedPtr<SLyudTransitScreen> Screen;
 	int32 ScreenStation = -1;
 	int32 RidingCabin = -1;
+	/** The player's capsule passes through the stations and pylons while their cabin moves (the cabin's walls keep them in;
+	 *  a platform end or a wheel housing the cabin's body sweeps over would otherwise push them out through it). */
+	bool bRiderIgnoresWay = false;
+	void RiderIgnoresWay(bool bIgnore);
 	/** Person id -> rider index of their trip. */
 	TMap<int32, int32> PeopleRides;
 	float PromptCooldown = 0.f;

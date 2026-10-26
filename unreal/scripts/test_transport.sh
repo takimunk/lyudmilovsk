@@ -2,6 +2,7 @@
 # Offscreen check of the cable-car metro in Lvl_Scene01 (test_transport.py): prints the TRANSPORTTEST lines and copies the
 # screenshots to Saved/TransportTest/<n>_<name>.png. Needs Content/Scene01, Characters/Hero+Humans, Voice copied from the
 # main checkout (cp -c). Waits for other offscreen UE runs first. SOUND=1 keeps the sound on (silent output).
+# SCRIPT=test_cabin.py: the cabin as a room (walk in through the door, ride, walk out).
 set -e
 UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -17,7 +18,7 @@ rm -f "$SHOTS"/ScreenShot*.png "$OUT"/*.png
 SND="-nosound"; [ "$SOUND" = 1 ] && SND="-ini:Engine:[Audio]:UnfocusedVolumeMultiplier=1"
 "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen \
     -windowed -ResX=1600 -ResY=900 -unattended -nosplash $SND -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
-    -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_transport.py" > "$LOG.stdout" 2>&1 &
+    -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/${SCRIPT:-test_transport.py}" > "$LOG.stdout" 2>&1 &
 PID=$!
 ( sleep "${TIMEOUT:-1200}"; kill "$PID" 2>/dev/null ) &
 DOG=$!
