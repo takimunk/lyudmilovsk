@@ -1,0 +1,10 @@
+{
+ "_doc": "The stations' surface textures: one Higgsfield grid (3x3 seamless swatches), cut by tools/transport_textures.py.",
+ "service": "higgsfield",
+ "job_id": "a16142fa-bc7f-431b-9606-6412b4fd1b47",
+ "model": "gpt_image_2_5",
+ "params": {"variant": "sunburst", "quality": "medium", "resolution": "4k", "aspect_ratio": "1:1", "background": "opaque"},
+ "credits": 1.25,
+ "prompt": "A material sample sheet: a precise 3x3 grid of nine square, flat, top-down, evenly lit, seamless tileable texture swatches for 1960s Soviet space-age modernist architecture, separated by thin pure black gutters, no labels, no text, no shadows, no perspective, orthographic scans. Row 1: (1) warm grey terrazzo floor with small white, ochre and black marble chips, polished; (2) smooth light grey precast concrete with faint formwork board lines and subtle pores; (3) ivory cream enamel facade panels, large rectangular panels with thin recessed seams, very subtle wear. Row 2: (4) amber orange enamel steel cladding with fine horizontal ribs; (5) brushed stainless steel, fine linear brushing; (6) ivory painted steel plate with a few rivet rows and slight weathering at the seams. Row 3: (7) dark grey rubber stair tread with parallel anti-slip grooves; (8) small square glass mosaic tiles in teal and deep blue with light grout; (9) yellow-ochre tactile warning paving with raised dots. Every swatch fills its cell edge to edge, uniform scale, photographic realism.",
+ "made": "2026-10-26"
+}

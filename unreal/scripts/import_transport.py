@@ -79,6 +79,82 @@ def glow(m):
     m.set_editor_property("used_with_instanced_static_meshes", True)
 
 
+TEXTURES = os.path.join(REPO, "design", "transport", "textures")
+TEX_DIR = "/Game/Transport/Textures"
+
+
+def surface(m):
+    """M_TR_Surface: the stations' textured surfaces (tools/transport_textures.py). The meshes' UVs are metres; the
+    texture repeats every Tile metres. BaseTex * Tint, NormalTex, RoughTex * RoughMul, Metallic."""
+    uv = mel.create_material_expression(m, unreal.MaterialExpressionTextureCoordinate, -1200, 0)
+    tile = sparam(m, "Tile", 1.0, -1200, 150)
+    div = mel.create_material_expression(m, unreal.MaterialExpressionDivide, -1000, 50)
+    mel.connect_material_expressions(uv, "", div, "A")
+    mel.connect_material_expressions(tile, "", div, "B")
+
+    def tex(name, y, sampler):
+        t = mel.create_material_expression(m, unreal.MaterialExpressionTextureSampleParameter2D, -800, y)
+        t.set_editor_property("parameter_name", name)
+        # a default of the sampler's kind (the engine's default texture is a colour one: the material would not compile)
+        kind = {"BaseTex": "C", "NormalTex": "N", "RoughTex": "R"}[name]
+        default = eal.load_asset(TEX_DIR + "/T_TR_concrete_" + kind)
+        if default:
+            t.set_editor_property("texture", default)
+        t.set_editor_property("sampler_type", sampler)
+        mel.connect_material_expressions(div, "", t, "UVs")
+        return t
+    base = tex("BaseTex", -200, unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
+    nrm = tex("NormalTex", 100, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    rgh = tex("RoughTex", 400, unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_GRAYSCALE)
+    tint = vparam(m, "Tint", (1, 1, 1, 1), -800, -400)
+    mul = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -400, -300)
+    mel.connect_material_expressions(base, "RGB", mul, "A")
+    mel.connect_material_expressions(tint, "", mul, "B")
+    mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
+    rm = sparam(m, "RoughMul", 1.0, -600, 600)
+    rmul = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -400, 450)
+    mel.connect_material_expressions(rgh, "R", rmul, "A")
+    mel.connect_material_expressions(rm, "", rmul, "B")
+    mel.connect_material_property(rmul, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(sparam(m, "Metallic", 0.0, -400, 650), "", unreal.MaterialProperty.MP_METALLIC)
+    m.set_editor_property("used_with_instanced_static_meshes", True)
+
+
+def import_textures():
+    """design/transport/textures/T_TR_*_{C,N,R}.png -> /Game/Transport/Textures (normal maps as normal maps, green
+    flipped: the generator writes OpenGL's +Y), then M_TR_Surface over them."""
+    if not os.path.isdir(TEXTURES):
+        log("no %s: keeping the committed textures" % TEXTURES)
+        return 0
+    tasks = []
+    names = sorted(f for f in os.listdir(TEXTURES) if f.startswith("T_TR_") and f.endswith(".png"))
+    for f in names:
+        t = unreal.AssetImportTask()
+        t.filename = os.path.join(TEXTURES, f)
+        t.destination_path = TEX_DIR
+        t.automated = True
+        t.replace_existing = True
+        t.save = False
+        tasks.append(t)
+    tools.import_asset_tasks(tasks)
+    for f in names:
+        a = eal.load_asset(TEX_DIR + "/" + f[:-4])
+        if not a:
+            continue
+        kind = f[-5]
+        if kind == "N":
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+            a.set_editor_property("srgb", False)
+            a.set_editor_property("flip_green_channel", True)
+        elif kind == "R":
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+            a.set_editor_property("srgb", False)
+        eal.save_loaded_asset(a)
+    material("M_TR_Surface", unreal.BlendMode.BLEND_OPAQUE, surface)
+    return len(names)
+
+
 def import_kit():
     if not os.path.isfile(KIT):
         # the meshes are committed (LFS); the .glb is only where they were made (blender/transport/optimize.py, pack.py)
@@ -131,14 +207,17 @@ def import_kit():
 
 def main():
     if not os.path.isfile(KIT) and eal.does_directory_exist(MATS):
-        # a checkout without the generated kit: the committed meshes and materials stay as they are
+        # a checkout without the generated kit: the committed meshes and materials stay as they are (the textures are
+        # committed sources, so they and M_TR_Surface are made anyway)
         log("no %s: the committed meshes and materials stay" % KIT)
+        log("textures: %d" % import_textures())
         return
     for name, blend, build in (("M_TR_Paint", unreal.BlendMode.BLEND_OPAQUE, paint),
                                ("M_TR_Glass", unreal.BlendMode.BLEND_TRANSLUCENT, glass),
                                ("M_TR_Glow", unreal.BlendMode.BLEND_OPAQUE, glow)):
         material(name, blend, build)
         log("material " + name)
+    log("textures: %d" % import_textures())
     log("meshes: %d" % import_kit())
 
 

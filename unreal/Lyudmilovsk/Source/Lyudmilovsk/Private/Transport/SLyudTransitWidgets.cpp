@@ -431,15 +431,29 @@ int32 SLyudStationSign::OnPaint(const FPaintArgs& Args, const FGeometry& G, cons
 		return LayerId;
 	}
 	const LyudTransport::FStation& St = N->Stations[Station];
-	P.Rect(LayerId, FVector2D(0, 30.f * U), FVector2D(Size.X, 200.f * U), FLinearColor(0.8f, 0.76f, 0.66f), 100.f * U);
-	P.Rect(LayerId + 1, FVector2D(0, 120.f * U), FVector2D(Size.X, 18.f * U), FLinearColor(0.86f, 0.42f, 0.08f));
-	float X = 110.f * U;
+	// a dark enamel plate in an amber frame, the line badges on the left, the name in ivory capitals in the middle of the
+	// free width; the amber rule runs under the letters, never through them
+	const FLinearColor Frame(0.86f, 0.42f, 0.08f), Plate(0.07f, 0.08f, 0.10f), Ivory(0.93f, 0.89f, 0.80f);
+	P.Rect(LayerId, FVector2D(0, 0), Size, Frame, 26.f * U);
+	P.Rect(LayerId + 1, FVector2D(10.f * U, 10.f * U), Size - FVector2D(20.f * U, 20.f * U), Plate, 18.f * U);
+	float X = 40.f * U;
 	for (const LyudTransport::FLevel& Lv : St.Levels)
 	{
-		P.Badge(LayerId + 2, FVector2D(X, 130.f * U), 46.f * U, N->Lines[Lv.Line]);
-		X += 104.f * U;
+		P.Badge(LayerId + 2, FVector2D(X + 50.f * U, Size.Y * 0.5f), 50.f * U, N->Lines[Lv.Line]);
+		X += 116.f * U;
 	}
-	P.Text(LayerId + 3, StationName(Station), FVector2D(X + 10.f * U, 130.f * U), LyudUI::Font(FMath::RoundToInt(78 * U), "Bold"), FLinearColor(0.12f, 0.08f, 0.05f));
+	const FString Name = StationName(Station).ToUpper();
+	FSlateFontInfo Font = LyudUI::Font(FMath::RoundToInt(110 * U), "Bold");
+	const float Free = Size.X - X - 40.f * U;
+	const FVector2D TS = P.TextSize(Name, Font);
+	if (TS.X > Free && TS.X > 1.f)
+	{
+		Font = LyudUI::Font(FMath::Max(8, FMath::FloorToInt(110 * U * Free / TS.X)), "Bold");
+	}
+	const float Cx = X + Free * 0.5f;
+	P.Text(LayerId + 3, Name, FVector2D(Cx, Size.Y * 0.46f), Font, Ivory, 0.5f);
+	const float W = FMath::Min(Free, P.TextSize(Name, Font).X);
+	P.Rect(LayerId + 3, FVector2D(Cx - W * 0.5f, Size.Y * 0.80f), FVector2D(W, 8.f * U), Frame);
 	return LayerId + 4;
 }
 

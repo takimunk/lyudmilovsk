@@ -155,6 +155,9 @@ The vestibule mesh:
 6. Size: the footprint fits 22 x 22 m in X < 0; at most 16 m tall over z = 0. Budget ~25k triangles, 2k textures.
 7. Collision: complex as simple. Material slots `TR_Glass*` (real glass) and `TR_Interior*` (plaster) as before.
 
+Made by blender/transport/vestibules.py (raw hi3d crowns in design/transport/gen, local), checked by
+blender/transport/check_vestibules.py (walk grid + connector box), then pack.py + import_transport.sh.
+
 `Content/Transport/vestibules.json` (written by the Blender script), per style, UE cm in the connector frame:
 `mesh`, `footprint` (polygon), `height`, `centre`, `door` ({at, yaw, hole}), `entrances` ([{at, out, width}]),
 `room` (box), `spots` (kiosk, bench, diagram wall: where the game puts the furniture; if empty it goes in the gallery).
