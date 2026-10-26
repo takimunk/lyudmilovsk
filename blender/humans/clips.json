@@ -1,5 +1,5 @@
 {
- "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) and the side-sleeping set (sleep_clips.py, posed on the target body). pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) and the computer loops (sit_pc.py), both posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
  "target": "blender/characters/guy_a/export/human_guy_a.glb",
  "sources": {
   "ual1": {
@@ -16,6 +16,10 @@
   },
   "side": {
    "file": "Saved/ClipSources/sleep_side.glb",
+   "ref": "rest"
+  },
+  "pc": {
+   "file": "Saved/ClipSources/sit_pc.glb",
    "ref": "rest"
   }
  },
@@ -101,6 +105,46 @@
    "source": "side",
    "action": "Side_GetUp",
    "pelvis": "abs"
+  },
+  "PC_Type": {
+   "source": "pc",
+   "action": "Pc_PC_Type",
+   "pelvis": "abs"
+  },
+  "PC_Game": {
+   "source": "pc",
+   "action": "Pc_PC_Game",
+   "pelvis": "abs"
+  },
+  "PC_Scroll": {
+   "source": "pc",
+   "action": "Pc_PC_Scroll",
+   "pelvis": "abs"
+  },
+  "PC_Read": {
+   "source": "pc",
+   "action": "Pc_PC_Read",
+   "pelvis": "abs"
+  },
+  "PC_LeanBack": {
+   "source": "pc",
+   "action": "Pc_PC_LeanBack",
+   "pelvis": "abs"
+  },
+  "PC_Stretch": {
+   "source": "pc",
+   "action": "Pc_PC_Stretch",
+   "pelvis": "abs"
+  },
+  "PC_Gamepad": {
+   "source": "pc",
+   "action": "Pc_PC_Gamepad",
+   "pelvis": "abs"
+  },
+  "Run": {
+   "source": "ual1",
+   "action": "Jog_Fwd_Loop",
+   "walk": true
   }
  }
 }

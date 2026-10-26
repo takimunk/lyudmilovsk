@@ -104,6 +104,20 @@ weights before importing.
   5 s breaths; LieDown sits on the edge, props on the elbow and rolls in; GetUp is it backward) into
   `Saved/ClipSources/sleep_side.glb`, which clips.json carries over like the rest. The bed frame is life_anims.py's
   (UE: the actor beside the bed facing +Y, mattress top 50 cm, its middle at local (-5, -55), the head toward +X).
+- **At a computer** (`PC_Type`, `PC_Game`, `PC_Scroll`, `PC_Read`, `PC_LeanBack`, `PC_Stretch`, `PC_Gamepad`):
+  `blender/humans/sit_pc.py` poses them on Guy_a with `poser.py` (two-bone IK arms with the elbows down by the body,
+  hands turned by their palms, finger taps and clicks, mouse flicks) on seat_anims' chair and desk and the shared seated
+  pelvis, so SitDown -> the loops -> StandUp follow on. `ULyudBodyAnimInstance::SetComputer(style)` works through the
+  person's own mix (Gamer, Browse, Reader, Office, Idle, Gamepad: `StyleOfClip` of their old seated clip's name),
+  6-18 s each with cross-fades; `ANpcBody` (Computer, Work), the club's placed people and `ABoothOwner` use it. While
+  `PC_Gamepad` plays, `SM_Gamepad` (`blender/humans/gamepad.py`, `unreal/scripts/import_gamepad.py`) sits between the
+  hands. The old per-person `A_<Name>_Sit_*` clips stay only as the style's name.
+- **Run**: UAL `Jog_Fwd_Loop`, ~2.6 m/s at rate 1; `ANpcBody` runs from 1.9 m/s (back to walking under 1.6).
+- **On top of every clip** (`FLyudBodyAnimProxy::Procedural`): breathing (chest, shoulders; ~4 s, deeper and quicker
+  after walking or running), the lean into starts, stops and turns, and on their feet (`SetOnFeet`) the feet on the
+  ground: a trace under each foot, two-bone IK (`AnimationCore::SolveTwoBoneIK`), the pelvis down to the lower foot,
+  the planted foot tilted to the slope. `lyud.Face.Log 1` logs it once a second; `make_body_test_level.py` +
+  `test_bodies.py` shoot desks, a ramp and a step.
 - **Walk speed**: the walk covers 0.92 m/s at rate 1 on Guy_a (`life_anims_report.json` `speed_m_s`); `ANpcBody` plays
   it at the person's speed / (93 cm/s x body scale). Body scale = pelvis height / 93.7 cm (Guy_a).
 - **A person's own clips** (`A_<Name>_Sit_*`, the club's computers): `bake_own_clips.py` bakes seat_anims' loops on the

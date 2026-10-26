@@ -901,6 +901,12 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	{
 		Anim->SetEyesShut(Pose == EPersonPose::Sleep && Transit == 0);
 		Anim->SetChatter(Pose == EPersonPose::Talk && Transit == 0);
+		if (Transit != 0 || (Pose != EPersonPose::Computer && Pose != EPersonPose::Work))
+		{
+			Anim->SetComputer(NAME_None);
+		}
+		Anim->SetOnFeet(Transit == 0 && (Pose == EPersonPose::Walk || Pose == EPersonPose::Stand || Pose == EPersonPose::Look
+			|| Pose == EPersonPose::Talk));
 	}
 	switch (Transit)
 	{
@@ -917,17 +923,42 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// the shared walk (Quaternius UAL Walk_Loop on Guy_a) covers ~93 cm/s at rate 1 (life_anims_report.json speed_m_s);
 		// the owner's (the fallback) 75
 		const bool bShared = Clip(TEXT("Walk")) && Clip(TEXT("Walk"))->GetName().StartsWith(TEXT("A_Human"));
-		Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 93.f * S : 75.f), 0.3f, 2.5f));
+		// a run (UAL Jog_Fwd_Loop, ~2.6 m/s at rate 1) from ~1.9 m/s, back to the walk under ~1.6 (a body's size scales both)
+		const bool bRun = Clip(TEXT("Run")) && Speed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
+		if (bRun)
+		{
+			Play(TEXT("Run"), true, FMath::Clamp(Speed / (260.f * S), 0.6f, 1.6f));
+		}
+		else
+		{
+			Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 93.f * S : 75.f), 0.3f, 2.5f));
+		}
 		break;
 	}
 	case EPersonPose::Talk: PlayVaried(TEXT("Talk"), { TEXT("Talk"), TEXT("Talk"), TEXT("Nod"), TEXT("Talk"), TEXT("FoldArms") }); break;
 	case EPersonPose::Look: PlayVaried(TEXT("Look"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") }, 0.8f); break;
 	case EPersonPose::Sit: PlayVaried(TEXT("Sit"), { TEXT("SitIdle"), TEXT("SitIdle"), TEXT("SitTalk") }); break;
-	case EPersonPose::Computer: Play(TEXT("Computer"), true); break;
+	case EPersonPose::Computer:
+		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+		{
+			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip));
+			Playing = TEXT("Computer");
+			break;
+		}
+		Play(TEXT("Computer"), true);
+		break;
 	case EPersonPose::Eat: Play(TEXT("Eat"), true); break;
 	case EPersonPose::Read: Play(TEXT("Read"), true); break;
 	case EPersonPose::Sleep: Play(TEXT("Sleep"), true); break;
-	case EPersonPose::Work: Play(TEXT("Computer"), true); break;
+	case EPersonPose::Work:
+		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+		{
+			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip.IsEmpty() ? FString(TEXT("Excel")) : ComputerClip));
+			Playing = TEXT("Computer");
+			break;
+		}
+		Play(TEXT("Computer"), true);
+		break;
 	default: PlayVaried(TEXT("Stand"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") }); break;
 	}
 }

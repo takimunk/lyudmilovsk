@@ -4,9 +4,13 @@
 #include "Animation/AnimationPoseData.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "AnimationRuntime.h"
+#include "TwoBoneIK.h"
+#include "GameFramework/Pawn.h"
 #include "BonePose.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Components/StaticMeshComponent.h"
 #include "Dom/JsonObject.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/World.h"
@@ -163,34 +167,113 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		Output.Curve.Set(FaceCurveNames()[I], FaceCurves[I]);
 	}
+	Procedural(Output);
+	return true;
+}
+
+void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
+{
+	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
+	auto Bone = [&Bones](const TCHAR* Name)
+	{
+		const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Name);
+		return MeshIndex == INDEX_NONE ? FCompactPoseBoneIndex(INDEX_NONE) : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex));
+	};
+	FCSPose<FCompactPose> CS;
+	CS.InitPose(Output.Pose);
+	// turns a bone (and so its children) about a component-space axis through its joint; the mesh faces +Y, its left
+	// is +X, up +Z
+	auto Turn = [&CS](FCompactPoseBoneIndex I, const FVector& Axis, float Deg)
+	{
+		if (I.IsValid() && FMath::Abs(Deg) > 1e-3f)
+		{
+			FTransform T = CS.GetComponentSpaceTransform(I);
+			T.SetRotation(FQuat(Axis, FMath::DegreesToRadians(Deg)) * T.GetRotation());
+			CS.SetComponentSpaceTransform(I, T);
+		}
+	};
+	// the feet first (they move the pelvis), then the upper body on top
+	const FCompactPoseBoneIndex Pelvis = Bone(TEXT("pelvis"));
+	if (FootIKAlpha > 0.01f && Pelvis.IsValid())
+	{
+		const TCHAR* Names[2][3] = { { TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l") }, { TEXT("thigh_r"), TEXT("calf_r"), TEXT("foot_r") } };
+		FCompactPoseBoneIndex Leg[2][3];
+		bool bOk = true;
+		for (int32 S = 0; S < 2; S++)
+		{
+			for (int32 J = 0; J < 3; J++)
+			{
+				Leg[S][J] = Bone(Names[S][J]);
+				bOk &= Leg[S][J].IsValid();
+			}
+		}
+		if (bOk)
+		{
+			// how planted each foot is in the clip (a lifted foot in mid-stride still follows the ground, half as much)
+			float Plant[2];
+			for (int32 S = 0; S < 2; S++)
+			{
+				const float Z = CS.GetComponentSpaceTransform(Leg[S][2]).GetLocation().Z;
+				Plant[S] = FMath::Clamp(1.f - (Z - 10.f) / 15.f, 0.5f, 1.f);
+			}
+			// the pelvis goes down to the lower foot (a leg can't stretch), never up
+			const float Down = FMath::Min3(FootOffset[0], FootOffset[1], 0.f) * FootIKAlpha;
+			FTransform P = CS.GetComponentSpaceTransform(Pelvis);
+			P.AddToTranslation(FVector(0.f, 0.f, Down));
+			CS.SetComponentSpaceTransform(Pelvis, P);
+			for (int32 S = 0; S < 2; S++)
+			{
+				FTransform Hip = CS.GetComponentSpaceTransform(Leg[S][0]);
+				FTransform Knee = CS.GetComponentSpaceTransform(Leg[S][1]);
+				FTransform Ankle = CS.GetComponentSpaceTransform(Leg[S][2]);
+				const FVector Want = Ankle.GetLocation() + FVector(0.f, 0.f, (FootOffset[S] * Plant[S] - Down) * FootIKAlpha);
+				// the knee bends the way it already bends
+				const FVector Mid = (Hip.GetLocation() + Ankle.GetLocation()) * 0.5f;
+				FVector Bend = Knee.GetLocation() - Mid;
+				if (Bend.SizeSquared() < 1.f)
+				{
+					Bend = FVector(0.f, 10.f, 0.f);
+				}
+				const FVector Pole = Knee.GetLocation() + Bend.GetSafeNormal() * 60.f;
+				const FQuat FootRot = Ankle.GetRotation();
+				AnimationCore::SolveTwoBoneIK(Hip, Knee, Ankle, Pole, Want, false, 1.0, 1.0);
+				// the foot keeps its clip's turn, tilted onto the slope as far as it is planted
+				const FQuat Slope = FQuat::FindBetweenNormals(FVector::UpVector, FootNormal[S]);
+				Ankle.SetRotation(FQuat::Slerp(FQuat::Identity, Slope, Plant[S] * FootIKAlpha) * FootRot);
+				CS.SetComponentSpaceTransform(Leg[S][0], Hip);
+				CS.SetComponentSpaceTransform(Leg[S][1], Knee);
+				CS.SetComponentSpaceTransform(Leg[S][2], Ankle);
+			}
+		}
+	}
+	// breathing: the chest lifts and opens, the shoulders rise a little, the head keeps still
+	const float B = (Breath - 0.5f) * BreathDepth;
+	Turn(Bone(TEXT("spine_02")), FVector::XAxisVector, -0.9f * B);
+	Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -1.3f * B);
+	Turn(Bone(TEXT("clavicle_l")), FVector::YAxisVector, -1.6f * B);
+	Turn(Bone(TEXT("clavicle_r")), FVector::YAxisVector, 1.6f * B);
+	Turn(Bone(TEXT("neck_01")), FVector::XAxisVector, 1.6f * B);
+	// leaning with the motion: forward into a start or uphill, back when stopping, into a turn
+	Turn(Bone(TEXT("spine_01")), FVector::XAxisVector, -LeanPitch * 0.6f);
+	Turn(Bone(TEXT("spine_01")), FVector::YAxisVector, LeanRoll * 0.6f);
+	Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -LeanPitch * 0.4f);
+	// the head's turn toward what the person looks at, a third in the neck and the rest in the head
 	if (FMath::Abs(HeadYaw) + FMath::Abs(HeadPitch) > 0.05f)
 	{
-		// the turn on top of the clip, a third in the neck and the rest in the head, about the component's up (yaw) and
-		// its sideways axis (pitch; the mesh faces +Y, its left is +X)
-		const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
-		FCSPose<FCompactPose> CS;
-		CS.InitPose(Output.Pose);
-		for (const TPair<const TCHAR*, float>& B : { TPair<const TCHAR*, float>(TEXT("neck_01"), 0.35f), TPair<const TCHAR*, float>(TEXT("head"), 0.65f) })
+		for (const TPair<const TCHAR*, float>& N : { TPair<const TCHAR*, float>(TEXT("neck_01"), 0.35f), TPair<const TCHAR*, float>(TEXT("head"), 0.65f) })
 		{
-			const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(B.Key);
-			if (MeshIndex == INDEX_NONE)
+			const FCompactPoseBoneIndex I = Bone(N.Key);
+			if (I.IsValid())
 			{
-				continue;
+				FTransform T = CS.GetComponentSpaceTransform(I);
+				const FQuat Q = FQuat(FVector::UpVector, FMath::DegreesToRadians(HeadYaw * N.Value))
+					* FQuat(FVector::XAxisVector, FMath::DegreesToRadians(HeadPitch * N.Value));
+				T.SetRotation(Q * T.GetRotation());
+				CS.SetComponentSpaceTransform(I, T);
 			}
-			const FCompactPoseBoneIndex Index = Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex));
-			if (!Index.IsValid())
-			{
-				continue;
-			}
-			FTransform T = CS.GetComponentSpaceTransform(Index);
-			const FQuat Q = FQuat(FVector::UpVector, FMath::DegreesToRadians(HeadYaw * B.Value))
-				* FQuat(FVector::XAxisVector, FMath::DegreesToRadians(HeadPitch * B.Value));
-			T.SetRotation(Q * T.GetRotation());
-			CS.SetComponentSpaceTransform(Index, T);
 		}
-		FCSPose<FCompactPose>::ConvertComponentPosesToLocalPoses(MoveTemp(CS), Output.Pose);
 	}
-	return true;
+	FCSPose<FCompactPose>::ConvertComponentPosesToLocalPoses(MoveTemp(CS), Output.Pose);
 }
 
 // --- the game side ---------------------------------------------------------------------------------------
@@ -242,6 +325,12 @@ void ULyudBodyAnimInstance::NativeInitializeAnimation()
 	{
 		if (UAnimSequence* Clip = Cast<UAnimSequence>(Mesh->AnimationData.AnimToPlay))
 		{
+			// a person at a club computer (their own seated loop) works through the computer loops instead
+			if (Mesh->AnimationData.bSavedPlaying && (Clip->GetName().Contains(TEXT("_Sit_")) || Clip->GetName().Contains(TEXT("Excel"))))
+			{
+				SetComputer(StyleOfClip(Clip->GetName()));
+				return;
+			}
 			const float At = Mesh->AnimationData.SavedPosition > 0.f ? Mesh->AnimationData.SavedPosition
 				: Rng.FRandRange(0.f, Clip->GetPlayLength());      // people in a row shouldn't move in step
 			PlayClip(Clip, Mesh->AnimationData.bSavedLooping, Mesh->AnimationData.bSavedPlaying ? Mesh->AnimationData.SavedPlayRate : 0.f, 0.f, At);
@@ -313,12 +402,236 @@ void ULyudBodyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bCandidate = Cam && FVector::DistSquared(Candidate, Mesh->GetComponentLocation()) < 600.f * 600.f;
 	}
 	bCandidateGiven = false;
+	UpdateComputer(Mesh);
+	UpdateGamepad(Mesh);
 	UpdateLook(Mesh, DeltaSeconds);
+	UpdateBody(Mesh, DeltaSeconds);
 	if (bFace)
 	{
 		UpdateBlink(Mesh);
 		UpdateMouth(Mesh, DeltaSeconds);
 		GetProxyOnGameThread<FLyudBodyAnimProxy>().FaceCurves = TArray<float>(Morph, 6);
+	}
+}
+
+FName ULyudBodyAnimInstance::StyleOfClip(const FString& Clip)
+{
+	if (Clip.Contains(TEXT("Gamepad")))
+	{
+		return TEXT("Gamepad");
+	}
+	if (Clip.Contains(TEXT("Browse")))
+	{
+		return TEXT("Browse");
+	}
+	if (Clip.Contains(TEXT("ChinRest")))
+	{
+		return TEXT("Reader");
+	}
+	if (Clip.Contains(TEXT("Excel")))
+	{
+		return TEXT("Office");
+	}
+	if (Clip.Contains(TEXT("Sit_Idle")) || Clip.Contains(TEXT("LeanBack")))
+	{
+		return TEXT("Idle");
+	}
+	return TEXT("Gamer");                                    // KeyboardMouse, Stream
+}
+
+void ULyudBodyAnimInstance::SetComputer(FName Style)
+{
+	if (Style != PcStyle)
+	{
+		PcStyle = Style;
+		PcUntil = 0.f;
+		PcClip = NAME_None;
+	}
+}
+
+void ULyudBodyAnimInstance::UpdateComputer(USkeletalMeshComponent* Mesh)
+{
+	if (PcStyle.IsNone())
+	{
+		PcClip = NAME_None;
+		return;
+	}
+	if (Clock < PcUntil && !PcClip.IsNone())
+	{
+		return;
+	}
+	// each style's mix (weights) of the loops; the stretch is a one-off
+	struct FPick { const TCHAR* Clip; float Weight; };
+	static const TMap<FName, TArray<FPick>> Mix = {
+		{ TEXT("Gamer"), { { TEXT("PC_Game"), 5.f }, { TEXT("PC_Type"), 1.5f }, { TEXT("PC_Scroll"), 1.5f }, { TEXT("PC_LeanBack"), 1.f }, { TEXT("PC_Stretch"), 0.5f }, { TEXT("PC_Read"), 0.5f } } },
+		{ TEXT("Browse"), { { TEXT("PC_Scroll"), 4.f }, { TEXT("PC_Read"), 2.5f }, { TEXT("PC_Type"), 1.5f }, { TEXT("PC_LeanBack"), 1.5f }, { TEXT("PC_Stretch"), 0.7f } } },
+		{ TEXT("Reader"), { { TEXT("PC_Read"), 4.f }, { TEXT("PC_Scroll"), 2.f }, { TEXT("PC_LeanBack"), 1.f }, { TEXT("PC_Stretch"), 0.5f } } },
+		{ TEXT("Office"), { { TEXT("PC_Type"), 4.f }, { TEXT("PC_Scroll"), 2.f }, { TEXT("PC_Read"), 1.5f }, { TEXT("PC_Stretch"), 0.7f }, { TEXT("PC_LeanBack"), 0.5f } } },
+		{ TEXT("Idle"), { { TEXT("PC_LeanBack"), 3.f }, { TEXT("PC_Scroll"), 2.5f }, { TEXT("PC_Read"), 1.5f }, { TEXT("PC_Type"), 1.f }, { TEXT("PC_Stretch"), 0.5f } } },
+		{ TEXT("Gamepad"), { { TEXT("PC_Gamepad"), 8.f }, { TEXT("PC_LeanBack"), 0.8f }, { TEXT("PC_Stretch"), 0.4f } } } };
+	const TArray<FPick>* Picks = Mix.Find(PcStyle);
+	if (!Picks)
+	{
+		Picks = Mix.Find(TEXT("Gamer"));
+	}
+	float Sum = 0.f;
+	for (const FPick& P : *Picks)
+	{
+		Sum += P.Clip == PcClip.ToString() ? 0.f : P.Weight;           // something else next (unless it's all there is)
+	}
+	float R = Rng.FRand() * Sum;
+	FName Pick = PcClip;
+	for (const FPick& P : *Picks)
+	{
+		if (P.Clip == PcClip.ToString())
+		{
+			continue;
+		}
+		R -= P.Weight;
+		Pick = P.Clip;
+		if (R <= 0.f)
+		{
+			break;
+		}
+	}
+	if (PcStyle == TEXT("Gamepad") && PcClip != TEXT("PC_Gamepad") && !PcClip.IsNone())
+	{
+		Pick = TEXT("PC_Gamepad");                           // back to the game after a break
+	}
+	TObjectPtr<UAnimSequence>& Seq = PcClips.FindOrAdd(Pick);
+	if (!Seq)
+	{
+		const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/Anims/A_Human_%s.A_Human_%s"), *Pick.ToString(), *Pick.ToString());
+		Seq = LoadObject<UAnimSequence>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	}
+	if (!Seq)
+	{
+		PcUntil = Clock + 5.f;
+		return;
+	}
+	PcClip = Pick;
+	const bool bOnce = Pick == TEXT("PC_Stretch");
+	PlayClip(Seq, !bOnce, Rng.FRandRange(0.9f, 1.1f), 0.6f, bOnce ? 0.f : Rng.FRandRange(0.f, Seq->GetPlayLength()));
+	PcUntil = Clock + (bOnce ? Seq->GetPlayLength() - 0.3f : Rng.FRandRange(6.f, 18.f) * (Pick == TEXT("PC_Gamepad") || Pick == TEXT("PC_Game") ? 1.6f : 1.f));
+}
+
+void ULyudBodyAnimInstance::UpdateGamepad(USkeletalMeshComponent* Mesh)
+{
+	const bool bShow = PcClip == TEXT("PC_Gamepad") && CurrentClip() && CurrentClip()->GetName().EndsWith(TEXT("PC_Gamepad"));
+	if (bShow && !Gamepad && Mesh->GetOwner())
+	{
+		if (UStaticMesh* SM = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Gamepad.SM_Gamepad")))
+		{
+			Gamepad = NewObject<UStaticMeshComponent>(Mesh->GetOwner(), TEXT("Gamepad"));
+			Gamepad->SetStaticMesh(SM);
+			Gamepad->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Gamepad->SetupAttachment(Mesh);
+			Gamepad->RegisterComponent();
+		}
+	}
+	if (!Gamepad)
+	{
+		return;
+	}
+	Gamepad->SetVisibility(bShow);
+	if (bShow)
+	{
+		// between the palms, its length from the right hand to the left, the sticks up toward the face
+		const FVector L = Mesh->GetSocketLocation(TEXT("hand_l")), R = Mesh->GetSocketLocation(TEXT("hand_r"));
+		const FVector Ml = Mesh->GetSocketLocation(TEXT("middle_01_l")), Mr = Mesh->GetSocketLocation(TEXT("middle_01_r"));
+		const FVector Mid = (L + R + Ml + Mr) * 0.25f;
+		const FVector Across = (L - R).GetSafeNormal();
+		const FVector Fwd = ((Ml + Mr) * 0.5f - (L + R) * 0.5f).GetSafeNormal();
+		const FVector Up = FVector::CrossProduct(Across, Fwd).GetSafeNormal();
+		// the mesh: length along X, far edge +Y (glTF -Z -> UE +Y), top +Z
+		const FMatrix M = FRotationMatrix::MakeFromXZ(Across, Up.Z >= 0.f ? Up : -Up);
+		Gamepad->SetWorldLocationAndRotation(Mid + (Up.Z >= 0.f ? Up : -Up) * 2.f, M.ToQuat());
+	}
+}
+
+void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
+{
+	FLyudBodyAnimProxy& P = GetProxyOnGameThread<FLyudBodyAnimProxy>();
+	const FTransform C = Mesh->GetComponentTransform();
+	const FVector Pos = C.GetLocation();
+	const float Yaw = (float)C.Rotator().Yaw;
+	// motion: smoothed velocity and turn rate (cm/s, deg/s)
+	if (bHasLast && Dt > 1e-4f)
+	{
+		const FVector V = (Pos - LastPos) / Dt;
+		const FVector Acc = (V - Vel) / FMath::Max(Dt, 0.016f);
+		Vel += (V - Vel) * FMath::Min(1.f, Dt * 6.f);
+		YawRate += (FMath::FindDeltaAngleDegrees(LastYaw, Yaw) / Dt - YawRate) * FMath::Min(1.f, Dt * 5.f);
+		const float Speed = Vel.Size2D();
+		// teleports (a person placed, a snap into a seat) aren't motion
+		if (Speed > 800.f)
+		{
+			Vel = FVector::ZeroVector;
+		}
+		// breathless after walking (a little) and running (a lot)
+		Exertion = FMath::Clamp(Exertion + Dt * (Speed > 250.f ? 0.06f : Speed > 60.f ? 0.006f : -0.03f), 0.f, 1.f);
+		if (bOnFeet)
+		{
+			const FVector Fwd = C.GetRotation().RotateVector(FVector::YAxisVector);     // the mesh faces +Y
+			const float FwdAcc = FMath::Clamp((float)FVector::DotProduct(Acc, Fwd), -300.f, 300.f);
+			const FVector2D Want(FMath::Clamp(FwdAcc * 0.012f + Speed * 0.006f, -4.f, 6.f),
+				FMath::Clamp(-YawRate * Speed * 0.0009f, -7.f, 7.f));
+			Lean += (Want - Lean) * FMath::Min(1.f, Dt * 4.f);
+		}
+		else
+		{
+			Lean *= FMath::Max(0.f, 1.f - Dt * 4.f);
+		}
+	}
+	LastPos = Pos;
+	LastYaw = Yaw;
+	bHasLast = true;
+	// breathing: ~4.2 s at rest down to ~2 s out of breath, a little irregular
+	BreathPeriod = FMath::Lerp(4.2f + 0.6f * FMath::Sin(Clock * 0.13f + Rng.GetInitialSeed()), 2.0f, Exertion);
+	BreathPhase = FMath::Fmod(BreathPhase + Dt / BreathPeriod, 1.f);
+	// in quicker than out
+	const float Ph = BreathPhase < 0.4f ? BreathPhase / 0.4f * 0.5f : 0.5f + (BreathPhase - 0.4f) / 0.6f * 0.5f;
+	P.Breath = 0.5f - 0.5f * FMath::Cos(Ph * 2.f * PI);
+	P.BreathDepth = 1.f + 1.6f * Exertion;
+	P.LeanPitch = Lean.X;
+	P.LeanRoll = Lean.Y;
+	// the feet on the ground: a trace under each foot (where it was last frame)
+	FootAlpha += ((bOnFeet ? 1.f : 0.f) - FootAlpha) * FMath::Min(1.f, Dt * 5.f);
+	if (FootAlpha > 0.01f && GetWorld())
+	{
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(LyudFeet), false, Mesh->GetOwner());
+		if (const APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0))
+		{
+			Q.AddIgnoredActor(Player);
+		}
+		const TCHAR* Feet[2] = { TEXT("foot_l"), TEXT("foot_r") };
+		for (int32 S = 0; S < 2; S++)
+		{
+			const FVector F = Mesh->GetSocketLocation(Feet[S]);
+			FHitResult Hit;
+			float Off = 0.f;
+			FVector N = FVector::UpVector;
+			if (GetWorld()->LineTraceSingleByChannel(Hit, FVector(F.X, F.Y, Pos.Z + 50.f), FVector(F.X, F.Y, Pos.Z - 60.f), ECC_Visibility, Q))
+			{
+				Off = FMath::Clamp((float)(Hit.ImpactPoint.Z - Pos.Z), -40.f, 40.f);
+				N = C.InverseTransformVectorNoScale(Hit.ImpactNormal).GetSafeNormal();
+				if (N.Z < 0.6f)
+				{
+					N = FVector::UpVector;                // a wall, a step's riser: stay level
+				}
+			}
+			FootOff[S] += (Off - FootOff[S]) * FMath::Min(1.f, Dt * 12.f);
+			FootNor[S] = FMath::Lerp(FootNor[S], N, FMath::Min(1.f, Dt * 8.f)).GetSafeNormal();
+			P.FootOffset[S] = FootOff[S];
+			P.FootNormal[S] = FootNor[S];
+		}
+	}
+	P.FootIKAlpha = FootAlpha;
+	if (CVarFaceLog.GetValueOnAnyThread() && FMath::FloorToInt(Clock) != FMath::FloorToInt(Clock - Dt))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LyudBody %s: feet %.2f (%.1f, %.1f cm), lean (%.1f, %.1f), breath %.2f x%.2f, clip %s"),
+			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), FootAlpha, FootOff[0], FootOff[1], Lean.X, Lean.Y, P.Breath, P.BreathDepth,
+			*GetNameSafe(CurrentClip()));
 	}
 }
 
@@ -531,6 +844,20 @@ static FAutoConsoleCommandWithWorldAndArgs GFaceChatter(TEXT("lyud.Face.Chatter"
 			if (ULyudBodyAnimInstance* A = It->GetWorld() == World ? Cast<ULyudBodyAnimInstance>(It->GetAnimInstance()) : nullptr)
 			{
 				A->SetChatter(bOn);
+			}
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GBodyOnFeet(TEXT("lyud.Body.OnFeet"),
+	TEXT("lyud.Body.OnFeet <0|1>: every body plants its feet on the ground (tests; ANpcBody sets it by its pose)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		const bool bOn = Args.Num() == 0 || Args[0] != TEXT("0");
+		for (TObjectIterator<USkeletalMeshComponent> It; It; ++It)
+		{
+			if (ULyudBodyAnimInstance* A = It->GetWorld() == World ? Cast<ULyudBodyAnimInstance>(It->GetAnimInstance()) : nullptr)
+			{
+				A->SetOnFeet(bOn);
 			}
 		}
 	}));
