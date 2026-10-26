@@ -46,6 +46,9 @@ namespace LyudTransport
 		std::vector<float> AxisYaw; // per line (index = line), degrees in the map frame; 0 if not on it
 		std::vector<int> Ends;      // per line: +1 its first stop, -1 its last, 0 a through station (or not on it)
 		float CoreX = 0.f, CoreY = 0.f, CoreGround = 0.f;   // the stair and lift (map), the ground under them
+		// the vestibule's connector (map; docs/transport.md): where its floor meets the gallery, +X of its frame toward the tower
+		bool bHasVest = false;
+		float VestX = 0.f, VestY = 0.f, VestZ = 0.f, VestYaw = 0.f, VestGroundMin = 0.f;
 		int SchemaX = 0, SchemaY = 0; bool bHasSchema = false;
 	};
 

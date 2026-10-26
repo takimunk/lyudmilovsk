@@ -118,6 +118,60 @@ at the door) is in the platform spec. Budget: shell ~22k triangles with its wall
 2k colour + 2k normal. Check: `TR_DEBUG=<dir>` saves `cabin.blend`; `SCRIPT=test_cabin.py
 unreal/scripts/test_transport.sh` walks the player in through the door, rides, walks out.
 
+## Station layout and the vestibule connector (spec v1.1, 2026-10-26)
+
+A station is two parts: the **procedural part** (built in code by `ALyudCableway`: the island platform with its canopy,
+the tower with the lift and the stair, the ground gallery, the podium) and a **unique vestibule** (one hi3d model per
+style, `SM_TR_Vestibule_<Style>`, cut in Blender by `blender/transport/vestibules.py`). They meet at one standard
+**connector**. The platform is never under the vestibule. The old crowns (`SM_TR_Top_*` over the platform) are gone.
+
+```
+   track ===============================================  (cabins at deck height)
+   island  [ platform ...... (tower: lift + stair) ...... ]   deck, 6+ m over the ground
+   track ==================|=|==========================
+                           |G|  glazed ground gallery, 3.0 m clear, under the track
+                           |=|  connector (z = 0, ground level)
+                     [ terrace   door ]  vestibule, X < 0 in its own frame
+                     [     room       ]
+```
+
+The connector frame: the origin is the middle of the terrace edge's 3.0 m gap, at the vestibule's floor (z = 0); +X
+points out of the vestibule toward the tower; the whole vestibule lies at X < 0. In Unreal the mesh's frame is this frame
+(Blender (x, y, z) m -> UE (x*100, -y*100, z*100), so +X stays +X).
+
+The vestibule mesh:
+1. The connector gap is 3.0 m clear (Y -150..+150 cm) in the terrace railing, with a straight floor edge at X = 0 over
+   Y -180..+180. Nothing above the floor within X -30..0 cm, |Y| <= 180 cm, up to z = 340 cm (except the railing ends):
+   the gallery's end frame (outer 340 x 340 cm) butts there.
+2. The terrace and the room floor are one level at z = 0 (no step over 2 cm); the room has 2.8 m clear height or more.
+3. The door into the room: a 164 x 233 cm hole (`character_standard.door_hole_for("Double")`), no leaves in the mesh; the
+   game fits an `ALyudDoor` Double (FitHole) at the transform from vestibules.json.
+4. A street entrance: a second railing gap, 2.0 m clear or more, on a side away from +X; the game adds steps down to the
+   terrain from it.
+5. No geometry below z = -60 cm; the game builds a concrete podium under the footprint down to the terrain.
+6. Size: the footprint fits 22 x 22 m in X < 0; at most 16 m tall over z = 0. Budget ~25k triangles, 2k textures.
+7. Collision: complex as simple. Material slots `TR_Glass*` (real glass) and `TR_Interior*` (plaster) as before.
+
+Made by blender/transport/vestibules.py (raw hi3d crowns in design/transport/gen, local), checked by
+blender/transport/check_vestibules.py (walk grid + connector box), then pack.py + import_transport.sh.
+
+`Content/Transport/vestibules.json` (written by the Blender script), per style, UE cm in the connector frame:
+`mesh`, `footprint` (polygon), `height`, `centre`, `door` ({at, yaw, hole}), `entrances` ([{at, out, width}]),
+`room` (box), `spots` (kiosk, bench, diagram wall: where the game puts the furniture; if empty it goes in the gallery).
+
+Placement (tools/transport.py, network_built.json `vestibule`): beside the line, perpendicular to the first level's
+axis, on the side of the station given by network.json `"vestibule": {"side": 1|-1, "gap": m}` (default: the side
+with the lower, flatter ground and no rope over the footprint), the connector 9.5 m + `gap` off the axis, its floor at
+the ground there. Every station's deck is 6 m or more over the gallery's ground so the gallery passes under the track
+with room to spare (Aton's platform rises to 6 m on its hill for this). Checks: no rope or cabin within 0.5 m of the
+footprint box, the platform never over it.
+
+The procedural part (`LyudCableway.cpp`): the platform deck with its own canopy; the tower at the island's middle (end
+station: 7 m from the wheel): a lift shaft and, beside it, a dog-leg stair in a closed core, the lift's doors opening on
+landings and on the platform, never on a stair flight; at the ground a lift lobby and the gallery to the connector,
+with the route diagram, the clock and the kiosk; the station's name on the gallery's end and on the canopy's fascia,
+with nothing in front of it.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

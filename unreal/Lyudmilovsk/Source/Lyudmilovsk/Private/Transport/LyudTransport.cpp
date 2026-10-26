@@ -84,7 +84,7 @@ namespace
 				T->TestRide(FName(*Args[0]), FName(*Args[1]));
 			}
 		}));
-	FAutoConsoleCommand CmdGoto(TEXT("Transport.Goto"), TEXT("Transport.Goto <station> [vestibule|platform|outside]: puts the player there (tests, looking round)."),
+	FAutoConsoleCommand CmdGoto(TEXT("Transport.Goto"), TEXT("Transport.Goto <station> [vestibule|gallery|platform|outside]: puts the player there (tests, looking round)."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 		{
 			ULyudTransportSubsystem* T = ForConsole();
@@ -100,17 +100,46 @@ namespace
 			}
 			const FLyudBuiltStation& B = T->GetCableway()->Built[S];
 			const FString Where = Args.Num() > 1 ? Args[1] : TEXT("vestibule");
-			FTransform At = FTransform(FRotator(0.f, 0.f, 0.f), FVector(-500.f, -250.f, 100.f)) * B.Vestibule;
-			if (Where == TEXT("outside"))
+			// "vestibule": 6 m into the vestibule from its connector, facing the gallery; "gallery": its middle facing the
+			// tower; "outside": by the street entrance looking in; "platform": by the call panel
+			FTransform At = B.Room.GetLocation().IsZero() ? FTransform(FRotator(0.f, 0.f, 0.f), FVector(-600.f, 0.f, 100.f)) * B.Connector : B.Room;
+			if (Where == TEXT("gallery"))
 			{
-				At = FTransform(FRotator(-8.f, 0.f, 0.f), FVector(-1700.f, 0.f, 180.f)) * B.Vestibule;
+				At = FTransform(FRotator::ZeroRotator, FVector(-120.f, 0.f, 100.f)) * B.Vestibule;
+			}
+			else if (Where == TEXT("outside"))
+			{
+				const FVector In = (B.Connector.GetLocation() - B.Entrance).GetSafeNormal2D();
+				At = FTransform(FRotator(-6.f, In.Rotation().Yaw, 0.f), B.Entrance - In * 500.f + FVector(0, 0, 180.f));
 			}
 			else if (Where == TEXT("platform") && B.Panels.Num())
 			{
 				At = FTransform(FRotator(0.f, 180.f, 0.f), FVector(-250.f, 0.f, 100.f)) * B.Panels.Last();
 			}
+			else
+			{
+				T->GetCableway()->View(S, Where, At);
+			}
 			PC->GetPawn()->SetActorLocation(At.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
 			PC->SetControlRotation(At.Rotator());
+		}));
+	FAutoConsoleCommand CmdProbe(TEXT("Transport.Probe"), TEXT("Transport.Probe [station]: traces down at the stations' landings, platforms, galleries (STATIONPROBE lines)."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			ULyudTransportSubsystem* T = ForConsole();
+			if (!T || !T->GetCableway())
+			{
+				return;
+			}
+			int32 Fails = 0;
+			for (int32 S = 0; S < T->GetCableway()->Built.Num(); S++)
+			{
+				if (!Args.Num() || T->FindStation(FName(*Args[0])) == S)
+				{
+					Fails += T->GetCableway()->Probe(S);
+				}
+			}
+			UE_LOG(LogTemp, Display, TEXT("STATIONPROBE done, %d fails"), Fails);
 		}));
 	FAutoConsoleCommand CmdCall(TEXT("Transport.Call"), TEXT("Transport.Call <from> <to> [who]: a trip for a person id (default 900) without a body."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
