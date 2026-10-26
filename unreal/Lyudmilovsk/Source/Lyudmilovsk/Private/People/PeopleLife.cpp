@@ -942,8 +942,8 @@ void ANpcBody::BuildBlanket()
 	struct FSeg { FName A, B; float R; };
 	static const FSeg Segs[] = {
 		{ TEXT("pelvis"), TEXT("spine_02"), 15.f }, { TEXT("spine_02"), TEXT("neck_01"), 15.f },
-		{ TEXT("upperarm_l"), TEXT("lowerarm_l"), 6.5f }, { TEXT("lowerarm_l"), TEXT("hand_l"), 5.5f },
-		{ TEXT("upperarm_r"), TEXT("lowerarm_r"), 6.5f }, { TEXT("lowerarm_r"), TEXT("hand_r"), 5.5f },
+		{ TEXT("upperarm_l"), TEXT("lowerarm_l"), -6.f }, { TEXT("lowerarm_l"), TEXT("hand_l"), -5.f },
+		{ TEXT("upperarm_r"), TEXT("lowerarm_r"), -6.f }, { TEXT("lowerarm_r"), TEXT("hand_r"), -5.f },
 		{ TEXT("thigh_l"), TEXT("calf_l"), 9.f }, { TEXT("calf_l"), TEXT("foot_l"), 6.5f }, { TEXT("foot_l"), TEXT("ball_l"), 5.f },
 		{ TEXT("thigh_r"), TEXT("calf_r"), 9.f }, { TEXT("calf_r"), TEXT("foot_r"), 6.5f }, { TEXT("foot_r"), TEXT("ball_r"), 5.f } };
 	TArray<FVector> A, B;
@@ -988,11 +988,12 @@ void ANpcBody::BuildBlanket()
 				const FVector2D ab = b - a;
 				const float t = FMath::Clamp(FVector2D::DotProduct(P - a, ab) / FMath::Max(ab.SizeSquared(), 1.f), 0.f, 1.f);
 				const float d = FVector2D::Distance(P, a + ab * t);
-				const float r = Rad[k] + 13.f;    // the duvet's loft rounds over the body
+				// the duvet's loft rounds over the body; arms (negative radius) are only just covered (one is under the pillow)
+				const float r = Rad[k] > 0.f ? Rad[k] + 8.f : -Rad[k] + 3.f;
 				if (d < r)
 				{
 					const float zc = FMath::Lerp(A[k].Z, B[k].Z, t);
-					Z = FMath::Max(Z, zc + FMath::Sqrt(r * r - d * d) * 0.75f + 1.f);
+					Z = FMath::Max(Z, zc + FMath::Sqrt(r * r - d * d) * 0.6f);
 				}
 			}
 			// the edges fall to the mattress (and a little over it)

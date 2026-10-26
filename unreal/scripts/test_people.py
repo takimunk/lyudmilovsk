@@ -180,18 +180,18 @@ if PART in ("all", "town"):
 
     @step
     def s_library(w):
-        ok = life(w).order(life(w).find_person("crowd_12"), "read_library", "library")
-        log("order crowd_12 read_library: %s" % ok)
+        ok = life(w).order(life(w).find_person("streamer"), "read_library", "library")
+        log("order streamer read_library: %s" % ok)
     # wait (up to ~3 min) till she sits down in the reading hall
     for k in range(40):
         def _wait(w, k=k):
-            p = person(w, "crowd_12")
+            p = person(w, "streamer")
             if p.state == "doing" and not st.get("reading"):
-                look_at_person(w, "crowd_12", 260.0, 150.0, 0.4)
+                look_at_person(w, "streamer", 260.0, 150.0, 0.4)
                 st["reading"] = True
-                log("crowd_12 reading after %d checks" % k)
+                log("streamer reading after %d checks" % k)
         step(_wait, 10.0)
-    step(lambda w: look_at_person(w, "crowd_12", 260.0, 150.0, 0.4), 2.0)
+    step(lambda w: look_at_person(w, "streamer", 260.0, 150.0, 0.4), 2.0)
     step(lambda w: shot(w, "library_reader"), 2.0)
 
     # an afternoon walk on the square
