@@ -131,7 +131,7 @@ namespace BirdLook
 				Add(TEXT("GreatTit"), L);
 			}
 			{
-				FLook L = Plain(P(TEXT("2f5a9c"), TEXT("6a8cc4")).Fr(0.08f), P(TEXT("3f6fb6")), P(TEXT("3f6fb6")), P(TEXT("e8d24a")), P(TEXT("8a9a4a")));
+				FLook L = Plain(P(TEXT("3a4250"), TEXT("5f86c0")).Fr(0.22f), P(TEXT("4a78b8")), P(TEXT("4a5a78"), TEXT("5f86c0")).Fr(0.2f), P(TEXT("e8d24a")), P(TEXT("8a9a4a")));
 				L.GreaterCoverts = G(P(TEXT("3f6fb6"), TEXT("f4f4ee")).TipF(0.28f));
 				L.Beak = L.BeakBase = C(TEXT("101012")); L.Legs = C(TEXT("5a6a88"));
 				L.BeakCm = 0.8f; L.BeakDepth = 0.6f; L.TailFrac = 0.4f;

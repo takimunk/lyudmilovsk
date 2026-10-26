@@ -246,7 +246,10 @@ namespace BirdFlight
 		if (Beats > 0) S.Energy -= Dt * Effort / std::max(P.Stamina, 1.0);
 		else S.Energy += Dt * (0.25 + 0.5 * (1.0 - Spread)) / std::max(P.Stamina, 1.0) * 1.5;
 		S.Energy = Clamp(S.Energy, 0.0, 1.0);
-		const double Strength = 0.2 + 0.8 * std::min(1.0, S.Energy / 0.15);
+		// tiring shows long before the end: the beats weaken from a third of the strength left, and a spent bird
+		// can no longer hold its height
+		const double E = Clamp(S.Energy / 0.35, 0.0, 1.0);
+		const double Strength = 0.1 + 0.9 * E * E * (3.0 - 2.0 * E);
 		double ThrustAcc = 0.5 * Beats * P.ClickThrust / Click * Launch * Strength;
 		double BeatLift = 0.5 * Beats * P.ClickLift / Click * SlowLift * Strength;
 		// the beats lift no more than the course needs (and a little to climb); the rest drives the bird on

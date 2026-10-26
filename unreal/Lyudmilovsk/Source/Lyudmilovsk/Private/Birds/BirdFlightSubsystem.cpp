@@ -563,6 +563,14 @@ void UBirdFlightSubsystem::FinishReturn()
 		PC->SetControlRotation(HeroControl);
 	}
 	SetHeroHeadShown(false);
+	if (bHeroHiddenForReturn)
+	{
+		if (ACharacter* HC = Cast<ACharacter>(Hero.Get()))
+		{
+			HC->GetMesh()->SetVisibility(true, true);
+		}
+		bHeroHiddenForReturn = false;
+	}
 #if LYUD_HAS_BIRDLIFE
 	if (ClaimedId >= 0)
 	{
@@ -858,8 +866,13 @@ void UBirdFlightSubsystem::HandleFate(EBirdFate Fate, const FVector& At)
 		{
 			const ALyudSea* Sea = ALyudSea::Get(this);
 			const float Surface = Sea ? Sea->SurfaceZ(At) : FBirdAir::SeaZ;
-			H->SetActorLocation(FVector(At.X, At.Y, Surface - H->GetDefaultHalfHeight() * 0.6f), false, nullptr, ETeleportType::TeleportPhysics);
+			// floating with the head out: the eyes about 20 cm over the waves
+			H->SetActorLocation(FVector(At.X, At.Y, Surface - HeroFloatDepth), false, nullptr, ETeleportType::TeleportPhysics);
+			H->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 			H->GetCharacterMovement()->SetMovementMode(MOVE_Swimming);
+			// the arm still held out from the befriending would sweep past the camera on its way back
+			H->GetMesh()->SetVisibility(false, true);
+			bHeroHiddenForReturn = true;
 			HeroControl = FRotator(0.f, B->GetActorRotation().Yaw, 0.f);
 		}
 	}
@@ -922,6 +935,20 @@ void UBirdFlightSubsystem::TickHero(float Dt)
 	// the hero again, with a befriended bird somewhere: in the water, swim ashore; ashore, hold R to call it
 	HintShowT = FMath::Max(0.f, HintShowT - Dt);
 	const bool bWater = IsHeroInWater();
+	if (ACharacter* HC = Cast<ACharacter>(Hero.Get()); HC && HC->GetCharacterMovement() && HC->GetCharacterMovement()->IsSwimming())
+	{
+		// swimming, the head stays out of the water (the waves lift and drop him with them)
+		const ALyudSea* Sea = ALyudSea::Get(this);
+		const float Surface = Sea ? Sea->SurfaceZ(HC->GetActorLocation()) : FBirdAir::SeaZ;
+		const FVector L = HC->GetActorLocation();
+		if (L.Z < Surface - HeroFloatDepth)
+		{
+			HC->SetActorLocation(FVector(L.X, L.Y, FMath::FInterpTo(L.Z, Surface - HeroFloatDepth, Dt, 12.f)));
+			FVector V = HC->GetCharacterMovement()->Velocity;
+			V.Z = FMath::Max(V.Z, 0.f);
+			HC->GetCharacterMovement()->Velocity = V;
+		}
+	}
 	if (bWater)
 	{
 		SetHeroHint(LyudText::Get(TEXT("bird.hero.swim_ashore")));
@@ -1068,6 +1095,13 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	}
 	const FVector Me = B->FeetLocation();
 	FVector P = A->GetActorLocation();
+	// the player sees who answers: the head turns to it for a moment
+	if (APlayerController* PCx = Player.Get(); PCx && Meet.T < 1.6f)
+	{
+		const FRotator Want = (P + FVector(0, 0, 8.f) - B->BirdView().Location).Rotation();
+		const FRotator Cur = PCx->GetControlRotation();
+		PCx->SetControlRotation(FMath::RInterpTo(Cur, FRotator(FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -60.f, 40.f), Want.Yaw, 0.f), Dt, 6.f));
+	}
 	const FVector To = Me - P;
 	const float D = To.Size2D();
 	const FBirdSpecies* Row = UBirdSpeciesLibrary::Find(Meet.Species);
@@ -1088,8 +1122,13 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	switch (Meet.Kind)
 	{
 	case EAnswer::Fight:
-		// it comes at you hopping, pecks at you two or three times, then is off
-		if (D > Len * 1.1f)
+		// it comes at you (flying in from further off, hopping the last of it), pecks at you two or three times, then is off
+		if (D > 100.f)
+		{
+			Vel = To.GetSafeNormal2D() * 260.f;
+			A->SetState(EBirdState::Fly);
+		}
+		else if (D > Len * 1.1f)
 		{
 			Vel = To.GetSafeNormal2D() * 90.f;
 			A->SetState(EBirdState::Hop);

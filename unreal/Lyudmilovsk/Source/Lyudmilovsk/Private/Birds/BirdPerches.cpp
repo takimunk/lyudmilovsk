@@ -91,9 +91,11 @@ bool FBirdPerches::Find(UWorld* World, const FVector& From, const FVector& Dir, 
 				D.Z = FMath::Max(D.Z / FMath::Max(C.Radii.Y, 1.f), 0.35f);
 				const FVector2D H(D.X, D.Y);
 				const FVector2D Hn = H.SizeSquared() > 1.f ? H.GetSafeNormal() : FVector2D(1, 0);
-				const float Up = FMath::Clamp(D.Z, 0.35f, 1.f);
+				// on the outside of the crown, in its upper part (small bushes and hedges: right on top, never in the leaves)
+				const bool bBush = C.Radii.Y < 200.f;
+				const float Up = bBush ? 1.f : FMath::Clamp(D.Z, 0.6f, 1.f);
 				const float Side = FMath::Sqrt(FMath::Max(0.f, 1.f - Up * Up));
-				const FVector P = Centre + FVector(Hn.X * Side * C.Radii.X * 0.85f, Hn.Y * Side * C.Radii.X * 0.85f, Up * C.Radii.Y * 0.9f);
+				const FVector P = Centre + FVector(Hn.X * Side * C.Radii.X, Hn.Y * Side * C.Radii.X, Up * C.Radii.Y + 8.f);
 				const float S = Score(P, true);
 				if (S < Best)
 				{
