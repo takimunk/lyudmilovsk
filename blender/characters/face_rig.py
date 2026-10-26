@@ -192,6 +192,8 @@ def build(model, arm, cid, spec):
     lower = part_lips(model, m, k, face_y)
     mouth_bag(model, m, k, surf_y(m["x"], m["z"]))
     tree = BVHTree.FromObject(model, bpy.context.evaluated_depsgraph_get(), deform=False)
+    if with_eyes and face.get("repaint_eyes"):
+        repaint_eyes(model, eyes, k, face, tree)
     if with_eyes:
         fuv = faces_uv(me)
         for e in eyes:
@@ -202,6 +204,124 @@ def build(model, arm, cid, spec):
         eye_mask(model, eyes)
     shape_keys(model, marks, k, tree0, with_eyes, lower)
     return marks
+
+
+def repaint_eyes(model, eyes, k, face, tree):
+    """Paints clean eyes over the generated ones in the model's own texture (character.json face.repaint_eyes, for a
+    model whose eyes came out torn: Kid_boy): a light eyeball in an almond opening, the iris (face.iris or the sampled
+    colour) with a pupil, a limbal ring and a catchlight, a dark upper lash line, a soft lower lid, and the ragged
+    painted lids round it eased toward the skin's colour. Every triangle of the eye area is drawn into its own texels
+    (barycentric), so the UV islands packed next to the eye are left alone."""
+    me = model.data
+    mat = me.materials[0]
+    img = next(n.image for n in mat.node_tree.nodes if n.type == "TEX_IMAGE" and n.image and "normal" not in n.image.name.lower())
+    W, H = img.size
+    px = np.empty(W * H * 4, np.float32)
+    img.pixels.foreach_get(px)
+    px = px.reshape(H, W, 4)
+    uvl = me.uv_layers.active.data
+    fuv = faces_uv(me)
+    for e in eyes:
+        a = 0.72 * e["w"] / 2                              # the measured opening includes the smudged lids
+        b = 0.38 * a
+        cx, cz, sy = e["x"], e["z"], e["surface_y"]
+        ri = 0.0057 * k                                     # the iris's radius
+        iris = np.array(face.get("iris", e.get("iris", (0.3, 0.3, 0.3))), np.float32)
+        skin = []
+        for dx in (-0.6, 0.0, 0.6):                         # the skin under the eye
+            uv = uv_at(me, fuv, tree, cx + dx * a, cz - 3.2 * b)
+            if uv is not None:
+                skin.append(px[min(H - 1, int(uv.y * H)), min(W - 1, int(uv.x * W)), :3])
+        skin = np.median(np.array(skin), 0) if skin else np.array([0.8, 0.65, 0.58], np.float32)
+        n = 0
+        for poly in me.polygons:
+            vs = [me.vertices[i].co for i in poly.vertices]
+            if not all(abs(v.x - cx) < 1.6 * a and abs(v.z - cz) < 4.0 * b and abs(v.y - sy) < 0.015 for v in vs):
+                continue
+            uvs = [uvl[l].uv for l in poly.loop_indices]
+            for t in range(1, len(vs) - 1):                 # fan into triangles
+                tri = (0, t, t + 1)
+                n += paint_triangle(px, W, H, [vs[i] for i in tri], [uvs[i] for i in tri],
+                                    lambda x, z: eye_paint(x, z, cx, cz, a, b, ri, iris, skin))
+        log("eye %s repainted: %d texels" % ("l" if e is eyes[0] else "r", n))
+    img.pixels.foreach_set(px.ravel())
+    img.update()
+    img.pack()
+
+
+def paint_triangle(px, W, H, co, uv, paint):
+    """Rasterises one triangle in texture space; paint(x, z) -> (rgb, alpha) or None at each texel's face point."""
+    P = np.array([[u.x * W, u.y * H] for u in uv])
+    x0, y0 = np.floor(P.min(0)).astype(int)
+    x1, y1 = np.ceil(P.max(0)).astype(int)
+    if x1 - x0 > 400 or y1 - y0 > 400:
+        return 0
+    xs, ys = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
+    d = (P[1, 1] - P[2, 1]) * (P[0, 0] - P[2, 0]) + (P[2, 0] - P[1, 0]) * (P[0, 1] - P[2, 1])
+    if abs(d) < 1e-9:
+        return 0
+    l0 = ((P[1, 1] - P[2, 1]) * (xs - P[2, 0]) + (P[2, 0] - P[1, 0]) * (ys - P[2, 1])) / d
+    l1 = ((P[2, 1] - P[0, 1]) * (xs - P[2, 0]) + (P[0, 0] - P[2, 0]) * (ys - P[2, 1])) / d
+    l2 = 1 - l0 - l1
+    inside = (l0 >= -0.02) & (l1 >= -0.02) & (l2 >= -0.02)
+    X = l0 * co[0].x + l1 * co[1].x + l2 * co[2].x
+    Z = l0 * co[0].z + l1 * co[1].z + l2 * co[2].z
+    rgb, alpha = paint(X, Z)
+    ix = np.clip(xs.astype(int), 0, W - 1)
+    iy = np.clip(ys.astype(int), 0, H - 1)
+    m = inside & (alpha > 0)
+    if not m.any():
+        return 0
+    cur = px[iy[m], ix[m], :3]
+    px[iy[m], ix[m], :3] = cur * (1 - alpha[m][:, None]) + rgb[m] * alpha[m][:, None]
+    return int(m.sum())
+
+
+def eye_paint(X, Z, cx, cz, a, b, ri, iris, skin):
+    """Colour and coverage of a painted eye at face points X, Z (arrays)."""
+    u = (X - cx) / a
+    t = (Z - cz) / b
+    q = np.clip(1 - u * u, 0, 1)
+    up = 0.95 * q ** 0.7 + 0.05                             # the upper lid's edge, the lower's
+    lo = -0.85 * q ** 0.9 - 0.02
+    aa = 0.06
+    inside = smooth((up - t) / aa) * smooth((t - lo) / aa) * smooth((1.0 - np.abs(u)) / 0.04)
+    shape = X.shape
+    rgb = np.zeros(shape + (3,), np.float32)
+    alpha = np.zeros(shape, np.float32)
+    # the cleaned skin round the eye: the ragged painted lids eased toward the skin's colour
+    ring = smooth((1.4 - np.abs(u)) / 0.3) * smooth((up + 1.5 - t) / 0.6) * smooth((t - lo + 1.2) / 0.5)
+    rgb[:] = skin
+    alpha = 0.75 * ring
+    # the lids' crease: a soft shadow just above the upper lid
+    crease = smooth(1 - np.abs(t - (up + 0.75)) / 0.35) * smooth((1.15 - np.abs(u)) / 0.3)
+    rgb = rgb * (1 - 0.18 * crease[..., None])
+    # the eyeball: white, shaded under the lid and toward the corners, a little pink at the inner corner
+    white = np.array([0.86, 0.83, 0.80], np.float32)
+    shade = (1 - 0.30 * smooth((t - 0.1) / 0.8)) * (1 - 0.30 * np.abs(u) ** 3)
+    eye = white[None, None] * shade[..., None] if X.ndim == 2 else white * shade[..., None]
+    # the iris, a little up and partly under the lid
+    dr = np.sqrt((u * a) ** 2 + ((t - 0.12) * b) ** 2)
+    ang = np.arctan2((t - 0.12) * b, u * a)
+    streak = 0.88 + 0.12 * np.sin(ang * 31.0)
+    limbal = 1 - 0.45 * smooth((dr / ri - 0.75) / 0.25)
+    iris_c = iris * streak[..., None] * limbal[..., None] * (1 - 0.25 * smooth((t - 0.3) / 0.6))[..., None]
+    in_iris = smooth((ri - dr) / (0.08 * ri))
+    eye = eye * (1 - in_iris[..., None]) + iris_c * in_iris[..., None]
+    in_pupil = smooth((0.40 * ri - dr) / (0.08 * ri))
+    eye = eye * (1 - in_pupil[..., None]) + np.array([0.02, 0.02, 0.025]) * in_pupil[..., None]
+    glint = smooth((0.16 * ri - np.sqrt((u * a - 0.32 * ri) ** 2 + ((t - 0.12) * b - 0.32 * ri) ** 2)) / (0.06 * ri))
+    eye = eye * (1 - glint[..., None]) + 0.95 * glint[..., None]
+    rgb = rgb * (1 - inside[..., None]) + eye * inside[..., None]
+    alpha = np.maximum(alpha, inside)
+    # the upper lash line (thicker toward the outer corner) and a soft lower lid edge
+    thick = 0.20 + 0.12 * np.clip(u * np.sign(cx), 0, 1)
+    lash = smooth((t - up + 0.04) / 0.05) * smooth((up + thick - t) / 0.05) * smooth((1.05 - np.abs(u)) / 0.08)
+    rgb = rgb * (1 - 0.9 * lash[..., None]) + np.array([0.10, 0.07, 0.06]) * 0.9 * lash[..., None]
+    lower = smooth((lo + 0.03 - t) / 0.04) * smooth((t - lo + 0.14) / 0.05) * smooth((0.95 - np.abs(u)) / 0.1)
+    rgb = rgb * (1 - 0.45 * lower[..., None]) + skin * 0.72 * 0.45 * lower[..., None]
+    alpha = np.maximum(alpha, np.maximum(lash, lower))
+    return rgb, alpha
 
 
 def smooth_eyes(model, eyes, iterations=4, factor=0.5, grow=1.5):

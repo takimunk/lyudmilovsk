@@ -115,7 +115,10 @@ weights before importing.
 ## Face
 
 `blender/characters/face_rig.py` (called by `rig_character.py`; `character.json` `face`: `{"rig": false}` skips it,
-`{"eyes": false}` leaves the eyes alone (glasses: Clerk, Crowd_13), `{"marks": {...}}` overrides the landmarks):
+`{"eyes": false}` leaves the eyes alone (glasses: Clerk, Crowd_13), `{"marks": {...}}` overrides the landmarks,
+`{"repaint_eyes": true, "iris": [r, g, b]}` paints clean eyes into the texture where the generated ones came out torn
+(Kid_boy: an almond opening, white, iris, pupil, catchlight, lash line, the ragged lids eased to the skin; drawn per
+triangle, so neighbouring UV islands are untouched)):
 
 1. **Landmarks**: the face rendered front-on and unlit; `face_marks.py` (numpy/scipy, system python) finds the irises
    (dark iris-sized blobs, a difference of Gaussians), the openings (how far the colour stays off the cheeks'), the lip

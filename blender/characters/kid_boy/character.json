@@ -9,6 +9,13 @@
  "bake_normal": true,
  "face": {
   "normal_strength": 0.45,
-  "_doc_normal": "the baked eye bags / lids read as hard rings under a key light: M_HumanFace NormalStrength lowered"
+  "_doc_normal": "the baked eye bags / lids read as hard rings under a key light: M_HumanFace NormalStrength lowered",
+  "repaint_eyes": true,
+  "iris": [
+   0.34,
+   0.4,
+   0.44
+  ],
+  "_doc_repaint": "the generated eyes came out as dark torn slits: face_rig.repaint_eyes paints clean ones into the texture (no paid regeneration, 2026-10-26)"
  }
 }
