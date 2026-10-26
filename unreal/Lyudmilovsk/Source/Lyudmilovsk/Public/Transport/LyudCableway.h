@@ -36,6 +36,8 @@ struct FLyudBuiltStation
 	FTransform Core;
 	/** The way out of the vestibule's street entrance (world, flat), zero when there is none. */
 	FVector EntranceOut = FVector::ZeroVector;
+	/** Per deck (as Decks): the frame the depot's storage rail runs along (origin past the turn wheel on the deck, X away). */
+	TArray<FTransform> DepotAt;
 	/** The vestibule's room: its middle at eye height, looking out to the gallery's side (identity: none). */
 	FTransform Room;
 	/** The tower's stops (cm over its ground: the ground, each deck) and the side of each stop's door (0..3). */
@@ -134,9 +136,12 @@ private:
 
 	void BuildStation(const LyudTransport::FNetwork& Net, int32 S);
 	/** The parts (LyudStationBuild.cpp), into the station's kit in its tower frame (cm). */
-	void BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, const TArray<float>& Stops, const TArray<int32>& Sides);
+	void BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, const TArray<float>& Stops, const TArray<int32>& Sides, bool bOwnShell);
+	/** A station's rope gear (LyudStationBuild.cpp): the posts and frames of its sheaves, its turn wheel. */
+	void BuildRopeGear(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S);
+	/** The vestibule's tower kit (vestibules.json v2 "tower"): its modules stacked to the height, in the tower's frame. */
+	bool StackTowerKit(int32 S, const FString& Style, float Height);
 	void BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Level);
-	void BuildGallery(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Side, float Length, float Rise);
 	void PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S);
 	/** Grass and forests scattered before the stations stood: again, with every station's footprint (and a margin) bare. */
 	void ClearGround();

@@ -84,6 +84,78 @@ namespace
 	FVector CornerAt(int32 K, float R, float Z) { return (SideOut(K) + SideOut(K + 1)) * R + FVector(0, 0, Z); }
 }
 
+namespace
+{
+	/** Content/Transport/vestibules.json (blender/transport/vestibules.py): per style, UE cm in the connector frame. */
+	TSharedPtr<FJsonObject> VestibuleData(const FString& Style)
+	{
+		static TSharedPtr<FJsonObject> All;
+		static bool bRead = false;
+		if (!bRead)
+		{
+			bRead = true;
+			FString Text;
+			if (FFileHelper::LoadFileToString(Text, *FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Transport/vestibules.json"))))
+			{
+				FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), All);
+			}
+		}
+		const TSharedPtr<FJsonObject>* V = nullptr;
+		return All.IsValid() && All->TryGetObjectField(Style.ToLower(), V) ? *V : nullptr;
+	}
+
+	/** vestibules.json v2 tower.decks[]: the deck on the vestibule's tower that serves line Line (Zenit's Sun line). */
+	TSharedPtr<FJsonObject> TowerDeck(const TSharedPtr<FJsonObject>& V, const FString& Line)
+	{
+		const TSharedPtr<FJsonObject>* T = nullptr;
+		const TArray<TSharedPtr<FJsonValue>>* Ds = nullptr;
+		if (V.IsValid() && V->TryGetObjectField(TEXT("tower"), T) && (*T)->TryGetArrayField(TEXT("decks"), Ds))
+		{
+			for (const TSharedPtr<FJsonValue>& D : *Ds)
+			{
+				if (D->AsObject()->GetStringField(TEXT("line")) == Line)
+				{
+					return D->AsObject();
+				}
+			}
+		}
+		return nullptr;
+	}
+
+	FVector JsonXY(const TSharedPtr<FJsonObject>& O, const TCHAR* Field, float Z = 0.f)
+	{
+		const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
+		if (O.IsValid() && O->TryGetArrayField(Field, A) && A->Num() >= 2)
+		{
+			return FVector((*A)[0]->AsNumber(), (*A)[1]->AsNumber(), A->Num() > 2 ? (*A)[2]->AsNumber() : Z);
+		}
+		return FVector(0, 0, Z);
+	}
+
+	/** The convex hull of 2D points (counterclockwise). */
+	TArray<FVector2D> Hull(TArray<FVector2D> P)
+	{
+		P.Sort([](const FVector2D& A, const FVector2D& B) { return A.X < B.X || (A.X == B.X && A.Y < B.Y); });
+		TArray<FVector2D> H;
+		auto Cross = [](const FVector2D& O, const FVector2D& A, const FVector2D& B) { return (A.X - O.X) * (B.Y - O.Y) - (A.Y - O.Y) * (B.X - O.X); };
+		for (int32 Pass = 0; Pass < 2; Pass++)
+		{
+			const int32 Start = H.Num();
+			for (int32 I = 0; I < P.Num(); I++)
+			{
+				const FVector2D& Q = Pass ? P[P.Num() - 1 - I] : P[I];
+				while (H.Num() >= Start + 2 && Cross(H[H.Num() - 2], H.Last(), Q) <= 0.f)
+				{
+					H.Pop();
+				}
+				H.Add(Q);
+			}
+			H.Pop();
+		}
+		return H;
+	}
+}
+
 UStaticMeshComponent* ALyudCableway::KitMesh(const FLyudMeshKit& K, const FTransform& At, FName Name, bool bMovable, USceneComponent* Parent)
 {
 	if (K.IsEmpty())
@@ -148,21 +220,25 @@ UWidgetComponent* ALyudCableway::Widget(int32 S, const TSharedRef<SWidget>& Slat
 
 void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 {
+	// docs/transport.md "Station layout v2": the vestibule at deck height between the spread tracks (its two edges the
+	// boarding platforms), on a tower with the lift and the stair from a street door at its foot
 	const LyudTransport::FStation& St = Net.Stations[S];
 	FLyudBuiltStation& B = Built[S];
 	const FVector Centre = W(St.X, St.Y, 0.f);
 	StationCentres[S] = Centre;
-	StationRadius[S] = IslandLen + 3400.f;
-	const float Yaw0 = SimNum(St.Levels) && SimValid(St.AxisYaw, St.Levels[0].Line) ? St.AxisYaw[St.Levels[0].Line] : 0.f;
+	StationRadius[S] = 4500.f;
+	// the tower and the vestibule turn with the top level's line (the vestibule's deck; a lower deck on the tower is
+	// turned to its own line)
+	const float Yaw0 = SimNum(St.Levels) && SimValid(St.AxisYaw, St.Levels.back().Line) ? St.AxisYaw[St.Levels.back().Line] : 0.f;
 	FVector CoreW = W(St.CoreX, St.CoreY, St.CoreGround);
 	{
-		// the floor 15 cm over the landscape as it stands in this level under the tower and the gallery either way
-		// (network_built.json's ground is the map's; a landscape built from older inputs can stand a little higher)
+		// the tower's floor 15 cm over the landscape as it stands in this level (a landscape built from older inputs
+		// can stand a little higher than network_built.json's ground)
 		const FTransform F0(FRotator(0.f, Yaw0, 0.f), CoreW);
 		float Top = -1e9f;
-		for (float Y = -1050.f; Y <= 1050.f; Y += 150.f)
+		for (const float Y : { -270.f, -135.f, 0.f, 135.f, 270.f })
 		{
-			for (const float X : { -270.f, -180.f, 0.f, 180.f, 270.f })
+			for (const float X : { -270.f, -135.f, 0.f, 135.f, 270.f })
 			{
 				const FVector P = F0.TransformPosition(FVector(X, Y, 0.f));
 				FHitResult Hit;
@@ -176,93 +252,105 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		}
 		if (Top + 15.f > CoreW.Z)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Transport: %s's floor raised %.0f cm over the landscape"), UTF8_TO_TCHAR(St.Id.c_str()), Top + 15.f - CoreW.Z);
 			CoreW.Z = Top + 15.f;
 		}
 	}
 	B.Core = FTransform(FRotator(0.f, Yaw0, 0.f), CoreW);
 
-	// the decks' frames: origin on the deck at the station's centre, X along its line
+	// the decks' frames: origin on the deck at the station's centre, X along its line's way out
 	for (int32 K = 0; K < SimNum(St.Levels); K++)
 	{
 		const int32 L = St.Levels[K].Line;
 		const float Yaw = SimValid(St.AxisYaw, L) ? St.AxisYaw[L] : 0.f;
-		B.Decks.Add(FTransform(FRotator(0.f, Yaw, 0.f), FVector(Centre.X, Centre.Y, St.Levels[K].Z * 100.f)));
+		const LyudTransport::FStationGeo* Geo = SimValid(St.Geo, L) && St.Geo[L].bValid ? &St.Geo[L] : nullptr;
+		// the line's own middle (a deck on the tower: the tower's axis)
+		const FVector Mid = Geo ? W(Geo->CX, Geo->CY, 0.f) : Centre;
+		B.Decks.Add(FTransform(FRotator(0.f, Yaw, 0.f), FVector(Mid.X, Mid.Y, St.Levels[K].Z * 100.f)));
 		B.DeckLines.Add(L);
+		// the depot's rail: past the turn wheel, along the line away from the station
+		if (Geo && Geo->bWheel)
+		{
+			const FVector Wh = W(Geo->Wheel.X, Geo->Wheel.Y, St.Levels[K].Z);
+			const FVector Away = (Wh - FVector(Centre.X, Centre.Y, Wh.Z)).GetSafeNormal2D();
+			B.DepotAt.Add(FTransform(Away.Rotation(), Wh + Away * 650.f));
+		}
+		else
+		{
+			B.DepotAt.Add(FTransform::Identity);
+		}
 	}
+	// the vestibule's frame: the top deck's, at the station's centre
+	B.Connector = B.Decks.Num() ? FTransform(B.Decks.Last().GetRotation(), FVector(Centre.X, Centre.Y, B.Decks.Last().GetLocation().Z)) : FTransform(Centre);
 
-	// the gallery's side: toward the vestibule (transport.py puts it square off the first level's axis)
-	FVector VestW = B.Core.TransformPosition(FVector(0.f, -(950.f), 0.f));
-	float VestZ = St.CoreGround * 100.f;
-	if (St.bHasVest)
+	// the vestibule's numbers (vestibules.json v2): the sides of the tower's street door and of its exit into the room
+	const FString Style = St.Style.empty() ? TEXT("saucer") : FString(UTF8_TO_TCHAR(St.Style.c_str()));
+	const TSharedPtr<FJsonObject> V = VestibuleData(Style);
+	const bool bV2 = V.IsValid() && V->HasField(TEXT("track_gap"));
+	auto SideOf = [](const FString& Str, int32 Default)
 	{
-		VestW = W(St.VestX, St.VestY, St.VestZ);
-		VestZ = FMath::Max(St.VestZ * 100.f, CoreW.Z);
+		return Str == TEXT("+x") ? 0 : Str == TEXT("+y") ? 1 : Str == TEXT("-x") ? 2 : Str == TEXT("-y") ? 3 : Default;
+	};
+	int32 GroundSide = 2, ExitSide = 0;
+	if (bV2)
+	{
+		ExitSide = SideOf(V->GetStringField(TEXT("core_exit")), 0);
+		const TSharedPtr<FJsonObject>* T = nullptr;
+		const TSharedPtr<FJsonObject>* D = nullptr;
+		if (V->TryGetObjectField(TEXT("tower"), T) && (*T)->TryGetObjectField(TEXT("door"), D))
+		{
+			GroundSide = SideOf((*D)->GetStringField(TEXT("side")), 2);
+		}
 	}
-	const FVector VestL = B.Core.InverseTransformPosition(VestW);
-	const int32 GroundSide = VestL.Y >= 0.f ? 1 : 3;
-	const float GalleryLen = FMath::Max(200.f, FMath::Abs(VestL.Y) - TowerOut);
-	const float Rise = FMath::Clamp(VestZ - CoreW.Z, 0.f, 260.f);
-
-	// stops: the ground and each deck (over the tower's ground); each deck's door side faces along its platform
-	// toward the stop (an end station: toward the wheel)
 	TArray<float> Stops = { 0.f };
 	TArray<int32> Sides = { GroundSide };
 	for (int32 K = 0; K < SimNum(St.Levels); K++)
 	{
-		const int32 L = St.Levels[K].Line;
-		const int32 End = SimValid(St.Ends, L) ? St.Ends[L] : 0;
-		const FVector Toward = B.Core.InverseTransformVectorNoScale(B.Decks[K].GetRotation().Vector()) * (End == 1 ? -1.f : 1.f);
-		int32 Best = 0;
-		for (int32 E = 1; E < 4; E++)
+		Stops.Add(St.Levels[K].Z * 100.f - CoreW.Z);
+		int32 Side = ExitSide;
+		// a lower deck on the tower: its own way out (tower.decks[].core_exit_dir, in the station's frame)
+		if (const TSharedPtr<FJsonObject> D = TowerDeck(V, UTF8_TO_TCHAR(Net.Lines[St.Levels[K].Line].Id.c_str())); D.IsValid() && K + 1 < SimNum(St.Levels))
 		{
-			if (FVector::DotProduct(SideOut(E), Toward) > FVector::DotProduct(SideOut(Best), Toward))
+			const FVector Dir = JsonXY(D, TEXT("core_exit_dir"));
+			for (int32 E = 1, Best = 0; E <= 4; E++)
 			{
-				Best = E;
-			}
-		}
-		// an end station's tower stands between the stop and the far end: the door toward the stop
-		if (End != 0)
-		{
-			const FVector StopW = B.Decks[K].TransformPosition(FVector(End == 1 ? 250.f : -250.f, 0.f, 0.f));
-			const FVector D = B.Core.InverseTransformVectorNoScale(StopW - B.Decks[K].TransformPosition(B.Decks[K].InverseTransformPosition(CoreW) * FVector(1, 1, 0)));
-			for (int32 E = 0; E < 4; E++)
-			{
-				if (FVector::DotProduct(SideOut(E), D) > FVector::DotProduct(SideOut(Best), D))
+				if (E == 4)
+				{
+					Side = Best;
+					break;
+				}
+				if (FVector::DotProduct(SideOut(E), Dir) > FVector::DotProduct(SideOut(Best), Dir))
 				{
 					Best = E;
 				}
 			}
 		}
-		Stops.Add(St.Levels[K].Z * 100.f - CoreW.Z);
-		Sides.Add(Best);
+		Sides.Add(Side);
 	}
-
 	B.Stops = Stops;
 	B.StopSides = Sides;
-	// bare ground: under each island (and 2 m round it), the tower and the gallery
-	for (const FTransform& D : B.Decks)
-	{
-		const float Mid = (D.GetLocation().Z + CoreW.Z) * 0.5f;
-		BareBoxes.Add({ FTransform(D.GetRotation(), FVector(D.GetLocation().X, D.GetLocation().Y, Mid)), FVector(IslandLen + 200.f, IslandHalf + 200.f, FMath::Abs(D.GetLocation().Z - CoreW.Z) * 0.5f + 2000.f) });
-	}
-	{
-		const FVector GDir0 = SideOut(GroundSide);
-		BareBoxes.Add({ FTransform(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(GDir0 * (TowerOut + GalleryLen) * 0.5f)),
-			FVector((TowerOut + GalleryLen) * 0.5f + 150.f, GalleryHalf + 220.f, 2500.f) });
-	}
+	const float Top = Stops.Last();
+
+	// the tower's own shell, unless the vestibule's tower kit stacks one round it
+	const bool bShell = bV2 && StackTowerKit(S, Style, Top);
 	FLyudMeshKit Kit;
-	BuildTower(Kit, Net, S, Stops, Sides);
-	for (int32 K = 0; K < SimNum(St.Levels); K++)
+	BuildTower(Kit, Net, S, Stops, Sides, !bShell);
+	// no vestibule (yet): a plain boarding deck between the spread tracks
+	if (!bV2)
 	{
-		BuildDeck(Kit, Net, S, K);
+		for (int32 K = 0; K < SimNum(St.Levels); K++)
+		{
+			BuildDeck(Kit, Net, S, K);
+		}
 	}
-	BuildGallery(Kit, Net, S, GroundSide, GalleryLen, Rise);
+	BuildRopeGear(Kit, Net, S);
 	if (UStaticMeshComponent* C = KitMesh(Kit, B.Core, FName(*FString::Printf(TEXT("SM_Station_%d"), S))))
 	{
 		C->SetCastShadow(true);
-		UE_LOG(LogTemp, Log, TEXT("Transport: station %d mesh %d triangles"), S, Kit.NumTriangles());
+		UE_LOG(LogTemp, Log, TEXT("Transport: station %d mesh %d triangles%s"), S, Kit.NumTriangles(), bShell ? TEXT(" (in its tower kit)") : TEXT(""));
 	}
+	// bare ground: under the vestibule (and its ropes' spread) and round the tower
+	BareBoxes.Add({ FTransform(B.Core.GetRotation(), FVector(Centre.X, Centre.Y, (CoreW.Z + Top + CoreW.Z) * 0.5f)),
+		FVector(1500.f, 1500.f, Top * 0.5f + 2500.f) });
 
 	// warm light in the tower at every stop's landing
 	for (int32 K = 0; K < Stops.Num(); K++)
@@ -270,7 +358,7 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
 		Lt->SetupAttachment(RootComponent);
 		Lt->RegisterComponent();
-		Lt->SetWorldLocation(B.Core.TransformPosition(SideOut(Sides[K]) * 187.f + FVector(0, 0, Stops[K] + 250.f)));
+		Lt->SetWorldLocation(B.Core.TransformPosition(SideOut(Sides[K]) * 187.f + FVector(0, 0, Stops[K] + (K + 1 == Stops.Num() ? -60.f : 250.f))));
 		Lt->SetIntensity(3000.f);
 		Lt->SetAttenuationRadius(700.f);
 		Lt->SetLightColor(FLinearColor(1.f, 0.82f, 0.6f));
@@ -279,7 +367,7 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 	}
 
 	// the lift
-	if (Stops.Last() > LevelLiftMin)
+	if (Top > LevelLiftMin)
 	{
 		FActorSpawnParameters SP;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -290,105 +378,116 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		}
 	}
 
-	// the gallery's end: the connector, its door, the way in
-	const FVector GDir = SideOut(GroundSide);
-	B.Connector = FTransform(FRotator(0.f, B.Core.Rotator().Yaw + GroundSide * 90.f + 180.f, 0.f), B.Core.TransformPosition(GDir * (TowerOut + GalleryLen) + FVector(0, 0, Rise)));
-	B.Vestibule = FTransform(B.Connector.GetRotation(), B.Core.TransformPosition(GDir * (TowerOut + GalleryLen * 0.5f)));
-	B.Entrance = B.Connector.TransformPosition(FVector(-250.f, 0.f, 0.f));
+	// the street door at the tower's foot, steps down from it to the ground, the way in
+	const FVector GDir = B.Core.TransformVectorNoScale(SideOut(GroundSide));
 	{
 		const FVector2D Hole = ALyudDoor::HoleForClear(150.f, 230.f, true);
-		const FTransform DoorT(B.Connector.GetRotation() * FRotator(0.f, 180.f, 0.f).Quaternion(), B.Connector.TransformPosition(FVector(-6.f, 0.f, 0.f)));
+		const FTransform DoorT(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * TowerHalf));
 		if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr,
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 		{
 			Door->Size = ELyudDoorSize::FitHole;
-			Door->HoleWidth = Hole.X;
-			Door->HoleHeight = Hole.Y;
+			Door->HoleWidth = FMath::Min(Hole.X, 200.f);
+			Door->HoleHeight = FMath::Min(Hole.Y, 230.f);
 			Door->bDoubleLeaf = true;
-			Door->WallThickness = 12.f;
+			Door->WallThickness = 8.f;
 			Door->LeafColor = FLinearColor(0.80f, 0.76f, 0.66f);
 			Door->FrameColor = FLinearColor(0.86f, 0.42f, 0.08f);
 			Door->FinishSpawning(DoorT);
 			B.Door = Door;
 		}
+		FLyudMeshKit Steps;
+		const FTransform OutF(FRotator(0.f, GroundSide * 90.f, 0.f), SideOut(GroundSide) * TowerOut);
+		// a landing before the door, then steps down to the ground found there
+		FHitResult Hit;
+		FCollisionQueryParams Q(TEXT("StationSteps"), false, this);
+		const FVector Probe = B.Core.TransformPosition(SideOut(GroundSide) * (TowerOut + 260.f));
+		float Drop = 0.f;
+		if (GetWorld()->LineTraceSingleByChannel(Hit, Probe + FVector(0, 0, 300.f), Probe - FVector(0, 0, 1500.f), ECC_WorldStatic, Q))
+		{
+			Drop = FMath::Max(0.f, CoreW.Z - (float)Hit.ImpactPoint.Z);
+		}
+		Steps.BoxIn(TEXT("tx_concrete"), OutF, FVector(75.f, 0.f, -(Drop + 60.f) * 0.5f), FVector(150.f, 300.f, Drop + 60.f), true, TEXT("tx_terrazzo"));
+		const int32 N = FMath::Clamp(FMath::CeilToInt((Drop - 3.f) / 16.f), 0, 30);
+		for (int32 I = 0; I < N; I++)
+		{
+			const float TopZ = -Drop * (I + 1) / N;
+			Steps.BoxIn(TEXT("tx_concrete"), OutF, FVector(150.f + 30.f * I + 15.f, 0.f, (TopZ - Drop - 40.f) * 0.5f), FVector(30.f, 300.f, TopZ + Drop + 40.f), false, TEXT("tx_tread"));
+		}
+		if (N > 0)
+		{
+			const float Run = 30.f * N;
+			Steps.CollideBox(FTransform(FRotator(-FMath::RadiansToDegrees(FMath::Atan2(Drop, Run)), 0.f, 0.f), FVector(150.f + Run * 0.5f, 0.f, -Drop * 0.5f - 4.f)) * OutF,
+				FVector(FMath::Sqrt(Run * Run + Drop * Drop) * 0.5f, 150.f, 4.f));
+		}
+		KitMesh(Steps, B.Core, FName(*FString::Printf(TEXT("SM_StationSteps_%d"), S)));
+		B.Entrance = B.Core.TransformPosition(SideOut(GroundSide) * (TowerOut + 150.f + 30.f * N + 120.f) - FVector(0, 0, Drop));
+		B.EntranceOut = GDir;
+		B.Vestibule = FTransform(FRotator(0.f, Yaw0 + GroundSide * 90.f + 180.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * (TowerOut + 100.f)));
 	}
 	PlaceVestibule(Net, S);
 
-	// the station's name: over the gallery's door outside, on the tower's head both ways across the line, on the
-	// tower's sides on each platform facing the tracks; each on its own plate, nothing in front of it
+	// the station's name over the street door, and on the tower's two faces across the line
 	auto Sign = [&](const FTransform& At, float WidthCm)
 	{
 		// a widget's face looks along its +X: the sign faces along At's +X
 		Widget(S, SNew(SLyudStationSign).Station(S), At, FVector2D(1600.f, 300.f), WidthCm / 1600.f, true);
 	};
-	Sign(FTransform(B.Connector.GetRotation() * FRotator(0.f, 180.f, 0.f).Quaternion(), B.Connector.TransformPosition(FVector(-14.f, 0.f, 290.f))), 300.f);
-	const float Top = Stops.Last();
-	for (const int32 E : { 1, 3 })
+	Sign(FTransform(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * (TowerOut + 3.f) + FVector(0, 0, 285.f))), 300.f);
+	for (const int32 E : { (GroundSide + 1) & 3, (GroundSide + 3) & 3 })
 	{
-		const FVector O = SideOut(E);
-		Sign(FTransform(FRotator(0.f, B.Core.Rotator().Yaw + E * 90.f, 0.f), B.Core.TransformPosition(O * (TowerOut + 3.f) + FVector(0, 0, Top + HeadOver - 130.f))), 480.f);
-		for (int32 K = 1; K < Stops.Num(); K++)
-		{
-			Sign(FTransform(FRotator(0.f, B.Core.Rotator().Yaw + E * 90.f, 0.f), B.Core.TransformPosition(O * (TowerOut + 3.f) + FVector(0, 0, Stops[K] + 250.f))), 300.f);
-		}
+		Sign(FTransform(FRotator(0.f, Yaw0 + E * 90.f, 0.f), B.Core.TransformPosition(SideOut(E) * (TowerOut + 3.f) + FVector(0, 0, FMath::Min(450.f, Top * 0.5f)))), 420.f);
 	}
 
-	// per level: the call panel at the stop, the board hanging from the canopy over it
+	// per level: by each edge the call panel at the stop mark (vestibules.json "panels" or the fallback deck's) with
+	// its wait board over it
 	for (int32 K = 0; K < SimNum(St.Levels); K++)
 	{
 		const int32 L = St.Levels[K].Line;
 		const FTransform& F = B.Decks[K];
-		const int32 End = SimValid(St.Ends, L) ? St.Ends[L] : 0;
-		const float Stop = End == 0 ? 550.f : (End == 1 ? 250.f : -250.f);
-		const float CoreX = F.InverseTransformPosition(CoreW).X;
-		const float Face = CoreX > Stop ? 0.f : 180.f;
-		const FTransform PanelT(FRotator(0.f, Face, 0.f), FVector(Stop, 0.f, 0.f));
-		B.Panels.Add(PanelT * F);
-		const FTransform BoardAt(FRotator(0.f, Face + 180.f, 0.f), FVector(Stop, 0.f, CanopyLow - 70.f));
-		Widget(S, SNew(SLyudStationBoard).Station(S).Line(L), BoardAt * F, FVector2D(900.f, 360.f), 0.27f, true)->SetTwoSided(true);
-	}
-
-	// the gallery's furniture: the live route diagram (E: where to go), the clock, a bench, a plant, lamps
-	{
-		const FVector Mid = B.Core.TransformPosition(GDir * (TowerOut + GalleryLen * 0.5f));
-		const FVector Along = B.Core.TransformVectorNoScale(GDir);
-		const FVector Across = B.Core.TransformVectorNoScale(SideAlong(GroundSide));
-		const float Yaw = Across.Rotation().Yaw + 180.f;     // the face looks back into the gallery
-		// the diagram on the solid panel of the +Across wall, facing in
-		const FVector DiagramAt = Mid + Across * (GalleryHalf - 4.f) + FVector(0, 0, 165.f);
-		Widget(S, SNew(SLyudTransitDiagram).bLive(true).bBoard(false).From(S), FTransform(FRotator(0.f, Yaw, 0.f), DiagramAt), FVector2D(1600.f, 900.f), 0.15f, true);
-		VestBoards.Add(FTransform(DiagramAt - Across * 110.f - FVector(0, 0, 65.f)));
-		VestBoardStation.Add(S);
-		TWeakObjectPtr<UObject> Ctx(this);
-		Widget(S, SNew(SLyudClock).WorldContext(Ctx), FTransform(FRotator(0.f, Yaw, 0.f), Mid + Across * (GalleryHalf - 4.f) + Along * 190.f + FVector(0, 0, 250.f)),
-			FVector2D(300.f, 300.f), 0.16f, false);
-		if (GalleryLen > 500.f)
+		const LyudTransport::FStationGeo* Geo = SimValid(St.Geo, L) && St.Geo[L].bValid ? &St.Geo[L] : nullptr;
+		const float Edge = Geo ? Geo->Edge * 100.f : IslandHalf;
+		const float Stop = Geo ? Geo->StopX * 100.f : 0.f;
+		TArray<FTransform> Spots;
+		const TArray<TSharedPtr<FJsonValue>>* Pn = nullptr;
+		// the panels: the vestibule's on its (top) deck, a lower deck's own in its frame (the tower's axis, its line)
+		const TSharedPtr<FJsonObject> TD = bV2 ? TowerDeck(V, UTF8_TO_TCHAR(Net.Lines[L].Id.c_str())) : nullptr;
+		if (TD.IsValid() && TD->TryGetArrayField(TEXT("panels"), Pn))
 		{
-			const FVector P = Mid - Across * (GalleryHalf - 30.f) - Along * (GalleryLen * 0.5f - 90.f) + FVector(0, 0, 0.f);
-			if (AProceduralPlant* Plant = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), FTransform(P + FVector(0, 0, 45.f)), nullptr, nullptr,
-				ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+			const FTransform DF(FRotator(0.f, Yaw0 + TD->GetNumberField(TEXT("axis_yaw")), 0.f), FVector(CoreW.X, CoreW.Y, F.GetLocation().Z));
+			for (const TSharedPtr<FJsonValue>& P : *Pn)
 			{
-				Plant->Species = S % 2 ? TEXT("RubberPlant") : TEXT("Monstera");
-				Plant->Seed = 700 + S;
-				Plant->AgeAtStart = 3.f;
-				Plant->bDemoGrowth = false;
-				Plant->bSnapToGround = false;
-				Plant->FinishSpawning(FTransform(P + FVector(0, 0, 45.f)));
+				const TSharedPtr<FJsonObject> O = P->AsObject();
+				const TArray<TSharedPtr<FJsonValue>>& At = O->GetArrayField(TEXT("at"));
+				Spots.Add(FTransform(FRotator(0.f, O->GetNumberField(TEXT("yaw")) - TD->GetNumberField(TEXT("axis_yaw")), 0.f), FVector(At[0]->AsNumber(), At[1]->AsNumber(), 0.f)) * DF * F.Inverse());
 			}
 		}
-		UPointLightComponent* Lt = NewObject<UPointLightComponent>(this);
-		Lt->SetupAttachment(RootComponent);
-		Lt->RegisterComponent();
-		Lt->SetWorldLocation(Mid + FVector(0, 0, GalleryH - 40.f));
-		Lt->SetIntensity(5000.f);
-		Lt->SetAttenuationRadius(FMath::Max(700.f, GalleryLen));
-		Lt->SetLightColor(FLinearColor(1.f, 0.8f, 0.55f));
-		Lt->SetCastShadows(false);
-		AddInstanceComponent(Lt);
+		else if (bV2 && K + 1 == SimNum(St.Levels) && V->TryGetArrayField(TEXT("panels"), Pn))
+		{
+			for (const TSharedPtr<FJsonValue>& P : *Pn)
+			{
+				const TSharedPtr<FJsonObject> O = P->AsObject();
+				const TArray<TSharedPtr<FJsonValue>>& At = O->GetArrayField(TEXT("at"));
+				Spots.Add(FTransform(FRotator(0.f, O->GetNumberField(TEXT("yaw")), 0.f), FVector(At[0]->AsNumber(), At[1]->AsNumber(), 0.f)) * B.Connector * F.Inverse());
+			}
+		}
+		if (!Spots.Num())
+		{
+			for (const float Side : { -1.f, 1.f })
+			{
+				Spots.Add(FTransform(FRotator(0.f, Side * 90.f, 0.f), FVector(Stop, Side * (Edge - 170.f), 0.f)));
+			}
+		}
+		for (const FTransform& Sp : Spots)
+		{
+			B.Panels.Add(Sp * F);
+			const FTransform BoardAt(FRotator(0.f, 180.f, 0.f), FVector(0.f, 0.f, 290.f));
+			Widget(S, SNew(SLyudStationBoard).Station(S).Line(L), BoardAt * Sp * F, FVector2D(900.f, 360.f), 0.27f, true)->SetTwoSided(true);
+		}
 	}
 }
 
-void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, const TArray<float>& Stops, const TArray<int32>& Sides)
+void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, const TArray<float>& Stops, const TArray<int32>& Sides, bool bOwnShell)
 {
 	const LyudTransport::FStation& St = Net.Stations[S];
 	const FTransform I = FTransform::Identity;
@@ -536,8 +635,10 @@ void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& N
 		K.BoxIn(TEXT("tx_enamel"), I, FVector(0, 0, (Top + 280.f) * 0.5f), FVector(ShaftHalf * 2.f, ShaftHalf * 2.f, Top + 280.f), true);
 	}
 
-	// the outer wall: glass from the ground to the head, enamel spandrels at the stops, mullions; the ways out
-	for (int32 E = 0; E < 4; E++)
+	// the outer wall (when the vestibule's tower kit does not give one): glass from the ground to the underside of the
+	// deck the vestibule stands on, enamel spandrels at the stops under it, mullions; the ways out at the lower stops
+	const float WallTop = Top - DeckThick;
+	for (int32 E = 0; E < 4 && bOwnShell; E++)
 	{
 		TArray<FLyudMeshKit::FOpening> Ways;
 		for (int32 Sp = 0; Sp < Stops.Num(); Sp++)
@@ -548,12 +649,9 @@ void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& N
 			}
 		}
 		const FTransform WF(FRotator(0.f, E * 90.f + 90.f, 0.f), SideOut(E) * TowerHalf - SideAlong(E) * TowerHalf);
-		K.Wall(TEXT("glass"), WF, TowerHalf * 2.f, 4.f, 0.f, Top + 300.f, Ways);
-		// the head: solid enamel over the glass, under the roof
-		K.Wall(TEXT("tx_enamel"), FTransform(FRotator(0.f, E * 90.f + 90.f, 0.f), SideOut(E) * TowerHalf - SideAlong(E) * (TowerHalf + 4.f)),
-			TowerHalf * 2.f + 8.f, 8.f, Top + 300.f, RoofZ, {});
+		K.Wall(TEXT("glass"), WF, TowerHalf * 2.f, 4.f, 0.f, WallTop, Ways);
 		// spandrel bands at each stop, broken by the way out; an amber line under each
-		for (int32 Sp = 1; Sp < Stops.Num(); Sp++)
+		for (int32 Sp = 1; Sp + 1 < Stops.Num(); Sp++)
 		{
 			const float Z = Stops[Sp];
 			TArray<FLyudMeshKit::FOpening> Gap;
@@ -584,7 +682,7 @@ void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& N
 					Z = O.Z1;
 				}
 			}
-			Spans.Add(FVector2D(Z, Top + 300.f));
+			Spans.Add(FVector2D(Z, WallTop));
 			for (const FVector2D& Sp : Spans)
 			{
 				if (Sp.Y - Sp.X > 2.f)
@@ -593,13 +691,43 @@ void ALyudCableway::BuildTower(FLyudMeshKit& K, const LyudTransport::FNetwork& N
 				}
 			}
 		}
-		K.BoxIn(TEXT("tx_enamel"), I, CornerAt(E, TowerHalf + 2.f, (Top + 300.f) * 0.5f), FVector(14.f, 14.f, Top + 300.f), false);
+		K.BoxIn(TEXT("tx_enamel"), I, CornerAt(E, TowerHalf + 2.f, WallTop * 0.5f), FVector(14.f, 14.f, WallTop), false);
 	}
-	// the roof and its amber edge
-	K.BoxIn(TEXT("tx_enamel"), I, FVector(0, 0, RoofZ + 15.f), FVector(TowerOut * 2.f + 50.f, TowerOut * 2.f + 50.f, 30.f), true, TEXT("tx_concrete"));
-	K.BoxIn(TEXT("tx_amber"), I, FVector(0, 0, RoofZ + 36.f), FVector(TowerOut * 2.f + 54.f, TowerOut * 2.f + 54.f, 12.f), false);
-	K.BoxIn(TEXT("glow_red"), I, FVector(0, 0, RoofZ + 60.f), FVector(16.f, 16.f, 16.f), false);
+	// round the stair's well at the top (the floor's opening over the core): glass on a steel shoe with a round top
+	// rail, open in the middle of the side the stair's last landing and the lift's door face
+	{
+		const int32 Exit = Sides.Last() & 3;
+		for (int32 E = 0; E < 4; E++)
+		{
+			const FVector O = SideOut(E), A = SideAlong(E);
+			TArray<FVector2D> Runs;
+			if (E == Exit)
+			{
+				Runs = { FVector2D(-TowerHalf, -115.f), FVector2D(115.f, TowerHalf) };
+			}
+			else
+			{
+				Runs = { FVector2D(-TowerHalf, TowerHalf) };
+			}
+			for (const FVector2D& R : Runs)
+			{
+				const FVector P0 = O * (TowerHalf + 5.f) + A * R.X + FVector(0, 0, Top), P1 = O * (TowerHalf + 5.f) + A * R.Y + FVector(0, 0, Top);
+				const float Len = FVector::Dist(P0, P1);
+				const FRotator Rr(0.f, E * 90.f + 90.f, 0.f);
+				K.BoxIn(TEXT("glass"), I, (P0 + P1) * 0.5f + FVector(0, 0, 58.f), FVector(Len - 4.f, 2.f, 96.f), true, NAME_None, Rr);
+				K.BoxIn(TEXT("tx_steel"), I, (P0 + P1) * 0.5f + FVector(0, 0, 5.f), FVector(Len, 7.f, 10.f), false, NAME_None, Rr);
+				K.Rod(TEXT("tx_steel"), P0 + FVector(0, 0, 110.f), P1 + FVector(0, 0, 110.f), 3.2f, 10, true);
+				for (const FVector& P : { P0, P1 })
+				{
+					K.Rod(TEXT("tx_steel"), P, P + FVector(0, 0, 107.f), 2.5f, 8, false);
+				}
+			}
+		}
+	}
+	(void)RoofZ;
 }
+
+
 
 void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Level)
 {
@@ -608,9 +736,15 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 	const int32 L = St.Levels[Level].Line;
 	// the deck's frame in the tower's (the kit's) frame
 	const FTransform F = B.Decks[Level].GetRelativeTransform(B.Core);
+	// a boarding deck between the spread tracks (when the vestibule is not there yet: the vestibule is the deck),
+	// its edges G/2 - 1.05 m off the axis, as long as the vestibule's edges
+	const LyudTransport::FStationGeo* Geo = SimValid(St.Geo, L) && St.Geo[L].bValid ? &St.Geo[L] : nullptr;
+	const float Half = Geo ? Geo->Edge * 100.f : IslandHalf;
+	const float Clear = Half - 32.f;       // nothing over the deck farther out (the hulls bulge to 1.24 m off the track)
+	const float HalfLen = Geo ? Geo->Length * 50.f : IslandLen;
+	const float A0 = -HalfLen, A1 = HalfLen;
+	const float Stop = Geo ? Geo->StopX * 100.f : 0.f;
 	const int32 End = SimValid(St.Ends, L) ? St.Ends[L] : 0;
-	const float A0 = End == 1 ? -60.f : -IslandLen, A1 = End == -1 ? 60.f : IslandLen;
-	const float Stop = End == 0 ? 550.f : (End == 1 ? 250.f : -250.f);
 	const bool bTop = Level == SimNum(St.Levels) - 1;
 
 	// the tower's square in this deck's frame (the hole)
@@ -624,7 +758,7 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 		HoleX1 = FMath::Max(HoleX1, P.X);
 	}
 	// the slab in bands across: the edge stone, the tactile strip, the floor, ...; each minus the tower
-	const float Bands[] = { -IslandHalf, -IslandHalf + 40.f, -IslandHalf + 80.f, IslandHalf - 80.f, IslandHalf - 40.f, IslandHalf };
+	const float Bands[] = { -Half, -Half + 40.f, -Half + 80.f, Half - 80.f, Half - 40.f, Half };
 	const FName Tops[] = { TEXT("tx_concrete"), TEXT("tx_tactile"), TEXT("tx_terrazzo"), TEXT("tx_tactile"), TEXT("tx_concrete") };
 	for (int32 Bd = 0; Bd < 5; Bd++)
 	{
@@ -633,9 +767,9 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 	// the amber belt along the deck's faces and ends
 	for (const float Side : { -1.f, 1.f })
 	{
-		K.BoxIn(TEXT("tx_amber"), F, FVector((A0 + A1) * 0.5f, Side * (IslandHalf + 1.f), -DeckThick + 9.f), FVector(A1 - A0, 2.f, 14.f), false);
+		K.BoxIn(TEXT("tx_amber"), F, FVector((A0 + A1) * 0.5f, Side * (Half + 1.f), -DeckThick + 9.f), FVector(A1 - A0, 2.f, 14.f), false);
 	}
-	// railings: along the edges, on the hulls' line (HullClear) and short of the stops; across the ends
+	// railings: along the edges, on the hulls' line (Clear) and short of the stops; across the ends
 	auto Railing = [&](const FVector2D& P0, const FVector2D& P1)
 	{
 		const FVector A(P0.X, P0.Y, 0.f), Bv(P1.X, P1.Y, 0.f);
@@ -657,7 +791,7 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 			K.Rod(TEXT("tx_steel"), F.TransformPosition(P), F.TransformPosition(P + FVector(0, 0, 107.f)), 2.5f, 8, false);
 		}
 	};
-	const float RailY = HullClear - 8.f;
+	const float RailY = Clear - 8.f;
 	for (const float Side : { -1.f, 1.f })
 	{
 		// the cabins' doors stop at Stop +- 0.47 m (either way of travel): open from Stop - 330 to Stop + 330
@@ -686,16 +820,7 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 	}
 	for (const float X : { A0, A1 })
 	{
-		const bool bWheel = (End == 1 && X == A0) || (End == -1 && X == A1);
-		if (!bWheel)
-		{
-			Railing(FVector2D(X - FMath::Sign(X) * 6.f, -RailY), FVector2D(X - FMath::Sign(X) * 6.f, RailY));
-		}
-		else
-		{
-			// round the wheel the cabins turn: a railing across, inside the turn
-			Railing(FVector2D(X + FMath::Sign(X) * -6.f, -RailY), FVector2D(X + FMath::Sign(X) * -6.f, RailY));
-		}
+		Railing(FVector2D(X - FMath::Sign(X) * 6.f, -RailY), FVector2D(X - FMath::Sign(X) * 6.f, RailY));
 	}
 
 	// columns under the island's ends, in pairs (round concrete, an amber collar under the deck)
@@ -706,7 +831,7 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 		{
 			continue;
 		}
-		for (const float Y : { -IslandHalf + 90.f, IslandHalf - 90.f })
+		for (const float Y : { -Half + 90.f, Half - 90.f })
 		{
 			const FVector Top = F.TransformPosition(FVector(X, Y, -DeckThick));
 			const FVector Bot(Top.X, Top.Y, Ground);
@@ -717,7 +842,7 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 
 	// the canopy: a butterfly roof over the island, low in the middle, on slim columns along the middle; it stops at
 	// the tower (which rises through it) and stays inside the hulls' line
-	const float CY = HullClear - 10.f;
+	const float CY = Clear - 10.f;
 	auto Canopy = [&](float X0, float X1)
 	{
 		if (X1 - X0 < 100.f)
@@ -765,179 +890,23 @@ void ALyudCableway::BuildDeck(FLyudMeshKit& K, const LyudTransport::FNetwork& Ne
 	Canopy(FMath::Max(CA0, HoleX1 + 2.f), CA1);
 	(void)bTop;
 
-	// the call panel at the stop: a steel pedestal with a glowing screen
-	const float CoreX = (HoleX0 + HoleX1) * 0.5f;
-	const float Face = CoreX > Stop ? 0.f : 180.f;
-	const FTransform PanelT = FTransform(FRotator(0.f, Face, 0.f), FVector(Stop, 0.f, 0.f)) * F;
-	K.BoxIn(TEXT("tx_enamel"), PanelT, FVector(0, 0, 65.f), FVector(28.f, 56.f, 130.f), true, TEXT("tx_steel"));
-	K.BoxIn(TEXT("glow"), PanelT, FVector(15.f, 0, 100.f), FVector(2.f, 44.f, 28.f), false);
-	K.BoxIn(TEXT("tx_amber"), PanelT, FVector(15.f, 0, 72.f), FVector(2.f, 44.f, 6.f), false);
-	// the board's hangers from the canopy's gutter
-	for (const float Y : { -110.f, 110.f })
+	// the call panels: one by each edge at the stop mark, facing its track; the board's hangers from the canopy
+	for (const float Side : { -1.f, 1.f })
 	{
-		K.Rod(TEXT("tx_steel"), PanelT.TransformPosition(FVector(0, Y, CanopyLow - 20.f)), PanelT.TransformPosition(FVector(0, Y, CanopyLow - 22.f - 20.f)), 1.f, 6, false);
+		const FTransform PanelT = FTransform(FRotator(0.f, Side * 90.f, 0.f), FVector(Stop, Side * (Half - 170.f), 0.f)) * F;
+		K.BoxIn(TEXT("tx_enamel"), PanelT, FVector(0, 0, 65.f), FVector(28.f, 56.f, 130.f), true, TEXT("tx_steel"));
+		K.BoxIn(TEXT("glow"), PanelT, FVector(15.f, 0, 100.f), FVector(2.f, 44.f, 28.f), false);
+		K.BoxIn(TEXT("tx_amber"), PanelT, FVector(15.f, 0, 72.f), FVector(2.f, 44.f, 6.f), false);
 	}
 
-	// an end station: the turn wheel at the rope's height, on a steel mast from the deck at the island's end
-	if (End != 0)
-	{
-		const float Rope = 401.f;
-		TArray<FVector2D> Wheel = { FVector2D(80.f, Rope - 30.f), FVector2D(460.f, Rope - 14.f), FVector2D(470.f, Rope), FVector2D(460.f, Rope + 14.f), FVector2D(80.f, Rope + 26.f) };
-		K.Lathe(FTransform(F.GetRotation(), F.TransformPosition(FVector(0.f, 0.f, 0.f))), Wheel, { TEXT("tx_steel"), TEXT("tx_dark"), TEXT("tx_dark"), TEXT("tx_steel") }, 48, false, false);
-		TArray<FVector2D> Mast = { FVector2D(40.f, -DeckThick), FVector2D(34.f, Rope + 60.f), FVector2D(60.f, Rope + 60.f), FVector2D(60.f, Rope + 90.f) };
-		K.Lathe(F, Mast, { TEXT("tx_enamel"), TEXT("tx_amber"), TEXT("tx_amber") }, 20, true, true);
-	}
-}
-
-void ALyudCableway::BuildGallery(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S, int32 Side, float Length, float Rise)
-{
-	// in a frame along the gallery: origin on the floor at the tower's outer face, X out to the connector, Y across
-	const FTransform G(FRotator(0.f, Side * 90.f, 0.f), SideOut(Side) * TowerOut);
-	const float HalfOut = GalleryHalf + 20.f, RoofTop = GalleryH + 40.f + Rise;
-	const float Ground = (Net.Stations[S].bHasVest ? FMath::Min(Net.Stations[S].VestGroundMin, Net.Stations[S].CoreGround) : Net.Stations[S].CoreGround) * 100.f - 200.f - Built[S].Core.GetLocation().Z;
-	// the floor on a plinth down into the ground; steps up near the end when the vestibule stands higher
-	const float StepsLen = Rise > 2.f ? FMath::CeilToInt(Rise / 17.f) * 30.f : 0.f;
-	const float FlatEnd = Length - StepsLen - 60.f;
-	K.BoxIn(TEXT("tx_concrete"), G, FVector(Length * 0.5f, 0.f, (Ground - 0.f) * 0.5f), FVector(Length + 2.f, HalfOut * 2.f, -Ground), true, TEXT("tx_terrazzo"));
-	if (StepsLen > 0.f)
-	{
-		const int32 N = FMath::CeilToInt(Rise / 17.f);
-		for (int32 I = 0; I < N; I++)
-		{
-			const float Top = Rise * (I + 1) / N;
-			const float X0 = FlatEnd + 30.f * I;
-			K.BoxIn(TEXT("tx_terrazzo"), G, FVector((X0 + Length) * 0.5f, 0.f, Top * 0.5f), FVector(Length - X0, GalleryHalf * 2.f, Top), false, TEXT("tx_tread"));
-		}
-		K.CollideBox(FTransform(FRotator(FMath::RadiansToDegrees(FMath::Atan2(Rise, StepsLen)), 0.f, 0.f), G.TransformPosition(FVector(FlatEnd + StepsLen * 0.5f, 0.f, Rise * 0.5f - 4.f))),
-			FVector(FMath::Sqrt(StepsLen * StepsLen + Rise * Rise) * 0.5f, GalleryHalf, 4.f));
-		K.BoxIn(TEXT("tx_terrazzo"), G, FVector(Length - 30.f, 0.f, Rise * 0.5f), FVector(60.f, GalleryHalf * 2.f, Rise), true, TEXT("tx_terrazzo"));
-	}
-	// the side walls: a low enamel dado, glass over it, the solid panel for the diagram on the +Y wall
-	for (const float Sg : { -1.f, 1.f })
-	{
-		const FTransform WF(FRotator(0.f, 0.f, 0.f), FVector(0.f, Sg * (GalleryHalf + 5.f), 0.f));
-		const FTransform WG = WF * G;
-		const float PanelU0 = Length * 0.5f - 160.f, PanelU1 = Length * 0.5f + 160.f;
-		if (Sg > 0.f)
-		{
-			K.Wall(TEXT("glass"), WG, Length, 3.f, 60.f, GalleryH + Rise, { { PanelU0, PanelU1, 0.f, 1e5f } });
-			K.BoxIn(TEXT("tx_mosaic"), WG, FVector((PanelU0 + PanelU1) * 0.5f, -1.f, (GalleryH + Rise) * 0.5f), FVector(PanelU1 - PanelU0, 10.f, GalleryH + Rise), true);
-			// the diagram's amber frame
-			K.BoxIn(TEXT("tx_amber"), WG, FVector((PanelU0 + PanelU1) * 0.5f, -7.f, 165.f), FVector(252.f, 2.f, 147.f), false);
-		}
-		else
-		{
-			K.Wall(TEXT("glass"), WG, Length, 3.f, 60.f, GalleryH + Rise, {});
-		}
-		K.BoxIn(TEXT("tx_enamel"), WG, FVector(Length * 0.5f, 0.f, 30.f), FVector(Length, 10.f, 60.f), true);
-		K.BoxIn(TEXT("tx_amber"), WG, FVector(Length * 0.5f, Sg * 5.f, 61.f), FVector(Length, 2.f, 4.f), false);
-		// mullions every ~2 m
-		const int32 N = FMath::Max(1, FMath::RoundToInt(Length / 200.f));
-		for (int32 I = 0; I <= N; I++)
-		{
-			const float U = Length * I / N;
-			K.BoxIn(TEXT("tx_enamel"), WG, FVector(FMath::Clamp(U, 6.f, Length - 6.f), Sg * 4.f, (GalleryH + Rise) * 0.5f), FVector(10.f, 12.f, GalleryH + Rise), false);
-		}
-	}
-	// the roof (a slab over the walls, amber edges), lamps under it
-	K.BoxIn(TEXT("tx_enamel"), G, FVector(Length * 0.5f - 10.f, 0.f, GalleryH + Rise + 20.f), FVector(Length + 20.f, HalfOut * 2.f + 20.f, 40.f), true, TEXT("tx_concrete"));
-	for (const float Sg : { -1.f, 1.f })
-	{
-		K.BoxIn(TEXT("tx_amber"), G, FVector(Length * 0.5f - 10.f, Sg * (HalfOut + 11.f), GalleryH + Rise + 26.f), FVector(Length + 20.f, 2.f, 14.f), false);
-	}
-	for (int32 I = 0; I < 3; I++)
-	{
-		K.BoxIn(TEXT("glow"), G, FVector(Length * (I + 0.5f) / 3.f, 0.f, GalleryH + Rise - 1.f), FVector(110.f, 18.f, 2.f), false);
-	}
-	// the end: a portal frame (the connector, 340 x 340 outside), glass round the double door
-	const FTransform E(FRotator(0.f, 0.f, 0.f), FVector(Length, 0.f, Rise));
-	const FTransform EG = E * G;
-	const FVector2D Hole = ALyudDoor::HoleForClear(150.f, 230.f, true);
-	const TArray<FLyudMeshKit::FOpening> DoorHole = { { GalleryHalf - Hole.X * 0.5f, GalleryHalf + Hole.X * 0.5f, 0.f, Hole.Y } };
-	K.Wall(TEXT("glass"), FTransform(FRotator(0.f, 90.f, 0.f), FVector(-6.f, -GalleryHalf, 0.f)) * EG, GalleryHalf * 2.f, 3.f, 0.f, GalleryH, DoorHole);
-	K.BoxIn(TEXT("tx_steel"), EG, FVector(-6.f, 0.f, Hole.Y + 4.f), FVector(10.f, Hole.X + 12.f, 8.f), false);
-	for (const float Sg : { -1.f, 1.f })
-	{
-		K.BoxIn(TEXT("tx_enamel"), EG, FVector(-10.f, Sg * (GalleryHalf + 10.f), (GalleryH + 40.f) * 0.5f), FVector(20.f, 20.f, GalleryH + 40.f), true);
-		K.BoxIn(TEXT("tx_steel"), EG, FVector(-6.f, Sg * (Hole.X * 0.5f + 4.f), Hole.Y * 0.5f), FVector(10.f, 8.f, Hole.Y), false);
-	}
-	K.BoxIn(TEXT("tx_enamel"), EG, FVector(-10.f, 0.f, GalleryH + 20.f), FVector(20.f, HalfOut * 2.f, 40.f), true);
-	// the plate under the station's name (the sign widget sits on it, BuildStation)
-	K.BoxIn(TEXT("tx_dark"), EG, FVector(-1.f, 0.f, 290.f), FVector(4.f, 310.f, 64.f), false);
-	// inside: a bench along the -Y wall, a bin
-	if (Length > 400.f)
-	{
-		const float Bx = Length * 0.5f;
-		K.BoxIn(TEXT("tx_amber"), G, FVector(Bx, -GalleryHalf + 32.f, 44.f), FVector(180.f, 46.f, 6.f), true);
-		K.BoxIn(TEXT("tx_amber"), G, FVector(Bx, -GalleryHalf + 10.f, 75.f), FVector(180.f, 5.f, 40.f), false, NAME_None, FRotator(0.f, 0.f, -8.f));
-		for (const float D : { -75.f, 75.f })
-		{
-			K.BoxIn(TEXT("tx_steel"), G, FVector(Bx + D, -GalleryHalf + 30.f, 21.f), FVector(5.f, 40.f, 42.f), false);
-		}
-		TArray<FVector2D> Bin = { FVector2D(18.f, 0.f), FVector2D(20.f, 70.f), FVector2D(21.f, 74.f) };
-		K.Lathe(FTransform(G.TransformPosition(FVector(Bx + 150.f, -GalleryHalf + 26.f, 0.f))), Bin, { TEXT("tx_steel"), TEXT("tx_amber") }, 16, true, true);
-	}
-}
-
-namespace
-{
-	/** Content/Transport/vestibules.json (blender/transport/vestibules.py): per style, UE cm in the connector frame. */
-	TSharedPtr<FJsonObject> VestibuleData(const FString& Style)
-	{
-		static TSharedPtr<FJsonObject> All;
-		static bool bRead = false;
-		if (!bRead)
-		{
-			bRead = true;
-			FString Text;
-			if (FFileHelper::LoadFileToString(Text, *FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Transport/vestibules.json"))))
-			{
-				FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), All);
-			}
-		}
-		const TSharedPtr<FJsonObject>* V = nullptr;
-		return All.IsValid() && All->TryGetObjectField(Style.ToLower(), V) ? *V : nullptr;
-	}
-
-	FVector JsonXY(const TSharedPtr<FJsonObject>& O, const TCHAR* Field, float Z = 0.f)
-	{
-		const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
-		if (O.IsValid() && O->TryGetArrayField(Field, A) && A->Num() >= 2)
-		{
-			return FVector((*A)[0]->AsNumber(), (*A)[1]->AsNumber(), A->Num() > 2 ? (*A)[2]->AsNumber() : Z);
-		}
-		return FVector(0, 0, Z);
-	}
-
-	/** The convex hull of 2D points (counterclockwise). */
-	TArray<FVector2D> Hull(TArray<FVector2D> P)
-	{
-		P.Sort([](const FVector2D& A, const FVector2D& B) { return A.X < B.X || (A.X == B.X && A.Y < B.Y); });
-		TArray<FVector2D> H;
-		auto Cross = [](const FVector2D& O, const FVector2D& A, const FVector2D& B) { return (A.X - O.X) * (B.Y - O.Y) - (A.Y - O.Y) * (B.X - O.X); };
-		for (int32 Pass = 0; Pass < 2; Pass++)
-		{
-			const int32 Start = H.Num();
-			for (int32 I = 0; I < P.Num(); I++)
-			{
-				const FVector2D& Q = Pass ? P[P.Num() - 1 - I] : P[I];
-				while (H.Num() >= Start + 2 && Cross(H[H.Num() - 2], H.Last(), Q) <= 0.f)
-				{
-					H.Pop();
-				}
-				H.Add(Q);
-			}
-			H.Pop();
-		}
-		return H;
-	}
+	(void)End;
 }
 
 void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 {
-	// the hi3d vestibule (blender/transport/vestibules.py) at the connector: its origin there, its +X toward the tower;
-	// under it a concrete podium down to the ground, steps down from its street entrances, its door (ALyudDoor), the
-	// route diagram, a kiosk and a bench at its spots. Missing (not made yet): a terrace before the gallery's door.
+	// the hi3d vestibule (blender/transport/vestibules.py, vestibules.json v2) in the station's frame: on the first
+	// deck at the station's centre, X along the line's way out, its edges by the spread tracks; its doors (ALyudDoor),
+	// lamps, the route diagram, a kiosk and a bench at its spots. Missing (not made yet): the fallback boarding deck.
 	const LyudTransport::FStation& St = Net.Stations[S];
 	const FString Style = St.Style.empty() ? TEXT("saucer") : FString(UTF8_TO_TCHAR(St.Style.c_str()));
 	const FString Cap = Style.Left(1).ToUpper() + Style.Mid(1);
@@ -945,21 +914,8 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 	const TSharedPtr<FJsonObject> V = VestibuleData(Style);
 	FLyudBuiltStation& B = Built[S];
 	const FTransform& C = B.Connector;
-	// the ground under a point of the connector frame (the landscape is there by now; the map's number otherwise)
-	auto GroundAt = [&](const FVector& Local) -> float
-	{
-		const FVector P = C.TransformPosition(FVector(Local.X, Local.Y, 0.f));
-		FHitResult Hit;
-		FCollisionQueryParams Q(TEXT("VestGround"), false, this);
-		for (TActorIterator<ALyudDoor> It(GetWorld()); It; ++It) { Q.AddIgnoredActor(*It); }
-		if (GetWorld()->LineTraceSingleByChannel(Hit, P + FVector(0, 0, 3000.f), P - FVector(0, 0, 6000.f), ECC_WorldStatic, Q))
-		{
-			return Hit.ImpactPoint.Z - C.GetLocation().Z;
-		}
-		return St.VestGroundMin * 100.f - C.GetLocation().Z;
-	};
 	FLyudMeshKit K;
-	if (Mesh && V.IsValid())
+	if (Mesh && V.IsValid() && V->HasField(TEXT("track_gap")))
 	{
 		UStaticMeshComponent* M = Single(Mesh, C, true);
 		M->SetCastShadow(true);
@@ -967,36 +923,6 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 			// bare ground under it and its terrace, a metre and a half round
 			const FBox Bb = Mesh->GetBoundingBox();
 			BareBoxes.Add({ FTransform(C.GetRotation(), C.TransformPosition(Bb.GetCenter())), Bb.GetExtent() + FVector(150.f, 150.f, 2000.f) });
-		}
-		// the podium: the footprint's hull from 60 cm under the floor down past the lowest ground under it
-		TArray<FVector2D> Pts;
-		const TArray<TSharedPtr<FJsonValue>>* Fp = nullptr;
-		if (V->TryGetArrayField(TEXT("footprint"), Fp))
-		{
-			for (const TSharedPtr<FJsonValue>& P : *Fp)
-			{
-				const TArray<TSharedPtr<FJsonValue>>& XY = P->AsArray();
-				if (XY.Num() >= 2)
-				{
-					Pts.Add(FVector2D(FMath::Min(XY[0]->AsNumber(), -2.0), XY[1]->AsNumber()));
-				}
-			}
-		}
-		TArray<FVector2D> Pod = Hull(Pts);
-		float Low = 0.f;
-		for (const FVector2D& P : Pod)
-		{
-			Low = FMath::Min(Low, GroundAt(FVector(P.X, P.Y, 0.f)));
-		}
-		// inset a little so the podium hides under the vestibule's own edge
-		const FVector2D Ctr = [&] { FVector2D A = FVector2D::ZeroVector; for (const FVector2D& P : Pod) { A += P; } return Pod.Num() ? A / Pod.Num() : A; }();
-		for (FVector2D& P : Pod)
-		{
-			P = Ctr + (P - Ctr) * 0.97f;
-		}
-		if (Pod.Num() >= 3)
-		{
-			K.Prism(TEXT("tx_concrete"), FTransform::Identity, Pod, Low - 150.f, -58.f, true, TEXT("tx_concrete"));
 		}
 		// the room's middle (Transport.Goto vestibule) and a warm light under its ceiling
 		const TSharedPtr<FJsonObject>* Room = nullptr;
@@ -1046,10 +972,23 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 			}
 			B.Room = FTransform(C.GetRotation(), C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, 100.f)));
 		}
-		// the door into the room
-		const TSharedPtr<FJsonObject>* D = nullptr;
-		if (V->TryGetObjectField(TEXT("door"), D))
+		// the doors into the room ("doors", or v1's one "door")
+		TArray<TSharedPtr<FJsonObject>> DoorList;
+		const TArray<TSharedPtr<FJsonValue>>* Ds = nullptr;
+		if (V->TryGetArrayField(TEXT("doors"), Ds))
 		{
+			for (const TSharedPtr<FJsonValue>& Dv : *Ds)
+			{
+				DoorList.Add(Dv->AsObject());
+			}
+		}
+		else if (const TSharedPtr<FJsonObject>* D1 = nullptr; V->TryGetObjectField(TEXT("door"), D1))
+		{
+			DoorList.Add(*D1);
+		}
+		for (const TSharedPtr<FJsonObject>& Dd : DoorList)
+		{
+			const TSharedPtr<FJsonObject>* D = &Dd;
 			const FVector At = JsonXY(*D, TEXT("at"));
 			const FVector Hole = JsonXY(*D, TEXT("hole"));
 			const float DYaw = (*D)->GetNumberField(TEXT("yaw"));
@@ -1064,41 +1003,6 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				Door->LeafColor = FLinearColor(0.80f, 0.76f, 0.66f);
 				Door->FrameColor = FLinearColor(0.86f, 0.42f, 0.08f);
 				Door->FinishSpawning(DoorT);
-			}
-		}
-		// steps from each street entrance down to the ground
-		const TArray<TSharedPtr<FJsonValue>>* En = nullptr;
-		if (V->TryGetArrayField(TEXT("entrances"), En))
-		{
-			for (const TSharedPtr<FJsonValue>& E : *En)
-			{
-				const TSharedPtr<FJsonObject> O = E->AsObject();
-				const FVector At = JsonXY(O, TEXT("at"));
-				const FVector Out = JsonXY(O, TEXT("out")).GetSafeNormal2D();
-				const float Wd = O->HasField(TEXT("width")) ? O->GetNumberField(TEXT("width")) : 240.f;
-				B.Entrance = C.TransformPosition(At + Out * 60.f);
-				B.EntranceOut = C.TransformVectorNoScale(Out);
-				const float Drop = -GroundAt(At + Out * 200.f);
-				const int32 N = FMath::Clamp(FMath::CeilToInt((Drop - 2.f) / 16.f), 0, 40);
-				const FRotator R(0.f, Out.Rotation().Yaw, 0.f);
-				for (int32 I = 0; I < N; I++)
-				{
-					const float Top = -Drop * (I + 1) / (N + 0.f) + 0.f;
-					const float TopZ = -(Drop * (I + 1)) / N;
-					(void)Top;
-					K.BoxIn(TEXT("tx_concrete"), FTransform(R, At), FVector(30.f * I + 15.f, 0.f, (TopZ + (Low - 150.f)) * 0.5f), FVector(30.f, Wd + 40.f, TopZ - (Low - 150.f)), false, TEXT("tx_tread"));
-				}
-				if (N > 0)
-				{
-					const float Run = 30.f * N;
-					K.CollideBox(FTransform(FRotator(-FMath::RadiansToDegrees(FMath::Atan2(Drop, Run)), 0.f, 0.f), FVector(Run * 0.5f, 0.f, -Drop * 0.5f - 4.f)) * FTransform(R, At),
-						FVector(FMath::Sqrt(Run * Run + Drop * Drop) * 0.5f, Wd * 0.5f + 20.f, 4.f));
-					for (const float Sg : { -1.f, 1.f })
-					{
-						// the cheek walls
-						K.BoxIn(TEXT("tx_enamel"), FTransform(R, At), FVector(Run * 0.5f, Sg * (Wd * 0.5f + 30.f), (-Drop + 90.f + (Low - 150.f)) * 0.5f), FVector(Run, 20.f, -(Low - 150.f) + 90.f - Drop + Drop), true, TEXT("tx_amber"));
-					}
-				}
 			}
 		}
 		// the furniture at its spots
@@ -1146,13 +1050,169 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 			}
 		}
 	}
-	else
+	KitMesh(K, C, FName(*FString::Printf(TEXT("SM_VestibuleFurniture_%d"), S)));
+}
+
+bool ALyudCableway::StackTowerKit(int32 S, const FString& Style, float Height)
+{
+	// vestibules.json v2 "tower": {"foot": {mesh, h}, "shafts": [{mesh, h}, ...], "neck": {mesh, h}, "neck_top",
+	// "decks": [{mesh, floor_z, axis_yaw, ...}]}; every module's origin on the tower's axis at its own bottom (a deck's:
+	// at its floor); stacked from the ground to the vestibule's floor, the tallest shaft modules first, the short ones to
+	// make up the rest, a deck at its floor_z under the vestibule's floor; nothing stretched
+	const TSharedPtr<FJsonObject> V = VestibuleData(Style);
+	const TSharedPtr<FJsonObject>* T = nullptr;
+	if (!V.IsValid() || !V->TryGetObjectField(TEXT("tower"), T))
 	{
-		// a terrace before the gallery's door
-		const float Down = FMath::Max(80.f, -GroundAt(FVector(-220.f, 0.f, 0.f)) + 120.f);
-		K.BoxIn(TEXT("tx_concrete"), FTransform::Identity, FVector(-220.f, 0.f, -Down * 0.5f), FVector(400.f, 460.f, Down), true, TEXT("tx_terrazzo"));
+		return false;
 	}
-	KitMesh(K, C, FName(*FString::Printf(TEXT("SM_Podium_%d"), S)));
+	auto Module = [&](const TSharedPtr<FJsonObject>& O, UStaticMesh*& Mesh, float& H)
+	{
+		Mesh = LoadMesh(O->GetStringField(TEXT("mesh")));
+		H = O->GetNumberField(TEXT("h"));
+		return Mesh && H > 1.f;
+	};
+	UStaticMesh* Foot = nullptr; UStaticMesh* Neck = nullptr;
+	float FootH = 0.f, NeckH = 0.f;
+	const TSharedPtr<FJsonObject>* Fo = nullptr;
+	const TSharedPtr<FJsonObject>* Ne = nullptr;
+	if (!(*T)->TryGetObjectField(TEXT("foot"), Fo) || !(*T)->TryGetObjectField(TEXT("neck"), Ne) || !Module(*Fo, Foot, FootH) || !Module(*Ne, Neck, NeckH))
+	{
+		return false;
+	}
+	TArray<TPair<UStaticMesh*, float>> Shafts;
+	for (const TSharedPtr<FJsonValue>& Sv : (*T)->GetArrayField(TEXT("shafts")))
+	{
+		UStaticMesh* M = nullptr;
+		float H = 0.f;
+		if (Module(Sv->AsObject(), M, H))
+		{
+			Shafts.Add({ M, H });
+		}
+	}
+	if (!Shafts.Num())
+	{
+		return false;
+	}
+	Shafts.Sort([](const TPair<UStaticMesh*, float>& A, const TPair<UStaticMesh*, float>& Bm) { return A.Value > Bm.Value; });
+	const float NeckTop = Height + ((*T)->HasField(TEXT("neck_top")) ? (*T)->GetNumberField(TEXT("neck_top")) : -DeckThick);
+	const FTransform& Core = Built[S].Core;
+	// the pieces between Z0 and Z1: whole modules, the last short one sunk into the piece over it where they do not add up
+	auto Fill = [&](float Z0, float Z1)
+	{
+		float Z = Z0, Left = Z1 - Z0;
+		for (const TPair<UStaticMesh*, float>& Sh : Shafts)
+		{
+			while (Left >= Sh.Value - 0.5f)
+			{
+				Single(Sh.Key, FTransform(FVector(0, 0, Z)) * Core, true);
+				Z += Sh.Value;
+				Left -= Sh.Value;
+			}
+		}
+		if (Left > 0.5f)
+		{
+			Single(Shafts.Last().Key, FTransform(FVector(0, 0, Z1 - Shafts.Last().Value)) * Core, true);
+		}
+	};
+	Single(Foot, Core, true);
+	float Z = FootH;
+	// the decks on the tower, from the lowest
+	TArray<TSharedPtr<FJsonObject>> Decks;
+	const TArray<TSharedPtr<FJsonValue>>* Ds = nullptr;
+	if ((*T)->TryGetArrayField(TEXT("decks"), Ds))
+	{
+		for (const TSharedPtr<FJsonValue>& D : *Ds)
+		{
+			Decks.Add(D->AsObject());
+		}
+	}
+	Decks.Sort([](const TSharedPtr<FJsonObject>& A, const TSharedPtr<FJsonObject>& Bd) { return A->GetNumberField(TEXT("floor_z")) < Bd->GetNumberField(TEXT("floor_z")); });
+	for (const TSharedPtr<FJsonObject>& D : Decks)
+	{
+		UStaticMesh* M = LoadMesh(D->GetStringField(TEXT("mesh")));
+		if (!M)
+		{
+			continue;
+		}
+		const float Floor = Height + D->GetNumberField(TEXT("floor_z"));
+		const FBox Bb = M->GetBoundingBox();
+		Fill(Z, Floor + Bb.Min.Z);
+		Single(M, FTransform(FRotator(0.f, D->GetNumberField(TEXT("axis_yaw")), 0.f), FVector(0, 0, Floor)) * Core, true);
+		Z = Floor + Bb.Max.Z;
+	}
+	if (NeckTop - NeckH < Z - 1.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Transport: %s's tower kit does not fit %.0f cm (foot %.0f, neck %.0f)"), *Style, Height, FootH, NeckH);
+	}
+	Fill(Z, NeckTop - NeckH);
+	Single(Neck, FTransform(FVector(0, 0, NeckTop - NeckH)) * Core, true);
+	return true;
+}
+
+void ALyudCableway::BuildRopeGear(FLyudMeshKit& K, const LyudTransport::FNetwork& Net, int32 S)
+{
+	// in the tower's frame (K's): per line through the station, a sheave post at each bend of a rope at the vestibule's
+	// ends (the convergence pylons are line pylons, BuildPylons), and at an end station the turn wheel on its mast
+	const LyudTransport::FStation& St = Net.Stations[S];
+	const FTransform& Core = Built[S].Core;
+	auto GroundAt = [&](const FVector& Wp) -> float
+	{
+		FHitResult Hit;
+		FCollisionQueryParams Q(TEXT("GearGround"), false, this);
+		if (GetWorld()->LineTraceSingleByChannel(Hit, Wp + FVector(0, 0, 500.f), Wp - FVector(0, 0, 8000.f), ECC_WorldStatic, Q))
+		{
+			return (float)Hit.ImpactPoint.Z;
+		}
+		return St.Ground * 100.f;
+	};
+	for (int32 L = 0; L < SimNum(St.Geo); L++)
+	{
+		const LyudTransport::FStationGeo& G = St.Geo[L];
+		if (!G.bValid)
+		{
+			continue;
+		}
+		for (const LyudTransport::FSheave& Sh : G.Sheaves)
+		{
+			if (Sh.bConverge)
+			{
+				continue;
+			}
+			// the sheave a little under the rope, its post outside the track (never under the passing cabins), an arm
+			const FVector At = W(Sh.X, Sh.Y, Sh.Z);
+			const FVector Out = FRotator(0.f, Sh.Yaw + (Sh.Side > 0 ? 90.f : -90.f), 0.f).Vector();
+			const FVector PostTop = At + Out * 190.f + FVector(0, 0, 60.f);
+			const float G0 = GroundAt(At + Out * 190.f) - 60.f;
+			const FVector Lp = Core.InverseTransformPosition(PostTop), Lb = Core.InverseTransformPosition(FVector(PostTop.X, PostTop.Y, G0));
+			TArray<FVector2D> Prof = { FVector2D(30.f, Lb.Z), FVector2D(24.f, Lp.Z - 40.f), FVector2D(30.f, Lp.Z - 40.f), FVector2D(30.f, Lp.Z) };
+			K.Lathe(FTransform(FVector(Lp.X, Lp.Y, 0.f)), Prof, { TEXT("tx_plate"), TEXT("tx_amber"), TEXT("tx_amber") }, 16, true, true);
+			const FVector La = Core.InverseTransformPosition(At + FVector(0, 0, 60.f));
+			K.Rod(TEXT("tx_steel"), Lp - FVector(0, 0, 15.f), La, 9.f, 10, true);
+			// the sheave: a dark disc in the rope's plane, a steel hub
+			const FTransform Disc(FRotator(0.f, Sh.Yaw - Core.Rotator().Yaw, 90.f), Core.InverseTransformPosition(At + FVector(0, 0, 30.f)));
+			TArray<FVector2D> Wheel = { FVector2D(8.f, -6.f), FVector2D(40.f, -5.f), FVector2D(45.f, 0.f), FVector2D(40.f, 5.f), FVector2D(8.f, 6.f) };
+			K.Lathe(Disc, Wheel, { TEXT("tx_dark"), TEXT("tx_dark"), TEXT("tx_dark"), TEXT("tx_steel") }, 20, false, false);
+		}
+		if (G.bWheel)
+		{
+			// the turn wheel at the rope's height on a mast from the ground; the cabins' grips ride its rim
+			const FVector Wh = W(G.Wheel.X, G.Wheel.Y, G.Wheel.Z);
+			const FVector Lw = Core.InverseTransformPosition(Wh);
+			const float Base = Core.InverseTransformPosition(FVector(Wh.X, Wh.Y, GroundAt(Wh) - 60.f)).Z;
+			const float R = 450.f;
+			TArray<FVector2D> Rim = { FVector2D(70.f, Lw.Z + 20.f), FVector2D(R - 20.f, Lw.Z + 12.f), FVector2D(R + 6.f, Lw.Z + 4.f), FVector2D(R + 6.f, Lw.Z - 4.f),
+				FVector2D(R - 20.f, Lw.Z - 12.f), FVector2D(70.f, Lw.Z - 22.f) };
+			K.Lathe(FTransform(FVector(Lw.X, Lw.Y, 0.f)), Rim, { TEXT("tx_steel"), TEXT("tx_dark"), TEXT("tx_dark"), TEXT("tx_dark"), TEXT("tx_steel") }, 48, false, false);
+			for (int32 Sp = 0; Sp < 6; Sp++)
+			{
+				const FVector D = FRotator(0.f, Sp * 60.f, 0.f).Vector();
+				K.Rod(TEXT("tx_steel"), FVector(Lw.X, Lw.Y, Lw.Z) + D * 70.f, FVector(Lw.X, Lw.Y, Lw.Z) + D * (R - 20.f), 6.f, 8, false);
+			}
+			// the mast comes up from under (the grips pass over the rim, the hangers outside it)
+			TArray<FVector2D> Mast = { FVector2D(90.f, Base), FVector2D(70.f, Lw.Z - 60.f), FVector2D(90.f, Lw.Z - 60.f), FVector2D(90.f, Lw.Z - 22.f) };
+			K.Lathe(FTransform(FVector(Lw.X, Lw.Y, 0.f)), Mast, { TEXT("tx_plate"), TEXT("tx_amber"), TEXT("tx_amber") }, 20, false, true);
+		}
+	}
 }
 
 void ALyudCableway::ClearGround()
@@ -1244,10 +1304,24 @@ bool ALyudCableway::View(int32 S, const FString& Name, FTransform& Out) const
 	}
 	if (Name == TEXT("tower"))
 	{
-		// 45 m off across the line on the vestibule's side, a little up, the whole station in view
-		const FVector Side = B.Core.TransformVectorNoScale(SideOut(G));
-		const FVector P = B.Core.GetLocation() + Side * 4500.f + B.Core.GetRotation().Vector() * 1800.f + FVector(0, 0, 900.f);
-		Out = FTransform((B.Core.GetLocation() + FVector(0, 0, B.Stops.Last() * 0.5f) - P).Rotation(), P);
+		// 40 m off across the line, a little up: the vestibule on its tower between the spread ropes
+		const FVector Across = B.Core.TransformVectorNoScale(FVector(0.f, 1.f, 0.f));
+		const FVector P = B.Core.GetLocation() + Across * 4000.f + B.Core.GetRotation().Vector() * 1500.f + FVector(0, 0, B.Stops.Last() * 0.6f + 300.f);
+		Out = FTransform((B.Core.GetLocation() + FVector(0, 0, B.Stops.Last() * 0.6f) - P).Rotation(), P);
+		return true;
+	}
+	if (Name == TEXT("edge"))
+	{
+		// on the first deck's +Y edge by the stop mark, looking along it
+		if (!B.Decks.Num())
+		{
+			return false;
+		}
+		const LyudTransport::FNetwork* Net = Transport ? Transport->GetNet() : nullptr;
+		const int32 L = B.DeckLines[0];
+		const LyudTransport::FStationGeo* Geo = Net && SimValid(Net->Stations[S].Geo, L) && Net->Stations[S].Geo[L].bValid ? &Net->Stations[S].Geo[L] : nullptr;
+		const float Edge = Geo ? Geo->Edge * 100.f : IslandHalf;
+		Out = FTransform(FRotator(-5.f, B.Decks[0].Rotator().Yaw + 160.f, 0.f), B.Decks[0].TransformPosition(FVector(800.f, Edge - 120.f, 170.f)));
 		return true;
 	}
 	return false;
@@ -1300,8 +1374,8 @@ int32 ALyudCableway::Probe(int32 S) const
 			}
 		}
 	}
-	Down(TEXT("gallery"), B.Vestibule.GetLocation(), B.Vestibule.GetLocation().Z, 6.f);
-	Down(TEXT("terrace"), B.Connector.TransformPosition(FVector(-150.f, 0.f, 0.f)), B.Connector.GetLocation().Z, 10.f);
+	// the street door's landing outside
+	Down(TEXT("door landing"), B.Core.TransformPosition(SideOut(B.StopSides[0]) * (TowerOut + 70.f)), G, 8.f);
 	return Fails;
 }
 
@@ -1402,9 +1476,13 @@ void ALyudCableway::BuildDepot(const LyudTransport::FNetwork& Net, int32 L)
 	{
 		return;
 	}
-	const FTransform& F = B.Decks[K];
-	const int32 End = SimValid(Net.Stations[S].Ends, L) ? Net.Stations[S].Ends[L] : -1;
-	const float Dir = End == 1 ? -1.f : 1.f;           // beyond the wheel
+	// past the turn wheel, along the line away from the station (DepotAt: origin 6.5 m past the wheel, on the deck)
+	if (!B.DepotAt.IsValidIndex(K) || B.DepotAt[K].Equals(FTransform::Identity))
+	{
+		return;
+	}
+	const FTransform& F = B.DepotAt[K];
+	const float Dir = 1.f;
 	int32 Count = 0;
 	for (const LyudTransport::FCabin& C : Net.Cabins)
 	{
@@ -1413,7 +1491,7 @@ void ALyudCableway::BuildDepot(const LyudTransport::FNetwork& Net, int32 L)
 	// a hall on columns past the turn wheel: a concrete deck, glass sides on enamel posts, a sawtooth roof with glass
 	FLyudMeshKit Kt;
 	const FTransform I = FTransform::Identity;
-	const float X0 = Dir * 650.f, Len = 500.f * Count + 400.f;
+	const float X0 = 0.f, Len = 560.f * Count + 400.f;
 	const float Xc = X0 + Dir * Len * 0.5f;
 	Kt.BoxIn(TEXT("tx_enamel"), I, FVector(Xc, 0.f, -DeckThick * 0.5f), FVector(Len, 760.f, DeckThick), true, TEXT("tx_concrete"));
 	for (const float Y : { -370.f, 370.f })
@@ -1434,7 +1512,9 @@ void ALyudCableway::BuildDepot(const LyudTransport::FNetwork& Net, int32 L)
 		Kt.BoxIn(TEXT("tx_enamel"), I, FVector(X, 0.f, 600.f), FVector(Len / Teeth + 4.f, 780.f, 16.f), false, TEXT("tx_concrete"), FRotator(Dir * 14.f, 0.f, 0.f));
 		Kt.BoxIn(TEXT("glass"), I, FVector(X + Dir * Len / Teeth * 0.5f, 0.f, 590.f), FVector(4.f, 760.f, 90.f), false);
 	}
-	Kt.BoxIn(TEXT("tx_steel"), I, FVector(Xc, 0.f, 401.f), FVector(Len, 14.f, 14.f), false);
+	Kt.BoxIn(TEXT("tx_steel"), I, FVector(Xc, 0.f, ALyudCabin::GripOverFloor()), FVector(Len, 14.f, 14.f), false);
+	// the rail on to it from the wheel
+	Kt.BoxIn(TEXT("tx_steel"), I, FVector(-325.f, 0.f, ALyudCabin::GripOverFloor()), FVector(650.f, 14.f, 14.f), false);
 	const float G = Net.Stations[S].Ground * 100.f - 200.f - F.GetLocation().Z;
 	for (const float X : { X0 + Dir * 150.f, X0 + Dir * (Len - 150.f) })
 	{

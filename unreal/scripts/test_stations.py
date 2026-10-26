@@ -59,7 +59,7 @@ def plan():
     for st in STATIONS:
         sid = st["id"]
         top = st["levels"][-1]["z"] * 100.0
-        for view in ("tower", "outside", "vestibule", "gallery", "lift", "stair"):
+        for view in ("tower", "outside", "vestibule", "lift", "stair"):
             add(0.5, lambda w, s=sid, v=view: cmd(w, "Transport.Goto %s %s" % (s, v)))
             add(3.0, lambda w, s=sid, v=view: shot(w, "%s_%s" % (s, v)))
         if os.environ.get("FLAGS"):
@@ -75,7 +75,7 @@ def plan():
         add(30.0, lambda w: None)
         add(0.5, lambda w, s=sid, z=top: pawn_z(w, s, z + 96.0))
         add(2.5, lambda w, s=sid: shot(w, "%s_lift_top" % s))
-        for view in ("top", "platform"):
+        for view in ("top", "platform", "edge"):
             add(0.5, lambda w, s=sid, v=view: cmd(w, "Transport.Goto %s %s" % (s, v)))
             add(3.0, lambda w, s=sid, v=view: shot(w, "%s_%s" % (s, v)))
     # a line pylon from 7 m off, looking up its shaft (the stretched shaft used to tear)

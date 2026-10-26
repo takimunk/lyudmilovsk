@@ -607,10 +607,10 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			const int32 K = B ? B->DeckLines.Find(C.Line) : INDEX_NONE;
 			if (B && K != INDEX_NONE)
 			{
-				const int32 End = SimValid(Net->Stations[Ln.Depot].Ends, C.Line) ? Net->Stations[Ln.Depot].Ends[C.Line] : -1;
-				const float Dir = End == 1 ? -1.f : 1.f;
-				const FVector Grip = B->Decks[K].TransformPosition(FVector(Dir * (650.f + 200.f + 560.f * C.DepotSlot), 0.f, ALyudCabin::GripOverFloor()));
-				A->Drive(Grip, B->Decks[K].GetRotation().Vector(), 0.f, 0.f);
+				// past the turn wheel (DepotAt: the depot's frame, X away from the station)
+				const FTransform& Dep = B->DepotAt.IsValidIndex(K) ? B->DepotAt[K] : B->Decks[K];
+				const FVector Grip = Dep.TransformPosition(FVector(200.f + 560.f * C.DepotSlot, 0.f, ALyudCabin::GripOverFloor()));
+				A->Drive(Grip, Dep.GetRotation().Vector(), 0.f, 0.f);
 			}
 		}
 		else

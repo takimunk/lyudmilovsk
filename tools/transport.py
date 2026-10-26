@@ -141,6 +141,8 @@ def resolve(src=None, log=print):
 
     # --- lines -------------------------------------------------------------------------------
     lines = []
+    global ln_all
+    ln_all = src
     for ln in src["lines"]:
         lines.append(_line(ln, st_by, st_built, D, probs))
     for s in stations:
@@ -152,9 +154,9 @@ def resolve(src=None, log=print):
                     s["axes"][ln["id"]] = st["yaw"]
                     # an end station's platform lies on the line's side of the wheel: -1 the last stop, +1 the first
                     s["ends"][ln["id"]] = -1 if k == len(ln["stations"]) - 1 else (1 if k == 0 else 0)
-        # the tower stands under the vestibule's middle (vestibules.json "tower" can move it along the axis)
+        # the tower stands under the vestibule's middle (vestibules.json "tower_x" moves it along the top level's axis)
         v = _vest(s["style"])
-        a0 = math.radians(s["axes"][s["levels"][0]["line"]]) if s["levels"] else 0.0
+        a0 = math.radians(s["axes"][s["levels"][-1]["line"]]) if s["levels"] else 0.0
         off = v.get("tower_x", 0.0)
         core = [round(s["at"][0] + math.cos(a0) * off, 3), round(s["at"][1] + math.sin(a0) * off, 3)]
         s["core"] = core
@@ -163,8 +165,8 @@ def resolve(src=None, log=print):
 
     for s in stations:
         v = _vest(s["style"])
-        lid = s["levels"][0]["line"] if s["levels"] else None
-        s["vestibule"] = {"at": s["at"], "z": s["levels"][0]["z"] if s["levels"] else s["deck"],
+        lid = s["levels"][-1]["line"] if s["levels"] else None
+        s["vestibule"] = {"at": s["at"], "z": s["levels"][-1]["z"] if s["levels"] else s["deck"],
                           "yaw": s["axes"].get(lid, 0.0) if lid else 0.0, "gap": v["gap"], "length": v["length"]}
         s["geo"] = {}
         for ln in lines:
@@ -201,18 +203,49 @@ def resolve(src=None, log=print):
     return built
 
 
-def _vest(style):
-    """The vestibule's numbers for the rope (vestibules.json, UE cm; defaults when it has none): G, the edges' length,
-    where the cabins' doors stop along an edge (from its middle), the tower along the axis."""
-    out = {"gap": VEST_GAP, "length": VEST_LEN, "stop_x": 0.0, "tower_x": 0.0}
+ln_all = None
+
+
+def _station_axis(src, lid, sid):
+    """The unit axis of line lid at station sid (the bisector of the way in and out), from network.json alone."""
+    ln = next(l for l in src["lines"] if l["id"] == lid)
+    st = {s["id"]: s for s in src["stations"]}
+    stops = ln["stops"]
+    i = stops.index(sid)
+    pts = []
+    for k in (i - 1, i + 1):
+        if 0 <= k < len(stops):
+            via = ln.get("via", {})
+            # the nearest corner toward the neighbour, else the neighbour
+            key, rev = ("%s-%s" % (sid, stops[k]), False) if k > i else ("%s-%s" % (stops[k], sid), True)
+            c = via.get(key, [])
+            p = (c[-1] if rev else c[0]) if c else st[stops[k]]["at"]
+            pts.append((p, k > i))
+    x, y = st[sid]["at"]
+    dirs = [_unit(p[0] - x, p[1] - y) if fwd else _unit(x - p[0], y - p[1]) for p, fwd in pts]
+    return _unit(sum(d[0] for d in dirs), sum(d[1] for d in dirs))
+
+
+def _vest(style, line=None):
+    """The vestibule's numbers for the rope (vestibules.json v2, UE cm; defaults when it has none): G, the edges'
+    length, where the cabins' doors stop along an edge (from its middle), the tower along the axis. A line served by a
+    deck on the vestibule's tower (tower.decks, Zenit's Sun line): that deck's numbers, centred on the tower's axis."""
+    out = {"gap": VEST_GAP, "length": VEST_LEN, "stop_x": 0.0, "tower_x": 0.0, "on_tower": False}
     try:
         with open(VESTIBULES) as f:
             v = json.load(f)[style.lower()]
     except (OSError, KeyError, ValueError, TypeError):
         return out
-    for k, key in (("gap", "track_gap"), ("length", "edge_length"), ("stop_x", "stop_x"), ("tower_x", "tower_x")):
-        if isinstance(v.get(key), (int, float)):
-            out[k] = v[key] / 100.0
+    src = v
+    for d in (v.get("tower") or {}).get("decks", []):
+        if line and d.get("line") == line:
+            src = d
+            out["on_tower"] = True
+    for k, key in (("gap", "track_gap"), ("length", "edge_length"), ("stop_x", "stop_x")):
+        if isinstance(src.get(key), (int, float)):
+            out[k] = src[key] / 100.0
+    if isinstance(v.get("tower_x"), (int, float)):
+        out["tower_x"] = v["tower_x"] / 100.0
     return out
 
 
@@ -225,8 +258,14 @@ def _line(ln, st_by, st_built, D, probs):
     for i, sid in enumerate(stops):
         s = st_built[sid]
         level = next(l["z"] for l in s["levels"] if l["line"] == ln["id"])
-        v = _vest(s["style"])
-        nodes.append({"kind": "station", "id": sid, "x": s["at"][0], "y": s["at"][1],
+        v = _vest(s["style"], ln["id"])
+        cx, cy = s["at"]
+        if v["on_tower"]:
+            # a deck on the vestibule's tower: the line's middle is the tower's axis (the top level's axis, tower_x)
+            top = s["levels"][-1]["line"]
+            a = _station_axis(ln_all, top, sid)
+            cx, cy = cx + a[0] * v["tower_x"], cy + a[1] * v["tower_x"]
+        nodes.append({"kind": "station", "id": sid, "x": cx, "y": cy,
                       "rope": level + D["rope_over_deck"], "deck": level, "gap": max(gap, v["gap"]),
                       "half_len": v["length"] / 2.0, "stop_x": v["stop_x"]})
         if i + 1 < len(stops):
@@ -508,7 +547,8 @@ def _loop(nodes, sup, D, lid):
     for nd in nodes:
         if nd["kind"] != "station":
             continue
-        g = {"gap": round(nd["gap"], 3), "edge": round(nd["gap"] / 2.0 - EDGE_IN, 3), "length": round(nd["half_len"] * 2.0, 3),
+        g = {"centre": [round(nd["x"], 3), round(nd["y"], 3)], "yaw": round(_yaw_deg(*nd["axis"]), 3),
+             "gap": round(nd["gap"], 3), "edge": round(nd["gap"] / 2.0 - EDGE_IN, 3), "length": round(nd["half_len"] * 2.0, 3),
              "stop_x": round(nd["stop_x"], 3), "rope": round(nd["rope"], 3), "wheel": None, "sheaves": []}
         for i, sp in enumerate(sup):
             if sp.get("station") != nd["id"]:

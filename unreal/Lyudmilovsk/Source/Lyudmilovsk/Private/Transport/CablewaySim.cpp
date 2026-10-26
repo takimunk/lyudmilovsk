@@ -241,6 +241,44 @@ namespace LyudTransport
 				Le.Z = Lv[K]["z"].F();
 				Stations[I].Levels.push_back(Le);
 			}
+			Stations[I].Geo.assign(Lines.size(), FStationGeo());
+			for (const auto& F : JS[I]["geo"].Fields)
+			{
+				const int L = FindLine(F.first);
+				if (L < 0)
+				{
+					continue;
+				}
+				const LyudJson::FValue& G = F.second;
+				FStationGeo& Ge = Stations[I].Geo[L];
+				Ge.bValid = true;
+				Ge.CX = G["centre"][0].F(Stations[I].X);
+				Ge.CY = G["centre"][1].F(Stations[I].Y);
+				Ge.Yaw = G["yaw"].F();
+				Ge.Gap = G["gap"].F();
+				Ge.Edge = G["edge"].F();
+				Ge.Length = G["length"].F();
+				Ge.StopX = G["stop_x"].F();
+				Ge.Rope = G["rope"].F();
+				if (G["wheel"].Type == LyudJson::FValue::Array)
+				{
+					Ge.bWheel = true;
+					Ge.Wheel = V3(G["wheel"][0].F(), G["wheel"][1].F(), G["wheel"][2].F());
+				}
+				for (size_t K = 0; K < G["sheaves"].Size(); K++)
+				{
+					const LyudJson::FValue& Sh = G["sheaves"][K];
+					FSheave S;
+					S.X = Sh["at"][0].F();
+					S.Y = Sh["at"][1].F();
+					S.Z = Sh["z"].F();
+					S.Yaw = Sh["yaw"].F();
+					S.Turn = Sh["turn_deg"].F();
+					S.Side = Sh["side"].I();
+					S.bConverge = Sh["kind"].S() == "converge";
+					Ge.Sheaves.push_back(S);
+				}
+			}
 			const LyudJson::FValue& Ax = JS[I]["axes"];
 			for (const auto& F : Ax.Fields)
 			{
