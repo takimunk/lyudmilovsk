@@ -248,6 +248,45 @@ convergence pylon, the shortest and the tallest from afar and at the head.
 - Tests: `test_stations.sh` with `COLLIDE=1` (traces into the pylons and the halls' walls) and `PYLONS=1` (the pylons
   from afar, at the head and from above).
 
+## Lobbies: a signature piece in every hall, and the universal vending machine (2026-10-26)
+
+Dima: every vestibule gets its own feature and is made cosy. The halls were furnished first (see "Furnishing"); the lobbies
+sit on top of that. Real lobbies in stations and airports hold a few repeating things: a showpiece you remember the place by
+(a chandelier, a clock, a pendulum, an aquarium, a fireplace), a place to eat or drink (a coffee bar, a tea urn, a vending
+machine), something to read or buy (a news kiosk, a souvenir case), warm light, seats. Each hall has one showpiece and one
+machine:
+
+| Station (style) | Showpiece | Vending machine (`lobby.json` stock) |
+|---|---|---|
+| Aton (wing) | **Coffee bar**: counter, espresso machine, cups, three stools, pendant lamps, steam | `coffee`: coffee, tea, pie, biscuits, chocolate |
+| Akademgorodok (dome) | **Foucault pendulum** from the apex, a 6 m wire, its plane turns with the game's day (sin 55 deg) | `press`: magazines, paper, postcards, badge, amber charm |
+| Zenit (saucer) | **Sputnik chandelier**, 24 glowing globes, turning slowly, over the hall's middle | `drinks`: water, four sodas, bird feed |
+| Polarnaya (star) | **Tiled stove** with a flickering fire and a brass samovar on a stand | `tea`: tea in a cup holder, sweets, biscuits, seeds, pie |
+| Mayak (lantern) | **Lighthouse lens** hung in the lantern, turning once in nine seconds, two beams across the glass | `cold`: ice cream, water, sodas |
+| Yantarny bereg (arches) | **Amber case**: a lit honeycomb of amber glass, raw lumps, a great chunk | `press` (the souvenir kiosk) |
+| Gorizont (folded) | **Aquarium**: perch loops, bubbles, a blue back light | `snacks`: chips, chocolate, biscuits, sweets, seeds, pie, feed |
+
+- **Data**: `Content/Transport/lobby.json`: `stock` (a preset = list of slots) and `layout` (per vestibule style which furniture record
+  becomes which piece, and the hall's `centre` piece). `blender/transport/lobby_layout.py` applies it (called by `vestibules.py`
+  `furnish()`; `python3 blender/transport/lobby_layout.py` rewrites `vestibules.json` in place, idempotent): the first Bench
+  becomes the machine, the egg-chair pair the showpiece, so they sit on the wall where the furniture already found room. The centre
+  pieces hang from the hall's ceiling (`room.height`).
+- **Models** (our own, Blender, metre UVs, clean boxes and lathes): `blender/transport/lobby_props.py` -> `SM_TR_Lobby_*`
+  (Vending, CoffeeBar, Chandelier + ChandelierRod, PendulumBob + PendulumPlate, Stove, BeaconLens, AmberCase, Aquarium, Fish), then
+  `pack.py` and `unreal/scripts/import_transport.sh` (they collide as complex, like the furniture). `lobby_preview.py` renders them
+  for a look. Material slots the game recolours: `TR_Skin` (the machine's paint by its stock), `TR_Brass`, `TR_Wood`,
+  `TR_Glow_Amber / _Fire / _Aqua` (emissive), `TR_Fish`.
+- **Game**: `Private/Transport/LyudLobby.cpp` (`ALyudCableway::LobbyItem / LobbyCentre / UpdateLobbies`): spawns the machine
+  (an `AVendingMachine` with `Preset`), builds the pieces, lights (warm point lights; the fire flickers; the beacon has two spots), and
+  moves what moves, only near the viewer (the beacon from 400 m). The pendulum's plane follows `UGameCalendar::GameSeconds`.
+- **Universal vending machine**: `AVendingMachine` takes `Slots` (item, price, count; keys 1-9, any item of the table) or a `Preset`
+  from `lobby.json`; with neither it is still the hall's classic drinks machine (the scene's own model, shelves of bottles).
+  Delivery is by what the item is: a labelled bottle (`ABottleItem`), bird feed (`ABirdFeedBag`), anything else with a `Look`
+  (`ALyudGoodsItem`: pack, flat, cup, glass, bottle, cone; its inventory icon is the picture on its face). The goods lie behind the glass.
+- **Goods** (16, each with an icon from one Higgsfield grid, `design/lobby/icons_grid.json`, cut by `tools/lobby_icons.py`; words
+  by `tools/lobby_strings.py`): water, coffee, tea, chips, chocolate, biscuits, ice cream, pie, seeds, candy, two magazines, a paper,
+  a postcard, a badge, an amber pendant. New item: see the `game-items` skill; to sell it add it to a stock in `lobby.json`.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

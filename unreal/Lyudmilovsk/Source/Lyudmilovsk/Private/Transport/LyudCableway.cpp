@@ -405,6 +405,7 @@ void ALyudCableway::BuildClubBoard(const LyudTransport::FNetwork& Net)
 void ALyudCableway::UpdateBoards(const LyudTransport::FNetwork& Net, const FVector& Viewer, float DeltaTime)
 {
 	UpdateHallSound(Viewer, DeltaTime);
+	UpdateLobbies(Viewer, DeltaTime);
 	for (int32 S = 0; S < Built.Num(); S++)
 	{
 		FLyudBuiltStation& B = Built[S];

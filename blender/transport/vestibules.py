@@ -1206,6 +1206,8 @@ def finish(style, cfg, parts):
         p, yaw = wall_spot(rel, inset)
         spots[key] = {"at": ue(p), "yaw": round((-yaw + 180.0) % 360.0 - 180.0, 1)}
     furniture = furnish(style, V, rc, core, cdir, door_o, n_out, spots)
+    import lobby_layout                                           # the lobby's signature pieces replace some records (docs/transport.md "Lobbies")
+    furniture, lobby = lobby_layout.apply(style, furniture)
     # perches for birds: the railing's top every ~2.5 m, and the tops of roofs and the canopy (a 2 m grid of traces
     # down, up-facing and over 2.5 m)
     perches = []
@@ -1260,6 +1262,7 @@ def finish(style, cfg, parts):
         "spots": spots,
         "perches": perches,
         "furniture": furniture,
+        **({"lobby": lobby} if lobby else {}),
     }
     data["tower"] = build_towers(style, cdir, mats)
     debug_render(V, style, rc, door_o)

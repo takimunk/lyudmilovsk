@@ -141,6 +141,11 @@ void ALyudCableway::FurnishVestibule(int32 S, const TSharedPtr<FJsonObject>& V, 
 		const FString Item = O->GetStringField(TEXT("item"));
 		const FTransform Local(FRotator(0.f, O->GetNumberField(TEXT("yaw")), 0.f), JsonVec(O, TEXT("at")));
 		const FTransform At = Local * C;
+		if (LobbyItem(S, Item, O, At))
+		{
+			N++;
+			continue;
+		}
 		if (Item == TEXT("EggPair"))
 		{
 			// two egg chairs turned a little toward each other with a tulip table between them, a rug under
@@ -165,6 +170,7 @@ void ALyudCableway::FurnishVestibule(int32 S, const TSharedPtr<FJsonObject>& V, 
 		}
 		N++;
 	}
+	LobbyCentre(S, V, C);
 }
 
 void ALyudCableway::DressCore(int32 S, const TSharedPtr<FJsonObject>& V)

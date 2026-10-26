@@ -1,0 +1,246 @@
+{
+ "_doc": "The station lobbies (docs/transport.md 'Lobbies'). stock: what a universal vending machine (AVendingMachine Preset) sells, slot by slot (keys 1-9; item = a row of the item table in LyudInventory.cpp, price 0 = the item's own, count units per purchase). layout: per vestibule style, which furniture record becomes which lobby piece (blender/transport/lobby_layout.py rewrites vestibules.json 'furniture', and gives the hall its 'lobby' centre piece).",
+ "stock": {
+  "drinks": [
+   {
+    "item": "water",
+    "price": 20
+   },
+   {
+    "item": "drink_baikal",
+    "price": 25
+   },
+   {
+    "item": "drink_dyushes",
+    "price": 25
+   },
+   {
+    "item": "drink_buratino",
+    "price": 25
+   },
+   {
+    "item": "drink_tarkhun",
+    "price": 25
+   },
+   {
+    "item": "bird_feed",
+    "price": 15,
+    "count": 5
+   }
+  ],
+  "snacks": [
+   {
+    "item": "chips",
+    "price": 35
+   },
+   {
+    "item": "chocolate",
+    "price": 25
+   },
+   {
+    "item": "cookies",
+    "price": 20
+   },
+   {
+    "item": "candy",
+    "price": 8
+   },
+   {
+    "item": "seeds",
+    "price": 10
+   },
+   {
+    "item": "pie",
+    "price": 18
+   },
+   {
+    "item": "bird_feed",
+    "price": 15,
+    "count": 5
+   }
+  ],
+  "coffee": [
+   {
+    "item": "coffee",
+    "price": 30
+   },
+   {
+    "item": "tea",
+    "price": 15
+   },
+   {
+    "item": "pie",
+    "price": 18
+   },
+   {
+    "item": "cookies",
+    "price": 20
+   },
+   {
+    "item": "chocolate",
+    "price": 25
+   }
+  ],
+  "tea": [
+   {
+    "item": "tea",
+    "price": 15
+   },
+   {
+    "item": "candy",
+    "price": 8
+   },
+   {
+    "item": "cookies",
+    "price": 20
+   },
+   {
+    "item": "seeds",
+    "price": 10
+   },
+   {
+    "item": "pie",
+    "price": 18
+   }
+  ],
+  "cold": [
+   {
+    "item": "ice_cream",
+    "price": 30
+   },
+   {
+    "item": "water",
+    "price": 20
+   },
+   {
+    "item": "drink_baikal",
+    "price": 25
+   },
+   {
+    "item": "drink_tarkhun",
+    "price": 25
+   }
+  ],
+  "press": [
+   {
+    "item": "magazine_science",
+    "price": 40
+   },
+   {
+    "item": "magazine_travel",
+    "price": 40
+   },
+   {
+    "item": "daily_paper",
+    "price": 5
+   },
+   {
+    "item": "postcard",
+    "price": 4
+   },
+   {
+    "item": "badge",
+    "price": 12
+   },
+   {
+    "item": "amber_charm",
+    "price": 90
+   }
+  ]
+ },
+ "layout": {
+  "wing": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "coffee",
+     "back": 0.425
+    },
+    {
+     "from": "EggPair",
+     "item": "CoffeeBar",
+     "back": 0.45
+    }
+   ]
+  },
+  "dome": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "press",
+     "back": 0.425
+    }
+   ],
+   "centre": "pendulum"
+  },
+  "saucer": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "drinks",
+     "back": 0.425
+    }
+   ],
+   "centre": "chandelier"
+  },
+  "star": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "tea",
+     "back": 0.425
+    },
+    {
+     "from": "EggPair",
+     "item": "Stove",
+     "back": 0.5
+    }
+   ]
+  },
+  "lantern": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "cold",
+     "back": 0.425
+    }
+   ],
+   "centre": "beacon"
+  },
+  "arches": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "press",
+     "back": 0.425
+    },
+    {
+     "from": "EggPair",
+     "item": "AmberCase",
+     "back": 0.48
+    }
+   ]
+  },
+  "folded": {
+   "replace": [
+    {
+     "from": "Bench",
+     "item": "Vending",
+     "stock": "snacks",
+     "back": 0.425
+    },
+    {
+     "from": "EggPair",
+     "item": "Aquarium",
+     "back": 0.35
+    }
+   ]
+  }
+ }
+}

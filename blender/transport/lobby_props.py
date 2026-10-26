@@ -90,7 +90,7 @@ def vending():
 
 def coffee_bar():
     bm = bmesh.new()
-    W = 2.6
+    W = 2.3
     # the counter: a panelled amber front, a terrazzo top with an overhang, a steel foot rail
     box(bm, (-0.05, 0, 0.51), (0.55, W, 1.0), WOOD)
     box(bm, (0.24, 0, 0.5), (0.02, W - 0.1, 0.9), AM)
@@ -225,8 +225,9 @@ def stove():
     tube(bm, (sx + 0.19, sy, 0.62), (sx + 0.29, sy, 0.6), 0.012, BRASS, 6)
     sphere(bm, (sx + 0.3, sy, 0.6), 0.025, GFIRE, 6, 3)
     lathe(bm, [(0.07, 0.97), (0.11, 0.99), (0.08, 1.07)], [BRASS, BRASS, BRASS], 12, (sx, sy, 0.0), cap1=True)
+    # two tea glasses on the stand's top, beside the samovar
     for dy in (-0.17, 0.17):
-    # a low bench beside the samovar table is the hall's own (furniture)
+        lathe(bm, [(0.035, 0.0), (0.04, 0.09)], [GLS, GLS], 8, (sx + 0.1, sy + dy, 0.49), cap1=False)
     return bm
 
 

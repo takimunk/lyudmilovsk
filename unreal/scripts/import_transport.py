@@ -213,7 +213,7 @@ def import_kit():
             if body:
                 # the vestibules and their towers are walked into and on: their own triangles collide (doors, rooms, decks, railings)
                 body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE
-                                         if a.get_name().startswith(("SM_TR_Vestibule_", "SM_TR_Tower_", "SM_TR_Pylon", "SM_TR_Furn_")) else unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
+                                         if a.get_name().startswith(("SM_TR_Vestibule_", "SM_TR_Tower_", "SM_TR_Pylon", "SM_TR_Furn_", "SM_TR_Lobby_")) else unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
             log("mesh %s: %d triangles" % (a.get_name(), a.get_num_triangles(0)))
             n += 1
     # Hi3D's PBR maps read as metal on these painted surfaces (everything came out near black): paint, not metal

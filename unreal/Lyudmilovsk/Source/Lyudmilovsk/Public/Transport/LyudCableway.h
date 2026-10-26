@@ -105,6 +105,30 @@ public:
 	UMaterialInterface* PosterMat(int32 K);
 	void Lamp(const FVector& At, float Intensity, float Radius);
 	void Plant(const FVector& At, FName Species, int32 Seed, float Age);
+	/** The lobbies (LyudLobby.cpp, docs/transport.md "Lobbies"): each hall's signature prop and its universal vending machine from
+	 * vestibules.json "furniture" (Vending, CoffeeBar, Stove, AmberCase, Aquarium; true if the item was one of them) and
+	 * "lobby" {"centre": chandelier | pendulum | beacon}: the hanging, turning, swinging pieces. UpdateLobbies moves them
+	 * (only the halls the viewer is near, the beacon from afar). */
+	bool LobbyItem(int32 S, const FString& Item, const TSharedPtr<class FJsonObject>& O, const FTransform& At);
+	void LobbyCentre(int32 S, const TSharedPtr<class FJsonObject>& V, const FTransform& C);
+	void UpdateLobbies(const FVector& Viewer, float DeltaTime);
+	void LobbyMaterials(UStaticMeshComponent* C, const FLinearColor& Skin);
+	UStaticMeshComponent* LobbyMesh(const TCHAR* Name, const FTransform& At, bool bCollide, USceneComponent* Parent = nullptr, const FLinearColor& Skin = FLinearColor(0.7f, 0.2f, 0.15f));
+	enum class ELobbyAnim : uint8 { Spin, Pendulum, Fire, Steam, Fish, Bubble, Pulse, Beacon };
+	struct FLobbyAnim
+	{
+		ELobbyAnim Kind = ELobbyAnim::Spin;
+		TWeakObjectPtr<USceneComponent> A;
+		TWeakObjectPtr<USceneComponent> B;
+		TWeakObjectPtr<class ULightComponent> Light;
+		TWeakObjectPtr<class UMaterialInstanceDynamic> Mat;
+		FTransform Frame = FTransform::Identity;      // the prop's frame (world)
+		FVector Base = FVector::ZeroVector;
+		float P0 = 0.f, P1 = 0.f, P2 = 0.f, Speed = 1.f;
+		int32 Station = 0;
+		float Far = 6000.f;                           // animated only while the viewer is within this (cm) of the prop
+	};
+	TArray<FLobbyAnim> LobbyAnims;
 	/** The halls' sound: the room's loop, and the announcements while the player is in a hall (now and then, and when a
 	 * cabin comes in). From UpdateBoards. */
 	void UpdateHallSound(const FVector& Viewer, float DeltaTime);

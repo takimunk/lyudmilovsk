@@ -129,11 +129,12 @@
    },
    {
     "at": [
-     419.4,
-     -265.0,
+     410.3,
+     -259.8,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "press",
     "yaw": 150.0
    },
    {
@@ -167,11 +168,11 @@
    },
    {
     "at": [
-     -469.7,
-     61.3,
+     -468.7,
+     61.1,
      0.0
     ],
-    "item": "EggPair",
+    "item": "AmberCase",
     "yaw": -10.0
    },
    {
@@ -931,11 +932,12 @@
    },
    {
     "at": [
-     139.6,
-     -532.1,
+     136.9,
+     -522.0,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "press",
     "yaw": 105.0
    },
    {
@@ -1017,6 +1019,9 @@
   ],
   "height": 867.7,
   "length": 2023.5,
+  "lobby": {
+   "centre": "pendulum"
+  },
   "mesh": "SM_TR_Vestibule_Dome",
   "panels": [
    {
@@ -1613,11 +1618,12 @@
    },
    {
     "at": [
-     -106.9,
-     -423.3,
+     -104.2,
+     -413.2,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "snacks",
     "yaw": 75.0
    },
    {
@@ -1655,7 +1661,7 @@
      519.9,
      0.0
     ],
-    "item": "EggPair",
+    "item": "Aquarium",
     "yaw": -85.0
    },
    {
@@ -2319,11 +2325,12 @@
    },
    {
     "at": [
-     -71.7,
-     478.2,
+     -69.9,
+     467.9,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "cold",
     "yaw": -80.0
    },
    {
@@ -2394,6 +2401,9 @@
   ],
   "height": 1053.1,
   "length": 2059.3,
+  "lobby": {
+   "centre": "beacon"
+  },
   "mesh": "SM_TR_Vestibule_Lantern",
   "panels": [
    {
@@ -2957,11 +2967,12 @@
    },
    {
     "at": [
-     54.8,
-     -511.3,
+     52.7,
+     -501.0,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "drinks",
     "yaw": 101.4
    },
    {
@@ -3005,6 +3016,9 @@
   ],
   "height": 1531.3,
   "length": 2110.2,
+  "lobby": {
+   "centre": "chandelier"
+  },
   "mesh": "SM_TR_Vestibule_Saucer",
   "panels": [
    {
@@ -3880,11 +3894,12 @@
    },
    {
     "at": [
-     -55.4,
-     -485.8,
+     -54.5,
+     -475.3,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "tea",
     "yaw": 85.0
    },
    {
@@ -3918,11 +3933,11 @@
    },
    {
     "at": [
-     374.3,
-     271.8,
+     371.8,
+     270.1,
      0.0
     ],
-    "item": "EggPair",
+    "item": "Stove",
     "yaw": -145.0
    }
   ],
@@ -4506,11 +4521,12 @@
    },
    {
     "at": [
-     442.3,
-     -90.9,
+     432.0,
+     -89.1,
      0.0
     ],
-    "item": "Bench",
+    "item": "Vending",
+    "stock": "coffee",
     "yaw": 170.0
    },
    {
@@ -4548,7 +4564,7 @@
      -169.2,
      0.0
     ],
-    "item": "EggPair",
+    "item": "CoffeeBar",
     "yaw": 20.0
    },
    {
