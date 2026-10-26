@@ -307,10 +307,12 @@ def cable_car():
     out["vestibules"] = []
     for s in b["stations"]:
         v = s.get("vestibule")
-        if v:
+        if v and "box" in v:
             a = math.radians(v["yaw"])
             x0, x1 = v["box"][0], v["box"][1]
             out["vestibules"].append((v["at"][0] + math.cos(a) * (x0 + x1) * 0.5, v["at"][1] + math.sin(a) * (x0 + x1) * 0.5))
+        elif v:   # stations v2: the vestibule stands on the station's tower, centred on "at"
+            out["vestibules"].append(tuple(v["at"][:2]))
     out["lines"] = [[(p[0], p[1]) for p in ln["supports"]] for ln in b["lines"]]
     for ln in b["lines"]:
         sup = [tuple(p) for p in ln["supports"]]
