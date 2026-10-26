@@ -187,6 +187,7 @@ namespace LyudPeople
 		float Yaw = 0.f;
 		float Speed = 0.f;
 		bool bIndoors = false;
+		bool bHurry = false;        // late (for work, school): runs the outdoor part of the way
 		int Island = 0;             // which side of the cable car they are on (FPlace::Island)
 		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; };   // Kind 0 outdoors, 1 indoors, 2 ride from here (Ride s) to the next
 		std::vector<FWay> Path;
@@ -234,6 +235,7 @@ namespace LyudPeople
 		float Sunrise = 7.5f, Sunset = 17.f;
 		float SunYaw = 225.f;           // where the sun sets/stands, yaw (deg) in the UE frame
 		bool bSunUp = true;
+		bool bRain = false;             // raining: people outdoors hurry (the wrapper sets it from the weather)
 		V3 Camera;
 
 		/** activities.json, people.json, people_places.json from Dir; the walk grid from AnimalsDir ("" = no grid). */
@@ -281,6 +283,8 @@ namespace LyudPeople
 		void Think(FPerson& P, bool bSnap = false);
 		bool Interrupt(FPerson& P, float Dt);
 		void Move(FPerson& P, float Dt);
+		/** Their pace now, m/s: a walk, or a run outdoors when late or in the rain (a brisk walk indoors). */
+		float Pace(const FPerson& P) const;
 		void Arrive(FPerson& P);
 		void FinishRide(FPerson& P);
 		void Leave(FPerson& P);

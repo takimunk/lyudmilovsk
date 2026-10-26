@@ -356,7 +356,46 @@ static void Checks(FWorld& W, bool bReal)
 	Run(W, C, 0.6f, 0.5f, W2);
 	CHECK(ActOf(W, "guy_a") == "read_library" && Who(W, "guy_a").Pose == EPose::Read, "... and reads there (%s, %s)", ActOf(W, "guy_a").c_str(),
 		PoseName(Who(W, "guy_a").Pose));
-}
+
+	// late for work: the clerk sets off from home at 10:10 on Wednesday (work from 10:00) and runs outdoors
+	C = FClock::At(2, 10.17f);
+	C.Set(W);
+	W.Resettle();
+	W.Order(W.FindPerson("clerk"), "rest_home");
+	W.Step(1.f);
+	{
+		FPerson& Clerk = W.People[W.FindPerson("clerk")];
+		Clerk.State = EState::Idle;
+		Clerk.Pos = W.Places[Clerk.Home].Portal;
+		Clerk.Slot = -1;
+		Clerk.bIndoors = false;
+	}
+	W.Order(W.FindPerson("clerk"), "work_clerk");
+	float MaxOut = 0.f;
+	FWatch W3;
+	Run(W, C, 0.05f, 0.5f, W3, [&]()
+	{
+		const FPerson& P = Who(W, "clerk");
+		if (P.State == EState::Going && !P.bIndoors)
+		{
+			MaxOut = std::max(MaxOut, P.Speed);
+		}
+	});
+	CHECK(MaxOut > 2.2f, "late for work: the clerk runs outdoors (%.2f m/s)", MaxOut);
+	// rain: people on their way outdoors hurry
+	W.bRain = true;
+	W.Order(W.FindPerson("guy_a"), "sit_bench");
+	MaxOut = 0.f;
+	Run(W, C, 0.05f, 0.5f, W3, [&]()
+	{
+		const FPerson& P = Who(W, "guy_a");
+		if (P.State == EState::Going && !P.bIndoors)
+		{
+			MaxOut = std::max(MaxOut, P.Speed);
+		}
+	});
+	W.bRain = false;
+	CHECK(MaxOut > 2.2f, "rain: Stas hurries to the bench (%.2f m/s)", MaxOut);}
 
 static int Test()
 {

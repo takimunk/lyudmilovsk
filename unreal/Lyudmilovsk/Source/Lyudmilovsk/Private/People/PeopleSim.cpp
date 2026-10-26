@@ -1269,6 +1269,23 @@ namespace LyudPeople
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
+		// late: a duty (not bed) that will have begun before they'd get there walking
+		P.bHurry = false;
+		float WayM = 0.f;
+		bool bRide = false;
+		for (int I = 0; I < (int)P.Path.size(); I++)
+		{
+			WayM += ((I ? P.Path[I - 1].P : P.Pos) - P.Path[I].P).Len();
+			bRide |= P.Path[I].Kind == 2;
+		}
+		const float ArriveH = Hour + (WayM / P.WalkSpeed + (bRide ? Opt.RideSeconds : 0.f)) / HourS;
+		for (const FDuty& D : P.Duties)
+		{
+			if (D.Activity == A.Id && InHours(D.From - 0.5f, D.To, Hour) && InHours(D.From, D.To, std::fmod(ArriveH, 24.f)))
+			{
+				P.bHurry = true;
+			}
+		}
 		return true;
 	}
 
@@ -1474,10 +1491,22 @@ namespace LyudPeople
 		}
 	}
 
+	float FWorld::Pace(const FPerson& P) const
+	{
+		const bool bRush = P.bHurry || (bRain && !P.bIndoors && P.State == EState::Going);
+		if (!bRush)
+		{
+			return P.WalkSpeed;
+		}
+		// no running on stairs and in rooms; outdoors a jog (~2.4 m/s; children a little faster for their size)
+		return P.bIndoors ? P.WalkSpeed * 1.25f : std::max(2.3f, P.WalkSpeed * 1.95f);
+	}
+
 	void FWorld::Move(FPerson& P, float Dt)
 	{
-		float Budget = P.WalkSpeed * Dt;
-		P.Speed = P.WalkSpeed;
+		const float Speed = Pace(P);
+		float Budget = Speed * Dt;
+		P.Speed = Speed;
 		while (Budget > 0.f && P.PathI < (int)P.Path.size())
 		{
 			const FPerson::FWay& W = P.Path[P.PathI];
@@ -1527,6 +1556,7 @@ namespace LyudPeople
 	void FWorld::Arrive(FPerson& P)
 	{
 		P.Speed = 0.f;
+		P.bHurry = false;
 		P.Path.clear();
 		P.PathI = 0;
 		if (P.Activity < 0 || P.Slot < 0)

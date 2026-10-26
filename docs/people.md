@@ -86,6 +86,8 @@ door, the hall and the partition onto the walkway to the station. The club's spu
 between them people ride the cable car (`RideSeconds`, 150 s, hidden in the cabin; the stations' doorsteps are the
 stops).
 
+**Hurrying.** Someone who would reach a duty (work, school, the booth) after it begins runs the outdoor part of the way (~2.4 m/s, a brisk walk indoors); so does everybody out on their way in the rain (`ULyudWeatherSubsystem` rain over 0.25). Otherwise they walk (1.25 m/s, children 1.35).
+
 **A new game** (the clock at the start date, Tuesday 20 October 16:00) begins as the club scene always has: the 11
 regulars at their own stations, the owner in his booth, the clerk at work, Nao at the club's door. Each regular plays a while (`start.minutes`)
 and then their life goes on. A clock jump (a load, `lyud.Birds.Time`, developer tools) puts everybody where they would

@@ -24,6 +24,7 @@
 #include "NpcDialogue.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
+#include "Weather/LyudWeather.h"
 #if __has_include("Doors/LyudDoor.h")
 #include "Doors/LyudDoor.h"
 #define LYUD_HAS_DOORS 1
@@ -279,6 +280,9 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 		PeopleSunTimes(Now, S.Sunrise, S.Sunset, S.SunYaw);
 	}
 	S.bSunUp = S.Hour > S.Sunrise && S.Hour < S.Sunset;
+	// in the rain people hurry along outdoors
+	const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(GetWorld());
+	S.bRain = Weather && Weather->GetSky().Rain > 0.25f;
 	if (!bFirst && bClockSeen && FMath::Abs(Seconds - LastSeconds) > 900.0)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: the clock jumped %.2f h; people resettled"), (Seconds - LastSeconds) / 3600.0);
