@@ -90,3 +90,44 @@ def find_eyes(ob):
         out.append(s.mean(0) if len(s) else None)
         print("EYE", "L" if side > 0 else "R", len(s), None if not len(s) else s.mean(0).round(4))
     return out
+
+
+def straighten_bill(p, eye=(0.1036, 0.0945), base_dx=0.009, keep=0.5, lift_deg=30.0):
+    """The generated bill is a long downcurved hook; a pigeon's is short and nearly straight. Every point of the bill
+    (ahead of base_dx in front of the eyes, in the midline band) is pulled toward the bill's base to keep a share of its
+    distance, then the bill is turned up about its base by lift_deg (from ~40 degrees down to ~15). The change fades in
+    over the first 4 mm so the base stays joined to the face."""
+    ex, ez = eye
+    xb = ex + base_dx
+    band = (np.abs(p[:, 1]) < 0.012) & (p[:, 2] > ez - 0.045) & (p[:, 2] < ez + 0.01)
+    bill = band & (p[:, 0] > xb)
+    if not bill.any():
+        return p
+    zb = np.median(p[band & (np.abs(p[:, 0] - xb) < 0.0015), 2])
+    q = p.copy()
+    d = p[bill] - np.array([xb, 0.0, zb])
+    s = d[:, 0]
+    t = np.clip(s / 0.004, 0, 1)
+    t = t * t * (3 - 2 * t)
+    k = 1 - (1 - keep) * t
+    a = np.radians(lift_deg) * t
+    dx, dz = d[:, 0] * k, d[:, 2] * k
+    q[bill, 0] = xb + dx * np.cos(a) - dz * np.sin(a)
+    q[bill, 1] = p[bill, 1]
+    q[bill, 2] = zb + dx * np.sin(a) + dz * np.cos(a)
+    # the hook: the bill's centre line past its middle is put back on the straight line of its first half
+    xs = q[bill, 0]
+    edges = np.linspace(xb, xs.max() + 1e-6, 12)
+    mid, zc = [], []
+    for e0, e1 in zip(edges[:-1], edges[1:]):
+        m = (xs >= e0) & (xs < e1)
+        if m.sum() > 3:
+            mid.append((e0 + e1) / 2)
+            zc.append(np.median(q[bill, 2][m]))
+    mid, zc = np.array(mid), np.array(zc)
+    if len(mid) >= 6:
+        h = len(mid) // 2
+        k, c0 = np.polyfit(mid[:h], zc[:h], 1)
+        fix = np.where(mid > mid[h - 1], k * mid + c0 - zc, 0.0)
+        q[bill, 2] += np.interp(xs, mid, fix)
+    return q

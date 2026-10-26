@@ -224,12 +224,48 @@ def morph_feathers(atlas, rects, m, seed):
     return out
 
 
+EYE = (0.1036, 0.0945)    # the eyes' middle, x and z (fit.py puts the generated eyes there)
+
+
+def paint_bill(body, pos):
+    """A pigeon's bill: dark horn grey, with the white, powdery cere over its base (the generated one is pale all over)."""
+    small = upsample(body, RES)[..., :3]
+    has = ~np.isnan(pos[..., 0])
+    P = np.where(has[..., None], pos, 0.0)
+    ex, ez = EYE
+    s = P[..., 0] - (ex + 0.009)
+    band = has & (np.abs(P[..., 1]) < 0.012) & (P[..., 2] > ez - 0.04) & (P[..., 2] < ez + 0.01)
+    # the bill's base height (where it grows from the face), then the bill and its cere relative to it: the forehead
+    # above the base is feathers and stays as it is
+    near = band & (s > 0.005) & (s < 0.009) & (np.abs(P[..., 1]) < 0.004)   # surely bill: ahead of the face
+    zb = float(np.median(P[near][:, 2])) if near.any() else ez - 0.012
+    z = P[..., 2] - zb
+    bill = band & (s > -0.001) & (z < 0.0045) & (z > -0.008) & (np.abs(P[..., 1]) < 0.0055 + 0.004 * np.clip(s / 0.01, 0, 1))
+    cere = bill & (s < 0.0045) & (z > 0.0012) & (np.abs(P[..., 1]) < 0.0045)
+    lum = small @ np.array([0.2126, 0.7152, 0.0722])
+    out = small.copy()
+    k = np.clip((s + 0.001) / 0.002, 0, 1) * bill
+    horn = np.array([0.105, 0.10, 0.11])[None, None, :] * np.clip(0.8 + 0.4 * (lum - 0.5), 0.6, 1.2)[..., None]
+    out = out * (1 - k[..., None]) + horn * k[..., None]
+    w = cere.astype(np.float32)
+    out = out * (1 - w[..., None]) + np.array([0.86, 0.85, 0.82]) * w[..., None]
+    factor = np.where(small > 1e-3, out / np.maximum(small, 1e-3), 1.0)
+    full = body.copy()
+    full[..., :3] = np.clip(body[..., :3] * upsample(factor, body.shape[0]), 0, 1)
+    changed = upsample((k > 0) | cere, body.shape[0])
+    full[changed, :3] = upsample(out, body.shape[0])[changed]
+    print("BILL", int(bill.sum()), "texels, cere", int(cere.sum()), "base z", round(zb, 4))
+    return full
+
+
 def main():
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    body = load(os.path.join(OUT, "T_FeralPigeon_Hero_Albedo.png"))
+    raw = load(os.path.join(HERE, "gen", "hero_albedo_raw.png"))
     feathers = load(os.path.join(OUT, "T_FeralPigeon_HeroFeathers_Albedo.png"))
     rects = json.load(open(os.path.join(HERE, "gen", "feather_rects.json")))
     pos = position_map()
+    body = paint_bill(raw, pos)
+    save(body, os.path.join(OUT, "T_FeralPigeon_Hero_Albedo.png"))
     # colours at RES (the masks' size), then back up to the texture's size: the recolour is a per-pixel factor
     small = upsample(body, RES)[..., :3]
     thumbs = []

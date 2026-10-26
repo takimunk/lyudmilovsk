@@ -74,6 +74,8 @@ def do_mesh():
     old_bare = unreal.load_asset("%s/MI_%s_Bare" % (DEST, SID))      # the species' own legs and toes paint
     mi_bare = B.get_or_create("MI_%s_Bare_Hero" % SID, DEST, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
     mi_bare.set_editor_property("parent", old_bare)
+    # a feral pigeon's legs and feet are coral red (the species' paint is pale here)
+    B.mel.set_material_instance_vector_parameter_value(mi_bare, "Tint", unreal.LinearColor(0.95, 0.34, 0.30, 1))
     eal.save_loaded_asset(mi_bare)
     # the scanned feathers are lit as foliage (light comes through them): a little darker than the scans so the wing
     # sits with the body, not whiter than it

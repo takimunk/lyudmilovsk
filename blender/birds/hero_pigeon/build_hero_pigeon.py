@@ -129,14 +129,14 @@ def hi_profile(co):
 
 
 def place(co, prof_rig, prof_hi=None):
-    p = fit.fit_points(co, FIT)
+    p = fit.straighten_bill(fit.fit_points(co, FIT))
     prof_hi = prof_hi or hi_profile(p)
     return bend_wings(p, prof_rig, prof_hi), prof_hi
 
 
 def covert_depth(ay):
     """How far back from the leading edge the generated wing is kept (the coverts), by span station; 0 = all cut."""
-    return np.interp(ay, [0.0, 0.045, 0.058], [1.0, 1.0, 0.0])
+    return np.interp(ay, [0.0, 0.036, 0.046], [1.0, 1.0, 0.0])
 
 
 def cut_body(ob, prof_rig):
@@ -146,7 +146,7 @@ def cut_body(ob, prof_rig):
     ys, le_r, _ = prof_rig
     ay = np.abs(co[:, 1])
     le = np.interp(ay, ys, le_r)
-    wing = ay > 0.045
+    wing = ay > 0.036
     cut = wing & ((le - co[:, 0]) > covert_depth(ay))
     cut |= ay > 0.26
     # the tail: the coverts reach about a third down the tail
@@ -213,7 +213,8 @@ def body_textures(ob):
     nodes = ob.data.materials[0].node_tree.nodes
     alb = next(n.image for n in nodes if n.type == "TEX_IMAGE" and n.outputs[0].links[0].to_socket.name == "Base Color")
     mr = next(n.image for n in nodes if n.type == "TEX_IMAGE" and n.image is not alb)
-    resized(alb, TEX, "T_FeralPigeon_Hero_Albedo", os.path.join(OUT, "T_FeralPigeon_Hero_Albedo.png"))
+    # the generated colours as they are; make_morphs.py paints the bill and cere on them and writes the game's albedo
+    resized(alb, TEX, "T_FeralPigeon_Hero_Albedo", os.path.join(GEN, "hero_albedo_raw.png"))
     small = mr.copy()
     small.scale(2048, 2048)
     px = np.empty(2048 * 2048 * 4, np.float32)
@@ -427,14 +428,15 @@ def feather_cards(arm, rects, lengths):
 
 
 # ====================================================================== legs, weights, slots
-def covert_cards(old, rects):
-    """The template's wing coverts (every card on a feather bone that is not that bone's flight feather, and the alula):
-    their geometry and skin weights as built (they fold with the wing the way the template's do), re-mapped onto the
-    scanned coverts: the outermost covert on each secondary (the greater covert, where the front wing bar is) barred,
-    the rest plain."""
+def template_cards(old, rects):
+    """Every feather card of the template's wings and tail (flight feathers, coverts, alula, tertials, tail): its
+    geometry and skin weights as built, so the wing folds and the tail closes the way the species' clips expect, each
+    card re-mapped onto a scanned feather: on a feather bone its longest card is the flight feather itself
+    (feather_for), the rest are coverts (the outermost on each secondary barred: the front wing bar), plain elsewhere.
+    The scan's rachis runs along the card, its outer vane toward the leading edge (primaries) or out (the rest)."""
     ob = old.copy()
     ob.data = old.data.copy()
-    ob.name = "coverts"
+    ob.name = "template_cards"
     bpy.context.scene.collection.objects.link(ob)
     co = coords(ob)
     g = dominant_groups(ob)
@@ -461,44 +463,58 @@ def covert_cards(old, rects):
         from collections import Counter
         return Counter(g[v.index] for f in isl for v in f.verts).most_common(1)[0][0]
 
-    def is_wing(n):
+    def is_card(n):
         b = n.split(".")[0]
-        return (b[:1] in "ps" and b[1:].isdigit()) or b in ("hand", "humerus", "forearm", "primaries")
+        # (the alula and the few cards on the arm bones stand up off the back when the wing folds: left out)
+        return (b[:1] in "ps" and b[1:].isdigit()) or n.startswith("tf.")
     by_bone = {}
     for isl in islands:
         n = bone_of(isl)
-        if is_wing(n) and isl[0].material_index == 0:
+        if is_card(n) and isl[0].material_index == 0:
             by_bone.setdefault(n, []).append(isl)
-    keep, plain, barred = [], sorted(k for k in rects if k.startswith("tail_1_")), []
-    barred = plain[:7]
-    plain = plain[7:]
+    keep = []
+    coverts = sorted(k for k in rects if k.startswith("tail_1_"))
+    barred, plain = coverts[:7], coverts[7:]
     uvl = bm.loops.layers.uv.active
-    count = 0
+    count = flights = 0
     for n, isls in by_bone.items():
         b = n.split(".")[0]
-        flight = b[:1] in "ps" and b[1:].isdigit()
+        own = (b[:1] in "ps" and b[1:].isdigit()) or n.startswith("tf.")
         vids = [sorted({v.index for f in isl for v in f.verts}) for isl in isls]
         reach = [np.linalg.norm(co[v] - co[v].mean(0), axis=1).max() for v in vids]
         order = np.argsort(reach)[::-1]
-        if flight:
-            order = order[1:]          # the longest card on a feather bone is the feather itself (scanned card instead)
         for rank, j in enumerate(order):
             isl, v = isls[j], vids[j]
             P = co[v]
             c = P.mean(0)
-            # the card's own axes: its length (rachis) and width, the root the end nearer the body
             w, vec = np.linalg.eigh(np.cov((P - c).T))
             ax, ac = vec[:, 2], vec[:, 1]
-            if np.dot(ax, c - np.array([0.0, 0.0, 0.08])) * 0 + np.dot(ax, P[np.argmax(np.abs(P[:, 1]))] - c) < 0:
+            side = 1.0 if c[1] >= 0 else -1.0
+            # length axis root -> tip: feathers point out and back from where they grow
+            if np.dot(ax, np.array([-1.0, side, 0.0])) < 0:
                 ax = -ax
-            # the root is the end nearer the wing's leading edge (coverts point back and out)
-            if ax[0] > 0:
-                ax = -ax
+            flight = own and rank == 0
+            outer = np.array([1.0, 0.0, 0.0]) if (flight and b[:1] == "p") else np.array([0.0, side, 0.0])
+            if n.startswith("tf.") or not flight:
+                outer = np.array([0.0, side, 0.0]) if abs(ax[1]) < 0.7 else np.array([1.0, 0.0, 0.0])
+            if np.dot(ac, outer) < 0:
+                ac = -ac
             a = (P - c) @ ax
             q = (P - c) @ ac
-            pick = barred[(count + rank) % len(barred)] if (b[:1] == "s" and rank == 0) else plain[(count + rank) % len(plain)]
+            if b[:1] == "s" and int(b[1:]) > 12:
+                # tertials and humerals: narrower, or they hang below the folded wing on the generated (slimmer) flank
+                for vi, qq in zip(v, q):
+                    bm.verts.ensure_lookup_table()
+                    bm.verts[vi].co -= mathutils.Vector(ac * qq * 0.45)
+                q = q * 0.55
+            if flight:
+                pick = feather_for(n)
+                flights += 1
+            else:
+                pick = barred[(count + rank) % len(barred)] if (b[:1] == "s" and rank == 1) else plain[(count + rank) % len(plain)]
             u0, v0, u1, v1 = rects[pick][:4]
-            v0 = v0 + (v1 - v0) * 0.33     # the downy base and the quill stay hidden under the next row
+            if not flight:
+                v0 = v0 + (v1 - v0) * 0.33     # a covert's downy base and quill stay hidden under the next row
             lut = dict(zip(v, zip((q - q.min()) / max(np.ptp(q), 1e-6), (a - a.min()) / max(np.ptp(a), 1e-6))))
             for f in isl:
                 for lp in f.loops:
@@ -510,7 +526,7 @@ def covert_cards(old, rects):
     bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in keep_set], context="FACES")
     bm.to_mesh(ob.data)
     bm.free()
-    print("COVERTS", count, "cards,", len(ob.data.polygons), "faces")
+    print("TEMPLATE CARDS", count, "cards (", flights, "flight feathers ),", len(ob.data.polygons), "faces")
     return ob
 
 
@@ -577,6 +593,18 @@ def transfer_weights(dst, old):
     # one continuous skin (unlike the template's separate feathers): soft weight borders, so a wing swept or folded at
     # the shoulder stretches the feathers there instead of tearing a wall between body and arm
     smooth_weights(dst, 12, 0.5)
+    # the generated body keeps none of the arm: a shoulder stub that follows the humerus stretches into a grey tube when
+    # the wing sweeps forward (first person) or folds; the wing's own cards cover the joint
+    names = {g.index: g.name for g in dst.vertex_groups}
+    arm_ix = [i for i, n in names.items() if n.split(".")[0] in ("humerus", "forearm", "hand", "primaries")]
+    body_vg = dst.vertex_groups["body"]
+    for v in dst.data.vertices:
+        moved = sum(g.weight for g in v.groups if g.group in arm_ix)
+        if moved > 0:
+            for g in list(v.groups):
+                if g.group in arm_ix:
+                    g.weight = 0.0
+            body_vg.add([v.index], moved, "ADD")
 
 
 def smooth_weights(ob, repeat, factor):
@@ -691,25 +719,24 @@ def main():
     par[..., 1] = 0.12
     par[..., 3] = 1.0
     save_rgba(par, "T_FeralPigeon_HeroFeathers_Params", "Non-Color")
-    cards = feather_cards(arm, rects, feather_lengths(arm, old))
+    cards = template_cards(old, rects)
     m_feath = material("M_FeralPigeon_Feathers_Hero", img_f)
     cards.data.materials.append(m_feath)
     legs = take_legs(old)
-    coverts = covert_cards(old, rects)
+
     m_bare = legs.data.materials[[i for i, m in enumerate(legs.data.materials) if "Bare" in m.name][0]]
     # one mesh
-    for o in (cards, legs, coverts):
+    for o in (cards, legs):
         for poly in o.data.polygons:
             poly.material_index = 0
         o.data.materials.clear()
     cards.data.materials.append(m_feath)
-    coverts.data.materials.append(m_feath)
     legs.data.materials.append(m_bare)
     body.data.materials.append(m_feath)
     body.data.materials.append(m_bare)
     bpy.data.objects.remove(old)
     bpy.ops.object.select_all(action="DESELECT")
-    for o in (body, cards, legs, coverts):
+    for o in (body, cards, legs):
         o.select_set(True)
     bpy.context.view_layer.objects.active = body
     bpy.ops.object.join()
