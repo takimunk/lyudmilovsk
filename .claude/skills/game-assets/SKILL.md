@@ -78,6 +78,22 @@ hi3d gives ~2M triangles and 8K textures: never import that. In Blender, before 
 Characters: `blender/characters/rig_character.py` does steps 1–3 (`faces`, `texture`, `bake_normal` in
 `character.json`); `unreal/scripts/import_character.py` does 4.
 
+## Things you enter or use: rebuilt by us, hi3d only as reference (Dima's rule, 2026-10-26)
+A hi3d model is a closed skin: no openings, no rooms inside, no wall thickness, junk left inside, big crooked
+triangles once decimated. Cutting windows or doors out of those triangles (e.g. by the texel colour under each one)
+gives ragged edges, shards and slivers ("polygon mince" inside the first cable-car cabin). So:
+
+- **Enterable or interactive** (cabins, vestibules, buildings, rooms, doors, furniture with shelves or drawers): build
+  the game mesh ourselves in Blender: clean low-poly geometry that follows the hi3d form (shrink-wrap a clean primitive
+  onto its outer skin along rays from outside in, or model it), closed walls of real thickness, openings cut with exact
+  booleans from clean outlines (windows, doors to `CharacterStandard`), door leaves as their own parts, flat glass
+  panes, simple collision boxes, our own UVs. The hi3d model is the **shape reference and the bake source**: its
+  colour and relief go onto our mesh by a Cycles selected-to-active bake (base colour + tangent normal).
+- **Organic and small props** (people, animals, birds, statues, rocks, small items): hi3d + the cleanup and
+  decimation above, as before.
+
+Worked example: `blender/transport/cabin.py` (docs/transport.md "The cabin").
+
 ## Storage (git LFS budget)
 - Raw outputs (multi-view images, 2M-face models, previews) stay local, ignored, refetchable from the sidecar's URL.
 - Push to LFS only what ships: the finished, decimated asset and its uassets (and a small jpg preview when useful).

@@ -89,23 +89,33 @@ Console: `Transport.Report`, `Transport.Goto <station> [vestibule|platform|outsi
 ## The cabin
 
 The hi3d egg is made a room people really ride in by `blender/transport/cabin.py` (run by `optimize.py -- cabin`, no new
-generation): the raw model is cut to its outer skin (Hi3D leaves bits inside), scaled to 4.64 m so the standard door fits
-under its roof, decimated; a door opening is cut on the door painted in its texture (found by its frame stripes) with
-straight edges, clear 1.10 x 2.12 m (`CharacterStandard`); the dark, dull texels are the windows, taken out and glazed both
-ways (`TR_Glass`); the rest gets a 4.5 cm wall whose inner face is plaster (`TR_Interior`) and whose reveals keep the
-paint. Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends
-(fitted by rays, wide enough for two each), a ceiling lamp, chrome grab rails. The piece cut out of the side is the plug
-door (`SM_TR_CabinDoor`): it steps out 8 cm, then slides 1.14 m back along the side over the window. The hanger and grip
-are their own mesh (`SM_TR_CabinHanger`), bent so the grip is plumb over the floor's centre.
+generation). Nothing is cut out of the generated triangles themselves (after decimation they are big, crooked and
+coloured by a texture that doesn't follow them: cutting windows by texel colour per triangle gave ragged edges and
+shards inside):
+
+- **A clean shell**: a sphere round the room's middle with every vertex moved along its ray onto the generated model's
+  outer skin (rays from outside in), even quads, scaled to 4.46 m so the standard door fits under the roof. The
+  model's colour and relief (trims, seams, handles) are **baked** onto it from the full 300k-triangle original
+  (Cycles, selected to active: `cabin_color` + `cabin_normal`, 2k).
+- **A real wall**: the shell solidified 4.5 cm inward, closed; its inner face plaster (`TR_Interior`).
+- **Windows**: where the generated texture is window (dark, dull texels), grouped into windows, each outlined smoothly
+  (convex outline, rounded, inset 2 cm) and cut through the wall with an exact boolean; the reveals are chrome
+  (`TR_Chrome`); the glass (`TR_Glass`) is the outline filled and laid on the hull half a wall in, both ways.
+- **The door**: a 1.10 x 2.12 m opening (`CharacterStandard`) with rounded top corners on the door painted in the
+  texture (found by its frame stripes), cut the same way; the leaf (`SM_TR_CabinDoor`) is the same outline
+  intersected with the wall, so it fits the opening exactly; it steps out 8 cm, then slides 1.14 m back along the side.
+- Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends
+  (fitted by rays, wide enough for two each), a ceiling lamp, chrome grab rails. The hanger, arm and roof lantern stay
+  the generated mesh, decimated (`SM_TR_CabinHanger`), the arm bent so the grip is plumb over the floor's centre.
 
 Every part has its origin on the floor's centre under the grip (rope along X, door on Blender +Y = Unreal -Y, the left of
 the way it goes). `kit.json` `cabin` holds what the game needs: `grip` (rope over the floor, 4.01 m = `network.json`
-`rope_over_deck`, keep them equal), `door` (x = +0.47 m ahead of the centre, clear size, `sill_y` 1.037 m = the hull at
+`rope_over_deck`, keep them equal), `door` (x = +0.47 m ahead of the centre, clear size, `sill_y` 1.007 m = the hull at
 floor level by the door, slide, out), `sockets` (four seats with their facing, lamp, board, name plates), `collision`
 (floor, walls round the room with the door gap, lintel, roof, benches: invisible boxes in `ALyudCabin`). The platform
 side of this (island edge 3.43 m from the station's centre, nothing over the deck between 3.13 and 3.43 m, stop marks
-at the door) is in the platform spec. Budget: shell ~20k triangles with its wall, door 4k, hanger 0.8k, inside 0.7k;
-2k texture. Check: `TR_DEBUG=<dir>` saves `cabin.blend` and the glass/room pictures; `SCRIPT=test_cabin.py
+at the door) is in the platform spec. Budget: shell ~22k triangles with its wall and glass, door 1.2k, hanger 1.4k, inside 0.7k;
+2k colour + 2k normal. Check: `TR_DEBUG=<dir>` saves `cabin.blend`; `SCRIPT=test_cabin.py
 unreal/scripts/test_transport.sh` walks the player in through the door, rides, walks out.
 
 ## Assets

@@ -1,14 +1,15 @@
-"""The cable-car cabin as a real room (docs/transport.md "The cabin"): the Hi3D egg (design/transport/gen/cabin.glb, one
-closed 300k-triangle surface) cut and built into a cabin people ride inside, without any new generation:
+"""The cable-car cabin as a room (docs/transport.md "The cabin"): the Hi3D egg (design/transport/gen/cabin.glb, one
+closed 300k-triangle surface) rebuilt clean, without any new generation. Nothing is cut out of the generated triangles
+(decimated they are big and crooked, and a window chosen by the texel colour under each one comes out ragged):
 
-  - the shell decimated, a door opening cut in its side with straight edges, the cut piece split into two leaves that
-    slide apart (SM_TR_CabinDoorA/B);
-  - its windows (dark, dull texels) taken out and glazed (TR_Glass, both faces), the rest given a wall: the inner face
-    plaster (TR_Interior), the window and door reveals in the shell's own paint;
-  - a flat terrazzo floor fitted to the hull, two padded benches facing each other at the ends (fitted to the hull by
-    rays), a ceiling lamp, chrome grab rails (SM_TR_CabinInside);
-  - the hanger arm and the grip as their own mesh (SM_TR_CabinHanger), bent so the grip is plumb over the floor's centre
-    (a hanging cabin's weight is under its grip), the grip bar along the rope;
+  - a clean shell: a sphere shrunk onto the model's outer skin along rays from outside in, the model's colour and
+    relief baked onto it from the full original; solidified into a closed 4.5 cm wall, plaster inside;
+  - windows where the texture is window, each a smooth outline cut through the wall by an exact boolean (chrome
+    reveals), glass laid in them; the door opening (CharacterStandard) cut the same way on the painted door, the
+    leaf (SM_TR_CabinDoor) the same outline intersected with the wall;
+  - a terrazzo floor, two padded benches facing each other, a ceiling lamp, chrome rails (SM_TR_CabinInside);
+  - the hanger, arm and lantern as the generated mesh, decimated (SM_TR_CabinHanger), bent so the grip is plumb over
+    the floor's centre;
   - sockets (kit.json cabin.sockets) and simple collision boxes (cabin.collision) for the game.
 
 Frame of every part (Blender, metres, Z up; Unreal (x, -y, z) * 100): origin on the floor's centre under the grip; the
@@ -25,9 +26,8 @@ FLOOR = 0.30             # m over the egg's bottom
 WALL = 0.045             # m of shell thickness
 DOOR_W, DOOR_H = 1.10, 2.12   # clear opening (CharacterStandard: >= 1.08 x 2.10)
 LEAF_OUT = 0.08          # m a leaf steps out before it slides
-BUDGET = 7000            # shell triangles before the wall (which about doubles them)
 HANGER_BUDGET = 1400
-LEAF_BUDGET = 900
+TEX_SIZE = 2048
 SEAT_H, SEAT_D, BACK_H = 0.45, 0.50, 1.00   # m: cushion top over the floor, depth, backrest top
 GLASS_DARK, GLASS_SAT = 0.46, 0.62          # its tinted windows are a warm brown
 
@@ -169,29 +169,6 @@ def painted_door(o, texture):
     return (a + b) / 2
 
 
-def outer_skin(bm):
-    """Delete what is not the egg's outer skin (Hi3D leaves bits inside behind the windows): a face stays if a ray
-    coming at it from outside along its normal, or from straight above or the side, meets it first."""
-    bvh = BVHTree.FromBMesh(bm)
-    bm.faces.ensure_lookup_table()
-    bm.normal_update()
-    kill = []
-    for f in bm.faces:
-        c = f.calc_center_median()
-        seen = False
-        for d in (f.normal, Vector((c.x, c.y, 0)).normalized(), Vector((0, 0, 1)), Vector((0, 0, -1))):
-            if d.length < 0.5:
-                continue
-            hit = bvh.ray_cast(c + d * 6.0, -d, 7.0)
-            if hit[2] is not None and (hit[2] == f.index or (hit[0] - c).length < 0.01):
-                seen = True
-                break
-        if not seen:
-            kill.append(f)
-    bmesh.ops.delete(bm, geom=kill, context="FACES")
-    return len(kill)
-
-
 def convex(pts):
     """2D convex hull (z kept at 0), counter-clockwise."""
     p = sorted({(round(v.x, 4), round(v.y, 4)) for v in pts})
@@ -212,90 +189,6 @@ def convex(pts):
     return [Vector((x, y, 0.0)) for x, y in lower[:-1] + upper[:-1]]
 
 
-def leaf_lining(o):
-    """The door's inside: a copy of the leaf relaxed flat (its edge kept), the wall's thickness in, faced inward, plaster
-    (slot 1); a strip round the edge closes the gap between the two."""
-    bm = bmesh.new()
-    bm.from_mesh(o.data)
-    edges = [e for e in bm.edges if e.is_boundary]
-    dup = bmesh.ops.duplicate(bm, geom=list(bm.faces))
-    vmap = dup["vert_map"]
-    faces = [e for e in dup["geom"] if isinstance(e, bmesh.types.BMFace)]
-    verts = list({v for f in faces for v in f.verts})
-    inner = [v for v in verts if not v.is_boundary]
-    for _ in range(12):
-        bmesh.ops.smooth_vert(bm, verts=inner, factor=0.8, use_axis_x=True, use_axis_y=True, use_axis_z=True)
-    for v in verts:
-        v.co.y -= WALL * 0.8
-    bmesh.ops.reverse_faces(bm, faces=faces)
-    for f in faces:
-        f.material_index = 1
-    for e in edges:
-        a, b = e.verts
-        try:
-            f = bm.faces.new((b, a, vmap[a], vmap[b]))
-            f.material_index = 0
-        except (ValueError, KeyError):
-            pass
-    bm.normal_update()
-    bm.to_mesh(o.data)
-    bm.free()
-
-
-def inner_lining(hull_bm, shell, m_room, centre=Vector((0, 0, 1.1)), rings=48, segs=96):
-    """The room's wall: not the shell turned inward (it would repeat every trim and crease of the generated outside) but
-    a smooth skin of its own: a sphere round the room's middle with every vertex pushed out along its ray to the egg's
-    inside (the egg is star-shaped from there), the wall's thickness in, relaxed; faced inward. Where the shell has a
-    window or the door (no shell right outside a face) the skin is cut away; under the floor too. The gap at the
-    openings' edges shows the shell's back (its paint is two-sided): a dark seal round the glass."""
-    hb = BVHTree.FromBMesh(hull_bm)
-    bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=segs, v_segments=rings, radius=1.0, matrix=Matrix.Translation(centre))
-    for v in bm.verts:
-        d = (v.co - centre).normalized()
-        hit = hb.ray_cast(centre, d, 6.0)
-        v.co = (hit[0] - d * WALL) if hit[0] is not None else centre + d * 1.0
-    for _ in range(2):
-        bmesh.ops.smooth_vert(bm, verts=bm.verts, factor=0.5, use_axis_x=True, use_axis_y=True, use_axis_z=True)
-    bm.normal_update()
-    sm = bmesh.new()
-    sm.from_mesh(shell.data)
-    sbvh = BVHTree.FromBMesh(sm)
-    kill = []
-    for f in bm.faces:
-        c = f.calc_center_median()
-        out = (c - centre).normalized()
-        if c.z < -0.03 or sbvh.ray_cast(c, out, WALL * 4)[0] is None:
-            kill.append(f)
-    bmesh.ops.delete(bm, geom=kill, context="FACES")
-    # the cut's stair-stepped edge onto the opening's own edge in the shell (sampled every 2 cm), a little in
-    from mathutils.kdtree import KDTree
-    pts = []
-    for e in sm.edges:
-        if e.is_boundary:
-            a, b = e.verts[0].co, e.verts[1].co
-            k = max(1, int((b - a).length / 0.02))
-            pts += [a.lerp(b, i / k) for i in range(k + 1)]
-    kd = KDTree(len(pts))
-    for i, q in enumerate(pts):
-        kd.insert(q, i)
-    kd.balance()
-    for v in bm.verts:
-        if v.is_boundary and v.co.z > 0.02:
-            q, _i, dist = kd.find(v.co)
-            if q is not None and dist < 0.15:
-                v.co = q - (q - centre).normalized() * WALL
-    sm.free()
-    # faced inward: the sphere's normals point out
-    bm.normal_update()
-    bmesh.ops.reverse_faces(bm, faces=list(bm.faces))
-    bmesh.ops.triangulate(bm, faces=list(bm.faces))
-    o = to_object("lining", bm, [m_room])
-    for p in o.data.polygons:
-        p.use_smooth = True
-    return o
-
-
 def smooth(o, angle=40):
     for p in o.data.polygons:
         p.use_smooth = True
@@ -309,6 +202,114 @@ def tris(o):
     return sum(len(p.vertices) - 2 for p in o.data.polygons)
 
 
+def clean_hull(body_bvh, centre, segs=72, rings=40, smooth_steps=2):
+    """The egg as a clean, even mesh: a sphere round the room's middle whose every vertex is moved along its ray onto
+    the generated model's outer skin (rays from outside in, so nothing left inside the model can catch them). Vertices
+    whose ray finds nothing (the cut-off roof cap under the lantern and the arm) are filled in from their neighbours."""
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=segs, v_segments=rings, radius=1.0, matrix=Matrix.Translation(centre))
+    known = {}
+    for v in bm.verts:
+        d = (v.co - centre).normalized()
+        hit = body_bvh.ray_cast(centre + d * 8.0, -d, 8.0)
+        if hit[0] is not None:
+            v.co = hit[0]
+            known[v] = True
+    free = [v for v in bm.verts if v not in known]
+    for _ in range(200):                         # harmonic fill of the holes
+        for v in free:
+            nb = [e.other_vert(v).co for e in v.link_edges]
+            v.co = sum(nb, Vector()) / len(nb)
+    for _ in range(smooth_steps):
+        bmesh.ops.smooth_vert(bm, verts=list(bm.verts), factor=0.5, use_axis_x=True, use_axis_y=True, use_axis_z=True)
+    bm.normal_update()
+    return bm, len(free)
+
+
+def bake(src, dst, size):
+    """The generated model's colour and relief (trims, seams, handles) baked onto the clean shell's own UVs."""
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.device = "CPU"
+    sc.cycles.samples = 1
+    sc.render.bake.margin = 8
+    bpy.context.view_layer.objects.active = dst
+    bpy.ops.object.select_all(action="DESELECT")
+    dst.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004)
+    bpy.ops.object.mode_set(mode="OBJECT")
+    m = bpy.data.materials.new("MI_TR_Cabin")
+    m.use_nodes = True
+    nt = m.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    bsdf.inputs["Roughness"].default_value = 0.45
+    imgs = {}
+    for kind in ("color", "normal"):
+        img = bpy.data.images.new("cabin_" + kind, size, size)
+        if kind == "normal":
+            img.colorspace_settings.name = "Non-Color"
+        node = nt.nodes.new("ShaderNodeTexImage")
+        node.image = img
+        imgs[kind] = (img, node)
+    dst.data.materials.clear()
+    dst.data.materials.append(m)
+    src.hide_render = False
+    src.select_set(True)
+    dst.select_set(True)
+    bpy.context.view_layer.objects.active = dst
+    for kind, btype in (("color", "DIFFUSE"), ("normal", "NORMAL")):
+        nt.nodes.active = imgs[kind][1]
+        kw = {"pass_filter": {"COLOR"}} if btype == "DIFFUSE" else {}
+        bpy.ops.object.bake(type=btype, use_selected_to_active=True, cage_extrusion=0.06, max_ray_distance=0.25, **kw)
+        imgs[kind][0].pack()
+    nt.links.new(imgs["color"][1].outputs["Color"], bsdf.inputs["Base Color"])
+    nm = nt.nodes.new("ShaderNodeNormalMap")
+    nt.links.new(imgs["normal"][1].outputs["Color"], nm.inputs["Color"])
+    nt.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
+    src.select_set(False)
+    return m
+
+
+def chaikin(poly, rounds=3):
+    for _ in range(rounds):
+        out = []
+        for i, a in enumerate(poly):
+            b = poly[(i + 1) % len(poly)]
+            out += [a.lerp(b, 0.25), a.lerp(b, 0.75)]
+        poly = out
+    return poly
+
+
+def inset(poly, d):
+    c = sum(poly, Vector((0, 0, 0))) / len(poly)
+    return [c + (p - c) * max(0.0, 1.0 - d / max(1e-6, (p - c).length)) for p in poly]
+
+
+def prism(bm, poly2d, frame, z0, z1):
+    """A closed prism into bm: poly2d (Vectors, x/y in the frame's plane) from z0 to z1 along the frame's normal."""
+    o, u, v, n = frame
+    bot = [bm.verts.new(o + u * p.x + v * p.y + n * z0) for p in poly2d]
+    top = [bm.verts.new(o + u * p.x + v * p.y + n * z1) for p in poly2d]
+    bm.faces.new(list(reversed(bot)))
+    bm.faces.new(top)
+    k = len(poly2d)
+    for i in range(k):
+        bm.faces.new((bot[i], bot[(i + 1) % k], top[(i + 1) % k], top[i]))
+
+
+def boolean(target, cutter, op):
+    mod = target.modifiers.new("cut", "BOOLEAN")
+    mod.operation = op
+    mod.solver = "EXACT"
+    mod.object = cutter
+    if hasattr(mod, "material_mode"):
+        mod.material_mode = "TRANSFER"
+    bpy.context.view_layer.objects.active = target
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+
+
 def build(o, ctx):
     """o: the raw egg joined into one mesh. ctx: optimize.py's helpers. Returns (objects by export name, kit entry)."""
     transform, bounds, decimate, texels = ctx["transform"], ctx["bounds"], ctx["decimate"], ctx["texels"]
@@ -319,31 +320,70 @@ def build(o, ctx):
     c = Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z))
     transform(o, Matrix.Translation((0, 0, -FLOOR * 1.0)) @ Matrix.Scale(s, 4) @ Matrix.Translation(-c))
     lo, hi = bounds(o)
-    # where the body ends and the arm starts: going up from the middle, the first slice much narrower than the body
+    # going up from the middle: the roof lantern starts where the slices get much narrower than the body, the arm
+    # where they are thinner still
     ext = {}
     for v in o.data.vertices:
         k = round(v.co.z, 1)
         a, b = ext.get(k, (1e9, -1e9))
         ext[k] = (min(a, v.co.y), max(b, v.co.y))
     wide = hi.y - lo.y
-    arm_z = min(k for k, (a, b) in ext.items() if k > (hi.z + lo.z) * 0.3 and b - a < wide * 0.2) - 0.05
-    body_top = arm_z
+    mid = (hi.z + lo.z) * 0.3
+    arm_z = min(k for k, (a, b) in ext.items() if k > mid and b - a < wide * 0.2) - 0.05
+    top_z = min(k for k, (a, b) in ext.items() if k > mid and b - a < wide * 0.4) - 0.05
     tex_w, tex_h, px = texels(o)
     painted = painted_door(o, (tex_w, tex_h, px))
-    decimate(o, BUDGET + HANGER_BUDGET)
-    shell_mat = o.data.materials[0]
+    shell_src_mat = o.data.materials[0]
 
-    bm = bmesh.new()
-    bm.from_mesh(o.data)
-    ul = bm.loops.layers.uv.active
-    n_inner = outer_skin(bm)
-    bvh = BVHTree.FromBMesh(bm)
+    # the full-detail model stays as the bake source and the texture lookup
+    src = o
+    sb = bmesh.new()
+    sb.from_mesh(src.data)
+    sul = sb.loops.layers.uv.active
+    sb.faces.ensure_lookup_table()
+    body = [f.index for f in sb.faces if f.calc_center_median().z <= top_z]
+    body_bvh = BVHTree.FromPolygons([v.co for v in sb.verts], [[v.index for v in sb.faces[i].verts] for i in body])
+    full_bvh = BVHTree.FromBMesh(sb)
+
+    def texel_at(p, n):
+        """The generated texture's colour where a ray along -n through p meets the model."""
+        loc, _n, fi, _d = full_bvh.ray_cast(p + n * 0.15, -n, 0.4)
+        if fi is None:
+            return None
+        f = sb.faces[fi]
+        u = sum(l[sul].uv[0] for l in f.loops) / len(f.loops)
+        v = sum(l[sul].uv[1] for l in f.loops) / len(f.loops)
+        k = (min(tex_h - 1, int(v % 1.0 * tex_h)) * tex_w + min(tex_w - 1, int(u % 1.0 * tex_w))) * 4
+        return px[k:k + 3]
+
+    # --- the hanger, the arm and the lantern: the generated mesh, decimated, the grip brought plumb ---------------
+    hsrc = bmesh.new()
+    hsrc.from_mesh(src.data)
+    hul = hsrc.loops.layers.uv.active
+    hb = copy_faces(hsrc, [f for f in hsrc.faces if f.calc_center_median().z > top_z], hul)
+    hsrc.free()
+    gv = [v for v in hb.verts if v.co.z > hi.z - 0.5]
+    glo = Vector([min(v.co[i] for v in gv) for i in range(3)])
+    ghi = Vector([max(v.co[i] for v in gv) for i in range(3)])
+    grip = (glo + ghi) / 2
+    foot = [v.co for v in hb.verts if arm_z < v.co.z < arm_z + 0.08]
+    foot_c = sum(foot, Vector()) / max(1, len(foot))
+    shift = Vector((-grip.x, -grip.y, 0.0))
+    for v in hb.verts:
+        t = min(1.0, max(0.0, (v.co.z - arm_z) / max(0.01, glo.z - arm_z)))
+        v.co += shift * (t * t * (3 - 2 * t))
+    grip += shift
+    grip_along = (ghi.x - glo.x) >= (ghi.y - glo.y)
+
+    # --- the clean shell ---------------------------------------------------------------------------------------
+    centre = Vector((0.0, 0.0, 1.0))
+    hull_bm, n_filled = clean_hull(body_bvh, centre)
+    hull_bvh = BVHTree.FromBMesh(hull_bm)
 
     def ray(p, d, far=6.0):
-        hit = bvh.ray_cast(Vector(p), Vector(d).normalized(), far)
+        hit = hull_bvh.ray_cast(Vector(p), Vector(d).normalized(), far)
         return hit[0]
 
-    # the hull from outside in (rays from the middle would stop on anything left inside)
     def hull_y(x, z, sgn=1):
         h = ray((x, sgn * 5.0, z), (0, -sgn, 0), 10.0)
         return abs(h.y) if h else 0.0
@@ -352,19 +392,16 @@ def build(o, ctx):
         h = ray((sgn * 5.0, y, z), (-sgn, 0, 0), 10.0)
         return abs(h.x) if h else 0.0
 
-    # --- the door: where the side stays tallest, so its top edge cuts the side and not the roof ----------------
-    # the door: on the painted one (its frame stripes in the texture), wide enough for the standard
     door_x = painted if painted is not None else 0.0
     door_lintel = min(hull_y(door_x + sx * DOOR_W / 2, DOOR_H + 0.10) for sx in (-1, 1))
     x0, x1 = door_x - DOOR_W / 2, door_x + DOOR_W / 2
     sill_y = hull_y(door_x, 0.0)
     side_y = max(hull_y(door_x, z * 0.1) for z in range(1, 21))
-    # measurements for the inside, on the closed hull
     end_x = {round(z * 0.05, 2): min(hull_x(z * 0.05, 1), hull_x(z * 0.05, -1)) for z in range(0, 45)}
     floor_ring = []
     for i in range(64):
         a = 2 * math.pi * i / 64
-        h = ray((5 * math.cos(a), 5 * math.sin(a), -0.02), (-math.cos(a), -math.sin(a), 0), 10.0)
+        h = ray((5 * math.cos(a), 5 * math.sin(a), 0.0), (-math.cos(a), -math.sin(a), 0), 10.0)
         if h:
             p = Vector((h.x, h.y, 0.0))
             floor_ring.append(p - p.normalized() * (WALL + 0.005))
@@ -374,64 +411,67 @@ def build(o, ctx):
         if hz:
             roof_c = min(roof_c, hz.z)
 
-    # --- the hanger: everything over the lantern ---------------------------------------------------------------
-    arm = [f for f in bm.faces if f.calc_center_median().z > arm_z]
-    hb = copy_faces(bm, arm, ul)
-    bmesh.ops.delete(bm, geom=arm, context="FACES")
-    gv = [v for v in hb.verts if v.co.z > hi.z - 0.5]
-    glo = Vector([min(v.co[i] for v in gv) for i in range(3)])
-    ghi = Vector([max(v.co[i] for v in gv) for i in range(3)])
-    grip = (glo + ghi) / 2
-    foot = [v.co for v in hb.verts if v.co.z < arm_z + 0.08]
-    foot_c = sum(foot, Vector()) / max(1, len(foot))
-    # bend the arm so the grip comes plumb over the floor's centre: a smooth ramp from the foot up
-    shift = Vector((-grip.x, -grip.y, 0.0))
-    for v in hb.verts:
-        t = min(1.0, max(0.0, (v.co.z - arm_z) / max(0.01, glo.z - arm_z)))
-        v.co += shift * (t * t * (3 - 2 * t))
-    grip += shift
-    grip_along = (ghi.x - glo.x) >= (ghi.y - glo.y)
-
-    hull = bm.copy()                             # the closed egg, for the inner lining
-    # --- cut the door: planes through the side, then the piece inside them becomes the leaf ----------------
-    def side_geom():
-        fs = [f for f in bm.faces if f.calc_center_median().y > 0.25]
-        return list({e for f in fs for e in f.edges}) + fs + list({v for f in fs for v in f.verts})
-
-    for co, no in (((x0, 0, 0), (1, 0, 0)), ((x1, 0, 0), (1, 0, 0)),
-                   ((0, 0, DOOR_H), (0, 0, 1)), ((0, 0, 0.0), (0, 0, 1))):
-        bmesh.ops.bisect_plane(bm, geom=side_geom(), plane_co=co, plane_no=no)
-    door = [f for f in bm.faces if f.calc_center_median().y > 0.25 and x0 < f.calc_center_median().x < x1
-            and 0.0 < f.calc_center_median().z < DOOR_H]
-    leaf_bm = copy_faces(bm, door, ul)
-    bmesh.ops.delete(bm, geom=door, context="FACES")
-
-    # --- windows out of the texture: dark, dull texels on the body's sides --------------------------------------
-    def is_glass(f):
-        u = sum(l[ul].uv[0] for l in f.loops) / len(f.loops)
-        v = sum(l[ul].uv[1] for l in f.loops) / len(f.loops)
-        x, y = min(tex_w - 1, max(0, int(u % 1.0 * tex_w))), min(tex_h - 1, max(0, int(v % 1.0 * tex_h)))
-        k = (y * tex_w + x) * 4
-        r, g, b = px[k], px[k + 1], px[k + 2]
-        top, low = max(r, g, b), min(r, g, b)
+    # --- windows: where the generated texture is window, smooth outlines ---------------------------------------
+    def is_glass(rgb, z):
+        if rgb is None:
+            return False
+        top, low = max(rgb), min(rgb)
         sat = (top - low) / top if top > 1e-4 else 0.0
-        return top < GLASS_DARK and sat < GLASS_SAT and 0.35 < f.calc_center_median().z < body_top - 0.3
+        return top < GLASS_DARK and sat < GLASS_SAT and 0.4 < z < roof_c - 0.25
 
-    flag = {f: is_glass(f) for f in bm.faces}
-    n_glass0 = sum(flag.values())
-    majority(bm, flag)
-    print("CABIN glass faces", n_glass0, "->", sum(flag.values()), "of", len(flag), "door faces", len(door), "arm_z", arm_z, "inner faces cut", n_inner)
-    glass = [f for f in bm.faces if flag[f]]
-    gb = copy_faces(bm, glass, ul)
-    bmesh.ops.delete(bm, geom=glass, context="FACES")
-    # glazed both ways, a little in from the outer skin
-    gb.normal_update()
-    for v in gb.verts:
-        v.co -= v.normal * (WALL * 0.4)
-    back = bmesh.ops.duplicate(gb, geom=list(gb.faces))
-    bmesh.ops.reverse_faces(gb, faces=[e for e in back["geom"] if isinstance(e, bmesh.types.BMFace)])
-    for f in gb.faces:
-        f.material_index = 0
+    hull_bm.faces.ensure_lookup_table()
+    flag = {}
+    for f in hull_bm.faces:
+        cc = f.calc_center_median()
+        in_door = cc.y > 0.3 and x0 - 0.05 < cc.x < x1 + 0.05 and cc.z < DOOR_H + 0.08
+        flag[f] = (not in_door) and is_glass(texel_at(cc, f.normal), cc.z)
+    majority(hull_bm, flag)
+    windows = []
+    seen = set()
+    for f in hull_bm.faces:
+        if not flag[f] or f in seen:
+            continue
+        comp, stack = [], [f]
+        seen.add(f)
+        while stack:
+            g = stack.pop()
+            comp.append(g)
+            for e in g.edges:
+                for h in e.link_faces:
+                    if flag[h] and h not in seen:
+                        seen.add(h)
+                        stack.append(h)
+        if sum(g.calc_area() for g in comp) > 0.05:
+            windows.append(comp)
+
+    cut_bm = bmesh.new()
+    panes = []
+    for comp in windows:
+        n = sum((g.normal * g.calc_area() for g in comp), Vector()).normalized()
+        o3 = sum((g.calc_center_median() for g in comp), Vector()) / len(comp)
+        u = n.cross(Vector((0, 0, 1)))
+        u = u.normalized() if u.length > 1e-3 else Vector((1, 0, 0))
+        v = n.cross(u).normalized()
+        pts = [Vector(((p.co - o3).dot(u), (p.co - o3).dot(v), 0.0)) for g in comp for p in g.verts]
+        poly = inset(chaikin(convex(pts), 3), 0.02)
+        frame = (o3, u, v, n)
+        prism(cut_bm, poly, frame, -0.35, 0.30)
+        panes.append((poly, frame))
+    # the door: a straight opening, the corners at the top a little round
+    r = 0.10
+    door_poly = [Vector((x0, -0.02, 0)), Vector((x1, -0.02, 0))]
+    for i in range(7):
+        a = math.pi / 2 * i / 6
+        door_poly.append(Vector((x1 - r + r * math.cos(a), DOOR_H - r + r * math.sin(a), 0)))
+    for i in range(7):
+        a = math.pi / 2 + math.pi / 2 * i / 6
+        door_poly.append(Vector((x0 + r + r * math.cos(a), DOOR_H - r + r * math.sin(a), 0)))
+    door_frame = (Vector((0, 0, 0)), Vector((1, 0, 0)), Vector((0, 0, 1)), Vector((0, 1, 0)))
+    # the outline's winding must agree with the prism's normal (u x v = n): here u x v = -n, so turn it round
+    door_poly2 = [Vector((p.x, p.y, 0)) for p in reversed(door_poly)]
+    door_bm = bmesh.new()
+    prism(door_bm, door_poly2, door_frame, 0.3, 2.0)
+    prism(cut_bm, door_poly2, door_frame, 0.3, 2.0)
 
     # --- objects -------------------------------------------------------------------------------------------------
     m_glass = mat("TR_Glass", (0.3, 0.4, 0.45, 0.25))
@@ -441,27 +481,58 @@ def build(o, ctx):
     m_chrome = mat("TR_Chrome", (0.85, 0.85, 0.87, 1), 0.2, 1.0)
     m_glow = mat("TR_Glow", (1.0, 0.82, 0.55, 1), emit=True)
 
-    for f in bm.faces:
-        f.material_index = 0
-    shell = to_object("SM_TR_Cabin", bm, [shell_mat, m_room])
-    lining = inner_lining(hull, shell, m_room)
+    shell = to_object("SM_TR_Cabin", hull_bm, [])
+    m_paint = bake(src, shell, TEX_SIZE)
+    shell.data.materials.append(m_room)
+    for p in shell.data.polygons:
+        p.use_smooth = True
+    solidify(shell, WALL, 1)
+    whole = shell.copy()
+    whole.data = shell.data.copy()
+    bpy.context.scene.collection.objects.link(whole)
+    cutters = to_object("cutters", cut_bm, [m_chrome])
+    boolean(shell, cutters, "DIFFERENCE")
+    # the leaf: the shell inside the door outline, a hair smaller than the opening
+    door_cut = to_object("door_cut", door_bm, [m_chrome])
+    for v in door_cut.data.vertices:
+        v.co.x = door_x + (v.co.x - door_x) * (1 - 0.008 / DOOR_W)
+        v.co.z = 0.004 + v.co.z * (1 - 0.008 / DOOR_H)
+    boolean(whole, door_cut, "INTERSECT")
+    whole.name = whole.data.name = "SM_TR_CabinDoor"
+    leaf = whole
+
+    # glass: each window's outline filled and laid on the hull, half a wall in, glazed both ways
+    gb = bmesh.new()
+    for poly, (o3, u, v, n) in panes:
+        vs = [gb.verts.new(o3 + u * p.x + v * p.y) for p in poly]
+        f = gb.faces.new(vs)
+        tri = bmesh.ops.triangulate(gb, faces=[f], quad_method="BEAUTY", ngon_method="BEAUTY")
+        edges = list({e for t in tri["faces"] for e in t.edges})
+        bmesh.ops.subdivide_edges(gb, edges=edges, cuts=2, use_grid_fill=True)
+    gb.verts.ensure_lookup_table()
+    for vert in gb.verts:
+        # onto the hull along the window's normal (the nearest pane's)
+        best = min(panes, key=lambda pf: (vert.co - pf[1][0]).length)
+        n = best[1][3]
+        hit = hull_bvh.ray_cast(vert.co + n * 0.6, -n, 1.2)
+        if hit[0] is not None:
+            vert.co = hit[0] - n * (WALL * 0.5)
+    back = bmesh.ops.duplicate(gb, geom=list(gb.faces))
+    bmesh.ops.reverse_faces(gb, faces=[e for e in back["geom"] if isinstance(e, bmesh.types.BMFace)])
     gl = to_object("glass", gb, [m_glass])
     bpy.ops.object.select_all(action="DESELECT")
-    for ob in (shell, lining, gl):
+    for ob in (shell, gl):
         ob.select_set(True)
     bpy.context.view_layer.objects.active = shell
-    bpy.ops.object.join()                       # one mesh, slots: paint, TR_Interior, TR_Glass
+    bpy.ops.object.join()
+    for ob in (cutters, door_cut):
+        bpy.data.objects.remove(ob)
 
-    for f in leaf_bm.faces:
-        f.material_index = 0
-    leaf = to_object("SM_TR_CabinDoor", leaf_bm, [shell_mat, m_room])
-    decimate(leaf, LEAF_BUDGET)
-    leaf_lining(leaf)
-
-    hanger = to_object("SM_TR_CabinHanger", hb, [shell_mat])
+    hanger = to_object("SM_TR_CabinHanger", hb, [shell_src_mat])
     decimate(hanger, HANGER_BUDGET)
     for ob in (shell, leaf, hanger):
-        smooth(ob)
+        smooth(ob, 35)
+    print("CABIN windows", len(windows), "filled hull verts", n_filled)
 
     # the inside: floor, benches, lamp, rails
     ib = bmesh.new()
@@ -548,6 +619,7 @@ def build(o, ctx):
         cbox["s"] = [round(v, 3) for v in cbox["s"]]
     parts = {"SM_TR_Cabin": shell, "SM_TR_CabinInside": inside, "SM_TR_CabinHanger": hanger,
              "SM_TR_CabinDoor": leaf}
+    bpy.data.objects.remove(src)
     lo, hi = bounds(shell)
     kit = {
         "origin": "floor centre under the grip",
