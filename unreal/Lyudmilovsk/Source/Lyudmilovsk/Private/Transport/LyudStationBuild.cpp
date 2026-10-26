@@ -1450,6 +1450,10 @@ void ALyudStationLift::Tick(float DeltaTime)
 	const float HalfIn = ShaftHalf - 15.f;
 	const bool bIn = FMath::Abs(Local.X) < HalfIn && FMath::Abs(Local.Y) < HalfIn && Local.Z > Z - 20.f && Local.Z < Z + 260.f;
 	const int32 Here = StopNear(Z);
+	if (bIn)
+	{
+		OutTime = 0.f;
+	}
 	const bool bDoorsShut = Open.IsValidIndex(Here) ? Open[Here] < 0.02f : true;
 	if (Target < 0)
 	{
@@ -1472,7 +1476,9 @@ void ALyudStationLift::Tick(float DeltaTime)
 		else
 		{
 			Stand = 0.f;
-			bRode = false;
+			// stepped out for good (not a bump as the cab stops): it may take them again
+			OutTime += DeltaTime;
+			bRode = bRode && OutTime < 0.6f;
 			// somebody waiting by a landing door the cab is not at: it comes
 			const int32 Near = StopNear(Local.Z);
 			if (Pawn && Near != Here && FMath::Abs(Local.Z - Stops[Near]) < 150.f && FVector2D(Local.X, Local.Y).Size() < 420.f)
