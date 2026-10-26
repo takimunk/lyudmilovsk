@@ -39,22 +39,21 @@ SOURCE = os.path.join(DATA_DIR, "network.json")
 BUILT = os.path.join(DATA_DIR, "network_built.json")
 LAYOUT = os.path.join(REPO, "blender", "export", "scene01_layout.json")
 
-ON_GROUND_RISE = 5.0     # a station on the ground: its platform this much over the highest ground under it (the gallery passes under its track)
-STOP_THROUGH = 5.5       # a through station: cabins stop this far along the line past its centre (the stair and lift are in the middle)
-STOP_END = 2.5           # an end station: this far from its centre (before the turn wheel), on the platform's side
-CORE_END = 7.0           # an end station's stair and lift: this far from its centre, away from the wheel
+ON_GROUND_RISE = 6.5     # a station on the ground: its deck this much over the highest ground under it (the vestibule's tower kit fits)
+DOOR_AHEAD = 0.47        # the cabin's door is this far ahead of its centre (kit.json cabin door x): a stop puts the door on the stop mark
 LEVEL_H = 6.5            # metres between the decks of a station on two lines
 STATION_R = 9.0          # half size of a station's footprint (deck, tower, stair)
 TURN_R = None            # turn wheel radius = track_gap / 2
 STEP = 6.0               # metres between rope samples on a span
-# the vestibule (docs/transport.md "Station layout and the vestibule connector"): beside the line on the ground, its
-# connector this far off the line's axis, joined to the tower by a ground gallery under the track
-VEST_OFF = 9.5
-VEST_DEPTH = 22.0        # the footprint's size away from the connector (X < 0 in its frame), when vestibules.json has none
-VEST_HALF = 11.0         # and across
-VEST_HEIGHT = 16.0
-GALLERY_CLEAR = 4.2      # deck over the gallery's floor at least (its roof 3.4 m, the cabin's floor, a margin)
+# the station (docs/transport.md "Station layout v2"): the vestibule stands on its tower at deck height between the
+# two tracks, which spread from track_gap to the vestibule's gap G over the station; the cabins stop at its two edges
 VESTIBULES = os.path.join(DATA_DIR, "vestibules.json")
+VEST_GAP = 24.0          # G when vestibules.json has none (metres between the two tracks along the vestibule)
+VEST_LEN = 22.0          # the vestibule's edges' length along the line (the rail the cabins roll on)
+EDGE_IN = 1.05           # a boarding edge stands this far inside its track (the cabin's sill is 1.007 m off its centre)
+SPREAD_DEG = 6.0         # the line sheaves' deflection: the convergence pylon closes G to track_gap at this angle
+WHEEL_RUN = 14.0         # an end station: the turn wheel this far past the vestibule's end (the end frame takes the turn)
+TOWER_R = 2.7            # half the tower's core (the ground under it is levelled)
 
 
 def load_source(path=SOURCE):
@@ -142,6 +141,8 @@ def resolve(src=None, log=print):
 
     # --- lines -------------------------------------------------------------------------------
     lines = []
+    global ln_all
+    ln_all = src
     for ln in src["lines"]:
         lines.append(_line(ln, st_by, st_built, D, probs))
     for s in stations:
@@ -153,27 +154,24 @@ def resolve(src=None, log=print):
                     s["axes"][ln["id"]] = st["yaw"]
                     # an end station's platform lies on the line's side of the wheel: -1 the last stop, +1 the first
                     s["ends"][ln["id"]] = -1 if k == len(ln["stations"]) - 1 else (1 if k == 0 else 0)
-        # the stair and lift: in the middle, or at an end station CORE_END from the wheel along its platform
-        core = [s["at"][0], s["at"][1]]
-        for lid, e in s["ends"].items():
-            if e and len(s["lines"]) == 1:
-                a = math.radians(s["axes"][lid])
-                core = [round(s["at"][0] + e * CORE_END * math.cos(a), 3), round(s["at"][1] + e * CORE_END * math.sin(a), 3)]
+        # the tower stands under the vestibule's middle (vestibules.json "tower_x" moves it along the top level's axis)
+        v = _vest(s["style"])
+        a0 = math.radians(s["axes"][s["levels"][-1]["line"]]) if s["levels"] else 0.0
+        off = v.get("tower_x", 0.0)
+        core = [round(s["at"][0] + math.cos(a0) * off, 3), round(s["at"][1] + math.sin(a0) * off, 3)]
         s["core"] = core
-        # the tower's and the gallery's floor 15 cm over the highest ground under them (the terrain never shows
-        # through it): the tower's square and the strip square off the first level's axis either way, to VEST_OFF
-        g = _ground_max(core[0], core[1], 2.7)
-        if s["levels"]:
-            a0 = math.radians(s["axes"][s["levels"][0]["line"]])
-            nx, ny = -math.sin(a0), math.cos(a0)
-            for k in range(-int(VEST_OFF), int(VEST_OFF) + 1):
-                for w in (-1.7, 0.0, 1.7):
-                    g = max(g, _ground(core[0] + nx * k + math.cos(a0) * w, core[1] + ny * k + math.sin(a0) * w))
-        s["core_ground"] = round(g + 0.15, 3)
+        s["core_ground"] = round(_ground_max(core[0], core[1], TOWER_R) + 0.15, 3)
         s["lift"] = round(max(0.0, s["levels"][-1]["z"] - s["core_ground"]), 3) if s["levels"] else 0.0
 
     for s in stations:
-        _vestibule(s, st_by[s["id"]], lines, probs)
+        v = _vest(s["style"])
+        lid = s["levels"][-1]["line"] if s["levels"] else None
+        s["vestibule"] = {"at": s["at"], "z": s["levels"][-1]["z"] if s["levels"] else s["deck"],
+                          "yaw": s["axes"].get(lid, 0.0) if lid else 0.0, "gap": v["gap"], "length": v["length"]}
+        s["geo"] = {}
+        for ln in lines:
+            if ln["id"] in s["lines"]:
+                s["geo"][ln["id"]] = ln["geo"][s["id"]]
 
     face_y = None
     try:
@@ -205,73 +203,54 @@ def resolve(src=None, log=print):
     return built
 
 
-def _vest_box(style):
-    """The vestibule's footprint box in its connector frame (metres): x0, x1, y0, y1, height."""
+ln_all = None
+
+
+def _station_axis(src, lid, sid):
+    """The unit axis of line lid at station sid (the bisector of the way in and out), from network.json alone."""
+    ln = next(l for l in src["lines"] if l["id"] == lid)
+    st = {s["id"]: s for s in src["stations"]}
+    stops = ln["stops"]
+    i = stops.index(sid)
+    pts = []
+    for k in (i - 1, i + 1):
+        if 0 <= k < len(stops):
+            via = ln.get("via", {})
+            # the nearest corner toward the neighbour, else the neighbour
+            key, rev = ("%s-%s" % (sid, stops[k]), False) if k > i else ("%s-%s" % (stops[k], sid), True)
+            c = via.get(key, [])
+            p = (c[-1] if rev else c[0]) if c else st[stops[k]]["at"]
+            pts.append((p, k > i))
+    x, y = st[sid]["at"]
+    dirs = [_unit(p[0] - x, p[1] - y) if fwd else _unit(x - p[0], y - p[1]) for p, fwd in pts]
+    return _unit(sum(d[0] for d in dirs), sum(d[1] for d in dirs))
+
+
+def _vest(style, line=None):
+    """The vestibule's numbers for the rope (vestibules.json v2, UE cm; defaults when it has none): G, the edges'
+    length, where the cabins' doors stop along an edge (from its middle), the tower along the axis. A line served by a
+    deck on the vestibule's tower (tower.decks, Zenit's Sun line): that deck's numbers, centred on the tower's axis."""
+    out = {"gap": VEST_GAP, "length": VEST_LEN, "stop_x": 0.0, "tower_x": 0.0, "on_tower": False}
     try:
         with open(VESTIBULES) as f:
-            v = json.load(f)["styles"][style]
-        pts = v["footprint"]
-        xs = [p[0] / 100.0 for p in pts]
-        ys = [p[1] / 100.0 for p in pts]
-        return min(xs), max(xs), min(ys), max(ys), v.get("height", VEST_HEIGHT * 100) / 100.0
+            v = json.load(f)[style.lower()]
     except (OSError, KeyError, ValueError, TypeError):
-        return -VEST_DEPTH, 0.0, -VEST_HALF, VEST_HALF, VEST_HEIGHT
-
-
-def _vestibule(s, src, lines, probs):
-    """Where the station's vestibule stands: beside the first level's line, the connector VEST_OFF + gap off its axis
-    at the tower's ground, +X of its frame toward the tower. The side: network.json's or the one with the flatter
-    ground and nothing over it."""
-    if not s["levels"]:
-        return
-    lid = s["levels"][0]["line"]
-    a = math.radians(s["axes"][lid])
-    ax, ay = math.cos(a), math.sin(a)
-    nx, ny = -ay, ax                                    # left of the axis
-    want = src.get("vestibule", {})
-    gap = float(want.get("gap", 0.0))
-    x0, x1, y0, y1, height = _vest_box(s["style"])
-    cx, cy = s["core"]
-    choices = []
-    for side in ([want["side"]] if "side" in want else [1, -1]):
-        px, py = cx + nx * side * (VEST_OFF + gap), cy + ny * side * (VEST_OFF + gap)
-        yaw = _yaw_deg(-nx * side, -ny * side)          # toward the tower
-        fx, fy = -nx * side, -ny * side                 # the frame's +X (map)
-        gx, gy = -fy, fx                                # its +Y
-        ground = []
-        for i in range(7):
-            for j in range(7):
-                u = x0 + (x1 - x0) * i / 6.0
-                v = y0 + (y1 - y0) * j / 6.0
-                ground.append(_ground(px + fx * u + gx * v, py + fy * u + gy * v))
-        # ropes over the footprint (another line crossing): their lowest height there
-        low = None
-        for ln in lines:
-            for q in ln["loop"]:
-                dx, dy = q[0] - px, q[1] - py
-                u, v = dx * fx + dy * fy, dx * gx + dy * gy
-                if x0 - 2.0 < u < x1 + 2.0 and y0 - 2.0 < v < y1 + 2.0:
-                    low = q[2] if low is None else min(low, q[2])
-        floor = max(s["core_ground"], max(ground) + 0.1)
-        score = (max(ground) - min(ground)) + (floor - s["core_ground"]) * 2.0
-        if low is not None and low - 4.5 < floor + height:
-            score += 1000.0
-        choices.append((score, side, px, py, yaw, floor, min(ground), max(ground), low))
-    score, side, px, py, yaw, floor, gmin, gmax, low = min(choices)
-    deck = s["levels"][0]["z"]
-    if deck - s["core_ground"] < GALLERY_CLEAR:
-        probs.add("%s: the deck is only %.1f m over the gallery (needs %.1f)" % (s["id"], deck - s["core_ground"], GALLERY_CLEAR))
-    if low is not None and low - 4.5 < floor + height:
-        probs.add("%s: a rope runs %.1f m over the vestibule's floor (it is up to %.0f m tall)" % (s["id"], low - floor, height))
-    if gmax - gmin > 6.0:
-        probs.add("%s: the ground under the vestibule falls %.1f m (a tall podium)" % (s["id"], gmax - gmin))
-    s["vestibule"] = {"at": [round(px, 3), round(py, 3)], "z": round(floor, 3), "yaw": round(yaw, 3), "side": side,
-                      "ground_min": round(gmin, 3), "ground_max": round(gmax, 3), "box": [x0, x1, y0, y1, height]}
+        return out
+    src = v
+    for d in (v.get("tower") or {}).get("decks", []):
+        if line and d.get("line") == line:
+            src = d
+            out["on_tower"] = True
+    for k, key in (("gap", "track_gap"), ("length", "edge_length"), ("stop_x", "stop_x")):
+        if isinstance(src.get(key), (int, float)):
+            out[k] = src[key] / 100.0
+    if isinstance(v.get("tower_x"), (int, float)):
+        out["tower_x"] = v["tower_x"] / 100.0
+    return out
 
 
 def _line(ln, st_by, st_built, D, probs):
     gap = D["track_gap"]
-    half_plat = D["platform_len"] / 2.0
     stops = ln["stops"]
     via = ln.get("via", {})
     # centre line: station, corners, station, ...
@@ -279,8 +258,16 @@ def _line(ln, st_by, st_built, D, probs):
     for i, sid in enumerate(stops):
         s = st_built[sid]
         level = next(l["z"] for l in s["levels"] if l["line"] == ln["id"])
-        nodes.append({"kind": "station", "id": sid, "x": s["at"][0], "y": s["at"][1],
-                      "rope": level + D["rope_over_deck"], "deck": level})
+        v = _vest(s["style"], ln["id"])
+        cx, cy = s["at"]
+        if v["on_tower"]:
+            # a deck on the vestibule's tower: the line's middle is the tower's axis (the top level's axis, tower_x)
+            top = s["levels"][-1]["line"]
+            a = _station_axis(ln_all, top, sid)
+            cx, cy = cx + a[0] * v["tower_x"], cy + a[1] * v["tower_x"]
+        nodes.append({"kind": "station", "id": sid, "x": cx, "y": cy,
+                      "rope": level + D["rope_over_deck"], "deck": level, "gap": max(gap, v["gap"]),
+                      "half_len": v["length"] / 2.0, "stop_x": v["stop_x"]})
         if i + 1 < len(stops):
             for c in via.get("%s-%s" % (sid, stops[i + 1]), []):
                 nodes.append({"kind": "corner", "x": c[0], "y": c[1]})
@@ -301,26 +288,43 @@ def _line(ln, st_by, st_built, D, probs):
             turn = math.degrees(math.acos(max(-1.0, min(1.0, dirs[0][0] * dirs[1][0] + dirs[0][1] * dirs[1][1]))))
             if turn > 75.0:
                 probs.add("%s/%s: the line turns %.0f degrees in the station (more than 75)" % (ln["id"], n["id"], turn))
-    # fixed supports along the centre line: each station's two platform ends, each corner
+    # fixed supports along the centre line: each station's two vestibule ends (the tracks G apart along the edges,
+    # on the station's axis), past them a convergence pylon where the tracks are track_gap apart again (on the way to
+    # the next support, SPREAD_DEG off it), and at an end station a turn wheel past its far end; each corner
     sup = []
     for i, n in enumerate(nodes):
-        if n["kind"] == "station":
-            ax, ay = n["axis"]
-            first, last = i == 0, i == len(nodes) - 1
-            ends = []
-            if not first:
-                ends.append(-half_plat)
-            if not last:
-                ends.append(half_plat)
-            if first:
-                ends = [half_plat]
-            if last:
-                ends = [-half_plat]
-            for e in ends:
-                sup.append({"x": n["x"] + ax * e, "y": n["y"] + ay * e, "z": n["rope"], "kind": "station",
-                            "station": n["id"], "end": "out" if e > 0 else "in"})
-        else:
+        if n["kind"] != "station":
             sup.append({"x": n["x"], "y": n["y"], "z": None, "kind": "corner"})
+            continue
+        ax, ay = n["axis"]
+        first, last = i == 0, i == len(nodes) - 1
+        L, G = n["half_len"], n["gap"]
+        run_out = (G - gap) / 2.0 / math.tan(math.radians(SPREAD_DEG))
+
+        def end(e):
+            return {"x": n["x"] + ax * e, "y": n["y"] + ay * e, "z": n["rope"], "kind": "station", "station": n["id"],
+                    "end": "out" if e > 0 else "in", "half": G / 2.0, "axis": (ax, ay)}
+
+        def converge(e, toward):
+            # on the straight from the vestibule's end toward the neighbour, far enough for SPREAD_DEG
+            ex, ey = n["x"] + ax * e, n["y"] + ay * e
+            dx, dy = _unit(toward["x"] - ex, toward["y"] - ey)
+            dist = math.hypot(toward["x"] - ex, toward["y"] - ey)
+            d = min(run_out, dist * 0.45)
+            if d < run_out - 0.5:
+                probs.add("%s/%s: only %.0f m to close the tracks (%.0f wanted)" % (ln["id"], n["id"], d, run_out))
+            return {"x": ex + dx * d, "y": ey + dy * d, "z": None, "kind": "converge", "station": n["id"]}
+
+        def wheel(e):
+            return {"x": n["x"] + ax * e, "y": n["y"] + ay * e, "z": n["rope"], "kind": "wheel", "station": n["id"],
+                    "half": gap / 2.0, "axis": (ax, ay)}
+
+        if first:
+            sup += [wheel(-L - WHEEL_RUN), end(-L), end(L), converge(L, nodes[i + 1])]
+        elif last:
+            sup += [converge(-L, nodes[i - 1]), end(-L), end(L), wheel(L + WHEEL_RUN)]
+        else:
+            sup += [converge(-L, nodes[i - 1]), end(-L), end(L), converge(L, nodes[i + 1])]
     # corner heights: on the straight line between the stations' ropes, over the clearance
     for i, s in enumerate(sup):
         if s["z"] is not None:
@@ -332,10 +336,10 @@ def _line(ln, st_by, st_built, D, probs):
         z = sup[a]["z"] + (sup[b]["z"] - sup[a]["z"]) * da / max(da + db, 1e-6)
         g = _ground(s["x"], s["y"])
         s["z"] = min(max(z, g + D["pylon_min"]), g + D["pylon_max"])
-    # auto pylons on every span between supports (station ends of one station are one rail: skip)
+    # auto pylons on every span between supports (a station's own supports, its ends, wheel and convergence, never)
     out = [sup[0]]
     for a, b in zip(sup, sup[1:]):
-        if a["kind"] == "station" and b["kind"] == "station" and a["station"] == b["station"]:
+        if a.get("station") and a.get("station") == b.get("station"):
             out.append(b)
             continue
         out.extend(_span(a, b, D, probs, ln["id"]))
@@ -343,7 +347,7 @@ def _line(ln, st_by, st_built, D, probs):
     sup = out
     pylons = []
     for i, s in enumerate(sup):
-        if s["kind"] == "station":
+        if s["kind"] in ("station", "wheel"):
             continue
         g = _ground(s["x"], s["y"])
         # the line's direction here (corners: the bisector)
@@ -357,14 +361,15 @@ def _line(ln, st_by, st_built, D, probs):
             probs.add("%s: pylon at (%.0f, %.0f) is %.1f m tall (max %.0f)" % (ln["id"], s["x"], s["y"], h, D["pylon_max"]))
         pylons.append({"x": round(s["x"], 3), "y": round(s["y"], 3), "ground": round(g, 3), "top": round(s["z"], 3),
                        "height": round(h, 3), "yaw": round(_yaw_deg(*bis), 3), "turn": round(turn, 2),
-                       "kind": "corner" if s["kind"] == "corner" or turn > 2.0 else "line"})
-    loop, stops_s, length, spans = _loop(nodes, sup, D, ln["id"])
+                       "kind": "corner" if s["kind"] == "corner" or turn > 2.0 else "line",
+                       "converge": s["kind"] == "converge"})
+    loop, stops_s, length, spans, geo = _loop(nodes, sup, D, ln["id"])
     stations = [{"id": n["id"], "yaw": round(_yaw_deg(*n["axis"]), 3), "deck": n["deck"], "rope": n["rope"]}
                 for n in nodes if n["kind"] == "station"]
     return {"id": ln["id"], "name": ln["name"], "color": ln["color"], "number": ln.get("number", 0),
             "stops": stops, "depot": ln.get("depot", stops[-1]), "stations": stations,
             "pylons": pylons, "supports": [[round(s["x"], 3), round(s["y"], 3), round(s["z"], 3)] for s in sup],
-            "loop": loop, "loop_length": round(length, 3), "stop_s": stops_s, "spans": spans}
+            "loop": loop, "loop_length": round(length, 3), "stop_s": stops_s, "spans": spans, "geo": geo}
 
 
 def _dist_along(sup, i, j):
@@ -436,17 +441,20 @@ def _span(a, b, D, probs, lid):
 
 
 def _offset(sup, i, side, gap):
-    """Support i moved sideways by side*gap/2 (right of the way out = +1), mitred at corners."""
+    """Support i moved sideways by side * its half gap (a station's own supports: square off the station's axis;
+    others: track_gap / 2, mitred at corners). One side is +normal, the other -normal."""
     s = sup[i]
+    if s.get("axis"):
+        ax, ay = s["axis"]
+        nx, ny = -ay, ax
+        k = side * s["half"]
+        return (s["x"] + nx * k, s["y"] + ny * k, s["z"])
     dirs = []
     if i > 0:
         dirs.append(_unit(s["x"] - sup[i - 1]["x"], s["y"] - sup[i - 1]["y"]))
     if i + 1 < len(sup):
         dirs.append(_unit(sup[i + 1]["x"] - s["x"], sup[i + 1]["y"] - s["y"]))
     tx, ty = _unit(sum(d[0] for d in dirs), sum(d[1] for d in dirs))
-    # right of (tx, ty) in a frame with X west and Y north, seen from above with north up and west left:
-    # (tx, ty) -> right = (ty, -tx)?  X west means the map is mirrored against a usual (east, north)
-    # frame, so right of the direction is (-ty, tx)... keep it simple: one side is +normal, the other -normal
     nx, ny = -ty, tx
     cos_half = max(0.3, abs(dirs[0][0] * tx + dirs[0][1] * ty)) if dirs else 1.0
     k = side * gap / 2.0 / cos_half
@@ -475,55 +483,58 @@ def _loop(nodes, sup, D, lid):
             i, j = order[k], order[k + 1]
             a, b = sup[i], sup[j]
             pa, pb = _offset(sup, i, side, gap), _offset(sup, j, side, gap)
-            same_station = a["kind"] == "station" and b["kind"] == "station" and a["station"] == b["station"]
+            # a station's own rail: between its two ends, and from an end to its turn wheel (no sag, no free span)
+            rail = a.get("station") and a.get("station") == b.get("station") and a["kind"] in ("station", "wheel") \
+                and b["kind"] in ("station", "wheel")
             span = math.hypot(pb[0] - pa[0], pb[1] - pa[1])
-            n = 1 if same_station else max(2, int(span / STEP))
+            n = 1 if rail else max(2, int(span / STEP))
             s_pa = None
             for m in range(n + 1):
                 t = m / n
                 z = pa[2] + (pb[2] - pa[2]) * t
-                if not same_station:
+                if not rail:
                     z -= 4.0 * t * (1.0 - t) * span * D["sag"]
                 add((pa[0] + (pb[0] - pa[0]) * t, pa[1] + (pb[1] - pa[1]) * t, z))
                 if m == 0:
                     s_pa = pts[-1][3]
-            if not same_station and span > 1.0:
+            if not rail and span > 1.0:
                 spans.append([round(s_pa, 3), round(pts[-1][3], 3)])
-            if same_station:
-                # the stop: STOP_THROUGH past the station's centre along the line, whichever way the cabin goes
-                along = span / 2.0 + STOP_THROUGH if side > 0 else span / 2.0 - STOP_THROUGH
+            if rail and a["kind"] == "station" and b["kind"] == "station":
+                # along an edge: the door (DOOR_AHEAD in front of the cabin's middle) stops at the edge's stop mark
+                # (stop_x from its middle, along the line's way out); an end station: only on the arriving edge
+                nd = next(x for x in nodes if x["kind"] == "station" and x["id"] == a["station"])
+                k_st = [x["id"] for x in nodes if x["kind"] == "station"]
+                first, last = nd["id"] == k_st[0], nd["id"] == k_st[-1]
+                arriving = (last and side > 0) or (first and side < 0)
+                if (first or last) and not arriving:
+                    continue
+                mark = span / 2.0 + (nd["stop_x"] if side > 0 else -nd["stop_x"])
                 stops.append({"station": a["station"], "dir": 0 if side > 0 else 1,
-                              "s": round(s_pa + along, 3), "end": False})
+                              "s": round(s_pa + mark - DOOR_AHEAD, 3), "end": first or last})
 
-    def turn(i, side_from, facing_out):
-        """Half circle round station node i's turn wheel, beyond its platform end, from track side_from to
-        the other; the stop is at its apex."""
+    def turn(i, side_from):
+        """Half circle round the turn wheel at support i, from track side_from to the other, through the far side."""
         s = sup[i]
+        ax, ay = s["axis"]
         n = next(nd for nd in nodes if nd["kind"] == "station" and nd["id"] == s["station"])
-        ax, ay = n["axis"]
-        if not facing_out:
+        # the far side: away from the station's middle
+        if (s["x"] - n["x"]) * ax + (s["y"] - n["y"]) * ay < 0:
             ax, ay = -ax, -ay
-        cx, cy = n["x"], n["y"]          # the wheel turns round the station's centre
-        nx, ny = -n["axis"][1], n["axis"][0]
+        nx, ny = -s["axis"][1], s["axis"][0]
         r = gap / 2.0
         steps = 12
-        # the stop: on the way in, STOP_END before the centre (the wheel turns round the centre)
-        stops.append({"station": n["id"], "dir": 0 if side_from > 0 else 1,
-                      "s": round(pts[-1][3] + D["platform_len"] / 2.0 - STOP_END, 3), "end": True})
-        # start angle: at +side normal, sweeping through the far axis
         for m in range(steps + 1):
             a = math.pi * m / steps
-            # vector = side_from*normal*cos(a) + far_axis*sin(a)
-            vx = side_from * nx * math.cos(a) + ax * math.sin(a) * 1.0
-            vy = side_from * ny * math.cos(a) + ay * math.sin(a) * 1.0
-            add((cx + vx * r, cy + vy * r, n["rope"]))
+            vx = side_from * nx * math.cos(a) + ax * math.sin(a)
+            vy = side_from * ny * math.cos(a) + ay * math.sin(a)
+            add((s["x"] + vx * r, s["y"] + vy * r, s["z"]))
 
     idx = list(range(len(sup)))
-    # out: first station's platform end ... last station's platform end, on side +1
+    # out: from the first station's wheel to the last one's, on side +1; round its wheel; back on side -1
     run(+1, idx)
-    turn(len(sup) - 1, +1, True)
+    turn(len(sup) - 1, +1)
     run(-1, list(reversed(idx)))
-    turn(0, -1, False)
+    turn(0, -1)
     # close the loop
     first = pts[0]
     add((first[0], first[1], first[2]))
@@ -531,7 +542,32 @@ def _loop(nodes, sup, D, lid):
     pts[-1][3] = length
     loop = [[round(v, 3) for v in p] for p in pts]
     stops.sort(key=lambda s: s["s"])
-    return loop, stops, length, spans
+    # per station: what the game builds (its gap, edges, stop mark, wheel, and the sheaves where the ropes bend)
+    geo = {}
+    for nd in nodes:
+        if nd["kind"] != "station":
+            continue
+        g = {"centre": [round(nd["x"], 3), round(nd["y"], 3)], "yaw": round(_yaw_deg(*nd["axis"]), 3),
+             "gap": round(nd["gap"], 3), "edge": round(nd["gap"] / 2.0 - EDGE_IN, 3), "length": round(nd["half_len"] * 2.0, 3),
+             "stop_x": round(nd["stop_x"], 3), "rope": round(nd["rope"], 3), "wheel": None, "sheaves": []}
+        for i, sp in enumerate(sup):
+            if sp.get("station") != nd["id"]:
+                continue
+            if sp["kind"] == "wheel":
+                g["wheel"] = [round(sp["x"], 3), round(sp["y"], 3), round(sp["z"], 3)]
+                continue
+            if i == 0 or i + 1 >= len(sup):
+                continue
+            for side in (1, -1):
+                p0, p1, p2 = (_offset(sup, k, side, gap) for k in (i - 1, i, i + 1))
+                d1 = _unit(p1[0] - p0[0], p1[1] - p0[1])
+                d2 = _unit(p2[0] - p1[0], p2[1] - p1[1])
+                ang = math.degrees(math.atan2(d1[0] * d2[1] - d1[1] * d2[0], d1[0] * d2[0] + d1[1] * d2[1]))
+                g["sheaves"].append({"at": [round(p1[0], 3), round(p1[1], 3)], "z": round(sp["z"], 3), "side": side,
+                                     "kind": sp["kind"], "turn_deg": round(ang, 2),
+                                     "yaw": round(_yaw_deg(d1[0] + d2[0], d1[1] + d2[1]), 3)})
+        geo[nd["id"]] = g
+    return loop, stops, length, spans, geo
 
 
 def report(b):

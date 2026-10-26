@@ -159,7 +159,17 @@ def step(w, dt):
             if S["pt"] > at and not S.get(name):
                 S[name] = True
                 shot(w, name)
-        if S["pt"] > 6.0:
+        # the route-diagram posters on the inside wall
+        for k, poster in enumerate(c.posters):
+            at = 6.5 + k * 1.5
+            if S["pt"] > at - 0.8 and not S.get("poster%d_aim" % k):
+                S["poster%d_aim" % k] = True
+                look_at(pc, pawn, poster.get_world_location())
+            if S["pt"] > at and not S.get("poster%d" % k):
+                S["poster%d" % k] = True
+                shot(w, "inside_poster_%d" % k)
+        if S["pt"] > 6.5 + 1.5 * len(c.posters):
+            log("posters inside: %d" % len(c.posters))
             S["phase"], S["pt"], S["last"], S["lp"] = "riding", 0.0, 0.0, -1
     elif ph == "riding":
         c = S["cabin"]

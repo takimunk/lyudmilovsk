@@ -458,6 +458,60 @@ def bake_procedural(o, slots, size):
     bpy.data.images.remove(dummy)
 
 
+POSTER_W, POSTER_H = 0.56, 0.315         # m, the route diagram's 16:9
+
+
+def poster_spots(shell, centre=Vector((0.0, 0.0, 1.0))):
+    """Places on the inside wall for the route-diagram posters: a 0.56 x 0.315 m rectangle (leaning with the wall)
+    whose middle, corners and edge middles all land on wall (not a window or the door) within 8 cm of its plane.
+    Tried round the room at a seated person's eye height and above; returns at most two, the farthest apart
+    (middle, inward normal, size, in the frame above)."""
+    bm = bmesh.new()
+    bm.from_mesh(shell.data)
+    bvh = BVHTree.FromBMesh(bm)
+    found = []
+    for k in range(36):
+        a = 2 * math.pi * k / 36
+        d = Vector((math.cos(a), math.sin(a), 0.0))
+        if d.y > 0.5:
+            continue                               # the door's side: the door and its windows
+        for z in (1.25, 1.4, 1.55, 1.7):
+            hit = bvh.ray_cast(Vector((0.0, 0.0, z)), d, 4.0)
+            if hit[0] is None:
+                continue
+            n = hit[1] if hit[1].dot(d) > 0 else -hit[1]
+            n = n.normalized()                     # outward
+            if abs(n.z) > 0.45:
+                continue
+            u = Vector((0, 0, 1)).cross(n).normalized()
+            v = n.cross(u).normalized()
+            c = hit[0]
+            ok = True
+            for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1), (0, 1), (0, -1), (1, 0), (-1, 0)):
+                p = c + u * (i * POSTER_W / 2) + v * (j * POSTER_H / 2)
+                h = bvh.ray_cast(p - n * 0.3, n, 0.5)
+                if h[0] is None or abs((h[0] - p).dot(n)) > 0.08:
+                    ok = False
+                    break
+            if ok:
+                # in front of the deepest point of the wall under it
+                depth = min((bvh.ray_cast(c + u * (i * POSTER_W / 2) + v * (j * POSTER_H / 2) - n * 0.3, n, 0.5)[0] - c).dot(n)
+                            for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1), (0, 0)))
+                found.append((c + n * (depth - 0.015), -n, v))
+                break
+    bm.free()
+    best = None
+    for i in range(len(found)):
+        for j in range(i + 1, len(found)):
+            dist = (found[i][0] - found[j][0]).length
+            if best is None or dist > best[0]:
+                best = (dist, [found[i], found[j]])
+    pick = best[1] if best else found[:1]
+    print("CABIN poster spots", len(found), "->", len(pick))
+    return [{"at": [round(x, 3) for x in at], "normal": [round(x, 3) for x in nrm], "up": [round(x, 3) for x in up],
+             "w": POSTER_W, "h": POSTER_H} for at, nrm, up in pick]
+
+
 def chaikin(poly, rounds=3):
     for _ in range(rounds):
         out = []
@@ -669,6 +723,7 @@ def build(o, ctx):
     m_chrome = mat("TR_Chrome", (0.85, 0.85, 0.87, 1), 0.2, 1.0)
     m_glow = mat("TR_Glow", (1.0, 0.82, 0.55, 1), emit=True)
 
+    skin = hull_bm.copy()                        # the hull's surface, for the glass
     shell = to_object("SM_TR_Cabin", hull_bm, [])
     m_paint = bake(src, shell, TEX_SIZE)
     shell.data.materials.append(m_room)
@@ -680,6 +735,7 @@ def build(o, ctx):
     bpy.context.scene.collection.objects.link(whole)
     cutters = to_object("cutters", cut_bm, [m_chrome])
     boolean(shell, cutters, "DIFFERENCE")
+    posters = poster_spots(shell)
     # the leaf: the shell inside the door outline, a hair smaller than the opening
     door_cut = to_object("door_cut", door_bm, [m_chrome])
     for v in door_cut.data.vertices:
@@ -689,22 +745,34 @@ def build(o, ctx):
     whole.name = whole.data.name = "SM_TR_CabinDoor"
     leaf = whole
 
-    # glass: each window's outline filled and laid on the hull, half a wall in, glazed both ways
+    # glass: the hull's own surface, half a wall in, cut to exactly the windows' openings (the same prisms), so each
+    # pane follows the egg's curve and fills its hole (a flat pane laid on along one direction stuck out of the
+    # wrap-round windscreen); glazed both ways
+    for v in skin.verts:
+        v.co -= v.normal * (WALL * 0.5)
+    pane_bm = bmesh.new()
+    for poly, frame in panes:
+        prism(pane_bm, poly, frame, -0.35, 0.30)
+    glass_skin = to_object("glass", skin, [m_glass])
+    pane_cut = to_object("pane_cut", pane_bm, [m_chrome])
+    mod = glass_skin.modifiers.new("panes", "BOOLEAN")
+    mod.operation = "INTERSECT"
+    mod.solver = "EXACT"
+    mod.use_hole_tolerant = True
+    mod.material_mode = "TRANSFER"
+    mod.object = pane_cut
+    bpy.context.view_layer.objects.active = glass_skin
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    bpy.data.objects.remove(pane_cut)
     gb = bmesh.new()
-    for poly, (o3, u, v, n) in panes:
-        vs = [gb.verts.new(o3 + u * p.x + v * p.y) for p in poly]
-        f = gb.faces.new(vs)
-        tri = bmesh.ops.triangulate(gb, faces=[f], quad_method="BEAUTY", ngon_method="BEAUTY")
-        edges = list({e for t in tri["faces"] for e in t.edges})
-        bmesh.ops.subdivide_edges(gb, edges=edges, cuts=2, use_grid_fill=True)
-    gb.verts.ensure_lookup_table()
-    for vert in gb.verts:
-        # onto the hull along the window's normal (the nearest pane's)
-        best = min(panes, key=lambda pf: (vert.co - pf[1][0]).length)
-        n = best[1][3]
-        hit = hull_bvh.ray_cast(vert.co + n * 0.6, -n, 1.2)
-        if hit[0] is not None:
-            vert.co = hit[0] - n * (WALL * 0.5)
+    gb.from_mesh(glass_skin.data)
+    bpy.data.objects.remove(glass_skin)
+    # the egg is closed, so the intersection is a solid: drop the prisms' own walls and caps inside it (they stood in
+    # the room like boxes behind the windows), keep only the skin
+    stray = [f for f in gb.faces if f.material_index != 0]
+    bmesh.ops.delete(gb, geom=stray, context="FACES")
+    for f in gb.faces:
+        f.material_index = 0
     back = bmesh.ops.duplicate(gb, geom=list(gb.faces))
     bmesh.ops.reverse_faces(gb, faces=[e for e in back["geom"] if isinstance(e, bmesh.types.BMFace)])
     gl = to_object("glass", gb, [m_glass])
@@ -834,6 +902,7 @@ def build(o, ctx):
             "board": [round(door_x, 3), round(wall_y - 0.05, 3), round(DOOR_H + 0.12, 3)],
             "plate": [round(door_x + DOOR_W / 2 + 0.75, 3), round(side_y + 0.02, 3), 0.55],
             "seats": seats,
+            "posters": posters,
         },
         "collision": col,
         "tris": {k: tris(v) for k, v in parts.items()},

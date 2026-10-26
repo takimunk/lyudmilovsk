@@ -34,6 +34,25 @@ namespace LyudTransport
 		float Z = 0.f;              // the deck of this line's platform
 	};
 
+	/** A sheave where a station's ropes bend (its vestibule's ends, the convergence pylons): map metres. */
+	struct FSheave
+	{
+		float X = 0.f, Y = 0.f, Z = 0.f, Yaw = 0.f, Turn = 0.f;
+		int Side = 0;
+		bool bConverge = false;
+	};
+
+	/** A station's rope on one line (network_built "geo"): the tracks G apart along its vestibule's edges. */
+	struct FStationGeo
+	{
+		bool bValid = false;
+		float CX = 0.f, CY = 0.f, Yaw = 0.f;            // the line's middle at the station (map) and its axis
+		float Gap = 0.f, Edge = 0.f, Length = 0.f, StopX = 0.f, Rope = 0.f;
+		bool bWheel = false;
+		V3 Wheel;
+		std::vector<FSheave> Sheaves;
+	};
+
 	struct FStation
 	{
 		std::string Id, Name, Style;
@@ -50,6 +69,7 @@ namespace LyudTransport
 		bool bHasVest = false;
 		float VestX = 0.f, VestY = 0.f, VestZ = 0.f, VestYaw = 0.f, VestGroundMin = 0.f;
 		int SchemaX = 0, SchemaY = 0; bool bHasSchema = false;
+		std::vector<FStationGeo> Geo;   // per line (index = line)
 	};
 
 	struct FStop

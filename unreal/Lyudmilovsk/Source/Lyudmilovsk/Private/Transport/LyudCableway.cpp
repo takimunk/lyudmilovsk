@@ -209,6 +209,17 @@ void ALyudCableway::KitMaterials(UStaticMeshComponent* C)
 		{
 			C->SetMaterial(I, Mat(TEXT("plaster")));
 		}
+		else if (N.StartsWith(TEXT("TR_Tx_")))
+		{
+			// the stations' own textured surfaces on the vestibules' and towers' metre UVs (M_TR_Surface)
+			FString Name = N.Mid(6);
+			int32 Cut = INDEX_NONE;
+			if (Name.FindChar(TEXT('_'), Cut))
+			{
+				Name.LeftInline(Cut);
+			}
+			C->SetMaterial(I, Mat(FName(*(TEXT("tx_") + Name.ToLower()))));
+		}
 		else if (N.StartsWith(TEXT("TR_")))
 		{
 			// the cabin's inside (cabin.py): TR_Terrazzo, TR_Seat, TR_Chrome, TR_Glow -> the palette's own
@@ -424,16 +435,19 @@ FTransform ALyudCableway::WaitSpot(int32 Station, int32 Line, int32 K) const
 	const FLyudBuiltStation& B = Built[Station];
 	int32 Lv = B.DeckLines.Find(Line);
 	Lv = Lv == INDEX_NONE ? 0 : Lv;
-	if (!B.Decks.IsValidIndex(Lv) || !B.Panels.IsValidIndex(Lv))
+	if (!B.Decks.IsValidIndex(Lv) || !Transport || !Transport->GetNet())
 	{
 		return FTransform::Identity;
 	}
+	// along the two edges by the stop mark, a little in from the edge, facing the track
+	const LyudTransport::FStation& St = Transport->GetNet()->Stations[Station];
+	const LyudTransport::FStationGeo* Geo = SimValid(St.Geo, Line) && St.Geo[Line].bValid ? &St.Geo[Line] : nullptr;
+	const float Edge = Geo ? Geo->Edge * 100.f : IslandHalf;
+	const float Stop = Geo ? Geo->StopX * 100.f : 0.f;
 	const FTransform& F = B.Decks[Lv];
-	const FVector Panel = F.InverseTransformPosition(B.Panels[Lv].GetLocation());
-	// along the platform's two edges by the stop, facing the tracks
 	const float Side = (K % 2) ? 1.f : -1.f;
-	const float X = Panel.X + ((K / 2) % 2 ? -1.f : 1.f) * (90.f + 70.f * (K / 4));
-	const FVector P = F.TransformPosition(FVector(X, Side * (IslandHalf - 110.f), 0.f));
+	const float X = Stop + ((K / 2) % 2 ? -1.f : 1.f) * (90.f + 70.f * (K / 4));
+	const FVector P = F.TransformPosition(FVector(X, Side * (Edge - 110.f), 0.f));
 	return FTransform(FRotator(0.f, F.Rotator().Yaw + Side * 90.f, 0.f), P);
 }
 
@@ -556,6 +570,24 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 		AddInstanceComponent(Gate);
 		Lamp->SetRelativeLocation(R.Lamp);
 		Inside->SetBoxExtent(FVector(R.EndX, R.WallY, 105.f));
+		// posters of the route diagram on the inside wall (kit.json sockets.posters), drawn by the game in the
+		// player's language, not painted into a texture
+		for (const FCabinKit::FPoster& P : R.Posters)
+		{
+			UWidgetComponent* W = NewObject<UWidgetComponent>(this);
+			W->SetupAttachment(Root);
+			W->SetWidgetSpace(EWidgetSpace::World);
+			W->SetDrawSize(FVector2D(1600.f, 900.f));
+			W->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			W->SetBlendMode(EWidgetBlendMode::Opaque);
+			W->RegisterComponent();
+			W->SetRelativeLocation(P.At);
+			W->SetRelativeRotation(FRotationMatrix::MakeFromXZ(P.Normal, P.Up).Rotator());
+			W->SetRelativeScale3D(FVector(P.W / 1600.f));
+			W->SetSlateWidget(SNew(SLyudTransitDiagram).bLive(false).bBoard(false));
+			AddInstanceComponent(W);
+			Posters.Add(W);
+		}
 	}
 	Drive(GetActorLocation() + FVector(0, 0, Kit().CabinGrip - Kit().CabinFloor), FVector::ForwardVector, 0.f, 0.f);
 
