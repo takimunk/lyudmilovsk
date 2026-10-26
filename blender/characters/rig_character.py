@@ -147,9 +147,21 @@ def optimize(m, spec):
         if l.to_socket in (bsdf.inputs["Metallic"], bsdf.inputs["Roughness"]):
             mat.node_tree.links.remove(l)
     bsdf.inputs["Metallic"].default_value = 0.0
-    if high is not None:
+    if high is not None:                                     # baked at the end, on the final face (face_rig.py
+        high.hide_render = True                              # subdivides and rounds it)
+        PENDING_BAKE[:] = [high, mat, bsdf, tex]
+
+
+PENDING_BAKE = []
+
+
+def bake_pending(m):
+    if PENDING_BAKE:
+        high, mat, bsdf, tex = PENDING_BAKE
+        high.hide_render = False
         bake_normal(m, high, mat, bsdf, tex)
         bpy.data.objects.remove(high)
+        PENDING_BAKE.clear()
 
 
 def bake_normal(low, high, mat, bsdf, size):
@@ -518,7 +530,8 @@ def finish(model, arm, cid):
     model.select_set(True)
     bpy.context.view_layer.objects.active = arm
     bpy.ops.export_scene.gltf(filepath=out, use_selection=True, export_format="GLB", export_skins=True,
-                              export_morph=True, export_morph_normal=True, export_animations=False, export_def_bones=False, export_yup=True,
+                              export_morph=True, export_morph_normal=True, export_animations=False,
+                              export_vertex_color="ACTIVE", export_all_vertex_colors=False, export_def_bones=False, export_yup=True,
                               export_apply=False, export_image_format="AUTO", export_jpeg_quality=90)
     log("wrote %s (%d verts, %d faces, %d groups)" % (os.path.relpath(out, ROOT), len(model.data.vertices),
                                                         len(model.data.polygons), len(model.vertex_groups)))
@@ -601,7 +614,10 @@ def main():
     transfer_weights(model, body, arm, spec.get("skirt"))
     if spec.get("face", {}).get("rig", True):
         import face_rig
-        face_rig.build(model, arm, cid, spec)
+        marks = face_rig.build(model, arm, cid, spec)
+        if PENDING_BAKE and spec.get("face", {}).get("eyes", True):
+            face_rig.smooth_eyes(PENDING_BAKE[0], marks["eyes"], iterations=8)
+    bake_pending(model)
     if "--preview" in argv:
         body.hide_render = True
         preview(model, arm, cid)

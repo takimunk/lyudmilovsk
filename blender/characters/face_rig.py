@@ -125,9 +125,10 @@ def faces_uv(me):
     return out
 
 
-def subdivide_near(model, centres, front_y):
-    """Subdivides (twice) the front faces whose centre is near any of `centres` [(x, z, rx, rz)]."""
-    for _ in range(2):
+def subdivide_near(model, centres, front_y, levels=2, smooth=0.0):
+    """Subdivides (`levels` times) the front faces whose centre is near any of `centres` [(x, z, rx, rz)]; smooth > 0
+    rounds the new vertices onto the surface's curve (the face's low-poly facets)."""
+    for _ in range(levels):
         bm = bmesh.new()
         bm.from_mesh(model.data)
         sel = set()
@@ -140,7 +141,7 @@ def subdivide_near(model, centres, front_y):
                     for e in f.edges:
                         sel.add(e)
                     break
-        bmesh.ops.subdivide_edges(bm, edges=list(sel), cuts=1, use_grid_fill=True, use_single_edge=False)
+        bmesh.ops.subdivide_edges(bm, edges=list(sel), cuts=1, use_grid_fill=True, use_single_edge=False, smooth=smooth)
         bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 4])
         bm.to_mesh(model.data)
         bm.free()
@@ -175,11 +176,19 @@ def build(model, arm, cid, spec):
         return loc.y if loc is not None else 0.0
     eyes = marks["eyes"]
     m = marks["mouth"]
+    for e in eyes:
+        e["surface_y"] = round(surf_y(e["x"], e["z"]), 4)
     regions = [(m["x"], m["z"], m["w"] * 0.7, 0.016 * k)]
     if with_eyes:
         regions += [(e["x"], e["z"], e["w"] * 0.8, e["h"] * 1.5 + 0.004) for e in eyes]
     face_y = surf_y(m["x"], (eyes[0]["z"] + m["z"]) / 2) + 0.05
-    subdivide_near(model, regions, lambda x, z: face_y)
+    # the whole face once (24k triangles leave facets a key light shows; rounding them with smooth > 0 puffed up the
+    # lids), then the eyes and the mouth once more; the normal map is baked afterwards, on this final face
+    mid_z = (eyes[0]["z"] + m["z"]) / 2
+    subdivide_near(model, [(m["x"], mid_z, 0.075 * k, 0.095 * k)], lambda x, z: face_y, levels=1)
+    subdivide_near(model, regions, lambda x, z: face_y, levels=1)
+    if with_eyes:
+        smooth_eyes(model, eyes, iterations=2)
     lower = part_lips(model, m, k, face_y)
     mouth_bag(model, m, k, surf_y(m["x"], m["z"]))
     tree = BVHTree.FromObject(model, bpy.context.evaluated_depsgraph_get(), deform=False)
@@ -189,8 +198,50 @@ def build(model, arm, cid, spec):
             e["uv"] = eye_uv(me, fuv, tree, e)
             e["surface_y"] = round(surf_y(e["x"], e["z"]), 4)
         json.dump(marks, open(os.path.join(HERE, cid, "face_marks.json"), "w"), indent=1)
+    if with_eyes:
+        eye_mask(model, eyes)
     shape_keys(model, marks, k, tree0, with_eyes, lower)
     return marks
+
+
+def smooth_eyes(model, eyes, iterations=4, factor=0.5, grow=1.5):
+    """Irons the relief out of the eye openings and the lids (hi3d sculpts ragged ridges there that a key light turns
+    into torn lids and hard rings); the painted eye carries the look. Also run on the bake's high copy, so the normal
+    map doesn't bring the ridges back."""
+    bm = bmesh.new()
+    bm.from_mesh(model.data)
+    verts = []
+    for v in bm.verts:
+        for e in eyes:
+            sy = e.get("surface_y")
+            if ((v.co.x - e["x"]) / (e["w"] / 2 * grow)) ** 2 + ((v.co.z - e["z"]) / (e["h"] / 2 * grow + 0.004)) ** 2 < 1.0 \
+                    and (sy is None or abs(v.co.y - sy) < 0.015):
+                verts.append(v)
+                break
+    for _ in range(iterations):
+        bmesh.ops.smooth_vert(bm, verts=verts, factor=factor, use_axis_x=True, use_axis_y=True, use_axis_z=True)
+    bm.to_mesh(model.data)
+    bm.free()
+    model.data.update()
+    log("eyes: %d vertices smoothed (%s)" % (len(verts), model.name))
+
+
+def eye_mask(model, eyes):
+    """Vertex colour EyeMask: red = the left eye's opening, green = the right's (1 inside, fading out to the lids), for
+    M_HumanFace's iris slide. A mask in texture space caught the neighbouring UV islands too (a crease over the nose)."""
+    me = model.data
+    attr = me.color_attributes.new("EyeMask", "BYTE_COLOR", "POINT")
+    co = np.array([v.co[:] for v in me.vertices])
+    col = np.zeros((len(co), 4), np.float32)
+    col[:, 3] = 1.0
+    for ch, e in enumerate(eyes):
+        r = np.sqrt(((co[:, 0] - e["x"]) / (e["w"] / 2)) ** 2 + ((co[:, 2] - e["z"]) / (e["h"] / 2)) ** 2)
+        front = np.abs(co[:, 1] - e["surface_y"]) < 0.01
+        col[:, ch] = np.where(front, 1.0 - smooth((r - 0.55) / 0.4), 0.0)
+    attr.data.foreach_set("color", col.ravel())
+    me.color_attributes.active_color = attr
+    me.color_attributes.render_color_index = me.color_attributes.find("EyeMask")
+    log("eye mask: %d / %d vertices" % (int((col[:, 0] > 0.01).sum()), int((col[:, 1] > 0.01).sum())))
 
 
 def part_lips(model, m, k, face_y):

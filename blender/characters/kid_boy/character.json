@@ -6,5 +6,9 @@
  "donor": "blender/humans/export/human_kid_boy.glb",
  "faces": 18000,
  "texture": 2048,
- "bake_normal": true
+ "bake_normal": true,
+ "face": {
+  "normal_strength": 0.45,
+  "_doc_normal": "the baked eye bags / lids read as hard rings under a key light: M_HumanFace NormalStrength lowered"
+ }
 }

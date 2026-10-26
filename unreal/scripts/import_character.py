@@ -88,7 +88,11 @@ def eye_params(mi, cid):
         mel.set_material_instance_vector_parameter_value(
             mi, "Eye%s_C" % side, unreal.LinearColor(uv["centre"][0], uv["centre"][1], e["w"] / 2, e["h"] / 2))
         mel.set_material_instance_vector_parameter_value(mi, "Eye%s_J" % side, unreal.LinearColor(a, b, c, d))
-    log("  eyes: opening parameters from face_marks.json")
+    spec = os.path.join(ROOT, "blender", "characters", cid, "character.json")
+    ns = json.load(open(spec)).get("face", {}).get("normal_strength") if os.path.isfile(spec) else None
+    if ns is not None:
+        mel.set_material_instance_scalar_parameter_value(mi, "NormalStrength", float(ns))
+    log("  eyes: opening parameters from face_marks.json%s" % (", normal strength %s" % ns if ns is not None else ""))
 
 
 def import_character(cid):

@@ -121,14 +121,19 @@ weights before importing.
    (dark iris-sized blobs, a difference of Gaussians), the openings (how far the colour stays off the cheeks'), the lip
    line (the darkest row under the nose) and the iris colour -> `blender/characters/<id>/face_marks.json`, debug
    picture `renders/characters/<id>_face.png`. Glasses fool it: give `marks` by hand.
-2. The face round the eyes and the mouth is subdivided twice (+3-8k triangles).
+2. The face's front is subdivided once and the eyes and mouth once more (+3-8k triangles); the eye openings and lids
+   are smoothed (hi3d sculpts ragged ridges there that a key light shows as torn lids and hard rings), on the low mesh
+   and on the bake's 400k copy; the **normal map is baked last**, on this final face (baked before, the subdivided
+   face's tangents no longer matched it: facets and glossy streaks). `face.normal_strength` in character.json lowers
+   M_HumanFace's NormalStrength (default 0.75) where the baked eye bags still read too hard (Owner 0.4, Kid_boy 0.45).
 3. **Lips**: the face is cut along the lip line across the mouth and split; a dark sheet behind (UV on the texture's
    darkest 9x9 block, skinned to the head, always behind the skin) is the inside of the mouth.
 4. **Morph targets**: `eyeBlinkLeft/Right` (the painted eye squeezed into the lower lid line, the upper lid's skin
    following), `jawOpen` (14 deg about a hinge under the ears; the lower lip drops most in the middle), `mouthFunnel`,
    `mouthSmile`, `browUp`.
-5. **Eyes look about** in the material: `M_HumanFace` reads the texture shifted inside each opening (fading out toward
-   the lids), so the painted iris slides. Real eyeballs cut into the paint were tried and looked like ping-pong balls.
+5. **Eyes look about** in the material: `M_HumanFace` reads the texture shifted inside each opening, so the painted
+   iris slides; where is the vertex colour `EyeMask` (red left, green right, fading toward the lids). A mask in texture
+   space caught the UV islands packed next to the eye's (a crease over Girl_b's nose). Real eyeballs cut into the paint were tried and looked like ping-pong balls.
 
 At run time (`ULyudBodyAnimInstance`): blinks every 2-6 s (sometimes double, more while talking), eyes shut in sleep;
 looks at the player now and then (2-6 s on, 3-8 s off, within 6 m and 70 deg), otherwise about; the head turns part of

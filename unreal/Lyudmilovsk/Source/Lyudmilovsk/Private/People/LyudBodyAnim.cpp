@@ -334,6 +334,10 @@ void ULyudBodyAnimInstance::UpdateBlink(USkeletalMeshComponent* Mesh)
 		if (Clock >= BlinkAt)
 		{
 			BlinkStart = Clock;
+			if (CVarFaceLog.GetValueOnAnyThread())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("LyudFace %s: blink at %.2f s"), *GetNameSafe(Mesh->GetSkeletalMeshAsset()), Clock);
+			}
 			// now and then a double blink; more often while talking
 			bDouble = Rng.FRand() < 0.12f;
 			BlinkAt = Clock + (bDouble ? 0.32f : Rng.FRandRange(2.f, 6.f) * (SpeakStart >= 0.f || bChatter ? 0.7f : 1.f));
