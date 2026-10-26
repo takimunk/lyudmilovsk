@@ -167,7 +167,11 @@ def resolve(src=None, log=print):
         v = _vest(s["style"])
         lid = s["levels"][-1]["line"] if s["levels"] else None
         s["vestibule"] = {"at": s["at"], "z": s["levels"][-1]["z"] if s["levels"] else s["deck"],
-                          "yaw": s["axes"].get(lid, 0.0) if lid else 0.0, "gap": v["gap"], "length": v["length"]}
+                          "yaw": s["axes"].get(lid, 0.0) if lid else 0.0, "gap": v["gap"], "length": v["length"],
+                          # the ground kept flat round the tower (its podium: the shaft's outline + 3 m) and the ground
+                          # kept clear of trees (that, or under the whole vestibule overhead when it is wider)
+                          "core": s["core"], "podium_r": round(v["tower_r"] + 3.0, 2),
+                          "clear_r": round(max(v["tower_r"] + 3.0, v["radius"] + 1.0), 2)}
         s["geo"] = {}
         for ln in lines:
             if ln["id"] in s["lines"]:
@@ -230,7 +234,8 @@ def _vest(style, line=None):
     """The vestibule's numbers for the rope (vestibules.json v2, UE cm; defaults when it has none): G, the edges'
     length, where the cabins' doors stop along an edge (from its middle), the tower along the axis. A line served by a
     deck on the vestibule's tower (tower.decks, Zenit's Sun line): that deck's numbers, centred on the tower's axis."""
-    out = {"gap": VEST_GAP, "length": VEST_LEN, "stop_x": 0.0, "tower_x": 0.0, "on_tower": False}
+    out = {"gap": VEST_GAP, "length": VEST_LEN, "stop_x": 0.0, "tower_x": 0.0, "on_tower": False,
+           "tower_r": 4.0, "radius": VEST_GAP / 2.0}
     try:
         with open(VESTIBULES) as f:
             v = json.load(f)[style.lower()]
@@ -246,6 +251,14 @@ def _vest(style, line=None):
             out[k] = src[key] / 100.0
     if isinstance(v.get("tower_x"), (int, float)):
         out["tower_x"] = v["tower_x"] / 100.0
+    # the tower's outline (its street door's wall from the axis) and the vestibule's reach (its bounds' half diagonal)
+    door = (v.get("tower") or {}).get("door") or {}
+    wall = door.get("wall") or [None, door.get("at")]
+    if isinstance(wall[-1], (int, float)):
+        out["tower_r"] = wall[-1] / 100.0
+    b = v.get("bounds")
+    if b and len(b) == 2:
+        out["radius"] = math.hypot(abs(b[1][0] - b[0][0]), abs(b[1][1] - b[0][1])) / 200.0
     return out
 
 

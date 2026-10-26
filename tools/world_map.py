@@ -303,16 +303,14 @@ def cable_car():
     if not b:
         return out
     out["towers"] = [(p["x"], p["y"]) for ln in b["lines"] for p in ln["pylons"]]
-    # the vestibules' middles (their footprint is ~22 m square beside the line, docs/transport.md)
+    # the stations' towers and vestibules (docs/transport.md "Stations v2"): (x, y, podium radius, clear radius) in metres;
+    # the podium's ground is kept flat, the vestibule's reach free of trees
     out["vestibules"] = []
     for s in b["stations"]:
         v = s.get("vestibule")
-        if v and "box" in v:
-            a = math.radians(v["yaw"])
-            x0, x1 = v["box"][0], v["box"][1]
-            out["vestibules"].append((v["at"][0] + math.cos(a) * (x0 + x1) * 0.5, v["at"][1] + math.sin(a) * (x0 + x1) * 0.5))
-        elif v:   # stations v2: the vestibule stands on the station's tower, centred on "at"
-            out["vestibules"].append(tuple(v["at"][:2]))
+        if v:
+            c = v.get("core", v["at"])
+            out["vestibules"].append((c[0], c[1], v.get("podium_r", 7.0), v.get("clear_r", 13.0)))
     out["lines"] = [[(p[0], p[1]) for p in ln["supports"]] for ln in b["lines"]]
     for ln in b["lines"]:
         sup = [tuple(p) for p in ln["supports"]]
@@ -331,8 +329,8 @@ def near_cable(x, y, r):
     for sx, sy in cc["stations"]:
         if math.hypot(x - sx, y - sy) < r + STATION_FLAT:
             return True
-    for vx, vy in cc.get("vestibules", []):
-        if math.hypot(x - vx, y - vy) < r + 16.0:
+    for vx, vy, _, vr in cc.get("vestibules", []):
+        if math.hypot(x - vx, y - vy) < r + vr:
             return True
     for pts in cc["lines"]:
         for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
@@ -614,8 +612,8 @@ def keep_flat(x, y):
         k = max(k, _ramp(math.hypot(x - sx, y - sy), STATION_FLAT, 6.0))
     for tx, ty in cc["towers"]:
         k = max(k, _ramp(math.hypot(x - tx, y - ty), 4.0, 3.0))
-    for vx, vy in cc.get("vestibules", []):
-        k = max(k, _ramp(math.hypot(x - vx, y - vy), 15.0, 5.0))
+    for vx, vy, vr, _ in cc.get("vestibules", []):
+        k = max(k, _ramp(math.hypot(x - vx, y - vy), vr, 4.0))
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
     k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))

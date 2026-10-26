@@ -1003,12 +1003,44 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				AddInstanceComponent(Lt);
 			}
 			B.Room = FTransform(C.GetRotation(), C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, 100.f)));
-			if (V->HasField(TEXT("core_in_room")) && V->GetBoolField(TEXT("core_in_room")) && B.StopSides.Num())
+			if (V->HasField(TEXT("core_in_room")) && V->GetBoolField(TEXT("core_in_room")) && B.StopSides.Num() &&
+				FVector::Dist2D(B.Room.GetLocation(), B.Core.GetLocation()) < TowerHalf + 150.f)
 			{
-				// the core stands in the middle: 2.5 m out of its way out, looking back at it
-				const int32 E = B.StopSides.Last();
-				const FVector At = B.Core.TransformPosition(SideOut(E) * (TowerHalf + 250.f) + FVector(0, 0, B.Stops.Last() + 100.f));
-				B.Room = FTransform((B.Core.GetLocation() - At).GetSafeNormal2D().Rotation(), At);
+				// the core stands in the middle: a free spot on the floor in the ring round it (its way out first, as far
+				// out as the room's box lets), looking along the ring (a narrow hall leaves room on one side only)
+				const int32 E0 = B.StopSides.Last();
+				FVector Lo(-300.f, -300.f, 0.f), Hi(300.f, 300.f, 0.f);
+				const TArray<TSharedPtr<FJsonValue>>* RoomBox = nullptr;
+				if ((*Room)->TryGetArrayField(TEXT("box"), RoomBox) && RoomBox->Num() == 2)
+				{
+					const TArray<TSharedPtr<FJsonValue>>& L0 = (*RoomBox)[0]->AsArray();
+					const TArray<TSharedPtr<FJsonValue>>& L1 = (*RoomBox)[1]->AsArray();
+					Lo = FVector(FMath::Min(L0[0]->AsNumber(), L1[0]->AsNumber()), FMath::Min(L0[1]->AsNumber(), L1[1]->AsNumber()), 0.f);
+					Hi = FVector(FMath::Max(L0[0]->AsNumber(), L1[0]->AsNumber()), FMath::Max(L0[1]->AsNumber(), L1[1]->AsNumber()), 0.f);
+				}
+				const FVector CoreL = C.InverseTransformPosition(B.Core.GetLocation());
+				for (int32 I = 0; I < 4; I++)
+				{
+					const int32 E = (E0 + I) & 3;
+					// the room's edge on this side, from the core (the tower and the vestibule share their axes)
+					const FVector O = SideOut(E);
+					const float Edge = O.X > 0.5f ? Hi.X - CoreL.X : O.X < -0.5f ? CoreL.X - Lo.X : O.Y > 0.5f ? Hi.Y - CoreL.Y : CoreL.Y - Lo.Y;
+					const float Out = FMath::Min(TowerHalf + 250.f, Edge - 70.f);
+					if (Out < TowerHalf + 60.f)
+					{
+						continue;
+					}
+					const FVector At = B.Core.TransformPosition(O * Out + FVector(0, 0, B.Stops.Last() + 100.f));
+					FCollisionQueryParams Q(TEXT("RoomSpot"), false);
+					FHitResult Hit;
+					const bool bFree = !GetWorld()->OverlapAnyTestByChannel(At + FVector(0, 0, 5.f), FQuat::Identity, ECC_Pawn, FCollisionShape::MakeCapsule(34.f, 88.f), Q);
+					const bool bFloor = GetWorld()->LineTraceSingleByChannel(Hit, At, At - FVector(0, 0, 140.f), ECC_Pawn, Q) && Hit.ImpactPoint.Z > At.Z - 130.f;
+					if (bFree && bFloor)
+					{
+						B.Room = FTransform(FRotator(-5.f, B.Core.TransformVectorNoScale(SideAlong(E)).Rotation().Yaw, 0.f), At);
+						break;
+					}
+				}
 			}
 		}
 		// the doors into the room ("doors", or v1's one "door")
