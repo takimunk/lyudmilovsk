@@ -647,7 +647,8 @@ def assign_slots(body, eye_mid):
             if g.group == hg.index:
                 w[v.index] = g.weight
     ex, ez = eye_mid[0], eye_mid[2]
-    bill = (co[:, 0] > ex + 0.011) & (co[:, 2] > ez - 0.03) & (co[:, 2] < ez + 0.006) & (np.abs(co[:, 1]) < 0.012)
+    # the bill's base and cere go with the skull: from the eye they are a white arc right under the camera
+    bill = (co[:, 0] > ex + 0.0155) & (co[:, 2] > ez - 0.03) & (co[:, 2] < ez + 0.006) & (np.abs(co[:, 1]) < 0.012)
     # the head and the throat in front of the camera (everything ahead of the neck's base, above the breast)
     skull_v = ((w > 0.15) | ((co[:, 0] > ex - 0.02) & (co[:, 2] > ez - 0.035))) & ~bill
     for poly in body.data.polygons:
