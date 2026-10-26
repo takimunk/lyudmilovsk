@@ -17,6 +17,8 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/PlatformProcess.h"
+#include "Misc/Paths.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
@@ -173,15 +175,27 @@ bool ULyudTransportSubsystem::Start(UWorld& World)
 {
 	FString Text;
 	const FString Path = FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Transport/network_built.json"));
+#if WITH_EDITOR
+	// network_built.json is made per checkout from its terrain (not committed): make it now if this one has none
+	if (!FPaths::FileExists(Path))
+	{
+		const FString Script = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectDir(), TEXT("../../tools/transport.py")));
+		int32 Code = -1;
+		FString Out, Err;
+		FPlatformProcess::ExecProcess(TEXT("/usr/bin/python3"), *FString::Printf(TEXT("\"%s\""), *Script), &Code, &Out, &Err);
+		UE_LOG(LogTemp, Warning, TEXT("Transport: no network_built.json in this checkout: ran tools/transport.py (exit %d)%s%s"), Code,
+			Err.IsEmpty() ? TEXT("") : TEXT(": "), *Err.Left(400));
+	}
+#endif
 	if (!FFileHelper::LoadFileToString(Text, *Path))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Transport: no %s (python3 tools/transport.py)"), *Path);
+		UE_LOG(LogTemp, Error, TEXT("Transport: OFF: no %s. Run python3 tools/transport.py (build_scene01.sh does) and play again."), *Path);
 		return false;
 	}
 	TPimplPtr<LT::FNetwork> N = MakePimpl<LT::FNetwork>();
 	if (!N->Load(TCHAR_TO_UTF8(*Text)))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Transport: %s"), UTF8_TO_TCHAR(N->LastError.c_str()));
+		UE_LOG(LogTemp, Error, TEXT("Transport: OFF: %s"), UTF8_TO_TCHAR(N->LastError.c_str()));
 		return false;
 	}
 	Net = MoveTemp(N);

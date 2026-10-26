@@ -10,6 +10,8 @@ LOG="$ROOT/unreal/Lyudmilovsk/Saved/Logs/test_transport.log"
 SHOTS="$ROOT/unreal/Lyudmilovsk/Saved/Screenshots/MacEditor"
 OUT="$ROOT/unreal/Lyudmilovsk/Saved/TransportTest"
 mkdir -p "$(dirname "$LOG")" "$OUT"
+# the network resolved against this checkout's terrain (not committed)
+[ -f "$ROOT/unreal/Lyudmilovsk/Content/Transport/network_built.json" ] || python3 "$ROOT/tools/transport.py" > /dev/null
 sh "$ROOT/tools/wait_ue_queue.sh" 7200
 rm -f "$SHOTS"/ScreenShot*.png "$OUT"/*.png
 SND="-nosound"; [ "$SOUND" = 1 ] && SND="-ini:Engine:[Audio]:UnfocusedVolumeMultiplier=1"

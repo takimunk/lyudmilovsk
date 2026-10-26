@@ -168,6 +168,17 @@ def tick(dt):
         return
     dt = min(dt, 0.25)
     S["t"] += dt
+    # the cable car has to be running from the start (no network_built.json: it stays off)
+    if S["t"] > 10.0 and not S.get("checked"):
+        S["checked"] = True
+        t = transport(w)
+        if not t or not t.is_running():
+            log("FAIL the cable car is off (no Content/Transport/network_built.json? python3 tools/transport.py)")
+            cmd(w, "quit")
+            S["phase"] = "quit"
+            return
+    if S["phase"] == "quit":
+        return
     while S["step"] < len(PLAN) and S["t"] > PLAN[S["step"]][0]:
         PLAN[S["step"]][1](w)
         S["step"] += 1
