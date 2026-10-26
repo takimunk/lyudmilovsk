@@ -272,6 +272,192 @@ def bake(src, dst, size):
     return m
 
 
+# --- the inside's own textures: procedural materials baked into images (no generation) ---------------------------
+
+def _nodes(m):
+    m.use_nodes = True
+    nt = m.node_tree
+    for n in list(nt.nodes):
+        if n.type != "OUTPUT_MATERIAL":
+            nt.nodes.remove(n)
+    out = [n for n in nt.nodes if n.type == "OUTPUT_MATERIAL"][0]
+    bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+    nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    co = nt.nodes.new("ShaderNodeTexCoord")
+    return nt, bsdf, co.outputs["Object"]
+
+
+def _mix(nt, a, b, fac):
+    mx = nt.nodes.new("ShaderNodeMix")
+    mx.data_type = "RGBA"
+    nt.links.new(fac, mx.inputs["Factor"])
+    for sock, val in ((mx.inputs["A"], a), (mx.inputs["B"], b)):
+        if isinstance(val, tuple):
+            sock.default_value = val
+        else:
+            nt.links.new(val, sock)
+    return mx.outputs["Result"]
+
+
+def _noise(nt, vec, scale, detail=4.0):
+    n = nt.nodes.new("ShaderNodeTexNoise")
+    n.inputs["Scale"].default_value = scale
+    n.inputs["Detail"].default_value = detail
+    nt.links.new(vec, n.inputs["Vector"])
+    return n.outputs["Fac"]
+
+
+def _bump(nt, bsdf, height, strength, dist=0.002):
+    b = nt.nodes.new("ShaderNodeBump")
+    b.inputs["Strength"].default_value = strength
+    b.inputs["Distance"].default_value = dist
+    nt.links.new(height, b.inputs["Height"])
+    nt.links.new(b.outputs["Normal"], bsdf.inputs["Normal"])
+
+
+def _lines(nt, coord, axis, period, width):
+    """A 0..1 mask of thin lines every period metres across axis (0 x, 1 y, 2 z) of the object's frame."""
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(coord, sep.inputs[0])
+    m = nt.nodes.new("ShaderNodeMath")
+    m.operation = "PINGPONG"
+    nt.links.new(sep.outputs[axis], m.inputs[0])
+    m.inputs[1].default_value = period / 2
+    c = nt.nodes.new("ShaderNodeMath")
+    c.operation = "LESS_THAN"
+    nt.links.new(m.outputs[0], c.inputs[0])
+    c.inputs[1].default_value = width
+    return c.outputs[0]
+
+
+def interior_wall(m):
+    """Cream vinyl lining with a fine leather grain, the panels' joins every 0.6 m round and 0.9 m along."""
+    nt, bsdf, co = _nodes(m)
+    grain = _noise(nt, co, 260.0, 6.0)
+    col = _mix(nt, (0.74, 0.70, 0.61, 1), (0.82, 0.78, 0.69, 1), _noise(nt, co, 3.0))
+    seam = nt.nodes.new("ShaderNodeMath")
+    seam.operation = "MAXIMUM"
+    nt.links.new(_lines(nt, co, 2, 0.6, 0.004), seam.inputs[0])
+    nt.links.new(_lines(nt, co, 0, 0.9, 0.004), seam.inputs[1])
+    col = _mix(nt, col, (0.60, 0.56, 0.49, 1), seam.outputs[0])
+    nt.links.new(col, bsdf.inputs["Base Color"])
+    h = nt.nodes.new("ShaderNodeMath")
+    h.operation = "SUBTRACT"
+    nt.links.new(grain, h.inputs[0])
+    nt.links.new(seam.outputs[0], h.inputs[1])
+    _bump(nt, bsdf, h.outputs[0], 0.35)
+    bsdf.inputs["Roughness"].default_value = 0.6
+
+
+def terrazzo(m):
+    """Warm grey terrazzo: marble chips (white, amber, grey, near black) in a speckled ground."""
+    nt, bsdf, co = _nodes(m)
+    vor = nt.nodes.new("ShaderNodeTexVoronoi")
+    vor.inputs["Scale"].default_value = 38.0
+    vor.inputs["Randomness"].default_value = 1.0
+    nt.links.new(co, vor.inputs["Vector"])
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    els = ramp.color_ramp.elements
+    els[0].position, els[0].color = 0.0, (0.88, 0.86, 0.80, 1)
+    els[1].position, els[1].color = 0.55, (0.70, 0.40, 0.14, 1)
+    for pos, c in ((0.3, (0.35, 0.33, 0.30, 1)), (0.8, (0.10, 0.09, 0.08, 1))):
+        e = els.new(pos)
+        e.color = c
+    ramp.color_ramp.interpolation = "CONSTANT"
+    nt.links.new(vor.outputs["Color"], ramp.inputs["Fac"])
+    chip = nt.nodes.new("ShaderNodeMath")
+    chip.operation = "LESS_THAN"
+    nt.links.new(vor.outputs["Distance"], chip.inputs[0])
+    chip.inputs[1].default_value = 0.32
+    ground = _mix(nt, (0.56, 0.53, 0.48, 1), (0.66, 0.63, 0.57, 1), _noise(nt, co, 90.0))
+    nt.links.new(_mix(nt, ground, ramp.outputs["Color"], chip.outputs[0]), bsdf.inputs["Base Color"])
+    _bump(nt, bsdf, chip.outputs[0], 0.08)
+    bsdf.inputs["Roughness"].default_value = 0.35
+
+
+def leatherette(m):
+    """Amber leatherette, pleated in channels 11 cm apart, a fine grain."""
+    nt, bsdf, co = _nodes(m)
+    col = _mix(nt, (0.46, 0.17, 0.04, 1), (0.62, 0.26, 0.07, 1), _noise(nt, co, 6.0))
+    pleat = _lines(nt, co, 1, 0.11, 0.008)
+    col = _mix(nt, col, (0.25, 0.08, 0.02, 1), pleat)
+    nt.links.new(col, bsdf.inputs["Base Color"])
+    h = nt.nodes.new("ShaderNodeMath")
+    h.operation = "SUBTRACT"
+    nt.links.new(_noise(nt, co, 300.0, 6.0), h.inputs[0])
+    nt.links.new(pleat, h.inputs[1])
+    _bump(nt, bsdf, h.outputs[0], 0.5)
+    bsdf.inputs["Roughness"].default_value = 0.45
+
+
+def bench_base(m):
+    """The benches' plinth: dark brown enamel, faintly mottled."""
+    nt, bsdf, co = _nodes(m)
+    nt.links.new(_mix(nt, (0.11, 0.07, 0.05, 1), (0.17, 0.11, 0.07, 1), _noise(nt, co, 12.0)), bsdf.inputs["Base Color"])
+    bsdf.inputs["Roughness"].default_value = 0.3
+
+
+def bake_procedural(o, slots, size):
+    """Bake o's procedural materials (slot index -> (builder, image size)) into colour + normal images on their own UVs,
+    then make each a plain textured material (what glTF and Unreal take)."""
+    sc = bpy.context.scene
+    sc.render.engine = "CYCLES"
+    sc.cycles.device = "CPU"
+    sc.cycles.samples = 1
+    sc.render.bake.margin = 8
+    bpy.ops.object.select_all(action="DESELECT")
+    o.select_set(True)
+    bpy.context.view_layer.objects.active = o
+    # their own UVs: only these faces, unwrapped on their own
+    bpy.ops.object.mode_set(mode="EDIT")
+    bm = bmesh.from_edit_mesh(o.data)
+    for f in bm.faces:
+        f.select = f.material_index in slots
+    bmesh.update_edit_mesh(o.data)
+    bpy.ops.uv.smart_project(angle_limit=math.radians(50), island_margin=0.006)
+    bpy.ops.object.mode_set(mode="OBJECT")
+    dummy = bpy.data.images.new("bake_dummy", 8, 8)
+    targets = {}
+    for i, m in enumerate(o.data.materials):
+        if i in slots:
+            slots[i][0](m)
+        if not m.use_nodes:
+            m.use_nodes = True
+        node = m.node_tree.nodes.new("ShaderNodeTexImage")
+        node.image = dummy
+        m.node_tree.nodes.active = node
+        targets[i] = node
+    for kind, btype in (("color", "DIFFUSE"), ("normal", "NORMAL")):
+        for i, (builder, sz) in slots.items():
+            img = bpy.data.images.new("%s_%s" % (o.data.materials[i].name, kind), sz, sz)
+            if kind == "normal":
+                img.colorspace_settings.name = "Non-Color"
+            targets[i].image = img
+        kw = {"pass_filter": {"COLOR"}} if btype == "DIFFUSE" else {}
+        bpy.ops.object.bake(type=btype, **kw)
+        for i in slots:
+            targets[i].image.pack()
+            targets[i]["baked_" + kind] = targets[i].image.name
+    for i, m in enumerate(o.data.materials):
+        nt = m.node_tree
+        if i not in slots:
+            nt.nodes.remove(targets[i])
+            continue
+        col, nrm = bpy.data.images[targets[i]["baked_color"]], bpy.data.images[targets[i]["baked_normal"]]
+        rough = [n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"][0].inputs["Roughness"].default_value
+        nt, bsdf, _co = _nodes(m)
+        bsdf.inputs["Roughness"].default_value = rough
+        tc = nt.nodes.new("ShaderNodeTexImage")
+        tc.image = col
+        nt.links.new(tc.outputs["Color"], bsdf.inputs["Base Color"])
+        tn = nt.nodes.new("ShaderNodeTexImage")
+        tn.image = nrm
+        nm = nt.nodes.new("ShaderNodeNormalMap")
+        nt.links.new(tn.outputs["Color"], nm.inputs["Color"])
+        nt.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
+    bpy.data.images.remove(dummy)
+
+
 def chaikin(poly, rounds=3):
     for _ in range(rounds):
         out = []
@@ -475,9 +661,11 @@ def build(o, ctx):
 
     # --- objects -------------------------------------------------------------------------------------------------
     m_glass = mat("TR_Glass", (0.3, 0.4, 0.45, 0.25))
-    m_room = mat("TR_Interior", (0.86, 0.82, 0.74, 1))
-    m_floor = mat("TR_Terrazzo", (0.60, 0.56, 0.50, 1), 0.45)
-    m_seat = mat("TR_Seat", (0.62, 0.26, 0.06, 1), 0.5)
+    # the inside's surfaces get textures of their own (TX_*: the game keeps them as imported)
+    m_room = mat("TX_CabinWall", (0.80, 0.76, 0.66, 1))
+    m_floor = mat("TX_CabinFloor", (0.60, 0.56, 0.50, 1), 0.45)
+    m_seat = mat("TX_CabinSeat", (0.62, 0.26, 0.06, 1), 0.5)
+    m_base = mat("TX_CabinBench", (0.14, 0.09, 0.06, 1), 0.3)
     m_chrome = mat("TR_Chrome", (0.85, 0.85, 0.87, 1), 0.2, 1.0)
     m_glow = mat("TR_Glow", (1.0, 0.82, 0.55, 1), emit=True)
 
@@ -527,6 +715,14 @@ def build(o, ctx):
     bpy.ops.object.join()
     for ob in (cutters, door_cut):
         bpy.data.objects.remove(ob)
+    # the lining's vinyl on the wall's inner face, and on the leaf's (a material of its own: its own UVs and images)
+    wall_slot = list(shell.data.materials).index(m_room)
+    bake_procedural(shell, {wall_slot: (interior_wall, 2048)}, 0)
+    leaf_mats = list(leaf.data.materials)
+    if m_room in leaf_mats:
+        k = leaf_mats.index(m_room)
+        leaf.data.materials[k] = mat("TX_CabinDoorIn", (0.80, 0.76, 0.66, 1))
+        bake_procedural(leaf, {k: (interior_wall, 512)}, 0)
 
     hanger = to_object("SM_TR_CabinHanger", hb, [shell_src_mat])
     decimate(hanger, HANGER_BUDGET)
@@ -596,7 +792,8 @@ def build(o, ctx):
             post = ray((sx * rail_x, t * 0.40, 1.2), (0, 0, 1))
             post_z = (post.z - WALL if post else rail_z + 0.1)
             add(lambda: rod(ib, (sx * rail_x, t * 0.40, rail_z), (sx * rail_x, t * 0.40, post_z), 0.012, 6), 4)
-    inside = to_object("SM_TR_CabinInside", ib, [m_floor, m_seat, m_seat, m_glow, m_chrome])
+    inside = to_object("SM_TR_CabinInside", ib, [m_floor, m_seat, m_base, m_glow, m_chrome])
+    bake_procedural(inside, {0: (terrazzo, 1024), 1: (leatherette, 1024), 2: (bench_base, 256)}, 0)
 
     # --- sockets and collision (Blender frame, metres from the origin) -------------------------------------------
     wall_y = min(hull_y(x * 0.1, z, sg) for x in range(-12, 13) for z in (0.15, 1.0, 1.9) for sg in (1, -1)) - WALL

@@ -97,13 +97,16 @@ shards inside):
   outer skin (rays from outside in), even quads, scaled to 4.46 m so the standard door fits under the roof. The
   model's colour and relief (trims, seams, handles) are **baked** onto it from the full 300k-triangle original
   (Cycles, selected to active: `cabin_color` + `cabin_normal`, 2k).
-- **A real wall**: the shell solidified 4.5 cm inward, closed; its inner face plaster (`TR_Interior`).
+- **A real wall**: the shell solidified 4.5 cm inward, closed; its inner face the vinyl lining (`TX_CabinWall`).
 - **Windows**: where the generated texture is window (dark, dull texels), grouped into windows, each outlined smoothly
   (convex outline, rounded, inset 2 cm) and cut through the wall with an exact boolean; the reveals are chrome
   (`TR_Chrome`); the glass (`TR_Glass`) is the outline filled and laid on the hull half a wall in, both ways.
 - **The door**: a 1.10 x 2.12 m opening (`CharacterStandard`) with rounded top corners on the door painted in the
   texture (found by its frame stripes), cut the same way; the leaf (`SM_TR_CabinDoor`) is the same outline
   intersected with the wall, so it fits the opening exactly; it steps out 8 cm, then slides 1.14 m back along the side.
+- **Textures inside**, no generation: procedural materials baked in Blender into colour + normal images on their own
+  UVs (`TX_CabinWall` cream vinyl lining with panel joins, `TX_CabinFloor` terrazzo, `TX_CabinSeat` pleated amber
+  leatherette, `TX_CabinBench`, `TX_CabinDoorIn`); the game keeps `TX_*` materials as imported.
 - Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends
   (fitted by rays, wide enough for two each), a ceiling lamp, chrome grab rails. The hanger, arm and roof lantern stay
   the generated mesh, decimated (`SM_TR_CabinHanger`), the arm bent so the grip is plumb over the floor's centre.
