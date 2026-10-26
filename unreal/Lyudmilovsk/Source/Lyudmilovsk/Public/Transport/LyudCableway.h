@@ -179,6 +179,7 @@ public:
 	float LogT = 0.f;
 	/** The cab brought the player here: it stays until they step out. */
 	bool bRode = false;
+	float OutTime = 0.f;
 	float Z = 0.f;
 	int32 Target = -1;
 	float Stand = 0.f;
