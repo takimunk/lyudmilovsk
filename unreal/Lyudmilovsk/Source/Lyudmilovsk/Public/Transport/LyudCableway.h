@@ -234,6 +234,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Cabin") TObjectPtr<UWidgetComponent> Board;
 	UPROPERTY(VisibleAnywhere, Category = "Cabin") TObjectPtr<UPointLightComponent> Lamp;
 	UPROPERTY(Transient) TArray<TObjectPtr<UWidgetComponent>> Plates;
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Cabin") TArray<TObjectPtr<UWidgetComponent>> Posters;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Hum;
 	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> InsideParts;
 	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Hanger;

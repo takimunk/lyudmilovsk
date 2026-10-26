@@ -37,6 +37,8 @@ namespace LyudTransportKit
 		FVector Lamp = FVector(0, 0, 195.f), Board = FVector(0, -80.f, 224.f), Plate = FVector(150.f, -119.f, 55.f);
 		TArray<FTransform> Seats;
 		TArray<TPair<FVector, FVector>> Collision;   // centre, full size
+		struct FPoster { FVector At, Normal, Up; float W = 56.f; };
+		TArray<FPoster> Posters;                     // the route diagram on the inside wall
 	};
 
 	/** Blender metres (x, y, z) -> the actor's centimetres (x, -y, z). */
@@ -93,6 +95,19 @@ namespace LyudTransportKit
 							{
 								const TSharedPtr<FJsonObject> S = V->AsObject();
 								R.Seats.Add(FTransform(FRotator(0.f, S->GetNumberField(TEXT("yaw")), 0.f), FromBlender(S->GetArrayField(TEXT("at")))));
+							}
+							const TArray<TSharedPtr<FJsonValue>>* Posters;
+							if ((*Sockets)->TryGetArrayField(TEXT("posters"), Posters))
+							{
+								for (const TSharedPtr<FJsonValue>& V : *Posters)
+								{
+									const TSharedPtr<FJsonObject> P = V->AsObject();
+									FCabinKit::FPoster& O = R.Posters.AddDefaulted_GetRef();
+									O.At = FromBlender(P->GetArrayField(TEXT("at")));
+									O.Normal = FromBlender(P->GetArrayField(TEXT("normal"))).GetSafeNormal();
+									O.Up = FromBlender(P->GetArrayField(TEXT("up"))).GetSafeNormal();
+									O.W = P->GetNumberField(TEXT("w")) * 100.f;
+								}
 							}
 							for (const TSharedPtr<FJsonValue>& V : (*C)->GetArrayField(TEXT("collision")))
 							{

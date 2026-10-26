@@ -556,6 +556,24 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 		AddInstanceComponent(Gate);
 		Lamp->SetRelativeLocation(R.Lamp);
 		Inside->SetBoxExtent(FVector(R.EndX, R.WallY, 105.f));
+		// posters of the route diagram on the inside wall (kit.json sockets.posters), drawn by the game in the
+		// player's language, not painted into a texture
+		for (const FCabinKit::FPoster& P : R.Posters)
+		{
+			UWidgetComponent* W = NewObject<UWidgetComponent>(this);
+			W->SetupAttachment(Root);
+			W->SetWidgetSpace(EWidgetSpace::World);
+			W->SetDrawSize(FVector2D(1600.f, 900.f));
+			W->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			W->SetBlendMode(EWidgetBlendMode::Opaque);
+			W->RegisterComponent();
+			W->SetRelativeLocation(P.At);
+			W->SetRelativeRotation(FRotationMatrix::MakeFromXZ(P.Normal, P.Up).Rotator());
+			W->SetRelativeScale3D(FVector(P.W / 1600.f));
+			W->SetSlateWidget(SNew(SLyudTransitDiagram).bLive(false).bBoard(false));
+			AddInstanceComponent(W);
+			Posters.Add(W);
+		}
 	}
 	Drive(GetActorLocation() + FVector(0, 0, Kit().CabinGrip - Kit().CabinFloor), FVector::ForwardVector, 0.f, 0.f);
 
