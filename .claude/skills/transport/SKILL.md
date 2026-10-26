@@ -33,13 +33,16 @@ The map keeps stations (17 m) and pylons (4 m) flat via `world_map.keep_flat` an
 - `ULyudTransportSubsystem` (Public/Transport/LyudTransport.h): `CallCabin(from, to)`, `WaitAt`, `GetStations/GetLines/GetCabins`,
   `OpenDiagram`, `BeginRide/RiderPose` (people), `OnTransportEvent` (Launch, Arrive, Depart, Board, Alight, Done, Park).
 - Simulation rules live in `Private/Transport/CablewaySim.cpp` (plain C++): change them there and test with transportsim first.
-- Geometry rules (island platform, crown, stair ring, lift, pylon parts) in `Private/Transport/LyudCableway.cpp`; kit sizes in
-  `Content/Transport/kit.json` (from `blender/transport/optimize.py`).
+- Stations (docs/transport.md "Stations v2"): the vestibule (vestibules.json v2) on its tower between the tracks spread to
+  its gap G; geometry in `Private/Transport/LyudStationBuild.cpp` (tower core, kit stacking, sheave posts, wheel, depot,
+  panels) with `LyudMeshKit` (metre UVs, box collision, textures `Mat("tx_<name>")`); the rope spread in transport.py
+  (`geo` per station in network_built.json). Kit sizes in `Content/Transport/kit.json` (`blender/transport/optimize.py`).
 - Sounds go through `ULyudSoundscapeSubsystem` (`PlayEffect`, `AttachLoop`, `PlayVoiceAt`); new sfx in `audio/sounds.json`
   (group `transport`), `tools/gen_sounds.py --sfx <ids>`.
 - Doors in stations use `ALyudDoor` (docs/doors.md); the cabins' own sliding doors are part of `ALyudCabin`.
 - Console: `Transport.Report`, `Transport.Ride <from> <to>`, `Transport.Call <from> <to> [who]`, `Transport.Diagram [station|close]`.
-- Check offscreen: `unreal/scripts/test_transport.sh` (never a windowed worktree editor).
+- Check offscreen: `unreal/scripts/test_transport.sh` and `unreal/scripts/test_stations.sh` (views, probes, a lift ride on
+  every station; `STATIONS=a,b`) (never a windowed worktree editor).
 
 ## New 3D for it
 

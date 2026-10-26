@@ -69,7 +69,8 @@ def plan():
                 add(0.5, lambda w, f=flag: cmd(w, "ShowFlag.%s 0" % f))
                 add(2.5, lambda w, s=sid, f=flag: shot(w, "%s_gallery_no%s" % (s, f.lower())))
                 add(0.5, lambda w, f=flag: cmd(w, "ShowFlag.%s 2" % f))
-        # the lift: stand in the cab at the ground; after a while it must be up at the top deck
+        # the lift: wait by its ground door (it comes down), step in; after a while it must be up at the top deck
+        add(16.0, lambda w, s=sid: cmd(w, "Transport.Goto %s lift" % s))
         add(1.0, lambda w, s=sid: cmd(w, "Transport.Goto %s liftin" % s))
         add(2.5, lambda w, s=sid: shot(w, "%s_liftin" % s))
         add(30.0, lambda w: None)

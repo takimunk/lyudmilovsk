@@ -231,6 +231,20 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 	// turned to its own line)
 	const float Yaw0 = SimNum(St.Levels) && SimValid(St.AxisYaw, St.Levels.back().Line) ? St.AxisYaw[St.Levels.back().Line] : 0.f;
 	FVector CoreW = W(St.CoreX, St.CoreY, St.CoreGround);
+	const FString Style = St.Style.empty() ? TEXT("saucer") : FString(UTF8_TO_TCHAR(St.Style.c_str()));
+	const TSharedPtr<FJsonObject> V = VestibuleData(Style);
+	const bool bV2 = V.IsValid() && V->HasField(TEXT("track_gap"));
+	// the tower kit's podium (tower.base): the tower's floor on it, it on the highest ground under the tower
+	float BaseH = 0.f;
+	{
+		const TSharedPtr<FJsonObject>* T = nullptr;
+		const TSharedPtr<FJsonObject>* Bs = nullptr;
+		if (bV2 && V->TryGetObjectField(TEXT("tower"), T) && (*T)->TryGetObjectField(TEXT("base"), Bs) && LoadMesh((*Bs)->GetStringField(TEXT("mesh"))))
+		{
+			BaseH = (*Bs)->GetNumberField(TEXT("h"));
+			CoreW.Z += BaseH - 15.f;
+		}
+	}
 	{
 		// the tower's floor 15 cm over the landscape as it stands in this level (a landscape built from older inputs
 		// can stand a little higher than network_built.json's ground)
@@ -250,9 +264,10 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 				}
 			}
 		}
-		if (Top + 15.f > CoreW.Z)
+		const float Over = BaseH > 0.f ? BaseH : 15.f;
+		if (Top + Over > CoreW.Z)
 		{
-			CoreW.Z = Top + 15.f;
+			CoreW.Z = Top + Over;
 		}
 	}
 	B.Core = FTransform(FRotator(0.f, Yaw0, 0.f), CoreW);
@@ -283,9 +298,6 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 	B.Connector = B.Decks.Num() ? FTransform(B.Decks.Last().GetRotation(), FVector(Centre.X, Centre.Y, B.Decks.Last().GetLocation().Z)) : FTransform(Centre);
 
 	// the vestibule's numbers (vestibules.json v2): the sides of the tower's street door and of its exit into the room
-	const FString Style = St.Style.empty() ? TEXT("saucer") : FString(UTF8_TO_TCHAR(St.Style.c_str()));
-	const TSharedPtr<FJsonObject> V = VestibuleData(Style);
-	const bool bV2 = V.IsValid() && V->HasField(TEXT("track_gap"));
 	auto SideOf = [](const FString& Str, int32 Default)
 	{
 		return Str == TEXT("+x") ? 0 : Str == TEXT("+y") ? 1 : Str == TEXT("-x") ? 2 : Str == TEXT("-y") ? 3 : Default;
@@ -382,7 +394,19 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 	const FVector GDir = B.Core.TransformVectorNoScale(SideOut(GroundSide));
 	{
 		const FVector2D Hole = ALyudDoor::HoleForClear(150.f, 230.f, true);
-		const FTransform DoorT(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * TowerHalf));
+		// in the kit's foot: in its wall just outside the clear square (tower.door.at: its distance from the axis)
+		float DoorR = TowerHalf;
+		if (bShell)
+		{
+			DoorR = 268.f;
+			const TSharedPtr<FJsonObject>* T = nullptr;
+			const TSharedPtr<FJsonObject>* D = nullptr;
+			if (V->TryGetObjectField(TEXT("tower"), T) && (*T)->TryGetObjectField(TEXT("door"), D) && (*D)->HasTypedField<EJson::Number>(TEXT("at")))
+			{
+				DoorR = (*D)->GetNumberField(TEXT("at"));
+			}
+		}
+		const FTransform DoorT(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * DoorR));
 		if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr,
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 		{
@@ -407,7 +431,15 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		{
 			Drop = FMath::Max(0.f, CoreW.Z - (float)Hit.ImpactPoint.Z);
 		}
-		Steps.BoxIn(TEXT("tx_concrete"), OutF, FVector(75.f, 0.f, -(Drop + 60.f) * 0.5f), FVector(150.f, 300.f, Drop + 60.f), true, TEXT("tx_terrazzo"));
+		if (BaseH > 0.f)
+		{
+			// the kit's podium has its own steps all round
+			Drop = 0.f;
+		}
+		else
+		{
+			Steps.BoxIn(TEXT("tx_concrete"), OutF, FVector(75.f, 0.f, -(Drop + 60.f) * 0.5f), FVector(150.f, 300.f, Drop + 60.f), true, TEXT("tx_terrazzo"));
+		}
 		const int32 N = FMath::Clamp(FMath::CeilToInt((Drop - 3.f) / 16.f), 0, 30);
 		for (int32 I = 0; I < N; I++)
 		{
@@ -971,6 +1003,13 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				AddInstanceComponent(Lt);
 			}
 			B.Room = FTransform(C.GetRotation(), C.TransformPosition(JsonXY(*Room, TEXT("centre")) + FVector(0, 0, 100.f)));
+			if (V->HasField(TEXT("core_in_room")) && V->GetBoolField(TEXT("core_in_room")) && B.StopSides.Num())
+			{
+				// the core stands in the middle: 2.5 m out of its way out, looking back at it
+				const int32 E = B.StopSides.Last();
+				const FVector At = B.Core.TransformPosition(SideOut(E) * (TowerHalf + 250.f) + FVector(0, 0, B.Stops.Last() + 100.f));
+				B.Room = FTransform((B.Core.GetLocation() - At).GetSafeNormal2D().Rotation(), At);
+			}
 		}
 		// the doors into the room ("doors", or v1's one "door")
 		TArray<TSharedPtr<FJsonObject>> DoorList;
@@ -1114,6 +1153,14 @@ bool ALyudCableway::StackTowerKit(int32 S, const FString& Style, float Height)
 			Single(Shafts.Last().Key, FTransform(FVector(0, 0, Z1 - Shafts.Last().Value)) * Core, true);
 		}
 	};
+	const TSharedPtr<FJsonObject>* Bs = nullptr;
+	if ((*T)->TryGetObjectField(TEXT("base"), Bs))
+	{
+		if (UStaticMesh* BaseM = LoadMesh((*Bs)->GetStringField(TEXT("mesh"))))
+		{
+			Single(BaseM, FTransform(FVector(0, 0, -(*Bs)->GetNumberField(TEXT("h")))) * Core, true);
+		}
+	}
 	Single(Foot, Core, true);
 	float Z = FootH;
 	// the decks on the tower, from the lowest
@@ -1351,31 +1398,35 @@ int32 ALyudCableway::Probe(int32 S) const
 	{
 		const int32 Sd = B.StopSides[K];
 		Down(TEXT("landing"), B.Core.TransformPosition(SideOut(Sd) * Mid + FVector(0, 0, B.Stops[K])), G + B.Stops[K], 8.f);
-		Down(TEXT("way out"), B.Core.TransformPosition(SideOut(Sd) * (TowerOut + 60.f) + FVector(0, 0, B.Stops[K])), G + B.Stops[K], 8.f);
+		if (K > 0)
+		{
+			Down(TEXT("way out"), B.Core.TransformPosition(SideOut(Sd) * (TowerOut + 60.f) + FVector(0, 0, B.Stops[K])), G + B.Stops[K], 8.f);
+		}
 		// three quarters round from this stop's side: on the stair's flight or a corner
 		Down(TEXT("corner"), B.Core.TransformPosition(CornerAt(Sd, Mid, 0.f) + FVector(0, 0, B.Stops[K])), G + B.Stops[K], 8.f);
 	}
-	for (int32 K = 0; K < B.Decks.Num(); K++)
+	// the boarding strips along each edge round the stop mark (where people wait and step in)
+	const LyudTransport::FNetwork* Net = Transport ? Transport->GetNet() : nullptr;
+	for (int32 K = 0; K < B.Decks.Num() && Net; K++)
 	{
-		const FVector Panel = B.Decks[K].InverseTransformPosition(B.Panels.IsValidIndex(K) ? B.Panels[K].GetLocation() : FVector::ZeroVector);
-		for (const float X : { -900.f, 0.f, 550.f, 900.f })
+		const LyudTransport::FStation& St = Net->Stations[S];
+		const int32 L = B.DeckLines[K];
+		if (!SimValid(St.Geo, L) || !St.Geo[L].bValid)
 		{
-			for (const float Y : { -250.f, 0.f, 250.f })
+			continue;
+		}
+		const LyudTransport::FStationGeo& Ge = St.Geo[L];
+		for (const float X : { -250.f, 0.f, 250.f })
+		{
+			for (const float Side : { -1.f, 1.f })
 			{
-				const FVector P = B.Decks[K].TransformPosition(FVector(X, Y, 0.f));
-				// on the island (an end station's runs one way from the wheel), off the tower, the panel and the wheel's mast
-				const bool bOff = (Panel.X > 0.f && Panel.X < 400.f && X < 0.f) || (Panel.X < 0.f && Panel.X > -400.f && X > 0.f);
-				if (bOff || FVector::Dist2D(P, B.Core.GetLocation()) < TowerOut * 1.45f || FVector::Dist2D(FVector(X, Y, 0.f), Panel) < 80.f ||
-					((Panel.X > -400.f && Panel.X < 400.f) && FMath::Abs(X) < 1.f && FMath::Abs(Y) < 1.f))
-				{
-					continue;
-				}
-				Down(TEXT("deck"), P, B.Decks[K].GetLocation().Z, 6.f);
+				Down(TEXT("edge"), B.Decks[K].TransformPosition(FVector(Ge.StopX * 100.f + X, Side * (Ge.Edge * 100.f - 60.f), 0.f)), B.Decks[K].GetLocation().Z, 8.f);
 			}
 		}
 	}
 	// the street door's landing outside
-	Down(TEXT("door landing"), B.Core.TransformPosition(SideOut(B.StopSides[0]) * (TowerOut + 70.f)), G, 8.f);
+	// (on a kit's podium: its steps go down from the door, up to its 45 cm)
+	Down(TEXT("door landing"), B.Core.TransformPosition(SideOut(B.StopSides[0]) * (TowerOut + 70.f)), G - 25.f, 30.f);
 	return Fails;
 }
 
@@ -1711,7 +1762,13 @@ void ALyudStationLift::Tick(float DeltaTime)
 			const float Goal = Stops[Target];
 			const float Dist = Goal - Z;
 			const float Speed = FMath::Min(250.f, FMath::Sqrt(2.f * 120.f * FMath::Abs(Dist)) + 20.f);
-			const float Step = FMath::Clamp(Dist, -Speed * DeltaTime, Speed * DeltaTime);
+			float Step = FMath::Clamp(Dist, -Speed * DeltaTime, Speed * DeltaTime);
+			// never down onto somebody in the shaft under the cab (only a teleport or a fall puts them there)
+			const bool bUnder = Pawn && FMath::Abs(Local.X) < HalfIn + 20.f && FMath::Abs(Local.Y) < HalfIn + 20.f && Local.Z < Z - 20.f && Local.Z > Z - 320.f;
+			if (Step < 0.f && bUnder)
+			{
+				Step = 0.f;
+			}
 			Z += Step;
 			// the rider goes with the cab (CharacterMovement does not ride a floor moved without a sweep)
 			if (bIn && Pawn)

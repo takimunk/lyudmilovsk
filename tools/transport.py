@@ -39,7 +39,7 @@ SOURCE = os.path.join(DATA_DIR, "network.json")
 BUILT = os.path.join(DATA_DIR, "network_built.json")
 LAYOUT = os.path.join(REPO, "blender", "export", "scene01_layout.json")
 
-ON_GROUND_RISE = 5.0     # a station on the ground: its platform this much over the highest ground under it (the gallery passes under its track)
+ON_GROUND_RISE = 6.5     # a station on the ground: its deck this much over the highest ground under it (the vestibule's tower kit fits)
 DOOR_AHEAD = 0.47        # the cabin's door is this far ahead of its centre (kit.json cabin door x): a stop puts the door on the stop mark
 LEVEL_H = 6.5            # metres between the decks of a station on two lines
 STATION_R = 9.0          # half size of a station's footprint (deck, tower, stair)
