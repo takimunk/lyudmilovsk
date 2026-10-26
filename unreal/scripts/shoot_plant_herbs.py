@@ -55,9 +55,14 @@ def tick(dt):
                 if p.get_actor_label().startswith("Bound_"):
                     m = re.search(r"h ([0-9.]+) r ([0-9.]+)", p.debug_report(60.0, 20.0))
                     sp = p.get_actor_label().split("_")[1]
-                    if not m:
-                        continue  # the potted trees (weeping fig, lemon) are bounded by the tree model
-                    h, r = float(m.group(1)), float(m.group(2))
+                    if m:
+                        h, r = float(m.group(1)), float(m.group(2))
+                    else:
+                        # the potted trees (weeping fig, lemon): MaxHeight and the crown dome of the tree model
+                        m = re.search(r"drawn h ([0-9.]+) reach ([0-9.]+)", p.debug_report(25.0, 20.0))
+                        if not m:
+                            continue
+                        h, r = float(m.group(1)), float(m.group(2))
                     o = worst.get(sp, (0, 0))
                     worst[sp] = (max(o[0], h), max(o[1], r))
             for sp, (h, r) in sorted(worst.items()):
