@@ -124,6 +124,67 @@ at the door) is in the platform spec. Budget: shell ~22k triangles with its wall
 2k colour + 2k normal. Check: `TR_DEBUG=<dir>` saves `cabin.blend`; `SCRIPT=test_cabin.py
 unreal/scripts/test_transport.sh` walks the player in through the door, rides, walks out.
 
+## Station layout v2: the vestibule on its own tower (2026-10-26)
+
+Dima (2026-10-26): a station is its unique vestibule up at the platform's height, on a tower in the same style with the
+lift and the stair inside, and a compact boarding platform built into the vestibule. (v1.1, the vestibule on the ground
+beside the line with a gallery under the track, is gone.)
+
+```
+   track ==\                                        /==  the two ropes spread round the vestibule (track gap G)
+            \=====[ edge  .. stop ..  edge ]=======/       boarding edge at y = -(G/2 - 1.05 m)
+                  [  terrace   ( room + core )  ]          the vestibule, floor at deck level
+            /=====[ edge  .. stop ..  edge ]=======\       boarding edge at y = +(G/2 - 1.05 m)
+   track ==/                 ||                     \==
+                             ||  the tower: foot, shafts, neck (a kit per style), the lift and the stair inside
+                           [door]  the street door at the foot
+```
+
+**Station frame** (UE cm): the origin at the boarding floor (deck level) on the line's centre line midway between the
+tracks; +X the line's way out, +Y right of it, Z up. `SM_TR_Vestibule_<Style>` is authored in it (Blender (x, y, z) m ->
+UE (x*100, -y*100, z*100)).
+
+The vestibule (blender/transport/vestibules.py, our own clean model; hi3d only the shape and the bake source):
+1. Turned so the line runs across its narrowest way (no longer than 22 m along X); the terrace gets a straight
+   **boarding edge** along each track at y = +-(G/2 - 1.05 m), edge_length long, a tactile line along it, the railing
+   0.45 m in and open over the stop zone (4.5 m + 1 m each side round `stop_x`, put where both edges are clear of
+   canopy feet). Nothing above the floor within 1.35 m of a track's centre.
+2. The **tower's core** comes up through `floor_hole` (5.2 x 5.2 m) on the line's axis at `tower_x`: in the middle of
+   the hall (all seven now: the small rooms were made 5.4 m in radius for it), the lift door and the stair landing
+   facing `core_exit`. The core's own walls stand in the hole (the procedural part).
+3. The hall: 20 cm walls, windows, the Double door hole(s) (`doors`), floor, ceiling; at most 16 m tall.
+4. Collision complex as simple; slots: baked outside (slot 0), `TR_Glass*`, `TR_Interior*`, `TR_Terrazzo`, `TR_Chrome`,
+   and the tiled surfaces `TR_Tx_<Concrete|Enamel|Amber|Mosaic|Tactile>` on metre UVs (KitMaterials: -> `tx_<name>`).
+
+The tower kit (blender/transport/towers.py, called by vestibules.py; clean meshes, metre UVs): per style
+`SM_TR_Tower_<Style>_Base` (a stepped podium, three 15 cm steps round the tower, its origin on the ground, its top at
+`base.h` 45 cm, a `skirt` 2 m into the ground), `SM_TR_Tower_<Style>_Foot` (3.5 m, on the podium's top, the street
+door, a Double hole on `tower.door.side`, between the style's fins), `_Shaft3` and `_Shaft1`
+(stacked, largest first, never stretched), `_Neck` (1.5 m, flares out; its top is the vestibule floor's underside at
+-60 cm). Every piece's origin is on the tower's axis at its own bottom; inside a clear zone of `tower.clear`
+(5.26 m square; the circle styles 7.44 m). Each speaks its vestibule (Dima: expressive, the vestibule's language):
+the arches' square shaft stands on four parabolic legs and opens into four corbel arches under the terrace; the dome's
+ribbed concrete drum with two rows of portholes, the ribs flaring into buttresses and corbels; the folded plates fan
+out at the foot and the top; the lantern's amber-lit glass facets between ribs with amber rings every metre on an
+enamel plinth; the saucer's column carries a small flying saucer every 3 m and big ones at the foot and the neck; the
+star's eight points run up the shaft and grow into big fins at both ends; the wing's two swept wings. The fins' edges
+are amber (the wing's mosaic).
+
+**Zenit**: the saucer's tower carries a second, lower deck for the Sun line (`tower.decks`: `SM_TR_Tower_Saucer_Deck2`,
+a 3.5 m piece of the tower with an opening out onto a ring deck at its own `axis_yaw`, `floor_z` -650 under the
+saucer's deck, its own `track_gap`, `edge_length`, `stop_x`, `panels`).
+
+`Content/Transport/vestibules.json` v2, per style (UE cm, station frame): `mesh`, `tris`, `height`, `length`,
+`track_gap`, `edge_length`, `stop_x`, `panels` ([{at, yaw}], one per edge), `tower_x`, `floor_hole` [x0, y0, x1, y1],
+`core_exit` (+x|-x|+y|-y), `core_in_room`, `footprint`, `bounds`, `centre`, `doors` ([{at, yaw, hole}]), `room`
+({centre, radius, height, box}), `spots` (kiosk, bench, diagram), `tower` ({foot, shafts, neck: {mesh, h}, clear,
+door: {side, hole}, neck_top, decks}).
+
+Checks: `blender/transport/check_vestibules.py` floods a player's walk from the core's exit: the hall, the diagram, the
+inside of the door and both edges at the stop must be reached; nothing in a track's keep-clear; 22 m, 16 m.
+`TR_DEBUG=<dir>` pictures. The ropes' spread, the stops and the tower's stacking are the procedural part's
+(tools/transport.py, CablewaySim, LyudStationBuild.cpp).
+
 ## Stations v2: the spread ropes, the tower's core, the gear (2026-10-26)
 
 Each station is its hi3d vestibule at deck height between the two tracks (its two edges the boarding platforms) on a

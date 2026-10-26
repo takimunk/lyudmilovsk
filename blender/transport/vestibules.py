@@ -1271,12 +1271,14 @@ def lower_deck(st, T, part, mats, mi_w, mi_b, mi_in):
         for i in range(64):
             a = 2 * math.pi * i / 64
             d = Vector((math.cos(a), math.sin(a), 0))
-            # a rectangle X0..X1 x -E2..E2 with rounded ends (radius E2)
+            # a rectangle X0..X1 x -E2..E2 with rounded corners (2 m), its edges straight over the stop zone
             rr = []
+            cxm, hw, rad = (X0 + X1) / 2, (X1 - X0) / 2, 2.0
             for t_ in [k * 0.02 for k in range(1, 800)]:
                 q = d * t_
-                cx_ = min(max(q.x, X0 + E2), X1 - E2)
-                if (Vector((q.x, q.y, 0)) - Vector((cx_, 0, 0))).length <= E2 and abs(q.y) <= E2:
+                dx_ = max(abs(q.x - cxm) - (hw - rad), 0.0)
+                dy_ = max(abs(q.y) - (E2 - rad), 0.0)
+                if math.hypot(dx_, dy_) <= rad:
                     rr.append(t_)
             pts.append(rot @ (d * max(rr)))
         top = [bm.verts.new((p.x, p.y, 0.0)) for p in pts]
