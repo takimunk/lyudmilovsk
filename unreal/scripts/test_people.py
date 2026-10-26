@@ -74,6 +74,23 @@ def shot(w, name):
     log("shot %s" % name)
 
 
+def present(w, keys, activities=None):
+    """The first of keys who is in the world now (not away, not in the cable car), doing one of activities if given."""
+    for k in keys:
+        p = person(w, k)
+        if p and p.pose != unreal.PersonPose.HIDDEN and p.state != "riding" and (not activities or p.activity in activities):
+            return k
+    return None
+
+
+def look_at_present(w, keys, tag, back=300.0, up=140.0, side=0.6, activities=None):
+    k = present(w, keys, activities)
+    st["who"] = k
+    log("%s: %s" % (tag, k))
+    if k:
+        look_at_person(w, k, back, up, side)
+
+
 def look_at_person(w, key, back=260.0, up=120.0, side=0.6):
     p = person(w, key)
     if not p:
@@ -90,6 +107,7 @@ def look_at_person(w, key, back=260.0, up=120.0, side=0.6):
 
 
 STEPS = []
+KEYS = ["streamer", "girl_b", "crowd_11", "crowd_12", "crowd_13", "kid_girl", "kid_boy", "guy_a", "guy_b", "girl_a", "clerk", "owner"]
 
 
 def step(fn, wait=2.0):
@@ -127,28 +145,17 @@ if PART in ("all", "club"):
     step(lambda w: shot(w, "kid_boy_standing_up"), 3.0)
     step(lambda w: look_at_person(w, "kid_boy", 300.0, 60.0, 0.3), 1.0)
     step(lambda w: shot(w, "kid_boy_walking"), 6.0)
-    step(lambda w: look_at_person(w, "kid_boy", 280.0, 60.0, 0.3), 1.0)
+    # the hall from by the booth, toward the vending machines (lit by the hall's lamps)
+    step(lambda w: look(w, (60.0, 420.0, 175.0), (-185.0, 300.0, 110.0)), 1.0)
     step(lambda w: shot(w, "kid_boy_at_vending"), 2.0)
 
 if PART in ("all", "town"):
-    # the sunset: who comes out to see the sun go down (Tuesday 17:00)
-    step(lambda w: cmd(w, "lyud.Birds.Time 16 55"), 4.0)
-    step(report("sunset 16:55"), 1.0)
-
-    @step
-    def s_sunset(w):
-        l = life(w)
-        best = None
-        for i in range(l.num_people()):
-            r = l.get_person(i)
-            p = r[1] if isinstance(r, tuple) else r
-            if p.activity in ("sun_watch", "walk", "sit_bench", "chat") and p.state == "doing":
-                best = p.key
-                break
-        st["who"] = best
-        log("sunset: %s" % best)
-        if best:
-            look_at_person(w, best, 420.0, 120.0, 0.8)
+    # the sunset: who comes out to see the sun go down (the sky's sunset on 20 October is ~17:45)
+    step(lambda w: cmd(w, "lyud.Birds.Time 17 30"), 4.0)
+    step(report("sunset 17:30"), 1.0)
+    step(lambda w: look_at_present(w, KEYS, "sunset", 420.0, 120.0, 0.8, ("sun_watch",))
+         or (not st.get("who") and look_at_present(w, KEYS, "out", 420.0, 120.0, 0.8,
+                                                   ("walk", "sit_bench", "chat"))), 2.0)
     step(lambda w: shot(w, "sunset_person") if st.get("who") else None, 2.0)
 
     # a night: asleep at home
@@ -164,8 +171,8 @@ if PART in ("all", "town"):
     step(report("morning 07:40"), 1.0)
     step(lambda w: look_at_person(w, "kid_girl", 260.0, 120.0, 0.6), 2.0)
     step(lambda w: shot(w, "kid_girl_morning"), 6.0)
-    step(lambda w: look_at_person(w, "guy_b", 300.0, 120.0, 0.6), 2.0)
-    step(lambda w: shot(w, "timur_morning"), 2.0)
+    step(lambda w: look_at_present(w, ["clerk", "girl_a", "kid_boy", "crowd_12", "guy_b"], "morning", 300.0, 140.0, 0.6), 2.0)
+    step(lambda w: shot(w, "morning_person") if st.get("who") else None, 2.0)
 
     # the library at midday (Olya at her desk on Wednesday)
     step(lambda w: cmd(w, "lyud.Birds.Time 12 30"), 4.0)
@@ -175,10 +182,17 @@ if PART in ("all", "town"):
     def s_library(w):
         ok = life(w).order(life(w).find_person("crowd_12"), "read_library", "library")
         log("order crowd_12 read_library: %s" % ok)
-        look_at_person(w, "girl_b", 320.0, 130.0, 0.4)
-    step(lambda w: shot(w, "library_olya"), 50.0)
-    step(lambda w: look_at_person(w, "crowd_12", 520.0, 260.0, 0.5), 2.0)
-    step(lambda w: shot(w, "walking_to_library"), 2.0)
+    # wait (up to ~3 min) till she sits down in the reading hall
+    for k in range(40):
+        def _wait(w, k=k):
+            p = person(w, "crowd_12")
+            if p.state == "doing" and not st.get("reading"):
+                look_at_person(w, "crowd_12", 260.0, 150.0, 0.4)
+                st["reading"] = True
+                log("crowd_12 reading after %d checks" % k)
+        step(_wait, 10.0)
+    step(lambda w: look_at_person(w, "crowd_12", 260.0, 150.0, 0.4), 2.0)
+    step(lambda w: shot(w, "library_reader"), 2.0)
 
     # an afternoon walk on the square
     step(lambda w: cmd(w, "lyud.Birds.Time 14 30"), 4.0)

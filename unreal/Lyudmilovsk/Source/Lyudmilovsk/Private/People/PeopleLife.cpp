@@ -7,6 +7,12 @@
 #include "Animation/SkeletalMeshActor.h"
 #include "BoothOwner.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "MeshDescription.h"
+#include "StaticMeshAttributes.h"
+#include "Materials/Material.h"
+#include "Materials/MaterialInterface.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -163,6 +169,7 @@ bool UPeopleLifeSubsystem::Start()
 	{
 		Flats += P.Kind == "flat" ? 1 : 0;
 	}
+	UE_LOG(LogTemp, Display, TEXT("PeopleLife: sun %.2f..%.2f"), Sim->Sunrise, Sim->Sunset);
 	UE_LOG(LogTemp, Display, TEXT("PeopleLife: %d people, %d activities, %d places (%d flats), %d slots, %d club actors; %s"),
 		(int32)Sim->People.size(), (int32)Sim->Activities.size(), (int32)Sim->Places.size(), Flats, (int32)Sim->Slots.size(), ClubActors.Num(),
 		UTF8_TO_TCHAR(Sim->Report().c_str()));
@@ -684,6 +691,15 @@ ANpcBody::ANpcBody()
 	Mesh->LightingChannels.bChannel0 = true;
 	Mesh->LightingChannels.bChannel1 = true;
 	Mesh->bCastDynamicShadow = true;
+	Blanket = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blanket"));
+	Blanket->SetupAttachment(Mesh);
+	Blanket->SetUsingAbsoluteLocation(true);
+	Blanket->SetUsingAbsoluteRotation(true);
+	Blanket->SetUsingAbsoluteScale(true);
+	Blanket->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Blanket->SetVisibility(false);
+	Blanket->LightingChannels.bChannel0 = true;
+	Blanket->LightingChannels.bChannel1 = true;
 }
 
 bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
@@ -853,6 +869,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		FVector At = Location - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
 		At.Z += (SeatHeight > 0.f ? SeatHeight : 50.f) - 50.f * S;
 		SetActorLocationAndRotation(At, R);
+		BedCenter = Location;
+		BedYaw = Yaw;
+		BedTop = SeatHeight > 0.f ? SeatHeight : 50.f;
 	}
 	else
 	{
@@ -865,6 +884,19 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// the model faces +Y at yaw 0
 		SetActorLocationAndRotation(At, FRotator(0.f, Facing - 90.f, 0.f));
 	}
+	// under the blanket once they lie still; it goes when they get up
+	const bool bAsleep = Pose == EPersonPose::Sleep && Transit == 0;
+	StillAsleep = bAsleep ? StillAsleep + DeltaTime : 0.f;
+	if (!bAsleep)
+	{
+		bBlanket = false;
+	}
+	else if (!bBlanket && StillAsleep > 0.6f)
+	{
+		BuildBlanket();
+		bBlanket = true;
+	}
+	Blanket->SetVisibility(bAsleep && bBlanket && BlanketMesh != nullptr);
 	if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 	{
 		Anim->SetEyesShut(Pose == EPersonPose::Sleep && Transit == 0);
@@ -898,6 +930,138 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case EPersonPose::Work: Play(TEXT("Computer"), true); break;
 	default: PlayVaried(TEXT("Stand"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") }); break;
 	}
+}
+
+void ANpcBody::BuildBlanket()
+{
+	// the bed's frame: U along it (head to foot), V across, Z up from the mattress's top
+	const FRotator R(0.f, BedYaw, 0.f);
+	const FVector U = R.Vector(), V = FVector::CrossProduct(FVector::UpVector, U);
+	const FVector Top = BedCenter + FVector(0.f, 0.f, BedTop);
+	auto Local = [&](const FVector& W) { const FVector D = W - Top; return FVector(FVector::DotProduct(D, U), FVector::DotProduct(D, V), D.Z); };
+	struct FSeg { FName A, B; float R; };
+	static const FSeg Segs[] = {
+		{ TEXT("pelvis"), TEXT("spine_02"), 15.f }, { TEXT("spine_02"), TEXT("neck_01"), 15.f },
+		{ TEXT("upperarm_l"), TEXT("lowerarm_l"), 6.5f }, { TEXT("lowerarm_l"), TEXT("hand_l"), 5.5f },
+		{ TEXT("upperarm_r"), TEXT("lowerarm_r"), 6.5f }, { TEXT("lowerarm_r"), TEXT("hand_r"), 5.5f },
+		{ TEXT("thigh_l"), TEXT("calf_l"), 9.f }, { TEXT("calf_l"), TEXT("foot_l"), 6.5f }, { TEXT("foot_l"), TEXT("ball_l"), 5.f },
+		{ TEXT("thigh_r"), TEXT("calf_r"), 9.f }, { TEXT("calf_r"), TEXT("foot_r"), 6.5f }, { TEXT("foot_r"), TEXT("ball_r"), 5.f } };
+	TArray<FVector> A, B;
+	TArray<float> Rad;
+	float UMin = 1e9f, UMax = -1e9f, VSum = 0.f;
+	for (const FSeg& G : Segs)
+	{
+		if (Mesh->GetBoneIndex(G.A) == INDEX_NONE || Mesh->GetBoneIndex(G.B) == INDEX_NONE)
+		{
+			continue;
+		}
+		A.Add(Local(Mesh->GetBoneLocation(G.A)));
+		B.Add(Local(Mesh->GetBoneLocation(G.B)));
+		Rad.Add(G.R * BodyScale);
+		for (const FVector& P : { A.Last(), B.Last() })
+		{
+			UMin = FMath::Min(UMin, P.X);
+			UMax = FMath::Max(UMax, P.X);
+		}
+		VSum += A.Last().Y + B.Last().Y;
+	}
+	if (A.Num() < 4)
+	{
+		return;
+	}
+	// from just under the chin (the neck's end of the trunk) to a hand past the feet, a body's width each side
+	const float U0 = Local(Mesh->GetBoneLocation(TEXT("neck_01"))).X + 4.f;
+	const float U1 = FMath::Max(UMax, UMin) + 22.f;
+	const float UStart = FMath::Min(U0, U1 - 40.f), VMid = VSum / (2.f * A.Num()), Half = 52.f * FMath::Max(BodyScale, 0.8f);
+	const int32 NU = 34, NV = 18;
+	TArray<float> H;
+	H.SetNumZeroed((NU + 1) * (NV + 1));
+	for (int32 j = 0; j <= NV; j++)
+	{
+		for (int32 i = 0; i <= NU; i++)
+		{
+			const FVector2D P(FMath::Lerp(UStart, U1, i / (float)NU), VMid + FMath::Lerp(-Half, Half, j / (float)NV));
+			float Z = 4.f;
+			for (int32 k = 0; k < A.Num(); k++)
+			{
+				const FVector2D a(A[k].X, A[k].Y), b(B[k].X, B[k].Y);
+				const FVector2D ab = b - a;
+				const float t = FMath::Clamp(FVector2D::DotProduct(P - a, ab) / FMath::Max(ab.SizeSquared(), 1.f), 0.f, 1.f);
+				const float d = FVector2D::Distance(P, a + ab * t);
+				const float r = Rad[k] + 13.f;    // the duvet's loft rounds over the body
+				if (d < r)
+				{
+					const float zc = FMath::Lerp(A[k].Z, B[k].Z, t);
+					Z = FMath::Max(Z, zc + FMath::Sqrt(r * r - d * d) * 0.75f + 1.f);
+				}
+			}
+			// the edges fall to the mattress (and a little over it)
+			const float Edge = FMath::Min(FMath::Min((float)j, (float)(NV - j)), (float)(NU - i)) / 2.5f;
+			H[j * (NU + 1) + i] = Edge < 1.f ? FMath::Lerp(-4.f, Z, Edge) : Z;
+		}
+	}
+	// soften: a cloth, not a mould
+	for (int32 Pass = 0; Pass < 7; Pass++)
+	{
+		TArray<float> G = H;
+		for (int32 j = 1; j < NV; j++)
+		{
+			for (int32 i = 1; i < NU; i++)
+			{
+				const int32 k = j * (NU + 1) + i;
+				G[k] = FMath::Max(H[k] * 0.4f + (H[k - 1] + H[k + 1] + H[k - NU - 1] + H[k + NU + 1]) * 0.15f, 2.f);
+			}
+		}
+		H = G;
+	}
+	FMeshDescription MD;
+	FStaticMeshAttributes Attr(MD);
+	Attr.Register();
+	TVertexAttributesRef<FVector3f> Pos = Attr.GetVertexPositions();
+	TVertexInstanceAttributesRef<FVector2f> UVs = Attr.GetVertexInstanceUVs();
+	TVertexInstanceAttributesRef<FVector3f> Nrm = Attr.GetVertexInstanceNormals();
+	const FPolygonGroupID Group = MD.CreatePolygonGroup();
+	TArray<FVertexInstanceID> Inst;
+	auto At = [&](int32 i, int32 j) { return FVector(FMath::Lerp(UStart, U1, i / (float)NU), VMid + FMath::Lerp(-Half, Half, j / (float)NV), H[j * (NU + 1) + i]); };
+	for (int32 j = 0; j <= NV; j++)
+	{
+		for (int32 i = 0; i <= NU; i++)
+		{
+			const FVertexID Vx = MD.CreateVertex();
+			Pos[Vx] = FVector3f(At(i, j));
+			const FVertexInstanceID In = MD.CreateVertexInstance(Vx);
+			UVs.Set(In, 0, FVector2f(i / (float)NU * 2.f, j / (float)NV));
+			const FVector N = FVector::CrossProduct(At(FMath::Min(i + 1, NU), j) - At(FMath::Max(i - 1, 0), j),
+				At(i, FMath::Min(j + 1, NV)) - At(i, FMath::Max(j - 1, 0))).GetSafeNormal();
+			Nrm[In] = FVector3f(N.Z < 0.f ? -N : N);
+			Inst.Add(In);
+		}
+	}
+	for (int32 j = 0; j < NV; j++)
+	{
+		for (int32 i = 0; i < NU; i++)
+		{
+			const FVertexInstanceID a = Inst[j * (NU + 1) + i], b = Inst[j * (NU + 1) + i + 1], c = Inst[(j + 1) * (NU + 1) + i], d = Inst[(j + 1) * (NU + 1) + i + 1];
+			// both windings: the linen's material is one-sided, the cloth is seen from above and at its edges from below
+			MD.CreateTriangle(Group, { a, c, b });
+			MD.CreateTriangle(Group, { b, c, d });
+			MD.CreateTriangle(Group, { a, b, c });
+			MD.CreateTriangle(Group, { b, d, c });
+		}
+	}
+	if (!BlanketMesh)
+	{
+		BlanketMesh = NewObject<UStaticMesh>(this);
+		static UMaterialInterface* Linen = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Academgorodok/Materials/MI_AC_FLinen.MI_AC_FLinen"));
+		BlanketMesh->GetStaticMaterials().Add(FStaticMaterial(Linen ? Linen : UMaterial::GetDefaultMaterial(MD_Surface)));
+	}
+	UStaticMesh::FBuildMeshDescriptionsParams Params;
+	Params.bBuildSimpleCollision = false;
+	Params.bFastBuild = true;
+	BlanketMesh->BuildFromMeshDescriptions({ &MD }, Params);
+	Blanket->SetStaticMesh(BlanketMesh);
+	// the field is in the bed's frame (U, V, up) over the mattress's top
+	Blanket->SetWorldLocationAndRotation(Top, FRotationMatrix::MakeFromXY(U, V).Rotator());
 }
 
 // --- console -----------------------------------------------------------------------------------------

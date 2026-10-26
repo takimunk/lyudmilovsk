@@ -1004,7 +1004,7 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
-		if (A.bSunset && !(Hour > Sunset - 0.8f && Hour < Sunset + 0.25f))
+		if (A.bSunset && !(Hour > Sunset - 0.45f && Hour < Sunset + 0.2f))
 		{
 			return -1e9f;
 		}

@@ -182,6 +182,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People")
 	TObjectPtr<USkeletalMeshComponent> Mesh;
 
+	/** A blanket over them asleep: draped over the body's bones once they lie still (BuildBlanket). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People")
+	TObjectPtr<class UStaticMeshComponent> Blanket;
+
 	/** Loads the model and remembers whose clips to use. False if the model is missing. */
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
 	/** Pose this frame: where (cm; seated: the floor under the seat, lying: under the mattress's middle), facing (deg; lying:
@@ -205,8 +209,18 @@ private:
 	float VariantUntil = 0.f;
 	uint32 Seed = 0;
 
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BlanketMesh;
+	float StillAsleep = 0.f;
+	bool bBlanket = false;
+	/** The bed: the floor under the mattress's middle, head-to-foot yaw, mattress top (cm over that floor). */
+	FVector BedCenter = FVector::ZeroVector;
+	float BedYaw = 0.f;
+	float BedTop = 50.f;
+
 	class UAnimSequence* Clip(FName Name);
 	void Play(FName Name, bool bLoop, float Rate = 1.f);
+	/** A duvet over the sleeper: a height field over the bed shaped by capsules round the bones, from the shoulders to past the feet. */
+	void BuildBlanket();
 	/** Plays one of the role's variants (the role's own clip most of the time), picking again every 6-12 s. */
 	void PlayVaried(FName InRole, std::initializer_list<FName> Variants, float Rate = 1.f);
 };
