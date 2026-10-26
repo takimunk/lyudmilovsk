@@ -101,7 +101,9 @@ def import_kit():
             a.set_editor_property("nanite_settings", s)
             body = a.get_editor_property("body_setup")
             if body:
-                body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
+                # the vestibules are walked into: their own triangles collide (door, room, railings)
+                body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE
+                                         if a.get_name().startswith("SM_TR_Vestibule_") else unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
             log("mesh %s: %d triangles" % (a.get_name(), a.get_num_triangles(0)))
             n += 1
     # Hi3D's PBR maps read as metal on these painted surfaces (everything came out near black): paint, not metal
