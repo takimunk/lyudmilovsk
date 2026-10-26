@@ -144,6 +144,7 @@ private:
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SeaMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> UnderMID;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> DepthTex;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SurfaceMesh;
@@ -160,6 +161,7 @@ private:
 	FVector2D AppliedDir = FVector2D::ZeroVector;
 	float AppliedFetch = -1.f, AppliedChop = -1.f;
 	bool bCameraUnder = false;
+	TWeakObjectPtr<class ALyudSky> Sky;
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;

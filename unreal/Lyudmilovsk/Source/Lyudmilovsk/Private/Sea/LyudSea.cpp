@@ -21,6 +21,7 @@
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "Sea/LyudSeabed.h"
+#include "Sky/LyudSky.h"
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
 #include "../Weather/WaveModel.h"
@@ -243,9 +244,11 @@ void ALyudSea::EnsureMaterial()
 	}
 	SeaMID->SetScalarParameterValue(TEXT("LandSideX"), LandSideX * 0.01f);
 	SeaMID->SetScalarParameterValue(TEXT("OpenSeaDepth"), OpenSeaDepthM);
-	if (UnderwaterMaterial && Underwater->Settings.WeightedBlendables.Array.Num() == 0)
+	if (UnderwaterMaterial && !UnderMID)
 	{
-		Underwater->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, UnderwaterMaterial));
+		UnderMID = UMaterialInstanceDynamic::Create(UnderwaterMaterial, this);
+		Underwater->Settings.WeightedBlendables.Array.Reset();
+		Underwater->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, UnderMID));
 	}
 }
 
@@ -623,6 +626,17 @@ void ALyudSea::Tick(float DeltaSeconds)
 		const FLyudSeaSample S = SampleSurface(Eye);
 		bCameraUnder = S.bIsSea && S.Immersion > 2.f;
 		Underwater->BlendWeight = bCameraUnder ? 1.f : 0.f;
+		if (bCameraUnder && UnderMID)
+		{
+			// the light coming down through the surface: full by day, a glimmer at night
+			if (!Sky.IsValid())
+			{
+				TActorIterator<ALyudSky> It(GetWorld());
+				Sky = It ? *It : nullptr;
+			}
+			const float Alt = Sky.IsValid() ? Sky->SunAltitude() : 30.f;
+			UnderMID->SetScalarParameterValue(TEXT("Light"), 0.03f + 0.97f * FMath::SmoothStep(-4.f, 12.f, Alt));
+		}
 		if (SeaMID)
 		{
 			SeaMID->SetScalarParameterValue(TEXT("CameraUnder"), bCameraUnder ? 1.f : 0.f);

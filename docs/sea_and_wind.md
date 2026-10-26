@@ -63,10 +63,11 @@ sound thread, which uses it for rain, thunder and the music's mood; visuals are 
   whole number of turns per loop).
 - **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, Baltic absorption and scattering (brown-green,
   a few metres of visibility), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
-  crests pinch (≈1 % of the sea at 7 m/s, more and streaked downwind in a gale), breakers and wash over the
-  shallows.
-- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). Waves longer
-  than ~2× the depth shrink and the surface stays under the breaking height (0.4 × depth); no sea east of
+  crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
+  along the wind at gale force), breakers and wash over the shallows.
+- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). The surface stays
+  under the breaking height (0.4 × depth), and where the water is shallower than ~1.5 × the wave height spilling
+  breakers roll in along the depth contours, in the geometry, the foam and `SampleSurface` alike; no sea east of
   `LandSideX`.
 - **Mesh**: rings round the camera built in code, ~26 k vertices (desktop) / 6.5 k (phone), fine near the eye and
   coarse to 30 km.
@@ -74,7 +75,8 @@ sound thread, which uses it for rain, thunder and the music's mood; visuals are 
   it; its brush is a box body built at runtime), so a character that falls in goes to `MOVE_Swimming` (checked
   offscreen: dropped in the shallows it swims, on the beach it walks). `IsSwimmable(Location)` asks the same of a
   point; `SampleSurface` gives the wavy surface to float at. The hero's own swim tuning lives with the hero.
-- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour and dims it with depth.
+- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour, dims it with depth,
+  lays caustics on the bed and shows the sky through Snell's window overhead (dark by night, from the sun's altitude).
 - **Buoyancy**: `ULyudBuoyancyComponent` on a simulating body (points, volume, drag). `lyud.Sea.SpawnFloat` drops
   a 1 m crate on the water to watch it ride.
 - **Quality**: `lyud.Sea.Quality` 0 phone (64 segments, 20 + 16 trains), 1, 2 desktop (128, 64 + 48); −1 = by
