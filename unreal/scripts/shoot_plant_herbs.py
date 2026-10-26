@@ -10,9 +10,9 @@ import unreal
 SHOTS = os.environ.get("HERB_SHOTS", "/tmp/shots")
 ONLY = os.environ.get("HERB_ONLY", "")
 INDOOR = ["RubberPlant", "WeepingFig", "Lemon", "Dracaena", "Monstera", "SnakePlant", "Aspidistra", "SpiderPlant", "Tradescantia",
-          "Geranium", "Begonia", "AfricanViolet", "KentiaPalm", "Aloe", "Cactus", "Dieffenbachia", "AsparagusFern"]
+          "Geranium", "Begonia", "AfricanViolet", "KentiaPalm", "Aloe", "Cactus", "Dieffenbachia", "AsparagusFern", "Amaryllis", "Avocado"]
 PLAN = [("Bed", 200), ("Bed", 293), ("Bed", 304), ("Bed", 120), ("BedClose", 200), ("BedClose", 293), ("AsterClose", 200), ("AsterClose", 293), ("AsterClose", 330), ("Hedge", 145), ("Hedge", 200), ("Hedge", 293), ("HedgeClose", 200), ("IndoorRow", 293)]
-PLAN += [(s, 293) for s in INDOOR]
+PLAN += [(s, 293) for s in INDOOR] + [("Amaryllis", 20), ("Amaryllis", 60)]
 if os.environ.get("HERB_QUICK"):
     PLAN = [("Hedge", 200), ("HedgeClose", 200), ("HedgeClose", 293), ("HedgeClose", 20), ("Hedge", 145)]
 if ONLY:
@@ -48,6 +48,20 @@ def tick(dt):
             reports = [p.debug_report(p.get_age(), 293.0) for p in unreal.GameplayStatics.get_all_actors_of_class(w, plant_cls) if p.get_actor_label().startswith("In_") or p.get_actor_label() in ("Privet_1", "Spiraea_1")]
             for r in reports:
                 unreal.log_warning("PLANTHERBS " + r)
+            # bounds: an old house plant of any seed fits 2.3 x 0.9 m (the species' own caps are tighter)
+            import re
+            worst = {}
+            for p in unreal.GameplayStatics.get_all_actors_of_class(w, plant_cls):
+                if p.get_actor_label().startswith("Bound_"):
+                    m = re.search(r"h ([0-9.]+) r ([0-9.]+)", p.debug_report(60.0, 20.0))
+                    sp = p.get_actor_label().split("_")[1]
+                    if not m:
+                        continue  # the potted trees (weeping fig, lemon) are bounded by the tree model
+                    h, r = float(m.group(1)), float(m.group(2))
+                    o = worst.get(sp, (0, 0))
+                    worst[sp] = (max(o[0], h), max(o[1], r))
+            for sp, (h, r) in sorted(worst.items()):
+                unreal.log_warning("PLANTBOUND %s h %.2f r %.2f %s" % (sp, h, r, "ok" if h <= 2.3 and r <= 0.9 else "FAIL"))
         return
     i = state["i"]
     if i < len(PLAN):

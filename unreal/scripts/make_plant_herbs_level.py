@@ -74,7 +74,7 @@ cam("Cam_HedgeClose", unreal.Vector(-50, 1000, 110), -5, 90)
 
 # every house plant in a row, each with its own camera
 INDOOR = ["RubberPlant", "WeepingFig", "Lemon", "Dracaena", "Monstera", "SnakePlant", "Aspidistra", "SpiderPlant", "Tradescantia",
-          "Geranium", "Begonia", "AfricanViolet", "KentiaPalm", "Aloe", "Cactus", "Dieffenbachia", "AsparagusFern"]
+          "Geranium", "Begonia", "AfricanViolet", "KentiaPalm", "Aloe", "Cactus", "Dieffenbachia", "AsparagusFern", "Amaryllis", "Avocado"]
 for i, s in enumerate(INDOOR):
     x = -2400 + i * 300
     # small ones stand on a "sill" (a box 80 cm high) like on a windowsill
@@ -89,10 +89,15 @@ for i, s in enumerate(INDOOR):
     p = plant(s, x, -1500, 5, 1, "In_" + s)
     p.set_actor_location(unreal.Vector(x, -1500, z + 5), False, False)
     h = {"RubberPlant": 150, "WeepingFig": 170, "Lemon": 130, "Dracaena": 150, "Monstera": 100, "KentiaPalm": 160, "Dieffenbachia": 90,
-         "SnakePlant": 80, "Aspidistra": 70}.get(s, 50)
+         "SnakePlant": 80, "Aspidistra": 70, "Avocado": 110, "Amaryllis": 60}.get(s, 50)
     d = max(70, h * 1.25)
     cam("Cam_" + s, unreal.Vector(x, -1500 - d, z + h * 0.65 + 25), -18, 90)
 cam("Cam_IndoorRow", unreal.Vector(0, -3300, 260), -8, 90)
+
+# size bounds: every house plant old, several seeds, far from the row (checked by shoot_plant_herbs.py, PLANTBOUND)
+for k, s in enumerate(INDOOR):
+    for sd in range(1, 5):
+        plant(s, -2400 + k * 300 + sd * 40, 4000, 60, sd * 17, "Bound_%s_%d" % (s, sd))
 
 # the room for the performance check: 51 pots
 for k in range(51):

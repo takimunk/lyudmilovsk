@@ -766,6 +766,18 @@ void PlantHerbs::Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FH
 			P.Z = FMath::Min(P.Z, Half.Z - In);
 		}
 	}
+	if (S.bIndoor && S.CrownBox.X <= 0.f)
+	{
+		// a house plant stays inside its bounds (cm): pressed back along each axis, never cut
+		const FPlantHerb& H = S.Herb;
+		const float MaxH = 100.f * (H.MaxHeight > 0.f ? H.MaxHeight : 1.3f * (H.Height + (H.Flower != EPlantFlowerForm::None ? H.ScapeHeight : 0.f)));
+		const float MaxR = 100.f * (H.MaxRadius > 0.f ? H.MaxRadius : 0.65f * H.Spread);
+		float Hi = 0.f, Ri = 0.f;
+		for (const FVector3f& P : Out.Pos) { Hi = FMath::Max(Hi, P.Z); Ri = FMath::Max(Ri, FVector2f(P.X, P.Y).Size()); }
+		const float Zs = Hi > MaxH ? MaxH / Hi : 1.f, Rs = Ri > MaxR ? MaxR / Ri : 1.f;
+		if (Zs < 1.f || Rs < 1.f)
+			for (FVector3f& P : Out.Pos) { P.X *= Rs; P.Y *= Rs; if (P.Z > 0.f) P.Z *= Zs; }
+	}
 	OutHeight = OutRadius = 0.f;
 	for (const FVector3f& P : Out.Pos)
 	{

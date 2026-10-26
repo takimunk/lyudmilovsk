@@ -177,6 +177,12 @@ struct FPlantHerb
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float Height = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float Spread = 0.4f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float MatureYears = 2.f;
+	/**
+	 * Hard bounds of an indoor plant, m (0 = derived: 1.3 x Height plus the flower scapes, 0.65 x Spread): whatever
+	 * a seed or age would grow beyond them is pressed back, so a house plant fits the spot it was placed in.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float MaxHeight = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") float MaxRadius = 0.f;
 	/** Sown in spring and killed by the first frost (marigold, cosmos); its age counts within the year. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb") bool bAnnual = false;
 	/** A shrub: its stems stand through the winter (only the leaves come and go). With CrownBox: a clipped hedge. */
