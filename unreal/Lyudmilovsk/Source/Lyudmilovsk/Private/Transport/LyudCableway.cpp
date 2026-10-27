@@ -489,6 +489,10 @@ int32 ALyudCableway::StationAt(const FVector& P) const
 ALyudCabin::ALyudCabin()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	// grass and forests scatter by tracing down: a cabin parked at a station when they (re)build must not get grass
+	// on its floor (it grew through it at Aton)
+	Tags.Add(TEXT("NoGrass"));
+	Tags.Add(TEXT("NoTree"));
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Root->SetMobility(EComponentMobility::Movable);
 	RootComponent = Root;

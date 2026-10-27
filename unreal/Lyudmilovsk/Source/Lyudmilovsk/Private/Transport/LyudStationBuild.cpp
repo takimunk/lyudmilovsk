@@ -1644,6 +1644,8 @@ static TAutoConsoleVariable<int32> CVarLiftLog(TEXT("lyud.Transport.LiftLog"), 0
 ALyudStationLift::ALyudStationLift()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Tags.Add(TEXT("NoGrass"));          // no grass on the cab's roof or floor when the ground's scatter rebuilds
+	Tags.Add(TEXT("NoTree"));
 	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
