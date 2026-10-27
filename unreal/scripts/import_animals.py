@@ -441,6 +441,9 @@ def do_bodies():
         r = json.load(open(p))
         out[breed] = {"kind": r["kind"], "coats": r["coats"], "eyes": r["eyes"], "speeds_cms": r["speeds_cms"],
                       "height_cm": r["height_cm"], "length_cm": r["length_cm"], "clips": sorted(r["clips"])}
+        ey = os.path.join(ROOT, "blender", "animals", "gen", breed, "eyes.json")     # runtime eyeballs, set by hand
+        if os.path.exists(ey):
+            out[breed]["eyeballs"] = {k: v for k, v in json.load(open(ey)).items() if not k.startswith("_")}
         c = os.path.join(EXPORT, breed, breed + "_collar.json")
         if os.path.exists(c):
             # the collar: the bone it rides, the point the tag hangs from, the chest it rests on (the breed's frame, cm)

@@ -253,7 +253,7 @@ if PART == "eyes":
         cmd(w, "Animal.Spawn %s 0 Stand %.0f %.0f 0 0" % (BREED, E[0], E[1]))
         log("spawned " + BREED)
     for k, (back, side, up, fov, name) in enumerate([(70.0, 0.0, 6.0, 30, "front"), (55.0, 35.0, 6.0, 30, "34"),
-                                                      (30.0, 20.0, 2.0, 22, "eye_right"), (30.0, -20.0, 2.0, 22, "eye_left")]):
+                                                      (45.0, 28.0, 3.0, 18, "eye_right"), (45.0, -28.0, 3.0, 18, "eye_left")]):
         step(lambda w, a=(back, side, up, fov, name): face_shot(w, *a), 4.0 if k == 0 else 2.0)
         step(lambda w, n=name: shot(w, "eyes_" + n), 2.0)
     step(lambda w: cmd(w, "lyud.Animals.EyeFix 1"), 0.5)

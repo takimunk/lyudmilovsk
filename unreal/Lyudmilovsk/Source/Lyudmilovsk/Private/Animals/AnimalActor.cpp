@@ -3,6 +3,11 @@
 #include "Animals/AnimalAnimInstance.h"
 #include "Animals/AnimalCollar.h"
 #include "Animation/AnimSequence.h"
+#include "AnimationRuntime.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Rendering/SkeletalMeshRenderData.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Dom/JsonObject.h"
 #include "Engine/SkeletalMesh.h"
@@ -32,6 +37,10 @@ namespace
 		/** A collar (blender/animals/collar.py), in the breed's frame (cm). */
 		bool bCollar = false;
 		FAnimalCollarSpec Collar;
+		/** Runtime eyeballs (blender/animals/gen/<Breed>/eyes.json): middle and look per eye (cm, the breed's frame). */
+		TArray<FVector> EyeAt, EyeLook;
+		float EyeRadius = 1.f, EyePush = 0.f, IrisR = 0.85f, PupilR = 0.4f;
+		FLinearColor Iris = FLinearColor(0.07f, 0.03f, 0.012f), Sclera = FLinearColor(0.1f, 0.06f, 0.045f);
 	};
 
 	const TMap<FName, FBreedData>& Breeds()
@@ -97,6 +106,41 @@ namespace
 				if ((*Co)->TryGetNumberField(TEXT("chest_radius_cm"), V)) { D.Collar.ChestRadius = (float)V; }
 				if ((*Co)->TryGetNumberField(TEXT("com_cm"), V)) { D.Collar.TagLength = (float)V; }
 				D.bCollar = true;
+			}
+			const TSharedPtr<FJsonObject>* Ey = nullptr;
+			if ((*O)->TryGetObjectField(TEXT("eyeballs"), Ey))
+			{
+				auto Arr = [](const TSharedPtr<FJsonObject>& J, const TCHAR* Field, FVector& Out)
+				{
+					const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
+					if (J->TryGetArrayField(Field, A) && A->Num() == 3)
+					{
+						Out = FVector((*A)[0]->AsNumber(), (*A)[1]->AsNumber(), (*A)[2]->AsNumber());
+						return true;
+					}
+					return false;
+				};
+				const TArray<TSharedPtr<FJsonValue>>* Balls = nullptr;
+				if ((*Ey)->TryGetArrayField(TEXT("balls"), Balls))
+				{
+					for (const TSharedPtr<FJsonValue>& B : *Balls)
+					{
+						FVector At, Look;
+						if (Arr(B->AsObject(), TEXT("at"), At) && Arr(B->AsObject(), TEXT("look"), Look))
+						{
+							D.EyeAt.Add(At);
+							D.EyeLook.Add(Look.GetSafeNormal());
+						}
+					}
+				}
+				double V = 0.0;
+				if ((*Ey)->TryGetNumberField(TEXT("radius"), V)) { D.EyeRadius = (float)V; }
+				if ((*Ey)->TryGetNumberField(TEXT("push"), V)) { D.EyePush = (float)V; }
+				if ((*Ey)->TryGetNumberField(TEXT("iris_r"), V)) { D.IrisR = (float)V; }
+				if ((*Ey)->TryGetNumberField(TEXT("pupil_r"), V)) { D.PupilR = (float)V; }
+				FVector C;
+				if (Arr(*Ey, TEXT("iris"), C)) { D.Iris = FLinearColor(C.X, C.Y, C.Z); }
+				if (Arr(*Ey, TEXT("sclera"), C)) { D.Sclera = FLinearColor(C.X, C.Y, C.Z); }
 			}
 			Table.Add(FName(*KV.Key), D);
 		}
@@ -168,6 +212,12 @@ static void SpawnAnimalCmd(const TArray<FString>& Args, UWorld* World)
 	A->FinishSpawning(T);
 }
 
+static TAutoConsoleVariable<int32> CVarAnimalEyes(TEXT("lyud.Animals.Eyes"), 1, TEXT("0: the eyeballs joined into the bodies, not the runtime ones (a new body)."));
+static TAutoConsoleVariable<float> CVarAnimalEyePush(TEXT("lyud.Animals.EyePush"), 0.f, TEXT("Extra cm the runtime eyeballs sit forward (tuning; a new body)."));
+static TAutoConsoleVariable<float> CVarAnimalEyeScale(TEXT("lyud.Animals.EyeScale"), 1.f, TEXT("Scales the runtime eyeballs (tuning; a new body)."));
+static TAutoConsoleVariable<int32> CVarAnimalEyeFix(TEXT("lyud.Animals.EyeFix"), 0, TEXT("1: every animal's eyes look lyud.Animals.EyeYaw off its body's forward (tests)."));
+static TAutoConsoleVariable<float> CVarAnimalEyeYaw(TEXT("lyud.Animals.EyeYaw"), 0.f, TEXT("Degrees (lyud.Animals.EyeFix)."));
+
 static FAutoConsoleCommandWithWorldAndArgs GAnimalSpawnCmd(TEXT("Animal.Spawn"),
 	TEXT("Animal.Spawn <Cat|Laika|Shepherd|Mutt> [coat] [activity] [x y z [yaw]]: an animal body 2.5 m in front of the camera, or there (testing)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&SpawnAnimalCmd));
@@ -227,6 +277,7 @@ bool AAnimalActor::SetBreed(FName InBreed, int32 InCoat)
 	}
 	ApplyCoat();
 	UpdateCollar();
+	UpdateEyes();
 	PlayingClip = NAME_None;
 	UpdateClip(0.f);
 	return true;
@@ -251,6 +302,108 @@ void AAnimalActor::UpdateCollar()
 	}
 	Collar->Setup(Body, D->Collar, Root(Breed) / FString::Printf(TEXT("SM_%s_Collar.SM_%s_Collar"), *Breed.ToString(), *Breed.ToString()),
 		Root(Breed) / FString::Printf(TEXT("SM_%s_Tag.SM_%s_Tag"), *Breed.ToString(), *Breed.ToString()));
+}
+
+void AAnimalActor::UpdateEyes()
+{
+	for (UStaticMeshComponent* C : Eyeballs)
+	{
+		if (C)
+		{
+			C->DestroyComponent();
+		}
+	}
+	Eyeballs.Reset();
+	EyeMIDs.Reset();
+	const FBreedData* D = Breeds().Find(Breed);
+	USkeletalMesh* SK = Body ? Body->GetSkeletalMeshAsset() : nullptr;
+	if (!D || D->EyeAt.Num() != 2 || !SK || CVarAnimalEyes.GetValueOnGameThread() == 0)
+	{
+		return;
+	}
+	UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	UMaterialInterface* EyeMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Characters/Humans/Materials/M_HumanEyeball.M_HumanEyeball"));
+	const int32 HeadBone = SK->GetRefSkeleton().FindBoneIndex(TEXT("head"));
+	if (!Sphere || !EyeMat || HeadBone == INDEX_NONE)
+	{
+		return;
+	}
+	// the eyeballs build_animal.py joined into the body stay in the mesh, hidden
+	const TArray<FName> Slots = Body->GetMaterialSlotNames();
+	if (const FSkeletalMeshRenderData* RD = SK->GetResourceForRendering())
+	{
+		for (int32 L = 0; L < RD->LODRenderData.Num(); L++)
+		{
+			for (int32 S = 0; S < RD->LODRenderData[L].RenderSections.Num(); S++)
+			{
+				const int32 Mi = RD->LODRenderData[L].RenderSections[S].MaterialIndex;
+				if (Slots.IsValidIndex(Mi) && Slots[Mi].ToString().Contains(TEXT("Eye")))
+				{
+					Body->ShowMaterialSection(Mi, S, false, L);
+				}
+			}
+		}
+	}
+	const FTransform HeadRef = FAnimationRuntime::GetComponentSpaceTransformRefPose(SK->GetRefSkeleton(), HeadBone);
+	const float R = D->EyeRadius * CVarAnimalEyeScale.GetValueOnGameThread();
+	const float Push = D->EyePush + CVarAnimalEyePush.GetValueOnGameThread();
+	for (int32 S = 0; S < 2; S++)
+	{
+		const FVector At = D->EyeAt[S] + D->EyeLook[S] * Push;
+		const FTransform InMesh(D->EyeLook[S].Rotation(), At, FVector(R / 50.f));
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+		C->SetStaticMesh(Sphere);
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetCastShadow(false);
+		C->SetReceivesDecals(false);
+		C->SetLightingChannels(true, true, false);       // the sun is channel 1, as on the body
+		C->SetupAttachment(Body, TEXT("head"));
+		C->SetRelativeTransform(InMesh.GetRelativeTransform(HeadRef));
+		C->RegisterComponent();
+		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(EyeMat, C);
+		M->SetVectorParameterValue(TEXT("Size"), FLinearColor(R, R, R, 0.f));
+		M->SetVectorParameterValue(TEXT("IrisColor"), D->Iris);
+		M->SetVectorParameterValue(TEXT("ScleraColor"), D->Sclera);
+		M->SetScalarParameterValue(TEXT("IrisR"), D->IrisR * R);
+		M->SetScalarParameterValue(TEXT("PupilR"), D->PupilR * R);
+		C->SetMaterial(0, M);
+		Eyeballs.Add(C);
+		EyeMIDs.Add(M);
+	}
+}
+
+void AAnimalActor::TickEyes(float DeltaSeconds)
+{
+	if (EyeMIDs.Num() != 2)
+	{
+		return;
+	}
+	EyeClock += DeltaSeconds;
+	if (EyeClock >= EyeSaccadeAt)
+	{
+		EyeSaccadeAt = EyeClock + Rng.FRandRange(0.4f, 2.5f);
+		EyeSaccade = FVector2D(Rng.FRandRange(-5.f, 5.f), Rng.FRandRange(-3.f, 3.f));
+	}
+	for (int32 S = 0; S < 2; S++)
+	{
+		const FTransform T = Eyeballs[S]->GetComponentTransform();
+		// straight on (the ball's X) or toward what she looks at, at most 35 deg off; a little wander on top
+		FVector Want = FVector::ForwardVector;
+		if (CVarAnimalEyeFix.GetValueOnGameThread())
+		{
+			const FVector F = Body->GetComponentTransform().TransformVectorNoScale(FRotator(0.f, CVarAnimalEyeYaw.GetValueOnGameThread(), 0.f).Vector());
+			Want = T.InverseTransformVectorNoScale(F);
+		}
+		else if (LookWeight > 0.05f)
+		{
+			Want = FMath::Lerp(FVector::ForwardVector, T.InverseTransformVectorNoScale((LookWorld - T.GetLocation()).GetSafeNormal()), LookWeight);
+		}
+		FRotator Rot = Want.GetSafeNormal().Rotation();
+		Rot.Yaw = FMath::Clamp(FRotator::NormalizeAxis(Rot.Yaw + EyeSaccade.X), -35.f, 35.f);
+		Rot.Pitch = FMath::Clamp(FRotator::NormalizeAxis(Rot.Pitch + EyeSaccade.Y), -20.f, 20.f);
+		EyeGaze[S] = FMath::Lerp(EyeGaze[S], Rot.Vector(), FMath::Min(1.f, DeltaSeconds * 20.f));
+		EyeMIDs[S]->SetVectorParameterValue(TEXT("Gaze"), FLinearColor(EyeGaze[S].X, EyeGaze[S].Y, EyeGaze[S].Z, 0.f));
+	}
 }
 
 void AAnimalActor::ApplyCoat()
@@ -469,6 +622,7 @@ void AAnimalActor::Tick(float DeltaSeconds)
 	{
 		O.Look = Body->GetComponentTransform().InverseTransformPosition(LookWorld);
 	}
+	TickEyes(DeltaSeconds);
 	// the mouth
 	if (JawTrain > 0 && (JawTrainTimer -= DeltaSeconds) <= 0.f)
 	{

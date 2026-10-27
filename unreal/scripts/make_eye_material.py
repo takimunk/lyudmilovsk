@@ -7,7 +7,8 @@ so the eye looks about by moving the iris over the white. Parameters (a dynamic 
     Size      (depth, width, height, socket) cm; local X forward, Y the character's right, Z up; socket 1 = the
               dark flesh behind the ball (a second, flatter body that fills the corners)
     Gaze      the look direction in the ball's frame (X forward)
-    IrisColor linear; IrisR, PupilR cm
+    IrisColor, ScleraColor linear; IrisR, PupilR cm
+Also the cats' and dogs' runtime eyeballs (AAnimalActor, a dark white, a big iris).
 The white is greyed toward the corners and under the upper lid (the lids' shade on a real eye), the iris has fibres,
 a darker rim and a glossy cornea, so it doesn't read as a ping-pong ball.
 
@@ -34,7 +35,7 @@ COLOUR = COMMON + """
 if (S.w > 0.5)
     return float3(0.09, 0.035, 0.03);
 float cy = saturate(abs(p.y) / S.y);
-float3 white = float3(0.56, 0.52, 0.48);
+float3 white = SC.rgb;
 white = lerp(white, float3(0.42, 0.2, 0.18), saturate(cy * cy * cy) * 0.7);
 white *= lerp(1.0, 0.45, saturate(cy * cy));
 white *= lerp(1.0, 0.6, saturate(p.z / S.z + 0.15));
@@ -97,7 +98,8 @@ src = [("LP", lp, ""),
        ("G", param(m, unreal.MaterialExpressionVectorParameter, "Gaze", unreal.LinearColor(1, 0, 0, 0), -1100, 200), "RGBA"),
        ("IR", param(m, unreal.MaterialExpressionScalarParameter, "IrisR", 0.58, -1100, 300), ""),
        ("PR", param(m, unreal.MaterialExpressionScalarParameter, "PupilR", 0.21, -1100, 380), ""),
-       ("IC", param(m, unreal.MaterialExpressionVectorParameter, "IrisColor", unreal.LinearColor(0.05, 0.03, 0.02, 1), -1100, 460), "RGBA")]
+       ("IC", param(m, unreal.MaterialExpressionVectorParameter, "IrisColor", unreal.LinearColor(0.05, 0.03, 0.02, 1), -1100, 460), "RGBA"),
+       ("SC", param(m, unreal.MaterialExpressionVectorParameter, "ScleraColor", unreal.LinearColor(0.56, 0.52, 0.48, 1), -1100, 540), "RGBA")]
 col = custom(m, COLOUR, unreal.CustomMaterialOutputType.CMOT_FLOAT3, "EyeColour", 0, src)
 rough = custom(m, ROUGH, unreal.CustomMaterialOutputType.CMOT_FLOAT1, "EyeRough", 300, src[:4])
 mel.connect_material_property(col, "", MP.MP_BASE_COLOR)
