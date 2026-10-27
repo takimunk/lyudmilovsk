@@ -134,6 +134,10 @@ club's dog on the spur (dog breed 3, `Maru`, female, the friendliest of all): a 
 tips and a plume tail curled over her back. Her body is a hi3d model (`gen/Maru/gen.json`: the views were drawn by hi3d
 from a description of the sheet, since the sheet itself can't be uploaded) on the laika's skeleton, scaled
 (`anatomy.py` `_derive("Laika", "Maru", ...)`), with all the dog clips; one coat, the generated one (`cream`).
+Her eyes: a generated head's eyes are not where the template's guess puts them (Maru's were 4 cm further back and 3 cm
+lower), so `gen_fit.find_eyes` finds them in the generated texture (the dark irises on the face, each side on its
+own); the fur is bare there, the coarse shells over them are cut away, and glossy eyeballs (hazel `EYES["Maru"]`)
+sit in them, their fronts a little proud of the skin. Every `--gen` breed gets this when its eyes can be found.
 
 **Her collar** (`collar.py`, run after `build_animal.py Maru --gen`): a 4 mm braided cord, dark red and black, laid
 round her neck along the skin measured by rays (pressed 1.2 cm into the fur), drawn together under the throat by a

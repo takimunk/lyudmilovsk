@@ -34,7 +34,7 @@ EYES = {
     "Laika": [("#7a4a1e", "#4a2a10"), ("#5a3416", "#3a200c")],
     "Shepherd": [("#6a3e18", "#3e220c"), ("#7a4a1e", "#4a2a10")],
     "Mutt": [("#6e4018", "#42240e"), ("#6a3c18", "#3c200c")],
-    "Maru": [("#b98a44", "#8a5e26")],
+    "Maru": [("#7e5c36", "#4a3220")],      # hazel-brown (Dima's photos of her eyes)
 }
 
 

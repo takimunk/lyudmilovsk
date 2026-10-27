@@ -264,6 +264,11 @@ if PART == "maru":
     step(lambda w: shot(w, "maru_collar"), 2.0)
     step(lambda w: look(w, (M[0] + 58.0, M[1] - 6.0, 50.0), (M[0] + 40.0, M[1], 49.0)), 2.0)
     step(lambda w: shot(w, "maru_tag"), 2.0)
+    # her eyes (left one at about (40.7, 4.5, 68) cm in her frame), face on and close
+    step(lambda w: look(w, (M[0] + 120.0, M[1] + 2.0, 72.0), (M[0] + 38.0, M[1], 67.0)), 2.0)
+    step(lambda w: shot(w, "maru_eyes"), 2.0)
+    step(lambda w: look(w, (M[0] + 68.0, M[1] + 32.0, 71.0), (M[0] + 40.0, M[1] + 4.5, 68.0)), 2.0)
+    step(lambda w: shot(w, "maru_eye_close"), 2.0)
 
     @step
     def s_find(w):

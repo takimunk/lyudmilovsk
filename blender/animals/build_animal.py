@@ -220,6 +220,13 @@ def uv_sphere(name, c, r, look, seg=24, rings=16):
 def eyes():
     out = []
     e = B["eye"]
+    if B.get("eyes_at"):
+        # a generated head: each eyeball sits in the eye the texture shows, its front a little proud of the skin
+        for (s, k), (c0, r, nk) in zip(AN.SIDES, B["eyes_at"] if AN.SIDES[0][1] > 0 else B["eyes_at"][::-1]):
+            look = nk * 0.6 + np.array([1.0, 0, 0]) * 0.4
+            look = look / np.linalg.norm(look)
+            out.append((uv_sphere("Eye_" + s, c0 - nk * r * 0.62, r, look), "head"))
+        return out
     for s, k in AN.SIDES:
         a = math.radians(B["eye_out"])
         look = np.array((math.cos(a), k * math.sin(a), 0.05))
@@ -255,6 +262,20 @@ def build_body_gen():
     facts = GF.fit(B, Q)
     B["gen"] = True
     log("fitted", facts)
+    # its own eyes (the template's place is only a guess on a generated head): bare of fur there, eyeballs set in them
+    found = GF.find_eyes(ob, img, B) if img is not None else None
+    if found:
+        (cl, rl, nl, ml), (cr, rr, nr, mr) = found
+        log("eyes found: left %s r %.1f mm (%d texels), right %s r %.1f mm; template was %s" % (
+            np.round(cl, 3), rl * 1000, ml, np.round(cr, 3), rr * 1000, np.round(B["eye"], 3)))
+        # each eye where it is (a generated head is seldom quite symmetric); B["eye"] the mean, for the template code
+        B["eye"] = (cl + cr * np.array([1, -1, 1])) / 2
+        B["eye_r"] = (rl + rr) / 2
+        n = (nl + nr * np.array([1, -1, 1])) / 2
+        B["eye_n"] = n / np.linalg.norm(n)
+        B["eyes_at"] = [(np.array(cl), rl, np.array(nl)), (np.array(cr), rr, np.array(nr))]
+    else:
+        log("eyes not found in the generated texture: the template's place is used")
     ob.name = "Body"
     high = copy_object(ob, "High")
     decimate(high, 400000)
@@ -441,8 +462,9 @@ def fur_field(A):
     L = L * (1 - A.nose) * (1 - A.pad * 0.8) * (1 - A.inner_ear * 0.5) * (1 - A.lips * 0.7)
     # bare round the eyes: the lids
     e = B["eye"]
-    for k in (1.0, -1.0):
-        d = np.linalg.norm(A.P - np.array([e[0], e[1] * k, e[2]]), axis=1) / B["eye_r"]
+    for k, at in zip((1.0, -1.0), B.get("eyes_at") or [None, None]):
+        c, r = (at[0], at[1]) if at is not None else (np.array([e[0], e[1] * k, e[2]]), B["eye_r"])
+        d = np.linalg.norm(A.P - c, axis=1) / r
         L = L * (0.08 + 0.92 * smooth01((d - 1.05) / 0.7))
     L = np.maximum(L, 0.15) * 0.01
     # comb: back toward the tail and down; down the legs; to the tip of the tail; back over the head; up the ears
@@ -632,6 +654,10 @@ def add_shells_from(ob, src, n, L, C, W, Wsrc):
     bm.from_mesh(tmp.data)
     nv0 = len(src.data.vertices)
     bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.material_index == 0], context="FACES_ONLY")
+    # and the shells over the eyes: the coarse copy's big triangles would spread the fur across them
+    for c, r, _n in B.get("eyes_at") or []:
+        cv = mathutils.Vector(c)
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * 1.9], context="FACES_ONLY")
     bm.verts.ensure_lookup_table()
     loose = [v for v in bm.verts if not v.link_faces]
     keep_idx = [v.index for v in bm.verts if v.link_faces]
@@ -906,7 +932,7 @@ def main():
     eye_mat.name = "Eye"
     if proxy is not None:
         bpy.data.objects.remove(proxy)
-    for ob, bone in ([] if GEN else eyes()):
+    for ob, bone in ([] if GEN and B.get("eye_n") is None else eyes()):
         ob.data.materials.append(eye_mat)
         skin_to(ob, arm, {bone: np.ones(len(ob.data.vertices))})
     log("built %.1fs" % (time.time() - t0), "LOD0 with shells", sum(len(p.vertices) - 2 for p in lods[0].data.polygons), "tris")

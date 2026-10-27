@@ -221,3 +221,55 @@ def base_color_image(ob):
         if img:
             return img
     return None
+
+
+def find_eyes(ob, img, B, size=1024):
+    """Where the generated body's own eyes are (the texture's dark irises and pupils on the face, left and right of the
+    middle, between the brow and the muzzle): their centres on the skin, radius and outward normals. The breed's
+    template eye place only guesses; on a generated head it can be centimetres off, and then the fur grows over the
+    real eyes (they look shut) and the eyeballs sit inside the head. None if they can't be told."""
+    me = ob.data
+    P = verts(ob)
+    N = np.zeros(len(me.vertices) * 3)
+    me.vertices.foreach_get("normal", N)
+    N = N.reshape(-1, 3)
+    uv = np.zeros(len(me.loops) * 2)
+    me.uv_layers.active.data.foreach_get("uv", uv)
+    vi = np.zeros(len(me.loops), dtype=np.int64)
+    me.loops.foreach_get("vertex_index", vi)
+    UV = np.zeros((len(me.vertices), 2))
+    UV[vi] = uv.reshape(-1, 2)
+    im = img.copy()
+    im.scale(size, size)
+    px = np.array(im.pixels[:]).reshape(size, size, 4)[..., :3]
+    bpy.data.images.remove(im)
+    iy = np.clip((UV[:, 1] % 1.0) * (size - 1), 0, size - 1).astype(int)
+    ix = np.clip((UV[:, 0] % 1.0) * (size - 1), 0, size - 1).astype(int)
+    lum = px[iy, ix] @ np.array([0.2126, 0.7152, 0.0722])
+    J = B["joints"]
+    head, tip = np.array(J["head"], float), np.array(J["head_end"], float)
+    L = float(np.linalg.norm(tip - head))
+    # the face between the ears' front and the start of the muzzle, above the mouth line, off the middle
+    face = ((P[:, 0] > head[0] - L * 0.1) & (P[:, 0] < head[0] + L * 0.62) & (P[:, 2] > tip[2] + L * 0.05)
+            & (P[:, 2] < head[2] + L * 0.55) & (np.abs(P[:, 1]) > L * 0.06) & (N[:, 0] > -0.2))
+    if face.sum() < 200:
+        return None
+    out = []
+    for k in (1.0, -1.0):
+        side = face & (P[:, 1] * k > 0)
+        thr = min(float(np.quantile(lum[side], 0.02)) * 1.8, 0.12)
+        dark = side & (lum < thr)
+        if dark.sum() < 30:
+            return None
+        Pd = P[dark]
+        c = np.median(Pd, 0)
+        for _ in range(3):
+            near = np.linalg.norm(Pd - c, axis=1) < L * 0.12
+            c = Pd[near].mean(0)
+        d = np.linalg.norm(Pd[near] - c, axis=1)
+        r = float(np.clip(np.quantile(d, 0.9) * 1.15, L * 0.035, L * 0.12))
+        around = np.linalg.norm(P - c, axis=1) < r
+        n = N[around].mean(0)
+        n = n / max(np.linalg.norm(n), 1e-6)
+        out.append((c, r, n, int(dark.sum())))
+    return out
