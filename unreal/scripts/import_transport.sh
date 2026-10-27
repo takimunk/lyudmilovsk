@@ -12,5 +12,7 @@ CMD="$UE/Engine/Binaries/Mac/UnrealEditor-Cmd"
 python3 "$ROOT/tools/transport.py" > /dev/null
 "$ROOT/tools/wait_ue_queue.sh" 7200
 "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_transport.py" -unattended -nosplash -stdout | grep -E "TRANSPORT|Error" | grep -v LogInit || true
+# the cabin's own kit (blender/transport/optimize.py -- cabin), when this checkout made one
+[ -f "$ROOT/design/transport/game/cabin_kit.glb" ] && TR_KIT=cabin "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_transport.py" -unattended -nosplash -stdout | grep -E "TRANSPORT|Error" | grep -v LogInit || true
 IMPORT_ONLY=sfx/transport/ "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_audio.py" -unattended -nosplash -stdout | grep -E "AUDIO|Error" | grep -v LogInit || true
 IMPORT_ONLY=line.transport. "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_voice.py" -unattended -nosplash -stdout | grep -E "VOICE|Error" | grep -v LogInit || true

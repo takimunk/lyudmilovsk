@@ -171,6 +171,8 @@ def step(w, dt):
         if S["pt"] > 6.5 + 1.5 * len(c.posters):
             log("posters inside: %d" % len(c.posters))
             S["phase"], S["pt"], S["last"], S["lp"] = "riding", 0.0, 0.0, -1
+            if os.environ.get("CABIN_QUICK"):
+                S["phase"] = "done"
     elif ph == "riding":
         c = S["cabin"]
         idx = t.player_cabin()

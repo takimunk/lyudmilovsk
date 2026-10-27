@@ -16,6 +16,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 KIT = os.path.join(REPO, "design", "transport", "game", "transport_kit.glb")
 MESHES = "/Game/Transport/Meshes"
+# TR_KIT=cabin: only the cabin's own kit (design/transport/game/cabin_kit.glb, optimize.py -- cabin) into
+# /Game/Transport/Meshes/cabin_kit, the rest of the kit and the materials untouched
+CABIN = os.environ.get("TR_KIT") == "cabin"
+if CABIN:
+    KIT = os.path.join(REPO, "design", "transport", "game", "cabin_kit.glb")
 MATS = "/Game/Transport/Materials"
 eal = unreal.EditorAssetLibrary
 mel = unreal.MaterialEditingLibrary
@@ -194,8 +199,10 @@ def import_kit():
         # the meshes are committed (LFS); the .glb is only where they were made (blender/transport/optimize.py, pack.py)
         log("no %s: keeping the committed meshes" % KIT)
         return 0
-    if eal.does_directory_exist(MESHES):
-        eal.delete_directory(MESHES)
+    # Interchange puts a scene into a folder named after the file: Meshes/transport_kit, Meshes/cabin_kit
+    dest = MESHES + ("/cabin_kit" if CABIN else "/transport_kit")
+    if eal.does_directory_exist(dest):
+        eal.delete_directory(dest)
     src = unreal.InterchangeManager.create_source_data(KIT)
     params = unreal.ImportAssetParameters()
     params.is_automated = True
@@ -203,7 +210,7 @@ def import_kit():
     mgr.import_scene(MESHES, src, params)
     mgr.wait_until_all_tasks_done(True)
     n = 0
-    for path in eal.list_assets(MESHES, True):
+    for path in eal.list_assets(dest, True):
         a = eal.load_asset(path)
         if isinstance(a, unreal.StaticMesh):
             s = a.get_editor_property("nanite_settings")
@@ -217,7 +224,7 @@ def import_kit():
             log("mesh %s: %d triangles" % (a.get_name(), a.get_num_triangles(0)))
             n += 1
     # Hi3D's PBR maps read as metal on these painted surfaces (everything came out near black): paint, not metal
-    for path in eal.list_assets(MESHES, True):
+    for path in eal.list_assets(dest, True):
         a = eal.load_asset(path)
         if isinstance(a, unreal.MaterialInstanceConstant):
             done = []
@@ -232,7 +239,7 @@ def import_kit():
             mel.update_material_instance(a)
             log("material %s (%s): %s" % (a.get_name(), a.get_editor_property("parent").get_name() if a.get_editor_property("parent") else "-",
                                           ", ".join(done) or "no metal / roughness parameters"))
-    eal.save_directory(MESHES)
+    eal.save_directory(dest)
     # the import also spawned actors in the editor's scratch level: never saved
     eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     for act in eas.get_all_level_actors():
@@ -242,6 +249,9 @@ def import_kit():
 
 
 def main():
+    if CABIN:
+        log("cabin meshes: %d" % import_kit())
+        return
     if not os.path.isfile(KIT) and eal.does_directory_exist(MATS):
         # a checkout without the generated kit: the committed meshes and materials stay as they are (the textures are
         # committed sources, so they and M_TR_Surface are made anyway)

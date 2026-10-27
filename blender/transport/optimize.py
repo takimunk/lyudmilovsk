@@ -237,6 +237,14 @@ def cabin(kit):
     shrink_textures(TEX["cabin"])
     for name, ob in parts.items():
         export([ob], name)
+    # one glb of the cabin's parts, imported on its own (/Game/Transport/Meshes/cabin_kit): the cabin can be remade and
+    # reimported without touching the rest of the kit
+    for ob in parts.values():
+        ob.name = ob.data.name = [k for k, v in parts.items() if v is ob][0]
+        for m in ob.data.materials:
+            if m and not m.name.startswith(("TR_", "TX_", "MI_")):
+                m.name = "MI_" + ob.name[3:]       # the shell and the leaf share their paint: named once
+    export(list(parts.values()), "cabin_kit")
     if os.environ.get("TR_DEBUG"):
         bpy.ops.wm.save_as_mainfile(filepath=os.path.join(os.environ["TR_DEBUG"], "cabin.blend"))
     kit["cabin"] = entry

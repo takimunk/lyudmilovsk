@@ -656,7 +656,7 @@
  "transport.diagram.pick": "Выберите станцию: кабина приедет по вызову.",
  "transport.diagram.look": "Наведите на станцию, чтобы узнать ожидание.",
  "transport.diagram.called": "Кабина вызвана до станции «{0}». Ожидание: {1}.",
- "transport.diagram.close": "Esc — закрыть",
+ "transport.diagram.close": "E, Esc или щелчок вне схемы — закрыть",
  "transport.wait.arriving": "прибывает",
  "transport.wait.sec": "{0} с",
  "transport.wait.min": "{0} мин",
@@ -727,5 +727,8 @@
  "item.badge.desc": "Эмалевый значок в виде красной кабинки. Коллекционный.",
  "item.amber_charm.name": "Янтарная подвеска",
  "item.amber_charm.desc": "Капля балтийского янтаря на тонкой цепочке. Тёплая, если подержать в руке.",
- "ui.vending.pick": "[1–{1}: выбор, сейчас {0}]"
+ "ui.vending.pick": "[1–{1}: выбор, сейчас {0}]",
+ "transport.prompt.cabin_open": "E — открыть дверь кабины «{0}»",
+ "transport.prompt.cabin_shut": "E — закрыть дверь кабины «{0}»",
+ "transport.prompt.cabin_where": "E — куда ехать (схема)"
 }

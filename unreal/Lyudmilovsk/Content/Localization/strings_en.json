@@ -656,7 +656,7 @@
  "transport.diagram.pick": "Pick a station: a cabin will come for you.",
  "transport.diagram.look": "Point at a station to see the wait.",
  "transport.diagram.called": "A cabin is called to {0}. Wait: {1}.",
- "transport.diagram.close": "Esc: close",
+ "transport.diagram.close": "E, Esc or a click outside the map: close",
  "transport.wait.arriving": "arriving",
  "transport.wait.sec": "{0} s",
  "transport.wait.min": "{0} min",
@@ -727,5 +727,8 @@
  "item.badge.desc": "An enamel pin shaped like a red cabin. A collector's item.",
  "item.amber_charm.name": "Amber pendant",
  "item.amber_charm.desc": "A drop of Baltic amber on a thin chain. Warm if you hold it.",
- "ui.vending.pick": "[1–{1}: choose, now {0}]"
+ "ui.vending.pick": "[1–{1}: choose, now {0}]",
+ "transport.prompt.cabin_open": "E: open the door of cabin {0}",
+ "transport.prompt.cabin_shut": "E: shut the door of cabin {0}",
+ "transport.prompt.cabin_where": "E: where to (route map)"
 }

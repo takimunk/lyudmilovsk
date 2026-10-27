@@ -656,7 +656,7 @@
  "transport.diagram.pick": "駅を選ぶと、キャビンが迎えに来ます。",
  "transport.diagram.look": "駅にカーソルを合わせると待ち時間が見られます。",
  "transport.diagram.called": "{0}行きのキャビンを呼びました。待ち時間：{1}。",
- "transport.diagram.close": "Esc：閉じる",
+ "transport.diagram.close": "E・Esc・図の外をクリック：閉じる",
  "transport.wait.arriving": "まもなく到着",
  "transport.wait.sec": "{0}秒",
  "transport.wait.min": "{0}分",
@@ -727,5 +727,8 @@
  "item.badge.desc": "赤いゴンドラの形のエナメルバッジ。コレクター向け。",
  "item.amber_charm.name": "琥珀のペンダント",
  "item.amber_charm.desc": "細い鎖につけたバルト海の琥珀のしずく。握ると温かい。",
- "ui.vending.pick": "[1〜{1}：選択、現在{0}]"
+ "ui.vending.pick": "[1〜{1}：選択、現在{0}]",
+ "transport.prompt.cabin_open": "E：キャビン「{0}」のドアを開ける",
+ "transport.prompt.cabin_shut": "E：キャビン「{0}」のドアを閉める",
+ "transport.prompt.cabin_where": "E：行き先（路線図）"
 }

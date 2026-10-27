@@ -41,7 +41,7 @@ ROWS = [
     ("transport.diagram.pick", "Выберите станцию: кабина приедет по вызову.", "Pick a station: a cabin will come for you.", "駅を選ぶと、キャビンが迎えに来ます。"),
     ("transport.diagram.look", "Наведите на станцию, чтобы узнать ожидание.", "Point at a station to see the wait.", "駅にカーソルを合わせると待ち時間が見られます。"),
     ("transport.diagram.called", "Кабина вызвана до станции «{0}». Ожидание: {1}.", "A cabin is called to {0}. Wait: {1}.", "{0}行きのキャビンを呼びました。待ち時間：{1}。"),
-    ("transport.diagram.close", "Esc — закрыть", "Esc: close", "Esc：閉じる"),
+    ("transport.diagram.close", "E, Esc или щелчок вне схемы — закрыть", "E, Esc or a click outside the map: close", "E・Esc・図の外をクリック：閉じる"),
     # waits
     ("transport.wait.arriving", "прибывает", "arriving", "まもなく到着"),
     ("transport.wait.sec", "{0} с", "{0} s", "{0}秒"),
@@ -62,6 +62,9 @@ ROWS = [
     ("transport.vestibule.kiosk", "Касса", "Tickets", "きっぷ売り場"),
     # prompts
     ("transport.prompt.call", "E — схема и вызов кабины", "E: route map and call a cabin", "E：路線図・キャビンを呼ぶ"),
+    ("transport.prompt.cabin_open", "E — открыть дверь кабины «{0}»", "E: open the door of cabin {0}", "E：キャビン「{0}」のドアを開ける"),
+    ("transport.prompt.cabin_shut", "E — закрыть дверь кабины «{0}»", "E: shut the door of cabin {0}", "E：キャビン「{0}」のドアを閉める"),
+    ("transport.prompt.cabin_where", "E — куда ехать (схема)", "E: where to (route map)", "E：行き先（路線図）"),
     ("transport.prompt.board", "E — схема канатных дорог", "E: cable car route map", "E：ロープウェイ路線図"),
     ("transport.prompt.ride", "Кабина «{0}» → {1}", "Cabin {0} → {1}", "キャビン「{0}」→ {1}"),
     # announcements (spoken: localization/voice.json speaker "transport"; the same words as a note on screen)
