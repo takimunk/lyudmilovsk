@@ -65,8 +65,9 @@ private:
  * targets and M_HumanFace):
  *  - blinks every 2-6 s (sometimes twice), eyes shut while asleep (SetEyesShut);
  *  - looks about: at the player now and then when they are near and in front (SetLookCandidate), else around; the head
- *    turns part of the way (neck and head on top of the clip), the eyes the rest with small saccades (the painted iris
- *    slides inside the opening, M_HumanFace EyeL/EyeR_Look);
+ *    turns part of the way (neck and head on top of the clip), the eyes the rest with small saccades: real eyeballs
+ *    behind the openings M_HumanFace cuts in the painted eyes (MakeEyes; blender/characters/eyes.py), the iris
+ *    drawn where the gaze leaves the ball (M_HumanEyeball Gaze);
  *  - breathes (chest and shoulders, a period of ~4 s, deeper and quicker after walking or running);
  *  - on its feet, plants them on the ground under each foot (traces, two-bone IK, the pelvis down to the lower foot, the
  *    feet turned to the slope) and leans into starts, stops and turns;
@@ -138,7 +139,12 @@ private:
 	float SaccadeAt = 0.f;
 	FVector2D Head = FVector2D::ZeroVector;        // smoothed head yaw, pitch
 	FVector2D Eye = FVector2D::ZeroVector;         // smoothed eye yaw, pitch
-	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> FaceMID;
+	// the eyeballs behind the cut openings: balls L, R, then the dark sockets behind them; their instances of M_HumanEyeball
+	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMeshComponent>> Eyeballs;
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> EyeMIDs;
+	bool bEyesMade = false;
+	float EyeYaw[2] = { 0.f, 0.f };                // each ball's turn (Blender's sense, deg)
+	void MakeEyes(USkeletalMeshComponent* Mesh);
 	// speaking
 	TArray<uint8> Jaw, Funnel, Smile;
 	float SpeakStart = -1.f;

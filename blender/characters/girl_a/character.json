@@ -6,5 +6,25 @@
  "donor": "blender/humans/export/human_girl_a.glb",
  "faces": 24000,
  "texture": 2048,
- "bake_normal": true
+ "bake_normal": true,
+ "face": {
+  "eye_open": [
+   {
+    "cx": 0.0372,
+    "cz": 1.5081,
+    "hw": 0.0135,
+    "up": 0.0058,
+    "lo": 0.0058,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0359,
+    "cz": 1.5073,
+    "hw": 0.0148,
+    "up": 0.006,
+    "lo": 0.006,
+    "tilt": 0.0008
+   }
+  ]
+ }
 }

@@ -6,5 +6,25 @@
  "donor": "blender/humans/export/human_guy_a.glb",
  "faces": 24000,
  "texture": 2048,
- "bake_normal": true
+ "bake_normal": true,
+ "face": {
+  "eye_open": [
+   {
+    "cx": 0.0342,
+    "cz": 1.6344,
+    "hw": 0.0135,
+    "up": 0.0043,
+    "lo": 0.0042,
+    "tilt": -0.0006
+   },
+   {
+    "cx": -0.0324,
+    "cz": 1.6333,
+    "hw": 0.0142,
+    "up": 0.0042,
+    "lo": 0.0042,
+    "tilt": 0.0005
+   }
+  ]
+ }
 }

@@ -76,8 +76,8 @@ weights before importing.
 - **Retargeting**: the skeleton plays the shared clips with root = Animation, pelvis = AnimationScaled, every other bone
   = Skeleton (the mesh's own lengths), `unreal/scripts/life_retarget.py`. A character's own clips (`A_<Id>_*`) get
   their own mesh as retarget source. The shared `A_Human_*` clips keep `SK_Guy_a` as source.
-- `MI_<Id>_body` is on `M_HumanFace` (`unreal/scripts/make_face_material.py`: M_HumanSkin plus the eyes' slide),
-  its `EyeL_C/J`, `EyeR_C/J` set from `face_marks.json` by `import_character.py`.
+- `MI_<Id>_body` is on `M_HumanFace` (`unreal/scripts/make_face_material.py`: M_HumanSkin plus the cut eye openings),
+  its eye parameters set from `eyes.json` by `import_character.py` (or `unreal/scripts/set_eyes.py` on its own).
 - Bodies play through `ULyudBodyAnimInstance` (`Public/People/LyudBodyAnim.h`): clips cross-fade, the face lives (below).
   `ANpcBody` uses it; `ULyudFaceSubsystem` switches the level's placed people (SkeletalMeshActors on the human skeleton
   playing one clip) to it at begin play.
@@ -150,9 +150,27 @@ triangle, so neighbouring UV islands are untouched)):
 4. **Morph targets**: `eyeBlinkLeft/Right` (the painted eye squeezed into the lower lid line, the upper lid's skin
    following), `jawOpen` (14 deg about a hinge under the ears; the lower lip drops most in the middle), `mouthFunnel`,
    `mouthSmile`, `browUp`.
-5. **Eyes look about** in the material: `M_HumanFace` reads the texture shifted inside each opening, so the painted
-   iris slides; where is the vertex colour `EyeMask` (red left, green right, fading toward the lids). A mask in texture
-   space caught the UV islands packed next to the eye's (a crease over Girl_b's nose). Real eyeballs cut into the paint were tried and looked like ping-pong balls.
+5. **Real eyes** (2026-10-27; the model is not touched): the hi3d paint of the eyes is often torn or smeared, and sliding
+   it about to make the eyes look (the old way) smeared it more. Now the paint inside each opening is cut away at run
+   time and an eyeball looks out from behind it:
+   - `blender/characters/eye_shots.py` (Blender, on `export/<id>.blend`) renders a close-up and a depth map of each
+     painted eye; the opening is fitted **by hand** on them (an almond: middle, half width, up, low, tilt) and kept in
+     `character.json` `face.eye_open` (an automatic fit came out ragged on the torn paint);
+   - `blender/characters/eyes.py` (system python) adds the shell's depth, places the ball (an ellipsoid ~12 mm deep and
+     tall, about as wide as the opening, turned with the face so its outer end follows the temple back, as close
+     behind the opening as the shell around it allows: the faces fall away fast at the outer corner and a straight ball
+     pokes out there) and a darker socket behind it, the iris colour from `face_marks.json` -> `<id>/eyes.json`, with a
+     check picture;
+   - `unreal/scripts/set_eyes.py` writes them into `MI_<Id>_body`; `M_HumanFace` cuts the openings with an opacity mask
+     in the reference pose's mesh space (`PreSkinnedPosition`, which leaves the morphs out, so the blink morph that
+     squeezes that skin into the lower lid closes the cut); `ULyudBodyAnimInstance` sets the balls (engine spheres
+     with `M_HumanEyeball`, `unreal/scripts/make_eye_material.py`) on the head bone and moves the **iris** over the ball
+     (the ball doesn't turn: an ellipsoid turning would push its ends through the lids). Test cvars `lyud.Face.EyeFix`,
+     `lyud.Face.EyeYaw`, `lyud.Face.EyePitch`, `lyud.Face.Shut`.
+   - Glasses (Clerk, Crowd_13): no `eye_open`, their painted eyes stay (the eyes are painted on the lenses' shell).
+   Real eyeballs were tried once before (2026-10-25) set into the painted eye on a ball the size of the opening and
+   looked like ping-pong balls; the shading (a grey, lid-shaded white, fibred iris, glossy cornea) and the cut
+   following the painted lids are what make them read as eyes now.
 
 At run time (`ULyudBodyAnimInstance`): blinks every 2-6 s (sometimes double, more while talking), eyes shut in sleep;
 looks at the player now and then (2-6 s on, 3-8 s off, within 6 m and 70 deg), otherwise about; the head turns part of

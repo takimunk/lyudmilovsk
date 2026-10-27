@@ -15,9 +15,9 @@ the shell has no lids). So the paint stays and moves:
        jawOpen             the lower lip and chin turn about a hinge under the ears; the face parts along the lip
                            line and the painted line between the lips stretches into the open mouth
        mouthFunnel (o, u), mouthSmile (e, i, a smile), browUp
-  4. Looking about: face_marks.json "uv" holds each eye's opening in texture space (its middle and the 2x2 map
-     between face metres and UV); M_HumanSkin shifts the texture inside the opening (EyeL/EyeR parameters, the
-     shift faded to nothing at the lids), so the painted iris slides the way the eye turns.
+  4. Looking about: since 2026-10-27 the painted eye is cut away at run time and a real eyeball sits behind it
+     (blender/characters/eyes.py, M_HumanFace, ULyudBodyAnimInstance); the EyeMask vertex colour and face_marks.json
+     "uv" made here for the old iris slide are no longer read.
 """
 import json
 import math

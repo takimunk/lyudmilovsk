@@ -127,6 +127,10 @@ namespace
 }
 
 static TAutoConsoleVariable<int32> CVarFaceLog(TEXT("lyud.Face.Log"), 0, TEXT("1: log each body's face values once a second."));
+static TAutoConsoleVariable<int32> CVarEyeFix(TEXT("lyud.Face.EyeFix"), 0, TEXT("1: every eyeball looks at lyud.Face.EyeYaw/EyePitch (tests)."));
+static TAutoConsoleVariable<float> CVarEyeYaw(TEXT("lyud.Face.EyeYaw"), 0.f, TEXT("Degrees toward the person's left (lyud.Face.EyeFix)."));
+static TAutoConsoleVariable<float> CVarEyePitch(TEXT("lyud.Face.EyePitch"), 0.f, TEXT("Degrees up (lyud.Face.EyeFix)."));
+static TAutoConsoleVariable<int32> CVarEyesShut(TEXT("lyud.Face.Shut"), 0, TEXT("1: every face keeps its eyes shut (tests)."));
 
 const TArray<FName>& FaceCurveNames()
 {
@@ -693,7 +697,7 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 void ULyudBodyAnimInstance::UpdateBlink(USkeletalMeshComponent* Mesh)
 {
 	float V = 0.f;
-	if (bEyesShut)
+	if (bEyesShut || CVarEyesShut.GetValueOnGameThread())
 	{
 		V = 1.f;
 	}
@@ -773,24 +777,93 @@ void ULyudBodyAnimInstance::UpdateLook(USkeletalMeshComponent* Mesh, float Dt)
 	{
 		return;
 	}
-	if (!FaceMID)
+	if (!bEyesMade)
 	{
-		UMaterialInterface* M = Mesh->GetMaterial(0);
-		FHashedMaterialParameterInfo Info(TEXT("EyeL_Look"));
-		FLinearColor Probe;
-		if (M && M->GetVectorParameterValue(Info, Probe))
+		MakeEyes(Mesh);
+	}
+	if (EyeMIDs.Num() == 0)
+	{
+		return;
+	}
+	// the gaze in mesh space (+Y forward, +X the character's left), then in each ball's frame (X forward, turned by
+	// EyeYaw; Y across, Z up); Eye.X turns toward the character's left
+	FVector2D E = Eye;
+	if (CVarEyeFix.GetValueOnGameThread())
+	{
+		E = FVector2D(CVarEyeYaw.GetValueOnGameThread(), CVarEyePitch.GetValueOnGameThread());
+	}
+	const float Y = FMath::DegreesToRadians(E.X), Pt = FMath::DegreesToRadians(E.Y);
+	const FVector D(FMath::Sin(Y) * FMath::Cos(Pt), FMath::Cos(Y) * FMath::Cos(Pt), FMath::Sin(Pt));
+	for (int32 I = 0; I < 2; I++)
+	{
+		const FRotator R(0.f, 90.f - EyeYaw[I], 0.f);
+		const FVector L = R.UnrotateVector(D);
+		EyeMIDs[I]->SetVectorParameterValue(TEXT("Gaze"), FLinearColor(L.X, L.Y, L.Z, 0.f));
+	}
+}
+
+void ULyudBodyAnimInstance::MakeEyes(USkeletalMeshComponent* Mesh)
+{
+	// blender/characters/eyes.py -> unreal/scripts/set_eyes.py, in the face's MI (mesh cm): Ball (middle, turn about Z in
+	// Blender's sense, the outer end back) and Size (depth, width, height, how much further back the dark socket sits
+	// that fills the corners); the ball is the engine sphere stretched, its X looking forward (mesh +Y) before the turn
+	bEyesMade = true;
+	USkeletalMesh* SK = Mesh->GetSkeletalMeshAsset();
+	UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	UMaterialInterface* EyeMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Characters/Humans/Materials/M_HumanEyeball.M_HumanEyeball"));
+	const int32 HeadBone = SK ? SK->GetRefSkeleton().FindBoneIndex(TEXT("head")) : INDEX_NONE;
+	UMaterialInterface* Face = Mesh->GetMaterial(0);
+	if (!Sphere || !EyeMat || HeadBone == INDEX_NONE || !Mesh->GetOwner() || !Face)
+	{
+		return;
+	}
+	FLinearColor Ball[2], Size[2], Iris(0.05f, 0.03f, 0.02f, 1.f);
+	for (int32 S = 0; S < 2; S++)
+	{
+		if (!Face->GetVectorParameterValue(FHashedMaterialParameterInfo(S ? TEXT("EyeR_Ball") : TEXT("EyeL_Ball")), Ball[S])
+			|| !Face->GetVectorParameterValue(FHashedMaterialParameterInfo(S ? TEXT("EyeR_Size") : TEXT("EyeL_Size")), Size[S])
+			|| Size[S].R <= 0.f)
 		{
-			FaceMID = Mesh->CreateDynamicMaterialInstance(0, M);
-		}
-		if (!FaceMID)
-		{
-			return;
+			return;                                       // no eyes set (glasses: the painted ones stay)
 		}
 	}
-	// the painted iris slides on the face: ~11 mm eye radius (face_rig.py frame: +x the character's left, z up)
-	const FLinearColor Look(FMath::Sin(FMath::DegreesToRadians(Eye.X)) * 0.011f, FMath::Sin(FMath::DegreesToRadians(Eye.Y)) * 0.008f, 0.f, 0.f);
-	FaceMID->SetVectorParameterValue(TEXT("EyeL_Look"), Look);
-	FaceMID->SetVectorParameterValue(TEXT("EyeR_Look"), Look);
+	Face->GetVectorParameterValue(FHashedMaterialParameterInfo(TEXT("IrisColor")), Iris);
+	const FTransform HeadRef = FAnimationRuntime::GetComponentSpaceTransformRefPose(SK->GetRefSkeleton(), HeadBone);
+	for (int32 K = 0; K < 4; K++)
+	{
+		const int32 S = K % 2;
+		const bool bSocket = K >= 2;
+		FVector Dim(Size[S].R, Size[S].G, Size[S].B);
+		FVector At(Ball[S].R, Ball[S].G, Ball[S].B);
+		if (bSocket)
+		{
+			At.Y -= Size[S].A;
+			Dim = FVector(Dim.X * 0.7f, Dim.Y * 1.2f, Dim.Z * 1.35f);
+		}
+		// Blender's yaw t about Z (y flipped into UE): forward (sin t, cos t) -> UE yaw 90 - t
+		EyeYaw[S] = Ball[S].A;
+		const FTransform InMesh(FRotator(0.f, 90.f - Ball[S].A, 0.f), At, Dim / 50.f);
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(Mesh->GetOwner());
+		C->SetStaticMesh(Sphere);
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetCastShadow(false);
+		C->SetReceivesDecals(false);
+		C->SetupAttachment(Mesh, TEXT("head"));
+		C->SetRelativeTransform(InMesh.GetRelativeTransform(HeadRef));
+		C->RegisterComponent();
+		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(EyeMat, C);
+		M->SetVectorParameterValue(TEXT("Size"), FLinearColor(Dim.X, Dim.Y, Dim.Z, bSocket ? 1.f : 0.f));
+		M->SetVectorParameterValue(TEXT("IrisColor"), Iris);
+		M->SetScalarParameterValue(TEXT("IrisR"), 0.49f * Size[S].R);
+		M->SetScalarParameterValue(TEXT("PupilR"), 0.18f * Size[S].R);
+		C->SetMaterial(0, M);
+		Eyeballs.Add(C);
+		if (!bSocket)
+		{
+			EyeMIDs.Add(M);
+		}
+	}
+	UE_LOG(LogTemp, Log, TEXT("LyudFace %s: eyeballs (r %.2f, %.2f cm, turned %.0f, %.0f)"), *GetNameSafe(SK), Size[0].R, Size[1].R, Ball[0].A, Ball[1].A);
 }
 
 void ULyudBodyAnimInstance::UpdateMouth(USkeletalMeshComponent* Mesh, float Dt)
@@ -825,8 +898,8 @@ void ULyudBodyAnimInstance::UpdateMouth(USkeletalMeshComponent* Mesh, float Dt)
 	Mouth += (Want - Mouth) * FMath::Min(1.f, Dt * 18.f);
 	if (CVarFaceLog.GetValueOnAnyThread() && FMath::FloorToInt(Clock) != FMath::FloorToInt(Clock - Dt))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LyudFace %s: jaw %.2f funnel %.2f smile %.2f, eyes (%.1f, %.1f), head (%.1f, %.1f), MID %d"),
-			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), Mouth.X, Mouth.Y, Mouth.Z, Eye.X, Eye.Y, Head.X, Head.Y, FaceMID ? 1 : 0);
+		UE_LOG(LogTemp, Warning, TEXT("LyudFace %s: jaw %.2f funnel %.2f smile %.2f, eyes (%.1f, %.1f), head (%.1f, %.1f), eyeballs %d"),
+			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), Mouth.X, Mouth.Y, Mouth.Z, Eye.X, Eye.Y, Head.X, Head.Y, Eyeballs.Num());
 	}
 	Morph[2] = Mouth.X;
 	Morph[3] = Mouth.Y;

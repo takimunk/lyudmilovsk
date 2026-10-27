@@ -15,6 +15,7 @@ CAST = os.environ.get("FACE_CAST", "Nao,Owner,Girl_b,Kid_boy").split(",")
 LINES = os.environ.get("FACE_LINES", "line.nao.first.1,line.owner.first.1,line.girl_b.first.1,line.kid_boy.first.1").split(",")
 FRAMES = int(os.environ.get("FACE_FRAMES", "36"))
 STEP = 0.12
+RES = os.environ.get("FACE_RES", "640")
 st = {"t": 0.0, "i": -1, "phase": 0, "n": 0, "t0": 0.0}
 
 
@@ -53,7 +54,7 @@ def tick(dt):
         st["phase"], st["t0"] = 2, st["t"]
     elif st["phase"] == 2 and st["t"] - st["t0"] >= STEP:
         unreal.log_warning("FACESHOT %s speak %03d" % (CAST[st["i"]], st["n"]))
-        cmd(w, "HighResShot 640x640")
+        cmd(w, "HighResShot %sx%s" % (RES, RES))
         st["n"] += 1
         st["t0"] = st["t"]
         if st["n"] >= FRAMES:
@@ -61,7 +62,7 @@ def tick(dt):
             st["phase"], st["n"] = 3, 0
     elif st["phase"] == 3 and st["t"] - st["t0"] >= STEP:
         unreal.log_warning("FACESHOT %s chatter %03d" % (CAST[st["i"]], st["n"]))
-        cmd(w, "HighResShot 640x640")
+        cmd(w, "HighResShot %sx%s" % (RES, RES))
         st["n"] += 1
         st["t0"] = st["t"]
         if st["n"] >= FRAMES:

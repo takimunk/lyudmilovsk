@@ -1,15 +1,20 @@
 """Builds /Game/Characters/Humans/Materials/M_HumanFace: M_HumanSkin for the generated cast (one texture holds skin and
-cloth) whose painted eyes can look about (blender/characters/face_rig.py, docs/characters.md "Face").
+cloth) with real eyes: the painted eye inside each opening is cut away (opacity mask) and an eyeball looks out from
+behind it (blender/characters/eyes.py, ULyudBodyAnimInstance; docs/characters.md "Face").
 
-Inside each eye opening the texture is read shifted, so the painted iris slides the way the eye turns. Where: the
-mesh's vertex colour (face_rig.py EyeMask: red the left opening, green the right, fading out toward the lids); a mask
-worked out in texture space also caught the UV islands packed next to the eye's (a crease over the nose).
-Per character (MI_<Id>_body, from face_marks.json):
-    EyeL_J, EyeR_J   (du/dx, du/dz, dv/dx, dv/dz): face metres -> UV round the eye
-    EyeL_C, EyeR_C   kept for reference (the opening's middle in UV, half width and height in m), not used
+The openings are almonds in the reference pose's mesh space (PreSkinnedPosition, cm, through a vertex interpolator: the pixel shader can't read it), so the cut stays on the same
+skin whatever the bones do, and the blink morph, squeezing that skin into the lower lid line, closes it. Per character
+(MI_<Id>_body, unreal/scripts/set_eyes.py from blender/characters/<id>/eyes.json):
+    EyeL_Hole, EyeR_Hole   (cx, cy, cz, half width): the opening's middle on the shell, cm
+    EyeL_Lid,  EyeR_Lid    (up, low, tilt, 0): top(u) = cz + up (1 - u^2)^0.75 + tilt u, bottom with -low; u across
+    EyeL_Ball, EyeR_Ball   (x, y, z, yaw): the eyeball's middle (cm) and turn (deg, Blender's about z, outer end back)
+    EyeL_Size, EyeR_Size   (depth, width, height, the socket's further back), cm
+    IrisColor              linear
+The last three are for ULyudBodyAnimInstance's eyeballs; they are fed to the cut unused so that the material keeps
+them.
+A character without them (glasses: Clerk, Crowd_13) keeps its painted eyes.
 NormalStrength scales the baked normal map (1 = as baked; less softens what a hard light makes of it).
-At run time (a dynamic instance, ULyudBodyAnimInstance):
-    EyeL_Look, EyeR_Look  (x, z metres): where the iris moves on the face (the character's right is -x)
+(Before 2026-10-27 the painted iris was slid about inside the opening instead; it smeared the hi3d paint further.)
 
   UnrealEditor-Cmd <uproject> -run=pythonscript -script=<this file> -unattended -nullrhi
 """
@@ -22,15 +27,20 @@ mel = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 MP = unreal.MaterialProperty
 
-# one eye's shift, written out twice (Metal's HLSL translation trips on arrays of the inputs)
+# one eye's opening, written out twice (Metal's HLSL translation trips on arrays of the inputs)
 EYE = """
 {{
-    float4 J = J{s};
-    float2 L = L{s}.xy;
-    o -= float2(J.x * L.x + J.y * L.y, J.z * L.x + J.w * L.y) * VC.{c};
+    float u = (P.x - H{s}.x) / H{s}.w;
+    if (abs(u) < 1.0 && abs(P.y - H{s}.y) < 1.5)
+    {{
+        float g = pow(1.0 - u * u, 0.75);
+        float zc = H{s}.z + L{s}.z * u;
+        if (P.z < zc + L{s}.x * g && P.z > zc - L{s}.y * g)
+            o = 0.0;
+    }}
 }}
 """
-SHIFT = "float2 o = UV;\n" + EYE.format(s="L", c="r") + EYE.format(s="R", c="g") + "return o;\n"
+HOLE = "float o = 1.0;\n" + EYE.format(s="L") + EYE.format(s="R") + "return o;\n"
 
 
 def log(m):
@@ -52,33 +62,36 @@ else:
     m = tools.create_asset(NAME, MATS, unreal.Material, unreal.MaterialFactoryNew())
 m.set_editor_property("used_with_skeletal_mesh", True)
 m.set_editor_property("used_with_morph_targets", True)
-uv = mel.create_material_expression(m, unreal.MaterialExpressionTextureCoordinate, -1500, 0)
-cust = mel.create_material_expression(m, unreal.MaterialExpressionCustom, -1100, 0)
-cust.set_editor_property("code", SHIFT)
-cust.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT2)
-cust.set_editor_property("description", "EyeShift")
+m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+cust = mel.create_material_expression(m, unreal.MaterialExpressionCustom, -700, 700)
+cust.set_editor_property("code", HOLE)
+cust.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT1)
+cust.set_editor_property("description", "EyeHoles")
+far = unreal.LinearColor(-1.0e4, 0.0, 0.0, 1.0)
+lid = unreal.LinearColor(0.0, 0.0, 0.0, 0.0)
+pre = mel.create_material_expression(m, unreal.MaterialExpressionPreSkinnedPosition, -1400, 700)
+vi = mel.create_material_expression(m, unreal.MaterialExpressionVertexInterpolator, -1100, 700)  # vertex shader only
+mel.connect_material_expressions(pre, "", vi, "")
+sources = [("P", vi)]
+for i, (pin, pname, val) in enumerate([("HL", "EyeL_Hole", far), ("LL", "EyeL_Lid", lid),
+                                       ("HR", "EyeR_Hole", far), ("LR", "EyeR_Lid", lid),
+                                       ("IC", "IrisColor", unreal.LinearColor(0.05, 0.03, 0.02, 1.0)),
+                                       ("BL", "EyeL_Ball", lid), ("SL", "EyeL_Size", lid),
+                                       ("BR", "EyeR_Ball", lid), ("SR", "EyeR_Size", lid)]):
+    sources.append((pin, param(m, unreal.MaterialExpressionVectorParameter, pname, val, -1100, 800 + 100 * i)))
 ins = []
-far = unreal.LinearColor(-10.0, -10.0, 0.01, 0.01)
-ident = unreal.LinearColor(1.0, 0.0, 0.0, 1.0)
-zero = unreal.LinearColor(0.0, 0.0, 0.0, 0.0)
-vc = mel.create_material_expression(m, unreal.MaterialExpressionVertexColor, -1500, 900)
-sources = [("UV", uv), ("VC", vc)]
-for i, (pin, pname, val) in enumerate([("CL", "EyeL_C", far), ("JL", "EyeL_J", ident), ("LL", "EyeL_Look", zero),
-                                       ("CR", "EyeR_C", far), ("JR", "EyeR_J", ident), ("LR", "EyeR_Look", zero)]):
-    sources.append((pin, param(m, unreal.MaterialExpressionVectorParameter, pname, val, -1500, 150 + 100 * i)))
 for pin, _ in sources:
     ci = unreal.CustomInput()
     ci.set_editor_property("input_name", pin)
     ins.append(ci)
 cust.set_editor_property("inputs", ins)
 for pin, src in sources:                          # vector parameters' default output is RGB: the custom code wants all 4
-    ok = mel.connect_material_expressions(src, "" if pin in ("UV", "VC") else "RGBA", cust, pin)
-    if not ok:
+    if not mel.connect_material_expressions(src, "" if pin == "P" else "RGBA", cust, pin):
         log("could not connect %s" % pin)
+mel.connect_material_property(cust, "", MP.MP_OPACITY_MASK)
 base = mel.create_material_expression(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, -200)
 base.set_editor_property("parameter_name", "BaseColor")
 base.set_editor_property("texture", unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))
-mel.connect_material_expressions(cust, "", base, "UVs")
 tint = param(m, unreal.MaterialExpressionVectorParameter, "Tint", unreal.LinearColor(1, 1, 1, 1), -700, 50)
 mul = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -400, -150)
 mel.connect_material_expressions(base, "RGB", mul, "A")
@@ -88,7 +101,6 @@ nor = mel.create_material_expression(m, unreal.MaterialExpressionTextureSamplePa
 nor.set_editor_property("parameter_name", "Normal")
 nor.set_editor_property("sampler_type", unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
 nor.set_editor_property("texture", unreal.load_asset("/Engine/EngineMaterials/FlatNormal"))
-mel.connect_material_expressions(cust, "", nor, "UVs")
 flat = mel.create_material_expression(m, unreal.MaterialExpressionConstant3Vector, -500, 450)
 flat.set_editor_property("constant", unreal.LinearColor(0, 0, 1, 1))
 soft = mel.create_material_expression(m, unreal.MaterialExpressionLinearInterpolate, -300, 350)

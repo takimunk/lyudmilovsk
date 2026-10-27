@@ -75,24 +75,17 @@ def face_curves():
 
 
 def eye_params(mi, cid):
-    """EyeL_C/J, EyeR_C/J of M_HumanFace from blender/characters/<id>/face_marks.json (face_rig.py)."""
+    """The real eyes (set_eyes.py, from blender/characters/<id>/eyes.json) and NormalStrength of M_HumanFace."""
     import json
-    path = os.path.join(ROOT, "blender", "characters", cid, "face_marks.json")
-    if not os.path.isfile(path):
-        return
-    for side, e in zip("LR", json.load(open(path))["eyes"]):
-        uv = e.get("uv")
-        if not uv:
-            continue
-        (a, b), (c, d) = uv["j"]
-        mel.set_material_instance_vector_parameter_value(
-            mi, "Eye%s_C" % side, unreal.LinearColor(uv["centre"][0], uv["centre"][1], e["w"] / 2, e["h"] / 2))
-        mel.set_material_instance_vector_parameter_value(mi, "Eye%s_J" % side, unreal.LinearColor(a, b, c, d))
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import set_eyes
+    has = set_eyes.apply(mi, cid)
     spec = os.path.join(ROOT, "blender", "characters", cid, "character.json")
     ns = json.load(open(spec)).get("face", {}).get("normal_strength") if os.path.isfile(spec) else None
     if ns is not None:
         mel.set_material_instance_scalar_parameter_value(mi, "NormalStrength", float(ns))
-    log("  eyes: opening parameters from face_marks.json%s" % (", normal strength %s" % ns if ns is not None else ""))
+    log("  eyes: %s%s" % ("eyeballs from eyes.json" if has else "painted (no eyes.json)",
+                          ", normal strength %s" % ns if ns is not None else ""))
 
 
 def import_character(cid):
@@ -146,7 +139,7 @@ def import_character(cid):
         sm = mats[i]
         mi = tools.create_asset("MI_%s_body%s" % (title, "" if i == 0 else i), dest + "/Materials",
                                 unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
-        face = unreal.load_asset(BASE + "/Materials/M_HumanFace")             # M_HumanSkin + eyes that look about
+        face = unreal.load_asset(BASE + "/Materials/M_HumanFace")             # M_HumanSkin + real eyes
         mi.set_editor_property("parent", face or unreal.load_asset(BASE + "/Materials/M_HumanSkin"))
         if face and i == 0:
             eye_params(mi, cid)

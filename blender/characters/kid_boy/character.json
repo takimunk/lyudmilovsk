@@ -16,6 +16,24 @@
    0.4,
    0.44
   ],
-  "_doc_repaint": "the generated eyes came out as dark torn slits: face_rig.repaint_eyes paints clean ones into the texture (no paid regeneration, 2026-10-26)"
+  "_doc_repaint": "the generated eyes came out as dark torn slits: face_rig.repaint_eyes paints clean ones into the texture (no paid regeneration, 2026-10-26)",
+  "eye_open": [
+   {
+    "cx": 0.035,
+    "cz": 1.3082,
+    "hw": 0.0143,
+    "up": 0.005,
+    "lo": 0.005,
+    "tilt": -0.0005
+   },
+   {
+    "cx": -0.0336,
+    "cz": 1.3066,
+    "hw": 0.0147,
+    "up": 0.0047,
+    "lo": 0.0045,
+    "tilt": 0.001
+   }
+  ]
  }
 }
