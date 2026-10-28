@@ -168,6 +168,9 @@ triangle, so neighbouring UV islands are untouched)):
      (the ball doesn't turn: an ellipsoid turning would push its ends through the lids). Test cvars `lyud.Face.EyeFix`,
      `lyud.Face.EyeYaw`, `lyud.Face.EyePitch`, `lyud.Face.Shut`.
    - Glasses (Clerk, Crowd_13): no `eye_open`, their painted eyes stay (the eyes are painted on the lenses' shell).
+   - Skin is **subsurface** (M_HumanFace, Scatter 1): Virtual Shadow Maps give subsurface a wide penumbra; default lit,
+     the 24k-triangle shells shadowed themselves in hard jagged triangles. The eyeball gets a fill set on screen
+     (M_HumanEyeball Fill, exposure undone) or it goes pitch black in the socket's shade.
    Real eyeballs were tried once before (2026-10-25) set into the painted eye on a ball the size of the opening and
    looked like ping-pong balls; the shading (a grey, lid-shaded white, fibred iris, glossy cornea) and the cut
    following the painted lids are what make them read as eyes now.

@@ -110,6 +110,18 @@ mel.connect_material_expressions(param(m, unreal.MaterialExpressionScalarParamet
 mel.connect_material_property(soft, "", MP.MP_NORMAL)
 mel.connect_material_property(param(m, unreal.MaterialExpressionScalarParameter, "Roughness", 0.55, -400, 100), "", MP.MP_ROUGHNESS)
 mel.connect_material_property(param(m, unreal.MaterialExpressionScalarParameter, "Specular", 0.35, -400, 180), "", MP.MP_SPECULAR)
+# skin: subsurface. Besides the softer light, Virtual Shadow Maps give a subsurface material a wide penumbra
+# (r.Shadow.Virtual.SubsurfaceShadowMinSourceAngle): the 24k-triangle shells otherwise shadow themselves in hard
+# jagged triangles round the nose, the eyes and the mouth (the "scary" faces, 2026-10-28)
+m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE)
+# the scatter takes the texture's own colour, a little redder (one texture holds skin, hair and cloth: a fixed skin red
+# turned black hair pink), and only a little of it
+sss = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -250, 650)
+mel.connect_material_expressions(mul, "", sss, "A")
+mel.connect_material_expressions(param(m, unreal.MaterialExpressionVectorParameter, "SubsurfaceTint",
+                                       unreal.LinearColor(1.0, 0.5, 0.4, 1.0), -400, 700), "", sss, "B")
+mel.connect_material_property(sss, "", MP.MP_SUBSURFACE_COLOR)
+mel.connect_material_property(param(m, unreal.MaterialExpressionScalarParameter, "Scatter", 1.0, -400, 800), "", MP.MP_OPACITY)
 mel.recompile_material(m)
 eal.save_loaded_asset(m)
 log("made " + path)

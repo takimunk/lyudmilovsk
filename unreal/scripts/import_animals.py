@@ -158,6 +158,16 @@ def make_masters():
     mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(const(m, 0.9, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(m, 0.25, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    # subsurface, as the people's skin: Virtual Shadow Maps give it a wide penumbra, else the generated heads' coarse
+    # facets shadow themselves in hard jagged triangles (Maru's face, 2026-10-28)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE)
+    ssc = node(m, unreal.MaterialExpressionMultiply, -250, 400)
+    mel.connect_material_expressions(mul, "", ssc, "A")
+    tint_s = node(m, unreal.MaterialExpressionConstant3Vector, -400, 450)
+    tint_s.set_editor_property("constant", unreal.LinearColor(1.0, 0.5, 0.4, 1.0))
+    mel.connect_material_expressions(tint_s, "", ssc, "B")
+    mel.connect_material_property(ssc, "", unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+    mel.connect_material_property(const(m, 1.0, -400, 550), "", unreal.MaterialProperty.MP_OPACITY)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     # the fur shells

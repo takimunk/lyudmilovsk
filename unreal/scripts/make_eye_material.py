@@ -103,6 +103,17 @@ src = [("LP", lp, ""),
 col = custom(m, COLOUR, unreal.CustomMaterialOutputType.CMOT_FLOAT3, "EyeColour", 0, src)
 rough = custom(m, ROUGH, unreal.CustomMaterialOutputType.CMOT_FLOAT1, "EyeRough", 300, src[:4])
 mel.connect_material_property(col, "", MP.MP_BASE_COLOR)
+# a fill: the ball sits in a socket the face shades (soft skin shadows shade it all), and without the light a real eye
+# gets back off the lids it went pitch black, a hole in the face (2026-10-28). The fill is set on screen (the camera's
+# exposure undone), so it reads alike in daylight and in the dark club; Fill is how bright on screen
+inv = mel.create_material_expression(m, unreal.MaterialExpressionEyeAdaptationInverse, -600, 550)
+fill = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -350, 500)
+mel.connect_material_expressions(col, "", fill, "A")
+mel.connect_material_expressions(inv, "", fill, "B")
+fill2 = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -200, 550)
+mel.connect_material_expressions(fill, "", fill2, "A")
+mel.connect_material_expressions(param(m, unreal.MaterialExpressionScalarParameter, "Fill", 0.22, -400, 650), "", fill2, "B")
+mel.connect_material_property(fill2, "", MP.MP_EMISSIVE_COLOR)
 mel.connect_material_property(rough, "", MP.MP_ROUGHNESS)
 spec = mel.create_material_expression(m, unreal.MaterialExpressionConstant, -300, 400)
 spec.set_editor_property("r", 0.5)

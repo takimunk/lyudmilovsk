@@ -46,6 +46,11 @@ def tick(dt):
                    if a.get_actor_label() == "FaceCam_" + who)
         pc.set_view_target_with_blend(cam, 0.0)
         cmd(w, "lyud.Face.Log 1")
+        if os.environ.get("FACE_SUN_ANGLE"):            # a softer sun: the level's own is the engine default 0.54 deg
+            for l in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.DirectionalLight):
+                l.light_component.set_editor_property("light_source_angle", float(os.environ["FACE_SUN_ANGLE"]))
+                l.light_component.set_visibility(False)
+                l.light_component.set_visibility(True)          # recreates its render state
         cmd(w, "fov 22")                                    # the camera manager keeps its own 90 otherwise
         st["phase"], st["t0"], st["n"] = 1, st["t"], 0
     elif st["phase"] == 1 and st["t"] - st["t0"] > 1.0:

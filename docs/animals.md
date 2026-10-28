@@ -191,3 +191,5 @@ bodies` copies the file into `animal_bodies.json`. Check: `ANIMTEST_PART=eyes un
 3/4 and each eye at a narrow field of view, then the eyes turned with `lyud.Animals.EyeFix/EyeYaw`); tune live with
 `lyud.Animals.EyePush` / `lyud.Animals.EyeScale` (a new body). The joined eyeballs had been set 0.62 r into a pit of the
 hi3d head and read as small, dull, half-hidden dots in daylight (2026-10-27).
+
+M_AnimalBody is subsurface (soft VSM shadows on the coarse generated heads, 2026-10-28); MI_Maru_cream_Fur StrandScale 20 (was 11.2: strands read as flakes up close) is set on the asset, a reimport of Maru's textures resets it.
