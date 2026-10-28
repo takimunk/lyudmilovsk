@@ -44,9 +44,13 @@ def import_head(cid, dest):
 
 
 def character_asset(cid, dest):
-    path = "%s/MHC_%s" % (dest, cid.capitalize())
+    name = os.environ.get("MH_NAME", "MHC_" + cid.capitalize())
+    path = "%s/%s" % (dest, name)
     if eal.does_asset_exist(path):
         return unreal.load_asset(path)
+    preset = os.environ.get("MH_PRESET")                      # start from one of MetaHuman's own faces
+    if preset:
+        return eal.duplicate_asset("/MetaHumanCharacter/Optional/Presets/" + preset, path)
     return unreal.AssetToolsHelpers.get_asset_tools().create_asset(
         asset_name="MHC_" + cid.capitalize(), package_path=dest, asset_class=unreal.MetaHumanCharacter,
         factory=unreal.new_object(type=unreal.MetaHumanCharacterFactoryNew))
@@ -92,7 +96,7 @@ def conform(ch, head, cid):
 # per character: grooms from /MetaHumanCharacter/Optional/Grooms/Bindings/<slot>/WI_*, hair melanin, skin tone (u, v)
 LOOK = {
     "nao": {"Hair": "WI_Hair_M_BobBangs", "Eyebrows": "WI_Eyebrows_M_Natural", "Eyelashes": "WI_Eyelashes_L_SlightCurl",
-            "melanin": 1.0, "skin_uv": (0.18, 0.35)},
+            "melanin": 1.0, "skin_uv": (0.18, 0.35), "clear": ("Beard", "Mustache")},
 }
 
 
@@ -110,8 +114,10 @@ def set_look(ch, cid):
             log("no wardrobe item " + pkg)
             continue
         key = col.try_add_item_from_wardrobe_item(slot_name=slot, wardrobe_item=data[0].get_asset())
-        col.default_instance.try_add_slot_selection(selection=unreal.MetaHumanPipelineSlotSelection(slot_name=slot, selected_item=key))
+        col.default_instance.set_single_slot_selection(slot_name=slot, item_key=key)     # replaces the preset's
         keys[slot] = key
+    for slot in look.get("clear", ()):
+        col.default_instance.set_single_slot_selection(slot_name=slot, item_key=unreal.MetaHumanPaletteItemKey())
     mhs.on_edit_preview_collection(ch)
     mhs.assemble_for_preview(character=ch)
     for slot, key in keys.items():
@@ -119,7 +125,7 @@ def set_look(ch, cid):
             if prm.name == "Melanin" and "melanin" in look:
                 prm.set_float(value=look["melanin"])
     mhs.on_edit_preview_collection(ch)
-    if "skin_uv" in look:
+    if "skin_uv" in look and not os.environ.get("MH_PRESET"):
         sk = unreal.MetaHumanCharacterSkinProperties()
         sk.u, sk.v = look["skin_uv"]
         st = unreal.MetaHumanCharacterSkinSettings()

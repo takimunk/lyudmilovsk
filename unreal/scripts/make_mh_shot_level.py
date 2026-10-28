@@ -36,15 +36,19 @@ def main():
     floor = spawn(unreal.StaticMeshActor, loc=(0, 0, -1), label="Floor")
     floor.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Plane"))
     floor.set_actor_scale3d(unreal.Vector(20, 20, 1))
-    path = "/Game/MetaHumans/%s/Build/MHC_%s/BP_MHC_%s" % (title, title, title)
+    name = os.environ.get("MH_NAME", "MHC_" + title)
+    path = "/Game/MetaHumans/%s/Build/%s/BP_%s" % (title, name, name)
     bp = unreal.EditorAssetLibrary.load_blueprint_class(path)
     if bp is None:
         raise RuntimeError("no blueprint class at " + path)
     ch = eas.spawn_actor_from_class(bp, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
     ch.set_actor_label("MH_" + title)
     # MetaHumans face +Y: cameras on the +Y side looking back (yaw -90)
-    for name, loc, rot, fov in (("MHCam_Face", (0, 80, 150), (0, -2, -90), 30),
-                                ("MHCam_Face34", (55, 60, 150), (0, -2, -132), 30),
+    origin, extent = ch.get_actor_bounds(False)
+    fz = origin.z + extent.z - 13.0                       # the eyes, about 13 cm under the top of the head
+    unreal.log_warning("MHSHOT top %.1f cm, face camera at %.1f" % (origin.z + extent.z, fz))
+    for name, loc, rot, fov in (("MHCam_Face", (0, 80, fz), (0, -2, -90), 30),
+                                ("MHCam_Face34", (55, 60, fz), (0, -2, -132), 30),
                                 ("MHCam_Full", (0, 420, 95), (0, -2, -90), 30)):
         cam = spawn(unreal.CameraActor, loc=loc, rot=rot, label=name)
         cam.camera_component.set_editor_property("field_of_view", fov)
