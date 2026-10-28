@@ -457,7 +457,7 @@ void ALyudTrain::UpdateLights()
 	const float Dusk = FMath::Clamp((12.f - Alt) / 14.f, 0.f, 1.f);
 	for (UPointLightComponent* L : CabinLights)
 	{
-		L->SetIntensity(250.f + 1700.f * Dusk);
+		L->SetIntensity(150.f + 520.f * Dusk);
 	}
 	const int32 LeadCar = Info.Dir >= 0 ? 0 : Cars.Num() - 1;
 	for (int32 C = 0; C < CarMats.Num(); C++)
@@ -466,11 +466,11 @@ void ALyudTrain::UpdateLights()
 		const FCarMats& M = CarMats[C];
 		if (M.Lamp)
 		{
-			M.Lamp->SetScalarParameterValue(TEXT("Intensity"), 1.5f + 9.f * Dusk);
+			M.Lamp->SetScalarParameterValue(TEXT("Intensity"), 1.f + 3.f * Dusk);
 		}
 		if (M.Head)
 		{
-			M.Head->SetScalarParameterValue(TEXT("Intensity"), bLead ? 12.f + 30.f * Dark : 0.f);
+			M.Head->SetScalarParameterValue(TEXT("Intensity"), bLead ? 8.f + 12.f * Dark : 0.f);
 		}
 		if (M.Tail)
 		{
@@ -482,7 +482,7 @@ void ALyudTrain::UpdateLights()
 		}
 		if (HeadLights.IsValidIndex(C))
 		{
-			HeadLights[C]->SetIntensity(bLead ? 20000.f * Dusk : 0.f);
+			HeadLights[C]->SetIntensity(bLead ? 5000.f * Dusk : 0.f);
 		}
 	}
 }

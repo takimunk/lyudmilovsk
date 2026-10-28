@@ -700,6 +700,9 @@ def island():
             k = 3 if slope > 0.55 else (2 if hm > 1.9 else (0 if hm > 0.2 else 1))
             f.material_index = k
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    for f in bm.faces:
+        if f.normal.z < 0:          # an open sheet: make sure it faces the sky
+            f.normal_flip()
     # UVs in metres over the plan (the game tiles its textures by the metre)
     uv = bm.loops.layers.uv.new("UVMap")
     for f in bm.faces:

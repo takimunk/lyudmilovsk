@@ -31,8 +31,9 @@ void ULyudTrainWake::EnsureParts()
 	AActor* Owner = GetOwner();
 	UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	UStaticMesh* Disc = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-	UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Transport/Materials/M_TR_Paint.M_TR_Paint"), nullptr, LOAD_NoWarn | LOAD_Quiet);
-	auto Make = [&](UStaticMesh* M, const TCHAR* Name, const FLinearColor& Col, float Rough)
+	// see-through white: the cable car's glass master (Color, Opacity) reads as spray and thin foam on the water
+	UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Transport/Materials/M_TR_Glass.M_TR_Glass"), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	auto Make = [&](UStaticMesh* M, const TCHAR* Name, const FLinearColor& Col, float Opacity)
 	{
 		UInstancedStaticMeshComponent* I = NewObject<UInstancedStaticMeshComponent>(Owner, Name);
 		I->SetStaticMesh(M);
@@ -47,8 +48,7 @@ void ULyudTrainWake::EnsureParts()
 		{
 			UMaterialInstanceDynamic* D = UMaterialInstanceDynamic::Create(Paint, Owner);
 			D->SetVectorParameterValue(TEXT("Color"), Col);
-			D->SetScalarParameterValue(TEXT("Roughness"), Rough);
-			D->SetScalarParameterValue(TEXT("Metallic"), 0.f);
+			D->SetScalarParameterValue(TEXT("Opacity"), Opacity);
 			I->SetMaterial(0, D);
 		}
 		I->SetupAttachment(this);
@@ -57,8 +57,8 @@ void ULyudTrainWake::EnsureParts()
 		Owner->AddInstanceComponent(I);
 		return I;
 	};
-	DropIsm = Make(Sphere, TEXT("WakeDrops"), FLinearColor(0.78f, 0.82f, 0.82f), 0.15f);
-	FoamIsm = Make(Disc, TEXT("WakeFoam"), FLinearColor(0.72f, 0.75f, 0.74f), 0.9f);
+	DropIsm = Make(Sphere, TEXT("WakeDrops"), FLinearColor(0.85f, 0.9f, 0.9f), 0.55f);
+	FoamIsm = Make(Disc, TEXT("WakeFoam"), FLinearColor(0.82f, 0.86f, 0.85f), 0.32f);
 	if (USoundBase* S = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Railway/S_splash_01.S_splash_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
 		Hiss = NewObject<UAudioComponent>(Owner, TEXT("WakeHiss"));
@@ -124,7 +124,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			D.P = W.Key + Side * Sd * Rnd.FRandRange(50.f, 80.f) + FVector(0, 0, 4.f);
 			D.V = Side * Sd * Out + Fwd * Speed * Rnd.FRandRange(0.05f, 0.25f) + FVector(0, 0, Rnd.FRandRange(150.f, 430.f) * (0.5f + 0.5f * W.Value));
 			D.Life = 3.f;
-			D.Size = Rnd.FRandRange(0.035f, 0.09f);
+			D.Size = Rnd.FRandRange(0.025f, 0.07f);
 			Drops.Add(D);
 		}
 		EmitDebt = FMath::Min(EmitDebt, 5.f);
@@ -140,7 +140,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			F.V = Side * Sd * Rnd.FRandRange(40.f, 90.f) + Fwd * Speed * 0.04f;
 			F.Age = 0.f;
 			F.Life = Rnd.FRandRange(8.f, 14.f);
-			F.Size = Rnd.FRandRange(0.6f, 1.3f);
+			F.Size = Rnd.FRandRange(0.3f, 0.75f);
 			Foam.Add(F);
 		}
 		FoamDebt = FMath::Min(FoamDebt, 3.f);
@@ -163,7 +163,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 				F.V = FVector(D.V.X, D.V.Y, 0.f) * 0.1f;
 				F.Age = 0.f;
 				F.Life = Rnd.FRandRange(2.f, 4.f);
-				F.Size = Rnd.FRandRange(0.2f, 0.5f);
+				F.Size = Rnd.FRandRange(0.12f, 0.3f);
 				Foam.Add(F);
 			}
 			Drops.RemoveAtSwap(I, EAllowShrinking::No);

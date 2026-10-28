@@ -34,7 +34,7 @@ def cmd(w, c):
 def shot(w, name):
     log("shot %02d %s" % (S["shots"], name))
     S["shots"] += 1
-    cmd(w, "shot showui")
+    cmd(w, "shot")
 
 
 def rail(w):
@@ -108,6 +108,7 @@ def watch(w):
 
 
 def start(w):
+    cmd(w, "DisableAllScreenMessages")
     r = rail(w)
     check(r is not None and r.is_running(), "the railway runs")
     if not r or not r.is_running():
@@ -141,9 +142,13 @@ def summary(w):
 
 DAY = [
     (30.0, start),
-    (31.0, lambda w: go(w, 146.0, -82.0, -40.6, 3.0, 128.0)),       # on the beach south of the crossing, looking at the mouth
-    (33.0, lambda w: report(w)),
-    (36.0, lambda w: shot(w, "crossing_warning")),
+    (30.5, lambda w: go(w, 160.0, -52.0, -40.2, 2.0, 180.0)),       # on the bank off the mouth, looking into the tunnel
+    (32.0, lambda w: shot(w, "tunnel_mouth")),
+    (33.0, lambda w: go(w, 129.0, -73.0, -40.7, 6.0, 90.0)),        # on the path south of the crossing, facing it
+    (35.0, lambda w: shot(w, "crossing_sign")),
+    (36.0, lambda w: go(w, 146.0, -82.0, -40.6, 3.0, 128.0)),       # on the beach south of the crossing, looking at the mouth
+    (36.5, lambda w: report(w)),
+    (37.5, lambda w: shot(w, "crossing_warning")),
     (41.0, lambda w: shot(w, "train_out_of_tunnel")),
     (44.0, lambda w: report(w)),
     (46.0, lambda w: go(w, 196.0, -66.0, -39.6, -2.0, 180.0)),      # on the beach halt's deck, looking along it
