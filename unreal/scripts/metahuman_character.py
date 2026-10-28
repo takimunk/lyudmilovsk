@@ -140,7 +140,8 @@ def conform(ch, head, cid):
 # per character: grooms from /MetaHumanCharacter/Optional/Grooms/Bindings/<slot>/WI_*, hair melanin, skin tone (u, v)
 LOOK = {
     "nao": {"Hair": "WI_Hair_M_BobBangs", "Eyebrows": "WI_Eyebrows_M_Natural", "Eyelashes": "WI_Eyelashes_L_SlightCurl",
-            "melanin": 1.0, "skin_uv": (0.18, 0.35), "clear": ("Beard", "Mustache"), "height": 160.0},
+            "melanin": 1.0, "skin_uv": (0.18, 0.35), "clear": ("Beard", "Mustache"), "height": 160.0,
+            "makeup": {"foundation_intensity": 0.35, "concealer": 0.5, "foundation": (0.93, 0.78, 0.70, 1)}},
 }
 
 
