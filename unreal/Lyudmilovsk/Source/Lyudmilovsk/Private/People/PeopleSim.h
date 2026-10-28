@@ -294,9 +294,10 @@ namespace LyudPeople
 		void EndRide(int Person);
 
 		/** The sea railway's timetable (ULyudRailwaySubsystem in the game, LyudRail::FRun in tools/peoplesim), in sim seconds:
-		 *  the next moment at or after Time a train going from stop From towards stop To (ids: beach, island) opens its doors
-		 *  at From; < 0 if none (no railway: the ride is then TrainSeconds, hidden). */
-		std::function<double(const std::string& From, const std::string& To, double Time)> TrainNext;
+		 *  Doors = the next moment at or after Time a train going from stop From towards stop To (ids: beach, island) opens
+		 *  its doors at From; false if none (no railway: the ride is then TrainSeconds, hidden). Sim seconds can be negative
+		 *  (the game's life clock counts from the start date), so no sentinel value. */
+		std::function<bool(const std::string& From, const std::string& To, double Time, double& Doors)> TrainNext;
 		/** Seconds from the doors opening at From to their opening at To. */
 		std::function<double(const std::string& From, const std::string& To)> TrainRide;
 		/** The game's own positions of a halt (its stair's foot on the ground and its boarding points on the deck, Unreal

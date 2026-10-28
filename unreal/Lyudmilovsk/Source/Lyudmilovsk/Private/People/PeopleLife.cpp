@@ -238,17 +238,20 @@ void UPeopleLifeSubsystem::BindRailway()
 		Dir = S[B].S > S[A].S ? 1 : -1;
 		return R;
 	};
-	Sim->TrainNext = [Self, Stops](const std::string& From, const std::string& To, double Time) -> double
+	// (the life's clock is negative before the start date: the doors' time is returned through Doors, never as -1)
+	Sim->TrainNext = [Self, Stops](const std::string& From, const std::string& To, double Time, double& Doors) -> bool
 	{
 		int32 A = -1, B = -1, Dir = 1;
 		const ULyudRailwaySubsystem* R = Stops(From, To, A, B, Dir);
 		if (!R)
 		{
-			return -1.0;
+			UE_LOG(LogTemp, Log, TEXT("PeopleLife: no train %hs -> %hs (stops %d %d)"), From.c_str(), To.c_str(), A, B);
+			return false;
 		}
 		const double Off = Self->RailOffset;
 		const double When = R->NextDoorsOpen(A, Dir, Time + Off);
-		return When < 0.0 ? -1.0 : When - Off;
+		Doors = When - Off;
+		return When >= 0.0;
 	};
 	Sim->TrainRide = [Stops](const std::string& From, const std::string& To) -> double
 	{
@@ -276,6 +279,8 @@ void UPeopleLifeSubsystem::UpdateRailway()
 	bRailSynced = true;
 	for (int32 Stop = 0; Stop < R->NumStops(); Stop++)
 	{
+		// the life's frame is Unreal metres (world cm / 100: people_places.json "frame": "unreal_metres", PeopleToUE),
+		// not the map's metres (those are 7.9 m off in Y: the portal face)
 		const FVector Foot = R->GetStopEntrance(Stop) / 100.0;
 		std::vector<LP::V3> Board;
 		for (int32 K = 0; K < 8; K++)
@@ -679,6 +684,12 @@ void UPeopleLifeSubsystem::DispatchEvents()
 	S.Events.clear();
 	for (const LP::FEvent& E : Events)
 	{
+		if (E.Kind == LP::EEvent::Ride && E.Person >= 0 && E.Person < (int)S.People.size() && S.People[E.Person].bTrain)
+		{
+			const LP::FPerson& P = S.People[E.Person];
+			UE_LOG(LogTemp, Log, TEXT("PeopleLife: %hs boards the train at %.0f (doors %.0f, off at %.0f, rail offset %.0f)"), P.Key.c_str(), S.Time,
+				P.DoorsAt, P.RideUntil, RailOffset);
+		}
 		OnPersonEvent.Broadcast(E.Person, FName(PeopleEventNames[(int)E.Kind]), E.Other);
 	}
 }

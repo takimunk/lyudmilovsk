@@ -94,8 +94,9 @@ public:
 	/** Rail head Z at S (world cm) and the ground/sea bed under it. */
 	double RailZ(double S) const;
 	double GroundZ(double S) const;
-	/** Map metres -> world cm. */
+	/** Map metres -> world cm, and back. */
 	FVector MapToWorld(double X, double Y, double Z) const;
+	UFUNCTION(BlueprintPure, Category = "Railway") FVector WorldToMap(const FVector& World) const { return FVector(World.X / 100.0, (World.Y - PortalFaceY) / 100.0, World.Z / 100.0); }
 	double LineLength() const;
 
 	/** Depart, Arrive, DoorsOpen, DoorsClose, Appear (out of the tunnel's dark or the haze), Vanish. */

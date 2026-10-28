@@ -674,7 +674,7 @@ def island():
     sea = -43.0
     cx, cy = isl["x"], isl["y"]
     rx, ry = isl["rx"] * 1.3, isl["ry"] * 1.3
-    step = 2.0
+    step = 1.25
     nx, ny = int(2 * rx / step) + 1, int(2 * ry / step) + 1
     H = {}
     for j in range(ny):

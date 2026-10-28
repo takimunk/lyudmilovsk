@@ -165,14 +165,16 @@ DAY = [
     (135.0, lambda w: S.update(chase=(35.0, 14.0, -30.0))),
     (140.0, lambda w: shot(w, "gulls_over_train")),
     (141.0, lambda w: report(w)),
-    (142.0, lambda w: S.update(chase=None)),
-    (143.0, lambda w: cmd(w, "lyud.Railway.Next island 1")),
-    (145.0, lambda w: go(w, 2420.0, -66.5, -39.3, -3.0, 180.0)),    # the island halt's deck
-    (164.0, doors_island),
-    (165.0, lambda w: shot(w, "island_halt")),
-    (167.0, lambda w: go(w, 2290.0, -170.0, -32.0, -6.0, 50.0)),    # the island from off its south-east shore
-    (170.0, lambda w: shot(w, "island")),
-    (171.0, summary),
+    (141.5, lambda w: S.update(chase=(5.0, 11.0, -26.0))),
+    (144.0, lambda w: shot(w, "gulls_close")),
+    (144.5, lambda w: S.update(chase=None)),
+    (145.0, lambda w: cmd(w, "lyud.Railway.Next island 1")),
+    (146.0, lambda w: go(w, 2420.0, -66.5, -39.3, -3.0, 180.0)),    # the island halt's deck
+    (167.0, doors_island),
+    (168.0, lambda w: shot(w, "island_halt")),
+    (169.0, lambda w: go(w, 2290.0, -170.0, -32.0, -6.0, 50.0)),    # the island from off its south-east shore
+    (172.0, lambda w: shot(w, "island")),
+    (173.0, summary),
 ]
 NIGHT = [
     (175.0, lambda w: cmd(w, "lyud.Birds.Time 21 30")),
@@ -191,11 +193,50 @@ FAR = [
     (250.0, lambda w: shot(w, "line_to_island")),
     (320.0, lambda w: shot(w, "train_to_horizon")),
 ]
+def people(w, key):
+    cmd(w, "lyud.People.Report %s" % key)
+
+
+def riders_start(w):
+    cmd(w, "DisableAllScreenMessages")
+    r = rail(w)
+    check(r is not None and r.is_running(), "the railway runs")
+    log("report " + r.report())
+    for k in ("nishimura_aya", "sorokin_oleg", "sato_mila"):
+        people(w, k)
+
+
+# residents riding: on Tuesday at 10:41 two of them are on the island; ordered home they walk to the island halt and
+# take the 10:47 back (the railway's clock untouched: their wait is fixed when they reach the platform)
+RIDERS = [
+    (21.0, lambda w: cmd(w, "lyud.Birds.Time 10 41")),
+    (22.0, riders_start),
+    (24.0, lambda w: go(w, 2328.0, -94.0, -40.6, -6.0, -135.0)),     # by the painter on the island's south shore
+    (30.0, lambda w: cmd(w, "lyud.People.Order sorokin_oleg read_home")),
+    (30.5, lambda w: cmd(w, "lyud.People.Order nishimura_aya read_home")),
+    (34.0, lambda w: shot(w, "island_painter")),
+    (35.0, lambda w: go(w, 2425.0, -66.5, -39.2, -5.0, 180.0)),      # the island halt's deck, looking along it
+    (200.0, lambda w: people(w, "sorokin_oleg")),
+    (201.0, lambda w: people(w, "nishimura_aya")),
+    (360.0, lambda w: shot(w, "island_waiting")),
+    (361.0, lambda w: report(w)),
+    (400.0, lambda w: shot(w, "island_boarding")),
+    (401.0, lambda w: people(w, "sorokin_oleg")),
+    (430.0, lambda w: S.update(chase=(0.0, 1.6, -7.0))),
+    (438.0, lambda w: shot(w, "riders_inside")),
+    (439.0, lambda w: people(w, "sorokin_oleg")),
+    (439.5, lambda w: people(w, "nishimura_aya")),
+    (440.0, lambda w: S.update(chase=(9.0, 2.0, 0.0))),
+    (446.0, lambda w: shot(w, "riders_window")),
+    (447.0, lambda w: S.update(chase=None)),
+]
 PLAN = []
+for name, part in (("riders", RIDERS),) if ONLY == "riders" else ():
+    PLAN += part
 for name, part in (("day", DAY), ("night", NIGHT), ("far", FAR)):
-    if not ONLY or name in ONLY.split(","):
+    if (not ONLY or name in ONLY.split(",")) and ONLY != "riders":
         PLAN += part
-if ONLY and "day" not in ONLY.split(","):
+if ONLY and "day" not in ONLY.split(",") and ONLY != "riders":
     PLAN.insert(0, (30.0, start))
 PLAN.append((PLAN[-1][0] + 4.0, lambda w: S.update(phase="done")))
 
@@ -214,7 +255,7 @@ def tick(dt):
     if S["chase"]:
         chase(w, *S["chase"])
     watch(w)
-    if S["phase"] == "done" or S["t"] > 600.0:
+    if S["phase"] == "done" or S["t"] > 800.0:
         log("done: %d failed" % S["fails"] if S["phase"] == "done" else "FAIL timeout")
         cmd(w, "quit")
         S["phase"] = "quit"

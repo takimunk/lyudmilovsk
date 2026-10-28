@@ -24,7 +24,7 @@ PID=$!
 DOG=$!
 wait "$PID" || true
 kill "$DOG" 2>/dev/null || true
-grep -E "RAILTEST|Railway:|LyudSea: depth|LogScript.*Error|Error:.*Rail" "$LOG" | sed 's/.*Warning: //; s/.*LogTemp: Display: //' || true
+grep -E "RAILTEST|Railway:|People: [A-Z]|LyudSea: depth|LogScript.*Error|Error:.*Rail" "$LOG" | sed 's/.*Warning: //; s/.*LogTemp: Display: //' || true
 # the shots in the order taken
 N=0
 grep -o "RAILTEST shot [0-9]* [a-z_0-9]*" "$LOG" | while read -r _ _ I NAME; do

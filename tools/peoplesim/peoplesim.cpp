@@ -37,6 +37,8 @@ static std::string ReadFile(const std::string& Path)
 /** The sea railway's timetable on the sim's clock (seconds since a Monday midnight: whole days, as the game's). */
 static LyudRail::FRun Rail;
 static bool bRail = false;
+/** The railway's clock minus the sim's (the game's life clock counts from the start date: negative before it). */
+static double RailShift = 0.0;
 
 static void AttachRail(FWorld& W)
 {
@@ -53,10 +55,12 @@ static void AttachRail(FWorld& W)
 		bRail = true;
 	}
 	auto Dir = [](int A, int B) { return Rail.Params().Stops[B].S > Rail.Params().Stops[A].S ? 1 : -1; };
-	W.TrainNext = [Dir](const std::string& From, const std::string& To, double Time)
+	W.TrainNext = [Dir](const std::string& From, const std::string& To, double Time, double& Doors)
 	{
 		const int A = Rail.FindStop(From), B = Rail.FindStop(To);
-		return A < 0 || B < 0 ? -1.0 : Rail.NextDoorsOpen(A, Dir(A, B), Time);
+		const double When = A < 0 || B < 0 ? -1.0 : Rail.NextDoorsOpen(A, Dir(A, B), Time + RailShift);
+		Doors = When - RailShift;
+		return When >= 0.0;
 	};
 	W.TrainRide = [Dir](const std::string& From, const std::string& To)
 	{
@@ -510,6 +514,90 @@ static void Checks(FWorld& W, bool bReal)
 	W.bRain = false;
 	CHECK(MaxOut > 2.2f, "rain: Stas hurries to the bench (%.2f m/s)", MaxOut);}
 
+/** The game's case: the life's clock before the start date (negative sim seconds), two people on the island ordered
+ *  home: they must wait on the platform for the timetable's train and ride it (never the hidden fallback), and follow the
+ *  timetable when the railway's clock is moved while they wait. */
+static void IslandOrder(FWorld& W)
+{
+	if (!bRail)
+	{
+		return;
+	}
+	FClock C = FClock::At(1, 10.f + 41.f / 60.f);
+	const double Shift = 200000.0;      // sim seconds = clock - Shift (negative, as in the game on its first day)
+	RailShift = Shift;
+	auto Set = [&]() { C.Set(W); W.Time = C.Seconds - Shift; };
+	Set();
+	W.Resettle();
+	const char* Keys[] = { "sorokin_oleg", "nishimura_aya" };
+	for (const char* K : Keys)
+	{
+		W.Order(W.FindPerson(K), "island_walk");
+	}
+	// out there by the train first, then a minute of what they came for
+	bool bOnIsland = false;
+	for (int I = 0; I < 3 * 3600 && !bOnIsland; I++)
+	{
+		C.Seconds += 1;
+		Set();
+		W.Step(1.f);
+		bOnIsland = true;
+		for (const char* K : Keys)
+		{
+			bOnIsland &= Who(W, K).Island == 2 && Who(W, K).State == EState::Doing;
+		}
+	}
+	for (int I = 0; I < 60; I++) { C.Seconds += 1; Set(); W.Step(1.f); }
+	for (const char* K : Keys)
+	{
+		W.Order(W.FindPerson(K), "read_home");
+	}
+	int Waited = 0, Timed = 0, Fallback = 0, Followed = 0;
+	std::set<std::string> Home;
+	bool bMoved = false;
+	std::map<std::string, EState> Last;
+	for (int I = 0; I < 2 * 3600; I++)
+	{
+		C.Seconds += 1;
+		Set();
+		W.Step(1.f);
+		for (const char* K : Keys)
+		{
+			const FPerson& P = Who(W, K);
+			// the railway's clock moved 10 minutes on while the first of them waits: the doors come 10 minutes sooner
+			if (P.State == EState::Waiting && !bMoved && P.DoorsAt - W.Time > 900.0)
+			{
+				const double Was = P.DoorsAt;
+				bMoved = true;
+				RailShift += 600.0;
+				for (int J = 0; J < 12; J++) { C.Seconds += 1; Set(); W.Step(1.f); }
+				Followed += std::fabs((Was - P.DoorsAt) - 600.0) < 1.0 ? 1 : 0;
+			}
+			if (P.State == Last[K])
+			{
+				continue;
+			}
+			Waited += P.State == EState::Waiting ? 1 : 0;
+			if (P.State == EState::Riding && P.bTrain)
+			{
+				const bool bTimedRide = Last[K] == EState::Waiting && P.RideUntil > P.DoorsAt + 60.0 && P.RideUntil < P.DoorsAt + 300.0;
+				(bTimedRide ? Timed : Fallback)++;
+			}
+			if (P.State == EState::Doing && P.Island == 0)
+			{
+				Home.insert(K);
+			}
+			Last[K] = P.State;
+		}
+	}
+	RailShift = 0.0;
+	CHECK(bOnIsland, "the island case: Oleg and Aya taken to the island by the train, the life's clock before the start date (%.0f s)", W.Time);
+	CHECK(Waited == 2 && Timed == 2 && Fallback == 0, "ordered home from the island: they wait on the platform (%d) and ride the timetable's train (%d timed, %d hidden fallbacks)",
+		Waited, Timed, Fallback);
+	CHECK(Followed == 1, "waiting, they follow the timetable when the railway's clock moves (%d)", Followed);
+	CHECK(Home.size() == 2, "... and get back to the valley (%d of 2)", (int)Home.size());
+}
+
 static int Test()
 {
 	std::printf("a made-up town:\n");
@@ -549,6 +637,7 @@ static int Test()
 		}
 		const auto T0 = std::chrono::high_resolution_clock::now();
 		Checks(W, true);
+		IslandOrder(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
 	}

@@ -718,9 +718,10 @@ namespace LyudPeople
 				else
 				{
 					T += 60.f;      // the stair, along the platform
-					const double Doors = TrainNext ? TrainNext(A.Stop, B.Stop, At + T) : -1.0;
+					double Doors = 0.0;
+					const bool bTimed = TrainNext && TrainNext(A.Stop, B.Stop, At + T, Doors);
 					const float Ride = TrainRide ? (float)TrainRide(A.Stop, B.Stop) : Opt.TrainSeconds;
-					T = Doors >= 0.0 ? (float)(Doors - At) + Ride : T + Opt.TrainSeconds;
+					T = bTimed ? (float)(Doors - At) + Ride : T + Opt.TrainSeconds;
 					T += 60.f;
 				}
 				Cur = B.Portal;
@@ -1854,8 +1855,8 @@ namespace LyudPeople
 		P.Speed = 0.f;
 		P.StateStart = Time;
 		const bool bStops = P.RailFrom >= 0 && P.RailTo >= 0;
-		const double Doors = bStops && TrainNext ? TrainNext(Places[P.RailFrom].Stop, Places[P.RailTo].Stop, Time) : -1.0;
-		if (Doors < 0.0)
+		double Doors = 0.0;
+		if (!bStops || !TrainNext || !TrainNext(Places[P.RailFrom].Stop, Places[P.RailTo].Stop, Time, Doors))
 		{
 			// no timetable (no railway in the level): gone for the ride, as the cable car once was
 			P.State = EState::Riding;
@@ -1866,6 +1867,7 @@ namespace LyudPeople
 		}
 		// wait on the platform facing the track
 		P.DoorsAt = Doors;
+		P.Think = 10.f;
 		P.State = EState::Waiting;
 		P.Pose = EPose::Stand;
 		if (P.PathI < (int)P.Path.size())
@@ -1895,22 +1897,29 @@ namespace LyudPeople
 		}
 		const float Walk = (Places[A].Portal - Slots[P.Slot].Approach).Len2D() * 1.3f / P.WalkSpeed + 90.f;
 		const double Earliest = Time + Activities[P.Activity].MinMinutes * 30.0;
-		double Best = -1.0;
+		bool bBest = false;
+		double Best = 0.0;
 		for (const double From : { P.Until + Walk - 3600.0, P.Until + Walk })
 		{
-			const double Doors = TrainNext(Places[A].Stop, Places[B].Stop, From);
+			double Doors = 0.0;
+			if (!TrainNext(Places[A].Stop, Places[B].Stop, From, Doors))
+			{
+				continue;
+			}
 			const double Leave = Doors - Walk - 60.0;
-			if (Doors >= 0.0 && Leave >= Earliest && (Best < 0.0 || std::fabs(Leave - P.Until) < std::fabs(Best - P.Until)))
+			if (Leave >= Earliest && (!bBest || std::fabs(Leave - P.Until) < std::fabs(Best - P.Until)))
 			{
 				Best = Leave;
+				bBest = true;
 			}
 		}
-		if (Best < 0.0)
+		double Doors = 0.0;
+		if (!bBest && TrainNext(Places[A].Stop, Places[B].Stop, Earliest + Walk, Doors))
 		{
-			const double Doors = TrainNext(Places[A].Stop, Places[B].Stop, Earliest + Walk);
-			Best = Doors >= 0.0 ? Doors - Walk - 60.0 : -1.0;
+			Best = Doors - Walk - 60.0;
+			bBest = true;
 		}
-		if (Best > Time)
+		if (bBest && Best > Time)
 		{
 			P.Until = Best;
 		}
@@ -2136,6 +2145,17 @@ namespace LyudPeople
 				Move(P, Dt);
 				break;
 			case EState::Waiting:
+				// the timetable may move under them (the railway's clock set): look again every 10 s till the doors are near
+				P.Think -= Dt;
+				if (P.Think <= 0.f && P.DoorsAt - Time > 15.0)
+				{
+					P.Think = 10.f;
+					double Doors = 0.0;
+					if (TrainNext && TrainNext(Places[P.RailFrom].Stop, Places[P.RailTo].Stop, Time, Doors))
+					{
+						P.DoorsAt = Doors;
+					}
+				}
 				// the doors open: in they get (a few seconds apart); should no train come in two hours, gone as without one
 				if (Time >= P.DoorsAt + 2.0 + (P.Id % 7) * 2.0 || Time - P.StateStart > 7200.0)
 				{
