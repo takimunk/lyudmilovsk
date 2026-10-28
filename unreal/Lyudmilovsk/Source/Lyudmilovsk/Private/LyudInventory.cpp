@@ -805,7 +805,13 @@ void ULyudInventoryUI::Use(FName Id)
 	{
 		return;
 	}
-	Close();
+	if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this); GameScreen && GameScreen->IsOpen())
+	{
+		// the diary goes back in the bag first: the hand that holds it takes the drink
+		TWeakObjectPtr<ULyudInventoryUI> Self = this;
+		GameScreen->CloseThen([Self, Id] { if (Self.IsValid()) { Self->Use(Id); } });
+		return;
+	}
 
 	// the item appears in front of the hand and the hand takes it
 	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());

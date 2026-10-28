@@ -259,6 +259,9 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Transport"), TEXT("station_chime") }, { TEXT("Transport"), TEXT("station_wheel") }, { TEXT("Transport"), TEXT("lift_start") },
 		{ TEXT("Transport"), TEXT("lift_ding") }, { TEXT("Transport"), TEXT("lift_hum") }, { TEXT("Transport"), TEXT("lift_doors") },
 		{ TEXT("Transport"), TEXT("station_hall") },
+		// the diary (ULyudGameScreen: taken out, opened, a page turned, shut)
+		{ TEXT("Diary"), TEXT("diary_take") }, { TEXT("Diary"), TEXT("diary_open") }, { TEXT("Diary"), TEXT("diary_close") },
+		{ TEXT("Diary"), TEXT("diary_page") }, { TEXT("Diary"), TEXT("diary_pages") },
 	};
 	for (const auto& G : Groups)
 	{

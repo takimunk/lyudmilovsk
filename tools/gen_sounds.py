@@ -39,7 +39,7 @@ RATE = 48000
 # Blender's python carries no CA bundle: use the system's
 SSL = ssl.create_default_context(cafile="/etc/ssl/cert.pem") if os.path.exists("/etc/ssl/cert.pem") else ssl.create_default_context()
 # loudness targets: one-shots by peak (dBFS), loops and music by RMS (dBFS)
-PEAK_DB = {"animals": -3.0, "far": -6.0, "club": -6.0}
+PEAK_DB = {"animals": -3.0, "far": -6.0, "club": -6.0, "diary": -9.0}
 LOOP_RMS_DB = -24.0
 MUSIC_RMS_DB = -21.0
 
