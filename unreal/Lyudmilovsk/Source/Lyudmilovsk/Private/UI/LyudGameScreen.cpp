@@ -5,6 +5,7 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -178,6 +179,14 @@ void ULyudGameScreen::Open(ELyudScreenTab InTab)
 			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			Params.ObjectFlags |= RF_Transient;
 			Book = World->SpawnActor<ALyudDiaryBook>(ALyudDiaryBook::StaticClass(), FTransform(Hero->EyeLocation()), Params);
+			// placed after the hero moves and before his hand is posed: a frame placed later leaves the fingers where the
+			// book was a frame ago (closed round the open spread's edge, through the shut board)
+			Book->OnTick = [this](float Dt) { if (bWithBook) { PlaceBook(Dt); } };
+			Book->AddTickPrerequisiteComponent(Hero->GetCharacterMovement());
+			if (UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero))
+			{
+				Reach->AddTickPrerequisiteActor(Book);
+			}
 		}
 		Book->SetCover(180.f);
 		Book->SetPages(nullptr);
@@ -246,6 +255,10 @@ void ULyudGameScreen::Finish()
 	Screen.Reset();
 	if (Book)
 	{
+		if (UHeroReachComponent* Reach = UHeroReachComponent::GetForPlayer(GetWorld()))
+		{
+			Reach->RemoveTickPrerequisiteActor(Book);
+		}
 		Book->Destroy();
 		Book = nullptr;
 	}
@@ -383,7 +396,9 @@ void ULyudGameScreen::PlaceBook(float DeltaTime)
 		H.FingerDir = HoldFrame.InverseTransformVectorNoScale(Finger);
 		H.PalmNormal = HoldFrame.InverseTransformVectorNoScale(Normal);
 		H.PitchFollow = 1.f;
-		H.Curl = 0.85f;
+		// shut, the book rests on the flat of the hand: fingers curled round its edge come out through the front board (they
+		// close on the open spread's edge only)
+		H.Curl = FMath::Lerp(0.85f, 0.12f, FMath::SmoothStep(0.f, 0.6f, Cover / 180.f));
 		H.BlendTime = 0.25f;
 		const FTransform PalmFrame(FRotationMatrix::MakeFromXZ(Finger, Normal).ToQuat(), Palm);
 		H.Shape = Book->Shape().Transformed(PalmFrame.Inverse());
@@ -436,10 +451,6 @@ void ULyudGameScreen::UpdateDiary(float DeltaTime)
 	{
 		// the book went with the level or a seat hid the hero: the pages just fade
 		bWithBook = false;
-	}
-	if (bWithBook)
-	{
-		PlaceBook(DeltaTime);
 	}
 	if (Screen)
 	{

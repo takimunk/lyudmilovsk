@@ -158,7 +158,8 @@ namespace
 
 ALyudDiaryBook::ALyudDiaryBook()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	Spine = CreateDefaultSubobject<USceneComponent>(TEXT("Spine"));
 	SetRootComponent(Spine);
 	LeftHinge = CreateDefaultSubobject<USceneComponent>(TEXT("LeftHinge"));
@@ -170,6 +171,15 @@ void ALyudDiaryBook::BeginPlay()
 {
 	Super::BeginPlay();
 	Build();
+}
+
+void ALyudDiaryBook::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (OnTick)
+	{
+		OnTick(DeltaSeconds);
+	}
 }
 
 UStaticMeshComponent* ALyudDiaryBook::AddPart(USceneComponent* Parent, const FName Name, UStaticMesh* Mesh, const FVector& At, UMaterialInterface* Material)
@@ -282,14 +292,16 @@ void ALyudDiaryBook::SpreadCorners(FVector Out[4]) const
 
 FReachShape ALyudDiaryBook::Shape() const
 {
-	// the right half always; the left half where its hinge has put it
+	// the right half always; the left half where its hinge has put it. A little bigger than the book: the fingers' skin
+	// reaches further than their bones say, and a swinging board otherwise shows fingertips through it
 	FReachShape S;
 	const float T = Block + Board;
+	constexpr float Margin = 1.2f;
 	auto Half = [&S, T](const FTransform& Frame, float Side)
 	{
 		FReachPrim P;
 		P.Kind = FReachPrim::EKind::Box;
-		P.Extent = FVector(T * 0.5f, (PageW + Overhang) * 0.5f, PageH * 0.5f + Overhang);
+		P.Extent = FVector(T * 0.5f + Margin, (PageW + Overhang) * 0.5f, PageH * 0.5f + Overhang + Margin);
 		P.Xf = FTransform(FVector(-T * 0.5f, Side * (PageW + Overhang) * 0.5f, 0.f)) * Frame;
 		P.Xf.SetScale3D(FVector::OneVector);
 		S.Prims.Add(P);

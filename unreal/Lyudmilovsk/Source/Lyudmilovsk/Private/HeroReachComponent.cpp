@@ -45,6 +45,19 @@ UHeroReachComponent* UHeroReachComponent::Get(AHeroCharacter* InHero)
 		C = NewObject<UHeroReachComponent>(InHero, TEXT("HeroReach"));
 		C->Hero = InHero;
 		C->RegisterComponent();
+		// the body is posed after the arm's wish for this frame is set, not from the last frame's (a hand a frame behind
+		// what it holds shows its fingers through it)
+		if (USkeletalMeshComponent* Body = InHero->GetMesh())
+		{
+			Body->AddTickPrerequisiteComponent(C);
+			for (USceneComponent* Child : Body->GetAttachChildren())
+			{
+				if (USkeletalMeshComponent* M = Cast<USkeletalMeshComponent>(Child))
+				{
+					M->AddTickPrerequisiteComponent(C);
+				}
+			}
+		}
 	}
 	C->Hero = InHero;
 	return C;

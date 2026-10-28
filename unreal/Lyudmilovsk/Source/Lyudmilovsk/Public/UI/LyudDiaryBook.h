@@ -52,7 +52,11 @@ public:
 	/** Where a palm holds it from below, under the spine (world), and its frame (the fingers behind the book, the palm up). */
 	void HoldFrame(FVector& Palm, FVector& Finger, FVector& Normal) const;
 
+	/** Run each frame before the hero's hand is posed: the owner places the book there, so hand and book agree in the same frame. */
+	TFunction<void(float)> OnTick;
+
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 private:
 	UPROPERTY()
