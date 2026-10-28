@@ -71,7 +71,7 @@ namespace LyudPeople
 
 	static const char* NeedNames[] = { "hunger", "tired", "social", "fun", "nature", "mind", "sun" };
 	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work" };
-	static const char* StateNames[] = { "idle", "going", "riding", "settling", "doing", "leaving", "away" };
+	static const char* StateNames[] = { "idle", "going", "riding", "settling", "doing", "leaving", "away", "waiting" };
 	static const char* EventNames[] = { "Start", "Arrive", "Leave", "TalkStart", "TalkEnd", "Ride", "Away", "Back" };
 
 	const char* NeedName(ENeed N) { return N < ENeed::Num ? NeedNames[(int)N] : "?"; }
@@ -199,6 +199,14 @@ namespace LyudPeople
 			}
 			A.bAway = V["away"].F() > 0.f;
 			A.bFree = V.Find("free") ? V["free"].F() > 0.f : true;
+			if (V["days"].Size() > 0)
+			{
+				A.Days = 0;
+				for (const LyudJson::FValue& Day : V["days"].Items)
+				{
+					A.Days |= 1 << (Day.I() % 7);
+				}
+			}
 			if (!A.Id.empty())
 			{
 				Activities.push_back(A);
@@ -227,6 +235,7 @@ namespace LyudPeople
 			P.Id = (int)People.size();
 			P.Key = V["key"].S();
 			P.Mesh = V["mesh"].S();
+			P.Body = V["body"].S(P.Mesh);
 			P.ComputerClip = V["computer_clip"].S("Sit_KeyboardMouse");
 			P.Occupation = V["occupation"].S();
 			P.Household = V["household"].S(P.Key);
@@ -268,6 +277,10 @@ namespace LyudPeople
 			for (const LyudJson::FValue& F : V["friends"].Items)
 			{
 				P.Friends.push_back(F.S());
+			}
+			for (const auto& L : V["likes"].Fields)
+			{
+				P.Likes.emplace_back(L.first, L.second.F());
 			}
 			P.Rng = Opt.Seed ^ (uint32_t)(P.Id * 2654435761u) ^ 0x9E3779B9u;
 			if (P.Rng == 0)
@@ -469,6 +482,18 @@ namespace LyudPeople
 				}
 				AddSlot(Pl, PlaceIdx, Staff, Prefix, "staff");
 			}
+			// a halt of the sea railway: the way from the ground up onto its platform; its slots are boarding points
+			Pl.Stop = V["stop"].S();
+			Pl.RailWay = Line(V["way"]);
+			if (!Pl.RailWay.empty() && !Same(Pl.RailWay.front(), Pl.Portal))
+			{
+				Pl.RailWay.insert(Pl.RailWay.begin(), Pl.Portal);
+			}
+			// on the sea island (off the walk grid: reached by the train)
+			if (V["sea_island"].F() > 0.f)
+			{
+				Pl.Island = 2;
+			}
 			if (Pl.Slots.empty())
 			{
 				// a spot outdoors: people stand round it
@@ -537,9 +562,171 @@ namespace LyudPeople
 		}
 		for (FPlace& Pl : Places)
 		{
-			Pl.Island = IslandOf(Pl.Portal);
+			Pl.Island = Pl.Island == 2 ? 2 : IslandOf(Pl.Portal);
+		}
+		// ground off the walk grid (the sea island's own height field)
+		Patches.clear();
+		for (const LyudJson::FValue& G : J["ground_patches"].Items)
+		{
+			FPatch Pa;
+			Pa.X0 = G["x0"].F();
+			Pa.Y0 = G["y0"].F();
+			Pa.Cell = std::max(0.1f, G["cell"].F(4.f));
+			Pa.NX = G["nx"].I();
+			Pa.NY = G["ny"].I();
+			for (const LyudJson::FValue& Z : G["z"].Items)
+			{
+				Pa.Z.push_back(Z.F());
+			}
+			if (Pa.NX > 1 && Pa.NY > 1 && (int)Pa.Z.size() == Pa.NX * Pa.NY)
+			{
+				Patches.push_back(Pa);
+			}
 		}
 		return true;
+	}
+
+	bool FWorld::FPatch::Has(float X, float Y) const
+	{
+		return X >= X0 && Y >= Y0 && X <= X0 + Cell * (NX - 1) && Y <= Y0 + Cell * (NY - 1);
+	}
+
+	float FWorld::FPatch::At(float X, float Y) const
+	{
+		const float FX = std::min(std::max((X - X0) / Cell, 0.f), NX - 1.001f);
+		const float FY = std::min(std::max((Y - Y0) / Cell, 0.f), NY - 1.001f);
+		const int I = (int)FX, J = (int)FY;
+		const float U = FX - I, V = FY - J;
+		const float* R0 = &Z[J * NX + I];
+		const float* R1 = &Z[(J + 1) * NX + I];
+		return (R0[0] * (1.f - U) + R0[1] * U) * (1.f - V) + (R1[0] * (1.f - U) + R1[1] * U) * V;
+	}
+
+	float FWorld::GroundAt(const V3& P) const
+	{
+		for (const FPatch& Pa : Patches)
+		{
+			if (Pa.Has(P.X, P.Y))
+			{
+				return Pa.At(P.X, P.Y);
+			}
+		}
+		return bHasGround ? Ground.GroundZ(P.X, P.Y) : P.Z;
+	}
+
+	int FWorld::RailStopOf(int Island) const
+	{
+		for (int I = 0; I < (int)Places.size(); I++)
+		{
+			if (Places[I].Kind == "rail_stop" && Places[I].Island == Island && !Places[I].Slots.empty())
+			{
+				return I;
+			}
+		}
+		return -1;
+	}
+
+	bool FWorld::SetRailStop(const std::string& Stop, const V3& Foot, const std::vector<V3>& Boarding)
+	{
+		for (FPlace& Pl : Places)
+		{
+			if (Pl.Kind != "rail_stop" || Pl.Stop != Stop)
+			{
+				continue;
+			}
+			// the stair's foot and top move with the foot; the boarding points are the game's
+			if (Pl.RailWay.size() >= 3)
+			{
+				const V3 D = Foot - Pl.RailWay[Pl.RailWay.size() - 2];
+				Pl.RailWay[Pl.RailWay.size() - 2] = Foot;
+				Pl.RailWay.back() = Pl.RailWay.back() + D;
+			}
+			for (size_t K = 0; K < Pl.Slots.size() && K < Boarding.size(); K++)
+			{
+				Slots[Pl.Slots[K]].Pos = Slots[Pl.Slots[K]].Approach = Boarding[K];
+			}
+			return true;
+		}
+		return false;
+	}
+
+	bool FWorld::Hops(int From, int To, std::vector<FHop>& Out) const
+	{
+		Out.clear();
+		if (From == To)
+		{
+			return true;
+		}
+		auto Cable = [&](int A, int B)
+		{
+			const int SA = StationOf(A), SB = StationOf(B);
+			if (SA < 0 || SB < 0)
+			{
+				return false;
+			}
+			Out.push_back({ 2, SA, SB, B });
+			return true;
+		};
+		auto Train = [&](int A, int B)
+		{
+			const int SA = RailStopOf(A), SB = RailStopOf(B);
+			if (SA < 0 || SB < 0)
+			{
+				return false;
+			}
+			Out.push_back({ 3, SA, SB, B });
+			return true;
+		};
+		if ((From == 0 && To == 1) || (From == 1 && To == 0))
+		{
+			return Cable(From, To);
+		}
+		if ((From == 0 && To == 2) || (From == 2 && To == 0))
+		{
+			return Train(From, To);
+		}
+		if (From == 1 && To == 2)
+		{
+			return Cable(1, 0) && Train(0, 2);
+		}
+		if (From == 2 && To == 1)
+		{
+			return Train(2, 0) && Cable(0, 1);
+		}
+		return false;
+	}
+
+	float FWorld::WaySeconds(const FPerson& P, const V3& From, int FromIsland, int ToSlot, double At) const
+	{
+		const FSlot& Sl = Slots[ToSlot];
+		const int ToIsland = Places[Sl.Place].Island;
+		const float Walk = 1.3f / P.WalkSpeed;
+		float T = 0.f;
+		V3 Cur = From;
+		std::vector<FHop> H;
+		if (FromIsland >= 0 && FromIsland != ToIsland && Hops(FromIsland, ToIsland, H))
+		{
+			for (const FHop& Hop : H)
+			{
+				const FPlace& A = Places[Hop.A];
+				const FPlace& B = Places[Hop.B];
+				T += (A.Portal - Cur).Len2D() * Walk;
+				if (Hop.Kind == 2)
+				{
+					T += Opt.RideSeconds + 240.f;
+				}
+				else
+				{
+					T += 60.f;      // the stair, along the platform
+					const double Doors = TrainNext ? TrainNext(A.Stop, B.Stop, At + T) : -1.0;
+					const float Ride = TrainRide ? (float)TrainRide(A.Stop, B.Stop) : Opt.TrainSeconds;
+					T = Doors >= 0.0 ? (float)(Doors - At) + Ride : T + Opt.TrainSeconds;
+					T += 60.f;
+				}
+				Cur = B.Portal;
+			}
+		}
+		return T + (Sl.Approach - Cur).Len2D() * Walk;
 	}
 
 	int FWorld::IslandOf(const V3& P) const
@@ -566,14 +753,16 @@ namespace LyudPeople
 
 	void FWorld::FinishRide(FPerson& P)
 	{
-		// out at the other station
+		// out at the other station (the train: onto the other halt's platform)
 		P.bRideExternal = false;
+		P.bTrain = false;
+		const int To = P.PathI > 0 && P.PathI <= (int)P.Path.size() ? P.Path[P.PathI - 1].ToIsland : -1;
 		if (P.PathI < (int)P.Path.size())
 		{
 			P.Pos = P.Path[P.PathI].P;
 			P.PathI++;
 		}
-		P.Island = 1 - P.Island;
+		P.Island = To >= 0 ? To : 1 - P.Island;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
 		Emit(EEvent::Back, P);
@@ -585,7 +774,7 @@ namespace LyudPeople
 
 	void FWorld::EndRide(int Person)
 	{
-		if (Person >= 0 && Person < (int)People.size() && People[Person].State == EState::Riding)
+		if (Person >= 0 && Person < (int)People.size() && People[Person].State == EState::Riding && !People[Person].bTrain)
 		{
 			FinishRide(People[Person]);
 		}
@@ -726,13 +915,34 @@ namespace LyudPeople
 			{
 				Size += Q.Household == P.Household ? 1 : 0;
 			}
+			int Pick = -1, PickBeds = -1;
 			for (const int F : Flats)
 			{
 				if (Places[F].Residents.empty() && Beds(F) >= Size)
 				{
-					SetHome(P.Household, Places[F].Id);
+					Pick = F;
 					break;
 				}
+			}
+			// none with enough beds left: the free flat with the most (the rest sleep on a sofa)
+			for (const int F : Flats)
+			{
+				if (Pick < 0 && Places[F].Residents.empty() && Beds(F) > PickBeds)
+				{
+					Pick = -1;
+					PickBeds = Beds(F);
+				}
+			}
+			for (const int F : Flats)
+			{
+				if (Pick < 0 && PickBeds > 0 && Places[F].Residents.empty() && Beds(F) == PickBeds)
+				{
+					Pick = F;
+				}
+			}
+			if (Pick >= 0)
+			{
+				SetHome(P.Household, Places[Pick].Id);
 			}
 		}
 		ReserveOwnSlots();
@@ -885,6 +1095,24 @@ namespace LyudPeople
 		return -1;
 	}
 
+	float FWorld::FreeHoursLeft(const FPerson& P) const
+	{
+		float Left = P.BedTime - Hour;
+		if (Left < 0.f)
+		{
+			Left += 24.f;
+		}
+		for (const FDuty& D : P.Duties)
+		{
+			const float In = D.From - Hour;
+			if (((D.Days >> Weekday) & 1) && In > 0.f && In < Left)
+			{
+				Left = In;
+			}
+		}
+		return Left;
+	}
+
 	bool FWorld::SlotFits(const FPerson& P, const FActivity& A, int S) const
 	{
 		const FSlot& Sl = Slots[S];
@@ -918,6 +1146,18 @@ namespace LyudPeople
 		if (Pl.Kind == "flat" && Sl.Place != P.Home)
 		{
 			return false;
+		}
+		// a sofa somebody of the household sleeps on is theirs from a while before their bedtime
+		if (Sl.Kind == "sofa" && Pl.Kind == "flat")
+		{
+			for (const int Id : Pl.Residents)
+			{
+				const FPerson& Q = People[Id];
+				if (Id != P.Id && Q.BedSlot == S && InHours(Q.BedTime - 1.6f, Q.Wake, Hour))
+				{
+					return false;
+				}
+			}
 		}
 		return Sl.Free(P.Id);
 	}
@@ -1000,7 +1240,7 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
-		if (A.bDaylight && !bSunUp)
+		if ((A.bDaylight && !bSunUp) || !((A.Days >> Weekday) & 1))
 		{
 			return -1e9f;
 		}
@@ -1015,19 +1255,11 @@ namespace LyudPeople
 			return -1e9f;
 		}
 		OutSlot = S;
-		// time left before bed: free time ends 20 minutes before it
-		float Left = P.BedTime - Hour;
-		if (Left < 0.f)
-		{
-			Left += 24.f;
-		}
+		// time left before bed or the day's next duty: free time ends 20 minutes before it
+		const float Left = FreeHoursLeft(P);
 		const V3 From = Where(P);
 		const FSlot& Sl = Slots[S];
-		float TravelH = (Sl.Approach - From).Len2D() * 1.3f / P.WalkSpeed / HourS;
-		if (Places[Sl.Place].Island != P.Island)
-		{
-			TravelH += (Opt.RideSeconds + 240.f) / HourS;
-		}
+		const float TravelH = WaySeconds(P, From, P.Island, S, Time) / HourS;
 		const bool bHome = Sl.Place == P.Home;
 		if (!bHome && Left - TravelH * 2.f - 0.33f < A.MinMinutes / 60.f)
 		{
@@ -1043,6 +1275,13 @@ namespace LyudPeople
 		}
 		const float T = A.Trait.empty() ? 0.5f : Trait(P, A.Trait);
 		float Score = A.Base + Gain * (0.6f + 0.8f * T);
+		for (const auto& L : P.Likes)
+		{
+			if (L.first == A.Id)
+			{
+				Score += L.second;
+			}
+		}
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// friends there: company draws people (and the club's regulars)
 		if (A.bTalk || Places[Sl.Place].Kind == "club")
@@ -1069,7 +1308,7 @@ namespace LyudPeople
 
 	V3 FWorld::Where(const FPerson& P) const
 	{
-		if (P.State == EState::Going || P.State == EState::Riding)
+		if (P.State == EState::Going || P.State == EState::Riding || P.State == EState::Waiting)
 		{
 			return P.Pos;
 		}
@@ -1119,6 +1358,23 @@ namespace LyudPeople
 
 	void FWorld::OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const
 	{
+		// off the walk grid (the sea island): straight, over its own ground
+		for (const FPatch& Pa : Patches)
+		{
+			if (Pa.Has(From.X, From.Y) || Pa.Has(To.X, To.Y))
+			{
+				const float L = (To - From).Len2D();
+				const int N = std::max(1, (int)std::ceil(L / 4.f));
+				for (int K = 1; K <= N; K++)
+				{
+					FPerson::FWay W;
+					W.P = From + (To - From) * ((float)K / N);
+					W.P.Z = K == N ? To.Z : GroundAt(W.P);
+					Out.push_back(W);
+				}
+				return;
+			}
+		}
 		std::vector<V3> Pts;
 		if (!bHasGround || !Ground.FindPath(From, To, LyudAnimals::EKind::Dog, Pts))
 		{
@@ -1187,23 +1443,52 @@ namespace LyudPeople
 		{
 			return false;
 		}
-		if (FromIsland >= 0 && FromIsland != ToIsland)
+		std::vector<FHop> H;
+		if (FromIsland >= 0 && !Hops(FromIsland, ToIsland, H))
 		{
-			const int A = StationOf(FromIsland), B = StationOf(ToIsland);
-			if (A < 0 || B < 0)
+			return false;
+		}
+		V3 Cur = Out0;
+		for (const FHop& Hop : H)
+		{
+			const FPlace& A = Places[Hop.A];
+			const FPlace& B = Places[Hop.B];
+			OutdoorWay(Cur, A.Portal, Out);
+			if (Hop.Kind == 2)
 			{
-				return false;
+				// the cable car from this station to the other
+				Out.back().Kind = 2;
+				Out.back().Ride = Opt.RideSeconds;
+				Out.back().ToIsland = (int8_t)Hop.To;
+				Push(B.Portal, 0);
 			}
-			OutdoorWay(Out0, Places[A].Portal, Out);
-			Out.back().Kind = 2;
-			Out.back().Ride = Opt.RideSeconds;
-			Push(Places[B].Portal, 0);
-			OutdoorWay(Places[B].Portal, Goal, Out);
+			else
+			{
+				// the train: up onto the platform to a boarding point (people spread along it), the ride, out onto the other
+				// halt's platform and down its stair
+				const int SA = A.Slots[(size_t)(P.Id * 5) % A.Slots.size()];
+				const int SB = B.Slots[(size_t)(P.Id * 3) % B.Slots.size()];
+				for (size_t I = 1; I < A.RailWay.size(); I++)
+				{
+					Push(A.RailWay[I], 4);
+				}
+				Push(Slots[SA].Pos, 3);
+				Out.back().ToIsland = (int8_t)Hop.To;
+				Out.back().RailFrom = Hop.A;
+				Out.back().RailTo = Hop.B;
+				Push(Slots[SB].Pos, 4);
+				for (int I = (int)B.RailWay.size() - 1; I >= 0; I--)
+				{
+					Push(B.RailWay[I], 4);
+				}
+				if (B.RailWay.empty())
+				{
+					Push(B.Portal, 4);
+				}
+			}
+			Cur = B.Portal;
 		}
-		else
-		{
-			OutdoorWay(Out0, Goal, Out);
-		}
+		OutdoorWay(Cur, Goal, Out);
 		if (ToPl.bIndoor)
 		{
 			for (size_t I = 1; I < To.Inside.size(); I++)
@@ -1254,6 +1539,7 @@ namespace LyudPeople
 			P.State = A.bAway ? EState::Away : EState::Doing;
 			P.Pose = A.bAway ? EPose::Hidden : A.Pose;
 			P.WanderAt = Time + 60.0;
+			CatchTrainBack(P);
 			return true;
 		}
 		if (!Route(P, P.Pos, FromSlot, Slot, P.Path))
@@ -1277,6 +1563,7 @@ namespace LyudPeople
 		{
 			WayM += ((I ? P.Path[I - 1].P : P.Pos) - P.Path[I].P).Len();
 			bRide |= P.Path[I].Kind == 2;
+			WayM += P.Path[I].Kind == 3 ? Opt.TrainSeconds * P.WalkSpeed : 0.f;
 		}
 		const float ArriveH = Hour + (WayM / P.WalkSpeed + (bRide ? Opt.RideSeconds : 0.f)) / HourS;
 		for (const FDuty& D : P.Duties)
@@ -1415,12 +1702,8 @@ namespace LyudPeople
 		}
 		float Minutes = 0.f;
 		PickSlot(P, Activities[Best], Minutes);
-		// free time ends before bed
-		float Left = P.BedTime - Hour;
-		if (Left < 0.f)
-		{
-			Left += 24.f;
-		}
+		// free time ends before bed (or the next duty)
+		const float Left = FreeHoursLeft(P);
 		Minutes = std::max(Activities[Best].MinMinutes * 0.5f, std::min(Minutes, Left * 60.f - 25.f));
 		char Why[96];
 		std::snprintf(Why, sizeof Why, bBreakNow ? "a break %.2f" : "free %.2f", BestScore);
@@ -1507,16 +1790,18 @@ namespace LyudPeople
 		const float Speed = Pace(P);
 		float Budget = Speed * Dt;
 		P.Speed = Speed;
+		bool bLine = false;
 		while (Budget > 0.f && P.PathI < (int)P.Path.size())
 		{
 			const FPerson::FWay& W = P.Path[P.PathI];
 			V3 D = W.P - P.Pos;
 			const bool bIn = W.Kind == 1;
-			if (!bIn)
+			bLine = bIn || W.Kind == 3 || W.Kind == 4;     // along a line in 3D (stairs, a halt's stair and platform)
+			if (!bLine)
 			{
 				D.Z = 0.f;
 			}
-			const float L = bIn ? D.Len() : D.Len2D();
+			const float L = bLine ? D.Len() : D.Len2D();
 			if (L > 0.01f)
 			{
 				P.Yaw = YawTo(P.Pos, W.P);
@@ -1537,19 +1822,97 @@ namespace LyudPeople
 					Emit(EEvent::Ride, P);
 					return;
 				}
+				if (W.Kind == 3)
+				{
+					// at the boarding point: the train
+					BoardTrain(P);
+					return;
+				}
 				P.PathI++;
 				continue;
 			}
 			P.Pos = P.Pos + D * (Budget / L);
 			Budget = 0.f;
 		}
-		if (!P.bIndoors && bHasGround)
+		if (!P.bIndoors && !bLine)
 		{
-			P.Pos.Z = Ground.GroundZ(P.Pos.X, P.Pos.Y);
+			P.Pos.Z = GroundAt(P.Pos);
 		}
 		if (P.PathI >= (int)P.Path.size())
 		{
 			Arrive(P);
+		}
+	}
+
+	void FWorld::BoardTrain(FPerson& P)
+	{
+		const FPerson::FWay& W = P.Path[P.PathI];
+		P.bTrain = true;
+		P.RailFrom = W.RailFrom;
+		P.RailTo = W.RailTo;
+		P.PathI++;
+		P.Speed = 0.f;
+		P.StateStart = Time;
+		const bool bStops = P.RailFrom >= 0 && P.RailTo >= 0;
+		const double Doors = bStops && TrainNext ? TrainNext(Places[P.RailFrom].Stop, Places[P.RailTo].Stop, Time) : -1.0;
+		if (Doors < 0.0)
+		{
+			// no timetable (no railway in the level): gone for the ride, as the cable car once was
+			P.State = EState::Riding;
+			P.Pose = EPose::Hidden;
+			P.RideUntil = Time + Opt.TrainSeconds;
+			Emit(EEvent::Ride, P);
+			return;
+		}
+		// wait on the platform facing the track
+		P.DoorsAt = Doors;
+		P.State = EState::Waiting;
+		P.Pose = EPose::Stand;
+		if (P.PathI < (int)P.Path.size())
+		{
+			for (const int S : Places[P.RailFrom].Slots)
+			{
+				if ((Slots[S].Pos - P.Pos).Len() < 0.05f)
+				{
+					P.Yaw = Slots[S].Yaw;
+				}
+			}
+		}
+	}
+
+	void FWorld::CatchTrainBack(FPerson& P)
+	{
+		// on the sea island: they leave what they do in time to walk to the halt for a train back (the one nearest the
+		// time they meant to stay, never less than half of what they came for)
+		if (P.Slot < 0 || P.Activity < 0 || Places[Slots[P.Slot].Place].Island != 2 || !TrainNext)
+		{
+			return;
+		}
+		const int A = RailStopOf(2), B = RailStopOf(0);
+		if (A < 0 || B < 0)
+		{
+			return;
+		}
+		const float Walk = (Places[A].Portal - Slots[P.Slot].Approach).Len2D() * 1.3f / P.WalkSpeed + 90.f;
+		const double Earliest = Time + Activities[P.Activity].MinMinutes * 30.0;
+		double Best = -1.0;
+		for (const double From : { P.Until + Walk - 3600.0, P.Until + Walk })
+		{
+			const double Doors = TrainNext(Places[A].Stop, Places[B].Stop, From);
+			const double Leave = Doors - Walk - 60.0;
+			if (Doors >= 0.0 && Leave >= Earliest && (Best < 0.0 || std::fabs(Leave - P.Until) < std::fabs(Best - P.Until)))
+			{
+				Best = Leave;
+			}
+		}
+		if (Best < 0.0)
+		{
+			const double Doors = TrainNext(Places[A].Stop, Places[B].Stop, Earliest + Walk);
+			Best = Doors >= 0.0 ? Doors - Walk - 60.0 : -1.0;
+		}
+		if (Best > Time)
+		{
+			P.Until = Best;
 		}
 	}
 
@@ -1572,6 +1935,7 @@ namespace LyudPeople
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
 		Emit(EEvent::Arrive, P);
+		CatchTrainBack(P);
 		if (A.bAway)
 		{
 			P.State = EState::Away;
@@ -1771,8 +2135,28 @@ namespace LyudPeople
 			case EState::Going:
 				Move(P, Dt);
 				break;
+			case EState::Waiting:
+				// the doors open: in they get (a few seconds apart); should no train come in two hours, gone as without one
+				if (Time >= P.DoorsAt + 2.0 + (P.Id % 7) * 2.0 || Time - P.StateStart > 7200.0)
+				{
+					const bool bLate = Time < P.DoorsAt;
+					const double Ride = TrainRide && P.RailFrom >= 0 && P.RailTo >= 0 ? TrainRide(Places[P.RailFrom].Stop, Places[P.RailTo].Stop) : -1.0;
+					P.State = EState::Riding;
+					P.Pose = EPose::Hidden;
+					P.StateStart = Time;
+					P.RideUntil = !bLate && Ride > 0.0 ? P.DoorsAt + Ride + 3.0 + (P.Id % 5) * 2.0 : Time + Opt.TrainSeconds;
+					Emit(EEvent::Ride, P);
+				}
+				break;
 			case EState::Riding:
-				if (P.bRideExternal ? Time - P.StateStart >= 3600.0
+				if (P.bTrain)
+				{
+					if (Time >= P.RideUntil)
+					{
+						FinishRide(P);
+					}
+				}
+				else if (P.bRideExternal ? Time - P.StateStart >= 3600.0
 					: Time - P.StateStart >= (P.PathI > 0 ? P.Path[P.PathI - 1].Ride : Opt.RideSeconds))
 				{
 					FinishRide(P);
@@ -1826,9 +2210,9 @@ namespace LyudPeople
 							Budget = 0.f;
 						}
 					}
-					if (!P.bIndoors && bHasGround)
+					if (!P.bIndoors)
 					{
-						P.Pos.Z = Ground.GroundZ(P.Pos.X, P.Pos.Y);
+						P.Pos.Z = GroundAt(P.Pos);
 					}
 					P.Speed = P.WalkSpeed;
 					if (P.PathI >= (int)P.Path.size())
@@ -1911,6 +2295,8 @@ namespace LyudPeople
 			P.Activity = -1;
 			P.Slot = -1;
 			P.State = EState::Idle;
+			P.bTrain = false;
+			P.bRideExternal = false;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - P.Wake;
 			if (Awake < 0.f)
@@ -2004,7 +2390,7 @@ namespace LyudPeople
 
 	float FWorld::Ground_Z(const V3& P) const
 	{
-		return bHasGround ? Ground.GroundZ(P.X, P.Y) : P.Z;
+		return GroundAt(P);
 	}
 
 	std::string FWorld::Describe(int Id) const

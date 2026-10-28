@@ -1,0 +1,77 @@
+{
+  "_doc": "The sea railway (docs/railway.md). Authored here; python3 tools/railway.py resolves it against the ground into railway_built.json. Map metres (tools/world_map.py frame: X west/sea, Y north, Z up).",
+  "line": {
+    "y": -60.0,
+    "tunnel_start_x": -160.0,
+    "portal_x": 123.0,
+    "end_x": 20000.0,
+    "rail_portal_z": -41.35,
+    "rail_sea_below": 0.3,
+    "grade": 0.02,
+    "island_rail_over_sea": 1.0,
+    "island_grade": 0.02
+  },
+  "tunnel": {
+    "width": 9.0,
+    "height": 6.6,
+    "depth": 46.0,
+    "hood": 18.0
+  },
+  "crossing": {
+    "id": "beach",
+    "x": 129.5,
+    "path_width": 4.0,
+    "warn_seconds": 25.0
+  },
+  "stops": [
+    {
+      "id": "beach",
+      "x": 182.0,
+      "side": -1,
+      "platform": [
+        143.0,
+        189.0
+      ],
+      "name": "rail.stop.beach"
+    },
+    {
+      "id": "island",
+      "x": 2404.0,
+      "side": -1,
+      "platform": [
+        2370.0,
+        2414.0
+      ],
+      "name": "rail.stop.island"
+    }
+  ],
+  "island": {
+    "x": 2400.0,
+    "y": -72.0,
+    "rx": 105.0,
+    "ry": 70.0,
+    "top_over_sea": 7.5,
+    "seed": 1958
+  },
+  "catenary": {
+    "span": 45.0,
+    "height": 5.3,
+    "side": 1,
+    "pole_offset": 2.9
+  },
+  "train": {
+    "cars": 2,
+    "car_length": 16.0,
+    "gauge": 1.067,
+    "vmax": 16.0,
+    "vmax_land": 7.0,
+    "accel": 0.45,
+    "decel": 0.6,
+    "dwell": 45.0,
+    "period": 3600.0,
+    "trains": 1,
+    "first_departure": 0.0,
+    "layover": 240.0,
+    "hidden_beyond_x": 18500.0
+  }
+}

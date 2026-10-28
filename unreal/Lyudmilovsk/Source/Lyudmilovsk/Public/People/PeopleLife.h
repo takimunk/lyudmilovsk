@@ -23,8 +23,10 @@ struct LYUDMILOVSK_API FPersonInfo
 	UPROPERTY(BlueprintReadOnly, Category = "People") int32 Id = -1;
 	/** owner, clerk, streamer, ... : npc.<key>.name in the strings. */
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString Key;
-	/** The model: /Game/Characters/Humans/<Mesh>/SK_<Mesh>. */
+	/** The model shown: /Game/Characters/Humans/<Mesh>/SK_<Mesh> (an existing one while their own body isn't made). */
 	UPROPERTY(BlueprintReadOnly, Category = "People") FName Mesh;
+	/** Their own body's id (people.json body; = Mesh for the club's people): loaded first, and their [<Body>] in npc_dialogue.txt. */
+	UPROPERTY(BlueprintReadOnly, Category = "People") FName Body;
 	UPROPERTY(BlueprintReadOnly, Category = "People") int32 Age = 0;
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString Occupation;
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString Household;
@@ -33,7 +35,7 @@ struct LYUDMILOVSK_API FPersonInfo
 	/** What they do (activities.json id) and where (place id). */
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString Activity;
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString Place;
-	/** idle, going, riding, settling, doing, leaving, away. */
+	/** idle, going, riding, settling, doing, leaving, away, waiting (for the train on a halt's platform). */
 	UPROPERTY(BlueprintReadOnly, Category = "People") FString State;
 	UPROPERTY(BlueprintReadOnly, Category = "People") EPersonPose Pose = EPersonPose::Stand;
 	UPROPERTY(BlueprintReadOnly, Category = "People") FVector Location = FVector::ZeroVector;
@@ -64,8 +66,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPeopleLifeEvent, int32, PersonId
  * or work, and free time in which they choose for themselves among the activities of Content/PeopleData/activities.json
  * (the club and its computers, the library, walks, benches, the sunset, talking to each other, a meal at home, town).
  * Slots (beds, chairs, computers, benches) are reserved so nobody takes a place somebody else has. They walk the
- * town's walk grid, the Academgorodok's stairs and flats and the club's corridor, and ride the cable car between the
- * valley and the club's spur.
+ * town's walk grid, the Academgorodok's stairs and flats and the club's corridor, ride the cable car between the
+ * valley and the club's spur and the sea railway's train (ULyudRailwaySubsystem's timetable) to the sea island and back.
+ * Besides the club's people, the Academgorodok's residents (people.json with a body of their own): Laboratory No. 2's
+ * staff, the kiosk's assistant, pensioners, a family, a fisherman, a painter, an ornithologist.
  *
  * The simulation is plain C++ (Private/People/PeopleSim.cpp; tools/peoplesim runs it outside the engine). Near the
  * camera a person is an ANpcBody (their MakeHuman model with the shared clips); at their own station in the club the
@@ -145,6 +149,11 @@ private:
 	int32 SunDay = -1;
 	float SaveTimer = 0.f;
 	float DialogueTimer = 0.f;
+	/** The railway's timetable clock minus the life's (both seconds; the railway's counts whole days of the calendar). */
+	double RailOffset = 0.0;
+	bool bRailSynced = false;
+	/** Train riders: person -> (train, seat). */
+	TMap<int32, FIntPoint> TrainSeats;
 
 	/** One body per person, made when first needed. */
 	UPROPERTY(Transient) TArray<TObjectPtr<ANpcBody>> Bodies;
@@ -161,6 +170,11 @@ private:
 	void Present(float DeltaTime);
 	void DispatchEvents();
 	void SyncMemory(bool bToSave);
+	/** The sea railway (ULyudRailwaySubsystem): the timetable for the people's train rides, the halts' real positions. */
+	void BindRailway();
+	void UpdateRailway();
+	/** A rider of the train: seated on a seat of the train they board while it is drawn, else hidden. */
+	void PresentTrainRider(int32 Id, const FVector& Cam, float Draw, float DeltaTime);
 	void ApplySaved();
 	ANpcBody* BodyFor(int32 Id);
 	void ShowPlaced(AActor* Actor, bool bShow);
@@ -194,6 +208,8 @@ public:
 	void Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap);
 
 	FString MeshName;
+	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
+	FString TalkId;
 
 private:
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<class UAnimSequence>> Clips;

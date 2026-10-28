@@ -25,6 +25,14 @@
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
 #include "Weather/LyudWeather.h"
+#if __has_include("Railway/LyudRailway.h") && __has_include("../Railway/RailRun.h")
+#include "Railway/LyudRailway.h"
+#include "Railway/LyudTrain.h"
+#include "../Railway/RailRun.h"
+#define LYUD_HAS_RAILWAY 1
+#else
+#define LYUD_HAS_RAILWAY 0
+#endif
 #if __has_include("Doors/LyudDoor.h")
 #include "Doors/LyudDoor.h"
 #define LYUD_HAS_DOORS 1
@@ -146,6 +154,7 @@ bool UPeopleLifeSubsystem::Start()
 	Sim = MoveTemp(W);
 	UpdateClock(true);
 	BindClub();
+	BindRailway();
 	if (bLoaded || Homes.Num() > 0)
 	{
 		ApplySaved();
@@ -198,8 +207,147 @@ void UPeopleLifeSubsystem::Stop()
 		Owner = nullptr;
 	}
 	Talkable.Reset();
+	TrainSeats.Reset();
+	bRailSynced = false;
 	Sim.Reset();
 	bStarted = false;
+}
+
+// --- the sea railway ----------------------------------------------------------------------------------
+
+void UPeopleLifeSubsystem::BindRailway()
+{
+#if LYUD_HAS_RAILWAY
+	// the timetable on the life's clock: the railway's NowSeconds counts whole days of the calendar, the life's from the
+	// start date; RailOffset (UpdateRailway, every tick) is the difference
+	TWeakObjectPtr<UPeopleLifeSubsystem> Self(this);
+	auto Stops = [Self](const std::string& From, const std::string& To, int32& A, int32& B, int32& Dir) -> const ULyudRailwaySubsystem*
+	{
+		const ULyudRailwaySubsystem* R = Self.IsValid() ? ULyudRailwaySubsystem::Get(Self.Get()) : nullptr;
+		if (!R || !R->IsRunning() || !R->GetRun())
+		{
+			return nullptr;
+		}
+		A = R->FindStop(FName(UTF8_TO_TCHAR(From.c_str())));
+		B = R->FindStop(FName(UTF8_TO_TCHAR(To.c_str())));
+		const std::vector<LyudRail::FStop>& S = R->GetRun()->Params().Stops;
+		if (A < 0 || B < 0 || A >= (int32)S.size() || B >= (int32)S.size() || A == B)
+		{
+			return nullptr;
+		}
+		Dir = S[B].S > S[A].S ? 1 : -1;
+		return R;
+	};
+	Sim->TrainNext = [Self, Stops](const std::string& From, const std::string& To, double Time) -> double
+	{
+		int32 A = -1, B = -1, Dir = 1;
+		const ULyudRailwaySubsystem* R = Stops(From, To, A, B, Dir);
+		if (!R)
+		{
+			return -1.0;
+		}
+		const double Off = Self->RailOffset;
+		const double When = R->NextDoorsOpen(A, Dir, Time + Off);
+		return When < 0.0 ? -1.0 : When - Off;
+	};
+	Sim->TrainRide = [Stops](const std::string& From, const std::string& To) -> double
+	{
+		int32 A = -1, B = -1, Dir = 1;
+		const ULyudRailwaySubsystem* R = Stops(From, To, A, B, Dir);
+		return R ? R->RideSeconds(A, B, Dir) : -1.0;
+	};
+#endif
+}
+
+void UPeopleLifeSubsystem::UpdateRailway()
+{
+#if LYUD_HAS_RAILWAY
+	const ULyudRailwaySubsystem* R = ULyudRailwaySubsystem::Get(this);
+	if (!R || !R->IsRunning())
+	{
+		return;
+	}
+	RailOffset = R->NowSeconds() - LastSeconds;
+	if (bRailSynced)
+	{
+		return;
+	}
+	// the halts where the railway has them: the stair's foot, the boarding points along the deck
+	bRailSynced = true;
+	for (int32 Stop = 0; Stop < R->NumStops(); Stop++)
+	{
+		const FVector Foot = R->GetStopEntrance(Stop) / 100.0;
+		std::vector<LP::V3> Board;
+		for (int32 K = 0; K < 8; K++)
+		{
+			const FVector B = R->GetBoardingPoint(Stop, K) / 100.0;
+			Board.emplace_back(B.X, B.Y, B.Z);
+		}
+		if (!Sim->SetRailStop(TCHAR_TO_UTF8(*R->GetStopId(Stop).ToString()), LP::V3(Foot.X, Foot.Y, Foot.Z), Board))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no halt %s in people_places.json (tools/people_map.py)"), *R->GetStopId(Stop).ToString());
+		}
+	}
+#endif
+}
+
+void UPeopleLifeSubsystem::PresentTrainRider(int32 Id, const FVector& Cam, float Draw, float DeltaTime)
+{
+	ANpcBody* Body = Id < Bodies.Num() ? Bodies[Id].Get() : nullptr;
+#if LYUD_HAS_RAILWAY
+	const LP::FPerson& P = Sim->People[Id];
+	const ULyudRailwaySubsystem* R = ULyudRailwaySubsystem::Get(this);
+	FIntPoint* Seat = TrainSeats.Find(Id);
+	if (R && R->IsRunning() && R->NumTrains() > 0)
+	{
+		if (!Seat)
+		{
+			// the train standing at their halt (else the first), a free seat (spread over the car from a seat of their own)
+			const int32 From = P.RailFrom >= 0 ? R->FindStop(FName(UTF8_TO_TCHAR(Sim->Places[P.RailFrom].Stop.c_str()))) : -1;
+			int32 Train = 0;
+			for (int32 T = 0; T < R->NumTrains(); T++)
+			{
+				const ALyudTrain* Tr = R->GetTrain(T);
+				if (Tr && From >= 0 && Tr->GetInfo().Stop == From)
+				{
+					Train = T;
+				}
+			}
+			const ALyudTrain* Tr = R->GetTrain(Train);
+			const int32 N = Tr ? Tr->NumSeats() : 0;
+			int32 Pick = -1;
+			for (int32 K = 0; K < N && Pick < 0; K++)
+			{
+				const int32 S = (Id * 7 + K * 5) % N;
+				bool bTaken = false;
+				for (const TPair<int32, FIntPoint>& Other : TrainSeats)
+				{
+					bTaken |= Other.Value == FIntPoint(Train, S);
+				}
+				Pick = bTaken ? -1 : S;
+			}
+			Seat = &TrainSeats.Add(Id, FIntPoint(Train, Pick));
+		}
+		const ALyudTrain* Tr = R->GetTrain(Seat->X);
+		FTransform T;
+		if (Tr && Seat->Y >= 0 && Tr->GetInfo().bVisible && Tr->GetSeat(Seat->Y, T) && FVector::Dist(T.GetLocation(), Cam) < Draw)
+		{
+			// the seat's frame is on the floor under its front edge; the body sits over the floor under the seat's middle
+			const FVector At = T.GetLocation() - T.GetUnitAxis(EAxis::X) * 20.0;
+			Body = BodyFor(Id);
+			if (Body)
+			{
+				Body->SetActorHiddenInGame(false);
+				Body->Drive(At, T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, ALyudTrain::SeatHeight, DeltaTime, true);
+			}
+			return;
+		}
+	}
+#endif
+	if (Body)
+	{
+		Body->SetActorHiddenInGame(true);
+	}
 }
 
 void UPeopleLifeSubsystem::ApplySaved()
@@ -365,10 +513,13 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 		{
 			return nullptr;
 		}
-		if (!Body->Setup(UTF8_TO_TCHAR(P.Mesh.c_str()), UTF8_TO_TCHAR(P.ComputerClip.c_str())))
+		// their own body when it is made, else the model people.json names for now
+		if (!(P.Body != P.Mesh && Body->Setup(UTF8_TO_TCHAR(P.Body.c_str()), UTF8_TO_TCHAR(P.ComputerClip.c_str())))
+			&& !Body->Setup(UTF8_TO_TCHAR(P.Mesh.c_str()), UTF8_TO_TCHAR(P.ComputerClip.c_str())))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no model for %s (%s)"), UTF8_TO_TCHAR(P.Key.c_str()), UTF8_TO_TCHAR(P.Mesh.c_str()));
 		}
+		Body->TalkId = UTF8_TO_TCHAR(P.Body.c_str());
 		if (P.Key.rfind("crowd", 0) == 0)
 		{
 			Body->Tags.Add(TEXT("NoTalk"));
@@ -427,6 +578,13 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				continue;
 			}
 		}
+		// riding the train: seated in it while it is drawn
+		if (P.State == LP::EState::Riding && P.bTrain)
+		{
+			PresentTrainRider(P.Id, Cam, Draw, DeltaTime);
+			continue;
+		}
+		TrainSeats.Remove(P.Id);
 		// riding the cable car: on its platform waiting, or seated in a cabin (ULyudTransportSubsystem places them)
 		if (P.State == LP::EState::Riding && P.bRideExternal && Transport)
 		{
@@ -506,7 +664,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		{
 			if (Bodies[Id] && !Talkable.Contains(Id) && !Bodies[Id]->ActorHasTag(TEXT("NoTalk")))
 			{
-				Director->AddPerson(FName(*Bodies[Id]->MeshName), Bodies[Id], Bodies[Id]->Mesh);
+				// by their own id: a resident shown by another's model has no lines of that one's (nor any till npc_dialogue.txt has theirs)
+				Director->AddPerson(FName(*Bodies[Id]->TalkId), Bodies[Id], Bodies[Id]->Mesh);
 				Talkable.Add(Id);
 			}
 		}
@@ -551,7 +710,9 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	}
 	LP::FWorld& S = *Sim;
 	const double Was = S.Time;
-	if (UpdateClock(false))
+	const bool bJumped = UpdateClock(false);
+	UpdateRailway();
+	if (bJumped)
 	{
 		Present(DeltaTime);
 		return;
@@ -597,6 +758,7 @@ bool UPeopleLifeSubsystem::GetPerson(int32 Id, FPersonInfo& Out) const
 	Out.Id = Id;
 	Out.Key = UTF8_TO_TCHAR(P.Key.c_str());
 	Out.Mesh = FName(UTF8_TO_TCHAR(P.Mesh.c_str()));
+	Out.Body = FName(UTF8_TO_TCHAR(P.Body.c_str()));
 	Out.Age = P.Age;
 	Out.Occupation = UTF8_TO_TCHAR(P.Occupation.c_str());
 	Out.Household = UTF8_TO_TCHAR(P.Household.c_str());

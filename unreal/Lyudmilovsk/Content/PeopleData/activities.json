@@ -1,5 +1,5 @@
 {
-  "_doc": "What people can do (docs/people.md). places: place kinds ('home' = their own flat); slots: slot kinds there; pose: the body (stand walk talk look sit computer eat read sleep work hidden); minutes [min, max]; hours [from, to) it can start in; meets: how much of a need it meets per hour; costs: how much it adds per hour; base: liked anyway; trait: the temper drawn to it; daylight/sunset/talk/wander/away: flags; free 0: only as a duty (people.json).",
+  "_doc": "What people can do (docs/people.md). places: place kinds ('home' = their own flat); slots: slot kinds there; pose: the body (stand walk talk look sit computer eat read sleep work hidden); minutes [min, max]; hours [from, to) it can start in; meets: how much of a need it meets per hour; costs: how much it adds per hour; base: liked anyway; trait: the temper drawn to it; daylight/sunset/talk/wander/away: flags; free 0: only as a duty (people.json); days: the weekdays it can be chosen on (0 Monday; default every day). Places off the town: lab (Laboratory No. 2's gate), shop (the Gastronom's kiosk), island_spot (the sea island, by the train).",
   "activities": [
     {"id": "sleep", "places": ["home"], "slots": ["bed", "sofa"], "pose": "sleep", "minutes": [420, 540], "meets": {"tired": 0.16}, "free": 0},
     {"id": "nap", "places": ["home"], "slots": ["sofa", "bed"], "pose": "sleep", "minutes": [30, 60], "hours": [13, 18], "meets": {"tired": 0.35}, "base": -0.15, "trait": "", "ages": [30, 200]},
@@ -10,6 +10,7 @@
     {"id": "read_library", "places": ["library"], "slots": ["read_seat"], "pose": "read", "minutes": [40, 120], "hours": [10, 19.5], "ages": [7, 200], "meets": {"mind": 0.7, "fun": 0.15}, "base": 0.02, "trait": "studious"},
     {"id": "read_home", "places": ["home"], "slots": ["armchair", "sofa", "desk_seat"], "pose": "read", "minutes": [30, 90], "hours": [8, 24], "meets": {"mind": 0.45, "tired": 0.04}, "base": -0.02, "trait": "studious"},
     {"id": "homework", "places": ["home"], "slots": ["desk_seat", "kitchen_seat"], "pose": "read", "minutes": [30, 60], "hours": [14, 20], "ages": [7, 17], "meets": {"mind": 0.6}, "base": 0.12, "trait": "studious"},
+    {"id": "pastime_home", "places": ["home"], "slots": ["armchair", "desk_seat", "kitchen_seat", "sofa"], "pose": "read", "minutes": [30, 80], "hours": [8, 23], "ages": [25, 200], "meets": {"fun": 0.45, "mind": 0.2}, "base": -0.04, "trait": "studious"},
     {"id": "rest_home", "places": ["home"], "slots": ["sofa", "armchair"], "pose": "sit", "minutes": [30, 60], "hours": [0, 24], "meets": {"tired": 0.12, "fun": 0.1}, "base": -0.05},
     {"id": "walk", "places": ["square", "beach", "lookout", "bench", "promenade_bench", "town_square", "town_bench"], "pose": "walk", "minutes": [30, 70], "hours": [7, 21.5], "meets": {"nature": 0.9, "sun": 0.2}, "costs": {"hunger": 0.06, "tired": 0.03}, "base": 0.0, "trait": "nature", "wander": 1},
     {"id": "sit_bench", "places": ["bench", "promenade_bench", "town_bench"], "slots": ["bench"], "pose": "sit", "minutes": [15, 40], "hours": [8, 21], "meets": {"nature": 0.55, "sun": 0.3, "social": 0.05}, "base": -0.02, "trait": "nature"},
@@ -21,6 +22,16 @@
     {"id": "work_library", "places": ["library"], "slots": ["staff_seat"], "pose": "sit", "minutes": [60, 60], "meets": {"mind": 0.3, "social": 0.2}, "free": 0},
     {"id": "work_away", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.2, "hunger": 0.3}, "free": 0, "away": 1},
     {"id": "school", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "away": 1},
-    {"id": "watch_door", "places": ["club_door", "club_forecourt"], "slots": ["stand"], "pose": "look", "wander": 1, "wander_m": [2.5, 20], "wander_pause": [20, 70], "minutes": [60, 60], "meets": {"sun": 0.6, "nature": 0.4, "social": 0.1}, "free": 0}
+    {"id": "watch_door", "places": ["club_door", "club_forecourt"], "slots": ["stand"], "pose": "look", "wander": 1, "wander_m": [2.5, 20], "wander_pause": [20, 70], "minutes": [60, 60], "meets": {"sun": 0.6, "nature": 0.4, "social": 0.1}, "free": 0},
+    {"id": "work_lab", "places": ["lab"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.25, "mind": 0.35, "hunger": 0.3}, "free": 0, "away": 1},
+    {"id": "work_shop", "places": ["shop"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.35}, "free": 0},
+    {"id": "work_sea", "places": ["beach"], "pose": "hidden", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.4, "hunger": 0.2}, "free": 0, "away": 1},
+    {"id": "shop", "places": ["shop"], "slots": ["stand"], "pose": "stand", "minutes": [4, 9], "hours": [9, 19], "days": [0, 1, 2, 3, 4, 5], "ages": [9, 200], "meets": {"hunger": 1.2, "social": 0.4}, "base": 0.0, "trait": "social"},
+    {"id": "sea_air", "places": ["beach"], "pose": "look", "minutes": [20, 45], "hours": [8, 20], "daylight": 1, "meets": {"nature": 1.0, "sun": 0.8}, "base": -0.02, "trait": "nature"},
+    {"id": "lookout_view", "places": ["lookout"], "pose": "look", "minutes": [20, 40], "hours": [9, 20], "daylight": 1, "ages": [12, 200], "meets": {"nature": 0.8, "sun": 0.7, "fun": 0.15}, "base": -0.05, "trait": "sun"},
+    {"id": "fish_shore", "places": ["beach", "island_spot"], "pose": "look", "minutes": [60, 150], "hours": [5, 20], "ages": [12, 200], "meets": {"nature": 0.3, "fun": 0.15}, "base": -0.5, "trait": "nature"},
+    {"id": "island_walk", "places": ["island_spot"], "pose": "walk", "minutes": [60, 140], "hours": [8, 17.5], "daylight": 1, "ages": [12, 200], "meets": {"nature": 0.8, "sun": 0.4, "fun": 0.15, "mind": 0.05}, "costs": {"hunger": 0.05, "tired": 0.03}, "base": 0.0, "trait": "nature", "wander": 1, "wander_m": [10, 110], "wander_pause": [40, 140]},
+    {"id": "paint_island", "places": ["island_spot"], "slots": ["stand"], "pose": "look", "minutes": [100, 180], "hours": [9, 15.5], "daylight": 1, "ages": [14, 200], "meets": {"mind": 0.25, "fun": 0.2, "nature": 0.35, "sun": 0.25}, "base": -0.8, "trait": "nature"},
+    {"id": "birdwatch", "places": ["island_spot"], "slots": ["stand"], "pose": "look", "minutes": [60, 140], "hours": [7, 16.5], "daylight": 1, "ages": [10, 200], "meets": {"nature": 0.35, "mind": 0.15, "fun": 0.1}, "base": -0.8, "trait": "nature"}
   ]
 }

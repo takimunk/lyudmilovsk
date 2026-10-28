@@ -14,7 +14,11 @@ Blender build runs), reads the club's layout (blender/export/scene01_layout.json
              sofas, armchairs, kitchen, dining and desk chairs) with the walk from the door to each
     places   the library (reading chairs, the librarian's chair), the Academgorodok's square and benches,
              the cable car's stations, the club's door, the spur's lookout and alley benches, the beach and
-             the promenade, the town square
+             the promenade, the town square; Laboratory No. 2's gate (lab) and the Gastronom's kiosk (shop) by
+             the Academgorodok (proposals: places in the data, no models yet); the sea railway's two halts
+             (rail_stop: the way from the ground up onto the platform, boarding points on the deck) and the sea
+             island's walk spots (island_spot, "sea_island": 1) from Content/Railway/railway_built.json
+    ground_patches  the sea island's own ground (a height field), off the walk grid
     club     inside the club: the way in from the portal to the walkway, a seat per computer, the vending
              machines, the owner's booth
 
@@ -34,6 +38,9 @@ over that floor. approach: where to stand before sitting or lying down (free of 
 walker's radius and reachable from the door).
 
 --plot writes Saved/PeopleMap/*.png (PIL): a plan per house storey, the library, the club, the world.
+
+The club comes from the scene layout (--scene, main's scene01_layout.json with its stations); a worktree whose
+layout lacks them keeps the club of the existing people_places.json.
 """
 import argparse
 import heapq
@@ -955,6 +962,154 @@ def build_outdoor(grid):
     return places
 
 
+# --- by the Academgorodok: Laboratory No. 2's gate and the Gastronom's kiosk (proposals, docs/people.md) ----------
+
+def near_walkable(grid, x, y, rmax=12.0):
+    """The walkable grid point nearest (x, y) (Unreal m), spiralling out by the grid's cell."""
+    if grid.walkable(x, y):
+        return x, y
+    best = None
+    r = grid.cell
+    while r <= rmax and best is None:
+        for k in range(16):
+            t = 2 * math.pi * k / 16
+            q = (x + r * math.cos(t), y + r * math.sin(t))
+            if grid.walkable(*q) and (best is None or math.hypot(q[0] - x, q[1] - y) < math.hypot(best[0] - x, best[1] - y)):
+                best = q
+        r += grid.cell
+    return best or (x, y)
+
+
+def build_academ_extra(grid):
+    """Laboratory No. 2 (its buildings aren't in the game): its gate, a spot behind the ensemble on the way into the
+    town, where its staff go in for the day (away). The Gastronom (its old hall is the library now): a kiosk on the
+    square's street corner by the cable car's lower station, its assistant behind the counter, three customers' spots
+    in front."""
+    E = lambda x, y: ens_to_ue((x, y, 0.0))[:2]
+    out = []
+    gx, gy = near_walkable(grid, *E(-85.0, 0.0))
+    face = face_to((gx, gy), E(-120.0, 0.0))
+    out.append({"id": "lab2_gate", "kind": "lab", "pos": [r2(gx), r2(gy), r2(grid.ground(gx, gy))], "yaw": ang(face),
+                "tag": "lab2", "slots": [{"kind": "stand", "pos": [r2(gx), r2(gy), r2(grid.ground(gx, gy))],
+                                          "yaw": ang(face), "capacity": 24, "height": 0.0,
+                                          "approach": [r2(gx), r2(gy), r2(grid.ground(gx, gy))]}]})
+    kx, ky = near_walkable(grid, *E(76.0, -30.0))
+    fc = E(*__import__("plan").SQUARE["fountain"])
+    face = face_to((kx, ky), fc)                                  # the counter looks onto the square
+    a = math.radians(face)
+    fx, fy, tx, ty = math.cos(a), math.sin(a), -math.sin(a), math.cos(a)
+    slots = [{"kind": "counter", "pos": [r2(kx), r2(ky), r2(grid.ground(kx, ky))], "yaw": ang(face), "capacity": 1,
+              "height": 0.0, "approach": [r2(kx), r2(ky), r2(grid.ground(kx, ky))]}]
+    for k in (-1, 0, 1):
+        x, y = kx + fx * 1.4 + tx * k * 1.0, ky + fy * 1.4 + ty * k * 1.0
+        x, y = near_walkable(grid, x, y, 3.0)
+        slots.append({"kind": "stand", "pos": [r2(x), r2(y), r2(grid.ground(x, y))], "yaw": ang(face + 180.0),
+                      "capacity": 1, "height": 0.0, "approach": [r2(x), r2(y), r2(grid.ground(x, y))]})
+    out.append({"id": "gastronom_kiosk", "kind": "shop", "pos": [r2(kx), r2(ky), r2(grid.ground(kx, ky))],
+                "yaw": ang(face), "tag": "academ", "slots": slots})
+    return out
+
+
+# --- the sea railway's halts and the sea island (tools/railway.py, Content/Railway/railway_built.json) -------------
+
+RAIL_BUILT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Railway", "railway_built.json")
+RAIL_SOURCE = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Railway", "railway.json")
+PLATFORM_EDGE, PLATFORM_W, PLATFORM_OVER_RAIL = 1.55, 3.2, 1.10     # ULyudRailwaySubsystem (Public/Railway/LyudRailway.h)
+
+
+def build_rail(grid):
+    """The halts (rail_stop: from the ground up the stair at the platform's east end onto the deck, eight boarding
+    points along it facing the track) and the island's spots (island_spot), its ground as a height field. The game
+    moves the stairs' feet and the boarding points to the railway's own (ULyudRailwaySubsystem GetStopEntrance /
+    GetBoardingPoint). Returns (places, patches); nothing without railway_built.json."""
+    if not os.path.exists(RAIL_BUILT):
+        return [], []
+    import railway as R
+    with open(RAIL_BUILT) as f:
+        built = json.load(f)
+    src = R.load(RAIL_SOURCE) if os.path.exists(RAIL_SOURCE) else built
+    line_y = built["line"]["y"]
+    side = -1
+    deck_y = line_y + side * (PLATFORM_EDGE + PLATFORM_W / 2)
+    board_y = line_y + side * (PLATFORM_EDGE + 0.75)
+    isl = built["island"]
+
+    def ih(x, y):
+        z = R.island_height(src, x, y)
+        return z if z is not None else W.SEA_Z - 0.3
+
+    places = []
+    for st in built["stops"]:
+        x0, x1 = st["platform"]
+        deck = st["rail"] + PLATFORM_OVER_RAIL
+        on_island = st["id"] == "island"
+        foot = (x0 - 3.0, deck_y - 1.35)                         # the stair down off the platform's east end
+        top = (x0 + 0.5, deck_y - 0.85)
+        if on_island:
+            fz = min(ih(*foot), deck)
+            portal = (foot[0] - 2.0, foot[1] - 4.0, ih(foot[0] - 2.0, foot[1] - 4.0))
+            way = [(foot[0], foot[1], fz)]
+        else:
+            # from the beach path's south end on the walk grid along the sand, over the level crossing, to the stair
+            cx = built["crossing"]["x"]
+            px, py, _ = map_to_ue(cx - 3.0, -37.0, 0.0)
+            px, py = near_walkable(grid, px, py, 10.0)
+            portal = (px, py - FACE_Y / 100.0, grid.ground(px, py))
+            pts = [(cx - 1.5, line_y + 9.0), (cx, line_y + 2.5), (cx, line_y - 2.5), (cx + 3.0, foot[1])]
+            way = [(x, y, R.seabed_z(x, y)) for x, y in pts]
+            fz = R.seabed_z(*foot)
+            way.append((foot[0], foot[1], fz))
+        way.append((top[0], top[1], deck))
+        n = 8
+        slots = []
+        for k in range(n):
+            bx = x0 + 5.0 + (x1 - x0 - 9.0) * k / (n - 1)
+            slots.append({"kind": "board", "pos": rp(map_to_ue(bx, board_y, deck)), "yaw": 90.0, "capacity": 4,
+                          "height": 0.0, "approach": rp(map_to_ue(bx, board_y, deck))})
+        p = {"id": "rail_" + st["id"], "kind": "rail_stop", "stop": st["id"], "pos": rp(map_to_ue(*portal)),
+             "yaw": 90.0, "way": [rp(map_to_ue(*q)) for q in way], "slots": slots, "tag": "railway"}
+        if on_island:
+            p["sea_island"] = 1
+        places.append(p)
+
+    # the island's spots: a ring inland, a ring on its beach, the knoll at its west end; all south of the track
+    cx, cy, rx, ry = isl["x"], isl["y"], isl["rx"], isl["ry"]
+    spots = []
+    for k, deg in enumerate(range(-165, 0, 30)):
+        t = math.radians(deg)
+        spots.append(("island_%d" % k, cx + 0.5 * rx * math.cos(t), cy + 0.5 * ry * math.sin(t), "island"))
+    for k, deg in enumerate(range(-170, 10, 25)):
+        t = math.radians(deg)
+        for f in (0.95, 0.9, 0.85, 0.8):
+            x, y = cx + f * rx * math.cos(t), cy + f * ry * math.sin(t)
+            if R.island_height(src, x, y) is not None and ih(x, y) > W.SEA_Z + 0.25:
+                break
+        spots.append(("island_shore_%d" % k, x, y, "island_shore"))
+    spots.append(("island_knoll", cx + 0.45 * rx, cy - 0.25 * ry, "island_knoll"))
+    for sid, x, y, tag in spots:
+        if y > line_y - 7.0 or R.island_height(src, x, y) is None:
+            continue
+        face = ang(math.degrees(math.atan2(y - cy, x - cx)))     # out to the sea (UE yaw = map yaw: Y only shifts)
+        a = math.radians(face)
+        tx, ty = -math.sin(a), math.cos(a)
+        sl = []
+        for d in (-0.7, 0.7):
+            q = (x + tx * d, y + ty * d)
+            sl.append({"kind": "stand", "pos": rp(map_to_ue(q[0], q[1], ih(*q))), "yaw": face, "capacity": 1, "height": 0.0,
+                       "approach": rp(map_to_ue(q[0], q[1], ih(*q)))})
+        places.append({"id": sid, "kind": "island_spot", "pos": rp(map_to_ue(x, y, ih(x, y))), "yaw": face, "slots": sl,
+                       "tag": tag, "sea_island": 1})
+
+    # its ground: a height field over the island (sea level round it)
+    cell = 4.0
+    gx0, gx1, gy0, gy1 = cx - rx * 1.3, cx + rx * 1.3, cy - ry * 1.35, line_y + 8.0
+    nx, ny = int((gx1 - gx0) / cell) + 1, int((gy1 - gy0) / cell) + 1
+    z = [r2(ih(gx0 + i * cell, gy0 + j * cell)) for j in range(ny) for i in range(nx)]
+    ux, uy, _ = map_to_ue(gx0, gy0, 0.0)
+    patch = {"id": "sea_island", "x0": r2(ux), "y0": r2(uy), "cell": cell, "nx": nx, "ny": ny, "z": z}
+    return places, [patch]
+
+
 # --- checks --------------------------------------------------------------------------------------------------------
 
 def check_outdoor(grid, places, stairs, club, library):
@@ -1247,13 +1402,29 @@ def main():
     library = build_library(data, data["houses"]["Novikova1"]["frame"])
     with open(a.scene) as f:
         scene = json.load(f)
-    club = build_club(scene)
-    places = build_outdoor(grid)
+    if "stations" in scene:
+        club = build_club(scene)
+    else:
+        with open(OUT) as f:
+            club = dict(json.load(f)["club"])
+        print("people_map: %s has no stations: the club kept from %s" % (a.scene, OUT))
+    places = build_outdoor(grid) + build_academ_extra(grid)
     bad = check_outdoor(grid, places, stairs, club, library)
+    rail, patches = build_rail(grid)
+    for p in rail:
+        if p.get("sea_island"):
+            p["island"] = 2
+        else:
+            q = p["pos"]
+            if not grid.walkable(q[0], q[1]):
+                bad.append("%s pos (%.1f, %.1f)" % (p["id"], q[0], q[1]))
+            p["island"] = 0
+    places += rail
     misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"]
     doc = {"version": 1, "frame": "unreal_metres", "face_y_cm": FACE_Y,
            "yaw": "Unreal degrees, 0 = +X, 90 = +Y; seats: the way the seated person faces; beds: head to foot; stand: the way the person looks",
-           "islands": "0 the valley (town, Academgorodok, beach), 1 the club's spur, -1 not on the walk grid",
+           "islands": "0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (sea_island: by the train), -1 not on the walk grid",
+           "ground_patches": patches,
            "stairs": strip(stairs), "flats": strip(flats),
            "places": strip([dict(library, kind="library", id="library")] + places), "club": strip(club)}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
