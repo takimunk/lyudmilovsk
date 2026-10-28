@@ -124,6 +124,8 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 	const FVector2D Size = G.GetLocalSize();
 	const_cast<SLyudMapView*>(this)->LastSize = Size;
 	const FLyudMapFrame& F = ULyudQuests::Frame();
+	// the screen fades the diary in and out: everything drawn here goes with it
+	const FLinearColor Fade = InWidgetStyle.GetColorAndOpacityTint();
 	const ULyudQuests* Quests = ULyudQuests::Get(Owner.Get());
 	auto Box = [&G](const FVector2D& Pos, const FVector2D& Sz) { return G.ToPaintGeometry(FVector2f(Sz), FSlateLayoutTransform(FVector2f(Pos))); };
 
@@ -131,7 +133,7 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 	static const FSlateColorBrush Sea(FLinearColor(0.42f, 0.56f, 0.62f));
 	if (!bInk)
 	{
-		FSlateDrawElement::MakeBox(Out, LayerId, Box(FVector2D::ZeroVector, Size), &Sea);
+		FSlateDrawElement::MakeBox(Out, LayerId, Box(FVector2D::ZeroVector, Size), &Sea, ESlateDrawEffect::None, Fade * Sea.TintColor.GetSpecifiedColor());
 	}
 	const FLinearColor InkC = bInk ? LyudDiary::Ink : FLinearColor(0.12f, 0.08f, 0.05f);
 	const FLinearColor Halo = bInk ? FLinearColor(0.95f, 0.93f, 0.87f, 0.85f) : FLinearColor(0.93f, 0.89f, 0.78f, 0.75f);
@@ -139,7 +141,7 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 	const FVector2D BottomRight = ToScreen(FVector2D(F.XMin, F.YMin), Size);
 	if (MapBrush->GetResourceObject())
 	{
-		FSlateDrawElement::MakeBox(Out, LayerId + 1, Box(TopLeft, BottomRight - TopLeft), MapBrush.Get());
+		FSlateDrawElement::MakeBox(Out, LayerId + 1, Box(TopLeft, BottomRight - TopLeft), MapBrush.Get(), ESlateDrawEffect::None, Fade * MapBrush->TintColor.GetSpecifiedColor());
 	}
 
 	const TSharedRef<FSlateFontMeasure> Measure = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
@@ -150,9 +152,9 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 		// a soft paper halo so the name reads over forest and water
 		for (const FVector2D& O : { FVector2D(1, 0), FVector2D(-1, 0), FVector2D(0, 1), FVector2D(0, -1) })
 		{
-			FSlateDrawElement::MakeText(Out, Layer, Box(P + O * (bInk ? 2.0 : 1.2), TS), S, Font, ESlateDrawEffect::None, Halo);
+			FSlateDrawElement::MakeText(Out, Layer, Box(P + O * (bInk ? 2.0 : 1.2), TS), S, Font, ESlateDrawEffect::None, Fade * Halo);
 		}
-		FSlateDrawElement::MakeText(Out, Layer + 1, Box(P, TS), S, Font, ESlateDrawEffect::None, Color);
+		FSlateDrawElement::MakeText(Out, Layer + 1, Box(P, TS), S, Font, ESlateDrawEffect::None, Fade * Color);
 	};
 
 	// places
@@ -171,7 +173,7 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 			if (!bArea)
 			{
 				Circle(Pts, S, 3.f, 10);
-				FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.2f, 0.15f, 0.1f, 0.6f), true, 1.5f);
+				FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.2f, 0.15f, 0.1f, 0.6f), true, 1.5f);
 			}
 			continue;
 		}
@@ -179,7 +181,7 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 		if (!bArea)
 		{
 			Circle(Pts, S, 3.5f, 10);
-			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.16f, 0.1f, 0.06f), true, 3.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.16f, 0.1f, 0.06f), true, 3.f);
 			At.Y -= 14.f;
 		}
 		if (bInk && !bArea)
@@ -200,8 +202,8 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 			{
 				Way.Add(ToScreen(M, Size));
 			}
-			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f, 0.7f), true, 5.f);
-			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, L.Color, true, 3.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, Fade * FLinearColor(0.1f, 0.06f, 0.03f, 0.7f), true, 5.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Way, ESlateDrawEffect::None, Fade * L.Color, true, 3.f);
 		}
 		for (const FLyudTransitCabin& C : Transport->GetCabins())
 		{
@@ -210,13 +212,13 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 				continue;
 			}
 			Circle(Pts, ToScreen(C.MapAt, Size), 2.5f, 8);
-			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f), true, 3.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.1f, 0.06f, 0.03f), true, 3.f);
 		}
 		for (const FLyudTransitStation& St : Transport->GetStations())
 		{
 			const FVector2D S = ToScreen(St.MapAt, Size);
 			Circle(Pts, S, 5.f, 14);
-			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.1f, 0.06f, 0.03f), true, 3.5f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.1f, 0.06f, 0.03f), true, 3.5f);
 			if (Zoom > 0.25f)
 			{
 				Label(LyudText::Get(St.NameKey).ToString(), S + FVector2D(0.f, bInk ? 26.f : 16.f), bInk ? LyudDiary::Hand(24.f, true) : LyudUI::Font(12, "Bold"),
@@ -246,19 +248,19 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 					// circled in red pen, twice round for the followed quest
 					const float R = bMain ? 22.f : 16.f;
 					const uint32 Seed = GetTypeHash(Q.Quest) | 1u;
-					LyudDiary::DrawMark(Out, LayerId + 6, G, LyudDiary::EMark::Circle, S - FVector2D(R, R * 0.7f), FVector2D(2.f * R, 1.4f * R), LyudDiary::Red, bMain ? 3.2f : 2.4f, Seed);
+					LyudDiary::DrawMark(Out, LayerId + 6, G, LyudDiary::EMark::Circle, S - FVector2D(R, R * 0.7f), FVector2D(2.f * R, 1.4f * R), Fade * LyudDiary::Red, bMain ? 3.2f : 2.4f, Seed);
 					if (bMain)
 					{
 						LyudDiary::DrawMark(Out, LayerId + 6, G, LyudDiary::EMark::Circle, S - FVector2D(R + 4.f, R * 0.7f + 3.f), FVector2D(2.f * R + 8.f, 1.4f * R + 6.f),
-							LyudDiary::Red * FLinearColor(1, 1, 1, 0.6f + 0.4f * Pulse), 2.f, Seed + 5);
+							Fade * LyudDiary::Red * FLinearColor(1, 1, 1, 0.6f + 0.4f * Pulse), 2.f, Seed + 5);
 					}
 					continue;
 				}
 				const float R = bMain ? 9.f + 2.f * Pulse : 7.f;
 				Pts = { S + FVector2D(0, -R), S + FVector2D(R, 0), S + FVector2D(0, R), S + FVector2D(-R, 0), S + FVector2D(0, -R) };
-				FSlateDrawElement::MakeLines(Out, LayerId + 5, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.1f, 0.05f, 0.f), true, 5.f);
+				FSlateDrawElement::MakeLines(Out, LayerId + 5, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.1f, 0.05f, 0.f), true, 5.f);
 				FSlateDrawElement::MakeLines(Out, LayerId + 6, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None,
-					bMain ? FLinearColor(1.f, 0.62f, 0.12f) : FLinearColor(0.85f, 0.7f, 0.4f), true, 2.5f);
+					Fade * (bMain ? FLinearColor(1.f, 0.62f, 0.12f) : FLinearColor(0.85f, 0.7f, 0.4f)), true, 2.5f);
 			}
 		}
 	}
@@ -279,17 +281,17 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 			{
 				Pt = S + (Pt - S) * 1.6;
 			}
-			LyudDiary::DrawStroke(Out, LayerId + 8, G, Pts, LyudDiary::Red, 3.4f, 4242, 0.5f);
+			LyudDiary::DrawStroke(Out, LayerId + 8, G, Pts, Fade * LyudDiary::Red, 3.4f, 4242, 0.5f);
 		}
 		else
 		{
-			FSlateDrawElement::MakeLines(Out, LayerId + 7, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.f, 0.f, 0.f, 0.8f), true, 6.f);
-			FSlateDrawElement::MakeLines(Out, LayerId + 8, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.95f, 0.15f, 0.08f), true, 3.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 7, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.f, 0.f, 0.f, 0.8f), true, 6.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 8, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.95f, 0.15f, 0.08f), true, 3.f);
 		}
 		if (!bInk)
 		{
 			Pts = { S - D * 3.f, Tip - D * 3.f };
-			FSlateDrawElement::MakeLines(Out, LayerId + 8, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, FLinearColor(0.95f, 0.15f, 0.08f), true, 4.f);
+			FSlateDrawElement::MakeLines(Out, LayerId + 8, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.95f, 0.15f, 0.08f), true, 4.f);
 		}
 	}
 
@@ -307,11 +309,11 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 	Pts = { Bar0 + FVector2D(0, -6), Bar0, Bar1, Bar1 + FVector2D(0, -6) };
 	if (bInk)
 	{
-		LyudDiary::DrawStroke(Out, LayerId + 9, G, Pts, InkC, 2.6f, 77, 0.5f);
+		LyudDiary::DrawStroke(Out, LayerId + 9, G, Pts, Fade * InkC, 2.6f, 77, 0.5f);
 	}
 	else
 	{
-		FSlateDrawElement::MakeLines(Out, LayerId + 9, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, InkC, false, 2.5f);
+		FSlateDrawElement::MakeLines(Out, LayerId + 9, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * InkC, false, 2.5f);
 	}
 	Label(LyudText::Get(TEXT("ui.map.scale"), { FStringFormatArg(FMath::RoundToInt(Metres)) }).ToString(), (Bar0 + Bar1) * 0.5 + FVector2D(0, bInk ? -22 : -14),
 		bInk ? LyudDiary::Hand(24.f) : LyudUI::Font(12), InkC, LayerId + 9);
@@ -322,11 +324,11 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 	Pts = { N + FVector2D(0, 14) * NS, N + FVector2D(0, -14) * NS, N + FVector2D(-6, -6) * NS, N + FVector2D(0, -14) * NS, N + FVector2D(6, -6) * NS };
 	if (bInk)
 	{
-		LyudDiary::DrawStroke(Out, LayerId + 9, G, Pts, InkC, 2.6f, 78, 0.4f);
+		LyudDiary::DrawStroke(Out, LayerId + 9, G, Pts, Fade * InkC, 2.6f, 78, 0.4f);
 	}
 	else
 	{
-		FSlateDrawElement::MakeLines(Out, LayerId + 9, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, InkC, false, 2.5f);
+		FSlateDrawElement::MakeLines(Out, LayerId + 9, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * InkC, false, 2.5f);
 	}
 	Label(LyudText::Get(TEXT("ui.map.north")).ToString(), N + FVector2D(0, 26) * NS, bInk ? LyudDiary::Hand(28.f, true) : LyudUI::Font(13, "Bold"), InkC, LayerId + 9);
 	return LayerId + 11;

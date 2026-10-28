@@ -66,19 +66,16 @@ for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"
         item = os.path.basename(path)[len("sketch_"):-4]
         import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Sketch_" + item, False)
 
-# the handwriting: font faces (FontFileImportFactory makes a UFontFace from a .ttf); the game puts them together into one
-# composite font (LyudDiaryStyle.cpp)
+# the handwriting: font faces, made in code (unreal.LyudFontTools: the .ttf factory asserts in a commandlet); the game
+# puts them together into one composite font (LyudDiaryStyle.cpp)
 for src, name in (("Caveat-Regular.ttf", "FF_Caveat_Regular"), ("Caveat-Bold.ttf", "FF_Caveat_Bold"),
                   ("Yomogi-Regular.ttf", "FF_Yomogi_Regular")):
-    face = import_file(os.path.join(ROOT, "fonts", src), DIARY + "/Fonts", name)
+    face = unreal.LyudFontTools.make_font_face(os.path.join(ROOT, "fonts", src), DIARY + "/Fonts/" + name)
     if face is None:
+        log("could not import font %s" % src)
         continue
-    if not isinstance(face, unreal.FontFace):
-        log("font %s came in as %s, not a FontFace" % (name, face.get_class().get_name()))
-        continue
-    face.set_editor_property("loading_policy", unreal.FontLoadingPolicy.INLINE)
-    eal.save_loaded_asset(face)
-    log("font %s" % name)
+    eal.save_loaded_asset(face, False)
+    log("font %s (%s)" % (name, face.get_class().get_name()))
 
 
 # the open pages of the 3D book

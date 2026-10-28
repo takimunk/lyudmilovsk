@@ -785,7 +785,7 @@ TSharedRef<SWidget> SLyudDiarySpread::MapNote()
 
 void SLyudDiaryFlip::Construct(const FArguments& InArgs)
 {
-	SetVisibility(EVisibility::HitTestInvisible);
+	// shown (HitTestInvisible) only while a page turns: idle it has no pictures and would cover the page in white
 }
 
 void SLyudDiaryFlip::Start(UTextureRenderTarget2D* From, UTextureRenderTarget2D* To, bool bInForward, int32 InSheets)
@@ -917,8 +917,9 @@ int32 SLyudDiaryFlip::OnPaint(const FPaintArgs& Args, const FGeometry& G, const 
 	ComeB.SetUVRegion(bForward ? FBox2f(FVector2f(0.5f, 0.f), FVector2f(1.f, 1.f)) : FBox2f(FVector2f(0.f, 0.f), FVector2f(0.5f, 1.f)));
 	const FVector2D Half(PageW, PageH);
 	const FVector2D StayAt = bForward ? FVector2D::ZeroVector : FVector2D(PageW, 0.f), ComeAt = bForward ? FVector2D(PageW, 0.f) : FVector2D::ZeroVector;
-	FSlateDrawElement::MakeBox(Out, LayerId, G.ToPaintGeometry(FVector2f(Half), FSlateLayoutTransform(FVector2f(StayAt))), &StayB);
-	FSlateDrawElement::MakeBox(Out, LayerId, G.ToPaintGeometry(FVector2f(Half), FSlateLayoutTransform(FVector2f(ComeAt))), &ComeB);
+	const FLinearColor Tint = InWidgetStyle.GetColorAndOpacityTint();
+	FSlateDrawElement::MakeBox(Out, LayerId, G.ToPaintGeometry(FVector2f(Half), FSlateLayoutTransform(FVector2f(StayAt))), &StayB, ESlateDrawEffect::None, Tint);
+	FSlateDrawElement::MakeBox(Out, LayerId, G.ToPaintGeometry(FVector2f(Half), FSlateLayoutTransform(FVector2f(ComeAt))), &ComeB, ESlateDrawEffect::None, Tint);
 
 	// the sheets, staggered; one alone carries both pictures, in a riffle the first carries the old page and the last the new
 	const float Stagger = Sheets > 1 ? 0.16f : 0.f;

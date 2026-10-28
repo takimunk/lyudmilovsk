@@ -113,7 +113,8 @@ namespace
 		D.Pos = { FVector3f(0, Y0, H * 0.5f), FVector3f(0, Y1, H * 0.5f), FVector3f(0, Y1, -H * 0.5f), FVector3f(0, Y0, -H * 0.5f) };
 		D.Nrm = { FVector3f(1, 0, 0), FVector3f(1, 0, 0), FVector3f(1, 0, 0), FVector3f(1, 0, 0) };
 		D.UV = { FVector2f(U0, 0), FVector2f(U1, 0), FVector2f(U1, 1), FVector2f(U0, 1) };
-		D.Tris = { 0, 2, 1, 0, 3, 2 };
+		// wound like the rounded box's faces, or the quad is culled and the block's lit edge shows through
+		D.Tris = { 0, 1, 2, 0, 2, 3 };
 		return D;
 	}
 

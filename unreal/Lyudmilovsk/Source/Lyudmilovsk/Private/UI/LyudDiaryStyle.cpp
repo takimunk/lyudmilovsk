@@ -70,8 +70,9 @@ namespace LyudDiary
 			{
 				Add(C->DefaultTypeface, TEXT("Regular"), Regular);
 				Add(C->DefaultTypeface, TEXT("Bold"), Bold ? Bold : Regular);
-				// a Japanese word in a Russian line (a name) still reads as handwriting
+				// a Japanese word in a Russian line (a name) still reads as handwriting; Caveat has no arrows, Yomogi does
 				FCompositeSubFont& Sub = C->SubTypefaces.AddDefaulted_GetRef();
+				Sub.CharacterRanges.Add(FInt32Range(0x2190, 0x21FF + 1));
 				Sub.CharacterRanges.Add(FInt32Range(0x3000, 0x30FF + 1));
 				Sub.CharacterRanges.Add(FInt32Range(0x4E00, 0x9FFF + 1));
 				Sub.CharacterRanges.Add(FInt32Range(0xFF00, 0xFFEF + 1));
