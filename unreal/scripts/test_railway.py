@@ -51,6 +51,11 @@ def go(w, x, y, z, pitch, yaw):
     cmd(w, "BugItGo %.0f %.0f %.0f %.1f %.1f 0" % (X, Y, Z, pitch, yaw))
 
 
+def doors_open(info):
+    # Unreal's Python drops the b of a bool's name
+    return getattr(info, "doors_open", None) if hasattr(info, "doors_open") else getattr(info, "b_doors_open", False)
+
+
 def check(ok, what):
     log(("ok   " if ok else "FAIL ") + what)
     if not ok:
@@ -117,13 +122,13 @@ def start(w):
 def doors_beach(w):
     r = rail(w)
     info = r.get_train(0).get_info()
-    check(info.b_doors_open and str(r.get_stop_id(info.stop)) == "beach", "doors open at the beach halt (stop %d, s %.1f)" % (info.stop, info.s))
+    check(doors_open(info) and str(r.get_stop_id(info.stop)) == "beach", "doors open at the beach halt (stop %d, s %.1f)" % (info.stop, info.s))
 
 
 def doors_island(w):
     r = rail(w)
     info = r.get_train(0).get_info()
-    check(info.b_doors_open and str(r.get_stop_id(info.stop)) == "island", "doors open at the island halt (stop %d, s %.1f)" % (info.stop, info.s))
+    check(doors_open(info) and str(r.get_stop_id(info.stop)) == "island", "doors open at the island halt (stop %d, s %.1f)" % (info.stop, info.s))
 
 
 def summary(w):

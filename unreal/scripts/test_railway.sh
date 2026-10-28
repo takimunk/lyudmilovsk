@@ -13,7 +13,7 @@ OUT="$ROOT/unreal/Lyudmilovsk/Saved/RailwayTest"
 mkdir -p "$(dirname "$LOG")" "$OUT"
 # the line resolved against this checkout's terrain (not committed)
 python3 "$ROOT/tools/railway.py" > /dev/null
-sh "$ROOT/tools/wait_ue_queue.sh" 7200
+sh "${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 rm -f "$SHOTS"/ScreenShot*.png "$OUT"/*.png
 SND="-nosound"; [ "$SOUND" = 1 ] && SND="-ini:Engine:[Audio]:UnfocusedVolumeMultiplier=1"
 "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen \

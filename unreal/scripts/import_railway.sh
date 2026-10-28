@@ -10,6 +10,6 @@ ROOT="$HERE/../.."
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 CMD="$UE/Engine/Binaries/Mac/UnrealEditor-Cmd"
 python3 "$ROOT/tools/railway.py" > /dev/null
-"$ROOT/tools/wait_ue_queue.sh" 7200
+"${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_railway.py" -unattended -nosplash -stdout | grep -E "RAILWAY|Error" | grep -v LogInit || true
 IMPORT_ONLY=sfx/railway/ "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_audio.py" -unattended -nosplash -stdout | grep -E "AUDIO|Error" | grep -v LogInit || true
