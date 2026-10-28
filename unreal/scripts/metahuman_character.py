@@ -89,6 +89,45 @@ def conform(ch, head, cid):
     log("conformed to %s" % head.get_path_name())
 
 
+# per character: grooms from /MetaHumanCharacter/Optional/Grooms/Bindings/<slot>/WI_*, hair melanin, skin tone (u, v)
+LOOK = {
+    "nao": {"Hair": "WI_Hair_M_BobBangs", "Eyebrows": "WI_Eyebrows_M_Natural", "Eyelashes": "WI_Eyelashes_L_SlightCurl",
+            "melanin": 1.0, "skin_uv": (0.18, 0.35)},
+}
+
+
+def set_look(ch, cid):
+    look = LOOK.get(cid, {})
+    reg = unreal.AssetRegistryHelpers.get_asset_registry()
+    col = mhs.get_preview_collection(ch)
+    keys = {}
+    for slot in ("Hair", "Eyebrows", "Eyelashes"):
+        if slot not in look:
+            continue
+        pkg = "/MetaHumanCharacter/Optional/Grooms/Bindings/%s/%s" % (slot, look[slot])
+        data = reg.get_assets_by_package_name(pkg)
+        if not data:
+            log("no wardrobe item " + pkg)
+            continue
+        key = col.try_add_item_from_wardrobe_item(slot_name=slot, wardrobe_item=data[0].get_asset())
+        col.default_instance.try_add_slot_selection(selection=unreal.MetaHumanPipelineSlotSelection(slot_name=slot, selected_item=key))
+        keys[slot] = key
+    mhs.on_edit_preview_collection(ch)
+    mhs.assemble_for_preview(character=ch)
+    for slot, key in keys.items():
+        for prm in col.default_instance.get_instance_parameters(item_path=unreal.MetaHumanPaletteItemPath(item_key=key)):
+            if prm.name == "Melanin" and "melanin" in look:
+                prm.set_float(value=look["melanin"])
+    mhs.on_edit_preview_collection(ch)
+    if "skin_uv" in look:
+        sk = unreal.MetaHumanCharacterSkinProperties()
+        sk.u, sk.v = look["skin_uv"]
+        st = unreal.MetaHumanCharacterSkinSettings()
+        st.skin = sk
+        mhs.commit_skin_settings(ch, st)
+    log("look: %s" % {k: v for k, v in look.items()})
+
+
 def main():
     cid = os.environ.get("MH_ID") or (sys.argv[-1] if len(sys.argv) > 1 else "nao")
     steps = os.environ.get("MH_STEPS", "import,conform,rig,textures,hair,build").split(",")
@@ -115,6 +154,9 @@ def main():
             mhs.request_texture_sources(ch, t)
             eal.save_loaded_asset(ch)
             log("textures: high res %s, saved" % ch.has_high_resolution_textures)
+        if "hair" in steps:
+            set_look(ch, cid)
+            eal.save_loaded_asset(ch)
         if "build" in steps:
             log("can build: %s" % mhs.can_build_meta_human(character=ch))
             if mhs.can_build_meta_human(character=ch):

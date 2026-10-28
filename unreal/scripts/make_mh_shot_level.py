@@ -43,8 +43,8 @@ def main():
     ch = eas.spawn_actor_from_class(bp, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
     ch.set_actor_label("MH_" + title)
     # MetaHumans face +Y: cameras on the +Y side looking back (yaw -90)
-    for name, loc, rot, fov in (("MHCam_Face", (0, 55, 152), (0, -2, -90), 30),
-                                ("MHCam_Face34", (38, 42, 152), (0, -2, -132), 30),
+    for name, loc, rot, fov in (("MHCam_Face", (0, 80, 150), (0, -2, -90), 30),
+                                ("MHCam_Face34", (55, 60, 150), (0, -2, -132), 30),
                                 ("MHCam_Full", (0, 420, 95), (0, -2, -90), 30)):
         cam = spawn(unreal.CameraActor, loc=loc, rot=rot, label=name)
         cam.camera_component.set_editor_property("field_of_view", fov)
