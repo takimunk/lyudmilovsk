@@ -1,0 +1,23 @@
+{
+ "id": "diary_pages",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/diary/diary_pages_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Several pages of a thick paper notebook riffled quickly with a thumb, a quick flutter of paper, close, quiet room, no voices",
+  "duration_seconds": 1.0
+ },
+ "hash": "c3ba570cc8f0",
+ "fal_request_id": "01a18428-579d-7690-a7d4-4fcd594ef92f",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab03c04/HrK3cg_PVSJRIS52rxmFL_sound_effect.mp3",
+ "created": "2026-10-28T20:16:42Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -9 dBFS",
+ "sha256": "c09e3b8913c1ca1dafa1bd4bb0780f63a487450fad2765fb43994984124ce7d4",
+ "seconds": 0.83,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "diary"
+}
