@@ -81,8 +81,9 @@ UStaticMeshComponent* ALyudRailTrack::AddKit(const FLyudMeshKit& Kit, FName Name
 	{
 		C->ComponentTags.Add(TEXT("LyudSeaBed"));
 	}
+	// placed before it registers: a static component can't be moved after
+	C->SetRelativeLocation(At);
 	C->RegisterComponent();
-	C->SetWorldLocation(At);
 	AddInstanceComponent(C);
 	return C;
 }
@@ -100,8 +101,8 @@ UStaticMeshComponent* ALyudRailTrack::AddPiece(const TCHAR* Kit, const FTransfor
 	C->SetStaticMesh(M);
 	C->SetCollisionEnabled(bCollide ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
 	C->LightingChannels.bChannel1 = true;
+	C->SetRelativeTransform(At);
 	C->RegisterComponent();
-	C->SetWorldTransform(At);
 	AddInstanceComponent(C);
 	return C;
 }
