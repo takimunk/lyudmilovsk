@@ -5,6 +5,13 @@ description: How to make or remake a person (NPC, club regular, the owner, any h
 
 # Making a character
 
+**Rule (Dima, 2026-10-28): the hi3d model is never the game mesh of a person or an animal.** It is the reference
+(North Star) and the bake source only, like the vestibules. The game model is ours: clean topology with loops round
+the eyes and mouth, real eyeballs, lids, lashes, teeth, tongue, SK_Human_Skeleton weights and the 52 ARKit face shapes
++ visemes from the start. People: `blender/characters/clean_human.py <id> --preview` (MakeHuman base through MPFB,
+fitted to the model, its colours baked on, our own hair shell and skirt; character.json `"clean"`). Animals: same idea
+on our own dog/cat base (in progress). Steps 3-4 below (rig_character.py on the hi3d mesh) are the old way.
+
 Full standard and the reasoning: `docs/characters.md` (Nao is the worked example). Providers and pinning: the
 `game-assets` skill. Words and voice: the `localization` skill.
 

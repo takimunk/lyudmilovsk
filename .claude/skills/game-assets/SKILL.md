@@ -89,8 +89,9 @@ gives ragged edges, shards and slivers ("polygon mince" inside the first cable-c
   booleans from clean outlines (windows, doors to `CharacterStandard`), door leaves as their own parts, flat glass
   panes, simple collision boxes, our own UVs. The hi3d model is the **shape reference and the bake source**: its
   colour and relief go onto our mesh by a Cycles selected-to-active bake (base colour + tangent normal).
-- **Organic and small props** (people, animals, birds, statues, rocks, small items): hi3d + the cleanup and
-  decimation above, as before.
+- **People and animals** (Dima, 2026-10-28): rebuilt by us too. A clean base with real eyes, lids and a face rig,
+  fitted to the hi3d model and baked from it (`characters` skill, `blender/characters/clean_human.py`).
+- **Organic and small props** (birds, statues, rocks, small items): hi3d + the cleanup and decimation above, as before.
 
 Worked example: `blender/transport/cabin.py` (docs/transport.md "The cabin").
 
