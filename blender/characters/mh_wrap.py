@@ -57,6 +57,39 @@ def load_face():
     return mesh, sec
 
 
+def face_lum(high):
+    """Luminance of the model's texture under each face: dark ones are hair, earrings, painted eyes and brows."""
+    me = high.data
+    img = next(n.image for n in me.materials[0].node_tree.nodes if n.type == "TEX_IMAGE" and n.image)
+    w, h = img.size
+    px = np.array(img.pixels[:], np.float32).reshape(h, w, 4)
+    uv = np.empty(len(me.loops) * 2)
+    me.uv_layers.active.data.foreach_get("uv", uv)
+    uv = uv.reshape(-1, 2)
+    start = np.empty(len(me.polygons), int)
+    me.polygons.foreach_get("loop_start", start)
+    u = uv[start]                                              # one corner per face is enough at 600k faces
+    c = px[np.clip((u[:, 1] * h).astype(int), 0, h - 1), np.clip((u[:, 0] * w).astype(int), 0, w - 1)]
+    return c[:, :3] @ np.array([0.2126, 0.7152, 0.0722], np.float32)
+
+
+def probe_skin(co, nrm, idx, bvh, rng, lum, dark=0.22):
+    t = np.zeros(len(co))
+    conf = np.zeros(len(co))
+    for i in idx:
+        p, d = Vector(co[i]), Vector(nrm[i])
+        best = None
+        for sign in (1, -1):
+            h = bvh.ray_cast(p, d * sign, rng)
+            if h[0] is not None and h[1].dot(d) > 0.55 and lum[h[2]] > dark:
+                v = (h[0] - p).length * sign
+                if best is None or abs(v) < abs(best):
+                    best = v
+        if best is not None:
+            t[i], conf[i] = best, 1.0
+    return t, conf
+
+
 def main():
     argv = sys.argv[sys.argv.index("--") + 1:]
     cid = argv[0]
@@ -131,8 +164,9 @@ def main():
         sx = 1 if c[0] > 0 else -1
         pts = {"outer": rim[np.argmax(co[rim, 0] * sx)], "inner": rim[np.argmax(-co[rim, 0] * sx)],
                "top": rim[np.argmax(co[rim, 2])], "bottom": rim[np.argmax(-co[rim, 2])]}
+        # widths only: the rim's top/bottom picks include lid skin lying on the ball, so heights would close the eye
         goal = {"outer": (c[0] + sx * tm["w"] / 2 * kw, None), "inner": (c[0] - sx * tm["w"] / 2 * kw, None),
-                "top": (None, c[2] + tm["h"] / 2 * kh), "bottom": (None, c[2] - tm["h"] / 2 * kh)}
+                "top": (None, co[pts["top"], 2]), "bottom": (None, co[pts["bottom"], 2])}
         src = np.array([[co[v, 0], co[v, 2]] for v in pts.values()])
         dd = np.array([[(g[0] - co[v, 0]) if g[0] is not None else 0.0, (g[1] - co[v, 2]) if g[1] is not None else 0.0]
                        for v, g in zip(pts.values(), goal.values())])
@@ -146,24 +180,42 @@ def main():
         log("eye %d opening: %s m" % (i, np.round(dd, 4).tolist()))
     R.set_world_co(face, co)
 
-    # 3. the face's skin onto the model's surface
-    nrm = C.vertex_normals(face)
-    t, conf = C.probe(co, nrm, np.nonzero(head)[0], bvh, 0.015, 0.015)
-    keep = np.zeros(len(co), bool)
-    for c in (co[sec == 3].mean(0), co[sec == 4].mean(0)):
-        keep |= np.linalg.norm((co - c) * [1, 1.2, 1.6], axis=1) < 0.019
-    keep |= nrm[:, 1] > 0.2                                      # the mouth's inside, the back of the head
-    keep |= co[:, 2] > tmid[2] + 0.025                           # forehead and scalp under the bangs
-    keep |= np.abs(co[:, 0] - tmid[0]) > 0.062                   # ears and the sides under the hair
-    keep |= co[:, 2] < mo["z"] - 0.065                           # the neck under the chin (the model has a collar)
+    lum = face_lum(high)
+    # 3. the face's skin onto the model's surface: a few passes, each probing nearer and smoothing less
     mw = spec.get("mh_wrap", {})
-    keep |= np.sqrt(((co[:, 0] - mo["x"]) / mw.get("mouth_rx", 0.032)) ** 2 +
-                    ((co[:, 2] - mo["z"]) / mw.get("mouth_rz", 0.016)) ** 2) < 1.0      # the lips keep MetaHuman's form
-    conf[keep] = 0.0
     nb = C.neighbours(face, head)
-    disp = C.diffuse(t[:, None] * nrm, conf, nb, iterations=500, smooth=spec.get("mh_wrap", {}).get("smooth", 25))
-    disp[~head] = 0
-    co = co + disp
+    co0 = co.copy()
+    for rng, smooth in mw.get("passes", ((0.04, 25), (0.02, 12), (0.01, 6))):
+        R.set_world_co(face, co)
+        face.data.update()
+        nrm = C.vertex_normals(face)
+        t, conf = probe_skin(co, nrm, np.nonzero(head)[0], bvh, rng, lum)
+        keep = np.zeros(len(co), bool)
+        for c in (co[sec == 3].mean(0), co[sec == 4].mean(0)):
+            keep |= np.linalg.norm((co - c) * [1, 1.2, 1.6], axis=1) < mw.get("eye_keep", 0.017)
+        keep |= nrm[:, 1] > 0.3                                  # the mouth's inside, the back of the head
+        keep |= co[:, 2] > tmid[2] + mw.get("brow_keep", 0.016)  # forehead and scalp under the bangs
+        ear = (np.abs(co[:, 0] - tmid[0]) > 0.065) & (co[:, 1] > tmid[1] + 0.02)
+        keep |= ear                                              # ears behind the hair
+        keep |= co[:, 2] < mo["z"] - 0.07                        # the neck under the chin (the model has a collar)
+        keep |= np.sqrt(((co[:, 0] - mo["x"]) / mw.get("mouth_rx", 0.028)) ** 2 +
+                        ((co[:, 2] - mo["z"]) / mw.get("mouth_rz", 0.013)) ** 2) < 1.0   # the lips keep their form
+        conf[keep] = 0.0
+        disp = C.diffuse(t[:, None] * nrm, conf, nb, iterations=400, smooth=smooth)
+        disp[~head] = 0
+        co = co + disp
+        log("pass %.3f m: %d of %d on the model, mean |d| %.4f" % (rng, conf.sum(), head.sum(), np.linalg.norm(disp[head], axis=1).mean()))
+    disp = co - co0
+    for _ in range(mw.get("final_smooth", 10)):              # no folds where neighbours met different surfaces
+        d2 = C.diffuse(disp, np.zeros(len(co)), nb, iterations=1, smooth=0)
+        disp[head] = 0.5 * disp[head] + 0.5 * d2[head]
+    # the lips move as one piece (a field interpolated between nose and chin would pull them apart)
+    rr = np.sqrt(((co0[:, 0] - mo["x"]) / mw.get("mouth_rx", 0.028)) ** 2 + ((co0[:, 2] - mo["z"]) / mw.get("mouth_rz", 0.013)) ** 2)
+    lipsm, ring = head & (rr < 1.0), head & (rr >= 1.0) & (rr < 1.4) & (nrm[:, 1] < 0)
+    if ring.any():
+        blend = np.clip((1.2 - rr) / 0.2, 0, 1)[:, None] * head[:, None]
+        disp = disp * (1 - blend) + disp[ring].mean(0) * blend
+    co = co0 + disp
     # 4. the other sections ride rigidly with the skin round them
     for i, name in SECTIONS.items():
         if i == 0:

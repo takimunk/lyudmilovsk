@@ -215,6 +215,27 @@ def shape(ch, cid):
         mhs.commit_eyes_settings(ch, e)
 
 
+def makeup(ch, cid):
+    """The generated look that the shape alone doesn't carry: dark irises, a liner, porcelain foundation that hides
+    the under-eye and cheek shadows, a soft lip tint (values in LOOK[cid]["makeup"])."""
+    m = LOOK.get(cid, {}).get("makeup", {})
+    e = ch.eyes_settings
+    for side in (e.eye_left, e.eye_right):
+        side.iris.global_tint = unreal.LinearColor(*m.get("iris_tint", (0.22, 0.2, 0.2, 1)))
+        side.iris.global_saturation = m.get("iris_saturation", 1.0)
+    mhs.commit_eyes_settings(ch, e)
+    mk = ch.makeup_settings
+    f = mk.foundation
+    f.apply_foundation = True
+    f.color = unreal.LinearColor(*m.get("foundation", (0.95, 0.80, 0.72, 1)))
+    f.intensity = m.get("foundation_intensity", 0.6)
+    f.concealer = m.get("concealer", 0.7)
+    mk.eyes.opacity = m.get("liner_opacity", 1.0)
+    mk.blush.intensity = m.get("blush", 0.25)
+    mhs.commit_makeup_settings(ch, mk)
+    log("makeup: %s" % m)
+
+
 def main():
     cid = os.environ.get("MH_ID") or (sys.argv[-1] if len(sys.argv) > 1 else "nao")
     steps = os.environ.get("MH_STEPS", "import,conform,rig,textures,hair,build").split(",")
@@ -238,6 +259,9 @@ def main():
             log("conform moved the face model by %.2f" % sum((a - b) ** 2 for a, b in zip(before[2:], after[2:])) ** 0.5)
         if "shape" in steps:
             shape(ch, cid)
+            eal.save_loaded_asset(ch)
+        if "makeup" in steps:
+            makeup(ch, cid)
             eal.save_loaded_asset(ch)
         if "rig" in steps:
             r = unreal.MetaHumanCharacterAutoRiggingRequestParams()
