@@ -17,7 +17,7 @@ of a Showa-era Japanese local line runs it, every hour, day and night. The setti
 | The kit (train, crossing, shelter, nameboard, mast, sleeper, island) | `blender/railway/rail_kit.py` → `design/railway/game/rail_kit.glb` + `Content/Railway/kit.json` (seats, doors, lamps) |
 | Sounds (synthesized, no service) | `tools/railsim/rail_sounds.py` → `audio/sfx/railway/*.wav` |
 | Import | `unreal/scripts/import_railway.sh` (kit → `/Game/Railway/Meshes/rail_kit`, sounds → `/Game/Audio/Railway`) |
-| Offscreen check | `unreal/scripts/test_railway.sh` (`RAILTEST_ONLY=day,night,far`) → `Saved/RailwayTest/*.png` |
+| Offscreen check | `unreal/scripts/test_railway.sh` (`RAILTEST_ONLY=day,night,far`, or `riders`: residents ride back from the island; `trees`: the island's plants up close) → `Saved/RailwayTest/*.png` |
 
 ## The line
 
@@ -107,8 +107,18 @@ neighbours either way: `rail.stop.*`) as a widget in the player's language, two 
 sunset. The beach halt's ramp comes down to the beach path by the crossing; the island halt's to the island's levelled
 ground.
 
+## People on the train
+
+The Academgorodok's residents ride it (docs/people.md): they walk to a halt's ramp, up onto the deck to a boarding
+point (`GetBoardingPoint`), wait facing the track (asking the timetable again every 10 s, so they follow
+`lyud.Railway.Next`), get in when the doors open and are shown seated on a free seat of the car while the train is
+drawn; at the other halt they get off and go down its ramp. Checked offscreen (`RAILTEST_ONLY=riders`): two residents
+ordered home from the island on Tuesday 10:41 wait at the island halt, take the 10:47 back, sit in the car (seen inside
+and through the windows) and come out at the beach halt by the crossing.
+
 ## Open
 
 - The landscape hole at the mouth needs a scene rebuild (`build_scene01.sh`) in a checkout to show.
+- The wheels' foam is simple see-through discs and droplets; a real water simulation (a wake in the sea's own surface) is open.
 - Gulls are actors of their own near the train (not birds of the bird life's simulation).
 - The train is one set on a single track; a passing loop at the island would allow two.

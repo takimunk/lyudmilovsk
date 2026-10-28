@@ -540,7 +540,7 @@ void ALyudRailTrack::BuildIsland(const TSharedPtr<FJsonObject>& Built)
 	FRandomStream Rnd(int32(Isl->GetNumberField(TEXT("seed"))));
 	UWorld* World = GetWorld();
 	int32 N = 0;
-	for (int32 Tries = 0; Tries < 120 && N < 14; Tries++)
+	for (int32 Tries = 0; Tries < 200 && N < 20; Tries++)
 	{
 		const double A = Rnd.FRandRange(0.0, 2.0 * PI), Rr = FMath::Sqrt(Rnd.FRand()) * 0.8;
 		const double X = Cx + FMath::Cos(A) * Rx * Rr, Y = Cy + FMath::Sin(A) * Ry * Rr;
@@ -557,7 +557,7 @@ void ALyudRailTrack::BuildIsland(const TSharedPtr<FJsonObject>& Built)
 			continue;
 		}
 		const float U = Rnd.FRand();
-		const FName Sp = U < 0.55f ? FName(TEXT("DunePine")) : (U < 0.8f ? FName(TEXT("Juniper")) : FName(TEXT("SeaBuckthorn")));
+		const FName Sp = U < 0.7f ? FName(TEXT("DunePine")) : (U < 0.92f ? FName(TEXT("Juniper")) : FName(TEXT("SeaBuckthorn")));
 		FActorSpawnParameters P;
 		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		P.bDeferConstruction = true;

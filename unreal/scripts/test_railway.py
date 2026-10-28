@@ -230,13 +230,41 @@ RIDERS = [
     (446.0, lambda w: shot(w, "riders_window")),
     (447.0, lambda w: S.update(chase=None)),
 ]
+def near_plant(w, dist):
+    """The camera dist metres south of the island's first plant, looking at it."""
+    best = None
+    for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.ProceduralPlant):
+        p = a.get_actor_location()
+        if p.x > 200000:
+            best = a
+            break
+    if not best:
+        log("no island plant")
+        return
+    p = best.get_actor_location()
+    log("plant %s %s at %.0f %.0f %.0f" % (best.get_name(), best.get_editor_property("species"), p.x, p.y, p.z))
+    cmd(w, "BugItGo %.0f %.0f %.0f -8 90 0" % (p.x, p.y - dist * 100.0, p.z + 400.0))
+
+
+TREES = [
+    (22.0, lambda w: near_plant(w, 12.0)),
+    (30.0, lambda w: shot(w, "pine_near_early")),
+    (31.0, lambda w: near_plant(w, 120.0)),
+    (36.0, lambda w: shot(w, "pine_far_early")),
+    (150.0, lambda w: near_plant(w, 12.0)),
+    (156.0, lambda w: shot(w, "pine_near_late")),
+    (157.0, lambda w: near_plant(w, 120.0)),
+    (163.0, lambda w: shot(w, "pine_far_late")),
+]
 PLAN = []
+for name, part in (("trees", TREES),) if ONLY == "trees" else ():
+    PLAN += part
 for name, part in (("riders", RIDERS),) if ONLY == "riders" else ():
     PLAN += part
 for name, part in (("day", DAY), ("night", NIGHT), ("far", FAR)):
-    if (not ONLY or name in ONLY.split(",")) and ONLY != "riders":
+    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees"):
         PLAN += part
-if ONLY and "day" not in ONLY.split(",") and ONLY != "riders":
+if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees"):
     PLAN.insert(0, (30.0, start))
 PLAN.append((PLAN[-1][0] + 4.0, lambda w: S.update(phase="done")))
 
