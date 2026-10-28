@@ -24,12 +24,15 @@ def log(m):
     unreal.log_warning("MHC " + str(m))
 
 
+TARGET = os.environ.get("MH_TARGET", "head")              # head: the head below the hair; model: the whole model
+
+
 def import_head(cid, dest):
-    glb = os.path.join(ROOT, "blender", "characters", cid, "export", "mh", "head.glb")
+    glb = os.path.join(ROOT, "blender", "characters", cid, "export", "mh", TARGET + ".glb")
     task = unreal.AssetImportTask()
     task.filename = glb
     task.destination_path = dest
-    task.destination_name = "SM_%s_head_ref" % cid.capitalize()
+    task.destination_name = "SM_%s_%s_ref" % (cid.capitalize(), TARGET)
     task.automated = True
     task.replace_existing = True
     task.save = True
@@ -43,11 +46,44 @@ def import_head(cid, dest):
     raise RuntimeError("no mesh imported from " + glb)
 
 
+def import_template(cid, dest):
+    """blender/characters/mh_wrap.py's sections (MetaHuman's own face mesh wrapped onto the model) as static meshes."""
+    src = os.path.join(ROOT, "blender", "characters", cid, "export", "mh")
+    tasks = []
+    for part in ("head", "eyeLeft", "eyeRight", "teeth"):
+        t = unreal.AssetImportTask()
+        t.filename = os.path.join(src, "template_%s.fbx" % part)
+        t.destination_path = dest + "/Template"
+        t.destination_name = "SM_%s_template_%s" % (cid.capitalize(), part)
+        t.automated, t.replace_existing, t.save = True, True, True
+        tasks.append(t)
+    unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks(tasks)
+    out = {}
+    for part, t in zip(("head", "eyeLeft", "eyeRight", "teeth"), tasks):
+        out[part] = next((unreal.load_asset(p) for p in t.imported_object_paths
+                          if isinstance(unreal.load_asset(p), unreal.StaticMesh)), None)
+        log("template %s -> %s" % (part, out[part].get_path_name() if out[part] else None))
+    return out
+
+
+def from_template(ch, parts):
+    p = unreal.ImportFromTemplateParams()
+    p.match_vertices_by_u_vs = True
+    p.use_eye_meshes = True
+    p.use_teeth_mesh = True
+    p.alignment_options = getattr(unreal.MetaHumanAlignmentOptions, os.environ.get("MH_ALIGN", "ROTATION_TRANSLATION"),
+                                  unreal.MetaHumanAlignmentOptions.SCALING_ROTATION_TRANSLATION)
+    r = mhs.import_from_template(ch, parts["head"], parts["eyeLeft"], parts["eyeRight"], parts["teeth"], p)
+    log("import_from_template: %s (align %s)" % (r, p.alignment_options))
+
+
 def character_asset(cid, dest):
     name = os.environ.get("MH_NAME", "MHC_" + cid.capitalize())
     path = "%s/%s" % (dest, name)
     if eal.does_asset_exist(path):
         return unreal.load_asset(path)
+    if os.environ.get("MH_FROM"):                              # start from another of ours
+        return eal.duplicate_asset(os.environ["MH_FROM"], path)
     preset = os.environ.get("MH_PRESET")                      # start from one of MetaHuman's own faces
     if preset:
         return eal.duplicate_asset("/MetaHumanCharacter/Optional/Presets/" + preset, path)
@@ -69,14 +105,17 @@ def conform(ch, head, cid):
     verts, idx, *_ = mhs.get_mesh_data_for_conforming(head)
     log("head target: %d verts, %d tris" % (len(verts), len(idx) // 3))
     p = unreal.ConformTargetParams()
-    p.conform_target_mesh.target_parts_type = unreal.TargetPartsType.HEAD_ONLY
-    for name, val in (("head_vertices", verts), ("head_vertex_indices", idx)):
+    combined = TARGET == "model"
+    p.conform_target_mesh.target_parts_type = unreal.TargetPartsType.COMBINED if combined else unreal.TargetPartsType.HEAD_ONLY
+    p.estimate_body_joints_from_mesh = combined
+    for name, val in ((("body_vertices", verts), ("body_vertex_indices", idx)) if combined else
+                      (("head_vertices", verts), ("head_vertex_indices", idx))):
         if hasattr(p.conform_target_mesh, name):
             setattr(p.conform_target_mesh, name, val)
     if not hasattr(p.conform_target_mesh, "head_vertices"):
         log("conform_target_mesh fields: %s" % [n for n in dir(p.conform_target_mesh) if not n.startswith("_")])
     p.auto_solve = True
-    p.body_conform_solve_settings.pipeline_name = "head_only"     # Content/Body/IdentityTemplate/pipeline_presets.json
+    p.body_conform_solve_settings.pipeline_name = "combined" if combined else "head_only"   # IdentityTemplate/pipeline_presets.json
     v = unreal.MinimalViewInfo()
     v.location = unreal.Vector(*cam["location_cm"])
     v.rotation = unreal.Rotator(pitch=cam["pitch"], yaw=cam["yaw"], roll=0.0)
@@ -87,16 +126,21 @@ def conform(ch, head, cid):
     p.camera_view_info = v
     p.image_size = size
     key = unreal.MetaHumanCharacterTargetMeshKey()
-    key.head_mesh = head
+    if combined:
+        key.combined_mesh = head
+    else:
+        key.head_mesh = head
     if not mhs.conform_to_target_meshes(ch, key, p):
         raise RuntimeError("conform_to_target_meshes failed")
+    if combined:
+        mhs.commit_posed_state_as_a_pose(ch, key)
     log("conformed to %s" % head.get_path_name())
 
 
 # per character: grooms from /MetaHumanCharacter/Optional/Grooms/Bindings/<slot>/WI_*, hair melanin, skin tone (u, v)
 LOOK = {
     "nao": {"Hair": "WI_Hair_M_BobBangs", "Eyebrows": "WI_Eyebrows_M_Natural", "Eyelashes": "WI_Eyelashes_L_SlightCurl",
-            "melanin": 1.0, "skin_uv": (0.18, 0.35), "clear": ("Beard", "Mustache")},
+            "melanin": 1.0, "skin_uv": (0.18, 0.35), "clear": ("Beard", "Mustache"), "height": 160.0},
 }
 
 
@@ -134,19 +178,67 @@ def set_look(ch, cid):
     log("look: %s" % {k: v for k, v in look.items()})
 
 
+def shape(ch, cid):
+    """Likeness without losing the start face: its face model coefficients blended toward the conformed one
+    (MH_TOWARD, weight MH_BLEND), body height and eye colour from LOOK."""
+    look = LOOK.get(cid, {})
+    toward = os.environ.get("MH_TOWARD")
+    if toward:
+        other = unreal.load_asset(toward)
+        mhs.try_add_object_to_edit(other)
+        a, b = list(mhs.get_face_model_coefficients(ch)), list(mhs.get_face_model_coefficients(other))
+        mhs.remove_object_to_edit(other)
+        w = float(os.environ.get("MH_BLEND", "0.35"))
+        mix = a[:2] + [(1 - w) * x + w * y for x, y in zip(a[2:], b[2:])]
+        mhs.set_face_model_coefficients(ch, mix)
+        log("face blended %.2f toward %s" % (w, toward))
+    if "height" in look:
+        cons = mhs.get_body_constraints(ch)
+        for c in cons:
+            if str(c.name) == "Height":
+                c.target_measurement = look["height"]
+                c.is_active = True
+        mhs.set_body_constraints(ch, cons)
+        mhs.commit_body_state(ch, mhs.get_body_state(ch)) if hasattr(mhs, "get_body_state") else None
+        log("height %.0f cm" % look["height"])
+    e = ch.eyes_settings
+    log("eye settings %s" % str(e.eye_left)[:900])
+    if "iris" in look:
+        log("eye fields %s" % [n for n in dir(e.eye_left) if not n.startswith("_")][:30])
+        for side in (e.eye_left, e.eye_right):
+            for path in look["iris"]:
+                obj = side
+                *head, last = path[0].split(".")
+                for h in head:
+                    obj = getattr(obj, h)
+                setattr(obj, last, path[1])
+        mhs.commit_eyes_settings(ch, e)
+
+
 def main():
     cid = os.environ.get("MH_ID") or (sys.argv[-1] if len(sys.argv) > 1 else "nao")
     steps = os.environ.get("MH_STEPS", "import,conform,rig,textures,hair,build").split(",")
     dest = "/Game/MetaHumans/" + cid.capitalize()
-    head = unreal.load_asset("%s/head/StaticMeshes/SM_%s_head_ref" % (dest, cid.capitalize()))
+    head = unreal.load_asset("%s/%s/StaticMeshes/SM_%s_%s_ref" % (dest, TARGET, cid.capitalize(), TARGET))
     if "import" in steps or (head is None and "conform" in steps):
         head = import_head(cid, dest)
     ch = character_asset(cid, dest)
     if not mhs.try_add_object_to_edit(ch):
         raise RuntimeError("cannot edit " + ch.get_path_name())
     try:
+        if "template" in steps:
+            before = list(mhs.get_face_model_coefficients(ch))
+            from_template(ch, import_template(cid, dest))
+            after = list(mhs.get_face_model_coefficients(ch))
+            log("template moved the face model by %.2f" % sum((a - b) ** 2 for a, b in zip(before[2:], after[2:])) ** 0.5)
         if "conform" in steps:
+            before = list(mhs.get_face_model_coefficients(ch))
             conform(ch, head, cid)
+            after = list(mhs.get_face_model_coefficients(ch))
+            log("conform moved the face model by %.2f" % sum((a - b) ** 2 for a, b in zip(before[2:], after[2:])) ** 0.5)
+        if "shape" in steps:
+            shape(ch, cid)
+            eal.save_loaded_asset(ch)
         if "rig" in steps:
             r = unreal.MetaHumanCharacterAutoRiggingRequestParams()
             r.blocking, r.report_progress = True, False
