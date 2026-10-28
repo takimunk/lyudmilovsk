@@ -148,7 +148,7 @@ def build_base(cid, spec):
     s = {"name": cid, "macro": c["macro"], "targets": c.get("targets", {}), "skin": c.get("skin", "young_caucasian_female2"),
          "eyes": c.get("eyes", "high-poly"), "eyelashes": c.get("eyelashes", "eyelashes01"),
          "eyebrows": c.get("eyebrows", "eyebrow001")}
-    if isinstance(c.get("hair"), str) and c["hair"] != "shell":        # a MakeHuman hairstyle, tinted later
+    if isinstance(c.get("hair"), str) and c["hair"] not in ("shell", "skin"):        # a MakeHuman hairstyle, tinted later
         s["hair"] = c["hair"]
     bm, arm, objs = P.build(s)
     if objs.get("eyebrows") and not c.get("keep_eyebrows", False):     # brows come painted from the model
@@ -278,7 +278,7 @@ def surface_fit(arm, body, high, spec, marks):
     disp = diffuse(raw, conf, nb, iterations=fit.get("iterations", 400), smooth=fit.get("smooth", 6))
     # the face only takes the model's broad form: its features stay MakeHuman's (the generated ones are lumpy)
     face = (group_weight(body, {"head", "jaw"}) > 0.3) & mask
-    for _ in range(fit.get("face_smooth", 40)):
+    for _ in range(fit.get("face_smooth", 15)):
         d2 = diffuse(disp, np.zeros(n), nb, iterations=1, smooth=0)
         disp[face] = d2[face]
     disp[~mask] = 0.0
@@ -296,6 +296,181 @@ def surface_fit(arm, body, high, spec, marks):
         hit, mask.sum(), (keep & mask).sum(), np.linalg.norm(disp[mask], axis=1).mean(), np.linalg.norm(disp, axis=1).max()))
     inv = np.array(body.matrix_world.inverted())
     move_all(body, lambda o: o + disp @ inv[:3, :3].T)
+
+
+# ---------------------------------------------------------------------------------------------- likeness
+
+FACE_TARGETS = ["eyes/%s-eye-" + t for t in (
+    "scale", "height2", "corner1", "corner2", "epicanthus")] + ["nose/nose-" + t for t in (
+    "scale-horiz", "scale-vert", "scale-depth", "point-width", "nostrils-width", "width1", "width2", "width3", "hump",
+    "volume", "base", "point", "curve", "trans", "flaring", "compression", "greek", "septumangle")] + ["mouth/mouth-" + t for t in (
+    "scale-horiz", "scale-vert", "scale-depth", "upperlip-volume", "lowerlip-volume", "upperlip-height", "lowerlip-height",
+    "upperlip-width", "lowerlip-width", "angles", "cupidsbow", "trans", "philtrum-volume")] + ["chin/chin-" + t for t in (
+    "height", "width", "prominent", "prognathism", "jaw-drop", "bones")] + ["cheek/%s-cheek-" + t for t in (
+    "bones", "volume", "inner")] + ["head/head-" + t for t in (
+    "scale-horiz", "scale-vert", "scale-depth", "fat")] + ["forehead/forehead-" + t for t in (
+    "scale-vert", "trans", "temple")] + ["eyebrows/eyebrows-" + t for t in ("trans", "angle")]
+OPPOSITES = [("incr", "decr"), ("out", "in"), ("up", "down"), ("forward", "backward"), ("convex", "concave"),
+             ("uncompress", "compress")]
+
+
+def target_pairs():
+    """Signed sliders: (name, [(file, sign)...]); a side's l- and r- files move together; trans keeps only the
+    forward/backward pair (moving features sideways or up would undo the paint's alignment)."""
+    import glob
+    import mpfb_pipeline as P
+    root = P.services()["LocationService"].get_mpfb_data("targets")
+    out = []
+    for pat in FACE_TARGETS:
+        sides = ["l", "r"] if "%s" in pat else [None]
+        files = {}
+        for sd in sides:
+            base = pat % sd if sd else pat
+            for f in glob.glob(os.path.join(root, base + "-*.target.gz")):
+                rest = os.path.basename(f)[len(os.path.basename(base)) + 1:-len(".target.gz")]
+                if "-" in rest:
+                    continue
+                files.setdefault(rest, []).append(f)
+        for pos, neg in OPPOSITES:
+            if pos in files and neg in files:
+                if pat.endswith("-trans") and pos not in ("forward",):
+                    continue
+                out.append((pat.replace("%s-", ""), [(f, 1) for f in files[pos]] + [(f, -1) for f in files[neg]]))
+    return out
+
+
+def read_target(path, n, fs):
+    import gzip
+    d = np.zeros((n, 3))
+    for line in gzip.open(path, "rt"):
+        p = line.split()
+        if len(p) == 4 and not line.startswith("#"):
+            i = int(p[0])
+            if i < n:
+                x, y, z = float(p[1]), float(p[2]), float(p[3])
+                d[i] = (x * 0.1 * fs, -z * 0.1 * fs, y * 0.1 * fs)
+    return d
+
+
+def probe(co, nrm, idx, bvh, out_max=0.035, in_max=0.02):
+    """Signed distance along each normal to the model's surface facing the same way (conf 0 where none is near)."""
+    t = np.zeros(len(co))
+    conf = np.zeros(len(co))
+    for i in idx:
+        p, d = Vector(co[i]), Vector(nrm[i])
+        best = None
+        for sign, lim in ((1, out_max), (-1, in_max)):
+            h = bvh.ray_cast(p, d * sign, lim)
+            if h[0] is not None and h[1].dot(d) > 0.3:
+                v = (h[0] - p).length * sign
+                if best is None or abs(v) < abs(best):
+                    best = v
+        if best is not None:
+            t[i], conf[i] = best, 1.0
+    return t, conf
+
+
+def eyeballs(body):
+    """[(centre, radius)] of our eyeballs, left (+X) first."""
+    mats = [i for i, m in enumerate(body.data.materials) if "-poly" in m.name or m.name.endswith("eyes")]
+    co = R.world_co(body)
+    vs = set()
+    for p in body.data.polygons:
+        if p.material_index in mats:
+            vs.update(p.vertices)
+    e = co[sorted(vs)]
+    out = []
+    for side in (e[e[:, 0] > 0], e[e[:, 0] < 0]):
+        c = side.mean(0)
+        out.append((c, float(np.median(np.linalg.norm(side - c, axis=1)))))
+    return out
+
+
+def opening(co, mask, ball):
+    """Our eye opening's rim (the lid margins: skin lying on the eyeball's front): outer, inner, top, bottom."""
+    c, r = ball
+    d = np.linalg.norm(co - c, axis=1)
+    rim = np.nonzero(mask & (np.abs(d - r) < 0.0025) & (co[:, 1] < c[1] - 0.25 * r))[0]
+    sx = 1 if c[0] > 0 else -1
+    pick = lambda a: int(rim[np.argmax(a)])
+    return {"outer": pick(co[rim, 0] * sx), "inner": pick(-co[rim, 0] * sx), "top": pick(co[rim, 2]), "bottom": pick(-co[rim, 2])}
+
+
+def fit_face(arm, body, high, spec, ours, theirs, fs):
+    """Likeness: MakeHuman's own face sliders (eyes' size and shape, nose, mouth, chin, cheeks, head) set by least
+    squares so our face meets the model's surface and our eye openings match its painted ones. The result stays a
+    clean MakeHuman face, only shaped like hers; the sliders are logged and written to export/<id>_face.json."""
+    n = len(body.data.vertices)
+    mask = body_mask(body)
+    nb_body = int(mask.sum())
+    assert mask[:nb_body].all(), "the skin must be the joined mesh's first vertices (MakeHuman's order)"
+    co = R.world_co(body)
+    nrm = vertex_normals(body)
+    pts = R.bone_points(arm)
+    ez = pts["eye_l"][0].z
+    face = mask & (group_weight(body, {"head", "jaw"}) > 0.3) & (nrm[:, 1] < -0.2) & (co[:, 2] > ez - 0.11) \
+        & (co[:, 2] < ez + 0.035) & (np.abs(co[:, 0]) < 0.075)
+    for e in ("eye_l", "eye_r"):
+        face &= np.linalg.norm((co - np.array(pts[e][0])) * [1, 1.3, 1.5], axis=1) > 0.02
+    bvh = BVHTree.FromObject(high, bpy.context.evaluated_depsgraph_get())
+    t, conf = probe(co, nrm, np.nonzero(face)[0], bvh)
+    rows = np.nonzero(conf > 0)[0]
+    pairs = target_pairs()
+    cols = []
+    for name, files in pairs:
+        d = np.zeros((n, 3))
+        for f, sg in files:
+            d[:nb_body] += sg * read_target(f, nb_body, fs)
+        cols.append(d)
+    D = np.stack(cols, -1)                                              # n x 3 x k
+    A = np.einsum("ij,ijk->ik", nrm[rows], D[rows])
+    b = t[rows]
+    # eye openings: our rim onto the model's painted opening
+    land_A, land_b = [], []
+    W = np.sqrt(len(rows)) * spec["clean"].get("fit", {}).get("eye_weight", 0.6)
+    for e, te, ball in zip(ours["eyes"], theirs["eyes"], eyeballs(body)):
+        o = opening(co, mask, ball)
+        sx = 1 if e["x"] > 0 else -1
+        kw, kh = spec["clean"].get("fit", {}).get("eye_open", (0.92, 0.85))   # the paint's opening includes the liner
+        for key, axis, goal in (("outer", 0, e["x"] + sx * te["w"] / 2 * kw), ("inner", 0, e["x"] - sx * te["w"] / 2 * kw),
+                                ("top", 2, e["z"] + te["h"] / 2 * kh), ("bottom", 2, e["z"] - te["h"] / 2 * kh)):
+            i = o[key]
+            land_A.append(D[i, axis] * W)
+            land_b.append((goal - co[i, axis]) * W)
+    A = np.vstack([A, np.array(land_A)])
+    b = np.concatenate([b, np.array(land_b)])
+    lam = spec["clean"].get("fit", {}).get("ridge", 1e-6) * len(rows)
+    free = np.ones(len(pairs), bool)
+    w = np.zeros(len(pairs))
+    lim = np.array([0.4 if ("push" in nm or "eye-scale" in nm) else 1.0 for nm, _ in pairs])
+    for _ in range(8):                                                  # bounded ridge: clip and solve the rest again
+        Af = A[:, free]
+        r = b - A[:, ~free] @ w[~free]
+        w[free] = np.linalg.solve(Af.T @ Af + lam * np.eye(free.sum()), Af.T @ r)
+        over = np.abs(w) > lim
+        if not (over & free).any():
+            break
+        w = np.clip(w, -lim, lim)
+        free &= ~over
+    disp = np.einsum("ijk,k->ij", D, w)
+    before = np.abs(b[:len(rows)]).mean()
+    after = np.abs(b[:len(rows)] - (A[:len(rows)] @ w)).mean()
+    # eyes, lashes, teeth ride with the skin round them
+    bi = np.nonzero(mask)[0]
+    kd = KDTree(len(bi))
+    for j, i in enumerate(bi):
+        kd.insert(co[i], j)
+    kd.balance()
+    for i in np.nonzero(~mask)[0]:
+        near = kd.find_n(co[i], 8)
+        ww = np.array([1.0 / max(d, 1e-4) for _, _, d in near])
+        disp[i] = (ww[:, None] * disp[bi[[j for _, j, _ in near]]]).sum(0) / ww.sum()
+    inv = np.array(body.matrix_world.inverted())
+    move_all(body, lambda o: o + disp @ inv[:3, :3].T)
+    used = {name: round(float(x), 3) for (name, _), x in zip(pairs, w) if abs(x) > 0.02}
+    json.dump(used, open(os.path.join(HERE, spec["id"], "export", spec["id"] + "_face.json"), "w"), indent=1)
+    log("face sliders (%d of %d used, %d surface points): mean gap %.4f -> %.4f m; %s" % (
+        len(used), len(pairs), len(rows), before, after, used))
 
 
 def mh_marks(body, arm, cid):
@@ -383,6 +558,9 @@ def load_high(cid, spec):
 
 
 def fit(arm, body, high, spec):
+    """Returns the scale the body took (MakeHuman's target deltas scale with it)."""
+    p0 = R.bone_points(arm)
+    l0 = (p0["head"][0] - p0["pelvis"][0]).length
     mco = R.world_co(high)
     target = R.silhouette(mco)
     # the donor share is of the skin's top (a MakeHuman hairstyle mustn't make the body shorter)
@@ -392,6 +570,8 @@ def fit(arm, body, high, spec):
     R.fit_donor(arm, body, target)
     R.centre_body(arm, body, mco)
     R.fit_legs(arm, body, mco, target["height"])
+    p1 = R.bone_points(arm)
+    return (p1["head"][0] - p1["pelvis"][0]).length / l0
 
 
 # ---------------------------------------------------------------------------------------------- the look
@@ -521,7 +701,12 @@ def bake_look(body, high, arm, cid, spec, ours, theirs):
     col2 = np.zeros((len(co), 4), np.float32)
     col2[:, 3] = 1
     col2[side, 0] = 1.0                                      # the face below the brows takes no far pass
-    col2[side & (np.abs(co[:, 0]) > 0.035), 1] = 1.0         # its sides lose stray dark paint (a braid, hair)
+    temple = (group_weight(low, {"head"}) > 0.3) & (co[:, 2] < ours["eyes"][0]["z"] + 0.03) & (np.abs(co[:, 0]) > 0.05)
+    col2[(side & (np.abs(co[:, 0]) > 0.035)) | temple, 1] = 1.0  # its sides lose stray dark paint (a braid, hair)
+    for c_, r_ in eyeballs(body):                            # a clean liner on our own lid margins
+        d = np.linalg.norm(co - c_, axis=1)
+        rim = (np.abs(d - r_) < 0.002) & (co[:, 1] < c_[1] - 0.55 * r_)
+        col2[rim, 2] = np.where(co[rim, 2] > c_[2], 1.0, 0.35)
     attr = low.data.color_attributes.new("mask", "FLOAT_COLOR", "POINT")
     attr.data.foreach_set("color", col.ravel())
     attr = low.data.color_attributes.new("mask2", "FLOAT_COLOR", "POINT")
@@ -575,6 +760,8 @@ def bake_look(body, high, arm, cid, spec, ours, theirs):
     dark = np.clip((0.85 * skin_l - lum) / (0.35 * skin_l), 0, 1)
     k = np.maximum(np.maximum(np.clip(mask[..., 0], 0, 1), np.clip(np.maximum(mask[..., 2], mask2[..., 1]), 0, 1) * dark), gap)
     out[..., :3] = fill_masked(out[..., :3], k)
+    liner = np.clip(mask2[..., 2:3], 0, 1) * spec["clean"].get("liner", 0.8)
+    out[..., :3] = out[..., :3] * (1 - liner) + np.array([0.04, 0.03, 0.03], np.float32) * liner
     out[..., 3] = 1
     img = bpy.data.images.new(cid + "_body", size, size, alpha=False)
     img.pixels.foreach_set(out.ravel())
@@ -700,12 +887,10 @@ def make_hair(body, high, arm, cid, spec):
     return hair
 
 
-def make_hair_shell(body, high, arm, cid, spec):
-    """Our own hair: a clean shell over the model's hair. Rays come in toward the head's middle on a grid of
-    directions (azimuth x elevation); where the first thing they meet stands off our skin, that is hair, and the
-    shell takes that point. Quads only where all four corners are hair: the open edges are the bangs and the bob's
-    hem. Thickened inward, smoothed, the model's colours baked on, rigged to the head."""
-    h = spec["clean"].get("hair_shell", {})
+def hair_grid(body, high, arm, h):
+    """The model's hairstyle as a radius over a grid of directions from the head's middle (azimuth x elevation):
+    rays come in toward the middle; where the first thing they meet stands off our skin, that is hair. Mirrored
+    (one-sided lumps such as a braid or clips go), thin bits dropped, smoothed. Returns c, els, azs, dirs, r, ok."""
     pts = R.bone_points(arm)
     c = Vector(pts["head"][0]) + Vector(h.get("centre", (0, 0.005, 0.07)))
     bvh = BVHTree.FromObject(high, bpy.context.evaluated_depsgraph_get())
@@ -732,6 +917,45 @@ def make_hair_shell(body, high, arm, cid, spec):
     for _ in range(2):
         nb = sum(np.roll(ok, s, 1) for s in (-1, 1)) + np.vstack([ok[1:], ok[-1:]]) + np.vstack([ok[:1], ok[:-1]])
         ok = np.where(ok, nb >= 2, nb >= 3) & (ok | (P != 0).any(-1))
+    # a tidy hairstyle: the radius over the grid, mirrored (one-sided lumps such as a braid or clips go) and smoothed
+    dirs = np.array([[(math.cos(el) * math.sin(az), -math.cos(el) * math.cos(az), math.sin(el)) for az in azs] for el in els])
+    r = np.where(ok, np.linalg.norm(P - np.array(c), axis=-1), 0.0)
+    if h.get("symmetric", True):
+        jm = (-np.arange(na)) % na
+        both = ok & ok[:, jm]
+        r = np.where(both, np.minimum(r, r[:, jm]), r)
+        ok = both
+    hitm = (P != 0).any(-1)
+    for i in np.nonzero(els > math.radians(55))[0]:                    # the crown is all hair
+        row = r[i][hitm[i]] if hitm[i].any() else r[i - 1][ok[i - 1]]
+        r[i] = np.where(hitm[i], r[i], np.median(row) if len(row) else 0.1)
+        ok[i] = True
+
+    def grow(m, k):
+        for _ in range(k):
+            m = m | np.roll(m, 1, 1) | np.roll(m, -1, 1) | np.vstack([m[1:], m[-1:]]) | np.vstack([m[:1], m[:-1]])
+        return m
+
+    def shrink(m, k):
+        return ~grow(~m, k)
+    ok = grow(shrink(ok, 3), 3) & ok                                   # thin bits (earrings, clips) go
+    for _ in range(h.get("radius_smooth", 24)):
+        okf = ok.astype(float)
+        sr = np.roll(r * okf, 1, 1) + np.roll(r * okf, -1, 1) + np.vstack([r[1:] * okf[1:], r[-1:] * okf[-1:]]) + np.vstack([r[:1] * okf[:1], r[:-1] * okf[:-1]])
+        sw = np.roll(okf, 1, 1) + np.roll(okf, -1, 1) + np.vstack([okf[1:], okf[-1:]]) + np.vstack([okf[:1], okf[:-1]])
+        r = np.where(ok & (sw > 0), 0.5 * r + 0.5 * sr / np.maximum(sw, 1), r)
+    return c, els, azs, dirs, r, ok
+
+
+def make_hair_shell(body, high, arm, cid, spec):
+    """Our own hair: a clean shell over the model's hair. Rays come in toward the head's middle on a grid of
+    directions (azimuth x elevation); where the first thing they meet stands off our skin, that is hair, and the
+    shell takes that point. Quads only where all four corners are hair: the open edges are the bangs and the bob's
+    hem. Thickened inward, smoothed, the model's colours baked on, rigged to the head."""
+    h = spec["clean"].get("hair_shell", {})
+    c, els, azs, dirs, r, ok = hair_grid(body, high, arm, h)
+    ne, na = len(els), len(azs)
+    P = np.array(c) + dirs * r[..., None]
     idx = -np.ones((ne, na), int)
     verts = []
     for i in range(ne):
@@ -790,6 +1014,114 @@ def make_hair_shell(body, high, arm, cid, spec):
     rig_to(hair, arm, {"head": np.ones(len(hair.data.vertices))})
     log("hair shell: %d of %d directions are hair, %d faces" % (ok.sum(), ok.size, len(hair.data.polygons)))
     return hair
+
+
+def make_hair_skin(body, high, arm, cid, spec):
+    """The model's hair surface itself, outer layer only: the faces that rays coming in toward the head's middle meet
+    first and that stand off our skin (no face, no inner layers, no specks), then decimated with its own UVs and
+    texture. The generated hair is not where the trouble was (eyes, face), and it is the model's own look."""
+    h = spec["clean"].get("hair_shell", {})
+    pts = R.bone_points(arm)
+    c = Vector(pts["head"][0]) + Vector(h.get("centre", (0, 0.005, 0.07)))
+    bvh = BVHTree.FromObject(high, bpy.context.evaluated_depsgraph_get())
+    tree = skin_bvh(body)
+    min_z = pts["neck_01"][0].z + h.get("min_dz", 0.0)
+    off = h.get("off", 0.004)
+    hit_faces = set()
+    for el in np.radians(np.linspace(h.get("el_min", -75), 90, h.get("el", 160))):
+        for az in np.linspace(0, 2 * math.pi, h.get("az", 240), endpoint=False):
+            d = Vector((math.cos(el) * math.sin(az), -math.cos(el) * math.cos(az), math.sin(el)))
+            hit = bvh.ray_cast(c + d * 0.3, -d, 0.3)
+            if hit[0] is None or hit[0].z < min_z:
+                continue
+            loc, nrm, _, dist = tree.find_nearest(hit[0])
+            if loc is not None and dist > off and (hit[0] - loc).dot(nrm) > 0:
+                hit_faces.add(hit[2])
+    hair = high.copy()
+    hair.data = high.data.copy()
+    hair.data.materials[0] = high.data.materials[0].copy()
+    bpy.context.scene.collection.objects.link(hair)
+    bm = bmesh.new()
+    bm.from_mesh(hair.data)
+    bm.faces.ensure_lookup_table()
+    keep = set(hit_faces)
+    for _ in range(h.get("grow", 3)):                                   # close the gaps between ray hits
+        ring = set()
+        for i in keep:
+            for v in bm.faces[i].verts:
+                for f in v.link_faces:
+                    if f.index not in keep:
+                        ring.add(f.index)
+        for i in ring:
+            p = Vector(bm.faces[i].calc_center_median())
+            loc, nrm, _, dist = tree.find_nearest(p)
+            if p.z > min_z and loc is not None and dist > off and (p - loc).dot(nrm) > 0:
+                keep.add(i)
+    bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in keep], context="FACES")
+    bm.to_mesh(hair.data)
+    bm.free()
+    R.clean(hair, min_island=300)
+    R.decimate(hair, h.get("faces", 9000))
+    for p in hair.data.polygons:
+        p.use_smooth = True
+    mat = hair.data.materials[0]
+    mat.name = "%s.hair" % cid
+    mat.use_backface_culling = False
+    for n in mat.node_tree.nodes:
+        if n.type == "TEX_IMAGE" and n.image and n.image.size[0] > h.get("texture", 2048):
+            n.image = n.image.copy()
+            n.image.scale(h.get("texture", 2048), h.get("texture", 2048))
+    hair.name = cid + "_hair"
+    rig_to(hair, arm, {"head": np.ones(len(hair.data.vertices))})
+    log("hair from the model's own surface: %d faces hit, %d kept -> %d faces" % (len(hit_faces), len(keep), len(hair.data.polygons)))
+    return hair
+
+
+def fit_mh_hair(body, high, arm, spec):
+    """A MakeHuman hairstyle (clean strand cards) bent to the model's: each hair vertex is moved along its direction
+    from the head's middle so the style's outer surface takes the model's radius there."""
+    name = spec["clean"]["hair"]
+    h = spec["clean"].get("hair_shell", {})
+    mats = [i for i, m in enumerate(body.data.materials) if m.name.split(".", 1)[-1] == name]
+    if not mats:
+        return
+    c, els, azs, dirs, rh, okh = hair_grid(body, high, arm, h)
+    c = np.array(c)
+    co = R.world_co(body)
+    vs = set()
+    for p in body.data.polygons:
+        if p.material_index in mats:
+            vs.update(p.vertices)
+    vi = np.array(sorted(vs))
+    v = co[vi] - c
+    rv = np.linalg.norm(v, axis=1)
+    el = np.arcsin(np.clip(v[:, 2] / rv, -1, 1))
+    az = np.arctan2(v[:, 0], -v[:, 1]) % (2 * math.pi)
+    ne, na = len(els), len(azs)
+    ii = np.clip(np.round((el - els[0]) / (els[1] - els[0])).astype(int), 0, ne - 1)
+    jj = np.round(az / (2 * math.pi) * na).astype(int) % na
+    rm = np.zeros((ne, na))
+    np.maximum.at(rm, (ii, jj), rv)                                     # the style's outer radius per direction
+    have = rm > 0
+    for _ in range(6):                                                  # fill and ease the style's own grid
+        f = have.astype(float)
+        sr = np.roll(rm * f, 1, 1) + np.roll(rm * f, -1, 1) + np.vstack([rm[1:] * f[1:], rm[-1:] * f[-1:]]) + np.vstack([rm[:1] * f[:1], rm[:-1] * f[:-1]])
+        sw = np.roll(f, 1, 1) + np.roll(f, -1, 1) + np.vstack([f[1:], f[-1:]]) + np.vstack([f[:1], f[:-1]])
+        rm = np.where(have, rm, np.where(sw > 0, sr / np.maximum(sw, 1), 0))
+        have = rm > 0
+    k = np.where(okh & have, rh / np.maximum(rm, 1e-4), 1.0)
+    k = np.clip(k, *h.get("scale_clip", (0.85, 1.6)))
+    for _ in range(4):
+        k = 0.5 * k + 0.125 * (np.roll(k, 1, 1) + np.roll(k, -1, 1) + np.vstack([k[1:], k[-1:]]) + np.vstack([k[:1], k[:-1]]))
+    s_ = k[ii, jj]
+    # the scalp side of the style stays put, its outside goes all the way out
+    inner = np.clip((rv - 0.6 * rm[ii, jj]) / (0.4 * rm[ii, jj] + 1e-6), 0, 1)
+    new = c + v * (1 + (s_ - 1) * inner)[:, None]
+    disp = np.zeros_like(co)
+    disp[vi] = new - co[vi]
+    inv = np.array(body.matrix_world.inverted())
+    move_all(body, lambda o: o + disp @ inv[:3, :3].T)
+    log("MakeHuman hair %s bent to the model's: scale %.2f..%.2f (median %.2f)" % (name, s_.min(), s_.max(), np.median(s_)))
 
 
 def make_skirt(body, high, arm, cid, spec):
@@ -979,18 +1311,22 @@ def main():
     if stage == "base":
         return
     high = load_high(cid, spec)
-    fit(arm, body, high, spec)
+    fs = fit(arm, body, high, spec)
     if marks:
         ours = mh_marks(body, arm, cid)
         for e, c in zip(ours["eyes"], eye_centres(body)):
             e["x"], e["z"] = float(c[0]), float(c[2])
         log("ours %s" % ours)
         face_warp(high, body, ours, marks, R.bone_points(arm)["neck_01"][0].z)
+        if spec["clean"].get("fit", {}).get("sliders", True):
+            fit_face(arm, body, high, spec, ours, marks, fs)
     surface_fit(arm, body, high, spec, marks)
     if marks:
         bake_look(body, high, arm, cid, spec, ours, marks)
     hs = spec["clean"].get("hair")
-    parts = [] if isinstance(hs, str) and hs != "shell" else [make_hair_shell(body, high, arm, cid, spec) if hs == "shell" else make_hair(body, high, arm, cid, spec)]
+    if isinstance(hs, str) and hs not in ("shell", "skin") and spec["clean"].get("hair_fit", True):
+        fit_mh_hair(body, high, arm, spec)
+    parts = [] if isinstance(hs, str) and hs not in ("shell", "skin") else [make_hair_shell(body, high, arm, cid, spec) if hs == "shell" else make_hair_skin(body, high, arm, cid, spec) if hs == "skin" else make_hair(body, high, arm, cid, spec)]
     if spec["clean"].get("skirt"):
         parts.append(make_skirt(body, high, arm, cid, spec))
     for m in body.data.materials:
