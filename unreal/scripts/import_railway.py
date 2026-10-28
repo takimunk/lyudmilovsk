@@ -24,7 +24,45 @@ def log(msg):
     unreal.log_warning("RAILWAY " + msg)
 
 
+TEXTURES = os.path.join(REPO, "design", "railway", "textures")
+TEX_DIR = "/Game/Railway/Textures"
+
+
+def import_textures():
+    """design/railway/textures/T_RL_*_{C,N,R}.png (tools/railway_textures.py) -> /Game/Railway/Textures, as the cable
+    car's surfaces (normal maps green-flipped, roughness linear); the game puts them on M_TR_Surface."""
+    if not os.path.isdir(TEXTURES):
+        return 0
+    tools = unreal.AssetToolsHelpers.get_asset_tools()
+    names = sorted(f for f in os.listdir(TEXTURES) if f.startswith("T_RL_") and f.endswith(".png"))
+    tasks = []
+    for f in names:
+        t = unreal.AssetImportTask()
+        t.filename = os.path.join(TEXTURES, f)
+        t.destination_path = TEX_DIR
+        t.automated = True
+        t.replace_existing = True
+        t.save = False
+        tasks.append(t)
+    tools.import_asset_tasks(tasks)
+    for f in names:
+        a = eal.load_asset(TEX_DIR + "/" + f[:-4])
+        if not a:
+            continue
+        kind = f[-5]
+        if kind == "N":
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+            a.set_editor_property("srgb", False)
+            a.set_editor_property("flip_green_channel", True)
+        elif kind == "R":
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+            a.set_editor_property("srgb", False)
+        eal.save_loaded_asset(a)
+    return len(names)
+
+
 def main():
+    log("textures: %d" % import_textures())
     if not os.path.isfile(KIT):
         log("no %s: keeping the committed meshes" % KIT)
         return

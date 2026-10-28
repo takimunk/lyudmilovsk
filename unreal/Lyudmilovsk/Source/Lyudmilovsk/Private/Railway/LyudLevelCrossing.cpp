@@ -48,8 +48,8 @@ void ALyudLevelCrossing::Setup(ULyudRailwaySubsystem* InRailway, const TSharedPt
 	// the deck: rubber panels over and between the rails, timber ramps up from the sand either side
 	{
 		FLyudMeshKit K;
-		K.Box(TEXT("rubber"), FTransform(FVector(0, 0, -5.0)), FVector(PathHalf, 120.0, 5.0), true);
-		K.Box(TEXT("rubber"), FTransform(FVector(0, 0, -20.0)), FVector(PathHalf, 260.0, 14.0), true);
+		K.Box(TEXT("tx_rubber"), FTransform(FVector(0, 0, -5.0)), FVector(PathHalf, 120.0, 5.0), true);
+		K.Box(TEXT("tx_rubber"), FTransform(FVector(0, 0, -20.0)), FVector(PathHalf, 260.0, 14.0), true);
 		const double Up = Rail - Ground;
 		const double Run = FMath::Max(300.0, Up / 0.16);
 		for (int32 Sd = -1; Sd <= 1; Sd += 2)
@@ -57,7 +57,7 @@ void ALyudLevelCrossing::Setup(ULyudRailwaySubsystem* InRailway, const TSharedPt
 			const double Pitch = FMath::RadiansToDegrees(FMath::Atan2(Up, Run));
 			const FVector M(0.0, Sd * (260.0 + Run * 0.5), -Up * 0.5 - 8.0);
 			// pitch about X (the ramp climbs along Y): build in a frame turned to face along Y
-			K.Box(TEXT("wood_grey"), FTransform(FRotator(Sd * Pitch, 90.0, 0.0), M), FVector(Run * 0.5 + 15.0, PathHalf, 8.0), true);
+			K.Box(TEXT("tx_planks_dark"), FTransform(FRotator(Sd * Pitch, 90.0, 0.0), M), FVector(Run * 0.5 + 15.0, PathHalf, 8.0), true);
 		}
 		TArray<FName> Slots;
 		UStaticMesh* Mesh = K.Build(this, TEXT("CrossingDeck"), Slots);

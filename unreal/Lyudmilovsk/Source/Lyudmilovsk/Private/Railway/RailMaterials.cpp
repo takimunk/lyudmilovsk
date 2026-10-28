@@ -80,10 +80,25 @@ UMaterialInterface* Get(UObject* Owner, FName Name, TMap<FName, TObjectPtr<UMate
 	{
 		const FString Key = S.Mid(3);
 		UMaterialInterface* Master = LoadObject<UMaterialInterface>(nullptr, SurfacePath, nullptr, LOAD_NoWarn | LOAD_Quiet);
-		const FString TexBase = Key == TEXT("tunnel") ? TEXT("concrete") : Key;
-		auto Tex = [&](const TCHAR* Suffix)
+		// the railway's own surfaces (tools/railway_textures.py -> /Game/Railway/Textures, metres per tile), else the
+		// cable car's (/Game/Transport/Textures)
+		static const TMap<FString, float> RailTiles = {
+			{ TEXT("ballast"), 0.8f }, { TEXT("armour"), 2.4f }, { TEXT("planks"), 1.6f }, { TEXT("planks_dark"), 1.6f },
+			{ TEXT("rubber"), 1.2f }, { TEXT("tunnel"), 3.f }, { TEXT("wetsand"), 1.5f }, { TEXT("turf"), 1.8f }, { TEXT("lichen"), 2.f },
+		};
+		const float* RailTile = RailTiles.Find(Key);
+		const FString TexBase = Key == TEXT("tunnel") && !RailTile ? TEXT("concrete") : Key;
+		auto Tex = [&](const TCHAR* Suffix) -> UTexture*
 		{
-			const FString N = FString::Printf(TEXT("T_TR_%s_%s"), *TexBase, Suffix);
+			if (RailTile)
+			{
+				const FString N = FString::Printf(TEXT("T_RL_%s_%s"), *Key, Suffix);
+				if (UTexture* T = LoadObject<UTexture>(nullptr, *FString::Printf(TEXT("/Game/Railway/Textures/%s.%s"), *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet))
+				{
+					return T;
+				}
+			}
+			const FString N = FString::Printf(TEXT("T_TR_%s_%s"), *(Key == TEXT("tunnel") ? FString(TEXT("concrete")) : TexBase), Suffix);
 			return LoadObject<UTexture>(nullptr, *FString::Printf(TEXT("/Game/Transport/Textures/%s.%s"), *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet);
 		};
 		UTexture* C = Tex(TEXT("C"));
@@ -100,10 +115,11 @@ UMaterialInterface* Get(UObject* Owner, FName Name, TMap<FName, TObjectPtr<UMate
 				M->SetTextureParameterValue(TEXT("RoughTex"), R);
 			}
 			// weathered sea-side concrete: greyer and darker than the stations', the tunnel's inside sooty
-			const FLinearColor Tint = Key == TEXT("tunnel") ? FLinearColor(0.25f, 0.24f, 0.23f)
+			const bool bOwn = RailTile && C->GetPathName().StartsWith(TEXT("/Game/Railway/"));
+			const FLinearColor Tint = Key == TEXT("tunnel") ? (bOwn ? FLinearColor(0.55f, 0.53f, 0.5f) : FLinearColor(0.25f, 0.24f, 0.23f))
 				: (Key == TEXT("concrete") ? FLinearColor(0.78f, 0.76f, 0.72f) : FLinearColor::White);
 			M->SetVectorParameterValue(TEXT("Tint"), Tint);
-			M->SetScalarParameterValue(TEXT("Tile"), Key == TEXT("steel") ? 1.f : 2.4f);
+			M->SetScalarParameterValue(TEXT("Tile"), bOwn ? *RailTile : (Key == TEXT("steel") ? 1.f : 2.4f));
 			M->SetScalarParameterValue(TEXT("Metallic"), Key == TEXT("steel") ? 0.8f : 0.f);
 			M->SetScalarParameterValue(TEXT("RoughMul"), 1.1f);
 			Out = M;

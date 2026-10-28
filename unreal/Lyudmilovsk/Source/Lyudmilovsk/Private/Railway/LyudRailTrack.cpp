@@ -156,7 +156,7 @@ void ALyudRailTrack::BuildLine(const TSharedPtr<FJsonObject>& Built)
 			const bool bTunnel = Sb <= PortalS;
 			const double Half = bTunnel ? TunnelHalf : CrestHalf;
 			// the crest: ballast
-			Q(K, TEXT("ballast"), L(Sa, -Half, Ca), L(Sb, -Half, Cb), L(Sb, Half, Cb), L(Sa, Half, Ca), FVector::UpVector);
+			Q(K, TEXT("tx_ballast"), L(Sa, -Half, Ca), L(Sb, -Half, Cb), L(Sb, Half, Cb), L(Sa, Half, Ca), FVector::UpVector);
 			if (!bTunnel)
 			{
 				// the sides: armour stones down to the bed (or the beach), toe spreading with the height
@@ -168,8 +168,8 @@ void ALyudRailTrack::BuildLine(const TSharedPtr<FJsonObject>& Built)
 					// the top 25 cm of the side is still ballast, then the stones (where the sea's weed grows on them)
 					const double Ka = Ca - 25.0, Kb = Cb - 25.0;
 					const double Ma = Half + Slope * 25.0, Mb = Half + Slope * 25.0;
-					Q(K, TEXT("ballast"), L(Sa, Sd * Half, Ca), L(Sb, Sd * Half, Cb), L(Sb, Sd * Mb, Kb), L(Sa, Sd * Ma, Ka), FVector(0, Sd, 1));
-					Q(K, TEXT("stone"), L(Sa, Sd * Ma, Ka), L(Sb, Sd * Mb, Kb), L(Sb, Sd * Wb, Tb), L(Sa, Sd * Wa, Ta), FVector(0, Sd, 1));
+					Q(K, TEXT("tx_ballast"), L(Sa, Sd * Half, Ca), L(Sb, Sd * Half, Cb), L(Sb, Sd * Mb, Kb), L(Sa, Sd * Ma, Ka), FVector(0, Sd, 1));
+					Q(K, TEXT("tx_armour"), L(Sa, Sd * Ma, Ka), L(Sb, Sd * Mb, Kb), L(Sb, Sd * Wb, Tb), L(Sa, Sd * Wa, Ta), FVector(0, Sd, 1));
 				}
 			}
 			// the rails: a head, its two sides (a 15 cm tall rail on the sleepers)
@@ -354,7 +354,7 @@ void ALyudRailTrack::BuildHalt(const TSharedPtr<FJsonObject>& St)
 		const double Za = Deck(Sa), Zb = Deck(Sb);
 		const double Ym = Side * (Edge + Wd * 0.5);
 		const double Pitch = FMath::RadiansToDegrees(FMath::Atan2(Za - Zb, (Sb - Sa) * 100.0));
-		K.Box(int32(Sa) % 2 ? TEXT("wood") : TEXT("wood_grey"), FTransform(FRotator(Pitch, 0.0, 0.0), L((Sa + Sb) * 0.5, Ym, (Za + Zb) * 0.5 - 6.0)),
+		K.Box(TEXT("tx_planks"), FTransform(FRotator(Pitch, 0.0, 0.0), L((Sa + Sb) * 0.5, Ym, (Za + Zb) * 0.5 - 6.0)),
 			FVector((Sb - Sa) * 50.0 - 1.0, Wd * 0.5, 6.0), true);
 		K.Box(TEXT("white"), FTransform(FRotator(Pitch, 0.0, 0.0), L((Sa + Sb) * 0.5, Side * (Edge + 12.0), (Za + Zb) * 0.5 + 0.5)), FVector((Sb - Sa) * 50.0, 6.0, 0.6), false);
 	}
@@ -388,7 +388,7 @@ void ALyudRailTrack::BuildHalt(const TSharedPtr<FJsonObject>& St)
 		const double Pitch = FMath::RadiansToDegrees(FMath::Atan2(D.Z, Len));
 		const FRotator Rot(Pitch, D.Rotation().Yaw, 0.0);
 		const FVector M = (A + B) * 0.5 - FVector(0, 0, 6.0);
-		K.Box(TEXT("wood_grey"), FTransform(Rot, M), FVector(Len * 0.5 + 10.0, 80.0, 6.0), true);
+		K.Box(TEXT("tx_planks"), FTransform(Rot, M), FVector(Len * 0.5 + 10.0, 80.0, 6.0), true);
 		for (int32 Sd = -1; Sd <= 1; Sd += 2)
 		{
 			const FVector Off = FRotator(0.0, Rot.Yaw, 0.0).RotateVector(FVector(0, Sd * 78.0, 0));
@@ -522,6 +522,18 @@ void ALyudRailTrack::BuildIsland(const TSharedPtr<FJsonObject>& Built)
 		return;
 	}
 	Ground->ComponentTags.Add(TEXT("LyudSeaBed"));
+	// the kit's flat paints -> the railway's photographed surfaces (UVs in metres)
+	const TArray<FName> SlotNames = Ground->GetMaterialSlotNames();
+	for (int32 I = 0; I < SlotNames.Num(); I++)
+	{
+		const FString N = SlotNames[I].ToString();
+		const TCHAR* Tx = N.Contains(TEXT("wetsand")) ? TEXT("tx_wetsand") : (N.Contains(TEXT("grass")) ? TEXT("tx_turf")
+			: (N.Contains(TEXT("rock")) ? TEXT("tx_lichen") : nullptr));
+		if (Tx)
+		{
+			Ground->SetMaterial(I, Mat(Tx));
+		}
+	}
 	Ground->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
 	// a few wind-bent pines, junipers and sea buckthorn on its crown (procedural plants like every plant in the game)
 	FRandomStream Rnd(int32(Isl->GetNumberField(TEXT("seed"))));
