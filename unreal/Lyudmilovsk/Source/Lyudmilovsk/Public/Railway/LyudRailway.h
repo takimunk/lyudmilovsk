@@ -112,6 +112,8 @@ public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
+	/** One train's state now: events, then its cars placed (called by the train's own pre-physics tick). */
+	void StepTrain(int32 Index, float DeltaTime);
 	virtual TStatId GetStatId() const override;
 	virtual bool IsTickable() const override { return bStarted; }
 

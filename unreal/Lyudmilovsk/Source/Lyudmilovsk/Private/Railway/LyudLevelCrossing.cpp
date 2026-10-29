@@ -1,5 +1,8 @@
 #include "Railway/LyudLevelCrossing.h"
 
+#include "Audio/LyudSoundscape.h"
+#include "Sound/SoundAttenuation.h"
+
 #include "../Transport/LyudMeshKit.h"
 #include "Components/AudioComponent.h"
 #include "Components/PointLightComponent.h"
@@ -198,6 +201,19 @@ void ALyudLevelCrossing::Setup(ULyudRailwaySubsystem* InRailway, const TSharedPt
 		Bell->SetSound(BellSound);
 		Bell->bAutoActivate = false;
 		Bell->bAllowSpatialization = true;
+		// the bell carries ~250 m and is muffled indoors (the club stands on the cliff over the crossing)
+		USoundAttenuation* At = NewObject<USoundAttenuation>(this);
+		At->Attenuation.bAttenuate = true;
+		At->Attenuation.bSpatialize = true;
+		At->Attenuation.AttenuationShape = EAttenuationShape::Sphere;
+		At->Attenuation.AttenuationShapeExtents = FVector(600.f, 0.f, 0.f);
+		At->Attenuation.FalloffDistance = 25000.f;
+		At->Attenuation.DistanceAlgorithm = EAttenuationDistanceModel::NaturalSound;
+		At->Attenuation.bAttenuateWithLPF = true;
+		At->Attenuation.LPFRadiusMin = 1500.f;
+		At->Attenuation.LPFRadiusMax = 25000.f;
+		BellAtten = At;
+		Bell->AttenuationSettings = At;
 		Bell->RegisterComponent();
 		Bell->SetRelativeLocation(FVector(0.0, 0.0, 380.0));
 		AddInstanceComponent(Bell);
@@ -246,6 +262,11 @@ void ALyudLevelCrossing::UpdateFrom(const LyudRail::FRun& Run, double Now, float
 		}
 	}
 	WarnTime += DeltaSeconds;
+	if (Bell && bWarning)
+	{
+		const ULyudSoundscapeSubsystem* Scape = ULyudSoundscapeSubsystem::Get(this);
+		Bell->SetVolumeMultiplier(Scape ? FMath::Lerp(0.06f, 1.f, Scape->GetOutdoors()) : 1.f);
+	}
 	// the barriers come down 5 s into the warning (8 s to fall), go up as soon as it ends (6 s)
 	const float Target = bWarning && WarnTime > 5.f ? 1.f : 0.f;
 	Barrier = FMath::FInterpConstantTo(Barrier, Target, DeltaSeconds, Target > Barrier ? 1.f / 8.f : 1.f / 6.f);

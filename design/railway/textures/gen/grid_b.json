@@ -1,0 +1,12 @@
+{
+ "service": "Higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "aspect_ratio": "1:1",
+ "job_id": "1b7ca122-29ab-44ac-b0e7-71b02c1f08e3",
+ "date": "2026-10-29",
+ "prompt": "A 3x3 grid of nine square seamless tileable surface textures for a video game, photographed straight down in flat even light, no shadows, no perspective, no borders, no gaps, no lines between cells, no text, no logos. Interior materials of an old 1960s Japanese Showa-era local electric train. Row 1: (1) wine-red cut-pile moquette seat fabric, fine velvet pile with a subtle small woven diamond pattern, slightly worn and faded; (2) pale mint-green melamine decorative laminate wall panel with a faint fine speckle pattern, slight sheen, tiny scuffs; (3) old oiled timber floor boards running horizontally, dark honey-brown, narrow 9 cm boards, worn smooth, a few dark nail holes. Row 2: (4) louvered steel heater grille painted cream-grey, horizontal slots, slightly dusty; (5) cream-white painted steel ceiling sheet with rows of small round rivet heads and faint dust; (6) beige roller blind canvas fabric with a fine woven texture, slightly yellowed. Row 3: (7) varnished warm brown wood trim, straight grain running horizontally, glossy varnish, a few dents; (8) dark grey ribbed rubber floor mat with small round studs, worn; (9) dark green painted steel with brush marks and tiny chips. Each cell evenly lit and uniform so it can tile.",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261029_103107_1b7ca122-29ab-44ac-b0e7-71b02c1f08e3.png",
+ "sha256": "b3e30f00a9ea9679feacaecb64a96e73803711fc22d0de563dad60804843c7a0"
+}

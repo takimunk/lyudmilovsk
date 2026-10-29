@@ -61,8 +61,38 @@ def import_textures():
     return len(names)
 
 
+LOCALIZED = os.path.join(REPO, "textures", "localized")
+
+
+def import_prints():
+    """The train's print atlas in every language there is (tools/train_ads.py: textures/localized/<lang>/train_atlas.jpg)
+    -> /Game/Railway/Localized/<lang>/T_RL_train_atlas (LyudText::LoadTexture("Railway", "T_RL_train_atlas"))."""
+    tools = unreal.AssetToolsHelpers.get_asset_tools()
+    n = 0
+    for lang in sorted(os.listdir(LOCALIZED)) if os.path.isdir(LOCALIZED) else []:
+        src = os.path.join(LOCALIZED, lang, "train_atlas.jpg")
+        if not os.path.isfile(src):
+            continue
+        dest = "/Game/Railway/Localized/%s" % lang
+        t = unreal.AssetImportTask()
+        t.filename = src
+        t.destination_path = dest
+        t.destination_name = "T_RL_train_atlas"
+        t.automated = True
+        t.replace_existing = True
+        t.save = False
+        tools.import_asset_tasks([t])
+        a = eal.load_asset(dest + "/T_RL_train_atlas")
+        if a:
+            a.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
+            eal.save_loaded_asset(a)
+            n += 1
+    return n
+
+
 def main():
     log("textures: %d" % import_textures())
+    log("print atlases: %d" % import_prints())
     if not os.path.isfile(KIT):
         log("no %s: keeping the committed meshes" % KIT)
         return

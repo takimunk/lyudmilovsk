@@ -1,0 +1,12 @@
+{
+ "service": "Higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "aspect_ratio": "16:9",
+ "job_id": "c8e16b5d-8afe-49aa-ab5c-ccd2136c6977",
+ "date": "2026-10-29",
+ "prompt": "A 4x3 grid of twelve separate small advertisement illustrations, each filling its cell edge to edge, in the style of 1960s Japanese Showa-era train poster art: flat silkscreen colours, limited palette, slight paper grain, bold simple shapes. Absolutely no text, no letters, no numbers, no logos anywhere. No borders, no gaps, no lines between cells. Row 1: (1) a sandy Baltic beach with striped umbrellas and a small green-and-cream train running on rails just under the sea toward a little island with pines; (2) a red cable-car cabin gliding on a wire over a seaside town of five-storey apartment blocks; (3) a glowing beige 1980s home computer and CRT monitor with a joystick on a desk, warm lamp; (4) a kiosk window with a bottle of lemonade and a vanilla ice cream cone on a waffle. Row 2: (5) a bakery basket with a round rye loaf and braided sweet buns; (6) polished honey-coloured Baltic amber pendants on dark velvet; (7) a murmuration of starlings forming a swirl over the sea at sunset; (8) a scientist in a white coat at a blackboard with a model atom and a telescope, retro science lecture. Row 3: (9) a tin of smoked sprats with golden fish fanned out, lemon and rye bread; (10) a wooden 1960s radio-gramophone set with a vinyl record; (11) fireworks over a calm sea at night with a pier; (12) a steaming public bathhouse with a painted Mount Fuji mural and wooden buckets.",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261029_103126_c8e16b5d-8afe-49aa-ab5c-ccd2136c6977.png",
+ "sha256": "f9d71a76b93d72b63c96702b6ce43f4a97e5e4a02c1f9bbbd519c76ee52497cb"
+}

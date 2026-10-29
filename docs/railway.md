@@ -118,9 +118,45 @@ drawn; at the other halt they get off and go down its ramp. Checked offscreen (`
 ordered home from the island on Tuesday 10:41 wait at the island halt, take the 10:47 back, sit in the car (seen inside
 and through the windows) and come out at the beach halt by the crossing.
 
+## The inside
+
+A Showa local of about 1958 (the car's plate: モハ 1958, Nippon Sharyo): oiled plank floor along the car with studded
+black rubber across each doorway and an aluminium sill plate; wine-red moquette long benches with rounded fronts and a
+backrest leaning 9 degrees, louvred heater grilles under them, varnished end screens with a bent chrome rail; mint
+melamine ("decora") walls, a cream riveted steel ceiling; varnished window sills and frames, beige roller blinds (some
+pulled part way); a luggage rack of chrome rods on brackets; straps on two rails; globe lamps on chrome collars; caged
+ceiling fans; the cab's partition with the line's map over its door.
+
+Textures: one Higgsfield grid of nine swatches (`design/railway/textures/gen/grid_b.png`, pinned in `grid_b.json`)
+through `tools/railway_textures.py` (the glossy ones deglared, laminate and sheet softened) -> `T_RL_<name>_{C,N,R}`;
+the kit's slots `tx_<name>` carry metre UVs and get `M_TR_Surface` in the game (`LyudRailMat::Dress`).
+
+Print: twelve advertisements (the beach, the cable car, the ATON club, the kiosk, the bakery, amber, the starlings, the
+Academgorodok's lectures, sprats, a radiogram, the sea festival, the Fuji bathhouse) as hanging posters over the aisle
+(two back to back on each of four hangers) and framed cards over the racks; the line's map; stickers (mind your
+fingers and don't lean on the doors, priority seats on the end windows, no smoking, the emergency call); the number
+and maker's plates. The pictures are a wordless Higgsfield grid (`design/railway/ads/gen/ads_a.png`); every word is
+typeset by `tools/train_ads.py` from the string tables (`poster.train.*`, `sign.train.*`; fonts Dela Gothic One and
+M PLUS 1p, OFL) into one 4096 atlas per language (`textures/localized/<lang>/train_atlas.jpg`,
+`design/railway/ads/atlas.json` for the UVs), shown in the player's language (`LyudRailMat::Print`).
+
+Glitch check: `blender/railway/kit_lint.py` runs in every kit build (`KITLINT` lines; `-- --strict` fails on any):
+same-facing faces closer than 2 mm and overlapping (z-fighting), textured faces without UV area, stretched metre UVs,
+squashed prints. The car is checked assembled (body, glass, trim, inside, the shut leaves); every print is a thin box
+standing clear of its surface. Look at the result too: `RAILTEST_ONLY=inside` (the aisle, benches, the cards over the
+racks at a grazing angle, a poster, the door stickers, both ends, a blind, night).
+
+Riding: the cars move in the train's own pre-physics tick and the player's character ticks after it, so standing on a
+car's floor CharacterMovement's movement base carries the player; only off the floor (a jump) does the train move
+them itself, never both (`RAILTEST_ONLY=ride`: a standing player drifts under 2 cm over a kilometre's run).
+
+Sound: the running gear's loops and the horn, joints, doors and gulls have their own attenuation (heard ~500 m, the
+horn ~2.5 km) and are muffled to 6 % for a listener indoors (`ULyudSoundscapeSubsystem::GetOutdoors`); the loops stop
+when the train is hidden (in the tunnel, under the club).
+
 ## Open
 
 - The landscape hole at the mouth needs a scene rebuild (`build_scene01.sh`) in a checkout to show.
-- The wheels' foam is simple see-through discs and droplets; a real water simulation (a wake in the sea's own surface) is open.
+- The wheels' foam is lace meshes of flecks and droplets; a real water simulation (a wake in the sea's own surface) is open.
 - Gulls are actors of their own near the train (not birds of the bird life's simulation).
 - The train is one set on a single track; a passing loop at the island would allow two.
