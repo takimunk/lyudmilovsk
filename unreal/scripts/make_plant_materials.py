@@ -11,7 +11,13 @@ species at runtime, so these are the only plant assets):
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
+import os
+import sys
+
 import unreal
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import winter_snow  # noqa: E402
 
 mel = unreal.MaterialEditingLibrary
 eal = unreal.EditorAssetLibrary
@@ -122,7 +128,7 @@ sat = node(m, unreal.MaterialExpressionSaturate, -300, 650)
 link(mul, "", sat, "")
 mask = node(m, unreal.MaterialExpressionMultiply, -180, 600)
 link(sat, "", mask, "A")
-link(snow, "", mask, "B")
+link(winter_snow.branch_snow(m, snow), "", mask, "B")
 white = node(m, unreal.MaterialExpressionConstant3Vector, -400, -50, constant=unreal.LinearColor(0.85, 0.88, 0.92, 1))
 lerp = node(m, unreal.MaterialExpressionLinearInterpolate, -150, -200)
 link(wood, "", lerp, "A")
@@ -155,7 +161,8 @@ link(shade, "", shade1, "A")
 base = node(m, unreal.MaterialExpressionMultiply, -350, -100)
 link(leaf, "", base, "A")
 link(shade1, "", base, "B")
-mel.connect_material_property(base, "", MP.MP_BASE_COLOR)
+# snow on the branches (MPC_LyudWinter, ULyudWinterSubsystem: fresh snow sticks, wind and thaw shake it off)
+mel.connect_material_property(winter_snow.leaf_snow(m, base), "", MP.MP_BASE_COLOR)
 # light through the blade: the leaf's own colour, a little deeper
 sss = node(m, unreal.MaterialExpressionMultiply, -350, 150, const_b=0.7)
 link(leaf, "", sss, "A")
