@@ -60,6 +60,21 @@
     "lo": 0.003,
     "tilt": 0.0
    }
-  ]
- }
+  ],
+  "subdivide": false
+ },
+ "face_protect": true,
+ "no_shadow": [
+  {
+   "_doc": "the bucket hat: its brim shaded his eyes",
+   "box": [
+    -0.2,
+    0.2,
+    -1,
+    1,
+    1.735,
+    2.0
+   ]
+  }
+ ]
 }

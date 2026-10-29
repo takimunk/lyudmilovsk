@@ -28,7 +28,7 @@ sun = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 50
 sun.light_component.set_intensity(4.0)
 eas.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 300)).light_component.set_intensity(1.2)
 eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(180, 220, 100), unreal.Rotator(0, -90, 0))
-idle = unreal.load_asset("/Game/Characters/Humans/Anims/A_Human_StandIdle")
+idle = unreal.load_asset("/Game/Characters/Humans/Anims/" + os.environ.get("FACE_ANIM", "A_Human_StandIdle"))   # A_Human_SitIdle: seated
 for i, who in enumerate(CAST):
     x = (400.0 if os.environ.get("FACE_FULL") else 120.0) * i
     act = eas.spawn_actor_from_class(unreal.SkeletalMeshActor, unreal.Vector(x, 0, 0), unreal.Rotator(0, 0, 0))

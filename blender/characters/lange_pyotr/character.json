@@ -27,6 +27,8 @@
     "lo": 0.0043,
     "tilt": 0.0
    }
-  ]
- }
+  ],
+  "subdivide": false
+ },
+ "face_protect": true
 }

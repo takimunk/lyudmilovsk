@@ -66,6 +66,8 @@
     "z": 1.4681,
     "w": 0.057
    }
-  }
- }
+  },
+  "subdivide": false
+ },
+ "face_protect": true
 }

@@ -66,7 +66,11 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
    own A and raises the arms to the T before anything else. `"face_protect": true` gives the face's front more of the
    budget (off by default: at fix_hi3d.sh's 40k the face rig's subdivision then doubles it). `M_HumanFace` is
    two-sided: a skirt's or coat's hem folded inside out past a leg in the idle stance showed holes. Face test:
-   `FACE_FULL=1` (level) and `FACE_FOV` (test_faces) give whole-body shots for a cast sheet. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
+   `FACE_FULL=1` (level) and `FACE_FOV` (test_faces) give whole-body shots for a cast sheet. A long skirt (Aya Nishimura): `skirt.smooth` averages its weights through space so a wrap's two loose layers move
+   together, `skirt.top`/`ramp` reach the blend above the hips, and `"inner"` zones (vertices on the donor's legs and
+   not the cloth's colour) give the legs under it the weights of the cloth over them, so a step or sitting can't push
+   them out while the shins and feet below the hem keep their own. `--preview` adds a seated pose (`*_sit*.png`);
+   L_FaceTest `FACE_ANIM=A_Human_SitIdle` seats the cast. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.

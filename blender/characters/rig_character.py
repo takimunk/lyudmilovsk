@@ -792,12 +792,12 @@ def relax_skirt(model, body, arm, skirt):
     legs = [n for n in names if n.split("_")[0] in ("thigh", "calf", "foot", "ball")]
     n = 0
     for v, p in zip(model.data.vertices, co):
-        if not (hem - 0.02 < p[2] < hip):
+        if not (hem - 0.02 < p[2] < hip + skirt.get("top", 0.0)):     # top: a skirt rigid on the pelvis from above the hips
             continue
         hit = tree.find_nearest(Vector(p))
         if hit[0] is None:
             continue
-        t = min(1.0, max(0.0, (hit[3] - skirt["gap"]) / skirt["blend"])) * min(1.0, (hip - p[2]) / 0.12)
+        t = min(1.0, max(0.0, (hit[3] - skirt["gap"]) / skirt["blend"])) * min(1.0, (hip + skirt.get("top", 0.0) - p[2]) / skirt.get("ramp", 0.12))
         if t <= 0:
             continue
         w = {names[g.group]: g.weight for g in v.groups}
@@ -814,6 +814,41 @@ def relax_skirt(model, body, arm, skirt):
                 model.vertex_groups[idx[k]].remove([v.index])
         n += 1
     log("skirt: %d vertices relaxed toward the pelvis" % n)
+    sm = skirt.get("smooth")
+    if sm:
+        smooth_skirt_weights(model, hem, hip + skirt.get("top", 0.0), sm.get("radius", 0.05), sm.get("iterations", 6))
+
+
+def smooth_skirt_weights(model, z0, z1, radius, iterations):
+    """A wrap skirt's two layers lie on each other unconnected; nearest-surface weights give the top flap one leg and
+    the layer under it the other, so a step or a wide stance opens the wrap and shows the leg (Aya Nishimura). The
+    weights of the skirt's vertices are averaged through space (all neighbours within `radius`), so what lies together
+    moves together."""
+    from mathutils.kdtree import KDTree
+    co = world_co(model)
+    idx = np.nonzero((co[:, 2] > z0 - 0.02) & (co[:, 2] < z1))[0]
+    names = [g.name for g in model.vertex_groups]
+    W = np.zeros((len(idx), len(names)))
+    pos = {v: i for i, v in enumerate(idx)}
+    for v in idx:
+        for g in model.data.vertices[v].groups:
+            W[pos[v], g.group] = g.weight
+    kd = KDTree(len(idx))
+    for i, v in enumerate(idx):
+        kd.insert(Vector(co[v]), i)
+    kd.balance()
+    nb = [[j for (_, j, _) in kd.find_range(Vector(co[v]), radius)] for v in idx]
+    for _ in range(iterations):
+        W = np.array([W[n].mean(0) for n in nb])
+    W /= np.maximum(W.sum(1, keepdims=True), 1e-6)
+    for i, v in enumerate(idx):
+        for gi, name in enumerate(names):
+            w = W[i, gi]
+            if w > 1e-3:
+                model.vertex_groups[gi].add([int(v)], float(w), "REPLACE")
+            else:
+                model.vertex_groups[gi].remove([int(v)])
+    log("skirt weights smoothed through space: %d vertices, %.0f cm" % (len(idx), radius * 100))
 
 
 # ---------------------------------------------------------------------------------------------- export
@@ -846,6 +881,70 @@ def no_shadow(model, zones):
     attr.data.foreach_set("color", col.ravel())
     me.color_attributes.active_color = attr
     log("no shadow: %d vertices" % sel.sum())
+
+
+def drop_hidden(model, zones, body=None):
+    """Removes what a long skirt hides and an idle stance pushes through it (Aya Nishimura's legs under her ankle-long
+    wrap skirt): vertices in each zone's box, only the warm skin-coloured ones if "skin"."""
+    co = world_co(model)
+    img = base_image(model)
+    W, H = img.size
+    px = np.empty(W * H * 4, np.float32)
+    img.pixels.foreach_get(px)
+    col = vertex_colours(model, img, px.reshape(H, W, 4))
+    sel = np.zeros(len(co), bool)
+    for z in zones:
+        x0, x1, y0, y1, z0, z1 = z["box"]
+        s = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
+        if z.get("skin"):
+            s &= (col[:, 0] - col[:, 1] > 0.06) & (col[:, 0] - col[:, 2] > 0.1) & (col[:, 0] > 0.45)   # not olive cloth
+        if z.get("near_donor") and body is not None:      # on the donor's own legs, where the skirt stands off them
+            from mathutils.bvhtree import BVHTree
+            tree = BVHTree.FromObject(body, bpy.context.evaluated_depsgraph_get())
+            near = np.array([tree.find_nearest(Vector(p))[3] or 1.0 for p in co])
+            s &= near < z["near_donor"]
+        if z.get("not_olive"):                            # skin, even in the skirt's shade, is redder than green
+            s &= col[:, 0] - col[:, 1] > 0.03
+        sel |= s
+    delete_verts(model, sel)
+    log("dropped %d hidden vertices" % sel.sum())
+
+
+def inner_follow(model, zones, body):
+    """What a long skirt hides moves with the skirt: in each zone (drop_hidden's selection: on the donor's legs, not
+    the skirt's colour) every hidden vertex takes the weights of the nearest skirt vertex, so a step or sitting can't
+    push the leg out through the cloth, and the leg is still there (Aya Nishimura's ankle-long wrap skirt)."""
+    from mathutils.kdtree import KDTree
+    from mathutils.bvhtree import BVHTree
+    co = world_co(model)
+    img = base_image(model)
+    W, H = img.size
+    px = np.empty(W * H * 4, np.float32)
+    img.pixels.foreach_get(px)
+    col = vertex_colours(model, img, px.reshape(H, W, 4))
+    tree = BVHTree.FromObject(body, bpy.context.evaluated_depsgraph_get())
+    names = [g.name for g in model.vertex_groups]
+    n = 0
+    for z in zones:
+        x0, x1, y0, y1, z0, z1 = z["box"]
+        box = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
+        near = np.array([tree.find_nearest(Vector(p))[3] or 1.0 for p in co])
+        inner = box & (near < z.get("near_donor", 0.025)) & (col[:, 0] - col[:, 1] > 0.03)
+        cloth = np.nonzero(box & ~inner)[0]
+        kd = KDTree(len(cloth))
+        for i, v in enumerate(cloth):
+            kd.insert(Vector(co[v]), i)
+        kd.balance()
+        for v in np.nonzero(inner)[0]:
+            _, j, _ = kd.find(Vector(co[v]))
+            src = {g.group: g.weight for g in model.data.vertices[int(cloth[j])].groups}
+            for gi in range(len(names)):
+                if gi in src:
+                    model.vertex_groups[gi].add([int(v)], src[gi], "REPLACE")
+                else:
+                    model.vertex_groups[gi].remove([int(v)])
+            n += 1
+    log("inner: %d hidden vertices move with the cloth over them" % n)
 
 
 def finish(model, arm, cid):
@@ -942,6 +1041,17 @@ def preview(model, arm, cid):
     turn("head", 20, "X")                # a nod: the bangs must stay on the forehead
     shot("posed", 30)
     shot("posed_side", 90)
+    # seated (benches, the train): thighs forward, shins down
+    for b in pb:
+        b.matrix_basis = Matrix()
+    turn("thigh_l", -85, "X")
+    turn("thigh_r", -85, "X")
+    turn("calf_l", 85, "X")
+    turn("calf_r", 85, "X")
+    turn("upperarm_l", 70, "Y")
+    turn("upperarm_r", -70, "Y")
+    shot("sit", 30)
+    shot("sit_side", 90)
 
 
 BODY_NAME = None
@@ -966,9 +1076,13 @@ def main():
     fit_donor(arm, body, target)
     centre_body(arm, body, world_co(model))
     fit_legs(arm, body, world_co(model), target["height"])
+    if "drop" in spec:
+        drop_hidden(model, spec["drop"], body)
     if "hands" in spec:
         replace_hands(model, body, arm, spec["hands"])
     transfer_weights(model, body, arm, spec.get("skirt"))
+    if "inner" in spec:
+        inner_follow(model, spec["inner"], body)
     if spec.get("face", {}).get("rig", True):
         import face_rig
         marks = face_rig.build(model, arm, cid, spec)

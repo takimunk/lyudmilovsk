@@ -33,10 +33,12 @@
     "lo": 0.004,
     "tilt": 0.0
    }
-  ]
+  ],
+  "subdivide": false
  },
  "face_project": {
   "skip": true,
   "_doc": "glasses: the front picture's frames would be painted onto the face"
- }
+ },
+ "face_protect": true
 }

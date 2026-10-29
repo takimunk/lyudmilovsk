@@ -10,9 +10,14 @@
  "hands": {},
  "skirt": {
   "hem_z": 0.1,
-  "gap": 0.015,
-  "blend": 0.06,
-  "pelvis": 0.4
+  "gap": 0.0,
+  "blend": 0.1,
+  "pelvis": 0.3,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "_doc": "ankle-long wrap skirt: follows the legs (sitting), its weights smoothed through space so the wrap's two layers move together"
  },
  "face": {
   "normal_strength": 0.4,
@@ -33,6 +38,22 @@
     "lo": 0.0045,
     "tilt": 0.0
    }
-  ]
- }
+  ],
+  "subdivide": false
+ },
+ "face_protect": true,
+ "inner": [
+  {
+   "_doc": "her legs under the ankle-long skirt move with it (feet and ankles below the hem keep their own)",
+   "box": [
+    -0.3,
+    0.3,
+    -1,
+    1,
+    0.13,
+    0.75
+   ],
+   "near_donor": 0.045
+  }
+ ]
 }

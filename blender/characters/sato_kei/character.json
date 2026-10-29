@@ -107,5 +107,6 @@
  "face_project": {
   "skip": true,
   "_doc": "glasses: the front picture's frames would be painted onto the face"
- }
+ },
+ "face_protect": true
 }

@@ -66,8 +66,10 @@
     "lo": 0.0035,
     "tilt": 0.0
    }
-  ]
+  ],
+  "subdivide": false
  },
  "a_pose": true,
- "_a_pose": "hi3d made her in an A-pose: unbend_arms raises the arms to the T first"
+ "_a_pose": "hi3d made her in an A-pose: unbend_arms raises the arms to the T first",
+ "face_protect": true
 }

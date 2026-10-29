@@ -33,6 +33,8 @@
     "lo": 0.0035,
     "tilt": 0.0
    }
-  ]
- }
+  ],
+  "subdivide": false
+ },
+ "face_protect": true
 }
