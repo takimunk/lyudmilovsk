@@ -115,12 +115,14 @@ for (int li = 0; li < 2; li++)
         float shrink = lerp(1.0, 1.0 - tb * tb * 0.85, B.z) + spread * 1.4;
         float c = saturate(cover * shrink);
         float d = K.Remap(field, 1.0 - c, 1.0 - c + max(c, 0.08) * 0.9);
-        if (B.w > 0.01)
+        if (B.w > 0.001)
         {
-            // thunderstorms: separate giant cells on a jittered grid, each a tower narrowing a little upward under an
-            // anvil that flares out downwind at the top (the anvil's shift is already in q)
-            float best = K.Cells(q, cell, cover, B.w, tb);
-            d = K.Remap(best + (n3 - 0.5) * 0.5, 0.0, 0.3) * smoothstep(1.0, 0.9, tb);
+            // thunderstorms: separate giant cells on a fixed grid, each a tower narrowing a little upward under an
+            // anvil that flares out downwind at the top (the anvil's shift is already in q); blended in as the anvil
+            // grows, so congestus turns into cumulonimbus without a jump
+            float best = K.Cells(q, 6.0, cover, B.w, tb);
+            float dc = K.Remap(best + (n3 - 0.5) * 0.5, 0.0, 0.3) * smoothstep(1.0, 0.9, tb);
+            d = lerp(d, dc, saturate(B.w * 2.0));
         }
         d *= smoothstep(0.0, lerp(0.04, 0.25, B.y), tb) * smoothstep(1.0, lerp(0.8, 0.55, B.y), tb);
         // a deck: an even layer with only a soft texture
@@ -152,7 +154,7 @@ for (int li = 0; li < 2; li++)
         float above = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 3.0), b2 / (cell * 3.5)), 0).r);
         float lfs = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 14.0), 0.31), 0).r);
         float f2 = lerp(above, lfs * 0.55 + above * 0.45, 0.35 + 0.55 * C.w) * lerp(1.0, K.Remap(lfs, 0.35, 0.75) * 1.3, C.w);
-        float core = B.w > 0.01 ? K.Remap(K.Cells(qs, cell, cover, 0.0, 0.0), 0.1, 0.6) : K.Remap(f2, 1.0 - cover * 0.8, 1.0);
+        float core = lerp(K.Remap(f2, 1.0 - cover * 0.8, 1.0), B.w > 0.001 ? K.Remap(K.Cells(qs, 6.0, cover, 0.0, 0.0), 0.1, 0.6) : 0.0, saturate(B.w * 2.0));
         float streak = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 1.5), h * 0.03 + t * 0.0005), 0).r);
         float d = E.x * 0.02 * core * (0.6 + 0.4 * streak) * smoothstep(0.0, 0.4, h) * smoothstep(b2, b2 - 0.3, h - 0.3);
         dens += d * A.w;

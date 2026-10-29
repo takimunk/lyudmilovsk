@@ -48,6 +48,15 @@ namespace
 		L.BaseM = BaseM;
 		L.TopM = TopM;
 		L.Density = Density;
+		// how flat the genus is (the weather engine gives it continuously; presets take the genus's own)
+		switch (G)
+		{
+		case ELyudCloudType::Cirrostratus: case ELyudCloudType::Stratus: L.Sheet = 1.f; break;
+		case ELyudCloudType::Altostratus: case ELyudCloudType::Nimbostratus: L.Sheet = 0.95f; break;
+		case ELyudCloudType::Stratocumulus: L.Sheet = 0.5f; break;
+		case ELyudCloudType::Altocumulus: case ELyudCloudType::AltocumulusLenticular: L.Sheet = 0.1f; break;
+		default: L.Sheet = 0.f; break;
+		}
 		return L;
 	}
 }
@@ -221,49 +230,61 @@ FLyudCloudSky ULyudCloudSubsystem::FromWeather() const
 
 ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& L, float PrecipRate, float ShowerCells)
 {
-	using G = ELyudCloudType;
+	// No switch on the genus: the weather's Type flips at thresholds, while Sheet, Cover, Base, Top and Density change
+	// smoothly, so the shape is blended from them and a change of genus never shows as a jump.
+	//   heaped (Sheet 0): cumulus -> congestus -> cumulonimbus by thickness; altocumulus in the middle layer
+	//   Sheet 0.5: stratocumulus
+	//   sheet (Sheet 1): stratus -> nimbostratus by thickness; altostratus in the middle layer
+	struct FRow
+	{
+		float Cell, Sheet, Round, Anvil, Erosion, Stretch, Ragged, Cluster, Dark, Boil, Shafts;
+		FRow Lerp(const FRow& O, float K) const
+		{
+			auto M = [K](float A, float B) { return A + (B - A) * K; };
+			return { M(Cell, O.Cell), M(Sheet, O.Sheet), M(Round, O.Round), M(Anvil, O.Anvil), M(Erosion, O.Erosion), M(Stretch, O.Stretch),
+				M(Ragged, O.Ragged), M(Cluster, O.Cluster), M(Dark, O.Dark), M(Boil, O.Boil), M(Shafts, O.Shafts) };
+		}
+	};
+	//                       cell  sheet round anvil eros  strch rag   clust dark  boil  shafts
+	static const FRow Cu     = { 1.4f, 0.f,  0.85f, 0.f, 0.75f, 1.4f, 0.05f, 0.35f, 0.3f, 1.f,  0.f };
+	static const FRow CuCon  = { 2.6f, 0.f,  0.55f, 0.f, 0.7f,  1.2f, 0.1f,  0.6f,  0.5f, 1.4f, 0.5f };
+	static const FRow Cb     = { 6.f,  0.f,  0.f,   1.f, 0.55f, 1.f,  0.3f,  0.f,   0.8f, 1.2f, 1.f };
+	static const FRow Sc     = { 1.6f, 0.12f, 0.55f, 0.f, 0.5f, 1.5f, 0.08f, 0.f,   0.45f, 0.6f, 0.2f };
+	static const FRow St     = { 4.f,  0.92f, 0.2f, 0.f, 0.15f, 1.5f, 0.08f, 0.f,   0.4f, 0.3f, 0.3f };
+	static const FRow Ns     = { 5.f,  0.85f, 0.2f, 0.f, 0.25f, 1.3f, 0.45f, 0.f,   0.85f, 0.5f, 1.f };
+	static const FRow Ac     = { 0.8f, 0.15f, 0.6f, 0.f, 0.55f, 1.6f, 0.02f, 0.45f, 0.2f, 0.6f, 0.f };
+	static const FRow As     = { 6.f,  0.95f, 0.1f, 0.f, 0.12f, 1.5f, 0.05f, 0.f,   0.35f, 0.3f, 0.4f };
+
 	FShape S;
-	// cell km, sheet, top rounding, anvil | erosion, stretch, ragged base km, cluster | darkness, boil
-	struct FRow { float Cell, Sheet, Round, Anvil, Erosion, Stretch, Ragged, Cluster, Dark, Boil; };
-	FRow R = { 1.5f, 0.f, 0.6f, 0.f, 0.5f, 1.3f, 0.05f, 0.f, 0.3f, 0.6f };
-	float Shafts = 0.f;
-	switch (L.Type)
-	{
-	case G::Cumulus:          R = { 1.4f, 0.f, 0.85f, 0.f, 0.75f, 1.4f, 0.05f, 0.35f, 0.3f, 1.f }; break;
-	case G::CumulusCongestus: R = { 2.6f, 0.f, 0.55f, 0.f, 0.7f, 1.2f, 0.1f, 0.6f, 0.5f, 1.4f }; Shafts = 0.5f; break;
-	case G::Cumulonimbus:     R = { 6.f, 0.f, 0.f, 1.f, 0.55f, 1.f, 0.3f, 0.f, 0.8f, 1.2f }; Shafts = 1.f; break;
-	case G::Stratocumulus:    R = { 1.6f, 0.12f, 0.55f, 0.f, 0.5f, 1.5f, 0.08f, 0.f, 0.45f, 0.6f }; break;
-	case G::Stratus:          R = { 4.f, 0.92f, 0.2f, 0.f, 0.15f, 1.5f, 0.08f, 0.f, 0.4f, 0.3f }; Shafts = 0.3f; break;
-	case G::Nimbostratus:     R = { 5.f, 0.85f, 0.2f, 0.f, 0.25f, 1.3f, 0.45f, 0.f, 0.85f, 0.5f }; Shafts = 1.f; break;
-	case G::Altocumulus:      R = { 0.8f, 0.15f, 0.6f, 0.f, 0.55f, 1.6f, 0.02f, 0.45f, 0.2f, 0.6f }; break;
-	case G::AltocumulusLenticular: R = { 0.9f, 0.1f, 0.7f, 0.f, 0.3f, 2.f, 0.02f, 0.2f, 0.2f, 0.2f }; break;
-	case G::Altostratus:      R = { 6.f, 0.95f, 0.1f, 0.f, 0.12f, 1.5f, 0.05f, 0.f, 0.35f, 0.3f }; Shafts = 0.4f; break;
-	default: break;
-	}
-	const bool bDraw = L.Type != G::None && !IsHigh(L.Type) && L.Cover > 0.f;
+	const bool bDraw = L.Type != ELyudCloudType::None && !IsHigh(L.Type) && L.Cover > 0.f;
 	const float Cover = bDraw ? L.Cover : 0.f;
-	// rain shafts only where something falls: light rain greys the air under the base, a downpour hangs curtains
-	Shafts *= FMath::Clamp(PrecipRate / 4.f, 0.f, 1.f);
-	// shower cells make convective layers clumpier
-	const float Cluster = FMath::Clamp(R.Cluster + (L.Type >= G::Cumulus ? ShowerCells * 0.5f : 0.f), 0.f, 1.f);
-	// decks: the weather's density is how much light they let through, so it sets their optical depth whatever
-	// their thickness (an altostratus 2 km thick still shows a watery sun; a nimbostratus is dark)
-	float Density = FMath::Clamp(L.Density, 0.f, 1.f);
 	const float ThickM = FMath::Max(L.TopM - L.BaseM, 50.f);
-	float Tau = 0.f;
-	switch (L.Type)
-	{
-	case G::Altostratus:  Tau = 1.5f + 7.f * Density; break;
-	case G::Stratus:      Tau = 6.f + 14.f * Density; break;
-	case G::Nimbostratus: Tau = 25.f + 35.f * Density; break;
-	case G::Stratocumulus: Tau = 8.f + 22.f * Density; break;
-	default: break;
-	}
-	if (Tau > 0.f)
-	{
-		Density = FMath::Clamp(Tau / (CloudSigmaPerM * ThickM), 0.f, 1.f);
-	}
-	S.A = FVector4f(Cover, L.BaseM * 1e-3f, ThickM * 1e-3f + L.BaseM * 1e-3f, Density);
+	const float ThickKm = ThickM * 1e-3f;
+	const float Sheet = FMath::Clamp(L.Sheet, 0.f, 1.f);
+	auto Smooth = [](float A, float B, float X) { const float T = FMath::Clamp((X - A) / (B - A), 0.f, 1.f); return T * T * (3.f - 2.f * T); };
+
+	// low: heaped by thickness, then toward the deck by Sheet (through stratocumulus at 0.5)
+	const FRow Heaped = Cu.Lerp(CuCon, Smooth(1.2f, 3.5f, ThickKm)).Lerp(Cb, Smooth(4.5f, 7.5f, ThickKm));
+	const FRow Deck = St.Lerp(Ns, Smooth(1.f, 2.5f, ThickKm));
+	const FRow Low = Sheet < 0.5f ? Heaped.Lerp(Sc, Sheet * 2.f) : Sc.Lerp(Deck, (Sheet - 0.5f) * 2.f);
+	// the middle layer: altocumulus .. altostratus
+	const FRow Mid = Ac.Lerp(As, Sheet);
+	const FRow R = Low.Lerp(Mid, Smooth(1800.f, 2600.f, L.BaseM) * (1.f - Smooth(4.5f, 7.5f, ThickKm)));
+
+	// rain shafts only where something falls: light rain greys the air under the base, a downpour hangs curtains
+	const float Shafts = R.Shafts * FMath::Clamp(PrecipRate / 4.f, 0.f, 1.f);
+	// shower cells make heaped layers clumpier
+	const float Cluster = FMath::Clamp(R.Cluster + (1.f - Sheet) * ShowerCells * 0.5f, 0.f, 1.f);
+	// decks: the weather's density is how much light they let through, so it sets their optical depth whatever their
+	// thickness (an altostratus 2 km thick still shows a watery sun; a nimbostratus is dark); heaps keep it as it is
+	const float Density0 = FMath::Clamp(L.Density, 0.f, 1.f);
+	const float LowTau = Sheet < 0.5f ? 8.f + 22.f * Density0
+		: FMath::Lerp(8.f + 22.f * Density0, FMath::Lerp(6.f + 14.f * Density0, 25.f + 35.f * Density0, Smooth(1.f, 2.5f, ThickKm)), (Sheet - 0.5f) * 2.f);
+	const float Tau = FMath::Lerp(LowTau, 1.5f + 7.f * Density0, Smooth(1800.f, 2600.f, L.BaseM));
+	const float DeckDensity = FMath::Clamp(Tau / (CloudSigmaPerM * ThickM), 0.f, 1.f);
+	const float Density = FMath::Lerp(Density0, DeckDensity, Smooth(0.25f, 0.75f, Sheet) * (1.f - Smooth(4.5f, 7.5f, ThickKm)));
+
+	S.A = FVector4f(Cover, L.BaseM * 1e-3f, (L.BaseM + ThickM) * 1e-3f, Density);
 	S.B = FVector4f(R.Cell, R.Sheet, R.Round, R.Anvil);
 	S.C = FVector4f(R.Erosion, R.Stretch, R.Ragged, Cluster);
 	S.E = FVector4f(Shafts, R.Dark, R.Boil, 0.f);
@@ -365,8 +386,10 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	if (IsHigh(High.Type) && High.Cover > 0.f)
 	{
 		HA = FVector4f(High.Cover, (High.BaseM + High.TopM) * 0.5e-3f, FMath::Clamp(High.Density, 0.f, 1.f), 0.f);
-		const bool bCi = High.Type == G::Cirrus, bCc = High.Type == G::Cirrocumulus, bCs = High.Type == G::Cirrostratus;
-		HB = FVector4f(bCi ? 1.f : (bCs ? 0.35f : 0.f), bCc ? 1.f : 0.f, bCs ? 1.f : 0.f, FMath::Clamp(Target.Halo, 0.f, 1.f));
+		// fibres and veil from Sheet (continuous); the grain of cirrocumulus eases in and out with its genus
+		const float Veil = FMath::Clamp(High.Sheet, 0.f, 1.f);
+		const float Grain = High.Type == G::Cirrocumulus ? 1.f : 0.f;
+		HB = FVector4f((1.f - Grain) * (1.f - 0.65f * Veil), Grain * (1.f - Veil), Veil, FMath::Clamp(Target.Halo, 0.f, 1.f));
 	}
 	if (HighA.X < 0.01f || bSnap)
 	{
