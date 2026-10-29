@@ -592,7 +592,8 @@ void ULyudWeatherSubsystem::Tick(float DeltaTime)
 		LastPrecip = uint8(S.Precip);
 		OnPrecipChanged.Broadcast(From, ELyudPrecipType(S.Precip));
 	}
-	// lightning: a Poisson process at ~2 x Thunder strikes a minute, mostly kilometres off, now and then close
+	// lightning: a Poisson process at ~2 x Thunder strikes a minute; the storm comes and goes with its episode: far
+	// off (a low rumble ~10 km away) as it starts and ends, overhead in its middle, each strike scattered round that
 	if (S.Thunder > 0.01f)
 	{
 		NextStrike -= DeltaTime;
@@ -600,7 +601,9 @@ void ULyudWeatherSubsystem::Tick(float DeltaTime)
 		{
 			const float Mean = 60.f / (2.f * S.Thunder);
 			NextStrike = -Mean * FMath::Loge(FMath::Max(FMath::FRand(), 1e-3f));
-			Strike(FMath::Lerp(300.f, 6000.f, FMath::Pow(FMath::FRand(), 0.7f)));
+			const float Edge = FMath::Abs(S.RegimeProgress - 0.5f) * 2.f;
+			const float Centre = FMath::Lerp(1200.f, 11000.f, Edge * Edge);
+			Strike(FMath::Clamp(Centre * FMath::Pow(2.f, FMath::FRandRange(-1.2f, 1.f)), 250.f, 16000.f));
 		}
 	}
 	else

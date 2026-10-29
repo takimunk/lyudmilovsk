@@ -160,6 +160,7 @@ namespace LyudAudio
 		Rate = SampleRate;
 		R = FRng(Seed);
 		WindV.Init(SampleRate, Seed + 100);
+		WeatherV.Init(SampleRate, Seed + 200);
 		LeafHp.Set(1900.f, 0.6f, Rate);
 		LeafHp2.Set(9000.f, 0.5f, Rate);
 		NeedleBp.Set(4200.f, 0.5f, Rate);
@@ -223,6 +224,12 @@ namespace LyudAudio
 				S.Pan = Pan;
 				S.T = 0.f;
 				S.Roll = FDrift(R.Next());
+				// a near strike's crack is a train of claps: the kinks of the channel, each a shock wave of its own
+				for (float& C : S.Claps)
+				{
+					C = 0.3f * R.Uniform() * R.Uniform();
+				}
+				S.Claps[0] = 0.f;
 				return;
 			}
 		}
@@ -377,11 +384,17 @@ namespace LyudAudio
 			if ((I & (Block - 1)) == 0)
 			{
 				Rn = SRain.Step(std::max(P.Rain, 0.f));
-				const float Water = Rn * (1.f - 0.92f * Snow);
-				Bed = 0.15f * std::sqrt(Water);
+				// showers come in waves with the gusts of their cloud
+				const float Wave = 1.f + 0.45f * Clamp(P.Showery, 0.f, 1.f) * ShowerDrift.Step(0.12f, Rate / Block);
+				const float Water = Rn * (1.f - 0.92f * Snow) * Wave;
+				// drizzle's fine drops make a soft high mist of a hiss and hardly any single ticks
+				const float Fine = Clamp(P.Drizzle, 0.f, 1.f);
+				Bed = 0.15f * std::sqrt(Water) * (1.f - 0.45f * Fine);
 				Low = 0.10f * std::sqrt(std::max(Water - 1.f, 0.f));
+				RainBedL.Set(2600.f + 2600.f * Fine, 0.45f, Rate);
+				RainBedR.Set(2800.f + 2600.f * Fine, 0.45f, Rate);
 				// single drops near the ears: ticks on the ground, patters on leaves, plips into puddles
-				const float PerSec = std::min(40.f * Water, 900.f);
+				const float PerSec = std::min(40.f * Water, 900.f) * (1.f - 0.8f * Fine);
 				const float Expected = PerSec * Block / Rate;
 				int N = int(Expected);
 				if (R.Uniform() < Expected - N)
@@ -508,10 +521,15 @@ namespace LyudAudio
 				S.F.Process(ThunderB.Process(R.White()));
 				float V = 2.0f * Loud * Env * Roll * S.F.Low;
 				// the crack of a near strike
-				if (S.Dist < 1500.f && T < 0.6f)
+				if (S.Dist < 1500.f && T < 0.9f)
 				{
 					S.Fc.Process(R.White());
-					V += 0.3f * (1.f - S.Dist / 1500.f) * std::exp(-T / 0.12f) * S.Fc.High;
+					float Train = 0.f;
+					for (const float C : S.Claps)
+					{
+						Train += T >= C ? std::exp(-(T - C) / 0.05f) : 0.f;
+					}
+					V += 0.11f * (1.f - S.Dist / 1500.f) * (Train + 0.6f * std::exp(-T / 0.25f)) * S.Fc.High;
 				}
 				float OutL = 0.f, OutR = 0.f;
 				PanTo(V, S.Pan, 0.6f, OutL, OutR);
@@ -608,7 +626,10 @@ namespace LyudAudio
 		Before[5] = Energy();
 		RenderThunder(TL, TR, Num, P);
 		Before[6] = Energy();
-		for (int V = 0; V < NumVoices; V++)
+		double Extra[NumVoices] = {};
+		WeatherV.RenderOutside(TL, TR, Num, P, Extra);
+		WeatherV.Hush(TL, TR, Num, P);
+		for (int V = 0; V < Snow; V++)
 		{
 			VoiceRms[V] = std::sqrt(std::max(Before[V + 1] - Before[V], 0.f) / (2.f * Num));
 		}
@@ -630,6 +651,20 @@ namespace LyudAudio
 			L[I] += G * WallL.Low;
 			R2[I] += G * WallR.Low;
 		}
+		// right at the listener, not through any wall: footsteps, rain on the window, the umbrella
+		std::fill(Tmp.begin(), Tmp.begin() + size_t(Num) * 2, 0.f);
+		WeatherV.RenderNear(TL, TR, Num, P, Extra);
+		for (int I = 0; I < Num; I++)
+		{
+			L[I] += P.Master * TL[I];
+			R2[I] += P.Master * TR[I];
+		}
+		for (int V = Snow; V < NumVoices; V++)
+		{
+			VoiceRms[V] = std::sqrt(float(Extra[V]) / (2.f * Num));
+		}
+		// hail, the umbrella and the window ticks count as rain
+		VoiceRms[Rain] = std::sqrt(VoiceRms[Rain] * VoiceRms[Rain] + float(Extra[Rain]) / (2.f * Num));
 		Time += Num / Rate;
 	}
 }

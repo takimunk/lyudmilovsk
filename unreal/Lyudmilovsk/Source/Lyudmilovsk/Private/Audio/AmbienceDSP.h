@@ -12,7 +12,10 @@
 //   - rain: a bed of countless far drops and single near ones (ticks on the ground, plips in puddles, patters on
 //     leaves), drumming and muffled on a roof overhead; snow nearly silent;
 //   - crickets: field crickets chirping at the rate their temperature sets (Dolbear's law), each in its own place;
-//   - thunder: a crack when near, a long rolling rumble that comes later and darker the farther the strike.
+//   - thunder: a crack (a train of claps from the channel's kinks) when near, a long rolling rumble that comes later
+//     and darker the farther the strike;
+//   - the weather's own voices (WeatherVoices.h, AmbienceWeather.cpp): hail, umbrella, windows, blizzard, the hush of fresh snow and fog,
+//     drips, iced twigs, sea ice, the lighthouse's fog signal, footsteps on snow, slush, puddles and ice.
 // Stereo: directions are given as pans (-1 left .. 1 right of the listener's view), wider sources decorrelated.
 #pragma once
 
@@ -80,6 +83,8 @@ namespace LyudAudio
 	/** Equal-power pan of a mono sample into a stereo pair, Pan -1 .. 1. */
 	inline void PanTo(float X, float Pan, float Width, float& L, float& R);
 
+	enum EVoice { Wind = 0, Leaves, Surf, Rain, Crickets, Thunder, Snow, Drips, Ice, Signal, Steps, NumVoices };
+
 	/** What the world sounds like here and now; set from the game thread, read by the audio thread. */
 	struct FAmbienceParams
 	{
@@ -102,17 +107,48 @@ namespace LyudAudio
 		float Rain = 0.f;
 		float Snow = 0.f;
 		float RainRoof = 0.f;
+		/** What falls besides plain rain: share of drizzle (fine drops, a soft mist hiss), hail or graupel 0..1, how
+		 *  showery (rain coming in waves with the gusts) 0..1. */
+		float Drizzle = 0.f;
+		float Hail = 0.f;
+		float Showery = 0.f;
+		/** An umbrella over the listener 0..1; indoors by windows 0..1 (rain ticks on the glass). */
+		float Umbrella = 0.f;
+		float Windows = 0.f;
+		/** Snow lying: level depth cm and density kg/m3 (fresh fluff hushes the world, old crust doesn't). */
+		float SnowDepthCm = 0.f;
+		float SnowDensity = 100.f;
+		/** Fog 0..1 (dulls the far sounds); drips off the trees around (after rain, in fog) 0..1; thaw 0..1 (eaves
+		 *  dripping); glaze on the twigs around 0..1 (they clink in the wind). */
+		float Fog = 0.f;
+		float Drip = 0.f;
+		float Melt = 0.f;
+		float Glaze = 0.f;
+		/** Sea ice in hearing: cover 0..1, thickness cm, how far its edge is, m, its pan, the air's change C per hour
+		 *  (cooling cracks it), the swell under it, m (grinding floes). */
+		float SeaIce = 0.f;
+		float IceCm = 0.f;
+		float IceDistance = 1000.f;
+		float IcePan = 0.f;
+		float IceTempRate = 0.f;
+		float IceSwell = 0.f;
+		/** The lighthouse's fog signal: 0 silent .. 1 sounding, how far, m, and its pan. */
+		float FogSignal = 0.f;
+		float FogSignalDistance = 2000.f;
+		float FogSignalPan = 0.f;
+		/** The ground under the feet (Footstep): wet 0..1, puddles 0..1, standing on ice 0..1. */
+		float Wet = 0.f;
+		float Puddles = 0.f;
+		float OnIce = 0.f;
 		/** Crickets: 0 .. 1 how many sing, and the air temperature that paces them, C. */
 		float Crickets = 0.f;
 		float TempC = 15.f;
 		/** 0 outdoors .. 1 deep indoors: the outside comes through walls muffled and quieter. */
 		float Enclosure = 0.f;
 		float Master = 1.f;
-		/** Per-voice gains (tests, mixing): wind, leaves, surf, rain, crickets, thunder. */
-		float Gain[6] = { 1.f, 1.f, 1.f, 1.f, 1.f, 1.f };
+		/** Per-voice gains (tests, mixing), by EVoice. */
+		float Gain[NumVoices] = { 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f };
 	};
-
-	enum EVoice { Wind = 0, Leaves, Surf, Rain, Crickets, Thunder, NumVoices };
 
 	/** Wind: rumble, whoosh, whistle and the rush of flight. Usable alone (ULyudWindAudioComponent). */
 	class FWindVoice
@@ -136,6 +172,12 @@ namespace LyudAudio
 		float LastLevel = 0.f;
 	};
 
+}
+
+#include "WeatherVoices.h"
+
+namespace LyudAudio
+{
 	/** The whole outdoor bed. */
 	class FAmbience
 	{
@@ -145,6 +187,9 @@ namespace LyudAudio
 		void Render(float* L, float* R, int Num, const FAmbienceParams& P);
 		/** A lightning strike DistanceM away (the crack and rumble arrive after the sound's travel), at Pan. */
 		void Strike(float DistanceM, float Pan);
+		/** A footstep of the listener now (Strength ~1 a walk, ~1.4 a run): its sound comes from the ground in the
+		 *  params (snow, slush, puddles, ice, wet or dry earth). */
+		void Footstep(float Strength, float Pan) { WeatherV.Footstep(Strength, Pan); }
 		/** RMS of each voice over the last render (tests). */
 		float VoiceRms[NumVoices] = {};
 
@@ -152,11 +197,13 @@ namespace LyudAudio
 		struct FGrain { float Amp = 0.f, Decay = 0.f, Pan = 0.f, Freq = 0.f, Phase = 0.f, Ring = 0.f; FSvf F; int Kind = 0; int Wait = 0; };
 		struct FBreak { float T = 0.f, Size = 1.f, Crash = 1.f, Wash = 4.f; FSvf F, Fw; bool bLive = false; };
 		struct FCricket { float Pan = 0.f, Freq = 4600.f, Phase = 0.f, Clock = 0.f, RateJit = 1.f, Gain = 1.f; int Pulse = 0; };
-		struct FStrike { float Delay = 0.f, Dist = 1000.f, Pan = 0.f, T = 0.f; FSvf F, Fc; FDrift Roll{ 3 }; bool bLive = false; };
+		struct FStrike { float Delay = 0.f, Dist = 1000.f, Pan = 0.f, T = 0.f; float Claps[5] = {}; FSvf F, Fc; FDrift Roll{ 3 }; bool bLive = false; };
 
 		float Rate = 48000.f;
 		FRng R;
+		FDrift ShowerDrift{ 31 };
 		FWindVoice WindV;
+		FWeatherVoices WeatherV;
 		// leaves
 		FSvf LeafHp, LeafHp2, NeedleBp;
 		FDrift LeafSwell{ 11 };

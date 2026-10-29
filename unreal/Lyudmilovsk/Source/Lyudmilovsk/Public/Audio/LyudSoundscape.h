@@ -8,6 +8,9 @@ class UAudioComponent;
 class USoundAttenuation;
 class USoundBase;
 class ULyudAmbienceSynth;
+class ALyudSea;
+namespace LyudAudio { struct FAmbienceParams; }
+namespace LyudWeather { struct FWeatherState; }
 
 /**
  * Everything the world sounds like around the player, and the music (docs/sound.md):
@@ -64,6 +67,10 @@ public:
 	UAudioComponent* AttachLoop(FName Pool, USceneComponent* Parent, float Volume = 1.f);
 	/** A spoken line (LyudText::LoadVoice) at Where, at the effects volume (the cable car's announcements). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume = 1.f);
+	/** An umbrella over the player 0..1 (rain drums on it; equipment calls this). */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void SetUmbrella(float Amount);
+	/** Windows near the player indoors 0..1 (rain ticks on the glass; a place that knows it has them calls this). */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void SetNearWindows(float Amount);
 	/** Text for logs and tests: every input of the bed and the music's state. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FString DebugReport() const;
 
@@ -104,6 +111,14 @@ private:
 	FVector Shore = FVector::ZeroVector;
 	float SurfHeight = 0.f, SurfPeriod = 6.f;
 	float Roof = 0.f;
+	// the weather's own voices: the umbrella and windows hooks, the air's cooling, the lighthouse, the feet
+	float Umbrella = 0.f, NearWindows = 0.f;
+	double LastWeatherHours = -1e9;
+	float LastWeatherTemp = 0.f, TempRate = 0.f;
+	bool bLighthouseLooked = false, bHaveLighthouse = false;
+	FVector Lighthouse = FVector::ZeroVector;
+	float StrideLeft = 0.3f;
+	bool bLeftFoot = false;
 	bool bBirdFlying = false;
 	TMap<FIntPoint, FTreeCell> TreeGrid;
 	bool bTreeGridBuilt = false;
@@ -130,6 +145,8 @@ private:
 	void UpdateSurf();
 	void UpdateBed();
 	void UpdateFar(float DeltaTime);
+	void UpdateWeatherVoices(LyudAudio::FAmbienceParams& P, const LyudWeather::FWeatherState& S, const ALyudSea* Sea);
+	void UpdateSteps(float DeltaTime);
 	void UpdateClub();
 	void UpdateMusic();
 	FName ComputeMood() const;
