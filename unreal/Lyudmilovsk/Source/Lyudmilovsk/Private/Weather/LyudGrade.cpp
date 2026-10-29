@@ -137,7 +137,8 @@ void ULyudGradeSubsystem::Tick(float DeltaTime)
 
 	FPostProcessSettings& S = Grade->Settings;
 	S.ColorGainShadows = Tint(1.f - 0.55f * B - 0.25f * A, 1.f - 0.15f * B - 0.1f * A, 1.f + 0.45f * B + 0.35f * A);
-	S.ColorOffsetShadows = Tint(0.f, 0.f, 0.004f * A + 0.003f * B);
+	// (an offset's W is a luminance offset, unlike the multipliers' W = 1)
+	S.ColorOffsetShadows = FVector4(0.f, 0.f, 0.004f * A + 0.003f * B, 0.f);
 	S.ColorSaturationShadows = Tint(1.f + 0.4f * B - M, 1.f + 0.4f * B - M, 1.f + 0.4f * B - M);
 	S.ColorGainMidtones = Tint(1.f - 0.25f * B + 0.1f * A + 0.15f * G, 1.f - 0.08f * B + 0.1f * A, 1.f + 0.2f * B + 0.2f * A - 0.1f * G);
 	S.ColorGammaMidtones = Tint(1.f + 0.3f * A, 1.f + 0.3f * A, 1.f + 0.3f * A);
@@ -152,11 +153,11 @@ void ULyudGradeSubsystem::Tick(float DeltaTime)
 	Outdoor = FMath::FInterpConstantTo(Outdoor, Sky->IsPlayerOutdoors() ? 1.f : 0.f, DeltaTime, 0.35f);
 	Grade->BlendWeight = Outdoor * (K > 0.f ? 1.f : 0.f);
 
-	// the sky's haze: crisp dry winter air, milky humid summer air, more in mist (the atmosphere's Mie scattering)
+	// the sky's haze: crisp dry air, a little milkier when humid, more in mist and rain (summer keeps its blue) (the atmosphere's Mie scattering)
 	if (Sky->Atmosphere && BaseMie >= 0.f)
 	{
 		const float Humid = FMath::Pow(FMath::Clamp(W.Humidity, 0.f, 1.f), 4.f);
-		float Mie = BaseMie * (0.8f + 0.35f * Summer + 0.45f * Humid + 1.2f * Smooth(20000.f, 3000.f, W.VisibilityM));
+		float Mie = BaseMie * (0.85f + 0.1f * Summer + 0.35f * Humid + 1.2f * Smooth(20000.f, 3000.f, W.VisibilityM));
 		if (K <= 0.f)
 		{
 			Mie = BaseMie;

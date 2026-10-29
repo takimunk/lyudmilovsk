@@ -440,7 +440,7 @@ const LyudWeather::FWeatherState& ULyudWeatherSubsystem::StateAt(double Hours) c
 	// the model is cheap: recompute every couple of game seconds so nothing it feeds moves in steps
 	const float Blend = BlendLength;
 	const bool bBlending = BlendStart > 0.0 && Real - BlendStart < Blend;
-	if (FMath::Abs(Hours - CachedHours) > 1.0 / 1800.0 || bBlending || CachedHours < -1e8 || bWasBlending)
+	if (FMath::Abs(Hours - CachedHours) > 1.0 / 1800.0 || bForced || bJump || bBlending || CachedHours < -1e8 || bWasBlending)
 	{
 		CachedHours = Hours;
 		LyudWeather::FWeatherState Target = LyudWeather::Full(Hours, *Chain, *Season);
