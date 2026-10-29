@@ -64,6 +64,21 @@ if PERF:
         for p in ("clear", "cu", "sc", "cb", "ns", "lens"):
             for on in (1, 0):
                 SHOTS.append(("perf%d_%s_%s" % (rnd, p, "on" if on else "off"), p, AFTERNOON, 10, 10, "r.VolumetricCloud %d" % on))
+# CLOUD_TIMELAPSE=2026-10-30-06,0.5,24: the weather's own clouds every 0.5 h from that hour (no forcing), to watch
+# genera change into one another
+if os.environ.get("CLOUD_TIMELAPSE"):
+    a = os.environ["CLOUD_TIMELAPSE"].split(",")
+    y, mo, d, hh = (int(v) for v in a[0].split("-"))
+    step, n = float(a[1]), int(a[2])
+    t0 = D(y, mo, d, hh)
+    SHOTS = [("tl_%s" % (t0 + datetime.timedelta(hours=step * k)).strftime("%m%d_%H%M"), "off", t0 + datetime.timedelta(hours=step * k),
+              8, 10, "lyud.Weather.BlendSeconds 0") for k in range(n)]
+# CLOUD_DIAG=1: what washes the scene out (the other weather systems switched off one by one)
+if os.environ.get("CLOUD_DIAG"):
+    SHOTS = [("diag_" + tag, "cu", AFTERNOON, 10, 10, c) for tag, c in (
+        ("plain", ""), ("nograde", "lyud.Grade 0"), ("nofog", "lyud.Fog.Fx 0"), ("norain", "lyud.Rain.Fx 0"),
+        ("nofog_scale", "lyud.Fog.Scale 0"), ("noclouds", "r.VolumetricCloud 0"), ("nofog_r", "r.Fog 0"),
+        ("none", "lyud.Grade 0;lyud.Fog.Fx 0;lyud.Rain.Fx 0;r.Fog 0"))]
 if os.environ.get("CLOUD_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["CLOUD_SHOTS"].split(",")]
 EXTRA = [c for c in os.environ.get("CLOUD_EXTRA", "").split(";") if c]

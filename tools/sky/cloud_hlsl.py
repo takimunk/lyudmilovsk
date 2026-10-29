@@ -182,8 +182,8 @@ if (Lens.x > 0.0 && h > Lens.y - 0.2 && h < Lens.z + 0.2)
             float plates = 0.8 + 0.2 * cos((h - hc) * 6.2831853 / 0.3);
             float edge = K.S(Shape.SampleLevel(ShapeSampler, float3(f / (Lens.w * 0.6), hc), 0).r);
             float d = smoothstep(thick, thick * 0.4, dz) * plates * smoothstep(1.0, 0.7 - 0.15 * edge, rr) * (0.75 + 0.25 * edge);
-            dens += d * 0.9;
-            ao = min(ao, lerp(0.7, 1.0, saturate((h - hc + thick) / max(2.0 * thick, 0.01))));
+            dens += d * 0.45;
+            ao = min(ao, lerp(0.85, 1.0, saturate((h - hc + thick) / max(2.0 * thick, 0.01))));
         }
     }
 }
