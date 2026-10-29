@@ -13,6 +13,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -66,13 +67,14 @@ namespace LyudBirds
 		Approach,   // coming to the food in the player's hand
 		Eat,        // eating from the player's hand
 		Claimed,    // the player is this bird (bird flight); not simulated
+		Murmur,     // starlings: in the evening murmuration over the roost (BirdMurmur.cpp flies it)
 		Num
 	};
 	const char* ActName(EAct A);
 	inline bool IsAirborne(EAct A)
 	{
 		return A == EAct::Takeoff || A == EAct::Fly || A == EAct::Land || A == EAct::Hawk || A == EAct::Soar || A == EAct::Flee
-			|| A == EAct::Chase || A == EAct::Mob || A == EAct::Approach;
+			|| A == EAct::Chase || A == EAct::Mob || A == EAct::Approach || A == EAct::Murmur;
 	}
 
 	/** One species' ecology and temper. Size and flight style match the species thread's table (species.json). */
@@ -116,6 +118,24 @@ namespace LyudBirds
 		float DawnSong = 0.f;            // extra song at dawn, calls a minute
 		uint32_t Color = 0x404040;       // placeholder colour, sRGB
 		bool bMigrant = false;           // away now (the game sets it from species.json months); only with Options.bMigration
+		// late stragglers (species.json "stragglers"): this many stay past the species' months and leave one by one between
+		// these days of the year (the game fills it; only with Options.bMigration, bMigrant false then)
+		int Stragglers = 0;
+		float LeaveFrom = 0.f, LeaveUntil = 0.f;
+
+		// the daily routine (BirdEcology.cpp, docs/bird_life.md "Daily routines")
+		float Stage[NumHabitats] = {};   // pre-roost gathering places (rooks on a field, swallows on wires); none = straight to roost
+		float StageMinutes = 0.f;        // gathers this long before it goes to roost
+		float WakeSpread = 0.f;          // min: its groups leave the roost one after another over this time
+		bool bMurmurates = false;        // starlings: the evening murmuration over the roost, then down into it in waves
+		bool bTidal = false;             // feeds on the sand the sea leaves at low tide, keeps off it at high tide
+		bool bMixedFlock = false;        // in winter joins the tits' roving flocks
+		bool bSleepsAloft = false;       // swifts: the night on the wing, high over home
+		bool bDriesWings = false;        // cormorants: after fishing stand on the beach or a post, wings spread
+		float Bathe = 0.f;               // 0..1: how often it bathes and preens at the water's edge at midday
+		float WinterForage[NumHabitats] = {};  // feeding tastes Nov-Feb (when bWinterForage)
+		bool bWinterForage = false;
+		float WinterFlock = 1.f;         // flocks this much bigger Nov-Feb
 	};
 
 	const std::vector<FSpecies>& SpeciesTable();
@@ -170,6 +190,7 @@ namespace LyudBirds
 		bool bGone = false;         // away (migrated); not drawn
 		bool bFemale = false;       // half of each species (its own seed), for the female plumage and size
 		uint32_t Rng = 1;
+		float LeaveDay = 1e9f;      // a straggler leaves on this day of the year (migration)
 	};
 
 	struct FGroup
@@ -184,6 +205,8 @@ namespace LyudBirds
 		float FlushedAt = -1e9f;
 		bool bMoving = false;
 		bool bStayPut = false;      // a test bird: keeps to its spot (AddBird)
+		float WakeShift = 0.f;      // min after the species' wake time it leaves the roost (WakeSpread)
+		int Slot0 = 0;              // first place of its row on a wire
 		// after a fright: keep away from where it came from (or from the player, who may follow) until then
 		double AvoidUntil = -1.0;
 		V3 Avoid;
@@ -224,6 +247,8 @@ namespace LyudBirds
 		V3 Pos;
 	};
 
+	class FMurmuration;
+
 	struct FOptions
 	{
 		uint32_t Seed = 20261024;
@@ -239,6 +264,8 @@ namespace LyudBirds
 		float ThinkNear = 0.f, ThinkMid = 0.12f, ThinkFar = 0.5f, ThinkDormant = 2.f;
 		/** Movement steps per tier (render interpolates), s. */
 		float StepFar = 0.1f, StepDormant = 0.5f;
+		/** Murmurations keep within this many metres of the shore over the sea (never deep out). */
+		float MurmurOffshore = 250.f;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -263,6 +290,9 @@ namespace LyudBirds
 		float Hour = 12.f;              // local clock
 		float Sunrise = 7.f, Sunset = 17.5f;
 		float DayOfYear = 297.f;
+		/** The sea's surface now (m): ALyudSea::SeaLevel, mean -43 plus the tide; swimmers float on it, waders follow it. */
+		float SeaZ = -43.f;
+		float MeanSeaZ = -43.f;
 		int SpeciesCount[64] = {};
 		int TierCount[4] = {};
 		std::string LastError;
@@ -277,6 +307,13 @@ namespace LyudBirds
 		float TopZ(float X, float Y) const;
 		/** Creates the birds and their groups (after the sites are final), each where it would be at Hour. */
 		void Populate();
+		/** Stragglers leave on their days (call when DayOfYear changes; Populate does it too). */
+		void UpdateMigration();
+		/** Metres from the nearest land over the sea (0 on land), and from the nearest sea on land (0 at sea), from the ground grid. */
+		float Offshore(float X, float Y) const;
+		float Inland(float X, float Y) const;
+		/** The starlings' evening murmuration (null when no species murmurates). */
+		FMurmuration* Murmuration() const { return Murm.get(); }
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
 		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */
@@ -310,6 +347,9 @@ namespace LyudBirds
 		float HashCell = 16.f;
 		int HashNX = 0, HashNY = 0;
 		float HashX0 = 0.f, HashY0 = 0.f;
+		std::vector<uint16_t> OffshoreD, InlandD;   // dm from land / from the sea, per grid cell
+		std::shared_ptr<FMurmuration> Murm;
+		friend class FMurmuration;
 		std::vector<int> NearScratch;
 		float StepAcc[4] = {};
 		double LastThink[4] = {};
@@ -325,8 +365,21 @@ namespace LyudBirds
 		void PerceiveBirds(FBird& B, float Dt);
 		void PerceiveBeasts(FBird& B, float Dt);
 		void GroupThink(FGroup& G, float Dt);
+		void SleepAloft(FBird& B, const FGroup& G);
+		int MixedFlockSite(const FGroup& G) const;
+		void JoinMurmuration(FGroup& G);
 		void PredatorThink(FPredator& P, float Dt);
-		void ScheduleOf(const FSpecies& S, float& Forage, int& Plan) const;
+		/** What the group should do now: Plan 0 rest, 1 feed, 2 roost, 3 gather before the roost, 4 murmurate, 5 bathe. */
+		void ScheduleOf(const FSpecies& S, const FGroup* G, float& Forage, int& Plan) const;
+		float Taste(const FSpecies& S, int Plan, EHabitat Kind) const;
+		bool IsWinter() const { return DayOfYear > 305.f || DayOfYear < 60.f; }
+		void BuildOffshore();
+		V3 WireSpot(const FSite& Site, const FBird& B) const;
+		/** A spot on a site for this bird: a free place in its group's row on a wire, anywhere on other sites. */
+		V3 SpotFor(FBird& B, int Site);
+		/** The site a roosting bird of this group goes to (a murmuration's roost is a whole reedbed). */
+		int RoostSpotSite(const FGroup& G, FBird& B);
+		bool InRoost(const FGroup& G, int Site) const;
 		int ChooseSite(const FGroup& G, int Plan, int Except) const;
 		float SiteScore(const FGroup& G, const FSite& Site, int Plan) const;
 		V3 SpotOn(const FSite& Site, uint32_t& Rng) const;

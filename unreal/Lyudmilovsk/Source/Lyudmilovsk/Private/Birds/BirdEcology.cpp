@@ -93,16 +93,82 @@ namespace LyudBirds
 			{ "WhiteWagtail", 0.18f, 0.022f,16, 1, 3,   500,  "Beach 1, Street .8, Meadow .6, Reed .4",      "Roof 1, Wire .8",                             "Reed 1, Broadleaf .5",   false, EFlight::Bounding,  9.f,  4.f, false, 1.2f,  8.f, 40.f, 0.4f, 0.4f, 16, false, true,  false, 0.7f, 0.f,   -10.f,0.2f, 3.f,  0.f,  0x8e939a, true  },
 			{ "HouseSparrow", 0.15f, 0.03f, 90, 8, 30,  160,  "Street 1, Garden .8, Meadow .3",              "Garden 1, Roof .8, Wire .3",                  "Roof 1, Garden .6",      false, EFlight::Bounding,  9.f,  5.f, true,  0.6f,  5.f, 35.f, 0.6f, 0.5f, 15, false, false, false, 0.9f, -10.f, -20.f,0.4f, 10.f, 3.f,  0x8a6e50, false },
 			{ "TreeSparrow",  0.14f, 0.022f,40, 6, 20,  350,  "Meadow 1, Garden .6, Reed .3",                "Broadleaf 1, Garden 1, Wire .5",              "Garden 1, Broadleaf .5", false, EFlight::Bounding,  9.f,  5.f, true,  0.6f,  7.f, 40.f, 0.4f, 0.4f, 14, false, false, false, 0.9f, -10.f, -20.f,0.4f, 8.f,  2.f,  0x8c6a4c, false },
-			{ "Starling",     0.21f, 0.08f, 40, 10, 30, 900,  "Meadow 1, Street .4, Beach .4",               "Wire 1, Roof .8, Broadleaf .6",               "Reed 1, Broadleaf .5",   true,  EFlight::Flap,      12.f, 10.f, false, 1.1f, 12.f, 60.f, 0.35f,0.4f, 30, false, true,  false, 0.6f, -15.f, -5.f, 0.3f, 6.f,  4.f,  0x1c1e24, false },
+			{ "Starling",     0.21f, 0.08f, 1200,20, 80, 1800, "Meadow 1, Street .6, Beach .5, Garden .3",    "Wire .7, Roof .8, Broadleaf .6",              "Reed 1",                 true,  EFlight::Flap,      12.f, 10.f, false, 1.1f, 12.f, 60.f, 0.35f,0.4f, 30, false, true,  false, 0.6f, -30.f, 30.f, 0.15f, 6.f,  4.f,  0x1c1e24, false },
 			{ "SongThrush",   0.22f, 0.07f, 20, 1, 1,   300,  "ForestFloor 1, Garden .6",                    "Broadleaf 1, Conifer .8",                     "Conifer 1",              false, EFlight::Flap,      10.f,  6.f, true,  1.0f, 12.f, 50.f, 0.3f, 0.3f, 28, false, false, false, 0.6f, -40.f, 0.f,  0.4f, 0.5f, 3.f,  0x8a7058, false },
 			{ "Fieldfare",    0.26f, 0.1f,  60, 10, 40, 1000, "Meadow 1, Garden .6, Broadleaf .5",           "Broadleaf 1, Conifer .5",                     "Conifer 1",              false, EFlight::Flap,      11.f, 12.f, true,  1.0f, 22.f, 70.f, 0.15f,0.2f, 38, false, true,  false, 0.5f, -10.f, -10.f,0.3f, 5.f,  1.f,  0x7a5a40, false },
 			{ "Blackbird",    0.25f, 0.1f,  30, 1, 2,   250,  "Garden 1, ForestFloor 1, Meadow .3",          "Garden 1, Broadleaf .8, Roof .4",             "Conifer 1, Garden 1",    false, EFlight::Flap,       9.f,  6.f, true,  1.2f, 10.f, 50.f, 0.4f, 0.4f, 35, false, true,  false, 0.5f, -40.f, 15.f, 0.3f, 0.7f, 3.f,  0x101010, false },
 			{ "Robin",        0.14f, 0.018f,24, 1, 1,   120,  "ForestFloor 1, Garden 1",                     "Broadleaf 1, Garden 1, Conifer .6",           "Broadleaf 1, Conifer 1", false, EFlight::Flap,       8.f,  4.f, true,  0.8f,  4.f, 30.f, 1.0f, 1.0f, 20, false, true,  false, 0.8f, -45.f, 20.f, 0.3f, 1.5f, 4.f,  0xc0703a, false },
 			{ "CommonSwift",  0.17f, 0.04f, 40, 5, 20,  1600, "Street 1, Meadow 1, Sea .6, Cliff .5",        "Tower 1, Cliff .6",                           "Tower 1, Cliff 1",          false, EFlight::Aerial, 18.f, 30.f, false, 0.f,  10.f, 80.f, 0.f,  0.f,  30, false, false, false, 0.3f, 10.f,  -15.f,0.f,  5.f,  0.f,  0x2a2622, true  },
 			{ "BarnSwallow",  0.18f, 0.02f, 40, 4, 20,  1200, "Meadow 1, Reed 1, Sea .6, Beach .5",          "Wire 1, Roof .6",                             "Reed 1",                 true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 50.f, 0.2f, 0.3f, 25, false, true,  false, 0.4f, 0.f,   -10.f,0.f,  6.f,  2.f,  0x1a2440, true  },
-			{ "SandMartin",   0.12f, 0.014f,40, 10, 30, 1200, "Sea 1, Beach 1, Reed .8, Meadow .4",          "Wire 1, Cliff 1",                             "Cliff 1, Reed .6",       true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 40.f, 0.1f, 0.2f, 15, false, true,  false, 0.5f, 0.f,   -10.f,0.f,  6.f,  0.f,  0x8a7a66, true  },
+			{ "SandMartin",   0.12f, 0.014f,40, 10, 30, 1200, "Sea 1, Beach 1, Reed .8, Meadow .4",          "Wire 1, Cliff 1",                             "Reed 1, Cliff .4",       true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 40.f, 0.1f, 0.2f, 15, false, true,  false, 0.5f, 0.f,   -10.f,0.f,  6.f,  0.f,  0x8a7a66, true  },
 			{ "Sparrowhawk",  0.33f, 0.2f,   2, 1, 1,   1400, "Garden 1, Street .6, Broadleaf .5, Meadow .3","Conifer 1, Broadleaf 1",                      "Conifer 1",              false, EFlight::FlapGlide, 12.f, 14.f, false, 0.6f, 35.f, 150.f,0.f,  0.1f, 90, false, false, true,  0.f,  0.f,   -10.f,0.4f, 0.1f, 0.f,  0x6a6660, false },
-			{ "Peregrine",    0.42f, 0.8f,   1, 1, 1,   2600, "Street 1, Beach .6, Sea .4",                  "Tower 1, Cliff 1",                            "Tower 1, Cliff 1",       false, EFlight::Soar,      16.f, 40.f, false, 0.5f, 50.f, 300.f,0.f,  0.1f, 100,false, false, true,  0.f,  0.f,   -10.f,0.6f, 0.1f, 0.f,  0x50545c, false },
+			{ "Peregrine",    0.42f, 0.8f,   1, 1, 1,   2600, "Street 1, Beach .6, Sea .4",                  "Tower 1, Cliff 1, Wire .2",                   "Tower 1, Cliff 1",       false, EFlight::Soar,      16.f, 40.f, false, 0.5f, 50.f, 300.f,0.f,  0.1f, 100,false, false, true,  0.f,  0.f,   25.f, 0.6f, 0.1f, 0.f,  0x50545c, false },
+		};
+		// clang-format on
+
+		/**
+		 * Each species' day beyond the numbers above (docs/bird_life.md "Daily routines"): where it gathers before the night
+		 * and for how long, how spread out its groups leave the roost in the morning, whether it bathes at midday, follows
+		 * the tide, roams with the tits in winter, sleeps on the wing, dries its wings; what it eats in winter and how big
+		 * its winter flocks are.
+		 */
+		struct FRoutine
+		{
+			const char* Id;
+			const char* Stage;
+			float StageMinutes, WakeSpread, Bathe;
+			bool bTidal, bMixed, bAloft, bDry;
+			const char* WinterForage;      // "" = as the rest of the year
+			float WinterFlock;
+		};
+
+		// clang-format off
+		const FRoutine Routines[] = {
+			// Id               pre-roost gathering                     min   wake  bathe tidal mixed aloft dry    winter feeding                                          flock
+			// rooks: feed in fields, gather on a field near the rookery, fly in together at dusk; in winter town refuse too
+			{ "Rook",           "Meadow 1, Broadleaf .6",                50.f, 20.f, 0.1f, false,false,false,false, "Meadow 1, Street .5, Beach .2",                  1.5f },
+			// crows: the beach's tideline at low water, fields; a small gathering in tall trees before the roost
+			{ "HoodedCrow",     "Conifer 1, Broadleaf .6",               30.f, 15.f, 0.2f, true, false,false,false, "Beach 1, Street .8, Meadow .6",                  1.f },
+			// jackdaws: chatter on roofs and the church tower before going in; roost in the tower
+			{ "Jackdaw",        "Roof 1, Tower 1, Meadow .4",            30.f, 15.f, 0.2f, false,false,false,false, "",                                               1.4f },
+			{ "Magpie",         "",                                       0.f,  5.f, 0.3f, false,false,false,false, "",                                               1.f },
+			{ "FeralPigeon",    "Roof 1",                                15.f, 10.f, 0.4f, false,false,false,false, "",                                               1.f },
+			// wood pigeons: big flocks on the fields in winter
+			{ "WoodPigeon",     "Conifer 1",                             15.f, 15.f, 0.2f, false,false,false,false, "Meadow 1, Garden .6",                            2.f },
+			// gulls: follow the tide on the sand, gather on the beach in the evening and go out to sleep on the water
+			{ "HerringGull",    "Beach 1, Meadow .3",                    40.f, 30.f, 0.5f, true, false,false,false, "",                                               1.f },
+			{ "BlackHeadedGull","Beach 1, Meadow .4",                    40.f, 30.f, 0.5f, true, false,false,false, "Meadow 1, Street .8, Beach 1",                   1.3f },
+			{ "CommonGull",     "Beach 1, Meadow .5",                    40.f, 30.f, 0.5f, true, false,false,false, "",                                               1.f },
+			// cormorants: fish in the morning, then stand on the beach or the cliff a long time, wings spread to dry
+			{ "Cormorant",      "Beach 1",                               20.f, 20.f, 0.f,  false,false,false,true,  "",                                               1.f },
+			// swans: on the water day and night, feed in the reed's edge
+			{ "MuteSwan",       "",                                       0.f, 10.f, 0.3f, false,false,false,false, "",                                               1.f },
+			{ "GreatTit",       "",                                       0.f,  5.f, 0.4f, false,false,false,false, "Garden 1, Broadleaf 1, Conifer .8, Street .2",    1.5f },
+			// blue tits: roam with the great tits in winter (mixed flocks)
+			{ "BlueTit",        "",                                       0.f,  5.f, 0.4f, false,true, false,false, "",                                               1.5f },
+			{ "Goldfinch",      "Broadleaf 1, Wire .8",                  10.f, 10.f, 0.4f, false,false,false,false, "Garden 1, Meadow .8, Reed .3",                   1.5f },
+			{ "Chaffinch",      "",                                       0.f, 10.f, 0.3f, false,false,false,false, "Meadow 1, Garden .6, ForestFloor .6",            2.f },
+			{ "Bullfinch",      "",                                       0.f, 10.f, 0.2f, false,false,false,false, "Garden 1, Broadleaf 1",                          1.f },
+			// waxwings: berry trees in gardens, a whole flock on one rowan, then off to the next
+			{ "Waxwing",        "Broadleaf 1, Wire .6",                  10.f, 10.f, 0.1f, false,false,false,false, "Garden 1",                                       1.5f },
+			// wagtails: the waterline and puddles; gather on roofs at dusk, then roost together in the reed
+			{ "WhiteWagtail",   "Roof 1, Street .5",                     20.f, 10.f, 0.6f, true, false,false,false, "",                                               1.f },
+			{ "HouseSparrow",   "Garden 1",                              15.f,  5.f, 0.7f, false,false,false,false, "",                                               1.3f },
+			{ "TreeSparrow",    "Garden 1, Broadleaf .6",                15.f,  5.f, 0.6f, false,false,false,false, "Meadow 1, Garden .8",                            1.5f },
+			// starlings: leave the roost before sunrise in waves, feed all day in flocks, gather on wires and trees, then the murmuration
+			{ "Starling",       "Wire 1, Broadleaf 1, Meadow .6",        35.f, 25.f, 0.5f, true, false,false,false, "",                                               1.f },
+			{ "SongThrush",     "",                                       0.f, 10.f, 0.4f, false,false,false,false, "",                                               1.f },
+			// fieldfares: rowan and apple trees and the fields in noisy flocks, bigger in winter
+			{ "Fieldfare",      "Broadleaf 1",                           15.f, 15.f, 0.2f, false,false,false,false, "Garden 1, Meadow .6, Broadleaf .5",              1.5f },
+			{ "Blackbird",      "",                                       0.f, 10.f, 0.6f, false,false,false,false, "Garden 1, ForestFloor .8",                       1.f },
+			{ "Robin",          "",                                       0.f,  5.f, 0.5f, false,false,false,false, "",                                               1.f },
+			// swifts: hawk high, scream round the tower at dusk, then climb to sleep on the wing
+			{ "CommonSwift",    "Tower 1",                               20.f, 10.f, 0.f,  false,false,true, false, "",                                               1.f },
+			// swallows and martins: gather on the wires before the reed roost (and before they leave in autumn)
+			{ "BarnSwallow",    "Wire 1, Reed .4",                       40.f, 10.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "SandMartin",     "Wire 1, Reed .5",                       30.f, 10.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "Sparrowhawk",    "",                                       0.f,  0.f, 0.2f, false,false,false,false, "",                                               1.f },
+			{ "Peregrine",      "",                                       0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
 		};
 		// clang-format on
 
@@ -148,6 +214,24 @@ namespace LyudBirds
 				S.DawnSong = D.DawnSong;
 				S.Color = D.Color;
 				S.bMigrant = D.bMigrant;
+				for (const FRoutine& R : Routines)
+				{
+					if (S.Id == R.Id)
+					{
+						Prefs(S.Stage, R.Stage);
+						S.StageMinutes = R.StageMinutes;
+						S.WakeSpread = R.WakeSpread;
+						S.Bathe = R.Bathe;
+						S.bTidal = R.bTidal;
+						S.bMixedFlock = R.bMixed;
+						S.bSleepsAloft = R.bAloft;
+						S.bDriesWings = R.bDry;
+						S.bWinterForage = R.WinterForage[0] != 0;
+						Prefs(S.WinterForage, R.WinterForage);
+						S.WinterFlock = R.WinterFlock;
+					}
+				}
+				S.bMurmurates = S.Id == "Starling";
 				Out.push_back(S);
 			}
 			return Out;

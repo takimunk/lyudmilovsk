@@ -586,7 +586,14 @@ def grass_patches():
         out.append((STATION_DOWN[0] + dx, STATION_DOWN[1] + dy, 30.0, 30.0,
                     "CommonReed" if dx < 0 else "SandSedge", seed, 1.0, -100.0, LOW_Z + 2.0))
         seed += 1
+    # the reedbed behind the beach where the valley opens to the sea: its runnels are the wettest ground on the map
+    # (the reed grows in clumps along them); the starlings' and swallows' roost (docs/bird_life.md)
+    x, y, hx, hy = REEDBED
+    out.append((x, y, hx, hy, "CommonReed", 731, 2.5, -100.0, LOW_Z + 2.0))
     return out
+
+
+REEDBED = (25.0, 280.0, 60.0, 45.0)   # centre x, y and half sizes, metres
 
 
 def _ramp(d, r, soft):
@@ -622,9 +629,9 @@ def keep_flat(x, y):
 
 
 def starlings():
-    """Where the murmuration roams: over the sea off the club, to the left of the door."""
-    y = 250.0
-    return (shore_x(y) + 300.0, y)
+    """Where the starlings roost and murmurate at dusk: over their reedbed behind the beach (the bird life's
+    murmuration keeps over the land and a coastal strip; the dev actor AStarlingMurmuration is put here too)."""
+    return REEDBED[0], REEDBED[1]
 
 
 def to_unreal(x, y, z, portal_face_y):

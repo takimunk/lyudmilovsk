@@ -31,7 +31,7 @@ SPECIES_COLOURS = {
     "WhiteWagtail": (240, 240, 200), "Waxwing": (200, 150, 130), "CommonSwift": (90, 60, 40),
     "BarnSwallow": (30, 50, 140), "SandMartin": (170, 150, 120), "Sparrowhawk": (255, 0, 255), "Peregrine": (0, 255, 255),
 }
-AIR = {"Takeoff", "Fly", "Land", "Hawk", "Soar", "Flee", "Chase", "Mob", "Approach"}
+AIR = {"Takeoff", "Fly", "Land", "Hawk", "Soar", "Flee", "Chase", "Mob", "Approach", "Murmur"}
 
 
 def load_grid():

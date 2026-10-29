@@ -1,6 +1,8 @@
 #include "Birds/BirdLife.h"
 
 #include "BirdSim.h"
+#include "BirdMurmur.h"
+#include "Sea/LyudSea.h"
 #include "Birds/BirdActor.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
@@ -240,6 +242,14 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 			Sp.Mass = R->MassG * 0.001f;
 			Sp.Wingbeat = R->WingbeatHz;
 			Sp.bMigrant = !R->IsPresentIn(Now.GetMonth());
+			// late stragglers (species.json): their days of leaving in this year
+			Sp.Stragglers = R->Stragglers;
+			if (R->Stragglers > 0 && R->StragglersFrom > 0 && R->StragglersUntil > 0)
+			{
+				auto Doy = [&Now](int32 MonthDay) { return (float)FDateTime(Now.GetYear(), MonthDay / 100, MonthDay % 100).GetDayOfYear(); };
+				Sp.LeaveFrom = Doy(R->StragglersFrom);
+				Sp.LeaveUntil = Doy(R->StragglersUntil);
+			}
 		}
 		else
 		{
@@ -548,6 +558,19 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	FWorld& S = *Sim;
 	UpdateClock();
 	UpdatePlayer(DeltaTime);
+	// the sea's level now (the tide): swimmers float on it, gulls and waders follow it over the sand
+	if (!Sea.IsValid())
+	{
+		TActorIterator<ALyudSea> It(GetWorld());
+		Sea = It ? *It : nullptr;
+	}
+	S.SeaZ = Sea.IsValid() ? (float)Sea->SeaLevel() * 0.01f : S.MeanSeaZ;
+	MigrationTimer -= DeltaTime;
+	if (MigrationTimer <= 0.f)
+	{
+		MigrationTimer = 5.f;
+		S.UpdateMigration();
+	}
 	S.Step(DeltaTime);
 	DispatchEvents();
 	if (Renderer)
@@ -1124,14 +1147,16 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			DriveBody(BodyOf(B.Id), World, B.Id);
 		}
-		if (B.bGone || B.Tier > 2 || B.Act == EAct::Claimed)
+		const bool bMurmur = B.Act == EAct::Murmur;
+		if (B.bGone || (B.Tier > 2 && !bMurmur) || B.Act == EAct::Claimed)
 		{
 			continue;            // a claimed bird is drawn by the player's own body (bird flight)
 		}
 		const FSpecies& S = SpeciesTable()[B.Species];
 		const FVector P = ToUE(World.RenderPos(B));
 		const float Dist = (float)FVector::Dist(P, Camera) * 0.01f;
-		if (Dist > S.Length * DrawLengths || (B.Act == EAct::Peck && P.Z < -4350.0))
+		// a murmuration shows as a cloud of specks from kilometres away
+		if (Dist > S.Length * DrawLengths * (bMurmur ? 8.f : 1.f) || (B.Act == EAct::Peck && P.Z < -4350.0))
 		{
 			continue;            // too small to see, or a cormorant under water
 		}
@@ -1143,7 +1168,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		// far birds keep at least ~1.2 px so they don't flicker away (1080 px, 90 degrees)
 		const float Px = S.Length / FMath::Max(Dist, 0.1f) * 540.f * PixelScale;
 		const float Grow = FMath::Max(1.f, 1.2f / FMath::Max(Px, 0.01f));
-		const float Scale = D.Scale * FMath::Min(Grow, 3.f) * (B.bFemale ? D.FemaleScale : 1.f);
+		const float Scale = D.Scale * FMath::Min(Grow, bMurmur ? 8.f : 3.f) * (B.bFemale ? D.FemaleScale : 1.f);
 		int32 Pose = 0;
 		float Pitch = 0.f, Roll = 0.f;
 		const bool bAir = IsAirborne(B.Act);
@@ -1156,7 +1181,16 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 			const int32 Frame = Beat < 0.25f ? 0 : (Beat < 0.5f ? 1 : (Beat < 0.75f ? 2 : 1));
 			Pose = 3 + Frame;
 			const float Slow = FMath::Sin(B.Phase * 0.21f + B.Id);
-			if (B.Act == EAct::Soar || B.Act == EAct::Land || (S.Flight == EFlight::FlapGlide && Slow > 0.1f) || (S.Flight == EFlight::Aerial && Slow > 0.3f))
+			if (bMurmur && World.Murmuration())
+			{
+				// banked in the flock's turns; the beats come in bouts with short glides
+				Roll = -FMath::RadiansToDegrees(World.Murmuration()->BankOf(B.Id));
+				if (Slow > 0.55f)
+				{
+					Pose = 6;
+				}
+			}
+			else if (B.Act == EAct::Soar || B.Act == EAct::Land || (S.Flight == EFlight::FlapGlide && Slow > 0.1f) || (S.Flight == EFlight::Aerial && Slow > 0.3f))
 			{
 				Pose = 6;
 			}
