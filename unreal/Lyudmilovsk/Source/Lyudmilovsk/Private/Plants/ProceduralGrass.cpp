@@ -1,4 +1,5 @@
 #include "Plants/ProceduralGrass.h"
+#include "Winter/LyudWinter.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -135,7 +136,7 @@ void AProceduralGrass::ApplySeason(float Day)
 	using PlantModel::SmoothStep;
 	// green from spring to the autumn turn, then straw standing through the winter
 	const float Green = SmoothStep(G.GreenUpStart, G.GreenUpFull, Day) * (1.f - SmoothStep(G.YellowStart, G.YellowFull, Day));
-	const float Snow = PlantModel::SnowCover(Day);
+	const float Snow = ULyudWinterSubsystem::SnowOnGround(GetWorld(), PlantModel::SnowCover(Day));
 	// new growth in spring, then the snow flattens it
 	const float Grow = Day < 200.f ? SmoothStep(G.GreenUpStart, G.GreenUpFull + 25.f, Day) : 1.f - SmoothStep(310.f, 345.f, Day);
 	Material->SetScalarParameterValue(TEXT("Dryness"), 1.f - Green);

@@ -201,9 +201,9 @@
   "collar": {
    "bone": "neck_01",
    "hang": [
-    41.003,
+    39.373,
     0.0,
-    54.767
+    55.302
    ],
    "com_cm": 2.678,
    "chest_center": [
@@ -211,7 +211,7 @@
     0.0,
     54.847
    ],
-   "chest_radius_cm": 14.19,
+   "chest_radius_cm": 12.57,
    "forward": [
     0.95,
     -0.0,

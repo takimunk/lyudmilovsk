@@ -18,6 +18,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools"))
 import terrain as T  # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import winter_snow  # noqa: E402
 
 DEST = "/Game/Scene01/Terrain"
 TEX_DIR = os.path.join(REPO, "textures", "ground")
@@ -264,6 +266,7 @@ def make_material(layers, textures):
     mel.connect_material_property(blend, "Roughness", MP.MP_ROUGHNESS)
     hole = _node(m, unreal.MaterialExpressionLandscapeVisibilityMask, -300, 400)
     mel.connect_material_property(hole, "", MP.MP_OPACITY_MASK)
+    winter_snow.ground_wpo(m)   # the snow lifts the ground (ULyudWinterSubsystem)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     return m

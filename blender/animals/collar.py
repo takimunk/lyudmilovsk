@@ -36,6 +36,9 @@ STRINGS = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Localization",
 # sizes, metres (the photo: a ~4 mm cord, a ~2 cm ring, a ~3 cm tag)
 CORD_R = 0.0026
 CORD_SINK = 0.026        # the cord's centre over the skin: on the fur, pressing it down a little
+# a body with no fur shells (rig.json "fur" false: Maru kept as hi3d made her, the fur only painted): the cord lies on
+# the skin, and hangs a little loose under the throat (2.6 cm off it left it floating, a perfect hoop, 2026-10-29)
+FURLESS_SAG = 0.007
 SPLIT_R, SPLIT_W = 0.0095, 0.0011
 TAG_W, TAG_H, TAG_T = 0.032, 0.018, 0.0018
 ENGRAVE = 0.00028
@@ -126,8 +129,14 @@ def neck_ring(bvh, bones, n=72):
     # a light smoothing of the radii (decimation leaves facets)
     rs = np.array(rs)
     rs = np.convolve(np.r_[rs[-2:], rs, rs[:2]], np.ones(5) / 5, mode="valid")
+    rig = json.load(open(os.path.join(OUT, BREED + "_rig.json")))
     for k in range(n):
-        pts.append(c + outs[k] * (rs[k] + CORD_SINK))
+        if rig.get("fur", True):
+            gap = CORD_SINK
+        else:
+            # on the skin at the nape and the sides, sagging away from it toward the throat (the knot's weight)
+            gap = CORD_R * 0.7 + FURLESS_SAG * max(0.0, outs[k].dot(fwd)) ** 2
+        pts.append(c + outs[k] * (rs[k] + gap))
     return c, axis, fwd, side, pts, outs, rs
 
 

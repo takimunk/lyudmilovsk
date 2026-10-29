@@ -182,6 +182,13 @@ namespace
 		return O;
 	}
 
+	/** SmoothStep that also runs downhill (A > B); FMath's does not. */
+	float Smooth(float A, float B, float X)
+	{
+		const float T = FMath::Clamp((X - A) / (B - A), 0.f, 1.f);
+		return T * T * (3.f - 2.f * T);
+	}
+
 	/** The forced single values on top of the model, kept consistent with each other (forced rain needs a sky). */
 	void ApplyForces(LyudWeather::FWeatherState& S)
 	{
@@ -202,7 +209,7 @@ namespace
 			S.TempC = Temp;
 			S.DewPointC = Temp - Spread;
 			S.FreezingLevelM = FMath::Max(0.f, Temp * 150.f);
-			S.SnowFraction = FMath::SmoothStep(1.6f, -0.3f, Temp - Spread / 3.f);
+			S.SnowFraction = Smooth(1.6f, -0.3f, Temp - Spread / 3.f);
 		}
 		if (Snow >= 0.f)
 		{
@@ -243,7 +250,7 @@ namespace
 		if (Rain >= 0.f || Temp > -99.f || Snow >= 0.f || Thunder >= 0.f)
 		{
 			const float R = S.PrecipRate;
-			S.SnowfallCmPerHour = R * S.SnowFraction * (1.f + FMath::SmoothStep(0.f, -10.f, S.TempC));
+			S.SnowfallCmPerHour = R * S.SnowFraction * (1.f + Smooth(0.f, -10.f, S.TempC));
 			if (R < 0.03f) S.Precip = EPrecip::None;
 			else if (S.SnowFraction > 0.75f) S.Precip = EPrecip::Snow;
 			else if (S.SnowFraction > 0.25f) S.Precip = EPrecip::Sleet;
