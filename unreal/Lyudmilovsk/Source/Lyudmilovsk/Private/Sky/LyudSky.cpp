@@ -334,9 +334,12 @@ void ALyudSky::MakeInstances()
 	if (!CloudMID && CloudMaterial)
 	{
 		CloudMID = UMaterialInstanceDynamic::Create(CloudMaterial, this);
+		CloudMID->SetFlags(RF_Transient);
 		// the clouds take the instance once its shaders are ready (UpdateClouds): the volumetric cloud renderer
-		// asserts on the surface material a still-compiling one falls back to
+		// asserts on the surface material a still-compiling one falls back to; until then no clouds (a level saved
+		// with an instance on the component would bring it back)
 		bCloudMIDSet = false;
+		Clouds->SetMaterial(nullptr);
 		float V = 0.f;
 		CloudBaseDensity = CloudMID->GetScalarParameterValue(FHashedMaterialParameterInfo(TEXT("Cloud_GlobalDensity")), V) ? V : -1.f;
 		if (CloudBaseDensity < 0.f)
@@ -360,17 +363,47 @@ void ALyudSky::UpdateClouds()
 	if (CloudMID && !bCloudMIDSet)
 	{
 		const FMaterialResource* R = CloudMID->GetMaterialResource(GMaxRHIShaderPlatform);
-		if (R && R->IsGameThreadShaderMapComplete() && CloudMID->GetMaterial()->MaterialDomain == MD_Volume)
+		const bool bMap = R && R->GetGameThreadShaderMap() != nullptr;
+		const bool bFinished = R && R->IsCompilationFinished();
+		const bool bComplete = R && R->IsGameThreadShaderMapComplete();
+		const double Now0 = FPlatformTime::Seconds();
+		if (!bComplete)
+		{
+			CloudCompleteSince = 0.0;
+		}
+		else if (CloudCompleteSince <= 0.0)
+		{
+			CloudCompleteSince = Now0;
+		}
+		// a couple of seconds after the game thread sees it complete, so the render thread has it too
+		if (bComplete && Now0 - CloudCompleteSince > 2.0 && CloudMID->GetMaterial()->MaterialDomain == MD_Volume && (R->GetCompileErrors().Num() == 0))
 		{
 			Clouds->SetMaterial(CloudMID);
 			bCloudMIDSet = true;
+			UE_LOG(LogTemp, Display, TEXT("LyudSky: the cloud material is ready (complete %d)"), bComplete ? 1 : 0);
 		}
-		else if (R && R->GetCompileErrors().Num() > 0 && !bCloudErrorsLogged)
+		else
 		{
-			bCloudErrorsLogged = true;
-			for (const FString& E : R->GetCompileErrors())
+			if (R && bFinished && !bComplete && !bCloudShadersForced)
 			{
-				UE_LOG(LogTemp, Error, TEXT("LyudSky: cloud material: %s"), *E);
+				// an incomplete shader map (only what was asked for so far): compile the rest, the cloud passes among it
+				bCloudShadersForced = true;
+				CloudMID->GetMaterial()->CacheShaders(EMaterialShaderPrecompileMode::Background);
+			}
+			const double Now = FPlatformTime::Seconds();
+			if (Now > NextCloudLog)
+			{
+				NextCloudLog = Now + 10.0;
+				UE_LOG(LogTemp, Display, TEXT("LyudSky: waiting for the cloud material: resource %d map %d finished %d complete %d errors %d"),
+					R ? 1 : 0, bMap ? 1 : 0, bFinished ? 1 : 0, bComplete ? 1 : 0, R ? R->GetCompileErrors().Num() : -1);
+			}
+			if (R && R->GetCompileErrors().Num() > 0 && !bCloudErrorsLogged)
+			{
+				bCloudErrorsLogged = true;
+				for (const FString& E : R->GetCompileErrors())
+				{
+					UE_LOG(LogTemp, Error, TEXT("LyudSky: cloud material: %s"), *E);
+				}
 			}
 		}
 	}

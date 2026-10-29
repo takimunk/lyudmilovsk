@@ -13,7 +13,8 @@ the rain shafts. Per layer L0 (low), L1 (middle):
   LxD = (offset x km, offset y km: the drift with the wind, downwind unit vector x, y)
   LxE = (rain shafts 0..1 under the base, darkness 0..1 of the base, boil speed, 0)
   Lens = (amount 0..1, base km, top km, lens size km), LensDir = (downwind x, y, 0, 0) of the flow that makes them
-  Misc = (time s, extinction per metre at density 1, lightning flash 0.., 0)
+  Misc = (time s, the tracing's max distance km (the clouds fade out before it), lightning flash 0.., 0)
+  Cam = the camera, world cm
   Flash = (x km, y km, altitude km, radius km) of the strike lighting the clouds from inside
 Coordinates: world cm (x, y) -> km; the altitude is the volumetric cloud's own (above the planet's top = sea level).
 Returns float4(density 0..~1, sky-light occlusion 0..1, flash 0..1, 0).
@@ -29,11 +30,32 @@ struct FLyudCloudLib
 {
     float H2(float2 p) { p = frac(p * float2(0.1031, 0.1030)); p += dot(p, p.yx + 33.33); return frac((p.x + p.y) * p.x); }
     float Remap(float v, float a, float b) { return saturate((v - a) / max(b - a, 1e-4)); }
+    // the engine's cloud noise volumes hold one Perlin-Worley channel packed into a narrow band: spread it to 0..1
+    float S(float v) { return saturate((v - 0.80) / 0.17); }
+    float Er(float v) { return saturate((v - 0.55) / 0.33); }
     float N2(float2 x)
     {
         float2 i = floor(x), f = frac(x);
         float2 u = f * f * (3.0 - 2.0 * f);
         return lerp(lerp(H2(i), H2(i + float2(1, 0)), u.x), lerp(H2(i + float2(0, 1)), H2(i + float2(1, 1)), u.x), u.y);
+    }
+    // thunderstorm cells: 1 at a cell's axis .. 0 at its edge (negative outside), tb = height in the cloud 0..1
+    float Cells(float2 q, float cell, float cover, float anvil, float tb)
+    {
+        float G = cell * 4.5;
+        float2 gi = floor(q / G);
+        float best = -1.0;
+        for (int gy = -1; gy <= 1; gy++)
+        for (int gx = -1; gx <= 1; gx++)
+        {
+            float2 g = gi + float2(gx, gy);
+            if (H2(g + 0.71) > saturate(cover * 0.9)) continue;
+            float2 cpos = (g + 0.5 + (float2(H2(g + 2.3), H2(g + 8.9)) - 0.5) * 0.5) * G;
+            float size = 0.7 + 0.6 * H2(g + 4.4);
+            float R = cell * 0.45 * size * (1.0 - 0.2 * tb) + anvil * cell * 0.9 * size * smoothstep(0.72, 0.95, tb);
+            best = max(best, 1.0 - length(q - cpos) / max(R, 0.05));
+        }
+        return best;
     }
     float Fbm2(float2 p, int n)
     {
@@ -68,22 +90,22 @@ for (int li = 0; li < 2; li++)
     float2 q = pk.xy + D.xy;
     float tn = saturate((h - base) / th);
     // towers lean downwind a little; an anvil spreads far downwind at the top
-    float spread = B.w * smoothstep(0.62, 0.92, tn);
-    q -= w * (tn * tn * th * 0.25 + spread * th * 1.2);
+    float spread = B.w * smoothstep(0.7, 0.93, tn);
+    q -= w * (tn * tn * th * 0.2 + spread * th * 0.45);
     float cell = max(B.x, 0.05);
     float2 qa = float2(dot(q, w) / max(C.y, 1.0), dot(q, cw));    // stretched along the wind: streets, rolls
 
     // the field of where the clouds are: one large-scale slice (clusters) and the cloud-scale shape
-    float lf = Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 7.0), 0.31 + t * E.z * 2e-5), 0).r;
-    float3 p3 = float3(qa / cell, h / (cell * 1.25) + t * E.z * 1e-4);
-    float4 s = Shape.SampleLevel(ShapeSampler, p3, 0);
-    float n3 = s.r * 0.62 + dot(s.gba, float3(0.2, 0.12, 0.06));
+    float lf = K.S(Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 14.0), 0.31 + t * E.z * 2e-5), 0).r);
+    float3 p3 = float3(qa / (cell * 3.0), h / (cell * 3.5) + t * E.z * 1e-4);
+    // the cloud-scale shape and one finer octave of the same noise
+    float n3 = K.S(Shape.SampleLevel(ShapeSampler, p3, 0).r) * 0.75 + K.S(Shape.SampleLevel(ShapeSampler, p3 * 2.7 + 0.37, 0).r) * 0.25;
     float field = lerp(n3, lf * 0.55 + n3 * 0.45, 0.35 + 0.55 * C.w);
     // isolated cells: only the peaks of the large-scale field carry clouds
     field *= lerp(1.0, K.Remap(lf, 0.35, 0.75) * 1.3, C.w);
 
     // the ragged base: the bottom wanders by up to C.z km
-    float rag = C.z * (1.0 - Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 2.0), 0.73), 0).g);
+    float rag = C.z * (1.0 - K.S(Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 5.0), 0.73), 0).r));
     float b2 = base - rag;
     float tb = saturate((h - b2) / max(top - b2, 0.05));
 
@@ -93,6 +115,13 @@ for (int li = 0; li < 2; li++)
         float shrink = lerp(1.0, 1.0 - tb * tb * 0.85, B.z) + spread * 1.4;
         float c = saturate(cover * shrink);
         float d = K.Remap(field, 1.0 - c, 1.0 - c + max(c, 0.08) * 0.9);
+        if (B.w > 0.01)
+        {
+            // thunderstorms: separate giant cells on a jittered grid, each a tower narrowing a little upward under an
+            // anvil that flares out downwind at the top (the anvil's shift is already in q)
+            float best = K.Cells(q, cell, cover, B.w, tb);
+            d = K.Remap(best + (n3 - 0.5) * 0.5, 0.0, 0.3) * smoothstep(1.0, 0.9, tb);
+        }
         d *= smoothstep(0.0, lerp(0.04, 0.25, B.y), tb) * smoothstep(1.0, lerp(0.8, 0.55, B.y), tb);
         // a deck: an even layer with only a soft texture
         float sheet = saturate(cover * 1.25) * (0.72 + 0.28 * n3) * smoothstep(0.0, 0.2, tb) * smoothstep(1.0, 0.7, tb);
@@ -101,8 +130,8 @@ for (int li = 0; li < 2; li++)
         // erosion by fine detail: billows on the tops, wisps at the base
         if (d > 0.0 && C.x > 0.0)
         {
-            float3 e = Erosion.SampleLevel(ErosionSampler, p3 * 5.3 + float3(0, 0, t * E.z * 3e-4), 0).rgb;
-            float ef = dot(e, float3(0.625, 0.25, 0.125));
+            float3 pe = p3 * 4.1 + float3(0, 0, t * E.z * 3e-4);
+            float ef = K.Er(Erosion.SampleLevel(ErosionSampler, pe, 0).r) * 0.65 + K.Er(Erosion.SampleLevel(ErosionSampler, pe * 2.3 + 0.5, 0).r) * 0.35;
             ef = lerp(1.0 - ef, ef, saturate(tb * 5.0));
             float k = ef * C.x * 0.45;
             d = saturate((d - k) / max(1.0 - k, 0.05));
@@ -120,12 +149,12 @@ for (int li = 0; li < 2; li++)
         // rain or snow shafts under the base: grey curtains where the cloud above is thickest, streaked down the wind
         float2 qs = q + w * (b2 - h) * 0.35;
         float2 qsa = float2(dot(qs, w) / max(C.y, 1.0), dot(qs, cw));
-        float above = Shape.SampleLevel(ShapeSampler, float3(qsa / cell, b2 / (cell * 1.25)), 0).r;
-        float lfs = Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 7.0), 0.31), 0).r;
+        float above = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 3.0), b2 / (cell * 3.5)), 0).r);
+        float lfs = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 14.0), 0.31), 0).r);
         float f2 = lerp(above, lfs * 0.55 + above * 0.45, 0.35 + 0.55 * C.w) * lerp(1.0, K.Remap(lfs, 0.35, 0.75) * 1.3, C.w);
-        float core = K.Remap(f2, 1.0 - cover * 0.8, 1.0);
-        float streak = Erosion.SampleLevel(ErosionSampler, float3(qsa / (cell * 0.35), h * 0.08 + t * 0.002), 0).r;
-        float d = E.x * 0.07 * core * (0.55 + 0.45 * streak) * smoothstep(0.0, 0.4, h) * smoothstep(b2, b2 - 0.3, h - 0.3);
+        float core = B.w > 0.01 ? K.Remap(K.Cells(qs, cell, cover, 0.0, 0.0), 0.1, 0.6) : K.Remap(f2, 1.0 - cover * 0.8, 1.0);
+        float streak = K.S(Shape.SampleLevel(ShapeSampler, float3(qsa / (cell * 1.5), h * 0.03 + t * 0.0005), 0).r);
+        float d = E.x * 0.02 * core * (0.6 + 0.4 * streak) * smoothstep(0.0, 0.4, h) * smoothstep(b2, b2 - 0.3, h - 0.3);
         dens += d * A.w;
         ao = min(ao, 0.5);
     }
@@ -146,16 +175,20 @@ if (Lens.x > 0.0 && h > Lens.y - 0.2 && h < Lens.z + 0.2)
         if (rr < 1.0)
         {
             float hc = lerp(Lens.y, Lens.z, 0.3 + 0.4 * K.H2(ci + 3.3));
-            float thick = (Lens.z - Lens.y) * 0.3 * (1.0 - rr * rr);
+            float thick = (Lens.z - Lens.y) * 0.42 * sqrt(saturate(1.0 - rr * rr));
             float dz = abs(h - hc);
-            float plates = 0.6 + 0.4 * cos((h - hc) / max(thick, 0.01) * 6.2831853 * 1.25);
-            float edge = Shape.SampleLevel(ShapeSampler, float3(f / (Lens.w * 0.6), hc), 0).g;
-            float d = smoothstep(thick, thick * 0.55, dz) * plates * smoothstep(1.0, 0.75 - 0.1 * edge, rr);
+            float plates = 0.8 + 0.2 * cos((h - hc) * 6.2831853 / 0.3);
+            float edge = K.S(Shape.SampleLevel(ShapeSampler, float3(f / (Lens.w * 0.6), hc), 0).r);
+            float d = smoothstep(thick, thick * 0.4, dz) * plates * smoothstep(1.0, 0.7 - 0.15 * edge, rr) * (0.75 + 0.25 * edge);
             dens += d * 0.9;
             ao = min(ao, lerp(0.7, 1.0, saturate((h - hc + thick) / max(2.0 * thick, 0.01))));
         }
     }
 }
+
+// fade out before the ray march stops (a hard arc in the sky otherwise)
+float dcam = length(pk - Cam * 1e-5);
+dens *= smoothstep(Misc.y, Misc.y * 0.75, dcam);
 
 // a lightning strike lights the cloud round it from inside
 float fl = 0.0;
@@ -188,14 +221,15 @@ float2 pa = float2(dot(p, w), dot(p, cw));
 float foot = tk * 0.0015;
 
 // cirrus: fibres combed along the upper wind, hooked, in bands
-float band = K.Fbm2(pa * float2(0.018, 0.05) + 3.1, 3);
-float fib = K.Fbm2(pa * float2(0.12, 1.6) + float2(K.Fbm2(pa * 0.06, 2) * 4.0, 0.0), foot < 0.5 ? 4 : 2);
+float band = K.Fbm2(pa * float2(0.03, 0.06) + 3.1, 3);
+float fib = K.Fbm2(pa * float2(0.35, 1.4) + float2(K.Fbm2(pa * 0.08, 2) * 5.0, K.Fbm2(pa * 0.11 + 5.0, 2) * 2.0), foot < 0.5 ? 4 : 2);
 float hook = K.Fbm2(pa * float2(0.35, 0.9) + 11.0, 2);
-float ci = K.Remap(band * 0.6 + fib * 0.55 + hook * 0.1, 1.0 - cover * 0.95, 1.05) * HighB.x;
+float ci = K.Remap(band * 0.75 + fib * 0.45 + hook * 0.1, 0.95 - cover * 0.6, 1.15) * HighB.x;
 // cirrocumulus: tiny grains in ripples
-float rip = 0.5 + 0.5 * sin(pa.x * 9.0 + K.Fbm2(pa * 0.4, 2) * 6.0);
-float gr = K.N2(pa * float2(14.0, 9.0)) * rip;
-float cc = K.Remap(band * 0.5 + gr * lerp(0.6, 0.1, saturate(foot * 3.0)), 1.0 - cover * 0.9, 1.0) * HighB.y;
+float rip = 0.5 + 0.5 * sin(pa.x * 4.0 + K.Fbm2(pa * 0.3, 2) * 6.0);
+float gr = K.N2(pa * float2(5.0, 3.5)) * (0.6 + 0.4 * rip);
+gr = lerp(gr, 0.5, saturate(foot * 4.0));
+float cc = K.Remap(band * 0.6 + gr * 0.6, 0.95 - cover * 0.6, 1.05) * HighB.y;
 // cirrostratus: a thin even veil with faint fibres in it
 float cs = saturate(cover * 1.1) * (0.75 + 0.25 * fib) * HighB.z;
 float a = saturate(max(max(ci, cc), cs) * HighA.z);
@@ -208,8 +242,8 @@ float3 sd = normalize(SunDir.xyz), md = normalize(MoonDir.xyz);
 float cs1 = dot(v, sd), cm1 = dot(v, md);
 float ph = 0.08 + 0.55 * pow(saturate(cs1 * 0.5 + 0.5), 8.0) + 0.12 * pow(saturate(cs1 * 0.5 + 0.5), 2.0);
 float phm = 0.08 + 0.55 * pow(saturate(cm1 * 0.5 + 0.5), 8.0);
-float3 lit = SunL.rgb * ph * 0.05 + MoonL.rgb * phm * 0.05;
-float3 amb = Amb.rgb * 0.9;
+float3 lit = SunL.rgb * ph * 0.12 + MoonL.rgb * phm * 0.12;
+float3 amb = Amb.rgb * 1.3;
 float3 col = lit + amb;
 // the 22-degree halo in a cirrostratus veil round the sun (and Europa): a ring, reddish inside
 float ang = acos(clamp(cs1, -1.0, 1.0));
