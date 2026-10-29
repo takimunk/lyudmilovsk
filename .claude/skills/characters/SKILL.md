@@ -5,12 +5,13 @@ description: How to make or remake a person (NPC, club regular, the owner, any h
 
 # Making a character
 
-**Rule (Dima, 2026-10-28): the hi3d model is never the game mesh of a person or an animal.** It is the reference
-(North Star) and the bake source only, like the vestibules. The game model is ours: clean topology with loops round
-the eyes and mouth, real eyeballs, lids, lashes, teeth, tongue, SK_Human_Skeleton weights and the 52 ARKit face shapes
-+ visemes from the start. People: `blender/characters/clean_human.py <id> --preview` (MakeHuman base through MPFB,
-fitted to the model, its colours baked on, our own hair shell and skirt; character.json `"clean"`). Animals: same idea
-on our own dog/cat base (in progress). Steps 3-4 below (rig_character.py on the hi3d mesh) are the old way.
+**People stay on their hi3d models, fixed in place (Dima, 2026-10-29).** Rebuilding them (MakeHuman base, MetaHuman,
+MetaHuman's face wrapped onto the model) lost the likeness or looked uncanny, so it was dropped. After step 3:
+`tools/characters/fix_hi3d.sh <id>...` paints the face from the character's own front picture (gen/front*.png, the
+one the model came from: clean eyes, brows, lips) onto the model's texture and smooths the face's lumps
+(`blender/characters/face_project.py`, character.json `face_project`; `skip` for glasses), rigs it (40k triangles,
+kids 30k), fits the real eyes (eye_shots.py + eyes.py from character.json `face.eye_open`), imports it. Each person
+gets their own iris colour (`face.iris`, sRGB). Check with test_faces.py offscreen.
 
 Full standard and the reasoning: `docs/characters.md` (Nao is the worked example). Providers and pinning: the
 `game-assets` skill. Words and voice: the `localization` skill.
