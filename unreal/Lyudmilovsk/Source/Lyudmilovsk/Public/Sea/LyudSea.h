@@ -53,6 +53,12 @@ struct LYUDMILOVSK_API FLyudSeaSample
  * In play a water physics volume covers the sea (from LandSideX out to sea, WaterVolumeDepth under sea
  * level up to it), so a character that falls in swims (MOVE_Swimming); IsSwimmable asks the same of a point.
  *
+ * The tide (LyudTide, docs/tides.md) moves the water: the actor stands at the datum, high water of springs,
+ * and SeaLevel() is the datum plus the tide now (never above it). The depth map holds the depth under the
+ * datum; every depth the sea reports or draws is that plus the tide, so at low water the line walks out
+ * across the flat and the waves shrink and break at its moving edge. lyud.TideOverride pins the level
+ * (metres over the datum), lyud.TideSpeed runs the tide's clock faster.
+ *
  * Under the surface a post process takes over (fog of the water's colour by distance, darker with
  * depth): the start of diving. The seabed and its life are ULyudSeabedComponent.
  *
@@ -90,7 +96,7 @@ public:
 	/** Depth beyond the ground's heights, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast") float OpenSeaDepthM = 25.f;
 	/** Cell of the depth map read from the ground, m. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast", meta = (ClampMin = "1")) float DepthCellM = 6.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast", meta = (ClampMin = "1")) float DepthCellM = 4.f;
 	/** Spawn a water physics volume over the sea in play, so characters swim in it (MOVE_Swimming). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") bool bWaterVolume = true;
 	/** How deep the water volume reaches under sea level, cm, and its fluid friction. */
@@ -111,9 +117,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sea") FLyudSeaSample SampleSurface(const FVector& Location) const;
 	/** World Z of the surface over a point, cm. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SurfaceZ(const FVector& Location) const { return SampleSurface(Location).SurfaceZ; }
-	/** Still-water depth at a point, cm (negative on land). */
+	/** Still-water depth at a point now (with the tide), cm (negative on land and on the bare flat). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float DepthAt(const FVector& Location) const;
-	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaLevel() const { return GetActorLocation().Z; }
+	/** Depth at a point if the water stood at WaterZ (world cm), cm: e.g. LowWaterZ() for what is always under water. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float DepthAtLevel(const FVector& Location, float WaterZ) const;
+	/** World Z of the still water now, cm: the datum plus the tide. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaLevel() const { return DatumZ() + TideCm; }
+	/** World Z of the datum (high water of springs, the map's SEA_Z): where the actor stands, cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float DatumZ() const { return GetActorLocation().Z; }
+	/** The tide now: the water over the datum, cm (0 at spring high water, negative below). */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideOffsetCm() const { return TideCm; }
+	/** The highest water there ever is (the datum), and the lowest of springs, world Z cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float HighWaterZ() const { return DatumZ(); }
+	UFUNCTION(BlueprintCallable, Category = "Sea") float LowWaterZ() const;
+	/** This tide's low water, world Z cm (neaps ~2 m, springs ~4.5 m under the datum). */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideLowZ() const { return DatumZ() + TideLowCm; }
+	/** Where the sand is still wet: the highest the water stood in the last hour, world Z cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float WetLineZ() const { return DatumZ() + WetLineCm; }
+	/** 0 neaps .. 1 springs; is the water coming in? */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideSpring() const { return TideSpringK; }
+	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsTideRising() const { return bTideRising; }
 	/** Significant wave height now, cm, and the wind the waves were grown in, m/s. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WaveHeight() const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaWindSpeed() const;
@@ -144,7 +167,14 @@ private:
 	void UploadWaveTable();
 	void StepDepthMap(int32 Budget);
 	void UploadDepthMap();
+	/** The hollows on the tidal flat that keep water when the ebb leaves them (PoolW). */
+	void FindPools();
+	/** Depth under the datum, m (the depth map). */
 	float DepthAtM(double XM, double YM) const;
+	/** Still-water depth now (with the tide), m. */
+	float WaterDepthAtM(double XM, double YM) const { return DepthAtM(XM, YM) + TideCm * 0.01f; }
+	/** The tide's level from the sky's clock (or the calendar), the override and speed cvars; moves the water volume. */
+	void UpdateTide(float DeltaSeconds);
 	bool ViewLocation(FVector& Out) const;
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
@@ -161,6 +191,16 @@ private:
 	void KeepSwimmerHeadUp(float DeltaSeconds);
 	FString GetDebugReportCore() const;
 
+	float TideCm = 0.f;
+	float TideLowCm = 0.f;
+	float WetLineCm = 0.f;
+	float TideSpringK = 0.f;
+	bool bTideRising = false;
+	/** Hours the tide's clock runs ahead of the sky's (lyud.TideSpeed). */
+	double TideExtraHours = 0.0;
+	float TideAge = 1e9f;
+	float VolumeTideCm = 0.f;
+
 	int32 AppliedQuality = -2;
 	int32 Segments = 128;
 	float MinStepCm = 25.f;
@@ -176,6 +216,8 @@ private:
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;
+	/** Water a hollow on the flat keeps at low tide, m, per depth cell. */
+	TArray<float> PoolW;
 	int32 DepthW = 0, DepthH = 0, DepthRow = 0;
 	FVector2D DepthMin = FVector2D::ZeroVector;
 	FVector2D DepthSize = FVector2D(1.0, 1.0);

@@ -21,7 +21,10 @@ import math
 import os
 import random
 
-SEA_Z = -43.0                 # sea level below the club floor (Unreal -4300 cm)
+SEA_Z = -43.0                 # sea level below the club floor (Unreal -4300 cm): the datum, high water of springs
+# The tide only falls from SEA_Z (docs/tides.md; Sea/Tide.h LyudTide mirrors these): low water at neaps and springs.
+TIDE_NEAP_LOW = -2.0
+TIDE_SPRING_LOW = -4.5
 BEACH_W = 25.0                # sand from the water line to the foot of the cliff
 DOOR_X = -1.93                # the blast door's centre (layout exit_door.center)
 
@@ -180,10 +183,57 @@ def height(x, y):
     return z + (academ_z() - z) * k if k > 0.0 else z
 
 
+# The tidal flat: a broad gentle sand flat out from the high-water line that the ebb lays bare (~1:80 for
+# FLAT_W metres, ~340 m of it dry at spring low water), then the old shelving bed down to 9 m. On it, low
+# sand bars along the shore with runnels behind them, a few tidal channels winding out to sea that drain
+# the flat, and shallow hollows that keep their water at low tide (ALyudSea finds them).
+FLAT_W = 350.0
+FLAT_SLOPE = 1.0 / 80.0
+TIDE_CHANNELS = (-620.0, -180.0, 260.0, 720.0, 1180.0, 1700.0)    # map Y where the channels leave the beach
+
+
+def _hash01(i, j, k=0):
+    h = (i * 73856093) ^ (j * 19349663) ^ (k * 83492791)
+    h = (h ^ (h >> 13)) * 0x5bd1e995 & 0xffffffff
+    return ((h ^ (h >> 15)) & 0xffffff) / float(0xffffff)
+
+
+def tidal_flat(d, y):
+    """Bed under the datum SEA_Z (metres, negative) at d metres out from the high-water line, map Y y."""
+    # the profile: the flat, a soft knee, then the old 6% bed
+    k = _smooth((d - FLAT_W + 40.0) / 80.0)
+    base = -0.3 - d * FLAT_SLOPE - k * (d - FLAT_W + 40.0) * 0.06 * 0.5 - max(d - FLAT_W - 40.0, 0.0) * 0.03
+    base = max(base, -9.3)
+    on = _smooth((d - 25.0) / 50.0) * (1.0 - _smooth((d - FLAT_W - 20.0) / 80.0))
+    # bars: narrow crests and broad runnels, ~70 m apart, wavering along the shore
+    w = d + 14.0 * math.sin(y / 95.0) + 7.0 * math.sin(y / 31.0 + 1.3)
+    bar = (0.5 + 0.5 * math.cos(2.0 * math.pi * w / 70.0)) ** 3 * 0.42 - 0.12
+    # channels: winding out to sea, deeper seaward
+    ch = 0.0
+    for n, cy in enumerate(TIDE_CHANNELS):
+        yc = cy + 28.0 * math.sin(d / 55.0 + n * 1.7) + 0.08 * d
+        width = 7.0 + d * 0.02
+        ch = max(ch, math.exp(-((y - yc) / width) ** 2) * (0.25 + 0.75 * _smooth((d - 30.0) / 240.0)))
+    # hollows: a shallow dish or none in each 110 m cell of the flat
+    pool = 0.0
+    ci, cj = int(math.floor(d / 110.0)), int(math.floor(y / 110.0))
+    for i in (ci - 1, ci, ci + 1):
+        for j in (cj - 1, cj, cj + 1):
+            if _hash01(i, j) < 0.45:
+                continue
+            pd = (i + 0.2 + 0.6 * _hash01(i, j, 1)) * 110.0
+            py = (j + 0.2 + 0.6 * _hash01(i, j, 2)) * 110.0
+            r = 9.0 + 14.0 * _hash01(i, j, 3)
+            q = ((d - pd) ** 2 + (y - py) ** 2 * 0.6) / (r * r)
+            if q < 1.0:
+                pool = max(pool, (1.0 - q) ** 2 * (0.25 + 0.3 * _hash01(i, j, 4)))
+    return base + on * (bar - 1.1 * ch - pool)
+
+
 def _height(x, y):
     s = inland(x, y)
-    if s <= 0.0:                                     # sea bed: shallow, like the Baltic
-        return SEA_Z - 0.3 - min(-s * 0.06, 9.0)
+    if s <= 0.0:                                     # sea bed: the tidal flat, then shallow like the Baltic
+        return SEA_Z + tidal_flat(-s, y)
     if s <= BEACH_W:
         return SEA_Z - 0.3 + (s / BEACH_W) * 1.8
     top = plateau(x, y)

@@ -1,5 +1,6 @@
 #include "Birds/BirdLife.h"
 
+#include "Sea/LyudSea.h"
 #include "BirdSim.h"
 #include "Birds/BirdActor.h"
 #include "HeroCharacter.h"
@@ -548,6 +549,11 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	FWorld& S = *Sim;
 	UpdateClock();
 	UpdatePlayer(DeltaTime);
+	// the water the sea birds sit on rides the tide
+	if (const ALyudSea* Sea = ALyudSea::Get(GetWorld()))
+	{
+		S.SeaZ = Sea->SeaLevel() * 0.01f;
+	}
 	S.Step(DeltaTime);
 	DispatchEvents();
 	if (Renderer)

@@ -934,16 +934,16 @@ void ABirdPawn::StepGround(const FBirdControls& C, float Dt)
 				bHopping = false;
 			}
 		}
-		else if (!bHopping && Feet.Z > FBirdAir::SeaZ + 1.f)
+		else if (!bHopping && Feet.Z > WaterZ(Feet) + 1.f)
 		{
 			Mode = EBirdMode::Air;
 			Flight->Vel = ToM(Move * 50.f);
 			Flight->Pos = ToM(GetActorLocation());
 			return;
 		}
-		if (Feet.Z < FBirdAir::SeaZ)
+		if (Feet.Z < WaterZ(Feet))
 		{
-			Feet.Z = FBirdAir::SeaZ;
+			Feet.Z = WaterZ(Feet);
 			bHopping = false;
 		}
 	}

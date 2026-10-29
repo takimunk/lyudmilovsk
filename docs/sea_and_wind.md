@@ -65,7 +65,10 @@ sound thread, which uses it for rain, thunder and the music's mood; visuals are 
   a few metres of visibility), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
   crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
   along the wind at gale force), breakers and wash over the shallows.
-- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). The surface stays
+- **Tide**: the actor stands at the datum (high water of springs); `SeaLevel()` and every depth follow the tide,
+  down to 4.5 m lower at springs, and pools stay in the hollows of the bared flat ([tides.md](tides.md)).
+- **Shallows**: a depth map read from the landscape at start (4 m cells, depth under the datum plus the pools the
+  ebb leaves, a few seconds of traces). The surface stays
   under the breaking height (0.4 × depth), and where the water is shallower than ~1.5 × the wave height spilling
   breakers roll in along the depth contours, in the geometry, the foam and `SampleSurface` alike; no sea east of
   `LandSideX`.

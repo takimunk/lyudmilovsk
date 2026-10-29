@@ -283,6 +283,8 @@ namespace LyudBirds
 		int AddFlock(int Species, const V3& P, int Count, float Radius);
 		/** Ground height where there is no grid (a test level): flights keep above it. */
 		float NoGridZ = -43.f;
+		/** The sea's water level now, m (the datum -43 at high water; the game moves it with the tide). */
+		float SeaZ = -43.f;
 		/** The clock jumped (developer mode, a loaded save): every group goes straight to where it would be now. */
 		void Resettle();
 		/** Advances the world by Dt seconds (call every frame with the frame's dt). */

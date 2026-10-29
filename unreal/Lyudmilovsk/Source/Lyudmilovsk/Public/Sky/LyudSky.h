@@ -7,6 +7,7 @@
 
 class UDirectionalLightComponent;
 class UMaterialInterface;
+class UMaterialInstanceDynamic;
 class UPostProcessComponent;
 class USkyAtmosphereComponent;
 class USkyLightComponent;
@@ -27,6 +28,13 @@ class UVolumetricCloudComponent;
  * Outside, the eye adapts: as the light fails after sunset the exposure opens up by up to NightExposureEV
  * stops over the club's fixed one, eased in over EyeAdaptSeconds as the player walks out (and back as
  * they walk in), so dusk and moonlit nights read instead of going black.
+ *
+ * The sun is a huge red dwarf (SunAngularDiameterDeg across, a ~3200 K star: limb darkening, boiling
+ * granulation, drifting sunspots, faculae, a corona and now and then a prominence) and the moon is Europa
+ * (MoonAngularDiameterDeg, lit per pixel from the true sun direction, so its phases are right, with a faint
+ * ashen light on its dark side). Both are drawn by the sky material (import_sky.py), not the atmosphere's
+ * light disks, with brightness capped so they read rather than blind. Nights are moonlit (a bright ice moon,
+ * cool soft-shadowed light) and never quite black (a faint airglow, NightSkyGlow).
  *
  * In the editor the sky shows EditorPreviewTime; in play it follows the calendar. The console variable
  * lyud.SkyHourOffset shifts either by some hours (look at a sunset or a night without waiting for it).
@@ -54,13 +62,32 @@ public:
 
 	/** Sunlight above the atmosphere, in the scene's lux (the club runs a fixed dark-room exposure); the atmosphere dims and reddens it near the horizon. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SunIlluminance = 40.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor SunColor = FLinearColor(1.f, 0.96f, 0.9f);
-	/** Full moon light, scene lux: far brighter than real moonlight so nights read as moonlit rather than black. Scaled by the phase. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float FullMoonIlluminance = 0.6f;
+	/** The daylight's colour: the red dwarf's ~3200 K, paled toward white so the day stays pleasant (the disk itself is drawn deeper orange). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor SunColor = FLinearColor(1.f, 0.83f, 0.68f);
+	/** Full moon light, scene lux: a huge bright ice moon, far brighter than real moonlight, so nights read as moonlit. Scaled by the phase. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float FullMoonIlluminance = 1.1f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor MoonColor = FLinearColor(0.62f, 0.72f, 1.f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SkyLightIntensity = 1.f;
+	/** The faint glow of the night sky itself (airglow), sky luminance at full dark: keeps a moonless night dark blue, not black. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor NightSkyGlow = FLinearColor(0.015f, 0.027f, 0.066f);
 	/** Star dome brightness at full dark (the day sky outshines it on its own). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float StarBrightness = 1.f;
+
+	/** The red dwarf's apparent size, degrees across (the Sun from Earth: 0.53). Also the sunlight's source angle: soft shadows. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float SunAngularDiameterDeg = 10.f;
+	/** Europa's apparent size, degrees across. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonAngularDiameterDeg = 7.f;
+	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.2f;
+	/** Europa's luminance (full sunlit ice) per lux of SunIlluminance at night, and how much brighter it is drawn by day so it shows against the blue. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDiskGain = 0.012f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDayBoost = 4.f;
+	/** Days the star takes to turn once (its spots drift across the disk with it); new spots each in-game day. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunRotationDays = 6.f;
+	/** The sunlight's specular strength: the drawn disk is far dimmer than a physical sun of SunIlluminance, so its reflections (the sea's glitter path) are toned down to match. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.06f;
+	/** Bloom outdoors (the club's level sets its own): low, so the big bright disk is not smeared into a blob. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float OutdoorBloom = 0.2f;
 
 	/** Unlit is-sky material on the dome: atmosphere luminance, sun and moon disks, stars (unreal/scripts/import_sky.py). Without one the atmosphere draws the sky itself. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") TObjectPtr<UMaterialInterface> SkyMaterial;
@@ -107,6 +134,10 @@ private:
 	FVector WorldDirection(const FVector& Enu) const;
 	void UpdatePlayerChannels(float DeltaSeconds);
 	void UpdateExposure(float DeltaSeconds);
+
+	/** The dome's material instance: sun, moon, pole directions, disk sizes and brightness each update. */
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SkyMID;
+	void UpdateSkyMaterial();
 
 	FSkyPosition SunPos;
 	FSkyPosition MoonPos;

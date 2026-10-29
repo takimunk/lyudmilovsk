@@ -12,7 +12,6 @@ namespace LyudBirds
 	namespace
 	{
 		constexpr float Pi = 3.14159265f;
-		constexpr float SeaZ = -43.f;
 
 		float Clamp(float V, float A, float B) { return V < A ? A : (V > B ? B : V); }
 		float Smooth(float T) { T = Clamp(T, 0.f, 1.f); return T * T * (3.f - 2.f * T); }

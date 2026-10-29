@@ -16,7 +16,9 @@ Krai; the map follows the Baltic now.
 Metres, origin on the club's portal face at floor level (the spur). X is to the left of someone
 walking out of the club (west, the sea), Y is straight out of the door (north), Z is up.
 Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..1300, Y -900..2200
-(2.6 x 3.1 km). The sea is at Z -43, the valley at -37, the upland at +18.
+(2.6 x 3.1 km). The sea is at Z -43 at high water (the datum; the tide only falls from it, to -45 at neaps and
+-47.5 at springs, [tides.md](tides.md)), the valley at -37, the upland at +18. Seaward of the beach lies a broad
+tidal flat (`W.tidal_flat`: ~1:80 for 350 m with bars, runnels, channels and pools), then the old 6% bed to 9 m.
 
 ## Places
 

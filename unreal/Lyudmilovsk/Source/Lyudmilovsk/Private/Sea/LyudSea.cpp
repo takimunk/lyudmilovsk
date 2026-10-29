@@ -23,6 +23,8 @@
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "Sea/LyudSeabed.h"
+#include "Sea/Tide.h"
+#include "Plants/GameCalendar.h"
 #include "Sky/LyudSky.h"
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
@@ -37,6 +39,10 @@ namespace
 	TAutoConsoleVariable<int32> CVarSeaReplacePlane(TEXT("lyud.Sea.ReplacePlane"), 1, TEXT("1: in play, swap an old flat sea plane (M_BalticSea) for an ALyudSea."));
 	TAutoConsoleVariable<float> CVarSeaDebugFoam(TEXT("lyud.Sea.DebugFoam"), 0.f, TEXT("Make the foam glow by this much, to see where it is."));
 	TAutoConsoleVariable<int32> CVarSeaDebug(TEXT("lyud.Sea.Debug"), 0, TEXT("1: print the sea state on screen."));
+	TAutoConsoleVariable<float> CVarTideOverride(TEXT("lyud.TideOverride"), -999.f,
+		TEXT("Pin the tide: water level in metres over the datum (0 = spring high water, -4.5 = spring low); -999 or NaN = follow the sky."));
+	TAutoConsoleVariable<float> CVarTideSpeed(TEXT("lyud.TideSpeed"), 1.f,
+		TEXT("The tide's clock runs this many times faster than the sky's (1 = with it; 3600 = an hour a second)."));
 
 	const TCHAR* CollectionPath = TEXT("/Game/Weather/MPC_LyudWeather.MPC_LyudWeather");
 	constexpr int32 TableHalf = 64;   // columns per train set in the wave table (geometry 0..63, detail 64..127)
@@ -246,6 +252,7 @@ void ALyudSea::EnsureMaterial()
 	}
 	SeaMID->SetScalarParameterValue(TEXT("LandSideX"), LandSideX * 0.01f);
 	SeaMID->SetScalarParameterValue(TEXT("OpenSeaDepth"), OpenSeaDepthM);
+	SeaMID->SetScalarParameterValue(TEXT("Tide"), TideCm * 0.01f);
 	if (UnderwaterMaterial && !UnderMID)
 	{
 		UnderMID = UMaterialInstanceDynamic::Create(UnderwaterMaterial, this);
@@ -416,28 +423,99 @@ float ALyudSea::GroundZ(double X, double Y, bool& bOk) const
 	return 0.f;
 }
 
+void ALyudSea::FindPools()
+{
+	// Priority flood (Barnes et al. 2014) from the water that never leaves (deeper than the lowest springs) and
+	// the map's edges: each cell's spill level is the lowest rim it would have to climb over to reach the sea.
+	// A cell under its spill level is in a hollow the ebb cannot drain; it keeps that much water (PoolW).
+	const int32 N = DepthW * DepthH;
+	PoolW.Init(0.f, N);
+	TArray<float> Fill;
+	Fill.SetNumUninitialized(N);
+	TArray<uint8> Done;
+	Done.Init(0, N);
+	struct FCell { float H; int32 I; };
+	struct FLower { bool operator()(const FCell& A, const FCell& B) const { return A.H < B.H; } };
+	TArray<FCell> Heap;
+	const float Always = -float(LyudTide::SpringLowM) + 0.3f;
+	for (int32 I = 0; I < N; I++)
+	{
+		const int32 X = I % DepthW, Y = I / DepthW;
+		if (Depth[I] > Always || X == 0 || Y == 0 || X == DepthW - 1 || Y == DepthH - 1)
+		{
+			Fill[I] = -Depth[I];
+			Done[I] = 1;
+			Heap.HeapPush({ Fill[I], I }, FLower());
+		}
+	}
+	while (Heap.Num())
+	{
+		FCell C;
+		Heap.HeapPop(C, FLower(), EAllowShrinking::No);
+		const int32 X = C.I % DepthW, Y = C.I / DepthW;
+		static const int32 DX[4] = { 1, -1, 0, 0 }, DY[4] = { 0, 0, 1, -1 };
+		for (int32 K = 0; K < 4; K++)
+		{
+			const int32 NX = X + DX[K], NY = Y + DY[K];
+			if (NX < 0 || NY < 0 || NX >= DepthW || NY >= DepthH)
+			{
+				continue;
+			}
+			const int32 J = NY * DepthW + NX;
+			if (Done[J])
+			{
+				continue;
+			}
+			Done[J] = 1;
+			Fill[J] = FMath::Max(-Depth[J], C.H);
+			Heap.HeapPush({ Fill[J], J }, FLower());
+		}
+	}
+	// only on the tidal flat: the hollow's water under the datum, not ponds on dry land
+	int32 Pools = 0;
+	for (int32 I = 0; I < N; I++)
+	{
+		const float W = Fill[I] + Depth[I];
+		if (W > 0.02f && Fill[I] < -0.05f && Depth[I] < Always)
+		{
+			PoolW[I] = W;
+			Pools++;
+		}
+	}
+	UE_LOG(LogTemp, Log, TEXT("LyudSea: %d depth cells hold tide pools at low water"), Pools);
+}
+
 void ALyudSea::UploadDepthMap()
 {
-	DepthTex = UTexture2D::CreateTransient(DepthW, DepthH, PF_R16F, TEXT("T_LyudSeaDepth"));
+	FindPools();
+	DepthTex = UTexture2D::CreateTransient(DepthW, DepthH, PF_G16R16F, TEXT("T_LyudSeaDepth"));
 	DepthTex->SRGB = false;
 	DepthTex->Filter = TF_Bilinear;
 	DepthTex->NeverStream = true;
 	DepthTex->AddressX = TA_Clamp;
 	DepthTex->AddressY = TA_Clamp;
 	DepthTex->UpdateResource();
-	FFloat16* Data = new FFloat16[DepthW * DepthH];
+	// r = depth under the datum, g = water a hollow keeps at low tide (tools/sea/sea_hlsl.py Lyud.Water)
+	FFloat16* Data = new FFloat16[DepthW * DepthH * 2];
 	for (int32 I = 0; I < DepthW * DepthH; I++)
 	{
-		Data[I] = FFloat16(Depth[I]);
+		Data[I * 2] = FFloat16(Depth[I]);
+		Data[I * 2 + 1] = FFloat16(PoolW[I]);
 	}
 	FUpdateTextureRegion2D* Region = new FUpdateTextureRegion2D(0, 0, 0, 0, DepthW, DepthH);
-	DepthTex->UpdateTextureRegions(0, 1, Region, DepthW * sizeof(FFloat16), sizeof(FFloat16), (uint8*)Data,
+	DepthTex->UpdateTextureRegions(0, 1, Region, DepthW * sizeof(FFloat16) * 2, sizeof(FFloat16) * 2, (uint8*)Data,
 		[](uint8* Src, const FUpdateTextureRegion2D* Regions) { delete[] (FFloat16*)Src; delete Regions; });
 	bDepthUploaded = true;
 	if (SeaMID)
 	{
 		SeaMID->SetTextureParameterValue(TEXT("DepthMap"), DepthTex);
 		SeaMID->SetVectorParameterValue(TEXT("DepthRect"), FLinearColor(DepthMin.X, DepthMin.Y, 1.0 / DepthSize.X, 1.0 / DepthSize.Y));
+	}
+	// the ground draws the pools the ebb leaves (M_Ground: standing water in the hollows over the sea's level)
+	for (TActorIterator<ALandscapeProxy> It(GetWorld()); It; ++It)
+	{
+		It->SetLandscapeMaterialTextureParameterValue(TEXT("TidePools"), DepthTex);
+		It->SetLandscapeMaterialVectorParameterValue(TEXT("PoolRect"), FLinearColor(DepthMin.X, DepthMin.Y, 1.0 / DepthSize.X, 1.0 / DepthSize.Y));
 	}
 }
 
@@ -467,7 +545,73 @@ float ALyudSea::DepthAtM(double XM, double YM) const
 
 float ALyudSea::DepthAt(const FVector& Location) const
 {
-	return DepthAtM(Location.X * 0.01, Location.Y * 0.01) * 100.f;
+	return WaterDepthAtM(Location.X * 0.01, Location.Y * 0.01) * 100.f;
+}
+
+float ALyudSea::DepthAtLevel(const FVector& Location, float WaterZ) const
+{
+	return DepthAtM(Location.X * 0.01, Location.Y * 0.01) * 100.f + (WaterZ - DatumZ());
+}
+
+float ALyudSea::LowWaterZ() const
+{
+	return DatumZ() + float(LyudTide::SpringLowM) * 100.f;
+}
+
+void ALyudSea::UpdateTide(float DeltaSeconds)
+{
+	const UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	const float Speed = CVarTideSpeed.GetValueOnGameThread();
+	if (Speed != 1.f)
+	{
+		TideExtraHours += double(Speed - 1.f) * DeltaSeconds / 3600.0;
+	}
+	TideAge += DeltaSeconds;
+	if (TideAge < 0.2f && Speed == 1.f)
+	{
+		return;
+	}
+	TideAge = 0.f;
+	if (!Sky.IsValid())
+	{
+		TActorIterator<ALyudSky> It(World);
+		Sky = It ? *It : nullptr;
+	}
+	// the sky's clock (with lyud.SkyHourOffset), so a shot of a night shows that night's tide
+	double Lon = 20.40, Utc = 2.0;
+	FDateTime Local = UGameCalendar::NowIn(World);
+	if (const ALyudSky* S = Sky.Get())
+	{
+		Local = S->ShownTime();
+		Lon = S->LongitudeDeg;
+		Utc = S->UtcOffsetHours;
+	}
+	const FDateTime When = Local - FTimespan::FromHours(Utc) + FTimespan::FromHours(TideExtraHours);
+	const LyudTide::FState T = LyudTide::At(When, Lon);
+	TideCm = float(T.LevelM) * 100.f;
+	TideLowCm = float(T.LowM) * 100.f;
+	TideSpringK = float(T.Spring);
+	bTideRising = T.bRising;
+	WetLineCm = float(LyudTide::RecentHighM(When, Lon, 1.0)) * 100.f;
+	const float Pin = CVarTideOverride.GetValueOnGameThread();
+	if (!FMath::IsNaN(Pin) && Pin > -900.f)
+	{
+		TideCm = FMath::Min(Pin, 0.f) * 100.f;
+		// as if on the ebb: the sand a little above the pinned water is still wet
+		WetLineCm = FMath::Min(TideCm + 120.f, 0.f);
+	}
+	// the water volume's top rides the tide (moved only by whole centimetres: it is a big box)
+	if (WaterVolume && FMath::Abs(VolumeTideCm - TideCm) > 2.f)
+	{
+		VolumeTideCm = TideCm;
+		FVector At = WaterVolume->GetActorLocation();
+		At.Z = SeaLevel() - WaterVolumeDepth * 0.5;
+		WaterVolume->SetActorLocation(At);
+	}
 }
 
 double ALyudSea::WaveClock() const
@@ -478,9 +622,9 @@ double ALyudSea::WaveClock() const
 FLyudSeaSample ALyudSea::SampleSurface(const FVector& Location) const
 {
 	FLyudSeaSample S;
-	const float SeaZ = GetActorLocation().Z;
+	const float SeaZ = SeaLevel();
 	const double X = Location.X * 0.01, Y = Location.Y * 0.01;
-	const float D = DepthAtM(X, Y);
+	const float D = WaterDepthAtM(X, Y);
 	S.Depth = D * 100.f;
 	S.SurfaceZ = SeaZ;
 	S.bIsSea = D > 0.f && Location.X >= LandSideX;
@@ -559,7 +703,7 @@ void ALyudSea::SpawnWaterVolume()
 	// the volume's brush is a simple box body built here (no editor brush in a game)
 	const double East = FMath::Max<double>(LandSideX, -OuterRadius), West = OuterRadius;
 	const FVector Size(West - East, OuterRadius * 2.0, WaterVolumeDepth);
-	const FVector Center((East + West) * 0.5, GetActorLocation().Y, GetActorLocation().Z - WaterVolumeDepth * 0.5);
+	const FVector Center((East + West) * 0.5, GetActorLocation().Y, SeaLevel() - WaterVolumeDepth * 0.5);
 	FActorSpawnParameters P;
 	P.Name = TEXT("LyudSeaWater");
 	APhysicsVolume* V = World->SpawnActor<APhysicsVolume>(Center, FRotator::ZeroRotator, P);
@@ -582,6 +726,7 @@ void ALyudSea::SpawnWaterVolume()
 	B->RecreatePhysicsState();
 	B->UpdateBounds();
 	WaterVolume = V;
+	VolumeTideCm = TideCm;
 	UE_LOG(LogTemp, Log, TEXT("LyudSea: water volume %s, %.0f x %.0f x %.0f m"), *Center.ToString(), Size.X * 0.01, Size.Y * 0.01, Size.Z * 0.01);
 }
 
@@ -680,6 +825,7 @@ void ALyudSea::Tick(float DeltaSeconds)
 	}
 	ApplyQuality(CVarSeaQuality.GetValueOnGameThread());
 	Clock += DeltaSeconds;
+	UpdateTide(DeltaSeconds);
 
 	// the ground under the sea: a few dozen rows a frame until it is all read
 	StepDepthMap(GetWorld() && GetWorld()->IsGameWorld() ? 8000 : 30000);
@@ -701,7 +847,7 @@ void ALyudSea::Tick(float DeltaSeconds)
 	{
 		// the rings follow the eye in whole fine cells, so the near water does not swim
 		const double Snap = MinStepCm * 2.0;
-		Surface->SetWorldLocation(FVector(FMath::GridSnap(Eye.X, Snap), FMath::GridSnap(Eye.Y, Snap), GetActorLocation().Z));
+		Surface->SetWorldLocation(FVector(FMath::GridSnap(Eye.X, Snap), FMath::GridSnap(Eye.Y, Snap), SeaLevel()));
 		const FLyudSeaSample S = SampleSurface(Eye);
 		bCameraUnder = S.bIsSea && S.Immersion > 2.f;
 		Underwater->BlendWeight = bCameraUnder ? 1.f : 0.f;
@@ -725,6 +871,7 @@ void ALyudSea::Tick(float DeltaSeconds)
 	{
 		SeaMID->SetScalarParameterValue(TEXT("DebugFoam"), CVarSeaDebugFoam.GetValueOnGameThread());
 		SeaMID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor((float)WaveClock(), (float)Segments, MinStepCm * 0.01f, OpenSeaDepthM));
+		SeaMID->SetScalarParameterValue(TEXT("Tide"), TideCm * 0.01f);
 	}
 	if (Collection)
 	{
@@ -737,7 +884,9 @@ void ALyudSea::Tick(float DeltaSeconds)
 				Big = T;
 			}
 		}
-		UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Sea"), FLinearColor(GetActorLocation().Z, (float)WaveClock(), Field->Hs, Field->PeakLambda));
+		UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Sea"), FLinearColor(SeaLevel(), (float)WaveClock(), Field->Hs, Field->PeakLambda));
+		// the tide for the ground (wet sand under the wet line): water now, datum, wet line (world cm), springs 0..1
+		UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Tide"), FLinearColor(SeaLevel(), DatumZ(), WetLineZ(), TideSpringK));
 		UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("SeaWave"), FLinearColor(Big.DirX, Big.DirY, Big.K, Big.Amp));
 		UKismetMaterialLibrary::SetScalarParameterValue(this, Collection, TEXT("SeaWaveOmega"), Big.Omega);
 		UKismetMaterialLibrary::SetScalarParameterValue(this, Collection, TEXT("SeaWavePhase"), Big.Phase);
@@ -766,7 +915,8 @@ FString ALyudSea::GetDebugReport() const
 
 FString ALyudSea::GetDebugReportCore() const
 {
-	return FString::Printf(TEXT("sea: wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s"),
+	return FString::Printf(TEXT("sea: tide %+.2f m (low %.2f, wet line %+.2f, springs %.2f, %s), wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s"),
+		TideCm * 0.01f, TideLowCm * 0.01f, WetLineCm * 0.01f, TideSpringK, bTideRising ? TEXT("flood") : TEXT("ebb"),
 		Field->WindSpeed, Field->Hs, Field->PeakLambda, Field->Chop, AppliedQuality, (int32)Field->Geo.size(), (int32)Field->Detail.size(), Segments,
 		DepthRow, DepthH, bCameraUnder ? TEXT("under water") : TEXT("above water"));
 }
