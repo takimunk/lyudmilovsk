@@ -1121,6 +1121,22 @@ def main():
         hd = B["head_r"][1] * 9.0
         render("fur_head", tuple(hx + np.array([hd * 0.85, -hd * 0.55, hd * 0.12])), tuple(hx), lens=85, res=(700, 600))
         render("fur_head_front", tuple(hx + np.array([hd, 0.0, hd * 0.05])), tuple(hx), lens=85, res=(700, 600))
+        if B.get("kind") == "dog":
+            # the mouth open and the head turned: the skull must stay rigid, the teeth and tongue show
+            pb = arm.pose.bones
+            if "jaw" in pb:
+                pb["jaw"].rotation_mode = "XYZ"
+                pb["jaw"].rotation_euler = (0, 0.45, 0)
+            for nm, ang in (("head", (0.0, 0.2, 0.35)),):
+                if nm in pb:
+                    pb[nm].rotation_mode = "XYZ"
+                    pb[nm].rotation_euler = ang
+            bpy.context.view_layer.update()
+            render("mouth_open", tuple(hx + np.array([hd * 0.85, -hd * 0.55, hd * 0.12])), tuple(hx), lens=85, res=(700, 600))
+            render("mouth_open_front", tuple(hx + np.array([hd, 0.0, hd * 0.05])), tuple(hx), lens=85, res=(700, 600))
+            for nm in ("jaw", "head"):
+                if nm in pb:
+                    pb[nm].rotation_euler = (0, 0, 0)
 
     B["name"] = BREED
     rig = GA.Rig(B)
