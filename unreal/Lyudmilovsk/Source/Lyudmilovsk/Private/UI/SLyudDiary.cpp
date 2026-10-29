@@ -160,9 +160,12 @@ int32 SLyudInkButton::OnPaint(const FPaintArgs& Args, const FGeometry& G, const 
 	const FVector2D Pos(Inset.Left, Inset.Top), Size = G.GetLocalSize() - FVector2D(Inset.Left + Inset.Right, Inset.Top + Inset.Bottom);
 	const FLinearColor Tint = InWidgetStyle.GetColorAndOpacityTint();
 	// the highlighter goes under the words, a circle or a box over them
+	// and stays inside the button: its broad strokes would run onto the next row's words
 	if (bSelected && SelectedMark == EMark::Highlight)
 	{
+		Out.PushClip(FSlateClippingZone(G.MakeChild(Size + FVector2D(16.f, 0.f), FSlateLayoutTransform(Pos - FVector2D(8.f, 0.f))).ToPaintGeometry()));
 		DrawMark(Out, LayerId, G, SelectedMark, Pos, Size, SelectedColor * Tint, 3.f, Seed);
+		Out.PopClip();
 	}
 	const int32 Top = SCompoundWidget::OnPaint(Args, G, MyCullingRect, Out, LayerId + 1, InWidgetStyle, bParentEnabled);
 	if (bSelected && SelectedMark != EMark::Highlight)
@@ -436,7 +439,7 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 		const bool bOn = Inv->IsWorn(Id) || Inv->EquippedItem() == Id;
 		Grid->AddSlot()
 		[
-			SNew(SBox).WidthOverride(170.f).HeightOverride(212.f)
+			SNew(SBox).WidthOverride(170.f).HeightOverride(224.f)
 			[
 				SNew(SLyudInkButton).HoverMark(EMark::Box).SelectedMark(EMark::Highlight).Selected(Id == State->SelectedItem).Seed(SeedOf(Id, 2))
 				.MarkColor(PencilFaint).SelectedColor(Highlight).Inset(FMargin(10.f, 6.f))
@@ -446,7 +449,7 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 					SNew(SVerticalBox)
 					+ SVerticalBox::Slot().AutoHeight().Padding(8, 2, 8, 0)
 					[
-						SNew(SBox).HeightOverride(28.f)
+						SNew(SBox).HeightOverride(34.f)
 						[
 							SNew(SHorizontalBox)
 							+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
