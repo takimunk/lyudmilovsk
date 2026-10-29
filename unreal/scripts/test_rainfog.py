@@ -28,15 +28,18 @@ STEPS = [
     ("door_downpour", DOOR, -10, 0, 0.0, (14.0, 0.0, 1.0, -1, 9), []),
     ("door_ground", DOOR, -35, 0, 0.0, (6.0, 0.0, 1.0, -1, 4), []),
     ("door_soaked_after", DOOR, -30, 0, 0.0, (0.0, 0.0, 1.0, -1, 2), []),
-    ("door_look_out", (-193.0, 700.0, 190.0), -4, 90, 0.0, (6.0, 0.0, 1.0, -1, 4), []),
     ("club_inside", (-17.5, -1585.0, 190.0), -5, 90, 0.0, (6.0, 0.4, 1.0, -1, 4), []),
     ("brow_rain", at(60, -10, 600), -12, 0, 0.0, (4.0, 0.0, 0.8, -1, 6), []),
     ("beach_rings", at(118, 5, SEA_Z + 180), -25, 0, 0.0, (4.0, 0.0, 0.8, -1, 1), []),
     ("brow_seafog", at(60, -10, 600), -8, 0, 0.0, (0.0, 0.85, 0.2, 45, 2), []),
     ("door_seafog", DOOR, -4, 0, 0.0, (0.0, 0.85, 0.2, 60, 2), []),
-    ("brow_groundfog_dawn", at(60, -10, 600), -10, -90, 14.5, (0.0, 0.7, 0.3, 15, 0.5), []),
+    ("brow_groundfog_morning", at(60, -10, 600), -10, -90, 16.3, (0.0, 0.7, 0.3, 15, 0.5), []),
     ("door_haze", DOOR, -2, 0, 0.0, (0.0, 0.2, 0.0, 200, 4), []),
     ("door_night_rain", DOOR, -6, 0, 5.0, (4.0, 0.1, 1.0, -1, 4), []),
+    ("preset_drizzle", DOOR, -6, 0, 0.0, (-1, -1, -1, -1, -1), ["lyud.Weather.Preset drizzle"]),
+    ("preset_downpour", at(60, -10, 600), -10, 0, 0.0, (-1, -1, -1, -1, -1), ["lyud.Weather.Preset downpour"]),
+    ("preset_seafog", at(60, -10, 600), -8, 0, 0.0, (-1, -1, -1, -1, -1), ["lyud.Weather.Preset seafog"]),
+    ("preset_fog", DOOR, -4, 0, 0.0, (-1, -1, -1, -1, -1), ["lyud.Weather.Preset fog"]),
     ("perf_on", DOOR, -6, 0, 0.0, (14.0, 0.0, 1.0, -1, 9), ["lyud.Rain.Fx 1", "csvprofile start"]),
     ("perf_off", DOOR, -6, 0, 0.0, (14.0, 0.0, 1.0, -1, 9), ["lyud.Rain.Fx 0", "csvprofile start"]),
     ("perf_on2", DOOR, -6, 0, 0.0, (14.0, 0.0, 1.0, -1, 9), ["lyud.Rain.Fx 1", "csvprofile start"]),
@@ -90,13 +93,14 @@ def tick(dt):
             cm.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
             cm.gravity_scale = 0.0
         pawn.set_actor_enable_collision(False)
+        cmd(w, "lyud.Weather.Preset off")   # clears the forced values too: first
         cmd(w, "lyud.SkyHourOffset %f" % hours)
         cmd(w, "lyud.Wind.Speed %f" % wind)
         cmd(w, "lyud.Weather.Rain %f" % rain)
         cmd(w, "lyud.Weather.Fog %f" % fog)
         cmd(w, "lyud.Weather.Wet %f" % wet)
         cmd(w, "lyud.Weather.FogTop %f" % top)
-        cmd(w, "lyud.Weather.Cloud %f" % (0.95 if rain > 0 or fog > 0.5 else 0.5))
+        cmd(w, "lyud.Weather.Cloud %f" % (-1 if rain < 0 else 0.95 if rain > 0 or fog > 0.5 else 0.5))
         for c in extra:
             cmd(w, c)
         st["loc"] = loc

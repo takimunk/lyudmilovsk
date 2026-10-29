@@ -67,7 +67,7 @@ def drops():
                      [("U", _uv(g, 0))], desc="Streak")
     op = g.mul(g.mul(alpha, shape), g.param("Alpha", 0.4))
     g.out(g.op(X.MaterialExpressionMin, op, g.const(1.0)), MP.MP_OPACITY)
-    g.out(g.mul(g.param("Light", 1.0), g.const((0.86, 0.92, 1.0))), MP.MP_EMISSIVE_COLOR)
+    g.out(g.mul(g.param("Light", 1.0), g.const((2.2, 2.35, 2.6))), MP.MP_EMISSIVE_COLOR)
     return g.finish()
 
 
@@ -91,7 +91,7 @@ float2 d = U * 2.0 - 1.0;
 float r = length(d);
 float ring = exp(-pow((r - 0.75) / 0.12, 2.0));
 float core = smoothstep(0.45, 0.1, r) * (1.0 - L.y) * (1.0 - L.y);
-return L.x * (1.0 - L.y) * saturate(ring * 0.8 + core);
+return L.x * (1.0 - L.y) * saturate(ring * 0.35 + core * 0.8);
 """, [("U", _uv(g, 0)), ("L", life)], desc="SplashShape")
     g.out(g.op(X.MaterialExpressionMin, g.mul(shape, g.param("Alpha", 0.55)), g.const(1.0)), MP.MP_OPACITY)
     g.out(g.mul(g.param("Light", 1.0), g.const((1.1, 1.15, 1.2))), MP.MP_EMISSIVE_COLOR)

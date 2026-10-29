@@ -70,10 +70,10 @@ public:
 	ALyudRainFx();
 
 	/** Number of streaks at the heaviest rain (fewer are drawn for lighter rain). */
-	UPROPERTY(EditAnywhere, Category = "Rain") int32 MaxDrops = 14000;
+	UPROPERTY(EditAnywhere, Category = "Rain") int32 MaxDrops = 24000;
 	UPROPERTY(EditAnywhere, Category = "Rain") int32 MaxSplashes = 3000;
 	/** The box of drops around the camera, cm (sides, height). */
-	UPROPERTY(EditAnywhere, Category = "Rain") FVector2D DropBox = FVector2D(3000.f, 2000.f);
+	UPROPERTY(EditAnywhere, Category = "Rain") FVector2D DropBox = FVector2D(2200.f, 1500.f);
 	UPROPERTY(EditAnywhere, Category = "Rain") float SplashBox = 2400.f;
 	/** Roof map: cells per side and their size, cm. */
 	UPROPERTY(EditAnywhere, Category = "Rain") int32 RoofCells = 64;

@@ -145,31 +145,30 @@ FLyudRainFogWeather ULyudRainFogSubsystem::ReadWeather() const
 	{
 		return W;
 	}
-	const FLyudSkyWeather S = Weather->GetSky();
+	const FLyudWeatherState S = Weather->GetState();
 	const ULyudWindSubsystem* Wind = World->GetSubsystem<ULyudWindSubsystem>();
 	const FVector Mean = Wind ? Wind->GetMeanWind() : FVector::ZeroVector;
-	const float WindSpeed = float(Mean.Size2D());
 	W.Wind = FVector(Mean.X, Mean.Y, 0.0) * 100.0;
-	W.Snow = S.Snow;
-	W.RainRate = S.Rain * (1.f - S.Snow);
-	W.Cloud = S.Cloud;
+	W.Snow = S.SnowFraction;
+	W.RainRate = S.PrecipRate * (1.f - S.SnowFraction);
+	W.Cloud = S.CloudCover;
 	W.Wet = S.Wet;
-	// light rain out of a low deck is drizzle (fine slow drops); a front's rain and showers are drops
-	W.Drizzle = 1.f - Smooth(0.25f, 1.0f, S.Rain);
-	// the general air: clean polar air after a front sees 30 km, rain cuts it (10 mm/h ~ 2 km), and the mist with it
-	const float RainVis = 25000.f / (1.f + 1.1f * S.Rain);
-	W.VisibilityM = FMath::Min(RainVis, 30000.f * (1.f - 0.35f * S.Cloud));
-	// the mist: a layer on the ground and the sea; still air leaves it shallow, a breeze or rain stirs it deeper
+	// drizzle is its own kind (fine slow drops out of a low deck); a very light rain looks much like it
+	const bool bDrizzle = S.Precip == ELyudPrecipType::Drizzle || S.Precip == ELyudPrecipType::FreezingDrizzle;
+	W.Drizzle = bDrizzle ? 1.f : 1.f - Smooth(0.15f, 0.6f, S.PrecipRate);
+	// the engine's visibility is the worst of the air, the rain and the fog: a fog lies as a layer on the sea or the
+	// ground (deep for sea fog and frontal mist, a few metres for a radiation fog), with clearer air above it
+	W.VisibilityM = S.VisibilityM;
 	W.Fog = S.Fog;
-	W.FogVisibilityM = 10000.f * FMath::Pow(0.012f, FMath::Clamp(S.Fog, 0.f, 1.f));
-	const float Calm = 1.f - Smooth(1.5f, 5.f, WindSpeed);
-	W.FogTopM = FMath::Lerp(140.f, 22.f, Calm) + (S.Rain > 0.1f ? 200.f : 0.f);
-	W.FogBaseM = 0.f;
-	if (S.Fog > 0.05f)
+	if (W.Fog > 0.01f)
 	{
-		// the mist thickens the general air too
-		W.VisibilityM = FMath::Min(W.VisibilityM, W.FogVisibilityM * 4.f + 400.f);
+		W.FogVisibilityM = S.VisibilityM;
+		W.VisibilityM = FMath::Min(25000.f / (1.f + 1.1f * W.RainRate), S.VisibilityM * 4.f + 400.f);
+		const float DefaultTop = S.FogType == ELyudFogType::Radiation ? 15.f : S.FogType == ELyudFogType::Steam ? 12.f
+			: S.FogType == ELyudFogType::Frontal ? 300.f : 80.f;   // advection, or a forced mist
+		W.FogTopM = S.FogTopM > 0.f ? S.FogTopM : DefaultTop;
 	}
+	W.FogBaseM = 0.f;
 	if (CVarWet.GetValueOnGameThread() >= 0.f)
 	{
 		W.Wet = FMath::Clamp(CVarWet.GetValueOnGameThread(), 0.f, 1.f);
@@ -504,7 +503,7 @@ float ALyudRainFx::SkyLuminance(const FLyudRainFogWeather& W) const
 	const float Day = Smooth(-7.f, 8.f, SunAlt);
 	const float Sin = FMath::Max(FMath::Sin(FMath::DegreesToRadians(FMath::Max(SunAlt, 0.f))), 0.15f);
 	const float Diffuse = SunLux * Sin / PI * FMath::Lerp(0.55f, 0.22f, W.Cloud);
-	return Diffuse * Day + 0.025f;
+	return Diffuse * Day + 0.006f;
 }
 
 void ALyudRainFx::UpdateMaterials(const FLyudRainFogWeather& W, const FVector& Camera, float DeltaSeconds)
@@ -518,10 +517,10 @@ void ALyudRainFx::UpdateMaterials(const FLyudRainFogWeather& W, const FVector& C
 	const float Rate = Smoothed[0], Drizzle = Smoothed[1], Wet = Smoothed[2];
 	const float Light = SkyLuminance(W);
 
-	const bool bDrops = Rate > 0.02f && OpenSky > 0.001f && DropMID && bRoofUploaded;
+	const bool bDrops = bOn && Rate > 0.02f && OpenSky > 0.001f && DropMID && bRoofUploaded;
 	Drops->SetVisibility(bDrops);
 	Splashes->SetVisibility(bDrops && SplashMID && Drizzle < 0.9f);
-	WetDecal->SetVisibility(Wet > 0.02f && WetMID && bRoofUploaded && OpenSky > 0.001f);
+	WetDecal->SetVisibility(bOn && Wet > 0.02f && WetMID && bRoofUploaded && OpenSky > 0.001f);
 
 	const FLinearColor RoofP(Origin.X * RoofCellSize, Origin.Y * RoofCellSize, RoofCellSize, RoofCells);
 	if (DropMID)
@@ -531,15 +530,15 @@ void ALyudRainFx::UpdateMaterials(const FLyudRainFogWeather& W, const FVector& C
 		// how many of the streaks show: the drop count goes as the rate's ~0.6 power, drizzle is many tiny drops
 		const float Density = FMath::Clamp(FMath::Lerp(0.04f + FMath::Pow(Rate / 14.f, 0.6f), 0.55f, Drizzle), 0.f, 1.f);
 		DropMID->SetVectorParameterValue(TEXT("Box"), FLinearColor(DropBox.X, DropBox.Y, Fall, Density));
-		DropMID->SetVectorParameterValue(TEXT("Wind"), FLinearColor(W.Wind.X, W.Wind.Y, FMath::Lerp(0.03f, 0.012f, Drizzle), FMath::Lerp(0.12f, 0.05f, Drizzle)));
+		DropMID->SetVectorParameterValue(TEXT("Wind"), FLinearColor(W.Wind.X, W.Wind.Y, FMath::Lerp(0.022f, 0.012f, Drizzle), FMath::Lerp(0.16f, 0.06f, Drizzle)));
 		DropMID->SetVectorParameterValue(TEXT("RoofP"), RoofP);
 		DropMID->SetScalarParameterValue(TEXT("Light"), Light);
-		DropMID->SetScalarParameterValue(TEXT("Alpha"), FMath::Lerp(0.45f, 0.22f, Drizzle) * Smooth(0.02f, 0.3f, Rate));
+		DropMID->SetScalarParameterValue(TEXT("Alpha"), FMath::Lerp(0.8f, 0.4f, Drizzle) * Smooth(0.02f, 0.3f, Rate));
 	}
 	if (SplashMID)
 	{
 		const float Density = FMath::Clamp(FMath::Pow(Rate / 12.f, 0.7f), 0.f, 1.f) * (1.f - Drizzle);
-		SplashMID->SetVectorParameterValue(TEXT("Box"), FLinearColor(SplashBox, Density, 0.45f, 1.f));
+		SplashMID->SetVectorParameterValue(TEXT("Box"), FLinearColor(SplashBox, Density, 0.45f, 0.7f));
 		SplashMID->SetVectorParameterValue(TEXT("RoofP"), RoofP);
 		SplashMID->SetScalarParameterValue(TEXT("Light"), Light);
 	}
@@ -584,9 +583,10 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	const float HazeFalloff = 1000.f / 60000.f;
 	const float FogExt = W.Fog > 0.001f ? 3.912f / FMath::Max(W.FogVisibilityM, 20.f) : 0.f;
 	const float FogDensity = FogExt * 10.f * Scale * Smooth(0.f, 0.15f, W.Fog);
-	const float FogFalloff = 1000.f / FMath::Max(W.FogTopM * 100.f * 0.6f, 200.f);
+	// the layer is about even up to its top: full density at half its depth, thinning fast above
+	const float FogFalloff = 1000.f / FMath::Max(W.FogTopM * 100.f * 0.35f, 150.f);
 	// the component's height is its own Z: both layers are put relative to the sea (or the valley's floor)
-	const float Base = (SeaZ > NoRoof ? SeaZ : 0.f) + W.FogBaseM * 100.f;
+	const float Base = (SeaZ > NoRoof ? SeaZ : 0.f) + (W.FogBaseM + 0.5f * W.FogTopM) * 100.f;
 	const float A = FogWeight;
 	C->SetFogDensity(FMath::Lerp(FogBase.Density, HazeDensity, A));
 	C->SetFogHeightFalloff(FMath::Lerp(FogBase.Falloff, HazeFalloff, A));
@@ -595,7 +595,7 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	C->SetSecondFogHeightFalloff(FMath::Lerp(FogBase.SecondFalloff, FogFalloff, A));
 	C->SetSecondFogHeightOffset(FMath::Lerp(FogBase.SecondHeight, Base - FogBase.ZOffset, A));
 	// the haze's colour: the sky's light, a little blue in the clean air, grey in the wet
-	const FLinearColor Tint = FMath::Lerp(FLinearColor(0.62f, 0.72f, 0.9f), FLinearColor(0.78f, 0.8f, 0.82f), FMath::Max(W.Cloud, W.Fog));
+	const FLinearColor Tint = FMath::Lerp(FLinearColor(0.6f, 0.7f, 0.88f), FLinearColor(0.7f, 0.74f, 0.78f), FMath::Max(W.Cloud, W.Fog));
 	C->SetFogInscatteringColor(FMath::Lerp(FogBase.Inscatter, Tint * Light, A));
 }
 
