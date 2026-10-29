@@ -256,7 +256,8 @@ ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& 
 	static const FRow As     = { 6.f,  0.95f, 0.1f, 0.f, 0.12f, 1.5f, 0.05f, 0.f,   0.35f, 0.3f, 0.4f };
 
 	FShape S;
-	const bool bDraw = L.Type != ELyudCloudType::None && !IsHigh(L.Type) && L.Cover > 0.f;
+	// the cover itself fades a layer in and out (the genus may read None while a trace of it is left)
+	const bool bDraw = !IsHigh(L.Type) && L.Cover > 0.f;
 	const float Cover = bDraw ? L.Cover : 0.f;
 	const float ThickM = FMath::Max(L.TopM - L.BaseM, 50.f);
 	const float ThickKm = ThickM * 1e-3f;
@@ -403,7 +404,7 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 
 	const bool bLens = Target.Lenticular > 0.f || Mid.Type == G::AltocumulusLenticular;
 	const FVector4f LT = bLens ? FVector4f(FMath::Clamp(FMath::Max(Target.Lenticular, Mid.Type == G::AltocumulusLenticular ? Mid.Cover : 0.f), 0.f, 1.f),
-		Mid.BaseM > 0.f ? Mid.BaseM * 1e-3f : 3.5f, Mid.TopM > 0.f ? Mid.TopM * 1e-3f : 4.5f, 6.f) : FVector4f(0.f, LensA.Y, LensA.Z, 6.f);
+		Mid.BaseM > 0.f ? Mid.BaseM * 1e-3f : 3.5f, Mid.TopM > 0.f ? Mid.TopM * 1e-3f : 4.5f, 4.f) : FVector4f(0.f, LensA.Y, LensA.Z, 4.f);
 	LensA = (LensA.X < 0.01f || bSnap) ? FVector4f(LensA.X + (LT.X - LensA.X) * K, LT.Y, LT.Z, LT.W) : Ease(LensA, LT, K);
 	bSnap = false;
 
