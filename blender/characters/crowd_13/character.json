@@ -1,7 +1,7 @@
 {
  "_doc": "crowd_13: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
  "id": "crowd_13",
- "model": "model_face",
+ "model": "model",
  "height": 1.79,
  "donor": "blender/humans/export/human_guy_a.glb",
  "faces": 40000,
@@ -32,5 +32,8 @@
     "w": 0.053
    }
   }
+ },
+ "face_project": {
+  "skip": true
  }
 }

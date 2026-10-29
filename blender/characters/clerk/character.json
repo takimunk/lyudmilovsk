@@ -1,7 +1,7 @@
 {
  "_doc": "clerk: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
  "id": "clerk",
- "model": "model_face",
+ "model": "model",
  "height": 1.68,
  "donor": "blender/humans/export/human_clerk.glb",
  "faces": 40000,
@@ -10,5 +10,8 @@
  "face": {
   "eyes": false,
   "_doc": "glasses in front of the eyes: painted eyes kept, only the mouth and brows move"
+ },
+ "face_project": {
+  "skip": true
  }
 }

@@ -32,7 +32,12 @@
     "tilt": -0.003
    }
   ],
-  "normal_strength": 0.3
+  "normal_strength": 0.3,
+  "iris": [
+   0.2,
+   0.12,
+   0.08
+  ]
  },
  "clean": {
   "_doc": "clean_human.py: MakeHuman base fitted to the hi3d model (docs/characters.md 'Clean rebuild')",

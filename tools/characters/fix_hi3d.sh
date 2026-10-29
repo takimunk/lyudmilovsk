@@ -16,7 +16,9 @@ d["model"] = d.get("model", "model").removesuffix("_face")
 d["faces"] = max(d.get("faces", 24000), 30000 if d.get("height", 1.7) < 1.5 else 40000)
 json.dump(d, open(p, "w"), indent=1, ensure_ascii=False)
 PY
-    if $B -b -P blender/characters/face_project.py -- $c >> $L 2>&1 && grep -q "FACEPROJ wrote" $L; then
+    if python3 -c "import json,sys; sys.exit(0 if json.load(open('blender/characters/$c/character.json')).get('face_project',{}).get('skip') else 1)"; then
+        echo "  face projection off (face_project.skip: glasses)"
+    elif $B -b -P blender/characters/face_project.py -- $c >> $L 2>&1 && grep -q "FACEPROJ wrote" $L; then
         python3 -c "
 import json; p='blender/characters/$c/character.json'; d=json.load(open(p)); d['model']=d['model']+'_face'; json.dump(d,open(p,'w'),indent=1,ensure_ascii=False)"
         grep "FACEPROJ model" $L

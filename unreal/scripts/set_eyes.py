@@ -45,7 +45,9 @@ def apply(mi, cid):
             b["x"] * 100, -b["y"] * 100, b["z"] * 100, b["yaw"]))
         mel.set_material_instance_vector_parameter_value(mi, "Eye%s_Size" % s, unreal.LinearColor(
             b["depth"] * 100, b["width"] * 100, b["height"] * 100, (b["socket_y"] - b["y"]) * 100))
-    mel.set_material_instance_vector_parameter_value(mi, "IrisColor", lin(eyes[0]["iris"]))
+    # each person's own iris colour (character.json face.iris, sRGB; Dima: not all the same brown), else the measured one
+    spec = json.load(open(os.path.join(CHARS, cid, "character.json")))
+    mel.set_material_instance_vector_parameter_value(mi, "IrisColor", lin(spec.get("face", {}).get("iris") or eyes[0]["iris"]))
     return True
 
 
