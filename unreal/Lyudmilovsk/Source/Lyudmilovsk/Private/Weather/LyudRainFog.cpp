@@ -19,6 +19,7 @@
 #include "Rendering/Texture2DResource.h"
 #include "StaticMeshAttributes.h"
 #include "MeshDescription.h"
+#include "Plants/ProceduralGrass.h"
 #include "Sea/LyudSea.h"
 #include "Sky/LyudSky.h"
 #include "Weather/LyudWeather.h"
@@ -296,6 +297,10 @@ void ALyudRainFx::BeginPlay()
 		Sky = *It;
 	}
 	Collection = LoadObject<UMaterialParameterCollection>(nullptr, CollectionPath);
+	for (TActorIterator<AProceduralGrass> It(GetWorld()); It; ++It)
+	{
+		Meadows.Add({ It->GetActorTransform(), It->HalfExtent });
+	}
 	if (const ALyudSea* Sea = ALyudSea::Get(this))
 	{
 		SeaZ = Sea->SeaLevel();
@@ -432,6 +437,19 @@ void ALyudRainFx::UpdateRoofMap(const FVector& Camera)
 		if (SeaZ > NoRoof && R.X < SeaZ)
 		{
 			R = FVector2f(SeaZ, 1.f);
+		}
+		else
+		{
+			// rain soaks into a meadow: wet, but no standing water among the grass
+			for (const TPair<FTransform, FVector2D>& M : Meadows)
+			{
+				const FVector L = M.Key.InverseTransformPosition(FVector(C.X, C.Y, R.X));
+				if (FMath::Abs(L.X) < M.Value.X && FMath::Abs(L.Y) < M.Value.Y)
+				{
+					R.Y = 2.f;
+					break;
+				}
+			}
 		}
 		bChanged |= Roof[I] != R || Dirty[I];
 		Roof[I] = R;

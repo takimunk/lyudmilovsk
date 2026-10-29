@@ -110,7 +110,9 @@ private:
 	TWeakObjectPtr<ALyudSky> Sky;
 	TWeakObjectPtr<UExponentialHeightFogComponent> Fog;
 
-	/** Roof map: top height (cm) and 1 where it is the sea, per cell, row-major from Origin. */
+	/** Grass meadows (AProceduralGrass): no puddles stand in them. */
+	TArray<TPair<FTransform, FVector2D>> Meadows;
+	/** Roof map: top height (cm) and 1 where it is the sea, 2 in a meadow, per cell, row-major from Origin. */
 	TArray<FVector2f> Roof;
 	TArray<uint8> Dirty;
 	FIntPoint Origin = FIntPoint(MAX_int32, MAX_int32);

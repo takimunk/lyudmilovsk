@@ -68,7 +68,7 @@ float2 xy = Cam.xy + rel;
 float a = frac(R1.x * 5.31 + R1.y * 9.17 + j.x) < Box.y ? 1.0 : 0.0;
 float inside;
 float2 roof = RoofMap.At(xy, RoofP, Roof, RoofSampler, inside);
-if (inside < 0.5 || roof.r < -1.0e6 || roof.g > 0.5) a = 0.0;
+if (inside < 0.5 || roof.r < -1.0e6 || (roof.g > 0.5 && roof.g < 1.5)) a = 0.0;
 float d = length(float3(rel, roof.r - Cam.z));
 a *= saturate(1.0 - d / (0.5 * Box.x)) * saturate((d - 30.0) / 50.0);
 float r = Box.w * lerp(1.5, 7.0, sqrt(life)) * (0.6 + 0.8 * R2.y);
@@ -136,7 +136,7 @@ float k01 = frac(sin(dot(g2i + float2(0, 1), float2(269.5, 183.3))) * 43758.5453
 float k11 = frac(sin(dot(g2i + float2(1, 1), float2(269.5, 183.3))) * 43758.5453);
 nz = nz * 0.7 + 0.3 * lerp(lerp(k00, k10, g2f.x), lerp(k01, k11, g2f.x), g2f.y);
 float th = 1.0 - 0.3 * Wet.y;
-float puddle = smoothstep(th, th + 0.12, nz) * flat * step(0.01, Wet.y);
+float puddle = smoothstep(th, th + 0.12, nz) * flat * step(0.01, Wet.y) * step(roof.g, 1.5);
 float2 tilt = Rings.Tilt(P.xy / 22.0, T, Wet.z) * 0.5 * Wet.z * puddle;
 float3 nn = normalize(n + float3(tilt, 0.0));
 float op = lerp(Wet.x * lerp(0.32, 0.55, flat), 0.93, puddle) * exposed;
