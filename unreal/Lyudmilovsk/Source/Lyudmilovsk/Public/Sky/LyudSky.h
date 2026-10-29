@@ -33,8 +33,8 @@ class UVolumetricCloudComponent;
  * granulation, drifting sunspots, faculae, a corona and now and then a prominence) and the moon is Europa
  * (MoonAngularDiameterDeg, lit per pixel from the true sun direction, so its phases are right, with a faint
  * ashen light on its dark side). Both are drawn by the sky material (import_sky.py), not the atmosphere's
- * light disks, with brightness capped so they read rather than blind. Nights are moonlit (a bright ice moon,
- * cool soft-shadowed light) and never quite black (a faint airglow, NightSkyGlow).
+ * light disks, with brightness capped so they read rather than blind. Nights are lit by Europa as its phase says (a bright ice moon,
+ * aquamarine soft-shadowed light, the same phase law as its disk) and never quite black (a faint airglow, NightSkyGlow).
  *
  * In the editor the sky shows EditorPreviewTime; in play it follows the calendar. The console variable
  * lyud.SkyHourOffset shifts either by some hours (look at a sunset or a night without waiting for it).
@@ -64,12 +64,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SunIlluminance = 40.f;
 	/** The daylight's colour: the red dwarf's ~3200 K, paled toward white so the day stays pleasant (the disk itself is drawn deeper orange). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor SunColor = FLinearColor(1.f, 0.83f, 0.68f);
-	/** Full moon light, scene lux: a huge bright ice moon, far brighter than real moonlight, so nights read as moonlit. Scaled by the phase. */
+	/** Full moon light, scene lux: a huge bright ice moon, far brighter than real moonlight, so nights read as moonlit.
+	 * Scaled by Europa's phase law (the disk's own brightness integrated, see MoonOppositionSurge) and by the air's
+	 * transmittance toward it, the same as the sky material dims the disk with. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float FullMoonIlluminance = 1.1f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor MoonColor = FLinearColor(0.62f, 0.72f, 1.f);
+	/** Europa's light: sea-wave aquamarine (teal-green), the night's own colour here, neither a cold blue filter nor
+	 * the ice's cream. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor MoonColor = FLinearColor(0.55f, 0.85f, 0.8f);
+	/** The sky light's tint at full night (the moonlit and airglow ambient in the same aquamarine; white by day). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor NightAmbientTint = FLinearColor(0.72f, 0.95f, 0.9f);
+	/** Europa's phase law on top of Lommel-Seeliger (which the disk is shaded with per pixel): an opposition surge
+	 * (1 + B0 / (1 + tan(a/2) / h), the shadow hiding of a porous ice regolith: the full moon flares up) and the
+	 * shadows of a rough surface (exp(-k a)). a = the phase angle (sun-Europa-viewer). With these a quarter moon is
+	 * ~0.12 of the full one, a crescent ~0.02. The disk and the light take the same number. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float MoonOppositionSurge = 0.4f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float MoonOppositionWidth = 0.06f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float MoonRoughness = 0.55f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float SkyLightIntensity = 1.f;
 	/** The faint glow of the night sky itself (airglow), sky luminance at full dark: keeps a moonless night dark blue, not black. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor NightSkyGlow = FLinearColor(0.015f, 0.027f, 0.066f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") FLinearColor NightSkyGlow = FLinearColor(0.012f, 0.03f, 0.056f);
 	/** Star dome brightness at full dark (the day sky outshines it on its own). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Light") float StarBrightness = 1.f;
 
@@ -108,8 +121,10 @@ public:
 	 * StopTracingTransmittanceThreshold, 0.005 by default): a thick cloud hides the sun's disk, its
 	 * limb and corona entirely instead of showing their outline through it. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudOpaqueBelow = 0.25f;
-	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudViewSamples = 1.f;
+	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few.
+	 * The view needs 2 with CloudDensityScale 8: at 1 the dense clouds' fringes speckle (the noise in their
+	 * transmittance, with or without the opaque cut-off); the shadow samples don't show it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudViewSamples = 2.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudShadowSamples = 1.f;
 
 	/** Unlit is-sky material on the dome: atmosphere luminance, sun and moon disks, stars (unreal/scripts/import_sky.py). Without one the atmosphere draws the sky itself. */
@@ -118,6 +133,10 @@ public:
 
 	/** How many stops the exposure opens outdoors at full night over the club's own (a day sky adds none). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Exposure") float NightExposureEV = 3.5f;
+	/** The eye opens further on a darker night: up to this many stops more as the moonlight fails (a quarter of a
+	 * stop per stop of moonlight lost), so a quarter-moon night is dimmer than a full one but readable, and a moonless
+	 * one dark blue. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Exposure") float MoonlessExposureEV = 1.f;
 	/** Seconds the eye takes to adapt walking out of or into the club. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Exposure") float EyeAdaptSeconds = 1.5f;
 
@@ -169,7 +188,15 @@ private:
 
 	FSkyPosition SunPos;
 	FSkyPosition MoonPos;
+	/** Europa's lit fraction and phase angle (rad) from the sun and moon directions the sky material is given. */
 	double MoonPhase = 0.0;
+	float MoonPhaseAngle = 0.f;
+	/** The phase law's factor over Lommel-Seeliger (the sky material's MoonLook.z) and the moonlight now over the
+	 * full moon's at the zenith (phase law, air, altitude). */
+	float MoonLawFactor = 1.f;
+	float MoonLight01 = 0.f;
+	/** The ephemeris' own (geocentric) lit fraction, for the report. */
+	double MoonPhaseEphemeris = 0.0;
 	bool bPlayerOutdoors = false;
 	float OutdoorsVote = 0.f;
 	float LastShift = 0.f;

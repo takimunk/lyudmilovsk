@@ -54,8 +54,10 @@ outdoor exposure), Europa `SunIlluminance x MoonDiskGain`. To match, the sunligh
 **The clouds hide the sun.** The volumetric clouds are composited over the dome, so they occlude the disk by their
 transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (8) thickens it (its
 `Cloud_GlobalDensity`, through a dynamic instance), and the low red sun goes behind the clouds instead of glowing
-through them like a lamp in fog. Thick clouds need more ray-march samples or they go grainy: `CloudViewSamples` and
-`CloudShadowSamples` (1, the engine's default; it was 0.5). A soft cloud's core still let ~30-50% through, enough to show the disk's limb
+through them like a lamp in fog. Thick clouds need more ray-march samples or they go grainy: `CloudViewSamples` 2 and
+`CloudShadowSamples` 1 (the engine's default is 1; it was 0.5). At density 8 one view sample speckled the clouds'
+fringes: the noise in their transmittance, with the opaque cut-off and without it alike (`COSMIC_EDGE=1` in
+shoot_cosmic.py sweeps samples, cut-off and density over the setting sun). A soft cloud's core still let ~30-50% through, enough to show the disk's limb
 and corona as a ring through it: clouds letting through less than `CloudOpaqueBelow` (0.25) are drawn opaque (the cloud
 component's `StopTracingTransmittanceThreshold`, 0.005 by default; `lyud.Sky.CloudOpaque` multiplies it, 0 = the
 engine's). In UE 5.8 it is a component property, not a cvar. Thin cloud still veils the disk.
@@ -72,8 +74,27 @@ and the moonlight scatters less in the clouds (`MoonCloudScatter`): moonlit haze
 the night exposure made a big halo.
 
 The sunlight's colour (`SunColor`) is the star's, paled toward white so the day stays pleasant; its source angle is
-the disk's (soft shadows). Europa's light: `FullMoonIlluminance` 1.1 scene lux at full, cool blue, soft shadows
+the disk's (soft shadows). Europa's light: `FullMoonIlluminance` 1.1 scene lux at full, soft shadows
 (source angle 7 degrees), shadows only when the sun is down (one shadowed directional light at a time).
+
+**Europa's phases drive the night.** `ALyudSky::UpdateSky` takes the phase angle from the very sun and moon
+directions it hands the sky material (`SunDir`, `MoonDir`), so the light's phase is the disk's. The disk is shaded
+Lommel-Seeliger per pixel; on top of it a phase law, the same number for the disk (`MoonLook.z`) and the light: an
+opposition surge `(1 + B0 / (1 + tan(a/2) / h)) / (1 + B0)` (`MoonOppositionSurge` 0.4, `MoonOppositionWidth` 0.06:
+the porous ice's shadow hiding makes the full moon flare) and rough-surface shadowing `exp(-k a)` (`MoonRoughness`
+0.55). The light = `FullMoonIlluminance` x the disk's brightness integrated (the Lommel-Seeliger sphere's phase
+function x the law) x the air's transmittance toward Europa (sky_hlsl's TRANS_HLSL, per channel, so a rising or
+setting moon dims and yellows) x a fade over -2..3 degrees of altitude. Relative to full at the zenith: gibbous
+(45 degrees) 0.36, quarter 0.12, crescent (135) 0.02. Its colour `MoonColor` is sea-wave aquamarine (0.55, 0.85, 0.8),
+the night's own colour here, and the sky light is tinted toward `NightAmbientTint` by night, so the moonlit ambient
+is the same teal; the airglow `NightSkyGlow` is a dark blue-teal. By night the moon, not the sun, casts the clouds' shadows: a cloud over Europa dims the moonlight
+under it, and the disk behind cloud is dimmed by the cloud's transmittance as the sun's is. The sky light captures
+the sky in real time, so the night ambient (moonlit atmosphere and clouds, airglow) follows by itself. The exposure
+opens a quarter of a stop more per stop of moonlight lost, up to `MoonlessExposureEV` (1) over `NightExposureEV`:
+full stays a bright moonlit night, a quarter is clearly dimmer, a new moon is dark blue airglow. The LYUDSKY report
+prints the phase angle, the law and the light (over full at the zenith) beside the ephemeris' own phase.
+`COSMIC_PHASE=1` in shoot_cosmic.py shoots the town path, the beach and the disk at new, crescent, quarter,
+gibbous and full.
 
 **Night glow**: `NightSkyGlow` adds airglow to the dome at night (brighter toward the horizon), which the sky light
 captures, so a moonless night is dark blue and readable. The outdoor exposure opens up by `NightExposureEV` after

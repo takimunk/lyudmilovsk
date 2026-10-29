@@ -29,6 +29,7 @@
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
 #include "../Weather/WaveModel.h"
+#include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 
 namespace
@@ -43,6 +44,10 @@ namespace
 	TAutoConsoleVariable<int32> CVarSeaDebug(TEXT("lyud.Sea.Debug"), 0, TEXT("1: print the sea state on screen."));
 	TAutoConsoleVariable<float> CVarTideOverride(TEXT("lyud.TideOverride"), -999.f,
 		TEXT("Pin the tide: water level in metres over the datum (0 = spring high water, -4.5 = spring low); -999 or NaN = follow the sky."));
+	TAutoConsoleVariable<float> CVarSeaMeanLevel(TEXT("lyud.Sea.MeanLevel"), -9999.f,
+		TEXT("Force the mean sea level's offset, cm (as SetMeanLevelOffsetCm, at once; below -9000: what the game set)."));
+	TAutoConsoleVariable<float> CVarSeaLookSeconds(TEXT("lyud.Sea.LookSeconds"), 120.f,
+		TEXT("How many seconds the sea's colour takes to follow the weather and the light (0 = at once)."));
 	TAutoConsoleVariable<float> CVarTideSpeed(TEXT("lyud.TideSpeed"), 1.f,
 		TEXT("The tide's clock runs this many times faster than the sky's (1 = with it; 3600 = an hour a second)."));
 
@@ -577,6 +582,16 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 	{
 		return;
 	}
+	// the mean level eases to its target (winter's lower sea; lyud.Sea.MeanLevel pins it)
+	const float MeanPin = CVarSeaMeanLevel.GetValueOnGameThread();
+	if (MeanPin > -9000.f)
+	{
+		MeanOffsetNowCm = MeanOffsetTargetCm = MeanPin;
+	}
+	else
+	{
+		MeanOffsetNowCm = MeanOffsetRateCmS > 0.f ? FMath::FInterpConstantTo(MeanOffsetNowCm, MeanOffsetTargetCm, TideAge, MeanOffsetRateCmS) : MeanOffsetTargetCm;
+	}
 	TideAge = 0.f;
 	if (!Sky.IsValid())
 	{
@@ -594,11 +609,11 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 	}
 	const FDateTime When = Local - FTimespan::FromHours(Utc) + FTimespan::FromHours(TideExtraHours);
 	const LyudTide::FState T = LyudTide::At(When, Lon);
-	TideCm = float(T.LevelM) * 100.f;
-	TideLowCm = float(T.LowM) * 100.f;
+	TideCm = float(T.LevelM) * 100.f + MeanOffsetNowCm;
+	TideLowCm = float(T.LowM) * 100.f + MeanOffsetNowCm;
 	TideSpringK = float(T.Spring);
 	bTideRising = T.bRising;
-	WetLineCm = float(LyudTide::RecentHighM(When, Lon, 1.0)) * 100.f;
+	WetLineCm = float(LyudTide::RecentHighM(When, Lon, 1.0)) * 100.f + MeanOffsetNowCm;
 	const float Pin = CVarTideOverride.GetValueOnGameThread();
 	if (!FMath::IsNaN(Pin) && Pin > -900.f)
 	{
@@ -613,6 +628,61 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 		FVector At = WaterVolume->GetActorLocation();
 		At.Z = SeaLevel() - WaterVolumeDepth * 0.5;
 		WaterVolume->SetActorLocation(At);
+	}
+}
+
+void ALyudSea::SetMeanLevelOffsetCm(float OffsetCm, float BlendSeconds)
+{
+	MeanOffsetTargetCm = OffsetCm;
+	MeanOffsetRateCmS = BlendSeconds > 0.f ? FMath::Abs(OffsetCm - MeanOffsetNowCm) / BlendSeconds : 0.f;
+	if (BlendSeconds <= 0.f)
+	{
+		MeanOffsetNowCm = OffsetCm;
+	}
+	TideAge = 1e9f;   // apply on the next tick
+}
+
+void ALyudSea::UpdateLook(float DeltaSeconds)
+{
+	// what the water's colour follows (the material's SeaLook): the cloud over it (grey-green, desaturated, darker),
+	// the sea state (a storm: dark slate, turbid, more foam), the season (winter colder and greyer, summer brighter)
+	// and the night. The light and the sky it mirrors change it by themselves (sunset, moonlight); this is the
+	// water's own body colour.
+	FLinearColor Want(0.f, 0.f, 0.f, 0.f);
+	if (const ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+	{
+		const FLyudSkyWeather Sky0 = W->GetSky();
+		Want.R = FMath::Clamp(Sky0.Cloud + 0.3f * FMath::Min(Sky0.Rain / 4.f, 1.f), 0.f, 1.f);
+		Want.G = FMath::Max(FMath::SmoothStep(1.6f, 3.5f, Field->Hs), 0.6f * Sky0.Thunder);
+	}
+	else
+	{
+		Want.G = FMath::SmoothStep(1.6f, 3.5f, Field->Hs);
+	}
+	FDateTime Local = UGameCalendar::NowIn(GetWorld());
+	float SunAlt = 30.f;
+	if (const ALyudSky* S = Sky.Get())
+	{
+		Local = S->ShownTime();
+		SunAlt = S->SunAltitude();
+	}
+	// coldest water late February, warmest early August
+	Want.B = FMath::Cos(2.f * PI * float(Local.GetDayOfYear() - 50) / 365.f);
+	Want.A = 1.f - FMath::SmoothStep(-6.f, 4.f, SunAlt);
+	const float T = CVarSeaLookSeconds.GetValueOnGameThread();
+	if (!bLookSet || T <= 0.f)
+	{
+		LookNow = Want;
+		bLookSet = true;
+	}
+	else
+	{
+		const float K = 1.f - FMath::Exp(-DeltaSeconds / T);
+		LookNow = LookNow + (Want - LookNow) * K;
+	}
+	if (SeaMID)
+	{
+		SeaMID->SetVectorParameterValue(TEXT("SeaLook"), LookNow);
 	}
 }
 
@@ -879,6 +949,7 @@ void ALyudSea::Tick(float DeltaSeconds)
 		SeaMID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor((float)WaveClock(), (float)Segments, MinStepCm * 0.01f, OpenSeaDepthM));
 		SeaMID->SetScalarParameterValue(TEXT("Tide"), TideCm * 0.01f);
 	}
+	UpdateLook(DeltaSeconds);
 	if (Collection)
 	{
 		// the dominant wave for things that sway with the sea (seabed weed, moored boats)
@@ -921,10 +992,11 @@ FString ALyudSea::GetDebugReport() const
 
 FString ALyudSea::GetDebugReportCore() const
 {
-	return FString::Printf(TEXT("sea: tide %+.2f m (low %.2f, wet line %+.2f, springs %.2f, %s), wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s"),
+	return FString::Printf(TEXT("sea: tide %+.2f m (low %.2f, wet line %+.2f, springs %.2f, %s), wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s, mean level %+.0f cm (to %+.0f), look cloud %.2f storm %.2f cold %+.2f night %.2f"),
 		TideCm * 0.01f, TideLowCm * 0.01f, WetLineCm * 0.01f, TideSpringK, bTideRising ? TEXT("flood") : TEXT("ebb"),
 		Field->WindSpeed, Field->Hs, Field->PeakLambda, Field->Chop, AppliedQuality, (int32)Field->Geo.size(), (int32)Field->Detail.size(), Segments,
-		DepthRow, DepthH, bCameraUnder ? TEXT("under water") : TEXT("above water"));
+		DepthRow, DepthH, bCameraUnder ? TEXT("under water") : TEXT("above water"), MeanOffsetNowCm, MeanOffsetTargetCm,
+		LookNow.R, LookNow.G, LookNow.B, LookNow.A);
 }
 
 ULyudBuoyancyComponent::ULyudBuoyancyComponent()

@@ -128,12 +128,22 @@ public:
 	/** The tide now: the water over the datum, cm (0 at spring high water, negative below). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float TideOffsetCm() const { return TideCm; }
 	/** The highest water there ever is (the datum), and the lowest of springs, world Z cm. */
-	UFUNCTION(BlueprintCallable, Category = "Sea") float HighWaterZ() const { return DatumZ(); }
+	UFUNCTION(BlueprintCallable, Category = "Sea") float HighWaterZ() const { return DatumZ() + FMath::Max(MeanOffsetNowCm, 0.f); }
 	UFUNCTION(BlueprintCallable, Category = "Sea") float LowWaterZ() const;
 	/** This tide's low water, world Z cm (neaps ~2 m, springs ~4.5 m under the datum). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float TideLowZ() const { return DatumZ() + TideLowCm; }
 	/** Where the sand is still wet: the highest the water stood in the last hour, world Z cm. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WetLineZ() const { return DatumZ() + WetLineCm; }
+	/** A slow offset of the mean sea level on top of the tide, cm (negative = lower: e.g. winter's, set by the winter
+	 * system; 0 = none). The water eases to it over BlendSeconds (0 = at once) and everything that follows the tide
+	 * (SeaLevel, the depth map's pools and wet line, the water volume, the ground's wet sand) follows it. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") void SetMeanLevelOffsetCm(float OffsetCm, float BlendSeconds = 600.f);
+	/** The mean-level offset the water stands at now and the one it is easing to, cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float MeanLevelOffsetCm() const { return MeanOffsetNowCm; }
+	UFUNCTION(BlueprintCallable, Category = "Sea") float MeanLevelOffsetTargetCm() const { return MeanOffsetTargetCm; }
+	/** The look the water's colour follows now (eased over minutes): x overcast 0..1, y storm 0..1, z cold season
+	 * -1 summer .. 1 winter, w night 0..1. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") FLinearColor SeaLook() const { return LookNow; }
 	/** 0 neaps .. 1 springs; is the water coming in? */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float TideSpring() const { return TideSpringK; }
 	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsTideRising() const { return bTideRising; }
@@ -200,6 +210,13 @@ private:
 	double TideExtraHours = 0.0;
 	float TideAge = 1e9f;
 	float VolumeTideCm = 0.f;
+	float MeanOffsetNowCm = 0.f;
+	float MeanOffsetTargetCm = 0.f;
+	float MeanOffsetRateCmS = 0.f;
+	/** The sea's look (SeaLook), eased toward the weather, sky and season. */
+	FLinearColor LookNow = FLinearColor(0.f, 0.f, 0.f, 0.f);
+	bool bLookSet = false;
+	void UpdateLook(float DeltaSeconds);
 
 	int32 AppliedQuality = -2;
 	int32 Segments = 128;

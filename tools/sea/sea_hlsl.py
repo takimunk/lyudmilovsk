@@ -88,6 +88,52 @@ struct FLyudNoise
         return a * (f * f * f - 0.25) * 2.0;
     }
     float BreakCap(float depth, float hs) { return saturate(0.4 * max(depth, 0.0) / max(0.5 * hs, 1e-3)) * (1.0 - 0.6 * SurfZone(depth, hs)); }
+    // cellular noise: (F1, F2), the distances to the nearest and second nearest of points jittered one per unit
+    // cell, each circling slowly (bubbles shifting); x positive
+    float2 Cells(float2 x, uint s, float t)
+    {
+        float2 f = floor(x), u = x - f;
+        float d1 = 8.0, d2 = 8.0;
+        for (int j = -1; j <= 1; j++)
+        for (int i = -1; i <= 1; i++)
+        {
+            uint3 c = uint3(uint(f.x + i) % 4096u, uint(f.y + j) % 4096u, 0u);
+            float hx = Hash(c, s), hy = Hash(c, s + 7u), hp = Hash(c, s + 13u);
+            float2 o = float2(i, j) + 0.15 + 0.7 * float2(hx, hy) + 0.12 * float2(cos(t * 0.7 + hp * 6.28), sin(t * 0.6 + hp * 6.28)) - u;
+            float d = dot(o, o);
+            if (d < d1) { d2 = d1; d1 = d; } else if (d < d2) { d2 = d; }
+        }
+        return sqrt(float2(d1, d2));
+    }
+    // foam lace at p (m) for an amount of foam 0..1, foot = metres per pixel: a net of foam threads round open holes
+    // (cell borders, F2 - F1 small), with finer bubbles in them. A little foam is thin broken threads and faint;
+    // more thickens the threads until the holes close. Where a cell is smaller than a few pixels it turns into its
+    // mean cover, a soft haze, never shimmer. Edges are smooth over at least a pixel, so nothing is hard-edged.
+    float Lace(float2 p, float t, float amt, float foot)
+    {
+        if (amt <= 0.002) return 0.0;
+        float2 q = fmod(p + float2(t * 0.05, t * 0.02), 2048.0) + 2048.0;
+        // the cells warped at two sizes so the net is never a honeycomb, and a slow noise that varies the threads'
+        // width and breaks them into pieces
+        float2 wq = float2(Noise3(float3(q / 1.3, t * 0.03), 43u, 2048u), Noise3(float3(q / 1.3 + 57.0, t * 0.03), 44u, 2048u));
+        float2 wr = float2(Noise3(float3(q / 0.4, t * 0.05), 45u, 2048u), Noise3(float3(q / 0.4 + 91.0, t * 0.05), 46u, 2048u));
+        float br = Noise3(float3(q / 0.9, t * 0.04), 47u, 2048u) * 0.5 + 0.5;
+        float2 c1 = Cells(q / 0.7 + wq * 0.55 + wr * 0.15, 41u, t);
+        float2 c2 = Cells(q / 0.18 + 31.7 + wr * 0.6, 42u, t * 1.4);
+        float a1 = foot / 0.7 * 1.5, a2 = foot / 0.18 * 1.5;
+        float w1 = (0.02 + 0.45 * amt * amt) * (0.4 + 1.2 * br);  // thread half-width, in cells
+        float w2 = 0.05 + 0.45 * amt;
+        float s1 = 0.06 + a1, s2 = 0.06 + a2;
+        float l1 = 1.0 - smoothstep(w1 - s1, w1 + s1, c1.y - c1.x);
+        float l2 = 1.0 - smoothstep(w2 - s2, w2 + s2, c2.y - c2.x);
+        // the threads fray: bubbles along them, gaps where the slow noise is low (less foam, more gaps)
+        l1 *= (0.35 + 0.65 * l2) * smoothstep(0.55 - 0.5 * amt, 0.9 - 0.5 * amt, br + 0.25 * (c1.x - 0.5));
+        float far1 = saturate(a1 * 1.5 - 0.3), far2 = saturate(a2 * 1.5 - 0.3);
+        l1 = lerp(l1, saturate(w1 * 2.6 + 0.15) * smoothstep(0.0, 0.7, amt), far1);
+        l2 = lerp(l2, saturate(w2 * 2.0), far2);
+        float net = l1 + smoothstep(0.5, 1.0, amt) * l2 * 0.4 * (1.0 - far1 * 0.5);
+        return saturate(net) * smoothstep(0.0, 0.4, amt) * (0.75 + 0.25 * amt);
+    }
 };
 FLyudNoise Lyud;
 """
@@ -223,64 +269,61 @@ float sigma = max(SP.y * 0.25, 0.02);
 float score = eta / sigma + (1.0 - J) * 4.0;
 float bar = lerp(3.0, 0.8, saturate((U - 4.0) / 10.0));
 float wind = saturate((U - 3.0) / 3.0);
-// broken into tufts a metre or so across, not whole crests
+// broken into tufts a metre or so across, not whole crests; a soft amount of foam (the lace draws it), wide ramps so
+// a pinching crest near the camera doesn't cut a hard edge
 float fine = Lyud.Noise3(float3(p / 0.8, fmod(Drift.z / 10.0, 1024.0) * 8.0), 18u, 1024u) * 0.5 + 0.5;
-float wc = smoothstep(bar, bar + 0.8, score) * wind * (0.35 + 1.3 * fn) * smoothstep(0.25, 0.6, fine) * w.y;
+float wc = smoothstep(bar - 0.6, bar + 1.8, score) * wind * saturate(0.25 + 1.1 * fn) * smoothstep(0.1, 0.85, fine) * w.y;
 // old foam left behind the breakers, grey and drawn out along the wind in a gale
 float2 wd = normalize(Wind.xy + 1e-4);
 float2 sq = float2(dot(p, float2(-wd.y, wd.x)) * 0.35, dot(p, wd) * 0.09);
 float st = Lyud.Noise3(float3(sq + 4096.0, 1.0), 16u, 4096u) * 0.5 + 0.5;
 float patchy = Lyud.Noise3(float3(p / 9.0, 2.0), 17u, 512u) * 0.5 + 0.5;
 float old = smoothstep(bar - 0.9, bar + 0.3, score) * st * patchy * w.y;
-wc = max(wc, old * saturate((U - 8.0) / 6.0) * 0.45);
+wc = max(wc, old * saturate((U - 8.0) / 6.0) * 0.4);
 return float4(n.x, n.y, rough, saturate(wc));
 """
 
-# Surf over the shallows: thin broken lines of lace foam where the breakers spill and in their wake, and a thin
-# broken line where the water meets the sand. Widths are held in metres, not in depth: over a flat (1:200) a band of
-# depth or phase is tens of metres wide, which drew wide white bands. Depth = metres of water under the surface from
-# the scene (SceneDepthWithoutWater), Bed = (still-water depth now from the depth map, calm: 0 in a pool the ebb left),
-# Pos in cm, Wind for how big the surf is.
+# Surf over the shallows, as an amount of foam 0..1 (the Foam node draws it as lace, Lyud.Lace): a soft band on each
+# spilling breaker's front that thins out behind it, and a band where the water runs up the sand; both broken into
+# patches. Widths are held in metres, not in depth: over a flat (1:200) a band of depth or phase is tens of metres
+# wide, which drew wide white bands. Depth = metres of water under the surface from the scene (SceneDepthWithoutWater),
+# Bed = (still-water depth now from the depth map, calm: 0 in a pool the ebb left), Pos in cm, Wind for how big the
+# surf is.
 SURF_HLSL = r"""
 float2 p = Pos.xy * 0.01;
 float d = max(min(Depth * 0.01, Bed.x + 0.2), 0.0);
 float hs = SP.y;
 float t = Clock.x;
 float foot = max(max(length(ddx(p)), length(ddy(p))), 1e-4);     // metres per pixel
-float2 q = p * 0.9 + float2(t * 0.05, t * 0.02);
+float2 q = p * 0.35 + float2(t * 0.03, t * 0.012);
 float n = 0, a = 0.5;
 for (int o = 0; o < 3; o++)
 {
-    n += a * (Lyud.Noise3(float3(fmod(q, 2048.0) + 2048.0, 3.0), 21u + o, 2048u) * 0.5 + 0.5);
+    n += a * (Lyud.Noise3(float3(fmod(q, 2048.0) + 2048.0, 3.0 + t * 0.02), 21u + o, 2048u) * 0.5 + 0.5);
     q = q * 2.03 + 17.1;
     a *= 0.5;
 }
 n /= 0.875;
-// lace: thin lines where a drifting noise crosses zero, two sizes, torn into pieces; where a pixel covers many
-// lines it becomes their mean cover (a faint haze), not shimmer
-float2 lq = fmod(p + float2(t * 0.04, -t * 0.03), 2048.0) + 2048.0;
-float n1 = abs(Lyud.Noise3(float3(lq / 1.4, t * 0.05), 31u, 2048u));
-float n2 = abs(Lyud.Noise3(float3(lq / 0.45, t * 0.08), 32u, 2048u));
-float a1 = foot / 1.4 * 1.5, a2 = foot / 0.45 * 1.5;
-float l1 = lerp(1.0 - smoothstep(0.05 - a1 * 0.5, 0.05 + a1 * 0.5, n1), 0.1, saturate(a1 / 0.05 - 1.0));
-float l2 = lerp(1.0 - smoothstep(0.07 - a2 * 0.5, 0.07 + a2 * 0.5, n2), 0.14, saturate(a2 / 0.07 - 1.0));
-float torn = smoothstep(0.35, 0.6, n);
-float lace = max(l1, l2 * 0.75) * torn;
-// spilling breakers: the same bores the surface rises in (Lyud.SurfHeight); at the front a thin line ~0.3 m wide
-// whatever the slope, behind it a fading net of lace
+float patchy = smoothstep(0.25, 0.75, n);
+// spilling breakers: the same bores the surface rises in (Lyud.SurfHeight); on the front a soft band ~0.6 m wide
+// whatever the slope, thinning out behind it as the foam dissolves
 float zone = Lyud.SurfZone(Bed.x, hs);
 float raw = Bed.x * 2.2 / max(hs, 0.25);
 float perM = length(float2(ddx(raw), ddy(raw))) / foot;          // phase per metre
-float f = frac(Lyud.SurfPhase(Bed.x, hs, t) + (n - 0.5) * 0.08);
-float lineW = max(0.3 * perM, 0.6 * fwidth(raw));
-float front = 1.0 - smoothstep(lineW * 0.5, lineW * 1.5, abs(f - 0.93));
-float trail = exp(-(f < 0.93 ? f + 0.07 : f - 0.93) * 4.0);
-float breakers = (front * (0.4 + 0.6 * torn) + trail * lace * 0.8) * sqrt(zone) * saturate(hs * 3.0);
-// the wash: a thin broken line where the water runs up the sand, ~0.25 m, and a little lace just off it
+float f = frac(Lyud.SurfPhase(Bed.x, hs, t) + (n - 0.5) * 0.1);
+float lineW = max(0.6 * perM, fwidth(raw));
+float df = f - 0.93;
+float front = exp(-df * df / (lineW * lineW));
+float behind = df < 0.0 ? f + 0.07 : df;                         // phase since the front passed
+float trail = exp(-behind * 5.0) * (1.0 - front);
+float breakers = (front * 0.85 + trail * 0.5) * (0.3 + 0.7 * patchy) * sqrt(zone) * saturate(hs * 3.0);
+// the wash: a band ~0.3-2.5 m off the water's edge, measured on the smooth depth map (the mesh's own edge, where it
+// tucks under the sand, is jagged: foam drawn along the scene's thickness traced its teeth), none in the last few cm
+// of water so the jagged edge itself stays clear
 float perD = max(length(float2(ddx(Bed.x), ddy(Bed.x))) / foot, 0.002);  // depth per metre (the smooth depth map's)
-float edge = (1.0 - smoothstep(0.0, 0.25 * perD, d)) * smoothstep(0.45, 0.7, n) * (0.25 + 0.75 * max(l1, l2))
-           + (1.0 - smoothstep(0.0, 2.5 * perD, d)) * lace * 0.6;
-return saturate(breakers + edge) * Bed.y;
+float off = max(Bed.x, 0.0) / perD;                                       // metres from the still-water edge
+float wash = smoothstep(0.1, 0.6, off) * (1.0 - smoothstep(0.8, 2.5, off)) * (0.15 + 0.45 * patchy) * saturate(hs * 4.0 + 0.3);
+return saturate(max(breakers, wash)) * smoothstep(0.005, 0.04, d) * Bed.y;
 """
 
 # Weed on the bed swaying with the passing waves: the dominant train's orbital motion at this depth

@@ -58,6 +58,17 @@ and jellies swim in the water as it is now.
 the player bird's air and feet (`FBirdAir::WaterZ`, `ABirdPawn::WaterZ`), the surf sound (`ULyudSoundscapeSubsystem`
 finds the nearest water now).
 
+## Mean sea level offset (the seasons' hook)
+
+`ALyudSea::SetMeanLevelOffsetCm(OffsetCm, BlendSeconds = 600)` moves the mean sea level under the tide: negative =
+lower (winter's sea, for the winter system to drive), positive = higher (a surge). The water eases to it at a constant
+rate over `BlendSeconds` (0 = at once); `MeanLevelOffsetCm()` / `MeanLevelOffsetTargetCm()` read it back. It is added to
+the tide's level, its low water and the wet line, so `SeaLevel()`, the depths (`DepthAt`, `WaterDepthAtM`), the water
+volume, the surf and the ground's wet sand (MPC `Tide`) all follow it; `HighWaterZ()` rises with a positive offset.
+The pools on the bared flat are the depth map's hollows and stay where they are. `lyud.Sea.MeanLevel <cm>` pins it
+(below -9000 = what the game set); `lyud.TideOverride` still pins the absolute level, offset or not. The LYUDSEA
+report prints `mean level +x cm (to +y)`.
+
 ## The ground
 
 `W.tidal_flat` (`tools/world_map.py`, the sea-bed branch of `W.height`): ~1:80 for the first ~350 m out from the

@@ -128,6 +128,56 @@ if os.environ.get("COSMIC_HALO"):
     for tag, c in (("now", now), ("v3", v3), ("now2", now), ("v3b", v3), ("now3", now),
                    ("opaque0.5", "lyud.Sky.CloudOpaque 2;lyud.Sky.CloudDensity 1")):
         SHOTS.append(("halo_sunset_" + tag, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + c))
+# COSMIC_EDGE=1: the grain at the sunset clouds' edges against the opaque cut-off, the density and the samples
+if os.environ.get("COSMIC_EDGE"):
+    SS = D(2026, 10, 20, 17, 2)
+    def edge(samples, cut, dens):
+        return "lyud.Sky.CloudSamples %s;lyud.Sky.CloudOpaque %s;lyud.Sky.CloudDensity %s" % (samples, cut, dens)
+    for tag, c in (("now", edge(1, 1, 1)), ("cut0", edge(1, 0, 1)), ("cut0.25", edge(1, 0.25, 1)), ("s2", edge(2, 1, 1)),
+                   ("s2_cut0.25", edge(2, 0.25, 1)), ("s3_cut0", edge(3, 0, 1)), ("d0.5_cut0", edge(1, 0, 0.5))):
+        SHOTS.append(("edge_sunset_" + tag, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + c))
+    SHOTS = [s for s in SHOTS if s[0].startswith("edge_")]
+# COSMIC_PHASE=1: the same night views (the town path from the terrace, the beach from the cliff) at Europa's
+# phases, for the moonlight, the night sky light and the exposure following the phase
+PHASES = (("new", D(2026, 11, 10, 0, 30)), ("crescent", D(2026, 11, 5, 5, 30)), ("quarter", D(2026, 11, 2, 3, 30)),
+          ("gibbous", D(2026, 10, 22, 22, 0)), ("full", D(2026, 10, 26, 0, 30)))
+if os.environ.get("COSMIC_PHASE"):
+    CC = os.environ.get("COSMIC_PHASE_CLOUD", "0.3")
+    for tag, when in PHASES:
+        # the same cloud cover every night (the calendar's weather differs from night to night, and clouds over the
+        # moon now shade its light), the disk from 30 m up, clear of the cliff and the poles
+        SHOTS.append(("phase_%s_town" % tag, when, None, TERRACE[0], TERRACE[1] + 25.0, 1.7, -6, 90, "lyud.Weather.Cloud " + CC))
+        SHOTS.append(("phase_%s_beach" % tag, when, None, BROW[0], BROW[1], 1.7, -14, 20, "lyud.Weather.Cloud " + CC))
+        SHOTS.append(("phase_%s_moon" % tag, when, None, BROW[0], BROW[1], 30.0, 0, "moon", "fov 25;lyud.Weather.Cloud " + CC))
+    if os.environ["COSMIC_PHASE"] == "only":
+        SHOTS = [s for s in SHOTS if s[0].startswith("phase_")]
+# COSMIC_FOAMDIAG=1: what draws the white strokes on the sand under the high water (the foam glowing, no ripples, no sea)
+if os.environ.get("COSMIC_FOAMDIAG"):
+    for tag, c in (("glow", "lyud.Sea.DebugFoam 4"), ("nocap", "lyud.Sea.Capillary 0"), ("nosea", "lyud.Sea 0")):
+        SHOTS.append(("foamdiag_" + tag, DAY, 0.0, BEACH[0], BEACH[1], 1.7, -3, 10, c))
+    SHOTS = [s for s in SHOTS if s[0].startswith(("foamdiag_", "phase_"))]
+# COSMIC_SCALE=1: how big Europa looks at the player's own field of view from the terrace (the town and trees for
+# scale), by night and by day, and the same frames with the real Moon's size (0.52 deg, a test override only)
+if os.environ.get("COSMIC_SCALE"):
+    for tag, when in (("night", D(2026, 10, 25, 19, 30)), ("day", D(2026, 10, 30, 10, 30))):
+        for size, c in (("", ""), ("_old", "moonsize 0.52")):
+            SHOTS.append(("scale_%s%s" % (tag, size), when, None, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "moon-wide",
+                          "lyud.Weather.Cloud 0;" + c))
+    if os.environ["COSMIC_SCALE"] == "only":
+        SHOTS = [s for s in SHOTS if s[0].startswith("scale_")]
+# COSMIC_SEALOOK=1: the sea's colour with the weather and the light from the cliff: sunny, overcast, storm, sunset,
+# night (full moon), and a winter noon; the look eases in at once (lyud.Sea.LookSeconds 0)
+if os.environ.get("COSMIC_SEALOOK"):
+    SL = "lyud.Sea.LookSeconds 0;"
+    for tag, when, c in (("sunny", DAY, "lyud.Weather.Cloud 0;lyud.Wind.Speed 5"),
+                         ("overcast", DAY, "lyud.Weather.Cloud 1;lyud.Wind.Speed 7"),
+                         ("storm", DAY, "lyud.Weather.Cloud 1;lyud.Weather.Rain 3;lyud.Wind.Speed 18"),
+                         ("sunset", D(2026, 10, 20, 17, 0), "lyud.Weather.Cloud 0.3;lyud.Wind.Speed 5"),
+                         ("night", D(2026, 10, 26, 0, 30), "lyud.Weather.Cloud 0.2;lyud.Wind.Speed 5"),
+                         ("winter", D(2027, 2, 10, 12, 30), "lyud.Weather.Cloud 0.3;lyud.Wind.Speed 7")):
+        SHOTS.append(("sealook_" + tag, when, -1.0, BROW[0], BROW[1], 1.7, -10, 15, SL + c))
+    if os.environ["COSMIC_SEALOOK"] == "only":
+        SHOTS = [s for s in SHOTS if s[0].startswith("sealook_")]
 if os.environ.get("COSMIC_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["COSMIC_SHOTS"].split(",")]
 WAIT = float(os.environ.get("COSMIC_WAIT", "7"))
@@ -189,6 +239,7 @@ def step(dt):
         b = sky.shown_time()
         M = unreal.MathLibrary
         st["base"] = D(M.get_year(b), M.get_month(b), M.get_day(b), M.get_hour(b), M.get_minute(b), M.get_second(b))
+        st["moon_d"] = sky.get_editor_property("moon_angular_diameter_deg")
         unreal.log_warning("COSMIC calendar now %s" % st["base"])
         return
     if st["phase"] == 0:
@@ -199,10 +250,13 @@ def step(dt):
             return
         name, when, tide, x, y, up, pitch, yaw = SHOTS[st["i"]][:8]
         for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
-                  "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
-                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg")] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
+                  "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "lyud.Sea.DebugFoam 0", "lyud.Weather.Cloud -1", "lyud.Weather.Rain -1", "lyud.Wind.Speed -1", "lyud.Sea.LookSeconds 120", "fov 0", "r.BloomQuality 5",
+                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg"), "moonsize %g" % st["moon_d"]] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))
+            elif c.startswith("moonsize "):           # test hook: Europa's apparent size
+                sky.set_editor_property("moon_angular_diameter_deg", float(c.split()[1]))
+                sky.update_sky()
             elif c.startswith("sunvis "):
                 sky.get_editor_property("sun_light").set_visibility(c.split()[1] == "1")
             elif c:
