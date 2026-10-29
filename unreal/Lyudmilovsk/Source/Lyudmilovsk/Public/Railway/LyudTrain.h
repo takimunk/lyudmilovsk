@@ -65,6 +65,17 @@ public:
 	static constexpr float SeatHeight = 42.f;
 
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void BeginPlay() override;
+
+	/** The free seat the player stands by and looks at (within 1.4 m), or -1. E sits them down there, E again (or a
+	 *  step, or Space) gets them up; seated, they ride with the car. */
+	UFUNCTION(BlueprintCallable, Category = "Train") int32 SeatInView() const;
+	/** Sits the player on a seat at once (tests). */
+	UFUNCTION(BlueprintCallable, Category = "Train") bool SitPlayer(int32 Seat);
+	/** As the player's E: sit on the seat in view, or get up (tests). */
+	UFUNCTION(BlueprintCallable, Category = "Train") void Use() { OnUse(); }
+	/** The seat the player sits on, or -1. */
+	UFUNCTION(BlueprintPure, Category = "Train") int32 GetPlayerSeat() const { return PlayerSeat; }
 
 	struct FCar
 	{
@@ -75,6 +86,12 @@ public:
 private:
 	void BuildCar(int32 C);
 	void CarryPlayer(const TArray<FTransform>& Old);
+	void OnUse();
+	void UpdateSeatPrompt(float DeltaSeconds);
+	FTransform SeatWorld(int32 Seat) const;
+	int32 PlayerSeat = -1;
+	float PromptTimer = 0.f;
+	bool bPromptShown = false;
 	void UpdateLights();
 	void UpdateDoors(float DeltaSeconds);
 	void UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev);

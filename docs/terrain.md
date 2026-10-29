@@ -37,7 +37,7 @@ Over the buried corridor (|X| < 12, Y -470..-30) the detail may raise the ground
 ## Surface layers
 
 Grass, Meadow (dry grass), Dirt (bare patches, steep ground, track edges, gullies), Mud (track centres, wet
-hollows), Sand (beach and sea bed), Rock (cliff faces over ~45 degrees), Forest (needles and moss under the pine
+hollows), Sand (beach, tidal flat and sea bed; wet and glistening under the tide's wet line, [tides.md](tides.md)), Rock (cliff faces over ~45 degrees), Forest (needles and moss under the pine
 woods). Photos: `tools/fal_ground_textures.py` (fal.ai) -> `textures/ground/raw/` (not committed) ->
 `blender -b --python tools/make_ground_textures.py` -> `textures/ground/<Layer>_D.jpg` / `_N.jpg` (seamless, even
 light). The material (`M_Ground`) mixes each photo at 2.6 m and 11 m tiling, lets stones and grass tips win the

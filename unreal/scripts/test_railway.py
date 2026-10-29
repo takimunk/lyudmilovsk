@@ -457,6 +457,143 @@ INSIDE += [
     (122.0, lambda w: shot(w, "in_cards_night")),
 ]
 
+def seat_go(w):
+    """The player into car 1's aisle (the train's second car) a step from a bench, looking at it, walking."""
+    import math
+    t = rail(w).get_train(0)
+    best = None
+    info = t.get_info()
+    for i in range(t.num_seats()):
+        if t.get_seat_car(i) != 1:
+            continue
+        r = t.get_seat(i)
+        tr = r[-1] if isinstance(r, tuple) else r
+        best = best or (i, tr)
+        if i % 7 == 3:
+            best = (i, tr)
+            break
+    i, tr = best
+    S["seat_try"] = i
+    front = tr.transform_location(unreal.Vector(70.0, 0.0, 95.0))     # in the aisle facing the bench
+    cushion = tr.transform_location(unreal.Vector(-24.0, 0.0, 42.0))
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    pawn.set_actor_location(front, False, True)
+    d = cushion - (front + unreal.Vector(0.0, 0.0, 60.0))
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    pc.set_control_rotation(unreal.Rotator(0.0, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))), math.degrees(math.atan2(d.y, d.x))))
+
+
+def seat_try(w):
+    t = rail(w).get_train(0)
+    v = t.seat_in_view()
+    check(v >= 0, "a free seat in view from the aisle (%d)" % v)
+    t.use()
+    check(t.get_player_seat() >= 0, "E sits the player down (seat %d)" % t.get_player_seat())
+
+
+def seat_rel(w):
+    t = rail(w).get_train(0)
+    seat = t.get_player_seat()
+    if seat < 0:
+        return None
+    r = t.get_seat(seat)
+    tr = r[-1] if isinstance(r, tuple) else r
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    return tr.inverse_transform_location(pawn.get_actor_location())
+
+
+def seat_watch(w):
+    l = seat_rel(w)
+    info = rail(w).get_train(0).get_info()
+    if l is None:
+        return
+    if "seat_ref" not in S:
+        S["seat_ref"] = l
+    r = S["seat_ref"]
+    if abs(info.speed) > 0.05:
+        S["seat_drift"] = max(S.get("seat_drift", 0.0), ((l.x - r.x) ** 2 + (l.y - r.y) ** 2 + (l.z - r.z) ** 2) ** 0.5)
+
+
+def seat_look(w, pitch, yaw_off):
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    t = rail(w).get_train(0)
+    r = t.get_seat(t.get_player_seat())
+    tr = r[-1] if isinstance(r, tuple) else r
+    pc.set_control_rotation(unreal.Rotator(0.0, pitch, tr.rotation.rotator().yaw + yaw_off))
+
+
+def seat_stand(w):
+    t = rail(w).get_train(0)
+    check(S.get("seat_drift", 1e9) < 3.0, "seated, the player stays on the seat while the train runs (drift %.1f cm)" % S.get("seat_drift", -1.0))
+    t.use()
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    mode = pawn.get_editor_property("character_movement").movement_mode
+    check(t.get_player_seat() < 0 and mode == unreal.MovementMode.MOVE_WALKING, "E gets the player up, walking (%s)" % mode)
+
+
+def line_pos(w):
+    """The player's place along the train: metres from its middle (car 0 ahead, outbound)."""
+    r = rail(w)
+    info = r.get_train(0).get_info()
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    a, b = r.line_to_world(info.s, 0.0, 0.0), r.line_to_world(info.s + 1.0, 0.0, 0.0)
+    d = b - a
+    p = pawn.get_actor_location() - a
+    return (p.x * d.x + p.y * d.y) / (d.x * d.x + d.y * d.y), p.z - 115.0
+
+
+def walk_through(w):
+    """Walks the player from the second car through the gangway into the first, the train running."""
+    r = rail(w)
+    info = r.get_train(0).get_info()
+    a, b = r.line_to_world(info.s, 0.0, 0.0), r.line_to_world(info.s + 1.0, 0.0, 0.0)
+    d = b - a
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    import math
+    pc.set_control_rotation(unreal.Rotator(0.0, 0.0, math.degrees(math.atan2(d.y, d.x))))
+    pawn.add_movement_input(unreal.Vector(d.x, d.y, 0.0), 1.0, False)
+
+
+def walk_start(w):
+    S["walk_from"] = line_pos(w)
+    log("walk from %.1f m (z %.0f cm)" % S["walk_from"])
+    S["walking"] = True
+
+
+def walk_end(w):
+    S["walking"] = False
+    p, z = line_pos(w)
+    log("walk to %.1f m (z %.0f cm)" % (p, z))
+    check(S["walk_from"][0] < -2.0 and p > 1.5 and z > 60.0, "walked through the gangway into the first car while running (%.1f -> %.1f m, z %.0f)" % (S["walk_from"][0], p, z))
+
+
+# sitting and walking through: at the beach halt the player steps into the second car, looks at a bench and presses E;
+# the train leaves and runs (the player stays on the seat), shots seated ahead and looking down at the legs; E gets
+# them up; then, running out on the bank, they walk forward through the gangway into the first car
+SEAT = [
+    (21.0, lambda w: cmd(w, "lyud.Birds.Time 11 20")),
+    (22.0, lambda w: cmd(w, "DisableAllScreenMessages")),
+    (23.0, lambda w: cmd(w, "lyud.Railway.Next beach 1")),
+    (46.0, seat_go),
+    (48.0, lambda w: shot(w, "seat_view")),
+    (50.0, seat_try),
+    (53.0, lambda w: seat_look(w, -5.0, 0.0)),
+    (55.0, lambda w: shot(w, "seated_ahead")),
+    (56.0, lambda w: S.update(seat_log=True)),
+    (57.0, lambda w: seat_look(w, -65.0, 0.0)),
+    (60.0, lambda w: shot(w, "seated_legs")),
+    (61.0, lambda w: seat_look(w, -10.0, 70.0)),
+    (95.0, lambda w: shot(w, "seated_running")),
+    (100.0, seat_stand),
+    (103.0, lambda w: shot(w, "stood_up")),
+    (104.0, lambda w: S.update(seat_log=False)),
+    (106.0, lambda w: seat_rel(w)),
+    (107.0, walk_start),
+    (113.0, walk_end),
+    (114.0, lambda w: shot(w, "walked_through")),
+]
+
 # riding: the player stands in the second car at the beach halt; it leaves and runs out onto the bank; standing
 # still, the player must stay where they stand in the car (the car's floor carries them)
 RIDE = [
@@ -471,6 +608,8 @@ RIDE = [
 ]
 
 PLAN = []
+for name, part in (("seat", SEAT),) if ONLY == "seat" else ():
+    PLAN += part
 for name, part in (("inside", INSIDE),) if ONLY == "inside" else ():
     PLAN += part
 for name, part in (("ride", RIDE),) if ONLY == "ride" else ():
@@ -482,9 +621,9 @@ for name, part in (("trees", TREES),) if ONLY == "trees" else ():
 for name, part in (("riders", RIDERS),) if ONLY == "riders" else ():
     PLAN += part
 for name, part in (("day", DAY), ("night", NIGHT), ("far", FAR)):
-    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees", "sunset", "ride", "inside"):
+    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees", "sunset", "ride", "inside", "seat"):
         PLAN += part
-if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees", "sunset", "ride", "inside"):
+if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees", "sunset", "ride", "inside", "seat"):
     PLAN.insert(0, (30.0, start))
 PLAN.append((max(t for t, _ in PLAN) + 4.0, lambda w: S.update(phase="done")))
 
@@ -508,6 +647,10 @@ def tick(dt):
         riders_watch(w)
     if S.get("ride_log"):
         ride_watch(w)
+    if S.get("seat_log"):
+        seat_watch(w)
+    if S.get("walking"):
+        walk_through(w)
     if S.get("follow"):
         follow(w, rail(w).get_train(0).get_info().s)
     watch(w)

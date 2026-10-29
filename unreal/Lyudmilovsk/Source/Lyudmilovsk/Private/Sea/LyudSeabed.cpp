@@ -144,7 +144,8 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 	{
 		return;
 	}
-	const float SeaZ = Sea->SeaLevel();
+	// the bed's life stays where the water covers it even at the lowest spring tide (the flat above it dries)
+	const float SeaZ = Sea->LowWaterZ();
 	TArray<FTransform> Out[NumKinds];
 	Flounders.Reset();
 	const int32 TX = FMath::FloorToInt(Eye.X / TileSize), TY = FMath::FloorToInt(Eye.Y / TileSize);
@@ -163,7 +164,7 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 			float MaxDepth = -1e9f;
 			for (int32 K = 0; K < 4; K++)
 			{
-				MaxDepth = FMath::Max(MaxDepth, Sea->DepthAt(Center + FVector((K & 1 ? 0.5 : -0.5) * TileSize, (K & 2 ? 0.5 : -0.5) * TileSize, 0.0)));
+				MaxDepth = FMath::Max(MaxDepth, Sea->DepthAtLevel(Center + FVector((K & 1 ? 0.5 : -0.5) * TileSize, (K & 2 ? 0.5 : -0.5) * TileSize, 0.0), SeaZ));
 			}
 			if (MaxDepth < 10.f)
 			{

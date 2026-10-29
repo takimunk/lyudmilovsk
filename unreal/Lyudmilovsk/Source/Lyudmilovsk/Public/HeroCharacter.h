@@ -10,11 +10,12 @@ class UInputMappingContext;
 struct FInputActionValue;
 class USkeletalMesh;
 class USkeletalMeshComponent;
+class UHeroShadowMesh;
 
 /**
  * The player, seen from inside: the hero's whole body (SK_Hero: the Zoomer in Murmuration's clothes)
  * stands in the world and the camera sits at its eyes, as in Murmuration's first person. The head is
- * hidden (the shadow is the headless body's), looking down shows your
+ * hidden (an invisible copy that follows the pose casts the shadow, head and all), looking down shows your
  * chest, arms, trousers and shoes. The body turns with the look the way a person does: standing
  * still the head and chest turn first and the feet follow past ~35 degrees, walking it faces where
  * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
@@ -65,6 +66,16 @@ public:
 	/** How far a reach wants the body down (0..1, UHeroReachComponent for low items); the body crouches to the deeper of this and the crouch. */
 	void SetReachCrouch(float Target) { ReachCrouchTarget = FMath::Clamp(Target, 0.f, 1.f); }
 
+	/** Sits down on a bench seat that moves with Base (a train's car): SeatLocal is the seat's frame on Base (origin on
+	 *  the floor under the cushion's front edge, X the way the sitter faces), SeatZ the cushion's height, cm. The hero
+	 *  stays on it, carried with Base, until StandUp (any step, Space, or the seat's own key). */
+	void SitOn(USceneComponent* Base, const FTransform& SeatLocal, float SeatZ);
+	/** Gets up and steps off the seat, forward. */
+	void StandUp();
+	bool IsSeated() const { return SeatBase.IsValid(); }
+	/** The seat's frame in the world now (identity when not seated). */
+	FTransform SeatWorld() const;
+
 	/** Narrows the view toward Zoom (1 the normal field of view, 0.6 a third closer), eased over a second or so: a bird
 	 *  eating from the palm is looked at closely. */
 	void SetViewZoom(float Zoom) { ViewZoomTarget = FMath::Clamp(Zoom, 0.3f, 1.f); }
@@ -112,6 +123,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Hero")
 	TObjectPtr<UCameraComponent> Camera;
 
+	/** The full body, invisible, only for the shadow (the visible one has no head); it copies the body's pose. */
+	UPROPERTY(VisibleAnywhere, Category = "Hero")
+	TObjectPtr<UHeroShadowMesh> ShadowBody;
+
 private:
 	void ReadInput(float DeltaSeconds);
 	void AddMappingContexts();
@@ -132,4 +147,11 @@ private:
 	float ReachCrouch = 0.f;
 	float ViewZoomTarget = 1.f;
 	float ViewZoom = 1.f;
+	void OnJumpPressed();
+	void KeepSeated();
+	TWeakObjectPtr<USceneComponent> SeatBase;
+	FTransform SeatLocal;
+	float SeatZ = 42.f;
+	float SitAlpha = 0.f;
+	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
 };

@@ -6,6 +6,8 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Framework/Application/SlateApplication.h"
+#include "HAL/IConsoleManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudText.h"
@@ -20,6 +22,7 @@
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Widgets/SWindow.h"
 
 #define LOCTEXT_NAMESPACE "PlantDevTool"
 
@@ -306,7 +309,8 @@ void APlantDevTool::Open()
 			]
 		]
 	];
-	Viewport->AddViewportWidgetContent(Panel.ToSharedRef(), 50);
+	// over the HUD, the diary and the transit screen (85, 86), under the game menu (100)
+	Viewport->AddViewportWidgetContent(Panel.ToSharedRef(), 95);
 	PC->SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
 	Mode.SetHideCursorDuringCapture(true);
@@ -363,6 +367,89 @@ void APlantDevTool::Tick(float DeltaSeconds)
 	}
 #endif
 }
+
+namespace
+{
+	void CollectOfType(const TSharedRef<SWidget>& Widget, FName Type, TArray<TSharedRef<SWidget>>& Out)
+	{
+		if (Widget->GetType() == Type)
+		{
+			Out.Add(Widget);
+		}
+		FChildren* Children = Widget->GetChildren();
+		for (int32 I = 0; Children && I < Children->Num(); ++I)
+		{
+			CollectOfType(Children->GetChildAt(I), Type, Out);
+		}
+	}
+
+	void LogCalendar(UWorld* World, const TCHAR* What)
+	{
+		if (const UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DEVPANEL %s now %s scale %.1f"), What, *Cal->Now().ToString(TEXT("%Y-%m-%d %H:%M:%S")), Cal->TimeScale);
+		}
+	}
+}
+
+// headless checks of the panel: the clicks go through Slate's hit test like the mouse's, so whatever lies over the panel gets them
+static FAutoConsoleCommandWithWorldAndArgs GDevPanel(TEXT("Dev.Panel"),
+	TEXT("Dev.Panel open | close | log | click <SSlider|SButton> <index> <0..1 across it>: the F7 panel without the keyboard and mouse"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		TActorIterator<APlantDevTool> Tool(World);
+		if (!Tool || Args.Num() == 0)
+		{
+			return;
+		}
+		const bool bOpen = Tool->GetPanel().IsValid();
+		if ((Args[0] == TEXT("open") && !bOpen) || (Args[0] == TEXT("close") && bOpen))
+		{
+			Tool->Toggle();
+		}
+		else if (Args[0] == TEXT("log"))
+		{
+			LogCalendar(World, TEXT("log"));
+		}
+		else if (Args[0] == TEXT("click") && bOpen && Args.Num() > 2 && FSlateApplication::IsInitialized())
+		{
+			TArray<TSharedRef<SWidget>> Found;
+			CollectOfType(Tool->GetPanel().ToSharedRef(), FName(*Args[1]), Found);
+			const int32 Index = FCString::Atoi(*Args[2]);
+			if (!Found.IsValidIndex(Index))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("DEVPANEL no %s %d (%d found)"), *Args[1], Index, Found.Num());
+				return;
+			}
+			const FGeometry& G = Found[Index]->GetTickSpaceGeometry();
+			const float Across = Args.Num() > 3 ? FCString::Atof(*Args[3]) : 0.5f;
+			const FVector2D At = G.LocalToAbsolute(G.GetLocalSize() * FVector2D(Across, 0.5f));
+			FSlateApplication& Slate = FSlateApplication::Get();
+			const FWidgetPath Path = Slate.LocateWindowUnderMouse(At, Slate.GetInteractiveTopLevelWindows(), true);
+			const FString Hit = Path.IsValid() ? Path.Widgets.Last().Widget->GetTypeAsString() : TEXT("nothing");
+			FString Over;
+			bool bReached = false;
+			for (int32 I = Path.Widgets.Num() - 1; I >= 0; --I)
+			{
+				bReached |= Path.Widgets[I].Widget == Found[Index];
+				if (I >= Path.Widgets.Num() - 6)
+				{
+					Over += Path.Widgets[I].Widget->GetTypeAsString() + TEXT(" < ");
+				}
+			}
+			LogCalendar(World, TEXT("before"));
+			// the pointer moves there first: a button only clicks when it is hovered as the mouse goes up
+			const FPointerEvent Move(Slate.GetUserIndexForMouse(), FSlateApplicationBase::CursorPointerIndex, At, At - FVector2D(1.f, 1.f), TSet<FKey>(), FKey(), 0.f, FModifierKeysState());
+			Slate.ProcessMouseMoveEvent(Move);
+			const FPointerEvent Down(Slate.GetUserIndexForMouse(), FSlateApplicationBase::CursorPointerIndex, At, At, TSet<FKey>{ EKeys::LeftMouseButton }, EKeys::LeftMouseButton, 0.f, FModifierKeysState());
+			const FPointerEvent Up(Slate.GetUserIndexForMouse(), FSlateApplicationBase::CursorPointerIndex, At, At, TSet<FKey>(), EKeys::LeftMouseButton, 0.f, FModifierKeysState());
+			Slate.ProcessMouseButtonDownEvent(nullptr, Down);
+			Slate.ProcessMouseButtonUpEvent(Up);
+			UE_LOG(LogTemp, Warning, TEXT("DEVPANEL click %s %d at %.0f,%.0f hit %s (path %s) target %s"), *Args[1], Index, At.X, At.Y, *Hit, *Over,
+				bReached ? TEXT("ok") : TEXT("MISSED"));
+			LogCalendar(World, TEXT("after"));
+		}
+	}));
 
 void UPlantDevSubsystem::OnWorldBeginPlay(UWorld& World)
 {

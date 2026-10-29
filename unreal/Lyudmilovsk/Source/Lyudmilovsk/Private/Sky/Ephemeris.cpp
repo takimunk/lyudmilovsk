@@ -46,8 +46,8 @@ namespace
 		return Rev(M + W + 180.0 + Ut * 15.0 + LongitudeDeg);
 	}
 
-	/** Ecliptic (longitude, latitude) to the horizon of an observer. */
-	FSkyPosition Horizon(double Lon, double Lat, double D, double LstDeg, double LatitudeDeg)
+	/** Ecliptic (longitude, latitude) to right ascension and declination, degrees. */
+	void RaDec(double Lon, double Lat, double D, double& Ra, double& Dec)
 	{
 		const double Ecl = Obliquity(D);
 		const double Xe = CosD(Lon) * CosD(Lat);
@@ -55,8 +55,15 @@ namespace
 		const double Z0 = SinD(Lat);
 		const double Ye = Y0 * CosD(Ecl) - Z0 * SinD(Ecl);
 		const double Ze = Y0 * SinD(Ecl) + Z0 * CosD(Ecl);
-		const double Ra = Atan2D(Ye, Xe);
-		const double Dec = Atan2D(Ze, FMath::Sqrt(Xe * Xe + Ye * Ye));
+		Ra = Atan2D(Ye, Xe);
+		Dec = Atan2D(Ze, FMath::Sqrt(Xe * Xe + Ye * Ye));
+	}
+
+	/** Ecliptic (longitude, latitude) to the horizon of an observer. */
+	FSkyPosition Horizon(double Lon, double Lat, double D, double LstDeg, double LatitudeDeg)
+	{
+		double Ra, Dec;
+		RaDec(Lon, Lat, D, Ra, Dec);
 		const double Ha = LstDeg - Ra;
 
 		const double X = CosD(Ha) * CosD(Dec);
@@ -89,44 +96,53 @@ FSkyPosition LyudEphemeris::Sun(const FDateTime& Utc, double LatitudeDeg, double
 	return Horizon(SunLongitude(D), 0.0, D, SiderealTime(D, LongitudeDeg, Utc), LatitudeDeg);
 }
 
+namespace
+{
+	/** The moon's geocentric ecliptic longitude and latitude (degrees) and distance (Earth radii) on day D. */
+	void MoonEcliptic(double D, double& Lon, double& Lat, double& R)
+	{
+		const double N = Rev(125.1228 - 0.0529538083 * D);
+		const double I = 5.1454;
+		const double W = Rev(318.0634 + 0.1643573223 * D);
+		const double A = 60.2666;   // Earth radii
+		const double E0 = 0.054900;
+		const double M = Rev(115.3654 + 13.0649929509 * D);
+
+		double E = M + E0 / Rad * SinD(M) * (1.0 + E0 * CosD(M));
+		for (int32 It = 0; It < 4; ++It)
+		{
+			E = E - (E - E0 / Rad * SinD(E) - M) / (1.0 - E0 * CosD(E));
+		}
+		const double Xv = A * (CosD(E) - E0);
+		const double Yv = A * FMath::Sqrt(1.0 - E0 * E0) * SinD(E);
+		const double V = Atan2D(Yv, Xv);
+		R = FMath::Sqrt(Xv * Xv + Yv * Yv);
+		const double Xh = R * (CosD(N) * CosD(V + W) - SinD(N) * SinD(V + W) * CosD(I));
+		const double Yh = R * (SinD(N) * CosD(V + W) + CosD(N) * SinD(V + W) * CosD(I));
+		const double Zh = R * SinD(V + W) * SinD(I);
+		Lon = Atan2D(Yh, Xh);
+		Lat = Atan2D(Zh, FMath::Sqrt(Xh * Xh + Yh * Yh));
+
+		// the largest perturbations by the sun
+		double Ms, Ws;
+		SunElements(D, Ms, Ws);
+		const double Ls = Ms + Ws;
+		const double Lm = M + W + N;
+		const double Dm = Lm - Ls;
+		const double F = Lm - N;
+		Lon += -1.274 * SinD(M - 2 * Dm) + 0.658 * SinD(2 * Dm) - 0.186 * SinD(Ms) - 0.059 * SinD(2 * M - 2 * Dm)
+			- 0.057 * SinD(M - 2 * Dm + Ms) + 0.053 * SinD(M + 2 * Dm) + 0.046 * SinD(2 * Dm - Ms) + 0.041 * SinD(M - Ms)
+			- 0.035 * SinD(Dm) - 0.031 * SinD(M + Ms) - 0.015 * SinD(2 * F - 2 * Dm) + 0.011 * SinD(M - 4 * Dm);
+		Lat += -0.173 * SinD(F - 2 * Dm) - 0.055 * SinD(M - F - 2 * Dm) - 0.046 * SinD(M + F - 2 * Dm)
+			+ 0.033 * SinD(F + 2 * Dm) + 0.017 * SinD(2 * M + F);
+	}
+}
+
 FSkyPosition LyudEphemeris::Moon(const FDateTime& Utc, double LatitudeDeg, double LongitudeDeg, double* PhaseFraction)
 {
 	const double D = DayNumber(Utc);
-	const double N = Rev(125.1228 - 0.0529538083 * D);
-	const double I = 5.1454;
-	const double W = Rev(318.0634 + 0.1643573223 * D);
-	const double A = 60.2666;   // Earth radii
-	const double E0 = 0.054900;
-	const double M = Rev(115.3654 + 13.0649929509 * D);
-
-	double E = M + E0 / Rad * SinD(M) * (1.0 + E0 * CosD(M));
-	for (int32 It = 0; It < 4; ++It)
-	{
-		E = E - (E - E0 / Rad * SinD(E) - M) / (1.0 - E0 * CosD(E));
-	}
-	const double Xv = A * (CosD(E) - E0);
-	const double Yv = A * FMath::Sqrt(1.0 - E0 * E0) * SinD(E);
-	const double V = Atan2D(Yv, Xv);
-	const double R = FMath::Sqrt(Xv * Xv + Yv * Yv);
-	const double Xh = R * (CosD(N) * CosD(V + W) - SinD(N) * SinD(V + W) * CosD(I));
-	const double Yh = R * (SinD(N) * CosD(V + W) + CosD(N) * SinD(V + W) * CosD(I));
-	const double Zh = R * SinD(V + W) * SinD(I);
-	double Lon = Atan2D(Yh, Xh);
-	double Lat = Atan2D(Zh, FMath::Sqrt(Xh * Xh + Yh * Yh));
-
-	// the largest perturbations by the sun
-	double Ms, Ws;
-	SunElements(D, Ms, Ws);
-	const double Ls = Ms + Ws;
-	const double Lm = M + W + N;
-	const double Dm = Lm - Ls;
-	const double F = Lm - N;
-	Lon += -1.274 * SinD(M - 2 * Dm) + 0.658 * SinD(2 * Dm) - 0.186 * SinD(Ms) - 0.059 * SinD(2 * M - 2 * Dm)
-		- 0.057 * SinD(M - 2 * Dm + Ms) + 0.053 * SinD(M + 2 * Dm) + 0.046 * SinD(2 * Dm - Ms) + 0.041 * SinD(M - Ms)
-		- 0.035 * SinD(Dm) - 0.031 * SinD(M + Ms) - 0.015 * SinD(2 * F - 2 * Dm) + 0.011 * SinD(M - 4 * Dm);
-	Lat += -0.173 * SinD(F - 2 * Dm) - 0.055 * SinD(M - F - 2 * Dm) - 0.046 * SinD(M + F - 2 * Dm)
-		+ 0.033 * SinD(F + 2 * Dm) + 0.017 * SinD(2 * M + F);
-
+	double Lon, Lat, R;
+	MoonEcliptic(D, Lon, Lat, R);
 	FSkyPosition P = Horizon(Lon, Lat, D, SiderealTime(D, LongitudeDeg, Utc), LatitudeDeg);
 	// seen from the surface, not the Earth's centre: the moon sits up to a degree lower
 	P.AltitudeDeg -= FMath::Asin(1.0 / R) / Rad * CosD(P.AltitudeDeg);
@@ -137,4 +153,16 @@ FSkyPosition LyudEphemeris::Moon(const FDateTime& Utc, double LatitudeDeg, doubl
 		*PhaseFraction = 0.5 * (1.0 - CosElong);
 	}
 	return P;
+}
+
+void LyudEphemeris::HourAngles(const FDateTime& Utc, double LongitudeDeg, double& SunHaDeg, double& MoonHaDeg)
+{
+	const double D = DayNumber(Utc);
+	const double Lst = SiderealTime(D, LongitudeDeg, Utc);
+	double Ra, Dec, Lon, Lat, R;
+	RaDec(SunLongitude(D), 0.0, D, Ra, Dec);
+	SunHaDeg = Rev(Lst - Ra);
+	MoonEcliptic(D, Lon, Lat, R);
+	RaDec(Lon, Lat, D, Ra, Dec);
+	MoonHaDeg = Rev(Lst - Ra);
 }

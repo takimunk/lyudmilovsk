@@ -6,6 +6,10 @@ cd "$(dirname "$0")/../.."
 B=/Applications/Blender.app/Contents/MacOS/Blender
 UE="/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac"; P=$PWD/unreal/Lyudmilovsk/Lyudmilovsk.uproject
 mkdir -p Saved/FixHi3d Saved/EyeShots
+# importing a mesh onto SK_Human_Skeleton rewrites the skeleton's reference pose from that mesh, and every shared
+# clip then bends the others' arms into their bodies (Owner, 2026-10-29): keep the skeleton as it is
+SKEL=unreal/Lyudmilovsk/Content/Characters/Humans/SK_Human_Skeleton.uasset
+cp -p $SKEL Saved/FixHi3d/SK_Human_Skeleton.keep
 for c in "$@"; do
     L=Saved/FixHi3d/$c.log; : > $L
     echo "== $c"
@@ -35,3 +39,4 @@ import json; p='blender/characters/$c/character.json'; d=json.load(open(p)); d['
     "$UE/UnrealEditor-Cmd" "$P" -run=pythonscript -script="$PWD/unreal/scripts/import_character.py $c" -unattended -nullrhi >> $L 2>&1
     grep -q "CHARACTER done" $L && echo "  imported" || echo "  IMPORT FAILED"
 done
+cp -p Saved/FixHi3d/SK_Human_Skeleton.keep $SKEL

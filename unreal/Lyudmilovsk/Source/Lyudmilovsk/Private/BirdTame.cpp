@@ -152,7 +152,7 @@ public:
 	{
 		ChildSlot
 		[
-			SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(FMargin(36.f, 0.f, 0.f, 36.f))
+			SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(FMargin(36.f, 0.f, 0.f, 36.f)).Visibility(EVisibility::HitTestInvisible)
 			[
 				SNew(SBorder)
 				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))

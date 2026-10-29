@@ -150,6 +150,13 @@ Riding: the cars move in the train's own pre-physics tick and the player's chara
 car's floor CharacterMovement's movement base carries the player; only off the floor (a jump) does the train move
 them itself, never both (`RAILTEST_ONLY=ride`: a standing player drifts under 2 cm over a kilometre's run).
 
+Sitting: on any free seat (not one a resident sits on), looking at it from within 1.4 m, E (prompt `ui.train.sit`)
+sits the hero down (`AHeroCharacter::SitOn`: no walking, no collision, kept on the seat's frame each frame after the
+car moves; `HandReach::ApplySit` puts the body on the cushion: hips back, feet under the knees, hands on the thighs);
+E, a step or Space gets them up a step forward. Between the cars: the coupled ends have the gangway's 0.9 x 2 m door,
+the gangway a floor plate and side walls (carried by the car ahead), so one walks through, running or not.
+`RAILTEST_ONLY=seat`: sit, ride (drift 1.9 cm), stand, walk through to the first car while running.
+
 Sound: the running gear's loops and the horn, joints, doors and gulls have their own attenuation (heard ~500 m, the
 horn ~2.5 km) and are muffled to 6 % for a listener indoors (`ULyudSoundscapeSubsystem::GetOutdoors`); the loops stop
 when the train is hidden (in the tunnel, under the club).

@@ -24,4 +24,6 @@ namespace LyudEphemeris
 	LYUDMILOVSK_API FSkyPosition Sun(const FDateTime& Utc, double LatitudeDeg, double LongitudeDeg);
 	/** Topocentric (parallax corrected). PhaseFraction = lit part of the disk, 0 new moon .. 1 full. */
 	LYUDMILOVSK_API FSkyPosition Moon(const FDateTime& Utc, double LatitudeDeg, double LongitudeDeg, double* PhaseFraction = nullptr);
+	/** Local hour angles of the sun and the moon (geocentric), degrees 0..360 west of the meridian: what drives the tide. */
+	LYUDMILOVSK_API void HourAngles(const FDateTime& Utc, double LongitudeDeg, double& SunHaDeg, double& MoonHaDeg);
 }
