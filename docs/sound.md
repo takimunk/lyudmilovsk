@@ -51,8 +51,8 @@ turns the state into the bed's inputs.
 | Footsteps | the player's strides outdoors (0.7 m walking .. 1.1 m running): snow crunching (a dense crackle of breaking crystals + the weight's thud), a soft "pff" in fresh fluff, a squeak in cold snow under -8 C (two ringing friction pitches), slush squelching, puddles splashing with bubbles, ice clicking and the sole's scrape, wet and dry earth | `SnowDepthCm`, `SnowDensity`, `TempC`, `Melt`, `Wet` (puddles over ~0.5), `Glaze`, standing on sea ice |
 | Thunder's storm | strikes scatter round a centre that is ~11 km off as a thundery episode starts and ends and ~1 km in its middle | `RegimeProgress` in `ULyudWeatherSubsystem::Tick` |
 
-Not yet: snow depth is the engine's level depth (the winter thread's drifts and paths will give the local depth
-underfoot); no umbrella item calls `SetUmbrella` and no place calls `SetNearWindows` yet; footsteps indoors.
+Footsteps take the snow underfoot from `ULyudWinterSubsystem::GetSnowDepthAt` (drifts; a cleared path keeps a thin
+crunching crust while the winter's snow lies) and walk on the sea ice where `IsIceWalkable`. Not yet: no umbrella item calls `SetUmbrella` and no place calls `SetNearWindows` yet; footsteps indoors.
 
 ## Music
 
