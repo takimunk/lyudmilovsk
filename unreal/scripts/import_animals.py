@@ -142,6 +142,64 @@ return col;
 """
 
 
+# a painted eye looks about (AAnimalActor, a breed with painted_eyes: Maru): inside each eye (PreSkinnedPosition within
+# EyeX_At.w of EyeX_At, mesh cm) the texture is read shifted so the paint under it moves by EyeX_Shift (world cm). The
+# texture-space step for a world-space one comes from the screen derivatives of both (no per-breed UV maps needed);
+# the shift fades out before the lids (the dark rim stays put)
+EYE_SHIFT_HLSL = """
+float2 o = UV;
+float3 dPx = ddx(WP), dPy = ddy(WP);
+float2 dUx = ddx(UV), dUy = ddy(UV);
+float a11 = dot(dPx, dPx), a12 = dot(dPx, dPy), a22 = dot(dPy, dPy);
+float det = a11 * a22 - a12 * a12;
+if (det > 1e-14)
+{
+    {
+        float d = length(P - AL.xyz) / max(AL.w, 1e-3);
+        float m = 1.0 - smoothstep(0.5, 0.85, d);
+        float b1 = dot(SL.xyz, dPx), b2 = dot(SL.xyz, dPy);
+        o -= m * ((a22 * b1 - a12 * b2) / det * dUx + (a11 * b2 - a12 * b1) / det * dUy);
+    }
+    {
+        float d = length(P - AR.xyz) / max(AR.w, 1e-3);
+        float m = 1.0 - smoothstep(0.5, 0.85, d);
+        float b1 = dot(SR.xyz, dPx), b2 = dot(SR.xyz, dPy);
+        o -= m * ((a22 * b1 - a12 * b2) / det * dUx + (a11 * b2 - a12 * b1) / det * dUy);
+    }
+}
+return o;
+"""
+
+
+def eye_shift(m, x, y):
+    """The custom node above with its inputs; its output goes to the body's texture samples' UVs."""
+    cu = node(m, unreal.MaterialExpressionCustom, x, y)
+    cu.set_editor_property("code", EYE_SHIFT_HLSL)
+    cu.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT2)
+    cu.set_editor_property("description", "EyeShift")
+    pre = node(m, unreal.MaterialExpressionPreSkinnedPosition, x - 600, y + 100)
+    vi = node(m, unreal.MaterialExpressionVertexInterpolator, x - 400, y + 100)    # the pixel shader can't read it
+    mel.connect_material_expressions(pre, "", vi, "")
+    far = unreal.LinearColor(-1.0e5, 0.0, 0.0, 0.0)
+    srcs = [("UV", node(m, unreal.MaterialExpressionTextureCoordinate, x - 400, y), ""), ("P", vi, ""),
+            ("WP", node(m, unreal.MaterialExpressionWorldPosition, x - 400, y + 200), "")]
+    for i, nm in enumerate(("EyeL_At", "EyeR_At", "EyeL_Shift", "EyeR_Shift")):
+        v = node(m, unreal.MaterialExpressionVectorParameter, x - 400, y + 300 + 100 * i)
+        v.set_editor_property("parameter_name", nm)
+        v.set_editor_property("default_value", far if nm.endswith("At") else unreal.LinearColor(0, 0, 0, 0))
+        srcs.append((("AL", "AR", "SL", "SR")[i], v, "RGBA"))
+    ins = []
+    for pin, _, _ in srcs:
+        ci = unreal.CustomInput()
+        ci.set_editor_property("input_name", pin)
+        ins.append(ci)
+    cu.set_editor_property("inputs", ins)
+    for pin, src, out in srcs:
+        if not mel.connect_material_expressions(src, out, cu, pin):
+            log("eye shift: could not connect " + pin)
+    return cu
+
+
 def make_masters():
     default_textures()
     # the body under the fur: opaque, matte, a little darker than the coat (seen between the hairs)
@@ -156,6 +214,9 @@ def make_masters():
     mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
     nrm = tex_param(m, "Normal", -700, 450, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
     mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
+    shift = eye_shift(m, -1100, 0)
+    mel.connect_material_expressions(shift, "", alb, "UVs")
+    mel.connect_material_expressions(shift, "", nrm, "UVs")
     mel.connect_material_property(const(m, 0.9, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(m, 0.25, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
     # subsurface, as the people's skin: Virtual Shadow Maps give it a wide penumbra, else the generated heads' coarse
@@ -451,6 +512,8 @@ def do_bodies():
         r = json.load(open(p))
         out[breed] = {"kind": r["kind"], "coats": r["coats"], "eyes": r["eyes"], "speeds_cms": r["speeds_cms"],
                       "height_cm": r["height_cm"], "length_cm": r["length_cm"], "clips": sorted(r["clips"])}
+        if r.get("eyes_at"):
+            out[breed]["painted_eyes"] = r["eyes_at"]          # [x, y, z, r, nx, ny, nz] cm, her frame: eyes that look about
         ey = os.path.join(ROOT, "blender", "animals", "gen", breed, "eyes.json")     # runtime eyeballs, set by hand
         if os.path.exists(ey):
             out[breed]["eyeballs"] = {k: v for k, v in json.load(open(ey)).items() if not k.startswith("_")}

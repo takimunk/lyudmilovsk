@@ -707,7 +707,7 @@ def add_shells_from(ob, src, n, L, C, W, Wsrc):
     # and the shells over the eyes: the coarse copy's big triangles would spread the fur across them
     for c, r, _n in B.get("eyes_at") or []:
         cv = mathutils.Vector(c)
-        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * 1.9 * min(B.get("eye_bare", 1.0), 1.2)], context="FACES_ONLY")
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * (1.6 if B.get("eye_bare") else 1.9)], context="FACES_ONLY")
     bm.verts.ensure_lookup_table()
     loose = [v for v in bm.verts if not v.link_faces]
     keep_idx = [v.index for v in bm.verts if v.link_faces]
@@ -959,7 +959,14 @@ def main():
     strand_scale = B.get("strand_scale", 9.0 if CAT else 7.0)
     mat_fur = fur_material(coat_imgs[0], strands, strand_scale)
     proxy = None
-    if GEN:
+    if GEN and B.get("face_tris"):
+        # a face-dense proxy: LOD2's big triangles grew the shells over the head in flat, angular plates
+        proxy = copy_object(lods[0], "ShellProxy")
+        decimate_face(proxy, 9000, 4000)
+        Pv, Nv = verts_np(proxy), normals_np(proxy)
+        proxy_W = weights_for(Pv, piece)
+        proxy_A = attributes(Pv, Nv, proxy_W)
+    elif GEN:
         proxy = copy_object(lods[2], "ShellProxy")
         proxy_W, proxy_A = WL[2], AL[2]
     for li, o in enumerate(lods):
@@ -1069,6 +1076,8 @@ def export(arm, lods, acts, lib, eye_mat):
     rig = {"breed": BREED, "kind": B["kind"], "withers_cm": float(J["chest"][2] * 100 + B["trunk"][7][1] * 0),
            "height_cm": float(max(q[1] for q in B["trunk"]) * 100), "length_cm": float((J["head_end"][0] - J["tail"][0][0]) * 100),
            "eye_l": [float(eye[0] * 100), float(-eye[1] * 100), float(eye[2] * 100)],
+           "eyes_at": [[c[0] * 100, -c[1] * 100, c[2] * 100, r * 100, n[0], -n[1], n[2]] for c, r, n in B.get("eyes_at") or []]
+           if B.get("painted_eyes") else [],
            "coats": CO.COATS[BREED], "eyes": len(CO.EYES[BREED]), "strand_scale": B.get("strand_scale", 9.0 if CAT else 7.0),
            "clips": {n: {"seconds": lib.clips[n][0], "loop": lib.clips[n][1]} for n in acts},
            "speeds_cms": {k: round(float(v) * 100, 1) for k, v in lib.speeds.items()},

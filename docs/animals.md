@@ -188,5 +188,11 @@ are kept: no eyeball is set over them (anatomy.py `painted_eyes`), the face keep
 pits), the face fur is short and the lids bare further out (`eye_bare`), the strands finer (`strand_scale`).
 M_AnimalBody is subsurface with a near-neutral scatter (soft Virtual Shadow Map penumbra on the coarse generated heads;
 a skin-red scatter turned her white lids pink). Check: `ANIMTEST_PART=eyes unreal/scripts/test_animals.sh`.
+Her painted eyes look about: build_animal exports `eyes_at` (middle, radius, normal per eye) -> animal_bodies.json
+`painted_eyes`; AAnimalActor gives the body a dynamic M_AnimalBody whose EyeShift node reads the texture shifted inside
+each eye (mask in PreSkinnedPosition, the texture step for a world-space shift from screen derivatives), toward what
+she looks at, up to a quarter of the eye's radius, with small saccades. The fur shells grow from a face-dense proxy
+(decimate_face 9000/4000; LOD2 as proxy grew them in flat angular plates over the head). Lids bare `eye_bare` 1.8,
+shells cut 1.6 r round each eye.
 Runtime eyeballs (AAnimalActor::UpdateEyes, `blender/animals/gen/<Breed>/eyes.json` -> animal_bodies.json "eyeballs")
 remain for a breed without good painted eyes; Maru no longer has one.
