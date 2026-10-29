@@ -169,6 +169,7 @@ struct LW
 LW w;
 Mask = 0.0;
 Roughness = 0.2;
+Normal = float3(0, 0, 1);
 if (I.z <= 0.0 || I.w < 1.0) return float3(0, 0, 0);
 float2 xy = P.xy;
 float2 uv = (xy - R.xy) * R.zw;
@@ -202,7 +203,17 @@ float snow = saturate((level * (0.4 + 1.2 * drift) - 1.0) / 4.0) * saturate(into
 float3 col = lerp(bare, lerp(float3(0.70, 0.71, 0.70), float3(0.86, 0.89, 0.93), S.y), snow);
 // the pancakes' raised white rims
 col = lerp(col, float3(0.78, 0.81, 0.84), rim * (1.0 - solid) * 0.8);
-Roughness = lerp(lerp(0.08, 0.25, cr), 0.7, snow);
+// pressure ridges: rubble walls where floes were pushed together, a few hundred metres apart, white and lumpy
+float rv = w.Value(m, 260.0, seed + 61u) + 0.35 * w.Value(m, 70.0, seed + 62u);
+float ridge = (1.0 - smoothstep(0.0, 0.018, abs(rv - 0.68))) * saturate(into / 40.0);
+col = lerp(col, float3(0.82, 0.85, 0.9), ridge * 0.9);
+// relief: wind-carved snow (sastrugi, long along the wind), the ridges' blocks, bare ice's ripples
+float e = 0.35;
+float2 q = float2(m.x * 0.45, m.y);
+float h0 = w.Fbm(q, 2.2, seed + 71u), hx = w.Fbm(q + float2(e * 0.45, 0), 2.2, seed + 71u), hy = w.Fbm(q + float2(0, e), 2.2, seed + 71u);
+float k = 0.45 * snow + 0.2 * (1.0 - snow) + 2.0 * ridge;
+Normal = normalize(float3(-(hx - h0) / e * k, -(hy - h0) / e * k, 1.0));
+Roughness = lerp(lerp(0.08, 0.25, cr), 0.7, max(snow, ridge));
 return col;
 """
 

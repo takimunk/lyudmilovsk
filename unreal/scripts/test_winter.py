@@ -128,6 +128,15 @@ def _tick(dt):
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
     pawn = pc.get_controlled_pawn()
     win = unreal.LyudWinterSubsystem.get_winter(w)
+    if os.environ.get("WINTER_DATE") and not st.get("dated"):
+        # a real day of the weather's winter: the calendar moved there, nothing forced (test_winter.sh WINTER_REAL=1)
+        y, mo, d, h = [int(v) for v in os.environ["WINTER_DATE"].split("-")]
+        for cal in unreal.ObjectIterator(unreal.GameCalendar):
+            if cal.get_world() == w:
+                cal.set_now(unreal.DateTime(y, mo, d, h, 0, 0, 0))
+                st["dated"] = True
+                log("calendar set to %s" % os.environ["WINTER_DATE"])
+        return
     if st["phase"] == -1:
         # wait for the snow to be read in (the traces run a few hundred rows a frame)
         if pawn and hasattr(pawn, "character_movement"):
@@ -138,7 +147,8 @@ def _tick(dt):
             log("ready after %.1f s" % st["t"])
             # residents out with their pushers, near the camera's first spots
             aim(w, pawn, pc, ue(ac(40.0, -12.0, 1.7)), ue(ac(0.0, 0.0, 4.0)))
-            cmd(w, "lyud.Winter.SnowOnPaths 12")
+            if not os.environ.get("WINTER_DATE"):
+                cmd(w, "lyud.Winter.SnowOnPaths 12")
         elif st["t"] > 240.0:
             log("FAIL not ready after 240 s: " + (win.debug_report() if win else "no winter subsystem"))
             cmd(w, "quit")
