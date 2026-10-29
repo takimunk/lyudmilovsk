@@ -15,6 +15,8 @@ struct UTreeBakeCache::FJob
 	FPlantSpecies Species;
 	PlantMeshes::FTreePrep Prep;
 	bool bRebake = false;
+	/** The date jumped far from this bake's: the old one shows the wrong season, so it is redone first and without the usual pauses. */
+	bool bUrgent = false;
 };
 
 const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances)
@@ -32,9 +34,18 @@ const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age,
 		Job->Day = Day;
 		Job->Species = *S;
 		Job->bRebake = bStale;
+		Job->bUrgent = bStale && FMath::Abs(Day - Have->Day) > UrgentDays;
 		Queued.Add(Key);
 		if (!LodsOf.Contains(Key)) LodsOf.Add(Key, LodDistances);
-		Wanted.Add(Job);
+		if (Job->bUrgent)
+		{
+			UrgentJobs++;
+			Wanted.Insert(Job, 0);
+		}
+		else
+		{
+			Wanted.Add(Job);
+		}
 	}
 	return Have;
 }
@@ -147,6 +158,7 @@ void UTreeBakeCache::Finish(FJob& Job)
 	Out.Version++;
 	for (int32 I = 0; I < 4; I++) Out.Triangles[I] = Bake.Triangles[I];
 	Queued.Remove(Job.Key);
+	if (Job.bUrgent) UrgentJobs--;
 
 	const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
 	FinishMs += Ms;
@@ -154,8 +166,8 @@ void UTreeBakeCache::Finish(FJob& Job)
 	WorstFinishMs = FMath::Max(WorstFinishMs, Ms);
 	Done++;
 	for (int32 I = 0; I < 4; I++) TotalTris[I] += Bake.Triangles[I];
-	// the next one waits eight times as long as this took
-	NextFinishTime = FPlatformTime::Seconds() + Ms * 8.0 * 0.001;
+	// the next one waits eight times as long as this took; after a jump of the calendar, no wait at all
+	NextFinishTime = UrgentJobs > 0 ? 0.0 : FPlatformTime::Seconds() + Ms * 8.0 * 0.001;
 }
 
 void UTreeBakeCache::Deinitialize()
@@ -169,7 +181,8 @@ void UTreeBakeCache::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	Running = RunningAtomic.Load();
-	while (Running < MaxWorkers && !Wanted.IsEmpty())
+	const int32 Workers = UrgentJobs > 0 ? MaxWorkers * 2 : MaxWorkers;
+	while (Running < Workers && !Wanted.IsEmpty())
 	{
 		TSharedPtr<FJob> Job = Wanted[0];
 		Wanted.RemoveAt(0);
