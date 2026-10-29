@@ -30,7 +30,7 @@ Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..
 | Cable car | upper station -15, 133 on the spur's brow, lower station -255, 520 in the valley | two stations, a tower on the brow, two ropes, red cabins | working cabins |
 | Beach under the club | X 110..135 | sand at the cliff's foot; dune pines and juniper on the spur by the cliff, sea buckthorn at its foot; meadow grass on the spur, dune grass on the beach | boats |
 | Starlings | 430, 250 | the murmuration over the sea, left of the door | |
-| Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge by the lower station | |
+| Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge on the wet floor below the lower station (past the Academgorodok's levelled lots) | |
 | Lyudmilovsk (town) | centre -330, 900, ~1.1 km across, in the valley | only the Academgorodok (north of the lower station); the placeholder houses are gone (2026-10-25), the ground stays level, trees grow sparse over it | whatever Dima decides |
 | Promenade | along the valley's beach, Y 450..1250 | a concrete strip | kiosks, railings, a pier |
 | North hills | beyond the town, from Y 1450 up to +12 m | old forest | |

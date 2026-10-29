@@ -564,7 +564,7 @@ def grass_patches():
     """(x, y, half_x, half_y, species, seed, density, min_z, max_z) in metres, one habitat per patch
     (the terrain's masks decide where each species actually grows): meadow on the spur and the
     hillside over the door with a dense low Turf patch under each, dune grass on the beach under the
-    cliff, reed and sedge on the wet valley floor by the cable car's lower station. 60 x 60 m
+    cliff, reed and sedge on the wet valley floor below the cable car's lower station. 60 x 60 m
     patches (~20 000 tufts each), drawn only within 90 m of the camera."""
     out = []
     seed = 500
@@ -582,9 +582,10 @@ def grass_patches():
         out.append((x, y, BEACH_W * 0.5, 30.0, "MarramGrass" if y % 120 else "SeaLymeGrass", seed, 0.8,
                     SEA_Z + 0.4, SEA_Z + 8.0))
         seed += 1
-    for dx, dy in ((-60, 0), (0, 60), (60, -30)):     # the wet valley floor by the lower station
-        out.append((STATION_DOWN[0] + dx, STATION_DOWN[1] + dy, 30.0, 30.0,
-                    "CommonReed" if dx < 0 else "SandSedge", seed, 1.0, -100.0, LOW_Z + 2.0))
+    # the wet valley floor between the spur and the lower station: the Academgorodok's lots round the station are levelled
+    # (no water gathers there), its runnels and hollows start past their edge (terrain wetness ~0.3)
+    for x, y, sp in ((-240, 195, "CommonReed"), (-180, 230, "SandSedge"), (-120, 215, "SandSedge")):
+        out.append((x, y, 30.0, 30.0, sp, seed, 1.0, -100.0, LOW_Z + 2.0))
         seed += 1
     # the reedbed behind the beach where the valley opens to the sea: its runnels are the wettest ground on the map
     # (the reed grows in clumps along them); the starlings' and swallows' roost (docs/bird_life.md)
