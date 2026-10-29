@@ -31,6 +31,7 @@ NOON, DAY = D(2026, 10, 20, 12, 30), D(2026, 10, 21, 13, 0)
 SHOTS = [
     ("sun_noon", NOON, None, BROW[0], BROW[1], 1.7, 0, "sun-wide"),
     ("sun_noon_close", NOON, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30"),
+    ("sun_noon_fullscreen_noclouds", NOON, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 11;r.VolumetricCloud 0"),
     ("sun_afternoon", D(2026, 10, 20, 15, 30), None, BROW[0], BROW[1], 1.7, 0, "sun-wide"),
     ("sun_sunset", D(2026, 10, 20, 17, 2), None, BROW[0], BROW[1], 1.7, 0, "sun-wide"),
     ("sun_sunset_close", D(2026, 10, 20, 17, 2), None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30"),
@@ -89,6 +90,16 @@ if os.environ.get("COSMIC_DIAG"):
         SHOTS = [s for s in SHOTS if s[0].startswith("diag2_")]
     if os.environ["COSMIC_DIAG"] == "only":
         SHOTS = [s for s in SHOTS if s[0].startswith("diag_")]
+# COSMIC_TUNE=1: sweeps for the polish pass (cloud density over the setting sun, the sun's specular and the capillary
+# ripples on the glitter path, the night haze round Europa); COSMIC_TUNE=only runs just these
+if os.environ.get("COSMIC_TUNE"):
+    SS = D(2026, 10, 20, 17, 2)
+    for cap in ("0.08", "0.2"):
+        SHOTS.append(("tune_sunpath_cap" + cap, SS, None, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Sea.Capillary " + cap))
+        SHOTS.append(("tune_sunpath_close_cap" + cap, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;lyud.Sea.Capillary " + cap))
+    SHOTS.append(("tune_noon_sea_cap0.2", NOON, None, BROW[0], BROW[1], 1.7, -10, 20, "lyud.Sea.Capillary 0.2"))
+    if os.environ["COSMIC_TUNE"] == "only":
+        SHOTS = [s for s in SHOTS if s[0].startswith("tune_")]
 if os.environ.get("COSMIC_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["COSMIC_SHOTS"].split(",")]
 WAIT = float(os.environ.get("COSMIC_WAIT", "7"))
@@ -159,8 +170,9 @@ def step(dt):
             st["phase"] = 9
             return
         name, when, tide, x, y, up, pitch, yaw = SHOTS[st["i"]][:8]
-        for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "fov 0", "r.BloomQuality 5",
-                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg")] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
+        for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
+                  "lyud.Sky.CloudDensity 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
+                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg")] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))
             elif c.startswith("sunvis "):

@@ -38,6 +38,8 @@ namespace
 		TEXT("Sea detail: 0 phone (64 x ~100 mesh, 20 + 16 wave trains), 1 medium, 2 desktop (128 x ~200, 64 + 48); -1 by platform."));
 	TAutoConsoleVariable<int32> CVarSeaReplacePlane(TEXT("lyud.Sea.ReplacePlane"), 1, TEXT("1: in play, swap an old flat sea plane (M_BalticSea) for an ALyudSea."));
 	TAutoConsoleVariable<float> CVarSeaDebugFoam(TEXT("lyud.Sea.DebugFoam"), 0.f, TEXT("Make the foam glow by this much, to see where it is."));
+	TAutoConsoleVariable<float> CVarSeaCapillary(TEXT("lyud.Sea.Capillary"), -1.f,
+		TEXT("The capillary ripples' slope per train (tuning: the sun's glitter; < 0 = the material's own)."));
 	TAutoConsoleVariable<int32> CVarSeaDebug(TEXT("lyud.Sea.Debug"), 0, TEXT("1: print the sea state on screen."));
 	TAutoConsoleVariable<float> CVarTideOverride(TEXT("lyud.TideOverride"), -999.f,
 		TEXT("Pin the tide: water level in metres over the datum (0 = spring high water, -4.5 = spring low); -999 or NaN = follow the sky."));
@@ -870,6 +872,10 @@ void ALyudSea::Tick(float DeltaSeconds)
 	if (SeaMID)
 	{
 		SeaMID->SetScalarParameterValue(TEXT("DebugFoam"), CVarSeaDebugFoam.GetValueOnGameThread());
+		if (CVarSeaCapillary.GetValueOnGameThread() >= 0.f)
+		{
+			SeaMID->SetVectorParameterValue(TEXT("Glitter"), FLinearColor(CVarSeaCapillary.GetValueOnGameThread(), 0.03f, 0.f, 0.f));
+		}
 		SeaMID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor((float)WaveClock(), (float)Segments, MinStepCm * 0.01f, OpenSeaDepthM));
 		SeaMID->SetScalarParameterValue(TEXT("Tide"), TideCm * 0.01f);
 	}

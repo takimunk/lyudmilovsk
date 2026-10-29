@@ -141,14 +141,16 @@ def sky_material():
     sun_disk = vparam("SunDisk", (0.0873, 3.6, 0.0, 0.0))
     moon_disk = vparam("MoonDisk", (0.061, 0.14, 0.012, 0.0))
     glow = vparam("NightGlow", (0.0, 0.0, 0.0, 0.0))
+    spots = vparam("SunSpots", (0.0, 0.08, 1.0, 0.8))
+    moon_look = vparam("MoonLook", (1.6, 0.004, 0.0, 0.0))
     t = g.node(X.MaterialExpressionTime)
     europa = g.node(X.MaterialExpressionTextureObjectParameter, -900, parameter_name="Europa", texture=europa_texture())
     rgba = lambda n: (n, "RGBA")
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     sun = g.custom(SH.LIB + SH.SUN_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
-                                         ("T", t), ("Tr", tr)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+                                         ("Spots", rgba(spots)), ("T", t), ("Tr", tr)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     moon = g.custom(SH.MOON_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)), ("P", rgba(pole)),
-                                   ("D", rgba(moon_disk)), ("Tr", tr), ("Europa", europa)],
+                                   ("D", rgba(moon_disk)), ("C", rgba(moon_look)), ("Tr", tr), ("Europa", europa)],
                     out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))
@@ -162,6 +164,11 @@ def sky_material():
     # the airglow: brighter toward the horizon, where the line of sight runs through more of the glowing layer
     ag = g.custom("float z = saturate(normalize(V).z); return G.rgb * (0.55 + 0.9 * exp(-z * 5.0)) * step(-0.2, normalize(V).z);",
                   [("V", view), ("G", rgba(glow))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    # over the two disks most of the sky's own glow is taken off: the haze in front of a far brighter real sun would
+    # not show, and added to the capped disk it pales the deep red-orange to pink
+    over = g.custom(SH.DISK_MASK_HLSL, [("V", view), ("S", rgba(sun_dir)), ("D", rgba(sun_disk)), ("M", rgba(moon_dir)),
+                                        ("MD", rgba(moon_disk))])
+    sky = g.op(X.MaterialExpressionMultiply, sky, over)
     em = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, sky, sun),
               g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, moon, st), ag))
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)

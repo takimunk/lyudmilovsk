@@ -78,16 +78,31 @@ public:
 	/** Europa's apparent size, degrees across. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonAngularDiameterDeg = 7.f;
 	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.2f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.14f;
+	/** The sunspots' umbra brightness (of the disk's), the granulation's contrast (1 = as drawn) and the faculae's strength. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.08f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunGranulation = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunFaculae = 0.9f;
 	/** Europa's luminance (full sunlit ice) per lux of SunIlluminance at night, and how much brighter it is drawn by day so it shows against the blue. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDiskGain = 0.012f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDayBoost = 4.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDayBoost = 12.f;
+	/** Europa's map midtones stretched by this (the lineae and chaos terrain read), and its own faint halo by night. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonContrast = 1.7f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonNightHalo = 0.003f;
 	/** Days the star takes to turn once (its spots drift across the disk with it); new spots each in-game day. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunRotationDays = 6.f;
 	/** The sunlight's specular strength: the drawn disk is far dimmer than a physical sun of SunIlluminance, so its reflections (the sea's glitter path) are toned down to match. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.06f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.012f;
 	/** Bloom outdoors (the club's level sets its own): low, so the big bright disk is not smeared into a blob. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float OutdoorBloom = 0.2f;
+	/** Bloom outdoors at full night, and the atmosphere's haze (Mie) then as a share of the day's: the haze lit by a 7-degree
+	 * moon at a night exposure would wrap Europa in a big glow. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightBloom = 0.05f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
+	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
+	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun instead of veiling it). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 3.f;
 
 	/** Unlit is-sky material on the dome: atmosphere luminance, sun and moon disks, stars (unreal/scripts/import_sky.py). Without one the atmosphere draws the sky itself. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") TObjectPtr<UMaterialInterface> SkyMaterial;
@@ -138,6 +153,11 @@ private:
 	/** The dome's material instance: sun, moon, pole directions, disk sizes and brightness each update. */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SkyMID;
 	void UpdateSkyMaterial();
+	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
+	float CloudBaseDensity = -1.f;
+	void MakeInstances();
+	void UpdateClouds();
 
 	FSkyPosition SunPos;
 	FSkyPosition MoonPos;
