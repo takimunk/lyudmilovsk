@@ -273,7 +273,7 @@ FLASH_HLSL = r"""
 float3 v = normalize(V);
 if (F.w <= 0.0) return 0.0;
 float a = acos(clamp(dot(v, normalize(F.xyz)), -1.0, 1.0));
-return float3(0.78, 0.84, 1.0) * F.w * (0.06 + exp(-a * a / 0.12) + 0.3 * exp(-a * a / 0.8)) * smoothstep(-0.05, 0.02, v.z);
+return float3(0.78, 0.84, 1.0) * F.w * (0.03 + exp(-a * a / 0.04) + 0.15 * exp(-a * a / 0.5)) * smoothstep(-0.05, 0.02, v.z);
 """
 
 # A flare on the red dwarf: two white-hot ribbons and a kernel on its face, spreading apart as it fades. The same disk
@@ -300,14 +300,14 @@ float3 t1 = normalize(cross(float3(0, 1, 0), fc)), t2 = cross(fc, t1);
 float3 dq = q - fc;
 float2 x = float2(dot(dq, t1), dot(dq, t2));
 float fade = saturate(F.z / max(F.w, 1e-3));
-float sep = 0.006 + 0.02 * (1.0 - fade);
-float len = 0.025 + 0.03 * F.w;
+float sep = 0.015 + 0.04 * (1.0 - fade);
+float len = 0.07 + 0.06 * F.w;
 float along = exp(-x.x * x.x / (len * len));
-float bend = 0.004 * sin(x.x / len * 2.5);
-float rib = exp(-pow((x.y - sep - bend) / 0.0025, 2.0)) + exp(-pow((x.y + sep + bend * 0.7) / 0.0025, 2.0));
-float kern = exp(-dot(x, x) / (0.006 * 0.006)) * fade * fade;
-float glow = exp(-dot(x, x) / (0.04 * 0.04)) * 0.15;
-float face = smoothstep(0.0, 0.15, dot(fc, float3(-sin(sp), 0, cos(sp))));
+float bend = 0.01 * sin(x.x / len * 2.5);
+float rib = exp(-pow((x.y - sep - bend) / 0.006, 2.0)) + exp(-pow((x.y + sep + bend * 0.7) / 0.006, 2.0));
+float kern = exp(-dot(x, x) / (0.014 * 0.014)) * fade * fade;
+float glow = exp(-dot(x, x) / (0.08 * 0.08)) * 0.2;
+float face = smoothstep(0.0, 0.15, dot(fc, float3(sin(sp), 0, cos(sp))));
 float onDisk = saturate((1.0 - r) / max(fwidth(r), 1e-4));
 float3 hot = float3(1.0, 0.92, 0.95);
 return hot * (rib * along * 3.0 + kern * 5.0 + glow) * F.z * face * onDisk * D.y * Tr;
