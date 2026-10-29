@@ -1,0 +1,14 @@
+{
+ "_doc": "Rustam Valiev (Рустам Валиев), engineer, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "valiev_rustam",
+ "model": "model",
+ "height": 1.75,
+ "donor": "blender/humans/export/human_guy_a.glb",
+ "faces": 15000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "face": {
+  "normal_strength": 0.4
+ }
+}

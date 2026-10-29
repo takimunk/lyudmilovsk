@@ -112,6 +112,14 @@ def protect_group(m, zones):
                 img.pixels.foreach_get(px)
                 col = vertex_colours(m, img, px.reshape(H, W, 4))
             sel &= (col[:, 0] < 0.5) & (col[:, 0] - col[:, 2] > 0.08)
+        if z.get("dark"):                                  # black frames
+            if col is None:
+                img = base_image(m)
+                W, H = img.size
+                px = np.empty(W * H * 4, np.float32)
+                img.pixels.foreach_get(px)
+                col = vertex_colours(m, img, px.reshape(H, W, 4))
+            sel &= col.mean(1) < (z["dark"] if z["dark"] is not True else 0.2)
         w[sel] = np.minimum(w[sel], z.get("weight", 0.8))
         log("protect: %d vertices at weight %.2f" % (sel.sum(), z.get("weight", 0.8)))
     g = m.vertex_groups.new(name="protect")
@@ -161,7 +169,11 @@ def optimize(m, spec):
         high.data = m.data.copy()
         bpy.context.scene.collection.objects.link(high)
         high.data.materials[0] = m.data.materials[0].copy()      # the bake target lives only in the low one's material
-    decimate(m, spec.get("faces", 24000), spec.get("protect"))
+    zones = list(spec.get("protect", []))
+    if spec.get("face_protect", True):            # the face's front keeps more of the budget (lips and lids in shards)
+        h = world_co(m)[:, 2].max()
+        zones.append({"box": [-0.085 * h / 1.7, 0.085 * h / 1.7, -1, -0.03, 0.83 * h, 0.95 * h], "weight": 0.9})
+    decimate(m, spec.get("faces", 24000), zones)
     if "protect" in m.vertex_groups:
         m.vertex_groups.remove(m.vertex_groups["protect"])
     for p in m.data.polygons:
@@ -350,6 +362,63 @@ def leg_centre(co, z, sign, h):
     return np.array([(s[:, 0].max() + s[:, 0].min()) / 2, (s[:, 1].max() + s[:, 1].min()) / 2])
 
 
+def unbend_arms(model, spec):
+    """Some generated models stand in an A-pose (Dasha Kimura: arms ~30 deg down) and the rig wants a T. On a 400k copy:
+    the donor in the model's own A (its arms turned down by the model's angle, scaled, centred) lends its weights, its
+    arms are raised to the horizontal and the model follows (an armature applied as a shape), so the shoulder bends as a
+    body does instead of a rigid swing. The donor goes away again; everything after sees a T-posed model."""
+    clean(model)
+    decimate(model, 400000)
+    h = world_co(model)[:, 2].max()
+    arm, body = load_donor(os.path.join(ROOT, spec["donor"]))
+    t_pose(arm, body)
+    s = h * spec.get("donor_height_share", 0.985) / world_co(body)[:, 2].max()
+    warp_donor(arm, body, lambda p: p * s)
+    centre_body(arm, body, world_co(model))
+    co = world_co(model)
+    pts = bone_points(arm)
+    pb = arm.pose.bones
+    angles = {}
+    for side, sign in (("l", 1), ("r", -1)):
+        sh = pts["upperarm_" + side][0]
+        tip = co[np.argmax(sign * co[:, 0])]
+        angles[side] = math.atan2(sh.z - tip[2], sign * (tip[0] - sh.x))
+        log("A-pose: arm %s %.1f deg below the horizontal" % (side, math.degrees(angles[side])))
+
+    def swing(down):
+        for side, sign in (("l", 1), ("r", -1)):
+            bpy.context.view_layer.update()
+            b = pb["upperarm_" + side]
+            mw = b.matrix.copy()
+            head = mw.translation.copy()
+            a = sign * angles[side] * (1 if down else -1)
+            b.matrix = Matrix.Translation(head) @ Matrix.Rotation(a, 4, "Y") @ Matrix.Translation(-head) @ mw
+    swing(True)
+    apply_pose_as_rest(arm, body)
+    for g in body.vertex_groups:
+        if g.name not in model.vertex_groups:
+            model.vertex_groups.new(name=g.name)
+    mod = model.modifiers.new("weights", "DATA_TRANSFER")
+    mod.object = body
+    mod.use_vert_data = True
+    mod.data_types_verts = {"VGROUP_WEIGHTS"}
+    mod.vert_mapping = "POLYINTERP_NEAREST"
+    mod.layers_vgroup_select_src = "ALL"
+    mod.layers_vgroup_select_dst = "NAME"
+    bpy.context.view_layer.objects.active = model
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    md = model.modifiers.new("unbend", "ARMATURE")
+    md.object = arm
+    swing(False)
+    bpy.context.view_layer.update()
+    bpy.context.view_layer.objects.active = model
+    bpy.ops.object.modifier_apply(modifier=md.name)
+    model.vertex_groups.clear()
+    for o in (body, arm):
+        bpy.data.objects.remove(o)
+    log("A-pose: arms raised to the T")
+
+
 def centre_body(arm, body, mco):
     """The generated model is centred on its bounding box (hair, a bag, the arms' T), the donor on its own feet: shift
     the donor so its hips' cross-section has the same middle as the model's (front/back and sideways)."""
@@ -444,22 +513,36 @@ def vertex_colours(m, img, px):
 
 
 def find_cuff(m, sign, px, img, step=0.005):
-    """Where the sleeve ends: walking in from the fingertips, the first slice where under half the vertices are
-    skin-coloured (warm: red over blue; the jacket's grey and the jumper's green cuff are not, the painted finger gaps
-    are only darker)."""
+    """Where the sleeve ends, walking in from the fingertips: the first slice where under half the vertices are
+    skin-coloured (warm: red over blue; a grey jacket or a green cuff is not, the painted finger gaps are only darker),
+    if that lies 12-28 cm from the tips; otherwise (a beige cardigan is as warm as skin) where the arm's thickness jumps
+    most from one slice to the next (the sleeve's open edge stands off the wrist)."""
     co = world_co(m)
     col = vertex_colours(m, img, px)
     a = sign * co[:, 0]
     tip = a.max()
     like = (col[:, 0] - col[:, 2] > 0.07) & (col[:, 0] > 0.3)
     skin = np.median(col[(a > tip - 0.06) & like], 0)
+    lo, hi = tip - 0.28, tip - 0.12
     x = tip - 0.03
-    while x > tip - 0.3:
+    while x > lo:
         s = (a > x - step) & (a <= x)
         if s.sum() > 10 and like[s].mean() < 0.5:
-            return sign * x, skin
+            if x <= hi:
+                return sign * x, skin
+            break
         x -= step
-    raise RuntimeError("no cuff found")
+    xs = np.arange(tip - 0.03, lo - step, -step)
+    th = []
+    for x in xs:
+        s = (a > x - step) & (a <= x)
+        th.append(np.percentile(co[s, 2], 95) - np.percentile(co[s, 2], 5) if s.sum() > 10 else 0.0)
+    th = np.array(th)
+    jump = np.diff(th)                                   # inward: positive where the next slice is thicker
+    ok = (xs[1:] <= hi) & (xs[1:] >= lo)
+    k = int(np.argmax(np.where(ok, jump, -1)))
+    log("cuff by thickness: %.3f -> %.3f m at %.3f" % (th[k], th[k + 1], xs[k + 1]))
+    return sign * xs[k], skin
 
 
 def paint_uv_tris(px, uv_tris, colour, grow=4):
@@ -493,7 +576,8 @@ def replace_hands(model, body, arm, spec):
     its wrist reaching back into the sleeve. Its colour comes from the cut-off hand (UVs by nearest surface onto the
     model's own texture), its weights from the donor like the rest (transfer_weights). The high copy for the normal
     bake loses the mitten too, so the fingers don't take its folds."""
-    skin = next(s.material.name for s in body.material_slots if s.material and s.material.name.endswith(".body"))
+    import re                                    # "<donor>.body", or ".body.001" when a donor was loaded before
+    skin = next(s.material.name for s in body.material_slots if s.material and re.search(r"\.body(\.\d+)?$", s.material.name))
     cutoff, overlap = spec.get("cut", 0.005), spec.get("overlap", 0.04)
     high = PENDING_BAKE[0] if PENDING_BAKE else None
     img = base_image(model)
@@ -755,6 +839,8 @@ def no_shadow(model, zones):
         s = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
         if z.get("dark_warm"):
             s &= (vcol[:, 0] < 0.5) & (vcol[:, 0] - vcol[:, 2] > 0.08)
+        if z.get("dark"):
+            s &= vcol.mean(1) < (z["dark"] if z["dark"] is not True else 0.2)
         sel |= s
     col[:, 3] = np.where(sel, 0.0, 1.0)
     attr.data.foreach_set("color", col.ravel())
@@ -868,6 +954,8 @@ def main():
     spec = json.load(open(os.path.join(HERE, cid, "character.json")))
     bpy.ops.wm.read_factory_settings(use_empty=True)
     model = load_model(os.path.join(HERE, cid, "gen", spec.get("model", "model") + ".glb"), spec["height"])
+    if spec.get("a_pose"):
+        unbend_arms(model, spec)
     optimize(model, spec)
     target = silhouette(world_co(model))
     target["donor_height_share"] = spec.get("donor_height_share", 0.985)

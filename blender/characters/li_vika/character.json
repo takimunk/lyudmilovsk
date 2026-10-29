@@ -1,0 +1,20 @@
+{
+ "_doc": "Vika Li (Вика Ли), lab assistant, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "li_vika",
+ "model": "model",
+ "height": 1.55,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 15000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "skirt": {
+  "hem_z": 0.42,
+  "gap": 0.0,
+  "blend": 0.08,
+  "pelvis": 0.6
+ },
+ "face": {
+  "normal_strength": 0.4
+ }
+}
