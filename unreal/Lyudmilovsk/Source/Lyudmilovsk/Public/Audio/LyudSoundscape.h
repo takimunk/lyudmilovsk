@@ -53,6 +53,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sound") FName GetMusicMood() const { return Mood; }
 	/** The music cue playing (None in a silence). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FName GetMusicCue() const { return CurrentCue; }
+	/** 0 indoors (walls between the listener and the open air) .. 1 outdoors, smoothed: for sources outside to muffle. */
+	UFUNCTION(BlueprintPure, Category = "Sound") float GetOutdoors() const { return Outdoors; }
 	/** Starts a cue for the current mood now (cross-fading any playing one). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayNextCue();
 	/** A one-shot of a pool (audio/sounds.json id) at Where, at the effects volume (the cable car, doors, lifts). */

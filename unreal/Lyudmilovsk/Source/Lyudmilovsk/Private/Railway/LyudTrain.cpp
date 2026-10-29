@@ -12,6 +12,7 @@
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
@@ -21,6 +22,8 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Sky/LyudSky.h"
+#include "Audio/LyudSoundscape.h"
+#include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
 
 namespace
@@ -39,12 +42,15 @@ USoundBase* RailSound(const TCHAR* Name)
 constexpr double JointM = 25.0;       // rail lengths: a joint every 25 m
 constexpr double BogieX = 5.6;        // bogie centres from a car's middle, m
 constexpr double AxleX = 1.05;        // axles from a bogie's centre
+constexpr double LeafX = 0.31;        // a shut door leaf's middle from the doorway's (the two meet edge to edge)
 }
 
 ALyudTrain::ALyudTrain()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickGroup = TG_PostPhysics;
+	// the cars move before physics and before the player's character (it is made to tick after this actor), so the
+	// character's movement base carries someone standing in a car in the same frame
+	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent->SetMobility(EComponentMobility::Movable);
 	Tags.Add(TEXT("NoGrass"));
@@ -99,10 +105,32 @@ void ALyudTrain::Setup(ULyudRailwaySubsystem* InRailway, int32 InIndex)
 	Wake->SetupAttachment(RootComponent);
 	Wake->RegisterComponent();
 	AddInstanceComponent(Wake);
+	// how far each sound carries (no attenuation means heard at full strength everywhere, the club included): the
+	// running gear's loops fade out over ~500 m and lose their top, the joints' ta-tan ~300 m, the horn ~2.5 km
+	auto Atten = [&](float Full, float Falloff)
+	{
+		USoundAttenuation* At = NewObject<USoundAttenuation>(this);
+		FSoundAttenuationSettings& A = At->Attenuation;
+		A.bAttenuate = true;
+		A.bSpatialize = true;
+		A.AttenuationShape = EAttenuationShape::Sphere;
+		A.AttenuationShapeExtents = FVector(Full, 0.f, 0.f);
+		A.FalloffDistance = Falloff;
+		A.DistanceAlgorithm = EAttenuationDistanceModel::NaturalSound;
+		A.bAttenuateWithLPF = true;
+		A.LPFRadiusMin = Full * 2.f;
+		A.LPFRadiusMax = Falloff;
+		return At;
+	};
+	RunAtten = Atten(1500.f, 50000.f);
+	JointAtten = Atten(800.f, 30000.f);
+	HornAtten = Atten(3000.f, 250000.f);
 	auto Loop = [&](const TCHAR* Sound, const TCHAR* Name)
 	{
 		UAudioComponent* A = NewObject<UAudioComponent>(this, Name);
 		A->SetSound(RailSound(Sound));
+		A->bOverrideAttenuation = false;
+		A->AttenuationSettings = RunAtten;
 		A->bAutoActivate = false;
 		A->SetupAttachment(CarRoots.Num() ? CarRoots[0].Get() : RootComponent.Get());
 		A->RegisterComponent();
@@ -142,6 +170,7 @@ void ALyudTrain::BuildCar(int32 C)
 		UStaticMeshComponent* S = NewObject<UStaticMeshComponent>(this);
 		S->SetMobility(EComponentMobility::Movable);
 		S->SetStaticMesh(M);
+		LyudRailMat::Dress(this, S, Mats);
 		S->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		S->SetCastShadow(bShadow);
 		S->LightingChannels.bChannel0 = true;
@@ -265,7 +294,7 @@ void ALyudTrain::BuildCar(int32 C)
 			D.Side = Side;
 			for (int32 E = -1; E <= 1; E += 2)
 			{
-				UStaticMeshComponent* Leaf = Piece(TEXT("SM_RL_DoorLeaf"), FVector((D.X + E * 0.30) * 100.0, Side * Hw * 100.0, 115.0),
+				UStaticMeshComponent* Leaf = Piece(TEXT("SM_RL_DoorLeaf"), FVector((D.X + E * LeafX) * 100.0, Side * Hw * 100.0, 115.0),
 					FRotator(0.0, Side > 0 ? 180.0 : 0.0, 0.0), false);
 				(E < 0 ? D.LeafA : D.LeafB) = Leaf;
 			}
@@ -338,6 +367,15 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 	}
 	if (!bShow)
 	{
+		// gone into the tunnel or the haze: its loops stop with it (they kept playing from the tunnel's end, under the
+		// club)
+		for (UAudioComponent* A : { Motor.Get(), Wheels.Get() })
+		{
+			if (A && A->IsPlaying())
+			{
+				A->Stop();
+			}
+		}
 		LastS = Info.S;
 		return;
 	}
@@ -370,13 +408,27 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 
 void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 {
-	// the player standing in a car goes with it (CharacterMovement doesn't ride a moved component's floor reliably)
-	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (!Pawn)
+	// Riding as games do it: a character standing on a car's floor has that floor as its movement base, and
+	// CharacterMovement moves it with the base (position and yaw) before its own move, keeping its walking velocity
+	// relative to the car. That needs the cars placed before the character ticks: this actor ticks pre-physics and
+	// the player's character is made to tick after it. Only off the floor (a jump, a stumble) is the player moved here,
+	// with the car, so the car doesn't run out from under them; never both, or the rider slides along at the train's
+	// speed (as the first version did: it moved the player and the base moved them again).
+	ACharacter* Char = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (!Char)
 	{
 		return;
 	}
-	const FVector P = Pawn->GetActorLocation();
+	if (TickOrderFor != Char)
+	{
+		if (UCharacterMovementComponent* Move = Char->GetCharacterMovement())
+		{
+			Move->AddTickPrerequisiteActor(this);
+		}
+		Char->AddTickPrerequisiteActor(this);
+		TickOrderFor = Char;
+	}
+	const FVector P = Char->GetActorLocation();
 	int32 InCar = -1;
 	for (int32 C = 0; C < Cars.Num() && C < Old.Num(); C++)
 	{
@@ -392,13 +444,26 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 		Rider.Reset();
 		return;
 	}
-	Rider = Pawn;
+	Rider = Char;
+	const UPrimitiveComponent* Base = Char->GetMovementBase();
+	if (Base && Base->GetOwner() == this)
+	{
+		return;
+	}
 	const FTransform& Now = Cars[InCar].Root->GetComponentTransform();
-	const FVector Local = Old[InCar].InverseTransformPosition(P);
-	const FVector NewP = Now.TransformPosition(Local);
+	const FVector NewP = Now.TransformPosition(Old[InCar].InverseTransformPosition(P));
 	if (!NewP.Equals(P, 0.01))
 	{
-		Pawn->SetActorLocation(NewP, false, nullptr, ETeleportType::None);
+		Char->SetActorLocation(NewP, false, nullptr, ETeleportType::TeleportPhysics);
+		const float Turn = Now.Rotator().Yaw - Old[InCar].Rotator().Yaw;
+		if (FMath::Abs(Turn) > 0.001f)
+		{
+			Char->AddActorWorldRotation(FRotator(0.f, Turn, 0.f));
+			if (AController* C = Char->GetController())
+			{
+				C->SetControlRotation(C->GetControlRotation() + FRotator(0.f, Turn, 0.f));
+			}
+		}
 	}
 }
 
@@ -419,7 +484,7 @@ void ALyudTrain::UpdateDoors(float DeltaSeconds)
 		{
 			for (int32 C = 0; C < Cars.Num(); C++)
 			{
-				UGameplayStatics::PlaySoundAtLocation(this, S, Cars[C].Root->GetComponentLocation() + FVector(0, -100.0, 200.0), 0.7f);
+				UGameplayStatics::PlaySoundAtLocation(this, S, Cars[C].Root->GetComponentLocation() + FVector(0, -100.0, 200.0), 0.7f, 1.f, 0.f, JointAtten);
 			}
 		}
 	}
@@ -431,11 +496,11 @@ void ALyudTrain::UpdateDoors(float DeltaSeconds)
 		const double Hw = 1.40 - 0.03;
 		if (UStaticMeshComponent* A = D.LeafA.Get())
 		{
-			A->SetRelativeLocation(FVector((D.X - 0.30 - 0.58 * Open) * 100.0, D.Side * Hw * 100.0, 115.0));
+			A->SetRelativeLocation(FVector((D.X - LeafX - 0.60 * Open) * 100.0, D.Side * Hw * 100.0, 115.0));
 		}
 		if (UStaticMeshComponent* B = D.LeafB.Get())
 		{
-			B->SetRelativeLocation(FVector((D.X + 0.30 + 0.58 * Open) * 100.0, D.Side * Hw * 100.0, 115.0));
+			B->SetRelativeLocation(FVector((D.X + LeafX + 0.60 * Open) * 100.0, D.Side * Hw * 100.0, 115.0));
 		}
 	}
 	// the doorway's collision: the side wall boxes leave the openings free already; shut leaves block nothing yet
@@ -491,6 +556,15 @@ void ALyudTrain::UpdateLights()
 void ALyudTrain::UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev)
 {
 	const float Speed = FMath::Abs(Info.Speed);
+	// a listener indoors (the club, a flat) hears the train faintly through the walls, aboard it fully
+	float Through = 1.f;
+	if (!Rider.IsValid())
+	{
+		if (const ULyudSoundscapeSubsystem* Scape = ULyudSoundscapeSubsystem::Get(this))
+		{
+			Through = FMath::Lerp(0.06f, 1.f, Scape->GetOutdoors());
+		}
+	}
 	if (Motor)
 	{
 		if (!Motor->IsPlaying() && Info.bInService)
@@ -498,7 +572,7 @@ void ALyudTrain::UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev)
 			Motor->Play();
 		}
 		Motor->SetPitchMultiplier(0.45f + Speed / 16.f * 1.25f);
-		Motor->SetVolumeMultiplier(Info.bInService ? 0.12f + 0.5f * FMath::Min(1.f, Speed / 8.f) : 0.f);
+		Motor->SetVolumeMultiplier(Through * (Info.bInService ? 0.12f + 0.5f * FMath::Min(1.f, Speed / 8.f) : 0.f));
 	}
 	if (Wheels)
 	{
@@ -507,7 +581,7 @@ void ALyudTrain::UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev)
 			Wheels->Play();
 		}
 		Wheels->SetPitchMultiplier(0.7f + Speed / 16.f * 0.5f);
-		Wheels->SetVolumeMultiplier(FMath::Min(1.f, Speed / 10.f) * 0.8f);
+		Wheels->SetVolumeMultiplier(Through * FMath::Min(1.f, Speed / 10.f) * 0.8f);
 	}
 	// ta-tan: each bogie over a rail joint
 	if (Speed > 0.5f)
@@ -522,8 +596,8 @@ void ALyudTrain::UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev)
 				{
 					if (USoundBase* S = Sounds.FindRef(Joints[(C * 2 + (Bx > 0 ? 1 : 0)) % 3]))
 					{
-						UGameplayStatics::PlaySoundAtLocation(this, S, Railway->LineToWorld(Now, 0.0, 0.3), FMath::Clamp(Speed / 12.f, 0.25f, 1.f),
-							0.9f + Speed / 60.f);
+						UGameplayStatics::PlaySoundAtLocation(this, S, Railway->LineToWorld(Now, 0.0, 0.3), Through * FMath::Clamp(Speed / 12.f, 0.25f, 1.f),
+							0.9f + Speed / 60.f, 0.f, JointAtten);
 					}
 				}
 			}
@@ -535,7 +609,8 @@ void ALyudTrain::UpdateSound(float DeltaSeconds, const FLyudTrainInfo& Prev)
 	if ((bAppear || bLeave) && Sounds.FindRef(TEXT("horn_01")))
 	{
 		const int32 Lead = Info.Dir >= 0 ? 0 : Cars.Num() - 1;
-		UGameplayStatics::PlaySoundAtLocation(this, Sounds.FindRef(TEXT("horn_01")), Cars[Lead].Root->GetComponentLocation() + FVector(0, 0, 350.0), 1.f);
+		UGameplayStatics::PlaySoundAtLocation(this, Sounds.FindRef(TEXT("horn_01")), Cars[Lead].Root->GetComponentLocation() + FVector(0, 0, 350.0),
+			FMath::Max(Through, 0.15f), 1.f, 0.f, HornAtten);
 	}
 }
 
@@ -639,7 +714,7 @@ void ALyudTrain::UpdateGulls(float DeltaSeconds)
 			if (USoundBase* Snd = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
 			{
 				GullSounds.AddUnique(Snd);
-				UGameplayStatics::PlaySoundAtLocation(this, Snd, NewP, 1.f, FMath::FRandRange(0.92f, 1.08f));
+				UGameplayStatics::PlaySoundAtLocation(this, Snd, NewP, 1.f, FMath::FRandRange(0.92f, 1.08f), 0.f, JointAtten);
 			}
 		}
 		if (GullAway < 20.f)
@@ -663,6 +738,10 @@ void ALyudTrain::UpdateGulls(float DeltaSeconds)
 void ALyudTrain::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (Railway)
+	{
+		Railway->StepTrain(Index, DeltaSeconds);
+	}
 }
 
 bool ALyudTrain::GetSeat(int32 Seat, FTransform& Out) const

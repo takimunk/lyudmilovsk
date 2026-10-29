@@ -187,47 +187,62 @@ double ULyudRailwaySubsystem::NowSeconds() const
 	return (Now - FDateTime(2026, 1, 1)).GetTotalSeconds() + ClockOffset + CVarRailwayOffset.GetValueOnGameThread();
 }
 
+void ULyudRailwaySubsystem::StepTrain(int32 I, float DeltaTime)
+{
+	if (!bStarted || !Run.IsValid() || !LastInfo.IsValidIndex(I))
+	{
+		return;
+	}
+	const double Now = NowSeconds();
+	const LyudRail::FTrainState St = Run->At(Now, I);
+	FLyudTrainInfo Info;
+	Info.S = St.S;
+	Info.Speed = St.V;
+	Info.Dir = St.Dir;
+	Info.Stop = St.Stop;
+	Info.bDoorsOpen = St.bDoorsOpen;
+	Info.bVisible = St.bVisible;
+	Info.bInService = St.bInService;
+	const FLyudTrainInfo& Last = LastInfo[I];
+	if (Info.Stop >= 0 && Last.Stop < 0)
+	{
+		OnTrainEvent.Broadcast(TEXT("Arrive"), I, Info.Stop);
+	}
+	if (Info.Stop < 0 && Last.Stop >= 0)
+	{
+		OnTrainEvent.Broadcast(TEXT("Depart"), I, Last.Stop);
+	}
+	if (Info.bDoorsOpen != Last.bDoorsOpen)
+	{
+		OnTrainEvent.Broadcast(Info.bDoorsOpen ? TEXT("DoorsOpen") : TEXT("DoorsClose"), I, Info.Stop >= 0 ? Info.Stop : Last.Stop);
+	}
+	if (Info.bVisible != Last.bVisible)
+	{
+		OnTrainEvent.Broadcast(Info.bVisible ? TEXT("Appear") : TEXT("Vanish"), I, -1);
+	}
+	LastInfo[I] = Info;
+	if (ALyudTrain* T = Trains[I])
+	{
+		T->Place(Info, DeltaTime);
+	}
+}
+
 void ULyudRailwaySubsystem::Tick(float DeltaTime)
 {
 	if (!bStarted || !Run.IsValid())
 	{
 		return;
 	}
-	const double Now = NowSeconds();
+	// each train moves itself early in the frame (ALyudTrain::Tick, pre-physics, before the player's character, so
+	// the character's movement base carries a rider the same frame); here only a train without its actor
 	for (int32 I = 0; I < Trains.Num(); I++)
 	{
-		const LyudRail::FTrainState St = Run->At(Now, I);
-		FLyudTrainInfo Info;
-		Info.S = St.S;
-		Info.Speed = St.V;
-		Info.Dir = St.Dir;
-		Info.Stop = St.Stop;
-		Info.bDoorsOpen = St.bDoorsOpen;
-		Info.bVisible = St.bVisible;
-		Info.bInService = St.bInService;
-		const FLyudTrainInfo& Last = LastInfo[I];
-		if (Info.Stop >= 0 && Last.Stop < 0)
+		if (!Trains[I])
 		{
-			OnTrainEvent.Broadcast(TEXT("Arrive"), I, Info.Stop);
-		}
-		if (Info.Stop < 0 && Last.Stop >= 0)
-		{
-			OnTrainEvent.Broadcast(TEXT("Depart"), I, Last.Stop);
-		}
-		if (Info.bDoorsOpen != Last.bDoorsOpen)
-		{
-			OnTrainEvent.Broadcast(Info.bDoorsOpen ? TEXT("DoorsOpen") : TEXT("DoorsClose"), I, Info.Stop >= 0 ? Info.Stop : Last.Stop);
-		}
-		if (Info.bVisible != Last.bVisible)
-		{
-			OnTrainEvent.Broadcast(Info.bVisible ? TEXT("Appear") : TEXT("Vanish"), I, -1);
-		}
-		LastInfo[I] = Info;
-		if (ALyudTrain* T = Trains[I])
-		{
-			T->Place(Info, DeltaTime);
+			StepTrain(I, DeltaTime);
 		}
 	}
+	const double Now = NowSeconds();
 	if (Crossing)
 	{
 		Crossing->UpdateFrom(*Run, Now, DeltaTime);
