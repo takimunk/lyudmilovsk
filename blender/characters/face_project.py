@@ -28,6 +28,23 @@ def log(m):
     print("FACEPROJ " + m, flush=True)
 
 
+def auto_box(png, height, marks):
+    """The face's square in the picture from the figure's outline: pixels a metre from its height (hair to soles),
+    the eyes' height from the model's marks; 0.2 m of face, as face_marks.py wants."""
+    code = ("from PIL import Image; import numpy as np; a=np.asarray(Image.open(%r).convert('RGB')).astype(float); "
+            "bg=a[:20,:20].reshape(-1,3).mean(0); m=np.abs(a-bg).sum(-1)>40; ys,xs=np.nonzero(m); "
+            "rows=np.nonzero(m.sum(1)>2)[0]; print(rows.min(), rows.max(), xs.min(), xs.max())" % png)
+    top, bot, left, right = map(int, subprocess.check_output(["python3", "-c", code]).split())
+    pxm = (bot - top) / height
+    ez = (marks["eyes"][0]["z"] + marks["eyes"][1]["z"]) / 2
+    ex = (marks["eyes"][0]["x"] + marks["eyes"][1]["x"]) / 2
+    cy = bot - (ez - 0.012) * pxm
+    # the figure's middle: the T-pose arms are symmetric, so the outline's middle is the body's
+    cx = (left + right) / 2 + ex * pxm
+    half = 0.1 * pxm
+    return tuple(int(round(v)) for v in (cx - half, cy - half, cx + half, cy + half))
+
+
 def picture_marks(png, box):
     """face_marks.py on a square crop of the picture; returns its marks in full-picture pixels (x right, y down)."""
     x0, y0, x1, y1 = box
@@ -62,7 +79,9 @@ def main():
     m = R.load_model(os.path.join(HERE, cid, "gen", model_name + ".glb"), spec["height"])
     R.clean(m)
     R.decimate(m, fp.get("faces", 600000))
-    ref = picture_marks(front, fp.get("box", (911, 184, 1143, 416)))
+    box = tuple(fp["box"]) if "box" in fp else auto_box(front, spec["height"], marks)
+    log("face box %s" % (box,))
+    ref = picture_marks(front, box)
     log("picture marks %s" % {k: v for k, v in ref.items() if k != "raw"})
     # model (x, z) -> picture (px, py). The picture is the character seen from the front: her left (+x) is on the
     # picture's right, as in the model's own front shot, so px grows with x and py falls with z.
@@ -80,6 +99,8 @@ def main():
     s, tx, ty = np.linalg.lstsq(A, b, rcond=None)[0]
     res = A @ np.array([s, tx, ty]) - b
     log("model -> picture: %.1f px/m, residual %s px" % (s, np.round(res, 1).tolist()))
+    if np.abs(res).max() > fp.get("max_residual", 14):            # the picture isn't the model's (or a wrong mark)
+        raise RuntimeError("picture and model disagree by %.0f px: give face_project.box/front by hand" % np.abs(res).max())
     W, H = bpy.data.images.load(front, check_existing=True).size
 
     me_ = m.data

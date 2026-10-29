@@ -462,6 +462,7 @@ def shape_keys(model, marks, k, tree0, with_eyes, lower):
     def add(name, delta):
         sk = model.shape_key_add(name=name, from_mix=False)
         sk.data.foreach_set("co", (co + delta).ravel())
+        sk.value = 0.0                  # Blender 5.3 starts a new key at 1 (every morph on in the previews and the glTF)
         log("key %s: %d vertices move (max %.1f mm)" % (name, int((np.abs(delta).sum(1) > 1e-6).sum()), 1000 * np.abs(delta).max()))
 
     for side, e in zip("lr", marks["eyes"]):
