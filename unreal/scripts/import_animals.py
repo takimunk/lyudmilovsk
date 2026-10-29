@@ -164,7 +164,7 @@ def make_masters():
     ssc = node(m, unreal.MaterialExpressionMultiply, -250, 400)
     mel.connect_material_expressions(mul, "", ssc, "A")
     tint_s = node(m, unreal.MaterialExpressionConstant3Vector, -400, 450)
-    tint_s.set_editor_property("constant", unreal.LinearColor(1.0, 0.5, 0.4, 1.0))
+    tint_s.set_editor_property("constant", unreal.LinearColor(0.75, 0.68, 0.64, 1.0))   # near neutral: a skin red turned her bare white lids pink
     mel.connect_material_expressions(tint_s, "", ssc, "B")
     mel.connect_material_property(ssc, "", unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
     mel.connect_material_property(const(m, 1.0, -400, 550), "", unreal.MaterialProperty.MP_OPACITY)

@@ -180,16 +180,13 @@ company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on 
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.
 - `unreal/scripts/test_animals.sh`: offscreen, the breeds and coats in a row, faces, poses, a cat and a laika meeting.
 
-## Eyes (runtime eyeballs)
+## Eyes
 
-A breed with `blender/animals/gen/<Breed>/eyes.json` (Maru) gets its eyeballs at run time (`AAnimalActor::UpdateEyes`):
-two engine spheres with `M_HumanEyeball` (the people's eye material: a dark white and a big brown iris here) on the head
-bone, where the generated head's own eyes are (`at`, `look`, `radius`, `push` forward along `look`, set by hand on
-close-ups), and the eyeballs `build_animal.py` joins into the body are hidden. The iris turns toward what the animal
-looks at (`SetLookTarget`, the same target as the head), at most 35 deg off, with small saccades. `import_animals.py
-bodies` copies the file into `animal_bodies.json`. Check: `ANIMTEST_PART=eyes unreal/scripts/test_animals.sh` (front,
-3/4 and each eye at a narrow field of view, then the eyes turned with `lyud.Animals.EyeFix/EyeYaw`); tune live with
-`lyud.Animals.EyePush` / `lyud.Animals.EyeScale` (a new body). The joined eyeballs had been set 0.62 r into a pit of the
-hi3d head and read as small, dull, half-hidden dots in daylight (2026-10-27).
-
-M_AnimalBody is subsurface (soft VSM shadows on the coarse generated heads, 2026-10-28); MI_Maru_cream_Fur StrandScale 20 (was 11.2: strands read as flakes up close) is set on the asset, a reimport of Maru's textures resets it.
+Maru (2026-10-29, after "no lids, scary"): her generated head's own painted eyes (amber iris, pupil, dark lid rims)
+are kept: no eyeball is set over them (anatomy.py `painted_eyes`), the face keeps ~9k triangles in the decimation
+(`face_tris`, build_animal.decimate_face; an even collapse left the head a few hundred and the eyes sat in faceted
+pits), the face fur is short and the lids bare further out (`eye_bare`), the strands finer (`strand_scale`).
+M_AnimalBody is subsurface with a near-neutral scatter (soft Virtual Shadow Map penumbra on the coarse generated heads;
+a skin-red scatter turned her white lids pink). Check: `ANIMTEST_PART=eyes unreal/scripts/test_animals.sh`.
+Runtime eyeballs (AAnimalActor::UpdateEyes, `blender/animals/gen/<Breed>/eyes.json` -> animal_bodies.json "eyeballs")
+remain for a breed without good painted eyes; Maru no longer has one.
