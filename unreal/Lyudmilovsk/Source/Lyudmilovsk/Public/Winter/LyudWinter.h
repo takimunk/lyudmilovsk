@@ -35,6 +35,8 @@ struct LYUDMILOVSK_API FLyudWinterNow
 	UPROPERTY(BlueprintReadOnly, Category = "Winter") float IceCm = 0.f;
 	/** Snow on the trees' branches 0..1 (fresh snow sticks, wind and thaw shake it off). */
 	UPROPERTY(BlueprintReadOnly, Category = "Winter") float CanopySnow = 0.f;
+	/** How far the sea is down for the winter, cm. */
+	UPROPERTY(BlueprintReadOnly, Category = "Winter") float LowWaterCm = 0.f;
 };
 
 /**
@@ -129,12 +131,14 @@ private:
 	UPROPERTY(Transient) TObjectPtr<AActor> DecalActor;
 	UPROPERTY(Transient) TObjectPtr<UDecalComponent> Decal;
 	UPROPERTY(Transient) TObjectPtr<class ALyudSeaIce> Ice;
+	UPROPERTY(Transient) TObjectPtr<class ALyudSnowNear> NearSnow;
 	TWeakObjectPtr<ALyudSea> Sea;
 	float SeaWindScale = -1.f;
 	float WadeSpeed = -1.f;
 	float SweepTimer = 0.f;
 
 	void ReadWeather(float DeltaTime);
+	void LowWater();
 	void StepCover();
 	void StartBuild();
 	void FinishBuild();
@@ -146,6 +150,7 @@ private:
 	void UpdateCollection();
 	void UpdateDecal();
 	void Wade(float DeltaTime);
+	void StepNear(float DeltaTime);
 	void KeepOffDecals();
 	bool CameraLocation(FVector& Out) const;
 };
@@ -177,4 +182,58 @@ private:
 	FVector LaidAt = FVector(1e12);
 	float LaidZ = -1e9f;
 	int32 Solid = 0;
+};
+
+/**
+ * The fine snow round the player (docs/winter.md "Footprints"): a 30 m square of 10 cm cells following the camera,
+ * drawn by M_SnowNear at the ground (exact landscape heights, RT_NearGround) plus the snow field's depth pressed down
+ * by the trail (RT_SnowTrail, 5 cm, a toroidal window): the footprints of the player, the people and the animals
+ * walking there, and the trench the player ploughs through deep snow. The ground's own snow sinks under it inside
+ * (M_Ground reads NearRect) and comes back up toward its edge, where this one sinks: no seam. Fresh snow fills the
+ * prints again. Spawned and driven by ULyudWinterSubsystem.
+ */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudSnowNear : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudSnowNear();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Snow") TObjectPtr<UStaticMeshComponent> Surface;
+
+	/** Follows the camera, presses the walkers' prints, fills them with fresh snow; uploads what changed. */
+	void Drive(class ULyudWinterSubsystem& Winter, const FVector& Camera, float DeltaTime);
+	/** How pressed the snow is at a world point 0..1 (tests). */
+	UFUNCTION(BlueprintPure, Category = "Snow") float PressedAt(const FVector& Location) const;
+	UFUNCTION(BlueprintPure, Category = "Snow") int32 NumPrints() const { return Prints; }
+
+	static constexpr float HalfCm = 1500.f;
+	static constexpr float StepCm = 10.f;
+	static constexpr float TrailCm = 5.f;
+	static constexpr int32 TrailN = 600;    // 30 m / 5 cm
+	static constexpr float GroundCm = 100.f;
+	static constexpr int32 GroundN = 48;
+
+private:
+	UPROPERTY(Transient) TObjectPtr<UTextureRenderTarget2D> GroundRT;
+	UPROPERTY(Transient) TObjectPtr<UTextureRenderTarget2D> TrailRT;
+	TArray<uint8> Trail;
+	TArray<float> Ground;
+	FVector2D Centre = FVector2D(1e12, 1e12);
+	FVector2D GroundOrigin = FVector2D::ZeroVector;
+	FIntRect Dirty;
+	bool bDirty = false;
+	bool bFullUpload = false;
+	float FillTimer = 0.f;
+	int32 Prints = 0;
+	struct FWalker { FVector2D Last = FVector2D(1e12, 1e12); FVector2D PloughLast = FVector2D(1e12, 1e12); int32 Side = 1; };
+	TMap<TWeakObjectPtr<AActor>, FWalker> Walkers;
+
+	void BuildMesh();
+	void Recentre(const FVector2D& C);
+	/** Presses an ellipse (along Dir) of half lengths A, B cm to Amount 0..1 at a world point. */
+	void Press(const FVector2D& At, const FVector2D& Dir, float A, float B, float Amount);
+	void Walk(AActor* Who, const FVector& Feet, const FVector& Velocity, float Stride, float Lateral, float A, float B, float SnowM, bool bPlough);
+	int32 Wrap(double V) const;
 };

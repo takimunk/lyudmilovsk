@@ -25,9 +25,12 @@ EXCL = unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS
 
 VECTORS = [("FieldRect", (0, 0, 0, 0)), ("FieldTexel", (0, 0, 100, 0)), ("CoverRect", (0, 0, 0, 0)), ("CoverTexel", (0, 0, 200, 0)),
            ("IceRect", (0, 0, 0, 0)), ("Snow", (0, 1, 0, 0)), ("SnowB", (0, 0, -43, 0)), ("Ice", (10, 3, 0, 0)),
-           ("IceRail", (0, 0, -1, 4)), ("IceDrift", (0, 0, -4300, 1947))]
+           ("IceRail", (0, 0, -1, 4)), ("IceDrift", (0, 0, -4300, 1947)),
+           ("NearRect", (0, 0, 0, 400)), ("NearGround", (0, 0, 100, 48)), ("NearTrail", (5, 4000, 0, 0))]
 # render targets: name, format, filter
-TARGETS = [("RT_SnowDepth", "RTF_R16F"), ("RT_SnowCover", "RTF_RG16F"), ("RT_SeaIce", "RTF_R16F")]
+TARGETS = [("RT_SnowDepth", "RTF_R16F"), ("RT_SnowCover", "RTF_RG16F"), ("RT_SeaIce", "RTF_R16F"), ("RT_NearGround", "RTF_R32F"),
+           ("RT_SnowTrail", "RTF_R8")]
+WRAP = ("RT_SnowTrail",)
 
 
 def _log(msg):
@@ -69,8 +72,9 @@ def render_targets():
         rt.set_editor_property("size_x", 64)
         rt.set_editor_property("size_y", 64)
         rt.set_editor_property("clear_color", unreal.LinearColor(0, 0, 0, 0))
-        rt.set_editor_property("address_x", unreal.TextureAddress.TA_CLAMP)
-        rt.set_editor_property("address_y", unreal.TextureAddress.TA_CLAMP)
+        addr = unreal.TextureAddress.TA_WRAP if name in WRAP else unreal.TextureAddress.TA_CLAMP
+        rt.set_editor_property("address_x", addr)
+        rt.set_editor_property("address_y", addr)
         rt.set_editor_property("auto_generate_mips", False)
         rt.set_editor_property("filter", unreal.TextureFilter.TF_BILINEAR)
         eal.save_loaded_asset(rt)
@@ -121,7 +125,8 @@ def ground_wpo(m, x=-700, y=1200):
     pos = _node(m, unreal.MaterialExpressionWorldPosition, x - 400, y, world_position_shader_offset=EXCL)
     dep = _node(m, unreal.MaterialExpressionTextureObject, x - 400, y + 120, texture=rts["RT_SnowDepth"])
     c = _custom(m, H.GROUND_WPO, [("P", pos), ("Dep", dep), ("Rect", mpc_node(m, mpc, "FieldRect", x - 400, y + 240)),
-                                  ("B", mpc_node(m, mpc, "SnowB", x - 400, y + 360))], x, y, "WinterSnowWPO")
+                                  ("B", mpc_node(m, mpc, "SnowB", x - 400, y + 360)),
+                                  ("N", mpc_node(m, mpc, "NearRect", x - 400, y + 480))], x, y, "WinterSnowWPO")
     mel.connect_material_property(c, "", unreal.MaterialProperty.MP_WORLD_POSITION_OFFSET)
     return c
 

@@ -18,7 +18,10 @@ trees. Everything is driven by `ULyudWinterSubsystem` (`Public/Winter/LyudWinter
    while the snow is loose: integrated from the weather's history since 1 September), blurred, normalised to a mean
    of 1 (snow moved, not made), blended in by how far the drifting has got (`Drift` 0..1). Steep slopes shed it,
    forest floors keep 72%.
-4. **Field** (1 m): level depth x factor, softly capped at ~1.1 m, none under roofs; paths cut out (below).
+4. **Field** (1 m): level depth x factor, none under roofs; paths cut out (below). Capped by place (Dima,
+   2026-10-29): the town (within ~50 m of a roof, fading out by ~110 m) keeps at most ~15 cm so people walk freely;
+   the wild up to 1.5 m, the forest keeping 2.2x what falls (no wind takes it, the sun reaches it less) with the
+   deepest drifts in its lee.
 
 The field goes to `/Game/Winter/RT_SnowDepth`; `M_Ground` lifts the landscape by it (world position offset; the
 landscape's collision stays at the ground, so the player wades: deep snow off the paths slows them to 42%).
@@ -26,6 +29,25 @@ One deferred decal over the whole map (`M_SnowDecal`) whitens the ground by the 
 thin snow in patches) and every upward face under the open sky by the level snow: roofs, benches, rails, kiosk tops.
 Under the ground (the club, the tunnel) and under a roof it does nothing; people, animals, birds, plants, the sea
 and the ice don't take it.
+
+## Footprints (deformable snow)
+
+`ALyudSnowNear`: a 30 m square of 10 cm cells round the camera (`M_SnowNear`), at what the snow lies on (the
+landscape or a low surface over it, traced exactly at 1 m into `RT_NearGround`) plus the field's depth pressed by the
+trail (`RT_SnowTrail`, 5 cm, a world-locked toroidal window): footprints of the player, the people's bodies and the
+cats and dogs walking there (stamped by stride, left and right), and the trench the player ploughs through snow deeper
+than ~22 cm. Pressed snow keeps 15% of its depth, greyer and glossier. The ground's own snow sinks under the square
+(`M_Ground` reads `NearRect`) and comes back up toward its edge while the square sinks: no seam. Fresh snow fills the
+prints (~5 cm hides one). No shadow of its own (a moving WPO mesh would redraw the virtual shadow map); measured
+34.0 ms with winter vs 34.4 without in one process.
+
+## Winter low water
+
+The sea goes down smoothly by `lyud.Winter.LowWater` (70 cm) from 20 November to 5 January and back by mid April
+(`ALyudSea::SetLevelOffset`: the surface, the water volume and the shader's level follow, the bed's depth map is read
+again): the island railway's rails (30 cm under high water) stand dry, the ice comes right up to the bank's slopes
+(the bank is no shore for the ice), open water stays only along the coast and round the island.
+`lyud.Winter.LowWaterNow 0..1` forces it.
 
 ## Paths and shovelling
 
@@ -50,8 +72,7 @@ that; `AProceduralPlant`/`AProceduralVine`/`AProceduralGrass` ask `ULyudWinterSu
 `ALyudSeaIce`: a flat sheet at the still water (`ALyudSea::SeaLevel()`, so it rides the tide and the surge) +
 freeboard. `M_SeaIce` masks it by the distance from water shallower than 0.4 m (the shore at this tide, the railway's
 bank, the island; a 3 m exact distance transform redone when the water moves 10 cm): open water for 10 m +- 3 m
-(ragged), pancakes for 4 m, then solid ice; floes and leads when the cover is partial; along the railway line beyond
-the grid a lead stays open. Snow lies on it in streaks. The waves die under it (`ALyudSea::WindScale`). Where it is
+(ragged), pancakes for 4 m, then solid ice; floes and leads when the cover is partial. Snow lies on it in streaks. The waves die under it (`ALyudSea::WindScale`). Where it is
 solid and >= 8 cm thick, box tiles round the player hold them.
 
 ## Console
