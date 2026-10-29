@@ -375,9 +375,14 @@ def do_import(breed):
         e = mi("MI_%s_Eye_%d" % (breed, i), dest, eye_m, {"Albedo": unreal.load_asset("%s/T_%s_Eye_%d" % (dest, breed, i))})
         first.setdefault("Eye", e)
     mats = mesh.get_editor_property("materials")
+    mouth = mouth_materials() if any("Mouth" in str(sm.material_slot_name) for sm in mats) else {}
     for i in range(len(mats)):
         sm = mats[i]
         slot = str(sm.material_slot_name)
+        if "Mouth" in slot:
+            sm.material_interface = mouth["Teeth" if "Teeth" in slot else "Tongue" if "Tongue" in slot else "Inside"]
+            mats[i] = sm
+            continue
         kind = "Fur" if "Fur" in slot else ("Eye" if "Eye" in slot else "Body")
         sm.material_interface = first[kind]
         mats[i] = sm
@@ -416,6 +421,31 @@ def do_import(breed):
     eal.save_directory(dest)
     b = mesh.get_bounds().box_extent
     log("%s: %d materials, %d LODs, %d clips, bounds %.1f x %.1f x %.1f cm" % (breed, len(mats), n, len(eal.list_assets(dest + "/Anims")), b.x * 2, b.y * 2, b.z * 2))
+
+
+def mouth_materials():
+    """A dog's mouth (build_animal.mouth_parts): the dark inside, the teeth, the tongue; one master, three instances."""
+    m = get_or_create("M_AnimalMouth", MATS, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(m)
+    col = node(m, unreal.MaterialExpressionVectorParameter, -500, 0)
+    col.set_editor_property("parameter_name", "Color")
+    col.set_editor_property("default_value", unreal.LinearColor(0.5, 0.1, 0.1, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(scalar(m, "Roughness", 0.4, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(scalar(m, "Specular", 0.4, -500, 400), "", unreal.MaterialProperty.MP_SPECULAR)
+    m.set_editor_property("used_with_skeletal_mesh", True)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    out = {}
+    for name, rgb, rough in (("Inside", (0.045, 0.008, 0.01), 0.55), ("Teeth", (0.72, 0.68, 0.58), 0.3),
+                             ("Tongue", (0.42, 0.08, 0.1), 0.35)):
+        i = get_or_create("MI_Mouth_" + name, MATS, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+        i.set_editor_property("parent", m)
+        mel.set_material_instance_vector_parameter_value(i, "Color", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
+        mel.set_material_instance_scalar_parameter_value(i, "Roughness", rough)
+        eal.save_loaded_asset(i)
+        out[name] = i
+    return out
 
 
 def collar_materials():

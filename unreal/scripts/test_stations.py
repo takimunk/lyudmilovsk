@@ -123,6 +123,19 @@ def plan():
                 for k, (dx, dy) in enumerate(((1, 0), (0, 1), (-1, 0), (0, -1))):
                     probe(w, (l.x, l.y, l.z), (l.x + dx * 1500, l.y + dy * 1500, l.z), "%s hall %d" % (s, k))
             add(1.0, into)
+    # CLOSE=1: close up in each hall (Dima's 3D glitch rule): the floor at a grazing look (z-fighting shows there first),
+    # the floor at the walls' feet, and the glass against the sky
+    if os.environ.get("CLOSE"):
+        for st in STATIONS:
+            sid = st["id"]
+            add(0.5, lambda w, s=sid: cmd(w, "Transport.Goto %s vestibule" % s))
+            for k, (dz, pitch, yaw) in enumerate(((-120, -6, 0), (-60, -30, 90), (0, 8, 200))):
+                def go(w, dz=dz, pitch=pitch, yaw=yaw):
+                    l = unreal.GameplayStatics.get_player_pawn(w, 0).get_actor_location()
+                    cmd(w, "BugItGo %.0f %.0f %.0f %.0f %.0f 0" % (l.x, l.y, l.z + dz, pitch, yaw))
+                add(0.6, go)
+                add(2.5, lambda w, s=sid, k=k: shot(w, "%s_close_%d" % (s, k)))
+                add(0.5, lambda w, s=sid: cmd(w, "Transport.Goto %s vestibule" % s))
     # PYLONS=1: every kind of pylon (the corner, a convergence one, the shortest, the tallest) from afar and at its head
     if os.environ.get("PYLONS"):
         allp = [p for ln in BUILT["lines"] for p in ln["pylons"]]

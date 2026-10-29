@@ -740,19 +740,8 @@ def build(style, cfg):
     log(style, "room", kind, "R", round(R, 2), "H", round(H, 2), "windows", len(ops), "door at",
         tuple(round(v, 2) for v in door_o))
 
-    # the room's floor and the threshold through the wall
+    # (the room's floor is a slab of its own set into the terrace, made in finish(): no floor lies on another)
     bm = bmesh.new()
-    fr = [rc + (Vector((v.co.x, v.co.y, 0)) - rc) for v in room.data.vertices if abs(v.co.z) < 1e-4]
-    seg = 48
-    rr = []
-    rt = bvh_of(room)
-    for i in range(seg):
-        _, _, d = ray(rt, rc + Vector((0, 0, 0.3)), az(360.0 * i / seg), 30.0)
-        rr.append(rc + az(360.0 * i / seg) * ((d or R - WALL) + 0.01) + Vector((0, 0, 0.01)))
-    fl = [bm.verts.new(p) for p in rr]
-    bm.faces.new(fl).material_index = TER
-    quad(bm, [door_o + u * su * (DOOR_W / 2 + 0.01) + n_out * sn + Vector((0, 0, 0.01)) for su, sn in
-              ((-1, -WALL - 0.3), (1, -WALL - 0.3), (1, 0.3), (-1, 0.3))], TER)
     panes(bm, ops, GLS)
     base = new_object("base", bm, mats)
 
@@ -1110,12 +1099,34 @@ def finish(style, cfg, parts):
         bm.faces.new((top[j], top[i], bot[i], bot[j])).material_index = 0
     bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
     slabo = new_object("terrace", bm, mats)
+    # the room's floor: a terrazzo slab over the room's whole foot (to its walls' outer face, so the door's sill is
+    # floor too), set into the terrace (cut out of it), its top level with the terrace's: nothing lies on anything
+    rv = [room.matrix_world @ v.co for v in room.data.vertices]
+    z_lo = min(v.z for v in rv)
+    foot = hull([(v.x, v.y) for v in rv if v.z < z_lo + 0.05])           # the walls' feet (their outer face)
+    log(style, "room floor: walls' foot at z %.2f, %d corners" % (z_lo, len(foot)))
+    fb = bmesh.new()
+    ft = [fb.verts.new((x, y, 0.0)) for x, y in foot]
+    fo = [fb.verts.new((x, y, BASE)) for x, y in foot]
+    fb.faces.new(ft).material_index = S["TR_Terrazzo"]
+    fb.faces.new(fo[::-1]).material_index = S["TR_Tx_Concrete"]
+    for i in range(len(foot)):
+        j = (i + 1) % len(foot)
+        fb.faces.new((fo[i], fo[j], ft[j], ft[i])).material_index = S["TR_Tx_Concrete"]
+    bmesh.ops.recalc_face_normals(fb, faces=list(fb.faces))
+    roomfloor = new_object("roomfloor", fb, mats)
+    hb = bmesh.new()
+    hb.from_mesh(roomfloor.data)
+    bmesh.ops.transform(hb, matrix=Matrix.Translation((0, 0, 0.3)) @ Matrix.Diagonal((1.0, 1.0, 2.0, 1.0)), verts=hb.verts)
+    holecut = new_object("roomcut", hb, mats)
+    boolean_cut(slabo, holecut)
+    bpy.data.objects.remove(holecut)
     cb = bmesh.new()
     box(cb, core + Vector((0, 0, BASE / 2)), (2 * CORE, 2 * CORE, -BASE + 0.4), S["TR_Tx_Concrete"])
     cut = new_object("corecut", cb, mats)
     boolean_cut(slabo, cut)
     if big:
-        boolean_cut(base, cut)
+        boolean_cut(roomfloor, cut)
     bpy.data.objects.remove(cut)
 
     # the railing: round the outline, in along the boarding edges, open at the stops
@@ -1134,18 +1145,9 @@ def finish(style, cfg, parts):
     xs_edge = [x for x, y in P if abs(abs(y) - E) < 1e-3]
     x0, x1 = (min(xs_edge), max(xs_edge)) if xs_edge else (-4.5, 4.5)
     for sy in (1, -1):
-        quad(bm, [Vector((xa, sy * yb, 0.004)) for xa, yb in ((x0, E - 0.6), (x1, E - 0.6), (x1, E - 0.1), (x0, E - 0.1))],
-             S["TR_Tx_Tactile"], flip=sy < 0)
+        # a raised tactile strip (1.5 cm), not a decal on the floor (that flickers)
+        box(bm, Vector(((x0 + x1) / 2, sy * (E - 0.35), 0.0075)), (x1 - x0, 0.5, 0.015), S["TR_Tx_Tactile"])
     rail = new_object("railing", bm, mats)
-    for o in (rail,):
-        bm2 = bmesh.new()
-        bm2.from_mesh(o.data)
-        for f in bm2.faces:
-            f.normal_update()
-            if f.material_index == S["TR_Tx_Tactile"] and f.normal.z < 0:
-                f.normal_flip()
-        bm2.to_mesh(o.data)
-        bm2.free()
 
     # nothing within 1.35 m of a track's centre: cut whatever of ours reaches past E - 0.3 above the floor
     for o in [room, canopy, glass]:
@@ -1161,7 +1163,7 @@ def finish(style, cfg, parts):
         bm.free()
 
     tx = {S[k] for k in S if k.startswith("TR_Tx_")}
-    objs = [o for o in (room, base, canopy, glass, slabo, rail) if o]
+    objs = [o for o in (room, base, canopy, glass, slabo, roomfloor, rail) if o]
     for o in objs:
         metre_uv(o, tx)
     E_ = bake(style, M, [o for o in objs if o is not rail])
@@ -1185,7 +1187,7 @@ def finish(style, cfg, parts):
             toward = Vector((rc.x, rc.y, min(max(p.z, 0.5), H - 0.3))) - p
             if f.normal.dot(toward) < 0:
                 f.normal_flip()
-        elif mn.startswith(("TR_Terrazzo", "TR_Tx_Tactile")) and f.normal.z < 0:
+        elif mn.startswith("TR_Terrazzo") and f.normal.z < 0:          # (the tactile strips are closed boxes now)
             f.normal_flip()
     bm.to_mesh(V.data)
     bm.free()
@@ -1342,12 +1344,9 @@ def lower_deck(st, T, part, mats, mi_w, mi_b, mi_in):
         bpy.data.meshes.remove(rme)
         # the tactile lines
         for sy in (1, -1):
-            ps = [rot @ Vector((xa, sy * yb, 0.004)) for xa, yb in ((-STOP_HALF, E2 - 0.6), (STOP_HALF, E2 - 0.6), (STOP_HALF, E2 - 0.1), (-STOP_HALF, E2 - 0.1))]
-            f = bm.faces.new([bm.verts.new(p) for p in ps])
-            f.material_index = S["TR_Tx_Tactile"]
-            f.normal_update()
-            if f.normal.z < 0:
-                f.normal_flip()
+            # a raised strip (1.5 cm), not a decal lying on the deck
+            box(bm, rot @ Vector((0.0, sy * (E2 - 0.35), 0.0075)), (2 * STOP_HALF, 0.5, 0.015), S["TR_Tx_Tactile"],
+                rot)
         # the opening out of the core onto the deck: toward +x' (the deck's long end)
         n = rot @ Vector((1, 0, 0))
         a = math.atan2(n.y, n.x)
@@ -1581,8 +1580,33 @@ def outline_pts(pts, n=32, pad=0.05, clamp=True):
     return out
 
 
+def split_glass(o, name):
+    """The glass faces (TR_Glass*) out of o into a mesh of their own, <name>_Glass.glb: the game sets glass apart (no
+    shadow, out of the distance fields), so the sun and the sky's light come in through the windows."""
+    gi = [i for i, m in enumerate(o.data.materials) if m and m.name.startswith("TR_Glass")]
+    path = os.path.join(OUT, name + "_Glass.glb")
+    if os.path.isfile(path):
+        os.remove(path)
+    if not gi or not any(p.material_index in gi for p in o.data.polygons):
+        return
+    g = o.copy()
+    g.data = o.data.copy()
+    bpy.context.scene.collection.objects.link(g)
+    for ob, keep in ((g, True), (o, False)):
+        bm = bmesh.new()
+        bm.from_mesh(ob.data)
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.material_index in gi) != keep], context="FACES")
+        bm.to_mesh(ob.data)
+        bm.free()
+    g.name = g.data.name = name + "_Glass"
+    activate(g)
+    bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_format="GLB", export_yup=True, export_apply=True)
+    bpy.data.objects.remove(g)
+
+
 def export(o, name):
     os.makedirs(OUT, exist_ok=True)
+    split_glass(o, name)
     activate(o)
     bpy.ops.export_scene.gltf(filepath=os.path.join(OUT, name + ".glb"), use_selection=True, export_format="GLB",
                               export_image_format="JPEG", export_jpeg_quality=90, export_yup=True, export_apply=True)
