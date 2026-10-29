@@ -1496,12 +1496,42 @@
    292.0
   ]
  ],
+ "exit_door": {
+  "leaves": [
+   "ExitDoor_Leaf"
+  ],
+  "riders": [
+   "ExitDoor_Wheel"
+  ],
+  "open_angles": [
+   -100.0
+  ],
+  "center": [
+   -192.7,
+   725.0,
+   100.0
+  ]
+ },
+ "outside": {
+  "portal_face_y": 790.0,
+  "center": [
+   0,
+   3290.0,
+   0
+  ],
+  "sea_z": -4300.0,
+  "starlings_hint": [
+   0,
+   12790.0,
+   1000.0
+  ]
+ },
  "hall_lights": [
   {
    "pos": [
-    -180.0,
+    -192.7,
     670.0,
-    230.0
+    263.3
    ],
    "color": [
     0.2,
@@ -1513,24 +1543,108 @@
   },
   {
    "pos": [
-    -50.0,
-    350.0,
-    275.0
+    -78.7,
+    359.3,
+    340.0
    ],
    "color": [
     1.0,
-    0.68,
-    0.38
+    0.75,
+    0.5
    ],
-   "cd": 18.0,
-   "radius": 900,
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -105.7,
+    386.2,
+    340.0
+   ],
+   "color": [
+    1.0,
+    0.75,
+    0.5
+   ],
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -100.0,
+    329.0,
+    326.0
+   ],
+   "color": [
+    1.0,
+    0.75,
+    0.5
+   ],
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -100.0,
+    401.0,
+    326.0
+   ],
+   "color": [
+    1.0,
+    0.75,
+    0.5
+   ],
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -91.8,
+    315.7,
+    312.0
+   ],
+   "color": [
+    1.0,
+    0.75,
+    0.5
+   ],
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -135.6,
+    400.1,
+    312.0
+   ],
+   "color": [
+    1.0,
+    0.75,
+    0.5
+   ],
+   "cd": 2.0,
+   "radius": 350
+  },
+  {
+   "pos": [
+    -100.0,
+    365.0,
+    300.0
+   ],
+   "color": [
+    1.0,
+    0.72,
+    0.45
+   ],
+   "cd": 30.0,
+   "radius": 1100,
    "shadows": true
   },
   {
    "pos": [
-    262.0,
-    380.0,
-    102.0
+    284.8,
+    565.0,
+    103.5
    ],
    "color": [
     1.0,
@@ -1543,8 +1657,23 @@
   },
   {
    "pos": [
+    200.0,
+    420.0,
+    300.0
+   ],
+   "color": [
+    1.0,
+    0.68,
+    0.38
+   ],
+   "cd": 10.0,
+   "radius": 600,
+   "shadows": true
+  },
+  {
+   "pos": [
     -185.0,
-    320.0,
+    220.0,
     120.0
    ],
    "color": [
@@ -1554,11 +1683,73 @@
    ],
    "cd": 3.0,
    "radius": 300
+  },
+  {
+   "pos": [
+    -178.0,
+    375.0,
+    120.0
+   ],
+   "color": [
+    0.85,
+    0.92,
+    1.0
+   ],
+   "cd": 2.5,
+   "radius": 300
   }
  ],
+ "door": {
+  "leaves": [
+   "PartitionDoor_LeafL",
+   "PartitionDoor_LeafR"
+  ],
+  "open_angles": [
+   95.0,
+   -95.0
+  ],
+  "center": [
+   -40.0,
+   6.0,
+   100.0
+  ]
+ },
+ "owner": {
+  "chair": [
+   170.0,
+   640.0,
+   0
+  ],
+  "sitter_yaw": 0.0,
+  "window": [
+   150.0,
+   537.0,
+   0
+  ],
+  "window_yaw": 180.0,
+  "zone_center": [
+   40.0,
+   390.0,
+   90.0
+  ],
+  "zone_extent": [
+   55.0,
+   200.0,
+   90.0
+  ]
+ },
+ "steam": {
+  "base_z": 45.8,
+  "top_z": 125.8,
+  "pos": [
+   270.0,
+   75.0,
+   45.8
+  ]
+ },
  "vending": [
   -260.0,
-  320.0,
+  220.0,
   100.0
  ],
  "walkway": {
@@ -1568,6 +1759,1012 @@
   ],
   "y0": -50.0
  },
+ "visitors": [
+  {
+   "index": 0,
+   "person": "Guy_b",
+   "kind": "laptop"
+  },
+  {
+   "index": 1,
+   "person": "Streamer",
+   "kind": "ps2"
+  },
+  {
+   "index": 4,
+   "person": "Girl_a",
+   "kind": "zx"
+  },
+  {
+   "index": 5,
+   "person": "Guy_a",
+   "kind": "gaming"
+  },
+  {
+   "index": 6,
+   "person": "Kid_boy",
+   "kind": "sega"
+  },
+  {
+   "index": 7,
+   "person": "Kid_girl",
+   "kind": "imac"
+  },
+  {
+   "index": 8,
+   "person": "Girl_b",
+   "kind": "beige"
+  },
+  {
+   "index": 11,
+   "person": "Guy_b",
+   "kind": "spreadsheet"
+  },
+  {
+   "index": 12,
+   "person": "Girl_a",
+   "kind": "beige"
+  },
+  {
+   "index": 13,
+   "person": "Guy_a",
+   "kind": "laptop"
+  }
+ ],
+ "stations": [
+  {
+   "index": 0,
+   "kind": "laptop",
+   "chair": [
+    47.5,
+    -152.5,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -152.5,
+    75.6
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 1,
+   "kind": "ps2",
+   "chair": [
+    47.5,
+    -290.0,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -290.0,
+    73.0
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 2,
+   "kind": "vr",
+   "chair": [
+    53.4,
+    -427.8,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -442.5,
+    76.4
+   ],
+   "sitter_yaw": 14.7,
+   "reachable": true
+  },
+  {
+   "index": 3,
+   "kind": "modern",
+   "chair": [
+    40.2,
+    -607.0,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -610.0,
+    75.3
+   ],
+   "sitter_yaw": -11.1,
+   "reachable": true
+  },
+  {
+   "index": 4,
+   "kind": "zx",
+   "chair": [
+    47.5,
+    -770.0,
+    0
+   ],
+   "chair_kind": "chair_stool",
+   "desk": [
+    129.5,
+    -770.0,
+    74.3
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 5,
+   "kind": "gaming",
+   "chair": [
+    47.5,
+    -930.0,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -930.0,
+    76.9
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 6,
+   "kind": "sega",
+   "chair": [
+    47.5,
+    -1082.5,
+    0
+   ],
+   "chair_kind": "chair_stool",
+   "desk": [
+    129.5,
+    -1082.5,
+    75.4
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 7,
+   "kind": "imac",
+   "chair": [
+    47.5,
+    -1235.0,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -1235.0,
+    76.8
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 8,
+   "kind": "beige",
+   "chair": [
+    47.5,
+    -1395.0,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -1395.0,
+    75.3
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 9,
+   "kind": "spreadsheet",
+   "chair": [
+    47.5,
+    -1540.0,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -1540.0,
+    76.2
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 10,
+   "kind": "imac",
+   "chair": [
+    40.6,
+    -1824.2,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -1837.5,
+    75.1
+   ],
+   "sitter_yaw": 16.0,
+   "reachable": true
+  },
+  {
+   "index": 11,
+   "kind": "spreadsheet",
+   "chair": [
+    47.5,
+    -1982.5,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -1982.5,
+    76.9
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 12,
+   "kind": "beige",
+   "chair": [
+    47.5,
+    -2135.0,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -2135.0,
+    75.4
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 13,
+   "kind": "laptop",
+   "chair": [
+    47.5,
+    -2295.0,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -2295.0,
+    75.7
+   ],
+   "sitter_yaw": 0,
+   "reachable": true
+  },
+  {
+   "index": 14,
+   "kind": "vr",
+   "chair": [
+    44.1,
+    -2448.5,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -2462.5,
+    74.0
+   ],
+   "sitter_yaw": -8.8,
+   "reachable": false
+  },
+  {
+   "index": 15,
+   "kind": "zx",
+   "chair": [
+    56.4,
+    -2610.2,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -2622.5,
+    76.7
+   ],
+   "sitter_yaw": 7.7,
+   "reachable": false
+  },
+  {
+   "index": 16,
+   "kind": "gaming",
+   "chair": [
+    56.0,
+    -2779.5,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -2782.5,
+    73.9
+   ],
+   "sitter_yaw": -0.3,
+   "reachable": false
+  },
+  {
+   "index": 17,
+   "kind": "mac",
+   "chair": [
+    50.0,
+    -2961.2,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -2950.0,
+    74.6
+   ],
+   "sitter_yaw": 1.3,
+   "reachable": false
+  },
+  {
+   "index": 18,
+   "kind": "sega",
+   "chair": [
+    48.3,
+    -3106.7,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -3102.5,
+    74.9
+   ],
+   "sitter_yaw": 15.8,
+   "reachable": false
+  },
+  {
+   "index": 19,
+   "kind": "modern",
+   "chair": [
+    45.7,
+    -3272.5,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -3262.5,
+    76.7
+   ],
+   "sitter_yaw": 10.0,
+   "reachable": false
+  },
+  {
+   "index": 20,
+   "kind": "spreadsheet",
+   "chair": [
+    42.2,
+    -3419.0,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -3422.5,
+    75.1
+   ],
+   "sitter_yaw": -3.8,
+   "reachable": false
+  },
+  {
+   "index": 21,
+   "kind": "beige",
+   "chair": [
+    52.6,
+    -3575.1,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -3567.5,
+    75.0
+   ],
+   "sitter_yaw": 19.1,
+   "reachable": false
+  },
+  {
+   "index": 22,
+   "kind": "ps2",
+   "chair": [
+    40.6,
+    -3719.3,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -3705.0,
+    73.1
+   ],
+   "sitter_yaw": 18.3,
+   "reachable": false
+  },
+  {
+   "index": 23,
+   "kind": "laptop",
+   "chair": [
+    44.6,
+    -3832.5,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -3842.5,
+    75.3
+   ],
+   "sitter_yaw": -4.1,
+   "reachable": false
+  },
+  {
+   "index": 24,
+   "kind": "sega",
+   "chair": [
+    56.6,
+    -3991.0,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -3987.5,
+    74.6
+   ],
+   "sitter_yaw": -9.0,
+   "reachable": false
+  },
+  {
+   "index": 25,
+   "kind": "gaming",
+   "chair": [
+    55.6,
+    -4145.8,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -4140.0,
+    76.5
+   ],
+   "sitter_yaw": 6.9,
+   "reachable": false
+  },
+  {
+   "index": 26,
+   "kind": "vr",
+   "chair": [
+    40.7,
+    -4296.2,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -4307.5,
+    73.9
+   ],
+   "sitter_yaw": 15.9,
+   "reachable": false
+  },
+  {
+   "index": 27,
+   "kind": "modern",
+   "chair": [
+    46.1,
+    -4471.0,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -4482.5,
+    76.9
+   ],
+   "sitter_yaw": 18.6,
+   "reachable": false
+  },
+  {
+   "index": 28,
+   "kind": "zx",
+   "chair": [
+    47.8,
+    -4648.4,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -4635.0,
+    76.5
+   ],
+   "sitter_yaw": -4.6,
+   "reachable": false
+  },
+  {
+   "index": 29,
+   "kind": "mac",
+   "chair": [
+    40.9,
+    -4769.8,
+    0
+   ],
+   "chair_kind": "chair_stool",
+   "desk": [
+    129.5,
+    -4765.0,
+    75.6
+   ],
+   "sitter_yaw": 4.0,
+   "reachable": false
+  },
+  {
+   "index": 30,
+   "kind": "sega",
+   "chair": [
+    54.6,
+    -4915.0,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -4902.5,
+    75.9
+   ],
+   "sitter_yaw": -16.4,
+   "reachable": false
+  },
+  {
+   "index": 31,
+   "kind": "vr",
+   "chair": [
+    49.9,
+    -5060.1,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -5062.5,
+    75.9
+   ],
+   "sitter_yaw": -12.7,
+   "reachable": false
+  },
+  {
+   "index": 32,
+   "kind": "imac",
+   "chair": [
+    50.0,
+    -5216.7,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -5222.5,
+    73.5
+   ],
+   "sitter_yaw": 16.8,
+   "reachable": false
+  },
+  {
+   "index": 33,
+   "kind": "ps2",
+   "chair": [
+    45.5,
+    -5369.0,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -5367.5,
+    73.9
+   ],
+   "sitter_yaw": -4.6,
+   "reachable": false
+  },
+  {
+   "index": 34,
+   "kind": "laptop",
+   "chair": [
+    46.0,
+    -5534.4,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -5520.0,
+    76.9
+   ],
+   "sitter_yaw": 9.3,
+   "reachable": false
+  },
+  {
+   "index": 35,
+   "kind": "gaming",
+   "chair": [
+    57.3,
+    -5680.6,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -5680.0,
+    73.5
+   ],
+   "sitter_yaw": -12.0,
+   "reachable": false
+  },
+  {
+   "index": 36,
+   "kind": "modern",
+   "chair": [
+    44.8,
+    -5854.5,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -5840.0,
+    73.7
+   ],
+   "sitter_yaw": 1.9,
+   "reachable": false
+  },
+  {
+   "index": 37,
+   "kind": "spreadsheet",
+   "chair": [
+    53.0,
+    -5987.4,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -6000.0,
+    74.4
+   ],
+   "sitter_yaw": -8.7,
+   "reachable": false
+  },
+  {
+   "index": 38,
+   "kind": "beige",
+   "chair": [
+    47.9,
+    -6140.3,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -6152.5,
+    73.4
+   ],
+   "sitter_yaw": 5.7,
+   "reachable": false
+  },
+  {
+   "index": 39,
+   "kind": "zx",
+   "chair": [
+    45.3,
+    -6299.6,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -6290.0,
+    75.4
+   ],
+   "sitter_yaw": 19.4,
+   "reachable": false
+  },
+  {
+   "index": 40,
+   "kind": "vr",
+   "chair": [
+    49.2,
+    -6447.6,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -6442.5,
+    73.5
+   ],
+   "sitter_yaw": -4.9,
+   "reachable": false
+  },
+  {
+   "index": 41,
+   "kind": "gaming",
+   "chair": [
+    52.6,
+    -6614.9,
+    0
+   ],
+   "chair_kind": "chair_bentwood",
+   "desk": [
+    129.5,
+    -6610.0,
+    76.2
+   ],
+   "sitter_yaw": -12.2,
+   "reachable": false
+  },
+  {
+   "index": 42,
+   "kind": "spreadsheet",
+   "chair": [
+    50.5,
+    -6756.6,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -6755.0,
+    75.0
+   ],
+   "sitter_yaw": -18.6,
+   "reachable": false
+  },
+  {
+   "index": 43,
+   "kind": "ps2",
+   "chair": [
+    53.2,
+    -6905.5,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -6900.0,
+    76.4
+   ],
+   "sitter_yaw": -14.0,
+   "reachable": false
+  },
+  {
+   "index": 44,
+   "kind": "modern",
+   "chair": [
+    51.3,
+    -7067.3,
+    0
+   ],
+   "chair_kind": "chair_stool",
+   "desk": [
+    129.5,
+    -7060.0,
+    75.7
+   ],
+   "sitter_yaw": -14.7,
+   "reachable": false
+  },
+  {
+   "index": 45,
+   "kind": "laptop",
+   "chair": [
+    40.5,
+    -7213.4,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -7212.5,
+    75.5
+   ],
+   "sitter_yaw": 2.1,
+   "reachable": false
+  },
+  {
+   "index": 46,
+   "kind": "zx",
+   "chair": [
+    45.8,
+    -7362.1,
+    0
+   ],
+   "chair_kind": "chair_gaming",
+   "desk": [
+    129.5,
+    -7365.0,
+    76.2
+   ],
+   "sitter_yaw": -16.0,
+   "reachable": false
+  },
+  {
+   "index": 47,
+   "kind": "beige",
+   "chair": [
+    40.0,
+    -7510.7,
+    0
+   ],
+   "chair_kind": "chair_aeron",
+   "desk": [
+    129.5,
+    -7517.5,
+    74.5
+   ],
+   "sitter_yaw": 2.2,
+   "reachable": false
+  },
+  {
+   "index": 48,
+   "kind": "imac",
+   "chair": [
+    50.5,
+    -7674.2,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -7662.5,
+    75.4
+   ],
+   "sitter_yaw": -10.4,
+   "reachable": false
+  },
+  {
+   "index": 49,
+   "kind": "sega",
+   "chair": [
+    39.6,
+    -7801.8,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -7815.0,
+    74.1
+   ],
+   "sitter_yaw": -7.9,
+   "reachable": false
+  },
+  {
+   "index": 50,
+   "kind": "imac",
+   "chair": [
+    40.1,
+    -7949.4,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -7960.0,
+    73.2
+   ],
+   "sitter_yaw": 19.2,
+   "reachable": false
+  },
+  {
+   "index": 51,
+   "kind": "beige",
+   "chair": [
+    55.4,
+    -8105.5,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -8105.0,
+    73.3
+   ],
+   "sitter_yaw": -15.5,
+   "reachable": false
+  },
+  {
+   "index": 52,
+   "kind": "zx",
+   "chair": [
+    51.9,
+    -8269.5,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -8265.0,
+    73.8
+   ],
+   "sitter_yaw": 13.9,
+   "reachable": false
+  },
+  {
+   "index": 53,
+   "kind": "vr",
+   "chair": [
+    50.5,
+    -8420.9,
+    0
+   ],
+   "chair_kind": "chair_office",
+   "desk": [
+    129.5,
+    -8432.5,
+    76.4
+   ],
+   "sitter_yaw": 16.9,
+   "reachable": false
+  },
+  {
+   "index": 54,
+   "kind": "ps2",
+   "chair": [
+    41.7,
+    -8580.5,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -8585.0,
+    76.3
+   ],
+   "sitter_yaw": 13.8,
+   "reachable": false
+  },
+  {
+   "index": 55,
+   "kind": "laptop",
+   "chair": [
+    55.8,
+    -8740.2,
+    0
+   ],
+   "chair_kind": "chair_folding",
+   "desk": [
+    129.5,
+    -8730.0,
+    73.0
+   ],
+   "sitter_yaw": -4.9,
+   "reachable": false
+  }
+ ],
  "desk_fans": [
   "DeskFan_Blades_04",
   "DeskFan_Blades_05",

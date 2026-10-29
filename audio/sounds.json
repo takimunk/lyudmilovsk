@@ -244,6 +244,41 @@
    "variants": 2,
    "duration": 2.5,
    "prompt": "Old elevator steel doors sliding open with a soft metallic rumble and a gentle stop, close, indoors, no bell, no voices"
+  },
+  {
+   "id": "diary_take",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.2,
+   "prompt": "A hardcover notebook pulled out of a canvas shoulder bag: a short rustle of fabric and a soft leather-bound book sliding out, close, indoors, no voices, no music"
+  },
+  {
+   "id": "diary_open",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.0,
+   "prompt": "A thick A4 hardcover planner opened flat: the leatherette cover swinging open with a soft creak of the spine and a papery whisper of pages settling, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_close",
+   "group": "diary",
+   "variants": 2,
+   "duration": 0.8,
+   "prompt": "A thick hardcover notebook closed with a soft muffled thump of the cover, short, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_page",
+   "group": "diary",
+   "variants": 4,
+   "duration": 0.7,
+   "prompt": "A single thick paper page of a notebook turned by hand: one crisp soft paper flip and swish, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_pages",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.0,
+   "prompt": "Several pages of a thick paper notebook riffled quickly with a thumb, a quick flutter of paper, close, quiet room, no voices"
   }
  ],
  "music": [

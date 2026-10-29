@@ -55,6 +55,10 @@ if GEN:
     LOD_TRIS = [14000, 5000, 1800, 700]
     LOD_SHELLS = [6, 4, 0, 0]
     TEX = 2048
+    # a generated body can stay as it was generated (Maru, 2026-10-29: the shells made her look nothing like her hi3d
+    # model): its own painted coat, no shells, more triangles
+    if B.get("gen_lods"):
+        LOD_TRIS, LOD_SHELLS = list(B["gen_lods"]), [0, 0, 0, 0]
 
 
 def log(*a):
@@ -105,6 +109,52 @@ def decimate(ob, tris):
         apply_mods(ob)
     for poly in ob.data.polygons:
         poly.use_smooth = True
+
+
+def decimate_face(ob, tris, face_tris):
+    """decimate(), but the face (the head forward of the ears, round the eyes and the muzzle) keeps ~face_tris of the
+    budget: an even collapse left a generated head a few hundred triangles, the eyes in faceted pits."""
+    J = B["joints"]
+    head, tip = np.array(J["head"], float), np.array(J["head_end"], float)
+    L = float(np.linalg.norm(tip - head))
+    P = verts_np(ob)
+    fwd = (tip - head) / L
+    t = (P - head) @ fwd                                     # along the head, 0 at the skull's back
+    d = np.linalg.norm((P - head) - t[:, None] * fwd, axis=1)  # off its axis
+    face = (t > -L * 0.15) & (d < L * 0.75)
+    n = sum(len(p.vertices) - 2 for p in ob.data.polygons)
+    nf = sum(len(p.vertices) - 2 for p in ob.data.polygons if face[list(p.vertices)].all())
+    if n <= tris or nf == 0:
+        decimate(ob, tris)
+        return
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bm.faces.ensure_lookup_table()
+    head_faces = [f for f in bm.faces if all(face[v.index] for v in f.verts)]
+    # the rest first (to what's left of the budget), then the face, each with the other side pinned
+    for part, budget in ((False, tris - face_tris), (True, face_tris)):
+        grp = ob.vertex_groups.new(name="dec")
+        idx = [i for i in range(len(ob.data.vertices)) if bool(face[i]) == part]
+        grp.add(idx, 1.0, "REPLACE")
+        cur = sum(len(p.vertices) - 2 for p in ob.data.polygons)
+        have = sum(len(p.vertices) - 2 for p in ob.data.polygons if all(bool(face[v]) == part for v in p.vertices))
+        mod = ob.modifiers.new("Decimate", "DECIMATE")
+        mod.ratio = max(0.01, min(1.0, (cur - have + budget) / cur))
+        mod.use_collapse_triangulate = True
+        mod.delimit = set()
+        mod.vertex_group = "dec"
+        mod.vertex_group_factor = 1000.0
+        apply_mods(ob)
+        ob.vertex_groups.remove(ob.vertex_groups["dec"])
+        P = verts_np(ob)
+        t = (P - head) @ fwd
+        d = np.linalg.norm((P - head) - t[:, None] * fwd, axis=1)
+        face = (t > -L * 0.15) & (d < L * 0.75)
+    bm.free()
+    for poly in ob.data.polygons:
+        poly.use_smooth = True
+    nf = sum(len(p.vertices) - 2 for p in ob.data.polygons if face[list(p.vertices)].all())
+    log("decimated with the face kept: %d tris, face %d" % (sum(len(p.vertices) - 2 for p in ob.data.polygons), nf))
 
 
 def copy_object(ob, name):
@@ -279,7 +329,10 @@ def build_body_gen():
     ob.name = "Body"
     high = copy_object(ob, "High")
     decimate(high, 400000)
-    decimate(ob, LOD_TRIS[0])
+    if B.get("face_tris"):
+        decimate_face(ob, LOD_TRIS[0] + B["face_tris"], B["face_tris"])
+    else:
+        decimate(ob, LOD_TRIS[0])
     piece = AN.body_piece(B)          # only for the skin weights (and the mouth, nose and eye places)
     log("generated body %d tris, %.1fs" % (sum(len(p.vertices) - 2 for p in ob.data.polygons), time.time() - t0))
     return ob, piece, high, img
@@ -465,7 +518,8 @@ def fur_field(A):
     for k, at in zip((1.0, -1.0), B.get("eyes_at") or [None, None]):
         c, r = (at[0], at[1]) if at is not None else (np.array([e[0], e[1] * k, e[2]]), B["eye_r"])
         d = np.linalg.norm(A.P - c, axis=1) / r
-        L = L * (0.08 + 0.92 * smooth01((d - 1.05) / 0.7))
+        g = B.get("eye_bare", 1.0)                     # how far out the lids stay bare (in eye radii, x the default)
+        L = L * (0.08 + 0.92 * smooth01((d - 1.05 * g) / (0.7 * g)))
     L = np.maximum(L, 0.15) * 0.01
     # comb: back toward the tail and down; down the legs; to the tip of the tail; back over the head; up the ears
     J = B["joints"]
@@ -657,7 +711,7 @@ def add_shells_from(ob, src, n, L, C, W, Wsrc):
     # and the shells over the eyes: the coarse copy's big triangles would spread the fur across them
     for c, r, _n in B.get("eyes_at") or []:
         cv = mathutils.Vector(c)
-        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * 1.9], context="FACES_ONLY")
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * (1.15 if B.get("eye_bare") else 1.9)], context="FACES_ONLY")
     bm.verts.ensure_lookup_table()
     loose = [v for v in bm.verts if not v.link_faces]
     keep_idx = [v.index for v in bm.verts if v.link_faces]
@@ -909,7 +963,14 @@ def main():
     strand_scale = B.get("strand_scale", 9.0 if CAT else 7.0)
     mat_fur = fur_material(coat_imgs[0], strands, strand_scale)
     proxy = None
-    if GEN:
+    if GEN and B.get("face_tris"):
+        # a face-dense proxy: LOD2's big triangles grew the shells over the head in flat, angular plates
+        proxy = copy_object(lods[0], "ShellProxy")
+        decimate_face(proxy, 9000, 4000)
+        Pv, Nv = verts_np(proxy), normals_np(proxy)
+        proxy_W = weights_for(Pv, piece)
+        proxy_A = attributes(Pv, Nv, proxy_W)
+    elif GEN:
         proxy = copy_object(lods[2], "ShellProxy")
         proxy_W, proxy_A = WL[2], AL[2]
     for li, o in enumerate(lods):
@@ -932,7 +993,7 @@ def main():
     eye_mat.name = "Eye"
     if proxy is not None:
         bpy.data.objects.remove(proxy)
-    for ob, bone in ([] if GEN and B.get("eye_n") is None else eyes()):
+    for ob, bone in ([] if GEN and (B.get("eye_n") is None or B.get("painted_eyes")) else eyes()):
         ob.data.materials.append(eye_mat)
         skin_to(ob, arm, {bone: np.ones(len(ob.data.vertices))})
     log("built %.1fs" % (time.time() - t0), "LOD0 with shells", sum(len(p.vertices) - 2 for p in lods[0].data.polygons), "tris")
@@ -1019,6 +1080,9 @@ def export(arm, lods, acts, lib, eye_mat):
     rig = {"breed": BREED, "kind": B["kind"], "withers_cm": float(J["chest"][2] * 100 + B["trunk"][7][1] * 0),
            "height_cm": float(max(q[1] for q in B["trunk"]) * 100), "length_cm": float((J["head_end"][0] - J["tail"][0][0]) * 100),
            "eye_l": [float(eye[0] * 100), float(-eye[1] * 100), float(eye[2] * 100)],
+           "eyes_at": [[c[0] * 100, -c[1] * 100, c[2] * 100, r * 100, n[0], -n[1], n[2]] for c, r, n in B.get("eyes_at") or []]
+           if B.get("painted_eyes") else [],
+           "fur": bool(LOD_SHELLS[0]),
            "coats": CO.COATS[BREED], "eyes": len(CO.EYES[BREED]), "strand_scale": B.get("strand_scale", 9.0 if CAT else 7.0),
            "clips": {n: {"seconds": lib.clips[n][0], "loop": lib.clips[n][1]} for n in acts},
            "speeds_cms": {k: round(float(v) * 100, 1) for k, v in lib.speeds.items()},

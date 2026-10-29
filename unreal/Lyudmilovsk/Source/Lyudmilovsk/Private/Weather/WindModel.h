@@ -41,6 +41,9 @@ namespace LyudWeather
 		double LongitudeDeg = 20.40;
 		double UtcOffsetHours = 2.0;
 		uint32_t Seed = 1977;
+		/** Take the weather's direction and strength from the synoptic chain (WeatherModel.h: fronts veer and freshen
+		 *  it); false = the old free-running noise of Seed. The day's rhythm, the sea breeze and gusts stay here. */
+		bool bSynoptic = true;
 	};
 
 	/** The wind of the whole area at one moment, without gusts. */

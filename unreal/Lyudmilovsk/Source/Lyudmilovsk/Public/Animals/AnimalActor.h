@@ -104,6 +104,12 @@ private:
 	float EyeSaccadeAt = 0.f;
 	float EyeClock = 0.f;
 	FVector EyeGaze[2] = { FVector::ForwardVector, FVector::ForwardVector };
+	/** Her painted eyes (a breed with painted_eyes): the body's material instances and each eye in the head bone's frame. */
+	UPROPERTY(Transient) TArray<TObjectPtr<class UMaterialInstanceDynamic>> BodyMIDs;
+	FVector PaintedInHead[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	FVector PaintedNInHead[2] = { FVector::ForwardVector, FVector::ForwardVector };
+	float PaintedR[2] = { 1.f, 1.f };
+	FVector PaintShift[2] = { FVector::ZeroVector, FVector::ZeroVector };
 	void UpdateEyes();
 	void TickEyes(float DeltaSeconds);
 

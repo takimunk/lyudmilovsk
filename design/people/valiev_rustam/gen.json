@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 45-year-old Tatar engineer: average height, solid build, dark hair cut short with grey at the temples, a neat short black beard, dark eyes; a navy padded work jacket over a blue checked shirt, dark grey work trousers, brown leather work boots. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "32ae232ba4344301b49632a6497ccc94",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "32ae232ba4344301b49632a6497ccc94",
+    "image_index": 0
+   },
+   {
+    "task_id": "32ae232ba4344301b49632a6497ccc94",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "e3872ae6911d4eb498136188df3094e0",
+  "points": 45,
+  "file": "blender/characters/valiev_rustam/gen/model.glb (local, ignored)",
+  "sha256": "28f3a458cd9dcd1269397d1cc98ba2ef42ae1549029c98bc4242430989e935c6",
+  "bytes": 48108052,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}

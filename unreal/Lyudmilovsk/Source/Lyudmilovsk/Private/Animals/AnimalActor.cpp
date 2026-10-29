@@ -39,6 +39,9 @@ namespace
 		FAnimalCollarSpec Collar;
 		/** Runtime eyeballs (blender/animals/gen/<Breed>/eyes.json): middle and look per eye (cm, the breed's frame). */
 		TArray<FVector> EyeAt, EyeLook;
+		/** Her own painted eyes (build_animal.py painted_eyes): middle, radius and outward normal per eye, her frame. */
+		TArray<FVector4> PaintedAt;
+		TArray<FVector> PaintedN;
 		float EyeRadius = 1.f, EyePush = 0.f, IrisR = 0.85f, PupilR = 0.4f;
 		FLinearColor Iris = FLinearColor(0.07f, 0.03f, 0.012f), Sclera = FLinearColor(0.1f, 0.06f, 0.045f);
 	};
@@ -106,6 +109,19 @@ namespace
 				if ((*Co)->TryGetNumberField(TEXT("chest_radius_cm"), V)) { D.Collar.ChestRadius = (float)V; }
 				if ((*Co)->TryGetNumberField(TEXT("com_cm"), V)) { D.Collar.TagLength = (float)V; }
 				D.bCollar = true;
+			}
+			const TArray<TSharedPtr<FJsonValue>>* Pe = nullptr;
+			if ((*O)->TryGetArrayField(TEXT("painted_eyes"), Pe))
+			{
+				for (const TSharedPtr<FJsonValue>& E : *Pe)
+				{
+					const TArray<TSharedPtr<FJsonValue>>& V = E->AsArray();
+					if (V.Num() == 7)
+					{
+						D.PaintedAt.Add(FVector4(V[0]->AsNumber(), V[1]->AsNumber(), V[2]->AsNumber(), V[3]->AsNumber()));
+						D.PaintedN.Add(FVector(V[4]->AsNumber(), V[5]->AsNumber(), V[6]->AsNumber()).GetSafeNormal());
+					}
+				}
 			}
 			const TSharedPtr<FJsonObject>* Ey = nullptr;
 			if ((*O)->TryGetObjectField(TEXT("eyeballs"), Ey))
@@ -315,8 +331,38 @@ void AAnimalActor::UpdateEyes()
 	}
 	Eyeballs.Reset();
 	EyeMIDs.Reset();
+	BodyMIDs.Reset();
 	const FBreedData* D = Breeds().Find(Breed);
 	USkeletalMesh* SK = Body ? Body->GetSkeletalMeshAsset() : nullptr;
+	if (D && D->PaintedAt.Num() == 2 && SK && SK->GetRefSkeleton().FindBoneIndex(TEXT("head")) != INDEX_NONE)
+	{
+		// her painted eyes look about: M_AnimalBody reads the texture shifted inside each eye (EyeX_At, EyeX_Shift)
+		const FTransform HeadRef = FAnimationRuntime::GetComponentSpaceTransformRefPose(SK->GetRefSkeleton(), SK->GetRefSkeleton().FindBoneIndex(TEXT("head")));
+		const TArray<FName> BodySlots = Body->GetMaterialSlotNames();
+		for (int32 i = 0; i < BodySlots.Num(); i++)
+		{
+			if (!BodySlots[i].ToString().Contains(TEXT("Fur")) && !BodySlots[i].ToString().Contains(TEXT("Eye")))
+			{
+				if (UMaterialInstanceDynamic* M = Body->CreateDynamicMaterialInstance(i))
+				{
+					for (int32 S = 0; S < 2; S++)
+					{
+						const FVector4& A = D->PaintedAt[S];
+						M->SetVectorParameterValue(S ? TEXT("EyeR_At") : TEXT("EyeL_At"), FLinearColor(A.X, A.Y, A.Z, A.W));
+					}
+					BodyMIDs.Add(M);
+				}
+			}
+		}
+		for (int32 S = 0; S < 2; S++)
+		{
+			const FVector4& A = D->PaintedAt[S];
+			PaintedInHead[S] = FTransform(FVector(A.X, A.Y, A.Z)).GetRelativeTransform(HeadRef).GetLocation();
+			PaintedNInHead[S] = HeadRef.InverseTransformVectorNoScale(D->PaintedN[S]);
+			PaintedR[S] = A.W;
+		}
+		return;
+	}
 	if (!D || D->EyeAt.Num() != 2 || !SK || CVarAnimalEyes.GetValueOnGameThread() == 0)
 	{
 		return;
@@ -374,7 +420,7 @@ void AAnimalActor::UpdateEyes()
 
 void AAnimalActor::TickEyes(float DeltaSeconds)
 {
-	if (EyeMIDs.Num() != 2)
+	if (EyeMIDs.Num() != 2 && BodyMIDs.Num() == 0)
 	{
 		return;
 	}
@@ -383,6 +429,40 @@ void AAnimalActor::TickEyes(float DeltaSeconds)
 	{
 		EyeSaccadeAt = EyeClock + Rng.FRandRange(0.4f, 2.5f);
 		EyeSaccade = FVector2D(Rng.FRandRange(-5.f, 5.f), Rng.FRandRange(-3.f, 3.f));
+	}
+	if (BodyMIDs.Num() > 0)
+	{
+		// the painted iris slides across the eye toward what she looks at: the target's direction off the eye's own
+		// outward normal, at most ~35 deg, a quarter of the eye's radius at that (more smears the pupil)
+		const FTransform HeadW = Body->GetSocketTransform(TEXT("head"));
+		for (int32 S = 0; S < 2; S++)
+		{
+			const FVector At = HeadW.TransformPosition(PaintedInHead[S]);
+			const FVector N = HeadW.TransformVectorNoScale(PaintedNInHead[S]);
+			FVector Dir = N;
+			if (CVarAnimalEyeFix.GetValueOnGameThread())
+			{
+				Dir = FRotator(0.f, CVarAnimalEyeYaw.GetValueOnGameThread(), 0.f).RotateVector(N);
+			}
+			else if (LookWeight > 0.05f)
+			{
+				Dir = FMath::Lerp(N, (LookWorld - At).GetSafeNormal(), LookWeight).GetSafeNormal();
+			}
+			// small saccades on top, in the eye's own plane
+			const FVector Side = FVector::CrossProduct(N, FVector::UpVector).GetSafeNormal();
+			const FVector Up = FVector::CrossProduct(Side, N);
+			Dir = (Dir + Side * FMath::DegreesToRadians(EyeSaccade.X) + Up * FMath::DegreesToRadians(EyeSaccade.Y)).GetSafeNormal();
+			FVector T = Dir - N * FVector::DotProduct(Dir, N);              // across the eye
+			const float Off = FMath::Min(T.Size(), 0.57f) / 0.57f;          // sin 35 deg = all the way
+			T = T.GetSafeNormal() * Off * PaintedR[S] * 0.25f;
+			PaintShift[S] = FMath::Lerp(PaintShift[S], T, FMath::Min(1.f, DeltaSeconds * 20.f));
+		}
+		for (UMaterialInstanceDynamic* M : BodyMIDs)
+		{
+			M->SetVectorParameterValue(TEXT("EyeL_Shift"), FLinearColor(PaintShift[0].X, PaintShift[0].Y, PaintShift[0].Z, 0.f));
+			M->SetVectorParameterValue(TEXT("EyeR_Shift"), FLinearColor(PaintShift[1].X, PaintShift[1].Y, PaintShift[1].Z, 0.f));
+		}
+		return;
 	}
 	for (int32 S = 0; S < 2; S++)
 	{

@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 55-year-old Russian chemist: medium height, sturdy, warm round face, light ash-blonde hair in a neat short bob, small pearl earrings; a long beige knitted cardigan over a navy blouse, a dark brown knee-length wool skirt, opaque dark tights, low brown leather ankle boots. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "8633d01bdafb4b3d8fa2f07c2baf7358",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "8633d01bdafb4b3d8fa2f07c2baf7358",
+    "image_index": 0
+   },
+   {
+    "task_id": "8633d01bdafb4b3d8fa2f07c2baf7358",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "6fec6ff6939847fba51c3afd217eafad",
+  "points": 45,
+  "file": "blender/characters/zotova_galina/gen/model.glb (local, ignored)",
+  "sha256": "af57b4e96e55310dedca3ede2616a25e5a4775c08286dcf07b3279cb91c4d6b1",
+  "bytes": 48761012,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}
