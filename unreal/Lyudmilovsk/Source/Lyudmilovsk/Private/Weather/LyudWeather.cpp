@@ -172,6 +172,7 @@ namespace
 		O.FreezingDegreeDays = S.FreezingDegreeDays;
 		O.SeaIceCm = S.SeaIceCm;
 		O.SeaIceCover = S.SeaIceCover;
+		O.SeaSurgeM = S.SeaSurgeM;
 		O.Kp = S.Kp;
 		O.Aurora = S.Aurora;
 		O.Halo = S.Halo;

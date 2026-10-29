@@ -161,6 +161,8 @@ struct LYUDMILOVSK_API FLyudWeatherState
 	UPROPERTY(BlueprintReadOnly, Category = "Weather|Sea") float SeaIceCm = 0.f;
 	/** 0..1 of the open sea frozen over. */
 	UPROPERTY(BlueprintReadOnly, Category = "Weather|Sea") float SeaIceCover = 0.f;
+	/** Storm surge on top of the tide, m (low pressure 1 cm/hPa, onshore wind setup; ALyudSea adds it to SeaLevel). */
+	UPROPERTY(BlueprintReadOnly, Category = "Weather|Sea") float SeaSurgeM = 0.f;
 
 	// the sky beyond the weather (chances 0..1; whoever draws them checks darkness, the sun and the cloud)
 	/** Planetary geomagnetic index 0..9. */

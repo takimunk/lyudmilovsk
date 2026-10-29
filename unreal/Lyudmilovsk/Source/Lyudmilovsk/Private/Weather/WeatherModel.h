@@ -139,6 +139,7 @@ namespace LyudWeather
 		float FreezingDegreeDays = 0.f; // this winter's sum of (-T) over freezing days
 		float SeaIceCm = 0.f;           // thickness of the level sea ice (0 = open water)
 		float SeaIceCover = 0.f;        // 0..1 how much of the open sea is frozen over
+		float SeaSurgeM = 0.f;          // storm surge on top of the tide: low pressure (1 cm/hPa) and onshore wind setup, m
 
 		// the sky beyond the weather
 		float Kp = 1.f;                 // planetary geomagnetic index 0..9

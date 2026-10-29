@@ -935,6 +935,9 @@ namespace LyudWeather
 			const double KSnow = Rate > 0.0 && SnowFrac > 0.0 ? 3.912 / (1500.0 / std::pow(std::max(Rate * SnowFrac, 0.01), 0.8)) : 0.0;
 			S.VisibilityM = float(Clamp(3.912 / (KFog + KRain + KSnow), 30.0, 50000.0));
 
+			// the sea's surge: the inverse barometer and the wind piling water on the coast (a westerly gale ~ +0.6 m)
+			S.SeaSurgeM = float((1013.0 - S.PressureHPa) * 0.01 + 0.0016 * S.WindSpeed * S.WindSpeed * std::cos((S.WindFromDeg - 270.0) * Pi / 180.0) * OpenSea);
+
 			// frost on surfaces: clear calm frozen nights near saturation, rime in freezing fog
 			S.Frost = float(Clamp01(SmoothStep(0.5, -3.0, T) * (SmoothStep(2.5, 0.5, Spread) * Calm * (1.0 - Opaque) * Night + S.Fog * SmoothStep(0.0, -2.0, T))));
 
