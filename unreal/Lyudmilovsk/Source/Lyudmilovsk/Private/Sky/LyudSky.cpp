@@ -183,6 +183,12 @@ float ALyudSky::MoonSizeNowDeg() const
 	return FMath::Clamp(Pin > 0.f ? Pin : MoonSizeDeg, 0.1f, 40.f);
 }
 
+FVector ALyudSky::BearingDirection(double BearingDeg) const
+{
+	const double B = FMath::DegreesToRadians(BearingDeg);
+	return WorldDirection(FVector(FMath::Sin(B), FMath::Cos(B), 0.0));
+}
+
 void ALyudSky::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
@@ -258,8 +264,9 @@ void ALyudSky::UpdateSky()
 	// The atmosphere reddens and dims the sun near the horizon by itself; below it the sun still lights
 	// the upper air (twilight) until it is well down, but no longer the ground.
 	const float SunAlt = (float)SunPos.AltitudeDeg;
-	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt));
-	SunLight->SetLightColor(SunColor);
+	// a flare on the star (ALyudRareSky): up to a quarter brighter and whiter at its peak
+	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt) * (1.f + 0.25f * FlareBoost));
+	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * FlareBoost));
 	const float Dark = 1.f - SmoothStep01(-10.f, -2.f, SunAlt);   // 1 once the sun is down past civil twilight
 	// Europa's phase from the very directions the sky material lights its disk with: the phase angle is the angle at
 	// Europa between the sun and the viewer, so the light's phase and the disk's are the same

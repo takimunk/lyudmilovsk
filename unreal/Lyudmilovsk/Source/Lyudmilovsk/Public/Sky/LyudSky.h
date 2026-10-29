@@ -165,6 +165,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAltitude() const { return SunPos.AltitudeDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
+	UFUNCTION(BlueprintCallable, Category = "Sky") float MoonAltitude() const { return MoonPos.AltitudeDeg; }
+	/** Europa's lit fraction, 0 new .. 1 full. */
+	UFUNCTION(BlueprintCallable, Category = "Sky") float MoonLitFraction() const { return float(MoonPhase); }
+	/** World unit vectors toward the sun and the moon now, and toward a compass bearing on the horizon. */
+	FVector SunDirection() const { return WorldDirection(SunPos.EastNorthUp()); }
+	FVector MoonDirection() const { return WorldDirection(MoonPos.EastNorthUp()); }
+	FVector BearingDirection(double BearingDeg) const;
+	/** The dome's material instance (ALyudRareSky sets the aurora's, the flares' and the lightning's parameters on it). */
+	UMaterialInstanceDynamic* GetSkyMaterialInstance() const { return SkyMID; }
+
+	/** A flare on the star now, 0..1 (ALyudRareSky): the daylight a little brighter and whiter while it lasts. */
+	UPROPERTY(Transient, BlueprintReadWrite, Category = "Sky") float FlareBoost = 0.f;
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
 	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
 	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
