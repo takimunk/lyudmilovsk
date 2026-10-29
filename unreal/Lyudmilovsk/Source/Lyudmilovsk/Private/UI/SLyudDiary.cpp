@@ -438,8 +438,8 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 		[
 			SNew(SBox).WidthOverride(170.f).HeightOverride(212.f)
 			[
-				SNew(SLyudInkButton).HoverMark(EMark::Box).SelectedMark(EMark::Circle).Selected(Id == State->SelectedItem).Seed(SeedOf(Id, 2))
-				.MarkColor(PencilFaint).SelectedColor(Red).Inset(FMargin(10.f, 6.f))
+				SNew(SLyudInkButton).HoverMark(EMark::Box).SelectedMark(EMark::Highlight).Selected(Id == State->SelectedItem).Seed(SeedOf(Id, 2))
+				.MarkColor(PencilFaint).SelectedColor(Highlight).Inset(FMargin(10.f, 6.f))
 				.OnClicked_Lambda([this, Id]() { State->SelectedItem = Id; Changed(); })
 				[
 					// worn or in the hand, and how many, on a line of their own above the sketch
