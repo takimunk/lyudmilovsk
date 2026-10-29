@@ -11,6 +11,8 @@
 #include "Engine/SkeletalMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Animation/SkeletalMeshActor.h"
@@ -23,9 +25,12 @@
 #include "Sky/LyudSky.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
+#include "Transport/LyudTransport.h"
 #include "Weather/LyudRainFog.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
+#include "Winter/LyudWinter.h"
+#include "../Weather/WeatherModel.h"
 
 namespace
 {
@@ -34,6 +39,11 @@ namespace
 	TAutoConsoleVariable<float> CVarMusicGap(TEXT("lyud.Music.Gap"), 1.f, TEXT("Scale on the silences between music cues (0.1 = almost back to back)."));
 	TAutoConsoleVariable<FString> CVarMusicMood(TEXT("lyud.Music.Mood"), TEXT(""), TEXT("Force the music's mood (club, dawn, day, dusk, night, rain, storm, snow, sea, flight); empty = by the moment."));
 	TAutoConsoleVariable<int32> CVarDebug(TEXT("lyud.Sound.Debug"), 0, TEXT("1: print what the soundscape hears on screen."));
+	TAutoConsoleVariable<int32> CVarSteps(TEXT("lyud.Sound.Steps"), 1, TEXT("1: the player's footsteps outdoors (snow, slush, puddles, ice, earth); 0: none."));
+	TAutoConsoleVariable<float> CVarUmbrella(TEXT("lyud.Sound.Umbrella"), -1.f, TEXT("Force an umbrella over the listener 0..1 (rain drums on it); -1 = as SetUmbrella says."));
+	TAutoConsoleVariable<float> CVarWindows(TEXT("lyud.Sound.Windows"), -1.f, TEXT("Force windows near the listener indoors 0..1 (rain ticks on the glass); -1 = as SetNearWindows says."));
+	TAutoConsoleVariable<FString> CVarForce(TEXT("lyud.Sound.Force"), TEXT(""),
+		TEXT("Force the weather voices' inputs (tests): \"Hail=0.8 Melt=1 Glaze=1 Drip=1 IceRate=-1.5 Puddles=1 FogSignal=1\"; empty = from the weather."));
 	TAutoConsoleVariable<int32> CVarBed(TEXT("lyud.Sound.Bed"), 1, TEXT("1: the procedural outdoor bed (wind, leaves, surf, rain, crickets, thunder); 0: off."));
 
 	FAutoConsoleCommandWithWorld NextCommand(TEXT("lyud.Music.Next"), TEXT("Play a music cue for the current mood now."),
@@ -81,7 +91,12 @@ namespace
 		return F ? *F : TArray<FName>();
 	}
 
-	float Smooth(float A, float B, float X) { return FMath::SmoothStep(A, B, X); }
+	/** 0 at A .. 1 at B, either way round (UE's FMath::SmoothStep is 0 for any X under A, so it can't go downhill). */
+	float Smooth(float A, float B, float X)
+	{
+		const float T = FMath::Clamp((X - A) / (B - A), 0.f, 1.f);
+		return T * T * (3.f - 2.f * T);
+	}
 
 	const TCHAR* Conifers[] = { TEXT("ScotsPine"), TEXT("DunePine"), TEXT("NorwaySpruce"), TEXT("Juniper") };
 	bool IsConifer(FName Species)
@@ -583,6 +598,7 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 				P.RainWater = 1.f;
 			}
 		}
+		UpdateWeatherVoices(P, Weather->GetModelState(), Sea);
 	}
 	// field crickets: summer nights (and late evenings) in the warm
 	const float Doy = DayOfYear();
@@ -593,6 +609,154 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 	{
 		Bed->SetParams(P);
 	}
+}
+
+void ULyudSoundscapeSubsystem::UpdateWeatherVoices(LyudAudio::FAmbienceParams& P, const LyudWeather::FWeatherState& S, const ALyudSea* Sea)
+{
+	using LyudWeather::EPrecip;
+	const float Through = 0.15f + 0.85f * Outdoors;
+	const float Trees = FMath::Clamp(Leafy * LeafSeason + Conifer, 0.f, 1.f);
+	const float Trunks = FMath::Clamp(Leafy + Conifer, 0.f, 1.f);
+	// what falls
+	P.Drizzle = S.Precip == EPrecip::Drizzle || S.Precip == EPrecip::FreezingDrizzle ? 1.f : 0.f;
+	P.Hail = S.Precip == EPrecip::Hail || S.Precip == EPrecip::Graupel || S.Precip == EPrecip::Thunderstorm ? S.Hail : 0.f;
+	const bool bShowers = S.Precip == EPrecip::Showers || S.Precip == EPrecip::Thunderstorm || S.Precip == EPrecip::SnowShowers
+		|| S.Precip == EPrecip::Hail || S.Precip == EPrecip::Graupel;
+	P.Showery = bShowers ? 1.f : FMath::Clamp(S.ShowerCells * 2.f, 0.f, 1.f);
+	const float ForcedUmbrella = CVarUmbrella.GetValueOnGameThread();
+	P.Umbrella = ForcedUmbrella >= 0.f ? ForcedUmbrella : Umbrella;
+	const float ForcedWindows = CVarWindows.GetValueOnGameThread();
+	P.Windows = ForcedWindows >= 0.f ? ForcedWindows : NearWindows;
+	// the ground and the air
+	P.SnowDepthCm = S.SnowDepthCm;
+	P.SnowDensity = S.SnowDensity;
+	P.Fog = S.Fog;
+	P.Wet = S.Wet;
+	P.Puddles = S.TempC > 0.f && S.SnowDepthCm < 1.f ? 0.6f * Smooth(0.5f, 0.9f, S.Wet) : 0.f;
+	P.Melt = S.Melt;
+	P.Glaze = S.Glaze * Trunks * Through;
+	// the trees drip in fog and for a while after rain, not while it still pours and not frozen
+	const float AfterRain = S.Wet * S.Wet * (1.f - Smooth(0.05f, 0.6f, S.PrecipRate));
+	P.Drip = (S.TempC > 0.5f ? 1.f : 0.f) * Trees * FMath::Max(AfterRain, 0.8f * S.Fog) * Through;
+
+	// the sea ice: from the shore out (the beach the surf would break on), its swell, the night's cooling
+	P.SeaIce = 0.f;
+	P.OnIce = 0.f;
+	if (Sea && bHaveShore && S.SeaIceCover > 0.01f && S.SeaIceCm > 0.5f)
+	{
+		P.SeaIce = S.SeaIceCover;
+		P.IceCm = S.SeaIceCm;
+		P.IceDistance = float(FVector::Dist2D(Shore, Listener)) / 100.f;
+		P.IcePan = PanOf(Shore);
+		P.IceSwell = Sea->WaveHeight() / 100.f;
+		P.OnIce = Sea->DepthAt(Listener) > 0.f && S.SeaIceCover > 0.5f && S.SeaIceCm > 5.f ? 1.f : 0.f;
+	}
+	// how fast the air is cooling, C per game hour (smoothed; a jump of the clock or a preset is not a change)
+	const double Dh = S.Hours - LastWeatherHours;
+	if (LastWeatherHours > -1e8 && Dh > 1e-4 && Dh < 1.0)
+	{
+		const float Rate = float((S.TempC - LastWeatherTemp) / Dh);
+		TempRate = FMath::Lerp(TempRate, FMath::Clamp(Rate, -5.f, 5.f), FMath::Clamp(float(Dh) * 4.f, 0.f, 1.f));
+	}
+	if (Dh != 0.0)
+	{
+		LastWeatherHours = S.Hours;
+		LastWeatherTemp = S.TempC;
+	}
+	P.IceTempRate = TempRate;
+
+	// underfoot: the winter's snow field knows the drifts, the cleared paths and where the sea ice holds
+	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (const ULyudWinterSubsystem* Winter = ULyudWinterSubsystem::Get(this); Winter && Winter->IsReady() && PC && PC->GetPawn())
+	{
+		const FVector Feet = PC->GetPawn()->GetActorLocation();
+		P.UnderfootSnowCm = Winter->GetSnowDepthAt(Feet);
+		if (Winter->IsIceWalkable(Feet))
+		{
+			P.OnIce = 1.f;
+		}
+	}
+
+	// the lighthouse's fog signal (the Mayak station's lantern) sounds when the visibility drops under ~2 km
+	P.FogSignal = 0.f;
+	if (!bLighthouseLooked)
+	{
+		if (const ULyudTransportSubsystem* Transport = ULyudTransportSubsystem::Get(this); Transport && Transport->IsRunning())
+		{
+			bLighthouseLooked = true;
+			const int32 Index = Transport->FindStation(TEXT("mayak"));
+			const TArray<FLyudTransitStation> Stations = Transport->GetStations();
+			if (Stations.IsValidIndex(Index))
+			{
+				bHaveLighthouse = true;
+				Lighthouse = Stations[Index].Entrance + FVector(0, 0, 3000.f);
+			}
+		}
+	}
+	if (bHaveLighthouse)
+	{
+		P.FogSignal = Smooth(2500.f, 1200.f, S.VisibilityM);
+		P.FogSignalDistance = float(FVector::Dist(Lighthouse, Listener)) / 100.f;
+		P.FogSignalPan = PanOf(Lighthouse);
+	}
+
+	// tests: lyud.Sound.Force "Name=Value ..."
+	TArray<FString> Forces;
+	CVarForce.GetValueOnGameThread().ParseIntoArrayWS(Forces);
+	for (const FString& F : Forces)
+	{
+		FString Name, Value;
+		if (!F.Split(TEXT("="), &Name, &Value))
+		{
+			continue;
+		}
+		const float V = FCString::Atof(*Value);
+		if (Name == TEXT("Hail")) P.Hail = V;
+		else if (Name == TEXT("Melt")) P.Melt = V;
+		else if (Name == TEXT("Glaze")) P.Glaze = V;
+		else if (Name == TEXT("Drip")) P.Drip = V;
+		else if (Name == TEXT("IceRate")) P.IceTempRate = V;
+		else if (Name == TEXT("Puddles")) P.Puddles = V;
+		else if (Name == TEXT("FogSignal")) P.FogSignal = V;
+	}
+}
+
+void ULyudSoundscapeSubsystem::UpdateSteps(float DeltaTime)
+{
+	// the player's feet outdoors: a step each stride on the ground (the weather decides what it sounds like)
+	const UWorld* World = GetWorld();
+	const APlayerController* PC = World->GetFirstPlayerController();
+	const ACharacter* Hero = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	const UCharacterMovementComponent* Move = Hero ? Hero->GetCharacterMovement() : nullptr;
+	if (!Bed || !Move || !Move->IsMovingOnGround() || Outdoors < 0.5f || CVarSteps.GetValueOnGameThread() <= 0 || CVarSound.GetValueOnGameThread() <= 0)
+	{
+		StrideLeft = 0.3f;
+		return;
+	}
+	const float Speed = float(Move->Velocity.Size2D()) / 100.f;
+	if (Speed < 0.3f)
+	{
+		StrideLeft = FMath::Min(StrideLeft, 0.2f);
+		return;
+	}
+	StrideLeft -= Speed * DeltaTime;
+	if (StrideLeft <= 0.f)
+	{
+		// strides lengthen with the pace: ~0.7 m walking, ~1.1 m running
+		StrideLeft += FMath::GetMappedRangeValueClamped(FVector2f(1.4f, 4.5f), FVector2f(0.72f, 1.1f), Speed);
+		bLeftFoot = !bLeftFoot;
+		Bed->Footstep(FMath::GetMappedRangeValueClamped(FVector2f(0.8f, 4.5f), FVector2f(0.6f, 1.4f), Speed), bLeftFoot ? -0.1f : 0.1f);
+	}
+}
+
+void ULyudSoundscapeSubsystem::SetUmbrella(float Amount)
+{
+	Umbrella = FMath::Clamp(Amount, 0.f, 1.f);
+}
+
+void ULyudSoundscapeSubsystem::SetNearWindows(float Amount)
+{
+	NearWindows = FMath::Clamp(Amount, 0.f, 1.f);
 }
 
 void ULyudSoundscapeSubsystem::OnLightning(FVector Location, float DistanceFromViewM)
@@ -1033,6 +1197,7 @@ void ULyudSoundscapeSubsystem::Tick(float DeltaTime)
 		UpdateBed();
 	}
 	UpdateFar(DeltaTime);
+	UpdateSteps(DeltaTime);
 	ClubTimer -= DeltaTime;
 	if (ClubTimer <= 0.f)
 	{
@@ -1054,9 +1219,12 @@ FString ULyudSoundscapeSubsystem::DebugReport() const
 		Bed->GetVoiceRms(Rms);
 	}
 	return FString::Printf(TEXT("SOUND outdoors %.2f wind %.1f m/s gust %.2f leaves %.2f (season %.2f dry %.2f) needles %.2f surf %s %.0f m h %.2f T %.1f roof %.0f bird %d | ")
-		TEXT("rms wind %.3f leaves %.3f surf %.3f rain %.3f crickets %.3f thunder %.3f | music mood %s cue %s silence %.0f s | sounds %d cues %d"),
+		TEXT("rms wind %.3f leaves %.3f surf %.3f rain %.3f crickets %.3f thunder %.3f snow %.3f drips %.3f ice %.3f signal %.3f steps %.3f | ")
+		TEXT("lighthouse %s %.0f m air %+.2f C/h | music mood %s cue %s silence %.0f s | sounds %d cues %d"),
 		Outdoors, LastWind, LastGust, Leafy, LeafSeason, LeafDry, Conifer, bHaveShore ? TEXT("yes") : TEXT("no"),
 		bHaveShore ? FVector::Dist(Shore, Listener) / 100.f : -1.f, SurfHeight, SurfPeriod, Roof, bBirdFlying ? 1 : 0,
-		Rms[0], Rms[1], Rms[2], Rms[3], Rms[4], Rms[5], *Mood.ToString(), *CurrentCue.ToString(),
+		Rms[0], Rms[1], Rms[2], Rms[3], Rms[4], Rms[5], Rms[6], Rms[7], Rms[8], Rms[9], Rms[10],
+		bHaveLighthouse ? TEXT("yes") : TEXT("no"), bHaveLighthouse ? FVector::Dist(Lighthouse, Listener) / 100.f : -1.f, TempRate,
+		*Mood.ToString(), *CurrentCue.ToString(),
 		FMath::Max(SilenceUntil - PlayTime, 0.0), CueRefs.Num(), Cues.Num());
 }

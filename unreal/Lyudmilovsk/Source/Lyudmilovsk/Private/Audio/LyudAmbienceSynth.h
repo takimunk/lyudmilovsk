@@ -20,6 +20,8 @@ public:
 	void SetParams(const LyudAudio::FAmbienceParams& InParams);
 	/** Lightning DistanceM away at Pan: the thunder arrives after the sound's travel time. */
 	void Strike(float DistanceM, float Pan);
+	/** A footstep of the player now (Strength ~1 walking), its pan: what it sounds like comes from the ground's params. */
+	void Footstep(float Strength, float Pan);
 	/** Each voice's loudness over the last block (tests, lyud.Sound.Debug). */
 	void GetVoiceRms(float Out[LyudAudio::NumVoices]) const;
 
