@@ -66,6 +66,15 @@ def tick(dt):
         pawn.character_movement.set_editor_property("max_walk_speed", 900.0)
         st["started"] = True
         st["w"] = 0
+        # the doors (ALyudDoor) stand open: this test is about the walls, floors and stairs; NPCs open
+        # doors themselves (docs/doors.md)
+        door_cls = unreal.load_class(None, "/Script/Lyudmilovsk.LyudDoorBase")
+        n_open = 0
+        for a in (unreal.GameplayStatics.get_all_actors_of_class(w, door_cls) if door_cls else []):
+            if not a.is_locked() if hasattr(a, "is_locked") else True:
+                a.open(None)
+                n_open += 1
+        log("opened %d doors" % n_open)
         if not WALKS:
             log("summary: no routes")
             unreal.SystemLibrary.execute_console_command(w, "quit")

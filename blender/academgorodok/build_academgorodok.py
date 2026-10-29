@@ -420,7 +420,9 @@ def build():
     join(gate_ob, copies)
     parts["Gates"] = gate_ob
 
-    sq = mesh_object("Square", plan.square_mesh(), coll)
+    sq_mesh = plan.square_mesh()
+    sq_mesh.extend(plan.benches(houses))
+    sq = mesh_object("Square", sq_mesh, coll)
     fx, fy = plan.SQUARE["fountain"]
     copies = []
     for name, kw in (("fountain", {}), ("flowerbed_railing", {"radius": plan.SQUARE["bed_r"]})):
@@ -457,6 +459,7 @@ def export(parts):
                                     "open": d["open"], "locked": d["locked"]})
     # every plant is an AProceduralPlant: the square's beds and hedges, the library's pots
     layout["plants"] = [dict(pl) for pl in plan.SQUARE_PLANTS]
+    layout["benches"] = [dict(b) for b in plan.BENCHES]
     for name, h in HOUSES.items():
         for pl in getattr(h, "plants", []):
             p0 = h.frame(tuple(pl["at"]))

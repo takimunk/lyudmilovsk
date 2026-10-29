@@ -266,6 +266,9 @@ def novikova1():
     h.inside.extend(shop.build())
     h.lights = list(shop.LIGHTS)
     h.plants = shop.procedural_plants() if hasattr(shop, "procedural_plants") else []
+    import interiors
+    for d in getattr(shop, "DOORS", []):
+        interiors.add_door(h, d["at"], d["out"], d["w"], d["h"], d["wall"], d["leaves"], d["open"])
     # its boards: a picture per language on a quad over each label (AcademToggle.cpp, make_academ_signs.py)
     for (key, lx, ly, lz, lw, lh), nrm in zip(getattr(shop, "LABELS", []), getattr(shop, "LABEL_NORMALS", [])):
         if not key.startswith("sign.academ.library."):
@@ -288,7 +291,8 @@ def novikova1():
     ops = []
     entr = [cu(-u) for u in N1_BAYS]               # the stairs sit behind the bays (?)
     for e in entr:
-        ops.append(Opening(e, floor_z(0) - 0.15, 1.4, 2.6, kind="door", unit="double", room=False, fill=False))
+        # at the ground: the lobby under the half landing is sunk to it (interiors._yard_pit)
+        ops.append(Opening(e, 0.0, 1.4, 2.3, kind="door", unit="double", room=False, fill=False))
         for k in range(F - 1):                     # stair windows over the half landings
             ops.append(Opening(e, floor_z(k) + STAIR_WIN_Z, 1.9, 1.7, unit="triple"))
     wus = []
@@ -302,7 +306,6 @@ def novikova1():
     build_facade(h, fac, ez, ops)
     for e in entr:
         h.detail(fac, "oculus", e, 0.0, ez - 1.25, d=0.75)
-        h.detail(fac, "steps", e, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
     for k in (1, 2, 3):                             # balconies on the yard side (?)
         for u in wus[1::3]:
             h.detail(fac, "balcony", u, 0.0, floor_z(k), length=2.6, depth=1.0, style="bars")
@@ -604,9 +607,6 @@ def side_house(name):
                 for k in (1, 2):
                     ops.append(Opening(mid, floor_z(k) + 0.05, 1.3, 2.6, unit="french_door"))
         build_facade(h, fac, ez, ops)
-        for o in ops:
-            if o.kind == "door":
-                h.detail(fac, "steps", o.uc, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
         for mid in balc:
             for k in (1, 2):
                 h.detail(fac, "balcony", mid, 0.0, floor_z(k), length=3.2, depth=1.2, style="ornamental", consoles=True)
@@ -650,7 +650,7 @@ def side_house(name):
 
 def _stair_entrance(u, F):
     """A yard entrance (open) with the stair's windows over the half landings above it."""
-    ops = [Opening(u, floor_z(0) - 0.15, 1.4, 2.5, kind="door", unit="double", room=False, fill=False)]
+    ops = [Opening(u, 0.0, 1.4, 2.3, kind="door", unit="double", room=False, fill=False)]     # at the ground (interiors._yard_pit)
     for k in range(F - 1):
         ops.append(Opening(u, floor_z(k) + STAIR_WIN_Z, 1.7, 1.6, unit="triple"))
     return ops
@@ -855,6 +855,53 @@ def square_trees():
         out.append((fx + dx, fy + dy, sp, seed, age))
         seed += 1
     return out
+
+
+BENCHES = []          # benches(): {"at": seat centre (ensemble frame, seat height), "yaw": facing (deg, from +x), "seats"}
+
+
+def _bench(m, x, y, face_deg):
+    """A park bench of the 1950s (ensemble frame): cast-iron ends, green-painted slats, a slatted back;
+    1.8 m long, seat 0.45 m high, facing face_deg."""
+    loc = Mesh()
+    L, d = 1.8, 0.45
+    for ex in (-L / 2 + 0.15, L / 2 - 0.15):
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, -0.22, -0.16, 0.0, 0.43)          # front leg
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, 0.16, 0.22, 0.0, 0.85)            # back leg up into the back
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, -0.24, 0.22, 0.38, 0.43)          # seat rail
+        box(loc, "AC_Iron", ex - 0.025, ex + 0.025, -0.2, 0.2, 0.08, 0.12)           # stretcher
+    for k in range(4):                                                              # seat slats
+        y0 = -d / 2 + k * 0.115
+        box(loc, "AC_FrameGreen", -L / 2, L / 2, y0, y0 + 0.09, 0.43, 0.46)
+    for k in range(3):                                                              # back slats
+        z0 = 0.55 + k * 0.11
+        box(loc, "AC_FrameGreen", -L / 2, L / 2, 0.2, 0.23, z0, z0 + 0.08)
+    a = math.radians(face_deg) - math.pi / 2          # local -y is the front
+    ca, sa = math.cos(a), math.sin(a)
+    m.extend(loc.transformed(lambda p: (x + ca * p[0] - sa * p[1], y + sa * p[0] + ca * p[1], p[2])))
+    BENCHES.append({"at": [x, y, 0.45], "yaw": face_deg, "seats": 3})
+
+
+def benches(houses):
+    """Benches round the fountain and by every yard entrance (NPC life thread: somewhere to sit).
+    Returns their mesh (ensemble frame); BENCHES lists them for layout.json."""
+    del BENCHES[:]
+    m = Mesh()
+    fx, fy = SQUARE["fountain"]
+    r = SQUARE["bed_r"] + 1.7
+    for deg in (50, 90, 130, 230, 270, 310):                    # on the ring path, facing the fountain
+        t = math.radians(deg)
+        _bench(m, fx + r * math.cos(t), fy + r * math.sin(t), deg + 180.0)
+    for name, h in houses.items():
+        for d in getattr(h, "doors", []):
+            if not (d["at"][2] == 0.0 and abs(d["hole"][0] - 1.4) < 0.01):
+                continue                                         # the yard doors only (at the ground)
+            ox, oy = d["out"]
+            ax, ay = -oy, ox                                     # along the wall
+            p = h.frame((d["at"][0] + ox * 1.6 + ax * 2.6, d["at"][1] + oy * 1.6 + ay * 2.6, 0.0))
+            q = h.frame((d["at"][0] + ox * 2.6 + ax * 2.6, d["at"][1] + oy * 2.6 + ay * 2.6, 0.0))
+            _bench(m, p[0], p[1], math.degrees(math.atan2(q[1] - p[1], q[0] - p[0])))
+    return m
 
 
 SQUARE_PLANTS = []    # square_mesh(): {"species", "at" (ensemble frame), "yaw" (deg, from +x), "seed", "age"}

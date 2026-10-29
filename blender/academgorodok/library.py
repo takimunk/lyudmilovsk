@@ -172,7 +172,10 @@ ROUND_TABLE = (5.9, -4.15)
 NOOK = (15.25, -0.5)
 GLOBE_XY = (13.75, -0.6)
 ISSUE_DESK = (-0.1, -3.85)       # centre; its front faces the arch (+x)
-CLOAK = (-1.0, -2.275, 2.8)      # centre x, centre y, length of the cloakroom counter
+CLOAK = (-1.25, -2.275, 2.3)     # centre x, centre y, length of the cloakroom counter
+# the door from the vestibule to the middle stair's lobby (the central portal is the stair's street entrance
+# too; NPC life thread, 2026-10-25): x range in the back wall, its top; an ALyudDoor fills it (DOORS)
+LOBBY_DOOR = (0.17, 1.33, Z0 + 2.3)
 CATALOGUES = [(-1.75, YI + 0.225, math.pi, 1.3), (VEST[0] + 0.225, -5.75, math.pi / 2, 1.0)]   # (x, y, yaw, width)
 RACK = (HALL[0] + 0.18, -5.95)   # periodicals rack on the arch wall, south of the arch
 
@@ -368,8 +371,12 @@ def walls(m):
     b0, b1 = ARCH_Y[0] - vy0, ARCH_Y[1] - vy0
     finish_wall(m, w, vy1 - vy0, [(b0, b1, Z0, ARCH_TOP)])
     arch_spandrel(m, w, b0, b1, ARCH_TOP, ARCH_TOP)
-    # vestibule back wall
-    finish_wall(m, _Wall((vx1, vy1), (0.0, -1.0)), vx1 - vx0, [])
+    # vestibule back wall with the door to the stair's lobby (its leaf is an ALyudDoor)
+    l0, l1, lz = LOBBY_DOOR
+    finish_wall(m, _Wall((vx1, vy1), (0.0, -1.0)), vx1 - vx0, [(vx1 - l1, vx1 - l0, Z0, lz)])
+    for x, n in ((l0, 1), (l1, -1)):            # plaster reveals through the 0.15 m wall
+        face_n(m, "AC_LPlaster", [(x, vy1, Z0), (x, vy1 + 0.15, Z0), (x, vy1 + 0.15, lz), (x, vy1, lz)], (n, 0, 0))
+    face_n(m, "AC_LPlaster", [(l0, vy1, lz), (l1, vy1, lz), (l1, vy1 + 0.15, lz), (l0, vy1 + 0.15, lz)], (0, 0, -1))
     # vestibule south wall with the glazed double door to the hairdresser's
     w = _Wall((vx0, vy1), (1.0, 0.0))
     d0, d1 = vy1 - SIDE_DOOR[1], vy1 - SIDE_DOOR[0]
@@ -414,9 +421,12 @@ def backs(m, t=0.15):
     """Outward plaster backs of the interior walls bordering unbuilt spaces (as gastronom.backs)."""
     hx0, hx1, hy0, hy1 = HALL
     vx0, vx1, vy0, vy1 = VEST
+    l0, l1, lz = LOBBY_DOOR
     for pts, n in (
         ([(vx0 - t, vy0, Z0), (vx0 - t, vy1, Z0), (vx0 - t, vy1, ZC), (vx0 - t, vy0, ZC)], (-1, 0, 0)),
-        ([(vx0, vy1 + t, Z0), (vx1, vy1 + t, Z0), (vx1, vy1 + t, ZC), (vx0, vy1 + t, ZC)], (0, 1, 0)),
+        ([(vx0, vy1 + t, Z0), (l0, vy1 + t, Z0), (l0, vy1 + t, ZC), (vx0, vy1 + t, ZC)], (0, 1, 0)),
+        ([(l0, vy1 + t, lz), (l1, vy1 + t, lz), (l1, vy1 + t, ZC), (l0, vy1 + t, ZC)], (0, 1, 0)),
+        ([(l1, vy1 + t, Z0), (vx1, vy1 + t, Z0), (vx1, vy1 + t, ZC), (l1, vy1 + t, ZC)], (0, 1, 0)),
         ([(vx1, vy1 + t, Z0), (hx0, vy1 + t, Z0), (hx0, vy1 + t, ZC), (vx1, vy1 + t, ZC)], (0, 1, 0)),
         ([(hx0 - t, vy1 + t, Z0), (hx0 - t, hy1 + t, Z0), (hx0 - t, hy1 + t, ZC), (hx0 - t, vy1 + t, ZC)], (-1, 0, 0)),
         ([(hx0 - t, hy1 + t, Z0), (hx1 + t, hy1 + t, Z0), (hx1 + t, hy1 + t, ZC), (hx0 - t, hy1 + t, ZC)], (0, 1, 0)),
@@ -826,7 +836,7 @@ def vestibule(m, rnd):
     # cloakroom: counter, coat racks with coats and hats on the back wall, a painting above
     cx, cy, L = CLOAK
     put(m, counter(rnd, L), cx, cy, Z0, 0.0, name="cloak_counter")
-    for k, x in enumerate((-1.9, -0.9, 0.1)):
+    for k, x in enumerate((-1.9, -0.9)):
         put(m, F.coat_rack(random.Random(31 + k), 0.95), x, vy1 - 0.16, Z0, 0.0, name="coats")
     # the issue desk facing the arch (+x)
     put(m, issue_desk(rnd), ISSUE_DESK[0], ISSUE_DESK[1], Z0, math.pi / 2, name="issue_desk")
@@ -839,7 +849,7 @@ def vestibule(m, rnd):
     put(m, F.runner(random.Random(5), 1.65, 0.9), 0.0, -5.72, Z0, math.pi / 2)
     put(m, F.runner(random.Random(6), 3.75, 0.9), 2.33, ARCH_Y[0] + 1.2, Z0, 0.0)
     # a big oil painting over the coats
-    put(m, F.picture(random.Random(8), 1.25, 0.8, "oil", "winter_village"), -0.9, vy1 - 0.015, Z0 + 2.45, 0.0)
+    put(m, F.picture(random.Random(8), 1.25, 0.8, "oil", "winter_village"), -1.4, vy1 - 0.015, Z0 + 2.45, 0.0)
 
 
 # --- hall -------------------------------------------------------------------------------------------------
@@ -1258,7 +1268,7 @@ def _plants():
     for x in TABLES_X:
         P("african_violet", x, sum(TABLE_Y) / 2, Z0 + TABLE_H, size=1.0)
     P("african_violet", ISSUE_DESK[0] + 0.1, ISSUE_DESK[1] + 0.5, Z0 + 1.05)      # on the reader's ledge
-    P("geranium", CLOAK[0] + 1.2, CLOAK[1] + 0.02, Z0 + 1.02)
+    P("geranium", CLOAK[0] + 0.9, CLOAK[1] + 0.02, Z0 + 1.02)
     x, y, yaw, w = CATALOGUES[0]
     P("tradescantia", *Frame(x, y, yaw, Z0)((w / 2 - 0.2, -0.1, 1.47)), yaw=yaw, edge=(0.15, 0.3))
     P("aloe", *Frame(x, y, yaw, Z0)((-0.35, 0.0, 1.47)))
@@ -1292,6 +1302,11 @@ def plants(m):
         if idx in PLANT_EDGES:
             part = overhang(part, *PLANT_EDGES[idx])
         m.extend(Frame(x, y, yaw, z).apply(part))
+
+
+# the library's own doorways for ALyudDoor (plan.py hands them to interiors.add_door): Novikova 1's frame
+DOORS = [{"at": ((LOBBY_DOOR[0] + LOBBY_DOOR[1]) / 2, VEST[3] + 0.075, Z0), "out": (0.0, -1.0),
+          "w": LOBBY_DOOR[1] - LOBBY_DOOR[0], "h": LOBBY_DOOR[2] - Z0, "wall": 0.15, "leaves": 1, "open": False}]
 
 
 def procedural_plants():
@@ -1390,12 +1405,13 @@ def door_boxes():
     boxes["side_door"] = (vx0, vx0 + d, SIDE_DOOR[0] - s, SIDE_DOOR[1] + s)
     boxes["arch_vestibule"] = (vx1 - d, vx1, ARCH_Y[0] - s, ARCH_Y[1] + s)
     boxes["arch_hall"] = (hx0, hx0 + d, ARCH_Y[0] - s, ARCH_Y[1] + s)
+    boxes["lobby_door"] = (LOBBY_DOOR[0] - s, LOBBY_DOOR[1] + s, vy1 - d, vy1)
     return boxes
 
 
 ROUTE_TARGETS = {
     "arch": (2.72, -3.6), "hall_door": (4.35, YI + 0.6), "back_door": (17.25, HALL[3] - 0.6),
-    "side_door": (VEST[0] + 0.6, -3.65), "issue_desk": (0.85, -3.85), "cloakroom": (0.9, -2.97),
+    "side_door": (VEST[0] + 0.6, -3.65), "lobby_door": ((LOBBY_DOOR[0] + LOBBY_DOOR[1]) / 2, VEST[3] - 0.6), "issue_desk": (0.85, -3.85), "cloakroom": (0.9, -2.97),
     "catalogue": (-1.2, -5.45), "periodicals": (3.95, -5.95), "pier1": (6.2, -5.83),
     "table1": (8.4, -3.15), "table2": (12.45, -3.15), "table3": (16.5, -3.15), "end_cases": (17.05, -1.5),
     "nook": (15.25, -1.45), "aisle1": (6.15, -0.9), "aisle2": (8.45, -0.9), "aisle3": (10.75, -0.9),
