@@ -29,6 +29,18 @@
   "pbr": true,
   "task_id": "9033933008d1415e93e4af1ad44cc062",
   "points": 45,
-  "note": "front and back only: the side views came out with the arm reaching forward, not a T-pose profile"
+  "note": "front and back only: the side views came out with the arm reaching forward, not a T-pose profile",
+  "file": "blender/characters/zotov_lev/gen/model.glb (local, ignored)",
+  "downloaded": "by Dima from the model page (Hi3D_Untitled_allparts_20261029_031616.glb), the API's signed links had expired",
+  "sha256": "5174494facf840c4b8702f58b9e1c69e6cd9ca185c56fb2edaaa2699240e3ebe",
+  "bytes": 48051372,
+  "triangles": 2000000,
+  "textures": "2 x 8192",
+  "size_m": [
+   0.98,
+   0.22,
+   1.0
+  ],
+  "review": "_shots/residents/zotov_lev_sheet.jpg, zotov_lev_hands.jpg (blender/characters/turnaround.py)"
  }
 }
