@@ -1,6 +1,8 @@
 #include "Sky/LyudSky.h"
 
 #include "Weather/LyudGrade.h"
+#include "Weather/LyudWeather.h"
+#include "Weather/WeatherModel.h"
 #include "MaterialShared.h"
 #include "RHIGlobals.h"
 
@@ -23,6 +25,10 @@
 
 static TAutoConsoleVariable<float> CVarSkyHourOffset(TEXT("lyud.SkyHourOffset"), 0.f,
 	TEXT("Hours added to the time the sky shows (sun, moon, stars), in play and in the editor."));
+static TAutoConsoleVariable<float> CVarOvercastEV(TEXT("lyud.Sky.OvercastEV"), 2.f,
+	TEXT("By day the eye opens up by this many stops under a thick dark overcast (scaled by how opaque the weather's cloud is)."));
+static TAutoConsoleVariable<float> CVarLowSunEV(TEXT("lyud.Sky.LowSunEV"), 0.7f,
+	TEXT("By day the eye opens up by this many stops when the sun is low (25 degrees down to 5), as in a winter noon."));
 static TAutoConsoleVariable<float> CVarSunDiskGain(TEXT("lyud.Sky.SunDiskGain"), 1.f, TEXT("Multiplies the sun disk's brightness (tuning)."));
 static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"), 1.f, TEXT("Multiplies Europa's brightness on the sky (tuning)."));
 static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
@@ -533,7 +539,17 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 	const float Night = 1.f - SmoothStep01(-8.f, 8.f, (float)SunPos.AltitudeDeg);
 	// a quarter of a stop wider per stop of moonlight lost, up to MoonlessExposureEV
 	const float Moonless = FMath::Clamp(-FMath::Log2(MoonLight01 + 0.03f) / 4.f, 0.f, MoonlessExposureEV);
-	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night;
+	// by day the eye adapts too: under a thick overcast and to a low winter sun (the weather's cloud, eased)
+	float Opacity = 0.f;
+	if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+	{
+		const LyudWeather::FWeatherState& W = Weather->GetModelState();
+		Opacity = 1.f - (1.f - W.Low.Cover * FMath::Clamp(W.Low.Density * 1.2f, 0.f, 1.f)) * (1.f - 0.7f * W.Mid.Cover * W.Mid.Density);
+	}
+	const float LowSun = SmoothStep01(25.f, 5.f, (float)SunPos.AltitudeDeg);
+	const float DayEV = (1.f - Night) * (CVarOvercastEV.GetValueOnGameThread() * Opacity + CVarLowSunEV.GetValueOnGameThread() * LowSun);
+	DayAdaptEV = FMath::FInterpTo(DayAdaptEV, DayEV, DeltaSeconds, 0.5f);
+	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night + DayAdaptEV;
 	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }

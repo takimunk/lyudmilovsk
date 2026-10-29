@@ -72,6 +72,7 @@ nights: shadows and middle tones a few percent towards deep blue, the highlights
 more saturated and warm; a summer day lighter and airier with the faintest ultramarine in the shade; a low summer sun
 warms the highlights; grey and wet weather mutes colour, fog flattens contrast. The sky's haze (the atmosphere's Mie
 scattering) follows the season, the humidity and the visibility: crisp in winter, milky in humid summer air.
+By day the eye also adapts in ALyudSky's outdoor exposure (never in the grade): up to `lyud.Sky.OvercastEV` (2) stops under a thick dark deck (from the weather's low and middle layers' cover x density) and `lyud.Sky.LowSunEV` (0.7) to a low winter sun (25 deg down to 5), eased; a January noon under Sc was nearly black without it.
 `lyud.Grade 0` A/B, `lyud.Grade.Strength`, `lyud.Grade.Debug 1`; `unreal/scripts/shoot_grade.sh` shoots on/off pairs.
 
 ## Climate (seed 750, 10 years, `tools/weather/run.sh climate`)

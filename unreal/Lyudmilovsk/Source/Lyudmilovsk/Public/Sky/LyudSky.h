@@ -232,5 +232,7 @@ private:
 	/** The level's own exposure bias (the club's post process volume), read at BeginPlay. */
 	float BaseExposureBias = 0.f;
 	float OutdoorWeight = 0.f;
+	/** The day's adaptation to overcast and a low sun, stops (eased). */
+	float DayAdaptEV = 0.f;
 	TWeakObjectPtr<APawn> LitPawn;
 };
