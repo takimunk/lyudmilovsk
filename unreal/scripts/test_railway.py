@@ -185,6 +185,12 @@ NIGHT = [
     (206.0, lambda w: shot(w, "night_inside")),
     (207.0, lambda w: go(w, 400.0, -110.0, -36.0, -5.0, 120.0)),
     (230.0, lambda w: shot(w, "night_from_sea")),
+    (231.0, lambda w: cmd(w, "lyud.Railway.Next beach 1")),         # out again: the lit cars on the dark bank
+    (290.0, lambda w: S.update(chase=(45.0, 5.0, -10.0))),
+    (300.0, lambda w: shot(w, "night_bank")),
+    (301.0, lambda w: S.update(chase=(14.0, 2.0, 4.0))),
+    (306.0, lambda w: shot(w, "night_bank_close")),
+    (307.0, lambda w: S.update(chase=None)),
 ]
 FAR = [
     (235.0, lambda w: cmd(w, "lyud.Birds.Time 16 25")),
@@ -206,6 +212,53 @@ def riders_start(w):
         people(w, k)
 
 
+def state(w, key):
+    """A resident's doing (waiting, riding, ...) from the life's own description."""
+    life = unreal.PeopleLifeSubsystem.get_people_life(w)
+    d = str(life.describe(life.find_person(key))) if life else ""
+    parts = d.split(") ", 1)
+    return parts[1].split(" ", 1)[0] if len(parts) > 1 else ""
+
+
+def later(dt, fn):
+    PLAN_EXTRA.append((S["t"] + dt, fn))
+    PLAN_EXTRA.sort(key=lambda e: e[0])
+
+
+RIDERS_KEYS = ("sorokin_oleg", "nishimura_aya")
+
+
+def riders_watch(w):
+    """The riders' shots follow what they do (the game's seconds and the test's drift apart under load): as soon as
+    both wait on the island halt's deck, from the track; as the doors open, along the deck; once both ride, inside the
+    car and through its windows."""
+    st = [state(w, k) for k in RIDERS_KEYS]
+    if S.get("rw") == "walk" and all(x == "waiting" for x in st):
+        S["rw"] = "wait"
+        go(w, 2410.0, -55.0, -39.6, -8.0, -160.0)
+        later(2.0, lambda w: shot(w, "island_waiting"))
+        later(2.5, lambda w: [people(w, k) for k in RIDERS_KEYS])
+    info = rail(w).get_train(0).get_info()
+    if S.get("rw") == "wait" and doors_open(info) and str(rail(w).get_stop_id(info.stop)) == "island":
+        S["rw"] = "doors"
+        go(w, 2372.0, -63.4, -39.2, -3.0, 2.0)
+        later(1.5, lambda w: shot(w, "island_boarding"))
+    if S.get("rw") == "doors" and all(x == "riding" for x in st):
+        S["rw"] = "ride"
+        check(True, "both residents got in at the island halt")
+        later(8.0, lambda w: S.update(chase=(0.0, 1.6, -7.0)))
+        later(14.0, lambda w: shot(w, "riders_inside"))
+        later(15.0, lambda w: S.update(chase=(9.0, 2.0, 0.0)))
+        later(21.0, lambda w: shot(w, "riders_window"))
+        later(22.0, lambda w: S.update(chase=None, rw="done"))
+
+
+def riders_end(w):
+    check(S.get("rw") == "done", "the riders waited, boarded and were seen riding (%s)" % S.get("rw"))
+    for k in RIDERS_KEYS:
+        people(w, k)
+
+
 # residents riding: on Tuesday at 10:41 two of them are on the island; ordered home they walk to the island halt and
 # take the 10:47 back (the railway's clock untouched: their wait is fixed when they reach the platform)
 RIDERS = [
@@ -215,20 +268,8 @@ RIDERS = [
     (30.0, lambda w: cmd(w, "lyud.People.Order sorokin_oleg read_home")),
     (30.5, lambda w: cmd(w, "lyud.People.Order nishimura_aya read_home")),
     (34.0, lambda w: shot(w, "island_painter")),
-    (35.0, lambda w: go(w, 2425.0, -66.5, -39.2, -5.0, 180.0)),      # the island halt's deck, looking along it
-    (200.0, lambda w: people(w, "sorokin_oleg")),
-    (201.0, lambda w: people(w, "nishimura_aya")),
-    (360.0, lambda w: shot(w, "island_waiting")),
-    (361.0, lambda w: report(w)),
-    (400.0, lambda w: shot(w, "island_boarding")),
-    (401.0, lambda w: people(w, "sorokin_oleg")),
-    (430.0, lambda w: S.update(chase=(0.0, 1.6, -7.0))),
-    (438.0, lambda w: shot(w, "riders_inside")),
-    (439.0, lambda w: people(w, "sorokin_oleg")),
-    (439.5, lambda w: people(w, "nishimura_aya")),
-    (440.0, lambda w: S.update(chase=(9.0, 2.0, 0.0))),
-    (446.0, lambda w: shot(w, "riders_window")),
-    (447.0, lambda w: S.update(chase=None)),
+    (35.0, lambda w: S.update(rw="walk")),
+    (600.0, riders_end),
 ]
 def near_plant(w, dist):
     """The camera dist metres south of the island's first plant, looking at it."""
@@ -341,6 +382,8 @@ def tick(dt):
         PLAN_EXTRA.pop(0)[1](w)
     if S["chase"]:
         chase(w, *S["chase"])
+    if S.get("rw") in ("walk", "wait", "doors"):
+        riders_watch(w)
     if S.get("follow"):
         follow(w, rail(w).get_train(0).get_info().s)
     watch(w)

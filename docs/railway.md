@@ -70,7 +70,7 @@ red tail lamps over them and a lit destination box, a diamond pantograph on car 
 doorways a side (clear 1.20 x 2.15 m: the character standard's 1.08 x 2.10 at least), wine-red moquette benches along
 the walls (46 seats), stanchions, straps, a luggage rack, ceiling fans and round lamps; the cab's desk behind a
 partition. The game swaps the glass and the lamps for its own materials: the cabin lamps glow warm from dusk (three
-point lights a car), the leading cab's headlamps light and its beam reaches ahead in the dark, the trailing cab shows
+point lights a car, brighter again in full dark so the lit windows read from out on the water), the leading cab's headlamps light and its beam reaches ahead in the dark, the trailing cab shows
 red. The doors on the platform side (south) slide open at the halts.
 
 The player walks in through an open door and rides: the car carries the pawn (as the cable car's cabins do); while the
