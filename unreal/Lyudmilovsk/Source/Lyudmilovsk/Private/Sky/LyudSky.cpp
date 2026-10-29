@@ -26,6 +26,7 @@ static TAutoConsoleVariable<float> CVarCloudDensity(TEXT("lyud.Sky.CloudDensity"
 static TAutoConsoleVariable<float> CVarCloudOpaque(TEXT("lyud.Sky.CloudOpaque"), 1.f, TEXT("Multiplies the clouds' opaque cut-off CloudOpaqueBelow (0 = the engine's tracing to the end; tuning)."));
 static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (tuning)."));
 static TAutoConsoleVariable<float> CVarNightMie(TEXT("lyud.Sky.NightMie"), -1.f, TEXT("Overrides NightMieShare when >= 0 (tuning: the haze round the moon)."));
+static TAutoConsoleVariable<float> CVarMoonSize(TEXT("lyud.Sky.MoonSizeDeg"), 0.f, TEXT("Europa's apparent size, degrees across, when > 0 (overrides ALyudSky::MoonSizeDeg)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
@@ -100,7 +101,7 @@ ALyudSky::ALyudSky()
 	MoonLight->SetupAttachment(RootComponent);
 	SetupDirectional(MoonLight, 1);
 	MoonLight->ForwardShadingPriority = 0;
-	MoonLight->LightSourceAngle = MoonAngularDiameterDeg;
+	MoonLight->LightSourceAngle = MoonSizeDeg;
 	MoonLight->bCastCloudShadows = false;   // by night only (UpdateSky)
 	MoonLight->CloudScatteredLuminanceScale = FLinearColor(MoonCloudScatter, MoonCloudScatter, MoonCloudScatter);
 	MoonLight->AtmosphereSunDiskColorScale = FLinearColor::Black;
@@ -172,13 +173,19 @@ FVector ALyudSky::WorldDirection(const FVector& Enu) const
 	return (East * Enu.X + North * Enu.Y + FVector::UpVector * Enu.Z).GetSafeNormal();
 }
 
+float ALyudSky::MoonSizeNowDeg() const
+{
+	const float Pin = CVarMoonSize.GetValueOnGameThread();
+	return FMath::Clamp(Pin > 0.f ? Pin : MoonSizeDeg, 0.1f, 40.f);
+}
+
 void ALyudSky::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	Dome->SetVisibility(SkyMaterial != nullptr);
 	SunLight->SetLightSourceAngle(SunAngularDiameterDeg);
 	SunLight->SetSpecularScale(SunSpecularScale);
-	MoonLight->SetLightSourceAngle(MoonAngularDiameterDeg);
+	MoonLight->SetLightSourceAngle(MoonSizeNowDeg());
 	SunLight->SetAtmosphereSunDiskColorScale(FLinearColor::Black);
 	MoonLight->SetAtmosphereSunDiskColorScale(FLinearColor::Black);
 	OutdoorExposure->Settings.BloomIntensity = OutdoorBloom;
@@ -285,6 +292,7 @@ void ALyudSky::UpdateSky()
 	// by night the haze is thinner: the moonlight it scatters would wrap Europa in a big glow
 	const float MieNight = CVarNightMie.GetValueOnGameThread() >= 0.f ? CVarNightMie.GetValueOnGameThread() : NightMieShare;
 	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt));
+	// TODO(weather): once ULyudGradeSubsystem lands, multiply Mie by ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
 	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
@@ -398,7 +406,12 @@ void ALyudSky::UpdateSkyMaterial()
 	const float NightK = CVarNightLight.GetValueOnGameThread();
 	const float MoonLum = SunIlluminance * MoonDiskGain * FMath::Lerp(MoonNightBoost, MoonDayBoost, Day) * CVarMoonDiskGain.GetValueOnGameThread();
 	// the ashen light on the dark side: a little of the sunlit ice's brightness, more by night
-	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonAngularDiameterDeg * 0.5f), MoonLum, 0.012f, 1.f - Day));
+	const float MoonSize = MoonSizeNowDeg();
+	if (!FMath::IsNearlyEqual(MoonLight->LightSourceAngle, MoonSize))
+	{
+		MoonLight->SetLightSourceAngle(MoonSize);
+	}
+	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonSize * 0.5f), MoonLum, 0.012f, 1.f - Day));
 	SkyMID->SetVectorParameterValue(TEXT("NightGlow"), NightSkyGlow * ((1.f - Day) * NightK));
 }
 

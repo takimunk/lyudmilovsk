@@ -134,13 +134,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sea") float TideLowZ() const { return DatumZ() + TideLowCm; }
 	/** Where the sand is still wet: the highest the water stood in the last hour, world Z cm. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WetLineZ() const { return DatumZ() + WetLineCm; }
-	/** A slow offset of the mean sea level on top of the tide, cm (negative = lower: e.g. winter's, set by the winter
-	 * system; 0 = none). The water eases to it over BlendSeconds (0 = at once) and everything that follows the tide
-	 * (SeaLevel, the depth map's pools and wet line, the water volume, the ground's wet sand) follows it. */
-	UFUNCTION(BlueprintCallable, Category = "Sea") void SetMeanLevelOffsetCm(float OffsetCm, float BlendSeconds = 600.f);
+	/** A slow offset of the mean sea level on top of the tide, cm (negative = lower: the winter's low water, set by
+	 * ULyudWinterSubsystem; positive = a surge; 0 = none): SeaLevel = datum + offset + tide. The water eases to it over
+	 * BlendSeconds (0 = at once; the first call after BeginPlay is at once too) and everything that follows the tide
+	 * (SeaLevel, depths, the pools and wet line, the water volume, the ground's wet sand) follows it. The actor stays
+	 * at the datum. Calling it every frame with the same value is cheap. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") void SetLevelOffset(float Cm, float BlendSeconds = 600.f);
 	/** The mean-level offset the water stands at now and the one it is easing to, cm. */
-	UFUNCTION(BlueprintCallable, Category = "Sea") float MeanLevelOffsetCm() const { return MeanOffsetNowCm; }
-	UFUNCTION(BlueprintCallable, Category = "Sea") float MeanLevelOffsetTargetCm() const { return MeanOffsetTargetCm; }
+	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffset() const { return MeanOffsetNowCm; }
+	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffsetTarget() const { return MeanOffsetTargetCm; }
 	/** The look the water's colour follows now (eased over minutes): x overcast 0..1, y storm 0..1, z cold season
 	 * -1 summer .. 1 winter, w night 0..1. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") FLinearColor SeaLook() const { return LookNow; }
@@ -213,6 +215,7 @@ private:
 	float MeanOffsetNowCm = 0.f;
 	float MeanOffsetTargetCm = 0.f;
 	float MeanOffsetRateCmS = 0.f;
+	bool bMeanOffsetSet = false;
 	/** The sea's look (SeaLook), eased toward the weather, sky and season. */
 	FLinearColor LookNow = FLinearColor(0.f, 0.f, 0.f, 0.f);
 	bool bLookSet = false;

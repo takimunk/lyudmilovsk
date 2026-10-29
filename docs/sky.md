@@ -6,7 +6,7 @@ star dome. The world is a simulation, so its sky is not Earth's:
 
 - **The sun is a huge red dwarf**, `SunAngularDiameterDeg` = 10 degrees across (the Sun from Earth: 0.53), a
   ~3200 K star. NPCs are drawn to it (docs/story/motifs.md).
-- **The moon is Europa**, `MoonAngularDiameterDeg` = 7 degrees, its phases from the real ephemeris.
+- **The moon is Europa**, `MoonSizeDeg` = 7 degrees (the one value for its size; `lyud.Sky.MoonSizeDeg` overrides it in play), its phases from the real ephemeris.
 - **Nights are moonlit**, not black.
 
 ## Drawn by the sky material
@@ -52,7 +52,7 @@ outdoor exposure), Europa `SunIlluminance x MoonDiskGain`. To match, the sunligh
 (`OutdoorBloom`).
 
 **The clouds hide the sun.** The volumetric clouds are composited over the dome, so they occlude the disk by their
-transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (8) thickens it (its
+transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (24) thickens it (its
 `Cloud_GlobalDensity`, through a dynamic instance), and the low red sun goes behind the clouds instead of glowing
 through them like a lamp in fog. Thick clouds need more ray-march samples or they go grainy: `CloudViewSamples` 2 and
 `CloudShadowSamples` 1 (the engine's default is 1; it was 0.5). At density 8 one view sample speckled the clouds'
@@ -61,6 +61,12 @@ shoot_cosmic.py sweeps samples, cut-off and density over the setting sun). A sof
 and corona as a ring through it: clouds letting through less than `CloudOpaqueBelow` (0.25) are drawn opaque (the cloud
 component's `StopTracingTransmittanceThreshold`, 0.005 by default; `lyud.Sky.CloudOpaque` multiplies it, 0 = the
 engine's). In UE 5.8 it is a component property, not a cvar. Thin cloud still veils the disk.
+v6: the cut-off is 0.03, not 0.25: the engine writes the transmittance as 0 past it and stops adding the cloud's
+deeper light, so at 0.25 every cloud core was a darker, hard-edged patch, and over Europa by day that patch read as the
+moon's dark side drawn on top of the cloud. The density went 8 -> 24 instead, so a cloud in front of Europa or the sun
+hides the whole disk (lit and dark side) and only its fringes let some through (`COSMIC_OPAQUE=cut:density,...` in
+shoot_cosmic.py compares them with the clouds frozen by slomo; `COSMIC_OPAQUE_MOON=34` draws Europa big enough to
+sit behind a cloud).
 
 **The sun on the sea.** The sun's image on calm water was a hard-edged semicircle: mostly the sunlight's own specular
 (a 10-degree area light mirrored by flat water), which no cloud in the view hides, plus the sky light's cubemap. Now

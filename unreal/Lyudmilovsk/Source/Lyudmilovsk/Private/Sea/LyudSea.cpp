@@ -45,7 +45,7 @@ namespace
 	TAutoConsoleVariable<float> CVarTideOverride(TEXT("lyud.TideOverride"), -999.f,
 		TEXT("Pin the tide: water level in metres over the datum (0 = spring high water, -4.5 = spring low); -999 or NaN = follow the sky."));
 	TAutoConsoleVariable<float> CVarSeaMeanLevel(TEXT("lyud.Sea.MeanLevel"), -9999.f,
-		TEXT("Force the mean sea level's offset, cm (as SetMeanLevelOffsetCm, at once; below -9000: what the game set)."));
+		TEXT("Force the mean sea level's offset, cm (as SetLevelOffset, at once; below -9000: what the game set)."));
 	TAutoConsoleVariable<float> CVarSeaLookSeconds(TEXT("lyud.Sea.LookSeconds"), 120.f,
 		TEXT("How many seconds the sea's colour takes to follow the weather and the light (0 = at once)."));
 	TAutoConsoleVariable<float> CVarTideSpeed(TEXT("lyud.TideSpeed"), 1.f,
@@ -631,14 +631,19 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 	}
 }
 
-void ALyudSea::SetMeanLevelOffsetCm(float OffsetCm, float BlendSeconds)
+void ALyudSea::SetLevelOffset(float Cm, float BlendSeconds)
 {
-	MeanOffsetTargetCm = OffsetCm;
-	MeanOffsetRateCmS = BlendSeconds > 0.f ? FMath::Abs(OffsetCm - MeanOffsetNowCm) / BlendSeconds : 0.f;
-	if (BlendSeconds <= 0.f)
+	if (bMeanOffsetSet && FMath::Abs(Cm - MeanOffsetTargetCm) < 0.1f)
 	{
-		MeanOffsetNowCm = OffsetCm;
+		return;
 	}
+	MeanOffsetTargetCm = Cm;
+	MeanOffsetRateCmS = BlendSeconds > 0.f && bMeanOffsetSet ? FMath::Abs(Cm - MeanOffsetNowCm) / BlendSeconds : 0.f;
+	if (MeanOffsetRateCmS <= 0.f)
+	{
+		MeanOffsetNowCm = Cm;
+	}
+	bMeanOffsetSet = true;
 	TideAge = 1e9f;   // apply on the next tick
 }
 

@@ -167,6 +167,30 @@ if os.environ.get("COSMIC_SCALE"):
         SHOTS = [s for s in SHOTS if s[0].startswith("scale_")]
 # COSMIC_SEALOOK=1: the sea's colour with the weather and the light from the cliff: sunny, overcast, storm, sunset,
 # night (full moon), and a winter noon; the look eases in at once (lyud.Sea.LookSeconds 0)
+# COSMIC_MOONCLOUD=1: Europa by day behind the clouds (the clouds must cover the whole disk, lit and unlit side) at
+# the default size and at 20 deg; with diagnostics (no disk, no moonlight) when it is "diag"
+if os.environ.get("COSMIC_MOONCLOUD"):
+    MC = [("", ""), ("_20", "moonsize 20")]
+    if os.environ["COSMIC_MOONCLOUD"] == "diag":
+        MC += [("_nodisk", "lyud.Sky.MoonDiskGain 0"), ("_nolight", "lyud.Sky.NightLight 0")]
+    for tag, c in MC:
+        for t, when in (("day", D(2026, 10, 30, 10, 30)), ("dayhalf", D(2026, 11, 2, 10, 0))):
+            SHOTS.append(("mooncloud_%s%s" % (t, tag), when, None, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "moon", c))
+    SHOTS = [s for s in SHOTS if s[0].startswith("mooncloud_")]
+# COSMIC_OPAQUE=1:1,0.12:2 (cut-off multiplier:density multiplier pairs): the clouds' opaque cut-off
+# (lyud.Sky.CloudOpaque) and density (lyud.Sky.CloudDensity) over Europa by day, the setting sun and a noon sky; the
+# game is slowed to a crawl (slomo) so the same clouds are in every frame
+if os.environ.get("COSMIC_OPAQUE"):
+    OS = []
+    for kd in os.environ["COSMIC_OPAQUE"].split(","):
+        k, d = (kd.split(":") + ["1"])[:2]
+        c0 = "slomo 0.0001;lyud.Sky.CloudOpaque %s;lyud.Sky.CloudDensity %s" % (k, d)
+        tag = "o%s_d%s" % (k, d)
+        OS += [(tag + "_moon", D(2026, 10, 30, 10, 30), None, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "moon", c0 + ";moonsize " + os.environ.get("COSMIC_OPAQUE_MOON", "20")),
+               (tag + "_sunset", D(2026, 10, 20, 17, 2), None, BROW[0], BROW[1], 1.7, 0, "sun", c0 + ";fov 30"),
+               (tag + "_sky", NOON, None, BROW[0], BROW[1], 1.7, 25, 60, c0)]
+    OS.sort(key=lambda s: s[0].split("_")[-1])
+    SHOTS = OS
 if os.environ.get("COSMIC_SEALOOK"):
     SL = "lyud.Sea.LookSeconds 0;"
     for tag, when, c in (("sunny", DAY, "lyud.Weather.Cloud 0;lyud.Wind.Speed 5"),
@@ -239,7 +263,7 @@ def step(dt):
         b = sky.shown_time()
         M = unreal.MathLibrary
         st["base"] = D(M.get_year(b), M.get_month(b), M.get_day(b), M.get_hour(b), M.get_minute(b), M.get_second(b))
-        st["moon_d"] = sky.get_editor_property("moon_angular_diameter_deg")
+        st["moon_d"] = sky.get_editor_property("moon_size_deg")
         unreal.log_warning("COSMIC calendar now %s" % st["base"])
         return
     if st["phase"] == 0:
@@ -251,12 +275,14 @@ def step(dt):
         name, when, tide, x, y, up, pitch, yaw = SHOTS[st["i"]][:8]
         for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
                   "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "lyud.Sea.DebugFoam 0", "lyud.Weather.Cloud -1", "lyud.Weather.Rain -1", "lyud.Wind.Speed -1", "lyud.Sea.LookSeconds 120", "fov 0", "r.BloomQuality 5",
-                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg"), "moonsize %g" % st["moon_d"]] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
+                  "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "lyud.Weather.BlendSeconds 0", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg"), "moonsize %g" % st["moon_d"]] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))
             elif c.startswith("moonsize "):           # test hook: Europa's apparent size
-                sky.set_editor_property("moon_angular_diameter_deg", float(c.split()[1]))
+                cmd(w, "lyud.Sky.MoonSizeDeg %s" % c.split()[1])
                 sky.update_sky()
+            elif c.startswith("moonvis "):
+                sky.get_editor_property("moon_light").set_visibility(c.split()[1] == "1")
             elif c.startswith("sunvis "):
                 sky.get_editor_property("sun_light").set_visibility(c.split()[1] == "1")
             elif c:

@@ -31,7 +31,7 @@ class UVolumetricCloudComponent;
  *
  * The sun is a huge red dwarf (SunAngularDiameterDeg across, a ~3200 K star: limb darkening, boiling
  * granulation, drifting sunspots, faculae, a corona and now and then a prominence) and the moon is Europa
- * (MoonAngularDiameterDeg, lit per pixel from the true sun direction, so its phases are right, with a faint
+ * (MoonSizeDeg, lit per pixel from the true sun direction, so its phases are right, with a faint
  * ashen light on its dark side). Both are drawn by the sky material (import_sky.py), not the atmosphere's
  * light disks, with brightness capped so they read rather than blind. Nights are lit by Europa as its phase says (a bright ice moon,
  * aquamarine soft-shadowed light, the same phase law as its disk) and never quite black (a faint airglow, NightSkyGlow).
@@ -88,8 +88,9 @@ public:
 
 	/** The red dwarf's apparent size, degrees across (the Sun from Earth: 0.53). Also the sunlight's source angle: soft shadows. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float SunAngularDiameterDeg = 10.f;
-	/** Europa's apparent size, degrees across. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonAngularDiameterDeg = 7.f;
+	/** Europa's apparent size, degrees across: the one value for the moon's size (disk, halo, star mask, the moonlight's
+	 * source angle all follow it). lyud.Sky.MoonSizeDeg overrides it when > 0. The 4096x2048 maps stay sharp up to ~25. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonSizeDeg = 7.f;
 	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.14f;
 	/** The sunspots' umbra brightness (of the disk's: small spots and pores only a little darker), the granulation's contrast (1 = as drawn) and the faculae's strength. */
@@ -115,12 +116,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
-	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun instead of veiling it). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 8.f;
+	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun and Europa instead of
+	 * veiling them: at 8 a cumulus in front of Europa by day still showed the disk through it like a ghost). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 24.f;
 	/** Clouds letting through less than this of the light behind them are drawn opaque (the cloud component's
 	 * StopTracingTransmittanceThreshold, 0.005 by default): a thick cloud hides the sun's disk, its
-	 * limb and corona entirely instead of showing their outline through it. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudOpaqueBelow = 0.25f;
+	 * limb and corona entirely instead of showing their outline through it. Kept small: past the cut the engine stops
+	 * adding the cloud's deeper light, so a big cut (0.25) drew every core as a darker patch with a hard outline
+	 * (over Europa it read as the disk's dark side drawn on the cloud); the density does the hiding instead. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudOpaqueBelow = 0.03f;
 	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few.
 	 * The view needs 2 with CloudDensityScale 8: at 1 the dense clouds' fringes speckle (the noise in their
 	 * transmittance, with or without the opaque cut-off); the shadow samples don't show it. */
@@ -156,6 +160,8 @@ public:
 
 	/** The local date and hour the sky shows now. */
 	UFUNCTION(BlueprintCallable, Category = "Sky") FDateTime ShownTime() const;
+	/** Europa's apparent size now, degrees across (MoonSizeDeg or lyud.Sky.MoonSizeDeg). */
+	UFUNCTION(BlueprintPure, Category = "Sky") float MoonSizeNowDeg() const;
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAltitude() const { return SunPos.AltitudeDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
