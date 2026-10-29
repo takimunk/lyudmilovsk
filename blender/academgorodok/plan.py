@@ -120,7 +120,7 @@ def build_facade(house, fac, z_top, openings, extra=None, wall_mat="AC_Wall", pl
                         box(m, "AC_Frame", cx - 0.02, cx + 0.02, -0.27, -0.21, cz - 0.04, cz + 0.04)
             locked = house.name == "Novikova1" and -10.4 < x_ < -2.5 and z0 < 1.0      # the shut-off rooms by the library
             interiors.add_door(house, (x_, y_, max(z0, 0.0)), fac.n, o.w, door_h, WALL_T, 2 if o.w >= 1.3 else 1,
-                               not o.fill and not locked, locked)
+                               not o.fill and not locked, locked, outside=True)
         elif o.fill:
             house.detail(fac, o.kind, o.uc, 0.0, z0, w=o.w, h=o.h, unit=o.unit)
         if o.surround:
@@ -289,7 +289,7 @@ def novikova1():
     # --- west facade (yard): walked from north to south --------------------------------------
     fac = Facade((x1, y1), (x0, y1))
     ops = []
-    entr = [cu(-u) for u in N1_BAYS]               # the stairs sit behind the bays (?)
+    entr = sorted(cu(-u) for u in N1_BAYS)         # the stairs sit behind the bays (?); walked north to south
     for e in entr:
         # at the ground: the lobby under the half landing is sunk to it (interiors._yard_pit)
         ops.append(Opening(e, 0.0, 1.4, 2.3, kind="door", unit="double", room=False, fill=False))

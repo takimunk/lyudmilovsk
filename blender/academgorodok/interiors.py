@@ -371,11 +371,12 @@ def _walks(spec, rooms, band, yb, flight_len):
     return out
 
 
-def add_door(house, at, out, w, h, wall_t, leaves, opened, locked=False):
+def add_door(house, at, out, w, h, wall_t, leaves, opened, locked=False, outside=False):
     """A door for unreal/scripts/place_doors.py (layout.json "doors"): house frame, floor point in the
-    middle of the hole and of the wall; out = the side it swings to."""
+    middle of the hole and of the wall; out = the side it swings to; outside: in a facade (dark leaves)."""
     house.__dict__.setdefault("doors", []).append({"at": at, "out": out, "hole": [w, h], "wall": wall_t,
-                                                     "leaves": leaves, "open": opened, "locked": locked})
+                                                     "leaves": leaves, "open": opened, "locked": locked,
+                                                     "outside": outside})
 
 
 def _clip(holes, x0, x1, y0, y1):
@@ -524,8 +525,9 @@ def _stair(m, spec, sx, band, yb, flight_len, rooms, doors_at):
         for sd, xw in ((-1, sx - CELL_HALF), (1, sx + CELL_HALF)):
             holes = [(spec.yc - glo, FLAT_DOOR_W, 2.3)] if (k, sd) in doors_at else []
             if holes:
-                # the flat's front door (ALyudDoor, docs/doors.md): shut, opening onto the landing
-                add_door(spec.h, (xw, spec.yc, fz), (-sd, 0.0), FLAT_DOOR_W, 2.3, CELL_T, 1, False)
+                # the flat's front door (ALyudDoor, docs/doors.md): shut, swinging into the flat (open onto
+                # the landing it would stand across the stair)
+                add_door(spec.h, (xw, spec.yc, fz), (sd, 0.0), FLAT_DOOR_W, 2.3, CELL_T, 1, False)
             wall(m, "AC_IWall", (xw, glo), (xw, hi), CELL_T, fz - 0.01, fz + CEIL, holes, ends=False)
             if k > 0:
                 # the strip of wall through the slab: without it the shaft shows the slab's inside

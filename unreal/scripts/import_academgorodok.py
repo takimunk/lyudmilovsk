@@ -286,9 +286,11 @@ def place(face_y, report=False):
         def to_ue(lx, ly, lz):
             x, y = W.academ_to_map(lx, ly)
             return W.to_unreal(x, y, z0 + lz, face_y)
-        place_doors.spawn_doors(layout["doors"], to_ue, tags=[TAG], folder="Outside/Academgorodok/Doors",
-                                label_prefix="Academ_Door_", leaf_material=unreal.load_asset(DEST + "/Materials/MI_AC_ILeaf"),
-                                log=log)
+        # street and yard doors dark brown like the photos' (MI_AC_Door), the doors inside painted (MI_AC_ILeaf)
+        for outside, mat in ((True, "MI_AC_Door"), (False, "MI_AC_ILeaf")):
+            place_doors.spawn_doors([d for d in layout["doors"] if bool(d.get("outside")) == outside], to_ue, tags=[TAG],
+                                    folder="Outside/Academgorodok/Doors", label_prefix="Academ_Door_",
+                                    leaf_material=unreal.load_asset(DEST + "/Materials/" + mat), log=log)
     log("placed %d parts, %d trees, %d plants at map %s, yaw %.1f" % (n, len(layout.get("trees", [])),
                                                                   len(layout.get("plants", [])), W.academ()[:2], yaw))
 
