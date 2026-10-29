@@ -1,5 +1,8 @@
 #include "Sky/LyudSky.h"
 
+#include "MaterialShared.h"
+#include "RHIGlobals.h"
+
 #include "Components/DirectionalLightComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
@@ -266,7 +269,9 @@ void ALyudSky::MakeInstances()
 	if (!CloudMID && CloudMaterial)
 	{
 		CloudMID = UMaterialInstanceDynamic::Create(CloudMaterial, this);
-		Clouds->SetMaterial(CloudMID);
+		// the clouds take the instance once its shaders are ready (UpdateClouds): the volumetric cloud renderer
+		// asserts on the surface material a still-compiling one falls back to
+		bCloudMIDSet = false;
 		float V = 0.f;
 		CloudBaseDensity = CloudMID->GetScalarParameterValue(FHashedMaterialParameterInfo(TEXT("Cloud_GlobalDensity")), V) ? V : -1.f;
 		if (CloudBaseDensity < 0.f)
@@ -287,6 +292,23 @@ void ALyudSky::MakeInstances()
 
 void ALyudSky::UpdateClouds()
 {
+	if (CloudMID && !bCloudMIDSet)
+	{
+		const FMaterialResource* R = CloudMID->GetMaterialResource(GMaxRHIShaderPlatform);
+		if (R && R->IsGameThreadShaderMapComplete() && CloudMID->GetMaterial()->MaterialDomain == MD_Volume)
+		{
+			Clouds->SetMaterial(CloudMID);
+			bCloudMIDSet = true;
+		}
+		else if (R && R->GetCompileErrors().Num() > 0 && !bCloudErrorsLogged)
+		{
+			bCloudErrorsLogged = true;
+			for (const FString& E : R->GetCompileErrors())
+			{
+				UE_LOG(LogTemp, Error, TEXT("LyudSky: cloud material: %s"), *E);
+			}
+		}
+	}
 	const float K = CVarCloudSamples.GetValueOnGameThread();
 	if (!FMath::IsNearlyEqual(Clouds->ViewSampleCountScale, CloudViewSamples * K))
 	{

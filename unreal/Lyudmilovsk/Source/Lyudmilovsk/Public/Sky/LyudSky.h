@@ -102,8 +102,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
-	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun instead of veiling it). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 4.f;
+	/** The clouds' density over the cloud material's own (tuning; the clouds themselves come from ULyudCloudSubsystem). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 1.f;
 	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudViewSamples = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudShadowSamples = 1.f;
@@ -137,6 +137,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
+	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
+	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
+	UMaterialInstanceDynamic* GetCloudMID() const { return CloudMID; }
 
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
@@ -160,6 +163,8 @@ private:
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
 	float CloudBaseDensity = -1.f;
+	bool bCloudMIDSet = false;
+	bool bCloudErrorsLogged = false;
 	void MakeInstances();
 	void UpdateClouds();
 
