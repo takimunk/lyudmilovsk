@@ -4,11 +4,14 @@
  "model": "model",
  "height": 1.68,
  "donor": "blender/humans/export/human_clerk.glb",
- "faces": 24000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "face": {
   "eyes": false,
   "_doc": "glasses in front of the eyes: painted eyes kept, only the mouth and brows move"
+ },
+ "face_project": {
+  "skip": true
  }
 }

@@ -4,7 +4,7 @@
  "model": "model",
  "height": 1.79,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 24000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "face": {
@@ -32,5 +32,8 @@
     "w": 0.053
    }
   }
+ },
+ "face_project": {
+  "skip": true
  }
 }

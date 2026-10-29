@@ -101,6 +101,18 @@ namespace
 			};
 			Ints(TEXT("months"), S.Months);
 			Ints(TEXT("winterMonths"), S.WinterMonths);
+			const TSharedPtr<FJsonObject>* Late;
+			if (O->TryGetObjectField(TEXT("stragglers"), Late))
+			{
+				auto MonthDay = [](const FString& T)
+				{
+					FString M, D;
+					return T.Split(TEXT("-"), &M, &D) ? FCString::Atoi(*M) * 100 + FCString::Atoi(*D) : 0;
+				};
+				S.Stragglers = (int32)(*Late)->GetNumberField(TEXT("count"));
+				S.StragglersFrom = MonthDay((*Late)->GetStringField(TEXT("from")));
+				S.StragglersUntil = MonthDay((*Late)->GetStringField(TEXT("until")));
+			}
 			FString Dimorphism;
 			S.bFemalePlumage = O->TryGetStringField(TEXT("dimorphism"), Dimorphism) && Dimorphism == TEXT("plumage");
 			O->TryGetNumberField(TEXT("femaleScale"), S.FemaleScale);

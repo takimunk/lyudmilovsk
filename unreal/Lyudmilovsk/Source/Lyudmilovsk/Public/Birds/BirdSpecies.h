@@ -94,6 +94,10 @@ struct LYUDMILOVSK_API FBirdSpecies
 	/** Months it wears its winter plumage (gulls without hoods, spangled starlings), and that plumage's colours; empty if it doesn't change. */
 	UPROPERTY(BlueprintReadOnly) TArray<int32> WinterMonths;
 	UPROPERTY(BlueprintReadOnly) TArray<FLinearColor> WinterPalette;
+	/** Late stragglers: this many stay on past Months and leave one by one between these days (month * 100 + day; 0 = none). */
+	UPROPERTY(BlueprintReadOnly) int32 Stragglers = 0;
+	UPROPERTY(BlueprintReadOnly) int32 StragglersFrom = 0;
+	UPROPERTY(BlueprintReadOnly) int32 StragglersUntil = 0;
 
 	bool IsPresentIn(int32 Month) const { return Months.Num() == 0 || Months.Contains(Month); }
 	bool InWinterPlumage(int32 Month) const { return WinterMonths.Contains(Month); }

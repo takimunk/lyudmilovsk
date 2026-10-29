@@ -1,10 +1,10 @@
 {
  "_doc": "owner: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
  "id": "owner",
- "model": "model",
+ "model": "model_face",
  "height": 1.66,
  "donor": "blender/humans/export/human_owner.glb",
- "faces": 24000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "face": {
@@ -14,19 +14,24 @@
    {
     "cx": 0.0367,
     "cz": 1.5317,
-    "hw": 0.016,
-    "up": 0.0047,
-    "lo": 0.0045,
+    "hw": 0.0144,
+    "up": 0.004,
+    "lo": 0.0038,
     "tilt": -0.0008
    },
    {
     "cx": -0.033,
     "cz": 1.5319,
-    "hw": 0.015,
-    "up": 0.0045,
-    "lo": 0.0045,
+    "hw": 0.0135,
+    "up": 0.0038,
+    "lo": 0.0038,
     "tilt": 0.0007
    }
+  ],
+  "iris": [
+   0.32,
+   0.2,
+   0.12
   ]
  }
 }

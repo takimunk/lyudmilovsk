@@ -90,7 +90,8 @@ gives ragged edges, shards and slivers ("polygon mince" inside the first cable-c
   panes, simple collision boxes, our own UVs. The hi3d model is the **shape reference and the bake source**: its
   colour and relief go onto our mesh by a Cycles selected-to-active bake (base colour + tangent normal).
 - **Organic and small props** (people, animals, birds, statues, rocks, small items): hi3d + the cleanup and
-  decimation above, as before.
+  decimation above. People's faces are then fixed in place: painted from their front picture, smoothed, real eyes
+  (`characters` skill, `tools/characters/fix_hi3d.sh`); rebuilding them on MakeHuman or MetaHuman was tried and dropped.
 
 Worked example: `blender/transport/cabin.py` (docs/transport.md "The cabin").
 

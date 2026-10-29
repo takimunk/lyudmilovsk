@@ -5,6 +5,14 @@ description: How to make or remake a person (NPC, club regular, the owner, any h
 
 # Making a character
 
+**People stay on their hi3d models, fixed in place (Dima, 2026-10-29).** Rebuilding them (MakeHuman base, MetaHuman,
+MetaHuman's face wrapped onto the model) lost the likeness or looked uncanny, so it was dropped. After step 3:
+`tools/characters/fix_hi3d.sh <id>...` paints the face from the character's own front picture (gen/front*.png, the
+one the model came from: clean eyes, brows, lips) onto the model's texture and smooths the face's lumps
+(`blender/characters/face_project.py`, character.json `face_project`; `skip` for glasses), rigs it (40k triangles,
+kids 30k), fits the real eyes (eye_shots.py + eyes.py from character.json `face.eye_open`), imports it. Each person
+gets their own iris colour (`face.iris`, sRGB). Check with test_faces.py offscreen.
+
 Full standard and the reasoning: `docs/characters.md` (Nao is the worked example). Providers and pinning: the
 `game-assets` skill. Words and voice: the `localization` skill.
 

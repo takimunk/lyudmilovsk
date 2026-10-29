@@ -1076,13 +1076,10 @@ if "outside" in LAYOUT:
         dl.set_editor_property("forward_shading_priority", 1 if shadows else 0)
         sun.set_folder_path("Outside")
 
-# Starlings (the murmuration thread's AStarlingMurmuration): a flock over the sea 300 m off the beach,
-# on the left of the door; it builds its meshes at runtime and traces the hill and sea under it at BeginPlay.
-flock_cls = unreal.load_class(None, "/Script/Lyudmilovsk.StarlingMurmuration")
-if "outside" in LAYOUT and flock_cls:
-    spawn(flock_cls, import_world.starlings_location(LAYOUT["outside"]["portal_face_y"]),
-          label="Starlings").set_folder_path("Outside")
-    log("starlings placed")
+# Starlings: one species of the bird life (UBirdLifeSubsystem starts by itself), with its evening murmuration over
+# the reedbed behind the beach (Private/Birds/BirdMurmur.cpp). AStarlingMurmuration is only a dev/test actor now
+# (make_birds_preview_level.py) and is no longer placed here; the Academgorodok's power lines (ALyudWires) put
+# themselves up at BeginPlay from Content/BirdsData/wires.json.
 # A poplar (the plants thread's AProceduralPlant) on the grass beside the path from the door; it grows
 # from a sprout with the game clock and snaps to the hill at BeginPlay.
 plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")

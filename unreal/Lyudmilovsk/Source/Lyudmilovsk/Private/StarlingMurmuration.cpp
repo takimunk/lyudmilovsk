@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "HAL/IConsoleManager.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -100,9 +101,20 @@ AStarlingMurmuration::AStarlingMurmuration()
 
 AStarlingMurmuration::~AStarlingMurmuration() = default;
 
+static TAutoConsoleVariable<int32> CVarStarlingsLegacy(TEXT("lyud.Starlings.Legacy"), 0,
+	TEXT("1: keep an AStarlingMurmuration placed in Lvl_Scene01. 0 (default): it stands down there, the starlings are the bird "
+		 "life's (BirdMurmur.cpp); the actor stays a dev/test flock in other levels."));
+
 void AStarlingMurmuration::BeginPlay()
 {
 	Super::BeginPlay();
+	if (GetWorld() && GetWorld()->GetMapName().Contains(TEXT("Lvl_Scene01")) && CVarStarlingsLegacy.GetValueOnGameThread() == 0)
+	{
+		UE_LOG(LogTemp, Display, TEXT("StarlingMurmuration %s: stands down in the outdoor map (the bird life's starlings murmurate there)"), *GetName());
+		SetActorHiddenInGame(true);
+		SetActorTickEnabled(false);
+		return;
+	}
 	StartFlock();
 }
 
