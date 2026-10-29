@@ -569,6 +569,14 @@ namespace
 				}
 			}
 			OnWires = (int)Wired.size();
+			int Along = 0;
+			for (const FBird* B : Wired)
+			{
+				const FSite& Wr = W.Sites[B->Site];
+				const V3 D = (Wr.B - Wr.A).Flat().Norm();
+				Along += std::fabs(D.X * std::cos(B->Yaw) + D.Y * std::sin(B->Yaw)) > 0.6f;
+			}
+			Check(R, Along == 0, "facing across the wire, not along it");
 			for (size_t I = 0; I < Wired.size(); I++)
 			{
 				for (size_t J = I + 1; J < Wired.size(); J++)

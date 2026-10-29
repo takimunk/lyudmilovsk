@@ -1167,7 +1167,8 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		FSpeciesDraw& D = Species[B.Species];
 		// far birds keep at least ~1.2 px so they don't flicker away (1080 px, 90 degrees)
 		const float Px = S.Length / FMath::Max(Dist, 0.1f) * 540.f * PixelScale;
-		const float Grow = FMath::Max(1.f, 1.2f / FMath::Max(Px, 0.01f));
+		// (a murmuration's birds keep ~2 px: the flock reads as a dark cloud against the evening sky, as it does)
+		const float Grow = FMath::Max(1.f, (bMurmur ? 2.f : 1.2f) / FMath::Max(Px, 0.01f));
 		const float Scale = D.Scale * FMath::Min(Grow, bMurmur ? 8.f : 3.f) * (B.bFemale ? D.FemaleScale : 1.f);
 		int32 Pose = 0;
 		float Pitch = 0.f, Roll = 0.f;

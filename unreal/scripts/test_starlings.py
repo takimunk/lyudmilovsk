@@ -6,7 +6,7 @@ the wires close up and along the street at noon, starlings feeding by day (close
 wires before dusk, the sunset murmuration from the beach (three moments, then the descent), starlings asleep in the
 reed. test_starlings.sh copies them to Saved/shots/ with names.
 
-The reedbed behind the beach (world_map REEDBED) is put up here if the level was built before it existed.
+The reedbed behind the beach (world_map REEDBED) comes with the level's build (import_world.py, grass patches).
 """
 import json
 import math
@@ -123,18 +123,9 @@ SHORE_X = 137.5                                    # world_map.shore_x(280), met
 def s_start(w):
     cmd(w, "ghost")
     cmd(w, "lyud.Birds.IgnorePlayer 1")
-    # the reedbed, if this level was built before it (import_world.py places it from world_map.grass_patches)
     have = any(str(a.get_editor_property("species")) == "CommonReed" and abs(a.get_actor_location().x - REED_UE[0]) < 500
                for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralGrass")))
-    if not have:
-        cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralGrass")
-        xf = unreal.Transform(unreal.Vector(REED_UE[0], REED_UE[1], ground(w, *REED_UE)), unreal.Rotator(0, 0, 0), unreal.Vector(1, 1, 1))
-        g = unreal.GameplayStatics.begin_deferred_actor_spawn_from_class(w, cls, xf)
-        for k, v in (("species", "CommonReed"), ("seed", 731), ("half_extent", unreal.Vector2D(REED[2] * 100, REED[3] * 100)),
-                     ("density_scale", 2.5), ("min_world_z", -10000.0), ("max_world_z", -3500.0), ("trace_up", 5000.0), ("trace_down", 6000.0)):
-            g.set_editor_property(k, v)
-        unreal.GameplayStatics.finish_spawning_actor(g, xf)
-        log("reedbed put up at %.0f %.0f" % REED_UE)
+    log("reedbed in the level: %s (the scene build places it from world_map.grass_patches)" % have)
     log("start " + report(w))
 
 
@@ -149,6 +140,7 @@ step(lambda w: None, 6.0)
 
 @step
 def s_wire_close(w):
+    cmd(w, "fov 70")
     p = WIRES["poles"][3]
     x, y, z = [c * 100.0 for c in p["at"]]
     a = math.radians(p["along"])
@@ -207,7 +199,8 @@ def s_feeders(w):
     if b:
         l = b.location
         log("feeding starling %d at %.0f %.0f %.0f" % (i, l.x, l.y, l.z))
-        look(w, (l.x - 700, l.y - 300, l.z + 160), (l.x, l.y, l.z + 10))
+        cmd(w, "fov 50")
+        look(w, (l.x - 260, l.y - 120, l.z + 70), (l.x, l.y, l.z + 8))
     else:
         log("no starling feeding")
 
@@ -221,7 +214,8 @@ def s_feeders_wide(w):
     b = bird(w, st["feed"]) if st.get("feed") is not None else None
     if b:
         l = b.location
-        look(w, (l.x - 3000, l.y - 1500, l.z + 1200), (l.x, l.y, l.z))
+        cmd(w, "fov 70")
+        look(w, (l.x - 2200, l.y - 1100, l.z + 700), (l.x, l.y, l.z))
 
 
 step(lambda w: fix_eye(w), 1.0)
@@ -234,7 +228,7 @@ def s_on_wire(w):
     if b:
         l = b.location
         log("perched starling %d at %.0f %.0f %.0f" % (i, l.x, l.y, l.z))
-        look(w, (l.x - 600, l.y - 400, l.z - 150), (l.x, l.y, l.z))
+        look(w, (l.x - 500, l.y - 300, l.z - 150), (l.x, l.y, l.z))
         st["perch"] = i
 
 
@@ -264,7 +258,17 @@ def s_swallows_find(w):
     if b:
         l = b.location
         log("swallow %d at %.0f %.0f %.0f" % (i, l.x, l.y, l.z))
-        look(w, (l.x - 220, l.y - 180, l.z - 40), (l.x, l.y, l.z + 3))
+        # across the nearest wire from it, a little below, a narrow lens
+        def dist(wr):
+            a, b = wr["a"], wr["b"]
+            return min(math.hypot(l.x - (a[0] + (b[0] - a[0]) * t) * 100, l.y - (a[1] + (b[1] - a[1]) * t) * 100) for t in (0.1 * k for k in range(11)))
+        wr = min(WIRES["wires"], key=dist)
+        dx, dy = wr["b"][0] - wr["a"][0], wr["b"][1] - wr["a"][1]
+        n = math.hypot(dx, dy) or 1.0
+        st["across"] = (-dy / n, dx / n)
+        ax, ay = st["across"]
+        cmd(w, "fov 40")
+        look(w, (l.x + ax * 160, l.y + ay * 160, l.z - 35), (l.x, l.y, l.z + 6))
     else:
         log("no swallow perched")
 
@@ -278,7 +282,9 @@ def s_swallows_wide(w):
     b = bird(w, st["swallow"]) if st.get("swallow") is not None else None
     if b:
         l = b.location
-        look(w, (l.x - 900, l.y - 700, l.z - 300), (l.x, l.y, l.z))
+        ax, ay = st.get("across", (1.0, 0.0))
+        cmd(w, "fov 55")
+        look(w, (l.x + ax * 700, l.y + ay * 700, l.z - 250), (l.x, l.y, l.z))
 
 
 step(lambda w: fix_eye(w), 1.0)
@@ -289,7 +295,7 @@ step(lambda w: shot(w, "swallows_on_wire_row") if st.get("swallow") is not None 
 @step
 def s_murm(w):
     rise, sset = st.get("sun", sun(w))
-    set_time(w, sset - 0.3)
+    set_time(w, sset - float(os.environ.get("STARTEST_MURM_H", "0.2")))
 
 
 step(lambda w: None, 45.0)
@@ -300,18 +306,29 @@ def murm_centre(w):
     return (int(m.group(1)), float(m.group(2)) * 100, float(m.group(3)) * 100, float(m.group(4)) * 100) if m else None
 
 
-for _k in range(3):
-    def _m(w, k=_k):
+for _k, _where in enumerate(("beach", "beach", "valley", "valley", "near", "near")):
+    def _m(w, k=_k, where=_where):
         c = murm_centre(w)
         log("murmuration %d: %s" % (k, report(w)))
         if c:
             n, x, y, z = c
-            # on the beach at the waterline, 1.7 m up, looking inland at the flock
-            ex, ey = (SHORE_X - 8.0) * 100.0, y + (k - 1) * 4000.0
-            look(w, (ex, ey, ground(w, ex, ey) + 170.0), (x, y, z))
+            if where == "near":
+                # 90 m from it on the land side, low, looking up at it over the shore
+                ex, ey = x - 9000.0, y + (k - 4.5) * 6000.0
+                ez = ground(w, ex, ey) + 200.0
+            elif where == "beach":
+                # on the beach at the waterline, 200 m along the coast, looking at the flock over the shore
+                ex, ey = (SHORE_X - 6.0) * 100.0, y + (20000.0 if k == 0 else -20000.0)
+                ez = ground(w, ex, ey) + 170.0
+            else:
+                # inland, on the valley floor 250 m east, looking west at it against the sunset over the sea
+                ex, ey = x - 25000.0, y + (k - 2.5) * 8000.0
+                ez = ground(w, ex, ey) + 300.0
+            cmd(w, "fov 60")
+            look(w, (ex, ey, ez), (x, y, z))
     step(_m, 1.0)
     step(lambda w: fix_eye(w), 0.5)
-    step(lambda w, k=_k: shot(w, "murmuration_from_beach_%d" % k), 12.0)
+    step(lambda w, k=_k, where=_where: shot(w, "murmuration_from_%s_%d" % (where, k)), 10.0)
 
 
 @step
@@ -354,7 +371,8 @@ def s_sleep_find(w):
     if b:
         l = b.location
         log("asleep: starling %d at %.0f %.0f %.0f" % (i, l.x, l.y, l.z))
-        look(w, (l.x - 260, l.y - 200, l.z + 60), (l.x, l.y, l.z))
+        cmd(w, "fov 50")
+        look(w, (l.x - 170, l.y - 120, l.z + 40), (l.x, l.y, l.z))
 
 
 step(lambda w: fix_eye(w), 1.0)
@@ -376,6 +394,7 @@ def s_sleep_wide(w):
     b = bird(w, st["sleeper"]) if st.get("sleeper") is not None else None
     if b:
         l = b.location
+        cmd(w, "fov 70")
         look(w, (l.x - 1400, l.y - 900, l.z + 500), (l.x, l.y, l.z))
 
 
@@ -398,6 +417,13 @@ def tick(dt):
             st["err"] = 1
             log("tick failed: %s" % e)
             cmd(world(), "quit")
+
+
+if os.environ.get("STARTEST_ONLY") == "murm":
+    _keep = ("s_start", "s_murm", "_m", "<lambda>", "s_quit")
+    _i0 = [k for k, (fn, _) in enumerate(STEPS) if fn.__name__ == "s_murm"][0]
+    _i1 = [k for k, (fn, _) in enumerate(STEPS) if fn.__name__ == "s_murm_down"][0]
+    STEPS[:] = STEPS[:1] + STEPS[_i0:_i1] + [s for s in STEPS if s[0].__name__ == "s_quit"]
 
 
 def _tick(dt):
