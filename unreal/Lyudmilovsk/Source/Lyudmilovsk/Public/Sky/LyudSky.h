@@ -166,6 +166,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
+	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
+	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
+	UMaterialInstanceDynamic* GetCloudMID() const { return CloudMID; }
 
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
@@ -189,6 +192,8 @@ private:
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
 	float CloudBaseDensity = -1.f;
+	bool bCloudMIDSet = false;
+	bool bCloudErrorsLogged = false;
 	void MakeInstances();
 	void UpdateClouds();
 
