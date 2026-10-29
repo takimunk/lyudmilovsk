@@ -1,14 +1,32 @@
 {
  "_doc": "Pyotr Lange (Пётр Ланге), fisherman, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
  "id": "lange_pyotr",
- "model": "model",
+ "model": "model_face",
  "height": 1.85,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "face": {
-  "normal_strength": 0.4
+  "normal_strength": 0.4,
+  "eye_open": [
+   {
+    "cx": 0.0359,
+    "cz": 1.6898,
+    "hw": 0.0142,
+    "up": 0.0036,
+    "lo": 0.0036,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0361,
+    "cz": 1.6886,
+    "hw": 0.0107,
+    "up": 0.0043,
+    "lo": 0.0043,
+    "tilt": 0.0
+   }
+  ]
  }
 }

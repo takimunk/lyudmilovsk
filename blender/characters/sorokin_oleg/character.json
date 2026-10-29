@@ -1,14 +1,65 @@
 {
  "_doc": "Oleg Sorokin (Олег Сорокин), retired ornithologist, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
  "id": "sorokin_oleg",
- "model": "model",
+ "model": "model_face",
  "height": 1.85,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "face": {
-  "normal_strength": 0.4
+  "normal_strength": 0.4,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/sorokin_oleg.png (5120 px/m, centre z 1.7095): the automatic ones were off",
+   "ipd": 0.0719,
+   "eyes": [
+    {
+     "x": 0.0344,
+     "z": 1.6923,
+     "iris": [
+      0.3,
+      0.36,
+      0.4
+     ],
+     "w": 0.03,
+     "h": 0.011
+    },
+    {
+     "x": -0.0375,
+     "z": 1.6923,
+     "iris": [
+      0.3,
+      0.36,
+      0.4
+     ],
+     "w": 0.03,
+     "h": 0.011
+    }
+   ],
+   "mouth": {
+    "x": -0.001,
+    "z": 1.617,
+    "w": 0.05
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0344,
+    "cz": 1.6923,
+    "hw": 0.011,
+    "up": 0.003,
+    "lo": 0.003,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0375,
+    "cz": 1.6923,
+    "hw": 0.011,
+    "up": 0.003,
+    "lo": 0.003,
+    "tilt": 0.0
+   }
+  ]
  }
 }

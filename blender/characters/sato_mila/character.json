@@ -1,18 +1,18 @@
 {
  "_doc": "Mila Sato (Мила Сато), doctor of the academgorodok: rig_character.py from her hi3d model (docs/characters.md)",
  "id": "sato_mila",
- "model": "model",
+ "model": "model_face",
  "height": 1.66,
  "donor": "blender/humans/export/human_girl_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "skirt": {
   "hem_z": 0.5,
-  "gap": 0.0,
-  "blend": 0.08,
-  "pelvis": 0.6
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
  },
  "face": {
   "normal_strength": 0.4,
@@ -33,6 +33,39 @@
     "lo": 0.005,
     "tilt": 0.001
    }
-  ]
+  ],
+  "marks": {
+   "_doc": "the first automatic marks (before the face projection), checked by eye",
+   "ipd": 0.0645,
+   "eyes": [
+    {
+     "x": 0.0322,
+     "z": 1.5347,
+     "iris": [
+      0.275,
+      0.243,
+      0.216
+     ],
+     "w": 0.0375,
+     "h": 0.0193
+    },
+    {
+     "x": -0.0322,
+     "z": 1.5345,
+     "iris": [
+      0.286,
+      0.231,
+      0.2
+     ],
+     "w": 0.0373,
+     "h": 0.0193
+    }
+   ],
+   "mouth": {
+    "x": 0.001,
+    "z": 1.4681,
+    "w": 0.057
+   }
+  }
  }
 }

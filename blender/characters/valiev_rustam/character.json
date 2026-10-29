@@ -1,14 +1,65 @@
 {
  "_doc": "Rustam Valiev (Рустам Валиев), engineer, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
  "id": "valiev_rustam",
- "model": "model",
+ "model": "model_face",
  "height": 1.75,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "face": {
-  "normal_strength": 0.4
+  "normal_strength": 0.4,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/valiev_rustam.png (5120 px/m, centre z 1.6175): the automatic ones were off",
+   "ipd": 0.0703,
+   "eyes": [
+    {
+     "x": 0.0359,
+     "z": 1.6169,
+     "iris": [
+      0.15,
+      0.1,
+      0.07
+     ],
+     "w": 0.03,
+     "h": 0.011
+    },
+    {
+     "x": -0.0344,
+     "z": 1.6159,
+     "iris": [
+      0.15,
+      0.1,
+      0.07
+     ],
+     "w": 0.03,
+     "h": 0.011
+    }
+   ],
+   "mouth": {
+    "x": 0.003,
+    "z": 1.5425,
+    "w": 0.05
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0359,
+    "cz": 1.6169,
+    "hw": 0.0125,
+    "up": 0.0035,
+    "lo": 0.0035,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0344,
+    "cz": 1.6159,
+    "hw": 0.0125,
+    "up": 0.0035,
+    "lo": 0.0035,
+    "tilt": 0.0
+   }
+  ]
  }
 }

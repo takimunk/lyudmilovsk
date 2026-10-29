@@ -1,21 +1,72 @@
 {
  "_doc": "Dasha Kimura (Даша Кимура), student, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
  "id": "kimura_dasha",
- "model": "model",
+ "model": "model_face",
  "height": 1.64,
  "donor": "blender/humans/export/human_girl_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "skirt": {
   "hem_z": 0.52,
-  "gap": 0.0,
-  "blend": 0.08,
-  "pelvis": 0.6
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
  },
  "face": {
-  "normal_strength": 0.4
+  "normal_strength": 0.4,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/kimura_dasha.png (5120 px/m, centre z 1.4925): the automatic ones were off",
+   "ipd": 0.0688,
+   "eyes": [
+    {
+     "x": 0.0344,
+     "z": 1.5019,
+     "iris": [
+      0.14,
+      0.09,
+      0.07
+     ],
+     "w": 0.03,
+     "h": 0.011
+    },
+    {
+     "x": -0.0344,
+     "z": 1.5019,
+     "iris": [
+      0.14,
+      0.09,
+      0.07
+     ],
+     "w": 0.03,
+     "h": 0.011
+    }
+   ],
+   "mouth": {
+    "x": 0.0,
+    "z": 1.4347,
+    "w": 0.045
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0344,
+    "cz": 1.5019,
+    "hw": 0.0155,
+    "up": 0.0035,
+    "lo": 0.0035,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0344,
+    "cz": 1.5019,
+    "hw": 0.0155,
+    "up": 0.0035,
+    "lo": 0.0035,
+    "tilt": 0.0
+   }
+  ]
  },
  "a_pose": true,
  "_a_pose": "hi3d made her in an A-pose: unbend_arms raises the arms to the T first"

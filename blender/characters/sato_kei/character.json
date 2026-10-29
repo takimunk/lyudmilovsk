@@ -4,7 +4,7 @@
  "model": "model",
  "height": 1.72,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
@@ -103,5 +103,9 @@
    ],
    "dark": 0.35
   }
- ]
+ ],
+ "face_project": {
+  "skip": true,
+  "_doc": "glasses: the front picture's frames would be painted onto the face"
+ }
 }

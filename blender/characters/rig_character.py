@@ -170,7 +170,7 @@ def optimize(m, spec):
         bpy.context.scene.collection.objects.link(high)
         high.data.materials[0] = m.data.materials[0].copy()      # the bake target lives only in the low one's material
     zones = list(spec.get("protect", []))
-    if spec.get("face_protect", True):            # the face's front keeps more of the budget (lips and lids in shards)
+    if spec.get("face_protect"):                  # the face's front keeps more of the budget (lips and lids in shards)
         h = world_co(m)[:, 2].max()
         zones.append({"box": [-0.085 * h / 1.7, 0.085 * h / 1.7, -1, -0.03, 0.83 * h, 0.95 * h], "weight": 0.9})
     decimate(m, spec.get("faces", 24000), zones)

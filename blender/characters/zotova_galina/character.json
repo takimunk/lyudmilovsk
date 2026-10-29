@@ -1,18 +1,18 @@
 {
  "_doc": "Galina Zotova (Галина Зотова), chemist of the academgorodok: rig_character.py from her hi3d model (docs/characters.md)",
  "id": "zotova_galina",
- "model": "model",
+ "model": "model_face",
  "height": 1.63,
  "donor": "blender/humans/export/human_girl_a.glb",
- "faces": 15000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "hands": {},
  "skirt": {
   "hem_z": 0.5,
-  "gap": 0.0,
-  "blend": 0.08,
-  "pelvis": 0.6
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
  },
  "face": {
   "normal_strength": 0.4,
@@ -33,6 +33,39 @@
     "lo": 0.0053,
     "tilt": 0.0008
    }
-  ]
+  ],
+  "marks": {
+   "_doc": "the first automatic marks (before the face projection), checked by eye",
+   "ipd": 0.0652,
+   "eyes": [
+    {
+     "x": 0.0307,
+     "z": 1.4999,
+     "iris": [
+      0.208,
+      0.184,
+      0.176
+     ],
+     "w": 0.0391,
+     "h": 0.0196
+    },
+    {
+     "x": -0.0346,
+     "z": 1.4993,
+     "iris": [
+      0.208,
+      0.173,
+      0.157
+     ],
+     "w": 0.0391,
+     "h": 0.0196
+    }
+   ],
+   "mouth": {
+    "x": -0.0005,
+    "z": 1.43,
+    "w": 0.0652
+   }
+  }
  }
 }
