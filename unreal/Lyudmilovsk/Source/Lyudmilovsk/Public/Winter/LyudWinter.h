@@ -96,6 +96,10 @@ public:
 	/** The dirtiest path patch within RadiusCm of Near with at least MinCm of snow nobody is clearing; -1 none. */
 	UFUNCTION(BlueprintCallable, Category = "Winter") int32 FindDirtyPatch(const FVector& Near, float RadiusCm, float MinCm = 4.f) const;
 	UFUNCTION(BlueprintCallable, Category = "Winter") int32 NumPatches() const;
+	/** Fresh snow on every path not being cleared, cm (a night's snow; tests). */
+	UFUNCTION(BlueprintCallable, Category = "Winter") void SnowOnPaths(float Cm);
+	/** Up to Max such patches, nearest first. */
+	UFUNCTION(BlueprintCallable, Category = "Winter") void FindDirtyPatches(const FVector& Near, float RadiusCm, int32 Max, float MinCm, TArray<int32>& Out) const;
 	/** Snow on a patch now, cm. */
 	UFUNCTION(BlueprintPure, Category = "Winter") float GetPatchSnow(int32 Patch) const;
 	/** The line a shoveller walks along a patch: its start and end on the ground (world cm). */

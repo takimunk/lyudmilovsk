@@ -41,6 +41,7 @@
 #include "TextureResource.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
+#include "../Weather/WeatherModel.h"
 
 namespace
 {
@@ -63,6 +64,16 @@ namespace
 			if (ULyudWinterSubsystem* W = ULyudWinterSubsystem::Get(World))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("%s"), *W->DebugReport());
+			}
+		}));
+
+	FAutoConsoleCommandWithWorldAndArgs WinterSnowOnPathsCommand(TEXT("lyud.Winter.SnowOnPaths"),
+		TEXT("Puts fresh snow on every path, cm (default 10): a night's snow for the shovellers (tests)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			if (ULyudWinterSubsystem* W = ULyudWinterSubsystem::Get(World))
+			{
+				W->SnowOnPaths(Args.Num() > 0 ? FCString::Atof(*Args[0]) : 10.f);
 			}
 		}));
 
@@ -191,6 +202,7 @@ namespace LyudWinter
 		float NextIceSeaZ = 0.f;
 		bool bIceUploaded = false;
 		float CanopySnow = 0.f;
+		bool bCanopySeeded = false;
 		float RoseHistory[8] = {};
 		float TransportSum = 0.f;
 		double LastWeatherHours = -1.0;
@@ -297,36 +309,67 @@ bool ULyudWinterSubsystem::IsReady() const
 
 void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 {
-	// What the weather gives: until the weather engine's season state (snow pack, sea ice) is in, the level snow and
-	// the ice come from the console (lyud.Winter.*) and the snowfall from the sky's snow share of its rain.
+	// what the weather engine says (its season: the snow pack, the sea ice) plus this winter's drifting winds, which
+	// the snow's shape remembers: integrated from the weather's history (from 1 September) the first time, then as the
+	// clock runs
 	UWorld* World = GetWorld();
 	LyudWinter::FWinterState& S = *State;
-	const ULyudWindSubsystem* Wind = World->GetSubsystem<ULyudWindSubsystem>();
 	const ULyudWeatherSubsystem* Weather = World->GetSubsystem<ULyudWeatherSubsystem>();
-	const FLyudSkyWeather Sky = Weather ? Weather->GetSky() : FLyudSkyWeather();
-	const FDateTime T = UGameCalendar::NowIn(World);
-	const double Hours = (T - FDateTime(2000, 1, 1)).GetTotalHours();
-	const float DtH = S.LastWeatherHours < 0.0 ? 0.f : float(FMath::Clamp(Hours - S.LastWeatherHours, 0.0, 6.0));
-	S.LastWeatherHours = Hours;
+	if (!Weather)
+	{
+		return;
+	}
+	const LyudWeather::FWeatherState& W = Weather->GetModelState();
+	const double Hours = W.Hours;
+	auto Drift = [&S](const LyudWeather::FWeatherState& X, float DtH)
+	{
+		if (X.SnowDepthCm > 1.f && DtH > 0.f)
+		{
+			// fresh, dry snow drifts; old, crusted or wet snow hardly moves
+			const float Loose = X.Melt > 0.2f || X.Glaze > 0.3f ? 0.08f : FMath::Clamp(1.f - X.SnowAgeDays / 10.f, 0.2f, 1.f);
+			S.TransportSum += LyudWinter::AddToRose(S.RoseHistory, X.WindFromDeg, X.WindSpeed, Loose * DtH);
+		}
+		else if (X.SnowDepthCm <= 0.5f)
+		{
+			// a thaw took the snow: the next snow starts level again
+			S.TransportSum = 0.f;
+			FMemory::Memzero(S.RoseHistory);
+		}
+	};
+	if (S.LastWeatherHours < 0.0 || Hours < S.LastWeatherHours - 1.0 || Hours > S.LastWeatherHours + 72.0)
+	{
+		// the history: this season from 1 September, every 3 hours
+		S.TransportSum = 0.f;
+		FMemory::Memzero(S.RoseHistory);
+		const FDateTime WNow = Weather->WeatherTime();
+		const int32 Year = WNow.GetMonth() >= 9 ? WNow.GetYear() : WNow.GetYear() - 1;
+		const double Start = (FDateTime(Year, 9, 1) - FDateTime(2000, 1, 1)).GetTotalHours();
+		LyudWeather::FChain& Chain = LyudWeather::SharedChain();
+		LyudWeather::FSeason Season;
+		for (double H = Start; H < Hours; H += 3.0)
+		{
+			Drift(LyudWeather::Full(H, Chain, Season), 3.f);
+		}
+		S.LastWeatherHours = Hours;
+	}
+	const float DtH = float(FMath::Clamp(Hours - S.LastWeatherHours, 0.0, 6.0));
+	if (DtH >= 0.25f)
+	{
+		Drift(W, DtH);
+		S.LastWeatherHours = Hours;
+	}
 
 	const float ForceSnow = CVarWinterSnow.GetValueOnGameThread();
 	const float ForceFall = CVarWinterSnowfall.GetValueOnGameThread();
-	Now.LevelCm = ForceSnow >= 0.f ? ForceSnow : 0.f;
-	Now.SnowfallCmPerHour = ForceFall >= 0.f ? ForceFall : Sky.Rain * Sky.Snow;
-	Now.Melt = Sky.TempC > 0.5f ? FMath::Clamp(Sky.TempC / 5.f, 0.f, 1.f) : 0.f;
+	Now.LevelCm = ForceSnow >= 0.f ? ForceSnow : W.SnowDepthCm;
+	Now.SnowfallCmPerHour = ForceFall >= 0.f ? ForceFall : W.SnowfallCmPerHour;
+	Now.Melt = W.Melt;
 	const float ForceAge = CVarWinterAge.GetValueOnGameThread();
-	Now.SnowAgeDays = ForceAge >= 0.f ? ForceAge : (Now.SnowfallCmPerHour > 0.1f ? 0.f : FMath::Min(Now.SnowAgeDays + DtH / 24.f, 60.f));
+	Now.SnowAgeDays = ForceAge >= 0.f ? ForceAge : W.SnowAgeDays;
 
-	// the winter's drifting winds: their snow-carrying power by direction, while there is loose snow to carry
-	const float WindFrom = Wind ? Wind->GetFromDegrees() : 250.f;
-	const float WindSpeed = Wind ? Wind->GetMeanSpeed() : 5.f;
-	if (Now.LevelCm > 1.f && DtH > 0.f)
-	{
-		const float Loose = Now.Melt > 0.2f ? 0.1f : FMath::Clamp(1.f - Now.SnowAgeDays / 10.f, 0.25f, 1.f);
-		S.TransportSum += LyudWinter::AddToRose(S.RoseHistory, WindFrom, WindSpeed, Loose * DtH);
-	}
 	const float ForceDrift = CVarWinterDrift.GetValueOnGameThread();
 	const float ForceFrom = CVarWinterDriftFrom.GetValueOnGameThread();
+	// a few days of a fresh wind over loose snow build the drifts fully (6000 = one day of 10 m/s and some)
 	Now.Drift = ForceDrift >= 0.f ? FMath::Clamp(ForceDrift, 0.f, 1.f) : 1.f - FMath::Exp(-S.TransportSum / 6000.f);
 	FMemory::Memzero(S.In.Rose);
 	float RoseSum = 0.f;
@@ -336,7 +379,7 @@ void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 	}
 	if (ForceFrom >= 0.f || RoseSum <= 0.f)
 	{
-		LyudWinter::AddToRose(S.In.Rose, ForceFrom >= 0.f ? ForceFrom : WindFrom, 12.f, 1.f);
+		LyudWinter::AddToRose(S.In.Rose, ForceFrom >= 0.f ? ForceFrom : W.WindFromDeg, 12.f, 1.f);
 	}
 	else
 	{
@@ -350,22 +393,30 @@ void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 	Now.DriftFromDeg = 45.f * Best;
 
 	// snow on the branches: fresh snow sticks, wind and thaw shake it off over a day or two
-	const float ForceCanopy = CVarWinterCanopy.GetValueOnGameThread();
-	S.CanopySnow = FMath::Clamp(S.CanopySnow + DtH * (0.35f * Now.SnowfallCmPerHour - 0.02f - 0.015f * FMath::Max(WindSpeed - 4.f, 0.f) - 0.6f * Now.Melt), 0.f, 1.f);
+	const float CanopyDtH = FMath::Clamp(DeltaTime / 3600.f * FMath::Max(GetDefault<UGameCalendar>()->TimeScale, 1.f), 0.f, 6.f);
+	S.CanopySnow = FMath::Clamp(S.CanopySnow + CanopyDtH * (0.35f * Now.SnowfallCmPerHour - 0.02f - 0.015f * FMath::Max(W.WindSpeed - 4.f, 0.f) - 0.6f * Now.Melt), 0.f, 1.f);
+	if (!S.bCanopySeeded)
+	{
+		// a start mid-winter: what a day like this would have on the branches
+		S.CanopySnow = Now.LevelCm > 2.f ? FMath::Clamp(1.f - Now.SnowAgeDays / 3.f, 0.f, 1.f) * (1.f - Now.Melt) : 0.f;
+		S.bCanopySeeded = true;
+	}
 	if (Now.LevelCm <= 0.5f)
 	{
 		S.CanopySnow = 0.f;
 	}
+	const float ForceCanopy = CVarWinterCanopy.GetValueOnGameThread();
 	Now.CanopySnow = ForceCanopy >= 0.f ? FMath::Clamp(ForceCanopy, 0.f, 1.f) : S.CanopySnow;
 
 	const float ForceIce = CVarWinterIce.GetValueOnGameThread();
 	const float ForceIceCm = CVarWinterIceCm.GetValueOnGameThread();
-	Now.IceCover = ForceIce >= 0.f ? FMath::Clamp(ForceIce, 0.f, 1.f) : 0.f;
-	Now.IceCm = ForceIceCm >= 0.f ? ForceIceCm : (Now.IceCover > 0.f ? 15.f : 0.f);
+	Now.IceCover = ForceIce >= 0.f ? FMath::Clamp(ForceIce, 0.f, 1.f) : W.SeaIceCover;
+	Now.IceCm = ForceIceCm >= 0.f ? ForceIceCm : (ForceIce >= 0.f && W.SeaIceCm < 1.f ? 15.f : W.SeaIceCm);
 
 	S.In.LevelCm = Now.LevelCm;
 	S.In.SnowfallCmPerHour = Now.SnowfallCmPerHour;
 	S.In.Transport = Now.Drift;
+	S.In.Density = W.SnowDensity;
 	S.IceP.Cover = Now.IceCover;
 	S.IceP.ThicknessCm = Now.IceCm;
 	if (CVarWinter.GetValueOnGameThread() == 0)
@@ -642,48 +693,119 @@ void ULyudWinterSubsystem::StepCover()
 						Mask[I] = P >= 0.5f ? 1 : 0;
 					}
 				});
-				// a 1.4 m path from every doorstep to the nearest paved cell within 30 m
-				for (const FVector2D& D : Doorsteps)
+				// people clear walkways, not squares and streets: paved ground wider than ~8 m (the square, the empty town's
+				// street grid) keeps its snow, with whatever narrow paving touches it; the rest rounded off (no 2 m steps)
 				{
-					const int32 CX = FMath::RoundToInt((D.X * 0.01 - AX0) / ACell), CY = FMath::RoundToInt((D.Y * 0.01 - AY0) / ACell);
-					const int32 R = FMath::CeilToInt(30.f / ACell);
-					double BestD = 1e18;
-					FVector2D Best;
-					for (int32 Y = CY - R; Y <= CY + R; Y++)
+					const int32 FW = S.Field.W, FH = S.Field.H;
+					std::vector<float> G(Mask.size());
+					for (size_t I = 0; I < Mask.size(); I++)
 					{
-						for (int32 X = CX - R; X <= CX + R; X++)
+						G[I] = Mask[I] ? 1e20f : 0.f;
+					}
+					LyudWinter::DistanceTransform(G, FW, FH, WinterParallelRows);
+					for (size_t I = 0; I < Mask.size(); I++)
+					{
+						G[I] = (Mask[I] && G[I] > 16.f) ? 0.f : 1e20f;   // the cores of wide paving (> 4 m from its edge)
+					}
+					LyudWinter::DistanceTransform(G, FW, FH, WinterParallelRows);
+					for (size_t I = 0; I < Mask.size(); I++)
+					{
+						if (G[I] < 36.f)
 						{
-							if (X >= 0 && Y >= 0 && X < NX && Y < NY && Paved(X, Y) > 0.f)
-							{
-								const FVector2D P((AX0 + X * ACell) * 100.0, (AY0 + Y * ACell) * 100.0);
-								const double DD = FVector2D::DistSquared(P, D);
-								if (DD < BestD)
-								{
-									BestD = DD;
-									Best = P;
-								}
-							}
+							Mask[I] = 0;
 						}
 					}
-					if (BestD > 1e17)
+					for (int32 Pass = 0; Pass < 2; Pass++)
 					{
-						continue;
+						std::vector<uint8_t> M2 = Mask;
+						ParallelFor(FH, [&](int32 Y)
+						{
+							for (int32 X = 0; X < FW; X++)
+							{
+								int32 N = 0, T = 0;
+								for (int32 DY = -1; DY <= 1; DY++)
+								{
+									for (int32 DX = -1; DX <= 1; DX++)
+									{
+										const int32 NX = X + DX, NY = Y + DY;
+										if (NX >= 0 && NY >= 0 && NX < FW && NY < FH)
+										{
+											N += M2[size_t(NY) * FW + NX];
+											T++;
+										}
+									}
+								}
+								const size_t I = size_t(Y) * FW + X;
+								Mask[I] = (N * 2 > T && S.Field.Open[I]) ? 1 : 0;
+							}
+						});
 					}
-					const double Len = FMath::Sqrt(BestD);
+				}
+				// the doors: a 1.6 m path from every doorstep to the nearest cleared walkway within 150 m and to the
+				// nearest other doorstep within 70 m (along a house's front), drawn only under the open sky
+				const int32 FW = S.Field.W, FH = S.Field.H;
+				std::vector<FVector2D> Kept;
+				for (int32 Y = 0; Y < FH; Y += 2)
+				{
+					for (int32 X = 0; X < FW; X += 2)
+					{
+						if (Mask[size_t(Y) * FW + X])
+						{
+							Kept.emplace_back(S.Field.X0 + X * S.Field.Cell, S.Field.Y0 + Y * S.Field.Cell);
+						}
+					}
+				}
+				auto Line = [&](const FVector2D& A, const FVector2D& B)
+				{
+					const double Len = FVector2D::Distance(A, B);
 					for (double T = 0.0; T <= Len; T += 50.0)
 					{
-						const FVector2D P = D + (Best - D) * (Len > 0.0 ? T / Len : 0.0);
+						const FVector2D P = A + (B - A) * (Len > 0.0 ? T / Len : 0.0);
 						for (int32 DY = -1; DY <= 1; DY++)
 						{
 							for (int32 DX = -1; DX <= 1; DX++)
 							{
 								const int32 X = FMath::RoundToInt((P.X - S.Field.X0) / S.Field.Cell) + DX, Y = FMath::RoundToInt((P.Y - S.Field.Y0) / S.Field.Cell) + DY;
-								if (X >= 0 && Y >= 0 && X < S.Field.W && Y < S.Field.H && FMath::Abs(DX) + FMath::Abs(DY) <= 1 && S.Field.Open[size_t(Y) * S.Field.W + X])
+								if (X >= 0 && Y >= 0 && X < FW && Y < FH && S.Field.Open[size_t(Y) * FW + X])
 								{
-									Mask[size_t(Y) * S.Field.W + X] = 1;
+									Mask[size_t(Y) * FW + X] = 1;
 								}
 							}
 						}
+					}
+				};
+				for (int32 I = 0; I < Doorsteps.Num(); I++)
+				{
+					const FVector2D& D = Doorsteps[I];
+					double BestD = FMath::Square(15000.0);
+					const FVector2D* Best = nullptr;
+					for (const FVector2D& K : Kept)
+					{
+						const double DD = FVector2D::DistSquared(K, D);
+						if (DD < BestD)
+						{
+							BestD = DD;
+							Best = &K;
+						}
+					}
+					if (Best)
+					{
+						Line(D, *Best);
+					}
+					BestD = FMath::Square(7000.0);
+					int32 Next = -1;
+					for (int32 J = 0; J < Doorsteps.Num(); J++)
+					{
+						const double DD = FVector2D::DistSquared(Doorsteps[J], D);
+						if (J != I && DD > 1.0 && DD < BestD)
+						{
+							BestD = DD;
+							Next = J;
+						}
+					}
+					if (Next >= 0)
+					{
+						Line(D, Doorsteps[Next]);
 					}
 				}
 			}
@@ -1163,6 +1285,58 @@ int32 ULyudWinterSubsystem::FindDirtyPatch(const FVector& Near, float RadiusCm, 
 		}
 	}
 	return Best;
+}
+
+void ULyudWinterSubsystem::SnowOnPaths(float Cm)
+{
+	if (!IsReady())
+	{
+		return;
+	}
+	LyudWinter::FWinterState& S = *State;
+	const double Hours = (UGameCalendar::NowIn(GetWorld()) - FDateTime(2000, 1, 1)).GetTotalHours();
+	if (!S.bPathsSettled)
+	{
+		LyudWinter::SettlePaths(S.Paths, S.In, Hours);
+		S.bPathsSettled = true;
+		S.PathHours = Hours;
+		S.PrevLevel = S.In.LevelCm;
+	}
+	for (LyudWinter::FPatch& P : S.Paths.Patches)
+	{
+		if (P.Progress >= 1.f)
+		{
+			P.FreshCm = FMath::Min(Cm, S.In.LevelCm);
+			P.SnowSinceHours = Hours;
+		}
+	}
+	S.Field.ComposeAll(S.Cover, S.In, &S.Paths, WinterParallelRows);
+	UploadDepth(0, 0, S.Field.W - 1, S.Field.H - 1);
+}
+
+void ULyudWinterSubsystem::FindDirtyPatches(const FVector& Near, float RadiusCm, int32 Max, float MinCm, TArray<int32>& Out) const
+{
+	Out.Reset();
+	if (!IsReady())
+	{
+		return;
+	}
+	TArray<TPair<float, int32>> Found;
+	const double R2 = double(RadiusCm) * RadiusCm;
+	for (int32 I = 0; I < int32(State->Paths.Patches.size()); I++)
+	{
+		const LyudWinter::FPatch& P = State->Paths.Patches[I];
+		const double D2 = FMath::Square(P.X - Near.X) + FMath::Square(P.Y - Near.Y);
+		if (P.Claimed < 0 && P.Progress >= 1.f && P.FreshCm + P.FreshBefore >= MinCm && D2 <= R2 && P.Cells >= 6)
+		{
+			Found.Emplace(float(D2), I);
+		}
+	}
+	Found.Sort([](const TPair<float, int32>& A, const TPair<float, int32>& B) { return A.Key < B.Key; });
+	for (int32 I = 0; I < FMath::Min(Max, Found.Num()); I++)
+	{
+		Out.Add(Found[I].Value);
+	}
 }
 
 float ULyudWinterSubsystem::GetPatchSnow(int32 Patch) const

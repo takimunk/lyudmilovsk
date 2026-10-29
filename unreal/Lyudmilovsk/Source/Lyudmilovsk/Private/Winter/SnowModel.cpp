@@ -561,7 +561,7 @@ namespace LyudWinter
 						const float Along = Pt.bAlongX ? float(X - Pt.MinX + 0.5f) / float(Pt.MaxX - Pt.MinX + 1)
 						                               : float(Y - Pt.MinY + 0.5f) / float(Pt.MaxY - Pt.MinY + 1);
 						const float OnPath = (Along < Pt.Progress ? Pt.FreshCm : Pt.FreshCm + Pt.FreshBefore) * 0.01f;
-						D = std::min(D, OnPath);
+						D = std::min(D, OnPath + 0.012f);
 					}
 					else if (P->Near[I] >= 0)
 					{
@@ -572,6 +572,35 @@ namespace LyudWinter
 					}
 				}
 				Depth[I] = D;
+			}
+		});
+		if (!bPaths)
+		{
+			return;
+		}
+		// the shovelled walls slump: one smoothing pass round the paths (the ground's 1 m vertices make a cut wall
+		// a jagged slab otherwise); a cleared path keeps a packed film of 1-2 cm
+		const int SX0 = std::max(RX0 - 1, 0), SY0 = std::max(RY0 - 1, 0), SX1 = std::min(RX1 + 1, W - 1), SY1 = std::min(RY1 + 1, H - 1);
+		const int SW = SX1 - SX0 + 1;
+		std::vector<float> Copy(size_t(SW) * (SY1 - SY0 + 1));
+		for (int Y = SY0; Y <= SY1; Y++)
+		{
+			std::copy(Depth.begin() + size_t(Y) * W + SX0, Depth.begin() + size_t(Y) * W + SX1 + 1, Copy.begin() + size_t(Y - SY0) * SW);
+		}
+		auto Cp = [&](int X, int Y) { return Copy[size_t(std::clamp(Y, SY0, SY1) - SY0) * SW + (std::clamp(X, SX0, SX1) - SX0)]; };
+		Par(RY1 - RY0 + 1, [&](int Row)
+		{
+			const int Y = RY0 + Row;
+			for (int X = RX0; X <= RX1; X++)
+			{
+				const size_t I = size_t(Y) * W + X;
+				if (!Open[I] || (P->Patch[I] < 0 && (P->Near[I] < 0 || P->NearDist[I] > 15)))
+				{
+					continue;
+				}
+				const float V = 0.4f * Cp(X, Y) + 0.1f * (Cp(X - 1, Y) + Cp(X + 1, Y) + Cp(X, Y - 1) + Cp(X, Y + 1)) +
+				                0.05f * (Cp(X - 1, Y - 1) + Cp(X + 1, Y - 1) + Cp(X - 1, Y + 1) + Cp(X + 1, Y + 1));
+				Depth[I] = P->Patch[I] >= 0 ? std::min(V, Cp(X, Y) + 0.008f) : V;
 			}
 		});
 	}

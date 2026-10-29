@@ -204,8 +204,8 @@ int main(int Argc, char** Argv)
 	const float LampFoot = F.DepthAt(F.X0 + (C.W / 2 + 7) * 200.0, F.Y0 + (C.H / 2 + 9) * 200.0);
 	Check(LampFoot > 0.05f, "a lamp post makes no hole in the snow", LampFoot);
 	const float PathD = Depth(-150.0, 12.0), BermD = Depth(-150.0, 13.0 + 0.9), Beside = Depth(-150.0, 18.0);
-	Check(PathD < 0.005f, "the path is clear", PathD);
-	Check(BermD > Beside + 0.15f, "a berm of shovelled snow beside it", BermD, Beside);
+	Check(PathD < 0.025f, "the path is clear (a packed film)", PathD);
+	Check(BermD > Beside + 0.07f, "a berm of shovelled snow beside it", BermD, Beside);
 	Check(!P.Patches.empty() && P.Patches.size() < 40, "the paths cut into patches", double(P.Patches.size()));
 
 	// it snows on the cleared paths, then somebody clears one stretch halfway
@@ -226,7 +226,7 @@ int main(int Argc, char** Argv)
 		const double MidX = F.X0 + (Pt.bAlongX ? (Pt.MinX + 0.25 * (Pt.MaxX - Pt.MinX)) : Pt.MinX) * F.Cell;
 		const double LateX = F.X0 + (Pt.bAlongX ? (Pt.MinX + 0.85 * (Pt.MaxX - Pt.MinX)) : Pt.MinX) * F.Cell;
 		const float Swept = F.DepthAt(MidX, Pt.Y), Unswept = F.DepthAt(LateX, Pt.Y);
-		Check(Swept < 0.005f && Unswept > 0.05f, "half the patch swept, half not yet", Swept, Unswept);
+		Check(Swept < 0.025f && Unswept > 0.05f, "half the patch swept, half not yet", Swept, Unswept);
 	}
 	// far patches clear by themselves after some hours (the camera stays by the house)
 	In.SnowfallCmPerHour = 0.f;

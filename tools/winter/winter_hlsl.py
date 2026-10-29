@@ -101,6 +101,10 @@ if (ground > -1.0e8 && P.z < surf + 45.0 && ng.z > 0.3)
     float3 nf = normalize(float3(-sx / (2.0 * e), -sy / (2.0 * e), 1.0));
     // where the field is thin the ground's own shape shows
     n = normalize(lerp(ng, nf, saturate(depth * 12.0)));
+    // the wind's ripples and the snow's soft lumps (cm scale relief the 1 m field can't hold)
+    float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
+               + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0);
+    n = normalize(n + rip * 0.22 * saturate(depth * 5.0));
 }
 else
 {
@@ -116,7 +120,7 @@ else
                        Cov.SampleLevel(View.SharedPointClampedSampler, uv + float2(0.5, 0.5) * t, 0).g));
     }
     float sheltered = (roof > 1.8 && ground > -1.0e8 && P.z < ground + roof * 100.0 - 60.0) ? 1.0 : 0.0;
-    float up = smoothstep(0.55, 0.88, ng.z);
+    float up = smoothstep(0.35, 0.72, ng.z);
     float level = S.x * 100.0;
     float thr = 0.6 + 2.5 * w.Fbm(m, 0.9, 12u);
     cover = up * (1.0 - sheltered) * smoothstep(thr * 0.4, thr, level);
@@ -130,7 +134,7 @@ n = normalize(n + float3(g1, g2, 0) * 0.12);
 float3 fresh = float3(0.86, 0.89, 0.93);
 float3 old = float3(0.70, 0.71, 0.70) * (0.92 + 0.08 * w.Fbm(m, 6.0, 23u));
 float3 col = lerp(old, fresh, S.y);
-col *= 1.0 - 0.25 * S.z;
+col *= (1.0 - 0.25 * S.z) * (0.94 + 0.06 * w.Fbm(m, 3.0, 24u));
 Opacity = cover;
 Normal = n;
 Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y;
