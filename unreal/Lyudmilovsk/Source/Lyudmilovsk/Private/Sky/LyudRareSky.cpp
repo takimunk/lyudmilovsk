@@ -29,6 +29,8 @@ namespace
 	TAutoConsoleVariable<float> CVarNlc(TEXT("lyud.Rare.Noctilucent"), -1.f, TEXT("Force the noctilucent clouds' chance 0..1 (negative: the weather's)."));
 	TAutoConsoleVariable<float> CVarFlare(TEXT("lyud.Rare.Flare"), -1.f, TEXT("Force a flare on the star at this strength 0..1 (negative: the calendar's)."));
 	TAutoConsoleVariable<int32> CVarDebug(TEXT("lyud.Rare.Debug"), 0, TEXT("1: print the rare sky on screen."));
+	TAutoConsoleVariable<int32> CVarOpticsSharp(TEXT("lyud.Rare.OpticsSharp"), 0,
+		TEXT("1: rainbows and halos drawn sharp, Earth-like (0.1 of the light's real size); 0: physical, broad and pale under the 10-degree star."));
 	TAutoConsoleVariable<float> CVarStrikeHold(TEXT("lyud.Rare.StrikeHold"), -1.f,
 		TEXT("Hold strikes at this age, seconds (tests: a screenshot of a stroke; negative: they run and fade)."));
 
@@ -355,7 +357,7 @@ void ALyudRareSky::Tick(float DeltaSeconds)
 		// the light's brightness: the sun's at the day exposure; Europa's (the phase dims it fast) at the night one
 		const float Lum = bMoon ? Sky->FullMoonIlluminance * FMath::Pow(Sky->MoonLitFraction(), 2.5f) / FMath::Max(Sky->SunIlluminance, 1e-3f) * 4.f : 1.f;
 		const FLinearColor Tr = Transmittance(AltDeg);
-		OpticsMID->SetVectorParameterValue(TEXT("Light"), FLinearColor(float(L.X), float(L.Y), float(L.Z), FMath::DegreesToRadians(RadiusDeg * OpticsDiskScale)));
+		OpticsMID->SetVectorParameterValue(TEXT("Light"), FLinearColor(float(L.X), float(L.Y), float(L.Z), FMath::DegreesToRadians(RadiusDeg * OpticsDiskScale * (CVarOpticsSharp.GetValueOnGameThread() ? 0.1f : 1.f))));
 		OpticsMID->SetVectorParameterValue(TEXT("LightColor"), Tr * (Lum * OpticsGain));
 		OpticsMID->SetVectorParameterValue(TEXT("Halo"), FLinearColor(S.Halo.Strength, S.Halo.SunDogs, S.Halo.Pillar, S.Halo.Ring46));
 		OpticsMID->SetVectorParameterValue(TEXT("Rainbow"), FLinearColor(S.Rainbow.Strength, S.Rainbow.Rain, float(FMath::Fmod(FMath::FloorToDouble(In.Hours * 3.0) * 1.37, 60.0)), 0.f));

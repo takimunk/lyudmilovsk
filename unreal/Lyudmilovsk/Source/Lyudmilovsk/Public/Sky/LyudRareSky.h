@@ -62,7 +62,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float AuroraGain = 1.5f;
 	/** How folded the curtains are (1 = the model's). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float AuroraFolding = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float NoctilucentGain = 0.45f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float NoctilucentGain = 1.2f;
 	/** Halos and rainbows: brightness per unit of the light (sun or Europa) and how much of the light's real size blurs
 	 * them (1 = physical: the 10-degree star makes them broad and pale; lower = sharper, Earth-like). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float OpticsGain = 3.f;
