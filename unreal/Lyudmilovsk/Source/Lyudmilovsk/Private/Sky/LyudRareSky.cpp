@@ -15,6 +15,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Weather/LyudWeather.h"
 #include "RareSkyModel.h"
+#include "../Weather/WeatherModel.h"
 
 namespace
 {
@@ -280,13 +281,17 @@ void ALyudRareSky::Tick(float DeltaSeconds)
 	In.Hours = (Sky->ShownTime() - FDateTime(2000, 1, 1)).GetTotalHours();
 	if (const ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
 	{
-		const FLyudSkyWeather Wx = W->GetSky();
-		In.CloudCover = Wx.Cloud;
-		In.PrecipRate = Wx.Rain;
-		In.ShowerCells = Wx.Rain > 0.05f ? 1.f - Wx.Cloud * 0.5f : 0.f;
-		// the weather's own chances come with its engine (Kp, aurora, halo, rainbow, noctilucent); until then a
-		// shower under a broken sky may show a bow
-		In.Rainbow = Wx.Rain > 0.1f && Wx.Cloud < 0.9f ? 0.35f : 0.f;
+		const LyudWeather::FWeatherState& Wx = W->GetModelState();
+		In.Kp = Wx.Kp;
+		In.Aurora = Wx.Aurora;
+		In.Halo = Wx.Halo;
+		In.Rainbow = Wx.Rainbow;
+		In.Noctilucent = Wx.Noctilucent;
+		In.CloudCover = Wx.CloudCover;
+		In.HighCover = Wx.High.Cover;
+		In.HighDensity = Wx.High.Density;
+		In.PrecipRate = Wx.PrecipRate;
+		In.ShowerCells = Wx.ShowerCells;
 	}
 	const float FKp = CVarKp.GetValueOnGameThread();
 	if (FKp >= 0.f)
@@ -347,8 +352,8 @@ void ALyudRareSky::Tick(float DeltaSeconds)
 		const FVector L = bMoon ? Sky->MoonDirection() : Sky->SunDirection();
 		const float AltDeg = bMoon ? Sky->MoonAltitude() : Sky->SunAltitude();
 		const float RadiusDeg = 0.5f * (bMoon ? Sky->MoonAngularDiameterDeg : Sky->SunAngularDiameterDeg);
-		// the light's brightness: the sun's at the day exposure; Europa's (the phase dims it fast) at the night one, ~11x
-		const float Lum = bMoon ? Sky->FullMoonIlluminance * FMath::Pow(Sky->MoonLitFraction(), 2.5f) / FMath::Max(Sky->SunIlluminance, 1e-3f) * 11.f : 1.f;
+		// the light's brightness: the sun's at the day exposure; Europa's (the phase dims it fast) at the night one
+		const float Lum = bMoon ? Sky->FullMoonIlluminance * FMath::Pow(Sky->MoonLitFraction(), 2.5f) / FMath::Max(Sky->SunIlluminance, 1e-3f) * 4.f : 1.f;
 		const FLinearColor Tr = Transmittance(AltDeg);
 		OpticsMID->SetVectorParameterValue(TEXT("Light"), FLinearColor(float(L.X), float(L.Y), float(L.Z), FMath::DegreesToRadians(RadiusDeg * OpticsDiskScale)));
 		OpticsMID->SetVectorParameterValue(TEXT("LightColor"), Tr * (Lum * OpticsGain));

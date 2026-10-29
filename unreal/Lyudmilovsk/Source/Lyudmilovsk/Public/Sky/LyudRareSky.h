@@ -59,19 +59,19 @@ public:
 	ALyudRareSky();
 
 	/** The aurora's brightness on the dome per unit of the model's (tuning: the night exposure opens +3.5 EV). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float AuroraGain = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float AuroraGain = 1.5f;
 	/** How folded the curtains are (1 = the model's). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float AuroraFolding = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float NoctilucentGain = 0.12f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float NoctilucentGain = 0.45f;
 	/** Halos and rainbows: brightness per unit of the light (sun or Europa) and how much of the light's real size blurs
 	 * them (1 = physical: the 10-degree star makes them broad and pale; lower = sharper, Earth-like). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float OpticsGain = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float OpticsGain = 3.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float OpticsDiskScale = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Look") float OpticsRadius = 300000.f;
-	/** A strike's light: candela at the return stroke's peak (inverse square: ~5 lux on the ground 2 km off). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float StrikeCandela = 2.0e7f;
+	/** A strike's light: candela at the return stroke's peak (inverse square: ~2 lux on the ground 2 km off). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float StrikeCandela = 7.0e6f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float BoltGain = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float SkyFlashGain = 0.6f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float SkyFlashGain = 0.12f;
 	/** Share of strikes that reach the ground (the rest flash inside the cloud). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rare sky|Lightning") float CloudToGround = 0.4f;
 	/** The cloud base over a strike, cm. */
