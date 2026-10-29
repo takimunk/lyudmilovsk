@@ -211,8 +211,11 @@ def sea_material(coll):
                     desc="Surf")
     wc = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=False, a=True)
     g.link(pix, wc)
-    # foam values come out soft; lift them so a breaking crest is properly white
-    foam = g.custom("return saturate(max(S, W) * 2.5);", [("S", surf), ("W", wc)], desc="Foam")
+    # the surf's and the whitecaps' amounts of foam drawn as lace: soft, broken, semi-transparent
+    foam = g.custom(H.GUST_LIB + "float2 p = Pos.xy * 0.01; float foot = max(max(length(ddx(p)), length(ddy(p))), 1e-4);"
+                    " return Lyud.Lace(p, Clock.x, saturate(max(S, W) * 1.6 * (1.0 + 0.8 * Look.y)), foot);",
+                    [("S", surf), ("W", wc), ("Pos", ppos), ("Clock", clock), ("Look", (g.vparam("SeaLook", (0.0, 0.0, 0.0, 0.0)), "RGBA"))],
+                    desc="Foam")
 
     nrm = g.custom("float2 a = N.xy; return float3(a, sqrt(saturate(1.0 - dot(a, a))));", [("N", pix)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
@@ -225,11 +228,11 @@ def sea_material(coll):
     rough = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=True, a=False)
     g.link(pix, rough)
     g.out(g.add(rough, g.mul(foam, g.const(0.7))), MP.MP_ROUGHNESS)
-    g.out(g.mul(foam, g.const((0.9, 0.92, 0.9))), MP.MP_BASE_COLOR)
+    g.out(g.const((0.86, 0.88, 0.86)), MP.MP_BASE_COLOR)
     # lyud.Sea.DebugFoam: the foam glows, to see where it is
     g.out(g.mul(foam, g.param("DebugFoam", 0.0)), MP.MP_EMISSIVE_COLOR)
     # single-layer water shows its base colour (the foam) as much as its opacity says
-    g.out(g.op(X.MaterialExpressionMin, g.mul(foam, g.const(1.6)), g.const(1.0)), MP.MP_OPACITY)
+    g.out(g.mul(foam, g.const(0.9)), MP.MP_OPACITY)
     g.out(g.const(0.255), MP.MP_SPECULAR)
 
     wo = g.node(X.MaterialExpressionSingleLayerWaterMaterialOutput, x=0)
@@ -241,9 +244,24 @@ def sea_material(coll):
     clear = ("float k = saturate((B.x - %g) / %g); float3 g = dot(K, 1.0 / 3.0);"
              " return lerp(lerp(g, K, saturate(B.x / 1.2)) * %g, K, pow(k, 1.3)) * 0.01;"
              % (SHALLOW_PALE_M, SHALLOW_CLEAR_M - SHALLOW_PALE_M, SHALLOW_CLARITY))
-    absorb = g.custom(clear, [("K", g.const(ABSORPTION)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+    # the water's body colour follows the weather and the season (ALyudSea::UpdateLook, SeaLook = overcast, storm,
+    # cold season -1..1, night): under cloud and in a storm the spectrum flattens (grey-green) and the water darkens,
+    # a storm stirs up silt and bubbles (whitish turbidity), winter is colder and greyer, summer brighter and greener.
+    # Sunset and moonlit colours come from the light and the mirrored sky themselves.
+    look = (g.vparam("SeaLook", (0.0, 0.0, 0.0, 0.0)), "RGBA")
+    look_k = ("float3 L = Look.xyz; float grey = dot(K, 1.0 / 3.0);"
+              " float desat = saturate(0.45 * L.x + 0.35 * L.y + 0.25 * max(L.z, 0.0));"
+              " float3 k = lerp(K, grey, desat);")
+    absorb_k = g.custom(look_k + " k *= 1.0 + 0.3 * L.x + 0.5 * L.y; k.g *= 1.0 + 0.15 * L.z; return k;",
+                        [("K", g.const(ABSORPTION)), ("Look", look)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                        desc="AbsorptionLook")
+    scatter_k = g.custom(look_k + " k *= (1.0 - 0.2 * L.x) * (1.0 - 0.2 * L.z);"
+                         " return k + float3(0.03, 0.034, 0.03) * L.y;",
+                         [("K", g.const(SCATTERING)), ("Look", look)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                         desc="ScatteringLook")
+    absorb = g.custom(clear, [("K", absorb_k), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
                       desc="Absorption")
-    scatter = g.custom(clear, [("K", g.const(SCATTERING)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+    scatter = g.custom(clear, [("K", scatter_k), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
                        desc="Scattering")
     for prop, value in ((("Scattering Coefficients", "ScatteringCoefficients"), scatter),
                         (("Absorption Coefficients", "AbsorptionCoefficients"), absorb),

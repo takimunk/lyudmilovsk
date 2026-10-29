@@ -198,7 +198,7 @@ _RELIEF = "const float HG = %g, RS = %g;\nconst float2 MAPSZ = float2(%d.0, %d.0
 # two maps (albedo; relief normal + height): Lommel-Seeliger over the sphere, the relief's normals shading its ridges,
 # bands and chaos blocks, and their shadows (a short march toward the sun over the height map) long near the
 # terminator; ashen light on the night side, a faint halo by night. Inputs: V, M (MoonDir), S (SunDir), P (Pole),
-# D (MoonDisk), C (MoonLook: halo in y), Tr, Europa (albedo), Relief.
+# D (MoonDisk), C (MoonLook: halo in y, phase law in z), Tr, Europa (albedo), Relief.
 MOON_HLSL = _RELIEF + r"""
 float3 v = normalize(V);
 float3 m = normalize(M.xyz);
@@ -239,7 +239,9 @@ if (r < 1.0)
     float mg = dot(n, s), mr = dot(rn, s);
     // Lommel-Seeliger over the sphere (an icy moon's flat-looking full disk), the relief's own slopes on top
     float ls = mg > 0.0 ? mg / (mg + mu) * 2.0 : 0.0;
-    float lit = ls * clamp(saturate(mr) / max(mg, 0.08), 0.0, 1.8) * smoothstep(-0.03, 0.04, mg);
+    // C.z: Europa's phase law over Lommel-Seeliger (opposition surge, rough-surface shadows), the same factor
+    // ALyudSky gives its light
+    float lit = ls * clamp(saturate(mr) / max(mg, 0.08), 0.0, 1.8) * smoothstep(-0.03, 0.04, mg) * (C.z > 0.0 ? C.z : 1.0);
     // the relief's shadows: march from here toward the sun over the height map; they lengthen near the terminator
     float sh = 1.0;
     if (mg > -0.03 && mg < 0.45)

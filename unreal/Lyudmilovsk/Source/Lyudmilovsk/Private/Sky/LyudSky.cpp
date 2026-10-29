@@ -51,6 +51,30 @@ namespace
 		L->bCastShadowsOnClouds = false;
 		L->bCastCloudShadows = true;
 	}
+
+	/** The disk-integrated brightness of a Lommel-Seeliger sphere at phase angle A (rad), 1 at full. */
+	float LommelSeeligerPhase(float A)
+	{
+		if (A < 1e-3f)
+		{
+			return 1.f;
+		}
+		if (A > PI - 1e-3f)
+		{
+			return 0.f;
+		}
+		const float H = 0.5f * A;
+		return FMath::Max(0.f, 1.f - FMath::Sin(H) * FMath::Tan(H) * FMath::Loge(1.f / FMath::Tan(0.5f * H)));
+	}
+
+	/** The sky's extinction toward an altitude (deg), per channel: sky_hlsl.py TRANS_HLSL (keep in step). */
+	FLinearColor AirTransmittance(float AltDeg)
+	{
+		const float H = FMath::Max(AltDeg, 0.f);
+		const float Am = 1.f / (FMath::Sin(FMath::DegreesToRadians(H)) + 0.50572f * FMath::Pow(H + 6.07995f, -1.6364f));
+		const float Sink = SmoothStep01(-6.f, 0.5f, AltDeg);
+		return FLinearColor(FMath::Exp(-0.07f * (Am - 1.f)) * Sink, FMath::Exp(-0.14f * (Am - 1.f)) * Sink, FMath::Exp(-0.30f * (Am - 1.f)) * Sink);
+	}
 }
 
 ALyudSky::ALyudSky()
@@ -77,7 +101,7 @@ ALyudSky::ALyudSky()
 	SetupDirectional(MoonLight, 1);
 	MoonLight->ForwardShadingPriority = 0;
 	MoonLight->LightSourceAngle = MoonAngularDiameterDeg;
-	MoonLight->bCastCloudShadows = false;
+	MoonLight->bCastCloudShadows = false;   // by night only (UpdateSky)
 	MoonLight->CloudScatteredLuminanceScale = FLinearColor(MoonCloudScatter, MoonCloudScatter, MoonCloudScatter);
 	MoonLight->AtmosphereSunDiskColorScale = FLinearColor::Black;
 
@@ -214,7 +238,7 @@ void ALyudSky::UpdateSky()
 {
 	const FDateTime Utc = ShownTime() - FTimespan::FromHours(UtcOffsetHours);
 	SunPos = LyudEphemeris::Sun(Utc, LatitudeDeg, LongitudeDeg);
-	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhase);
+	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhaseEphemeris);
 
 	// a directional light shines along its forward axis: from the body toward the ground
 	SunLight->SetWorldRotation((-WorldDirection(SunPos.EastNorthUp())).Rotation());
@@ -226,12 +250,32 @@ void ALyudSky::UpdateSky()
 	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt));
 	SunLight->SetLightColor(SunColor);
 	const float Dark = 1.f - SmoothStep01(-10.f, -2.f, SunAlt);   // 1 once the sun is down past civil twilight
+	// Europa's phase from the very directions the sky material lights its disk with: the phase angle is the angle at
+	// Europa between the sun and the viewer, so the light's phase and the disk's are the same
+	const FVector SunDir = WorldDirection(SunPos.EastNorthUp());
+	const FVector MoonDir = WorldDirection(MoonPos.EastNorthUp());
+	const float CosA = FMath::Clamp(-(float)FVector::DotProduct(SunDir, MoonDir), -1.f, 1.f);
+	MoonPhaseAngle = FMath::Acos(CosA);
+	MoonPhase = 0.5 * (1.0 + CosA);
+	const float B0 = FMath::Max(MoonOppositionSurge, 0.f);
+	const float Surge = (1.f + B0 / (1.f + FMath::Tan(0.5f * FMath::Min(MoonPhaseAngle, 3.1f)) / FMath::Max(MoonOppositionWidth, 1e-3f))) / (1.f + B0);
+	MoonLawFactor = Surge * FMath::Exp(-MoonRoughness * MoonPhaseAngle);
+	// its light: the disk's brightness integrated, through the same air as the disk (a low moon dims and yellows),
+	// gone once it sets
+	const FLinearColor Air = AirTransmittance((float)MoonPos.AltitudeDeg);
+	const float AirY = FMath::Max(0.2126f * Air.R + 0.7152f * Air.G + 0.0722f * Air.B, 1e-4f);
 	const float MoonUp = SmoothStep01(-2.f, 3.f, (float)MoonPos.AltitudeDeg);
-	// the lit fraction dims the moon faster than linearly (a half moon is ~1/10 of a full one)
-	const float MoonLux = FullMoonIlluminance * FMath::Pow((float)MoonPhase, 2.5f) * MoonUp * CVarNightLight.GetValueOnGameThread();
+	MoonLight01 = LommelSeeligerPhase(MoonPhaseAngle) * MoonLawFactor * AirY * MoonUp;
+	const float MoonLux = FullMoonIlluminance * MoonLight01 * CVarNightLight.GetValueOnGameThread();
 	MoonLight->SetIntensity(MoonLux);
-	MoonLight->SetLightColor(MoonColor);
+	MoonLight->SetLightColor(MoonColor * FLinearColor(Air.R / AirY, Air.G / AirY, Air.B / AirY));
 	MoonLight->SetVisibility(MoonLux > 1e-4f);
+	// the night's ambient in the moonlight's aquamarine
+	const FLinearColor Ambient = FMath::Lerp(FLinearColor::White, NightAmbientTint, Dark);
+	if (!SkyLight->GetLightColor().Equals(Ambient, 1e-3f))
+	{
+		SkyLight->SetLightColor(Ambient);
+	}
 
 	const float Spec = SunSpecularScale * CVarSunSpecular.GetValueOnGameThread();
 	if (!FMath::IsNearlyEqual(SunLight->SpecularScale, Spec))
@@ -251,6 +295,17 @@ void ALyudSky::UpdateSky()
 	const bool bSunShadows = SunAlt > -1.f;
 	SunLight->SetCastShadows(bSunShadows);
 	MoonLight->SetCastShadows(!bSunShadows && Dark > 0.5f);
+	// and one light's cloud shadows: clouds crossing the moon dim the moonlight under them
+	if (SunLight->bCastCloudShadows != bSunShadows)
+	{
+		SunLight->bCastCloudShadows = bSunShadows;
+		SunLight->MarkRenderStateDirty();
+	}
+	if (MoonLight->bCastCloudShadows == bSunShadows)
+	{
+		MoonLight->bCastCloudShadows = !bSunShadows;
+		MoonLight->MarkRenderStateDirty();
+	}
 	SunLight->SetForwardShadingPriority(bSunShadows ? 1 : 0);
 	MoonLight->SetForwardShadingPriority(bSunShadows ? 0 : 1);
 	UpdateSkyMaterial();
@@ -336,7 +391,8 @@ void ALyudSky::UpdateSkyMaterial()
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
 	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));
-	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(0.f, MoonNightHalo, 0.f, 0.f));
+	// z: Europa's phase law over Lommel-Seeliger, the same factor its light takes (UpdateSky)
+	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(0.f, MoonNightHalo, MoonLawFactor, 0.f));
 
 	const float Day = SmoothStep01(-6.f, 6.f, (float)SunPos.AltitudeDeg);
 	const float NightK = CVarNightLight.GetValueOnGameThread();
@@ -399,15 +455,18 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 {
 	OutdoorWeight = FMath::FInterpConstantTo(OutdoorWeight, bPlayerOutdoors ? 1.f : 0.f, DeltaSeconds, 1.f / FMath::Max(EyeAdaptSeconds, 0.01f));
 	const float Night = 1.f - SmoothStep01(-8.f, 8.f, (float)SunPos.AltitudeDeg);
-	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + NightExposureEV * Night;
+	// a quarter of a stop wider per stop of moonlight lost, up to MoonlessExposureEV
+	const float Moonless = FMath::Clamp(-FMath::Log2(MoonLight01 + 0.03f) / 4.f, 0.f, MoonlessExposureEV);
+	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night;
 	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }
 
 FString ALyudSky::DebugReport() const
 {
-	return FString::Printf(TEXT("LYUDSKY %s sun alt %.2f az %.2f | moon alt %.2f az %.2f phase %.2f | sun lux %.2f moon lux %.4f | outdoors %d exposure %.2f x %.2f"),
+	return FString::Printf(TEXT("LYUDSKY %s sun alt %.2f az %.2f | moon alt %.2f az %.2f phase %.2f | sun lux %.2f moon lux %.4f | outdoors %d exposure %.2f x %.2f | moon phase angle %.1f law %.3f light %.4f ephemeris phase %.3f"),
 		*ShownTime().ToString(TEXT("%Y-%m-%d %H:%M")), SunPos.AltitudeDeg, SunPos.AzimuthDeg, MoonPos.AltitudeDeg,
 		MoonPos.AzimuthDeg, MoonPhase, SunLight->Intensity, MoonLight->Intensity, bPlayerOutdoors ? 1 : 0,
-		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight);
+		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight, FMath::RadiansToDegrees(MoonPhaseAngle), MoonLawFactor,
+		MoonLight01, MoonPhaseEphemeris);
 }
