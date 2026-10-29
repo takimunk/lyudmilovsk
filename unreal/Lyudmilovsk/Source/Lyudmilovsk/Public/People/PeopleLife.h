@@ -13,7 +13,7 @@ class USkeletalMeshComponent;
 
 /** How someone looks now (the simulation's poses, Private/People/PeopleSim.h EPose, in the same order). */
 UENUM(BlueprintType)
-enum class EPersonPose : uint8 { Hidden, Stand, Walk, Talk, Look, Sit, Computer, Eat, Read, Sleep, Work };
+enum class EPersonPose : uint8 { Hidden, Stand, Walk, Talk, Look, Sit, Computer, Eat, Read, Sleep, Work, Shovel };
 
 USTRUCT(BlueprintType)
 struct LYUDMILOVSK_API FPersonInfo
@@ -172,6 +172,9 @@ private:
 	void SyncMemory(bool bToSave);
 	/** The sea railway (ULyudRailwaySubsystem): the timetable for the people's train rides, the halts' real positions. */
 	void BindRailway();
+	/** The winter (ULyudWinterSubsystem): stretches of snowy path for the shovel activity, and how far they got. */
+	void BindWinter();
+	float SnowTimer = 0.f;
 	void UpdateRailway();
 	/** A rider of the train: seated on a seat of the train they board while it is drawn, else hidden. */
 	void PresentTrainRider(int32 Id, const FVector& Cam, float Draw, float DeltaTime);
@@ -199,6 +202,11 @@ public:
 	/** A blanket over them asleep: draped over the body's bones once they lie still (BuildBlanket). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People")
 	TObjectPtr<class UStaticMeshComponent> Blanket;
+
+	/** A snow pusher (a scraper's blade on a pole with a cross bar) in their hands while they clear a path. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PusherBlade;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PusherPole;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PusherBar;
 
 	/** Loads the model and remembers whose clips to use. False if the model is missing. */
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
@@ -234,6 +242,8 @@ private:
 	float BedTop = 50.f;
 
 	class UAnimSequence* Clip(FName Name);
+	/** Lays the pusher between the hands and the ground ahead (or hides it). */
+	void PlacePusher(bool bShow);
 	void Play(FName Name, bool bLoop, float Rate = 1.f);
 	/** A duvet over the sleeper: a height field over the bed shaped by capsules round the bones, from the shoulders to past the feet. */
 	void BuildBlanket();

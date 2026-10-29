@@ -108,6 +108,9 @@ def main():
         if not isinstance(a, unreal.AnimSequence):
             continue
         nm = a.get_name()
+        # a glb of one clip (retarget_clips.py --only X) comes in named after the file: LIFE_ONLY=X names it
+        if "Life_" not in nm and os.environ.get("LIFE_ONLY"):
+            nm = "Life_" + os.environ["LIFE_ONLY"]
         if "Life_" not in nm:
             log("  skipping %s" % nm)
             continue
