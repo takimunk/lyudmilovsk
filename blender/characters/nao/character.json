@@ -1,7 +1,7 @@
 {
  "_doc": "Nao (Нао): how blender/characters/rig_character.py turns gen/model.glb into a game character (docs/characters.md).",
  "id": "nao",
- "model": "model_short",
+ "model": "model_short_face",
  "height": 1.6,
  "donor": "blender/humans/export/human_girl_a.glb",
  "faces": 24000,
@@ -18,20 +18,21 @@
    {
     "cx": 0.0345,
     "cz": 1.4748,
-    "hw": 0.0165,
-    "up": 0.005,
-    "lo": 0.0055,
+    "hw": 0.0152,
+    "up": 0.0043,
+    "lo": 0.0047,
     "tilt": 0.0022
    },
    {
     "cx": -0.0333,
     "cz": 1.4742,
-    "hw": 0.0155,
-    "up": 0.0045,
-    "lo": 0.0052,
+    "hw": 0.0143,
+    "up": 0.0038,
+    "lo": 0.0044,
     "tilt": -0.003
    }
-  ]
+  ],
+  "normal_strength": 0.3
  },
  "clean": {
   "_doc": "clean_human.py: MakeHuman base fitted to the hi3d model (docs/characters.md 'Clean rebuild')",
