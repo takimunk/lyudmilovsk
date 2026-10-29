@@ -1,0 +1,38 @@
+{
+ "_doc": "Yuki Sato (Юки Сато), 8, the Satos' daughter, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "sato_yuki",
+ "model": "model_face",
+ "height": 1.28,
+ "donor": "blender/humans/export/human_kid_girl.glb",
+ "faces": 30000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "skirt": {
+  "hem_z": 0.33,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
+ },
+ "face": {
+  "normal_strength": 0.4,
+  "eye_open": [
+   {
+    "cx": 0.0326,
+    "cz": 1.1459,
+    "hw": 0.0124,
+    "up": 0.0054,
+    "lo": 0.0054,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0293,
+    "cz": 1.1446,
+    "hw": 0.0118,
+    "up": 0.0054,
+    "lo": 0.0054,
+    "tilt": 0.0
+   }
+  ]
+ }
+}

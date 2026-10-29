@@ -2521,8 +2521,9 @@ namespace LyudBirds
 			{
 				continue;
 			}
-			// the day has come: it goes south (out of sight: far from the camera, or by night)
-			if (DayOfYear >= B.LeaveDay && (B.Tier >= 2 || Hour < Sunrise || Hour > Sunset) && B.Act != EAct::Claimed
+			// the day has come: it goes south (out of sight: far from the camera, or by night out of the near ring;
+			// never from under the player's nose, where it would simply vanish)
+			if (DayOfYear >= B.LeaveDay && (B.Tier >= 2 || ((Hour < Sunrise || Hour > Sunset) && B.Tier >= 1)) && B.Act != EAct::Claimed
 				&& B.Act != EAct::Approach && B.Act != EAct::Eat)
 			{
 				B.bGone = true;

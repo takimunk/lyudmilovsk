@@ -30,7 +30,7 @@ eas.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 300)).light_comp
 eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(180, 220, 100), unreal.Rotator(0, -90, 0))
 idle = unreal.load_asset("/Game/Characters/Humans/Anims/A_Human_StandIdle")
 for i, who in enumerate(CAST):
-    x = 120.0 * i
+    x = (400.0 if os.environ.get("FACE_FULL") else 120.0) * i
     act = eas.spawn_actor_from_class(unreal.SkeletalMeshActor, unreal.Vector(x, 0, 0), unreal.Rotator(0, 0, 0))
     act.set_actor_label("Face_" + who)
     comp = act.skeletal_mesh_component
@@ -54,10 +54,15 @@ for i, who in enumerate(CAST):
     h = json.load(open(spec)).get("height", 1.6) if os.path.isfile(spec) else 1.6
     eyes = os.path.join(ROOT, "blender", "characters", who.lower(), "eyes.json")
     front = -100.0 * min(e["open"]["y"] for e in json.load(open(eyes))["eyes"]) if os.path.isfile(eyes) else 7.0
-    cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x, front + 63.0 * h / 1.6, eye_z - 3.0),
-                                     unreal.Rotator(roll=0, pitch=0, yaw=-90))
+    if os.environ.get("FACE_FULL"):                     # the whole person, for the cast sheet
+        cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x, 420.0, 50.0 * h + 2.0),
+                                         unreal.Rotator(roll=0, pitch=0, yaw=-90))
+        cam.camera_component.set_editor_property("field_of_view", 30.0)
+    else:
+        cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x, front + 63.0 * h / 1.6, eye_z - 3.0),
+                                         unreal.Rotator(roll=0, pitch=0, yaw=-90))
+        cam.camera_component.set_editor_property("field_of_view", 22.0)
     cam.set_actor_label("FaceCam_" + who)
-    cam.camera_component.set_editor_property("field_of_view", 22.0)
     cam.camera_component.set_editor_property("constrain_aspect_ratio", False)
     unreal.log_warning("FACETEST %s eye height ~%.0f cm" % (who, eye_z))
 les.save_current_level()

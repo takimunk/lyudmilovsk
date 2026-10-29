@@ -62,7 +62,11 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
    optionally only its dark warm vertices, a collapse weight below 1) keep thin parts (glasses' frames) and the face
    denser through the decimation; `"no_shadow"` zones (same form) get vertex colour alpha 0, which `M_HumanFace` leaves
    out of the shadow pass (glasses' frames laid a hard ring of shade on the cheek). The adult budget counts the hands
-   (~5.7k) and the face rig (~4k): Lev Zotov's `faces` is 15000 for ~23k in all. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
+   (~5.7k) and the face rig (~4k): Lev Zotov's `faces` is 15000 for ~23k in all. An A-posed model (hi3d made Dasha Kimura so) takes `"a_pose": true`: `unbend_arms` lends it the donor's weights in its
+   own A and raises the arms to the T before anything else. `"face_protect": true` gives the face's front more of the
+   budget (off by default: at fix_hi3d.sh's 40k the face rig's subdivision then doubles it). `M_HumanFace` is
+   two-sided: a skirt's or coat's hem folded inside out past a leg in the idle stance showed holes. Face test:
+   `FACE_FULL=1` (level) and `FACE_FOV` (test_faces) give whole-body shots for a cast sheet. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.

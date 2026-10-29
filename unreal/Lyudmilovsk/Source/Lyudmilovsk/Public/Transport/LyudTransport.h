@@ -141,6 +141,12 @@ public:
 	virtual TStatId GetStatId() const override;
 	virtual bool IsTickable() const override { return Net.IsValid(); }
 
+	/** The player on one of a cabin's seats (E at a free seat; E, a step or Space to stand): AHeroCharacter::SitOn on
+	 *  the cabin, so the hero sits and rides with its swing. */
+	void SitDown(int32 Cabin, int32 K);
+	void StandUp();
+	UFUNCTION(BlueprintPure, Category = "Transport") bool IsSeated() const { return SeatedCabin >= 0; }
+
 private:
 	TPimplPtr<LyudTransport::FNetwork> Net;
 	UPROPERTY(Transient) TObjectPtr<ALyudCableway> Cableway;
@@ -152,6 +158,9 @@ private:
 	 *  a platform end or a wheel housing the cabin's body sweeps over would otherwise push them out through it). */
 	bool bRiderIgnoresWay = false;
 	void RiderIgnoresWay(bool bIgnore);
+	int32 SeatedCabin = -1, SeatedK = -1;
+	int32 FreeSeatNear(int32 Cabin, const FVector& P) const;
+	void KeepSeated();
 	/** Person id -> rider index of their trip. */
 	TMap<int32, int32> PeopleRides;
 	float PromptCooldown = 0.f;

@@ -39,7 +39,7 @@ STYLES = {
                                      "neck": (0.35, 2.0)})},
     # the lantern: amber-lit glass facets between ribs, amber bands every metre, a solid plinth; ribs curl out on top
     "lantern": {"outer": ("ngon", 4.4, 12), "inner": "circle", "wall": "glass", "band": "tx_amber",
-                "windows": "none", "detail": "corner_ribs", "rings_every": 1.0, "plinth": 1.2,
+                "windows": "none", "detail": "none", "rings_every": 1.0, "plinth": 1.2,        # its fins are the ribs
                 "feature": ("fins", {"n": 12, "phase": math.pi / 12, "t": 0.2, "foot": (0.9, 0.18), "shaft": (0.18, 0.18),
                                      "neck": (0.18, 1.5)})},
     # the saucer: a ringed column with a small flying saucer round every 3 m and a big one at the foot and the neck
@@ -159,7 +159,8 @@ def details(bm, st, z0, z1, mi_wall, mi_band, beam, box):
         for i in range(4):
             a = math.pi / 4 + i * math.pi / 2
             r = r_out(spec, a) + 0.05
-            box(bm, Vector((r * math.cos(a), r * math.sin(a), (z0 + z1) / 2)), (0.5, 0.5, z1 - z0), mi_band,
+            # wider than the legs that run into them, so their sides don't share a plane
+            box(bm, Vector((r * math.cos(a), r * math.sin(a), (z0 + z1) / 2)), (0.6, 0.6, z1 - z0), mi_band,
                 Matrix.Rotation(a, 3, "Z"))
     elif d == "fins":
         for sx in (-1, 1):
@@ -175,7 +176,7 @@ def fins(bm, st, z0, z1, depth, mi, t, n, phase, curve=1.0, K=8, mi_edge=None):
         a = phase + 2 * math.pi * i / n
         d = Vector((math.cos(a), math.sin(a), 0))
         u = Vector((-d.y, d.x, 0))
-        rb = r_out(spec, a) - 0.03
+        rb = r_out(spec, a)          # from the wall's face out (sunk into it, its caps lay on the wall's top: flicker)
         rows = []
         for k in range(K + 1):
             f = k / K
@@ -239,6 +240,8 @@ def fin_angles(st):
 def feature(bm, st, piece, z0, z1, mi_w, mi_b, beam):
     """The style's own expression on a piece: piece is "foot", "shaft" or "neck"."""
     f = st.get("feature")
+    if piece == "neck":
+        z1 += 0.03          # up into the terrace's slab: their tops don't lie on the neck's flared top (the lint)
     if isinstance(f, tuple) and f[0] == "fins":
         c = f[1]
         fins(bm, st, z0, z1, c[piece], mi_w, c["t"], c["n"], c["phase"], c.get("curve", 1.6), mi_edge=mi_b)

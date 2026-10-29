@@ -1,4 +1,5 @@
 #include "Plants/ProceduralPlant.h"
+#include "Winter/LyudWinter.h"
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
@@ -532,7 +533,7 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		}
 	}
 
-	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
+	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), ULyudWinterSubsystem::SnowOnBranches(GetWorld(), Season.Snow));
 	// a dead tree's wood greys as it stands
 	WoodMaterial->SetVectorParameterValue(TEXT("Tint"), FMath::Lerp(FLinearColor(0.82f, 0.82f, 0.86f, 1.f), FLinearColor::White, Sum.Vigour > 0.f ? 1.f : 0.f));
 	// past its snag years it is gone

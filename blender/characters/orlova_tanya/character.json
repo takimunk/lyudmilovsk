@@ -1,0 +1,38 @@
+{
+ "_doc": "Tanya Orlova (Таня Орлова), kiosk shop assistant, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "orlova_tanya",
+ "model": "model_face",
+ "height": 1.65,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "skirt": {
+  "hem_z": 0.62,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
+ },
+ "face": {
+  "normal_strength": 0.4,
+  "eye_open": [
+   {
+    "cx": 0.0336,
+    "cz": 1.5164,
+    "hw": 0.0134,
+    "up": 0.0052,
+    "lo": 0.0052,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0334,
+    "cz": 1.5158,
+    "hw": 0.0134,
+    "up": 0.0058,
+    "lo": 0.0058,
+    "tilt": 0.0
+   }
+  ]
+ }
+}

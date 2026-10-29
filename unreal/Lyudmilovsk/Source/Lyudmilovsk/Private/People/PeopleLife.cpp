@@ -25,6 +25,12 @@
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
 #include "Weather/LyudWeather.h"
+#include "Winter/LyudWinter.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "UObject/ConstructorHelpers.h"
 #if __has_include("Railway/LyudRailway.h") && __has_include("../Railway/RailRun.h")
 #include "Railway/LyudRailway.h"
 #include "Railway/LyudTrain.h"
@@ -155,6 +161,7 @@ bool UPeopleLifeSubsystem::Start()
 	UpdateClock(true);
 	BindClub();
 	BindRailway();
+	BindWinter();
 	if (bLoaded || Homes.Num() > 0)
 	{
 		ApplySaved();
@@ -416,6 +423,58 @@ void UPeopleLifeSubsystem::SyncMemory(bool bToSave)
 			}
 		}
 	}
+}
+
+void UPeopleLifeSubsystem::BindWinter()
+{
+	// the shovel activity (activities.json "snow"): the winter's dirty path patches as stretches to clear
+	TWeakObjectPtr<UPeopleLifeSubsystem> Self(this);
+	Sim->SnowJobs = [Self](const LP::V3& Near, int Max, std::vector<LP::FWorld::FSnowJob>& Out)
+	{
+		ULyudWinterSubsystem* W = Self.IsValid() ? ULyudWinterSubsystem::Get(Self.Get()) : nullptr;
+		if (!W || !W->IsReady())
+		{
+			return;
+		}
+		TArray<int32> Patches;
+		W->FindDirtyPatches(PeopleToUE(Near), 25000.f, Max, 4.f, Patches);
+		for (const int32 P : Patches)
+		{
+			FVector A, B;
+			if (W->GetPatchLine(P, A, B))
+			{
+				LP::FWorld::FSnowJob J;
+				J.Job = P;
+				J.From = PeopleFromUE(A);
+				J.To = PeopleFromUE(B);
+				J.Cm = W->GetPatchSnow(P);
+				Out.push_back(J);
+			}
+		}
+	};
+	Sim->SnowProgress = [Self](int Person, int Job, float Progress) -> bool
+	{
+		ULyudWinterSubsystem* W = Self.IsValid() ? ULyudWinterSubsystem::Get(Self.Get()) : nullptr;
+		if (!W)
+		{
+			return false;
+		}
+		if (Progress < 0.f)
+		{
+			W->ReleasePatch(Job, Person);
+			return true;
+		}
+		if (Progress == 0.f && !W->ClaimPatch(Job, Person))
+		{
+			return false;
+		}
+		W->SetPatchProgress(Job, Progress);
+		if (Progress >= 1.f)
+		{
+			W->ReleasePatch(Job, Person);
+		}
+		return true;
+	};
 }
 
 bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
@@ -723,6 +782,17 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	const double Was = S.Time;
 	const bool bJumped = UpdateClock(false);
 	UpdateRailway();
+	// the stretches of snowy path near the camera that want clearing (the shovel activity)
+	SnowTimer -= DeltaTime;
+	if (SnowTimer <= 0.f)
+	{
+		SnowTimer = 5.f;
+		const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC && PC->PlayerCameraManager)
+		{
+			S.UpdateSnowSlots(PeopleFromUE(PC->PlayerCameraManager->GetCameraLocation()));
+		}
+	}
 	if (bJumped)
 	{
 		Present(DeltaTime);
@@ -877,6 +947,81 @@ ANpcBody::ANpcBody()
 	Blanket->SetVisibility(false);
 	Blanket->LightingChannels.bChannel0 = true;
 	Blanket->LightingChannels.bChannel1 = true;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CylMesh(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	auto Part = [this](UStaticMeshComponent*& Out, const TCHAR* Name, UStaticMesh* M)
+	{
+		Out = CreateDefaultSubobject<UStaticMeshComponent>(Name);
+		Out->SetupAttachment(Mesh);
+		Out->SetUsingAbsoluteLocation(true);
+		Out->SetUsingAbsoluteRotation(true);
+		Out->SetUsingAbsoluteScale(true);
+		Out->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Out->SetVisibility(false);
+		Out->SetReceivesDecals(false);
+		Out->LightingChannels.bChannel0 = true;
+		Out->LightingChannels.bChannel1 = true;
+		if (M)
+		{
+			Out->SetStaticMesh(M);
+		}
+	};
+	UStaticMeshComponent* C = nullptr;
+	Part(C, TEXT("PusherBlade"), CubeMesh.Object);
+	PusherBlade = C;
+	Part(C, TEXT("PusherPole"), CylMesh.Object);
+	PusherPole = C;
+	Part(C, TEXT("PusherBar"), CylMesh.Object);
+	PusherBar = C;
+}
+
+void ANpcBody::PlacePusher(bool bShow)
+{
+	if (!PusherBlade || !PusherPole || !PusherBar)
+	{
+		return;
+	}
+	if (!bShow || Mesh->GetBoneIndex(TEXT("hand_l")) == INDEX_NONE)
+	{
+		PusherBlade->SetVisibility(false);
+		PusherPole->SetVisibility(false);
+		PusherBar->SetVisibility(false);
+		return;
+	}
+	if (!PusherBlade->GetMaterial(0) || !PusherBlade->GetMaterial(0)->IsA<UMaterialInstanceDynamic>())
+	{
+		// an orange plastic blade on a wooden pole
+		auto Tint = [](UStaticMeshComponent* C, const FLinearColor& Col)
+		{
+			if (UMaterialInstanceDynamic* M = C->CreateDynamicMaterialInstance(0))
+			{
+				M->SetVectorParameterValue(TEXT("Color"), Col);
+			}
+		};
+		Tint(PusherBlade, FLinearColor(0.55f, 0.13f, 0.02f));
+		Tint(PusherPole, FLinearColor(0.32f, 0.2f, 0.1f));
+		Tint(PusherBar, FLinearColor(0.32f, 0.2f, 0.1f));
+	}
+	// the cross bar between the hands, the pole from it down to the blade on the ground ~1.1 m ahead of the feet
+	const FVector L = Mesh->GetBoneLocation(TEXT("hand_l")), R = Mesh->GetBoneLocation(TEXT("hand_r"));
+	const FVector Grip = (L + R) * 0.5;
+	const FVector Fwd = FRotator(0.f, Facing, 0.f).Vector();
+	const FVector Side = FVector::CrossProduct(FVector::UpVector, Fwd);
+	const FVector Feet = GetActorLocation();
+	const FVector BladeAt = Feet + Fwd * (88.f * BodyScale) + FVector(0.f, 0.f, 17.f);
+	auto Rod = [](UStaticMeshComponent* C, const FVector& A, const FVector& B, float Diameter)
+	{
+		const FVector D = B - A;
+		C->SetWorldLocationAndRotation((A + B) * 0.5, FRotationMatrix::MakeFromZ(D.GetSafeNormal()).Rotator());
+		C->SetWorldScale3D(FVector(Diameter / 100.f, Diameter / 100.f, FMath::Max(D.Size(), 1.0) / 100.f));
+		C->SetVisibility(true);
+	};
+	Rod(PusherPole, Grip, BladeAt + FVector(0.f, 0.f, 8.f), 3.4f);
+	Rod(PusherBar, Grip - Side * 28.f, Grip + Side * 28.f, 3.0f);
+	// the blade: 75 cm wide, 34 cm high, tipped back a little, its lower edge 1 cm over the ground
+	PusherBlade->SetWorldLocationAndRotation(BladeAt, FRotationMatrix::MakeFromXZ(Fwd, FVector::UpVector).Rotator() + FRotator(-12.f, 0.f, 0.f));
+	PusherBlade->SetWorldScale3D(FVector(0.025f, 0.75f, 0.34f));
+	PusherBlade->SetVisibility(true);
 }
 
 bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
@@ -1083,8 +1228,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 			Anim->SetComputer(NAME_None);
 		}
 		Anim->SetOnFeet(Transit == 0 && (Pose == EPersonPose::Walk || Pose == EPersonPose::Stand || Pose == EPersonPose::Look
-			|| Pose == EPersonPose::Talk));
+			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel));
 	}
+	PlacePusher(Transit == 0 && Pose == EPersonPose::Shovel && Clip(TEXT("Push")) != nullptr);
 	switch (Transit)
 	{
 	case 1: Play(TEXT("SitDown"), false); return;
@@ -1123,6 +1269,17 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 			break;
 		}
 		Play(TEXT("Computer"), true);
+		break;
+	case EPersonPose::Shovel:
+		// pushing the scraper (UAL Push_Loop's legs, blender/humans/push_clip.py's arms): 0.36 m/s at rate 1
+		if (Clip(TEXT("Push")))
+		{
+			Play(TEXT("Push"), true, FMath::Clamp(Speed / (36.f * S), 0.5f, 1.6f));
+		}
+		else
+		{
+			Play(TEXT("Walk"), true, 0.4f);
+		}
 		break;
 	case EPersonPose::Eat: Play(TEXT("Eat"), true); break;
 	case EPersonPose::Read: Play(TEXT("Read"), true); break;

@@ -65,10 +65,20 @@ def paint(m):
 
 
 def glass(m):
-    m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_SURFACE)
-    mel.connect_material_property(vparam(m, "Color", (0.55, 0.66, 0.68, 1), -500, 0), "", unreal.MaterialProperty.MP_BASE_COLOR)
-    mel.connect_material_property(sparam(m, "Opacity", 0.22, -500, 200), "", unreal.MaterialProperty.MP_OPACITY)
-    mel.connect_material_property(sparam(m, "Roughness", 0.04, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    """Clear window glass: nearly see-through face on, more reflective at a grazing look (fresnel), a faint green tint,
+    lit per pixel (forward shading: real reflections, no yellow cast from the warm lamps' volume)."""
+    m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_SURFACE_PER_PIXEL_LIGHTING)
+    mel.connect_material_property(vparam(m, "Color", (0.86, 0.93, 0.92, 1), -500, 0), "", unreal.MaterialProperty.MP_BASE_COLOR)
+    fr = mel.create_material_expression(m, unreal.MaterialExpressionFresnel, -700, 200)
+    fr.set_editor_property("exponent", 4.0)
+    lo, hi = sparam(m, "Opacity", 0.07, -700, 320), sparam(m, "OpacityEdge", 0.42, -700, 400)
+    lp = mel.create_material_expression(m, unreal.MaterialExpressionLinearInterpolate, -450, 260)
+    mel.connect_material_expressions(lo, "", lp, "A")
+    mel.connect_material_expressions(hi, "", lp, "B")
+    mel.connect_material_expressions(fr, "", lp, "Alpha")
+    mel.connect_material_property(lp, "", unreal.MaterialProperty.MP_OPACITY)
+    mel.connect_material_property(sparam(m, "Roughness", 0.02, -500, 520), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(sparam(m, "Specular", 0.9, -500, 600), "", unreal.MaterialProperty.MP_SPECULAR)
     m.set_editor_property("used_with_instanced_static_meshes", True)
     m.set_editor_property("two_sided", True)
 

@@ -158,6 +158,14 @@ swifts, swallows or martins in October; 0 keeps everybody), `lyud.Birds.Bodies`,
 `lyud.Birds.IgnorePlayer 1`, `lyud.Birds.TestRun <from x y z> <to x y> <cm/s> <s>` (tests). `lyud.Wires 0` leaves the
 Academgorodok's power lines down (read at the start); `lyud.Academ 0` hides them with the ensemble.
 
+Drawing without popping (the renderer, ABirdLifeRenderer::Draw): a bird shrinks to nothing over the last fifth of its
+draw range (and is gone before 0.95 x FarDist, where the sim stops moving it) instead of being cut at ~1.2 px; a
+murmurating bird's range eases between 1x and 8x over ~10 s; a bird with a body keeps it to 30 m and against newcomers
+up to 5 m nearer (bodies are posed at once and the instance stays one more frame); late stragglers never leave from
+the near ring. `lyud.Birds.Steady 0` brings back the old hard cuts for A/B; the report ends with `pops N, body spawns
+N releases N` and the last pops with their reasons. Check: `STARTEST_ONLY=pop unreal/scripts/test_starlings.sh`
+(walks past the swallows' wires at dusk, a feeding starling flock and the wires at noon, both ways; POPCHECK ok/FAIL).
+
 After a fright a bird stays watchful for 45-90 s (its alertness fades over ~45 s instead of ~7) and its group keeps
 away from the danger, or from the player wherever they are, for one to two minutes.
 

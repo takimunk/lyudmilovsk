@@ -70,7 +70,7 @@ namespace LyudPeople
 	}
 
 	static const char* NeedNames[] = { "hunger", "tired", "social", "fun", "nature", "mind", "sun" };
-	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work" };
+	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work", "shovel" };
 	static const char* StateNames[] = { "idle", "going", "riding", "settling", "doing", "leaving", "away", "waiting" };
 	static const char* EventNames[] = { "Start", "Arrive", "Leave", "TalkStart", "TalkEnd", "Ride", "Away", "Back" };
 
@@ -186,6 +186,7 @@ namespace LyudPeople
 			A.bSunset = V["sunset"].F() > 0.f;
 			A.bTalk = V["talk"].F() > 0.f;
 			A.bWander = V["wander"].F() > 0.f;
+			A.bSnow = V["snow"].F() > 0.f;
 			if (V["wander_m"].Items.size() == 2)
 			{
 				A.WanderNear = V["wander_m"].Items[0].F();
@@ -1130,7 +1131,7 @@ namespace LyudPeople
 				bPlace = true;
 			}
 		}
-		if (!bPlace || Pl.Island < 0)
+		if (!bPlace || Pl.Island < 0 || (Pl.Kind == "snow" && Sl.SnowJob < 0))
 		{
 			return false;
 		}
@@ -1509,6 +1510,7 @@ namespace LyudPeople
 		const FActivity& A = Activities[Act];
 		const FSlot& Sl = Slots[Slot];
 		const int FromSlot = P.Slot;
+		P.SweepT = -1.f;
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -1979,6 +1981,15 @@ namespace LyudPeople
 	void FWorld::Leave(FPerson& P)
 	{
 		const EPose Was = P.Pose;
+		if (P.SweepT >= 0.f)
+		{
+			// called away half way along a stretch of snow: somebody else will finish it
+			if (SnowProgress && P.Slot >= 0 && Slots[P.Slot].SnowJob >= 0)
+			{
+				SnowProgress(P.Id, Slots[P.Slot].SnowJob, -1.f);
+			}
+			P.SweepT = -1.f;
+		}
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -2035,7 +2046,7 @@ namespace LyudPeople
 		{
 			const FSlot& Sl = Slots[S];
 			const FPlace& Pl = Places[Sl.Place];
-			if (S == P.Slot || Pl.bIndoor || Pl.Island != Island || !Has(A.Places, Pl.Kind) || !Sl.Free(P.Id))
+			if (S == P.Slot || Pl.bIndoor || Pl.Island != Island || !Has(A.Places, Pl.Kind) || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
 			{
 				continue;
 			}
@@ -2048,6 +2059,10 @@ namespace LyudPeople
 		P.WanderAt = Time + 1e9;
 		if (Options.empty())
 		{
+			if (A.bSnow)
+			{
+				P.Until = std::min(P.Until, Time);   // nothing more to clear near here
+			}
 			return;
 		}
 		const int S = Options[(size_t)(Rand(P.Rng) * Options.size()) % Options.size()];
@@ -2058,6 +2073,127 @@ namespace LyudPeople
 		OutdoorWay(P.Pos, Slots[S].Approach, P.Path);
 		P.PathI = 0;
 		P.Pose = EPose::Walk;
+	}
+
+	void FWorld::Sweep(FPerson& P, float Dt)
+	{
+		if (P.Slot < 0)
+		{
+			return;
+		}
+		FSlot& Sl = Slots[P.Slot];
+		if (Sl.SnowJob < 0)
+		{
+			P.SweepT = -1.f;
+			P.WanderAt = Time;
+			Wander(P);
+			return;
+		}
+		if (P.SweepT < 0.f)
+		{
+			// take the stretch (somebody else may have it after all)
+			if (SnowProgress && !SnowProgress(P.Id, Sl.SnowJob, 0.f))
+			{
+				Sl.SnowJob = -1;
+				P.WanderAt = Time;
+				Wander(P);
+				return;
+			}
+			P.SweepT = 0.f;
+			P.SweepSent = 0.f;
+		}
+		// the pusher's pace (the Push clip's feet: 0.36 m/s); a long stretch takes a few minutes
+		const float Pace = 0.36f;
+		const float L = std::max((Sl.SnowTo - Sl.Pos).Len2D(), 0.5f);
+		P.SweepT = std::min(1.f, P.SweepT + Pace * Dt / L);
+		V3 At = Sl.Pos + (Sl.SnowTo - Sl.Pos) * P.SweepT;
+		At.Z = GroundAt(At);
+		P.Pos = At;
+		P.Yaw = YawTo(Sl.Pos, Sl.SnowTo);
+		P.Pose = EPose::Shovel;
+		P.Speed = Pace;
+		if (P.SweepT >= 1.f || P.SweepT - P.SweepSent > 0.04f)
+		{
+			if (SnowProgress)
+			{
+				SnowProgress(P.Id, Sl.SnowJob, P.SweepT);
+			}
+			P.SweepSent = P.SweepT;
+		}
+		if (P.SweepT >= 1.f)
+		{
+			// done: on to the next stretch near here, if there is one
+			Sl.SnowJob = -1;
+			P.SweepT = -1.f;
+			P.Speed = 0.f;
+			P.Pose = EPose::Stand;
+			P.WanderAt = Time;
+			Wander(P);
+		}
+	}
+
+	void FWorld::UpdateSnowSlots(const V3& Near)
+	{
+		if (!SnowJobs)
+		{
+			return;
+		}
+		int Pi = FindPlace("snow_jobs");
+		if (Pi < 0)
+		{
+			// one outdoor place whose slots stand for the stretches of path that want clearing now
+			FPlace Pl;
+			Pl.Id = "snow_jobs";
+			Pl.Kind = "snow";
+			Pl.Portal = Near;
+			Pi = (int)Places.size();
+			Places.push_back(Pl);
+			for (int K = 0; K < 6; K++)
+			{
+				FSlot Sl;
+				Sl.Kind = "shovel";
+				Sl.Place = Pi;
+				Sl.Pos = Sl.Approach = Sl.SnowTo = Near;
+				Places[Pi].Slots.push_back((int)Slots.size());
+				Slots.push_back(Sl);
+			}
+		}
+		FPlace& Pl = Places[Pi];
+		std::vector<int> Held, Free;
+		for (const int S : Pl.Slots)
+		{
+			(Slots[S].Users.empty() ? Free : Held).push_back(S);
+		}
+		std::vector<FSnowJob> Jobs;
+		SnowJobs(Near, (int)Pl.Slots.size() + 4, Jobs);
+		size_t J = 0;
+		for (const int S : Free)
+		{
+			FSlot& Sl = Slots[S];
+			Sl.SnowJob = -1;
+			for (; J < Jobs.size(); J++)
+			{
+				const FSnowJob& Jb = Jobs[J];
+				bool bTaken = IslandOf(Jb.From) != 0;
+				for (const int H : Held)
+				{
+					bTaken |= Slots[H].SnowJob == Jb.Job;
+				}
+				if (!bTaken)
+				{
+					Sl.SnowJob = Jb.Job;
+					Sl.Pos = Sl.Approach = Jb.From;
+					Sl.SnowTo = Jb.To;
+					Sl.Yaw = YawTo(Jb.From, Jb.To);
+					J++;
+					break;
+				}
+			}
+		}
+		if (!Jobs.empty())
+		{
+			Pl.Portal = Jobs[0].From;
+		}
 	}
 
 	void FWorld::TalkPairs()
@@ -2206,7 +2342,9 @@ namespace LyudPeople
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
 				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep);
-				if (Time >= P.Until || bDutyCalls || (P.Path.empty() && Interrupt(P, Dt)))
+				// a stretch of snow half cleared is finished first
+				const bool bMidSweep = P.SweepT >= 0.f;
+				if ((Time >= P.Until && !bMidSweep) || bDutyCalls || (P.Path.empty() && !bMidSweep && Interrupt(P, Dt)))
 				{
 					Leave(P);
 					break;
@@ -2251,7 +2389,12 @@ namespace LyudPeople
 						P.PathI = 0;
 						P.Speed = 0.f;
 						const FActivity& A = Activities[P.Activity];
-						if (A.bWander)
+						if (A.bSnow)
+						{
+							P.Pose = EPose::Shovel;
+							P.SweepT = -1.f;
+						}
+						else if (A.bWander)
 						{
 							P.Pose = EPose::Look;
 							P.Yaw = bSunUp && Rand(P.Rng) < 0.5f ? SunYaw : Slots[P.Slot].Yaw;
@@ -2273,7 +2416,11 @@ namespace LyudPeople
 					}
 					break;
 				}
-				if (Activities[P.Activity].bWander)
+				if (Activities[P.Activity].bSnow)
+				{
+					Sweep(P, Dt);
+				}
+				else if (Activities[P.Activity].bWander)
 				{
 					Wander(P);
 				}

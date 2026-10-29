@@ -1,5 +1,11 @@
 #include "Sky/LyudSky.h"
 
+#include "Weather/LyudGrade.h"
+#include "Weather/LyudWeather.h"
+#include "Weather/WeatherModel.h"
+#include "MaterialShared.h"
+#include "RHIGlobals.h"
+
 #include "Components/DirectionalLightComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
@@ -19,6 +25,10 @@
 
 static TAutoConsoleVariable<float> CVarSkyHourOffset(TEXT("lyud.SkyHourOffset"), 0.f,
 	TEXT("Hours added to the time the sky shows (sun, moon, stars), in play and in the editor."));
+static TAutoConsoleVariable<float> CVarOvercastEV(TEXT("lyud.Sky.OvercastEV"), 2.f,
+	TEXT("By day the eye opens up by this many stops under a thick dark overcast (scaled by how opaque the weather's cloud is)."));
+static TAutoConsoleVariable<float> CVarLowSunEV(TEXT("lyud.Sky.LowSunEV"), 0.7f,
+	TEXT("By day the eye opens up by this many stops when the sun is low (25 degrees down to 5), as in a winter noon."));
 static TAutoConsoleVariable<float> CVarSunDiskGain(TEXT("lyud.Sky.SunDiskGain"), 1.f, TEXT("Multiplies the sun disk's brightness (tuning)."));
 static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"), 1.f, TEXT("Multiplies Europa's brightness on the sky (tuning)."));
 static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
@@ -179,6 +189,12 @@ float ALyudSky::MoonSizeNowDeg() const
 	return FMath::Clamp(Pin > 0.f ? Pin : MoonSizeDeg, 0.1f, 40.f);
 }
 
+FVector ALyudSky::BearingDirection(double BearingDeg) const
+{
+	const double B = FMath::DegreesToRadians(BearingDeg);
+	return WorldDirection(FVector(FMath::Sin(B), FMath::Cos(B), 0.0));
+}
+
 void ALyudSky::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
@@ -254,8 +270,9 @@ void ALyudSky::UpdateSky()
 	// The atmosphere reddens and dims the sun near the horizon by itself; below it the sun still lights
 	// the upper air (twilight) until it is well down, but no longer the ground.
 	const float SunAlt = (float)SunPos.AltitudeDeg;
-	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt));
-	SunLight->SetLightColor(SunColor);
+	// a flare on the star (ALyudRareSky): up to a quarter brighter and whiter at its peak
+	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt) * (1.f + 0.25f * FlareBoost));
+	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * FlareBoost));
 	const float Dark = 1.f - SmoothStep01(-10.f, -2.f, SunAlt);   // 1 once the sun is down past civil twilight
 	// Europa's phase from the very directions the sky material lights its disk with: the phase angle is the angle at
 	// Europa between the sun and the viewer, so the light's phase and the disk's are the same
@@ -291,8 +308,8 @@ void ALyudSky::UpdateSky()
 	}
 	// by night the haze is thinner: the moonlight it scatters would wrap Europa in a big glow
 	const float MieNight = CVarNightMie.GetValueOnGameThread() >= 0.f ? CVarNightMie.GetValueOnGameThread() : NightMieShare;
-	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt));
-	// TODO(weather): once ULyudGradeSubsystem lands, multiply Mie by ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
+	// and the weather's haze on top (humid air, mist, rain: ULyudGradeSubsystem, eased there)
+	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt)) * ULyudGradeSubsystem::GetSkyHazeScale(GetWorld());
 	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
@@ -330,7 +347,12 @@ void ALyudSky::MakeInstances()
 	if (!CloudMID && CloudMaterial)
 	{
 		CloudMID = UMaterialInstanceDynamic::Create(CloudMaterial, this);
-		Clouds->SetMaterial(CloudMID);
+		CloudMID->SetFlags(RF_Transient);
+		// the clouds take the instance once its shaders are ready (UpdateClouds): the volumetric cloud renderer
+		// asserts on the surface material a still-compiling one falls back to; until then no clouds (a level saved
+		// with an instance on the component would bring it back)
+		bCloudMIDSet = false;
+		Clouds->SetMaterial(nullptr);
 		float V = 0.f;
 		CloudBaseDensity = CloudMID->GetScalarParameterValue(FHashedMaterialParameterInfo(TEXT("Cloud_GlobalDensity")), V) ? V : -1.f;
 		if (CloudBaseDensity < 0.f)
@@ -351,6 +373,53 @@ void ALyudSky::MakeInstances()
 
 void ALyudSky::UpdateClouds()
 {
+	if (CloudMID && !bCloudMIDSet)
+	{
+		const FMaterialResource* R = CloudMID->GetMaterialResource(GMaxRHIShaderPlatform);
+		const bool bMap = R && R->GetGameThreadShaderMap() != nullptr;
+		const bool bFinished = R && R->IsCompilationFinished();
+		const bool bComplete = R && R->IsGameThreadShaderMapComplete();
+		const double Now0 = FPlatformTime::Seconds();
+		if (!bComplete)
+		{
+			CloudCompleteSince = 0.0;
+		}
+		else if (CloudCompleteSince <= 0.0)
+		{
+			CloudCompleteSince = Now0;
+		}
+		// a couple of seconds after the game thread sees it complete, so the render thread has it too
+		if (bComplete && Now0 - CloudCompleteSince > 2.0 && CloudMID->GetMaterial()->MaterialDomain == MD_Volume && (R->GetCompileErrors().Num() == 0))
+		{
+			Clouds->SetMaterial(CloudMID);
+			bCloudMIDSet = true;
+			UE_LOG(LogTemp, Display, TEXT("LyudSky: the cloud material is ready (complete %d)"), bComplete ? 1 : 0);
+		}
+		else
+		{
+			if (R && bFinished && !bComplete && !bCloudShadersForced)
+			{
+				// an incomplete shader map (only what was asked for so far): compile the rest, the cloud passes among it
+				bCloudShadersForced = true;
+				CloudMID->GetMaterial()->CacheShaders(EMaterialShaderPrecompileMode::Background);
+			}
+			const double Now = FPlatformTime::Seconds();
+			if (Now > NextCloudLog)
+			{
+				NextCloudLog = Now + 10.0;
+				UE_LOG(LogTemp, Display, TEXT("LyudSky: waiting for the cloud material: resource %d map %d finished %d complete %d errors %d"),
+					R ? 1 : 0, bMap ? 1 : 0, bFinished ? 1 : 0, bComplete ? 1 : 0, R ? R->GetCompileErrors().Num() : -1);
+			}
+			if (R && R->GetCompileErrors().Num() > 0 && !bCloudErrorsLogged)
+			{
+				bCloudErrorsLogged = true;
+				for (const FString& E : R->GetCompileErrors())
+				{
+					UE_LOG(LogTemp, Error, TEXT("LyudSky: cloud material: %s"), *E);
+				}
+			}
+		}
+	}
 	const float K = CVarCloudSamples.GetValueOnGameThread();
 	if (!FMath::IsNearlyEqual(Clouds->ViewSampleCountScale, CloudViewSamples * K))
 	{
@@ -470,7 +539,17 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 	const float Night = 1.f - SmoothStep01(-8.f, 8.f, (float)SunPos.AltitudeDeg);
 	// a quarter of a stop wider per stop of moonlight lost, up to MoonlessExposureEV
 	const float Moonless = FMath::Clamp(-FMath::Log2(MoonLight01 + 0.03f) / 4.f, 0.f, MoonlessExposureEV);
-	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night;
+	// by day the eye adapts too: under a thick overcast and to a low winter sun (the weather's cloud, eased)
+	float Opacity = 0.f;
+	if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+	{
+		const LyudWeather::FWeatherState& W = Weather->GetModelState();
+		Opacity = 1.f - (1.f - W.Low.Cover * FMath::Clamp(W.Low.Density * 1.2f, 0.f, 1.f)) * (1.f - 0.7f * W.Mid.Cover * W.Mid.Density);
+	}
+	const float LowSun = SmoothStep01(25.f, 5.f, (float)SunPos.AltitudeDeg);
+	const float DayEV = (1.f - Night) * (CVarOvercastEV.GetValueOnGameThread() * Opacity + CVarLowSunEV.GetValueOnGameThread() * LowSun);
+	DayAdaptEV = FMath::FInterpTo(DayAdaptEV, DayEV, DeltaSeconds, 0.5f);
+	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night + DayAdaptEV;
 	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }

@@ -151,7 +151,9 @@ static int Test()
 	// 6. the rope sags under a cabin crossing a span and sways in the wind; the cabin swings when it speeds up
 	N.Reset();
 	RI = N.Travel(PlayerId, Aton, Academ);
-	float MaxSag = 0.f, MaxSway = 0.f, MaxPitch = 0.f;
+	float MaxSag = 0.f, MaxSway = 0.f, MaxPitch = 0.f, MaxA = 0.f, MaxRoll = 0.f;
+	LT_V3 Prev[2];
+	int Seen = 0;
 	const LT_V3 Wind(0.f, 12.f, 0.f);
 	for (int I = 0; I < 1600; I++)
 	{
@@ -167,8 +169,33 @@ static int Test()
 		MaxSag = std::max(MaxSag, -O.Z);
 		MaxSway = std::max(MaxSway, std::sqrt(O.X * O.X + O.Y * O.Y));
 		MaxPitch = std::max(MaxPitch, std::fabs(N.Cabins[C].Pitch));
+		MaxRoll = std::max(MaxRoll, std::fabs(N.Cabins[C].Roll));
+		// the ride is smooth: the grip's acceleration (second differences of where it is) stays a gondola's, no kinks
+		const LT_V3 G3 = N.CabinAt(C);
+		if (N.Cabins[C].State == ECabinState::Moving && R.State == ERiderState::Riding)
+		{
+			if (Seen >= 2)
+			{
+				const LT_V3 A = (G3 - Prev[1] * 2.f + Prev[0]) * (1.f / (0.05f * 0.05f));
+				const float Am = std::sqrt(A.X * A.X + A.Y * A.Y + A.Z * A.Z);
+				if (Am > 3.f && std::getenv("TR_DEBUG_JOLT"))
+				{
+					std::printf("  jolt %.2f at s=%.1f v=%.2f acc=%.2f t=%.2f\n", Am, N.Cabins[C].S, N.Cabins[C].Speed, N.Cabins[C].Acc, N.Time);
+				}
+				MaxA = std::max(MaxA, Am);
+			}
+			Prev[0] = Prev[1];
+			Prev[1] = G3;
+			Seen++;
+		}
+		else
+		{
+			Seen = 0;
+		}
 	}
-	std::printf("rope under the cabin: sag up to %.2f m, sway %.2f m in 12 m/s; cabin pitch up to %.1f deg\n", MaxSag, MaxSway, MaxPitch * 57.3f);
+	std::printf("rope under the cabin: sag up to %.2f m, sway %.2f m in 12 m/s; cabin pitch up to %.1f deg, roll %.1f deg; the ride's acceleration up to %.2f m/s2\n",
+		MaxSag, MaxSway, MaxPitch * 57.3f, MaxRoll * 57.3f, MaxA);
+	CHECK(MaxA < 4.f, "a jolt in the ride: %.2f m/s2", MaxA);      // ~3.5 at most, slowly round the end wheel
 	CHECK(MaxSag > 0.2f && MaxSag < 4.f, "sag %.2f", MaxSag);
 	CHECK(MaxSway > 0.1f && MaxSway < 5.f, "sway %.2f", MaxSway);
 	CHECK(MaxPitch > 0.002f && MaxPitch < 0.2f, "pitch %.3f", MaxPitch);

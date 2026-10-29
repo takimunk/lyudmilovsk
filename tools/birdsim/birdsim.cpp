@@ -596,9 +596,24 @@ namespace
 			}
 			std::printf("at %.1f h %d of them asleep in the reed\n", W.Hour, InReed);
 			Check(R, InReed == Perched, "and sleep in the reed");
-			// a week on: gone south
+			// a week on: gone south, but never from under the player's nose (they would simply vanish, popping)
 			W.DayOfYear = Doy(11, 6);
 			W.Hour = 23.f;
+			FBird* Watched = nullptr;
+			for (FBird& B : W.Birds)
+			{
+				Watched = !Watched && (B.Species == Sw || B.Species == Sm) && !B.bGone ? &B : Watched;
+			}
+			const V3 Away = W.Camera;
+			if (Watched)
+			{
+				W.Camera = Watched->Pos + V3(3.f, 0.f, 1.f);
+				W.Step(0.f);           // the tiers by the new camera
+				W.UpdateMigration();
+				Check(R, !Watched->bGone, "a straggler 3 m from the camera doesn't vanish (it leaves out of sight)");
+			}
+			W.Camera = Away;
+			W.Step(0.f);           // the tiers by the new camera
 			W.UpdateMigration();
 			int Left = 0;
 			for (const FBird& B : W.Birds)

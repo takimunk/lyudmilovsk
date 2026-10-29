@@ -116,9 +116,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a big moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
-	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun and Europa instead of
-	 * veiling them: at 8 a cumulus in front of Europa by day still showed the disk through it like a ghost). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 24.f;
+	/** The clouds' density over the cloud material's own. 24 was for the engine's simple cloud material (so a cumulus
+	 * hid the low red sun and Europa instead of veiling them); M_LyudClouds (ULyudCloudSubsystem) sets each deck's
+	 * optical depth from the weather itself, so 1 = as the weather says. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 1.f;
 	/** Clouds letting through less than this of the light behind them are drawn opaque (the cloud component's
 	 * StopTracingTransmittanceThreshold, 0.005 by default): a thick cloud hides the sun's disk, its
 	 * limb and corona entirely instead of showing their outline through it. Kept small: past the cut the engine stops
@@ -165,7 +166,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAltitude() const { return SunPos.AltitudeDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAzimuth() const { return SunPos.AzimuthDeg; }
 	UFUNCTION(BlueprintCallable, Category = "Sky") bool IsPlayerOutdoors() const { return bPlayerOutdoors; }
+	UFUNCTION(BlueprintCallable, Category = "Sky") float MoonAltitude() const { return MoonPos.AltitudeDeg; }
+	/** Europa's lit fraction, 0 new .. 1 full. */
+	UFUNCTION(BlueprintCallable, Category = "Sky") float MoonLitFraction() const { return float(MoonPhase); }
+	/** World unit vectors toward the sun and the moon now, and toward a compass bearing on the horizon. */
+	FVector SunDirection() const { return WorldDirection(SunPos.EastNorthUp()); }
+	FVector MoonDirection() const { return WorldDirection(MoonPos.EastNorthUp()); }
+	FVector BearingDirection(double BearingDeg) const;
+	/** The dome's material instance (ALyudRareSky sets the aurora's, the flares' and the lightning's parameters on it). */
+	UMaterialInstanceDynamic* GetSkyMaterialInstance() const { return SkyMID; }
+
+	/** A flare on the star now, 0..1 (ALyudRareSky): the daylight a little brighter and whiter while it lasts. */
+	UPROPERTY(Transient, BlueprintReadWrite, Category = "Sky") float FlareBoost = 0.f;
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
+	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
+	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
+	UMaterialInstanceDynamic* GetCloudMID() const { return CloudMID; }
+	/** The clouds draw with their instance (its shaders are ready). */
+	bool IsCloudMaterialReady() const { return bCloudMIDSet; }
 
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
@@ -189,6 +207,11 @@ private:
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
 	float CloudBaseDensity = -1.f;
+	bool bCloudMIDSet = false;
+	bool bCloudErrorsLogged = false;
+	double NextCloudLog = 0.0;
+	bool bCloudShadersForced = false;
+	double CloudCompleteSince = 0.0;
 	void MakeInstances();
 	void UpdateClouds();
 
@@ -209,5 +232,7 @@ private:
 	/** The level's own exposure bias (the club's post process volume), read at BeginPlay. */
 	float BaseExposureBias = 0.f;
 	float OutdoorWeight = 0.f;
+	/** The day's adaptation to overcast and a low sun, stops (eased). */
+	float DayAdaptEV = 0.f;
 	TWeakObjectPtr<APawn> LitPawn;
 };

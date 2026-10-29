@@ -16,7 +16,9 @@ import unreal
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools", "sea"))
+sys.path.insert(0, os.path.join(REPO, "tools", "rainfog"))
 import sea_hlsl as H  # noqa: E402
+import rain_hlsl as RH  # noqa: E402
 
 SEA = "/Game/Sea"
 WEATHER = "/Game/Weather"
@@ -46,6 +48,7 @@ def collection():
     (re-creating it would cut every material that reads it)."""
     vectors = [("Wind", (0.0, 1.0, 6.0, 0.25)), ("WindDrift", (0.0, 0.0, 0.0, 0.0)),
                ("Sea", (-4300.0, 0.0, 0.5, 20.0)), ("SeaWave", (1.0, 0.0, 0.3, 0.2)),
+               ("Rain", (0.0, 0.0, 0.0, 0.0)),
                # the tide (ALyudSea): water now, datum, wet line (world cm), springs 0..1; the ground's wet sand reads it
                ("Tide", (-4300.0, -4300.0, -4300.0, 0.0))]
     scalars = [("SeaWaveOmega", 1.7), ("SeaWavePhase", 0.0)]
@@ -217,8 +220,9 @@ def sea_material(coll):
                     [("S", surf), ("W", wc), ("Pos", ppos), ("Clock", clock), ("Look", (g.vparam("SeaLook", (0.0, 0.0, 0.0, 0.0)), "RGBA"))],
                     desc="Foam")
 
-    nrm = g.custom("float2 a = N.xy; return float3(a, sqrt(saturate(1.0 - dot(a, a))));", [("N", pix)],
-                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    # rain rings on the water (ALyudRainFx sets MPC Rain; tools/rainfog/rain_hlsl.py)
+    nrm = g.custom(RH.SEA_RINGS, [("N", pix), ("XY", uv), ("T", g.node(X.MaterialExpressionTime)), ("Rain", g.mpc(coll, "Rain"))],
+                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="SeaRainRings")
     lerp = g.node(X.MaterialExpressionLinearInterpolate)
     g.link(nrm, lerp, "A")
     g.link(g.const((0.0, 0.0, 1.0)), lerp, "B")

@@ -52,14 +52,48 @@ namespace LyudTransport
 		I = std::min(I, (int)Loop.size() - 2);
 		const float Seg = std::max(1e-4f, LoopS[I + 1] - LoopS[I]);
 		const float T = std::min(1.f, std::max(0.f, (S - LoopS[I]) / Seg));
-		const V3 A = Loop[I], B = Loop[I + 1];
+		// a smooth curve through the rope's points (cubic Hermite in S, the tangents from the neighbours): a cabin
+		// passing a point of the rope keeps its velocity instead of kinking it (a jolt at every sample of the sag)
+		const int N = (int)Loop.size();
+		const bool bClosed = N > 2 && std::fabs(Loop[0].X - Loop[N - 1].X) + std::fabs(Loop[0].Y - Loop[N - 1].Y) + std::fabs(Loop[0].Z - Loop[N - 1].Z) < 0.01f;
+		auto Pt = [&](int K, float& Sk) -> V3
+		{
+			if (K < 0)
+			{
+				if (!bClosed)
+				{
+					Sk = LoopS[0] - 1.f;
+					return Loop[0] * 2.f - Loop[1];
+				}
+				Sk = LoopS[N - 1 + K] - Length;
+				return Loop[N - 1 + K];
+			}
+			if (K > N - 1)
+			{
+				if (!bClosed)
+				{
+					Sk = LoopS[N - 1] + 1.f;
+					return Loop[N - 1] * 2.f - Loop[N - 2];
+				}
+				Sk = LoopS[K - (N - 1)] + Length;
+				return Loop[K - (N - 1)];
+			}
+			Sk = LoopS[K];
+			return Loop[K];
+		};
+		float S0, S1, S2, S3;
+		const V3 P0 = Pt(I - 1, S0), P1 = Pt(I, S1), P2 = Pt(I + 1, S2), P3 = Pt(I + 2, S3);
+		const V3 M1 = (P2 - P0) * (1.f / std::max(1e-4f, S2 - S0)), M2 = (P3 - P1) * (1.f / std::max(1e-4f, S3 - S1));
+		const float T2 = T * T, T3 = T2 * T;
+		const float H00 = 2 * T3 - 3 * T2 + 1, H10 = T3 - 2 * T2 + T, H01 = -2 * T3 + 3 * T2, H11 = T3 - T2;
 		if (OutDir)
 		{
-			const V3 D = B - A;
+			const float D00 = 6 * T2 - 6 * T, D10 = 3 * T2 - 4 * T + 1, D01 = -6 * T2 + 6 * T, D11 = 3 * T2 - 2 * T;
+			const V3 D = P1 * D00 + M1 * (D10 * Seg) + P2 * D01 + M2 * (D11 * Seg);
 			const float L = std::sqrt(D.X * D.X + D.Y * D.Y + D.Z * D.Z);
 			*OutDir = L > 1e-5f ? D * (1.f / L) : V3(1, 0, 0);
 		}
-		return A + (B - A) * T;
+		return P1 * H00 + M1 * (H10 * Seg) + P2 * H01 + M2 * (H11 * Seg);
 	}
 
 	float FLine::Ahead(float From, float To) const
@@ -341,6 +375,7 @@ namespace LyudTransport
 			C.Riders.clear();
 			C.Reserved = 0;
 			C.Speed = 0.f;
+			C.Acc = 0.f;
 			C.Door = 0.f;
 			C.bToDepot = C.bHold = C.bPlayerAboard = false;
 			C.Odometer = C.EmptyMetres = 0.f;
@@ -809,6 +844,7 @@ namespace LyudTransport
 		const FLine& L = Lines[C.Line];
 		C.S = L.Stops[Stop].S;
 		C.Speed = 0.f;
+		C.Acc = 0.f;
 		C.AtStop = Stop;
 		if (C.bToDepot && Stop == L.DepotStop && C.Targets.empty() && C.Riders.empty() && C.Reserved == 0 && !C.bPlayerAboard)
 		{
@@ -930,6 +966,7 @@ namespace LyudTransport
 		C.AtStop = -1;
 		C.State = ECabinState::Moving;
 		C.Speed = 0.f;
+		C.Acc = 0.f;
 	}
 
 	bool FNetwork::Clear(int CI, float S) const
@@ -990,6 +1027,7 @@ namespace LyudTransport
 					C.AtStop = -1;
 					C.S = DS;
 					C.Speed = 0.f;
+					C.Acc = 0.f;
 					Emit(EEvent::Launch, CI, L.DepotStop, -1);
 					if (NextTarget(C) == L.DepotStop)
 					{
@@ -1110,6 +1148,14 @@ namespace LyudTransport
 					break;
 				case ECabinState::Moving:
 				{
+					// sent off from a stop with its doors open (an idle cabin stands open): shut them before it goes
+					if (C.Door > 0.f)
+					{
+						C.Door = std::max(0.f, C.Door - H / P.DoorTime);
+						C.Speed = 0.f;
+						C.Acc = 0.f;
+						break;
+					}
 					const int T = NextTarget(C);
 					if (T < 0)
 					{
@@ -1145,8 +1191,23 @@ namespace LyudTransport
 							V = std::min(V, std::sqrt(P.SpeedThrough * P.SpeedThrough + 2.f * P.Accel * (Fwd - Zone)));
 						}
 					}
+					// round a bend (the end station's wheel, a sheave) no faster than a gentle sideways pull allows, slowing
+					// before it
+					for (float Ah = 0.f; Ah <= 48.f; Ah += 2.f)
+					{
+						V3 D0, D1;
+						L.At(C.S + Ah, &D0);
+						L.At(C.S + Ah + 2.f, &D1);
+						const float Cos = std::max(-1.f, std::min(1.f, D0.X * D1.X + D0.Y * D1.Y + D0.Z * D1.Z));
+						const float K = std::acos(Cos) / 2.f;          // 1/m
+						if (K > 1e-4f)
+						{
+							const float VBend = std::sqrt(P.Lateral / K);
+							V = std::min(V, std::sqrt(VBend * VBend + 2.f * 0.6f * P.Accel * Ah));
+						}
+					}
 					// stopping at the target
-					V = std::min(V, std::sqrt(2.f * P.Accel * std::max(0.f, Dist)) + 0.15f);
+					V = std::min(V, std::sqrt(2.f * 0.6f * P.Accel * std::max(0.f, Dist)) + 0.12f);
 					// keep the headway to the cabin ahead (parked ones stand on the siding)
 					float Gap = 1e30f;
 					for (int O = 0; O < (int)Cabins.size(); O++)
@@ -1164,15 +1225,21 @@ namespace LyudTransport
 					}
 					if (Gap < 1e29f)
 					{
-						V = std::min(V, std::sqrt(2.f * P.Accel * std::max(0.f, Gap - P.Headway)));
+						V = std::min(V, std::sqrt(2.f * 0.6f * P.Accel * std::max(0.f, Gap - P.Headway)));
 					}
-					if (V > C.Speed)
+					// the acceleration eases in and out (a limited jerk): smooth starts, stops and changes of pace
 					{
-						C.Speed = std::min(V, C.Speed + P.Accel * H);
-					}
-					else
-					{
-						C.Speed = std::max(V, C.Speed - 2.5f * P.Accel * H);
+						const float Want = std::max(-2.5f * P.Accel, std::min(P.Accel, (V - C.Speed) / 0.9f));
+						C.Acc += std::max(-P.Jerk * H, std::min(P.Jerk * H, Want - C.Acc));
+						if (V < C.Speed - 0.6f)
+						{
+							C.Acc = std::min(C.Acc, Want);  // a limit it must keep (a stop, the cabin ahead): brake at once
+						}
+						C.Speed = std::max(0.f, C.Speed + C.Acc * H);
+						if (C.Speed > V + 0.3f)
+						{
+							C.Speed = std::max(V + 0.3f, C.Speed - 2.5f * P.Accel * H);
+						}
 					}
 					const float Move = std::min(C.Speed * H, Dist);
 					C.S = std::fmod(C.S + Move, L.Length);
@@ -1340,12 +1407,24 @@ namespace LyudTransport
 		const float W0 = std::sqrt(G / Arm);
 		for (FCabin& C : Cabins)
 		{
-			const float Acc = (C.Speed - C.LastSpeed) / Dt;
+			const float Acc = C.State == ECabinState::Moving ? C.Acc : 0.f;
 			C.LastSpeed = C.Speed;
 			V3 Dir;
 			Lines[C.Line].At(C.S, &Dir);
+			// the heading's turn rate (a bend in the rope at a sheave, a station's spread): the cabin swings outward
+			const float Yaw = std::atan2(Dir.Y, Dir.X);
+			if (!C.bYawSet)
+			{
+				C.Yaw = Yaw;
+				C.bYawSet = true;
+			}
+			float DYaw = Yaw - C.Yaw;
+			DYaw -= 6.2831853f * std::floor((DYaw + 3.14159265f) / 6.2831853f);
+			C.Yaw = Yaw;
+			C.YawRate += (DYaw / Dt - C.YawRate) * std::min(1.f, Dt * 4.f);
+			const float Lateral = C.State == ECabinState::Moving ? C.Speed * C.YawRate : 0.f;
 			const float Across = Wind.X * -Dir.Y + Wind.Y * Dir.X;
-			const float RollTarget = 0.0025f * Across * std::fabs(Across) / G;      // drag on the cabin's side
+			const float RollTarget = 0.0025f * Across * std::fabs(Across) / G - Lateral / G;   // drag on its side; outward in a bend
 			C.PitchV += (-W0 * W0 * C.Pitch - 0.5f * Acc / Arm - 2.f * 0.2f * W0 * C.PitchV) * Dt;
 			C.Pitch += C.PitchV * Dt;
 			C.RollV += (W0 * W0 * (RollTarget - C.Roll) - 2.f * 0.12f * W0 * C.RollV) * Dt;

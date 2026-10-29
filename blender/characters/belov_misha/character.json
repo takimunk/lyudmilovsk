@@ -1,0 +1,32 @@
+{
+ "_doc": "Misha Belov (Миша Белов), lab technician, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "belov_misha",
+ "model": "model_face",
+ "height": 1.86,
+ "donor": "blender/humans/export/human_guy_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "face": {
+  "normal_strength": 0.4,
+  "eye_open": [
+   {
+    "cx": 0.0314,
+    "cz": 1.7052,
+    "hw": 0.0121,
+    "up": 0.0052,
+    "lo": 0.0052,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.032,
+    "cz": 1.7047,
+    "hw": 0.0127,
+    "up": 0.0043,
+    "lo": 0.0043,
+    "tilt": 0.0
+   }
+  ]
+ }
+}

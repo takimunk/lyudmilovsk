@@ -419,6 +419,127 @@ def tick(dt):
             cmd(world(), "quit")
 
 
+# --- popping: birds near the camera must not blink in and out (Dima, 29 Oct) ---------------------------------
+# STARTEST_ONLY=pop: at the swallows' wires before dusk, by a starling flock feeding by day and under the swallows hawking
+# at noon, the camera walks past them for a while with lyud.Birds.Steady 0 (the old hard cuts) and then 1, and the
+# renderer's counters (pops: a bird of half a pixel or more drawn one frame and not the next, or back; body spawns) are
+# compared. A few frames of each are shot.
+POP = {"rows": []}
+
+
+def counters(w):
+    m = re.search(r"pops (\d+), body spawns (\d+) releases (\d+)", report(w))
+    return tuple(int(g) for g in m.groups()) if m else (0, 0, 0)
+
+
+def walker(w, a, b, secs):
+    """The camera walks from a to b (cm) in secs, looking at the side of its path (+90 degrees)."""
+    t0 = st["t"]
+    def move(w):
+        k = min(1.0, (st["t"] - t0) / secs)
+        eye = tuple(a[i] + (b[i] - a[i]) * k for i in range(3))
+        tgt = POP.get("look") or POP["ab"][1]
+        look(w, eye, tgt)
+    return move
+
+
+def pop_phase(where, steady, a, b, target, secs=14.0):
+    def place(w):
+        # the camera jumps to the walk's start and stands there a moment: a jump pops birds, rightly, and isn't counted
+        cmd(w, "lyud.Birds.Steady %d" % steady)
+        POP["look"] = target
+        POP["ab"] = (a(w), b(w)) if callable(a) else (a, b)
+        st["move"] = walker(w, POP["ab"][0], POP["ab"][0], 1.0)
+    def start(w):
+        POP["c0"] = counters(w)
+        POP["tt"] = st["t"]
+        st["move"] = walker(w, POP["ab"][0], POP["ab"][1], secs)
+    step(place, 2.0)
+    def stop(w):
+        st["move"] = None
+        c = counters(w)
+        d = [c[i] - POP["c0"][i] for i in range(3)]
+        secs_ = max(0.1, st["t"] - POP["tt"])
+        POP["rows"].append((where, steady, d[0], d[1], secs_))
+        log("POP %s steady=%d pops %d spawns %d releases %d over %.1f s (%s)" % (where, steady, d[0], d[1], d[2], secs_, report(w)[-1200:]))
+    step(start, secs * 0.5)
+    step(lambda w, s_=steady, wh=where: shot(w, "pop_%s_steady%d_a" % (wh, s_)), 0.05)
+    step(lambda w, s_=steady, wh=where: shot(w, "pop_%s_steady%d_b" % (wh, s_)), 0.05)
+    step(lambda w, s_=steady, wh=where: shot(w, "pop_%s_steady%d_c" % (wh, s_)), secs * 0.5)
+    step(stop, 0.5)
+
+
+def _pop_steps():
+    @step
+    def p_wires_time(w):
+        rise, sset = sun(w)
+        st["sun"] = (rise, sset)
+        set_time(w, sset - 1.0)
+    step(lambda w: None, 25.0)
+
+    @step
+    def p_wires_find(w):
+        log("swallows' gathering " + report(w))
+        poles = WIRES["poles"]
+        cx = sum(p["at"][0] for p in poles) / len(poles) * 100.0
+        cy = sum(p["at"][1] for p in poles) / len(poles) * 100.0
+        i, b = find(w, (cx, cy, -2800.0), 400000.0, "BarnSwallow", ("PERCH", "PREEN", "WATCH"), above=-3500.0)
+        POP["sw"] = (b.location.x, b.location.y, b.location.z) if b else None
+        log("pop: swallow %s at %s" % (i, POP["sw"]))
+    for steady in (0, 1):
+        # a walk along under the row, 8 m off it, 30 m past the swallow
+        pop_phase("wires_dusk", steady, lambda w: (POP["sw"][0] - 1500, POP["sw"][1] - 800, POP["sw"][2] - 300) if POP["sw"] else (0, 0, 0),
+                  lambda w: (POP["sw"][0] + 1500, POP["sw"][1] - 800, POP["sw"][2] - 300) if POP["sw"] else (0, 0, 0), None)
+
+    @step
+    def p_feed_time(w):
+        set_time(w, 10.5)
+    step(lambda w: None, 20.0)
+
+    @step
+    def p_feed_find(w):
+        for c in ((-33000.0, 90790.0, -3700.0), (REED_UE[0], REED_UE[1], -3700.0), (-5000.0, 30000.0, 0.0)):
+            i, b = find(w, c, 150000.0, "Starling", ("PECK", "FORAGE"))
+            if b:
+                break
+        POP["st"] = (b.location.x, b.location.y, b.location.z) if b else None
+        log("pop: feeding starling %s at %s" % (i, POP["st"]))
+    for steady in (0, 1):
+        pop_phase("flock_day", steady, lambda w: (POP["st"][0] - 2500, POP["st"][1] - 1200, POP["st"][2] + 170) if POP["st"] else (0, 0, 0),
+                  lambda w: (POP["st"][0] + 2500, POP["st"][1] - 1200, POP["st"][2] + 170) if POP["st"] else (0, 0, 0), None)
+
+    @step
+    def p_noon(w):
+        set_time(w, 12.5)
+    step(lambda w: None, 15.0)
+    for steady in (0, 1):
+        p = WIRES["poles"][4]
+        x, y, z = [c * 100.0 for c in p["at"]]
+        pop_phase("wires_noon", steady, (x - 3000, y - 2000, z + 100), (x + 3000, y - 2000, z + 100), (x, y + 3000, z + 4000))
+
+    @step
+    def p_verdict(w):
+        rows = POP["rows"]
+        log("POP table: " + "; ".join("%s steady=%d pops %d spawns %d in %.0f s" % r for r in rows))
+        ok = True
+        for where in sorted(set(r[0] for r in rows)):
+            old = [r for r in rows if r[0] == where and r[1] == 0]
+            new = [r for r in rows if r[0] == where and r[1] == 1]
+            if not old or not new:
+                continue
+            o, n = old[0], new[0]
+            good = n[2] <= max(3, o[2] // 20) and n[3] <= max(o[3], 12)
+            ok = ok and good
+            log("POP %s: pops %d -> %d, body spawns/s %.2f -> %.2f %s" % (where, o[2], n[2], o[3] / o[4], n[3] / n[4], "ok" if good else "FAIL"))
+        log("POPCHECK " + ("ok" if ok else "FAIL"))
+
+
+if os.environ.get("STARTEST_ONLY") == "pop":
+    STEPS[:] = STEPS[:1]
+    _pop_steps()
+    step(s_quit, 0.0)
+
+
 if os.environ.get("STARTEST_ONLY") == "murm":
     _keep = ("s_start", "s_murm", "_m", "<lambda>", "s_quit")
     _i0 = [k for k, (fn, _) in enumerate(STEPS) if fn.__name__ == "s_murm"][0]
@@ -431,6 +552,8 @@ def _tick(dt):
     w = world()
     if not w or st["t"] < 8.0:
         return
+    if st.get("move"):
+        st["move"](w)
     if not birds(w) or not birds(w).is_running():
         if st["t"] > 90.0 and st["i"] == 0:
             log("bird life did not start")

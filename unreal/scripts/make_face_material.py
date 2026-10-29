@@ -63,6 +63,9 @@ else:
 m.set_editor_property("used_with_skeletal_mesh", True)
 m.set_editor_property("used_with_morph_targets", True)
 m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+# two-sided: a skirt's or a coat's hem folded past a leg in the idle stance turned inside out and showed holes
+# (the residents, 2026-10-29); now its inner side shows
+m.set_editor_property("two_sided", True)
 cust = mel.create_material_expression(m, unreal.MaterialExpressionCustom, -700, 700)
 cust.set_editor_property("code", HOLE)
 cust.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT1)

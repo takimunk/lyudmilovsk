@@ -51,7 +51,7 @@ def tick(dt):
                 l.light_component.set_editor_property("light_source_angle", float(os.environ["FACE_SUN_ANGLE"]))
                 l.light_component.set_visibility(False)
                 l.light_component.set_visibility(True)          # recreates its render state
-        cmd(w, "fov 22")                                    # the camera manager keeps its own 90 otherwise
+        cmd(w, "fov %s" % os.environ.get("FACE_FOV", "22"))                                  # the camera manager keeps its own 90 otherwise
         st["phase"], st["t0"], st["n"] = 1, st["t"], 0
     elif st["phase"] == 1 and st["t"] - st["t0"] > 1.0:
         who = CAST[st["i"]]

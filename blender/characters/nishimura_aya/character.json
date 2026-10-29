@@ -1,0 +1,38 @@
+{
+ "_doc": "Aya Nishimura (Ая Нишимура), painter, of the academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "nishimura_aya",
+ "model": "model_face",
+ "height": 1.72,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "skirt": {
+  "hem_z": 0.1,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4
+ },
+ "face": {
+  "normal_strength": 0.4,
+  "eye_open": [
+   {
+    "cx": 0.037,
+    "cz": 1.5803,
+    "hw": 0.016,
+    "up": 0.004,
+    "lo": 0.0045,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0322,
+    "cz": 1.5801,
+    "hw": 0.0155,
+    "up": 0.004,
+    "lo": 0.0045,
+    "tilt": 0.0
+   }
+  ]
+ }
+}

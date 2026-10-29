@@ -74,6 +74,7 @@ namespace LyudWeather
 		float BaseM = 0.f;    // base, m above sea level
 		float TopM = 0.f;     // top
 		float Density = 0.f;  // 0 thin (sun shows through) .. 1 dark, opaque
+		float Sheet = 0.5f;   // 0 heaped or fibrous cells .. 1 a flat continuous sheet (changes smoothly; Type is its name)
 	};
 
 	/** The weather at one moment, the same over the whole map (local effects are for whoever draws them). */
@@ -214,13 +215,21 @@ namespace LyudWeather
 		void Apply(FWeatherState& S, FChain& Chain) const;
 		double At() const { return Now; }
 	private:
-		void Reset(double Hours);
+		void Reset(double Hours, FChain& Chain);
 		void Step(double Hours, double Dt, FChain& Chain);
 		double Now = -1e12;
 		double SeasonStart = 0.0;
-		double SnowWater = 0.0, SnowDepth = 0.0, SnowAge = 30.0, LastMelt = 0.0;
-		double GroundFrost = 0.0, Fdd = 0.0, SeaTemp = 10.0, SeaIce = 0.0, IceCover = 0.0, Glaze = 0.0, Wet = 0.0;
+		/** What the season shows; Apply eases from the hour before (Prev) to the last step's (Cur), an hour late but never in steps. */
+		struct FOut
+		{
+			double SnowWater = 0.0, SnowDepth = 0.0, SnowAge = 30.0, Melt = 0.0;
+			double GroundFrost = 0.0, Fdd = 0.0, SeaTemp = 10.0, SeaIce = 0.0, IceCover = 0.0, Glaze = 0.0, Wet = 0.0;
+		};
+		FOut Cur, Prev;
 	};
+
+	/** A + (B - A) * K for every continuous field (the named kinds, types and regimes switch at K = 0.5). */
+	FWeatherState LerpState(const FWeatherState& A, const FWeatherState& B, float K);
 
 	/** Everything at Hours: the instant weather plus the season (advanced as needed). */
 	FWeatherState Full(double Hours, FChain& Chain, FSeason& Season);

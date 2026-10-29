@@ -845,5 +845,7 @@
  "sign.train.maker": "Nippon Sharyo · 1958",
  "sign.train.emergency": "Emergency: call the driver",
  "ui.train.sit": "[E] Sit down",
- "ui.train.stand": "[E] Stand up"
+ "ui.train.stand": "[E] Stand up",
+ "transport.prompt.seat_sit": "E: sit down",
+ "transport.prompt.seat_up": "E: stand up"
 }
