@@ -87,7 +87,33 @@
    ],
    "dark_warm": true,
    "weight": 0.8
+  },
+  {
+   "_doc": "the face's front: more of the budget (it showed facets in UE)",
+   "box": [
+    -0.085,
+    0.085,
+    -1,
+    -0.04,
+    1.57,
+    1.76
+   ],
+   "weight": 0.9
   }
  ],
- "_faces": "15k body + the donor's two hands (~5.7k) + the face rig's eyes/mouth (~4k) = ~25k, the adult budget"
+ "_faces": "15k body + the donor's two hands (~5.7k) + the face rig's eyes/mouth (~4k) = ~25k, the adult budget",
+ "no_shadow": [
+  {
+   "_doc": "the glasses' frames and temples: their shade lay on the cheek as a hard ring",
+   "box": [
+    -0.1,
+    0.1,
+    -1,
+    0.02,
+    1.65,
+    1.73
+   ],
+   "dark_warm": true
+  }
+ ]
 }

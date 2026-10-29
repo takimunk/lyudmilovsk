@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "d78ec8508ac14354893915b63a226e83",
   "points": 45,
-  "file": "blender/characters/sato_kei/gen/model.glb (local, ignored)"
+  "file": "blender/characters/sato_kei/gen/model.glb (local, ignored)",
+  "sha256": "1c59fb9777a67328f8b5908b5e8c2f3c3e9029cfb91bd860b4ab4a2d4b4b7640",
+  "bytes": 48222620,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

@@ -88,7 +88,28 @@ cust.set_editor_property("inputs", ins)
 for pin, src in sources:                          # vector parameters' default output is RGB: the custom code wants all 4
     if not mel.connect_material_expressions(src, "" if pin == "P" else "RGBA", cust, pin):
         log("could not connect %s" % pin)
-mel.connect_material_property(cust, "", MP.MP_OPACITY_MASK)
+# parts that cast no shadow (Lev Zotov's glasses frames: a hard ring of shade on the cheek): vertex colour alpha 0
+# (rig_character.py "no_shadow"; alpha is 1 everywhere else, and a mesh without vertex colours reads white), clipped in
+# the shadow pass only
+vc = mel.create_material_expression(m, unreal.MaterialExpressionVertexColor, -700, 1000)
+one = mel.create_material_expression(m, unreal.MaterialExpressionConstant, -700, 1100)
+one.set_editor_property("r", 1.0)
+sps = mel.create_material_expression(m, unreal.MaterialExpressionCustom, -450, 1000)   # the ShadowPassSwitch node
+sps.set_editor_property("code", "#if SHADOW_DEPTH_SHADER\nreturn S;\n#else\nreturn D;\n#endif\n")  # (not in Python)
+sps.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT1)
+sps.set_editor_property("description", "ShadowPass")
+sins = []
+for pin in ("D", "S"):
+    ci = unreal.CustomInput()
+    ci.set_editor_property("input_name", pin)
+    sins.append(ci)
+sps.set_editor_property("inputs", sins)
+mel.connect_material_expressions(one, "", sps, "D")
+mel.connect_material_expressions(vc, "A", sps, "S")
+cut = mel.create_material_expression(m, unreal.MaterialExpressionMultiply, -250, 800)
+mel.connect_material_expressions(cust, "", cut, "A")
+mel.connect_material_expressions(sps, "", cut, "B")
+mel.connect_material_property(cut, "", MP.MP_OPACITY_MASK)
 base = mel.create_material_expression(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, -200)
 base.set_editor_property("parameter_name", "BaseColor")
 base.set_editor_property("texture", unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))

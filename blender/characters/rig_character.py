@@ -734,6 +734,34 @@ def relax_skirt(model, body, arm, skirt):
 
 # ---------------------------------------------------------------------------------------------- export
 
+def no_shadow(model, zones):
+    """Vertices in `zones` (as "protect": a box, optionally only dark warm ones) get vertex colour alpha 0: M_HumanFace
+    leaves them out of the shadow pass (glasses' frames cast a hard ring of shade on the cheek)."""
+    me = model.data
+    attr = me.color_attributes.get("EyeMask") or me.color_attributes.new("EyeMask", "BYTE_COLOR", "POINT")
+    col = np.empty(len(me.vertices) * 4, np.float32)
+    if attr.domain == "POINT":
+        attr.data.foreach_get("color", col)
+    col = col.reshape(-1, 4)
+    co = world_co(model)
+    img = base_image(model)
+    W, H = img.size
+    px = np.empty(W * H * 4, np.float32)
+    img.pixels.foreach_get(px)
+    vcol = vertex_colours(model, img, px.reshape(H, W, 4))
+    sel = np.zeros(len(co), bool)
+    for z in zones:
+        x0, x1, y0, y1, z0, z1 = z["box"]
+        s = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
+        if z.get("dark_warm"):
+            s &= (vcol[:, 0] < 0.5) & (vcol[:, 0] - vcol[:, 2] > 0.08)
+        sel |= s
+    col[:, 3] = np.where(sel, 0.0, 1.0)
+    attr.data.foreach_set("color", col.ravel())
+    me.color_attributes.active_color = attr
+    log("no shadow: %d vertices" % sel.sum())
+
+
 def finish(model, arm, cid):
     model.name = "SK_" + cid.capitalize()
     for i, slot in enumerate(model.material_slots):
@@ -859,6 +887,8 @@ def main():
         if PENDING_BAKE and spec.get("face", {}).get("eyes", True):
             face_rig.smooth_eyes(PENDING_BAKE[0], marks["eyes"], iterations=8)
     bake_pending(model)
+    if "no_shadow" in spec:
+        no_shadow(model, spec["no_shadow"])
     if "--preview" in argv:
         body.hide_render = True
         preview(model, arm, cid)

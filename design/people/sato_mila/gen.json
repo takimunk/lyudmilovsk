@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "6ea18aab283c4728a9b25961bf7a3396",
   "points": 45,
-  "file": "blender/characters/sato_mila/gen/model.glb (local, ignored)"
+  "file": "blender/characters/sato_mila/gen/model.glb (local, ignored)",
+  "sha256": "509c8a4d7a06ae9b4df079a09a567dee927285ace93051b625927d9ad92c7eeb",
+  "bytes": 47984004,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

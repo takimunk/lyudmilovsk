@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "6fec6ff6939847fba51c3afd217eafad",
   "points": 45,
-  "file": "blender/characters/zotova_galina/gen/model.glb (local, ignored)"
+  "file": "blender/characters/zotova_galina/gen/model.glb (local, ignored)",
+  "sha256": "af57b4e96e55310dedca3ede2616a25e5a4775c08286dcf07b3279cb91c4d6b1",
+  "bytes": 48761012,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

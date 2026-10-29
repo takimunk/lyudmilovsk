@@ -56,7 +56,13 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
    (Dima's rule: generated models are far too detailed): duplicates welded and specks removed, decimated to `faces`
    (24k triangles for an adult, 18k for a child), smooth shaded, the lost detail baked from a 400k copy into a 2048
    tangent normal map, the 8K base colour scaled to `texture` (2048), metal/roughness dropped (the master sets them).
-   Hands are checked in close-ups; fused or broken fingers are replaced by the donor's hands. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
+   Hands are checked in close-ups; fused or broken fingers are replaced by the donor's hands (`character.json`
+   `"hands": {}`, `replace_hands`: the mitten is cut where the sleeve ends, found by colour, the donor's MakeHuman hand
+   set in 4 cm into the sleeve, its colour one even skin tone from the cut-off hand). `"protect"` zones (a box,
+   optionally only its dark warm vertices, a collapse weight below 1) keep thin parts (glasses' frames) and the face
+   denser through the decimation; `"no_shadow"` zones (same form) get vertex colour alpha 0, which `M_HumanFace` leaves
+   out of the shadow pass (glasses' frames laid a hard ring of shade on the cheek). The adult budget counts the hands
+   (~5.7k) and the face rig (~4k): Lev Zotov's `faces` is 15000 for ~23k in all. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.

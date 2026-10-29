@@ -48,7 +48,13 @@ for i, who in enumerate(CAST):
         comp.set_anim_instance_class(unreal.LyudBodyAnimInstance.static_class())
     marks = os.path.join(ROOT, "blender", "characters", who.lower(), "face_marks.json")
     eye_z = 100.0 * sum(e["z"] for e in json.load(open(marks))["eyes"]) / 2 if os.path.isfile(marks) else 150.0
-    cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x, 70.0, eye_z - 3.0),
+    # the camera's distance by the person's height (70 cm was set on Nao's 1.6 m) from the front of the face (eyes.json:
+    # the eye openings' depth; glasses push it 4-6 cm forward)
+    spec = os.path.join(ROOT, "blender", "characters", who.lower(), "character.json")
+    h = json.load(open(spec)).get("height", 1.6) if os.path.isfile(spec) else 1.6
+    eyes = os.path.join(ROOT, "blender", "characters", who.lower(), "eyes.json")
+    front = -100.0 * min(e["open"]["y"] for e in json.load(open(eyes))["eyes"]) if os.path.isfile(eyes) else 7.0
+    cam = eas.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(x, front + 63.0 * h / 1.6, eye_z - 3.0),
                                      unreal.Rotator(roll=0, pitch=0, yaw=-90))
     cam.set_actor_label("FaceCam_" + who)
     cam.camera_component.set_editor_property("field_of_view", 22.0)
