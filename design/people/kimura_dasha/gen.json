@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "dcf1285cf5dc438684258300c389e616",
   "points": 45,
-  "file": "blender/characters/kimura_dasha/gen/model.glb (local, ignored)"
+  "file": "blender/characters/kimura_dasha/gen/model.glb (local, ignored)",
+  "sha256": "13fcd1aa0d62fd2d952411411ab30d677f00697afcb6d5ae3becf82032824125",
+  "bytes": 48318972,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "fee338f6918944cd8bca6a6833c40286",
   "points": 45,
-  "file": "blender/characters/li_vika/gen/model.glb (local, ignored)"
+  "file": "blender/characters/li_vika/gen/model.glb (local, ignored)",
+  "sha256": "a8fb1ef2114d43f8ca1e8af79051550b13f3aee31f9de8a8dc3019d2f896b63f",
+  "bytes": 47579596,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

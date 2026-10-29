@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "5b30c13c4706477ba507ecea38e57849",
   "points": 45,
-  "file": "blender/characters/belov_misha/gen/model.glb (local, ignored)"
+  "file": "blender/characters/belov_misha/gen/model.glb (local, ignored)",
+  "sha256": "affd14234f1db429cc02c339b198dd196a3ee5c60179d16488d05fd87902b100",
+  "bytes": 48049572,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

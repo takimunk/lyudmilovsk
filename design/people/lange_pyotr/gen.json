@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "bbed15961a54422e90ae1c82cb088489",
   "points": 45,
-  "file": "blender/characters/lange_pyotr/gen/model.glb (local, ignored)"
+  "file": "blender/characters/lange_pyotr/gen/model.glb (local, ignored)",
+  "sha256": "cc3c1ce227368ba539fd14cb1ea83b247ac7db832e600c6ed6b7dde9f6222330",
+  "bytes": 48218448,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }
