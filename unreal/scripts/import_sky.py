@@ -157,12 +157,13 @@ def cloud_material():
     g = Graph("M_LyudClouds")
     g.m.set_editor_property("material_domain", unreal.MaterialDomain.MD_VOLUME)
     g.m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    g.m.set_editor_property("used_with_volumetric_cloud", True)
 
     def vparam(name, v):
         return g.node(X.MaterialExpressionVectorParameter, -900, parameter_name=name,
                       default_value=unreal.LinearColor(v[0], v[1], v[2], v[3]))
     rgba = lambda n: (n, "RGBA")
-    ins = [("P", g.node(X.MaterialExpressionWorldPosition))]
+    ins = [("P", g.node(X.MaterialExpressionWorldPosition)), ("Cam", g.node(X.MaterialExpressionCameraPositionWS))]
     ins.append(("Shape", g.node(X.MaterialExpressionTextureObject, -900,
                                 texture=unreal.load_asset("/Engine/EngineSky/VolumetricClouds/T_VolumeNoiseShape128"))))
     ins.append(("Erosion", g.node(X.MaterialExpressionTextureObject, -900,
@@ -173,7 +174,7 @@ def cloud_material():
         for k, v in defaults.items():
             n = "L%d%s" % (li, k)
             ins.append((n, rgba(vparam(n, v))))
-    for n, v in (("Lens", (0.0, 3.5, 4.5, 6.0)), ("LensDir", (1.0, 0.0, 0.0, 0.0)), ("Misc", (0.0, 0.0, 0.0, 0.0)),
+    for n, v in (("Lens", (0.0, 3.5, 4.5, 6.0)), ("LensDir", (1.0, 0.0, 0.0, 0.0)), ("Misc", (0.0, 60.0, 0.0, 0.0)),
                  ("Flash", (0.0, 0.0, 2.0, 3.0))):
         ins.append((n, rgba(vparam(n, v))))
     d = g.custom(CH.VOLUME_HLSL, ins, out=unreal.CustomMaterialOutputType.CMOT_FLOAT4)

@@ -37,6 +37,8 @@ SHOTS = [
     ("nimbostratus", "ns", AFTERNOON, 6, 10),
     ("altocumulus", "ac", AFTERNOON, 30, 10),
     ("altostratus_sun", "as", AFTERNOON, 0, "sun-wide"),
+    ("nimbostratus_sun", "ns", AFTERNOON, 0, "sun-wide"),
+    ("stratocumulus_sun", "sc", AFTERNOON, 0, "sun-wide"),
     ("lenticular", "lens", AFTERNOON, 10, 10),
     ("cirrus", "ci", AFTERNOON, 30, 10),
     ("cirrocumulus", "cc", AFTERNOON, 40, 10),
@@ -49,7 +51,19 @@ SHOTS = [
     ("sunset_ci", "ci", SUNSET, 0, "sun-wide"),
     ("night_sc", "sc", NIGHT, 10, "moon"),
     ("weather_now", "off", AFTERNOON, 12, 10),
+    # from above: the layers' pattern and cover
+    ("cumulus_above", "cu", AFTERNOON, -60, 10, "up 4000"),
+    ("stratocumulus_above", "sc", AFTERNOON, -60, 10, "up 3000"),
+    ("cumulonimbus_above", "cb", AFTERNOON, -35, 10, "up 12000"),
 ]
+# CLOUD_PERF=1: frame time with the clouds on and off (r.VolumetricCloud) under a few skies, in this one process
+PERF = bool(os.environ.get("CLOUD_PERF"))
+if PERF:
+    SHOTS = []
+    for rnd in (1, 2):
+        for p in ("clear", "cu", "sc", "cb", "ns", "lens"):
+            for on in (1, 0):
+                SHOTS.append(("perf%d_%s_%s" % (rnd, p, "on" if on else "off"), p, AFTERNOON, 10, 10, "r.VolumetricCloud %d" % on))
 if os.environ.get("CLOUD_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["CLOUD_SHOTS"].split(",")]
 EXTRA = [c for c in os.environ.get("CLOUD_EXTRA", "").split(";") if c]
@@ -109,6 +123,12 @@ def step(dt):
         M = unreal.MathLibrary
         st["base"] = D(M.get_year(b), M.get_month(b), M.get_day(b), M.get_hour(b), M.get_minute(b), M.get_second(b))
         return
+    if st["phase"] == 0 and st["i"] < 0 and st["t"] < float(os.environ.get("CLOUD_WARMUP", "300")):
+        # wait for the cloud material's shaders (the clouds stay off until they are ready)
+        cmd(w, "lyud.Clouds.Preset cu")
+        if "ready 1" not in unreal.LyudCloudSubsystem.get_clouds(w).debug_report():
+            return
+        unreal.log_warning("CLOUDSHOT warm after %.0f s" % st["t"])
     if st["phase"] == 0:
         st["i"] += 1
         if st["i"] >= len(SHOTS):
@@ -116,13 +136,16 @@ def step(dt):
             st["phase"] = 9
             return
         name, preset, when, pitch, yaw = SHOTS[st["i"]][:5]
+        up = 1.7
         for c in ["fov 0", "t.MaxFPS 0", "lyud.Clouds.Preset " + preset] + EXTRA + (SHOTS[st["i"]][5:] or [""])[0].split(";"):
-            if c:
+            if c.startswith("up "):                   # test hook: metres over the brow
+                up = float(c.split()[1])
+            elif c:
                 cmd(w, c)
         cmd(w, "lyud.SkyHourOffset %f" % ((when - st["base"]).total_seconds() / 3600.0))
         if hasattr(pawn, "character_movement"):
             pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
-        ux, uy, uz = T.to_unreal(BROW[0], BROW[1], T.ground_z(*BROW) + 1.7, FACE_Y)
+        ux, uy, uz = T.to_unreal(BROW[0], BROW[1], T.ground_z(*BROW) + up, FACE_Y)
         pawn.set_actor_location(unreal.Vector(ux, uy, uz), False, True)
         if not isinstance(yaw, str):
             pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
@@ -134,6 +157,12 @@ def step(dt):
             y, p = aim(sky, yaw)
             pc.set_control_rotation(unreal.Rotator(roll=0, pitch=p, yaw=y))
         st["phase"] = 2
+    elif st["phase"] == 2 and PERF and st["t"] - st["t0"] > 3.0:
+        st.setdefault("dts", []).append(dt)
+        if st["t"] - st["t0"] > 8.0:
+            d = sorted(st.pop("dts"))
+            unreal.log_warning("CLOUDPERF %s median %.2f ms p90 %.2f ms n %d" % (SHOTS[st["i"]][0], d[len(d) // 2] * 1000, d[int(len(d) * 0.9)] * 1000, len(d)))
+            st["phase"] = 0
     elif st["phase"] == 2 and st["t"] - st["t0"] > WAIT:
         clouds = unreal.LyudCloudSubsystem.get_clouds(w)
         rep = clouds.debug_report() if clouds else "no cloud subsystem"

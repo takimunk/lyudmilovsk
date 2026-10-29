@@ -17,6 +17,9 @@ static TAutoConsoleVariable<int32> CVarCloudDebug(TEXT("lyud.Clouds.Debug"), 0, 
 
 namespace
 {
+	/** The cloud material's extinction per metre at density 1 (its Sigma). */
+	constexpr float CloudSigmaPerM = 0.04f;
+
 	/** Seconds the shapes take to ease to a new genus or cover (about 63 percent of the way). */
 	constexpr float EaseSeconds = 6.f;
 
@@ -228,11 +231,11 @@ ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& 
 	{
 	case G::Cumulus:          R = { 1.4f, 0.f, 0.85f, 0.f, 0.75f, 1.4f, 0.05f, 0.35f, 0.3f, 1.f }; break;
 	case G::CumulusCongestus: R = { 2.6f, 0.f, 0.55f, 0.f, 0.7f, 1.2f, 0.1f, 0.6f, 0.5f, 1.4f }; Shafts = 0.5f; break;
-	case G::Cumulonimbus:     R = { 7.f, 0.f, 0.35f, 1.f, 0.65f, 1.f, 0.35f, 0.9f, 0.8f, 1.2f }; Shafts = 1.f; break;
-	case G::Stratocumulus:    R = { 1.8f, 0.35f, 0.6f, 0.f, 0.45f, 2.2f, 0.08f, 0.f, 0.45f, 0.6f }; break;
+	case G::Cumulonimbus:     R = { 6.f, 0.f, 0.f, 1.f, 0.55f, 1.f, 0.3f, 0.f, 0.8f, 1.2f }; Shafts = 1.f; break;
+	case G::Stratocumulus:    R = { 1.6f, 0.12f, 0.55f, 0.f, 0.5f, 1.5f, 0.08f, 0.f, 0.45f, 0.6f }; break;
 	case G::Stratus:          R = { 4.f, 0.92f, 0.2f, 0.f, 0.15f, 1.5f, 0.08f, 0.f, 0.4f, 0.3f }; Shafts = 0.3f; break;
 	case G::Nimbostratus:     R = { 5.f, 0.85f, 0.2f, 0.f, 0.25f, 1.3f, 0.45f, 0.f, 0.85f, 0.5f }; Shafts = 1.f; break;
-	case G::Altocumulus:      R = { 0.7f, 0.15f, 0.6f, 0.f, 0.6f, 1.6f, 0.02f, 0.05f, 0.2f, 0.6f }; break;
+	case G::Altocumulus:      R = { 0.8f, 0.15f, 0.6f, 0.f, 0.55f, 1.6f, 0.02f, 0.45f, 0.2f, 0.6f }; break;
 	case G::AltocumulusLenticular: R = { 0.9f, 0.1f, 0.7f, 0.f, 0.3f, 2.f, 0.02f, 0.2f, 0.2f, 0.2f }; break;
 	case G::Altostratus:      R = { 6.f, 0.95f, 0.1f, 0.f, 0.12f, 1.5f, 0.05f, 0.f, 0.35f, 0.3f }; Shafts = 0.4f; break;
 	default: break;
@@ -243,7 +246,24 @@ ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& 
 	Shafts *= FMath::Clamp(PrecipRate / 4.f, 0.f, 1.f);
 	// shower cells make convective layers clumpier
 	const float Cluster = FMath::Clamp(R.Cluster + (L.Type >= G::Cumulus ? ShowerCells * 0.5f : 0.f), 0.f, 1.f);
-	S.A = FVector4f(Cover, L.BaseM * 1e-3f, FMath::Max(L.TopM, L.BaseM + 50.f) * 1e-3f, FMath::Clamp(L.Density, 0.f, 1.f));
+	// decks: the weather's density is how much light they let through, so it sets their optical depth whatever
+	// their thickness (an altostratus 2 km thick still shows a watery sun; a nimbostratus is dark)
+	float Density = FMath::Clamp(L.Density, 0.f, 1.f);
+	const float ThickM = FMath::Max(L.TopM - L.BaseM, 50.f);
+	float Tau = 0.f;
+	switch (L.Type)
+	{
+	case G::Altostratus:  Tau = 1.5f + 7.f * Density; break;
+	case G::Stratus:      Tau = 6.f + 14.f * Density; break;
+	case G::Nimbostratus: Tau = 25.f + 35.f * Density; break;
+	case G::Stratocumulus: Tau = 8.f + 22.f * Density; break;
+	default: break;
+	}
+	if (Tau > 0.f)
+	{
+		Density = FMath::Clamp(Tau / (CloudSigmaPerM * ThickM), 0.f, 1.f);
+	}
+	S.A = FVector4f(Cover, L.BaseM * 1e-3f, ThickM * 1e-3f + L.BaseM * 1e-3f, Density);
 	S.B = FVector4f(R.Cell, R.Sheet, R.Round, R.Anvil);
 	S.C = FVector4f(R.Erosion, R.Stretch, R.Ragged, Cluster);
 	S.E = FVector4f(Shafts, R.Dark, R.Boil, 0.f);
@@ -403,8 +423,15 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	}
 	UVolumetricCloudComponent* Clouds = Sky->Clouds;
 	const bool bAny = Top > 0.f;
+	// the ray march goes this far from the eye; the shader fades the clouds out before it
+	const float TraceKm = 60.f;
 	if (Clouds)
 	{
+		if (Clouds->TracingMaxDistanceMode != EVolumetricCloudTracingMaxDistanceMode::DistanceFromPointOfView || !FMath::IsNearlyEqual(Clouds->TracingMaxDistance, TraceKm))
+		{
+			Clouds->TracingMaxDistanceMode = EVolumetricCloudTracingMaxDistanceMode::DistanceFromPointOfView;
+			Clouds->SetTracingMaxDistance(TraceKm);
+		}
 		if (Clouds->IsVisible() != bAny)
 		{
 			Clouds->SetVisibility(bAny);
@@ -441,7 +468,7 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 		CloudMid->SetVectorParameterValue(TEXT("Lens"), Vec(LensA));
 		CloudMid->SetVectorParameterValue(TEXT("LensDir"), FLinearColor(float(DUp.X), float(DUp.Y), 0.f, 0.f));
 		const float Time = GetWorld() ? float(FMath::Fmod(GetWorld()->GetTimeSeconds(), 100000.0)) : 0.f;
-		CloudMid->SetVectorParameterValue(TEXT("Misc"), FLinearColor(Time, 0.f, Flicker * 40.f, 0.f));
+		CloudMid->SetVectorParameterValue(TEXT("Misc"), FLinearColor(Time, TraceKm, Flicker * 40.f, 0.f));
 		CloudMid->SetVectorParameterValue(TEXT("Flash"), Vec(FlashAt));
 	}
 	if (UMaterialInstanceDynamic* SkyMid = Sky->GetSkyMID())
@@ -474,7 +501,10 @@ FString ULyudCloudSubsystem::DebugReport() const
 	{
 		return FString::Printf(TEXT("%s %s cover %.2f %0.f-%0.f m dens %.2f"), Name, *GenusName(L.Type), L.Cover, L.BaseM, L.TopM, L.Density);
 	};
+	const ALyudSky* Sky = SkyActor.Get();
+	const FString Mat = Sky ? FString::Printf(TEXT(" | material %s ready %d visible %d"), Sky->Clouds && Sky->Clouds->GetMaterial() ? *Sky->Clouds->GetMaterial()->GetName() : TEXT("none"),
+		Sky->IsCloudMaterialReady() ? 1 : 0, Sky->Clouds && Sky->Clouds->IsVisible() ? 1 : 0) : FString(TEXT(" | no sky"));
 	return FString::Printf(TEXT("CLOUDS %s | %s | %s | lens %.2f showers %.2f rain %.1f | slab %.2f+%.2f km | drawn cover %.2f %.2f high %.2f"),
 		*Line(TEXT("low"), Target.Low), *Line(TEXT("mid"), Target.Mid), *Line(TEXT("high"), Target.High), Target.Lenticular,
-		Target.ShowerCells, Target.PrecipRate, SlabBottom, SlabHeight, Shape[0].A.X, Shape[1].A.X, HighA.X);
+		Target.ShowerCells, Target.PrecipRate, SlabBottom, SlabHeight, Shape[0].A.X, Shape[1].A.X, HighA.X) + Mat;
 }

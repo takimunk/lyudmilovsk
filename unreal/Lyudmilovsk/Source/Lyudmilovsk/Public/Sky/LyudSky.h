@@ -140,6 +140,8 @@ public:
 	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
 	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
 	UMaterialInstanceDynamic* GetCloudMID() const { return CloudMID; }
+	/** The clouds draw with their instance (its shaders are ready). */
+	bool IsCloudMaterialReady() const { return bCloudMIDSet; }
 
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
@@ -165,6 +167,9 @@ private:
 	float CloudBaseDensity = -1.f;
 	bool bCloudMIDSet = false;
 	bool bCloudErrorsLogged = false;
+	double NextCloudLog = 0.0;
+	bool bCloudShadersForced = false;
+	double CloudCompleteSince = 0.0;
 	void MakeInstances();
 	void UpdateClouds();
 
