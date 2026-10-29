@@ -1,7 +1,10 @@
 # textures/sky
 
-`europa_2k.jpg` — Europa's surface for the moon in the sky (ALyudSky, `unreal/scripts/import_sky.py` imports it as
-`/Game/Scene01/Sky/T_Europa`).
+`europa_albedo.png`, `europa_relief.png` — Europa's surface for the moon in the sky (ALyudSky; `unreal/scripts/import_sky.py`
+imports them as `/Game/Scene01/Sky/T_EuropaAlbedo`, `T_EuropaRelief`): our own, procedural, baked by
+`tools/sky/europa_bake.py` from `tools/sky/europa_bake.json` (seed 1610). No outside source.
+
+`europa_2k.jpg` — a colour and feature reference only (not used by the game):
 
 - Source: USGS Astrogeology, *Europa Voyager - Galileo SSI Global Mosaic 500m*,
   https://planetarymaps.usgs.gov/mosaic/Europa_Voyager_GalileoSSI_global_mosaic_500m.tif

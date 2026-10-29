@@ -31,6 +31,8 @@ EXCL = unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS
 # Blue goes first in the Baltic (yellow substance from the rivers), red next (the water itself).
 ABSORPTION = (0.45, 0.14, 0.38)
 SCATTERING = (0.03, 0.04, 0.032)
+SHALLOW_CLARITY = 0.12    # absorption and scattering over the flat, of the open sea's
+SHALLOW_CLEAR_M = 8.0     # depth (m) from which the water is the open sea's
 
 
 def _log(msg):
@@ -229,10 +231,19 @@ def sea_material(coll):
     g.out(g.const(0.255), MP.MP_SPECULAR)
 
     wo = g.node(X.MaterialExpressionSingleLayerWaterMaterialOutput, x=0)
-    for prop, value in ((("Scattering Coefficients", "ScatteringCoefficients"), SCATTERING),
-                        (("Absorption Coefficients", "AbsorptionCoefficients"), ABSORPTION),
+    # the water output takes its coefficients per centimetre (SingleLayerWaterShading.ush multiplies them by the
+    # depth in world units): ours are per metre, as the underwater fog uses them (fed per metre they made the sea
+    # opaque in a few cm: a dark green field over the flat). Over the tidal flat and the shallows the water is a little
+    # clearer still; from SHALLOW_CLEAR_M down the open sea's own
+    clear = "float k = saturate(B.x / %g); return lerp(K * %g, K, k * k) * 0.01;" % (SHALLOW_CLEAR_M, SHALLOW_CLARITY)
+    absorb = g.custom(clear, [("K", g.const(ABSORPTION)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                      desc="Absorption")
+    scatter = g.custom(clear, [("K", g.const(SCATTERING)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                       desc="Scattering")
+    for prop, value in ((("Scattering Coefficients", "ScatteringCoefficients"), scatter),
+                        (("Absorption Coefficients", "AbsorptionCoefficients"), absorb),
                         (("Phase G", "PhaseG"), 0.3), (("Color Scale Behind Water", "ColorScaleBehindWater"), 1.0)):
-        src = g.const(value)
+        src = value if not isinstance(value, (int, float)) else g.const(value)
         if not any(mel.connect_material_expressions(src, "", wo, pin) for pin in prop):
             raise RuntimeError("water output: no pin " + prop[0])
     try:

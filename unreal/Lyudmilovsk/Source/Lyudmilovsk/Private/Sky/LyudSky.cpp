@@ -23,6 +23,7 @@ static TAutoConsoleVariable<float> CVarSunDiskGain(TEXT("lyud.Sky.SunDiskGain"),
 static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"), 1.f, TEXT("Multiplies Europa's brightness on the sky (tuning)."));
 static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
 static TAutoConsoleVariable<float> CVarCloudDensity(TEXT("lyud.Sky.CloudDensity"), 1.f, TEXT("Multiplies the clouds' density (tuning)."));
+static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (tuning)."));
 static TAutoConsoleVariable<float> CVarNightMie(TEXT("lyud.Sky.NightMie"), -1.f, TEXT("Overrides NightMieShare when >= 0 (tuning: the haze round the moon)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
@@ -99,9 +100,9 @@ ALyudSky::ALyudSky()
 	Clouds->SetupAttachment(RootComponent);
 	Clouds->LayerBottomAltitude = 1.2f;
 	Clouds->LayerHeight = 5.f;
-	// cheaper than the defaults: the club's forest already takes most of the frame
-	Clouds->ViewSampleCountScale = 0.5f;
-	Clouds->ShadowViewSampleCountScale = 0.5f;
+	// the view and shadow sample counts come from CloudViewSamples / CloudShadowSamples (UpdateClouds)
+	Clouds->ViewSampleCountScale = CloudViewSamples;
+	Clouds->ShadowViewSampleCountScale = CloudShadowSamples;
 	Clouds->ReflectionViewSampleCountScaleValue = 1.f;
 
 	Dome = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StarDome"));
@@ -286,6 +287,12 @@ void ALyudSky::MakeInstances()
 
 void ALyudSky::UpdateClouds()
 {
+	const float K = CVarCloudSamples.GetValueOnGameThread();
+	if (!FMath::IsNearlyEqual(Clouds->ViewSampleCountScale, CloudViewSamples * K))
+	{
+		Clouds->SetViewSampleCountScale(CloudViewSamples * K);
+		Clouds->SetShadowViewSampleCountScale(CloudShadowSamples * K);
+	}
 	if (CloudMID && CloudBaseDensity >= 0.f)
 	{
 		const float D = CloudBaseDensity * CloudDensityScale * CVarCloudDensity.GetValueOnGameThread();
@@ -323,11 +330,11 @@ void ALyudSky::UpdateSkyMaterial()
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
 	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));
-	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(MoonContrast, MoonNightHalo, 0.f, 0.f));
+	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(0.f, MoonNightHalo, 0.f, 0.f));
 
 	const float Day = SmoothStep01(-6.f, 6.f, (float)SunPos.AltitudeDeg);
 	const float NightK = CVarNightLight.GetValueOnGameThread();
-	const float MoonLum = SunIlluminance * MoonDiskGain * FMath::Lerp(1.f, MoonDayBoost, Day) * CVarMoonDiskGain.GetValueOnGameThread();
+	const float MoonLum = SunIlluminance * MoonDiskGain * FMath::Lerp(MoonNightBoost, MoonDayBoost, Day) * CVarMoonDiskGain.GetValueOnGameThread();
 	// the ashen light on the dark side: a little of the sunlit ice's brightness, more by night
 	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonAngularDiameterDeg * 0.5f), MoonLum, 0.012f, 1.f - Day));
 	SkyMID->SetVectorParameterValue(TEXT("NightGlow"), NightSkyGlow * ((1.f - Day) * NightK));

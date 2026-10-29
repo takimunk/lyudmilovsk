@@ -15,18 +15,29 @@ star dome. The world is a simulation, so its sky is not Earth's:
 `tools/sky/sky_hlsl.py`; the atmosphere's own light disks are off (`AtmosphereSunDiskColorScale` black).
 
 - **Sun** (`SUN_HLSL`): a deep red-orange ~3000 K disk with strong limb darkening (about 0.15 of the centre at the
-  edge) and reddening; boiling granulation (Worley cells, each a little brighter or dimmer, soft dark lanes; contrast
-  `SunGranulation`); 3-4 sunspot groups a day, each a big leader with 0-2 smaller followers trailing it, a dark umbra
-  (`SunSpotUmbra`) in a finely striated penumbra. The groups are put on the face the star turns to us at the day's noon
-  (`SunSpots.x`), so 4-8 spots cross the disk while it is up, drifting as it turns once in `SunRotationDays`. Faculae
-  (`SunFaculae`) round the groups and a faint network near the limb; a soft orange corona and, on some days,
-  prominences on the limb. The disk is oriented by the celestial pole, like the real sky. Over the disk most of the
-  atmosphere's own glow is taken off (`DISK_MASK_HLSL`): added to the capped disk it paled it to pink.
-- **Europa** (`MOON_HLSL`): the USGS Voyager/Galileo mosaic (`textures/sky/europa_2k.jpg`, public domain, see
-  `textures/sky/SOURCE.md`) tinted cream ice with red-brown lineae, its midtones stretched by `MoonContrast` so the
-  lineae and chaos terrain read; lit per pixel from the true sun direction (Lommel-Seeliger with a little Lambert), so
-  phases and the terminator are right; a faint ashen light on the dark side; 270 W (Conamara, Pwyll) faces the coast.
-  Visible by day when it is up (`MoonDayBoost`).
+  edge) and reddening. Granulation at its true scale: a granule is ~1/1000 of the diameter (1000-1500 km on the
+  Sun), so ~1000 across the disk, a couple of pixels each even full-screen: a fine, barely resolved, slowly boiling
+  mottling (soft cells and thin lanes on a warped grid, so no polygon outlines), faded to its mean where a pixel covers
+  several; faint meso- and supergranulation patches (contrast `SunGranulation`). Spots are small and subtle: one to
+  three groups a day, each a small spot with a slight soft penumbra and a few pores trailing it, only a little darker
+  than the photosphere (`SunSpotUmbra` 0.7), ragged and a little elongated. The groups are put on the face the star
+  turns to us at the day's noon (`SunSpots.x`), drifting as it turns once in `SunRotationDays`. Faint faculae
+  (`SunFaculae`) round the groups and toward the limb; a soft orange corona and, on some days, prominences on the
+  limb. The disk is oriented by the celestial pole. Over the disk most of the atmosphere's own glow is taken off
+  (`DISK_MASK_HLSL`): added to the capped disk it paled it to pink.
+- **Europa** (`MOON_HLSL`): our own procedural Europa, baked once into two committed maps by
+  `tools/sky/europa_bake.py` (seed and every parameter in `tools/sky/europa_bake.json`; same file, same maps):
+  `textures/sky/europa_albedo.png` (sRGB) and `europa_relief.png` (relief normal east/north, height), 2048 x 1024
+  equirectangular. On it, oldest first: ridged plains (cream ice, darker brownish mottling, blue-white young ice, a fine
+  grain of tiny ridges); lineae along arcs of great and small circles, most double ridges (two crests, a trough between),
+  some triple bands (a bright central ridge in red-brown margins), some smooth grey striated bands, their margins
+  red-brown to ochre; chaos terrain (tilted ice plates keeping the old surface, in a lowered hummocky red-brown matrix);
+  a few craters (bowl, rim, central peak, bright ejecta; one rayed). The shader lights the sphere from the true sun
+  (Lommel-Seeliger: the flat bright full disk of an icy moon), the relief normals shade ridges, bands and plates, and
+  a short march toward the sun over the height map casts their shadows, long near the terminator; a faint ashen light
+  on the dark side. 285 E (the bright side) faces the coast. Brighter by night (`MoonNightBoost`) and by day
+  (`MoonDayBoost`), so it reads as a cream-white icy disk. The NASA mosaic (`europa_2k.jpg`) is kept only as a colour
+  reference.
 - Both dim and redden toward the horizon (an analytic extinction, `TRANS_HLSL`); stars fade near both disks.
 
 **Brightness is capped**, not physical: the disk centre is `SunIlluminance x SunDiskGain` (the spots read at the
@@ -36,9 +47,10 @@ outdoor exposure), Europa `SunIlluminance x MoonDiskGain`. To match, the sunligh
 (`OutdoorBloom`).
 
 **The clouds hide the sun.** The volumetric clouds are composited over the dome, so they occlude the disk by their
-transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (3) thickens it (its
+transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (4) thickens it (its
 `Cloud_GlobalDensity`, through a dynamic instance), and the low red sun goes behind the clouds instead of glowing
-through them like a lamp in fog.
+through them like a lamp in fog. Thick clouds need more ray-march samples or they go grainy: `CloudViewSamples` and
+`CloudShadowSamples` (1, the engine's default; it was 0.5).
 
 **The sun on the sea.** The sun's image on calm water was a hard-edged semicircle: mostly the sunlight's own specular
 (a 10-degree area light mirrored by flat water), which no cloud in the view hides, plus the sky light's cubemap. Now
@@ -62,11 +74,14 @@ sunset, as before; the club inside is untouched (lighting channels).
 ## Tuning and checks
 
 - `lyud.SkyHourOffset <h>`, `lyud.Sky.SunDiskGain`, `lyud.Sky.MoonDiskGain`, `lyud.Sky.NightLight`,
-  `lyud.Sky.SunSpecular`, `lyud.Sky.CloudDensity` (multipliers), `lyud.Sky.NightMie` (the night's Mie share),
+  `lyud.Sky.SunSpecular`, `lyud.Sky.CloudDensity`, `lyud.Sky.CloudSamples` (multipliers), `lyud.Sky.NightMie` (the night's Mie share),
   `lyud.Sea.Capillary` (the ripples' slope).
 - `unreal/scripts/shoot_cosmic.py` (offscreen): the sun at noon, in the afternoon, at sunset and dusk (wide and
   close), Europa by day and night, full- and new-moon nights over the town and the beach, the tide states
   ([tides.md](tides.md)); `COSMIC_GAINS=0.5,2` adds brightness sweeps, `COSMIC_DIAG=only` the glow diagnostics,
-  `COSMIC_TUNE=only` the sun-path ripple sweep.
+  `COSMIC_TUNE=only` the cloud-sample and Europa-brightness sweeps, `COSMIC_BANK=1` the high water by the railway
+  bank with and without seabed life, dry and without the sea.
+- Europa: `python3 tools/sky/europa_bake.py --preview <png>` rebakes the maps (~20 s) and draws a lit preview at
+  three phases; commit both PNGs with the .json.
 - Gotcha: an `ALyudSky` loaded with its level gets no `OnConstruction` in a game; its dome instance is made in
   `BeginPlay` (else the sky material shows its defaults).

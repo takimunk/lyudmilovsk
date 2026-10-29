@@ -236,14 +236,17 @@ wc = max(wc, old * saturate((U - 8.0) / 6.0) * 0.45);
 return float4(n.x, n.y, rough, saturate(wc));
 """
 
-# Surf over the shallows: a band of foam lines running in to the beach and a broken white edge where the
-# water meets the sand. Depth = metres of water under the surface from the scene (SceneDepthWithoutWater),
-# Bed = (still-water depth now from the depth map, calm: 0 in a pool the ebb left), Pos in cm, Wind for how big the surf is.
+# Surf over the shallows: thin broken lines of lace foam where the breakers spill and in their wake, and a thin
+# broken line where the water meets the sand. Widths are held in metres, not in depth: over a flat (1:200) a band of
+# depth or phase is tens of metres wide, which drew wide white bands. Depth = metres of water under the surface from
+# the scene (SceneDepthWithoutWater), Bed = (still-water depth now from the depth map, calm: 0 in a pool the ebb left),
+# Pos in cm, Wind for how big the surf is.
 SURF_HLSL = r"""
 float2 p = Pos.xy * 0.01;
 float d = max(min(Depth * 0.01, Bed.x + 0.2), 0.0);
 float hs = SP.y;
 float t = Clock.x;
+float foot = max(max(length(ddx(p)), length(ddy(p))), 1e-4);     // metres per pixel
 float2 q = p * 0.9 + float2(t * 0.05, t * 0.02);
 float n = 0, a = 0.5;
 for (int o = 0; o < 3; o++)
@@ -253,15 +256,30 @@ for (int o = 0; o < 3; o++)
     a *= 0.5;
 }
 n /= 0.875;
-// spilling breakers: the same bores the surface rises in (Lyud.SurfHeight), white at the steep front where
-// they spill, a wide band of foam trailing behind, broken up by noise
+// lace: thin lines where a drifting noise crosses zero, two sizes, torn into pieces; where a pixel covers many
+// lines it becomes their mean cover (a faint haze), not shimmer
+float2 lq = fmod(p + float2(t * 0.04, -t * 0.03), 2048.0) + 2048.0;
+float n1 = abs(Lyud.Noise3(float3(lq / 1.4, t * 0.05), 31u, 2048u));
+float n2 = abs(Lyud.Noise3(float3(lq / 0.45, t * 0.08), 32u, 2048u));
+float a1 = foot / 1.4 * 1.5, a2 = foot / 0.45 * 1.5;
+float l1 = lerp(1.0 - smoothstep(0.05 - a1 * 0.5, 0.05 + a1 * 0.5, n1), 0.1, saturate(a1 / 0.05 - 1.0));
+float l2 = lerp(1.0 - smoothstep(0.07 - a2 * 0.5, 0.07 + a2 * 0.5, n2), 0.14, saturate(a2 / 0.07 - 1.0));
+float torn = smoothstep(0.35, 0.6, n);
+float lace = max(l1, l2 * 0.75) * torn;
+// spilling breakers: the same bores the surface rises in (Lyud.SurfHeight); at the front a thin line ~0.3 m wide
+// whatever the slope, behind it a fading net of lace
 float zone = Lyud.SurfZone(Bed.x, hs);
+float raw = Bed.x * 2.2 / max(hs, 0.25);
+float perM = length(float2(ddx(raw), ddy(raw))) / foot;          // phase per metre
 float f = frac(Lyud.SurfPhase(Bed.x, hs, t) + (n - 0.5) * 0.08);
-float front = smoothstep(0.62, 0.93, f) * (1.0 - smoothstep(0.97, 1.0, f));
-float trail = exp(-f * 1.8) * 0.9;
-float breakers = saturate((front * 1.2 + trail * 0.45) * sqrt(zone) * (0.55 + n) - 0.25) * saturate(hs * 3.0);
-// the wash: a broken white edge where the water runs up the sand
-float edge = saturate(1.0 - d / 0.07) * smoothstep(0.3, 0.6, n);
+float lineW = max(0.3 * perM, 0.6 * fwidth(raw));
+float front = 1.0 - smoothstep(lineW * 0.5, lineW * 1.5, abs(f - 0.93));
+float trail = exp(-(f < 0.93 ? f + 0.07 : f - 0.93) * 4.0);
+float breakers = (front * (0.4 + 0.6 * torn) + trail * lace * 0.8) * sqrt(zone) * saturate(hs * 3.0);
+// the wash: a thin broken line where the water runs up the sand, ~0.25 m, and a little lace just off it
+float perD = max(length(float2(ddx(Bed.x), ddy(Bed.x))) / foot, 0.002);  // depth per metre (the smooth depth map's)
+float edge = (1.0 - smoothstep(0.0, 0.25 * perD, d)) * smoothstep(0.45, 0.7, n) * (0.25 + 0.75 * max(l1, l2))
+           + (1.0 - smoothstep(0.0, 2.5 * perD, d)) * lace * 0.6;
 return saturate(breakers + edge) * Bed.y;
 """
 

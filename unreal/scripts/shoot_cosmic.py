@@ -43,6 +43,11 @@ SHOTS = [
     ("europa_night_full", D(2026, 10, 26, 0, 30), None, BROW[0], BROW[1], 1.7, 0, "moon-wide"),
     ("europa_night_full_close", D(2026, 10, 26, 0, 30), None, BROW[0], BROW[1], 1.7, 0, "moon", "fov 25"),
     ("europa_crescent_dawn", D(2026, 11, 6, 6, 15), None, BROW[0], BROW[1], 1.7, 0, "moon", "fov 25"),
+    # the relief near the terminator: half phases by night and by day, and a narrow lens on the night one
+    ("europa_night_half", D(2026, 10, 19, 20, 0), None, BROW[0], BROW[1], 1.7, 0, "moon", "fov 25"),
+    ("europa_night_half_detail", D(2026, 10, 19, 20, 0), None, BROW[0], BROW[1], 1.7, 0, "moon", "fov 9"),
+    ("europa_day_half", D(2026, 11, 2, 10, 0), None, BROW[0], BROW[1], 1.7, 0, "moon", "fov 25"),
+    ("sun_noon_detail", NOON, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 4;r.VolumetricCloud 0"),
     ("night_full_town", D(2026, 10, 26, 0, 30), None, TERRACE[0], TERRACE[1] + 25.0, 1.7, -6, 90),
     ("night_full_beach", D(2026, 10, 26, 0, 30), None, BROW[0], BROW[1], 1.7, -14, 20),
     ("night_new_town", D(2026, 11, 10, 0, 30), None, TERRACE[0], TERRACE[1] + 25.0, 1.7, -6, 90),
@@ -55,6 +60,10 @@ SHOTS = [
     ("tide_mid_beach", DAY, -2.0, BEACH[0], BEACH[1], 1.7, -3, 10),
     ("tide_low_beach", DAY, -4.5, BEACH[0], BEACH[1], 1.7, -3, 10),
     ("tide_low_pools", DAY, -4.5, BEACH[0] + 60.0, BEACH[1], 1.7, -12, 30),
+    # high water over the flat by the railway bank (y -60): a few metres over the water south of it, toward the bank
+    # and along it
+    ("bank_high_water", DAY, 0.0, 330.0, -88.0, -40.0 - T.ground_z(330.0, -88.0), -14, 90),
+    ("bank_high_water_along", DAY, 0.0, 300.0, -78.0, -41.2 - T.ground_z(300.0, -78.0), -7, 25),
 ]
 # tuning: COSMIC_GAINS=0.5,1,2 adds sun_noon / europa shots at those disk gains
 for g in [v for v in os.environ.get("COSMIC_GAINS", "").split(",") if v]:
@@ -92,14 +101,25 @@ if os.environ.get("COSMIC_DIAG"):
         SHOTS = [s for s in SHOTS if s[0].startswith("diag_")]
 # COSMIC_TUNE=1: sweeps for the polish pass (cloud density over the setting sun, the sun's specular and the capillary
 # ripples on the glitter path, the night haze round Europa); COSMIC_TUNE=only runs just these
+# COSMIC_TUNE=1: sweeps for the polish pass (the clouds' ray-march samples and density over the setting sun, Europa's
+# night brightness); COSMIC_TUNE=only runs just these
 if os.environ.get("COSMIC_TUNE"):
     SS = D(2026, 10, 20, 17, 2)
-    for cap in ("0.08", "0.2"):
-        SHOTS.append(("tune_sunpath_cap" + cap, SS, None, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Sea.Capillary " + cap))
-        SHOTS.append(("tune_sunpath_close_cap" + cap, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;lyud.Sea.Capillary " + cap))
-    SHOTS.append(("tune_noon_sea_cap0.2", NOON, None, BROW[0], BROW[1], 1.7, -10, 20, "lyud.Sea.Capillary 0.2"))
+    for tag, c in (("s1", "lyud.Sky.CloudSamples 1"), ("s2", "lyud.Sky.CloudSamples 2"), ("s4", "lyud.Sky.CloudSamples 4"),
+                   ("s2_mode1", "lyud.Sky.CloudSamples 2;r.VolumetricRenderTarget.Mode 1"),
+                   ("s2_d1.7", "lyud.Sky.CloudSamples 2;lyud.Sky.CloudDensity 1.7")):
+        SHOTS.append(("tune_sunset_" + tag, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + c))
+    for g in ("1", "1.6"):
+        SHOTS.append(("tune_europa_g" + g, D(2026, 10, 26, 0, 30), None, BROW[0], BROW[1], 1.7, 0, "moon",
+                      "fov 25;lyud.Sky.MoonDiskGain " + g))
     if os.environ["COSMIC_TUNE"] == "only":
         SHOTS = [s for s in SHOTS if s[0].startswith("tune_")]
+# COSMIC_BANK=1: what darkens the high water over the flat by the bank (seabed life, the bed itself dry, no sea)
+if os.environ.get("COSMIC_BANK"):
+    bz = -40.0 - T.ground_z(330.0, -88.0)
+    for tag, tide, c in (("plain", 0.0, ""), ("noseabed", 0.0, "lyud.Seabed 0"), ("dry", -6.0, ""), ("nosea", 0.0, "lyud.Sea 0")):
+        SHOTS.append(("bank_" + tag, DAY, tide, 330.0, -88.0, bz, -14, 90, c))
+    SHOTS = [s for s in SHOTS if s[0].startswith("bank_") and s[0] != "bank_high_water_along"]
 if os.environ.get("COSMIC_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["COSMIC_SHOTS"].split(",")]
 WAIT = float(os.environ.get("COSMIC_WAIT", "7"))
@@ -171,7 +191,7 @@ def step(dt):
             return
         name, when, tide, x, y, up, pitch, yaw = SHOTS[st["i"]][:8]
         for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
-                  "lyud.Sky.CloudDensity 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
+                  "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
                   "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg")] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))

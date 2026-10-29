@@ -30,8 +30,10 @@ OLD_LABELS = ("Sun", "Sun_Fill", "Outside_SkyDome", "Outside_Sea", "PreviewSea",
 OLD_CLASSES = (unreal.SkyAtmosphere, unreal.SkyLight, unreal.VolumetricCloud)
 OLD_CLASS_NAMES = ("LyudSky", "LyudSea")
 
-# Europa's surface: the USGS Voyager/Galileo SSI global mosaic, cut to 2048 x 1024 (textures/sky/SOURCE.md).
-EUROPA_JPG = os.path.join(REPO, "textures", "sky", "europa_2k.jpg")
+# Europa's surface: our own, procedural, baked by tools/sky/europa_bake.py (seed and parameters in its .json):
+# albedo (sRGB) and relief (linear: normal east/north, height)
+EUROPA_ALBEDO = os.path.join(REPO, "textures", "sky", "europa_albedo.png")
+EUROPA_RELIEF = os.path.join(REPO, "textures", "sky", "europa_relief.png")
 
 # The sea's land edge runs under the ground a little inland of the nearest water line.
 SEA_INLAND_X = min(x for _, x in W.SHORE) - 100.0      # map metres
@@ -104,21 +106,23 @@ class Graph:
         return self.m
 
 
-def europa_texture():
-    """Europa's map as a texture under DEST (imported every build from the committed JPG)."""
+def europa_texture(path, name, srgb):
+    """One of Europa's baked maps as a texture under DEST (imported every build from the committed PNG)."""
     task = unreal.AssetImportTask()
-    task.set_editor_property("filename", EUROPA_JPG)
+    task.set_editor_property("filename", path)
     task.set_editor_property("destination_path", DEST)
-    task.set_editor_property("destination_name", "T_Europa")
+    task.set_editor_property("destination_name", name)
     task.set_editor_property("automated", True)
     task.set_editor_property("replace_existing", True)
     task.set_editor_property("save", True)
     unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
-    tex = unreal.load_asset(DEST + "/T_Europa")
-    tex.set_editor_property("srgb", True)
+    tex = unreal.load_asset(DEST + "/" + name)
+    tex.set_editor_property("srgb", srgb)
     tex.set_editor_property("address_x", unreal.TextureAddress.TA_WRAP)
     tex.set_editor_property("address_y", unreal.TextureAddress.TA_CLAMP)
-    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+    # the relief stays uncompressed: block compression would smear the normals and the heights the shadows march over
+    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT if srgb else
+                            unreal.TextureCompressionSettings.TC_VECTOR_DISPLACEMENTMAP)
     tex.set_editor_property("never_stream", True)
     eal.save_loaded_asset(tex)
     return tex
@@ -144,13 +148,16 @@ def sky_material():
     spots = vparam("SunSpots", (0.0, 0.08, 1.0, 0.8))
     moon_look = vparam("MoonLook", (1.6, 0.004, 0.0, 0.0))
     t = g.node(X.MaterialExpressionTime)
-    europa = g.node(X.MaterialExpressionTextureObjectParameter, -900, parameter_name="Europa", texture=europa_texture())
+    europa = g.node(X.MaterialExpressionTextureObjectParameter, -900, parameter_name="EuropaAlbedo",
+                    texture=europa_texture(EUROPA_ALBEDO, "T_EuropaAlbedo", True))
+    relief = g.node(X.MaterialExpressionTextureObjectParameter, -900, parameter_name="EuropaRelief",
+                    texture=europa_texture(EUROPA_RELIEF, "T_EuropaRelief", False))
     rgba = lambda n: (n, "RGBA")
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     sun = g.custom(SH.LIB + SH.SUN_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
                                          ("Spots", rgba(spots)), ("T", t), ("Tr", tr)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     moon = g.custom(SH.MOON_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)), ("P", rgba(pole)),
-                                   ("D", rgba(moon_disk)), ("C", rgba(moon_look)), ("Tr", tr), ("Europa", europa)],
+                                   ("D", rgba(moon_disk)), ("C", rgba(moon_look)), ("Tr", tr), ("Europa", europa), ("Relief", relief)],
                     out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))
