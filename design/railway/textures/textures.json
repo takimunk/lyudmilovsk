@@ -27,6 +27,33 @@
   },
   "lichen": {
    "tile_m": 2.0
+  },
+  "moquette": {
+   "tile_m": 0.35
+  },
+  "decora": {
+   "tile_m": 1.6
+  },
+  "floorwood": {
+   "tile_m": 0.6
+  },
+  "grille": {
+   "tile_m": 0.45
+  },
+  "ceiling": {
+   "tile_m": 1.8
+  },
+  "blind": {
+   "tile_m": 0.5
+  },
+  "varnish": {
+   "tile_m": 0.8
+  },
+  "studs": {
+   "tile_m": 0.5
+  },
+  "greenpaint": {
+   "tile_m": 0.8
   }
  }
 }

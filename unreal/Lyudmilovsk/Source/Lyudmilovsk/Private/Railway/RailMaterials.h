@@ -13,6 +13,10 @@ namespace LyudRailMat
 	/** A material for Name: a palette paint ("ballast", "stone", "rail", "wood", ...), "tx_<surface>" a textured one
 	 *  (concrete, steel, tread: the cable car's textures), "glow_warm" / "glow_red" / "glow_white" emissive, "glass". */
 	UMaterialInterface* Get(UObject* Owner, FName Name, TMap<FName, TObjectPtr<UMaterialInterface>>& Cache);
+	/** The train's printed matter: the player's language's atlas of ads and notices (tools/train_ads.py). */
+	UMaterialInterface* Print(UObject* Owner, TMap<FName, TObjectPtr<UMaterialInterface>>& Cache);
+	/** Puts the game's own materials on a kit piece's slots named "tx_<surface>" and "ad_atlas". */
+	void Dress(UObject* Owner, class UStaticMeshComponent* Comp, TMap<FName, TObjectPtr<UMaterialInterface>>& Cache);
 	/** The kit's (rail_kit.glb) mesh SM_RL_<Name> or null. */
 	class UStaticMesh* KitMesh(const TCHAR* Name);
 	/** An emissive instance to drive (Color, Intensity), on the cable car's glow master. */

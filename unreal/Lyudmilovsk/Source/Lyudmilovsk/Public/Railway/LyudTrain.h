@@ -101,6 +101,9 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> GullSounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> CabinLights;
 	UPROPERTY(Transient) TArray<TObjectPtr<USpotLightComponent>> HeadLights;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> RunAtten;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> JointAtten;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> HornAtten;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Motor;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Wheels;
 	UPROPERTY(Transient) TObjectPtr<ULyudTrainWake> Wake;
@@ -112,6 +115,7 @@ private:
 	double LastS = 0.0;
 	bool bWasVisible = true;
 	TWeakObjectPtr<APawn> Rider;
+	TWeakObjectPtr<APawn> TickOrderFor;    // the character made to tick after this train
 public:
 	/** Length of a car (m) and the gap between two (m). */
 	double CarLength = 16.0;
