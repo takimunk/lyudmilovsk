@@ -1,0 +1,20 @@
+{
+ "_doc": "Lev Zotov (Лев Зотов), physicist of the academgorodok: how blender/characters/rig_character.py turns gen/model.glb (hi3d) into a game character (docs/characters.md).",
+ "id": "zotov_lev",
+ "model": "model",
+ "height": 1.84,
+ "donor": "blender/humans/export/human_guy_a.glb",
+ "faces": 24000,
+ "texture": 2048,
+ "bake_normal": true,
+ "face": {
+  "rig": false,
+  "normal_strength": 0.3
+ },
+ "skirt": {
+  "hem_z": 0.8,
+  "gap": 0.025,
+  "blend": 0.05,
+  "pelvis": 0.5
+ }
+}
