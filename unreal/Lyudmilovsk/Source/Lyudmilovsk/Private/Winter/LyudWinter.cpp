@@ -1014,7 +1014,7 @@ void ULyudWinterSubsystem::StepIce(float DeltaTime)
 			SeaWindScale = Sea->WindScale;
 		}
 		const float K = bIce ? S.IceP.Cover * FMath::Clamp(S.IceP.ThicknessCm / 4.f, 0.f, 1.f) : 0.f;
-		Sea->WindScale = SeaWindScale * FMath::Lerp(1.f, 0.08f, K);
+		Sea->WindScale = SeaWindScale * FMath::Lerp(1.f, 0.03f, K);
 	}
 	if (!bIce)
 	{
@@ -1079,7 +1079,7 @@ void ULyudWinterSubsystem::StepIce(float DeltaTime)
 	CameraLocation(Cam);
 	const LyudWinter::FIceParams IP = S.IceP;
 	const LyudWinter::FIceMask& Mask = S.Ice;
-	Ice->Drive(SeaZ + 0.1f * S.IceP.ThicknessCm + 1.f, S.IceP.ThicknessCm, Cam,
+	Ice->Drive(SeaZ + 0.1f * S.IceP.ThicknessCm + 12.f, S.IceP.ThicknessCm, Cam,
 		[&Mask, &IP](double X, double Y) { return Mask.Walkable(X, Y, IP); }, false);
 }
 
@@ -1482,6 +1482,9 @@ ALyudSeaIce::ALyudSeaIce()
 	Sheet->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Sheet->SetReceivesDecals(false);
 	Sheet->SetCastShadow(false);
+	// outdoors the sun and the moon light channel 1 only (ALyudSky)
+	Sheet->LightingChannels.bChannel0 = true;
+	Sheet->LightingChannels.bChannel1 = true;
 	Sheet->bUseAsOccluder = false;
 	Sheet->SetMobility(EComponentMobility::Movable);
 	// 60 km across (the plane is 1 m), it follows the camera in X/Y

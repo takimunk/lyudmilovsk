@@ -107,6 +107,8 @@ namespace LyudAudio
 		float Rain = 0.f;
 		float Snow = 0.f;
 		float RainRoof = 0.f;
+		/** 0 .. 1 how much of the rain near the ears falls on water (the sea at the listener's feet). */
+		float RainWater = 0.f;
 		/** What falls besides plain rain: share of drizzle (fine drops, a soft mist hiss), hail or graupel 0..1, how
 		 *  showery (rain coming in waves with the gusts) 0..1. */
 		float Drizzle = 0.f;

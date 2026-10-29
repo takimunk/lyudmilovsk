@@ -8,6 +8,8 @@ LOG="$ROOT/unreal/Lyudmilovsk/Saved/Logs/test_winter.log"
 mkdir -p "$(dirname "$LOG")"
 rm -f "$ROOT"/unreal/Lyudmilovsk/Saved/Screenshots/MacEditor/HighresScreenshot*.png
 CV="lyud.MainMenuOnStart=0,lyud.Winter.Snow=35,lyud.Winter.Drift=1,lyud.Winter.DriftFrom=250,lyud.Winter.Snowfall=0,lyud.Winter.Age=1,lyud.Winter.Canopy=0.8,lyud.Winter.Ice=1,lyud.Winter.IceCm=25,lyud.Weather.Rain=0,lyud.Weather.Cloud=0.35,lyud.Weather.Temp=-6"
+# WINTER_REAL=1 WINTER_DATE=2027-01-12-11: the weather's own winter on that day, nothing forced
+[ -n "$WINTER_REAL" ] && CV="lyud.MainMenuOnStart=0"
 "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen \
     -windowed -ResX=1600 -ResY=900 -unattended -nosplash -nosound -dpcvars=$CV${DPCVARS:+,$DPCVARS} $EXTRA \
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_winter.py" > "$LOG.stdout" 2>&1 &

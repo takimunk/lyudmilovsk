@@ -71,10 +71,24 @@ def ice_material(mpc, rts):
     ins = [("P", pos), ("Tex", tex)]
     for i, (pin, name) in enumerate((("R", "IceRect"), ("I", "Ice"), ("Rail", "IceRail"), ("Dr", "IceDrift"), ("S", "Snow"))):
         ins.append((pin, W.mpc_node(m, mpc, name, -1200, 240 + i * 120)))
-    c = W._custom(m, H.ICE, ins, -500, 0, "WinterSeaIce", out=F3, extra=(("Mask", F1), ("Roughness", F1)))
+    c = W._custom(m, H.ICE, ins, -500, 0, "WinterSeaIce", out=F3, extra=(("Mask", F1), ("Roughness", F1), ("Normal", F3)))
     mel.connect_material_property(c, "", MP.MP_BASE_COLOR)
     mel.connect_material_property(c, "Mask", MP.MP_OPACITY_MASK)
     mel.connect_material_property(c, "Roughness", MP.MP_ROUGHNESS)
+    mel.connect_material_property(c, "Normal", MP.MP_NORMAL)
+    # the sheet is too big for Lumen's cards (it would get no sky light and look like dark water): the sky's light
+    # on an upward face, from the sky light's map, as emissive (ALyudSky's capture), a share of the albedo
+    env = W._node(m, X.MaterialExpressionSkyLightEnvMapSample, -500, 400)
+    up = W._node(m, X.MaterialExpressionConstant3Vector, -700, 400, constant=unreal.LinearColor(0, 0, 1, 1))
+    mel.connect_material_expressions(up, "", env, "Direction")
+    one = W._node(m, X.MaterialExpressionConstant, -700, 500, r=1.0)
+    mel.connect_material_expressions(one, "", env, "Roughness")
+    amb = W._node(m, X.MaterialExpressionMultiply, -300, 400)
+    mel.connect_material_expressions(env, "", amb, "A")
+    mel.connect_material_expressions(c, "", amb, "B")
+    amb2 = W._node(m, X.MaterialExpressionMultiply, -150, 400, const_b=0.35)
+    mel.connect_material_expressions(amb, "", amb2, "A")
+    mel.connect_material_property(amb2, "", MP.MP_EMISSIVE_COLOR)
     spec = W._node(m, X.MaterialExpressionConstant, -300, 300, r=0.5)
     mel.connect_material_property(spec, "", MP.MP_SPECULAR)
     mel.recompile_material(m)
