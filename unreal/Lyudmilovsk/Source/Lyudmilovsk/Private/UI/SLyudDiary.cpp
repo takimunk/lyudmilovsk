@@ -442,23 +442,27 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 				.MarkColor(PencilFaint).SelectedColor(Red).Inset(FMargin(10.f, 6.f))
 				.OnClicked_Lambda([this, Id]() { State->SelectedItem = Id; Changed(); })
 				[
-					SNew(SOverlay)
-					+ SOverlay::Slot()
+					// worn or in the hand, and how many, on a line of their own above the sketch
+					SNew(SVerticalBox)
+					+ SVerticalBox::Slot().AutoHeight().Padding(8, 2, 8, 0)
 					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Sketch(UI, Id, 128.f)]
-						+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(4, 2, 4, 0)
+						SNew(SBox).HeightOverride(28.f)
 						[
-							SNew(STextBlock).Text(ULyudInventory::ItemName(Id)).Font(Hand(24.f)).ColorAndOpacity(Ink).AutoWrapText(true).Justification(ETextJustify::Center)
+							SNew(SHorizontalBox)
+							+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
+							[
+								Words(bOn ? LyudText::Get(Inv->IsWorn(Id) ? TEXT("ui.inventory.badge_on") : TEXT("ui.inventory.badge_hand")) : FText::GetEmpty(), 22.f, Green, true)
+							]
+							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+							[
+								Words(P.Value > 1 ? FText::FromString(FString::Printf(TEXT("x%d"), P.Value)) : FText::GetEmpty(), 26.f, Red, true)
+							]
 						]
 					]
-					+ SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(0, 4, 8, 0)
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Sketch(UI, Id, 108.f)]
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(4, 2, 4, 0)
 					[
-						Words(P.Value > 1 ? FText::FromString(FString::Printf(TEXT("x%d"), P.Value)) : FText::GetEmpty(), 30.f, Red, true)
-					]
-					+ SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(6, 4, 0, 0)
-					[
-						Words(bOn ? LyudText::Get(Inv->IsWorn(Id) ? TEXT("ui.inventory.badge_on") : TEXT("ui.inventory.badge_hand")) : FText::GetEmpty(), 22.f, Green, true)
+						SNew(STextBlock).Text(ULyudInventory::ItemName(Id)).Font(Hand(24.f)).ColorAndOpacity(Ink).AutoWrapText(true).Justification(ETextJustify::Center)
 					]
 				]
 			]
@@ -1309,17 +1313,17 @@ TSharedRef<SWidget> SLyudDiaryScreen::MakeTabs()
 				}
 			})
 			[
-				SNew(SOverlay)
-				+ SOverlay::Slot()[SNew(SImage).Image(FCoreStyle::Get().GetBrush("WhiteBrush")).ColorAndOpacity(TabColor(S) * (bHere ? 1.f : 0.86f))]
-				+ SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center)
-				[
-					// the name written along the tab
-					SNew(SBox).WidthOverride(H - 16.f).HeightOverride(W).HAlign(HAlign_Center).VAlign(VAlign_Center)
-					.RenderTransformPivot(FVector2D(0.5f, 0.5f)).RenderTransform(FSlateRenderTransform(FQuat2D(FMath::DegreesToRadians(bLeft ? -90.f : 90.f))))
-					[
-						SNew(STextBlock).Text(LyudText::Get(SectionKey(S))).Font(Hand(26.f, true)).ColorAndOpacity(Ink).Justification(ETextJustify::Center)
-					]
-				]
+				SNew(SImage).Image(FCoreStyle::Get().GetBrush("WhiteBrush")).ColorAndOpacity(TabColor(S) * (bHere ? 1.f : 0.86f))
+			]
+		];
+		// the name written along the tab: laid out the tab's length wide, then turned onto it
+		const FVector2D LabelSize(H - 16.f, W);
+		C->AddSlot().Position(FVector2D(X + W * 0.5f, Y + H * 0.5f) - LabelSize * 0.5f).Size(LabelSize)
+		[
+			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center).Visibility(EVisibility::HitTestInvisible)
+			.RenderTransformPivot(FVector2D(0.5f, 0.5f)).RenderTransform(FSlateRenderTransform(FQuat2D(FMath::DegreesToRadians(bLeft ? -90.f : 90.f))))
+			[
+				SNew(STextBlock).Text(LyudText::Get(SectionKey(S))).Font(Hand(26.f, true)).ColorAndOpacity(Ink).Justification(ETextJustify::Center)
 			]
 		];
 	}
