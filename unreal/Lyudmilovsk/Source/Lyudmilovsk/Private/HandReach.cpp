@@ -380,6 +380,68 @@ namespace HandReach
 		}
 	}
 
+	void ApplySit(FCompactPose& Pose, float Alpha, float SeatZ)
+	{
+		const float A = FMath::Clamp(Alpha, 0.f, 1.f);
+		if (A < 0.001f)
+		{
+			return;
+		}
+		const FBoneContainer& Bones = Pose.GetBoneContainer();
+		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
+		struct FLimb { FCompactPoseBoneIndex A, B, C; float Side; };
+		const FLimb Legs[] = {
+			{ Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("calf_l")), Find(Bones, TEXT("foot_l")), 1.f },
+			{ Find(Bones, TEXT("thigh_r")), Find(Bones, TEXT("calf_r")), Find(Bones, TEXT("foot_r")), -1.f },
+		};
+		const FLimb Arms[] = {
+			{ Find(Bones, TEXT("upperarm_l")), Find(Bones, TEXT("lowerarm_l")), Find(Bones, TEXT("hand_l")), 1.f },
+			{ Find(Bones, TEXT("upperarm_r")), Find(Bones, TEXT("lowerarm_r")), Find(Bones, TEXT("hand_r")), -1.f },
+		};
+		if (!Pel.IsValid())
+		{
+			return;
+		}
+		for (const FLimb& L : Legs)
+		{
+			if (!L.A.IsValid() || !L.B.IsValid() || !L.C.IsValid())
+			{
+				return;
+			}
+		}
+		// the mesh faces +Y, its left is +X, the floor is Z 0 under the seat's front edge: the hips go back over the
+		// cushion and down onto it, the feet step forward under the knees, a little apart
+		const FTransform Feet[] = { ComponentSpace(Pose, Legs[0].C), ComponentSpace(Pose, Legs[1].C) };
+		FTransform P = ComponentSpace(Pose, Pel);
+		const FVector Hip = P.GetLocation();
+		P.SetLocation(FMath::Lerp(Hip, FVector(Hip.X, -SitBack, SeatZ + SitHipOverSeat), A));
+		P.SetRotation((FQuat(FVector::XAxisVector, FMath::DegreesToRadians(4.f * A)) * P.GetRotation()).GetNormalized());
+		SetComponentSpace(Pose, Pel, P);
+		for (int32 I = 0; I < 2; ++I)
+		{
+			const FLimb& L = Legs[I];
+			const FVector Foot = Feet[I].GetLocation();
+			const FVector To = FMath::Lerp(Foot, FVector(Foot.X * 1.25f + 3.f * L.Side, SitFeetForward, Foot.Z), A);
+			TwoBoneIK(Pose, L.A, L.B, L.C, To, FVector(0.1f * L.Side, 1.f, 0.6f).GetSafeNormal());
+			FTransform F = ComponentSpace(Pose, L.C);
+			F.SetRotation(Feet[I].GetRotation());
+			SetComponentSpace(Pose, L.C, F);
+		}
+		// the hands rest on the thighs, two thirds of the way to the knees, the elbows out and back
+		for (int32 I = 0; I < 2; ++I)
+		{
+			const FLimb& Arm = Arms[I];
+			if (!Arm.A.IsValid() || !Arm.B.IsValid() || !Arm.C.IsValid())
+			{
+				continue;
+			}
+			const FVector Knee = Loc(Pose, Legs[I].B), Thigh = Loc(Pose, Legs[I].A);
+			const FVector Rest = FMath::Lerp(Thigh, Knee, 0.62f) + FVector(3.f * Arm.Side, 0.f, 11.f);
+			const FTransform Hand = ComponentSpace(Pose, Arm.C);
+			TwoBoneIK(Pose, Arm.A, Arm.B, Arm.C, FMath::Lerp(Hand.GetLocation(), Rest, A), FVector(Arm.Side, -0.6f, -0.2f).GetSafeNormal());
+		}
+	}
+
 	void ApplyArm(FCompactPose& Pose, const FHeroReachPose& Reach, const FPalmFrame& AnimPalm)
 	{
 		const float W = FMath::Clamp(Reach.Weight, 0.f, 1.f);

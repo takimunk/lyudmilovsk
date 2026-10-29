@@ -843,5 +843,7 @@
  "sign.train.route_title": "The Sea Line",
  "sign.train.car_number": "モハ 1958",
  "sign.train.maker": "Nippon Sharyo · 1958",
- "sign.train.emergency": "Emergency: call the driver"
+ "sign.train.emergency": "Emergency: call the driver",
+ "ui.train.sit": "[E] Sit down",
+ "ui.train.stand": "[E] Stand up"
 }

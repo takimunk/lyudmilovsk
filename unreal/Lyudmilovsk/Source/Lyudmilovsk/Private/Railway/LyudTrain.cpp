@@ -13,6 +13,12 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Camera/PlayerCameraManager.h"
+#include "GameFramework/PlayerController.h"
+#include "HeroCharacter.h"
+#include "LyudInventory.h"
+#include "LyudText.h"
+#include "People/PeopleLife.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
@@ -328,7 +334,29 @@ void ALyudTrain::BuildCar(int32 C)
 	}
 	for (int32 E = -1; E <= 1; E += 2)
 	{
-		Box(FVector(E * (HalfL - 4.0), 0.0, 260.0), FVector(4.0, 140.0, 140.0));
+		// the end toward a neighbouring car (car C couples to C + 1 at -X and to C - 1 at +X) has the gangway's door:
+		// 0.9 m wide, 2 m high, the wall round it
+		const bool bGangway = E < 0 ? C + 1 < NumCars : C > 0;
+		if (!bGangway)
+		{
+			Box(FVector(E * (HalfL - 4.0), 0.0, 260.0), FVector(4.0, 140.0, 140.0));
+			continue;
+		}
+		for (int32 Side = -1; Side <= 1; Side += 2)
+		{
+			Box(FVector(E * (HalfL - 4.0), Side * 95.0, 260.0), FVector(4.0, 45.0, 140.0));
+		}
+		Box(FVector(E * (HalfL - 4.0), 0.0, 357.5), FVector(4.0, 50.0, 42.5));
+		if (E < 0)
+		{
+			// over the gap to the next car: the gangway's floor plate and the bellows' sides (carried with this car)
+			const double Gx = -(HalfL + CarGap * 50.0);
+			Box(FVector(Gx, 0.0, 105.0), FVector(CarGap * 50.0 + 12.0, 46.0, 10.0));
+			for (int32 Side = -1; Side <= 1; Side += 2)
+			{
+				Box(FVector(Gx, Side * 50.0, 215.0), FVector(CarGap * 50.0 + 12.0, 4.0, 100.0));
+			}
+		}
 	}
 }
 
@@ -433,7 +461,9 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 	for (int32 C = 0; C < Cars.Num() && C < Old.Num(); C++)
 	{
 		const FVector L = Old[C].InverseTransformPosition(P);
-		if (FMath::Abs(L.X) < CarLength * 50.0 - 5.0 && FMath::Abs(L.Y) < 135.0 && L.Z > 100.0 && L.Z < 400.0)
+		// in the car, or in its half of a gangway (toward a coupled neighbour)
+		const double Reach = CarLength * 50.0 + ((L.X < 0.0 ? C + 1 < Cars.Num() : C > 0) ? CarGap * 50.0 : -5.0);
+		if (FMath::Abs(L.X) < Reach && FMath::Abs(L.Y) < 135.0 && L.Z > 100.0 && L.Z < 400.0)
 		{
 			InCar = C;
 			break;
@@ -445,6 +475,10 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 		return;
 	}
 	Rider = Char;
+	if (const AHeroCharacter* Hero = Cast<AHeroCharacter>(Char); Hero && Hero->IsSeated())
+	{
+		return;
+	}
 	const UPrimitiveComponent* Base = Char->GetMovementBase();
 	if (Base && Base->GetOwner() == this)
 	{
@@ -741,6 +775,131 @@ void ALyudTrain::Tick(float DeltaSeconds)
 	if (Railway)
 	{
 		Railway->StepTrain(Index, DeltaSeconds);
+	}
+	UpdateSeatPrompt(DeltaSeconds);
+}
+
+void ALyudTrain::BeginPlay()
+{
+	Super::BeginPlay();
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		EnableInput(PC);
+		if (InputComponent)
+		{
+			// several actors listen for E (doors, the hero's seat, the train): none may swallow it
+			InputComponent->BindKey(EKeys::E, IE_Pressed, this, &ALyudTrain::OnUse).bConsumeInput = false;
+		}
+	}
+}
+
+FTransform ALyudTrain::SeatWorld(int32 Seat) const
+{
+	FTransform T;
+	GetSeat(Seat, T);
+	return T;
+}
+
+int32 ALyudTrain::SeatInView() const
+{
+	// any free seat of the car the player stands in, within reach (1.4 m) and where they look
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	const APlayerCameraManager* Cam = UGameplayStatics::GetPlayerCameraManager(this, 0);
+	if (!Hero || !Cam || Hero->IsSeated() || !Rider.IsValid())
+	{
+		return -1;
+	}
+	const FVector Eye = Cam->GetCameraLocation(), Look = Cam->GetCameraRotation().Vector();
+	const FVector Feet = Hero->GetActorLocation();
+	TArray<FVector> Taken;
+	for (TActorIterator<ANpcBody> It(GetWorld()); It; ++It)
+	{
+		if (!It->IsHidden())
+		{
+			Taken.Add(It->GetActorLocation());
+		}
+	}
+	int32 Best = -1;
+	float BestDot = 0.55f;
+	for (int32 I = 0; I < Seats.Num(); I++)
+	{
+		const FTransform T = SeatWorld(I);
+		const FVector Cushion = T.TransformPosition(FVector(-24.0, 0.0, SeatHeight));
+		if (FVector::Dist2D(Cushion, Feet) > 140.0 || FMath::Abs(Cushion.Z - Feet.Z) > 150.0)
+		{
+			continue;
+		}
+		if (Taken.ContainsByPredicate([&](const FVector& P) { return FVector::Dist2D(P, Cushion) < 40.0; }))
+		{
+			continue;
+		}
+		const float Dot = FVector::DotProduct(Look, (Cushion - Eye).GetSafeNormal());
+		if (Dot > BestDot)
+		{
+			BestDot = Dot;
+			Best = I;
+		}
+	}
+	return Best;
+}
+
+bool ALyudTrain::SitPlayer(int32 Seat)
+{
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (!Hero || !Seats.IsValidIndex(Seat) || !CarRoots.IsValidIndex(Seats[Seat].Car))
+	{
+		return false;
+	}
+	Hero->SitOn(CarRoots[Seats[Seat].Car], Seats[Seat].Local, SeatHeight);
+	PlayerSeat = Seat;
+	return true;
+}
+
+void ALyudTrain::OnUse()
+{
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (!Hero)
+	{
+		return;
+	}
+	if (Hero->IsSeated())
+	{
+		if (PlayerSeat >= 0)
+		{
+			Hero->StandUp();
+			PlayerSeat = -1;
+		}
+		return;
+	}
+	const int32 Seat = SeatInView();
+	if (Seat >= 0)
+	{
+		SitPlayer(Seat);
+	}
+}
+
+void ALyudTrain::UpdateSeatPrompt(float DeltaSeconds)
+{
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (PlayerSeat >= 0 && (!Hero || !Hero->IsSeated()))
+	{
+		PlayerSeat = -1;          // got up by a step or Space
+	}
+	PromptTimer -= DeltaSeconds;
+	if (PromptTimer > 0.f)
+	{
+		return;
+	}
+	PromptTimer = 0.15f;
+	const bool bSeated = PlayerSeat >= 0;
+	const bool bCan = !bSeated && SeatInView() >= 0;
+	if (bSeated || bCan || bPromptShown)
+	{
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+		{
+			UI->SetPrompt(this, bSeated ? LyudText::Get(TEXT("ui.train.stand")) : (bCan ? LyudText::Get(TEXT("ui.train.sit")) : FText::GetEmpty()));
+			bPromptShown = bSeated || bCan;
+		}
 	}
 }
 

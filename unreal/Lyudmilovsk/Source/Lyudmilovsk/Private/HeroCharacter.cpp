@@ -151,7 +151,7 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 	if (UInputAction* A = JumpAction.LoadSynchronous())
 	{
-		Input->BindAction(A, ETriggerEvent::Started, this, &ACharacter::Jump);
+		Input->BindAction(A, ETriggerEvent::Started, this, &AHeroCharacter::OnJumpPressed);
 		Input->BindAction(A, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
 	if (UInputAction* A = MoveAction.LoadSynchronous())
@@ -167,10 +167,29 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
+void AHeroCharacter::OnJumpPressed()
+{
+	if (IsSeated())
+	{
+		StandUp();
+		return;
+	}
+	Jump();
+}
+
 void AHeroCharacter::OnMove(const FInputActionValue& Value)
 {
 	// as the template, but along the look (the body turns on its own)
 	const FVector2D V = Value.Get<FVector2D>();
+	if (IsSeated())
+	{
+		// a step gets you up
+		if (V.Size() > 0.5f)
+		{
+			StandUp();
+		}
+		return;
+	}
 	const FRotator Yaw(0.f, GetControlRotation().Yaw, 0.f);
 	AddMovementInput(Yaw.RotateVector(FVector::ForwardVector), V.Y);
 	AddMovementInput(Yaw.RotateVector(FVector::RightVector), V.X);
@@ -187,7 +206,15 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	ReadInput(DeltaSeconds);
-	TurnBody(DeltaSeconds);
+	if (IsSeated())
+	{
+		KeepSeated();
+	}
+	else
+	{
+		TurnBody(DeltaSeconds);
+	}
+	SitAlpha = FMath::FInterpConstantTo(SitAlpha, IsSeated() ? 1.f : 0.f, DeltaSeconds, 1.8f);
 	FeedAnimation(DeltaSeconds);
 	if (CVarHeroDebugBones.GetValueOnGameThread())
 	{
@@ -239,6 +266,12 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 	Move->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
 	Move->MaxWalkSpeedCrouched = bWantsWalk ? CrouchCreepSpeed : CrouchSpeed;
 
+	if (IsSeated())
+	{
+		bCrouchToggled = false;
+		CrouchAlpha = FMath::FInterpConstantTo(CrouchAlpha, 0.f, DeltaSeconds, 2.2f);
+		return;
+	}
 	// crouch: C toggles it, Ctrl held crouches while it is down (polled: other systems may read the same keys)
 	if (!PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::C))
 	{
@@ -295,10 +328,66 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	S.IdleTime = IdleTime;
 	ReachCrouch = FMath::FInterpConstantTo(ReachCrouch, ReachCrouchTarget, DeltaSeconds, 1.6f);
 	S.Crouch = FMath::SmoothStep(0.f, 1.f, FMath::Max(CrouchAlpha, ReachCrouch));
+	S.Sit = FMath::SmoothStep(0.f, 1.f, SitAlpha);
+	// the mesh's origin is SoleDrop over the floor (the soles reach below it)
+	S.SeatZ = SeatZ - SoleDrop;
 	if (UHeroAnimInstance* Anim = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		Anim->State = S;
 	}
+}
+
+void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal, float InSeatZ)
+{
+	if (!Base)
+	{
+		return;
+	}
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	bCrouchToggled = false;
+	SeatBase = Base;
+	SeatLocal = InSeatLocal;
+	SeatZ = InSeatZ;
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	Move->StopMovementImmediately();
+	// no walking, no falling: the seat holds the body (KeepSeated each frame, after the seat has moved)
+	Move->SetMovementMode(MOVE_None);
+	SeatedCollision = GetCapsuleComponent()->GetCollisionEnabled();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	KeepSeated();
+}
+
+void AHeroCharacter::StandUp()
+{
+	if (!IsSeated())
+	{
+		return;
+	}
+	const FTransform W = SeatWorld();
+	SeatBase.Reset();
+	// a step forward off the cushion, standing on the floor
+	const FVector At = W.TransformPosition(FVector(38.f, 0.f, 0.f)) + FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f);
+	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);
+	SetActorLocation(At, false, nullptr, ETeleportType::TeleportPhysics);
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+}
+
+FTransform AHeroCharacter::SeatWorld() const
+{
+	const USceneComponent* B = SeatBase.Get();
+	return B ? SeatLocal * B->GetComponentTransform() : FTransform::Identity;
+}
+
+void AHeroCharacter::KeepSeated()
+{
+	// the body's origin (the capsule's middle) over the floor under the seat's front edge, facing out of it
+	const FTransform W = SeatWorld();
+	const float Half = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	BodyYaw = W.Rotator().Yaw;
+	SetActorLocationAndRotation(W.GetLocation() + FVector(0.f, 0.f, Half), FRotator(0.f, BodyYaw, 0.f), false, nullptr, ETeleportType::TeleportPhysics);
 }
 
 FVector AHeroCharacter::EyeLocation() const
