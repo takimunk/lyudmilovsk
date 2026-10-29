@@ -32,23 +32,8 @@ materials' own wind, and NPC lines that read `lyud.Overcast` (weather beyond win
 
 ## Clouds and rain
 
-`Public/Weather/LyudWeather.h` (`ULyudWeatherSubsystem`), `Private/Weather/RainModel.cpp` (plain C++; added by the
-sound thread, which uses it for rain, thunder and the music's mood; visuals are still to build on it).
-
-- Like the wind, a pure function of the calendar (`LyudWeather::Sky(hours, wind params, sky params)`), riding on the
-  wind's weather: fronts with a fresh wind bring the cloud and rain. Seed 2660 (its own, beside the wind's 921):
-  broken cloud and dry over the scene's start on 20 October, drizzle the next day.
-- `GetSky()` -> `FLyudSkyWeather`: `Cloud` 0..1, `Rain` mm/h (drizzle 0.3, rain 2, downpour 10+), `Snow` 0..1 of it
-  as snow, `Thunder` 0..1 (lightning ~2x/min at 1), `Fog` 0..1, `TempC`, `Wet` 0..1 (ground; dries over hours).
-- `OnLightning(Location, DistanceFromViewM)` fires in thunderstorms (the sound's thunder follows by the speed of
-  sound; the sky can flash on it). It sets `lyud.Overcast` (cloud > 0.75) for what people say about the sun.
-- Climate (`tools/audiosim/run.sh weather`): rain ~8-18% of the hours, ~900 mm a year, wettest July-October,
-  snow in December-February, thunder in summer, mist on calm cold mornings; mean temperature -1 C in January,
-  18 C in July (the Kaliningrad coast's).
-- Console: `lyud.Weather.Rain / Cloud / Fog / Temp / Thunder` force a value, `lyud.Weather.Strike [m]` lightning now,
-  `lyud.Weather.Debug 1`.
-- To build on it: rain and snow particles and wet ground for the sky/sea/terrain threads (`Rain`, `Snow`, `Wet`),
-  cloud cover for `ALyudSky`'s volumetric clouds (`Cloud`), fog for the height fog (`Fog`).
+Now the weather engine: see `docs/weather.md` (`ULyudWeatherSubsystem`, `Private/Weather/WeatherModel.cpp`). The
+wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky()` keeps the old short summary.
 
 ## Sea
 
