@@ -123,6 +123,15 @@ shards inside):
   door (it comes before the call panel at the same spot; a shut idle cabin stays shut, a shut dwelling one may go
   when its dwell is over: `FCabin::bShutReq`); E inside, away from the door, opens the route map to pick where to
   go. The route map closes on E, Esc, a click anywhere outside it, or its ✕.
+- **Riding** (2026-10-29, smooth): the cabin follows a smooth curve through the rope's points (cubic Hermite in
+  S, `FLine::At`; the straight pieces between the sag's samples kinked its path every ~9 m), its acceleration eases in
+  and out (`FParams::Jerk` 0.9 m/s³, `FCabin::Acc`), it slows for bends (`FParams::Lateral` 0.6 m/s², looking 48 m
+  ahead: the end wheels), brakes on a gentler profile (60 % of the deceleration), and a cabin sent off from an open
+  stand shuts its doors first. It swings on its hanger as a pendulum: back and forth from that acceleration,
+  outward in a bend, sideways in the wind. Checks: transportsim (the grip's acceleration under 4 m/s², ~3.5 only
+  slowly round an end wheel) and test_cabin (the cabin's acceleration per frame in the game: median ~0.3, 99 % ~2 m/s²).
+- **Seats**: E at a free seat inside sits the hero on it (`AHeroCharacter::SitOn` on the cabin, as on the train),
+  carried with the cabin and its swing; E, a step or Space stands up. `Transport.Sit [k|up]` for tests.
 - **Posters**: two route diagrams on the inside wall where a 0.56 x 0.315 m rectangle lands on wall only (found by
   rays in `poster_spots`, kit.json `sockets.posters`); the game draws them live (`SLyudTransitDiagram`, the player's language).
 - Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends

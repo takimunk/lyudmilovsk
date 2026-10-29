@@ -134,6 +134,9 @@ namespace LyudTransport
 		// the swing of the cabin under its hanger (radians): pitch along the rope, roll across it
 		float Pitch = 0.f, PitchV = 0.f, Roll = 0.f, RollV = 0.f;
 		float LastSpeed = 0.f;
+		float Acc = 0.f;            // its acceleration along the rope, changed no faster than FParams::Jerk (no jolts)
+		float Yaw = 0.f, YawRate = 0.f;  // heading on the rope and how fast it turns (the swing outward in a bend)
+		bool bYawSet = false;
 		float Odometer = 0.f;
 		float EmptyMetres = 0.f;    // run without anybody aboard (tests: no running for nothing)
 		int DepotSlot = 0;
@@ -181,6 +184,8 @@ namespace LyudTransport
 	{
 		float Speed = 6.f, SpeedEmpty = 11.f, SpeedStation = 1.2f, SpeedThrough = 3.f;
 		float Accel = 0.9f;
+		float Jerk = 0.9f;          // m/s^3: how fast the acceleration itself may change
+		float Lateral = 0.6f;       // m/s^2: the most sideways pull in a bend
 		float Dwell = 14.f, IdleReturn = 90.f, Headway = 28.f, PlatformLen = 18.f, DoorTime = 1.6f;
 		int Capacity = 4;
 	};

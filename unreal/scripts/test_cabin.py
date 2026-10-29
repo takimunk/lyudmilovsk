@@ -116,6 +116,19 @@ def step(w, dt):
             # stand on the platform 2.2 m out from the door, facing it
             door = c.door_point()
             dl = local(c, door)
+            if os.environ.get("CABIN_LOOK"):
+                # what is round the door: a view from above, then on with the test
+                cmd(w, "ghost")
+                cabs = t.get_cabins()
+                idx = [a.get_name() for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudCabin)].index(c.get_name())
+                log("chosen %s state %s, %.0f m from the player's spot\n%s" % (c.get_name(), cabs[idx].state if idx < len(cabs) else "?",
+                    (c.get_actor_location() - pawn.get_actor_location()).length() / 100.0, t.report()))
+                pawn.set_actor_location(c.get_actor_transform().transform_location(unreal.Vector(0, -600, 2500)), False, False)
+                look_at(pc, pawn, c.get_actor_location())
+                S["look_until"] = S["t"] + 2.0
+                S["phase"] = "look_above"
+                S["cabin"] = c
+                return
             # straight out from the door, past the platform's edge line, clear of the benches further in
             out = c.get_actor_transform().transform_location(unreal.Vector(dl.x, dl.y - 130.0, 100.0))
             pawn.set_actor_location(out, False, True)
@@ -126,6 +139,13 @@ def step(w, dt):
         elif S["pt"] > 150.0:
             fail("no cabin opened its door in 150 s")
             S["phase"] = "done"
+    elif ph == "look_above":
+        if S["t"] > S["look_until"] and not S.get("above"):
+            S["above"] = True
+            shot(w, "above_the_door")
+            cmd(w, "walk")
+            S["phase"] = "call"
+            os.environ.pop("CABIN_LOOK", None)
     elif ph == "look_door":
         if S["pt"] > 1.5 and not S.get("s1"):
             S["s1"] = True
@@ -171,10 +191,28 @@ def step(w, dt):
         if S["pt"] > 6.5 + 1.5 * len(c.posters):
             log("posters inside: %d" % len(c.posters))
             S["phase"], S["pt"], S["last"], S["lp"] = "riding", 0.0, 0.0, -1
+            # ride seated: the view on the seat, carried with the swing
+            cmd(w, "Transport.Sit 0")
+            S["track"] = []
             if os.environ.get("CABIN_QUICK"):
                 S["phase"] = "done"
     elif ph == "riding":
         c = S["cabin"]
+        if S["pt"] < 1.0 and not S.get("sat_logged"):
+            S["sat_logged"] = True
+            log("seated: %s" % t.is_seated())
+        # how smooth the ride is: the cabin's acceleration from frame to frame (second differences)
+        wt = unreal.GameplayStatics.get_time_seconds(w)
+        tr = S.setdefault("track", [])
+        if not tr or wt - tr[-1][0] > 1e-4:          # one sample per game frame, on the game's clock
+            tr.append((wt, c.get_actor_location()))
+        if len(tr) >= 3:
+            (t0, a), (t1, b), (t2, d) = tr[-3:]
+            h0, h1 = t1 - t0, t2 - t1
+            if h0 > 1e-3 and h1 > 1e-3 and h0 < 0.1 and h1 < 0.1 and str(t.get_cabins()[t.player_cabin()].state if t.player_cabin() >= 0 else "") == "moving":
+                acc = ((d - b) / h1 - (b - a) / h0) / ((h0 + h1) / 2) / 100.0
+                S["amax"] = max(S.get("amax", 0.0), acc.length())
+                S.setdefault("alist", []).append(acc.length())
         idx = t.player_cabin()
         cabs = t.get_cabins()
         st = str(cabs[idx].state) if 0 <= idx < len(cabs) else "?"
@@ -191,6 +229,13 @@ def step(w, dt):
             fail("the player left the moving cabin (local %s)" % L)
             S["phase"] = "done"
         if S["pt"] > 20.0 and st == "dwelling" and c.door > 0.95:
+            al = sorted(S.get("alist", [0.0]))
+            log("ride smoothness: cabin acceleration median %.2f m/s2, 99%% %.2f, max %.2f (frames %d)" % (
+                al[len(al) // 2], al[int(len(al) * 0.99)], al[-1], len(al)))
+            if al[int(len(al) * 0.99)] > 3.0:
+                fail("the ride jolts: 99%% of frames under %.2f m/s2" % al[int(len(al) * 0.99)])
+            shot(w, "seated_at_arrival")
+            cmd(w, "Transport.Sit up")
             log("arrived after %.0f s" % S["pt"])
             S["phase"], S["pt"] = "walk_out", 0.0
         elif S["pt"] > 400.0:
@@ -198,6 +243,9 @@ def step(w, dt):
             S["phase"] = "done"
     elif ph == "walk_out":
         c = S["cabin"]
+        if S["pt"] - S.get("lpo", -1) > 0.5:
+            S["lpo"] = S["pt"]
+            probe(w, c, pawn, "walk_out")
         door = c.door_point()
         out = door + (door - c.get_actor_location()).normal() * 200.0
         if S["pt"] < 0.5:

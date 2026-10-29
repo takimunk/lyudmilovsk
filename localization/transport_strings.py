@@ -64,6 +64,8 @@ ROWS = [
     ("transport.prompt.call", "E — схема и вызов кабины", "E: route map and call a cabin", "E：路線図・キャビンを呼ぶ"),
     ("transport.prompt.cabin_open", "E — открыть дверь кабины «{0}»", "E: open the door of cabin {0}", "E：キャビン「{0}」のドアを開ける"),
     ("transport.prompt.cabin_shut", "E — закрыть дверь кабины «{0}»", "E: shut the door of cabin {0}", "E：キャビン「{0}」のドアを閉める"),
+    ("transport.prompt.seat_sit", "E — сесть", "E: sit down", "E：座る"),
+    ("transport.prompt.seat_up", "E — встать", "E: stand up", "E：立つ"),
     ("transport.prompt.cabin_where", "E — куда ехать (схема)", "E: where to (route map)", "E：行き先（路線図）"),
     ("transport.prompt.board", "E — схема канатных дорог", "E: cable car route map", "E：ロープウェイ路線図"),
     ("transport.prompt.ride", "Кабина «{0}» → {1}", "Cabin {0} → {1}", "キャビン「{0}」→ {1}"),
