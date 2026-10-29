@@ -1677,7 +1677,7 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 		{
 			DoorSet.Add(D & 3);
 		}
-		const float Sc = (ShaftHalf - 8.f) * 2.f / 230.f;
+		const float Sc = 1.f;           // the round cab (furniture.py, 1.18 m outer radius) fits the 1.25 m shaft as it is
 		auto Part = [&](UStaticMesh* M, float Yaw)
 		{
 			UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
@@ -1689,6 +1689,25 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 			C->RegisterComponent();
 			Way->KitMaterials(C);
 			AddInstanceComponent(C);
+			// its glass band apart: no shadow, out of the distance fields (light through it)
+			if (UStaticMesh* G = LoadMesh(M->GetName() + TEXT("_Glass")))
+			{
+				UStaticMeshComponent* Gc = NewObject<UStaticMeshComponent>(this);
+				Gc->SetMobility(EComponentMobility::Movable);
+				Gc->SetStaticMesh(G);
+				Gc->SetupAttachment(Cab);
+				Gc->SetRelativeTransform(C->GetRelativeTransform());
+				Gc->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+				Gc->SetCastShadow(false);
+				Gc->bAffectDistanceFieldLighting = false;
+				Gc->bAffectDynamicIndirectLighting = false;
+				Gc->RegisterComponent();
+				for (int32 I = 0; I < Gc->GetNumMaterials(); I++)
+				{
+					Gc->SetMaterial(I, Way->Mat(TEXT("glass")));
+				}
+				AddInstanceComponent(Gc);
+			}
 		};
 		Part(CabFloor, 0.f);
 		Part(CabCeil, 0.f);

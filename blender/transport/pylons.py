@@ -100,7 +100,7 @@ def wheel(bm, c, r, w, mi, mi_rim, seg=16):
     def ring(rr, y):
         return [bm.verts.new(c + Vector((rr * math.cos(2 * math.pi * i / seg), y, rr * math.sin(2 * math.pi * i / seg)))) for i in range(seg)]
     a, b = ring(r, -w / 2), ring(r, w / 2)
-    ai, bi = ring(r * 0.35, -w / 2 - 0.02), ring(r * 0.35, w / 2 + 0.02)
+    ai, bi = ring(r * 0.35, -w / 2 - 0.008), ring(r * 0.35, w / 2 + 0.008)       # clear of the rails beside it
     for i in range(seg):
         j = (i + 1) % seg
         bm.faces.new((a[j], a[i], b[i], b[j])).material_index = mi_rim
@@ -121,7 +121,7 @@ def fin(bm, ang, pts, t, mi, mi_edge):
     bm.faces.new(B).material_index = mi
     for i in range(n):
         j = (i + 1) % n
-        edge = pts[i][0] > 0.6 and pts[j][0] > 0.6
+        edge = pts[i][0] > 0.6 and pts[j][0] > 0.6 and j != 0          # not the edge back along the shaft
         bm.faces.new((A[i], A[j], B[j], B[i])).material_index = mi_edge if edge else mi
 
 
@@ -155,10 +155,11 @@ def line_pylon(H):
         a = math.pi / 4 + k * math.pi / 2
         top = 5.4
         out = r0 + 2.2
-        pts = [(rad(0.35) - 0.05, 0.3), (out, 0.3), (out, 0.75)]
+        # sunk 2 cm into the shoes and 5 cm into the shaft: no face of it lies on theirs (the lint)
+        pts = [(rad(0.4) - 0.05, 0.4), (out, 0.4), (out, 0.8)]
         for i in range(1, 9):
             f = i / 8
-            pts.append((out - (out - rad(top) + 0.05) * (1 - (1 - f) ** 2), 0.75 + (top - 0.75) * f))
+            pts.append((out - (out - rad(top)) * (1 - (1 - f) ** 2), 0.8 + (top - 0.8) * f))
         pts.append((rad(top) - 0.05, top))
         fin(bm, a, pts, 0.16, PLATE, AMBER)
         # a dark shoe under each fin
@@ -168,13 +169,13 @@ def line_pylon(H):
     zl = 1.2
     rails = []
     while zl < collar0 - 0.2:
-        z2 = min(zl + 1.5, collar0 - 0.2)
+        z2 = min(zl + 1.6, collar0 - 0.2)          # 5 rungs a length, the joints halfway between two
         for s in (-0.22, 0.22):
             a_ = Vector((-(rad(zl) + 0.22), s, zl))
             b_ = Vector((-(rad(z2) + 0.22), s, z2))
             tube(bm, a_, b_, 0.025, STEEL, 6)
         zl = z2
-    z = 1.5
+    z = 1.36
     while z < collar0 - 0.3:
         tube(bm, Vector((-(rad(z) + 0.22), -0.22, z)), Vector((-(rad(z) + 0.22), 0.22, z)), 0.018, STEEL, 6)
         z += 0.32
@@ -191,7 +192,8 @@ def line_pylon(H):
         box(bm, Vector((0, hy, head + 0.02)), (0.55, 0.3, 0.12), DARK)
         beam(bm, Vector((-1.15, hy - sy * 0.12, H - 0.42)), Vector((1.15, hy - sy * 0.12, H - 0.42)), 0.08, 0.22, DARK)
         beam(bm, Vector((-1.15, hy + sy * 0.12, H - 0.42)), Vector((1.15, hy + sy * 0.12, H - 0.42)), 0.08, 0.22, DARK)
-        box(bm, Vector((0, hy, (head + 0.08 + H - 0.53) / 2)), (0.3, 0.3, H - 0.53 - head - 0.08), STEEL)
+        # the rocker's post, between the two rails and up into them (its faces clear of theirs)
+        box(bm, Vector((0, hy, (head + 0.08 + H - 0.48) / 2)), (0.3, 0.2, H - 0.48 - head - 0.08), STEEL)
         for x in (-0.9, -0.3, 0.3, 0.9):
             wheel(bm, Vector((x, hy, H - 0.24)), 0.24, 0.1, STEEL, DARK)
             tube(bm, Vector((x, hy - 0.17, H - 0.24)), Vector((x, hy + 0.17, H - 0.24)), 0.03, STEEL, 6)
@@ -224,8 +226,10 @@ def corner_pylon(H):
         za, zb = 1.6 + (top - 1.6) * k / nb, 1.6 + (top - 1.6) * (k + 1) / nb
         for (ax, ay), (bx, by_) in (((1, 1), (1, -1)), ((1, -1), (-1, -1)), ((-1, -1), (-1, 1)), ((-1, 1), (1, 1))):
             tube(bm, leg(ax, ay, zb), leg(bx, by_, zb), 0.09, PLATE, 8)
-            tube(bm, leg(ax, ay, za), leg(bx, by_, zb), 0.07, PLATE, 6)
-            tube(bm, leg(bx, by_, za), leg(ax, ay, zb), 0.07, PLATE, 6)
+            # the X's two bars 5 cm apart across the face, so their sides don't lie in one plane where they cross
+            o = Vector((ax + bx, ay + by_, 0)).normalized() * 0.025
+            tube(bm, leg(ax, ay, za) + o, leg(bx, by_, zb) + o, 0.07, PLATE, 6)
+            tube(bm, leg(bx, by_, za) - o, leg(ax, ay, zb) - o, 0.07, PLATE, 6)
     # the crossarm; on each end a shoe of sheaves lying flat that the rope bends round in plan (built for a turn to
     # the left, +Y: the rope bears on the shoe's outer side, -Y; the game mirrors it for a right turn), at z = H
     arm_z = H - 0.75
@@ -238,10 +242,12 @@ def corner_pylon(H):
         cen = Vector((0, hy + Rs + 0.32, H))        # the arc's centre on the turn's inside
         arc = [math.radians(-9 + 3 * i) for i in range(7)]
         pts = [cen + Vector((Rs * math.sin(a), -Rs * math.cos(a), 0)) for a in arc]
-        for p_ in pts:
-            hwheel(bm, p_ + Vector((0, 0.32, 0)), 0.3, 0.12, STEEL, DARK)
-        for p_, q_ in zip(pts, pts[1:]):
-            beam(bm, p_ + Vector((0, 0.32, -0.16)), q_ + Vector((0, 0.32, -0.16)), 0.5, 0.08, DARK)
+        for i, p_ in enumerate(pts):
+            # neighbours overlap in plan: every other one 3 cm thicker, so their faces aren't one plane
+            hwheel(bm, p_ + Vector((0, 0.32, 0)), 0.3, 0.12 + 0.03 * (i & 1), STEEL, DARK)
+        for i, (p_, q_) in enumerate(zip(pts, pts[1:])):
+            # every other one 3 cm thicker: where they overlap at the joints their tops aren't one plane
+            beam(bm, p_ + Vector((0, 0.32, -0.16)), q_ + Vector((0, 0.32, -0.16)), 0.5, 0.08 + 0.03 * (i & 1), DARK)
         box(bm, Vector((0, hy + 0.35, (arm_z + 0.25 + H - 0.2) / 2)), (2.6, 0.5, (H - 0.2) - (arm_z + 0.25)), STEEL)
     # the golden star on its staff
     tube(bm, Vector((0, 0, arm_z + 0.25)), Vector((0, 0, H + 1.6)), 0.07, PLATE, 8)

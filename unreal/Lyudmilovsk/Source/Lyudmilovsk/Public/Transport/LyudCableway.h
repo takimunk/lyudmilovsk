@@ -92,6 +92,8 @@ public:
 	UStaticMeshComponent* KitMesh(const FLyudMeshKit& K, const FTransform& At, FName Name, bool bMovable = false, USceneComponent* Parent = nullptr);
 	/** Real glass and plaster on a kit mesh's TR_Glass / TR_Interior slots. */
 	void KitMaterials(UStaticMeshComponent* C);
+	/** A mesh's glass part (<name>_Glass) placed like Like: clear glass, no shadow, out of the distance fields. */
+	UStaticMeshComponent* GlassOf(UStaticMesh* G, USceneComponent* Like);
 
 	/** Where a bird can land on the cable car (world, cm): pylons' crossarms and tops, vestibules' railings and roofs
 	 * (vestibules.json "perches"). FBirdPerches reads them (Q, the magnet landing). */
