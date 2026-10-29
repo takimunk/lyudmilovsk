@@ -167,6 +167,10 @@ if os.environ.get("COSMIC_SCALE"):
         SHOTS = [s for s in SHOTS if s[0].startswith("scale_")]
 # COSMIC_SEALOOK=1: the sea's colour with the weather and the light from the cliff: sunny, overcast, storm, sunset,
 # night (full moon), and a winter noon; the look eases in at once (lyud.Sea.LookSeconds 0)
+# COSMIC_NEWMOON=1: Europa beside the sun at new moon (9 Nov 2026, 07 UTC), the two disks' overlap by day
+if os.environ.get("COSMIC_NEWMOON"):
+    for tag, when in (("am", D(2026, 11, 9, 9, 0)), ("noon", D(2026, 11, 9, 12, 0))):
+        SHOTS.append(("newmoon_sun_" + tag, when, None, BROW[0], BROW[1], 40.0, 0, "sun", "fov 45;r.VolumetricCloud 0"))
 # COSMIC_MOONCLOUD=1: Europa by day behind the clouds (the clouds must cover the whole disk, lit and unlit side) at
 # the default size and at 20 deg; with diagnostics (no disk, no moonlight) when it is "diag"
 if os.environ.get("COSMIC_MOONCLOUD"):

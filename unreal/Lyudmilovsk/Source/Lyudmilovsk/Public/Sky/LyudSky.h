@@ -90,7 +90,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float SunAngularDiameterDeg = 10.f;
 	/** Europa's apparent size, degrees across: the one value for the moon's size (disk, halo, star mask, the moonlight's
 	 * source angle all follow it). lyud.Sky.MoonSizeDeg overrides it when > 0. The 4096x2048 maps stay sharp up to ~25. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonSizeDeg = 7.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonSizeDeg = 14.f;
 	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.14f;
 	/** The sunspots' umbra brightness (of the disk's: small spots and pores only a little darker), the granulation's contrast (1 = as drawn) and the faculae's strength. */
@@ -110,11 +110,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.012f;
 	/** Bloom outdoors (the club's level sets its own): low, so the big bright disk is not smeared into a blob. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float OutdoorBloom = 0.2f;
-	/** Bloom outdoors at full night, and the atmosphere's haze (Mie) then as a share of the day's: the haze lit by a 7-degree
+	/** Bloom outdoors at full night, and the atmosphere's haze (Mie) then as a share of the day's: the haze lit by a big
 	 * moon at a night exposure would wrap Europa in a big glow. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightBloom = 0.05f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
-	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
+	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a big moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
 	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun and Europa instead of
 	 * veiling them: at 8 a cumulus in front of Europa by day still showed the disk through it like a ghost). */

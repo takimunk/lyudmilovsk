@@ -159,6 +159,9 @@ def sky_material():
     moon = g.custom(SH.MOON_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)), ("P", rgba(pole)),
                                    ("D", rgba(moon_disk)), ("C", rgba(moon_look)), ("Tr", tr), ("Europa", europa), ("Relief", relief)],
                     out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    # Europa passes in front of the sun at new moons (both disks are big): the sun goes behind it
+    cover = g.custom(SH.MOON_COVER_HLSL, [("V", view), ("M", rgba(moon_dir)), ("MD", rgba(moon_disk))])
+    sun = g.op(X.MaterialExpressionMultiply, sun, cover)
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))
     g.link(uv, stars, "UVs")

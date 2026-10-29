@@ -269,6 +269,15 @@ float3 halo = float3(0.55, 0.65, 0.85) * C.y * exp(-h * 4.0) * D.w;
 return (col + halo) * D.y * Tr;
 """
 
+# Europa in front of the sun: 0 inside the moon's disk, 1 outside (a pixel-wide soft edge). At a new moon the two big
+# disks overlap by day (14 + 10 degrees across, a few degrees apart): the sun, its limb and corona go behind the dark
+# moon instead of drawing through it. Inputs: V, M (MoonDir), MD (MoonDisk).
+MOON_COVER_HLSL = r"""
+float a = acos(clamp(dot(normalize(V), normalize(M.xyz)), -1.0, 1.0));
+float fw = max(fwidth(a), 1e-5);
+return MD.y > 0.0 ? saturate((a - MD.x) / fw + 0.5) : 1.0;
+"""
+
 # Atmospheric transmittance toward a direction (altitude from its z): an analytic extinction for a damp
 # Baltic air (Kasten & Young air mass), so both disks dim and redden near the horizon.
 TRANS_HLSL = r"""

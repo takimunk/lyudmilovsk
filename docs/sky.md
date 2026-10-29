@@ -6,7 +6,7 @@ star dome. The world is a simulation, so its sky is not Earth's:
 
 - **The sun is a huge red dwarf**, `SunAngularDiameterDeg` = 10 degrees across (the Sun from Earth: 0.53), a
   ~3200 K star. NPCs are drawn to it (docs/story/motifs.md).
-- **The moon is Europa**, `MoonSizeDeg` = 7 degrees (the one value for its size; `lyud.Sky.MoonSizeDeg` overrides it in play), its phases from the real ephemeris.
+- **The moon is Europa**, `MoonSizeDeg` = 14 degrees (Dima, 2026-10-29) (the one value for its size; `lyud.Sky.MoonSizeDeg` overrides it in play), its phases from the real ephemeris.
 - **Nights are moonlit**, not black.
 
 ## Drawn by the sky material
@@ -76,12 +76,12 @@ image into glitter near the camera and, where they are finer than a pixel, go in
 image stretches into a path. `lyud.Sea.Capillary` overrides the slope.
 
 **Nights round Europa**: the haze is thinner by night (`NightMieShare` of the day's Mie), bloom drops to `NightBloom`,
-and the moonlight scatters less in the clouds (`MoonCloudScatter`): moonlit haze and clouds round a 7-degree moon at
+and the moonlight scatters less in the clouds (`MoonCloudScatter`): moonlit haze and clouds round a big moon at
 the night exposure made a big halo.
 
 The sunlight's colour (`SunColor`) is the star's, paled toward white so the day stays pleasant; its source angle is
 the disk's (soft shadows). Europa's light: `FullMoonIlluminance` 1.1 scene lux at full, soft shadows
-(source angle 7 degrees), shadows only when the sun is down (one shadowed directional light at a time).
+(source angle = `MoonSizeDeg`), shadows only when the sun is down (one shadowed directional light at a time).
 
 **Europa's phases drive the night.** `ALyudSky::UpdateSky` takes the phase angle from the very sun and moon
 directions it hands the sky material (`SunDir`, `MoonDir`), so the light's phase is the disk's. The disk is shaded
