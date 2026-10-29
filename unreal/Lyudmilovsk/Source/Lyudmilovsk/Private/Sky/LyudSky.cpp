@@ -23,6 +23,7 @@ static TAutoConsoleVariable<float> CVarSunDiskGain(TEXT("lyud.Sky.SunDiskGain"),
 static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"), 1.f, TEXT("Multiplies Europa's brightness on the sky (tuning)."));
 static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
 static TAutoConsoleVariable<float> CVarCloudDensity(TEXT("lyud.Sky.CloudDensity"), 1.f, TEXT("Multiplies the clouds' density (tuning)."));
+static TAutoConsoleVariable<float> CVarCloudOpaque(TEXT("lyud.Sky.CloudOpaque"), 1.f, TEXT("Multiplies the clouds' opaque cut-off CloudOpaqueBelow (0 = the engine's tracing to the end; tuning)."));
 static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (tuning)."));
 static TAutoConsoleVariable<float> CVarNightMie(TEXT("lyud.Sky.NightMie"), -1.f, TEXT("Overrides NightMieShare when >= 0 (tuning: the haze round the moon)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
@@ -292,6 +293,11 @@ void ALyudSky::UpdateClouds()
 	{
 		Clouds->SetViewSampleCountScale(CloudViewSamples * K);
 		Clouds->SetShadowViewSampleCountScale(CloudShadowSamples * K);
+	}
+	const float Stop = FMath::Clamp(CVarCloudOpaque.GetValueOnGameThread() * CloudOpaqueBelow, 0.005f, 0.9f);
+	if (!FMath::IsNearlyEqual(Clouds->StopTracingTransmittanceThreshold, Stop))
+	{
+		Clouds->SetStopTracingTransmittanceThreshold(Stop);
 	}
 	if (CloudMID && CloudBaseDensity >= 0.f)
 	{

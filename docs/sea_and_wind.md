@@ -46,10 +46,11 @@ wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky
 - The material gets the same trains through a 128×2 float texture, so `SampleSurface(Location)` (height, normal,
   water velocity, depth, immersion) is exactly what is on screen. Time loops every 1200 s (every frequency is a
   whole number of turns per loop).
-- **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, Baltic absorption and scattering (brown-green,
-  a few metres of visibility; `make_sea_materials.py` ABSORPTION / SCATTERING per metre, fed to the water output per
-  centimetre, which is what the engine's shader takes; over the flat and the shallows, down to `SHALLOW_CLEAR_M`, the
-  water is clearer still, so the sand shows through it), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
+- **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, absorption and scattering of a sea-wave teal
+  (aquamarine) water turning dark teal-green with depth, a few metres of visibility (`make_sea_materials.py`
+  ABSORPTION / SCATTERING per metre, fed to the water output per centimetre, which is what the engine's shader takes).
+  In the first `SHALLOW_PALE_M` (0.25 m) the water is nearly clear and without hue (pale over the sand), then its
+  coefficients grow to the open sea's at `SHALLOW_CLEAR_M` (6 m); the sky shows in it by the water's own Fresnel, detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
   crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
   along the wind at gale force), breakers and wash over the shallows as thin torn lines of lace foam whose widths are held in metres (over a flat,
   a band of depth or wave phase is tens of metres wide).

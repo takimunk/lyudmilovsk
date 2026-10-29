@@ -27,12 +27,14 @@ X = unreal
 MP = unreal.MaterialProperty
 EXCL = unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS
 
-# Baltic coastal water: brownish green, cloudy, a few metres of visibility (coefficients per metre).
-# Blue goes first in the Baltic (yellow substance from the rivers), red next (the water itself).
-ABSORPTION = (0.45, 0.14, 0.38)
-SCATTERING = (0.03, 0.04, 0.032)
-SHALLOW_CLARITY = 0.12    # absorption and scattering over the flat, of the open sea's
-SHALLOW_CLEAR_M = 8.0     # depth (m) from which the water is the open sea's
+# Our sea's water: sea-wave teal (aquamarine) turning dark teal-green with depth, a few metres of visibility
+# (coefficients per metre). Red goes first (the water itself), blue a little before green (a touch of the Baltic's
+# yellow substance); the scattering is low against the absorption, so deep water is dark.
+ABSORPTION = (0.42, 0.085, 0.13)
+SCATTERING = (0.016, 0.03, 0.03)
+SHALLOW_CLARITY = 0.03    # absorption and scattering in the first few tens of cm, of the open sea's
+SHALLOW_CLEAR_M = 6.0     # depth (m) from which the water is the open sea's
+SHALLOW_PALE_M = 0.25     # down to this depth the water is nearly clear over the sand
 
 
 def _log(msg):
@@ -233,9 +235,12 @@ def sea_material(coll):
     wo = g.node(X.MaterialExpressionSingleLayerWaterMaterialOutput, x=0)
     # the water output takes its coefficients per centimetre (SingleLayerWaterShading.ush multiplies them by the
     # depth in world units): ours are per metre, as the underwater fog uses them (fed per metre they made the sea
-    # opaque in a few cm: a dark green field over the flat). Over the tidal flat and the shallows the water is a little
-    # clearer still; from SHALLOW_CLEAR_M down the open sea's own
-    clear = "float k = saturate(B.x / %g); return lerp(K * %g, K, k * k) * 0.01;" % (SHALLOW_CLEAR_M, SHALLOW_CLARITY)
+    # opaque in a few cm: a dark green field over the flat). Over the tidal flat and the shallows the water is
+    # clearer; from SHALLOW_CLEAR_M down the open sea's own
+    # clearer still, and without the hue, in the first few tens of cm: pale water over sand at the edge
+    clear = ("float k = saturate((B.x - %g) / %g); float3 g = dot(K, 1.0 / 3.0);"
+             " return lerp(lerp(g, K, saturate(B.x / 1.2)) * %g, K, pow(k, 1.3)) * 0.01;"
+             % (SHALLOW_PALE_M, SHALLOW_CLEAR_M - SHALLOW_PALE_M, SHALLOW_CLARITY))
     absorb = g.custom(clear, [("K", g.const(ABSORPTION)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
                       desc="Absorption")
     scatter = g.custom(clear, [("K", g.const(SCATTERING)), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
