@@ -56,6 +56,7 @@ SHOTS = [
     # a flare on the star
     ("flare_close", NOON, BROW, 0, "sun", "lyud.Rare.Flare 1;fov 30"),
     ("flare_detail", NOON, BROW, 0, "sun", "lyud.Rare.Flare 0.7;fov 12;r.VolumetricCloud 0"),
+    ("flare_detail_late", NOON, BROW, 0, "sun", "lyud.Rare.Flare 0.25;fov 12;r.VolumetricCloud 0"),
     # lightning: a stroke held at its peak, by night and by day, near and far, a flash in the cloud, the leader
     ("strike_night_near", NEWMOON, BROW, 8, 70, "lyud.Rare.StrikeHold 0.04;lyud.Weather.Cloud 0.9;STRIKE 1800 1 0"),
     ("strike_night_far", NEWMOON, BROW, 4, 70, "lyud.Rare.StrikeHold 0.04;lyud.Weather.Cloud 0.9;STRIKE 6000 1 10"),
@@ -67,7 +68,7 @@ if os.environ.get("RARE_SHOTS"):
     SHOTS = [s for s in SHOTS if any(s[0].startswith(p) for p in os.environ["RARE_SHOTS"].split(","))]
 # console state every shot starts from
 RESET = ["lyud.Rare.Kp -1", "lyud.Rare.Aurora -1", "lyud.Rare.AuroraOnset -1e9", "lyud.Rare.Halo -1", "lyud.Rare.Rainbow -1",
-         "lyud.Rare.Noctilucent -1", "lyud.Rare.Flare -1", "lyud.Rare.StrikeHold -1", "lyud.Weather.Cloud -1", "fov 0",
+         "lyud.Rare.Noctilucent -1", "lyud.Rare.Flare -1", "lyud.Rare.OpticsSharp 0", "lyud.Rare.StrikeHold -1", "lyud.Weather.Cloud -1", "fov 0",
          "r.VolumetricCloud 1"]
 WAIT = float(os.environ.get("RARE_WAIT", "7"))
 st = {"t": 0.0, "i": -1, "phase": 0, "base": None}
