@@ -19,6 +19,7 @@
 #include "HeroAnimInstance.h"
 #include "HeroReachComponent.h"
 #include "HeroSeat.h"
+#include "HeroShadowMesh.h"
 #include "LyudInventory.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -82,12 +83,14 @@ AHeroCharacter::AHeroCharacter()
 	USkeletalMeshComponent* Body = GetMesh();
 	Body->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -LyudmilovskCharacter::PlayerCapsuleHalfHeight + SoleDrop), FRotator(0.f, -90.f, 0.f));
 	Body->SetAnimInstanceClass(UHeroAnimInstance::StaticClass());
-	// the body casts its own shadow (headless: a hidden full copy for the shadow darkened the chest
-	// under the invisible head and doubled the skinning cost)
-	Body->SetCastShadow(true);
+	// the shadow is ShadowBody's, which has the head; the body casts it only with lyud.HeroShadowHead 0
+	Body->SetCastShadow(false);
 	Body->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	Body->bEnableUpdateRateOptimizations = false;
 
+
+	ShadowBody = CreateDefaultSubobject<UHeroShadowMesh>(TEXT("ShadowBody"));
+	ShadowBody->SetupAttachment(Body);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(GetCapsuleComponent());
@@ -103,6 +106,7 @@ void AHeroCharacter::BeginPlay()
 	{
 		GetMesh()->SetSkeletalMesh(Mesh);
 		GetMesh()->HideBoneByName(HeadBone, PBO_None);
+		ShadowBody->Follow(GetMesh());
 	}
 	else
 	{

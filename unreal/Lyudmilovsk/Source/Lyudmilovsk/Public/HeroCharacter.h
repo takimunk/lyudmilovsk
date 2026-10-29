@@ -10,11 +10,12 @@ class UInputMappingContext;
 struct FInputActionValue;
 class USkeletalMesh;
 class USkeletalMeshComponent;
+class UHeroShadowMesh;
 
 /**
  * The player, seen from inside: the hero's whole body (SK_Hero: the Zoomer in Murmuration's clothes)
  * stands in the world and the camera sits at its eyes, as in Murmuration's first person. The head is
- * hidden (the shadow is the headless body's), looking down shows your
+ * hidden (an invisible copy that follows the pose casts the shadow, head and all), looking down shows your
  * chest, arms, trousers and shoes. The body turns with the look the way a person does: standing
  * still the head and chest turn first and the feet follow past ~35 degrees, walking it faces where
  * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
@@ -121,6 +122,10 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Hero")
 	TObjectPtr<UCameraComponent> Camera;
+
+	/** The full body, invisible, only for the shadow (the visible one has no head); it copies the body's pose. */
+	UPROPERTY(VisibleAnywhere, Category = "Hero")
+	TObjectPtr<UHeroShadowMesh> ShadowBody;
 
 private:
 	void ReadInput(float DeltaSeconds);
