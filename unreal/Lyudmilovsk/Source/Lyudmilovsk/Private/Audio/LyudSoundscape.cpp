@@ -23,6 +23,7 @@
 #include "Sky/LyudSky.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
+#include "Weather/LyudRainFog.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 
@@ -569,8 +570,19 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 		P.Rain = W.Rain;
 		P.Snow = W.Snow;
 		P.TempC = W.TempC;
-		// a roof or canopy overhead drums only out there (indoors the walls already carry it, muffled)
-		P.RainRoof = Roof * Outdoors;
+		// a roof or canopy overhead drums only out there (indoors the walls already carry it, muffled); a cabin's or
+		// a car's thin roof with the open sky all around drums too
+		const float OpenSky = ULyudRainFogSubsystem::Get(World) ? ULyudRainFogSubsystem::Get(World)->GetOpenSky() : 0.f;
+		P.RainRoof = Roof * FMath::Max(Outdoors, FMath::Clamp(OpenSky * 2.f - 0.4f, 0.f, 1.f));
+		// rain at the listener's feet falls on the sea: at the waterline or swimming
+		P.RainWater = bHaveShore ? FMath::Clamp(1.f - (float(FVector::Dist2D(Shore, Listener)) / 100.f - 3.f) / 25.f, 0.f, 1.f) * 0.6f : 0.f;
+		if (const ALyudSea* SeaHere = ALyudSea::Get(World))
+		{
+			if (SeaHere->IsSwimmable(Listener) || (Listener.Z < SeaHere->SeaLevel() + 250.f && SeaHere->DepthAt(Listener) > 0.f))
+			{
+				P.RainWater = 1.f;
+			}
+		}
 	}
 	// field crickets: summer nights (and late evenings) in the warm
 	const float Doy = DayOfYear();

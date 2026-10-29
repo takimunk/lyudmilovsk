@@ -372,13 +372,15 @@ namespace LyudAudio
 	void FAmbience::RenderRain(float* L, float* R2, int Num, const FAmbienceParams& P)
 	{
 		float Rn = SRain.Y, Bed = 0.f, Low = 0.f, Roof = Clamp(P.RainRoof, 0.f, 1.f), Snow = Clamp(P.Snow, 0.f, 1.f);
+		const float OnWater = Clamp(P.RainWater, 0.f, 1.f) * (1.f - Roof);
 		for (int I = 0; I < Num; I++)
 		{
 			if ((I & (Block - 1)) == 0)
 			{
 				Rn = SRain.Step(std::max(P.Rain, 0.f));
 				const float Water = Rn * (1.f - 0.92f * Snow);
-				Bed = 0.15f * std::sqrt(Water);
+				// rain on the sea hisses brighter and fuller than on the ground
+				Bed = 0.15f * std::sqrt(Water) * (1.f + 0.45f * OnWater);
 				Low = 0.10f * std::sqrt(std::max(Water - 1.f, 0.f));
 				// single drops near the ears: ticks on the ground, patters on leaves, plips into puddles
 				const float PerSec = std::min(40.f * Water, 900.f);
@@ -392,7 +394,7 @@ namespace LyudAudio
 				{
 					const float U = R.Uniform();
 					const float Amp = 0.03f * (0.2f + std::pow(R.Uniform(), 5.f) * 2.5f) * (1.f - 0.7f * Roof);
-					if (U < 0.18f)
+					if (U < 0.18f + 0.62f * OnWater)
 					{
 						// a small drop into water: the bubble rings (Minnaert) and rises
 						AddGrain(2, Amp * 0.7f, R.White(), 1300.f + 2500.f * R.Uniform(), 0.012f + 0.02f * R.Uniform(), 0.f, I);

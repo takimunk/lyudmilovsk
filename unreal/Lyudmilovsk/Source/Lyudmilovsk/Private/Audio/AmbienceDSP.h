@@ -102,6 +102,8 @@ namespace LyudAudio
 		float Rain = 0.f;
 		float Snow = 0.f;
 		float RainRoof = 0.f;
+		/** 0 .. 1 how much of the rain near the ears falls on water (the sea at the listener's feet). */
+		float RainWater = 0.f;
 		/** Crickets: 0 .. 1 how many sing, and the air temperature that paces them, C. */
 		float Crickets = 0.f;
 		float TempC = 15.f;
