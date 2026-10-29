@@ -10,6 +10,8 @@ the player standing still.
 ANIMTEST_PART=lineup|poses|life picks a part (default all); door, town and maru run only when asked.
 maru: Maru up close (the model, the collar, the tag), her name over her, E (lyud.Animals.Hail) and her glad bark, the
 tag swinging as she turns and trots (ANIMTEST lines with the collar's swing and clinks, frames in Saved/Screenshots).
+eyes (ANIMTEST_BREED=Maru by default): a still body's face up close at a narrow field of view, front on, 3/4 and the
+left eye alone; then the same with the eyes turned (lyud.Animals.EyeFix/EyeYaw).
 """
 import os
 
@@ -223,6 +225,43 @@ if PART == "town":
     step(lambda w: (cmd(w, "csvprofile stop"), log("perf off stop")), 2.0)
     step(lambda w: cmd(w, "lyud.Animals 1"), 2.0)
 
+
+if PART == "eyes":
+    E = (8000.0, 0.0, 0.0)
+    BREED = os.environ.get("ANIMTEST_BREED", "Maru")
+
+    def head(w):
+        for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalActor):
+            if abs(a.get_actor_location().x - E[0]) < 300.0:
+                body = a.get_editor_property("body")
+                return body.get_socket_location("head"), a.get_actor_forward_vector()
+        return None, None
+
+    def face_shot(w, back, side, up, fov, _name):
+        h, f = head(w)
+        if h is None:
+            log("no %s found" % BREED)
+            return
+        r = unreal.Vector(-f.y, f.x, 0.0)                  # her right
+        # the eyes sit ~1/3 of the way from the head bone to the muzzle and a little above it
+        t = h + f * 9.0 + unreal.Vector(0, 0, 3.0)
+        cmd(w, "fov %d" % fov)
+        look(w, (t + f * back + r * side + unreal.Vector(0, 0, up)).to_tuple(), t.to_tuple())
+
+    @step
+    def s_eyes(w):
+        cmd(w, "Animal.Spawn %s 0 Stand %.0f %.0f 0 0" % (BREED, E[0], E[1]))
+        log("spawned " + BREED)
+    for k, (back, side, up, fov, name) in enumerate([(70.0, 0.0, 6.0, 30, "front"), (55.0, 35.0, 6.0, 30, "34"),
+                                                      (45.0, 28.0, 3.0, 18, "eye_right"), (45.0, -28.0, 3.0, 18, "eye_left")]):
+        step(lambda w, a=(back, side, up, fov, name): face_shot(w, *a), 4.0 if k == 0 else 2.0)
+        step(lambda w, n=name: shot(w, "eyes_" + n), 2.0)
+    step(lambda w: cmd(w, "lyud.Animals.EyeFix 1"), 0.5)
+    step(lambda w: cmd(w, "lyud.Animals.EyeYaw 25"), 0.5)
+    step(lambda w: face_shot(w, 70.0, 0.0, 6.0, 30, "front"), 2.0)
+    step(lambda w: shot(w, "eyes_front_look_left"), 2.0)
+    step(lambda w: cmd(w, "lyud.Animals.EyeYaw -25"), 1.0)
+    step(lambda w: shot(w, "eyes_front_look_right"), 2.0)
 
 if PART == "maru":
     M = (6000.0, 0.0, 0.0)

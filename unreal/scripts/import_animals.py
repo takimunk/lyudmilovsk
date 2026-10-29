@@ -158,6 +158,16 @@ def make_masters():
     mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(const(m, 0.9, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(m, 0.25, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    # subsurface, as the people's skin: Virtual Shadow Maps give it a wide penumbra, else the generated heads' coarse
+    # facets shadow themselves in hard jagged triangles (Maru's face, 2026-10-28)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE)
+    ssc = node(m, unreal.MaterialExpressionMultiply, -250, 400)
+    mel.connect_material_expressions(mul, "", ssc, "A")
+    tint_s = node(m, unreal.MaterialExpressionConstant3Vector, -400, 450)
+    tint_s.set_editor_property("constant", unreal.LinearColor(1.0, 0.5, 0.4, 1.0))
+    mel.connect_material_expressions(tint_s, "", ssc, "B")
+    mel.connect_material_property(ssc, "", unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+    mel.connect_material_property(const(m, 1.0, -400, 550), "", unreal.MaterialProperty.MP_OPACITY)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     # the fur shells
@@ -441,6 +451,9 @@ def do_bodies():
         r = json.load(open(p))
         out[breed] = {"kind": r["kind"], "coats": r["coats"], "eyes": r["eyes"], "speeds_cms": r["speeds_cms"],
                       "height_cm": r["height_cm"], "length_cm": r["length_cm"], "clips": sorted(r["clips"])}
+        ey = os.path.join(ROOT, "blender", "animals", "gen", breed, "eyes.json")     # runtime eyeballs, set by hand
+        if os.path.exists(ey):
+            out[breed]["eyeballs"] = {k: v for k, v in json.load(open(ey)).items() if not k.startswith("_")}
         c = os.path.join(EXPORT, breed, breed + "_collar.json")
         if os.path.exists(c):
             # the collar: the bone it rides, the point the tag hangs from, the chest it rests on (the breed's frame, cm)

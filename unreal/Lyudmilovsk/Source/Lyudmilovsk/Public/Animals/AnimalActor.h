@@ -95,6 +95,17 @@ private:
 	/** Her collar, for a breed that wears one (Maru): the cord on the neck and the swinging, jingling tag. */
 	UPROPERTY(Transient) TObjectPtr<class UAnimalCollarComponent> Collar;
 	void UpdateCollar();
+	/** Her own eyeballs (a breed with "eyeballs" in animal_bodies.json: Maru): on the head bone where the generated
+	 *  head's eyes are, the iris turned toward what she looks at (else straight on, with small saccades); the eyeballs
+	 *  joined into the body are hidden. */
+	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMeshComponent>> Eyeballs;
+	UPROPERTY(Transient) TArray<TObjectPtr<class UMaterialInstanceDynamic>> EyeMIDs;
+	FVector2D EyeSaccade = FVector2D::ZeroVector;
+	float EyeSaccadeAt = 0.f;
+	float EyeClock = 0.f;
+	FVector EyeGaze[2] = { FVector::ForwardVector, FVector::ForwardVector };
+	void UpdateEyes();
+	void TickEyes(float DeltaSeconds);
 
 	UAnimalAnimInstance* Anim() const;
 	UAnimSequence* Clip(FName Name) const;

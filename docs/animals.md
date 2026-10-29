@@ -179,3 +179,17 @@ company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on 
   and `animals_day_acts.txt` (what they do, hour by hour); `run.sh trace <id> <hour> <hours>` follows one animal.
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.
 - `unreal/scripts/test_animals.sh`: offscreen, the breeds and coats in a row, faces, poses, a cat and a laika meeting.
+
+## Eyes (runtime eyeballs)
+
+A breed with `blender/animals/gen/<Breed>/eyes.json` (Maru) gets its eyeballs at run time (`AAnimalActor::UpdateEyes`):
+two engine spheres with `M_HumanEyeball` (the people's eye material: a dark white and a big brown iris here) on the head
+bone, where the generated head's own eyes are (`at`, `look`, `radius`, `push` forward along `look`, set by hand on
+close-ups), and the eyeballs `build_animal.py` joins into the body are hidden. The iris turns toward what the animal
+looks at (`SetLookTarget`, the same target as the head), at most 35 deg off, with small saccades. `import_animals.py
+bodies` copies the file into `animal_bodies.json`. Check: `ANIMTEST_PART=eyes unreal/scripts/test_animals.sh` (front,
+3/4 and each eye at a narrow field of view, then the eyes turned with `lyud.Animals.EyeFix/EyeYaw`); tune live with
+`lyud.Animals.EyePush` / `lyud.Animals.EyeScale` (a new body). The joined eyeballs had been set 0.62 r into a pit of the
+hi3d head and read as small, dull, half-hidden dots in daylight (2026-10-27).
+
+M_AnimalBody is subsurface (soft VSM shadows on the coarse generated heads, 2026-10-28); MI_Maru_cream_Fur StrandScale 20 (was 11.2: strands read as flakes up close) is set on the asset, a reimport of Maru's textures resets it.
