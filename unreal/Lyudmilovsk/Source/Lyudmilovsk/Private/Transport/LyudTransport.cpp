@@ -824,7 +824,40 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 	FText Prompt;
 	int32 PanelStation = -1;
 	bool bClubBoard = false;
-	if (Cableway)
+	// a cabin standing at a station: E at its door opens or shuts it, like any door (before the call panel there,
+	// which stands at the same spot); E inside, away from the door, asks where to go
+	int32 DoorCabin = -1, WhereCabin = -1;
+	float Best = 1e9f;
+	for (int32 I = 0; I < Cabins.Num() && I < SimNum(Net->Cabins); I++)
+	{
+		const LT::FCabin& C = Net->Cabins[I];
+		if (!Cabins[I] || C.AtStop < 0 || (C.State != LT::ECabinState::Idle && C.State != LT::ECabinState::Dwelling))
+		{
+			continue;
+		}
+		const FVector D = Cabins[I]->DoorPoint();
+		const float Dist = FVector::Dist2D(D, P);
+		if (Dist < (I == In ? 140.f : 220.f) && FMath::Abs(P.Z - 90.f - D.Z) < 160.f && Dist < Best)
+		{
+			Best = Dist;
+			DoorCabin = I;
+		}
+	}
+	if (DoorCabin < 0 && In >= 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving)
+	{
+		WhereCabin = In;
+	}
+	if (DoorCabin >= 0)
+	{
+		const LT::FCabin& C = Net->Cabins[DoorCabin];
+		Prompt = LyudText::Get(C.Door > 0.5f ? TEXT("transport.prompt.cabin_shut") : TEXT("transport.prompt.cabin_open"),
+			{ FStringFormatArg(LyudText::Get(Key(C.Name)).ToString()) });
+	}
+	else if (WhereCabin >= 0)
+	{
+		Prompt = LyudText::Get(TEXT("transport.prompt.cabin_where"));
+	}
+	if (Cableway && Prompt.IsEmpty())
 	{
 		const int32 S = Cableway->StationAt(P);
 		if (S >= 0 && Cableway->PanelNear(S, P, PanelReach) >= 0)
@@ -851,7 +884,24 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 			FStringFormatArg(Dest >= 0 ? StationName(Dest).ToString() : LyudText::Get(TEXT("transport.cabin.idle")).ToString()) });
 	}
 	UI->SetPrompt(this, Prompt);
-	if ((PanelStation >= 0 || bClubBoard) && PromptCooldown <= 0.f && PC->WasInputKeyJustPressed(EKeys::E) && !UI->IsOpen())
+	const bool bE = PromptCooldown <= 0.f && PC->WasInputKeyJustPressed(EKeys::E) && !UI->IsOpen();
+	if (bE && DoorCabin >= 0)
+	{
+		LT::FCabin& C = Net->Cabins[DoorCabin];
+		const bool bShut = C.Door > 0.5f;
+		C.bShutReq = bShut;
+		if (!bShut && C.State == LT::ECabinState::Dwelling && Net->Time >= C.DwellUntil)
+		{
+			C.DwellUntil = Net->Time + 6.0;     // opened again by hand: a little longer before it goes
+		}
+		PromptCooldown = 0.3f;
+	}
+	else if (bE && WhereCabin >= 0)
+	{
+		const LT::FCabin& C = Net->Cabins[WhereCabin];
+		OpenDiagram(Net->Lines[C.Line].Stops[C.AtStop].Station);
+	}
+	else if (bE && (PanelStation >= 0 || bClubBoard))
 	{
 		OpenDiagram(PanelStation);
 	}

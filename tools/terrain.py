@@ -241,6 +241,18 @@ def _cached(fn):
     return functools.lru_cache(maxsize=None)(fn)
 
 
+def railway_holes():
+    """The sea railway's tunnel mouth (docs/railway.md): the landscape's hole under its concrete hood, (i, j) grid
+    vertices from Content/Railway/railway_built.json's terrain_holes (tools/railway.py; none if it isn't built)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "unreal", "Lyudmilovsk", "Content", "Railway",
+                        "railway_built.json")
+    try:
+        with open(path) as f:
+            return [tuple(h) for h in json.load(f).get("terrain_holes", [])]
+    except (OSError, ValueError):
+        return []
+
+
 def write_inputs(out_dir, log=print):
     """Samples the macro shape on the landscape grid and writes terrain_in.json/.bin for the C++
     build. About a minute of pure Python."""
@@ -312,6 +324,9 @@ def _write_inputs(out_dir, log):
     hole = bytearray(GRID_NX * GRID_NY)
     for j in range(HOLE_Y[0], HOLE_Y[1]):
         for i in range(HOLE_X[0], HOLE_X[1]):
+            hole[(j - GRID_Y0) * GRID_NX + (i - GRID_X0)] = 255
+    for i, j in railway_holes():
+        if 0 <= i - GRID_X0 < GRID_NX and 0 <= j - GRID_Y0 < GRID_NY:
             hole[(j - GRID_Y0) * GRID_NX + (i - GRID_X0)] = 255
     with open(os.path.join(out_dir, "terrain_in.bin"), "wb") as f:
         # header: magic, nx, ny, x0, y0, seed, sea_z, track count; each track: point count, x y pairs

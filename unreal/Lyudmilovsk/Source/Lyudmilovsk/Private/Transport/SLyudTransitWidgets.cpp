@@ -11,6 +11,7 @@
 #include "UI/LyudUIStyle.h"
 #include "Plants/GameCalendar.h"
 #include "Widgets/Layout/SBorder.h"
+#include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/SOverlay.h"
@@ -536,13 +537,38 @@ void SLyudTransitScreen::Construct(const FArguments& InArgs)
 		SNew(SOverlay)
 		+ SOverlay::Slot()
 		[
+			// a click anywhere round the map closes it (Esc in the editor's play leaves the game)
 			SNew(SBorder).BorderImage(LyudUI::ShadeBrush())
+			.OnMouseButtonDown_Lambda([](const FGeometry&, const FPointerEvent&)
+			{
+				if (ULyudTransportSubsystem* T = Active())
+				{
+					T->CloseDiagram();
+				}
+				return FReply::Handled();
+			})
 		]
 		+ SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(40.f)
 		[
 			SNew(SBorder).BorderImage(LyudUI::PanelBrush()).Padding(14.f)
+			.OnMouseButtonDown_Lambda([](const FGeometry&, const FPointerEvent&) { return FReply::Handled(); })
 			[
 				SNew(SVerticalBox)
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Right)
+				[
+					SNew(SButton).ButtonColorAndOpacity(FLinearColor(0.f, 0.f, 0.f, 0.f))
+					.OnClicked_Lambda([]()
+					{
+						if (ULyudTransportSubsystem* T = Active())
+						{
+							T->CloseDiagram();
+						}
+						return FReply::Handled();
+					})
+					[
+						SNew(STextBlock).Font(LyudUI::Font(22)).ColorAndOpacity(LyudUI::Text).Text(FText::FromString(TEXT("\u2715")))
+					]
+				]
 				+ SVerticalBox::Slot().AutoHeight()
 				[
 					SNew(SBox).WidthOverride(1280.f).HeightOverride(720.f)

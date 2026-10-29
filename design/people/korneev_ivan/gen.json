@@ -1,0 +1,15 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 74-year-old Russian retired engineer: average height, broad shoulders, white hair cut short, a thick white moustache, bushy eyebrows, deep wrinkles, kind face; a brown flat cap, a dark olive quilted vest over a checked flannel shirt, grey wool trousers, black leather shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "48f826b57e8d48819fe91dac91cc22a2",
+  "points": 8
+ },
+ "model": null
+}

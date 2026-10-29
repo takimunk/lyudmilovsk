@@ -466,8 +466,53 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 	// the station's name over the street door, and on the tower's two faces across the line
 	auto Sign = [&](const FTransform& At, float WidthCm)
 	{
-		// a widget's face looks along its +X: the sign faces along At's +X
-		Widget(S, SNew(SLyudStationSign).Station(S), At, FVector2D(1600.f, 300.f), WidthCm / 1600.f, true);
+		// a widget's face looks along its +X: the sign faces along At's +X. The kit's tower is not a box of TowerOut:
+		// the sign goes onto whatever of the tower is really there (a fin, a ring, the shaft), found by a trace in
+		// from outside, a few cm off it and facing the way it faces; nothing there: no sign
+		const FVector Out = At.GetRotation().GetForwardVector();
+		const FVector From = At.GetLocation() + Out * 800.f;
+		FHitResult Hit;
+		FCollisionQueryParams Q(TEXT("StationSign"), true);
+		if (!GetWorld()->LineTraceSingleByChannel(Hit, From, At.GetLocation() - Out * (TowerOut + 3.f), ECC_Visibility, Q))
+		{
+			return;
+		}
+		FVector N = FVector(Hit.ImpactNormal.X, Hit.ImpactNormal.Y, 0.f).GetSafeNormal();
+		if (N.IsNearlyZero() || FVector::DotProduct(N, Out) < 0.5f)
+		{
+			N = Out;
+		}
+		// as wide as the surface stays within 12 cm of the sign's plane (a round shaft takes a narrower sign)
+		const FVector C = Hit.ImpactPoint;
+		const FVector Right = FVector::CrossProduct(FVector::UpVector, N).GetSafeNormal();
+		float W = WidthCm;
+		for (; W >= 160.f; W *= 0.8f)
+		{
+			bool bFlat = true;
+			for (const float Sx : { -0.5f, 0.5f })
+			{
+				for (const float Sz : { -0.5f, 0.5f })
+				{
+					const FVector P = C + Right * (Sx * W) + FVector(0, 0, Sz * W * 300.f / 1600.f);
+					FHitResult H;
+					if (!GetWorld()->LineTraceSingleByChannel(H, P + N * 200.f, P - N * 40.f, ECC_Visibility, Q)
+						|| FMath::Abs(FVector::DotProduct(H.ImpactPoint - C, N)) > 12.f)
+					{
+						bFlat = false;
+					}
+				}
+			}
+			if (bFlat)
+			{
+				break;
+			}
+		}
+		if (W < 160.f)
+		{
+			return;
+		}
+		// in front of the surface's most outward point under it
+		Widget(S, SNew(SLyudStationSign).Station(S), FTransform(N.Rotation(), C + N * 15.f), FVector2D(1600.f, 300.f), W / 1600.f, true);
 	};
 	Sign(FTransform(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * (TowerOut + 3.f) + FVector(0, 0, 285.f))), 300.f);
 	for (const int32 E : { (GroundSide + 1) & 3, (GroundSide + 3) & 3 })
@@ -1599,6 +1644,8 @@ static TAutoConsoleVariable<int32> CVarLiftLog(TEXT("lyud.Transport.LiftLog"), 0
 ALyudStationLift::ALyudStationLift()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Tags.Add(TEXT("NoGrass"));          // no grass on the cab's roof or floor when the ground's scatter rebuilds
+	Tags.Add(TEXT("NoTree"));
 	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;

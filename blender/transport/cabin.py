@@ -512,6 +512,176 @@ def poster_spots(shell, centre=Vector((0.0, 0.0, 1.0))):
              "w": POSTER_W, "h": POSTER_H} for at, nrm, up in pick]
 
 
+def trim(ib, add, panes, door, roof_in, hull_bvh, cut_bvh):
+    """The fittings that make the shell a cabin (docs/transport.md "The cabin"): round each window a black rubber gasket
+    holding the glass and a chrome surround standing off the wall, the same surround round the door with a chrome
+    handrail on each jamb and a chrome threshold, a ribbed rubber mat inside the door, an amber belt moulding round
+    the wall under the windows (the outside's belt), a black rubber skirting, and the ceiling: an ivory oval panel
+    with an amber rim, a saucer lamp and a round vent grille. Slots: 4 chrome, 5 amber, 6 dark rubber, 7 ivory."""
+    x0, x1, door_x, sill_y = door
+    up = Vector((0, 0, 1))
+
+    def wall(p, n):
+        """The inside face of the wall where a ray along -n through p meets the hull (n: outward)."""
+        h = hull_bvh.ray_cast(p + n * 0.8, -n, 4.0)
+        return None if h[0] is None else h[0] - n * WALL
+
+    def resample(poly, k, closed=True):
+        m = len(poly) if closed else len(poly) - 1
+        per = [(poly[(i + 1) % len(poly)] - poly[i]).length for i in range(m)]
+        total = sum(per)
+        out, acc, i = [], 0.0, 0
+        for j in range(k):
+            t = total * j / (k if closed else k - 1)
+            t = min(t, total - 1e-6)
+            while i < m - 1 and acc + per[i] < t:
+                acc += per[i]
+                i += 1
+            f = (t - acc) / max(1e-6, per[i])
+            out.append(poly[i].lerp(poly[(i + 1) % len(poly)], f))
+        return out
+
+    def ring(loop_in, loop_out, n_of, proud, closed=True):
+        """A flat band between two loops on the wall, standing proud of it, with its outer edge down to the wall."""
+        k = len(loop_in)
+        a = [ib.verts.new(p - n_of(p) * proud) for p in loop_in]
+        b = [ib.verts.new(p - n_of(p) * proud) for p in loop_out]
+        c = [ib.verts.new(p + n_of(p) * 0.004) for p in loop_out]
+        d = [ib.verts.new(p + n_of(p) * 0.004) for p in loop_in]
+        for i in range(k if closed else k - 1):
+            j = (i + 1) % k
+            for q in ((a[i], b[i], b[j], a[j]), (b[i], c[i], c[j], b[j]), (d[i], a[i], a[j], d[j])):
+                try:
+                    ib.faces.new(q)
+                except ValueError:
+                    pass
+
+    def tube(loop, r, closed=True, seg=6):
+        k = len(loop)
+        for i in range(k if closed else k - 1):
+            rod(ib, loop[i], loop[(i + 1) % k], r, seg)
+
+    # windows: gasket on the glass's edge, chrome surround 6 cm wide on the wall round it
+    for poly, (o3, u, v, n) in panes:
+        p2 = resample(poly, 56)
+        inner, outer, gasket = [], [], []
+        c2 = sum(p2, Vector((0, 0, 0))) / len(p2)
+        for p in p2:
+            d2 = (p - c2)
+            d2 = d2.normalized() if d2.length > 1e-6 else Vector((1, 0, 0))
+            pi = wall(o3 + u * p.x + v * p.y, n)
+            po = wall(o3 + u * (p.x + d2.x * 0.06) + v * (p.y + d2.y * 0.06), n)
+            pg = wall(o3 + u * (p.x - d2.x * 0.008) + v * (p.y - d2.y * 0.008), n)
+            if None in (pi, po, pg):
+                break
+            inner.append(pi)
+            outer.append(po)
+            gasket.append(pg + n * (WALL * 0.5))
+        else:
+            add(lambda: ring(inner, outer, lambda q: n, 0.014), 4)
+            add(lambda: tube(gasket, 0.012), 6)
+
+    # the door: the surround on the jambs and head (not the sill), a handrail on each jamb, the threshold, the mat
+    ny = Vector((0, 1, 0))
+    r = 0.10
+    path = [Vector((x0, 2.5, 0.02))]   # y outside the hull: wall() casts back in along -y
+    for i in range(7):
+        a = math.pi - math.pi / 2 * i / 6
+        path.append(Vector((x0 + r + r * math.cos(a), 2.5, DOOR_H - r + r * math.sin(a))))
+    for i in range(7):
+        a = math.pi / 2 - math.pi / 2 * i / 6
+        path.append(Vector((x1 - r + r * math.cos(a), 2.5, DOOR_H - r + r * math.sin(a))))
+    path.append(Vector((x1, 2.5, 0.02)))
+    path = resample(path, 41, closed=False)
+    cd = Vector((door_x, 2.5, DOOR_H * 0.45))
+    di, do = [], []
+    for p in path:
+        out2 = Vector((p.x - cd.x, 0, p.z - cd.z))
+        out2 = out2.normalized() if out2.length > 1e-6 else Vector((0, 0, 1))
+        if p.z < 0.05:
+            out2 = Vector((math.copysign(1, p.x - door_x), 0, 0))
+        pi, po = wall(p, ny), wall(p + out2 * 0.07, ny)
+        if pi is not None and po is not None:
+            di.append(pi)
+            do.append(po)
+    if len(di) > 2:
+        add(lambda: ring(di, do, lambda q: ny, 0.016, closed=False), 4)
+    for jx in (x0 - 0.13, x1 + 0.13):
+        a, b = wall(Vector((jx, 2.5, 0.85)), ny), wall(Vector((jx, 2.5, 1.75)), ny)
+        if a is not None and b is not None:
+            off = Vector((0, -0.06, 0))
+            add(lambda: rod(ib, a + off, b + off, 0.017, 10), 4)
+            add(lambda: rod(ib, a + off, a, 0.009, 6), 4)
+            add(lambda: rod(ib, b + off, b, 0.009, 6), 4)
+    t_in = wall(Vector((door_x, 2.5, 0.03)), ny)
+    if t_in is not None:
+        ty0, ty1 = t_in.y - 0.03, sill_y + 0.005
+        add(lambda: box(ib, Vector((door_x, (ty0 + ty1) / 2, 0.004)), (x1 - x0, ty1 - ty0, 0.012)), 4)
+        my1 = ty0
+        add(lambda: box(ib, Vector((door_x, my1 - 0.35, 0.003)), (x1 - x0 - 0.1, 0.7, 0.008)), 6)
+        for i in range(9):
+            mx = x0 + 0.1 + (x1 - x0 - 0.2) * i / 8
+            add(lambda: box(ib, Vector((mx, my1 - 0.35, 0.009)), (0.02, 0.66, 0.008)), 6)
+
+    # the belt moulding (amber) and the skirting (black rubber): round the wall where it is wall (not the door)
+    def round_band(z0, z1, proud, mi):
+        loop0, loop1, ok = [], [], []
+        for k in range(120):
+            a = 2 * math.pi * k / 120
+            d = Vector((math.cos(a), math.sin(a), 0))
+            h0 = cut_bvh.ray_cast(Vector((0, 0, z0)), d, 4.0)
+            h1 = cut_bvh.ray_cast(Vector((0, 0, z1)), d, 4.0)
+            w0 = hull_bvh.ray_cast(Vector((0, 0, z0)), d, 4.0)
+            w1 = hull_bvh.ray_cast(Vector((0, 0, z1)), d, 4.0)
+            good = all(h[0] is not None for h in (h0, h1, w0, w1)) and (h0[0] - w0[0]).length < WALL + 0.02 \
+                and (h1[0] - w1[0]).length < WALL + 0.02
+            loop0.append(h0[0] - d * proud if h0[0] is not None else None)
+            loop1.append(h1[0] - d * proud if h1[0] is not None else None)
+            ok.append(good)
+        for k in range(120):
+            j = (k + 1) % 120
+            if ok[k] and ok[j]:
+                q = [ib.verts.new(p) for p in (loop0[k], loop0[j], loop1[j], loop1[k])]
+                add(lambda: ib.faces.new(q), mi)
+    zs = [wall(o3 + u * p.x + v * p.y, n) for poly, (o3, u, v, n) in panes for p in poly]
+    zmin = min((p.z for p in zs if p is not None), default=1.0)
+    round_band(zmin - 0.09, zmin - 0.03, 0.012, 5)
+    round_band(0.0, 0.11, 0.015, 6)
+
+    # the ceiling: an ivory oval panel a little under the roof, an amber rim, a saucer lamp, a vent grille
+    def ceil(x, y):
+        h = hull_bvh.ray_cast(Vector((x, y, 1.2)), up, 3.0)
+        return (h[0].z - WALL) if h[0] is not None else roof_in
+
+    ea, eb = 1.15, 0.55
+    rimo, rimi = [], []
+    for k in range(48):
+        a = 2 * math.pi * k / 48
+        cx, cy = math.cos(a), math.sin(a)
+        rimo.append(Vector((ea * cx, eb * cy, ceil(ea * cx, eb * cy) - 0.035)))
+        rimi.append(Vector((ea * 0.93 * cx, eb * 0.93 * cy, ceil(ea * 0.93 * cx, eb * 0.93 * cy) - 0.045)))
+
+    def panel():
+        cz = ceil(0, 0) - 0.05
+        c = ib.verts.new(Vector((0, 0, cz)))
+        vs = [ib.verts.new(p) for p in rimi]
+        for k in range(48):
+            f = ib.faces.new((c, vs[(k + 1) % 48], vs[k]))
+    add(panel, 7)
+    add(lambda: ring(rimi, rimo, lambda q: Vector((0, 0, -1)), 0.0), 5)
+    lz = ceil(0, 0) - 0.05
+    add(lambda: bmesh.ops.create_cone(ib, cap_ends=True, segments=24, radius1=0.30, radius2=0.20, depth=0.05,
+                                      matrix=Matrix.Translation((0, 0, lz - 0.025))), 4)
+    add(lambda: bmesh.ops.create_cone(ib, cap_ends=True, segments=24, radius1=0.24, radius2=0.24, depth=0.012,
+                                      matrix=Matrix.Translation((0, 0, lz - 0.056))), 3)
+    for vx in (-0.75, 0.75):
+        vz = ceil(vx, 0) - 0.05
+        add(lambda: bmesh.ops.create_cone(ib, cap_ends=True, segments=20, radius1=0.11, radius2=0.11, depth=0.015,
+                                          matrix=Matrix.Translation((vx, 0, vz - 0.008))), 4)
+        for i in range(-3, 4):
+            add(lambda: box(ib, Vector((vx + i * 0.028, 0, vz - 0.018)), (0.012, 0.18 * math.sqrt(max(0.0, 1 - (i / 3.6) ** 2)), 0.01)), 6)
+
+
 def chaikin(poly, rounds=3):
     for _ in range(rounds):
         out = []
@@ -736,6 +906,10 @@ def build(o, ctx):
     cutters = to_object("cutters", cut_bm, [m_chrome])
     boolean(shell, cutters, "DIFFERENCE")
     posters = poster_spots(shell)
+    cut_bm = bmesh.new()
+    cut_bm.from_mesh(shell.data)
+    cut_bvh = BVHTree.FromBMesh(cut_bm)
+    cut_bm.free()
     # the leaf: the shell inside the door outline, a hair smaller than the opening
     door_cut = to_object("door_cut", door_bm, [m_chrome])
     for v in door_cut.data.vertices:
@@ -792,6 +966,26 @@ def build(o, ctx):
         leaf.data.materials[k] = mat("TX_CabinDoorIn", (0.80, 0.76, 0.66, 1))
         bake_procedural(leaf, {k: (interior_wall, 512)}, 0)
 
+    # the door's handle inside: a chrome bar on stand-offs by its trailing edge
+    lb = bmesh.new()
+    lb.from_mesh(leaf.data)
+    if m_chrome.name not in [m.name for m in leaf.data.materials]:
+        leaf.data.materials.append(m_chrome)
+    ci = [m.name for m in leaf.data.materials].index(m_chrome.name)
+    hx = door_x - math.copysign(DOOR_W / 2 - 0.12, -door_x)
+    hit = hull_bvh.ray_cast(Vector((hx, 0.0, 1.1)), Vector((0, 1, 0)), 3.0)
+    if hit[0] is not None:
+        hy = hit[0].y - WALL - 0.065
+        n0 = len(lb.faces)
+        rod(lb, (hx, hy, 0.92), (hx, hy, 1.28), 0.014, 8)
+        for hz in (0.95, 1.25):
+            rod(lb, (hx, hy, hz), (hx, hit[0].y - WALL, hz), 0.008, 6)
+        lb.faces.ensure_lookup_table()
+        for i in range(n0, len(lb.faces)):
+            lb.faces[i].material_index = ci
+    lb.to_mesh(leaf.data)
+    lb.free()
+
     hanger = to_object("SM_TR_CabinHanger", hb, [shell_src_mat])
     decimate(hanger, HANGER_BUDGET)
     for ob in (shell, leaf, hanger):
@@ -835,7 +1029,21 @@ def build(o, ctx):
         base_back = min(back_x, inner_end(0.0, 0.12)) - 0.02
         cx = sgn * (front_x + back_x) / 2
         bcx = sgn * (front_x + 0.02 + base_back) / 2
-        add(lambda: box(ib, Vector((bcx, 0, (SEAT_H - 0.12) / 2)), (base_back - front_x - 0.02, half_w * 2 - 0.08, SEAT_H - 0.12)), 2)
+        # the frame: an enamel apron under the cushion's front, two chrome sled legs, the cushion on them
+        add(lambda: box(ib, Vector((sgn * (front_x + 0.04), 0, (SEAT_H - 0.12) / 2 + 0.05)),
+                        (0.025, half_w * 2 - 0.16, SEAT_H - 0.22), 0.008), 2)
+        for t in (-1, 1):
+            ly = t * (half_w - 0.10)
+            fx, bx = sgn * (front_x + 0.06), sgn * (base_back - 0.04)
+            add(lambda: rod(ib, (fx, ly, 0.0), (fx, ly, SEAT_H - 0.12), 0.016, 8), 4)
+            add(lambda: rod(ib, (bx, ly, 0.0), (bx, ly, SEAT_H - 0.12), 0.016, 8), 4)
+            add(lambda: rod(ib, (fx, ly, 0.012), (bx, ly, 0.012), 0.014, 8), 4)
+            add(lambda: rod(ib, (fx, ly, SEAT_H - 0.13), (bx, ly, SEAT_H - 0.13), 0.014, 8), 4)
+            # an armrest at each end: a chrome loop over the cushion's edge
+            ay = t * (half_w + 0.01)
+            ax0, ax1 = sgn * (front_x + 0.05), sgn * (back_x - 0.10)
+            add(lambda: rod(ib, (ax0, ay, SEAT_H - 0.12), (ax0, ay, SEAT_H + 0.20), 0.013, 8), 4)
+            add(lambda: rod(ib, (ax0, ay, SEAT_H + 0.20), (ax1, ay, SEAT_H + 0.20), 0.013, 8), 4)
         add(lambda: box(ib, Vector((cx, 0, SEAT_H - 0.06)), (SEAT_D, half_w * 2, 0.12), 0.03), 1)
         # the backrest: from the cushion's back, leaning back as far as the hull lets it
         bz0, bz1 = SEAT_H, BACK_H
@@ -845,6 +1053,9 @@ def build(o, ctx):
         rot = Matrix.Rotation(sgn * tilt, 4, "Y")
         add(lambda: box(ib, Vector((sgn * (bx0 + bx1) / 2, 0, (bz0 + bz1) / 2)), (0.10, half_w * 2, (bz1 - bz0) / math.cos(tilt)),
                         0.03, rot), 1)
+        # a head roll along the backrest's top
+        hx = sgn * (bx1 + 0.01)
+        add(lambda: rod(ib, (hx, -half_w + 0.03, bz1 + 0.01), (hx, half_w - 0.03, bz1 + 0.01), 0.045, 12), 1)
         bench[sgn] = {"x": round(cx, 3), "front": round(sgn * front_x, 3), "half_w": round(half_w, 3)}
         for t in (-1, 1):
             # a seat: the floor under the cushion's middle, facing the other bench
@@ -860,8 +1071,26 @@ def build(o, ctx):
             post = ray((sx * rail_x, t * 0.40, 1.2), (0, 0, 1))
             post_z = (post.z - WALL if post else rail_z + 0.1)
             add(lambda: rod(ib, (sx * rail_x, t * 0.40, rail_z), (sx * rail_x, t * 0.40, post_z), 0.012, 6), 4)
-    inside = to_object("SM_TR_CabinInside", ib, [m_floor, m_seat, m_base, m_glow, m_chrome])
+    trim(ib, add, panes, (x0, x1, door_x, sill_y), roof_in, hull_bvh, cut_bvh)
+    m_amber = mat("TR_Amber", (0.86, 0.42, 0.08, 1), 0.35)
+    m_dark = mat("TR_Dark", (0.05, 0.045, 0.04, 1), 0.7)
+    m_ivory = mat("TR_Ivory", (0.80, 0.76, 0.66, 1), 0.45)
+    inside = to_object("SM_TR_CabinInside", ib, [m_floor, m_seat, m_base, m_glow, m_chrome, m_amber, m_dark, m_ivory])
     bake_procedural(inside, {0: (terrazzo, 1024), 1: (leatherette, 1024), 2: (bench_base, 256)}, 0)
+
+    # the cabin's board over the door inside, on the wall (the inner face is the hull a wall in)
+    hb_ = hull_bvh.ray_cast(Vector((door_x, 0.0, DOOR_H + 0.14)), Vector((0, 1, 0)), 3.0)
+    board_y = (hb_[0].y - WALL - 0.03) if hb_[0] is not None else wall_y - 0.05
+    board = [round(door_x, 3), round(board_y, 3), round(DOOR_H + 0.14, 3)]
+
+    # the number and the bird's name on both sides, on the hull itself (a flat plate a hand off the egg floated)
+    plates = []
+    for sgn, px in ((1, x1 + 0.55), (-1, door_x + 0.2)):
+        h = hull_bvh.ray_cast(Vector((px, sgn * 5.0, 0.62)), Vector((0, -sgn, 0)), 10.0)
+        if h[0] is not None:
+            n = h[1] if h[1].y * sgn > 0 else -h[1]
+            n = Vector((n.x, n.y, n.z)).normalized()
+            plates.append({"at": [round(v, 3) for v in h[0] + n * 0.025], "normal": [round(v, 3) for v in n]})
 
     # --- sockets and collision (Blender frame, metres from the origin) -------------------------------------------
     wall_y = min(hull_y(x * 0.1, z, sg) for x in range(-12, 13) for z in (0.15, 1.0, 1.9) for sg in (1, -1)) - WALL
@@ -899,8 +1128,9 @@ def build(o, ctx):
             "grip": [round(v, 3) for v in grip],
             "hanger_foot": [round(foot_c.x, 3), round(foot_c.y, 3), round(arm_z, 3)],
             "lamp": [0.0, 0.0, round(roof_in - 0.1, 3)],
-            "board": [round(door_x, 3), round(wall_y - 0.05, 3), round(DOOR_H + 0.12, 3)],
+            "board": board,
             "plate": [round(door_x + DOOR_W / 2 + 0.75, 3), round(side_y + 0.02, 3), 0.55],
+            "plates": plates,
             "seats": seats,
             "posters": posters,
         },

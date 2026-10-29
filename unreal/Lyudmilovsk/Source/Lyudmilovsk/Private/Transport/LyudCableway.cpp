@@ -489,6 +489,10 @@ int32 ALyudCableway::StationAt(const FVector& P) const
 ALyudCabin::ALyudCabin()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	// grass and forests scatter by tracing down: a cabin parked at a station when they (re)build must not get grass
+	// on its floor (it grew through it at Aton)
+	Tags.Add(TEXT("NoGrass"));
+	Tags.Add(TEXT("NoTree"));
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Root->SetMobility(EComponentMobility::Movable);
 	RootComponent = Root;
@@ -614,11 +618,28 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 		P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		P->SetBlendMode(EWidgetBlendMode::Transparent);
 		P->RegisterComponent();
-		const FVector At = bRoom ? FVector(S > 0 ? -R.Plate.X : R.Plate.X, S * FMath::Abs(R.Plate.Y), R.Plate.Z)
-			: FVector(S > 0 ? 0.f : 110.f, S * (Width * 0.5f + 4.f), 48.f);
-		P->SetRelativeLocation(At);
-		P->SetRelativeRotation(FRotator(0.f, S > 0 ? 90.f : -90.f, 0.f));
-		P->SetRelativeScale3D(FVector(0.16f));
+		// on the hull itself (kit.json sockets.plates, one per side: where it is and which way it faces)
+		const TPair<FVector, FVector>* OnHull = nullptr;
+		for (const TPair<FVector, FVector>& H : R.Plates)
+		{
+			if (bRoom && H.Value.Y * S > 0.f)
+			{
+				OnHull = &H;
+			}
+		}
+		if (OnHull)
+		{
+			P->SetRelativeLocation(OnHull->Key);
+			P->SetRelativeRotation(FRotationMatrix::MakeFromXZ(OnHull->Value, FVector::UpVector).Rotator());
+		}
+		else
+		{
+			const FVector At = bRoom ? FVector(S > 0 ? -R.Plate.X : R.Plate.X, S * FMath::Abs(R.Plate.Y), R.Plate.Z)
+				: FVector(S > 0 ? 0.f : 110.f, S * (Width * 0.5f + 4.f), 48.f);
+			P->SetRelativeLocation(At);
+			P->SetRelativeRotation(FRotator(0.f, S > 0 ? 90.f : -90.f, 0.f));
+		}
+		P->SetRelativeScale3D(FVector(bRoom ? 0.13f : 0.16f));
 		P->SetSlateWidget(SNew(SLyudCabinPlate).Number(Number).Name(Name).Color(LineColor));
 		AddInstanceComponent(P);
 		Plates.Add(P);

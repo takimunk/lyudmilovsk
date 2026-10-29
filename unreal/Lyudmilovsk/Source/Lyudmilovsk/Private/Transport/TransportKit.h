@@ -39,6 +39,7 @@ namespace LyudTransportKit
 		TArray<TPair<FVector, FVector>> Collision;   // centre, full size
 		struct FPoster { FVector At, Normal, Up; float W = 56.f; };
 		TArray<FPoster> Posters;                     // the route diagram on the inside wall
+		TArray<TPair<FVector, FVector>> Plates;      // the number and name on the hull: at, outward normal
 	};
 
 	/** Blender metres (x, y, z) -> the actor's centimetres (x, -y, z). */
@@ -96,6 +97,15 @@ namespace LyudTransportKit
 								const TSharedPtr<FJsonObject> S = V->AsObject();
 								R.Seats.Add(FTransform(FRotator(0.f, S->GetNumberField(TEXT("yaw")), 0.f), FromBlender(S->GetArrayField(TEXT("at")))));
 							}
+							const TArray<TSharedPtr<FJsonValue>>* PlateList;
+							if ((*Sockets)->TryGetArrayField(TEXT("plates"), PlateList))
+							{
+								for (const TSharedPtr<FJsonValue>& V : *PlateList)
+								{
+									const TSharedPtr<FJsonObject> P = V->AsObject();
+									R.Plates.Add({ FromBlender(P->GetArrayField(TEXT("at"))), FromBlender(P->GetArrayField(TEXT("normal"))).GetSafeNormal() });
+								}
+							}
 							const TArray<TSharedPtr<FJsonValue>>* Posters;
 							if ((*Sockets)->TryGetArrayField(TEXT("posters"), Posters))
 							{
@@ -136,13 +146,17 @@ namespace LyudTransportKit
 
 	inline UStaticMesh* LoadMesh(const FString& Name)
 	{
-		// Interchange names the asset after the glTF mesh; some versions prefix it again
-		for (const FString& N : { Name, TEXT("SM_") + Name })
+		// Interchange names the asset after the glTF mesh; some versions prefix it again. The cabin's parts come from a
+		// kit of their own (cabin_kit), found first; the rest from transport_kit
+		for (const TCHAR* Kit : { TEXT("cabin_kit"), TEXT("transport_kit") })
 		{
-			const FString Path = FString::Printf(TEXT("/Game/Transport/Meshes/transport_kit/StaticMeshes/%s.%s"), *N, *N);
-			if (UStaticMesh* M = LoadObject<UStaticMesh>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+			for (const FString& N : { Name, TEXT("SM_") + Name })
 			{
-				return M;
+				const FString Path = FString::Printf(TEXT("/Game/Transport/Meshes/%s/StaticMeshes/%s.%s"), Kit, *N, *N);
+				if (UStaticMesh* M = LoadObject<UStaticMesh>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+				{
+					return M;
+				}
 			}
 		}
 		return nullptr;

@@ -1,0 +1,15 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 20-year-old student, half Japanese half Russian: slim, medium height, long straight black hair with a fringe, light makeup; an oversized mustard-yellow knitted sweater, a pleated dark plaid skirt above the knee, black tights, chunky black lace-up boots. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "c7d6f95d230b48d48ce01390753a4390",
+  "points": 8
+ },
+ "model": null
+}

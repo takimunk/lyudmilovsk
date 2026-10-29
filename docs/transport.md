@@ -108,6 +108,21 @@ shards inside):
 - **Textures inside**, no generation: procedural materials baked in Blender into colour + normal images on their own
   UVs (`TX_CabinWall` cream vinyl lining with panel joins, `TX_CabinFloor` terrazzo, `TX_CabinSeat` pleated amber
   leatherette, `TX_CabinBench`, `TX_CabinDoorIn`); the game keeps `TX_*` materials as imported.
+- **Fittings** (`trim` in cabin.py, after real cabins: glass held in a rubber strip in its frame, benches at the
+  ends, grab rails, a moulded ceiling with the light and the vents): a black rubber gasket round every pane and a
+  chrome surround on the wall round it, the same surround round the door with a chrome handrail on each jamb, a
+  chrome threshold and a ribbed rubber mat, the door's own handle, an amber belt moulding round the wall under the
+  windows, black rubber skirting, an ivory oval ceiling panel with an amber rim, a saucer lamp and two vent grilles;
+  the benches on chrome sled frames with armrests and a head roll.
+- **Plates**: the number and the bird's name on both sides lie on the hull (kit.json `sockets.plates`: where and
+  which way, from rays onto the clean shell), the cabin's board over the door inside on the wall.
+- **Own kit**: the cabin's parts are `design/transport/game/cabin_kit.glb` (written by `optimize.py -- cabin`),
+  imported on their own into `/Game/Transport/Meshes/cabin_kit` (`TR_KIT=cabin`, run by import_transport.sh when the
+  file exists); `LoadMesh` looks there first; pack.py leaves `SM_TR_Cabin*` out of transport_kit.
+- **Door in play**: a cabin waiting at a station (idle) stands open; E at a cabin's door opens or shuts it like any
+  door (it comes before the call panel at the same spot; a shut idle cabin stays shut, a shut dwelling one may go
+  when its dwell is over: `FCabin::bShutReq`); E inside, away from the door, opens the route map to pick where to
+  go. The route map closes on E, Esc, a click anywhere outside it, or its ✕.
 - **Posters**: two route diagrams on the inside wall where a 0.56 x 0.315 m rectangle lands on wall only (found by
   rays in `poster_spots`, kit.json `sockets.posters`); the game draws them live (`SLyudTransitDiagram`, the player's language).
 - Inside (`SM_TR_CabinInside`): a terrazzo floor fitted to the hull, two padded benches facing each other at the ends

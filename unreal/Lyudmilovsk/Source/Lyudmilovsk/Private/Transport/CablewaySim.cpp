@@ -914,6 +914,7 @@ namespace LyudTransport
 	void FNetwork::Leave(FCabin& C, int CI)
 	{
 		const int Stop = C.AtStop;
+		C.bShutReq = false;
 		C.Targets.erase(std::remove(C.Targets.begin(), C.Targets.end(), Stop), C.Targets.end());
 		// a player who was to get in here and did not: their cabin is gone, another is found
 		for (int RI = 0; RI < (int)Riders.size(); RI++)
@@ -998,11 +999,20 @@ namespace LyudTransport
 				}
 				case ECabinState::Idle:
 				{
-					C.Door = std::max(0.f, C.Door - H / P.DoorTime);
+					// a cabin waiting at a station stands open (one walks in), unless someone shut it by hand; it shuts
+					// before it leaves
+					const bool bLeaving = (!C.Targets.empty() && NextTarget(C) != C.AtStop) || C.bToDepot;
 					if (C.bPlayerAboard)
 					{
-						C.Door = std::min(1.f, C.Door + 2.f * H / P.DoorTime);
 						C.IdleSince = Time;
+					}
+					if (bLeaving || (C.bShutReq && !C.bPlayerAboard))
+					{
+						C.Door = std::max(0.f, C.Door - H / P.DoorTime);
+					}
+					else
+					{
+						C.Door = std::min(1.f, C.Door + H / P.DoorTime);
 					}
 					if (!C.Targets.empty())
 					{
@@ -1010,7 +1020,7 @@ namespace LyudTransport
 						{
 							ArriveAt(CI, C.AtStop);
 						}
-						else if (Clear(CI, C.S))
+						else if (C.Door <= 0.f && Clear(CI, C.S))
 						{
 							Leave(C, CI);       // off the siding onto the rope when it is clear
 						}
@@ -1033,6 +1043,10 @@ namespace LyudTransport
 						{
 							ArriveAt(CI, C.AtStop);
 						}
+						else if (C.Door > 0.f)
+						{
+							// shut first (next steps), then go
+						}
 						else if (Clear(CI, C.S))
 						{
 							Leave(C, CI);
@@ -1045,7 +1059,7 @@ namespace LyudTransport
 					break;
 				}
 				case ECabinState::Dwelling:
-					if (Time < C.DwellUntil || C.bHold)
+					if ((Time < C.DwellUntil && !C.bShutReq) || C.bHold)
 					{
 						C.Door = std::min(1.f, C.Door + H / P.DoorTime);
 						break;

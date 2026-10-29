@@ -1,0 +1,15 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 34-year-old Japanese spectroscopist: slim, medium height, short tidy black hair with a side part, clean-shaven, thin black rectangular glasses; a light grey crewneck sweater over a white shirt collar, dark navy chinos, white leather sneakers. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "74428c38772740528e5fb6f14bd21ef3",
+  "points": 8
+ },
+ "model": null
+}

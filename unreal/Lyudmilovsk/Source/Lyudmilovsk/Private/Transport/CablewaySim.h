@@ -128,6 +128,8 @@ namespace LyudTransport
 		double IdleSince = 0.0;
 		bool bToDepot = false;
 		bool bHold = false;         // somebody in the doorway (the game sets it): the doors stay open
+		bool bShutReq = false;      // the player shut the doors by hand (the game sets it): an idle cabin stays shut, a
+		                            // dwelling one may go once its dwell is over; cleared when it moves
 		bool bPlayerAboard = false; // the game sets it from the cabin's inside volume
 		// the swing of the cabin under its hanger (radians): pitch along the rope, roll across it
 		float Pitch = 0.f, PitchV = 0.f, Roll = 0.f, RollV = 0.f;

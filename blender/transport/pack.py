@@ -9,7 +9,8 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 GAME = os.path.join(ROOT, "design", "transport", "game")
 bpy.ops.wm.read_factory_settings(use_empty=True)
 for f in sorted(os.listdir(GAME)):
-    if not (f.startswith("SM_TR_") and f.endswith(".glb")):
+    if not (f.startswith("SM_TR_") and f.endswith(".glb")) or f.startswith("SM_TR_Cabin"):
+        # the cabin's parts are a kit of their own (cabin_kit.glb, written by optimize.py -- cabin)
         continue
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=os.path.join(GAME, f))

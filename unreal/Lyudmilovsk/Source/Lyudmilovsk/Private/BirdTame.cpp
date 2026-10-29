@@ -602,7 +602,7 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// a move of the hand (buying a drink, drinking) takes it over; the feed waits in the pocket meanwhile
-	const bool bFree = !Reach->IsBusy();
+	const bool bFree = !Reach->IsBusy() && !Reach->HasOverrideHold();
 	const bool bOffer = bEquipped && bWantOffer && bFree;
 	const bool bCarry = bEquipped && !bWantOffer && bFree;
 	if (bOffer)

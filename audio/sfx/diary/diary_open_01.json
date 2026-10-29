@@ -1,0 +1,23 @@
+{
+ "id": "diary_open",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/diary/diary_open_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A thick A4 hardcover planner opened flat: the leatherette cover swinging open with a soft creak of the spine and a papery whisper of pages settling, close, quiet room, no voices",
+  "duration_seconds": 1.0
+ },
+ "hash": "ec82347bbb7f",
+ "fal_request_id": "01a18427-b87f-7ae1-8849-66276cdc419e",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab03c00/8E9_fo5fvIF0V-kUFo4UO_sound_effect.mp3",
+ "created": "2026-10-28T20:16:01Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -9 dBFS",
+ "sha256": "7efdda7aad8c48aafe857ae5ceb7764a8d55145fd8318eef82fc1ba5e6e7a1fd",
+ "seconds": 0.67,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "diary"
+}

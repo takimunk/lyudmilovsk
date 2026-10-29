@@ -343,6 +343,17 @@ void ALyudSea::StepDepthMap(int32 Budget)
 		{
 			Box += P->GetComponentsBoundingBox(true);
 		}
+		// other ground the sea stands on (the railway's bank near the coast, its island: components tagged LyudSeaBed)
+		if (Box.IsValid)
+		{
+			for (TObjectIterator<UPrimitiveComponent> It; It; ++It)
+			{
+				if (It->GetWorld() == World && It->ComponentHasTag(TEXT("LyudSeaBed")) && It->IsRegistered())
+				{
+					Box += It->Bounds.GetBox();
+				}
+			}
+		}
 		if (!Box.IsValid)
 		{
 			return;
@@ -382,7 +393,7 @@ void ALyudSea::StepDepthMap(int32 Budget)
 
 float ALyudSea::GroundZ(double X, double Y, bool& bOk) const
 {
-	// the ground only (the landscape): a pier, a boulder or a tree is not the bed
+	// the ground only (the landscape, and what is tagged LyudSeaBed: the railway's bank and island): a pier, a boulder or a tree is not the bed
 	bOk = false;
 	const UWorld* World = GetWorld();
 	if (!World)
@@ -396,7 +407,7 @@ float ALyudSea::GroundZ(double X, double Y, bool& bOk) const
 	World->LineTraceMultiByObjectType(Hits, FVector(X, Y, SeaZ + 15000.0), FVector(X, Y, SeaZ - 8000.0), Objects, Params);
 	for (const FHitResult& H : Hits)
 	{
-		if (H.GetActor() && H.GetActor()->IsA<ALandscapeProxy>())
+		if (H.GetActor() && (H.GetActor()->IsA<ALandscapeProxy>() || (H.GetComponent() && H.GetComponent()->ComponentHasTag(TEXT("LyudSeaBed")))))
 		{
 			bOk = true;
 			return float(H.ImpactPoint.Z);

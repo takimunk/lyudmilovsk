@@ -1,0 +1,32 @@
+{
+ "_doc": "Made by tools/railway_textures.py: the metres one tile of each texture covers.",
+ "textures": {
+  "ballast": {
+   "tile_m": 0.8
+  },
+  "armour": {
+   "tile_m": 2.4
+  },
+  "planks": {
+   "tile_m": 1.6
+  },
+  "planks_dark": {
+   "tile_m": 1.6
+  },
+  "rubber": {
+   "tile_m": 1.2
+  },
+  "tunnel": {
+   "tile_m": 3.0
+  },
+  "wetsand": {
+   "tile_m": 1.5
+  },
+  "turf": {
+   "tile_m": 1.8
+  },
+  "lichen": {
+   "tile_m": 2.0
+  }
+ }
+}

@@ -8,7 +8,8 @@
 // a slot of a place (a bed, a kitchen chair, a club computer, a library chair, a bench); slots are reserved so nobody
 // sits on anybody's knees. Ways: outdoors along the animal walk grid (tools/animal_map.py, A*), indoors along the
 // polylines of tools/people_map.py (stairs, flats, the library, the club); between the valley and the club's spur by the
-// cable car.
+// cable car; between the valley and the sea island by the sea railway's train (its timetable through TrainNext/TrainRide:
+// Private/Railway/RailRun.h in the game and in tools/peoplesim).
 //
 // Frame: Unreal world metres (UE cm / 100), Z up, yaw in degrees (0 = +X, 90 = +Y).
 #pragma once
@@ -66,11 +67,12 @@ namespace LyudPeople
 	{
 		Idle,       // between activities (decides next think)
 		Going,      // walking a route to the activity's slot
-		Riding,     // in the cable car (hidden), comes out at the other station
+		Riding,     // in the cable car or the train (hidden in the sim; the game seats them), comes out at the other station
 		Settling,   // sitting down / lying down at the slot (Transit seconds)
 		Doing,      // doing the activity at the slot
 		Leaving,    // standing up / getting up (Transit seconds), then Idle
 		Away,       // gone to town / school / work elsewhere: not in the world
+		Waiting,    // on a railway halt's platform at a boarding point, waiting for the train's doors to open
 		Num
 	};
 	const char* StateName(EState S);
@@ -98,11 +100,17 @@ namespace LyudPeople
 	struct FPlace
 	{
 		std::string Id;
-		std::string Kind;           // flat, library, club, bench, square, lookout, beach, promenade, station_lower, station_upper, town, ...
+		std::string Kind;           // flat, library, club, bench, square, lookout, beach, promenade, station_lower, station_upper, town,
+		                            // lab, shop, rail_stop, island_spot, ...
 		V3 Portal;                  // outdoor point by its door (or the spot itself outdoors)
 		float Yaw = 0.f;
 		bool bIndoor = false;
-		int Island = 0;             // 0 the valley (town, Academgorodok, beach), 1 the club's spur; -1 cut off
+		int Island = 0;             // 0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (by train); -1 cut off
+		// a railway halt (kind rail_stop): the timetable's stop id (beach, island) and the way from Portal (on the ground,
+		// where walkers arrive) to the platform's deck (the stair's foot and top); its slots (kind board) are the
+		// boarding points on the deck
+		std::string Stop;
+		std::vector<V3> RailWay;
 		std::vector<int> Slots;
 		// flats
 		std::string House;
@@ -133,6 +141,7 @@ namespace LyudPeople
 		bool bPauseSet = false;                         // wander_pause given (else the first stop is 30-90 s)
 		bool bAway = false;                 // leaves the world (town, school)
 		bool bFree = true;                  // chosen in free time (false: only by a duty: sleep, work, school)
+		int Days = 0x7F;                    // the weekdays it can be chosen on (bit 0 Monday; a shop closed on Sundays)
 	};
 
 	/** Fixed hours of a person: work or school. */
@@ -147,7 +156,9 @@ namespace LyudPeople
 	{
 		int Id = -1;
 		std::string Key;            // owner, clerk, streamer, kid_boy, ... (npc.<key>.name in the strings)
-		std::string Mesh;           // Owner, Clerk, Streamer, ... (/Game/Characters/Humans/<Mesh>/SK_<Mesh>)
+		std::string Mesh;           // the model shown now: Owner, Clerk, Streamer, ... (/Game/Characters/Humans/<Mesh>/SK_<Mesh>)
+		std::string Body;           // their own body's id (people.json body; = Mesh when absent): the game loads it first and
+		                            // falls back to Mesh while it isn't made; also their id in npc_dialogue.txt
 		std::string ComputerClip;   // their own seated clip at a computer (Sit_KeyboardMouse, ...)
 		std::string Occupation;
 		std::string Household;      // people of one household share a flat
@@ -161,6 +172,7 @@ namespace LyudPeople
 		std::vector<FDuty> Duties;
 		std::string ClubSeat;       // their usual station in the club ("4"); "" none
 		std::vector<std::string> Friends;
+		std::vector<std::pair<std::string, float>> Likes;   // activity id -> how much more they like it (a painter and the island)
 		std::string OwnSlot;        // "club:9": a slot only they use
 		std::string StartActivity;  // what they do when a new game begins
 		float StartMinutes[2] = { 60.f, 120.f };
@@ -189,7 +201,10 @@ namespace LyudPeople
 		bool bIndoors = false;
 		bool bHurry = false;        // late (for work, school): runs the outdoor part of the way
 		int Island = 0;             // which side of the cable car they are on (FPlace::Island)
-		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; };   // Kind 0 outdoors, 1 indoors, 2 ride from here (Ride s) to the next
+		// Kind 0 outdoors (the walk grid's ground, or the island's), 1 indoors, 2 the cable car from here (Ride s) to the next,
+		// 3 the train from here (a boarding point) to the next (the other halt's boarding point), 4 outdoors along a fixed
+		// line in 3D (to a halt, its stair and platform); ToIsland: where a ride comes out; RailFrom/RailTo: the halts' places
+		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; int8_t ToIsland = -1; int RailFrom = -1, RailTo = -1; };
 		std::vector<FWay> Path;
 		int PathI = 0;
 		float Think = 0.f;
@@ -197,6 +212,10 @@ namespace LyudPeople
 		bool bBreak = false;        // wants a break from a duty (to eat)
 		bool bOnBreak = false;      // on it: the duty waits till this activity ends
 		bool bRideExternal = false; // the ride is the cable car's (RideHook took it): it ends with EndRide
+		bool bTrain = false;        // waiting for or riding the train
+		int RailFrom = -1, RailTo = -1;     // the train ride's halts (places)
+		double DoorsAt = 0.0;       // waiting: when the doors open (sim seconds)
+		double RideUntil = 0.0;     // riding the train: when it opens its doors at the other halt
 		uint32_t Rng = 1;
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
@@ -211,6 +230,7 @@ namespace LyudPeople
 		uint32_t Seed = 20261020;
 		float ThinkEvery = 2.f;         // s between decisions of an idle person
 		float RideSeconds = 150.f;      // the cable car from station to station
+		float TrainSeconds = 280.f;     // the train between the halts when there is no timetable (TrainNext unset or -1): hidden
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
 		float Jitter = 0.15f;
 	};
@@ -273,8 +293,30 @@ namespace LyudPeople
 		/** Their cable-car ride is over: out at the other station, on along their way. */
 		void EndRide(int Person);
 
+		/** The sea railway's timetable (ULyudRailwaySubsystem in the game, LyudRail::FRun in tools/peoplesim), in sim seconds:
+		 *  Doors = the next moment at or after Time a train going from stop From towards stop To (ids: beach, island) opens
+		 *  its doors at From; false if none (no railway: the ride is then TrainSeconds, hidden). Sim seconds can be negative
+		 *  (the game's life clock counts from the start date), so no sentinel value. */
+		std::function<bool(const std::string& From, const std::string& To, double Time, double& Doors)> TrainNext;
+		/** Seconds from the doors opening at From to their opening at To. */
+		std::function<double(const std::string& From, const std::string& To)> TrainRide;
+		/** The game's own positions of a halt (its stair's foot on the ground and its boarding points on the deck, Unreal
+		 *  metres) over the data's guesses; false if there is no such halt. */
+		bool SetRailStop(const std::string& Stop, const V3& Foot, const std::vector<V3>& Boarding);
+
 		float Ground_Z(const V3& P) const;
+		/** Ground under a point: the island's own height field where it has one (people_places.json ground_patches), else
+		 *  the walk grid's; P.Z without either. */
+		float GroundAt(const V3& P) const;
 		int IslandOf(const V3& P) const;
+		/** Seconds of the way from From (on island FromIsland) to slot To leaving at At: walks, rides, waits for the train. */
+		float WaySeconds(const FPerson& P, const V3& From, int FromIsland, int ToSlot, double At) const;
+		/** A halt of the sea railway (place index) on an island, -1 none. */
+		int RailStopOf(int Island) const;
+
+		/** Height fields of ground off the walk grid (the sea island), Unreal metres. */
+		struct FPatch { float X0 = 0.f, Y0 = 0.f, Cell = 4.f; int NX = 0, NY = 0; std::vector<float> Z; bool Has(float X, float Y) const; float At(float X, float Y) const; };
+		std::vector<FPatch> Patches;
 
 	private:
 		int StationOf(int Island) const;
@@ -291,6 +333,8 @@ namespace LyudPeople
 		void Finish(FPerson& P);
 		bool Start(FPerson& P, int Activity, int Slot, double Minutes, bool bSnap, const char* Why);
 		int DutyNow(const FPerson& P, bool& bSleep) const;
+		/** Hours of free time left: till bed, or till today's next duty begins. */
+		float FreeHoursLeft(const FPerson& P) const;
 		bool InHours(float From, float To, float H) const;
 		float Score(const FPerson& P, const FActivity& A, int& OutSlot) const;
 		int PickSlot(const FPerson& P, const FActivity& A, float& OutMinutes) const;
@@ -298,6 +342,12 @@ namespace LyudPeople
 		float Trait(const FPerson& P, const std::string& T) const;
 		V3 Where(const FPerson& P) const;
 		void Reserve(FPerson& P, int Slot);
+		/** The hops between two islands: (kind 2 cable car | 3 train, the place to set off from, the place to come out at, the island). */
+		struct FHop { int Kind; int A; int B; int To; };
+		bool Hops(int From, int To, std::vector<FHop>& Out) const;
+		/** On the sea island: ends the activity in time for a train back (the walk to the halt and a minute to spare). */
+		void CatchTrainBack(FPerson& P);
+		void BoardTrain(FPerson& P);
 		V3 SpotOf(const FPerson& P, int Slot) const;
 		float YawAt(const FPerson& P, int Slot, EPose Pose) const;
 		void Unreserve(FPerson& P);
