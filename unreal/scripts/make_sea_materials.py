@@ -191,7 +191,7 @@ def sea_material(coll):
     view = g.node(X.MaterialExpressionCameraVectorWS)
     pix = g.custom(H.GUST_LIB + H.PIXEL_HLSL,
                    [("XY", uv), ("V", view), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
-                    ("Tide", tide), ("Wind", wind), ("Drift", drift)],
+                    ("Tide", tide), ("Wind", wind), ("Drift", drift), ("Glit", (g.vparam("Glitter", (0.18, 0.03, 0.0, 0.0)), "RGBA"))],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT4, desc="SeaNormal")
 
     # surf over the shallows, from the scene's own depth under the water and the depth map

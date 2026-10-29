@@ -13,6 +13,7 @@ Parameters (ALyudSea sets them on its dynamic material):
               g = water a hollow on the tidal flat keeps when the ebb leaves it, m: the ground draws those pools)
   LandSideX = world X (m) east of which there is no sea
   Tide      = the water over the datum now, m (0 at spring high water, negative below; the depth map is under the datum)
+  Glitter   = (the capillary ripples' slope per train, the water's least roughness, 0, 0)
 and from /Game/Weather/MPC_LyudWeather: Wind = (dir x, dir y, speed m/s, gustiness),
 WindDrift = (drift x m, drift y m, gust clock s, day stir).
 """
@@ -125,7 +126,7 @@ return d * 100.0;
 # shader), detail trains scaled by the local gust (cat's paws; glassy where the air is still), trains
 # finer than the pixel fading into roughness; whitecaps where the Gerstner surface pinches (Jacobian)
 # in a fresh wind. Returns (normal x, normal y, roughness, whitecap); normal z = sqrt(1 - x^2 - y^2).
-# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Tide, Wind, Drift.
+# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Tide, Wind, Drift, Glit (capillary slope, least roughness).
 PIXEL_HLSL = r"""
 float2 xy = XY;
 float foot = max(length(ddx(xy)), length(ddy(xy))) + 1e-5;
@@ -173,6 +174,28 @@ for (int k = 0; k < nd; k++)
     Txz -= KA * a.x * s;
     Tyz -= KA * a.y * s;
 }
+// capillary ripples: the sea is never a mirror; even in a calm a light air ruffles it into wavelets a few cm to two
+// metres long (deep-water dispersion with surface tension), Glit.x = their slope. Near the camera they break the
+// sun's and the sky's mirror images into glitter; far off they go into the roughness and the sun's mirror image
+// stretches into a path
+float2 wdir = normalize(Wind.xy + float2(1e-4, 0.0));
+float wang = atan2(wdir.y, wdir.x);
+float cap0 = Glit.x * saturate(depth * 4.0) * (0.6 + 0.4 * saturate(g));
+for (int q = 0; q < 6; q++)
+{
+    float ang = wang + (q - 2.5) * 0.55 + sin(q * 2.4) * 0.3;
+    float kq = 6.2831853 / (0.12 * pow(1.75, q));
+    float KA = cap0 * (0.8 + 0.08 * q);
+    float fade = saturate(2.0 - kq * foot * 1.5);
+    lost += KA * KA * (1.0 - fade * fade);
+    if (fade <= 0.0) continue;
+    float2 dq = float2(cos(ang), sin(ang));
+    float om = sqrt(9.81 * kq + 7.4e-5 * kq * kq * kq);
+    float s, c;
+    sincos(kq * dot(dq, xy) - om * t + q * 1.7, s, c);
+    Txz -= KA * fade * dq.x * s;
+    Tyz -= KA * fade * dq.y * s;
+}
 // the breakers' slope, from how their height changes across the pixel's neighbours
 float sh = Lyud.SurfHeight(depth, SP.y, t) * w.y;
 float2 dxy = ddx(xy), dyy = ddy(xy);
@@ -191,7 +214,7 @@ for (int j = 0; j < 4; j++)
     if (r.z > 0.03) break;
     n = normalize(lerp(n, float3(0, 0, 1), 0.5));
 }
-float rough = saturate(0.02 + sqrt(lost) * 0.9);
+float rough = saturate(Glit.y + sqrt(lost) * 0.9);
 // whitecaps: crests that stand high (eta in sigmas of the sea) or pinch (Jacobian) break; the fresher the
 // wind the lower the bar (a few % of the sea at 7 m/s, a white-flecked sea at gale force), broken up by noise
 float2 p = Lyud.Drifted(xy, Drift);

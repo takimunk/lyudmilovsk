@@ -208,9 +208,11 @@ def _triplanar(m, d, nm, tile, x, y, shared):
 
 
 # Wet sand and pools under the tide: from the water's edge up to where the water stood within the last hour the sand
-# is dark and glistening (the film of water flattens its bumps), a damp band above that dries out over the
-# hour as the ebb leaves it; over the high-water mark it stays dry. Tide = MPC_LyudWeather "Tide" (ALyudSea):
-# (water now, datum, wet line, springs), world cm.
+# is dark and glistening (a film of water over it: smooth, its bumps flattened, wet grains catching the sun), a damp
+# band above that dries out over the hour as the ebb leaves it; over the high-water mark it stays dry.
+# Tide = MPC_LyudWeather "Tide" (ALyudSea): (water now, datum, wet line, springs), world cm; T = time s.
+# The pools are water: nearly black through their depth (the sand under them seen darkly), smooth and mirroring the
+# sky, ruffled by small drifting ripples, with a sharp edge and a band of soaked sand round it.
 WET_HLSL = """
 float z = P.z;
 float now = Tide.x;
@@ -219,20 +221,118 @@ float wet = (1.0 - smoothstep(top - 5.0, top + 25.0, z)) * (1.0 - smoothstep(Tid
 float sheen = wet * (1.0 - saturate((z - now) / max(top - now, 40.0)));
 // pools: the hollows the ebb cannot drain keep water up to their rim (the sea's depth map: r = bed under the datum,
 // g = the water a hollow keeps, both m; ALyudSea hands it over as TidePools / PoolRect)
-float pool = 0.0;
+float pool = 0.0, rim = 0.0, deep = 0.0;
 if (Rect.z > 0.0)
 {
     float2 uv = (P.xy * 0.01 - Rect.xy) * Rect.zw;
     float2 bw = Pools.SampleLevel(PoolsSampler, uv, 0).rg;
     float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0;     // the pool's water level, world cm
-    pool = smoothstep(0.0, 6.0, surf - z) * step(Tide.x + 3.0, surf) * saturate(bw.y * 20.0);
+    float keep = step(Tide.x + 3.0, surf) * smoothstep(0.004, 0.02, bw.y);
+    pool = smoothstep(0.0, 0.8, surf - z) * keep;
+    deep = smoothstep(0.0, 12.0, surf - z) * keep;
+    rim = (1.0 - smoothstep(0.0, 5.0, z - surf)) * keep * (1.0 - pool);
 }
-Rough = lerp(lerp(lerp(R, 0.42, wet), 0.1, sheen), 0.03, pool);
-Nrm = normalize(lerp(N, float3(0, 0, 1), max(0.65 * sheen, pool)));
-float3 c = C * lerp(float3(1, 1, 1), float3(0.4, 0.42, 0.45), wet);
-// still water: the sand seen dark through it, and some of the sky (the reflections alone stay dim on a landscape)
-return lerp(c, c * float3(0.25, 0.28, 0.3) + float3(0.1, 0.13, 0.16), pool);
+float2 xy = P.xy * 0.01;
+// fine sparkle on the soaked sand: grain-sized facets tilted at random catch the sun and the sky; faded out where a
+// pixel covers many grains (else it shimmers)
+float foot = max(length(ddx(xy)), length(ddy(xy)));
+float2 cell = floor(xy * 60.0);
+float h1 = frac(sin(dot(cell, float2(127.1, 311.7))) * 43758.5453);
+float h2 = frac(sin(dot(cell, float2(269.5, 183.3))) * 43758.5453);
+float spark = step(0.9, h1) * (1.0 - smoothstep(0.004, 0.02, foot)) * max(sheen, rim);
+float3 sn = normalize(float3((h2 - 0.5) * 0.6, (frac(h2 * 7.13) - 0.5) * 0.6, 1.0));
+// the pools' ripples: a few small trains drifting with time (a breath of wind over still water)
+float2 rg = 0.0;
+rg += float2(0.8, 0.6) * cos(dot(xy, float2(0.8, 0.6)) * 9.0 - T * 2.1);
+rg += float2(-0.5, 0.86) * cos(dot(xy, float2(-0.5, 0.86)) * 13.0 - T * 2.7 + 1.3);
+rg += float2(0.97, -0.26) * cos(dot(xy, float2(0.97, -0.26)) * 21.0 - T * 3.3 + 4.1);
+rg += float2(-0.3, -0.95) * cos(dot(xy, float2(-0.3, -0.95)) * 31.0 - T * 4.0 + 2.2) * 0.6;
+float3 pn = normalize(float3(rg * 0.018, 1.0));
+float3 n = normalize(lerp(N, float3(0, 0, 1), 0.65 * max(sheen, rim)));
+n = normalize(lerp(n, sn, spark));
+Nrm = normalize(lerp(n, pn, pool));
+Rough = lerp(lerp(lerp(lerp(R, 0.42, wet), 0.12, sheen), 0.1, rim), 0.05, spark * (1.0 - pool));
+Rough = lerp(Rough, 0.02, pool);
+Spec = lerp(lerp(0.5, 0.6, max(sheen, rim)), 0.25, pool);
+// the sky in the pools: the sky light's cubemap (clouds and all) along the mirror direction, by water's Fresnel (the
+// landscape's own reflections stay dim on still water), RDir / RAmt for the SkyLightEnvMapSample node
+float3 v = normalize(-V);
+float3 wn = normalize(float3(Nrm.xy, max(Nrm.z, 0.2)));
+RDir = reflect(-v, wn);
+RDir.z = max(RDir.z, 0.02);
+float cosv = saturate(dot(v, wn));
+RAmt = pool * 0.85 * (0.02 + 0.98 * pow(1.0 - cosv, 5.0));
+float3 c = C * lerp(float3(1, 1, 1), float3(0.4, 0.42, 0.45), max(wet, rim));
+c *= lerp(1.0, 0.75, rim);
+// through the water: the sand dark and brownish, darker where the pool is deeper (the sky comes from the reflection)
+return lerp(c, c * lerp(float3(0.22, 0.22, 0.2), float3(0.07, 0.08, 0.08), deep), pool);
 """
+
+
+def _wet_node(m, blend):
+    """The wet sand and pools (WET_HLSL) on top of the ground's blend; wires base colour, normal, roughness, specular."""
+    pos = _node(m, unreal.MaterialExpressionWorldPosition, -300, -400)
+    tide = _node(m, unreal.MaterialExpressionCollectionParameter, -300, -300,
+                 collection=unreal.load_asset(TIDE_MPC), parameter_name="Tide")
+    pools = _node(m, unreal.MaterialExpressionTextureObjectParameter, -300, -200, parameter_name="TidePools",
+                  texture=unreal.load_asset("/Engine/EngineResources/Black"))
+    rect = _node(m, unreal.MaterialExpressionVectorParameter, -300, -100, parameter_name="PoolRect",
+                 default_value=unreal.LinearColor(0, 0, 0, 0))
+    time = _node(m, unreal.MaterialExpressionTime, -300, -500)
+    wet = _node(m, unreal.MaterialExpressionCustom, 100, 0, code=WET_HLSL,
+                output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description="WetSand",
+                inputs=[_custom_input(n) for n in ("C", "N", "R", "P", "Tide", "Pools", "Rect", "T", "V")],
+                additional_outputs=[_custom_output("Nrm", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
+                                    _custom_output("Rough", unreal.CustomMaterialOutputType.CMOT_FLOAT1),
+                                    _custom_output("Spec", unreal.CustomMaterialOutputType.CMOT_FLOAT1),
+                                    _custom_output("RDir", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
+                                    _custom_output("RAmt", unreal.CustomMaterialOutputType.CMOT_FLOAT1)])
+    _link(blend, "", wet, "C")
+    _link(blend, "Normal", wet, "N")
+    _link(blend, "Roughness", wet, "R")
+    _link(pos, "", wet, "P")
+    _link(tide, "", wet, "Tide")
+    _link(pools, "", wet, "Pools")
+    _link(rect, "RGBA", wet, "Rect")
+    _link(time, "", wet, "T")
+    view = _node(m, unreal.MaterialExpressionCameraVectorWS, -300, -100 - 500)
+    _link(view, "", wet, "V")
+    env = _node(m, unreal.MaterialExpressionSkyLightEnvMapSample, 400, -200)
+    _link(wet, "RDir", env, "Direction")
+    rough = _node(m, unreal.MaterialExpressionConstant, 300, -100, r=0.04)
+    _link(rough, "", env, "Roughness")
+    refl = _node(m, unreal.MaterialExpressionMultiply, 600, -200)
+    _link(env, "", refl, "A")
+    _link(wet, "RAmt", refl, "B")
+    mel.connect_material_property(refl, "", MP.MP_EMISSIVE_COLOR)
+    mel.connect_material_property(wet, "", MP.MP_BASE_COLOR)
+    mel.connect_material_property(wet, "Nrm", MP.MP_NORMAL)
+    mel.connect_material_property(wet, "Rough", MP.MP_ROUGHNESS)
+    mel.connect_material_property(wet, "Spec", MP.MP_SPECULAR)
+    return wet
+
+
+def patch_wet():
+    """Rebuilds only M_Ground's wet sand and pools in place (the landscape keeps its material), for tuning WET_HLSL
+    without rebuilding the ground: TERRAIN_WET_ONLY=1."""
+    m = unreal.load_asset(DEST + "/M_Ground")
+    blend = None
+    for e in [e for e in unreal.ObjectIterator(unreal.MaterialExpression) if e.get_outer() == m]:
+        if isinstance(e, unreal.MaterialExpressionCustom) and e.get_editor_property("description") == "WetSand":
+            mel.delete_material_expression(m, e)
+        elif isinstance(e, unreal.MaterialExpressionCustom) and e.get_editor_property("description") == "GroundBlend":
+            blend = e
+        elif e.get_editor_property("material_expression_editor_x") == -300 and \
+                e.get_editor_property("material_expression_editor_y") in (-600, -500, -400, -300, -200, -100) or \
+                (e.get_editor_property("material_expression_editor_x") in (300, 400, 600) and
+                 e.get_editor_property("material_expression_editor_y") in (-200, -100)):
+            mel.delete_material_expression(m, e)     # the wet node's own inputs (_wet_node puts them there)
+    if blend is None:
+        raise RuntimeError("M_Ground has no GroundBlend node: rebuild the ground")
+    _wet_node(m, blend)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    _log("M_Ground wet sand patched")
 
 
 def make_material(layers, textures):
@@ -288,28 +388,7 @@ def make_material(layers, textures):
     _link(mix, "", blend, "Macro")
     depth = _node(m, unreal.MaterialExpressionPixelDepth, -1400, -200)
     _link(depth, "", blend, "Dist")
-    pos = _node(m, unreal.MaterialExpressionWorldPosition, -300, -400)
-    tide = _node(m, unreal.MaterialExpressionCollectionParameter, -300, -300,
-                 collection=unreal.load_asset(TIDE_MPC), parameter_name="Tide")
-    pools = _node(m, unreal.MaterialExpressionTextureObjectParameter, -300, -200, parameter_name="TidePools",
-                  texture=unreal.load_asset("/Engine/EngineResources/Black"))
-    rect = _node(m, unreal.MaterialExpressionVectorParameter, -300, -100, parameter_name="PoolRect",
-                 default_value=unreal.LinearColor(0, 0, 0, 0))
-    wet = _node(m, unreal.MaterialExpressionCustom, 100, 0, code=WET_HLSL,
-                output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description="WetSand",
-                inputs=[_custom_input(n) for n in ("C", "N", "R", "P", "Tide", "Pools", "Rect")],
-                additional_outputs=[_custom_output("Nrm", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
-                                    _custom_output("Rough", unreal.CustomMaterialOutputType.CMOT_FLOAT1)])
-    _link(blend, "", wet, "C")
-    _link(blend, "Normal", wet, "N")
-    _link(blend, "Roughness", wet, "R")
-    _link(pos, "", wet, "P")
-    _link(tide, "", wet, "Tide")
-    _link(pools, "", wet, "Pools")
-    _link(rect, "RGBA", wet, "Rect")
-    mel.connect_material_property(wet, "", MP.MP_BASE_COLOR)
-    mel.connect_material_property(wet, "Nrm", MP.MP_NORMAL)
-    mel.connect_material_property(wet, "Rough", MP.MP_ROUGHNESS)
+    _wet_node(m, blend)
     hole = _node(m, unreal.MaterialExpressionLandscapeVisibilityMask, -300, 400)
     mel.connect_material_property(hole, "", MP.MP_OPACITY_MASK)
     mel.recompile_material(m)
@@ -421,7 +500,9 @@ def build(face_y):
     return landscape
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and os.environ.get("TERRAIN_WET_ONLY"):
+    patch_wet()
+elif __name__ == "__main__":
     import json
     with open(os.path.join(REPO, "blender", "export", "scene01_layout.json")) as f:
         layout = json.load(f)

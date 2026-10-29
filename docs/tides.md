@@ -38,8 +38,13 @@ physics volume (moved with the tide), the MPC `Sea` vector, and the sea material
 
 **Pools.** When the depth map is read, a priority flood from the water that never leaves (deeper than the lowest
 springs) finds the hollows on the flat that cannot drain; the depth map's second channel holds how much water each
-keeps. Once the ebb leaves a hollow, the sea material lifts the water there to the pool's own level and stills it
-(no waves, no surf). The CPU side ignores pools (they are ankle deep).
+keeps. Once the ebb leaves a hollow, the ground (`M_Ground`, `WET_HLSL` in `unreal/scripts/import_terrain.py`) draws
+the pool as water up to its rim: a sharp edge with a band of soaked sand round it, nearly black through its depth,
+smooth (roughness 0.02) and ruffled by small drifting ripples, the sky mirrored in it (the sky light's cubemap along
+the mirror direction, by water's Fresnel, as emissive: the landscape's own reflections stay dim on still water). The
+soaked sand under the hour's wet line is smooth and glistens: grain-sized facets catch the sun and the sky near the
+camera. The CPU side ignores pools (they are ankle deep). `TERRAIN_WET_ONLY=1` with `import_terrain.py` rebuilds just
+this part of `M_Ground` in place.
 
 **Seabed life** (`ULyudSeabedComponent`) is placed only where the lowest spring tide still covers it; the fish
 and jellies swim in the water as it is now.
