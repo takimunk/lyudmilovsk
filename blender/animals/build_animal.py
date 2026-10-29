@@ -707,7 +707,7 @@ def add_shells_from(ob, src, n, L, C, W, Wsrc):
     # and the shells over the eyes: the coarse copy's big triangles would spread the fur across them
     for c, r, _n in B.get("eyes_at") or []:
         cv = mathutils.Vector(c)
-        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * (1.6 if B.get("eye_bare") else 1.9)], context="FACES_ONLY")
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * (1.15 if B.get("eye_bare") else 1.9)], context="FACES_ONLY")
     bm.verts.ensure_lookup_table()
     loose = [v for v in bm.verts if not v.link_faces]
     keep_idx = [v.index for v in bm.verts if v.link_faces]
