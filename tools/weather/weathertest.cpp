@@ -226,6 +226,35 @@ static int Test(const FClimate& C)
 		Check(Veers >= Fronts * 0.7, "the wind veers at most cold fronts", double(Veers) / std::max(Fronts, 1));
 		Check(PressureJumps >= Fronts * 0.7, "pressure rises behind most cold fronts", double(PressureJumps) / std::max(Fronts, 1));
 	}
+	// seamless: minute by minute over 200 days nothing jumps (what the clouds, rain, fog and snow draw from)
+	{
+		FChain Chain(C);
+		FSeason Season;
+		const double H0 = HoursSince2000(2026, 10, 1, 0.0), Dt = 1.0 / 60.0;
+		FWeatherState A = Full(H0, Chain, Season);
+		double MCov = 0, MBase = 0, MTop = 0, MSheet = 0, MFog = 0, MFogTop = 0, MSnowFrac = 0, MSnow = 0, MWet = 0, MIce = 0, MHalo = 0, MLens = 0;
+		for (double H = Dt; H < 200 * 24; H += Dt)
+		{
+			const FWeatherState B = Full(H0 + H, Chain, Season);
+			auto M = [](double& X, double V) { X = std::max(X, std::fabs(V)); };
+			M(MCov, B.CloudCover - A.CloudCover); M(MCov, B.Low.Cover - A.Low.Cover); M(MCov, B.Mid.Cover - A.Mid.Cover); M(MCov, B.High.Cover - A.High.Cover);
+			M(MBase, B.Low.BaseM - A.Low.BaseM); M(MBase, B.Mid.BaseM - A.Mid.BaseM); M(MTop, B.Low.TopM - A.Low.TopM);
+			M(MSheet, B.Low.Sheet - A.Low.Sheet); M(MSheet, B.High.Sheet - A.High.Sheet);
+			M(MFog, B.Fog - A.Fog); M(MFogTop, B.FogTopM - A.FogTopM); M(MSnowFrac, B.SnowFraction - A.SnowFraction);
+			M(MSnow, B.SnowDepthCm - A.SnowDepthCm); M(MWet, B.Wet - A.Wet); M(MIce, B.SeaIceCover - A.SeaIceCover);
+			M(MHalo, B.Halo - A.Halo); M(MLens, B.Lenticular - A.Lenticular);
+			A = B;
+		}
+		Check(MCov < 0.03, "seamless: cloud cover per minute < 0.03", MCov);
+		Check(MBase < 120, "seamless: cloud base per minute < 120 m", MBase);
+		Check(MTop < 300, "seamless: cloud top per minute < 300 m", MTop);
+		Check(MSheet < 0.05, "seamless: cloud form (sheet) per minute < 0.05", MSheet);
+		Check(MFog < 0.03 && MFogTop < 60, "seamless: fog and its depth per minute", MFogTop);
+		Check(MSnowFrac < 0.06, "seamless: snow share per minute < 0.06", MSnowFrac);
+		Check(MSnow < 0.2 && MIce < 0.01, "seamless: snow depth and sea ice per minute", MSnow);
+		Check(MWet < 0.06, "seamless: ground wetness per minute < 0.06", MWet);
+		Check(MHalo < 0.03 && MLens < 0.03, "seamless: halo and lenses per minute", std::max(MHalo, MLens));
+	}
 	// deterministic: a fresh chain and a fresh season agree with a long-running one
 	{
 		FChain A(C), B(C);

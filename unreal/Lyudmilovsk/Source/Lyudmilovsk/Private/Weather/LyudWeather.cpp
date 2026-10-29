@@ -24,6 +24,8 @@ namespace
 	TAutoConsoleVariable<float> CVarSnowDepth(TEXT("lyud.Weather.SnowDepth"), -1.f, TEXT("Force the level snow depth, cm (negative: the season's)."));
 	TAutoConsoleVariable<float> CVarSeaIce(TEXT("lyud.Weather.SeaIce"), -1.f, TEXT("Force the sea ice thickness, cm (negative: the season's)."));
 	TAutoConsoleVariable<float> CVarLens(TEXT("lyud.Weather.Lenticular"), -1.f, TEXT("Force the lenticular clouds 0..1 (negative: the calendar's)."));
+	TAutoConsoleVariable<float> CVarBlend(TEXT("lyud.Weather.BlendSeconds"), 20.f, TEXT("A jump of the clock (a load, the calendar moved) eases the weather in over this many seconds (0 = at once)."));
+	TAutoConsoleVariable<float> CVarPresetBlend(TEXT("lyud.Weather.PresetBlend"), 0.f, TEXT("A forced value or preset eases in over this many seconds (0 = at once; e.g. 60 to watch a change of weather)."));
 	TAutoConsoleVariable<int32> CVarDebug(TEXT("lyud.Weather.Debug"), 0, TEXT("1: print the weather on screen; 2: every field."));
 
 	/** The forced episode type (Count = none) and the preset's name. */
@@ -119,6 +121,7 @@ namespace
 		O.BaseM = L.BaseM;
 		O.TopM = L.TopM;
 		O.Density = L.Density;
+		O.Sheet = L.Sheet;
 		return O;
 	}
 
@@ -222,7 +225,7 @@ namespace
 			S.CloudCover = C;
 			if (S.Low.Cover + S.Mid.Cover + S.High.Cover < 0.02f && C > 0.f)
 			{
-				S.Low = { C > 0.8f ? ECloud::Stratocumulus : ECloud::Cumulus, C, 700.f, 1500.f, 0.5f };
+				S.Low = { C > 0.8f ? ECloud::Stratocumulus : ECloud::Cumulus, C, 700.f, 1500.f, 0.5f, C > 0.8f ? 0.7f : 0.1f };
 			}
 			else
 			{
@@ -239,7 +242,7 @@ namespace
 				S.CloudCover = FMath::Max(S.CloudCover, 0.95f);
 				if (S.Low.Cover < 0.9f)
 				{
-					S.Low = { Rain > 6.f ? ECloud::Cumulonimbus : ECloud::Nimbostratus, 0.95f, 500.f, 4000.f, 0.9f };
+					S.Low = { Rain > 6.f ? ECloud::Cumulonimbus : ECloud::Nimbostratus, 0.95f, 500.f, 4000.f, 0.9f, Rain > 6.f ? 0.15f : 1.f };
 				}
 			}
 		}
@@ -298,7 +301,7 @@ namespace
 			S.Lenticular = Lens;
 			if (Lens > 0.25f)
 			{
-				S.Mid = { ECloud::AltocumulusLenticular, FMath::Max(S.Mid.Cover, 0.3f * Lens), 3000.f, 3600.f, 0.5f };
+				S.Mid = { ECloud::AltocumulusLenticular, FMath::Max(S.Mid.Cover, 0.3f * Lens), 3000.f, 3600.f, 0.5f, 0.5f };
 			}
 		}
 	}
@@ -345,6 +348,7 @@ ULyudWeatherSubsystem::~ULyudWeatherSubsystem()
 	delete Chain;
 	delete Season;
 	delete Cached;
+	delete BlendFromPtr;
 }
 
 ULyudWeatherSubsystem* ULyudWeatherSubsystem::Get(const UObject* WorldContext)
@@ -368,6 +372,7 @@ void ULyudWeatherSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 	if (!Cached) Cached = new LyudWeather::FWeatherState();
 	if (!Season) Season = new LyudWeather::FSeason();
+	if (!BlendFromPtr) BlendFromPtr = new LyudWeather::FWeatherState();
 	PushClimate();
 }
 
@@ -415,13 +420,41 @@ const LyudWeather::FWeatherState& ULyudWeatherSubsystem::StateAt(double Hours) c
 {
 	PushClimate();
 	const uint32 F = ForceHash();
-	// the weather changes over minutes: recompute twice a game minute, or at once when a value is forced
-	if (FMath::Abs(Hours - CachedHours) > 1.0 / 120.0 || F != CachedForceHash)
+	const double Real = FPlatformTime::Seconds();
+	// a forced value, a preset or a jump of the clock eases over lyud.Weather.BlendSeconds (from what was shown)
+	// a jump of the clock (a load, the calendar moved) eases in over lyud.Weather.BlendSeconds; a forced value or a
+	// preset over lyud.Weather.PresetBlend (0 by default: tests force a weather and look at once)
+	const bool bJump = CachedHours > -1e8 && FMath::Abs(Hours - CachedHours) > 0.25;
+	const bool bForced = F != CachedForceHash;
+	if (bJump || bForced)
+	{
+		const float Want = bJump ? CVarBlend.GetValueOnGameThread() : CVarPresetBlend.GetValueOnGameThread();
+		if (CachedHours > -1e8 && Want > 0.f)
+		{
+			*BlendFromPtr = *Cached;
+			BlendStart = Real;
+			BlendLength = Want;
+		}
+		CachedForceHash = F;
+	}
+	// the model is cheap: recompute every couple of game seconds so nothing it feeds moves in steps
+	const float Blend = BlendLength;
+	const bool bBlending = BlendStart > 0.0 && Real - BlendStart < Blend;
+	if (FMath::Abs(Hours - CachedHours) > 1.0 / 1800.0 || bBlending || CachedHours < -1e8 || bWasBlending)
 	{
 		CachedHours = Hours;
-		CachedForceHash = F;
-		*Cached = LyudWeather::Full(Hours, *Chain, *Season);
-		ApplyForces(*Cached);
+		LyudWeather::FWeatherState Target = LyudWeather::Full(Hours, *Chain, *Season);
+		ApplyForces(Target);
+		if (bBlending)
+		{
+			const float T = FMath::Clamp(float((Real - BlendStart) / FMath::Max(Blend, 0.01f)), 0.f, 1.f);
+			*Cached = LyudWeather::LerpState(*BlendFromPtr, Target, T * T * (3.f - 2.f * T));
+		}
+		else
+		{
+			*Cached = Target;
+		}
+		bWasBlending = bBlending;
 	}
 	return *Cached;
 }
