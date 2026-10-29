@@ -41,7 +41,9 @@ def collection():
     """The parameter collection: created once, then only its parameter list is kept up to date
     (re-creating it would cut every material that reads it)."""
     vectors = [("Wind", (0.0, 1.0, 6.0, 0.25)), ("WindDrift", (0.0, 0.0, 0.0, 0.0)),
-               ("Sea", (-4300.0, 0.0, 0.5, 20.0)), ("SeaWave", (1.0, 0.0, 0.3, 0.2))]
+               ("Sea", (-4300.0, 0.0, 0.5, 20.0)), ("SeaWave", (1.0, 0.0, 0.3, 0.2)),
+               # the tide (ALyudSea): water now, datum, wet line (world cm), springs 0..1; the ground's wet sand reads it
+               ("Tide", (-4300.0, -4300.0, -4300.0, 0.0))]
     scalars = [("SeaWaveOmega", 1.7), ("SeaWavePhase", 0.0)]
     if eal.does_asset_exist(MPC_PATH):
         mpc = unreal.load_asset(MPC_PATH)
@@ -169,6 +171,7 @@ def sea_material(coll):
     sp = g.vparam("SeaParams", (0.8, 0.0, 0.0, 0.0))
     rect = g.vparam("DepthRect", (0.0, 0.0, 0.0, 0.0))
     land = g.param("LandSideX", -1.0e7)
+    tide = g.param("Tide", 0.0)
     wind = g.mpc(coll, "Wind")
     drift = g.mpc(coll, "WindDrift")
 
@@ -179,7 +182,8 @@ def sea_material(coll):
     g.link(g.mul(xy, g.const(0.01)), rest, "VS")
 
     wpo = g.custom(H.GUST_LIB + H.VERTEX_HLSL,
-                   [("Pos", vpos), ("Cam", cam), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land)],
+                   [("Pos", vpos), ("Cam", cam), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
+                    ("Tide", tide)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="SeaWaves")
     g.out(wpo, MP.MP_WORLD_POSITION_OFFSET)
 
@@ -187,7 +191,7 @@ def sea_material(coll):
     view = g.node(X.MaterialExpressionCameraVectorWS)
     pix = g.custom(H.GUST_LIB + H.PIXEL_HLSL,
                    [("XY", uv), ("V", view), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
-                    ("Wind", wind), ("Drift", drift)],
+                    ("Tide", tide), ("Wind", wind), ("Drift", drift)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT4, desc="SeaNormal")
 
     # surf over the shallows, from the scene's own depth under the water and the depth map
@@ -195,8 +199,9 @@ def sea_material(coll):
     below = g.node(X.MaterialExpressionSceneDepthWithoutWater, fallback_depth=1.0e6)
     here = g.node(X.MaterialExpressionPixelDepth)
     thick = g.custom("return (Below - Here) * abs(V.z);", [("Below", below), ("Here", here), ("V", view)])
-    bed = g.custom(H.GUST_LIB + "return Lyud.Depth(XY, Rect, Clock.w, LandX, Dep, DepSampler);",
-                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Dep", dep)], desc="Bed")
+    bed = g.custom(H.GUST_LIB + "return Lyud.Water(XY, Rect, Clock.w, LandX, Tide, Dep, DepSampler).xy;",
+                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Tide", tide), ("Dep", dep)],
+                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT2, desc="Bed")
     surf = g.custom(H.GUST_LIB + H.SURF_HLSL,
                     [("Pos", ppos), ("Clock", clock), ("Depth", thick), ("Bed", bed), ("SP", sp)],
                     desc="Surf")

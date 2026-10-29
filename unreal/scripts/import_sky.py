@@ -16,6 +16,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools"))
 import world_map as W  # noqa: E402
+sys.path.insert(0, os.path.join(REPO, "tools", "sky"))
+import sky_hlsl as SH  # noqa: E402
 
 DEST = "/Game/Scene01/Sky"
 eal = unreal.EditorAssetLibrary
@@ -27,6 +29,9 @@ X = unreal
 OLD_LABELS = ("Sun", "Sun_Fill", "Outside_SkyDome", "Outside_Sea", "PreviewSea", "Sea", "Sky")
 OLD_CLASSES = (unreal.SkyAtmosphere, unreal.SkyLight, unreal.VolumetricCloud)
 OLD_CLASS_NAMES = ("LyudSky", "LyudSea")
+
+# Europa's surface: the USGS Voyager/Galileo SSI global mosaic, cut to 2048 x 1024 (textures/sky/SOURCE.md).
+EUROPA_JPG = os.path.join(REPO, "textures", "sky", "europa_2k.jpg")
 
 # The sea's land edge runs under the ground a little inland of the nearest water line.
 SEA_INLAND_X = min(x for _, x in W.SHORE) - 100.0      # map metres
@@ -99,22 +104,66 @@ class Graph:
         return self.m
 
 
+def europa_texture():
+    """Europa's map as a texture under DEST (imported every build from the committed JPG)."""
+    task = unreal.AssetImportTask()
+    task.set_editor_property("filename", EUROPA_JPG)
+    task.set_editor_property("destination_path", DEST)
+    task.set_editor_property("destination_name", "T_Europa")
+    task.set_editor_property("automated", True)
+    task.set_editor_property("replace_existing", True)
+    task.set_editor_property("save", True)
+    unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+    tex = unreal.load_asset(DEST + "/T_Europa")
+    tex.set_editor_property("srgb", True)
+    tex.set_editor_property("address_x", unreal.TextureAddress.TA_WRAP)
+    tex.set_editor_property("address_y", unreal.TextureAddress.TA_CLAMP)
+    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+    tex.set_editor_property("never_stream", True)
+    eal.save_loaded_asset(tex)
+    return tex
+
+
 def sky_material():
-    """The star dome: the atmosphere's own luminance, the sun and moon disks, and stars that the day sky outshines."""
+    """The star dome: the atmosphere's own luminance, the red dwarf and Europa (tools/sky/sky_hlsl.py), the
+    night sky's airglow, and stars that the day sky and the two disks outshine."""
     g = Graph("M_LyudSky", unreal.MaterialShadingModel.MSM_UNLIT)
     sky = g.node(X.MaterialExpressionSkyAtmosphereViewLuminance)
-    sun = g.node(X.MaterialExpressionSkyAtmosphereLightDiskLuminance, light_index=0)
-    moon = g.node(X.MaterialExpressionSkyAtmosphereLightDiskLuminance, light_index=1)
+    cam = g.node(X.MaterialExpressionCameraVectorWS)
+    view = g.custom("return -C;", [("C", cam)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+
+    def vparam(name, v):
+        return g.node(X.MaterialExpressionVectorParameter, -900, parameter_name=name,
+                      default_value=unreal.LinearColor(v[0], v[1], v[2], v[3]))
+    sun_dir = vparam("SunDir", (0.0, 0.0, 1.0, 0.0))
+    moon_dir = vparam("MoonDir", (0.0, 0.7, 0.7, 0.0))
+    pole = vparam("Pole", (0.0, 0.57, 0.82, 0.0))
+    sun_disk = vparam("SunDisk", (0.0873, 3.6, 0.0, 0.0))
+    moon_disk = vparam("MoonDisk", (0.061, 0.14, 0.012, 0.0))
+    glow = vparam("NightGlow", (0.0, 0.0, 0.0, 0.0))
+    t = g.node(X.MaterialExpressionTime)
+    europa = g.node(X.MaterialExpressionTextureObjectParameter, -900, parameter_name="Europa", texture=europa_texture())
+    rgba = lambda n: (n, "RGBA")
+    tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    sun = g.custom(SH.LIB + SH.SUN_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
+                                         ("T", t), ("Tr", tr)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    moon = g.custom(SH.MOON_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)), ("P", rgba(pole)),
+                                   ("D", rgba(moon_disk)), ("Tr", tr), ("Europa", europa)],
+                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))
     g.link(uv, stars, "UVs")
-    cam = g.node(X.MaterialExpressionCameraVectorWS)
-    # stars thin out toward the horizon, where the air is thickest
-    fade = g.custom("return saturate(-V.z * 3.0 - 0.05);", [("V", cam)])
+    # stars thin out toward the horizon, where the air is thickest, and near the two disks
+    fade = g.custom(SH.STAR_MASK_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)),
+                                        ("MD", rgba(moon_disk)), ("SD", rgba(sun_disk))])
     bright = g.param("StarBrightness", 1.0)
     k = g.op(X.MaterialExpressionMultiply, g.op(X.MaterialExpressionMultiply, fade, bright), g.const(0.15))
     st = g.op(X.MaterialExpressionMultiply, stars, k, a_pin="RGB")
-    em = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, sky, sun), g.op(X.MaterialExpressionAdd, moon, st))
+    # the airglow: brighter toward the horizon, where the line of sight runs through more of the glowing layer
+    ag = g.custom("float z = saturate(normalize(V).z); return G.rgb * (0.55 + 0.9 * exp(-z * 5.0)) * step(-0.2, normalize(V).z);",
+                  [("V", view), ("G", rgba(glow))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    em = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, sky, sun),
+              g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, moon, st), ag))
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     g.m.set_editor_property("is_sky", True)
     g.m.set_editor_property("two_sided", True)

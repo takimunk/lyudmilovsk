@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(REPO, "tools"))
 import terrain as T  # noqa: E402
 
 DEST = "/Game/Scene01/Terrain"
+TIDE_MPC = "/Game/Weather/MPC_LyudWeather"      # its "Tide" (make_sea_materials.py) wets the sand under the tide
 TEX_DIR = os.path.join(REPO, "textures", "ground")
 eal = unreal.EditorAssetLibrary
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
@@ -206,6 +207,34 @@ def _triplanar(m, d, nm, tile, x, y, shared):
     return mix                                        # outputs: "" colour, "Nrm" normal
 
 
+# Wet sand and pools under the tide: from the water's edge up to where the water stood within the last hour the sand
+# is dark and glistening (the film of water flattens its bumps), a damp band above that dries out over the
+# hour as the ebb leaves it; over the high-water mark it stays dry. Tide = MPC_LyudWeather "Tide" (ALyudSea):
+# (water now, datum, wet line, springs), world cm.
+WET_HLSL = """
+float z = P.z;
+float now = Tide.x;
+float top = max(Tide.z, now) + 10.0;
+float wet = (1.0 - smoothstep(top - 5.0, top + 25.0, z)) * (1.0 - smoothstep(Tide.y + 15.0, Tide.y + 45.0, z));
+float sheen = wet * (1.0 - saturate((z - now) / max(top - now, 40.0)));
+// pools: the hollows the ebb cannot drain keep water up to their rim (the sea's depth map: r = bed under the datum,
+// g = the water a hollow keeps, both m; ALyudSea hands it over as TidePools / PoolRect)
+float pool = 0.0;
+if (Rect.z > 0.0)
+{
+    float2 uv = (P.xy * 0.01 - Rect.xy) * Rect.zw;
+    float2 bw = Pools.SampleLevel(PoolsSampler, uv, 0).rg;
+    float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0;     // the pool's water level, world cm
+    pool = smoothstep(0.0, 6.0, surf - z) * step(Tide.x + 3.0, surf) * saturate(bw.y * 20.0);
+}
+Rough = lerp(lerp(lerp(R, 0.42, wet), 0.1, sheen), 0.03, pool);
+Nrm = normalize(lerp(N, float3(0, 0, 1), max(0.65 * sheen, pool)));
+float3 c = C * lerp(float3(1, 1, 1), float3(0.4, 0.42, 0.45), wet);
+// still water: the sand seen dark through it, and some of the sky (the reflections alone stay dim on a landscape)
+return lerp(c, c * float3(0.25, 0.28, 0.3) + float3(0.1, 0.13, 0.16), pool);
+"""
+
+
 def make_material(layers, textures):
     path = DEST + "/M_Ground"
     if eal.does_asset_exist(path):
@@ -259,9 +288,28 @@ def make_material(layers, textures):
     _link(mix, "", blend, "Macro")
     depth = _node(m, unreal.MaterialExpressionPixelDepth, -1400, -200)
     _link(depth, "", blend, "Dist")
-    mel.connect_material_property(blend, "", MP.MP_BASE_COLOR)
-    mel.connect_material_property(blend, "Normal", MP.MP_NORMAL)
-    mel.connect_material_property(blend, "Roughness", MP.MP_ROUGHNESS)
+    pos = _node(m, unreal.MaterialExpressionWorldPosition, -300, -400)
+    tide = _node(m, unreal.MaterialExpressionCollectionParameter, -300, -300,
+                 collection=unreal.load_asset(TIDE_MPC), parameter_name="Tide")
+    pools = _node(m, unreal.MaterialExpressionTextureObjectParameter, -300, -200, parameter_name="TidePools",
+                  texture=unreal.load_asset("/Engine/EngineResources/Black"))
+    rect = _node(m, unreal.MaterialExpressionVectorParameter, -300, -100, parameter_name="PoolRect",
+                 default_value=unreal.LinearColor(0, 0, 0, 0))
+    wet = _node(m, unreal.MaterialExpressionCustom, 100, 0, code=WET_HLSL,
+                output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description="WetSand",
+                inputs=[_custom_input(n) for n in ("C", "N", "R", "P", "Tide", "Pools", "Rect")],
+                additional_outputs=[_custom_output("Nrm", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
+                                    _custom_output("Rough", unreal.CustomMaterialOutputType.CMOT_FLOAT1)])
+    _link(blend, "", wet, "C")
+    _link(blend, "Normal", wet, "N")
+    _link(blend, "Roughness", wet, "R")
+    _link(pos, "", wet, "P")
+    _link(tide, "", wet, "Tide")
+    _link(pools, "", wet, "Pools")
+    _link(rect, "RGBA", wet, "Rect")
+    mel.connect_material_property(wet, "", MP.MP_BASE_COLOR)
+    mel.connect_material_property(wet, "Nrm", MP.MP_NORMAL)
+    mel.connect_material_property(wet, "Rough", MP.MP_ROUGHNESS)
     hole = _node(m, unreal.MaterialExpressionLandscapeVisibilityMask, -300, 400)
     mel.connect_material_property(hole, "", MP.MP_OPACITY_MASK)
     mel.recompile_material(m)
@@ -364,6 +412,8 @@ def build(face_y):
     if not landscape:
         raise RuntimeError("terrain build failed: %s" % report)
     landscape.set_folder_path("Outside/Ground")
+    # the sea hands the ground its tide pools at runtime (ALyudSea::UploadDepthMap): per-component dynamic instances
+    landscape.set_editor_property("use_dynamic_material_instance", True)
     eal.save_loaded_asset(mask)
     T.load(out_dir)                                   # ground_z now answers with the built heights
     make_patch(face_y, make_patch_material(textures))

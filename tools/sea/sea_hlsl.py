@@ -9,8 +9,10 @@ sorted longest first, so a loop can stop at the first train too short to draw.
 Parameters (ALyudSea sets them on its dynamic material):
   SeaClock  = (wave clock s wrapped to 1200, ring segments, finest mesh step m, open-sea depth m)
   SeaParams = (Gerstner choppiness, significant height m, geometry trains, detail trains)
-  DepthRect = (min x m, min y m, 1/size x, 1/size y) of DepthMap (still-water depth m; land < 0)
+  DepthRect = (min x m, min y m, 1/size x, 1/size y) of DepthMap (r = depth under the datum m, land < 0;
+              g = water a hollow on the tidal flat keeps when the ebb leaves it, m: the ground draws those pools)
   LandSideX = world X (m) east of which there is no sea
+  Tide      = the water over the datum now, m (0 at spring high water, negative below; the depth map is under the datum)
 and from /Game/Weather/MPC_LyudWeather: Wind = (dir x, dir y, speed m/s, gustiness),
 WindDrift = (drift x m, drift y m, gust clock s, day stir).
 """
@@ -58,14 +60,22 @@ struct FLyudNoise
         float n2 = Noise3(float3(p / 32.0, c * 2.0), 13u, 128u);
         return clamp(1.0 + wind.w * (0.45 * n0 + 0.45 * n1 + 0.3 * n2) * 2.2, 0.05, 2.5);
     }
-    // still-water depth at world xy (m), the same as ALyudSea::DepthAtM (bilinear between cell centres)
-    float Depth(float2 xy, float4 rect, float openDepth, float landX, Texture2D dep, SamplerState depS)
+    // (depth now m, calm 0..1, lift m) at world xy: the depth map's depth under the datum (r, bilinear between
+    // cell centres) plus the tide. The pools the ebb leaves in the flat's hollows (g) are drawn by the ground
+    // (M_Ground), so the sea stays calm = 1, lift = 0 here; the slots are kept for the call sites.
+    float3 Water(float2 xy, float4 rect, float openDepth, float landX, float tide, Texture2D dep, SamplerState depS)
     {
-        if (xy.x < landX) return -10.0;
-        if (rect.z <= 0.0) return openDepth;
+        if (xy.x < landX) return float3(-10.0, 1.0, 0.0);
+        if (rect.z <= 0.0) return float3(openDepth + tide, 1.0, 0.0);
         float2 uv = (xy - rect.xy) * rect.zw;
-        if (any(uv < 0.0) || any(uv > 1.0)) return openDepth;
-        return dep.SampleLevel(depS, uv, 0).r;
+        if (any(uv < 0.0) || any(uv > 1.0)) return float3(openDepth + tide, 1.0, 0.0);
+        return float3(dep.SampleLevel(depS, uv, 0).r + tide, 1.0, 0.0);
+    }
+    // still-water depth at world xy now (m), the same as ALyudSea::WaterDepthAtM: the depth map's depth under
+    // the datum (r, bilinear between cell centres) plus the tide
+    float Depth(float2 xy, float4 rect, float openDepth, float landX, float tide, Texture2D dep, SamplerState depS)
+    {
+        return Water(xy, rect, openDepth, landX, tide, dep, depS).x;
     }
     // the surf (WaveModel.cpp SurfZone, SurfHeight): 0..1 into the shallows, and the breakers' height there (m)
     float SurfZone(float depth, float hs) { return depth <= 0.0 ? 0.0 : saturate(1.0 - depth / max(hs * 1.5 + 0.2, 0.25)); }
@@ -83,16 +93,18 @@ FLyudNoise Lyud;
 
 # World position offset of the sea surface (WaveModel.cpp Displace), cm. Trains shorter than ~6 mesh
 # cells at this distance fade out of the geometry (their slopes stay in the pixel normals).
-# Inputs: Pos (absolute world position, cm), Cam (camera position, cm), Tab, Dep, Clock, SP, Rect, LandX.
+# Inputs: Pos (absolute world position, cm), Cam (camera position, cm), Tab, Dep, Clock, SP, Rect, LandX, Tide.
 VERTEX_HLSL = r"""
 float3 p = Pos * 0.01;
 float2 xy = p.xy;
 float spacing = max(length(p - Cam * 0.01) * 6.2831853 / Clock.y, Clock.z);
-float depth = Lyud.Depth(xy, Rect, Clock.w, LandX, Dep, DepSampler);
+float3 w = Lyud.Water(xy, Rect, Clock.w, LandX, Tide, Dep, DepSampler);
+float depth = w.x;
 // no sea on land: tuck the surface away under the ground
 if (depth < -0.3) return float3(0.0, 0.0, -3000.0);
-float cap = Lyud.BreakCap(depth, SP.y);
-float3 d = float3(0.0, 0.0, Lyud.SurfHeight(depth, SP.y, Clock.x));
+// a pool left on the flat stands still at its own level
+float cap = Lyud.BreakCap(depth, SP.y) * w.y;
+float3 d = float3(0.0, 0.0, Lyud.SurfHeight(depth, SP.y, Clock.x) * w.y + w.z);
 int n = (int)SP.z;
 for (int i = 0; i < n; i++)
 {
@@ -113,12 +125,13 @@ return d * 100.0;
 # shader), detail trains scaled by the local gust (cat's paws; glassy where the air is still), trains
 # finer than the pixel fading into roughness; whitecaps where the Gerstner surface pinches (Jacobian)
 # in a fresh wind. Returns (normal x, normal y, roughness, whitecap); normal z = sqrt(1 - x^2 - y^2).
-# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Wind, Drift.
+# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Tide, Wind, Drift.
 PIXEL_HLSL = r"""
 float2 xy = XY;
 float foot = max(length(ddx(xy)), length(ddy(xy))) + 1e-5;
-float depth = Lyud.Depth(xy, Rect, Clock.w, LandX, Dep, DepSampler);
-float cap = Lyud.BreakCap(depth, SP.y);
+float3 w = Lyud.Water(xy, Rect, Clock.w, LandX, Tide, Dep, DepSampler);
+float depth = w.x;
+float cap = Lyud.BreakCap(depth, SP.y) * w.y;
 float t = Clock.x;
 float Txx = 1.0, Txy = 0.0, Tyy = 1.0, Txz = 0.0, Tyz = 0.0, lost = 0.0, eta = 0.0;
 int ng = (int)SP.z;
@@ -144,7 +157,7 @@ for (int i = 0; i < ng; i++)
 float J = Txx * Tyy - Txy * Txy;
 float g = Lyud.Gust(xy, Wind, Drift);
 float U = Wind.z * g;
-float rip = saturate((U - 0.7) / 1.8) * g * saturate(depth * 4.0);
+float rip = saturate((U - 0.7) / 1.8) * g * saturate(depth * 4.0) * (0.25 + 0.75 * w.y);
 int nd = (int)SP.w;
 for (int k = 0; k < nd; k++)
 {
@@ -161,7 +174,7 @@ for (int k = 0; k < nd; k++)
     Tyz -= KA * a.y * s;
 }
 // the breakers' slope, from how their height changes across the pixel's neighbours
-float sh = Lyud.SurfHeight(depth, SP.y, t);
+float sh = Lyud.SurfHeight(depth, SP.y, t) * w.y;
 float2 dxy = ddx(xy), dyy = ddy(xy);
 float2 dsh = float2(ddx(sh), ddy(sh));
 float det = dxy.x * dyy.y - dxy.y * dyy.x;
@@ -189,23 +202,23 @@ float bar = lerp(3.0, 0.8, saturate((U - 4.0) / 10.0));
 float wind = saturate((U - 3.0) / 3.0);
 // broken into tufts a metre or so across, not whole crests
 float fine = Lyud.Noise3(float3(p / 0.8, fmod(Drift.z / 10.0, 1024.0) * 8.0), 18u, 1024u) * 0.5 + 0.5;
-float wc = smoothstep(bar, bar + 0.8, score) * wind * (0.35 + 1.3 * fn) * smoothstep(0.25, 0.6, fine);
+float wc = smoothstep(bar, bar + 0.8, score) * wind * (0.35 + 1.3 * fn) * smoothstep(0.25, 0.6, fine) * w.y;
 // old foam left behind the breakers, grey and drawn out along the wind in a gale
 float2 wd = normalize(Wind.xy + 1e-4);
 float2 sq = float2(dot(p, float2(-wd.y, wd.x)) * 0.35, dot(p, wd) * 0.09);
 float st = Lyud.Noise3(float3(sq + 4096.0, 1.0), 16u, 4096u) * 0.5 + 0.5;
 float patchy = Lyud.Noise3(float3(p / 9.0, 2.0), 17u, 512u) * 0.5 + 0.5;
-float old = smoothstep(bar - 0.9, bar + 0.3, score) * st * patchy;
+float old = smoothstep(bar - 0.9, bar + 0.3, score) * st * patchy * w.y;
 wc = max(wc, old * saturate((U - 8.0) / 6.0) * 0.45);
 return float4(n.x, n.y, rough, saturate(wc));
 """
 
 # Surf over the shallows: a band of foam lines running in to the beach and a broken white edge where the
 # water meets the sand. Depth = metres of water under the surface from the scene (SceneDepthWithoutWater),
-# Bed = still-water depth from the depth map, Pos in cm, Wind for how big the surf is.
+# Bed = (still-water depth now from the depth map, calm: 0 in a pool the ebb left), Pos in cm, Wind for how big the surf is.
 SURF_HLSL = r"""
 float2 p = Pos.xy * 0.01;
-float d = max(min(Depth * 0.01, Bed + 0.2), 0.0);
+float d = max(min(Depth * 0.01, Bed.x + 0.2), 0.0);
 float hs = SP.y;
 float t = Clock.x;
 float2 q = p * 0.9 + float2(t * 0.05, t * 0.02);
@@ -219,14 +232,14 @@ for (int o = 0; o < 3; o++)
 n /= 0.875;
 // spilling breakers: the same bores the surface rises in (Lyud.SurfHeight), white at the steep front where
 // they spill, a wide band of foam trailing behind, broken up by noise
-float zone = Lyud.SurfZone(Bed, hs);
-float f = frac(Lyud.SurfPhase(Bed, hs, t) + (n - 0.5) * 0.08);
+float zone = Lyud.SurfZone(Bed.x, hs);
+float f = frac(Lyud.SurfPhase(Bed.x, hs, t) + (n - 0.5) * 0.08);
 float front = smoothstep(0.62, 0.93, f) * (1.0 - smoothstep(0.97, 1.0, f));
 float trail = exp(-f * 1.8) * 0.9;
-float breakers = saturate((front * 1.3 + trail) * sqrt(zone) * (0.55 + n) - 0.15) * saturate(hs * 3.0);
+float breakers = saturate((front * 1.2 + trail * 0.45) * sqrt(zone) * (0.55 + n) - 0.25) * saturate(hs * 3.0);
 // the wash: a broken white edge where the water runs up the sand
-float edge = saturate(1.0 - d / 0.3) * smoothstep(0.25, 0.55, n);
-return saturate(breakers + edge);
+float edge = saturate(1.0 - d / 0.07) * smoothstep(0.3, 0.6, n);
+return saturate(breakers + edge) * Bed.y;
 """
 
 # Weed on the bed swaying with the passing waves: the dominant train's orbital motion at this depth

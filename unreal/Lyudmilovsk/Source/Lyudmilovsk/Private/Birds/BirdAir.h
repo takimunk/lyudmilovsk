@@ -32,8 +32,10 @@ public:
 	/** The playable box (the landscape's extent), cm. */
 	const FBox& Bounds() const { return WorldBounds; }
 
-	/** Sea level, cm (tools/world_map.py SEA_Z = -43 m). */
+	/** The sea's datum, high water, cm (tools/world_map.py SEA_Z = -43 m); the water itself is WaterZ(). */
 	static constexpr float SeaZ = -4300.f;
+	/** The sea's still water now (with the tide; ALyudSea::SeaLevel), cm. */
+	float WaterZ() const;
 
 private:
 	TWeakObjectPtr<UWorld> World;
