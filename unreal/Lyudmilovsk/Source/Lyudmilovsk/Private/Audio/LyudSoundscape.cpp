@@ -250,9 +250,18 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Animals"), TEXT("dog_bark_big") }, { TEXT("Animals"), TEXT("dog_bark_medium") }, { TEXT("Animals"), TEXT("dog_bark_laika") },
 		{ TEXT("Animals"), TEXT("dog_growl") }, { TEXT("Animals"), TEXT("dog_whine") }, { TEXT("Animals"), TEXT("dog_bark_far") },
 		{ TEXT("Animals"), TEXT("cat_meow") }, { TEXT("Animals"), TEXT("cat_purr") }, { TEXT("Animals"), TEXT("cat_hiss") },
+		{ TEXT("Animals"), TEXT("dog_bark_happy") }, { TEXT("Animals"), TEXT("collar_jingle") },   // Maru: her glad bark, her tag
 		{ TEXT("Far"), TEXT("ship_horn_far") }, { TEXT("Far"), TEXT("foghorn_far") }, { TEXT("Far"), TEXT("buoy_bell") }, { TEXT("Far"), TEXT("town_far") },
 		{ TEXT("Club"), TEXT("club_room_tone") }, { TEXT("Club"), TEXT("keyboard_typing") }, { TEXT("Club"), TEXT("mouse_clicks") },
 		{ TEXT("Club"), TEXT("console_game_far") }, { TEXT("Club"), TEXT("vending_hum") }, { TEXT("Club"), TEXT("vending_drop") },
+		// the cable car (ULyudTransportSubsystem plays them through PlayEffect / AttachLoop)
+		{ TEXT("Transport"), TEXT("cabin_motor") }, { TEXT("Transport"), TEXT("cabin_sheave") }, { TEXT("Transport"), TEXT("cabin_door") },
+		{ TEXT("Transport"), TEXT("station_chime") }, { TEXT("Transport"), TEXT("station_wheel") }, { TEXT("Transport"), TEXT("lift_start") },
+		{ TEXT("Transport"), TEXT("lift_ding") }, { TEXT("Transport"), TEXT("lift_hum") }, { TEXT("Transport"), TEXT("lift_doors") },
+		{ TEXT("Transport"), TEXT("station_hall") },
+		// the diary (ULyudGameScreen: taken out, opened, a page turned, shut)
+		{ TEXT("Diary"), TEXT("diary_take") }, { TEXT("Diary"), TEXT("diary_open") }, { TEXT("Diary"), TEXT("diary_close") },
+		{ TEXT("Diary"), TEXT("diary_page") }, { TEXT("Diary"), TEXT("diary_pages") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -322,6 +331,31 @@ void ULyudSoundscapeSubsystem::PlayAt(FName Pool, const FVector& Where, float Vo
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, S, Where, FRotator::ZeroRotator, Volume * MasterVolume * EffectsVolume,
 			FMath::FRandRange(1.f - PitchJitter, 1.f + PitchJitter), 0.f, Attenuation);
+	}
+}
+
+void ULyudSoundscapeSubsystem::PlayEffect(FName Pool, const FVector& Where, float Volume)
+{
+	PlayAt(Pool, Where, Volume, NearAttenuation, 0.03f);
+}
+
+UAudioComponent* ULyudSoundscapeSubsystem::AttachLoop(FName Pool, USceneComponent* Parent, float Volume)
+{
+	USoundBase* S = Pick(Pool);
+	if (!S || !Parent)
+	{
+		return nullptr;
+	}
+	UAudioComponent* A = UGameplayStatics::SpawnSoundAttached(S, Parent, NAME_None, FVector::ZeroVector, EAttachLocation::KeepRelativeOffset,
+		true, Volume * MasterVolume * EffectsVolume, 1.f, 0.f, NearAttenuation, nullptr, false);
+	return A;
+}
+
+void ULyudSoundscapeSubsystem::PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume)
+{
+	if (Voice)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, Voice, Where, FRotator::ZeroRotator, Volume * MasterVolume * EffectsVolume, 1.f, 0.f, NearAttenuation);
 	}
 }
 
@@ -593,7 +627,12 @@ void ULyudSoundscapeSubsystem::OnAnimalEvent(int32 AnimalId, FName Event)
 	{
 		if (Event == TEXT("Bark"))
 		{
-			Pool = A.Breed == TEXT("Shepherd") ? TEXT("dog_bark_big") : (A.Breed == TEXT("Laika") ? TEXT("dog_bark_laika") : TEXT("dog_bark_medium"));
+			Pool = A.Breed == TEXT("Shepherd") ? TEXT("dog_bark_big") : (A.Breed == TEXT("Laika") || A.Breed == TEXT("Maru") ? TEXT("dog_bark_laika") : TEXT("dog_bark_medium"));
+		}
+		else if (Event == TEXT("BarkHappy"))
+		{
+			Pool = TEXT("dog_bark_happy");     // answering the player who called her
+			Volume = 0.9f;
 		}
 		else if (Event == TEXT("Growl"))
 		{

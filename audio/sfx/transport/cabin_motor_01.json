@@ -1,0 +1,25 @@
+{
+ "id": "cabin_motor",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/cabin_motor_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Inside a small aerial gondola cabin gliding along a steel cable: a soft steady electric hum, the low rumble of the haul rope and faint creaking of the hanger, gentle wind outside, seamless loop, no voices, no music",
+  "duration_seconds": 12.0,
+  "loop": true
+ },
+ "hash": "1673b15351a0",
+ "fal_request_id": "01a174ca-c047-75a0-b347-25b874ddb58f",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd751/PLSgqVvmiW9OHakMeKmcb_sound_effect.mp3",
+ "created": "2026-10-25T20:40:12Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "a492c1aa6a61c1624a3c179d595f4dd722264dd1962d4406e8e814e83088b5ca",
+ "seconds": 11.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport",
+ "loop": true
+}

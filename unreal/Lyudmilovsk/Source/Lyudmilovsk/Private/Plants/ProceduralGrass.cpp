@@ -225,7 +225,7 @@ void AProceduralGrass::Scatter()
 			}
 			// a patchy sward: clumps and thin places on a scale of tens of metres
 			const float Clump = 0.5f + 0.25f * FMath::Sin(X * 0.0041f + Seed * 1.7f) + 0.25f * FMath::Sin(Y * 0.0033f + X * 0.0017f + Seed * 0.7f);
-			if (Hash01(U, (uint32)Cx, (uint32)Cy, 3) > 0.3f + 0.7f * Clump)
+			if (Hash01(U, (uint32)Cx, (uint32)Cy, 3) > 0.55f + 0.45f * Clump)
 			{
 				continue;
 			}
@@ -305,8 +305,9 @@ void AProceduralGrass::Rebuild()
 {
 	EnsureAssets();
 	// the end of each ring fades the tufts down into the ground (the material's PerInstanceFadeAmount), not a pop
-	NearTufts->SetCullDistances((int32)(NearDistance * 0.8f), (int32)NearDistance);
-	FarTufts->SetCullDistances((int32)(FarDistance * 0.8f), (int32)FarDistance);
+	const float Scale = GetSpecies().CullScale;
+	NearTufts->SetCullDistances((int32)(NearDistance * Scale * 0.8f), (int32)(NearDistance * Scale));
+	FarTufts->SetCullDistances((int32)(FarDistance * Scale * 0.8f), (int32)(FarDistance * Scale));
 	Scatter();
 	ApplySeason(CurrentDay());
 }

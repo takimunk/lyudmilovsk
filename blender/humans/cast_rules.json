@@ -1,0 +1,16 @@
+{
+  "_doc": "House rules every character is clamped to (blender/humans/build_humans.py). Keeps the cast in one style: same body proportions model, plausible ranges per group. Edit here, not per character.",
+  "fixed": {"proportions": 0.5, "cupsize": 0.5, "firmness": 0.5},
+  "groups": {
+    "kid":   {"age": [0.20, 0.27], "height": [0.40, 0.60], "weight": [0.40, 0.55], "muscle": [0.40, 0.50]},
+    "young": {"age": [0.42, 0.56], "height": [0.40, 0.62], "weight": [0.38, 0.62], "muscle": [0.35, 0.60]},
+    "adult": {"age": [0.56, 0.75], "height": [0.35, 0.60], "weight": [0.45, 0.70], "muscle": [0.30, 0.55]},
+    "elder": {"age": [0.75, 0.92], "height": [0.30, 0.55], "weight": [0.40, 0.65], "muscle": [0.25, 0.45]}
+  },
+  "target_limit": 0.6,
+  "target_limit_exceptions": {"head-age-incr": 1.0},
+  "cast": {
+    "zoomer": "young", "clerk": "adult", "owner": "elder", "streamer": "young",
+    "kid_boy": "kid", "kid_girl": "kid", "guy_a": "young", "guy_b": "young", "girl_a": "young", "girl_b": "young"
+  }
+}

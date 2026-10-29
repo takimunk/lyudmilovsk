@@ -728,6 +728,202 @@ UStaticMesh* PlantMeshes::BuildLeafCluster(UObject* Outer, const FPlantSpecies& 
 	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Leaves_%s"), *S.Name.ToString()), D);
 }
 
+/** Triangles of one blossom instance (for the cap on how many a tree carries). */
+int32 PlantMeshes::BlossomTriangles(const FPlantBlossom& B)
+{
+	const int32 N = FMath::Max(B.PerCluster, 1);
+	switch (B.Form)
+	{
+	case EPlantBlossomForm::Catkin: return N * 50;
+	case EPlantBlossomForm::Blossom: return N * (FMath::Max(B.Petals, 3) * 2 + 8 + 2);
+	case EPlantBlossomForm::Cone: return N * 16;
+	default: return 0;
+	}
+}
+
+namespace
+{
+	/** A tube of rings (t along its length 0..1, radius factor) round the axis Dir from Base, bent sideways by Bend: catkins and cones. */
+	void BlossomTube(FMeshData& D, const FVector3f& Base, const FVector3f& Dir, float Length, float Radius, float Bend, const float (&Ts)[6], const float (&Rs)[6], int32 Rings, int32 Sides)
+	{
+		const FVector3f Side = FVector3f::CrossProduct(Dir, FMath::Abs(Dir.Z) < 0.9f ? FVector3f::UpVector : FVector3f::XAxisVector).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::XAxisVector);
+		const FVector3f Up2 = FVector3f::CrossProduct(Dir, Side).GetSafeNormal();
+		const int32 First = D.Pos.Num();
+		for (int32 R = 0; R < Rings; R++)
+		{
+			const float T = Ts[R];
+			const FVector3f C = Base + Dir * (Length * T) + Side * (Bend * Length * FMath::Sin(T * PI));
+			for (int32 K = 0; K <= Sides; K++)
+			{
+				const float A = 2.f * PI * (K % Sides) / Sides;
+				const FVector3f Radial = Side * FMath::Cos(A) + Up2 * FMath::Sin(A);
+				D.Add(C + Radial * (Radius * Rs[R]), Radial, Dir, FVector2f(0.5f * K / Sides, T));
+			}
+		}
+		for (int32 R = 0; R + 1 < Rings; R++)
+		{
+			for (int32 K = 0; K < Sides; K++)
+			{
+				const int32 A = First + R * (Sides + 1) + K, B = A + Sides + 1;
+				D.Tris.Add(FIntVector3(A, B, A + 1));
+				D.Tris.Add(FIntVector3(A + 1, B, B + 1));
+			}
+		}
+	}
+
+	/** One open flower at C looking along N (cm): Petals rounded petals cupped a little, a centre and a stalk back to the origin. */
+	void BlossomFlower(FMeshData& D, const FVector3f& C, const FVector3f& N, float Diameter, int32 Petals, uint32 Seed)
+	{
+		const FVector3f A0 = FVector3f::CrossProduct(N, FMath::Abs(N.Z) < 0.9f ? FVector3f::UpVector : FVector3f::XAxisVector).GetSafeNormal(UE_SMALL_NUMBER, FVector3f::XAxisVector);
+		const FVector3f A1 = FVector3f::CrossProduct(N, A0);
+		const float Spin = Hash01(Seed, 1) * 2.f * PI;
+		for (int32 P = 0; P < Petals; P++)
+		{
+			const float Ang = Spin + 2.f * PI * P / Petals;
+			const FVector3f Dir = A0 * FMath::Cos(Ang) + A1 * FMath::Sin(Ang);
+			const FVector3f Across = FVector3f::CrossProduct(N, Dir);
+			const float Half = Diameter * 0.5f;
+			const float Wd = Half * FMath::Clamp(1.1f * PI / Petals, 0.3f, 0.9f);
+			const int32 B = D.Add(C + Dir * (Half * 0.1f), N, Dir, FVector2f(0.25f, 0.f));
+			D.Add(C + Dir * (Half * 0.55f) - Across * Wd + N * (Half * 0.18f), N, Dir, FVector2f(0.02f, 0.45f));
+			D.Add(C + Dir * Half + N * (Half * 0.38f), N, Dir, FVector2f(0.25f, 1.f));
+			D.Add(C + Dir * (Half * 0.55f) + Across * Wd + N * (Half * 0.18f), N, Dir, FVector2f(0.48f, 0.45f));
+			D.Tris.Add(FIntVector3(B, B + 1, B + 2));
+			D.Tris.Add(FIntVector3(B, B + 2, B + 3));
+		}
+		// the centre: a small fan of stamens
+		const int32 Hub = D.Add(C + N * (Diameter * 0.04f), N, A0, FVector2f(0.75f, 0.25f));
+		for (int32 K = 0; K < 6; K++)
+		{
+			const float Ang = 2.f * PI * K / 6.f;
+			D.Add(C + (A0 * FMath::Cos(Ang) + A1 * FMath::Sin(Ang)) * (Diameter * 0.15f) + N * (Diameter * 0.1f), N, A0, FVector2f(0.75f, 0.25f));
+		}
+		for (int32 K = 0; K < 6; K++)
+		{
+			D.Tris.Add(FIntVector3(Hub, Hub + 1 + K, Hub + 1 + (K + 1) % 6));
+		}
+	}
+}
+
+static void BlossomClusterData(const FPlantBlossom& B, FMeshData& D)
+{
+	const int32 N = FMath::Max(B.PerCluster, 1);
+	const float Size = B.Size * 100.f;
+	switch (B.Form)
+	{
+	case EPlantBlossomForm::Catkin:
+	{
+		// pendulous tassels from the tip of the twig: a thin stalk, a long body (scales are in the texture) and a rounded end
+		const float Ts[6] = { 0.f, 0.1f, 0.4f, 0.7f, 0.93f, 1.f };
+		const float Rs[6] = { 0.2f, 0.7f, 1.f, 1.f, 0.7f, 0.f };
+		for (int32 I = 0; I < N; I++)
+		{
+			const float Phi = I * GoldenAngle + Hash01(78, I, 1) * 0.6f;
+			const float Tilt = (N > 1 ? 0.12f + 0.28f * Hash01(78, I, 2) : 0.f);
+			const FVector3f Dir(FMath::Sin(Tilt) * FMath::Cos(Phi), FMath::Sin(Tilt) * FMath::Sin(Phi), -FMath::Cos(Tilt));
+			const float Len = Size * (0.8f + 0.4f * Hash01(78, I, 3));
+			BlossomTube(D, FVector3f::ZeroVector, Dir, Len, 0.5f * Len * B.Thickness, 0.07f * (Hash01(78, I, 4) - 0.5f) * 2.f, Ts, Rs, 6, 5);
+		}
+		break;
+	}
+	case EPlantBlossomForm::Cone:
+	{
+		const float Ts[6] = { 0.f, 0.5f, 1.f };
+		const float Rs[6] = { 0.6f, 1.f, 0.f };
+		for (int32 I = 0; I < N; I++)
+		{
+			// a rosette of upright ovoids round the shoot (one cone stands straight)
+			const float Phi = I * GoldenAngle;
+			const float Tilt = N > 1 ? FMath::DegreesToRadians(8.f + 50.f * FMath::Sqrt((I + 0.5f) / N)) : 0.f;
+			const FVector3f Dir(FMath::Sin(Tilt) * FMath::Cos(Phi), FMath::Sin(Tilt) * FMath::Sin(Phi), FMath::Cos(Tilt));
+			const float Len = Size * (0.85f + 0.3f * Hash01(78, I, 3));
+			BlossomTube(D, Dir * (Size * 0.15f), Dir, Len, 0.5f * Len * B.Thickness, 0.f, Ts, Rs, 3, 4);
+		}
+		break;
+	}
+	case EPlantBlossomForm::Blossom:
+	{
+		// a cluster of flowers on short stalks, spread over a shallow dome above the twig
+		const float R = 0.5f * B.Spread * Size;
+		for (int32 I = 0; I < N; I++)
+		{
+			const float Rad = N > 1 ? R * FMath::Sqrt((I + 0.5f) / N) : 0.f;
+			const float Ang = I * GoldenAngle;
+			const float Lift = Size * 0.7f + 0.5f * Size * (1.f - FMath::Square(Rad / FMath::Max(R, 0.01f)));
+			const FVector3f C(Rad * FMath::Cos(Ang), Rad * FMath::Sin(Ang), Lift);
+			const FVector3f Nrm = (FVector3f(C.X * 0.6f, C.Y * 0.6f, 1.f)).GetSafeNormal();
+			// the stalk: a thin strip back to the twig
+			const FVector3f Across = FVector3f(-FMath::Sin(Ang), FMath::Cos(Ang), 0.f) * (Size * 0.03f);
+			const int32 S0 = D.Add(-Across, Nrm, Nrm, FVector2f(0.75f, 0.75f));
+			D.Add(Across, Nrm, Nrm, FVector2f(0.75f, 0.75f));
+			D.Add(C + Across, Nrm, Nrm, FVector2f(0.75f, 0.75f));
+			D.Add(C - Across, Nrm, Nrm, FVector2f(0.75f, 0.75f));
+			D.Tris.Add(FIntVector3(S0, S0 + 2, S0 + 1));
+			D.Tris.Add(FIntVector3(S0, S0 + 3, S0 + 2));
+			BlossomFlower(D, C, Nrm, Size * (0.9f + 0.2f * Hash01(78, I, 5)), FMath::Max(B.Petals, 3), 7000u + I);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+UStaticMesh* PlantMeshes::BuildBlossom(UObject* Outer, const FPlantSpecies& S)
+{
+	FMeshData D;
+	BlossomClusterData(S.Blossom, D);
+	return BuildMesh(Outer, nullptr, *FString::Printf(TEXT("SM_Blossom_%s"), *S.Name.ToString()), D);
+}
+
+UTexture2D* PlantMeshes::BuildBlossomAtlas(UObject* Outer, const FPlantBlossom& B)
+{
+	// left half: petals (base to tip) or the pattern of a catkin's or cone's scales; right half: centre (top), stalk (bottom)
+	constexpr int32 W = 128, H = 64;
+	TArray<FColor> Px;
+	Px.SetNumUninitialized(W * H);
+	const bool bFlower = B.Form == EPlantBlossomForm::Blossom;
+	for (int32 Y = 0; Y < H; Y++)
+	{
+		for (int32 X = 0; X < W; X++)
+		{
+			const float U = (X + 0.5f) / W, V = (Y + 0.5f) / H;
+			const float Noise = Hash01(91, X, Y, 1);
+			FLinearColor C;
+			if (U < 0.5f)
+			{
+				const float Lu = U * 2.f;
+				if (bFlower)
+				{
+					const float Base = FMath::SmoothStep(0.f, 0.5f, V);
+					C = FMath::Lerp(B.CentreColour * 0.7f + FLinearColor(0.05f, 0.1f, 0.02f), B.FreshColour, Base);
+					// a few veins, and a little uneven
+					C *= 0.93f + 0.07f * FMath::Cos(Lu * 2.f * PI * 4.f) * (0.4f + 0.6f * V) + 0.04f * (Noise - 0.5f);
+				}
+				else
+				{
+					// staggered scales: bracts in rows round the body
+					const float Gx = Lu * 5.f, Gy = V * 12.f;
+					const float Fx = FMath::Frac(Gx + 0.5f * FMath::FloorToFloat(Gy)) - 0.5f, Fy = FMath::Frac(Gy) - 0.5f;
+					const float Scale = FMath::Clamp(1.f - 1.6f * (FMath::Square(Fx) + 0.5f * FMath::Square(Fy)), 0.f, 1.f);
+					const float G = 0.55f + 0.45f * Scale + 0.08f * (Noise - 0.5f);
+					C = FLinearColor(G, G, G);
+				}
+			}
+			else if (V < 0.5f)
+			{
+				C = bFlower ? B.CentreColour * (0.8f + 0.4f * Noise) : FLinearColor::White;
+			}
+			else
+			{
+				C = FLinearColor(0.1f, 0.17f, 0.04f) * (0.8f + 0.4f * Noise);
+			}
+			Px[Y * W + X] = C.ToFColor(true);
+		}
+	}
+	return MakeTextureFromPixels(Outer, W, H, MoveTemp(Px), true);
+}
+
 void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint32 Seed, UTexture2D*& OutAlbedo, UTexture2D*& OutNormal)
 {
 	const FPlantBark& B = S.Bark;
@@ -795,11 +991,11 @@ UTexture2D* PlantMeshes::BuildFoliageCard(UObject* Outer, const FPlantLeafShape&
 	{
 		return BuildLeafDetail(Outer, L);
 	}
-	// a spray of leaves seen from the side: alpha 255 on a leaf, a grey shade, the shapes of this species' blades
-	constexpr int32 W = 128;
+	// a spray of leaves seen from the side: alpha is the leaf's coverage (soft edge), a grey shade, the shapes of this species' blades
+	constexpr int32 W = 256;
 	TArray<FColor> Img;
 	Img.Init(FColor(0, 0, 0, 0), W * W);
-	const int32 Leaves = 70;
+	const int32 Leaves = 90;
 	for (int32 N = 0; N < Leaves; N++)
 	{
 		const float Cx = (0.12f + 0.76f * Hash01(41, N, 1)) * W, Cy = (0.1f + 0.85f * Hash01(41, N, 2)) * W;
@@ -815,11 +1011,15 @@ UTexture2D* PlantMeshes::BuildFoliageCard(UObject* Outer, const FPlantLeafShape&
 				const float U = (X * Sa - Y * Ca) / Len + 0.5f, Vv = (X * Ca + Y * Sa) / Wid;
 				if (U < 0.f || U > 1.f) continue;
 				const float Half = FMath::Pow(FMath::Sin(PI * FMath::Clamp(U, 0.f, 1.f)), 0.8f);
-				if (FMath::Abs(Vv) > Half) continue;
+				// distance to the outline in texels, across the leaf: soft over one texel
+				const float Edge = (Half - FMath::Abs(Vv)) * Wid;
+				const float Cover = FMath::Clamp(Edge + 0.5f, 0.f, 1.f);
+				if (Cover <= 0.f) continue;
 				const int32 Ix = FMath::RoundToInt(Cx) + X, Iy = FMath::RoundToInt(Cy) + Y;
 				if (Ix < 0 || Ix >= W || Iy < 0 || Iy >= W) continue;
 				const uint8 C = (uint8)FMath::RoundToInt(255.f * Shade * (0.75f + 0.25f * U));
-				Img[Iy * W + Ix] = FColor(C, C, C, 255);
+				const uint8 Al = (uint8)FMath::RoundToInt(Cover * 255.f);
+				if (Al >= Img[Iy * W + Ix].A) Img[Iy * W + Ix] = FColor(C, C, C, Al);
 			}
 		}
 	}
@@ -830,8 +1030,9 @@ UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& 
 {
 	if (L.Form == EPlantLeafForm::Needle)
 	{
-		// a fan of needles from the bottom middle, alpha 255 on a needle: M_PlantNeedle cuts the card out by it
-		constexpr int32 NW = 128, NH = 128;
+		// a fan of needles from the bottom middle; alpha is the needle's coverage of the texel (anti-aliased, so a magnified card
+		// has soft edges: the material dithers it with the temporal AA instead of cutting it hard)
+		constexpr int32 NW = 256, NH = 256;
 		TArray<FColor> Img;
 		Img.Init(FColor(0, 0, 0, 0), NW * NH);
 		const int32 Needles = FMath::Clamp(L.PerCluster * 2, 12, 120);
@@ -843,22 +1044,29 @@ UTexture2D* PlantMeshes::BuildLeafDetail(UObject* Outer, const FPlantLeafShape& 
 			const float Len = (0.55f + 0.45f * Hash01(31, G, 2)) * NH * 0.97f;
 			const float Bend = (Hash01(31, G, 3) - 0.5f) * 0.5f;
 			const float Shade = 0.8f + 0.2f * Hash01(31, G, 4);
-			const int32 Steps = FMath::CeilToInt(Len * 1.5f);
+			const int32 Steps = FMath::CeilToInt(Len * 2.f);
 			for (int32 K = 0; K <= Steps; K++)
 			{
 				const float T = (float)K / Steps;
 				const float Ang = A + Bend * T * T;
 				const float X = NW * 0.5f + FMath::Sin(Ang) * Len * T, Y = NH - 1.f - FMath::Cos(Ang) * Len * T;
-				const float Thick = 1.4f * (1.f - 0.7f * T);
+				const float Radius = 1.5f * (1.f - 0.7f * T) + 0.3f;
 				const uint8 V = (uint8)FMath::RoundToInt(255.f * Shade * (0.7f + 0.3f * T));
-				for (int32 Dy = -1; Dy <= 1; Dy++)
+				for (int32 Dy = -3; Dy <= 3; Dy++)
 				{
-					for (int32 Dx = -1; Dx <= 1; Dx++)
+					for (int32 Dx = -3; Dx <= 3; Dx++)
 					{
-						if (Dx * Dx + Dy * Dy > Thick * Thick) continue;
 						const int32 Ix = FMath::RoundToInt(X) + Dx, Iy = FMath::RoundToInt(Y) + Dy;
 						if (Ix < 0 || Ix >= NW || Iy < 0 || Iy >= NH) continue;
-						Img[Iy * NW + Ix] = FColor(V, V, V, 255);
+						const float Dist = FVector2f(Ix - X, Iy - Y).Size();
+						const float Cover = FMath::Clamp(Radius + 0.5f - Dist, 0.f, 1.f);
+						if (Cover <= 0.f) continue;
+						FColor& Px = Img[Iy * NW + Ix];
+						const uint8 Al = (uint8)FMath::RoundToInt(Cover * 255.f);
+						if (Al >= Px.A)
+						{
+							Px = FColor(V, V, V, Al);
+						}
 					}
 				}
 			}
@@ -1009,7 +1217,8 @@ UTexture2D* PlantMeshes::BuildFruitDetail(UObject* Outer)
 UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 {
 	FMeshData D;
-	constexpr int32 Rows = 5;
+	// a short blade needs fewer rows: a carpet of them is many thousands of tufts
+	const int32 Rows = G.Height < 0.3f ? 3 : 5;
 	const int32 Count = FMath::Clamp(G.Blades, 3, 40);
 	for (int32 B = 0; B < Count; B++)
 	{
@@ -1077,7 +1286,7 @@ UStaticMesh* PlantMeshes::BuildGrassTuft(UObject* Outer, const FGrassSpecies& G)
 namespace
 {
 	/** The data of one LOD as two sections, wood and leaves, in a mesh description. */
-	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf, const FMeshData& Card)
+	void FillTreeLod(FMeshDescription& MD, const FMeshData& Wood, const FMeshData& Leaf, const FMeshData& Card, const FMeshData& Bloom)
 	{
 		FStaticMeshAttributes Attr(MD);
 		Attr.Register();
@@ -1088,9 +1297,9 @@ namespace
 		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
 		TVertexInstanceAttributesRef<FVector4f> VCol = Attr.GetVertexInstanceColors();
 		VUV.SetNumChannels(2);
-		const FMeshData* Parts[3] = { &Wood, &Leaf, &Card };
-		const TCHAR* Slots[3] = { TEXT("Wood"), TEXT("Leaf"), TEXT("Card") };
-		for (int32 Part = 0; Part < 3; Part++)
+		const FMeshData* Parts[4] = { &Wood, &Leaf, &Card, &Bloom };
+		const TCHAR* Slots[4] = { TEXT("Wood"), TEXT("Leaf"), TEXT("Card"), TEXT("Bloom") };
+		for (int32 Part = 0; Part < 4; Part++)
 		{
 			const FMeshData& D = *Parts[Part];
 			const FPolygonGroupID PG = MD.CreatePolygonGroup();
@@ -1132,7 +1341,8 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 	Skeleton.Build(S, Seed);
 	FPlantSkeleton::FInstances Out;
 	Skeleton.Evaluate(Age, PlantModel::Season(S, Seed, Day), Out);
-	FMeshData Cluster, Simple, CardCluster;
+	FMeshData Cluster, Simple, CardCluster, BloomCluster;
+	if (S.Blossom.Form != EPlantBlossomForm::None) BlossomClusterData(S.Blossom, BloomCluster);
 	LeafClusterData(S, Cluster);
 	LeafClusterData(S, Simple, true);
 	{
@@ -1158,7 +1368,24 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 		{
 			if (T.Order <= Lods[L].MaxOrder) Tubes.Add(T);
 		}
-		FMeshData Wood, Leaf, Card;
+		FMeshData Wood, Leaf, Card, Bloom;
+		// the flowers only on the two nearest LODs, thinned and larger in the second (and not at all on the far ones)
+		if (L < 2 && !BloomCluster.Pos.IsEmpty())
+		{
+			const int32 Stride = L == 0 ? 1 : 3;
+			for (int32 B = 0; B < Out.Blossoms.Num(); B += Stride)
+			{
+				FTransform Xf = Out.Blossoms[B];
+				Xf.SetScale3D(Xf.GetScale3D() * (L == 0 ? 1.f : 1.6f));
+				const int32 Base = Bloom.Pos.Num();
+				for (int32 V = 0; V < BloomCluster.Pos.Num(); V++)
+				{
+					Bloom.Add(FVector3f(Xf.TransformPosition(FVector(BloomCluster.Pos[V]))), FVector3f(Xf.TransformVectorNoScale(FVector(BloomCluster.Nrm[V]))),
+					          FVector3f(Xf.TransformVectorNoScale(FVector(BloomCluster.Tan[V]))), BloomCluster.UV[V]);
+				}
+				for (const FIntVector3& T : BloomCluster.Tris) Bloom.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
+			}
+		}
 		if (!Tubes.IsEmpty())
 		{
 			BuildWoodImpl(nullptr, nullptr, Tubes, S.Bark, Age, Seed, nullptr, &Wood);
@@ -1182,13 +1409,13 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 				for (const FIntVector3& T : Src.Tris) Dst.Tris.Add(FIntVector3(Base + T.X, Base + T.Y, Base + T.Z));
 			}
 		}
-		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty() && Card.Tris.IsEmpty())
+		if (Wood.Tris.IsEmpty() && Leaf.Tris.IsEmpty() && Card.Tris.IsEmpty() && Bloom.Tris.IsEmpty())
 		{
 			for (int32 I = 0; I < 3; I++) Wood.Add(FVector3f::ZeroVector, FVector3f::UpVector, FVector3f::XAxisVector, FVector2f::ZeroVector);
 			Wood.Tris.Add(FIntVector3(0, 1, 2));
 		}
-		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Card.Tris.Num();
-		FillTreeLod(Descriptions[L], Wood, Leaf, Card);
+		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Card.Tris.Num() + Bloom.Tris.Num();
+		FillTreeLod(Descriptions[L], Wood, Leaf, Card, Bloom);
 	}
 	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
 	Result.Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
@@ -1204,6 +1431,7 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Wood")));
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Leaf")));
 	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Card")));
+	Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, TEXT("Bloom")));
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
 	Params.bMarkPackageDirty = false;
 	Params.bBuildSimpleCollision = false;
@@ -1212,9 +1440,16 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	Mesh->BuildFromMeshDescriptions({ &Prep.Lods[0], &Prep.Lods[1], &Prep.Lods[2], &Prep.Lods[3] }, Params);
 	Result.Mesh = Mesh;
 	Result.Radius = Prep.Radius;
-	// the two farthest LODs cast no shadow (the shadow of a tree 60 m away is a few pixels of a shadow map page)
+	// the two farthest LODs cast no shadow (the shadow of a tree 60 m away is a few pixels of a shadow map page); flowers never do
 	if (FStaticMeshRenderData* Data = Mesh->GetRenderData())
 	{
+		for (FStaticMeshLODResources& Lod : Data->LODResources)
+		{
+			for (FStaticMeshSection& Section : Lod.Sections)
+			{
+				if (Section.MaterialIndex == 3) Section.bCastShadow = false;
+			}
+		}
 		for (int32 L = 2; L < Data->LODResources.Num(); L++)
 		{
 			for (FStaticMeshSection& Section : Data->LODResources[L].Sections) Section.bCastShadow = false;

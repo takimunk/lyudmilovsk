@@ -1,0 +1,10 @@
+{
+ "id": "icon_ice_cream",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  2,
+  1
+ ]
+}

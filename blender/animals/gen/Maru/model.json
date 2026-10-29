@@ -1,0 +1,10 @@
+{
+ "service": "hi3d MCP",
+ "model_task": "e7de98d615ef45f4b55af4fec5e481e3",
+ "model_page": "https://www.hi3d.ai/3d-model/e7de98d615ef45f4b55af4fec5e481e3",
+ "output": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261026/25fb6da831484c4b9b0eb45ff649563a/target/model/original/GLB0.glb (signed; refetch with get_task_outputs)",
+ "file": "model.glb (local, not committed)",
+ "bytes": 47895364,
+ "sha256": "a11fc0671e5534e04e2849eb67309b91b4340b710a656f4a5537cfe78af09b3f",
+ "credits": 53
+}

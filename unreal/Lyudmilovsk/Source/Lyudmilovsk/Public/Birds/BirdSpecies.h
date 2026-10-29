@@ -140,6 +140,14 @@ public:
 	/** SK_<Id>_Hero (the player's detailed body, on the same skeleton and clips), or null if the species has none. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static USkeletalMesh* LoadHeroMesh(FName Id);
+	/** The hero body can be worn from its own eye (ABirdActor::SetFirstPerson): it has the "Skull" material slot. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	static bool HasFirstPersonBody(FName Id);
+	/** Feral pigeon colour morphs of the hero body: 0 BlueBar (the base) .. Count-1; the name is the material suffix
+	 *  ("" for the base). Pick is weighted by how common each is in a city flock. */
+	static int32 PigeonMorphCount();
+	static FString PigeonMorphName(int32 Morph);
+	static int32 PickPigeonMorph(int32 Seed);
 	/** Clip is one of the names above (Idle, Flap, ...); null if that species has none. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static UAnimSequence* LoadClip(FName Id, FName Clip);

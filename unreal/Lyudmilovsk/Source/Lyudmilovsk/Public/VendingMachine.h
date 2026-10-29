@@ -5,7 +5,19 @@
 #include "VendingMachine.generated.h"
 
 class ABottleItem;
+class ALyudGoodsItem;
 class UStaticMeshComponent;
+
+/** One selection button of a vending machine: Count units of Item (any item of the table) for Price roubles (0: the item's usual price). */
+USTRUCT(BlueprintType)
+struct FVendingSlot
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FName Item;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Price = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 Count = 1;
+};
 
 /**
  * The drinks machine in the hall. Look at it from about a metre away: 1..4 choose a drink, 5 a bag of bird feed, E pays and the machine
@@ -20,6 +32,18 @@ class LYUDMILOVSK_API AVendingMachine : public AActor
 
 public:
 	AVendingMachine();
+
+	/**
+	 * Universal machine: what it sells, slot by slot (keys 1..9), any item of the inventory table. Empty and no Preset: the hall's
+	 * classic four drinks and a bag of bird feed. Bottles and bird feed are delivered as ABottleItem / ABirdFeedBag, everything else with
+	 * a Look as ALyudGoodsItem (the item's icon on its face).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vending")
+	TArray<FVendingSlot> Slots;
+
+	/** A stock list from Content/Transport/lobby.json "stock" (drinks, snacks, press, ...); it fills Slots at BeginPlay when Slots is empty. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vending")
+	FName Preset;
 
 	/** Price of a bottle, roubles (the bird feed in slot 5 has its own). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vending")
@@ -49,9 +73,14 @@ private:
 
 	void Buy();
 	void StockShelves();
+	void StockShelvesUniversal();
+	AActor* SpawnGoods(const FVendingSlot& Slot, const FVector& Start);
 	FVector TrayRest() const;
 	FText PromptFor(int32 Flavor) const;
 	int32 PriceOf(int32 Slot) const;
+	/** Slots (filled from Preset or the classic five). */
+	void ResolveSlots();
+	bool bClassic = true;
 	FVector TrayRestFor(const AActor* Item) const;
 
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Tray;

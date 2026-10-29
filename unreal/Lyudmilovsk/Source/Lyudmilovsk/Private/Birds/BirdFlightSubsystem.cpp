@@ -238,8 +238,8 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.C.Right = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 90.f); return false; });
 		S->Add(1.5f, [](FCtx& X) { X.C.Shift = true; CVar(TEXT("lyud.Bird.ChaseYaw"), 60.f); return false; });
 		S->Add(1.5f, [](FCtx& X) { X.C.Left = X.T > 0.2f && X.T < 0.3f; CVar(TEXT("lyud.Bird.ChaseYaw"), 180.f); CVar(TEXT("lyud.Bird.ChasePitch"), 25); return false; });
-		S->Add(3.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseCam"), 0); X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
-		S->Add(3.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-15.f, -95.f, 0.f), true); return false; });
+		S->Add(3.f, [](FCtx& X) { CVar(TEXT("lyud.Bird.ChaseCam"), 0); X.Bird->SetFakeHead(FRotator(-30.f, -95.f, 0.f), true); return false; });
+		S->Add(3.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-30.f, -95.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator(-70.f, 0.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.C.Space = true; X.Bird->SetFakeHead(FRotator(-10.f, 100.f, 0.f), true); return false; });
 		S->Add(2.f, [](FCtx& X) { X.Bird->SetFakeHead(FRotator::ZeroRotator, false); return false; });
@@ -324,6 +324,31 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			return !X.Bird || X.Bird->GetEnergy() < 0.01f;
 		});
 	}
+	else if (Kind == TEXT("magnet"))
+	{
+		// over the upland's forest, then Q held: pulled onto the nearest twig or treetop; off again, Q onto the next
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const FVector At(-6000.f, PortalFaceY - 9000.f, 0.f);
+			FBirdAir A; A.Init(X.Sys->GetWorld());
+			X.Sys->BecomeSpecies(X.PC, Species, At + FVector(0, 0, A.GroundZ(FVector2D(At)) + 2500.f), -100.f, FVector(-200.f, -1000.f, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-20.f, -100.f, 0.f));
+			return true;
+		});
+		for (int32 K = 0; K < 3; K++)
+		{
+			S->Add(15.f, [](FCtx& X)
+			{
+				X.C.Magnet = true;
+				if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD magnet t=%.0f %s at %s"), X.T, *X.Bird->DebugLine().Left(60), *X.Bird->GetActorLocation().ToCompactString());
+				return X.Bird->GetMode() == EBirdMode::Ground;
+			});
+			S->Add(2.f, [](FCtx& X) { if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD perched at %s"), *X.Bird->FeetLocation().ToCompactString()); return false; });
+			S->Add(1.5f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(10.f, -100.f + 60.f * FMath::FRand(), 0.f); return false; });
+		}
+	}
 	else if (Kind == TEXT("call"))
 	{
 		// on the ground among birds of the kind (lyud.Birds.SpawnNear puts them there): call, three times
@@ -402,7 +427,8 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 		|| Info.Activity == EBirdActivity::Peck || Info.Velocity.Size() < 30.f;
 	// standing (on the palm), it turns round after eating and faces the way the hero looks
 	const float Yaw = bStanding ? PC->GetControlRotation().Yaw : Info.Velocity.Rotation().Yaw;
-	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, Actor))
+	// bird life keeps a claimed bird's own body hidden (it draws nothing for it): the pawn spawns its own
+	if (!S->BecomeSpecies(PC, Info.SpeciesId, Info.Location, Yaw, Info.Velocity, bStanding, nullptr))
 	{
 		Life->ReleaseBird(BirdId);
 		return false;
@@ -410,9 +436,10 @@ bool UBirdFlightSubsystem::BecomeBird(APlayerController* PC, int32 BirdId)
 	S->ClaimedId = BirdId;
 	S->LastClaimId = BirdId;
 	S->bOurFemale = Info.bFemale;
-	if (ABirdActor* A = Cast<ABirdActor>(Actor))
+	(void)Actor;
+	if (ABirdPawn* BP = S->Bird.Get(); BP && BP->GetOutsideBody())
 	{
-		A->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
+		BP->GetOutsideBody()->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
 	}
 	return true;
 #else
@@ -538,6 +565,14 @@ void UBirdFlightSubsystem::FinishReturn()
 		PC->SetControlRotation(HeroControl);
 	}
 	SetHeroHeadShown(false);
+	if (bHeroHiddenForReturn)
+	{
+		if (ACharacter* HC = Cast<ACharacter>(Hero.Get()))
+		{
+			HC->GetMesh()->SetVisibility(true, true);
+		}
+		bHeroHiddenForReturn = false;
+	}
 #if LYUD_HAS_BIRDLIFE
 	if (ClaimedId >= 0)
 	{
@@ -833,8 +868,13 @@ void UBirdFlightSubsystem::HandleFate(EBirdFate Fate, const FVector& At)
 		{
 			const ALyudSea* Sea = ALyudSea::Get(this);
 			const float Surface = Sea ? Sea->SurfaceZ(At) : FBirdAir::SeaZ;
-			H->SetActorLocation(FVector(At.X, At.Y, Surface - H->GetDefaultHalfHeight() * 0.6f), false, nullptr, ETeleportType::TeleportPhysics);
+			// floating with the head out: the eyes about 20 cm over the waves
+			H->SetActorLocation(FVector(At.X, At.Y, Surface - HeroFloatDepth), false, nullptr, ETeleportType::TeleportPhysics);
+			H->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 			H->GetCharacterMovement()->SetMovementMode(MOVE_Swimming);
+			// the arm still held out from the befriending would sweep past the camera on its way back
+			H->GetMesh()->SetVisibility(false, true);
+			bHeroHiddenForReturn = true;
 			HeroControl = FRotator(0.f, B->GetActorRotation().Yaw, 0.f);
 		}
 	}
@@ -897,6 +937,20 @@ void UBirdFlightSubsystem::TickHero(float Dt)
 	// the hero again, with a befriended bird somewhere: in the water, swim ashore; ashore, hold R to call it
 	HintShowT = FMath::Max(0.f, HintShowT - Dt);
 	const bool bWater = IsHeroInWater();
+	if (ACharacter* HC = Cast<ACharacter>(Hero.Get()); HC && HC->GetCharacterMovement() && HC->GetCharacterMovement()->IsSwimming())
+	{
+		// swimming, the head stays out of the water (the waves lift and drop him with them)
+		const ALyudSea* Sea = ALyudSea::Get(this);
+		const float Surface = Sea ? Sea->SurfaceZ(HC->GetActorLocation()) : FBirdAir::SeaZ;
+		const FVector L = HC->GetActorLocation();
+		if (L.Z < Surface - HeroFloatDepth)
+		{
+			HC->SetActorLocation(FVector(L.X, L.Y, FMath::FInterpTo(L.Z, Surface - HeroFloatDepth, Dt, 12.f)));
+			FVector V = HC->GetCharacterMovement()->Velocity;
+			V.Z = FMath::Max(V.Z, 0.f);
+			HC->GetCharacterMovement()->Velocity = V;
+		}
+	}
 	if (bWater)
 	{
 		SetHeroHint(LyudText::Get(TEXT("bird.hero.swim_ashore")));
@@ -940,7 +994,7 @@ bool UBirdFlightSubsystem::RecallBird()
 		FBirdLifeInfo Info;
 		if (Life->GetBird(LastClaimId, Info))
 		{
-			Shown = Life->ClaimBird(LastClaimId);
+			Life->ClaimBird(LastClaimId);
 			Sp = Info.SpeciesId;
 			Id = LastClaimId;
 		}
@@ -991,13 +1045,22 @@ void UBirdFlightSubsystem::HandleCall()
 		{
 			K = (EAnswer)Force;
 		}
-		AActor* A = Life->ClaimBird(Id);
+		Life->ClaimBird(Id);
+		// bird life hides a claimed bird's body: the answer is played by a body of our own, where that bird is
+		FActorSpawnParameters SP;
+		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SP.bDeferConstruction = true;
+		ABirdActor* A = GetWorld()->SpawnActor<ABirdActor>(ABirdActor::StaticClass(), FTransform(Info.Location), SP);
 		if (!A)
 		{
 			Life->ReleaseBird(Id);
 			continue;
 		}
-		A->SetActorHiddenInGame(false);
+		A->Species = Info.SpeciesId;
+		A->InitialState = EBirdState::Look;
+		A->FinishSpawning(FTransform(FRotator(0.f, (At - Info.Location).Rotation().Yaw, 0.f), Info.Location));
+		A->SetSex(Info.bFemale ? EBirdSex::Female : EBirdSex::Male);
+		A->SetActorEnableCollision(false);
 		Meet = FEncounter();
 		Meet.Id = Id;
 		Meet.Actor = A;
@@ -1026,6 +1089,10 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	const float Length = Meet.Kind == EAnswer::Fight ? 6.f : Meet.Kind == EAnswer::Court ? 4.f : 2.f;
 	auto Release = [&]()
 	{
+		if (A)
+		{
+			A->Destroy();
+		}
 		if (Life)
 		{
 			Life->ReleaseBird(Meet.Id);
@@ -1043,6 +1110,13 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	}
 	const FVector Me = B->FeetLocation();
 	FVector P = A->GetActorLocation();
+	// the player sees who answers: the head turns to it for a moment
+	if (APlayerController* PCx = Player.Get(); PCx && (Meet.Kind == EAnswer::Fight || Meet.Kind == EAnswer::Court || Meet.T < 1.6f))
+	{
+		const FRotator Want = (P + FVector(0, 0, 8.f) - B->BirdView().Location).Rotation();
+		const FRotator Cur = PCx->GetControlRotation();
+		PCx->SetControlRotation(FMath::RInterpTo(Cur, FRotator(FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -60.f, 40.f), Want.Yaw, 0.f), Dt, 6.f));
+	}
 	const FVector To = Me - P;
 	const float D = To.Size2D();
 	const FBirdSpecies* Row = UBirdSpeciesLibrary::Find(Meet.Species);
@@ -1060,11 +1134,20 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 			}
 		}
 	};
+	if (FMath::Fmod(Meet.T, 0.5f) < Dt)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
+	}
 	switch (Meet.Kind)
 	{
 	case EAnswer::Fight:
-		// it comes at you hopping, pecks at you two or three times, then is off
-		if (D > Len * 1.1f)
+		// it comes at you (flying in from further off, hopping the last of it), pecks at you two or three times, then is off
+		if (D > 100.f)
+		{
+			Vel = To.GetSafeNormal2D() * 260.f;
+			A->SetState(EBirdState::Fly);
+		}
+		else if (D > Len * 1.1f)
 		{
 			Vel = To.GetSafeNormal2D() * 90.f;
 			A->SetState(EBirdState::Hop);

@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.hall_lift.1",
+ "lang": "ja",
+ "text": "エレベーターと階段は乗車ホームへ続いています。階段では手すりにおつかまりください。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] エレベーターと階段は乗車ホームへ続いています。階段では手すりにおつかまりください。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a179ae-21ba-7ba1-af08-a9aa8e774cfd",
+ "hash": "1cee43ccdf84"
+}

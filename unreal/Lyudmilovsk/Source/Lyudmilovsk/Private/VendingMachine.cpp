@@ -2,6 +2,12 @@
 
 #include "BirdFeedItem.h"
 #include "BottleItem.h"
+#include "LyudGoodsItem.h"
+#include "Dom/JsonObject.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -27,8 +33,49 @@ namespace
 		{ TEXT("drink_tarkhun"), TEXT("tarkhun"), 25, 1 },
 		{ TEXT("bird_feed"), nullptr, 15, 5 },
 	};
-	constexpr int32 NumGoods = UE_ARRAY_COUNT(Drinks);
 	constexpr int32 NumDrinks = 4;
+	constexpr int32 MaxSlots = 9;
+
+	/** The bottle flavor of an item (empty if it is not a labelled bottle). */
+	FName FlavorOf(FName Item)
+	{
+		const FLyudItemDef* D = ULyudInventory::FindDef(Item);
+		return D ? D->Flavor : FName();
+	}
+
+	/** Content/Transport/lobby.json "stock" <Preset>: [{"item", "price", "count"}...] */
+	TArray<FVendingSlot> LoadPreset(FName Preset)
+	{
+		TArray<FVendingSlot> Out;
+		FString Text;
+		if (!FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("Transport/lobby.json"))))
+		{
+			return Out;
+		}
+		TSharedPtr<FJsonObject> Root;
+		if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root.IsValid())
+		{
+			return Out;
+		}
+		const TSharedPtr<FJsonObject>* Stock = nullptr;
+		const TArray<TSharedPtr<FJsonValue>>* List = nullptr;
+		if (Root->TryGetObjectField(TEXT("stock"), Stock) && (*Stock)->TryGetArrayField(Preset.ToString(), List))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *List)
+			{
+				const TSharedPtr<FJsonObject> O = V->AsObject();
+				FVendingSlot S;
+				S.Item = FName(*O->GetStringField(TEXT("item")));
+				S.Price = O->HasField(TEXT("price")) ? (int32)O->GetNumberField(TEXT("price")) : 0;
+				S.Count = O->HasField(TEXT("count")) ? (int32)O->GetNumberField(TEXT("count")) : 1;
+				if (ULyudInventory::FindDef(S.Item))
+				{
+					Out.Add(S);
+				}
+			}
+		}
+		return Out;
+	}
 	constexpr float DispenseTime = 0.7f;
 }
 
@@ -61,9 +108,10 @@ AVendingMachine::AVendingMachine()
 void AVendingMachine::BeginPlay()
 {
 	Super::BeginPlay();
+	ResolveSlots();
 	if (bStockShelves)
 	{
-		StockShelves();
+		bClassic ? StockShelves() : StockShelvesUniversal();
 	}
 	UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	if (Base)
@@ -73,6 +121,86 @@ void AVendingMachine::BeginPlay()
 			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
 			MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.025f, 0.025f, 0.03f));
 			C->SetMaterial(0, MID);
+		}
+	}
+}
+
+void AVendingMachine::ResolveSlots()
+{
+	if (Slots.IsEmpty() && !Preset.IsNone())
+	{
+		Slots = LoadPreset(Preset);
+	}
+	bClassic = Slots.IsEmpty();
+	if (bClassic)
+	{
+		for (const FDrink& D : Drinks)
+		{
+			FVendingSlot S;
+			S.Item = D.Item;
+			S.Price = D.Flavor ? 0 : D.Price;
+			S.Count = D.Count;
+			Slots.Add(S);
+		}
+	}
+	if (Slots.Num() > MaxSlots)
+	{
+		Slots.SetNum(MaxSlots);
+	}
+}
+
+void AVendingMachine::StockShelvesUniversal()
+{
+	// goods lie behind the glass, one product per column and two of each, in rows three wide (the model's: lobby_props.py Vending, shelves 30 cm apart)
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	constexpr float ShelfZ0 = 58.f, ShelfPitch = 38.f, FrontX = 12.f, MidY = -9.f, ColPitch = 25.f;
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	for (int32 I = 0; I < Slots.Num(); ++I)
+	{
+		const FLyudItemDef* D = ULyudInventory::FindDef(Slots[I].Item);
+		if (!D)
+		{
+			continue;
+		}
+		for (int32 Copy = 0; Copy < 2; ++Copy)
+		{
+			const FVector Local(FrontX - Copy * 12.f, MidY + ((I % 3) - 1) * ColPitch + (Copy ? 2.f : -2.f), ShelfZ0 + (I / 3) * ShelfPitch);
+			AActor* G = nullptr;
+			if (!D->Flavor.IsNone())
+			{
+				ABottleItem* B = World->SpawnActor<ABottleItem>(GetActorTransform().TransformPosition(Local + FVector(0, 0, ABottleItem::BodyRadius + 0.2f)), FRotator::ZeroRotator, Params);
+				if (B)
+				{
+					B->Init(D->Flavor, 1.f);
+					B->LieDown(B->GetActorLocation(), GetActorRightVector());
+					B->SetActorScale3D(FVector(0.9f));
+				}
+				G = B;
+			}
+			else if (D->Look != ELyudItemLook::Auto)
+			{
+				ALyudGoodsItem* Shown = World->SpawnActor<ALyudGoodsItem>(GetActorTransform().TransformPosition(Local), GetActorRotation(), Params);
+				if (Shown)
+				{
+					Shown->Init(Slots[I].Item);
+					const float Tall = FMath::Max(D->Size.Y, D->Size.Z);
+					const float Fit = FMath::Min(1.f, 30.f / Tall);
+					Shown->SetActorScale3D(FVector(Fit));
+					// stand it on the shelf; flat things lean against the back, picture out
+					Shown->SetActorLocation(GetActorTransform().TransformPosition(Local + FVector(0, 0, Shown->HalfHeight() * Fit + 0.2f)));
+				}
+				G = Shown;
+			}
+			if (G)
+			{
+				G->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+				Stock.Add(G);
+			}
 		}
 	}
 }
@@ -147,14 +275,22 @@ FVector AVendingMachine::TrayRest() const
 FText AVendingMachine::PromptFor(int32 Sel) const
 {
 	const ULyudInventory* Inv = ULyudInventory::Get(this);
-	const FText Name = ULyudInventory::ItemName(Drinks[Sel].Item);
+	const FText Name = ULyudInventory::ItemName(Slots[Sel].Item);
 	const int32 Cost = PriceOf(Sel);
-	TArray<FStringFormatArg> Names;
-	for (const FDrink& D : Drinks)
+	FString Choose;
+	if (bClassic)
 	{
-		Names.Add(FStringFormatArg(ULyudInventory::ItemName(D.Item).ToString()));
+		TArray<FStringFormatArg> Names;
+		for (const FVendingSlot& S : Slots)
+		{
+			Names.Add(FStringFormatArg(ULyudInventory::ItemName(S.Item).ToString()));
+		}
+		Choose = LyudText::Get(TEXT("ui.vending.choose"), Names).ToString();
 	}
-	const FString Choose = LyudText::Get(TEXT("ui.vending.choose"), Names).ToString();
+	else
+	{
+		Choose = LyudText::Get(TEXT("ui.vending.pick"), { FStringFormatArg(Sel + 1), FStringFormatArg(Slots.Num()) }).ToString();
+	}
 	if (Inv && Inv->Rubles < Cost)
 	{
 		return FText::FromString(LyudText::Get(TEXT("ui.vending.nomoney"), { FStringFormatArg(Name.ToString()), FStringFormatArg(Cost), FStringFormatArg(Inv->Rubles) }).ToString()
@@ -166,8 +302,18 @@ FText AVendingMachine::PromptFor(int32 Sel) const
 
 int32 AVendingMachine::PriceOf(int32 Sel) const
 {
-	// the drinks cost the machine's Price (set per machine); the feed its own
-	return Drinks[Sel].Flavor ? Price : Drinks[Sel].Price;
+	// a slot's own price; else, in the classic machine, bottles cost the machine's Price (set per machine); else the item's usual
+	const FVendingSlot& S = Slots[Sel];
+	if (S.Price > 0)
+	{
+		return S.Price;
+	}
+	if (!FlavorOf(S.Item).IsNone())
+	{
+		return Price;
+	}
+	const FLyudItemDef* D = ULyudInventory::FindDef(S.Item);
+	return D && D->Price > 0 ? D->Price : Price;
 }
 
 void AVendingMachine::Buy()
@@ -181,15 +327,26 @@ void AVendingMachine::Buy()
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	const FVector Start = GetActorTransform().TransformPosition(FlapLocal - FVector(10.f, 0.f, 0.f));
-	if (Drinks[Flavor].Flavor)
+	const FName Sold = Slots[Flavor].Item;
+	if (!FlavorOf(Sold).IsNone())
 	{
 		ABottleItem* B = World->SpawnActor<ABottleItem>(Start, FRotator::ZeroRotator, Params);
 		if (B)
 		{
-			B->Init(Drinks[Flavor].Flavor, 1.f);
+			B->Init(FlavorOf(Sold), 1.f);
 			B->LieDown(B->GetActorLocation(), GetActorRightVector());
 		}
 		Goods = B;
+	}
+	else if (Sold != TEXT("bird_feed"))
+	{
+		ALyudGoodsItem* G = World->SpawnActor<ALyudGoodsItem>(Start, FRotator::ZeroRotator, Params);
+		if (G)
+		{
+			G->Init(Sold);
+			G->LieDown(Start, GetActorRightVector());
+		}
+		Goods = G;
 	}
 	else
 	{
@@ -200,6 +357,7 @@ void AVendingMachine::Buy()
 		}
 		Goods = Bag;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("VENDING bought %s for %d, rubles left %d"), *Sold.ToString(), PriceOf(Flavor), Inv->Rubles);
 	State = EState::Dispensing;
 	Clock = 0.f;
 }
@@ -207,6 +365,10 @@ void AVendingMachine::Buy()
 FVector AVendingMachine::TrayRestFor(const AActor* Item) const
 {
 	// a bag lies on its back, thinner than a bottle
+	if (const ALyudGoodsItem* G = Cast<ALyudGoodsItem>(Item))
+	{
+		return GetActorTransform().TransformPosition(FVector(37.5f + 7.5f, 10.f, 13.f + FMath::Min(G->HalfDepth(), 4.f) + 0.2f));
+	}
 	return Cast<ABirdFeedBag>(Item)
 		? GetActorTransform().TransformPosition(FVector(37.5f + 7.5f, 10.f, 13.f + ABirdFeedBag::HalfDepth + 0.2f))
 		: TrayRest();
@@ -242,12 +404,16 @@ void AVendingMachine::Tick(float DeltaSeconds)
 		{
 			State = EState::Taking;
 			UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
-			const FName ItemId = Drinks[Flavor].Item;
-			const int32 Count = Drinks[Flavor].Count;
+			const FName ItemId = Slots[Flavor].Item;
+			const int32 Count = Slots[Flavor].Count;
 			FReachItem Reachable;
 			if (const ABottleItem* B = Cast<ABottleItem>(Goods.Get()))
 			{
 				Reachable = B->MakeReachItem();
+			}
+			else if (const ALyudGoodsItem* G = Cast<ALyudGoodsItem>(Goods.Get()))
+			{
+				Reachable = G->MakeReachItem();
 			}
 			else if (const ABirdFeedBag* Bag = Cast<ABirdFeedBag>(Goods.Get()))
 			{
@@ -297,9 +463,9 @@ void AVendingMachine::Tick(float DeltaSeconds)
 	const bool bFree = !UI->IsOpen() && !(Reach && Reach->IsBusy()) && !Hero->IsHidden();
 	if (bNear && bFront && bLooking && bFree)
 	{
-		const FKey Keys[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five };
-		static_assert(UE_ARRAY_COUNT(Keys) == NumGoods, "a key per slot");
-		for (int32 I = 0; I < NumGoods; ++I)
+		const FKey Keys[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+		static_assert(UE_ARRAY_COUNT(Keys) == MaxSlots, "a key per slot");
+		for (int32 I = 0; I < Slots.Num(); ++I)
 		{
 			if (PC->WasInputKeyJustPressed(Keys[I]))
 			{
@@ -323,7 +489,7 @@ void AVendingMachine::Tick(float DeltaSeconds)
 
 void AVendingMachine::DebugBuy(int32 Slot)
 {
-	if (State == EState::Idle && Slot >= 0 && Slot < NumGoods)
+	if (State == EState::Idle && Slot >= 0 && Slot < Slots.Num())
 	{
 		Flavor = Slot;
 		Buy();

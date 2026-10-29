@@ -1,0 +1,17 @@
+{
+ "step": "right",
+ "service": "higgsfield grid, cut by tools/characters/cut_grid.py, uploaded to fal storage",
+ "grid_job_id": "7e6100ac-538b-440c-bfd2-93010a238c96",
+ "grid_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_201835_7e6100ac-538b-440c-bfd2-93010a238c96.png",
+ "cell": {
+  "row": 1,
+  "col": 2,
+  "x": 2388,
+  "y": 1200,
+  "w": 1194,
+  "h": 1200
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd6dd/G6JLtrAOtCj46c4qwnqJq_right.png",
+ "output_file": "right.png",
+ "sha256": "e314893a0131f77e3d0c26b779734cf1cd910dd720255566b656a50588d7ce90"
+}

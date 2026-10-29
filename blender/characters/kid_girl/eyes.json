@@ -1,0 +1,57 @@
+{
+ "_doc": "blender/characters/eyes.py: the eye openings cut at run time and the eyeballs behind them ([0] the character's left; model metres, Blender frame: -y forward)",
+ "eyes": [
+  {
+   "open": {
+    "cx": 0.0339,
+    "cz": 1.1701,
+    "hw": 0.0137,
+    "up": 0.005,
+    "lo": 0.005,
+    "tilt": 0.0003,
+    "y": -0.08079
+   },
+   "ball": {
+    "x": 0.0339,
+    "z": 1.1701,
+    "depth": 0.01062,
+    "width": 0.0148,
+    "height": 0.01062,
+    "yaw": 30.0,
+    "y": -0.06846,
+    "socket_y": -0.06528
+   },
+   "iris": [
+    0.165,
+    0.122,
+    0.102
+   ]
+  },
+  {
+   "open": {
+    "cx": -0.0273,
+    "cz": 1.1712,
+    "hw": 0.0135,
+    "up": 0.0047,
+    "lo": 0.0047,
+    "tilt": -0.0012,
+    "y": -0.07957
+   },
+   "ball": {
+    "x": -0.0273,
+    "z": 1.1712,
+    "depth": 0.01062,
+    "width": 0.0135,
+    "height": 0.01062,
+    "yaw": 0.0,
+    "y": -0.06795,
+    "socket_y": -0.06476
+   },
+   "iris": [
+    0.133,
+    0.102,
+    0.09
+   ]
+  }
+ ]
+}

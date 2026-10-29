@@ -1,0 +1,24 @@
+{
+ "step": "right_short",
+ "model": "google/nano-banana-2.1/edit",
+ "request_id": "01a174a8-659b-7100-b38f-76c83b0a0b69",
+ "seconds": 55,
+ "inputs": {
+  "resolution": "2K",
+  "aspect_ratio": "1:1",
+  "output_format": "png",
+  "num_images": 1,
+  "seed": 2673,
+  "thinking_level": "high",
+  "prompt": "The same woman in the same T-pose seen exactly from her right side (profile view, camera rotated 90 degrees around her so she faces the left edge of the picture). Her right arm points straight at the camera and is foreshortened, the left arm is hidden behind her body. Same black bob with bangs, the thin braid at her right temple visible, same short black dress ending at mid-thigh with white collar, black tights, black Mary Jane shoes. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text.",
+  "image_urls": [
+   "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195917_fff0eeb7-a70d-40c1-9c2e-0d94619affee.png"
+  ]
+ },
+ "output_url": "https://v3b.fal.media/files/b/0aafd66f/R1VzXo42v4M3R0DanyyuW_LwQ32XgY.png",
+ "output_file": "right_short.png",
+ "sha256": "64aa1b9073ae3c34ffd57127f4709cb258fedd8ec91517b4720344aa04ca54c0",
+ "response": {
+  "description": ""
+ }
+}

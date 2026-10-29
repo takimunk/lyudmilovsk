@@ -1,0 +1,23 @@
+{
+ "id": "diary_take",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/diary/diary_take_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A hardcover notebook pulled out of a canvas shoulder bag: a short rustle of fabric and a soft leather-bound book sliding out, close, indoors, no voices, no music",
+  "duration_seconds": 1.2
+ },
+ "hash": "a4dce8e9e8c5",
+ "fal_request_id": "01a18427-abfe-7173-9fe4-5975dd366d69",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab03bff/eq589uyb9I-ajOkAjRfbv_sound_effect.mp3",
+ "created": "2026-10-28T20:15:57Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -9 dBFS",
+ "sha256": "790420c58dd4c89301ff8a8f2ea4b45c4e29320a0f348bfe2f7c0059fc8ba800",
+ "seconds": 0.89,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "diary"
+}

@@ -27,7 +27,7 @@ struct LYUDMILOVSK_API FAnimalInfo
 
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") int32 Id = -1;
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") EAnimalKind Kind = EAnimalKind::Cat;
-	/** Cat, Laika, Shepherd, Mutt (the model: /Game/Animals/<Breed>). */
+	/** Cat, Laika, Shepherd, Mutt, Maru (the model: /Game/Animals/<Breed>). */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") FName Breed;
 	/** Its coat (blender/animals/coats.py), e.g. tabby, ginger, black_white. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") FName Coat;
@@ -50,8 +50,10 @@ struct LYUDMILOVSK_API FAnimalInfo
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") float Trust = 0.f;
 	/** Reserved for taming (a dog walking with the player): not grown by anything yet. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") float Bond = 0.f;
-	/** Reserved: the name the player gives it. */
+	/** Its name as shown: the one the player gave it, else its own (NameKey in the player's language), else empty. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") FString Name;
+	/** The localization key of the name it already has (animal.maru.name), empty for the nameless. */
+	UPROPERTY(BlueprintReadOnly, Category = "Animals") FString NameKey;
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") bool bNoticedPlayer = false;
 	/** Its body near the camera (AAnimalActor), null far away. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") TObjectPtr<AActor> Actor = nullptr;
@@ -112,11 +114,16 @@ public:
 	void Scare(FVector Location, float Radius, float Strength = 1.f);
 
 	/**
-	 * One animal at Location (cm) that lives right there (tests): Breed Cat, Laika, Shepherd or Mutt, Coat its index.
+	 * One animal at Location (cm) that lives right there (tests): Breed Cat, Laika, Shepherd, Mutt or Maru, Coat its index.
 	 * Works in any level (an empty world without the town's map). Console: lyud.Animals.SpawnNear <Breed> [coat] [x y z].
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Animals")
 	int32 SpawnAnimal(FName Breed, int32 Coat, FVector Location, bool bYoung = false);
+
+	/** The player speaks to it (E, AAnimalNameTags): a dog turns to them and barks back gladly (OnAnimalEvent BarkHappy),
+	 *  a cat looks and meows. False when it can't (running away, up a tree). Console: lyud.Animals.Hail [id]. */
+	UFUNCTION(BlueprintCallable, Category = "Animals")
+	bool Hail(int32 Id);
 
 	/** Reserved for taming: the name the player gave it (kept with the save). */
 	UFUNCTION(BlueprintCallable, Category = "Animals")
@@ -136,7 +143,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Animals")
 	FString Describe(int32 Id) const;
 
-	/** Notice, Watch, Approach, Flee, Bark, Growl, Whine, Meow, Purr, Hiss, Pounce, ChaseStart, Climb, Greet, PlayStart. */
+	/** Notice, Watch, Approach, Flee, Bark, Growl, Whine, Meow, Purr, Hiss, Pounce, ChaseStart, Climb, Greet, PlayStart, BarkHappy. */
 	UPROPERTY(BlueprintAssignable, Category = "Animals") FAnimalLifeEvent OnAnimalEvent;
 
 	UPROPERTY(SaveGame) TMap<int32, FAnimalMemory> Saved;
@@ -155,6 +162,7 @@ public:
 private:
 	TPimplPtr<LyudAnimals::FWorld> Sim;
 	UPROPERTY(Transient) TObjectPtr<class AAnimalLifeRenderer> Renderer;
+	UPROPERTY(Transient) TObjectPtr<class AAnimalNameTags> NameTags;
 	bool bWantStart = false;
 	bool bStarted = false;
 	float StartDelay = 0.f;

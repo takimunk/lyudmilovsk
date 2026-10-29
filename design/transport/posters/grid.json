@@ -1,0 +1,16 @@
+{
+ "service": "higgsfield",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "job_id": "a72f4e95-a174-427e-b11e-404efd2577ab",
+ "args": {
+  "aspect_ratio": "1:1",
+  "quality": "high",
+  "resolution": "4k"
+ },
+ "credits": 4.25,
+ "prompt": "A sheet of six separate vintage 1960s travel posters ... (see the job; textless; cable car, lighthouse, domed pavilion, starlings, saucer station, golden star)",
+ "output": "design/transport/posters/grid.png",
+ "sha256": "70fdd9c6f10de7c3ba902c6e17ae58e018c103d8016a470691786bdea84730c1",
+ "cut": "poster_0..5.png, 3x2 cells at the paper gaps, 1024x1536"
+}

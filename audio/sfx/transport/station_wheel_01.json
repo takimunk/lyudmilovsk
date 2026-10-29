@@ -1,0 +1,25 @@
+{
+ "id": "station_wheel",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/station_wheel_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "The big bull wheel of a cable car station turning slowly: a low mechanical drone, a deep gear hum and a slow periodic metal tick, outdoors under a concrete roof, seamless loop",
+  "duration_seconds": 12.0,
+  "loop": true
+ },
+ "hash": "63b8267e12ef",
+ "fal_request_id": "01a174cb-53f8-7152-8d55-4693a296a377",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd754/TtATGytRDssIwixHwHyem_sound_effect.mp3",
+ "created": "2026-10-25T20:40:51Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "8f046ad536bb706f7aec96274e2a82ebe7fad71a6a6e6ee1b1ba1253d95f95e6",
+ "seconds": 11.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport",
+ "loop": true
+}

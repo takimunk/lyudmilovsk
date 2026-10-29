@@ -22,7 +22,7 @@ struct FTreeBakeKey
 struct FTreeBaked
 {
 	TObjectPtr<UStaticMesh> Mesh;
-	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf, Card;
+	TObjectPtr<UMaterialInstanceDynamic> Wood, Leaf, Card, Bloom;
 	/** The day of the year it was baked for. */
 	float Day = -1000.f;
 	/** Counts up every time the mesh is replaced by a newer bake; a user of it compares. */
@@ -64,14 +64,16 @@ public:
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UTreeBakeCache, STATGROUP_Tickables); }
 	virtual bool IsTickableInEditor() const override { return false; }
 
-	/** Worker threads at most. */
+	/** Worker threads at most (twice as many after a jump of the calendar). */
 	int32 MaxWorkers = 3;
+	/** A bake more than this many days away from the date asked for is redone urgently. */
+	float UrgentDays = 45.f;
 
 private:
 	struct FJob;
 	struct FSpeciesAssets
 	{
-		TObjectPtr<UTexture2D> Albedo, Normal, Detail, Card;
+		TObjectPtr<UTexture2D> Albedo, Normal, Detail, Card, Bloom;
 	};
 	void Finish(FJob& Job);
 	void Launch(const TSharedPtr<FJob>& Job);
@@ -86,6 +88,7 @@ private:
 	FCriticalSection FinishedLock;
 	TAtomic<int32> RunningAtomic = 0;
 	int32 Running = 0;
+	int32 UrgentJobs = 0;
 	double NextFinishTime = 0.0;
 	double PrepareMs = 0.0, FinishMs = 0.0, WorstFinishMs = 0.0;
 	int32 Done = 0;

@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "People/LyudBodyAnim.h"
 
 ABoothOwner::ABoothOwner()
 {
@@ -25,6 +26,9 @@ ABoothOwner::ABoothOwner()
 	Body->SetUsingAbsoluteLocation(true);
 	Body->SetUsingAbsoluteRotation(true);
 	Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// the people's body (People/LyudBodyAnim.h): clips cross-fade, he breathes, blinks, looks about, works his computer
+	Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	Body->SetAnimInstanceClass(ULyudBodyAnimInstance::StaticClass());
 }
 
 void ABoothOwner::BeginPlay()
@@ -42,11 +46,31 @@ void ABoothOwner::SetPose(const FVector& Loc, float Yaw)
 
 void ABoothOwner::Play(UAnimSequence* Anim, bool bLoop)
 {
-	if (Anim)
+	if (!Anim)
+	{
+		return;
+	}
+	ULyudBodyAnimInstance* Body2 = Cast<ULyudBodyAnimInstance>(Body->GetAnimInstance());
+	if (!Body2)
 	{
 		Body->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 		Body->PlayAnimation(Anim, bLoop);
+		return;
 	}
+	// seated at his booth: the computer loops of an idler; otherwise the shared clips of the same kind (his own old
+	// standing and walking clips were made on the MakeHuman body: they don't fit the generated one)
+	const FString Name = Anim->GetName();
+	if (Name.Contains(TEXT("_Sit_")))
+	{
+		Body2->SetComputer(ULyudBodyAnimInstance::StyleOfClip(Name));
+		return;
+	}
+	Body2->SetComputer(NAME_None);
+	Body2->SetOnFeet(State == EState::ToWindow || State == EState::ToSeat || State == EState::AtWindow);
+	const TCHAR* Shared = Name.Contains(TEXT("StandUp")) ? TEXT("StandUp") : Name.Contains(TEXT("SitDown")) ? TEXT("SitDown")
+		: Name.Contains(TEXT("Walk")) ? TEXT("Walk") : TEXT("StandIdle");
+	UAnimSequence* Clip = LoadObject<UAnimSequence>(nullptr, *FString::Printf(TEXT("/Game/Characters/Humans/Anims/A_Human_%s.A_Human_%s"), Shared, Shared));
+	Body2->PlayClip(Clip ? Clip : Anim, bLoop, 1.f, 0.3f);
 }
 
 void ABoothOwner::Enter(EState NewState)
@@ -113,6 +137,25 @@ bool ABoothOwner::WalkTo(const FVector& Target, float DeltaSeconds)
 	return false;
 }
 
+void ABoothOwner::SetAway(bool bInAway)
+{
+	if (bAway == bInAway)
+	{
+		return;
+	}
+	bAway = bInAway;
+	Body->SetVisibility(!bAway, true);
+	if (bAway && bTradePrompt)
+	{
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+		{
+			UI->SetPrompt(this, FText::GetEmpty());
+		}
+		bTradePrompt = false;
+	}
+	Enter(EState::Seated);
+}
+
 void ABoothOwner::EndPlay(const EEndPlayReason::Type Reason)
 {
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
@@ -159,6 +202,10 @@ void ABoothOwner::TickTrade()
 void ABoothOwner::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (bAway)
+	{
+		return;
+	}
 	StateTime += DeltaSeconds;
 	const bool bCalled = PlayerAtWindow();
 	AwayTime = bCalled ? 0.f : AwayTime + DeltaSeconds;

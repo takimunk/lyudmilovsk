@@ -8,11 +8,13 @@ eye textures, <Breed>_rig.json).
   /Game/Animals/<Breed>/MI_<Breed>_<coat>_Body|Fur, MI_<Breed>_Eye_<n>
   /Game/Animals/<Breed>/Anims/A_<Breed>_<Clip>
   Content/AnimalsData/animal_bodies.json                             coats, eyes and stride speeds per breed (AAnimalActor)
+  /Game/Animals/<Breed>/SM_<Breed>_Collar, SM_<Breed>_Tag            a breed with a collar (blender/animals/collar.py: Maru)
 
 Headless, no editor open on this checkout, one process per step (Interchange can't re-import in one process):
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> masters"
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> textures <Breed>"
   UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> import <Breed>"
+  UnrealEditor-Cmd <uproject> -run=pythonscript -script="<this file> collar <Breed> Collar|Tag"   (when export/<Breed>/<Breed>_Collar.glb exists)
 (unreal/scripts/import_animals.sh does them all for a list of breeds)
 """
 import json
@@ -79,7 +81,11 @@ def import_texture(path, dest, name, linear=False):
     t = unreal.load_asset("%s/%s" % (dest, name))
     if t is None:
         raise RuntimeError("texture import failed: " + path)
-    if linear:
+    if linear == "normal":
+        t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+        t.set_editor_property("srgb", False)
+        t.set_editor_property("flip_green_channel", True)   # Blender (OpenGL) -> Unreal (DirectX)
+    elif linear:
         t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_MASKS)
         t.set_editor_property("srgb", False)
     else:
@@ -95,7 +101,8 @@ DEFAULTS = {}
 def default_textures():
     tmp = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Saved", "animals_defaults")
     os.makedirs(tmp, exist_ok=True)
-    for name, rgba, linear in (("Albedo", (128, 110, 90, 255), False), ("Strands", (200, 128, 0, 255), True)):
+    for name, rgba, linear in (("Albedo", (128, 110, 90, 255), False), ("Strands", (200, 128, 0, 255), True),
+                               ("Normal", (128, 128, 255, 255), "normal")):
         f = os.path.join(tmp, "T_AnimalDefault_%s.png" % name)
         png_rgba(f, 4, 4, rgba)
         DEFAULTS[name] = import_texture(f, MATS, "T_AnimalDefault_%s" % name, linear)
@@ -135,6 +142,64 @@ return col;
 """
 
 
+# a painted eye looks about (AAnimalActor, a breed with painted_eyes: Maru): inside each eye (PreSkinnedPosition within
+# EyeX_At.w of EyeX_At, mesh cm) the texture is read shifted so the paint under it moves by EyeX_Shift (world cm). The
+# texture-space step for a world-space one comes from the screen derivatives of both (no per-breed UV maps needed);
+# the shift fades out before the lids (the dark rim stays put)
+EYE_SHIFT_HLSL = """
+float2 o = UV;
+float3 dPx = ddx(WP), dPy = ddy(WP);
+float2 dUx = ddx(UV), dUy = ddy(UV);
+float a11 = dot(dPx, dPx), a12 = dot(dPx, dPy), a22 = dot(dPy, dPy);
+float det = a11 * a22 - a12 * a12;
+if (det > 1e-14)
+{
+    {
+        float d = length(P - AL.xyz) / max(AL.w, 1e-3);
+        float m = 1.0 - smoothstep(0.5, 0.85, d);
+        float b1 = dot(SL.xyz, dPx), b2 = dot(SL.xyz, dPy);
+        o -= m * ((a22 * b1 - a12 * b2) / det * dUx + (a11 * b2 - a12 * b1) / det * dUy);
+    }
+    {
+        float d = length(P - AR.xyz) / max(AR.w, 1e-3);
+        float m = 1.0 - smoothstep(0.5, 0.85, d);
+        float b1 = dot(SR.xyz, dPx), b2 = dot(SR.xyz, dPy);
+        o -= m * ((a22 * b1 - a12 * b2) / det * dUx + (a11 * b2 - a12 * b1) / det * dUy);
+    }
+}
+return o;
+"""
+
+
+def eye_shift(m, x, y):
+    """The custom node above with its inputs; its output goes to the body's texture samples' UVs."""
+    cu = node(m, unreal.MaterialExpressionCustom, x, y)
+    cu.set_editor_property("code", EYE_SHIFT_HLSL)
+    cu.set_editor_property("output_type", unreal.CustomMaterialOutputType.CMOT_FLOAT2)
+    cu.set_editor_property("description", "EyeShift")
+    pre = node(m, unreal.MaterialExpressionPreSkinnedPosition, x - 600, y + 100)
+    vi = node(m, unreal.MaterialExpressionVertexInterpolator, x - 400, y + 100)    # the pixel shader can't read it
+    mel.connect_material_expressions(pre, "", vi, "")
+    far = unreal.LinearColor(-1.0e5, 0.0, 0.0, 0.0)
+    srcs = [("UV", node(m, unreal.MaterialExpressionTextureCoordinate, x - 400, y), ""), ("P", vi, ""),
+            ("WP", node(m, unreal.MaterialExpressionWorldPosition, x - 400, y + 200), "")]
+    for i, nm in enumerate(("EyeL_At", "EyeR_At", "EyeL_Shift", "EyeR_Shift")):
+        v = node(m, unreal.MaterialExpressionVectorParameter, x - 400, y + 300 + 100 * i)
+        v.set_editor_property("parameter_name", nm)
+        v.set_editor_property("default_value", far if nm.endswith("At") else unreal.LinearColor(0, 0, 0, 0))
+        srcs.append((("AL", "AR", "SL", "SR")[i], v, "RGBA"))
+    ins = []
+    for pin, _, _ in srcs:
+        ci = unreal.CustomInput()
+        ci.set_editor_property("input_name", pin)
+        ins.append(ci)
+    cu.set_editor_property("inputs", ins)
+    for pin, src, out in srcs:
+        if not mel.connect_material_expressions(src, out, cu, pin):
+            log("eye shift: could not connect " + pin)
+    return cu
+
+
 def make_masters():
     default_textures()
     # the body under the fur: opaque, matte, a little darker than the coat (seen between the hairs)
@@ -147,8 +212,23 @@ def make_masters():
     mel.connect_material_expressions(alb, "RGB", mul, "A")
     mel.connect_material_expressions(scalar(m, "SkinDark", 0.72, -700, 250), "", mul, "B")
     mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    nrm = tex_param(m, "Normal", -700, 450, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    mel.connect_material_property(nrm, "RGB", unreal.MaterialProperty.MP_NORMAL)
+    shift = eye_shift(m, -1100, 0)
+    mel.connect_material_expressions(shift, "", alb, "UVs")
+    mel.connect_material_expressions(shift, "", nrm, "UVs")
     mel.connect_material_property(const(m, 0.9, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(m, 0.25, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    # subsurface, as the people's skin: Virtual Shadow Maps give it a wide penumbra, else the generated heads' coarse
+    # facets shadow themselves in hard jagged triangles (Maru's face, 2026-10-28)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_SUBSURFACE)
+    ssc = node(m, unreal.MaterialExpressionMultiply, -250, 400)
+    mel.connect_material_expressions(mul, "", ssc, "A")
+    tint_s = node(m, unreal.MaterialExpressionConstant3Vector, -400, 450)
+    tint_s.set_editor_property("constant", unreal.LinearColor(0.75, 0.68, 0.64, 1.0))   # near neutral: a skin red turned her bare white lids pink
+    mel.connect_material_expressions(tint_s, "", ssc, "B")
+    mel.connect_material_property(ssc, "", unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+    mel.connect_material_property(const(m, 1.0, -400, 550), "", unreal.MaterialProperty.MP_OPACITY)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     # the fur shells
@@ -197,6 +277,8 @@ def make_masters():
     mel.connect_material_expressions(tint, "", cu, "Tint")
     mel.connect_material_property(cu, "", unreal.MaterialProperty.MP_BASE_COLOR)
     mel.connect_material_property(cu, "Mask", unreal.MaterialProperty.MP_OPACITY_MASK)
+    fn = tex_param(f, "Normal", -900, 900, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    mel.connect_material_property(fn, "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(const(f, 0.82, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
     mel.connect_material_property(const(f, 0.22, -500, 400), "", unreal.MaterialProperty.MP_SPECULAR)
     mel.recompile_material(f)
@@ -207,8 +289,9 @@ def make_masters():
     e.set_editor_property("used_with_skeletal_mesh", True)
     alb = tex_param(e, "Albedo", -600, 0, unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
     mel.connect_material_property(alb, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
-    mel.connect_material_property(const(e, 0.06, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
-    mel.connect_material_property(const(e, 0.9, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    # wet but not a mirror: a full specular turned brown eyes sky-blue in daylight (Maru's, 2026-10-27)
+    mel.connect_material_property(const(e, 0.12, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(const(e, 0.45, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
     mel.recompile_material(e)
     eal.save_loaded_asset(e)
     log("masters")
@@ -229,6 +312,9 @@ def do_textures(breed):
     for i in range(rig["eyes"]):
         import_texture(os.path.join(src, "T_%s_Eye_%d.png" % (breed, i)), dest, "T_%s_Eye_%d" % (breed, i))
     import_texture(os.path.join(src, "T_%s_Strands.png" % breed), dest, "T_%s_Strands" % breed, linear=True)
+    nf = os.path.join(src, "T_%s_Normal.png" % breed)
+    if os.path.exists(nf):
+        import_texture(nf, dest, "T_%s_Normal" % breed, linear="normal")
     eal.save_directory(dest)
     log("%s textures: %d coats, %d eyes" % (breed, len(rig["coats"]), rig["eyes"]))
 
@@ -275,10 +361,14 @@ def do_import(breed):
     eye_m = unreal.load_asset(MATS + "/M_AnimalEye")
     strands = unreal.load_asset("%s/T_%s_Strands" % (dest, breed))
     first = {}
+    nrm = unreal.load_asset("%s/T_%s_Normal" % (dest, breed)) if eal.does_asset_exist("%s/T_%s_Normal" % (dest, breed)) else None
+    extra = {"Normal": nrm} if nrm else {}
     for coat in rig["coats"]:
         alb = unreal.load_asset("%s/T_%s_%s" % (dest, breed, coat))
-        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, {"Albedo": alb})
-        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, {"Albedo": alb, "Strands": strands}, {"StrandScale": float(rig["strand_scale"]) * 1.6})
+        # without fur shells (a generated body kept as made) the skin is the coat itself: hardly darkened (1.0 washed her out in daylight)
+        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, dict({"Albedo": alb}, **extra),
+               {} if rig.get("fur", True) else {"SkinDark": 0.85})
+        f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, dict({"Albedo": alb, "Strands": strands}, **extra), {"StrandScale": float(rig["strand_scale"]) * 1.6})
         first.setdefault("Body", b)
         first.setdefault("Fur", f)
     for i in range(rig["eyes"]):
@@ -328,9 +418,95 @@ def do_import(breed):
     log("%s: %d materials, %d LODs, %d clips, bounds %.1f x %.1f x %.1f cm" % (breed, len(mats), n, len(eal.list_assets(dest + "/Anims")), b.x * 2, b.y * 2, b.z * 2))
 
 
+def collar_materials():
+    """The cord (its braid in the vertex colours) and the metal of the ring and the tag (one master, three instances)."""
+    c = get_or_create("M_AnimalCollarCord", MATS, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(c)
+    # dark red and black braid: the strands' colours ride in the vertex colours (white when the importer drops them,
+    # so they only tint a dark maroon base)
+    vc = node(c, unreal.MaterialExpressionVertexColor, -700, 0)
+    base = node(c, unreal.MaterialExpressionConstant3Vector, -700, 200)
+    base.set_editor_property("constant", unreal.LinearColor(0.11, 0.022, 0.025, 1))
+    mul = node(c, unreal.MaterialExpressionMultiply, -450, 0)
+    mel.connect_material_expressions(vc, "", mul, "A")
+    mel.connect_material_expressions(base, "", mul, "B")
+    mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(const(c, 0.85, -400, 200), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(const(c, 0.3, -400, 300), "", unreal.MaterialProperty.MP_SPECULAR)
+    mel.recompile_material(c)
+    eal.save_loaded_asset(c)
+    m = get_or_create("M_AnimalCollarMetal", MATS, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(m)
+    col = node(m, unreal.MaterialExpressionVectorParameter, -500, 0)
+    col.set_editor_property("parameter_name", "Color")
+    col.set_editor_property("default_value", unreal.LinearColor(1.0, 0.72, 0.3, 1))
+    mel.connect_material_property(col, "", unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(const(m, 1.0, -400, 200), "", unreal.MaterialProperty.MP_METALLIC)
+    mel.connect_material_property(scalar(m, "Roughness", 0.2, -500, 300), "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    out = {"Cord": c}
+    for name, rgb, rough in (("Gold", (1.0, 0.6, 0.16), 0.22), ("Engraved", (0.42, 0.24, 0.06), 0.5), ("Steel", (0.82, 0.82, 0.84), 0.25)):
+        i = get_or_create("MI_Collar_" + name, MATS, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+        i.set_editor_property("parent", m)
+        mel.set_material_instance_vector_parameter_value(i, "Color", unreal.LinearColor(rgb[0], rgb[1], rgb[2], 1))
+        mel.set_material_instance_scalar_parameter_value(i, "Roughness", rough)
+        eal.save_loaded_asset(i)
+        out[name] = i
+    return out
+
+
+def do_collar(breed, parts=("Collar", "Tag")):
+    """The collar's two static meshes (the cord round the neck, the swinging ring and tag) with their materials.
+    Interchange misses a second import in the same process: import_animals.sh runs one part per process."""
+    src = os.path.join(EXPORT, breed)
+    dest = "%s/%s" % (ANIMALS, breed)
+    mats = collar_materials()
+    for part in parts:
+        tmp = "%s/_import_%s" % (dest, part)
+        source = unreal.InterchangeManager.create_source_data(os.path.join(src, "%s_%s.glb" % (breed, part)))
+        params = unreal.ImportAssetParameters()
+        params.is_automated = True
+        params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
+        params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFAssetsPipeline.DefaultGLTFAssetsPipeline"))
+        mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
+        mgr.import_asset(tmp, source, params)
+        mgr.wait_until_all_tasks_done(True)
+        mesh = next((eal.load_asset(p) for p in eal.list_assets(tmp, True) if isinstance(eal.load_asset(p), unreal.StaticMesh)), None)
+        if mesh is None:
+            raise RuntimeError("no static mesh in %s_%s.glb" % (breed, part))
+        sms = mesh.get_editor_property("static_materials")
+        for i in range(len(sms)):
+            sm = sms[i]
+            slot = str(sm.material_slot_name)
+            key = next((k for k in mats if k in slot), "Gold")
+            sm.material_interface = mats[key]
+            sms[i] = sm
+        mesh.set_editor_property("static_materials", sms)
+        # a few thousand triangles: no Nanite (its materials would need the Nanite usage)
+        ns = mesh.get_editor_property("nanite_settings")
+        ns.set_editor_property("enabled", False)
+        mesh.set_editor_property("nanite_settings", ns)
+        name = "SM_%s_%s" % (breed, part)
+        if eal.does_asset_exist("%s/%s" % (dest, name)):
+            eal.delete_asset("%s/%s" % (dest, name))
+        tools.rename_assets([unreal.AssetRenameData(mesh, dest, name)])
+        m = unreal.load_asset("%s/%s" % (dest, name))
+        eal.save_asset("%s/%s" % (dest, name), only_if_is_dirty=False)
+        for p in eal.list_assets(tmp, True):
+            eal.delete_asset(p)
+        if eal.does_directory_exist(tmp):
+            eal.delete_directory(tmp)
+        b = m.get_bounds().box_extent
+        log("%s: %d tris, %d materials, %.1f x %.1f x %.1f cm" % (name, m.get_num_triangles(0), len(sms), b.x * 2, b.y * 2, b.z * 2))
+    eal.save_directory(dest)
+
+
 def do_bodies():
     """Content/AnimalsData/animal_bodies.json from every breed's rig facts (what AAnimalActor reads)."""
-    out = {}
+    # breeds not built in this checkout (blender/animals/export is local) keep their entries
+    path = os.path.join(DATA, "animal_bodies.json")
+    out = json.load(open(path)) if os.path.exists(path) else {}
     for breed in sorted(os.listdir(EXPORT)):
         p = os.path.join(EXPORT, breed, breed + "_rig.json")
         if not os.path.exists(p):
@@ -338,10 +514,20 @@ def do_bodies():
         r = json.load(open(p))
         out[breed] = {"kind": r["kind"], "coats": r["coats"], "eyes": r["eyes"], "speeds_cms": r["speeds_cms"],
                       "height_cm": r["height_cm"], "length_cm": r["length_cm"], "clips": sorted(r["clips"])}
+        if r.get("eyes_at"):
+            out[breed]["painted_eyes"] = r["eyes_at"]          # [x, y, z, r, nx, ny, nz] cm, her frame: eyes that look about
+        ey = os.path.join(ROOT, "blender", "animals", "gen", breed, "eyes.json")     # runtime eyeballs, set by hand
+        if os.path.exists(ey):
+            out[breed]["eyeballs"] = {k: v for k, v in json.load(open(ey)).items() if not k.startswith("_")}
+        c = os.path.join(EXPORT, breed, breed + "_collar.json")
+        if os.path.exists(c):
+            # the collar: the bone it rides, the point the tag hangs from, the chest it rests on (the breed's frame, cm)
+            out[breed]["collar"] = {k: v for k, v in json.load(open(c)).items() if k != "breed"}
     os.makedirs(DATA, exist_ok=True)
     with open(os.path.join(DATA, "animal_bodies.json"), "w") as f:
         json.dump(out, f, indent=1)
-    log("bodies: " + ", ".join(sorted(out)))
+    out = dict(sorted(out.items()))
+    log("bodies: " + ", ".join(out))
 
 
 step = sys.argv[1:] or ["masters"]
@@ -352,6 +538,8 @@ elif step[0] == "textures":
         do_textures(b)
 elif step[0] == "bodies":
     do_bodies()
+elif step[0] == "collar":
+    do_collar(step[1], step[2:] or ("Collar", "Tag"))
 else:
     for b in step[1:]:
         do_import(b)

@@ -424,11 +424,17 @@ class Library:
 
     def dog_tail(self, p, w, wag):
         breed = self.r.b.get("name", "")
-        if breed == "Laika" or breed == "Mutt":
+        if breed == "Maru":
+            # her plume is carried up in a loose curve: her generated tail hangs at rest, and bending it much further
+            # than this shears the mesh into a flat fan
+            p["tail_lift"] = 0.75
+            p["tail_curl"] = 0.7
+        elif breed in ("Laika", "Mutt"):
             p["tail_lift"] = 1.05
             p["tail_curl"] = 2.4 if breed == "Laika" else 1.2
         else:
-            p["tail_lift"] = -0.55
+            # a shepherd's tail hangs low (a generated body's rest tail already hangs: lift it a little off the legs)
+            p["tail_lift"] = 0.35 if self.r.b.get("gen") else -0.55
             p["tail_curl"] = -0.4
         p["tail_wave"] = wag
         p["tail_phase"] = w * 1.5

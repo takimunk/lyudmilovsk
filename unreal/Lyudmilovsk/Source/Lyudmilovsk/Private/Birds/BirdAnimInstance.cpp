@@ -144,6 +144,9 @@ void FBirdAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	BankDeg = Bird->BankDeg;
 	TailPitchDeg = Bird->TailPitchDeg;
 	StreamerScale = Bird->StreamerScale;
+	Wings = Bird->Wings;
+	FoldSeq = Bird->FoldSeq;
+	TuckSeq = Bird->TuckSeq;
 }
 
 namespace
@@ -173,6 +176,149 @@ namespace
 		TArray<FBoneTransform> Out;
 		Out.Add(FBoneTransform(B, T));
 		CS.SafeSetCSBoneTransforms(Out);
+	}
+}
+
+namespace
+{
+	const TCHAR* LegBones[] = { TEXT("thigh"), TEXT("shin"), TEXT("tarsus"), TEXT("toes"), TEXT("hallux") };
+
+	void SampleAt0(UAnimSequence* Seq, FCompactPose& Pose)
+	{
+		FBlendedCurve Curve;
+		Curve.InitFrom(Pose.GetBoneContainer());
+		UE::Anim::FStackAttributeContainer Attr;
+		FAnimationPoseData Data(Pose, Curve, Attr);
+		Seq->GetAnimationPose(Data, FAnimExtractContext(0.0, false));
+	}
+
+	/** +1 for a bone on the bird's left (UE -Y), -1 on its right. */
+	float SideSign(const TCHAR* Side) { return Side[0] == TEXT('L') ? 1.f : -1.f; }
+}
+
+void FBirdAnimProxy::ApplyWingsLocal(FCompactPose& Pose) const
+{
+	// spread = the bind pose, folded = Idle's first frame; the upstroke flexes the wrist a little (the hand comes in)
+	const FBoneContainer& Bones = Pose.GetBoneContainer();
+	const float W = FMath::Clamp(Wings.Weight, 0.f, 1.f);
+	FCompactPose Fold, Tuck;
+	if (FoldSeq)
+	{
+		Fold.SetBoneContainer(&Bones);
+		SampleAt0(FoldSeq, Fold);
+	}
+	if (TuckSeq)
+	{
+		Tuck.SetBoneContainer(&Bones);
+		SampleAt0(TuckSeq, Tuck);
+	}
+	for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
+	{
+		const bool bL = Side[0] == TEXT('L');
+		const float Phase = bL ? Wings.StrokeL : Wings.StrokeR;
+		const float Up = FMath::Max(0.f, FMath::Sin(2.f * PI * (Phase - 0.5f))) * Wings.StrokeAmp;   // > 0 on the upstroke
+		const float Spread = FMath::Clamp((bL ? Wings.SpreadL : Wings.SpreadR) * (1.f - 0.35f * Up), 0.f, 1.f);
+		auto Set = [&](const FString& Name, float SpreadOfBone)
+		{
+			const FCompactPoseBoneIndex B = FindBone(Bones, *Name);
+			if (!B.IsValid())
+			{
+				return;
+			}
+			const FQuat Ref = Bones.GetRefPoseTransform(B).GetRotation();
+			const FQuat Folded = FoldSeq ? Fold[B].GetRotation() : Ref;
+			const FQuat Want = FQuat::Slerp(Folded, Ref, SpreadOfBone).GetNormalized();
+			Pose[B].SetRotation(FQuat::Slerp(Pose[B].GetRotation(), Want, W).GetNormalized());
+			if (FoldSeq)
+			{
+				Pose[B].SetTranslation(FMath::Lerp(Pose[B].GetTranslation(), FMath::Lerp(Fold[B].GetTranslation(), Bones.GetRefPoseTransform(B).GetTranslation(), SpreadOfBone), W));
+			}
+		};
+		// the hand folds first and opens last
+		Set(FString::Printf(TEXT("humerus_%s"), Side), FMath::Clamp(Spread * 1.4f, 0.f, 1.f));
+		Set(FString::Printf(TEXT("forearm_%s"), Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
+		Set(FString::Printf(TEXT("hand_%s"), Side), Spread);
+		Set(FString::Printf(TEXT("primaries_%s"), Side), Spread);
+		for (int32 i = 1; i <= 12; ++i)
+		{
+			Set(FString::Printf(TEXT("p%d_%s"), i, Side), Spread);
+		}
+		for (int32 i = 1; i <= 24; ++i)
+		{
+			Set(FString::Printf(TEXT("s%d_%s"), i, Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
+		}
+		// legs: tucked under the belly (Glide) .. hanging down (Idle)
+		for (const TCHAR* Leg : LegBones)
+		{
+			const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("%s_%s"), Leg, Side));
+			if (B.IsValid() && FoldSeq && TuckSeq)
+			{
+				const FQuat Q = FQuat::Slerp(Tuck[B].GetRotation(), Fold[B].GetRotation(), FMath::Clamp(Wings.LegsDown, 0.f, 1.f));
+				Pose[B].SetRotation(FQuat::Slerp(Pose[B].GetRotation(), Q, W).GetNormalized());
+			}
+		}
+	}
+	// the tail closed as in the bind pose: the fan opens in ApplyWingsCS
+	for (int32 K = 1; K <= 8; ++K)
+	{
+		for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
+		{
+			const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K));
+			if (B.IsValid())
+			{
+				Pose[B].SetRotation(FQuat::Slerp(Pose[B].GetRotation(), Bones.GetRefPoseTransform(B).GetRotation(), W).GetNormalized());
+			}
+		}
+	}
+}
+
+void FBirdAnimProxy::ApplyWingsCS(FCSPose<FCompactPose>& CS) const
+{
+	const FBoneContainer& Bones = CS.GetPose().GetBoneContainer();
+	const float W = FMath::Clamp(Wings.Weight, 0.f, 1.f);
+	const FCompactPoseBoneIndex Body = FindBone(Bones, TEXT("body"));
+	// the body's own axes (it may be banked): forward, up
+	const FQuat BodyQ = Body.IsValid() ? CS.GetComponentSpaceTransform(Body).GetRotation() * RefCS(Bones, Body).Inverse() : FQuat::Identity;
+	const FVector Fwd = BodyQ.RotateVector(FVector::XAxisVector), UpV = BodyQ.RotateVector(FVector::ZAxisVector);
+	auto Turn = [&](FCompactPoseBoneIndex B, const FVector& Axis, float Rad)
+	{
+		if (B.IsValid() && FMath::Abs(Rad) > 1e-5f)
+		{
+			RotateCS(CS, B, FQuat(Axis, Rad * W));
+		}
+	};
+	for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
+	{
+		const bool bL = Side[0] == TEXT('L');
+		const float S = SideSign(Side);
+		const float Phase = bL ? Wings.StrokeL : Wings.StrokeR;
+		const float Spread = bL ? Wings.SpreadL : Wings.SpreadR;
+		// elevation: top of the stroke at phase 0, bottom at 0.5; a pigeon's beat is ~110 degrees, a bit more up than down
+		const float Elev = Wings.StrokeAmp * (FMath::DegreesToRadians(55.f) * FMath::Cos(2.f * PI * Phase) + FMath::DegreesToRadians(8.f));
+		const FCompactPoseBoneIndex Hum = FindBone(Bones, *FString::Printf(TEXT("humerus_%s"), Side));
+		const FCompactPoseBoneIndex Hand = FindBone(Bones, *FString::Printf(TEXT("hand_%s"), Side));
+		// first person sweep and droop, the flare's forward reach
+		const float Sweep = FMath::DegreesToRadians(Wings.SweepDeg + 25.f * Wings.Flare) * Spread;
+		Turn(Hum, UpV, S * Sweep);
+		Turn(Hum, Fwd, -S * (Elev + FMath::DegreesToRadians(12.f) * Wings.Flare) + S * Wings.DroopRad * Spread);
+		// the downstroke pronates (leading edge down), the flare supinates: twist about the wing's span
+		if (Hum.IsValid() && Hand.IsValid())
+		{
+			const FVector Span = (CS.GetComponentSpaceTransform(Hand).GetLocation() - CS.GetComponentSpaceTransform(Hum).GetLocation()).GetSafeNormal();
+			const float Twist = Wings.StrokeAmp * FMath::DegreesToRadians(14.f) * FMath::Sin(2.f * PI * Phase) - FMath::DegreesToRadians(30.f) * Wings.Flare;
+			Turn(Hum, Span, S * Twist);
+		}
+		// the primaries part at the tips when spread
+		const float Part = FMath::DegreesToRadians(1.6f) * FMath::Clamp(Spread * 2.f - 1.f, 0.f, 1.f);
+		for (int32 i = 1; i <= 12; ++i)
+		{
+			Turn(FindBone(Bones, *FString::Printf(TEXT("p%d_%s"), i, Side)), UpV, S * Part * (i - 6.f));
+		}
+		// the tail fans out from the middle pair
+		for (int32 K = 1; K <= 8; ++K)
+		{
+			Turn(FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K)), UpV, S * FMath::DegreesToRadians(9.f) * (K - 0.5f) * Wings.TailFan);
+		}
 	}
 }
 
@@ -227,17 +373,19 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		return true;
 	}
-	// the outermost tail feather pair, shorter or longer (its bone scales along with the card)
+	// the outermost tail feather pair, shorter or longer (its bone scales along with the card). Bone names are as
+	// Unreal imported them: Blender's "tf.L.6" became "tf_L_6"
+
 	if (FMath::Abs(StreamerScale - 1.f) > 1e-3)
 	{
 		for (int32 K = 7; K >= 1; --K)
 		{
-			const FCompactPoseBoneIndex L = FindBone(Bones, *FString::Printf(TEXT("tf.L.%d"), K));
+			const FCompactPoseBoneIndex L = FindBone(Bones, *FString::Printf(TEXT("tf_L_%d"), K));
 			if (L.IsValid())
 			{
 				for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
 				{
-					const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf.%s.%d"), Side, K));
+					const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K));
 					if (B.IsValid())
 					{
 						Output.Pose[B].SetScale3D(FVector(StreamerScale));
@@ -247,8 +395,16 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 			}
 		}
 	}
+	if (Wings.Weight > 1e-3f)
+	{
+		ApplyWingsLocal(Output.Pose);
+	}
 	FCSPose<FCompactPose> CS;
 	CS.InitPose(Output.Pose);
+	if (Wings.Weight > 1e-3f)
+	{
+		ApplyWingsCS(CS);
+	}
 	// banking (player flight): the body rolls about its length, the tail twists and pitches against it
 	if (Body.IsValid() && (FMath::Abs(BankDeg) > 0.1f || FMath::Abs(TailPitchDeg) > 0.1f))
 	{

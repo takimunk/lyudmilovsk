@@ -6,6 +6,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Plants/GameCalendar.h"
+#include "WeatherModel.h"
 #include "WindModel.h"
 
 namespace
@@ -83,7 +84,10 @@ const ULyudWindSubsystem::FState& ULyudWindSubsystem::State() const
 	const float ForceFrom = CVarWindFrom.GetValueOnGameThread();
 	const float ForceGust = CVarWindGust.GetValueOnGameThread();
 	// a second of game time changes nothing worth recomputing; forced values apply at once
-	const bool bForceChanged = LastForce[0] != ForceSpeed || LastForce[1] != ForceFrom || LastForce[2] != ForceGust;
+	// (a weather preset plays another hour's episode: that counts as forced too)
+	const float Shift = float(LyudWeather::GetHourShift());
+	const bool bForceChanged = LastForce[0] != ForceSpeed || LastForce[1] != ForceFrom || LastForce[2] != ForceGust || LastShift != Shift;
+	LastShift = Shift;
 	if (FMath::Abs(Hours - Cached.Hours) < 1.0 / 3600.0 && !bForceChanged)
 	{
 		return Cached;

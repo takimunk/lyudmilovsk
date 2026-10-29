@@ -100,6 +100,14 @@ public:
 	void SetHold(const FHeroHoldPose& Hold);
 	void ClearHold();
 	bool IsHolding() const { return bHold; }
+	/**
+	 * A hold that wins over SetHold while it is set (the diary in the hand: ULyudGameScreen sets it every frame from where the book is):
+	 * placed exactly in the look's frame (the eyes, the look's yaw and pitch clamped to -45..20 times PitchFollow), without the
+	 * ordinary hold's lag. Whoever keeps an ordinary hold leaves its things out of the hand meanwhile (HasOverrideHold).
+	 */
+	void SetOverrideHold(const FHeroHoldPose& Hold);
+	void ClearOverrideHold();
+	bool HasOverrideHold() const { return bOverride; }
 	/** How far the hand is in the hold (0 the animation's own hand, 1 there). */
 	float HoldWeight() const { return HoldW; }
 	/** The palm frame the hold puts the hand in this frame (world): the palm's centre on the skin, out of the palm. */
@@ -181,6 +189,8 @@ private:
 	void TickHold(float DeltaTime);
 	FHeroHoldPose Hold;
 	bool bHold = false;
+	FHeroHoldPose Override;
+	bool bOverride = false;
 	float HoldW = 0.f;
 	FVector HoldEye = FVector::ZeroVector;
 	FRotator HoldLook = FRotator::ZeroRotator;

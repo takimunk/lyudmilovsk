@@ -78,7 +78,7 @@ namespace LyudAnimals
 	const char* EventName(EEvent E)
 	{
 		static const char* N[] = { "Notice", "Watch", "Approach", "Flee", "Bark", "Growl", "Whine", "Meow", "Purr", "Hiss", "Pounce",
-			"ChaseStart", "Climb", "Greet", "PlayStart" };
+			"ChaseStart", "Climb", "Greet", "PlayStart", "BarkHappy" };
 		return (int)E < (int)EEvent::Num ? N[(int)E] : "?";
 	}
 
@@ -878,7 +878,7 @@ namespace LyudAnimals
 		// loners: yard dogs by a house in the town, the dog of the lower station, the club's dog on the spur
 		struct FLone { EPlace Kind; const char* Tag; int Breed; float Friendly; float Range; };
 		const FLone Lone[] = {
-			{ EPlace::ClubDoor, "club", 0, 0.92f, 90.f },          // the friendliest: the one to make friends with, later
+			{ EPlace::ClubDoor, "club", 3, 0.95f, 90.f },          // Maru: the friendliest, the one to make friends with
 			{ EPlace::Station, "lower", 2, 0.7f, 180.f },
 			{ EPlace::Doorstep, "house", 1, 0.35f, 150.f },
 			{ EPlace::Doorstep, "house", 0, 0.6f, 250.f },
@@ -922,6 +922,19 @@ namespace LyudAnimals
 			A.Hunter = Clamp01(0.2f + 0.5f * Rand(A.Rng));
 			A.Playfulness = Clamp01(0.3f + 0.5f * Rand(A.Rng));
 			A.Lively = Clamp01(0.3f + 0.5f * Rand(A.Rng));
+			if (L.Breed == 3)
+			{
+				// Maru (Dima's dog): a young bitch with her name on the tag of her collar, glad of everybody
+				A.bFemale = true;
+				A.Coat = 0;
+				A.Size = 1.f;
+				A.NameKey = "animal.maru.name";
+				A.Bold = 0.7f;
+				A.Social = 0.8f;
+				A.Playfulness = 0.75f;
+				A.Lively = 0.8f;
+				A.Hunter = 0.3f;
+			}
 			Made++;
 		}
 
@@ -2243,6 +2256,31 @@ namespace LyudAnimals
 			return;
 		}
 		case EAct::Bark:
+			if (A.HappyBark > 0.f)
+			{
+				// barking back at the player who called: looking at them, tail going (the glad barks are one call:
+				// two or three barks in the sound, the jaw follows them, AAnimalActor::Vocalize)
+				A.HappyBark -= Dt;
+				A.NextHappy -= Dt;
+				A.Excite = std::max(A.Excite, 0.8f);
+				if (Player.bPresent)
+				{
+					A.Look = Player.Eye;
+					A.bLook = true;
+				}
+				if (A.NextHappy <= 0.f && A.NextHappy > -1.f)
+				{
+					Emit(EEvent::BarkHappy, A);
+					A.NextHappy = -2.f;          // once per call
+				}
+				if (A.HappyBark <= 0.f)
+				{
+					A.HappyBark = 0.f;
+					A.Goal = EGoal::None;
+					SetAct(A, EAct::Stand, 1.5f + Rand(A.Rng) * 2.f);
+				}
+				return;
+			}
 			if (A.Target >= 0 && A.Target < (int)Animals.size() && Animals[A.Target].Up > 0.f)
 			{
 				A.Look = Animals[A.Target].Pos;
@@ -2770,6 +2808,14 @@ namespace LyudAnimals
 			// a sharp turn slows it down
 			Target *= Clamp01(1.2f - std::fabs(D) / Pi);
 		}
+		else if (A.HappyBark > 0.f && Player.bPresent)
+		{
+			// turns round to the player who called it
+			const V3 To = Player.Feet - A.Pos;
+			const float Turn = Clamp(WrapPi(std::atan2(To.Y, To.X) - A.Yaw), -4.f * Dt, 4.f * Dt);
+			A.YawRate = Turn / std::max(Dt, 1e-4f);
+			A.Yaw = WrapPi(A.Yaw + Turn);
+		}
 		else
 		{
 			A.YawRate = 0.f;
@@ -2913,6 +2959,39 @@ namespace LyudAnimals
 			return A.Pos + A.Vel * StepAcc[A.Tier];
 		}
 		return A.Pos;
+	}
+
+	bool FWorld::Hail(int Id)
+	{
+		if (Id < 0 || Id >= (int)Animals.size())
+		{
+			return false;
+		}
+		FAnimal& A = Animals[Id];
+		if (A.Act == EAct::Flee || A.Act == EAct::Climb || A.Act == EAct::Perch || A.Up > 0.f)
+		{
+			return false;
+		}
+		// it wakes if it slept, stops where it is and turns to the player
+		A.Path.clear();
+		A.PathI = 0;
+		A.Speed = 0.f;
+		A.Target = -1;
+		A.Goal = EGoal::Person;
+		A.Trust = std::min(1.f, A.Trust + 0.03f);
+		A.Fear = 0.f;
+		A.Tired = std::max(0.f, A.Tired - 0.05f);
+		if (IsCat(A))
+		{
+			SetAct(A, EAct::Watch, 2.f);
+			Emit(EEvent::Meow, A);
+			return true;
+		}
+		SetAct(A, EAct::Bark, 2.6f);
+		A.HappyBark = 1.7f + Rand(A.Rng) * 0.6f;
+		A.NextHappy = 0.15f;
+		A.Excite = 0.9f;
+		return true;
 	}
 
 	void FWorld::Scare(const V3& P, float R, float Strength)

@@ -18,6 +18,7 @@ the hooks for it are listed at the end.
 | Import to Unreal | `unreal/scripts/import_animals.sh` (`import_animals.py`) -> `/Game/Animals/<Breed>`, `Content/AnimalsData/animal_bodies.json` |
 | Offscreen checks | `unreal/scripts/make_animals_test_level.py`, `test_animals.sh` (`test_animals.py`) |
 | Birds fleeing them | `Private/Birds/BirdSim.cpp` `PerceiveBeasts`, `UBirdLifeSubsystem::SetBeasts` |
+| Maru: her collar, her name, E | `blender/animals/collar.py`, `Public/Animals/AnimalCollar.h`, `AnimalNameTags.h` |
 
 Rebuild the walk map whenever `tools/world_map.py`, the terrain or the Academgorodok's layout changes:
 `python3 tools/animal_map.py`.
@@ -74,6 +75,15 @@ when they frighten it; it is kept with the save.
 
 ## Looks
 
+**Since 2026-10-25 the bodies are generated** (Dima's ask): hi3d multi-view pictures and v3.0 models, the requests and
+outputs pinned in `blender/animals/gen/<Breed>/gen.json` and `model.json` (the raw 2M-triangle `model.glb` stays local).
+`build_animal.py <Breed> --gen` cleans the model (welds, cuts fins, fills holes), turns and scales it into the breed's
+frame and fits the breed's skeleton onto it (`gen_fit.py`: the paws, the leg columns, the nose, the tail along its own
+centre line), decimates it to 14k (LODs 12k with shells, 1.8k, 0.7k from a 400k copy), bakes that copy's detail into a
+normal map, keeps the generated texture as the first coat and paints the others carrying its fine detail, and grows 6
+fur shells from the 1.8k copy. The clips, the simulation and the sculpted fallback (without `--gen`) are unchanged.
+
+
 Bodies are sculpted from signed-distance primitives over each breed's skeleton (a lofted trunk, a thigh mass, the
 shank, paws with four toes; the cat's round head with whisker pads; a dog's head as a lofted wedge; eyes in sockets,
 ears with a hollow, a mouth slit so the jaw can open), meshed with OpenVDB and decimated to four LODs sharing one UV
@@ -117,6 +127,40 @@ for them).
 `lyud.Animals.DumpDay [hour hours csv]`, `lyud.Animals.Scare [m]`; `Animal.Spawn <Breed> [coat] [activity] [x y z [yaw]]`
 (a body alone, for looking at the models).
 
+## Maru, the club's dog
+
+Dima's own dog (2026-10-26; his sheet and the photo of her collar in `blender/animals/gen/Maru/ref/`). She is the
+club's dog on the spur (dog breed 3, `Maru`, female, the friendliest of all): a slim cream laika mix with folded ear
+tips and a plume tail curled over her back. Her body is a hi3d model (`gen/Maru/gen.json`: the views were drawn by hi3d
+from a description of the sheet, since the sheet itself can't be uploaded) on the laika's skeleton, scaled
+(`anatomy.py` `_derive("Laika", "Maru", ...)`), with all the dog clips; one coat, the generated one (`cream`).
+Her eyes: a generated head's eyes are not where the template's guess puts them (Maru's were 4 cm further back and 3 cm
+lower), so `gen_fit.find_eyes` finds them in the generated texture (the dark irises on the face, each side on its
+own); the fur is bare there, the coarse shells over them are cut away, and glossy eyeballs (hazel `EYES["Maru"]`)
+sit in them, their fronts a little proud of the skin. Every `--gen` breed gets this when its eyes can be found.
+
+**Her collar** (`collar.py`, run after `build_animal.py Maru --gen`): a 4 mm braided cord, dark red and black, laid
+round her neck along the skin measured by rays (pressed 1.2 cm into the fur), drawn together under the throat by a
+knot; from the knot a steel split ring, and on it a polished brass bone tag, 32 x 18 mm, with «Мару» engraved
+(`label.maru.tag`; the font is Blender's Inter, the letters cut with an exact boolean). Two meshes:
+`SM_Maru_Collar` follows the neck bone; `SM_Maru_Tag` is a pendulum (`UAnimalCollarComponent`, created by
+`AAnimalActor` for a breed with `collar` in `animal_bodies.json`): gravity and the neck's own movement swing it,
+it rests and knocks on her chest (a sphere under the throat), and a knock or a jerk hard enough clinks
+(`collar_jingle`, louder for a harder knock, not beyond 15 m). 240 Hz substeps, nothing worked out when she isn't on
+screen.
+
+**Her name and E** (`AAnimalNameTags`, spawned with the animal life): every animal with a name (her `NameKey`
+`animal.maru.name`, or one the player gives) has it over her head while she's in sight within 35 m, in the people's
+label style; within 4.5 m and looked at it offers `ui.animal.call`, and E speaks to her:
+`UAnimalLifeSubsystem::Hail` -> `FWorld::Hail`: she stops, turns to the player, barks back gladly (one `BarkHappy`
+event: `dog_bark_happy`, two or three barks, the jaw snapping with each), wags, and then usually comes up to them.
+Console `lyud.Animals.Hail [id]`.
+
+Build and import: `Blender -b --python blender/animals/build_animal.py -- Maru --gen`, then
+`Blender -b --python blender/animals/collar.py -- Maru [--preview]`, then `unreal/scripts/import_animals.sh Maru`
+(it imports the collar when `export/Maru/Maru_Collar.glb` is there). Checks: `tools/animalsim/run.sh test` (she
+lives by the club's door, turns and barks once when called), `ANIMTEST_PART=maru unreal/scripts/test_animals.sh`.
+
 ## Taming, later
 
 What is there for it: `FAnimal::Bond` and `Name` (saved with the trust in `UAnimalLifeSubsystem::Saved`), the act
@@ -135,3 +179,24 @@ company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on 
   and `animals_day_acts.txt` (what they do, hour by hour); `run.sh trace <id> <hour> <hours>` follows one animal.
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.
 - `unreal/scripts/test_animals.sh`: offscreen, the breeds and coats in a row, faces, poses, a cat and a laika meeting.
+
+## Eyes
+
+Maru is kept as hi3d made her (2026-10-29, Dima: "far from the original"): anatomy `gen_lods` [28000, 12000,
+4000, 1200] (+`face_tris` 12000 on LOD0) and no fur shells over her painted coat (rig.json `fur` false -> the body MI's
+SkinDark 0.85 instead of the shells' 0.72).
+
+Maru (2026-10-29, after "no lids, scary"): her generated head's own painted eyes (amber iris, pupil, dark lid rims)
+are kept: no eyeball is set over them (anatomy.py `painted_eyes`), the face keeps ~9k triangles in the decimation
+(`face_tris`, build_animal.decimate_face; an even collapse left the head a few hundred and the eyes sat in faceted
+pits), the face fur is short and the lids bare further out (`eye_bare`), the strands finer (`strand_scale`).
+M_AnimalBody is subsurface with a near-neutral scatter (soft Virtual Shadow Map penumbra on the coarse generated heads;
+a skin-red scatter turned her white lids pink). Check: `ANIMTEST_PART=eyes unreal/scripts/test_animals.sh`.
+Her painted eyes look about: build_animal exports `eyes_at` (middle, radius, normal per eye) -> animal_bodies.json
+`painted_eyes`; AAnimalActor gives the body a dynamic M_AnimalBody whose EyeShift node reads the texture shifted inside
+each eye (mask in PreSkinnedPosition, the texture step for a world-space shift from screen derivatives), toward what
+she looks at, up to a quarter of the eye's radius, with small saccades. The fur shells grow from a face-dense proxy
+(decimate_face 9000/4000; LOD2 as proxy grew them in flat angular plates over the head). Lids bare `eye_bare` 1.8,
+shells cut 1.15 r round each eye (wider left angular bare patches).
+Runtime eyeballs (AAnimalActor::UpdateEyes, `blender/animals/gen/<Breed>/eyes.json` -> animal_bodies.json "eyeballs")
+remain for a breed without good painted eyes; Maru no longer has one.

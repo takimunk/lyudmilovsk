@@ -1,0 +1,23 @@
+{
+ "id": "diary_close",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/diary/diary_close_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A thick hardcover notebook closed with a soft muffled thump of the cover, short, close, quiet room, no voices",
+  "duration_seconds": 0.8
+ },
+ "hash": "f8dc3f370b4b",
+ "fal_request_id": "01a18427-d5bf-7fe1-8f00-62845d16dee8",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab03c00/8MDiUP2bcHCMnh1rvSjsR_sound_effect.mp3",
+ "created": "2026-10-28T20:16:09Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -9 dBFS",
+ "sha256": "574f86ca2d575ad345d2d1bae4177e8da7421add7a1601f5a453c547c7c1c3dd",
+ "seconds": 0.64,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "diary"
+}

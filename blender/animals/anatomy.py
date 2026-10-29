@@ -155,6 +155,17 @@ _derive("Laika", "Shepherd", scale=1.1, body=1.1, legs=1.0, head=1.05, muzzle=1.
 _derive("Laika", "Mutt", scale=0.66, body=0.98, legs=0.8, head=1.18, muzzle=0.82,
         ear=dict(kind="drop", w=0.060), fur=dict(body=2.2, neck=2.8, tail=3.0, belly=2.0, head=1.0, leg=1.3, cheek=1.6),
         shells=12)
+# Maru, the club's dog (Dima's own, 2026-10-26): a slim, leggy cream laika mix, ears with folded tips, a plume tail
+# curled over the back; the generated body (gen/Maru) gives her shape and coat, this only the skeleton and the clips
+_derive("Laika", "Maru", scale=0.92, body=0.98, legs=1.04, head=0.96, muzzle=1.0,
+        fur=dict(body=4.0, neck=5.2, tail=7.5, belly=3.0, head=0.6), shells=14)
+# her generated head's own painted eyes (iris, pupil, the dark lid rims) are better than any ball set into them
+# (2026-10-28: "no lids, scary"): build_animal keeps the paint, the face denser, the fur on it short and bare
+# further round the eyes (the shells hid half of each), the strands finer
+BREEDS["Maru"].update(painted_eyes=True, face_tris=12000, strand_scale=12.5, eye_bare=1.8)
+# and the rest of her as hi3d made her (Dima 2026-10-29: "far from the original"): no fur shells over her painted coat,
+# 40k triangles up close
+BREEDS["Maru"].update(gen_lods=[28000, 12000, 4000, 1200])
 
 
 # ====================================================================== skeleton

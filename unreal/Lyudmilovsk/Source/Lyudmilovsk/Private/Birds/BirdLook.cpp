@@ -131,7 +131,7 @@ namespace BirdLook
 				Add(TEXT("GreatTit"), L);
 			}
 			{
-				FLook L = Plain(P(TEXT("2f5a9c"), TEXT("6a8cc4")).Fr(0.08f), P(TEXT("3f6fb6")), P(TEXT("3f6fb6")), P(TEXT("e8d24a")), P(TEXT("8a9a4a")));
+				FLook L = Plain(P(TEXT("3a4250"), TEXT("5f86c0")).Fr(0.22f), P(TEXT("4a78b8")), P(TEXT("4a5a78"), TEXT("5f86c0")).Fr(0.2f), P(TEXT("e8d24a")), P(TEXT("8a9a4a")));
 				L.GreaterCoverts = G(P(TEXT("3f6fb6"), TEXT("f4f4ee")).TipF(0.28f));
 				L.Beak = L.BeakBase = C(TEXT("101012")); L.Legs = C(TEXT("5a6a88"));
 				L.BeakCm = 0.8f; L.BeakDepth = 0.6f; L.TailFrac = 0.4f;
@@ -180,7 +180,7 @@ namespace BirdLook
 			// --- starling: black with a green and purple sheen and pale autumn spots
 			{
 				const P Body = P(TEXT("1a1c1e"), TEXT("c8ac78")).Sp(0.08f).Gl(0.8f, 0.4f);
-				FLook L = Plain(P(TEXT("24262a"), TEXT("b89a6a")).Fr(0.1f).Gl(0.4f, 0.3f), Body, P(TEXT("26282c"), TEXT("b89a6a")).Fr(0.1f), Body, Body);
+				FLook L = Plain(P(TEXT("2c2e33"), TEXT("c4a674")).Fr(0.2f).Gl(0.4f, 0.3f), Body, P(TEXT("2e3034"), TEXT("c4a674")).Fr(0.18f), Body, Body);
 				L.Beak = L.BeakBase = C(TEXT("3a3530")); L.Legs = C(TEXT("b0706a"));
 				L.BeakCm = 2.6f; L.BeakDepth = 0.32f; L.Wing = EWing::Pointed; L.TailFrac = 0.28f;
 				Add(TEXT("Starling"), L);

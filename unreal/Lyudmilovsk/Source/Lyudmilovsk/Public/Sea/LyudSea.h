@@ -7,6 +7,7 @@
 #include "Templates/PimplPtr.h"
 #include "LyudSea.generated.h"
 
+class ACharacter;
 class APhysicsVolume;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
@@ -95,6 +96,10 @@ public:
 	/** How deep the water volume reaches under sea level, cm, and its fluid friction. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float WaterVolumeDepth = 3000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float FluidFriction = 0.6f;
+	/** A swimming player's eyes are kept at least this far over the waves, cm (0 = off; diving will lift it). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float SwimEyeClearance = 22.f;
+	/** Shallower than this the player stands (walks out onto the beach), cm. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float SwimMinDepth = 120.f;
 	/** How far the surface mesh reaches from the camera, cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Detail") float OuterRadius = 3.0e6f;
 
@@ -144,12 +149,17 @@ private:
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SeaMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> UnderMID;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> DepthTex;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> SurfaceMesh;
 	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> Collection;
 	UPROPERTY(Transient) TObjectPtr<APhysicsVolume> WaterVolume;
 	void SpawnWaterVolume();
+	/** Holds a player in the sea in its water (the volume's flat top would let wave crests lift them out) and
+	 * lifts them so the camera stays over the waves (eases up, snaps when far under). */
+	void KeepSwimmerHeadUp(float DeltaSeconds);
+	FString GetDebugReportCore() const;
 
 	int32 AppliedQuality = -2;
 	int32 Segments = 128;
@@ -160,6 +170,9 @@ private:
 	FVector2D AppliedDir = FVector2D::ZeroVector;
 	float AppliedFetch = -1.f, AppliedChop = -1.f;
 	bool bCameraUnder = false;
+	TWeakObjectPtr<class ALyudSky> Sky;
+	TWeakObjectPtr<ACharacter> Swimmer;
+	bool bHoldingSwimmer = false;
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;

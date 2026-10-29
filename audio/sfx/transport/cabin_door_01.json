@@ -1,0 +1,23 @@
+{
+ "id": "cabin_door",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/cabin_door_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A small pneumatic sliding door of a 1960s cable car cabin opening with a soft hiss and a rubber thump, close, no voices",
+  "duration_seconds": 2.0
+ },
+ "hash": "67fa182abada",
+ "fal_request_id": "01a174cb-0d2e-7cd0-b49b-7b7d51097109",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd752/voxZIFn51sb6jKelfDRVc_sound_effect.mp3",
+ "created": "2026-10-25T20:40:34Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "da411922b171673700d0a39f0a96b81b4e702353a1a12d1a55115353771b60ba",
+ "seconds": 1.92,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

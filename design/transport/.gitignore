@@ -1,0 +1,4 @@
+# full-size generations stay local (sources.json / gen/*.json pin them); the small previews are committed
+concepts/*.png
+gen/*.glb
+game/

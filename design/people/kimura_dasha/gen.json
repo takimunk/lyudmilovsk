@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 20-year-old student, half Japanese half Russian: slim, medium height, long straight black hair with a fringe, light makeup; an oversized mustard-yellow knitted sweater, a pleated dark plaid skirt above the knee, black tights, chunky black lace-up boots. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "c7d6f95d230b48d48ce01390753a4390",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "c7d6f95d230b48d48ce01390753a4390",
+    "image_index": 0
+   },
+   {
+    "task_id": "c7d6f95d230b48d48ce01390753a4390",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "dcf1285cf5dc438684258300c389e616",
+  "points": 45,
+  "file": "blender/characters/kimura_dasha/gen/model.glb (local, ignored)",
+  "sha256": "13fcd1aa0d62fd2d952411411ab30d677f00697afcb6d5ae3becf82032824125",
+  "bytes": 48318972,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}

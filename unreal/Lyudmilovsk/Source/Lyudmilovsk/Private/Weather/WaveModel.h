@@ -15,8 +15,9 @@
 // Time loops every LoopSeconds: every train's angular frequency is a whole number of turns per
 // loop, so the material can be handed a wrapped clock without losing float precision.
 //
-// Shallow water: trains longer than about twice the depth shrink, and the whole surface is held
-// under the breaking height (0.4 x depth), so waves die on the beach instead of passing through it.
+// Shallow water: the surface is held under the breaking height (0.4 x depth), and over the shallows
+// (shallower than ~1.5 x the wave height) spilling breakers take over: bores along the depth contours
+// rolling in to the beach (SurfHeight), the same lines the material draws as surf foam.
 //
 // Frame: Unreal world metres, Z up; time in seconds.
 #pragma once
@@ -83,6 +84,12 @@ namespace LyudWeather
 		/** How much of a train's height survives in DepthM of water, and the surface-wide cap under breaking. */
 		static float DepthAtten(float K, float DepthM);
 		float BreakCap(float DepthM) const;
+		/** 0..1 how far into the surf zone (water shallower than ~1.5 x the wave height) a depth is. */
+		float SurfZone(float DepthM) const;
+		/** The breakers' height over the shallows at a depth (m) and time, m; OutRate = its rise per second. */
+		float SurfHeight(float DepthM, double T, float* OutRate = nullptr) const;
+		/** Breaker lines per second passing a depth (a whole number per loop: 192 in 1200 s). */
+		static constexpr double SurfRate = 0.16;
 
 		/** Where the water particle that rests at (X0, Y0) is at time T: offset from rest, m. */
 		void Displace(double X0, double Y0, double T, float DepthM, float Out[3]) const;

@@ -39,6 +39,9 @@ STEPS = [
     ("open_storm_foam", at(1500, 0, SEA_Z + 400), -10, 10, 0.0, 14, ["lyud.Sea.DebugFoam 5"]),
     ("beach_foam", at(118, 5, SEA_Z + 180), -4, 0, 0.0, -1, ["lyud.Sea.DebugFoam 5"]),
     ("swim_sea", at(190, 0, SEA_Z - 100), -10, 0, 0.0, -1, []),
+    ("swim_storm", at(1500, 0, SEA_Z - 150), -5, 30, 0.0, 14, []),
+    ("swim_out", at(150, 0, SEA_Z - 50), -5, 30, 0.0, -1, []),
+    ("swim_deep", at(1000, 0, SEA_Z - 150), -5, 30, 0.0, -1, []),
     ("swim_beach", at(118, 5, SEA_Z + 250), -10, 0, 0.0, -1, []),
     ("phone_quality", at(190, 0, SEA_Z + 300), -12, 10, 0.0, -1, ["lyud.Sea.Quality 0"]),
 ]
@@ -71,6 +74,8 @@ def report(w, name):
     pawn = pc.get_controlled_pawn()
     cm = getattr(pawn, "character_movement", None)
     sea = unreal.LyudSea.get_sea(w)
+    if name.startswith("swim") and sea:
+        log("  eye %.1f cm over the surface" % (eye.z - sea.sample_surface(eye).surface_z))
     log("  pawn at %s, movement %s, swimmable %s" % (pawn.get_actor_location(), cm.movement_mode if cm else None,
         sea.is_swimmable(pawn.get_actor_location()) if sea else None))
     if wind:
@@ -139,6 +144,10 @@ def tick(dt):
         # keep it still against any drift
         if not STEPS[st["i"]][0].startswith("swim"):
             pawn.set_actor_location(unreal.Vector(*st["loc"]), False, True)
+        elif int((st["t"] - st["t0"]) * 2) != st.get("tick"):
+            st["tick"] = int((st["t"] - st["t0"]) * 2)
+            sea = unreal.LyudSea.get_sea(w)
+            log("  t %.1f z %.0f %s" % (st["t"] - st["t0"], pawn.get_actor_location().z, sea.get_debug_report().split("camera")[-1] if sea else ""))
         if st["t"] - st["t0"] > WAIT:
             report(w, STEPS[st["i"]][0])
             cmd(w, "HighResShot 1600x900")

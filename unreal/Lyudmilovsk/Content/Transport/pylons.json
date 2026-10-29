@@ -1,0 +1,33 @@
+{
+ "_doc": "Made by blender/transport/pylons.py. Per kind the mesh name pattern for a whole height in m (ceil of the pylon's height, the extra sunk into the ground, at most a step), heights [min, max, step], the ropes' offset from the axis across the line (UE cm), the pad's skirt. Mesh frame: origin on the ground at the axis, +X along the line, the rope on the sheaves' tops at z = the height.",
+ "corner": {
+  "heights": [
+   8,
+   46,
+   2
+  ],
+  "mesh": "SM_TR_PylonCorner_H%02d",
+  "rope_y": 450.0,
+  "shoe_deg": 18.0,
+  "skirt": 220.00000000000003,
+  "tris": [
+   3120,
+   6384
+  ],
+  "turn": "built for a left turn (+Y); mirror Y for a right one"
+ },
+ "line": {
+  "heights": [
+   8,
+   46,
+   1
+  ],
+  "mesh": "SM_TR_PylonLine_H%02d",
+  "rope_y": 450.0,
+  "skirt": 220.00000000000003,
+  "tris": [
+   3376,
+   6924
+  ]
+ }
+}

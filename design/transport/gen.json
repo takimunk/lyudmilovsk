@@ -1,0 +1,155 @@
+{
+ "_doc": "Every paid 3D generation of the cable-car metro (tools/gen_transport_assets.py). Inputs are the Higgsfield Nano Banana 2.1 renders listed in concepts/sources.json.",
+ "steps": {
+  "cabin": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_db78e52a-db2d-4cff-8920-2fc6d1d6a77e.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_cabin.png (Higgsfield nano_banana_2_1 job db78e52a-db2d-4cff-8920-2fc6d1d6a77e)"
+  },
+  "pylon_line": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200049_8c3bfbf5-8d98-42a6-8585-25f6927defd6.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_pylon_line.png (Higgsfield nano_banana_2_1 job 8c3bfbf5-8d98-42a6-8585-25f6927defd6)"
+  },
+  "pylon_corner": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_98c9b5fe-2dfa-41c8-a669-0e8064553f1e.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_pylon_corner.png (Higgsfield nano_banana_2_1 job 98c9b5fe-2dfa-41c8-a669-0e8064553f1e)"
+  },
+  "top_saucer": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_8eff7e0e-3b36-47b8-bc02-e55b37f96b5c.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_saucer.png (Higgsfield nano_banana_2_1 job 8eff7e0e-3b36-47b8-bc02-e55b37f96b5c)"
+  },
+  "top_folded": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200050_bedfa951-6c34-4a35-bc37-f8fecf27b8de.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_folded.png (Higgsfield nano_banana_2_1 job bedfa951-6c34-4a35-bc37-f8fecf27b8de)"
+  },
+  "top_lantern": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200051_b44a0878-a46a-4b29-9161-6d9f728ceef9.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_lantern.png (Higgsfield nano_banana_2_1 job b44a0878-a46a-4b29-9161-6d9f728ceef9)"
+  },
+  "top_wing": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200051_ade33b0e-9e75-4369-ab6f-7c40a3b36c07.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_wing.png (Higgsfield nano_banana_2_1 job ade33b0e-9e75-4369-ab6f-7c40a3b36c07)"
+  },
+  "top_arches": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200524_9edd42ce-9882-4def-be3c-19890c272460.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_arches.png (Higgsfield nano_banana_2_1 job 9edd42ce-9882-4def-be3c-19890c272460)"
+  },
+  "top_star": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200523_a9291471-a42e-4616-a41c-46610473b7d6.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_star.png (Higgsfield nano_banana_2_1 job a9291471-a42e-4616-a41c-46610473b7d6)"
+  },
+  "top_dome": {
+   "model": "hitem3d/hi3d/v3.0/image-to-3d",
+   "inputs": {
+    "image_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200540_39abbb72-43ba-4df2-8254-683bdf25d89b.png"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 300000
+   },
+   "source": "design/transport/concepts/iso_top_dome.png (Higgsfield nano_banana_2_1 job 39abbb72-43ba-4df2-8254-683bdf25d89b)"
+  }
+ }
+}

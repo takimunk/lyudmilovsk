@@ -1,0 +1,55 @@
+{
+  "comment": "The cable-car metro of Lyudmilovsk (docs/transport.md). Authored data: edit here, then python3 tools/transport.py resolves it against the terrain into network_built.json. Map frame of tools/world_map.py: metres, X west, Y north. Names are string keys (strings_<lang>.json).",
+  "defaults": {
+    "rope_over_deck": 4.01,
+    "min_clearance": 9.0,
+    "pylon_min": 8.0,
+    "pylon_max": 45.0,
+    "max_span": 240.0,
+    "sag": 0.012,
+    "track_gap": 9.0,
+    "platform_len": 18.0,
+    "min_lift": 4.0,
+    "speed": 6.0,
+    "speed_empty": 11.0,
+    "speed_station": 1.2,
+    "dwell": 14.0,
+    "idle_return": 90.0,
+    "headway": 28.0,
+    "capacity": 4
+  },
+  "stations": [
+    {"id": "aton",    "name": "transport.station.aton",    "at": [-15.0, 133.0],   "deck": "ground", "style": "wing", "schema": [4, 8]},
+    {"id": "academ",  "name": "transport.station.academ",  "at": [-255.0, 520.0],  "deck": -8.0,    "style": "dome", "schema": [4, 6]},
+    {"id": "zenit",   "name": "transport.station.zenit",   "at": [-470.0, 905.0],  "deck": -10.0,    "style": "saucer", "schema": [6, 4]},
+    {"id": "polar",   "name": "transport.station.polar",   "at": [-360.0, 1660.0], "deck": 16.0,     "style": "star", "schema": [6, 1]},
+    {"id": "mayak",   "name": "transport.station.mayak",   "at": [95.0, -400.0],   "deck": 30.0,     "style": "lantern", "schema": [1, 9]},
+    {"id": "amber",   "name": "transport.station.amber",   "at": [95.0, 640.0],    "deck": -28.0,    "style": "arches", "schema": [1, 4]},
+    {"id": "horizon", "name": "transport.station.horizon", "at": [-1120.0, 1010.0], "deck": -6.0,    "style": "folded", "schema": [9, 4]}
+  ],
+  "lines": [
+    {"id": "sun", "name": "transport.line.sun", "color": "#E8962E", "number": 1,
+     "stops": ["aton", "academ", "zenit", "polar"],
+     "via": {},
+     "depot": "polar"},
+    {"id": "sea", "name": "transport.line.sea", "color": "#2E8C9A", "number": 2,
+     "stops": ["mayak", "amber", "zenit", "horizon"],
+     "via": {"mayak-amber": [[60.0, 120.0]]},
+     "depot": "horizon"}
+  ],
+  "cabins": [
+    {"id": "c01", "number": 1,  "name": "transport.cabin.c01", "line": "sun"},
+    {"id": "c02", "number": 2,  "name": "transport.cabin.c02", "line": "sun"},
+    {"id": "c03", "number": 3,  "name": "transport.cabin.c03", "line": "sun"},
+    {"id": "c04", "number": 4,  "name": "transport.cabin.c04", "line": "sun"},
+    {"id": "c05", "number": 5,  "name": "transport.cabin.c05", "line": "sun"},
+    {"id": "c06", "number": 6,  "name": "transport.cabin.c06", "line": "sun"},
+    {"id": "c07", "number": 7,  "name": "transport.cabin.c07", "line": "sea"},
+    {"id": "c08", "number": 8,  "name": "transport.cabin.c08", "line": "sea"},
+    {"id": "c09", "number": 9,  "name": "transport.cabin.c09", "line": "sea"},
+    {"id": "c10", "number": 10, "name": "transport.cabin.c10", "line": "sea"},
+    {"id": "c11", "number": 11, "name": "transport.cabin.c11", "line": "sea"},
+    {"id": "c12", "number": 12, "name": "transport.cabin.c12", "line": "sea"}
+  ],
+  "club_board": {"at": [3.2, 9.0], "facing": [0.0, 1.0], "comment": "the route board by the club's exit: right of the forecourt, facing out of the door"}
+}

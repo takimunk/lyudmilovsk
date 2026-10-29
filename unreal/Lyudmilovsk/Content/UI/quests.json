@@ -6,7 +6,7 @@
    "kind": "main",
    "auto_start": true,
    "stages": [
-    {"id": "wake", "objectives": [{"id": "leave_pc", "event": "leave_computer", "place": "club"}]},
+    {"id": "wake", "objectives": [{"id": "leave_pc", "event": "leave_computer|walk", "place": "club"}]},
     {"id": "owner", "objectives": [{"id": "talk_owner", "event": "talk", "target": "owner", "place": "club"}]},
     {"id": "outside", "objectives": [{"id": "go_out", "event": "reach", "target": "club_door"}]},
     {"id": "cable", "objectives": [{"id": "reach_cable", "event": "reach", "target": "cable_upper"}],

@@ -348,9 +348,11 @@ void UBirdSelfBody::Build(FName SpeciesId, float LengthCm, float WingspanCm, USc
 	Flight = NewObject<UInstancedStaticMeshComponent>(GetOwner(), TEXT("FlightFeathers"));
 	Contour = NewObject<UInstancedStaticMeshComponent>(GetOwner(), TEXT("ContourFeathers"));
 	UStaticMesh* Feather = FeatherMesh(this, FeatherMaterial);
+	FeatherMID = FeatherMaterial ? UMaterialInstanceDynamic::Create(FeatherMaterial, this) : nullptr;
 	for (UInstancedStaticMeshComponent* C : { Flight.Get(), Contour.Get() })
 	{
 		C->SetStaticMesh(Feather);
+		if (FeatherMID) C->SetMaterial(0, FeatherMID);
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->NumCustomDataFloats = FPaint::NumFloats;
 		C->SetupAttachment(this);
@@ -416,7 +418,7 @@ void UBirdSelfBody::BuildFeathers(const FLook& Look)
 		{
 			const float Len = Primary * PrimaryProfile(Wing, I);
 			// fingered wings: the outer primaries narrow (emarginated)
-			const float W = Primary * (bSlots && I >= 6 ? 0.16f : Wing == EWing::Sickle ? 0.16f : 0.25f);
+			const float W = Primary * (I >= 6 ? (bSlots ? 0.14f : 0.18f) : Wing == EWing::Sickle ? 0.16f : 0.25f);
 			Add(FFeather::Primary, Side, I, 10, Len, W, I / 9.f, -I * Lay * 0.25f, Look.Primaries.For(I, 10));
 		}
 		const int32 NS = Wing == EWing::Sickle ? 7 : Wing == EWing::Broad ? 14 : 11;
@@ -558,7 +560,8 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 	}
 	Phi += Pose.Flare * 0.45f;
 	const float Elev = Side * Phi;
-	const FQuat Raise = FQuat(FVector::XAxisVector, Elev) * FQuat(FVector::ZAxisVector, FMath::DegreesToRadians(-Side * 32.f * ViewForward));
+	// seen from its own eye: swept forward and drooped a little, so the eye looks down onto the upper side of the spread hand
+	const FQuat Raise = FQuat(FVector::XAxisVector, Elev - Side * 0.22f * ViewForward) * FQuat(FVector::ZAxisVector, FMath::DegreesToRadians(-Side * 45.f * ViewForward));
 	// the downstroke pitches the leading edge down a little (pronation)
 	const float Twist = bBeat ? -0.18f * FMath::Sin(2.f * PI * Phase) : 0.f;
 	auto ToBody = [&](const FVector& Flat) { return P0 + Raise.RotateVector(Flat - P0); };
@@ -602,7 +605,8 @@ void UBirdSelfBody::PoseWing(int8 Side, const FBirdBodyPose& Pose, float Time, T
 		case FFeather::Primary:
 		{
 			// fanned from pointing back (P1) to along the hand (P10) when spread; stacked when folded
-			const float Fan = FMath::Lerp(62.f, 3.f, FMath::Pow(F.Along, 0.8f)) * EHand + (2.f + F.Index * 0.4f) * (1.f - EHand);
+			// spread, the outer primaries part at their tips like fingers
+			const float Fan = FMath::Lerp(62.f, -12.f, FMath::Pow(F.Along, 0.8f)) * EHand + (2.f + F.Index * 0.4f) * (1.f - EHand);
 			const FVector Root = FMath::Lerp(Joint[2], Joint[3], 0.12f + 0.88f * F.Along);
 			Place(F, Root, Dir[2].RotateAngleAxis(Side * Fan, FVector::UpVector), 0.4f + 0.6f * F.Along);
 			break;
@@ -725,4 +729,12 @@ FVector UBirdSelfBody::Squeeze(const FVector& Local) const
 		return Local;
 	}
 	return ViewLoc + Fwd * Ahead + (C - Fwd * Ahead) * ViewK;
+}
+
+void UBirdSelfBody::SetSkyFill(float Amount)
+{
+	if (FeatherMID)
+	{
+		FeatherMID->SetScalarParameterValue(TEXT("SkyFill"), Amount);
+	}
 }

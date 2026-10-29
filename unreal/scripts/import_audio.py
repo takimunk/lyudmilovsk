@@ -13,6 +13,8 @@ import unreal
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 tools = unreal.AssetToolsHelpers.get_asset_tools()
+# IMPORT_ONLY=<text>: only the files whose path has it (one thread's new sounds, leaving everybody else's assets alone)
+ONLY = os.environ.get("IMPORT_ONLY", "")
 eal = unreal.EditorAssetLibrary
 tasks, loops = [], []
 
@@ -29,6 +31,8 @@ def add(path, dest, name):
 
 
 for path in sorted(glob.glob(os.path.join(ROOT, "audio", "sfx", "*", "*.wav"))):
+    if ONLY not in os.path.relpath(path, ROOT):
+        continue
     group = os.path.basename(os.path.dirname(path)).capitalize()
     name = "S_" + os.path.basename(path)[:-4]
     add(path, "/Game/Audio/" + group, name)
@@ -36,6 +40,8 @@ for path in sorted(glob.glob(os.path.join(ROOT, "audio", "sfx", "*", "*.wav"))):
     if os.path.exists(side) and json.load(open(side, encoding="utf-8")).get("loop"):
         loops.append("/Game/Audio/%s/%s" % (group, name))
 for path in sorted(glob.glob(os.path.join(ROOT, "audio", "music", "*.wav"))):
+    if ONLY not in os.path.relpath(path, ROOT):
+        continue
     add(path, "/Game/Audio/Music", "MU_" + os.path.basename(path)[:-4])
 tools.import_asset_tasks(tasks)
 for p in loops:

@@ -1,0 +1,10 @@
+{
+ "id": "icon_magazine_science",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  1,
+  2
+ ]
+}

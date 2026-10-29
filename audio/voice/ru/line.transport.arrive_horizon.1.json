@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_horizon.1",
+ "lang": "ru",
+ "text": "Горизонт. Просим освободить кабину.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Горизонт. Просим освободить кабину.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a174ca-a70b-7883-9bf3-c64a2446c869",
+ "hash": "db0115ce0a27"
+}

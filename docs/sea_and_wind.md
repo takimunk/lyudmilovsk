@@ -32,23 +32,8 @@ materials' own wind, and NPC lines that read `lyud.Overcast` (weather beyond win
 
 ## Clouds and rain
 
-`Public/Weather/LyudWeather.h` (`ULyudWeatherSubsystem`), `Private/Weather/RainModel.cpp` (plain C++; added by the
-sound thread, which uses it for rain, thunder and the music's mood; visuals are still to build on it).
-
-- Like the wind, a pure function of the calendar (`LyudWeather::Sky(hours, wind params, sky params)`), riding on the
-  wind's weather: fronts with a fresh wind bring the cloud and rain. Seed 2660 (its own, beside the wind's 921):
-  broken cloud and dry over the scene's start on 20 October, drizzle the next day.
-- `GetSky()` -> `FLyudSkyWeather`: `Cloud` 0..1, `Rain` mm/h (drizzle 0.3, rain 2, downpour 10+), `Snow` 0..1 of it
-  as snow, `Thunder` 0..1 (lightning ~2x/min at 1), `Fog` 0..1, `TempC`, `Wet` 0..1 (ground; dries over hours).
-- `OnLightning(Location, DistanceFromViewM)` fires in thunderstorms (the sound's thunder follows by the speed of
-  sound; the sky can flash on it). It sets `lyud.Overcast` (cloud > 0.75) for what people say about the sun.
-- Climate (`tools/audiosim/run.sh weather`): rain ~8-18% of the hours, ~900 mm a year, wettest July-October,
-  snow in December-February, thunder in summer, mist on calm cold mornings; mean temperature -1 C in January,
-  18 C in July (the Kaliningrad coast's).
-- Console: `lyud.Weather.Rain / Cloud / Fog / Temp / Thunder` force a value, `lyud.Weather.Strike [m]` lightning now,
-  `lyud.Weather.Debug 1`.
-- To build on it: rain and snow particles and wet ground for the sky/sea/terrain threads (`Rain`, `Snow`, `Wet`),
-  cloud cover for `ALyudSky`'s volumetric clouds (`Cloud`), fog for the height fog (`Fog`).
+Now the weather engine: see `docs/weather.md` (`ULyudWeatherSubsystem`, `Private/Weather/WeatherModel.cpp`). The
+wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky()` keeps the old short summary.
 
 ## Sea
 
@@ -63,18 +48,24 @@ sound thread, which uses it for rain, thunder and the music's mood; visuals are 
   whole number of turns per loop).
 - **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, Baltic absorption and scattering (brown-green,
   a few metres of visibility), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
-  crests pinch (≈1 % of the sea at 7 m/s, more and streaked downwind in a gale), breakers and wash over the
-  shallows.
-- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). Waves longer
-  than ~2× the depth shrink and the surface stays under the breaking height (0.4 × depth); no sea east of
+  crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
+  along the wind at gale force), breakers and wash over the shallows.
+- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). The surface stays
+  under the breaking height (0.4 × depth), and where the water is shallower than ~1.5 × the wave height spilling
+  breakers roll in along the depth contours, in the geometry, the foam and `SampleSurface` alike; no sea east of
   `LandSideX`.
 - **Mesh**: rings round the camera built in code, ~26 k vertices (desktop) / 6.5 k (phone), fine near the eye and
   coarse to 30 km.
 - **Swimming**: in play a water `APhysicsVolume` covers the sea (from `LandSideX` out, 30 m under sea level up to
   it; its brush is a box body built at runtime), so a character that falls in goes to `MOVE_Swimming` (checked
   offscreen: dropped in the shallows it swims, on the beach it walks). `IsSwimmable(Location)` asks the same of a
-  point; `SampleSurface` gives the wavy surface to float at. The hero's own swim tuning lives with the hero.
-- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour and dims it with depth.
+  point; `SampleSurface` gives the wavy surface to float at. While the player's body is in water deeper than
+  `SwimMinDepth` (1.2 m) the sea holds them in its water itself (the volume's flat top would let a wave crest lift
+  them out, drop, swim, pop out again) and keeps the camera `SwimEyeClearance` (22 cm) over the waves, whatever put
+  them in the sea (a fall, the hand-over from a drowned bird); shallower they stand and walk out. Checked offscreen
+  in the shallows, the open sea at 14 m/s and on the beach (`swim_*` steps of test_sea).
+- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour, dims it with depth,
+  lays caustics on the bed and shows the sky through Snell's window overhead (dark by night, from the sun's altitude).
 - **Buoyancy**: `ULyudBuoyancyComponent` on a simulating body (points, volume, drag). `lyud.Sea.SpawnFloat` drops
   a 1 m crate on the water to watch it ride.
 - **Quality**: `lyud.Sea.Quality` 0 phone (64 segments, 20 + 16 trains), 1, 2 desktop (128, 64 + 48); −1 = by

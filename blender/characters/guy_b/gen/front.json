@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "ec88e68b-8eca-415f-b1ca-7f7ed6c82c62",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3007,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 27-year-old Kazakh man, a warehouse worker: lean, short black hair, relaxed friendly face, a dark navy polo shirt, faded blue jeans, brown leather work boots. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_ec88e68b-8eca-415f-b1ca-7f7ed6c82c62.png",
+ "output_file": "front.png",
+ "sha256": "d51c979ad72dd60ecfde4d053e2af02caa0322c1cb4993f04fb6f9631ff09c77",
+ "credits": 2
+}

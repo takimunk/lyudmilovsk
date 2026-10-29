@@ -1,0 +1,33 @@
+{
+ "key": "line.nao.again1.1",
+ "lang": "ru",
+ "text": "Море сегодня такое же, как вчера. Или это я такая же.",
+ "speaker": "nao",
+ "voice": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_id": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Young Japanese woman, about twenty: a soft, light, calm and clear voice, quiet and unhurried, a little dreamy and distant, gentle, natural everyday speech",
+  "preview_text": "Вышел. Я так и думала, что сегодня кто-нибудь выйдет."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Море сегодня такое же, как вчера. Или это я такая же.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102603333026-QqUMP15a"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1748e-ab9a-74f3-96e0-ac9513f594d7",
+ "hash": "6383d4f3132c"
+}

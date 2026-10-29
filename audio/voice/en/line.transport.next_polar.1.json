@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.next_polar.1",
+ "lang": "en",
+ "text": "Next station: Polar Star, the end of the line.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Next station: Polar Star, the end of the line.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a174ca-e302-7142-a7bb-eb0cdf9d08e1",
+ "hash": "ba19ea4a89b2"
+}

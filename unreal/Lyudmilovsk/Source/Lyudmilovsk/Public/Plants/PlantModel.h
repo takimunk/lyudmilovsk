@@ -52,6 +52,13 @@ struct FPlantSeason
 	float LitterFrom[NumBuckets] = {};
 	/** Snow lying on the branches, 0..1. */
 	float Snow = 0.f;
+	/** Flowering: how much of it is out (0 none .. 1 full), how far open (their size), how aged (0 fresh .. 1 spent). */
+	float Bloom = 0.f;
+	float BloomOpen = 0.f;
+	float BloomAge = 0.f;
+	/** The colour multiplying the flowers' texture, and the colour the bloom looks from afar. */
+	FLinearColor BloomTint = FLinearColor::White;
+	FLinearColor BloomLook = FLinearColor::White;
 };
 
 /** Pure functions of the species: no state, no randomness beyond the seed. */
@@ -134,6 +141,9 @@ public:
 		/** Fruit that has dropped and not yet rotted: id, where it hung (m), how it hung (cm, as on the tree) and its skin. */
 		struct FFallen { int32 Id; FVector3f At; FTransform Hung; float Data[FruitDataFloats]; };
 		TArray<FFallen> FallenFruit;
+		/** Blossom, catkins or cones (cm) and how much each swings with its twig, 0..1. */
+		TArray<FTransform> Blossoms;
+		TArray<float> BlossomSway;
 		/** Fallen leaves lying under the tree: where (m, the ground's height is the caller's), turn, size, bucket. */
 		struct FLitter { FVector2f At; float Yaw; float Size; int32 Bucket; };
 		TArray<FLitter> Litter;

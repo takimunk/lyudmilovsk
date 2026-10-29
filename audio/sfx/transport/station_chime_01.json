@@ -1,0 +1,23 @@
+{
+ "id": "station_chime",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/station_chime_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A soft three-note electronic chime of a 1960s Soviet metro station, warm vibraphone-like tones, descending, clean, a little reverb, no voice",
+  "duration_seconds": 2.5
+ },
+ "hash": "3c1a767a10b6",
+ "fal_request_id": "01a174cb-426c-7f22-867c-ad570d3b9230",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aafd754/XB4dphPKmNeL3_6OKKjMP_sound_effect.mp3",
+ "created": "2026-10-25T20:40:44Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "2a03caa94f78978d35797c2069c440750ab87736edb57b25e9571790a3fe1d6c",
+ "seconds": 2.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport"
+}

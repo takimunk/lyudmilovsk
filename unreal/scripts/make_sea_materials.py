@@ -192,14 +192,13 @@ def sea_material(coll):
 
     # surf over the shallows, from the scene's own depth under the water and the depth map
     ppos = g.node(X.MaterialExpressionWorldPosition)
-    t = g.node(X.MaterialExpressionTime)
     below = g.node(X.MaterialExpressionSceneDepthWithoutWater, fallback_depth=1.0e6)
     here = g.node(X.MaterialExpressionPixelDepth)
     thick = g.custom("return (Below - Here) * abs(V.z);", [("Below", below), ("Here", here), ("V", view)])
     bed = g.custom(H.GUST_LIB + "return Lyud.Depth(XY, Rect, Clock.w, LandX, Dep, DepSampler);",
                    [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Dep", dep)], desc="Bed")
     surf = g.custom(H.GUST_LIB + H.SURF_HLSL,
-                    [("Pos", ppos), ("Time", t), ("Depth", thick), ("Bed", bed), ("SP", sp)],
+                    [("Pos", ppos), ("Clock", clock), ("Depth", thick), ("Bed", bed), ("SP", sp)],
                     desc="Surf")
     wc = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=False, a=True)
     g.link(pix, wc)
@@ -238,27 +237,57 @@ def sea_material(coll):
     return g.finish()
 
 
+UNDERWATER_HLSL = r"""
+float3 dir = normalize(P - Cam);
+float camDepth = max((Sea.x - Cam.z) * 0.01, 0.0);
+float3 absorb = float3(%f, %f, %f);
+float3 sigma = absorb + float3(%f, %f, %f);
+float3 lightDown = exp(-absorb * (camDepth + 0.5));
+float3 fogc = WaterColor.rgb * Bright * Light * lightDown;
+float3 col;
+if (dir.z > 0.0 && P.z > Sea.x - 60.0)
+{
+    // looking up at the surface: inside Snell's window (48.6 deg from straight up) the sky shines through,
+    // rippling; outside it the surface mirrors the dim water below; a bright rim at the window's edge
+    float ds = camDepth / max(dir.z, 0.05);
+    float3 T = exp(-sigma * ds);
+    float rip = 0.8 + 0.2 * sin(P.x * 0.05 + Sea.y * 1.3) * sin(P.y * 0.06 - Sea.y * 1.1);
+    float3 sky = SkyTint.rgb * Light * rip;
+    float win = smoothstep(0.63, 0.69, dir.z);
+    col = lerp(fogc, sky * T + fogc * (1.0 - T), win);
+    col += sky * T * 0.5 * exp(-pow((dir.z - 0.66) / 0.025, 2.0));
+}
+else
+{
+    float d = length(P - Cam) * 0.01;
+    float3 T = exp(-sigma * d);
+    // caustics: sunlight focused by the waves dancing over the bed, fading with depth
+    float bed = max((Sea.x - P.z) * 0.01, 0.0);
+    float2 q = P.xy * 0.01;
+    float c1 = sin(q.x * 3.1 + Sea.y * 1.7 + sin(q.y * 2.3 + Sea.y)) * sin(q.y * 2.9 - Sea.y * 1.3 + sin(q.x * 1.9 - Sea.y * 0.7));
+    float c2 = sin(q.x * 4.7 - Sea.y * 1.1 + sin(q.y * 3.7 - Sea.y * 0.9)) * sin(q.y * 5.3 + Sea.y * 1.4);
+    float caustic = (pow(1.0 - abs(c1), 8.0) + 0.6 * pow(1.0 - abs(c2), 10.0)) * 1.4 * exp(-0.25 * bed) * saturate(N.z) * Light;
+    col = Scene.rgb * (1.0 + caustic) * T + fogc * (1.0 - T);
+}
+return col;
+"""
+
+
 def underwater_material(coll):
-    """Under the surface: the scene fades into the water's own colour by distance, and the light in
-    that colour dims the deeper the eye is."""
+    """Under the surface: the scene fades into the water's own colour by distance, the light dims the deeper
+    the eye is, the bed carries caustics, and looking up the sky shows through Snell's window."""
     g = Graph("PP_LyudUnderwater", None)
     g.m.set_editor_property("material_domain", unreal.MaterialDomain.MD_POST_PROCESS)
     g.m.set_editor_property("blendable_location", unreal.BlendableLocation.BL_SCENE_COLOR_BEFORE_DOF)
     scene = g.node(X.MaterialExpressionSceneTexture, scene_texture_id=unreal.SceneTextureId.PPI_POST_PROCESS_INPUT0)
-    depth = g.node(X.MaterialExpressionSceneDepth)
+    normal = g.node(X.MaterialExpressionSceneTexture, scene_texture_id=unreal.SceneTextureId.PPI_WORLD_NORMAL)
+    pos = g.node(X.MaterialExpressionWorldPosition)
     cam = g.node(X.MaterialExpressionCameraPositionWS)
     sea = g.mpc(coll, "Sea")
-    code = r"""
-float d = Depth * 0.01;
-float camDepth = max((Sea.x - Cam.z) * 0.01, 0.0);
-float3 absorb = float3(%f, %f, %f);
-float3 sigma = absorb + float3(%f, %f, %f);
-float3 T = exp(-sigma * d);
-float3 light = exp(-absorb * (camDepth + 0.5));
-return Scene.rgb * T + WaterColor * Bright * light * (1.0 - T);
-""" % (ABSORPTION + SCATTERING)
-    em = g.custom(code, [("Scene", (scene, "Color")), ("Depth", depth), ("Cam", cam), ("Sea", sea),
-                         ("WaterColor", g.vparam("WaterColor", (0.09, 0.19, 0.15, 1.0))), ("Bright", g.param("Brightness", 1.0))],
+    em = g.custom(UNDERWATER_HLSL % (ABSORPTION + SCATTERING),
+                  [("Scene", (scene, "Color")), ("N", (normal, "Color")), ("P", pos), ("Cam", cam), ("Sea", sea),
+                   ("WaterColor", g.vparam("WaterColor", (0.16, 0.30, 0.25, 1.0))), ("SkyTint", g.vparam("SkyTint", (1.8, 2.2, 2.3, 1.0))),
+                   ("Bright", g.param("Brightness", 1.0)), ("Light", g.param("Light", 1.0))],
                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="Underwater")
     g.out(em, MP.MP_EMISSIVE_COLOR)
     return g.finish()

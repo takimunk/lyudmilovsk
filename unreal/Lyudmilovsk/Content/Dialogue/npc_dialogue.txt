@@ -84,3 +84,76 @@ again = girl_b.again3.1
 again = girl_b.again4.1
 
 sun.day = girl_b.sun_day.1
+
+[Nao]
+first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
+again = nao.again1.1
+again = hero.nao_again2.1 | nao.again2.2
+again = nao.again3.1
+again = nao.again4.1
+sun.day = nao.sun_day.1
+sun.low = nao.sun_low.1
+sun.night = nao.sun_night.1
+sun.cloudy = nao.sun_cloudy.1
+
+# The Academgorodok's residents (docs/people.md): [Id] is their own body id (people.json body), not the mesh they borrow for now.
+
+[Zotov_lev]
+first = zotov_lev.first.1
+again = zotov_lev.again1.1
+
+[Zotova_galina]
+first = zotova_galina.first.1
+again = zotova_galina.again1.1
+
+[Sato_kei]
+first = sato_kei.first.1
+again = sato_kei.again1.1
+
+[Sato_mila]
+first = sato_mila.first.1
+again = sato_mila.again1.1
+
+[Sato_yuki]
+first = sato_yuki.first.1
+again = sato_yuki.again1.1
+
+[Korneev_ivan]
+first = korneev_ivan.first.1
+again = korneev_ivan.again1.1
+
+[Korneeva_nina]
+first = korneeva_nina.first.1
+again = korneeva_nina.again1.1
+
+[Belov_misha]
+first = belov_misha.first.1
+again = belov_misha.again1.1
+
+[Orlova_tanya]
+first = orlova_tanya.first.1
+again = orlova_tanya.again1.1
+
+[Lange_pyotr]
+first = lange_pyotr.first.1
+again = lange_pyotr.again1.1
+
+[Kimura_dasha]
+first = kimura_dasha.first.1
+again = kimura_dasha.again1.1
+
+[Li_vika]
+first = li_vika.first.1
+again = li_vika.again1.1
+
+[Valiev_rustam]
+first = valiev_rustam.first.1
+again = valiev_rustam.again1.1
+
+[Nishimura_aya]
+first = nishimura_aya.first.1
+again = nishimura_aya.again1.1
+
+[Sorokin_oleg]
+first = sorokin_oleg.first.1
+again = sorokin_oleg.again1.1

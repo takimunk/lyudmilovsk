@@ -322,6 +322,44 @@ static void TestPlayer()
 	}
 }
 
+static void TestHail()
+{
+	std::printf("the player speaks to Maru (E): she turns round and barks back gladly (one call of two or three barks)\n");
+	FWorld W = Empty();
+	const int Dog = W.AddAnimal(EKind::Dog, 3, 0, V3(3.f, 0.f, 0.f));
+	W.Animals[Dog].Yaw = 0.f;            // her back to the player
+	W.Animals[Dog].Friendly = 0.95f;
+	W.Animals[Dog].Tired = 0.f;
+	W.Player.bPresent = true;
+	W.Player.Feet = V3(0.f, 0.f, 0.f);
+	W.Player.Eye = V3(0.f, 0.f, 1.65f);
+	float H = 15.f;
+	SetClock(W, H);
+	W.Step(0.05f);
+	W.Events.clear();
+	const bool bOk = W.Hail(Dog);
+	int Glad = 0, Other = 0;
+	bool bFaced = false;
+	for (float T = 0.f; T < 4.f; T += 0.05f)
+	{
+		W.Step(0.05f);
+		for (const FEvent& E : W.Events)
+		{
+			if (E.Animal == Dog)
+			{
+				(E.Kind == EEvent::BarkHappy ? Glad : Other)++;
+			}
+		}
+		W.Events.clear();
+		const float D = std::fabs(std::remainder(W.Animals[Dog].Yaw - 3.14159265f, 6.2831853f));
+		bFaced |= D < 0.35f && W.Animals[Dog].Act == EAct::Bark;
+	}
+	CHECK(bOk, "she heard");
+	CHECK(Glad == 1 && Other == 0, "one glad call (%d, other calls %d)", Glad, Other);
+	CHECK(bFaced, "she turned to face the player while barking");
+	CHECK(W.Animals[Dog].Act != EAct::Bark, "and stopped (%s)", ActName(W.Animals[Dog].Act));
+}
+
 static void TestPackPlay()
 {
 	std::printf("two pack dogs in a playful mood: a bow, then they chase each other round\n");
@@ -413,6 +451,12 @@ static void TestMap()
 				}
 			}
 		});
+		int Maru = 0;
+		for (const FAnimal& A : W.Animals)
+		{
+			Maru += A.Kind == EKind::Dog && A.Breed == 3 && A.NameKey == "animal.maru.name" && A.bFemale && (A.Pos - Door).Len2D() < 20.f;
+		}
+		CHECK(Maru == 1, "Maru lives by the club's door (%d)", Maru);
 		CHECK(CatNear >= Samples && DogNear >= Samples, "a cat and a dog by the club's door all half an hour (%d / %d of %d looks)", CatNear, DogNear, Samples);
 	}
 	// paths between random places
@@ -488,6 +532,7 @@ int main(int Argc, char** Argv)
 	TestHissStandoff();
 	TestStalk();
 	TestPlayer();
+	TestHail();
 	TestPackPlay();
 	TestMap();
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);

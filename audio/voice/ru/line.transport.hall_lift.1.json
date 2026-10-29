@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.hall_lift.1",
+ "lang": "ru",
+ "text": "Лифт и лестница ведут на посадочную платформу. На лестнице, пожалуйста, держитесь за поручень.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Лифт и лестница ведут на посадочную платформу. На лестнице, пожалуйста, держитесь за поручень.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a179ad-9bd5-7453-a486-dfe5e8eaf33a",
+ "hash": "39f93f8a889d"
+}

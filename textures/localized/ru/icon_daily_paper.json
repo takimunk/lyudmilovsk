@@ -1,0 +1,10 @@
+{
+ "id": "icon_daily_paper",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  3,
+  2
+ ]
+}

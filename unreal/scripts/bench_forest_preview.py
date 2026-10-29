@@ -13,14 +13,22 @@ SHOT_PREFIX = os.environ.get("FOREST_SHOT_PREFIX", "shot")
 
 WARMUP = 1500
 SAMPLE = 300
-# the forest's western edge is at x = -6000 cm; the camera stands D metres out from it, eye height, looking east into it
+# the forest's western edge is at x = -6000 cm; the camera stands D metres out from it, eye height, looking east into it.
+# FOREST_VIEWS="name:x:y:z:pitch;..." (cm, degrees; yaw 0) replaces them
 VIEWS = [("d%03dm" % d, (-6000 - d * 100, 0, 170), (0, 0, 0)) for d in (10, 30, 80, 200)] + [("inside", (-1200, 0, 170), (0, 0, 0)), ("end", (-1200, 0, 170), (0, 0, 0))]
+if os.environ.get("FOREST_VIEWS"):
+    VIEWS = []
+    for v in os.environ["FOREST_VIEWS"].split(";"):
+        n, x, y, z, pitch = v.split(":")
+        VIEWS.append((n, (float(x), float(y), float(z)), (float(pitch), 0, 0)))
+    VIEWS.append(("end",) + VIEWS[-1][1:])
 state = {"t": 0, "view": -1, "dts": [], "phase": "warm"}
 
 
 def world():
-    a = unreal.find_object(None, "/Game/Dev/L_ForestPreview.L_ForestPreview:PersistentLevel.ProceduralPlant_0")
-    return a.get_world() if a else None
+    for w in unreal.ObjectIterator(unreal.World):
+        if unreal.GameplayStatics.get_player_controller(w, 0):
+            return w
 
 
 def place(i):

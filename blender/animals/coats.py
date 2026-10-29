@@ -7,6 +7,7 @@ Cats (Cat): 0 brown mackerel tabby, 1 ginger tabby, 2 black, 3 black and white (
 Laika: 0 grey-sable (wolf-grey agouti, pale mask and underside), 1 black with a white chest, feet and tail tip.
 Shepherd: 0 black and tan (black saddle), 1 grey sable.
 Mutt: 0 ginger with white, 1 white with brown patches.
+Maru: 0 cream (white with a pale apricot wash over the back, the head and the tail; the generated texture when built --gen).
 Eye colours per coat in EYES (iris inner, outer).
 """
 import numpy as np
@@ -25,6 +26,7 @@ COATS = {
     "Laika": ["wolf", "black_white"],
     "Shepherd": ["black_tan", "grey_sable"],
     "Mutt": ["ginger_white", "white_brown"],
+    "Maru": ["cream"],
 }
 EYES = {
     "Cat": [("#c9b03a", "#7f8f2e"), ("#d89a2a", "#b0701c"), ("#d9a826", "#b98a1e"), ("#8fb04a", "#5f8a30"),
@@ -32,6 +34,7 @@ EYES = {
     "Laika": [("#7a4a1e", "#4a2a10"), ("#5a3416", "#3a200c")],
     "Shepherd": [("#6a3e18", "#3e220c"), ("#7a4a1e", "#4a2a10")],
     "Mutt": [("#6e4018", "#42240e"), ("#6a3c18", "#3c200c")],
+    "Maru": [("#7e5c36", "#4a3220")],      # hazel-brown (Dima's photos of her eyes)
 }
 
 
@@ -158,6 +161,12 @@ def paint(breed, coat, A, scale):
         else:
             c = ticking(A, srgb("#111010"), srgb("#1f1b19"), 300.0, 0.4)
             c = mix(c, srgb("#ece7de"), white_mask(A, chest=1.0, paws=1.0, muzzle=0.6, tail_tip=1.0, belly=0.6))
+    elif breed == "Maru":
+        c = ticking(A, srgb("#f1e9dc"), srgb("#fbf6ee"), 300.0, 0.4)
+        wash = smooth(1.5, 0.7, A.theta + fbm(A.P, 3.0, 4) * 0.3) * A.body
+        wash = np.maximum(wash, A.ear * 0.9 + A.head * smooth(0.2, 0.7, A.headup) * 0.6)
+        wash = np.maximum(wash, A.tail * 0.7)
+        c = mix(c, srgb("#e2bf8c"), np.clip(wash, 0, 1) * 0.75)
     elif breed == "Shepherd":
         if name == "black_tan":
             tan = ticking(A, srgb("#a76a32"), srgb("#c99254"), 300.0, 0.5)

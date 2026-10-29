@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_aton.1",
+ "lang": "en",
+ "text": "Aton.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Aton.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a174cb-41b2-7251-bd89-a64c25a39516",
+ "hash": "ce619fb4dd1f"
+}

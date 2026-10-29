@@ -1,0 +1,25 @@
+{
+ "id": "station_hall",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/transport/station_hall_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Quiet ambience inside a small 1960s cable car station hall: soft room tone, a faint murmur of a few distant people, a wall clock ticking slowly, light footsteps far away, a gentle stone-hall echo, seamless loop, no music, no clear words",
+  "duration_seconds": 20.0,
+  "loop": true
+ },
+ "hash": "de14577619dd",
+ "fal_request_id": "01a179ad-142f-7da2-8912-c4a147a562bd",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aaff753/dqCItBdOof729PrA-p3wS_sound_effect.mp3",
+ "created": "2026-10-26T19:25:56Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "0f7e2b83441ad11a5b1cbce644a510cd67e4000a556d67ca8f8ccc889c5145a8",
+ "seconds": 19.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "transport",
+ "loop": true
+}

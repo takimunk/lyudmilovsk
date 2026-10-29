@@ -65,6 +65,15 @@ bool ABirdActor::SetSpecies(FName Id)
 		}
 	}
 	ApplyPlumage();
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->FoldSeq = Clip(TEXT("Idle"));
+		A->TuckSeq = Clip(TEXT("Glide"));
+	}
+	if (bFirstPerson)
+	{
+		SetFirstPerson(true);
+	}
 	return true;
 }
 
@@ -118,6 +127,7 @@ void ABirdActor::ApplyPlumage()
 		}
 		Body->SetMaterial(i, Use);
 	}
+	ApplyMorph();
 	Body->SetRelativeScale3D(FVector(bFemale ? Data.FemaleScale : 1.f));
 	UE_LOG(LogTemp, Verbose, TEXT("Bird %s: %s, %d material sets tried"), *N, bFemale ? TEXT("female") : TEXT("male"), Suffixes.Num());
 	if (UBirdAnimInstance* A = Anim())
@@ -230,6 +240,91 @@ void ABirdActor::SetFlightInput(float Flap01, float Fold01, float Bank, float Pi
 	}
 }
 
+void ABirdActor::SetWingPose(float SpreadL, float SpreadR, float StrokeL, float StrokeR, float StrokeAmp, float Flare, float TailFan, float LegsDown)
+{
+	UBirdAnimInstance* A = Anim();
+	if (!A)
+	{
+		return;
+	}
+	FBirdWingPose& W = A->Wings;
+	W.SpreadL = FMath::Clamp(SpreadL, 0.f, 1.f);
+	W.SpreadR = FMath::Clamp(SpreadR, 0.f, 1.f);
+	W.StrokeL = FMath::Frac(StrokeL);
+	W.StrokeR = FMath::Frac(StrokeR);
+	W.StrokeAmp = FMath::Clamp(StrokeAmp, 0.f, 1.f);
+	W.Flare = FMath::Clamp(Flare, 0.f, 1.f);
+	W.TailFan = FMath::Clamp(TailFan, 0.f, 1.f);
+	W.LegsDown = FMath::Clamp(LegsDown, 0.f, 1.f);
+	WingPoseAge = 0.f;
+}
+
+void ABirdActor::SetFirstPerson(bool bOn)
+{
+	bFirstPerson = bOn;
+	USkinnedAsset* Mesh = Body ? Body->GetSkinnedAsset() : nullptr;
+	if (!Mesh)
+	{
+		return;
+	}
+	const int32 Skull = Mesh->GetMaterials().IndexOfByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName == FName(TEXT("Skull")); });
+	if (Skull != INDEX_NONE)
+	{
+		// sections are per LOD; the hero body has one LOD, and its sections are in slot order
+		Body->ShowMaterialSection(Skull, Skull, !bOn, 0);
+	}
+	Body->SetForcedLOD(bOn ? 1 : 0);
+	Body->SetBoundsScale(bOn ? 4.f : 1.f);
+	Body->bCastHiddenShadow = true;
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->Wings.SweepDeg = bOn ? ViewSweepDeg : 0.f;
+		A->Wings.DroopRad = bOn ? ViewDroopRad : 0.f;
+	}
+}
+
+void ABirdActor::SetViewSweep(float SweepDeg, float DroopRad)
+{
+	ViewSweepDeg = SweepDeg;
+	ViewDroopRad = DroopRad;
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->Wings.SweepDeg = bFirstPerson ? ViewSweepDeg : 0.f;
+		A->Wings.DroopRad = bFirstPerson ? ViewDroopRad : 0.f;
+	}
+}
+
+void ABirdActor::ApplyMorph()
+{
+	// the hero pigeon's colour morphs: MI_FeralPigeon_Plumage_Hero_<Morph>, made from the base albedo by make_morphs.py
+	if (!bHeroBody || Species != FName(TEXT("FeralPigeon")))
+	{
+		return;
+	}
+	USkinnedAsset* Mesh = Body ? Body->GetSkinnedAsset() : nullptr;
+	if (!Mesh)
+	{
+		return;
+	}
+	const int32 N = UBirdSpeciesLibrary::PigeonMorphCount();
+	const int32 Pick = Morph >= 0 ? Morph % FMath::Max(N, 1) : UBirdSpeciesLibrary::PickPigeonMorph(Seed ? Seed : GetUniqueID());
+	const FString Suffix = UBirdSpeciesLibrary::PigeonMorphName(Pick);
+	const TArray<FSkeletalMaterial>& Slots = Mesh->GetMaterials();
+	for (int32 i = 0; i < Slots.Num(); ++i)
+	{
+		const UMaterialInterface* Base = Slots[i].MaterialInterface;
+		if (!Base || Suffix.IsEmpty() || !(Base->GetName().Contains(TEXT("Plumage")) || Base->GetName().Contains(TEXT("Feathers"))))
+		{
+			continue;
+		}
+		const FString P = FString::Printf(TEXT("/Game/Birds/FeralPigeon/%s_%s.%s_%s"), *Base->GetName(), *Suffix, *Base->GetName(), *Suffix);
+		if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *P, nullptr, LOAD_NoWarn | LOAD_Quiet))
+		{
+			Body->SetMaterial(i, M);
+		}
+	}
+}
+
 FTransform ABirdActor::GetEyeTransform() const
 {
 	const USkinnedAsset* Mesh = Body ? Body->GetSkinnedAsset() : nullptr;
@@ -308,6 +403,8 @@ void ABirdActor::Tick(float DeltaSeconds)
 		return;
 	}
 	StateTime += DeltaSeconds;
+	WingPoseAge += DeltaSeconds;
+	A->Wings.Weight = FMath::FInterpTo(A->Wings.Weight, WingPoseAge < 0.25f ? 1.f : 0.f, DeltaSeconds, 10.f);
 	const float Speed2D = Velocity.Size2D();
 	switch (State)
 	{

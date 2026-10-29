@@ -1,0 +1,32 @@
+{
+ "_doc": "Made by tools/transport_textures.py: the metres one tile of each texture covers.",
+ "textures": {
+  "terrazzo": {
+   "tile_m": 1.2
+  },
+  "concrete": {
+   "tile_m": 2.4
+  },
+  "enamel": {
+   "tile_m": 2.4
+  },
+  "amber": {
+   "tile_m": 1.0
+  },
+  "steel": {
+   "tile_m": 1.0
+  },
+  "plate": {
+   "tile_m": 2.0
+  },
+  "tread": {
+   "tile_m": 1.2
+  },
+  "mosaic": {
+   "tile_m": 0.8
+  },
+  "tactile": {
+   "tile_m": 0.6
+  }
+ }
+}

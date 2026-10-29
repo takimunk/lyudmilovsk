@@ -72,6 +72,9 @@ for patch in range(PATCHES):
         e.set_editor_property("species", sp); e.set_editor_property("weight", w)
         e.set_editor_property("young_age", y); e.set_editor_property("mature_age", m)
         mix.append(e)
+    only = os.environ.get("FOREST_ONLY")
+    if only:
+        mix = [m for m in mix if str(m.get_editor_property("species")) in only.split(",")]
     f.set_editor_property("mix", mix)
     f.rebuild()
     f.bake_all()

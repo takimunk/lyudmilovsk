@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.next_polar.1",
+ "lang": "ru",
+ "text": "Следующая станция — Полярная. Конечная.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Следующая станция — Полярная. Конечная.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a174c9-fc08-7010-a2ad-170c77edd779",
+ "hash": "e8b08467a5f8"
+}

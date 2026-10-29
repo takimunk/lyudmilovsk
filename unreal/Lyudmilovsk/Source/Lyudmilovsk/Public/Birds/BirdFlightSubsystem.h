@@ -119,6 +119,9 @@ private:
 		FName Species;
 	};
 	FEncounter Meet;
+	bool bHeroHiddenForReturn = false;
+	/** The hero's centre below the water's surface while he swims (the eyes ~20 cm out), cm. */
+	static constexpr float HeroFloatDepth = 45.f;
 
 	// a script playing
 	TSharedPtr<FScript> Script;

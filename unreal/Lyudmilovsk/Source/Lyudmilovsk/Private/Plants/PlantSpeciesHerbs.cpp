@@ -714,6 +714,7 @@ namespace
 		FPlantHerb& H = S.Herb;
 		H.Height = 1.5f;
 		H.Spread = 1.4f;
+		H.MaxRadius = 0.75f;
 		H.MatureYears = 5.f;
 		H.Leaves = 8;
 		H.Rise = FVector2D(8.0, 40.0);
@@ -816,11 +817,70 @@ namespace
 		S.SummerLeafColour = C(0.06f, 0.15f, 0.03f);
 		return S;
 	}
+
+	/** Hippeastrum (амариллис): a bulb in a pot; strap leaves in two ranks, a tall hollow scape of big trumpets in midwinter. */
+	FPlantSpecies Amaryllis()
+	{
+		FPlantSpecies S = Indoor(TEXT("Amaryllis"), EPlantHerbForm::Rosette, 16.f);
+		FPlantHerb& H = S.Herb;
+		H.Height = 0.45f;
+		H.Spread = 0.5f;
+		H.MatureYears = 2.f;
+		H.Leaves = 12;
+		H.Fans = 2;
+		H.Rise = FVector2D(35.0, 70.0);
+		H.Arch = 35.f;
+		H.ProfilePower = 0.5f;
+		H.Flower = EPlantFlowerForm::Trumpet;
+		H.FlowerSize = 0.14f;
+		H.Flowers = 2;
+		H.ScapeHeight = 0.2f;
+		H.BloomStart = 1.f;
+		H.BloomEnd = 95.f;
+		H.FlowerColours = { C(0.8f, 0.03f, 0.03f), C(0.85f, 0.15f, 0.15f), C(0.9f, 0.55f, 0.55f) };
+		H.CentreColour = C(0.75f, 0.75f, 0.35f);
+		H.StemColour = C(0.1f, 0.18f, 0.05f);
+		S.Leaf.Length = 0.5f;
+		S.Leaf.Width = 0.075f;
+		S.Leaf.WidestAt = 0.5f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.f;
+		S.Leaf.Fold = 0.3f;
+		S.SummerLeafColour = C(0.03f, 0.11f, 0.03f);
+		return S;
+	}
+
+	/** Persea americana (авокадо), a seedling grown from the stone: one cane, big glossy oval leaves. */
+	FPlantSpecies Avocado()
+	{
+		FPlantSpecies S = Indoor(TEXT("Avocado"), EPlantHerbForm::Bush, 24.f);
+		FPlantHerb& H = S.Herb;
+		H.Height = 1.0f;
+		H.Spread = 0.6f;
+		H.MatureYears = 3.f;
+		H.Stems = 1;
+		H.Branches = 0;
+		H.Lean = 5.f;
+		H.StemRadius = 0.007f;
+		H.BareStem = 0.2f;
+		H.Leaves = 26;
+		H.Rise = FVector2D(35.0, 70.0);
+		H.Arch = 30.f;
+		H.StemColour = C(0.09f, 0.1f, 0.04f);
+		S.Leaf.Length = 0.3f;
+		S.Leaf.Width = 0.5f;
+		S.Leaf.WidestAt = 0.45f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.2f;
+		S.Leaf.Fold = 0.15f;
+		S.SummerLeafColour = C(0.02f, 0.075f, 0.02f);
+		return S;
+	}
 }
 
 TArray<FPlantSpecies> PlantHerbs::Species()
 {
 	return { DayLily(), Marigold(), Cosmos(), Aster(), Privet(), Spiraea(), RubberPlant(), WeepingFig(), Lemon(), Dracaena(), Monstera(),
 		SnakePlant(), Aspidistra(), SpiderPlant(), Tradescantia(), Geranium(), Begonia(), AfricanViolet(), KentiaPalm(), Aloe(), Cactus(),
-		Dieffenbachia(), AsparagusFern() };
+		Dieffenbachia(), AsparagusFern(), Amaryllis(), Avocado() };
 }

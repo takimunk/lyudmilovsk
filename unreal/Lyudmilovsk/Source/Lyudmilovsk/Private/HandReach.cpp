@@ -462,9 +462,13 @@ namespace HandReach
 					TArray<FVector, TInlineAllocator<4>> Pts;
 					FingerPoints(Pose, F, Idx, Axis, T, Cur.FingerDir, Pts);
 					bool bTouch = false;
-					for (int32 K = 1; K < Pts.Num(); ++K)
+					for (int32 K = 1; K < Pts.Num() && !bTouch; ++K)
 					{
-						bTouch |= DistanceToShape(Reach.Shape, Pts[K]) <= FingerSkin;   // the bone line is FingerSkin inside the finger's skin
+						// along each bone, not only at the joints: a ~3 cm bone steps over a thin board (a book's cover) between them
+						for (const float S : { 0.25f, 0.5f, 0.75f, 1.f })
+						{
+							bTouch |= DistanceToShape(Reach.Shape, FMath::Lerp(Pts[K - 1], Pts[K], S)) <= FingerSkin;   // the bone line is FingerSkin inside the finger's skin
+						}
 					}
 					if (bTouch)
 					{

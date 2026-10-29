@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_aton.1",
+ "lang": "ja",
+ "text": "アトンです。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] アトンです。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cc-1b58-7413-b6d7-0b7461ec1e83",
+ "hash": "0f4452a01054"
+}

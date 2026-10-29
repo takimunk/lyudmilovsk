@@ -36,3 +36,19 @@ blender/hero/*.blend
 unreal/Lyudmilovsk/Content/Characters/Hero/
 blender/birds/export/
 blender/animals/export/
+
+# generated character sources: sidecars committed, pictures and raw models local
+blender/characters/*/gen/*
+!blender/characters/*/gen/*.json
+blender/characters/*/export/
+blender/humans/export/
+renders/characters/
+blender/characters/_grids/
+
+# the cable car resolved against this checkout's terrain (python3 tools/transport.py; build_scene01.sh makes it)
+unreal/Lyudmilovsk/Content/Transport/network_built.json
+# the sea railway resolved against it (python3 tools/railway.py) and its kit's export (blender/railway/rail_kit.py)
+unreal/Lyudmilovsk/Content/Railway/railway_built.json
+design/railway/game/
+blender/animals/gen/*/model.glb
+blender/animals/gen/*/views/

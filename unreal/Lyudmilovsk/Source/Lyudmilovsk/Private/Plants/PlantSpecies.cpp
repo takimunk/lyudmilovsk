@@ -1117,6 +1117,137 @@ namespace
 	}
 }
 
+
+namespace
+{
+	/**
+	 * Flowering of the tree and shrub species, by day of the year (Kaliningrad coast: alder and aspen catkins in March, poplars
+	 * in April, birches and maples at bud break, apple, oak and rowan in May, conifers' flowers in May and June).
+	 */
+	void ApplyBlossom(FPlantSpecies& S)
+	{
+		FPlantBlossom& B = S.Blossom;
+		const FString N = S.Name.ToString();
+		auto Catkin = [&](float Start, float Peak, float End, float Size, float Thick, int32 Per, FLinearColor Fresh, FLinearColor Aged, float Far)
+		{
+			B.Form = EPlantBlossomForm::Catkin;
+			B.StartDay = Start; B.PeakDay = Peak; B.EndDay = End;
+			B.Size = Size; B.Thickness = Thick; B.PerCluster = Per;
+			B.FreshColour = Fresh; B.AgedColour = Aged; B.FarTint = Far;
+		};
+		if (N == TEXT("PyramidalPoplar"))
+		{
+			// a male clone: dark crimson catkins before the leaves, then greyish and shed
+			Catkin(84.f, 100.f, 118.f, 0.1f, 0.13f, 2, C(0.3f, 0.015f, 0.025f), C(0.25f, 0.13f, 0.05f), 0.5f);
+			B.Chance = 0.8f; B.PerTwig = 4; B.MinAge = 4.f;
+		}
+		else if (N == TEXT("BlackPoplar"))
+		{
+			Catkin(86.f, 102.f, 122.f, 0.1f, 0.13f, 2, C(0.3f, 0.02f, 0.025f), C(0.22f, 0.14f, 0.05f), 0.5f);
+			B.Chance = 0.8f; B.PerTwig = 4; B.MinAge = 6.f;
+		}
+		else if (N == TEXT("Aspen"))
+		{
+			// silky grey-purple tassels in March and April, long before it leafs
+			Catkin(70.f, 90.f, 112.f, 0.09f, 0.14f, 2, C(0.3f, 0.17f, 0.17f), C(0.35f, 0.3f, 0.22f), 0.45f);
+			B.Chance = 0.8f; B.PerTwig = 4; B.MinAge = 8.f;
+		}
+		else if (N == TEXT("BlackAlder"))
+		{
+			// the first spring flowers: long purple-brown catkins in March, yellowing as the pollen goes
+			Catkin(52.f, 76.f, 104.f, 0.07f, 0.12f, 3, C(0.09f, 0.02f, 0.03f), C(0.4f, 0.28f, 0.06f), 0.55f);
+			B.Chance = 0.8f; B.PerTwig = 4; B.MinAge = 4.f;
+		}
+		else if (N == TEXT("SilverBirch") || N == TEXT("DownyBirch") || N == TEXT("WeepingBirch") || N == TEXT("StoneBirch"))
+		{
+			// male catkins lengthen and turn pollen-yellow as the leaves unfold
+			Catkin(102.f, 118.f, 140.f, 0.085f, 0.1f, 3, C(0.42f, 0.28f, 0.05f), C(0.12f, 0.08f, 0.03f), 0.4f);
+			B.Chance = 0.7f; B.PerTwig = 4; B.MinAge = 5.f;
+			if (N == TEXT("DownyBirch")) { B.StartDay = 106.f; B.PeakDay = 122.f; B.EndDay = 144.f; }
+			if (N == TEXT("StoneBirch")) { B.StartDay = 112.f; B.PeakDay = 128.f; B.EndDay = 150.f; B.Size = 0.065f; }
+		}
+		else if (N == TEXT("DwarfBirch"))
+		{
+			Catkin(122.f, 138.f, 158.f, 0.025f, 0.12f, 2, C(0.22f, 0.12f, 0.03f), C(0.08f, 0.05f, 0.02f), 0.2f);
+			B.Chance = 0.5f; B.PerTwig = 2; B.MinAge = 3.f;
+		}
+		else if (N == TEXT("SwampWhiteOak"))
+		{
+			// slender yellow-green catkins hanging as the leaves unfold
+			Catkin(120.f, 133.f, 152.f, 0.09f, 0.11f, 4, C(0.6f, 0.58f, 0.08f), C(0.22f, 0.17f, 0.05f), 0.3f);
+			B.Chance = 0.4f; B.PerTwig = 3; B.MinAge = 15.f;
+		}
+		else if (N == TEXT("Apple"))
+		{
+			B.Form = EPlantBlossomForm::Blossom;
+			B.StartDay = 118.f; B.PeakDay = 134.f; B.EndDay = 154.f;
+			B.Size = 0.05f; B.PerCluster = 6; B.Petals = 5; B.Spread = 1.5f;
+			B.Chance = 0.9f; B.PerTwig = 3; B.MinAge = 3.f;
+			B.FreshColour = C(0.93f, 0.78f, 0.8f); B.CentreColour = C(0.75f, 0.52f, 0.04f); B.AgedColour = C(0.55f, 0.42f, 0.34f);
+			B.Lift = 0.03f; B.FarTint = 0.55f;
+		}
+		else if (N == TEXT("Rowan"))
+		{
+			// flat creamy corymbs of small flowers in late May
+			B.Form = EPlantBlossomForm::Blossom;
+			B.StartDay = 136.f; B.PeakDay = 150.f; B.EndDay = 170.f;
+			B.Size = 0.022f; B.PerCluster = 16; B.Petals = 5; B.Spread = 5.5f; B.Lift = 0.1f;
+			B.Chance = 0.8f; B.PerTwig = 3; B.MinAge = 4.f;
+			B.FreshColour = C(0.9f, 0.82f, 0.62f); B.CentreColour = C(0.6f, 0.55f, 0.15f); B.AgedColour = C(0.55f, 0.45f, 0.3f);
+			B.FarTint = 0.45f;
+		}
+		else if (N == TEXT("Maple"))
+		{
+			// yellow-green corymbs open with the leaves
+			B.Form = EPlantBlossomForm::Blossom;
+			B.StartDay = 108.f; B.PeakDay = 120.f; B.EndDay = 138.f;
+			B.Size = 0.02f; B.PerCluster = 12; B.Petals = 5; B.Spread = 4.5f; B.Lift = 0.09f;
+			B.Chance = 0.5f; B.PerTwig = 2; B.MinAge = 10.f;
+			B.FreshColour = C(0.8f, 0.72f, 0.07f); B.CentreColour = C(0.5f, 0.4f, 0.05f); B.AgedColour = C(0.5f, 0.55f, 0.35f);
+			B.FarTint = 0.4f;
+		}
+		else if (N == TEXT("SeaBuckthorn"))
+		{
+			// tiny yellowish flowers along the bare twigs in April
+			B.Form = EPlantBlossomForm::Blossom;
+			B.StartDay = 96.f; B.PeakDay = 108.f; B.EndDay = 126.f;
+			B.Size = 0.011f; B.PerCluster = 6; B.Petals = 4; B.Spread = 3.f; B.Lift = 0.02f;
+			B.Chance = 0.5f; B.PerTwig = 3; B.MinAge = 3.f;
+			B.FreshColour = C(0.4f, 0.4f, 0.1f); B.CentreColour = C(0.5f, 0.4f, 0.05f); B.AgedColour = C(0.6f, 0.5f, 0.35f);
+			B.FarTint = 0.15f;
+		}
+		else if (N == TEXT("ScotsPine") || N == TEXT("DunePine"))
+		{
+			// clusters of yellow pollen cones round the base of the new shoots
+			B.Form = EPlantBlossomForm::Cone;
+			B.StartDay = 138.f; B.PeakDay = 150.f; B.EndDay = 168.f;
+			B.Size = 0.032f; B.Thickness = 0.45f; B.PerCluster = 12; B.Lift = 0.08f;
+			B.Chance = 0.8f; B.PerTwig = 2; B.MinAge = 10.f;
+			B.FreshColour = C(0.85f, 0.65f, 0.05f); B.AgedColour = C(0.2f, 0.12f, 0.03f);
+			B.FarTint = 0.3f;
+		}
+		else if (N == TEXT("NorwaySpruce"))
+		{
+			// crimson female cones standing up on the shoots in May
+			B.Form = EPlantBlossomForm::Cone;
+			B.StartDay = 126.f; B.PeakDay = 138.f; B.EndDay = 160.f;
+			B.Size = 0.07f; B.Thickness = 0.45f; B.PerCluster = 1; B.Lift = 0.12f;
+			B.Chance = 0.8f; B.PerTwig = 1; B.MinAge = 20.f;
+			B.FreshColour = C(0.55f, 0.025f, 0.04f); B.AgedColour = C(0.14f, 0.1f, 0.03f);
+			B.FarTint = 0.3f;
+		}
+		else if (N == TEXT("Juniper"))
+		{
+			B.Form = EPlantBlossomForm::Cone;
+			B.StartDay = 110.f; B.PeakDay = 124.f; B.EndDay = 142.f;
+			B.Size = 0.011f; B.Thickness = 0.5f; B.PerCluster = 6; B.Lift = 0.04f;
+			B.Chance = 0.4f; B.PerTwig = 2; B.MinAge = 4.f;
+			B.FreshColour = C(0.5f, 0.4f, 0.04f); B.AgedColour = C(0.2f, 0.14f, 0.04f);
+			B.FarTint = 0.1f;
+		}
+	}
+}
+
 const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 {
 	static const TArray<FPlantSpecies> Species = []
@@ -1124,6 +1255,7 @@ const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 		TArray<FPlantSpecies> Out = { PyramidalPoplar(), BlackPoplar(), Apple(), Maple(), SwampWhiteOak(),
 			SilverBirch(), DownyBirch(), WeepingBirch(), DwarfBirch(), StoneBirch(),
 			ScotsPine(), DunePine(), NorwaySpruce(), BlackAlder(), Rowan(), SeaBuckthorn(), Juniper(), Aspen() };
+		for (FPlantSpecies& S : Out) ApplyBlossom(S);
 		Out.Append(PlantHerbs::Species());
 		return Out;
 	}();

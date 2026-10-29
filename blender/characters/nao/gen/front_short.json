@@ -1,0 +1,20 @@
+{
+ "step": "front_short",
+ "service": "higgsfield (MCP generate_image)",
+ "model": "nano_banana_2_1",
+ "job_id": "fff0eeb7-a70d-40c1-9c2e-0d94619affee",
+ "inputs": {
+  "image_references": [
+   "higgsfield media 3c59b15c-4820-4a3d-8f69-d6e047c91f59 = gen/front.png"
+  ],
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 2670,
+  "thinking_level": "high",
+  "prompt": "Edit this picture: make her dress shorter, the skirt now ends at mid-thigh, about a hand's width above the knee, still a flared A-line skirt; more of her black opaque tights shows. Keep everything else exactly the same: her face, hair with bangs, the braid, the horse earring, the white collar, the short puffed sleeves, the strict T-pose, the shoes, the framing, scale and position, the plain light grey background and the soft even shadowless light."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_195917_fff0eeb7-a70d-40c1-9c2e-0d94619affee.png",
+ "output_file": "front_short.png",
+ "sha256": "2e99aeac8c2dc19a15b01ecb10851902ee5d534564a535233255b2e82ff07e45",
+ "credits": 2
+}

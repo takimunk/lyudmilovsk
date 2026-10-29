@@ -1,5 +1,5 @@
 """Builds the outdoor map's placeholder geometry (tools/world_map.py) as one .glb: the concrete-slab
-path, the club's entrance, the beach promenade and the cable car (the trees are AProceduralForest
+path, the club's entrance and the beach promenade (the cable car is ULyudTransportSubsystem's, docs/transport.md; the trees are AProceduralForest
 actors, the ground is the landscape from tools/terrain.py and unreal/scripts/import_terrain.py;
 everything here stands on terrain.ground_z). Pure Python (no bpy, no numpy), so the Unreal build can
 run it itself and the .glb never needs committing.
@@ -30,7 +30,6 @@ MATERIALS = {
     "World_SlabConcrete": ((0.55, 0.54, 0.5), 0.9, "ceiling.jpg", 2.0),
     "World_Roof_Flat": ((0.25, 0.25, 0.26), 0.9, None, 1.0),
     "World_Steel": ((0.35, 0.36, 0.38), 0.5, None, 1.0),
-    "World_Cabin_Red": ((0.7, 0.08, 0.06), 0.5, None, 1.0),
 }
 
 
@@ -183,67 +182,6 @@ def portal(mesh):
         box(conc, (W.DOOR_X + side * 3.15, 1.55, -0.2), (0.25, 3.1, 0.32), 0.0, tile=2.0)
 
 
-def rope(prim, p0, p1, r=0.04):
-    """Thin 4-sided tube from p0 to p1 (map metres)."""
-    d = [p1[i] - p0[i] for i in range(3)]
-    l = math.sqrt(sum(v * v for v in d))
-    f = [v / l for v in d]
-    up = (0.0, 0.0, 1.0)
-    side = _norm(_cross(f, up))
-    up = _cross(side, f)
-    for i in range(4):
-        a0, a1 = i * math.pi / 2, (i + 1) * math.pi / 2
-
-        def at(p, aa):
-            return tuple(p[k] + r * (math.cos(aa) * side[k] + math.sin(aa) * up[k]) for k in range(3))
-
-        am = (a0 + a1) / 2
-        n = tuple(math.cos(am) * side[k] + math.sin(am) * up[k] for k in range(3))
-        prim.quad([at(p0, a0), at(p1, a0), at(p1, a1), at(p0, a1)], n)
-
-
-def cable_car(mesh):
-    """Two stations, the towers, two ropes (up and down line) sagging between supports, red cabins."""
-    cc = W.cable_car()
-    sup = cc["supports"]
-    (x0, y0), (x1, y1) = cc["upper"], cc["lower"]
-    yaw = math.atan2(y1 - y0, x1 - x0)               # along the line
-    ca, sa = math.cos(yaw), math.sin(yaw)
-    nx, ny = -sa, ca                                 # across it
-    conc, steel = mesh.p("World_SlabConcrete"), mesh.p("World_Steel")
-    for (sx, sy), back in ((cc["upper"], -1), (cc["lower"], 1)):
-        z = T.ground_z(sx, sy)
-        # a concrete hall with a flat roof, open toward the line; the bull wheel's housing on top
-        box(conc, (sx + back * 3 * ca, sy + back * 3 * sa, z - 1.0), (14, 12, 1.2), yaw, tile=2.0)
-        for side in (-1, 1):
-            box(conc, (sx + back * 3 * ca + side * 5.6 * nx, sy + back * 3 * sa + side * 5.6 * ny, z), (14, 0.8, 5.6),
-                yaw, tile=2.0)
-        box(conc, (sx + back * 9.6 * ca, sy + back * 9.6 * sa, z), (0.8, 12, 5.6), yaw, tile=2.0)
-        box(mesh.p("World_Roof_Flat"), (sx + back * 3 * ca, sy + back * 3 * sa, z + 5.6), (15, 13, 0.5), yaw)
-        box(steel, (sx, sy, z + W.ROPE_Z - 0.4), (5.0, 7.0, 0.4), yaw)
-    for tx, ty in cc["towers"]:
-        tz = T.ground_z(tx, ty)
-        box(steel, (tx, ty, tz - 0.5), (1.2, 1.2, W.TOWER_H + 0.5), yaw)
-        box(steel, (tx, ty, tz + W.TOWER_H - 0.3), (1.0, 7.4, 0.6), yaw)
-    for side in (-3.0, 3.0):
-        pts = []
-        for (ax, ay, az), (bx, by, bz) in zip(sup, sup[1:]):
-            span = math.hypot(bx - ax, by - ay)
-            n = max(2, int(span / 8))
-            for k in range(n):
-                t = k / n
-                sag = 4 * t * (1 - t) * span * 0.012
-                pts.append((ax + (bx - ax) * t + side * nx, ay + (by - ay) * t + side * ny, az + (bz - az) * t - sag))
-        bx, by, bz = sup[-1]
-        pts.append((bx + side * nx, by + side * ny, bz))
-        for p0, p1 in zip(pts, pts[1:]):
-            rope(steel, p0, p1)
-        for f in ((0.2, 0.55, 0.85) if side < 0 else (0.35, 0.7)):
-            cx, cy, cz = pts[int(len(pts) * f)]
-            box(steel, (cx, cy, cz - 1.2), (0.12, 0.12, 1.2), yaw)
-            box(mesh.p("World_Cabin_Red"), (cx, cy, cz - 3.4), (1.9, 1.7, 2.2), yaw, bottom=True)
-
-
 # --- glb writer --------------------------------------------------------------------------------
 
 def write_glb(out, meshes, tex_dir):
@@ -320,8 +258,8 @@ def write_glb(out, meshes, tex_dir):
 
 def build(out, tex_dir=None):
     meshes = []
-    for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade),
-                     ("World_CableCar", cable_car)):
+    # the cable car is the transport thread's: ULyudTransportSubsystem builds it at play from Content/Transport
+    for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade)):
         m = Mesh(name)
         fn(m)
         meshes.append(m)

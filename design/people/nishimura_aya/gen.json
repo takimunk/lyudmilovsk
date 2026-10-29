@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 39-year-old Japanese painter: slender, tall, long black hair loosely tied with a few strands loose, no makeup, calm face; a loose oversized off-white linen smock shirt with small paint stains, a long dark olive wrap skirt to the ankle, a thin grey cardigan, flat black canvas shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "10379657017d4cec816bf865a2056b0a",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "10379657017d4cec816bf865a2056b0a",
+    "image_index": 0
+   },
+   {
+    "task_id": "10379657017d4cec816bf865a2056b0a",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "42485a15098a4b8dbaadcc69de5366e3",
+  "points": 45,
+  "file": "blender/characters/nishimura_aya/gen/model.glb (local, ignored)",
+  "sha256": "adcd5a682b40a0bcaff3d42ef6fedf6a52255e23698d5fe3c8f468b592c6616f",
+  "bytes": 47727708,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}

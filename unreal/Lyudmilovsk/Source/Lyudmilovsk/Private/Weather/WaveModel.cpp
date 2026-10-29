@@ -137,12 +137,39 @@ namespace LyudWeather
 
 	float FWaveField::DepthAtten(float K, float DepthM)
 	{
-		return float(std::sqrt(Clamp01(K * DepthM * 0.5)));
+		// only the longest trains in the shallowest water lose height: the rest shoal on until they break
+		return float(std::sqrt(Clamp01(K * DepthM * 4.0)));
+	}
+
+	float FWaveField::SurfZone(float DepthM) const
+	{
+		if (DepthM <= 0.f)
+		{
+			return 0.f;
+		}
+		return float(Clamp01(1.0 - DepthM / std::max(Hs * 1.5 + 0.2, 0.25)));
 	}
 
 	float FWaveField::BreakCap(float DepthM) const
 	{
-		return float(Clamp01(0.4 * std::max(DepthM, 0.f) / std::max(0.5 * Hs, 1e-3)));
+		// under the breaking height, and in the surf zone the breakers take over from the trains
+		return float(Clamp01(0.4 * std::max(DepthM, 0.f) / std::max(0.5 * Hs, 1e-3)) * (1.0 - 0.6 * SurfZone(DepthM)));
+	}
+
+	float FWaveField::SurfHeight(float DepthM, double T, float* OutRate) const
+	{
+		const float Zone = SurfZone(DepthM);
+		const double A = Zone * std::min(0.3 * DepthM, 0.35 * Hs) * Clamp01(Hs * 3.0);
+		if (A <= 0.0)
+		{
+			if (OutRate) *OutRate = 0.f;
+			return 0.f;
+		}
+		// spilling breakers: bores along the depth contours rolling in to the beach, a steep front and a long back
+		const double Ph = DepthM * 2.2 / std::max(double(Hs), 0.25) + T * SurfRate;
+		const double F = Ph - std::floor(Ph);
+		if (OutRate) *OutRate = float(A * 6.0 * F * F * SurfRate);
+		return float(A * (F * F * F - 0.25) * 2.0);
 	}
 
 	double FWaveField::Wrap(double Seconds) const
@@ -171,7 +198,7 @@ namespace LyudWeather
 		}
 		Out[0] = float(DX);
 		Out[1] = float(DY);
-		Out[2] = float(DZ);
+		Out[2] = float(DZ) + SurfHeight(DepthM, T);
 	}
 
 	FSeaSurface FWaveField::SurfaceAt(double X, double Y, double T, float DepthM) const
@@ -214,6 +241,9 @@ namespace LyudWeather
 		double NY = Txz * Txy - Txx * Tyz;
 		double NZ = Txx * Tyy - Txy * Txy;
 		const double L = std::sqrt(NX * NX + NY * NY + NZ * NZ);
+		float SurfRise;
+		H += SurfHeight(DepthM, T, &SurfRise);
+		VZ += SurfRise;
 		FSeaSurface S;
 		S.Height = float(H);
 		if (L > 1e-9)

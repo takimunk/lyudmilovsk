@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 63-year-old Russian retired ornithologist: tall, thin, a long weathered face, grey-white beard of medium length, a green waxed bucket hat; a khaki field jacket with many pockets, a brown wool scarf, olive hiking trousers, brown hiking boots; binoculars hang on a strap round his neck. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "d107710eefc947cf9fdaacb0ee8cc182",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "d107710eefc947cf9fdaacb0ee8cc182",
+    "image_index": 0
+   },
+   {
+    "task_id": "d107710eefc947cf9fdaacb0ee8cc182",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "7dad0e84750f4cf09ef3bdfc7e07d3ee",
+  "points": 45,
+  "file": "blender/characters/sorokin_oleg/gen/model.glb (local, ignored)",
+  "sha256": "b66f656ef77bb4ef58455e49024cb72f59ad4d3ae7badc90cc378e6608398f8f",
+  "bytes": 48893352,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}

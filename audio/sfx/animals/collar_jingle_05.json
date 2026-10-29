@@ -1,0 +1,23 @@
+{
+ "id": "collar_jingle",
+ "variant": 5,
+ "kind": "sfx",
+ "file": "audio/sfx/animals/collar_jingle_05.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A small brass bone-shaped dog tag clinking once against a steel split ring on a thin rope dog collar, a single light metallic jingle, very close, dry, no other sounds",
+  "duration_seconds": 0.6
+ },
+ "hash": "1d1e14e02919",
+ "fal_request_id": "01a179fa-ed91-74a3-8db4-7a91b723496d",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0aaff951/A2zXw-ayjD6z5Jb5WXsAc_sound_effect.mp3",
+ "created": "2026-10-26T20:50:53Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -3 dBFS",
+ "sha256": "c0266df21d40a93473d10959188d5613b41737fa728246b8b4d60948f6bed475",
+ "seconds": 0.6,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "animals"
+}

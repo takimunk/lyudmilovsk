@@ -1,0 +1,10 @@
+{
+ "id": "icon_pie",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/lobby/icons_grid.png",
+ "cell": [
+  3,
+  1
+ ]
+}

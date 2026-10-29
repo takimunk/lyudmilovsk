@@ -70,6 +70,8 @@ public:
 	void SetViewForward(float Amount) { ViewForward = FMath::Clamp(Amount, 0.f, 1.f); }
 	/** Torso length, cm. */
 	float TorsoLength() const { return L; }
+	/** The sky's light on the upper side of the feathers (0 at night .. ~0.2 by day): the close-up wing is never a pure silhouette. */
+	void SetSkyFill(float Amount);
 
 	static const FName FeatherMaterialPath;
 	static const FName BodyMaterialPath;
@@ -102,6 +104,7 @@ private:
 	UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> LegParts;
 	UPROPERTY() TObjectPtr<UMaterialInterface> FeatherMaterial;
 	UPROPERTY() TObjectPtr<UMaterialInterface> BodyMaterial;
+	UPROPERTY() TObjectPtr<class UMaterialInstanceDynamic> FeatherMID;
 
 	TArray<FFeather> Feathers;
 	BirdLook::EWing Wing = BirdLook::EWing::Round;

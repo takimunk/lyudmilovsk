@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_mayak.1",
+ "lang": "ja",
+ "text": "灯台です。キャビンからお降りください。",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] 灯台です。キャビンからお降りください。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a174cc-5df4-7901-b28c-0322994f5d3a",
+ "hash": "345ae14b8237"
+}

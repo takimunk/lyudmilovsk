@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.next_mayak.1",
+ "lang": "en",
+ "text": "Next station: Lighthouse, the end of the line.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Next station: Lighthouse, the end of the line.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a174ca-fccb-7511-8839-f9c67ac5b564",
+ "hash": "cf116811b3e9"
+}

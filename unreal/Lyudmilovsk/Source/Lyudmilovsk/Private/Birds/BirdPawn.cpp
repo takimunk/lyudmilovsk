@@ -2,6 +2,7 @@
 
 #include "BirdAir.h"
 #include "BirdBio.h"
+#include "BirdPerches.h"
 #include "BirdSound.h"
 #include "BirdWindStreaks.h"
 #include "Components/AudioComponent.h"
@@ -15,8 +16,10 @@
 #include "BirdSelfBody.h"
 #include "Birds/BirdActor.h"
 #include "Birds/BirdSpecies.h"
+#include "Plants/GameCalendar.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
@@ -46,7 +49,10 @@ namespace
 	TAutoConsoleVariable<float> CVarChaseYaw(TEXT("lyud.Bird.ChaseYaw"), 0.f, TEXT("Chase camera: degrees round the bird from behind."));
 	TAutoConsoleVariable<float> CVarChasePitch(TEXT("lyud.Bird.ChasePitch"), 12.f, TEXT("Chase camera: degrees above the bird."));
 	TAutoConsoleVariable<float> CVarChaseDist(TEXT("lyud.Bird.ChaseDist"), 1.f, TEXT("Chase camera: distance scale."));
-	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 150.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
+	TAutoConsoleVariable<float> CVarWingFov(TEXT("lyud.Bird.WingFov"), 118.f, TEXT("Field of view the bird's own body is drawn with in first person (wider brings the wings into view)."));
+	TAutoConsoleVariable<int32> CVarEngineFP(TEXT("lyud.Bird.EngineFirstPerson"), 1, TEXT("First-person species body drawn through the engine's first-person view (1) or as it is (0)."));
+	TAutoConsoleVariable<int32> CVarBodyDebug(TEXT("lyud.Bird.BodyDebug"), 0, TEXT("Log the first-person body's place against the camera."));
+	TAutoConsoleVariable<float> CVarBodySweep(TEXT("lyud.Bird.BodySweep"), 60.f, TEXT("First-person species body: degrees the wings are drawn swept forward (ABirdActor::ViewSweepDeg)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
@@ -96,6 +102,7 @@ ABirdPawn::ABirdPawn()
 	Params = MakeShared<BirdFlight::FParams>();
 	Flight = MakeShared<BirdFlight::FState>();
 	Air = MakeShared<FBirdAir>();
+	Perches = MakeShared<FBirdPerches>();
 	Tracker = MakeShared<FHeadTracker>();
 }
 
@@ -338,6 +345,7 @@ void ABirdPawn::ReadControls(float Dt, FBirdControls& C)
 		C.Ctrl = Down(EKeys::LeftControl) || Down(EKeys::RightControl);
 		C.FreeLook = Down(EKeys::C) || Down(EKeys::MiddleMouseButton);
 		C.Return = Down(EKeys::R);
+		C.Magnet = Down(EKeys::Q);
 		C.Peck = PC->WasInputKeyJustPressed(EKeys::E);
 		C.Call = PC->WasInputKeyJustPressed(EKeys::F);
 		C.Move = FVector2D((Down(EKeys::D) ? 1 : 0) - (Down(EKeys::A) ? 1 : 0), (Down(EKeys::W) ? 1 : 0) - (Down(EKeys::S) ? 1 : 0));
@@ -503,6 +511,12 @@ void ABirdPawn::Tick(float DeltaSeconds)
 	UpdateBody(Dt);
 	UpdateHead(C, Dt);
 	UpdateOutsideBody(Dt);
+	{
+		// the sky lights the top of the wings by day, hardly at all at night
+		const float Hour = (float)UGameCalendar::NowIn(GetWorld()).GetTimeOfDay().GetTotalHours();
+		const float Day = FMath::SmoothStep(6.5f, 8.5f, Hour) * (1.f - FMath::SmoothStep(16.5f, 18.5f, Hour));
+		Body->SetSkyFill(0.03f + 0.17f * Day);
+	}
 }
 
 void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
@@ -568,8 +582,82 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
 	In.AimYaw = FMath::DegreesToRadians(Aim.Yaw);
 	In.AimPitch = FMath::DegreesToRadians(FRotator::NormalizeAxis(Aim.Pitch));
-	FindLandingSpot(Flare);
-	if (bLandingSpot)
+	// Q held: the landing magnet. The nearest perch ahead (a twig in a crown, a treetop, a roof) pulls the bird in;
+	// it brakes and beats by itself as it needs, and lands there
+	if (C.Magnet && Fate == EBirdFate::None)
+	{
+		MagnetSearch -= Dt;
+		const FVector Here = GetActorLocation();
+		// it latches on once, like a web line, and only looks again if there was nothing
+		if (!bMagnet && MagnetSearch <= 0.f)
+		{
+			MagnetSearch = 0.4f;
+			FBirdPerches::FPerch Perch;
+			const FRotator Look = Head->GetComponentRotation();
+			if (Perches->Find(GetWorld(), Here, Look.Vector(), 3500.f, this, Perch))
+			{
+				MagnetBest = 1e9f;
+				MagnetStall = 0.f;
+				bMagnet = true;
+				MagnetPoint = Perch.Point;
+				bMagnetBranch = Perch.bBranch;
+			}
+		}
+	}
+	else
+	{
+		bMagnet = false;
+	}
+	if (bMagnet)
+	{
+		const FVector To = MagnetPoint + FVector(0, 0, Body->StandHeight()) - GetActorLocation();
+		const float Dist = To.Size() / 100.f;
+		const FRotator Want = To.Rotation();
+		In.AimYaw = FMath::DegreesToRadians(Want.Yaw);
+		In.AimPitch = FMath::DegreesToRadians(FMath::Clamp(Want.Pitch, -70.f, 60.f));
+		// arrive slowly: brake with the tail and wings when too fast, beat when too slow or below the perch
+		const float V = (float)BirdFlight::Speed(*Flight);
+		const float VWant = FMath::Clamp(Dist * 1.2f, (float)P.Stall * 0.8f, (float)P.Cruise * 1.4f);
+		Flare = FMath::FInterpTo(Flare, Dist > 6.f ? 0.f : FMath::Clamp((V - VWant) / 2.5f, 0.f, 1.f), Dt, 10.f);
+		// the pull itself: the line draws the bird in (and holds it against the wind) until the last metres
+		if (Dist > 2.f)
+		{
+			const FVector Pull = To.GetSafeNormal() * FMath::Clamp(Dist * 0.6f, 2.f, 9.f) * Dt;
+			Flight->Vel += BirdFlight::V3(Pull.X, Pull.Y, Pull.Z);
+			// the wind is cancelled on the way in, or a headwind would hold the bird off its perch
+			Flight->Vel += BirdFlight::V3(-LastAir.X, -LastAir.Y, 0) * FMath::Min(1.0, 3.0 * Dt);
+		}
+		In.Flare = Flare;
+		In.TuckL = In.TuckR = 0.f;
+		if ((V < VWant * 0.9f || (To.Z > 60.f && V < P.Cruise)) && TakeoffAssist <= 0.f)
+		{
+			AssistClock -= Dt;
+			if (AssistClock <= 0.f)
+			{
+				In.ClickL = In.ClickR = true;
+				AssistClock = (float)P.ClickTime();
+			}
+		}
+		LandingSpot = MagnetPoint;
+		bLandingSpot = true;
+		// close and no longer getting closer (twigs of a live tree in the way): it hops the last bit
+		MagnetBest = FMath::Min(MagnetBest, To.Size());
+		MagnetStall = To.Size() > MagnetBest - 5.f ? MagnetStall + Dt : 0.f;
+		if (To.Size() < FMath::Max(40.f, V * 100.f * Dt * 2.f) || (To.Size() < 500.f && MagnetStall > 0.5f))
+		{
+			const bool bTwig = bMagnetBranch;
+			Land(MagnetPoint, FVector::UpVector);
+			// a twig has no collision under it: the bird holds on where it is
+			bAnchored = bTwig;
+			bMagnet = false;
+			return;
+		}
+	}
+	else
+	{
+		FindLandingSpot(Flare);
+	}
+	if (bLandingSpot && !bMagnet)
 	{
 		const FVector To = LandingSpot + FVector(0, 0, Body->StandHeight()) - GetActorLocation();
 		const FRotator Want = To.Rotation();
@@ -738,6 +826,8 @@ void ABirdPawn::Land(const FVector& Point, const FVector& Normal)
 	Mode = EBirdMode::Ground;
 	Feet = Point;
 	bAnchored = false;
+	// a key still held from the flight (Q) doesn't take off again at once
+	bMagnetHeldOnGround = true;
 	bHopping = false;
 	HopVel = FVector::ZeroVector;
 	Flight->Vel = BirdFlight::V3();
@@ -768,11 +858,13 @@ void ABirdPawn::TakeOff()
 void ABirdPawn::StepGround(const FBirdControls& C, float Dt)
 {
 	const bool PressL = C.Left && !bPrevL, PressR = C.Right && !bPrevR;
-	if (PressL || PressR || (C.Space && !bPrevSpace))
+	if (PressL || PressR || (C.Space && !bPrevSpace) || (C.Magnet && !bMagnetHeldOnGround))
 	{
 		TakeOff();
+		bMagnetHeldOnGround = C.Magnet;
 		return;
 	}
+	bMagnetHeldOnGround = C.Magnet;
 	UWorld* W = GetWorld();
 	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
 	const FVector Fwd = FRotator(0.f, Aim.Yaw, 0.f).Vector();
@@ -969,7 +1061,16 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 		Eye += FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Nod;
 		Eye += Gaze.Vector() * Peck * Body->BodyRadius() * 0.8f;
 	}
-	Head->SetWorldLocationAndRotation(GetActorLocation() + Eye, Gaze);
+	FVector EyeWorld = GetActorLocation() + Eye;
+	if (bFirstPersonBody && OutsideBody)
+	{
+		// the camera sits between the body's own eyes
+		// turning round or looking down, the neck lifts and draws the head back over the body (the wing, the breast in view)
+		const float Bend = FMath::Max(Turn, Down);
+		EyeWorld = OutsideBody->GetEyeTransform().GetLocation() + FVector(0, 0, Body->BodyRadius() * (0.6f * Turn + 1.4f * Down))
+			- FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Body->TorsoLength() * 0.45f * Bend;
+	}
+	Head->SetWorldLocationAndRotation(EyeWorld, Gaze);
 }
 
 FMinimalViewInfo ABirdPawn::BirdView() const
@@ -1025,12 +1126,32 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const float ToEye = FVector::Dist(P, Head->GetComponentLocation());
 		Inside = ToEye < Body->BodyRadius() * 2.5f ? 1.f : 0.f;
 	}
-	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird
+	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird. A species with a
+	// first-person body (the detailed pigeon) is that body inside too: skull hidden, bill kept, wings swept into view.
 	bInsideView = Inside > 0.5f;
-	Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
-	if (OutsideBody)
+	const bool bOwnBody = OutsideBody && UBirdSpeciesLibrary::HasFirstPersonBody(Species);
+	if (bOwnBody)
 	{
-		OutsideBody->SetActorHiddenInGame(bInsideView);
+		Body->SetShown(false, false);
+		OutsideBody->SetActorHiddenInGame(false);
+		if (bInsideView != bFirstPersonBody)
+		{
+			OutsideBody->ViewSweepDeg = CVarBodySweep.GetValueOnGameThread();
+			OutsideBody->SetFirstPerson(bInsideView);
+			if (USkeletalMeshComponent* M = OutsideBody->Body)
+			{
+				M->SetFirstPersonPrimitiveType(bInsideView && CVarEngineFP.GetValueOnGameThread() ? EFirstPersonPrimitiveType::FirstPerson : EFirstPersonPrimitiveType::None);
+			}
+			bFirstPersonBody = bInsideView;
+		}
+	}
+	else
+	{
+		Body->SetShown(bInsideView || !OutsideBody, !bInsideView);
+		if (OutsideBody)
+		{
+			OutsideBody->SetActorHiddenInGame(bInsideView);
+		}
 	}
 	if (Inside > 0.5f)
 	{
@@ -1040,6 +1161,24 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 		const float LookDown = FMath::Clamp((FRotator::NormalizeAxis(BodyRot.Pitch - Gz.Pitch) - 30.f) / 30.f, 0.f, 1.f);
 		const float Turn = FMath::Max(FMath::Clamp(FMath::Abs(FRotator::NormalizeAxis(Gz.Yaw - BodyRot.Yaw)) / 60.f, 0.f, 1.f), LookDown);
 		const float WideFov = FMath::Lerp(CVarWingFov.GetValueOnGameThread(), OutResult.FOV, Turn);
+		if (bOwnBody)
+		{
+			// turning the head to a wing (or looking down) brings back its true shape and place
+			OutsideBody->SetViewSweep(FMath::Lerp(CVarBodySweep.GetValueOnGameThread(), 0.f, Turn), FMath::Lerp(0.2f, 0.f, Turn));
+			// the engine's first-person view for the body: drawn with a wider field of view than the scene's
+			OutResult.bUseFirstPersonParameters = true;
+			OutResult.FirstPersonFOV = WideFov;
+			OutResult.FirstPersonScale = 1.f;
+			static double Last = 0;
+			if (CVarBodyDebug.GetValueOnGameThread() && FPlatformTime::Seconds() - Last > 0.5)
+			{
+				Last = FPlatformTime::Seconds();
+				const USkeletalMeshComponent* M = OutsideBody->Body;
+				UE_LOG(LogTemp, Warning, TEXT("BIRDFP turn %.2f cam %s actor %s eye %s bounds %s hidden %d vis %d"), Turn,
+					*OutResult.Location.ToCompactString(), *OutsideBody->GetActorLocation().ToCompactString(), *OutsideBody->GetEyeTransform().GetLocation().ToCompactString(),
+					M ? *M->Bounds.GetBox().ToString() : TEXT("-"), OutsideBody->IsHidden() ? 1 : 0, M && M->IsVisible() ? 1 : 0);
+			}
+		}
 		Body->SetViewSqueeze(OutResult.Location, OutResult.Rotation,
 			FMath::Tan(FMath::DegreesToRadians(OutResult.FOV * 0.5f)) / FMath::Tan(FMath::DegreesToRadians(FMath::Min(WideFov, 170.f) * 0.5f)));
 		Body->SetViewForward((1.f - Turn) * (Mode == EBirdMode::Air ? 1.f : 0.f));
@@ -1091,6 +1230,14 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 	if (Want != A->GetState())
 	{
 		A->SetState(Want);
+	}
+	if (Mode == EBirdMode::Air || bFirstPersonBody)
+	{
+		// the wings, tail and legs exactly as the flight has them
+		const bool bBeat = S.BurstL > 0 || S.BurstR > 0 || S.PhaseL > 0 || S.PhaseR > 0;
+		const float Fold01 = Mode == EBirdMode::Air ? 0.f : Fold;
+		A->SetWingPose((float)S.SpreadL * (1.f - Fold01), (float)S.SpreadR * (1.f - Fold01), (float)S.PhaseL, (float)S.PhaseR, bBeat ? 1.f : 0.f, Flare,
+			FMath::Clamp(FMath::Max(Flare, FMath::Abs((float)S.Bank) * 0.5f), 0.f, 1.f) * (1.f - Fold01), LegsDown);
 	}
 }
 

@@ -89,6 +89,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	void SetFlightInput(float Flap01, float Fold01, float Bank, float Pitch, bool bPlayerControl = true);
 
+	/** The player's wings, tail and legs set directly (call every frame; ~0.25 s after the last call the clips take them
+	 *  back). Spread 0 folded .. 1 spread; Stroke the phase 0..1 (0..0.5 the downstroke, 0 the top); StrokeAmp 0 glides ..
+	 *  1 a full beat; Flare, TailFan, LegsDown 0..1. */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetWingPose(float SpreadL, float SpreadR, float StrokeL, float StrokeR, float StrokeAmp, float Flare, float TailFan, float LegsDown);
+
+	/** Seen from its own eye: hides the skull feathers (the material slot "Skull") and keeps the bill and the eyes' rims,
+	 *  holds LOD0, keeps the bounds wide enough with the camera inside, and sweeps the wings forward by ViewSweepDeg and
+	 *  down by ViewDroopRad at the shoulders (so they reach into the screen's edges). Needs a body with HasFirstPersonBody. */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetFirstPerson(bool bOn);
+
+	/** The first-person sweep and droop, changed every frame if need be (cheap: no LOD / section work). */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetViewSweep(float SweepDeg, float DroopRad);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
+	float ViewSweepDeg = 45.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
+	float ViewDroopRad = 0.2f;
+
+	/** Feral pigeon colour morph (hero body): -1 picks one from the seed by how common it is in a city flock. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
+	int32 Morph = -1;
+
 	/** The bird's eyes: the middle of eye_l and eye_r, looking where the head looks. */
 	UFUNCTION(BlueprintPure, Category = "Bird")
 	FTransform GetEyeTransform() const;
@@ -111,6 +137,9 @@ private:
 	float LookHold = 0.f;                        // the head stays put this long, then jerks to the target
 	float LookTilt = 0.f;
 	bool bPlayer = false;
+	bool bFirstPerson = false;
+	float WingPoseAge = 1e3f;
+	void ApplyMorph();
 	float InFlap = 1.f, InFold = 0.f, InBank = 0.f, InPitch = 0.f;
 	float FlightPhase = 0.f;                     // the flight style's burst / pause cycle
 	float FlightSegment = 0.f;

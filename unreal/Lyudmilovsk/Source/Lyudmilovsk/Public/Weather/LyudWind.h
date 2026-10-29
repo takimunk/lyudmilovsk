@@ -114,6 +114,7 @@ private:
 
 	mutable FState Cached;
 	mutable float LastForce[3] = { -2.f, -2.f, -2.f };
+	mutable float LastShift = 0.f;
 	double DriftX = 0.0, DriftY = 0.0, GustClock = 0.0;
 	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> Collection;
 	bool bCollectionLooked = false;

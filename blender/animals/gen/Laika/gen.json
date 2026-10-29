@@ -1,0 +1,46 @@
+{
+ "breed": "Laika",
+ "date": "2026-10-25",
+ "requested_by": "Dima (replace the cat and dog models with hi3d ones)",
+ "views": {
+  "service": "hi3d MCP",
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Photorealistic medium-sized Russian yard dog, a laika-type mongrel (West Siberian laika mix): wedge-shaped head, erect pointed triangular ears, dark eyes, black nose, dense double coat in wolf-grey sable with a pale cream mask, chest, belly and legs, 55 cm at the withers. Neutral rigging pose: standing squarely on all four legs, legs straight and vertical, slightly apart, paws flat, back level, head straight forward, mouth closed, ears up, tail held straight out behind horizontally (not curled over the back). Full body in frame, orthographic-like view, even soft studio light, no shadows, plain pure white background, nothing else in the picture.",
+  "task_id": "57745d3e6c83407bbf494b1175e01e5d",
+  "credits": 8
+ },
+ "edits": [],
+ "model": {
+  "service": "hi3d MCP",
+  "tool": "quote_generation + create_generation",
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "source_images": [
+   {
+    "task_id": "57745d3e6c83407bbf494b1175e01e5d",
+    "image_index": 0
+   },
+   {
+    "task_id": "57745d3e6c83407bbf494b1175e01e5d",
+    "image_index": 1
+   },
+   {
+    "task_id": "57745d3e6c83407bbf494b1175e01e5d",
+    "image_index": 2
+   },
+   {
+    "task_id": "57745d3e6c83407bbf494b1175e01e5d",
+    "image_index": 3
+   }
+  ],
+  "task_id": "278695e492e7404ea16b8aed45de198f",
+  "credits": 65
+ },
+ "note": "Grid rule exception: hi3d's own multi-view task returns four separate views per animal, the only upload-free way into its 3D (game-assets skill)."
+}

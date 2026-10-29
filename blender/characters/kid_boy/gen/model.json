@@ -1,0 +1,51 @@
+{
+ "service": "hi3d MCP",
+ "why": "fal Hi3D refused the cut views (422); remade inside hi3d per the game-assets skill",
+ "views": {
+  "tool": "create_image_generation",
+  "task_id": "d10e7189d1e84f83bf715517f566130d",
+  "model_name": "Nano-Banana 2",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "aspect_ratio": "1:1",
+  "points": 8,
+  "prompt": "Full-body character reference for 3D modelling of an 11-year-old Russian schoolboy: short messy light brown hair, freckles, a slightly oversized plain red t-shirt, straight blue jeans, grey-and-white running shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed. Whole body visible from the top of the hair to the soles of the shoes in every view, same scale. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic.",
+  "outputs": [
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/d10e7189d1e84f83bf715517f566130d/0.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/d10e7189d1e84f83bf715517f566130d/1.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/d10e7189d1e84f83bf715517f566130d/2.png",
+   "https://hitem3dstatic.zaohaowu.net/image-edit/target/c_4cd1e71110c84eaebd4aef184ff2dbed/20261025/d10e7189d1e84f83bf715517f566130d/3.png"
+  ]
+ },
+ "model": {
+  "tool": "create_generation",
+  "task_id": "12daa51377af42f5b4f9e1e558d34dcf",
+  "source_images": [
+   {
+    "task_id": "d10e7189d1e84f83bf715517f566130d",
+    "image_index": 0
+   },
+   {
+    "task_id": "d10e7189d1e84f83bf715517f566130d",
+    "image_index": 1
+   },
+   {
+    "task_id": "d10e7189d1e84f83bf715517f566130d",
+    "image_index": 2
+   },
+   {
+    "task_id": "d10e7189d1e84f83bf715517f566130d",
+    "image_index": 3
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality (standard)",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "points": 65,
+  "model_page_url": "https://www.hi3d.ai/3d-model/12daa51377af42f5b4f9e1e558d34dcf",
+  "output_file": "model.glb",
+  "sha256": "3443753a53df2af3b89e9abc8d080517ef750e7c52947e0582c1d2afc1e86178",
+  "note_url": "the download URL is signed and expires; get_task_outputs(task_id) refreshes it"
+ }
+}

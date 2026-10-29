@@ -1,0 +1,30 @@
+{
+ "_doc": "kid_girl: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
+ "id": "kid_girl",
+ "model": "model",
+ "height": 1.32,
+ "donor": "blender/humans/export/human_kid_girl.glb",
+ "faces": 18000,
+ "texture": 2048,
+ "bake_normal": true,
+ "face": {
+  "eye_open": [
+   {
+    "cx": 0.0339,
+    "cz": 1.1701,
+    "hw": 0.0137,
+    "up": 0.005,
+    "lo": 0.005,
+    "tilt": 0.0003
+   },
+   {
+    "cx": -0.0273,
+    "cz": 1.1712,
+    "hw": 0.0135,
+    "up": 0.0047,
+    "lo": 0.0047,
+    "tilt": -0.0012
+   }
+  ]
+ }
+}

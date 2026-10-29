@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 27-year-old Russian-Korean lab assistant: petite, short black pixie haircut, small silver stud earrings, round thin gold glasses; a white lab coat open over a lilac sweater, light grey straight trousers, white sneakers. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "c58c09143c4645c2b375672e5978350d",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "c58c09143c4645c2b375672e5978350d",
+    "image_index": 0
+   },
+   {
+    "task_id": "c58c09143c4645c2b375672e5978350d",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "fee338f6918944cd8bca6a6833c40286",
+  "points": 45,
+  "file": "blender/characters/li_vika/gen/model.glb (local, ignored)",
+  "sha256": "a8fb1ef2114d43f8ca1e8af79051550b13f3aee31f9de8a8dc3019d2f896b63f",
+  "bytes": 47579596,
+  "downloaded": "2026-10-29 by the API right when ready"
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "_doc": "Nao (Нао): how blender/characters/rig_character.py turns gen/model.glb into a game character (docs/characters.md).",
+ "id": "nao",
+ "model": "model_short",
+ "height": 1.6,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 24000,
+ "texture": 2048,
+ "bake_normal": true,
+ "skirt": {
+  "hem_z": 0.6,
+  "gap": 0.02,
+  "blend": 0.06,
+  "pelvis": 0.5
+ },
+ "face": {
+  "eye_open": [
+   {
+    "cx": 0.0345,
+    "cz": 1.4748,
+    "hw": 0.0165,
+    "up": 0.005,
+    "lo": 0.0055,
+    "tilt": 0.0022
+   },
+   {
+    "cx": -0.0333,
+    "cz": 1.4742,
+    "hw": 0.0155,
+    "up": 0.0045,
+    "lo": 0.0052,
+    "tilt": -0.003
+   }
+  ]
+ }
+}

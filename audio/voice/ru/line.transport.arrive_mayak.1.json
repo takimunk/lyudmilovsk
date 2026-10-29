@@ -1,0 +1,20 @@
+{
+ "key": "line.transport.arrive_mayak.1",
+ "lang": "ru",
+ "text": "Маяк. Просим освободить кабину.",
+ "speaker": "transport",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, warm station announcer, unhurried]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, warm station announcer, unhurried] Маяк. Просим освободить кабину.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a174ca-7ee1-74c1-97ab-5ccfaf8cf28e",
+ "hash": "3447a16bb4eb"
+}

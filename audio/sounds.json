@@ -1,51 +1,462 @@
 {
  "about": "Every generated sound of the game: the model, its pinned settings and the exact request. tools/gen_sounds.py makes audio/sfx/<group>/<id>_<n>.wav and audio/music/<id>.wav from it, each with a .json sidecar (request, fal request id, sha256). Procedural sounds are not here: they are code (Private/Audio/AmbienceDSP.cpp). Provenance of everything: audio/SOURCES.md.",
  "models": {
-  "sfx": {"endpoint": "fal-ai/elevenlabs/sound-effects/v2", "settings": {"output_format": "mp3_44100_192", "prompt_influence": 0.45},
-          "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0."},
-  "music": {"endpoint": "fal-ai/stable-audio-25/text-to-audio", "settings": {"num_inference_steps": 8, "guidance_scale": 1, "sync_mode": false},
-          "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0."}
+  "sfx": {
+   "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+   "settings": {
+    "output_format": "mp3_44100_192",
+    "prompt_influence": 0.45
+   },
+   "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0."
+  },
+  "music": {
+   "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+   "settings": {
+    "num_inference_steps": 8,
+    "guidance_scale": 1,
+    "sync_mode": false
+   },
+   "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0."
+  }
  },
  "sfx": [
-  {"id": "dog_bark_big", "group": "animals", "variants": 4, "duration": 2.0, "prompt": "A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds"},
-  {"id": "dog_bark_medium", "group": "animals", "variants": 4, "duration": 2.0, "prompt": "A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds"},
-  {"id": "dog_bark_laika", "group": "animals", "variants": 3, "duration": 2.0, "prompt": "A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds"},
-  {"id": "dog_growl", "group": "animals", "variants": 3, "duration": 3.0, "prompt": "A dog growling low and warningly, close, outdoors, no barking, no other sounds"},
-  {"id": "dog_whine", "group": "animals", "variants": 3, "duration": 2.5, "prompt": "A friendly dog whining and whimpering softly, begging for food, close, no other sounds"},
-  {"id": "dog_bark_far", "group": "animals", "variants": 4, "duration": 5.0, "prompt": "A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air"},
-  {"id": "cat_meow", "group": "animals", "variants": 5, "duration": 1.5, "prompt": "A single domestic cat meowing once, close, outdoors, clear, no other sounds"},
-  {"id": "cat_purr", "group": "animals", "variants": 1, "duration": 8.0, "loop": true, "prompt": "A contented cat purring steadily, very close, seamless loop, no other sounds"},
-  {"id": "cat_hiss", "group": "animals", "variants": 3, "duration": 2.0, "prompt": "An angry cat hissing and spitting at a dog, close, no other sounds"},
-  {"id": "ship_horn_far", "group": "far", "variants": 3, "duration": 9.0, "prompt": "A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water"},
-  {"id": "foghorn_far", "group": "far", "variants": 2, "duration": 9.0, "prompt": "A distant lighthouse foghorn in thick sea fog, one long low moan, far away over the water"},
-  {"id": "buoy_bell", "group": "far", "variants": 3, "duration": 7.0, "prompt": "A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic"},
-  {"id": "town_far", "group": "far", "variants": 1, "duration": 20.0, "loop": true, "prompt": "Distant small town ambience heard from a hill: faint cars far off, a moped, muffled voices very far, quiet, seamless loop, no music"},
-  {"id": "club_room_tone", "group": "club", "variants": 1, "duration": 20.0, "loop": true, "prompt": "Room tone of a dim basement computer club: many desktop PC fans whirring, soft electrical hum of old monitors, quiet, no voices, no music, seamless loop"},
-  {"id": "keyboard_typing", "group": "club", "variants": 4, "duration": 6.0, "prompt": "Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds"},
-  {"id": "mouse_clicks", "group": "club", "variants": 2, "duration": 5.0, "prompt": "Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds"},
-  {"id": "console_game_far", "group": "club", "variants": 3, "duration": 8.0, "prompt": "Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet"},
-  {"id": "vending_hum", "group": "club", "variants": 1, "duration": 10.0, "loop": true, "prompt": "A snack vending machine humming with its compressor and fluorescent light, close, indoors, seamless loop"},
-  {"id": "vending_drop", "group": "club", "variants": 2, "duration": 2.5, "prompt": "A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud"}
+  {
+   "id": "dog_bark_big",
+   "group": "animals",
+   "variants": 4,
+   "duration": 2.0,
+   "prompt": "A single large German shepherd dog barking twice, deep chesty woof woof, outdoors in a quiet courtyard, close, no other sounds"
+  },
+  {
+   "id": "dog_bark_medium",
+   "group": "animals",
+   "variants": 4,
+   "duration": 2.0,
+   "prompt": "A medium-sized mongrel dog barking two or three sharp barks, outdoors, close, dry, no other sounds"
+  },
+  {
+   "id": "dog_bark_laika",
+   "group": "animals",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A spitz husky-like laika dog giving a high ringing excited bark, outdoors in the cold, close, no other sounds"
+  },
+  {
+   "id": "dog_growl",
+   "group": "animals",
+   "variants": 3,
+   "duration": 3.0,
+   "prompt": "A dog growling low and warningly, close, outdoors, no barking, no other sounds"
+  },
+  {
+   "id": "dog_whine",
+   "group": "animals",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "A friendly dog whining and whimpering softly, begging for food, close, no other sounds"
+  },
+  {
+   "id": "dog_bark_happy",
+   "group": "animals",
+   "variants": 4,
+   "duration": 1.6,
+   "prompt": "A young medium-sized female laika mix dog answering her owner with two or three happy, excited, friendly barks, bright and playful, tail-wagging mood, close, outdoors, no other sounds"
+  },
+  {
+   "id": "collar_jingle",
+   "group": "animals",
+   "variants": 6,
+   "duration": 0.6,
+   "prompt": "A small brass bone-shaped dog tag clinking once against a steel split ring on a thin rope dog collar, a single light metallic jingle, very close, dry, no other sounds"
+  },
+  {
+   "id": "dog_bark_far",
+   "group": "animals",
+   "variants": 4,
+   "duration": 5.0,
+   "prompt": "A dog barking far away across a valley at night in a small town, faint, echoing off houses, quiet night air"
+  },
+  {
+   "id": "cat_meow",
+   "group": "animals",
+   "variants": 5,
+   "duration": 1.5,
+   "prompt": "A single domestic cat meowing once, close, outdoors, clear, no other sounds"
+  },
+  {
+   "id": "cat_purr",
+   "group": "animals",
+   "variants": 1,
+   "duration": 8.0,
+   "loop": true,
+   "prompt": "A contented cat purring steadily, very close, seamless loop, no other sounds"
+  },
+  {
+   "id": "cat_hiss",
+   "group": "animals",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "An angry cat hissing and spitting at a dog, close, no other sounds"
+  },
+  {
+   "id": "ship_horn_far",
+   "group": "far",
+   "variants": 3,
+   "duration": 9.0,
+   "prompt": "A large cargo ship's deep horn sounding one long blast far out at sea, heard from the shore, distant, echoing over the water"
+  },
+  {
+   "id": "foghorn_far",
+   "group": "far",
+   "variants": 2,
+   "duration": 9.0,
+   "prompt": "A distant lighthouse foghorn in thick sea fog, one long low moan, far away over the water"
+  },
+  {
+   "id": "buoy_bell",
+   "group": "far",
+   "variants": 3,
+   "duration": 7.0,
+   "prompt": "A bell buoy at sea clanging irregularly as waves rock it, heard from the beach, distant, metallic"
+  },
+  {
+   "id": "town_far",
+   "group": "far",
+   "variants": 1,
+   "duration": 20.0,
+   "loop": true,
+   "prompt": "Distant small town ambience heard from a hill: faint cars far off, a moped, muffled voices very far, quiet, seamless loop, no music"
+  },
+  {
+   "id": "club_room_tone",
+   "group": "club",
+   "variants": 1,
+   "duration": 20.0,
+   "loop": true,
+   "prompt": "Room tone of a dim basement computer club: many desktop PC fans whirring, soft electrical hum of old monitors, quiet, no voices, no music, seamless loop"
+  },
+  {
+   "id": "keyboard_typing",
+   "group": "club",
+   "variants": 4,
+   "duration": 6.0,
+   "prompt": "Someone typing on a mechanical computer keyboard, bursts of fast typing with pauses, close, indoors, no other sounds"
+  },
+  {
+   "id": "mouse_clicks",
+   "group": "club",
+   "variants": 2,
+   "duration": 5.0,
+   "prompt": "Computer mouse clicking and scrolling while playing a game, close, indoors, no other sounds"
+  },
+  {
+   "id": "console_game_far",
+   "group": "club",
+   "variants": 3,
+   "duration": 8.0,
+   "prompt": "Muffled 8-bit and 16-bit video game sound effects coming from an old CRT television a few meters away: jumps, coins, small explosions, no melody, quiet"
+  },
+  {
+   "id": "vending_hum",
+   "group": "club",
+   "variants": 1,
+   "duration": 10.0,
+   "loop": true,
+   "prompt": "A snack vending machine humming with its compressor and fluorescent light, close, indoors, seamless loop"
+  },
+  {
+   "id": "vending_drop",
+   "group": "club",
+   "variants": 2,
+   "duration": 2.5,
+   "prompt": "A vending machine motor turning a spiral and a snack packet dropping into the tray with a thud"
+  },
+  {
+   "id": "cabin_motor",
+   "group": "transport",
+   "variants": 1,
+   "duration": 12.0,
+   "loop": true,
+   "prompt": "Inside a small aerial gondola cabin gliding along a steel cable: a soft steady electric hum, the low rumble of the haul rope and faint creaking of the hanger, gentle wind outside, seamless loop, no voices, no music"
+  },
+  {
+   "id": "cabin_sheave",
+   "group": "transport",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "A gondola cabin's grip rolling over the sheave train of a cable car tower: a quick rhythmic clack-clack-clack of steel wheels and a short swing creak, close, outdoors"
+  },
+  {
+   "id": "cabin_door",
+   "group": "transport",
+   "variants": 2,
+   "duration": 2.0,
+   "prompt": "A small pneumatic sliding door of a 1960s cable car cabin opening with a soft hiss and a rubber thump, close, no voices"
+  },
+  {
+   "id": "station_chime",
+   "group": "transport",
+   "variants": 1,
+   "duration": 2.5,
+   "prompt": "A soft three-note electronic chime of a 1960s Soviet metro station, warm vibraphone-like tones, descending, clean, a little reverb, no voice"
+  },
+  {
+   "id": "station_wheel",
+   "group": "transport",
+   "variants": 1,
+   "duration": 12.0,
+   "loop": true,
+   "prompt": "The big bull wheel of a cable car station turning slowly: a low mechanical drone, a deep gear hum and a slow periodic metal tick, outdoors under a concrete roof, seamless loop"
+  },
+  {
+   "id": "lift_start",
+   "group": "transport",
+   "variants": 1,
+   "duration": 2.0,
+   "prompt": "An old glass elevator starting to move: a relay click and a rising electric motor whine, close"
+  },
+  {
+   "id": "lift_ding",
+   "group": "transport",
+   "variants": 1,
+   "duration": 1.5,
+   "prompt": "A single soft bell ding of an old elevator arriving at a floor, warm, clean"
+  },
+  {
+   "id": "station_hall",
+   "group": "transport",
+   "variants": 1,
+   "duration": 20.0,
+   "loop": true,
+   "prompt": "Quiet ambience inside a small 1960s cable car station hall: soft room tone, a faint murmur of a few distant people, a wall clock ticking slowly, light footsteps far away, a gentle stone-hall echo, seamless loop, no music, no clear words"
+  },
+  {
+   "id": "lift_hum",
+   "group": "transport",
+   "variants": 1,
+   "duration": 8.0,
+   "loop": true,
+   "prompt": "Inside an old elevator cab moving smoothly up a shaft: a low steady electric motor hum, soft whir of the cables, faint rattle of the cab walls, seamless loop, no voices, no music"
+  },
+  {
+   "id": "lift_doors",
+   "group": "transport",
+   "variants": 2,
+   "duration": 2.5,
+   "prompt": "Old elevator steel doors sliding open with a soft metallic rumble and a gentle stop, close, indoors, no bell, no voices"
+  },
+  {
+   "id": "diary_take",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.2,
+   "prompt": "A hardcover notebook pulled out of a canvas shoulder bag: a short rustle of fabric and a soft leather-bound book sliding out, close, indoors, no voices, no music"
+  },
+  {
+   "id": "diary_open",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.0,
+   "prompt": "A thick A4 hardcover planner opened flat: the leatherette cover swinging open with a soft creak of the spine and a papery whisper of pages settling, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_close",
+   "group": "diary",
+   "variants": 2,
+   "duration": 0.8,
+   "prompt": "A thick hardcover notebook closed with a soft muffled thump of the cover, short, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_page",
+   "group": "diary",
+   "variants": 4,
+   "duration": 0.7,
+   "prompt": "A single thick paper page of a notebook turned by hand: one crisp soft paper flip and swish, close, quiet room, no voices"
+  },
+  {
+   "id": "diary_pages",
+   "group": "diary",
+   "variants": 2,
+   "duration": 1.0,
+   "prompt": "Several pages of a thick paper notebook riffled quickly with a thumb, a quick flutter of paper, close, quiet room, no voices"
+  }
  ],
  "music": [
-  {"id": "club_1", "mood": ["club"], "seconds": 120, "seed": 11201, "prompt": "Lo-fi ambient, warm detuned analog synth pads, soft Rhodes chords, faint tape hiss, D minor, 72 BPM, nostalgic late-night computer club, slow, no drums, no vocals"},
-  {"id": "club_2", "mood": ["club"], "seconds": 120, "seed": 11202, "prompt": "Dreamy chiptune-tinged ambient, soft square-wave arpeggio far in the background, warm pad, gentle electric piano, D minor, 76 BPM, cozy retro computers, no drums, no vocals"},
-  {"id": "club_3", "mood": ["club"], "seconds": 110, "seed": 11203, "prompt": "Minimal ambient, warm sub pad and soft glassy synth bells, slow chord changes, D minor, 70 BPM, quiet glow of old monitors in the dark, no drums, no vocals"},
-  {"id": "dawn_1", "mood": ["dawn"], "seconds": 110, "seed": 12101, "prompt": "Slow ambient swell, warm string pad rising, distant bell-like synth notes, D major, 60 BPM, cold Baltic dawn over the sea, hopeful and quiet, no drums, no vocals"},
-  {"id": "dawn_2", "mood": ["dawn", "day"], "seconds": 110, "seed": 12102, "prompt": "Ambient felt piano, sparse gentle melody, soft airy pad, D major, 66 BPM, early morning by a northern sea, delicate, no drums, no vocals"},
-  {"id": "day_1", "mood": ["day"], "seconds": 120, "seed": 13101, "prompt": "Ambient acoustic guitar harmonics and soft glockenspiel, light warm pad, F major, 80 BPM, breezy seaside town afternoon, wistful, no drums, no vocals"},
-  {"id": "day_2", "mood": ["day"], "seconds": 120, "seed": 13102, "prompt": "Ambient felt piano and soft strings, sparse nostalgic melody, D minor, 68 BPM, overcast autumn day in a quiet Baltic town, no drums, no vocals"},
-  {"id": "day_3", "mood": ["day", "sea"], "seconds": 120, "seed": 13103, "prompt": "Airy ambient, slow evolving synth pads like waves, soft kalimba notes, F major, 72 BPM, wide sky over dunes and pines, no drums, no vocals"},
-  {"id": "dusk_1", "mood": ["dusk"], "seconds": 120, "seed": 14101, "prompt": "Ambient, soft cello drone and felt piano, D minor, 60 BPM, golden-hour melancholy by the sea, slow and warm, no drums, no vocals"},
-  {"id": "dusk_2", "mood": ["dusk", "night"], "seconds": 120, "seed": 14102, "prompt": "Ambient, warm analog pads and a lonely clarinet-like synth lead, D minor, 62 BPM, the last light over a Soviet seaside town, tender, no drums, no vocals"},
-  {"id": "night_1", "mood": ["night"], "seconds": 120, "seed": 15101, "prompt": "Dark ambient, deep slow pads, sparse celesta notes with long reverb, D minor, 54 BPM, cold starry night by the sea, calm, no drums, no vocals"},
-  {"id": "night_2", "mood": ["night"], "seconds": 120, "seed": 15102, "prompt": "Nocturnal ambient, soft sub drone, distant music box fragments, D minor, 56 BPM, sleeping town under the moon, mysterious and gentle, no drums, no vocals"},
-  {"id": "rain_1", "mood": ["rain"], "seconds": 110, "seed": 16101, "prompt": "Minimal ambient piano with soft reverb, slow melancholic chords in the style of Erik Satie, D minor, 64 BPM, rainy afternoon, no drums, no vocals"},
-  {"id": "rain_2", "mood": ["rain", "night"], "seconds": 110, "seed": 16102, "prompt": "Ambient, muted electric piano and warm pad, gentle tape wobble, D minor, 66 BPM, rain on the windows, cozy and sad, no drums, no vocals"},
-  {"id": "storm_1", "mood": ["storm"], "seconds": 100, "seed": 17101, "prompt": "Brooding dark ambient, low strings swelling, distant timpani rolls, D minor, 60 BPM, storm coming in from the sea, tense but restrained, no vocals"},
-  {"id": "sea_1", "mood": ["sea"], "seconds": 120, "seed": 18101, "prompt": "Oceanic ambient, slow swelling synth pads like breathing waves, soft choir-like texture without words, D major, 58 BPM, standing at the shore of the Baltic sea, vast and calm, no drums"},
-  {"id": "flight_1", "mood": ["flight"], "seconds": 100, "seed": 19101, "prompt": "Uplifting ambient, airy pads and shimmering arpeggios, light soft percussion, D major, 92 BPM, soaring over the sea and pine forest as a bird, free and joyful, no vocals"},
-  {"id": "flight_2", "mood": ["flight"], "seconds": 100, "seed": 19102, "prompt": "Ambient post-rock, gentle delayed guitar arpeggios, warm pads, soft brushes, D major, 96 BPM, gliding high over a seaside town, wonder, no vocals"},
-  {"id": "snow_1", "mood": ["snow", "night"], "seconds": 110, "seed": 20101, "prompt": "Crystalline ambient, music box and soft glass pads, slow, D minor, 60 BPM, snow falling on a quiet northern town, no drums, no vocals"}
+  {
+   "id": "club_1",
+   "mood": [
+    "club"
+   ],
+   "seconds": 120,
+   "seed": 11201,
+   "prompt": "Lo-fi ambient, warm detuned analog synth pads, soft Rhodes chords, faint tape hiss, D minor, 72 BPM, nostalgic late-night computer club, slow, no drums, no vocals"
+  },
+  {
+   "id": "club_2",
+   "mood": [
+    "club"
+   ],
+   "seconds": 120,
+   "seed": 11202,
+   "prompt": "Dreamy chiptune-tinged ambient, soft square-wave arpeggio far in the background, warm pad, gentle electric piano, D minor, 76 BPM, cozy retro computers, no drums, no vocals"
+  },
+  {
+   "id": "club_3",
+   "mood": [
+    "club"
+   ],
+   "seconds": 110,
+   "seed": 11203,
+   "prompt": "Minimal ambient, warm sub pad and soft glassy synth bells, slow chord changes, D minor, 70 BPM, quiet glow of old monitors in the dark, no drums, no vocals"
+  },
+  {
+   "id": "dawn_1",
+   "mood": [
+    "dawn"
+   ],
+   "seconds": 110,
+   "seed": 12101,
+   "prompt": "Slow ambient swell, warm string pad rising, distant bell-like synth notes, D major, 60 BPM, cold Baltic dawn over the sea, hopeful and quiet, no drums, no vocals"
+  },
+  {
+   "id": "dawn_2",
+   "mood": [
+    "dawn",
+    "day"
+   ],
+   "seconds": 110,
+   "seed": 12102,
+   "prompt": "Ambient felt piano, sparse gentle melody, soft airy pad, D major, 66 BPM, early morning by a northern sea, delicate, no drums, no vocals"
+  },
+  {
+   "id": "day_1",
+   "mood": [
+    "day"
+   ],
+   "seconds": 120,
+   "seed": 13101,
+   "prompt": "Ambient acoustic guitar harmonics and soft glockenspiel, light warm pad, F major, 80 BPM, breezy seaside town afternoon, wistful, no drums, no vocals"
+  },
+  {
+   "id": "day_2",
+   "mood": [
+    "day"
+   ],
+   "seconds": 120,
+   "seed": 13102,
+   "prompt": "Ambient felt piano and soft strings, sparse nostalgic melody, D minor, 68 BPM, overcast autumn day in a quiet Baltic town, no drums, no vocals"
+  },
+  {
+   "id": "day_3",
+   "mood": [
+    "day",
+    "sea"
+   ],
+   "seconds": 120,
+   "seed": 13103,
+   "prompt": "Airy ambient, slow evolving synth pads like waves, soft kalimba notes, F major, 72 BPM, wide sky over dunes and pines, no drums, no vocals"
+  },
+  {
+   "id": "dusk_1",
+   "mood": [
+    "dusk"
+   ],
+   "seconds": 120,
+   "seed": 14101,
+   "prompt": "Ambient, soft cello drone and felt piano, D minor, 60 BPM, golden-hour melancholy by the sea, slow and warm, no drums, no vocals"
+  },
+  {
+   "id": "dusk_2",
+   "mood": [
+    "dusk",
+    "night"
+   ],
+   "seconds": 120,
+   "seed": 14102,
+   "prompt": "Ambient, warm analog pads and a lonely clarinet-like synth lead, D minor, 62 BPM, the last light over a Soviet seaside town, tender, no drums, no vocals"
+  },
+  {
+   "id": "night_1",
+   "mood": [
+    "night"
+   ],
+   "seconds": 120,
+   "seed": 15101,
+   "prompt": "Dark ambient, deep slow pads, sparse celesta notes with long reverb, D minor, 54 BPM, cold starry night by the sea, calm, no drums, no vocals"
+  },
+  {
+   "id": "night_2",
+   "mood": [
+    "night"
+   ],
+   "seconds": 120,
+   "seed": 15102,
+   "prompt": "Nocturnal ambient, soft sub drone, distant music box fragments, D minor, 56 BPM, sleeping town under the moon, mysterious and gentle, no drums, no vocals"
+  },
+  {
+   "id": "rain_1",
+   "mood": [
+    "rain"
+   ],
+   "seconds": 110,
+   "seed": 16101,
+   "prompt": "Minimal ambient piano with soft reverb, slow melancholic chords in the style of Erik Satie, D minor, 64 BPM, rainy afternoon, no drums, no vocals"
+  },
+  {
+   "id": "rain_2",
+   "mood": [
+    "rain",
+    "night"
+   ],
+   "seconds": 110,
+   "seed": 16102,
+   "prompt": "Ambient, muted electric piano and warm pad, gentle tape wobble, D minor, 66 BPM, rain on the windows, cozy and sad, no drums, no vocals"
+  },
+  {
+   "id": "storm_1",
+   "mood": [
+    "storm"
+   ],
+   "seconds": 100,
+   "seed": 17101,
+   "prompt": "Brooding dark ambient, low strings swelling, distant timpani rolls, D minor, 60 BPM, storm coming in from the sea, tense but restrained, no vocals"
+  },
+  {
+   "id": "sea_1",
+   "mood": [
+    "sea"
+   ],
+   "seconds": 120,
+   "seed": 18101,
+   "prompt": "Oceanic ambient, slow swelling synth pads like breathing waves, soft choir-like texture without words, D major, 58 BPM, standing at the shore of the Baltic sea, vast and calm, no drums"
+  },
+  {
+   "id": "flight_1",
+   "mood": [
+    "flight"
+   ],
+   "seconds": 100,
+   "seed": 19101,
+   "prompt": "Uplifting ambient, airy pads and shimmering arpeggios, light soft percussion, D major, 92 BPM, soaring over the sea and pine forest as a bird, free and joyful, no vocals"
+  },
+  {
+   "id": "flight_2",
+   "mood": [
+    "flight"
+   ],
+   "seconds": 100,
+   "seed": 19102,
+   "prompt": "Ambient post-rock, gentle delayed guitar arpeggios, warm pads, soft brushes, D major, 96 BPM, gliding high over a seaside town, wonder, no vocals"
+  },
+  {
+   "id": "snow_1",
+   "mood": [
+    "snow",
+    "night"
+   ],
+   "seconds": 110,
+   "seed": 20101,
+   "prompt": "Crystalline ambient, music box and soft glass pads, slow, D minor, 60 BPM, snow falling on a quiet northern town, no drums, no vocals"
+  }
  ]
 }

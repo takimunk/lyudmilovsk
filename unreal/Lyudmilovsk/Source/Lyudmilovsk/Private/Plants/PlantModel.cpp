@@ -1,7 +1,10 @@
 #include "Plants/PlantModel.h"
+#include "Plants/PlantMeshes.h"
 
 namespace
 {
+	/** lyud.PlantBloom 0 hides every plant's flowering (to measure what it costs; plants re-shape to follow). */
+	TAutoConsoleVariable<int32> CVarPlantBloom(TEXT("lyud.PlantBloom"), 1, TEXT("Flowering of trees and shrubs: catkins, blossom, flowering cones (0 off)"), ECVF_Default);
 	constexpr float Never = TNumericLimits<float>::Max();
 	constexpr float GoldenAngle = 2.39996323f;
 	const FVector3f Up(0.f, 0.f, 1.f);
@@ -186,6 +189,25 @@ FPlantSeason PlantModel::Season(const FPlantSpecies& S, uint32 Seed, float Day)
 			Out.FruitScale = 0.3f + 0.7f * Smooth(S.FruitSetDay, S.FruitRipeDay, Df);
 			Out.FruitRipeness = Smooth(S.FruitRipeDay - 40.f, S.FruitRipeDay, Df);
 			Out.FruitColour = FMath::Lerp(S.FruitUnripeColour, S.FruitColour, Out.FruitRipeness);
+		}
+	}
+	const FPlantBlossom& Bl = S.Blossom;
+	if (Bl.Form != EPlantBlossomForm::None && CVarPlantBloom.GetValueOnAnyThread() != 0)
+	{
+		// opens from StartDay, full at PeakDay, then falls away until EndDay: size follows the opening, how much is out follows both
+		Out.BloomOpen = Smooth(Bl.StartDay, Bl.PeakDay, D);
+		Out.BloomAge = Smooth(Bl.PeakDay, Bl.EndDay, D);
+		Out.Bloom = Out.BloomOpen * (1.f - Out.BloomAge * Out.BloomAge);
+		if (Bl.Form == EPlantBlossomForm::Blossom)
+		{
+			// petals are tinted by browning; the look from afar is the petals browned
+			Out.BloomTint = FMath::Lerp(FLinearColor::White, Bl.AgedColour, Out.BloomAge);
+			Out.BloomLook = Bl.FreshColour * Out.BloomTint;
+		}
+		else
+		{
+			Out.BloomTint = FMath::Lerp(Bl.FreshColour, Bl.AgedColour, Out.BloomAge);
+			Out.BloomLook = Out.BloomTint;
 		}
 	}
 	// snow on the branches from late November to the March thaw (the calendar's climate, not the tree's)
@@ -429,6 +451,8 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 	Out.FruitData.Reset();
 	Out.Litter.Reset();
 	Out.Dropped.Reset();
+	Out.Blossoms.Reset();
+	Out.BlossomSway.Reset();
 	Out.Height = Out.Reach = 0.f;
 	Out.LiveBranches = 0;
 	using PlantModel::Hash01;
@@ -450,6 +474,9 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 	const float Vigour = PlantModel::Vigour(S, Seed, Age);
 	const float LeafScale = Vigour > 0.f ? Season.LeafScale * FMath::Clamp(H / 4.f, 0.5f, 1.f) : 0.f;
 	const bool bFruit = Season.FruitScale > 0.f && Age >= S.FruitingAge && Vigour > 0.5f;
+	const bool bBloom = S.Blossom.Form != EPlantBlossomForm::None && Season.Bloom > 0.f && Age >= S.Blossom.MinAge && Vigour > 0.3f;
+	// as many as keep a tree to ~250k triangles of flowers
+	const int32 MaxBlossoms = bBloom ? FMath::Clamp(250000 / FMath::Max(PlantMeshes::BlossomTriangles(S.Blossom), 1), 200, 3000) : 0;
 
 	TArray<int32> TubeOf;
 	TubeOf.Init(INDEX_NONE, N);
@@ -534,6 +561,26 @@ void FPlantSkeleton::Evaluate(float Age, const FPlantSeason& Season, FInstances&
 					F.Hung = Hung;
 					FMemory::Memcpy(F.Data, Data, sizeof(Data));
 				}
+			}
+		}
+
+		// blossom, catkins or cones at the tips of the twigs (on the spurs where a species has them), thinning as the bloom goes over
+		if (bBloom && (B.Order == FruitOrder || (S.SpurSpacing > 0.f && B.Order == 2)) && L > (B.Order == 3 ? 0.02f : FMath::Min(0.2f, 0.08f * S.MaxHeight)) && Hash01(Seed, I, 0, 61) < S.Blossom.Chance * (B.Order == FruitOrder ? 1.f : 0.5f)
+			&& Out.Blossoms.Num() < MaxBlossoms)
+		{
+			for (int32 K = 0; K < FMath::Max(S.Blossom.PerTwig, 1); K++)
+			{
+				if (Hash01(Seed, I, K, 62) > Season.Bloom * Vigour) continue;
+				const float Along = B.Order == 3 ? L : L * (0.5f + 0.5f * Hash01(Seed, I, K, 63));
+				const FVector3f P = B.At(Along);
+				const float Open = Season.BloomOpen;
+				const float Size = (0.4f + 0.6f * Open) * (0.85f + 0.3f * Hash01(Seed, I, K, 64));
+				const float Yaw = Hash01(Seed, I, K, 65) * 360.f;
+				// catkins hang straight down with a sway to them, flowers look up and out, cones stand
+				const FRotator Rot(S.Blossom.Form == EPlantBlossomForm::Catkin ? (Hash01(Seed, I, K, 66) - 0.5f) * 36.f : (Hash01(Seed, I, K, 66) - 0.5f) * 60.f, Yaw,
+					S.Blossom.Form == EPlantBlossomForm::Catkin ? (Hash01(Seed, I, K, 67) - 0.5f) * 36.f : 0.f);
+				Out.Blossoms.Emplace(Rot.Quaternion(), FVector(P.X, P.Y, P.Z + S.Blossom.Lift) * 100.0, FVector(Size));
+				Out.BlossomSway.Add(B.Order >= 2 ? FMath::Pow(Along / L, 1.3f) : 0.f);
 			}
 		}
 

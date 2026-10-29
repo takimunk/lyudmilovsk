@@ -1,0 +1,17 @@
+{
+ "step": "front",
+ "service": "higgsfield (MCP generate_image_batch)",
+ "model": "nano_banana_2_1",
+ "job_id": "cba9a312-2658-4158-bccc-7b533a78a96f",
+ "inputs": {
+  "resolution": "2k",
+  "aspect_ratio": "1:1",
+  "seed": 3010,
+  "thinking_level": "high",
+  "prompt": "Full-body character reference for 3D modelling of a 31-year-old Russian fisherman from the Baltic coast: weathered sunburnt face, short dark stubble, a dark navy knit watch cap, a thick dark green wool jumper, dark canvas work trousers, black rubber boots to mid-calf. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the cap to the soles of the boots, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no text, photorealistic."
+ },
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261025_200628_cba9a312-2658-4158-bccc-7b533a78a96f.png",
+ "output_file": "front.png",
+ "sha256": "9ab781c8688b4fbd127ebe8a5114dc10fb0f57e3fbc219db36b386ae5c7ab8c6",
+ "credits": 2
+}

@@ -96,6 +96,9 @@ AProceduralPlant::AProceduralPlant()
 	FruitComponent = MakeInstanced(this, TEXT("Fruit"), Body);
 	FruitComponent->SetStaticMesh(Sphere.Object);
 	FruitComponent->NumCustomDataFloats = FPlantSkeleton::FInstances::FruitDataFloats;
+	BloomComponent = MakeInstanced(this, TEXT("Bloom"), Body);
+	BloomComponent->NumCustomDataFloats = 1;
+	BloomComponent->SetCastShadow(false);
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		UInstancedStaticMeshComponent* Litter = MakeInstanced(this, *FString::Printf(TEXT("Litter%d"), K), RootComponent);
@@ -290,6 +293,8 @@ void AProceduralPlant::EnsureMeshes()
 		}
 		FruitMaterial = UMaterialInstanceDynamic::Create(FruitMaterialAsset, this);
 		FruitComponent->SetMaterial(0, FruitMaterial);
+		BloomMaterial = UMaterialInstanceDynamic::Create(LeafMaterialAsset, this);
+		BloomComponent->SetMaterial(0, BloomMaterial);
 		LitterMaterials.Reset();
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
@@ -330,6 +335,25 @@ void AProceduralPlant::EnsureMeshes()
 		{
 			FruitMesh = PlantMeshes::BuildFruit(this, S);
 			FruitComponent->SetStaticMesh(FruitMesh);
+		}
+		if (S.Blossom.Form != EPlantBlossomForm::None)
+		{
+			BloomMesh = PlantMeshes::BuildBlossom(this, S);
+			BloomAtlas = PlantMeshes::BuildBlossomAtlas(this, S.Blossom);
+			BloomComponent->SetStaticMesh(BloomMesh);
+			// a flower is a pixel or two beyond ~1000 of its own sizes: not drawn past that
+			const FPlantBlossom& Bl = S.Blossom;
+			const float Extent = Bl.Size * 100.f * (Bl.Form == EPlantBlossomForm::Blossom ? Bl.Spread : 1.f);
+			BloomComponent->SetCullDistances(0, FMath::Clamp(Extent * 1000.f, 3000.f, 9000.f));
+			BloomMaterial->SetTextureParameterValue(TEXT("LeafDetail"), BloomAtlas);
+			// flowers swing with their twigs and flutter a little, like leaves
+			BloomMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+			BloomMaterial->SetScalarParameterValue(TEXT("Flutter"), 1.f);
+		}
+		else
+		{
+			BloomMesh = nullptr;
+			BloomComponent->SetStaticMesh(nullptr);
 		}
 		FruitMaterial->SetTextureParameterValue(TEXT("FruitDetail"), FruitDetail);
 		FruitMaterial->SetVectorParameterValue(TEXT("GroundUnripe"), S.FruitUnripeColour);
@@ -384,6 +408,7 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 		for (UInstancedStaticMeshComponent* L : LitterComponents) SetInstances(L, {});
 		for (UInstancedStaticMeshComponent* L : FallingComponents) SetInstances(L, {});
 		SetInstances(FruitComponent, {});
+		SetInstances(BloomComponent, {});
 		Falling.Reset();
 		PendingDrops.Reset();
 		Skeleton = FPlantSkeleton();
@@ -422,6 +447,7 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 	Wood->SetVisibility(false);
 	FarTree->SetVisibility(false);
 	FruitComponent->SetVisibility(false);
+	BloomComponent->SetVisibility(false);
 	for (UInstancedStaticMeshComponent* L : LeafComponents) L->SetVisibility(false);
 	SetActorHiddenInGame(false);
 
@@ -528,6 +554,13 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 	}
 	Wood->SetVisibility(!bSummary);
 	FruitComponent->SetVisibility(!bSummary);
+	BloomComponent->SetVisibility(!bSummary && BloomMesh != nullptr);
+	BloomMaterial->SetVectorParameterValue(TEXT("Color"), Season.BloomTint);
+	// in bloom the thin twigs take on the colour of the flowers (as a baked tree's do): a haze of catkins that the few drawn ones do not give
+	{
+		const float Mix = S.Blossom.Form != EPlantBlossomForm::None ? FMath::Min(1.f, S.Blossom.FarTint * Season.Bloom * 0.8f) : 0.f;
+		WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), FMath::Lerp(S.Bark.TwigColour, Season.BloomLook, Mix));
+	}
 	SummaryTrunk->SetVisibility(false);
 	SummaryCrown->SetVisibility(false);
 	FarTree->SetVisibility(bSummary);
@@ -538,12 +571,15 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		for (UInstancedStaticMeshComponent* L : LeafComponents) SetInstances(L, {});
 		for (UInstancedStaticMeshComponent* L : LitterComponents) SetInstances(L, {});
 		SetInstances(FruitComponent, {});
+		SetInstances(BloomComponent, {});
+		LastBloom = 0;
 		if (Far->Version != FarVersion || FarTree->GetStaticMesh() != Far->Mesh)
 		{
 			FarTree->SetStaticMesh(Far->Mesh);
 			FarTree->SetMaterial(0, Far->Wood);
 			FarTree->SetMaterial(1, Far->Leaf);
 			FarTree->SetMaterial(2, Far->Card);
+			FarTree->SetMaterial(3, Far->Bloom);
 			FarVersion = Far->Version;
 		}
 	}
@@ -568,6 +604,13 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 			LeafComponents[K]->MarkRenderStateDirty();
 			NumLeaves += Out.Leaves[K].Num();
 		}
+		SetInstances(BloomComponent, Out.Blossoms);
+		for (int32 B = 0; B < Out.BlossomSway.Num(); B++)
+		{
+			BloomComponent->SetCustomDataValue(B, 0, Out.BlossomSway[B], false);
+		}
+		BloomComponent->MarkRenderStateDirty();
+		LastBloom = Out.Blossoms.Num();
 		UpdateLitter(Out, Season);
 		if (bGame)
 		{
@@ -1071,15 +1114,18 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	SinceUpdate = 0.f;
 	const float Age = GetAge(), Day = CurrentDay();
 	bool bSummary = WantsSummary();
-	if (bSummary && !bShownSummary)
+	bool bNewBake = false;
+	if (bSummary)
 	{
-		// far, but its bake is not ready yet: stay as it is rather than re-shape in full every time
+		// far, but its bake is not ready yet: stay as it is rather than re-shape in full every time; and when a newer bake
+		// (the season has moved on: blossom, leaves) is ready, take it over at once instead of at the next re-shape
 		UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
 		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FVector(15.0, 55.0, 150.0)) : nullptr;
-		bSummary = Far && Far->Mesh;
+		bNewBake = bShownSummary && Far && Far->Mesh && Far->Version != FarVersion;
+		if (!bShownSummary) bSummary = Far && Far->Mesh;
 	}
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
-	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f || bLitterDirty;
+	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f || bLitterDirty || bNewBake;
 	const bool bWoodDue = !bSummary && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
 	if (bChanged || bWoodDue)
 	{
@@ -1117,8 +1163,8 @@ FString AProceduralPlant::DebugReport(float Age, float DayOfYear)
 	const int32 Leaves = Out.Leaves[0].Num() + Out.Leaves[1].Num() + Out.Leaves[2].Num();
 	const FStaticMeshRenderData* RD = WoodMesh ? WoodMesh->GetRenderData() : nullptr;
 	const int32 WoodUVs = RD && RD->LODResources.Num() ? RD->LODResources[0].GetNumTexCoords() : 0;
-	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: wood UVs %d, mask %s: %d/%d branches, %d rings, wood %d tris, %d leaf clusters x %d tris, %d fruit, drawn h %.2f reach %.2f | summary h %.2f crown r %.2f leaves %.2f | evaluate %.2f ms, wood mesh %.1f ms"),
+	return FString::Printf(TEXT("%s seed %d age %.1f day %.0f: wood UVs %d, mask %s: %d/%d branches, %d rings, wood %d tris, %d leaf clusters x %d tris, %d fruit, %d bloom (%.2f out, %d tris each), drawn h %.2f reach %.2f | summary h %.2f crown r %.2f leaves %.2f | evaluate %.2f ms, wood mesh %.1f ms"),
 		*S.Name.ToString(), Seed, Age, DayOfYear, WoodUVs, ScarMask ? TEXT("yes") : TEXT("no"), Out.LiveBranches, Skeleton.GetBranches().Num(), Out.NumRings(), NumTriangles(WoodMesh),
-		Leaves, NumTriangles(LeafMesh), Out.Fruit.Num(), Out.Height, Out.Reach, Sum.Height, Sum.CrownRadius, Sum.LeafAmount,
+		Leaves, NumTriangles(LeafMesh), Out.Fruit.Num(), Out.Blossoms.Num(), Season.Bloom, NumTriangles(BloomMesh), Out.Height, Out.Reach, Sum.Height, Sum.CrownRadius, Sum.LeafAmount,
 		(T1 - T0) * 1000.0, (T2 - T1) * 1000.0);
 }
