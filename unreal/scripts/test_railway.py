@@ -352,7 +352,129 @@ TREES = [
     (157.0, lambda w: near_plant(w, 120.0)),
     (163.0, lambda w: shot(w, "pine_far_late")),
 ]
+def ride_board(w):
+    """The player into car 2's aisle by its middle door, while the doors stand open at the beach halt."""
+    t = rail(w).get_train(0)
+    p = t.get_door_point(2)
+    S["ride_seat"] = 0
+    # from the door point (outside the car) 1.45 m in, toward the line's centre, standing on the floor
+    mid = rail(w).line_to_world(t.get_info().s, 0.0, 0.0)
+    d = unreal.Vector(mid.x - p.x, mid.y - p.y, 0.0)
+    n = (d.x * d.x + d.y * d.y) ** 0.5 or 1.0
+    q = unreal.Vector(p.x + d.x / n * 145.0, p.y + d.y / n * 145.0, p.z + 20.0)
+    # not BugItGo: it ghosts the pawn (no collision, flying); the pawn is put there as it is, walking, and falls onto
+    # the car's floor like a player stepping in
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    pawn.set_actor_location(unreal.Vector(q.x, q.y, q.z + 80.0), False, True)
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    pc.set_control_rotation(unreal.Rotator(0.0, 0.0, 90.0))
+    S["ride_log"] = True
+
+
+def ride_local(w):
+    import math
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    r = rail(w).get_train(0).get_seat(S.get("ride_seat", 0))
+    seat = r[-1] if isinstance(r, tuple) else r
+    if not pawn or seat is None or (isinstance(r, tuple) and not r[0]):
+        return None
+    return seat.inverse_transform_location(pawn.get_actor_location())
+
+
+def ride_watch(w):
+    l = ride_local(w)
+    if l is None:
+        return
+    info = rail(w).get_train(0).get_info()
+    if "ride_first" not in S and abs(info.speed) < 0.01:
+        S["ride_ref"] = l
+    if abs(info.speed) > 0.05:
+        S["ride_first"] = True
+        r = S.get("ride_ref", l)
+        S["ride_drift"] = max(S.get("ride_drift", 0.0), ((l.x - r.x) ** 2 + (l.y - r.y) ** 2) ** 0.5)
+
+
+def ride_report(w):
+    l = ride_local(w)
+    info = rail(w).get_train(0).get_info()
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    mv = pawn.get_movement_base() if pawn and hasattr(pawn, "get_movement_base") else None
+    mode = pawn.get_editor_property("character_movement").movement_mode if pawn else None
+    log("ride s %.1f v %.2f local %.0f %.0f %.0f base %s mode %s drift %.1f cm" % (
+        info.s, info.speed, l.x, l.y, l.z, mv.get_owner().get_name() if mv else None, mode, S.get("ride_drift", 0.0)))
+
+
+def ride_end(w):
+    ride_report(w)
+    pawn = unreal.GameplayStatics.get_player_pawn(w, 0)
+    mv = pawn.get_movement_base() if pawn and hasattr(pawn, "get_movement_base") else None
+    mode = pawn.get_editor_property("character_movement").movement_mode if pawn else None
+    check(mode == unreal.MovementMode.MOVE_WALKING, "the player walks on the car's floor (%s, base %s)" % (mode, mv.get_name() if mv else None))
+    check(S.get("ride_first", False) and S.get("ride_drift", 1e9) < 15.0,
+          "a player standing in the car stays put as it pulls away and runs (drift %.1f cm)" % S.get("ride_drift", -1.0))
+
+
+def look(w, a, b):
+    """The camera at a, looking at b; both (metres along the line from the second car's middle, to the north, over
+    the rail head)."""
+    import math
+    r = rail(w)
+    m = r.get_train(0).get_info().s - 8.45
+    p = r.line_to_world(m + a[0], a[1], a[2])
+    q = r.line_to_world(m + b[0], b[1], b[2])
+    d = q - p
+    # BugItGo places the pawn: its eyes are ~64 cm over that
+    cmd(w, "BugItGo %.0f %.0f %.0f %.2f %.2f 0" % (p.x, p.y, p.z - 64.0, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))),
+                                                   math.degrees(math.atan2(d.y, d.x))))
+
+
+# the car's inside, standing at the beach halt (the doors open on the platform's side, south), by day then at night:
+# the aisle, the benches and their grilles, the cards over the racks at a grazing angle (flicker would show there),
+# a hanging poster, the shut doors' stickers, both end walls, a window's blind, the aisle at night
+VIEWS = [
+    ("aisle", (-6.2, 0.0, 2.75), (8.0, 0.0, 2.45)),
+    ("benches", (-1.0, 0.25, 2.25), (0.6, -1.2, 1.55)),
+    ("cards_grazing", (-3.2, -0.85, 3.05), (1.0, -1.32, 3.2)),
+    ("poster", (-3.4, 0.35, 3.0), (-2.0, 0.0, 3.45)),
+    ("door_stickers", (-4.55, -0.2, 2.35), (-4.55, 1.37, 2.05)),
+    ("end_cab", (-4.6, 0.0, 2.8), (-6.6, 0.0, 3.2)),
+    ("end_gangway", (5.0, 0.0, 2.6), (8.0, 0.0, 3.0)),
+    ("blind", (1.0, -0.3, 2.35), (1.0, 1.4, 2.55)),
+]
+INSIDE = [
+    (21.0, lambda w: cmd(w, "lyud.Birds.Time 11 20")),
+    (22.0, lambda w: cmd(w, "DisableAllScreenMessages")),
+    (23.0, lambda w: cmd(w, "lyud.Railway.Next beach 1")),
+]
+for i, (name, a_, b_) in enumerate(VIEWS):
+    INSIDE += [(45.0 + 4.0 * i, lambda w, a_=a_, b_=b_: look(w, a_, b_)), (47.5 + 4.0 * i, lambda w, n=name: shot(w, "in_" + n))]
+INSIDE += [
+    (90.0, lambda w: cmd(w, "lyud.Birds.Time 21 40")),
+    (91.0, lambda w: cmd(w, "lyud.Railway.Next beach 1")),
+    (114.0, lambda w: look(w, VIEWS[0][1], VIEWS[0][2])),
+    (118.0, lambda w: shot(w, "in_aisle_night")),
+    (119.0, lambda w: look(w, VIEWS[2][1], VIEWS[2][2])),
+    (122.0, lambda w: shot(w, "in_cards_night")),
+]
+
+# riding: the player stands in the second car at the beach halt; it leaves and runs out onto the bank; standing
+# still, the player must stay where they stand in the car (the car's floor carries them)
+RIDE = [
+    (22.0, lambda w: cmd(w, "DisableAllScreenMessages")),
+    (23.0, lambda w: cmd(w, "lyud.Railway.Next beach 1")),
+    (46.0, ride_board),
+    (52.0, ride_report),
+    (54.0, lambda w: shot(w, "ride_standing")),
+] + [(60.0 + 5.0 * i, ride_report) for i in range(16)] + [
+    (100.0, lambda w: shot(w, "ride_running")),
+    (142.0, ride_end),
+]
+
 PLAN = []
+for name, part in (("inside", INSIDE),) if ONLY == "inside" else ():
+    PLAN += part
+for name, part in (("ride", RIDE),) if ONLY == "ride" else ():
+    PLAN += part
 for name, part in (("sunset", SUNSET),) if ONLY == "sunset" else ():
     PLAN += part
 for name, part in (("trees", TREES),) if ONLY == "trees" else ():
@@ -360,9 +482,9 @@ for name, part in (("trees", TREES),) if ONLY == "trees" else ():
 for name, part in (("riders", RIDERS),) if ONLY == "riders" else ():
     PLAN += part
 for name, part in (("day", DAY), ("night", NIGHT), ("far", FAR)):
-    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees", "sunset"):
+    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees", "sunset", "ride", "inside"):
         PLAN += part
-if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees", "sunset"):
+if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees", "sunset", "ride", "inside"):
     PLAN.insert(0, (30.0, start))
 PLAN.append((max(t for t, _ in PLAN) + 4.0, lambda w: S.update(phase="done")))
 
@@ -384,6 +506,8 @@ def tick(dt):
         chase(w, *S["chase"])
     if S.get("rw") in ("walk", "wait", "doors"):
         riders_watch(w)
+    if S.get("ride_log"):
+        ride_watch(w)
     if S.get("follow"):
         follow(w, rail(w).get_train(0).get_info().s)
     watch(w)

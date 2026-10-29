@@ -1,4 +1,5 @@
 #include "WindModel.h"
+#include "WeatherModel.h"
 
 #include <algorithm>
 #include <cmath>
@@ -108,12 +109,19 @@ namespace LyudWeather
 		S.Hours = Hours;
 		const uint32_t Seed = P.Seed;
 		const double DirN = 0.7 * SmoothNoise1(Hours / 30.0, Seed) + 0.3 * SmoothNoise1(Hours / 9.0, Seed + 1);
-		const double From = P.PrevailingFromDeg + P.DirectionSwingDeg * DirN * 1.3;
+		double From = P.PrevailingFromDeg + P.DirectionSwingDeg * DirN * 1.3;
 		// two scales of weather (fronts a day apart, squally spells of hours), pushed out toward the extremes
 		// so that calm days and gales both come up instead of everything hovering near the median
 		const double SpeedN = 0.75 * SmoothNoise1(Hours / 22.0, Seed + 2) + 0.45 * SmoothNoise1(Hours / 6.0, Seed + 3);
 		const double Spread = (SpeedN < 0.0 ? -1.0 : 1.0) * std::pow(std::fabs(SpeedN), 0.7) * 1.6;
-		const double Weather = Clamp(P.MedianSpeed * std::exp(P.SpeedLogSigma * Spread), P.MinSpeed, P.MaxSpeed);
+		double Weather = Clamp(P.MedianSpeed * std::exp(P.SpeedLogSigma * Spread), P.MinSpeed, P.MaxSpeed);
+		if (P.bSynoptic)
+		{
+			float SynFrom = 0.f, SynSpeed = 0.f;
+			SynopticWind(Hours, SharedChain(), SynFrom, SynSpeed);
+			From = SynFrom;
+			Weather = Clamp(SynSpeed * P.MedianSpeed / 6.5, P.MinSpeed, P.MaxSpeed);
+		}
 		S.Weather = float(Weather);
 		S.Day = DayFactor(Hours, P);
 

@@ -1,5 +1,9 @@
 #include "RailMaterials.h"
 
+#include "Components/StaticMeshComponent.h"
+#include "Engine/Texture2D.h"
+#include "LyudText.h"
+
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -85,6 +89,9 @@ UMaterialInterface* Get(UObject* Owner, FName Name, TMap<FName, TObjectPtr<UMate
 		static const TMap<FString, float> RailTiles = {
 			{ TEXT("ballast"), 0.8f }, { TEXT("armour"), 2.4f }, { TEXT("planks"), 1.6f }, { TEXT("planks_dark"), 1.6f },
 			{ TEXT("rubber"), 1.2f }, { TEXT("tunnel"), 3.f }, { TEXT("wetsand"), 1.5f }, { TEXT("turf"), 1.8f }, { TEXT("lichen"), 2.f },
+			// the train's inside (grid_b; the kit's faces carry metre UVs)
+			{ TEXT("moquette"), 0.35f }, { TEXT("decora"), 1.6f }, { TEXT("floorwood"), 0.6f }, { TEXT("grille"), 0.45f },
+			{ TEXT("ceiling"), 1.8f }, { TEXT("blind"), 0.5f }, { TEXT("varnish"), 0.8f }, { TEXT("studs"), 0.5f }, { TEXT("greenpaint"), 0.8f },
 		};
 		const float* RailTile = RailTiles.Find(Key);
 		const FString TexBase = Key == TEXT("tunnel") && !RailTile ? TEXT("concrete") : Key;
@@ -142,6 +149,51 @@ UMaterialInterface* Get(UObject* Owner, FName Name, TMap<FName, TObjectPtr<UMate
 	}
 	Cache.Add(Name, Out);
 	return Out;
+}
+
+UMaterialInterface* Print(UObject* Owner, TMap<FName, TObjectPtr<UMaterialInterface>>& Cache)
+{
+	static const FName Key(TEXT("ad_atlas"));
+	if (TObjectPtr<UMaterialInterface>* Found = Cache.Find(Key))
+	{
+		return *Found;
+	}
+	UMaterialInterface* Master = LoadObject<UMaterialInterface>(nullptr, SurfacePath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	UTexture2D* Atlas = LyudText::LoadTexture(TEXT("Railway"), TEXT("T_RL_train_atlas"));
+	if (!Master || !Atlas)
+	{
+		return Get(Owner, TEXT("white"), Cache);
+	}
+	// the kit's print faces carry the atlas rectangle in 0..1 UVs: one "metre" per atlas
+	UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Master, Owner);
+	M->SetTextureParameterValue(TEXT("BaseTex"), Atlas);
+	M->SetVectorParameterValue(TEXT("Tint"), FLinearColor::White);
+	M->SetScalarParameterValue(TEXT("Tile"), 1.f);
+	M->SetScalarParameterValue(TEXT("Metallic"), 0.f);
+	M->SetScalarParameterValue(TEXT("RoughMul"), 1.f);
+	Cache.Add(Key, M);
+	return M;
+}
+
+void Dress(UObject* Owner, UStaticMeshComponent* Comp, TMap<FName, TObjectPtr<UMaterialInterface>>& Cache)
+{
+	if (!Comp)
+	{
+		return;
+	}
+	const TArray<FName> Names = Comp->GetMaterialSlotNames();
+	for (int32 I = 0; I < Names.Num(); I++)
+	{
+		const FString N = Names[I].ToString();
+		if (N.StartsWith(TEXT("tx_")))
+		{
+			Comp->SetMaterial(I, Get(Owner, Names[I], Cache));
+		}
+		else if (N.StartsWith(TEXT("ad_")))
+		{
+			Comp->SetMaterial(I, Print(Owner, Cache));
+		}
+	}
 }
 
 UStaticMesh* KitMesh(const TCHAR* Name)

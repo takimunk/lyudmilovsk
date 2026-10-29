@@ -80,7 +80,25 @@ PALETTE = {
     "RL_wetsand": ((0.50, 0.44, 0.33), 0.5, 0.0, 0.0),
     "RL_grass": ((0.33, 0.40, 0.18), 0.9, 0.0, 0.0),
     "RL_rock": ((0.42, 0.40, 0.37), 0.85, 0.0, 0.0),
+    # the inside's textured surfaces (tools/railway_textures.py grid_b; the game: M_TR_Surface "tx_<name>", metre UVs)
+    "tx_moquette": ((0.45, 0.07, 0.10), 0.95, 0.0, 0.0),
+    "tx_decora": ((0.66, 0.82, 0.72), 0.4, 0.0, 0.0),
+    "tx_floorwood": ((0.40, 0.25, 0.14), 0.6, 0.0, 0.0),
+    "tx_grille": ((0.78, 0.76, 0.70), 0.6, 0.0, 0.0),
+    "tx_ceiling": ((0.92, 0.91, 0.86), 0.7, 0.0, 0.0),
+    "tx_blind": ((0.86, 0.78, 0.60), 0.9, 0.0, 0.0),
+    "tx_varnish": ((0.55, 0.30, 0.15), 0.3, 0.0, 0.0),
+    "tx_studs": ((0.25, 0.25, 0.25), 0.7, 0.0, 0.0),
+    # all the printed matter in one atlas (tools/train_ads.py; the game: the player's language's atlas)
+    "ad_atlas": ((1.0, 1.0, 1.0), 0.55, 0.0, 0.0),
 }
+TEX_DIR = os.path.join(REPO, "design", "railway", "textures")
+ATLAS_JSON = os.path.join(REPO, "design", "railway", "ads", "atlas.json")
+ATLAS_IMG = os.path.join(REPO, "textures", "localized", "en", "train_atlas.jpg")
+with open(ATLAS_JSON) as _f:
+    _atlas = json.load(_f)
+ATLAS_SIZE = _atlas["size"][0]
+PRINTS = _atlas["prints"]
 
 
 def srgb_to_lin(c):
@@ -102,6 +120,24 @@ def material(name):
     if emit > 0:
         b.inputs["Emission Color"].default_value = (*lin, 1.0)
         b.inputs["Emission Strength"].default_value = emit
+    img = None
+    if name.startswith("tx_"):
+        img = os.path.join(TEX_DIR, "T_RL_%s_C.png" % name[3:])
+    elif name == "ad_atlas":
+        img = ATLAS_IMG
+    if img and os.path.exists(img):
+        nt = m.node_tree
+        t = nt.nodes.new("ShaderNodeTexImage")
+        t.image = bpy.data.images.load(img, check_existing=True)
+        if name.startswith("tx_"):
+            with open(os.path.join(TEX_DIR, "textures.json")) as f:
+                tile = json.load(f)["textures"][name[3:]]["tile_m"]
+            mp = nt.nodes.new("ShaderNodeMapping")
+            mp.inputs["Scale"].default_value = (1 / tile, 1 / tile, 1)
+            co = nt.nodes.new("ShaderNodeTexCoord")
+            nt.links.new(co.outputs["UV"], mp.inputs["Vector"])
+            nt.links.new(mp.outputs["Vector"], t.inputs["Vector"])
+        nt.links.new(t.outputs["Color"], b.inputs["Base Color"])
     if name == "RL_glass":
         b.inputs["Alpha"].default_value = 0.35
         m.blend_method = "BLEND" if hasattr(m, "blend_method") else None
@@ -109,9 +145,34 @@ def material(name):
 
 
 # --- a small mesh builder: faces per material into one bmesh ------------------------------------------------------
+def metre_uv(pts):
+    """Planar UVs in metres, projected along the face's main axis (the game's textures tile by the metre)."""
+    n = Vector((0, 0, 0))
+    for i in range(len(pts)):
+        a, b = pts[i], pts[(i + 1) % len(pts)]
+        n += Vector(((a.y - b.y) * (a.z + b.z), (a.z - b.z) * (a.x + b.x), (a.x - b.x) * (a.y + b.y)))
+    ax = max(range(3), key=lambda k: abs(n[k]))
+    if ax == 2:
+        return [(p.x, p.y) for p in pts]
+    if ax == 1:
+        return [(p.x, p.z) for p in pts]
+    return [(p.y, p.z) for p in pts]
+
+
+def metre_uvs(o):
+    """The same for a finished object (the body after its booleans)."""
+    me = o.data
+    uv = me.uv_layers.new(name="UVMap") if not me.uv_layers else me.uv_layers[0]
+    for p in me.polygons:
+        pts = [me.vertices[me.loops[i].vertex_index].co.copy() for i in p.loop_indices]
+        for i, t in zip(p.loop_indices, metre_uv(pts)):
+            uv.data[i].uv = t
+
+
 class Builder:
     def __init__(self):
         self.bm = bmesh.new()
+        self.uv = self.bm.loops.layers.uv.new("UVMap")
         self.mats = []
 
     def mi(self, mat):
@@ -119,11 +180,36 @@ class Builder:
             self.mats.append(mat)
         return self.mats.index(mat)
 
-    def face(self, pts, mat):
+    def face(self, pts, mat, uv=None):
         vs = [self.bm.verts.new(Vector(p)) for p in pts]
         f = self.bm.faces.new(vs)
         f.material_index = self.mi(mat)
+        for lp, t in zip(f.loops, uv or metre_uv([v.co for v in vs])):
+            lp[self.uv].uv = t
         return f
+
+    def card(self, rect, c, r, u, w, h, d, edge="RL_chrome", back=None):
+        """A print: a thin closed box (w x h, d deep) whose front (facing r x u) shows the atlas rectangle rect
+        (pixels from the top left); back: another print on the back face (a hanging poster), else edge material."""
+        c, r, u = Vector(c), Vector(r).normalized(), Vector(u).normalized()
+        n = r.cross(u)
+        def P(i, j, k):
+            return c + r * (i * w / 2) + u * (j * h / 2) + n * (k * d / 2)
+        def uvq(rc):
+            S = ATLAS_SIZE
+            u0, u1 = rc[0] / S, rc[2] / S
+            vb, vt = 1 - rc[3] / S, 1 - rc[1] / S
+            return [(u0, vb), (u1, vb), (u1, vt), (u0, vt)]
+        self.face([P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1)], "ad_atlas", uvq(rect))
+        if back:
+            # seen from behind its right is -r: the same corners, the picture mirrored back
+            self.face([P(1, -1, -1), P(-1, -1, -1), P(-1, 1, -1), P(1, 1, -1)], "ad_atlas", uvq(back))
+        else:
+            self.face([P(1, -1, -1), P(-1, -1, -1), P(-1, 1, -1), P(1, 1, -1)], edge)
+        self.face([P(-1, -1, -1), P(1, -1, -1), P(1, -1, 1), P(-1, -1, 1)], edge)
+        self.face([P(1, 1, -1), P(-1, 1, -1), P(-1, 1, 1), P(1, 1, 1)], edge)
+        self.face([P(-1, 1, -1), P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1)], edge)
+        self.face([P(1, -1, -1), P(1, 1, -1), P(1, 1, 1), P(1, -1, 1)], edge)
 
     def box(self, mat, c, s, rot_z=0.0, mats=None):
         """Box at centre c, full size s; mats: optional dict face->mat ('top','bottom','x+','x-','y+','y-')."""
@@ -300,7 +386,7 @@ def car_body():
     b.face(rings[1], "RL_green")
     b.face(list(reversed(rings[0])), "RL_green")
     o = b.to_object("SM_RL_Car")
-    o.data.materials.append(material("RL_wall_in"))
+    o.data.materials.append(material("tx_decora"))
     sol = o.modifiers.new("skin", "SOLIDIFY")
     sol.thickness = SKIN
     sol.offset = -1.0
@@ -310,7 +396,7 @@ def car_body():
     apply_mods(o)
     # the paint: split the outside at the belt's edges, then paint by height (green below, the orange belt, cream
     # above, the roof grey, the underside dark); inside, the ceiling lighter than the walls
-    for m in ("RL_cream", "RL_orange", "RL_roof", "RL_under", "RL_ceiling"):
+    for m in ("RL_cream", "RL_orange", "RL_roof", "RL_under", "tx_ceiling"):
         o.data.materials.append(material(m))
     names = [m.name for m in o.data.materials]
     bm = bmesh.new()
@@ -321,9 +407,9 @@ def car_body():
     for f in bm.faces:
         c = f.calc_center_median()
         nz = f.normal.z
-        if f.material_index == names.index("RL_wall_in"):
+        if f.material_index == names.index("tx_decora"):
             if c.z > EAVE_Z - 0.2:
-                f.material_index = names.index("RL_ceiling")
+                f.material_index = names.index("tx_ceiling")
             continue
         if nz < -0.5:
             f.material_index = names.index("RL_under")
@@ -352,6 +438,7 @@ def car_body():
     cutters.append(cutter_x("cut_gang", [(-0.45, FLOOR_Z - 0.01), (0.45, FLOOR_Z - 0.01), (0.45, FLOOR_Z + 2.0), (-0.45, FLOOR_Z + 2.0)],
                             -L / 2 - 0.3, -L / 2 + 0.3))
     boolean_cut(o, cutters)
+    metre_uvs(o)
     return o
 
 
@@ -378,7 +465,7 @@ def car_details():
         t.cyl("RL_chrome", (xf - 0.02, yy, 1.86), (xf + 0.06, yy, 1.86), 0.075, n=14, caps=False)
         t.disc("RL_tail", (xf + 0.055, yy, 1.86), (1, 0, 0), 0.065, n=14)
     t.box("RL_black", (xf + 0.02, 0, 3.22), (0.06, 0.95, 0.24))
-    t.box("RL_sign", (xf + 0.051, 0, 3.22), (0.002, 0.85, 0.17))
+    t.box("RL_sign", (xf + 0.054, 0, 3.22), (0.002, 0.85, 0.17))
     # the orange belt across the front and its chrome edge, the window divider
     t.box("RL_chrome", (xf + 0.006, 0, 1.92), (0.012, 2.6, 0.02))
     # wipers, grab rails, a horn, the coupler
@@ -396,7 +483,7 @@ def car_details():
             t.box("RL_chrome", (wx, y, WIN_Z[0] - 0.02), (WIN_W + 0.04, 0.012, 0.03))
         for dx in DOOR_X:
             for e in (-1, 1):
-                t.box("RL_chrome", (dx + e * (DOOR_W / 2 + 0.02), y, (FLOOR_Z + DOOR_TOP) / 2), (0.03, 0.012, DOOR_TOP - FLOOR_Z))
+                t.box("RL_chrome", (dx + e * (DOOR_W / 2 + 0.02), y, (FLOOR_Z + DOOR_TOP) / 2 - 0.002), (0.03, 0.012, DOOR_TOP - FLOOR_Z - 0.004))
             t.box("RL_chrome", (dx, y, DOOR_TOP + 0.02), (DOOR_W + 0.07, 0.012, 0.03))
             # the step under the door
             t.box("RL_under", (dx, side * (HALF_W - 0.1), SILL_Z - 0.08), (DOOR_W + 0.1, 0.25, 0.04))
@@ -410,7 +497,7 @@ def car_details():
 
     # the underframe: skirt boxes between the bogies, the air tanks
     u = Builder()
-    u.box("RL_under", (0, 0, 0.75), (8.6, 2.2, 0.5))
+    u.box("RL_under", (0, 0, 0.745), (8.6, 2.2, 0.49))
     for yy in (-0.7, 0.7):
         u.cyl("RL_under", (-3.5, yy, 0.62), (3.5, yy, 0.62), 0.2, n=12)
     u.box("RL_under", (0, 0, SILL_Z - 0.04), (L - 0.4, 2.6, 0.08))
@@ -418,69 +505,209 @@ def car_details():
     return [g, tr, un]
 
 
+def wall_y(z):
+    """The inner face of the side wall at height z (the body's profile less its skin)."""
+    pts = body_profile()
+    for (y0, z0), (y1, z1) in zip(pts, pts[1:]):
+        if z0 <= z <= z1 and z1 > z0:
+            return y0 + (y1 - y0) * (z - z0) / (z1 - z0) - SKIN
+    return HALF_W - SKIN
+
+
+def extrude_x(b, mat, prof, x0, x1, cap=None):
+    """A closed prism along X from a (y, z) outline (counterclockwise seen from +X)."""
+    n = len(prof)
+    A = [(x0, y, z) for (y, z) in prof]
+    B = [(x1, y, z) for (y, z) in prof]
+    for i in range(n):
+        j = (i + 1) % n
+        b.face([A[i], A[j], B[j], B[i]], mat)
+    b.face(list(reversed(A)), cap or mat)
+    b.face(B, cap or mat)
+
+
+def arc(cy, cz, r, a0, a1, k=4):
+    return [(cy + r * math.cos(math.radians(a0 + (a1 - a0) * i / k)), cz + r * math.sin(math.radians(a0 + (a1 - a0) * i / k)))
+            for i in range(k + 1)]
+
+
+# the hanging posters' places (x) and which ads they carry on their two faces; the framed cards over the windows
+HANG = [(-6.0, "beach", "aton"), (-2.0, "cable", "starlings"), (2.0, "lectures", "festival"), (6.0, "kiosk", "sprats")]
+FRAME_ORDER = ["bakery", "amber", "radio", "bath", "beach", "cable", "aton", "kiosk", "starlings", "lectures", "sprats", "festival"]
+
+
 def car_interior():
-    """Benches along the walls, the floor, stanchions, the rack, straps, lamps, fans, the cab's desk and partition."""
+    """A Showa local's inside (docs/railway.md "The inside"): oiled plank floor with studded rubber at the doors, wine
+    moquette benches over louvred heater grilles, varnished end screens and window sills, roller blinds, a luggage
+    rack of chrome rods on brackets, straps, globe lamps, caged ceiling fans, hanging posters over the aisle, framed
+    cards over the racks, the line's map, the car's plates and the notices. Every print is a thin box a few mm off
+    its surface (never coplanar with it: tools/kit_lint.py checks)."""
     b = Builder()
     yin = HALF_W - SKIN
-    b.box("RL_floor", (0, 0, FLOOR_Z - 0.05), (L - 2 * SKIN, 2 * yin, 0.1))
+    # the floor: planks along the car, studded rubber across each doorway (pieces side by side, never overlapping)
+    cuts = sorted([-L / 2 + SKIN] + [dx + e * 0.62 for dx in DOOR_X for e in (-1, 1)] + [L / 2 - SKIN])
+    for x0, x1 in zip(cuts, cuts[1:]):
+        door = any(abs((x0 + x1) / 2 - dx) < 0.1 for dx in DOOR_X)
+        b.box("tx_studs" if door else "tx_floorwood", ((x0 + x1) / 2, 0, FLOOR_Z - 0.05), (x1 - x0, 2 * yin, 0.1))
+    for dx in DOOR_X:
+        for side in (-1, 1):
+            # an aluminium sill plate in the doorway, its top 6 mm proud of the floor
+            b.box("RL_chrome", (dx, side * (HALF_W - 0.06), FLOOR_Z - 0.004), (DOOR_W - 0.006, 0.14, 0.02))
     seats = []
     runs = [(-DOOR_X[1] + DOOR_W / 2 + 0.15, DOOR_X[1] - DOOR_W / 2 - 0.15), (DOOR_X[1] + DOOR_W / 2 + 0.15, L / 2 - 1.55),
             (-L / 2 + 0.25, DOOR_X[0] - DOOR_W / 2 - 0.15)]
+    wy = wall_y(SEAT_TOP)
     for (x0, x1) in runs:
         for side in (-1, 1):
-            yb = side * (yin - SEAT_D / 2)
-            # cushion, its front skirt, the backrest
-            b.box("RL_seat", ((x0 + x1) / 2, yb, SEAT_TOP - 0.07), (x1 - x0, SEAT_D, 0.14))
-            b.box("RL_wall_in", ((x0 + x1) / 2, side * (yin - SEAT_D + 0.03), FLOOR_Z + 0.15), (x1 - x0, 0.03, 0.3))
-            b.box("RL_seat", ((x0 + x1) / 2, side * (yin - 0.06), SEAT_TOP + 0.28), (x1 - x0, 0.1, 0.48))
-            # the end screens with a chrome rail
-            for xe in (x0, x1):
-                b.box("RL_wall_in", (xe, side * (yin - 0.35), FLOOR_Z + 0.55), (0.03, 0.6, 1.1))
-                b.cyl("RL_chrome", (xe, side * (yin - 0.7), FLOOR_Z), (xe, side * (yin - 0.7), EAVE_Z - 0.2), 0.016, n=8)
-            # seats every 0.46 m along the bench, facing across the car
+            s_ = side
+            yf = wy - SEAT_D            # the cushion's front (in |y|)
+            # the cushion: a slab with a rounded front edge, the pile on top and front
+            prof = [(wy - 0.07, SEAT_TOP - 0.15), (yf + 0.02, SEAT_TOP - 0.15)] + arc(yf + 0.06, SEAT_TOP - 0.06, 0.06, 270, 180, 3)[1:] \
+                + arc(yf + 0.07, SEAT_TOP - 0.07, 0.07, 180, 90, 4)[1:] + [(wy - 0.07, SEAT_TOP)]
+            extrude_x(b, "tx_moquette", [(s_ * y, z) for (y, z) in (prof if s_ < 0 else reversed(prof))], x0, x1)
+            # the backrest, leaning back 9 degrees, its top rolled
+            t = math.radians(9)
+            bz0, bz1 = SEAT_TOP + 0.03, SEAT_TOP + 0.50
+            yb0 = wy - 0.12
+            back = [(yb0, bz0), (wy - 0.015, bz0), (wy - 0.015 - (bz1 - bz0) * 0.02, bz1 - 0.03)] \
+                + arc(yb0 + (bz1 - bz0) * math.tan(t) + 0.035, bz1 - 0.035, 0.035, 60, 180, 3) \
+                + [(yb0 + 0.02, bz0 + 0.05)]
+            extrude_x(b, "tx_moquette", [(s_ * y, z) for (y, z) in (back if s_ < 0 else reversed(back))], x0 + 0.025, x1 - 0.025)
+            # the heater grille under it (louvred steel), a little back from the cushion's front
+            b.box("tx_grille", ((x0 + x1) / 2, s_ * (yf + 0.06), (FLOOR_Z + SEAT_TOP - 0.15) / 2), (x1 - x0 - 0.04, 0.025, SEAT_TOP - 0.15 - FLOOR_Z - 0.004))
+            b.box("RL_under", ((x0 + x1) / 2, s_ * ((yf + 0.075 + wy) / 2), FLOOR_Z + 0.006), (x1 - x0 - 0.04, wy - yf - 0.09, 0.01))
+            # the end screens: varnished boards with a bent chrome rail
+            for xe, e in ((x0, -1), (x1, 1)):
+                b.box("tx_varnish", (xe + e * 0.017, s_ * (wy - 0.30), FLOOR_Z + 0.50), (0.025, 0.56, 0.96))
+                yr = s_ * (wy - 0.66)
+                b.cyl("RL_chrome", (xe + e * 0.04, yr, FLOOR_Z - 0.02), (xe + e * 0.04, yr, FLOOR_Z + 0.95), 0.016, n=8)
+                b.cyl("RL_chrome", (xe + e * 0.04, yr, FLOOR_Z + 0.95), (xe + e * 0.04, s_ * (wy - 0.026), FLOOR_Z + 0.95), 0.016, n=8)
+                b.cyl("RL_chrome", (xe + e * 0.04, yr, FLOOR_Z + 0.95), (xe + e * 0.04, yr, EAVE_Z - 0.2), 0.016, n=8)
             k = int((x1 - x0) / 0.46)
             for i in range(k):
                 sx = x0 + (i + 0.5) * (x1 - x0) / k
-                fy = side * (yin - SEAT_D)          # the cushion's front edge
-                seats.append({"x": round(sx, 3), "y": round(fy, 3), "z": FLOOR_Z, "face_y": -side})
-    # the luggage rack over the windows, the strap rails with rings
+                seats.append({"x": round(sx, 3), "y": round(s_ * yf, 3), "z": FLOOR_Z, "face_y": -s_})
+    # the windows from inside: varnished sills and frames, roller blinds (some pulled part way)
     for side in (-1, 1):
-        b.box("RL_chrome", (0, side * (yin - 0.17), 3.05), (L - 3.4, 0.3, 0.02))
+        for i, wx in enumerate(WINDOWS):
+            ys = wall_y(WIN_Z[0])
+            b.box("tx_varnish", (wx, side * (ys - 0.03), WIN_Z[0] - 0.03), (WIN_W + 0.13, 0.08, 0.03))
+            for e in (-1, 1):
+                b.box("tx_varnish", (wx + e * (WIN_W / 2 + 0.035), side * (wall_y(2.5) - 0.006), (WIN_Z[0] + WIN_Z[1]) / 2), (0.05, 0.022, WIN_Z[1] - WIN_Z[0] + 0.02))
+            b.box("tx_varnish", (wx, side * (wall_y(WIN_Z[1]) - 0.008), WIN_Z[1] + 0.03), (WIN_W + 0.12, 0.026, 0.06))
+            # the blind's roll under the top frame, and the blind itself down to a varnished pull bar
+            yr = side * (wall_y(WIN_Z[1]) - 0.045)
+            b.cyl("tx_blind", (wx - WIN_W / 2 + 0.03, yr, WIN_Z[1] - 0.03), (wx + WIN_W / 2 - 0.03, yr, WIN_Z[1] - 0.03), 0.024, n=10)
+            drop = [0.0, 0.35, 0.0, 0.6, 0.15, 0.0, 0.5, 0.0][(i + (3 if side > 0 else 0)) % 8]
+            if drop > 0:
+                zt, zb = WIN_Z[1] - 0.05, WIN_Z[1] - 0.05 - drop * (WIN_Z[1] - WIN_Z[0] - 0.08)
+                yb = side * (wall_y(WIN_Z[1]) + 0.012)
+                b.box("tx_blind", (wx, yb, (zt + zb) / 2), (WIN_W - 0.08, 0.004, zt - zb))
+                b.cyl("tx_varnish", (wx - WIN_W / 2 + 0.05, yb, zb), (wx + WIN_W / 2 - 0.05, yb, zb), 0.012, n=8)
+    # the luggage rack: chrome rods on brackets, over the benches only
+    racks = [(-L / 2 + 0.35, DOOR_X[0] - 0.72), (DOOR_X[0] + 0.72, DOOR_X[1] - 0.72), (DOOR_X[1] + 0.72, L / 2 - 1.6)]
+    for side in (-1, 1):
+        for (x0, x1) in racks:
+            zr = 3.05
+            yw = wall_y(zr)
+            for k in range(6):
+                yy = side * (yw - 0.04 - k * 0.055)
+                b.cyl("RL_chrome", (x0, yy, zr), (x1, yy, zr), 0.007, n=6)
+            b.cyl("RL_chrome", (x0, side * (yw - 0.34), zr + 0.03), (x1, side * (yw - 0.34), zr + 0.03), 0.013, n=8)
+            nb = max(2, int((x1 - x0) / 1.1) + 1)
+            for k in range(nb):
+                bx = x0 + 0.05 + k * (x1 - x0 - 0.1) / (nb - 1)
+                b.box("RL_chrome", (bx, side * (yw - 0.17), zr - 0.012), (0.02, 0.36, 0.014))
+                b.cyl("RL_chrome", (bx, side * (yw - 0.005), zr - 0.22), (bx, side * (yw - 0.33), zr - 0.01), 0.008, n=6)
+    # straps on two rails along the aisle
+    for side in (-1, 1):
         b.cyl("RL_chrome", (-L / 2 + 1.0, side * 0.55, EAVE_Z - 0.05), (L / 2 - 1.6, side * 0.55, EAVE_Z - 0.05), 0.014, n=6)
         for i in range(24):
             rx = -L / 2 + 1.3 + i * 0.55
             if any(abs(rx - dx) < 0.3 for dx in DOOR_X):
                 continue
-            b.box("RL_white", (rx, side * 0.55, EAVE_Z - 0.18), (0.012, 0.012, 0.25))
+            b.box("RL_white", (rx, side * 0.55, EAVE_Z - 0.18), (0.022, 0.006, 0.25))
             b.torus_ring("RL_white", (rx, side * 0.55, EAVE_Z - 0.36), (1, 0, 0), 0.06, 0.01, n=10, m=4)
-    # lamps: two rows of round glass shades; ceiling fans between them
+    # lamps: two rows of globes on chrome collars
     lamps = []
+    zc = ROOF_Z - SKIN
     for i in range(6):
         lx = -L / 2 + 1.6 + i * 2.5
         for yy in (-0.62, 0.62):
-            b.cyl("RL_lamp", (lx, yy, ROOF_Z - 0.18), (lx, yy, ROOF_Z - 0.26), 0.11, n=12)
+            b.cyl("RL_chrome", (lx, yy, zc - 0.11), (lx, yy, zc - 0.17), 0.075, n=12)
+            b.cyl("RL_lamp", (lx, yy, zc - 0.17), (lx, yy, zc - 0.27), 0.10, n=14, r2=0.07)
             lamps.append([round(lx, 3), yy, ROOF_Z - 0.3])
+    # the fans: a motor, three blades and a round cage of rings
     for fx in (-4.0, 0.0, 4.0):
-        c = (fx, 0, ROOF_Z - 0.2)
-        b.cyl("RL_ceiling", (fx, 0, ROOF_Z - 0.12), (fx, 0, ROOF_Z - 0.3), 0.07, n=10)
+        b.cyl("RL_white", (fx, 0, zc - 0.03), (fx, 0, zc - 0.16), 0.03, n=8)
+        b.cyl("RL_white", (fx, 0, zc - 0.16), (fx, 0, zc - 0.26), 0.075, n=12)
         for k in range(3):
             a = 2 * math.pi * k / 3
-            b.box("RL_ceiling", (fx + 0.22 * math.cos(a), 0.22 * math.sin(a), ROOF_Z - 0.28), (0.36, 0.08, 0.01), rot_z=a)
-        b.box("RL_white", (fx, 0, ROOF_Z - 0.32), (0.5, 0.5, 0.012))
+            b.box("tx_ceiling", (fx + 0.15 * math.cos(a), 0.15 * math.sin(a), zc - 0.24), (0.24, 0.07, 0.008), rot_z=a)
+        for rz, rr in ((zc - 0.20, 0.27), (zc - 0.27, 0.27), (zc - 0.31, 0.15)):
+            b.torus_ring("RL_chrome", (fx, 0, rz), (0, 0, 1), rr, 0.005, n=20, m=4)
+        for k in range(8):
+            a = 2 * math.pi * k / 8
+            b.cyl("RL_chrome", (fx + 0.27 * math.cos(a), 0.27 * math.sin(a), zc - 0.20), (fx + 0.27 * math.cos(a), 0.27 * math.sin(a), zc - 0.27), 0.004, n=4)
+            b.cyl("RL_chrome", (fx + 0.27 * math.cos(a), 0.27 * math.sin(a), zc - 0.27), (fx + 0.15 * math.cos(a), 0.15 * math.sin(a), zc - 0.31), 0.004, n=4)
     # stanchions by the doors
     for dx in DOOR_X:
         for e in (-1, 1):
             for side in (-1, 1):
-                b.cyl("RL_chrome", (dx + e * 0.75, side * (yin - 0.45), FLOOR_Z), (dx + e * 0.75, side * (yin - 0.45), EAVE_Z - 0.2), 0.016, n=8)
+                b.cyl("RL_chrome", (dx + e * 0.75, side * (yin - 0.45), FLOOR_Z - 0.02), (dx + e * 0.75, side * (yin - 0.45), EAVE_Z - 0.2), 0.016, n=8)
     # the cab: a partition with a door window, the driver's desk and seat on the right (y-)
     xp = L / 2 - 1.45
-    b.box("RL_wall_in", (xp, -0.85, FLOOR_Z + 1.2), (0.04, 1.0, 2.4))
-    b.box("RL_wall_in", (xp, 0.9, FLOOR_Z + 1.2), (0.04, 0.9, 2.4))
-    b.box("RL_wall_in", (xp, 0.0, FLOOR_Z + 2.25), (0.04, 0.8, 0.3))
-    b.box("RL_green", (L / 2 - 0.45, -0.6, FLOOR_Z + 0.5), (0.6, 1.1, 1.0))
+    b.box("tx_decora", (xp, -0.84, FLOOR_Z + 1.195), (0.04, 0.98, 2.41))
+    b.box("tx_decora", (xp, 0.89, FLOOR_Z + 1.195), (0.04, 0.88, 2.41))
+    b.box("tx_decora", (xp, 0.0, FLOOR_Z + 2.25), (0.04, 0.8, 0.3))
+    b.box("tx_varnish", (xp - 0.025, 0.0, FLOOR_Z + 2.08), (0.01, 0.82, 0.03))
+    b.box("RL_green", (L / 2 - 0.45, -0.6, FLOOR_Z + 0.495), (0.6, 1.1, 1.01))
     b.box("RL_black", (L / 2 - 0.4, -0.6, FLOOR_Z + 1.02), (0.45, 1.0, 0.06))
-    b.box("RL_seat", (L / 2 - 1.05, -0.6, FLOOR_Z + 0.5), (0.45, 0.45, 0.1))
-    b.cyl("RL_chrome", (L / 2 - 1.05, -0.6, FLOOR_Z), (L / 2 - 1.05, -0.6, FLOOR_Z + 0.45), 0.03, n=8)
+    b.box("tx_moquette", (L / 2 - 1.05, -0.6, FLOOR_Z + 0.5), (0.45, 0.45, 0.1))
+    b.cyl("RL_chrome", (L / 2 - 1.05, -0.6, FLOOR_Z - 0.02), (L / 2 - 1.05, -0.6, FLOOR_Z + 0.45), 0.03, n=8)
+
+    # --- print ----------------------------------------------------------------------------------------------
+    P = PRINTS
+    X, Y, Z = (1, 0, 0), (0, 1, 0), (0, 0, 1)
+    # hanging posters over the aisle, two ads back to back, a chrome clip bar top and bottom, two wires up
+    for hx, a1, a2 in HANG:
+        w, h = 0.52, 0.52 * 720 / 1008
+        zt = zc - 0.24
+        b.card(P["hang_" + a1], (hx, 0, zt - h / 2), (0, -1, 0), Z, w, h, 0.004, back=P["hang_" + a2])
+        for zz in (zt + 0.006, zt - h - 0.006):
+            b.box("RL_chrome", (hx, 0, zz), (0.014, w + 0.02, 0.014))
+        for yy in (-0.2, 0.2):
+            b.cyl("RL_chrome", (hx, yy, zt + 0.012), (hx, yy, zc + 0.01), 0.0025, n=4)
+    # framed cards over the racks, along both walls, one over each window
+    k = 0
+    for side in (-1, 1):
+        for wx in WINDOWS:
+            name = FRAME_ORDER[k % len(FRAME_ORDER)]
+            k += 1
+            w, h = 0.50, 0.50 * 362 / 1008
+            zm = 3.075 + h / 2 + 0.02
+            yw = wall_y(zm)
+            # the frame stands 8 mm off the wall (the wall leans a little: never touching it), the card 3 mm proud
+            b.box("RL_chrome", (wx, side * (yw - 0.008 - 0.006), zm), (w + 0.03, 0.012, h + 0.03))
+            b.card(P["frame_" + name], (wx, side * (yw - 0.0225), zm), (side, 0, 0), Z, w, h, 0.003)
+    # the line's map over the gangway door and over the cab's door; the plates and notices on the end wall
+    xe = -L / 2 + SKIN
+    b.box("RL_chrome", (xe + 0.012, 0, 3.32), (0.008, 0.95, 0.25))
+    b.card(P["route"], (xe + 0.0185, 0, 3.32), (0, 1, 0), Z, 0.92, 0.92 * 256 / 1008, 0.003)
+    b.box("RL_chrome", (xp - 0.032, 0, 3.40), (0.008, 0.95, 0.25))
+    b.card(P["route"], (xp - 0.0385, 0, 3.40), (0, -1, 0), Z, 0.92, 0.92 * 256 / 1008, 0.003)
+    b.card(P["plate_number"], (xe + 0.012, 0.66, 2.95), (0, 1, 0), Z, 0.34, 0.34 * 160 / 512, 0.006, edge="RL_green")
+    b.card(P["plate_maker"], (xe + 0.012, -0.66, 2.95), (0, 1, 0), Z, 0.30, 0.30 * 160 / 512, 0.006, edge="RL_wood")
+    b.card(P["sticker_no_smoking"], (xe + 0.004, 0.85, 2.55), (0, 1, 0), Z, 0.20, 0.20, 0.0015, edge="RL_white")
+    b.card(P["sticker_no_smoking"], (xp - 0.0215, 0.9, 2.55), (0, -1, 0), Z, 0.20, 0.20, 0.0015, edge="RL_white")
+    for dx in DOOR_X:
+        for side in (-1, 1):
+            ex = dx + (0.85 if dx > 0 else -0.85)
+            b.card(P["sticker_emergency"], (ex, side * (wall_y(2.45) - 0.006), 2.45), (side, 0, 0), Z, 0.26, 0.13, 0.0015, edge="RL_white")
+    # priority seats: the gangway end's benches, a sticker low on the end windows' glass and over the bench
+    for side in (-1, 1):
+        yg = side * (HALF_W - SKIN / 2 - 0.004)
+        b.card(P["sticker_priority"], (-6.35, yg, 2.14), (side, 0, 0), Z, 0.40, 0.40 * 256 / 1008, 0.0015, edge="RL_white")
     o = b.to_object("SM_RL_CarInterior")
     return o, seats, lamps
 
@@ -488,14 +715,18 @@ def car_interior():
 def door_leaf():
     """One sliding leaf (half the doorway: two leaves part in the middle), its outside in the body's paint."""
     b = Builder()
-    w, h = DOOR_W / 2 + 0.04, DOOR_TOP - FLOOR_Z + 0.03
+    w, h = DOOR_W / 2 + 0.02, DOOR_TOP - FLOOR_Z + 0.03      # shut, the two meet edge to edge (game: LeafX 0.31)
     # the leaf: frame along X (its width), Z up; the outside +Y
-    b.box("RL_cream", (0, 0, h / 2), (w, 0.04, h), mats={"y-": "RL_wall_in"})
-    b.box("RL_green", (0, 0.022, 0.35), (w, 0.004, 0.7))
-    b.box("RL_orange", (0, 0.022, 0.73), (w, 0.004, 0.06))
-    # its window and rubber edge
-    b.box("RL_glass", (0, 0.0, 1.5), (w - 0.18, 0.045, 0.85))
-    b.box("RL_black", (w / 2 - 0.01, 0, h / 2), (0.02, 0.05, h))
+    b.box("RL_cream", (0, 0, h / 2), (w, 0.04, h), mats={"y-": "tx_decora"})
+    # the paint bands, 0.5 mm proud of the outside, short of the ends (and of the rubber)
+    b.box("RL_green", (-0.012, 0.0225, 0.35), (w - 0.028, 0.004, 0.7))
+    b.box("RL_orange", (-0.012, 0.0225, 0.73), (w - 0.028, 0.004, 0.06))
+    # its window and the rubber of the meeting edge, both standing proud of the leaf on both faces
+    b.box("RL_glass", (0, 0.0, 1.5), (w - 0.18, 0.047, 0.85))
+    b.box("RL_black", (w / 2 - 0.012, 0, h / 2), (0.02, 0.044, h - 0.01))
+    # inside (y-): the fingers sticker by the meeting edge, "don't lean" on the glass
+    b.card(PRINTS["sticker_fingers"], (w / 2 - 0.14, -0.0215, 0.92), (1, 0, 0), (0, 0, 1), 0.15, 0.15, 0.002, edge="RL_white")
+    b.card(PRINTS["sticker_lean"], (0, -0.0265, 1.17), (1, 0, 0), (0, 0, 1), 0.40, 0.40 * 160 / 1008, 0.0015, edge="RL_white")
     return b.to_object("SM_RL_DoorLeaf")
 
 
@@ -559,7 +790,7 @@ def crossing_post():
     # the crossbuck (an X of two yellow boards with black edges)
     for a in (math.radians(35), math.radians(-35)):
         R = Matrix.Rotation(a, 3, "X")
-        for (mat, s, dx) in (("RL_black", (0.03, 1.32, 0.24), 0.0), ("RL_yellow", (0.035, 1.25, 0.17), 0.003)):
+        for (mat, s, dx) in (("RL_black", (0.03, 1.32, 0.24), 0.0), ("RL_yellow", (0.035, 1.25, 0.17), 0.006)):
             hx, hy, hz = s[0] / 2, s[1] / 2, s[2] / 2
             cs = [Vector((x, y, z)) for x in (-hx, hx) for y in (-hy, hy) for z in (-hz, hz)]
             pts = [R @ c + Vector((0.09 + dx, 0, 3.55)) for c in cs]
@@ -603,7 +834,7 @@ def crossing_gate():
         y0 = 0.25 + i * (ln / n)
         a.box("RL_yellow" if i % 2 == 0 else "RL_black", (0, y0 + ln / n / 2, 0), (0.06, ln / n, 0.09))
     a.box("RL_black", (0, 0.05, 0), (0.12, 0.5, 0.18))   # the counterweight's side
-    a.box("RL_under", (0, -0.25, 0), (0.12, 0.3, 0.25))
+    a.box("RL_under", (0, -0.25, 0), (0.116, 0.3, 0.25))
     a.cyl("RL_tail", (0.035, ln - 0.3, 0), (0.05, ln - 0.3, 0), 0.04, n=10)
     arm = a.to_object("SM_RL_XingArm")
     return [box, arm]
@@ -616,7 +847,7 @@ def shelter():
     w, d, h = 3.2, 1.5, 2.35
     for x in (-w / 2, w / 2):
         b.box("RL_wood", (x, -d / 2, h / 2), (0.08, d, h))
-    b.box("RL_wood", (0, -d + 0.04, h / 2), (w, 0.08, h))
+    b.box("RL_wood", (0, -d + 0.04, h / 2), (w - 0.08, 0.08, h))
     for i in range(12):
         b.box("RL_wood_dark", (-w / 2 + 0.13 + i * (w - 0.2) / 11, -d + 0.09, h / 2), (0.02, 0.01, h - 0.1))
     roof = Matrix.Rotation(math.radians(-8), 3, "X")
@@ -794,12 +1025,34 @@ def main():
         preview([car, *details, inside, b1, b2, p1] + lv[:4], prev)
         for o in [b1, b2, p1] + lv:
             bpy.data.objects.remove(o, do_unlink=True)
+    # glitch checks (blender/railway/kit_lint.py): the car as the game assembles it (body, glass, trim, inside, the
+    # door leaves shut in their doorways), then every other piece on its own
+    sys.path.insert(0, HERE)
+    import kit_lint
+    scn = bpy.context.scene
+    shut = []
+    for dx in DOOR_X:
+        for side in (-1, 1):
+            for e in (-1, 1):
+                l = leaf.copy(); l.location = (dx + e * 0.31, side * (HALF_W - 0.03), FLOOR_Z)
+                l.rotation_euler = (0, 0, 0 if side > 0 else math.pi)
+                scn.collection.objects.link(l); shut.append(l)
+    bpy.context.view_layer.update()
+    problems = kit_lint.lint([car, *details, inside] + shut, "car")
+    for o in shut:
+        bpy.data.objects.remove(o, do_unlink=True)
+    for o in [gang, bog, pan, *xpost, *xgate, shel, nb, ms, sl]:
+        problems += kit_lint.lint([o], o.name)
+    if "--strict" in argv and problems:
+        raise SystemExit("RAILKIT: %d glitch findings (KITLINT lines above)" % len(problems))
     os.makedirs(os.path.dirname(OUT_GLB), exist_ok=True)
     bpy.ops.object.select_all(action="DESELECT")
     for o in objs:
         o.location = (0, 0, 0)
         o.select_set(True)
-    bpy.ops.export_scene.gltf(filepath=OUT_GLB, use_selection=True, export_format="GLB", export_yup=True, export_apply=True)
+    # no images in the file: the game puts its own textures on the tx_* and ad_* slots (the preview's are only for looking)
+    bpy.ops.export_scene.gltf(filepath=OUT_GLB, use_selection=True, export_format="GLB", export_yup=True, export_apply=True,
+                              export_image_format="NONE")
     kit = {
         "_doc": "Made by blender/railway/rail_kit.py; metres, the car's frame (X along it, +X its cab end, Y left, Z up from the rail head).",
         "car": {"length": L, "half_width": HALF_W, "floor": FLOOR_Z, "roof": ROOF_Z, "sill": SILL_Z,

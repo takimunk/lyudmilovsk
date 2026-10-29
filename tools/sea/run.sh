@@ -7,5 +7,5 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Weather"
 mkdir -p "$ROOT/Saved/Sea"
-clang++ -std=c++17 -O2 -Wall -I"$SRC" -o "$ROOT/Saved/Sea/seatest" "$ROOT/tools/sea/seatest.cpp" "$SRC/WindModel.cpp" "$SRC/WaveModel.cpp"
+clang++ -std=c++17 -O2 -Wall -I"$SRC" -o "$ROOT/Saved/Sea/seatest" "$ROOT/tools/sea/seatest.cpp" "$SRC/WindModel.cpp" "$SRC/WaveModel.cpp" "$SRC/WeatherModel.cpp" "$SRC/RainModel.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/Sea/seatest" "$@"

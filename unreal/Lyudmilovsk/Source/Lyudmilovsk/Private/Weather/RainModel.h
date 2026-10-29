@@ -1,4 +1,4 @@
-// Clouds, rain, snow, thunder, fog and the air's temperature over the outdoor map, in plain C++ (no Unreal types) so it
+// The old short summary of the weather (now a view of WeatherModel.h), in plain C++ (no Unreal types) so it
 // can be run and looked at outside the engine (tools/audiosim/run.sh weather). ULyudWeatherSubsystem wraps it.
 //
 // Like the wind (WindModel.h) it is a function of the local date and hour, not a simulation, and it leans on the
@@ -19,7 +19,7 @@ namespace LyudWeather
 	struct FSkyParams
 	{
 		/** Picks the sequence of days (the wind has its own seed; this one only decides the rain inside its fronts; 2660 = broken cloud and dry on the scene's start, rain the next days). */
-		uint32_t Seed = 2660;
+		uint32_t Seed = 750;
 		/** How much more often than the climate it rains (1 = the Baltic coast; 0 = never). */
 		double Wetness = 1.0;
 		/** Monthly mean temperature: the yearly cosine's mean and half swing, C, and the coldest day of the year. */

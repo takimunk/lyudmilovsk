@@ -49,6 +49,7 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> LampsB;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> Glows;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Bell;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> BellAtten;
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UMaterialInterface>> Mats;
 	TArray<FQuat> ArmUp, ArmDown;
 	double S = 0.0;              // where the crossing is along the line
