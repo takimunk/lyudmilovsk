@@ -78,17 +78,23 @@ namespace
 		];
 	}
 
-	TSharedRef<SWidget> Link(const FText& T, TFunction<void()> Do, uint32 Seed, float Size = 30.f)
+	/** bWrap only where the link is given a width (a filled slot): in a wrap box a wrapping text shrinks to its last width. */
+	TSharedRef<SWidget> Link(const FText& T, TFunction<void()> Do, uint32 Seed, float Size = 30.f, bool bWrap = false)
 	{
+		TSharedRef<SHorizontalBox> Row = SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(bWrap ? VAlign_Top : VAlign_Center)[Words(FText::FromString(TEXT("→ ")), Size, InkSoft)];
+		if (bWrap)
+		{
+			Row->AddSlot().FillWidth(1.f).VAlign(VAlign_Top)[Words(T, Size, Ink, true, true)];
+		}
+		else
+		{
+			Row->AddSlot().AutoWidth().VAlign(VAlign_Center)[Words(T, Size, Ink, true)];
+		}
 		return SNew(SLyudInkButton).HoverMark(EMark::Underline).Seed(Seed)
 			.OnClicked_Lambda([Do]() { Do(); })
 			[
-				SNew(SBox).Padding(FMargin(4, 0))
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[Words(FText::FromString(TEXT("→ ")), Size, InkSoft)]
-					+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)[Words(T, Size, Ink, true, true)]
-				]
+				SNew(SBox).Padding(FMargin(4, 0))[Row]
 			];
 	}
 
@@ -743,7 +749,7 @@ TSharedRef<SWidget> SLyudDiarySpread::MapNote()
 			Words(Near.IsNone() ? FText::GetEmpty() : LyudText::Get(TEXT("ui.map.near"), { FStringFormatArg(ULyudQuests::PlaceName(Near).ToString()),
 				FStringFormatArg(FMath::RoundToInt(FMath::Sqrt(Best))) }), 26.f, Ink, false, true)
 		];
-		Box->AddSlot().AutoHeight().HAlign(HAlign_Fill)[Link(LyudText::Get(TEXT("ui.diary.to_me")), [this] { if (Map) { Map->CenterOnPlayer(); } }, 77, 26.f)];
+		Box->AddSlot().AutoHeight().HAlign(HAlign_Fill)[Link(LyudText::Get(TEXT("ui.diary.to_me")), [this] { if (Map) { Map->CenterOnPlayer(); } }, 77, 26.f, true)];
 	}
 	TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
 	int32 NFound = 0, NAll = 0;
