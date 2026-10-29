@@ -1,7 +1,6 @@
 #include "Weather/LyudGrade.h"
 
 #include "Components/PostProcessComponent.h"
-#include "Components/SkyAtmosphereComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -39,11 +38,14 @@ TStatId ULyudGradeSubsystem::GetStatId() const
 
 void ULyudGradeSubsystem::Deinitialize()
 {
-	if (Sky.IsValid() && Sky->Atmosphere && BaseMie >= 0.f)
-	{
-		Sky->Atmosphere->SetMieScatteringScale(BaseMie);
-	}
 	Super::Deinitialize();
+}
+
+float ULyudGradeSubsystem::GetSkyHazeScale(const UObject* WorldContext)
+{
+	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+	const ULyudGradeSubsystem* G = World ? World->GetSubsystem<ULyudGradeSubsystem>() : nullptr;
+	return G && G->HazeScale > 0.f ? G->HazeScale : 1.f;
 }
 
 void ULyudGradeSubsystem::EnsureActor()
@@ -81,10 +83,6 @@ void ULyudGradeSubsystem::EnsureActor()
 	S.bOverride_ColorSaturationMidtones = S.bOverride_ColorGainMidtones = S.bOverride_ColorContrastMidtones = S.bOverride_ColorGammaMidtones = true;
 	S.bOverride_ColorSaturationHighlights = S.bOverride_ColorGainHighlights = true;
 	S.bOverride_ColorContrast = true;
-	if (Sky->Atmosphere)
-	{
-		BaseMie = Sky->Atmosphere->MieScatteringScale;
-	}
 }
 
 void ULyudGradeSubsystem::Tick(float DeltaTime)
@@ -153,21 +151,12 @@ void ULyudGradeSubsystem::Tick(float DeltaTime)
 	Outdoor = FMath::FInterpConstantTo(Outdoor, Sky->IsPlayerOutdoors() ? 1.f : 0.f, DeltaTime, 0.35f);
 	Grade->BlendWeight = Outdoor * (K > 0.f ? 1.f : 0.f);
 
-	// the sky's haze: crisp dry air, a little milkier when humid, more in mist and rain (summer keeps its blue) (the atmosphere's Mie scattering)
-	if (Sky->Atmosphere && BaseMie >= 0.f)
+	// the sky's haze as a factor for ALyudSky's own Mie (it owns MieScatteringScale): crisp dry air, a little milkier
+	// when humid, more in mist and rain; eased
 	{
 		const float Humid = FMath::Pow(FMath::Clamp(W.Humidity, 0.f, 1.f), 4.f);
-		float Mie = BaseMie * (0.85f + 0.1f * Summer + 0.35f * Humid + 1.2f * Smooth(20000.f, 3000.f, W.VisibilityM));
-		if (K <= 0.f)
-		{
-			Mie = BaseMie;
-		}
-		// ease, and only touch the component when it moved (it re-renders the sky's LUTs)
-		LastMie = LastMie < 0.f ? Mie : FMath::FInterpTo(LastMie, Mie, DeltaTime, 0.2f);
-		if (FMath::Abs(LastMie - Sky->Atmosphere->MieScatteringScale) > BaseMie * 0.003f)
-		{
-			Sky->Atmosphere->SetMieScatteringScale(LastMie);
-		}
+		const float Want = K > 0.f ? 0.85f + 0.1f * Summer + 0.35f * Humid + 1.2f * Smooth(20000.f, 3000.f, W.VisibilityM) : 1.f;
+		HazeScale = HazeScale < 0.f ? Want : FMath::FInterpTo(HazeScale, Want, DeltaTime, 0.2f);
 	}
 	if (CVarDebug.GetValueOnGameThread() > 0 && GEngine)
 	{
@@ -177,6 +166,6 @@ void ULyudGradeSubsystem::Tick(float DeltaTime)
 
 FString ULyudGradeSubsystem::DebugReport() const
 {
-	return FString::Printf(TEXT("GRADE outdoor %.2f winter-night %.2f summer-day %.2f golden %.2f grey %.2f haze %.2f mie %.5f (base %.5f)"),
-		Outdoor, WinterNight, SummerDay, Golden, Grey, Haze, LastMie, BaseMie);
+	return FString::Printf(TEXT("GRADE outdoor %.2f winter-night %.2f summer-day %.2f golden %.2f grey %.2f haze %.2f sky haze x%.2f"),
+		Outdoor, WinterNight, SummerDay, Golden, Grey, Haze, HazeScale);
 }
