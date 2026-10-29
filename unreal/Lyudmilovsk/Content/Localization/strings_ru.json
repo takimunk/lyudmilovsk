@@ -843,5 +843,7 @@
  "sign.train.route_title": "Морская линия",
  "sign.train.car_number": "モハ 1958",
  "sign.train.maker": "Ниппон Сярё · 1958",
- "sign.train.emergency": "Экстренная связь с машинистом"
+ "sign.train.emergency": "Экстренная связь с машинистом",
+ "ui.train.sit": "[E] Сесть",
+ "ui.train.stand": "[E] Встать"
 }

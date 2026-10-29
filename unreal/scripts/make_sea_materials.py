@@ -27,10 +27,14 @@ X = unreal
 MP = unreal.MaterialProperty
 EXCL = unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS
 
-# Baltic coastal water: brownish green, cloudy, a few metres of visibility (coefficients per metre).
-# Blue goes first in the Baltic (yellow substance from the rivers), red next (the water itself).
-ABSORPTION = (0.45, 0.14, 0.38)
-SCATTERING = (0.03, 0.04, 0.032)
+# Our sea's water: sea-wave teal (aquamarine) turning dark teal-green with depth, a few metres of visibility
+# (coefficients per metre). Red goes first (the water itself), blue a little before green (a touch of the Baltic's
+# yellow substance); the scattering is low against the absorption, so deep water is dark.
+ABSORPTION = (0.42, 0.085, 0.13)
+SCATTERING = (0.016, 0.03, 0.03)
+SHALLOW_CLARITY = 0.03    # absorption and scattering in the first few tens of cm, of the open sea's
+SHALLOW_CLEAR_M = 6.0     # depth (m) from which the water is the open sea's
+SHALLOW_PALE_M = 0.25     # down to this depth the water is nearly clear over the sand
 
 
 def _log(msg):
@@ -41,7 +45,9 @@ def collection():
     """The parameter collection: created once, then only its parameter list is kept up to date
     (re-creating it would cut every material that reads it)."""
     vectors = [("Wind", (0.0, 1.0, 6.0, 0.25)), ("WindDrift", (0.0, 0.0, 0.0, 0.0)),
-               ("Sea", (-4300.0, 0.0, 0.5, 20.0)), ("SeaWave", (1.0, 0.0, 0.3, 0.2))]
+               ("Sea", (-4300.0, 0.0, 0.5, 20.0)), ("SeaWave", (1.0, 0.0, 0.3, 0.2)),
+               # the tide (ALyudSea): water now, datum, wet line (world cm), springs 0..1; the ground's wet sand reads it
+               ("Tide", (-4300.0, -4300.0, -4300.0, 0.0))]
     scalars = [("SeaWaveOmega", 1.7), ("SeaWavePhase", 0.0)]
     if eal.does_asset_exist(MPC_PATH):
         mpc = unreal.load_asset(MPC_PATH)
@@ -169,6 +175,7 @@ def sea_material(coll):
     sp = g.vparam("SeaParams", (0.8, 0.0, 0.0, 0.0))
     rect = g.vparam("DepthRect", (0.0, 0.0, 0.0, 0.0))
     land = g.param("LandSideX", -1.0e7)
+    tide = g.param("Tide", 0.0)
     wind = g.mpc(coll, "Wind")
     drift = g.mpc(coll, "WindDrift")
 
@@ -179,7 +186,8 @@ def sea_material(coll):
     g.link(g.mul(xy, g.const(0.01)), rest, "VS")
 
     wpo = g.custom(H.GUST_LIB + H.VERTEX_HLSL,
-                   [("Pos", vpos), ("Cam", cam), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land)],
+                   [("Pos", vpos), ("Cam", cam), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
+                    ("Tide", tide)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="SeaWaves")
     g.out(wpo, MP.MP_WORLD_POSITION_OFFSET)
 
@@ -187,7 +195,7 @@ def sea_material(coll):
     view = g.node(X.MaterialExpressionCameraVectorWS)
     pix = g.custom(H.GUST_LIB + H.PIXEL_HLSL,
                    [("XY", uv), ("V", view), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
-                    ("Wind", wind), ("Drift", drift)],
+                    ("Tide", tide), ("Wind", wind), ("Drift", drift), ("Glit", (g.vparam("Glitter", (0.18, 0.03, 0.0, 0.0)), "RGBA"))],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT4, desc="SeaNormal")
 
     # surf over the shallows, from the scene's own depth under the water and the depth map
@@ -195,15 +203,19 @@ def sea_material(coll):
     below = g.node(X.MaterialExpressionSceneDepthWithoutWater, fallback_depth=1.0e6)
     here = g.node(X.MaterialExpressionPixelDepth)
     thick = g.custom("return (Below - Here) * abs(V.z);", [("Below", below), ("Here", here), ("V", view)])
-    bed = g.custom(H.GUST_LIB + "return Lyud.Depth(XY, Rect, Clock.w, LandX, Dep, DepSampler);",
-                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Dep", dep)], desc="Bed")
+    bed = g.custom(H.GUST_LIB + "return Lyud.Water(XY, Rect, Clock.w, LandX, Tide, Dep, DepSampler).xy;",
+                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Tide", tide), ("Dep", dep)],
+                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT2, desc="Bed")
     surf = g.custom(H.GUST_LIB + H.SURF_HLSL,
                     [("Pos", ppos), ("Clock", clock), ("Depth", thick), ("Bed", bed), ("SP", sp)],
                     desc="Surf")
     wc = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=False, a=True)
     g.link(pix, wc)
-    # foam values come out soft; lift them so a breaking crest is properly white
-    foam = g.custom("return saturate(max(S, W) * 2.5);", [("S", surf), ("W", wc)], desc="Foam")
+    # the surf's and the whitecaps' amounts of foam drawn as lace: soft, broken, semi-transparent
+    foam = g.custom(H.GUST_LIB + "float2 p = Pos.xy * 0.01; float foot = max(max(length(ddx(p)), length(ddy(p))), 1e-4);"
+                    " return Lyud.Lace(p, Clock.x, saturate(max(S, W) * 1.6 * (1.0 + 0.8 * Look.y)), foot);",
+                    [("S", surf), ("W", wc), ("Pos", ppos), ("Clock", clock), ("Look", (g.vparam("SeaLook", (0.0, 0.0, 0.0, 0.0)), "RGBA"))],
+                    desc="Foam")
 
     nrm = g.custom("float2 a = N.xy; return float3(a, sqrt(saturate(1.0 - dot(a, a))));", [("N", pix)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
@@ -216,18 +228,45 @@ def sea_material(coll):
     rough = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=True, a=False)
     g.link(pix, rough)
     g.out(g.add(rough, g.mul(foam, g.const(0.7))), MP.MP_ROUGHNESS)
-    g.out(g.mul(foam, g.const((0.9, 0.92, 0.9))), MP.MP_BASE_COLOR)
+    g.out(g.const((0.86, 0.88, 0.86)), MP.MP_BASE_COLOR)
     # lyud.Sea.DebugFoam: the foam glows, to see where it is
     g.out(g.mul(foam, g.param("DebugFoam", 0.0)), MP.MP_EMISSIVE_COLOR)
     # single-layer water shows its base colour (the foam) as much as its opacity says
-    g.out(g.op(X.MaterialExpressionMin, g.mul(foam, g.const(1.6)), g.const(1.0)), MP.MP_OPACITY)
+    g.out(g.mul(foam, g.const(0.9)), MP.MP_OPACITY)
     g.out(g.const(0.255), MP.MP_SPECULAR)
 
     wo = g.node(X.MaterialExpressionSingleLayerWaterMaterialOutput, x=0)
-    for prop, value in ((("Scattering Coefficients", "ScatteringCoefficients"), SCATTERING),
-                        (("Absorption Coefficients", "AbsorptionCoefficients"), ABSORPTION),
+    # the water output takes its coefficients per centimetre (SingleLayerWaterShading.ush multiplies them by the
+    # depth in world units): ours are per metre, as the underwater fog uses them (fed per metre they made the sea
+    # opaque in a few cm: a dark green field over the flat). Over the tidal flat and the shallows the water is
+    # clearer; from SHALLOW_CLEAR_M down the open sea's own
+    # clearer still, and without the hue, in the first few tens of cm: pale water over sand at the edge
+    clear = ("float k = saturate((B.x - %g) / %g); float3 g = dot(K, 1.0 / 3.0);"
+             " return lerp(lerp(g, K, saturate(B.x / 1.2)) * %g, K, pow(k, 1.3)) * 0.01;"
+             % (SHALLOW_PALE_M, SHALLOW_CLEAR_M - SHALLOW_PALE_M, SHALLOW_CLARITY))
+    # the water's body colour follows the weather and the season (ALyudSea::UpdateLook, SeaLook = overcast, storm,
+    # cold season -1..1, night): under cloud and in a storm the spectrum flattens (grey-green) and the water darkens,
+    # a storm stirs up silt and bubbles (whitish turbidity), winter is colder and greyer, summer brighter and greener.
+    # Sunset and moonlit colours come from the light and the mirrored sky themselves.
+    look = (g.vparam("SeaLook", (0.0, 0.0, 0.0, 0.0)), "RGBA")
+    look_k = ("float3 L = Look.xyz; float grey = dot(K, 1.0 / 3.0);"
+              " float desat = saturate(0.45 * L.x + 0.35 * L.y + 0.25 * max(L.z, 0.0));"
+              " float3 k = lerp(K, grey, desat);")
+    absorb_k = g.custom(look_k + " k *= 1.0 + 0.3 * L.x + 0.5 * L.y; k.g *= 1.0 + 0.15 * L.z; return k;",
+                        [("K", g.const(ABSORPTION)), ("Look", look)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                        desc="AbsorptionLook")
+    scatter_k = g.custom(look_k + " k *= (1.0 - 0.2 * L.x) * (1.0 - 0.2 * L.z);"
+                         " return k + float3(0.03, 0.034, 0.03) * L.y;",
+                         [("K", g.const(SCATTERING)), ("Look", look)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                         desc="ScatteringLook")
+    absorb = g.custom(clear, [("K", absorb_k), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                      desc="Absorption")
+    scatter = g.custom(clear, [("K", scatter_k), ("B", bed)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                       desc="Scattering")
+    for prop, value in ((("Scattering Coefficients", "ScatteringCoefficients"), scatter),
+                        (("Absorption Coefficients", "AbsorptionCoefficients"), absorb),
                         (("Phase G", "PhaseG"), 0.3), (("Color Scale Behind Water", "ColorScaleBehindWater"), 1.0)):
-        src = g.const(value)
+        src = value if not isinstance(value, (int, float)) else g.const(value)
         if not any(mel.connect_material_expressions(src, "", wo, pin) for pin in prop):
             raise RuntimeError("water output: no pin " + prop[0])
     try:

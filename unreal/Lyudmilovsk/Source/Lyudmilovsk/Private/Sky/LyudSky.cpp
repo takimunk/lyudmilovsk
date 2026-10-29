@@ -19,6 +19,15 @@
 
 static TAutoConsoleVariable<float> CVarSkyHourOffset(TEXT("lyud.SkyHourOffset"), 0.f,
 	TEXT("Hours added to the time the sky shows (sun, moon, stars), in play and in the editor."));
+static TAutoConsoleVariable<float> CVarSunDiskGain(TEXT("lyud.Sky.SunDiskGain"), 1.f, TEXT("Multiplies the sun disk's brightness (tuning)."));
+static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"), 1.f, TEXT("Multiplies Europa's brightness on the sky (tuning)."));
+static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
+static TAutoConsoleVariable<float> CVarCloudDensity(TEXT("lyud.Sky.CloudDensity"), 1.f, TEXT("Multiplies the clouds' density (tuning)."));
+static TAutoConsoleVariable<float> CVarCloudOpaque(TEXT("lyud.Sky.CloudOpaque"), 1.f, TEXT("Multiplies the clouds' opaque cut-off CloudOpaqueBelow (0 = the engine's tracing to the end; tuning)."));
+static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (tuning)."));
+static TAutoConsoleVariable<float> CVarNightMie(TEXT("lyud.Sky.NightMie"), -1.f, TEXT("Overrides NightMieShare when >= 0 (tuning: the haze round the moon)."));
+static TAutoConsoleVariable<float> CVarMoonSize(TEXT("lyud.Sky.MoonSizeDeg"), 0.f, TEXT("Europa's apparent size, degrees across, when > 0 (overrides ALyudSky::MoonSizeDeg)."));
+static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
 {
@@ -43,6 +52,30 @@ namespace
 		L->bCastShadowsOnClouds = false;
 		L->bCastCloudShadows = true;
 	}
+
+	/** The disk-integrated brightness of a Lommel-Seeliger sphere at phase angle A (rad), 1 at full. */
+	float LommelSeeligerPhase(float A)
+	{
+		if (A < 1e-3f)
+		{
+			return 1.f;
+		}
+		if (A > PI - 1e-3f)
+		{
+			return 0.f;
+		}
+		const float H = 0.5f * A;
+		return FMath::Max(0.f, 1.f - FMath::Sin(H) * FMath::Tan(H) * FMath::Loge(1.f / FMath::Tan(0.5f * H)));
+	}
+
+	/** The sky's extinction toward an altitude (deg), per channel: sky_hlsl.py TRANS_HLSL (keep in step). */
+	FLinearColor AirTransmittance(float AltDeg)
+	{
+		const float H = FMath::Max(AltDeg, 0.f);
+		const float Am = 1.f / (FMath::Sin(FMath::DegreesToRadians(H)) + 0.50572f * FMath::Pow(H + 6.07995f, -1.6364f));
+		const float Sink = SmoothStep01(-6.f, 0.5f, AltDeg);
+		return FLinearColor(FMath::Exp(-0.07f * (Am - 1.f)) * Sink, FMath::Exp(-0.14f * (Am - 1.f)) * Sink, FMath::Exp(-0.30f * (Am - 1.f)) * Sink);
+	}
 }
 
 ALyudSky::ALyudSky()
@@ -57,21 +90,30 @@ ALyudSky::ALyudSky()
 	SunLight->SetupAttachment(RootComponent);
 	SetupDirectional(SunLight, 0);
 	SunLight->ForwardShadingPriority = 1;
-	SunLight->LightSourceAngle = 0.53f;
+	SunLight->LightSourceAngle = SunAngularDiameterDeg;
+	// the sky material draws the star itself (spots, granulation, corona), not the atmosphere's flat disk
+	SunLight->AtmosphereSunDiskColorScale = FLinearColor::Black;
+	// the disk is drawn far dimmer than a real sun of this light's strength: so must its mirror image be (the sea would
+	// show a blown white blob where the star sets), and its sheen on wet sand and leaves
+	SunLight->SpecularScale = SunSpecularScale;
 
 	MoonLight = CreateDefaultSubobject<UDirectionalLightComponent>(TEXT("Moon"));
 	MoonLight->SetupAttachment(RootComponent);
 	SetupDirectional(MoonLight, 1);
 	MoonLight->ForwardShadingPriority = 0;
-	MoonLight->LightSourceAngle = 0.52f;
-	MoonLight->bCastCloudShadows = false;
+	MoonLight->LightSourceAngle = MoonSizeDeg;
+	MoonLight->bCastCloudShadows = false;   // by night only (UpdateSky)
+	MoonLight->CloudScatteredLuminanceScale = FLinearColor(MoonCloudScatter, MoonCloudScatter, MoonCloudScatter);
+	MoonLight->AtmosphereSunDiskColorScale = FLinearColor::Black;
 
 	// planet top at the actor: put the actor at sea level
 	Atmosphere = CreateDefaultSubobject<USkyAtmosphereComponent>(TEXT("Atmosphere"));
 	Atmosphere->SetupAttachment(RootComponent);
 	Atmosphere->TransformMode = ESkyAtmosphereTransformMode::PlanetTopAtComponentTransform;
-	// a damp coast: more haze than the engine's clear default
-	Atmosphere->MieScatteringScale = 0.008f;
+	// a damp coast, a little hazier than the engine's clear default, but with a softer forward glow than real haze:
+	// the aureole round a 10-degree star must not drown the disk
+	Atmosphere->MieScatteringScale = 0.0045f;
+	Atmosphere->MieAnisotropy = 0.62f;
 	Atmosphere->AerialPespectiveViewDistanceScale = 1.6f;
 
 	SkyLight = CreateDefaultSubobject<USkyLightComponent>(TEXT("SkyLight"));
@@ -84,9 +126,9 @@ ALyudSky::ALyudSky()
 	Clouds->SetupAttachment(RootComponent);
 	Clouds->LayerBottomAltitude = 1.2f;
 	Clouds->LayerHeight = 5.f;
-	// cheaper than the defaults: the club's forest already takes most of the frame
-	Clouds->ViewSampleCountScale = 0.5f;
-	Clouds->ShadowViewSampleCountScale = 0.5f;
+	// the view and shadow sample counts come from CloudViewSamples / CloudShadowSamples (UpdateClouds)
+	Clouds->ViewSampleCountScale = CloudViewSamples;
+	Clouds->ShadowViewSampleCountScale = CloudShadowSamples;
 	Clouds->ReflectionViewSampleCountScaleValue = 1.f;
 
 	Dome = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StarDome"));
@@ -102,6 +144,8 @@ ALyudSky::ALyudSky()
 	OutdoorExposure->Priority = 1000.f;
 	OutdoorExposure->BlendWeight = 0.f;
 	OutdoorExposure->Settings.bOverride_AutoExposureBias = true;
+	OutdoorExposure->Settings.bOverride_BloomIntensity = true;
+	OutdoorExposure->Settings.BloomIntensity = OutdoorBloom;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/EngineSky/SM_SkySphere.SM_SkySphere"));
 	if (SphereMesh.Succeeded())
@@ -129,19 +173,27 @@ FVector ALyudSky::WorldDirection(const FVector& Enu) const
 	return (East * Enu.X + North * Enu.Y + FVector::UpVector * Enu.Z).GetSafeNormal();
 }
 
+float ALyudSky::MoonSizeNowDeg() const
+{
+	const float Pin = CVarMoonSize.GetValueOnGameThread();
+	return FMath::Clamp(Pin > 0.f ? Pin : MoonSizeDeg, 0.1f, 40.f);
+}
+
 void ALyudSky::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	if (CloudMaterial)
-	{
-		Clouds->SetMaterial(CloudMaterial);
-	}
 	Dome->SetVisibility(SkyMaterial != nullptr);
-	if (SkyMaterial && Dome->GetStaticMesh())
+	SunLight->SetLightSourceAngle(SunAngularDiameterDeg);
+	SunLight->SetSpecularScale(SunSpecularScale);
+	MoonLight->SetLightSourceAngle(MoonSizeNowDeg());
+	SunLight->SetAtmosphereSunDiskColorScale(FLinearColor::Black);
+	MoonLight->SetAtmosphereSunDiskColorScale(FLinearColor::Black);
+	OutdoorExposure->Settings.BloomIntensity = OutdoorBloom;
+	SkyMID = nullptr;
+	CloudMID = nullptr;
+	MakeInstances();
+	if (Dome->GetStaticMesh())
 	{
-		UMaterialInstanceDynamic* Mid = UMaterialInstanceDynamic::Create(SkyMaterial, this);
-		Mid->SetScalarParameterValue(TEXT("StarBrightness"), StarBrightness);
-		Dome->SetMaterial(0, Mid);
 		const double R = FMath::Max(1.0, (double)Dome->GetStaticMesh()->GetBounds().SphereRadius);
 		Dome->SetRelativeScale3D(FVector(DomeRadius / R));
 	}
@@ -152,6 +204,8 @@ void ALyudSky::OnConstruction(const FTransform& Transform)
 void ALyudSky::BeginPlay()
 {
 	Super::BeginPlay();
+	// an actor loaded with its level gets no OnConstruction in a game: make the dome's and the clouds' instances here
+	MakeInstances();
 	// the club's exposure: the strongest unbound volume that sets one
 	float Best = -FLT_MAX;
 	for (TActorIterator<APostProcessVolume> It(GetWorld()); It; ++It)
@@ -191,7 +245,7 @@ void ALyudSky::UpdateSky()
 {
 	const FDateTime Utc = ShownTime() - FTimespan::FromHours(UtcOffsetHours);
 	SunPos = LyudEphemeris::Sun(Utc, LatitudeDeg, LongitudeDeg);
-	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhase);
+	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhaseEphemeris);
 
 	// a directional light shines along its forward axis: from the body toward the ground
 	SunLight->SetWorldRotation((-WorldDirection(SunPos.EastNorthUp())).Rotation());
@@ -203,19 +257,162 @@ void ALyudSky::UpdateSky()
 	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt));
 	SunLight->SetLightColor(SunColor);
 	const float Dark = 1.f - SmoothStep01(-10.f, -2.f, SunAlt);   // 1 once the sun is down past civil twilight
+	// Europa's phase from the very directions the sky material lights its disk with: the phase angle is the angle at
+	// Europa between the sun and the viewer, so the light's phase and the disk's are the same
+	const FVector SunDir = WorldDirection(SunPos.EastNorthUp());
+	const FVector MoonDir = WorldDirection(MoonPos.EastNorthUp());
+	const float CosA = FMath::Clamp(-(float)FVector::DotProduct(SunDir, MoonDir), -1.f, 1.f);
+	MoonPhaseAngle = FMath::Acos(CosA);
+	MoonPhase = 0.5 * (1.0 + CosA);
+	const float B0 = FMath::Max(MoonOppositionSurge, 0.f);
+	const float Surge = (1.f + B0 / (1.f + FMath::Tan(0.5f * FMath::Min(MoonPhaseAngle, 3.1f)) / FMath::Max(MoonOppositionWidth, 1e-3f))) / (1.f + B0);
+	MoonLawFactor = Surge * FMath::Exp(-MoonRoughness * MoonPhaseAngle);
+	// its light: the disk's brightness integrated, through the same air as the disk (a low moon dims and yellows),
+	// gone once it sets
+	const FLinearColor Air = AirTransmittance((float)MoonPos.AltitudeDeg);
+	const float AirY = FMath::Max(0.2126f * Air.R + 0.7152f * Air.G + 0.0722f * Air.B, 1e-4f);
 	const float MoonUp = SmoothStep01(-2.f, 3.f, (float)MoonPos.AltitudeDeg);
-	// the lit fraction dims the moon faster than linearly (a half moon is ~1/10 of a full one)
-	const float MoonLux = FullMoonIlluminance * FMath::Pow((float)MoonPhase, 2.5f) * MoonUp;
+	MoonLight01 = LommelSeeligerPhase(MoonPhaseAngle) * MoonLawFactor * AirY * MoonUp;
+	const float MoonLux = FullMoonIlluminance * MoonLight01 * CVarNightLight.GetValueOnGameThread();
 	MoonLight->SetIntensity(MoonLux);
-	MoonLight->SetLightColor(MoonColor);
+	MoonLight->SetLightColor(MoonColor * FLinearColor(Air.R / AirY, Air.G / AirY, Air.B / AirY));
 	MoonLight->SetVisibility(MoonLux > 1e-4f);
+	// the night's ambient in the moonlight's aquamarine
+	const FLinearColor Ambient = FMath::Lerp(FLinearColor::White, NightAmbientTint, Dark);
+	if (!SkyLight->GetLightColor().Equals(Ambient, 1e-3f))
+	{
+		SkyLight->SetLightColor(Ambient);
+	}
+
+	const float Spec = SunSpecularScale * CVarSunSpecular.GetValueOnGameThread();
+	if (!FMath::IsNearlyEqual(SunLight->SpecularScale, Spec))
+	{
+		SunLight->SetSpecularScale(Spec);
+	}
+	// by night the haze is thinner: the moonlight it scatters would wrap Europa in a big glow
+	const float MieNight = CVarNightMie.GetValueOnGameThread() >= 0.f ? CVarNightMie.GetValueOnGameThread() : NightMieShare;
+	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt));
+	// TODO(weather): once ULyudGradeSubsystem lands, multiply Mie by ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
+	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
+	{
+		Atmosphere->SetMieScatteringScale(Mie);
+	}
+	UpdateClouds();
 
 	// one shadowed directional light at a time
 	const bool bSunShadows = SunAlt > -1.f;
 	SunLight->SetCastShadows(bSunShadows);
 	MoonLight->SetCastShadows(!bSunShadows && Dark > 0.5f);
+	// and one light's cloud shadows: clouds crossing the moon dim the moonlight under them
+	if (SunLight->bCastCloudShadows != bSunShadows)
+	{
+		SunLight->bCastCloudShadows = bSunShadows;
+		SunLight->MarkRenderStateDirty();
+	}
+	if (MoonLight->bCastCloudShadows == bSunShadows)
+	{
+		MoonLight->bCastCloudShadows = !bSunShadows;
+		MoonLight->MarkRenderStateDirty();
+	}
 	SunLight->SetForwardShadingPriority(bSunShadows ? 1 : 0);
 	MoonLight->SetForwardShadingPriority(bSunShadows ? 0 : 1);
+	UpdateSkyMaterial();
+}
+
+void ALyudSky::MakeInstances()
+{
+	if (!SkyMID && SkyMaterial && Dome->GetStaticMesh())
+	{
+		SkyMID = UMaterialInstanceDynamic::Create(SkyMaterial, this);
+		SkyMID->SetScalarParameterValue(TEXT("StarBrightness"), StarBrightness);
+		Dome->SetMaterial(0, SkyMID);
+	}
+	if (!CloudMID && CloudMaterial)
+	{
+		CloudMID = UMaterialInstanceDynamic::Create(CloudMaterial, this);
+		Clouds->SetMaterial(CloudMID);
+		float V = 0.f;
+		CloudBaseDensity = CloudMID->GetScalarParameterValue(FHashedMaterialParameterInfo(TEXT("Cloud_GlobalDensity")), V) ? V : -1.f;
+		if (CloudBaseDensity < 0.f)
+		{
+			TArray<FMaterialParameterInfo> Infos;
+			TArray<FGuid> Ids;
+			CloudMID->GetAllScalarParameterInfo(Infos, Ids);
+			FString Names;
+			for (const FMaterialParameterInfo& I : Infos)
+			{
+				Names += I.Name.ToString() + TEXT(", ");
+			}
+			UE_LOG(LogTemp, Warning, TEXT("LyudSky: the cloud material has no \"Cloud_GlobalDensity\"; its scalars: %s"), *Names);
+		}
+	}
+	UpdateClouds();
+}
+
+void ALyudSky::UpdateClouds()
+{
+	const float K = CVarCloudSamples.GetValueOnGameThread();
+	if (!FMath::IsNearlyEqual(Clouds->ViewSampleCountScale, CloudViewSamples * K))
+	{
+		Clouds->SetViewSampleCountScale(CloudViewSamples * K);
+		Clouds->SetShadowViewSampleCountScale(CloudShadowSamples * K);
+	}
+	const float Stop = FMath::Clamp(CVarCloudOpaque.GetValueOnGameThread() * CloudOpaqueBelow, 0.005f, 0.9f);
+	if (!FMath::IsNearlyEqual(Clouds->StopTracingTransmittanceThreshold, Stop))
+	{
+		Clouds->SetStopTracingTransmittanceThreshold(Stop);
+	}
+	if (CloudMID && CloudBaseDensity >= 0.f)
+	{
+		const float D = CloudBaseDensity * CloudDensityScale * CVarCloudDensity.GetValueOnGameThread();
+		float Now = 0.f;
+		if (!CloudMID->GetScalarParameterValue(FHashedMaterialParameterInfo(TEXT("Cloud_GlobalDensity")), Now) || !FMath::IsNearlyEqual(Now, D))
+		{
+			CloudMID->SetScalarParameterValue(TEXT("Cloud_GlobalDensity"), D);
+		}
+	}
+}
+
+void ALyudSky::UpdateSkyMaterial()
+{
+	if (!SkyMID)
+	{
+		return;
+	}
+	auto Vec = [](const FVector& V) { return FLinearColor(float(V.X), float(V.Y), float(V.Z), 0.f); };
+	const FVector SunDir = WorldDirection(SunPos.EastNorthUp());
+	const FVector MoonDir = WorldDirection(MoonPos.EastNorthUp());
+	// the celestial pole: the stars, the star's spin and Europa's north all turn about it
+	const double Lat = FMath::DegreesToRadians(LatitudeDeg);
+	const FVector Pole = WorldDirection(FVector(0.0, FMath::Cos(Lat), FMath::Sin(Lat)));
+	SkyMID->SetVectorParameterValue(TEXT("SunDir"), Vec(SunDir));
+	SkyMID->SetVectorParameterValue(TEXT("MoonDir"), Vec(MoonDir));
+	SkyMID->SetVectorParameterValue(TEXT("Pole"), Vec(Pole));
+
+	// the star turns once in SunRotationDays; its spots are new every in-game day (it is night at the change)
+	const FDateTime Now = ShownTime();
+	const double Days = (Now - FDateTime(2026, 1, 1)).GetTotalDays();
+	const float Spin = float(FMath::Fmod(Days / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
+	const float DaySeed = float(FMath::FloorToDouble(Days));
+	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread();
+	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum, DaySeed, Spin));
+	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
+	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
+	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));
+	// z: Europa's phase law over Lommel-Seeliger, the same factor its light takes (UpdateSky)
+	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(0.f, MoonNightHalo, MoonLawFactor, 0.f));
+
+	const float Day = SmoothStep01(-6.f, 6.f, (float)SunPos.AltitudeDeg);
+	const float NightK = CVarNightLight.GetValueOnGameThread();
+	const float MoonLum = SunIlluminance * MoonDiskGain * FMath::Lerp(MoonNightBoost, MoonDayBoost, Day) * CVarMoonDiskGain.GetValueOnGameThread();
+	// the ashen light on the dark side: a little of the sunlit ice's brightness, more by night
+	const float MoonSize = MoonSizeNowDeg();
+	if (!FMath::IsNearlyEqual(MoonLight->LightSourceAngle, MoonSize))
+	{
+		MoonLight->SetLightSourceAngle(MoonSize);
+	}
+	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonSize * 0.5f), MoonLum, 0.012f, 1.f - Day));
+	SkyMID->SetVectorParameterValue(TEXT("NightGlow"), NightSkyGlow * ((1.f - Day) * NightK));
 }
 
 void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)
@@ -271,14 +468,18 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 {
 	OutdoorWeight = FMath::FInterpConstantTo(OutdoorWeight, bPlayerOutdoors ? 1.f : 0.f, DeltaSeconds, 1.f / FMath::Max(EyeAdaptSeconds, 0.01f));
 	const float Night = 1.f - SmoothStep01(-8.f, 8.f, (float)SunPos.AltitudeDeg);
-	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + NightExposureEV * Night;
+	// a quarter of a stop wider per stop of moonlight lost, up to MoonlessExposureEV
+	const float Moonless = FMath::Clamp(-FMath::Log2(MoonLight01 + 0.03f) / 4.f, 0.f, MoonlessExposureEV);
+	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night;
+	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }
 
 FString ALyudSky::DebugReport() const
 {
-	return FString::Printf(TEXT("LYUDSKY %s sun alt %.2f az %.2f | moon alt %.2f az %.2f phase %.2f | sun lux %.2f moon lux %.4f | outdoors %d exposure %.2f x %.2f"),
+	return FString::Printf(TEXT("LYUDSKY %s sun alt %.2f az %.2f | moon alt %.2f az %.2f phase %.2f | sun lux %.2f moon lux %.4f | outdoors %d exposure %.2f x %.2f | moon phase angle %.1f law %.3f light %.4f ephemeris phase %.3f"),
 		*ShownTime().ToString(TEXT("%Y-%m-%d %H:%M")), SunPos.AltitudeDeg, SunPos.AzimuthDeg, MoonPos.AltitudeDeg,
 		MoonPos.AzimuthDeg, MoonPhase, SunLight->Intensity, MoonLight->Intensity, bPlayerOutdoors ? 1 : 0,
-		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight);
+		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight, FMath::RadiansToDegrees(MoonPhaseAngle), MoonLawFactor,
+		MoonLight01, MoonPhaseEphemeris);
 }

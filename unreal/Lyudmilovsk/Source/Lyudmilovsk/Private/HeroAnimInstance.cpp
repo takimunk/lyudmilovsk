@@ -221,6 +221,8 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 
 	// sneaking up on a bird: down on the haunches, the walk's feet kept where they step
 	HandReach::ApplyCrouch(Output.Pose, State.Crouch, CrouchDrop);
+	// on a bench (a train's): the clips' idle stands, the body sits
+	HandReach::ApplySit(Output.Pose, State.Sit, State.SeatZ);
 
 	// reaching for something: the body crouches and leans to it first (the look builds on that)
 	const FPalmFrame AnimPalm = Reach.IsActive() ? HandReach::CurrentPalm(Output.Pose) : FPalmFrame();

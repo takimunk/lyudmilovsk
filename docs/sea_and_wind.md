@@ -46,11 +46,32 @@ wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky
 - The material gets the same trains through a 128×2 float texture, so `SampleSurface(Location)` (height, normal,
   water velocity, depth, immersion) is exactly what is on screen. Time loops every 1200 s (every frequency is a
   whole number of turns per loop).
-- **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, Baltic absorption and scattering (brown-green,
-  a few metres of visibility), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
-  crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
-  along the wind at gale force), breakers and wash over the shallows.
-- **Shallows**: a depth map read from the landscape at start (6 m cells, a few seconds of traces). The surface stays
+- **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, absorption and scattering of a sea-wave teal
+  (aquamarine) water turning dark teal-green with depth, a few metres of visibility (`make_sea_materials.py`
+  ABSORPTION / SCATTERING per metre, fed to the water output per centimetre, which is what the engine's shader takes).
+  In the first `SHALLOW_PALE_M` (0.25 m) the water is nearly clear and without hue (pale over the sand), then its
+  coefficients grow to the open sea's at `SHALLOW_CLEAR_M` (6 m); the sky shows in it by the water's own Fresnel, detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
+  crests stand high or pinch (a few at 7 m/s, a white-flecked sea with grey old foam drawn out along the wind at gale
+  force), breakers and wash over the shallows, whose widths are held in metres (over a flat, a band of depth or wave
+  phase is tens of metres wide). **Foam** is computed as a soft amount (0..1, wide ramps, broken into patches by
+  noise) and drawn by `Lyud.Lace` (sea_hlsl.py): a cellular net of foam threads round open holes with finer bubbles
+  in them; a little foam is thin broken faint threads, more thickens them until the holes close, so foam dissolves at
+  its edges and behind each breaker's front. Where the cells are smaller than a few pixels it becomes their mean
+  cover (a soft haze). Opacity is the lace's, at most 0.9, colour a constant off-white: nothing is opaque or
+  hard-edged. The wash band is measured on the smooth depth map (0.3-2.5 m off the still-water edge), never in the
+  last few cm of water: the sea mesh's own edge, where it tucks under the sand, is jagged, and foam following the
+  scene's water thickness drew its teeth as white "noodles".
+- **Colour with the weather** (`ALyudSea::UpdateLook`, the material's `SeaLook`): the cloud cover (and rain), the sea
+  state (Hs 1.6-3.5 m, thunder), the season (coldest late February, warmest early August) and the night, eased over
+  `lyud.Sea.LookSeconds` (120 s; 0 = at once), bend the water's own absorption and scattering: under cloud and in a
+  storm the spectrum flattens toward grey and the water darkens (grey-green overcast, dark slate in a storm, with silt
+  and bubbles' whitish turbidity and up to 1.8x the foam), winter is greyer and less green, summer brighter. Sunset
+  and night colours come from the light and the mirrored sky themselves. `COSMIC_SEALOOK=1` in shoot_cosmic.py shoots
+  sunny, overcast, storm, sunset, night and winter from the cliff.
+- **Tide**: the actor stands at the datum (high water of springs); `SeaLevel()` and every depth follow the tide,
+  down to 4.5 m lower at springs, and pools stay in the hollows of the bared flat ([tides.md](tides.md)).
+- **Shallows**: a depth map read from the landscape at start (4 m cells, depth under the datum plus the pools the
+  ebb leaves, a few seconds of traces). The surface stays
   under the breaking height (0.4 × depth), and where the water is shallower than ~1.5 × the wave height spilling
   breakers roll in along the depth contours, in the geometry, the foam and `SampleSurface` alike; no sea east of
   `LandSideX`.

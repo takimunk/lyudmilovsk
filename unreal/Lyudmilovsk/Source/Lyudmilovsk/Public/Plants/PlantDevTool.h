@@ -31,6 +31,7 @@ public:
 	void SelectInView();
 	void Step(int32 Delta);
 	AProceduralPlant* Selected() const { return Plant.Get(); }
+	TSharedPtr<SWidget> GetPanel() const { return Panel; }
 
 	/** Years per second added to the selected tree's age, and days per second to its day of the year. */
 	float AgeSpeed = 0.f;
