@@ -16,5 +16,9 @@
   "gap": 0.025,
   "blend": 0.05,
   "pelvis": 0.5
+ },
+ "hands": {
+  "cut": 0.0,
+  "overlap": 0.03
  }
 }

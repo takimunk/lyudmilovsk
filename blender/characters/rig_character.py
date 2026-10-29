@@ -153,6 +153,7 @@ def optimize(m, spec):
 
 
 PENDING_BAKE = []
+FLAT_UV = []        # texels the grafted hands use (replace_hands): flat in the normal map
 
 
 def bake_pending(m):
@@ -181,6 +182,14 @@ def bake_normal(low, high, mat, bsdf, size):
     bpy.context.view_layer.objects.active = low
     bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True, cage_extrusion=0.006, max_ray_distance=0.02,
                         margin=8, normal_space="TANGENT")
+    if FLAT_UV:
+        px = np.empty(size * size * 4, np.float32)
+        img.pixels.foreach_get(px)
+        px = px.reshape(size, size, 4)
+        for u, v in FLAT_UV:
+            x, y = int(u * size), int(v * size)
+            px[max(y - 4, 0):y + 5, max(x - 4, 0):x + 5, :3] = (0.5, 0.5, 1.0)
+        img.pixels.foreach_set(px.ravel())
     img.file_format = "PNG"
     nm = nodes.new("ShaderNodeNormalMap")
     mat.node_tree.links.new(tn.outputs["Color"], nm.inputs["Color"])
@@ -358,6 +367,185 @@ def fit_legs(arm, body, mco, h):
 
 
 # ---------------------------------------------------------------------------------------------- weights
+
+def select_beyond(o, cut, sign, mat_name=None):
+    """Vertex indices of `o` past x = cut on the arm's side (sign*x > sign*cut), optionally only `mat_name`'s faces."""
+    co = world_co(o)
+    far = sign * co[:, 0] > sign * cut
+    if mat_name is not None:
+        slot = next(i for i, s in enumerate(o.material_slots) if s.material and s.material.name == mat_name)
+        keep = np.zeros(len(co), bool)
+        for p in o.data.polygons:
+            if p.material_index == slot:
+                keep[list(p.vertices)] = True
+        far &= keep
+    return far
+
+
+def delete_verts(o, mask):
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bm.verts.ensure_lookup_table()
+    bmesh.ops.delete(bm, geom=[bm.verts[i] for i in np.nonzero(mask)[0]], context="VERTS")
+    bm.to_mesh(o.data)
+    bm.free()
+
+
+def base_image(m):
+    mat = m.data.materials[0]
+    bsdf = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    return next(l.from_node for l in mat.node_tree.links if l.to_socket == bsdf.inputs["Base Color"]).image
+
+
+def vertex_colours(m, img, px):
+    """Each vertex's base colour (the texel under its first loop's UV)."""
+    W, H = img.size
+    uv = np.empty(len(m.data.loops) * 2)
+    m.data.uv_layers[0].data.foreach_get("uv", uv)
+    uv = uv.reshape(-1, 2)
+    li = np.empty(len(m.data.loops), int)
+    m.data.loops.foreach_get("vertex_index", li)
+    vuv = np.zeros((len(m.data.vertices), 2))
+    vuv[li] = uv
+    x = np.clip((vuv[:, 0] % 1) * W, 0, W - 1).astype(int)
+    y = np.clip((vuv[:, 1] % 1) * H, 0, H - 1).astype(int)
+    return px[y, x, :3]
+
+
+def find_cuff(m, sign, px, img, step=0.005):
+    """Where the sleeve ends: walking in from the fingertips, the first slice where under half the vertices are
+    skin-coloured (warm: red over blue; the jacket's grey and the jumper's green cuff are not, the painted finger gaps
+    are only darker)."""
+    co = world_co(m)
+    col = vertex_colours(m, img, px)
+    a = sign * co[:, 0]
+    tip = a.max()
+    like = (col[:, 0] - col[:, 2] > 0.07) & (col[:, 0] > 0.3)
+    skin = np.median(col[(a > tip - 0.06) & like], 0)
+    x = tip - 0.03
+    while x > tip - 0.3:
+        s = (a > x - step) & (a <= x)
+        if s.sum() > 10 and like[s].mean() < 0.5:
+            return sign * x, skin
+        x -= step
+    raise RuntimeError("no cuff found")
+
+
+def paint_uv_tris(px, uv_tris, colour, grow=4):
+    """Fills the texels under UV triangles (n x 3 x 2, 0..1) with one colour, `grow` texels wider."""
+    H, W = px.shape[:2]
+    mask = np.zeros((H, W), bool)
+    for t in uv_tris:
+        p = t * (W, H)
+        x0, y0 = np.floor(p.min(0)).astype(int) - grow
+        x1, y1 = np.ceil(p.max(0)).astype(int) + grow
+        x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, W - 1), min(y1, H - 1)
+        if x1 < x0 or y1 < y0:
+            continue
+        gx, gy = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
+        (ax, ay), (bx, by), (cx, cy) = p
+        d = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        if abs(d) < 1e-9:
+            continue
+        l1 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / d
+        l2 = ((cy - ay) * (gx - cx) + (ax - cx) * (gy - cy)) / d
+        l3 = 1 - l1 - l2
+        e = grow / max(abs(d) ** 0.5, 1.0)
+        mask[y0:y1 + 1, x0:x1 + 1] |= (l1 > -e) & (l2 > -e) & (l3 > -e)
+    px[mask, :3] = colour
+    return mask
+
+
+def replace_hands(model, body, arm, spec):
+    """The generator fuses the fingers into mittens (hi3d, every adult so far): each hand is cut off at the wrist and
+    the donor's own hand (MakeHuman skin, five fingers, its 15 finger bones) is set in its place, a few centimetres of
+    its wrist reaching back into the sleeve. Its colour comes from the cut-off hand (UVs by nearest surface onto the
+    model's own texture), its weights from the donor like the rest (transfer_weights). The high copy for the normal
+    bake loses the mitten too, so the fingers don't take its folds."""
+    skin = next(s.material.name for s in body.material_slots if s.material and s.material.name.endswith(".body"))
+    cutoff, overlap = spec.get("cut", 0.005), spec.get("overlap", 0.04)
+    high = PENDING_BAKE[0] if PENDING_BAKE else None
+    img = base_image(model)
+    W, H = img.size
+    px = np.empty(W * H * 4, np.float32)
+    img.pixels.foreach_get(px)
+    px = px.reshape(H, W, 4)
+    for side, sign in (("l", 1), ("r", -1)):
+        cuff, tone = find_cuff(model, sign, px, img)
+        cut = cuff + sign * cutoff
+        # the old hand: kept apart as the colour source, then dropped from the model and the bake copy
+        old = model.copy()
+        old.data = model.data.copy()
+        bpy.context.scene.collection.objects.link(old)
+        delete_verts(old, ~select_beyond(old, cut, sign))
+        # the mitten's texels become one even skin tone: the new fingers take UVs from it by nearest surface, across
+        # its islands' seams, which would bring the seams' padding (jacket grey) and the painted finger gaps along
+        uv = np.empty(len(old.data.loops) * 2)
+        old.data.uv_layers[0].data.foreach_get("uv", uv)
+        uv = uv.reshape(-1, 2)
+        tris = [uv[list(p.loop_indices)] for p in old.data.polygons if p.loop_total == 3]
+        mask = paint_uv_tris(px, np.array(tris) % 1.0, tone)
+        # the texel deepest inside the painted area: every new hand corner points at it
+        inner = mask.copy()
+        for _ in range(64):
+            nxt = inner.copy()
+            nxt[1:] &= inner[:-1]
+            nxt[:-1] &= inner[1:]
+            nxt[:, 1:] &= inner[:, :-1]
+            nxt[:, :-1] &= inner[:, 1:]
+            if not nxt.any():
+                break
+            inner = nxt
+        ys, xs = np.nonzero(inner)
+        spot = ((xs[0] + 0.5) / W, (ys[0] + 0.5) / H)
+        FLAT_UV.append(spot)
+        delete_verts(model, select_beyond(model, cut, sign))
+        if high is not None:
+            delete_verts(high, select_beyond(high, cut, sign))
+        # the donor's hand (skin faces only), joined into the model
+        hand = body.copy()
+        hand.data = body.data.copy()
+        bpy.context.scene.collection.objects.link(hand)
+        for md in list(hand.modifiers):
+            hand.modifiers.remove(md)
+        hand.parent = None
+        hand.matrix_world = body.matrix_world.copy()
+        delete_verts(hand, ~select_beyond(hand, cut - sign * overlap, sign, skin))
+        n_hand = len(hand.data.vertices)
+        for p in hand.data.polygons:
+            p.material_index = 0
+            p.use_smooth = True
+        hand.data.materials.clear()
+        hand.data.materials.append(model.data.materials[0])
+        for g in list(hand.vertex_groups):
+            hand.vertex_groups.remove(g)
+        hand.vertex_groups.new(name="graft").add(list(range(n_hand)), 1.0, "REPLACE")
+        while len(hand.data.uv_layers) > 1:
+            hand.data.uv_layers.remove(hand.data.uv_layers[-1])
+        hand.data.uv_layers[0].name = model.data.uv_layers[0].name
+        bpy.ops.object.select_all(action="DESELECT")
+        hand.select_set(True)
+        model.select_set(True)
+        bpy.context.view_layer.objects.active = model
+        bpy.ops.object.join()
+        gi = model.vertex_groups["graft"].index
+        graft = np.array([any(g.group == gi for g in v.groups) for v in model.data.vertices])
+        li = np.empty(len(model.data.loops), int)
+        model.data.loops.foreach_get("vertex_index", li)
+        uv = np.empty(len(model.data.loops) * 2)
+        lay = model.data.uv_layers[0]
+        lay.data.foreach_get("uv", uv)
+        uv = uv.reshape(-1, 2)
+        uv[graft[li]] = spot
+        lay.data.foreach_set("uv", uv.ravel())
+        model.vertex_groups.remove(model.vertex_groups["graft"])
+        bpy.data.objects.remove(old)
+        log("hand %s: sleeve ends at x=%.3f, cut at %.3f, donor hand set in (%d verts), %d texels of skin %s"
+            % (side, cuff, cut, n_hand, mask.sum(), np.round(tone, 3).tolist()))
+    img.pixels.foreach_set(px.ravel())
+    img.update()
+
 
 def transfer_weights(model, body, arm, skirt):
     for g in body.vertex_groups:
@@ -569,6 +757,18 @@ def preview(model, arm, cid):
     shot("front", 0)
     shot("side", 90)
     pb = arm.pose.bones
+    # the hands close up (replace_hands): from the front and from above, at rest
+    cam.data.ortho_scale = 0.32
+    for side in ("l", "r"):
+        h = arm.matrix_world @ arm.data.bones["hand_" + side].head_local
+        c = h + Vector((0.08 if side == "l" else -0.08, 0, 0))
+        cam.location, cam.rotation_euler = (c.x, c.y - 2, c.z), (math.radians(90), 0, 0)
+        sc.render.filepath = os.path.join(out, "%s_hand_%s.png" % (cid, side))
+        bpy.ops.render.render(write_still=True)
+        cam.location, cam.rotation_euler = (c.x, c.y, c.z + 2), (0, 0, 0)
+        sc.render.filepath = os.path.join(out, "%s_hand_%s_top.png" % (cid, side))
+        bpy.ops.render.render(write_still=True)
+    cam.data.ortho_scale = 2.0
 
     def turn(name, deg, axis):
         """Rotates a pose bone about an armature-space axis through its head."""
@@ -611,6 +811,8 @@ def main():
     fit_donor(arm, body, target)
     centre_body(arm, body, world_co(model))
     fit_legs(arm, body, world_co(model), target["height"])
+    if "hands" in spec:
+        replace_hands(model, body, arm, spec["hands"])
     transfer_weights(model, body, arm, spec.get("skirt"))
     if spec.get("face", {}).get("rig", True):
         import face_rig
