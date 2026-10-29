@@ -13,7 +13,7 @@
 namespace
 {
 constexpr int32 MaxDrops = 420;
-constexpr int32 MaxFoam = 340;
+constexpr int32 MaxFoam = 520;
 constexpr float Gravity = 980.f;
 }
 
@@ -59,16 +59,59 @@ void ULyudTrainWake::EnsureParts()
 		return I;
 	};
 	DropIsm = Make(Sphere, TEXT("WakeDrops"), FLinearColor(0.85f, 0.9f, 0.9f), 0.55f);
-	// a ring of foam: a flat annulus 50 cm across its outside, both faces (the kit builds it once)
+	// foam is lace, not a solid sheet: little irregular flecks scattered over a shape, both faces. The ring: flecks round
+	// an annulus 50 cm across its outside, thinning to gaps here and there; the trail's patch: flecks over a unit disc,
+	// dense in the middle and sparse at the rim (the instance stretches it along the way)
+	auto Lace = [&](FName Name, int32 Count, float RIn, float ROut, bool bRing, int32 Seed) -> UStaticMesh*
 	{
+		FRandomStream R(Seed);
 		FLyudMeshKit K;
-		K.Lathe(FTransform::Identity, { FVector2D(36.0, 0.0), FVector2D(50.0, 0.0) }, { TEXT("foam") }, 28, false, false);
-		K.Lathe(FTransform::Identity, { FVector2D(50.0, 0.2), FVector2D(36.0, 0.2) }, { TEXT("foam") }, 28, false, false);
+		int32 Made = 0;
+		for (int32 Tries = 0; Made < Count && Tries < Count * 8; Tries++)
+		{
+			const float A = R.FRandRange(0.f, 2.f * PI);
+			float Rad;
+			if (bRing)
+			{
+				// gaps: the lace thins where a slow wave of the angle dips
+				const float Keep = 0.55f + 0.45f * FMath::Sin(A * 3.f + 1.3f) * FMath::Sin(A * 5.f + 0.4f);
+				if (R.FRand() > Keep)
+				{
+					continue;
+				}
+				Rad = FMath::Lerp(RIn, ROut, 0.5f + 0.5f * (R.FRand() - R.FRand()));
+			}
+			else
+			{
+				Rad = ROut * FMath::Sqrt(R.FRand()) * (0.5f + 0.5f * R.FRand());
+			}
+			const FVector C(Rad * FMath::Cos(A), Rad * FMath::Sin(A), 0.f);
+			const float S = bRing ? R.FRandRange(1.5f, 4.5f) : R.FRandRange(0.9f, 2.2f) * (1.f - 0.5f * Rad / ROut);
+			const int32 N = 5;
+			TArray<FVector> P;
+			const float A0 = R.FRandRange(0.f, 2.f * PI);
+			for (int32 I = 0; I < N; I++)
+			{
+				const float B = A0 + 2.f * PI * I / N;
+				// longer along the ring's way: flecks string out like torn foam
+				const float L = S * R.FRandRange(0.6f, 1.3f);
+				FVector D(FMath::Cos(B) * L, FMath::Sin(B) * L * 0.6f, 0.f);
+				P.Add(C + (bRing ? FQuat(FVector::UpVector, A + PI / 2).RotateVector(D) : D));
+			}
+			for (int32 I = 1; I + 1 < N; I++)
+			{
+				K.Tri(TEXT("foam"), P[0], P[I], P[I + 1]);
+				K.Tri(TEXT("foam"), P[0] + FVector(0, 0, 0.1f), P[I + 1] + FVector(0, 0, 0.1f), P[I] + FVector(0, 0, 0.1f));
+			}
+			Made++;
+		}
 		TArray<FName> Slots;
-		RingMesh = K.Build(Owner, TEXT("WakeRing"), Slots);
-	}
-	FoamIsm = Make(RingMesh ? RingMesh.Get() : Disc, TEXT("WakeFoam"), FLinearColor(0.86f, 0.9f, 0.88f), 0.45f);
-	TrailIsm = Make(Disc, TEXT("WakeTrail"), FLinearColor(0.8f, 0.85f, 0.84f), 0.22f);
+		return K.Build(Owner, Name, Slots);
+	};
+	RingMesh = Lace(TEXT("WakeRing"), 90, 34.f, 50.f, true, 7);
+	PatchMesh = Lace(TEXT("WakePatch"), 230, 0.f, 50.f, false, 11);
+	FoamIsm = Make(RingMesh ? RingMesh.Get() : Disc, TEXT("WakeFoam"), FLinearColor(0.9f, 0.93f, 0.92f), 0.5f);
+	TrailIsm = Make(PatchMesh ? PatchMesh.Get() : Disc, TEXT("WakeTrail"), FLinearColor(0.88f, 0.92f, 0.9f), 0.4f);
 	if (USoundBase* S = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Railway/S_splash_01.S_splash_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
 		Hiss = NewObject<UAudioComponent>(Owner, TEXT("WakeHiss"));
@@ -151,6 +194,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			F.Age = 0.f;
 			F.Life = Rnd.FRandRange(4.f, 7.f);
 			F.Size = Rnd.FRandRange(0.5f, 1.0f);
+			F.Yaw = Rnd.FRandRange(0.f, 360.f);
 			Foam.Add(F);
 		}
 		FoamDebt = FMath::Min(FoamDebt, 3.f);
@@ -159,7 +203,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		TrailAt -= Speed * Dt;
 		while (TrailAt <= 0.0 && Foam.Num() < MaxFoam - 2)
 		{
-			TrailAt += 160.0;
+			TrailAt += 220.0;
 			const FVector Back = WetWheels.Last().Key;
 			for (int32 Sd = -1; Sd <= 1; Sd += 2)
 			{
@@ -194,6 +238,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 				F.Age = 0.f;
 				F.Life = Rnd.FRandRange(1.5f, 3.f);
 				F.Size = Rnd.FRandRange(0.15f, 0.35f);
+				F.Yaw = Rnd.FRandRange(0.f, 360.f);
 				Foam.Add(F);
 			}
 			Drops.RemoveAtSwap(I, EAllowShrinking::No);
@@ -240,14 +285,14 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			// a ring spreads out and its band thins away (the mesh's band is fixed: the ring grows, then shrinks to nothing at
 			// its very end so it never pops)
 			const float R = F.Size * 2.f * (0.6f + 2.4f * T) * (T > 0.85f ? (1.f - T) / 0.15f : 1.f);
-			FT.Add(FTransform(FQuat::Identity, At, FVector(R, R, 1.f)));
+			FT.Add(FTransform(FRotator(0.f, F.Yaw + 25.f * T, 0.f), At, FVector(R, R, 1.f)));
 		}
 		else
 		{
 			// a streak: long along the way, widening as it ages, gone at the end
-			const float Len = F.Size * 3.2f * (1.f + 0.4f * T);
-			const float Wid = F.Size * 0.45f * (1.f + 2.2f * T) * (1.f - T * T);
-			TT.Add(FTransform(FRotator(0.f, F.Yaw, 0.f), At, FVector(Len, Wid, 0.004f)));
+			const float Len = F.Size * 2.f * (1.f + 0.4f * T);
+			const float Wid = F.Size * 0.7f * (1.f + 1.6f * T) * (1.f - T * T);
+			TT.Add(FTransform(FRotator(0.f, F.Yaw, 0.f), At, FVector(Len, Wid, 1.f)));
 		}
 	}
 	auto Push = [](UInstancedStaticMeshComponent* Ism, const TArray<FTransform>& Ts)

@@ -48,6 +48,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UInstancedStaticMeshComponent> FoamIsm;
 	UPROPERTY(Transient) TObjectPtr<UInstancedStaticMeshComponent> TrailIsm;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> RingMesh;
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> PatchMesh;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Hiss;
 	TWeakObjectPtr<ALyudSea> Sea;
 	float Wet = 0.f;

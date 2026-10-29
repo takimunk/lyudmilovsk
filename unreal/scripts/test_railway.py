@@ -248,21 +248,57 @@ def near_plant(w, dist):
 
 def frames(w, n, first=0, step=1.0):
     for i in range(n):
-        PLAN_EXTRA.append((S["t"] + step * i, lambda w, i=i: shot(w, "sunset_%03d" % (first + i))))
+        PLAN_EXTRA.append((S["t"] + step * i, lambda w, i=i: sunset_frame(w, first + i)))
+
+
+def sunset_frame(w, i):
+    info = rail(w).get_train(0).get_info()
+    log("sunset %03d train s %.0f dir %d" % (i, info.s, info.dir))
+    shot(w, "sunset_%03d" % i)
+
+
+def fixed(w, s, side, up, look_s, look_side=0.0, look_up=2.0):
+    """A still camera beside the line (metres along it, to its north, over the rail head), looking at a point by it."""
+    import math
+    r = rail(w)
+    p = r.line_to_world(s, side, up)
+    q = r.line_to_world(look_s, look_side, look_up)
+    d = q - p
+    cmd(w, "BugItGo %.0f %.0f %.0f %.1f %.1f 0" % (p.x, p.y, p.z, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))),
+                                                   math.degrees(math.atan2(d.y, d.x))))
+
+
+def follow(w, train_s):
+    """The long lens: from the still camera, aimed at the train's middle, zoomed so it fills a third of the frame until
+    the lens is at its longest (6 degrees: longer, the sea's waves alias into stripes), after which it shrinks into the
+    haze. From south of the line and 10 m up, so the masts (north of the rails) stand behind it, not before it."""
+    import math
+    r = rail(w)
+    p = r.line_to_world(2850.0, -20.0, 10.0)
+    q = r.line_to_world(train_s - 16.0, 0.0, 2.0)
+    d = q - p
+    dist = math.hypot(d.x, d.y) / 100.0
+    cmd(w, "fov %.2f" % max(6.0, min(40.0, math.degrees(2.0 * math.atan(48.0 / max(dist, 1.0))))))
+    cmd(w, "BugItGo %.0f %.0f %.0f %.3f %.3f 0" % (p.x, p.y, p.z, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))),
+                                                   math.degrees(math.atan2(d.y, d.x))))
 
 
 PLAN_EXTRA = []
-# the train leaves the island for the horizon at sunset: from the island halt's far end, looking west into the sun;
-# the game runs 4x (slomo) so it shrinks into the haze within the frames
+# the train leaves the island for the horizon at sunset: a still camera 6 m over the water a little north of the bank,
+# 290 m past the island halt, looking out along the line with the low sun on the left; the train pulls out of the halt
+# behind it, runs by on the bank throwing its spray and foam and goes on; then a longer lens on it from south of the line
+# (follow) and the game at 8x watch it go into the haze
 SUNSET = [
-    (21.0, lambda w: cmd(w, "lyud.Birds.Time 16 34")),
+    (21.0, lambda w: cmd(w, "lyud.Birds.Time 16 50")),
     (22.0, lambda w: cmd(w, "DisableAllScreenMessages")),
     (23.0, lambda w: cmd(w, "lyud.Railway.Next island 1")),
-    (24.0, lambda w: go(w, 2452.0, -53.0, -38.6, -1.5, -4.0)),       # a little north of the line past the halt, west
-    (76.0, lambda w: frames(w, 60, 0, 1.0)),                          # it pulls out and runs off at its own pace
-    (136.5, lambda w: cmd(w, "slomo 6")),
-    (137.0, lambda w: frames(w, 70, 60, 1.0)),                        # then six times faster, into the haze
-    (208.0, lambda w: cmd(w, "slomo 1")),
+    (26.0, lambda w: fixed(w, 2850.0, 14.0, 6.0, 6000.0, -700.0, 0.0)),
+    (66.0, lambda w: frames(w, 90, 0, 1.0)),            # it pulls out, comes by and runs off at its own pace
+    (156.5, lambda w: cmd(w, "slomo 8")),
+    (156.6, lambda w: S.update(follow=True)),
+    (157.0, lambda w: frames(w, 90, 90, 1.0)),          # then eight times faster, into the haze
+    (248.0, lambda w: cmd(w, "slomo 1")),
+    (248.1, lambda w: S.update(follow=False)),
 ]
 
 TREES = [
@@ -305,6 +341,8 @@ def tick(dt):
         PLAN_EXTRA.pop(0)[1](w)
     if S["chase"]:
         chase(w, *S["chase"])
+    if S.get("follow"):
+        follow(w, rail(w).get_train(0).get_info().s)
     watch(w)
     if S["phase"] == "done" or S["t"] > 800.0:
         log("done: %d failed" % S["fails"] if S["phase"] == "done" else "FAIL timeout")

@@ -17,7 +17,7 @@ of a Showa-era Japanese local line runs it, every hour, day and night. The setti
 | The kit (train, crossing, shelter, nameboard, mast, sleeper, island) | `blender/railway/rail_kit.py` → `design/railway/game/rail_kit.glb` + `Content/Railway/kit.json` (seats, doors, lamps) |
 | Sounds (synthesized, no service) | `tools/railsim/rail_sounds.py` → `audio/sfx/railway/*.wav` |
 | Import | `unreal/scripts/import_railway.sh` (kit → `/Game/Railway/Meshes/rail_kit`, sounds → `/Game/Audio/Railway`) |
-| Offscreen check | `unreal/scripts/test_railway.sh` (`RAILTEST_ONLY=day,night,far`, or `riders`: residents ride back from the island; `trees`: the island's plants up close) → `Saved/RailwayTest/*.png` |
+| Offscreen check | `unreal/scripts/test_railway.sh` (`RAILTEST_ONLY=day,night,far`, or `riders`: residents ride back from the island; `trees`: the island's plants up close; `sunset`: the train leaves the island into the low sun, past a still camera on the water, then a longer lens follows it into the haze; `tools/frames_to_mp4.py` joins the frames) → `Saved/RailwayTest/*.png` |
 
 ## The line
 
@@ -83,8 +83,10 @@ horn coming out of the tunnel and leaving a halt, the doors.
 
 `ULyudTrainWake`: at each wheel the sea is sampled; where the surface stands over the rail head (`bIsSea`, still-water
 depth over the bank > 0, the waves' surface within 6 cm of the rail or over it) the wheel throws spray to both sides
-(droplets fly and fall back as foam), the bank's flanks shove a V of foam that drifts outward and fades, and a hiss of
-water follows the front bogie. Off the water (the beach, the island, a low tide) nothing. Only within 250 m of the camera.
+(droplets fly and fall back as small foam), the bank's flanks shove rings of foam outward that spread and thin away, a
+foamy trail of patches lies along both flanks behind the last wheel, widening and drifting off, and a hiss of water
+follows the front bogie. Foam is lace, never a solid sheet: each ring and patch is a mesh of little irregular flecks
+built in code (a broken annulus with gaps; a disc denser in the middle), turned at random per instance. Off the water (the beach, the island, a low tide) nothing. Only within 250 m of the camera.
 
 Gulls (the bird species' own `ABirdActor` herring, black-headed and common gulls) gather over the last car while it
 runs through the water by day: they hang in slow figure-eights behind it, glide with a few wingbeats now and then, call
