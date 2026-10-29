@@ -1,0 +1,34 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 58-year-old Russian physicist: tall, lean, slightly stooped, high forehead, receding grey hair combed back, short grey beard, wire-rimmed round glasses, thoughtful eyes; a grey herringbone tweed jacket over a dark green wool turtleneck, charcoal trousers, brown leather derby shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "a13d612ce4004e10bb9ad72cb75445a5",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "source_images": [
+   {
+    "task_id": "a13d612ce4004e10bb9ad72cb75445a5",
+    "image_index": 0
+   },
+   {
+    "task_id": "a13d612ce4004e10bb9ad72cb75445a5",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "9033933008d1415e93e4af1ad44cc062",
+  "points": 45,
+  "note": "front and back only: the side views came out with the arm reaching forward, not a T-pose profile"
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-10-28",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 71-year-old Russian retired teacher: short, plump, silver hair in a neat bun, rosy cheeks, gentle smile lines; a burgundy wool coat to the knee, a colorful paisley headscarf around her neck, a grey skirt below the knee, thick beige tights, sturdy black low-heeled shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "88945a90ce5441799c77f9cc3529a059",
+  "points": 8
+ },
+ "model": null
+}

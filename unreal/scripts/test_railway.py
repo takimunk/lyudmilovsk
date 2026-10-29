@@ -246,6 +246,25 @@ def near_plant(w, dist):
     cmd(w, "BugItGo %.0f %.0f %.0f -8 90 0" % (p.x, p.y - dist * 100.0, p.z + 400.0))
 
 
+def frames(w, n, first=0, step=1.0):
+    for i in range(n):
+        PLAN_EXTRA.append((S["t"] + step * i, lambda w, i=i: shot(w, "sunset_%03d" % (first + i))))
+
+
+PLAN_EXTRA = []
+# the train leaves the island for the horizon at sunset: from the island halt's far end, looking west into the sun;
+# the game runs 4x (slomo) so it shrinks into the haze within the frames
+SUNSET = [
+    (21.0, lambda w: cmd(w, "lyud.Birds.Time 16 34")),
+    (22.0, lambda w: cmd(w, "DisableAllScreenMessages")),
+    (23.0, lambda w: cmd(w, "lyud.Railway.Next island 1")),
+    (24.0, lambda w: go(w, 2452.0, -53.0, -38.6, -1.5, -4.0)),       # a little north of the line past the halt, west
+    (76.0, lambda w: frames(w, 60, 0, 1.0)),                          # it pulls out and runs off at its own pace
+    (136.5, lambda w: cmd(w, "slomo 6")),
+    (137.0, lambda w: frames(w, 70, 60, 1.0)),                        # then six times faster, into the haze
+    (208.0, lambda w: cmd(w, "slomo 1")),
+]
+
 TREES = [
     (22.0, lambda w: near_plant(w, 12.0)),
     (30.0, lambda w: shot(w, "pine_near_early")),
@@ -257,16 +276,18 @@ TREES = [
     (163.0, lambda w: shot(w, "pine_far_late")),
 ]
 PLAN = []
+for name, part in (("sunset", SUNSET),) if ONLY == "sunset" else ():
+    PLAN += part
 for name, part in (("trees", TREES),) if ONLY == "trees" else ():
     PLAN += part
 for name, part in (("riders", RIDERS),) if ONLY == "riders" else ():
     PLAN += part
 for name, part in (("day", DAY), ("night", NIGHT), ("far", FAR)):
-    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees"):
+    if (not ONLY or name in ONLY.split(",")) and ONLY not in ("riders", "trees", "sunset"):
         PLAN += part
-if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees"):
+if ONLY and "day" not in ONLY.split(",") and ONLY not in ("riders", "trees", "sunset"):
     PLAN.insert(0, (30.0, start))
-PLAN.append((PLAN[-1][0] + 4.0, lambda w: S.update(phase="done")))
+PLAN.append((max(t for t, _ in PLAN) + 4.0, lambda w: S.update(phase="done")))
 
 
 def tick(dt):
@@ -280,6 +301,8 @@ def tick(dt):
     while S["step"] < len(PLAN) and S["t"] > PLAN[S["step"]][0]:
         PLAN[S["step"]][1](w)
         S["step"] += 1
+    while PLAN_EXTRA and S["t"] > PLAN_EXTRA[0][0]:
+        PLAN_EXTRA.pop(0)[1](w)
     if S["chase"]:
         chase(w, *S["chase"])
     watch(w)

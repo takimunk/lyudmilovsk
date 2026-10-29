@@ -2,6 +2,7 @@
 
 #include "Components/AudioComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "../Transport/LyudMeshKit.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,7 +13,7 @@
 namespace
 {
 constexpr int32 MaxDrops = 420;
-constexpr int32 MaxFoam = 260;
+constexpr int32 MaxFoam = 340;
 constexpr float Gravity = 980.f;
 }
 
@@ -58,7 +59,16 @@ void ULyudTrainWake::EnsureParts()
 		return I;
 	};
 	DropIsm = Make(Sphere, TEXT("WakeDrops"), FLinearColor(0.85f, 0.9f, 0.9f), 0.55f);
-	FoamIsm = Make(Disc, TEXT("WakeFoam"), FLinearColor(0.82f, 0.86f, 0.85f), 0.32f);
+	// a ring of foam: a flat annulus 50 cm across its outside, both faces (the kit builds it once)
+	{
+		FLyudMeshKit K;
+		K.Lathe(FTransform::Identity, { FVector2D(36.0, 0.0), FVector2D(50.0, 0.0) }, { TEXT("foam") }, 28, false, false);
+		K.Lathe(FTransform::Identity, { FVector2D(50.0, 0.2), FVector2D(36.0, 0.2) }, { TEXT("foam") }, 28, false, false);
+		TArray<FName> Slots;
+		RingMesh = K.Build(Owner, TEXT("WakeRing"), Slots);
+	}
+	FoamIsm = Make(RingMesh ? RingMesh.Get() : Disc, TEXT("WakeFoam"), FLinearColor(0.86f, 0.9f, 0.88f), 0.45f);
+	TrailIsm = Make(Disc, TEXT("WakeTrail"), FLinearColor(0.8f, 0.85f, 0.84f), 0.22f);
 	if (USoundBase* S = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Railway/S_splash_01.S_splash_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
 		Hiss = NewObject<UAudioComponent>(Owner, TEXT("WakeHiss"));
@@ -136,14 +146,34 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			const FVector Front = WetWheels[0].Key;
 			const float Sd = Rnd.FRand() < 0.5f ? -1.f : 1.f;
 			FFoam F;
-			F.P = Front + Side * Sd * Rnd.FRandRange(260.f, 340.f) - Fwd * Rnd.FRandRange(0.f, 200.f);
-			F.V = Side * Sd * Rnd.FRandRange(40.f, 90.f) + Fwd * Speed * 0.04f;
+			F.P = Front + Side * Sd * Rnd.FRandRange(260.f, 320.f) - Fwd * Rnd.FRandRange(0.f, 200.f);
+			F.V = Side * Sd * Rnd.FRandRange(50.f, 110.f) + Fwd * Speed * 0.04f;
 			F.Age = 0.f;
-			F.Life = Rnd.FRandRange(8.f, 14.f);
-			F.Size = Rnd.FRandRange(0.3f, 0.75f);
+			F.Life = Rnd.FRandRange(4.f, 7.f);
+			F.Size = Rnd.FRandRange(0.5f, 1.0f);
 			Foam.Add(F);
 		}
 		FoamDebt = FMath::Min(FoamDebt, 3.f);
+		// the trail: a streak along each flank every 1.6 m run behind the last wet wheel, widening and drifting off
+		TrailAt = FMath::Min(TrailAt, double(Speed) * 2.0);
+		TrailAt -= Speed * Dt;
+		while (TrailAt <= 0.0 && Foam.Num() < MaxFoam - 2)
+		{
+			TrailAt += 160.0;
+			const FVector Back = WetWheels.Last().Key;
+			for (int32 Sd = -1; Sd <= 1; Sd += 2)
+			{
+				FFoam F;
+				F.Kind = 1;
+				F.Yaw = Fwd.Rotation().Yaw + Rnd.FRandRange(-4.f, 4.f) + Sd * 3.f;
+				F.P = Back + Side * Sd * Rnd.FRandRange(240.f, 300.f) - Fwd * Rnd.FRandRange(50.f, 250.f);
+				F.V = Side * Sd * Rnd.FRandRange(25.f, 55.f);
+				F.Age = 0.f;
+				F.Life = Rnd.FRandRange(9.f, 14.f);
+				F.Size = Rnd.FRandRange(0.8f, 1.2f);
+				Foam.Add(F);
+			}
+		}
 	}
 	// droplets fly and fall; on the water they become small foam
 	for (int32 I = Drops.Num() - 1; I >= 0; I--)
@@ -156,14 +186,14 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		const float Water = S ? S->SeaLevel() : D.P.Z - 1.f;
 		if (D.P.Z < Water || D.Life <= 0.f)
 		{
-			if (D.P.Z < Water && Foam.Num() < MaxFoam && Rnd.FRand() < 0.15f)
+			if (D.P.Z < Water && Foam.Num() < MaxFoam && Rnd.FRand() < 0.25f)
 			{
 				FFoam F;
 				F.P = FVector(D.P.X, D.P.Y, Water);
 				F.V = FVector(D.V.X, D.V.Y, 0.f) * 0.1f;
 				F.Age = 0.f;
-				F.Life = Rnd.FRandRange(2.f, 4.f);
-				F.Size = Rnd.FRandRange(0.12f, 0.3f);
+				F.Life = Rnd.FRandRange(1.5f, 3.f);
+				F.Size = Rnd.FRandRange(0.15f, 0.35f);
 				Foam.Add(F);
 			}
 			Drops.RemoveAtSwap(I, EAllowShrinking::No);
@@ -187,14 +217,13 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 	{
 		DT.Add(FTransform(FQuat::Identity, D.P, FVector(D.Size)));
 	}
-	TArray<FTransform> FT;
+	TArray<FTransform> FT, TT;
 	FT.Reserve(Foam.Num());
 	const float Level = S ? S->SeaLevel() : 0.f;
 	for (int32 I = 0; I < Foam.Num(); I++)
 	{
 		const FFoam& F = Foam[I];
 		const float T = F.Age / F.Life;
-		const float R = F.Size * (1.f + 1.6f * T) * (1.f - T * T);
 		float Z = Level + 2.f;
 		if (S && (I + GFrameNumber) % 6 == 0)
 		{
@@ -205,7 +234,21 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		{
 			Z = F.P.Z;
 		}
-		FT.Add(FTransform(FQuat::Identity, FVector(F.P.X, F.P.Y, Z), FVector(R, R, 0.004f)));
+		const FVector At(F.P.X, F.P.Y, Z);
+		if (F.Kind == 0)
+		{
+			// a ring spreads out and its band thins away (the mesh's band is fixed: the ring grows, then shrinks to nothing at
+			// its very end so it never pops)
+			const float R = F.Size * 2.f * (0.6f + 2.4f * T) * (T > 0.85f ? (1.f - T) / 0.15f : 1.f);
+			FT.Add(FTransform(FQuat::Identity, At, FVector(R, R, 1.f)));
+		}
+		else
+		{
+			// a streak: long along the way, widening as it ages, gone at the end
+			const float Len = F.Size * 3.2f * (1.f + 0.4f * T);
+			const float Wid = F.Size * 0.45f * (1.f + 2.2f * T) * (1.f - T * T);
+			TT.Add(FTransform(FRotator(0.f, F.Yaw, 0.f), At, FVector(Len, Wid, 0.004f)));
+		}
 	}
 	auto Push = [](UInstancedStaticMeshComponent* Ism, const TArray<FTransform>& Ts)
 	{
@@ -239,6 +282,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 	};
 	Push(DropIsm, DT);
 	Push(FoamIsm, FT);
+	Push(TrailIsm, TT);
 	if (Hiss)
 	{
 		const float Vol = bNear ? FMath::Clamp(Wet * Speed / 900.f, 0.f, 1.2f) : 0.f;
