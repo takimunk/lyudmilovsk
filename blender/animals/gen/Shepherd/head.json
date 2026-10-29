@@ -1,0 +1,1 @@
+{"note": "the head's real mouth line (corner, front) and eye on the oriented body (x forward, z up, metres), read by hand off a side close-up of the Unreal export; gen_fit.fit_head puts the head bones on the mouth and the nose tip", "eye": [0.508, 0.763], "mouth": [[0.511, 0.658], [0.581, 0.658]]}

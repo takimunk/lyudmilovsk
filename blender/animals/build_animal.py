@@ -15,6 +15,7 @@ Frame: facing +X, left +Y, up +Z, metres; the origin on the ground between the f
 import json
 import math
 import os
+import shutil
 import sys
 import time
 import zlib
@@ -51,6 +52,10 @@ TEX = 1024
 # skeleton fitted onto it; the fur shells grow from a coarse copy (the budget is ~20k triangles up close)
 GEN = "--gen" in FLAGS
 GEN_GLB = os.path.join(ROOT, "blender", "animals", "gen", BREED, "model.glb")
+# with the raw model gone, the body as it is in Unreal (unreal/scripts/export_animal_source.py): the same generated
+# shape, UVs, coat and baked normal map, only already decimated
+GEN_UE = os.path.join(ROOT, "blender", "animals", "gen", BREED, "ue")
+UE_SRC = not os.path.exists(GEN_GLB) and os.path.exists(os.path.join(GEN_UE, "SK_%s.obj" % BREED))
 if GEN:
     LOD_TRIS = [14000, 5000, 1800, 700]
     LOD_SHELLS = [6, 4, 0, 0]
@@ -59,6 +64,8 @@ if GEN:
     # model): its own painted coat, no shells, more triangles
     if B.get("gen_lods"):
         LOD_TRIS, LOD_SHELLS = list(B["gen_lods"]), [0, 0, 0, 0]
+if "--no-shells" in FLAGS:             # previews of the bare skin
+    LOD_SHELLS = [0, 0, 0, 0]
 
 
 def log(*a):
@@ -328,13 +335,42 @@ def cut_mouth(ob):
         ids = [v.index for v in f.verts]
         if band[ids].all() and (h[ids] > 0).any() and (h[ids] <= 0).any():
             cut.append(f)
+    edge_verts = {v for f in cut for v in f.verts}
     bmesh.ops.delete(bm, geom=cut, context="FACES_ONLY")
+    # shut at rest: the lips' new edges onto the lip line (the upper a hair above it, the lower a hair below), so the
+    # cut shows only when the jaw opens
+    for v in edge_verts:
+        if v.is_valid and v.link_faces:
+            hv = float((np.array(v.co) - corner) @ up)
+            v.co = mathutils.Vector(np.array(v.co) - up * (hv - (0.0004 if hv > 0 else -0.0004)))
     bm.to_mesh(ob.data)
     bm.free()
     log("mouth cut: %d faces" % len(cut))
+    if "--debug-mouth" in FLAGS:
+        sel = (t > -0.05 * L) & (t < 1.08 * L) & (np.abs(P[:, 1]) < B["muzzle"][1] * 1.6)
+        log("mouth corner", corner, "front", front, "L", L, "up", up, "muzzle", B["muzzle"], "in band x/y", int(sel.sum()),
+            "h quantiles", np.quantile(h[sel], [0, 0.1, 0.5, 0.9, 1]) if sel.any() else None, "nose x", P[:, 0].max())
 
 
-def mouth_parts():
+def tuck(ob, body, margin):
+    """Pulls every vertex of ob that is outside the body (or closer to its skin than margin) to margin under the skin: a
+    generated muzzle is narrower and shallower than the template's, and the mouth parts poked through the lips and chin."""
+    from mathutils.bvhtree import BVHTree
+    dg = bpy.context.evaluated_depsgraph_get()
+    tree = BVHTree.FromObject(body, dg)
+    n = 0
+    for v in ob.data.vertices:
+        loc, nrm, _, _ = tree.find_nearest(v.co)
+        if loc is None:
+            continue
+        if (v.co - loc).dot(nrm) > -margin:
+            v.co = loc - nrm * margin
+            n += 1
+    ob.data.update()
+    return n
+
+
+def mouth_parts(body=None):
     """Every dog's default inside of the mouth: a dark mouth, upper teeth on the head, lower teeth and the tongue on
     the jaw (materials Mouth_Inside, Mouth_Teeth, Mouth_Tongue). Sized from the muzzle; hidden while the mouth is shut."""
     corner, front, ax, up, L = mouth_frame()
@@ -393,6 +429,9 @@ def mouth_parts():
     tongue = ellipsoid("Mouth_Tongue", mid - up * float(B["muzzle"][2]) * 0.1 + ax * L * 0.08, L * 0.42, hw * 0.62,
                        float(B["muzzle"][2]) * 0.16, m_to)
     out.append((tongue, "jaw"))
+    if body is not None:
+        H = float(B["joints"]["chest"][2])
+        log("mouth parts tucked under the skin:", {o.name: tuck(o, body, H * 0.006) for o, _ in out})
     log("mouth parts: inside, teeth up/low, tongue (muzzle %s, mouth %.1f cm)" % (np.round(B["muzzle"], 3).tolist(), L * 100))
     return out
 
@@ -412,7 +451,11 @@ def build_body_gen():
     """The generated body: cleaned, turned and scaled into the breed's frame, the skeleton fitted onto it; a ~400k copy
     kept for baking the normal map; LOD0 decimated to the budget (the generated UVs and texture kept)."""
     t0 = time.time()
-    ob = GF.import_glb(GEN_GLB)
+    if UE_SRC:
+        ob = GF.import_ue(os.path.join(GEN_UE, "SK_%s.obj" % BREED), os.path.join(GEN_UE, "T_%s_%s.png" % (BREED, CO.COATS[BREED][0])))
+        log("body from Unreal's export", GEN_UE)
+    else:
+        ob = GF.import_glb(GEN_GLB)
     GF.clean(ob)
     img = GF.base_color_image(ob)
     ob.data.materials.clear()
@@ -420,6 +463,9 @@ def build_body_gen():
         poly.material_index = 0
     Q = GF.orient(ob, B)
     facts = GF.fit(B, Q)
+    head_json = os.path.join(ROOT, "blender", "animals", "gen", BREED, "head.json")
+    if os.path.exists(head_json):
+        facts.update(GF.fit_head(B, Q, json.load(open(head_json))))
     B["gen"] = True
     log("fitted", facts)
     # its own eyes (the template's place is only a guess on a generated head): bare of fur there, eyeballs set in them
@@ -444,6 +490,10 @@ def build_body_gen():
     else:
         decimate(ob, LOD_TRIS[0])
     piece = AN.body_piece(B)          # only for the skin weights (and the mouth, nose and eye places)
+    if B.get("head_fit") and "mouth" in B["head_fit"]:
+        # the generated head's own lip line, by hand (gen/<Breed>/head.json): the lips' split, the cut, the mouth parts
+        log("mouth line: template", np.round(np.array(B["_mouth"])[:, [0, 2]], 3).tolist(), "by hand", B["head_fit"]["mouth"])
+        B["_mouth"] = tuple(np.array([p[0], 0.0, p[1]]) for p in B["head_fit"]["mouth"])
     log("generated body %d tris, %.1fs" % (sum(len(p.vertices) - 2 for p in ob.data.polygons), time.time() - t0))
     return ob, piece, high, img
 
@@ -822,6 +872,12 @@ def add_shells_from(ob, src, n, L, C, W, Wsrc):
     for c, r, _n in B.get("eyes_at") or []:
         cv = mathutils.Vector(c)
         bmesh.ops.delete(bm, geom=[f for f in bm.faces if (f.calc_center_median() - cv).length < r * (1.15 if B.get("eye_bare") else 1.9)], context="FACES_ONLY")
+    if B.get("head_fit"):
+        # and over the muzzle (in front of the eyes): the coarse copy's plates stood off the snout as flat slabs and,
+        # crossing the lips, tore when the jaw opened; a dog's muzzle hair is short anyway
+        ex = float(B["eye"][0]) - 0.01
+        mz = float(B["_mouth"][0][2]) - 0.08
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.calc_center_median().x > ex and f.calc_center_median().z > mz], context="FACES_ONLY")
     bm.verts.ensure_lookup_table()
     loose = [v for v in bm.verts if not v.link_faces]
     keep_idx = [v.index for v in bm.verts if v.link_faces]
@@ -1060,7 +1116,11 @@ def main():
                 rgb = rgb * detail[..., None]
         coat_imgs.append(save_png("T_%s_%s" % (BREED, CO.COATS[BREED][ci]), rgb))
         log("coat", CO.COATS[BREED][ci])
-    if GEN and high is not None:
+    if GEN and UE_SRC:
+        # the normal map baked from the raw model, on the same UVs
+        shutil.copyfile(os.path.join(GEN_UE, "T_%s_Normal.png" % BREED), os.path.join(OUT, "T_%s_Normal.png" % BREED))
+        bpy.data.objects.remove(high)
+    elif GEN and high is not None:
         bake_normal(high, body, TEX, "T_%s_Normal" % BREED)
         bpy.data.objects.remove(high)
         log("normal baked %.1fs" % (time.time() - t0))
@@ -1085,6 +1145,8 @@ def main():
     elif GEN:
         proxy = copy_object(lods[2], "ShellProxy")
         proxy_W, proxy_A = WL[2], AL[2]
+    # the skin without the shells, for tucking the mouth parts in
+    skin = copy_object(lods[0], "Skin") if GEN and B.get("kind") == "dog" else None
     for li, o in enumerate(lods):
         o.data.materials.append(mat_body)
         o.data.materials.append(mat_fur)
@@ -1109,8 +1171,10 @@ def main():
         ob.data.materials.append(eye_mat)
         skin_to(ob, arm, {bone: np.ones(len(ob.data.vertices))})
     if B.get("kind") == "dog":
-        for ob, bone in mouth_parts():
+        for ob, bone in mouth_parts(skin):
             skin_to(ob, arm, bone if isinstance(bone, dict) else {bone: np.ones(len(ob.data.vertices))})
+        if skin is not None:
+            bpy.data.objects.remove(skin)
     log("built %.1fs" % (time.time() - t0), "LOD0 with shells", sum(len(p.vertices) - 2 for p in lods[0].data.polygons), "tris")
     if "--previews" in FLAGS or QUICK:
         L = 2.6 * H

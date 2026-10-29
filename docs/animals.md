@@ -83,6 +83,17 @@ centre line), decimates it to 14k (LODs 12k with shells, 1.8k, 0.7k from a 400k 
 normal map, keeps the generated texture as the first coat and paints the others carrying its fine detail, and grows 6
 fur shells from the 1.8k copy. The clips, the simulation and the sculpted fallback (without `--gen`) are unchanged.
 
+**The dogs' heads (2026-10-29, Dima: the muzzle bent out of shape when the head turned).** `fit()` set the head bones by
+the back's height, and the generated dogs hold their heads ~10 cm lower than the templates: the jaw pivot and the lip
+line sat in the skull, so the jaw dragged the whole face. `gen/<Breed>/head.json` holds the real lip line (corner,
+front), read by hand off a side close-up; `gen_fit.fit_head` moves the head bones onto it and the nose tip, and the lip
+line is the mouth's (the lips' split, the cut). The skull is rigid (head and jaw take a vertex wholly where they hold most
+of it), the lips are cut apart and shut at rest, the mouth parts (dark inside, teeth, tongue) are tucked under the skin,
+and no fur shells grow in front of the eyes (the coarse copy's plates stood off the snout). The raw models of Laika,
+Shepherd and Mutt are lost (the hi3d links expired): `unreal/scripts/export_animal_source.py` exports the body, first coat
+and normal map back out of Unreal into `gen/<Breed>/ue/` (local), and `--gen` builds from that when `model.glb` is
+missing (the normal map is reused, not baked). `ANIMTEST_PART=dogfaces` shoots each dog's head standing and barking.
+
 
 Bodies are sculpted from signed-distance primitives over each breed's skeleton (a lofted trunk, a thigh mass, the
 shank, paws with four toes; the cat's round head with whisker pads; a dog's head as a lofted wedge; eyes in sockets,

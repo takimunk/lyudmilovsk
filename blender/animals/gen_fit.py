@@ -31,6 +31,43 @@ def import_glb(path):
     return ob
 
 
+def import_ue(obj_path, tex_path, keep="Body"):
+    """A breed's body exported back out of Unreal (unreal/scripts/export_animal_source.py, for when its raw model.glb is
+    gone): only the faces of the `keep` section (not the fur shells), centimetres to metres, Unreal's left-handed frame
+    to Blender's (y negated; the importer's own winding then faces out), and a plain material with the generated coat, the way the
+    generated glb came in."""
+    before = set(bpy.data.objects)
+    bpy.ops.wm.obj_import(filepath=obj_path, forward_axis="Y", up_axis="Z")
+    new = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    for o in new:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = new[0]
+    if len(new) > 1:
+        bpy.ops.object.join()
+    ob = bpy.context.view_layer.objects.active
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    names = [m.name.split(".")[0] if m else "" for m in ob.data.materials]
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bmesh.ops.delete(bm, geom=[f for f in bm.faces if names[f.material_index] != keep], context="FACES")
+    for v in bm.verts:
+        v.co = (v.co.x * 0.01, -v.co.y * 0.01, v.co.z * 0.01)
+    bm.to_mesh(ob.data)
+    bm.free()
+    ob.data.materials.clear()
+    m = bpy.data.materials.new("UESource")
+    m.use_nodes = True
+    p = next(n for n in m.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    t = m.node_tree.nodes.new("ShaderNodeTexImage")
+    t.image = bpy.data.images.load(tex_path)
+    t.image.colorspace_settings.name = "sRGB"
+    m.node_tree.links.new(t.outputs["Color"], p.inputs["Base Color"])
+    ob.data.materials.append(m)
+    return ob
+
+
 def verts(ob):
     a = np.zeros(len(ob.data.vertices) * 3)
     ob.data.vertices.foreach_get("co", a)
@@ -169,6 +206,48 @@ def fit(B, Q):
     B["trunk_f"] = tuple(mx(f) for f in B["trunk_f"])
     B["trunk"] = [(q[0], q[1] * zs, q[2] * zs, q[3] * ys) for q in B["trunk"]]
     return dict(paws={k: [float(x) for x in v] for k, v in paws.items()}, zs=zs, ys=ys, nose_x=nose_x, tail_x=tail_x)
+
+
+def fit_head(B, Q, spec):
+    """The head bones onto the head the body really has. fit() moves them with the back's height, and a generated dog
+    that holds its head lower than the template (Laika: ~10 cm) kept its jaw pivot and mouth line in the skull, so the
+    jaw dragged the whole face. spec (gen/<Breed>/head.json): the real mouth line, by hand off a side close-up. The
+    template's mouth corner and nose tip go onto the real corner and the body's own nose tip by one turn-and-scale in
+    the side plane; the head's sizes follow the scale, the upper neck half the move."""
+    J = B["joints"]
+    nose_x = float(Q[:, 0].max())
+    tip = Q[(Q[:, 0] > nose_x - 0.008) & (np.abs(Q[:, 1]) < 0.025)]
+    tip_r = np.array([nose_x, float(tip[:, 2].mean())])
+    corner_r = np.array(spec["mouth"][0], float)
+    # the template's nose tip and mouth corner in the head's own frame (measured on the three dog templates' sculpts:
+    # the same shares of the head's length for all of them)
+    h0, h1 = np.array([J["head"][0], J["head"][2]]), np.array([J["head_end"][0], J["head_end"][2]])
+    L = float(np.linalg.norm(h1 - h0))
+    ax = (h1 - h0) / L
+    upv = np.array([-ax[1], ax[0]])
+    tip_f = h1 + L * (0.09 * ax + 0.07 * upv)
+    corner_f = h0 + L * (0.49 * ax - 0.15 * upv)
+    a, b = tip_f - corner_f, tip_r - corner_r
+    s = float(np.linalg.norm(b) / np.linalg.norm(a))
+    ang = math.atan2(b[1], b[0]) - math.atan2(a[1], a[0])
+    R = np.array([[math.cos(ang), -math.sin(ang)], [math.sin(ang), math.cos(ang)]]) * s
+
+    def tf(p):
+        p = np.array(p, float)
+        xz = R @ (np.array([p[0], p[2]]) - corner_f) + corner_r
+        return np.array([xz[0], p[1] * s, xz[1]])
+    head0 = J["head"].copy()
+    for k in ("head", "head_end", "jaw", "jaw_end", "ear", "ear_end"):
+        J[k] = tf(J[k])
+    J["neck_02"] = J["neck_02"] + (J["head"] - head0) * 0.5
+    B["eye"] = tf(B["eye"])
+    for k in ("head_r", "muzzle", "nose"):
+        B[k] = tuple(r * s for r in B[k])
+    B["muzzle_len"] *= s
+    B["eye_r"] *= s ** 0.7
+    B["ear"] = dict(B["ear"], w=B["ear"]["w"] * s)
+    B["head_fit"] = spec
+    return dict(head_scale=s, head_turn_deg=math.degrees(ang), head_move=[float(x) for x in J["head"] - head0], nose=tip_r.tolist())
 
 
 def clean(ob, weld=0.0005):

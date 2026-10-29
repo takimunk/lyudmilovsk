@@ -51,4 +51,5 @@ unreal/Lyudmilovsk/Content/Transport/network_built.json
 unreal/Lyudmilovsk/Content/Railway/railway_built.json
 design/railway/game/
 blender/animals/gen/*/model.glb
+blender/animals/gen/*/ue/
 blender/animals/gen/*/views/

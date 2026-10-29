@@ -1674,19 +1674,29 @@ namespace LyudPeople
 		{
 			Urgent = P.N[(int)ENeed::Hunger] >= P.N[(int)ENeed::Tired] ? (int)ENeed::Hunger : (int)ENeed::Tired;
 		}
-		for (int I = 0; I < (int)Activities.size(); I++)
+		// a break from work is taken at the work's own place when it has what's needed (the owner eats in the club, not
+		// at home); otherwise anywhere
+		const std::string WorkKind = bBreakNow && P.Slot >= 0 ? Places[Slots[P.Slot].Place].Kind : std::string();
+		for (int Pass = WorkKind.empty() ? 1 : 0; Pass < 2 && Best < 0; Pass++)
 		{
-			if (Urgent >= 0 && Activities[I].Need[Urgent] <= 0.f)
+			for (int I = 0; I < (int)Activities.size(); I++)
 			{
-				continue;
-			}
-			int S = -1;
-			const float Sc = Score(P, Activities[I], S);
-			if (Sc > BestScore)
-			{
-				BestScore = Sc;
-				Best = I;
-				BestSlot = S;
+				if (Urgent >= 0 && Activities[I].Need[Urgent] <= 0.f)
+				{
+					continue;
+				}
+				if (Pass == 0 && !Has(Activities[I].Places, WorkKind))
+				{
+					continue;
+				}
+				int S = -1;
+				const float Sc = Score(P, Activities[I], S);
+				if (Sc > BestScore)
+				{
+					BestScore = Sc;
+					Best = I;
+					BestSlot = S;
+				}
 			}
 		}
 		if (Best < 0)
