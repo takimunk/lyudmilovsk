@@ -80,16 +80,44 @@ def load_model(path, height):
     return m
 
 
-def decimate(m, faces):
+def decimate(m, faces, protect=None):
     n = len(m.data.polygons)
     if n <= faces:
         return
     mod = m.modifiers.new("decimate", "DECIMATE")
     mod.ratio = faces / n
     mod.use_collapse_triangulate = True
+    if protect:
+        mod.vertex_group = protect_group(m, protect)
     bpy.context.view_layer.objects.active = m
     bpy.ops.object.modifier_apply(modifier=mod.name)
     log("decimated %d -> %d faces" % (n, len(m.data.polygons)))
+
+
+def protect_group(m, zones):
+    """Thin parts the collapse would cut to polygons (round glasses became octagons): vertices in each zone's box
+    (x0, x1, y0, y1, z0, z1, metres), optionally only the dark warm ones (a brown frame, not the skin round it), get a
+    lower decimation weight (1 = decimated as usual)."""
+    co = world_co(m)
+    w = np.ones(len(co))
+    col = None
+    for z in zones:
+        x0, x1, y0, y1, z0, z1 = z["box"]
+        sel = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
+        if z.get("dark_warm"):
+            if col is None:
+                img = base_image(m)
+                W, H = img.size
+                px = np.empty(W * H * 4, np.float32)
+                img.pixels.foreach_get(px)
+                col = vertex_colours(m, img, px.reshape(H, W, 4))
+            sel &= (col[:, 0] < 0.5) & (col[:, 0] - col[:, 2] > 0.08)
+        w[sel] = np.minimum(w[sel], z.get("weight", 0.8))
+        log("protect: %d vertices at weight %.2f" % (sel.sum(), z.get("weight", 0.8)))
+    g = m.vertex_groups.new(name="protect")
+    for val in np.unique(w):
+        g.add([int(i) for i in np.nonzero(w == val)[0]], float(val), "REPLACE")
+    return g.name
 
 
 def clean(m, min_island=40):
@@ -133,7 +161,9 @@ def optimize(m, spec):
         high.data = m.data.copy()
         bpy.context.scene.collection.objects.link(high)
         high.data.materials[0] = m.data.materials[0].copy()      # the bake target lives only in the low one's material
-    decimate(m, spec.get("faces", 24000))
+    decimate(m, spec.get("faces", 24000), spec.get("protect"))
+    if "protect" in m.vertex_groups:
+        m.vertex_groups.remove(m.vertex_groups["protect"])
     for p in m.data.polygons:
         p.use_smooth = True
     mat = m.data.materials[0]
@@ -767,6 +797,15 @@ def preview(model, arm, cid):
         bpy.ops.render.render(write_still=True)
         cam.location, cam.rotation_euler = (c.x, c.y, c.z + 2), (0, 0, 0)
         sc.render.filepath = os.path.join(out, "%s_hand_%s_top.png" % (cid, side))
+        bpy.ops.render.render(write_still=True)
+    # the face close up, from the front and three-quarters
+    cam.data.ortho_scale = 0.32
+    f = arm.matrix_world @ arm.data.bones["head"].head_local + Vector((0, 0, 0.09))
+    for name, yaw in (("face", 0), ("face_34", 35)):
+        a = math.radians(yaw)
+        cam.location = (f.x + 2 * math.sin(a), f.y - 2 * math.cos(a), f.z)
+        cam.rotation_euler = (math.radians(90), 0, a)
+        sc.render.filepath = os.path.join(out, "%s_%s.png" % (cid, name))
         bpy.ops.render.render(write_still=True)
     cam.data.ortho_scale = 2.0
 

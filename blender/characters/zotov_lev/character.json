@@ -4,7 +4,7 @@
  "model": "model",
  "height": 1.84,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 24000,
+ "faces": 18500,
  "texture": 2048,
  "bake_normal": true,
  "face": {
@@ -20,5 +20,21 @@
  "hands": {
   "cut": 0.0,
   "overlap": 0.03
- }
+ },
+ "protect": [
+  {
+   "_doc": "the round glasses' brown frame and temples",
+   "box": [
+    -0.1,
+    0.1,
+    -1,
+    -0.02,
+    1.65,
+    1.73
+   ],
+   "dark_warm": true,
+   "weight": 0.8
+  }
+ ],
+ "_faces": "18.5k body + the donor's two hands (~5.7k) = ~24k, the adult budget"
 }
