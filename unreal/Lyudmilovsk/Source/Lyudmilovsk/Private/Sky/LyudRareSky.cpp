@@ -353,7 +353,7 @@ void ALyudRareSky::Tick(float DeltaSeconds)
 		OpticsDome->SetWorldScale3D(FVector(OpticsRadius / SphereRadius));
 		const FVector L = bMoon ? Sky->MoonDirection() : Sky->SunDirection();
 		const float AltDeg = bMoon ? Sky->MoonAltitude() : Sky->SunAltitude();
-		const float RadiusDeg = 0.5f * (bMoon ? Sky->MoonAngularDiameterDeg : Sky->SunAngularDiameterDeg);
+		const float RadiusDeg = 0.5f * (bMoon ? Sky->MoonSizeNowDeg() : Sky->SunAngularDiameterDeg);
 		// the light's brightness: the sun's at the day exposure; Europa's (the phase dims it fast) at the night one
 		const float Lum = bMoon ? Sky->FullMoonIlluminance * FMath::Pow(Sky->MoonLitFraction(), 2.5f) / FMath::Max(Sky->SunIlluminance, 1e-3f) * 4.f : 1.f;
 		const FLinearColor Tr = Transmittance(AltDeg);

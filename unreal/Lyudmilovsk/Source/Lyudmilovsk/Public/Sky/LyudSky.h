@@ -116,9 +116,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float NightMieShare = 0.15f;
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a big moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
-	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun and Europa instead of
-	 * veiling them: at 8 a cumulus in front of Europa by day still showed the disk through it like a ghost). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 24.f;
+	/** The clouds' density over the cloud material's own. 24 was for the engine's simple cloud material (so a cumulus
+	 * hid the low red sun and Europa instead of veiling them); M_LyudClouds (ULyudCloudSubsystem) sets each deck's
+	 * optical depth from the weather itself, so 1 = as the weather says. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 1.f;
 	/** Clouds letting through less than this of the light behind them are drawn opaque (the cloud component's
 	 * StopTracingTransmittanceThreshold, 0.005 by default): a thick cloud hides the sun's disk, its
 	 * limb and corona entirely instead of showing their outline through it. Kept small: past the cut the engine stops
