@@ -87,7 +87,7 @@ namespace
 				[
 					SNew(SHorizontalBox)
 					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[Words(FText::FromString(TEXT("→ ")), Size, InkSoft)]
-					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[Words(T, Size, Ink, true)]
+					+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)[Words(T, Size, Ink, true, true)]
 				]
 			];
 	}
@@ -713,7 +713,8 @@ TSharedRef<SWidget> SLyudDiarySpread::MapSpread()
 	};
 	return SNew(SOverlay)
 		+ SOverlay::Slot().Padding(FMargin(Margin, 100, Margin, 70))[Map.ToSharedRef()]
-		+ SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(FMargin(Margin + 30, 28, 0, 0))[Title(LyudText::Get(TEXT("ui.diary.map")))]
+		// the title heads the right page: the left one's top line has the date
+		+ SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(FMargin(PageW + Margin + 20, 22, 0, 0))[Title(LyudText::Get(TEXT("ui.diary.map")))]
 		+ SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(FMargin(Margin + 30, 0, 0, 22))[Key(TEXT("ui.diary.hint.map"), 24.f, PencilFaint)]
 		+ SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(FMargin(0, 0, Margin + 10, 90))[MapNote()];
 }
@@ -742,7 +743,7 @@ TSharedRef<SWidget> SLyudDiarySpread::MapNote()
 			Words(Near.IsNone() ? FText::GetEmpty() : LyudText::Get(TEXT("ui.map.near"), { FStringFormatArg(ULyudQuests::PlaceName(Near).ToString()),
 				FStringFormatArg(FMath::RoundToInt(FMath::Sqrt(Best))) }), 26.f, Ink, false, true)
 		];
-		Box->AddSlot().AutoHeight().HAlign(HAlign_Left)[Link(LyudText::Get(TEXT("ui.diary.to_me")), [this] { if (Map) { Map->CenterOnPlayer(); } }, 77, 26.f)];
+		Box->AddSlot().AutoHeight().HAlign(HAlign_Fill)[Link(LyudText::Get(TEXT("ui.diary.to_me")), [this] { if (Map) { Map->CenterOnPlayer(); } }, 77, 26.f)];
 	}
 	TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
 	int32 NFound = 0, NAll = 0;
