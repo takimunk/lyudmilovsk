@@ -182,6 +182,10 @@ company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on 
 
 ## Eyes
 
+Maru is kept as hi3d made her (2026-10-29, Dima: "far from the original"): anatomy `gen_lods` [28000, 12000,
+4000, 1200] (+`face_tris` 12000 on LOD0) and no fur shells over her painted coat (rig.json `fur` false -> the body MI's
+SkinDark 0.85 instead of the shells' 0.72).
+
 Maru (2026-10-29, after "no lids, scary"): her generated head's own painted eyes (amber iris, pupil, dark lid rims)
 are kept: no eyeball is set over them (anatomy.py `painted_eyes`), the face keeps ~9k triangles in the decimation
 (`face_tris`, build_animal.decimate_face; an even collapse left the head a few hundred and the eyes sat in faceted

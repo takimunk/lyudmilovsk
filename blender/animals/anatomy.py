@@ -162,7 +162,10 @@ _derive("Laika", "Maru", scale=0.92, body=0.98, legs=1.04, head=0.96, muzzle=1.0
 # her generated head's own painted eyes (iris, pupil, the dark lid rims) are better than any ball set into them
 # (2026-10-28: "no lids, scary"): build_animal keeps the paint, the face denser, the fur on it short and bare
 # further round the eyes (the shells hid half of each), the strands finer
-BREEDS["Maru"].update(painted_eyes=True, face_tris=9000, strand_scale=12.5, eye_bare=1.8)
+BREEDS["Maru"].update(painted_eyes=True, face_tris=12000, strand_scale=12.5, eye_bare=1.8)
+# and the rest of her as hi3d made her (Dima 2026-10-29: "far from the original"): no fur shells over her painted coat,
+# 40k triangles up close
+BREEDS["Maru"].update(gen_lods=[28000, 12000, 4000, 1200])
 
 
 # ====================================================================== skeleton

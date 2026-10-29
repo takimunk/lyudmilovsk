@@ -365,7 +365,9 @@ def do_import(breed):
     extra = {"Normal": nrm} if nrm else {}
     for coat in rig["coats"]:
         alb = unreal.load_asset("%s/T_%s_%s" % (dest, breed, coat))
-        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, dict({"Albedo": alb}, **extra))
+        # without fur shells (a generated body kept as made) the skin is the coat itself: hardly darkened (1.0 washed her out in daylight)
+        b = mi("MI_%s_%s_Body" % (breed, coat), dest, body_m, dict({"Albedo": alb}, **extra),
+               {} if rig.get("fur", True) else {"SkinDark": 0.85})
         f = mi("MI_%s_%s_Fur" % (breed, coat), dest, fur_m, dict({"Albedo": alb, "Strands": strands}, **extra), {"StrandScale": float(rig["strand_scale"]) * 1.6})
         first.setdefault("Body", b)
         first.setdefault("Fur", f)

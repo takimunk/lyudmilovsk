@@ -55,6 +55,10 @@ if GEN:
     LOD_TRIS = [14000, 5000, 1800, 700]
     LOD_SHELLS = [6, 4, 0, 0]
     TEX = 2048
+    # a generated body can stay as it was generated (Maru, 2026-10-29: the shells made her look nothing like her hi3d
+    # model): its own painted coat, no shells, more triangles
+    if B.get("gen_lods"):
+        LOD_TRIS, LOD_SHELLS = list(B["gen_lods"]), [0, 0, 0, 0]
 
 
 def log(*a):
@@ -1078,6 +1082,7 @@ def export(arm, lods, acts, lib, eye_mat):
            "eye_l": [float(eye[0] * 100), float(-eye[1] * 100), float(eye[2] * 100)],
            "eyes_at": [[c[0] * 100, -c[1] * 100, c[2] * 100, r * 100, n[0], -n[1], n[2]] for c, r, n in B.get("eyes_at") or []]
            if B.get("painted_eyes") else [],
+           "fur": bool(LOD_SHELLS[0]),
            "coats": CO.COATS[BREED], "eyes": len(CO.EYES[BREED]), "strand_scale": B.get("strand_scale", 9.0 if CAT else 7.0),
            "clips": {n: {"seconds": lib.clips[n][0], "loop": lib.clips[n][1]} for n in acts},
            "speeds_cms": {k: round(float(v) * 100, 1) for k, v in lib.speeds.items()},
