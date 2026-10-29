@@ -544,7 +544,13 @@ namespace LyudAudio
 			if (S.Kind < 0)
 			{
 				// what the foot lands on
-				const float Snow = P.SnowDepthCm;
+				float Snow = P.UnderfootSnowCm >= 0.f ? P.UnderfootSnowCm : P.SnowDepthCm;
+				if (Snow < 1.5f && P.SnowDepthCm >= 1.5f && P.TempC < 0.5f)
+				{
+					// a cleared path in a snowy winter: the trodden crust left on it still crunches, thinner
+					Snow = 1.5f;
+					S.Strength *= 0.6f;
+				}
 				if (P.OnIce > 0.5f || (P.Glaze > 0.5f && Snow < 1.5f))
 				{
 					S.Kind = IceStep;

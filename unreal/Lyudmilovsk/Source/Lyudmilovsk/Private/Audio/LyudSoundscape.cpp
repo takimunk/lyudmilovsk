@@ -28,6 +28,7 @@
 #include "Transport/LyudTransport.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
+#include "Winter/LyudWinter.h"
 #include "../Weather/WeatherModel.h"
 
 namespace
@@ -651,6 +652,18 @@ void ULyudSoundscapeSubsystem::UpdateWeatherVoices(LyudAudio::FAmbienceParams& P
 		LastWeatherTemp = S.TempC;
 	}
 	P.IceTempRate = TempRate;
+
+	// underfoot: the winter's snow field knows the drifts, the cleared paths and where the sea ice holds
+	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (const ULyudWinterSubsystem* Winter = ULyudWinterSubsystem::Get(this); Winter && Winter->IsReady() && PC && PC->GetPawn())
+	{
+		const FVector Feet = PC->GetPawn()->GetActorLocation();
+		P.UnderfootSnowCm = Winter->GetSnowDepthAt(Feet);
+		if (Winter->IsIceWalkable(Feet))
+		{
+			P.OnIce = 1.f;
+		}
+	}
 
 	// the lighthouse's fog signal (the Mayak station's lantern) sounds when the visibility drops under ~2 km
 	P.FogSignal = 0.f;

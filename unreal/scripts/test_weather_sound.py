@@ -140,6 +140,11 @@ def tick(dt):
             wx = unreal.LyudWeatherSubsystem.get_weather(w)
             log("%s at %s walk %s moved %.0f cm" % (name, st["loc"], walk, (pawn.get_actor_location() - st["from"]).length()))
             log("  " + (s.debug_report() if s else "NO SOUNDSCAPE"))
+            winter = unreal.LyudWinterSubsystem.get_winter(w)
+            if winter:
+                feet = pawn.get_actor_location()
+                log("  underfoot snow %.1f cm ice walkable %s on ground %s" % (winter.get_snow_depth_at(feet), winter.is_ice_walkable(feet),
+                                                                          move.is_moving_on_ground() if move else None))
             log("  " + (wx.debug_report(False) if wx else "NO WEATHER"))
             st["phase"] = 0
 

@@ -136,7 +136,9 @@ namespace LyudAudio
 		float FogSignal = 0.f;
 		float FogSignalDistance = 2000.f;
 		float FogSignalPan = 0.f;
-		/** The ground under the feet (Footstep): wet 0..1, puddles 0..1, standing on ice 0..1. */
+		/** The ground under the feet (Footstep): snow there, cm (-1: the level SnowDepthCm; drifts and cleared paths
+		 *  differ), wet 0..1, puddles 0..1, standing on ice 0..1. */
+		float UnderfootSnowCm = -1.f;
 		float Wet = 0.f;
 		float Puddles = 0.f;
 		float OnIce = 0.f;
