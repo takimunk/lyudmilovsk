@@ -185,7 +185,8 @@ def build(model, arm, cid, spec):
     # the whole face once (24k triangles leave facets a key light shows; rounding them with smooth > 0 puffed up the
     # lids), then the eyes and the mouth once more; the normal map is baked afterwards, on this final face
     mid_z = (eyes[0]["z"] + m["z"]) / 2
-    subdivide_near(model, [(m["x"], mid_z, 0.075 * k, 0.095 * k)], lambda x, z: face_y, levels=1)
+    if face.get("subdivide", True):     # false: only the eyes and the mouth (glasses: their dense frames would double)
+        subdivide_near(model, [(m["x"], mid_z, 0.075 * k, 0.095 * k)], lambda x, z: face_y, levels=1)
     subdivide_near(model, regions, lambda x, z: face_y, levels=1)
     if with_eyes:
         smooth_eyes(model, eyes, iterations=2)
@@ -462,6 +463,7 @@ def shape_keys(model, marks, k, tree0, with_eyes, lower):
     def add(name, delta):
         sk = model.shape_key_add(name=name, from_mix=False)
         sk.data.foreach_set("co", (co + delta).ravel())
+        sk.value = 0.0                  # Blender 5.3 starts a new key at 1 (every morph on in the previews and the glTF)
         log("key %s: %d vertices move (max %.1f mm)" % (name, int((np.abs(delta).sum(1) > 1e-6).sum()), 1000 * np.abs(delta).max()))
 
     for side, e in zip("lr", marks["eyes"]):

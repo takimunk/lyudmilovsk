@@ -801,7 +801,7 @@ def preview(model, arm, cid):
     # the face close up, from the front and three-quarters
     cam.data.ortho_scale = 0.32
     f = arm.matrix_world @ arm.data.bones["head"].head_local + Vector((0, 0, 0.09))
-    for name, yaw in (("face", 0), ("face_34", 35)):
+    for name, yaw in (("closeup", 0), ("closeup_34", 35)):
         a = math.radians(yaw)
         cam.location = (f.x + 2 * math.sin(a), f.y - 2 * math.cos(a), f.z)
         cam.rotation_euler = (math.radians(90), 0, a)

@@ -4,12 +4,46 @@
  "model": "model",
  "height": 1.84,
  "donor": "blender/humans/export/human_guy_a.glb",
- "faces": 18500,
+ "faces": 15000,
  "texture": 2048,
  "bake_normal": true,
  "face": {
-  "rig": false,
-  "normal_strength": 0.3
+  "rig": true,
+  "normal_strength": 0.3,
+  "marks": {
+   "_doc": "by hand from Saved/FaceShots/zotov_lev.png (5120 px/m, centre z 1.7003): the glasses' brown rims fooled face_marks",
+   "ipd": 0.0672,
+   "eyes": [
+    {
+     "x": 0.0332,
+     "z": 1.6965,
+     "iris": [
+      0.3,
+      0.33,
+      0.36
+     ],
+     "w": 0.026,
+     "h": 0.0095
+    },
+    {
+     "x": -0.034,
+     "z": 1.6962,
+     "iris": [
+      0.3,
+      0.33,
+      0.36
+     ],
+     "w": 0.026,
+     "h": 0.0095
+    }
+   ],
+   "mouth": {
+    "x": 0.0006,
+    "z": 1.6155,
+    "w": 0.045
+   }
+  },
+  "subdivide": false
  },
  "skirt": {
   "hem_z": 0.8,
@@ -36,5 +70,5 @@
    "weight": 0.8
   }
  ],
- "_faces": "18.5k body + the donor's two hands (~5.7k) = ~24k, the adult budget"
+ "_faces": "15k body + the donor's two hands (~5.7k) + the face rig's eyes/mouth (~4k) = ~25k, the adult budget"
 }
