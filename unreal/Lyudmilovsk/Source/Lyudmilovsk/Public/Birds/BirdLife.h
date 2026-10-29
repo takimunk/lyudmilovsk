@@ -242,6 +242,12 @@ public:
 
 	int32 DrawnLastFrame = 0;
 	int32 BodiesLastFrame = 0;
+	/** Since the start: birds that appeared or vanished at half a pixel or more from one frame to the next; bodies made and dropped. */
+	int32 Pops = 0;
+	int32 BodySpawns = 0;
+	int32 BodyReleases = 0;
+	/** The last few pops (species#id, why it went or came, distance, size before and after) for the report. */
+	TArray<FString> PopLog;
 
 	static constexpr int32 NumPoses = 7;   // Perch, Peck, Sleep, Flap0, Flap1, Flap2, Glide
 
@@ -267,6 +273,14 @@ private:
 	/** Per body: the act it was last told (so clips are not restarted every frame). */
 	TMap<int32, float> BodyActs;
 	TArray<int32> Promoted;
+	/** Per body: the frame it was made (its instance stays drawn until the body has rendered posed). */
+	TMap<int32, uint64> BodyBorn;
+	/** Per bird: its draw range in units of the usual one (eases to 8 in a murmuration), and its size on screen last frame. */
+	TArray<float> Reach;
+	TArray<float> LastPx;
+	/** Per bird this frame: why it wasn't drawn (0 drawn, 1 gone, 2 tier, 3 claimed, 4 out of range, 5 under water). */
+	TArray<uint8> Why;
+	TArray<uint8> LastWhy;
 
 	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);

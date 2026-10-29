@@ -56,6 +56,7 @@ namespace LyudPeople
 		Read,       // a book in the hands, seated
 		Sleep,      // lying in bed
 		Work,       // at their work place: the club's owner at the booth (ABoothOwner draws him), the clerk at his desk
+		Shovel,     // clearing a path of snow, pushing a scraper along it (the winter's paths)
 		Num
 	};
 	const char* PoseName(EPose P);
@@ -90,6 +91,8 @@ namespace LyudPeople
 		std::string Tag;            // club seats: the station index; flats: the room kind
 		std::vector<V3> Spots;      // a double bed: where each sleeper lies
 		std::vector<V3> Inside;     // the way from the place's door (Portal) to Approach; empty outdoors
+		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none
+		V3 SnowTo;                  // and its far end
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
 		std::vector<int> Users;     // who is using or going to it now
@@ -142,6 +145,7 @@ namespace LyudPeople
 		bool bAway = false;                 // leaves the world (town, school)
 		bool bFree = true;                  // chosen in free time (false: only by a duty: sleep, work, school)
 		int Days = 0x7F;                    // the weekdays it can be chosen on (bit 0 Monday; a shop closed on Sundays)
+		bool bSnow = false;                 // clears snow off the paths: at a snow place's stretches, one after another
 	};
 
 	/** Fixed hours of a person: work or school. */
@@ -214,6 +218,8 @@ namespace LyudPeople
 		bool bRideExternal = false; // the ride is the cable car's (RideHook took it): it ends with EndRide
 		bool bTrain = false;        // waiting for or riding the train
 		int RailFrom = -1, RailTo = -1;     // the train ride's halts (places)
+		float SweepT = -1.f;        // clearing a stretch of snow: how far along 0..1 (-1 not at it)
+		float SweepSent = -1.f;     // how far the winter was last told
 		double DoorsAt = 0.0;       // waiting: when the doors open (sim seconds)
 		double RideUntil = 0.0;     // riding the train: when it opens its doors at the other halt
 		uint32_t Rng = 1;
@@ -304,6 +310,15 @@ namespace LyudPeople
 		 *  metres) over the data's guesses; false if there is no such halt. */
 		bool SetRailStop(const std::string& Stop, const V3& Foot, const std::vector<V3>& Boarding);
 
+		/** A stretch of path that wants its snow cleared (ULyudWinterSubsystem's patches): an id, its ends (Unreal metres), the snow, cm. */
+		struct FSnowJob { int Job = -1; V3 From, To; float Cm = 0.f; };
+		/** The winter's paths: up to Max stretches that want clearing, nearest to Near first. Unset: no snow work. */
+		std::function<void(const V3& Near, int Max, std::vector<FSnowJob>& Out)> SnowJobs;
+		/** Someone clearing a stretch: Progress 0 takes it (false: somebody else has it), then how far 0..1 (1 done), < 0 gives it up. */
+		std::function<bool(int Person, int Job, float Progress)> SnowProgress;
+		/** Hands the snow place's free slots the stretches that want clearing now, near Near (the wrapper calls it every few seconds). */
+		void UpdateSnowSlots(const V3& Near);
+
 		float Ground_Z(const V3& P) const;
 		/** Ground under a point: the island's own height field where it has one (people_places.json ground_patches), else
 		 *  the walk grid's; P.Z without either. */
@@ -354,6 +369,8 @@ namespace LyudPeople
 		void TalkPairs();
 		float PairTimer = 0.f;
 		void Wander(FPerson& P);
+		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
+		void Sweep(FPerson& P, float Dt);
 		void OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const;
 		float Rand(uint32_t& S) const;
 		void Emit(EEvent E, const FPerson& P, int Other = -1) { Events.push_back({ E, P.Id, Other, P.Place }); }

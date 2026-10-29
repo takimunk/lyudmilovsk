@@ -61,6 +61,8 @@ struct LYUDMILOVSK_API FLyudCloudLayer
 	UPROPERTY(BlueprintReadOnly, Category = "Weather") float TopM = 0.f;
 	/** 0 thin (the sun shows through) .. 1 dark. */
 	UPROPERTY(BlueprintReadOnly, Category = "Weather") float Density = 0.f;
+	/** 0 heaped or fibrous cells .. 1 a flat continuous sheet. Changes smoothly (Type is only its name): draw from this. */
+	UPROPERTY(BlueprintReadOnly, Category = "Weather") float Sheet = 0.5f;
 };
 
 /**
@@ -302,6 +304,11 @@ private:
 	mutable LyudWeather::FChain* Chain = nullptr;
 	LyudWeather::FSeason* Season = nullptr;
 	LyudWeather::FWeatherState* Cached = nullptr;
+	/** Easing a forced change in: what was shown when it began, and when (FPlatformTime seconds). */
+	LyudWeather::FWeatherState* BlendFromPtr = nullptr;
+	mutable double BlendStart = 0.0;
+	mutable float BlendLength = 0.f;
+	mutable bool bWasBlending = false;
 	mutable double CachedHours = -1e9;
 	mutable uint32 CachedForceHash = 0;
 	mutable uint32 ClimateHash = 0;

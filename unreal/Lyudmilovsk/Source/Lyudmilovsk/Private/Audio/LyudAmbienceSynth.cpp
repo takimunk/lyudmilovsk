@@ -28,6 +28,17 @@ void ULyudAmbienceSynth::Strike(float DistanceM, float Pan)
 	});
 }
 
+void ULyudAmbienceSynth::Footstep(float Strength, float Pan)
+{
+	SynthCommand([this, Strength, Pan]()
+	{
+		if (Bed)
+		{
+			Bed->Footstep(Strength, Pan);
+		}
+	});
+}
+
 void ULyudAmbienceSynth::GetVoiceRms(float Out[LyudAudio::NumVoices]) const
 {
 	FScopeLock Guard(&Lock);

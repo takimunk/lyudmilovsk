@@ -845,5 +845,7 @@
  "sign.train.maker": "日本車輌　昭和三十三年",
  "sign.train.emergency": "非常通報装置",
  "ui.train.sit": "[E] 座る",
- "ui.train.stand": "[E] 立つ"
+ "ui.train.stand": "[E] 立つ",
+ "transport.prompt.seat_sit": "E：座る",
+ "transport.prompt.seat_up": "E：立つ"
 }

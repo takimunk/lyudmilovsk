@@ -2,6 +2,8 @@
 // player's calls, rides and announcements.
 #include "Transport/LyudTransport.h"
 
+#include "HeroCharacter.h"
+
 #include "Audio/LyudSoundscape.h"
 #include "CablewaySim.h"
 #include "Components/AudioComponent.h"
@@ -15,6 +17,8 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
@@ -153,6 +157,23 @@ namespace
 				const int32 A = T->FindStation(FName(*Args[0])), B = T->FindStation(FName(*Args[1]));
 				const int32 Who = Args.Num() > 2 ? FCString::Atoi(*Args[2]) : 900;
 				UE_LOG(LogTemp, Display, TEXT("Transport.Call %s -> %s: rider %d"), *Args[0], *Args[1], T->GetNet()->Travel(Who, A, B));
+			}
+		}));
+	FAutoConsoleCommand CmdSit(TEXT("Transport.Sit"), TEXT("Transport.Sit [seat|up]: the player in a cabin sits on a seat (the nearest free one), or stands up."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			ULyudTransportSubsystem* T = ForConsole();
+			if (!T || T->PlayerCabin() < 0)
+			{
+				return;
+			}
+			if (Args.Num() && Args[0] == TEXT("up"))
+			{
+				T->StandUp();
+			}
+			else
+			{
+				T->SitDown(T->PlayerCabin(), Args.Num() ? FCString::Atoi(*Args[0]) : 0);
 			}
 		}));
 	FAutoConsoleCommand CmdDiagram(TEXT("Transport.Diagram"), TEXT("Transport.Diagram [station|close]: opens the route diagram (from a station: to pick where to go), or closes it."),
@@ -652,12 +673,76 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 		}
 	}
 	RiderIgnoresWay(RidingCabin >= 0 && RidingCabin < SimNum(Net->Cabins) && Net->Cabins[RidingCabin].State == LT::ECabinState::Moving);
+	KeepSeated();
 	if (Cableway)
 	{
 		Cableway->UpdateBoards(*Net, View, DeltaTime);
 		Cableway->UpdateRopes(*Net, View);
 	}
 	UpdatePlayer(DeltaTime);
+}
+
+int32 ULyudTransportSubsystem::FreeSeatNear(int32 Cabin, const FVector& P) const
+{
+	if (!Net || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
+	{
+		return -1;
+	}
+	int32 Best = -1;
+	float BestD = 95.f;
+	for (int32 K = 0; K < 4; K++)
+	{
+		bool bTaken = false;
+		for (const LT::FRider& R : Net->Riders)
+		{
+			bTaken |= R.Who != LT::PlayerId && R.State == LT::ERiderState::Riding && R.Cabin == Cabin && R.Seat % 4 == K;
+		}
+		const float D = FVector::Dist2D(Cabins[Cabin]->Seat(K).GetLocation(), P);
+		if (!bTaken && D < BestD)
+		{
+			BestD = D;
+			Best = K;
+		}
+	}
+	return Best;
+}
+
+void ULyudTransportSubsystem::SitDown(int32 Cabin, int32 K)
+{
+	// the hero's own seat (AHeroCharacter::SitOn, as on the train): carried with the cabin, its swing included
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	if (!Hero || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
+	{
+		return;
+	}
+	// the seat's frame on the cabin: on the floor under the cushion's front edge, facing the other bench
+	const FTransform Seat = Cabins[Cabin]->Seat(K).GetRelativeTransform(Cabins[Cabin]->GetActorTransform());
+	const FTransform Front(Seat.GetRotation(), Seat.GetLocation() + Seat.GetRotation().GetForwardVector() * 25.f);
+	Hero->SitOn(Cabins[Cabin]->GetRootComponent(), Front, 45.f);
+	SeatedCabin = Cabin;
+	SeatedK = K;
+}
+
+void ULyudTransportSubsystem::StandUp()
+{
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	if (AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr; Hero && Hero->IsSeated())
+	{
+		Hero->StandUp();
+	}
+	SeatedCabin = SeatedK = -1;
+}
+
+void ULyudTransportSubsystem::KeepSeated()
+{
+	// the hero stands up by itself too (a step, Space): follow it
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	const AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	if (SeatedCabin >= 0 && (!Hero || !Hero->IsSeated()))
+	{
+		SeatedCabin = SeatedK = -1;
+	}
 }
 
 void ULyudTransportSubsystem::RiderIgnoresWay(bool bIgnore)
@@ -681,9 +766,10 @@ void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& 
 		return;
 	}
 	const UPrimitiveComponent* Base = Char->GetMovementBase();
-	if (Base && Base->GetOwner() == Cabin)
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Char);
+	if ((Base && Base->GetOwner() == Cabin) || (Hero && Hero->IsSeated()))
 	{
-		return;
+		return;     // its own base carries it, or it sits (the seat carries it)
 	}
 	const FVector P = After.TransformPosition(Before.InverseTransformPosition(Char->GetActorLocation()));
 	const float Turn = After.Rotator().Yaw - Before.Rotator().Yaw;
@@ -843,7 +929,17 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 			DoorCabin = I;
 		}
 	}
-	if (DoorCabin < 0 && In >= 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving)
+	// a seat: sit on a free one (E), stand up from it (E)
+	int32 SeatK = -1;
+	if (SeatedCabin >= 0)
+	{
+		DoorCabin = -1;
+	}
+	else if (In >= 0 && DoorCabin < 0)
+	{
+		SeatK = FreeSeatNear(In, P);
+	}
+	if (DoorCabin < 0 && SeatK < 0 && SeatedCabin < 0 && In >= 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving)
 	{
 		WhereCabin = In;
 	}
@@ -852,6 +948,14 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		const LT::FCabin& C = Net->Cabins[DoorCabin];
 		Prompt = LyudText::Get(C.Door > 0.5f ? TEXT("transport.prompt.cabin_shut") : TEXT("transport.prompt.cabin_open"),
 			{ FStringFormatArg(LyudText::Get(Key(C.Name)).ToString()) });
+	}
+	else if (SeatedCabin >= 0)
+	{
+		Prompt = LyudText::Get(TEXT("transport.prompt.seat_up"));
+	}
+	else if (SeatK >= 0)
+	{
+		Prompt = LyudText::Get(TEXT("transport.prompt.seat_sit"));
 	}
 	else if (WhereCabin >= 0)
 	{
@@ -894,6 +998,16 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		{
 			C.DwellUntil = Net->Time + 6.0;     // opened again by hand: a little longer before it goes
 		}
+		PromptCooldown = 0.3f;
+	}
+	else if (bE && SeatedCabin >= 0)
+	{
+		StandUp();
+		PromptCooldown = 0.3f;
+	}
+	else if (bE && SeatK >= 0)
+	{
+		SitDown(In, SeatK);
 		PromptCooldown = 0.3f;
 	}
 	else if (bE && WhereCabin >= 0)

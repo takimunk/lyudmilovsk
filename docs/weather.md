@@ -48,6 +48,33 @@ The wind subsystem takes its weather (direction and strength before the day's rh
 same chain (`FWindParams::bSynoptic`, `LyudWeather::SynopticWind`), so fronts veer and freshen the wind, the sea's
 waves grow with it and the birds feel it.
 
+## Seamless
+
+Nothing the engine gives moves in steps (Dima, 2026-10-29: "every change of weather smooth, no jumps"):
+- the model is continuous minute by minute (`tools/weather/run.sh test`, "seamless" checks over 200 days): episodes
+  cross-fade, the low cloud is the episode's deck and the convection's cumulus blended by how much of each there is
+  (base, top, density never jump when Cu take over), lenses take over the middle layer gradually, freezing rain is a
+  smooth weight, the fog's depth is the causes' weighted mean, visibility has no floor at the onset of rain;
+- each cloud layer has `Sheet` (0 heaped or fibrous cells .. 1 a flat sheet), blended across episodes: the genus
+  (`Type`) is only its name and switches at a threshold, so renderers should draw from `Sheet`, `Cover`, `BaseM`,
+  `TopM`, `Density` (continuous) and treat `Type` as a hint;
+- the season (snow, ice, frozen soil, sea temperature, wetness) eases from the hour before to the last hour step
+  (an hour late, never in steps); the ground wets at once in rain;
+- the subsystem recomputes every 2 game seconds; a jump of the clock (a load, `SetNow`) eases over
+  `lyud.Weather.BlendSeconds` (20 s); forced values and presets switch at once unless `lyud.Weather.PresetBlend` > 0
+  (e.g. 60 to watch a front come in).
+
+## Colour
+
+`ULyudGradeSubsystem` (`Public/Weather/LyudGrade.h`): an unbound post-process (priority 1001) with colour grading only,
+so faint the player never sees it change, and gone indoors (eases with `ALyudSky::IsPlayerOutdoors`). Winter dusks and
+nights: shadows and middle tones a few percent towards deep blue, the highlights (the lamps' sodium orange) a touch
+more saturated and warm; a summer day lighter and airier with the faintest ultramarine in the shade; a low summer sun
+warms the highlights; grey and wet weather mutes colour, fog flattens contrast. The sky's haze (the atmosphere's Mie
+scattering) follows the season, the humidity and the visibility: crisp in winter, milky in humid summer air.
+By day the eye also adapts in ALyudSky's outdoor exposure (never in the grade): up to `lyud.Sky.OvercastEV` (2) stops under a thick dark deck (from the weather's low and middle layers' cover x density) and `lyud.Sky.LowSunEV` (0.7) to a low winter sun (25 deg down to 5), eased; a January noon under Sc was nearly black without it.
+`lyud.Grade 0` A/B, `lyud.Grade.Strength`, `lyud.Grade.Debug 1`; `unreal/scripts/shoot_grade.sh` shoots on/off pairs.
+
 ## Climate (seed 750, 10 years, `tools/weather/run.sh climate`)
 
 January -3.5 C (hard frosts to -18), July 19.7 C (hot days 29), ~930 mm a year, wet ~19 % of hours, May the driest

@@ -60,7 +60,8 @@ UMaterialInterface* ALyudCableway::Mat(FName Name)
 	{
 		UMaterialInterface* G = LoadObject<UMaterialInterface>(nullptr, GlassPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(G ? G : Basic, this);
-		M->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.5f, 0.62f, 0.66f));
+		// clear glass with the faintest green of its edge (Dima: it looked yellow); the material's fresnel does the rest
+		M->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.86f, 0.93f, 0.92f));
 		Out = M;
 	}
 	else if (Name.ToString().StartsWith(TEXT("glow")))
@@ -159,6 +160,13 @@ UInstancedStaticMeshComponent* ALyudCableway::IsmFor(FName Kind, FName MatName, 
 	C->SetCollisionEnabled(bCollide ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
 	C->SetCollisionProfileName(bCollide ? UCollisionProfile::BlockAll_ProfileName : UCollisionProfile::NoCollision_ProfileName);
 	C->SetCastShadow(MatName != TEXT("glass"));
+	if (MatName == TEXT("glass"))
+	{
+		// the shaft's and the stair's glass: out of the distance fields too, or their shadowing and the sky's light
+		// stop at it as at a wall (Dima: no light through the stair's glass)
+		C->bAffectDistanceFieldLighting = false;
+		C->bAffectDynamicIndirectLighting = false;
+	}
 	C->SetupAttachment(RootComponent);
 	C->RegisterComponent();
 	AddInstanceComponent(C);
@@ -190,8 +198,37 @@ UStaticMeshComponent* ALyudCableway::Single(UStaticMesh* Mesh, const FTransform&
 	{
 		KitMaterials(C);
 	}
+	// the mesh's glass, when its Blender script set it apart (<name>_Glass: vestibules.py, towers, the lift's cab):
+	// no shadow and out of the distance fields, so the sun and the sky's light come in through it
+	if (MatName.IsNone() && !Mesh->GetName().EndsWith(TEXT("_Glass")))
+	{
+		if (UStaticMesh* G = LyudTransportKit::LoadMesh(Mesh->GetName() + TEXT("_Glass")))
+		{
+			GlassOf(G, C);
+		}
+	}
 	AddInstanceComponent(C);
 	Singles.Add(C);
+	return C;
+}
+
+UStaticMeshComponent* ALyudCableway::GlassOf(UStaticMesh* G, USceneComponent* Like)
+{
+	UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+	C->SetMobility(EComponentMobility::Movable);
+	C->SetStaticMesh(G);
+	C->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+	C->SetCastShadow(false);
+	C->bAffectDistanceFieldLighting = false;
+	C->bAffectDynamicIndirectLighting = false;
+	C->SetupAttachment(Like->GetAttachParent() ? Like->GetAttachParent() : RootComponent.Get());
+	C->RegisterComponent();
+	C->SetWorldTransform(Like->GetComponentTransform());
+	for (int32 I = 0; I < C->GetNumMaterials(); I++)
+	{
+		C->SetMaterial(I, Mat(TEXT("glass")));
+	}
+	AddInstanceComponent(C);
 	return C;
 }
 

@@ -18,6 +18,8 @@ sys.path.insert(0, os.path.join(REPO, "tools"))
 import world_map as W  # noqa: E402
 sys.path.insert(0, os.path.join(REPO, "tools", "sky"))
 import sky_hlsl as SH  # noqa: E402
+import cloud_hlsl as CH  # noqa: E402
+import rare_hlsl as RH  # noqa: E402
 
 DEST = "/Game/Scene01/Sky"
 eal = unreal.EditorAssetLibrary
@@ -128,6 +130,79 @@ def europa_texture(path, name, srgb):
     return tex
 
 
+def high_clouds(g, em, sky, view, sun_dir, moon_dir, vparam):
+    """Cirrus, cirrocumulus and cirrostratus as a layer on the dome at their altitude (tools/sky/cloud_hlsl.py
+    HIGH_HLSL; ULyudCloudSubsystem sets HighA/B/D), lit by the sun and Europa through the atmosphere."""
+    rgba = lambda n: (n, "RGBA")
+    high_a = vparam("HighA", (0.0, 9.0, 0.0, 0.0))
+    high_b = vparam("HighB", (0.0, 0.0, 0.0, 0.0))
+    high_d = vparam("HighD", (0.0, 0.0, 1.0, 0.0))
+    cam = g.node(X.MaterialExpressionCameraPositionWS)
+    # where the view ray meets the layer (9 km nominal; the light hardly changes over the layer's spread)
+    at = g.custom("float3 v = normalize(V); return C + v * (A.y * 1e5 / max(v.z, 0.05));",
+                  [("V", view), ("C", cam), ("A", rgba(high_a))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    sun_l = g.node(X.MaterialExpressionSkyAtmosphereLightIlluminance, light_index=0)
+    pin = "WorldPosition" if mel.connect_material_expressions(at, "", sun_l, "WorldPosition") else "World Position"
+    g.link(at, sun_l, pin)
+    moon_l = g.node(X.MaterialExpressionSkyAtmosphereLightIlluminance, light_index=1)
+    g.link(at, moon_l, pin)
+    return g.custom(CH.HIGH_HLSL, [("Sky", em), ("V", view), ("Cam", cam), ("SunL", sun_l), ("MoonL", moon_l), ("Amb", sky),
+                                   ("SunDir", rgba(sun_dir)), ("MoonDir", rgba(moon_dir)), ("HighA", rgba(high_a)),
+                                   ("HighB", rgba(high_b)), ("HighD", rgba(high_d))],
+                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+
+
+def cloud_material():
+    """The volumetric clouds: the low and middle layers, lens clouds and rain shafts (tools/sky/cloud_hlsl.py
+    VOLUME_HLSL; ULyudCloudSubsystem sets the layer parameters), on the engine's cloud noise volumes."""
+    g = Graph("M_LyudClouds")
+    g.m.set_editor_property("material_domain", unreal.MaterialDomain.MD_VOLUME)
+    g.m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    g.m.set_editor_property("used_with_volumetric_cloud", True)
+
+    def vparam(name, v):
+        return g.node(X.MaterialExpressionVectorParameter, -900, parameter_name=name,
+                      default_value=unreal.LinearColor(v[0], v[1], v[2], v[3]))
+    rgba = lambda n: (n, "RGBA")
+    ins = [("P", g.node(X.MaterialExpressionWorldPosition)), ("Cam", g.node(X.MaterialExpressionCameraPositionWS))]
+    ins.append(("Shape", g.node(X.MaterialExpressionTextureObject, -900,
+                                texture=unreal.load_asset("/Engine/EngineSky/VolumetricClouds/T_VolumeNoiseShape128"))))
+    ins.append(("Erosion", g.node(X.MaterialExpressionTextureObject, -900,
+                                  texture=unreal.load_asset("/Engine/EngineSky/VolumetricClouds/T_VolumeNoiseErosion32"))))
+    defaults = {"A": (0.0, 1.0, 2.0, 1.0), "B": (1.5, 0.0, 0.6, 0.0), "C": (0.5, 1.3, 0.05, 0.0), "D": (0.0, 0.0, 1.0, 0.0),
+                "E": (0.0, 0.3, 0.6, 0.0)}
+    for li in (0, 1):
+        for k, v in defaults.items():
+            n = "L%d%s" % (li, k)
+            ins.append((n, rgba(vparam(n, v))))
+    for n, v in (("Lens", (0.0, 3.5, 4.5, 6.0)), ("LensDir", (1.0, 0.0, 0.0, 0.0)), ("Misc", (0.0, 60.0, 0.0, 0.0)),
+                 ("Flash", (0.0, 0.0, 2.0, 3.0))):
+        ins.append((n, rgba(vparam(n, v))))
+    d = g.custom(CH.VOLUME_HLSL, ins, out=unreal.CustomMaterialOutputType.CMOT_FLOAT4)
+    # extinction per metre: density x Sigma x the sky's tuning multiplier (ALyudSky sets Cloud_GlobalDensity)
+    sigma = g.param("Sigma", 0.04)
+    glob = g.param("Cloud_GlobalDensity", 1.0)
+    ext = g.custom("return D.x * S * K;", [("D", d), ("S", sigma), ("K", glob)],
+                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    g.out(ext, unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+    albedo = vparam("Albedo", (0.93, 0.93, 0.95, 0.0))
+    g.out(albedo, unreal.MaterialProperty.MP_BASE_COLOR)
+    ao = g.custom("return D.y;", [("D", d)])
+    g.out(ao, unreal.MaterialProperty.MP_AMBIENT_OCCLUSION)
+    flash = vparam("FlashColor", (0.75, 0.8, 1.0, 0.0))
+    em = g.custom("return D.z * D.x * F.rgb;", [("D", d), ("F", rgba(flash))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    # two-lobe phase (a bright silver lining toward the sun, a softer back glow) and the multiple-scattering octaves
+    # that make thick clouds white instead of grey
+    adv = g.node(X.MaterialExpressionVolumetricAdvancedMaterialOutput)
+    for k, v in (("const_phase_g", 0.6), ("const_phase_g2", -0.25), ("const_phase_blend", 0.3),
+                 ("multi_scattering_approximation_octave_count", 2), ("const_multi_scattering_contribution", 0.55),
+                 ("const_multi_scattering_occlusion", 0.45), ("const_multi_scattering_eccentricity", 0.6),
+                 ("gray_scale_material", True), ("ground_contribution", False)):
+        adv.set_editor_property(k, v)
+    return g.finish()
+
+
 def sky_material():
     """The star dome: the atmosphere's own luminance, the red dwarf and Europa (tools/sky/sky_hlsl.py), the
     night sky's airglow, and stars that the day sky and the two disks outshine."""
@@ -181,10 +256,63 @@ def sky_material():
     sky = g.op(X.MaterialExpressionMultiply, sky, over)
     em = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, sky, sun),
               g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, moon, st), ag))
+    em = high_clouds(g, em, sky, view, sun_dir, moon_dir, vparam)
+    # the rare sky (tools/sky/rare_hlsl.py, ALyudRareSky sets these): the aurora, noctilucent clouds, the lightning's
+    # glow and the red dwarf's flares
+    f3 = unreal.CustomMaterialOutputType.CMOT_FLOAT3
+    aur = g.custom(RH.AURORA_HLSL, [("V", view), ("A", rgba(vparam("AurA", (0.0, 2000.0, 300.0, 0.0)))),
+                                    ("B", rgba(vparam("AurB", (0.0, 0.4, 0.0, 105.0)))),
+                                    ("C", rgba(vparam("AurC", (-0.27, 0.96, 0.0, 1.0)))), ("T", t), ("Tr", tr)], out=f3)
+    nlc = g.custom(RH.NLC_HLSL, [("V", view), ("S", rgba(sun_dir)), ("N", rgba(vparam("NlcA", (0.0, 0.0, 0.0, 0.0)))),
+                                 ("T", t), ("Tr", tr)], out=f3)
+    flash = g.custom(RH.FLASH_HLSL, [("V", view), ("F", rgba(vparam("Flash", (0.0, 1.0, 0.2, 0.0))))], out=f3)
+    flare = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
+                                     ("F", rgba(vparam("Flare", (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
+    rare = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, aur, nlc), g.op(X.MaterialExpressionAdd, flash, flare))
+    em = g.op(X.MaterialExpressionAdd, em, rare)
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     g.m.set_editor_property("is_sky", True)
     g.m.set_editor_property("two_sided", True)
     return g.finish()
+
+
+def _translucent_dome(name, code, inputs):
+    """An unlit additive material for a camera-centred sphere (ALyudRareSky): fogged by the clouds in front of it."""
+    g = Graph(name, unreal.MaterialShadingModel.MSM_UNLIT)
+    g.m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_ADDITIVE)
+    g.m.set_editor_property("two_sided", True)
+    for prop in ("apply_cloud_fogging", "compute_fog_per_pixel"):
+        try:
+            g.m.set_editor_property(prop, True)
+        except Exception as e:                       # property names move between engine versions
+            _log("%s: no %s (%r)" % (name, prop, e))
+    cam = g.node(X.MaterialExpressionCameraVectorWS)
+    view = g.custom("return -C;", [("C", cam)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    ins = [("V", view)]
+    for pin, src in inputs:
+        if isinstance(src, tuple) and src[0] == "vec":
+            n = g.node(X.MaterialExpressionVectorParameter, -900, parameter_name=src[1],
+                       default_value=unreal.LinearColor(*src[2]))
+            ins.append((pin, (n, "RGBA")))
+        else:
+            ins.append((pin, src(g)))
+    em = g.custom(code, ins, out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    return g.finish()
+
+
+def optics_material():
+    """Halos, sun dogs, pillars and rainbows (rare_hlsl.OPTICS_HLSL) on a sphere ~3 km round the camera."""
+    return _translucent_dome("M_LyudSkyOptics", RH.OPTICS_HLSL, [
+        ("Ld", ("vec", "Light", (0.0, -0.7, 0.3, 0.087))), ("Lc", ("vec", "LightColor", (0.0, 0.0, 0.0, 0.0))),
+        ("Hs", ("vec", "Halo", (0.0, 0.0, 0.0, 0.0))), ("Rb", ("vec", "Rainbow", (0.0, 0.0, 0.0, 0.0)))])
+
+
+def lightning_material():
+    """A cloud-to-ground bolt (rare_hlsl.BOLT_HLSL) on a sphere just short of the strike."""
+    return _translucent_dome("M_LyudLightning", RH.BOLT_HLSL, [
+        ("Cam", lambda g: g.node(X.MaterialExpressionCameraPositionWS)),
+        ("Bt", ("vec", "Bolt", (0.0, 0.0, 0.0, 0.0))), ("Bb", ("vec", "BoltLook", (150000.0, 0.0, 1.0, 1.0)))])
 
 
 def build(face_y, sea_z=W.SEA_Z * 100.0):
@@ -202,6 +330,10 @@ def build(face_y, sea_z=W.SEA_Z * 100.0):
     sky.set_actor_label("Sky")
     sky.set_folder_path("Outside")
     sky.set_editor_property("sky_material", sky_material())
+    sky.set_editor_property("cloud_material", cloud_material())
+    # the rare sky's own materials: ALyudRareSky (spawned by its subsystem at play) loads them from DEST
+    optics_material()
+    lightning_material()
 
     # the sea: ALyudSea (waves from the wind, depth from the ground, seabed life; its materials are
     # committed assets from make_sea_materials.py), with no sea east of the old plane's land edge

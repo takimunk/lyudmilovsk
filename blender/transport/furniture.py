@@ -33,7 +33,7 @@ COL = {"TR_Tx_Enamel": (0.9, 0.87, 0.8), "TR_Tx_Amber": (0.85, 0.45, 0.1), "TR_C
        "TR_Glass": (0.5, 0.6, 0.65), "TR_Tx_Plate": (0.85, 0.8, 0.7), "TR_Tx_Steel": (0.6, 0.62, 0.65)}
 EN, AM, CH, TZ, SEAT, DK, MO, GLOW, POSTER, GLS, PLATE, STEEL = range(len(MATS))
 PLANTER_TOP = 0.5
-CAB = 2.30                   # the cab's inside, square (the shaft is 2.5 m)
+CAB = 2.30                   # (the old square cab's inside; the shaft is 2.5 m)
 CAB_H = 2.32
 
 
@@ -90,8 +90,8 @@ def bench():
     for y in (-L / 2 + 0.15, L / 2 - 0.15):
         tube(bm, (0.18, y, 0.0), (0.18, y, 0.37), 0.025, CH)
         tube(bm, (-0.18, y, 0.0), (-0.2, y, 0.5), 0.025, CH)
-        tube(bm, (-0.2, y, 0.5), (-0.26, y, 0.9), 0.022, CH)
-        tube(bm, (0.18, y, 0.02), (-0.18, y, 0.02), 0.02, CH)
+        tube(bm, (-0.21, y, 0.5), (-0.33, y, 0.9), 0.022, CH)          # behind the back, not along its face
+        tube(bm, (0.18, y, 0.035), (-0.18, y, 0.035), 0.02, CH)
     tube(bm, (0.0, -L / 2 + 0.15, 0.36), (0.0, L / 2 - 0.15, 0.36), 0.02, CH)
     return bm
 
@@ -130,7 +130,7 @@ def egg_chair():
 
 def table():
     bm = bmesh.new()
-    lathe(bm, [(0.28, 0.0), (0.28, 0.02), (0.06, 0.08), (0.04, 0.6), (0.12, 0.66)], [EN, EN, EN, EN], 20)
+    lathe(bm, [(0.28, 0.0), (0.28, 0.02), (0.06, 0.08), (0.04, 0.6), (0.12, 0.64)], [EN, EN, EN, EN], 20, cap1=False)
     lathe(bm, [(0.42, 0.66), (0.42, 0.7)], [TZ], 24)
     return bm
 
@@ -162,8 +162,9 @@ def bin_():
 
 def rug():
     bm = bmesh.new()
-    lathe(bm, [(1.3, 0.0), (1.3, 0.012)], [MO], 48)
-    lathe(bm, [(1.32, 0.0), (1.32, 0.013), (1.22, 0.013)], [AM, AM], 48, cap0=False, cap1=False)
+    # the pile, and a braided amber rim standing 1.5 cm over it (a rim lying on the pile flickers)
+    lathe(bm, [(1.2, 0.0), (1.2, 0.015)], [MO], 48)
+    lathe(bm, [(1.22, 0.015), (1.22, 0.03), (1.32, 0.03), (1.32, 0.0)], [AM, AM, AM], 48, cap0=False, cap1=False)
     return bm
 
 
@@ -171,13 +172,14 @@ def poster():
     bm = bmesh.new()
     w, h = 0.8, 1.2
     # the picture (UV 0..1 over it), a chrome frame round it, a backing board
-    v = [bm.verts.new(p) for p in ((0.025, -w / 2, -h / 2), (0.025, w / 2, -h / 2), (0.025, w / 2, h / 2), (0.025, -w / 2, h / 2))]
+    # the picture 1.5 cm off its backing board (closer flickers)
+    v = [bm.verts.new(p) for p in ((0.035, -w / 2, -h / 2), (0.035, w / 2, -h / 2), (0.035, w / 2, h / 2), (0.035, -w / 2, h / 2))]
     f = bm.faces.new(v)
     f.material_index = POSTER
     box(bm, (0.01, 0, 0), (0.02, w + 0.04, h + 0.04), DK)
     for (a, b) in (((-w / 2 - 0.02, -h / 2 - 0.02), (w / 2 + 0.02, -h / 2 - 0.02)), ((w / 2 + 0.02, -h / 2 - 0.02), (w / 2 + 0.02, h / 2 + 0.02)),
                    ((w / 2 + 0.02, h / 2 + 0.02), (-w / 2 - 0.02, h / 2 + 0.02)), ((-w / 2 - 0.02, h / 2 + 0.02), (-w / 2 - 0.02, -h / 2 - 0.02))):
-        tube(bm, (0.035, a[0], a[1]), (0.035, b[0], b[1]), 0.015, CH, 6)
+        tube(bm, (0.04, a[0], a[1]), (0.04, b[0], b[1]), 0.015, CH, 6)
     return bm
 
 
@@ -189,54 +191,103 @@ def sconce():
     return bm
 
 
+# --- the lift's cab: a round capsule (Dima: the square box looked grim). Inside radius CAB_R; the game turns the wall
+# pieces to its four sides: a quarter of the round wall each (CabWall closed, CabDoor with the door's opening).
+
+CAB_R = 1.12
+SEG_Q = 12            # segments per quarter
+
+
+def arc_wall(bm, a0, a1, z0, z1, r_in, r_out, mi_out, mi_in, mi_top=None, seg=SEG_Q):
+    """A curved wall from azimuth a0 to a1 (radians), z0..z1, between r_in and r_out, closed."""
+    ang = [a0 + (a1 - a0) * k / seg for k in range(seg + 1)]
+    def ring(r, z):
+        return [bm.verts.new((r * math.cos(a), r * math.sin(a), z)) for a in ang]
+    ob, ot, ib, it = ring(r_out, z0), ring(r_out, z1), ring(r_in, z0), ring(r_in, z1)
+    for k in range(seg):
+        bm.faces.new((ob[k], ob[k + 1], ot[k + 1], ot[k])).material_index = mi_out
+        bm.faces.new((ib[k + 1], ib[k], it[k], it[k + 1])).material_index = mi_in
+        bm.faces.new((ot[k], ot[k + 1], it[k + 1], it[k])).material_index = mi_in if mi_top is None else mi_top
+        bm.faces.new((ob[k + 1], ob[k], ib[k], ib[k + 1])).material_index = mi_in if mi_top is None else mi_top
+    for (o0, o1, i0, i1) in ((ob[0], ot[0], ib[0], it[0]), (ob[-1], ot[-1], ib[-1], it[-1])):
+        bm.faces.new((i0, i1, o1, o0)).material_index = mi_in
+
+
 def cab_floor():
     bm = bmesh.new()
-    box(bm, (0, 0, -0.06), (CAB, CAB, 0.12), TZ)
-    lathe(bm, [(0.6, 0.0), (0.6, 0.004)], [AM], 32)      # an amber ring inlaid in the terrazzo
-    lathe(bm, [(0.5, 0.0), (0.5, 0.005)], [TZ], 32)
+    # a round terrazzo floor with an amber compass ring set into it (its own ring of the floor, not laid on it)
+    lathe(bm, [(CAB_R + 0.06, -0.12), (CAB_R + 0.06, 0.0), (0.62, 0.0)], [CH, TZ], 48, cap0=True, cap1=False)
+    lathe(bm, [(0.62, 0.0), (0.5, 0.0)], [AM], 48, cap0=False, cap1=False)
+    lathe(bm, [(0.5, 0.0), (0.0, 0.0)], [TZ], 48, cap0=False, cap1=False)
     return bm
 
 
 def cab_ceiling():
     bm = bmesh.new()
-    box(bm, (0, 0, CAB_H + 0.06), (CAB, CAB, 0.12), PLATE)
-    lathe(bm, [(0.7, CAB_H - 0.02), (0.72, CAB_H), (0.62, CAB_H)], [CH, CH], 32, cap0=False, cap1=False)
-    lathe(bm, [(0.6, CAB_H - 0.03), (0.0, CAB_H - 0.03)], [GLOW], 32, cap0=False, cap1=False)
-    for k in range(8):                                      # coffers: radial chrome ribs
-        a = 2 * math.pi * k / 8
-        tube(bm, (0.72 * math.cos(a), 0.72 * math.sin(a), CAB_H - 0.01), (1.1 * math.cos(a), 1.1 * math.sin(a), CAB_H - 0.01), 0.015, CH, 6)
+    # a low dome over the cab, a glowing ring round its middle, a chrome boss in the centre
+    prof = [(CAB_R + 0.06, CAB_H), (CAB_R - 0.05, CAB_H + 0.02), (0.95, CAB_H + 0.12), (0.62, CAB_H + 0.2)]
+    lathe(bm, prof, [EN, EN, EN], 48, cap0=False, cap1=False)
+    lathe(bm, [(0.62, CAB_H + 0.2), (0.62, CAB_H + 0.17), (0.4, CAB_H + 0.17), (0.4, CAB_H + 0.24)], [CH, GLOW, CH], 48, cap0=False, cap1=False)
+    lathe(bm, [(0.4, CAB_H + 0.24), (0.0, CAB_H + 0.27)], [EN], 48, cap0=False, cap1=False)
+    lathe(bm, [(0.1, CAB_H + 0.2), (0.12, CAB_H + 0.24)], [CH], 16, cap0=True, cap1=False)
+    # the outer shell over it (seen from the shaft)
+    lathe(bm, [(CAB_R + 0.06, CAB_H + 0.32), (0.0, CAB_H + 0.36)], [EN], 48, cap0=False, cap1=False)
+    lathe(bm, [(CAB_R + 0.06, CAB_H), (CAB_R + 0.06, CAB_H + 0.32)], [AM], 48, cap0=False, cap1=False)
     return bm
 
 
+def _wall_layers(bm, a0, a1, mullions=(True, True)):
+    """The rounded wall's bands from the floor up: an enamel dado, an amber belt, a glass band to see the shaft and
+    the stair through, an enamel frieze; a chrome handrail at 0.92 m."""
+    r_in, r_out = CAB_R, CAB_R + 0.06
+    arc_wall(bm, a0, a1, 0.0, 0.95, r_in, r_out, EN, PLATE)
+    arc_wall(bm, a0, a1, 0.95, 1.05, r_in, r_out + 0.01, AM, AM)
+    arc_wall(bm, a0, a1, 1.05, 2.05, r_in + 0.02, r_in + 0.04, GLS, GLS)
+    arc_wall(bm, a0, a1, 2.05, CAB_H, r_in, r_out, EN, PLATE)
+    # mullions at the ends of the glass band
+    for a, on in zip((a0, a1), mullions):
+        if not on:
+            continue                       # (the door's jamb stands there)
+        c = Vector(((r_in + 0.03) * math.cos(a), (r_in + 0.03) * math.sin(a), 1.55))
+        box(bm, c, (0.05, 0.05, 1.04), CH, Matrix.Rotation(a, 3, "Z"))      # into the bands over and under the glass
+    # the handrail on brackets
+    ang = [a0 + (a1 - a0) * k / SEG_Q for k in range(SEG_Q + 1)]
+    pts = [Vector(((r_in - 0.07) * math.cos(a), (r_in - 0.07) * math.sin(a), 0.92)) for a in ang]
+    for p, q in zip(pts, pts[1:]):
+        tube(bm, p, q, 0.02, CH, 8)
+    for a in (a0 + (a1 - a0) * 0.2, a0 + (a1 - a0) * 0.8):
+        tube(bm, ((r_in - 0.07) * math.cos(a), (r_in - 0.07) * math.sin(a), 0.92), ((r_in - 0.005) * math.cos(a), (r_in - 0.005) * math.sin(a), 0.92), 0.012, CH, 6)
+
+
 def cab_wall():
-    """A closed side at +X (the cab's middle at the origin): wood-coloured enamel panels, a mirror band, a handrail."""
+    """A closed quarter, facing +X (from -45 to +45 degrees)."""
     bm = bmesh.new()
-    x = CAB / 2
-    box(bm, (x - 0.02, 0, CAB_H / 2), (0.04, CAB, CAB_H), PLATE)
-    box(bm, (x - 0.045, 0, 0.06), (0.01, CAB, 0.12), CH)                   # kick plate
-    box(bm, (x - 0.045, 0, 1.5), (0.01, CAB - 0.5, 0.7), GLS)              # the mirror
-    for y in (-CAB / 2 + 0.25, CAB / 2 - 0.25):
-        box(bm, (x - 0.045, y, CAB_H / 2), (0.012, 0.03, CAB_H), AM)         # amber pilaster lines
-    tube(bm, (x - 0.1, -CAB / 2 + 0.15, 0.92), (x - 0.1, CAB / 2 - 0.15, 0.92), 0.022, CH)
-    for y in (-CAB / 2 + 0.2, CAB / 2 - 0.2):
-        tube(bm, (x - 0.1, y, 0.92), (x - 0.04, y, 0.92), 0.012, CH, 6)
+    _wall_layers(bm, math.radians(-45), math.radians(45))
     return bm
 
 
 def cab_door():
-    """A side with the door at +X: a brass frame round a 1.24 m opening, the floor indicator over it, a button panel."""
+    """A quarter with the door's opening (1.32 m wide, 2.24 m high) facing +X: the rounded wall beside it, a curved
+    amber frame round it, the floor indicator and the buttons."""
     bm = bmesh.new()
-    x = CAB / 2
-    for y0, y1 in ((-CAB / 2, -0.66), (0.66, CAB / 2)):
-        box(bm, (x - 0.02, (y0 + y1) / 2, CAB_H / 2), (0.04, y1 - y0, CAB_H), PLATE)
-    box(bm, (x - 0.02, 0, (2.24 + CAB_H) / 2), (0.04, 1.32, CAB_H - 2.24), PLATE)
-    for y in (-0.64, 0.64):
-        box(bm, (x - 0.05, y, 1.12), (0.03, 0.05, 2.24), AM)
-    box(bm, (x - 0.05, 0, 2.25), (0.03, 1.33, 0.05), AM)
-    box(bm, (x - 0.045, 0, 2.29), (0.01, 0.3, 0.06), GLOW)                 # the indicator
-    box(bm, (x - 0.05, 0.85, 1.15), (0.02, 0.14, 0.4), CH)                 # the button panel
+    half = math.asin(0.66 / CAB_R)
+    _wall_layers(bm, math.radians(-45), -half, (True, False))
+    _wall_layers(bm, half, math.radians(45), (False, True))
+    # over the opening: the frieze and an amber lintel
+    arc_wall(bm, -half, half, 2.24, CAB_H, CAB_R, CAB_R + 0.06, EN, PLATE, seg=6)
+    arc_wall(bm, -half - 0.04, half + 0.04, 2.2, 2.24, CAB_R - 0.03, CAB_R + 0.08, AM, AM, seg=6)     # its ends in the walls
+    for a in (-half, half):
+        # the jambs up to the lintel's underside, their feet sunk 2 cm into the floor
+        c = Vector(((CAB_R + 0.025) * math.cos(a), (CAB_R + 0.025) * math.sin(a), 1.09))
+        box(bm, c, (0.11, 0.06, 2.22), AM, Matrix.Rotation(a, 3, "Z"))
+    # the indicator over the door, the buttons on a chrome plate beside it (inside)
+    a = 0.0
+    box(bm, Vector((CAB_R - 0.04, 0, 2.28)), (0.012, 0.3, 0.05), GLOW)
+    b = half + math.radians(10)
+    c = Vector(((CAB_R - 0.03) * math.cos(b), (CAB_R - 0.03) * math.sin(b), 1.15))
+    box(bm, c, (0.02, 0.14, 0.4), CH, Matrix.Rotation(b, 3, "Z"))
     for k in range(3):
-        box(bm, (x - 0.064, 0.85, 1.03 + 0.1 * k), (0.012, 0.045, 0.045), GLOW)
+        box(bm, c + Vector((-0.02 * math.cos(b), -0.02 * math.sin(b), -0.1 + 0.1 * k)), (0.012, 0.045, 0.045), GLOW, Matrix.Rotation(b, 3, "Z"))
     return bm
 
 
@@ -275,6 +326,29 @@ def export(made, name, mats=None, col=None, out=None):
     metre_uv(me)
     o = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(o)
+    if name.startswith("SM_TR_Furn_LiftCab"):
+        # the cab's glass band as a mesh of its own (<name>_Glass): the game keeps glass out of shadows and distance
+        # fields, so light comes through it
+        gpath = os.path.join(out or OUT, name + "_Glass.glb")
+        if os.path.isfile(gpath):
+            os.remove(gpath)
+        gi = [i for i, m_ in enumerate(me.materials) if m_.name.startswith("TR_Glass")]
+        if any(p.material_index in gi for p in me.polygons):
+            g = o.copy()
+            g.data = me.copy()
+            bpy.context.scene.collection.objects.link(g)
+            for ob, keep in ((g, True), (o, False)):
+                b2 = bmesh.new()
+                b2.from_mesh(ob.data)
+                bmesh.ops.delete(b2, geom=[f for f in b2.faces if (f.material_index in gi) != keep], context="FACES")
+                b2.to_mesh(ob.data)
+                b2.free()
+            g.name = g.data.name = name + "_Glass"
+            bpy.ops.object.select_all(action="DESELECT")
+            g.select_set(True)
+            bpy.context.view_layer.objects.active = g
+            bpy.ops.export_scene.gltf(filepath=gpath, use_selection=True, export_format="GLB", export_yup=True, export_apply=True)
+            bpy.data.objects.remove(g)
     bpy.ops.object.select_all(action="DESELECT")
     o.select_set(True)
     bpy.context.view_layer.objects.active = o
