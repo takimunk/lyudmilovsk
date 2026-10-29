@@ -222,7 +222,20 @@ def weights_for(P, piece):
         W["jaw"] = np.where(lower, hj, np.where(upper, 0.0, W["jaw"]))
         W["head"] = np.where(upper, hj, np.where(lower, 0.0, W["head"]))
     tot = sum(W[n] for n in names)
-    return {n: W[n] / np.maximum(tot, 1e-9) for n in names}
+    W = {n: W[n] / np.maximum(tot, 1e-9) for n in names}
+    if B.get("kind") == "dog" and "head" in W:
+        # the skull is rigid (Dima, 2026-10-29: a turning head bent the muzzle out of shape): where the head and the
+        # jaw hold most of a vertex they take all of it, and the blend into the neck is kept to a short band
+        hj = W["head"] + W.get("jaw", 0)
+        k = np.clip((hj - 0.3) / 0.35, 0, 1)
+        new_hj = hj + (1 - hj) * k
+        rest = np.maximum(1 - hj, 1e-9)
+        for n in names:
+            if n in ("head", "jaw"):
+                W[n] = W[n] / np.maximum(hj, 1e-9) * new_hj
+            else:
+                W[n] = W[n] / rest * (1 - new_hj)
+    return W
 
 
 def set_groups(ob, W):
@@ -284,6 +297,103 @@ def eyes():
         c = np.array((e[0], e[1] * k, e[2])) - look * B["eye_r"] * 0.18
         ob = uv_sphere("Eye_" + s, c, B["eye_r"], look)
         out.append((ob, "head"))
+    return out
+
+
+def mouth_frame():
+    """The mouth line (corner -> front), its up and its side, from the template fitted onto the body."""
+    corner, front = (np.array(v, float) for v in B["_mouth"])
+    ax = front - corner
+    L = float(np.linalg.norm(ax))
+    ax = ax / L
+    up = np.cross(np.cross(ax, (0, 0, 1)), ax)
+    up = up / np.linalg.norm(up)
+    return corner, front, ax, up, L
+
+
+def cut_mouth(ob):
+    """A generated head is closed: opening the jaw stretched the skin across the lips. The faces that bridge the lip
+    line (a vertex above it and one below, inside the mouth's band) are cut away, so the lips part."""
+    corner, front, ax, up, L = mouth_frame()
+    P = verts_np(ob)
+    rel = P - corner
+    t = rel @ ax
+    h = rel @ up
+    band = (t > -0.05 * L) & (t < 1.08 * L) & (np.abs(P[:, 1]) < B["muzzle"][1] * 1.6) & (np.abs(h) < B["muzzle"][2] * 0.5)
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bm.faces.ensure_lookup_table()
+    cut = []
+    for f in bm.faces:
+        ids = [v.index for v in f.verts]
+        if band[ids].all() and (h[ids] > 0).any() and (h[ids] <= 0).any():
+            cut.append(f)
+    bmesh.ops.delete(bm, geom=cut, context="FACES_ONLY")
+    bm.to_mesh(ob.data)
+    bm.free()
+    log("mouth cut: %d faces" % len(cut))
+
+
+def mouth_parts():
+    """Every dog's default inside of the mouth: a dark mouth, upper teeth on the head, lower teeth and the tongue on
+    the jaw (materials Mouth_Inside, Mouth_Teeth, Mouth_Tongue). Sized from the muzzle; hidden while the mouth is shut."""
+    corner, front, ax, up, L = mouth_frame()
+    side = np.cross(up, ax)
+    hw = float(B["muzzle"][1]) * 0.78                    # half the width inside the lips
+    out = []
+
+    def mesh_from(name, verts, faces, mat):
+        me = bpy.data.meshes.new(name)
+        me.from_pydata([tuple(v) for v in verts], [], faces)
+        me.update()
+        for p in me.polygons:
+            p.use_smooth = True
+        me.uv_layers.new(name="UVMap")
+        ob = link(bpy.data.objects.new(name, me))
+        ob.data.materials.append(mat)
+        return ob
+
+    def ellipsoid(name, c, a, b, cc, mat, seg=16, rings=8):
+        bm = bmesh.new()
+        bmesh.ops.create_uvsphere(bm, u_segments=seg, v_segments=rings, radius=1.0)
+        V = [np.array(v.co) for v in bm.verts]
+        F = [[v.index for v in f.verts] for f in bm.faces]
+        bm.free()
+        Vw = [c + ax * v[0] * a + side * v[1] * b + up * v[2] * cc for v in V]
+        return mesh_from(name, Vw, F, mat)
+
+    def tooth_row(name, z_sign, mat, n=7):
+        V, F = [], []
+        for sdir in (1, -1):
+            for i in range(n):
+                u = i / (n - 1)                                   # 0 at the front, 1 at the corner
+                tpos = front - ax * (L * (0.06 + 0.86 * u))
+                w = hw * (0.35 + 0.65 * math.sqrt(u))             # the jaw's U
+                base = tpos + side * (w * sdir) + up * (z_sign * float(B["muzzle"][2]) * 0.12)
+                size = L * (0.035 if i == 1 else 0.022)            # the canine is bigger
+                tip = base - up * z_sign * size * (2.2 if i == 1 else 1.2)
+                k = len(V)
+                r = size * 0.5
+                ring = [base + ax * r * math.cos(a) + side * r * math.sin(a) for a in np.linspace(0, 2 * math.pi, 6, endpoint=False)]
+                V.extend(ring + [tip])
+                for j in range(6):
+                    F.append([k + j, k + (j + 1) % 6, k + 6])
+        return mesh_from(name, V, F, mat)
+
+    m_in = preview_material("Mouth_Inside", (0.08, 0.02, 0.025), 0.5)
+    m_te = preview_material("Mouth_Teeth", (0.86, 0.83, 0.74), 0.3)
+    m_to = preview_material("Mouth_Tongue", (0.62, 0.22, 0.25), 0.35)
+    mid = (corner + front) / 2 - up * float(B["muzzle"][2]) * 0.25
+    inside = ellipsoid("Mouth_Inside", mid - ax * L * 0.05, L * 0.55, hw * 0.95, float(B["muzzle"][2]) * 0.55, m_in)
+    P = verts_np(inside)
+    hgt = (P - corner) @ up
+    out.append((inside, {"head": (hgt > 0).astype(float), "jaw": (hgt <= 0).astype(float)}))
+    out.append((tooth_row("Mouth_TeethUp", 1, m_te), "head"))
+    out.append((tooth_row("Mouth_TeethLow", -1, m_te), "jaw"))
+    tongue = ellipsoid("Mouth_Tongue", mid - up * float(B["muzzle"][2]) * 0.1 + ax * L * 0.08, L * 0.42, hw * 0.62,
+                       float(B["muzzle"][2]) * 0.16, m_to)
+    out.append((tongue, "jaw"))
+    log("mouth parts: inside, teeth up/low, tongue (muzzle %s, mouth %.1f cm)" % (np.round(B["muzzle"], 3).tolist(), L * 100))
     return out
 
 
@@ -902,6 +1012,8 @@ def main():
     # weights and attributes per LOD
     WL, AL = [], []
     for o in lods:
+        if GEN and B.get("kind") == "dog":
+            cut_mouth(o)
         Pv, Nv = verts_np(o), normals_np(o)
         W = weights_for(Pv, piece)
         WL.append(W)
@@ -996,6 +1108,9 @@ def main():
     for ob, bone in ([] if GEN and (B.get("eye_n") is None or B.get("painted_eyes")) else eyes()):
         ob.data.materials.append(eye_mat)
         skin_to(ob, arm, {bone: np.ones(len(ob.data.vertices))})
+    if B.get("kind") == "dog":
+        for ob, bone in mouth_parts():
+            skin_to(ob, arm, bone if isinstance(bone, dict) else {bone: np.ones(len(ob.data.vertices))})
     log("built %.1fs" % (time.time() - t0), "LOD0 with shells", sum(len(p.vertices) - 2 for p in lods[0].data.polygons), "tris")
     if "--previews" in FLAGS or QUICK:
         L = 2.6 * H
@@ -1006,6 +1121,22 @@ def main():
         hd = B["head_r"][1] * 9.0
         render("fur_head", tuple(hx + np.array([hd * 0.85, -hd * 0.55, hd * 0.12])), tuple(hx), lens=85, res=(700, 600))
         render("fur_head_front", tuple(hx + np.array([hd, 0.0, hd * 0.05])), tuple(hx), lens=85, res=(700, 600))
+        if B.get("kind") == "dog":
+            # the mouth open and the head turned: the skull must stay rigid, the teeth and tongue show
+            pb = arm.pose.bones
+            if "jaw" in pb:
+                pb["jaw"].rotation_mode = "XYZ"
+                pb["jaw"].rotation_euler = (0, 0.45, 0)
+            for nm, ang in (("head", (0.0, 0.2, 0.35)),):
+                if nm in pb:
+                    pb[nm].rotation_mode = "XYZ"
+                    pb[nm].rotation_euler = ang
+            bpy.context.view_layer.update()
+            render("mouth_open", tuple(hx + np.array([hd * 0.85, -hd * 0.55, hd * 0.12])), tuple(hx), lens=85, res=(700, 600))
+            render("mouth_open_front", tuple(hx + np.array([hd, 0.0, hd * 0.05])), tuple(hx), lens=85, res=(700, 600))
+            for nm in ("jaw", "head"):
+                if nm in pb:
+                    pb[nm].rotation_euler = (0, 0, 0)
 
     B["name"] = BREED
     rig = GA.Rig(B)
@@ -1037,7 +1168,7 @@ def export(arm, lods, acts, lib, eye_mat):
         pb.location = (0, 0, 0)
         pb.rotation_quaternion = (1, 0, 0, 0)
         pb.scale = (1, 1, 1)
-    eyes_src = [o for o in bpy.data.objects if o.name.startswith("Eye_")]
+    eyes_src = [o for o in bpy.data.objects if o.name.startswith(("Eye_", "Mouth_"))]
     for li, o in enumerate(lods):
         o.hide_render = False
         parts = [o]
