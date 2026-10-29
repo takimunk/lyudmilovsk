@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "7dad0e84750f4cf09ef3bdfc7e07d3ee",
   "points": 45,
-  "file": "blender/characters/sorokin_oleg/gen/model.glb (local, ignored)"
+  "file": "blender/characters/sorokin_oleg/gen/model.glb (local, ignored)",
+  "sha256": "b66f656ef77bb4ef58455e49024cb72f59ad4d3ae7badc90cc378e6608398f8f",
+  "bytes": 48893352,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

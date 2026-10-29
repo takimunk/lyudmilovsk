@@ -6,14 +6,19 @@
 // The player stands at the club's door unless a scenario moves them. The sun times come from a simple
 // solar formula for the game's place (54.96 N, 20.40 E, UTC+2) on the game's date.
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdSim.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdMurmur.h"
 
 #include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <map>
+#include <set>
+#include <sstream>
 #include <string>
+#include <vector>
 
 using namespace LyudBirds;
 
@@ -56,6 +61,64 @@ namespace
 	{
 		const char* E = std::getenv("BIRD_DATA");
 		return E ? E : "unreal/Lyudmilovsk/Content/BirdsData";
+	}
+
+	/** Day of the year of a month-day (the game's year has no 29 February before October). */
+	float Doy(int Month, int Day)
+	{
+		static const int Before[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+		return (float)(Before[Month - 1] + Day);
+	}
+
+	/**
+	 * Who is away on a day, as the game does it from species.json (months, stragglers): sets bMigrant and the stragglers'
+	 * days in the species table. A small reader for the two fields only.
+	 */
+	void ApplyMonths(float DayOfYear)
+	{
+		std::ifstream F(Dir() + "/species.json");
+		std::stringstream SS;
+		SS << F.rdbuf();
+		const std::string T = SS.str();
+		int Month = 1;
+		while (Month < 12 && Doy(Month + 1, 1) <= DayOfYear)
+		{
+			Month++;
+		}
+		for (FSpecies& S : MutableSpeciesTable())
+		{
+			const size_t At = T.find("\"id\": \"" + S.Id + "\"");
+			if (At == std::string::npos)
+			{
+				continue;
+			}
+			const size_t End = std::min(T.find("\"id\":", At + 5), T.size());
+			const size_t M = T.find("\"months\":", At);
+			if (M == std::string::npos || M > End)
+			{
+				continue;
+			}
+			bool bHere = false;
+			for (const char* P = T.c_str() + T.find('[', M); *P && *P != ']'; P++)
+			{
+				if (*P >= '0' && *P <= '9')
+				{
+					char* E;
+					bHere |= std::strtol(P, &E, 10) == Month;
+					P = E - 1;
+				}
+			}
+			S.bMigrant = !bHere;
+			const size_t L = T.find("\"stragglers\":", At);
+			if (L != std::string::npos && L < End)
+			{
+				int Count = 0, M0 = 0, D0 = 0, M1 = 0, D1 = 0;
+				std::sscanf(T.c_str() + L, "\"stragglers\": {\"count\": %d, \"from\": \"%d-%d\", \"until\": \"%d-%d\"", &Count, &M0, &D0, &M1, &D1);
+				S.Stragglers = Count;
+				S.LeaveFrom = Doy(M0, D0);
+				S.LeaveUntil = Doy(M1, D1);
+			}
+		}
 	}
 
 	// the club's door in Unreal metres (map origin, portal face y 790 cm)
@@ -281,9 +344,339 @@ namespace
 		return Found;
 	}
 
+	/** Runs the world on the clock from Hour for Hours (game time = real time), calling Fn after each step. */
+	template <typename F>
+	void Advance(FWorld& W, float Hours, float Dt, F&& Fn)
+	{
+		const float Start = W.Hour;
+		for (float T = 0.f; T < Hours * 3600.f; T += Dt)
+		{
+			W.Hour = std::fmod(Start + T / 3600.f, 24.f);
+			W.Step(Dt);
+			W.Events.clear();
+			Fn();
+		}
+	}
+
+	/** The species' days (docs/bird_life.md "Daily routines"): starlings and their murmuration, swallows on the wires, the tide. */
+	void Routines(FResult& R)
+	{
+		const int Star = FindSpecies("Starling");
+		// --- the starlings' evening: gather, murmurate over the reedbed by the shore, drop in, sleep ---
+		{
+			FWorld W;
+			if (!Setup(W, 15.5f))
+			{
+				Check(R, false, "the world loads");
+				return;
+			}
+			W.Camera = V3(0.f, -2000.f, 500.f);       // far away: everybody coarse, as most of the time in the game
+			FMurmuration* M = W.Murmuration();
+			Check(R, M != nullptr, "the starlings have a murmuration and a roost");
+			if (!M)
+			{
+				return;
+			}
+			const V3 Roost = M->RoostCentre();
+			std::printf("starlings' roost: reed at %.0f %.0f, %.0f m from the sea\n", Roost.X, Roost.Y, W.Inland(Roost.X, Roost.Y));
+			Check(R, W.Inland(Roost.X, Roost.Y) < 250.f, "the starlings roost in a reedbed near the shore");
+			int Total = 0;
+			for (const FBird& B : W.Birds)
+			{
+				Total += B.Species == Star && !B.bGone;
+			}
+			int MaxIn = 0, Asleep = 0, Over = 0;
+			float Spread = 0.f, CostMax = 0.f;
+			double Cost = 0.0;
+			long CostN = 0;
+			bool bSpreadSeen = false;
+			const float Dusk = W.Sunset + 0.6f;      // civil dusk at the end of October
+			const float Dt = 0.1f;
+			Advance(W, (Dusk + 1.0f) - 15.5f, Dt, [&]()
+			{
+				const auto A = std::chrono::steady_clock::now();
+				MaxIn = std::max(MaxIn, M->Count());
+				static int Printed = 0;
+				if (std::getenv("BIRD_TRACE") && Printed < 12)
+				{
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Act == EAct::Murmur && W.Offshore(B.Pos.X, B.Pos.Y) > 220.f && Printed < 12)
+						{
+							Printed++;
+							std::printf("    OUT %.3f h bird %d at %.0f %.0f %.0f vel %.1f %.1f off %.0f from roost %.0f; %s\n", W.Hour, B.Id, B.Pos.X, B.Pos.Y, B.Pos.Z,
+								B.Vel.X, B.Vel.Y, W.Offshore(B.Pos.X, B.Pos.Y), (B.Pos - M->RoostCentre()).Len2D(), M->Describe(W).c_str());
+						}
+					}
+				}
+				if (M->Count() > 0)
+				{
+					const double Ms = std::chrono::duration<double>(std::chrono::steady_clock::now() - A).count() * 1000.0;
+					(void)Ms;
+				}
+				// the flock's body: 90% of the birds within this of its centre, ten minutes before sunset
+				if (!bSpreadSeen && W.Hour > W.Sunset - 0.17f && M->Count() > Total / 2)
+				{
+					bSpreadSeen = true;
+					std::vector<float> D;
+					V3 C;
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Act == EAct::Murmur)
+						{
+							C += B.Pos;
+							D.push_back(0.f);
+						}
+					}
+					C = C * (1.f / D.size());
+					D.clear();
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Act == EAct::Murmur)
+						{
+							D.push_back((B.Pos - C).Len());
+						}
+					}
+					std::sort(D.begin(), D.end());
+					Spread = D[D.size() * 9 / 10];
+					std::printf("  %.2f h: %s\n", W.Hour, M->Describe(W).c_str());
+				}
+				if (std::fmod(W.Hour * 60.f, 10.f) < Dt / 60.f && W.Hour > W.Sunset - 1.2f)
+				{
+					int Roosting = 0, Staging = 0;
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Species == Star)
+						{
+							Roosting += B.Act == EAct::Sleep;
+							Staging += W.Groups[B.Group].Plan == 3;
+						}
+					}
+					std::printf("  %.2f h (sunset %+.0f min): %d in the murmuration, %d gathering before it, %d asleep; max offshore %.0f m\n", W.Hour,
+						(W.Hour - W.Sunset) * 60.f, M->Count(), Staging, Roosting, M->MaxOffshore);
+				}
+			});
+			for (const FBird& B : W.Birds)
+			{
+				if (B.Species == Star && !B.bGone)
+				{
+					Asleep += B.Act == EAct::Sleep && B.Site >= 0 && M->IsRoostSite(B.Site);
+				}
+			}
+			(void)Over;
+			(void)Cost;
+			(void)CostN;
+			(void)CostMax;
+			std::printf("murmuration cost: %.3f ms per simulated second (%.3f ms a frame at 60 fps)\n", M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f),
+				M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f) / 60.f);
+			std::printf("murmuration: up to %d of %d starlings, 90%% within %.0f m of its centre at sunset-10 min; farthest over the sea %.0f m "
+				"(bound %.0f); %.0f m from the roost at most; %d escape rolls; %d asleep in the reed at dusk+1 h\n",
+				MaxIn, Total, Spread, M->MaxOffshore, W.Opt.MurmurOffshore, M->MaxFromRoost, M->Escapes, Asleep);
+			Check(R, MaxIn > Total * 0.7f, "most starlings join the evening murmuration");
+			Check(R, Spread > 10.f && Spread < 160.f, "the murmuration is one flock (90% within 160 m of its centre)");
+			Check(R, M->MaxOffshore <= W.Opt.MurmurOffshore, "the murmuration never goes farther out to sea than the coastal strip");
+			Check(R, M->MaxFromRoost < 450.f, "it keeps over its roost and round it");
+			Check(R, M->Escapes > 50, "the peregrine's attacks send escape waves through it");
+			Check(R, Asleep == Total, "every starling is asleep in the reed by dusk + 1 h");
+
+			// --- the morning: out of the reed in waves before sunrise, feeding by midday ---
+			W.Hour = W.Sunrise - 1.f;
+			std::set<int> Left;
+			float First = -1.f, Last = -1.f;
+			int InTown = 0, Feeding = 0;
+			std::map<std::string, int> Where;
+			Advance(W, 3.5f, 0.2f, [&]()
+			{
+				for (const FBird& B : W.Birds)
+				{
+					if (B.Species == Star && !Left.count(B.Group) && IsAirborne(B.Act) && W.Hour < W.Sunrise + 1.f)
+					{
+						Left.insert(B.Group);
+						First = First < 0.f ? W.Hour : First;
+						Last = W.Hour;
+					}
+				}
+			});
+			for (const FBird& B : W.Birds)
+			{
+				if (B.Species != Star || B.Site < 0 || IsAirborne(B.Act))
+				{
+					continue;
+				}
+				const EHabitat K = W.Sites[B.Site].Kind;
+				Where[HabitatName(K)]++;
+				Feeding += B.Act == EAct::Peck || B.Act == EAct::Forage;
+				InTown += K == EHabitat::Street;
+			}
+			std::printf("starlings' morning: %zu groups left the reed from %+.0f to %+.0f min of sunrise; at %.1f h on:", Left.size(), (First - W.Sunrise) * 60.f,
+				(Last - W.Sunrise) * 60.f, W.Hour);
+			for (auto& [K, N] : Where)
+			{
+				std::printf(" %s %d", K.c_str(), N);
+			}
+			std::printf("; %d feeding\n", Feeding);
+			Check(R, First < W.Sunrise && Last - First > 0.15f, "they leave the roost before sunrise, group after group");
+			Check(R, Where["Reed"] < Total / 10 && Feeding > Total / 4, "by late morning they are out feeding");
+			Check(R, Where["Meadow"] > 0 && InTown > 0, "on the fields and in the town's lawns and streets");
+		}
+		if (std::getenv("BIRD_ONLY") && std::string(std::getenv("BIRD_ONLY")) == "murm")
+		{
+			return;
+		}
+		// --- the swallows: October stragglers on the Academgorodok's wires, the reed at night, gone in November ---
+		{
+			FWorld W;
+			W.Opt.bMigration = true;
+			ApplyMonths(Doy(10, 29));
+			if (!W.LoadHabitats(Dir()))
+			{
+				return;
+			}
+			W.DayOfYear = Doy(10, 29);
+			SunTimes(W.DayOfYear, W.Sunrise, W.Sunset);
+			W.Hour = 11.f;
+			W.Camera = Door;
+			W.Populate();
+			const int Sw = FindSpecies("BarnSwallow"), Sm = FindSpecies("SandMartin"), Swift = FindSpecies("CommonSwift");
+			int Swallows = 0, Martins = 0, Swifts = 0;
+			for (const FBird& B : W.Birds)
+			{
+				Swallows += B.Species == Sw && !B.bGone;
+				Martins += B.Species == Sm && !B.bGone;
+				Swifts += B.Species == Swift && !B.bGone;
+			}
+			std::printf("29 October with migration: %d barn swallows, %d sand martins, %d swifts\n", Swallows, Martins, Swifts);
+			Check(R, Swallows > 0 && Swallows <= 14 && Swifts == 0, "a few swallows stay late into October; the swifts have gone");
+			int Hawked = 0, OnWires = 0, Close = 0, InReed = 0, Perched = 0;
+			Advance(W, (W.Sunset - 0.9f) - 11.f, 0.2f, [&]()
+			{
+				for (const FBird& B : W.Birds)
+				{
+					Hawked += (B.Species == Sw || B.Species == Sm) && B.Act == EAct::Hawk;
+				}
+			});
+			// an hour before the night: in rows on the wires
+			std::vector<const FBird*> Wired;
+			for (const FBird& B : W.Birds)
+			{
+				if ((B.Species == Sw || B.Species == Sm) && !B.bGone)
+				{
+					Perched++;
+					if (!IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Wire)
+					{
+						Wired.push_back(&B);
+					}
+				}
+			}
+			OnWires = (int)Wired.size();
+			int Along = 0;
+			for (const FBird* B : Wired)
+			{
+				const FSite& Wr = W.Sites[B->Site];
+				const V3 D = (Wr.B - Wr.A).Flat().Norm();
+				Along += std::fabs(D.X * std::cos(B->Yaw) + D.Y * std::sin(B->Yaw)) > 0.6f;
+			}
+			Check(R, Along == 0, "facing across the wire, not along it");
+			for (size_t I = 0; I < Wired.size(); I++)
+			{
+				for (size_t J = I + 1; J < Wired.size(); J++)
+				{
+					Close += (Wired[I]->Pos - Wired[J]->Pos).Len() < 0.1f;
+				}
+			}
+			std::printf("swallows and martins: hawked %d bird-steps by day; %d of %d on the wires before dusk, %d pairs closer than 10 cm\n", Hawked,
+				OnWires, Perched, Close);
+			Check(R, Hawked > 0, "they hunt insects on the wing by day");
+			Check(R, OnWires > Perched / 2, "they gather on the wires before the night");
+			Check(R, Close == 0, "sitting in a row a body apart (no two closer than 10 cm)");
+			Advance(W, 2.f, 0.2f, [] {});
+			for (const FBird& B : W.Birds)
+			{
+				InReed += (B.Species == Sw || B.Species == Sm) && !B.bGone && B.Act == EAct::Sleep && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Reed;
+			}
+			std::printf("at %.1f h %d of them asleep in the reed\n", W.Hour, InReed);
+			Check(R, InReed == Perched, "and sleep in the reed");
+			// a week on: gone south
+			W.DayOfYear = Doy(11, 6);
+			W.Hour = 23.f;
+			W.UpdateMigration();
+			int Left = 0;
+			for (const FBird& B : W.Birds)
+			{
+				Left += (B.Species == Sw || B.Species == Sm) && !B.bGone;
+			}
+			Check(R, Left == 0, "by 6 November the last stragglers have left");
+			ApplyMonths(Doy(10, 29));
+			for (FSpecies& S : MutableSpeciesTable())
+			{
+				S.bMigrant = false;
+				S.Stragglers = 0;
+			}
+		}
+		// --- other days: gulls follow the tide, swifts sleep aloft, rooks gather on a field before the rookery ---
+		{
+			FWorld W;
+			Setup(W, 12.f);
+			W.Camera = Door;
+			const int Gull = FindSpecies("BlackHeadedGull"), Rook = FindSpecies("Rook"), Swift = FindSpecies("CommonSwift");
+			auto OnBeach = [&](float Tide)
+			{
+				W.SeaZ = W.MeanSeaZ + Tide;
+				W.Hour = 12.f;
+				W.Resettle();
+				int N = 0;
+				Advance(W, 0.5f, 0.25f, [] {});
+				for (const FBird& B : W.Birds)
+				{
+					N += B.Species == Gull && !IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Beach;
+				}
+				return N;
+			};
+			const int Low = OnBeach(-0.8f), High = OnBeach(0.8f);
+			W.SeaZ = W.MeanSeaZ;
+			std::printf("black-headed gulls on the beach at noon: %d at low tide, %d at high tide\n", Low, High);
+			Check(R, Low > High, "gulls go down to the sand the low tide lays bare");
+			W.Hour = W.Sunset - 1.3f;
+			W.Resettle();
+			int Gathering = 0, Rooks = 0;
+			Advance(W, 0.5f, 0.25f, [] {});
+			for (const FGroup& G : W.Groups)
+			{
+				if (G.Species == Rook)
+				{
+					Rooks++;
+					Gathering += G.Plan == 3;
+				}
+			}
+			std::printf("rooks an hour before sunset: %d of %d flocks at the pre-roost gathering\n", Gathering, Rooks);
+			Check(R, Gathering > Rooks / 2, "rooks gather on a field before going to the rookery");
+			W.Hour = 1.f;
+			W.Resettle();
+			float Low_ = 1e9f;
+			int N = 0;
+			for (const FBird& B : W.Birds)
+			{
+				if (B.Species == Swift && !B.bGone)
+				{
+					Low_ = std::min(Low_, B.Pos.Z - W.GroundZ(B.Pos.X, B.Pos.Y));
+					N++;
+				}
+			}
+			std::printf("swifts at 1 am: %d, the lowest %.0f m over the ground\n", N, Low_);
+			Check(R, N > 0 && Low_ > 250.f, "swifts sleep on the wing high up");
+		}
+	}
+
 	int Test()
 	{
 		FResult R;
+		if (std::getenv("BIRD_ONLY"))
+		{
+			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only)
+			Routines(R);
+			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
+			return R.Fail ? 1 : 0;
+		}
 		FWorld W;
 		V3 P(100.f, 100.f, 0.f);
 		float D;
@@ -534,6 +927,7 @@ namespace
 			Check(R, SparrowCat > 2.f && SparrowCat < SparrowDog, "a walking cat puts a sparrow up nearer");
 			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
 		}
+		Routines(R);
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;
 	}

@@ -1,6 +1,6 @@
 # Bird life
 
-The wild birds of the outdoor map: about 1100 birds of 29 Baltic species that live where their species would,
+The wild birds of the outdoor map: about 2250 birds of 29 Baltic species (1200 of them starlings) that live where their species would,
 keep their day by the game calendar, deal with each other and with hawks, and perceive the player. The
 species' looks, sizes and animations are the species table's (`Content/BirdsData/species.json`,
 `Public/Birds/BirdSpecies.h`); this is their behaviour.
@@ -10,18 +10,21 @@ species' looks, sizes and animations are the species table's (`Content/BirdsData
 | What | Where |
 |---|---|
 | Simulation, plain C++ (no Unreal types) | `Source/Lyudmilovsk/Private/Birds/BirdSim.h/.cpp` |
-| Each species' ecology and temper | `Private/Birds/BirdEcology.cpp` |
+| Each species' ecology and temper, its daily routine | `Private/Birds/BirdEcology.cpp` |
+| The starlings' evening murmuration | `Private/Birds/BirdMurmur.h/.cpp` |
+| The Academgorodok's power lines (poles, wires; the birds' wire perches) | `tools/academ_wires.py` -> `Content/BirdsData/wires.json`, `Private/World/LyudWires.cpp` |
 | Game side: subsystem, drawing, API | `Public/Birds/BirdLife.h`, `Private/Birds/BirdLife.cpp` |
 | Places birds can be, from the map | `tools/bird_habitats.py` -> `Content/BirdsData/bird_habitats.json`, `bird_world.bin` |
 | Run it outside the engine, tests, maps | `tools/birdsim/run.sh day|test|trace`, `tools/birdsim/render_birds.py` |
 | Offscreen play test | `unreal/scripts/test_birds.sh` (test_birds.py) |
 
-Rebuild the habitats whenever `tools/world_map.py` or the terrain changes: `python3 tools/bird_habitats.py`.
+Rebuild the habitats whenever `tools/world_map.py`, the terrain or the wires change: `python3 tools/academ_wires.py && python3 tools/bird_habitats.py`.
 
 ## How it works
 
-**Places.** `bird_habitats.py` writes ~7500 sites of 13 kinds: sea, beach (wet sand), the clay cliff's face,
-meadows and fields, reed, streets and yards, roof ridges, the church tower, the cable car's ropes, gardens,
+**Places.** `bird_habitats.py` writes ~7700 sites of 13 kinds: sea, beach (wet sand), the clay cliff's face,
+meadows and fields, reed, streets and yards, roof ridges and eaves (the Academgorodok's houses), the church tower, wires
+(the cable car's ropes and the Academgorodok's power lines, each conductor in sagging pieces of up to 4 m), gardens,
 broadleaf and conifer crowns, the forest floor. A site is a point or a segment (a ridge, a rope) with a patch
 round it. In the game the guessed tree sites are replaced by the real crowns of the forests and hero plants
 (`AProceduralForest::ForEachTree`, `PlantModel::Summary`), so birds sit in real trees. An 8 m grid of the ground
@@ -34,11 +37,41 @@ taste for the kind (feeding, resting and roosting tastes differ), distance from 
 whether bigger birds hold it and whether it was disturbed lately.
 
 **The day.** From sunrise and sunset (ALyudSky's ephemeris at the game's date): asleep before each species'
-wake time (thrushes and robins first, gulls late), a feeding peak in the morning, a rest at midday, feeding
-again in the afternoon, the last ~40 minutes on the way to the roost, asleep after dark. Rooks, crows,
-jackdaws, gulls, starlings and swallows sleep all together at one communal roost (rooks in tall trees, gulls
-on the sea, swallows in the reed); the rest near home. Dawn song for the songbirds. Swifts, swallows and
-martins feed on the wing; gulls soar now and then; cormorants dive.
+wake time (thrushes and robins first, gulls late; the groups of a species leave the roost one after another over its
+wake spread), a feeding peak in the morning, a rest at midday (with a bath at the water's edge and a long preen for
+those that bathe), feeding again in the afternoon, a pre-roost gathering for the species that have one (rooks on a
+field near the rookery, jackdaws on roofs, gulls on the beach, swallows on the wires), the last ~40 minutes on the
+way to the roost, asleep after dark. Rooks, crows, jackdaws, gulls, starlings, wagtails and swallows sleep all
+together at one communal roost (rooks in tall trees, gulls on the sea, starlings, wagtails and swallows in the reed,
+up on the stems); the rest near home. Dawn song for the songbirds. Swifts, swallows and martins feed on the wing;
+swifts sleep on the wing 400-700 m up; gulls soar now and then; cormorants dive, then stand drying their wings. The
+tide (`ALyudSea::SeaLevel`, `FWorld::SeaZ`) moves gulls, crows, wagtails and starlings onto the sand it lays bare and
+off it at high water; in winter (November-February) some species feed elsewhere (fieldfares and blackbirds on
+berries in gardens, gulls in the town) and flock bigger, and blue tits roam with the great tits' flocks. Each
+species' routine is in the table below.
+
+**Starlings.** One species of the bird life like any other (ids, bodies near the camera, befriending, bird flight,
+trust and saves, hawks), 1200 of them in late October in flocks of 20-80. They leave the reedbed behind the beach
+(world_map `REEDBED`, the wettest runnels of the valley mouth, a `CommonReed` grass patch) 30 to 5 minutes before
+sunrise, group after group, feed all day on the fields, the town's lawns and streets and the wrack on the beach, rest
+on wires, roofs and trees, gather on wires and trees near the roost in the last half hour of the afternoon and fly to
+it from 40 minutes before sunset. There they join one flock, the murmuration (`FMurmuration`, act `Murmur`): the
+flocking of Dima's Murmuration demo (StarDisplay: 7 topological neighbours, separation, alignment, cohesion by
+centrality, speed alignment, banked flight with lift and roll, 12% informed birds steering for a wandering goal,
+turns started at the rim), flown in 1/25 s steps for every bird in it whatever its LOD. It wanders over the roost and
+the land round it and may swing out over the sea along the coast, but never more than `FOptions::MurmurOffshore`
+(250 m) from the shore (a firm turn back near 80% of it). The peregrine comes at dusk and stoops at the rim again and
+again; each attack sends escape rolls neighbour to neighbour through the flock. From 4 minutes after sunset the birds
+drop into the reed in waves (a bird follows its descending neighbours), are handed back to the bird life on the last
+metres, chatter and fall asleep; by sunset + 30 minutes they are all down. `AStarlingMurmuration` is now only a
+dev/test actor: in Lvl_Scene01 it stands down (`lyud.Starlings.Legacy 1` keeps it).
+
+**Late swallows.** Barn swallows and sand martins have their months (April-September), but `species.json`
+`stragglers` keeps a few on into the autumn (14 swallows leaving between 27 October and 5 November, 6 martins between
+25 October and 2 November, each on its own day, out of sight). They hawk low over the meadows, the reed and the water,
+sit in rows on the Academgorodok's wires (a body and a half apart, ~13 cm for a swallow, all facing the same way)
+and sleep in the reed. Swifts keep their months (none in October). With `lyud.Birds.Migration 0` every species stays,
+in full numbers.
 
 **Each other.** A bigger bird walking up makes a smaller one give way; gulls and crows chase a bird that found
 something big; a sparrowhawk (2) and a peregrine (1) hunt now and then: everything small near the attack
@@ -61,6 +94,41 @@ them, its trust grows at its species' tameness (robins and tits fast, pigeons an
 hardly). Once trust passes 0.55, the player has kept still a while and it is hungry, the boldest such bird
 flies to the palm (`OnBirdApproach`), lands on it and pecks (`OnBirdEat` at the first peck). Moving the hand
 fast, a sharp view turn or standing up and walking flushes it. Trust is per bird and saved.
+
+## Daily routines
+
+| Species | Wakes (min from sunrise) | Groups leave over | Feeds | Rests | Before the night | Roost (min from sunset) | Midday bath | Other | Winter |
+|---|---|---|---|---|---|---|---|---|---|
+| Rook | -25 | 20 min | fields, beach, street | crowns, wires, roofs | gathers on a field near the rookery, 50 min | rookery in tall trees (communal), +5 | rarely | mobs hawks | town refuse too, flocks ×1.5 |
+| Hooded crow | -20 | 15 | beach (low tide), fields, streets | conifers, roofs, tower | tall trees, 30 min | conifers (communal), 0 | sometimes | steals food, mobs | ×1 |
+| Jackdaw | -20 | 15 | fields, streets | roofs, tower | chatters on roofs and the tower, 30 min | church tower (communal), +10 | sometimes | steals, mobs | flocks ×1.4 |
+| Magpie | -15 | 5 | fields, streets, gardens | gardens | — | gardens, -5 | yes | steals, mobs | — |
+| Feral pigeon | 0 | 10 | streets | roofs, tower, wires | roofs, 15 min | tower, roofs, -5 | often | tame | — |
+| Wood pigeon | -10 | 15 | fields, gardens, forest floor | crowns, wires | conifers, 15 min | conifers, -10 | sometimes | — | fields, flocks ×2 |
+| Herring gull | -30 | 30 | sea, beach (tide), street | roofs, beach, sea | on the beach, 40 min | on the sea (communal), +20 | often | soars, steals | — |
+| Black-headed gull | -30 | 30 | fields, beach (tide), sea, street | beach, sea, wires | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | the town's streets, flocks ×1.3 |
+| Common gull | -30 | 30 | fields, beach (tide), sea | beach, sea, roofs | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | — |
+| Cormorant | -10 | 20 | the sea (dives) | beach, cliff: stands drying its wings | on the beach, 20 min | beach (communal), 0 | — | — | — |
+| Mute swan | -20 | 10 | sea, the reed's edge | beach, sea | — | on the water, +10 | sometimes | — | — |
+| Great tit | -15 | 5 | gardens, crowns | gardens, crowns | — | broadleaf crowns, -20 | often | dawn song, mobs | gardens and feeders, flocks ×1.5 (the core of mixed flocks) |
+| Blue tit | -15 | 5 | gardens, crowns, reed | gardens, reed | — | broadleaf crowns, -20 | often | mobs | roams with the great tits, ×1.5 |
+| Goldfinch | -5 | 10 | fields (seed heads), gardens | crowns, wires | crowns and wires, 10 min | conifers, -20 | often | — | gardens, fields, reed; ×1.5 |
+| Chaffinch | -15 | 10 | forest floor, fields | crowns | — | conifers, -20 | sometimes | dawn song | fields, flocks ×2 |
+| Bullfinch | -5 | 10 | gardens, crowns | gardens | — | conifers, -20 | sometimes | — | berries |
+| Waxwing | 0 | 10 | gardens (berries) | crowns, wires | crowns, wires, 10 min | conifers, -20 | rarely | — | gardens only, ×1.5 |
+| White wagtail | 0 | 10 | beach (tide), streets, fields | roofs, wires | gathers on roofs, 20 min | the reed (communal), -10 | often | mobs | (migrant) |
+| House sparrow | -10 | 5 | streets, gardens | gardens, roofs | gardens, 15 min | roofs, gardens, -20 | dust and water baths, often | — | flocks ×1.3 |
+| Tree sparrow | -10 | 5 | fields, gardens | crowns, wires | gardens, 15 min | gardens, -20 | often | — | fields, ×1.5 |
+| Starling | -30 | 25 | fields, town lawns and streets, beach wrack (tide) | wires, roofs, crowns | wires and trees near the roost, 35 min | **the murmuration** from -40, then the reedbed (communal), down by +30 | sometimes | mobs | — |
+| Song thrush | -40 | 10 | forest floor, gardens | crowns | — | conifers, 0 | sometimes | dawn song | — |
+| Fieldfare | -10 | 15 | fields, gardens | crowns | crowns, 15 min | conifers, -10 | rarely | mobs | berries in gardens, ×1.5 |
+| Blackbird | -40 | 10 | gardens, forest floor | gardens, crowns | — | conifers, gardens, +15 | often | dawn and dusk song, mobs | gardens, forest floor |
+| Robin | -45 | 5 | forest floor, gardens | crowns, gardens | — | crowns, +20 | often | dawn song, mobs, very tame | — |
+| Common swift | +10 | 10 | hawks high over streets, fields, sea | tower, cliff | screams round the tower, 20 min | **sleeps on the wing** 400-700 m up | — | clings, never perches | (away) |
+| Barn swallow | 0 | 10 | hawks low over fields, reed, water | wires, roofs | in rows on the wires, 40 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
+| Sand martin | 0 | 10 | hawks over the sea, beach, reed | wires, cliff | on the wires, 30 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
+| Sparrowhawk | 0 | — | hunts gardens, streets | conifers | — | conifers, -10 | — | hunts small birds | — |
+| Peregrine | 0 | — | hunts over the town, beach, sea | tower, cliff | — | tower, cliff, +25 (hunts the murmuration at dusk) | — | stoops | — |
 
 ## LOD and cost
 
@@ -87,7 +155,8 @@ as a bird (other birds keep seeing it, and don't fear the player while they are 
 swifts, swallows or martins in October; 0 keeps everybody), `lyud.Birds.Bodies`, `lyud.Birds.DrawDistance`,
 `lyud.Birds.Report`, `lyud.Birds.Scare [m]`, `lyud.Birds.DumpDay <hour> <hours> [csv]`, `lyud.Birds.AnyMap 1`,
 `lyud.Birds.SpawnNear <Species> [x y z]` (a calm test bird that keeps to its spot, any level), `lyud.Birds.Time <h> [m]`,
-`lyud.Birds.IgnorePlayer 1`, `lyud.Birds.TestRun <from x y z> <to x y> <cm/s> <s>` (tests).
+`lyud.Birds.IgnorePlayer 1`, `lyud.Birds.TestRun <from x y z> <to x y> <cm/s> <s>` (tests). `lyud.Wires 0` leaves the
+Academgorodok's power lines down (read at the start); `lyud.Academ 0` hides them with the ensemble.
 
 After a fright a bird stays watchful for 45-90 s (its alertness fades over ~45 s instead of ~7) and its group keeps
 away from the danger, or from the player wherever they are, for one to two minutes.
@@ -96,7 +165,12 @@ away from the danger, or from the player wherever they are, for one to two minut
 
 - `tools/birdsim/run.sh test`: flight distances by species and gait, the befriending sequence (notice, turn,
   watch, approach, eat, no flush), sharp turns scare with a warning first, a runner makes a rook fly away, a
-  pigeon flock goes up together.
+  pigeon flock goes up together; the routines: the starlings' murmuration (one flock, within the coastal strip,
+  over its roost, escape waves from the peregrine, everybody asleep in the reed by dusk + 1 h, out in waves before
+  sunrise, feeding on fields and in town by mid-morning), October's swallows (stragglers, hawking, rows on the wires
+  no closer than 10 cm, asleep in the reed, gone by 6 November), gulls on the beach at low tide, rooks' pre-roost
+  gathering, swifts asleep on the wing. `BIRD_ONLY=routines` (or `murm`) runs only those; the murmuration's cost
+  is printed (~0.1 ms a frame for 1200 birds).
 - `tools/birdsim/run.sh day && python3 tools/birdsim/render_birds.py`: `Saved/BirdSim/birds_day_map.png`
   (the map at eight hours, a dot per bird in its species' colour) and `birds_day_acts.png` (what they do
   over the day).

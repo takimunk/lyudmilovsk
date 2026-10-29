@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "fc9b47de37aa48dbb4922cd0b0d0b8c6",
   "points": 45,
-  "file": "blender/characters/sato_yuki/gen/model.glb (local, ignored)"
+  "file": "blender/characters/sato_yuki/gen/model.glb (local, ignored)",
+  "sha256": "5d38e6907a291492e1ee70bc4c22bf4dab04112f4af8c9615c89c47f58df8d10",
+  "bytes": 48078156,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

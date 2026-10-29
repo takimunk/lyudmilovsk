@@ -57,10 +57,16 @@ SPOTS = [
     ("n3_door",) + inside("Novikova3", (3.44, 1.6, 2.3), (3.44, 6.0, 1.9)),
     ("n3_corr",) + inside("Novikova3", (2.0, 2.15, 2.3), (9.0, 2.15, 2.0)),
     ("n_gate_arch2", (17.0, 37.8, 1.6), (2.0, 37.8, 2.6)),         # docs/academgorodok/refs/dima/arch2.jpg
-    ("s_gate_arch1", (9.5, -42.5, 1.6), (7.0, -45.5, 2.8)),        # .../arch1.jpg: close to the block
-    ("n1_shop_front", (12.0, 4.5, 1.6), (7.25, 4.5, 2.2)),         # .../shop.jpg: the library's door and windows
+    ("s_gate_arch1", (14.5, -41.6, 1.6), (9.0, -43.6, 2.4)),       # .../arch1.jpg: street side, arch left, scroll right
+    ("n1_shop_front", (12.6, 6.7, 1.6), (7.0, 6.7, 2.2)),          # .../shop.jpg: the library's door left, its window right
     ("library_hall",) + inside("Novikova1", (0.4, -5.6, 2.3), (12.0, -2.0, 1.6)),
     ("library_tables",) + inside("Novikova1", (16.8, -5.4, 2.3), (6.0, -3.0, 1.2)),
+    ("floor_down_n3",) + inside("Novikova3", (-9.0, 5.5, 6.1), (-9.0, 7.5, 4.6)),
+    ("floor_up_n3",) + inside("Novikova3", (-9.0, 5.5, 5.0), (-9.0, 7.0, 8.5)),
+    ("floor_down_n1",) + inside("Novikova1", (26.0, -3.0, 9.9), (26.0, -5.0, 8.4)),
+    ("wing_stair_n3",) + inside("Novikova3", (20.7, 2.15, 6.1), (20.7, -4.0, 4.5)),
+    ("n1_beds", (14.0, -26.0, 1.6), (7.5, -20.8, 1.0)),
+    ("floor_corr_n1",) + inside("Novikova1", (12.0, 0.0, 6.1), (6.0, 0.0, 4.6)),
     ("hedge_close", (22.0, 14.0, 1.4), (30.0, 9.0, 0.5)),         # the hedges and the fountain's flowers
     ("flowers_close", (13.5, 1.0, 1.4), (22.9, 1.6, 0.3)),
     ("n1_stair_up",) + inside("Novikova1", (20.4, -0.6, 1.9), (20.3, 3.5, 2.9)),

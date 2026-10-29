@@ -1,10 +1,10 @@
 {
  "_doc": "girl_a: how blender/characters/rig_character.py turns the hi3d model into a game character (docs/characters.md).",
  "id": "girl_a",
- "model": "model",
+ "model": "model_face",
  "height": 1.64,
  "donor": "blender/humans/export/human_girl_a.glb",
- "faces": 24000,
+ "faces": 40000,
  "texture": 2048,
  "bake_normal": true,
  "face": {
@@ -25,6 +25,11 @@
     "lo": 0.006,
     "tilt": 0.0008
    }
+  ],
+  "iris": [
+   0.38,
+   0.4,
+   0.22
   ]
  }
 }

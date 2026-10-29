@@ -83,6 +83,13 @@ namespace HandReach
 	/** A deep crouch on the pose as it is (standing or walking): the hips go down Drop cm and back, the back leans
 	 *  forward, the legs bend so each foot stays where the animation put it, flat. Alpha 0 leaves the pose alone. */
 	void ApplyCrouch(FCompactPose& Pose, float Alpha, float Drop);
+	/** Seated on a bench SeatZ cm over the floor (the mesh's origin under the seat's front edge): hips back onto the
+	 *  cushion, feet forward under the knees, hands on the thighs. */
+	void ApplySit(FCompactPose& Pose, float Alpha, float SeatZ);
+	/** How far behind the seat's front edge the hips rest, how high over the cushion, how far forward the feet go, cm. */
+	constexpr float SitBack = 24.f;
+	constexpr float SitHipOverSeat = 9.f;
+	constexpr float SitFeetForward = 26.f;
 
 	/** The right hand's palm in the pose as it is now (the animation's own): what a reach blends in from and out to. */
 	FPalmFrame CurrentPalm(const FCompactPose& Pose);

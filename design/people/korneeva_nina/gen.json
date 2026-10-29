@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "9a49696d0712478f908913d1a7af1b43",
   "points": 45,
-  "file": "blender/characters/korneeva_nina/gen/model.glb (local, ignored)"
+  "file": "blender/characters/korneeva_nina/gen/model.glb (local, ignored)",
+  "sha256": "61308d9eb116807e5387066f7c2ae44a97ccae1941b6baa896fd9654fbbb6900",
+  "bytes": 48104192,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

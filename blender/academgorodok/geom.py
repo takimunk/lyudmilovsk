@@ -288,3 +288,135 @@ def extrude_profile(m, mat, side_mat, poly, t0, t1, to3d):
         L = math.hypot(q[0] - p[0], q[1] - p[1])
         m.face(side_mat, [to3d(*p, t0), to3d(*q, t0), to3d(*q, t1), to3d(*p, t1)],
                [(0, t0), (L, t0), (L, t1), (0, t1)])
+
+
+def coplanar_offsets(polys, gap=0.003, tol=0.002, min_overlap=2e-4, cell=0.5):
+    """Dima's rule against z-fighting: of faces lying in one plane (within tol), facing the same way and
+    overlapping, the smaller goes over the larger, at least gap metres along their normal over every face
+    it overlaps (a mirror off its wardrobe door, a rug's border off its field, a room's ceiling off the
+    house's). polys: [[(x, y, z), ...]] counter-clockwise seen from the front. Returns {face: offset}."""
+    from collections import defaultdict
+    info = []
+    buckets = defaultdict(list)
+    for fi, pts in enumerate(polys):
+        nx = ny = nz = 0.0
+        for a, b in zip(pts, pts[1:] + pts[:1]):
+            nx += (a[1] - b[1]) * (a[2] + b[2])
+            ny += (a[2] - b[2]) * (a[0] + b[0])
+            nz += (a[0] - b[0]) * (a[1] + b[1])
+        ln = math.sqrt(nx * nx + ny * ny + nz * nz)
+        if ln < 1e-9:
+            info.append(None)
+            continue
+        n = (nx / ln, ny / ln, nz / ln)
+        d = n[0] * pts[0][0] + n[1] * pts[0][1] + n[2] * pts[0][2]
+        info.append((n, d, ln / 2))
+        buckets[(round(n[0] * 40), round(n[1] * 40), round(n[2] * 40), round(d / tol))].append(fi)
+    out = {}
+    done = set()
+    for key in sorted(buckets):
+        if key in done:
+            continue
+        # a run of neighbouring plane buckets is one group
+        group, k = [], key[3]
+        while key[:3] + (k,) in buckets and key[:3] + (k,) not in done:
+            group += buckets[key[:3] + (k,)]
+            done.add(key[:3] + (k,))
+            k += 1
+        if len(group) < 2:
+            continue
+        n = info[group[0]][0]
+        a_ = (1.0, 0.0, 0.0) if abs(n[0]) < 0.9 else (0.0, 1.0, 0.0)
+        u = norm(cross(n, a_))
+        v = cross(n, u)
+        poly = {}
+        grid = defaultdict(list)
+        for fi in group:
+            q = [(p[0] * u[0] + p[1] * u[1] + p[2] * u[2], p[0] * v[0] + p[1] * v[1] + p[2] * v[2]) for p in polys[fi]]
+            if _area(q) < 0:
+                q = q[::-1]
+            poly[fi] = q
+            xs, ys = [p[0] for p in q], [p[1] for p in q]
+            for gx in range(int(math.floor(min(xs) / cell)), int(math.floor(max(xs) / cell)) + 1):
+                for gy in range(int(math.floor(min(ys) / cell)), int(math.floor(max(ys) / cell)) + 1):
+                    grid[(gx, gy)].append(fi)
+        dnew = {}
+        # back to front (a finish already set off its wall stays in front), the larger first in one plane
+        for fi in sorted(group, key=lambda f: (round(info[f][1] / 1e-4), -info[f][2])):
+            near = set()
+            q = poly[fi]
+            xs, ys = [p[0] for p in q], [p[1] for p in q]
+            for gx in range(int(math.floor(min(xs) / cell)), int(math.floor(max(xs) / cell)) + 1):
+                for gy in range(int(math.floor(min(ys) / cell)), int(math.floor(max(ys) / cell)) + 1):
+                    near.update(grid[(gx, gy)])
+            d = info[fi][1]
+            want = d
+            for fj in near:
+                if fj == fi or fj not in dnew:
+                    continue
+                if info[fj][0][0] * n[0] + info[fj][0][1] * n[1] + info[fj][0][2] * n[2] < 0.999:
+                    continue
+                if dnew[fj] + gap <= d + 1e-5:
+                    continue
+                ov = _clip_poly(q, poly[fj])
+                if len(ov) >= 3 and abs(_area(ov)) > min_overlap:
+                    want = max(want, dnew[fj] + gap)
+            dnew[fi] = want
+            if want > d + 1e-5:
+                out[fi] = want - d
+    return out
+
+
+def separate_coplanar(m, gap=0.003, passes=8):
+    """coplanar_offsets on a Mesh (its faces own their vertices, so a face moves alone), repeated while a
+    lifted face lands on another. Returns the number of faces moved."""
+    total = 0
+    for _ in range(passes):
+        n = _separate_once(m, gap)
+        total += n
+        if not n:
+            break
+    return total
+
+
+def _separate_once(m, gap):
+    off = coplanar_offsets([[m.verts[i] for i in idx] for _, idx, _ in m.faces], gap)
+    for fi, o in off.items():
+        pts = [m.verts[i] for i in m.faces[fi][1]]
+        nx = ny = nz = 0.0
+        for a, b in zip(pts, pts[1:] + pts[:1]):
+            nx += (a[1] - b[1]) * (a[2] + b[2])
+            ny += (a[2] - b[2]) * (a[0] + b[0])
+            nz += (a[0] - b[0]) * (a[1] + b[1])
+        ln = math.sqrt(nx * nx + ny * ny + nz * nz)
+        for i in m.faces[fi][1]:
+            p = m.verts[i]
+            m.verts[i] = (p[0] + nx / ln * o, p[1] + ny / ln * o, p[2] + nz / ln * o)
+    return len(off)
+
+
+def _area(poly):
+    return sum(poly[i - 1][0] * poly[i][1] - poly[i][0] * poly[i - 1][1] for i in range(len(poly))) / 2.0
+
+
+def _clip_poly(subject, clipper):
+    """Sutherland-Hodgman with a convex clipper; both counter-clockwise."""
+    out = subject
+    for i in range(len(clipper)):
+        a, b = clipper[i - 1], clipper[i]
+        inp, out = out, []
+        if not inp:
+            break
+        side = lambda p: (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0])
+        for j in range(len(inp)):
+            p, q = inp[j - 1], inp[j]
+            sp, sq = side(p), side(q)
+            if sq >= -1e-12:
+                if sp < -1e-12:
+                    t = sp / (sp - sq)
+                    out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+                out.append(q)
+            elif sp >= -1e-12:
+                t = sp / (sp - sq)
+                out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+    return out

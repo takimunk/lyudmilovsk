@@ -16,7 +16,9 @@ namespace LyudBirds { class FWorld; }
 UENUM(BlueprintType)
 enum class EBirdActivity : uint8
 {
-	Sleep, Perch, Preen, Forage, Peck, Swim, Watch, Takeoff, Fly, Land, Hawk, Soar, Flee, Chase, Mob, Approach, Eat, Claimed
+	Sleep, Perch, Preen, Forage, Peck, Swim, Watch, Takeoff, Fly, Land, Hawk, Soar, Flee, Chase, Mob, Approach, Eat, Claimed,
+	/** Starlings in the evening murmuration over their roost. */
+	Murmur
 };
 
 USTRUCT(BlueprintType)
@@ -181,6 +183,8 @@ private:
 	bool bStarted = false;
 	float StartDelay = 0.f;
 	int32 SunDay = -1;
+	float MigrationTimer = 0.f;
+	TWeakObjectPtr<class ALyudSea> Sea;
 	bool bClockSeen = false;
 	FVector TestRunFeet = FVector::ZeroVector, TestRunTarget = FVector::ZeroVector;
 	float TestRunSpeed = 0.f;

@@ -44,7 +44,13 @@ void FBirdAir::Init(UWorld* InWorld)
 
 float FBirdAir::GroundZ(const FVector2D& XY) const
 {
-	return FMath::Max(SeaZ, SolidZ(XY));
+	return FMath::Max(WaterZ(), SolidZ(XY));
+}
+
+float FBirdAir::WaterZ() const
+{
+	const ALyudSea* Sea = World.IsValid() ? ALyudSea::Get(World.Get()) : nullptr;
+	return Sea ? Sea->SeaLevel() : SeaZ;
 }
 
 float FBirdAir::SolidZ(const FVector2D& XY) const
@@ -79,7 +85,7 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 	const ULyudWindSubsystem* World_Wind = World.IsValid() ? ULyudWindSubsystem::Get(World.Get()) : nullptr;
 	if (World_Wind && CVarWindSpeed.GetValueOnGameThread() < 0.f)
 	{
-		const FLyudWindSample W = World_Wind->GetWindAt(PosCm, FMath::Max(10.f, (PosCm.Z - CacheGround) / 100.f), CacheGround <= SeaZ + 1.f);
+		const FLyudWindSample W = World_Wind->GetWindAt(PosCm, FMath::Max(10.f, (PosCm.Z - CacheGround) / 100.f), CacheGround <= WaterZ() + 1.f);
 		Speed = W.Speed;
 		Dir = W.Speed > 0.01f ? W.Velocity / W.Speed : FVector(-1, 0, 0);
 	}
@@ -128,7 +134,7 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 	// thermals: columns over land by day, ~250 m apart, drifting with the wind
 	const float Hour = (float)UGameCalendar::NowIn(World.Get()).GetTimeOfDay().GetTotalHours();
 	const float Day = FMath::SmoothStep(9.5f, 11.5f, Hour) * (1.f - FMath::SmoothStep(16.f, 17.5f, Hour)) * CVarThermals.GetValueOnGameThread();
-	if (Day > 0.f && CacheGround > SeaZ + 300.f)
+	if (Day > 0.f && CacheGround > WaterZ() + 300.f)
 	{
 		const FVector2D Drift = FVector2D(Dir) * Speed * 40.f * (float)Clock;
 		const FVector2D Q = FVector2D(PosCm) - Drift;

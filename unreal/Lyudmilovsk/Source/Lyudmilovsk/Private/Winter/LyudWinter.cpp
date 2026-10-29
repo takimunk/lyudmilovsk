@@ -1117,7 +1117,8 @@ void ULyudWinterSubsystem::LowWater()
 	Now.LowWaterCm = CVarWinterLowWater.GetValueOnGameThread() * W;
 	if (FMath::Abs(Sea->GetLevelOffset() + Now.LowWaterCm) > 0.5f)
 	{
-		Sea->SetLevelOffset(-Now.LowWaterCm);
+		// the winter's low water eases itself over weeks: the sea follows it at once
+		Sea->SetLevelOffset(-Now.LowWaterCm, 0.f);
 	}
 }
 

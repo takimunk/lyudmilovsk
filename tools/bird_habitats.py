@@ -21,10 +21,12 @@ import struct
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+sys.path.insert(0, os.path.join(ROOT, "blender", "academgorodok"))
 import world_map as W  # noqa: E402
 import terrain as T  # noqa: E402
-
-ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import plan as AP  # noqa: E402  (the Academgorodok's houses)
+from geom import Frame  # noqa: E402
 OUT_DIR = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData")
 
 # Order matters: LyudBirds::EHabitat (BirdSim.h) has the same order.
@@ -74,9 +76,27 @@ def house_roofs():
     return out
 
 
+def academ_houses():
+    """The Academgorodok's three houses: (frame in map metres, length, depth, eaves z, ridge z) (blender/academgorodok/plan.py)."""
+    out = []
+    ox, oy, ayaw = W.academ()
+    gz = W.academ_z()
+    for name, (cx, cy, yaw, mirror) in AP.FRAMES.items():
+        n1 = name == "Novikova1"
+        L, D = (AP.N1_L, AP.N1_D) if n1 else (AP.S_L, AP.S_D)
+        ez = gz + AP.eaves_z(AP.N1_FLOORS if n1 else AP.S_FLOORS)
+        rz = ez + D / 2 * math.tan(AP.N1_PITCH if n1 else AP.S_PITCH)
+        mx, my = W.academ_to_map(cx, cy)
+        # the house's u axis on the map: the ensemble's turn (x -> (sin, -cos)) after the house's own yaw
+        ux, uy = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+        u = (ux * math.sin(ayaw) - uy * math.cos(ayaw), -ux * math.cos(ayaw) - uy * math.sin(ayaw))
+        out.append((mx, my, math.atan2(u[1], u[0]), L, D, ez, rz))
+    return out
+
+
 def house_boxes():
     """(x, y, yaw, half w, half d, top z) of every building, map metres, for the obstacle grid."""
-    out = []
+    out = [(x, y, yaw, L / 2, D / 2, rz + 1.0) for x, y, yaw, L, D, ez, rz in academ_houses()]
     for x, y, yaw, w, d, fl, kind in W.town():
         z = T.ground_z(x, y)
         top = {"block": fl * 2.8 + 1.0, "kirche": 46.0}.get(kind, fl * 3.0 + 0.4 + min(w, d) / 2 * 0.9)
@@ -162,9 +182,11 @@ def main():
             add("Meadow", (x, y, z + 0.02), radius=10.0, cap=24)
     for p in W.grass_patches():
         if p[4] in ("CommonReed", "SandSedge"):
-            for dx in (-18.0, 0.0, 18.0):
-                for dy in (-18.0, 0.0, 18.0):
-                    x, y = p[0] + dx, p[1] + dy
+            # over the whole patch, every 15 m
+            nx_, ny_ = max(1, int(p[2] * 2 / 15.0)), max(1, int(p[3] * 2 / 15.0))
+            for i in range(nx_):
+                for j in range(ny_):
+                    x, y = p[0] - p[2] + (i + 0.5) * 2 * p[2] / nx_, p[1] - p[3] + (j + 0.5) * 2 * p[3] / ny_
                     add("Reed", (x, y, T.ground_z(x, y) + 0.6), radius=6.0, cap=20)
 
     # the town: streets and yards, the square, the promenade; roofs, the church tower
@@ -184,6 +206,29 @@ def main():
         add("Street", (x, y, T.ground_z(x, y) + 0.02), radius=3.0, cap=10)
     for kind, p, q, r in house_roofs():
         add(kind, p, q, r, 10 if kind == "Roof" else 16)
+    # the Academgorodok: ridges and both eaves of each house (jackdaws, pigeons, starlings, wagtails sit on them)
+    for x, y, yaw, L, D, ez, rz in academ_houses():
+        ca, sa = math.cos(yaw), math.sin(yaw)
+        hw = L / 2 - 1.0
+        for off, z in ((0.0, rz), (-D / 2 - 0.3, ez), (D / 2 + 0.3, ez)):
+            nx_, ny_ = -sa * off, ca * off
+            add("Roof", (x + nx_ - hw * ca, y + ny_ - hw * sa, z + 0.1), (x + nx_ + hw * ca, y + ny_ + hw * sa, z + 0.1), 0.0, 24)
+    # the Academgorodok's power lines (tools/academ_wires.py): every conductor, sagging, in pieces of up to 4 m
+    wires_path = os.path.join(OUT_DIR, "wires.json")
+    if os.path.exists(wires_path):
+        with open(wires_path) as f:
+            wdoc = json.load(f)
+        wfy = wdoc["face_y_cm"] / 100.0
+        for wr in wdoc["wires"]:
+            wa, wb, sg = wr["a"], wr["b"], wr["sag"]
+            n = max(1, int(math.ceil(math.dist(wa, wb) / 4.0)))
+            pts = []
+            for k in range(n + 1):
+                t = min(max(k / n, 0.04), 0.96)          # keep off the insulators
+                pts.append((wa[0] + (wb[0] - wa[0]) * t, wa[1] - wfy + (wb[1] - wa[1]) * t,
+                            wa[2] + (wb[2] - wa[2]) * t - 4 * sg * t * (1 - t)))
+            for p, q in zip(pts, pts[1:]):
+                add("Wire", p, q, 0.0, max(2, int(math.dist(p, q) / 0.15)))
 
     # the cable car's two ropes, between their supports, sagging (world_mesh.cable_car)
     cc = W.cable_car()

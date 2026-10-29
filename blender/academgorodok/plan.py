@@ -99,7 +99,29 @@ def build_facade(house, fac, z_top, openings, extra=None, wall_mat="AC_Wall", pl
             pass  # the hole is square; the unit and its surround fill the spandrels (see below)
         if o.room and o.kind == "window" and not house.interiors:
             _room(m, house.rnd, u0, u1, z0, z1, fac.length)
-        if o.fill:
+        if o.kind == "door":
+            # a real door (ALyudDoor) instead of modelled leaves: shut, swinging out of the house
+            import interiors
+            x_, y_, _ = fac.to_building((o.uc, -WALL_T / 2, 0.0))
+            door_h = o.h
+            if o.arch:
+                # ALyudDoor is rectangular: it fills the hole up to the springing, a fixed glazed
+                # fanlight fills the half round above it
+                r = o.w / 2
+                door_h = o.h - r
+                zs = z0 + door_h
+                fan = [(o.uc + r * math.cos(math.pi * k / 12), zs + r * math.sin(math.pi * k / 12)) for k in range(13)]
+                geom.extrude_profile(m, "AC_Glass", "AC_Frame", fan, 0.24, 0.25, lambda u, v, t: (u, -t, v))
+                box(m, "AC_Frame", u0, u1, -0.28, -0.2, zs - 0.03, zs + 0.03)
+                for a in (math.pi / 3, 2 * math.pi / 3):
+                    for k in range(6):
+                        rr = r * (k + 0.5) / 6
+                        cx, cz = o.uc + rr * math.cos(a), zs + rr * math.sin(a)
+                        box(m, "AC_Frame", cx - 0.02, cx + 0.02, -0.27, -0.21, cz - 0.04, cz + 0.04)
+            locked = house.name == "Novikova1" and -10.4 < x_ < -2.5 and z0 < 1.0      # the shut-off rooms by the library
+            interiors.add_door(house, (x_, y_, max(z0, 0.0)), fac.n, o.w, door_h, WALL_T, 2 if o.w >= 1.3 else 1,
+                               not o.fill and not locked, locked, outside=True)
+        elif o.fill:
             house.detail(fac, o.kind, o.uc, 0.0, z0, w=o.w, h=o.h, unit=o.unit)
         if o.surround:
             house.detail(fac, "surround", o.uc, 0.0, z0, w=o.w, h=o.h, style=o.surround)
@@ -184,6 +206,18 @@ STAIR_WIN_Z = FLOOR_H / 2 + 0.8     # stair window sill over its storey's floor:
 SIDE_STAIRS = (-20.7, 0.0, 20.7)    # side houses: stair axes behind the street portals
 
 
+def n1_window_xs():
+    """Building x of the window axes on Novikova 1's square front (the doors take two on the ground floor)."""
+    xs = []
+    for b0, b1 in zip(N1_BAYS, N1_BAYS[1:]):
+        s = b0 + N1_BAY_W / 2 + N1_BAY_GAP
+        xs += [s + i * N1_WIN_STEP for i in range(4)]
+    for side in (-1, 1):
+        s = side * (N1_BAYS[2] + N1_BAY_W / 2 + N1_BAY_GAP)
+        xs += [s + side * i * N1_WIN_STEP for i in range(2)]
+    return sorted(xs)
+
+
 def novikova1():
     h = House("Novikova1", Frame(*FRAMES["Novikova1"][:2], math.radians(FRAMES["Novikova1"][2])))
     L, D, F = N1_L, N1_D, N1_FLOORS
@@ -198,14 +232,7 @@ def novikova1():
         half = N1_BAY_W / 2
         # windows: 3 between the bays, 2 beyond the side bays (facade_notes.md: 3 (?4))
         ops += _n1_bay_openings(cu(b))
-    win_us = []
-    for b0, b1 in zip(N1_BAYS, N1_BAYS[1:]):
-        s = b0 + N1_BAY_W / 2 + N1_BAY_GAP
-        win_us += [s + i * N1_WIN_STEP for i in range(4)]
-    for side in (-1, 1):
-        s = side * (N1_BAYS[2] + N1_BAY_W / 2 + N1_BAY_GAP)
-        win_us += [s + side * i * N1_WIN_STEP for i in range(2)]
-    win_us = sorted(cu(u) for u in win_us)
+    win_us = sorted(cu(u) for u in n1_window_xs())
     for k in range(1, F):
         for u in win_us:
             ops.append(Opening(u, floor_z(k) + SILL_H, WIN_W, WIN_H))
@@ -238,6 +265,10 @@ def novikova1():
         import gastronom as shop
     h.inside.extend(shop.build())
     h.lights = list(shop.LIGHTS)
+    h.plants = shop.procedural_plants() if hasattr(shop, "procedural_plants") else []
+    import interiors
+    for d in getattr(shop, "DOORS", []):
+        interiors.add_door(h, d["at"], d["out"], d["w"], d["h"], d["wall"], d["leaves"], d["open"])
     # its boards: a picture per language on a quad over each label (AcademToggle.cpp, make_academ_signs.py)
     for (key, lx, ly, lz, lw, lh), nrm in zip(getattr(shop, "LABELS", []), getattr(shop, "LABEL_NORMALS", [])):
         if not key.startswith("sign.academ.library."):
@@ -258,9 +289,10 @@ def novikova1():
     # --- west facade (yard): walked from north to south --------------------------------------
     fac = Facade((x1, y1), (x0, y1))
     ops = []
-    entr = [cu(-u) for u in N1_BAYS]               # the stairs sit behind the bays (?)
+    entr = sorted(cu(-u) for u in N1_BAYS)         # the stairs sit behind the bays (?); walked north to south
     for e in entr:
-        ops.append(Opening(e, floor_z(0) - 0.15, 1.4, 2.6, kind="door", unit="double", room=False, fill=False))
+        # at the ground: the lobby under the half landing is sunk to it (interiors._yard_pit)
+        ops.append(Opening(e, 0.0, 1.4, 2.3, kind="door", unit="double", room=False, fill=False))
         for k in range(F - 1):                     # stair windows over the half landings
             ops.append(Opening(e, floor_z(k) + STAIR_WIN_Z, 1.9, 1.7, unit="triple"))
     wus = []
@@ -274,7 +306,6 @@ def novikova1():
     build_facade(h, fac, ez, ops)
     for e in entr:
         h.detail(fac, "oculus", e, 0.0, ez - 1.25, d=0.75)
-        h.detail(fac, "steps", e, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
     for k in (1, 2, 3):                             # balconies on the yard side (?)
         for u in wus[1::3]:
             h.detail(fac, "balcony", u, 0.0, floor_z(k), length=2.6, depth=1.0, style="bars")
@@ -320,6 +351,21 @@ def _n1_bay_openings(bu):
     return ops
 
 
+def _globe(m, c, r, segs=10, rings=7):
+    """An opal lamp globe (AC_LampGlobe), facade-local centre c."""
+    def p(i, j):
+        th, ph = 2 * math.pi * i / segs, math.pi * j / rings
+        return (c[0] + r * math.sin(ph) * math.cos(th), c[1] + r * math.sin(ph) * math.sin(th), c[2] - r * math.cos(ph))
+    for j in range(rings):
+        for i in range(segs):
+            q = [p(i, j), p(i + 1, j), p(i + 1, j + 1), p(i, j + 1)]
+            if j == 0:
+                q = [q[0], q[2], q[3]]
+            elif j == rings - 1:
+                q = [q[0], q[1], q[2]]
+            m.face("AC_LampGlobe", q)
+
+
 def _n1_ground_details(m, ground, sign_door_u):
     """The square facade's ground floor (Dima's photo docs/academgorodok/refs/dima/shop.jpg): wide white
     architraves round the doors and the big windows, a light well with a grate in front of each window,
@@ -339,10 +385,12 @@ def _n1_ground_details(m, ground, sign_door_u):
                 gx = u0 - 0.15 + i * 0.06
                 box(m, "AC_Iron", gx, gx + 0.012, 0.06, 0.84, 0.3, 0.32)
         else:
-            # a globe lamp on a bracket over the door
-            cu_ = u0 - 0.55
-            box(m, "AC_Iron", cu_ - 0.02, cu_ + 0.02, 0.0, 0.22, z1 + 0.5, z1 + 0.54)
-            box(m, "AC_LampGlobe", cu_ - 0.12, cu_ + 0.12, 0.1, 0.34, z1 + 0.3, z1 + 0.54)
+            # a globe lamp on a short bracket over the door's surround, left of its middle (shop.jpg)
+            cu_, zg = u0 + 0.4, z1 + bw + 0.42
+            box(m, "AC_Iron", cu_ - 0.05, cu_ + 0.05, 0.0, 0.03, zg - 0.12, zg + 0.04)
+            box(m, "AC_Iron", cu_ - 0.015, cu_ + 0.015, 0.0, 0.2, zg - 0.03, zg)
+            box(m, "AC_Iron", cu_ - 0.05, cu_ + 0.05, 0.15, 0.25, zg - 0.04, zg - 0.01)
+            _globe(m, (cu_, 0.2, zg - 0.18), 0.14)
     for o in ground:
         if o.kind == "door" and abs(o.uc - sign_door_u) < 0.01:
             u1 = o.rect[1] + 0.3 + 0.35
@@ -405,7 +453,7 @@ def _n1_end(h, fac, ez):
     square_first = fac.p0[1] < fac.p1[1]
     def at(t):            # t measured from the square corner
         return t if square_first else L - t
-    ops.append(Opening(at(1.9), floor_z(0) - 0.15, 1.2, 2.6, kind="door", unit="arched", arch=True,
+    ops.append(Opening(at(1.9), floor_z(0) - 0.15, 1.2, 2.7, kind="door", unit="arched", arch=True,
                        room=False, surround="arch"))
     for k in range(4):
         ops.append(Opening(at(5.2), floor_z(k) + SILL_H, 1.3, WIN_H))
@@ -490,7 +538,7 @@ def side_house(name):
                 sur = hood[k] if (k == 0 or near) else "band"
                 ops.append(Opening(uc, floor_z(k) + SILL_H, 1.35, 1.85, surround=sur))
         else:
-            ops.append(Opening(uc, floor_z(0) - 0.15, 1.3, 2.6, kind="door", unit="arched", arch=True,
+            ops.append(Opening(uc, floor_z(0) - 0.15, 1.3, 2.8, kind="door", unit="arched", arch=True,
                                room=False, surround=None, fill=False))
             ops.append(Opening(uc, floor_z(1) + 0.05, 1.3, 2.6, unit="french_door", surround="pediment"))
             ops.append(Opening(uc, floor_z(2) + SILL_H, 1.35, 1.85, surround="ears"))
@@ -541,7 +589,10 @@ def side_house(name):
             us = axes(1.0, Lf - 1.0, 3)
             su = min(us, key=lambda u: min(abs(fac.to_building((u, 0, 0))[0] - sx) for sx in SIDE_STAIRS))
             ops += windows_on_axes([u for u in us if u != su], F)
-            ops += _stair_entrance(su, F)
+            # the wing's stair stops 1.6 m past its flights (interiors.py): its yard door, and ordinary
+            # windows above it (a store room behind them)
+            ops += _stair_entrance(su, 1)
+            ops += [o for o in windows_on_axes([su], F) if o.z0 > floor_z(1) - 0.5]
         elif i in (1, 3):                  # wing side faces: paired windows with a colonnette
             for k in range(F):
                 ops.append(Opening(Lf / 2, floor_z(k) + SILL_H, 2.3, 1.85, unit="paired"))
@@ -556,9 +607,6 @@ def side_house(name):
                 for k in (1, 2):
                     ops.append(Opening(mid, floor_z(k) + 0.05, 1.3, 2.6, unit="french_door"))
         build_facade(h, fac, ez, ops)
-        for o in ops:
-            if o.kind == "door":
-                h.detail(fac, "steps", o.uc, 0.0, 0.0, w=2.0, n=2, rise=(floor_z(0) - 0.15) / 2, tread=0.35)
         for mid in balc:
             for k in (1, 2):
                 h.detail(fac, "balcony", mid, 0.0, floor_z(k), length=3.2, depth=1.2, style="ornamental", consoles=True)
@@ -602,7 +650,7 @@ def side_house(name):
 
 def _stair_entrance(u, F):
     """A yard entrance (open) with the stair's windows over the half landings above it."""
-    ops = [Opening(u, floor_z(0) - 0.15, 1.4, 2.5, kind="door", unit="double", room=False, fill=False)]
+    ops = [Opening(u, 0.0, 1.4, 2.3, kind="door", unit="double", room=False, fill=False)]     # at the ground (interiors._yard_pit)
     for k in range(F - 1):
         ops.append(Opening(u, floor_z(k) + STAIR_WIN_Z, 1.7, 1.6, unit="triple"))
     return ops
@@ -634,10 +682,13 @@ class _Proxy:
 # steps down towards the drive; a concrete plinth under both.
 GATE_BLOCK_W, GATE_BLOCK_D, GATE_BLOCK_H = 3.0, 1.1, 5.0
 GATE_ARCH_W, GATE_ARCH_H = 1.5, 3.1
-GATE_WING = [(0.0, 3.45), (0.25, 3.52), (0.5, 3.44), (0.62, 3.22), (0.58, 2.97), (0.42, 2.82), (0.34, 2.56),
-             (0.42, 2.27), (0.66, 2.02), (0.95, 1.77), (1.07, 1.63), (1.22, 1.56), (1.45, 1.32), (1.56, 1.02),
-             (1.52, 0.72), (1.37, 0.52), (1.22, 0.46), (1.22, 0.35), (0.0, 0.35)]
-GATE_WING_T = 0.5
+# the scrolled wing (refs/dima/arch2.jpg, arch1.jpg; QA 2026-10-25: as tall as the arch, broad): (out from
+# the block, height over the plinth), clockwise from the top at the block. Its foot reaches 1.3 m out, the top
+# volute sits at the arch's springing, a neck between them
+GATE_WING = [(0.0, 2.62), (0.2, 2.68), (0.42, 2.6), (0.58, 2.42), (0.62, 2.2), (0.56, 1.98), (0.5, 1.8),
+             (0.56, 1.55), (0.72, 1.36), (0.95, 1.2), (1.15, 1.08), (1.27, 0.88), (1.3, 0.62), (1.24, 0.36),
+             (1.1, 0.14), (0.9, 0.02), (0.7, 0.0), (0.0, 0.0)]
+GATE_WING_T = 0.4
 
 
 def gates(houses):
@@ -673,10 +724,13 @@ def _gate_block(m, u0, u1, wing_dir):
     aw, ah = GATE_ARCH_W, GATE_ARCH_H
     r = aw / 2
     ua0, ua1, zs = uc - r, uc + r, ah - r
-    pl = 0.35
-    # plinth (split at the passage) and the piers, the wall over the arch, the spandrels and the soffit
-    box(m, "AC_Concrete", u0 - 0.03, ua0, y0 - 0.03, y1 + 0.03, -0.4, pl)
-    box(m, "AC_Concrete", ua1, u1 + 0.03, y0 - 0.03, y1 + 0.03, -0.4, pl)
+    pl = 0.4
+    # the granite plinth under the block and its wing (split at the passage), the piers, the wall over
+    # the arch, the spandrels and the soffit
+    uf = u1 if wing_dir > 0 else u0
+    uw = uf + wing_dir * (GATE_WING[12][0] + 0.06)
+    box(m, "AC_Granite", min(u0 - 0.03, uw), ua0, y0 - 0.03, y1 + 0.03, -0.4, pl)
+    box(m, "AC_Granite", ua1, max(u1 + 0.03, uw), y0 - 0.03, y1 + 0.03, -0.4, pl)
     box(m, "AC_Wall", u0, ua0, y0, y1, pl, ah, faces="xXyY")
     box(m, "AC_Wall", ua1, u1, y0, y1, pl, ah, faces="xXyY")
     box(m, "AC_Wall", u0, u1, y0, y1, ah, H - 0.2, faces="xXyY")
@@ -696,30 +750,38 @@ def _gate_block(m, u0, u1, wing_dir):
         inner[-2:0:-1] + [(ua1, zs), (ua1, pl)]
     for t0, t1 in ((-y0, -y0 + 0.035), (-y1 - 0.035, -y1)):
         geom.extrude_profile(m, "AC_Trim", "AC_Trim", u_ring, t0, t1, to3d)
-    # a white band at 4 m, the cornice and the low hipped cap
+    # a white band at 4 m under a dark flashing, the cornice and the dark sheet-steel cap
     box(m, "AC_Trim", u0 - 0.06, u1 + 0.06, y0 - 0.06, y1 + 0.06, 3.95, 4.12)
-    box(m, "AC_Trim", u0 - 0.03, u1 + 0.03, y0 - 0.03, y1 + 0.03, 4.12, 4.2)
+    box(m, "AC_RoofDark", u0 - 0.08, u1 + 0.08, y0 - 0.08, y1 + 0.08, 4.12, 4.15)
+    box(m, "AC_Trim", u0 - 0.03, u1 + 0.03, y0 - 0.03, y1 + 0.03, 4.15, 4.2)
     box(m, "AC_Trim", u0 - 0.2, u1 + 0.2, y0 - 0.2, y1 + 0.2, H - 0.2, H)
-    geom.hip_roof(m, "AC_Roof", "AC_Trim", "AC_Trim", u0, u1, y0, y1, H, math.radians(14), 0.25, fascia_h=0.06)
-    # the scrolled wing, its S-curved edge white, and a white band along the curve on both faces
-    uf = u1 if wing_dir > 0 else u0
-    prof = [(uf + wing_dir * p[0], p[1]) for p in GATE_WING]
+    geom.hip_roof(m, "AC_RoofDark", "AC_RoofDark", "AC_RoofDark", u0, u1, y0, y1, H, math.radians(20), 0.25, fascia_h=0.06)
+    # the scrolled wing: ochre, its S-curved edge white, a broad white band along the curve on both faces,
+    # the top volute all white and the lower one curling in
+    prof = [(uf + wing_dir * p[0], pl + p[1]) for p in GATE_WING]
     t = GATE_WING_T / 2
     geom.extrude_profile(m, "AC_Wall", "AC_Trim", prof, -t, t, to3d)
-    curve = GATE_WING[:-2]
+
+    def on_faces(poly):
+        """A white patch [(out, height over the plinth)] on both faces of the wing, facing out."""
+        for yy in (-t - 0.008, t + 0.008):
+            pts = [(uf + wing_dir * q[0], yy, pl + q[1]) for q in poly]
+            a_, b_, c_ = pts[0], pts[1], pts[2]
+            ny = (b_[2] - a_[2]) * (c_[0] - a_[0]) - (b_[0] - a_[0]) * (c_[2] - a_[2])
+            m.face("AC_Trim", pts if (ny > 0) == (yy > 0) else pts[::-1])
+    curve = GATE_WING[:-1]
     for i in range(len(curve) - 1):
         (s0, z0), (s1, z1) = curve[i], curve[i + 1]
         ln = math.hypot(s1 - s0, z1 - z0) or 1.0
-        nx, nz = (z1 - z0) / ln, -(s1 - s0) / ln          # into the wing
-        q = [(s0, z0), (s1, z1), (s1 + nx * 0.2, z1 + nz * 0.2), (s0 + nx * 0.2, z0 + nz * 0.2)]
-        q = [(uf + wing_dir * qq[0], qq[1]) for qq in q]
-        for yy, flip in ((-t - 0.008, False), (t + 0.008, True)):
-            pts = [(p[0], yy, p[1]) for p in q]
-            if (wing_dir > 0) != flip:
-                pts = pts[::-1]
-            m.face("AC_Trim", pts)
-    box(m, "AC_Concrete", min(uf, uf + wing_dir * 1.3), max(uf, uf + wing_dir * 1.3), -t - 0.05, t + 0.05, -0.4, 0.35)
-
+        nx, nz = (z1 - z0) / ln, -(s1 - s0) / ln          # into the wing (the outline runs clockwise)
+        on_faces([(s0, z0), (s1, z1), (s1 + nx * 0.2, z1 + nz * 0.2), (s0 + nx * 0.2, z0 + nz * 0.2)])
+    vc, vr = (0.32, 2.3), 0.27                              # the top volute
+    on_faces([(vc[0] + vr * math.cos(2 * math.pi * k / 16), vc[1] + vr * math.sin(2 * math.pi * k / 16)) for k in range(16)])
+    lc, lr0, lr1 = (0.88, 0.6), 0.22, 0.38                  # the lower volute curling in from the foot
+    for k in range(10):
+        a0, a1 = math.radians(-60 + 24 * k), math.radians(-60 + 24 * (k + 1))
+        on_faces([(lc[0] + lr1 * math.cos(a0), lc[1] + lr1 * math.sin(a0)), (lc[0] + lr1 * math.cos(a1), lc[1] + lr1 * math.sin(a1)),
+                  (lc[0] + lr0 * math.cos(a1), lc[1] + lr0 * math.sin(a1)), (lc[0] + lr0 * math.cos(a0), lc[1] + lr0 * math.sin(a0))])
 
 SQUARE = {
     "fountain": (22.9 - N1_OSM[0], 6.6 - N1_OSM[1]),
@@ -737,26 +799,38 @@ def square_mesh():
     _flat(m, "AC_Asphalt", [(fx, fy - 1.6), (SQUARE["x_end"] + 26.0, fy - 1.6), (SQUARE["x_end"] + 26.0, fy + 1.6), (fx, fy + 1.6)], 0.02)
     # the street along the square (to the lower station and on into the town)
     _flat(m, "AC_Asphalt", [(SQUARE["x_end"], -115.0), (SQUARE["x_end"] + 9.0, -115.0), (SQUARE["x_end"] + 9.0, 115.0), (SQUARE["x_end"], 115.0)], 0.03)
-    # the garden: clipped hedges along the paths (gaps where paths cross), flowers round the fountain
-    # and along the facade (commons_Marshal_Novikov_str._1_1_.jpg, _2_.jpg)
+    # the garden: clipped privet along the paths (gaps where paths cross), loose spiraea along the
+    # street, flowers round the fountain and along the facade (commons_Marshal_Novikov_str._1_1_.jpg,
+    # _2_.jpg). All of it is AProceduralPlant (layout "plants"), the plants thread's species (Dima: every
+    # plant goes through our plant system)
+    del SQUARE_PLANTS[:]
     xe = SQUARE["x_end"]
     for side in (-1, 1):
         y_in = fy + side * 2.4
-        for a, b in ((fx + SQUARE["bed_r"] + 2.6, xe - 1.2),):
-            _hedge(m, a, b, y_in - 0.35, y_in + 0.35)
-        for a, b in ((fy + side * 9.0, fy + side * 34.0),):
-            y0, y1 = sorted((a, b))
-            _hedge(m, 17.0, 17.7, y0, y1)               # behind the apron
-            _hedge(m, xe - 1.0, xe - 0.3, y0, y1)       # along the street
+        _hedge_row("Privet", fx + SQUARE["bed_r"] + 2.6, xe - 1.2, y_in, y_in)
+        y0, y1 = sorted((fy + side * 9.0, fy + side * 34.0))
+        _hedge_row("Privet", 17.35, 17.35, y0, y1)                  # behind the apron
+        _hedge_row("Spiraea", xe - 0.65, xe - 0.65, y0, y1, step=1.6)  # along the street
     rnd = random.Random(7)
-    for i in range(70):                                 # day lilies and marigolds inside the fountain's ring
-        t = 2 * math.pi * i / 70
-        r = SQUARE["bed_r"] - rnd.uniform(0.6, 2.2)
-        _flower_clump(m, fx + r * math.cos(t), fy + r * math.sin(t), rnd, h=rnd.uniform(0.45, 0.75))
-    for y0, y1 in ((-29.5, -16.0), (-12.0, -5.5), (5.5, 12.0), (16.0, 29.5)):   # under the ground-floor windows
-        n = int((y1 - y0) / 0.45)
+    beds = ("DayLily", "Marigold", "Aster", "Cosmos")
+    for i in range(36):                                 # inside the fountain's ring
+        t = 2 * math.pi * (i + rnd.uniform(-0.2, 0.2)) / 36
+        r = SQUARE["bed_r"] - rnd.uniform(0.7, 2.2)
+        _plant(beds[i % 4], fx + r * math.cos(t), fy + r * math.sin(t), rnd)
+    # under the ground-floor windows, kept 1.7 m clear of every door (Dima: the beds blocked the
+    # stair entrances behind the bays)
+    f1 = Frame(*FRAMES["Novikova1"][:2], math.radians(FRAMES["Novikova1"][2]))
+    doors_x = (-N1_BAYS[2], -4.35, 0.0, 4.35, N1_BAYS[2])
+    doors_y = [f1((bx, 0.0, 0.0))[1] for bx in doors_x]
+    # and off the light wells in front of the shop windows (refs/dima/shop.jpg: no flowers there)
+    wells_y = [f1((bx, 0.0, 0.0))[1] for bx in n1_window_xs() if all(abs(bx - d) > 0.1 for d in doors_x)]
+    for y0, y1 in ((-29.5, -5.5), (5.5, 29.5)):
+        n = int((y1 - y0) / 0.9)
         for k in range(n):
-            _flower_clump(m, 7.75 + rnd.uniform(-0.15, 0.15), y0 + (k + 0.5) * (y1 - y0) / n, rnd, w=0.55, h=rnd.uniform(0.4, 0.65))
+            yy = y0 + (k + 0.5) * (y1 - y0) / n
+            if any(abs(yy - dy) < 1.7 for dy in doors_y) or any(abs(yy - wy) < 1.45 for wy in wells_y):
+                continue
+            _plant(rnd.choice(("Marigold", "Aster", "Aster", "DayLily")), 7.75 + rnd.uniform(-0.12, 0.12), yy, rnd)
     # drives through the gates into the yard
     for gy in (38.4, -38.9):
         _flat(m, "AC_Asphalt", [(-35.0, gy - 2.2), (SQUARE["x_end"], gy - 2.2), (SQUARE["x_end"], gy + 2.2), (-35.0, gy + 2.2)], 0.025)
@@ -783,57 +857,73 @@ def square_trees():
     return out
 
 
-def _hedge(m, x0, x1, y0, y1, h=0.95, seed=0):
-    """A clipped hedge: a dark core and alpha leaf cards over its faces and through it
-    (textures/academ/foliage_hedge.png, tools/make_academ_foliage.py)."""
-    rnd = random.Random(int(abs(x0 * 7 + y0 * 13)) + seed)
-    i = 0.14
-    box(m, "AC_Hedge", x0 + i, x1 - i, y0 + i, y1 - i, 0.0, h - i, faces="xXyYZ")
-    def card(c, u, v, w, hh, uv0):
-        """A card centred at c spanning w along unit vector u and hh along v."""
-        p = [(c[0] - u[0] * w / 2 - v[0] * hh / 2, c[1] - u[1] * w / 2 - v[1] * hh / 2, c[2] - u[2] * w / 2 - v[2] * hh / 2)]
-        p.append((p[0][0] + u[0] * w, p[0][1] + u[1] * w, p[0][2] + u[2] * w))
-        p.append((p[1][0] + v[0] * hh, p[1][1] + v[1] * hh, p[1][2] + v[2] * hh))
-        p.append((p[0][0] + v[0] * hh, p[0][1] + v[1] * hh, p[0][2] + v[2] * hh))
-        a, b = uv0
-        m.face("AC_Foliage", p, [(a, b), (a + 0.5, b), (a + 0.5, b + 0.5), (a, b + 0.5)])
-    uv = lambda: (rnd.choice((0.0, 0.5)), rnd.choice((0.0, 0.5)))
-    L = (x1 - x0, y1 - y0)
-    along_x = L[0] >= L[1]
-    length = max(L)
-    n = max(2, int(length / 0.35))
+BENCHES = []          # benches(): {"at": seat centre (ensemble frame, seat height), "yaw": facing (deg, from +x), "seats"}
+
+
+def _bench(m, x, y, face_deg):
+    """A park bench of the 1950s (ensemble frame): cast-iron ends, green-painted slats, a slatted back;
+    1.8 m long, seat 0.45 m high, facing face_deg."""
+    loc = Mesh()
+    L, d = 1.8, 0.45
+    for ex in (-L / 2 + 0.15, L / 2 - 0.15):
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, -0.22, -0.16, 0.0, 0.43)          # front leg
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, 0.16, 0.22, 0.0, 0.85)            # back leg up into the back
+        box(loc, "AC_Iron", ex - 0.03, ex + 0.03, -0.24, 0.22, 0.38, 0.43)          # seat rail
+        box(loc, "AC_Iron", ex - 0.025, ex + 0.025, -0.2, 0.2, 0.08, 0.12)           # stretcher
+    for k in range(4):                                                              # seat slats
+        y0 = -d / 2 + k * 0.115
+        box(loc, "AC_FrameGreen", -L / 2, L / 2, y0, y0 + 0.09, 0.43, 0.46)
+    for k in range(3):                                                              # back slats
+        z0 = 0.55 + k * 0.11
+        box(loc, "AC_FrameGreen", -L / 2, L / 2, 0.2, 0.23, z0, z0 + 0.08)
+    a = math.radians(face_deg) - math.pi / 2          # local -y is the front
+    ca, sa = math.cos(a), math.sin(a)
+    m.extend(loc.transformed(lambda p: (x + ca * p[0] - sa * p[1], y + sa * p[0] + ca * p[1], p[2])))
+    BENCHES.append({"at": [x, y, 0.45], "yaw": face_deg, "seats": 3})
+
+
+def benches(houses):
+    """Benches round the fountain and by every yard entrance (NPC life thread: somewhere to sit).
+    Returns their mesh (ensemble frame); BENCHES lists them for layout.json."""
+    del BENCHES[:]
+    m = Mesh()
+    fx, fy = SQUARE["fountain"]
+    r = SQUARE["bed_r"] + 1.7
+    for deg in (50, 90, 130, 230, 270, 310):                    # on the ring path, facing the fountain
+        t = math.radians(deg)
+        _bench(m, fx + r * math.cos(t), fy + r * math.sin(t), deg + 180.0)
+    for name, h in houses.items():
+        for d in getattr(h, "doors", []):
+            if not (d["at"][2] == 0.0 and abs(d["hole"][0] - 1.4) < 0.01):
+                continue                                         # the yard doors only (at the ground)
+            ox, oy = d["out"]
+            ax, ay = -oy, ox                                     # along the wall
+            p = h.frame((d["at"][0] + ox * 1.6 + ax * 2.6, d["at"][1] + oy * 1.6 + ay * 2.6, 0.0))
+            q = h.frame((d["at"][0] + ox * 2.6 + ax * 2.6, d["at"][1] + oy * 2.6 + ay * 2.6, 0.0))
+            _bench(m, p[0], p[1], math.degrees(math.atan2(q[1] - p[1], q[0] - p[0])))
+    return m
+
+
+SQUARE_PLANTS = []    # square_mesh(): {"species", "at" (ensemble frame), "yaw" (deg, from +x), "seed", "age"}
+
+
+def _plant(species, x, y, rnd, yaw=None, age=None):
+    SQUARE_PLANTS.append({"species": species, "at": [x, y, 0.0],
+                          "yaw": rnd.uniform(0, 360) if yaw is None else yaw,
+                          "seed": 300 + len(SQUARE_PLANTS), "age": age if age is not None else rnd.uniform(3.0, 6.0)})
+
+
+def _hedge_row(species, x0, x1, y0, y1, step=0.8):
+    """A row of hedge plants from (x0, y0) to (x1, y1), each turned along the row (privet is clipped
+    to a box 0.9 m along its X: planted 0.8 m apart they close into one wall)."""
+    rnd = random.Random(int(abs(x0 * 7 + y0 * 13)))
+    L = math.hypot(x1 - x0, y1 - y0)
+    yaw = math.degrees(math.atan2(y1 - y0, x1 - x0))
+    n = max(1, int(round(L / step)))
     for k in range(n):
-        t = (k + rnd.uniform(0.2, 0.8)) / n
-        if along_x:
-            px = x0 + (x1 - x0) * t
-            for side, yy in ((-1, y0 + rnd.uniform(-0.03, 0.05)), (1, y1 - rnd.uniform(-0.03, 0.05))):
-                for zc in (h * 0.3, h * 0.72):
-                    card((px, yy, zc + rnd.uniform(-0.05, 0.05)), (1, 0, 0), (0, 0, 1), 0.55, 0.55, uv())
-            card((px, (y0 + y1) / 2, h - rnd.uniform(0.0, 0.05)), (1, 0, 0), (0, 1, 0), 0.5, (y1 - y0) + 0.1, uv())
-        else:
-            py = y0 + (y1 - y0) * t
-            for side, xx in ((-1, x0 + rnd.uniform(-0.03, 0.05)), (1, x1 - rnd.uniform(-0.03, 0.05))):
-                for zc in (h * 0.3, h * 0.72):
-                    card((xx, py, zc + rnd.uniform(-0.05, 0.05)), (0, 1, 0), (0, 0, 1), 0.55, 0.55, uv())
-            card(((x0 + x1) / 2, py, h - rnd.uniform(0.0, 0.05)), (0, 1, 0), (1, 0, 0), 0.5, (x1 - x0) + 0.1, uv())
-        # a few tilted cards poking out of the top so the silhouette is not ruler-straight
-        if rnd.random() < 0.5:
-            a_ = rnd.uniform(0, math.pi)
-            card((x0 + (x1 - x0) * (t if along_x else 0.5), y0 + (y1 - y0) * (0.5 if along_x else t), h + 0.02),
-                 (math.cos(a_), math.sin(a_), 0), (0, 0, 1), 0.45, 0.3, uv())
-    for xe in ((x0, x1) if along_x else ()):
-        card((xe, (y0 + y1) / 2, h / 2), (0, 1, 0), (0, 0, 1), (y1 - y0) + 0.08, h, uv())
-    for ye in ((y0, y1) if not along_x else ()):
-        card(((x0 + x1) / 2, ye, h / 2), (1, 0, 0), (0, 0, 1), (x1 - x0) + 0.08, h, uv())
-
-
-def _flower_clump(m, cx, cy, rnd, w=0.6, h=0.6):
-    """Day lilies and marigolds: three crossed cards (textures/academ/foliage_flowers.png)."""
-    for k in range(3):
-        a = math.pi * k / 3 + rnd.uniform(-0.2, 0.2)
-        dx, dy = math.cos(a) * w / 2, math.sin(a) * w / 2
-        p = [(cx - dx, cy - dy, 0.0), (cx + dx, cy + dy, 0.0), (cx + dx, cy + dy, h), (cx - dx, cy - dy, h)]
-        m.face("AC_FlowerCards", p, [(0, 0), (1, 0), (1, 1), (0, 1)])
+        t = (k + 0.5) / n
+        _plant(species, x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, rnd, yaw=yaw + rnd.uniform(-2, 2),
+               age=rnd.uniform(5.0, 7.0))
 
 
 # Two plantings either side of the square's axis: the view from the lower station along the axis to the

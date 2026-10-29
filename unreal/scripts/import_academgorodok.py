@@ -221,6 +221,21 @@ def place(face_y, report=False):
             p.set_editor_property(k, v)
         p.tags = [TAG]
         p.set_folder_path("Outside/Academgorodok")
+    # beds, hedges and the library's pots: the plants thread's species (Dima: every plant is ours)
+    for i, pl in enumerate(layout.get("plants", [])):
+        lx, ly, lz = pl["at"]
+        x, y = W.academ_to_map(lx, ly)
+        # the mesh's y runs to Unreal -Y, so an angle in the ensemble turns the other way in Unreal
+        p = eas.spawn_actor_from_class(plant_cls, unreal.Vector(*W.to_unreal(x, y, z0 + lz, face_y)),
+                                       unreal.Rotator(0.0, 0.0, yaw - pl["yaw"]))
+        p.set_actor_label("Academ_Plant_%03d_%s" % (i, pl["species"]))
+        for k, v in (("species", pl["species"]), ("seed", pl["seed"]), ("age_at_start", pl["age"]),
+                     ("demo_growth", False), ("snap_to_ground", True)):
+            p.set_editor_property(k, v)
+        if pl.get("pot_cm"):
+            p.set_editor_property("pot_diameter", pl["pot_cm"])
+        p.tags = [TAG]
+        p.set_folder_path("Outside/Academgorodok/Plants")
     gardens = layout.get("garden") or []
     for gi, g in enumerate(gardens if isinstance(gardens, list) else [gardens]):
         # the square's garden: old maples (for the limes), birches and spruces either side of the axis;
@@ -271,10 +286,13 @@ def place(face_y, report=False):
         def to_ue(lx, ly, lz):
             x, y = W.academ_to_map(lx, ly)
             return W.to_unreal(x, y, z0 + lz, face_y)
-        place_doors.spawn_doors(layout["doors"], to_ue, tags=[TAG], folder="Outside/Academgorodok/Doors",
-                                label_prefix="Academ_Door_", leaf_material=unreal.load_asset(DEST + "/Materials/MI_AC_ILeaf"),
-                                log=log)
-    log("placed %d parts, %d trees at map %s, yaw %.1f" % (n, len(layout.get("trees", [])), W.academ()[:2], yaw))
+        # street and yard doors dark brown like the photos' (MI_AC_Door), the doors inside painted (MI_AC_ILeaf)
+        for outside, mat in ((True, "MI_AC_Door"), (False, "MI_AC_ILeaf")):
+            place_doors.spawn_doors([d for d in layout["doors"] if bool(d.get("outside")) == outside], to_ue, tags=[TAG],
+                                    folder="Outside/Academgorodok/Doors", label_prefix="Academ_Door_",
+                                    leaf_material=unreal.load_asset(DEST + "/Materials/" + mat), log=log)
+    log("placed %d parts, %d trees, %d plants at map %s, yaw %.1f" % (n, len(layout.get("trees", [])),
+                                                                  len(layout.get("plants", [])), W.academ()[:2], yaw))
 
 
 if __name__ == "__main__":

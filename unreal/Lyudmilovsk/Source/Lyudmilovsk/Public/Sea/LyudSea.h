@@ -53,6 +53,12 @@ struct LYUDMILOVSK_API FLyudSeaSample
  * In play a water physics volume covers the sea (from LandSideX out to sea, WaterVolumeDepth under sea
  * level up to it), so a character that falls in swims (MOVE_Swimming); IsSwimmable asks the same of a point.
  *
+ * The tide (LyudTide, docs/tides.md) moves the water: the actor stands at the datum, high water of springs,
+ * and SeaLevel() is the datum plus the tide now (never above it). The depth map holds the depth under the
+ * datum; every depth the sea reports or draws is that plus the tide, so at low water the line walks out
+ * across the flat and the waves shrink and break at its moving edge. lyud.TideOverride pins the level
+ * (metres over the datum), lyud.TideSpeed runs the tide's clock faster.
+ *
  * Under the surface a post process takes over (fog of the water's colour by distance, darker with
  * depth): the start of diving. The seabed and its life are ULyudSeabedComponent.
  *
@@ -90,7 +96,7 @@ public:
 	/** Depth beyond the ground's heights, m. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast") float OpenSeaDepthM = 25.f;
 	/** Cell of the depth map read from the ground, m. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast", meta = (ClampMin = "1")) float DepthCellM = 6.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Coast", meta = (ClampMin = "1")) float DepthCellM = 4.f;
 	/** Spawn a water physics volume over the sea in play, so characters swim in it (MOVE_Swimming). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") bool bWaterVolume = true;
 	/** How deep the water volume reaches under sea level, cm, and its fluid friction. */
@@ -111,16 +117,38 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sea") FLyudSeaSample SampleSurface(const FVector& Location) const;
 	/** World Z of the surface over a point, cm. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SurfaceZ(const FVector& Location) const { return SampleSurface(Location).SurfaceZ; }
-	/** Still-water depth at a point, cm (negative on land). */
+	/** Still-water depth at a point now (with the tide), cm (negative on land and on the bare flat). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float DepthAt(const FVector& Location) const;
-	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaLevel() const { return GetActorLocation().Z; }
-	/**
-	 * Moves the still water Cm from where the level placed it (the winter's low water, ULyudWinterSubsystem): the
-	 * surface, the water volume and the shader's level follow at once; the bed's depth map is read again (row by row,
-	 * the old one meanwhile) once it moved 20 cm from the last read.
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Sea") void SetLevelOffset(float Cm);
-	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffset() const { return LevelOffsetCm; }
+	/** Depth at a point if the water stood at WaterZ (world cm), cm: e.g. LowWaterZ() for what is always under water. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float DepthAtLevel(const FVector& Location, float WaterZ) const;
+	/** World Z of the still water now, cm: the datum plus the tide. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaLevel() const { return DatumZ() + TideCm; }
+	/** World Z of the datum (high water of springs, the map's SEA_Z): where the actor stands, cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float DatumZ() const { return GetActorLocation().Z; }
+	/** The tide now: the water over the datum, cm (0 at spring high water, negative below). */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideOffsetCm() const { return TideCm; }
+	/** The highest water there ever is (the datum), and the lowest of springs, world Z cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float HighWaterZ() const { return DatumZ() + FMath::Max(MeanOffsetNowCm, 0.f); }
+	UFUNCTION(BlueprintCallable, Category = "Sea") float LowWaterZ() const;
+	/** This tide's low water, world Z cm (neaps ~2 m, springs ~4.5 m under the datum). */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideLowZ() const { return DatumZ() + TideLowCm; }
+	/** Where the sand is still wet: the highest the water stood in the last hour, world Z cm. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float WetLineZ() const { return DatumZ() + WetLineCm; }
+	/** A slow offset of the mean sea level on top of the tide, cm (negative = lower: the winter's low water, set by
+	 * ULyudWinterSubsystem; positive = a surge; 0 = none): SeaLevel = datum + offset + tide. The water eases to it over
+	 * BlendSeconds (0 = at once; the first call after BeginPlay is at once too) and everything that follows the tide
+	 * (SeaLevel, depths, the pools and wet line, the water volume, the ground's wet sand) follows it. The actor stays
+	 * at the datum. Calling it every frame with the same value is cheap. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") void SetLevelOffset(float Cm, float BlendSeconds = 600.f);
+	/** The mean-level offset the water stands at now and the one it is easing to, cm. */
+	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffset() const { return MeanOffsetNowCm; }
+	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffsetTarget() const { return MeanOffsetTargetCm; }
+	/** The look the water's colour follows now (eased over minutes): x overcast 0..1, y storm 0..1, z cold season
+	 * -1 summer .. 1 winter, w night 0..1. */
+	UFUNCTION(BlueprintCallable, Category = "Sea") FLinearColor SeaLook() const { return LookNow; }
+	/** 0 neaps .. 1 springs; is the water coming in? */
+	UFUNCTION(BlueprintCallable, Category = "Sea") float TideSpring() const { return TideSpringK; }
+	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsTideRising() const { return bTideRising; }
 	/** Significant wave height now, cm, and the wind the waves were grown in, m/s. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WaveHeight() const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaWindSpeed() const;
@@ -151,7 +179,14 @@ private:
 	void UploadWaveTable();
 	void StepDepthMap(int32 Budget);
 	void UploadDepthMap();
+	/** The hollows on the tidal flat that keep water when the ebb leaves them (PoolW). */
+	void FindPools();
+	/** Depth under the datum, m (the depth map). */
 	float DepthAtM(double XM, double YM) const;
+	/** Still-water depth now (with the tide), m. */
+	float WaterDepthAtM(double XM, double YM) const { return DepthAtM(XM, YM) + TideCm * 0.01f; }
+	/** The tide's level from the sky's clock (or the calendar), the override and speed cvars; moves the water volume. */
+	void UpdateTide(float DeltaSeconds);
 	bool ViewLocation(FVector& Out) const;
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
@@ -168,6 +203,24 @@ private:
 	void KeepSwimmerHeadUp(float DeltaSeconds);
 	FString GetDebugReportCore() const;
 
+	float TideCm = 0.f;
+	float TideLowCm = 0.f;
+	float WetLineCm = 0.f;
+	float TideSpringK = 0.f;
+	bool bTideRising = false;
+	/** Hours the tide's clock runs ahead of the sky's (lyud.TideSpeed). */
+	double TideExtraHours = 0.0;
+	float TideAge = 1e9f;
+	float VolumeTideCm = 0.f;
+	float MeanOffsetNowCm = 0.f;
+	float MeanOffsetTargetCm = 0.f;
+	float MeanOffsetRateCmS = 0.f;
+	bool bMeanOffsetSet = false;
+	/** The sea's look (SeaLook), eased toward the weather, sky and season. */
+	FLinearColor LookNow = FLinearColor(0.f, 0.f, 0.f, 0.f);
+	bool bLookSet = false;
+	void UpdateLook(float DeltaSeconds);
+
 	int32 AppliedQuality = -2;
 	int32 Segments = 128;
 	float MinStepCm = 25.f;
@@ -183,14 +236,12 @@ private:
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;
+	/** Water a hollow on the flat keeps at low tide, m, per depth cell. */
+	TArray<float> PoolW;
 	int32 DepthW = 0, DepthH = 0, DepthRow = 0;
 	FVector2D DepthMin = FVector2D::ZeroVector;
 	FVector2D DepthSize = FVector2D(1.0, 1.0);
 	bool bDepthUploaded = false;
-	float LevelOffsetCm = 0.f;
-	float DepthReadOffsetCm = 0.f;
-	double BaseZ = 0.0;
-	bool bBaseZ = false;
 	bool bDepthStarted = false;
 };
 

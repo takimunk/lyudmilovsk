@@ -26,6 +26,9 @@ struct FHeroBodyState
 	double IdleTime = 0.0;
 	/** 0 standing, 1 in a deep crouch (HandReach::ApplyCrouch). */
 	float Crouch = 0.f;
+	/** 0 standing, 1 seated on a bench SeatZ cm high (HandReach::ApplySit; the train's benches). */
+	float Sit = 0.f;
+	float SeatZ = 42.f;
 };
 
 /**

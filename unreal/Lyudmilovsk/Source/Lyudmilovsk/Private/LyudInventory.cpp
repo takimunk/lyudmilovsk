@@ -365,7 +365,7 @@ public:
 	{
 		ChildSlot
 		[
-			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(FMargin(0.f, 0.f, 0.f, 120.f))
+			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(FMargin(0.f, 0.f, 0.f, 120.f)).Visibility(EVisibility::HitTestInvisible)
 			[
 				SNew(SBorder)
 				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
@@ -898,6 +898,15 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEarn(TEXT("Inventory.Earn"), TEXT
 		if (ULyudInventory* Inv = ULyudInventory::Get(World))
 		{
 			Inv->Earn(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 100);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GInvPrompt(TEXT("Inventory.Prompt"), TEXT("Inventory.Prompt [text]: shows the interaction prompt (without text hides it; headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World))
+		{
+			UI->SetPrompt(UI, FText::FromString(FString::Join(Args, TEXT(" "))));
 		}
 	}));
 

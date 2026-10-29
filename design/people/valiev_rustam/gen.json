@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "e3872ae6911d4eb498136188df3094e0",
   "points": 45,
-  "file": "blender/characters/valiev_rustam/gen/model.glb (local, ignored)"
+  "file": "blender/characters/valiev_rustam/gen/model.glb (local, ignored)",
+  "sha256": "28f3a458cd9dcd1269397d1cc98ba2ef42ae1549029c98bc4242430989e935c6",
+  "bytes": 48108052,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

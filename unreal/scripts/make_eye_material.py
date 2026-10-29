@@ -99,7 +99,7 @@ src = [("LP", lp, ""),
        ("IR", param(m, unreal.MaterialExpressionScalarParameter, "IrisR", 0.58, -1100, 300), ""),
        ("PR", param(m, unreal.MaterialExpressionScalarParameter, "PupilR", 0.21, -1100, 380), ""),
        ("IC", param(m, unreal.MaterialExpressionVectorParameter, "IrisColor", unreal.LinearColor(0.05, 0.03, 0.02, 1), -1100, 460), "RGBA"),
-       ("SC", param(m, unreal.MaterialExpressionVectorParameter, "ScleraColor", unreal.LinearColor(0.56, 0.52, 0.48, 1), -1100, 540), "RGBA")]
+       ("SC", param(m, unreal.MaterialExpressionVectorParameter, "ScleraColor", unreal.LinearColor(0.78, 0.75, 0.71, 1), -1100, 540), "RGBA")]
 col = custom(m, COLOUR, unreal.CustomMaterialOutputType.CMOT_FLOAT3, "EyeColour", 0, src)
 rough = custom(m, ROUGH, unreal.CustomMaterialOutputType.CMOT_FLOAT1, "EyeRough", 300, src[:4])
 mel.connect_material_property(col, "", MP.MP_BASE_COLOR)

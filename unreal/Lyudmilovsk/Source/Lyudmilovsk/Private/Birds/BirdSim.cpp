@@ -1,5 +1,7 @@
 #include "BirdSim.h"
 
+#include "BirdMurmur.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -12,7 +14,6 @@ namespace LyudBirds
 	namespace
 	{
 		constexpr float Pi = 3.14159265f;
-		constexpr float SeaZ = -43.f;
 
 		float Clamp(float V, float A, float B) { return V < A ? A : (V > B ? B : V); }
 		float Smooth(float T) { T = Clamp(T, 0.f, 1.f); return T * T * (3.f - 2.f * T); }
@@ -47,7 +48,7 @@ namespace LyudBirds
 
 	const char* ActName(EAct A)
 	{
-		static const char* const Names[] = { "Sleep", "Perch", "Preen", "Forage", "Peck", "Swim", "Watch", "Takeoff", "Fly", "Land", "Hawk", "Soar", "Flee", "Chase", "Mob", "Approach", "Eat", "Claimed" };
+		static const char* const Names[] = { "Sleep", "Perch", "Preen", "Forage", "Peck", "Swim", "Watch", "Takeoff", "Fly", "Land", "Hawk", "Soar", "Flee", "Chase", "Mob", "Approach", "Eat", "Claimed", "Murmur" };
 		return (int)A < (int)EAct::Num ? Names[(int)A] : "?";
 	}
 
@@ -146,6 +147,7 @@ namespace LyudBirds
 		{
 			LastError = "no bird_world.bin (ground grid): flights keep a fixed height";
 		}
+		OffshoreD.clear();
 		return !Sites.empty();
 	}
 
@@ -219,25 +221,48 @@ namespace LyudBirds
 		return P;
 	}
 
+	/** How much this species likes a kind of place for what it means to do now (the season, the tide). */
+	float FWorld::Taste(const FSpecies& S, int Plan, EHabitat Kind) const
+	{
+		const int K = (int)Kind;
+		float W;
+		switch (Plan)
+		{
+		case 1: W = S.bWinterForage && IsWinter() ? S.WinterForage[K] : S.Forage[K]; break;
+		case 2: W = S.Roost[K]; break;
+		case 3: W = S.Stage[K]; break;
+		case 5: W = Kind == EHabitat::Beach ? 1.f : (Kind == EHabitat::Reed ? 0.8f : (Kind == EHabitat::Sea && S.Length > 0.3f ? 0.6f : 0.f)); break;
+		default: W = S.Perch[K]; break;
+		}
+		if (Kind == EHabitat::Beach && (Plan == 1 || Plan == 5))
+		{
+			// the tide: low water lays bare the wet sand (waders, gulls, crows and wagtails go down to it), high water covers it
+			const float Low = Clamp((MeanSeaZ - SeaZ) / 0.6f, 0.f, 1.f), High = Clamp((SeaZ - MeanSeaZ) / 0.6f, 0.f, 1.f);
+			W *= (1.f - 0.85f * High) * (S.bTidal ? 1.f + 2.5f * Low : 1.f);
+		}
+		return W;
+	}
+
 	float FWorld::SiteScore(const FGroup& G, const FSite& Site, int Plan) const
 	{
 		const FSpecies& S = SpeciesTable()[G.Species];
-		const float* Taste = Plan == 1 ? S.Forage : (Plan == 2 ? S.Roost : S.Perch);
-		float W = Taste[(int)Site.Kind];
+		float W = Taste(S, Plan, Site.Kind);
 		if (W <= 0.f)
 		{
 			return 0.f;
 		}
 		const V3 C = Site.Center();
-		const float D = (C - G.Home).Len2D();
-		const float Range = Plan == 2 ? S.HomeRange * 2.f : S.HomeRange;
+		// gathering before the night: near the roost, not near home
+		const V3 From = Plan == 3 && G.Roost >= 0 ? Sites[G.Roost].Center() : G.Home;
+		const float D = (C - From).Len2D();
+		const float Range = Plan == 3 ? 700.f : (Plan == 2 ? S.HomeRange * 2.f : S.HomeRange);
 		if (D > Range * 1.5f)
 		{
 			return 0.f;
 		}
 		W *= 1.f - 0.8f * Smooth(D / Range);
 		// the next place is usually not far from this one (short hops, not trips across the map)
-		if (G.Site >= 0 && Plan != 2)
+		if (G.Site >= 0 && Plan != 2 && Plan != 3)
 		{
 			W /= 1.f + (C - Sites[G.Site].Center()).Len2D() / (0.3f * Range);
 		}
@@ -318,14 +343,22 @@ namespace LyudBirds
 		Birds.clear();
 		Groups.clear();
 		Predators.clear();
+		Murm.reset();
+		if (OffshoreD.empty())
+		{
+			BuildOffshore();
+		}
 		uint32_t R = Opt.Seed | 1u;
 		const std::vector<FSpecies>& T = SpeciesTable();
 		// near-uniform candidate sites for homes: one list per species of sites it likes at all
 		for (int Sp = 0; Sp < (int)T.size(); Sp++)
 		{
 			const FSpecies& S = T[Sp];
-			const bool bAway = Opt.bMigration && S.bMigrant;
-			int Count = (int)std::lround(S.Population * Opt.PopulationScale);
+			// a migrant away this month is created but gone; a few late stragglers may stay on (and leave one by one)
+			const bool bStragglers = Opt.bMigration && S.bMigrant && S.Stragglers > 0 && DayOfYear < S.LeaveUntil;
+			const bool bAway = Opt.bMigration && S.bMigrant && !bStragglers;
+			int Count = bStragglers ? S.Stragglers : (int)std::lround(S.Population * Opt.PopulationScale);
+			const int Created = Count;
 			if (S.bPredator)
 			{
 				Count = Opt.bPredators ? S.Population : 0;          // never scaled away
@@ -353,7 +386,9 @@ namespace LyudBirds
 			{
 				FGroup G;
 				G.Species = Sp;
-				const int Size = std::min(Count, S.FlockMin + (int)(Rand(R) * (S.FlockMax - S.FlockMin + 1)));
+				const float Season = IsWinter() ? S.WinterFlock : 1.f;
+				const int FMin = (int)std::lround(S.FlockMin * Season), FMax = (int)std::lround(S.FlockMax * Season);
+				const int Size = std::min(Count, FMin + (int)(Rand(R) * (FMax - FMin + 1)));
 				Count -= Size;
 				// home: of 10 weighted picks the one farthest from this species' other homes (spreads them out);
 				// some groups near the place the player is most
@@ -384,6 +419,8 @@ namespace LyudBirds
 					}
 				}
 				Homes.push_back(G.Home);
+				G.WakeShift = Rand(R) * S.WakeSpread;
+				G.Slot0 = (int)(Rand(R) * 1000.f);
 				for (int M = 0; M < Size; M++)
 				{
 					FBird B;
@@ -399,6 +436,12 @@ namespace LyudBirds
 					B.CallTimer = 2.f + Rand(B.Rng) * 30.f;
 					B.ThinkTimer = Rand(B.Rng);
 					B.bGone = bAway;
+					if (bStragglers)
+					{
+						// the stragglers leave one by one over their days
+						const float K = ((float)(Created - Count - Size + M) + 0.5f + (Rand(B.Rng) - 0.5f) * 0.8f) / (float)std::max(Created, 1);
+						B.LeaveDay = S.LeaveFrom + (S.LeaveUntil - S.LeaveFrom) * Clamp(K, 0.f, 1.f);
+					}
 					B.Trust = S.Tameness > 0.7f && S.Population > 60 ? 0.1f : 0.f;   // town pigeons and sparrows know people
 					G.Members.push_back(B.Id);
 					Birds.push_back(B);
@@ -418,13 +461,28 @@ namespace LyudBirds
 				for (int I = 0; I < (int)Sites.size(); I++)
 				{
 					const bool bPoint = (Sites[I].B - Sites[I].A).Len() < 0.01f && Sites[I].Radius <= 0.f;
-					const float W = bPoint ? 0.f : S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
+					float W = bPoint ? 0.f : S.Roost[(int)Sites[I].Kind] * Sites[I].Capacity / (1.f + (Sites[I].Center() - Mid).Len2D() / 600.f);
+					if (S.bMurmurates && W > 0.f)
+					{
+						// a murmuration's roost is a big reedbed (the more reed round it the better) by the shore
+						int Bed = 0;
+						for (const FSite& O : Sites)
+						{
+							Bed += O.Kind == Sites[I].Kind && (O.Center() - Sites[I].Center()).Len2D() < 60.f;
+						}
+						const V3 C = Sites[I].Center();
+						W = S.Roost[(int)Sites[I].Kind] * (float)Bed / (1.f + Inland(C.X, C.Y) / 250.f);
+					}
 					if (W > BestW)
 					{
 						BestW = W;
 						Shared = I;
 					}
 				}
+			}
+			if (S.bMurmurates && Shared >= 0 && FirstGroup < (int)Groups.size())
+			{
+				Murm = std::make_shared<FMurmuration>(*this, Sp, Shared);
 			}
 			for (int Gi = FirstGroup; Gi < (int)Groups.size(); Gi++)
 			{
@@ -492,6 +550,7 @@ namespace LyudBirds
 			}
 		}
 		Approacher = -1;
+		UpdateMigration();
 		BuildHash();
 	}
 
@@ -530,7 +589,7 @@ namespace LyudBirds
 			B.Site = G.Site;
 			B.Rng = (Opt.Seed ^ (uint32_t)(B.Id * 0x9E3779B9u)) | 1u;
 			Rand(B.Rng);
-			B.Pos = B.Spot = Count > 1 ? SpotOn(Sites[G.Site], B.Rng) : P;
+			B.Pos = B.Spot = Count > 1 ? SpotFor(B, G.Site) : P;
 			B.Boldness = Count > 1 ? 0.7f + 0.6f * Rand(B.Rng) : 1.f;
 			B.Hunger = 0.6f + 0.3f * Rand(B.Rng);
 			B.bFemale = Rand(B.Rng) < 0.5f;
@@ -548,6 +607,10 @@ namespace LyudBirds
 
 	void FWorld::Resettle()
 	{
+		if (Murm)
+		{
+			Murm->Clear();
+		}
 		for (FGroup& G : Groups)
 		{
 			bool bBusy = false;
@@ -587,31 +650,43 @@ namespace LyudBirds
 			// the group's plan and place, once for all its members
 			float Forage;
 			int Plan;
-			ScheduleOf(S, Forage, Plan);
-			if (Plan != 2)
+			ScheduleOf(S, &G, Forage, Plan);
+			if (Plan == 1 || Plan == 0)
 			{
 				Plan = Rand(B.Rng) < Forage ? 1 : 0;
 			}
+			if (Plan == 5)
+			{
+				Plan = 0;
+			}
 			G.Plan = Plan;
-			G.Site = Plan == 2 ? G.Roost : ChooseSite(G, Plan, -1);
+			G.Site = Plan == 2 || Plan == 4 ? G.Roost : ChooseSite(G, Plan, -1);
 			if (G.Site < 0)
 			{
 				G.Site = G.Roost;
 			}
 		}
 		const int Plan = G.Plan;
-		B.Site = G.Site;
+		B.Site = Plan == 2 ? RoostSpotSite(G, B) : G.Site;
 		if (B.Site < 0)
 		{
 			B.Pos = G.Home;
 			SetAct(B, EAct::Perch, 5.f);
 			return;
 		}
-		B.Spot = SpotOn(Sites[B.Site], B.Rng);
+		B.Spot = SpotFor(B, B.Site);
 		B.Pos = B.Spot;
 		B.Yaw = Rand(B.Rng) * 2.f * Pi;
 		Settle(B);
-		if (Plan == 2)
+		if (Plan == 4 && Murm)
+		{
+			Murm->Place(*this, B.Id);      // already in the evening's murmuration
+		}
+		else if (Plan == 2 && S.bSleepsAloft)
+		{
+			SleepAloft(B, G);
+		}
+		else if (Plan == 2)
 		{
 			SetAct(B, EAct::Sleep, 30.f);
 		}
@@ -619,14 +694,39 @@ namespace LyudBirds
 
 	// --- the day --------------------------------------------------------------------------------------
 
-	void FWorld::ScheduleOf(const FSpecies& S, float& Forage, int& Plan) const
+	void FWorld::ScheduleOf(const FSpecies& S, const FGroup* G, float& Forage, int& Plan) const
 	{
-		const float Wake = Sunrise + S.WakeMinutes / 60.f;
+		const float Wake = Sunrise + (S.WakeMinutes + (G ? G->WakeShift : 0.f)) / 60.f;
 		const float Bed = Sunset + S.RoostMinutes / 60.f;
-		if (Hour < Wake || Hour > Bed - 0.6f)
+		Forage = 0.f;
+		if (S.bMurmurates && Murm)
+		{
+			// starlings: feed all day, gather on wires and trees near the roost, murmurate over it round sunset, then drop in
+			const float MurmFrom = Sunset + FMurmuration::StartMinutes / 60.f;
+			if (Hour < Wake || Hour > Bed)
+			{
+				Plan = 2;
+				return;
+			}
+			if (Hour > MurmFrom)
+			{
+				Plan = 4;
+				return;
+			}
+			if (Hour > MurmFrom - S.StageMinutes / 60.f)
+			{
+				Plan = 3;
+				return;
+			}
+		}
+		else if (Hour < Wake || Hour > Bed - 0.6f)
 		{
 			Plan = 2;          // asleep, or on the way to the roost in the last ~40 minutes
-			Forage = 0.f;
+			return;
+		}
+		else if (S.StageMinutes > 0.f && Hour > Bed - 0.6f - S.StageMinutes / 60.f)
+		{
+			Plan = 3;          // the pre-roost gathering: rooks on a field, swallows on the wires, gulls on the beach
 			return;
 		}
 		const float T = (Hour - Wake) / std::max(Bed - Wake, 1.f);
@@ -635,6 +735,27 @@ namespace LyudBirds
 		Forage = 0.5f + 0.45f * Bell(T, 0.08f, 0.15f) + 0.4f * Bell(T, 0.85f, 0.12f) - 0.55f * S.MiddayRest * Bell(T, 0.5f, 0.17f);
 		Forage = Clamp(Forage, 0.08f, 0.97f);
 		Plan = 1;
+		// the midday bath (and a long preen after it), for those that do
+		uint32_t H = (uint32_t)(G ? G - Groups.data() : 0) * 2654435761u ^ (uint32_t)(Time / 900.0) * 40503u;
+		H = (H ^ (H >> 13)) * 0x5bd1e995u;
+		if (S.Bathe > 0.f && G && Bell(T, 0.5f, 0.12f) > 0.5f && (H >> 8) / 16777216.f < S.Bathe * 0.5f)
+		{
+			Plan = 5;
+		}
+	}
+
+	/** Swifts: the night on the wing, circling high over their home. */
+	void FWorld::SleepAloft(FBird& B, const FGroup& G)
+	{
+		B.Site = -1;
+		B.FlyFrom = G.Home + V3((Rand(B.Rng) - 0.5f) * 200.f, (Rand(B.Rng) - 0.5f) * 200.f, 0.f);
+		B.FlyFrom.Z = std::max(GroundZ(B.FlyFrom.X, B.FlyFrom.Y), SeaZ) + 400.f + Rand(B.Rng) * 300.f;
+		if (!IsAirborne(B.Act))
+		{
+			B.Pos = B.FlyFrom;
+		}
+		SetAct(B, EAct::Soar, 3600.f);
+		B.Vel = V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.f) * 6.f;
 	}
 
 	void FWorld::GroupThink(FGroup& G, float Dt)
@@ -646,17 +767,23 @@ namespace LyudBirds
 		}
 		float Forage;
 		int Plan;
-		ScheduleOf(S, Forage, Plan);
+		ScheduleOf(S, &G, Forage, Plan);
 		G.StayTimer -= Dt;
 		// after a flush the group gathers again once it has calmed down
 		bool bBusy = false, bScattered = false;
+		int Present = 0;
 		for (int Id : G.Members)
 		{
 			const FBird& B = Birds[Id];
+			if (B.bGone)
+			{
+				continue;
+			}
+			Present++;
 			bBusy |= B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Flee || B.Act == EAct::Chase || B.Act == EAct::Mob;
-			bScattered |= B.Site != G.Site;
+			bScattered |= B.Site != G.Site && !(G.Plan == 2 && InRoost(G, B.Site)) && B.Act != EAct::Murmur && B.Target != -6;
 		}
-		if (bBusy)
+		if (bBusy || Present == 0)
 		{
 			return;
 		}
@@ -675,31 +802,138 @@ namespace LyudBirds
 		{
 			return;
 		}
-		if (Plan == 2)
+		if (Plan == 4)
 		{
-			if (G.Roost >= 0 && (G.Plan != 2 || G.Site != G.Roost || bScattered))
+			// to the murmuration over the roost
+			if (G.Plan != 4)
 			{
-				G.Plan = 2;
-				SendGroup(G, G.Roost);
+				G.Plan = 4;
+				G.Site = G.Roost;
+				JoinMurmuration(G);
 			}
 			return;
 		}
-		if (G.Plan == 2 || G.StayTimer <= 0.f || bAfterFlush || G.Site < 0)
+		if (Plan == 2)
+		{
+			if (S.bSleepsAloft)
+			{
+				if (G.Plan != 2)
+				{
+					G.Plan = 2;
+					for (int Id : G.Members)
+					{
+						if (!Birds[Id].bGone && Birds[Id].Act != EAct::Claimed)
+						{
+							SleepAloft(Birds[Id], G);
+						}
+					}
+				}
+				return;
+			}
+			if (G.Roost >= 0 && (G.Plan != 2 || !InRoost(G, G.Site) || bScattered))
+			{
+				const bool bFromMurmur = G.Plan == 4;
+				G.Plan = 2;
+				if (!bFromMurmur)
+				{
+					SendGroup(G, G.Roost);
+				}
+				else
+				{
+					G.Site = G.Roost;      // the murmuration sends its birds down itself
+				}
+			}
+			return;
+		}
+		if (Plan == 3)
+		{
+			// the pre-roost gathering: one place near the roost for the evening (several groups end up together)
+			if (G.Plan != 3 || bScattered)
+			{
+				int Site = G.Plan == 3 && G.Site >= 0 ? G.Site : ChooseSite(G, 3, -1);
+				if (Site < 0)
+				{
+					Site = G.Roost;
+				}
+				G.Plan = 3;
+				if (Site >= 0)
+				{
+					SendGroup(G, Site);
+				}
+			}
+			return;
+		}
+		if (G.Plan == 2 || G.Plan == 3 || G.Plan == 4 || G.StayTimer <= 0.f || bAfterFlush || G.Site < 0)
 		{
 			uint32_t& R = Birds[G.Members[0]].Rng;
-			const int NewPlan = Rand(R) < Forage ? 1 : 0;
-			int Site = ChooseSite(G, NewPlan, G.Plan == NewPlan && !bAfterFlush ? G.Site : -1);
+			const int NewPlan = Plan == 5 ? 5 : (Rand(R) < Forage ? 1 : 0);
+			int Site = -1;
+			// winter: blue tits and the like roam with the great tits' flock
+			if (S.bMixedFlock && IsWinter() && NewPlan != 5 && Rand(R) < 0.6f)
+			{
+				Site = MixedFlockSite(G);
+			}
 			if (Site < 0)
 			{
-				Site = ChooseSite(G, 1 - NewPlan, -1);
+				Site = ChooseSite(G, NewPlan, (G.Plan == NewPlan || NewPlan == 5) && !bAfterFlush ? G.Site : -1);
+			}
+			if (Site < 0)
+			{
+				Site = ChooseSite(G, NewPlan == 1 ? 0 : 1, -1);
 			}
 			G.Plan = NewPlan;
 			// stay longer when it is good; aerial feeders keep moving over their beat
-			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f);
+			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f) * (NewPlan == 5 ? 0.4f : 1.f);
 			if (Site >= 0 && (Site != G.Site || bScattered))
 			{
 				SendGroup(G, Site);
 			}
+		}
+	}
+
+	/** The site of the nearest great tits' flock within reach (a winter mixed flock), or -1. */
+	int FWorld::MixedFlockSite(const FGroup& G) const
+	{
+		static const int Core = FindSpecies("GreatTit");
+		const FSpecies& S = SpeciesTable()[G.Species];
+		int Best = -1;
+		float BestD = S.HomeRange;
+		for (const FGroup& O : Groups)
+		{
+			if (O.Species != Core || &O == &G || O.Site < 0 || O.Plan == 2)
+			{
+				continue;
+			}
+			const float D = (Sites[O.Site].Center() - G.Home).Len2D();
+			if (D < BestD)
+			{
+				BestD = D;
+				Best = O.Site;
+			}
+		}
+		return Best;
+	}
+
+	/** The group takes off for the murmuration: each bird flies at the roost from where it is, joining the flock as it comes. */
+	void FWorld::JoinMurmuration(FGroup& G)
+	{
+		if (!Murm)
+		{
+			return;
+		}
+		const V3 C = Murm->Centre();
+		for (int Id : G.Members)
+		{
+			FBird& B = Birds[Id];
+			if (B.bGone || B.Act == EAct::Claimed || B.Act == EAct::Murmur || B.Act == EAct::Approach || B.Act == EAct::Eat)
+			{
+				continue;
+			}
+			B.Delay = Rand(B.Rng) * 1.5f;
+			B.Site = -1;
+			B.Spot = C + V3((Rand(B.Rng) - 0.5f) * 60.f, (Rand(B.Rng) - 0.5f) * 60.f, 0.f);
+			B.Spot.Z = std::max(GroundZ(B.Spot.X, B.Spot.Y), SeaZ) + 45.f;
+			B.Target = -6;            // -6: to the murmuration (FMurmuration::Join on the way)
 		}
 	}
 
@@ -710,8 +944,20 @@ namespace LyudBirds
 		for (int Id : G.Members)
 		{
 			FBird& B = Birds[Id];
-			if (B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.bGone)
+			if (B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Murmur || B.bGone)
 			{
+				continue;
+			}
+			if (Site == G.Roost && G.Plan == 2)
+			{
+				if (!IsAirborne(B.Act) && InRoost(G, B.Site))
+				{
+					continue;                       // already in the bed
+				}
+				B.Site = RoostSpotSite(G, B);   // a reedbed: its own stems, anywhere in the bed
+				B.Delay = Rand(B.Rng) * (S.FlockMax > 4 ? 1.5f : 0.6f);
+				B.Spot = SpotFor(B, B.Site);
+				B.Target = -2;
 				continue;
 			}
 			if (B.Site == Site && !IsAirborne(B.Act) && B.Act != EAct::Sleep)
@@ -721,7 +967,7 @@ namespace LyudBirds
 			// the flock leaves together, a bird at a time over a second or two
 			B.Delay = Rand(B.Rng) * (S.FlockMax > 4 ? 1.5f : 0.6f);
 			B.Site = Site;
-			B.Spot = SpotOn(Sites[Site], B.Rng);
+			B.Spot = SpotFor(B, Site);
 			B.Target = -2;            // -2: fly to Spot when Delay runs out
 		}
 	}
@@ -797,12 +1043,34 @@ namespace LyudBirds
 		}
 		const FSite& Site = Sites[B.Site];
 		const FGroup& G = Groups[B.Group];
-		if (G.Plan == 2 && B.Site == G.Roost)
+		if (Site.Kind == EHabitat::Wire)
+		{
+			// a row on the wire: everybody faces the same way, across it
+			const V3 Along = (Site.B - Site.A).Flat().Norm();
+			B.Yaw = std::atan2(Along.Y, Along.X) + ((G.Slot0 & 1) ? 0.5f : -0.5f) * Pi + (Rand(B.Rng) - 0.5f) * 0.3f;
+		}
+		if (G.Plan == 2 && InRoost(G, B.Site))
 		{
 			float F;
 			int Plan;
-			ScheduleOf(S, F, Plan);
+			ScheduleOf(S, &G, F, Plan);
+			if (Site.Kind == EHabitat::Reed && B.Pos.Z < Site.A.Z + 0.6f)
+			{
+				// up on the reed stems, out of reach of a fox
+				B.Pos.Z += 0.7f + Rand(B.Rng) * 1.1f;
+				B.Spot = B.Pos;
+			}
 			SetAct(B, Plan == 2 && (Hour < Sunrise || Hour > Sunset + S.RoostMinutes / 60.f - 0.25f) ? EAct::Sleep : EAct::Perch, 20.f + Rand(B.Rng) * 20.f);
+			return;
+		}
+		if (S.bDriesWings && G.Plan == 0 && Site.Kind != EHabitat::Sea)
+		{
+			SetAct(B, EAct::Preen, 60.f + Rand(B.Rng) * 120.f);   // a cormorant on the beach, wings held out to dry
+			return;
+		}
+		if (G.Plan == 5 && Site.Kind != EHabitat::Sea)
+		{
+			SetAct(B, EAct::Preen, 6.f + Rand(B.Rng) * 10.f);     // the bath at the water's edge, then a long preen
 			return;
 		}
 		if (Site.Kind == EHabitat::Sea)
@@ -826,9 +1094,9 @@ namespace LyudBirds
 
 	void FWorld::Flush(FBird& B, const V3& From, int Cause)
 	{
-		if (B.Act == EAct::Claimed || B.Act == EAct::Flee)
+		if (B.Act == EAct::Claimed || B.Act == EAct::Flee || B.Act == EAct::Murmur)
 		{
-			return;
+			return;                 // (a murmuration escapes as one: FMurmuration)
 		}
 		const FSpecies& S = SpeciesTable()[B.Species];
 		if (B.Id == Approacher)
@@ -871,7 +1139,7 @@ namespace LyudBirds
 		if (Cover >= 0)
 		{
 			B.Site = Cover;
-			B.Spot = SpotOn(Sites[Cover], B.Rng);
+			B.Spot = SpotFor(B, Cover);
 		}
 		else
 		{
@@ -1222,7 +1490,7 @@ namespace LyudBirds
 			}
 			else if (B.Site >= 0)
 			{
-				FlyTo(B, B.Site, SpotOn(Sites[B.Site], B.Rng));
+				FlyTo(B, B.Site, SpotFor(B, B.Site));
 			}
 			Emit(EEvent::Supplant, B);
 		}
@@ -1356,10 +1624,16 @@ namespace LyudBirds
 		FGroup& G = Groups[H.Group];
 		float Forage;
 		int Plan;
-		ScheduleOf(S, Forage, Plan);
+		ScheduleOf(S, &G, Forage, Plan);
 		if (H.Act == EAct::Claimed)
 		{
 			return;
+		}
+		// a falcon comes to the starlings' murmuration at dusk, again and again
+		const bool bMurmHunt = Murm && Murm->Count() > 60 && S.Length > 0.38f && Opt.bPredators;
+		if (bMurmHunt && Plan == 2)
+		{
+			Plan = 1;
 		}
 		if (Plan == 2)
 		{
@@ -1393,7 +1667,7 @@ namespace LyudBirds
 					FlyTo(H, Site, SpotOn(Sites[Site], H.Rng));
 				}
 				P.Prey = -1;
-				P.Timer = 600.f + Rand(H.Rng) * 1200.f;
+				P.Timer = bMurmHunt ? 30.f + Rand(H.Rng) * 90.f : 600.f + Rand(H.Rng) * 1200.f;
 			}
 			return;
 		}
@@ -1410,9 +1684,10 @@ namespace LyudBirds
 			}
 			return;
 		}
-		// hunt: the nearest worthwhile prey within 250 m, sooner near the player (so it can be seen)
-		int Best = -1;
-		float BestW = 0.f;
+		// hunt: the nearest worthwhile prey within 250 m, sooner near the player (so it can be seen); at dusk a bird on the
+		// murmuration's rim
+		int Best = bMurmHunt ? Murm->RimBird(*this, H.Rng) : -1;
+		float BestW = Best >= 0 ? 1e9f : 0.f;
 		for (int I = 0; I < (int)Birds.size(); I++)
 		{
 			const FBird& O = Birds[I];
@@ -1422,7 +1697,7 @@ namespace LyudBirds
 				continue;
 			}
 			const float D = (O.Pos - H.Pos).Len();
-			if (D > 250.f)
+			if (D > 250.f || Best >= 0)
 			{
 				continue;
 			}
@@ -1445,7 +1720,13 @@ namespace LyudBirds
 		{
 			H.Vel = (Birds[Best].Pos - H.Pos).Norm() * 6.f;
 		}
-		SetAct(H, EAct::Chase, 6.f + Rand(H.Rng) * 4.f);
+		if (bMurmHunt && H.Tier >= 3 && (H.Pos - Birds[Best].Pos).Len() > 150.f)
+		{
+			// from high above, out of the sun: a stoop
+			H.Pos = Birds[Best].Pos + V3((Rand(H.Rng) - 0.5f) * 120.f, (Rand(H.Rng) - 0.5f) * 120.f, 90.f + Rand(H.Rng) * 40.f);
+			H.Vel = (Birds[Best].Pos - H.Pos).Norm() * 25.f;
+		}
+		SetAct(H, EAct::Chase, (bMurmHunt ? 9.f : 6.f) + Rand(H.Rng) * 4.f);
 		Emit(EEvent::ChaseStart, H);
 	}
 
@@ -1593,6 +1874,12 @@ namespace LyudBirds
 						const V3 Spot = B.Spot;
 						FlyTo(B, B.Site, Spot);
 					}
+					else if (B.Target == -6)
+					{
+						const V3 Spot = B.Spot;
+						FlyTo(B, -1, Spot);
+						B.Target = -6;
+					}
 					else if (B.Alert >= 1.f)
 					{
 						Flush(B, B.FlyFrom, B.Target);
@@ -1605,7 +1892,11 @@ namespace LyudBirds
 				B.ThinkTimer = ThinkEvery[B.Tier] * (0.8f + 0.4f * Rand(B.Rng));
 				Think(B, std::min(Since, 3.f));
 			}
-			if (B.Tier <= 1)
+			if (B.Act == EAct::Murmur)
+			{
+				// flown by the murmuration below
+			}
+			else if (B.Tier <= 1)
 			{
 				Move(B, Dt);
 			}
@@ -1617,6 +1908,10 @@ namespace LyudBirds
 			{
 				Move(B, DormantDt);
 			}
+		}
+		if (Murm)
+		{
+			Murm->Step(*this, Dt);
 		}
 		if (bMoveFar)
 		{
@@ -1645,6 +1940,10 @@ namespace LyudBirds
 
 	V3 FWorld::RenderPos(const FBird& B) const
 	{
+		if (B.Act == EAct::Murmur && Murm)
+		{
+			return B.Pos + B.Vel * Murm->Ahead();
+		}
 		if (B.Tier >= 2 && IsAirborne(B.Act))
 		{
 			return B.Pos + B.Vel * StepAcc[B.Tier];
@@ -1655,7 +1954,13 @@ namespace LyudBirds
 	void FWorld::Think(FBird& B, float Dt)
 	{
 		const FSpecies& S = SpeciesTable()[B.Species];
-		if (B.Tier <= 2)
+		if (B.Act == EAct::Murmur)
+		{
+			// high in the murmuration: the flock is all it minds (its calls are the roar of the wings and the chatter)
+			B.Alert = 0.f;
+			B.bNoticed = B.bWatching = false;
+		}
+		else if (B.Tier <= 2)
 		{
 			PerceivePlayer(B, Dt);
 			PerceiveBeasts(B, Dt);
@@ -1707,7 +2012,7 @@ namespace LyudBirds
 				if (G.Plan == 1 && B.Site >= 0 && (bGround || R < 0.5f))
 				{
 					// feed: on the ground walk to a new spot, in a crown flit to another twig
-					B.Spot = SpotOn(Sites[B.Site], B.Rng);
+					B.Spot = SpotFor(B, B.Site);
 					if (bGround && Sites[B.Site].Kind == EHabitat::Sea)
 					{
 						SetAct(B, EAct::Swim, 3.f + Rand(B.Rng) * 6.f);     // paddles about
@@ -1728,7 +2033,7 @@ namespace LyudBirds
 					SetAct(B, EAct::Soar, 30.f + Rand(B.Rng) * 60.f);
 					B.Vel = V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.4f) * 4.f;
 				}
-				else if (G.Plan == 2 && B.Site == G.Roost && (Hour > Sunset + S.RoostMinutes / 60.f - 0.25f || Hour < Sunrise))
+				else if (G.Plan == 2 && InRoost(G, B.Site) && (Hour > Sunset + S.RoostMinutes / 60.f - 0.25f || Hour < Sunrise))
 				{
 					SetAct(B, EAct::Sleep, 30.f);       // dark: tuck the head in
 				}
@@ -1818,7 +2123,7 @@ namespace LyudBirds
 					const int Site = G.Site;
 					if (Site >= 0 && S.Id != "CommonSwift")
 					{
-						FlyTo(B, Site, SpotOn(Sites[Site], B.Rng));
+						FlyTo(B, Site, SpotFor(B, Site));
 					}
 				}
 			}
@@ -1828,7 +2133,7 @@ namespace LyudBirds
 			{
 				if (B.Site >= 0)
 				{
-					FlyTo(B, B.Site, SpotOn(Sites[B.Site], B.Rng));
+					FlyTo(B, B.Site, SpotFor(B, B.Site));
 				}
 			}
 			break;
@@ -1837,7 +2142,7 @@ namespace LyudBirds
 			{
 				if (B.Site >= 0)
 				{
-					FlyTo(B, B.Site, SpotOn(Sites[B.Site], B.Rng));
+					FlyTo(B, B.Site, SpotFor(B, B.Site));
 				}
 			}
 			else if (Rand(B.Rng) < Dt * 1.5f)
@@ -1854,7 +2159,7 @@ namespace LyudBirds
 				const int Site = Groups[B.Group].Site;
 				if (Site >= 0)
 				{
-					FlyTo(B, Site, SpotOn(Sites[Site], B.Rng));
+					FlyTo(B, Site, SpotFor(B, Site));
 				}
 			}
 			else if (!B.bAte && B.ActTime > 0.35f)
@@ -1870,7 +2175,7 @@ namespace LyudBirds
 				const int Site = Groups[B.Group].Site;
 				if (Site >= 0)
 				{
-					FlyTo(B, Site, SpotOn(Sites[Site], B.Rng));
+					FlyTo(B, Site, SpotFor(B, Site));
 				}
 			}
 			break;
@@ -2003,7 +2308,7 @@ namespace LyudBirds
 				Speed = S.Cruise * (S.bPredator ? 1.7f : 1.25f);
 				bLanding = false;
 				// the chased bird flees when the chaser gets close
-				if ((T.Pos - B.Pos).Len() < 10.f && T.Act != EAct::Flee && T.Act != EAct::Claimed)
+				if ((T.Pos - B.Pos).Len() < 10.f && T.Act != EAct::Flee && T.Act != EAct::Claimed && T.Act != EAct::Murmur)
 				{
 					T.FlyFrom = B.Pos;
 					T.Alert = 1.f;
@@ -2015,7 +2320,7 @@ namespace LyudBirds
 					B.Target = -1;
 					if (Site >= 0)
 					{
-						FlyTo(B, Site, SpotOn(Sites[Site], B.Rng));
+						FlyTo(B, Site, SpotFor(B, Site));
 					}
 					else
 					{
@@ -2145,7 +2450,7 @@ namespace LyudBirds
 				}
 				if (Next >= 0)
 				{
-					FlyTo(B, Next, SpotOn(Sites[Next], B.Rng));
+					FlyTo(B, Next, SpotFor(B, Next));
 				}
 			}
 			break;
@@ -2193,10 +2498,179 @@ namespace LyudBirds
 		const int Site = Groups[B.Group].Site;
 		B.Vel = V3();
 		SetAct(B, EAct::Perch, 1.f);
-		if (Site >= 0)
+		if (Murm && Murm->Species() == B.Species && Groups[B.Group].Plan == 4)
 		{
-			FlyTo(B, Site, SpotOn(Sites[Site], B.Rng));
+			// back into the evening's murmuration
+			FlyTo(B, -1, Murm->Centre());
+			B.Target = -6;
 		}
+		else if (Site >= 0)
+		{
+			FlyTo(B, Site, SpotFor(B, Site));
+		}
+	}
+
+	// --- migration, the coast, places on wires and in the reed ---------------------------------------------
+
+	void FWorld::UpdateMigration()
+	{
+		for (FBird& B : Birds)
+		{
+			const FSpecies& S = SpeciesTable()[B.Species];
+			if (!Opt.bMigration || !S.bMigrant || S.Stragglers <= 0 || B.bGone || B.LeaveDay > 1e8f)
+			{
+				continue;
+			}
+			// the day has come: it goes south (out of sight: far from the camera, or by night)
+			if (DayOfYear >= B.LeaveDay && (B.Tier >= 2 || Hour < Sunrise || Hour > Sunset) && B.Act != EAct::Claimed
+				&& B.Act != EAct::Approach && B.Act != EAct::Eat)
+			{
+				B.bGone = true;
+			}
+		}
+	}
+
+	/** Distance fields over the ground grid: from land over the sea, from the sea over land (two-pass chamfer). */
+	void FWorld::BuildOffshore()
+	{
+		const int NX = Grid.NX, NY = Grid.NY;
+		if (NX == 0)
+		{
+			return;
+		}
+		auto Field = [&](bool bFromLand, std::vector<uint16_t>& Out)
+		{
+			std::vector<float> D((size_t)NX * NY, 1e9f);
+			for (int J = 0; J < NY; J++)
+			{
+				for (int I = 0; I < NX; I++)
+				{
+					const bool bLand = Grid.Ground[(size_t)J * NX + I] * 0.01f > MeanSeaZ + 0.3f;
+					if (bLand == bFromLand)
+					{
+						D[(size_t)J * NX + I] = 0.f;
+					}
+				}
+			}
+			const float C = Grid.Cell, Dg = Grid.Cell * 1.41421f;
+			for (int J = 0; J < NY; J++)
+			{
+				for (int I = 0; I < NX; I++)
+				{
+					float& V = D[(size_t)J * NX + I];
+					if (I > 0) V = std::min(V, D[(size_t)J * NX + I - 1] + C);
+					if (J > 0) V = std::min(V, D[(size_t)(J - 1) * NX + I] + C);
+					if (I > 0 && J > 0) V = std::min(V, D[(size_t)(J - 1) * NX + I - 1] + Dg);
+					if (I < NX - 1 && J > 0) V = std::min(V, D[(size_t)(J - 1) * NX + I + 1] + Dg);
+				}
+			}
+			for (int J = NY - 1; J >= 0; J--)
+			{
+				for (int I = NX - 1; I >= 0; I--)
+				{
+					float& V = D[(size_t)J * NX + I];
+					if (I < NX - 1) V = std::min(V, D[(size_t)J * NX + I + 1] + C);
+					if (J < NY - 1) V = std::min(V, D[(size_t)(J + 1) * NX + I] + C);
+					if (I < NX - 1 && J < NY - 1) V = std::min(V, D[(size_t)(J + 1) * NX + I + 1] + Dg);
+					if (I > 0 && J < NY - 1) V = std::min(V, D[(size_t)(J + 1) * NX + I - 1] + Dg);
+				}
+			}
+			Out.resize(D.size());
+			for (size_t K = 0; K < D.size(); K++)
+			{
+				Out[K] = (uint16_t)std::min(D[K] * 10.f, 65000.f);
+			}
+		};
+		Field(true, OffshoreD);
+		Field(false, InlandD);
+	}
+
+	static float FieldAt(const std::vector<uint16_t>& F, int NX, int NY, float X0, float Y0, float Cell, float X, float Y, float Outside)
+	{
+		if (F.empty())
+		{
+			return Outside;
+		}
+		const int I = (int)std::floor((X - X0) / Cell + 0.5f), J = (int)std::floor((Y - Y0) / Cell + 0.5f);
+		if (I < 0 || J < 0 || I >= NX || J >= NY)
+		{
+			return Outside;
+		}
+		return F[(size_t)J * NX + I] * 0.1f;
+	}
+
+	float FWorld::Offshore(float X, float Y) const
+	{
+		// beyond the grid lies the open sea to the west (the map's +X): far out
+		return FieldAt(OffshoreD, Grid.NX, Grid.NY, Grid.X0, Grid.Y0, Grid.Cell, X, Y, 5000.f);
+	}
+
+	float FWorld::Inland(float X, float Y) const
+	{
+		return FieldAt(InlandD, Grid.NX, Grid.NY, Grid.X0, Grid.Y0, Grid.Cell, X, Y, 0.f);
+	}
+
+	/** Its place in its group's row along the wire: birds a body and a half apart (swallows ~13 cm), the row starting at the group's slot. */
+	V3 FWorld::WireSpot(const FSite& Site, const FBird& B) const
+	{
+		const FSpecies& S = SpeciesTable()[B.Species];
+		const float Len = (Site.B - Site.A).Len();
+		const float Gap = std::max(0.1f, S.Length * 0.7f);
+		const int N = std::max(1, (int)(Len / Gap));
+		int K = 0, Slot0 = 0;
+		if (B.Group >= 0 && B.Group < (int)Groups.size())
+		{
+			const FGroup& G = Groups[B.Group];
+			Slot0 = G.Slot0;
+			for (int M = 0; M < (int)G.Members.size(); M++)
+			{
+				if (G.Members[M] == B.Id)
+				{
+					K = M;
+					break;
+				}
+			}
+		}
+		// rows of other groups on the same wire start elsewhere (Slot0 differs); a few birds leave a gap
+		const int Slot = (Slot0 + K + K / 5) % N;
+		const float T = (Slot + 0.5f) / N;
+		return Site.A + (Site.B - Site.A) * T;
+	}
+
+	V3 FWorld::SpotFor(FBird& B, int Site)
+	{
+		if (Site < 0 || Site >= (int)Sites.size())
+		{
+			return B.Pos;
+		}
+		const FSite& S = Sites[Site];
+		if (S.Kind == EHabitat::Wire)
+		{
+			return WireSpot(S, B);
+		}
+		return SpotOn(S, B.Rng);
+	}
+
+	bool FWorld::InRoost(const FGroup& G, int Site) const
+	{
+		if (Site < 0)
+		{
+			return false;
+		}
+		if (Site == G.Roost)
+		{
+			return true;
+		}
+		return Murm && Murm->Species() == G.Species && Murm->IsRoostSite(Site);
+	}
+
+	int FWorld::RoostSpotSite(const FGroup& G, FBird& B)
+	{
+		if (Murm && Murm->Species() == G.Species)
+		{
+			return Murm->PickRoostSite(*this, B.Rng);
+		}
+		return G.Roost;
 	}
 
 	std::string FWorld::Report() const
@@ -2220,8 +2694,8 @@ namespace LyudBirds
 		}
 		char Buf[256];
 		std::string Out;
-		std::snprintf(Buf, sizeof(Buf), "birds %d (%d away) at %.2f h, %d in the air, tiers %d/%d/%d/%d; acts:", (int)Birds.size(), Gone, Hour, Air,
-			TierCount[0], TierCount[1], TierCount[2], TierCount[3]);
+		std::snprintf(Buf, sizeof(Buf), "birds %d (%d away) at %.2f h (sun %.2f-%.2f, sea %.2f), %d in the air, tiers %d/%d/%d/%d; acts:", (int)Birds.size(), Gone,
+			Hour, Sunrise, Sunset, SeaZ, Air, TierCount[0], TierCount[1], TierCount[2], TierCount[3]);
 		Out += Buf;
 		for (int A = 0; A < (int)EAct::Num; A++)
 		{
@@ -2230,6 +2704,10 @@ namespace LyudBirds
 				std::snprintf(Buf, sizeof(Buf), " %s %d", ActName((EAct)A), Acts[A]);
 				Out += Buf;
 			}
+		}
+		if (Murm && Murm->Count())
+		{
+			Out += "; " + Murm->Describe(*this);
 		}
 		Out += "; on:";
 		for (int H = 0; H < NumHabitats; H++)

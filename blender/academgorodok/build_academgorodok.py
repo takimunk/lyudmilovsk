@@ -1,7 +1,7 @@
 """Builds the Academgorodok of Laboratory No. 2 (Moscow, 1945-48) for Lyudmilovsk.
 
 Run headless from the repo root:
-    /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/academgorodok/build_academgorodok.py -- [--no-render] [--views a,b]
+    /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/academgorodok/build_academgorodok.py -- [--no-render] [--views a,b] [--lint]
 
 Writes blender/export/academgorodok/<part>.glb (one mesh per house, the gates, the square) and
 blender/export/academgorodok/layout.json (ensemble frame), plus control renders matched to the
@@ -22,6 +22,7 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import common  # noqa: E402
+import geom  # noqa: E402
 import interiors  # noqa: E402
 import plan  # noqa: E402
 from character_standard import MIN_DOOR_CLEAR_HEIGHT_M, MIN_DOOR_CLEAR_WIDTH_M  # noqa: E402
@@ -95,8 +96,37 @@ def materials():
                 b.inputs["Emission Strength"].default_value = 0.15
 
 
+def separate_object(ob, gap=0.003):
+    """The facade's joined detail pieces: zero-area faces dissolved, coplanar overlapping faces lifted apart
+    (geom.coplanar_offsets; their edges split so a face moves alone)."""
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=bm.edges[:])
+    moved = 0
+    for _ in range(8):
+        bm.faces.ensure_lookup_table()
+        off = geom.coplanar_offsets([[tuple(v.co) for v in f.verts] for f in bm.faces], gap)
+        if not off:
+            break
+        faces = [(bm.faces[i], o) for i, o in off.items()]
+        bmesh.ops.split_edges(bm, edges=list({e for f, _ in faces for e in f.edges}))
+        for f, o in faces:
+            n = f.normal.copy()
+            for v in f.verts:
+                v.co += n * o
+        moved += len(faces)
+    bm.to_mesh(ob.data)
+    bm.free()
+    ob.data.update()
+    print("ACADEM %s: %d coplanar faces lifted off the faces under them" % (ob.name, moved))
+
+
 def mesh_object(name, m, coll):
-    """geom.Mesh -> bpy object with one material slot per used material name."""
+    """geom.Mesh -> bpy object with one material slot per used material name. Coplanar overlapping
+    faces are stacked a few mm apart first (geom.separate_coplanar: no z-fighting)."""
+    moved = geom.separate_coplanar(m)
+    if moved:
+        print("ACADEM %s: %d coplanar faces lifted off the faces under them" % (name, moved))
     mats = sorted(set(f[0] for f in m.faces))
     me = bpy.data.meshes.new(name)
     me.from_pydata(m.verts, [], [f[1] for f in m.faces])
@@ -397,6 +427,7 @@ def build():
         notches = [(-b, -a, c, d) if f.mirror else (a, b, c, d) for a, b, c, d in getattr(h, "notches", [])]
         apply_notches(ob, notches)
         join(ob, place_details(h.details, f.mirror, coll))
+        separate_object(ob)
         ob.matrix_world = Matrix.Translation((f.ox, f.oy, f.oz)) @ Matrix.Rotation(f.yaw, 4, "Z")
         parts[name] = ob
         glass = split_glass(ob, coll)
@@ -418,9 +449,12 @@ def build():
         c.matrix_world = Matrix.Translation(Vector(pos)) @ Matrix.Rotation(yaw, 4, "Z")
         copies.append(c)
     join(gate_ob, copies)
+    separate_object(gate_ob)
     parts["Gates"] = gate_ob
 
-    sq = mesh_object("Square", plan.square_mesh(), coll)
+    sq_mesh = plan.square_mesh()
+    sq_mesh.extend(plan.benches(houses))
+    sq = mesh_object("Square", sq_mesh, coll)
     fx, fy = plan.SQUARE["fountain"]
     copies = []
     for name, kw in (("fountain", {}), ("flowerbed_railing", {"radius": plan.SQUARE["bed_r"]})):
@@ -430,6 +464,7 @@ def build():
         c.matrix_world = Matrix.Translation((fx, fy, 0.0))
         copies.append(c)
     join(sq, copies)
+    separate_object(sq)
     parts["Square"] = sq
 
     # apply transforms (mirror included) and fix normals after the mirror
@@ -445,6 +480,27 @@ def export(parts):
     os.makedirs(EXPORT_DIR, exist_ok=True)
     layout = {"frame": "ensemble metres: x east, y north, z up; origin = Novikova 1 footprint centre at ground",
               "parts": {}, "trees": plan.square_trees(), "lights": [], "garden": plan.SQUARE_GARDEN}
+    layout["doors"] = []
+    for name, h in HOUSES.items():
+        for i, d in enumerate(getattr(h, "doors", [])):
+            f = h.frame
+            p0 = f(d["at"])
+            p1 = f((d["at"][0] + d["out"][0], d["at"][1] + d["out"][1], d["at"][2]))
+            layout["doors"].append({"name": "%s_Door_%03d" % (name, i), "at": list(p0),
+                                    "out": [p1[0] - p0[0], p1[1] - p0[1]], "hole": d["hole"], "wall": d["wall"],
+                                    "leaves": d["leaves"], "hinge": "left", "frame": False,
+                                    "open": d["open"], "locked": d["locked"],
+                                    "outside": d.get("outside", False)})
+    # every plant is an AProceduralPlant: the square's beds and hedges, the library's pots
+    layout["plants"] = [dict(pl) for pl in plan.SQUARE_PLANTS]
+    layout["benches"] = [dict(b) for b in plan.BENCHES]
+    for name, h in HOUSES.items():
+        for pl in getattr(h, "plants", []):
+            p0 = h.frame(tuple(pl["at"]))
+            a = math.radians(pl["yaw"])
+            p1 = h.frame((pl["at"][0] + math.cos(a), pl["at"][1] + math.sin(a), pl["at"][2]))
+            layout["plants"].append(dict(pl, at=list(p0), yaw=math.degrees(math.atan2(p1[1] - p0[1], p1[0] - p0[0])),
+                                         indoor=True))
     layout["walks"] = []
     for name, h in HOUSES.items():
         for label, pts in getattr(h, "walks", []):
@@ -560,6 +616,9 @@ if __name__ == "__main__":
     parts, houses, lines = build()
     HOUSES = houses
     check_doors(houses)
+    if "--lint" in ARGS:
+        import lint_academ
+        lint_academ.lint(parts)
     export(parts)
     if DO_RENDER:
         names = list(VIEWS)

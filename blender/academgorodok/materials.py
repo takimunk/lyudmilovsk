@@ -39,6 +39,8 @@ SLOTS = {
     "AC_IronWhite":  (None, 0.0, 0.0, 0.0),
     "AC_Zinc":       (None, 0.0, 1.0, 0.0),
     "AC_Pylon":      ("plaster_white", 0.45, 0.0, 0.5),
+    "AC_Granite":    ("concrete", 0.05, 0.0, 0.5),          # polished slabs: the concrete grain, tinted
+    "AC_RoofDark":   ("roof_steel", 0.2, 0.0, 0.4),
     "AC_Stone":      ("stone_cast", 0.25, 0.0, 0.6),
     "AC_Asphalt":    ("asphalt", 0.0, 0.0, 0.5),
     "AC_Concrete":   ("concrete", 0.2, 0.0, 0.5),

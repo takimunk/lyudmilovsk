@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "8707159e4fbe42b88d5f7894744a7afb",
   "points": 45,
-  "file": "blender/characters/korneev_ivan/gen/model.glb (local, ignored)"
+  "file": "blender/characters/korneev_ivan/gen/model.glb (local, ignored)",
+  "sha256": "98bd21b7dc87d152405fdc41a00bb91b0e424e365651829c6facd124314252ee",
+  "bytes": 48332084,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

@@ -31,6 +31,9 @@
   "pbr": true,
   "task_id": "42485a15098a4b8dbaadcc69de5366e3",
   "points": 45,
-  "file": "blender/characters/nishimura_aya/gen/model.glb (local, ignored)"
+  "file": "blender/characters/nishimura_aya/gen/model.glb (local, ignored)",
+  "sha256": "adcd5a682b40a0bcaff3d42ef6fedf6a52255e23698d5fe3c8f468b592c6616f",
+  "bytes": 47727708,
+  "downloaded": "2026-10-29 by the API right when ready"
  }
 }

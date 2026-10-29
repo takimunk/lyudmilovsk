@@ -16,7 +16,9 @@ Krai; the map follows the Baltic now.
 Metres, origin on the club's portal face at floor level (the spur). X is to the left of someone
 walking out of the club (west, the sea), Y is straight out of the door (north), Z is up.
 Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..1300, Y -900..2200
-(2.6 x 3.1 km). The sea is at Z -43, the valley at -37, the upland at +18.
+(2.6 x 3.1 km). The sea is at Z -43 at high water (the datum; the tide only falls from it, to -45 at neaps and
+-47.5 at springs, [tides.md](tides.md)), the valley at -37, the upland at +18. Seaward of the beach lies a broad
+tidal flat (`W.tidal_flat`: ~1:80 for 350 m with bars, runnels, channels and pools), then the old 6% bed to 9 m.
 
 ## Places
 
@@ -30,7 +32,7 @@ Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..
 | Cable car | upper station -15, 133 on the spur's brow, lower station -255, 520 in the valley | two stations, a tower on the brow, two ropes, red cabins | working cabins |
 | Beach under the club | X 110..135 | sand at the cliff's foot; dune pines and juniper on the spur by the cliff, sea buckthorn at its foot; meadow grass on the spur, dune grass on the beach | boats |
 | Starlings | 430, 250 | the murmuration over the sea, left of the door | |
-| Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge by the lower station | |
+| Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge on the wet floor below the lower station (past the Academgorodok's levelled lots) | |
 | Lyudmilovsk (town) | centre -330, 900, ~1.1 km across, in the valley | only the Academgorodok (north of the lower station); the placeholder houses are gone (2026-10-25), the ground stays level, trees grow sparse over it | whatever Dima decides |
 | Promenade | along the valley's beach, Y 450..1250 | a concrete strip | kiosks, railings, a pier |
 | North hills | beyond the town, from Y 1450 up to +12 m | old forest | |
