@@ -21,6 +21,10 @@
   "pc": {
    "file": "Saved/ClipSources/sit_pc.glb",
    "ref": "rest"
+  },
+  "push": {
+   "file": "Saved/ClipSources/push_scraper.glb",
+   "ref": "rest"
   }
  },
  "clips": {
@@ -144,6 +148,16 @@
   "Run": {
    "source": "ual1",
    "action": "Jog_Fwd_Loop",
+   "walk": true
+  },
+  "Push": {
+   "source": "push",
+   "action": "Hand_Push",
+   "walk": true
+  },
+  "PushSource": {
+   "source": "ual1",
+   "action": "Push_Loop",
    "walk": true
   }
  }

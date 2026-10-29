@@ -288,7 +288,27 @@ namespace LyudWeather
 			double Drizzle = 0.0;       // 0..1 how drizzly the low deck is
 			double ThunderBoost = 0.0;
 			ECloud LowType = ECloud::None, MidType = ECloud::None, HighType = ECloud::None;
+			// 0 heaped or fibrous cells .. 1 a flat continuous sheet; < 0 = the genus' own (SheetOf)
+			double LowSheet = -1.0, MidSheet = -1.0, HighSheet = -1.0;
 		};
+
+		/** How sheet-like a genus is (blended across episodes so a change of genus never snaps the look). */
+		double SheetOf(ECloud C)
+		{
+			switch (C)
+			{
+			case ECloud::Stratus: case ECloud::Nimbostratus: case ECloud::Altostratus: case ECloud::Cirrostratus: return 1.0;
+			case ECloud::Stratocumulus: return 0.7;
+			case ECloud::AltocumulusLenticular: return 0.5;
+			case ECloud::Altocumulus: return 0.3;
+			case ECloud::Cirrocumulus: return 0.2;
+			case ECloud::Cumulonimbus: return 0.15;
+			case ECloud::Cirrus: return 0.1;
+			case ECloud::Cumulus: return 0.1;
+			case ECloud::CumulusCongestus: return 0.05;
+			default: return 0.5;
+			}
+		}
 
 		void AddBearing(FProf& F, double FromDeg, double Weight)
 		{
@@ -355,15 +375,18 @@ namespace LyudWeather
 				F.HighCov = 0.12 * (0.5 + 0.5 * B);
 				F.HighType = ECloud::Cirrus;
 				// a winter high under its inversion: a flat grey Sc deck for days ('anticyclonic gloom')
-				if (W > 0.55 && B > 0.15)
 				{
-					F.LowCov = 0.92 * SmoothStep(0.55, 0.8, W);
-					F.LowType = ECloud::Stratocumulus;
-					F.LowBase = 500.0 + 300.0 * I;
-					F.LowTop = F.LowBase + 400.0;
-					F.LowDen = 0.55;
-					F.Drizzle = 0.15;
-					F.Spread = 1.5;
+					const double G = SmoothStep(0.55, 0.8, W) * SmoothStep(0.1, 0.3, B);
+					if (W > 0.5)
+					{
+						F.LowCov = 0.92 * G;
+						F.LowType = ECloud::Stratocumulus;
+						F.LowBase = Lerp(F.LowBase, 500.0 + 300.0 * I, G);
+						F.LowTop = Lerp(F.LowTop, F.LowBase + 400.0, G);
+						F.LowDen = Lerp(F.LowDen, 0.55, G);
+						F.Drizzle = 0.15 * G;
+						F.Spread = Lerp(F.Spread, 1.5, G);
+					}
 				}
 				// the next front's cirrus streams in over the last day, then thickens; the wind backs and freshens
 				if (Next == ERegime::WarmFront || Next == ERegime::Occluded)
@@ -371,6 +394,7 @@ namespace LyudWeather
 					const double A = SmoothStep(22.0, 0.0, Hours);
 					F.HighCov = Lerp(F.HighCov, 0.75, A);
 					F.HighType = A > 0.6 ? ECloud::Cirrostratus : (A > 0.25 ? ECloud::Cirrus : F.HighType);
+					F.HighSheet = Lerp(0.1, 1.0, SmoothStep(0.35, 0.85, A));
 					F.HighDen = Lerp(0.15, 0.3, A);
 					F.MidCov = 0.25 * SmoothStep(0.6, 1.0, A);
 					F.MidType = ECloud::Altocumulus;
@@ -425,6 +449,7 @@ namespace LyudWeather
 				F.WarmNose = 0.8;
 				F.LowCov = Lerp(0.95, 0.55, S * (0.5 + 0.5 * B));
 				F.LowType = S > 0.6 && B > 0.0 ? ECloud::Stratocumulus : ECloud::Stratus;
+				F.LowSheet = Lerp(1.0, 0.7, SmoothStep(0.5, 0.7, S) * SmoothStep(-0.1, 0.1, B));
 				F.LowBase = Lerp(250.0, 700.0, S);
 				F.LowTop = F.LowBase + 700.0;
 				F.LowDen = 0.6;
@@ -493,6 +518,7 @@ namespace LyudWeather
 					const double A = SmoothStep(20.0, 0.0, Hours);
 					F.HighCov = Lerp(F.HighCov, 0.7, A);
 					F.HighType = A > 0.5 ? ECloud::Cirrostratus : ECloud::Cirrus;
+					F.HighSheet = Lerp(0.1, 1.0, SmoothStep(0.25, 0.75, A));
 					F.Cells *= 1.0 - A;
 					F.P -= 5.0 * A;
 					SteerBearing(F, 170.0, A, 302.0 + 20.0 * B);
@@ -514,6 +540,7 @@ namespace LyudWeather
 				F.WarmNose = 0.5 * (1.0 - T);
 				F.LowCov = 1.0 - 0.4 * SmoothStep(0.75, 1.0, T);
 				F.LowType = T < 0.7 ? ECloud::Nimbostratus : ECloud::Stratocumulus;
+				F.LowSheet = Lerp(1.0, 0.7, SmoothStep(0.6, 0.8, T));
 				F.LowBase = 450.0;
 				F.LowTop = 3500.0;
 				F.LowDen = 0.85;
@@ -582,6 +609,9 @@ namespace LyudWeather
 			default:
 				break;
 			}
+			if (F.LowSheet < 0.0) F.LowSheet = SheetOf(F.LowType);
+			if (F.MidSheet < 0.0) F.MidSheet = SheetOf(F.MidType);
+			if (F.HighSheet < 0.0) F.HighSheet = SheetOf(F.HighType);
 			return F;
 		}
 
@@ -639,6 +669,7 @@ namespace LyudWeather
 			L(A.HighCov, B.HighCov); L(A.HighBase, B.HighBase); L(A.HighDen, B.HighDen);
 			L(A.Strat, B.Strat); L(A.Cells, B.Cells); L(A.CellRate, B.CellRate); L(A.Instab, B.Instab); L(A.Stable, B.Stable);
 			L(A.WarmNose, B.WarmNose); L(A.Drizzle, B.Drizzle); L(A.ThunderBoost, B.ThunderBoost);
+			L(A.LowSheet, B.LowSheet); L(A.MidSheet, B.MidSheet); L(A.HighSheet, B.HighSheet);
 		}
 
 		FCtx MakeCtx(double Hours, const FClimate& C)
@@ -713,7 +744,7 @@ namespace LyudWeather
 			const uint32_t Seed = C.Seed ^ 0xA0u;
 			double Kp = 1.3 + 0.9 * (0.5 + 0.5 * SmoothNoise1(Hours / 9.0, Seed)) + 0.5 * Act;
 			const double Day = std::floor(Hours / 24.0);
-			for (int Back = 0; Back <= 3; Back++)
+			for (int Back = 0; Back <= 5; Back++)
 			{
 				const double D = Day - Back;
 				const uint32_t K = uint32_t(int64_t(D));
@@ -822,25 +853,28 @@ namespace LyudWeather
 
 			// the low layer: stratiform from the episode, cumulus grown by convection (base from the dew-point spread)
 			const double CuBase = Clamp(125.0 * (T - Td), 250.0, 2600.0);
-			double LowBase = F.LowBase, LowTop = F.LowTop, LowDen = F.LowDen;
-			ECloud LowType = F.LowType;
+			// the episode's own low cloud (a deck gets its base from the damp air: 125 m per degree of spread) and the
+			// cumulus the convection grows, blended by how much of each there is, so neither base nor look ever jumps
+			const double DeckBase = Lerp(F.LowBase, std::min(F.LowBase, std::max(120.0, 125.0 * (T - Td) + 80.0)), SmoothStep(0.4, 0.6, F.LowSheet));
 			const double Cu = S.Convection * (0.35 + 0.4 * F.Instab);
-			if (Cu > 0.05 && (LowType == ECloud::Cumulus || LowType == ECloud::CumulusCongestus || LowCov < Cu))
+			const double CuTop = CuBase + 800.0 + 7000.0 * S.Convection * std::min(F.Instab, 1.2);
+			const double CuDen = 0.4 + 0.5 * S.Convection;
+			const double Own = LowCov;
+			const double WCu = Cu / std::max(Own + Cu, 0.1);
+			LowCov = std::min(1.0, Own + Cu * (1.0 - Own));
+			const double LowBase = Lerp(DeckBase, CuBase, WCu);
+			const double LowTop = Lerp(F.LowTop, CuTop, WCu);
+			const double LowDen = Lerp(F.LowDen, CuDen, WCu);
+			const double LowSheet = Lerp(F.LowSheet, 0.08, WCu);
+			ECloud LowType = F.LowType;
+			if (WCu > 0.5)
 			{
 				LowType = S.Convection > 0.75 && F.Instab > 0.9 ? ECloud::Cumulonimbus
 					: (S.Convection > 0.45 ? ECloud::CumulusCongestus : ECloud::Cumulus);
-				LowBase = CuBase;
-				LowTop = CuBase + 800.0 + 7000.0 * S.Convection * std::min(F.Instab, 1.2);
-				LowDen = 0.4 + 0.5 * S.Convection;
-				LowCov = std::max(LowCov, Cu);
 			}
-			if (LowType == ECloud::Stratus || LowType == ECloud::Stratocumulus || LowType == ECloud::Nimbostratus)
-			{
-				LowBase = std::min(LowBase, std::max(120.0, 125.0 * (T - Td) + 80.0));
-			}
-			S.Low = { LowCov > 0.02 ? LowType : ECloud::None, float(LowCov), float(LowBase), float(std::max(LowTop, LowBase + 100.0)), float(LowDen) };
-			S.Mid = { MidCov > 0.02 ? F.MidType : ECloud::None, float(MidCov), float(F.MidBase), float(std::max(F.MidTop, F.MidBase + 300.0)), float(F.MidDen) };
-			S.High = { HighCov > 0.02 ? F.HighType : ECloud::None, float(HighCov), float(F.HighBase), float(F.HighBase + 1500.0), float(F.HighDen) };
+			S.Low = { LowCov > 0.02 ? LowType : ECloud::None, float(LowCov), float(LowBase), float(std::max(LowTop, LowBase + 100.0)), float(LowDen), float(LowSheet) };
+			S.Mid = { MidCov > 0.02 ? F.MidType : ECloud::None, float(MidCov), float(F.MidBase), float(std::max(F.MidTop, F.MidBase + 300.0)), float(F.MidDen), float(F.MidSheet) };
+			S.High = { HighCov > 0.02 ? F.HighType : ECloud::None, float(HighCov), float(F.HighBase), float(F.HighBase + 1500.0), float(F.HighDen), float(F.HighSheet) };
 			if (S.High.Type == ECloud::Cirrus && S.High.Cover > 0.3 && SmoothNoise1(Hours / 2.0, Seed + 49) > 0.5)
 			{
 				S.High.Type = ECloud::Cirrocumulus;
@@ -849,16 +883,21 @@ namespace LyudWeather
 			S.CloudCover = float(1.0 - (1.0 - LowCov) * (1.0 - MidCov) * (1.0 - 0.8 * HighCov));
 
 			// lenticulars: strong stable flow aloft with a moist middle layer; a quarter of such episodes show them
-			const double LensOk = (E.Key & 3u) == 0u ? 1.0 : 0.15;
+			const double LensOk = 0.15 + 0.85 * SmoothStep(0.35, 0.65, 0.5 + 0.5 * SmoothNoise1(Hours / 30.0, Seed + 60));
 			S.Lenticular = float(SmoothStep(20.0, 34.0, S.UpperSpeed) * SmoothStep(0.35, 0.75, F.Stable) * LensOk
 				* (1.0 - 0.8 * LowCov) * SmoothStep(-0.3, 0.6, SmoothNoise1(Hours / 4.0, Seed + 50)));
-			if (S.Lenticular > 0.25 && S.Mid.Cover < 0.6)
 			{
-				S.Mid.Type = ECloud::AltocumulusLenticular;
-				S.Mid.Cover = std::max(S.Mid.Cover, float(0.25 * S.Lenticular));
-				S.Mid.BaseM = 3000.f;
-				S.Mid.TopM = 3600.f;
-				S.Mid.Density = 0.5f;
+				// lenses take over a thin middle layer gradually (the renderer can draw them from Lenticular alone)
+				const float K = float(SmoothStep(0.1, 0.4, S.Lenticular) * SmoothStep(0.7, 0.4, S.Mid.Cover));
+				if (K > 0.f)
+				{
+					if (K > 0.5f) S.Mid.Type = ECloud::AltocumulusLenticular;
+					S.Mid.Cover = std::max(S.Mid.Cover, float(0.25 * S.Lenticular));
+					S.Mid.BaseM = float(Lerp(S.Mid.BaseM, 3000.0, K));
+					S.Mid.TopM = float(Lerp(S.Mid.TopM, 3600.0, K));
+					S.Mid.Density = float(Lerp(S.Mid.Density, 0.5, K));
+					S.Mid.Sheet = float(Lerp(S.Mid.Sheet, 0.5, K));
+				}
 			}
 
 			// precipitation: the episode's steady fall and the shower cells passing over (heavier when warm)
@@ -867,7 +906,7 @@ namespace LyudWeather
 			double Conv = 0.0;
 			if (Cells > 0.0)
 			{
-				const double Cell = 0.5 + 0.5 * (0.7 * SmoothNoise1(Hours / 0.55, Seed + 51) + 0.3 * SmoothNoise1(Hours / 0.17, Seed + 52));
+				const double Cell = 0.5 + 0.5 * (0.7 * SmoothNoise1(Hours / 0.55, Seed + 51) + 0.3 * SmoothNoise1(Hours / 0.3, Seed + 52));
 				const double Over = (Cell - (1.0 - Cells)) / std::max(Cells, 0.05);
 				if (Over > 0.0)
 				{
@@ -886,9 +925,11 @@ namespace LyudWeather
 
 			// its kind: snow and sleet by the wet-bulb, freezing rain under a warm nose, hail and graupel in showers
 			const double Tw = T - (T - Td) / 3.0;
-			double SnowFrac = SmoothStep(2.0, -0.2, Tw);
-			const bool bFreezing = T < 0.0 && F.WarmNose > 0.5 && T > -6.0 && E.Regime != ERegime::ArcticHigh;
-			if (bFreezing) SnowFrac = SmoothStep(-3.0, -6.0, T);
+			// (the warm layer aloft melts the flakes; they freeze again on the ground: a smooth weight, not a switch)
+			const double Freeze = SmoothStep(0.3, 0.7, F.WarmNose) * SmoothStep(0.5, -0.5, T) * SmoothStep(-7.0, -5.0, T)
+				* (E.Regime == ERegime::ArcticHigh ? 0.0 : 1.0);
+			const double SnowFrac = Lerp(SmoothStep(2.0, -0.2, Tw), SmoothStep(-3.0, -6.0, T), Freeze);
+			const bool bFreezing = Freeze > 0.5;
 			S.SnowFraction = float(SnowFrac);
 			S.Thunder = float(Clamp01(SmoothStep(0.5, 3.0, Conv) * SmoothStep(9.0, 16.0, T) * (0.8 + F.ThunderBoost)
 				+ F.ThunderBoost * SmoothStep(1.0, 5.0, Conv) * SmoothStep(14.0, 20.0, T)));
@@ -921,18 +962,23 @@ namespace LyudWeather
 				* SmoothStep(11.0, 6.0, S.WindSpeed) * SmoothStep(0.85, 0.97, S.Humidity);
 			const double Steam = OpenSea * SmoothStep(8.0, 16.0, SeaTempC - T) * SmoothStep(12.0, 4.0, S.WindSpeed);
 			const double Frontal = SmoothStep(0.8, 3.0, Strat) * SmoothStep(0.93, 1.0, S.Humidity) * 0.45;
+			// the strongest cause names it; the depth is the causes' weighted mean so it never jumps
 			double Fog = Radiation;
 			S.FogType = Radiation > 0.05 ? EFog::Radiation : EFog::None;
-			S.FogTopM = float(5.0 + 120.0 * Radiation);
-			if (Advection > Fog) { Fog = Advection; S.FogType = EFog::Advection; S.FogTopM = float(150.0 + 250.0 * Advection); }
-			if (Steam * 0.7 > Fog) { Fog = Steam * 0.7; S.FogType = EFog::Steam; S.FogTopM = float(8.0 + 40.0 * Steam); }
-			if (Frontal > Fog) { Fog = Frontal; S.FogType = EFog::Frontal; S.FogTopM = float(LowBase); }
+			if (Advection > Fog) { Fog = Advection; S.FogType = EFog::Advection; }
+			if (Steam * 0.7 > Fog) { Fog = Steam * 0.7; S.FogType = EFog::Steam; }
+			if (Frontal > Fog) { Fog = Frontal; S.FogType = EFog::Frontal; }
+			{
+				const double WR = Radiation * Radiation, WA = Advection * Advection, WS = 0.49 * Steam * Steam, WF = Frontal * Frontal;
+				const double Sum = WR + WA + WS + WF;
+				S.FogTopM = float((WR * (5.0 + 120.0 * Radiation) + WA * (150.0 + 250.0 * Advection) + WS * (8.0 + 40.0 * Steam) + WF * LowBase + 1e-3 * 5.0) / (Sum + 1e-3));
+			}
 			S.Fog = float(Clamp01(Fog));
 			if (S.Fog < 0.03) S.FogType = EFog::None;
 			// visibility: the extinctions add up (fog 1 -> 80 m; 1 mm/h of rain ~ 12 km, of snow ~ 1.5 km)
 			const double KFog = 3.912 / (30000.0 * std::pow(10.0, -2.57 * S.Fog));
-			const double KRain = Rate > 0.0 ? 3.912 / (12000.0 / std::pow(std::max(Rate * (1.0 - SnowFrac), 0.01), 0.6)) : 0.0;
-			const double KSnow = Rate > 0.0 && SnowFrac > 0.0 ? 3.912 / (1500.0 / std::pow(std::max(Rate * SnowFrac, 0.01), 0.8)) : 0.0;
+			const double KRain = 3.912 / 12000.0 * std::pow(std::max(Rate * (1.0 - SnowFrac), 0.0), 0.6);
+			const double KSnow = 3.912 / 1500.0 * std::pow(std::max(Rate * SnowFrac, 0.0), 0.8);
 			S.VisibilityM = float(Clamp(3.912 / (KFog + KRain + KSnow), 30.0, 50000.0));
 
 			// the sea's surge: the inverse barometer and the wind piling water on the coast (a westerly gale ~ +0.6 m)
@@ -944,7 +990,7 @@ namespace LyudWeather
 			// the sky beyond the weather
 			S.Kp = float(KpAt(Hours, C));
 			S.Aurora = float(SmoothStep(5.3, 8.5, S.Kp) * (0.65 + 0.35 * (0.5 + 0.5 * SmoothNoise1(Hours / 0.4, Seed + 55))));
-			S.Halo = float(Clamp01((S.High.Type == ECloud::Cirrostratus ? 0.8f * S.High.Cover : 0.f) * (1.0 - MidCov * F.MidDen * 1.5) * (1.0 - LowCov)));
+			S.Halo = float(Clamp01(0.8 * S.High.Cover * SmoothStep(0.6, 0.9, S.High.Sheet) * (1.0 - MidCov * F.MidDen * 1.5) * (1.0 - LowCov)));
 			S.Rainbow = float(Clamp01(Cells * 5.0 * SmoothStep(0.05, 0.6, Rate + Cells) * (1.0 - LowCov * 0.7) * SmoothStep(1.0, 6.0, Sun) * SmoothStep(44.0, 30.0, Sun)));
 			{
 				const bool bNlcSeason = X.Doy > 145.0 && X.Doy < 225.0;
@@ -996,26 +1042,21 @@ namespace LyudWeather
 		}
 	}
 
-	void FSeason::Reset(double Hours)
+	void FSeason::Reset(double Hours, FChain& Chain)
 	{
 		SeasonStart = SeasonStartOf(Hours);
 		Now = SeasonStart;
-		SnowWater = SnowDepth = 0.0;
-		SnowAge = 30.0;
-		LastMelt = 0.0;
-		GroundFrost = Fdd = SeaIce = IceCover = Glaze = Wet = 0.0;
-		SeaTemp = 0.0;   // set from the climate on the first step
+		Cur = FOut();
+		Cur.SeaTemp = ClimateSeaC(DayOfYearOf(SeasonStart), Chain.GetClimate());
+		Prev = Cur;
 	}
 
 	void FSeason::Step(double Hours, double Dt, FChain& Chain)
 	{
 		const FClimate& C = Chain.GetClimate();
 		const double Doy = DayOfYearOf(Hours);
-		if (SeaTemp == 0.0 && Hours - SeasonStart < Dt + 1e-6)
-		{
-			SeaTemp = ClimateSeaC(Doy, C);
-		}
-		const FWeatherState S = InstantWith(Hours, Chain, SeaTemp, IceCover, SnowDepth);
+		Prev = Cur;
+		const FWeatherState S = InstantWith(Hours, Chain, Cur.SeaTemp, Cur.IceCover, Cur.SnowDepth);
 		const double T = S.TempC;
 		const double Rate = S.PrecipRate;
 		const double SnowW = Rate * S.SnowFraction * Dt;
@@ -1025,70 +1066,70 @@ namespace LyudWeather
 		if (SnowW > 0.0)
 		{
 			const double Fresh = Clamp(60.0 + 6.0 * T, 50.0, 160.0);
-			const double OldD = SnowDepth;
-			SnowWater += SnowW;
-			SnowDepth += SnowW / Fresh * 100.0;
-			if (SnowW / Dt > 0.1) SnowAge = 0.0;
+			const double OldD = Cur.SnowDepth;
+			Cur.SnowWater += SnowW;
+			Cur.SnowDepth += SnowW / Fresh * 100.0;
+			if (SnowW / Dt > 0.1) Cur.SnowAge = 0.0;
 			(void)OldD;
 		}
 		double Melt = 0.0;
-		if (SnowWater > 0.0)
+		if (Cur.SnowWater > 0.0)
 		{
 			const double Sun = SunElevation(Hours, C);
 			const double Rad = SmoothStep(5.0, 45.0, Sun) * (1.0 - 0.8 * S.CloudCover) * 0.35 * SmoothStep(-4.0, 0.0, T);
 			Melt = std::max(0.0, 3.5 / 24.0 * T) + 0.0125 * RainW / std::max(Dt, 1e-3) * std::max(T, 0.0) + Rad;
-			Melt = std::min(SnowWater, Melt * Dt);
-			const double Rho = SnowDepth > 0.01 ? SnowWater / (SnowDepth / 100.0) : 100.0;
-			SnowWater -= Melt;
+			Melt = std::min(Cur.SnowWater, Melt * Dt);
+			const double Rho = Cur.SnowDepth > 0.01 ? Cur.SnowWater / (Cur.SnowDepth / 100.0) : 100.0;
+			Cur.SnowWater -= Melt;
 			// settling: towards 350 kg/m3 over ~3 weeks, quicker when warm and wet
 			const double Settle = Dt / (24.0 * (T > -1.0 ? 6.0 : 20.0));
 			const double NewRho = std::min(Rho + (380.0 - Rho) * Settle + (Melt > 0.0 ? 4.0 * Dt : 0.0), 450.0);
-			SnowDepth = SnowWater > 0.01 ? SnowWater / NewRho * 100.0 : 0.0;
-			if (SnowWater <= 0.01) SnowWater = 0.0;
+			Cur.SnowDepth = Cur.SnowWater > 0.01 ? Cur.SnowWater / NewRho * 100.0 : 0.0;
+			if (Cur.SnowWater <= 0.01) Cur.SnowWater = 0.0;
 		}
-		SnowAge += Dt / 24.0;
-		LastMelt = Melt / std::max(Dt, 1e-3);
+		Cur.SnowAge += Dt / 24.0;
+		Cur.Melt = Melt / std::max(Dt, 1e-3);
 
 		// freezing degree-days of this winter (net: a thaw takes some back)
-		Fdd = std::max(0.0, Fdd + (T < 0.0 ? -T : -0.5 * T) * Dt / 24.0);
+		Cur.Fdd = std::max(0.0, Cur.Fdd + (T < 0.0 ? -T : -0.5 * T) * Dt / 24.0);
 		// frozen soil: grows under bare frozen ground, insulated by snow, thaws from the top
-		const double Insul = 1.0 / (1.0 + SnowDepth / 8.0);
-		GroundFrost = Clamp(GroundFrost + (T < 0.0 ? 0.06 * -T * Insul / (1.0 + GroundFrost / 15.0) : -0.08 * T) * Dt, 0.0, 120.0);
+		const double Insul = 1.0 / (1.0 + Cur.SnowDepth / 8.0);
+		Cur.GroundFrost = Clamp(Cur.GroundFrost + (T < 0.0 ? 0.06 * -T * Insul / (1.0 + Cur.GroundFrost / 15.0) : -0.08 * T) * Dt, 0.0, 120.0);
 
 		// the sea: pulled to its climate over two months, cooled or warmed by the air (faster in wind), frozen at -0.3
 		const double Wind = S.WindSpeed;
-		if (IceCover < 0.98)
+		if (Cur.IceCover < 0.98)
 		{
 			const double Clim = ClimateSeaC(Doy, C);
-			SeaTemp += (Clim - SeaTemp) * Dt / (24.0 * 60.0) + (T - SeaTemp) * Dt / (24.0 * 20.0) * (0.4 + Wind / 8.0);
-			SeaTemp = std::max(SeaTemp, -0.3);
+			Cur.SeaTemp += (Clim - Cur.SeaTemp) * Dt / (24.0 * 60.0) + (T - Cur.SeaTemp) * Dt / (24.0 * 20.0) * (0.4 + Wind / 8.0);
+			Cur.SeaTemp = std::max(Cur.SeaTemp, -0.3);
 		}
 		// sea ice: once the water is at freezing, it thickens as the square root of the frost (Stefan), melts in thaw,
 		// and wind breaks young ice up
-		if (SeaTemp <= -0.25 && T < -1.0)
+		if (Cur.SeaTemp <= -0.25 && T < -1.0)
 		{
-			SeaIce += 0.045 * (-T - 1.0) / (SeaIce + 2.0) * Dt * 10.0 / 10.0;
+			Cur.SeaIce += 0.045 * (-T - 1.0) / (Cur.SeaIce + 2.0) * Dt * 10.0 / 10.0;
 		}
-		else if (T > 0.0 || SeaTemp > 0.0)
+		else if (T > 0.0 || Cur.SeaTemp > 0.0)
 		{
-			SeaIce -= (0.04 * std::max(T, 0.0) + 0.02 * std::max(SeaTemp, 0.0)) * Dt;
+			Cur.SeaIce -= (0.04 * std::max(T, 0.0) + 0.02 * std::max(Cur.SeaTemp, 0.0)) * Dt;
 		}
-		if (Wind > 11.0 && SeaIce < 6.0) SeaIce -= 0.05 * (Wind - 11.0) * Dt;
-		SeaIce = std::max(SeaIce, 0.0);
-		IceCover = SmoothStep(0.5, 6.0, SeaIce);
-		if (IceCover > 0.02)
+		if (Wind > 11.0 && Cur.SeaIce < 6.0) Cur.SeaIce -= 0.05 * (Wind - 11.0) * Dt;
+		Cur.SeaIce = std::max(Cur.SeaIce, 0.0);
+		Cur.IceCover = SmoothStep(0.5, 6.0, Cur.SeaIce);
+		if (Cur.IceCover > 0.02)
 		{
-			SeaTemp = std::min(SeaTemp, -0.3 + 1.5 * (1.0 - IceCover));
+			Cur.SeaTemp = std::min(Cur.SeaTemp, -0.3 + 1.5 * (1.0 - Cur.IceCover));
 		}
 
 		// glaze from freezing rain, gone in a thaw or a sunny day
-		if (S.Precip == EPrecip::FreezingRain || S.Precip == EPrecip::FreezingDrizzle) Glaze += RainW * 0.6;
-		Glaze = Clamp(Glaze - (std::max(T, 0.0) * 0.15 + 0.01) * Dt, 0.0, 1.0);
+		if (S.Precip == EPrecip::FreezingRain || S.Precip == EPrecip::FreezingDrizzle) Cur.Glaze += RainW * 0.6;
+		Cur.Glaze = Clamp(Cur.Glaze - (std::max(T, 0.0) * 0.15 + 0.01) * Dt, 0.0, 1.0);
 
 		// the ground's water: rain and melt in, out to evaporation and soaking (dries in hours on a warm windy day)
-		Wet += RainW + Melt * 0.5;
+		Cur.Wet += RainW + Melt * 0.5;
 		const double Evap = (0.04 + 0.025 * std::max(T, 0.0) + 0.015 * Wind) * (1.0 - S.Humidity + 0.1) + 0.03;
-		Wet = Clamp(Wet - Evap * Dt * (T < 0.0 ? 0.2 : 1.0), 0.0, 6.0);
+		Cur.Wet = Clamp(Cur.Wet - Evap * Dt * (T < 0.0 ? 0.2 : 1.0), 0.0, 6.0);
 
 		Now = Hours + Dt;
 	}
@@ -1098,7 +1139,7 @@ namespace LyudWeather
 		const double Start = SeasonStartOf(Hours);
 		if (Hours < Now || Start != SeasonStart || Now < -1e11)
 		{
-			Reset(Hours);
+			Reset(Hours, Chain);
 		}
 		// hourly steps (the last one partial is left to Apply)
 		while (Now + 1.0 <= Hours)
@@ -1110,24 +1151,56 @@ namespace LyudWeather
 	void FSeason::Apply(FWeatherState& S, FChain& Chain) const
 	{
 		(void)Chain;
-		const double Part = Clamp(S.Hours - Now, 0.0, 1.0);
+		const double K = Clamp(S.Hours - Now, 0.0, 1.0);
+		auto E = [K](double A, double B) { return float(A + (B - A) * K); };
+		// the ground wets at once in rain (the season's water follows an hour late)
 		const double RainNow = S.PrecipRate * (1.0 - S.SnowFraction);
-		S.Wet = float(Clamp01((Wet + RainNow * Part) / 2.5));
-		S.SnowWaterMm = float(SnowWater);
-		S.SnowDepthCm = float(SnowDepth + S.SnowfallCmPerHour * Part);
-		S.SnowDensity = float(SnowDepth > 0.1 ? SnowWater / (SnowDepth / 100.0) : 100.0);
-		S.SnowAgeDays = float(S.SnowfallCmPerHour > 0.1f ? 0.0 : SnowAge);
-		S.Melt = float(Clamp01(LastMelt / 0.5));
-		S.Glaze = float(Glaze);
-		S.GroundFrostCm = float(GroundFrost);
-		S.SeaTempC = float(SeaTemp);
-		S.FreezingDegreeDays = float(Fdd);
-		S.SeaIceCm = float(SeaIce);
-		S.SeaIceCover = float(IceCover);
-		if (S.SnowDepthCm > 1.f && S.TempC < 0.5f)
+		S.SnowWaterMm = E(Prev.SnowWater, Cur.SnowWater);
+		S.SnowDepthCm = E(Prev.SnowDepth, Cur.SnowDepth);
+		S.SnowDensity = float(S.SnowDepthCm > 0.1f ? Clamp(S.SnowWaterMm / (S.SnowDepthCm / 100.0), 50.0, 500.0) : 100.0);
+		S.SnowAgeDays = float(E(Prev.SnowAge, Cur.SnowAge) * SmoothStep(0.3, 0.05, S.SnowfallCmPerHour));
+		S.Melt = float(Clamp01(E(Prev.Melt, Cur.Melt) / 0.5));
+		S.Glaze = E(Prev.Glaze, Cur.Glaze);
+		S.GroundFrostCm = E(Prev.GroundFrost, Cur.GroundFrost);
+		S.SeaTempC = E(Prev.SeaTemp, Cur.SeaTemp);
+		S.FreezingDegreeDays = E(Prev.Fdd, Cur.Fdd);
+		S.SeaIceCm = E(Prev.SeaIce, Cur.SeaIce);
+		S.SeaIceCover = E(Prev.IceCover, Cur.IceCover);
+		const double Water = E(Prev.Wet, Cur.Wet) + std::min(RainNow, 2.0) * 0.6;
+		// under frozen snow the ground shows no wet
+		S.Wet = float(Clamp01(Water / 2.5) * (1.0 - 0.8 * SmoothStep(0.5, 3.0, S.SnowDepthCm) * SmoothStep(1.5, -0.5, S.TempC)));
+	}
+
+	FWeatherState LerpState(const FWeatherState& A, const FWeatherState& B, float K)
+	{
+		FWeatherState O = K < 0.5f ? A : B;
+		auto L = [K](float X, float Y) { return X + (Y - X) * K; };
+		auto Deg = [K](float X, float Y) { const float D = float(std::fmod(Y - X + 540.0, 360.0) - 180.0); return float(std::fmod(X + D * K + 360.0, 360.0)); };
+		auto Layer = [&](const FCloudLayer& X, const FCloudLayer& Y, FCloudLayer& Out)
 		{
-			S.Wet = std::min(S.Wet, 0.2f);
-		}
+			Out.Cover = L(X.Cover, Y.Cover); Out.BaseM = L(X.BaseM, Y.BaseM); Out.TopM = L(X.TopM, Y.TopM);
+			Out.Density = L(X.Density, Y.Density); Out.Sheet = L(X.Sheet, Y.Sheet);
+		};
+		O.Hours = A.Hours + (B.Hours - A.Hours) * K;
+		O.RegimeProgress = L(A.RegimeProgress, B.RegimeProgress); O.HoursToNext = L(A.HoursToNext, B.HoursToNext); O.Intensity = L(A.Intensity, B.Intensity);
+		O.PressureHPa = L(A.PressureHPa, B.PressureHPa); O.PressureTendency = L(A.PressureTendency, B.PressureTendency);
+		O.TempC = L(A.TempC, B.TempC); O.DewPointC = L(A.DewPointC, B.DewPointC); O.Humidity = L(A.Humidity, B.Humidity);
+		O.FreezingLevelM = L(A.FreezingLevelM, B.FreezingLevelM); O.Inversion = L(A.Inversion, B.Inversion); O.Convection = L(A.Convection, B.Convection);
+		O.WindFromDeg = Deg(A.WindFromDeg, B.WindFromDeg); O.WindSpeed = L(A.WindSpeed, B.WindSpeed); O.WindGustiness = L(A.WindGustiness, B.WindGustiness);
+		O.UpperFromDeg = Deg(A.UpperFromDeg, B.UpperFromDeg); O.UpperSpeed = L(A.UpperSpeed, B.UpperSpeed);
+		Layer(A.Low, B.Low, O.Low); Layer(A.Mid, B.Mid, O.Mid); Layer(A.High, B.High, O.High);
+		O.CloudCover = L(A.CloudCover, B.CloudCover); O.Lenticular = L(A.Lenticular, B.Lenticular); O.ShowerCells = L(A.ShowerCells, B.ShowerCells);
+		O.PrecipRate = L(A.PrecipRate, B.PrecipRate); O.SnowFraction = L(A.SnowFraction, B.SnowFraction); O.SnowfallCmPerHour = L(A.SnowfallCmPerHour, B.SnowfallCmPerHour);
+		O.Thunder = L(A.Thunder, B.Thunder); O.Hail = L(A.Hail, B.Hail);
+		O.Fog = L(A.Fog, B.Fog); O.VisibilityM = std::exp(L(std::log(std::max(A.VisibilityM, 1.f)), std::log(std::max(B.VisibilityM, 1.f)))); O.FogTopM = L(A.FogTopM, B.FogTopM);
+		O.Wet = L(A.Wet, B.Wet); O.SnowDepthCm = L(A.SnowDepthCm, B.SnowDepthCm); O.SnowWaterMm = L(A.SnowWaterMm, B.SnowWaterMm);
+		O.SnowDensity = L(A.SnowDensity, B.SnowDensity); O.SnowAgeDays = L(A.SnowAgeDays, B.SnowAgeDays); O.Melt = L(A.Melt, B.Melt);
+		O.Frost = L(A.Frost, B.Frost); O.Glaze = L(A.Glaze, B.Glaze); O.GroundFrostCm = L(A.GroundFrostCm, B.GroundFrostCm);
+		O.SeaTempC = L(A.SeaTempC, B.SeaTempC); O.FreezingDegreeDays = L(A.FreezingDegreeDays, B.FreezingDegreeDays);
+		O.SeaIceCm = L(A.SeaIceCm, B.SeaIceCm); O.SeaIceCover = L(A.SeaIceCover, B.SeaIceCover); O.SeaSurgeM = L(A.SeaSurgeM, B.SeaSurgeM);
+		O.Kp = L(A.Kp, B.Kp); O.Aurora = L(A.Aurora, B.Aurora); O.Halo = L(A.Halo, B.Halo); O.Rainbow = L(A.Rainbow, B.Rainbow);
+		O.Noctilucent = L(A.Noctilucent, B.Noctilucent); O.Waterspout = L(A.Waterspout, B.Waterspout);
+		return O;
 	}
 
 	FWeatherState Full(double Hours, FChain& Chain, FSeason& Season)

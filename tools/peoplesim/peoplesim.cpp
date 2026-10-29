@@ -598,6 +598,100 @@ static void IslandOrder(FWorld& W)
 	CHECK(Home.size() == 2, "... and get back to the valley (%d of 2)", (int)Home.size());
 }
 
+// winter: stretches of snowy path near the valley's outdoor places; residents clear them with the pusher
+static void Snow(FWorld& W)
+{
+	struct FJob { V3 A, B; int Owner = -1; float Done = 0.f; };
+	std::vector<FJob> Jobs;
+	for (const FPlace& P : W.Places)
+	{
+		if (!P.bIndoor && P.Island == 0 && (P.Kind == "bench" || P.Kind == "square" || P.Kind == "promenade") && Jobs.size() < 14)
+		{
+			FJob J;
+			J.A = P.Portal;
+			J.B = P.Portal + V3(9.f, 0.f, 0.f);
+			Jobs.push_back(J);
+		}
+	}
+	int Double = 0;
+	W.SnowJobs = [&](const V3& Near, int Max, std::vector<FWorld::FSnowJob>& Out)
+	{
+		for (int I = 0; I < (int)Jobs.size() && (int)Out.size() < Max; I++)
+		{
+			if (Jobs[I].Owner < 0 && Jobs[I].Done < 1.f)
+			{
+				FWorld::FSnowJob J;
+				J.Job = I;
+				J.From = Jobs[I].A;
+				J.To = Jobs[I].B;
+				J.Cm = 10.f;
+				Out.push_back(J);
+			}
+		}
+	};
+	W.SnowProgress = [&](int Person, int Job, float Progress) -> bool
+	{
+		FJob& J = Jobs[Job];
+		if (Progress == 0.f)
+		{
+			if (J.Owner >= 0 && J.Owner != Person)
+			{
+				Double++;
+				return false;
+			}
+			J.Owner = Person;
+			return true;
+		}
+		if (J.Owner != Person)
+		{
+			Double++;
+		}
+		if (Progress < 0.f || Progress >= 1.f)
+		{
+			J.Owner = -1;
+		}
+		J.Done = std::max(J.Done, Progress);
+		return true;
+	};
+	FClock C = FClock::At(5, 8.f);     // a Saturday morning after a night's snow
+	C.Set(W);
+	W.Resettle();
+	FWatch Watch;
+	std::set<std::string> Shovellers;
+	float MaxOff = 0.f;
+	Run(W, C, 8.f, 1.f, Watch, [&]()
+	{
+		if ((int)W.Time % 5 == 0)
+		{
+			W.UpdateSnowSlots(Jobs.empty() ? V3() : Jobs[0].A);
+		}
+		for (const FPerson& P : W.People)
+		{
+			if (P.Pose == EPose::Shovel && P.SweepT >= 0.f && P.Slot >= 0)
+			{
+				Shovellers.insert(P.Key);
+				// on the line of the stretch they clear
+				const FSlot& Sl = W.Slots[P.Slot];
+				const V3 D = Sl.SnowTo - Sl.Pos;
+				const float T = std::max(0.f, std::min(1.f, ((P.Pos - Sl.Pos).X * D.X + (P.Pos - Sl.Pos).Y * D.Y) / std::max(D.Len2D() * D.Len2D(), 1e-3f)));
+				MaxOff = std::max(MaxOff, (P.Pos - (Sl.Pos + D * T)).Len2D());
+			}
+		}
+	});
+	int Done = 0;
+	for (const FJob& J : Jobs)
+	{
+		Done += J.Done >= 1.f;
+	}
+	CHECK(!Jobs.empty() && !Shovellers.empty(), "winter: residents come out to clear the snow (%d of them, %d stretches)", (int)Shovellers.size(), (int)Jobs.size());
+	CHECK(Done * 2 >= (int)Jobs.size(), "winter: most stretches cleared in a morning (%d of %d)", Done, (int)Jobs.size());
+	CHECK(Double == 0, "winter: nobody clears a stretch somebody else has (%d clashes)", Double);
+	CHECK(MaxOff < 0.3f, "winter: they push along the stretch (%.2f m off it at most)", MaxOff);
+	CHECK(Watch.Overbooked == 0, "winter: no slot overbooked (%d)", Watch.Overbooked);
+	W.SnowJobs = nullptr;
+	W.SnowProgress = nullptr;
+}
+
 static int Test()
 {
 	std::printf("a made-up town:\n");
@@ -638,6 +732,7 @@ static int Test()
 		const auto T0 = std::chrono::high_resolution_clock::now();
 		Checks(W, true);
 		IslandOrder(W);
+		Snow(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
 	}

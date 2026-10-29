@@ -1,4 +1,5 @@
 #include "Plants/ProceduralVine.h"
+#include "Winter/LyudWinter.h"
 
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -858,7 +859,7 @@ void AProceduralVine::Apply(float G, float Day, bool bWood)
 		Wood->SetVisibility(!Tubes.IsEmpty());
 		WoodG = G;
 	}
-	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), Season.Snow);
+	WoodMaterial->SetScalarParameterValue(TEXT("Snow"), ULyudWinterSubsystem::SnowOnBranches(GetWorld(), Season.Snow));
 	WoodMaterial->SetVectorParameterValue(TEXT("Tint"), FLinearColor::White);
 
 	// leaves on every other step or so, facing out of the wall, their tips hanging down it

@@ -417,7 +417,9 @@ def main():
     target_hip = tarm.data.bones["thigh_l"].head_local.z
     GUY_HIP = cfg.get("seat_hip", target_hip)
     log("target %s, hip %.3f" % (cfg["target"], target_hip))
-    sources = {k: Source(v) for k, v in cfg["sources"].items()}
+    # only the sources the clips being made use (a hand-made source may not exist yet: push_clip.py makes its own)
+    used = {c["source"] for n, c in cfg["clips"].items() if not only or n in only}
+    sources = {k: Source(v) for k, v in cfg["sources"].items() if k in used}
     made, report = [], {}
     for name, spec in cfg["clips"].items():
         if only and name not in only:

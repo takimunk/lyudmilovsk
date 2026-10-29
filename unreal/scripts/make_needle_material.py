@@ -2,7 +2,13 @@
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
+import os
+import sys
+
 import unreal
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import winter_snow  # noqa: E402
 
 mel = unreal.MaterialEditingLibrary
 eal = unreal.EditorAssetLibrary
@@ -79,7 +85,8 @@ link(shade, "", shade1, "A")
 base = node(m, unreal.MaterialExpressionMultiply, -350, -100)
 link(leaf, "", base, "A")
 link(shade1, "", base, "B")
-mel.connect_material_property(base, "", MP.MP_BASE_COLOR)
+# snow on the branches (MPC_LyudWinter, ULyudWinterSubsystem: fresh snow sticks, wind and thaw shake it off)
+mel.connect_material_property(winter_snow.leaf_snow(m, base), "", MP.MP_BASE_COLOR)
 # the alpha is anti-aliased coverage: a blue-noise dither (the temporal AA resolves it) turns it into a soft edge
 # instead of a hard stepped cut: mask = alpha - noise + 0.5, clipped at 0.5
 noise = node(m, unreal.MaterialExpressionScalarBlueNoise, -700, 520)
