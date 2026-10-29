@@ -11,5 +11,26 @@
   "task_id": "c7d6f95d230b48d48ce01390753a4390",
   "points": 8
  },
- "model": null
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "c7d6f95d230b48d48ce01390753a4390",
+    "image_index": 0
+   },
+   {
+    "task_id": "c7d6f95d230b48d48ce01390753a4390",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "dcf1285cf5dc438684258300c389e616",
+  "points": 45,
+  "file": "blender/characters/kimura_dasha/gen/model.glb (local, ignored)"
+ }
 }

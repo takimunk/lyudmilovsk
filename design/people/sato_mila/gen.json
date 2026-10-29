@@ -11,5 +11,26 @@
   "task_id": "3078f4a6348d42cda0f7a286a11f4d41",
   "points": 8
  },
- "model": null
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "3078f4a6348d42cda0f7a286a11f4d41",
+    "image_index": 0
+   },
+   {
+    "task_id": "3078f4a6348d42cda0f7a286a11f4d41",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "6ea18aab283c4728a9b25961bf7a3396",
+  "points": 45,
+  "file": "blender/characters/sato_mila/gen/model.glb (local, ignored)"
+ }
 }

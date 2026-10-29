@@ -11,5 +11,26 @@
   "task_id": "88945a90ce5441799c77f9cc3529a059",
   "points": 8
  },
- "model": null
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-10-29",
+  "approved": "Dima in the project thread, 'да 630' (14 x 45 points)",
+  "source_images": [
+   {
+    "task_id": "88945a90ce5441799c77f9cc3529a059",
+    "image_index": 0
+   },
+   {
+    "task_id": "88945a90ce5441799c77f9cc3529a059",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "9a49696d0712478f908913d1a7af1b43",
+  "points": 45,
+  "file": "blender/characters/korneeva_nina/gen/model.glb (local, ignored)"
+ }
 }
