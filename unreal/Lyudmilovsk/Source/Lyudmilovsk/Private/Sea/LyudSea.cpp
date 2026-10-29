@@ -667,6 +667,38 @@ void ALyudSea::EndPlay(const EEndPlayReason::Type Reason)
 	Super::EndPlay(Reason);
 }
 
+void ALyudSea::SetLevelOffset(float Cm)
+{
+	if (!bBaseZ)
+	{
+		BaseZ = GetActorLocation().Z;
+		bBaseZ = true;
+	}
+	if (FMath::Abs(Cm - LevelOffsetCm) < 0.1f)
+	{
+		return;
+	}
+	const float Delta = Cm - LevelOffsetCm;
+	LevelOffsetCm = Cm;
+	if (GetRootComponent() && GetRootComponent()->Mobility != EComponentMobility::Movable)
+	{
+		GetRootComponent()->SetMobility(EComponentMobility::Movable);
+	}
+	FVector L = GetActorLocation();
+	L.Z = BaseZ + Cm;
+	SetActorLocation(L);
+	if (WaterVolume)
+	{
+		WaterVolume->AddActorWorldOffset(FVector(0.0, 0.0, Delta));
+	}
+	if (FMath::Abs(Cm - DepthReadOffsetCm) > 20.f && IsDepthReady())
+	{
+		// read the bed again over the old map (the rows are overwritten as they come in)
+		DepthReadOffsetCm = Cm;
+		DepthRow = 0;
+	}
+}
+
 void ALyudSea::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

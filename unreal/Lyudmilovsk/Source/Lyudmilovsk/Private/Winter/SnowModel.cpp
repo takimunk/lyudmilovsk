@@ -135,6 +135,23 @@ namespace LyudWinter
 		}
 	}
 
+	void FCover::ComputeUrban(const FParallel& Par)
+	{
+		std::vector<float> G(size_t(W) * H);
+		for (size_t I = 0; I < G.size(); I++)
+		{
+			G[I] = Kind[I] == CellRoof ? 0.f : 1e20f;
+		}
+		DistanceTransform(G, W, H, Par);
+		Urban.assign(G.size(), 0);
+		const float CellM = Cell * 0.01f;
+		for (size_t I = 0; I < G.size(); I++)
+		{
+			const float D = G[I] >= 1e19f ? 1e4f : std::sqrt(G[I]) * CellM;
+			Urban[I] = uint8_t(std::lround((1.f - SmoothStepW(50.f, 110.f, D)) * 255.f));
+		}
+	}
+
 	void FCover::CleanRoofs()
 	{
 		std::vector<uint8_t> K = Kind;
@@ -492,7 +509,7 @@ namespace LyudWinter
 				V *= 1.f - SmoothStepW(34.f, 52.f, B.SlopeDeg[I]);
 				if (K == CellForest)
 				{
-					V *= 0.72f;
+					V *= In.ForestGain;
 				}
 				Factor[I] = V;
 			}
@@ -524,6 +541,22 @@ namespace LyudWinter
 		return Wt > 1e-4f ? S / Wt : 0.f;
 	}
 
+	float FSnowField::CapAt(const FCover& C, const FSnowInputs& In, double WX, double WY) const
+	{
+		if (C.Urban.empty())
+		{
+			return In.MaxDepthM;
+		}
+		const double U = (WX - C.X0) / C.Cell, V = (WY - C.Y0) / C.Cell;
+		const int IX = std::clamp(int(std::floor(U)), 0, C.W - 1), IY = std::clamp(int(std::floor(V)), 0, C.H - 1);
+		const int JX = std::min(IX + 1, C.W - 1), JY = std::min(IY + 1, C.H - 1);
+		const float FX = float(std::clamp(U - IX, 0.0, 1.0)), FY = float(std::clamp(V - IY, 0.0, 1.0));
+		const float A = C.Urban[C.Index(IX, IY)] + (C.Urban[C.Index(JX, IY)] - C.Urban[C.Index(IX, IY)]) * FX;
+		const float B = C.Urban[C.Index(IX, JY)] + (C.Urban[C.Index(JX, JY)] - C.Urban[C.Index(IX, JY)]) * FX;
+		const float Town = (A + (B - A) * FY) / 255.f;
+		return In.MaxDepthM + (In.MaxTownM - In.MaxDepthM) * Town;
+	}
+
 	float FSnowField::DriftedM(const FCover& C, const FSnowInputs& In, int X, int Y) const
 	{
 		const size_t I = size_t(Y) * W + X;
@@ -531,7 +564,7 @@ namespace LyudWinter
 		{
 			return 0.f;
 		}
-		return SoftClamp(In.LevelCm * 0.01f * FactorAt(C, X0 + X * Cell, Y0 + Y * Cell), In.MaxDepthM);
+		return SoftClamp(In.LevelCm * 0.01f * FactorAt(C, X0 + X * Cell, Y0 + Y * Cell), CapAt(C, In, X0 + X * Cell, Y0 + Y * Cell));
 	}
 
 	void FSnowField::Compose(const FCover& C, const FSnowInputs& In, const FSnowPaths* P, int RX0, int RY0, int RX1, int RY1, const FParallel& Par)
@@ -568,7 +601,7 @@ namespace LyudWinter
 						const FPatch& Pt = P->Patches[P->Near[I]];
 						const float Dist = P->NearDist[I] * 0.1f;
 						const float Bump = std::exp(-((Dist - 0.9f) / 0.65f) * ((Dist - 0.9f) / 0.65f));
-						D = std::min(D + Bump * Pt.RemovedCm * 0.01f * 0.9f, In.MaxDepthM + 0.25f);
+						D = std::min(D + Bump * Pt.RemovedCm * 0.01f * 0.9f, CapAt(C, In, X0 + X * Cell, Y0 + Y * Cell) + 0.12f);
 					}
 				}
 				Depth[I] = D;

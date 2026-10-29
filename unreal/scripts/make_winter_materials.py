@@ -96,15 +96,44 @@ def ice_material(mpc, rts):
     W._log("M_SeaIce built")
 
 
+def near_material(mpc, rts):
+    m = new_material("M_SnowNear")
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    m.set_editor_property("opacity_mask_clip_value", 0.5)
+    m.set_editor_property("tangent_space_normal", False)
+    vpos = W._node(m, X.MaterialExpressionWorldPosition, -1400, 0, world_position_shader_offset=W.EXCL)
+    pos = W._node(m, X.MaterialExpressionWorldPosition, -1400, 900)
+    def common(y0):
+        out = []
+        for i, (pin, tex) in enumerate((("Gt", "RT_NearGround"), ("Dep", "RT_SnowDepth"), ("Tt", "RT_SnowTrail"))):
+            out.append((pin, W._node(m, X.MaterialExpressionTextureObject, -1400, y0 + i * 120, texture=rts[tex])))
+        for i, (pin, name) in enumerate((("NG", "NearGround"), ("Rect", "FieldRect"), ("TR", "NearTrail"), ("N", "NearRect"),
+                                         ("S", "Snow"), ("B", "SnowB"))):
+            out.append((pin, W.mpc_node(m, mpc, name, -1400, y0 + 360 + i * 120)))
+        return out
+    wpo = W._custom(m, H.NEAR_WPO, [("P", vpos)] + common(120), -600, 0, "WinterNearWPO", out=F3)
+    mel.connect_material_property(wpo, "", MP.MP_WORLD_POSITION_OFFSET)
+    ps = W._custom(m, H.NEAR_PS, [("P", pos)] + common(1100), -600, 900, "WinterNearSurface", out=F3,
+                   extra=(("Mask", F1), ("Normal", F3), ("Roughness", F1)))
+    mel.connect_material_property(ps, "", MP.MP_BASE_COLOR)
+    mel.connect_material_property(ps, "Mask", MP.MP_OPACITY_MASK)
+    mel.connect_material_property(ps, "Normal", MP.MP_NORMAL)
+    mel.connect_material_property(ps, "Roughness", MP.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    W._log("M_SnowNear built")
+
+
 def patch_ground():
     path = "/Game/Scene01/Terrain/M_Ground"
     if not eal.does_asset_exist(path):
         W._log("no M_Ground (build the terrain first)")
         return
     m = unreal.load_asset(path)
-    if mel.get_material_property_input_node(m, MP.MP_WORLD_POSITION_OFFSET):
-        W._log("M_Ground already lifted by the snow")
-        return
+    old = mel.get_material_property_input_node(m, MP.MP_WORLD_POSITION_OFFSET)
+    if old:
+        # an older lift: rebuilt with the current code and inputs
+        mel.delete_material_expression(m, old)
     W.ground_wpo(m)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
@@ -124,6 +153,7 @@ mpc = W.collection()
 rts = W.render_targets()
 decal_material(mpc, rts)
 ice_material(mpc, rts)
+near_material(mpc, rts)
 patch_ground()
 if os.environ.get("WINTER_PLANTS", "1") == "1":
     rebuild_plants()

@@ -45,8 +45,12 @@ NOISE = r"""
 GROUND_WPO = r"""
 float2 uv = (P.xy - Rect.xy) * Rect.zw;
 if (B.y < 0.5 || any(uv <= 0.0) || any(uv >= 1.0)) return float3(0, 0, 0);
-float d = Dep.SampleLevel(DepSampler, uv, 0).r;
-return float3(0, 0, max(d, 0.0) * 100.0);
+float d = max(Dep.SampleLevel(DepSampler, uv, 0).r, 0.0);
+// round the player the fine snow surface (M_SnowNear) takes over: the ground's own snow sinks under it, back up
+// toward the fine one's edge (N: its centre x, y, half size, fade band; cm)
+float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
+float inner = N.z > 0.0 ? 1.0 - smoothstep(N.z - N.w, N.z - 0.25 * N.w, cheb) : 0.0;
+return float3(0, 0, d * lerp(1.0, 0.1, inner) * 100.0);
 """
 
 # --- the snow decal over the whole map: returns base colour, Opacity, Normal (world), Roughness
@@ -222,4 +226,77 @@ LEAF_SNOW = r"""
 float up = saturate((N.z - 0.15) * 2.2);
 float n = frac(sin(dot(floor(P.xy / 7.0), float2(12.9898, 78.233))) * 43758.5453);
 return saturate(up * B.x * (0.7 + 0.5 * n));
+"""
+
+# --- the fine snow round the player (M_SnowNear on ALyudSnowNear's 16 cm grid): the ground (RT_NearGround, 1 m,
+# exact landscape heights) + the snow field's depth pressed down by the trail (RT_SnowTrail: footprints, trenches;
+# a toroidal window, wrap addressing). NG: x0, y0 (cm, texel 0's centre), cell cm, texels a side; TR: window cm.
+NEAR_COMMON = r"""
+struct LWN
+{
+""" + NOISE + r"""
+    float Ground(float2 xy, float4 ng, Texture2D tex)
+    {
+        float2 t = (xy - ng.xy) / ng.z;
+        float2 i0 = clamp(floor(t), 0.0, ng.w - 2.0);
+        float2 f = saturate(t - i0);
+        int2 i = int2(i0);
+        float a = tex.Load(int3(i, 0)).r, b = tex.Load(int3(i + int2(1, 0), 0)).r;
+        float c = tex.Load(int3(i + int2(0, 1), 0)).r, d = tex.Load(int3(i + int2(1, 1), 0)).r;
+        return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
+    }
+    float Depth(float2 xy, float4 rect, Texture2D tex, SamplerState s)
+    {
+        float2 uv = (xy - rect.xy) * rect.zw;
+        if (any(uv <= 0.0) || any(uv >= 1.0)) return 0.0;
+        return max(tex.SampleLevel(s, uv, 0).r, 0.0);
+    }
+    float Trail(float2 xy, float4 tr, Texture2D tex, SamplerState s)
+    {
+        return tex.SampleLevel(s, frac(xy / tr.y), 0).r;
+    }
+    // the snow's surface: pressed snow keeps ~15% of its depth
+    float Height(float2 xy, float4 ng, Texture2D gt, float4 rect, Texture2D dt, SamplerState ds, float4 tr, Texture2D tt, SamplerState ts)
+    {
+        return Ground(xy, ng, gt) + 100.0 * Depth(xy, rect, dt, ds) * (1.0 - 0.85 * Trail(xy, tr, tt, ts));
+    }
+};
+LWN w;
+"""
+
+NEAR_WPO = NEAR_COMMON + r"""
+if (N.z <= 0.0) return float3(0, 0, -100000.0);
+float h = w.Height(P.xy, NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
+// toward its edge it sinks under the ground's own snow (which comes up there)
+float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
+float sink = 8.0 * smoothstep(N.z - N.w, N.z, cheb);
+return float3(0, 0, h - sink - P.z);
+"""
+
+NEAR_PS = NEAR_COMMON + r"""
+Mask = 0.0;
+Normal = float3(0, 0, 1);
+Roughness = 0.65;
+float d = w.Depth(P.xy, Rect, Dep, DepSampler);
+float tr = w.Trail(P.xy, TR, Tt, TtSampler);
+float left = d * (1.0 - 0.85 * tr);
+float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
+if (B.y < 0.5 || d < 0.02 || cheb > N.z) return float3(0, 0, 0);
+Mask = 1.0;
+float e = 6.0;
+float hx = w.Height(P.xy + float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
+float hy = w.Height(P.xy + float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
+float3 n = normalize(float3(-hx / (2.0 * e), -hy / (2.0 * e), 1.0));
+float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
+           + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0)
+           + 0.5 * float3(w.Value(P.xy, 2.3, 21u) - 0.5, w.Value(P.yx, 2.9, 22u) - 0.5, 0.0) * (1.0 - tr);
+Normal = normalize(n + rip * 0.2);
+float2 m = P.xy * 0.01;
+float3 fresh = float3(0.86, 0.89, 0.93);
+float3 old = float3(0.70, 0.71, 0.70) * (0.92 + 0.08 * w.Fbm(m, 6.0, 23u));
+float3 col = lerp(old, fresh, S.y) * (1.0 - 0.25 * S.z) * (0.94 + 0.06 * w.Fbm(m, 3.0, 24u));
+// pressed snow is a little greyer and glossier
+col *= 1.0 - 0.12 * tr;
+Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y - 0.15 * tr;
+return col;
 """

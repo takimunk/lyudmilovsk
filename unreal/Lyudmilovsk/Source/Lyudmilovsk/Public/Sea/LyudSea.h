@@ -114,6 +114,13 @@ public:
 	/** Still-water depth at a point, cm (negative on land). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float DepthAt(const FVector& Location) const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaLevel() const { return GetActorLocation().Z; }
+	/**
+	 * Moves the still water Cm from where the level placed it (the winter's low water, ULyudWinterSubsystem): the
+	 * surface, the water volume and the shader's level follow at once; the bed's depth map is read again (row by row,
+	 * the old one meanwhile) once it moved 20 cm from the last read.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Sea") void SetLevelOffset(float Cm);
+	UFUNCTION(BlueprintPure, Category = "Sea") float GetLevelOffset() const { return LevelOffsetCm; }
 	/** Significant wave height now, cm, and the wind the waves were grown in, m/s. */
 	UFUNCTION(BlueprintCallable, Category = "Sea") float WaveHeight() const;
 	UFUNCTION(BlueprintCallable, Category = "Sea") float SeaWindSpeed() const;
@@ -180,6 +187,10 @@ private:
 	FVector2D DepthMin = FVector2D::ZeroVector;
 	FVector2D DepthSize = FVector2D(1.0, 1.0);
 	bool bDepthUploaded = false;
+	float LevelOffsetCm = 0.f;
+	float DepthReadOffsetCm = 0.f;
+	double BaseZ = 0.0;
+	bool bBaseZ = false;
 	bool bDepthStarted = false;
 };
 

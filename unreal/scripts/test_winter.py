@@ -48,6 +48,9 @@ SPOTS = [
     ("shoveller", None, None),
     ("shoveller_close", None, None),
     ("perf", ac(40.0, -12.0, 1.7), ac(0.0, 0.0, 4.0)),
+    # walk the pawn along a line (its feet on the ground), then look back at the prints
+    ("walk_town", ac(45.0, -25.0, 0.0), ac(45.0, -37.0, 0.0)),
+    ("walk_forest", g(-1150.0, -380.0, 0.0), g(-1150.0, -366.0, 0.0)),
 ]
 if os.environ.get("WINTER_SHOTS"):
     SPOTS = [s for s in SPOTS if s[0] in os.environ["WINTER_SHOTS"].split(",")]
@@ -227,9 +230,35 @@ def _tick(dt):
             log("perf frame median: winter on %.1f ms, off %.1f ms (%d/%d frames)" % (med(st["pf"]["on"]), med(st["pf"]["off"]), len(st["pf"]["on"]), len(st["pf"]["off"])))
             cmd(w, "lyud.Winter 1")
             st["phase"] = 0
+    elif st["phase"] == 1 and SPOTS[st["i"]][0].startswith("walk_") and not st.get("walked"):
+        a, b = ue(SPOTS[st["i"]][1]), ue(SPOTS[st["i"]][2])
+        el = st["t"] - st["t0"]
+        half = pawn.capsule_component.get_scaled_capsule_half_height() if hasattr(pawn, "capsule_component") else 90.0
+        k = min(1.0, max(0.0, (el - 1.0) / 8.0))
+        z = T.ground_z((SPOTS[st["i"]][1][0] * (1 - k) + SPOTS[st["i"]][2][0] * k), (SPOTS[st["i"]][1][1] * (1 - k) + SPOTS[st["i"]][2][1] * k)) * 100.0
+        pawn.set_actor_location(unreal.Vector(a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, z + half + 2.0), False, True)
+        if el > 9.5:
+            st["walked"] = True
+            near = None
+            for o in unreal.ObjectIterator(unreal.LyudSnowNear):
+                if o.get_world() == w:
+                    near = o
+            mid = unreal.Vector((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, z)
+            log("%s: walked %.1f m, prints %s, pressed at the middle %s, hidden %s, snow there %.1f cm" % (SPOTS[st["i"]][0], math.hypot(b[0] - a[0], b[1] - a[1]) / 100.0,
+                near.num_prints() if near else "no near snow", max(near.pressed_at(unreal.Vector(mid.x + dx, mid.y + dy, 0)) for dx in range(-30, 31, 5) for dy in range(-30, 31, 5)) if near else "-",
+                near.is_hidden_ed() if near and hasattr(near, "is_hidden_ed") else "-", win.get_snow_depth_at(mid)))
+            # look back from beside the start, low
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            L = math.hypot(dx, dy)
+            ux, uy = dx / L, dy / L
+            # from above the trail's middle, a little to the side, looking steeply down
+            cam = (mid.x - uy * 150.0 - ux * 150.0, mid.y + ux * 150.0 - uy * 150.0, z + 380.0)
+            aim(w, pawn, pc, cam, (mid.x, mid.y, z))
+            st["t0"] = st["t"] - WAIT + 2.0
     elif st["phase"] == 1 and st["t"] - st["t0"] > WAIT:
         log("shot %s" % SPOTS[st["i"]][0])
         cmd(w, "HighResShot " + RES)
+        st["walked"] = False
         st["phase"] = 2
         st["t0"] = st["t"]
     elif st["phase"] == 2 and st["t"] - st["t0"] > 1.5:

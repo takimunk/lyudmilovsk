@@ -89,7 +89,10 @@ static void MakeCover(FCover& C, int W, int H, double X0, double Y0)
 		}
 	}
 	C.Classify(SeaZ);
+	// a forest 200 m east of the house (X -380..-460 m), past the town's reach
+	C.MarkForest(-46000.0, -15000.0, -38000.0, 15000.0);
 	C.CleanRoofs();
+	C.ComputeUrban(Threads);
 }
 
 static void WritePgm(const std::string& Path, int W, int H, const std::function<float(int, int)>& F)
@@ -177,13 +180,16 @@ int main(int Argc, char** Argv)
 
 	auto Depth = [&](double XM, double YM) { return F.DepthAt(XM * 100.0, YM * 100.0); };
 	// the wind is from the west (X+): the house's lee is its east side (smaller X)
-	const float Lee = Depth(-139.0, -2.0), Windward = Depth(-101.0, -2.0), Open = Depth(-60.0, -40.0), Inside = Depth(-120.0, 0.0);
+	const float Lee = Depth(-139.0, -2.0), Windward = Depth(-101.0, -2.0), Open = Depth(-90.0, -20.0), Inside = Depth(-120.0, 0.0);
 	Check(Inside == 0.f, "no snow inside the house", Inside);
-	Check(Lee > 0.75f, "a deep drift in the house's lee (m)", Lee);
-	Check(Lee > Open * 2.f, "lee drift deeper than open ground", Lee, Open);
-	Check(Windward < Open, "the windward foot scooped", Windward, Open);
+	Check(Lee <= 0.16f && Open <= 0.16f, "the town's snow no deeper than ~15 cm (lee, open)", Lee, Open);
+	Check(Windward <= Open + 0.01f, "the windward foot scooped", Windward, Open);
+	const float Forest = Depth(-420.0, 0.0), ForestEdge = Depth(-466.0, 0.0), Wild = Depth(-330.0, -60.0);
+	Check(Forest > 0.6f && Forest > Wild * 1.6f, "the forest keeps deep snow", Forest, Wild);
+	Check(ForestEdge > 0.9f && ForestEdge <= 1.5f, "a drift up to 1.5 m in the forest edge's lee", ForestEdge);
 	const float HillTop = Depth(-260.0, 120.0), HillLee = Depth(-300.0, 120.0);
 	Check(HillTop < In.LevelCm * 0.01f * 0.8f, "the hill's top blown thin", HillTop);
+	Check(HillLee > 0.15f, "the wild's lee deeper than the town's cap", HillLee);
 	Check(HillLee > HillTop * 1.5f, "the hill's lee side deeper than its top", HillLee, HillTop);
 	float Max = 0.f;
 	double Sum = 0.0;
@@ -199,13 +205,13 @@ int main(int Argc, char** Argv)
 				N++;
 			}
 		}
-	Check(Max <= In.MaxDepthM + 0.26f, "no drift deeper than the cap (+berm)", Max, In.MaxDepthM);
-	Check(std::fabs(Sum / N - In.LevelCm * 0.01) < 0.06, "snow moved, not made: mean ~ level", Sum / N, In.LevelCm * 0.01);
+	Check(Max <= In.MaxDepthM + 0.01f, "no drift deeper than the cap", Max, In.MaxDepthM);
+	Check(Sum / N > In.LevelCm * 0.01 * 0.6 && Sum / N < In.LevelCm * 0.01 * 1.6, "the mean near the level (town capped, forest more)", Sum / N, In.LevelCm * 0.01);
 	const float LampFoot = F.DepthAt(F.X0 + (C.W / 2 + 7) * 200.0, F.Y0 + (C.H / 2 + 9) * 200.0);
 	Check(LampFoot > 0.05f, "a lamp post makes no hole in the snow", LampFoot);
 	const float PathD = Depth(-150.0, 12.0), BermD = Depth(-150.0, 13.0 + 0.9), Beside = Depth(-150.0, 18.0);
 	Check(PathD < 0.025f, "the path is clear (a packed film)", PathD);
-	Check(BermD > Beside + 0.07f, "a berm of shovelled snow beside it", BermD, Beside);
+	Check(BermD > Beside + 0.04f, "a berm of shovelled snow beside it", BermD, Beside);
 	Check(!P.Patches.empty() && P.Patches.size() < 40, "the paths cut into patches", double(P.Patches.size()));
 
 	// it snows on the cleared paths, then somebody clears one stretch halfway

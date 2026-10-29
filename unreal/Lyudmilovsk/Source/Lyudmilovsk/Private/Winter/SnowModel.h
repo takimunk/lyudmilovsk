@@ -47,6 +47,8 @@ namespace LyudWinter
 		std::vector<float> Ground; // cm (the landscape or the bed); NoGround where the trace found none
 		std::vector<float> Top;    // cm, the highest surface over the cell (Ground when nothing stands there)
 		std::vector<uint8_t> Kind; // ECell
+		/** 0 the wild (forest, fields) .. 255 the town (within ~50 m of a roof, fading out by ~110 m): its snow is kept low. */
+		std::vector<uint8_t> Urban;
 		static constexpr float NoGround = -1.0e9f;
 
 		void Init(int InW, int InH, double InX0, double InY0, float InCell);
@@ -54,6 +56,8 @@ namespace LyudWinter
 		int Index(int X, int Y) const { return Y * W + X; }
 		/** Kind from the heights: none (no ground or under SeaZ + 30 cm), roof, open; forest cells (marked before) stay. */
 		void Classify(float SeaZ);
+		/** Urban from the distance to the nearest roof. */
+		void ComputeUrban(const FParallel& Par);
 		/** Drops lone roofs (lamp posts, tree trunks, a pole's cap): a roof cell needs 3 of its 8 neighbours roofed. */
 		void CleanRoofs();
 		/** Bilinear ground height (cm); NoGround outside. */
@@ -89,7 +93,11 @@ namespace LyudWinter
 		float Transport = 0.f;
 		/** How the drifting winds were spread over the 8 directions (sums to 1). */
 		float Rose[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f };
-		float MaxDepthM = 1.1f;
+		/** The deepest snow in the wild (forest, lee slopes) and in the town (people walk there: no more than this). */
+		float MaxDepthM = 1.5f;
+		float MaxTownM = 0.15f;
+		/** The forest keeps more of what falls (no wind takes it, the sun and the thaw reach it less). */
+		float ForestGain = 2.2f;
 	};
 
 	/** A stretch of path somebody clears at once. */
@@ -149,6 +157,8 @@ namespace LyudWinter
 		float DriftedM(const FCover& C, const FSnowInputs& In, int X, int Y) const;
 		float DepthAt(double X, double Y) const;
 		bool Valid() const { return W > 0 && (int)Depth.size() == W * H; }
+		/** The deepest the snow may lie at a world point: the wild's MaxDepthM, the town's MaxTownM, blended by Urban. */
+		float CapAt(const FCover& C, const FSnowInputs& In, double WX, double WY) const;
 	private:
 		float FactorAt(const FCover& C, double WX, double WY) const;
 	};

@@ -55,6 +55,8 @@ namespace
 	TAutoConsoleVariable<float> CVarWinterAge(TEXT("lyud.Winter.Age"), -1.f, TEXT("Force the snow's age, days since fresh snow (negative: the weather's)."));
 	TAutoConsoleVariable<float> CVarWinterCanopy(TEXT("lyud.Winter.Canopy"), -1.f, TEXT("Force the snow on the branches 0..1 (negative: from the snowfall, wind and thaw)."));
 	TAutoConsoleVariable<float> CVarWinterAutoClear(TEXT("lyud.Winter.AutoClearHours"), 5.f, TEXT("Hours after snow begins to lie that a path far from the camera is cleared by somebody unseen."));
+	TAutoConsoleVariable<float> CVarWinterLowWater(TEXT("lyud.Winter.LowWater"), 70.f, TEXT("How far the sea goes down over the winter, cm (the island railway's rails 30 cm under high water stand dry)."));
+	TAutoConsoleVariable<float> CVarWinterLowWaterForce(TEXT("lyud.Winter.LowWaterNow"), -1.f, TEXT("Force how far into the winter's low water 0..1 (negative: by the calendar)."));
 	TAutoConsoleVariable<int32> CVarWinterDebug(TEXT("lyud.Winter.Debug"), 0, TEXT("1: print the winter on screen."));
 	TAutoConsoleVariable<int32> CVarWinterTraceMs(TEXT("lyud.Winter.TraceMs"), 6, TEXT("Milliseconds a frame for reading the world for the snow when winter first comes."));
 
@@ -100,6 +102,9 @@ namespace
 	}
 
 	/** Down through everything at a point: the ground (the landscape or a LyudSeaBed) and the highest thing over it. */
+	/** The railway's bank (LyudSeaBed pieces kilometres long): not a shore for the ice, not ground for the snow field. */
+	TSet<const UPrimitiveComponent*> GWinterBank;
+
 	void WinterTraceColumn(const UWorld* World, double X, double Y, double ZTop, double ZBottom, float& OutGround, float& OutTop)
 	{
 		OutGround = OutTop = LyudWinter::FCover::NoGround;
@@ -116,7 +121,7 @@ namespace
 			{
 				continue;
 			}
-			const bool bGround = A->IsA<ALandscapeProxy>() || C->ComponentHasTag(TEXT("LyudSeaBed"));
+			const bool bGround = A->IsA<ALandscapeProxy>() || (C->ComponentHasTag(TEXT("LyudSeaBed")) && !GWinterBank.Contains(C));
 			if (OutTop == LyudWinter::FCover::NoGround && C->IsVisible() && !WinterIsPlant(A))
 			{
 				OutTop = float(H.ImpactPoint.Z);
@@ -441,6 +446,7 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 		Sea = ALyudSea::Get(GetWorld());
 	}
 	ReadWeather(DeltaTime);
+	LowWater();
 	const bool bWanted = S.In.LevelCm > 0.2f || (S.IceP.Cover > 0.f && S.IceP.ThicknessCm > 0.5f);
 	switch (S.Phase)
 	{
@@ -468,6 +474,7 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 	UpdateCollection();
 	UpdateDecal();
 	Wade(DeltaTime);
+	StepNear(DeltaTime);
 	SweepTimer -= DeltaTime;
 	if (SweepTimer <= 0.f && S.Phase == LyudWinter::EPhase::Ready)
 	{
@@ -503,6 +510,7 @@ void ULyudWinterSubsystem::StartBuild()
 	S.Cover.Init(W, H, S.LandBox.Min.X + Cell * 0.5, S.LandBox.Min.Y + Cell * 0.5, Cell);
 	// the ice's grid: the landscape and the sea out past the island (the small LyudSeaBed pieces; the bank is a lead along the line)
 	double IceMaxX = S.LandBox.Max.X;
+	GWinterBank.Reset();
 	for (TObjectIterator<UPrimitiveComponent> It; It; ++It)
 	{
 		if (It->GetWorld() == World && It->ComponentHasTag(TEXT("LyudSeaBed")) && It->IsRegistered())
@@ -511,6 +519,10 @@ void ULyudWinterSubsystem::StartBuild()
 			if (B.GetSize().X < 200000.0 && B.GetSize().Y < 200000.0)
 			{
 				IceMaxX = FMath::Max(IceMaxX, B.Max.X + 15000.0);
+			}
+			else
+			{
+				GWinterBank.Add(*It);
 			}
 		}
 	}
@@ -571,6 +583,7 @@ void ULyudWinterSubsystem::StepCover()
 				S.Cover.MarkForest(C.X - It->HalfExtent.X, C.Y - It->HalfExtent.Y, C.X + It->HalfExtent.X, C.Y + It->HalfExtent.Y);
 			}
 			S.Cover.CleanRoofs();
+			S.Cover.ComputeUrban(WinterParallelRows);
 			S.Field.Setup(S.Cover, 100.f);
 			S.OpenFine = S.Field.Open;
 			S.Refine.clear();
@@ -981,7 +994,9 @@ void ULyudWinterSubsystem::UploadCover()
 		const float G = S.Cover.Ground[I];
 		const bool bNone = G == LyudWinter::FCover::NoGround;
 		// R: the ground over the datum, m (10 m under it where there is none); G: the roof over it, m (0 = open sky)
-		Data[I * 2] = FFloat16(bNone ? -10.f : (G - S.Datum) * 0.01f);
+		// what the snow lies on: a low surface over the landscape (a yard's paving, a platform) counts as the ground
+		const float Base = (!bNone && S.Cover.Kind[I] != LyudWinter::CellRoof && S.Cover.Top[I] > G) ? S.Cover.Top[I] : G;
+		Data[I * 2] = FFloat16(bNone ? -10.f : (Base - S.Datum) * 0.01f);
 		Data[I * 2 + 1] = FFloat16(S.Cover.Kind[I] == LyudWinter::CellRoof ? (S.Cover.Top[I] - G) * 0.01f : 0.f);
 	}
 	WinterUploadHalf(CoverRT, 0, 0, S.Cover.W, S.Cover.H, 2, MoveTemp(Data));
@@ -1027,16 +1042,8 @@ void ULyudWinterSubsystem::StepIce(float DeltaTime)
 	}
 	const float SeaZ = Sea->SeaLevel();
 	S.IceP.SeaZ = SeaZ;
-	if (ULyudRailwaySubsystem* Rail = ULyudRailwaySubsystem::Get(World))
-	{
-		if (Rail->IsRunning())
-		{
-			const FVector A = Rail->LineToWorld(0.0), B = Rail->LineToWorld(Rail->LineLength());
-			S.IceP.RailY = 0.5 * (A.Y + B.Y);
-			S.IceP.RailX0 = FMath::Min(A.X, B.X);
-			S.IceP.RailX1 = FMath::Max(A.X, B.X);
-		}
-	}
+	// the railway's bank stands dry over the winter's low water: the ice comes right up to its slopes (no lead)
+	S.IceP.RailX1 = S.IceP.RailX0 - 1.0;
 	// the distances again when the tide has moved the shore
 	if (!S.bIceBusy && !S.bIceReady && FMath::Abs(SeaZ - S.Ice.BuiltSeaZ) > 10.f)
 	{
@@ -1084,6 +1091,35 @@ void ULyudWinterSubsystem::StepIce(float DeltaTime)
 }
 
 // -------------------------------------------------------------------------------------------------------------- look
+
+void ULyudWinterSubsystem::LowWater()
+{
+	// the Baltic's winter low: the sea goes down from late November, stays down January-February, comes back by mid
+	// April; smooth (a day of the year blend), so the shore and the ice edge walk out slowly
+	if (!Sea.IsValid())
+	{
+		return;
+	}
+	const float Day = UGameCalendar::DayOfYear(UGameCalendar::NowIn(GetWorld()));
+	auto Smooth = [](float A, float B, float V) { const float T = FMath::Clamp((V - A) / (B - A), 0.f, 1.f); return T * T * (3.f - 2.f * T); };
+	// days counted from 1 July so the winter is one stretch: 20 Nov = 142, 5 Jan = 188, 1 Mar = 243, 10 Apr = 283
+	const float D = FMath::Fmod(Day - 182.f + 365.f, 365.f);
+	float W = Smooth(142.f, 188.f, D) * (1.f - Smooth(243.f, 283.f, D));
+	const float Force = CVarWinterLowWaterForce.GetValueOnGameThread();
+	if (Force >= 0.f)
+	{
+		W = FMath::Clamp(Force, 0.f, 1.f);
+	}
+	if (CVarWinter.GetValueOnGameThread() == 0)
+	{
+		W = 0.f;
+	}
+	Now.LowWaterCm = CVarWinterLowWater.GetValueOnGameThread() * W;
+	if (FMath::Abs(Sea->GetLevelOffset() + Now.LowWaterCm) > 0.5f)
+	{
+		Sea->SetLevelOffset(-Now.LowWaterCm);
+	}
+}
 
 void ULyudWinterSubsystem::UpdateCollection()
 {
@@ -1163,6 +1199,33 @@ void ULyudWinterSubsystem::UpdateDecal()
 		bUnder = G != LyudWinter::FCover::NoGround && Cam.Z < G - 400.f;
 	}
 	Decal->SetVisibility(!bUnder);
+}
+
+void ULyudWinterSubsystem::StepNear(float DeltaTime)
+{
+	// the fine snow round the player (footprints): only where there is snow to press
+	const bool bSnow = IsReady() && State->In.LevelCm > 1.f && !State->Field.Factor.empty();
+	FVector Cam;
+	if (!bSnow || !CameraLocation(Cam))
+	{
+		if (NearSnow && !NearSnow->IsHidden())
+		{
+			NearSnow->SetActorHiddenInGame(true);
+			if (Collection)
+			{
+				UKismetMaterialLibrary::SetVectorParameterValue(GetWorld(), Collection, TEXT("NearRect"), FLinearColor(0.f, 0.f, 0.f, 400.f));
+			}
+		}
+		return;
+	}
+	if (!NearSnow)
+	{
+		FActorSpawnParameters P;
+		P.ObjectFlags |= RF_Transient;
+		NearSnow = GetWorld()->SpawnActor<ALyudSnowNear>(ALyudSnowNear::StaticClass(), FTransform(Cam), P);
+	}
+	NearSnow->SetActorHiddenInGame(false);
+	NearSnow->Drive(*this, Cam, DeltaTime);
 }
 
 void ULyudWinterSubsystem::KeepOffDecals()
