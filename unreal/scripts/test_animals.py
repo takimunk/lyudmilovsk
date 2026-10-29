@@ -7,7 +7,9 @@
 order): every breed and coat in a row, close-ups of the faces, the clips on a cat and a laika, then the simulation: a
 laika and a cat meeting (chase, hiss or a tree), a cat and a sparrow (stalk, pounce, the bird flies), a friendly dog and
 the player standing still.
-ANIMTEST_PART=lineup|poses|life picks a part (default all); door, town and maru run only when asked.
+ANIMTEST_PART=lineup|poses|life picks a part (default all); door, town, maru and dogfaces run only when asked.
+dogfaces: each dog breed standing and barking side by side, the heads up close 3/4 and in profile (the rigid skull, the
+jaw opening on its own, the teeth and tongue; Dima, 2026-10-29).
 maru: Maru up close (the model, the collar, the tag), her name over her, E (lyud.Animals.Hail) and her glad bark, the
 tag swinging as she turns and trots (ANIMTEST lines with the collar's swing and clinks, frames in Saved/Screenshots).
 eyes (ANIMTEST_BREED=Maru by default): a still body's face up close at a narrow field of view, front on, 3/4 and the
@@ -157,6 +159,55 @@ if PART in ("all", "life"):
                 shot(w, "life_%02d" % k)
         step(_watch, 2.5)
 
+
+if PART == "dogfaces":
+    DOGS = [("Laika", 0.0), ("Shepherd", 600.0), ("Mutt", 1200.0)]
+    DX = 9000.0
+
+    def dog_head(w, y):
+        for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalActor):
+            l = a.get_actor_location()
+            if abs(l.x - DX) < 300.0 and abs(l.y - y) < 120.0:
+                return a.get_editor_property("body").get_socket_location("head"), a.get_actor_forward_vector()
+        return None, None
+
+    def head_shot(w, y, back, side, up):
+        h, f = dog_head(w, y)
+        if h is None:
+            log("no dog at y %.0f" % y)
+            return
+        r = unreal.Vector(-f.y, f.x, 0.0)
+        t = h + f * 10.0
+        cmd(w, "fov 30")
+        look(w, (t + f * back + r * side + unreal.Vector(0, 0, up)).to_tuple(), t.to_tuple())
+
+    def hold_bark(w, breed, y):
+        for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.AnimalActor):
+            l = a.get_actor_location()
+            if abs(l.x - DX) < 300.0 and abs(l.y - y) < 120.0:
+                a.set_actor_tick_enabled(False)
+                body = a.get_editor_property("body")
+                body.set_animation_mode(unreal.AnimationMode.ANIMATION_SINGLE_NODE)
+                body.play_animation(unreal.load_asset("/Game/Animals/%s/Anims/A_%s_Bark" % (breed, breed)), False)
+                body.set_play_rate(0.0)
+                body.set_position(0.14, False)
+                log("bark held on %s" % breed)
+
+    @step
+    def s_dogfaces(w):
+        for b, y in DOGS:
+            cmd(w, "Animal.Spawn %s 0 Stand %.0f %.0f 0 180" % (b, DX, y))
+            cmd(w, "Animal.Spawn %s 0 Bark %.0f %.0f 0 180" % (b, DX, y + 250.0))
+        log("dogfaces spawned")
+    for b, y in DOGS:
+        for k, yy in (("stand", y), ("bark", y + 250.0)):
+            for view, back, side, up in (("34", 110.0, 70.0, 10.0), ("side", 15.0, 130.0, 5.0)):
+                step(lambda w, a=(yy, back, side, up): head_shot(w, *a), 2.0)
+                step(lambda w, n="%s_%s_%s" % (b.lower(), k, view): shot(w, n), 1.2)
+                if k == "bark":
+                    # the bark opens the jaw only for a tenth of a second: held at its widest (0.14 s into the clip)
+                    step(lambda w, a=(b, yy): hold_bark(w, *a), 0.5)
+                    step(lambda w, n="%s_%s_%s_open" % (b.lower(), k, view): shot(w, n), 1.2)
 
 if PART == "door":
     DOOR = (-193.0, 1150.0, 190.0)
