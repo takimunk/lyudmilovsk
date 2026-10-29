@@ -120,6 +120,14 @@ if os.environ.get("COSMIC_BANK"):
     for tag, tide, c in (("plain", 0.0, ""), ("noseabed", 0.0, "lyud.Seabed 0"), ("dry", -6.0, ""), ("nosea", 0.0, "lyud.Sea 0")):
         SHOTS.append(("bank_" + tag, DAY, tide, 330.0, -88.0, bz, -14, 90, c))
     SHOTS = [s for s in SHOTS if s[0].startswith("bank_") and s[0] != "bank_high_water_along"]
+# COSMIC_HALO=1: the setting sun behind thick cloud now and with v3's clouds (half the density, the engine's cut-off)
+if os.environ.get("COSMIC_HALO"):
+    SS = D(2026, 10, 20, 17, 2)
+    v3 = "lyud.Sky.CloudOpaque 0;lyud.Sky.CloudDensity 0.5"
+    now = "lyud.Sky.CloudOpaque 1;lyud.Sky.CloudDensity 1"
+    for tag, c in (("now", now), ("v3", v3), ("now2", now), ("v3b", v3), ("now3", now),
+                   ("opaque0.5", "lyud.Sky.CloudOpaque 2;lyud.Sky.CloudDensity 1")):
+        SHOTS.append(("halo_sunset_" + tag, SS, None, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + c))
 if os.environ.get("COSMIC_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["COSMIC_SHOTS"].split(",")]
 WAIT = float(os.environ.get("COSMIC_WAIT", "7"))
@@ -191,7 +199,7 @@ def step(dt):
             return
         name, when, tide, x, y, up, pitch, yaw = SHOTS[st["i"]][:8]
         for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
-                  "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
+                  "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "fov 0", "r.BloomQuality 5",
                   "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg")] + (SHOTS[st["i"]][8:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))

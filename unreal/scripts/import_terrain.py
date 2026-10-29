@@ -235,19 +235,23 @@ FWetLib WL;
 float2 xm = P.xy * 0.01;
 // the pools' outline wanders: the lookup is warped by a couple of metres and the water level against the sand
 // shifted by a centimetre or two (on a flat that moves the edge by metres), so no straight edges from the map's cells
-float2 warp = float2(WL.N(xm / 7.0), WL.N(xm / 7.0 + 31.7)) - 0.5;
+float2 warp = (float2(WL.N(xm / 7.0), WL.N(xm / 7.0 + 31.7)) - 0.5) * 3.0
+             + (float2(WL.N(xm / 31.0 + 3.3), WL.N(xm / 31.0 + 17.9)) - 0.5) * 14.0;
 float wob = (WL.N(xm / 3.1 + 5.3) - 0.5) * 2.4 + (WL.N(xm / 0.9 + 11.1) - 0.5) * 0.8;
+// the runnels behind the bars keep long strips along the shore: the water in them drains down to a level that
+// wanders by up to ~12 cm over tens of metres, so a strip breaks into separate lobed pools with sand spits between
+float drain = saturate((WL.N(xm / 23.0 + 7.7) * 0.65 + WL.N(xm / 9.0 + 2.9) * 0.35 - 0.38) * 1.6) * 12.0;
 float pool = 0.0, rim = 0.0, deep = 0.0;
 if (Rect.z > 0.0)
 {
-    float2 uv = (xm + warp * 3.0 - Rect.xy) * Rect.zw;
+    float2 uv = (xm + warp - Rect.xy) * Rect.zw;
     float2 bw = Pools.SampleLevel(PoolsSampler, uv, 0).rg;
-    float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0 + wob;   // the pool's water level, world cm
-    float keep = step(Tide.x + 3.0, surf) * smoothstep(0.004, 0.02, bw.y);
-    pool = smoothstep(0.0, 0.6, surf - z) * keep;
+    float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0 + wob - drain;   // the pool's water level, world cm
+    float keep = step(Tide.x + 3.0, surf) * smoothstep(0.004, 0.02, bw.y) * step(1.0, bw.y * 100.0 - drain + 2.0);
+    pool = smoothstep(0.0, 0.35, surf - z) * keep;
     deep = smoothstep(0.3, 10.0, surf - z) * keep;
     // the wet edge: soaked sand a little above the water, darkest right at it
-    rim = (1.0 - smoothstep(0.0, 6.0, z - surf)) * keep * (1.0 - pool);
+    rim = (1.0 - smoothstep(0.0, 2.5, z - surf)) * keep * (1.0 - pool);
 }
 float2 xy = P.xy * 0.01;
 // fine sparkle on the soaked sand: grain-sized facets tilted at random catch the sun and the sky; faded out where a
@@ -281,10 +285,14 @@ float cosv = saturate(dot(v, wn));
 // a pool is shallow: mostly the sand through it, the sky by water's Fresnel only toward grazing and never a full
 // mirror of the pale horizon (that made paper-white strips from afar); the mirrored ray is lifted a little off the
 // horizon so it picks up blue and cloud
-RDir.z = max(RDir.z, 0.12);
-RAmt = pool * (0.02 + 0.22 * pow(1.0 - cosv, 5.0));
+RDir.z = max(RDir.z, 0.3);
+// Schlick's Fresnel for water (0.02 head-on), held under a full mirror; the sand under it is dimmed by what's reflected
+float fr = 0.02 + 0.98 * pow(1.0 - cosv, 5.0);
+RAmt = pool * min(fr, 0.75);
 float3 c = C * lerp(float3(1, 1, 1), float3(0.42, 0.42, 0.44), max(wet * 0.6, rim));
-c *= lerp(1.0, 0.8, rim);
+// the wet edge darkest right at the water: a darker ring outlines each pool
+c *= lerp(1.0, 0.72, rim * rim);
+c *= 1.0 - min(fr, 0.75) * pool;
 // through the water: the sand darker and a little greener, more so where the pool is deeper
 return lerp(c, c * lerp(float3(0.6, 0.6, 0.55), float3(0.3, 0.34, 0.33), deep), pool);
 """

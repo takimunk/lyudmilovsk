@@ -191,7 +191,8 @@ return (col + glow) * D.y * Tr;
 # Europa's baked relief (tools/sky/europa_bake.py): B = height * HEIGHT_GAIN + 0.5, height unit = relief_scale of
 # Europa's radius
 _BAKE = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "europa_bake.json")))
-_RELIEF = "const float HG = %g, RS = %g;\n" % (0.4, _BAKE["relief_scale"])
+_RELIEF = "const float HG = %g, RS = %g;\nconst float2 MAPSZ = float2(%d.0, %d.0);\n" % (
+    0.4, _BAKE["relief_scale"], _BAKE["width"], _BAKE["height"])
 
 # Europa: (luminance rgb) at V: a sphere lit per pixel by the true sun, its surface our procedural Europa baked into
 # two maps (albedo; relief normal + height): Lommel-Seeliger over the sphere, the relief's normals shading its ridges,
@@ -221,7 +222,7 @@ float lat = asin(clamp(dot(n, bz), -1.0, 1.0));
 float2 uv = float2(frac(lon / 6.2831853), 0.5 - lat / 3.14159265);   // the maps run 0..360 E
 float2 dx = ddx(uv), dy = ddy(uv);
 dx.x -= round(dx.x); dy.x -= round(dy.x);
-float mip = max(log2(max(length(dx * float2(2048.0, 1024.0)), length(dy * float2(2048.0, 1024.0)))), 0.0);
+float mip = max(log2(max(length(dx * MAPSZ), length(dy * MAPSZ))), 0.0);
 if (r > 4.0 || D.y <= 0.0) return 0.0;
 float3 col = 0.0;
 if (r < 1.0)

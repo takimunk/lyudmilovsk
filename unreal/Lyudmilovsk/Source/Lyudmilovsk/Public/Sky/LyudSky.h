@@ -103,7 +103,11 @@ public:
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
 	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun instead of veiling it). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 4.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 8.f;
+	/** Clouds letting through less than this of the light behind them are drawn opaque (the cloud component's
+	 * StopTracingTransmittanceThreshold, 0.005 by default): a thick cloud hides the sun's disk, its
+	 * limb and corona entirely instead of showing their outline through it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudOpaqueBelow = 0.25f;
 	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudViewSamples = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudShadowSamples = 1.f;

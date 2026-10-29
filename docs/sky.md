@@ -27,13 +27,18 @@ star dome. The world is a simulation, so its sky is not Earth's:
   (`DISK_MASK_HLSL`): added to the capped disk it paled it to pink.
 - **Europa** (`MOON_HLSL`): our own procedural Europa, baked once into two committed maps by
   `tools/sky/europa_bake.py` (seed and every parameter in `tools/sky/europa_bake.json`; same file, same maps):
-  `textures/sky/europa_albedo.png` (sRGB) and `europa_relief.png` (relief normal east/north, height), 2048 x 1024
-  equirectangular. On it, oldest first: ridged plains (cream ice, darker brownish mottling, blue-white young ice, a fine
-  grain of tiny ridges); lineae along arcs of great and small circles, most double ridges (two crests, a trough between),
-  some triple bands (a bright central ridge in red-brown margins), some smooth grey striated bands, their margins
-  red-brown to ochre; chaos terrain (tilted ice plates keeping the old surface, in a lowered hummocky red-brown matrix);
-  a few craters (bowl, rim, central peak, bright ejecta; one rayed). The shader lights the sphere from the true sun
-  (Lommel-Seeliger: the flat bright full disk of an icy moon), the relief normals shade ridges, bands and plates, and
+  `textures/sky/europa_albedo.png` (sRGB) and `europa_relief.png` (relief normal east/north, height), 4096 x 2048
+  equirectangular. No craters, no stamped plates: the plains are ridged multifractal noise (hummocky, ridged, from
+  swells down to a pixel) with broad low regions, cut by a fracture network grown in a tidal stress field. Each of 8
+  epochs turns the field 23 degrees in longitude (non-synchronous rotation), so each generation runs another way and
+  crosscuts the older ones; ~38,000 cracks at five scales (global lineae, cycloidal chains of arcs with cusps, regional
+  ridges, small and fine cracks that make the plains' grain), traced step by step along the field, oldest first, a
+  younger ridge flattening what was under it. Each is a double ridge (two crests, a central trough), worn lower and
+  softer the older it is; some global ones are triple bands with wide dark red-brown margins, a few grey striated bands.
+  The colour comes from height and age: troughs and low ground red-brown, crests bright white, old terrain mottled
+  brown, young ice bluish white. ~3 min to bake.
+  The shader lights the sphere from the true sun
+  (Lommel-Seeliger: the flat bright full disk of an icy moon), the relief normals shade ridges and bands, and
   a short march toward the sun over the height map casts their shadows, long near the terminator; a faint ashen light
   on the dark side. 285 E (the bright side) faces the coast. Brighter by night (`MoonNightBoost`) and by day
   (`MoonDayBoost`), so it reads as a cream-white icy disk. The NASA mosaic (`europa_2k.jpg`) is kept only as a colour
@@ -47,10 +52,13 @@ outdoor exposure), Europa `SunIlluminance x MoonDiskGain`. To match, the sunligh
 (`OutdoorBloom`).
 
 **The clouds hide the sun.** The volumetric clouds are composited over the dome, so they occlude the disk by their
-transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (4) thickens it (its
+transmittance; the engine's simple cloud material is thin, so `CloudDensityScale` (8) thickens it (its
 `Cloud_GlobalDensity`, through a dynamic instance), and the low red sun goes behind the clouds instead of glowing
 through them like a lamp in fog. Thick clouds need more ray-march samples or they go grainy: `CloudViewSamples` and
-`CloudShadowSamples` (1, the engine's default; it was 0.5).
+`CloudShadowSamples` (1, the engine's default; it was 0.5). A soft cloud's core still let ~30-50% through, enough to show the disk's limb
+and corona as a ring through it: clouds letting through less than `CloudOpaqueBelow` (0.25) are drawn opaque (the cloud
+component's `StopTracingTransmittanceThreshold`, 0.005 by default; `lyud.Sky.CloudOpaque` multiplies it, 0 = the
+engine's). In UE 5.8 it is a component property, not a cvar. Thin cloud still veils the disk.
 
 **The sun on the sea.** The sun's image on calm water was a hard-edged semicircle: mostly the sunlight's own specular
 (a 10-degree area light mirrored by flat water), which no cloud in the view hides, plus the sky light's cubemap. Now
@@ -81,7 +89,7 @@ sunset, as before; the club inside is untouched (lighting channels).
   ([tides.md](tides.md)); `COSMIC_GAINS=0.5,2` adds brightness sweeps, `COSMIC_DIAG=only` the glow diagnostics,
   `COSMIC_TUNE=only` the cloud-sample and Europa-brightness sweeps, `COSMIC_BANK=1` the high water by the railway
   bank with and without seabed life, dry and without the sea.
-- Europa: `python3 tools/sky/europa_bake.py --preview <png>` rebakes the maps (~20 s) and draws a lit preview at
-  three phases; commit both PNGs with the .json.
+- Europa: `python3 tools/sky/europa_bake.py --preview <png>` rebakes the maps (~3 min) and draws a lit preview at
+  three phases (`--detail <png>` a lit 1:1 crop); commit both PNGs with the .json.
 - Gotcha: an `ALyudSky` loaded with its level gets no `OnConstruction` in a game; its dome instance is made in
   `BeginPlay` (else the sky material shows its defaults).
