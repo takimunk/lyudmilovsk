@@ -47,9 +47,12 @@ wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky
   water velocity, depth, immersion) is exactly what is on screen. Time loops every 1200 s (every frequency is a
   whole number of turns per loop).
 - **Look** (`/Game/Sea/M_LyudSea`, single-layer water): refraction, Baltic absorption and scattering (brown-green,
-  a few metres of visibility), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
+  a few metres of visibility; `make_sea_materials.py` ABSORPTION / SCATTERING per metre, fed to the water output per
+  centimetre, which is what the engine's shader takes; over the flat and the shallows, down to `SHALLOW_CLEAR_M`, the
+  water is clearer still, so the sand shows through it), detail ripples scaled by the local gusts (cat's paws, glassy calms), whitecaps where
   crests stand high or pinch, broken into tufts (a few at 7 m/s, a white-flecked sea with grey old foam drawn out
-  along the wind at gale force), breakers and wash over the shallows.
+  along the wind at gale force), breakers and wash over the shallows as thin torn lines of lace foam whose widths are held in metres (over a flat,
+  a band of depth or wave phase is tens of metres wide).
 - **Tide**: the actor stands at the datum (high water of springs); `SeaLevel()` and every depth follow the tide,
   down to 4.5 m lower at springs, and pools stay in the hollows of the bared flat ([tides.md](tides.md)).
 - **Shallows**: a depth map read from the landscape at start (4 m cells, depth under the datum plus the pools the

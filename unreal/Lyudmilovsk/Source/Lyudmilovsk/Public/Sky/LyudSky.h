@@ -79,15 +79,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonAngularDiameterDeg = 7.f;
 	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.14f;
-	/** The sunspots' umbra brightness (of the disk's), the granulation's contrast (1 = as drawn) and the faculae's strength. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.08f;
+	/** The sunspots' umbra brightness (of the disk's: small spots and pores only a little darker), the granulation's contrast (1 = as drawn) and the faculae's strength. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.7f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunGranulation = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunFaculae = 0.9f;
-	/** Europa's luminance (full sunlit ice) per lux of SunIlluminance at night, and how much brighter it is drawn by day so it shows against the blue. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunFaculae = 0.35f;
+	/** Europa's luminance (full sunlit ice) per lux of SunIlluminance, and how much brighter it is drawn by night (a bright
+	 * icy disk at the night exposure) and by day (so it shows against the blue). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDiskGain = 0.012f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonNightBoost = 1.2f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDayBoost = 12.f;
-	/** Europa's map midtones stretched by this (the lineae and chaos terrain read), and its own faint halo by night. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonContrast = 1.7f;
+	/** Europa's own faint halo by night. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonNightHalo = 0.003f;
 	/** Days the star takes to turn once (its spots drift across the disk with it); new spots each in-game day. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunRotationDays = 6.f;
@@ -102,7 +103,10 @@ public:
 	/** How much of the moonlight the clouds scatter (of the engine's): moonlit clouds round a 7-degree moon at the night exposure would glow into a halo. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonCloudScatter = 0.45f;
 	/** The clouds' density over the cloud material's own (thicker clouds hide the low red sun instead of veiling it). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 3.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudDensityScale = 4.f;
+	/** The clouds' ray-march samples over the engine's (view and shadow): the thick clouds go grainy with too few. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudViewSamples = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float CloudShadowSamples = 1.f;
 
 	/** Unlit is-sky material on the dome: atmosphere luminance, sun and moon disks, stars (unreal/scripts/import_sky.py). Without one the atmosphere draws the sky itself. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") TObjectPtr<UMaterialInterface> SkyMaterial;

@@ -39,9 +39,12 @@ physics volume (moved with the tide), the MPC `Sea` vector, and the sea material
 **Pools.** When the depth map is read, a priority flood from the water that never leaves (deeper than the lowest
 springs) finds the hollows on the flat that cannot drain; the depth map's second channel holds how much water each
 keeps. Once the ebb leaves a hollow, the ground (`M_Ground`, `WET_HLSL` in `unreal/scripts/import_terrain.py`) draws
-the pool as water up to its rim: a sharp edge with a band of soaked sand round it, nearly black through its depth,
-smooth (roughness 0.02) and ruffled by small drifting ripples, the sky mirrored in it (the sky light's cubemap along
-the mirror direction, by water's Fresnel, as emissive: the landscape's own reflections stay dim on still water). The
+the pool as shallow water up to its rim: an irregular outline (the lookup warped by a few metres and the level
+against the sand shifted by a centimetre or two, so no straight edges from the map's cells), a soft band of soaked
+sand round it, the sand darker and a little greener through the water, darkest where it is deepest, smooth (roughness
+0.02) and ruffled by small drifting ripples, the sky mirrored in it by water's Fresnel only toward grazing and never
+as a full mirror of the pale horizon (the sky light's cubemap along the mirror direction lifted a little off the
+horizon, as emissive: the landscape's own reflections stay dim on still water). The
 soaked sand under the hour's wet line is smooth and glistens: grain-sized facets catch the sun and the sky near the
 camera. The CPU side ignores pools (they are ankle deep). `TERRAIN_WET_ONLY=1` with `import_terrain.py` rebuilds just
 this part of `M_Ground` in place.

@@ -221,16 +221,33 @@ float wet = (1.0 - smoothstep(top - 5.0, top + 25.0, z)) * (1.0 - smoothstep(Tid
 float sheen = wet * (1.0 - saturate((z - now) / max(top - now, 40.0)));
 // pools: the hollows the ebb cannot drain keep water up to their rim (the sea's depth map: r = bed under the datum,
 // g = the water a hollow keeps, both m; ALyudSea hands it over as TidePools / PoolRect)
+struct FWetLib
+{
+    float H(float2 c) { return frac(sin(dot(c, float2(127.1, 311.7))) * 43758.5453); }
+    float N(float2 x)
+    {
+        float2 i = floor(x), f = frac(x);
+        f = f * f * (3.0 - 2.0 * f);
+        return lerp(lerp(H(i), H(i + float2(1, 0)), f.x), lerp(H(i + float2(0, 1)), H(i + float2(1, 1)), f.x), f.y);
+    }
+};
+FWetLib WL;
+float2 xm = P.xy * 0.01;
+// the pools' outline wanders: the lookup is warped by a couple of metres and the water level against the sand
+// shifted by a centimetre or two (on a flat that moves the edge by metres), so no straight edges from the map's cells
+float2 warp = float2(WL.N(xm / 7.0), WL.N(xm / 7.0 + 31.7)) - 0.5;
+float wob = (WL.N(xm / 3.1 + 5.3) - 0.5) * 2.4 + (WL.N(xm / 0.9 + 11.1) - 0.5) * 0.8;
 float pool = 0.0, rim = 0.0, deep = 0.0;
 if (Rect.z > 0.0)
 {
-    float2 uv = (P.xy * 0.01 - Rect.xy) * Rect.zw;
+    float2 uv = (xm + warp * 3.0 - Rect.xy) * Rect.zw;
     float2 bw = Pools.SampleLevel(PoolsSampler, uv, 0).rg;
-    float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0;     // the pool's water level, world cm
+    float surf = Tide.y - (bw.x - bw.y) * 100.0 - 2.0 + wob;   // the pool's water level, world cm
     float keep = step(Tide.x + 3.0, surf) * smoothstep(0.004, 0.02, bw.y);
-    pool = smoothstep(0.0, 0.8, surf - z) * keep;
-    deep = smoothstep(0.0, 12.0, surf - z) * keep;
-    rim = (1.0 - smoothstep(0.0, 5.0, z - surf)) * keep * (1.0 - pool);
+    pool = smoothstep(0.0, 0.6, surf - z) * keep;
+    deep = smoothstep(0.3, 10.0, surf - z) * keep;
+    // the wet edge: soaked sand a little above the water, darkest right at it
+    rim = (1.0 - smoothstep(0.0, 6.0, z - surf)) * keep * (1.0 - pool);
 }
 float2 xy = P.xy * 0.01;
 // fine sparkle on the soaked sand: grain-sized facets tilted at random catch the sun and the sky; faded out where a
@@ -247,25 +264,29 @@ rg += float2(0.8, 0.6) * cos(dot(xy, float2(0.8, 0.6)) * 9.0 - T * 2.1);
 rg += float2(-0.5, 0.86) * cos(dot(xy, float2(-0.5, 0.86)) * 13.0 - T * 2.7 + 1.3);
 rg += float2(0.97, -0.26) * cos(dot(xy, float2(0.97, -0.26)) * 21.0 - T * 3.3 + 4.1);
 rg += float2(-0.3, -0.95) * cos(dot(xy, float2(-0.3, -0.95)) * 31.0 - T * 4.0 + 2.2) * 0.6;
-float3 pn = normalize(float3(rg * 0.018, 1.0));
+rg += float2(WL.N(xy * 1.7 + T * 0.3) - 0.5, WL.N(xy * 1.7 + 9.0 - T * 0.25) - 0.5) * 0.8;
+float3 pn = normalize(float3(rg * 0.03, 1.0));
 float3 n = normalize(lerp(N, float3(0, 0, 1), 0.65 * max(sheen, rim)));
 n = normalize(lerp(n, sn, spark));
 Nrm = normalize(lerp(n, pn, pool));
 Rough = lerp(lerp(lerp(lerp(R, 0.42, wet), 0.12, sheen), 0.1, rim), 0.05, spark * (1.0 - pool));
 Rough = lerp(Rough, 0.02, pool);
-Spec = lerp(lerp(0.5, 0.6, max(sheen, rim)), 0.25, pool);
+Spec = lerp(lerp(0.5, 0.6, max(sheen, rim)), 0.15, pool);
 // the sky in the pools: the sky light's cubemap (clouds and all) along the mirror direction, by water's Fresnel (the
 // landscape's own reflections stay dim on still water), RDir / RAmt for the SkyLightEnvMapSample node
 float3 v = normalize(-V);
 float3 wn = normalize(float3(Nrm.xy, max(Nrm.z, 0.2)));
 RDir = reflect(-v, wn);
-RDir.z = max(RDir.z, 0.02);
 float cosv = saturate(dot(v, wn));
-RAmt = pool * 0.85 * (0.02 + 0.98 * pow(1.0 - cosv, 5.0));
-float3 c = C * lerp(float3(1, 1, 1), float3(0.4, 0.42, 0.45), max(wet, rim));
-c *= lerp(1.0, 0.75, rim);
-// through the water: the sand dark and brownish, darker where the pool is deeper (the sky comes from the reflection)
-return lerp(c, c * lerp(float3(0.22, 0.22, 0.2), float3(0.07, 0.08, 0.08), deep), pool);
+// a pool is shallow: mostly the sand through it, the sky by water's Fresnel only toward grazing and never a full
+// mirror of the pale horizon (that made paper-white strips from afar); the mirrored ray is lifted a little off the
+// horizon so it picks up blue and cloud
+RDir.z = max(RDir.z, 0.12);
+RAmt = pool * (0.02 + 0.22 * pow(1.0 - cosv, 5.0));
+float3 c = C * lerp(float3(1, 1, 1), float3(0.42, 0.42, 0.44), max(wet * 0.6, rim));
+c *= lerp(1.0, 0.8, rim);
+// through the water: the sand darker and a little greener, more so where the pool is deeper
+return lerp(c, c * lerp(float3(0.6, 0.6, 0.55), float3(0.3, 0.34, 0.33), deep), pool);
 """
 
 

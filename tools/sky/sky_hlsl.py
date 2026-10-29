@@ -7,10 +7,14 @@ The red dwarf and Europa are drawn here, per pixel of the dome, not by the atmos
   SunSpots = (the spin at the day's noon rad: the face the spots are put on, umbra brightness, granulation
               contrast, faculae strength)
   MoonDisk = (angular radius rad, luminance of full sunlit ice, ashen light share, night 0..1)
-  MoonLook = (contrast of the map's midtones, the night halo's strength, 0, 0)
-  Europa   = Europa's surface (grey, equirectangular, east longitude 0..360 left to right)
+  MoonLook = (unused, the night halo's strength, 0, 0)
+  EuropaAlbedo, EuropaRelief = Europa's baked maps (tools/sky/europa_bake.py; equirectangular, east longitude 0..360
+             left to right): albedo; relief normal (east, north) and height
 V = the view direction (camera to pixel), T = time s.
 """
+
+import json
+import os
 
 LIB = r"""
 struct FLyudSkyLib
@@ -40,9 +44,11 @@ struct FLyudSkyLib
         for (int o = 0; o < 4; o++) { n += a * Noise(p); p = p * 2.07 + 13.1; a *= 0.5; }
         return n / 0.9375;
     }
-    // granules: bright cells with dark lanes (Worley F2 - F1); the cells' seeds wander, so the pattern boils
+    // granules: soft bright cells parted by thin dark lanes (Worley F2 - F1 on a warped grid, so no straight polygon
+    // edges); each a gentle dome, the lane's depth varying along it; the cells' seeds wander, so the pattern boils
     float Granules(float3 p, float t)
     {
+        p += float3(Noise(p * 0.7 + 3.1), Noise(p * 0.7 + 17.3), Noise(p * 0.7 + 29.9)) * 0.9 - 0.45;
         float3 i = floor(p), f = frac(p);
         float f1 = 8.0, f2 = 8.0, b = 0.5;
         for (int z = -1; z <= 1; z++)
@@ -51,25 +57,30 @@ struct FLyudSkyLib
         {
             float3 g = float3(x, y, z);
             float3 h = H33(i + g);
-            float3 o = 0.5 + 0.38 * sin(t * (0.6 + h * 0.8) + h * 6.2831853);
+            float3 o = 0.5 + 0.4 * sin(t * (0.6 + h * 0.8) + h * 6.2831853);
             float d = length(g + o - f);
             if (d < f1) { f2 = f1; f1 = d; b = H3(i + g + 71.3); } else if (d < f2) { f2 = d; }
         }
-        // a granule: brightest at its middle, each a little brighter or dimmer than the next, a soft dark lane round it
-        float lane = smoothstep(0.0, 0.35, f2 - f1);
-        return lane * (0.55 + 0.45 * b) * (1.0 - 0.35 * f1);
+        float e = f2 - f1;
+        float lane = 1.0 - exp(-e * e * 30.0);
+        float dome = 1.0 - 0.5 * smoothstep(0.0, 0.9, f1);
+        return lerp(0.25, 1.0, lane) * dome * (0.85 + 0.15 * b);
     }
-    // spot k (0..2) of group g of a day's seed: (centre on the unit star, umbra radius rad; 0 = none). Groups stand
-    // in two belts north and south of the equator, on the face the star turns to us at the day's noon (face = the
-    // spin then), each a big leader with smaller followers trailing it in longitude
+    // member k (0 leader, 1..4 followers) of spot group g (0..2) of a day's seed: (centre on the unit star, umbra
+    // radius rad; 0 = none). One to three groups, in two belts north and south of the equator, on the face the star
+    // turns to us at the day's noon (face = the spin then); a big leader, ragged smaller followers and pores trailing
+    // it in longitude
     float4 Spot(float seed, int g, int k, float face)
     {
         float gk = seed * 3.17 + g * 2.71;
         float sk = gk * 1.31 + k * 1.618;
-        bool on = (g < 3 || H1(gk + 7.0) < 0.55) && (k == 0 || H1(sk + 8.0) < (k == 1 ? 0.8 : 0.5));
-        float lat = (H1(gk) < 0.5 ? -1.0 : 1.0) * (0.12 + 0.42 * H1(gk + 1.0)) + (H1(sk + 2.0) - 0.5) * 0.07 * k;
-        float lon = face + (H1(gk + 3.0) - 0.5) * 2.4 - k * (0.2 + 0.16 * H1(sk + 4.0));
-        float r = k == 0 ? 0.045 + 0.065 * H1(gk + 5.0) : 0.014 + 0.03 * H1(sk + 6.0);
+        float pg = g == 0 ? 1.0 : (g == 1 ? 0.6 : 0.3);
+        float pk = k == 0 ? 1.0 : 0.9 - 0.15 * k;
+        bool on = H1(gk + 7.0) < pg && H1(sk + 8.0) < pk;
+        float big = g == 0 ? 1.0 : 0.55 + 0.45 * H1(gk + 9.0);
+        float lat = (H1(gk) < 0.5 ? -1.0 : 1.0) * (0.14 + 0.4 * H1(gk + 1.0)) + (H1(sk + 2.0) - 0.5) * 0.02 * min(k, 1);
+        float lon = face + (H1(gk + 3.0) - 0.5) * 2.2 - k * (0.02 + 0.03 * H1(sk + 4.0)) - (k > 0 ? 0.03 * big : 0.0);
+        float r = k == 0 ? (0.007 + 0.009 * H1(gk + 5.0)) * big : 0.0025 + 0.004 * H1(sk + 6.0) * big;
         return float4(cos(lat) * sin(lon), sin(lat), cos(lat) * cos(lon), on ? r : 0.0);
     }
 };
@@ -105,30 +116,44 @@ if (r < 1.0)
     // strong limb darkening (a cool convective star): ~0.15 of the centre at the very edge
     float limb = 0.15 + 0.85 * pow(mu, 0.85);
     float3 base = lerp(Limb, Hot, pow(mu, 0.6)) * limb;
-    // granulation: ~70 cells across with dark lanes, slowly boiling; finer mottling on top; flatter toward the limb
-    float g = L.Granules(q * 34.0, T * 0.05);
-    float m = L.Fbm(q * 90.0 + T * 0.01);
-    float gc = Spots.z * (0.45 + 0.55 * mu);
-    float gran = 1.0 + gc * (0.55 * (g - 0.42) + 0.15 * (m - 0.5));
-    // spots: a dark umbra in a striated penumbra, in groups; faculae (bright) round them, plainest near the limb
+    // granulation at its true scale: a granule is ~1/1000 of the diameter, so ~1000 across the disk, at best a
+    // couple of pixels each full-screen: a fine, barely resolved mottling, faded to its mean where a pixel covers
+    // several (else it shimmers); mesogranulation and supergranulation as faint broad patches; slowly boiling
+    float aa = 1.0 - smoothstep(0.0008, 0.0025, fw);
+    float g1 = aa > 0.0 ? L.Granules(q * 500.0, T * 0.15) : 0.62;
+    float meso = L.Fbm(q * 45.0 + T * 0.003);
+    float sup = L.Noise(q * 14.0 + 7.0);
+    float gc = Spots.z * (0.4 + 0.6 * mu);
+    float gran = 1.0 + gc * (aa * 0.14 * (g1 - 0.62) + 0.035 * (meso - 0.5) + 0.03 * (sup - 0.5));
+    // spots: small and subtle (Dima: barely visible dark points, a little darker than the photosphere): a few pores
+    // and one or two small spots with a slight, soft penumbra, a ragged edge
     float spot = 1.0, fac = 0.0;
-    for (int gi = 0; gi < 4; gi++)
-    for (int k = 0; k < 3; k++)
+    for (int gi = 0; gi < 3; gi++)
+    for (int k = 0; k < 5; k++)
     {
         float4 kk = L.Spot(D.z, gi, k, Spots.x);
         if (kk.w <= 0.0) continue;
-        float d = acos(clamp(dot(q, kk.xyz), -1.0, 1.0));
-        float ru = kk.w, rp = kk.w * 2.2;
-        if (d > rp * 3.5) continue;
-        float3 t1 = normalize(cross(kk.xyz, float3(0, 1, 0))), t2 = cross(kk.xyz, t1);
-        float az = atan2(dot(q, t2), dot(q, t1));
-        // the penumbra's filaments run out from the umbra, its edge ragged
-        float fil = 0.88 + 0.12 * sin(az * 60.0 + L.Noise(q * 45.0) * 5.0) + 0.06 * (L.Noise(q * 160.0) - 0.5);
-        float rag = 1.0 + 0.18 * (L.Noise(q * 70.0 + kk.x * 9.0) - 0.5);
-        float pen = 1.0 - smoothstep(rp * 0.85 * rag, rp * 1.02 * rag, d);
-        float umb = 1.0 - smoothstep(ru * 0.7, ru * 1.0, d);
-        spot *= lerp(1.0, lerp(0.52 * fil, Spots.y, umb), pen);
-        fac = max(fac, (1.0 - smoothstep(rp, rp * 3.5, d)) * (1.0 - pen));
+        float ru = kk.w;
+        float3 dq = q - kk.xyz;
+        if (dot(dq, dq) > ru * ru * 36.0) continue;
+        float hs = L.H1(D.z * 1.7 + gi * 5.3 + k * 2.9);
+        float3 t1 = normalize(cross(float3(0, 1, 0), kk.xyz)), t2 = cross(kk.xyz, t1);
+        float2 rq = float2(dot(dq, t1), dot(dq, t2));
+        float el = 1.0 + 0.5 * frac(hs * 7.31);
+        rq *= float2(1.0 / sqrt(el), sqrt(el));
+        float d = length(rq);
+        float2 cs = rq / max(d, 1e-6);
+        float3 sd = float3(hs * 37.0, k * 11.0, gi * 7.0);
+        float ue = ru * (0.8 + 0.4 * L.Noise(float3(cs * 2.2, 0.0) + sd));
+        bool pore = k > 0 || ru < 0.006;
+        float pe = pore ? ue * 1.6 : ue * (1.9 + 0.4 * L.Noise(float3(cs * 1.8, 2.0) + sd));
+        float fil = 0.9 + 0.1 * L.Noise(float3(cs * 16.0, d / ru * 0.6) + sd);
+        float x = saturate((d - ue) / max(pe - ue, 1e-5));
+        float pen = 1.0 - smoothstep(0.0, 1.0, x);
+        float umb = 1.0 - smoothstep(0.7, 1.0, d / ue);
+        float dark = lerp(lerp(1.0, 0.86 * fil, pen * (pore ? 0.5 : 1.0)), Spots.y, umb);
+        spot *= dark;
+        fac = max(fac, (1.0 - smoothstep(pe, pe * 4.0, d)) * (1.0 - pen));
     }
     // faculae: bright patches round the groups and a network near the limb, where they show best
     float facNoise = smoothstep(0.42, 0.75, L.Fbm(q * 20.0 + 5.0));
@@ -163,11 +188,17 @@ float3 glow = (float3(1.0, 0.36, 0.12) * corona + float3(1.0, 0.25, 0.15) * prom
 return (col + glow) * D.y * Tr;
 """
 
-# Europa: (luminance rgb) at V: a sphere lit per pixel by the true sun (Lommel-Seeliger, a little Lambert),
-# its surface the Galileo/Voyager mosaic tinted cream ice with red-brown lineae, ashen light on the night side,
-# a faint halo by night. Inputs: V, M (MoonDir), S (SunDir), P (Pole), D (MoonDisk), C (MoonLook: contrast, halo),
-# Tr, Europa (texture).
-MOON_HLSL = r"""
+# Europa's baked relief (tools/sky/europa_bake.py): B = height * HEIGHT_GAIN + 0.5, height unit = relief_scale of
+# Europa's radius
+_BAKE = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "europa_bake.json")))
+_RELIEF = "const float HG = %g, RS = %g;\n" % (0.4, _BAKE["relief_scale"])
+
+# Europa: (luminance rgb) at V: a sphere lit per pixel by the true sun, its surface our procedural Europa baked into
+# two maps (albedo; relief normal + height): Lommel-Seeliger over the sphere, the relief's normals shading its ridges,
+# bands and chaos blocks, and their shadows (a short march toward the sun over the height map) long near the
+# terminator; ashen light on the night side, a faint halo by night. Inputs: V, M (MoonDir), S (SunDir), P (Pole),
+# D (MoonDisk), C (MoonLook: halo in y), Tr, Europa (albedo), Relief.
+MOON_HLSL = _RELIEF + r"""
 float3 v = normalize(V);
 float3 m = normalize(M.xyz);
 float R = D.x;
@@ -185,26 +216,48 @@ float2 uc = u / max(r, 1.0);
 float3 n = ee * uc.x + nn * uc.y - m * mu;
 // the body frame: x toward us (the face it always turns to us), z north
 float3 bx = -m, bz = nn, by = cross(bz, bx);
-float lon = atan2(dot(n, by), dot(n, bx)) + 1.5708;          // 90 E (270 W: Conamara, Pwyll, the lineae) faces us
+float lon = atan2(dot(n, by), dot(n, bx)) + 4.9742;          // 285 E faces us
 float lat = asin(clamp(dot(n, bz), -1.0, 1.0));
-float2 uv = float2(frac(lon / 6.2831853), 0.5 - lat / 3.14159265);   // the map runs 0..360 E
+float2 uv = float2(frac(lon / 6.2831853), 0.5 - lat / 3.14159265);   // the maps run 0..360 E
 float2 dx = ddx(uv), dy = ddy(uv);
 dx.x -= round(dx.x); dy.x -= round(dy.x);
+float mip = max(log2(max(length(dx * float2(2048.0, 1024.0)), length(dy * float2(2048.0, 1024.0)))), 0.0);
 if (r > 4.0 || D.y <= 0.0) return 0.0;
 float3 col = 0.0;
 if (r < 1.0)
 {
-    float g = Europa.SampleGrad(EuropaSampler, uv, dx, dy).r;
-    // ice: cream where bright, the lineae and chaos terrain red-brown where dark; the map's midtones stretched
-    // (Contrast) so the lineae read against the ice at a glance, not only in a close-up
-    float gs = saturate((g - 0.5) * C.x + 0.5);
-    float3 ice = lerp(float3(0.3, 0.12, 0.05), float3(0.97, 0.93, 0.85), smoothstep(0.25, 0.7, gs));
-    ice *= 0.12 + 0.95 * gs;
-    float mu0 = dot(n, normalize(S.xyz));
-    float ls = mu0 > 0.0 ? mu0 / (mu0 + mu) * 2.0 : 0.0;
-    float lit = lerp(saturate(mu0), ls, 0.7);
+    float3 alb = Europa.SampleGrad(EuropaSampler, uv, dx, dy).rgb;
+    float4 rl = Relief.SampleGrad(ReliefSampler, uv, dx, dy);
+    // the relief's normal in the surface's frame (east, north, up)
+    float3 E = cross(bz, n);
+    E = dot(E, E) > 1e-8 ? normalize(E) : ee;
+    float3 N = cross(n, E);
+    float2 sl = rl.xy * 2.0 - 1.0;
+    float3 rn = normalize(E * sl.x + N * sl.y + n * sqrt(saturate(1.0 - dot(sl, sl))));
+    float3 s = normalize(S.xyz);
+    float mg = dot(n, s), mr = dot(rn, s);
+    // Lommel-Seeliger over the sphere (an icy moon's flat-looking full disk), the relief's own slopes on top
+    float ls = mg > 0.0 ? mg / (mg + mu) * 2.0 : 0.0;
+    float lit = ls * clamp(saturate(mr) / max(mg, 0.08), 0.0, 1.8) * smoothstep(-0.03, 0.04, mg);
+    // the relief's shadows: march from here toward the sun over the height map; they lengthen near the terminator
+    float sh = 1.0;
+    if (mg > -0.03 && mg < 0.45)
+    {
+        float2 sd = float2(dot(s, E), dot(s, N));
+        float sdl = max(length(sd), 1e-4);
+        float tanE = mg / sdl;
+        float2 duv = sd / sdl * float2(1.0 / (6.2831853 * max(cos(lat), 0.05)), -1.0 / 3.14159265);
+        float h0 = (rl.z - 0.5) / HG * RS;
+        for (int i = 1; i <= 12; i++)
+        {
+            float t = 0.0015 * i * i * 0.25 + 0.0008 * i;              // radians along the ground, up to ~0.03
+            float hz = (Relief.SampleLevel(ReliefSampler, uv + duv * t, mip).z - 0.5) / HG * RS;
+            float ray = h0 + t * tanE;
+            sh = min(sh, saturate(1.0 + (ray - hz) / (RS * 0.12)));
+        }
+    }
     float ashen = D.z * (0.6 + 0.4 * mu);
-    col = ice * (lit + ashen);
+    col = alb * (lit * sh + ashen);
     col *= saturate((1.0 - r) / fw);
 }
 // a faint halo by night (moonlight in the haze)
@@ -233,11 +286,12 @@ float as = acos(clamp(dot(v, normalize(S.xyz)), -1.0, 1.0));
 return horizon * smoothstep(MD.x, MD.x * 3.5, am) * smoothstep(SD.x, SD.x * 2.0, as);
 """
 
-# How much of the atmosphere's own luminance stays over the two disks (0.35 inside the sun, 0.5 inside Europa by
-# night: by day the blue sky over the ice is what shows it at all; 1 outside, a soft rim). Inputs: V, S (SunDir), D (SunDisk), M (MoonDir), MD (MoonDisk).
+# How much of the atmosphere's own luminance stays over the two disks (0.35 inside the sun, 0.2 inside Europa by
+# night, so the blue night sky does not tint the ice lavender; by day the blue sky over the ice is what shows it at
+# all; 1 outside, a soft rim). Inputs: V, S (SunDir), D (SunDisk), M (MoonDir), MD (MoonDisk).
 DISK_MASK_HLSL = r"""
 float3 v = normalize(V);
 float a = acos(clamp(dot(v, normalize(S.xyz)), -1.0, 1.0));
 float b = acos(clamp(dot(v, normalize(M.xyz)), -1.0, 1.0));
-return lerp(0.35, 1.0, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0.5, MD.w), 1.0, smoothstep(MD.x * 0.97, MD.x * 1.03, b));
+return lerp(0.35, 1.0, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0.2, MD.w), 1.0, smoothstep(MD.x * 0.97, MD.x * 1.03, b));
 """
