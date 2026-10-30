@@ -285,7 +285,9 @@ namespace
 	float BarkHeight(const FPlantBark& B, uint32 Seed, float U, float V, float& OutFlake)
 	{
 		OutFlake = 0.f;
-		const float Warp = (Fbm(Seed + 1, U, V, 4, 2, 3) - 0.5f) * 0.12f;
+		// a strong domain warp breaks the regular stripes; a slow field changes the relief from patch to patch
+		const float Warp = (Fbm(Seed + 1, U, V, 2, 1, 3) - 0.5f) * 0.2f;
+		const float Macro = 0.72f + 0.28f * Fbm(Seed + 9, U, V, 2, 3, 3);
 		const float Fine = Fbm(Seed + 2, U, V, 24, 48, 3);
 		switch (B.Pattern)
 		{
@@ -298,17 +300,17 @@ namespace
 			if (B.Pattern == EPlantBarkPattern::Blocks)
 			{
 				// cracks across the ridges
-				const float C = FMath::Abs(Noise(Seed + 5, U + Warp, V + Warp, 5, 9) - 0.5f);
+				const float C = FMath::Abs(Noise(Seed + 5, U + Warp * 0.35f, V + Warp * 0.35f, 5, 9) - 0.5f);
 				H *= 0.3f + 0.7f * Smooth(0.015f, 0.07f, C);
 			}
-			return FMath::Clamp(H * (0.85f + 0.15f * Fine) + 0.08f * (Fine - 0.5f), 0.f, 1.f);
+			return FMath::Clamp(H * Macro * (0.85f + 0.15f * Fine) + 0.1f * (Fine - 0.5f), 0.f, 1.f);
 		}
 		case EPlantBarkPattern::Plates:
 		{
 			// irregular scales, longer than wide, cracked apart; each a little cupped and lifting at its
 			// edges, and some already flaked off, baring the smoother, warmer bark under them
 			float Cell = 0.f;
-			const float E = Voronoi(Seed + 6, U + Warp * 1.5f, V + Warp, 7, 7, B.TileHeight / B.TileWidth * 0.6f, Cell);
+			const float E = Voronoi(Seed + 6, U + Warp * 1.2f, V + Warp, 7, 7, B.TileHeight / B.TileWidth * 0.6f, Cell);
 			const float Crack = Smooth(0.f, 0.06f, E);
 			if (Cell < B.FlakeChance)
 			{
@@ -316,7 +318,7 @@ namespace
 				return FMath::Clamp(0.25f + 0.1f * Fine, 0.f, 1.f) * Crack;
 			}
 			const float Cup = 0.55f + 0.3f * Cell + 0.15f * (1.f - Smooth(0.06f, 0.3f, E));
-			return FMath::Clamp(Cup * Crack + 0.18f * (Fine - 0.5f), 0.f, 1.f);
+			return FMath::Clamp(Cup * Crack * (0.88f + 0.12f * Macro) + 0.22f * (Fine - 0.5f), 0.f, 1.f);
 		}
 		default:
 		{
@@ -611,9 +613,10 @@ static UStaticMesh* BuildWoodImpl(UObject* Outer, UStaticMesh* Mesh, const TArra
 			const int32 Ri = RingAt(J.S);
 			const FVector3f Dp = J.Dir - Dirs[Ri] * FVector3f::DotProduct(J.Dir, Dirs[Ri]);
 			const float Theta = FMath::Atan2(FVector3f::DotProduct(Dp, Bfs[Ri]), FVector3f::DotProduct(Dp, Nfs[Ri]));
-			const float Strength = Bark.Scars * (0.8f + 0.2f * PlantModel::Hash01(Seed, T.Key, Jk, 63));
+			const float Pick = PlantModel::Hash01(Seed, T.Key, Jk, 63);
+			const float Strength = Bark.Scars * (0.3f + 0.7f * Pick * Pick);
 			const float Arms = 0.7f + 0.6f * PlantModel::Hash01(Seed, T.Key, Jk, 64);
-			const float Rc = J.R * (J.bShed ? 1.6f : 2.2f);
+			const float Rc = J.R * (J.bShed ? 1.3f : 1.7f) * (0.6f + 0.8f * PlantModel::Hash01(Seed, T.Key, Jk, 69));
 			const float Cx = (Theta < 0.f ? Theta + 2.f * PI : Theta) / (2.f * PI) * Rect.W, Cy = J.S * PerM_Y;
 			const float Mx = PerM_X(J.S);
 			const int32 Ex = FMath::CeilToInt(3.6f * Arms * Rc * Mx), EyLo = FMath::CeilToInt(1.6f * Rc * PerM_Y), EyHi = FMath::CeilToInt(2.2f * Rc * PerM_Y);
@@ -955,7 +958,7 @@ void PlantMeshes::BuildBarkTextures(UObject* Outer, const FPlantSpecies& S, uint
 				float Flake = 0.f;
 				const float Hh = BarkHeight(B, TexSeed, U, V, Flake);
 				Hgt[Y * W + X] = Hh;
-				const float Mottle = 0.8f + 0.4f * Fbm(TexSeed + 20, U, V, 6, 10, 3);
+				const float Mottle = (0.82f + 0.36f * Fbm(TexSeed + 20, U, V, 3, 5, 3)) * (0.9f + 0.2f * Fbm(TexSeed + 21, U, V, 2, 3, 2));
 				C = FMath::Lerp(FMath::Lerp(B.FurrowColour, B.RidgeColour, Hh), B.UnderColour, Flake) * Mottle;
 			}
 			// alpha: the deep fissures of an old, dark trunk base (where the vertex colour asks for it)

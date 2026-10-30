@@ -79,12 +79,72 @@ albedo = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, -200, 
               texture=unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))
 normal = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, 200, parameter_name="BarkNormal",
               texture=unreal.load_asset("/Engine/EngineMaterials/DefaultNormal"), sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+# --- against tiling: the texture is sampled twice, the second time at another scale and offset, and the two are blended
+# patch by patch by a noise of the world position (a different pattern on every tree, none repeating along a trunk);
+# a slower noise lightens and darkens whole stretches of bark
+albedo_b = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, -700, parameter_name="BarkAlbedo",
+                texture=unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))
+normal_b = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, 700, parameter_name="BarkNormal",
+                texture=unreal.load_asset("/Engine/EngineMaterials/DefaultNormal"), sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+uv_b = node(m, unreal.MaterialExpressionTextureCoordinate, -1200, -800, coordinate_index=0, u_tiling=0.61, v_tiling=0.37)
+uv_off = node(m, unreal.MaterialExpressionAdd, -1050, -800, const_b=0.37)
+link(uv_b, "", uv_off, "A")
+link(uv_off, "", albedo_b, "UVs")
+link(uv_off, "", normal_b, "UVs")
+MACRO_HLSL = """
+float3 q = P * Scale;
+float3 i = floor(q);
+float3 f = frac(q);
+f = f * f * (3.0 - 2.0 * f);
+float h000 = frac(sin(dot(i, float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h100 = frac(sin(dot(i + float3(1, 0, 0), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h010 = frac(sin(dot(i + float3(0, 1, 0), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h110 = frac(sin(dot(i + float3(1, 1, 0), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h001 = frac(sin(dot(i + float3(0, 0, 1), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h101 = frac(sin(dot(i + float3(1, 0, 1), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h011 = frac(sin(dot(i + float3(0, 1, 1), float3(127.1, 311.7, 74.7))) * 43758.5453);
+float h111 = frac(sin(dot(i + float3(1, 1, 1), float3(127.1, 311.7, 74.7))) * 43758.5453);
+return lerp(lerp(lerp(h000, h100, f.x), lerp(h010, h110, f.x), f.y), lerp(lerp(h001, h101, f.x), lerp(h011, h111, f.x), f.y), f.z);
+"""
+wpos = node(m, unreal.MaterialExpressionWorldPosition, -1500, -300,
+            world_position_shader_offset=unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS)
+patch_n = node(m, unreal.MaterialExpressionCustom, -1300, -300, code=MACRO_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT1,
+               description="BarkPatches", inputs=[custom_input("P"), custom_input("Scale")])
+link(wpos, "", patch_n, "P")
+link(node(m, unreal.MaterialExpressionConstant, -1500, -150, r=0.045), "", patch_n, "Scale")
+tone_n = node(m, unreal.MaterialExpressionCustom, -1300, -100, code=MACRO_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT1,
+              description="BarkTone", inputs=[custom_input("P"), custom_input("Scale")])
+link(wpos, "", tone_n, "P")
+link(node(m, unreal.MaterialExpressionConstant, -1500, 0, r=0.0065), "", tone_n, "Scale")
+patch_mask = node(m, unreal.MaterialExpressionSmoothStep, -1100, -300)
+link(node(m, unreal.MaterialExpressionConstant, -1250, -420, r=0.38), "", patch_mask, "Min")
+link(node(m, unreal.MaterialExpressionConstant, -1250, -370, r=0.62), "", patch_mask, "Max")
+link(patch_n, "", patch_mask, "Value")
+tone = node(m, unreal.MaterialExpressionMultiply, -1100, -100, const_b=0.36)
+link(tone_n, "", tone, "A")
+tone1 = node(m, unreal.MaterialExpressionAdd, -950, -100, const_b=0.82)
+link(tone, "", tone1, "A")
+alb_mix = node(m, unreal.MaterialExpressionLinearInterpolate, -800, -250)
+link(albedo, "RGB", alb_mix, "A")
+link(albedo_b, "RGB", alb_mix, "B")
+link(patch_mask, "", alb_mix, "Alpha")
+alb_toned = node(m, unreal.MaterialExpressionMultiply, -650, -250)
+link(alb_mix, "", alb_toned, "A")
+link(tone1, "", alb_toned, "B")
+alpha_mix = node(m, unreal.MaterialExpressionLinearInterpolate, -800, -50)
+link(albedo, "A", alpha_mix, "A")
+link(albedo_b, "A", alpha_mix, "B")
+link(patch_mask, "", alpha_mix, "Alpha")
+nrm_mix = node(m, unreal.MaterialExpressionLinearInterpolate, -800, 350)
+link(normal, "RGB", nrm_mix, "A")
+link(normal_b, "RGB", nrm_mix, "B")
+link(patch_mask, "", nrm_mix, "Alpha")
 tint = node(m, unreal.MaterialExpressionVectorParameter, -900, -450, parameter_name="Tint", default_value=unreal.LinearColor(1, 1, 1, 1))
 snow = node(m, unreal.MaterialExpressionScalarParameter, -900, 500, parameter_name="Snow", default_value=0.0)
 vc = node(m, unreal.MaterialExpressionVertexColor, -1300, -700)
 twig_col = node(m, unreal.MaterialExpressionVectorParameter, -1300, -900, parameter_name="TwigColour", default_value=unreal.LinearColor(0.08, 0.035, 0.02, 1))
 twig = node(m, unreal.MaterialExpressionLinearInterpolate, -1000, -600)
-link(albedo, "RGB", twig, "A")
+link(alb_toned, "", twig, "A")
 link(twig_col, "", twig, "B")
 link(vc, "G", twig, "Alpha")
 base_r = node(m, unreal.MaterialExpressionVectorParameter, -1300, -1100, parameter_name="BaseRidge", default_value=unreal.LinearColor(0.06, 0.06, 0.055, 1))
@@ -92,7 +152,7 @@ base_f = node(m, unreal.MaterialExpressionVectorParameter, -1300, -1250, paramet
 rough_base = node(m, unreal.MaterialExpressionLinearInterpolate, -1000, -1100)
 link(base_f, "", rough_base, "A")
 link(base_r, "", rough_base, "B")
-link(albedo, "A", rough_base, "Alpha")
+link(alpha_mix, "", rough_base, "Alpha")
 bark = node(m, unreal.MaterialExpressionLinearInterpolate, -800, -600)
 link(twig, "", bark, "A")
 link(rough_base, "", bark, "B")
@@ -135,7 +195,7 @@ link(wood, "", lerp, "A")
 link(white, "", lerp, "B")
 link(mask, "", lerp, "Alpha")
 mel.connect_material_property(lerp, "", MP.MP_BASE_COLOR)
-mel.connect_material_property(normal, "RGB", MP.MP_NORMAL)
+mel.connect_material_property(nrm_mix, "", MP.MP_NORMAL)
 rough = node(m, unreal.MaterialExpressionConstant, -300, 300, r=0.92)
 mel.connect_material_property(rough, "", MP.MP_ROUGHNESS)
 m.set_editor_property("used_with_instanced_static_meshes", True)

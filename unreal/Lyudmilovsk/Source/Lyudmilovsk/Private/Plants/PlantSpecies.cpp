@@ -621,9 +621,9 @@ namespace
 		S.Bark.TileHeight = 0.4f;
 		S.Bark.Depth = 2.4f;
 		S.Bark.RidgeColour = C(0.2f, 0.075f, 0.03f);
-		S.Bark.FurrowColour = C(0.1f, 0.035f, 0.015f);
-		S.Bark.FlakeChance = 0.22f;
-		S.Bark.UnderColour = C(0.32f, 0.12f, 0.045f);
+		S.Bark.FurrowColour = C(0.14f, 0.05f, 0.02f);
+		S.Bark.FlakeChance = 0.1f;
+		S.Bark.UnderColour = C(0.27f, 0.1f, 0.04f);
 		S.Bark.DarkBaseRate = 0.2f;
 		S.Bark.DarkBaseMax = 9.f;
 		S.Bark.BaseRidgeColour = C(0.07f, 0.055f, 0.045f);
@@ -735,8 +735,8 @@ namespace
 		S.Bark.Depth = 2.2f;
 		S.Bark.RidgeColour = C(0.07f, 0.03f, 0.016f);
 		S.Bark.FurrowColour = C(0.04f, 0.02f, 0.012f);
-		S.Bark.FlakeChance = 0.25f;
-		S.Bark.UnderColour = C(0.25f, 0.1f, 0.05f);
+		S.Bark.FlakeChance = 0.12f;
+		S.Bark.UnderColour = C(0.2f, 0.085f, 0.042f);
 		S.BudBreakDay = 125.f;
 		S.FullLeafDay = 155.f;
 		S.ColourStartDay = 290.f;
