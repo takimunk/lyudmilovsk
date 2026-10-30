@@ -120,7 +120,10 @@ void UTreeBakeCache::Finish(FJob& Job)
 		Out.Card = UMaterialInstanceDynamic::Create(NeedleMaterial, this);
 		KeepAlive.Add(Out.Card);
 		Out.Card->SetTextureParameterValue(TEXT("LeafDetail"), A.Card);
-		Out.Card->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		// a baked tree sways and leans with the wind like the live one: its instance is the tree, so its foot is the instance's
+		Out.Card->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		Out.Card->SetScalarParameterValue(TEXT("WeightMin"), 0.5f);
+		Out.Card->SetScalarParameterValue(TEXT("Bend"), S.WindBend);
 		Out.Card->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkAlbedo"), A.Albedo);
 		Out.Wood->SetTextureParameterValue(TEXT("BarkNormal"), A.Normal);
@@ -128,16 +131,21 @@ void UTreeBakeCache::Finish(FJob& Job)
 		Out.Wood->SetVectorParameterValue(TEXT("TwigColour"), S.Bark.TwigColour);
 		Out.Wood->SetVectorParameterValue(TEXT("BaseRidge"), S.Bark.BaseRidgeColour);
 		Out.Wood->SetVectorParameterValue(TEXT("BaseFurrow"), S.Bark.BaseFurrowColour);
-		Out.Wood->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		Out.Wood->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		Out.Wood->SetScalarParameterValue(TEXT("Bend"), S.WindBend);
 		// the flowers (slot 3): the leaf material with the blossom atlas, still (a baked tree does not sway)
 		Out.Bloom = UMaterialInstanceDynamic::Create(LeafMaterial, this);
 		KeepAlive.Add(Out.Bloom);
 		if (A.Bloom) Out.Bloom->SetTextureParameterValue(TEXT("LeafDetail"), A.Bloom);
-		Out.Bloom->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
+		Out.Bloom->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		Out.Bloom->SetScalarParameterValue(TEXT("WeightMin"), 0.45f);
+		Out.Bloom->SetScalarParameterValue(TEXT("Bend"), S.WindBend);
 		Out.Bloom->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		Out.Leaf->SetTextureParameterValue(TEXT("LeafDetail"), A.Detail);
-		Out.Leaf->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
-		Out.Leaf->SetScalarParameterValue(TEXT("Flutter"), 0.f);
+		Out.Leaf->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
+		Out.Leaf->SetScalarParameterValue(TEXT("WeightMin"), 0.45f);
+		Out.Leaf->SetScalarParameterValue(TEXT("Bend"), S.WindBend);
+		Out.Leaf->SetScalarParameterValue(TEXT("Flutter"), 0.6f);
 	}
 	const FPlantSeason Season = PlantModel::Season(S, Job.Key.Seed, Job.Day);
 	Out.Wood->SetScalarParameterValue(TEXT("Snow"), Season.Snow);

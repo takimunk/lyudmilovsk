@@ -50,27 +50,16 @@ def custom_input(name):
     return c
 
 
-# Wind for swinging twigs and their leaves: a smooth field over the world, so a twig and the leaves on
-# it move together; W is how far this point swings (cm at full gust).
-WIND_HLSL = """
-float a = sin(T * 1.3 + P.x * 0.011 + P.y * 0.007);
-float b = sin(T * 0.83 + P.y * 0.013 - P.x * 0.005);
-float g = 0.55 + 0.45 * sin(T * 0.31 + (P.x + P.y) * 0.002);
-return float3(0.5 + 0.7 * a, 0.6 * b, -0.15 * abs(a)) * g * W;
-"""
+import tree_wind  # noqa: E402
 
 
 def wind(m, weight, x, y):
-    """World position offset node: WIND_HLSL at this vertex, scaled by the expression weight."""
-    pos = node(m, unreal.MaterialExpressionWorldPosition, x - 300, y,
-               world_position_shader_offset=unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS)
-    time = node(m, unreal.MaterialExpressionTime, x - 300, y + 120)
-    c = node(m, unreal.MaterialExpressionCustom, x, y, code=WIND_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
-             description="Wind", inputs=[custom_input(n) for n in ("P", "T", "W")])
-    link(pos, "", c, "P")
-    link(time, "", c, "T")
-    link(weight, "", c, "W")
-    return c
+    """The tree wind (tree_wind.py) as a world position offset node, scaled by the expression weight."""
+    return tree_wind.wind(m, weight, x, y, node, link, scalar_param)
+
+
+def scalar_param(m, name, x, y, v):
+    return node(m, unreal.MaterialExpressionScalarParameter, x, y, parameter_name=name, default_value=v)
 
 
 # --- bark
@@ -234,18 +223,21 @@ leaf_amp = node(m, unreal.MaterialExpressionScalarParameter, -1500, 800, paramet
 leaf_w = node(m, unreal.MaterialExpressionPerInstanceCustomData, -1300, 700, data_index=0)
 zero = node(m, unreal.MaterialExpressionConstant, -1500, 700, r=0.0)
 link(zero, "", leaf_w, "DefaultValue")
+# a baked tree has no per-instance sway weight: WeightMin gives all its leaves one
+leaf_w2 = node(m, unreal.MaterialExpressionMax, -1200, 700)
+link(leaf_w, "", leaf_w2, "A")
+link(node(m, unreal.MaterialExpressionScalarParameter, -1400, 600, parameter_name="WeightMin", default_value=0.0), "", leaf_w2, "B")
 leaf_sw = node(m, unreal.MaterialExpressionMultiply, -1100, 750)
-link(leaf_w, "", leaf_sw, "A")
+link(leaf_w2, "", leaf_sw, "A")
 link(leaf_amp, "", leaf_sw, "B")
 swing = wind(m, leaf_sw, -800, 750)
-FLUTTER_HLSL = """
-return float3(0.4 * sin(T * 5.3 + R * 17.0), 0.3 * sin(T * 6.1 + R * 29.0), 0.6 * sin(T * 7.0 + R * 40.0)) * F;
-"""
+FLUTTER_HLSL = tree_wind.FLUTTER_HLSL
 flut = node(m, unreal.MaterialExpressionCustom, -800, 1000, code=FLUTTER_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
-            description="Flutter", inputs=[custom_input(n) for n in ("T", "R", "F")])
+            description="Flutter", inputs=[custom_input(n) for n in ("T", "R", "F", "Wd")])
 link(node(m, unreal.MaterialExpressionTime, -1100, 1000), "", flut, "T")
 link(node(m, unreal.MaterialExpressionPerInstanceRandom, -1100, 1100), "", flut, "R")
 link(node(m, unreal.MaterialExpressionScalarParameter, -1100, 1200, parameter_name="Flutter", default_value=0.0), "", flut, "F")
+link(node(m, unreal.MaterialExpressionCollectionParameter, -1100, 1300, collection=unreal.load_asset("/Game/Weather/MPC_LyudWeather"), parameter_name="Wind"), "", flut, "Wd")
 wpo = node(m, unreal.MaterialExpressionAdd, -500, 850)
 link(swing, "", wpo, "A")
 link(flut, "", wpo, "B")

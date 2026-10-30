@@ -9,7 +9,11 @@ made in code per grass; vertex colour R = how far up the blade, G = a random per
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
+import os
+import sys
+
 import unreal
+
 
 mel = unreal.MaterialEditingLibrary
 eal = unreal.EditorAssetLibrary
@@ -96,16 +100,22 @@ mel.connect_material_property(node(m, unreal.MaterialExpressionConstant, -300, 3
 
 # --- wind and height
 WPO_HLSL = """
-float a = sin(T * 1.3 + P.x * 0.011 + P.y * 0.007);
+float2 dir = dot(Wd.xy, Wd.xy) > 1e-4 ? normalize(Wd.xy) : float2(1, 0);
+float2 side = float2(-dir.y, dir.x);
+float2 q = P.xy * 0.01 - Dr.xy;
+float gust = clamp(1.0 + Wd.w * 1.4 * (0.7 * sin(q.x * 0.011 + q.y * 0.0083 + Dr.z * 0.09) + 0.5 * sin(q.x * 0.043 - q.y * 0.037 + Dr.z * 0.21)), 0.15, 2.4);
+float x = max(Wd.z, 0.0) * (1.0 / 7.0);
+float local = min(x * sqrt(x) * gust, 4.5);
+float a = sin(T * (1.3 + 0.5 * local) + P.x * 0.011 + P.y * 0.007);
 float b = sin(T * 0.83 + P.y * 0.013 - P.x * 0.005);
-float g = 0.55 + 0.45 * sin(T * 0.31 + (P.x + P.y) * 0.002);
-float w = Amp * H * H;
-float3 sway = float3(0.5 + 0.7 * a, 0.6 * b, -0.15 * abs(a)) * g * w;
+float w = Amp * H * H * (0.25 + 0.75 * local);
+// leaning downwind more in a stronger wind, the blades' own waves on top
+float3 sway = float3(dir * (0.55 + 0.5 * a) * w * 1.3 + side * 0.35 * b * w, -0.15 * abs(a) * w);
 float k = Scale * Fade;
 return sway + float3(0, 0, (k - 1.0) * (P.z - O.z));
 """
 wpo = node(m, unreal.MaterialExpressionCustom, -300, 900, code=WPO_HLSL, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
-           description="GrassWind", inputs=[custom_input(n) for n in ("P", "O", "T", "H", "Amp", "Scale", "Fade")])
+           description="GrassWind", inputs=[custom_input(n) for n in ("P", "O", "T", "H", "Amp", "Scale", "Fade", "Wd", "Dr")])
 link(node(m, unreal.MaterialExpressionWorldPosition, -700, 900,
           world_position_shader_offset=unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS), "", wpo, "P")
 link(node(m, unreal.MaterialExpressionObjectPositionWS, -700, 1000), "", wpo, "O")
@@ -114,6 +124,9 @@ link(vc, "R", wpo, "H")
 link(scalar(m, "SwayAmp", -700, 1200, 6.0), "", wpo, "Amp")
 link(scalar(m, "HeightScale", -700, 1300, 1.0), "", wpo, "Scale")
 link(node(m, unreal.MaterialExpressionPerInstanceFadeAmount, -700, 1400), "", wpo, "Fade")
+_mpc = unreal.load_asset("/Game/Weather/MPC_LyudWeather")
+link(node(m, unreal.MaterialExpressionCollectionParameter, -700, 1500, collection=_mpc, parameter_name="Wind"), "", wpo, "Wd")
+link(node(m, unreal.MaterialExpressionCollectionParameter, -700, 1600, collection=_mpc, parameter_name="WindDrift"), "", wpo, "Dr")
 mel.connect_material_property(wpo, "", MP.MP_WORLD_POSITION_OFFSET)
 m.set_editor_property("used_with_instanced_static_meshes", True)
 mel.recompile_material(m)

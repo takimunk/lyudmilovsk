@@ -381,6 +381,11 @@ struct FPlantSpecies
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TwigRadiusScale = 1.f;
 	/** How far the tips of twigs swing in the wind, cm (and the leaves with them). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float Sway = 8.f;
+	/**
+	 * How far the whole tree leans in a strong wind: cm = WindBend x height^2 (m) x (wind / 7 m/s)^2 x 0.3. 0.1 puts the top of a
+	 * 15 m tree 7 cm off at 7 m/s and 60 cm at a gale of 20 m/s; slender flexible trees take more, stiff pines less.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float WindBend = 0.1f;
 	/** Order-2 twigs hang: 0 they grow like the limbs, 1 they hang straight down (silver birch's weeping twigs). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Branches") float TwigHang = 0.f;
 	/** Long limbs sag under their own weight and fruit: downward pull growing with the distance out, 1/m^2. */

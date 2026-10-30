@@ -350,6 +350,8 @@ void AProceduralPlant::EnsureMeshes()
 			// flowers swing with their twigs and flutter a little, like leaves
 			BloomMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.Sway);
 			BloomMaterial->SetScalarParameterValue(TEXT("Flutter"), 1.f);
+			BloomMaterial->SetScalarParameterValue(TEXT("Bend"), S.bIndoor ? 0.f : S.WindBend);
+			BloomMaterial->SetScalarParameterValue(TEXT("FootFromActor"), 1.f);
 		}
 		else
 		{
@@ -374,11 +376,15 @@ void AProceduralPlant::EnsureMeshes()
 		WoodMaterial->SetVectorParameterValue(TEXT("Color"), S.Bark.RidgeColour); // when the plant materials are missing
 		WoodMaterial->SetVectorParameterValue(TEXT("TwigColour"), S.Bark.TwigColour);
 		WoodMaterial->SetScalarParameterValue(TEXT("SwayAmp"), S.bIndoor ? 0.f : S.Sway);
+		WoodMaterial->SetScalarParameterValue(TEXT("Bend"), S.bIndoor ? 0.f : S.WindBend);
 		for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 		{
 			// leaves on the tree swing with their twigs and flutter; the litter lies still
 			LeafMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), S.bIndoor ? 0.f : S.Sway);
 			LeafMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), S.bIndoor ? 0.f : 1.f);
+			// its instances are the tree's leaf clusters: the tree's foot is the actor's place, and the whole crown leans with the wind
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("Bend"), S.bIndoor ? 0.f : S.WindBend);
+			LeafMaterials[K]->SetScalarParameterValue(TEXT("FootFromActor"), 1.f);
 			LitterMaterials[K]->SetScalarParameterValue(TEXT("SwayAmp"), 0.f);
 			LitterMaterials[K]->SetScalarParameterValue(TEXT("Flutter"), 0.f);
 		}

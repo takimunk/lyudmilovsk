@@ -30,6 +30,7 @@ namespace
 		S.LifeMax = 120.f;
 		S.DeclineYears = 12.f;
 		S.SnagYears = 8.f;
+		S.WindBend = 0.13f;
 		return S;
 	}
 
@@ -294,6 +295,7 @@ namespace
 		S.LifeMax = 400.f;
 		S.DeclineYears = 25.f;
 		S.SnagYears = 20.f;
+		S.WindBend = 0.07f;
 		return S;
 	}
 
@@ -379,6 +381,7 @@ namespace
 		S.TwigRadiusScale = 0.3f;
 		S.Sway = 25.f;
 		S.Bark.Scars = 1.f;
+		S.WindBend = 0.14f;
 		return S;
 	}
 
@@ -649,6 +652,7 @@ namespace
 		S.LifeMax = 400.f;
 		S.DeclineYears = 25.f;
 		S.SnagYears = 25.f;
+		S.WindBend = 0.07f;
 		return S;
 	}
 
@@ -758,6 +762,7 @@ namespace
 		S.LifeMax = 400.f;
 		S.DeclineYears = 25.f;
 		S.SnagYears = 15.f;
+		S.WindBend = 0.06f;
 		return S;
 	}
 
@@ -972,6 +977,7 @@ namespace
 		S.LifeMax = 160.f;
 		S.DeclineYears = 12.f;
 		S.SnagYears = 6.f;
+		S.WindBend = 0.05f;
 		return S;
 	}
 
@@ -1047,6 +1053,7 @@ namespace
 		S.LifeMax = 300.f;
 		S.DeclineYears = 15.f;
 		S.SnagYears = 20.f;
+		S.WindBend = 0.04f;
 		return S;
 	}
 
@@ -1113,6 +1120,7 @@ namespace
 		S.LifeMax = 200.f;
 		S.DeclineYears = 12.f;
 		S.SnagYears = 12.f;
+		S.WindBend = 0.14f;
 		return S;
 	}
 }
