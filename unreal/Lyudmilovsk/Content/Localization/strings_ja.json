@@ -995,6 +995,7 @@
  "item.bird_guide.desc": "『リュドミロフスクの鳥』：観察地図つきの図鑑。なぜか地図には、まわり三百メートルほどの生きた鳥が映る。Bで開く。",
  "ui.use.open_guide": "図鑑を開く",
  "ui.shop.title_library": "図書館カウンター：{0}",
+ "ui.shop.title_grocery": "第7食料品店:{0}",
  "ui.guide.title": "リュドミロフスクの鳥",
  "ui.guide.subtitle": "野鳥図鑑・観察地図　半径{0}m",
  "ui.guide.near": "近くにいる鳥",

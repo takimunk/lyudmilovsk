@@ -995,6 +995,7 @@
  "item.bird_guide.desc": "\"Birds of Lyudmilovsk\": a field guide with an observation map. Somehow the map shows the live birds around you, some three hundred metres out. Press B to open.",
  "ui.use.open_guide": "Open the guide",
  "ui.shop.title_library": "Library desk: {0}",
+ "ui.shop.title_grocery": "Grocery No. 7: {0}",
  "ui.guide.title": "Birds of Lyudmilovsk",
  "ui.guide.subtitle": "A field guide · observation map, {0} m around you",
  "ui.guide.near": "Near you",

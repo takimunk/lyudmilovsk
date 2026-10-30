@@ -2,6 +2,12 @@
  "_doc": "People who sell over a counter while at work (ULyudCounterTradeSubsystem, docs/bird_guide.md). person: people.json key; activity: activities.json id (sells only while doing it at its place); title: string key ({0} = their name); goods: item ids of LyudInventory.cpp.",
  "counters": [
   {"person": "girl_b", "activity": "work_library", "title": "ui.shop.title_library", "reach_cm": 320,
-   "goods": [{"item": "bird_guide", "price": 60, "count": 1}]}
+   "goods": [{"item": "bird_guide", "price": 60, "count": 1}]},
+  {"person": "orlova_tanya", "activity": "work_shop", "title": "ui.shop.title_grocery", "reach_cm": 320,
+   "goods": [{"item": "feed_suet", "price": 25, "count": 5}, {"item": "feed_niger", "price": 30, "count": 5},
+             {"item": "feed_rowan", "price": 25, "count": 5}, {"item": "feed_mealworm", "price": 35, "count": 5},
+             {"item": "feed_grain", "price": 15, "count": 5}, {"item": "feed_peanuts", "price": 30, "count": 5},
+             {"item": "bird_feed", "price": 10, "count": 5}, {"item": "feeder", "price": 80, "count": 1},
+             {"item": "bread_loaf", "price": 12, "count": 1}, {"item": "kefir", "price": 14, "count": 1}]}
  ]
 }

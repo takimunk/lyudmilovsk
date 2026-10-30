@@ -18,6 +18,7 @@ stairs, sixty furnished flats and the ground-floor «Гастроном № 7».
 | Courtyard facades, end facades | single photos | partly inferred |
 | Flat plans, stair cells | **inferred** (no plan is published): dog-leg stairs behind the entrances, a corridor across each flat, rooms between the window axes; sizes from listings | inferred |
 | Gastronom hall | museum photos (`gastronom.py`) | photos, early-1950s fittings inferred |
+| Grocery pavilion behind Novikova 1 (`grocery.py`: the Gastronom's hall in a one-storey ochre pavilion, hipped roof, enamel sign) | none: a game addition (the museum holds the old hall, which is the library in the game) | invented |
 | Furniture | the museum's flat of B. V. Kurchatov (`furniture.py`) | photos |
 
 The doors are wider than the period ones where needed: every doorway is at least 1.10 × 2.20 m (the game's
@@ -27,7 +28,7 @@ standard is 1.08 × 2.10 m, `tools/character_standard.py`).
 
 * `blender/academgorodok/` — the build (pure-Python geometry + Blender for details and export):
   `plan.py` (plan, facades), `interiors.py` (floors, stairs, flats, walking routes), `details.py` (detail meshes),
-  `gastronom.py`, `furniture.py`, `materials.py` (Blender preview materials), `geom.py`, `common.py`,
+  `gastronom.py`, `grocery.py` (the grocery pavilion round it), `furniture.py`, `materials.py` (Blender preview materials), `geom.py`, `common.py`,
   `build_academgorodok.py` (the build), `preview_*.py` (preview renders of the parts).
 * `blender/export/academgorodok/layout.json` — where each part goes (ensemble frame), the square's trees, the lamps,
   the walking routes. The `.glb` it was built with is not committed (`build_academgorodok.py` makes it).

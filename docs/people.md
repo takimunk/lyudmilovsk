@@ -119,19 +119,19 @@ eat and goes back.
 kinds), `pose`, `minutes`, `hours`, `ages`, `meets`, `costs`, `base`, `trait`, and flags `daylight`, `sunset`, `talk`
 (looks for somebody to talk to there), `wander` (a walk from spot to spot; `wander_m` [near, far] metres to the next
 spot, default 15-220, `wander_pause` [min, max] seconds at each, default 40-130), `away` (leaves the world: town, school,
-work), `free` (0 = only a duty), `days` (the weekdays it can be chosen on: the kiosk is shut on Sundays). To add one, add a row; if it needs a new kind of place or seat, add it to
+work), `free` (0 = only a duty), `days` (the weekdays it can be chosen on: the Gastronom is shut on Sundays). To add one, add a row; if it needs a new kind of place or seat, add it to
 `tools/people_map.py`. Reading in the library is `read_library` (the 23 seats of the reading hall).
-The residents' ones: `work_lab` (in at Laboratory No. 2's gate, away for the day), `work_shop` (behind the kiosk's
-counter), `work_sea` (out to sea from the beach), `shop` (a few minutes at the kiosk, Monday to Saturday 9–19),
+The residents' ones: `work_lab` (in at Laboratory No. 2's gate, away for the day), `work_shop` (behind the Gastronom's
+counter), `work_sea` (out to sea from the beach), `shop` (a few minutes at the Gastronom's counter, Monday to Saturday 9–19),
 `pastime_home` (crosswords, the radio, mending: fun at home for grown-ups), `sea_air` (standing on the beach),
 `lookout_view` (up the cable car to the spur's lookout), `fish_shore` (the beach or the island), `island_walk`,
 `paint_island`, `birdwatch` (the island's spots).
 
-**Places off the town (proposals, data only, no models).** Laboratory No. 2's buildings aren't in the game: its gate
+**Places off the town.** Laboratory No. 2's buildings aren't in the game: its gate
 (`lab2_gate`, kind `lab`) is a spot behind the ensemble on the way into town, 85 m back from the middle house, where its
-staff go in. The ensemble's Gastronom hall is the library now, so the Gastronom sells from a kiosk (`gastronom_kiosk`,
-kind `shop`: the assistant's `counter`, three customers' spots) on the square's corner by the street to the lower cable-car
-station. Both are made by `tools/people_map.py` (`build_academ_extra`) and can be moved there.
+staff go in (a proposal, data only, no model). The Gastronom (`gastronom`, kind `shop`, indoors) is the grocery pavilion behind Novikova 1 (`blender/academgorodok/grocery.py`):
+in by its hall door, the assistant's `counter` in the service aisle, three customers' spots in front of the counter
+(`build_gastronom`); its assistant sells over the counter (`counters.json`). Both are made by `tools/people_map.py` (`build_academ_extra`, `build_gastronom`) and can be moved there.
 
 **Homes and reservations.** A flat belongs to a household (`SetHome(household, flat)`, kept with the save); a new game
 spreads the households over the houses and stairs (seeded), each into a free flat with enough beds. In the flat each
