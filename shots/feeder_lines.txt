@@ -1,0 +1,717 @@
+LogPython: Warning: FEEDERTEST lyud.Birds.Time 9
+LogPython: Warning: FEEDERTEST BugItGo 900 2600 100 0 90 0
+LogPython: Warning: FEEDERTEST lyud.Feeder.Place
+LogTemp: Display: FEEDER place ok
+LogPython: Warning: FEEDERTEST lyud.Feeder.Fill feed_suet 5
+LogTemp: Display: FEEDER fill 0 feed_suet: 5
+LogPython: Warning: FEEDERTEST lyud.Feeder.Age 0
+LogPython: Warning: FEEDERTEST lyud.Feeder.Report
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.00 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 00 feeder_placed
+LogPython: Warning: FEEDERTEST Tame.Walk 900 1700 80 300 0 360 0
+LogPython: Warning: FEEDERTEST Tame.Walk off
+LogPython: Warning: FEEDERTEST lyud.Feeder.Cam
+LogPython: Warning: FEEDERTEST shot 01 feeder_cam_start
+LogPython: Warning: FEEDERTEST t 0 s (0.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.00 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 02 tray_000min
+LogPython: Warning: FEEDERTEST t 4 s (0.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.01 h ago; on it:
+LogPython: Warning: FEEDERTEST t 8 s (1.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.02 h ago; on it:
+LogPython: Warning: FEEDERTEST t 12 s (1.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.03 h ago; on it:
+LogPython: Warning: FEEDERTEST t 16 s (2.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.04 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 03 tray_002min
+LogPython: Warning: FEEDERTEST t 20 s (2.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.05 h ago; on it:
+LogPython: Warning: FEEDERTEST t 24 s (3.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.06 h ago; on it:
+LogPython: Warning: FEEDERTEST t 28 s (3.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.06 h ago; on it:
+LogPython: Warning: FEEDERTEST t 32 s (4.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.07 h ago; on it:
+LogPython: Warning: FEEDERTEST t 36 s (4.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.08 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 04 tray_005min
+LogPython: Warning: FEEDERTEST t 40 s (5.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.09 h ago; on it:
+LogPython: Warning: FEEDERTEST t 44 s (5.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.10 h ago; on it:
+LogPython: Warning: FEEDERTEST t 48 s (6.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.11 h ago; on it:
+LogPython: Warning: FEEDERTEST t 52 s (7.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.12 h ago; on it:
+LogPython: Warning: FEEDERTEST t 56 s (7.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.13 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 05 tray_008min
+LogPython: Warning: FEEDERTEST t 60 s (8.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.14 h ago; on it:
+LogPython: Warning: FEEDERTEST t 64 s (8.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.15 h ago; on it:
+LogPython: Warning: FEEDERTEST t 68 s (9.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.15 h ago; on it:
+LogPython: Warning: FEEDERTEST t 72 s (9.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.16 h ago; on it:
+LogPython: Warning: FEEDERTEST t 76 s (10.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.17 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 06 tray_010min
+LogPython: Warning: FEEDERTEST t 80 s (10.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.18 h ago; on it:
+LogPython: Warning: FEEDERTEST t 84 s (11.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.19 h ago; on it:
+LogPython: Warning: FEEDERTEST t 88 s (11.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.20 h ago; on it:
+LogPython: Warning: FEEDERTEST t 92 s (12.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.21 h ago; on it:
+LogPython: Warning: FEEDERTEST t 96 s (12.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.22 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 07 tray_013min
+LogPython: Warning: FEEDERTEST t 100 s (13.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.23 h ago; on it:
+LogPython: Warning: FEEDERTEST t 104 s (13.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.23 h ago; on it:
+LogPython: Warning: FEEDERTEST t 108 s (14.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.24 h ago; on it:
+LogPython: Warning: FEEDERTEST t 112 s (15.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.25 h ago; on it:
+LogPython: Warning: FEEDERTEST t 116 s (15.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.26 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 08 tray_016min
+LogPython: Warning: FEEDERTEST t 120 s (16.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.27 h ago; on it:
+LogPython: Warning: FEEDERTEST t 124 s (16.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.28 h ago; on it:
+LogPython: Warning: FEEDERTEST t 128 s (17.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.29 h ago; on it:
+LogPython: Warning: FEEDERTEST t 132 s (17.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.30 h ago; on it:
+LogPython: Warning: FEEDERTEST t 136 s (18.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.31 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 09 tray_018min
+LogPython: Warning: FEEDERTEST t 140 s (18.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.31 h ago; on it:
+LogPython: Warning: FEEDERTEST t 144 s (19.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.32 h ago; on it:
+LogPython: Warning: FEEDERTEST t 148 s (19.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.33 h ago; on it:
+LogPython: Warning: FEEDERTEST t 152 s (20.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.34 h ago; on it:
+LogPython: Warning: FEEDERTEST t 156 s (20.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.35 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 10 tray_021min
+LogPython: Warning: FEEDERTEST t 160 s (21.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.36 h ago; on it:
+LogPython: Warning: FEEDERTEST t 164 s (21.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.37 h ago; on it:
+LogPython: Warning: FEEDERTEST t 168 s (22.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.38 h ago; on it:
+LogPython: Warning: FEEDERTEST t 172 s (23.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.39 h ago; on it:
+LogPython: Warning: FEEDERTEST t 176 s (23.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.39 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 11 tray_024min
+LogPython: Warning: FEEDERTEST t 180 s (24.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.40 h ago; on it:
+LogPython: Warning: FEEDERTEST t 184 s (24.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.41 h ago; on it:
+LogPython: Warning: FEEDERTEST t 188 s (25.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.42 h ago; on it:
+LogPython: Warning: FEEDERTEST t 192 s (25.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.43 h ago; on it:
+LogPython: Warning: FEEDERTEST t 196 s (26.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.44 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 12 tray_026min
+LogPython: Warning: FEEDERTEST t 200 s (26.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.45 h ago; on it:
+LogPython: Warning: FEEDERTEST t 204 s (27.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.46 h ago; on it:
+LogPython: Warning: FEEDERTEST t 208 s (27.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.47 h ago; on it:
+LogPython: Warning: FEEDERTEST t 212 s (28.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.48 h ago; on it:
+LogPython: Warning: FEEDERTEST t 216 s (28.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.48 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 13 tray_029min
+LogPython: Warning: FEEDERTEST t 220 s (29.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.49 h ago; on it:
+LogPython: Warning: FEEDERTEST t 224 s (29.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.50 h ago; on it:
+LogPython: Warning: FEEDERTEST t 228 s (30.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.51 h ago; on it:
+LogPython: Warning: FEEDERTEST t 232 s (31.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.52 h ago; on it:
+LogPython: Warning: FEEDERTEST t 236 s (31.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.53 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 14 tray_032min
+LogPython: Warning: FEEDERTEST t 240 s (32.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.54 h ago; on it:
+LogPython: Warning: FEEDERTEST t 244 s (32.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.55 h ago; on it:
+LogPython: Warning: FEEDERTEST t 248 s (33.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.56 h ago; on it:
+LogPython: Warning: FEEDERTEST t 252 s (33.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.57 h ago; on it:
+LogPython: Warning: FEEDERTEST t 256 s (34.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.57 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 15 tray_034min
+LogPython: Warning: FEEDERTEST t 260 s (34.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.58 h ago; on it:
+LogPython: Warning: FEEDERTEST t 264 s (35.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.59 h ago; on it:
+LogPython: Warning: FEEDERTEST t 268 s (35.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.60 h ago; on it:
+LogPython: Warning: FEEDERTEST t 272 s (36.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.61 h ago; on it:
+LogPython: Warning: FEEDERTEST t 276 s (36.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.62 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 16 tray_037min
+LogPython: Warning: FEEDERTEST t 280 s (37.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.63 h ago; on it:
+LogPython: Warning: FEEDERTEST t 285 s (37.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.64 h ago; on it:
+LogPython: Warning: FEEDERTEST t 289 s (38.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.65 h ago; on it:
+LogPython: Warning: FEEDERTEST t 293 s (39.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.66 h ago; on it:
+LogPython: Warning: FEEDERTEST t 297 s (39.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.67 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 17 tray_040min
+LogPython: Warning: FEEDERTEST t 301 s (40.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.68 h ago; on it:
+LogPython: Warning: FEEDERTEST t 305 s (40.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.69 h ago; on it:
+LogPython: Warning: FEEDERTEST t 309 s (41.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.70 h ago; on it:
+LogPython: Warning: FEEDERTEST t 313 s (41.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.71 h ago; on it:
+LogPython: Warning: FEEDERTEST t 317 s (42.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.72 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 18 tray_042min
+LogPython: Warning: FEEDERTEST t 321 s (42.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.73 h ago; on it:
+LogPython: Warning: FEEDERTEST t 325 s (43.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.74 h ago; on it:
+LogPython: Warning: FEEDERTEST t 329 s (43.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.74 h ago; on it:
+LogPython: Warning: FEEDERTEST t 333 s (44.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.75 h ago; on it:
+LogPython: Warning: FEEDERTEST t 337 s (44.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.76 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 19 tray_045min
+LogPython: Warning: FEEDERTEST t 341 s (45.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.77 h ago; on it:
+LogPython: Warning: FEEDERTEST t 345 s (46.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.78 h ago; on it:
+LogPython: Warning: FEEDERTEST t 349 s (46.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.79 h ago; on it:
+LogPython: Warning: FEEDERTEST t 353 s (47.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.80 h ago; on it:
+LogPython: Warning: FEEDERTEST t 357 s (47.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.81 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 20 tray_048min
+LogPython: Warning: FEEDERTEST t 361 s (48.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.82 h ago; on it:
+LogPython: Warning: FEEDERTEST t 365 s (48.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.82 h ago; on it:
+LogPython: Warning: FEEDERTEST t 369 s (49.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.83 h ago; on it:
+LogPython: Warning: FEEDERTEST t 373 s (49.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.84 h ago; on it:
+LogPython: Warning: FEEDERTEST t 377 s (50.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.85 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 21 tray_050min
+LogPython: Warning: FEEDERTEST t 381 s (50.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.86 h ago; on it:
+LogPython: Warning: FEEDERTEST t 385 s (51.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.87 h ago; on it:
+LogPython: Warning: FEEDERTEST t 389 s (51.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.88 h ago; on it:
+LogPython: Warning: FEEDERTEST t 393 s (52.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.89 h ago; on it:
+LogPython: Warning: FEEDERTEST t 397 s (52.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.90 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 22 tray_053min
+LogPython: Warning: FEEDERTEST t 401 s (53.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.91 h ago; on it:
+LogPython: Warning: FEEDERTEST t 405 s (54.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.91 h ago; on it:
+LogPython: Warning: FEEDERTEST t 409 s (54.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.92 h ago; on it:
+LogPython: Warning: FEEDERTEST t 413 s (55.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.93 h ago; on it:
+LogPython: Warning: FEEDERTEST t 417 s (55.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.94 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 23 tray_056min
+LogPython: Warning: FEEDERTEST t 421 s (56.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.95 h ago; on it:
+LogPython: Warning: FEEDERTEST t 425 s (56.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.96 h ago; on it:
+LogPython: Warning: FEEDERTEST t 429 s (57.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.97 h ago; on it:
+LogPython: Warning: FEEDERTEST t 433 s (57.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.98 h ago; on it:
+LogPython: Warning: FEEDERTEST t 437 s (58.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 0.99 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 24 tray_058min
+LogPython: Warning: FEEDERTEST t 441 s (58.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.00 h ago; on it:
+LogPython: Warning: FEEDERTEST t 445 s (59.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.01 h ago; on it:
+LogPython: Warning: FEEDERTEST t 449 s (59.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.01 h ago; on it:
+LogPython: Warning: FEEDERTEST t 453 s (60.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.02 h ago; on it:
+LogPython: Warning: FEEDERTEST t 457 s (60.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.03 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 25 tray_061min
+LogPython: Warning: FEEDERTEST t 461 s (61.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.04 h ago; on it:
+LogPython: Warning: FEEDERTEST t 465 s (62.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.05 h ago; on it:
+LogPython: Warning: FEEDERTEST t 469 s (62.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.06 h ago; on it:
+LogPython: Warning: FEEDERTEST t 473 s (63.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.07 h ago; on it:
+LogPython: Warning: FEEDERTEST t 477 s (63.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.08 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 26 tray_064min
+LogPython: Warning: FEEDERTEST t 481 s (64.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.09 h ago; on it:
+LogPython: Warning: FEEDERTEST t 485 s (64.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.10 h ago; on it:
+LogPython: Warning: FEEDERTEST t 489 s (65.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.10 h ago; on it:
+LogPython: Warning: FEEDERTEST t 493 s (65.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.11 h ago; on it:
+LogPython: Warning: FEEDERTEST t 497 s (66.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.12 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 27 tray_066min
+LogPython: Warning: FEEDERTEST t 501 s (66.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.13 h ago; on it:
+LogPython: Warning: FEEDERTEST t 505 s (67.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.14 h ago; on it:
+LogPython: Warning: FEEDERTEST t 509 s (67.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.15 h ago; on it:
+LogPython: Warning: FEEDERTEST t 513 s (68.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.16 h ago; on it:
+LogPython: Warning: FEEDERTEST t 517 s (68.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.17 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 28 tray_069min
+LogPython: Warning: FEEDERTEST t 521 s (69.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.18 h ago; on it:
+LogPython: Warning: FEEDERTEST t 525 s (70.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.19 h ago; on it:
+LogPython: Warning: FEEDERTEST t 529 s (70.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.20 h ago; on it:
+LogPython: Warning: FEEDERTEST t 533 s (71.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.21 h ago; on it:
+LogPython: Warning: FEEDERTEST t 537 s (71.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.21 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 29 tray_072min
+LogPython: Warning: FEEDERTEST t 541 s (72.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.22 h ago; on it:
+LogPython: Warning: FEEDERTEST t 545 s (72.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.23 h ago; on it:
+LogPython: Warning: FEEDERTEST t 549 s (73.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.24 h ago; on it:
+LogPython: Warning: FEEDERTEST t 553 s (73.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.25 h ago; on it:
+LogPython: Warning: FEEDERTEST t 557 s (74.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.26 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 30 tray_074min
+LogPython: Warning: FEEDERTEST t 561 s (74.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.27 h ago; on it:
+LogPython: Warning: FEEDERTEST t 565 s (75.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.28 h ago; on it:
+LogPython: Warning: FEEDERTEST t 569 s (75.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.29 h ago; on it:
+LogPython: Warning: FEEDERTEST t 573 s (76.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.30 h ago; on it:
+LogPython: Warning: FEEDERTEST t 577 s (77.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.31 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 31 tray_077min
+LogPython: Warning: FEEDERTEST t 581 s (77.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.31 h ago; on it:
+LogPython: Warning: FEEDERTEST t 585 s (78.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.32 h ago; on it:
+LogPython: Warning: FEEDERTEST t 589 s (78.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.33 h ago; on it:
+LogPython: Warning: FEEDERTEST t 593 s (79.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.34 h ago; on it:
+LogPython: Warning: FEEDERTEST t 597 s (79.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.35 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 32 tray_080min
+LogPython: Warning: FEEDERTEST t 601 s (80.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.36 h ago; on it:
+LogPython: Warning: FEEDERTEST t 605 s (80.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.37 h ago; on it:
+LogPython: Warning: FEEDERTEST t 609 s (81.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.38 h ago; on it:
+LogPython: Warning: FEEDERTEST t 613 s (81.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.39 h ago; on it:
+LogPython: Warning: FEEDERTEST t 617 s (82.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.40 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 33 tray_082min
+LogPython: Warning: FEEDERTEST t 621 s (82.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.40 h ago; on it:
+LogPython: Warning: FEEDERTEST t 625 s (83.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.41 h ago; on it:
+LogPython: Warning: FEEDERTEST t 629 s (83.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.42 h ago; on it:
+LogPython: Warning: FEEDERTEST t 633 s (84.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.43 h ago; on it:
+LogPython: Warning: FEEDERTEST t 637 s (85.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.44 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 34 tray_085min
+LogPython: Warning: FEEDERTEST t 642 s (85.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.45 h ago; on it:
+LogPython: Warning: FEEDERTEST t 646 s (86.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.46 h ago; on it:
+LogPython: Warning: FEEDERTEST t 650 s (86.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.47 h ago; on it:
+LogPython: Warning: FEEDERTEST t 654 s (87.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.48 h ago; on it:
+LogPython: Warning: FEEDERTEST t 658 s (87.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.49 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 35 tray_088min
+LogPython: Warning: FEEDERTEST t 662 s (88.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.49 h ago; on it:
+LogPython: Warning: FEEDERTEST t 666 s (88.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.50 h ago; on it:
+LogPython: Warning: FEEDERTEST t 670 s (89.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.51 h ago; on it:
+LogPython: Warning: FEEDERTEST t 674 s (89.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.52 h ago; on it:
+LogPython: Warning: FEEDERTEST t 678 s (90.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.53 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 36 tray_090min
+LogPython: Warning: FEEDERTEST t 682 s (90.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.54 h ago; on it:
+LogPython: Warning: FEEDERTEST t 686 s (91.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.55 h ago; on it:
+LogPython: Warning: FEEDERTEST t 690 s (91.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.56 h ago; on it:
+LogPython: Warning: FEEDERTEST t 694 s (92.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.57 h ago; on it:
+LogPython: Warning: FEEDERTEST t 698 s (93.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.58 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 37 tray_093min
+LogPython: Warning: FEEDERTEST t 702 s (93.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.59 h ago; on it:
+LogPython: Warning: FEEDERTEST t 706 s (94.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x5.00, filled 1.59 h ago; on it: Blackbird(2091, trust 0.02) Blackbird(2092, trust 0.01)
+LogPython: Warning: FEEDERTEST t 710 s (94.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.97, filled 1.60 h ago; on it: Blackbird(2091, trust 0.14) Blackbird(2092, trust 0.11)
+LogPython: Warning: FEEDERTEST t 714 s (95.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.94, filled 1.61 h ago; on it: Blackbird(2091, trust 0.25) Blackbird(2092, trust 0.23)
+LogPython: Warning: FEEDERTEST t 718 s (95.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.91, filled 1.62 h ago; on it: Blackbird(2091, trust 0.35) Blackbird(2092, trust 0.33)
+LogPython: Warning: FEEDERTEST shot 38 tray_096min
+LogPython: Warning: FEEDERTEST t 722 s (96.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.88, filled 1.63 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 726 s (96.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.86, filled 1.64 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 730 s (97.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.85, filled 1.65 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 734 s (97.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.84, filled 1.66 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 738 s (98.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.83, filled 1.67 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 39 tray_098min
+LogPython: Warning: FEEDERTEST t 742 s (98.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.82, filled 1.68 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 746 s (99.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.81, filled 1.68 h ago; on it:
+LogPython: Warning: FEEDERTEST t 750 s (100.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.81, filled 1.69 h ago; on it:
+LogPython: Warning: FEEDERTEST t 754 s (100.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.81, filled 1.70 h ago; on it:
+LogPython: Warning: FEEDERTEST t 758 s (101.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.81, filled 1.71 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 40 tray_101min
+LogPython: Warning: FEEDERTEST t 762 s (101.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.81, filled 1.72 h ago; on it:
+LogPython: Warning: FEEDERTEST t 766 s (102.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.79, filled 1.73 h ago; on it: Blackbird(2080, trust 0.08) Blackbird(2081, trust 0.10)
+LogPython: Warning: FEEDERTEST t 770 s (102.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.76, filled 1.74 h ago; on it: Blackbird(2080, trust 0.17) Blackbird(2081, trust 0.20)
+LogPython: Warning: FEEDERTEST t 774 s (103.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.73, filled 1.75 h ago; on it: Blackbird(2080, trust 0.27) Blackbird(2081, trust 0.28)
+LogPython: Warning: FEEDERTEST t 778 s (103.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.70, filled 1.76 h ago; on it: Blackbird(2080, trust 0.39) Blackbird(2081, trust 0.38)
+LogPython: Warning: FEEDERTEST shot 41 tray_104min
+LogPython: Warning: FEEDERTEST t 782 s (104.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.68, filled 1.77 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 786 s (104.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.65, filled 1.77 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 790 s (105.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.62, filled 1.78 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 794 s (105.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.59, filled 1.79 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 798 s (106.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.80 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 42 tray_106min
+LogPython: Warning: FEEDERTEST t 802 s (106.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.81 h ago; on it:
+LogPython: Warning: FEEDERTEST t 806 s (107.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.82 h ago; on it:
+LogPython: Warning: FEEDERTEST t 810 s (108.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.83 h ago; on it:
+LogPython: Warning: FEEDERTEST t 814 s (108.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.84 h ago; on it:
+LogPython: Warning: FEEDERTEST t 818 s (109.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.85 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 43 tray_109min
+LogPython: Warning: FEEDERTEST t 822 s (109.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.57, filled 1.86 h ago; on it: Blackbird(2103, trust 0.10)
+LogPython: Warning: FEEDERTEST t 826 s (110.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.55, filled 1.86 h ago; on it: GreatTit(443, trust 0.29) GreatTit(444, trust 0.20) Blackbird(2103, trust 0.15)
+LogPython: Warning: FEEDERTEST t 830 s (110.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.53, filled 1.87 h ago; on it: GreatTit(443, trust 0.40) GreatTit(444, trust 0.38) Blackbird(2103, trust 0.20)
+LogPython: Warning: FEEDERTEST t 834 s (111.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.51, filled 1.88 h ago; on it: GreatTit(443, trust 0.40) GreatTit(444, trust 0.40) Blackbird(2103, trust 0.25)
+LogPython: Warning: FEEDERTEST t 838 s (111.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.49, filled 1.89 h ago; on it: GreatTit(443, trust 0.40) GreatTit(444, trust 0.40) Blackbird(2103, trust 0.30)
+LogPython: Warning: FEEDERTEST shot 44 tray_112min
+LogPython: Warning: FEEDERTEST t 842 s (112.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.90 h ago; on it:
+LogPython: Warning: FEEDERTEST t 846 s (112.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.91 h ago; on it:
+LogPython: Warning: FEEDERTEST t 850 s (113.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.92 h ago; on it:
+LogPython: Warning: FEEDERTEST t 854 s (113.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.93 h ago; on it:
+LogPython: Warning: FEEDERTEST t 858 s (114.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.94 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 45 tray_114min
+LogPython: Warning: FEEDERTEST t 862 s (114.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.95 h ago; on it:
+LogPython: Warning: FEEDERTEST t 866 s (115.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.96 h ago; on it:
+LogPython: Warning: FEEDERTEST t 870 s (116.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.97 h ago; on it:
+LogPython: Warning: FEEDERTEST t 874 s (116.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.97 h ago; on it:
+LogPython: Warning: FEEDERTEST t 878 s (117.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.48, filled 1.98 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 46 tray_117min
+LogPython: Warning: FEEDERTEST t 882 s (117.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.47, filled 1.99 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 886 s (118.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.47, filled 2.00 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 890 s (118.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.42, filled 2.01 h ago; on it: BlueTit(490, trust 0.01) BlueTit(491, trust 0.04) BlueTit(494, trust 0.05) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 894 s (119.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.35, filled 2.02 h ago; on it: BlueTit(490, trust 0.15) BlueTit(491, trust 0.17) BlueTit(492, trust 0.13) BlueTit(493, trust 0.18) BlueTit(494, trust 0.20) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 898 s (119.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.27, filled 2.03 h ago; on it: BlueTit(490, trust 0.27) BlueTit(491, trust 0.30) BlueTit(493, trust 0.32) BlueTit(494, trust 0.36) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 47 tray_120min
+LogPython: Warning: FEEDERTEST t 902 s (120.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.20, filled 2.04 h ago; on it: BlueTit(490, trust 0.39) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 906 s (120.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.13, filled 2.05 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 910 s (121.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x4.07, filled 2.06 h ago; on it: BlueTit(490, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 914 s (121.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.98, filled 2.07 h ago; on it: BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 918 s (122.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.88, filled 2.07 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 48 tray_122min
+LogPython: Warning: FEEDERTEST t 922 s (123.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.82, filled 2.08 h ago; on it: BlueTit(490, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 926 s (123.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.76, filled 2.09 h ago; on it: BlueTit(491, trust 0.40) BlueTit(493, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 930 s (124.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.69, filled 2.10 h ago; on it: BlueTit(490, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 934 s (124.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.63, filled 2.11 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(493, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 938 s (125.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.57, filled 2.12 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 49 tray_125min
+LogPython: Warning: FEEDERTEST t 942 s (125.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.51, filled 2.13 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 946 s (126.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.44, filled 2.14 h ago; on it: BlueTit(490, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 950 s (126.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.39, filled 2.15 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 954 s (127.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.36, filled 2.16 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 958 s (127.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.33, filled 2.16 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 50 tray_128min
+LogPython: Warning: FEEDERTEST t 962 s (128.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.31, filled 2.17 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 966 s (128.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.29, filled 2.18 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40)
+LogPython: Warning: FEEDERTEST t 970 s (129.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.28, filled 2.19 h ago; on it:
+LogPython: Warning: FEEDERTEST t 974 s (129.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.28, filled 2.20 h ago; on it:
+LogPython: Warning: FEEDERTEST t 978 s (130.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.28, filled 2.21 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 51 tray_130min
+LogPython: Warning: FEEDERTEST t 982 s (131.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.28, filled 2.22 h ago; on it:
+LogPython: Warning: FEEDERTEST t 986 s (131.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.28, filled 2.23 h ago; on it:
+LogPython: Warning: FEEDERTEST t 990 s (132.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.26, filled 2.24 h ago; on it: Magpie(145, trust 0.06) Magpie(146, trust 0.05)
+LogPython: Warning: FEEDERTEST t 994 s (132.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.25 h ago; on it: Magpie(145, trust 0.13) Magpie(146, trust 0.12)
+LogPython: Warning: FEEDERTEST t 998 s (133.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.26 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 52 tray_133min
+LogPython: Warning: FEEDERTEST t 1002 s (133.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.26 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1006 s (134.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.27 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1010 s (134.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.28 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1014 s (135.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.29 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1018 s (135.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.30 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 53 tray_136min
+LogPython: Warning: FEEDERTEST t 1022 s (136.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.31 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1026 s (136.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.32 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1031 s (137.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.33 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1035 s (137.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.34 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1039 s (138.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.34 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 54 tray_138min
+LogPython: Warning: FEEDERTEST t 1043 s (139.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.35 h ago; on it: Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40) Blackbird(2103, trust 0.38)
+LogPython: Warning: FEEDERTEST t 1047 s (139.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.22, filled 2.36 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40) Blackbird(2103, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1051 s (140.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.21, filled 2.37 h ago; on it: Magpie(139, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1055 s (140.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.19, filled 2.38 h ago; on it: Magpie(139, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2092, trust 0.40) Blackbird(2103, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1059 s (141.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.18, filled 2.39 h ago; on it: Magpie(139, trust 0.40) Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 55 tray_141min
+LogPython: Warning: FEEDERTEST t 1063 s (141.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.16, filled 2.40 h ago; on it: Magpie(139, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1067 s (142.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.16, filled 2.41 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1071 s (142.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.14, filled 2.42 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1075 s (143.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.11, filled 2.43 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1079 s (143.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.09, filled 2.43 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 56 tray_144min
+LogPython: Warning: FEEDERTEST t 1083 s (144.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.06, filled 2.44 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1087 s (144.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.03, filled 2.45 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1091 s (145.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x3.00, filled 2.46 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1095 s (146.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.97, filled 2.47 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1099 s (146.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.94, filled 2.48 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST shot 57 tray_146min
+LogPython: Warning: FEEDERTEST t 1103 s (147.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.49 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1107 s (147.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.50 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1111 s (148.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.51 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1115 s (148.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.52 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1119 s (149.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.53 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 58 tray_149min
+LogPython: Warning: FEEDERTEST t 1123 s (149.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.90, filled 2.54 h ago; on it: Blackbird(2103, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1127 s (150.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.89, filled 2.54 h ago; on it: Blackbird(2103, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1131 s (150.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.88, filled 2.55 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1135 s (151.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.87, filled 2.56 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1139 s (151.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.87, filled 2.57 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 59 tray_152min
+LogPython: Warning: FEEDERTEST t 1143 s (152.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.87, filled 2.58 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1147 s (152.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.87, filled 2.59 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1151 s (153.4 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.86, filled 2.60 h ago; on it: Blackbird(2080, trust 0.40) Blackbird(2081, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1155 s (154.0 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.86, filled 2.61 h ago; on it: HoodedCrow(65, trust 0.14)
+LogPython: Warning: FEEDERTEST t 1159 s (154.5 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.86, filled 2.62 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 60 tray_154min
+LogPython: Warning: FEEDERTEST t 1163 s (155.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.85, filled 2.63 h ago; on it: HoodedCrow(65, trust 0.17)
+LogPython: Warning: FEEDERTEST t 1167 s (155.6 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.84, filled 2.63 h ago; on it: HoodedCrow(65, trust 0.22) Blackbird(2091, trust 0.40) Blackbird(2092, trust 0.40)
+LogPython: Warning: FEEDERTEST t 1171 s (156.1 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.64 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1175 s (156.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.65 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1179 s (157.2 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.66 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 61 tray_157min
+LogPython: Warning: FEEDERTEST t 1183 s (157.7 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.67 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1187 s (158.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.68 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1191 s (158.8 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.69 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1195 s (159.3 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.82, filled 2.70 h ago; on it:
+LogPython: Warning: FEEDERTEST t 1199 s (159.9 game min)
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.77, filled 2.71 h ago; on it: BlueTit(490, trust 0.40) BlueTit(491, trust 0.40) BlueTit(492, trust 0.40) BlueTit(493, trust 0.40) BlueTit(494, trust 0.40)
+LogPython: Warning: FEEDERTEST Tame.Walk 900 2540 80 300 0 360 0
+LogPython: Warning: FEEDERTEST Tame.Walk off
+LogPython: Warning: FEEDERTEST lyud.Feeder.Report
+LogTemp: Display: FEEDER 0 at X=900.000 Y=2720.000 Z=0.000: feed_suet x2.73, filled 2.71 h ago; on it:
+LogPython: Warning: FEEDERTEST shot 62 feeder_from_hero
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_suet 32
+LogPython: Warning: FEEDERTEST shot 63 packet_feed_suet
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_niger 32
+LogPython: Warning: FEEDERTEST shot 64 packet_feed_niger
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_rowan 32
+LogPython: Warning: FEEDERTEST shot 65 packet_feed_rowan
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_mealworm 32
+LogPython: Warning: FEEDERTEST shot 66 packet_feed_mealworm
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_grain 32
+LogPython: Warning: FEEDERTEST shot 67 packet_feed_grain
+LogPython: Warning: FEEDERTEST lyud.Goods.Show feed_peanuts 32
+LogPython: Warning: FEEDERTEST shot 68 packet_feed_peanuts
+LogPython: Warning: FEEDERTEST lyud.Goods.Show off
+LogPython: Warning: FEEDERTEST Inventory.Give feed_suet 5
+LogPython: Warning: FEEDERTEST Inventory.Give feed_niger 5
+LogPython: Warning: FEEDERTEST Inventory.Give feed_rowan 5
+LogPython: Warning: FEEDERTEST Inventory.Give feed_mealworm 5
+LogPython: Warning: FEEDERTEST Inventory.Give feed_grain 5
+LogPython: Warning: FEEDERTEST Inventory.Give feed_peanuts 5
+LogPython: Warning: FEEDERTEST Inventory.Give feeder 1
+LogPython: Warning: FEEDERTEST Inventory.Give bread_loaf 1
+LogPython: Warning: FEEDERTEST Inventory.Give kefir 1
+LogPython: Warning: FEEDERTEST Inventory.Open
+LogPython: Warning: FEEDERTEST shot 69 inventory
+LogPython: Warning: FEEDERTEST Inventory.Open 0
+LogPython: Warning: FEEDERTEST BugItGo 308 -2394 155 0.0 -153.8 0
+LogPython: Warning: FEEDERTEST shot 70 pavilion_front
+LogPython: Warning: FEEDERTEST BugItGo -402 -2558 135 27.5 177.0 0
+LogPython: Warning: FEEDERTEST shot 71 pavilion_sign
+LogPython: Warning: FEEDERTEST BugItGo 140 -1785 635 -6.7 -134.2 0
+LogPython: Warning: FEEDERTEST shot 72 pavilion_roof
+LogPython: Warning: FEEDERTEST BugItGo -1011 -2726 105 -0.5 -107.0 0
+LogPython: Warning: FEEDERTEST shot 73 hall_north
+LogPython: Warning: FEEDERTEST BugItGo -1279 -4014 105 -1.1 90.8 0
+LogPython: Warning: FEEDERTEST shot 74 hall_south
+LogPython: Warning: FEEDERTEST BugItGo -993 -3328 105 2.5 177.0 0
+LogPython: Warning: FEEDERTEST shot 75 hall_back
+LogPython: Warning: FEEDERTEST done
