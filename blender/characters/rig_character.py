@@ -929,7 +929,9 @@ def inner_follow(model, zones, body):
         x0, x1, y0, y1, z0, z1 = z["box"]
         box = (co[:, 0] > x0) & (co[:, 0] < x1) & (co[:, 1] > y0) & (co[:, 1] < y1) & (co[:, 2] > z0) & (co[:, 2] < z1)
         near = np.array([tree.find_nearest(Vector(p))[3] or 1.0 for p in co])
-        inner = box & (near < z.get("near_donor", 0.025)) & (col[:, 0] - col[:, 1] > 0.03)
+        inner = box & (near < z.get("near_donor", 0.025))
+        if z.get("not_olive", True):                      # skin under an olive skirt; off for dark tights
+            inner &= col[:, 0] - col[:, 1] > 0.03
         cloth = np.nonzero(box & ~inner)[0]
         kd = KDTree(len(cloth))
         for i, v in enumerate(cloth):

@@ -9,10 +9,14 @@
  "bake_normal": true,
  "hands": {},
  "skirt": {
-  "hem_z": 0.62,
+  "hem_z": 0.5,
   "gap": 0.015,
   "blend": 0.06,
-  "pelvis": 0.4
+  "pelvis": 0.75,
+  "smooth": {
+   "radius": 0.08,
+   "iterations": 10
+  }
  },
  "face": {
   "normal_strength": 0.4,

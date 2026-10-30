@@ -9,10 +9,14 @@
  "bake_normal": true,
  "hands": {},
  "skirt": {
-  "hem_z": 0.5,
+  "hem_z": 0.44,
   "gap": 0.015,
   "blend": 0.06,
-  "pelvis": 0.4
+  "pelvis": 0.4,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  }
  },
  "face": {
   "normal_strength": 0.4,
@@ -69,5 +73,20 @@
   },
   "subdivide": false
  },
- "face_protect": true
+ "face_protect": true,
+ "inner": [
+  {
+   "_doc": "her legs under the knee-long skirt move with it (in dark tights: no colour test)",
+   "box": [
+    -0.3,
+    0.3,
+    -1,
+    1,
+    0.46,
+    0.74
+   ],
+   "near_donor": 0.02,
+   "not_olive": false
+  }
+ ]
 }

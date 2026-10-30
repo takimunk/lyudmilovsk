@@ -163,10 +163,11 @@ def import_character(cid):
         eal.delete_asset(p)
     eal.delete_directory(tmp)
     mesh = unreal.load_asset("%s/SK_%s" % (dest, title))
-    # LOD1/LOD2 at 50 % and 25 % of the triangles (the game-assets budget)
+    # four LODs down to <= 5k triangles with their screen sizes (lod_people.py: a town of 55-70k people)
+    sys.path.insert(0, HERE)
+    import lod_people
+    lod_people.apply(mesh)
     sme = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
-    sme.regenerate_lod(mesh, 3, True, False)
-    eal.save_loaded_asset(mesh)
     for p in eal.list_assets(dest + "/Anims", True) if eal.does_directory_exist(dest + "/Anims") else []:
         a = eal.load_asset(p)
         if isinstance(a, unreal.AnimSequence):
