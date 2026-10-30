@@ -103,6 +103,13 @@ freezing rain a few times a winter. `WinterSeverity` and `Wetness` scale the win
 
 ## Debug
 
+- In play, **F7 → Weather** (Private/Plants/PlantDevWeather.cpp) has all of this behind buttons: the weather now,
+  every preset, the eight weather types, phenomena forced on top (thunder, lenticular, fog, aurora, halo, rainbow,
+  noctilucent clouds, star flare in the sky, a busy star, snow on the ground, drifts, snow on branches, sea ice,
+  winter low water), a lightning strike and a flare on the star's disk now, sliders for cloud, precipitation, fog,
+  temperature and wind (far left = auto), how long a change takes (`lyud.Weather.PresetBlend`), and **Auto (live
+  weather)**, which clears every one of them. The panel writes the same console variables, so the console sees it.
+  Offscreen check: `unreal/scripts/test_devpanel.sh`.
 - `lyud.Weather.Debug 1|2`: on-screen summary / every field.
 - `lyud.Weather.Preset <name>`: `clear fair overcast drizzle rain downpour storm thunder fog seafog snow blizzard
   freezingrain frost lenticular aurora halo rainbow`, `off`. A preset plays an episode of the right type (found in

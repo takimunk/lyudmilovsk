@@ -11,9 +11,11 @@ class SWidget;
 /**
  * Developer mode, in play: F7 (fn+F7 on a Mac keyboard) opens a panel over the game. The world: the
  * calendar's date, time of day and time speed (UGameCalendar; plants, sky and sun, starlings and grass
- * all follow it). A tree (the one in view, or step through them): its age, day of the year, how fast
+ * all follow it). The weather: presets, weather types, phenomena forced on top (aurora, halo, snow, sea
+ * ice...), values, and Auto to hand it back to the simulation (PlantDevWeather.cpp). A tree (the one in view, or step through them): its age, day of the year, how fast
  * each runs, species, seed, the far-away summary. Overrides live on the tree (DevAge / DevDay) and are
- * not saved. F7 is not consumed, and the game keeps its keyboard while the panel is open.
+ * not saved. F7 is not consumed, and the game keeps its keyboard while the panel is open. Each section
+ * folds by its title. H shows the game's keys (F10 opens the menu in the editor, where Esc stops play).
  */
 UCLASS(NotPlaceable)
 class LYUDMILOVSK_API APlantDevTool : public AActor
@@ -28,14 +30,23 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	void Toggle();
+	void ToggleHelp();
 	void SelectInView();
 	void Step(int32 Delta);
 	AProceduralPlant* Selected() const { return Plant.Get(); }
 	TSharedPtr<SWidget> GetPanel() const { return Panel; }
+	TSharedPtr<SWidget> GetHelp() const { return Help; }
 
 	/** Years per second added to the selected tree's age, and days per second to its day of the year. */
 	float AgeSpeed = 0.f;
 	float DaySpeed = 0.f;
+
+	/** The weather the panel forced: a preset's name, "regime:<type>", "values", or empty for the live weather. */
+	FString WeatherChoice;
+	/** Which sections are unfolded (kept while the panel is closed and opened again). */
+	bool bWorldOpen = true;
+	bool bWeatherOpen = true;
+	bool bTreesOpen = false;
 
 private:
 	bool TryBindInput();
@@ -45,6 +56,7 @@ private:
 
 	TWeakObjectPtr<AProceduralPlant> Plant;
 	TSharedPtr<SWidget> Panel;
+	TSharedPtr<SWidget> Help;
 	bool bBound = false;
 };
 
