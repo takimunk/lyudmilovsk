@@ -57,9 +57,29 @@ bigger than half a metre never come. They peck, a handful lasting a few birds' m
 within 30 m they grow used to him (`Trust` towards 0.6), so the palm next to the feeder works in seconds. Feeders and
 what is in them are saved ("Feeders").
 
+Birds feed at a feeder in the morning and through the day; one filled late in the afternoon stays empty till the next
+morning (they are going to roost). The finding time is mostly the groups' own pace: with the feed "found" at once
+(`lyud.Feeder.Age 3`) the first birds still take about as long.
+
 Dev console: `lyud.Feeder.Place`, `lyud.Feeder.Fill <feed> [n] [i]`, `lyud.Feeder.Age <hours> [i]`, `lyud.Feeder.Report`
-(`FEEDER` log lines: birds on each tray, food left). The sim's check: `BIRD_ONLY=feeders tools/birdsim/run.sh` (suet
-by the club door brings tits after ~2 h, grain brings chaffinches, a feed nobody likes stays untouched).
+(`FEEDER` log lines: birds on each tray, food left), `lyud.Feeder.Cam [i] [cm away] [cm up] [deg round] | off` (a camera
+at the tray), `lyud.Goods.Show <item> [cm] | off` (an item's goods, a packet's label, in front of the view),
+`Inventory.Give <item> [n]`, `lyud.Birds.Time <hour>`. The sim's check: `BIRD_ONLY=feeders tools/birdsim/run.sh test`
+(suet by the club door brings tits after ~2 h, grain brings chaffinches, a feed nobody likes stays untouched).
+
+The game's check, offscreen (after `make_tame_test_level.py`):
+
+```sh
+rm -rf unreal/Lyudmilovsk/Content/Dev/L_FeederTest*
+UnrealEditor-Cmd unreal/Lyudmilovsk/Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/make_feeder_test_level.py
+sh unreal/scripts/test_feeder.sh          # FEEDERTEST/FEEDER lines, Saved/FeederTest/<n>_<name>.png; FEED=, MINUTES= (20)
+```
+
+It puts a feeder with suet by the garden 18 m from the club door at 9:00, the hero 9 m off, and watches the tray at
+slomo 8 (the bird life steps at most 0.25 s a frame, so ~6x): on 2026-10-30 blackbirds came at 1.6 h, then a great tit,
+blue tits (7 birds at once at 2.0 h), a magpie and hooded crows; 5 handfuls were 2.7 by 2.7 h. Then the six packets'
+fronts, the inventory with the grocery's things, and the pavilion (`L_FeederTest` has its meshes on the lawn) outside
+and in.
 
 ## Pieces
 

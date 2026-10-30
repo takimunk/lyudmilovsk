@@ -95,18 +95,31 @@ def board_tall(text, lang, path):
     im = Image.new("RGB", (W, H), (88, 18, 26))
     d = ImageDraw.Draw(im)
     d.rectangle([10, 10, W - 11, H - 11], outline=(196, 160, 86), width=6)
-    words = text.split(" ") if lang != "ja" else [text[i:i + 4] for i in range(0, len(text), 4)]
-    f = font("bold", lang, 92)
+    size = 92
+    f = font("bold", lang, size)
+    words = text.split(" ")
+    while max(d.textlength(w_, font=f) for w_ in words) > W - 90 and size > (64 if lang == "ja" else 40):   # the longest word fits
+        size -= 4
+        f = font("bold", lang, size)
+    if lang == "ja":   # a phrase still too long breaks by characters
+        split = []
+        for w_ in words:
+            while d.textlength(w_, font=f) > W - 90:
+                n = max(k for k in range(1, len(w_)) if d.textlength(w_[:k], font=f) <= W - 90)
+                split.append(w_[:n])
+                w_ = w_[n:]
+            split.append(w_)
+        words = split
     lines, cur = [], ""
     for w_ in words:
-        t = (cur + (" " if cur and lang != "ja" else "") + w_)
+        t = (cur + " " + w_) if cur else w_
         if d.textlength(t, font=f) > W - 90 and cur:
             lines.append(cur)
             cur = w_
         else:
             cur = t
     lines.append(cur)
-    lh = 120
+    lh = round(size * 120 / 92)
     y = (H - lh * len(lines)) / 2
     for ln in lines:
         centred(d, y, ln, f, (222, 190, 112), W)

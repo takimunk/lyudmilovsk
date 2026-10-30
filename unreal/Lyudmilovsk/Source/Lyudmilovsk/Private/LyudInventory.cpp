@@ -952,6 +952,15 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEarn(TEXT("Inventory.Earn"), TEXT
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GInvGive(TEXT("Inventory.Give"), TEXT("Inventory.Give <item id> [n]: puts n (1) of an item in the pocket (headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventory* Inv = ULyudInventory::Get(World); Inv && Args.Num() > 0 && ULyudInventory::FindDef(FName(*Args[0])))
+		{
+			Inv->Add(FName(*Args[0]), Args.Num() > 1 ? FCString::Atoi(*Args[1]) : 1);
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GInvPrompt(TEXT("Inventory.Prompt"), TEXT("Inventory.Prompt [text]: shows the interaction prompt (without text hides it; headless checks)"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{

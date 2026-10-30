@@ -2,6 +2,8 @@
 
 #include "BirdSim.h"
 #include "Birds/BirdLife.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Dom/JsonObject.h"
@@ -262,7 +264,7 @@ ABirdFeeder::ABirdFeeder()
 	for (int32 S = -1; S <= 1; S += 2)
 	{
 		Roof.Add(Part(FName(*FString::Printf(TEXT("Roof%d"), S > 0 ? 1 : 0)), FVector(0.f, S * (H + 6.f) / 2.f, T + PostH + Rise / 2.f + 1.f),
-			FVector(2.f * H + 10.f, Half, 1.6f), FRotator(0.f, 0.f, S * -Pitch)));
+			FVector(2.f * H + 10.f, Half, 1.6f), FRotator(0.f, 0.f, S * Pitch)));      // (roll +: +Y side down)
 	}
 	Roof.Add(Part(TEXT("Ridge"), FVector(0.f, 0.f, T + PostH + Rise + 1.8f), FVector(2.f * H + 12.f, 3.f, 2.f)));
 	Heap = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Heap"));
@@ -380,7 +382,16 @@ void UBirdFeederSubsystem::SpawnAll()
 		}
 		Actors.Add(A);
 	}
-	SimStart = -1;          // put them up in the bird life again
+	// put them up in the bird life again: take the old trays down first, or they stay there with the old feed
+	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && Life->IsRunning() && SimStart == Life->GetStartCount())
+	{
+		for (int32 Id : SimIds)
+		{
+			Life->RemoveFeeder(Id);
+		}
+	}
+	SimIds.Reset();
+	SimStart = -1;
 }
 
 void UBirdFeederSubsystem::Register()
@@ -729,5 +740,49 @@ static FAutoConsoleCommandWithWorldAndArgs GFeederReportCmd(TEXT("lyud.Feeder.Re
 			}
 			UE_LOG(LogTemp, Display, TEXT("FEEDER %d at %s: %s x%.2f, filled %.2f h ago; on it:%s"), I, *S.Location.ToString(), *S.Feed.ToString(),
 				S.Handfuls, (UGameCalendar::NowIn(World) - S.FilledAt).GetTotalHours(), *Birds);
+		}
+	}));
+
+static TWeakObjectPtr<ACameraActor> GFeederCamera;
+static FAutoConsoleCommandWithWorldAndArgs GFeederCamCmd(TEXT("lyud.Feeder.Cam"),
+	TEXT("lyud.Feeder.Cam [feeder] [cm away] [cm up] [deg round] | off: views a feeder's tray from a camera beside it (headless checks)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		const UBirdFeederSubsystem* F = UBirdFeederSubsystem::Get(World);
+		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+		if (!F || !PC)
+		{
+			return;
+		}
+		if (Args.Num() > 0 && Args[0] == TEXT("off"))
+		{
+			PC->SetViewTarget(PC->GetPawn());
+			return;
+		}
+		const ABirdFeeder* A = F->Actor(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : F->Num() - 1);
+		if (!A)
+		{
+			return;
+		}
+		const float Dist = Args.Num() > 1 ? FCString::Atof(*Args[1]) : 130.f;
+		const float Up = Args.Num() > 2 ? FCString::Atof(*Args[2]) : 35.f;
+		const float Round = Args.Num() > 3 ? FCString::Atof(*Args[3]) : 40.f;
+		const FVector Tray = A->TrayLocation() + FVector(0.f, 0.f, 4.f);
+		const FVector At = Tray + FRotator(0.f, A->GetActorRotation().Yaw + Round, 0.f).Vector() * Dist + FVector(0.f, 0.f, Up);
+		if (!GFeederCamera.IsValid())
+		{
+			FActorSpawnParameters P;
+			P.ObjectFlags |= RF_Transient;
+			GFeederCamera = World->SpawnActor<ACameraActor>(At, (Tray - At).Rotation(), P);
+			if (GFeederCamera.IsValid())
+			{
+				GFeederCamera->GetCameraComponent()->SetFieldOfView(50.f);
+				GFeederCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
+			}
+		}
+		if (GFeederCamera.IsValid())
+		{
+			GFeederCamera->SetActorLocationAndRotation(At, (Tray - At).Rotation());
+			PC->SetViewTarget(GFeederCamera.Get());
 		}
 	}));
