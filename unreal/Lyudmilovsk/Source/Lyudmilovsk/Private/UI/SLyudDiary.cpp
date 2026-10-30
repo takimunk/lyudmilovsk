@@ -785,7 +785,7 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 	Text->AddSlot().AutoHeight()[Marked(Words(ULyudBirdBook::SpeciesName(Species), 36.f, Ink, true), EMark::Underline, InkSoft, SeedOf(Species, 7))];
 	if (!Latin.IsEmpty())
 	{
-		Text->AddSlot().AutoHeight()[Words(FText::FromString(Latin), 22.f, PencilFaint)];
+		Text->AddSlot().AutoHeight()[Words(FText::FromString(Latin), 22.f, Pencil)];
 	}
 	// when and where it was first met, and how
 	const FText Where = Seen->Place.IsNone() ? FText::GetEmpty() : ULyudQuests::PlaceName(Seen->Place);

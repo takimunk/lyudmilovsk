@@ -689,7 +689,7 @@ void ULyudGameScreen::Tick(float DeltaTime)
 	if (PC->WasInputKeyJustPressed(EKeys::Tab) || PC->WasInputKeyJustPressed(EKeys::I)) { Want = ELyudScreenTab::Inventory; bKey = true; }
 	else if (PC->WasInputKeyJustPressed(EKeys::J)) { Want = ELyudScreenTab::Journal; bKey = true; }
 	else if (PC->WasInputKeyJustPressed(EKeys::M)) { Want = ELyudScreenTab::Map; bKey = true; }
-	else if (PC->WasInputKeyJustPressed(EKeys::B)) { Want = ELyudScreenTab::Birds; bKey = true; }
+	else if (PC->WasInputKeyJustPressed(EKeys::K)) { Want = ELyudScreenTab::Birds; bKey = true; }
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	if (IsOpen())
 	{

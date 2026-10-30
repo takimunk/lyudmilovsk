@@ -21,7 +21,7 @@ enum class ELyudScreenTab : uint8
 	Map,
 	/** The diary's entries (its newest spread). */
 	Diary,
-	/** The birds met and befriended (B). */
+	/** The birds met and befriended (K; B is the bird guide). */
 	Birds,
 };
 

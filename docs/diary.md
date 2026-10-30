@@ -44,7 +44,7 @@ marks, and a yellow sticky note says where the hero is.
 
 ## Birds
 
-The fifth tab (B, lilac): the hero's bird book (`ULyudBirdBook`, `Public/Birds/BirdBook.h`, saved as "BirdBook"). A card for each
+The fifth tab (K, lilac): the hero's bird book (`ULyudBirdBook`, `Public/Birds/BirdBook.h`, saved as "BirdBook"). A card for each
 species he has met, in the order he met them, three to a page: its drawing (pencil and watercolour, the female's for a species whose
 female looks different when she is the one met), the name and the Latin name, the day and place it was first met and how. Under it,
 in green, each befriended bird of that species: male or female, the day it first ate from his hand, how often it has come, and
