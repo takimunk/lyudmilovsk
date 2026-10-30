@@ -1,8 +1,8 @@
 """Exports a generated breed back out of Unreal for a rebuild when its raw hi3d model.glb is gone (2026-10-29: the dogs'
 were lost with old worktrees and the hi3d links had expired): SK_<Breed>'s LOD0 as OBJ (through a dynamic mesh: the FBX
 exporter asserts in a commandlet) with one material per section, and its first coat (the generated
-texture) and normal map as PNG, into blender/animals/gen/<Breed>/ue/. blender/animals/ue_source.py turns them into a
-model.glb that build_animal.py --gen takes as it took the generated one.
+texture) and normal map as PNG, into blender/animals/gen/<Breed>/ue/ (local), which build_animal.py --gen builds from
+when model.glb is missing (gen_fit.import_ue).
 
 UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script="export_animal_source.py Laika Shepherd Mutt"
 """
@@ -62,8 +62,7 @@ def obj(sk, path):
                 f.write("vt %.6f %.6f\n" % (w.x, 1.0 - w.y))
             n += 3
             f.write("f %d/%d %d/%d %d/%d\n" % (i3.x + 1, n - 2, i3.y + 1, n - 1, i3.z + 1, n))
-    ids, tris = P, T
-    unreal.log_warning("EXPORT %s -> %s: %d verts, %d tris, materials %s" % (sk.get_name(), path, len(ids), len(tris), mats))
+    unreal.log_warning("EXPORT %s -> %s: %d verts, %d tris, materials %s" % (sk.get_name(), path, len(P), len(T), mats))
 
 
 def main(breeds):
