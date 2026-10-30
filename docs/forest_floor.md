@@ -53,7 +53,12 @@ the weather's).
 
 ## Performance
 
-See the numbers at the end (bench). Cheap by construction: no collision except logs, stumps and boulders (simple
+Measured 2026-10-30 (`tools/bench_forest.sh nofloor floorhalf`, Epic, one process, 2 rounds) on a heavily loaded Mac
+(4 other Unreal/compile processes, ~100 ms frames instead of the usual ~26): forest segment 122.5 ms with the floor,
+130.2 ms without, 130.2 ms at half density; terrace 87.3 / 91.1 ms. The floor's cost is below that noise; measure
+again on an idle machine. Around the upland forest spot it holds ~63k instances in autumn (feather moss 19k, birch
+leaves 26k, bilberry 7.8k, sticks 2.7k, cones 3.3k ...), ~100 in deep snow; laying out a cell is a few ms of traces
+spread over frames (`TracesPerTick`). Cheap by construction: no collision except logs, stumps and boulders (simple
 boxes); shadows only from logs, stumps, boulders, branches, roots and moss cushions (static, cached by the virtual
 shadow map; no WPO); moss and leaves culled at ~13-15 m, herbs at 26-42 m with a LOD 1 from ~10 m.
 
@@ -69,3 +74,11 @@ shadow map; no WPO); moss and leaves culled at ~13-15 m, herbs at 26-42 m with a
   overlapping faces of different parts, NaNs; every debris kind must read 0.
 - `tools/bench_forest.sh nofloor floorhalf`: one-process A/B.
 - Terrain relief without UE: build `TerrainGen.cpp` with a small clang++ driver (docs/terrain.md).
+
+## Known gaps
+
+- Seedlings are the forests' own tree bakes and queue behind them: right after the level opens they come in once the
+  forest bakes are done (a few minutes).
+- The ground's litter is drawn from the field only within 96 m of the camera (beyond, the plain forest photo).
+- Puddles in the forest's hollows are the rain's generic wet decal, not the terrain's wetness.
+- Leaves blown along the ground stir in place (vertex shader); they are not carried across the floor.
