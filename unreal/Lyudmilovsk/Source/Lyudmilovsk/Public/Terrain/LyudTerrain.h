@@ -30,12 +30,17 @@ public:
 	UPROPERTY() TArray<uint8> Grass;
 	UPROPERTY() TArray<uint8> DuneGrass;
 	UPROPERTY() TArray<uint8> Wetness;
+	UPROPERTY() TArray<uint8> ForestFloor;
 
 	/** 0..1, bilinear; 0 outside the map. */
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetGrassDensity(const FVector& WorldLocation) const { return Sample(Grass, WorldLocation); }
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetDuneGrassDensity(const FVector& WorldLocation) const { return Sample(DuneGrass, WorldLocation); }
 	/** 0 dry .. 1 where water runs and stands (gullies, hollows, ruts). */
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetWetness(const FVector& WorldLocation) const { return Sample(Wetness, WorldLocation); }
+	/** 0..1 forest floor the ground cover grows on (AForestFloor): under the forest, off its tracks, rock and sand. */
+	UFUNCTION(BlueprintPure, Category = "Terrain") float GetForestFloor(const FVector& WorldLocation) const { return Sample(ForestFloor, WorldLocation); }
+	/** A mask built before the forest floor channel existed has none (AForestFloor then goes by the trees alone). */
+	bool HasForestFloor() const { return ForestFloor.Num() == Width * Height && Width > 1; }
 
 	/** The level's mask, or null if the terrain has not been built. */
 	UFUNCTION(BlueprintPure, Category = "Terrain") static ULyudTerrainMask* Get();

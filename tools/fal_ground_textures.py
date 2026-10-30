@@ -37,6 +37,11 @@ PROMPTS = {
             "bands of pale yellow sand and darker silt, fine vertical rain rills running down, a few dry roots, ",
     "Forest": "Scots pine forest floor: brown fallen pine needles, a few small pine cones and twigs, patches "
               "of green moss and lingonberry leaves, ",
+    # the forest floor's litter (docs/forest_floor.md): tinted in M_Ground by what trees stand around
+    "Leaves": "a thick carpet of freshly fallen birch and aspen leaves on a forest floor in autumn, overlapping "
+              "small oval toothed leaves in soft yellow and pale ochre, a few curled and brown, no grass, ",
+    "Moss": "a dense carpet of feather moss (Pleurozium) on a Baltic pine forest floor, fine yellow-green and "
+            "green moss fronds, a few brown pine needles lying on it, ",
 }
 
 

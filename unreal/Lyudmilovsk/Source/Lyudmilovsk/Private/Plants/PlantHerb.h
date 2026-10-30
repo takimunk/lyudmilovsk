@@ -70,4 +70,6 @@ namespace PlantHerbs
 
 	/** The presets of flowers, hedges and house plants (PlantSpeciesHerbs.cpp), in the species library after the trees. */
 	TArray<FPlantSpecies> Species();
+	/** The forest floor's dwarf shrubs, ferns and wood sorrel (PlantSpeciesFloor.cpp, drawn by AForestFloor). */
+	TArray<FPlantSpecies> FloorSpecies();
 }

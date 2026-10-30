@@ -1257,6 +1257,7 @@ const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 			ScotsPine(), DunePine(), NorwaySpruce(), BlackAlder(), Rowan(), SeaBuckthorn(), Juniper(), Aspen() };
 		for (FPlantSpecies& S : Out) ApplyBlossom(S);
 		Out.Append(PlantHerbs::Species());
+		Out.Append(PlantHerbs::FloorSpecies());
 		return Out;
 	}();
 	return Species;

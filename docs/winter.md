@@ -86,6 +86,9 @@ fresh snow sticks, wind and thaw shake it off in a day or two); `M_PlantBark` ta
 that; `AProceduralPlant`/`AProceduralVine`/`AProceduralGrass` ask `ULyudWinterSubsystem::SnowOnBranches` /
 `SnowOnGround` instead of the calendar's guess where the winter runs.
 
+The forest floor's shrubs, litter and debris (`AForestFloor`, [forest_floor.md](forest_floor.md)) are not drawn where the
+snow is deeper than they stand, and are whitened on top where they stick out.
+
 ## Sea ice
 
 `ALyudSeaIce`: a flat sheet at the still water (`ALyudSea::SeaLevel()`, so it rides the tide and the surge) +

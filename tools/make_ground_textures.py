@@ -14,10 +14,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "..", "textures", "ground", "raw")
 DST = os.path.join(HERE, "..", "textures", "ground")
-LAYERS = ["Grass", "Meadow", "Dirt", "Mud", "Sand", "Rock", "Forest"]
+LAYERS = ["Grass", "Meadow", "Dirt", "Mud", "Sand", "Rock", "Forest", "Leaves", "Moss"]
 SIZE = 1024
 # how strong the bumps read in the normal map, per layer (sand is nearly smooth, rock is rough)
-BUMP = {"Grass": 3.0, "Meadow": 3.0, "Dirt": 4.0, "Mud": 3.5, "Sand": 1.5, "Rock": 6.0, "Forest": 3.5}
+BUMP = {"Grass": 3.0, "Meadow": 3.0, "Dirt": 4.0, "Mud": 3.5, "Sand": 1.5, "Rock": 6.0, "Forest": 3.5, "Leaves": 3.5, "Moss": 3.0}
 
 
 def load(path):

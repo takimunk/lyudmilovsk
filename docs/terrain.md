@@ -44,6 +44,12 @@ light). The material (`M_Ground`) mixes each photo at 2.6 m and 11 m tiling, let
 blend between layers, and drifts the brightness slowly so repeats don't show. Tints and roughness: `LOOK` in
 import_terrain.py.
 
+## Forest floor
+
+Inside the forest the generator adds mossy hummocks, hollows and windthrow pit-and-mound pairs (`ForestFloorRelief`), and
+the mask carries a forest-floor channel (`GetForestFloor`). The litter, ground cover and debris on it:
+[forest_floor.md](forest_floor.md).
+
 ## Grass mask
 
 `ULyudTerrainMask::Get()` (`/Game/Scene01/Terrain/DA_TerrainMask`, 2 m cells): `GetGrassDensity(WorldLocation)`

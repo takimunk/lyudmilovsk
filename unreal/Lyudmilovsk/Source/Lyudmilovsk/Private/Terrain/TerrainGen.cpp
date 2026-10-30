@@ -336,6 +336,75 @@ bool WriteHeights(const std::string& Dir, const FOutputs& Out)
 	return Ok;
 }
 
+namespace
+{
+	inline uint32_t CellHash(int X, int Y, uint32_t Seed, uint32_t K)
+	{
+		uint32_t H = uint32_t(X) * 0x8DA6B343u ^ uint32_t(Y) * 0xD8163841u ^ Seed * 0xCB1AB31Fu ^ K * 0x9E3779B9u;
+		H ^= H >> 13; H *= 0x5BD1E995u; H ^= H >> 15;
+		return H;
+	}
+	inline float CellRand(int X, int Y, uint32_t Seed, uint32_t K) { return (CellHash(X, Y, Seed, K) & 0xFFFFFFu) / float(0x1000000); }
+
+	/**
+	 * Inside the forest only (docs/forest_floor.md): low mossy hummocks 0.2-0.45 m over a few metres, shallow hollows
+	 * between them, and every ~20 m on average a windthrow: the pit a fallen tree's roots tore out (~0.45 m deep,
+	 * ~1.5 m across) with its mound of soil beside it. Not on tracks, protected ground or the bluff; the 1 m grid
+	 * carries this, finer bumps are the ground material's.
+	 */
+	void ForestFloorRelief(const FInputs& In, const std::vector<float>& TrackD, FOutputs& Out)
+	{
+		const int NX = In.NX, NY = In.NY;
+		const size_t N = size_t(NX) * NY;
+		std::vector<float> F(N);
+		for (size_t I = 0; I < N; ++I) F[I] = In.Kind[I] == Land ? In.Forest[I] / 255.f : 0.f;
+		F = Blur(F, NX, NY, 2, 2);
+		const FNoise Bumps(In.Seed * 2654435761u + 101u);
+		constexpr float Cell = 20.f;
+		int Throws = 0;
+		float Highest = 0.f;
+		for (int Y = 1; Y < NY - 1; ++Y)
+			for (int X = 1; X < NX - 1; ++X)
+			{
+				const size_t I = size_t(Y) * NX + X;
+				if (In.Hole[I] || In.Protect[I] == 255) continue;
+				const float GX = (Out.Height[I + 1] - Out.Height[I - 1]) * 0.5f, GY = (Out.Height[I + NX] - Out.Height[I - NX]) * 0.5f;
+				const float W = Smooth(0.25f, 0.8f, F[I]) * (1.f - In.Protect[I] / 255.f) * Smooth(2.f, 5.f, TrackD[I])
+					* (1.f - Smooth(0.45f, 0.8f, std::sqrt(GX * GX + GY * GY))) * (1.f - In.Cliff[I] / 255.f);
+				if (W <= 0.f) continue;
+				const double WX = In.X0 + X, WY = In.Y0 + Y;
+				// hummocks: only the tops of a noise field rise, so they stand apart with flat floor between
+				const float B = Bumps.Fbm(WX, WY, 8.f, 2);
+				const float Hummock = Smooth(0.1f, 0.42f, B) * 0.42f;
+				const float Hollow = Smooth(0.25f, 0.55f, -Bumps.Fbm(WX + 913.0, WY - 377.0, 9.f, 2)) * 0.14f;
+				// windthrows: one at most per 20 m cell, the pit and the mound side by side along the tree's fall
+				float Throw = 0.f;
+				const int CX = int(std::floor(WX / Cell)), CY = int(std::floor(WY / Cell));
+				for (int DY = -1; DY <= 1; ++DY)
+					for (int DX = -1; DX <= 1; ++DX)
+					{
+						const int KX = CX + DX, KY = CY + DY;
+						if (CellRand(KX, KY, In.Seed, 1) > 0.3f) continue;
+						const float PX = (KX + 0.2f + 0.6f * CellRand(KX, KY, In.Seed, 2)) * Cell, PY = (KY + 0.2f + 0.6f * CellRand(KX, KY, In.Seed, 3)) * Cell;
+						const float A = CellRand(KX, KY, In.Seed, 4) * 6.2832f, Size = 0.75f + 0.5f * CellRand(KX, KY, In.Seed, 5);
+						const float DirX = std::cos(A), DirY = std::sin(A);
+						const float RX = float(WX - PX), RY = float(WY - PY);
+						const float U = (RX * DirX + RY * DirY) / Size, V = (-RX * DirY + RY * DirX) / Size;
+						const float Pit = std::exp(-((U + 0.9f) * (U + 0.9f) / 0.7f + V * V / 1.1f));
+						const float Mound = std::exp(-((U - 1.0f) * (U - 1.0f) / 0.45f + V * V / 0.9f));
+						Throw += (Mound * 0.55f - Pit * 0.45f) * Size;
+					}
+				const float D = std::clamp(Hummock - Hollow + Throw, -0.55f, 0.75f) * W;
+				Out.Height[I] += D;
+				Highest = std::max(Highest, D);
+				Throws += Throw > 0.3f;
+			}
+		char Buf[160];
+		std::snprintf(Buf, sizeof(Buf), "forest floor: hummocks up to %.2f m, ~%d windthrow mound vertices\n", Highest, Throws);
+		Out.Report += Buf;
+	}
+}
+
 void Generate(const FInputs& In, FOutputs& Out)
 {
 	const int NX = In.NX, NY = In.NY;
@@ -504,6 +573,9 @@ void Generate(const FInputs& In, FOutputs& Out)
 			Out.Height[I] = Lerp(Out.Height[I], Lerp(Smoothed[I], Out.Height[I], P), Flat) - Trough * (1.f - P);
 		}
 	}
+	// --- the forest floor's micro-relief: mossy hummocks and old windthrow pits with their root mounds ---
+	ForestFloorRelief(In, TrackD, Out);
+
 	// the portal hole and every protected vertex keep the macro height exactly; over the corridor the
 	// ground may rise but not sink
 	for (size_t I = 0; I < N; ++I)
@@ -528,6 +600,7 @@ void Generate(const FInputs& In, FOutputs& Out)
 	for (auto& L : Out.Weights) L.assign(N, 0);
 	Out.GrassDensity.assign(N, 0);
 	Out.DuneGrass.assign(N, 0);
+	Out.ForestFloor.assign(N, 0);
 	double Cover[NumLayers] = {};
 	for (int Y = 0; Y < NY; ++Y)
 		for (int X = 0; X < NX; ++X)
@@ -590,6 +663,8 @@ void Generate(const FInputs& In, FOutputs& Out)
 			const float Z = Out.Height[I] - In.SeaZ;
 			const float Dune = W[ELayer::Sand] * Smooth(0.9f, 1.6f, Z) * Smooth(-0.15f, 0.3f, Noise2.Fbm(WX, WY, 6.f, 2));
 			Out.DuneGrass[I] = uint8_t(Clamp01(Dune) * 255.f + 0.5f);
+			const float Floor = ForestV * (1.f - P) * Smooth(1.5f, 3.5f, TrackD[I]) * (1.f - Clamp01(RockV)) * (1.f - Clamp01(SandV)) * (1.f - Steep);
+			Out.ForestFloor[I] = In.Kind[I] == Land ? uint8_t(Clamp01(Floor) * 255.f + 0.5f) : 0;
 		}
 
 	float Lo = 1e9f, Hi = -1e9f;

@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(REPO, "tools"))
 import terrain as T  # noqa: E402
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import winter_snow  # noqa: E402
+import forestfloor_ground  # noqa: E402
 
 DEST = "/Game/Scene01/Terrain"
 TIDE_MPC = "/Game/Weather/MPC_LyudWeather"      # its "Tide" (make_sea_materials.py) wets the sand under the tide
@@ -360,7 +361,9 @@ def patch_wet():
             mel.delete_material_expression(m, e)     # the wet node's own inputs (_wet_node puts them there)
     if blend is None:
         raise RuntimeError("M_Ground has no GroundBlend node: rebuild the ground")
-    _wet_node(m, blend)
+    litter = [e for e in unreal.ObjectIterator(unreal.MaterialExpressionCustom)
+              if e.get_outer() == m and e.get_editor_property("description") == "ForestLitter"]
+    _wet_node(m, litter[0] if litter else blend)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     _log("M_Ground wet sand patched")
@@ -384,11 +387,14 @@ def make_material(layers, textures):
                   [_custom_input("Macro"), _custom_input("Dist")],
                   additional_outputs=[_custom_output("Normal", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
                                       _custom_output("Roughness", unreal.CustomMaterialOutputType.CMOT_FLOAT1)])
+    forest_w = None
     for i, name in enumerate(layers):
         d, nm = textures[name]
         y = i * 520
         w = _node(m, unreal.MaterialExpressionLandscapeLayerSample, -1200, y, parameter_name=name,
                   preview_weight=1.0 if i == 0 else 0.0)
+        if name == "Forest":
+            forest_w = w
         if name in TRIPLANAR:
             mix = _triplanar(m, d, nm, TRIPLANAR[name], -1800, y, shared)
             _link(w, "", blend, "W%d" % i)
@@ -419,7 +425,8 @@ def make_material(layers, textures):
     _link(mix, "", blend, "Macro")
     depth = _node(m, unreal.MaterialExpressionPixelDepth, -1400, -200)
     _link(depth, "", blend, "Dist")
-    _wet_node(m, blend)
+    # the forest floor's litter (AForestFloor's field) over the forest layer, under the wet sand and pools
+    _wet_node(m, forestfloor_ground.ground_litter(m, blend, forest_w) if forest_w else blend)
     hole = _node(m, unreal.MaterialExpressionLandscapeVisibilityMask, -300, 400)
     mel.connect_material_property(hole, "", MP.MP_OPACITY_MASK)
     winter_snow.ground_wpo(m)   # the snow lifts the ground (ULyudWinterSubsystem)

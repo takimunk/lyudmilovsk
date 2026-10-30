@@ -11,6 +11,8 @@ variant() {
         base)       echo "" ;;
         nolive)     echo "lyud.Bench.LiveHide 1" ;;
         noforest)   echo "lyud.Bench.ForestHide 1" ;;
+        nofloor)    echo "lyud.ForestFloor 0" ;;
+        floorhalf)  echo "lyud.ForestFloor.Density 0.5" ;;
         notrees)    echo "lyud.Bench.ForestHide 1;lyud.Bench.LiveHide 1" ;;
         noshadow)   echo "lyud.Bench.ForestShadows 0" ;;
         channel1)   echo "lyud.Bench.ForestChannel0 0" ;;

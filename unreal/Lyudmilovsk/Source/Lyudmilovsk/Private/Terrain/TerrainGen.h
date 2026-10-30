@@ -38,6 +38,7 @@ namespace LyudTerrain
 		std::vector<uint8_t> GrassDensity;       // meadow grass, 0..255
 		std::vector<uint8_t> DuneGrass;          // marram / lyme grass on the sand, 0..255
 		std::vector<uint8_t> Wetness;            // where water runs and stands, 0..255
+		std::vector<uint8_t> ForestFloor;        // forest floor the ground cover grows on (no track, rock, sand), 0..255
 		std::string Report;
 	};
 
