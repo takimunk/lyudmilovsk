@@ -208,6 +208,8 @@ def sky_material():
     night sky's airglow, and stars that the day sky and the two disks outshine."""
     g = Graph("M_LyudSky", unreal.MaterialShadingModel.MSM_UNLIT)
     sky = g.node(X.MaterialExpressionSkyAtmosphereViewLuminance)
+    # ALyudSky keeps a low sun's light up but not the sky it would brighten with it (SkyLumScale)
+    sky = g.op(X.MaterialExpressionMultiply, sky, g.param("SkyLumScale", 1.0))
     cam = g.node(X.MaterialExpressionCameraVectorWS)
     view = g.custom("return -C;", [("C", cam)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
 
@@ -229,8 +231,14 @@ def sky_material():
                     texture=europa_texture(EUROPA_RELIEF, "T_EuropaRelief", False))
     rgba = lambda n: (n, "RGBA")
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
-    sun = g.custom(SH.LIB + SH.SUN_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
-                                         ("Spots", rgba(spots)), ("T", t), ("Tr", tr)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    # the star's activity (ULyudSunActivity sets these): active regions, prominences, the flare
+    sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
+               ("Tr", tr), ("Look", rgba(vparam("SunLook", (1.0, 0.25, 1.0, 1.0)))),
+               ("Look2", rgba(vparam("SunLook2", (2.2, 0.0, 0.0, 0.0))))]
+    sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
+    for k in "ABC":
+        sun_ins += [("P%s%d" % (k, i), rgba(vparam("SunProm%s%d" % (k, i), (0.0, 0.0, 1.0, 0.0)))) for i in range(SH.SUN_PROMS)]
+    sun = g.custom(SH.LIB + SH.SUN_HLSL, sun_ins, out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     moon = g.custom(SH.MOON_HLSL, [("V", view), ("M", rgba(moon_dir)), ("S", rgba(sun_dir)), ("P", rgba(pole)),
                                    ("D", rgba(moon_disk)), ("C", rgba(moon_look)), ("Tr", tr), ("Europa", europa), ("Relief", relief)],
                     out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
@@ -268,6 +276,10 @@ def sky_material():
     flash = g.custom(RH.FLASH_HLSL, [("V", view), ("F", rgba(vparam("Flash", (0.0, 1.0, 0.2, 0.0))))], out=f3)
     flare = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
                                      ("F", rgba(vparam("Flare", (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
+    # the activity's everyday flares, drawn the same way (ULyudSunActivity sets SunFlare)
+    flare2 = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
+                                      ("F", rgba(vparam("SunFlare", (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
+    flare = g.op(X.MaterialExpressionAdd, flare, flare2)
     rare = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, aur, nlc), g.op(X.MaterialExpressionAdd, flash, flare))
     em = g.op(X.MaterialExpressionAdd, em, rare)
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)

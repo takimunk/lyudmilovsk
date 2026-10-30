@@ -3,9 +3,14 @@
 The red dwarf and Europa are drawn here, per pixel of the dome, not by the atmosphere's light disks
 (ALyudSky turns those off). Parameters (ALyudSky::UpdateSkyMaterial sets them):
   SunDir, MoonDir, Pole = world unit vectors toward the sun, the moon, the celestial north pole
-  SunDisk  = (angular radius rad, disk-centre luminance, day seed, the star's spin rad)
-  SunSpots = (the spin at the day's noon rad: the face the spots are put on, umbra brightness, granulation
-              contrast, faculae strength)
+  SunDisk  = (angular radius rad, disk-centre luminance, day number, the star's spin rad)
+  SunSpots = (the spin at the day's noon rad: the face the rare sky's flares are put on, umbra brightness,
+              granulation contrast, faculae strength)
+  SunLook  = (aureole strength, how much of the air's dimming the disk keeps 0..1, prominence gain, corona gain)
+  SunRegion0..7 = the active regions (ULyudSunActivity): latitude, star longitude (rad), strength 0..1, seed
+  SunPromA/B/C0..15 = the prominences (view frame: x east, y north, z toward us, unit star): anchor xyz + height
+              (radii); foot axis xyz + half length (rad); brightness, kind (0 loop, 1 hedgerow, 2 surge), lift (radii), seed
+  SunFlare = the activity's flare in the rare sky's format (rare_hlsl.FLARE_HLSL draws it)
   MoonDisk = (angular radius rad, luminance of full sunlit ice, ashen light share, night 0..1)
   MoonLook = (unused, the night halo's strength, 0, 0)
   EuropaAlbedo, EuropaRelief = Europa's baked maps (tools/sky/europa_bake.py; equirectangular, east longitude 0..360
@@ -66,30 +71,47 @@ struct FLyudSkyLib
         float dome = 1.0 - 0.5 * smoothstep(0.0, 0.9, f1);
         return lerp(0.25, 1.0, lane) * dome * (0.85 + 0.15 * b);
     }
-    // member k (0 leader, 1..4 followers) of spot group g (0..2) of a day's seed: (centre on the unit star, umbra
-    // radius rad; 0 = none). One to three groups, in two belts north and south of the equator, on the face the star
-    // turns to us at the day's noon (face = the spin then); a big leader, ragged smaller followers and pores trailing
-    // it in longitude
-    float4 Spot(float seed, int g, int k, float face)
+    // member k (0 leader, 1..4 followers and pores) of an active region's spot group (ULyudSunActivity:
+    // g = latitude, star longitude, strength 0..1, seed): (centre on the unit star in the star's frame, umbra radius
+    // rad; 0 = none). A stronger region has a bigger leader and more followers trailing it in longitude.
+    float4 RegionSpot(float4 g, int k)
     {
-        float gk = seed * 3.17 + g * 2.71;
-        float sk = gk * 1.31 + k * 1.618;
-        float pg = g == 0 ? 1.0 : (g == 1 ? 0.6 : 0.3);
-        float pk = k == 0 ? 1.0 : 0.9 - 0.15 * k;
-        bool on = H1(gk + 7.0) < pg && H1(sk + 8.0) < pk;
-        float big = g == 0 ? 1.0 : 0.55 + 0.45 * H1(gk + 9.0);
-        float lat = (H1(gk) < 0.5 ? -1.0 : 1.0) * (0.14 + 0.4 * H1(gk + 1.0)) + (H1(sk + 2.0) - 0.5) * 0.02 * min(k, 1);
-        float lon = face + (H1(gk + 3.0) - 0.5) * 2.2 - k * (0.02 + 0.03 * H1(sk + 4.0)) - (k > 0 ? 0.03 * big : 0.0);
-        float r = k == 0 ? (0.007 + 0.009 * H1(gk + 5.0)) * big : 0.0025 + 0.004 * H1(sk + 6.0) * big;
+        float sk = g.w * 1.31 + k * 1.618;
+        bool on = g.z > 0.0 && k < 1.0 + 4.0 * g.z && (k == 0 || H1(sk + 8.0) < 0.85);
+        float lat = g.x + (H1(sk + 2.0) - 0.5) * 0.03 * min(k, 1);
+        float lon = g.y - k * (0.015 + 0.025 * H1(sk + 4.0)) * (0.6 + 0.6 * g.z) - (k > 0 ? 0.02 : 0.0);
+        float r = k == 0 ? 0.004 + 0.014 * g.z : 0.002 + 0.004 * H1(sk + 6.0) * g.z;
         return float4(cos(lat) * sin(lon), sin(lat), cos(lat) * cos(lon), on ? r : 0.0);
+    }
+    // a point of a prominence (view frame, unit star): s = -1..1 along its foot, A = the foot's middle, Tt = the
+    // foot's axis, w = half its length (rad), h = height at the top (radii), lift = how far it has risen, sw = its
+    // sideways sway (radii) along Bn
+    float3 PromPt(float3 A, float3 Tt, float3 Bn, float w, float h, float lift, float s, float sw)
+    {
+        float a = w * s;
+        float sh = sqrt(saturate(1.0 - s * s));
+        return (A * cos(a) + Tt * sin(a)) * (1.0 + h * sh) + Bn * (sw * sh) + A * lift;
     }
 };
 """
 
-# The red dwarf: (luminance rgb) at view direction V, plus the corona and prominences around it.
-# Inputs: V, S (SunDir), P (Pole), D (SunDisk), Spots (SunSpots), T (time s), Tr (atmosphere transmittance rgb toward the sun).
+# The red dwarf: (luminance rgb) at view direction V: the disk (limb darkening, granulation, the active regions' spots
+# and faculae), the corona with streamers over the active regions, the prominences on the limb (dark filaments where
+# they lie in front of the disk) and the warm aureole round it all in the haze.
+# Inputs: V, S (SunDir), P (Pole), D (SunDisk), Spots (SunSpots), T (time s), Tr (atmosphere transmittance rgb toward
+# V), Look (SunLook: aureole, horizon dimming kept 0..1, prominence gain, corona gain), Look2 (SunLook2: the disk's
+# detail contrast, 0, 0, 0), R0..R7 (SunRegion*: latitude,
+# star longitude, strength, seed), PA/PB/PC0..15 (SunPromA/B/C*: anchor xyz + height; foot axis xyz + half length;
+# brightness, kind 0 loop 1 hedgerow 2 surge, lift, seed), all from ULyudSunActivity.
+SUN_REGIONS = 8
+SUN_PROMS = 16
 SUN_HLSL = r"""
 FLyudSkyLib L;
+float4 RG[8] = { R0, R1, R2, R3, R4, R5, R6, R7 };
+float4 PA[16] = { PA0, PA1, PA2, PA3, PA4, PA5, PA6, PA7, PA8, PA9, PA10, PA11, PA12, PA13, PA14, PA15 };
+float4 PB[16] = { PB0, PB1, PB2, PB3, PB4, PB5, PB6, PB7, PB8, PB9, PB10, PB11, PB12, PB13, PB14, PB15 };
+float4 PC[16] = { PC0, PC1, PC2, PC3, PC4, PC5, PC6, PC7, PC8, PC9, PC10, PC11, PC12, PC13, PC14, PC15 };
+
 float3 v = normalize(V);
 float3 s = normalize(S.xyz);
 float R = D.x;
@@ -101,18 +123,121 @@ float3 w = v - s * c;
 float2 u = float2(dot(w, ee), dot(w, nn)) / sin(R);
 float r = c > 0.0 ? length(u) : 100.0;
 float fw = max(fwidth(r), 1e-4);
-if (r > 3.5 || D.y <= 0.0) return 0.0;
+if (D.y <= 0.0) return 0.0;
+// the air toward the star's centre, without the sinking below the horizon: the disk keeps Look.y of its dimming (the
+// eye adapts to a low sun, and a real one stays blinding); the colour still follows the air, pixel by pixel
+float salt = degrees(asin(clamp(s.z, -1.0, 1.0)));
+float sh0 = max(salt, 0.0);
+float sam = 1.0 / (sin(radians(sh0)) + 0.50572 * pow(sh0 + 6.07995, -1.6364));
+float3 trs = exp(-float3(0.07, 0.14, 0.30) * (sam - 1.0));
+float trsY = max(dot(trs, float3(0.2126, 0.7152, 0.0722)), 1e-3);
+float3 TrB = Tr * lerp(1.0, min(pow(trsY, Look.y - 1.0), 30.0), smoothstep(30.0, 3.0, salt));
+// the aureole: the haze's forward glow round the star, warm, wider and stronger the more air the light crosses
+float3 aur = 0.0;
+if (r > 0.98 && r < 14.0)
+{
+    float x = max(r - 1.0, 0.0);
+    float haze = 0.25 + 1.6 * (1.0 - trsY);
+    float lobe = 0.03 * exp(-x / 0.7) + 0.012 / (1.0 + x * x / 9.0) + 0.0035 / (1.0 + x * x / 60.0);
+    aur = float3(1.0, 0.5, 0.26) * (Look.x * haze * lobe) * smoothstep(0.98, 1.02, r);
+}
+if (r > 4.5) return aur * D.y * TrB;
 // a ~3000 K star, deep red-orange, darker and redder toward the limb (deeper than the light: the tonemapper pales it)
 const float3 Hot = float3(1.0, 0.31, 0.075);
 const float3 Limb = float3(0.55, 0.07, 0.015);
+float sp = D.w;
+float csp = cos(sp), ssp = sin(sp);
 float3 col = 0.0;
+// prominences: their emission off the limb, their dark filaments where they lie in front of the disk
+float prom = 0.0, core = 0.0, filament = 1.0;
+float phi0 = atan2(u.y, u.x);
+if (r > 0.55 && Look.z > 0.0)
+{
+    float wdMin = max(fw * 1.2, 0.002);
+    for (int i = 0; i < SUN_PROMS; i++)
+    {
+        float4 pa = PA[i], pb = PB[i], pc = PC[i];
+        if (pc.x <= 0.0) continue;
+        float3 A = pa.xyz;
+        float hh = pa.w, ww = pb.w, lift = pc.z;
+        float ext = ww * 1.1 + hh + 0.06;
+        float2 d0 = u - A.xy * (1.0 + lift);
+        if (dot(d0, d0) > ext * ext) continue;
+        float3 Tt = pb.xyz;
+        float3 Bn = cross(A, Tt);
+        float sd = pc.w;
+        int kind = (int)(pc.y + 0.5);
+        // the sway: slow, and a quicker ripple along it (the field lines shaken from below)
+        float swA = hh * (0.07 * sin(T * 0.21 + sd) + 0.03 * sin(T * 0.53 + sd * 1.7));
+        // the arch as a polyline; for a hedgerow, each vertex also stands a thread down to the surface
+        float best = 1e9, bs = 0.0, bz = 0.0, br = 1.0, thr = 0.0, thz = 1.0;
+        float wdT = max(0.007, wdMin);
+        float3 prev = L.PromPt(A, Tt, Bn, ww, hh, lift, -1.0, swA * sin(sd));
+        const int NSEG = 10;
+        for (int k = 1; k <= NSEG; k++)
+        {
+            float sk = -1.0 + 2.0 * k / NSEG;
+            float ph = swA * sin(sd + sk * 2.3 + T * 0.4);
+            float hk = hh * (kind == 1 ? 0.65 + 0.55 * L.H1(sd + k * 3.1) : 1.0);
+            float3 cur = L.PromPt(A, Tt, Bn, ww, hk, lift, sk, ph);
+            float2 e = cur.xy - prev.xy, f = u - prev.xy;
+            float t = saturate(dot(f, e) / max(dot(e, e), 1e-9));
+            float2 g = f - e * t;
+            float dd = dot(g, g);
+            if (dd < best) { best = dd; bs = sk - (2.0 / NSEG) * (1.0 - t); bz = lerp(prev.z, cur.z, t); br = length(lerp(prev.xy, cur.xy, t)); }
+            if (kind == 1)
+            {
+                // a vertical thread from the foot to the arch, swaying with it
+                float3 base = L.PromPt(A, Tt, Bn, ww, 0.0, lift, sk - 1.0 / NSEG, 0.0);
+                float3 top = L.PromPt(A, Tt, Bn, ww, hk, lift, sk - 1.0 / NSEG, ph);
+                float2 e2 = top.xy - base.xy, f2 = u - base.xy;
+                float t2 = saturate(dot(f2, e2) / max(dot(e2, e2), 1e-9));
+                float2 g2 = f2 - e2 * t2;
+                float q = exp(-dot(g2, g2) / (wdT * wdT)) * (0.35 + 0.65 * t2) * (wdT > 0.007 ? 0.007 / wdT : 1.0);
+                if (q > thr) { thr = q; thz = lerp(base.z, top.z, t2); }
+            }
+            prev = cur;
+        }
+        float dist = sqrt(best);
+        float wd0 = (kind == 1 ? 0.028 : (kind == 2 ? 0.014 : 0.02)) * (1.0 + 0.8 * lift);
+        float wd = max(wd0, wdMin);
+        // under the arch: the body of the prominence, a faint fibrous sheet down to the surface
+        float inside = r > 1.0 ? smoothstep(0.0, 0.04, br - r) * smoothstep(1.0, 0.85, abs(bs)) * smoothstep(1.0, 1.015, r) : 0.0;
+        if (dist > wd * 8.0 && thr < 0.01 && inside <= 0.0) continue;
+        // fine structure: strands across, knots of plasma draining down the legs, flickering threads
+        // strands along it: noise stretched along the arch, fine across it
+        float n1 = L.Noise(float3(bs * 7.0, dist / wd * 3.5, sd)) * 0.6 + L.Noise(float3(bs * 23.0, dist / wd * 7.0, sd + 5.0)) * 0.4;
+        float flow = L.Noise(float3(bs * 9.0 - T * 0.12 * sign(bs + 1e-4), sd * 0.37, 0.0));
+        float band = exp(-dist * dist / (wd * wd)) * (wd0 / wd);
+        // brighter toward the top of the legs, fading into the feet
+        float legs = 0.55 + 0.45 * smoothstep(1.0, 0.4, abs(bs));
+        float e1 = band * (0.25 + 1.2 * n1 * n1) * (0.5 + 0.8 * flow) * legs;
+        float glow = exp(-dist / (wd * 1.5)) * 0.25;
+        float thread = thr * (0.5 + 0.8 * L.Noise(float3(bs * 25.0, T * 0.05 + sd, 3.0)));
+        float fib = L.Noise(float3(phi0 * 160.0 + sd, r * 25.0 - T * 0.02, sd));
+        float body = inside * (kind == 1 ? 0.4 : 0.3) * (0.3 + 1.0 * fib * fib);
+        float em = (kind == 1 ? 0.5 * e1 + 0.9 * thread : e1) + glow + body;
+        // an erupting one leaves a faint expanding front ahead of it
+        em += lift > 0.2 ? 0.05 * exp(-abs(dist - 0.25 * lift) / (0.03 + 0.02 * lift)) : 0.0;
+        float zAt = kind == 1 && thr > band ? thz : bz;
+        if (r < 1.0)
+        {
+            // in front of the disk: a dark filament (cool gas against the hot photosphere); behind it: nothing
+            if (zAt > 0.0 && kind == 1) filament *= 1.0 - saturate(0.06 * exp(-dist / 0.035) * (0.6 + 0.6 * n1) * pc.x);
+        }
+        else
+        {
+            prom += em * pc.x;
+            core += band * pc.x;
+        }
+    }
+}
 if (r < 1.0)
 {
     float mu = sqrt(1.0 - r * r);
     // a point on the star in its own frame (y = its north, z = toward us), turned with its spin
     float3 p = float3(u.x, u.y, mu);
-    float sp = D.w;
-    float3 q = float3(p.x * cos(sp) + p.z * sin(sp), p.y, -p.x * sin(sp) + p.z * cos(sp));
+    float3 q = float3(p.x * csp + p.z * ssp, p.y, -p.x * ssp + p.z * csp);
     // strong limb darkening (a cool convective star): ~0.15 of the centre at the very edge
     float limb = 0.15 + 0.85 * pow(mu, 0.85);
     float3 base = lerp(Limb, Hot, pow(mu, 0.6)) * limb;
@@ -125,68 +250,77 @@ if (r < 1.0)
     float sup = L.Noise(q * 14.0 + 7.0);
     float gc = Spots.z * (0.4 + 0.6 * mu);
     float gran = 1.0 + gc * (aa * 0.14 * (g1 - 0.62) + 0.035 * (meso - 0.5) + 0.03 * (sup - 0.5));
-    // spots: small and subtle (Dima: barely visible dark points, a little darker than the photosphere): a few pores
-    // and one or two small spots with a slight, soft penumbra, a ragged edge
-    float spot = 1.0, fac = 0.0;
-    for (int gi = 0; gi < 3; gi++)
-    for (int k = 0; k < 5; k++)
+    // the active regions' spots: small and subtle (Dima: barely visible dark points, a little darker than the
+    // photosphere): pores and small spots with a slight, soft penumbra, a ragged edge; bright plage round them
+    float spot = 1.0, fac = 0.0, plage = 0.0;
+    for (int gi = 0; gi < SUN_REGIONS; gi++)
     {
-        float4 kk = L.Spot(D.z, gi, k, Spots.x);
-        if (kk.w <= 0.0) continue;
-        float ru = kk.w;
-        float3 dq = q - kk.xyz;
-        if (dot(dq, dq) > ru * ru * 36.0) continue;
-        float hs = L.H1(D.z * 1.7 + gi * 5.3 + k * 2.9);
-        float3 t1 = normalize(cross(float3(0, 1, 0), kk.xyz)), t2 = cross(kk.xyz, t1);
-        float2 rq = float2(dot(dq, t1), dot(dq, t2));
-        float el = 1.0 + 0.5 * frac(hs * 7.31);
-        rq *= float2(1.0 / sqrt(el), sqrt(el));
-        float d = length(rq);
-        float2 cs = rq / max(d, 1e-6);
-        float3 sd = float3(hs * 37.0, k * 11.0, gi * 7.0);
-        float ue = ru * (0.8 + 0.4 * L.Noise(float3(cs * 2.2, 0.0) + sd));
-        bool pore = k > 0 || ru < 0.006;
-        float pe = pore ? ue * 1.6 : ue * (1.9 + 0.4 * L.Noise(float3(cs * 1.8, 2.0) + sd));
-        float fil = 0.9 + 0.1 * L.Noise(float3(cs * 16.0, d / ru * 0.6) + sd);
-        float x = saturate((d - ue) / max(pe - ue, 1e-5));
-        float pen = 1.0 - smoothstep(0.0, 1.0, x);
-        float umb = 1.0 - smoothstep(0.7, 1.0, d / ue);
-        float dark = lerp(lerp(1.0, 0.86 * fil, pen * (pore ? 0.5 : 1.0)), Spots.y, umb);
-        spot *= dark;
-        fac = max(fac, (1.0 - smoothstep(pe, pe * 4.0, d)) * (1.0 - pen));
+        float4 rg = RG[gi];
+        if (rg.z <= 0.0) continue;
+        float3 rc = float3(cos(rg.x) * sin(rg.y), sin(rg.x), cos(rg.x) * cos(rg.y));
+        float cr = dot(q, rc);
+        if (cr < 0.95) continue;
+        plage = max(plage, rg.z * exp(-(1.0 - cr) / (0.0025 * (0.5 + rg.z))));
+        for (int k = 0; k < 5; k++)
+        {
+            float4 kk = L.RegionSpot(rg, k);
+            if (kk.w <= 0.0) continue;
+            float ru = kk.w;
+            float3 dq = q - kk.xyz;
+            if (dot(dq, dq) > ru * ru * 36.0) continue;
+            float hs = L.H1(rg.w * 1.7 + gi * 5.3 + k * 2.9);
+            float3 t1 = normalize(cross(float3(0, 1, 0), kk.xyz)), t2 = cross(kk.xyz, t1);
+            float2 rq = float2(dot(dq, t1), dot(dq, t2));
+            float el = 1.0 + 0.5 * frac(hs * 7.31);
+            rq *= float2(1.0 / sqrt(el), sqrt(el));
+            float d = length(rq);
+            float2 cs = rq / max(d, 1e-6);
+            float3 sdd = float3(hs * 37.0, k * 11.0, gi * 7.0);
+            float ue = ru * (0.8 + 0.4 * L.Noise(float3(cs * 2.2, 0.0) + sdd));
+            bool pore = k > 0 || ru < 0.006;
+            float pe = pore ? ue * 1.6 : ue * (1.9 + 0.4 * L.Noise(float3(cs * 1.8, 2.0) + sdd));
+            float fil = 0.9 + 0.1 * L.Noise(float3(cs * 16.0, d / ru * 0.6) + sdd);
+            float x = saturate((d - ue) / max(pe - ue, 1e-5));
+            float pen = 1.0 - smoothstep(0.0, 1.0, x);
+            float umb = 1.0 - smoothstep(0.7, 1.0, d / ue);
+            float dark = lerp(lerp(1.0, 0.86 * fil, pen * (pore ? 0.5 : 1.0)), Spots.y, umb);
+            spot *= dark;
+            fac = max(fac, (1.0 - smoothstep(pe, pe * 4.0, d)) * (1.0 - pen));
+        }
     }
     // faculae: bright patches round the groups and a network near the limb, where they show best
     float facNoise = smoothstep(0.42, 0.75, L.Fbm(q * 20.0 + 5.0));
     float net = smoothstep(0.55, 0.85, L.Fbm(q * 13.0 + 11.0)) * 0.6;
-    float faculae = 1.0 + Spots.w * (fac * facNoise + net) * pow(1.0 - mu, 0.6);
-    col = base * gran * spot * faculae;
+    float faculae = 1.0 + Spots.w * ((fac + plage) * facNoise + net) * pow(1.0 - mu, 0.6);
+    // the disk is drawn bright (the tonemapper's shoulder squeezes it): its detail is steepened by Look2.x so the
+    // granulation, the spots and the faculae still read
+    col = base * pow(max(gran * spot * filament, 1e-3), Look2.x) * faculae;
     // a soft edge, a pixel or so wide
     col *= saturate((1.0 - r) / fw);
 }
-// the corona: a soft orange glow off the limb
+// the corona: a soft orange glow off the limb, brighter and reaching farther over the active regions near the limb
+// (helmet streamers)
 float h = max(r - 1.0, 0.0);
-float corona = 0.05 * exp(-h * 10.0) + 0.012 * exp(-h * 2.5);
-// prominences: now and then an arc of glowing gas standing on the limb (new ones each day)
-float prom = 0.0;
-if (r > 0.97 && r < 1.35)
+float phi = atan2(u.y, u.x);
+float streamer = 0.0;
+for (int gj = 0; gj < SUN_REGIONS; gj++)
 {
-    float phi = atan2(u.y, u.x);
-    for (int j = 0; j < 3; j++)
-    {
-        float pk = D.z * 5.13 + j * 3.7;
-        if (L.H1(pk) < 0.4) continue;
-        float at = L.H1(pk + 1.0) * 6.2831853;
-        float dphi = atan2(sin(phi - at), cos(phi - at));
-        float a = 0.05 + 0.09 * L.H1(pk + 2.0);
-        float x = dphi, y = r - 0.985;
-        float arc = abs(sqrt(x * x + y * y * 1.3) - a);
-        float n = L.Fbm(float3(phi * 30.0, r * 40.0, T * 0.02 + pk));
-        prom += exp(-arc * arc / (0.0004 + 0.0006 * n)) * smoothstep(0.0, 0.02, y) * (0.5 + n);
-    }
+    float4 rg = RG[gj];
+    if (rg.z <= 0.0) continue;
+    float3 rq = float3(cos(rg.x) * sin(rg.y), sin(rg.x), cos(rg.x) * cos(rg.y));
+    float3 rp = float3(rq.x * csp - rq.z * ssp, rq.y, rq.x * ssp + rq.z * csp);
+    float dphi = atan2(sin(phi - atan2(rp.y, rp.x)), cos(phi - atan2(rp.y, rp.x)));
+    streamer += rg.z * exp(-rp.z * rp.z / 0.12) * exp(-dphi * dphi / (0.09 * (1.0 + 2.0 * h)));
 }
-float3 glow = (float3(1.0, 0.36, 0.12) * corona + float3(1.0, 0.25, 0.15) * prom * 0.5) * smoothstep(0.985, 1.0, r);
-return (col + glow) * D.y * Tr;
+float corona = (0.02 * exp(-h * 10.0) + 0.005 * exp(-h * 2.5)) * (1.0 + 1.5 * streamer) + 0.009 * streamer * exp(-h * 1.3);
+// the chromosphere: a thin ragged red rim of spicules just off the limb
+float chrom = exp(-h / 0.006) * (0.5 + 0.7 * L.Noise(float3(phi * 260.0, h * 300.0, T * 0.1))) * smoothstep(0.0, 0.001, h);
+float off = smoothstep(0.985, 1.0, r);
+float3 glow = (float3(1.0, 0.36, 0.12) * corona * Look.w + (float3(1.0, 0.17, 0.08) * (prom + 0.35 * chrom) + float3(1.0, 0.3, 0.15) * core * 0.15) * 0.35 * Look.z) * off;
+return (col + glow + aur) * D.y * TrB;
 """
+
+SUN_HLSL = SUN_HLSL.replace("SUN_PROMS", str(SUN_PROMS)).replace("SUN_REGIONS", str(SUN_REGIONS))
 
 # Europa's baked relief (tools/sky/europa_bake.py): B = height * HEIGHT_GAIN + 0.5, height unit = relief_scale of
 # Europa's radius

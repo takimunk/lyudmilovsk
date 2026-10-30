@@ -18,12 +18,11 @@ star dome. The world is a simulation, so its sky is not Earth's:
   edge) and reddening. Granulation at its true scale: a granule is ~1/1000 of the diameter (1000-1500 km on the
   Sun), so ~1000 across the disk, a couple of pixels each even full-screen: a fine, barely resolved, slowly boiling
   mottling (soft cells and thin lanes on a warped grid, so no polygon outlines), faded to its mean where a pixel covers
-  several; faint meso- and supergranulation patches (contrast `SunGranulation`). Spots are small and subtle: one to
-  three groups a day, each a small spot with a slight soft penumbra and a few pores trailing it, only a little darker
-  than the photosphere (`SunSpotUmbra` 0.7), ragged and a little elongated. The groups are put on the face the star
-  turns to us at the day's noon (`SunSpots.x`), drifting as it turns once in `SunRotationDays`. Faint faculae
-  (`SunFaculae`) round the groups and toward the limb; a soft orange corona and, on some days, prominences on the
-  limb. The disk is oriented by the celestial pole. Over the disk most of the atmosphere's own glow is taken off
+  several; faint meso- and supergranulation patches (contrast `SunGranulation`). Spots are small and subtle, only a
+  little darker than the photosphere (`SunSpotUmbra` 0.7), ragged and a little elongated: the spot groups of the
+  star's active regions, which are born, turn with the star and decay over the game's days (`ULyudSunActivity`,
+  **docs/sun.md**, which also covers the prominences, the flares and how the sun reads as the light source). Faint
+  faculae (`SunFaculae`) round the groups and toward the limb; a soft orange corona with streamers. The disk is oriented by the celestial pole. Over the disk most of the atmosphere's own glow is taken off
   (`DISK_MASK_HLSL`): added to the capped disk it paled it to pink.
 - **Europa** (`MOON_HLSL`): our own procedural Europa, baked once into two committed maps by
   `tools/sky/europa_bake.py` (seed and every parameter in `tools/sky/europa_bake.json`; same file, same maps):
@@ -45,8 +44,8 @@ star dome. The world is a simulation, so its sky is not Earth's:
   reference.
 - Both dim and redden toward the horizon (an analytic extinction, `TRANS_HLSL`); stars fade near both disks.
 
-**Brightness is capped**, not physical: the disk centre is `SunIlluminance x SunDiskGain` (the spots read at the
-outdoor exposure), Europa `SunIlluminance x MoonDiskGain`. To match, the sunlight's specular is cut
+**Brightness is capped**, not physical: the disk centre is `SunIlluminance x SunDiskGain` (brighter than anything
+it lights, its detail steepened so the spots still read: docs/sun.md), Europa `SunIlluminance x MoonDiskGain`. To match, the sunlight's specular is cut
 (`SunSpecularScale`, else the sea mirrors a white blob where the star sets), the atmosphere's forward haze is softer
 (Mie 0.0045, anisotropy 0.62: the aureole round a 10-degree star would drown the disk), and outdoor bloom is low
 (`OutdoorBloom`).

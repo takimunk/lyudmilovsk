@@ -30,7 +30,9 @@ class UVolumetricCloudComponent;
  * they walk in), so dusk and moonlit nights read instead of going black.
  *
  * The sun is a huge red dwarf (SunAngularDiameterDeg across, a ~3200 K star: limb darkening, boiling
- * granulation, drifting sunspots, faculae, a corona and now and then a prominence) and the moon is Europa
+ * granulation, and a living surface from ULyudSunActivity: active regions with spots and faculae turning with it,
+ * prominences that grow, sway, erupt and fade, flares; docs/sun.md), kept the brightest thing in the sky down to the
+ * horizon (the Sky|Sun settings) and the moon is Europa
  * (MoonSizeDeg, lit per pixel from the true sun direction, so its phases are right, with a faint
  * ashen light on its dark side). Both are drawn by the sky material (import_sky.py), not the atmosphere's
  * light disks, with brightness capped so they read rather than blind. Nights are lit by Europa as its phase says (a bright ice moon,
@@ -91,8 +93,13 @@ public:
 	/** Europa's apparent size, degrees across: the one value for the moon's size (disk, halo, star mask, the moonlight's
 	 * source angle all follow it). lyud.Sky.MoonSizeDeg overrides it when > 0. The 4096x2048 maps stay sharp up to ~25. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look", meta = (ClampMin = "0.1", ClampMax = "40")) float MoonSizeDeg = 14.f;
-	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: a bright disk whose spots read at the outdoor exposure. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.14f;
+	/** The sun disk's luminance at the disk centre per lux of SunIlluminance, before the atmosphere dims it: brighter
+	 * than anything it lights (a white wall in full sun is ~SunIlluminance/pi), so it reads as the light source, yet far
+	 * from a real sun's, so it does not blind (0.14 before: dimmer than the clouds it lit). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDiskGain = 0.45f;
+	/** The disk's detail (granulation, spots, faculae) steepened by this power: the bright disk sits on the tonemapper's
+	 * shoulder, which would flatten it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDetailContrast = 3.2f;
 	/** The sunspots' umbra brightness (of the disk's: small spots and pores only a little darker), the granulation's contrast (1 = as drawn) and the faculae's strength. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.7f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunGranulation = 1.f;
@@ -104,10 +111,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDayBoost = 12.f;
 	/** Europa's own faint halo by night. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonNightHalo = 0.003f;
-	/** Days the star takes to turn once (its spots drift across the disk with it); new spots each in-game day. */
+	/** Days the star's equator takes to turn once: its active regions (ULyudSunActivity) ride across the disk with it. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunRotationDays = 6.f;
-	/** The sunlight's specular strength: the drawn disk is far dimmer than a physical sun of SunIlluminance, so its reflections (the sea's glitter path) are toned down to match. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.012f;
+	/** The warm glow round the star in the haze (forward scattering), over the disk's brightness; it grows as the star
+	 * sinks and its light crosses more air (lyud.Sky.SunAureole multiplies it). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunAureole = 1.f;
+	/** How much of the air's dimming the disk keeps near the horizon (1 = all of it, physical; 0 = none): the eye adapts
+	 * to a low sun, and a real one stays blinding to the last, so the setting star stays the brightest thing in the sky,
+	 * deep orange-red. The colour always follows the air. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunHorizonDimming = 0.25f;
+	/** The prominences' and the corona's brightness over the disk's (1 = as drawn). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunProminenceGain = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunCoronaGain = 1.f;
+	/** A low sun's light (below ~25 degrees): this much stronger at the horizon than the atmosphere alone leaves it
+	 * (lit faces stay bright and warm against their long shadows), the sky light this share of its own (deeper
+	 * shadows), the sunlight's specular this many times stronger (a glittering path on the sea), and the haze's
+	 * forward glow stronger and narrower (the aureole over the sea and the land). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunLightGain = 1.5f;
+	/** The disk itself this much brighter on the horizon (over SunDiskGain), on top of SunHorizonDimming. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunDiskGain = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunAmbient = 0.7f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunSpecularGain = 4.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunMieGain = 0.25f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunMieAnisotropy = 0.72f;
+	/** God rays: the bright star blurred radially over what stands in front of it (the light's screen-space shafts),
+	 * at this scale when the star is low (a fifth of it high up), from scene colour over the threshold. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunShaftBloom = 0.15f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunShaftThreshold = 1.f;
+	/** The light a flare of the activity adds at its full strength (a big flare of the rare sky adds up to a quarter). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float ActivityFlareLight = 0.12f;
+	/** The sunlight's specular strength: the drawn disk is far dimmer than a physical sun of SunIlluminance, so its
+	 * reflections (the sea's glitter path) are toned down to match (0.012 for the dimmer disk before SunDiskGain 0.55). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpecularScale = 0.03f;
 	/** Bloom outdoors (the club's level sets its own): low, so the big bright disk is not smeared into a blob. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float OutdoorBloom = 0.2f;
 	/** Bloom outdoors at full night, and the atmosphere's haze (Mie) then as a share of the day's: the haze lit by a big
@@ -178,6 +213,10 @@ public:
 
 	/** A flare on the star now, 0..1 (ALyudRareSky): the daylight a little brighter and whiter while it lasts. */
 	UPROPERTY(Transient, BlueprintReadWrite, Category = "Sky") float FlareBoost = 0.f;
+	/** The activity's flare now (ULyudSunActivity), its share of the daylight 0..1. */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Sky") float ActivityFlare = 0.f;
+	/** How low the sun is for its light, 0 (above ~25 degrees) .. 1 (on the horizon) (x lyud.Sky.LowSunLight in use). */
+	UFUNCTION(BlueprintPure, Category = "Sky") float LowSun() const;
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
 	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
 	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
