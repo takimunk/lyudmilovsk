@@ -191,7 +191,7 @@ private:
 };
 
 /**
- * The fine snow round the player (docs/winter.md "Footprints"): a 30 m square of 10 cm cells following the camera,
+ * The fine snow round the player (docs/winter.md "Footprints"): a 30 m square of 8 cm cells following the camera,
  * drawn by M_SnowNear at the ground (exact landscape heights, RT_NearGround) plus the snow field's depth pressed down
  * by the trail (RT_SnowTrail, 5 cm, a toroidal window): the footprints of the player, the people and the animals
  * walking there, and the trench the player ploughs through deep snow. The ground's own snow sinks under it inside
@@ -215,9 +215,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Snow") int32 NumPrints() const { return Prints; }
 
 	static constexpr float HalfCm = 1500.f;
-	static constexpr float StepCm = 10.f;
-	static constexpr float TrailCm = 5.f;
-	static constexpr int32 TrailN = 600;    // 30 m / 5 cm
+	static constexpr float StepCm = 8.f;
+	static constexpr float TrailCm = 2.5f;
+	static constexpr int32 TrailN = 1200;   // 30 m / 2.5 cm
 	static constexpr float GroundCm = 100.f;
 	static constexpr int32 GroundN = 48;
 
@@ -226,6 +226,12 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UTextureRenderTarget2D> TrailRT;
 	TArray<uint8> Trail;
 	TArray<float> Ground;
+	/** Per landscape vertex round the camera: how far the ground's own snow is sunk there (under the prints within 60 cm),
+	 * uploaded with the ground (RT_NearGround G); M_Ground sinks those vertices, M_SnowNear shows where they are. */
+	TArray<float> Lowered;
+	bool bGroundDirty = false;
+	void UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1);
+	void UploadGround();
 	FVector2D Centre = FVector2D(1e12, 1e12);
 	FVector2D GroundOrigin = FVector2D::ZeroVector;
 	FIntRect Dirty;

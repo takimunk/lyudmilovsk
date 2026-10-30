@@ -46,11 +46,15 @@ GROUND_WPO = r"""
 float2 uv = (P.xy - Rect.xy) * Rect.zw;
 if (B.y < 0.5 || any(uv <= 0.0) || any(uv >= 1.0)) return float3(0, 0, 0);
 float d = max(Dep.SampleLevel(DepSampler, uv, 0).r, 0.0);
-// round the player the fine snow surface (M_SnowNear) takes over: the ground's own snow sinks under it, back up
-// toward the fine one's edge (N: its centre x, y, half size, fade band; cm)
-float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
-float inner = N.z > 0.0 ? 1.0 - smoothstep(N.z - N.w, N.z - 0.25 * N.w, cheb) : 0.0;
-return float3(0, 0, d * lerp(1.0, 0.1, inner) * 100.0);
+// round the player's prints the fine snow surface (M_SnowNear) shows them: the ground's snow sinks under it at the
+// vertices ALyudSnowNear marked (RT_NearGround G, on this landscape's own 1 m vertices; NG: its origin, cell, size)
+float pm = 0.0;
+if (N.z > 0.0)
+{
+    int2 v = int2(round((P.xy - NG.xy) / NG.z));
+    if (all(v >= 0) && all(v < int(NG.w))) pm = Gt.Load(int3(v, 0)).g;
+}
+return float3(0, 0, d * (1.0 - 0.95 * saturate(pm * 4.0)) * 100.0);
 """
 
 # --- the snow decal over the whole map: returns base colour, Opacity, Normal (world), Roughness
@@ -108,9 +112,17 @@ if (ground > -1.0e8 && P.z < surf + 45.0 && ng.z > 0.3)
     n = normalize(lerp(ng, nf, saturate(depth * 12.0)));
     // round the player the fine snow (ALyudSnowNear, 10 cm cells) carries the prints: its own shape shows
     float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
-    float nearW = N.z > 0.0 ? 1.0 - smoothstep(N.z - N.w, N.z - 0.15 * N.w, cheb) : 0.0;
+    float nearW = (N.z > 0.0 && cheb < N.z) ? 1.0 : 0.0;
     pressed = nearW * Tt.SampleLevel(TtSampler, frac(P.xy / TR.y), 0).r;
-    n = normalize(lerp(n, ng, 0.85 * nearW));
+    if (pressed > 0.001)
+    {
+        // the print's walls from the trail itself (smooth: the 2.5 cm trail, not the surface's triangles)
+        float pe = 2.5;
+        float px = Tt.SampleLevel(TtSampler, frac((P.xy + float2(pe, 0)) / TR.y), 0).r - Tt.SampleLevel(TtSampler, frac((P.xy - float2(pe, 0)) / TR.y), 0).r;
+        float py = Tt.SampleLevel(TtSampler, frac((P.xy + float2(0, pe)) / TR.y), 0).r - Tt.SampleLevel(TtSampler, frac((P.xy - float2(0, pe)) / TR.y), 0).r;
+        float k = 100.0 * depth * 0.85 / (2.0 * pe) * nearW;
+        n = normalize(n + float3(px * k, py * k, 0.0));
+    }
     // the wind's ripples and the snow's soft lumps (cm scale relief the 1 m field can't hold)
     float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
                + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0);
@@ -263,10 +275,34 @@ struct LWN
     {
         return tex.SampleLevel(s, frac(xy / tr.y), 0).r;
     }
-    // the snow's surface: pressed snow keeps ~15% of its depth
-    float Height(float2 xy, float4 ng, Texture2D gt, float4 rect, Texture2D dt, SamplerState ds, float4 tr, Texture2D tt, SamplerState ts)
+    // the ground's own snow surface exactly as the landscape draws it: its 1 m vertices (the ground + the field's depth
+    // sampled there) and the same two triangles a quad (diagonal (0,0)-(1,1)), so the two meet without a seam
+    float Surface(float2 xy, float4 ng, Texture2D gt, float4 rect, Texture2D dt, SamplerState ds)
     {
-        return Ground(xy, ng, gt) + 100.0 * Depth(xy, rect, dt, ds) * (1.0 - 0.85 * Trail(xy, tr, tt, ts));
+        float2 t = (xy - ng.xy) / ng.z;
+        float2 i0 = clamp(floor(t), 0.0, ng.w - 2.0);
+        float2 f = saturate(t - i0);
+        int2 i = int2(i0);
+        float2 o = ng.xy + i0 * ng.z;
+        float h00 = gt.Load(int3(i, 0)).r + 100.0 * Depth(o, rect, dt, ds);
+        float h10 = gt.Load(int3(i + int2(1, 0), 0)).r + 100.0 * Depth(o + float2(ng.z, 0), rect, dt, ds);
+        float h01 = gt.Load(int3(i + int2(0, 1), 0)).r + 100.0 * Depth(o + float2(0, ng.z), rect, dt, ds);
+        float h11 = gt.Load(int3(i + int2(1, 1), 0)).r + 100.0 * Depth(o + float2(ng.z, ng.z), rect, dt, ds);
+        return f.x >= f.y ? h00 + f.x * (h10 - h00) + f.y * (h11 - h10) : h00 + f.y * (h01 - h00) + f.x * (h11 - h01);
+    }
+    // how far a print is pressed in here, cm (pressed snow keeps ~15% of its depth)
+    float Pressed(float2 xy, float4 rect, Texture2D dt, SamplerState ds, float4 tr, Texture2D tt, SamplerState ts)
+    {
+        return 100.0 * Depth(xy, rect, dt, ds) * 0.85 * Trail(xy, tr, tt, ts);
+    }
+    // the most pressed within r cm (where the fine surface has to take over from the ground's)
+    float Near(float2 xy, float r, float4 tr, Texture2D tt, SamplerState ts)
+    {
+        float m = 0.0;
+        for (int j = -1; j <= 1; j++)
+        for (int i = -1; i <= 1; i++)
+            m = max(m, Trail(xy + float2(i, j) * r, tr, tt, ts));
+        return m;
     }
 };
 LWN w;
@@ -274,45 +310,26 @@ LWN w;
 
 NEAR_WPO = NEAR_COMMON + r"""
 if (N.z <= 0.0) return float3(0, 0, -100000.0);
-float h = w.Height(P.xy, NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
-// toward its edge it sinks under the ground's own snow (which comes up there)
-float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
-float sink = 8.0 * smoothstep(N.z - N.w, N.z, cheb);
-return float3(0, 0, h - sink - P.z);
+// the ground's own snow surface, 1 cm over it, the prints pressed in
+float h = w.Surface(P.xy, NG, Gt, Rect, Dep, DepSampler) + 1.0 - w.Pressed(P.xy, Rect, Dep, DepSampler, TR, Tt, TtSampler);
+return float3(0, 0, h - P.z);
 """
 
 NEAR_PS = NEAR_COMMON + r"""
+// drawn only round the prints (elsewhere the ground's own snow is the same surface): no zone, no ring; its look is the
+// map's snow decal's, as everywhere
 Mask = 0.0;
 Normal = float3(0, 0, 1);
 Roughness = 0.65;
 float d = w.Depth(P.xy, Rect, Dep, DepSampler);
-float tr = w.Trail(P.xy, TR, Tt, TtSampler);
-float left = d * (1.0 - 0.85 * tr);
 float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
-if (B.y < 0.5 || d < 0.02 || cheb > N.z) return float3(0, 0, 0);
-// toward its edge it dissolves (a per-pixel dither the temporal AA smooths) into the ground's own snow: no ring
-float fade = 1.0 - smoothstep(N.z - N.w, N.z - 0.15 * N.w, cheb);
-float2 sp = Parameters.SvPosition.xy + float(View.StateFrameIndexMod8) * float2(5.588, 3.471);
-float ign = frac(52.9829189 * frac(dot(sp, float2(0.06711056, 0.00583715))));
-Mask = ign < fade ? 1.0 : 0.0;
-float e = 6.0;
-float hx = w.Height(P.xy + float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
-float hy = w.Height(P.xy + float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
-float3 n = normalize(float3(-hx / (2.0 * e), -hy / (2.0 * e), 1.0));
-// the same relief and sparkle as the ground's snow decal (M_SnowDecal), so the two can't be told apart
-float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
-           + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0);
-n = normalize(n + rip * 0.22 * saturate(d * 5.0));
-float g1 = w.Value(P.xy, 2.3, 21u) - 0.5, g2 = w.Value(P.yx, 2.9, 22u) - 0.5;
-Normal = normalize(n + float3(g1, g2, 0) * 0.12);
-float2 m = P.xy * 0.01;
-float3 fresh = float3(0.86, 0.89, 0.93);
-float3 old = float3(0.70, 0.71, 0.70) * (0.92 + 0.08 * w.Fbm(m, 6.0, 23u));
-float3 col = lerp(old, fresh, S.y) * (1.0 - 0.25 * S.z) * (0.94 + 0.06 * w.Fbm(m, 3.0, 24u));
-// pressed snow is a little greyer and glossier
-col *= 1.0 - 0.12 * tr;
-Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y - 0.15 * tr;
-return col;
+// where any corner of this landscape quad is sunk (exactly where the ground's own snow has gone down)
+float2 t = (P.xy - NG.xy) / NG.z;
+int2 q = int2(clamp(floor(t), 0.0, NG.w - 2.0));
+float sunk = max(max(Gt.Load(int3(q, 0)).g, Gt.Load(int3(q + int2(1, 0), 0)).g), max(Gt.Load(int3(q + int2(0, 1), 0)).g, Gt.Load(int3(q + int2(1, 1), 0)).g));
+if (B.y < 0.5 || d < 0.02 || cheb > N.z || sunk <= 0.0) return float3(0, 0, 0);
+Mask = 1.0;
+return float3(0.86, 0.89, 0.93);
 """
 
 # --- falling snow (ALyudSnowFx): every flake a quad at the camera; P the actor (the camera), C its corner (UV0),

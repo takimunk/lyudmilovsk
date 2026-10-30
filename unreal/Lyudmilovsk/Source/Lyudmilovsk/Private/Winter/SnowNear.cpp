@@ -99,6 +99,7 @@ ALyudSnowNear::ALyudSnowNear()
 	Surface->SetCastShadow(false);
 	Trail.SetNumZeroed(TrailN * TrailN);
 	Ground.SetNumZeroed(GroundN * GroundN);
+	Lowered.SetNumZeroed(GroundN * GroundN);
 }
 
 int32 ALyudSnowNear::Wrap(double V) const
@@ -205,7 +206,14 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	bFullUpload = true;
 	Centre = C;
 	// the ground's exact heights, 1 m, round the new centre
+	// on the landscape's own vertices (its 1 m grid from its origin), so the fine surface can follow its triangles
+	FVector2D LandOrigin(0.0, 0.0);
+	if (TActorIterator<ALandscapeProxy> It(World); It)
+	{
+		LandOrigin = FVector2D(It->GetActorLocation());
+	}
 	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
+	GroundOrigin = LandOrigin + FVector2D(FMath::RoundToDouble((GroundOrigin.X - LandOrigin.X) / GroundCm), FMath::RoundToDouble((GroundOrigin.Y - LandOrigin.Y) / GroundCm)) * GroundCm;
 	const double Z = GetActorLocation().Z;
 	float Last = float(Z);
 	TArray<float> Tops;
@@ -251,11 +259,55 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 		}
 	}
 	Ground = Base;
-	TArray<uint8> Bytes;
-	Bytes.SetNumUninitialized(Ground.Num() * sizeof(float));
-	FMemory::Memcpy(Bytes.GetData(), Ground.GetData(), Bytes.Num());
-	SnowNearUpload(GroundRT, 0, 0, GroundN, GroundN, sizeof(float), MoveTemp(Bytes));
+	UpdateLowered(0, 0, GroundN - 1, GroundN - 1);
+	UploadGround();
 	SetActorLocation(FVector(C.X, C.Y, Z));
+}
+
+void ALyudSnowNear::UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1)
+{
+	// a vertex sinks as far as the deepest print within 60 cm of it (its triangles reach 1 m: the fine surface covers them)
+	const int32 R = FMath::CeilToInt(60.f / TrailCm);
+	for (int32 VY = FMath::Max(Y0, 0); VY <= FMath::Min(Y1, GroundN - 1); VY++)
+	{
+		for (int32 VX = FMath::Max(X0, 0); VX <= FMath::Min(X1, GroundN - 1); VX++)
+		{
+			const double WX = GroundOrigin.X + VX * GroundCm, WY = GroundOrigin.Y + VY * GroundCm;
+			uint8 M = 0;
+			if (FMath::Abs(WX - Centre.X) < HalfCm && FMath::Abs(WY - Centre.Y) < HalfCm)
+			{
+				const int64 GX = int64(FMath::FloorToDouble(WX / TrailCm)), GY = int64(FMath::FloorToDouble(WY / TrailCm));
+				for (int64 TY = GY - R; TY <= GY + R && M < 255; TY++)
+				{
+					const uint8* Row = Trail.GetData() + int32(((TY % TrailN) + TrailN) % TrailN) * TrailN;
+					for (int64 TX = GX - R; TX <= GX + R; TX++)
+					{
+						M = FMath::Max(M, Row[int32(((TX % TrailN) + TrailN) % TrailN)]);
+					}
+				}
+			}
+			const float L = M / 255.f;
+			if (Lowered[VY * GroundN + VX] != L)
+			{
+				Lowered[VY * GroundN + VX] = L;
+				bGroundDirty = true;
+			}
+		}
+	}
+}
+
+void ALyudSnowNear::UploadGround()
+{
+	TArray<uint8> Bytes;
+	Bytes.SetNumUninitialized(Ground.Num() * 2 * sizeof(float));
+	float* F = reinterpret_cast<float*>(Bytes.GetData());
+	for (int32 I = 0; I < Ground.Num(); I++)
+	{
+		F[I * 2] = Ground[I];
+		F[I * 2 + 1] = Lowered[I];
+	}
+	SnowNearUpload(GroundRT, 0, 0, GroundN, GroundN, 2 * sizeof(float), MoveTemp(Bytes));
+	bGroundDirty = false;
 }
 
 void ALyudSnowNear::Press(const FVector2D& At, const FVector2D& Dir, float A, float B, float Amount)
@@ -275,13 +327,15 @@ void ALyudSnowNear::Press(const FVector2D& At, const FVector2D& Dir, float A, fl
 			{
 				continue;
 			}
-			// a firm floor and a soft rim
-			const float K = Amount * (1.f - FMath::SmoothStep(0.65f, 1.f, E));
+			// a bowl: a firm floor easing up into a soft rim
+			const float K = Amount * (1.f - FMath::SmoothStep(0.35f, 1.f, E));
 			const int32 Col = int32(((GX % TrailN) + TrailN) % TrailN), Row = int32(((GY % TrailN) + TrailN) % TrailN);
 			uint8& T = Trail[Row * TrailN + Col];
 			T = uint8(FMath::Max<int32>(T, FMath::RoundToInt(K * 255.f)));
 		}
 	}
+	UpdateLowered(FMath::FloorToInt((At.X - R - 60.f - GroundOrigin.X) / GroundCm), FMath::FloorToInt((At.Y - R - 60.f - GroundOrigin.Y) / GroundCm),
+		FMath::CeilToInt((At.X + R + 60.f - GroundOrigin.X) / GroundCm), FMath::CeilToInt((At.Y + R + 60.f - GroundOrigin.Y) / GroundCm));
 	const int32 CX0 = int32(((X0 % TrailN) + TrailN) % TrailN), CY0 = int32(((Y0 % TrailN) + TrailN) % TrailN);
 	const int32 CX1 = CX0 + int32(X1 - X0), CY1 = CY0 + int32(Y1 - Y0);
 	if (CX1 >= TrailN || CY1 >= TrailN)
@@ -400,10 +454,15 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 		}
 		bFullUpload = true;
 		FillTimer = 0.f;
+		UpdateLowered(0, 0, GroundN - 1, GroundN - 1);
 	}
 	else if (Fall <= 0.05f)
 	{
 		FillTimer = 0.f;
+	}
+	if (bGroundDirty)
+	{
+		UploadGround();
 	}
 	if (bFullUpload)
 	{

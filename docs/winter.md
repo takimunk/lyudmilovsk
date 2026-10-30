@@ -32,15 +32,17 @@ and the ice don't take it.
 
 ## Footprints (deformable snow)
 
-`ALyudSnowNear`: a 30 m square of 10 cm cells round the camera (`M_SnowNear`), at what the snow lies on (the
-landscape or a low surface over it, traced exactly at 1 m into `RT_NearGround`) plus the field's depth pressed by the
-trail (`RT_SnowTrail`, 5 cm, a world-locked toroidal window): footprints of the player, the people's bodies and the
-cats and dogs walking there (stamped by stride, left and right), and the trench the player ploughs through snow deeper
-than ~22 cm. Pressed snow keeps 15% of its depth, greyer and glossier. The ground's own snow sinks under the square
-(`M_Ground` reads `NearRect`) and comes back up toward its edge while the square sinks: no seam. Fresh snow fills the
-prints (~5 cm hides one). The map's snow decal shades it too (receives decals), so it looks exactly like the ground's
-snow round it, and it dissolves at its edge by a per-pixel dither: no ring moving with the player. No shadow of its own (a moving WPO mesh would redraw the virtual shadow map); measured
-34.0 ms with winter vs 34.4 without in one process.
+No zone round the player: the ground's own snow is the surface everywhere, and the fine surface (`ALyudSnowNear`,
+8 cm cells over 30 m, `M_SnowNear`) is drawn only round the prints, shaped exactly like the landscape's own snow there
+(the same 1 m vertices, the ground + the field's depth sampled at them, the same two triangles a quad) 1 cm over it,
+the prints pressed in. Under the prints the landscape's vertices sink (ALyudSnowNear marks them: the deepest print
+within 60 cm, `RT_NearGround` G on the landscape's own grid; M_Ground reads it), and the fine surface covers every
+quad with a sunk corner. Both take the map's snow decal, so they look the same; the prints' walls get their normal
+from the trail itself (`RT_SnowTrail`, 2.5 cm, a world-locked toroidal window), so no triangles show. Prints are soft
+bowls stamped by stride (the player, the people's bodies, cats and dogs), deep snow ploughs a trench; fresh snow
+fills them (~5 cm hides one). No shadow of its own (a moving WPO mesh would redraw the virtual shadow map).
+Two-sided: an eye low in a deep drift sees the snow's underside, not a thin sheet. What the snow lies on: the
+landscape, or a wide even surface over it (paving under 60 cm that lifts most neighbours alike), never a lone thing.
 
 ## Snowfall
 
