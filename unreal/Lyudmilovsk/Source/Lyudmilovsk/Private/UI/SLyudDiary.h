@@ -30,6 +30,8 @@ struct FLyudDiaryState
 	bool bMapSet = false;
 	/** The diary's entries on each page (indices into ULyudQuests::Entries), oldest first. */
 	TArray<TArray<int32>> DiaryPages;
+	/** The birds section: the species on each page (ULyudBirdBook::Seen order), BirdsPerPage a page. */
+	TArray<TArray<FName>> BirdPages;
 };
 
 /** A hand-drawn mark over whatever it is laid over (an overlay slot): an underline, a circle, a tick... */
@@ -117,6 +119,8 @@ private:
 	TSharedRef<SWidget> QuestsLeft();
 	TSharedRef<SWidget> QuestsRight();
 	TSharedRef<SWidget> DiaryPage(int32 PageIndex);
+	TSharedRef<SWidget> BirdsPage(int32 PageIndex);
+	TSharedRef<SWidget> BirdCard(FName Species);
 	TSharedRef<SWidget> MapSpread();
 	TSharedRef<SWidget> MapNote();
 	void Changed() { OnChanged.ExecuteIfBound(); }
@@ -210,6 +214,7 @@ private:
 	TSharedRef<SWidget> MakeTabs();
 	TSharedRef<SWidget> MakeCorner(bool bRight);
 	void Paginate();
+	void PaginateBirds();
 	void Refresh();
 	FVector2D LocalPos() const;
 	float LocalScale() const;

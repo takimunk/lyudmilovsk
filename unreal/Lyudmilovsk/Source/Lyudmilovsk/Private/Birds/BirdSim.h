@@ -329,6 +329,14 @@ namespace LyudBirds
 
 		// the player's hand (befriending): the bird coming to it, if any
 		int Approacher = -1;
+		/** A befriended bird the player called (from the diary): it flies to SummonPalm from wherever it is, without food. */
+		int Summoned = -1;
+		V3 SummonPalm;
+		/** Calls bird Id to the palm; a bird further than FarM is first put Entry (high, out of sight) and flies in from there.
+		 *  False if it can't come (gone, claimed, unknown). */
+		bool Summon(int Id, const V3& Palm, const V3& Entry, float FarM);
+		/** The bird goes back to its flock (the call is over or given up). */
+		void CancelSummon();
 		/** Takes a bird out of the simulation (the player becomes it); its position is then set by SetClaimedPos. */
 		bool Claim(int Id);
 		void SetClaimedPos(int Id, const V3& Pos, const V3& Vel);
@@ -396,6 +404,10 @@ namespace LyudBirds
 		float Danger(const FBird& B, float Dist, bool bSeen) const;
 		void PlaceAtStart(FBird& B, FGroup& G);
 		void UpdateApproach(FBird& B, float Dt);
+		/** Where the hand is for this bird: the summon's palm for the called bird, the offer's for the others. */
+		const V3& PalmFor(const FBird& B) const { return B.Id == Summoned ? SummonPalm : Player.Palm; }
+		/** Is there something in the hand for this bird (food held out, or it was called)? */
+		bool HandFor(const FBird& B) const { return Player.bOffer || B.Id == Summoned; }
 		int GroundSpot(FBird& B);
 	};
 }

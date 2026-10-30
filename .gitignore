@@ -50,6 +50,8 @@ unreal/Lyudmilovsk/Content/Transport/network_built.json
 # the sea railway resolved against it (python3 tools/railway.py) and its kit's export (blender/railway/rail_kit.py)
 unreal/Lyudmilovsk/Content/Railway/railway_built.json
 design/railway/game/
+# the diary's bird sheets (design/birds_diary/sheets.json has their URLs and sha256; the cut drawings are in textures/ui/birds)
+design/birds_diary/gen/
 blender/animals/gen/*/model.glb
 blender/animals/gen/*/ue/
 blender/animals/gen/*/views/

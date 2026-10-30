@@ -4,6 +4,9 @@
 #include "Fonts/FontMeasure.h"
 #include "Framework/Application/SlateApplication.h"
 #include "HAL/IConsoleManager.h"
+#include "BirdTame.h"
+#include "Birds/BirdBook.h"
+#include "Birds/BirdSpecies.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
@@ -121,6 +124,7 @@ namespace
 		case ESection::Things: return TEXT("ui.diary.things");
 		case ESection::Quests: return TEXT("ui.diary.quests");
 		case ESection::Diary: return TEXT("ui.diary.diary");
+		case ESection::Birds: return TEXT("ui.diary.birds");
 		default: return TEXT("ui.diary.map");
 		}
 	}
@@ -243,6 +247,10 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 	case ESection::Diary:
 		L = DiaryPage(Spread.Part * 2);
 		R = DiaryPage(Spread.Part * 2 + 1);
+		break;
+	case ESection::Birds:
+		L = BirdsPage(Spread.Part * 2);
+		R = BirdsPage(Spread.Part * 2 + 1);
 		break;
 	default:
 		break;
@@ -712,6 +720,123 @@ TSharedRef<SWidget> SLyudDiarySpread::DiaryPage(int32 PageIndex)
 	return Box;
 }
 
+// ------------------------------------------------------------------ birds: a card for each species met, the friends under it
+
+namespace
+{
+	/** Cards on a page (the first page has the title and the count instead of one). */
+	constexpr int32 BirdsPerPage = 3;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::BirdsPage(int32 PageIndex)
+{
+	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("ui.diary.birds")))];
+		const int32 NSeen = Book ? Book->Seen.Num() : 0;
+		const int32 NFriends = Book ? Book->Friends.Num() : 0;
+		Box->AddSlot().AutoHeight().Padding(0, 0, 0, 10)
+		[
+			Words(LyudText::Get(TEXT("ui.birds.count"), { FStringFormatArg(NSeen), FStringFormatArg(UBirdSpeciesLibrary::All().Num()), FStringFormatArg(NFriends) }), 26.f, Pencil, false, true)
+		];
+		if (!NSeen)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 20, 0, 0)[Key(TEXT("ui.birds.empty"), 30.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->BirdPages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const FName Species : State->BirdPages[PageIndex])
+	{
+		Box->AddSlot().AutoHeight().Padding(0, 6, 0, 14)[BirdCard(Species)];
+	}
+	if (PageIndex == State->BirdPages.Num() - 1)
+	{
+		Box->AddSlot().FillHeight(1.f)[SNew(SSpacer)];
+		Box->AddSlot().AutoHeight()[Key(TEXT("ui.birds.hint"), 22.f, PencilFaint, false, true)];
+	}
+	return Box;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
+{
+	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
+	const FLyudBirdSeen* Seen = Book ? Book->FindSeen(Species) : nullptr;
+	if (!Seen)
+	{
+		return SNew(SSpacer);
+	}
+	const TArray<const FLyudBirdFriend*> Friends = Book->FriendsOf(Species);
+	// the drawing: the female's when only she has been met (or the first friend is one)
+	const bool bFemale = Friends.Num() ? Friends[0]->bFemale : Seen->Sexes == 2;
+	const FSlateBrush* Pic = ULyudBirdBook::Drawing(Species, bFemale);
+	FString Latin;
+	if (const FBirdSpecies* Sp = UBirdSpeciesLibrary::Find(Species))
+	{
+		Latin = Sp->Latin;
+	}
+
+	TSharedRef<SVerticalBox> Text = SNew(SVerticalBox);
+	Text->AddSlot().AutoHeight()[Marked(Words(ULyudBirdBook::SpeciesName(Species), 36.f, Ink, true), EMark::Underline, InkSoft, SeedOf(Species, 7))];
+	if (!Latin.IsEmpty())
+	{
+		Text->AddSlot().AutoHeight()[Words(FText::FromString(Latin), 22.f, PencilFaint)];
+	}
+	// when and where it was first met, and how
+	const FText Where = Seen->Place.IsNone() ? FText::GetEmpty() : ULyudQuests::PlaceName(Seen->Place);
+	const TCHAR* HowKey = Seen->How == TEXT("binoculars") ? TEXT("ui.birds.how_binoculars") : Seen->How == TEXT("bird") ? TEXT("ui.birds.how_bird") : TEXT("ui.birds.how_hand");
+	Text->AddSlot().AutoHeight().Padding(0, 6, 0, 0)
+	[
+		Words(LyudText::Get(Where.IsEmpty() ? TEXT("ui.birds.first") : TEXT("ui.birds.first_at"),
+			{ FStringFormatArg(LyudUIText::Date(Seen->When).ToString()), FStringFormatArg(Where.ToString()), FStringFormatArg(LyudText::Get(HowKey).ToString()) }), 26.f, Ink, false, true)
+	];
+	// the friends: when each first ate from the hand, how often it came, and the call
+	for (const FLyudBirdFriend* F : Friends)
+	{
+		const int32 Id = F->BirdId;
+		TSharedRef<SHorizontalBox> Row = SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
+			[
+				Words(LyudText::Get(F->bFemale ? TEXT("ui.birds.friend_f") : TEXT("ui.birds.friend_m"),
+					{ FStringFormatArg(LyudUIText::Date(F->Tamed).ToString()), FStringFormatArg(F->Visits) }), 25.f, Green, false, true)
+			];
+		Row->AddSlot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0, 0, 0)
+		[
+			Link(LyudText::Get(TEXT("ui.birds.call")), [this, Id]()
+			{
+				// the diary goes back in the bag first: the hand that held it is the one held out
+				if (ULyudGameScreen* S = Owner.Get())
+				{
+					TWeakObjectPtr<ULyudGameScreen> WeakS = S;
+					S->CloseThen([WeakS, Id]()
+					{
+						if (UBirdTameSubsystem* Tame = WeakS.IsValid() ? UBirdTameSubsystem::Get(WeakS.Get()) : nullptr)
+						{
+							Tame->Summon(Id);
+						}
+					});
+				}
+			}, (uint32)Id * 31u + 5u, 25.f)
+		];
+		Text->AddSlot().AutoHeight().Padding(0, 4, 0, 0)[Row];
+	}
+
+	const float PicSize = 250.f;
+	TSharedRef<SWidget> Img = Pic ? StaticCastSharedRef<SWidget>(SNew(SImage).Image(Pic))
+		: StaticCastSharedRef<SWidget>(SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center)[Words(FText::FromString(TEXT("?")), 90.f, PencilFaint)]);
+	return SNew(SHorizontalBox)
+		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Top).Padding(0, 0, 18, 0)
+		[
+			SNew(SBox).WidthOverride(PicSize).HeightOverride(PicSize)[Img]
+		]
+		+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Top)[Text];
+}
+
 // ------------------------------------------------------------------ the map across the spread, with a sticky note
 
 TSharedRef<SWidget> SLyudDiarySpread::MapSpread()
@@ -1171,11 +1296,34 @@ void SLyudDiaryScreen::Paginate()
 	}
 }
 
+void SLyudDiaryScreen::PaginateBirds()
+{
+	// a page of cards each; the first page has the title and the count where one card would be
+	State->BirdPages.Reset();
+	State->BirdPages.AddDefaulted();
+	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
+	if (!Book)
+	{
+		return;
+	}
+	for (const FLyudBirdSeen& S : Book->Seen)
+	{
+		const int32 Room = State->BirdPages.Num() == 1 ? BirdsPerPage - 1 : BirdsPerPage;
+		if (State->BirdPages.Last().Num() >= Room)
+		{
+			State->BirdPages.AddDefaulted();
+		}
+		State->BirdPages.Last().Add(S.Species);
+	}
+}
+
 void SLyudDiaryScreen::Rebuild()
 {
 	Language = LyudText::Language();
 	Paginate();
+	PaginateBirds();
 	const int32 DiarySpreads = FMath::Max(1, (State->DiaryPages.Num() + 1) / 2);
+	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
@@ -1183,6 +1331,10 @@ void SLyudDiaryScreen::Rebuild()
 	for (int32 P = 0; P < DiarySpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
+	}
+	for (int32 P = 0; P < BirdSpreads; ++P)
+	{
+		Spreads.Add({ ESection::Birds, P });
 	}
 	Spreads.Add({ ESection::Map, 0 });
 	// stay on the same spread (or the same section's last one, if it got shorter)
@@ -1221,7 +1373,7 @@ TSharedRef<SLyudDiarySpread> SLyudDiaryScreen::MakeSpread(int32 I)
 int32 SLyudDiaryScreen::SpreadFor(ELyudScreenTab Tab) const
 {
 	const ESection S = Tab == ELyudScreenTab::Inventory ? ESection::Things : Tab == ELyudScreenTab::Journal ? ESection::Quests
-		: Tab == ELyudScreenTab::Diary ? ESection::Diary : ESection::Map;
+		: Tab == ELyudScreenTab::Diary ? ESection::Diary : Tab == ELyudScreenTab::Birds ? ESection::Birds : ESection::Map;
 	int32 Found = 0;
 	for (int32 I = 0; I < Spreads.Num(); ++I)
 	{
@@ -1339,7 +1491,7 @@ TSharedRef<SWidget> SLyudDiaryScreen::MakeTabs()
 		const ESection S = static_cast<ESection>(K);
 		const bool bLeft = K < OnLeft;
 		const float H = 184.f, W = TabRoom - 8.f;
-		const float Y = 146.f + 224.f * K - H * 0.5f + 92.f;
+		const float Y = TabY(K) - H * 0.5f + 92.f;
 		const float X = bLeft ? 8.f : TabRoom + SpreadW;
 		const bool bHere = Spreads.IsValidIndex(Current) && Spreads[Current].Section == S;
 		C->AddSlot().Position(FVector2D(X, Y)).Size(FVector2D(W, H))

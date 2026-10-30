@@ -33,7 +33,7 @@ public:
 	static constexpr float Block = 0.85f;       // the pages of one half
 	static constexpr float Board = 0.28f;
 	static constexpr float Overhang = 0.3f;     // the boards past the pages
-	static constexpr int32 NumTabs = 4;
+	static constexpr int32 NumTabs = 5;
 
 	/** 0 open flat .. 180 shut. */
 	void SetCover(float Degrees);

@@ -1,6 +1,7 @@
 #include "BirdTame.h"
 
 #include "BirdFeedItem.h"
+#include "Birds/BirdBook.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Containers/Ticker.h"
 #include "Engine/Engine.h"
@@ -18,6 +19,8 @@
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "StarlingMurmuration.h"
+#include "Audio/LyudSoundscape.h"
+#include "UI/LyudGameScreen.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Images/SImage.h"
 #include "Widgets/Notifications/SProgressBar.h"
@@ -274,6 +277,10 @@ void UBirdTameSubsystem::Deinitialize()
 
 void UBirdTameSubsystem::Reset()
 {
+	if (CallId >= 0)
+	{
+		CancelSummon();
+	}
 	bWantOffer = false;
 	Phase = EPhase::Idle;
 	PhaseTime = 0.f;
@@ -461,6 +468,17 @@ void UBirdTameSubsystem::HandleCall(int32 BirdId)
 
 void UBirdTameSubsystem::HandleApproach(int32 BirdId)
 {
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && IsNearOffer(BirdId))
+	{
+		// a bird coming to the hand is one the hero has met, whether it eats or not
+		FBirdLifeInfo Info;
+		if (ULyudBirdBook* Book = ULyudBirdBook::Get(this); Book && Life->GetBird(BirdId, Info))
+		{
+			Book->NoteSeen(this, Info.SpeciesId, Info.bFemale, TEXT("hand"), Info.Location);
+		}
+	}
+#endif
 	if (IsOffering() && IsNearOffer(BirdId))
 	{
 		bApproaching = true;
@@ -476,6 +494,19 @@ void UBirdTameSubsystem::HandleApproach(int32 BirdId)
 void UBirdTameSubsystem::HandleEat(int32 BirdId)
 {
 	LogEvent(TEXT("eat"), BirdId);
+	if (Phase == EPhase::Calling)
+	{
+		if (BirdId == CallId)
+		{
+			// the called bird is on the palm: a moment with it, then the view goes into it
+			Focus = BirdId;
+			Phase = EPhase::Eating;
+			bCalled = true;
+			PhaseTime = 0.f;
+			Say(TEXT("ui.tame.summon_arrived"), BirdId);
+		}
+		return;
+	}
 	if (!IsOffering() || Phase != EPhase::Idle)
 	{
 		return;
@@ -514,17 +545,29 @@ void UBirdTameSubsystem::HandleReturnedToHero(APawn* Pawn)
 	}
 	Phase = EPhase::Idle;
 	bWantOffer = false;
+	bCalled = false;
+	CallId = -1;
 	Focus = -1;
 }
 
 void UBirdTameSubsystem::Eaten()
 {
-	// one handful is gone; the camera goes into the bird
-	if (ULyudInventory* Inv = ULyudInventory::Get(this))
+	// one handful is gone (a called bird came for the hand, not the feed); the camera goes into the bird
+	const int32 Bird = Focus;
+	if (ULyudInventory* Inv = ULyudInventory::Get(this); Inv && !bCalled)
 	{
 		Inv->Remove(FeedId);
 	}
-	const int32 Bird = Focus;
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		FBirdLifeInfo Info;
+		if (ULyudBirdBook* Book = ULyudBirdBook::Get(this); Book && Life->GetBird(Bird, Info))
+		{
+			Book->NoteTamed(this, Bird, Info.SpeciesId, Info.bFemale, Info.Location);
+		}
+	}
+#endif
 	bWantOffer = false;
 	TellBirds(false);
 	if (Handful)
@@ -547,6 +590,17 @@ void UBirdTameSubsystem::Eaten()
 	if (!bBird)
 	{
 		Focus = -1;
+#if LYUD_HAS_BIRDLIFE
+		if (bCalled)
+		{
+			if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+			{
+				Life->CancelSummon();
+			}
+		}
+#endif
+		bCalled = false;
+		CallId = -1;
 	}
 }
 
@@ -590,6 +644,11 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 	ULyudInventory* Inv = ULyudInventory::Get(this);
 	if (!Reach || !Inv)
 	{
+		return;
+	}
+	if (IsCalling())
+	{
+		UpdateCall(Hero, DeltaTime);
 		return;
 	}
 	const bool bEquipped = Inv->EquippedItem() == FeedId;
@@ -833,10 +892,15 @@ void UBirdTameSubsystem::Tick(float DeltaTime)
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	const bool bInUI = (UI && UI->IsOpen()) || (Menu && Menu->IsOpen());
-	if (!bInUI && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::F) && Phase == EPhase::Idle)
+	if (!bInUI && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::F) && Phase == EPhase::Calling)
+	{
+		CancelSummon(TEXT("ui.tame.summon_stop"));
+	}
+	else if (!bInUI && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::F) && Phase == EPhase::Idle)
 	{
 		SetOffering(!bWantOffer);
 	}
+	UpdateBinoculars(DeltaTime);
 	DriveDebugWalk(Hero, DeltaTime);
 	UpdateHand(Hero, DeltaTime);
 	UpdateHud(Hero);
@@ -851,6 +915,232 @@ void UBirdTameSubsystem::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+// ------------------------------------------------------------------ calling a befriended bird (the diary)
+
+bool UBirdTameSubsystem::Summon(int32 BirdId)
+{
+#if LYUD_HAS_BIRDLIFE
+	UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	FBirdLifeInfo Info;
+	if (!Life || !Hero || Hero->IsHidden() || !Life->GetBird(BirdId, Info))
+	{
+		Say(TEXT("ui.tame.summon_cant"), -1);
+		return false;
+	}
+	if (Life->IsBirdAway(BirdId))
+	{
+		Say(TEXT("ui.tame.summon_away"), BirdId);
+		return false;
+	}
+	// under a roof the bird can't get to the hand
+	if (const ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this); Sound && Sound->GetOutdoors() < 0.5f)
+	{
+		Say(TEXT("ui.tame.summon_indoors"), BirdId);
+		return false;
+	}
+	if (Phase != EPhase::Idle)
+	{
+		return false;
+	}
+	bWantOffer = false;
+	if (Handful)
+	{
+		Handful->Destroy();
+		Handful = nullptr;
+	}
+	TellBirds(false);
+	CallId = BirdId;
+	CallTime = 0.f;
+	bCalled = false;
+	Phase = EPhase::Calling;
+	Focus = BirdId;
+	// the bird answers as soon as the hand is out; until then it is told where the hero is
+	OfferAt = Hero->EyeLocation() + FRotator(0.f, Hero->GetControlRotation().Yaw, 0.f).Vector() * 54.f - FVector(0.f, 0.f, 30.f);
+	if (!Life->SummonBird(BirdId, OfferAt))
+	{
+		Phase = EPhase::Idle;
+		CallId = -1;
+		Focus = -1;
+		Say(TEXT("ui.tame.summon_cant"), -1);
+		return false;
+	}
+	Say(TEXT("ui.tame.summon"), BirdId, 5.f);
+	UE_LOG(LogTemp, Log, TEXT("Tame: calling bird %d (%s) from %.0f m"), BirdId, *Info.SpeciesId.ToString(), FVector::Dist(Info.Location, OfferAt) / 100.f);
+	return true;
+#else
+	return false;
+#endif
+}
+
+void UBirdTameSubsystem::CancelSummon(const TCHAR* SayKey)
+{
+#if LYUD_HAS_BIRDLIFE
+	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		Life->CancelSummon();
+	}
+#endif
+	const int32 Was = CallId;
+	if (Phase == EPhase::Calling || (Phase == EPhase::Eating && bCalled))
+	{
+		Phase = EPhase::Idle;
+	}
+	CallId = -1;
+	bCalled = false;
+	Focus = -1;
+	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+	{
+		Hero->SetViewZoom(1.f);
+		if (UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero))
+		{
+			Reach->ClearHold();
+		}
+	}
+	if (SayKey)
+	{
+		Say(SayKey, Was);
+	}
+}
+
+void UBirdTameSubsystem::UpdateCall(AHeroCharacter* Hero, float DeltaTime)
+{
+	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
+	if (!Reach)
+	{
+		return;
+	}
+	// the empty palm held out, as with the seeds; a move of the hand (a drink) gives up the call
+	if (Reach->IsBusy() || Reach->HasOverrideHold())
+	{
+		CancelSummon(TEXT("ui.tame.summon_stop"));
+		return;
+	}
+	Reach->SetHold(OfferPose());
+	FTransform PalmNow;
+	if (Reach->IsHolding() && Reach->HoldWeight() > 0.5f && HandPalm(Hero->GetMesh(), Reach->HoldNormal(), Reach->HoldFinger(), PalmNow))
+	{
+		// where the bird's feet go: on the skin of the palm
+		OfferAt = PalmNow.TransformPosition(FVector(0.f, 0.f, 1.2f));
+	}
+#if LYUD_HAS_BIRDLIFE
+	UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
+	if (!Life || !Life->SummonBird(CallId, OfferAt))
+	{
+		CancelSummon(TEXT("ui.tame.summon_cant"));
+		return;
+	}
+	FBirdLifeInfo Info;
+	const bool bNear = Life->GetBird(CallId, Info) && FVector::Dist(Info.Location, OfferAt) < 1500.f;
+#else
+	const bool bNear = false;
+#endif
+	// the eyes follow it in the last metres (slowly; the mouse wins)
+	if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()); PC && (bNear || Phase == EPhase::Eating))
+	{
+		float MouseX = 0.f, MouseY = 0.f;
+		PC->GetInputMouseDelta(MouseX, MouseY);
+		if (FMath::Abs(MouseX) + FMath::Abs(MouseY) < 0.01f)
+		{
+			const FRotator Want = (OfferAt + FVector(0.f, 0.f, 6.f) - Hero->EyeLocation()).Rotation();
+			const FRotator Now = PC->GetControlRotation();
+			PC->SetControlRotation(FMath::RInterpConstantTo(Now, FRotator(FMath::Clamp(FRotator::NormalizeAxis(Want.Pitch), -70.f, 20.f), Want.Yaw, 0.f), DeltaTime, 35.f));
+		}
+	}
+	if (Phase == EPhase::Eating)
+	{
+		PhaseTime += DeltaTime;
+		Hero->SetViewZoom(0.55f);
+		if (PhaseTime >= EatSeconds)
+		{
+			Eaten();
+		}
+		return;
+	}
+	Hero->SetViewZoom(1.f);
+#if LYUD_HAS_BIRDLIFE
+	if (FMath::FloorToInt(CallTime) != FMath::FloorToInt(CallTime + DeltaTime) && Life->GetBird(CallId, Info))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Tame: called bird %d at %.1f m, %s"), CallId, FVector::Dist(Info.Location, OfferAt) / 100.f, *UEnum::GetValueAsString(Info.Activity));
+	}
+#endif
+	CallTime += DeltaTime;
+	if (CallTime > 45.f)
+	{
+		CancelSummon(TEXT("ui.tame.summon_nobody"));
+	}
+}
+
+void UBirdTameSubsystem::UpdateBinoculars(float DeltaTime)
+{
+#if LYUD_HAS_BIRDLIFE
+	const ULyudGameScreen* Screen = ULyudGameScreen::Get(this);
+	const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
+	ULyudBirdBook* Book = ULyudBirdBook::Get(this);
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	if (!Screen || !Life || !Book || !PC || !PC->PlayerCameraManager || Screen->BinocularsAmount() < 0.95f)
+	{
+		GlassBird = -1;
+		GlassTime = 0.f;
+		return;
+	}
+	// a few times a second: the bird nearest the middle of the view (within a couple of degrees, 150 m)
+	GlassTime += DeltaTime;
+	if ((GlassTimer -= DeltaTime) > 0.f)
+	{
+		return;
+	}
+	GlassTimer = 0.2f;
+	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+	const FVector Fwd = PC->PlayerCameraManager->GetCameraRotation().Vector();
+	int32 Best = -1;
+	float BestCos = FMath::Cos(FMath::DegreesToRadians(2.5f));
+	for (const int32 Id : Life->FindBirdsNear(Eye, 15000.f))
+	{
+		FBirdLifeInfo Info;
+		if (!Life->GetBird(Id, Info) || Life->IsBirdAway(Id))
+		{
+			continue;
+		}
+		const FVector To = Info.Location - Eye;
+		const float D = To.Size();
+		if (D < 100.f)
+		{
+			continue;
+		}
+		const float C = FVector::DotProduct(To / D, Fwd);
+		if (C > BestCos)
+		{
+			BestCos = C;
+			Best = Id;
+		}
+	}
+	if (Best != GlassBird)
+	{
+		GlassBird = Best;
+		GlassTime = 0.f;
+		return;
+	}
+	// held on it for a second and a half: the hero has had a good look
+	FBirdLifeInfo Info;
+	if (GlassBird >= 0 && GlassTime > 1.5f && Life->GetBird(GlassBird, Info))
+	{
+		FHitResult Hit;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdGlass), false, PC->GetPawn());
+		if (Info.Actor)
+		{
+			Q.AddIgnoredActor(Info.Actor);
+		}
+		if (!GetWorld()->LineTraceSingleByChannel(Hit, Eye, Info.Location + FVector(0.f, 0.f, 5.f), ECC_Visibility, Q)
+			&& Book->NoteSeen(this, Info.SpeciesId, Info.bFemale, TEXT("binoculars"), Info.Location))
+		{
+			Say(TEXT("ui.tame.seen"), GlassBird, 3.f);
+		}
+		GlassTime = -1e6f;
+	}
+#endif
 }
 
 // ------------------------------------------------------------------ scripted approach (offscreen recordings, tests)
