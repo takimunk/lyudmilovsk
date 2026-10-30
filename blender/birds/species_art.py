@@ -21,7 +21,7 @@ MORPH_DEFAULTS = dict(
     fluff=1.0, crest=0.0, fluff_layer=0.55,
     n_prim=9, n_sec=6, n_tail=6, p_outer=1.0, n_neck=1, neck_s=0.0, foot="aniso", keel=0.0, rear_taper=0.0,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
-    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0,
+    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0, fly_neck_s=None, fly_trail=0.0, bare_shin=0.0,
     feather_shapes={},
 )
 
@@ -938,7 +938,7 @@ species("GreyHeron", dict(body_len=1.25, body_w=0.85, body_h=0.95, belly=0.9, he
                           arm=1.2, hand=1.05, prim=1.1, prim_profile=ROUNDED, prim_width=1.2, n_prim=10, p_outer=0.85, n_sec=17, sec=1.15,
                           fingers=0.5, tail=0.55, tail_shape="square", n_tail=6, shin=1.9, tarsus=2.6, leg_thick=1.1, toes=1.8, hallux=1.2,
                           fluff=0.85, fluff_layer=0.2, perch_pitch=22, perch_neck=40, perch_head=-40, perch_tail=-6, perch_low=0.0,
-                          peck_depth=60, glide_elev=2, glide_sweep=-2, fly_neck=80, fly_head=-70, call_gape=26), dict(
+                          peck_depth=60, glide_elev=2, glide_sweep=-2, fly_neck=20, fly_neck_s=70, fly_head=-10, fly_trail=1.0, bare_shin=0.6, call_gape=26), dict(
     styles={
         "grey": st("#8a909a", ("down", "#6a707a"), rough=0.6),
         "white": st("#ececec", ("down", "#d0d0d0")),

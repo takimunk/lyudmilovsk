@@ -846,9 +846,15 @@ def build_legs(sb, lod=0):
                 d = V(math.sin(ang), 0, math.cos(ang))
                 tube(sb, [foot, foot + d * 0.018 * M["toes"]], [0.0013 * lt, 0.001 * lt], [{f"toes.{side}": 1}] * 2, BARE, n=3, uv_key="legs", close=False)
             continue
-        tube(sb, [hip, knee, ankle + V(0, 0.002, 0) * M["shin"]], [0.006, 0.0052 * lt, 0.0034 * lt],
+        # waders (bare_shin): the feathers stop part way down the shin, the rest is bare skin like the tarsus
+        bs = M["bare_shin"]
+        fe = ankle + V(0, 0.002, 0) * M["shin"] if bs <= 0 else knee + (ankle - knee) * (1 - bs)
+        tube(sb, [hip, knee, fe], [0.006, 0.0052 * lt, (0.0034 if bs <= 0 else 0.0028) * lt],
              [{f"thigh.{side}": 1}, {f"thigh.{side}": 0.5, f"shin.{side}": 0.5}, {f"shin.{side}": 1}], PLUMAGE, n=10,
              uv_const=body_uv_at(-0.012, -math.pi * 0.35))   # the flank's plumage
+        if bs > 0:
+            tube(sb, [knee + (ankle - knee) * (1 - bs - 0.08), ankle], [0.0024 * lt, 0.0021 * lt], [{f"shin.{side}": 1}] * 2, BARE, n=8,
+                 uv_key="legs")
         # feather fringe over the knee so the "trousers" read as feathers
         for k in range(5):
             a = 2 * math.pi * k / 5
@@ -1317,11 +1323,13 @@ def solve_pose(P):
             deform(f"toes.{side}", rx(curl) @ rx(math.radians(P.get("toepitch", 0.0))), head=foot)
             deform(f"hallux.{side}", rx(-curl * 0.5), head=foot)
         else:
-            deform(f"shin.{side}", Rb @ nose_up(-30 * tuck), head=knee)
-            Rtar = Rb @ rx(math.radians(-66 * tuck) + reach)
+            # songbirds fold the feet forward under the belly; long-legged birds (fly_trail) stretch them back past the tail
+            trail = M["fly_trail"] * tuck
+            deform(f"shin.{side}", Rb @ nose_up(-30 * tuck * (1 - trail) - 80 * trail), head=knee)
+            Rtar = Rb @ rx(math.radians(-66 * tuck * (1 - trail) + 92 * trail) + reach)
             deform(f"tarsus.{side}", Rtar)
-            deform(f"toes.{side}", Rtar @ rx(math.radians(70 * tuck)))
-            deform(f"hallux.{side}", Rtar @ rx(math.radians(-40 * tuck)))
+            deform(f"toes.{side}", Rtar @ rx(math.radians(70 * tuck * (1 - trail) + 88 * trail)))
+            deform(f"hallux.{side}", Rtar @ rx(math.radians(-40 * tuck * (1 - trail) - 122 * trail)))
     return R, H, P.get("breath", 0.0), P.get("fluffup", 0.0)
 
 
@@ -1366,9 +1374,9 @@ def ease(t):
     return t * t * (3 - 2 * t)
 
 
-PERCH = dict(lift=-M["perch_low"], tailroof=1.0, pitch=M["perch_pitch"], neck=M["perch_neck"], head=M["perch_head"], fold=1.0, perch=1.0, tailpitch=M["perch_tail"], tailspread=0.0)
-# (herons fly with the neck drawn back into an S: fly_neck / fly_head)
-FLIGHT = dict(pitch=0, neck=M["fly_neck"], head=M["fly_head"], fold=0.0, perch=0.0, tuck=1.0, tailpitch=0, tailspread=0.0)
+PERCH = dict(lift=-M["perch_low"], tailroof=1.0, pitch=M["perch_pitch"], neck=M["perch_neck"], neck_s=M["neck_s"], head=M["perch_head"], fold=1.0, perch=1.0, tailpitch=M["perch_tail"], tailspread=0.0)
+# (herons fly with the neck drawn back into an S: fly_neck / fly_neck_s / fly_head, legs trailing: fly_trail)
+FLIGHT = dict(pitch=0, neck=M["fly_neck"], neck_s=M["neck_s"] if M["fly_neck_s"] is None else M["fly_neck_s"], head=M["fly_head"], fold=0.0, perch=0.0, tuck=1.0, tailpitch=0, tailspread=0.0)
 FS = SP["flight"]
 FLAP = {  # amplitude (deg), offset, upstroke fold, hand flick
     "Flapping": (52, -8, 0.38, -14), "Bounding": (62, -4, 0.55, -22), "Undulating": (54, -6, 0.42, -16),
@@ -1393,7 +1401,7 @@ def flap_pose(ph):
 
 def glide_pose(t):
     g = dict(FLIGHT, elev=M["glide_elev"] + 2.0 * math.sin(2 * math.pi * t), sweep=M["glide_sweep"], handsweep=M["glide_hand"], twist=-2,
-             tailspread=0.9 if FS not in ("Flicker",) else 0.3, roll=2.5 * math.sin(2 * math.pi * t), head=1.5 * math.sin(2 * math.pi * t),
+             tailspread=0.9 if FS not in ("Flicker",) else 0.3, roll=2.5 * math.sin(2 * math.pi * t), head=FLIGHT["head"] + 1.5 * math.sin(2 * math.pi * t),
              fingers=M["fingers"], handelev=M["glide_handelev"])
     return g
 
