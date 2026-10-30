@@ -162,7 +162,7 @@ void APlantDevTool::ToggleHelp()
 	TSharedRef<SVerticalBox> Lines = SNew(SVerticalBox)
 		+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 6)
 		[SNew(STextBlock).Text(LyudText::Get(TEXT("ui.help.title"))).Font(Font(13)).ColorAndOpacity(Heading)];
-	for (const TCHAR* Key : { TEXT("ui.help.move"), TEXT("ui.help.use"), TEXT("ui.help.palm"), TEXT("ui.help.screen"), TEXT("ui.help.wear"),
+	for (const TCHAR* Key : { TEXT("ui.help.move"), TEXT("ui.help.use"), TEXT("ui.help.palm"), TEXT("ui.help.screen"), TEXT("ui.help.guide"), TEXT("ui.help.wear"),
 		TEXT("ui.help.menu"), TEXT("ui.help.dev"), TEXT("ui.help.help") })
 	{
 		Lines->AddSlot().AutoHeight().Padding(0, 2)[SNew(STextBlock).AutoWrapText(true).Text(LyudText::Get(Key)).Font(Font(11)).ColorAndOpacity(FLinearColor::White)];

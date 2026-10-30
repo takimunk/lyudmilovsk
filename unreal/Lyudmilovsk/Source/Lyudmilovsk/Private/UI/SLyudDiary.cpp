@@ -11,6 +11,7 @@
 #include "Rendering/SlateRenderer.h"
 #include "Slate/WidgetRenderer.h"
 #include "Styling/CoreStyle.h"
+#include "UI/LyudBirdGuide.h"
 #include "UI/LyudQuests.h"
 #include "UI/LyudUIText.h"
 #include "UI/SLyudMapView.h"
@@ -403,6 +404,19 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			}
 		});
 	}
+	else if (Id == ULyudBirdGuide::ItemId)
+	{
+		// the guide is a book of its own: the diary goes back into the bag and the guide comes out
+		AddAction(TEXT("ui.use.open_guide"), [WeakUI]
+		{
+			UWorld* World = WeakUI.IsValid() ? WeakUI->GetWorld() : nullptr;
+			TWeakObjectPtr<UWorld> WeakWorld = World;
+			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
+			{
+				Screen->CloseThen([WeakWorld] { if (ULyudBirdGuideScreen* Guide = ULyudBirdGuideScreen::Get(WeakWorld.Get())) { Guide->Open(); } });
+			}
+		});
+	}
 	Box->AddSlot().AutoHeight().Padding(0, 26, 0, 0)
 	[
 		SNew(SHorizontalBox)
@@ -750,6 +764,26 @@ TSharedRef<SWidget> SLyudDiarySpread::MapNote()
 				FStringFormatArg(FMath::RoundToInt(FMath::Sqrt(Best))) }), 26.f, Ink, false, true)
 		];
 		Box->AddSlot().AutoHeight().HAlign(HAlign_Fill)[Link(LyudText::Get(TEXT("ui.diary.to_me")), [this] { if (Map) { Map->CenterOnPlayer(); } }, 77, 26.f, true)];
+	}
+	// with the bird guide: its birds on this map too, switched here
+	if (ULyudBirdGuide::IsOwned(Owner.Get()))
+	{
+		TWeakObjectPtr<ULyudGameScreen> WeakOwner = Owner;
+		Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+		[
+			SNew(SLyudInkButton).HoverMark(EMark::Underline).Seed(91)
+			.OnClicked_Lambda([WeakOwner]() { if (ULyudBirdGuide* G = ULyudBirdGuide::Get(WeakOwner.Get())) { G->bMapLayer = !G->bMapLayer; } })
+			[
+				SNew(SBox).Padding(FMargin(4, 0))
+				[
+					SNew(STextBlock).Font(Hand(26.f, true)).ColorAndOpacity(Ink).Text_Lambda([WeakOwner]()
+					{
+						const ULyudBirdGuide* G = ULyudBirdGuide::Get(WeakOwner.Get());
+						return LyudText::Get(G && G->bMapLayer ? TEXT("ui.diary.birds_on") : TEXT("ui.diary.birds_off"));
+					})
+				]
+			]
+		];
 	}
 	TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
 	int32 NFound = 0, NAll = 0;

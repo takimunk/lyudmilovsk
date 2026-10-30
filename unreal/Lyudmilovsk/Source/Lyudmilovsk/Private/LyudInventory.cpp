@@ -105,6 +105,8 @@ namespace
 		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
 		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
+		// the ornithological guide from the Academgorodok library's desk (docs/bird_guide.md): a cloth-bound book with a map of the live birds
+		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
 		// things to wear: the clothes the hero woke up in (blender/hero/build_hero.py), a head lamp and binoculars from the club owner
 		auto Wear = [&D](const TCHAR* Id, ELyudEquipSlot Slot)
 		{
@@ -581,7 +583,7 @@ void ULyudInventoryUI::Tick(float)
 		return;
 	}
 	// Tab / I / J / M for the game screen are read by ULyudGameScreen
-	if (bShop)
+	if (bShop && ShopOpenedFrame != GFrameCounter)
 	{
 		const bool bToggle = PC->WasInputKeyJustPressed(EKeys::Tab) || PC->WasInputKeyJustPressed(EKeys::I);
 		const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
@@ -645,6 +647,7 @@ void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>&
 	Viewport->AddViewportWidgetContent(Shop.ToSharedRef(), 70);
 	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->Rebuild(); } });
 	bShop = true;
+	ShopOpenedFrame = GFrameCounter;
 	Lock(true);
 }
 

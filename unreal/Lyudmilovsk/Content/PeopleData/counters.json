@@ -1,0 +1,7 @@
+{
+ "_doc": "People who sell over a counter while at work (ULyudCounterTradeSubsystem, docs/bird_guide.md). person: people.json key; activity: activities.json id (sells only while doing it at its place); title: string key ({0} = their name); goods: item ids of LyudInventory.cpp.",
+ "counters": [
+  {"person": "girl_b", "activity": "work_library", "title": "ui.shop.title_library", "reach_cm": 320,
+   "goods": [{"item": "bird_guide", "price": 60, "count": 1}]}
+ ]
+}

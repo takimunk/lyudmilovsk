@@ -5,11 +5,14 @@
 #include "Framework/Application/SlateApplication.h"
 #include "LyudText.h"
 #include "Rendering/DrawElements.h"
+#include "Rendering/SlateRenderer.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
 #include "UI/LyudDiaryStyle.h"
 #include "UI/LyudUIStyle.h"
 #include "Transport/LyudTransport.h"
+#include "Birds/BirdSpecies.h"
+#include "UI/LyudBirdGuide.h"
 
 namespace
 {
@@ -64,7 +67,10 @@ void SLyudMapView::Construct(const FArguments& InArgs)
 {
 	Owner = InArgs._Owner;
 	bInk = InArgs._bInk;
+	bGuide = InArgs._bGuide;
 	SetClipping(EWidgetClipping::ClipToBounds);
+	// the birds move: paint every frame
+	ForceVolatile(true);
 	MapBrush = MakeShared<FSlateBrush>();
 	if (ULyudGameScreen* O = Owner.Get())
 	{
@@ -123,6 +129,21 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 {
 	const FVector2D Size = G.GetLocalSize();
 	const_cast<SLyudMapView*>(this)->LastSize = Size;
+	if (bGuide)
+	{
+		// the guide's page is held round the hero: the radius fills it at first, the wheel brings it closer
+		SLyudMapView* Self = const_cast<SLyudMapView*>(this);
+		FVector2D Here, Facing;
+		if (Owner.IsValid() && Owner->PlayerOnMap(Here, Facing))
+		{
+			Self->Center = Here;
+		}
+		if (!bGuideZoomSet && Size.X > 1.0)
+		{
+			Self->Zoom = 0.47f * FMath::Min(Size.X, Size.Y) / ULyudBirdGuide::Radius();
+			Self->bGuideZoomSet = true;
+		}
+	}
 	const FLyudMapFrame& F = ULyudQuests::Frame();
 	// the screen fades the diary in and out: everything drawn here goes with it
 	const FLinearColor Fade = InWidgetStyle.GetColorAndOpacityTint();
@@ -265,6 +286,11 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 		}
 	}
 
+	if (ShowsBirds())
+	{
+		DrawBirds(Out, LayerId + 4, G, Size, Fade);
+	}
+
 	// the player
 	FVector2D At, Facing;
 	if (Owner.IsValid() && Owner->PlayerOnMap(At, Facing))
@@ -339,9 +365,12 @@ FReply SLyudMapView::OnMouseWheel(const FGeometry& MyGeometry, const FPointerEve
 	const FVector2D Size = MyGeometry.GetLocalSize();
 	const FVector2D Cursor = MyGeometry.AbsoluteToLocal(E.GetScreenSpacePosition());
 	const FVector2D Before = ToMap(Cursor, Size);
-	Zoom = FMath::Clamp(Zoom * FMath::Pow(1.25f, E.GetWheelDelta()), MinZoom(Size), MaxZoom);
-	// keep the point under the cursor where it was
-	Center += Before - ToMap(Cursor, Size);
+	Zoom = FMath::Clamp(Zoom * FMath::Pow(1.25f, E.GetWheelDelta()), bGuide ? 0.3f * FMath::Min(Size.X, Size.Y) / ULyudBirdGuide::Radius() : MinZoom(Size), MaxZoom);
+	// keep the point under the cursor where it was (the guide stays on the hero)
+	if (!bGuide)
+	{
+		Center += Before - ToMap(Cursor, Size);
+	}
 	if (OnMoved)
 	{
 		OnMoved(Center, Zoom);
@@ -351,7 +380,7 @@ FReply SLyudMapView::OnMouseWheel(const FGeometry& MyGeometry, const FPointerEve
 
 FReply SLyudMapView::OnMouseButtonDown(const FGeometry& MyGeometry, const FPointerEvent& E)
 {
-	if (E.GetEffectingButton() == EKeys::LeftMouseButton)
+	if (E.GetEffectingButton() == EKeys::LeftMouseButton && !bGuide)
 	{
 		bDragging = true;
 		return FReply::Handled().CaptureMouse(SharedThis(this));
@@ -371,6 +400,7 @@ FReply SLyudMapView::OnMouseButtonUp(const FGeometry& MyGeometry, const FPointer
 
 FReply SLyudMapView::OnMouseMove(const FGeometry& MyGeometry, const FPointerEvent& E)
 {
+	Mouse = MyGeometry.AbsoluteToLocal(E.GetScreenSpacePosition());
 	if (!bDragging)
 	{
 		return FReply::Unhandled();
@@ -385,4 +415,154 @@ FReply SLyudMapView::OnMouseMove(const FGeometry& MyGeometry, const FPointerEven
 		OnMoved(Center, Zoom);
 	}
 	return FReply::Handled();
+}
+
+void SLyudMapView::OnMouseLeave(const FPointerEvent& MouseEvent)
+{
+	SLeafWidget::OnMouseLeave(MouseEvent);
+	Mouse = FVector2D(-1.0, -1.0);
+}
+
+bool SLyudMapView::ShowsBirds() const
+{
+	if (bGuide)
+	{
+		return true;
+	}
+	const ULyudBirdGuide* Guide = ULyudBirdGuide::Get(Owner.Get());
+	return Guide && Guide->ShowsOnMap(Owner.Get());
+}
+
+namespace
+{
+	/** Fills everything outside a circle (the land the guide does not see) with a colour: a ring of quads out past the corners. */
+	void FillOutside(FSlateWindowElementList& Out, int32 Layer, const FGeometry& G, const FVector2D& Size, const FVector2D& C, float R, const FLinearColor& Color)
+	{
+		const FSlateBrush* White = FCoreStyle::Get().GetBrush("WhiteBrush");
+		const FSlateResourceHandle Handle = FSlateApplication::Get().GetRenderer()->GetResourceHandle(*White);
+		const FSlateRenderTransform& T = G.GetAccumulatedRenderTransform();
+		const FColor Col = Color.ToFColor(true);
+		const float Far = R + 2.f * Size.Size();
+		constexpr int32 N = 72;
+		TArray<FSlateVertex> Verts;
+		TArray<SlateIndex> Index;
+		for (int32 K = 0; K < N; ++K)
+		{
+			const float A = 2.f * PI * K / N;
+			const FVector2f Dir(FMath::Cos(A), FMath::Sin(A));
+			const FVector2f Center(C);
+			Verts.Add(FSlateVertex::Make<ESlateVertexRounding::Disabled>(T, Center + Dir * R, FVector2f(0.5f, 0.5f), Col));
+			Verts.Add(FSlateVertex::Make<ESlateVertexRounding::Disabled>(T, Center + Dir * Far, FVector2f(0.5f, 0.5f), Col));
+		}
+		for (int32 K = 0; K < N; ++K)
+		{
+			const SlateIndex I0 = 2 * K, I1 = 2 * K + 1, J0 = 2 * ((K + 1) % N), J1 = J0 + 1;
+			Index.Append({ I0, I1, J1, I0, J1, J0 });
+		}
+		FSlateDrawElement::MakeCustomVerts(Out, Layer, Handle, Verts, Index, nullptr, 0, 0);
+	}
+
+	/** Words for what a bird is doing, as the guide names it. */
+	const TCHAR* DoingKey(const FLyudGuideBird& B)
+	{
+		return B.bFlying ? TEXT("ui.guide.flying") : B.bOnWater ? TEXT("ui.guide.swimming") : B.bAsleep ? TEXT("ui.guide.asleep") : TEXT("ui.guide.perched");
+	}
+}
+
+void SLyudMapView::DrawBirds(FSlateWindowElementList& Out, int32 LayerId, const FGeometry& G, const FVector2D& Size, const FLinearColor& Fade) const
+{
+	FVector2D Hero;
+	const TArray<FLyudGuideBird> Birds = ULyudBirdGuide::BirdsNearHero(Owner.Get(), &Hero);
+	const FVector2D HeroS = ToScreen(Hero, Size);
+	const float Rpx = ULyudBirdGuide::Radius() * Zoom;
+	TArray<FVector2D> Pts;
+
+	// the edge of what the guide sees
+	if (bGuide)
+	{
+		FillOutside(Out, LayerId, G, Size, HeroS, Rpx, Fade * FLinearColor(0.93f, 0.91f, 0.84f, 0.86f));
+		Circle(Pts, HeroS, Rpx, 96);
+		FSlateDrawElement::MakeLines(Out, LayerId + 1, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.08f, 0.2f, 0.14f, 0.9f), true, 2.f);
+	}
+	else
+	{
+		// a dashed pencil ring
+		constexpr int32 Dashes = 48;
+		for (int32 K = 0; K < Dashes; ++K)
+		{
+			const float A0 = 2.f * PI * K / Dashes, A1 = A0 + PI / Dashes;
+			Pts = { HeroS + Rpx * FVector2D(FMath::Cos(A0), FMath::Sin(A0)), HeroS + Rpx * FVector2D(FMath::Cos((A0 + A1) * 0.5f), FMath::Sin((A0 + A1) * 0.5f)),
+				HeroS + Rpx * FVector2D(FMath::Cos(A1), FMath::Sin(A1)) };
+			FSlateDrawElement::MakeLines(Out, LayerId + 1, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * LyudDiary::PencilFaint, true, 2.f);
+		}
+	}
+
+	// the birds: a mark each, flying ones with a stroke along their way
+	const FLyudGuideBird* Hover = nullptr;
+	double HoverD = 16.0 * 16.0;
+	for (const FLyudGuideBird& B : Birds)
+	{
+		const FVector2D S = ToScreen(B.At, Size);
+		if (S.X < -20 || S.Y < -20 || S.X > Size.X + 20 || S.Y > Size.Y + 20)
+		{
+			continue;
+		}
+		const float R = FMath::Clamp(1.6f + B.LengthCm / 14.f, 2.2f, 6.f) * (bInk ? 1.5f : 1.f);
+		FLinearColor C = B.Color;
+		if (bInk)
+		{
+			// pencilled: the bird's colour taken down towards the graphite
+			C = FMath::Lerp(C, FLinearColor(LyudDiary::Pencil), 0.35f);
+		}
+		C.A = B.bAsleep ? 0.55f : 1.f;
+		if (B.bFlying && B.Velocity.SizeSquared() > 0.01)
+		{
+			// a little "v" pointed the way it flies, and a short wake behind it
+			const FVector2D D = FVector2D(-B.Velocity.X, -B.Velocity.Y).GetSafeNormal();
+			const FVector2D Side(-D.Y, D.X);
+			const float W = R * 1.7f;
+			Pts = { S - D * W * 0.4f + Side * W, S + D * W * 0.35f, S - D * W * 0.4f - Side * W };
+			FSlateDrawElement::MakeLines(Out, LayerId + 3, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * C, true, bInk ? 2.6f : 2.2f);
+			Pts = { S - D * W * 0.6f, S - D * (W * 0.6f + FMath::Clamp((float)B.Velocity.Size() * 0.8f, 4.f, 16.f)) };
+			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * C * FLinearColor(1, 1, 1, 0.45f), true, 1.5f);
+		}
+		else
+		{
+			// a filled dot (a ring as thick as its radius); on the water a ripple under it
+			Circle(Pts, S, R * 0.5f, 10);
+			FSlateDrawElement::MakeLines(Out, LayerId + 3, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * C, true, R);
+			if (B.bOnWater)
+			{
+				Pts = { S + FVector2D(-R * 1.4f, R * 1.3f), S + FVector2D(-R * 0.5f, R * 0.9f), S + FVector2D(R * 0.5f, R * 1.3f), S + FVector2D(R * 1.4f, R * 0.9f) };
+				FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.2f, 0.34f, 0.56f, 0.8f), true, 1.4f);
+			}
+		}
+		if (bGuide && Mouse.X >= 0.0)
+		{
+			const double D2 = FVector2D::DistSquared(S, Mouse);
+			if (D2 < HoverD)
+			{
+				HoverD = D2;
+				Hover = &B;
+			}
+		}
+	}
+
+	// the guide names the bird under the mouse
+	if (Hover)
+	{
+		const FBirdSpecies* Sp = UBirdSpeciesLibrary::Find(Hover->Species);
+		const FString Name = (Sp ? Sp->DisplayName().ToString() : Hover->Species.ToString()) + TEXT(" · ") + LyudText::Get(DoingKey(*Hover)).ToString();
+		const FVector2D S = ToScreen(Hover->At, Size);
+		Circle(Pts, S, 10.f, 16);
+		FSlateDrawElement::MakeLines(Out, LayerId + 5, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.08f, 0.2f, 0.14f), true, 1.5f);
+		const FSlateFontInfo Font = LyudUI::Font(14, "Bold");
+		const FVector2D TS = FSlateApplication::Get().GetRenderer()->GetFontMeasureService()->Measure(Name, Font);
+		const FVector2D P(FMath::Clamp(S.X - TS.X * 0.5, 4.0, Size.X - TS.X - 4.0), S.Y - 18.0 - TS.Y);
+		static const FSlateColorBrush Tag(FLinearColor::White);
+		FSlateDrawElement::MakeBox(Out, LayerId + 5, G.ToPaintGeometry(FVector2f(TS + FVector2D(10, 4)), FSlateLayoutTransform(FVector2f(P - FVector2D(5, 2)))), &Tag,
+			ESlateDrawEffect::None, Fade * FLinearColor(0.97f, 0.95f, 0.88f, 0.92f));
+		FSlateDrawElement::MakeText(Out, LayerId + 6, G.ToPaintGeometry(FVector2f(TS), FSlateLayoutTransform(FVector2f(P))), Name, Font, ESlateDrawEffect::None,
+			Fade * FLinearColor(0.08f, 0.2f, 0.14f));
+	}
 }

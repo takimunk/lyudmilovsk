@@ -12,6 +12,7 @@ One game screen, the hero's diary (an A4 planner he takes out of his bag: docs/d
 | M | the diary on the map; on the map the wheel zooms at the cursor, dragging moves it, C finds you |
 | A / D, arrows, PgUp / PgDn | turn a page (also the tabs on the fore-edge and the dog-eared corners) |
 | Esc | puts the diary away (F10 in the editor opens the game menu, which puts it away too) |
+| B | the bird guide (when the hero has it, docs/bird_guide.md); B or Esc shuts it |
 | L | head lamp on and off (when it is worn) |
 | right mouse button, held | binoculars (when they are worn) |
 

@@ -1,0 +1,12 @@
+{
+ "id": "icon_bird_guide",
+ "lang": "ru",
+ "service": "higgsfield",
+ "model": "nano_banana_2_1",
+ "resolution": "1k",
+ "seed": 4172,
+ "job": "4c196266-0e28-4e1b-93fa-ea0ef32803ad",
+ "aspect": "1:1",
+ "prompt": "Inventory icon for a moody adventure game set in a computer club in 2004: the object centred and filling most of a square frame, softly lit from the upper left, painterly realistic style, plain dark warm-grey background with a faint vignette, no frame, no UI elements, no text except what is printed on the object itself. A thick cloth-bound bird field guide in dark bottle-green, lying at a slight angle, its cover stamped in faded gold with a simple line drawing of a gull in flight above a small round map with a compass rose, no lettering anywhere, a red ribbon bookmark hanging out at the bottom, slightly worn corners and spine.",
+ "strings": {}
+}

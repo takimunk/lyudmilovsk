@@ -246,6 +246,13 @@
    "aspect": "1:1",
    "prompt": "A polished Baltic amber pendant on a thin chain.",
    "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
+  },
+  "icon_bird_guide": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A thick cloth-bound bird field guide in dark bottle-green, lying at a slight angle, its cover stamped in faded gold with a simple line drawing of a gull in flight above a small round map with a compass rose, no lettering anywhere, a red ribbon bookmark hanging out at the bottom, slightly worn corners and spine.",
+   "source": "Higgsfield nano_banana_2_1, 1k, seed 4172, job 4c196266-0e28-4e1b-93fa-ea0ef32803ad (style icon + prompt), resized to 512 px"
   }
  }
 }

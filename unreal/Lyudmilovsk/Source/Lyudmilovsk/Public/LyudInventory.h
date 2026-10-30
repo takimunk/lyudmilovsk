@@ -228,6 +228,8 @@ private:
 	TWeakObjectPtr<const UObject> PromptKey;
 	bool bLocked = false;
 	uint64 ShopClosedFrame = 0;
+	/** The frame a shop opened: its own T press must not shut it again (the traders' ticks and this one run in any order). */
+	uint64 ShopOpenedFrame = 0;
 	bool bUsing = false;
 
 	UPROPERTY(Transient)
