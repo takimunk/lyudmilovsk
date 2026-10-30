@@ -758,9 +758,131 @@ namespace
 		Check(R, Gale.Bad == 0, "no bird is blown out of the world or into the ground");
 	}
 
+
+	/**
+	 * The player's feeder (docs/bird_taming.md "Feeds and the feeder"): put up in the birds' range with a feed they like, after
+	 * a couple of hours they come and peck on its tray; a feed nobody near likes, or a feeder out of every range, stays empty.
+	 */
+	void Feeders(FResult& R)
+	{
+		struct FCase { const char* Name; std::vector<std::pair<const char*, float>> Like; V3 Where; bool bExpect; };
+		FWorld W;
+		if (!Setup(W, 9.f))
+		{
+			Check(R, false, "feeders: world loads");
+			return;
+		}
+		// a garden near the club's door, where the small birds live, and far out on the sea
+		V3 Garden = Door + V3(12.f, 18.f, 0.f);
+		for (const FSite& S : W.Sites)
+		{
+			if (S.Kind == EHabitat::Garden && (S.Center() - Door).Len2D() < 150.f)
+			{
+				Garden = S.Center() + V3(4.f, 0.f, 0.f);
+				break;
+			}
+		}
+		const std::vector<FCase> Cases = {
+			{ "suet in the garden", { { "GreatTit", 1.f }, { "BlueTit", 1.f }, { "Robin", 0.6f } }, Garden, true },
+			{ "grain in the garden", { { "FeralPigeon", 1.f }, { "HouseSparrow", 0.6f }, { "TreeSparrow", 0.5f }, { "Chaffinch", 0.4f } }, Garden, true },
+			{ "a feed nobody eats", {}, Garden, false },
+		};
+		const std::vector<FSite> Base = W.Sites;
+		for (const FCase& C : Cases)
+		{
+			FWorld X;
+			Setup(X, 9.f);
+			V3 Tray = C.Where;
+			Tray.Z = X.GroundZ(Tray.X, Tray.Y) + 1.2f;
+			const int F = X.AddFeeder(Tray, 0.2f, X.KindsAround(Tray));
+			for (const auto& L : C.Like)
+			{
+				const int Sp = FindSpecies(L.first);
+				if (Sp >= 0 && Sp < 64)
+				{
+					X.Feeders[F].Like[Sp] = L.second;
+				}
+			}
+			X.Feeders[F].Food = 5.f;
+			X.Player.bPresent = false;
+			if (std::getenv("FEEDER_DIAG"))
+			{
+				for (const FGroup& G : X.Groups)
+				{
+					if (G.Species < 64 && X.Feeders[F].Like[G.Species] > 0.f)
+					{
+						std::printf("  candidate %s x%d: %.0f m from the tray, range %.0f m\n", SpeciesTable()[G.Species].Id.c_str(), (int)G.Members.size(),
+							(X.Sites[X.Feeders[F].Site].Center() - G.Home).Len2D(), SpeciesTable()[G.Species].HomeRange);
+					}
+				}
+			}
+			std::map<std::string, int> Seen;
+			int Peaks = 0;
+			float FirstAt = -1.f;
+			float T = 0.f;
+			Advance(X, 4.5f, 0.1f, [&]()
+			{
+				T += 0.1f;
+				X.Feeders[F].Ready = std::min(1.f, std::max(0.f, T / 3600.f - 1.5f));      // as the game ramps it: found between 1.5 and 2.5 h
+				int On = 0;
+				for (const FBird& B : X.Birds)
+				{
+					if (B.Site == X.Feeders[F].Site && !IsAirborne(B.Act) && !B.bGone)
+					{
+						On++;
+						Seen[SpeciesTable()[B.Species].Id]++;
+						if (FirstAt < 0.f)
+						{
+							FirstAt = T / 3600.f;
+						}
+					}
+				}
+				Peaks = std::max(Peaks, On);
+			});
+			std::string Kinds;
+			for (int K = 0; K < NumHabitats; K++)
+			{
+				if (X.Feeders[F].Around & (1u << K))
+				{
+					Kinds += std::string(Kinds.empty() ? "" : " ") + HabitatName((EHabitat)K);
+				}
+			}
+			std::printf("feeder, %s (%s): first bird on it after %.2f h, at most %d at once, food left %.2f;", C.Name, Kinds.c_str(), FirstAt, Peaks, X.Feeders[F].Food);
+			bool bOnlyLiked = true;
+			for (const auto& KV : Seen)
+			{
+				std::printf(" %s", KV.first.c_str());
+				bool bLiked = false;
+				for (const auto& L : C.Like)
+				{
+					bLiked |= KV.first == L.first;
+				}
+				bOnlyLiked &= bLiked;
+			}
+			std::printf("\n");
+			if (C.bExpect)
+			{
+				Check(R, FirstAt > 1.4f && Peaks > 0, (std::string("feeder: birds come to ") + C.Name + " after a couple of hours").c_str());
+				Check(R, bOnlyLiked, (std::string("feeder: only birds that like ") + C.Name + " come").c_str());
+				Check(R, X.Feeders[F].Food < 5.f, "feeder: the feed goes down as they peck");
+			}
+			else
+			{
+				Check(R, Peaks == 0, (std::string("feeder: ") + C.Name + " stays empty").c_str());
+			}
+		}
+		(void)Base;
+	}
+
 	int Test()
 	{
 		FResult R;
+		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "feeders"))
+		{
+			Feeders(R);
+			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
+			return R.Fail ? 1 : 0;
+		}
 		if (std::getenv("BIRD_ONLY"))
 		{
 			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only; wind: the gale only)
@@ -1059,6 +1181,7 @@ namespace
 			Check(R, SparrowCat > 2.f && SparrowCat < SparrowDog, "a walking cat puts a sparrow up nearer");
 			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
 		}
+		Feeders(R);
 		Routines(R);
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;

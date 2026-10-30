@@ -1,0 +1,23 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "job_id": "6df3e31c-ffba-4fd7-a9c9-f15644115df6",
+ "date": "2026-10-30",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170949_6df3e31c-ffba-4fd7-a9c9-f15644115df6.png",
+ "prompt_template": "design/grocery/labels_prompt.txt (<<key>> = strings_ru.json)",
+ "lang": "ru",
+ "ids": [
+  "feed_suet",
+  "feed_niger",
+  "feed_rowan",
+  "feed_mealworm",
+  "feed_grain",
+  "feed_peanuts"
+ ],
+ "note": "3x2 grid of the grocery's bird-feed packet labels (Russian words), cut by tools/grocery_assets.py into textures/localized/ru/label_<id>.jpg; other languages fall back to ru.",
+ "credits": 1
+}

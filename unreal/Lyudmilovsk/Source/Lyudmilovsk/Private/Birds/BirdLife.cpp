@@ -4,6 +4,7 @@
 #include "BirdMurmur.h"
 #include "Sea/LyudSea.h"
 #include "Birds/BirdActor.h"
+#include "Birds/BirdFeeder.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/PlayerCameraManager.h"
@@ -170,6 +171,7 @@ bool UBirdLifeSubsystem::Start()
 		return false;
 	}
 	Sim = MoveTemp(W);
+	StartCount++;
 	FWorld& S = *Sim;
 	S.Opt.PopulationScale = FMath::Max(0.f, CVarBirdsPopulation.GetValueOnGameThread());
 	S.Opt.Seed = 20261024u;
@@ -288,6 +290,7 @@ bool UBirdLifeSubsystem::StartEmpty(float GroundZ)
 {
 	UWorld* World = GetWorld();
 	Sim = MakePimpl<FWorld>();
+	StartCount++;
 	FWorld& S = *Sim;
 	FillSpeciesFromTable();
 	S.Opt.PopulationScale = 0.f;
@@ -518,6 +521,10 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 		bOffer = false;
 	}
 	P.bOffer = bOffer;
+	if (bOffer)
+	{
+		LyudBirdFeeds::LikeTable(OfferFood, P.OfferLike);
+	}
 	P.Palm = FromUE(LastPalm);
 	P.HandSpeed = HandSpeed;
 	// LOD and drawing follow the real camera; perception the hero's eyes (the bird near the hero thinks every frame too)
@@ -762,6 +769,7 @@ void UBirdLifeSubsystem::SetOffer(FVector PalmLocation, FName Food, bool bOn)
 		}
 		LastPalm = PalmLocation;
 		LastOfferTime = Now;
+		OfferFood = Food;
 	}
 	bOffer = bOn;
 	(void)Food;
@@ -1504,4 +1512,65 @@ void ABirdLifeRenderer::DriveBody(AActor* Body, const FWorld& World, int32 Id)
 	}
 	Bird->SetVelocity(ToUE(B.Vel));
 	Bird->SetLookTarget(ToUE(B.Look), B.bLook);
+}
+
+// ------------------------------------------------------------------ the player's feeders
+
+int32 UBirdLifeSubsystem::AddFeeder(FVector Tray, float Radius)
+{
+	if (!Sim)
+	{
+		return -1;
+	}
+	const V3 At = FromUE(Tray);
+	return Sim->AddFeeder(At, Radius * 0.01f, Sim->KindsAround(At));
+}
+
+void UBirdLifeSubsystem::RemoveFeeder(int32 Id)
+{
+	if (Sim)
+	{
+		Sim->RemoveFeeder(Id);
+	}
+}
+
+void UBirdLifeSubsystem::SetFeeder(int32 Id, FName Feed, float Handfuls, float Ready)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->Feeders.size())
+	{
+		return;
+	}
+	FFeeder& F = Sim->Feeders[Id];
+	LyudBirdFeeds::LikeTable(Feed, F.Like, 0.f);
+	F.Food = FMath::Max(0.f, Handfuls);
+	F.Ready = FMath::Clamp(Ready, 0.f, 1.f);
+}
+
+float UBirdLifeSubsystem::TakeFeederEaten(int32 Id)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->Feeders.size())
+	{
+		return 0.f;
+	}
+	const float E = Sim->Feeders[Id].Eaten;
+	Sim->Feeders[Id].Eaten = 0.f;
+	return E;
+}
+
+TArray<int32> UBirdLifeSubsystem::BirdsOnFeeder(int32 Id) const
+{
+	TArray<int32> Out;
+	if (!Sim || Id < 0 || Id >= (int32)Sim->Feeders.size())
+	{
+		return Out;
+	}
+	const int Site = Sim->Feeders[Id].Site;
+	for (const FBird& B : Sim->Birds)
+	{
+		if (B.Site == Site && !B.bGone && !IsAirborne(B.Act))
+		{
+			Out.Add(B.Id);
+		}
+	}
+	return Out;
 }

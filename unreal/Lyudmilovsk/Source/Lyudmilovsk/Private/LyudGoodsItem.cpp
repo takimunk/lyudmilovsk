@@ -3,7 +3,12 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "LyudText.h"
 #include "LyudInventory.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "HAL/IConsoleManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 ALyudGoodsItem::ALyudGoodsItem()
@@ -92,13 +97,28 @@ void ALyudGoodsItem::Init(FName InItem)
 		PlateSize = FVector();
 		break;
 	}
+	// a printed label when the item has one (the grocery's feeds: T_Label_<id>), in its own proportions, else its icon
+	UTexture2D* Label = PlateSize.X > 0.f ? LyudText::LoadTexture(TEXT("Hall"), TEXT("T_Label_") + Item.ToString()) : nullptr;
+	if (Label && Label->GetSizeX() > 0)
+	{
+		const float Aspect = (float)Label->GetSizeY() / (float)Label->GetSizeX();
+		// (on a pack, under its crimped top)
+		const float Room = Def->Look == ELyudItemLook::Pack ? S.Z - 2.4f : S.Z;
+		PlateSize.Z = FMath::Min(Room * 0.9f, S.Y * 0.86f * Aspect);
+		PlateSize.Y = PlateSize.Z / Aspect;
+	}
+	const float PlateZ = Def->Look == ELyudItemLook::Flat ? 0.f : Label && Def->Look == ELyudItemLook::Pack ? -1.2f : -S.Z * 0.02f;
 	if (PlateSize.X > 0.f)
 	{
-		UStaticMeshComponent* Plate = Part(Cube, FVector(PlateX, 0.f, Def->Look == ELyudItemLook::Flat ? 0.f : -S.Z * 0.02f), PlateSize, FLinearColor::White);
+		UStaticMeshComponent* Plate = Part(Cube, FVector(PlateX, 0.f, PlateZ), PlateSize, FLinearColor::White);
 		if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel")))
 		{
 			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
-			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			if (Label)
+			{
+				MID->SetTextureParameterValue(TEXT("Label"), Label);
+			}
+			else if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 			{
 				if (UTexture2D* Tex = UI->IconTexture(Item))
 				{
@@ -129,3 +149,30 @@ void ALyudGoodsItem::LieDown(const FVector& Pos, const FVector& Along)
 {
 	SetActorLocationAndRotation(Pos, FRotationMatrix::MakeFromZX(Along.GetSafeNormal(), FVector::UpVector).Rotator());
 }
+
+// dev/test: the goods' look up close (a packet's label) without a shop
+static TWeakObjectPtr<ALyudGoodsItem> GShownGoods;
+static FAutoConsoleCommandWithWorldAndArgs GGoodsShowCmd(TEXT("lyud.Goods.Show"),
+	TEXT("lyud.Goods.Show <item> [cm] | off: an item's goods 30 cm (or cm) in front of the view, its front toward it."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (GShownGoods.IsValid())
+		{
+			GShownGoods->Destroy();
+		}
+		const APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+		if (!World || !PC || !PC->PlayerCameraManager || Args.Num() < 1 || Args[0] == TEXT("off"))
+		{
+			return;
+		}
+		const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+		const FVector Look = PC->PlayerCameraManager->GetCameraRotation().Vector();
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		ALyudGoodsItem* Goods = World->SpawnActor<ALyudGoodsItem>(Eye + Look * (Args.Num() > 1 ? FCString::Atof(*Args[1]) : 30.f), FRotator(0.f, (-Look).Rotation().Yaw, 0.f), P);
+		if (Goods)
+		{
+			Goods->Init(FName(*Args[0]));
+			GShownGoods = Goods;
+		}
+	}));

@@ -152,6 +152,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Birds")
 	bool IsRunning() const { return Sim.IsValid(); }
 
+	/**
+	 * The player's bird feeders (UBirdFeederSubsystem, docs/bird_taming.md): a tray at Tray (world cm) of Radius (cm) that
+	 * birds come to when its feed suits them, it stands in their range and they have found it. Returns its id in the bird
+	 * life (-1 when the birds aren't running). The ids go when the bird life restarts (StartCount changes).
+	 */
+	int32 AddFeeder(FVector Tray, float Radius);
+	void RemoveFeeder(int32 Id);
+	/** What is in it: a feed (an item in Content/BirdsData/feeds.json), the handfuls left, and how far the birds round about have found it (0..1). */
+	void SetFeeder(int32 Id, FName Feed, float Handfuls, float Ready);
+	/** Handfuls the birds pecked from it since the last call. */
+	float TakeFeederEaten(int32 Id);
+	/** The birds on its tray now. */
+	TArray<int32> BirdsOnFeeder(int32 Id) const;
+	/** Goes up each time the bird life (re)starts: feeders must then be put up again. */
+	int32 GetStartCount() const { return StartCount; }
+
 	UFUNCTION(BlueprintPure, Category = "Birds")
 	int32 NumBirds() const;
 
@@ -195,6 +211,9 @@ private:
 	UPROPERTY(Transient) TObjectPtr<class ABirdLifeRenderer> Renderer;
 	bool bWantStart = false;
 	bool bStarted = false;
+	int32 StartCount = 0;
+	/** The food in the hand (SetOffer) and how much each species wants it. */
+	FName OfferFood;
 	float StartDelay = 0.f;
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;

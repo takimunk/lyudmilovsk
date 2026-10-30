@@ -1,0 +1,31 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "medias": [
+  {
+   "role": "image_references",
+   "value": "6df3e31c-ffba-4fd7-a9c9-f15644115df6 (labels_grid)"
+  }
+ ],
+ "job_id": "4e2c573b-7673-4942-a812-d5c89a59489f",
+ "date": "2026-10-30",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_171222_4e2c573b-7673-4942-a812-d5c89a59489f.png",
+ "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text except what is printed on the objects. The reference image shows six printed packet labels (3 columns, 2 rows); the first six packets wear exactly those labels, in the same order. Row 1, left: a small paper box of suet cake wearing the first label (the great tit), a round suet cake with oats and seeds beside it. Row 1, middle: a small paper packet wearing the second label (the goldfinch), a few tiny black niger seeds spilled in front. Row 1, right: a paper packet wearing the third label (the waxwing), a few dried red rowan berries in front. Row 2, left: a small paper box wearing the fourth label (the robin), a few dried mealworms in front. Row 2, middle: a paper sack-like packet wearing the fifth label (the pigeon), wheat and split peas spilled in front. Row 2, right: a red plastic mesh bag of shelled peanuts with the sixth label (the blue tit) as a paper tag on its top. Row 3, left: a small wooden bird feeder: a square tray with a low rim on a short square post, four corner posts holding a little gabled plank roof, pale weathered pine. Row 3, middle: a Soviet white bread loaf (baton) with slanting cuts on top, on a scrap of wrapping paper. Row 3, right: a half-litre glass bottle of kefir with a green foil cap, no label.",
+ "ids": [
+  "feed_suet",
+  "feed_niger",
+  "feed_rowan",
+  "feed_mealworm",
+  "feed_grain",
+  "feed_peanuts",
+  "feeder",
+  "bread_loaf",
+  "kefir"
+ ],
+ "note": "3x3 grid of the grocery's item icons, the packets wearing the labels of labels_grid; cut by tools/grocery_assets.py into textures/localized/ru/icon_<id>.jpg.",
+ "credits": 1
+}

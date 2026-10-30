@@ -1,0 +1,10 @@
+{
+ "id": "icon_bread_loaf",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/grocery/icons_grid.png",
+ "cell": [
+  1,
+  2
+ ]
+}

@@ -33,6 +33,7 @@
 // the wild birds (bird-life thread) and playing as a bird (bird-flight thread): wired in when their code is in the build
 #if __has_include("Birds/BirdLife.h")
 #include "Birds/BirdLife.h"
+#include "Birds/BirdFeeder.h"
 #define LYUD_HAS_BIRDLIFE 1
 #else
 #define LYUD_HAS_BIRDLIFE 0
@@ -356,7 +357,7 @@ void UBirdTameSubsystem::TellBirds(bool bOn)
 	if (UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && (bOn || bTold))
 	{
 		// every frame while the palm is out: the birds read the hand's speed from the successive points
-		Life->SetOffer(BirdOfferAt.IsZero() ? OfferAt : BirdOfferAt, FeedId, bOn);
+		Life->SetOffer(BirdOfferAt.IsZero() ? OfferAt : BirdOfferAt, HeldFeed(), bOn);
 	}
 #endif
 	if (bOn != bTold)
@@ -453,6 +454,16 @@ void UBirdTameSubsystem::HandleWatch(int32 BirdId)
 	LogEvent(TEXT("watch"), BirdId);
 	if (IsOffering() && Focus == BirdId)
 	{
+#if LYUD_HAS_BIRDLIFE
+		// it looks, but this is not its food (Content/BirdsData/feeds.json): it won't come for it
+		FBirdLifeInfo Info;
+		if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this); Life && Life->GetBird(BirdId, Info)
+			&& LyudBirdFeeds::Like(HeldFeed(), Info.SpeciesId) < 0.3f)
+		{
+			Say(TEXT("ui.tame.dislike"), BirdId, 4.f);
+			return;
+		}
+#endif
 		Say(TEXT("ui.tame.watch"), BirdId, 4.f);
 	}
 }
@@ -556,7 +567,7 @@ void UBirdTameSubsystem::Eaten()
 	const int32 Bird = Focus;
 	if (ULyudInventory* Inv = ULyudInventory::Get(this); Inv && !bCalled)
 	{
-		Inv->Remove(FeedId);
+		Inv->Remove(HeldFeed());
 	}
 #if LYUD_HAS_BIRDLIFE
 	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
@@ -613,17 +624,38 @@ bool UBirdTameSubsystem::IsOffering() const
 	return bWantOffer && Handful && Reach && Reach->IsHolding() && Reach->HoldWeight() > 0.95f && !Reach->IsBusy();
 }
 
+FName UBirdTameSubsystem::HeldFeed() const
+{
+	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	const FName Id = Inv ? Inv->EquippedItem() : FName();
+	const FLyudItemDef* Def = ULyudInventory::FindDef(Id);
+	return Def && Def->Kind == ELyudItemKind::Feed ? Id : FName();
+}
+
 bool UBirdTameSubsystem::SetOffering(bool bOn)
 {
 	ULyudInventory* Inv = ULyudInventory::Get(this);
-	if (bOn && (!Inv || Inv->Count(FeedId) < 1))
+	if (bOn && Inv && HeldFeed().IsNone())
+	{
+		// nothing in the hand: the seeds from the pocket, else any other feed there
+		FName Any = Inv->Count(FeedId) > 0 ? FeedId : FName();
+		for (const TPair<FName, int32>& It : Inv->Held())
+		{
+			const FLyudItemDef* Def = ULyudInventory::FindDef(It.Key);
+			if (Any.IsNone() && Def && Def->Kind == ELyudItemKind::Feed)
+			{
+				Any = It.Key;
+			}
+		}
+		if (!Any.IsNone())
+		{
+			Inv->Equip(Any);
+		}
+	}
+	if (bOn && (!Inv || HeldFeed().IsNone()))
 	{
 		Say(TEXT("ui.tame.nofeed"), -1);
 		return false;
-	}
-	if (bOn && Inv->EquippedItem() != FeedId)
-	{
-		Inv->Equip(FeedId);
 	}
 	bWantOffer = bOn;
 	return true;
@@ -651,7 +683,7 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		UpdateCall(Hero, DeltaTime);
 		return;
 	}
-	const bool bEquipped = Inv->EquippedItem() == FeedId;
+	const bool bEquipped = !HeldFeed().IsNone();
 	if (!bEquipped)
 	{
 		bWantOffer = false;

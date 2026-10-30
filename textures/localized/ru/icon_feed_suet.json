@@ -1,0 +1,10 @@
+{
+ "id": "icon_feed_suet",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/grocery/icons_grid.png",
+ "cell": [
+  0,
+  0
+ ]
+}

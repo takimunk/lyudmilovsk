@@ -1,0 +1,24 @@
+{
+ "_doc": "Bird feeds (docs/bird_taming.md 'Feeds and the feeder'): per feed item (LyudInventory.cpp) how much each species (species.json id) wants it, 0..1. 'default' is for every species not listed (0 when left out). A bird comes to a feeder with this feed, or to the palm holding it, only when it likes it (palm: 0.3 or more); liking it more makes it trust the hand faster. From the species' diets (species.json 'diet') and what Baltic garden feeders get in winter.",
+ "feeds": {
+  "bird_feed": {"default": 0.4, "like": {
+   "HouseSparrow": 1.0, "TreeSparrow": 1.0, "Chaffinch": 0.9, "GreatTit": 0.9, "BlueTit": 0.8, "FeralPigeon": 0.9, "WoodPigeon": 0.7,
+   "Goldfinch": 0.6, "Bullfinch": 0.6, "Robin": 0.5, "Rook": 0.5, "Jackdaw": 0.5, "Blackbird": 0.25, "SongThrush": 0.2,
+   "Fieldfare": 0.15, "Waxwing": 0.0, "WhiteWagtail": 0.0}},
+  "feed_suet": {"like": {
+   "GreatTit": 1.0, "BlueTit": 1.0, "Starling": 0.6, "Robin": 0.6, "Blackbird": 0.4, "HouseSparrow": 0.4, "TreeSparrow": 0.3,
+   "Magpie": 0.4, "Jackdaw": 0.4, "HoodedCrow": 0.3}},
+  "feed_niger": {"like": {
+   "Goldfinch": 1.0, "Bullfinch": 0.5, "Chaffinch": 0.5, "TreeSparrow": 0.3}},
+  "feed_rowan": {"like": {
+   "Waxwing": 1.0, "Bullfinch": 1.0, "Fieldfare": 1.0, "Blackbird": 0.8, "SongThrush": 0.7, "Starling": 0.5, "Robin": 0.4}},
+  "feed_mealworm": {"like": {
+   "Robin": 1.0, "WhiteWagtail": 1.0, "Blackbird": 0.9, "SongThrush": 0.9, "Starling": 0.8, "Fieldfare": 0.5, "GreatTit": 0.6,
+   "BlueTit": 0.6, "HouseSparrow": 0.5, "Chaffinch": 0.4, "TreeSparrow": 0.4}},
+  "feed_grain": {"like": {
+   "FeralPigeon": 1.0, "WoodPigeon": 1.0, "Rook": 0.8, "Jackdaw": 0.6, "HoodedCrow": 0.4, "HouseSparrow": 0.6, "TreeSparrow": 0.5,
+   "Chaffinch": 0.4, "MuteSwan": 0.6}},
+  "feed_peanuts": {"like": {
+   "GreatTit": 0.9, "BlueTit": 0.9, "Jackdaw": 0.6, "Magpie": 0.5, "Starling": 0.5, "HouseSparrow": 0.4, "HoodedCrow": 0.4}}
+ }
+}

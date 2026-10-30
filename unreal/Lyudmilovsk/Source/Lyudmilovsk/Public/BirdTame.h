@@ -35,8 +35,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UBirdTameSubsystem, STATGROUP_Tickables); }
 
-	/** The item that is bird feed. */
+	/** The vending machine's bird feed (seeds and millet); any ELyudItemKind::Feed item can be held out (the grocery's feeds). */
 	static const FName FeedId;
+	/** The feed in the hand (none when the hand holds no feed). */
+	FName HeldFeed() const;
 
 	/** Is the palm held out with feed on it (fully out, birds can see it)? */
 	bool IsOffering() const;
