@@ -72,7 +72,11 @@ the MakeHuman cast's. The rig takes them from a **donor**, a MakeHuman human of 
    them out while the shins and feet below the hem keep their own. `--preview` adds a seated pose (`*_sit*.png`);
    L_FaceTest `FACE_ANIM=A_Human_SitIdle` seats the cast. **LODs**: `unreal/scripts/lod_people.py` (called by `import_character.py`; on its own for meshes already in)
    gives every person four LODs from `LOD_HumanPeople` (SkeletalMeshLODSettings): 100 % / 40 % / 15 % / at most 5000
-   triangles at screen sizes 1.0 / 0.45 / 0.2 / 0.08. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
+   triangles at screen sizes 1.0 / 0.45 / 0.2 / 0.08. `skirt.min` floors the blend for cloth lying on the thighs (an apron wholly on the pelvis: `min` 1 with `pelvis` 1,
+   anything less still splits the leg share between both thighs and folds it); `"inner"` zones take `"dark"` (black
+   leggings, not the blue apron over them) or `"not_olive": false`. After the decimation, single faces turned over
+   against their neighbours are flipped back (lit from behind under the two-sided material: dark specks), and the
+   baked normal map's sideways texels (rays that hit the wrong layer: blue under 0.6) are flattened. Then it takes the donor's weights by nearest surface (`POLYINTERP_NEAREST`), at most 4 per vertex, normalised.
 5. **Skirt**: between the hips and `skirt.hem_z`, cloth farther than `gap` from the donor's legs is blended over
    `blend` metres toward the pelvis (half of the leg share stays on the thighs, split evenly), so it swings with the
    hips instead of tearing between the legs.

@@ -128,6 +128,26 @@ def protect_group(m, zones):
     return g.name
 
 
+def fix_flipped(m):
+    """The collapse leaves single faces turned over (normal against all its neighbours'): with the two-sided M_HumanFace
+    they are lit from behind, a dark speck in the game (Tanya Orlova's apron). Flip each back."""
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(m.data)
+    bm.faces.ensure_lookup_table()
+    flip = []
+    for f in bm.faces:
+        nb = {g for e in f.edges for g in e.link_faces if g is not f}
+        if len(nb) >= 2:
+            avg = sum((g.normal for g in nb), Vector())
+            if avg.length > 1e-6 and f.normal.dot(avg.normalized()) < -0.5:
+                flip.append(f)
+    bmesh.ops.reverse_faces(bm, faces=flip)
+    bm.to_mesh(m.data)
+    bm.free()
+    log("flipped faces turned back: %d" % len(flip))
+
+
 def clean(m, min_island=40):
     """Welds duplicate vertices and drops tiny loose islands (specks the generator leaves around the model)."""
     import bmesh
@@ -176,6 +196,7 @@ def optimize(m, spec):
     decimate(m, spec.get("faces", 24000), zones)
     if "protect" in m.vertex_groups:
         m.vertex_groups.remove(m.vertex_groups["protect"])
+    fix_flipped(m)
     for p in m.data.polygons:
         p.use_smooth = True
     mat = m.data.materials[0]
@@ -224,6 +245,15 @@ def bake_normal(low, high, mat, bsdf, size):
     bpy.context.view_layer.objects.active = low
     bpy.ops.object.bake(type="NORMAL", use_selected_to_active=True, cage_extrusion=0.006, max_ray_distance=0.02,
                         margin=8, normal_space="TANGENT")
+    # rays that hit the wrong surface (layered cloth, the cut-off mittens) leave texels pointing sideways (yellow-green
+    # in the map, blue under 0.6): dark blotches under a low sun in the game (Tanya Orlova's apron) -> flat
+    px = np.empty(size * size * 4, np.float32)
+    img.pixels.foreach_get(px)
+    px = px.reshape(size, size, 4)
+    bad = px[:, :, 2] < 0.6
+    px[bad, :3] = (0.5, 0.5, 1.0)
+    img.pixels.foreach_set(px.ravel())
+    log("normal map: %d sideways texels flattened" % bad.sum())
     if FLAT_UV:
         px = np.empty(size * size * 4, np.float32)
         img.pixels.foreach_get(px)
@@ -797,7 +827,8 @@ def relax_skirt(model, body, arm, skirt):
         hit = tree.find_nearest(Vector(p))
         if hit[0] is None:
             continue
-        t = min(1.0, max(0.0, (hit[3] - skirt["gap"]) / skirt["blend"])) * min(1.0, (hip + skirt.get("top", 0.0) - p[2]) / skirt.get("ramp", 0.12))
+        t = max(skirt.get("min", 0.0), min(1.0, max(0.0, (hit[3] - skirt["gap"]) / skirt["blend"])))   # min: cloth lying on
+        t *= min(1.0, (hip + skirt.get("top", 0.0) - p[2]) / skirt.get("ramp", 0.12))                  # the thighs too
         if t <= 0:
             continue
         w = {names[g.group]: g.weight for g in v.groups}
@@ -932,6 +963,8 @@ def inner_follow(model, zones, body):
         inner = box & (near < z.get("near_donor", 0.025))
         if z.get("not_olive", True):                      # skin under an olive skirt; off for dark tights
             inner &= col[:, 0] - col[:, 1] > 0.03
+        if z.get("dark"):                                 # black leggings under a blue apron (not the apron itself)
+            inner &= col.mean(1) < z["dark"]
         cloth = np.nonzero(box & ~inner)[0]
         kd = KDTree(len(cloth))
         for i, v in enumerate(cloth):

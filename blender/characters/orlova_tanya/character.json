@@ -12,11 +12,13 @@
   "hem_z": 0.5,
   "gap": 0.015,
   "blend": 0.06,
-  "pelvis": 0.75,
+  "pelvis": 1.0,
   "smooth": {
-   "radius": 0.08,
-   "iterations": 10
-  }
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "min": 1.0,
+  "_doc": "the apron half on the pelvis even where it lies on the thighs (min; a wide stance turned patches inside out, sitting needs it on the thighs), weights smoothed; the legs' fronts behind it move with it"
  },
  "face": {
   "normal_strength": 0.4,
@@ -40,5 +42,21 @@
   ],
   "subdivide": false
  },
- "face_protect": true
+ "face_protect": true,
+ "inner": [
+  {
+   "_doc": "the front of her legs behind the apron moves with it (the thighs pushed its panel inside out in a wide stance); the sides and below stay on the legs",
+   "box": [
+    -0.2,
+    0.2,
+    -1,
+    0.0,
+    0.52,
+    0.85
+   ],
+   "near_donor": 0.03,
+   "not_olive": false,
+   "dark": 0.2
+  }
+ ]
 }
