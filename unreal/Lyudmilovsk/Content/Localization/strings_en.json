@@ -636,7 +636,7 @@
  "ui.birds.friend_m": "♂ male, a friend since {0}. Visits: {1}",
  "ui.birds.friend_f": "♀ female, a friend since {0}. Visits: {1}",
  "ui.birds.call": "call",
- "ui.birds.hint": "B: birds. \"Call\": a friend flies to your palm wherever it is",
+ "ui.birds.hint": "K: birds. \"Call\": a friend flies to your palm wherever it is",
  "journal.bird.seen": "Met a new bird: the {0}.",
  "journal.bird.seen_binoculars": "Had a good look through the binoculars: the {0}. Noted it down.",
  "journal.bird.tamed_m": "The {0} ate from my hand. We're friends now, and I can call him.",

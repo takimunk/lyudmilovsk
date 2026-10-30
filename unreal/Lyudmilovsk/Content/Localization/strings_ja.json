@@ -636,7 +636,7 @@
  "ui.birds.friend_m": "♂ オス　{0}から友だち　来た回数：{1}",
  "ui.birds.friend_f": "♀ メス　{0}から友だち　来た回数：{1}",
  "ui.birds.call": "呼ぶ",
- "ui.birds.hint": "B：鳥。「呼ぶ」：友だちがどこにいても手のひらへ飛んでくる",
+ "ui.birds.hint": "K：鳥。「呼ぶ」：友だちがどこにいても手のひらへ飛んでくる",
  "journal.bird.seen": "新しい鳥に出会った：{0}。",
  "journal.bird.seen_binoculars": "双眼鏡でじっくり見た：{0}。書きとめた。",
  "journal.bird.tamed_m": "{0}（オス）が手からえさを食べた。もう友だち。手帳から呼べる。",

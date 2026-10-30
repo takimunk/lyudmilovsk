@@ -155,6 +155,26 @@
      3392
     ]
    }
+  },
+  {
+   "id": "big_birds",
+   "seed": 26103007,
+   "cells": [
+    "WhiteTailedEagle",
+    "GoldenEagle",
+    "CommonBuzzard",
+    "Raven",
+    "GreyHeron",
+    "BlackBrowedAlbatross"
+   ],
+   "describe": "top row: an adult white-tailed eagle perched on a rock (huge, brown body, pale head, massive yellow hooked bill, short wedge-shaped white tail, yellow feet), an adult golden eagle perched (dark brown with a golden-buff nape, feathered legs, dark bill with yellow cere), a common buzzard perched on a post (brown, pale band across the breast, rounded head, yellow feet); bottom row: a common raven perched (all glossy black, very heavy bill, shaggy throat feathers, wedge-shaped tail), a grey heron standing in shallow water (tall, grey back, white neck with a black stripe, black plume behind the eye, long yellow dagger bill, long legs), a black-browed albatross standing on a rock (white head and body, dark grey-black back and wings, dark eyebrow line, pink-orange hooked bill)",
+   "run": {
+    "service": "higgsfield (MCP generate_image)",
+    "job_id": "6841aac7-4fd5-4763-b3d8-67a9a67eb1f5",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_180850_6841aac7-4fd5-4763-b3d8-67a9a67eb1f5.png"
+   }
   }
  ]
 }
