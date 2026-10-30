@@ -825,7 +825,8 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 	}
 	const FName Id = Inv->EquippedItem();
 	const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Inv->Count(Id)) });
-	const TCHAR* HintKey = bWantOffer ? TEXT("ui.held.hint_out") : Hero->bIsCrouched ? TEXT("ui.held.hint_crouched") : TEXT("ui.held.hint");
+	// calling a friend holds the empty palm out too (F lowers it)
+	const TCHAR* HintKey = bWantOffer || IsCalling() ? TEXT("ui.held.hint_out") : Hero->bIsCrouched ? TEXT("ui.held.hint_crouched") : TEXT("ui.held.hint");
 	Hud->Set(UI->IconBrush(Id), Title, LyudText::Get(HintKey));
 	// the bird the palm is held out to: how it feels about the hero, so creeping can be judged
 	FText Bird;
@@ -950,6 +951,12 @@ bool UBirdTameSubsystem::Summon(int32 BirdId)
 	{
 		Handful->Destroy();
 		Handful = nullptr;
+	}
+	// the palm is empty: the bag carried in it goes back to the pocket (UpdateHand isn't run while calling)
+	if (Bag)
+	{
+		Bag->Destroy();
+		Bag = nullptr;
 	}
 	TellBirds(false);
 	CallId = BirdId;

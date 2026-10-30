@@ -14,7 +14,7 @@ MARK="$OUT/.mark"; touch "$MARK"
     -windowed -ResX=1600 -ResY=900 -unattended -nosplash -nosound -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_bird_diary.py" > "$LOG.stdout" 2>&1 &
 PID=$!
-( sleep "${TIMEOUT:-1200}"; kill "$PID" 2>/dev/null ) &
+( sleep "${TIMEOUT:-1200}"; kill "$PID" 2>/dev/null ) >/dev/null 2>&1 &
 DOG=$!
 wait "$PID" || true
 kill "$DOG" 2>/dev/null || true
