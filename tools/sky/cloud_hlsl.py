@@ -190,7 +190,7 @@ if (Lens.x > 0.0 && h > Lens.y - 0.2 && h < Lens.z + 0.2)
 
 // fade out before the ray march stops (a hard arc in the sky otherwise)
 float dcam = length(pk - Cam * 1e-5);
-dens *= smoothstep(Misc.y, Misc.y * 0.75, dcam);
+dens *= smoothstep(Misc.y, Misc.y * 0.9, dcam);
 
 // a lightning strike lights the cloud round it from inside
 float fl = 0.0;

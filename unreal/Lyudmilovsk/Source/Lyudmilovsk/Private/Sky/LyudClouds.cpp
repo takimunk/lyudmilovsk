@@ -281,7 +281,8 @@ ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& 
 	const float Density0 = FMath::Clamp(L.Density, 0.f, 1.f);
 	const float LowTau = Sheet < 0.5f ? 8.f + 22.f * Density0
 		: FMath::Lerp(8.f + 22.f * Density0, FMath::Lerp(6.f + 14.f * Density0, 25.f + 35.f * Density0, Smooth(1.f, 2.5f, ThickKm)), (Sheet - 0.5f) * 2.f);
-	const float Tau = FMath::Lerp(LowTau, 1.5f + 7.f * Density0, Smooth(1800.f, 2600.f, L.BaseM));
+	// an altostratus is thin: the sun shows through it as a dim washed-out disk ("as through ground glass")
+	const float Tau = FMath::Lerp(LowTau, 0.3f + 1.2f * Density0, Smooth(1800.f, 2600.f, L.BaseM));
 	const float DeckDensity = FMath::Clamp(Tau / (CloudSigmaPerM * ThickM), 0.f, 1.f);
 	const float Density = FMath::Lerp(Density0, DeckDensity, Smooth(0.25f, 0.75f, Sheet) * (1.f - Smooth(4.5f, 7.5f, ThickKm)));
 
@@ -433,7 +434,7 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	// sun); that counts only where the decks close up (broken clouds keep their own moving shadows and sunny gaps).
 	{
 		const float SinAlt = FMath::Max(FMath::Sin(FMath::DegreesToRadians(Sky->SunAltitude())), 0.12f);
-		float Through = 1.f, Closed = 0.f;
+		float Through = 1.f, Closed = 0.f, Diffuse = 1.f, DeckBase = 1e9f;
 		for (int32 I = 0; I < 2; ++I)
 		{
 			const FShape& S = Shape[I];
@@ -442,12 +443,25 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 			const float Cover = FMath::Clamp(S.A.X, 0.f, 1.f);
 			Through *= 1.f - Cover * (1.f - FMath::Exp(-Tau));
 			// how closed the layer is: a deck (sheet) at full cover; heaps never close up the sky this way
-			Closed = FMath::Max(Closed, FMath::SmoothStep(0.75f, 0.97f, Cover) * FMath::SmoothStep(0.2f, 0.6f, S.B.Y + S.B.W));
+			const float LayerClosed = FMath::SmoothStep(0.75f, 0.97f, Cover) * FMath::SmoothStep(0.2f, 0.6f, S.B.Y + S.B.W);
+			Closed = FMath::Max(Closed, LayerClosed);
+			// the light that diffuses through a deck (two-stream: ~1 / (1 + 0.11 tau) for cloud droplets), straight down
+			const float TauV = S.A.W * CloudSigmaPerM * ThickM;
+			Diffuse *= 1.f - Cover * (1.f - 1.f / (1.f + 0.11f * TauV));
+			if (LayerClosed > 0.5f)
+			{
+				DeckBase = FMath::Min(DeckBase, S.A.Y);
+			}
 		}
 		// a cirrostratus veil takes a little of the sun's crispness too
 		Through *= 1.f - 0.25f * HighA.X * HighB.Z * HighA.Z;
 		Sky->SetOvercastSunScale(FMath::Lerp(1.f, FMath::Max(Through, 0.02f), Closed));
 		SunThrough = Sky->GetOvercastSunScale();
+		SkyLightThrough = Diffuse;
+		DeckClosed = Closed;
+		// a closed deck reaches the horizon: trace it out to where its base sinks under the earth's curve
+		// (sqrt(2 R h)), so no strip of bright sky is left over the sea under it
+		DeckTraceKm = DeckBase < 1e8f ? FMath::Lerp(60.f, FMath::Clamp(FMath::Sqrt(2.f * 6371.f * FMath::Max(DeckBase, 0.05f)) + 45.f, 60.f, 230.f), Closed) : 60.f;
 	}
 
 	// the volumetric slab, fitted round what is drawn (the shader keeps everything at its own altitude, so changing it
@@ -470,7 +484,7 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	UVolumetricCloudComponent* Clouds = Sky->Clouds;
 	const bool bAny = Top > 0.f;
 	// the ray march goes this far from the eye; the shader fades the clouds out before it
-	const float TraceKm = 60.f;
+	const float TraceKm = FMath::RoundToFloat(DeckTraceKm / 5.f) * 5.f;
 	if (Clouds)
 	{
 		if (Clouds->TracingMaxDistanceMode != EVolumetricCloudTracingMaxDistanceMode::DistanceFromPointOfView || !FMath::IsNearlyEqual(Clouds->TracingMaxDistance, TraceKm))
@@ -516,6 +530,12 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 		const float Time = GetWorld() ? float(FMath::Fmod(GetWorld()->GetTimeSeconds(), 100000.0)) : 0.f;
 		CloudMid->SetVectorParameterValue(TEXT("Misc"), FLinearColor(Time, TraceKm, Flicker * 40.f, 0.f));
 		CloudMid->SetVectorParameterValue(TEXT("Flash"), Vec(FlashAt));
+		// a closed deck's underside: the diffuse light through it (as ALyudRainFx::SkyLuminance lights the fog under it)
+		const float SunAlt = Sky->SunAltitude();
+		const float Day = FMath::SmoothStep(-7.f, 8.f, SunAlt);
+		const float Sin = FMath::Max(FMath::Sin(FMath::DegreesToRadians(FMath::Max(SunAlt, 0.f))), 0.15f);
+		const float Glow = (Sky->SunIlluminance * Sin / PI * 0.55f * SkyLightThrough * Day + 0.006f) * DeckClosed;
+		CloudMid->SetVectorParameterValue(TEXT("DeckGlow"), Sky->SunColor * Glow);
 	}
 	if (UMaterialInstanceDynamic* SkyMid = Sky->GetSkyMID())
 	{

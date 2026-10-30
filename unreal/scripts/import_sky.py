@@ -190,7 +190,12 @@ def cloud_material():
     ao = g.custom("return D.y;", [("D", d)])
     g.out(ao, unreal.MaterialProperty.MP_AMBIENT_OCCLUSION)
     flash = vparam("FlashColor", (0.75, 0.8, 1.0, 0.0))
-    em = g.custom("return D.z * D.x * F.rgb;", [("D", d), ("F", rgba(flash))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    # under a closed deck the light it has scattered many times glows out of its underside (DeckGlow, the luminance
+    # ULyudCloudSubsystem works out: the same diffuse light the fog under it takes); emitted per metre of extinction,
+    # so an opaque deck shows exactly that luminance
+    glow = vparam("DeckGlow", (0.0, 0.0, 0.0, 0.0))
+    em = g.custom("return D.z * D.x * F.rgb + D.x * S * K * G.rgb;", [("D", d), ("F", rgba(flash)), ("S", sigma), ("K", glob),
+                                                                     ("G", rgba(glow))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     # two-lobe phase (a bright silver lining toward the sun, a softer back glow) and the multiple-scattering octaves
     # that make thick clouds white instead of grey

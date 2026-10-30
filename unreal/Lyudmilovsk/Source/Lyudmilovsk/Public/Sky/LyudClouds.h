@@ -66,6 +66,9 @@ public:
 	/** Snap the eased shapes to the target now (tests, a jump of the clock). */
 	UFUNCTION(BlueprintCallable, Category = "Clouds") void Snap() { bSnap = true; }
 	UFUNCTION(BlueprintCallable, Category = "Clouds") FString DebugReport() const;
+	/** The share of the clear sky's diffuse light that comes down through the cloud decks now (1 clear .. ~0.1 under a
+	 * thick nimbostratus): the fog, the rain and anything lit by the sky under the clouds take it. */
+	UFUNCTION(BlueprintCallable, Category = "Clouds") float GetSkyLightThrough() const { return SkyLightThrough; }
 
 	/** The sky for a preset name. */
 	static bool PresetSky(const FString& Name, FLyudCloudSky& Out);
@@ -108,4 +111,7 @@ private:
 	double DebugNext = 0.0;
 	FString LastPreset;
 	float SunThrough = 1.f;
+	float SkyLightThrough = 1.f;
+	float DeckTraceKm = 60.f;
+	float DeckClosed = 0.f;
 };

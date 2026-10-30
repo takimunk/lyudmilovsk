@@ -21,6 +21,7 @@
 #include "MeshDescription.h"
 #include "Plants/ProceduralGrass.h"
 #include "Sea/LyudSea.h"
+#include "Sky/LyudClouds.h"
 #include "Sky/LyudSky.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
@@ -521,7 +522,11 @@ float ALyudRainFx::SkyLuminance(const FLyudRainFogWeather& W) const
 	}
 	const float Day = Smooth(-7.f, 8.f, SunAlt);
 	const float Sin = FMath::Max(FMath::Sin(FMath::DegreesToRadians(FMath::Max(SunAlt, 0.f))), 0.15f);
-	const float Diffuse = SunLux * Sin / PI * FMath::Lerp(0.55f, 0.22f, W.Cloud);
+	// under the clouds: as much as the decks let through (ULyudCloudSubsystem), so the fog over the sea is no brighter
+	// than the deck's underside; without it, a guess from the cloud cover
+	const ULyudCloudSubsystem* Clouds = ULyudCloudSubsystem::Get(this);
+	const float Through = Clouds ? 0.55f * Clouds->GetSkyLightThrough() : FMath::Lerp(0.55f, 0.22f, W.Cloud);
+	const float Diffuse = SunLux * Sin / PI * Through;
 	return Diffuse * Day + 0.006f;
 }
 

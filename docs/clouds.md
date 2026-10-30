@@ -57,6 +57,16 @@ must be gone everywhere, so there are no crisp shadows in a snowfall or a steady
 clouds at 75-97 percent cover). `ALyudSky::SetOvercastSunScale` scales the sunlight, and `lyud.Clouds.Debug` prints it
 as "sun". Broken heaps keep their own moving shadows and sunny gaps.
 
+A closed deck also:
+
+- glows from its underside with the diffuse light that gets through it (`DeckGlow`, ~1/(1 + 0.11 tau) per layer).
+  `ALyudRainFx` lights the fog under it with the same light (`ULyudCloudSubsystem::GetSkyLightThrough`), so an
+  overcast day is grey rather than black, and the deck and the haze over the sea horizon match;
+- is traced out to where its base sinks under the earth's curve (sqrt(2 R h) + 45 km, up to 230 km), so no strip of
+  open sky is left over the sea.
+
+An altostratus is thin (vertical optical depth 0.3-1.5), so the sun shows through it as a dim washed-out disk.
+
 ## Console
 
 - `lyud.Clouds.Preset <name|off>` forces a sky: clear, cu, cucon, cb, sc, st, ns, ac, as, lens, ci, cc, cs,

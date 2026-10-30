@@ -37,6 +37,7 @@ SHOTS = [
     ("nimbostratus", "ns", AFTERNOON, 6, 10),
     ("altocumulus", "ac", AFTERNOON, 30, 10),
     ("altostratus_sun", "as", AFTERNOON, 0, "sun-wide"),
+    ("altostratus_sun_close", "as", AFTERNOON, 0, "sun", "fov 40"),
     ("nimbostratus_sun", "ns", AFTERNOON, 0, "sun-wide"),
     ("stratocumulus_sun", "sc", AFTERNOON, 0, "sun-wide"),
     ("lenticular", "lens", AFTERNOON, 10, 10),
@@ -52,6 +53,11 @@ SHOTS = [
     ("night_sc", "sc", NIGHT, 10, "moon"),
     ("weather_now", "off", AFTERNOON, 12, 10),
     ("weather_ground", "off", AFTERNOON, -25, 100),
+    # the sea horizon under a closed deck: no bright strip between the deck and the sea
+    ("horizon_ns", "ns", AFTERNOON, 1, 10),
+    ("horizon_st", "st", AFTERNOON, 1, 10),
+    ("horizon_ns_nofog", "ns", AFTERNOON, 1, 10, "r.Fog 0"),
+    ("horizon_ns_fog", "ns", AFTERNOON, 1, 10, "r.Fog 1"),
     # shadows on the terrace by the club's door: crisp under a clear sky, gone under a deck
     ("terrace_shadows", "off", AFTERNOON, -30, 250, "at %.1f 33" % (T.W.DOOR_X - 2.0)),
     # from above: the layers' pattern and cover
