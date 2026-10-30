@@ -123,6 +123,16 @@ public:
 	 * to a low sun, and a real one stays blinding to the last, so the setting star stays the brightest thing in the sky,
 	 * deep orange-red. The colour always follows the air. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunHorizonDimming = 0.4f;
+	/** The weather's haze and fog (the height fog) lie over the star dome too, so the horizon sinks into them; the star is
+	 * drawn behind them with its own transmittance instead (FOG_DISK_HLSL): it keeps this share of the haze's dimming
+	 * toward it (log share, 1 = physical: the eye adapts, as with SunHorizonDimming), and where it outshines the haze
+	 * in front of it this share of the haze's flat glow is taken off (a real sun is far brighter than its haze). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunHazeDimming = 0.45f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunVeilClear = 0.75f;
+	/** The clear sky's share of the haze's light (the atmosphere's HeightFogContribution) under a closed cloud deck: the
+	 * haze below it is lit by the deck's grey underside, not the blue sky (with all of it the horizon under an overcast
+	 * shone as a white band below the deck's far edge). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float HazeSkyUnderDeck = 0.2f;
 	/** The prominences' and the corona's brightness over the disk's (1 = as drawn). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunProminenceGain = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunCoronaGain = 1.f;
@@ -224,6 +234,9 @@ public:
 	UPROPERTY(Transient, BlueprintReadWrite, Category = "Sky") float FlareBoost = 0.f;
 	/** The activity's flare now (ULyudSunActivity), its share of the daylight 0..1. */
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "Sky") float ActivityFlare = 0.f;
+	/** How much of a sunset's glow the sky shows: 1 from ~-3 to ~1 degrees, nothing above 10 or below -7 (the haze's
+	 * stronger, narrower forward glow and the aureole's wide lobes; the light itself follows LowSun). */
+	UFUNCTION(BlueprintPure, Category = "Sky") float SunsetGlow() const;
 	/** How low the sun is for its light, 0 (above ~25 degrees) .. 1 (on the horizon) (x lyud.Sky.LowSunLight in use). */
 	UFUNCTION(BlueprintPure, Category = "Sky") float LowSun() const;
 	UFUNCTION(BlueprintCallable, Category = "Sky") FString GetDebugReport() const { return DebugReport(); }
@@ -256,6 +269,11 @@ private:
 	/** The dome's material instance: sun, moon, pole directions, disk sizes and brightness each update. */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SkyMID;
 	void UpdateSkyMaterial();
+	/** The weather's height fog as the sky material sees it over the dome (SkyFogA..E), for drawing the star behind it. */
+	void UpdateSkyFog();
+	TWeakObjectPtr<class UExponentialHeightFogComponent> HeightFog;
+	/** How closed the low and middle cloud decks are 0..1 (UpdateExposure, from the weather). */
+	float DeckOpacity = 0.f;
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
 	float CloudBaseDensity = -1.f;

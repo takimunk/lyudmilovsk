@@ -27,14 +27,59 @@ And as the star sinks (`ALyudSky::LowSun()`, 0 above 25 degrees to 1 at 2 degree
 | what | where | how |
 |---|---|---|
 | the disk keeps its brightness | `SUN_HLSL` (`SunLook.y`), `SunDisk.y` | the air's colour pixel by pixel, but only `SunHorizonDimming` (0.4) of its dimming, and `1 + LowSunDiskGain` (1.3x) brighter at the horizon: still the brightest thing in the sky, deep orange (1 and 0 = physical). Brighter than that it blew out to pale yellow on the tonemapper's shoulder |
-| no flat haze over the dome | `ALyudRainFx` height fog `FogCutoffDistance` 150 km | the weather's haze (height fog) is not applied to the star dome (200 km out): its flat, unreddened inscatter over the low sky was what turned the setting disk into a pale ghost; the atmosphere draws the sky's haze itself |
+| behind the haze | `FOG_DISK_HLSL` (`SkyFogA..E`), `SunHazeDimming`, `SunVeilClear` | the weather's haze and fog lie over the dome like over the land (see *Behind the air* below); the star keeps 0.45 of the haze's real dimming toward it and only a quarter of its flat glow where it outshines it |
 | the haze round the disk | `DISK_MASK_HLSL` (`SunLook2.y`) | `SunRimClear` (0.5) of the sky's own glow is taken off just outside a low disk, fading over a radius: the forward glow round a capped disk this big blurred its limb |
-| the aureole | `SUN_HLSL` (`SunLook.x`) | a warm forward-scattering glow round the disk, three lobes (a few, ~10 and ~30 degrees wide), stronger the more air the light crosses; `SunAureole` |
-| the haze glows | `USkyAtmosphereComponent` | Mie up by `LowSunMieGain` (0.25) and its anisotropy from 0.62 to `LowSunMieAnisotropy` (0.72): a brighter, narrower forward lobe in the sky and over the far sea and land |
+| the aureole | `SUN_HLSL` (`SunLook.x`) | a warm forward-scattering glow round the disk, three lobes (a few, ~10 and ~30 degrees wide), stronger the more air the light crosses; `SunAureole`, at full strength only round sunset (`SunsetGlow()`), a third of it higher up |
+| the haze glows | `USkyAtmosphereComponent` | Mie up by `LowSunMieGain` (0.25) and its anisotropy from 0.62 to `LowSunMieAnisotropy` (0.72): a brighter, narrower forward lobe in the sky and over the far sea and land; only round sunset (`SunsetGlow()`: 1 from about -3 to 1 degrees, nothing above 10 or below -7), since the late-autumn sun never climbs over 25 degrees and `LowSun` alone kept a warm glow over the horizon all day |
 | the light | sun `UDirectionalLightComponent` | `1 + LowSunLightGain` (2.5x) the atmosphere's light at the horizon; the atmosphere still reddens it. The atmosphere's sky and haze (aerial perspective) follow the light, so they are scaled back by the same factor (`SkyAndAerialPerspectiveLuminanceFactor`; the material's `SkyLumScale` stays 1): a brighter light alone paled the whole sky and veiled the disk. The clouds get `LowSunCloudLight` (0.3) of the extra light (`CloudScatteredLuminanceScale`): with all of it they shone as bright as the disk where they cross it |
 | the shadows | the sky light | `LowSunAmbient` (0.7) of its intensity: deeper shadows against warm lit faces; they are long by geometry |
 | the sun path | the light's specular | `SunSpecularScale x (1 + LowSunSpecularGain)` (5x at the horizon): the sea's capillary ripples break the mirror image into a glittering path |
 | god rays | the light's screen-space light shafts | the bright disk blurred radially over trees, buildings and clouds in front of it, `SunShaftBloom` (0.15) when low (a fifth high up), from scene colour over `SunShaftThreshold` (1); stronger shafts veil the big disk itself |
+
+### Behind the air (round 3)
+
+Dima's playtest of round 2 found a warm band over the horizon at every hour, cutting through fog, and a seam across
+the sky with a semi-transparent layer starting at it; and the star looked pasted on the sky, with no air in front.
+
+- **The band and the seam were one thing: the fog stopped short of the dome.** Round 2 cut the weather's height fog
+  off at 150 km (`FogCutoffDistance`) so it would not veil the setting disk; the dome is 200 km out. In haze, fog or
+  under an overcast the land, the sea (60 km) and the cloud deck sank into the fog, but the dome over the horizon did
+  not: a hard line on the sea horizon, the bare atmosphere's bright yellow-orange horizon above it (its Mie glow, the
+  red dwarf's light), and the fogged cloud deck ending as a semi-transparent sheet at the clouds' tracing distance
+  (60 km) with the bare sky under it. The fog now lies over the dome too (`ALyudSky` keeps the cutoff at 0;
+  `lyud.Sky.DomeFog 0` brings the old cutoff back for comparison): the horizon sinks into the haze like the land.
+- **The star is drawn behind that fog** (`tools/sky/sky_hlsl.py FOG_DISK_HLSL`). Over the star the engine's fog is a
+  flat veil (opaque near the horizon, the dome being 200 km out), which is what paled the setting disk before. The sky
+  material works out the engine's own fog over each pixel (the formula of `HeightFogCommon.ush`, from the live
+  component: `ALyudSky::UpdateSkyFog` sets `SkyFogA..E` every frame: both layers' density at the eye and falloff, the
+  inscatter, the glow toward the sun with the atmosphere's sunlight, the sky's ambient share) and draws the star for
+  it: what that fog takes off is given back, and the haze's real dimming is put on instead, along the pixel's own
+  direction and round the earth's curve (an exponential layer of scale height H at elevation e has an air mass of
+  ~1 / (sin e + sqrt(2H / pi R)); flat, it went on for ever). The disk keeps `SunHazeDimming` (0.45) of it, as a log
+  share like `SunHorizonDimming`. Where the disk outshines the haze in front of it, `SunVeilClear` (0.75) of the
+  haze's flat glow is taken off (a real sun is ~10^5 times brighter than its haze; the capped one is not); where the
+  haze outshines it (fog) it stays, and the disk shows as a pale coin or not at all. The emission there may go below
+  zero (`allow_negative_emissive_color`): the fog pass adds the glow back. The sky light's reflection capture takes
+  the plain star (`ReflectionCapturePassSwitch`).
+  So the star reddens and dims toward the horizon (the air, `TRANS_HLSL`) and with the weather's haze, sinks into it
+  at the horizon, fades to a pale disk in mist and is gone in fog, and keeps some of the haze's glow on top: less
+  contrast in haze. On a clear day high up the haze is thin and it is drawn as before.
+  The haze's dimming is a little chromatic (Angstrom exponent ~1.3: 0.8, 1, 1.3 of it in r, g, b), so the setting
+  disk's lower edge reddens as it sinks into the haze.
+- **Thin cloud in front softens it.** A cirrostratus or cirrus veil (the clouds' `HighA`/`HighB`) scatters part of the
+  disk's light into a soft glow just round it and flattens its detail (`SUN_HLSL`, `veil`); the veil itself dims it
+  (`HIGH_HLSL`). The volumetric decks dim it by their own transmittance and light their edges by their phase.
+- **The haze under a cloud deck is lit by the deck, not the blue sky**: the atmosphere's share of the fog's light
+  (`HeightFogContribution`) falls to `HazeSkyUnderDeck` (0.2) under a closed deck (the deck's opacity, as for the
+  exposure). With all of it the horizon below an overcast shone as a white band under the deck's far edge.
+- **The warm low-sun sky only round sunset.** The haze's stronger, narrower forward glow (Mie gain and anisotropy) and
+  the aureole's wide lobes follow `SunsetGlow()` (-7..10 degrees), not `LowSun()` (25 degrees down): the late-October
+  sun stays under 25 degrees all day. The light itself, its shadows and the sea's glitter path still follow `LowSun`.
+
+Still open (not in LyudSky): under a full overcast a thin bright strip stays just over the sea horizon, below the
+deck's far edge (the volumetric deck fades out at its 60 km tracing distance and the haze beyond is lit brighter than
+the deck's underside: `ALyudRainFx::SkyLuminance`); with the `as` cloud preset (altostratus) the sun does not show at
+all (the deck's transmittance along the sun is ~0).
 
 The exposure already opens a little for a low sun (`lyud.Sky.LowSunEV`). Volumetric fog stays off (its cost); the
 shafts are the screen-space kind, so they show while the sun is on the screen or near it.
@@ -128,6 +173,8 @@ the neutral line, projected from the star) stands on the limb and brightens as t
 | `lyud.Sky.SunHorizonDimming` | -1 | overrides `SunHorizonDimming` when >= 0 (1 = physical) |
 | `lyud.Sky.LowSunLight` | 1 | multiplies the low sun's extra light, specular and haze (0 = the atmosphere alone) |
 | `lyud.Sky.SunShafts` | 1 | multiplies the light shafts (0 = off) |
+| `lyud.Sky.DomeFog` | 1 | 0: the fog cut off short of the dome and the star drawn without it (round 2's look, for comparison) |
+| `lyud.Sky.SunHaze`, `lyud.Sky.SunVeil` | -1 | override `SunHazeDimming`, `SunVeilClear` when set (tuning) |
 | `lyud.Sky.LowSunDiskGain`, `lyud.Sky.LowSunCloud`, `lyud.Sky.SunRimClear`, `lyud.Sky.SunLimb`, `lyud.Sky.LowSunMieG` | -1 | override `LowSunDiskGain`, `LowSunCloudLight`, `SunRimClear`, `SunLimbDarkening`, `LowSunMieAnisotropy` when set (tuning) |
 
 ## Tests
@@ -140,3 +187,6 @@ the neutral line, projected from the star) stands on the limb and brightens as t
   cliff; `flare_late` is a forced flare 30 s on (the ribbons parted), `flare_arcade` one near the limb 40 s on (the
   loop arcade). `SUN_VARY="tag=cmd;cmd|tag2=..."` takes each chosen shot again per variant (tuning sweeps in one
   process).
+- `SUN_SKY3=1` (round 3): the horizon at noon toward and away from the sun, with and without fog and clouds, the
+  sunsets, fog and overcast at noon toward and away from the sun, the sun through cirrostratus, cirrus, altostratus,
+  haze and mist, and the old look (`lyud.Sky.DomeFog 0`) of the fog, the overcast, the sunset and the noon disk.

@@ -235,7 +235,8 @@ def sky_material():
     # the star's activity (ULyudSunActivity sets these): active regions, prominences, the flare
     sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
                ("Tr", tr), ("Look", rgba(vparam("SunLook", (1.0, 0.25, 1.0, 1.0)))),
-               ("Look2", rgba(look2))]
+               ("Look2", rgba(look2)), ("Hi", rgba(vparam("HighA", (0.0, 9.0, 0.0, 0.0)))),
+               ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0))))]
     sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
     for k in "ABC":
         sun_ins += [("P%s%d" % (k, i), rgba(vparam("SunProm%s%d" % (k, i), (0.0, 0.0, 1.0, 0.0)))) for i in range(SH.SUN_PROMS)]
@@ -246,6 +247,27 @@ def sky_material():
     # Europa passes in front of the sun at new moons (both disks are big): the sun goes behind it
     cover = g.custom(SH.MOON_COVER_HLSL, [("V", view), ("M", rgba(moon_dir)), ("MD", rgba(moon_disk))])
     sun = g.op(X.MaterialExpressionMultiply, sun, cover)
+    # the star's flares lie on it (rare_hlsl FLARE_HLSL): the rare sky's big ones (ALyudRareSky sets Flare) and the
+    # activity's everyday ones (ULyudSunActivity sets SunFlare)
+    f3 = unreal.CustomMaterialOutputType.CMOT_FLOAT3
+    for fp in ("Flare", "SunFlare"):
+        fl = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
+                                      ("F", rgba(vparam(fp, (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
+        sun = g.op(X.MaterialExpressionAdd, sun, fl)
+    # the star behind the weather's haze: the engine's height fog over it given back, the haze's real dimming and
+    # in-scatter put on instead (SH.FOG_DISK_HLSL; ALyudSky sets SkyFogA..E from the fog); reflection captures (the sky
+    # light) take the plain star
+    rv = g.op(X.MaterialExpressionSubtract, g.node(X.MaterialExpressionWorldPosition), g.node(X.MaterialExpressionCameraPositionWS))
+    fog_ins = [("Sun", sun), ("Rv", rv), ("S", rgba(sun_dir))]
+    for k, v in (("A", (0.0, 0.0, 0.0, 0.0)), ("B", (0.0, 0.0, 0.0, 0.0)), ("C", (0.0, 0.0, 0.0, 4.0)),
+                 ("D", (0.0, 0.0, 0.45, 0.75)), ("E", (1.0, 1.0, 1.0, 0.0))):
+        fog_ins.append(("F" + k, rgba(vparam("SkyFog" + k, v))))
+    fog_ins.append(("Amb", g.node(X.MaterialExpressionSkyAtmosphereDistantLightScatteredLuminance)))
+    seen = g.custom(SH.FOG_DISK_HLSL, fog_ins, out=f3)
+    sw = g.node(X.MaterialExpressionReflectionCapturePassSwitch)
+    g.link(seen, sw, "Default")
+    g.link(sun, sw, "Reflection")
+    sun = sw
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))
     g.link(uv, stars, "UVs")
@@ -267,25 +289,20 @@ def sky_material():
               g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, moon, st), ag))
     em = high_clouds(g, em, sky, view, sun_dir, moon_dir, vparam)
     # the rare sky (tools/sky/rare_hlsl.py, ALyudRareSky sets these): the aurora, noctilucent clouds, the lightning's
-    # glow and the red dwarf's flares
-    f3 = unreal.CustomMaterialOutputType.CMOT_FLOAT3
+    # glow (the red dwarf's flares are drawn with the star, above)
     aur = g.custom(RH.AURORA_HLSL, [("V", view), ("A", rgba(vparam("AurA", (0.0, 2000.0, 300.0, 0.0)))),
                                     ("B", rgba(vparam("AurB", (0.0, 0.4, 0.0, 105.0)))),
                                     ("C", rgba(vparam("AurC", (-0.27, 0.96, 0.0, 1.0)))), ("T", t), ("Tr", tr)], out=f3)
     nlc = g.custom(RH.NLC_HLSL, [("V", view), ("S", rgba(sun_dir)), ("N", rgba(vparam("NlcA", (0.0, 0.0, 0.0, 0.0)))),
                                  ("T", t), ("Tr", tr)], out=f3)
     flash = g.custom(RH.FLASH_HLSL, [("V", view), ("F", rgba(vparam("Flash", (0.0, 1.0, 0.2, 0.0))))], out=f3)
-    flare = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
-                                     ("F", rgba(vparam("Flare", (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
-    # the activity's everyday flares, drawn the same way (ULyudSunActivity sets SunFlare)
-    flare2 = g.custom(RH.FLARE_HLSL, [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)),
-                                      ("F", rgba(vparam("SunFlare", (0.3, 0.0, 0.0, 0.0)))), ("Spots", rgba(spots)), ("Tr", tr)], out=f3)
-    flare = g.op(X.MaterialExpressionAdd, flare, flare2)
-    rare = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, aur, nlc), g.op(X.MaterialExpressionAdd, flash, flare))
+    rare = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, aur, nlc), flash)
     em = g.op(X.MaterialExpressionAdd, em, rare)
     g.out(em, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     g.m.set_editor_property("is_sky", True)
     g.m.set_editor_property("two_sided", True)
+    # the star's light under the fog may go below zero (FOG_DISK_HLSL): the fog pass adds the haze's glow back
+    g.m.set_editor_property("allow_negative_emissive_color", True)
     return g.finish()
 
 

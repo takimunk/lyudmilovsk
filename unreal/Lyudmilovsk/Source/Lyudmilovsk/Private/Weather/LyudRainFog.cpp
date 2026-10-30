@@ -621,12 +621,7 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	// thick snow in the air scatters white
 	Tint = FMath::Lerp(Tint, FLinearColor(0.86f, 0.88f, 0.9f), W.Snow * FMath::SmoothStep(400.f, 40.f, W.VisibilityM));
 	C->SetFogInscatteringColor(FMath::Lerp(FogBase.Inscatter, Tint * Light, A));
-	// not on the star dome (ALyudSky's, 200 km out): the atmosphere draws the sky's haze itself, reddened toward a low
-	// sun; this flat haze over it veiled the setting disk into a pale ghost
-	if (!FMath::IsNearlyEqual(C->FogCutoffDistance, 1.5e7f))
-	{
-		C->SetFogCutoffDistance(1.5e7f);
-	}
+	// the haze lies over the star dome too (the horizon sinks into it); ALyudSky draws the star behind it
 }
 
 void ALyudRainFx::Tick(float DeltaSeconds)

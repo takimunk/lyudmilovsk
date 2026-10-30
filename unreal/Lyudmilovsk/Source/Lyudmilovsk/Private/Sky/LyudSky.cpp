@@ -9,16 +9,19 @@
 #include "RHIGlobals.h"
 
 #include "Components/DirectionalLightComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/VolumetricCloudComponent.h"
+#include "Engine/ExponentialHeightFog.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/StaticMesh.h"
 #include "EngineUtils.h"
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
+#include "Camera/PlayerCameraManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/GameCalendar.h"
@@ -49,6 +52,9 @@ static TAutoConsoleVariable<float> CVarLowSunCloud(TEXT("lyud.Sky.LowSunCloud"),
 static TAutoConsoleVariable<float> CVarSunRimClear(TEXT("lyud.Sky.SunRimClear"), -1.f, TEXT("Overrides ALyudSky::SunRimClear when >= 0 (tuning: the haze's glow taken off round a low disk)."));
 static TAutoConsoleVariable<float> CVarSunLimb(TEXT("lyud.Sky.SunLimb"), -1.f, TEXT("Overrides ALyudSky::SunLimbDarkening when > 0 (tuning)."));
 static TAutoConsoleVariable<float> CVarLowSunMieG(TEXT("lyud.Sky.LowSunMieG"), -1.f, TEXT("Overrides ALyudSky::LowSunMieAnisotropy when > 0 (tuning)."));
+static TAutoConsoleVariable<int32> CVarDomeFog(TEXT("lyud.Sky.DomeFog"), 1, TEXT("1: the weather's height fog over the star dome too, the star drawn behind it with its own transmittance; 0: no fog on the dome (the fog cut off at 150 km), the star as drawn (the old look, for comparison)."));
+static TAutoConsoleVariable<float> CVarSunHaze(TEXT("lyud.Sky.SunHaze"), -1.f, TEXT("Overrides ALyudSky::SunHazeDimming when >= 0 (tuning: the share of the haze's dimming the star keeps)."));
+static TAutoConsoleVariable<float> CVarSunVeil(TEXT("lyud.Sky.SunVeil"), -1.f, TEXT("Overrides ALyudSky::SunVeilClear when >= 0 (tuning: the haze's glow taken off over the star)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
@@ -198,6 +204,12 @@ FDateTime ALyudSky::ShownTime() const
 float ALyudSky::LowSun() const
 {
 	return SmoothStep01(25.f, 2.f, (float)SunPos.AltitudeDeg);
+}
+
+float ALyudSky::SunsetGlow() const
+{
+	const float Alt = (float)SunPos.AltitudeDeg;
+	return SmoothStep01(10.f, 1.f, Alt) * SmoothStep01(-7.f, -3.f, Alt);
 }
 
 FVector ALyudSky::WorldDirection(const FVector& Enu) const
@@ -366,14 +378,16 @@ void ALyudSky::UpdateSky()
 	// by night the haze is thinner: the moonlight it scatters would wrap Europa in a big glow
 	const float MieNight = CVarNightMie.GetValueOnGameThread() >= 0.f ? CVarNightMie.GetValueOnGameThread() : NightMieShare;
 	// and the weather's haze on top (humid air, mist, rain: ULyudGradeSubsystem, eased there)
-	// a low sun's aureole: more haze along its long path and a narrower, brighter forward lobe
+	// a setting sun's aureole: more haze along its long path and a narrower, brighter forward lobe, only round sunset
+	// (the late-autumn sun stays under 25 degrees all day: a warm glow over the horizon at noon)
+	const float Glow = SunsetGlow() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
 	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt)) * ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
-		* (1.f + LowSunMieGain * Low);
+		* (1.f + LowSunMieGain * Glow);
 	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
 	}
-	const float MieG = FMath::Lerp(0.62f, CVarLowSunMieG.GetValueOnGameThread() > 0.f ? CVarLowSunMieG.GetValueOnGameThread() : LowSunMieAnisotropy, FMath::Clamp(Low, 0.f, 1.f) * SmoothStep01(-6.f, 0.f, SunAlt));
+	const float MieG = FMath::Lerp(0.62f, CVarLowSunMieG.GetValueOnGameThread() > 0.f ? CVarLowSunMieG.GetValueOnGameThread() : LowSunMieAnisotropy, FMath::Clamp(Glow, 0.f, 1.f));
 	if (!FMath::IsNearlyEqual(Atmosphere->MieAnisotropy, MieG, 1e-3f))
 	{
 		Atmosphere->SetMieAnisotropy(MieG);
@@ -506,6 +520,61 @@ void ALyudSky::UpdateClouds()
 	}
 }
 
+void ALyudSky::UpdateSkyFog()
+{
+	UWorld* World = GetWorld();
+	UExponentialHeightFogComponent* F = HeightFog.Get();
+	if (!F && World)
+	{
+		if (TActorIterator<AExponentialHeightFog> It(World); It)
+		{
+			F = It->GetComponent();
+			HeightFog = F;
+		}
+	}
+	const APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+	const bool bDome = CVarDomeFog.GetValueOnGameThread() > 0;
+	// the fog lies over the dome (2e7 cm out) too, or (lyud.Sky.DomeFog 0) is cut off short of it
+	if (F && !FMath::IsNearlyEqual(F->FogCutoffDistance, bDome ? 0.f : 1.5e7f))
+	{
+		F->SetFogCutoffDistance(bDome ? 0.f : 1.5e7f);
+	}
+	if (!bDome || !F || !F->IsVisible() || !PC || !PC->PlayerCameraManager)
+	{
+		SkyMID->SetVectorParameterValue(TEXT("SkyFogD"), FLinearColor(0.f, 0.f, 0.f, 0.f));
+		return;
+	}
+	// what the renderer makes of the component (FExponentialHeightFogSceneInfo, FSceneRenderer::InitFogConstants): the
+	// densities and falloffs per cm, each layer's density at the eye
+	const float Eye = PC->PlayerCameraManager->GetCameraLocation().Z;
+	const float H0 = F->GetComponentLocation().Z;
+	auto AtEye = [Eye](float Density, float Falloff, float Height)
+	{
+		return Density * FMath::Pow(2.f, FMath::Clamp(-Falloff * (Eye - Height), -125.f, 126.f));
+	};
+	const float D0 = F->FogDensity / 1000.f, F0 = F->FogHeightFalloff / 1000.f;
+	const float D1 = F->SecondFogData.FogDensity / 1000.f, F1 = F->SecondFogData.FogHeightFalloff / 1000.f;
+	SkyMID->SetVectorParameterValue(TEXT("SkyFogA"), FLinearColor(AtEye(D0, F0, H0), F0, AtEye(D1, F1, H0 + F->SecondFogData.FogHeightOffset), F1));
+	const FLinearColor In = F->FogInscatteringLuminance;
+	SkyMID->SetVectorParameterValue(TEXT("SkyFogB"), FLinearColor(In.R, In.G, In.B, 1.f - F->FogMaxOpacity));
+	// the fog's glow toward the sun: its own colour x the light's, and the atmosphere's sunlight on the ground
+	// (r.SupportSkyAtmosphereAffectsHeightFog, on by default)
+	// the haze is lit by the clear sky's light only where there is a clear sky over it
+	const float FogShare = FMath::Lerp(1.f, HazeSkyUnderDeck, DeckOpacity);
+	if (!FMath::IsNearlyEqual(Atmosphere->HeightFogContribution, FogShare, 1e-3f))
+	{
+		Atmosphere->SetHeightFogContribution(FogShare);
+	}
+	const FLinearColor Light = SunLight->GetColoredLightBrightness();
+	const FLinearColor Dir = F->DirectionalInscatteringLuminance * Light.GetLuminance()
+		+ Light * Atmosphere->GetAtmosphereTransmitanceOnGroundAtPlanetTop(SunLight) * FogShare;
+	SkyMID->SetVectorParameterValue(TEXT("SkyFogC"), FLinearColor(Dir.R, Dir.G, Dir.B, FMath::Clamp(F->DirectionalInscatteringExponent, 1e-6f, 1000.f)));
+	const float Haze = CVarSunHaze.GetValueOnGameThread() >= 0.f ? CVarSunHaze.GetValueOnGameThread() : SunHazeDimming;
+	const float Veil = CVarSunVeil.GetValueOnGameThread() >= 0.f ? CVarSunVeil.GetValueOnGameThread() : SunVeilClear;
+	SkyMID->SetVectorParameterValue(TEXT("SkyFogD"), FLinearColor(F->DirectionalInscatteringStartDistance, 1.f, Haze, FMath::Clamp(Veil, 0.f, 1.f)));
+	SkyMID->SetVectorParameterValue(TEXT("SkyFogE"), F->SkyAtmosphereAmbientContributionColorScale * FogShare);
+}
+
 void ALyudSky::UpdateSkyMaterial()
 {
 	if (!SkyMID)
@@ -538,7 +607,9 @@ void ALyudSky::UpdateSkyMaterial()
 	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));
 	// the aureole, how much of the air's dimming the disk keeps, the prominences' and the corona's gains
 	const float Dimming = CVarSunHorizonDimming.GetValueOnGameThread() >= 0.f ? CVarSunHorizonDimming.GetValueOnGameThread() : SunHorizonDimming;
-	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * CVarSunAureole.GetValueOnGameThread(),
+	// the aureole: its full width round a setting sun, a third of it higher up
+	const float AureoleK = FMath::Lerp(0.35f, 1.f, SunsetGlow());
+	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * AureoleK * CVarSunAureole.GetValueOnGameThread(),
 		FMath::Clamp(Dimming, 0.f, 1.f), SunProminenceGain, SunCoronaGain));
 	const float Detail = CVarSunDetail.GetValueOnGameThread() > 0.f ? CVarSunDetail.GetValueOnGameThread() : SunDetailContrast;
 	const float Rim = CVarSunRimClear.GetValueOnGameThread() >= 0.f ? CVarSunRimClear.GetValueOnGameThread() : SunRimClear;
@@ -549,6 +620,7 @@ void ALyudSky::UpdateSkyMaterial()
 	{
 		ActivityFlare = Activity->Update(SkyMID, Now, SunRotationDays, NoonSpin);
 	}
+	UpdateSkyFog();
 	// z: Europa's phase law over Lommel-Seeliger, the same factor its light takes (UpdateSky)
 	SkyMID->SetVectorParameterValue(TEXT("MoonLook"), FLinearColor(0.f, MoonNightHalo, MoonLawFactor, 0.f));
 
@@ -627,6 +699,7 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 		const LyudWeather::FWeatherState& W = Weather->GetModelState();
 		Opacity = 1.f - (1.f - W.Low.Cover * FMath::Clamp(W.Low.Density * 1.2f, 0.f, 1.f)) * (1.f - 0.7f * W.Mid.Cover * W.Mid.Density);
 	}
+	DeckOpacity = Opacity;
 	const float LowSun = SmoothStep01(25.f, 5.f, (float)SunPos.AltitudeDeg);
 	const float DayEV = (1.f - Night) * (CVarOvercastEV.GetValueOnGameThread() * Opacity + CVarLowSunEV.GetValueOnGameThread() * LowSun);
 	DayAdaptEV = FMath::FInterpTo(DayAdaptEV, DayEV, DeltaSeconds, 0.5f);

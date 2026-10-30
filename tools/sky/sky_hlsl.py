@@ -102,7 +102,8 @@ struct FLyudSkyLib
 # V), Look (SunLook: aureole, horizon dimming kept 0..1, prominence gain, corona gain), Look2 (SunLook2: the disk's
 # detail contrast, the haze cleared round the disk (DISK_MASK_HLSL), the limb darkening steepened, 0), R0..R7 (SunRegion*: latitude,
 # star longitude, strength, seed), PA/PB/PC0..15 (SunPromA/B/C*: anchor xyz + height; foot axis xyz + half length;
-# brightness, kind 0 loop 1 hedgerow 2 surge, lift, seed), all from ULyudSunActivity.
+# brightness, kind 0 loop 1 hedgerow 2 surge, lift, seed), all from ULyudSunActivity; Hi, Hb (the high clouds' HighA,
+# HighB: a thin veil in front softens the disk).
 SUN_REGIONS = 8
 SUN_PROMS = 16
 SUN_HLSL = r"""
@@ -141,7 +142,16 @@ if (r > 0.98 && r < 14.0)
     float lobe = 0.03 * exp(-x / 0.7) + 0.012 / (1.0 + x * x / 9.0) + 0.0035 / (1.0 + x * x / 60.0);
     aur = float3(1.0, 0.5, 0.26) * (Look.x * haze * lobe) * smoothstep(0.98, 1.02, r);
 }
-if (r > 4.5) return aur * D.y * TrB;
+// a thin high veil (cirrostratus, cirrus: the clouds' HighA/HighB) in front: the ice scatters the disk's light into a
+// soft glow round it and lowers its contrast (the veil itself dims it, HIGH_HLSL)
+float veil = saturate(saturate(Hi.x * 1.1) * Hb.z + 0.5 * Hi.x * max(Hb.x, Hb.y)) * Hi.z;
+float3 soft = 0.0;
+if (veil > 0.0 && r > 0.9)
+{
+    float x = max(r - 1.0, 0.0);
+    soft = float3(1.0, 0.36, 0.1) * veil * (0.22 * exp(-x / 0.12) + 0.06 * exp(-x / 0.5)) * smoothstep(0.9, 1.0, r);
+}
+if (r > 4.5) return (aur + soft) * D.y * TrB;
 // a ~3000 K star, deep red-orange, darker and redder toward the limb (deeper than the light: the tonemapper pales it)
 const float3 Hot = float3(1.0, 0.26, 0.055);
 const float3 Limb = float3(0.55, 0.07, 0.015);
@@ -327,7 +337,8 @@ float chrom = exp(-h / 0.006) * (0.5 + 0.7 * L.Noise(float3(phi * 260.0, h * 300
 float off = smoothstep(0.985, 1.0, r);
 // prominences glow in H-alpha: a hot pinkish red, the cores whiter
 float3 glow = (float3(1.0, 0.36, 0.12) * corona * Look.w + (float3(1.0, 0.2, 0.22) * (prom + 0.35 * chrom) + float3(1.0, 0.4, 0.36) * core * 0.08) * 0.5 * Look.z) * off;
-return (col + glow + aur) * D.y * TrB;
+col = lerp(col, float3(0.55, 0.13, 0.03) * saturate((1.0 - r) / fw), 0.45 * veil);
+return (col + glow + aur + soft) * D.y * TrB;
 """
 
 SUN_HLSL = SUN_HLSL.replace("SUN_PROMS", str(SUN_PROMS)).replace("SUN_REGIONS", str(SUN_REGIONS))
@@ -453,4 +464,42 @@ float a = acos(clamp(dot(v, normalize(S.xyz)), -1.0, 1.0));
 float b = acos(clamp(dot(v, normalize(M.xyz)), -1.0, 1.0));
 float rim = 1.0 - K.y * exp(-max(a - D.x, 0.0) / (D.x * 0.9));
 return lerp(0.15, rim, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0.2, MD.w), 1.0, smoothstep(MD.x * 0.97, MD.x * 1.03, b));
+"""
+
+# The star behind the weather's haze. The height fog (ALyudRainFx's haze and fog layers) lies over the whole dome, so the
+# horizon sinks into it like the land and the sea; over the star the engine's fog would be a flat veil (the dome is
+# 200 km out: near the horizon it is opaque) that turns the disk into a pale ghost. So the star's own light is drawn
+# for that fog: whatever the engine's fog takes off it is given back (1 / its transmittance, the engine's own formula,
+# HeightFogCommon.ush), and the haze's real dimming toward the star is put on instead: along the pixel's direction,
+# round the earth's curve (the layer thins out ahead of the ray instead of going on flat for ever), keeping D.z of it
+# (log share, like the air's). Where the disk outshines the haze in front of it, D.w of the haze's flat glow is taken
+# off (a real sun is ~10^5 times brighter than the haze; the capped one is not): the haze still lowers its contrast,
+# and where the haze outshines it (fog) it shows through as a pale disk. The result may be negative (the material
+# allows it): only the fog pass adds the glow back. Inputs: Sun (the star's luminance), Rv (the dome pixel from the
+# camera, cm), S (SunDir), FA (the fog's two layers: density at the eye, falloff per cm, x2), FB (inscatter luminance,
+# minimum transmittance), FC (directional inscatter rgb, exponent), FD (directional start distance, on, the dimming
+# kept, the glow taken off), FE (sky ambient scale rgb), Amb (the atmosphere's distant sky light).
+FOG_DISK_HLSL = r"""
+if (FD.y <= 0.0) return Sun;
+float len = max(length(Rv), 1.0);
+float3 n = Rv / len;
+const float3 LUM = float3(0.2126, 0.7152, 0.0722);
+// the engine's height fog over this pixel: two layers integrated from the eye to the dome
+float x0 = max(-127.0, FA.y * Rv.z), x1 = max(-127.0, FA.w * Rv.z);
+float li = FA.x * (abs(x0) > 1e-5 ? (1.0 - exp2(-x0)) / x0 : 0.693147 - 0.240227 * x0)
+         + FA.z * (abs(x1) > 1e-5 ? (1.0 - exp2(-x1)) / x1 : 0.693147 - 0.240227 * x1);
+float Tu = max(saturate(exp2(-li * len)), FB.w);
+float Td = saturate(exp2(-li * max(len - FD.x, 0.0)));
+float3 Iu = (FB.rgb + FE.rgb * Amb) * (1.0 - Tu) + FC.rgb * pow(saturate(dot(n, normalize(S.xyz))), FC.w) * (1.0 - Td) * 0.0795775;
+// the haze toward the star along the pixel's direction, round the earth (R 6371 km): an exponential layer of scale
+// height H seen at elevation e has an air mass ~1 / (sin e + sqrt(2 H / (pi R)))
+float e = max(n.z, 0.0);
+float f0 = max(FA.y, 1e-9), f1 = max(FA.w, 1e-9);
+float c0 = sqrt(2.0 / (f0 * 0.693147 * 3.14159265 * 6.371e8)), c1 = sqrt(2.0 / (f1 * 0.693147 * 3.14159265 * 6.371e8));
+float tp = FA.x / f0 / (e + c0) + FA.z / f1 / (e + c1);
+// haze droplets scatter blue a little more than red (Angstrom exponent ~1.3): the low edge reddens as it dims
+float3 lit = Sun * pow(saturate(exp2(-tp * float3(0.8, 1.0, 1.3))), FD.z);
+// only where the disk clearly outshines the haze: over the faint corona and aureole a partial take-off left a brown ring
+float s = smoothstep(0.8, 2.0, dot(lit, LUM) / max(dot(Iu, LUM), 1e-4));
+return (lit - FD.w * s * Iu) / max(Tu, 1.0 / 256.0);
 """

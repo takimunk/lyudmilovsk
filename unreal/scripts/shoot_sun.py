@@ -68,6 +68,42 @@ if os.environ.get("SUN_DIAG"):
     for k in ("0", "1", "2"):
         SHOTS.append(("diag_shafts%s_terrace" % k, SET1, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "sun-wide", CLEAR + ";lyud.Sky.SunShafts " + k))
         SHOTS.append(("diag_shafts%s_close" % k, SET1, BROW[0], BROW[1], 1.7, 0, "sun", SC + ";lyud.Sky.SunShafts " + k))
+# SUN_SKY3=1: the horizon and the disk through the air (docs/sun.md, round 3): no warm glow away from a low sun, the fog
+# hiding the horizon, no band across the sky, the disk behind the atmosphere (thin cloud, haze)
+if os.environ.get("SUN_SKY3"):
+    WIDE = "fov 100;"
+    PM = D(2026, 10, 20, 15, 0)
+    SHOTS = [
+        ("s3_noon_sun", NOON, BROW[0], BROW[1], 1.7, 0, "sun-wide", CLEAR),
+        ("s3_noon_away", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + CLEAR),
+        ("s3_noon_side", NOON, BROW[0], BROW[1], 1.7, 0, "sun+90", WIDE + CLEAR),
+        ("s3_noon_away_nofog", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + CLEAR + ";r.Fog 0"),
+        ("s3_noon_away_nocloud", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + CLEAR + ";r.VolumetricCloud 0"),
+        ("s3_noon_up", NOON, BROW[0], BROW[1], 1.7, 0, "sun+150up", WIDE + CLEAR),
+        ("s3_set_terrace", SET1, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "sun-wide", CLEAR),
+        ("s3_set_close", SET1, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
+        ("s3_set_close_low", SET2, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
+        ("s3_set_away", SET1, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + CLEAR),
+        ("s3_fog_sun", NOON, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Weather.Preset fog"),
+        ("s3_fog_away", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + "lyud.Weather.Preset fog"),
+        ("s3_overcast_sun", NOON, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Weather.Preset overcast"),
+        ("s3_overcast_away", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + "lyud.Weather.Preset overcast"),
+        ("s3_cs_sun", PM, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Clouds.Preset cs"),
+        ("s3_ci_sun", PM, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Clouds.Preset ci"),
+        ("s3_as_sun", PM, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Clouds.Preset as"),
+        ("s3_haze_sun", PM, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Weather.Cloud 0;lyud.Weather.Fog 0.12"),
+        ("s3_haze_set", SET1, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Weather.Cloud 0;lyud.Weather.Fog 0.12"),
+        ("s3_mist_sun", PM, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Weather.Cloud 0;lyud.Weather.Fog 0.4"),
+        ("s3_clouds_set", SET1, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Weather.Cloud 0.6"),
+        ("s3_noon_close", NOON, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
+        ("s3_noon_limb", NOON, BROW[0], BROW[1], 1.7, 0, "sun", LIMB),
+        # the old look (no fog on the dome) for comparison
+        ("s3_noon_close_old", NOON, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR + ";lyud.Sky.DomeFog 0"),
+        ("s3_fog_away_old", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + "lyud.Weather.Preset fog;lyud.Sky.DomeFog 0"),
+        ("s3_overcast_away_old", NOON, BROW[0], BROW[1], 1.7, 0, "sun+180", WIDE + "lyud.Weather.Preset overcast;lyud.Sky.DomeFog 0"),
+        ("s3_set_close_old", SET1, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR + ";lyud.Sky.DomeFog 0"),
+        ("s3_haze_set_old", SET1, BROW[0], BROW[1], 1.7, 0, "sun", "fov 40;lyud.Weather.Cloud 0;lyud.Weather.Fog 0.12;lyud.Sky.DomeFog 0"),
+    ]
 if os.environ.get("SUN_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["SUN_SHOTS"].split(",")]
 # SUN_VARY="tag=cmd;cmd|tag2=..." (tuning sweeps): each chosen shot again per variant, its commands added
@@ -113,6 +149,9 @@ def aim(sky, what):
     elif what.endswith("back"):                      # back to the sun: the lit land and the long shadows
         yaw += 180.0
         pitch = -8.0
+    elif "+" in what:                                # "sun+<deg>[up]": turned from the sun, at the horizon (or 25 up)
+        yaw += float(what.split("+")[1].replace("up", ""))
+        pitch = 25.0 if what.endswith("up") else 3.0
     elif what.endswith("side"):                      # across the light: lit faces, shadows running sideways
         yaw += 75.0
         pitch = -4.0
@@ -160,7 +199,7 @@ def step(dt):
             st["phase"] = 9
             return
         name, when, x, y, up, pitch, yaw = SHOTS[st["i"]][:7]
-        for c in ["lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
+        for c in ["lyud.Weather.Preset off", "lyud.Weather.Fog -1", "lyud.Clouds.Preset off", "lyud.Sky.DomeFog 1", "lyud.Sky.SunHaze -1", "lyud.Sky.SunVeil -1", "lyud.Sky.SunDiskGain 1", "lyud.Sky.MoonDiskGain 1", "lyud.Sky.NightLight 1", "lyud.Sky.SunSpecular 1",
                   "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "lyud.Sea.DebugFoam 0", "lyud.Weather.Cloud -1", "lyud.Weather.Rain -1", "lyud.Wind.Speed -1", "lyud.Sea.LookSeconds 120", "fov 0", "r.BloomQuality 5",
                   "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "lyud.Weather.BlendSeconds 0", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg"), "moonsize %g" % st["moon_d"],
                   "lyud.Sky.LowSunLight 1", "lyud.Sky.SunHorizonDimming -1", "lyud.Sky.SunShafts 1", "lyud.Sky.SunAureole 1",
