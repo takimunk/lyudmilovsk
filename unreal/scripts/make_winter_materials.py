@@ -100,6 +100,8 @@ def ice_material(mpc, rts):
 def near_material(mpc, rts):
     m = new_material("M_SnowNear")
     m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    # seen from under it (an eye low in a deep drift) it is the snow's underside, not a thin floating sheet
+    m.set_editor_property("two_sided", True)
     m.set_editor_property("opacity_mask_clip_value", 0.5)
     m.set_editor_property("tangent_space_normal", False)
     vpos = W._node(m, X.MaterialExpressionWorldPosition, -1400, 0, world_position_shader_offset=W.EXCL)

@@ -50,8 +50,9 @@ namespace
 	}
 
 	/** What the snow lies on: the landscape, or a low surface over it (a yard's paving, a platform; under 1.8 m). */
-	float SnowNearGroundAt(const UWorld* World, double X, double Y, double Z, bool& bOk)
+	float SnowNearGroundAt(const UWorld* World, double X, double Y, double Z, bool& bOk, float& OutTop)
 	{
+		OutTop = -1e9f;
 		TArray<FHitResult> Hits;
 		World->LineTraceMultiByObjectType(Hits, FVector(X, Y, Z + 8000.0), FVector(X, Y, Z - 8000.0), FCollisionObjectQueryParams(ECC_WorldStatic),
 			FCollisionQueryParams(SCENE_QUERY_STAT(LyudSnowNear), true));
@@ -74,7 +75,8 @@ namespace
 			{
 				bOk = true;
 				const double G = H.ImpactPoint.Z;
-				return float(Top > G && Top - G < LyudWinter::RoofMinCm ? Top : G);
+				OutTop = float(Top > G ? Top : G);
+				return float(G);
 			}
 		}
 		bOk = false;
@@ -206,16 +208,49 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
 	const double Z = GetActorLocation().Z;
 	float Last = float(Z);
+	TArray<float> Tops;
+	Tops.SetNumZeroed(GroundN * GroundN);
 	for (int32 Y = 0; Y < GroundN; Y++)
 	{
 		for (int32 X = 0; X < GroundN; X++)
 		{
 			bool bOk;
-			const float G = SnowNearGroundAt(World, GroundOrigin.X + X * GroundCm, GroundOrigin.Y + Y * GroundCm, Z, bOk);
+			float T;
+			const float G = SnowNearGroundAt(World, GroundOrigin.X + X * GroundCm, GroundOrigin.Y + Y * GroundCm, Z, bOk, T);
 			Ground[Y * GroundN + X] = bOk ? G : Last - 50.f;
+			Tops[Y * GroundN + X] = bOk ? T : Ground[Y * GroundN + X];
 			Last = bOk ? G : Last;
 		}
 	}
+	// what the snow lies on: a low, wide, even surface over the landscape (a yard's paving, a platform) counts, a lone
+	// thing standing on the ground (a bench, a stump, a fence's top) does not (it made shelves of snow in the air)
+	TArray<float> Base = Ground;
+	for (int32 Y = 1; Y + 1 < GroundN; Y++)
+	{
+		for (int32 X = 1; X + 1 < GroundN; X++)
+		{
+			const int32 I = Y * GroundN + X;
+			const float Lift = Tops[I] - Ground[I];
+			if (Lift < 2.f || Lift > 60.f)
+			{
+				continue;
+			}
+			int32 Even = 0;
+			for (int32 DY = -1; DY <= 1; DY++)
+			{
+				for (int32 DX = -1; DX <= 1; DX++)
+				{
+					const int32 J = (Y + DY) * GroundN + X + DX;
+					Even += (DX || DY) && Tops[J] - Ground[J] >= 2.f && FMath::Abs(Tops[J] - Tops[I]) < 15.f;
+				}
+			}
+			if (Even >= 7)
+			{
+				Base[I] = Tops[I];
+			}
+		}
+	}
+	Ground = Base;
 	TArray<uint8> Bytes;
 	Bytes.SetNumUninitialized(Ground.Num() * sizeof(float));
 	FMemory::Memcpy(Bytes.GetData(), Ground.GetData(), Bytes.Num());

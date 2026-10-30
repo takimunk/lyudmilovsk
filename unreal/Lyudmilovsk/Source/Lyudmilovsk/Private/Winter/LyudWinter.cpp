@@ -1001,7 +1001,24 @@ void ULyudWinterSubsystem::UploadCover()
 		const bool bNone = G == LyudWinter::FCover::NoGround;
 		// R: the ground over the datum, m (10 m under it where there is none); G: the roof over it, m (0 = open sky)
 		// what the snow lies on: a low surface over the landscape (a yard's paving, a platform) counts as the ground
-		const float Base = (!bNone && S.Cover.Kind[I] != LyudWinter::CellRoof && S.Cover.Top[I] > G) ? S.Cover.Top[I] : G;
+		float Base = G;
+		if (!bNone && S.Cover.Kind[I] != LyudWinter::CellRoof && S.Cover.Top[I] - G >= 2.f && S.Cover.Top[I] - G <= 60.f)
+		{
+			// only a wide even surface (paving), not a lone thing on the ground: most neighbours lifted alike
+			const int32 X = I % S.Cover.W, Y = I / S.Cover.W;
+			int32 Even = 0;
+			for (int32 DY = -1; DY <= 1; DY++)
+			{
+				for (int32 DX = -1; DX <= 1; DX++)
+				{
+					const int32 NX = FMath::Clamp(X + DX, 0, S.Cover.W - 1), NY = FMath::Clamp(Y + DY, 0, S.Cover.H - 1);
+					const int32 J = S.Cover.Index(NX, NY);
+					Even += (DX || DY) && S.Cover.Ground[J] != LyudWinter::FCover::NoGround && S.Cover.Top[J] - S.Cover.Ground[J] >= 2.f
+						&& FMath::Abs(S.Cover.Top[J] - S.Cover.Top[I]) < 15.f;
+				}
+			}
+			Base = Even >= 7 ? S.Cover.Top[I] : G;
+		}
 		Data[I * 2] = FFloat16(bNone ? -10.f : (Base - S.Datum) * 0.01f);
 		Data[I * 2 + 1] = FFloat16(S.Cover.Kind[I] == LyudWinter::CellRoof ? (S.Cover.Top[I] - G) * 0.01f : 0.f);
 	}
