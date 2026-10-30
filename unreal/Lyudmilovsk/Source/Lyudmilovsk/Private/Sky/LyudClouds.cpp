@@ -428,6 +428,28 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	FlashLeft = FMath::Max(0.f, FlashLeft - Dt);
 	const float Flicker = FlashLeft > 0.f ? (FMath::Frac(FlashLeft * 23.f) > 0.4f ? 1.f : 0.3f) : 0.f;
 
+	// the direct sun under an overcast: the cloud shadow map dims it per pixel, but under a full deck it must be gone
+	// everywhere (no crisp shadows in a snowfall). Each layer lets through 1 - cover x (1 - its transmittance along the
+	// sun); that counts only where the decks close up (broken clouds keep their own moving shadows and sunny gaps).
+	{
+		const float SinAlt = FMath::Max(FMath::Sin(FMath::DegreesToRadians(Sky->SunAltitude())), 0.12f);
+		float Through = 1.f, Closed = 0.f;
+		for (int32 I = 0; I < 2; ++I)
+		{
+			const FShape& S = Shape[I];
+			const float ThickM = FMath::Max(S.A.Z - S.A.Y, 0.05f) * 1000.f;
+			const float Tau = S.A.W * CloudSigmaPerM * ThickM / SinAlt;
+			const float Cover = FMath::Clamp(S.A.X, 0.f, 1.f);
+			Through *= 1.f - Cover * (1.f - FMath::Exp(-Tau));
+			// how closed the layer is: a deck (sheet) at full cover; heaps never close up the sky this way
+			Closed = FMath::Max(Closed, FMath::SmoothStep(0.75f, 0.97f, Cover) * FMath::SmoothStep(0.2f, 0.6f, S.B.Y + S.B.W));
+		}
+		// a cirrostratus veil takes a little of the sun's crispness too
+		Through *= 1.f - 0.25f * HighA.X * HighB.Z * HighA.Z;
+		Sky->SetOvercastSunScale(FMath::Lerp(1.f, FMath::Max(Through, 0.02f), Closed));
+		SunThrough = Sky->GetOvercastSunScale();
+	}
+
 	// the volumetric slab, fitted round what is drawn (the shader keeps everything at its own altitude, so changing it
 	// only clips; a tight slab spends the ray-march samples where the clouds are)
 	float Bottom = 1e9f, Top = 0.f;
@@ -528,7 +550,7 @@ FString ULyudCloudSubsystem::DebugReport() const
 	const ALyudSky* Sky = SkyActor.Get();
 	const FString Mat = Sky ? FString::Printf(TEXT(" | material %s ready %d visible %d"), Sky->Clouds && Sky->Clouds->GetMaterial() ? *Sky->Clouds->GetMaterial()->GetName() : TEXT("none"),
 		Sky->IsCloudMaterialReady() ? 1 : 0, Sky->Clouds && Sky->Clouds->IsVisible() ? 1 : 0) : FString(TEXT(" | no sky"));
-	return FString::Printf(TEXT("CLOUDS %s | %s | %s | lens %.2f showers %.2f rain %.1f | slab %.2f+%.2f km | drawn cover %.2f %.2f high %.2f"),
-		*Line(TEXT("low"), Target.Low), *Line(TEXT("mid"), Target.Mid), *Line(TEXT("high"), Target.High), Target.Lenticular,
+	return FString::Printf(TEXT("CLOUDS sun %.2f | %s | %s | %s | lens %.2f showers %.2f rain %.1f | slab %.2f+%.2f km | drawn cover %.2f %.2f high %.2f"),
+		SunThrough, *Line(TEXT("low"), Target.Low), *Line(TEXT("mid"), Target.Mid), *Line(TEXT("high"), Target.High), Target.Lenticular,
 		Target.ShowerCells, Target.PrecipRate, SlabBottom, SlabHeight, Shape[0].A.X, Shape[1].A.X, HighA.X) + Mat;
 }
