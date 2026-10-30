@@ -48,6 +48,16 @@ public:
 	/** The bird that is coming to the hand or eating from it (-1 none). */
 	int32 FocusBird() const { return Focus; }
 
+	/**
+	 * Calls a befriended bird (the diary's birds page): the hero holds out his empty palm and the bird flies to it from wherever it
+	 * is, sits on it a moment and the view goes into it, as after a befriending. F (or another bird coming) gives up the call; so
+	 * does waiting 45 s. False, with a note on the screen, when it can't come: indoors, away for the winter, already the player.
+	 */
+	bool Summon(int32 BirdId);
+	void CancelSummon(const TCHAR* SayKey = nullptr);
+	bool IsCalling() const { return Phase == EPhase::Calling || (Phase == EPhase::Eating && bCalled); }
+	int32 CalledBird() const { return IsCalling() ? CallId : -1; }
+
 	/** Dev/test: give the hero feed (handfuls) and put it in the hand. */
 	void DebugGiveFeed(int32 Handfuls);
 
@@ -72,7 +82,7 @@ protected:
 	UFUNCTION() void HandleReturnedToHero(APawn* Hero);
 
 private:
-	enum class EPhase : uint8 { Idle, Eating, Bird };
+	enum class EPhase : uint8 { Idle, Eating, Bird, Calling };
 
 	void BindBirds();
 	void UnbindBirds();
@@ -86,6 +96,9 @@ private:
 	void Eaten();
 	void Reset();
 	void DriveDebugWalk(AHeroCharacter* Hero, float DeltaTime);
+	void UpdateCall(AHeroCharacter* Hero, float DeltaTime);
+	/** The binoculars held on a bird for a moment write its species in the bird book. */
+	void UpdateBinoculars(float DeltaTime);
 
 	UPROPERTY(Transient) TObjectPtr<ABirdFeedBag> Bag;
 	UPROPERTY(Transient) TObjectPtr<ASeedHandful> Handful;
@@ -104,6 +117,15 @@ private:
 	float SayLeft = 0.f;
 	float LogTimer = 0.f;
 	float SpillCooldown = 0.f;
+
+	// a befriended bird called from the diary
+	int32 CallId = -1;
+	float CallTime = 0.f;
+	bool bCalled = false;
+	// the bird the binoculars rest on, and for how long
+	int32 GlassBird = -1;
+	float GlassTime = 0.f;
+	float GlassTimer = 0.f;
 
 	bool bDebugWalk = false;
 	FVector DebugTarget = FVector::ZeroVector;

@@ -10,6 +10,7 @@ One game screen, the hero's diary (an A4 planner he takes out of his bag: docs/d
 | Tab or I | the diary on its things (again: put it away) |
 | J | the diary on the to-do list (the quests) |
 | M | the diary on the map; on the map the wheel zooms at the cursor, dragging moves it, C finds you |
+| B | the diary on the birds: the species met and the befriended birds, with "call" for each friend |
 | A / D, arrows, PgUp / PgDn | turn a page (also the tabs on the fore-edge and the dog-eared corners) |
 | Esc | puts the diary away (F10 in the editor opens the game menu, which puts it away too) |
 | B | the bird guide (when the hero has it, docs/bird_guide.md); B or Esc shuts it |

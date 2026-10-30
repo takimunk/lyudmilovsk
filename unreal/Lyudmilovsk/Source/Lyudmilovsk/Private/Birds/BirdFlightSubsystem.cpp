@@ -1,4 +1,5 @@
 #include "Birds/BirdFlightSubsystem.h"
+#include "Birds/BirdBook.h"
 
 #include "BirdAir.h"
 #include "Birds/BirdActor.h"
@@ -525,6 +526,11 @@ bool UBirdFlightSubsystem::BecomeSpecies(APlayerController* PC, FName Species, c
 	B->OnFate = [this](EBirdFate F, const FVector& At) { HandleFate(F, At); };
 	B->OnCall = [this]() { HandleCall(); };
 	LastSpecies = Species;
+	if (ULyudBirdBook* Book = ULyudBirdBook::Get(this))
+	{
+		// being one of them is the closest acquaintance there is
+		Book->NoteSeen(this, Species, bOurFemale, TEXT("bird"), Where);
+	}
 	SetHeroHint(FText::GetEmpty());
 	// after a befriending the bird hops down off the palm onto the ground before you fly it
 	if (bStanding && Hero.IsValid() && !bInstant)

@@ -775,6 +775,49 @@ void UBirdLifeSubsystem::AddPlayerThreat(float Amount)
 	}
 }
 
+bool UBirdLifeSubsystem::SummonBird(int32 Id, FVector PalmLocation)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->Birds.size() || Sim->Birds[Id].bGone)
+	{
+		return false;
+	}
+	const V3 Palm = FromUE(PalmLocation);
+	if (Sim->Summoned == Id)
+	{
+		Sim->SummonPalm = Palm;
+		return true;
+	}
+	// from far off it comes in from behind and above the hero, 45 m out, where it wasn't on screen a moment ago
+	FVector Back = FVector::ForwardVector;
+	if (const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr)
+	{
+		Back = -FRotator(0.f, PC->GetControlRotation().Yaw, 0.f).Vector();
+	}
+	const FVector Entry = PalmLocation + Back.RotateAngleAxis(FMath::FRandRange(-50.f, 50.f), FVector::UpVector) * 4500.f + FVector(0.f, 0.f, 1800.f);
+	if (!Sim->Summon(Id, Palm, FromUE(Entry), 80.f))
+	{
+		return false;
+	}
+	if (Renderer)
+	{
+		Renderer->EnsureBody(*Sim, Id);
+	}
+	return true;
+}
+
+void UBirdLifeSubsystem::CancelSummon()
+{
+	if (Sim)
+	{
+		Sim->CancelSummon();
+	}
+}
+
+bool UBirdLifeSubsystem::IsBirdAway(int32 Id) const
+{
+	return Sim && Id >= 0 && Id < (int32)Sim->Birds.size() && Sim->Birds[Id].bGone;
+}
+
 bool UBirdLifeSubsystem::GetBird(int32 Id, FBirdLifeInfo& Out) const
 {
 	if (!Sim || Id < 0 || Id >= (int32)Sim->Birds.size())

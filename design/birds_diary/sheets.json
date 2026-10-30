@@ -1,0 +1,130 @@
+{
+ "_doc": "Diary bird drawings (docs/diary.md, Birds section). One Higgsfield nano_banana_2_1 picture per sheet, 3 columns x 2 rows, cut by tools/ui_diary_birds.py into textures/ui/birds/bird_<Species>[_f].png. Cells are listed left to right, top row first. The prompt sent for a sheet is style + ' The six birds are: ' + describe + '.'; run holds what came back.",
+ "model": "nano_banana_2_1",
+ "resolution": "4k",
+ "aspect_ratio": "3:2",
+ "thinking_level": "high",
+ "style": "A sheet of six naturalist field sketches from a teenager's nature diary, arranged in an invisible grid of 3 columns and 2 rows of equal cells. Each bird is drawn in soft graphite pencil with confident hatching, then lightly washed with transparent watercolour in its true natural colours, the way a careful bird-watcher sketches from life. Accurate field-guide anatomy and proportions for each species, in its late-October plumage. Every bird is seen from the side, facing right, standing or perched on a short pencil-drawn twig or a little patch of ground, the whole bird visible from beak to tail tip and feet, centred in its cell and filling about 70 percent of the cell height, with generous empty margins so nothing touches or crosses a cell edge. All birds drawn at the same size on the page regardless of their real size. Pure flat white paper background, no paper texture, no cast shadows on the paper, no text, no labels, no numbers, no signatures, no borders, no grid lines, no frames.",
+ "sheets": [
+  {
+   "id": "corvids_pigeons",
+   "seed": 26103001,
+   "cells": [
+    "Rook",
+    "HoodedCrow",
+    "Jackdaw",
+    "Magpie",
+    "FeralPigeon",
+    "WoodPigeon"
+   ],
+   "describe": "top row: a rook (glossy black, bare greyish-white face at the base of the bill), a hooded crow (grey body, black head, wings and tail), a western jackdaw (small, dark grey with a pale grey nape and a pale silver-white eye); bottom row: a Eurasian magpie (black and white with a long iridescent green-blue tail), a feral rock pigeon (blue-grey with two black wing bars and iridescent green-purple neck), a common wood pigeon (large, grey with a white neck patch and a pinkish breast)",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "d827eb9b-ddd7-4925-89e3-5dc3bb004fa9",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_d827eb9b-ddd7-4925-89e3-5dc3bb004fa9.png"
+   }
+  },
+  {
+   "id": "gulls_tits",
+   "seed": 26103002,
+   "cells": [
+    "HerringGull",
+    "BlackHeadedGull",
+    "CommonGull",
+    "GreatTit",
+    "BlueTit",
+    "Goldfinch"
+   ],
+   "describe": "top row: a European herring gull adult (silver-grey back, black wing tips with white spots, yellow bill with a red spot, pink legs), a black-headed gull in winter plumage (white head with a dark ear spot, red bill and legs), a common gull / mew gull adult (grey back, slim yellowish-green bill, greenish-yellow legs, gentle face); bottom row: a great tit (black head, white cheeks, yellow breast with a black stripe), a Eurasian blue tit (blue cap, white face with a dark eye line, yellow underparts), a European goldfinch (red face, black and white head, gold wing bars)",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "e72114c6-0004-42fb-9c68-cdb7be5bdaf8",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170514_e72114c6-0004-42fb-9c68-cdb7be5bdaf8.png"
+   }
+  },
+  {
+   "id": "finches_sparrows",
+   "seed": 26103003,
+   "cells": [
+    "Chaffinch",
+    "Chaffinch_f",
+    "Bullfinch",
+    "Bullfinch_f",
+    "HouseSparrow",
+    "HouseSparrow_f"
+   ],
+   "describe": "top row: a male common chaffinch (blue-grey cap, pinkish-russet face and breast, white wing bars), a female common chaffinch (plain olive-brown, white wing bars), a male Eurasian bullfinch (black cap, bright rose-red breast and cheeks, grey back); bottom row: a female Eurasian bullfinch (black cap, soft greyish-brown buff breast), a male house sparrow (grey crown, chestnut nape, black bib), a female house sparrow (plain brown streaked back, pale buff eyebrow, no bib)",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "76c01cab-42b5-4ec8-9f3d-41474230bef4",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_76c01cab-42b5-4ec8-9f3d-41474230bef4.png"
+   }
+  },
+  {
+   "id": "thrushes_starling",
+   "seed": 26103004,
+   "cells": [
+    "TreeSparrow",
+    "Starling",
+    "SongThrush",
+    "Fieldfare",
+    "Blackbird",
+    "Blackbird_f"
+   ],
+   "describe": "top row: a Eurasian tree sparrow (chestnut crown, black cheek spot on white cheek, small black bib), a common starling in fresh autumn plumage (glossy dark with dense white star spots), a song thrush (warm brown back, cream breast with neat dark arrowhead spots); bottom row: a fieldfare (grey head and rump, chestnut back, heavily spotted orange-washed breast), a male common blackbird (all black with an orange-yellow bill and eye ring), a female common blackbird (dark brown with a faintly mottled breast, dull bill)",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "209ac0e0-150d-4c0d-b3cd-8aae2a6debb0",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170517_209ac0e0-150d-4c0d-b3cd-8aae2a6debb0.png"
+   }
+  },
+  {
+   "id": "small_aerial",
+   "seed": 26103005,
+   "cells": [
+    "Robin",
+    "WhiteWagtail",
+    "Waxwing",
+    "CommonSwift",
+    "BarnSwallow",
+    "SandMartin"
+   ],
+   "describe": "top row: a European robin (orange-red face and breast, olive-brown back, round shape), a white wagtail (grey back, black and white head, long wagging tail), a Bohemian waxwing (pinkish-brown with a crest, black mask, yellow tail tip, red waxy wing tips); bottom row: a common swift in flight seen from the side and slightly below (sooty brown, long scythe-shaped wings, short forked tail), a barn swallow perched on a thin wire (glossy blue back, red throat, long tail streamers), a sand martin perched (brown back, white underparts with a brown breast band)",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "662ba274-4fe6-465b-b7ad-5ffabe0c0cbc",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170521_662ba274-4fe6-465b-b7ad-5ffabe0c0cbc.png"
+   }
+  },
+  {
+   "id": "large_raptors",
+   "seed": 26103006,
+   "cells": [
+    "Cormorant",
+    "MuteSwan",
+    "Sparrowhawk",
+    "Sparrowhawk_f",
+    "Peregrine",
+    "Unknown"
+   ],
+   "describe": "top row: a great cormorant standing on a rock with its wings half spread to dry (black with a white cheek patch, hooked bill), a mute swan on water (white, orange bill with a black knob, S-curved neck), a male Eurasian sparrowhawk perched (slate-grey back, finely orange-barred breast, yellow eye, long tail); bottom row: a female Eurasian sparrowhawk perched (larger, brown-grey back, grey-barred white breast, pale eyebrow), a peregrine falcon perched (dark slate back, black moustache stripe, white throat, barred underparts), and in the last cell only a faint, unfinished pencil outline of a small generic songbird with no colour, as if the sketch was never finished",
+   "run": {
+    "service": "higgsfield (MCP generate_image_batch)",
+    "job_id": "893d4bb6-af22-436c-9bcf-14f8d545ede6",
+    "date": "2026-10-30",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170523_893d4bb6-af22-436c-9bcf-14f8d545ede6.png"
+   }
+  }
+ ]
+}

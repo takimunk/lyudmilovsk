@@ -130,6 +130,7 @@ namespace LyudDiary
 		case ESection::Things: return FLinearColor(0.84f, 0.55f, 0.32f);    // orange card
 		case ESection::Quests: return FLinearColor(0.42f, 0.62f, 0.78f);    // blue
 		case ESection::Diary: return FLinearColor(0.58f, 0.74f, 0.46f);     // green
+		case ESection::Birds: return FLinearColor(0.72f, 0.6f, 0.8f);      // lilac
 		case ESection::Map: return FLinearColor(0.86f, 0.76f, 0.38f);       // yellow
 		default: return FLinearColor::Gray;
 		}
