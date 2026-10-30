@@ -982,9 +982,7 @@ def near_walkable(grid, x, y, rmax=12.0):
 
 def build_academ_extra(grid):
     """Laboratory No. 2 (its buildings aren't in the game): its gate, a spot behind the ensemble on the way into the
-    town, where its staff go in for the day (away). The Gastronom (its old hall is the library now): a kiosk on the
-    square's street corner by the cable car's lower station, its assistant behind the counter, three customers' spots
-    in front."""
+    town, where its staff go in for the day (away). The Gastronom is a pavilion of its own now (build_gastronom)."""
     E = lambda x, y: ens_to_ue((x, y, 0.0))[:2]
     out = []
     gx, gy = near_walkable(grid, *E(-85.0, 0.0))
@@ -993,21 +991,49 @@ def build_academ_extra(grid):
                 "tag": "lab2", "slots": [{"kind": "stand", "pos": [r2(gx), r2(gy), r2(grid.ground(gx, gy))],
                                           "yaw": ang(face), "capacity": 24, "height": 0.0,
                                           "approach": [r2(gx), r2(gy), r2(grid.ground(gx, gy))]}]})
-    kx, ky = near_walkable(grid, *E(76.0, -30.0))
-    fc = E(*__import__("plan").SQUARE["fountain"])
-    face = face_to((kx, ky), fc)                                  # the counter looks onto the square
-    a = math.radians(face)
-    fx, fy, tx, ty = math.cos(a), math.sin(a), -math.sin(a), math.cos(a)
-    slots = [{"kind": "counter", "pos": [r2(kx), r2(ky), r2(grid.ground(kx, ky))], "yaw": ang(face), "capacity": 1,
-              "height": 0.0, "approach": [r2(kx), r2(ky), r2(grid.ground(kx, ky))]}]
-    for k in (-1, 0, 1):
-        x, y = kx + fx * 1.4 + tx * k * 1.0, ky + fy * 1.4 + ty * k * 1.0
-        x, y = near_walkable(grid, x, y, 3.0)
-        slots.append({"kind": "stand", "pos": [r2(x), r2(y), r2(grid.ground(x, y))], "yaw": ang(face + 180.0),
-                      "capacity": 1, "height": 0.0, "approach": [r2(x), r2(y), r2(grid.ground(x, y))]})
-    out.append({"id": "gastronom_kiosk", "kind": "shop", "pos": [r2(kx), r2(ky), r2(grid.ground(kx, ky))],
-                "yaw": ang(face), "tag": "academ", "slots": slots})
     return out
+
+
+# --- the Gastronom: the grocery pavilion in the yard behind Novikova 1 (blender/academgorodok/grocery.py) -----------
+
+def build_gastronom():
+    """The shop (kind shop): in through the hall door, its assistant behind the counter in the service aisle (counter,
+    round the counter's north end), three customers' spots in front of the counter; gastronom.py's hall in the
+    pavilion's frame."""
+    import gastronom as G
+    import grocery
+    xf = HouseXf(grocery.frame())
+    hx0, hx1, hy0, hy1 = G.HALL
+    P = Plan(hx0 - 0.5, G.YO - 3.0, hx1 + 0.5, hy1 + 0.5)
+    P.room(hx0, hx1, hy0, hy1)
+    ex, _, ew, _ = G.HALL_DOOR
+    P.rect(ex - ew / 2 + DOOR_SIDE, ex + ew / 2 - DOOR_SIDE, G.YO - 0.6, G.YI + 0.5, 1)     # the hall door
+    P.rect(ex - 1.3, ex + 1.3, G.YO - 2.6, G.YO - 0.3, 1)                                   # the steps outside
+    for r in (G.COUNTER, G.KASSA, G.COLUMN, (G.CASES_X[0], G.CASES_X[1], 0.95, hy1)):
+        P.block(*r)
+    door = (ex, G.YO - 2.0)
+    P.flood(door)
+
+    def zp(p):
+        z = 0.0 if p[1] < G.YO - 0.75 else (G.Z0 - 0.15 if p[1] < G.YI + 0.1 else G.Z0)
+        return (p[0], p[1], z)
+
+    misses = []
+
+    def slot(kind, xy, face):
+        w = P.way(xy)
+        if w is None:
+            misses.append("gastronom %s at %s: unreachable" % (kind, xy))
+        p = zp(xy)
+        return {"kind": kind, "pos": rp(xf.pt(p)), "yaw": xf.yaw(p, face), "capacity": 1, "height": 0.0,
+                "approach": rp(xf.pt(p)), "path": None if w is None else xf.path([zp(q) for q in w])}
+    cy = (G.COUNTER[3] + 0.95) / 2                                  # the middle of the service aisle
+    slots = [slot("counter", (11.6, cy), -math.pi / 2)]
+    for x in (8.0, 11.6, 14.6):
+        slots.append(slot("stand", (x, G.COUNTER[2] - 0.7), math.pi / 2))
+    return {"id": "gastronom", "kind": "shop", "tag": "academ", "door": rp(xf.pt(zp(door))),
+            "pos": rp(xf.pt(zp(door))), "yaw": xf.yaw(zp(door), math.pi / 2),
+            "path": slots[1]["path"], "slots": slots, "_plan": P, "_xf": xf, "_misses": misses, "_door": door}
 
 
 # --- the sea railway's halts and the sea island (tools/railway.py, Content/Railway/railway_built.json) -------------
@@ -1122,12 +1148,15 @@ def check_outdoor(grid, places, stairs, club, library):
         return 0 if c == valley else (1 if c == spur else (-1 if c == 0 else 2 + c))
 
     for p in places:
-        pts = [("pos", p["pos"])] + [("slot%d" % i, s["pos"]) for i, s in enumerate(p["slots"])] + \
-              [("approach%d" % i, s["approach"]) for i, s in enumerate(p["slots"])]
+        if "door" in p:                          # indoors (the Gastronom): only its door is on the walk grid
+            pts, anchor = [("door", p["door"])], p["door"]
+        else:
+            pts = [("pos", p["pos"])] + [("slot%d" % i, s["pos"]) for i, s in enumerate(p["slots"])] + \
+                  [("approach%d" % i, s["approach"]) for i, s in enumerate(p["slots"])]
+            anchor = p["slots"][0]["approach"] if p["slots"] else p["pos"]
         for lab, q in pts:
             if not grid.walkable(q[0], q[1]):
                 bad.append("%s %s (%.1f, %.1f)" % (p["id"], lab, q[0], q[1]))
-        anchor = p["slots"][0]["approach"] if p["slots"] else p["pos"]
         p["island"] = isl(anchor[0], anchor[1])
     for s in stairs:
         for lab in ("street", "yard"):
@@ -1400,6 +1429,7 @@ def main():
     grid = WalkGrid(GRID)
     stairs, flats, plot_rows = build_flats(data)
     library = build_library(data, data["houses"]["Novikova1"]["frame"])
+    gastronom = build_gastronom()
     with open(a.scene) as f:
         scene = json.load(f)
     if "stations" in scene:
@@ -1408,7 +1438,7 @@ def main():
         with open(OUT) as f:
             club = dict(json.load(f)["club"])
         print("people_map: %s has no stations: the club kept from %s" % (a.scene, OUT))
-    places = build_outdoor(grid) + build_academ_extra(grid)
+    places = build_outdoor(grid) + build_academ_extra(grid) + [gastronom]
     bad = check_outdoor(grid, places, stairs, club, library)
     rail, patches = build_rail(grid)
     for p in rail:
@@ -1420,7 +1450,7 @@ def main():
                 bad.append("%s pos (%.1f, %.1f)" % (p["id"], q[0], q[1]))
             p["island"] = 0
     places += rail
-    misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"]
+    misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"] + gastronom["_misses"]
     doc = {"version": 1, "frame": "unreal_metres", "face_y_cm": FACE_Y,
            "yaw": "Unreal degrees, 0 = +X, 90 = +Y; seats: the way the seated person faces; beds: head to foot; stand: the way the person looks",
            "islands": "0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (sea_island: by the train), -1 not on the walk grid",

@@ -44,7 +44,10 @@ def log(msg):
     unreal.log_warning("ACADEM " + msg)
 
 
-SIGNS = ("library", "reading_room", "issue_desk", "catalogue", "silence", "hours", "cloakroom", "periodicals")
+SIGNS = ("library", "reading_room", "issue_desk", "catalogue", "silence", "hours", "cloakroom", "periodicals",
+         # the grocery pavilion (blender/academgorodok/grocery.py): its enamel plate and the Gastronom's boards
+         "grocery", "gastronom_name", "gastronom_hours", "gastronom_price_list", "gastronom_rules",
+         "gastronom_sales_limits", "gastronom_pay_at_cashier", "gastronom_cashier")
 
 
 def _pictures():
@@ -197,7 +200,7 @@ def place(face_y, report=False):
         a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc, unreal.Rotator(0.0, 0.0, yaw))
         a.static_mesh_component.set_static_mesh(sm)
         a.set_actor_label("Academ_" + name)
-        house = name.split("_")[0] in ("Novikova1", "Novikova3", "Maksimova8")
+        house = name.split("_")[0] in ("Novikova1", "Novikova3", "Maksimova8", "Gastronom")
         a.tags = [TAG, "NoGrass", "NoTree"] + (["Roof"] if house and not name.endswith(("Glass", "GlassFar")) else [])
         a.set_folder_path("Outside/Academgorodok")
         c = a.static_mesh_component

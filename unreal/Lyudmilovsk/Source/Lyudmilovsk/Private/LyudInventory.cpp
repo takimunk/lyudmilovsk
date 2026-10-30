@@ -18,6 +18,7 @@
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "Birds/BirdFeeder.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -107,6 +108,36 @@ namespace
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
 		// the ornithological guide from the Academgorodok library's desk (docs/bird_guide.md): a cloth-bound book with a map of the live birds
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
+		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
+		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
+		// the feeder to put them in, and bread and kefir for the hero
+		auto FeedGood = [&D](const TCHAR* Id, FVector Size, FLinearColor Tint, int32 Price)
+		{
+			FLyudItemDef I;
+			I.Id = Id;
+			I.Kind = ELyudItemKind::Feed;
+			I.Slot = ELyudEquipSlot::Hand;
+			I.Look = ELyudItemLook::Pack;
+			I.Size = Size;
+			I.Tint = Tint;
+			I.Price = Price;
+			I.Radius = 4.f;
+			D.Add(I);
+		};
+		FeedGood(TEXT("feed_suet"), FVector(4.f, 9.f, 9.f), FLinearColor(0.2f, 0.36f, 0.22f), 25);
+		FeedGood(TEXT("feed_niger"), FVector(3.f, 9.f, 14.f), FLinearColor(0.75f, 0.55f, 0.15f), 30);
+		FeedGood(TEXT("feed_rowan"), FVector(3.f, 9.f, 14.f), FLinearColor(0.6f, 0.1f, 0.08f), 25);
+		FeedGood(TEXT("feed_mealworm"), FVector(4.f, 8.f, 11.f), FLinearColor(0.42f, 0.28f, 0.16f), 35);
+		FeedGood(TEXT("feed_grain"), FVector(5.f, 11.f, 17.f), FLinearColor(0.5f, 0.68f, 0.85f), 15);
+		FeedGood(TEXT("feed_peanuts"), FVector(5.f, 10.f, 15.f), FLinearColor(0.85f, 0.4f, 0.1f), 30);
+		Good(TEXT("bread_loaf"), K::Food, L::Pack, FVector(8.f, 10.f, 28.f), FLinearColor(0.82f, 0.6f, 0.32f), 12, 5.f);
+		Good(TEXT("kefir"), K::Drink, L::Bottle, FVector(6.4f, 6.4f, 20.f), FLinearColor(0.92f, 0.93f, 0.9f), 14, 3.2f);
+		FLyudItemDef Feeder;
+		Feeder.Id = TEXT("feeder");
+		Feeder.Kind = ELyudItemKind::Place;
+		Feeder.Radius = 8.f;
+		Feeder.Price = 80;
+		D.Add(Feeder);
 		// things to wear: the clothes the hero woke up in (blender/hero/build_hero.py), a head lamp and binoculars from the club owner
 		auto Wear = [&D](const TCHAR* Id, ELyudEquipSlot Slot)
 		{
@@ -797,6 +828,23 @@ AActor* ULyudInventoryUI::SpawnHeld(FName Id, const FVector& Pos)
 	return Ball;
 }
 
+void ULyudInventoryUI::Place(FName Id)
+{
+	if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this); GameScreen && GameScreen->IsOpen())
+	{
+		TWeakObjectPtr<ULyudInventoryUI> Self = this;
+		GameScreen->CloseThen([Self, Id] { if (Self.IsValid()) { Self->Place(Id); } });
+		return;
+	}
+	if (Id == UBirdFeederSubsystem::FeederItem)
+	{
+		if (UBirdFeederSubsystem* Feeders = UBirdFeederSubsystem::Get(this))
+		{
+			Feeders->PlaceFromPocket();
+		}
+	}
+}
+
 void ULyudInventoryUI::Use(FName Id)
 {
 	UWorld* World = GetWorld();
@@ -804,7 +852,7 @@ void ULyudInventoryUI::Use(FName Id)
 	const FLyudItemDef* Def = ULyudInventory::FindDef(Id);
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
-	if (!Inv || !Def || !Reach || Reach->IsBusy() || Inv->Count(Id) < 1 || Def->Kind == ELyudItemKind::Misc || Def->Kind == ELyudItemKind::Feed)
+	if (!Inv || !Def || !Reach || Reach->IsBusy() || Inv->Count(Id) < 1 || Def->Kind == ELyudItemKind::Misc || Def->Kind == ELyudItemKind::Feed || Def->Kind == ELyudItemKind::Place)
 	{
 		return;
 	}

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""The Academgorodok library's signs, one picture per language (local fonts, no paid API).
+"""The Academgorodok library's and grocery's signs, one picture per language (local fonts, no paid API).
 
   python3 tools/make_academ_signs.py [lang ...]     -> textures/localized/<lang>/academ_sign_<name>.png
 
-Words come only from unreal/Lyudmilovsk/Content/Localization/strings_<lang>.json (keys sign.academ.library*);
+Words come only from unreal/Lyudmilovsk/Content/Localization/strings_<lang>.json (keys sign.academ.library*, sign.academ.grocery*, sign.gastronom.*);
 the outside sign copies the enamel plates of the street (white enamel, dark blue letters, a thin blue rule,
 like the old «ХЛЕБ» plate on docs/academgorodok/refs/dima/shop.jpg); the boards inside are maroon glass
 with gilt letters, like the museum's. unreal/scripts/import_academgorodok.py imports them to
@@ -55,18 +55,19 @@ def centred(draw, y, text, f, fill, W):
     draw.text(((W - w) / 2, y), text, font=f, fill=fill)
 
 
-def outside(s, lang, path):
+def outside(s, lang, path, key="sign.academ.library"):
+    """The enamel plate over a door: key (the name), key.sub over it and key.hours under it."""
     W, H = 1024, 720
     im = Image.new("RGB", (W, H), (236, 236, 230))
     d = ImageDraw.Draw(im)
     d.rectangle([14, 14, W - 15, H - 15], outline=BLUE, width=10)
-    f = fit(d, s["sign.academ.library.sub"].upper(), "regular", lang, 54, W - 140)
-    centred(d, 70, s["sign.academ.library.sub"].upper(), f, BLUE, W)
-    f = fit(d, s["sign.academ.library"], "bold", lang, 210, W - 120)
-    centred(d, 175, s["sign.academ.library"], f, BLUE, W)
+    f = fit(d, s[key + ".sub"].upper(), "regular", lang, 54, W - 140)
+    centred(d, 70, s[key + ".sub"].upper(), f, BLUE, W)
+    f = fit(d, s[key], "bold", lang, 210, W - 120)
+    centred(d, 175, s[key], f, BLUE, W)
     d.rectangle([60, 470, W - 60, 478], fill=BLUE)
-    f = fit(d, s["sign.academ.library.hours"], "bold", lang, 64, W - 140)
-    centred(d, 520, s["sign.academ.library.hours"], f, BLUE, W)
+    f = fit(d, s[key + ".hours"], "bold", lang, 64, W - 140)
+    centred(d, 520, s[key + ".hours"], f, BLUE, W)
     # enamel: a soft sheen and a few chips at the edges
     im = im.filter(ImageFilter.SMOOTH)
     d = ImageDraw.Draw(im)
@@ -113,7 +114,9 @@ def board_tall(text, lang, path):
     im.save(path)
 
 
-TALL = {"hours"}
+# the grocery pavilion's boards inside (blender/academgorodok/grocery.py over gastronom.py's maroon boards)
+GASTRONOM = ("name", "hours", "price_list", "rules", "sales_limits", "pay_at_cashier", "cashier")
+TALL = {"hours", "gastronom_hours", "gastronom_price_list", "gastronom_rules", "gastronom_sales_limits"}
 
 
 def main(langs):
@@ -124,6 +127,10 @@ def main(langs):
         outside(s, lang, os.path.join(out, "academ_sign_library.png"))
         for name, key in INSIDE.items():
             board(s[key], lang, os.path.join(out, "academ_sign_%s.png" % name), portrait=name in TALL)
+        outside(s, lang, os.path.join(out, "academ_sign_grocery.png"), "sign.academ.grocery")
+        for b in GASTRONOM:
+            name = "gastronom_" + b
+            board(s["sign.gastronom." + b], lang, os.path.join(out, "academ_sign_%s.png" % name), portrait=name in TALL)
         print("wrote", out)
 
 

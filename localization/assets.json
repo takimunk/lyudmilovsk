@@ -253,6 +253,69 @@
    "aspect": "1:1",
    "prompt": "A thick cloth-bound bird field guide in dark bottle-green, lying at a slight angle, its cover stamped in faded gold with a simple line drawing of a gull in flight above a small round map with a compass rose, no lettering anywhere, a red ribbon bookmark hanging out at the bottom, slightly worn corners and spine.",
    "source": "Higgsfield nano_banana_2_1, 1k, seed 4172, job 4c196266-0e28-4e1b-93fa-ea0ef32803ad (style icon + prompt), resized to 512 px"
+   },
+  "icon_feed_suet": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_suet).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feed_niger": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_niger).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feed_rowan": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_rowan).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feed_mealworm": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_mealworm).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feed_grain": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_grain).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feed_peanuts": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feed_peanuts).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_feeder": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of feeder).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_bread_loaf": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of bread_loaf).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_kefir": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/grocery/icons_grid.json (cell of kefir).",
+   "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
   }
  }
 }

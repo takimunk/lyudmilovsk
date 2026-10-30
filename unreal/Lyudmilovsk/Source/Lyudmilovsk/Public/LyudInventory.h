@@ -23,6 +23,8 @@ enum class ELyudItemKind : uint8
 	Feed,
 	/** Worn (clothes, the head lamp, binoculars): goes into its Slot. */
 	Wear,
+	/** Set up on the ground in front of the hero (Tab: "Поставить"): the bird feeder (UBirdFeederSubsystem). */
+	Place,
 };
 
 /** How a thing looks in the hand and on a vending machine's tray (ALyudGoodsItem builds it from engine shapes; bottles keep ABottleItem). */
@@ -194,6 +196,8 @@ public:
 
 	/** Uses one of the item (drinks it, eats it): the screen closes and the hero's hand does it. */
 	void Use(FName Id);
+	/** Sets a Place item up in front of the hero (the bird feeder): the screen closes first. */
+	void Place(FName Id);
 
 	/** One line near the bottom of the screen for Key's interactable; an empty line takes it away. */
 	void SetPrompt(const UObject* Key, const FText& Text);

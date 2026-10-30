@@ -149,7 +149,7 @@ namespace LyudBirds
 		V3 A, B;                    // a point (A == B) or a segment (ridge, rope, ledge)
 		float Radius = 0.f;         // patch round it to walk in (ground and water)
 		int Capacity = 8;
-		uint8_t Flags = 0;          // 1 guessed tree, 2 hero plant (replaced in the game)
+		uint8_t Flags = 0;          // 1 guessed tree, 2 hero plant (replaced in the game), 4 a feeder's tray (FFeeder)
 		// live
 		int Occupants = 0;
 		float Disturbed = 0.f;      // game seconds until the birds trust this spot again
@@ -227,6 +227,27 @@ namespace LyudBirds
 		float HandSpeed = 0.f;           // m/s of the palm
 		float ExtraThreat = 0.f;         // added by gameplay (AddPlayerThreat), decays
 		bool bClaimedBird = false;       // the player is a bird now: birds treat them as one
+		float OfferLike[64];             // how much each species wants the food held out, 0..1 (the feed's table, BirdFeeder.cpp)
+		FPlayer() { for (float& L : OfferLike) L = 1.f; }
+	};
+
+	/** Site flag of a feeder's tray. */
+	constexpr uint8_t SiteFeeder = 4;
+
+	/**
+	 * A bird feeder the player put up (BirdFeeder.cpp in the game): a tray on a post that birds whose taste the feed suits
+	 * come to, if it stands within their home range and in a kind of place they feed in. They perch on the tray and peck;
+	 * eating there near a calm player they slowly learn to trust them.
+	 */
+	struct FFeeder
+	{
+		bool bActive = false;
+		int Site = -1;                    // its tray (a site with SiteFeeder)
+		uint32_t Around = 1u << (int)EHabitat::Garden;   // the kinds of place round it (bits of EHabitat): a species must feed in one of them
+		float Like[64] = {};              // how much each species wants the feed in it, 0..1
+		float Ready = 0.f;                // 0..1: how far the birds round about have found it (the game ramps it over a couple of hours)
+		float Food = 0.f;                 // handfuls in it
+		float Eaten = 0.f;                // handfuls pecked since the game last took them off
 	};
 
 	/** A ground animal birds watch out for: the animal life's cats and dogs (docs/animals.md), filled by the game every frame. */
@@ -338,6 +359,17 @@ namespace LyudBirds
 		/** A sudden scare at P (a gunshot, a dropped tray): radius R. */
 		void Scare(const V3& P, float R, float Strength);
 
+		/** The player's feeders (index = feeder id; a removed one stays, inactive, and is reused). */
+		std::vector<FFeeder> Feeders;
+		/** Puts up a feeder with its tray at Tray (radius m) among the kinds of place Around (KindsAround); returns its id. Fill its Like, Food, Ready. */
+		int AddFeeder(const V3& Tray, float Radius, uint32_t Around);
+		/** Takes a feeder down: the birds on it leave. */
+		void RemoveFeeder(int F);
+		/** The feeder whose tray this site is (-1 none). */
+		int FeederAt(int Site) const;
+		/** The kinds of place within Radius of P birds feed in (bits of EHabitat; Garden alone when none is near). */
+		uint32_t KindsAround(const V3& P, float Radius = 30.f) const;
+
 		std::string Report() const;
 
 	private:
@@ -396,6 +428,9 @@ namespace LyudBirds
 		float Danger(const FBird& B, float Dist, bool bSeen) const;
 		void PlaceAtStart(FBird& B, FGroup& G);
 		void UpdateApproach(FBird& B, float Dt);
+		float FeederScore(const FGroup& G, const FFeeder& F) const;
+		/** A bird on a feeder's tray: peck while there is food (and trust a calm player near by), else rest. */
+		void AtFeeder(FBird& B, FFeeder& F, float Dt);
 		int GroundSpot(FBird& B);
 	};
 }
