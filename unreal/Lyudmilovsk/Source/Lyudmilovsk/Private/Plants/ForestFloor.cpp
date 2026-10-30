@@ -628,8 +628,14 @@ void AForestFloor::BuildKind(FKind& K)
 	C->SetCullDistances((int32)(K.Cull * 0.8f), (int32)K.Cull);
 	if (K.bCollision)
 	{
+		// they stop walkers (the player, people, animals) and things thrown, nothing else: the winter takes any WorldStatic
+		// it traces for what the snow lies on (a log's box would hold a shelf of snow in the air) and the rain's roof map
+		// looks along Visibility
 		C->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		C->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+		C->SetCollisionObjectType(ECC_WorldDynamic);
+		C->SetCollisionResponseToAllChannels(ECR_Ignore);
+		C->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		C->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Block);
 	}
 	switch (K.Type)
 	{

@@ -76,7 +76,11 @@ else:
         ("deep", (X, Y, 1.7), (X, Y + 14.0, 0.6), ["lyud.Winter.Snow 70"]),
         ("deep_close", (X + 0.5, Y + 3.0, 0.9), (X + 1.2, Y + 5.2, 0.0), []),
         ("walk", None, None, []),
+        # the same low view without the floor: what is the floor's and what the snow's own
+        ("low_off", (X - 1.0, Y + 6.0, 0.3), (X - 1.0, Y + 12.0, 0.15), ["lyud.ForestFloor 0"]),
     ]
+if os.environ.get("FLOOR_SHOTS"):
+    VIEWS = [v for v in VIEWS if v[0] in os.environ["FLOOR_SHOTS"].split(",")]
 
 
 def leafy(floor, w):
