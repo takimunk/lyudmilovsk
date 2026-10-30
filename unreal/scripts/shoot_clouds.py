@@ -48,6 +48,11 @@ SHOTS = [
     ("coldfront", "coldfront", AFTERNOON, 6, 10),
     ("showers", "showers", AFTERNOON, 6, 10),
     ("sunset_cu", "cu", SUNSET, 0, "sun-wide"),
+    # small cumulus across the setting sun: dark bodies with lit edges, not bright specks
+    ("sunset_cu_small", "cu", SUNSET, 0, "sun", "fov 25;lyud.Clouds.Cover 0.45"),
+    ("sunset_cu_small_wide", "cu", SUNSET, 0, "sun-wide", "lyud.Clouds.Cover 0.45"),
+    # the sky thread's view: the weather forced to a little cloud, the setting disk at fov 30
+    ("sunset_weather015", "off", D(2026, 10, 20, 16, 45), 0, "sun", "fov 30;lyud.Weather.BlendSeconds 0;lyud.Weather.Cloud 0.15"),
     ("sunset_sc", "sc", SUNSET, 0, "sun-wide"),
     ("sunset_ci", "ci", SUNSET, 0, "sun-wide"),
     ("night_sc", "sc", NIGHT, 10, "moon"),
@@ -162,7 +167,7 @@ def step(dt):
         name, preset, when, pitch, yaw = SHOTS[st["i"]][:5]
         up = 1.7
         at = BROW
-        for c in ["fov 0", "t.MaxFPS 0", "lyud.Clouds.Preset " + preset] + EXTRA + (SHOTS[st["i"]][5:] or [""])[0].split(";"):
+        for c in ["fov 0", "t.MaxFPS 0", "lyud.Clouds.Cover 1", "lyud.Weather.Cloud -1", "lyud.Clouds.Preset " + preset] + EXTRA + (SHOTS[st["i"]][5:] or [""])[0].split(";"):
             if c.startswith("up "):                   # test hook: metres over the brow
                 up = float(c.split()[1])
             elif c.startswith("at "):                 # test hook: stand at map x, y (metres) instead of the brow

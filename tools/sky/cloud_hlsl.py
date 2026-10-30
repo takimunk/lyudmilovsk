@@ -68,6 +68,9 @@ struct FLyudCloudLib
 
 VOLUME_HLSL = LIB + r"""
 FLyudCloudLib K;
+// how far the sample is: fine detail and thin fringes that a far pixel can't resolve go (they read as bright noisy
+// specks against a low sun: "confetti")
+float far = saturate(length(P - Cam) * 1e-5 / 18.0);
 float3 pk = P * 1e-5;                                  // world km
 float h = MaterialExpressionCloudSampleAltitude(Parameters) * 1e-5;
 float t = Misc.x;
@@ -99,7 +102,8 @@ for (int li = 0; li < 2; li++)
     float lf = K.S(Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 14.0), 0.31 + t * E.z * 2e-5), 0).r);
     float3 p3 = float3(qa / (cell * 3.0), h / (cell * 3.5) + t * E.z * 1e-4);
     // the cloud-scale shape and one finer octave of the same noise
-    float n3 = K.S(Shape.SampleLevel(ShapeSampler, p3, 0).r) * 0.75 + K.S(Shape.SampleLevel(ShapeSampler, p3 * 2.7 + 0.37, 0).r) * 0.25;
+    float n3c = K.S(Shape.SampleLevel(ShapeSampler, p3, 0).r);
+    float n3 = far < 0.99 ? lerp(n3c * 0.75 + K.S(Shape.SampleLevel(ShapeSampler, p3 * 2.7 + 0.37, 0).r) * 0.25, n3c, far) : n3c;
     float field = lerp(n3, lf * 0.55 + n3 * 0.45, 0.35 + 0.55 * C.w);
     // isolated cells: only the peaks of the large-scale field carry clouds
     field *= lerp(1.0, K.Remap(lf, 0.35, 0.75) * 1.3, C.w);
@@ -113,8 +117,19 @@ for (int li = 0; li < 2; li++)
     {
         // the vertical profile: a flat base, rounded tops (the cover shrinks upward), the anvil widening again
         float shrink = lerp(1.0, 1.0 - tb * tb * 0.85, B.z) + spread * 1.4;
-        float c = saturate(cover * shrink);
+        // a thin sky of heaps is fewer clouds, not smaller ones: below CMIN the clouds keep the shape of a CMIN sky and
+        // a large-scale mask thins them out (tiny peaks of the noise were noisy, translucent, bright specks against the
+        // sun); decks are not affected
+        const float CMIN = 0.3;
+        float thin = (1.0 - B.y) * saturate(1.0 - cover / CMIN);
+        float c = saturate(lerp(cover, CMIN, thin) * shrink);
         float d = K.Remap(field, 1.0 - c, 1.0 - c + max(c, 0.08) * 0.9);
+        if (thin > 0.0)
+        {
+            float m = K.S(Shape.SampleLevel(ShapeSampler, float3(qa / (cell * 9.0), 0.83), 0).r);
+            float keep = saturate(cover / CMIN);
+            d *= lerp(1.0, K.Remap(m, 1.0 - keep - 0.06, 1.0 - keep + 0.06), thin);
+        }
         if (B.w > 0.001)
         {
             // thunderstorms: separate giant cells on a fixed grid, each a tower narrowing a little upward under an
@@ -130,14 +145,17 @@ for (int li = 0; li < 2; li++)
         sheet *= K.Remap(field + cover, 0.25, 0.65);
         d = lerp(d, sheet, B.y);
         // erosion by fine detail: billows on the tops, wisps at the base
-        if (d > 0.0 && C.x > 0.0)
+        if (d > 0.0 && C.x > 0.0 && far < 0.99)
         {
             float3 pe = p3 * 4.1 + float3(0, 0, t * E.z * 3e-4);
             float ef = K.Er(Erosion.SampleLevel(ErosionSampler, pe, 0).r) * 0.65 + K.Er(Erosion.SampleLevel(ErosionSampler, pe * 2.3 + 0.5, 0).r) * 0.35;
             ef = lerp(1.0 - ef, ef, saturate(tb * 5.0));
-            float k = ef * C.x * 0.45;
+            float k = ef * C.x * 0.45 * (1.0 - far);
             d = saturate((d - k) / max(1.0 - k, 0.05));
         }
+        // no faint translucent fringe: a cloud's edge goes from clear to its body over a short band, so the few
+        // ray-march samples a small far cloud gets don't each catch a different wisp
+        d = smoothstep(0.04, 0.25, d) * d;
         d *= A.w;
         if (d > 0.0)
         {

@@ -284,7 +284,9 @@ ULyudCloudSubsystem::FShape ULyudCloudSubsystem::ShapeOf(const FLyudCloudLayer& 
 	// an altostratus is thin: the sun shows through it as a dim washed-out disk ("as through ground glass")
 	const float Tau = FMath::Lerp(LowTau, 0.3f + 1.2f * Density0, Smooth(1800.f, 2600.f, L.BaseM));
 	const float DeckDensity = FMath::Clamp(Tau / (CloudSigmaPerM * ThickM), 0.f, 1.f);
-	const float Density = FMath::Lerp(Density0, DeckDensity, Smooth(0.25f, 0.75f, Sheet) * (1.f - Smooth(4.5f, 7.5f, ThickKm)));
+	// heaps are dense: even a small cumulus is a dark body against a low sun, with only its edge lit
+	const float HeapDensity = FMath::Lerp(0.75f, 1.f, Density0);
+	const float Density = FMath::Lerp(HeapDensity, DeckDensity, Smooth(0.25f, 0.75f, Sheet) * (1.f - Smooth(4.5f, 7.5f, ThickKm)));
 
 	S.A = FVector4f(Cover, L.BaseM * 1e-3f, (L.BaseM + ThickM) * 1e-3f, Density);
 	S.B = FVector4f(R.Cell, R.Sheet, R.Round, R.Anvil);
