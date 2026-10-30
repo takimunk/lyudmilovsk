@@ -38,8 +38,17 @@ trail (`RT_SnowTrail`, 5 cm, a world-locked toroidal window): footprints of the 
 cats and dogs walking there (stamped by stride, left and right), and the trench the player ploughs through snow deeper
 than ~22 cm. Pressed snow keeps 15% of its depth, greyer and glossier. The ground's own snow sinks under the square
 (`M_Ground` reads `NearRect`) and comes back up toward its edge while the square sinks: no seam. Fresh snow fills the
-prints (~5 cm hides one). No shadow of its own (a moving WPO mesh would redraw the virtual shadow map); measured
+prints (~5 cm hides one). The map's snow decal shades it too (receives decals), so it looks exactly like the ground's
+snow round it, and it dissolves at its edge by a per-pixel dither: no ring moving with the player. No shadow of its own (a moving WPO mesh would redraw the virtual shadow map); measured
 34.0 ms with winter vs 34.4 without in one process.
+
+## Snowfall
+
+`ALyudSnowFx`: 40k flakes in a 22 x 22 x 12 m box round the camera (`M_SnowFlakes`: a quad per flake, the fall
+~1 m/s, the wind's drift, a sway, wrapped round the camera in the world position offset; ~2 cm, far ones kept a pixel
+and fainter; none under a roof or below the snow's surface), as many as the weather's snowfall asks, lit as
+translucency by the scene (warm under the lamps). Hidden indoors and underground. The rain's splashes, rings and
+puddles are off on snow-covered ground (`ULyudRainFogSubsystem` asks `SnowOnGround`).
 
 ## Winter low water
 
@@ -72,7 +81,8 @@ that; `AProceduralPlant`/`AProceduralVine`/`AProceduralGrass` ask `ULyudWinterSu
 `ALyudSeaIce`: a flat sheet at the still water (`ALyudSea::SeaLevel()`, so it rides the tide and the surge) +
 freeboard. `M_SeaIce` masks it by the distance from water shallower than 0.4 m (the shore at this tide, the railway's
 bank, the island; a 3 m exact distance transform redone when the water moves 10 cm): open water for 10 m +- 3 m
-(ragged), pancakes for 4 m, then solid ice; floes and leads when the cover is partial. Snow lies on it in streaks. The waves die under it (`ALyudSea::WindScale`). Where it is
+(ragged), pancakes for 4 m, then solid ice. Floes and leads only at the freeze's start and its break-up: from ~60%
+of the weather's cover the open sea is shut. Snow lies on it in streaks. The waves die under it (`ALyudSea::WindScale`). Where it is
 solid and >= 8 cm thick, box tiles round the player hold them.
 
 ## Console

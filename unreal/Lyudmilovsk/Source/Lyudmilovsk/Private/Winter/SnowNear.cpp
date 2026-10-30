@@ -89,7 +89,8 @@ ALyudSnowNear::ALyudSnowNear()
 	RootComponent = Surface;
 	Surface->SetMobility(EComponentMobility::Movable);
 	Surface->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Surface->SetReceivesDecals(false);
+	// the map's snow decal shades it like the ground round it (the same colour, sparkle and light): no ring
+	Surface->SetReceivesDecals(true);
 	Surface->LightingChannels.bChannel0 = true;
 	Surface->LightingChannels.bChannel1 = true;
 	// no shadow of its own: a world-position-offset mesh would redraw the virtual shadow map every frame
@@ -389,7 +390,7 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 	}
 	if (UMaterialParameterCollection* MPC = LoadObject<UMaterialParameterCollection>(nullptr, SnowNearCollectionPath))
 	{
-		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearRect"), FLinearColor(float(C.X), float(C.Y), HalfCm, 400.f));
+		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearRect"), FLinearColor(float(C.X), float(C.Y), HalfCm, 600.f));
 		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearGround"), FLinearColor(float(GroundOrigin.X), float(GroundOrigin.Y), GroundCm, float(GroundN)));
 		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearTrail"), FLinearColor(TrailCm, TrailCm * TrailN, 0.f, 0.f));
 	}

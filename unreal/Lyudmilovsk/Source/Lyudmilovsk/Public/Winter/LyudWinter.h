@@ -132,6 +132,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UDecalComponent> Decal;
 	UPROPERTY(Transient) TObjectPtr<class ALyudSeaIce> Ice;
 	UPROPERTY(Transient) TObjectPtr<class ALyudSnowNear> NearSnow;
+	UPROPERTY(Transient) TObjectPtr<class ALyudSnowFx> Flakes;
 	TWeakObjectPtr<ALyudSea> Sea;
 	float SeaWindScale = -1.f;
 	float WadeSpeed = -1.f;
@@ -151,6 +152,7 @@ private:
 	void UpdateDecal();
 	void Wade(float DeltaTime);
 	void StepNear(float DeltaTime);
+	void StepFlakes(float DeltaTime);
 	void KeepOffDecals();
 	bool CameraLocation(FVector& Out) const;
 };
@@ -236,4 +238,34 @@ private:
 	void Press(const FVector2D& At, const FVector2D& Dir, float A, float B, float Amount);
 	void Walk(AActor* Who, const FVector& Feet, const FVector& Velocity, float Stride, float Lateral, float A, float B, float SnowM, bool bPlough);
 	int32 Wrap(double V) const;
+};
+
+/**
+ * Falling snow (docs/winter.md "Snowfall"): flakes in a 22 x 22 x 12 m box round the camera (one mesh of quads, all
+ * the motion in M_SnowFlakes' world position offset: a slow fall ~1 m/s, the wind's drift, each flake's own sway and
+ * tumble, wrapped round the camera), as many as the weather's snowfall asks, none under a roof or below the snow's
+ * surface. Lit as translucency by the scene (warm under the street lamps). Spawned and driven by
+ * ULyudWinterSubsystem; hidden indoors and underground.
+ */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudSnowFx : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudSnowFx();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Snow") TObjectPtr<UStaticMeshComponent> Flakes;
+
+	/** Follows the camera; Density 0..1 of the flakes shown, Wind cm/s. */
+	void Drive(const FVector& Camera, float Density, const FVector& Wind, float DeltaSeconds);
+
+	static constexpr int32 Count = 40000;
+	static constexpr float BoxCm = 2200.f;
+	static constexpr float BoxHeightCm = 1200.f;
+
+private:
+	UPROPERTY(Transient) TObjectPtr<class UMaterialInstanceDynamic> MID;
+	float Shown = 0.f;
+	void BuildMesh();
 };

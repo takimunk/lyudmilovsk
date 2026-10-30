@@ -24,6 +24,7 @@
 #include "Sky/LyudSky.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
+#include "Winter/LyudWinter.h"
 
 namespace
 {
@@ -532,12 +533,14 @@ void ALyudRainFx::UpdateMaterials(const FLyudRainFogWeather& W, const FVector& C
 	Smoothed[0] += ((bOn ? W.RainRate : 0.f) - Smoothed[0]) * K;
 	Smoothed[1] += (W.Drizzle - Smoothed[1]) * K;
 	Smoothed[2] += ((bOn ? W.Wet : 0.f) - Smoothed[2]) * K * 0.5f;
-	const float Rate = Smoothed[0], Drizzle = Smoothed[1], Wet = Smoothed[2];
+	// on snow the rain soaks in: no splashes, rings or puddles there (the winter's snow cover)
+	const float SnowGround = ULyudWinterSubsystem::SnowOnGround(GetWorld(), 0.f);
+	const float Rate = Smoothed[0], Drizzle = Smoothed[1], Wet = Smoothed[2] * (1.f - SnowGround);
 	const float Light = SkyLuminance(W);
 
 	const bool bDrops = bOn && Rate > 0.02f && OpenSky > 0.001f && DropMID && bRoofUploaded;
 	Drops->SetVisibility(bDrops);
-	Splashes->SetVisibility(bDrops && SplashMID && Drizzle < 0.9f);
+	Splashes->SetVisibility(bDrops && SplashMID && Drizzle < 0.9f && SnowGround < 0.5f);
 	WetDecal->SetVisibility(bOn && Wet > 0.02f && WetMID && bRoofUploaded && OpenSky > 0.001f);
 
 	const FLinearColor RoofP(Origin.X * RoofCellSize, Origin.Y * RoofCellSize, RoofCellSize, RoofCells);

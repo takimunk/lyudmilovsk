@@ -422,7 +422,9 @@ void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 	S.In.SnowfallCmPerHour = Now.SnowfallCmPerHour;
 	S.In.Transport = Now.Drift;
 	S.In.Density = W.SnowDensity;
-	S.IceP.Cover = Now.IceCover;
+	// leads and floes belong to the freeze's start and its break-up: from ~60% of the weather's cover the open sea is
+	// shut (only the shore's strip stays open)
+	S.IceP.Cover = FMath::Clamp((Now.IceCover - 0.15f) / 0.45f, 0.f, 1.f);
 	S.IceP.ThicknessCm = Now.IceCm;
 	if (CVarWinter.GetValueOnGameThread() == 0)
 	{
@@ -475,6 +477,7 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 	UpdateDecal();
 	Wade(DeltaTime);
 	StepNear(DeltaTime);
+	StepFlakes(DeltaTime);
 	SweepTimer -= DeltaTime;
 	if (SweepTimer <= 0.f && S.Phase == LyudWinter::EPhase::Ready)
 	{
@@ -1115,7 +1118,7 @@ void ULyudWinterSubsystem::LowWater()
 		W = 0.f;
 	}
 	Now.LowWaterCm = CVarWinterLowWater.GetValueOnGameThread() * W;
-	if (FMath::Abs(Sea->GetLevelOffset() + Now.LowWaterCm) > 0.5f)
+	if (FMath::Abs(Sea->GetLevelOffsetTarget() + Now.LowWaterCm) > 0.5f)
 	{
 		// the winter's low water eases itself over weeks: the sea follows it at once
 		Sea->SetLevelOffset(-Now.LowWaterCm, 0.f);
@@ -1227,6 +1230,43 @@ void ULyudWinterSubsystem::StepNear(float DeltaTime)
 	}
 	NearSnow->SetActorHiddenInGame(false);
 	NearSnow->Drive(*this, Cam, DeltaTime);
+}
+
+void ULyudWinterSubsystem::StepFlakes(float DeltaTime)
+{
+	// falling snow: as thick as the weather's snowfall, not indoors or under the ground (the club, the tunnel)
+	FVector Cam;
+	if (!CameraLocation(Cam) || !State.IsValid())
+	{
+		return;
+	}
+	const LyudWinter::FWinterState& S = *State;
+	const float Fall = CVarWinter.GetValueOnGameThread() ? Now.SnowfallCmPerHour : 0.f;
+	float Density = Fall > 0.02f ? FMath::Clamp(0.06f + FMath::Pow(Fall / 2.5f, 0.6f), 0.f, 1.f) : 0.f;
+	if (S.Cover.Valid())
+	{
+		const float G = S.Cover.GroundAt(Cam.X, Cam.Y);
+		const int32 IX = FMath::RoundToInt((Cam.X - S.Cover.X0) / S.Cover.Cell), IY = FMath::RoundToInt((Cam.Y - S.Cover.Y0) / S.Cover.Cell);
+		const bool bIn = IX >= 0 && IY >= 0 && IX < S.Cover.W && IY < S.Cover.H;
+		const bool bRoofed = bIn && S.Cover.Kind[S.Cover.Index(IX, IY)] == LyudWinter::CellRoof && Cam.Z < S.Cover.Top[S.Cover.Index(IX, IY)];
+		if ((G != LyudWinter::FCover::NoGround && Cam.Z < G - 300.f) || bRoofed)
+		{
+			Density = 0.f;
+		}
+	}
+	if (!Flakes)
+	{
+		if (Density <= 0.f)
+		{
+			return;
+		}
+		FActorSpawnParameters P;
+		P.ObjectFlags |= RF_Transient;
+		Flakes = GetWorld()->SpawnActor<ALyudSnowFx>(ALyudSnowFx::StaticClass(), FTransform(Cam), P);
+	}
+	const ULyudWindSubsystem* Wind = GetWorld()->GetSubsystem<ULyudWindSubsystem>();
+	const FVector W = Wind ? Wind->GetMeanWind() * 100.0 : FVector::ZeroVector;
+	Flakes->Drive(Cam, Density, FVector(W.X, W.Y, 0.0), DeltaTime);
 }
 
 void ULyudWinterSubsystem::KeepOffDecals()

@@ -48,8 +48,9 @@ def decal_material(mpc, rts):
     cov = W._node(m, X.MaterialExpressionTextureObject, -1200, 360, texture=rts["RT_SnowCover"])
     ins = [("WP", pos), ("Cam", cam), ("Dep", dep), ("Cov", cov)]
     for i, (pin, name) in enumerate((("FRect", "FieldRect"), ("FT", "FieldTexel"), ("CRect", "CoverRect"), ("CT", "CoverTexel"),
-                                     ("S", "Snow"), ("B", "SnowB"))):
+                                     ("S", "Snow"), ("B", "SnowB"), ("N", "NearRect"), ("TR", "NearTrail"))):
         ins.append((pin, W.mpc_node(m, mpc, name, -1200, 480 + i * 120)))
+    ins.append(("Tt", W._node(m, X.MaterialExpressionTextureObject, -1200, 1500, texture=rts["RT_SnowTrail"])))
     c = W._custom(m, H.DECAL, ins, -500, 0, "WinterSnowDecal", out=F3,
                   extra=(("Opacity", F1), ("Normal", F3), ("Roughness", F1)))
     mel.connect_material_property(c, "", MP.MP_BASE_COLOR)
@@ -124,6 +125,35 @@ def near_material(mpc, rts):
     W._log("M_SnowNear built")
 
 
+def flakes_material(mpc, rts):
+    m = new_material("M_SnowFlakes")
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_VOLUMETRIC_NON_DIRECTIONAL)
+    m.set_editor_property("two_sided", True)
+    vpos = W._node(m, X.MaterialExpressionWorldPosition, -1400, 0, world_position_shader_offset=W.EXCL)
+    uv = [W._node(m, X.MaterialExpressionTextureCoordinate, -1400, 120 + i * 120, coordinate_index=i) for i in range(3)]
+    t = W._node(m, X.MaterialExpressionTime, -1400, 480)
+    box = W._node(m, X.MaterialExpressionVectorParameter, -1400, 600, parameter_name="Box", default_value=unreal.LinearColor(2600, 2600, 1600, 0))
+    wind = W._node(m, X.MaterialExpressionVectorParameter, -1400, 720, parameter_name="Wind", default_value=unreal.LinearColor(0, 0, 0, 0))
+    ins = [("P", vpos), ("C", (uv[0], "")), ("R1", (uv[1], "")), ("R2", (uv[2], "")), ("T", t), ("Box", (box, "RGBA")), ("Wind", (wind, "RGBA")),
+           ("Cov", W._node(m, X.MaterialExpressionTextureObject, -1400, 840, texture=rts["RT_SnowCover"])),
+           ("Dep", W._node(m, X.MaterialExpressionTextureObject, -1400, 960, texture=rts["RT_SnowDepth"])),
+           ("CRect", W.mpc_node(m, mpc, "CoverRect", -1400, 1080)), ("FRect", W.mpc_node(m, mpc, "FieldRect", -1400, 1200)),
+           ("B", W.mpc_node(m, mpc, "SnowB", -1400, 1320))]
+    wpo = W._custom(m, H.FLAKES_WPO, ins, -600, 0, "WinterFlakesWPO", out=F3)
+    mel.connect_material_property(wpo, "", MP.MP_WORLD_POSITION_OFFSET)
+    pos = W._node(m, X.MaterialExpressionWorldPosition, -1400, 1500)
+    cam = W._node(m, X.MaterialExpressionCameraPositionWS, -1400, 1620)
+    uv0 = W._node(m, X.MaterialExpressionTextureCoordinate, -1400, 1740, coordinate_index=0)
+    a = W._custom(m, H.FLAKES_PS, [("C", uv0), ("WP", pos), ("Cam", cam)], -600, 1500, "WinterFlakesAlpha", out=F1)
+    mel.connect_material_property(a, "", MP.MP_OPACITY)
+    col = W._node(m, X.MaterialExpressionConstant3Vector, -300, 1300, constant=unreal.LinearColor(0.9, 0.92, 0.95, 1))
+    mel.connect_material_property(col, "", MP.MP_BASE_COLOR)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    W._log("M_SnowFlakes built")
+
+
 def patch_ground():
     path = "/Game/Scene01/Terrain/M_Ground"
     if not eal.does_asset_exist(path):
@@ -154,6 +184,7 @@ rts = W.render_targets()
 decal_material(mpc, rts)
 ice_material(mpc, rts)
 near_material(mpc, rts)
+flakes_material(mpc, rts)
 patch_ground()
 if os.environ.get("WINTER_PLANTS", "1") == "1":
     rebuild_plants()

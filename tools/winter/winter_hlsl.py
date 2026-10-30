@@ -84,6 +84,7 @@ float ground = w.Ground(P.xy, CRect, Cov, View.SharedBilinearClampedSampler, dat
 float depth = w.Depth(P.xy, FRect, Dep, View.SharedBilinearClampedSampler);
 float2 m = P.xy * 0.01;
 float cover = 0.0;
+float pressed = 0.0;
 float3 n = ng;
 if (ground > -1.0e8 && P.z < ground - 60.0)
 {
@@ -105,6 +106,11 @@ if (ground > -1.0e8 && P.z < surf + 45.0 && ng.z > 0.3)
     float3 nf = normalize(float3(-sx / (2.0 * e), -sy / (2.0 * e), 1.0));
     // where the field is thin the ground's own shape shows
     n = normalize(lerp(ng, nf, saturate(depth * 12.0)));
+    // round the player the fine snow (ALyudSnowNear, 10 cm cells) carries the prints: its own shape shows
+    float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
+    float nearW = N.z > 0.0 ? 1.0 - smoothstep(N.z - N.w, N.z - 0.15 * N.w, cheb) : 0.0;
+    pressed = nearW * Tt.SampleLevel(TtSampler, frac(P.xy / TR.y), 0).r;
+    n = normalize(lerp(n, ng, 0.85 * nearW));
     // the wind's ripples and the snow's soft lumps (cm scale relief the 1 m field can't hold)
     float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
                + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0);
@@ -139,9 +145,11 @@ float3 fresh = float3(0.86, 0.89, 0.93);
 float3 old = float3(0.70, 0.71, 0.70) * (0.92 + 0.08 * w.Fbm(m, 6.0, 23u));
 float3 col = lerp(old, fresh, S.y);
 col *= (1.0 - 0.25 * S.z) * (0.94 + 0.06 * w.Fbm(m, 3.0, 24u));
+// pressed snow (footprints) a little greyer and glossier
+col *= 1.0 - 0.12 * pressed;
 Opacity = cover;
 Normal = n;
-Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y;
+Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y - 0.15 * pressed;
 return col;
 """
 
@@ -282,15 +290,21 @@ float tr = w.Trail(P.xy, TR, Tt, TtSampler);
 float left = d * (1.0 - 0.85 * tr);
 float cheb = max(abs(P.x - N.x), abs(P.y - N.y));
 if (B.y < 0.5 || d < 0.02 || cheb > N.z) return float3(0, 0, 0);
-Mask = 1.0;
+// toward its edge it dissolves (a per-pixel dither the temporal AA smooths) into the ground's own snow: no ring
+float fade = 1.0 - smoothstep(N.z - N.w, N.z - 0.15 * N.w, cheb);
+float2 sp = Parameters.SvPosition.xy + float(View.StateFrameIndexMod8) * float2(5.588, 3.471);
+float ign = frac(52.9829189 * frac(dot(sp, float2(0.06711056, 0.00583715))));
+Mask = ign < fade ? 1.0 : 0.0;
 float e = 6.0;
 float hx = w.Height(P.xy + float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(e, 0), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
 float hy = w.Height(P.xy + float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler) - w.Height(P.xy - float2(0, e), NG, Gt, Rect, Dep, DepSampler, TR, Tt, TtSampler);
 float3 n = normalize(float3(-hx / (2.0 * e), -hy / (2.0 * e), 1.0));
+// the same relief and sparkle as the ground's snow decal (M_SnowDecal), so the two can't be told apart
 float3 rip = float3(w.Value(P.xy, 90.0, 31u) - 0.5, w.Value(P.yx, 115.0, 33u) - 0.5, 0.0)
-           + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0)
-           + 0.5 * float3(w.Value(P.xy, 2.3, 21u) - 0.5, w.Value(P.yx, 2.9, 22u) - 0.5, 0.0) * (1.0 - tr);
-Normal = normalize(n + rip * 0.2);
+           + 0.6 * float3(w.Value(P.xy, 23.0, 34u) - 0.5, w.Value(P.yx, 29.0, 35u) - 0.5, 0.0);
+n = normalize(n + rip * 0.22 * saturate(d * 5.0));
+float g1 = w.Value(P.xy, 2.3, 21u) - 0.5, g2 = w.Value(P.yx, 2.9, 22u) - 0.5;
+Normal = normalize(n + float3(g1, g2, 0) * 0.12);
 float2 m = P.xy * 0.01;
 float3 fresh = float3(0.86, 0.89, 0.93);
 float3 old = float3(0.70, 0.71, 0.70) * (0.92 + 0.08 * w.Fbm(m, 6.0, 23u));
@@ -299,4 +313,55 @@ float3 col = lerp(old, fresh, S.y) * (1.0 - 0.25 * S.z) * (0.94 + 0.06 * w.Fbm(m
 col *= 1.0 - 0.12 * tr;
 Roughness = lerp(0.72, 0.42, S.z) - 0.08 * S.y - 0.15 * tr;
 return col;
+"""
+
+# --- falling snow (ALyudSnowFx): every flake a quad at the camera; P the actor (the camera), C its corner (UV0),
+# R1, R2 its randoms (UV1, UV2), T the time; Box (x, y, z sizes cm, density 0..1), Wind (cm/s)
+FLAKES_WPO = r"""
+struct LWF
+{
+    float Ground(float2 xy, float4 rect, Texture2D tex, SamplerState s, float datum)
+    {
+        float2 uv = (xy - rect.xy) * rect.zw;
+        if (any(uv <= 0.0) || any(uv >= 1.0)) return -1.0e9;
+        return (tex.SampleLevel(s, uv, 0).r + datum) * 100.0;
+    }
+};
+LWF w;
+float id = frac(R1.x * 37.13 + R2.x * 91.71 + R1.y * 13.37);
+if (id > Box.w) return float3(0, 0, 0);    // not falling now: a quad of no size at the camera
+float speed = lerp(65.0, 135.0, R2.y);
+float3 base = float3(R1.x, R1.y, R2.x) * Box.xyz;
+float3 pos = base + float3(Wind.x * T * 0.9, Wind.y * T * 0.9, -speed * T);
+float ph = R1.x * 61.0 + R2.y * 17.0;
+pos.xy += float2(sin(T * 1.3 + ph), cos(T * 1.1 + ph * 1.7)) * 18.0;
+float3 rel = (frac((pos - P) / Box.xyz + 0.5) - 0.5) * Box.xyz;
+float3 wp = P + rel;
+// none under the snow's surface, none under a roof
+float ground = w.Ground(wp.xy, CRect, Cov, View.SharedBilinearClampedSampler, B.z);
+if (ground > -1.0e8)
+{
+    float2 fuv = (wp.xy - FRect.xy) * FRect.zw;
+    float d = (all(fuv > 0.0) && all(fuv < 1.0)) ? max(Dep.SampleLevel(View.SharedBilinearClampedSampler, fuv, 0).r, 0.0) : 0.0;
+    if (wp.z < ground + d * 100.0) return float3(0, 0, 0);
+    float2 cuv = (wp.xy - CRect.xy) * CRect.zw;
+    float roof = Cov.SampleLevel(View.SharedPointClampedSampler, cuv, 0).g;
+    if (roof > 1.8 && wp.z < ground + roof * 100.0) return float3(0, 0, 0);
+}
+float3 Rv = ResolvedView.ViewToTranslatedWorld[0].xyz;
+float3 Uv = ResolvedView.ViewToTranslatedWorld[1].xyz;
+float dist = length(rel);
+// ~2 cm flakes (clumps); far ones kept at least ~a pixel and fainter (the pixel shader)
+float size = max(1.1, dist * 0.0022) * lerp(0.6, 1.4, R1.y);
+wp += (Rv * C.x + Uv * C.y) * size;
+return wp - P;
+"""
+
+FLAKES_PS = r"""
+float r = length(C);
+float dist = length(WP - Cam);
+float a = (1.0 - smoothstep(0.25, 1.0, r)) * saturate(1.1 / max(dist * 0.0022, 1.1));
+// nearest ones soft (out of focus), faint up close so they don't blot the view
+a *= smoothstep(15.0, 60.0, dist);
+return a * 0.85;
 """
