@@ -472,13 +472,16 @@ return lerp(0.15, rim, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0
 # for that fog: whatever the engine's fog takes off it is given back (1 / its transmittance, the engine's own formula,
 # HeightFogCommon.ush), and the haze's real dimming toward the star is put on instead: along the pixel's direction,
 # round the earth's curve (the layer thins out ahead of the ray instead of going on flat for ever), keeping D.z of it
-# (log share, like the air's). Where the disk outshines the haze in front of it, D.w of the haze's flat glow is taken
-# off (a real sun is ~10^5 times brighter than the haze; the capped one is not): the haze still lowers its contrast,
-# and where the haze outshines it (fog) it shows through as a pale disk. The result may be negative (the material
+# (log share, like the air's). Over the disk, where it outshines the haze in front of it, up to D.w of the haze's flat
+# glow is taken off (a real sun is ~10^5 times brighter than the haze; the capped one is not): the haze still lowers
+# its contrast, and where the haze outshines it (fog) it shows through as a pale disk. Off the disk the prominences,
+# corona and glows fade as the disk stops outshining the haze (GLOW_HAZE). The result may be negative (the material
 # allows it): only the fog pass adds the glow back. Inputs: Sun (the star's luminance), Rv (the dome pixel from the
 # camera, cm), S (SunDir), FA (the fog's two layers: density at the eye, falloff per cm, x2), FB (inscatter luminance,
 # minimum transmittance), FC (directional inscatter rgb, exponent), FD (directional start distance, on, the dimming
-# kept, the glow taken off), FE (sky ambient scale rgb), Amb (the atmosphere's distant sky light).
+# kept, the glow taken off), FE (sky ambient scale rgb), Amb (the atmosphere's distant sky light), D (SunDisk),
+# Lk (SunLook).
+GLOW_HAZE = (2.0, 9.0)   # the disk's centre over the haze's glow: off-disk light gone .. untouched
 FOG_DISK_HLSL = r"""
 if (FD.y <= 0.0) return Sun;
 float len = max(length(Rv), 1.0);
@@ -499,7 +502,30 @@ float c0 = sqrt(2.0 / (f0 * 0.693147 * 3.14159265 * 6.371e8)), c1 = sqrt(2.0 / (
 float tp = FA.x / f0 / (e + c0) + FA.z / f1 / (e + c1);
 // haze droplets scatter blue a little more than red (Angstrom exponent ~1.3): the low edge reddens as it dims
 float3 lit = Sun * pow(saturate(exp2(-tp * float3(0.8, 1.0, 1.3))), FD.z);
-// only where the disk clearly outshines the haze: over the faint corona and aureole a partial take-off left a brown ring
-float s = smoothstep(0.8, 2.0, dot(lit, LUM) / max(dot(Iu, LUM), 1e-4));
-return (lit - FD.w * s * Iu) / max(Tu, 1.0 / 256.0);
+float x = dot(lit, LUM) / max(dot(Iu, LUM), 1e-4);
+// off the disk (the prominences, the corona, a flare's glow off the limb, the aureole) a real star's light is hundreds
+// of times fainter than the disk: in a haze the disk still burns through it is lost in the glow. Ours are drawn bright
+// for a clear sky and, dimmed only like the disk, stood out crisp and pink over a misty disk. So off the limb (a
+// pixel-wide edge) the light fades with how far the disk's centre outshines the haze's glow (Vc, the centre as SUN_HLSL
+// draws it: Hot x the air's dimming kept Lk.y, x the haze's here), smoothstep(GLOW_HAZE) of it. Measured next to the
+// limb: ~10 on a clear noon (untouched), ~7 in a light haze (softer), ~3 in a mist (nearly gone), < 2 at a hazy sunset
+float salt = degrees(asin(clamp(normalize(S.xyz).z, -1.0, 1.0)));
+float sh0 = max(salt, 0.0);
+float sam = 1.0 / (sin(radians(sh0)) + 0.50572 * pow(sh0 + 6.07995, -1.6364));
+float3 trs = exp(-float3(0.07, 0.14, 0.30) * (sam - 1.0));
+float trsY = max(dot(trs, LUM), 1e-3);
+float trB = trsY * smoothstep(-6.0, 0.5, salt) * lerp(1.0, min(pow(trsY, Lk.y - 1.0), 30.0), smoothstep(30.0, 3.0, salt));
+float Vc = D.y * 0.402 * trB * dot(pow(saturate(exp2(-tp * float3(0.8, 1.0, 1.3))), FD.z), LUM) / max(dot(Iu, LUM), 1e-4);
+float ang = acos(clamp(dot(n, normalize(S.xyz)), -1.0, 1.0));
+float offd = saturate((ang - D.x) / max(fwidth(ang), 1e-6) + 0.5);
+float gate = lerp(1.0, smoothstep(GLOW_HAZE), offd);
+lit *= gate;
+// over the disk the glow taken off grows smoothly with how far the star's light there outshines the haze, never more
+// than that light itself (a = K (1 - exp(-x / K)), x = star / haze): the bright centre loses up to D.w of the veil, the
+// darkened limb a little less, fading continuously (an on/off step there left a pale ring inside the limb in mist), and
+// nothing ends darker than the haze round it (no brown ring). Off the disk nothing is taken off, as before
+float K = max(FD.w, 1e-3);
+float a = K * (1.0 - exp(-x / K)) * (1.0 - offd);
+return (lit - a * Iu) / max(Tu, 1.0 / 256.0);
 """
+FOG_DISK_HLSL = FOG_DISK_HLSL.replace("GLOW_HAZE", "%.3f, %.3f, Vc" % GLOW_HAZE)

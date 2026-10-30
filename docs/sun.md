@@ -56,9 +56,18 @@ the sky with a semi-transparent layer starting at it; and the star looked pasted
   it: what that fog takes off is given back, and the haze's real dimming is put on instead, along the pixel's own
   direction and round the earth's curve (an exponential layer of scale height H at elevation e has an air mass of
   ~1 / (sin e + sqrt(2H / pi R)); flat, it went on for ever). The disk keeps `SunHazeDimming` (0.45) of it, as a log
-  share like `SunHorizonDimming`. Where the disk outshines the haze in front of it, `SunVeilClear` (0.75) of the
-  haze's flat glow is taken off (a real sun is ~10^5 times brighter than its haze; the capped one is not); where the
-  haze outshines it (fog) it stays, and the disk shows as a pale coin or not at all. The emission there may go below
+  share like `SunHorizonDimming`. Over the disk, where the star's light outshines the haze in front of it, up to
+  `SunVeilClear` (0.75) of the haze's flat glow is taken off (a real sun is ~10^5 times brighter than its haze; the
+  capped one is not): a = K (1 - exp(-x / K)) of it, x the star's light over the haze's there, K = `SunVeilClear`. It
+  grows smoothly with x and never takes off more than the light itself, so the darkened limb keeps a little more veil
+  with no step (round 3's on/off smoothstep(0.8, 2) of x left a pale ring inside the limb in mist) and nothing ends
+  darker than the haze round it (no brown ring). Off the disk nothing is taken off.
+  Off the disk (prominences, corona, a flare's glow off the limb, the aureole: a real star's are hundreds of times
+  fainter than its disk) the light fades with how far the disk's centre outshines the haze's glow, Vc (the centre as
+  `SUN_HLSL` draws it, through the same haze): `smoothstep(2, 9, Vc)` (`sky_hlsl.GLOW_HAZE`). Measured next to the limb
+  Vc is ~10 on a clear noon (untouched), ~7 in a light haze (a little softer), ~3 in a mist (nearly gone), < 2 low in
+  a hazy sunset. Dimmed only like the disk, they stood out crisp and pink over a misty disk ("pasted on top").
+  Where the haze outshines the star (fog) the disk shows as a pale coin or not at all. The emission there may go below
   zero (`allow_negative_emissive_color`): the fog pass adds the glow back. The sky light's reflection capture takes
   the plain star (`ReflectionCapturePassSwitch`).
   So the star reddens and dims toward the horizon (the air, `TRANS_HLSL`) and with the weather's haze, sinks into it

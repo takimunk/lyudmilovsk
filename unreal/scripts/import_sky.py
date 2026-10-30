@@ -237,9 +237,10 @@ def sky_material():
     rgba = lambda n: (n, "RGBA")
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     look2 = vparam("SunLook2", (2.2, 0.0, 1.0, 0.0))
+    sun_look = vparam("SunLook", (1.0, 0.25, 1.0, 1.0))
     # the star's activity (ULyudSunActivity sets these): active regions, prominences, the flare
     sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
-               ("Tr", tr), ("Look", rgba(vparam("SunLook", (1.0, 0.25, 1.0, 1.0)))),
+               ("Tr", tr), ("Look", rgba(sun_look)),
                ("Look2", rgba(look2)), ("Hi", rgba(vparam("HighA", (0.0, 9.0, 0.0, 0.0)))),
                ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0))))]
     sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
@@ -263,7 +264,7 @@ def sky_material():
     # in-scatter put on instead (SH.FOG_DISK_HLSL; ALyudSky sets SkyFogA..E from the fog); reflection captures (the sky
     # light) take the plain star
     rv = g.op(X.MaterialExpressionSubtract, g.node(X.MaterialExpressionWorldPosition), g.node(X.MaterialExpressionCameraPositionWS))
-    fog_ins = [("Sun", sun), ("Rv", rv), ("S", rgba(sun_dir))]
+    fog_ins = [("Sun", sun), ("Rv", rv), ("S", rgba(sun_dir)), ("D", rgba(sun_disk)), ("Lk", rgba(sun_look))]
     for k, v in (("A", (0.0, 0.0, 0.0, 0.0)), ("B", (0.0, 0.0, 0.0, 0.0)), ("C", (0.0, 0.0, 0.0, 4.0)),
                  ("D", (0.0, 0.0, 0.45, 0.75)), ("E", (1.0, 1.0, 1.0, 0.0))):
         fog_ins.append(("F" + k, rgba(vparam("SkyFog" + k, v))))
