@@ -178,12 +178,19 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 		FSlateDrawElement::MakeText(Out, Layer + 1, Box(P, TS), S, Font, ESlateDrawEffect::None, Fade * Color);
 	};
 
-	// places
+	// places (the guide leaves out the names right by the hero: his arrow is what matters there)
 	TArray<FVector2D> Pts;
+	FVector2D HeroAt, HeroFacing;
+	const bool bHideNearHero = bGuide && Owner.IsValid() && Owner->PlayerOnMap(HeroAt, HeroFacing);
+	const FVector2D HeroS = bHideNearHero ? ToScreen(HeroAt, Size) : FVector2D::ZeroVector;
 	for (const FLyudMapPlace& P : ULyudQuests::Places())
 	{
 		const FVector2D S = ToScreen(P.At, Size);
 		if (S.X < -200 || S.Y < -50 || S.X > Size.X + 200 || S.Y > Size.Y + 50)
+		{
+			continue;
+		}
+		if (bHideNearHero && FVector2D::DistSquared(S, HeroS) < 70.0 * 70.0)
 		{
 			continue;
 		}
