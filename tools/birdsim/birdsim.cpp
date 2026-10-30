@@ -805,11 +805,22 @@ namespace
 			}
 			X.Feeders[F].Food = 5.f;
 			X.Player.bPresent = false;
+			if (std::getenv("FEEDER_DIAG"))
+			{
+				for (const FGroup& G : X.Groups)
+				{
+					if (G.Species < 64 && X.Feeders[F].Like[G.Species] > 0.f)
+					{
+						std::printf("  candidate %s x%d: %.0f m from the tray, range %.0f m\n", SpeciesTable()[G.Species].Id.c_str(), (int)G.Members.size(),
+							(X.Sites[X.Feeders[F].Site].Center() - G.Home).Len2D(), SpeciesTable()[G.Species].HomeRange);
+					}
+				}
+			}
 			std::map<std::string, int> Seen;
 			int Peaks = 0;
 			float FirstAt = -1.f;
 			float T = 0.f;
-			Advance(X, 3.f, 0.1f, [&]()
+			Advance(X, 4.5f, 0.1f, [&]()
 			{
 				T += 0.1f;
 				X.Feeders[F].Ready = std::min(1.f, std::max(0.f, T / 3600.f - 1.5f));      // as the game ramps it: found between 1.5 and 2.5 h
