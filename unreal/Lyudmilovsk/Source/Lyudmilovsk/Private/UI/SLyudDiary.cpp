@@ -769,14 +769,14 @@ TSharedRef<SWidget> SLyudDiarySpread::MapNote()
 	if (ULyudBirdGuide::IsOwned(Owner.Get()))
 	{
 		TWeakObjectPtr<ULyudGameScreen> WeakOwner = Owner;
-		Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+		Box->AddSlot().AutoHeight().HAlign(HAlign_Fill).Padding(0, 4, 0, 0)
 		[
 			SNew(SLyudInkButton).HoverMark(EMark::Underline).Seed(91)
 			.OnClicked_Lambda([WeakOwner]() { if (ULyudBirdGuide* G = ULyudBirdGuide::Get(WeakOwner.Get())) { G->bMapLayer = !G->bMapLayer; } })
 			[
 				SNew(SBox).Padding(FMargin(4, 0))
 				[
-					SNew(STextBlock).Font(Hand(26.f, true)).ColorAndOpacity(Ink).Text_Lambda([WeakOwner]()
+					SNew(STextBlock).Font(Hand(26.f, true)).ColorAndOpacity(Ink).AutoWrapText(true).Text_Lambda([WeakOwner]()
 					{
 						const ULyudBirdGuide* G = ULyudBirdGuide::Get(WeakOwner.Get());
 						return LyudText::Get(G && G->bMapLayer ? TEXT("ui.diary.birds_on") : TEXT("ui.diary.birds_off"));

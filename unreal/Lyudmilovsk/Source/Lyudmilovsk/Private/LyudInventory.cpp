@@ -439,7 +439,7 @@ public:
 						SNew(SVerticalBox)
 						+ SVerticalBox::Slot().AutoHeight()
 						[
-							SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20))
+							SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 20)).AutoWrapText(true)
 							.Text(G.Count > 1 ? FText::FromString(ULyudInventory::ItemName(G.Item).ToString() + TEXT("  ") + LyudText::Get(TEXT("ui.shop.count"), { FStringFormatArg(G.Count) }).ToString())
 							                  : ULyudInventory::ItemName(G.Item))
 						]

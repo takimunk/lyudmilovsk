@@ -10,6 +10,7 @@ DOOR = "BugItGo -193 1500 150 0 90 0"
 CABLE = "BugItGo -1500 14090 200 0 120 0"
 
 PLAN = [
+    (9.5, "lyud.People.Report girl_b", None),
     (10.0, "lyud.Trade.Open girl_b", None),
     (11.5, "shot showui", "library_shop"),
     (12.0, "Shop.Open close", None),

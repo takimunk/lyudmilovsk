@@ -54,7 +54,8 @@ namespace
 			}
 		}
 		FLinearColor Hsv = Best.LinearRGBToHSV();
-		Hsv.B = FMath::Clamp(Hsv.B, 0.18f, 0.7f);
+		// no paler than mid-tone (a jackdaw's grey or a gull's cream vanish on the paper)
+		Hsv.B = FMath::Clamp(Hsv.B, 0.12f, 0.4f);
 		Hsv.G = FMath::Max(Hsv.G, 0.35f);
 		return Hsv.HSVToLinearRGB();
 	}
@@ -260,8 +261,10 @@ private:
 			const FBirdSpecies* S = UBirdSpeciesLibrary::Find(Row.Species);
 			const FText Name = S ? S->DisplayName() : FText::FromName(Row.Species);
 			const FText Latin = S ? FText::FromString(S->Latin) : FText::GetEmpty();
-			const FText Count = Row.Flying > 0 ? LyudText::Get(TEXT("ui.guide.count_flying"), { FStringFormatArg(Row.N), FStringFormatArg(Row.Flying) })
-			                                   : LyudText::Get(TEXT("ui.guide.count"), { FStringFormatArg(Row.N) });
+			// the number level with the name, how many of them fly under it, level with the Latin
+			// a fixed wrap width: the rows are rebuilt twice a second, and an auto-wrapping text sizes itself a frame late
+			constexpr float NameWidth = 200.f;
+			const FText Flying = Row.Flying > 0 ? LyudText::Get(TEXT("ui.guide.n_flying"), { FStringFormatArg(Row.Flying) }) : FText::GetEmpty();
 			Legend->AddSlot().AutoHeight().Padding(0, 0, 0, 8)
 			[
 				SNew(SHorizontalBox)
@@ -272,12 +275,20 @@ private:
 				+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
 				[
 					SNew(SVerticalBox)
-					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(16, "Bold")).ColorAndOpacity(GuideInk).Text(Name)]
-					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(12, "Italic")).ColorAndOpacity(GuideInkSoft).Text(Latin)]
+					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(16, "Bold")).ColorAndOpacity(GuideInk).WrapTextAt(NameWidth).Text(Name)]
+					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(12, "Italic")).ColorAndOpacity(GuideInkSoft).WrapTextAt(NameWidth).Text(Latin)]
 				]
-				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0, 14, 0)
 				[
-					SNew(STextBlock).Font(LyudUI::Font(15)).ColorAndOpacity(GuideInk).Text(Count)
+					SNew(SVerticalBox)
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Right)
+					[
+						SNew(STextBlock).Font(LyudUI::Font(16, "Bold")).ColorAndOpacity(GuideInk).Text(FText::AsNumber(Row.N))
+					]
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Right)
+					[
+						SNew(STextBlock).Font(LyudUI::Font(12, "Italic")).ColorAndOpacity(GuideInkSoft).Text(Flying)
+					]
 				]
 			];
 		}
