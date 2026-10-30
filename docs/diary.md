@@ -65,7 +65,10 @@ moment while the view narrows onto it, and the view goes into it, as after a bef
 (on the palm in ~7 s) and from 600 m (~9 s).
 
 Drawings: `design/birds_diary/sheets.json` (6 Higgsfield `nano_banana_2_1` sheets, 3 x 2 cells, one style text; every run pinned
-there), cut by `tools/ui_diary_birds.py` into `textures/ui/birds/bird_<Species>[_f].png` (the paper made transparent), imported as
+there), cut by `tools/ui_diary_birds.py` into `textures/ui/birds/bird_<Species>[_f].png` (the paper made transparent against
+its own white fitted across the cell, as some sheets come on faintly tinted paper; each drawing taken as its own blots of pencil
+and paint, so a tail or wing tip over the cell's edge stays whole and a neighbour's twig stays out; `--check` also writes a contact
+sheet), imported as
 `/Game/UI/Diary/Birds/T_Bird_<name>`. A species without a drawing shows `T_Bird_Unknown` (an unfinished outline). New species (the
 big birds): add a sheet, generate, rerun.
 

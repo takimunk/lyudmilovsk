@@ -23,7 +23,12 @@
     "job_id": "d827eb9b-ddd7-4925-89e3-5dc3bb004fa9",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_d827eb9b-ddd7-4925-89e3-5dc3bb004fa9.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_d827eb9b-ddd7-4925-89e3-5dc3bb004fa9.png",
+    "sha256": "68e410c9b0c578692b2f2a3ace7067e8c632361bb7547f6e0307a6501ef5df1a",
+    "size": [
+     5056,
+     3392
+    ]
    }
   },
   {
@@ -43,7 +48,12 @@
     "job_id": "e72114c6-0004-42fb-9c68-cdb7be5bdaf8",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170514_e72114c6-0004-42fb-9c68-cdb7be5bdaf8.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170514_e72114c6-0004-42fb-9c68-cdb7be5bdaf8.png",
+    "sha256": "271a376456e5b71cf5dc9e005d0ba55512f19f0e6670a397e9a888b31eeda451",
+    "size": [
+     5056,
+     3392
+    ]
    }
   },
   {
@@ -63,7 +73,12 @@
     "job_id": "76c01cab-42b5-4ec8-9f3d-41474230bef4",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_76c01cab-42b5-4ec8-9f3d-41474230bef4.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170515_76c01cab-42b5-4ec8-9f3d-41474230bef4.png",
+    "sha256": "c76b39aff75d56511f1bc1b9b2f87e8c1a04565b1cf14b172bceadd9746c82d1",
+    "size": [
+     5056,
+     3392
+    ]
    }
   },
   {
@@ -83,7 +98,12 @@
     "job_id": "209ac0e0-150d-4c0d-b3cd-8aae2a6debb0",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170517_209ac0e0-150d-4c0d-b3cd-8aae2a6debb0.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170517_209ac0e0-150d-4c0d-b3cd-8aae2a6debb0.png",
+    "sha256": "424508691a9601e67c1db28affc3e6d1e18f0fcf3aa9ce6159f4fca5267f8d27",
+    "size": [
+     5056,
+     3392
+    ]
    }
   },
   {
@@ -103,7 +123,12 @@
     "job_id": "662ba274-4fe6-465b-b7ad-5ffabe0c0cbc",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170521_662ba274-4fe6-465b-b7ad-5ffabe0c0cbc.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170521_662ba274-4fe6-465b-b7ad-5ffabe0c0cbc.png",
+    "sha256": "bd8a9aa18f3b86bfa8fd29b78a26055d8f8ebbd39f177a4f643a877b9a1b9acb",
+    "size": [
+     5056,
+     3392
+    ]
    }
   },
   {
@@ -123,7 +148,12 @@
     "job_id": "893d4bb6-af22-436c-9bcf-14f8d545ede6",
     "date": "2026-10-30",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170523_893d4bb6-af22-436c-9bcf-14f8d545ede6.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261030_170523_893d4bb6-af22-436c-9bcf-14f8d545ede6.png",
+    "sha256": "fa010f280472fc9d4f06e61d0115fb5e60e817a5d2454e4c74f2317d496b8121",
+    "size": [
+     5056,
+     3392
+    ]
    }
   }
  ]
