@@ -1,0 +1,10 @@
+{
+ "id": "label_feed_niger",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/grocery/labels_grid.png",
+ "cell": [
+  1,
+  0
+ ]
+}

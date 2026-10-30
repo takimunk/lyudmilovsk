@@ -37,8 +37,9 @@ def cut(img, cols, rows, c, r, margin):
     return cell.crop((mx, my, cell.width - mx, cell.height - my))
 
 
-def trim(cell, bg_tol=26):
-    """Crops the off-white paper round a label (the grid's gaps) to the label's printed edge."""
+def trim(cell, bg_tol=26, inset=4):
+    """Crops the off-white paper round a label (the grid's gaps) to the label's printed edge, `inset` px inside it
+    (the edge is soft, a line of paper would stay)."""
     px = cell.load()
     w, h = cell.size
     ref = px[2, 2]
@@ -48,7 +49,7 @@ def trim(cell, bg_tol=26):
     cols = [x for x in range(w) if sum(far(px[x, y]) for y in range(0, h, 4)) > h // 16]
     if not rows or not cols:
         return cell
-    return cell.crop((cols[0], rows[0], cols[-1] + 1, rows[-1] + 1))
+    return cell.crop((cols[0] + inset, rows[0] + inset, cols[-1] + 1 - inset, rows[-1] + 1 - inset))
 
 
 def sidecar(path, data):

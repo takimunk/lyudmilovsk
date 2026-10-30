@@ -1,0 +1,10 @@
+{
+ "id": "label_feed_suet",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/grocery/labels_grid.png",
+ "cell": [
+  0,
+  0
+ ]
+}
