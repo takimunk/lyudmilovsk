@@ -72,3 +72,9 @@ open door, the hero walking through, no shutting on the hero in the sweep, NPCs 
 walks into the door from the swing side) going through and the doors shutting behind them, a locked door stopping both
 E and an NPC; then save, flip every door, load, `Door.CheckSaved`. Screenshots land in
 `Saved/Screenshots/MacEditor/door_*.png`.
+
+`unreal/scripts/test_club_exit.sh` walks the hero out of the club in `Lvl_Scene01` (hall → open blast door → 6 m onto
+the forecourt and back, never jumping; `CLUBEXIT_WINTER=1` with 35 cm of forced snow), logs what the feet stand on along
+the door's axis, fails on any engine ball or default-material primitive round the hall, and takes four shots into
+`Saved/clubexit_shots/`. The forecourt must stay at the club's floor level: `world_map.forecourt_level` holds the
+upland's north-slope tail off it (it once stood 0.7 m over the threshold and the head met the portal lintel).

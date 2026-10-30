@@ -145,11 +145,24 @@ def mound(x, d):
     return m * (1 - t * t * (3 - 2 * t))
 
 
+def forecourt_level(x, d):
+    """0..1: how much of the forecourt's floor level (the club's floor, z 0) the ground must keep: 1
+    between the wing walls, fading out over 4 m past their ends."""
+    if d <= 0.0:
+        return 0.0
+    end = forecourt_half(FORECOURT_LEN) + 0.5
+    if d <= FORECOURT_LEN and abs(x) <= forecourt_half(d) + 0.5:
+        return 1.0
+    return (1.0 - _smooth((d - FORECOURT_LEN) / 4.0)) * (1.0 - _smooth((abs(x) - end) / 3.0))
+
+
 def plateau(x, y):
     """The land before the sea cuts it: the valley, raised to the spur, the north hills and the upland."""
     low = valley(x, y)
     z = max(low, low + (0.0 - low) * spur(x, y), low + (NORTH_Z - low) * north_hills(x, y))
-    z = z + (TOP_Z - z) * upland(x, y) if TOP_Z > z else z
+    # the upland's north slope ends just past the door: its tail must not lift the forecourt over the
+    # club's floor (it stood 0.7 m over the threshold and the player had to jump out)
+    z = z + (TOP_Z - z) * upland(x, y) * (1.0 - forecourt_level(x, y)) if TOP_Z > z else z
     if abs(x) <= 37.0 and -60.0 <= y <= 12.0:        # the hillside right round the portal
         z = max(z, mound(x, y))
     return z

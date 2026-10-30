@@ -156,7 +156,7 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 		A.Frame = At;
 		return A;
 	};
-	auto Steam = [this, World, &Anim](const FVector& Local, int32 N, float Rise)
+	auto Steam = [this, World, &Anim, &At](const FVector& Local, int32 N, float Rise)
 	{
 		UStaticMesh* Ball = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 		UMaterialInterface* Glass = Mat(TEXT("glass"));
@@ -181,6 +181,11 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 			A.P1 = Rise;
 			A.P2 = I * 2.4f;
 			A.Speed = 0.35f;
+			// in its place and unseen until UpdateLobbies takes it up: a component left at the actor's origin
+			// (the world's origin, in the club's hall) stood there as a grey metre-wide ball
+			P->SetWorldLocationAndRotation(At.TransformPosition(Local), At.GetRotation());
+			P->SetWorldScale3D(FVector(0.03f));
+			M->SetScalarParameterValue(TEXT("Opacity"), 0.f);
 		}
 	};
 	if (Item == TEXT("Vending"))
@@ -299,6 +304,7 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 			A.P0 = I / 6.f;
 			A.P1 = -20.f + I * 7.f;
 			A.Far = 3500.f;
+			P->SetWorldLocation(At.TransformPosition(FVector(-6.f, A.P1, 100.f + 70.f * A.P0)));   // in the tank, not at the world's origin
 		}
 		return true;
 	}
