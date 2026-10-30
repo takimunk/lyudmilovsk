@@ -4,8 +4,8 @@ tools/sea/sea_hlsl.py) bends a tree and shakes its twigs and leaves in proportio
 
   local   = (speed / 7 m/s)^1.5 x the gust at this place, at most 4.5: 1 is the breezy afternoon the species'
             SwayAmp is given for, 3 a gale
-  lean    the whole tree leans downwind, Bend x height^2 x local^2 x 0.3 cm (the top of a 15 m tree at 7 m/s with
-            Bend 0.1: 7 cm; at 20 m/s: 60 cm)
+  lean    the whole tree leans downwind, Bend x height^2 x local^2 x 0.55 cm, breathing with the gusts, at most ~16 degrees (the top of a 12 m
+            tree with Bend 0.13 at 7 m/s: 10 cm; at 20 m/s: 2.5 m, a gale)
   sway    twigs and leaf clusters swing downwind and a little across it, W (= SwayAmp x the vertex's weight) x local
             cm, faster in a stronger wind, in a wave that travels with the wind across the crown
   flutter the leaves' own shiver grows with the wind (a rustle), see FLUTTER_HLSL
@@ -38,7 +38,9 @@ float x = max(spd, 0.0) * (1.0 / 7.0);
 float local = min(x * sqrt(x) * gust, 4.5);   // ~ x^1.5: close enough to the 1.15 power the doc says, no pow()
 float3 foot = FootFromActor > 0.5 ? Actor : O;
 float h = max(P.z - foot.z, 0.0) * 0.01;
-float lean = Bend * h * h * local * local * 0.3;
+// the lean breathes with the gusts (0.75 .. 1.25 of its mean)
+float lean = Bend * h * h * local * local * 0.55 * (1.0 + 0.25 * sin(T * 0.7 + dot(P.xy, dir) * 0.004));
+lean = min(lean, h * 28.0);   // never more than ~16 degrees off the vertical at any height
 float ph = T * (1.0 + 0.45 * local) + dot(P.xy, dir) * 0.011;
 float osc = 0.65 * sin(ph) + 0.35 * sin(ph * 1.73 + 1.3);
 float sway = W * local * (0.6 + 0.8 * osc);
