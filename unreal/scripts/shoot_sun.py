@@ -33,6 +33,7 @@ NIGHT = D(2026, 10, 26, 0, 30)
 CLEAR = "lyud.Weather.Cloud 0.15"
 OLD = "lyud.Sky.LowSunLight 0;lyud.Sky.SunHorizonDimming 1;lyud.Sky.SunShafts 0;lyud.Sky.SunAureole 0"
 LIMB = "fov 16;r.VolumetricCloud 0;lyud.Weather.Cloud 0"
+WHOLE = LIMB.replace("fov 16", "fov 22")                 # the whole disk in the frame (flares anywhere on it)
 # (name, local time, map x, y, metres over the ground, pitch, yaw or "sun"/"sun-wide"/"sun-path"/"moon"[, console commands])
 SHOTS = [
     ("sunset_terrace", SET1, TERRACE[0], TERRACE[1] + 25.0, 1.7, 0, "sun-wide", CLEAR),
@@ -44,12 +45,15 @@ SHOTS = [
     ("sunset_beach_old", SET1, BEACH[0], BEACH[1], 1.7, 0, "sun-path", CLEAR + ";" + OLD),
     ("sunset_brow", SET2, BROW[0], BROW[1], 1.7, 0, "sun-path", CLEAR),
     ("sunset_close", SET1, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
+    ("sunset_close_low", SET2, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
     ("sunset_clouds", SET1, BROW[0], BROW[1], 1.7, 0, "sun-wide", "lyud.Weather.Cloud 0.6"),
     ("noon_wide", NOON, BROW[0], BROW[1], 1.7, 0, "sun-wide", CLEAR),
     ("noon_close", NOON, BROW[0], BROW[1], 1.7, 0, "sun", "fov 30;" + CLEAR),
     ("noon_limb", NOON, BROW[0], BROW[1], 1.7, 0, "sun", LIMB),
     ("noon_detail", NOON, BROW[0], BROW[1], 1.7, 0, "sun", "fov 5;r.VolumetricCloud 0;lyud.Weather.Cloud 0"),
-    ("flare_limb", NOON, BROW[0], BROW[1], 1.7, 0, "sun", LIMB + ";lyud.Sun.ForceFlare 0;lyud.Sun.ForceFlare 0.9"),
+    ("flare_limb", NOON, BROW[0], BROW[1], 1.7, 0, "sun", WHOLE + ";lyud.Sun.ForceFlare 0;lyud.Sun.ForceFlare 0.9"),
+    ("flare_late", NOON, BROW[0], BROW[1], 1.7, 0, "sun", WHOLE + ";lyud.Sun.ForceFlare 0;lyud.Sun.ForceFlare 0.88;wait 30"),
+    ("flare_arcade", NOON, BROW[0], BROW[1], 1.7, 0, "sun", WHOLE + ";lyud.Sun.ForceFlareLimb 1;lyud.Sun.ForceFlare 0;lyud.Sun.ForceFlare 0.86;wait 40"),
     ("busy_limb", NOON, BROW[0], BROW[1], 1.7, 0, "sun", LIMB + ";lyud.Sun.Activity 2.5"),
     ("europa_night", NIGHT, BROW[0], BROW[1], 1.7, 0, "moon-wide", CLEAR),
     ("sunset_terrace_town", SET1, TERRACE[0], TERRACE[1] + 25.0, 1.7, -4, "sun-side", CLEAR),
@@ -66,6 +70,10 @@ if os.environ.get("SUN_DIAG"):
         SHOTS.append(("diag_shafts%s_close" % k, SET1, BROW[0], BROW[1], 1.7, 0, "sun", SC + ";lyud.Sky.SunShafts " + k))
 if os.environ.get("SUN_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["SUN_SHOTS"].split(",")]
+# SUN_VARY="tag=cmd;cmd|tag2=..." (tuning sweeps): each chosen shot again per variant, its commands added
+if os.environ.get("SUN_VARY"):
+    VARY = [v.split("=", 1) for v in os.environ["SUN_VARY"].split("|")]
+    SHOTS = [(s[0] + "_" + t,) + s[1:7] + ((s[7] + ";" if len(s) > 7 else "") + c,) for s in SHOTS for t, c in VARY]
 WAIT = float(os.environ.get("SUN_WAIT", "7"))
 LAPSE = [float(v) for v in os.environ.get("SUN_TIMELAPSE", "0,60").split(",")]
 st = {"t": 0.0, "i": -1, "phase": 0, "base": None}
@@ -156,7 +164,8 @@ def step(dt):
                   "lyud.Sky.CloudDensity 1", "lyud.Sky.CloudOpaque 1", "lyud.Sky.CloudSamples 1", "r.VolumetricRenderTarget.Mode 0", "lyud.Seabed 1", "lyud.Sea 1", "lyud.Sky.NightMie -1", "lyud.Sea.Capillary 0.18", "lyud.Sea.DebugFoam 0", "lyud.Weather.Cloud -1", "lyud.Weather.Rain -1", "lyud.Wind.Speed -1", "lyud.Sea.LookSeconds 120", "fov 0", "r.BloomQuality 5",
                   "r.VolumetricCloud 1", "r.SkyAtmosphere 1", "r.Lumen.Reflections.Allow 1", "r.SkyLight.RealTimeReflectionCapture 1", "sunvis 1", "lyud.Weather.BlendSeconds 0", "sunangle %g" % sky.get_editor_property("sun_angular_diameter_deg"), "moonsize %g" % st["moon_d"],
                   "lyud.Sky.LowSunLight 1", "lyud.Sky.SunHorizonDimming -1", "lyud.Sky.SunShafts 1", "lyud.Sky.SunAureole 1",
-                  "lyud.Sun.Activity 1", "lyud.Sun.Debug 0", "lyud.Sky.SunDetailContrast -1", "r.Fog 1"] + (SHOTS[st["i"]][7:] or [""])[0].split(";"):
+                  "lyud.Sun.Activity 1", "lyud.Sun.Debug 0", "lyud.Sky.SunDetailContrast -1", "r.Fog 1", "lyud.Sky.LowSunEV 0.7", "lyud.Sky.LowSunDiskGain -1",
+                  "lyud.Sky.LowSunCloud -1", "lyud.Sky.SunRimClear -1", "lyud.Sky.SunLimb -1", "lyud.Sky.LowSunMieG -1", "lyud.Sun.ForceFlareLimb 0"] + (SHOTS[st["i"]][7:] or [""])[0].split(";"):
             if c.startswith("sunangle "):             # test hook: the sun light's source angle
                 sky.get_editor_property("sun_light").set_light_source_angle(float(c.split()[1]))
             elif c.startswith("moonsize "):           # test hook: Europa's apparent size
@@ -164,6 +173,8 @@ def step(dt):
                 sky.update_sky()
             elif c.startswith("moonvis "):
                 sky.get_editor_property("moon_light").set_visibility(c.split()[1] == "1")
+            elif c.startswith("wait "):               # this shot waits longer (a flare running on)
+                st["extra"] = float(c.split()[1])
             elif c.startswith("sunvis "):
                 sky.get_editor_property("sun_light").set_visibility(c.split()[1] == "1")
             elif c:
@@ -185,7 +196,8 @@ def step(dt):
             y, p = aim(sky, yaw)
             pc.set_control_rotation(unreal.Rotator(roll=0, pitch=p, yaw=y))
         st["phase"] = 2
-    elif st["phase"] == 2 and st["t"] - st["t0"] > WAIT:
+    elif st["phase"] == 2 and st["t"] - st["t0"] > WAIT + st.get("extra", 0.0):
+        st["extra"] = 0.0
         name = st.pop("lapse_name", SHOTS[st["i"]][0])
         sun = sky.get_editor_property("sun_light")
         unreal.log_warning("SUN %s | %s | %s | sun disk scale %s angle %.1f" % (

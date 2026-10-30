@@ -92,6 +92,8 @@ namespace LyudSunActivity
 	{
 		double StartActivityHours = -1e9;
 		float Peak = 0.f;
+		/** On a region near the limb (else on the limb north-east) instead of the most visible one: its loop arcade. */
+		bool bNearLimb = false;
 	};
 
 	/** The game clock in hours since 2026-01-01 00:00 local -> the activity clock in activity hours. */

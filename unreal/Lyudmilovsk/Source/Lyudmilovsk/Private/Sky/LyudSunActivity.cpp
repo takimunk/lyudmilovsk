@@ -14,6 +14,8 @@ namespace
 		TEXT("The activity clock (prominences, eruptions, flares) over the game clock: real hours of a star's life pass in game minutes."));
 	TAutoConsoleVariable<float> CVarSunForceFlare(TEXT("lyud.Sun.ForceFlare"), 0.f,
 		TEXT("Set > 0: a flare starts now at this peak 0..1 on the most visible strong region (set 0, then again, for another)."));
+	TAutoConsoleVariable<int32> CVarSunForceFlareLimb(TEXT("lyud.Sun.ForceFlareLimb"), 0,
+		TEXT("1: lyud.Sun.ForceFlare puts the flare on a region near the limb (its loop arcade stands on the limb)."));
 	TAutoConsoleVariable<int32> CVarSunDebug(TEXT("lyud.Sun.Debug"), 0, TEXT("1: print the star's activity on screen."));
 
 	FLinearColor V4(float X, float Y, float Z, float W) { return FLinearColor(X, Y, Z, W); }
@@ -91,6 +93,7 @@ float ULyudSunActivity::Update(UMaterialInstanceDynamic* SkyMID, const FDateTime
 	FForcedFlare Forced;
 	Forced.StartActivityHours = ForcedStartActivityHours;
 	Forced.Peak = ForcedPeak;
+	Forced.bNearLimb = CVarSunForceFlareLimb.GetValueOnGameThread() != 0;
 
 	FState& S = *State;
 	Evaluate(GameHours, Set, S, &Forced);

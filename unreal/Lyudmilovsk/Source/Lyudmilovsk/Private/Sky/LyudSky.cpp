@@ -44,6 +44,11 @@ static TAutoConsoleVariable<float> CVarSunHorizonDimming(TEXT("lyud.Sky.SunHoriz
 static TAutoConsoleVariable<float> CVarLowSunLight(TEXT("lyud.Sky.LowSunLight"), 1.f, TEXT("Multiplies the low sun's extra light, specular and haze glow (tuning; 0 = the atmosphere alone)."));
 static TAutoConsoleVariable<float> CVarSunShafts(TEXT("lyud.Sky.SunShafts"), 1.f, TEXT("Multiplies the sun's light shafts (god rays; 0 = off)."));
 static TAutoConsoleVariable<float> CVarSunDetail(TEXT("lyud.Sky.SunDetailContrast"), -1.f, TEXT("Overrides ALyudSky::SunDetailContrast when > 0 (tuning)."));
+static TAutoConsoleVariable<float> CVarLowSunDiskGain(TEXT("lyud.Sky.LowSunDiskGain"), -1.f, TEXT("Overrides ALyudSky::LowSunDiskGain when >= 0 (tuning)."));
+static TAutoConsoleVariable<float> CVarLowSunCloud(TEXT("lyud.Sky.LowSunCloud"), -1.f, TEXT("Overrides ALyudSky::LowSunCloudLight when >= 0 (tuning: the share of a low sun's extra light the clouds get)."));
+static TAutoConsoleVariable<float> CVarSunRimClear(TEXT("lyud.Sky.SunRimClear"), -1.f, TEXT("Overrides ALyudSky::SunRimClear when >= 0 (tuning: the haze's glow taken off round a low disk)."));
+static TAutoConsoleVariable<float> CVarSunLimb(TEXT("lyud.Sky.SunLimb"), -1.f, TEXT("Overrides ALyudSky::SunLimbDarkening when > 0 (tuning)."));
+static TAutoConsoleVariable<float> CVarLowSunMieG(TEXT("lyud.Sky.LowSunMieG"), -1.f, TEXT("Overrides ALyudSky::LowSunMieAnisotropy when > 0 (tuning)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
@@ -298,6 +303,21 @@ void ALyudSky::UpdateSky()
 	const float Flare = FMath::Max(FlareBoost, ActivityFlare * ActivityFlareLight / 0.25f);
 	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt) * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare));
 	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare));
+	// the clouds get only LowSunCloudLight of that extra light, and the sky and the haze over the land (the aerial
+	// perspective) none: lit by the boosted light they paled to the disk's brightness, the clouds drawn over it and the
+	// haze round it washing the setting star out
+	const float CloudShare = CVarLowSunCloud.GetValueOnGameThread() >= 0.f ? CVarLowSunCloud.GetValueOnGameThread() : LowSunCloudLight;
+	const float CloudK = (1.f + LowSunLightGain * Low * CloudShare) / (1.f + LowSunLightGain * Low);
+	if (!FMath::IsNearlyEqual(SunLight->CloudScatteredLuminanceScale.R, CloudK, 1e-3f))
+	{
+		SunLight->CloudScatteredLuminanceScale = FLinearColor(CloudK, CloudK, CloudK);
+		SunLight->MarkRenderStateDirty();
+	}
+	const float HazeK = 1.f / (1.f + LowSunLightGain * Low);
+	if (!FMath::IsNearlyEqual(Atmosphere->SkyAndAerialPerspectiveLuminanceFactor.R, HazeK, 1e-3f))
+	{
+		Atmosphere->SetSkyAndAerialPerspectiveLuminanceFactor(FLinearColor(HazeK, HazeK, HazeK));
+	}
 	const float SkyK = SkyLightIntensity * FMath::Lerp(1.f, LowSunAmbient, Low * SmoothStep01(-4.f, 2.f, SunAlt));
 	if (!FMath::IsNearlyEqual(SkyLight->Intensity, SkyK, 1e-3f))
 	{
@@ -353,7 +373,7 @@ void ALyudSky::UpdateSky()
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
 	}
-	const float MieG = FMath::Lerp(0.62f, LowSunMieAnisotropy, FMath::Clamp(Low, 0.f, 1.f) * SmoothStep01(-6.f, 0.f, SunAlt));
+	const float MieG = FMath::Lerp(0.62f, CVarLowSunMieG.GetValueOnGameThread() > 0.f ? CVarLowSunMieG.GetValueOnGameThread() : LowSunMieAnisotropy, FMath::Clamp(Low, 0.f, 1.f) * SmoothStep01(-6.f, 0.f, SunAlt));
 	if (!FMath::IsNearlyEqual(Atmosphere->MieAnisotropy, MieG, 1e-3f))
 	{
 		Atmosphere->SetMieAnisotropy(MieG);
@@ -507,12 +527,11 @@ void ALyudSky::UpdateSkyMaterial()
 	const double Days = (Now - FDateTime(2026, 1, 1)).GetTotalDays();
 	const float Spin = float(FMath::Fmod(Days / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
 	const float DaySeed = float(FMath::FloorToDouble(Days));
-	// a low sun: the disk brighter, and the sky's own luminance kept where the atmosphere puts it although the light
-	// is kept up (the sky material's atmosphere luminance follows the light's illuminance: a brighter light alone
-	// paled the whole sky and veiled the disk)
+	// a low sun: the disk brighter (the sky's own luminance stays where the atmosphere puts it although the light is
+	// kept up: UpdateSky scales the atmosphere's sky and haze back, SkyLumScale stays 1)
 	const float Low = LowSun() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
-	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread() * (1.f + LowSunDiskGain * Low);
-	SkyMID->SetScalarParameterValue(TEXT("SkyLumScale"), 1.f / (1.f + LowSunLightGain * Low));
+	const float DiskLow = CVarLowSunDiskGain.GetValueOnGameThread() >= 0.f ? CVarLowSunDiskGain.GetValueOnGameThread() : LowSunDiskGain;
+	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread() * (1.f + DiskLow * Low);
 	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum, DaySeed, Spin));
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
@@ -522,7 +541,9 @@ void ALyudSky::UpdateSkyMaterial()
 	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * CVarSunAureole.GetValueOnGameThread(),
 		FMath::Clamp(Dimming, 0.f, 1.f), SunProminenceGain, SunCoronaGain));
 	const float Detail = CVarSunDetail.GetValueOnGameThread() > 0.f ? CVarSunDetail.GetValueOnGameThread() : SunDetailContrast;
-	SkyMID->SetVectorParameterValue(TEXT("SunLook2"), FLinearColor(Detail, 0.f, 0.f, 0.f));
+	const float Rim = CVarSunRimClear.GetValueOnGameThread() >= 0.f ? CVarSunRimClear.GetValueOnGameThread() : SunRimClear;
+	const float LimbK = CVarSunLimb.GetValueOnGameThread() > 0.f ? CVarSunLimb.GetValueOnGameThread() : SunLimbDarkening;
+	SkyMID->SetVectorParameterValue(TEXT("SunLook2"), FLinearColor(Detail, FMath::Clamp(Rim * Low, 0.f, 0.9f), LimbK, 0.f));
 	// the star's activity: regions with their spots, prominences, flares (ULyudSunActivity sets their parameters)
 	if (ULyudSunActivity* Activity = ULyudSunActivity::Get(this))
 	{

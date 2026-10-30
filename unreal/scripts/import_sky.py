@@ -231,10 +231,11 @@ def sky_material():
                     texture=europa_texture(EUROPA_RELIEF, "T_EuropaRelief", False))
     rgba = lambda n: (n, "RGBA")
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+    look2 = vparam("SunLook2", (2.2, 0.0, 1.0, 0.0))
     # the star's activity (ULyudSunActivity sets these): active regions, prominences, the flare
     sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
                ("Tr", tr), ("Look", rgba(vparam("SunLook", (1.0, 0.25, 1.0, 1.0)))),
-               ("Look2", rgba(vparam("SunLook2", (2.2, 0.0, 0.0, 0.0))))]
+               ("Look2", rgba(look2))]
     sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
     for k in "ABC":
         sun_ins += [("P%s%d" % (k, i), rgba(vparam("SunProm%s%d" % (k, i), (0.0, 0.0, 1.0, 0.0)))) for i in range(SH.SUN_PROMS)]
@@ -260,7 +261,7 @@ def sky_material():
     # over the two disks most of the sky's own glow is taken off: the haze in front of a far brighter real sun would
     # not show, and added to the capped disk it pales the deep red-orange to pink
     over = g.custom(SH.DISK_MASK_HLSL, [("V", view), ("S", rgba(sun_dir)), ("D", rgba(sun_disk)), ("M", rgba(moon_dir)),
-                                        ("MD", rgba(moon_disk))])
+                                        ("MD", rgba(moon_disk)), ("K", rgba(look2))])
     sky = g.op(X.MaterialExpressionMultiply, sky, over)
     em = g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, sky, sun),
               g.op(X.MaterialExpressionAdd, g.op(X.MaterialExpressionAdd, moon, st), ag))
