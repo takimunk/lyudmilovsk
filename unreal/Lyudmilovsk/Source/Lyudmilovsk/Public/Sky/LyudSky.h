@@ -230,6 +230,10 @@ public:
 	/** The dome's and the clouds' material instances (ULyudCloudSubsystem sets the clouds' parameters on them). */
 	UMaterialInstanceDynamic* GetSkyMID() const { return SkyMID; }
 	UMaterialInstanceDynamic* GetCloudMID() const { return CloudMID; }
+	/** How much of the direct sunlight gets through an overcast (ULyudCloudSubsystem sets it from the cloud decks): under
+	 * a thick grey deck the sun casts no crisp shadows, whatever the cloud shadow map makes of it. */
+	void SetOvercastSunScale(float Scale) { OvercastSunScale = FMath::Clamp(Scale, 0.f, 1.f); }
+	float GetOvercastSunScale() const { return OvercastSunScale; }
 	/** The clouds draw with their instance (its shaders are ready). */
 	bool IsCloudMaterialReady() const { return bCloudMIDSet; }
 
@@ -256,6 +260,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> CloudMID;
 	float CloudBaseDensity = -1.f;
 	bool bCloudMIDSet = false;
+	float OvercastSunScale = 1.f;
 	bool bCloudErrorsLogged = false;
 	double NextCloudLog = 0.0;
 	bool bCloudShadersForced = false;

@@ -51,6 +51,12 @@ depth from it, whatever their thickness. Each layer drifts with its own wind:
 The volumetric slab is fitted round what is drawn, so the ray march spends its samples where the clouds are. With
 nothing to draw, the volumetric clouds are off.
 
+Under an overcast the direct sun goes as well. The cloud shadow map dims it pixel by pixel, but under a closed deck it
+must be gone everywhere, so there are no crisp shadows in a snowfall or a steady rain. Each layer lets through
+1 - cover x (1 - e^-tau along the sun), and that counts in proportion to how closed the decks are (sheet or anvil
+clouds at 75-97 percent cover). `ALyudSky::SetOvercastSunScale` scales the sunlight, and `lyud.Clouds.Debug` prints it
+as "sun". Broken heaps keep their own moving shadows and sunny gaps.
+
 ## Console
 
 - `lyud.Clouds.Preset <name|off>` forces a sky: clear, cu, cucon, cb, sc, st, ns, ac, as, lens, ci, cc, cs,

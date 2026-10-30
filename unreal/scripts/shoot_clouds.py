@@ -51,6 +51,9 @@ SHOTS = [
     ("sunset_ci", "ci", SUNSET, 0, "sun-wide"),
     ("night_sc", "sc", NIGHT, 10, "moon"),
     ("weather_now", "off", AFTERNOON, 12, 10),
+    ("weather_ground", "off", AFTERNOON, -25, 100),
+    # shadows on the terrace by the club's door: crisp under a clear sky, gone under a deck
+    ("terrace_shadows", "off", AFTERNOON, -30, 250, "at %.1f 33" % (T.W.DOOR_X - 2.0)),
     # from above: the layers' pattern and cover
     ("cumulus_above", "cu", AFTERNOON, -60, 10, "up 4000"),
     ("stratocumulus_above", "sc", AFTERNOON, -60, 10, "up 3000"),
@@ -152,15 +155,18 @@ def step(dt):
             return
         name, preset, when, pitch, yaw = SHOTS[st["i"]][:5]
         up = 1.7
+        at = BROW
         for c in ["fov 0", "t.MaxFPS 0", "lyud.Clouds.Preset " + preset] + EXTRA + (SHOTS[st["i"]][5:] or [""])[0].split(";"):
             if c.startswith("up "):                   # test hook: metres over the brow
                 up = float(c.split()[1])
+            elif c.startswith("at "):                 # test hook: stand at map x, y (metres) instead of the brow
+                at = (float(c.split()[1]), float(c.split()[2]))
             elif c:
                 cmd(w, c)
         cmd(w, "lyud.SkyHourOffset %f" % ((when - st["base"]).total_seconds() / 3600.0))
         if hasattr(pawn, "character_movement"):
             pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
-        ux, uy, uz = T.to_unreal(BROW[0], BROW[1], T.ground_z(*BROW) + up, FACE_Y)
+        ux, uy, uz = T.to_unreal(at[0], at[1], T.ground_z(*at) + up, FACE_Y)
         pawn.set_actor_location(unreal.Vector(ux, uy, uz), False, True)
         if not isinstance(yaw, str):
             pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))

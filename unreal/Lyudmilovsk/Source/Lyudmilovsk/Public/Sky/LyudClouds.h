@@ -107,4 +107,5 @@ private:
 	bool bBound = false;
 	double DebugNext = 0.0;
 	FString LastPreset;
+	float SunThrough = 1.f;
 };
