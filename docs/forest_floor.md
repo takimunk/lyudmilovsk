@@ -16,6 +16,24 @@ birch woods (Zelenogradsk, Svetlogorsk). Everything follows the trees about, the
 | Ground cover | `AForestFloor`, plant system species | herbs `Bilberry`, `Lingonberry`, `Heather`, `Bracken`, `BucklerFern`, `WoodSorrel` (`PlantSpeciesFloor.cpp`, `FPlantSpecies::Herb`, 3 seeds each, a cheap LOD 1); grass tufts `FeatherMoss`, `HaircapMoss`, `ReindeerLichen`, `WavyHairGrass` (`GrassSpecies.cpp`); seedlings of `ScotsPine`, `NorwaySpruce`, `SilverBirch`, `Rowan` (their forest bakes, `UTreeBakeCache`, ages 2.5 and 5) |
 | Litter and debris | `AForestFloor`, `Private/Plants/ForestFloorMeshes.cpp` | fallen leaves of every deciduous species in the woods (`PlantMeshes::BuildSingleLeaf`, by the field), falling leaves under the crowns in leaf fall, pine and spruce cones under their trees, birch bark curls, sticks, fallen branches, logs, stumps, roots round old trunks (pine, spruce and birch bark from `PlantMeshes::BuildBarkTextures`), granite and gneiss stones and boulders, moss cushions |
 
+Where it may lie at all (the site guard, `lyud.ForestFloor.Guard`, on by default): never in the town, the
+Academgorodok, a yard, on a station forecourt, a path or the paved walk grid, nor by a building or a roof. A ground
+vertex grows the floor only if all of these hold:
+
+- the walk grid (`Content/AnimalsData/animal_world.bin`, 2 m cells, made by `tools/animal_map.py` from
+  `tools/world_map.py`'s zones) calls it forest: the old and wet woods' tiles outside the town's circle and the
+  Academgorodok's ground (or a steep cell within 6 m of them); beyond that grid (the upland, the hills round the
+  valley) the wild forests' own tiles (`AProceduralForest` extents);
+- it is 15 m clear of every paved and yard cell of that grid and of the footprint of every actor tagged `NoTree`,
+  `NoGrass` or `Roof` that stands on the ground (houses, the square, stations, vestibules, pylons, the rail; pieces over
+  300 m are left to the ground trace);
+- at least 3 trees of the wild woods stand within 12 m (the Academgorodok's garden and the town's forests, tagged
+  `Academ` or holding maples, apples, poplars, and the lone planted trees, don't count);
+- the terrain mask's forest-floor channel and the ground trace (the landscape, not a slab) allow it, as before.
+
+Logs, stumps, boulders, branches and roots also need 6 wild trees within 15 m. Falling leaves come only from wild
+trees and land only on such ground; the ground's litter field fades to nothing from 15 m to 6 m off anything built.
+
 Placement: 8 m world cells aligned to the landscape's vertices, each traced at its 81 vertices once (ground height and
 whether it is bare forest ground: the landscape, not a path or a yard), filled from a hash of the cell (every visit and
 machine grows the same floor). What grows where comes from the stand round the cell (shares of pine, spruce, birch,
@@ -47,7 +65,7 @@ Parameters (added to `/Game/Weather/MPC_LyudWeather`: a landscape material may r
 
 ## Console
 
-`lyud.ForestFloor 0` hides it all (and the ground's litter). `lyud.ForestFloor.Density` (next layout),
+`lyud.ForestFloor 0` hides it all (and the ground's litter). `lyud.ForestFloor.Guard 0` drops the site guard, `-1` also ignores the terrain mask (the old placement on a ground built before its forest channel: any landscape among any trees); both lay out again, tests only. `lyud.ForestFloor.Density` (next layout),
 `lyud.ForestFloor.Shadows 0`, `lyud.ForestFloor.Debug 1`, `lyud.ForestFloor.Wet / Rime / Dry` force the weather (negative:
 the weather's).
 
@@ -73,6 +91,12 @@ shadow map; no WPO); moss and leaves culled at ~13-15 m, herbs at 26-42 m with a
 - Mesh lint (`ForestFloorMeshes::Lint`, in `DescribeState`): degenerate triangles, UV stretch (UVs in metres), coplanar
   overlapping faces of different parts, NaNs; every debris kind must read 0.
 - `tools/bench_forest.sh nofloor floorhalf`: one-process A/B.
+- `unreal/scripts/audit_forestfloor.sh` (offscreen `-game`, winter): the Academgorodok's square, yard and garden with
+  the old placement (`lyud.ForestFloor.Guard -1`, `FLOOR_BEFORE=0` for the mask-only one) and the guarded one, a forest view, then `AForestFloor::AuditMap` lays
+  out every cell of the map without showing it and counts pieces outside the woods or within 15 m of paving, a yard or a
+  built footprint (must be 0), writing the 2 m occupancy to `Saved/ForestFloorAudit/*.ffa`; `tools/forestfloor_audit.py`
+  checks those files against `world_map.py`'s zones (Academgorodok, town, streets, club path, forecourt, promenade,
+  stations, pylons, houses, beach, outside the old/wet tiles) independently of the walk grid.
 - Terrain relief without UE: build `TerrainGen.cpp` with a small clang++ driver (docs/terrain.md).
 
 ## Known gaps

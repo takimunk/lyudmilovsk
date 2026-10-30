@@ -13,6 +13,9 @@
 #include "HAL/IConsoleManager.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "LandscapeHeightfieldCollisionComponent.h"
+#include "LandscapeProxy.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "MeshDescription.h"
@@ -47,6 +50,8 @@ static TAutoConsoleVariable<int32> CVarFloorShadows(TEXT("lyud.ForestFloor.Shado
 static TAutoConsoleVariable<int32> CVarFloorDebug(TEXT("lyud.ForestFloor.Debug"), 0, TEXT("1: print the forest floor's state on screen."));
 static TAutoConsoleVariable<float> CVarFloorWet(TEXT("lyud.ForestFloor.Wet"), -1.f, TEXT("Force the forest floor's wetness 0..1 (negative: the weather's)."));
 static TAutoConsoleVariable<float> CVarFloorRime(TEXT("lyud.ForestFloor.Rime"), -1.f, TEXT("Force rime on the litter and the moss 0..1 (negative: the weather's)."));
+static TAutoConsoleVariable<int32> CVarFloorGuard(TEXT("lyud.ForestFloor.Guard"), 1,
+	TEXT("1: the floor lies only on wild forest ground, 15 m from anything built, among enough trees. Tests: 0 anywhere the terrain mask allows, as before; -1 as before on a ground built without the mask's forest channel (any landscape among any trees)."));
 static TAutoConsoleVariable<float> CVarFloorDry(TEXT("lyud.ForestFloor.Dry"), -1.f, TEXT("Force drought on the litter 0..1 (negative: the weather's)."));
 
 namespace
@@ -58,6 +63,24 @@ namespace
 	constexpr float TreeCell = 1000.f;
 	constexpr int32 LitterN = 128;
 	constexpr float LitterCell = 150.f;
+	/** The floor keeps this far (cm) from anything built: paving, yards, buildings, stations, roofs. */
+	constexpr float KeepOffBuilt = 1500.f;
+	/** Wild trees it needs about: any piece within SmallTreeR, a log, stump, boulder, branch or root within BigTreeR. */
+	constexpr float SmallTreeR = 1200.f, BigTreeR = 1500.f;
+	constexpr int32 SmallTrees = 3, BigTrees = 6;
+	/** Built things larger than this (the coast's slabs, the rail bank) are left to the ground trace. */
+	constexpr float MaxBuiltBox = 30000.f;
+	/** Walk grid kinds (tools/animal_map.py, LyudAnimals::EGround). */
+	enum : uint8 { WalkBlocked = 0, WalkGrass = 1, WalkPaved = 2, WalkYard = 3, WalkSand = 4, WalkForest = 5 };
+	/** A site cell beyond the walk grid (the upland and the hills round the valley): wild land, its trees decide. */
+	constexpr uint8 SiteBeyond = 7;
+	/** Trees of these species stand only in towns and gardens: their forests are not wild woods. */
+	bool IsTownSpecies(FName S)
+	{
+		const FString N = S.ToString();
+		return N.Contains(TEXT("Maple")) || N.Contains(TEXT("Apple")) || N.Contains(TEXT("Poplar")) || N.Contains(TEXT("Lime")) || N.Contains(TEXT("Chestnut"));
+	}
+
 	/** Bands of the layout: what is only worth drawing close by is laid out only close by. */
 	constexpr float BandReach[3] = { 1800.f, 4200.f, 7000.f };
 
@@ -159,6 +182,8 @@ struct AForestFloor::FKind
 	bool bAlign = false;
 	float ScaleMin = 0.8f, ScaleMax = 1.2f;
 	float Sink = 0.f;
+	/** Logs, stumps, boulders, branches, roots: they need a real wood about them. */
+	bool bBig = false;
 };
 
 namespace
@@ -412,7 +437,7 @@ void AForestFloor::BuildTreeIndex()
 	TreeGrid.Reset();
 	TreeCount = 0;
 	ForestTreeSum = 0;
-	auto Add = [&](FName Species, const FVector& At, float Age)
+	auto Add = [&](FName Species, const FVector& At, float Age, bool bWild)
 	{
 		const FPlantSpecies* S = PlantSpeciesLibrary::Find(Species);
 		if (!S || S->Herb.Form != EPlantHerbForm::None) return;
@@ -423,19 +448,204 @@ void AForestFloor::BuildTreeIndex()
 		const int32 C = ClassOf(Species);
 		T.Class = (uint8)FMath::Min(C, 255);
 		T.Crown = FMath::Clamp(T.Height * (GClasses[C].bConifer ? 0.18f : 0.26f), 120.f, 650.f);
+		T.bWild = bWild;
 		TreeGrid.FindOrAdd(FIntPoint(FMath::FloorToInt(At.X / TreeCell), FMath::FloorToInt(At.Y / TreeCell))).Add(T);
 		TreeCount++;
 	};
 	for (TActorIterator<AProceduralForest> It(GetWorld()); It; ++It)
 	{
 		ForestTreeSum += It->NumTrees();
-		It->ForEachTree([&](FName Species, const FTransform& Xf, float Age) { Add(Species, Xf.GetLocation(), Age); });
+		// the wild woods: not the Academgorodok's garden, not the town's trees between the houses
+		bool bWild = !It->Tags.Contains(TEXT("Academ"));
+		for (const FForestMix& M : It->Mix) bWild &= !IsTownSpecies(M.Species);
+		It->ForEachTree([&](FName Species, const FTransform& Xf, float Age) { Add(Species, Xf.GetLocation(), Age, bWild); });
 	}
 	for (TActorIterator<AProceduralPlant> It(GetWorld()); It; ++It)
 	{
 		// the live plants a forest swaps in stand where its own tree is; only count those of nobody's forest (the club's pines, the alley)
-		if (It->GetOwner() == nullptr && !It->IsHidden()) Add(It->Species, It->GetActorLocation(), It->AgeAtStart);
+		if (It->GetOwner() == nullptr && !It->IsHidden()) Add(It->Species, It->GetActorLocation(), It->AgeAtStart, false);
 	}
+	BuildSites();
+}
+
+int32 AForestFloor::WildTreesNear(float X, float Y, float Radius) const
+{
+	int32 N = 0;
+	ForTreesNear(FVector(X, Y, 0.0), Radius, [&](const FTreeRef& T, float) { N += T.bWild ? 1 : 0; });
+	return N;
+}
+
+void AForestFloor::BuildSites()
+{
+	SiteForest.Reset();
+	SiteClear.Reset();
+	SiteKind.Reset();
+	BuiltBoxes.Reset();
+	SiteNX = SiteNY = 0;
+	TArray<uint8> Bin;
+	FFileHelper::LoadFileToArray(Bin, *(FPaths::ProjectContentDir() / TEXT("AnimalsData/animal_world.bin")));
+	if (Bin.Num() < 24 || FMemory::Memcmp(Bin.GetData(), "AWG1", 4) != 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ForestFloor: no walk grid (AnimalsData/animal_world.bin): no forest floor anywhere"));
+		return;
+	}
+	int32 WNX, WNY;
+	float X0, Y0, Cell;
+	FMemory::Memcpy(&WNX, Bin.GetData() + 4, 4);
+	FMemory::Memcpy(&WNY, Bin.GetData() + 8, 4);
+	FMemory::Memcpy(&X0, Bin.GetData() + 12, 4);
+	FMemory::Memcpy(&Y0, Bin.GetData() + 16, 4);
+	FMemory::Memcpy(&Cell, Bin.GetData() + 20, 4);
+	const int64 N = int64(WNX) * WNY;
+	const int64 KindsAt = 24 + N * 2;
+	if (WNX <= 0 || WNY <= 0 || Bin.Num() < KindsAt + N)
+	{
+		return;
+	}
+	// the walk grid covers the town's valley; the site grid runs on its lattice over the whole of the wild woods too
+	double MinX = X0 * 100.0, MinY = Y0 * 100.0, MaxX = (X0 + (WNX - 1) * Cell) * 100.0, MaxY = (Y0 + (WNY - 1) * Cell) * 100.0;
+	for (const TPair<FIntPoint, TArray<FTreeRef>>& P : TreeGrid)
+	{
+		for (const FTreeRef& T : P.Value)
+		{
+			if (!T.bWild) continue;
+			MinX = FMath::Min(MinX, T.At.X - 5000.0); MaxX = FMath::Max(MaxX, T.At.X + 5000.0);
+			MinY = FMath::Min(MinY, T.At.Y - 5000.0); MaxY = FMath::Max(MaxY, T.At.Y + 5000.0);
+		}
+	}
+	SiteCellCm = Cell * 100.f;
+	const int32 OX = FMath::CeilToInt((X0 * 100.0 - MinX) / SiteCellCm), OY = FMath::CeilToInt((Y0 * 100.0 - MinY) / SiteCellCm);
+	SiteOrigin = FVector2D(X0 * 100.0 - OX * SiteCellCm, Y0 * 100.0 - OY * SiteCellCm);
+	SiteNX = FMath::CeilToInt((MaxX - SiteOrigin.X) / SiteCellCm) + 1;
+	SiteNY = FMath::CeilToInt((MaxY - SiteOrigin.Y) / SiteCellCm) + 1;
+	const int64 SN = int64(SiteNX) * SiteNY;
+	SiteKind.Init(SiteBeyond, SN);
+	for (int32 Y = 0; Y < WNY; Y++)
+		for (int32 X = 0; X < WNX; X++)
+			SiteKind[int64(Y + OY) * SiteNX + X + OX] = Bin[KindsAt + int64(Y) * WNX + X] & 7;
+	const int16* Zw = (const int16*)(Bin.GetData() + 24);
+	// forest ground: the wild woods' cells, the steep ones among them (blocked for walkers, still forest; not the sea),
+	// and beyond the walk grid the wild forests' own tiles (AProceduralForest's extent)
+	SiteForest.SetNumZeroed(SN);
+	for (TActorIterator<AProceduralForest> It(GetWorld()); It; ++It)
+	{
+		bool bWild = !It->Tags.Contains(TEXT("Academ"));
+		for (const FForestMix& M : It->Mix) bWild &= !IsTownSpecies(M.Species);
+		if (!bWild) continue;
+		const FVector L = It->GetActorLocation();
+		const int32 IX0 = FMath::Max(FMath::CeilToInt((L.X - It->HalfExtent.X - SiteOrigin.X) / SiteCellCm), 0), IX1 = FMath::Min(FMath::FloorToInt((L.X + It->HalfExtent.X - SiteOrigin.X) / SiteCellCm), SiteNX - 1);
+		const int32 IY0 = FMath::Max(FMath::CeilToInt((L.Y - It->HalfExtent.Y - SiteOrigin.Y) / SiteCellCm), 0), IY1 = FMath::Min(FMath::FloorToInt((L.Y + It->HalfExtent.Y - SiteOrigin.Y) / SiteCellCm), SiteNY - 1);
+		for (int32 Y = IY0; Y <= IY1; Y++)
+			for (int32 X = IX0; X <= IX1; X++)
+				if (SiteKind[int64(Y) * SiteNX + X] == SiteBeyond) SiteForest[int64(Y) * SiteNX + X] = 1;
+	}
+	const int32 Steep = 3;
+	for (int32 Y = 0; Y < SiteNY; Y++)
+	{
+		for (int32 X = 0; X < SiteNX; X++)
+		{
+			const int64 I = int64(Y) * SiteNX + X;
+			if (SiteKind[I] == WalkForest) { SiteForest[I] = 1; continue; }
+			if (SiteKind[I] == SiteBeyond) continue;
+			if (SiteKind[I] != WalkBlocked || Zw[int64(Y - OY) * WNX + X - OX] <= -4200) continue;
+			for (int32 J = FMath::Max(Y - Steep, 0); J <= FMath::Min(Y + Steep, SiteNY - 1) && !SiteForest[I]; J++)
+				for (int32 K = FMath::Max(X - Steep, 0); K <= FMath::Min(X + Steep, SiteNX - 1); K++)
+					if (SiteKind[int64(J) * SiteNX + K] == WalkForest) { SiteForest[I] = 1; break; }
+		}
+	}
+	const ALandscapeProxy* Land = nullptr;
+	for (TActorIterator<ALandscapeProxy> It(GetWorld()); It && !Land; ++It) Land = *It;
+	const int32 NX = SiteNX, NY = SiteNY;
+	// what is built: paved and yard cells, and the footprints of the actors nothing may grow on
+	TArray<float> D;
+	D.Init(1e9f, SN);
+	for (int64 I = 0; I < SN; I++) if (SiteKind[I] == WalkPaved || SiteKind[I] == WalkYard) D[I] = 0.f;
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	{
+		const AActor* A = *It;
+		if (!(A->Tags.Contains(TEXT("NoTree")) || A->Tags.Contains(TEXT("NoGrass")) || A->Tags.Contains(TEXT("Roof")))) continue;
+		TArray<UPrimitiveComponent*> Prims;
+		A->GetComponents(Prims);
+		for (const UPrimitiveComponent* P : Prims)
+		{
+			if (!P->IsRegistered()) continue;
+			const FBox B = P->Bounds.GetBox();
+			if (!B.IsValid || B.GetSize().X > MaxBuiltBox || B.GetSize().Y > MaxBuiltBox) continue;
+			if (B.Max.X < SiteOrigin.X || B.Max.Y < SiteOrigin.Y || B.Min.X > SiteOrigin.X + NX * SiteCellCm || B.Min.Y > SiteOrigin.Y + NY * SiteCellCm) continue;
+			const int32 IX0 = FMath::Clamp(FMath::FloorToInt((B.Min.X - SiteOrigin.X) / SiteCellCm), 0, NX - 1), IX1 = FMath::Clamp(FMath::CeilToInt((B.Max.X - SiteOrigin.X) / SiteCellCm), 0, NX - 1);
+			const int32 IY0 = FMath::Clamp(FMath::FloorToInt((B.Min.Y - SiteOrigin.Y) / SiteCellCm), 0, NY - 1), IY1 = FMath::Clamp(FMath::CeilToInt((B.Max.Y - SiteOrigin.Y) / SiteCellCm), 0, NY - 1);
+			// only what stands on the ground (not a rope or a cabin high over the woods)
+			const TOptional<float> G = Land ? Land->GetHeightAtLocation(B.GetCenter()) : TOptional<float>();
+			if (G.IsSet() && B.Min.Z > G.GetValue() + 800.f) continue;
+			for (int32 Y = IY0; Y <= IY1; Y++)
+				for (int32 X = IX0; X <= IX1; X++)
+					D[int64(Y) * NX + X] = 0.f;
+			BuiltBoxes.Add(B);
+		}
+	}
+	// metres to the nearest built cell (two-pass chamfer distance)
+	const float Dg = SiteCellCm * UE_SQRT_2;
+	for (int32 Y = 0; Y < NY; Y++)
+	{
+		for (int32 X = 0; X < NX; X++)
+		{
+			float& V = D[int64(Y) * NX + X];
+			if (X > 0) V = FMath::Min(V, D[int64(Y) * NX + X - 1] + SiteCellCm);
+			if (Y > 0)
+			{
+				V = FMath::Min(V, D[int64(Y - 1) * NX + X] + SiteCellCm);
+				if (X > 0) V = FMath::Min(V, D[int64(Y - 1) * NX + X - 1] + Dg);
+				if (X < NX - 1) V = FMath::Min(V, D[int64(Y - 1) * NX + X + 1] + Dg);
+			}
+		}
+	}
+	for (int32 Y = NY - 1; Y >= 0; Y--)
+	{
+		for (int32 X = NX - 1; X >= 0; X--)
+		{
+			float& V = D[int64(Y) * NX + X];
+			if (X < NX - 1) V = FMath::Min(V, D[int64(Y) * NX + X + 1] + SiteCellCm);
+			if (Y < NY - 1)
+			{
+				V = FMath::Min(V, D[int64(Y + 1) * NX + X] + SiteCellCm);
+				if (X < NX - 1) V = FMath::Min(V, D[int64(Y + 1) * NX + X + 1] + Dg);
+				if (X > 0) V = FMath::Min(V, D[int64(Y + 1) * NX + X - 1] + Dg);
+			}
+		}
+	}
+	SiteClear.SetNumUninitialized(SN);
+	int64 Ok = 0;
+	for (int64 I = 0; I < SN; I++)
+	{
+		// a cell's centre may lie a cell's half diagonal off the point asked, a built edge half a cell off the cell that
+		// marks it, a piece up to 1 m off the ground's vertices that allowed it: keep that much further away
+		SiteClear[I] = (uint8)FMath::Clamp((D[I] - SiteCellCm * 1.21f - 100.f) / 100.f, 0.f, 255.f);
+		Ok += SiteForest[I] && SiteClear[I] * 100.f >= KeepOffBuilt ? 1 : 0;
+	}
+	UE_LOG(LogTemp, Log, TEXT("ForestFloor: sites %d x %d (%.0f cm), %lld forest floor cells (%.1f%%), %d built footprints"),
+		SiteNX, SiteNY, SiteCellCm, Ok, 100.0 * Ok / SN, BuiltBoxes.Num());
+}
+
+bool AForestFloor::SiteCell(double X, double Y, int32& OutIndex) const
+{
+	if (SiteNX <= 0) return false;
+	const int32 IX = FMath::RoundToInt((X - SiteOrigin.X) / SiteCellCm), IY = FMath::RoundToInt((Y - SiteOrigin.Y) / SiteCellCm);
+	if (IX < 0 || IY < 0 || IX >= SiteNX || IY >= SiteNY) return false;
+	OutIndex = IY * SiteNX + IX;
+	return true;
+}
+
+float AForestFloor::SiteAt(FVector Location) const
+{
+	int32 I;
+	return SiteCell(Location.X, Location.Y, I) && SiteForest[I] && SiteClear[I] * 100.f >= KeepOffBuilt ? 1.f : 0.f;
+}
+
+float AForestFloor::SiteSoft(double X, double Y) const
+{
+	int32 I;
+	if (!SiteCell(X, Y, I) || !SiteForest[I]) return 0.f;
+	return SmoothStep(KeepOffBuilt * 0.004f, KeepOffBuilt * 0.01f, (float)SiteClear[I]);
 }
 
 float AForestFloor::SnowDepthAt(const FVector& At) const
@@ -614,6 +824,8 @@ void AForestFloor::EnsureKinds()
 	for (int32 I = 0; I < Kinds.Num(); I++)
 	{
 		Kinds[I]->Comp = Comps.Add(MakeComp(this, I));
+		const FString Nm = Kinds[I]->Name.ToString();
+		Kinds[I]->bBig = Kinds[I]->Type == EKindType::Debris && (Kinds[I]->bCollision || Nm.StartsWith(TEXT("Branch_")) || Nm.StartsWith(TEXT("Roots_")));
 		BuildKind(*Kinds[I]);
 		MaxReach = FMath::Max(MaxReach, Kinds[I]->Cull);
 	}
@@ -840,7 +1052,9 @@ void AForestFloor::TraceCell(const FIntPoint& C, FCell& Cell)
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(ForestFloorGround), false, this);
 	FCollisionObjectQueryParams Obj(ECC_WorldStatic);
 	const ULyudTerrainMask* Mask = ULyudTerrainMask::Get();
-	const bool bMask = Mask && Mask->HasForestFloor();
+	const int32 Guard = CVarFloorGuard.GetValueOnGameThread();
+	const bool bMask = Mask && Mask->HasForestFloor() && Guard >= 0;
+	const bool bGuard = Guard > 0;
 	const double X0 = GridOrigin.X + C.X * (double)CellSize, Y0 = GridOrigin.Y + C.Y * (double)CellSize;
 	const float Step = CellSize / 8.f;
 	for (int32 J = 0; J <= 8; J++)
@@ -848,6 +1062,15 @@ void AForestFloor::TraceCell(const FIntPoint& C, FCell& Cell)
 		for (int32 I = 0; I <= 8; I++)
 		{
 			const double X = X0 + I * Step, Y = Y0 + J * Step;
+			// never in the town, the Academgorodok, a yard, on or by a path or a building: the wild woods' own ground,
+			// 15 m clear of anything built, among trees (a lone garden tree or the alley's make no forest floor)
+			// (the trees counted a metre closer than a piece asks: it may lie that far off the vertex)
+			if (bGuard && (SiteAt(FVector(X, Y, 0.0)) <= 0.f || WildTreesNear(X, Y, SmallTreeR - 100.f) < SmallTrees))
+			{
+				Cell.Ground[J * 9 + I] = -1e9f;
+				Cell.Floor[J * 9 + I] = 0;
+				continue;
+			}
 			FHitResult Hit;
 			float Z = -1e9f;
 			uint8 F = 0;
@@ -905,12 +1128,14 @@ void AForestFloor::LayCell(const FIntPoint& C, FCell& Cell, int32 Band)
 	const ULyudTerrainMask* Mask = ULyudTerrainMask::Get();
 	const float Scale = DensityScale * CVarFloorDensity.GetValueOnGameThread();
 	const uint32 CellKey = HashCombineFast(GetTypeHash(C), (uint32)Seed);
+	const bool bGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
 
 	auto Place = [&](FKind& K, int32 KindIndex, float X, float Y, float Yaw, float S, float C0, float C1, float Pitch = 0.f, float Roll = 0.f) -> bool
 	{
 		float Nz = 1.f, F = 0.f;
 		const float Z = GroundAt(Cell, C, X, Y, Nz, F);
 		if (F <= 0.f || Nz < 0.72f) return false;
+		if (K.bBig && bGuard && WildTreesNear(X, Y, BigTreeR) < BigTrees) return false;
 		FCellItem It;
 		FQuat4f Q = FQuat4f(FRotator3f(Pitch, Yaw, Roll));
 		if (K.bAlign)
@@ -1062,11 +1287,12 @@ void AForestFloor::CommitKind(int32 Index)
 	{
 		// leaves falling under the deciduous crowns round the camera: the material moves them; here only where and how high
 		const float Day = CurrentDay();
+		const bool bGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
 		int32 N = 0;
 		ForTreesNear(Centre, K.Cull, [&](const FTreeRef& T, float D)
 		{
 			const FTreeClass& Cl = GClasses[T.Class];
-			if (Cl.bConifer || N >= 600) return;
+			if (Cl.bConifer || N >= 600 || (bGuard && !T.bWild)) return;
 			const float Rate = SmoothStep(Cl.DropStart - 10.f, Cl.DropStart + 5.f, Day) * (1.f - SmoothStep(Cl.Bare - 5.f, Cl.Bare + 3.f, Day));
 			const int32 Count = FMath::RoundToInt(Rate * 14.f);
 			for (int32 I = 0; I < Count; I++)
@@ -1074,6 +1300,7 @@ void AForestFloor::CommitKind(int32 Index)
 				const uint32 H = (uint32)(T.At.X * 7.f + T.At.Y * 13.f) + I * 7919;
 				const float A = Hash01(H, 1) * 2.f * PI, R = FMath::Sqrt(Hash01(H, 2)) * T.Crown;
 				const FVector At(T.At.X + FMath::Cos(A) * R, T.At.Y + FMath::Sin(A) * R, T.At.Z);
+				if (bGuard && SiteAt(At) <= 0.f) continue;
 				Xfs.Add(FTransform(FRotator(0.f, Hash01(H, 3) * 360.f, 0.f), At, FVector(1.f)));
 				Custom.Add(T.Height * (0.45f + 0.4f * Hash01(H, 4)));   // the height it falls from
 				Custom.Add(Hash01(H, 5));                                // its phase
@@ -1143,6 +1370,114 @@ void AForestFloor::RebuildAround(FVector Location)
 	UpdateLitterField(Location, CurrentDay(), true);
 	LaidDay = CurrentDay();
 	bStarted = true;
+}
+
+FString AForestFloor::AuditMap(const FString& OutFile, FVector Location, float Radius)
+{
+	if (TreeCount == 0 || ForestTreeSum < 0) BuildTreeIndex();
+	EnsureKinds();
+	if (SiteNX <= 0) return TEXT("audit: no walk grid");
+	const double T0 = FPlatformTime::Seconds();
+	const bool bGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
+	// 0 nothing, 1 a piece lies in this 2 m cell, 2 a big one (log, stump, boulder, branch, roots)
+	TArray<uint8> Occ;
+	Occ.SetNumZeroed(int64(SiteNX) * SiteNY);
+	int64 Items = 0, Big = 0, FewTrees = 0;
+	int32 CellsLaid = 0;
+	const int32 N = FMath::CeilToInt(Radius / CellSize);
+	const FIntPoint C0(FMath::FloorToInt((Location.X - GridOrigin.X) / CellSize), FMath::FloorToInt((Location.Y - GridOrigin.Y) / CellSize));
+	for (int32 Y = -N; Y <= N; Y++)
+	{
+		for (int32 X = -N; X <= N; X++)
+		{
+			const FIntPoint C(C0.X + X, C0.Y + Y);
+			const FVector Mid(GridOrigin.X + (C.X + 0.5) * CellSize, GridOrigin.Y + (C.Y + 0.5) * CellSize, 0.0);
+			if (FVector::DistSquared2D(Mid, Location) > FMath::Square(Radius)) continue;
+			int32 Dummy;
+			if (!SiteCell(Mid.X, Mid.Y, Dummy)) continue;
+			FCell Cell;
+			TraceCell(C, Cell);
+			bool bAny = false;
+			for (uint8 F : Cell.Floor) bAny |= F > 0;
+			if (!bAny) continue;
+			for (int32 B = 0; B < 3; B++) LayCell(C, Cell, B);
+			CellsLaid++;
+			for (const FCellItem& It : Cell.Items)
+			{
+				const FVector3f At = It.Xf.GetLocation();
+				int32 I;
+				if (!SiteCell(At.X, At.Y, I)) continue;
+				const bool bBig = Kinds[It.Kind]->bBig;
+				Occ[I] = FMath::Max<uint8>(Occ[I], bBig ? 2 : 1);
+				Items++;
+				Big += bBig ? 1 : 0;
+				FewTrees += WildTreesNear(At.X, At.Y, bBig ? BigTreeR : SmallTreeR) < (bBig ? BigTrees : SmallTrees) ? 1 : 0;
+			}
+		}
+	}
+	// every occupied cell checked by brute force on the walk grid itself and the built footprints (not the site field)
+	TMap<FIntPoint, TArray<int32>> BoxBuckets;
+	const float Bucket = 5000.f;
+	for (int32 I = 0; I < BuiltBoxes.Num(); I++)
+	{
+		const FBox& B = BuiltBoxes[I];
+		for (int32 Y = FMath::FloorToInt((B.Min.Y - KeepOffBuilt) / Bucket); Y <= FMath::FloorToInt((B.Max.Y + KeepOffBuilt) / Bucket); Y++)
+			for (int32 X = FMath::FloorToInt((B.Min.X - KeepOffBuilt) / Bucket); X <= FMath::FloorToInt((B.Max.X + KeepOffBuilt) / Bucket); X++)
+				BoxBuckets.FindOrAdd(FIntPoint(X, Y)).Add(I);
+	}
+	int64 OutsideForest = 0, NearPaved = 0, NearBuilt = 0, BigBad = 0;
+	const int32 R = FMath::CeilToInt(KeepOffBuilt / SiteCellCm);
+	for (int32 Y = 0; Y < SiteNY; Y++)
+	{
+		for (int32 X = 0; X < SiteNX; X++)
+		{
+			const int64 I = int64(Y) * SiteNX + X;
+			if (!Occ[I]) continue;
+			const double Wx = SiteOrigin.X + X * SiteCellCm, Wy = SiteOrigin.Y + Y * SiteCellCm;
+			// outside the woods: not a forest cell, nor a steep one next to forest cells
+			bool bForest = SiteKind[I] == WalkForest || (SiteKind[I] == SiteBeyond && SiteForest[I]);
+			for (int32 J = FMath::Max(Y - 3, 0); J <= FMath::Min(Y + 3, SiteNY - 1) && !bForest && SiteKind[I] == WalkBlocked; J++)
+				for (int32 K = FMath::Max(X - 3, 0); K <= FMath::Min(X + 3, SiteNX - 1); K++)
+					bForest |= SiteKind[int64(J) * SiteNX + K] == WalkForest;
+			bool bPaved = false;
+			for (int32 J = FMath::Max(Y - R, 0); J <= FMath::Min(Y + R, SiteNY - 1) && !bPaved; J++)
+			{
+				for (int32 K = FMath::Max(X - R, 0); K <= FMath::Min(X + R, SiteNX - 1); K++)
+				{
+					const uint8 Kd = SiteKind[int64(J) * SiteNX + K];
+					if ((Kd == WalkPaved || Kd == WalkYard) && FMath::Square((J - Y) * SiteCellCm) + FMath::Square((K - X) * SiteCellCm) < FMath::Square(KeepOffBuilt)) { bPaved = true; break; }
+				}
+			}
+			bool bBuilt = false;
+			if (const TArray<int32>* L = BoxBuckets.Find(FIntPoint(FMath::FloorToInt(Wx / Bucket), FMath::FloorToInt(Wy / Bucket))))
+			{
+				for (int32 BI : *L)
+				{
+					const FBox& B = BuiltBoxes[BI];
+					const double Dx = FMath::Max3(B.Min.X - Wx, 0.0, Wx - B.Max.X), Dy = FMath::Max3(B.Min.Y - Wy, 0.0, Wy - B.Max.Y);
+					if (Dx * Dx + Dy * Dy < FMath::Square(KeepOffBuilt - SiteCellCm * 0.71f)) { bBuilt = true; break; }
+				}
+			}
+			OutsideForest += bForest ? 0 : 1;
+			NearPaved += bPaved ? 1 : 0;
+			NearBuilt += bBuilt ? 1 : 0;
+			BigBad += Occ[I] == 2 && (!bForest || bPaved || bBuilt) ? 1 : 0;
+		}
+	}
+	if (!OutFile.IsEmpty())
+	{
+		TArray<uint8> Out;
+		Out.Append((const uint8*)"FFA1", 4);
+		const float Hdr[3] = { float(SiteOrigin.X / 100.0), float(SiteOrigin.Y / 100.0), SiteCellCm / 100.f };
+		Out.Append((const uint8*)&SiteNX, 4);
+		Out.Append((const uint8*)&SiteNY, 4);
+		Out.Append((const uint8*)Hdr, sizeof(Hdr));
+		Out.Append(Occ);
+		FFileHelper::SaveArrayToFile(Out, *OutFile);
+	}
+	return FString::Printf(TEXT("audit guard %d: %d cells laid, %lld pieces (%lld big) in %.1f s; occupied 2 m cells outside the woods %lld, within 15 m of paving/yard %lld, "
+		"within 15 m of a building/station/roof %lld, big pieces in such cells %lld; pieces with too few wild trees about %lld"),
+		bGuard ? 1 : 0, CellsLaid, Items, Big, FPlatformTime::Seconds() - T0, OutsideForest, NearPaved, NearBuilt, BigBad, FewTrees);
 }
 
 int32 AForestFloor::NumInstances() const
@@ -1219,17 +1554,21 @@ void AForestFloor::UpdateLitterField(const FVector& Camera, float Day, bool bFor
 	LitterCentre = Want;
 	LitterDay = Day;
 	const double X0 = Want.X - LitterN * LitterCell * 0.5, Y0 = Want.Y - LitterN * LitterCell * 0.5;
+	const bool bGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
 	TArray<FFloat16> Data;
 	Data.SetNumUninitialized(LitterN * LitterN * 4);
 	for (int32 J = 0; J < LitterN; J++)
 	{
 		for (int32 I = 0; I < LitterN; I++)
 		{
-			const FForestLitter L = LitterFrom(FVector(X0 + (I + 0.5) * LitterCell, Y0 + (J + 0.5) * LitterCell, 0.0), Day);
+			const double X = X0 + (I + 0.5) * LitterCell, Y = Y0 + (J + 0.5) * LitterCell;
+			const FForestLitter L = LitterFrom(FVector(X, Y, 0.0), Day);
+			// no litter on the ground in the town, the yards, by the paths: it fades in from 6 to 15 m off them
+			const float Site = bGuard ? SiteSoft(X, Y) : 1.f;
 			const int32 O = (J * LitterN + I) * 4;
 			// R needles, G leaves, B their hue, A their decay
-			Data[O] = FFloat16(L.Needles);
-			Data[O + 1] = FFloat16(L.Leaves);
+			Data[O] = FFloat16(L.Needles * Site);
+			Data[O + 1] = FFloat16(L.Leaves * Site);
 			Data[O + 2] = FFloat16(L.Hue);
 			Data[O + 3] = FFloat16(L.Decay);
 		}
@@ -1243,6 +1582,18 @@ void AForestFloor::UpdateLitterField(const FVector& Camera, float Day, bool bFor
 }
 
 // ------------------------------------------------------------------------------------------------------------ tick
+
+void AForestFloor::ResetLayout()
+{
+	Cells.Reset();
+	ClearKinds();
+	for (UHierarchicalInstancedStaticMeshComponent* C : Comps) C->DestroyComponent();
+	Comps.Reset();
+	KeepAlive.Reset();
+	Centre = FVector(1e12);
+	LitterCentre = FVector2D(1e12, 1e12);
+	bStarted = false;
+}
 
 void AForestFloor::Tick(float DeltaSeconds)
 {
@@ -1266,15 +1617,14 @@ void AForestFloor::Tick(float DeltaSeconds)
 		if (Sum != ForestTreeSum)
 		{
 			BuildTreeIndex();
-			Cells.Reset();
-			ClearKinds();
-			for (UHierarchicalInstancedStaticMeshComponent* C : Comps) C->DestroyComponent();
-			Comps.Reset();
-			KeepAlive.Reset();
-			Centre = FVector(1e12);
-			LitterCentre = FVector2D(1e12, 1e12);
-			bStarted = false;
+			ResetLayout();
 		}
+	}
+	const int32 Guard = CVarFloorGuard.GetValueOnGameThread();
+	if (Guard != GuardShown)
+	{
+		if (GuardShown != MIN_int32) ResetLayout();
+		GuardShown = Guard;
 	}
 	if (TreeCount == 0) return;
 	EnsureKinds();

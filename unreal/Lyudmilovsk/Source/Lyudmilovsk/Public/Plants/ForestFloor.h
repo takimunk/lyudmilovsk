@@ -86,6 +86,15 @@ public:
 	/** One line per kind: instances, triangles, cull, and the mesh lint (degenerate, stretched, overlapping faces). */
 	UFUNCTION(BlueprintCallable, Category = "Floor") FString DescribeState() const;
 	UFUNCTION(BlueprintCallable, Category = "Floor") float CurrentDay() const;
+	/**
+	 * Lays out every cell within Radius of Centre the way the floor would (nothing is shown) and checks each piece
+	 * against the built world: the walk grid's paved and yard cells and the NoTree/NoGrass/Roof actors within 15 m, the
+	 * forest ground under it, the wild trees about it. Writes the 2 m occupancy (0 none, 1 a piece, 2 a big one) to
+	 * OutFile (FFA1, the walk grid's frame) for tools/forestfloor_audit.py. Returns a summary line.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Floor") FString AuditMap(const FString& OutFile, FVector Centre, float Radius);
+	/** 1 where the floor may lie (wild forest ground, 15 m from anything built), 0 elsewhere. */
+	UFUNCTION(BlueprintCallable, Category = "Floor") float SiteAt(FVector Location) const;
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
@@ -100,6 +109,8 @@ public:
 		float TrunkR = 0.f;
 		/** Index into the floor's tree classes (needles, leaf fall days, leaf hue, cone kind). */
 		uint8 Class = 0;
+		/** A tree of the wild woods (not a town's, a garden's, an alley's or a lone planted one). */
+		bool bWild = false;
 	};
 	struct FCellItem
 	{
@@ -137,10 +148,30 @@ private:
 	FForestLitter LitterFrom(const FVector& At, float Day) const;
 	template <typename FFn> void ForTreesNear(const FVector& At, float Radius, FFn&& Fn) const;
 	float SnowDepthAt(const FVector& At) const;
+	void BuildSites();
+	void ResetLayout();
+	int32 WildTreesNear(float X, float Y, float Radius) const;
+	/** The site grid at a world point: forest ground (0/1) and metres to the nearest built thing. */
+	bool SiteCell(double X, double Y, int32& OutIndex) const;
+	float SiteSoft(double X, double Y) const;
 
 	TArray<FKind*> Kinds;
 	TMap<FIntPoint, FCell> Cells;
 	TMap<FIntPoint, TArray<FTreeRef>> TreeGrid;
+	/**
+	 * Where the floor may lie (BuildSites), on the walk grid's 2 m cells (Content/AnimalsData/animal_world.bin, built by
+	 * tools/animal_map.py from tools/world_map.py's zones): the forest ground of the wild woods (not the town, the
+	 * Academgorodok, the beach), and the metres from each cell to the nearest built thing (paved, a yard, a building's,
+	 * station's or roof's footprint: the NoTree/NoGrass/Roof actors).
+	 */
+	TArray<uint8> SiteForest;
+	TArray<uint8> SiteClear;
+	TArray<uint8> SiteKind;
+	TArray<FBox> BuiltBoxes;
+	int32 SiteNX = 0, SiteNY = 0;
+	FVector2D SiteOrigin = FVector2D::ZeroVector;
+	float SiteCellCm = 200.f;
+	int32 GuardShown = MIN_int32;
 	int32 TreeCount = 0;
 	int32 ForestTreeSum = -1;
 	double NextTreeCheck = 0.0;
