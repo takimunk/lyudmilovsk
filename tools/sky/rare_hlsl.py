@@ -276,9 +276,11 @@ float a = acos(clamp(dot(v, normalize(F.xyz)), -1.0, 1.0));
 return float3(0.78, 0.84, 1.0) * F.w * (0.03 + exp(-a * a / 0.04) + 0.15 * exp(-a * a / 0.5)) * smoothstep(-0.05, 0.02, v.z);
 """
 
-# A flare on the red dwarf: two ragged, bowed white-hot ribbons either side of the active region's neutral line, a few
-# kernels on them in the first minutes, a soft glow; the ribbons part as it fades. The same disk
-# frame as the sun (sky_hlsl.SUN_HLSL). Inputs: V, S (SunDir), P (Pole), D (SunDisk: radius, luminance, day seed,
+# A flare on the red dwarf, as on real stars: two bright ribbons running either side of the active region's neutral line
+# (the filament channel), soft-edged and warm white-to-yellow, beaded with brighter knots in the first minutes, a gentle
+# glow round them; the ribbons part as it goes on. Near the limb a post-flare loop arcade stands over the ribbons,
+# glowing as the flare fades. Never narrower than ~1.5 pixels (energy kept), so no hard lines or aliasing. The same
+# disk frame as the sun (sky_hlsl.SUN_HLSL). Inputs: V, S (SunDir), P (Pole), D (SunDisk: radius, luminance, day seed,
 # spin), F = Flare (lat, lon from the face turned to us at noon, strength now, peak), Spots (x = the noon spin), Tr.
 FLARE_HLSL = LIB + r"""
 FRareLib L;
@@ -291,43 +293,95 @@ float3 ee = cross(s, nn);
 float3 w = v - s * c;
 float2 u = float2(dot(w, ee), dot(w, nn)) / sin(D.x);
 float r = c > 0.0 ? length(u) : 100.0;
-if (r > 1.6) return 0.0;
-float mu = sqrt(saturate(1.0 - r * r));
-float3 p = float3(u.x, u.y, mu);
+if (r > 1.4) return 0.0;
 float sp = D.w;
-float3 q = float3(p.x * cos(sp) + p.z * sin(sp), p.y, -p.x * sin(sp) + p.z * cos(sp));
+float csp = cos(sp), ssp = sin(sp);
 float lon = Spots.x + F.y;
 float3 fc = float3(cos(F.x) * sin(lon), sin(F.x), cos(F.x) * cos(lon));
-// the ribbons' own frame on the star: turned by an angle of the flare's (the active region's neutral line)
+// the region's centre in the view frame (z toward us): the flare is hidden once it turns behind the limb
+float3 fv = float3(fc.x * csp - fc.z * ssp, fc.y, fc.x * ssp + fc.z * csp);
+if (fv.z < -0.25 || dot(u - fv.xy, u - fv.xy) > 0.09) return 0.0;
+float mu = sqrt(saturate(1.0 - r * r));
+float3 p = float3(u.x, u.y, mu);
+float3 q = float3(p.x * csp + p.z * ssp, p.y, -p.x * ssp + p.z * csp);
+// the ribbons' frame on the star: x along the neutral line (turned by an angle of the region's), y across it
 float3 t1 = normalize(cross(float3(0, 1, 0), fc)), t2 = cross(fc, t1);
-float ang = (F.x * 7.3 + F.y * 3.1);
-float2 x0 = float2(dot(q - fc, t1), dot(q - fc, t2));
-float2 x = float2(x0.x * cos(ang) - x0.y * sin(ang), x0.x * sin(ang) + x0.y * cos(ang));
+float ang = F.x * 7.3 + F.y * 3.1;
+float ca = cos(ang), sa = sin(ang);
+float3 dx = t1 * ca - t2 * sa, dy = t1 * sa + t2 * ca;
+float2 x = float2(dot(q - fc, dx), dot(q - fc, dy));
+float pix = max(fwidth(r), 1e-4);                         // a pixel, in star radii
 float fade = saturate(F.z / max(F.w, 1e-3));
 float len = 0.06 + 0.06 * F.w;
-float sep = 0.012 + 0.035 * (1.0 - fade);               // the ribbons part as the flare goes on
-float s1 = x.x / len;
-float along = smoothstep(1.0, 0.6, abs(s1)) * (0.35 + 0.65 * L.F1(s1 * 6.0 + F.x * 31.0));
-float along2 = smoothstep(1.0, 0.55, abs(s1 + 0.15)) * (0.35 + 0.65 * L.F1(s1 * 6.0 + F.y * 17.0 + 4.0));
-// two J-shaped ribbons either side of the neutral line, bowed and ragged
-float y1 = sep + 0.012 * s1 * s1 + 0.004 * (L.N1(s1 * 9.0 + 2.0) - 0.5);
-float y2 = -sep - 0.010 * s1 * s1 * s1 - 0.004 * (L.N1(s1 * 9.0 + 7.0) - 0.5);
-float wd = 0.0035 + 0.003 * (1.0 - fade);
-float rib = exp(-pow((x.y - y1) / wd, 2.0)) * along + exp(-pow((x.y - y2) / wd, 2.0)) * along2;
-// the first minutes: a few white-hot kernels along the ribbons
+float sl = x.x / len;
+float seed = F.x * 31.7 + F.y * 17.3;
+// the neutral line: a gentle S through the region; the ribbons on either side of it, parting as the flare goes on
+float yN = len * 0.3 * sin(sl * 1.7 + seed) + len * 0.06 * (L.N1(sl * 2.5 + seed) - 0.5);
+float sep = 0.009 + 0.024 * (1.0 - fade);
+float wd0 = 0.005 + 0.004 * (1.0 - fade);
+float pixY = max(fwidth(x.y), pix);                    // foreshortened toward the limb: wider across
+float wd = max(wd0, pixY * 1.5);
+float keep = wd0 / wd;
+float y1 = x.y - (yN + sep * (1.0 + 0.25 * sl * sl)), y2 = x.y - (yN - sep * (1.0 + 0.2 * sl));
+// brightness along each ribbon: smooth bright stretches, no fine raggedness; the second shorter and offset
+float a1 = smoothstep(1.05, 0.45, abs(sl)) * (0.45 + 0.55 * L.F1(sl * 2.6 + seed));
+float a2 = smoothstep(1.0, 0.4, abs(sl + 0.18)) * (0.45 + 0.55 * L.F1(sl * 2.6 + seed + 9.0));
+float rib = (exp(-y1 * y1 / (wd * wd)) * a1 + exp(-y2 * y2 / (wd * wd)) * a2) * keep;
+// a soft halo hugging each ribbon (the bloom of the hot footpoints)
+float halo = (exp(-abs(y1) / (wd * 3.0)) * a1 + exp(-abs(y2) / (wd * 3.0)) * a2) * 0.3;
+// the first minutes: a few soft brighter knots on the ribbons
 float kern = 0.0;
-for (int k = 0; k < 3; k++)
+for (int k = 0; k < 4; k++)
 {
-    float kx = (L.H1(F.x * 13.0 + k) - 0.5) * 1.4 * len;
-    float ky = (k % 2 == 0) ? y1 : y2;
-    float2 dk = x - float2(kx, ky);
-    kern += exp(-dot(dk, dk) / 0.00005) * fade * fade;
+    float ks = (L.H1(seed + k * 1.7) - 0.5) * 1.3;
+    float2 dk = float2(sl - ks, ((k % 2 == 0) ? y1 : y2) / (wd * 1.6));
+    kern += exp(-dk.x * dk.x / 0.004 - dk.y * dk.y) * keep;
 }
-float glow = exp(-dot(x, x) / pow(len * 1.3, 2.0)) * 0.12;
-float face = smoothstep(0.0, 0.15, dot(fc, float3(sin(sp), 0, cos(sp))));
-float onDisk = saturate((1.0 - r) / max(fwidth(r), 1e-4));
-float3 hot = float3(1.0, 0.9, 0.85);
-return hot * (rib * 2.2 + kern * 5.0 + glow) * F.z * face * onDisk * D.y * Tr;
+kern *= fade * fade;
+// the glow over the whole region
+float glow = exp(-dot(x, x) / pow(len * 1.3, 2.0)) * 0.3;
+float face = smoothstep(-0.02, 0.12, fv.z);
+float onDisk = saturate((1.0 - r) / pix);
+float3 core = float3(1.0, 0.86, 0.6), warm = float3(1.0, 0.62, 0.28);
+float3 col = (lerp(warm, core, saturate(rib)) * (rib * 0.8 + kern * 0.9) + warm * (halo + glow)) * onDisk * face;
+// the post-flare loop arcade: loops bridging the two ribbons across the neutral line, standing over them; seen on
+// the limb (in front of the disk they are lost against it), glowing as the flare fades
+float limbish = smoothstep(0.45, 0.1, fv.z) * smoothstep(-0.25, 0.0, fv.z);
+if (limbish > 0.0 && fade < 0.97)
+{
+    float best = 1e9, bh = 0.0;
+    const int NL = 6;
+    const int NS = 7;
+    float hL = sep * 1.6 + 0.035;
+    for (int j = 0; j < NL; j++)
+    {
+        float sj = -0.75 + 1.5 * (j + 0.5) / NL;
+        float yj = len * 0.3 * sin(sj * 1.7 + seed);
+        float sepj = sep * (1.0 + 0.2 * sj * sj);
+        float hj = hL * (0.8 + 0.4 * L.H1(seed + j * 3.3));
+        float3 prev = 0.0;
+        for (int i = 0; i <= NS; i++)
+        {
+            float th = 3.14159265 * i / NS;
+            float3 qa = fc * (1.0 + hj * sin(th)) + dx * (sj * len) + dy * (yj + sepj * cos(th));
+            float3 pa = float3(qa.x * csp - qa.z * ssp, qa.y, qa.x * ssp + qa.z * csp);
+            if (i > 0 && (pa.z > 0.0 || length(pa.xy) > 1.0))
+            {
+                float2 e = pa.xy - prev.xy, f = u - prev.xy;
+                float t = saturate(dot(f, e) / max(dot(e, e), 1e-9));
+                float2 g = f - e * t;
+                float dd = dot(g, g);
+                if (dd < best) { best = dd; bh = sin(3.14159265 * (i - 1.0 + t) / NS); }
+            }
+            prev = pa;
+        }
+    }
+    float lw0 = 0.003, lw = max(lw0, pix * 1.3);
+    float loops = exp(-best / (lw * lw)) * (lw0 / lw) * (0.6 + 0.4 * bh) + exp(-sqrt(best) / (lw * 3.0)) * 0.12;
+    float off = smoothstep(0.995, 1.01, r);
+    col += float3(1.0, 0.45, 0.3) * loops * (1.0 - fade) * 3.0 * limbish * max(off, 0.15);
+}
+return col * F.z * D.y * Tr;
 """
 
 # ---------------------------------------------------------------------------------------------------------------------

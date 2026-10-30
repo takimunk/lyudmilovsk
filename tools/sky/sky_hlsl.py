@@ -100,7 +100,7 @@ struct FLyudSkyLib
 # they lie in front of the disk) and the warm aureole round it all in the haze.
 # Inputs: V, S (SunDir), P (Pole), D (SunDisk), Spots (SunSpots), T (time s), Tr (atmosphere transmittance rgb toward
 # V), Look (SunLook: aureole, horizon dimming kept 0..1, prominence gain, corona gain), Look2 (SunLook2: the disk's
-# detail contrast, 0, 0, 0), R0..R7 (SunRegion*: latitude,
+# detail contrast, the haze cleared round the disk (DISK_MASK_HLSL), the limb darkening steepened, 0), R0..R7 (SunRegion*: latitude,
 # star longitude, strength, seed), PA/PB/PC0..15 (SunPromA/B/C*: anchor xyz + height; foot axis xyz + half length;
 # brightness, kind 0 loop 1 hedgerow 2 surge, lift, seed), all from ULyudSunActivity.
 SUN_REGIONS = 8
@@ -143,7 +143,7 @@ if (r > 0.98 && r < 14.0)
 }
 if (r > 4.5) return aur * D.y * TrB;
 // a ~3000 K star, deep red-orange, darker and redder toward the limb (deeper than the light: the tonemapper pales it)
-const float3 Hot = float3(1.0, 0.31, 0.075);
+const float3 Hot = float3(1.0, 0.26, 0.055);
 const float3 Limb = float3(0.55, 0.07, 0.015);
 float sp = D.w;
 float csp = cos(sp), ssp = sin(sp);
@@ -206,14 +206,14 @@ if (r > 0.55 && Look.z > 0.0)
         if (dist > wd * 8.0 && thr < 0.01 && inside <= 0.0) continue;
         // fine structure: strands across, knots of plasma draining down the legs, flickering threads
         // strands along it: noise stretched along the arch, fine across it
-        float n1 = L.Noise(float3(bs * 7.0, dist / wd * 3.5, sd)) * 0.6 + L.Noise(float3(bs * 23.0, dist / wd * 7.0, sd + 5.0)) * 0.4;
+        float n1 = L.Noise(float3(bs * 7.0, dist / wd * 5.0, sd)) * 0.5 + L.Noise(float3(bs * 23.0, dist / wd * 11.0, sd + 5.0)) * 0.5;
         float flow = L.Noise(float3(bs * 9.0 - T * 0.12 * sign(bs + 1e-4), sd * 0.37, 0.0));
         float band = exp(-dist * dist / (wd * wd)) * (wd0 / wd);
-        // brighter toward the top of the legs, fading into the feet
-        float legs = 0.55 + 0.45 * smoothstep(1.0, 0.4, abs(bs));
-        float e1 = band * (0.25 + 1.2 * n1 * n1) * (0.5 + 0.8 * flow) * legs;
-        float glow = exp(-dist / (wd * 1.5)) * 0.25;
-        float thread = thr * (0.5 + 0.8 * L.Noise(float3(bs * 25.0, T * 0.05 + sd, 3.0)));
+        // brightest low down, where the plasma is densest, fading up the arch
+        float legs = 1.0 + 1.3 * exp(-max(br - 1.0, 0.0) / 0.035);
+        float e1 = band * (0.2 + 1.5 * n1 * n1 * n1) * (0.5 + 0.8 * flow) * legs;
+        float glow = exp(-dist / (wd * 2.5)) * 0.4 * legs;
+        float thread = thr * (0.4 + 1.0 * L.Noise(float3(bs * 40.0, T * 0.05 + sd, 3.0))) * (1.0 + 1.0 * exp(-max(r - 1.0, 0.0) / 0.04));
         float fib = L.Noise(float3(phi0 * 160.0 + sd, r * 25.0 - T * 0.02, sd));
         float body = inside * (kind == 1 ? 0.4 : 0.3) * (0.3 + 1.0 * fib * fib);
         float em = (kind == 1 ? 0.5 * e1 + 0.9 * thread : e1) + glow + body;
@@ -238,20 +238,28 @@ if (r < 1.0)
     // a point on the star in its own frame (y = its north, z = toward us), turned with its spin
     float3 p = float3(u.x, u.y, mu);
     float3 q = float3(p.x * csp + p.z * ssp, p.y, -p.x * ssp + p.z * csp);
-    // strong limb darkening (a cool convective star): ~0.15 of the centre at the very edge
-    float limb = 0.15 + 0.85 * pow(mu, 0.85);
-    float3 base = lerp(Limb, Hot, pow(mu, 0.6)) * limb;
+    // limb darkening of a ~3000 K fully convective star (a quadratic law, u1 ~0.6, u2 ~0.3 in the red: Claret 2000):
+    // ~0.1 of the centre at the very edge and redder there (we see higher, cooler layers); steepened by Look2.z for the
+    // screen: the bright disk sits on the tonemapper's shoulder, which would flatten it into a plate
+    float lm = 1.0 - mu;
+    float limb = pow(saturate(1.0 - 0.6 * lm - 0.3 * lm * lm), Look2.z);
+    float3 base = lerp(Limb, Hot, pow(mu, 0.45));
     // granulation at its true scale: a granule is ~1/1000 of the diameter, so ~1000 across the disk, at best a
     // couple of pixels each full-screen: a fine, barely resolved mottling, faded to its mean where a pixel covers
-    // several (else it shimmers); mesogranulation and supergranulation as faint broad patches; slowly boiling
+    // several (else it shimmers); the mesogranulation, cells a few times bigger, is the mottling that shows up close;
+    // supergranulation (~30 across) as a faint network: its borders darker lanes at the centre, bright faculae toward
+    // the limb; slowly boiling, foreshortened toward the limb
     float aa = 1.0 - smoothstep(0.0008, 0.0025, fw);
     float g1 = aa > 0.0 ? L.Granules(q * 500.0, T * 0.15) : 0.62;
+    float am = 1.0 - smoothstep(0.003, 0.009, fw);
+    float g2 = am > 0.0 ? L.Granules(q * 110.0, T * 0.04) : 0.62;
     float meso = L.Fbm(q * 45.0 + T * 0.003);
-    float sup = L.Noise(q * 14.0 + 7.0);
-    float gc = Spots.z * (0.4 + 0.6 * mu);
-    float gran = 1.0 + gc * (aa * 0.14 * (g1 - 0.62) + 0.035 * (meso - 0.5) + 0.03 * (sup - 0.5));
-    // the active regions' spots: small and subtle (Dima: barely visible dark points, a little darker than the
-    // photosphere): pores and small spots with a slight, soft penumbra, a ragged edge; bright plage round them
+    float ridge = 1.0 - abs(2.0 * (0.65 * L.Noise(q * 15.0 + 7.0) + 0.35 * L.Noise(q * 31.0 + 2.0)) - 1.0);
+    float netw = pow(saturate(ridge), 8.0);
+    float gc = Spots.z * (0.35 + 0.65 * mu);
+    float gran = 1.0 + gc * (aa * 0.12 * (g1 - 0.62) + am * 0.11 * (g2 - 0.62) + 0.03 * (meso - 0.5) - 0.035 * netw * mu * mu);
+    // the active regions' spots: small (Dima: tiny, barely darker pores) but readable: a dark umbra in a lighter
+    // filamentary penumbra on the bigger ones, pores alone round them, a ragged edge; bright plage round the group
     float spot = 1.0, fac = 0.0, plage = 0.0;
     for (int gi = 0; gi < SUN_REGIONS; gi++)
     {
@@ -279,22 +287,23 @@ if (r < 1.0)
             float ue = ru * (0.8 + 0.4 * L.Noise(float3(cs * 2.2, 0.0) + sdd));
             bool pore = k > 0 || ru < 0.006;
             float pe = pore ? ue * 1.6 : ue * (1.9 + 0.4 * L.Noise(float3(cs * 1.8, 2.0) + sdd));
-            float fil = 0.9 + 0.1 * L.Noise(float3(cs * 16.0, d / ru * 0.6) + sdd);
+            float fil = 0.84 + 0.16 * L.Noise(float3(cs * 22.0, d / ru * 0.6) + sdd);
             float x = saturate((d - ue) / max(pe - ue, 1e-5));
             float pen = 1.0 - smoothstep(0.0, 1.0, x);
             float umb = 1.0 - smoothstep(0.7, 1.0, d / ue);
-            float dark = lerp(lerp(1.0, 0.86 * fil, pen * (pore ? 0.5 : 1.0)), Spots.y, umb);
+            float dark = lerp(lerp(1.0, 0.8 * fil, pen * (pore ? 0.5 : 1.0)), Spots.y, umb);
             spot *= dark;
             fac = max(fac, (1.0 - smoothstep(pe, pe * 4.0, d)) * (1.0 - pen));
         }
     }
-    // faculae: bright patches round the groups and a network near the limb, where they show best
+    // faculae: bright patches round the groups and along the supergranular network, showing toward the limb (hot
+    // walls seen side-on), where the photosphere round them is darker
     float facNoise = smoothstep(0.42, 0.75, L.Fbm(q * 20.0 + 5.0));
-    float net = smoothstep(0.55, 0.85, L.Fbm(q * 13.0 + 11.0)) * 0.6;
-    float faculae = 1.0 + Spots.w * ((fac + plage) * facNoise + net) * pow(1.0 - mu, 0.6);
+    float net = netw * (0.25 + 0.35 * facNoise);
+    float faculae = 1.0 + Spots.w * ((fac + plage) * (0.4 + facNoise) + net) * pow(saturate(1.0 - mu), 0.5) * smoothstep(0.0, 0.08, mu);
     // the disk is drawn bright (the tonemapper's shoulder squeezes it): its detail is steepened by Look2.x so the
     // granulation, the spots and the faculae still read
-    col = base * pow(max(gran * spot * filament, 1e-3), Look2.x) * faculae;
+    col = base * limb * pow(max(gran * spot * filament, 1e-3), Look2.x) * faculae;
     // a soft edge, a pixel or so wide
     col *= saturate((1.0 - r) / fw);
 }
@@ -316,7 +325,8 @@ float corona = (0.02 * exp(-h * 10.0) + 0.005 * exp(-h * 2.5)) * (1.0 + 1.5 * st
 // the chromosphere: a thin ragged red rim of spicules just off the limb
 float chrom = exp(-h / 0.006) * (0.5 + 0.7 * L.Noise(float3(phi * 260.0, h * 300.0, T * 0.1))) * smoothstep(0.0, 0.001, h);
 float off = smoothstep(0.985, 1.0, r);
-float3 glow = (float3(1.0, 0.36, 0.12) * corona * Look.w + (float3(1.0, 0.17, 0.08) * (prom + 0.35 * chrom) + float3(1.0, 0.3, 0.15) * core * 0.15) * 0.35 * Look.z) * off;
+// prominences glow in H-alpha: a hot pinkish red, the cores whiter
+float3 glow = (float3(1.0, 0.36, 0.12) * corona * Look.w + (float3(1.0, 0.2, 0.22) * (prom + 0.35 * chrom) + float3(1.0, 0.4, 0.36) * core * 0.08) * 0.5 * Look.z) * off;
 return (col + glow + aur) * D.y * TrB;
 """
 
@@ -432,12 +442,15 @@ float as = acos(clamp(dot(v, normalize(S.xyz)), -1.0, 1.0));
 return horizon * smoothstep(MD.x, MD.x * 3.5, am) * smoothstep(SD.x, SD.x * 2.0, as);
 """
 
-# How much of the atmosphere's own luminance stays over the two disks (0.35 inside the sun, 0.2 inside Europa by
+# How much of the atmosphere's own luminance stays over the two disks (0.15 inside the sun: more pales its orange, 0.2 inside Europa by
 # night, so the blue night sky does not tint the ice lavender; by day the blue sky over the ice is what shows it at
-# all; 1 outside, a soft rim). Inputs: V, S (SunDir), D (SunDisk), M (MoonDir), MD (MoonDisk).
+# all; 1 outside, a soft rim). Round a low sun K.y of the haze's glow is taken off just outside the disk, fading over a
+# radius: the forward glow of a capped disk this big would otherwise be as bright as the disk and wash its limb out.
+# Inputs: V, S (SunDir), D (SunDisk), M (MoonDir), MD (MoonDisk), K (SunLook2).
 DISK_MASK_HLSL = r"""
 float3 v = normalize(V);
 float a = acos(clamp(dot(v, normalize(S.xyz)), -1.0, 1.0));
 float b = acos(clamp(dot(v, normalize(M.xyz)), -1.0, 1.0));
-return lerp(0.35, 1.0, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0.2, MD.w), 1.0, smoothstep(MD.x * 0.97, MD.x * 1.03, b));
+float rim = 1.0 - K.y * exp(-max(a - D.x, 0.0) / (D.x * 0.9));
+return lerp(0.15, rim, smoothstep(D.x * 0.97, D.x * 1.03, a)) * lerp(lerp(1.0, 0.2, MD.w), 1.0, smoothstep(MD.x * 0.97, MD.x * 1.03, b));
 """

@@ -15,15 +15,23 @@ clouds it lit, and at sunset the atmosphere left a dim red coin in a pale sky ov
   (granulation, spots, filaments) is steepened by `SunDetailContrast` (3.2) before it is drawn: the spots and the
   granulation still read at noon. The bloom (`OutdoorBloom`) gives it a soft glare.
 - **The sun's reflections match it**: `SunSpecularScale` 0.03 (was 0.012 for the dimmer disk).
+- **It has depth, not a flat plate.** Limb darkening of a ~3000 K star (a quadratic law, ~0.1 of the centre at the
+  edge) raised to `SunLimbDarkening` (2) for the screen, and redder toward the rim; granulation at its true scale
+  (sub-pixel, faded to its mean), the mesogranulation (cells ~110 across the star) that shows up close, a faint
+  supergranular network (darker lanes at the centre, bright faculae along it toward the limb), faculae round the spot
+  groups (`SunFaculae` 0.6), spots with a dark umbra (`SunSpotUmbra` 0.5) in a lighter filamentary penumbra. Only 15%
+  of the sky's own glow stays over the disk (more paled the orange to peach).
 
 And as the star sinks (`ALyudSky::LowSun()`, 0 above 25 degrees to 1 at 2 degrees):
 
 | what | where | how |
 |---|---|---|
-| the disk keeps its brightness | `SUN_HLSL` (`SunLook.y`), `SunDisk.y` | the air's colour pixel by pixel, but only `SunHorizonDimming` (0.25) of its dimming, and `1 + LowSunDiskGain` (2x) brighter at the horizon: still the brightest thing in the sky, deep orange (1 and 0 = physical) |
+| the disk keeps its brightness | `SUN_HLSL` (`SunLook.y`), `SunDisk.y` | the air's colour pixel by pixel, but only `SunHorizonDimming` (0.4) of its dimming, and `1 + LowSunDiskGain` (1.3x) brighter at the horizon: still the brightest thing in the sky, deep orange (1 and 0 = physical). Brighter than that it blew out to pale yellow on the tonemapper's shoulder |
+| no flat haze over the dome | `ALyudRainFx` height fog `FogCutoffDistance` 150 km | the weather's haze (height fog) is not applied to the star dome (200 km out): its flat, unreddened inscatter over the low sky was what turned the setting disk into a pale ghost; the atmosphere draws the sky's haze itself |
+| the haze round the disk | `DISK_MASK_HLSL` (`SunLook2.y`) | `SunRimClear` (0.5) of the sky's own glow is taken off just outside a low disk, fading over a radius: the forward glow round a capped disk this big blurred its limb |
 | the aureole | `SUN_HLSL` (`SunLook.x`) | a warm forward-scattering glow round the disk, three lobes (a few, ~10 and ~30 degrees wide), stronger the more air the light crosses; `SunAureole` |
 | the haze glows | `USkyAtmosphereComponent` | Mie up by `LowSunMieGain` (0.25) and its anisotropy from 0.62 to `LowSunMieAnisotropy` (0.72): a brighter, narrower forward lobe in the sky and over the far sea and land |
-| the light | sun `UDirectionalLightComponent` | `1 + LowSunLightGain` (2.5x) the atmosphere's light at the horizon; the atmosphere still reddens it. The sky material's atmosphere luminance follows the light, so it is scaled back by the same factor (`SkyLumScale`): a brighter light alone paled the whole sky and veiled the disk |
+| the light | sun `UDirectionalLightComponent` | `1 + LowSunLightGain` (2.5x) the atmosphere's light at the horizon; the atmosphere still reddens it. The atmosphere's sky and haze (aerial perspective) follow the light, so they are scaled back by the same factor (`SkyAndAerialPerspectiveLuminanceFactor`; the material's `SkyLumScale` stays 1): a brighter light alone paled the whole sky and veiled the disk. The clouds get `LowSunCloudLight` (0.3) of the extra light (`CloudScatteredLuminanceScale`): with all of it they shone as bright as the disk where they cross it |
 | the shadows | the sky light | `LowSunAmbient` (0.7) of its intensity: deeper shadows against warm lit faces; they are long by geometry |
 | the sun path | the light's specular | `SunSpecularScale x (1 + LowSunSpecularGain)` (5x at the horizon): the sea's capillary ripples break the mirror image into a glittering path |
 | god rays | the light's screen-space light shafts | the bright disk blurred radially over trees, buildings and clouds in front of it, `SunShaftBloom` (0.15) when low (a fifth high up), from scene colour over `SunShaftThreshold` (1); stronger shafts veil the big disk itself |
@@ -72,7 +80,7 @@ second machine see the same star. `ALyudSky` asks it every tick and it sets the 
   ribbons parting on either side of a neutral line in the active region. *We:* each region flares at a rate growing
   with its strength squared (~14 a star day over the whole star), a steep power law of peaks (most ~0.1-0.3, now
   and then a big one), rise 2-5 star minutes, decay 6-36. The strongest flare facing us is drawn (rare_hlsl
-  `FLARE_HLSL`, the rare sky's own: ribbons and kernels, `SunFlare`) and brightens the daylight a little
+  `FLARE_HLSL`, the rare sky's own, `SunFlare`: see Drawing) and brightens the daylight a little
   (`ActivityFlareLight`, +12% at strength 1). The rare sky's big flares (docs/rare_sky.md) stay on top of these.
 
 ### Time
@@ -96,7 +104,16 @@ regions (`SunRegion0..7`: latitude, star longitude, strength, seed) and the 16 m
 Each prominence is an arch over its foot, worked out in 3D on the star and projected: a polyline of 10 segments
 (hedgerows also stand a thread under each vertex), its width never under a pixel (energy kept), with strands, flowing
 knots and a soft glow. Off the limb it glows red; where it lies in front of the disk it darkens the photosphere as a
-filament; behind the disk it is hidden. The corona gets streamers over active regions near the limb.
+filament; behind the disk it is hidden. They glow in H-alpha, a hot pinkish red, brightest low down where the plasma
+is densest, as fine threads (strand noise across the arch) with a soft glow round them. The corona gets streamers
+over active regions near the limb.
+
+A flare (`rare_hlsl.FLARE_HLSL`) is drawn as on real stars: two bright ribbons on either side of the region's neutral
+line (a gentle S through it, the filament channel), warm white-yellow at their cores and yellow-orange at their soft
+edges, with a halo hugging each and a glow over the region; soft knots on them in the first minutes; they part as the
+flare goes on. Never narrower than ~1.5 pixels (energy kept): no hard lines or aliasing. The model's light curve rises
+in 2-5 star minutes and decays over 6-36. When the region is near the limb a post-flare loop arcade (six loops across
+the neutral line, projected from the star) stands on the limb and brightens as the flare fades.
 
 ## Console
 
@@ -105,11 +122,13 @@ filament; behind the disk it is hidden. The corona gets streamers over active re
 | `lyud.Sun.Activity` | 1 | births of regions, prominences and flares x this (0 = a quiet star) |
 | `lyud.Sun.TimeScale` | 20 | the activity clock over the game clock |
 | `lyud.Sun.ForceFlare <peak>` | 0 | a flare starts now at this peak 0..1 on the most visible strong region (set 0 and again for another) |
+| `lyud.Sun.ForceFlareLimb 1` | 0 | the forced flare goes on a region near the limb (the loop arcade) |
 | `lyud.Sun.Debug 1` | 0 | the activity on screen (`SUNACT` line; also in `ALyudSky`'s debug report) |
 | `lyud.Sky.SunAureole` | 1 | multiplies the aureole |
 | `lyud.Sky.SunHorizonDimming` | -1 | overrides `SunHorizonDimming` when >= 0 (1 = physical) |
 | `lyud.Sky.LowSunLight` | 1 | multiplies the low sun's extra light, specular and haze (0 = the atmosphere alone) |
 | `lyud.Sky.SunShafts` | 1 | multiplies the light shafts (0 = off) |
+| `lyud.Sky.LowSunDiskGain`, `lyud.Sky.LowSunCloud`, `lyud.Sky.SunRimClear`, `lyud.Sky.SunLimb`, `lyud.Sky.LowSunMieG` | -1 | override `LowSunDiskGain`, `LowSunCloudLight`, `SunRimClear`, `SunLimbDarkening`, `LowSunMieAnisotropy` when set (tuning) |
 
 ## Tests
 
@@ -117,4 +136,7 @@ filament; behind the disk it is hidden. The corona gets streamers over active re
 - `unreal/scripts/shoot_sun.py` offscreen (see its docstring): sunsets from the terrace and the beach (and the same
   without the low-sun changes: `_old`), the lit land with the sun behind, the noon disk wide, close and in detail,
   the limb, a forced flare, a busy star, Europa's night for comparison. `SUN_SHOTS=noon_limb SUN_TIMELAPSE=10,60`
-  stays on the limb and takes a frame a minute for ten minutes.
+  stays on the limb and takes a frame a minute for ten minutes. `sunset_close_low` is the setting disk close from the
+  cliff; `flare_late` is a forced flare 30 s on (the ribbons parted), `flare_arcade` one near the limb 40 s on (the
+  loop arcade). `SUN_VARY="tag=cmd;cmd|tag2=..."` takes each chosen shot again per variant (tuning sweeps in one
+  process).

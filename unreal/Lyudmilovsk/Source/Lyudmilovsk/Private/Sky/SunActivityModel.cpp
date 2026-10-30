@@ -404,14 +404,16 @@ namespace LyudSunActivity
 			const float Now = Forced->Peak * FlareCurve(T, Rise, Decay);
 			if (Now >= 0.01f)
 			{
-				// on the most visible strong region, else a little north-east of the disk's centre
+				// on the most visible strong region, else a little north-east of the disk's centre (near the limb: on the
+				// strongest region close to it, else on the limb north-east)
 				FFlare F;
 				F.Lat = 0.3f;
-				F.Lon = float(std::fmod(Spin + 0.35, TwoPi));
+				F.Lon = float(std::fmod(Spin + (Forced->bNearLimb ? 1.35 : 0.35) + TwoPi, TwoPi));
 				float Best = 0.f;
 				for (int I = 0; I < NumAlive; ++I)
 				{
-					const float Sc = Alive[I].Strength * Smooth(0.25f, 0.7f, float(ViewOf(Alive[I].Lat, Alive[I].Lon, Spin).Z));
+					const float Z = float(ViewOf(Alive[I].Lat, Alive[I].Lon, Spin).Z);
+					const float Sc = Alive[I].Strength * (Forced->bNearLimb ? Smooth(0.02f, 0.1f, Z) * Smooth(0.35f, 0.2f, Z) : Smooth(0.25f, 0.7f, Z));
 					if (Sc > Best)
 					{
 						Best = Sc;

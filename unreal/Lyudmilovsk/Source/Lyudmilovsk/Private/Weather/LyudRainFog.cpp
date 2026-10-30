@@ -618,6 +618,12 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	// the haze's colour: the sky's light, a little blue in the clean air, grey in the wet
 	const FLinearColor Tint = FMath::Lerp(FLinearColor(0.6f, 0.7f, 0.88f), FLinearColor(0.7f, 0.74f, 0.78f), FMath::Max(W.Cloud, W.Fog));
 	C->SetFogInscatteringColor(FMath::Lerp(FogBase.Inscatter, Tint * Light, A));
+	// not on the star dome (ALyudSky's, 200 km out): the atmosphere draws the sky's haze itself, reddened toward a low
+	// sun; this flat haze over it veiled the setting disk into a pale ghost
+	if (!FMath::IsNearlyEqual(C->FogCutoffDistance, 1.5e7f))
+	{
+		C->SetFogCutoffDistance(1.5e7f);
+	}
 }
 
 void ALyudRainFx::Tick(float DeltaSeconds)

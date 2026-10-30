@@ -100,10 +100,13 @@ public:
 	/** The disk's detail (granulation, spots, faculae) steepened by this power: the bright disk sits on the tonemapper's
 	 * shoulder, which would flatten it. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunDetailContrast = 3.2f;
+	/** The limb darkening (a quadratic law for a ~3000 K star) raised to this power for the screen: the disk's centre is
+	 * on the tonemapper's shoulder, so the physical fall-off alone would leave a flat plate with a thin dark rim. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunLimbDarkening = 2.f;
 	/** The sunspots' umbra brightness (of the disk's: small spots and pores only a little darker), the granulation's contrast (1 = as drawn) and the faculae's strength. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.7f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunSpotUmbra = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunGranulation = 1.f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunFaculae = 0.35f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float SunFaculae = 0.6f;
 	/** Europa's luminance (full sunlit ice) per lux of SunIlluminance, and how much brighter it is drawn by night (a bright
 	 * icy disk at the night exposure) and by day (so it shows against the blue). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Look") float MoonDiskGain = 0.012f;
@@ -119,7 +122,7 @@ public:
 	/** How much of the air's dimming the disk keeps near the horizon (1 = all of it, physical; 0 = none): the eye adapts
 	 * to a low sun, and a real one stays blinding to the last, so the setting star stays the brightest thing in the sky,
 	 * deep orange-red. The colour always follows the air. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunHorizonDimming = 0.25f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunHorizonDimming = 0.4f;
 	/** The prominences' and the corona's brightness over the disk's (1 = as drawn). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunProminenceGain = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunCoronaGain = 1.f;
@@ -129,11 +132,17 @@ public:
 	 * forward glow stronger and narrower (the aureole over the sea and the land). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunLightGain = 1.5f;
 	/** The disk itself this much brighter on the horizon (over SunDiskGain), on top of SunHorizonDimming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunDiskGain = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunDiskGain = 0.3f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunAmbient = 0.7f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunSpecularGain = 4.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunMieGain = 0.25f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunMieAnisotropy = 0.72f;
+	/** The share of a low sun's extra light (LowSunLightGain) the clouds get: lit by all of it they shone as bright as
+	 * the setting disk and washed it out where they cross it. The sky and the haze get none of it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float LowSunCloudLight = 0.3f;
+	/** Round a low sun this share of the haze's glow is taken off just outside the disk (fading over a radius): the
+	 * forward glow round a capped disk this big is as bright as the disk and blurs its limb. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunRimClear = 0.5f;
 	/** God rays: the bright star blurred radially over what stands in front of it (the light's screen-space shafts),
 	 * at this scale when the star is low (a fifth of it high up), from scene colour over the threshold. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Sun") float SunShaftBloom = 0.15f;

@@ -142,6 +142,10 @@ int main(int Argc, char** Argv)
 	F.Peak = 0.8f;
 	Evaluate(Noon, Set, S, &F);
 	Check(S.Flare.Strength > 0.5f && S.Flare.Face > 0.5f, "a forced flare 3 activity minutes old shows on the face", S.FlareLight);
+	F.bNearLimb = true;
+	Evaluate(Noon, Set, S, &F);
+	const double LimbZ = std::cos(S.Flare.Lat) * std::cos(S.Flare.Lon - SpinAt(Noon, Set));
+	Check(S.Flare.Strength > 0.5f && LimbZ > 0.0 && LimbZ < 0.4, "a forced flare near the limb sits near the limb (view z 0..0.4)", LimbZ);
 
 	std::printf("%s\n", Failures ? "SOME CHECKS FAILED" : "all checks passed");
 	return Failures ? 1 : 0;
