@@ -140,6 +140,11 @@ def _tick(dt):
                 st["dated"] = True
                 log("calendar set to %s" % os.environ["WINTER_DATE"])
         return
+    if not st.get("cmds_run"):
+        st["cmds_run"] = True
+        for c in [c for c in os.environ.get("WINTER_CMDS", "").split(";") if c]:
+            cmd(w, c)
+            log("ran %s" % c)
     if st["phase"] == -1:
         # wait for the snow to be read in (the traces run a few hundred rows a frame)
         if pawn and hasattr(pawn, "character_movement"):
@@ -176,6 +181,10 @@ def _tick(dt):
                 cmd(w, "slomo 6")
             return
         checks(w, win)
+        wx = unreal.LyudWeatherSubsystem.get_weather(w) if hasattr(unreal, "LyudWeatherSubsystem") else None
+        if wx:
+            ws = wx.get_state()
+            log("weather: visibility %.0f m, blowing %.2f, snowfall %.2f cm/h, wind %.1f m/s" % (ws.visibility_m, ws.blowing_snow, ws.snowfall_cm_per_hour, ws.wind_speed))
         st["phase"] = 0
     if st["phase"] == 0 and st["i"] + 1 < len(SPOTS) and not SPOTS[st["i"] + 1][0].startswith("shoveller"):
         cmd(w, "slomo 1")

@@ -135,6 +135,7 @@ namespace LyudWeather
 		float Melt = 0.f;               // 0..1 how fast the snow is melting now (slush, drips)
 		float Frost = 0.f;              // 0..1 hoarfrost/rime on surfaces now
 		float Glaze = 0.f;              // 0..1 ice on surfaces from freezing rain
+		float BlowingSnow = 0.f;        // 0..1 snow lifted off the ground by the wind (a ground blizzard), cuts the visibility
 		float GroundFrostCm = 0.f;      // frozen soil depth
 		float SeaTempC = 10.f;          // the sea's surface off the coast
 		float FreezingDegreeDays = 0.f; // this winter's sum of (-T) over freezing days
@@ -230,6 +231,13 @@ namespace LyudWeather
 
 	/** A + (B - A) * K for every continuous field (the named kinds, types and regimes switch at K = 0.5). */
 	FWeatherState LerpState(const FWeatherState& A, const FWeatherState& B, float K);
+
+	/**
+	 * The wind and the snow together: blowing snow off the ground (a fresh, dry cover and a wind over ~7 m/s) and falling
+	 * snow driven by a gale both thicken the air: BlowingSnow 0..1, VisibilityM down to a whiteout (~10 m) in a blizzard.
+	 * Full() applies it; the forced weather calls it again with the forced wind.
+	 */
+	void WindSnow(FWeatherState& S, float WindSpeed);
 
 	/** Everything at Hours: the instant weather plus the season (advanced as needed). */
 	FWeatherState Full(double Hours, FChain& Chain, FSeason& Season);

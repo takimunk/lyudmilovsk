@@ -1203,6 +1203,21 @@ namespace LyudWeather
 		return O;
 	}
 
+	void WindSnow(FWeatherState& S, float WindSpeed)
+	{
+		const double W = WindSpeed;
+		const double Fall = S.SnowfallCmPerHour;
+		// loose snow to lift: fresh and dry (crusted, wet or glazed snow stays put); falling snow is loose by itself
+		double Loose = (S.Melt > 0.2f || S.Glaze > 0.3f) ? 0.08 : Clamp(1.0 - S.SnowAgeDays / 6.0, 0.2, 1.0);
+		Loose = std::max(Loose, SmoothStep(0.2, 1.0, Fall));
+		S.BlowingSnow = float(SmoothStep(6.5, 14.0, W) * Clamp01(S.SnowDepthCm / 4.0) * Loose);
+		// a gale drives the falling snow across the view (the flakes' path through the air lengthens)
+		const double KFall = 3.912 / 1500.0 * std::pow(std::max(double(S.PrecipRate) * S.SnowFraction, 0.0), 0.8) * 2.5 * SmoothStep(6.0, 16.0, W);
+		const double KBlow = 3.912 / 15.0 * S.BlowingSnow * S.BlowingSnow;
+		const double K = 3.912 / std::max(double(S.VisibilityM), 1.0) + KFall + KBlow;
+		S.VisibilityM = float(Clamp(3.912 / K, 8.0, 50000.0));
+	}
+
 	FWeatherState Full(double Hours, FChain& Chain, FSeason& Season)
 	{
 		Season.AdvanceTo(Hours, Chain);
@@ -1212,6 +1227,7 @@ namespace LyudWeather
 		FWeatherState S = InstantWith(Hours + GetHourShift(), Chain, Probe.SeaTempC, Probe.SeaIceCover, Probe.SnowDepthCm);
 		S.Hours = Hours;
 		Season.Apply(S, Chain);
+		WindSnow(S, S.WindSpeed);
 		return S;
 	}
 }

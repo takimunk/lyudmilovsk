@@ -75,7 +75,7 @@ namespace
 		}));
 
 	FAutoConsoleCommandWithWorldAndArgs PresetCommand(TEXT("lyud.Weather.Preset"),
-		TEXT("Force a weather: clear, fair, overcast, drizzle, rain, downpour, storm, thunder, fog, seafog, snow, blizzard, freezingrain, frost, lenticular, aurora, halo, rainbow; off"),
+		TEXT("Force a weather: clear, fair, overcast, drizzle, rain, downpour, storm, thunder, fog, seafog, lightsnow, snow, heavysnow, blizzard, freezingrain, frost, lenticular, aurora, halo, rainbow; off"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(World))
@@ -167,6 +167,7 @@ namespace
 		O.SnowWaterMm = S.SnowWaterMm;
 		O.SnowDensity = S.SnowDensity;
 		O.SnowAgeDays = S.SnowAgeDays;
+		O.BlowingSnow = S.BlowingSnow;
 		O.Melt = S.Melt;
 		O.Frost = S.Frost;
 		O.Glaze = S.Glaze;
@@ -289,6 +290,20 @@ namespace
 			S.SnowDepthCm = Depth;
 			S.SnowWaterMm = Depth * 2.5f;
 			S.SnowDensity = 250.f;
+		}
+		if (Depth >= 0.f || Rain >= 0.f || Fog >= 0.f)
+		{
+			// the wind and the snow again, with the forced wind (a preset's gale)
+			float WindNow = S.WindSpeed;
+			if (const IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Wind.Speed")))
+			{
+				WindNow = V->GetFloat() >= 0.f ? V->GetFloat() : WindNow;
+			}
+			if (Depth >= 0.f)
+			{
+				S.SnowAgeDays = FMath::Min(S.SnowAgeDays, S.SnowfallCmPerHour > 0.1f ? 0.f : 2.f);
+			}
+			LyudWeather::WindSnow(S, WindNow);
 		}
 		if (Ice >= 0.f)
 		{
@@ -522,8 +537,10 @@ bool ULyudWeatherSubsystem::SetPreset(const FString& InName)
 	else if (Name == TEXT("thunder")) { Regime = ERegime::ThunderyLow; Values = [Set] { Set(TEXT("lyud.Weather.Rain"), 12.f); Set(TEXT("lyud.Weather.Thunder"), 0.8f); Set(TEXT("lyud.Weather.Temp"), 22.f); }; }
 	else if (Name == TEXT("fog")) { Regime = ERegime::High; Values = [Set] { Set(TEXT("lyud.Weather.Fog"), 0.9f); Set(TEXT("lyud.Weather.Rain"), 0.f); Set(TEXT("lyud.Wind.Speed"), 0.8f); }; }
 	else if (Name == TEXT("seafog")) { Regime = ERegime::WarmSector; Values = [Set] { Set(TEXT("lyud.Weather.Fog"), 0.85f); Set(TEXT("lyud.Weather.Rain"), 0.f); Set(TEXT("lyud.Wind.Speed"), 4.f); Set(TEXT("lyud.Wind.From"), 270.f); }; }
+	else if (Name == TEXT("lightsnow")) { Regime = ERegime::High; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -2.f); Set(TEXT("lyud.Weather.Rain"), 0.25f); Set(TEXT("lyud.Weather.Snow"), 1.f); Set(TEXT("lyud.Weather.Cloud"), 0.85f); Set(TEXT("lyud.Wind.Speed"), 1.2f); Set(TEXT("lyud.Weather.SnowDepth"), 15.f); }; }
+	else if (Name == TEXT("heavysnow")) { Regime = ERegime::WarmFront; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -4.f); Set(TEXT("lyud.Weather.Rain"), 4.f); Set(TEXT("lyud.Weather.Snow"), 1.f); Set(TEXT("lyud.Wind.Speed"), 5.f); Set(TEXT("lyud.Weather.SnowDepth"), 45.f); }; }
 	else if (Name == TEXT("snow")) { Regime = ERegime::WarmFront; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -3.f); Set(TEXT("lyud.Weather.Rain"), 1.2f); Set(TEXT("lyud.Weather.Snow"), 1.f); Set(TEXT("lyud.Weather.SnowDepth"), 25.f); }; }
-	else if (Name == TEXT("blizzard")) { Regime = ERegime::ColdFront; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -8.f); Set(TEXT("lyud.Weather.Rain"), 3.f); Set(TEXT("lyud.Weather.Snow"), 1.f); Set(TEXT("lyud.Wind.Speed"), 16.f); Set(TEXT("lyud.Weather.SnowDepth"), 60.f); }; }
+	else if (Name == TEXT("blizzard")) { Regime = ERegime::ColdFront; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -9.f); Set(TEXT("lyud.Weather.Rain"), 3.5f); Set(TEXT("lyud.Weather.Snow"), 1.f); Set(TEXT("lyud.Wind.Speed"), 19.f); Set(TEXT("lyud.Weather.SnowDepth"), 60.f); }; }
 	else if (Name == TEXT("freezingrain")) { Regime = ERegime::WarmFront; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -2.f); Set(TEXT("lyud.Weather.Rain"), 1.5f); Set(TEXT("lyud.Weather.Snow"), 0.f); }; }
 	else if (Name == TEXT("frost")) { Regime = ERegime::ArcticHigh; Values = [Set] { Set(TEXT("lyud.Weather.Temp"), -15.f); Set(TEXT("lyud.Weather.Cloud"), 0.f); Set(TEXT("lyud.Weather.Rain"), 0.f); Set(TEXT("lyud.Weather.SnowDepth"), 30.f); Set(TEXT("lyud.Weather.SeaIce"), 25.f); }; }
 	else if (Name == TEXT("lenticular")) { Regime = ERegime::High; Values = [Set] { Set(TEXT("lyud.Weather.Lenticular"), 1.f); Set(TEXT("lyud.Weather.Rain"), 0.f); }; }

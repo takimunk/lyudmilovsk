@@ -50,6 +50,16 @@ and fainter; none under a roof or below the snow's surface), as many as the weat
 translucency by the scene (warm under the lamps). Hidden indoors and underground. The rain's splashes, rings and
 puddles are off on snow-covered ground (`ULyudRainFogSubsystem` asks `SnowOnGround`).
 
+### Kinds of snowfall
+
+Blended, never switched (ULyudWinterSubsystem::StepFlakes, `SnowfallKind` in the debug line): calm light snow (wind
+under ~3 m/s, under ~1 cm/h) = big flakes drifting slowly down and swaying; light, moderate, heavy = more and smaller;
+a blizzard (wind over ~10 m/s with falling or blowing snow) = small fast driven flakes and a sheet of snow streaming a
+metre or two over the ground, the air a whiteout. The weather engine's `WindSnow` (WeatherModel.cpp) adds
+`BlowingSnow` (fresh dry snow lifted by a wind over ~7 m/s) and the gale's driven snow to the visibility (down to
+~10 m); the haze goes that thick and white in snow (LyudRainFog.cpp). Presets (F7 and `lyud.Weather.Preset`):
+`lightsnow`, `snow`, `heavysnow`, `blizzard`.
+
 ## Winter low water
 
 The sea goes down smoothly by `lyud.Winter.LowWater` (70 cm) from 20 November to 5 January and back by mid April

@@ -207,6 +207,7 @@ namespace LyudWinter
 		float NextIceSeaZ = 0.f;
 		bool bIceUploaded = false;
 		float CanopySnow = 0.f;
+		float WindMs = 0.f;
 		bool bCanopySeeded = false;
 		float RoseHistory[8] = {};
 		float TransportSum = 0.f;
@@ -369,6 +370,8 @@ void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 	Now.LevelCm = ForceSnow >= 0.f ? ForceSnow : W.SnowDepthCm;
 	Now.SnowfallCmPerHour = ForceFall >= 0.f ? ForceFall : W.SnowfallCmPerHour;
 	Now.Melt = W.Melt;
+	Now.BlowingSnow = W.BlowingSnow;
+	S.WindMs = W.WindSpeed;
 	const float ForceAge = CVarWinterAge.GetValueOnGameThread();
 	Now.SnowAgeDays = ForceAge >= 0.f ? ForceAge : W.SnowAgeDays;
 
@@ -1243,6 +1246,8 @@ void ULyudWinterSubsystem::StepFlakes(float DeltaTime)
 	const LyudWinter::FWinterState& S = *State;
 	const float Fall = CVarWinter.GetValueOnGameThread() ? Now.SnowfallCmPerHour : 0.f;
 	float Density = Fall > 0.02f ? FMath::Clamp(0.06f + FMath::Pow(Fall / 2.5f, 0.6f), 0.f, 1.f) : 0.f;
+	// snow blown off the ground fills the air too (a ground blizzard under a clear sky)
+	Density = FMath::Max(Density, FMath::Clamp(Now.BlowingSnow * 1.2f, 0.f, 1.f));
 	if (S.Cover.Valid())
 	{
 		const float G = S.Cover.GroundAt(Cam.X, Cam.Y);
@@ -1266,7 +1271,21 @@ void ULyudWinterSubsystem::StepFlakes(float DeltaTime)
 	}
 	const ULyudWindSubsystem* Wind = GetWorld()->GetSubsystem<ULyudWindSubsystem>();
 	const FVector W = Wind ? Wind->GetMeanWind() * 100.0 : FVector::ZeroVector;
-	Flakes->Drive(Cam, Density, FVector(W.X, W.Y, 0.0), DeltaTime);
+	// the snowfall's kind, blended (no switch): calm light snow = big slow flakes drifting down; heavier = more, smaller;
+	// a blizzard = small fast flakes driven along, much of it swept off the ground near it, the air white
+	const float Ms = float(W.Size2D()) * 0.01f;
+	auto Sm = [](float A, float B, float V) { return FMath::SmoothStep(A, B, V); };
+	const float Calm = (1.f - Sm(2.f, 5.f, Ms)) * (1.f - Sm(0.6f, 1.6f, Fall));
+	const float Bliz = Sm(9.f, 14.f, Ms) * FMath::Max(Sm(0.2f, 1.f, Fall), Now.BlowingSnow);
+	const float Heavy = Sm(1.5f, 3.f, Fall);
+	FLinearColor Style;
+	Style.R = FMath::Lerp(FMath::Lerp(1.3f, 2.4f, Calm), 0.75f, Bliz);              // size
+	Style.G = FMath::Lerp(FMath::Lerp(1.f, 0.6f, Calm), 1.7f, Bliz);                // fall speed
+	Style.B = FMath::Lerp(1.f, 1.8f, Calm) * (1.f - 0.6f * Bliz) * (1.f - 0.3f * Heavy);   // sway
+	Style.A = FMath::Clamp(0.55f * Bliz + 0.35f * Now.BlowingSnow, 0.f, 0.8f);      // swept along the ground
+	Now.SnowfallKind = Density <= 0.f ? FName(TEXT("none")) : Bliz > 0.5f ? FName(TEXT("blizzard")) : Calm > 0.5f ? FName(TEXT("calm"))
+		: Fall > 2.f ? FName(TEXT("heavy")) : Fall > 0.7f ? FName(TEXT("moderate")) : FName(TEXT("light"));
+	Flakes->Drive(Cam, Density, FVector(W.X, W.Y, 0.0), Style, DeltaTime);
 }
 
 void ULyudWinterSubsystem::KeepOffDecals()
@@ -1552,8 +1571,8 @@ FString ULyudWinterSubsystem::DebugReport() const
 		Dirty += (P.FreshCm + P.FreshBefore) >= 2.f;
 		Claimed += P.Claimed >= 0;
 	}
-	FString R = FString::Printf(TEXT("winter %s: level %.1f cm, snowfall %.2f cm/h, drift %.2f from %.0f, age %.1f d, melt %.2f, canopy %.2f | patches %d (%d snowy, %d being cleared) | ice cover %.2f %.0f cm, sea z %.0f, solid tiles %d"),
-		Phases[int32(S.Phase)], Now.LevelCm, Now.SnowfallCmPerHour, Now.Drift, Now.DriftFromDeg, Now.SnowAgeDays, Now.Melt, Now.CanopySnow,
+	FString R = FString::Printf(TEXT("winter %s: level %.1f cm, snowfall %.2f cm/h (%s, blowing %.2f), drift %.2f from %.0f, age %.1f d, melt %.2f, canopy %.2f | patches %d (%d snowy, %d being cleared) | ice cover %.2f %.0f cm, sea z %.0f, solid tiles %d"),
+		Phases[int32(S.Phase)], Now.LevelCm, Now.SnowfallCmPerHour, *Now.SnowfallKind.ToString(), Now.BlowingSnow, Now.Drift, Now.DriftFromDeg, Now.SnowAgeDays, Now.Melt, Now.CanopySnow,
 		int32(S.Paths.Patches.size()), Dirty, Claimed, Now.IceCover, Now.IceCm, S.IceP.SeaZ, Ice ? Ice->NumSolid() : 0);
 	if (S.Phase == LyudWinter::EPhase::Tracing)
 	{

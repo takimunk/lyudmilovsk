@@ -598,7 +598,8 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	const float Scale = CVarFogDensityScale.GetValueOnGameThread();
 	const float Light = SkyLuminance(W);
 	// Koschmieder: extinction 3.912 / visibility per metre; the height fog's density is per km of cm (x1000/100)
-	const float HazeExt = 3.912f / FMath::Max(W.VisibilityM, 50.f);
+	// a blizzard's snow is a whiteout (the weather's visibility down to ~10 m): the haze goes that thick in snow
+	const float HazeExt = 3.912f / FMath::Max(W.VisibilityM, W.Snow > 0.5f ? 10.f : 50.f);
 	const float HazeDensity = HazeExt * 10.f * Scale;
 	// the haze thins with height over ~600 m (falloff per 1000 cm: 1000 / scale height in cm)
 	const float HazeFalloff = 1000.f / 60000.f;
@@ -616,7 +617,9 @@ void ALyudRainFx::UpdateFog(const FLyudRainFogWeather& W, float DeltaSeconds)
 	C->SetSecondFogHeightFalloff(FMath::Lerp(FogBase.SecondFalloff, FogFalloff, A));
 	C->SetSecondFogHeightOffset(FMath::Lerp(FogBase.SecondHeight, Base - FogBase.ZOffset, A));
 	// the haze's colour: the sky's light, a little blue in the clean air, grey in the wet
-	const FLinearColor Tint = FMath::Lerp(FLinearColor(0.6f, 0.7f, 0.88f), FLinearColor(0.7f, 0.74f, 0.78f), FMath::Max(W.Cloud, W.Fog));
+	FLinearColor Tint = FMath::Lerp(FLinearColor(0.6f, 0.7f, 0.88f), FLinearColor(0.7f, 0.74f, 0.78f), FMath::Max(W.Cloud, W.Fog));
+	// thick snow in the air scatters white
+	Tint = FMath::Lerp(Tint, FLinearColor(0.86f, 0.88f, 0.9f), W.Snow * FMath::SmoothStep(400.f, 40.f, W.VisibilityM));
 	C->SetFogInscatteringColor(FMath::Lerp(FogBase.Inscatter, Tint * Light, A));
 }
 

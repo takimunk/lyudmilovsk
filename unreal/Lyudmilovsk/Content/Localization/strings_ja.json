@@ -437,6 +437,8 @@
  "ui.dev.wx.preset.fog": "霧",
  "ui.dev.wx.preset.seafog": "海霧",
  "ui.dev.wx.preset.snow": "降雪",
+ "ui.dev.wx.preset.lightsnow": "静かな小雪",
+ "ui.dev.wx.preset.heavysnow": "大雪",
  "ui.dev.wx.preset.blizzard": "吹雪",
  "ui.dev.wx.preset.freezingrain": "着氷性の雨",
  "ui.dev.wx.preset.frost": "厳しい冷え込み",

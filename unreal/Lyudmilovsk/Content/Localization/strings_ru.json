@@ -437,6 +437,8 @@
  "ui.dev.wx.preset.fog": "Туман",
  "ui.dev.wx.preset.seafog": "Морской туман",
  "ui.dev.wx.preset.snow": "Снегопад",
+ "ui.dev.wx.preset.lightsnow": "Тихий снег",
+ "ui.dev.wx.preset.heavysnow": "Сильный снегопад",
  "ui.dev.wx.preset.blizzard": "Метель",
  "ui.dev.wx.preset.freezingrain": "Ледяной дождь",
  "ui.dev.wx.preset.frost": "Мороз",

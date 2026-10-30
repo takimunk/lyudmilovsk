@@ -32,7 +32,7 @@ namespace
 
 	const TCHAR* const Presets[] = {
 		TEXT("clear"), TEXT("fair"), TEXT("overcast"), TEXT("drizzle"), TEXT("rain"), TEXT("downpour"), TEXT("storm"), TEXT("thunder"),
-		TEXT("fog"), TEXT("seafog"), TEXT("snow"), TEXT("blizzard"), TEXT("freezingrain"), TEXT("frost"), TEXT("lenticular"),
+		TEXT("fog"), TEXT("seafog"), TEXT("lightsnow"), TEXT("snow"), TEXT("heavysnow"), TEXT("blizzard"), TEXT("freezingrain"), TEXT("frost"), TEXT("lenticular"),
 		TEXT("aurora"), TEXT("halo"), TEXT("rainbow") };
 
 	// ELyudWeatherRegime's order

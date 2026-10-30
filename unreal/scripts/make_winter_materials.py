@@ -135,7 +135,8 @@ def flakes_material(mpc, rts):
     t = W._node(m, X.MaterialExpressionTime, -1400, 480)
     box = W._node(m, X.MaterialExpressionVectorParameter, -1400, 600, parameter_name="Box", default_value=unreal.LinearColor(2600, 2600, 1600, 0))
     wind = W._node(m, X.MaterialExpressionVectorParameter, -1400, 720, parameter_name="Wind", default_value=unreal.LinearColor(0, 0, 0, 0))
-    ins = [("P", vpos), ("C", (uv[0], "")), ("R1", (uv[1], "")), ("R2", (uv[2], "")), ("T", t), ("Box", (box, "RGBA")), ("Wind", (wind, "RGBA")),
+    style = W._node(m, X.MaterialExpressionVectorParameter, -1600, 720, parameter_name="Style", default_value=unreal.LinearColor(1, 1, 1, 0))
+    ins = [("P", vpos), ("C", (uv[0], "")), ("R1", (uv[1], "")), ("R2", (uv[2], "")), ("T", t), ("Box", (box, "RGBA")), ("Wind", (wind, "RGBA")), ("Style", (style, "RGBA")),
            ("Cov", W._node(m, X.MaterialExpressionTextureObject, -1400, 840, texture=rts["RT_SnowCover"])),
            ("Dep", W._node(m, X.MaterialExpressionTextureObject, -1400, 960, texture=rts["RT_SnowDepth"])),
            ("CRect", W.mpc_node(m, mpc, "CoverRect", -1400, 1080)), ("FRect", W.mpc_node(m, mpc, "FieldRect", -1400, 1200)),
@@ -149,6 +150,16 @@ def flakes_material(mpc, rts):
     mel.connect_material_property(a, "", MP.MP_OPACITY)
     col = W._node(m, X.MaterialExpressionConstant3Vector, -300, 1300, constant=unreal.LinearColor(0.9, 0.92, 0.95, 1))
     mel.connect_material_property(col, "", MP.MP_BASE_COLOR)
+    # the translucency lighting volume is coarse and dark round the camera: the sky's light on the flakes too, so a near
+    # flake is a pale fleck, not a dark blot
+    env = W._node(m, X.MaterialExpressionSkyLightEnvMapSample, -600, 1800)
+    up = W._node(m, X.MaterialExpressionConstant3Vector, -800, 1800, constant=unreal.LinearColor(0, 0, 1, 1))
+    mel.connect_material_expressions(up, "", env, "Direction")
+    one = W._node(m, X.MaterialExpressionConstant, -800, 1900, r=1.0)
+    mel.connect_material_expressions(one, "", env, "Roughness")
+    em = W._node(m, X.MaterialExpressionMultiply, -300, 1800, const_b=0.55)
+    mel.connect_material_expressions(env, "", em, "A")
+    mel.connect_material_property(em, "", MP.MP_EMISSIVE_COLOR)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
     W._log("M_SnowFlakes built")

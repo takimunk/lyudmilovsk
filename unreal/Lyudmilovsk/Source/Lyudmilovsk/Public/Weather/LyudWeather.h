@@ -149,6 +149,8 @@ struct LYUDMILOVSK_API FLyudWeatherState
 	UPROPERTY(BlueprintReadOnly, Category = "Weather|Ground") float SnowDensity = 100.f;
 	/** Days since fresh snow (how white it is). */
 	UPROPERTY(BlueprintReadOnly, Category = "Weather|Ground") float SnowAgeDays = 0.f;
+	/** 0..1 snow lifted off the ground by the wind (a ground blizzard). */
+	UPROPERTY(BlueprintReadOnly, Category = "Weather|Ground") float BlowingSnow = 0.f;
 	/** 0..1 melting now (slush, drips). */
 	UPROPERTY(BlueprintReadOnly, Category = "Weather|Ground") float Melt = 0.f;
 	/** 0..1 hoarfrost / rime now. */

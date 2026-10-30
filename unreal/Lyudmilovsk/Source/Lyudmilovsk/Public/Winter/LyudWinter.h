@@ -35,6 +35,10 @@ struct LYUDMILOVSK_API FLyudWinterNow
 	UPROPERTY(BlueprintReadOnly, Category = "Winter") float IceCm = 0.f;
 	/** Snow on the trees' branches 0..1 (fresh snow sticks, wind and thaw shake it off). */
 	UPROPERTY(BlueprintReadOnly, Category = "Winter") float CanopySnow = 0.f;
+	/** Snow lifted off the ground by the wind 0..1 (the weather's), and the falling snow's kind now: none, calm (light,
+	 * big slow flakes), light, moderate, heavy, blizzard (driven, a whiteout). */
+	UPROPERTY(BlueprintReadOnly, Category = "Winter") float BlowingSnow = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Winter") FName SnowfallKind = NAME_None;
 	/** How far the sea is down for the winter, cm. */
 	UPROPERTY(BlueprintReadOnly, Category = "Winter") float LowWaterCm = 0.f;
 };
@@ -257,8 +261,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Snow") TObjectPtr<UStaticMeshComponent> Flakes;
 
-	/** Follows the camera; Density 0..1 of the flakes shown, Wind cm/s. */
-	void Drive(const FVector& Camera, float Density, const FVector& Wind, float DeltaSeconds);
+	/** Follows the camera; Density 0..1 of the flakes shown, Wind cm/s, Style: flake size x, fall speed x, sway x,
+	 * share swept along near the ground (blowing snow). */
+	void Drive(const FVector& Camera, float Density, const FVector& Wind, const FLinearColor& Style, float DeltaSeconds);
 
 	static constexpr int32 Count = 40000;
 	static constexpr float BoxCm = 2200.f;
@@ -267,5 +272,6 @@ public:
 private:
 	UPROPERTY(Transient) TObjectPtr<class UMaterialInstanceDynamic> MID;
 	float Shown = 0.f;
+	FLinearColor ShownStyle = FLinearColor(1.f, 1.f, 1.f, 0.f);
 	void BuildMesh();
 };

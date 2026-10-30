@@ -85,14 +85,16 @@ void ALyudSnowFx::BuildMesh()
 	}
 }
 
-void ALyudSnowFx::Drive(const FVector& Camera, float Density, const FVector& Wind, float DeltaSeconds)
+void ALyudSnowFx::Drive(const FVector& Camera, float Density, const FVector& Wind, const FLinearColor& Style, float DeltaSeconds)
 {
 	if (!Flakes->GetStaticMesh())
 	{
 		BuildMesh();
 	}
 	// ease in and out (a shower's edge, a forced change)
-	Shown += (Density - Shown) * (1.f - FMath::Exp(-DeltaSeconds / 3.f));
+	const float K = 1.f - FMath::Exp(-DeltaSeconds / 3.f);
+	Shown += (Density - Shown) * K;
+	ShownStyle += (Style - ShownStyle) * K;
 	const bool bShow = Shown > 0.005f && MID;
 	Flakes->SetVisibility(bShow);
 	if (!bShow)
@@ -102,4 +104,5 @@ void ALyudSnowFx::Drive(const FVector& Camera, float Density, const FVector& Win
 	SetActorLocation(Camera);
 	MID->SetVectorParameterValue(TEXT("Box"), FLinearColor(BoxCm, BoxCm, BoxHeightCm, Shown));
 	MID->SetVectorParameterValue(TEXT("Wind"), FLinearColor(float(Wind.X), float(Wind.Y), 0.f, 0.f));
+	MID->SetVectorParameterValue(TEXT("Style"), ShownStyle);
 }

@@ -437,6 +437,8 @@
  "ui.dev.wx.preset.fog": "Fog",
  "ui.dev.wx.preset.seafog": "Sea fog",
  "ui.dev.wx.preset.snow": "Snowfall",
+ "ui.dev.wx.preset.lightsnow": "Light snow, calm",
+ "ui.dev.wx.preset.heavysnow": "Heavy snow",
  "ui.dev.wx.preset.blizzard": "Blizzard",
  "ui.dev.wx.preset.freezingrain": "Freezing rain",
  "ui.dev.wx.preset.frost": "Hard frost",

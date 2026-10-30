@@ -330,11 +330,14 @@ struct LWF
 LWF w;
 float id = frac(R1.x * 37.13 + R2.x * 91.71 + R1.y * 13.37);
 if (id > Box.w) return float3(0, 0, 0);    // not falling now: a quad of no size at the camera
-float speed = lerp(65.0, 135.0, R2.y);
+// Style: x flake size, y fall speed, z sway, w the share swept along near the ground (blowing snow)
+float speed = lerp(65.0, 135.0, R2.y) * Style.y;
 float3 base = float3(R1.x, R1.y, R2.x) * Box.xyz;
-float3 pos = base + float3(Wind.x * T * 0.9, Wind.y * T * 0.9, -speed * T);
+bool low = frac(id * 7.31) < Style.w;
+float gust = low ? 1.35 : 0.9;
+float3 pos = base + float3(Wind.x * T * gust, Wind.y * T * gust, low ? 0.0 : -speed * T);
 float ph = R1.x * 61.0 + R2.y * 17.0;
-pos.xy += float2(sin(T * 1.3 + ph), cos(T * 1.1 + ph * 1.7)) * 18.0;
+pos.xy += float2(sin(T * 1.3 + ph), cos(T * 1.1 + ph * 1.7)) * 18.0 * Style.z;
 float3 rel = (frac((pos - P) / Box.xyz + 0.5) - 0.5) * Box.xyz;
 float3 wp = P + rel;
 // none under the snow's surface, none under a roof
@@ -343,7 +346,10 @@ if (ground > -1.0e8)
 {
     float2 fuv = (wp.xy - FRect.xy) * FRect.zw;
     float d = (all(fuv > 0.0) && all(fuv < 1.0)) ? max(Dep.SampleLevel(View.SharedBilinearClampedSampler, fuv, 0).r, 0.0) : 0.0;
-    if (wp.z < ground + d * 100.0) return float3(0, 0, 0);
+    float surf = ground + d * 100.0;
+    // blowing snow: a sheet streaming along a metre or two over the snow, thickest at the bottom
+    if (low) wp.z = surf + 5.0 + 160.0 * R2.x * R2.x + 6.0 * sin(T * 3.1 + ph);
+    if (wp.z < surf) return float3(0, 0, 0);
     float2 cuv = (wp.xy - CRect.xy) * CRect.zw;
     float roof = Cov.SampleLevel(View.SharedPointClampedSampler, cuv, 0).g;
     if (roof > 1.8 && wp.z < ground + roof * 100.0) return float3(0, 0, 0);
@@ -352,7 +358,7 @@ float3 Rv = ResolvedView.ViewToTranslatedWorld[0].xyz;
 float3 Uv = ResolvedView.ViewToTranslatedWorld[1].xyz;
 float dist = length(rel);
 // ~2 cm flakes (clumps); far ones kept at least ~a pixel and fainter (the pixel shader)
-float size = max(1.1, dist * 0.0022) * lerp(0.6, 1.4, R1.y);
+float size = max(1.1, dist * 0.0022) * lerp(0.6, 1.4, R1.y) * Style.x;
 wp += (Rv * C.x + Uv * C.y) * size;
 return wp - P;
 """
@@ -362,6 +368,6 @@ float r = length(C);
 float dist = length(WP - Cam);
 float a = (1.0 - smoothstep(0.25, 1.0, r)) * saturate(1.1 / max(dist * 0.0022, 1.1));
 // nearest ones soft (out of focus), faint up close so they don't blot the view
-a *= smoothstep(15.0, 60.0, dist);
+a *= smoothstep(30.0, 160.0, dist);
 return a * 0.85;
 """
