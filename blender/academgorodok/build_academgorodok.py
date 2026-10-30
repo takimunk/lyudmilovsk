@@ -381,6 +381,8 @@ def build():
     scene.collection.children.link(work)
 
     houses = plan.ensemble()
+    import grocery
+    houses["Gastronom"] = grocery.build()     # the grocery pavilion in the yard (its hall: gastronom.py)
     parts = {}
     for name, h in houses.items():
         f = h.frame

@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "LyudText.h"
 #include "LyudInventory.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
@@ -98,7 +99,12 @@ void ALyudGoodsItem::Init(FName InItem)
 		if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel")))
 		{
 			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
-			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			// a printed label when the item has one (the grocery's feeds: T_Label_<id>), else its icon
+			if (UTexture2D* Label = LyudText::LoadTexture(TEXT("Hall"), TEXT("T_Label_") + Item.ToString()))
+			{
+				MID->SetTextureParameterValue(TEXT("Label"), Label);
+			}
+			else if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 			{
 				if (UTexture2D* Tex = UI->IconTexture(Item))
 				{

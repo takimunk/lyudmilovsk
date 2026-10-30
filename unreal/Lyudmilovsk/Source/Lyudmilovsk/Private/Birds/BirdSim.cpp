@@ -246,7 +246,13 @@ namespace LyudBirds
 			const float A = Rand(Rng) * 2.f * Pi, R = Site.Radius * std::sqrt(Rand(Rng));
 			P.X += std::cos(A) * R;
 			P.Y += std::sin(A) * R;
-			if (Site.Kind == EHabitat::Sea)
+			if (Site.Flags & SiteFeeder)
+			{
+				// on the feeder's tray, round its edge more than in the middle
+				const float E = Site.Radius * (0.7f + 0.3f * Rand(Rng));
+				P = Site.A + V3(std::cos(A) * E, std::sin(A) * E, 0.f);
+			}
+			else if (Site.Kind == EHabitat::Sea)
 			{
 				P.Z = SeaZ;
 			}
@@ -297,6 +303,10 @@ namespace LyudBirds
 	float FWorld::SiteScore(const FGroup& G, const FSite& Site, int Plan) const
 	{
 		const FSpecies& S = SpeciesTable()[G.Species];
+		if (Site.Flags & SiteFeeder)
+		{
+			return 0.f;            // feeders: ChooseSite asks FeederScore
+		}
 		float W = Taste(S, Plan, Site.Kind);
 		if (W <= 0.f)
 		{
@@ -398,7 +408,191 @@ namespace LyudBirds
 				Best = I;
 			}
 		}
+		// the player's feeders are few: each is always a candidate when the group means to feed
+		if (Plan == 1)
+		{
+			for (const FFeeder& F : Feeders)
+			{
+				if (F.bActive && F.Site != Except)
+				{
+					const float W = FeederScore(G, F) * (0.6f + 0.8f * Rand(R));
+					if (W > BestW)
+					{
+						BestW = W;
+						Best = F.Site;
+					}
+				}
+			}
+		}
 		return Best;
+	}
+
+	/** How much a group wants to feed at a feeder now: its feed to their taste, found, within their range, in a place they feed in. */
+	float FWorld::FeederScore(const FGroup& G, const FFeeder& F) const
+	{
+		const FSpecies& S = SpeciesTable()[G.Species];
+		const FSite& Site = Sites[F.Site];
+		const float Like = G.Species < 64 ? F.Like[G.Species] : 0.f;
+		if (Like <= 0.f || F.Ready <= 0.f || F.Food <= 0.f || S.bPredator || IsAerial(S) || S.Length > 0.5f)
+		{
+			return 0.f;
+		}
+		bool bHabitat = false;
+		for (int K = 0; K < NumHabitats && !bHabitat; K++)
+		{
+			bHabitat = (F.Around & (1u << K)) && Taste(S, 1, (EHabitat)K) > 0.f;
+		}
+		if (!bHabitat)
+		{
+			return 0.f;            // not a kind of place this species feeds in
+		}
+		const float D = (Site.Center() - G.Home).Len2D();
+		if (D > S.HomeRange * 1.5f)
+		{
+			return 0.f;            // out of the group's range: they never come across it
+		}
+		float W = 1.6f * Like * F.Ready * (1.f - 0.6f * Smooth(D / S.HomeRange));
+		const int Size = (int)G.Members.size();
+		if (Site.Occupants + Size > Site.Capacity + 2)
+		{
+			return 0.f;            // a tray holds a few birds: a big flock (or one more on a full tray) feeds elsewhere
+		}
+		W *= 1.f - Clamp((float)(Site.Occupants + Size) / (float)(Site.Capacity + Size), 0.f, 1.f) * 0.8f;
+		if (Site.TopDominance > S.Dominance + 10 && Site.Occupants > 0)
+		{
+			W *= 0.25f;
+		}
+		if (Site.Disturbed > Time)
+		{
+			W *= 0.1f;
+		}
+		if (Avoided(G, Site.Center()))
+		{
+			W *= 0.02f;
+		}
+		return W;
+	}
+
+	int FWorld::AddFeeder(const V3& Tray, float Radius, uint32_t Around)
+	{
+		int Id = -1;
+		for (int I = 0; I < (int)Feeders.size(); I++)
+		{
+			if (!Feeders[I].bActive)
+			{
+				Id = I;
+				break;
+			}
+		}
+		if (Id < 0)
+		{
+			FSite Site;
+			Site.Kind = EHabitat::Garden;       // a perch: the birds sit on the tray, they don't walk about
+			Site.Flags = SiteFeeder;
+			Sites.push_back(Site);
+			FFeeder F;
+			F.Site = (int)Sites.size() - 1;
+			Feeders.push_back(F);
+			Id = (int)Feeders.size() - 1;
+		}
+		FFeeder& F = Feeders[Id];
+		const int SiteId = F.Site;
+		F = FFeeder();
+		F.Site = SiteId;
+		F.bActive = true;
+		F.Around = Around;
+		FSite& Site = Sites[SiteId];
+		Site.A = Site.B = Tray;
+		Site.Radius = Radius;
+		Site.Capacity = 6;
+		Site.Occupants = 0;
+		Site.Disturbed = 0.f;
+		return Id;
+	}
+
+	void FWorld::RemoveFeeder(int Id)
+	{
+		if (Id < 0 || Id >= (int)Feeders.size() || !Feeders[Id].bActive)
+		{
+			return;
+		}
+		FFeeder& F = Feeders[Id];
+		F.bActive = false;
+		F.Food = F.Ready = 0.f;
+		for (FGroup& G : Groups)
+		{
+			if (G.Site == F.Site)
+			{
+				G.StayTimer = 0.f;                   // they look for somewhere else at their next thought
+			}
+		}
+		for (FBird& B : Birds)
+		{
+			if (B.Site == F.Site && !B.bGone && B.Act != EAct::Claimed && B.Act != EAct::Approach && B.Act != EAct::Eat)
+			{
+				Flush(B, Sites[F.Site].A + V3(0.f, 0.f, -1.f), -1);
+			}
+		}
+	}
+
+	int FWorld::FeederAt(int Site) const
+	{
+		if (Site < 0 || Site >= (int)Sites.size() || !(Sites[Site].Flags & SiteFeeder))
+		{
+			return -1;
+		}
+		for (int I = 0; I < (int)Feeders.size(); I++)
+		{
+			if (Feeders[I].Site == Site)
+			{
+				return I;
+			}
+		}
+		return -1;
+	}
+
+	uint32_t FWorld::KindsAround(const V3& P, float Radius) const
+	{
+		uint32_t Mask = 0;
+		for (const FSite& S : Sites)
+		{
+			if ((S.Flags & SiteFeeder) || S.Kind == EHabitat::Sea || S.Kind == EHabitat::Wire || S.Kind == EHabitat::Tower || S.Kind == EHabitat::Roof)
+			{
+				continue;
+			}
+			if ((S.Center() - P).Len2D() - S.Radius - (S.B - S.A).Len() * 0.5f < Radius)
+			{
+				Mask |= 1u << (int)S.Kind;
+			}
+		}
+		return Mask ? Mask : 1u << (int)EHabitat::Garden;
+	}
+
+	void FWorld::AtFeeder(FBird& B, FFeeder& F, float Dt)
+	{
+		(void)Dt;
+		const FSpecies& S = SpeciesTable()[B.Species];
+		const bool bFeed = F.bActive && F.Food > 0.f && B.Species < 64 && F.Like[B.Species] > 0.f && Groups[B.Group].Plan == 1;
+		if (bFeed && B.Hunger > 0.05f && Rand(B.Rng) < 0.75f)
+		{
+			// a few pecks, then a look round (or a hop along the tray)
+			SetAct(B, EAct::Peck, 1.5f + Rand(B.Rng) * 3.f);
+			const V3 To = (Sites[F.Site].A - B.Pos).Flat();
+			if (To.Len2D() > 0.01f)
+			{
+				B.Yaw = std::atan2(To.Y, To.X) + (Rand(B.Rng) - 0.5f) * 1.2f;
+			}
+		}
+		else if (bFeed && Rand(B.Rng) < 0.3f)
+		{
+			B.Spot = SpotFor(B, B.Site);
+			FlyTo(B, B.Site, B.Spot);
+		}
+		else
+		{
+			SetAct(B, Rand(B.Rng) < 0.25f ? EAct::Preen : EAct::Perch, 1.f + Rand(B.Rng) * 3.f);
+		}
+		(void)S;
 	}
 
 	// --- creating the birds ---------------------------------------------------------------------------
@@ -1110,6 +1304,15 @@ namespace LyudBirds
 		}
 		const FSite& Site = Sites[B.Site];
 		const FGroup& G = Groups[B.Group];
+		if (Site.Flags & SiteFeeder)
+		{
+			const int F = FeederAt(B.Site);
+			if (F >= 0)
+			{
+				AtFeeder(B, Feeders[F], 0.f);
+				return;
+			}
+		}
 		if (Site.Kind == EHabitat::Wire)
 		{
 			// a row on the wire: everybody faces the same way, across it
@@ -1395,7 +1598,9 @@ namespace LyudBirds
 		if (B.bNoticed && Player.bOffer && PalmDist < 16.f && B.Alert < 0.6f && Dist > 0.f)
 		{
 			const float Calm = Clamp(1.f - (D / std::max(S.FleeDistance, 0.5f) - 0.3f), 0.f, 1.f);
-			B.Trust = std::min(1.f, B.Trust + Dt * 0.05f * (0.2f + 0.8f * B.Habituation) * S.Tameness * (0.5f + 0.5f * B.Boldness) * (1.f - B.Alert) * Calm * (PalmDist < 8.f ? 1.4f : 1.f));
+			// food it likes wins it over faster; food it doesn't eat hardly at all
+			const float Like = 0.15f + 0.85f * (B.Species < 64 ? Player.OfferLike[B.Species] : 1.f);
+			B.Trust = std::min(1.f, B.Trust + Dt * 0.05f * (0.2f + 0.8f * B.Habituation) * S.Tameness * (0.5f + 0.5f * B.Boldness) * (1.f - B.Alert) * Calm * (PalmDist < 8.f ? 1.4f : 1.f) * Like);
 		}
 		else if (B.bNoticed && Dist < 20.f && B.Alert < 0.3f)
 		{
@@ -1654,9 +1859,10 @@ namespace LyudBirds
 	{
 		(void)Dt;
 		const FSpecies& S = SpeciesTable()[B.Species];
-		if (!Player.bOffer || Approacher >= 0 || B.bGone || S.bPredator || IsAerial(S) || S.Length > 0.5f)
+		if (!Player.bOffer || Approacher >= 0 || B.bGone || S.bPredator || IsAerial(S) || S.Length > 0.5f
+			|| (B.Species < 64 && Player.OfferLike[B.Species] < 0.3f))
 		{
-			return;
+			return;                 // (nor for food it does not eat)
 		}
 		if (!B.bNoticed || B.Trust < 0.55f || B.Habituation < 0.5f || B.Alert > 0.35f || B.Hunger < 0.15f || IsAirborne(B.Act) || B.Act == EAct::Sleep)
 		{
@@ -2076,7 +2282,12 @@ namespace LyudBirds
 				const FGroup& G = Groups[B.Group];
 				const bool bGround = B.Site >= 0 && IsGroundHabitat(Sites[B.Site].Kind);
 				const float R = Rand(B.Rng);
-				if (G.Plan == 1 && B.Site >= 0 && (bGround || R < 0.5f))
+				const int Feeder = FeederAt(B.Site);
+				if (Feeder >= 0)
+				{
+					AtFeeder(B, Feeders[Feeder], Dt);
+				}
+				else if (G.Plan == 1 && B.Site >= 0 && (bGround || R < 0.5f))
 				{
 					// feed: on the ground walk to a new spot, in a crown flit to another twig
 					B.Spot = SpotFor(B, B.Site);
@@ -2120,6 +2331,24 @@ namespace LyudBirds
 			}
 			break;
 		case EAct::Peck:
+			if (const int Feeder = FeederAt(B.Site); Feeder >= 0)
+			{
+				// on a feeder's tray: the feed goes down, and a calm player near by becomes someone who brings food
+				FFeeder& F = Feeders[Feeder];
+				const float Bite = Dt * 0.0006f;         // a handful lasts a bird about half an hour of pecking
+				F.Food = std::max(0.f, F.Food - Bite);
+				F.Eaten += Bite;
+				if (Player.bPresent && !Player.bClaimedBird && B.bNoticed && B.Alert < 0.3f && (B.Pos - Player.Feet).Len() < 30.f)
+				{
+					B.Trust = std::min(0.6f, B.Trust + Dt * 0.006f * S.Tameness * (0.5f + 0.5f * B.Boldness));
+					B.Habituation = std::min(1.f, B.Habituation + Dt * 0.02f);
+				}
+				if (B.ActTime > B.ActLen)
+				{
+					AtFeeder(B, F, Dt);
+				}
+				break;
+			}
 			if (B.ActTime > B.ActLen)
 			{
 				// many eyes: in a big flock a bird looks up less often

@@ -394,6 +394,16 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			}
 		});
 	}
+	else if (Def->Kind == ELyudItemKind::Place)
+	{
+		AddAction(TEXT("ui.use.place"), [WeakUI, Id]
+		{
+			if (ULyudInventoryUI* U = WeakUI.Get())
+			{
+				U->Place(Id);
+			}
+		});
+	}
 	else if (Def->Kind == ELyudItemKind::Drink || Def->Kind == ELyudItemKind::Food)
 	{
 		AddAction(Def->Kind == ELyudItemKind::Drink ? TEXT("ui.use.drink") : TEXT("ui.use.eat"), [WeakUI, Id]

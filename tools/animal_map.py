@@ -52,6 +52,7 @@ ACADEM_HOUSES = {
     "Novikova1": ((0.0, 0.0), 93.0, 60.7, 14.5),
     "Novikova3": ((-12.83 - 2.05, 76.14 - 5.08), -34.6, 63.3, 19.8),
     "Maksimova8": ((-5.86 - 2.05, -68.74 - 5.08), -138.2, 63.3, 19.8),
+    "Gastronom": ((-42.99, -22.1), 93.0, 21.45, 9.25),      # the grocery pavilion (blender/academgorodok/grocery.py footprint())
 }
 
 
@@ -267,12 +268,15 @@ def main():
         yaw = b[2] + math.atan2(n[1], n[0])
         add("Doorstep", x, y, yaw, 3, max(0.0, -math.sin(yaw)) * 0.8 + 0.2, 0.3, 0.0, "academ")
     n1 = ab.get("Novikova1")
-    if n1:
-        # the shop is in Novikova 1's ground floor (house x -2.5..18.2): its yard door
-        x, y = box_point(n1, 8.0, n1[4] + 1.5)
-        add("ShopDoor", x, y, n1[2] + math.pi / 2, 4, 0.2, 0.2, 1.0, "gastronom")
-        x, y = box_point(n1, 14.0, n1[4] + 4.0)
+    gs = ab.get("Gastronom")
+    if gs:
+        # the grocery pavilion (grocery.py): its doors look east at Novikova 1's back (house -y, the box's +v: the map
+        # is mirrored); people go in by the hall door (house x 4.35, u -3.4 from the box centre); the bins behind it
+        x, y = box_point(gs, -3.4, gs[4] + 1.5)
+        add("ShopDoor", x, y, gs[2] + math.pi / 2, 4, 0.2, 0.2, 1.0, "gastronom")
+        x, y = box_point(gs, 4.0, -(gs[4] + 2.5))
         add("Bins", x, y, 0.0, 4, 0.0, 0.0, 0.7, "gastronom")
+    if n1:
         x, y = box_point(n1, -12.0, n1[4] + 3.0)
         add("Feeder", x, y, 0.0, 6, 0.4, 0.0, 1.0, "academ")       # the lady from the second stair feeds the cats
         x, y = box_point(n1, -26.0, n1[4] + 2.0)
