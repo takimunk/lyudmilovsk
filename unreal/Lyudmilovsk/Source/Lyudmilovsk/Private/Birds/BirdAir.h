@@ -18,6 +18,8 @@ public:
 		FVector Wind = FVector::ZeroVector;   // m/s, horizontal
 		float Updraft = 0.f;                  // m/s, rising air (ridge + thermal)
 		float Ridge = 0.f, Thermal = 0.f;
+		/** Gusts here, m/s rms (the wind's gustiness, rougher over land and low down, calm in a lull). */
+		float Turbulence = 0.f;
 		float GroundZ = 0.f;                  // cm, under the bird
 	};
 

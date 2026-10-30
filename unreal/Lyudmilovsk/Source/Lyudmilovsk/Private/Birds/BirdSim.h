@@ -92,6 +92,8 @@ namespace LyudBirds
 		bool bCommunalRoost = false;     // every group of the species sleeps at the same place
 		EFlight Flight = EFlight::Flap;
 		float Cruise = 10.f;             // m/s
+		float Sprint = 13.f;             // m/s, flat out (BirdBio): escapes, chases, and the strongest headwind it can beat
+		float WindLimit = 12.f;          // m/s mean wind (BirdBio) above which it keeps to shelter and flies low and seldom
 		float Wingbeat = 0.f;            // Hz, 0 = from the mass (the species table sets it)
 		float FlightClearance = 12.f;    // m over the tallest thing under it
 		float HawkAlt = 15.f;            // aerial feeders: height over the ground they hunt at
@@ -191,6 +193,7 @@ namespace LyudBirds
 		bool bFemale = false;       // half of each species (its own seed), for the female plumage and size
 		uint32_t Rng = 1;
 		float LeaveDay = 1e9f;      // a straggler leaves on this day of the year (migration)
+		float Struggle = 0.f;       // s it has been flying without making way against the wind
 	};
 
 	struct FGroup
@@ -293,6 +296,16 @@ namespace LyudBirds
 		/** The sea's surface now (m): ALyudSea::SeaLevel, mean -43 plus the tide; swimmers float on it, waders follow it. */
 		float SeaZ = -43.f;
 		float MeanSeaZ = -43.f;
+		/** The wind (ULyudWindSubsystem's mean at 10 m, m/s, horizontal) and its gustiness (gust spread / mean),
+		 *  filled by the game; flying birds drift with it, and in a gale the small ones keep to shelter. */
+		V3 Wind;
+		float Gustiness = 0.25f;
+		/** How hard the wind is for a species now: 1 = its WindLimit. */
+		float WindStress(const FSpecies& S) const;
+		/** How much more often a soarer goes up to circle in this wind (0 = never: the albatross in a calm). */
+		float SoarWind(const FSpecies& S) const;
+		/** The nearest place this bird can sit out a wind it can't fly against (rather downwind, in the lee). */
+		int ShelterNear(const FBird& B) const;
 		int SpeciesCount[64] = {};
 		int TierCount[4] = {};
 		std::string LastError;

@@ -1367,7 +1367,8 @@ def ease(t):
 
 
 PERCH = dict(lift=-M["perch_low"], tailroof=1.0, pitch=M["perch_pitch"], neck=M["perch_neck"], head=M["perch_head"], fold=1.0, perch=1.0, tailpitch=M["perch_tail"], tailspread=0.0)
-FLIGHT = dict(pitch=0, neck=0, head=0, fold=0.0, perch=0.0, tuck=1.0, tailpitch=0, tailspread=0.0)
+# (herons fly with the neck drawn back into an S: fly_neck / fly_head)
+FLIGHT = dict(pitch=0, neck=M["fly_neck"], head=M["fly_head"], fold=0.0, perch=0.0, tuck=1.0, tailpitch=0, tailspread=0.0)
 FS = SP["flight"]
 FLAP = {  # amplitude (deg), offset, upstroke fold, hand flick
     "Flapping": (52, -8, 0.38, -14), "Bounding": (62, -4, 0.55, -22), "Undulating": (54, -6, 0.42, -16),

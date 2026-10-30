@@ -476,6 +476,16 @@ void ABirdPawn::Tick(float DeltaSeconds)
 		{
 			ShowNote(TEXT("bird.note.tired"), 3.f);
 		}
+		// a wind stronger than the species can fly against: it is blowing the bird back (lower down it is weaker)
+		const FVector Heading = FVector(Flight->Vel.X, Flight->Vel.Y, 0.0).GetSafeNormal();
+		const float Against = -FVector::DotProduct(LastAir, Heading);
+		HeadwindT = Mode == EBirdMode::Air && Against > Params->Sprint * 0.9 && FVector::DotProduct(FVector(Flight->Ground.X, Flight->Ground.Y, 0.0), Heading) < 0.5
+			? HeadwindT + Dt : 0.f;
+		if (HeadwindT > 2.f && NoteT <= 0.f)
+		{
+			ShowNote(TEXT("bird.note.headwind"), 4.f);
+			HeadwindT = -20.f;
+		}
 	}
 	NoteT = FMath::Max(0.f, NoteT - Dt);
 	// the beats heard, the air heard and seen
@@ -543,13 +553,19 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	TuckL = (HeldL > TuckAfter || C.Ctrl) ? 1.f : 0.f;
 	TuckR = (HeldR > TuckAfter || C.Ctrl) ? 1.f : 0.f;
 
-	// Space: the species' own rhythm; a take-off: a moment of steady beats
+	// Space: the species' own easy rhythm (a share of full power, it holds the cruise); the player's own clicks
+	// beat flat out (the sprint, and the climb), and tire the bird much faster; a take-off: a moment of steady beats
+	const bool bOwnClick = In.ClickL || In.ClickR;
 	if (C.Space)
 	{
 		double AutoTuck = 0.0;
 		if (BirdFlight::AutoFlap(P, Dt, AutoClock, AutoTuck))
 		{
 			In.ClickL = In.ClickR = true;
+			if (!bOwnClick)
+			{
+				In.Power = P.CruisePower;
+			}
 		}
 		TuckL = FMath::Max(TuckL, (float)AutoTuck);
 		TuckR = FMath::Max(TuckR, (float)AutoTuck);
@@ -635,6 +651,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 			if (AssistClock <= 0.f)
 			{
 				In.ClickL = In.ClickR = true;
+				In.Power = FMath::Max((double)In.Power * (bOwnClick ? 1.0 : 0.0), P.CruisePower);
 				AssistClock = (float)P.ClickTime();
 			}
 		}
@@ -670,6 +687,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	BirdFlight::FAir Wind;
 	Wind.Wind = BirdFlight::V3(A.Wind.X, A.Wind.Y, 0);
 	Wind.Updraft = A.Updraft;
+	Wind.Turbulence = A.Turbulence;
 	LastAir = A.Wind;
 	LastUpdraft = A.Updraft;
 

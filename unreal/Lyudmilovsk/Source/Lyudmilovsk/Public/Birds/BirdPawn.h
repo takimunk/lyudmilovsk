@@ -197,6 +197,8 @@ private:
 	float FateT = 0.f, DangerT = 0.f, DangerCheck = 0.f;
 	FString NoteKey;
 	float NoteT = 0.f;
+	/** Seconds the wind has been blowing the bird back (the headwind note). */
+	float HeadwindT = 0.f;
 	FVector SwimVel = FVector::ZeroVector;
 	double PrevPhase = 0.0;
 	bool bAutoDescend = false;

@@ -43,7 +43,7 @@ void SBirdHud::Construct(const FArguments&, ABirdPawn* InPawn)
 {
 	Pawn = InPawn;
 	SetVisibility(EVisibility::HitTestInvisible);
-	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.magnet"), TEXT("bird.hint.actions"), TEXT("bird.hint.return") })
+	for (const TCHAR* K : { TEXT("bird.hint.look"), TEXT("bird.hint.beat"), TEXT("bird.hint.tuck"), TEXT("bird.hint.flare"), TEXT("bird.hint.sprint"), TEXT("bird.hint.magnet"), TEXT("bird.hint.actions"), TEXT("bird.hint.return") })
 	{
 		Hints.Add(LyudText::Get(K));
 	}

@@ -358,6 +358,9 @@ namespace
 		}
 	}
 
+	void Wind(FResult& R);
+	bool IsGullName(const std::string& Id) { return Id.find("Gull") != std::string::npos; }
+
 	/** The species' days (docs/bird_life.md "Daily routines"): starlings and their murmuration, swallows on the wires, the tide. */
 	void Routines(FResult& R)
 	{
@@ -680,6 +683,79 @@ namespace
 			std::printf("swifts at 1 am: %d, the lowest %.0f m over the ground\n", N, Low_);
 			Check(R, N > 0 && Low_ > 250.f, "swifts sleep on the wing high up");
 		}
+		Wind(R);
+	}
+
+	/** The wind (BirdBio's flying qualities): in a gale the small birds keep to the lee, the soarers take to the air. */
+	void Wind(FResult& R)
+	{
+		struct FCount { int SmallOpen = 0, Small = 0, Soaring = 0, Soarers = 0, Albatross = 0, Bad = 0; };
+		std::map<std::string, int> SoarBy;
+		auto Census = [&](float Ms)
+		{
+			SoarBy.clear();
+			FWorld W;
+			FCount C;
+			if (!Setup(W, 11.f))
+			{
+				return C;
+			}
+			W.Camera = Door;
+			// from the west-south-west (compass to world: east = -X, north = +Y)
+			W.Wind = V3(-0.92f, 0.38f, 0.f) * Ms;
+			W.Gustiness = 0.3f;
+			W.Resettle();
+			Advance(W, 1.f, 0.25f, [&]
+			{
+				for (const FBird& B : W.Birds)
+				{
+					const FSpecies& S = SpeciesTable()[B.Species];
+					if (B.bGone) continue;
+					C.Soarers += (S.Flight == EFlight::FlapGlide || S.Flight == EFlight::Soar) && !S.bPredator && S.Id != "Peregrine";
+					C.Soaring += B.Act == EAct::Soar;
+					if (B.Act == EAct::Soar && std::getenv("BIRD_WIND_ACTS")) SoarBy[S.Id]++;
+					C.Albatross += S.Id == "BlackBrowedAlbatross" && IsAirborne(B.Act);
+				}
+			});
+			if (std::getenv("BIRD_WIND_ACTS"))
+			{
+				std::map<std::string, int> Acts;
+				for (const FBird& B : W.Birds)
+				{
+					const FSpecies& S = SpeciesTable()[B.Species];
+					if (!B.bGone) Acts[std::string(S.Length < 0.3f ? "small " : IsGullName(S.Id) ? "gull " : "other ") + ActName(B.Act) + (B.Site >= 0 ? std::string(" ") + HabitatName(W.Sites[B.Site].Kind) : "")]++;
+				}
+				for (auto& [K, N] : Acts) std::printf("    %5d %s\n", N, K.c_str());
+				int Shown = 0;
+				for (const FBird& B : W.Birds)
+				{
+					const FSpecies& S = SpeciesTable()[B.Species];
+					if (B.Act == EAct::Fly && Shown < 12 && (Shown < 6 ? IsGullName(S.Id) : S.Length < 0.3f))
+					{
+						Shown++;
+						std::printf("    %s fly %.0fs site %d (%.0f,%.0f) pos (%.0f,%.0f) target %d: to spot %.0f m (dz %.0f), vel %.1f,%.1f,%.1f struggle %.1f z-floor %.1f\n", S.Id.c_str(), B.ActTime, B.Site, B.Site >= 0 ? W.Sites[B.Site].Center().X : 0.f, B.Site >= 0 ? W.Sites[B.Site].Center().Y : 0.f, B.Pos.X, B.Pos.Y, B.Target, (B.Spot - B.Pos).Len2D(), B.Spot.Z - B.Pos.Z, B.Vel.X, B.Vel.Y, B.Vel.Z, B.Struggle, B.Pos.Z - W.TopZ(B.Pos.X, B.Pos.Y));
+					}
+				}
+			}
+			for (auto& [K, N] : SoarBy) std::printf("    soar %s %d\n", K.c_str(), N);
+			for (const FBird& B : W.Birds)
+			{
+				const FSpecies& S = SpeciesTable()[B.Species];
+				if (!std::isfinite(B.Pos.X) || !std::isfinite(B.Pos.Z) || B.Pos.Z < W.GroundZ(B.Pos.X, B.Pos.Y) - 3.f) C.Bad++;
+				if (B.bGone || IsAirborne(B.Act) || B.Site < 0 || S.Length >= 0.3f || S.Flight == EFlight::Aerial) continue;
+				const EHabitat K = W.Sites[B.Site].Kind;
+				C.Small++;
+				C.SmallOpen += K == EHabitat::Meadow || K == EHabitat::Wire || K == EHabitat::Roof || K == EHabitat::Beach || K == EHabitat::Tower;
+			}
+			return C;
+		};
+		const FCount Calm = Census(1.5f), Gale = Census(17.f);
+		std::printf("wind 1.5 m/s: %d of %d small birds in the open, soaring %d bird-steps (albatross aloft %d)\n", Calm.SmallOpen, Calm.Small, Calm.Soaring, Calm.Albatross);
+		std::printf("wind 17 m/s: %d of %d small birds in the open, soaring %d bird-steps (albatross aloft %d); %d birds out of the world\n", Gale.SmallOpen, Gale.Small, Gale.Soaring, Gale.Albatross, Gale.Bad);
+		Check(R, Gale.Small > 0 && Calm.Small > 0 && Gale.SmallOpen * Calm.Small < Calm.SmallOpen * Gale.Small / 2, "in a gale the small birds leave the open for the lee (half as many or fewer)");
+		Check(R, Gale.Soaring >= Calm.Soaring * 0.8f, "the gulls and the big soarers keep circling in a gale");
+		Check(R, Gale.Albatross > Calm.Albatross * 5, "the albatross mostly sits on the sea in a calm and flies in a blow");
+		Check(R, Gale.Bad == 0, "no bird is blown out of the world or into the ground");
 	}
 
 	int Test()
@@ -687,8 +763,9 @@ namespace
 		FResult R;
 		if (std::getenv("BIRD_ONLY"))
 		{
-			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only)
-			Routines(R);
+			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only; wind: the gale only)
+			if (!std::strcmp(std::getenv("BIRD_ONLY"), "wind")) Wind(R);
+			else Routines(R);
 			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 			return R.Fail ? 1 : 0;
 		}

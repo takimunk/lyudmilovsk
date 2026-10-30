@@ -19,13 +19,13 @@ never shake it.
 
 | Input | What the bird does |
 |---|---|
-| Click LMB and RMB together | One wingbeat: down on press, up on release. Clicking rhythmically is flapping; the species' own wingbeat rate is the fastest that helps |
+| Click LMB and RMB together | One wingbeat at full power: down on press, up on release. Clicking rhythmically is flapping; clicking as fast as the species' wingbeat rate allows is its sprint (and its steepest climb), and tires it several times faster than Space |
 | Click one button | One beat of that wing only: a hard roll and turn away from it (rowing with one oar) |
 | Hold both | Wings pulled in to the body: you fall and gain speed (a dive, or the "bound" of a finch between bursts) |
 | Hold one | That wing pulled in: a hard roll and a tight turn toward it |
 | Nothing pressed | Wings spread: you glide |
 | Mouse | The head: look, and the body steers after the look |
-| Space | Both wings beat; hold it to flap at the species' natural rhythm and pattern (keyboard-only play) |
+| Space | Both wings beat; hold it to flap at the species' natural rhythm and pattern, its easy travelling flight at cruise speed (keyboard-only play) |
 | Shift | Flare: tail fanned, wings forward, feet down. Brakes, and lands on whatever is under or in front of you |
 | Q (hold) | The landing magnet: the nearest perch ahead (a twig in a crown, a treetop, a roof, a rail) pulls you in like a web line; the bird beats and brakes by itself and lands there. From the ground it takes off and goes for the next one |
 | Ctrl | Wings pulled in, same as holding both buttons |
@@ -141,6 +141,50 @@ a gull 11): the model tunes each species' wingbeat thrust to it when the bird is
 
 Dev scripts: `Bird.Script water:MuteSwan | drown:Starling | tire:BlueTit | call:Starling` (with
 `lyud.Birds.AnyMap 1` in a test level; `lyud.Bird.ForceAnswer 3` forces a fight).
+
+## Flying qualities (round 4)
+
+Every species flies as well as the real one: `Private/Birds/BirdBio.cpp` holds, next to stamina, dive speed and agility,
+its **sprint** (the fastest level flight at full power, m/s), its **climb** (the steepest climb by flapping, m/s: the strength
+of its flight muscles), the **wind it can cope with** (the mean wind at which wild birds of it keep to shelter) and its
+**glide ratio**. Sources: Alerstam et al. 2007 (cruising airspeeds), Bruderer & Boldt 2001 (radar), Pennycuick 2008
+(power curves, climb, glide), Henningsson et al. 2010 (swift sprints), Tucker 1998 (stoops).
+
+| | sprint m/s | climb m/s | wind limit m/s | glide |
+|---|---|---|---|---|
+| blue tit | 11 | 2.5 | 7 | 5:1 |
+| house sparrow | 13 | 2.6 | 8 | 5:1 |
+| starling | 20 | 2.8 | 13 | 7:1 |
+| feral pigeon | 24 | 3.0 | 13 | 7:1 |
+| herring gull | 18 | 1.5 | 24 | 15:1 |
+| common swift | 31 | 2.5 | 18 | 12:1 |
+| peregrine | 30 (stoop 90) | 4.0 | 22 | 10:1 |
+| mute swan | 22 | 1.0 | 18 | 7:1 |
+| white-tailed eagle | 17 | 0.9 | 22 | 15:1 |
+| golden eagle | 20 (stoop 67) | 1.0 | 22 | 16:1 |
+| black-browed albatross | 18 | 0.5 | 35 | 22:1 |
+| grey heron | 15 | 1.3 | 15 | 9:1 |
+
+How the model holds them (`BirdFlightModel.cpp`, fitted per species when the bird is made, ~50 ms):
+
+- **Power, not force.** Above cruise speed a beat's thrust falls as 1/V (the muscles deliver power), so clicking flat out
+  settles at the sprint. The species' rhythm on Space uses a fitted share of full power (`CruisePower`) and holds the cruise;
+  a weak flier that needs everything to cruise (the eagles, the albatross) gets shorter glides between its bursts instead.
+- **The climb.** What the beats put into speed and height, averaged over a second, is at most what level flight costs here
+  plus lifting the bird at its climb rate (`ClimbCap`, fitted). A swan climbs at 1 m/s, a peregrine at 4; a zoom (trading
+  speed for height on spread wings) costs the beats nothing. A take-off gets a few seconds of extra (anaerobic) power; heavy
+  birds can't lift themselves straight up and must fly up to speed first.
+- **Headwind.** The bird moves with the air, so a headwind stronger than its sprint blows it backwards over the ground.
+  The wind is weaker near the ground (the HUD says so: `bird.note.headwind`).
+- **Gusts.** A change of the air changes the airspeed, not the ground speed: the bird has mass, the air takes it along only
+  through its drag. On top of the wind come random gusts (`FAir::Turbulence`, from the wind's gustiness, rougher over land
+  and low down). A blue tit's track wanders a quarter of its speed in a gusty crosswind, a white-tailed eagle's a seventh.
+
+Wild birds (`BirdSim.cpp`, docs/bird_life.md "Wind") use the same sprint and wind limit.
+
+`unreal/scripts/test_bird_flight.sh` checks each species' sprint, climb, a headwind just under and just over its sprint,
+and the gusts (a blue tit against an eagle), besides the glide, cruise, take-off, dive, stall, turns, ridge lift, flare
+and stamina.
 
 ## Becoming the bird and back
 

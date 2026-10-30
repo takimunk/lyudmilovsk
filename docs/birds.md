@@ -1,6 +1,9 @@
 # Birds: species, models, animation
 
-29 Baltic species, every one built by the same generator from a table, so a new species is a few lines.
+36 species, every one built by the same generator from a table, so a new species is a few lines. Round 4 added the big
+birds: white-tailed and golden eagle, common buzzard, raven, grey heron (it flies with its neck drawn into an S:
+`fly_neck` / `fly_head` in `species_art.py`) and a black-browed albatross, a vagrant from the south such as turn up in the
+North Sea and the Baltic. Their calls are synthesised like the others (`tools/birdsim/bird_calls.py`).
 
 ## Data
 

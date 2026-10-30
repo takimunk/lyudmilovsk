@@ -300,7 +300,44 @@ def hawk_kek(n=5, f=2200):
     return trill(lambda i: caw(f, 0.07, [(f * 1.2, 500, 1.0), (f * 2.2, 700, 0.4)], 0.2, 1.0), n, 0.06)
 
 
+# the big birds (round 4)
+def eagle_klee():
+    # white-tailed eagle: a yelping, rather thin "kli-kli-kli-kli", falling and slowing, surprisingly weak for its size
+    return trill(lambda i: chirp_note(2400 - i * 90, 1900 - i * 80, 0.09 + 0.01 * i, (1.0, 0.35, 0.12)), 7, 0.07, 1.06)
+
+
+def golden_yelp():
+    # golden eagle (mostly silent): a thin, puppy-like "kyik", twice
+    return seq(chirp_note(1500, 1150, 0.16, (1.0, 0.3, 0.1)), silence(0.22), chirp_note(1450, 1100, 0.15, (1.0, 0.3, 0.1)))
+
+
+def buzzard_mew():
+    # common buzzard: the long, cat-like mewing "pee-yaa", falling, a little hoarse
+    f = contour([(0, 1500), (0.15, 2200), (0.55, 1900), (1, 1150)], 1.1)
+    y = whistle(f, 1.1, (1.0, 0.35, 0.15, 0.05), vib=0.01, vib_hz=40, attack=0.04, release=0.25)
+    return y + 0.08 * noise_band(1.1, 2000, 600) * env(int(1.1 * SR), 0.04, 0.25)
+
+
+def raven_kronk():
+    # common raven: a deep, hollow, resonant "kronk" (much lower than a crow), often doubled
+    p = [(420, 150, 1.0), (900, 220, 0.55), (1500, 300, 0.2)]
+    return seq(caw(190, 0.32, p, 0.35, 0.92), silence(0.16), caw(185, 0.28, p, 0.35, 0.9))
+
+
+def heron_frank():
+    # grey heron: a loud harsh croak "fraank", raw and nasal
+    return caw(320, 0.5, [(700, 260, 1.0), (1400, 380, 0.7), (2300, 500, 0.35)], 0.9, 0.8)
+
+
+def albatross_bray():
+    # black-browed albatross at sea: a braying, rattling grunt and a bill clatter
+    clatter = trill(lambda i: noise_band(0.018, 2600, 900) * env(int(0.018 * SR), 0.001, 0.01), 8, 0.03)
+    return seq(caw(260, 0.45, [(600, 220, 1.0), (1200, 300, 0.6), (2000, 400, 0.25)], 0.7, 0.85), silence(0.08), clatter)
+
+
 CALLS = {
+    ("WhiteTailedEagle", "klee"): eagle_klee, ("GoldenEagle", "yelp"): golden_yelp, ("CommonBuzzard", "mew"): buzzard_mew,
+    ("Raven", "kronk"): raven_kronk, ("GreyHeron", "frank"): heron_frank, ("BlackBrowedAlbatross", "bray"): albatross_bray,
     ("Rook", "kaah"): rook_kaah, ("HoodedCrow", "kraa"): crow_kraa, ("Jackdaw", "tchak"): jackdaw_tchak,
     ("Magpie", "chatter"): magpie_chatter, ("FeralPigeon", "coo"): pigeon_coo, ("WoodPigeon", "coo_coo"): woodpigeon_coo_coo,
     ("HerringGull", "laugh"): herring_laugh, ("HerringGull", "kyow"): herring_kyow, ("BlackHeadedGull", "kree"): bhg_kree,

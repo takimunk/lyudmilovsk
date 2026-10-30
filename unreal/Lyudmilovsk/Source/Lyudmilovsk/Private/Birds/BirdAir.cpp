@@ -155,5 +155,11 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 		S.Thermal = Best * Day * FMath::SmoothStep(0.f, 15.f, Agl) * (1.f - FMath::SmoothStep(400.f, 700.f, Agl));
 	}
 	S.Updraft = S.Ridge + S.Thermal;
+	// gusts: the wind's own gust spread, stirred more over land (trees, roofs, the cliff edge) and in the lowest
+	// tens of metres, plus the bubbling edge of a thermal
+	const float Gustiness = World_Wind && CVarWindSpeed.GetValueOnGameThread() < 0.f ? World_Wind->GetGustiness() : 0.25f;
+	const bool bLand = CacheGround > WaterZ() + 100.f;
+	const float Low = 1.f - 0.4f * FMath::SmoothStep(20.f, 120.f, Agl);
+	S.Turbulence = Speed * Gustiness * (bLand ? 0.6f : 0.4f) * Low + 0.25f * S.Thermal;
 	return S;
 }

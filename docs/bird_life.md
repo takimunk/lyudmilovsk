@@ -1,6 +1,6 @@
 # Bird life
 
-The wild birds of the outdoor map: about 2250 birds of 29 Baltic species (1200 of them starlings) that live where their species would,
+The wild birds of the outdoor map: about 2270 birds of 36 species (1200 of them starlings) that live where their species would,
 keep their day by the game calendar, deal with each other and with hawks, and perceive the player. The
 species' looks, sizes and animations are the species table's (`Content/BirdsData/species.json`,
 `Public/Birds/BirdSpecies.h`); this is their behaviour.
@@ -129,6 +129,31 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 | Sand martin | 0 | 10 | hawks over the sea, beach, reed | wires, cliff | on the wires, 30 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
 | Sparrowhawk | 0 | — | hunts gardens, streets | conifers | — | conifers, -10 | — | hunts small birds | — |
 | Peregrine | 0 | — | hunts over the town, beach, sea | tower, cliff | — | tower, cliff, +25 (hunts the murmuration at dusk) | — | stoops | — |
+
+| White-tailed eagle | +10 | — | the sea, the beach, the reed (fish, waterbirds, carrion) | the cliff, conifers | — | conifers, -10 | — | soars on the cliff wind, steals from gulls | — |
+| Golden eagle | +15 | — | fields, the cliff | the cliff, conifers | — | the cliff, -15 | — | soars wide and high (for the mountains to come) | — |
+| Common buzzard | +20 | — | fields (voles, worms) | wires, posts, crowns | — | conifers, -20 | — | soars, sits long on a lookout | — |
+| Raven | -10 | 5 | the beach, fields, the cliff | the cliff, conifers, tower | — | conifers, 0 | rarely | steals, mobs, plays in a gale | — |
+| Grey heron | -20 | 10 | the reed, the sand at low tide | conifers, the reed | — | conifers (communal heronry), +10 | — | stalks the waterline | — |
+| Black-browed albatross | 0 | — | the sea | on the sea | — | on the sea, +30 | — | a lost wanderer: sits on the sea in a calm, soars low over the waves in a blow | — |
+
+## Wind
+
+The bird life gets the weather's mean wind and gustiness (`ULyudWindSubsystem`) every frame (`FWorld::Wind`, `Gustiness`),
+and every species its sprint and wind limit from `BirdBio.cpp` (docs/bird_flight.md "Flying qualities").
+
+- **Flying birds move with the air.** A bird crabs so its track holds the course, flies faster into a headwind (up to its
+  sprint) and rides a tailwind; the wind is weaker low down (over the ground, the sea or a wood's canopy). Gusts toss light
+  birds about, hardly heavy ones. A bird that can't make way drops to just over the ground or the waves, and if that doesn't
+  help it gives up the trip for the nearest shelter, rather downwind (`ShelterNear`).
+- **A gale keeps the small birds in the lee.** Above about 0.6 of its wind limit a species leaves the open (fields, wires,
+  roofs, the beach, the tower) for crowns, hedges, gardens, the reed and the streets, flies low, goes only short hops and
+  sits tight longer. In a 17 m/s gale the share of small birds out in the open falls from about half to under a tenth.
+- **The soarers want the wind.** Gulls, the eagles and the buzzard go up to circle more often the windier it is, and
+  prefer the cliff, the beach and the sea; the albatross barely flies in a calm and soars low over the waves in a blow.
+- Escapes are near the sprint, a hawk's chase at its sprint.
+
+`tools/birdsim/run.sh test` checks it (BIRD_ONLY=wind for the gale alone; BIRD_WIND_ACTS=1 prints what everybody is doing).
 
 ## LOD and cost
 

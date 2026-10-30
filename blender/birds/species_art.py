@@ -21,7 +21,7 @@ MORPH_DEFAULTS = dict(
     fluff=1.0, crest=0.0, fluff_layer=0.55,
     n_prim=9, n_sec=6, n_tail=6, p_outer=1.0, n_neck=1, neck_s=0.0, foot="aniso", keel=0.0, rear_taper=0.0,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
-    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0,
+    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0,
     feather_shapes={},
 )
 
@@ -851,3 +851,133 @@ species("MuteSwan", dict(body_len=1.3, body_w=1.45, body_h=1.2, belly=1.05, head
     bare=dict(beak="#141414", beak_tip="#e86a2a", lower="#e06a2a", lower_tip="#e06a2a", tip_from=0.18, base_skin="#141414", base_skin_len=0.2,
               legs="#2a2a2a", iris="#1a120c", eyering="#2a2a2a", mouth="#c86a5a", beak_rough=0.55),
 ))
+
+
+# ---------------------------------------------------------------- the big birds (round 4): eagles, buzzard, raven, heron, albatross
+# Broad "fingered" soaring wings (deeply emarginated outer primaries spread like fingers), many secondaries, short or wedge tails.
+EAGLE = dict(RAPTOR, body_len=1.12, body_w=1.18, body_h=1.12, head=0.98, neck=0.9, flat_crown=0.9, beak_taper=0.55, beak_curve=0.0032,
+             arm=1.25, hand=1.05, prim=1.1, prim_profile=FINGERED, prim_width=1.25, sec=1.15, sec_width=1.2,
+             feather_shapes={"primary": {"emarg": 0.55}}, fingers=1.4, n_prim=10, p_outer=0.78, n_sec=18, n_tail=6,
+             tarsus=1.05, leg_thick=1.9, toes=1.5, claw=2.2, trousers=1.8, fluff=0.9, fluff_layer=0.3, keel=0.12,
+             perch_pitch=34, perch_neck=-4, perch_tail=-24, glide_elev=7, glide_sweep=-2, glide_hand=-4, glide_handelev=4, eye=1.05, call_gape=34)
+
+# White-tailed eagle (Haliaeetus albicilla), adult: brown, a pale sandy head and neck, a short white wedge tail, a huge yellow bill
+species("WhiteTailedEagle", dict(EAGLE, beak_len=0.95, beak_depth=2.1, beak_width=1.45, beak_round=1.3, beak_hook=1.5, tail=0.8,
+                                 tail_shape="wedge", fork=0.2), dict(
+    styles={
+        "brown": st("#4e3c2a", ("fringe", "#8a7254", 0.18, "all"), ("down", "#3a2c20")),
+        "cov": st("#6a5238", ("fringe", "#c8b088", 0.28, "all"), ("down", "#4a3a28")),
+        "head": st("#cdbb98", ("streak", "#8a7458", 0.18), ("down", "#a89878")),
+        "flight": st("#241a12", ("shaft", "#2e2218")),
+        "sec": st("#2e2218", ("grad", "#1e1610", 0.4)),
+        "tail": st("#f2efe6", ("down", "#d8d0c0"), ("shaft", "#e0dace")),
+        "under": st("#3a2c20", ("mottle", "#5a4632", 0.3)),
+        "trousers": st("#3e2e22", loft=2.0),
+    },
+    regions={"upper": "brown", "under": "brown", "head": "head", "nape": "head", "neckside": "head", "throat": "head", "chin": "head",
+             "lcovert": "cov", "mcovert": "cov", "gcovert": "cov", "scapular": "cov", "primary": "flight", "secondary": "sec", "tertial": "brown",
+             "tail": "tail", "uppertail": "brown", "underwing": "under", "trousers": "trousers"},
+    bare=dict(beak="#e8c040", beak_tip="#e2b838", lower="#e8c040", cere="#e8c040", legs="#e8c040", iris="#e8d070", eyering="#d8b040",
+              mouth="#e8a0a0", beak_rough=0.4),
+))
+# Golden eagle (Aquila chrysaetos), adult: dark brown, the golden crown and nape, greyish bars on the flight feathers and tail
+species("GoldenEagle", dict(EAGLE, body_len=1.08, arm=1.18, hand=1.1, beak_len=0.82, beak_depth=1.9, beak_width=1.3, beak_round=1.3, beak_hook=1.6,
+                            tail=1.05, tail_shape="round"), dict(
+    styles={
+        "brown": st("#3e2c1e", ("fringe", "#5a4430", 0.15, "all"), ("down", "#2e2016")),
+        "gold": st("#c89a50", ("streak", "#8a6a3a", 0.2), ("down", "#8a6a3a")),
+        "cov": st("#5a4430", ("fringe", "#8a6a44", 0.25, "all")),
+        "flight": st("#2a1e14", ("bars", "#5a4e44", 5, 0.25)),
+        "tail": st("#3a2c20", ("bars", "#6a5a48", 4, 0.3), ("tip", "#1e160e", 0.2)),
+        "under": st("#2e2218"),
+        "trousers": st("#5a4230", loft=2.2),
+    },
+    regions={"upper": "brown", "under": "brown", "head": "brown", "crown": "gold", "nape": "gold", "neckside": "gold", "lcovert": "cov",
+             "mcovert": "cov", "primary": "flight", "secondary": "flight", "tail": "tail", "underwing": "under", "trousers": "trousers"},
+    bare=dict(beak="#2a2420", beak_tip="#141210", lower="#3a3430", cere="#e0b040", legs="#e0b040", iris="#7a4a1a", eyering="#3a2c20",
+              mouth="#e8a0a0", beak_rough=0.4),
+))
+# Common buzzard (Buteo buteo), a typical brown bird: dark brown above, a pale breast band (the "U"), barred tail and flight feathers
+species("CommonBuzzard", dict(EAGLE, body_len=1.0, body_w=1.15, head=1.08, arm=1.1, hand=0.95, prim=1.0, n_sec=14, fingers=1.1,
+                              beak_len=0.6, beak_depth=1.7, beak_width=1.2, beak_round=1.3, beak_hook=1.4, tail=1.05, tail_shape="round",
+                              trousers=1.4, leg_thick=1.4, toes=1.3, claw=1.8), dict(
+    styles={
+        "brown": st("#5a4030", ("fringe", "#8a6a4a", 0.15, "all"), ("down", "#3e2c22")),
+        "breast": st("#5e4432", ("mottle", "#e2d2b0", 0.25)),
+        "band": st("#e2d2b0", ("streak", "#7a5a40", 0.15)),
+        "flight": st("#3a2c22", ("bars", "#8a7460", 6, 0.3)),
+        "tail": st("#8a6a4a", ("bars", "#3a2a1e", 9, 0.28), ("tip", "#e6dcc8", 0.03)),
+        "under": st("#ece2cc", ("bars", "#6a5240", 5, 0.25)),
+        "trousers": st("#5a4232", ("bars", "#8a6a4a", 3, 0.3), loft=1.8),
+    },
+    regions={"upper": "brown", "under": "breast", "head": "brown", "throat": "breast", "breast": "breast", "primary": "flight",
+             "secondary": "flight", "tail": "tail", "underwing": "under", "trousers": "trousers"},
+    rules=[(lambda q: q.region in ("breast", "breastside") and 0.016 < q.z < 0.03, "band")],
+    bare=dict(beak="#2a2420", beak_tip="#141210", lower="#3a3430", cere="#e8c050", legs="#e8c050", iris="#6a3a1a", eyering="#3a2c22",
+              mouth="#e8a0a0"),
+))
+# Common raven (Corvus corax): the biggest crow, all black with a blue-purple sheen, a massive bill, shaggy throat, a wedge tail
+species("Raven", dict(CORVID, body_len=1.08, body_w=1.12, beak_len=1.6, beak_depth=2.3, beak_width=1.45, beak_curve=0.0022, beak_round=1.3,
+                      arm=1.15, hand=1.05, tail=1.2, tail_shape="wedge", fork=0.25, throat=1.35, gloss_hue=0.7, n_prim=10, p_outer=0.62, n_sec=10), dict(
+    styles={
+        "black": st("#0a0a0e", ("down", "#1a1a22"), gloss=0.85, rough=0.3),
+        "black_dull": st("#0e0e12", gloss=0.45, rough=0.45),
+        "hackles": st("#0c0c10", ("streak", "#1a1a22", 0.3), gloss=0.6, loft=1.8),
+        "flight": st("#0a0a0e", ("shaft", "#141418"), gloss=0.7, rough=0.32),
+        "under": st("#121216", gloss=0.25),
+    },
+    regions={"upper": "black", "under": "black_dull", "head": "black", "throat": "hackles", "chin": "hackles", "primary": "flight",
+             "tail": "flight", "underwing": "under", "flank": "black_dull"},
+    bare=dict(beak="#141414", beak_tip="#0e0e0e", lower="#1a1a1a", legs="#141414", iris="#120e0c", eyering="#141414", mouth="#6a4a50", beak_rough=0.35),
+))
+# Grey heron (Ardea cinerea): grey back and wings, black flight feathers, white neck with a black stripe down the front, a black
+# crest stripe and plumes, a yellow dagger bill, long legs; it flies with the neck drawn back into an S
+species("GreyHeron", dict(body_len=1.25, body_w=0.85, body_h=0.95, belly=0.9, head=0.82, neck=3.6, n_neck=3, neck_s=18.0, neck_up=0.006,
+                          neck_thin=0.6, crown_h=0.85, flat_crown=0.9, throat=0.9, eye=1.0, crest=1.6,
+                          beak_len=2.4, beak_depth=0.85, beak_width=0.7, beak_taper=0.45, beak_round=1.0, beak_curve=0.0,
+                          arm=1.2, hand=1.05, prim=1.1, prim_profile=ROUNDED, prim_width=1.2, n_prim=10, p_outer=0.85, n_sec=17, sec=1.15,
+                          fingers=0.5, tail=0.55, tail_shape="square", n_tail=6, shin=1.9, tarsus=2.6, leg_thick=1.1, toes=1.8, hallux=1.2,
+                          fluff=0.85, fluff_layer=0.2, perch_pitch=22, perch_neck=40, perch_head=-40, perch_tail=-6, perch_low=0.0,
+                          peck_depth=60, glide_elev=2, glide_sweep=-2, fly_neck=80, fly_head=-70, call_gape=26), dict(
+    styles={
+        "grey": st("#8a909a", ("down", "#6a707a"), rough=0.6),
+        "white": st("#ececec", ("down", "#d0d0d0")),
+        "neck": st("#e2e2e4", ("down", "#c8c8cc")),
+        "stripe": st("#ececec", ("streak", "#1c1c20", 0.45)),
+        "black": st("#1c1c20"),
+        "flight": st("#26282c", ("shaft", "#30323a")),
+        "sec": st("#4a4e56"),
+        "plume": st("#d8dadc", ("streak", "#8a8e94", 0.1), loft=2.0),
+        "under": st("#7a808a"),
+    },
+    regions={"upper": "grey", "under": "white", "head": "white", "crown": "white", "crest": "black", "neckside": "neck", "nape": "neck",
+             "throat": "stripe", "breast": "plume", "flank": "black", "primary": "flight", "secondary": "sec", "tertial": "grey", "tail": "grey",
+             "underwing": "under", "pcovert": "flight", "alula": "flight"},
+    rules=[(lambda q: q.head and q.region in ("supercilium", "eyestripe") and q.dz < 0.0, "black")],
+    bare=dict(beak="#d8b040", beak_tip="#c8a038", lower="#e0c050", legs="#9a8a6a", iris="#e8d040", eyering="#c8c060", base_skin="#c8c060",
+              base_skin_len=0.1, mouth="#e0b080", beak_rough=0.4),
+))
+# Black-browed albatross (Thalassarche melanophris): white head and body, blackish-grey upperwing and back, a dark eyebrow, a pink-orange
+# bill hooked at the tip, very long narrow stiff wings (a long arm with ~25 secondaries), a short grey tail, webbed feet
+species("BlackBrowedAlbatross", dict(GULL, body_len=1.18, body_w=1.25, body_h=1.15, head=1.05, beak_len=1.75, beak_depth=1.25, beak_width=1.05,
+                                     beak_hook=1.6, beak_gonys=0.2, beak_taper=0.6, arm=1.75, hand=1.2, prim=1.1, prim_profile=LONG_POINTED,
+                                     prim_width=0.85, n_prim=10, p_outer=0.95, n_sec=25, sec=0.75, sec_width=0.8, tail=0.6, tail_shape="round",
+                                     tarsus=0.85, leg_thick=1.6, toes=1.6, keel=0.12, fluff_layer=0.25, glide_elev=1, glide_sweep=-6, glide_hand=-8,
+                                     glide_handelev=-3, perch_pitch=6, perch_neck=-8), dict(
+    styles={
+        "white": st("#f4f4f0", ("down", "#d8d8d4"), rough=0.6),
+        "dark": st("#2a2c30", ("down", "#1c1e22")),
+        "flight": st("#1e2024", ("shaft", "#3a3c40")),
+        "brow": st("#202024"),
+        "tail": st("#4a4c50", ("grad", "#2a2c30", 0.5)),
+        "under": st("#f0f0ec", ("fringe", "#2a2c30", 0.4, "outer")),
+    },
+    regions={"upper": "dark", "under": "white", "head": "white", "nape": "white", "neckside": "white", "rump": "white", "uppertail": "white",
+             "tail": "tail", "primary": "flight", "secondary": "flight", "tertial": "dark", "underwing": "under", "trousers": "white"},
+    rules=[(lambda q: q.head and q.region in ("supercilium", "eyestripe", "lore") and abs(q.dz) < 0.004 and q.dy > -0.002, "brow")],
+    bare=dict(beak="#f0a030", beak_tip="#e8782a", lower="#f0a030", lower_tip="#e8782a", tip_from=0.85, legs="#c8b8b0", iris="#2a1e16",
+              eyering="#1e1e22", mouth="#e8a080", beak_rough=0.35),
+))
+# the new birds' plume layers: sleek raptors and the albatross, the shaggy raven
+for _n, _f in {"WhiteTailedEagle": 0.3, "GoldenEagle": 0.3, "CommonBuzzard": 0.4, "Raven": 0.2, "GreyHeron": 0.2, "BlackBrowedAlbatross": 0.25}.items():
+    SPECIES[_n]["morph"]["fluff_layer"] = _f

@@ -204,7 +204,8 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 	{
 		// each flight style from behind: flapping by Space, a glide, an oar turn
 		static const TCHAR* Ids[] = { TEXT("HouseSparrow"), TEXT("Goldfinch"), TEXT("GreatTit"), TEXT("Starling"), TEXT("SongThrush"), TEXT("FeralPigeon"),
-		                              TEXT("Rook"), TEXT("Magpie"), TEXT("HerringGull"), TEXT("CommonSwift"), TEXT("BarnSwallow"), TEXT("Cormorant") };
+		                              TEXT("Rook"), TEXT("Magpie"), TEXT("HerringGull"), TEXT("CommonSwift"), TEXT("BarnSwallow"), TEXT("Cormorant"),
+		                              TEXT("WhiteTailedEagle"), TEXT("BlackBrowedAlbatross"), TEXT("GreyHeron") };
 		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); CVar(TEXT("lyud.Bird.ChaseCam"), 1); return true; });
 		for (const TCHAR* Id : Ids)
 		{

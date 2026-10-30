@@ -128,7 +128,7 @@ for sid in ids:
 
 # a lineup at true scale, one camera on all of it (each species' own cameras frame it to its size)
 LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Jackdaw", "Rook", "HoodedCrow",
-          "HerringGull", "Cormorant", "MuteSwan"]
+          "HerringGull", "CommonBuzzard", "Raven", "Cormorant", "GreyHeron", "GoldenEagle", "WhiteTailedEagle", "BlackBrowedAlbatross", "MuteSwan"]
 lx = 0.0
 for sid in [i for i in LINEUP if i in ids]:
     L = TABLE[sid]["lengthCm"]

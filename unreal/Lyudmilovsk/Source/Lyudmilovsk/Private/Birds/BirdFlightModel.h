@@ -54,6 +54,16 @@ namespace BirdFlight
 		bool Hops = true;             // on the ground: hops (sparrow) or walks (pigeon)
 		/** Seconds of steady flapping from rested to spent (BirdBio); gliding and soaring rest the wings. */
 		double Stamina = 150.0;
+		/** The fastest level flight at full power (BirdBio), m/s: clicking as fast as the wings go. */
+		double Sprint = 20.0;
+		/** The steepest climb at full power (BirdBio), m/s up. */
+		double Climb = 2.5;
+		/** Share of full power the species' easy travelling rhythm (Space) puts into each beat: it holds Cruise. */
+		double CruisePower = 1.0;
+		/** The rhythm's glides between bursts, x the flight style's (shorter for a bird that must work to cruise). */
+		double GapScale = 1.0;
+		/** Climb rate (m/s) past which the beats only hold the bird up; fitted so the steady climb is Climb. */
+		double ClimbCap = 2.5;
 		double Gravity = 9.81;
 	};
 
@@ -69,6 +79,9 @@ namespace BirdFlight
 		double TuckL = 0, TuckR = 0;         // 0..1, wing pulled in
 		double Flare = 0;                    // 0..1, tail fanned, wings forward, feet down
 		double Roll = 0;                     // -1..1 tail trim (A / D)
+		/** 0..1 how hard a click started this step beats: 1 the player's own clicks (full power),
+		 *  P.CruisePower the species' rhythm on Space. */
+		double Power = 1;
 	};
 
 	/** The air at the bird: wind (horizontal, m/s) and rising air (m/s up). */
@@ -76,6 +89,8 @@ namespace BirdFlight
 	{
 		V3 Wind;
 		double Updraft = 0;
+		/** Gustiness of the air here, m/s rms: random gusts on top of Wind and Updraft that toss the bird. */
+		double Turbulence = 0;
 	};
 
 	struct FState
@@ -95,9 +110,27 @@ namespace BirdFlight
 		double YawKick = 0;        // rad of oar turn still to apply
 		/** 1 rested .. 0 spent: a spent bird's beats barely lift it, it must glide down and rest. */
 		double Energy = 1;
+		/** The power of each wing's current burst (FInput::Power when it started). */
+		double PowerL = 1, PowerR = 1;
+		/** The air last step (wind + turbulence, updraft as Z): a gust changes the airspeed, not the ground speed,
+		 *  so the bird is carried by it only as fast as its own drag lets the air take it. bAir: AirWas is set. */
+		V3 AirWas;
+		bool bAir = false;
+		/** The random part of the air (FAir::Turbulence), m/s, and its generator. */
+		V3 Turb;
+		uint32_t Rng = 0x9e3779b9u;
+		/** 1 .. 0: the take-off's burst of power, charged while (nearly) standing, spent over its first beats. */
+		double Burst = 0;
+		/** The beats' power over the last second, W/kg (what the flight muscles' limit is held against). */
+		double PowerUse = 0;
 	};
 
 	void Step(const FParams& P, const FInput& In, const FAir& Air, FState& S, double Dt);
+
+	/** Steady level speed clicking both wings as fast as they go at this power, m/s (the sprint at 1). */
+	double TopSpeed(const FParams& P, double Power = 1.0);
+	/** Steady climb rate at full power, the best of a few climb angles, m/s up. */
+	double ClimbRate(const FParams& P);
 
 	/** Airspeed. */
 	inline double Speed(const FState& S) { return S.Vel.Size(); }

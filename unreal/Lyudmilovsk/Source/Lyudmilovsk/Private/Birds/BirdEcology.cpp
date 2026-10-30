@@ -5,6 +5,8 @@
 // table (Content/BirdsData/species.json).
 #include "BirdSim.h"
 
+#include "BirdBio.h"
+
 #include <cstdlib>
 #include <cstring>
 
@@ -103,6 +105,15 @@ namespace LyudBirds
 			{ "SandMartin",   0.12f, 0.014f,40, 10, 30, 1200, "Sea 1, Beach 1, Reed .8, Meadow .4",          "Wire 1, Cliff 1",                             "Reed 1, Cliff .4",       true,  EFlight::Aerial,    10.f,  4.f, false, 0.f,   8.f, 40.f, 0.1f, 0.2f, 15, false, true,  false, 0.5f, 0.f,   -10.f,0.f,  6.f,  0.f,  0x8a7a66, true  },
 			{ "Sparrowhawk",  0.33f, 0.2f,   2, 1, 1,   1400, "Garden 1, Street .6, Broadleaf .5, Meadow .3","Conifer 1, Broadleaf 1",                      "Conifer 1",              false, EFlight::FlapGlide, 12.f, 14.f, false, 0.6f, 35.f, 150.f,0.f,  0.1f, 90, false, false, true,  0.f,  0.f,   -10.f,0.4f, 0.1f, 0.f,  0x6a6660, false },
 			{ "Peregrine",    0.42f, 0.8f,   1, 1, 1,   2600, "Street 1, Beach .6, Sea .4",                  "Tower 1, Cliff 1, Wire .2",                   "Tower 1, Cliff 1",       false, EFlight::Soar,      16.f, 40.f, false, 0.5f, 50.f, 300.f,0.f,  0.1f, 100,false, false, true,  0.f,  0.f,   25.f, 0.6f, 0.1f, 0.f,  0x50545c, false },
+			// the big birds (round 4): two eagles and a buzzard that soar on the cliff wind and over the fields, a raven pair
+			// on the cliff, herons stalking the reed and the sand at low tide, and one black-browed albatross, a lost
+			// wanderer from the south (such vagrants do turn up in the North Sea and the Baltic), out on the sea in a blow
+			{ "WhiteTailedEagle",0.86f,4.8f, 2, 1, 2,   2600, "Sea 1, Beach .6, Reed .4",                    "Cliff 1, Conifer 1, Beach .4",                "Conifer 1",              false, EFlight::Soar,      12.5f,45.f, false, 0.6f,120.f,400.f,0.02f,0.1f, 120,true,  false, false, 0.f,  10.f,  -10.f,0.6f, 0.1f, 0.f,  0x5a4632, false },
+			{ "GoldenEagle",  0.85f, 4.3f,  1, 1, 1,   2600, "Meadow 1, Cliff .6",                          "Cliff 1, Conifer .8",                         "Cliff 1, Conifer .8",    false, EFlight::Soar,      13.f, 60.f, false, 0.6f,120.f,400.f,0.02f,0.05f,125,false, false, false, 0.f,  15.f,  -15.f,0.6f, 0.05f,0.f,  0x3e2c1e, false },
+			{ "CommonBuzzard",0.53f, 0.9f,  4, 1, 2,   1200, "Meadow 1, ForestFloor .2",                    "Wire 1, Broadleaf .8, Conifer .8, Tower .3",  "Conifer 1, Broadleaf .8",false, EFlight::Soar,      11.5f,30.f, false, 0.6f, 60.f,300.f,0.05f,0.1f, 100,false, false, false, 0.f,  20.f,  -20.f,0.5f, 0.3f, 0.f,  0x5a4030, false },
+			{ "Raven",        0.64f, 1.2f,  4, 1, 2,   2000, "Beach 1, Meadow .8, Cliff .3",                "Cliff 1, Conifer 1, Tower .5",                "Conifer 1, Cliff .6",    false, EFlight::Flap,      12.5f,30.f, false, 1.1f, 50.f,200.f,0.1f, 0.5f, 105,true,  true,  false, 0.f,  -10.f, 0.f,  0.3f, 1.f,  0.f,  0x0a0a0e, false },
+			{ "GreyHeron",    0.94f, 1.5f,  4, 1, 2,   1500, "Reed 1, Beach .6, Meadow .4",                 "Conifer 1, Broadleaf .6, Reed .5",            "Conifer 1, Broadleaf .8",true,  EFlight::Flap,      12.f, 20.f, false, 0.5f, 60.f,150.f,0.05f,0.1f, 90, false, false, false, 0.f,  -20.f, 10.f, 0.4f, 0.2f, 0.f,  0x8a909a, false },
+			{ "BlackBrowedAlbatross",0.85f,3.5f,1,1,1,  2600, "Sea 1",                                       "Sea 1",                                       "Sea 1",                  false, EFlight::Soar,      13.5f, 6.f, false, 0.4f, 15.f,200.f,0.5f, 0.5f, 110,false, false, false, 0.f,  0.f,   30.f, 0.3f, 0.1f, 0.f,  0xf4f4f0, false },
 		};
 		// clang-format on
 
@@ -169,6 +180,13 @@ namespace LyudBirds
 			{ "SandMartin",     "Wire 1, Reed .5",                       30.f, 10.f, 0.f,  false,false,false,false, "",                                               1.f },
 			{ "Sparrowhawk",    "",                                       0.f,  0.f, 0.2f, false,false,false,false, "",                                               1.f },
 			{ "Peregrine",      "",                                       0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
+			// eagles and the buzzard soar by day and sit long on a lookout; the heron fishes the waterline at low tide
+			{ "WhiteTailedEagle","",                                      0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "GoldenEagle",    "",                                       0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "CommonBuzzard",  "",                                       0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "Raven",          "",                                       0.f,  5.f, 0.1f, false,false,false,false, "",                                               1.f },
+			{ "GreyHeron",      "",                                       0.f, 10.f, 0.f,  true, false,false,false, "",                                               1.f },
+			{ "BlackBrowedAlbatross","",                                  0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
 		};
 		// clang-format on
 
@@ -232,6 +250,10 @@ namespace LyudBirds
 					}
 				}
 				S.bMurmurates = S.Id == "Starling";
+				// the flying qualities (BirdBio)
+				const BirdBio::FBio& Bio = BirdBio::Get(D.Id);
+				S.Sprint = Bio.SprintMs > 0 ? (float)Bio.SprintMs : S.Cruise * 1.3f;
+				S.WindLimit = (float)Bio.WindLimitMs;
 				Out.push_back(S);
 			}
 			return Out;

@@ -25,6 +25,56 @@ namespace LyudBirds
 		bool IsSmall(const FSpecies& S) { return S.Length < 0.3f; }
 		bool IsAerial(const FSpecies& S) { return S.Flight == EFlight::Aerial; }
 		bool IsGull(const FSpecies& S) { return S.Flight == EFlight::FlapGlide && !S.bPredator; }
+		/** Circles on rising air when resting: the gulls, and the big soarers (eagles, the buzzard, the albatross). */
+		bool Soars(const FSpecies& S) { return IsGull(S) || (S.Flight == EFlight::Soar && !S.bPredator); }
+		/** Out in the wind: no cover from it. */
+		bool IsExposed(EHabitat H)
+		{
+			return H == EHabitat::Sea || H == EHabitat::Beach || H == EHabitat::Cliff || H == EHabitat::Meadow || H == EHabitat::Wire
+				|| H == EHabitat::Tower || H == EHabitat::Roof;
+		}
+	}
+
+	/** How much the wind makes a soarer take to the air: the gulls hang on the cliff wind, the albatross needs a
+	 *  stiff breeze at all (in a calm it sits on the sea). */
+	float FWorld::SoarWind(const FSpecies& S) const
+	{
+		const float W = Wind.Len2D();
+		if (S.WindLimit > 28.f)
+		{
+			return Clamp((W - 3.f) / 5.f, 0.f, 3.f);
+		}
+		return 1.f + Clamp(W / 5.f, 0.f, 3.f);
+	}
+
+	int FWorld::ShelterNear(const FBird& B) const
+	{
+		const FSpecies& S = SpeciesTable()[B.Species];
+		const V3 Down = Wind.Flat().Norm();
+		int Best = -1;
+		float BestD = 1e9f;
+		for (int I = 0; I < (int)Sites.size(); I++)
+		{
+			const FSite& Site = Sites[I];
+			if (Taste(S, 0, Site.Kind) <= 0.f || (Site.Occupants >= Site.Capacity && I != B.Site))
+			{
+				continue;
+			}
+			const V3 To = Site.Center() - B.Pos;
+			// near, rather downwind than up, out of the wind if it can be
+			const float D = To.Len2D() - 0.6f * To.Flat().Dot(Down) + (IsExposed(Site.Kind) ? 60.f : 0.f);
+			if (D < BestD)
+			{
+				BestD = D;
+				Best = I;
+			}
+		}
+		return Best;
+	}
+
+	float FWorld::WindStress(const FSpecies& S) const
+	{
+		return Wind.Len2D() / std::max(S.WindLimit, 1.f);
 	}
 
 	float V3::Len() const { return std::sqrt(X * X + Y * Y + Z * Z); }
@@ -234,11 +284,12 @@ namespace LyudBirds
 		case 5: W = Kind == EHabitat::Beach ? 1.f : (Kind == EHabitat::Reed ? 0.8f : (Kind == EHabitat::Sea && S.Length > 0.3f ? 0.6f : 0.f)); break;
 		default: W = S.Perch[K]; break;
 		}
-		if (Kind == EHabitat::Beach && (Plan == 1 || Plan == 5))
+		if (Kind == EHabitat::Beach)
 		{
-			// the tide: low water lays bare the wet sand (waders, gulls, crows and wagtails go down to it), high water covers it
+			// the tide: low water lays bare the wet sand (waders, gulls, crows and wagtails go down to it to feed), high
+			// water covers it (nobody stands about on what's left of it either)
 			const float Low = Clamp((MeanSeaZ - SeaZ) / 0.6f, 0.f, 1.f), High = Clamp((SeaZ - MeanSeaZ) / 0.6f, 0.f, 1.f);
-			W *= (1.f - 0.85f * High) * (S.bTidal ? 1.f + 2.5f * Low : 1.f);
+			W *= (1.f - 0.85f * High) * (S.bTidal && (Plan == 1 || Plan == 5) ? 1.f + 2.5f * Low : 1.f);
 		}
 		return W;
 	}
@@ -255,7 +306,9 @@ namespace LyudBirds
 		// gathering before the night: near the roost, not near home
 		const V3 From = Plan == 3 && G.Roost >= 0 ? Sites[G.Roost].Center() : G.Home;
 		const float D = (C - From).Len2D();
-		const float Range = Plan == 3 ? 700.f : (Plan == 2 ? S.HomeRange * 2.f : S.HomeRange);
+		// (in a gale a bird that can't cope with it only goes short hops)
+		const float Range = (Plan == 3 ? 700.f : (Plan == 2 ? S.HomeRange * 2.f : S.HomeRange))
+			/ (Soars(S) ? 1.f : 1.f + 3.f * Smooth((WindStress(S) - 0.7f) / 0.6f));
 		if (D > Range * 1.5f)
 		{
 			return 0.f;
@@ -277,6 +330,18 @@ namespace LyudBirds
 		if (Site.Disturbed > Time)
 		{
 			W *= 0.1f;
+		}
+		// a gale: birds that can't cope with it leave the open (wires, roofs, fields, the beach) for the lee of trees,
+		// hedges, reeds and streets; the soarers want the open coast all the more
+		const float Stress = WindStress(S);
+		if (Stress > 0.6f && !Soars(S) && S.Flight != EFlight::Soar)
+		{
+			const float K = Smooth((Stress - 0.6f) / 0.6f);
+			W *= IsExposed(Site.Kind) ? 1.f - 0.92f * K : 1.f + 0.8f * K;
+		}
+		else if (Soars(S) && (Site.Kind == EHabitat::Cliff || Site.Kind == EHabitat::Sea || Site.Kind == EHabitat::Beach))
+		{
+			W *= 1.f + 0.5f * Clamp(Wind.Len2D() / 10.f, 0.f, 1.f);
 		}
 		if (Avoided(G, C))
 		{
@@ -883,7 +948,9 @@ namespace LyudBirds
 			}
 			G.Plan = NewPlan;
 			// stay longer when it is good; aerial feeders keep moving over their beat
-			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f) * (NewPlan == 5 ? 0.4f : 1.f);
+			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f) * (NewPlan == 5 ? 0.4f : 1.f)
+				* (1.f + 2.f * Smooth(WindStress(S) - 0.7f));         // in a gale they sit tight
+
 			if (Site >= 0 && (Site != G.Site || bScattered))
 			{
 				SendGroup(G, Site);
@@ -2026,9 +2093,11 @@ namespace LyudBirds
 						FlyTo(B, B.Site, B.Spot);
 					}
 				}
-				else if (IsGull(S) && G.Plan == 0 && R < 0.12f && B.Site >= 0)
+				else if (Soars(S) && (G.Plan == 0 || (G.Plan == 1 && Wind.Len2D() > 9.f)) && R < (IsGull(S) ? 0.12f : 0.08f) * SoarWind(S) && B.Site >= 0)
 				{
-					B.Spot = Sites[B.Site].Center() + V3(0.f, 0.f, 25.f + Rand(B.Rng) * 25.f);
+					// (the big soarers circle higher: an eagle 50-120 m up)
+					const float Up = S.Length > 0.5f ? 50.f + Rand(B.Rng) * 70.f : 25.f + Rand(B.Rng) * 25.f;
+					B.Spot = Sites[B.Site].Center() + V3(0.f, 0.f, Up);
 					B.FlyFrom = B.Spot;           // the centre of its circles
 					SetAct(B, EAct::Soar, 30.f + Rand(B.Rng) * 60.f);
 					B.Vel = V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.4f) * 4.f;
@@ -2286,7 +2355,7 @@ namespace LyudBirds
 			}
 			else if (B.Act == EAct::Flee)
 			{
-				Speed = S.Cruise * 1.35f;
+				Speed = std::max(S.Cruise * 1.2f, S.Sprint * 0.9f);     // nearly flat out
 				bLanding = B.Site >= 0;
 			}
 			else if (B.Act == EAct::Hawk)
@@ -2296,8 +2365,10 @@ namespace LyudBirds
 			}
 			else if (B.Act == EAct::Soar)
 			{
-				const float A = (float)Time * 0.12f + B.Id;
-				Goal = B.FlyFrom + V3(std::cos(A) * 45.f, std::sin(A) * 45.f, std::sin(A * 0.3f) * 8.f);
+				// wide slow circles; an eagle's are wider (it turns more slowly)
+				const float R = 45.f * std::max(1.f, S.Length / 0.6f);
+				const float A = (float)Time * 0.12f * 45.f / R + B.Id;
+				Goal = B.FlyFrom + V3(std::cos(A) * R, std::sin(A) * R, std::sin(A * 0.3f) * 8.f);
 				Speed = S.Cruise * 0.8f;
 				bLanding = false;
 			}
@@ -2305,7 +2376,7 @@ namespace LyudBirds
 			{
 				FBird& T = Birds[B.Target];
 				Goal = T.Pos + V3(0.f, 0.f, 0.3f);
-				Speed = S.Cruise * (S.bPredator ? 1.7f : 1.25f);
+				Speed = S.bPredator ? std::max(S.Sprint, S.Cruise * 1.5f) : std::min(S.Sprint, S.Cruise * 1.25f);
 				bLanding = false;
 				// the chased bird flees when the chaser gets close
 				if ((T.Pos - B.Pos).Len() < 10.f && T.Act != EAct::Flee && T.Act != EAct::Claimed && T.Act != EAct::Murmur)
@@ -2343,10 +2414,13 @@ namespace LyudBirds
 			// height: cruise over everything on the way, glide down onto the spot (~25 deg)
 			const V3 Ahead = B.Pos + B.Vel * 1.5f;
 			const float Floor = std::max({ TopZ(B.Pos.X, B.Pos.Y), TopZ(Ahead.X, Ahead.Y), SeaZ });
+			// in a strong wind a bird keeps low, under the worst of it: hedge-hopping, a gull skimming the waves
+			const float Stress = WindStress(S);
+			const float Clearance = Lerp(S.FlightClearance, std::min(S.FlightClearance, 2.f), Smooth((Stress - 0.4f) / 0.6f));
 			float WantZ = Goal.Z;
 			if (bLanding || B.Act == EAct::Approach)
 			{
-				WantZ = std::min(std::max(Goal.Z, Floor + S.FlightClearance), Goal.Z + Dist2D * 0.47f);
+				WantZ = std::min(std::max(Goal.Z, Floor + Clearance), Goal.Z + Dist2D * 0.47f);
 				if (Dist2D > 12.f)
 				{
 					WantZ = std::max(WantZ, Floor + 2.5f);
@@ -2354,7 +2428,7 @@ namespace LyudBirds
 			}
 			else if (B.Act != EAct::Hawk && B.Act != EAct::Chase && B.Act != EAct::Mob)
 			{
-				WantZ = std::max(Goal.Z, Floor + S.FlightClearance);
+				WantZ = std::max(Goal.Z, Floor + Clearance);
 			}
 			else
 			{
@@ -2364,11 +2438,67 @@ namespace LyudBirds
 			{
 				Speed = std::min(Speed, std::max(1.2f, Dist * 1.4f));
 			}
+			// losing against the wind: down to where it is weakest, just over the ground or the waves
+			if (B.Struggle > 0.4f && Dist2D > 12.f && B.Act != EAct::Chase && B.Act != EAct::Mob)
+			{
+				WantZ = std::min(WantZ, Floor + 1.f);
+			}
 			V3 Want = V3(To.X, To.Y, 0.f).Norm() * Speed;
 			Want.Z = Clamp((WantZ - B.Pos.Z) * 1.2f, -5.f, 4.f);
 			if (bLanding && Dist < 3.f)
 			{
 				Want = To * (Speed / std::max(Dist, 0.05f));
+			}
+			// the wind: a flying bird moves with the air. It crabs so its track holds the course, flies faster into a
+			// headwind (up to its sprint) and rides a tailwind; a wind stronger than its sprint blows it back. Low
+			// down the wind is weaker. Gusts toss a light bird about, hardly a heavy one. The last metres onto a
+			// spot and the player's hand are flown in the lee of it (the bird's own business).
+			const float WindNow = Wind.Len2D();
+			if (WindNow > 0.3f && B.Act != EAct::Approach && !(bLanding && Dist2D < 6.f))
+			{
+				// (the height that counts is over whatever the wind blows across: the ground, the sea, a wood's canopy)
+				const float Agl = std::max(0.f, B.Pos.Z - Floor);
+				const float Expo = 0.35f + 0.65f * Smooth(Agl / 10.f) + 0.1f * Smooth((Agl - 10.f) / 60.f);
+				const float Toss = Clamp(0.1f / std::cbrt(std::max(S.Mass, 0.005f)), 0.08f, 0.5f) * Gustiness * WindNow * Expo;
+				const float T = (float)Time, Q = (float)B.Id;
+				const V3 Gust(std::sin(T * 1.3f + Q * 1.7f) + 0.5f * std::sin(T * 3.1f + Q), std::cos(T * 1.1f + Q * 2.3f) + 0.5f * std::sin(T * 2.7f + Q * 0.7f), 0.4f * std::sin(T * 1.9f + Q * 3.1f));
+				const V3 W = V3(Wind.X, Wind.Y, 0.f) * Expo;
+				const float Sp = Want.Len2D();
+				if (Sp > 0.5f)
+				{
+					const V3 D(Want.X / Sp, Want.Y / Sp, 0.f);
+					const float Along = W.Dot(D);
+					const V3 Cross = W - D * Along;
+					const float Cross2 = Cross.X * Cross.X + Cross.Y * Cross.Y;
+					// into a headwind it works harder, up to flat out
+					const float AirMax = Lerp(Sp, std::max(Sp, S.Sprint), Clamp(-Along / std::max(Sp, 1.f), 0.f, 1.f));
+					V3 Ground;
+					if (AirMax * AirMax > Cross2)
+					{
+						Ground = D * (Along + std::sqrt(AirMax * AirMax - Cross2));
+					}
+					else
+					{
+						// it can't even hold the line across: carried sideways
+						Ground = D * Along + Cross * (1.f - AirMax / std::sqrt(Cross2));
+					}
+					const float Made = Ground.Dot(D);
+					B.Struggle = Made < 1.f && Dist2D > 15.f ? B.Struggle + Dt : std::max(0.f, B.Struggle - Dt);
+					Want.X = Ground.X;
+					Want.Y = Ground.Y;
+				}
+				Want += Gust * Toss;
+				// beaten by the wind: it gives up the trip and drops into the nearest shelter it can reach (the group
+				// sends it on again when the wind lets up)
+				if (B.Struggle > 3.f && B.Act == EAct::Fly)
+				{
+					B.Struggle = 0.f;
+					const int Lee = ShelterNear(B);
+					if (Lee >= 0)
+					{
+						FlyTo(B, Lee, SpotFor(B, Lee));
+					}
+				}
 			}
 			// keep away from the player when escaping (never through them)
 			if (B.Act == EAct::Flee && Player.bPresent)

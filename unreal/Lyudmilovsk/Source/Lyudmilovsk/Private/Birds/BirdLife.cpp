@@ -25,6 +25,7 @@
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralPlant.h"
 #include "Sky/Ephemeris.h"
+#include "Weather/LyudWind.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
 #include "../Murmuration/StarlingMesh.h"
@@ -567,6 +568,13 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		Sea = It ? *It : nullptr;
 	}
 	S.SeaZ = Sea.IsValid() ? (float)Sea->SeaLevel() * 0.01f : S.MeanSeaZ;
+	// the wind (the weather's mean at 10 m): flying birds drift with it, in a gale the small ones keep to the lee
+	if (const ULyudWindSubsystem* Wind = ULyudWindSubsystem::Get(this))
+	{
+		const FVector W = Wind->GetMeanWind();
+		S.Wind = LyudBirds::V3((float)W.X, (float)W.Y, 0.f);
+		S.Gustiness = Wind->GetGustiness();
+	}
 	MigrationTimer -= DeltaTime;
 	if (MigrationTimer <= 0.f)
 	{

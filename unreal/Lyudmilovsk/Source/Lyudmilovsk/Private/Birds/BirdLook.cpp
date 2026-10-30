@@ -274,6 +274,52 @@ namespace BirdLook
 				L.BeakCm = 2.f; L.BeakDepth = 0.6f; L.BeakHook = 1.f; L.Wing = EWing::Pointed; L.TailShape = ETail::Square; L.TailFrac = 0.35f;
 				Add(TEXT("Peregrine"), L);
 			}
+			// --- the big birds: eagles, the buzzard, the raven, the heron, the albatross
+			{
+				// white-tailed eagle, adult: brown with pale-fringed coverts, a pale head, the white wedge tail, a huge yellow bill
+				const P Brown = P(TEXT("4e3c2a"), TEXT("2a2018")).Fr(0.12f);
+				FLook L = Plain(P(TEXT("2a2018"), TEXT("1a140e")), P(TEXT("6a5238"), TEXT("c8b088")).Fr(0.25f), P(TEXT("f2efe6"), TEXT("d8d0c0")).Fr(0.04f), Brown, P(TEXT("5a4630"), TEXT("bca27a")).Fr(0.2f));
+				L.Beak = L.BeakBase = C(TEXT("e8c040")); L.Legs = C(TEXT("e8c040"));
+				L.BeakCm = 6.5f; L.BeakDepth = 0.55f; L.BeakHook = 0.9f; L.Wing = EWing::Broad; L.TailShape = ETail::Wedge; L.TailFrac = 0.3f;
+				Add(TEXT("WhiteTailedEagle"), L);
+			}
+			{
+				// golden eagle: dark brown, golden nape, paler grey-brown bars on the flight feathers and tail
+				FLook L = Plain(P(TEXT("2e2218"), TEXT("4a3c30")).Bar(6.f), P(TEXT("5a4430"), TEXT("8a6a44")).Fr(0.15f), P(TEXT("3a2c20"), TEXT("6a5a48")).Bar(4.f), P(TEXT("3e2c1e")), P(TEXT("4a3626"), TEXT("c89a50")).Fr(0.1f));
+				L.Beak = C(TEXT("2a2420")); L.BeakBase = C(TEXT("e0b040")); L.Legs = C(TEXT("e0b040"));
+				L.BeakCm = 5.f; L.BeakDepth = 0.55f; L.BeakHook = 1.f; L.Wing = EWing::Broad; L.TailShape = ETail::Rounded; L.TailFrac = 0.34f;
+				Add(TEXT("GoldenEagle"), L);
+			}
+			{
+				// common buzzard: brown, a pale breast band, barred flight feathers and tail
+				FLook L = Plain(P(TEXT("4a3a2c"), TEXT("2a2018")).Bar(6.f), P(TEXT("6a4e36"), TEXT("a88a66")).Fr(0.15f), P(TEXT("8a6a4a"), TEXT("4a3828")).Bar(9.f), P(TEXT("e2d2b0"), TEXT("6a4e36")).Bar(3.f), P(TEXT("5a4030")));
+				L.Beak = C(TEXT("2a2420")); L.BeakBase = C(TEXT("e8c050")); L.Legs = C(TEXT("e8c050"));
+				L.BeakCm = 3.f; L.BeakDepth = 0.55f; L.BeakHook = 1.f; L.Wing = EWing::Broad; L.TailShape = ETail::Rounded; L.TailFrac = 0.4f;
+				Add(TEXT("CommonBuzzard"), L);
+			}
+			{
+				// raven: black all over with a blue-purple sheen, a massive bill, a wedge tail
+				const P Black = P(TEXT("0a0a0e"), TEXT("05050a")).Gl(0.75f, 0.9f);
+				FLook L = Plain(Black, Black, Black, P(TEXT("141418")).Gl(0.5f, 0.9f), Black);
+				L.Beak = L.BeakBase = C(TEXT("141414")); L.Legs = C(TEXT("141414"));
+				L.BeakCm = 7.5f; L.BeakDepth = 0.42f; L.BeakHook = 0.35f; L.Wing = EWing::Broad; L.TailShape = ETail::Wedge; L.TailFrac = 0.38f;
+				Add(TEXT("Raven"), L);
+			}
+			{
+				// grey heron: grey back and coverts, black flight feathers, white neck and breast streaked black, a dagger bill
+				FLook L = Plain(P(TEXT("1c1c20")), P(TEXT("8a909a"), TEXT("6a707a")).Fr(0.1f), P(TEXT("8a909a")), P(TEXT("ececec"), TEXT("2a2a30")).Bar(2.f), P(TEXT("9aa0a8")));
+				L.Beak = L.BeakBase = C(TEXT("d8b040")); L.Legs = C(TEXT("9a8a6a"));
+				L.BeakCm = 12.f; L.BeakDepth = 0.18f; L.BeakHook = 0.f; L.Wing = EWing::Broad; L.TailShape = ETail::Square; L.TailFrac = 0.18f;
+				Add(TEXT("GreyHeron"), L);
+			}
+			{
+				// black-browed albatross: white body, blackish-grey upperwing and back, a dark tail, a pink-orange bill
+				const P Dark = P(TEXT("2a2c30"), TEXT("1a1c20"));
+				FLook L = Plain(Dark, Dark, P(TEXT("3a3c40")), P(TEXT("f4f4f0")), Dark);
+				L.Beak = C(TEXT("f0a030")); L.BeakBase = C(TEXT("e08a2a")); L.Legs = C(TEXT("c8b8b0"));
+				L.BeakCm = 11.f; L.BeakDepth = 0.3f; L.BeakHook = 0.6f; L.Wing = EWing::Pointed; L.TailShape = ETail::Rounded; L.TailFrac = 0.2f;
+				Add(TEXT("BlackBrowedAlbatross"), L);
+			}
 			return M;
 		}
 	}
