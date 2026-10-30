@@ -808,7 +808,7 @@ void AForestFloor::UpdateSeason(float Day, bool bForce)
 		}
 		else if (K.Type == EKindType::Seedling && Cache)
 		{
-			const FTreeBaked* B = Cache->Request(K.Species, K.VariantSeed, K.Age, Day, 14.f, FVector(4.0, 12.0, 25.0));
+			const FTreeBaked* B = Cache->Request(K.Species, K.VariantSeed, K.Age, Day, 14.f, FVector(15.0, 55.0, 150.0));
 			if (B && B->Mesh && B->Version != K.BakeVersion)
 			{
 				C->SetStaticMesh(B->Mesh);
@@ -1086,8 +1086,9 @@ void AForestFloor::CommitKind(int32 Index)
 				if (It.Kind != Index) continue;
 				const FVector At(It.Xf.GetLocation());
 				if (FVector::DistSquared2D(At, Centre) > Reach2) continue;
-				// buried: the snow lies deeper than it stands
-				if (bSnow && SnowDepthAt(At) > It.Top * 0.9f) continue;
+				// buried: the snow lies deeper than it stands (a log or a stone a little sooner: its last sliver over the
+				// snow would read as a white plank, where a real one is a rounded hump of snow)
+				if (bSnow && SnowDepthAt(At) > It.Top * (K.Type == EKindType::Debris ? 0.7f : 0.9f)) continue;
 				Xfs.Add(FTransform(It.Xf));
 				Custom.Add(It.Custom0);
 				Custom.Add(It.Custom1);
