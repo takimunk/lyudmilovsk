@@ -20,7 +20,7 @@
 
 namespace
 {
-	TAutoConsoleVariable<int32> CVarBikes(TEXT("lyud.Bikes"), 1, TEXT("0: no bicycles are put out in the level (read at the level's start)"));
+	TAutoConsoleVariable<int32> CVarBikes(TEXT("lyud.Bikes"), 1, TEXT("0: the bicycles are hidden and nothing of theirs runs (live, for A/B benchmarks); 0 at the level's start puts none out"));
 	TAutoConsoleVariable<int32> CVarBikesAnyMap(TEXT("lyud.Bikes.AnyMap"), 0, TEXT("1: bicycles in any level, not only Lvl_Scene01 (tests)"));
 	TAutoConsoleVariable<int32> CVarBikesLog(TEXT("lyud.Bikes.Log"), 0, TEXT("1: residents' bikes log what they do"));
 
@@ -378,9 +378,9 @@ void ULyudBikeSubsystem::SyncParked()
 		{
 			B->bMoved = false;
 			// shown with its rider (PresentPerson), hidden while they are out of sight
-			const bool bShown = Presented.Contains(SB.Rider);
-			B->SetActorHiddenInGame(!bShown);
-			if (!bShown)
+			const bool bWithRider = Presented.Contains(SB.Rider);
+			B->SetActorHiddenInGame(!bWithRider);
+			if (!bWithRider)
 			{
 				B->SetHolder(nullptr);
 				B->Hush();
@@ -412,6 +412,23 @@ void ULyudBikeSubsystem::SyncParked()
 
 void ULyudBikeSubsystem::Tick(float DeltaTime)
 {
+	const bool bOn = CVarBikes.GetValueOnGameThread() != 0;
+	if (bOn != bShown)
+	{
+		bShown = bOn;
+		for (ALyudBike* B : Bikes)
+		{
+			if (B)
+			{
+				B->SetActorHiddenInGame(!bOn);
+				B->Hush();
+			}
+		}
+	}
+	if (!bOn)
+	{
+		return;
+	}
 	// the hero's own handling of bikes
 	if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
@@ -756,10 +773,16 @@ static FAutoConsoleCommandWithWorldAndArgs GBikeNpc(TEXT("Bike.NpcRide"),
 						// a camera on the bike, following it out of the entrance and along the way
 						if (AActor* T = BikeFollowTarget(World, UTF8_TO_TCHAR(B.Id.c_str())))
 						{
-							GBikeCamOffset = FVector(300.f, 0.f, 140.f);
+							GBikeCamOffset = FVector(230.f, 0.f, 110.f);
 							const FVector Target = T->GetActorLocation() + FVector(0.f, 0.f, 55.f);
-							BikeCamLook(World, Target + FRotator(0.f, T->GetActorRotation().Yaw + 120.f, 0.f).Vector() * 300.f + FVector(0.f, 0.f, 140.f), Target, 55.f);
+							BikeCamLook(World, Target + FRotator(0.f, T->GetActorRotation().Yaw + 180.f, 0.f).Vector() * 230.f + FVector(0.f, 0.f, 110.f), Target, 55.f);
 							GBikeCamFollow = T;
+							// the hero a few steps off in the lobby (its lamps light only near him by day)
+							if (APlayerController* PC = World->GetFirstPlayerController(); PC && PC->GetPawn())
+							{
+								PC->GetPawn()->SetActorLocation(T->GetActorLocation() + FRotator(0.f, T->GetActorRotation().Yaw, 0.f).RotateVector(FVector(-260.f, 0.f, 100.f)),
+									false, nullptr, ETeleportType::TeleportPhysics);
+							}
 						}
 					}
 					return;
@@ -776,7 +799,7 @@ void ULyudBikeSubsystem::FollowCamera()
 		const float Yaw = (float)T->GetActorRotation().Yaw + (T->IsA<ALyudBike>() ? 0.f : 90.f);
 		const FVector Target = T->GetActorLocation() + FVector(0.f, 0.f, T->IsA<ALyudBike>() ? 55.f : 90.f);
 		const float D = (float)GBikeCamOffset.Size2D();
-		const FVector Off = FRotator(0.f, Yaw + 120.f, 0.f).Vector() * D + FVector(0.f, 0.f, GBikeCamOffset.Z);
+		const FVector Off = FRotator(0.f, Yaw + 180.f, 0.f).Vector() * D + FVector(0.f, 0.f, GBikeCamOffset.Z);
 		const FVector Now = GBikeCam->GetActorLocation();
 		const FVector Want = Target + Off;
 		const FVector At = FVector::Dist(Now, Want) > 600.f ? Want : FMath::Lerp(Now, Want, 0.1f);

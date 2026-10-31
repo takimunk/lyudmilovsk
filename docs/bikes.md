@@ -84,9 +84,9 @@ body on it. The player taking a resident's bike leaves its owner on foot until i
   `BIKETEST_ONLY=hero|npc|lobby`.
 - Console: `Bike.Hero mount|off|lead|letgo|ride <throttle> <steer> <s>`, `Bike.Goto <id>`, `Bike.Look <id|person> [dist yaw height fov follow]`,
   `Bike.ViewFrom x y z pitch yaw [fov] | off`, `Bike.NpcRide <entrance id> [activity]`, `Bike.Report`, `lyud.Bike.Log 1`,
-  `lyud.Bikes.Log 1`, `lyud.Bikes 0` (none at the next level start), `lyud.Bikes.AnyMap 1`.
+  `lyud.Bikes.Log 1`, `lyud.Bikes 0` (live: hides them and stops their work, for one-process A/B benches; 0 at a level's start puts none out), `lyud.Bikes.AnyMap 1`.
 
 ## Cost
 
 Nothing ticks while a bike stands. A ridden or led bike moves ~10 components a frame (no instanced meshes); every part is
-out of Lumen's scene and the distance fields (small, moving), drawn within 60-90 m, LODs generated at import.
+out of Lumen's scene and the distance fields (small, moving), drawn within 60-90 m. The whole bike is ~31k triangles; the importer asks for three lower LODs, but the headless editor's mesh reduction refused them here (one LOD in the assets now): the draw distance keeps far bikes off the screen.

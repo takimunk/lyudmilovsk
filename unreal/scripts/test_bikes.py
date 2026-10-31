@@ -113,8 +113,8 @@ part("hero", [
 ])
 
 part("lobby", [
-    C("Bike.Look Novikova1.s0 210 40 70 70", wait=5.0), SHOT("a bike in Novikova 1's entrance"),
-    C("Bike.Look Novikova3.s1 210 -40 70 70", wait=3.0), SHOT("a bike in Novikova 3's entrance"),
+    C("Bike.Goto Novikova1.s0", "Bike.Look Novikova1.s0 170 -70 60 75", wait=5.0), SHOT("a bike in Novikova 1's entrance"),
+    C("Bike.Goto Novikova3.s1", "Bike.Look Novikova3.s1 170 -70 60 75", wait=4.0), SHOT("a bike in Novikova 3's entrance"),
     C("Bike.Look academ 260 30 90 50", wait=3.0), SHOT("the bike by the lower cable-car station"),
 ])
 

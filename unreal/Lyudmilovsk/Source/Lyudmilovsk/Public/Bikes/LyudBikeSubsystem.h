@@ -54,6 +54,7 @@ private:
 	TSet<int32> Presented;
 	bool bStarted = false;
 	bool bSimBound = false;
+	bool bShown = true;
 	float AssignTimer = 0.f;
 
 	void SpawnFromData();
