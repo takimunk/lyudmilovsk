@@ -184,6 +184,8 @@ namespace LyudBirds
 		void OnFlush(FWorld& W, FBird& B, const V3& From, int Cause);
 		/** The group mustn't send it elsewhere now. */
 		bool Busy(int Bird) const;
+		/** How long its group keeps away from the player after they startled it (x the usual 2 min): a friend comes back soon, an enemy later. */
+		float PlayerWariness(const FBird& B) const;
 		/** The player's danger for this bird (a grudge keeps it farther off, a bond lets them closer). */
 		float DangerScale(const FBird& B) const;
 		/** A teasing magpie isn't put up by the cat it is teasing unless the cat turns on it. */

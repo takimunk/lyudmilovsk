@@ -1,10 +1,14 @@
 # Birds: species, models, animation
 
-36 species, every one built by the same generator from a table, so a new species is a few lines. Round 4 added the big
+39 species, every one built by the same generator from a table, so a new species is a few lines. Round 4 added the big
 birds: white-tailed and golden eagle, common buzzard, raven, grey heron (it flies with its neck drawn into an S
 and its legs trailing past the tail: `fly_neck` / `fly_neck_s` / `fly_head` / `fly_trail` in `species_art.py`; `bare_shin`
 leaves a wader's lower shin unfeathered) and a black-browed albatross, a vagrant from the south such as turn up in the
 North Sea and the Baltic. Their calls are synthesised like the others (`tools/birdsim/bird_calls.py`).
+The corvids round added the jay (barred blue wing patch, white rump, a streaked crown raised as a small crest), the spotted
+nutcracker (white drop spots, a white-tipped tail, a long dagger bill) and the carrion crow (the hooded crow's build, all
+glossy black; the coast is in their hybrid zone). Crows' nasal bristles over the bill base are `bristles` in `species_art.py`
+(rows of small cards laid on the bill's own section, LOD0-1 only).
 
 ## Data
 

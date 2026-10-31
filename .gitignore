@@ -35,6 +35,7 @@ blender/hero/export/
 blender/hero/*.blend
 unreal/Lyudmilovsk/Content/Characters/Hero/
 blender/birds/export/
+blender/props/export/corvid_items/
 blender/animals/export/
 
 # generated character sources: sidecars committed, pictures and raw models local

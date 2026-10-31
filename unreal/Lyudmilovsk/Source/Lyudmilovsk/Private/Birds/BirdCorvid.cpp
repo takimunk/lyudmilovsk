@@ -746,7 +746,7 @@ namespace LyudBirds
 		const FItem& It = Items[C.Held];
 		const FItemKind& IK = ItemKind(It.Kind);
 		const float R = W.Rand(B.Rng);
-		const bool bPlayerNear = W.Player.bPresent && !W.Player.bClaimedBird && (W.Player.Feet - B.Pos).Len() < 70.f;
+		const bool bPlayerNear = W.Player.bPresent && !W.Player.bClaimedBird && (W.Player.Feet - B.Pos).Len() < 150.f;
 		const bool bForGift = C.Task == ETask::Fetch && C.Other == -2;
 		if (bPlayerNear && C.Bond > 0.5f && (bForGift || (W.Time - C.LastGift > 300.0 && (IK.bShiny || IK.bCache) && R < K.Gift * C.Bond)))
 		{
@@ -1014,7 +1014,7 @@ namespace LyudBirds
 			return;
 		}
 		// the player: a grudge is shouted, a bond followed; food held out is grabbed by the bold
-		if (bPlayer && C.Grudge > 0.35f && PlayerD < 50.f && (B.bNoticed || PlayerD < 25.f) && W.Time - C.LastScold > 20.0)
+		if (bPlayer && C.Grudge > 0.35f && PlayerD < 100.f && (B.bNoticed || PlayerD < 60.f) && W.Time - C.LastScold > 20.0)
 		{
 			Offer(ETask::Scold, 1.2f * C.Grudge + 0.3f);
 		}
@@ -1027,7 +1027,7 @@ namespace LyudBirds
 		{
 			Offer(ETask::Follow, 0.4f + 0.4f * C.Bond);
 		}
-		if (bPlayer && C.Bond > 0.5f && PlayerD < 70.f && W.Time - C.LastGift > 300.0)
+		if (bPlayer && C.Bond > 0.5f && PlayerD < 150.f && W.Time - C.LastGift > 300.0)
 		{
 			// a present: something shiny or a nut it can find near by
 			Offer(ETask::Fetch, 0.3f + K.Gift * C.Bond, -2);
@@ -1251,9 +1251,25 @@ namespace LyudBirds
 			}
 			return false;
 		}
+		// a crow that knows the player (a friend, or an enemy it means to shout at) doesn't circle out there for minutes because
+		// they turned up: once calm it comes back down
+		if (B.Act == EAct::Flee && B.Site < 0 && (C.Bond > 0.5f || C.Grudge > 0.35f) && B.Alert < 0.3f && W.Player.bPresent && (B.Pos - B.FlyFrom).Len2D() > 25.f)
+		{
+			if (G.Site >= 0)
+			{
+				W.FlyTo(B, G.Site, W.SpotFor(B, G.Site));
+			}
+			else
+			{
+				W.FlyTo(B, -1, GroundAt(W, B.Pos.X, B.Pos.Y));
+			}
+			return true;
+		}
 		if (C.Task == ETask::None)
 		{
-			if (C.Cooldown > 0.f || B.Tier > 2 || B.Act == EAct::Flee || B.Act == EAct::Watch || B.Alert > 0.45f)
+			// a crow with a grudge that has the player in its eye shouts at them instead of only watching
+			const bool bAngry = C.Grudge > 0.35f && W.Player.bPresent && B.Act == EAct::Watch;
+			if (C.Cooldown > 0.f || B.Tier > 2 || B.Act == EAct::Flee || ((B.Act == EAct::Watch || B.Alert > 0.45f) && !bAngry))
 			{
 				return false;
 			}
@@ -1268,11 +1284,17 @@ namespace LyudBirds
 			}
 		}
 		// fear first: a watching bird watches (BirdSim), the task waits
-		if (B.Act == EAct::Watch || B.Act == EAct::Flee)
+		if (B.Act == EAct::Flee || (B.Act == EAct::Watch && C.Task != ETask::Scold))
 		{
 			return false;
 		}
 		C.TaskTime += Dt;
+		// its feelings turned while it was at it: no present for an enemy, no scolding a friend
+		if (((C.Task == ETask::Gift || C.Task == ETask::Follow) && C.Bond < 0.3f) || (C.Task == ETask::Scold && C.Grudge < 0.2f))
+		{
+			End(W, B, C);
+			return true;
+		}
 		if (C.TaskTime > C.TaskLen)
 		{
 			if (C.Held >= 0 && C.Task != ETask::Cache && C.Task != ETask::Gift)
@@ -2433,7 +2455,7 @@ namespace LyudBirds
 		{
 			return 1.f;
 		}
-		float K = 1.f + 0.6f * C->Grudge - 0.3f * C->Bond;
+		float K = std::max(0.3f, 1.f + 0.6f * C->Grudge - 0.7f * C->Bond);      // a friend sits still a few steps off
 		switch (C->Task)
 		{
 		case ETask::Snatch: K *= 0.25f; break;
@@ -2444,6 +2466,12 @@ namespace LyudBirds
 		default: break;
 		}
 		return K;
+	}
+
+	float FCorvids::PlayerWariness(const FBird& B) const
+	{
+		const FCorvid* C = Mind(B.Id);
+		return C ? std::clamp(1.f - 0.9f * C->Bond + 0.5f * C->Grudge, 0.1f, 1.5f) : 1.f;
 	}
 
 	float FCorvids::BeastScale(const FBird& B, const FBeast& M) const

@@ -55,6 +55,8 @@ static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDista
 	TEXT("Birds are drawn within this many of their own lengths from the camera."));
 static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
 	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
+static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,
+	TEXT("The crow family's minds and items (docs/corvids.md): 0 = they live like the other birds and their items go (switches while running; tools/bench_systems.sh nocorvids)."));
 static TAutoConsoleVariable<int32> CVarBirdsSteady(TEXT("lyud.Birds.Steady"), 1,
 	TEXT("1: birds fade out at the edge of their draw range and bodies hand over with some slack; 0: the old hard cuts (A/B of popping)."));
 
@@ -182,6 +184,7 @@ bool UBirdLifeSubsystem::Start()
 	S.Opt.PopulationScale = FMath::Max(0.f, CVarBirdsPopulation.GetValueOnGameThread());
 	S.Opt.Seed = 20261024u;
 	S.Opt.bNests = CVarBirdsNests.GetValueOnGameThread() != 0;
+	S.Opt.bCorvids = CVarBirdsCorvids.GetValueOnGameThread() != 0;
 
 	FillSpeciesFromTable();
 	S.Opt.bMigration = CVarBirdsMigration.GetValueOnGameThread() != 0;
@@ -589,6 +592,10 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		Stop();
 		bWantStart = true;
 		return;
+	}
+	if ((CVarBirdsCorvids.GetValueOnGameThread() != 0) != S.Opt.bCorvids)
+	{
+		S.SetCorvids(CVarBirdsCorvids.GetValueOnGameThread() != 0);
 	}
 	UpdateClock();
 	UpdatePlayer(DeltaTime);
