@@ -1368,6 +1368,10 @@ namespace LyudBirds
 		{
 			return;                 // (a murmuration escapes as one: FMurmuration)
 		}
+		if (B.Id == Summoned)
+		{
+			return;                 // called to the hand: it trusts the hand more than the alarm
+		}
 		const FSpecies& S = SpeciesTable()[B.Species];
 		if (B.Id == Approacher)
 		{
@@ -2233,6 +2237,14 @@ namespace LyudBirds
 			B.Alert = 0.f;
 			B.bNoticed = B.bWatching = false;
 		}
+		else if (B.Id == Summoned)
+		{
+			// called to the hand: it knows the player and comes straight
+			B.Alert = 0.f;
+			B.Trust = 1.f;
+			B.bNoticed = true;
+			B.bWatching = false;
+		}
 		else if (B.Tier <= 2)
 		{
 			PerceivePlayer(B, Dt);
@@ -2449,7 +2461,7 @@ namespace LyudBirds
 			}
 			break;
 		case EAct::Eat:
-			if (!Player.bOffer)
+			if (!HandFor(B))
 			{
 				// the hand went in: off to its flock
 				Approacher = -1;
@@ -2467,7 +2479,7 @@ namespace LyudBirds
 			}
 			break;
 		case EAct::Approach:
-			if (!Player.bOffer)
+			if (!HandFor(B))
 			{
 				Approacher = -1;
 				const int Site = Groups[B.Group].Site;
@@ -2565,7 +2577,7 @@ namespace LyudBirds
 			}
 			break;
 		case EAct::Eat:
-			B.Pos = Player.Palm;
+			B.Pos = PalmFor(B);
 			B.Vel = V3();
 			break;
 		case EAct::Claimed:
@@ -2578,9 +2590,10 @@ namespace LyudBirds
 			bool bLanding = true;
 			if (B.Act == EAct::Approach)
 			{
-				Goal = Player.Palm;
+				Goal = PalmFor(B);
 				B.Spot = Goal;
-				Speed = std::min(S.Cruise, 6.f);
+				// a called bird comes from afar at its own speed and slows down for the hand
+				Speed = B.Id == Summoned ? std::min(S.Cruise, std::max(4.f, (Goal - B.Pos).Len() * 0.35f)) : std::min(S.Cruise, 6.f);
 			}
 			else if (B.Act == EAct::Flee)
 			{
@@ -2819,6 +2832,63 @@ namespace LyudBirds
 
 	// --- the player -----------------------------------------------------------------------------------
 
+	bool FWorld::Summon(int Id, const V3& Palm, const V3& Entry, float FarM)
+	{
+		if (Id < 0 || Id >= (int)Birds.size() || Birds[Id].bGone || Birds[Id].Act == EAct::Claimed)
+		{
+			return false;
+		}
+		CancelSummon();
+		FBird& B = Birds[Id];
+		if (Approacher == Id)
+		{
+			Approacher = -1;
+		}
+		Summoned = Id;
+		SummonPalm = Palm;
+		if ((B.Pos - Palm).Len() > FarM)
+		{
+			// far off (across the bay, in the forest): it is already on its way, just out of sight
+			B.Pos = Entry;
+		}
+		B.FlyFrom = B.Pos;
+		B.Spot = Palm;
+		B.Site = -1;
+		B.Vel = (Palm - B.Pos).Norm() * 3.f + V3(0.f, 0.f, 1.5f);
+		B.Alert = 0.f;
+		B.Trust = 1.f;
+		B.bAte = false;
+		B.bNoticed = true;
+		B.Tier = 0;
+		SetAct(B, EAct::Approach, 0.f);
+		Emit(EEvent::Call, B);
+		return true;
+	}
+
+	void FWorld::CancelSummon()
+	{
+		if (Summoned < 0 || Summoned >= (int)Birds.size())
+		{
+			Summoned = -1;
+			return;
+		}
+		FBird& B = Birds[Summoned];
+		Summoned = -1;
+		if (B.Act == EAct::Approach || B.Act == EAct::Eat)
+		{
+			B.bAte = false;
+			const int Site = Groups[B.Group].Site;
+			if (Site >= 0)
+			{
+				FlyTo(B, Site, SpotFor(B, Site));
+			}
+			else
+			{
+				SetAct(B, EAct::Fly, 0.f);
+			}
+		}
+	}
+
 	bool FWorld::Claim(int Id)
 	{
 		if (Id < 0 || Id >= (int)Birds.size() || Birds[Id].bGone)
@@ -2828,6 +2898,10 @@ namespace LyudBirds
 		if (Approacher == Id)
 		{
 			Approacher = -1;
+		}
+		if (Summoned == Id)
+		{
+			Summoned = -1;
 		}
 		SetAct(Birds[Id], EAct::Claimed, 0.f);
 		return true;

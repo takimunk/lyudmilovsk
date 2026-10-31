@@ -16,6 +16,7 @@
 #include "LyudSave.h"
 #include "LyudText.h"
 #include "Audio/LyudSoundscape.h"
+#include "Birds/BirdBook.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "HeroReachComponent.h"
 #include "Slate/WidgetRenderer.h"
@@ -89,6 +90,12 @@ void ULyudGameScreen::OnWorldBeginPlay(UWorld& InWorld)
 			if (Screen && !Screen->IsTurning()) { Screen->Rebuild(); }
 		});
 	}
+	if (ULyudBirdBook* Birds = ULyudBirdBook::Get(&InWorld))
+	{
+		// a new game like the quests (a load fills it back)
+		Birds->Reset();
+		Birds->OnChanged.AddWeakLambda(this, [this] { if (Screen && !Screen->IsTurning()) { Screen->Rebuild(); } });
+	}
 	if (ULyudInventory* Inv = ULyudInventory::Get(&InWorld))
 	{
 		Inv->OnAdded.AddUObject(this, &ULyudGameScreen::OnItemAdded);
@@ -123,6 +130,10 @@ void ULyudGameScreen::Deinitialize()
 		{
 			Q->OnNews.RemoveAll(this);
 			Q->OnChanged.RemoveAll(this);
+		}
+		if (ULyudBirdBook* Birds = ULyudBirdBook::Get(World))
+		{
+			Birds->OnChanged.RemoveAll(this);
 		}
 		if (ULyudInventory* Inv = ULyudInventory::Get(World))
 		{
@@ -678,6 +689,7 @@ void ULyudGameScreen::Tick(float DeltaTime)
 	if (PC->WasInputKeyJustPressed(EKeys::Tab) || PC->WasInputKeyJustPressed(EKeys::I)) { Want = ELyudScreenTab::Inventory; bKey = true; }
 	else if (PC->WasInputKeyJustPressed(EKeys::J)) { Want = ELyudScreenTab::Journal; bKey = true; }
 	else if (PC->WasInputKeyJustPressed(EKeys::M)) { Want = ELyudScreenTab::Map; bKey = true; }
+	else if (PC->WasInputKeyJustPressed(EKeys::K)) { Want = ELyudScreenTab::Birds; bKey = true; }
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	if (IsOpen())
 	{
@@ -751,6 +763,14 @@ void ULyudGameScreen::Tick(float DeltaTime)
 	UpdateHud();
 }
 
+void ULyudGameScreen::TurnBy(int32 N)
+{
+	if (Screen && Phase == EPhase::Reading)
+	{
+		Screen->TurnTo(FMath::Clamp(Screen->CurrentSpread() + N, 0, Screen->NumSpreads() - 1));
+	}
+}
+
 bool ULyudGameScreen::KeysOnDiary(APlayerController* PC)
 {
 	// a page forward or back; C finds the hero on the map
@@ -763,7 +783,7 @@ bool ULyudGameScreen::KeysOnDiary(APlayerController* PC)
 		{
 			const LyudDiary::ESection S = Screen->SpreadAt(To).Section;
 			Tab = S == LyudDiary::ESection::Things ? ELyudScreenTab::Inventory : S == LyudDiary::ESection::Quests ? ELyudScreenTab::Journal
-				: S == LyudDiary::ESection::Diary ? ELyudScreenTab::Diary : ELyudScreenTab::Map;
+				: S == LyudDiary::ESection::Diary ? ELyudScreenTab::Diary : S == LyudDiary::ESection::Birds ? ELyudScreenTab::Birds : ELyudScreenTab::Map;
 		}
 		return true;
 	}
@@ -776,7 +796,16 @@ bool ULyudGameScreen::KeysOnDiary(APlayerController* PC)
 }
 
 // --- dev commands for headless checks ---
-static FAutoConsoleCommandWithWorldAndArgs GScreenOpen(TEXT("Screen.Open"), TEXT("Screen.Open inventory|journal|map|diary|none [place]: takes the diary out on a section (map: centred on a place), or puts it away"),
+static FAutoConsoleCommandWithWorldAndArgs GScreenTurn(TEXT("Screen.Turn"), TEXT("Screen.Turn [n]: turns the open diary n spreads on (back if negative)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudGameScreen* S = ULyudGameScreen::Get(World))
+		{
+			S->TurnBy(Args.Num() ? FCString::Atoi(*Args[0]) : 1);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GScreenOpen(TEXT("Screen.Open"), TEXT("Screen.Open inventory|journal|map|diary|birds|none [place]: takes the diary out on a section (map: centred on a place), or puts it away"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		ULyudGameScreen* S = ULyudGameScreen::Get(World);
@@ -796,7 +825,7 @@ static FAutoConsoleCommandWithWorldAndArgs GScreenOpen(TEXT("Screen.Open"), TEXT
 		else
 		{
 			S->Open(Page == TEXT("map") ? ELyudScreenTab::Map : Page == TEXT("journal") ? ELyudScreenTab::Journal : Page == TEXT("diary") ? ELyudScreenTab::Diary
-				: ELyudScreenTab::Inventory);
+				: Page == TEXT("birds") ? ELyudScreenTab::Birds : ELyudScreenTab::Inventory);
 		}
 	}));
 

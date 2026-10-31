@@ -931,6 +931,46 @@ namespace
 			const V3 Palm = W.Player.Palm;
 			Check(R, W.Birds[0].Act == EAct::Eat && (W.Birds[0].Pos - Palm).Len() < 0.05f, "it sits on the palm");
 		}
+		// called from the diary (no food): a befriended bird comes to the empty palm, from near and from far
+		for (const float Far : { 25.f, 600.f })
+		{
+			Lone(W, "GreatTit", P);
+			W.Birds[0].Pos = P + V3(Far, 0.f, 0.f);
+			const V3 Feet = P + V3(-2.f, 0.f, 0.f);
+			W.Player.bPresent = true;
+			W.Player.Feet = Feet;
+			W.Player.Eye = Feet + V3(0.f, 0.f, 1.65f);
+			W.Player.bOffer = false;
+			W.Player.Palm = W.Player.Eye + V3(0.4f, 0.f, -0.3f);
+			W.Camera = W.Player.Eye;
+			const bool bOk = W.Summon(0, W.Player.Palm, Feet + V3(45.f, 10.f, 18.f), 80.f);
+			float Ate = -1.f;
+			bool bFled = false;
+			for (int K = 0; K < 60 * 60 && Ate < 0.f; K++)
+			{
+				W.Step(1.f / 60.f);
+				for (const FEvent& E : W.Events)
+				{
+					if (E.Kind == EEvent::Eat && E.Bird == 0)
+					{
+						Ate = K / 60.f;
+					}
+					bFled |= E.Kind == EEvent::Flee && E.Bird == 0;
+				}
+				W.Events.clear();
+			}
+			Check(R, !bFled, "a called bird does not flee");
+			std::printf("great tit called from %.0f m: on the palm after %.1f s\n", Far, Ate);
+			Check(R, bOk && Ate > 0.f && Ate < 40.f, "a called bird comes to the empty palm");
+			Check(R, (W.Birds[0].Pos - W.Player.Palm).Len() < 0.05f, "and sits on it");
+			W.CancelSummon();
+			for (int K = 0; K < 3 * 60; K++)
+			{
+				W.Step(1.f / 60.f);
+				W.Events.clear();
+			}
+			Check(R, W.Birds[0].Act != EAct::Eat && W.Birds[0].Act != EAct::Approach, "let go, it goes back to its flock");
+		}
 		// the same with a sharp mouse turn on the way: it gets uneasy before it flies
 		{
 			Lone(W, "GreatTit", P);

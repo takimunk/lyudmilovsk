@@ -147,7 +147,7 @@ namespace
 	/** Where index tab K sits up the fore-edge (its centre, cm from the middle), top first. */
 	float TabZ(int32 K)
 	{
-		return 11.2f - K * 5.6f;
+		return 11.2f - K * 4.9f;     // LyudDiary::TabY in cm (40 units a cm) from the page's middle
 	}
 
 	UMaterialInterface* Basic()

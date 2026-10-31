@@ -155,6 +155,8 @@ public:
 
 	void HandleEvent(FName Event, const FString& Target, int32 N);
 	bool Start(FName Quest);
+	/** A line of the hero's own in the diary (no quest): Key's text with Args (an arg starting with @ is a key itself). */
+	void AddNote(const FString& Key, const TArray<FString>& Args = TArray<FString>()) { AddEntry(Key, NAME_None, Args); OnChanged.Broadcast(); }
 	/** Finishes the current stage of a quest at once (dev command Quest.Advance). */
 	void Advance(FName Quest);
 
