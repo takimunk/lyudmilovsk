@@ -1048,8 +1048,9 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		const FLinearColor Colour = R && R->Palette.Num() ? R->Palette[0] : FLinearColor(FColor((SpeciesTable()[I].Color >> 16) & 255, (SpeciesTable()[I].Color >> 8) & 255, SpeciesTable()[I].Color & 255));
 		Mat->SetVectorParameterValue(TEXT("Color"), Colour);
 		Materials.Add(Mat);
-		D.bOwnMeshes = UBirdSpeciesLibrary::LoadPose(Id, TEXT("Perch")) != nullptr;
-		D.bHasBody = UBirdSpeciesLibrary::LoadSkeletalMesh(Id) != nullptr;
+		D.bOwnMeshes = UBirdSpeciesLibrary::HasPose(Id, TEXT("Perch"));
+		// only asked whether it exists: loading all 36 bodies here kept ~GBs in the editor's PIE (and compiled them on the spot)
+		D.bHasBody = UBirdSpeciesLibrary::HasSkeletalMesh(Id);
 		D.Scale = D.bOwnMeshes ? 1.f : Length / 0.215f;
 		D.FemaleScale = R ? R->FemaleScale : 1.f;
 		const bool bWinter = R && R->InWinterPlumage(UGameCalendar::NowIn(GetWorld()).GetMonth());

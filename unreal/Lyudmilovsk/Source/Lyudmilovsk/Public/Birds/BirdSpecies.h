@@ -141,6 +141,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static USkeletalMesh* LoadSkeletalMesh(FName Id);
+	/** SK_<Id> exists, without loading it (a loaded body stays in the editor's memory for the whole session). */
+	static bool HasSkeletalMesh(FName Id);
+	/** SM_<Id>_<Pose> exists, without loading it. */
+	static bool HasPose(FName Id, FName Pose);
 	/** SK_<Id>_Hero (the player's detailed body, on the same skeleton and clips), or null if the species has none. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	static USkeletalMesh* LoadHeroMesh(FName Id);

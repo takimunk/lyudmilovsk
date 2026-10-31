@@ -6,6 +6,7 @@
 #include "Engine/StaticMesh.h"
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
+#include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -178,6 +179,18 @@ USkeletalMesh* UBirdSpeciesLibrary::LoadSkeletalMesh(FName Id)
 {
 	const FString N = Id.ToString();
 	return LoadObject<USkeletalMesh>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/SK_%s.SK_%s"), *N, *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet);
+}
+
+bool UBirdSpeciesLibrary::HasSkeletalMesh(FName Id)
+{
+	const FString N = Id.ToString();
+	return FPackageName::DoesPackageExist(FString::Printf(TEXT("/Game/Birds/%s/SK_%s"), *N, *N));
+}
+
+bool UBirdSpeciesLibrary::HasPose(FName Id, FName Pose)
+{
+	const FString N = Id.ToString(), P = Pose.ToString();
+	return FPackageName::DoesPackageExist(FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s"), *N, *N, *P));
 }
 
 USkeletalMesh* UBirdSpeciesLibrary::LoadHeroMesh(FName Id)

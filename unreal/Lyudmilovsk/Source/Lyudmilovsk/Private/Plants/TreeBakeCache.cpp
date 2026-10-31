@@ -107,9 +107,12 @@ void UTreeBakeCache::Finish(FJob& Job)
 	PlantMeshes::FTreeBake Bake = PlantMeshes::FinishTreeBake(this, S, Job.Key.Seed, MoveTemp(Job.Prep), FVector3f(Lods));
 	const double MeshMs = (FPlatformTime::Seconds() - MeshStart) * 1000.0;
 	UE_LOG(LogTemp, Verbose, TEXT("TREEBAKE %s: prepare %.0f ms (worker), textures %.0f ms, mesh %.0f ms (%d/%d/%d/%d tris)"), *S.Name.ToString(), Job.Prep.Ms, (MeshStart - TexStart) * 1000.0, MeshMs, Bake.Triangles[0], Bake.Triangles[1], Bake.Triangles[2], Bake.Triangles[3]);
-	KeepAlive.Add(Bake.Mesh); // an older bake stays alive while some component still draws it
+	KeepAlive.Add(Bake.Mesh);
 
 	FTreeBaked& Out = Baked.FindOrAdd(Job.Key);
+	// a rebake lets go of the older mesh: a component still drawing it keeps it alive by its own reference until it
+	// swaps, then the garbage collector frees it (before, every rebake of every kind kept a full 4-LOD mesh forever)
+	if (Out.Mesh) KeepAlive.RemoveSingleSwap(Out.Mesh, EAllowShrinking::No);
 	if (!Out.Wood)
 	{
 		Out.Wood = UMaterialInstanceDynamic::Create(BarkMaterial, this);
