@@ -115,7 +115,7 @@ public:
 	const FString& GetSubtitleKey() const { return SubtitleKey; }
 	float GetSubtitleAlpha() const { return SubtitleAlpha; }
 	/** Seconds the eyes have been under since the last breath. */
-	float GetTimeUnder() const { return TimeUnder; }
+	UFUNCTION(BlueprintPure, Category = "Swim") float GetTimeUnder() const { return TimeUnder; }
 
 	/** Goes under from the surface now (tests, a scripted dive); false if not at the surface. */
 	UFUNCTION(BlueprintCallable, Category = "Swim") bool Dive();

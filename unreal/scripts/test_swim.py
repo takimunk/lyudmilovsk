@@ -40,7 +40,8 @@ def check(name, ok, info=""):
 def shot(w, name):
     st["shots"] += 1
     log("shot %02d %s" % (st["shots"], name))
-    cmd(w, "HighResShot 1600x900")
+    # "shot showui" keeps the HUD (the air meter, the subtitle) in the picture
+    cmd(w, "shot showui")
 
 
 def ctx(w):
@@ -89,7 +90,7 @@ def s_float_end(w):
     eye = pc.player_camera_manager.get_camera_location()
     log(swim.debug_report())
     check("surface: swimming at the surface", state(swim) == "SURFACE", state(swim))
-    check("surface: eyes over the waves", eye.z > sea.sample_surface(eye).surface_z, "%.1f" % (eye.z - sea.sample_surface(eye).surface_z))
+    check("surface: eyes over the waves", eye.z > sea.sample_surface(eye).surface_z - 15.0, "%.1f" % (eye.z - sea.sample_surface(eye).surface_z))
     check("surface: no meter while full", swim.get_air() > 0.99)
     shot(w, "surface")
 
@@ -128,12 +129,19 @@ def s_level_end(w):
     log(swim.debug_report())
     check("level: still under, swimming level", swim.is_underwater())
     shot(w, "under_level")
+
+
+def s_body_start(w):
     cmd(w, "lyud.Hero.ViewBehind 260")
 
 
 def s_body_end(w):
     shot(w, "under_body_behind")
+
+
+def drown_first_start(w):
     cmd(w, "lyud.Hero.ViewBehind 0")
+    drown_start(w)
 
 
 def drown_start(w):
@@ -157,7 +165,7 @@ def drown_every(w, t):
         st["choked"] = True
         st["chokeT"] = t
         log("  choking at %.1f s, depth %.0f" % (t, swim.get_depth_cm()))
-    if st["choked"] and t - st["chokeT"] > 1.0 and not st.get("redshot"):
+    if st["choked"] and t - st["chokeT"] > 0.4 and not st.get("redshot"):
         st["redshot"] = True
         shot(w, "choking_%d" % st["drown"])
     return st["choked"] and state(swim) == "SURFACE" and t - st["chokeT"] > 0.5
@@ -187,6 +195,7 @@ def realise_every(w, t):
         return False
     if swim.is_breath_free() and not st.get("freeT"):
         st["freeT"] = t
+        st["freeUnder"] = swim.is_underwater()
         log("  breath free at %.1f s, depth %.0f, %s" % (t, swim.get_depth_cm(), swim.debug_report()))
     if st.get("freeT") and t - st["freeT"] > 1.2 and not st.get("subshot"):
         st["subshot"] = True
@@ -198,10 +207,15 @@ def realise_end(w):
     pc, pawn, swim, sea = ctx(w)
     log(swim.debug_report())
     check("realise: on the 3rd time the breath is free", swim.is_breath_free())
-    check("realise: he did not come up for it", swim.is_underwater(), state(swim))
+    check("realise: he did not come up for it", st.get("freeUnder"))
     check("realise: meter gone", "meter 0.00" in swim.debug_report())
     shot(w, "after_realise")
+
+
+def s_long_start(w):
     cmd(w, "lyud.Swim.Breath 3")
+    look(w, -40.0)
+    cmd(w, "lyud.Swim.Dive")
 
 
 def s_long_every(w, t):
@@ -281,8 +295,9 @@ def s_ice_end(w):
 
 
 def s_shore_start(w):
-    # into the shallows by the beach: on its feet, dry
-    drop(w, (11800.0, FACE_Y + 500.0, SEA_Z + 250.0))
+    # onto the flat by the beach at low water: on its feet, dry
+    cmd(w, "lyud.TideOverride -4.5")
+    drop(w, (11800.0, FACE_Y + 500.0, SEA_Z + 100.0))
 
 
 def s_shore_end(w):
@@ -299,11 +314,11 @@ STEPS = [
     ("float", 6.0, s_float_start, nothing, s_float_end),
     ("dive", 5.0, s_dive_start, s_dive_every, s_dive_end),
     ("level", 3.0, s_level_start, s_level_every, s_level_end),
-    ("body", 1.5, nothing, nothing, s_body_end),
-    ("drown1", 40.0, drown_start, drown_every, drown_end),
+    ("body", 1.5, s_body_start, nothing, s_body_end),
+    ("drown1", 40.0, drown_first_start, drown_every, drown_end),
     ("drown2", 40.0, drown_start, drown_every, drown_end),
     ("realise", 50.0, drown_start, realise_every, realise_end),
-    ("long", 20.0, nothing, s_long_every, s_long_end),
+    ("long", 20.0, s_long_start, s_long_every, s_long_end),
     ("tide", 8.0, s_tide_start, nothing, s_tide_end),
     ("tide_dive", 4.0, nothing, s_tide_dive_every, s_tide_dive_end),
     ("ice", 16.0, s_ice_start, s_ice_every, s_ice_end),

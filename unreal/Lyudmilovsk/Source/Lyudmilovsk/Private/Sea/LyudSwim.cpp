@@ -111,14 +111,17 @@ public:
 			]
 			+ SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(FMargin(0, 0, 0, 86))
 			[
-				SNew(SBorder).BorderImage(&Track).Padding(FMargin(3.f))
+				// the outer border draws nothing: its opacity fades the track (outline and all) with the bar
+				SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("NoBorder")).Padding(0.f)
+				.Visibility_Lambda([W]() { return W.IsValid() && W->GetMeterAlpha() > 0.01f ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })
 				.ColorAndOpacity_Lambda([W]() { return FLinearColor(1.f, 1.f, 1.f, W.IsValid() ? W->GetMeterAlpha() : 0.f); })
-				.BorderBackgroundColor_Lambda([W]() { return FSlateColor(FLinearColor(1.f, 1.f, 1.f, W.IsValid() ? W->GetMeterAlpha() : 0.f)); })
+				[
+				SNew(SBorder).BorderImage(&Track).Padding(FMargin(3.f))
 				[
 					SNew(SBox).WidthOverride(Width).HeightOverride(8.f).HAlign(HAlign_Left)
 					[
 						SNew(SBox).HeightOverride(8.f)
-						.WidthOverride_Lambda([W, Width]() { return FOptionalSize(W.IsValid() ? FMath::Max(2.f, Width * W->GetAir()) : Width); })
+						.WidthOverride_Lambda([W, Width]() { return FOptionalSize(!W.IsValid() || W->IsMeterRed() ? Width : FMath::Max(2.f, Width * W->GetAir())); })
 						[
 							SNew(SBorder).BorderImage(&Fill)
 							.BorderBackgroundColor_Lambda([W]() -> FSlateColor
@@ -127,10 +130,10 @@ public:
 								{
 									return FLinearColor::Transparent;
 								}
-								const float A = W->GetMeterAlpha();
+								const float A = 1.f;
 								if (W->IsMeterRed())
 								{
-									// empty: a red that blinks, the whole track lit by it
+									// empty: the whole bar blinks red
 									const float Blink = 0.5f + 0.5f * FMath::Sin(float(FPlatformTime::Seconds()) * 2.f * PI * 2.6f);
 									return FLinearColor(0.95f, 0.12f, 0.08f, A * (0.35f + 0.65f * Blink));
 								}
@@ -140,6 +143,7 @@ public:
 							})
 						]
 					]
+				]
 				]
 			]
 		];
