@@ -33,7 +33,7 @@ def birds(w):
 
 
 def corv(w):
-    return w.get_subsystem(unreal.CorvidLifeSubsystem)
+    return unreal.CorvidLifeSubsystem.get_corvid_life(w)
 
 
 def log(msg):

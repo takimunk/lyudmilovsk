@@ -127,7 +127,8 @@ for sid in ids:
     hx += max(TABLE[sid]["wingspanCm"], 60) * 1.6
 
 # a lineup at true scale, one camera on all of it (each species' own cameras frame it to its size)
-LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Jackdaw", "Rook", "HoodedCrow",
+LINEUP = ["BlueTit", "GreatTit", "HouseSparrow", "Robin", "Starling", "Blackbird", "FeralPigeon", "Nutcracker", "Jay", "Jackdaw",
+          "Rook", "HoodedCrow", "CarrionCrow",
           "HerringGull", "CommonBuzzard", "Raven", "Cormorant", "GreyHeron", "GoldenEagle", "WhiteTailedEagle", "BlackBrowedAlbatross", "MuteSwan"]
 lx = 0.0
 for sid in [i for i in LINEUP if i in ids]:

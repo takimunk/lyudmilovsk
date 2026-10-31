@@ -30,6 +30,10 @@ class LYUDMILOVSK_API UCorvidLifeSubsystem : public UTickableWorldSubsystem
 public:
 	static UCorvidLifeSubsystem* Get(const UObject* WorldContext);
 
+	/** Get for Blueprints and Python: unreal.CorvidLifeSubsystem.get_corvid_life(world). */
+	UFUNCTION(BlueprintPure, Category = "Birds", meta = (WorldContext = "WorldContext"))
+	static UCorvidLifeSubsystem* GetCorvidLife(const UObject* WorldContext) { return Get(WorldContext); }
+
 	/** Fires for every corvid event near the player (within ~120 m) on the game thread. */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FCorvidLifeEvent OnCorvid;
 
