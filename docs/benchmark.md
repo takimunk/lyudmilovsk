@@ -137,3 +137,20 @@ rounds, frame median; the machine was shared, so +-10% is noise):
   lighting channels 0 and 1 and their components' bounds span 280x215 m tiles over the club, so every club light
   with shadows culls their instances. `channel1` measures the fix.
 - Freezing the sky's sun gained nothing (VSM cache is fine). Cascaded shadow maps are far worse than VSM here.
+
+## Live systems and Lumen (2026-10-31)
+
+`tools/bench_systems.sh [variant ...]` flies the whole route (or `SEGMENTS=`) at Epic with each live system switched
+off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noanimals`, `notransport`, `norailway`,
+`nosea`, `noacadem`, `nofloor`, `nosound`, `novines`, `noforest`, `nolumen`, plus Lumen and quality options
+(`cardfreeze`, `captures64`, `lumenlow`, `shadowhigh`, `sp75`).
+
+- **Run it alone.** A -game of Lvl_Scene01 holds ~22 GB; two at once on the 36 GB Mac swap (18 GB of swap seen) and
+  frames read 300+ ms instead of ~40. `tools/wait_ue_queue.sh` before every run, and check `sysctl vm.swapusage`.
+- Each live system alone (birds, people, animals, transport, sea, forest floor) moves the frame under 5%.
+- Lumen was ~250 surface-cache card captures a frame, 95% of them the cableway's rope cylinders: anything that updates
+  instances every frame with `bMarkRenderStateDirty` (or calls `MarkRenderStateDirty()` after the loop) rebuilds its
+  proxy, and Lumen recaptures all its instances. Fixed in 68e1e243 (15 captures a frame; route 39.6 -> 32.3 ms at
+  1080p, hall 34 -> 26, flight 41 -> 33). See it with `r.LumenScene.SurfaceCache.LogUpdates 2` in `SETUP`.
+- Still on the table (quality calls): Lumen at High (`lumenlow`) about -20%, `r.ScreenPercentage 75` about -9%;
+  Lumen off entirely about -38%.
