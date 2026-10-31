@@ -273,6 +273,7 @@ namespace LyudBirds
 
 	class FMurmuration;
 	class FCorvids;
+	class FNesting;
 
 	struct FOptions
 	{
@@ -293,6 +294,8 @@ namespace LyudBirds
 		float MurmurOffshore = 250.f;
 		/** The crow family's minds and items (BirdCorvid.h); off = they live like the other birds (A/B, lyud.Birds.Corvids 0). */
 		bool bCorvids = true;
+		/** The breeding year: nests, eggs, chicks, fledglings (BirdNest.h); off = no nests (A/B, lyud.Birds.Nests 0). */
+		bool bNests = true;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -317,6 +320,7 @@ namespace LyudBirds
 		float Hour = 12.f;              // local clock
 		float Sunrise = 7.f, Sunset = 17.5f;
 		float DayOfYear = 297.f;
+		int Year = 2026;                // the calendar year (the nests' plans differ year by year)
 		/** The sea's surface now (m): ALyudSea::SeaLevel, mean -43 plus the tide; swimmers float on it, waders follow it. */
 		float SeaZ = -43.f;
 		float MeanSeaZ = -43.f;
@@ -353,6 +357,8 @@ namespace LyudBirds
 		FMurmuration* Murmuration() const { return Murm.get(); }
 		/** The crow family's minds and the things they carry (BirdCorvid.h). */
 		FCorvids* Corvids() const { return Corv.get(); }
+		/** The breeding year: nests and their birds (BirdNest.h). */
+		FNesting* Nesting() const { return Nest.get(); }
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
 		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */
@@ -402,6 +408,8 @@ namespace LyudBirds
 		friend class FMurmuration;
 		std::shared_ptr<FCorvids> Corv;
 		friend class FCorvids;
+		std::shared_ptr<FNesting> Nest;
+		friend class FNesting;
 		std::vector<int> NearScratch;
 		float StepAcc[4] = {};
 		double LastThink[4] = {};

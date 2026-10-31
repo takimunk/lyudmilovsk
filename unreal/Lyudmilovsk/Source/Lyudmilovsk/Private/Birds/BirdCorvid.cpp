@@ -229,6 +229,34 @@ namespace LyudBirds
 		return Id;
 	}
 
+	int FCorvids::GiveItem(FWorld& W, FBird& B, EItem Kind)
+	{
+		Sync(W);
+		FCorvid* C = Mind(B.Id);
+		if (!C)
+		{
+			return -1;
+		}
+		const int Id = NewItem(W, Kind, B.Pos, EItemState::Ground);
+		if (Id >= 0)
+		{
+			Pick(W, B, *C, Id);
+		}
+		return Id;
+	}
+
+	bool FCorvids::UseItem(FWorld& W, FBird& B, int Item)
+	{
+		FCorvid* C = Mind(B.Id);
+		if (!C || C->Held != Item || Item < 0)
+		{
+			return false;
+		}
+		Remove(W, Item);
+		C->Held = -1;
+		return true;
+	}
+
 	int FCorvids::WashUp(FWorld& W, const V3& P)
 	{
 		return Spawn(W, EItem::Fish, P);

@@ -23,6 +23,7 @@
 using namespace LyudBirds;
 
 int CorvidTests(int* Passed);    // corvids_test.cpp
+int NestTests(int* Passed);      // nests_test.cpp
 
 namespace
 {
@@ -889,6 +890,10 @@ namespace
 		{
 			return CorvidTests(nullptr) ? 1 : 0;
 		}
+		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "nests"))
+		{
+			return NestTests(nullptr) ? 1 : 0;
+		}
 		if (std::getenv("BIRD_ONLY"))
 		{
 			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only; wind: the gale only)
@@ -1152,6 +1157,9 @@ namespace
 		int CorvidPasses = 0;
 		R.Fail += CorvidTests(&CorvidPasses);
 		R.Pass += CorvidPasses;
+		int NestPasses = 0;
+		R.Fail += NestTests(&NestPasses);
+		R.Pass += NestPasses;
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;
 	}
