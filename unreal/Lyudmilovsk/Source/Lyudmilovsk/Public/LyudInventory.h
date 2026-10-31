@@ -120,6 +120,10 @@ public:
 	UPROPERTY(SaveGame)
 	TArray<FName> Worn;
 
+	/** A food (or anything used up bit by bit) begun and put back: the share of one unit left (ULyudFoodSubsystem). */
+	UPROPERTY(SaveGame)
+	TMap<FName, float> Started;
+
 	/** The item table; null for an unknown id. */
 	static const FLyudItemDef* FindDef(FName Id);
 	static FText ItemName(FName Id);
@@ -198,6 +202,10 @@ public:
 	void Use(FName Id);
 	/** Sets a Place item up in front of the hero (the bird feeder): the screen closes first. */
 	void Place(FName Id);
+
+	/** A good was bought at the trade screen (ULyudFoodSubsystem hands it over across the counter when the screen shuts). */
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FShopBought, FName /*Id*/, int32 /*Count*/);
+	FShopBought OnShopBought;
 
 	/** One line near the bottom of the screen for Key's interactable; an empty line takes it away. */
 	void SetPrompt(const UObject* Key, const FText& Text);

@@ -379,7 +379,7 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			}
 		});
 	}
-	else if (Def->Kind == ELyudItemKind::Feed)
+	else if (Def->Kind == ELyudItemKind::Feed || Def->Kind == ELyudItemKind::Food)
 	{
 		const bool bInHand = Inv->EquippedItem() == Id;
 		AddAction(bInHand ? TEXT("ui.use.unequip") : TEXT("ui.use.equip"), [WeakInv, WeakUI, Id, bInHand]
@@ -404,9 +404,9 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			}
 		});
 	}
-	else if (Def->Kind == ELyudItemKind::Drink || Def->Kind == ELyudItemKind::Food)
+	else if (Def->Kind == ELyudItemKind::Drink)
 	{
-		AddAction(Def->Kind == ELyudItemKind::Drink ? TEXT("ui.use.drink") : TEXT("ui.use.eat"), [WeakUI, Id]
+		AddAction(TEXT("ui.use.drink"), [WeakUI, Id]
 		{
 			if (ULyudInventoryUI* U = WeakUI.Get())
 			{
