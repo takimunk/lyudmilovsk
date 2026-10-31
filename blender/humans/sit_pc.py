@@ -12,7 +12,9 @@ Arms by two-bone IK with the elbows kept in by the body and a little back (not w
 palms, part of the wrist's turn in the forearm. Each loop starts and ends on its own base pose; the game picks among
 them (ULyudBodyAnimInstance, ANpcBody's Computer pose) with cross-fades, so a person types, then flicks the mouse, leans
 back, stretches, scrolls and reads in an order of their own:
-    PC_Type      typing in bursts, now and then a glance at the keys
+    PC_Type      typing in bursts of seeded keystrokes: the wrist travels toward each key and dips, the finger lifts and
+                 strikes, thumbs on space, shoulders follow the hands; pauses on the wrist rest, one mouse trip with
+                 two clicks
     PC_Game      left hand on WASD, right on the mouse, quick flicks and clicks (a shooter)
     PC_Scroll    leaning back a little, scrolling with the index finger, slow; the left hand on the desk
     PC_Read      leaning in, the chin on the left hand, an occasional scroll
@@ -83,26 +85,116 @@ def seated(p, lean=8.0, slump=0.0, legs="normal", look=(0.0, 0.0)):
 
 
 ELBOW = {"l": (0.10, 0.45, -1.0), "r": (-0.10, 0.45, -1.0)}   # elbows down by the body, a little back, barely out
+HOME = {"l": Vector((0.10, -0.47, KEYS_Z)), "r": Vector((-0.10, -0.47, KEYS_Z))}   # the wrists over the home row
+
+
+def sm(x):
+    """Smoothstep clamped to 0..1."""
+    x = max(0.0, min(1.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def pulse(x, w):
+    return math.exp(-(x / w) ** 2)
+
+
+def shoulder(p, side, wrist):
+    """The shoulder goes with the hand: forward when it reaches ahead, up when it is raised, back and down when it
+    drops into the lap, so the arm is not a rod hinged at a fixed joint. Before the arm's IK (it moves the arm's root)."""
+    sign = 1 if side == "l" else -1
+    d = Vector(wrist) - HOME[side]
+    fwd = max(-4.0, min(9.0, 2.5 - d.y * 60.0 + abs(d.x) * 15.0))
+    up = max(-3.0, min(15.0, d.z * 18.0))
+    p.turn("clavicle_" + side, -sign * fwd, Z)
+    p.turn("clavicle_" + side, -sign * up, Y)
 
 
 def arm(p, side, wrist, fingers_dir, palm=(0, 0, -1), pole=None, forearm_share=0.5):
+    shoulder(p, side, wrist)
     p.ik("upperarm_" + side, "lowerarm_" + side, "hand_" + side, wrist, pole or ELBOW[side])
     p.hand(side, fingers_dir, palm, forearm_share)
 
 
-def keys_hands(p, t, typing=True, look_down=0.0):
-    """Both hands on the keyboard; fingers tapping in bursts."""
+# finger -> (the key's offset from the hand's home, outward from the body's middle; toward the body) in m
+FINGER_KEYS = {"index": (-0.022, 0.0), "middle": (0.0, 0.0), "ring": (0.018, 0.0), "pinky": (0.036, 0.0)}
+RELAXED = {"index": 6.0, "middle": 9.0, "ring": 10.0, "pinky": 12.0}   # light: the rig's fingers rest well curled already
+_STRIKES = {}
+
+
+def typing_strikes(T, bursts, seed):
+    """The loop's keystrokes, seeded and fixed: (time, side, finger, the key's offset from that hand's home)."""
+    key = (T, tuple(bursts), seed)
+    if key in _STRIKES:
+        return _STRIKES[key]
+    import random
+    r = random.Random(seed)
+    out = []
+    for b0, b1 in bursts:
+        t = b0 + r.uniform(0.0, 0.1)
+        while t < b1:
+            if r.random() < 0.16:                          # a space between words: the right thumb, mostly
+                side = "r" if r.random() < 0.75 else "l"
+                out.append((t, side, "thumb", Vector((0.0, 0.02, 0.0))))
+                t += r.uniform(0.12, 0.25)
+                continue
+            side = r.choice("lr")
+            sign = 1 if side == "l" else -1
+            f = r.choices(list(FINGER_KEYS), weights=[4, 3, 2, 1])[0]
+            row = r.choice((-0.036, -0.018, 0.0, 0.0, 0.0, 0.019))   # the number row .. the bottom row
+            col = FINGER_KEYS[f][0] + r.uniform(-0.012, 0.012)
+            out.append((t, side, f, Vector((sign * col, row, 0.0))))
+            t += r.uniform(0.09, 0.21) + (0.35 if r.random() < 0.07 else 0.0)   # now and then a hesitation
+    _STRIKES[key] = out
+    return out
+
+
+def keys_hands(p, t, T, strikes, act, mouse=0.0, mouse_at=None):
+    """Both hands on the keyboard: each keystroke moves the wrist part of the way to its key (the fingers do the rest)
+    and dips it, the finger lifts and strikes, its neighbours twitch with it; in the pauses (act 0) the hands sink back
+    onto the wrist rest and the fingers relax. mouse 0..1 takes the right hand over to the mouse (mouse_at)."""
     for s, sign in (("l", 1), ("r", -1)):
-        w = Vector((sign * 0.10, -0.47, KEYS_Z)) + Vector((sign * 0.008 * math.sin(t * 1.3 + sign), 0.006 * math.sin(t * 0.9), 0))
-        arm(p, s, w, (-sign * 0.25, -1.0, -0.35))
-        taps = {}
-        for i, f in enumerate(("index", "middle", "ring", "pinky")):
-            tap = 0.0
-            if typing:
-                ph = (t * (7.0 + i * 1.3) + i * 1.7 + (0 if s == "l" else 0.9)) % 1.0
-                tap = 14.0 * max(0.0, math.sin(ph * TAU)) ** 6
-            taps[f] = 28.0 + tap
-        p.curl(s, taps, thumb=10.0)
+        num, den, dip = Vector(), 0.7, 0.0
+        press = {f: 0.0 for f in list(FINGER_KEYS) + ["thumb"]}
+        lift = dict(press)
+        for ti, si, f, off in strikes:
+            if si != s:
+                continue
+            for k in (-T, 0.0, T):
+                x = t - (ti + k)
+                if abs(x) > 1.2:
+                    continue
+                w = pulse(x, 0.24)
+                if f != "thumb":
+                    num += off * w
+                    den += w
+                    dip += pulse(x, 0.06)
+                press[f] += pulse(x, 0.05)
+                lift[f] += pulse(x + 0.09, 0.05)
+        shift = num / den * 0.55
+        rest = 1.0 - act
+        w = HOME[s] + shift + Vector((sign * 0.006 * math.sin(t * TAU * 1 / T + sign),
+                                      0.004 * math.sin(t * TAU * 2 / T), -0.005 * min(dip, 1.0)))
+        w += Vector((0.0, 0.025, -0.012)) * rest
+        # arched: the knuckles above the wrist so the fingertips land on the keys, not through the keyboard (more so when
+        # the wrist sinks onto the rest)
+        fd = Vector((-sign * 0.25 + shift.x * 3.0, -1.0, 0.28 + 0.3 * rest))
+        palm = Vector((-sign * 0.12 - shift.x * 2.0, 0.05, -1.0))
+        curls = {}
+        for i, f in enumerate(FINGER_KEYS):
+            nb = sum(press[g] for g in FINGER_KEYS if g != f) * 3.0
+            curls[f] = RELAXED[f] + 3.0 * rest + 9.0 * min(press[f], 1.0) - 12.0 * min(lift[f], 1.0) + min(nb, 3.0)
+        thumb = 10.0 + 4.0 * rest + 14.0 * min(press["thumb"], 1.0)
+        if s == "r" and mouse > 0.0:
+            m = mouse_at + Vector((0.006 * math.sin(t * 5.0), 0.004 * math.sin(t * 3.3), 0.0))
+            w = w.lerp(m, mouse)
+            fd = fd.lerp(Vector((0.10, -1.0, 0.18)), mouse)
+            palm = palm.lerp(Vector((0.0, 0.0, -1.0)), mouse)
+            click = 10.0 * pulse(t - 7.9, 0.05) + 10.0 * pulse(t - 8.15, 0.05)
+            mc = {"index": 9.0 + click, "middle": 11.0, "ring": 19.0, "pinky": 23.0}
+            curls = {f: curls[f] + (mc[f] - curls[f]) * mouse for f in curls}
+            thumb += (15.0 - thumb) * mouse
+        arm(p, s, w, fd, palm, forearm_share=0.5 + 0.1 * mouse if s == "r" else 0.5)
+        p.curl(s, curls, thumb=thumb)
 
 
 def burst(t, period, on):
@@ -113,10 +205,21 @@ def burst(t, period, on):
 
 # ---------------------------------------------------------------------------------------------- the loops
 
+TYPE_BURSTS = ((0.4, 3.3), (4.1, 6.6), (9.0, 11.4))
+TYPE_MOUSE = (7.0, 8.7)              # in the long pause the right hand goes to the mouse, clicks twice, comes back
+
+
 def pc_type(p, t, T):
-    glance = bump(t % 8.0, 5.2, 1.4)
-    seated(p, lean=9.0 + 2.0 * math.sin(t * TAU / T), look=(2.0 * math.sin(t * TAU * 2 / T), 14.0 * glance))
-    keys_hands(p, t, typing=burst(t, 4.0, 0.7) > 0.5)
+    strikes = typing_strikes(T, TYPE_BURSTS, 11)
+    act = max(sm((t - b0 + 0.15) / 0.3) * sm((b1 + 0.25 - t) / 0.3) for b0, b1 in TYPE_BURSTS)
+    mouse = sm((t - TYPE_MOUSE[0]) / 0.4) * sm((TYPE_MOUSE[1] - t) / 0.4)
+    glance = pulse(t - 2.0, 0.45) + 0.6 * pulse(t - 10.2, 0.35)          # a look down at the keys
+    seated(p, lean=9.0 + 1.5 * math.sin(t * TAU / T) - 2.5 * (1 - act),
+           look=(2.0 * math.sin(t * TAU * 2 / T) - 6.0 * mouse, 14.0 * glance - 2.0 * (1 - act)))
+    # the body leans a touch toward the busier hand
+    lw = sum(pulse(t - ti - k, 0.4) * (1 if s == "l" else -1) for ti, s, f, _ in strikes if f != "thumb" for k in (-T, 0.0, T))
+    p.turn("spine_02", max(-1.5, min(1.5, lw * 0.4)), Z)
+    keys_hands(p, t, T, strikes, act, mouse, Vector((-0.27, -0.43, DESK + 0.045)))
 
 
 def pc_game(p, t, T):
@@ -131,26 +234,26 @@ def pc_game(p, t, T):
     seated(p, lean=13.0, look=(-off[0] * 120.0, 0.0))
     # left hand on WASD, fingers pressing
     w = Vector((0.16, -0.45, KEYS_Z))
-    arm(p, "l", w, (-0.35, -1.0, -0.35))
-    press = {f: 26.0 + 16.0 * max(0.0, math.sin((t * r + ph) * TAU)) ** 8
+    arm(p, "l", w, (-0.35, -1.0, 0.26))                      # arched over the keys (see keys_hands)
+    press = {f: 8.0 + 10.0 * max(0.0, math.sin((t * r + ph) * TAU)) ** 8
              for f, r, ph in (("index", 2.1, 0.1), ("middle", 3.3, 0.4), ("ring", 1.7, 0.7), ("pinky", 0.9, 0.2))}
-    p.curl("l", press, thumb=20.0)
+    p.curl("l", press, thumb=6.0)
     # right hand on the mouse
     m = Vector((-0.27 + off[0], -0.43 + off[1], DESK + 0.045))
-    arm(p, "r", m, (0.10, -1.0, -0.30), forearm_share=0.6)
+    arm(p, "r", m, (0.10, -1.0, 0.18), forearm_share=0.6)       # fingers over the mouse, not through the desk
     click = 12.0 * max(0.0, math.sin((t * 1.9) * TAU)) ** 16
-    p.curl("r", {"index": 18.0 + click, "middle": 22.0, "ring": 38.0, "pinky": 45.0}, thumb=15.0)
+    p.curl("r", {"index": 9.0 + click, "middle": 11.0, "ring": 19.0, "pinky": 23.0}, thumb=15.0)
 
 
 def pc_scroll(p, t, T):
     seated(p, lean=3.0, look=(0.0, 3.0 + 2.0 * math.sin(t * TAU / T)))
     m = Vector((-0.27, -0.42, DESK + 0.045))
-    arm(p, "r", m, (0.08, -1.0, -0.30), forearm_share=0.6)
+    arm(p, "r", m, (0.08, -1.0, 0.18), forearm_share=0.6)
     scroll = 18.0 * (0.5 - 0.5 * math.cos(t * TAU * 1.4)) * burst(t, 3.0, 0.45)
-    p.curl("r", {"index": 15.0 + scroll, "middle": 24.0, "ring": 40.0, "pinky": 48.0}, thumb=15.0)
+    p.curl("r", {"index": 7.0 + scroll, "middle": 12.0, "ring": 20.0, "pinky": 24.0}, thumb=15.0)
     # the left hand resting on the desk to the side, relaxed
-    arm(p, "l", Vector((0.22, -0.36, DESK + 0.03)), (-0.55, -1.0, -0.2))
-    p.curl("l", 22.0, thumb=8.0)
+    arm(p, "l", Vector((0.22, -0.36, DESK + 0.03)), (-0.55, -1.0, 0.24))
+    p.curl("l", 10.0, thumb=-4.0)
 
 
 def pc_read(p, t, T):
@@ -160,9 +263,9 @@ def pc_read(p, t, T):
     arm(p, "l", chin + Vector((0.035, 0.0, -0.03)), (-0.35, -0.2, 1.0), palm=(-0.3, 1.0, 0.0), pole=(0.25, -0.35, -1.0))
     p.curl("l", 35.0, thumb=15.0)
     m = Vector((-0.27, -0.42, DESK + 0.045))
-    arm(p, "r", m, (0.08, -1.0, -0.30), forearm_share=0.6)
+    arm(p, "r", m, (0.08, -1.0, 0.18), forearm_share=0.6)
     scroll = 18.0 * bump(t % T, T * 0.6, 1.2)
-    p.curl("r", {"index": 15.0 + scroll, "middle": 24.0, "ring": 40.0, "pinky": 48.0}, thumb=15.0)
+    p.curl("r", {"index": 7.0 + scroll, "middle": 12.0, "ring": 20.0, "pinky": 24.0}, thumb=15.0)
 
 
 def pc_lean_back(p, t, T):
@@ -204,7 +307,7 @@ def pc_gamepad(p, t, T):
     bpy.context.view_layer.update()
 
 
-LOOPS = {"PC_Type": (pc_type, 8.0), "PC_Game": (pc_game, 6.0), "PC_Scroll": (pc_scroll, 9.0), "PC_Read": (pc_read, 10.0),
+LOOPS = {"PC_Type": (pc_type, 12.0), "PC_Game": (pc_game, 6.0), "PC_Scroll": (pc_scroll, 9.0), "PC_Read": (pc_read, 10.0),
          "PC_LeanBack": (pc_lean_back, 10.0), "PC_Stretch": (pc_stretch, 4.0), "PC_Gamepad": (pc_gamepad, 9.0)}
 
 
