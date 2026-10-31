@@ -1,0 +1,23 @@
+{
+ "_doc": "How each food is held and eaten (ULyudFoodSubsystem, Public/LyudFood.h). Frames: the palm's (cm): X along the fingers, Z out of the palm, origin the palm's middle; for the right hand +Y is the little finger's side, -Y the thumb's. stages: bite stage meshes /Game/Food/SM_Food_<id>_<k> (blender/food/build_food.py writes them in the palm's frame, so palm_loc/palm_rot stay 0); mouth_full/mouth_empty: the point that goes to the lips when whole and at the last bite (actor frame); mouth_fingers/mouth_palm: the palm's turn at the mouth in the look frame (forward, right, up) when it isn't across the mouth; bites: the share a click, a hold and each steady bite take; steady_every s; texture: the bite sound (crisp, soft, squeak, chewy, crunch); chew_seconds: chewing for the whole thing; wrapped: rustles out of the pocket. Foods not listed (or without mouth_full) are held by their plain look's size and bitten from the top.",
+ "foods": {
+  "corn_cob": {"stages": 8, "mouth_full": [0.5, -13.0, 5.6], "mouth_empty": [0.5, -1.0, 5.6],
+               "bites": [0.06, 0.13, 0.05], "steady_every": 0.7, "texture": "crisp", "chew_seconds": 26, "wrapped": true},
+  "cheese_braid": {"stages": 8, "mouth_full": [0.0, -17.0, 1.9], "mouth_empty": [0.0, -3.0, 1.9],
+                   "mouth_fingers": [-0.15, -1.0, 0.2], "mouth_palm": [0.0, 0.2, 1.0],
+                   "bites": [0.08, 0.16, 0.06], "steady_every": 0.9, "texture": "chewy", "chew_seconds": 30},
+  "cheese_round_small": {"stages": 8, "mouth_full": [1.0, 0.0, 11.4], "mouth_empty": [1.0, 0.0, 2.5],
+                         "bites": [0.07, 0.15, 0.05], "steady_every": 0.85, "texture": "squeak", "chew_seconds": 28},
+  "cheese_round_big": {"stages": 10, "mouth_full": [1.0, 0.0, 17.6], "mouth_empty": [1.0, 0.0, 3.0],
+                       "bites": [0.03, 0.07, 0.025], "steady_every": 0.85, "texture": "squeak", "chew_seconds": 60},
+  "apple": {"texture": "crisp", "chew_seconds": 18},
+  "chips": {"texture": "crunch", "chew_seconds": 22, "wrapped": true},
+  "chocolate": {"texture": "crunch", "chew_seconds": 16, "wrapped": true},
+  "cookies": {"texture": "crunch", "chew_seconds": 18, "wrapped": true},
+  "ice_cream": {"texture": "soft", "chew_seconds": 8},
+  "pie": {"texture": "soft", "chew_seconds": 18, "wrapped": true},
+  "seeds": {"texture": "crunch", "chew_seconds": 30, "wrapped": true},
+  "candy": {"texture": "crunch", "chew_seconds": 10, "wrapped": true},
+  "bread_loaf": {"texture": "soft", "chew_seconds": 45, "bites": [0.04, 0.09, 0.035]}
+ }
+}

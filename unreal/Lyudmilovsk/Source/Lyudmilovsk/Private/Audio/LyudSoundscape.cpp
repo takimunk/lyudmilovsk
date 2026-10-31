@@ -278,6 +278,10 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// the diary (ULyudGameScreen: taken out, opened, a page turned, shut)
 		{ TEXT("Diary"), TEXT("diary_take") }, { TEXT("Diary"), TEXT("diary_open") }, { TEXT("Diary"), TEXT("diary_close") },
 		{ TEXT("Diary"), TEXT("diary_page") }, { TEXT("Diary"), TEXT("diary_pages") },
+		// food in the hand (ULyudFoodSubsystem: a bite by what it is, chewing, a swallow, the paper it comes in)
+		{ TEXT("Food"), TEXT("food_bite_crisp") }, { TEXT("Food"), TEXT("food_bite_soft") }, { TEXT("Food"), TEXT("food_bite_squeak") },
+		{ TEXT("Food"), TEXT("food_bite_chewy") }, { TEXT("Food"), TEXT("food_bite_crunch") }, { TEXT("Food"), TEXT("food_chew") },
+		{ TEXT("Food"), TEXT("food_swallow") }, { TEXT("Food"), TEXT("food_wrap") },
 	};
 	for (const auto& G : Groups)
 	{
