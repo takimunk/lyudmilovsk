@@ -470,7 +470,7 @@ int NestTests(int* Passed)
 			W.Hour = 11.f;
 			LookAt(W, M.Nests[Gull].Pos);
 			W.Resettle();
-			Run(W, 10.f, 0.1f);
+			Run(W, 600.f, 0.1f);       // (the parents come back to their young from wherever they were)
 			W.Player.bPresent = true;
 			W.Player.Feet = M.Nests[Gull].Pos + V3(4.f, 0.f, 0.f);
 			W.Player.Eye = W.Player.Feet + V3(0.f, 0.f, 1.7f);
@@ -486,7 +486,9 @@ int NestTests(int* Passed)
 					Dives += E.Kind == ENestEvent::Dive ? 1 : 0;
 				}
 			});
-			std::printf("  gull colony, day %.0f: %d young about, %d dives at the player in a minute; %s\n", Day, Young, Dives, M.Report(W).c_str());
+			std::printf("  gull colony (%s, %s), day %.0f: %d young about, %d dives at the player in a minute (dive duties %d, guard %d); %s\n",
+				SpeciesTable()[M.Nests[Gull].Species].Id.c_str(), HabitatName(W.Sites[M.Nests[Gull].Site].Kind), Day, Young, Dives,
+				M.DutyStarts[(int)EDuty::Dive], M.DutyStarts[(int)EDuty::Guard], M.Report(W).c_str());
 			Check(Young > 0, "the gull chicks are out round the nests");
 			Check(Dives >= 3, "the gulls dive at the player's head");
 		}

@@ -8,7 +8,7 @@ LOG="$ROOT/unreal/Lyudmilovsk/Saved/Logs/test_nests.log"
 mkdir -p "$(dirname "$LOG")"
 "${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen \
-    -windowed -ResX=1600 -ResY=900 -unattended -nosplash ${NOSOUND--nosound} -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
+    -windowed -ResX=1600 -ResY=900 $("$ROOT/tools/ue_quiet_args.sh") -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_nests.py" > "$LOG.stdout" 2>&1 &
 PID=$!
 # a watchdog: no test takes 25 minutes

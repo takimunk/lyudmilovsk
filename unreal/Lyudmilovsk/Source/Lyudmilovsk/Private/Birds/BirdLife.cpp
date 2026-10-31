@@ -54,7 +54,7 @@ static TAutoConsoleVariable<int32> CVarBirdsIgnorePlayer(TEXT("lyud.Birds.Ignore
 static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 700.f,
 	TEXT("Birds are drawn within this many of their own lengths from the camera."));
 static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
-	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (read when the bird life starts; A/B)."));
+	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsSteady(TEXT("lyud.Birds.Steady"), 1,
 	TEXT("1: birds fade out at the edge of their draw range and bodies hand over with some slack; 0: the old hard cuts (A/B of popping)."));
 
@@ -583,6 +583,13 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		}
 	}
 	FWorld& S = *Sim;
+	// lyud.Birds.Nests switched while running (the benchmark's passes): start over with or without them
+	if ((CVarBirdsNests.GetValueOnGameThread() != 0) != S.Opt.bNests)
+	{
+		Stop();
+		bWantStart = true;
+		return;
+	}
 	UpdateClock();
 	UpdatePlayer(DeltaTime);
 	// the sea's level now (the tide): swimmers float on it, gulls and waders follow it over the sand

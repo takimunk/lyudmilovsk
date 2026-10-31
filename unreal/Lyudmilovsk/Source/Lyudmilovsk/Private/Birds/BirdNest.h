@@ -139,6 +139,7 @@ namespace LyudBirds
 		uint32_t Seed = 1;
 		bool bPlaced = false;         // the game has put it on real wood or a wall (Pos, Yaw final)
 		float DrawScale = 1.f;        // the game's fit (a tree hole to the trunk's girth)
+		bool bOnPole = false;         // a nest box with no trunk near: on a pole of its own (the skvorechnik in a yard)
 		// the year's plan (cached; PlanYear says for which)
 		int PlanYear = -1;
 		std::vector<FAttempt> Plan;

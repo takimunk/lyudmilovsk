@@ -92,9 +92,9 @@ ABirdNestRenderer::FDrawSet* ABirdNestRenderer::SetFor(FName Mesh, bool bMover)
 		return nullptr;
 	}
 	// only ask whether the package is there (the kits may not be imported in a checkout); load the mesh when it is drawn
-	const FString Path = FString::Printf(TEXT("/Game/Birds/Nests/%s"), *Mesh.ToString());
+	const FString Path = Mesh == FName(TEXT("Pole")) ? FString(TEXT("/Engine/BasicShapes/Cylinder")) : FString::Printf(TEXT("/Game/Birds/Nests/%s"), *Mesh.ToString());
 	UStaticMesh* SM = FPackageName::DoesPackageExist(Path)
-		? LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("%s.%s"), *Path, *Mesh.ToString()), nullptr, LOAD_NoWarn | LOAD_Quiet) : nullptr;
+		? LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("%s.%s"), *Path, *FPackageName::GetShortName(Path)), nullptr, LOAD_NoWarn | LOAD_Quiet) : nullptr;
 	if (!SM)
 	{
 		Missing.Add(Mesh);
@@ -246,6 +246,21 @@ void ABirdNestRenderer::Place(FWorld& World, int32 NestId)
 				Nest.Pos = FromUE(BestP + FVector(0.0, 0.0, BestR * 0.8f));
 			}
 		}
+		else if (bTrunk)
+		{
+			// no trunk to hang the box on (a yard, a young tree): a pole of its own, the box ~3.5 m up
+			FHitResult Ground;
+			if (UW->LineTraceSingleByChannel(Ground, At + FVector(0.0, 0.0, 300.0), At - FVector(0.0, 0.0, 1500.0), ECC_Visibility, Q))
+			{
+				Nest.Pos = FromUE(Ground.ImpactPoint + FVector(0.0, 0.0, 350.0) + Fwd * 5.0);
+				Nest.bOnPole = true;
+				PlacedOn[2]++;
+			}
+			else
+			{
+				PlacedOn[3]++;
+			}
+		}
 		else
 		{
 			PlacedOn[3]++;
@@ -341,7 +356,7 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 		}
 		else if (K.Nest == ENest::Burrow)
 		{
-			Mesh = TEXT("SM_Burrow");
+			Mesh = TEXT("SM_Burrow");          // (sunk a little into the face below: only the hole and its lip show)
 		}
 		else if (K.Nest == ENest::Eave)
 		{
@@ -378,6 +393,16 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 				// a box: its origin is the hole on its front; its back goes against the trunk or the wall
 				const float Depth = -(float)Set->ISM->GetStaticMesh()->GetBoundingBox().Min.X;
 				X = FTransform(Rot, At + Rot.Vector() * Depth);
+				if (Nest.bOnPole && SetFor(TEXT("Pole"), false))
+				{
+					// the pole under the box's back (the engine's cylinder: 1 m tall and wide, pivot in the middle)
+					const FVector Foot = At - FVector(0.0, 0.0, 350.0);
+					Add(TEXT("Pole"), FTransform(FRotator::ZeroRotator, Foot + FVector(0.0, 0.0, 190.0) - Rot.Vector() * 4.0, FVector(0.07, 0.07, 3.8)));
+				}
+			}
+			if (K.Nest == ENest::Burrow)
+			{
+				X.AddToTranslation(-Rot.Vector() * 4.0);
 			}
 			Add(Mesh, X);
 		}

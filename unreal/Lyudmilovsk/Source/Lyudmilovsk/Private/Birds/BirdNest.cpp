@@ -110,7 +110,7 @@ namespace LyudBirds
 			{ "Nutcracker",      N::Cup,       M::Twigs,     "Conifer 1",                                      4, 10,  0.15f, false, 300.f, 0.f,  1, 1,   75,  95, 110,  10, 3, 4,  1.f, 18,  23,  30, 1,  Bo,   Bo,   false, false, 0.98f,  10.f,  80.f, 0.2f, 0.3f },
 			{ "FeralPigeon",     N::Platform,  M::Twigs,     "Roof 1, Tower 1, Cliff .5",                      0,  0,  0.12f, true,  1.5f, 40.f, 20, 8,   32, 300, 320,   4, 2, 2,  2.f, 18,  30,  10, 4,  Bo,   Bo,   false, true,  0.975f, 60.f,  60.f, 0.0f, 0.5f },
 			{ "WoodPigeon",      N::Platform,  M::Twigs,     "Broadleaf 1, Conifer 1, Garden .8",              2, 10,  0.13f, false, 60.f,  0.f,  1, 1,  105, 135, 245,   4, 2, 2,  2.f, 17,  30,   7, 3,  Bo,   Bo,   false, false, 0.96f,  60.f,  50.f, 0.0f, 0.6f },
-			{ "HerringGull",     N::Scrape,    M::Grass,     "Roof 1, Cliff 1, Beach .4",                      0,  0,  0.25f, true,  5.f, 120.f, 30, 8,  120, 140, 155,   6, 2, 3,  2.f, 30,   4,  50, 1,  Bo,   Bo,   true,  false, 0.98f,  40.f,  30.f, 1.0f, 0.f },
+			{ "HerringGull",     N::Scrape,    M::Grass,     "Roof 1, Beach .6, Meadow .3",                    0,  0,  0.25f, true,  5.f, 120.f, 30, 8,  120, 140, 155,   6, 2, 3,  2.f, 30,   4,  50, 1,  Bo,   Bo,   true,  false, 0.98f,  40.f,  30.f, 1.0f, 0.f },
 			{ "BlackHeadedGull", N::Mound,     M::Reed,      "Reed 1, Beach .3",                               0,  0,  0.20f, true,  2.f,  60.f, 40, 10, 110, 130, 150,   5, 2, 3, 1.5f, 24,   3,  35, 1,  Bo,   Bo,   true,  false, 0.97f,  30.f,  30.f, 1.0f, 0.f },
 			{ "CommonGull",      N::Scrape,    M::Grass,     "Roof 1, Beach .8, Meadow .4",                    0,  0,  0.20f, true,  6.f, 100.f, 25, 8,  125, 145, 160,   5, 2, 3,  2.f, 25,   3,  40, 1,  Bo,   Bo,   true,  false, 0.97f,  40.f,  30.f, 1.0f, 0.f },
 			{ "GreatTit",        N::Cavity,    M::Moss,      "Broadleaf 1, Garden 1, Conifer .5",            1.5f, 5,  0.07f, false, 60.f,  0.f,  1, 1,  110, 125, 175,   7, 7, 10, 1.f, 14,  19,  14, 2,  Fe,   Fe,   false, true,  0.97f,  1.5f, 40.f, 0.4f, 2.f },
@@ -1281,7 +1281,7 @@ namespace LyudBirds
 			W.FlyTo(B, Nest.Site, NestSeat(Nest, true));
 			return true;
 		}
-		if (!bDay || G.Plan == 2 || B.Tier > 2 || W.Time < R.Next || B.Alert > 0.5f || B.Act == EAct::Watch)
+		if (!bDay || G.Plan == 2 || W.Time < R.Next || B.Alert > 0.5f || B.Act == EAct::Watch)
 		{
 			return false;
 		}
@@ -1346,9 +1346,22 @@ namespace LyudBirds
 		case EStage::Chicks:
 		case EStage::Fledged:
 		{
-			if (K.FeedMinutes <= 0.f || (K.bPrecocial && St.Stage == EStage::Fledged))
+			if (K.bPrecocial && St.Stage == EStage::Fledged)
 			{
-				break;                                // swans and gull chicks feed themselves, near their parents
+				// swans and gull chicks feed themselves: the parents keep near them, feeding and watching round about
+				if (Nest.Young.empty() || (B.Pos - Nest.Pos).Len2D() < 35.f)
+				{
+					break;
+				}
+				R.Next = W.Time + 60.0 + W.Rand(B.Rng) * 120.0;
+				Start(W, B, EDuty::Forage, 900.f);
+				const V3 Near = Nest.Pos + V3(W.Rand(B.Rng) * 8.f - 4.f, W.Rand(B.Rng) * 8.f - 4.f, 0.f);
+				W.FlyTo(B, Nest.Site, V3(Near.X, Near.Y, Nest.Pos.Z));
+				return true;
+			}
+			if (K.FeedMinutes <= 0.f)
+			{
+				break;
 			}
 			if (St.Stage == EStage::Fledged && Nest.Young.empty())
 			{
@@ -1641,7 +1654,7 @@ namespace LyudBirds
 			if (R.Step == 0)
 			{
 				R.Step = 1;
-				W.SetAct(B, EAct::Peck, std::max(3.f, KindOf(Nest).FeedMinutes * 60.f * (0.2f + 0.3f * W.Rand(B.Rng))));
+				W.SetAct(B, EAct::Peck, std::max(KindOf(Nest).bPrecocial ? 120.f : 3.f, KindOf(Nest).FeedMinutes * 60.f * (0.2f + 0.3f * W.Rand(B.Rng))));
 				return true;
 			}
 			if (R.Step == 2)
