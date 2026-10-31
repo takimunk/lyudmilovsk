@@ -471,6 +471,31 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 		return Box;
 	}
 	TSharedRef<SWrapBox> Grid = SNew(SWrapBox).PreferredSize(PageW - 2 * Margin - 28).InnerSlotPadding(FVector2D(8.f, 10.f));
+	// an item's name under its sketch: two lines of the cell's width at most (the hand's own line height is tall: pressed together), a smaller hand for a long name; a name without
+	// spaces (Japanese) is broken into even lines, so no character is left alone on the second
+	const TSharedRef<FSlateFontMeasure> Measure = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
+	constexpr float NameW = 142.f;
+	auto NameText = [&Measure](const FText& Name)
+	{
+		float Size = 24.f;
+		float W = Measure->Measure(Name, Hand(Size)).X;
+		while (Size > 17.f && W > 2.f * NameW * 0.92f)
+		{
+			Size -= 3.5f;
+			W = Measure->Measure(Name, Hand(Size)).X;
+		}
+		float Wrap = NameW;
+		if (!Name.ToString().Contains(TEXT(" ")) && W > NameW)
+		{
+			Wrap = FMath::Min(NameW, W / FMath::CeilToFloat(W / NameW) + Size * 0.6f);
+		}
+		constexpr float LineH = 0.8f;
+		return SNew(SBox).MaxDesiredHeight(2.f * LineH * Measure->GetMaxCharacterHeight(Hand(Size)) + 4.f).Clipping(EWidgetClipping::ClipToBounds)
+		[
+			SNew(STextBlock).Text(Name).Font(Hand(Size)).ColorAndOpacity(Ink).WrapTextAt(Wrap).LineHeightPercentage(LineH)
+			.WrappingPolicy(ETextWrappingPolicy::AllowPerCharacterWrapping).Justification(ETextJustify::Center)
+		];
+	};
 	for (const TPair<FName, int32>& P : Held)
 	{
 		const FName Id = P.Key;
@@ -505,11 +530,7 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 					// width, which for Japanese (no spaces) collapsed to a character a line running over the next row
 					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Fill).Padding(4, 2, 4, 0)
 					[
-						SNew(SBox).MaxDesiredHeight(64.f).Clipping(EWidgetClipping::ClipToBounds)
-						[
-							SNew(STextBlock).Text(ULyudInventory::ItemName(Id)).Font(Hand(24.f)).ColorAndOpacity(Ink).WrapTextAt(150.f)
-							.WrappingPolicy(ETextWrappingPolicy::AllowPerCharacterWrapping).Justification(ETextJustify::Center)
-						]
+						NameText(ULyudInventory::ItemName(Id))
 					]
 				]
 			]
