@@ -104,6 +104,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float FluidFriction = 0.6f;
 	/** A swimming player's eyes are kept at least this far over the waves, cm (0 = off; diving will lift it). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float SwimEyeClearance = 22.f;
+	/** The player is diving (ULyudSwimComponent): the sea still holds them in its water but no longer lifts the eyes
+	 *  over the waves. */
+	void SetSwimmerDiving(bool bDiving) { bSwimmerDiving = bDiving; }
+	bool IsSwimmerDiving() const { return bSwimmerDiving; }
 	/** Shallower than this the player stands (walks out onto the beach), cm. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sea|Swimming") float SwimMinDepth = 120.f;
 	/** How far the surface mesh reaches from the camera, cm. */
@@ -233,6 +237,7 @@ private:
 	TWeakObjectPtr<class ALyudSky> Sky;
 	TWeakObjectPtr<ACharacter> Swimmer;
 	bool bHoldingSwimmer = false;
+	bool bSwimmerDiving = false;
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;

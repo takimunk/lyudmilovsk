@@ -11,6 +11,7 @@ struct FInputActionValue;
 class USkeletalMesh;
 class USkeletalMeshComponent;
 class UHeroShadowMesh;
+class ULyudSwimComponent;
 
 /**
  * The player, seen from inside: the hero's whole body (SK_Hero: the Zoomer in Murmuration's clothes)
@@ -19,7 +20,8 @@ class UHeroShadowMesh;
  * chest, arms, trousers and shoes. The body turns with the look the way a person does: standing
  * still the head and chest turn first and the feet follow past ~35 degrees, walking it faces where
  * you look. Movement is the template's: WASD / arrows run at 6 m/s, Shift walks, Space jumps, the mouse
- * looks; the template's locomotion clips animate the body. C (toggle) or Ctrl (held) crouches.
+ * looks; the template's locomotion clips animate the body. C (toggle) or Ctrl (held) crouches. In the sea he swims and
+ * dives (ULyudSwimComponent: C / Ctrl go under, the move follows the look under water, Space rises).
  *
  * Look, move and jump use the template's own Enhanced Input actions and mapping contexts exactly as
  * TP_FirstPersonCharacter does (same scaling, no smoothing); Shift is read from the key. Other
@@ -127,6 +129,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Hero")
 	TObjectPtr<UHeroShadowMesh> ShadowBody;
 
+	/** Swimming, diving and the breath. */
+	UPROPERTY(VisibleAnywhere, Category = "Hero")
+	TObjectPtr<ULyudSwimComponent> Swim;
+
 private:
 	void ReadInput(float DeltaSeconds);
 	void AddMappingContexts();
@@ -147,6 +153,8 @@ private:
 	float ReachCrouch = 0.f;
 	float ViewZoomTarget = 1.f;
 	float ViewZoom = 1.f;
+	double SwimClock = 0.0;
+	bool bHeadShown = false;
 	void OnJumpPressed();
 	void KeepSeated();
 	TWeakObjectPtr<USceneComponent> SeatBase;

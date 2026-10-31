@@ -1,0 +1,23 @@
+{
+ "id": "swim_dive",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_dive_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A person duck-diving head first into the sea from the surface: a short splash then the muffled rush of water closing over the head, close, no voice",
+  "duration_seconds": 1.5
+ },
+ "hash": "235b8dc57093",
+ "fal_request_id": "01a19392-c755-7833-94cd-ff3b7e1efd23",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a10b/jhubfhAKElV5hSneu6rjM_sound_effect.mp3",
+ "created": "2026-10-31T20:07:17Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "1114d25818c7450f9f3b7a373846a3def99bf66af93d9694fe77b7812a25d087",
+ "seconds": 1.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

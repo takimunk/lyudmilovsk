@@ -849,7 +849,7 @@ void ALyudSea::KeepSwimmerHeadUp(float DeltaSeconds)
 	{
 		Move->SetMovementMode(MOVE_Swimming);
 	}
-	if (SwimEyeClearance <= 0.f)
+	if (SwimEyeClearance <= 0.f || bSwimmerDiving)
 	{
 		return;
 	}

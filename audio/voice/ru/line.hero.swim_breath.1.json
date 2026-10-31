@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.swim_breath.1",
+ "lang": "ru",
+ "text": "Стоп... Я же дышу. Прямо под водой. ...Ну ладно. Значит, и так можно.",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "surprised, quiet, catching his breath, then relieved",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Стоп... Я же дышу. Прямо под водой. ...Ну ладно. Значит, и так можно.",
+  "voice_setting": {
+   "speed": 0.9,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19392-2540-7c62-a30a-e7ab6afc871d",
+ "hash": "c9bb18dd84e0"
+}

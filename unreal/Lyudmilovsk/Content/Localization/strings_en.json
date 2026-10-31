@@ -1017,5 +1017,6 @@
  "ui.guide.asleep": "asleep",
  "ui.diary.birds_on": "birds on the map: hide",
  "ui.diary.birds_off": "birds on the map: show",
- "ui.help.guide": "B: the bird guide (once you have it)"
+ "ui.help.guide": "B: the bird guide (once you have it)",
+ "line.hero.swim_breath.1": "Wait... I'm breathing. Right here, under the water. ...Okay then. Guess that works too."
 }

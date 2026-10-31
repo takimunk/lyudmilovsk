@@ -21,6 +21,7 @@
 #include "HeroSeat.h"
 #include "HeroShadowMesh.h"
 #include "LyudInventory.h"
+#include "Sea/LyudSwim.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
@@ -32,6 +33,8 @@
 
 namespace
 {
+	TAutoConsoleVariable<float> CVarHeroViewBehind(TEXT("lyud.Hero.ViewBehind"), 0.f,
+		TEXT("Pulls the camera this many cm back from the eyes and shows the head (checks of the body: swimming, crouching)."));
 	TAutoConsoleVariable<int32> CVarHeroDebugBones(TEXT("lyud.HeroDebugBones"), 0, TEXT("Draws the hero's leg bones over the body (checks of the crouch and the skin)"));
 	const FName EyeL(TEXT("eye_l"));
 	const FName EyeR(TEXT("eye_r"));
@@ -91,6 +94,8 @@ AHeroCharacter::AHeroCharacter()
 
 	ShadowBody = CreateDefaultSubobject<UHeroShadowMesh>(TEXT("ShadowBody"));
 	ShadowBody->SetupAttachment(Body);
+
+	Swim = CreateDefaultSubobject<ULyudSwimComponent>(TEXT("Swim"));
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(GetCapsuleComponent());
@@ -194,6 +199,11 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 		}
 		return;
 	}
+	// under water the stroke follows the look, up and down too
+	if (Swim && Swim->SwimMove(V))
+	{
+		return;
+	}
 	const FRotator Yaw(0.f, GetControlRotation().Yaw, 0.f);
 	AddMovementInput(Yaw.RotateVector(FVector::ForwardVector), V.Y);
 	AddMovementInput(Yaw.RotateVector(FVector::RightVector), V.X);
@@ -276,6 +286,17 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 		CrouchAlpha = FMath::FInterpConstantTo(CrouchAlpha, 0.f, DeltaSeconds, 2.2f);
 		return;
 	}
+	// in the water C and Ctrl dive and sink (ULyudSwimComponent): no crouch
+	if (Swim && Swim->IsSwimming())
+	{
+		bCrouchToggled = false;
+		if (bIsCrouched)
+		{
+			UnCrouch();
+		}
+		CrouchAlpha = FMath::FInterpConstantTo(CrouchAlpha, 0.f, DeltaSeconds, 2.2f);
+		return;
+	}
 	// crouch: C toggles it, Ctrl held crouches while it is down (polled: other systems may read the same keys)
 	if (!PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::C))
 	{
@@ -328,6 +349,17 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 	const FRotator Look = GetControlRotation();
 	S.LookYaw = Wrap180(Look.Yaw - BodyYaw);
 	S.LookPitch = Wrap180(Look.Pitch);
+	if (Swim)
+	{
+		// swimming: the body lies along the stroke (pitched), the strokes run by the speed through the water
+		S.Swim = Swim->GetBodySwim();
+		S.SwimPitch = Swim->GetBodyPitch() * S.Swim;
+		const float Through = float(Vel.Size()) / FMath::Max(1.f, Swim->DiveSpeed);
+		S.SwimMove = FMath::Clamp(Through * 1.6f, 0.f, 1.f);
+		SwimClock += DeltaSeconds * (0.75f + 0.6f * FMath::Clamp(Through, 0.f, 1.2f));
+		S.SwimTime = SwimClock;
+		S.LookPitch = Wrap180(S.LookPitch - S.SwimPitch);
+	}
 	S.Distance = Distance;
 	S.IdleTime = IdleTime;
 	ReachCrouch = FMath::FInterpConstantTo(ReachCrouch, ReachCrouchTarget, DeltaSeconds, 1.6f);
@@ -413,6 +445,16 @@ void AHeroCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 {
 	Super::CalcCamera(DeltaTime, OutResult);
 	OutResult.Location = EyeLocation();
+	const float Behind = CVarHeroViewBehind.GetValueOnGameThread();
+	if ((Behind > 0.f) != bHeadShown && GetMesh()->GetSkeletalMeshAsset())
+	{
+		bHeadShown = Behind > 0.f;
+		bHeadShown ? GetMesh()->UnHideBoneByName(HeadBone) : GetMesh()->HideBoneByName(HeadBone, PBO_None);
+	}
+	if (Behind > 0.f)
+	{
+		OutResult.Location -= OutResult.Rotation.Vector() * Behind;
+	}
 	const float Down = -Wrap180(OutResult.Rotation.Pitch);
 	ViewZoom = FMath::FInterpTo(ViewZoom, ViewZoomTarget, DeltaTime, 2.f);
 	OutResult.FOV = (Fov + FovLookDownExtra * FMath::SmoothStep(40.f, 80.f, Down)) * ViewZoom;

@@ -171,6 +171,14 @@
    "source": "ual1",
    "action": "Push_Loop",
    "walk": true
+  },
+  "SwimIdle": {
+   "source": "ual1",
+   "action": "Swim_Idle_Loop"
+  },
+  "SwimFwd": {
+   "source": "ual1",
+   "action": "Swim_Fwd_Loop"
   }
  }
 }

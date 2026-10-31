@@ -1,0 +1,23 @@
+{
+ "id": "swim_cough",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_cough_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A teenage boy coughing up water, three or four wet hacking coughs, then catching his breath, close, no other sounds",
+  "duration_seconds": 2.5
+ },
+ "hash": "7521588cfb77",
+ "fal_request_id": "01a19394-89d4-7341-9ccb-d191c1bbca88",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a116/Qn3k6WvTq5rsrJvwnSMWH_sound_effect.mp3",
+ "created": "2026-10-31T20:09:11Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "b4d87248b20027bae640de2e4a22112c3c009ca8a4dbf284e805624286935bef",
+ "seconds": 2.04,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

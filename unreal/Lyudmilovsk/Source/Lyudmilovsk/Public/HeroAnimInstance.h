@@ -29,6 +29,12 @@ struct FHeroBodyState
 	/** 0 standing, 1 seated on a bench SeatZ cm high (HandReach::ApplySit; the train's benches). */
 	float Sit = 0.f;
 	float SeatZ = 42.f;
+	/** 0 on land .. 1 swimming (the swim clips), how much of it is the forward stroke (0 treading water .. 1), the
+	 *  body's pitch along the stroke (degrees, + head up) and the strokes' clock, s. */
+	float Swim = 0.f;
+	float SwimMove = 0.f;
+	float SwimPitch = 0.f;
+	double SwimTime = 0.0;
 };
 
 /**
@@ -55,6 +61,14 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	TArray<TObjectPtr<UAnimSequence>> Walk;    // Fwd, Fwd_Right, Right, Bwd_Right, Bwd, Bwd_Left, Left, Fwd_Left
 	TArray<TObjectPtr<UAnimSequence>> Jog;
 	TArray<float> WalkStride, JogStride;       // cm per clip loop
+	/** Treading water and the forward stroke (UAL's, retargeted: blender/humans/clips.json SwimIdle, SwimFwd). */
+	TObjectPtr<UAnimSequence> SwimIdle;
+	TObjectPtr<UAnimSequence> SwimFwd;
+	/** Where the head is standing (component space, the idle's first frame): the swimming body hangs from it. */
+	FVector StandHead = FVector::ZeroVector;
+	bool bStandHead = false;
+	/** Turns the swimming body about the head: the swim clips' head put where the standing head is, pitched along the stroke. */
+	void PlaceSwimmer(FCompactPose& Pose);
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
 	FHeroReachPose Reach;
 	/** How far the hips go down in a full crouch, cm. */
@@ -90,6 +104,10 @@ public:
 	TArray<TObjectPtr<UAnimSequence>> Walk;
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UAnimSequence>> Jog;
+	UPROPERTY(Transient)
+	TObjectPtr<UAnimSequence> SwimIdle;
+	UPROPERTY(Transient)
+	TObjectPtr<UAnimSequence> SwimFwd;
 	TArray<float> WalkStride, JogStride;
 
 protected:

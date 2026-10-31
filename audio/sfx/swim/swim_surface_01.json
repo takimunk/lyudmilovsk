@@ -1,0 +1,23 @@
+{
+ "id": "swim_surface",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_surface_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Head breaking through the surface of the sea from under water: water streaming off, a short splash and drips close to the ears, no voice",
+  "duration_seconds": 1.5
+ },
+ "hash": "eb3ac992a152",
+ "fal_request_id": "01a19392-f6ac-7270-a30f-d5c08f912b9a",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a10c/zxV4ZhH-EMHYj1ZO8WSk2_sound_effect.mp3",
+ "created": "2026-10-31T20:07:28Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "6a927906445552e52a189f38cce648a05b971ede8142a6c077c20e116f3a2b8d",
+ "seconds": 1.45,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

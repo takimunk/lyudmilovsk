@@ -1,0 +1,23 @@
+{
+ "id": "swim_choke",
+ "variant": 4,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_choke_04.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A teenage boy choking under water, out of breath: muffled strained throat sounds and gurgling, panicked short spasms, bubbles bursting out, heard from under water, close",
+  "duration_seconds": 2.0
+ },
+ "hash": "d4b5c855bd5c",
+ "fal_request_id": "01a19394-2530-7a31-8c6e-9d20ec38165b",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a114/smM6Oud8t6upKjKnJmJg2_sound_effect.mp3",
+ "created": "2026-10-31T20:08:45Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "89cdafb90d8c0c7666b9006ead50ff21449bfd202d1d16f8a5c3b9f92fad4797",
+ "seconds": 1.86,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}
