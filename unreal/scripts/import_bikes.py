@@ -112,6 +112,22 @@ def gltf_values(mi):
     return col, met, rough
 
 
+def glb_materials(path):
+    """Each glTF material's base colour (linear), metallic, roughness, read from the .glb's own JSON."""
+    import json
+    import struct
+    with open(path, "rb") as f:
+        data = f.read()
+    n = struct.unpack_from("<I", data, 12)[0]
+    j = json.loads(data[20:20 + n])
+    out = {}
+    for m in j.get("materials", []):
+        pbr = m.get("pbrMetallicRoughness", {})
+        c = pbr.get("baseColorFactor", [0.5, 0.5, 0.5, 1.0])
+        out[m["name"]] = (unreal.LinearColor(c[0], c[1], c[2], 1.0), pbr.get("metallicFactor", 1.0), pbr.get("roughnessFactor", 1.0))
+    return out
+
+
 def main():
     if not os.path.isfile(KIT):
         log("no %s (blender/bikes/build_bike.py): nothing to import" % KIT)
@@ -130,6 +146,8 @@ def main():
     mgr.import_scene(MESHES, src, params)
     mgr.wait_until_all_tasks_done(True)
     made = {}
+    gltf = glb_materials(KIT)
+    log("glTF materials: %s" % ", ".join(sorted(gltf)))
     meshes = []
     for path in eal.list_assets(DEST, True):
         a = eal.load_asset(path)
@@ -141,6 +159,7 @@ def main():
         s = a.get_editor_property("nanite_settings")
         s.enabled = False
         a.set_editor_property("nanite_settings", s)
+        eal.save_loaded_asset(a)
         # the materials: one instance of M_Bike per glTF material (the chain's own scrolling one)
         for i, sm in enumerate(a.get_editor_property("static_materials")):
             slot = str(sm.get_editor_property("material_slot_name"))
@@ -150,7 +169,7 @@ def main():
                 if "Chain" in key:
                     made[key] = chain
                 else:
-                    col, met, rough = gltf_values(mi) if mi else (unreal.LinearColor(0.5, 0.5, 0.5, 1.0), 0.0, 0.5)
+                    col, met, rough = gltf.get(key) or (gltf_values(mi) if mi else (unreal.LinearColor(0.5, 0.5, 0.5, 1.0), 0.0, 0.5))
                     inst = tools.create_asset("MI_" + key, MATS, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
                     mel.set_material_instance_parent(inst, base)
                     mel.set_material_instance_vector_parameter_value(inst, "BaseColor", col)
@@ -169,7 +188,18 @@ def main():
             unreal.EditorScriptingMeshReductionSettings(percent_triangles=0.4, screen_size=0.25),
             unreal.EditorScriptingMeshReductionSettings(percent_triangles=0.15, screen_size=0.1),
             unreal.EditorScriptingMeshReductionSettings(percent_triangles=0.05, screen_size=0.04)])
-        n = unreal.EditorStaticMeshLibrary.set_lods(a, opts) if name != "SM_Bike_Chain" else 1
+        n = 1
+        if name != "SM_Bike_Chain":
+            sms = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+            n = sms.set_lods(a, opts) if sms else unreal.EditorStaticMeshLibrary.set_lods(a, opts)
+            if n < 0:
+                # the editor library refuses a mesh whose Nanite change isn't built yet: the source models by hand
+                a.set_num_source_models(4)
+                for lod, (pct, size) in enumerate(((1.0, 1.0), (0.4, 0.25), (0.15, 0.1), (0.05, 0.04))):
+                    r = unreal.MeshReductionSettings()
+                    r.set_editor_property("percent_triangles", pct)
+                    a.set_reduction_settings(lod, r) if hasattr(a, "set_reduction_settings") else None
+                n = a.get_num_lods()
         tris = [a.get_num_triangles(l) for l in range(a.get_num_lods())]
         eal.save_loaded_asset(a)
         target = MESHES + "/" + name

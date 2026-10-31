@@ -11,5 +11,5 @@ PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 CMD="$UE/Engine/Binaries/Mac/UnrealEditor-Cmd"
 QUIET="$("$ROOT/tools/ue_quiet_args.sh")"
 "${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
-"$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_bikes.py" $QUIET -stdout | grep -E "BIKES|Error" | grep -v LogInit || true
-IMPORT_ONLY=sfx/bikes/ "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_audio.py" $QUIET -stdout | grep -E "AUDIO|Error" | grep -v LogInit || true
+"$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_bikes.py" $QUIET -stdout | grep -E "LogPython: (Warning: BIKES|Error)" || true
+IMPORT_ONLY=sfx/bikes/ "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_audio.py" $QUIET -stdout | grep -E "LogPython: (Warning: AUDIO|Error)" || true

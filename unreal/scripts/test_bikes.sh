@@ -19,7 +19,7 @@ fi
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_bikes.py" > "$LOG.stdout" 2>&1 &
 PID=$!
 # a watchdog: no run takes 25 minutes (it checks the pid is still this test before it kills)
-( sleep "${TIMEOUT:-1500}"; ps -p "$PID" -o args= | grep -q test_bikes.py && kill "$PID" 2>/dev/null ) &
+( sleep "${TIMEOUT:-1200}"; ps -p "$PID" -o args= | grep -q test_bikes.py && kill "$PID" 2>/dev/null ) &
 DOG=$!
 trap 'pkill -P "$DOG" 2>/dev/null; kill "$DOG" 2>/dev/null' EXIT
 wait "$PID" || true

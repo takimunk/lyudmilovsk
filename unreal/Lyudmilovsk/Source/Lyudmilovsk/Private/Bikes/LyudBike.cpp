@@ -508,7 +508,7 @@ void ALyudBike::RiderPose(const USkeletalMeshComponent* Mesh, const FLyudBikeRid
 		Out.PelvisWeight = 1.f;
 		Out.TorsoPitch = Ride.bSprint ? 34.f : 16.f;
 		Out.bAutoLean = true;
-		Out.HeadUp = 0.8f;
+		Out.HeadUp = Ride.HeadUp;
 		Out.TorsoRoll = -Rock * 2.f;
 		OnPedal(0, Out.Feet[0]);
 		OnPedal(1, Out.Feet[1]);

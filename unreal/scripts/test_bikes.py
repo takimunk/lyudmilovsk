@@ -2,11 +2,15 @@
 
   unreal/scripts/test_bikes.sh   (UnrealEditor <uproject> /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen ... "-ExecCmds=py <this>")
 
-Shots go to Saved/Screenshots (in order; BIKETEST lines name each): the club's bike close up from three sides, the hero
-getting on it (from beside), his own view on it looking ahead and down at the bars, his hands and knees, riding and
-leaning into a turn, getting off, leading it by the bars; then in the Academgorodok a resident taking their bike out of
-the entrance and riding off; the bikes standing in the entrances. BIKETEST_ONLY=hero|npc|lobby limits the parts;
-BIKETEST_SHOTS=0 only logs. Ends with a save and a load (the club's bike must stay where the hero left it).
+Shots go to Saved/Screenshots (in order; "BIKETEST shot NN" lines name each): the club's bike close up from three sides
+and from above, the hero getting on it (from beside), his own view on it looking ahead and down at the bars, his hands
+and knees, riding and leaning into a turn, getting off, leading it by the bars; the bikes standing in the entrances; a
+resident of the Academgorodok taking their bike out of the entrance and riding off. BIKETEST_ONLY=hero,lobby,npc limits
+the parts; BIKETEST_SHOTS=0 only logs. The hero part ends with a save and a load (the club's bike must stay where the
+hero left it).
+
+A shot is a step of its own: HighResShot takes the frame after the commands of its step, so nothing moves the view in
+the step that shoots.
 """
 import os
 
@@ -36,234 +40,92 @@ def pc(w):
     return unreal.GameplayStatics.get_player_controller(w, 0)
 
 
-def hero(w):
-    return pc(w).get_controlled_pawn()
-
-
-def shot(w, label):
-    st["shot"] += 1
-    log("shot %02d %s" % (st["shot"], label))
-    if SHOTS:
-        cmd(w, "HighResShot %s" % RES)
-
-
 def bike(w, bid):
     for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudBike):
         if str(a.get_editor_property("bike_id")) == bid:
             return a
 
 
-def look(w, yaw_off, pitch):
-    """The hero's own view: pitch (deg, down negative), yaw relative to his bike."""
-    b = bike(w, "club")
-    yaw = (b.get_actor_rotation().yaw if b else hero(w).get_actor_rotation().yaw) + yaw_off
-    pc(w).set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
+def look(yaw_off, pitch):
+    """The hero's own view: pitch (deg, down negative), yaw relative to the club's bike."""
+    def f(w):
+        b = bike(w, "club")
+        yaw = b.get_actor_rotation().yaw + yaw_off
+        pc(w).set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
+    return f
 
 
 STEPS = []
 
 
-def step(part, wait=3.0):
-    def wrap(fn):
-        if not ONLY or part in ONLY or part == "all":
-            STEPS.append((fn, wait))
-        return fn
-    return wrap
+def part(name, items):
+    if ONLY and name not in ONLY:
+        return
+    for it in items:
+        STEPS.append(it)
 
 
-@step("all", 2.0)
-def s_start(w):
-    cmd(w, "lyud.Birds.Time 11 40")
-    cmd(w, "lyud.Bike.Log 1")
-    cmd(w, "Bike.Report")
+def C(*cmds, wait=2.0):
+    """Console commands (or callables taking the world), then wait seconds."""
+    def f(w):
+        for c in cmds:
+            c(w) if callable(c) else cmd(w, c)
+    return (f, wait)
 
 
-# --- the hero and the club's bike ---
-@step("hero", 6.0)
-def s_bike_close(w):
-    cmd(w, "Bike.Goto club")
-    cmd(w, "Bike.Look club 230 0 55 45")
+def SHOT(label, wait=1.5):
+    def f(w):
+        st["shot"] += 1
+        log("shot %02d %s" % (st["shot"], label))
+        if SHOTS:
+            cmd(w, "HighResShot %s" % RES)
+    return (f, wait)
 
 
-@step("hero", 2.5)
-def s_shot_side(w):
-    shot(w, "club bike, right side")
-    cmd(w, "Bike.Look club 190 55 95 45")
+part("all", [C("lyud.Birds.Time 12 30", "lyud.SkyHourOffset 0", "lyud.Bike.Log 1", "lyud.Bikes.Log 1", "Bike.Report", wait=4.0)])
 
-
-@step("hero", 2.5)
-def s_shot_front(w):
-    shot(w, "club bike, three quarters from the front")
-    cmd(w, "Bike.Look club 95 -15 15 40")
-
-
-@step("hero", 2.5)
-def s_shot_drive(w):
-    shot(w, "club bike, the drivetrain close")
-    cmd(w, "Bike.Look club 120 170 110 45")
-
-
-@step("hero", 2.5)
-def s_shot_left(w):
-    shot(w, "club bike, left side from above (kickstand)")
+part("hero", [
+    C("Bike.Goto club", "Bike.Look club 240 0 60 45", wait=6.0), SHOT("club bike, right side"),
+    C("Bike.Look club 190 55 95 45", wait=2.0), SHOT("club bike, three quarters from the front"),
+    C("Bike.Look club 95 -15 15 40", wait=2.0), SHOT("club bike, the drivetrain close"),
+    C("Bike.Look club 160 180 220 50", wait=2.0), SHOT("club bike from above, its left side and stand"),
+    C("Bike.Look club 900 20 900 50", wait=2.5), SHOT("where the club's bike stands (from high up)"),
     # the hero beside it, his head shown for the outside view
-    cmd(w, "Hero.SideCam 260 40 30")
-    cmd(w, "Bike.Look club 300 -35 70 50")
+    C("Hero.SideCam 260 40 30", "Bike.Look club 320 -35 70 50", wait=2.0), SHOT("the hero beside the bike", wait=0.5),
+    C("Bike.Hero mount", wait=0.5), SHOT("getting on: the right leg up behind", wait=0.2),
+    C(wait=0.3), SHOT("getting on: over the saddle", wait=0.2),
+    C(wait=0.5), SHOT("getting on: onto the pedals", wait=0.2),
+    C(wait=1.5), SHOT("on the bike, from outside"),
+    C("Hero.DumpBones", "Hero.SideCam off", look(0, -5), wait=2.0), SHOT("his own view on the bike, looking ahead"),
+    C(look(0, -58), wait=2.0), SHOT("his own view looking down: hands on the bars, knees"),
+    C(look(0, -5), "Bike.Hero ride 1 0 8", wait=3.5), SHOT("riding: his own view", wait=0.3),
+    C(look(0, -50), wait=0.7), SHOT("riding: looking down, pedalling", wait=0.3),
+    C(look(0, -8), "Bike.Hero ride 0.8 0.7 3", wait=1.5), SHOT("riding into a turn: his view (horizon level, the body leans)", wait=0.3),
+    C("Hero.SideCam 300 -60 60", "Bike.Look club 380 -20 90 50 follow", wait=0.6), SHOT("riding into a turn, from outside", wait=0.3),
+    C("Bike.Hero ride 0 0 0.1", wait=2.5),
+    C("Bike.Report", "Bike.Hero off", wait=0.6), SHOT("getting off", wait=0.3),
+    C(wait=1.8), SHOT("off, the bike on its stand"),
+    C("Bike.Hero lead", wait=1.5), SHOT("leading it by the bars (outside)"),
+    C("Hero.SideCam off", look(20, -35), wait=1.5), SHOT("leading it: his own view"),
+    C("Bike.Hero letgo", "Bike.Report", "lyud.Save biketest", wait=4.0),
+    C("lyud.Load 0", wait=30.0),
+    C("Bike.Report", wait=1.0),
+])
 
+part("lobby", [
+    C("Bike.Look Novikova1.s0 210 40 70 70", wait=5.0), SHOT("a bike in Novikova 1's entrance"),
+    C("Bike.Look Novikova3.s1 210 -40 70 70", wait=3.0), SHOT("a bike in Novikova 3's entrance"),
+    C("Bike.Look academ 260 30 90 50", wait=3.0), SHOT("the bike by the lower cable-car station"),
+])
 
-@step("hero", 1.0)
-def s_mount(w):
-    shot(w, "the hero beside the bike")
-    cmd(w, "Bike.Hero mount")
+npc = [C("lyud.Birds.Time 7 05", "Bike.Look Novikova3.s0 330 60 130 55", wait=8.0), C("Bike.Report", "Bike.NpcRide any sea_air", "lyud.SkyHourOffset 6", wait=3.0)]
+for i in range(16):
+    npc.append(SHOT("a resident with their bike, %d" % i, wait=2.7))
+    if i % 4 == 3:
+        npc.append(C("Bike.Report", wait=0.3))
+part("npc", npc)
 
-
-@step("hero", 0.55)
-def s_mount1(w):
-    shot(w, "getting on: the right leg up behind")
-
-
-@step("hero", 0.55)
-def s_mount2(w):
-    shot(w, "getting on: over the saddle")
-
-
-@step("hero", 1.4)
-def s_mount3(w):
-    shot(w, "getting on: onto the pedals")
-
-
-@step("hero", 2.0)
-def s_on(w):
-    shot(w, "on the bike, from outside")
-    cmd(w, "Hero.DumpBones")
-    cmd(w, "Hero.SideCam off")
-    look(w, 0, -5)
-
-
-@step("hero", 2.0)
-def s_fpv_ahead(w):
-    shot(w, "his own view on the bike, looking ahead")
-    look(w, 0, -58)
-
-
-@step("hero", 2.0)
-def s_fpv_down(w):
-    shot(w, "his own view looking down: hands on the bars, knees")
-    look(w, 0, -5)
-    cmd(w, "Bike.Hero ride 1 0 7")
-
-
-@step("hero", 3.5)
-def s_ride1(w):
-    shot(w, "riding: his own view")
-    look(w, 0, -50)
-
-
-@step("hero", 1.0)
-def s_ride2(w):
-    shot(w, "riding: looking down, pedalling")
-    look(w, 0, -8)
-    cmd(w, "Bike.Hero ride 0.8 0.7 3")
-
-
-@step("hero", 1.8)
-def s_turn(w):
-    shot(w, "riding into a turn (lean)")
-    cmd(w, "Hero.SideCam 300 -60 60")
-    cmd(w, "Bike.Look club 340 -20 80 50 follow")
-
-
-@step("hero", 1.0)
-def s_turn_out(w):
-    shot(w, "riding into a turn, from outside")
-    cmd(w, "Bike.Hero ride 0 0 0.1")
-
-
-@step("hero", 2.5)
-def s_off(w):
-    cmd(w, "Bike.Report")
-    cmd(w, "Bike.Hero off")
-
-
-@step("hero", 0.7)
-def s_off1(w):
-    shot(w, "getting off")
-
-
-@step("hero", 2.2)
-def s_off2(w):
-    shot(w, "off, the bike on its stand")
-    cmd(w, "Bike.Hero lead")
-
-
-@step("hero", 1.5)
-def s_lead(w):
-    shot(w, "leading it by the bars (outside)")
-    cmd(w, "Hero.SideCam off")
-    look(w, 20, -35)
-
-
-@step("hero", 1.5)
-def s_lead_fpv(w):
-    shot(w, "leading it: his own view")
-    cmd(w, "Bike.Hero letgo")
-    cmd(w, "Bike.Report")
-
-
-# --- the residents ---
-@step("lobby", 4.0)
-def s_lobby1(w):
-    cmd(w, "Bike.Look Novikova1.s0 210 40 70 70")
-
-
-@step("lobby", 2.5)
-def s_lobby1s(w):
-    shot(w, "a bike in Novikova 1's entrance")
-    cmd(w, "Bike.Look Novikova3.s1 210 -40 70 70")
-
-
-@step("lobby", 2.5)
-def s_lobby2s(w):
-    shot(w, "a bike in Novikova 3's entrance")
-
-
-@step("npc", 3.0)
-def s_npc(w):
-    cmd(w, "Bike.Report")
-    cmd(w, "lyud.Bikes.Log 1")
-    cmd(w, "Bike.Look Novikova3.s0 320 60 120 55 follow")
-    cmd(w, "Bike.NpcRide Novikova3.s0 sea_air")
-
-
-def npc_shot(i):
-    def s(w):
-        shot(w, "a resident with their bike, %d" % i)
-        if i % 3 == 2:
-            cmd(w, "Bike.Report")
-    s.__name__ = "s_npc%d" % i
-    return s
-
-
-for i in range(14):
-    step("npc", 3.0)(npc_shot(i))
-
-
-@step("hero", 2.0)
-def s_save(w):
-    cmd(w, "Bike.Report")
-    cmd(w, "lyud.Save biketest")
-
-
-@step("hero", 25.0)
-def s_load(w):
-    cmd(w, "lyud.Load 0")
-
-
-@step("all", 2.0)
-def s_end(w):
-    cmd(w, "Bike.Report")
-    log("end")
-    cmd(w, "quit")
+part("all", [C("Bike.Report", wait=1.0), C(lambda w: log("end"), "quit", wait=5.0)])
 
 
 def tick(dt):
@@ -295,7 +157,7 @@ def _tick(dt):
     try:
         fn(w)
     except Exception as e:  # noqa: BLE001
-        log("step %s failed: %s" % (fn.__name__, e))
+        log("step %d failed: %s" % (st["i"], e))
     st["t0"] = st["t"]
     st["wait"] = wait
 

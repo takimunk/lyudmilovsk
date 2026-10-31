@@ -73,6 +73,9 @@ struct FLyudBikeRide
 	float Weight = 1.f;
 	/** Pedalling hard: out of the saddle a little, pulling on the bars. */
 	bool bSprint = false;
+	/** How much of the trunk's lean the neck and head take back to look ahead (the hero's own eyes see the way by the camera:
+	 *  less, so his collar stays below them). */
+	float HeadUp = 0.8f;
 };
 
 /**

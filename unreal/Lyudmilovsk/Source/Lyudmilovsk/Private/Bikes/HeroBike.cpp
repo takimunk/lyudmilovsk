@@ -540,6 +540,7 @@ void UHeroBikeComponent::FeedBody()
 	Ride.bSprint = bSprint;
 	// SK_Hero's hips stand ~97 cm over the floor (the shared clips' body 93)
 	Ride.Scale = 1.04f;
+	Ride.HeadUp = 0.25f;
 	Bike->RiderPose(H->GetMesh(), Ride, Anim->Bike);
 	if (Act == ELyudBikeAct::Ride && FootDown > 0.f)
 	{
@@ -619,18 +620,24 @@ FVector UHeroBikeComponent::SmoothEye(const FVector& Eye, float DeltaSeconds)
 {
 	// getting on and off the camera glides over (a second or so); riding it is the eyes exactly
 	const bool bGlide = Act == ELyudBikeAct::Mount || Act == ELyudBikeAct::Dismount || EyeEase < 1.f;
+	FVector Want = Eye;
+	if (IsOnBike() && Bike.IsValid())
+	{
+		// leaning over the bars the eyes come forward of the collar a little (the camera would see the overshirt's inside)
+		Want += Bike->GetActorForwardVector() * 7.f * (Act == ELyudBikeAct::Ride ? 1.f : (Act == ELyudBikeAct::Dismount ? 1.f - Phase : Phase));
+	}
 	if (!bEyeValid || !bGlide)
 	{
-		LastEye = Eye;
+		LastEye = Want;
 		bEyeValid = true;
 		if (!IsOnBike())
 		{
 			EyeEase = 1.f;
 		}
-		return Eye;
+		return Want;
 	}
 	EyeEase = FMath::Min(1.f, EyeEase + DeltaSeconds / 0.6f);
-	LastEye = FMath::Lerp(LastEye, Eye, FMath::Min(1.f, DeltaSeconds * FMath::Lerp(5.f, 40.f, EyeEase)));
+	LastEye = FMath::Lerp(LastEye, Want, FMath::Min(1.f, DeltaSeconds * FMath::Lerp(5.f, 40.f, EyeEase)));
 	return LastEye;
 }
 

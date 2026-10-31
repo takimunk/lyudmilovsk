@@ -153,8 +153,32 @@ void ULyudBikeSubsystem::SpawnFromData()
 	{
 		const TSharedPtr<FJsonObject> O = V->AsObject();
 		FVector At = BikeJsonVec(O->GetArrayField(TEXT("at"))) * 100.0;
+		// the ground: the highest level surface under the point, from high above (the valley is ~36 m below the club)
 		float Z = 0.f;
-		if (!TraceGround(FVector(At.X, At.Y, 20000.f - 150.f), Z) && !TraceGround(At, Z))
+		bool bGround = false;
+		{
+			TArray<FHitResult> Hits;
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(BikeSpawn), false);
+			GetWorld()->LineTraceMultiByChannel(Hits, FVector(At.X, At.Y, 30000.f), FVector(At.X, At.Y, -30000.f), ECC_Visibility, Q);
+			for (const FHitResult& H : Hits)
+			{
+				if (H.ImpactNormal.Z > 0.75f && (!bGround || H.ImpactPoint.Z > Z))
+				{
+					Z = (float)H.ImpactPoint.Z;
+					bGround = true;
+				}
+			}
+			if (!bGround)
+			{
+				FHitResult H;
+				if (GetWorld()->LineTraceSingleByChannel(H, FVector(At.X, At.Y, 30000.f), FVector(At.X, At.Y, -30000.f), ECC_Visibility, Q))
+				{
+					Z = (float)H.ImpactPoint.Z;
+					bGround = true;
+				}
+			}
+		}
+		if (!bGround)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Bikes: no ground under %s"), *O->GetStringField(TEXT("id")));
 			continue;
@@ -713,19 +737,31 @@ static FAutoConsoleCommandWithWorldAndArgs GBikeNpc(TEXT("Bike.NpcRide"),
 		{
 			return;
 		}
+		// the owner (any bike's with "any") who is at home now: their way out passes the bike in the entrance
 		for (const LPB::FWorld::FBike& B : S->Bikes)
 		{
-			if (B.Id != TCHAR_TO_UTF8(*A[0]))
+			if (A[0] != TEXT("any") && B.Id != TCHAR_TO_UTF8(*A[0]))
 			{
 				continue;
 			}
 			for (const LPB::FPerson& P : S->People)
 			{
-				if (P.Household == B.Owner && !P.bChild && P.Age <= 76)
+				if (P.Household == B.Owner && !P.bChild && P.Age <= 76 && P.Home >= 0 && P.Place == P.Home && B.Rider < 0)
 				{
 					const FString Act = A.Num() > 1 ? A[1] : TEXT("sea_air");
 					const bool bOk = Life->Order(P.Id, Act, A.Num() > 2 ? A[2] : TEXT(""));
-					UE_LOG(LogTemp, Warning, TEXT("BIKETEST npc %hs ordered %s: %d, bike %d mode %d"), P.Key.c_str(), *Act, bOk ? 1 : 0, P.Bike, (int32)P.BikeMode);
+					UE_LOG(LogTemp, Warning, TEXT("BIKETEST npc %hs (%hs) ordered %s: %d, bike %d mode %d"), P.Key.c_str(), B.Id.c_str(), *Act, bOk ? 1 : 0, P.Bike, (int32)P.BikeMode);
+					if (P.Bike >= 0)
+					{
+						// a camera on the bike, following it out of the entrance and along the way
+						if (AActor* T = BikeFollowTarget(World, UTF8_TO_TCHAR(B.Id.c_str())))
+						{
+							GBikeCamOffset = FVector(300.f, 0.f, 140.f);
+							const FVector Target = T->GetActorLocation() + FVector(0.f, 0.f, 55.f);
+							BikeCamLook(World, Target + FRotator(0.f, T->GetActorRotation().Yaw + 120.f, 0.f).Vector() * 300.f + FVector(0.f, 0.f, 140.f), Target, 55.f);
+							GBikeCamFollow = T;
+						}
+					}
 					return;
 				}
 			}
