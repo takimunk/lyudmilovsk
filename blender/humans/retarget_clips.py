@@ -19,6 +19,7 @@ reference bone points (T-pose to T-pose that is almost identity; old A-pose clip
 Bone lengths stay the target's; only root and pelvis translate:
     pelvis "scale": the source's pelvis offset from its reference, times hip height ratio (standing, walking)
     calm [action, w]: every bone's rotation only w of the way from that (calmer) clip toward this one
+    calm_keep [bones]: these bones keep all of the clip's own motion (Nod: the head nods over the idle's body)
     pelvis "seat":  the seated pelvis lands on the house's chair point (UE (0, 1, 56.7) cm for a body like Guy_a,
                     seat top 47 cm, docs in life_anims.py); offsets from the source's seated pelvis are scaled.
 Clips are in place (root stays at the origin), 30 fps, Blender character space faces -Y.
@@ -238,6 +239,7 @@ def bake(target, src, name, spec):
             zs.append(src.pose(act, f)[pel].translation.copy())
         seat_src = min(zs, key=lambda v: v.z)
     calm = (src.acts[spec["calm"][0]], spec["calm"][1]) if spec.get("calm") else None
+    calm_keep = set(spec.get("calm_keep", ()))                   # bones that keep all of this clip's motion
     hand_of = {c.name for s_ in "lr" for c in tarm.data.bones["hand_" + s_].children_recursive}
     new = bpy.data.actions.new("Life_" + name)
     set_action(tarm, new)
@@ -261,7 +263,7 @@ def bake(target, src, name, spec):
                     dc = C[s].to_quaternion() @ src.ref[s].to_quaternion().inverted()
                     if dc.dot(d) < 0:
                         dc = -dc
-                    d = dc.slerp(d, cw)
+                    d = dc.slerp(d, 1.0 if b in calm_keep else cw)
                 q = d @ tref[b]
             else:                                                    # jaw, eyes: ride on the parent
                 q = (pose[parent.name] @ rl[b]).to_quaternion() if parent else trest[b].to_quaternion()

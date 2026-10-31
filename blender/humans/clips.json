@@ -75,7 +75,15 @@
   },
   "Nod": {
    "source": "ual2",
-   "action": "Yes"
+   "action": "Yes",
+   "calm": [
+    "Idle_No_Loop",
+    0.0
+   ],
+   "calm_keep": [
+    "neck_01",
+    "head"
+   ]
   },
   "ShakeHead": {
    "source": "ual2",
