@@ -136,7 +136,7 @@ def import_meshes():
         if not name.startswith("SM_"):
             name = "SM_" + name
         glass = name.endswith("_Glass")
-        building = name in ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Glass", "SM_Diner_Inside_Glass")
+        building = name in ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Glass", "SM_Diner_Inside_Glass", "SM_Diner_Stools")
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
             key = str(sl.material_slot_name)
             mi = mats.get(key) or next((v for k, v in sorted(mats.items(), key=lambda kv: -len(kv[0])) if key.startswith(k)), None)
@@ -203,6 +203,10 @@ def place(face_y, report=False):
         if glass:
             c.set_editor_property("cast_shadow", False)
         if name in ("SM_Diner_Inside", "SM_Diner_Inside_Glass"):
+            c.set_editor_property("ld_max_draw_distance", NEAR_CM)
+        if name == "SM_Diner_Stools":
+            # the hero stands at the counter where a stool is (people keep off them: people_map.build_diner blocks them)
+            c.set_collision_profile_name("NoCollision")
             c.set_editor_property("ld_max_draw_distance", NEAR_CM)
         n += 1
     cls = unreal.load_class(None, "/Script/Lyudmilovsk.LyudDiner")

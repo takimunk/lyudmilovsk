@@ -95,18 +95,19 @@ def plan():
         sv = L["counter"]["serving"][5]
         stand = sv["stand"]
         plate = sv["plate"]
-        add(3.0, lambda w: go(w, (stand[0], stand[1] - 0.05), (plate[0], plate[1], plate[2])))
+        # looking at the plate the way one does at a counter: down at it from the stool, not straight down
+        add(3.0, lambda w: go(w, (stand[0], stand[1] - 0.05), (plate[0], plate[1] + 1.2, plate[2] - 0.1)))
         add(1.0, lambda w: cmd(w, "lyud.Diner.Serve diner_spaghetti"))
         add(2.0, lambda w: shot(w, "served"))
+        # slowed down five times so the shots land in the right phase whatever the offscreen frame rate
+        add(0.5, lambda w: cmd(w, "slomo 0.2"))
         add(0.5, lambda w: cmd(w, "lyud.Diner.Eat"))
-        add(0.65, lambda w: cmd(w, "lyud.Bite.Take small"))
-        add(0.0, lambda w: None)
-        add(0.6, lambda w: shot(w, "fork_plate_small"))
-        add(0.0, lambda w: None)
-        add(1.6, lambda w: shot(w, "fork_mouth_small"))
-        add(0.5, lambda w: cmd(w, "lyud.Bite.Take big"))
-        add(0.8, lambda w: shot(w, "fork_plate_big"))
-        add(1.0, lambda w: shot(w, "fork_mouth_big"))
+        add(3.0, lambda w: shot(w, "fork_plate_small"))
+        add(3.7, lambda w: shot(w, "fork_mouth_small"))
+        add(4.0, lambda w: cmd(w, "lyud.Bite.Take big"))
+        add(3.6, lambda w: shot(w, "fork_plate_big"))
+        add(4.3, lambda w: shot(w, "fork_mouth_big"))
+        add(3.0, lambda w: cmd(w, "slomo 1"))
         for _ in range(3):
             add(2.6, lambda w: cmd(w, "lyud.Bite.Take big"))
         add(3.0, lambda w: shot(w, "after_bites"))
@@ -120,9 +121,11 @@ def plan():
         add(1.5, lambda w: shot(w, "coffee_carry"))
         add(1.2, lambda w: shot(w, "coffee_pour"))
         add(3.5, lambda w: shot(w, "coffee_poured"))
+        add(0.5, lambda w: cmd(w, "slomo 0.2"))
         add(0.5, lambda w: cmd(w, "lyud.Diner.Eat"))
-        add(0.3, lambda w: cmd(w, "lyud.Bite.Take big"))
-        add(0.85, lambda w: shot(w, "coffee_sip"))
+        add(0.1, lambda w: cmd(w, "lyud.Bite.Take big"))
+        add(6.0, lambda w: shot(w, "coffee_sip"))
+        add(3.0, lambda w: cmd(w, "slomo 1"))
         add(3.0, lambda w: cmd(w, "lyud.Bite.Stop"))
     if step("burger"):
         sv = L["counter"]["serving"][7]
@@ -131,8 +134,10 @@ def plan():
         add(2.0, lambda w: shot(w, "burger_served"))
         add(0.5, lambda w: cmd(w, "lyud.Diner.Eat"))
         add(2.0, lambda w: shot(w, "burger_hand"))
+        add(0.5, lambda w: cmd(w, "slomo 0.2"))
         add(0.5, lambda w: cmd(w, "lyud.Hand.Press 1"))
-        add(0.9, lambda w: shot(w, "burger_mouth"))
+        add(4.0, lambda w: shot(w, "burger_mouth"))
+        add(0.5, lambda w: cmd(w, "slomo 1"))
         add(1.5, lambda w: cmd(w, "lyud.Hand.Press 0"))
         add(2.0, lambda w: shot(w, "burger_bitten"))
         add(0.5, lambda w: cmd(w, "lyud.Hand.PutAway"))

@@ -54,6 +54,8 @@ public:
 	/** Where it stands when not in the hand (the counter, the coffee table's tray). */
 	const FTransform& RestTransform() const { return Rest; }
 	void SetRest(const FTransform& T) { Rest = T; SetActorTransform(T); }
+	/** Not to be eaten yet (a mug being poured into). */
+	void SetReady(bool bIn) { bReady = bIn; }
 	/** The fill shows (coffee being poured): 0..1 of the vessel. */
 	void SetPoured(float Share);
 	/** Starts eating it (the left button went down while the hero looks at it). */
@@ -82,6 +84,7 @@ private:
 	float Left = 1.f;
 	FTransform Rest;
 	bool bEating = false;
+	bool bReady = true;
 	bool bPrompted = false;
 	float EmptyFor = 0.f;
 	float FoodZ = 0.f;

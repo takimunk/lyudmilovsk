@@ -700,8 +700,9 @@ def main():
     extra = signs(sh)
     ins = bmesh.new()
     counter(ins)
+    stools = bmesh.new()             # their own mesh without collision: the hero stands at the counter where a stool is
     for x in STOOLS:
-        stool(ins, x, STOOL_Y)
+        stool(stools, x, STOOL_Y)
     for xa, xb in BOOTHS:
         booth(ins, min(xa, xb), max(xa, xb))
     nose_bench(ins)
@@ -712,11 +713,12 @@ def main():
     # the glass bits of the inside (sugar pourers, the pie case, gauges) go to the glass mesh with the panes
     C.export(sh, "SM_Diner_Shell", extra_mats=extra, split_glass=False)
     tris_in = C.export(ins, "SM_Diner_Inside", smooth=["DN_Chrome", "DN_China", "DN_Vinyl", "DN_Opal", "DN_Steel", "DN_Crust"])
+    C.export(stools, "SM_Diner_Stools", smooth=["DN_Chrome", "DN_Vinyl"])
     C.export(gl, "SM_Diner_Glass", split_glass=False)
     # ---- the layout for the game (diner frame, metres) ------------------------------------------------------------------
     serving = []
     for i, x in enumerate(STOOLS):
-        serving.append({"stool": [x, STOOL_Y, STOOL_SEAT], "plate": [x, 0.58, COUNTER_TOP], "stand": [x, STOOL_Y - 0.45, 0.0]})
+        serving.append({"stool": [x, STOOL_Y, STOOL_SEAT], "plate": [x, 0.46, COUNTER_TOP], "stand": [x, STOOL_Y - 0.14, 0.0]})
     seats = []
     for xa, xb in BOOTHS:
         lo, hi = min(xa, xb), max(xa, xb)
@@ -736,7 +738,7 @@ def main():
                 "tools/world_map.py diner() / diner_to_map() put it on the map, floor_z is the floor's map height.",
         "prototype": "Modern Diner, Pawtucket RI (Sterling Streamliner, J. B. Judkins Co., 1940)",
         "floor_z": round(floor, 3),
-        "parts": ["SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Inside_Glass", "SM_Diner_Glass"],
+        "parts": ["SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Inside_Glass", "SM_Diner_Glass", "SM_Diner_Stools"],
         "box": {"inside": [XI_W, XE + R - TH, YI_F, YI_B, 0.0, CROWN_IN], "kitchen": [AX0 + ATH, AX1 - ATH, YB, AY1 - ATH, 0.0, A_TOP]},
         "doors": doors,
         "lights": lights,

@@ -31,6 +31,33 @@
 
 namespace LyudDiner
 {
+	void ApplyShown(IConsoleVariable* Var);
+
+	/** The diner shown (1) or hidden with no collision (0): the benchmark's A/B (tools/bench_systems.sh nodiner). */
+	TAutoConsoleVariable<int32> CVarDiner(TEXT("lyud.Diner"), 1, TEXT("The diner by the lower station: shown (1) or hidden with no collision (0)."),
+		FConsoleVariableDelegate::CreateStatic(&ApplyShown), ECVF_Default);
+
+	void ApplyShown(IConsoleVariable* Var)
+	{
+		const bool bOn = Var->GetInt() != 0;
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			UWorld* World = Context.World();
+			if (!World || !World->IsGameWorld())
+			{
+				continue;
+			}
+			for (TActorIterator<AActor> It(World); It; ++It)
+			{
+				if (It->ActorHasTag(TEXT("Diner")) || It->IsA<ALyudDinerDish>())
+				{
+					It->SetActorHiddenInGame(!bOn);
+					It->SetActorEnableCollision(bOn);
+				}
+			}
+		}
+	}
+
 	AHeroCharacter* Hero(const UWorld* World)
 	{
 		return Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
@@ -281,6 +308,9 @@ bool ALyudDinerDish::StartEating()
 		}
 		if (!FoodSys->HoldFromPocket(Def.Item))
 		{
+			const FLyudItemDef* ID = ULyudInventory::FindDef(Def.Item);
+			UE_LOG(LogTemp, Warning, TEXT("DINERTEST hand: %s not taken (count %d, kind %d, hand %d)"), *Def.Item.ToString(), Inv->Count(Def.Item),
+				ID ? (int32)ID->Kind : -1, ULyudHandUse::Get(this) ? 1 : 0);
 			Inv->Remove(Def.Item);
 			return false;
 		}
@@ -352,7 +382,7 @@ void ALyudDinerDish::Tick(float DeltaTime)
 	const APlayerController* PC = LyudDiner::Controller(World);
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	const ULyudBiteSubsystem* Bite = ULyudBiteSubsystem::Get(this);
-	if (bEating || !Hero || !PC || (UI && UI->IsOpen()) || (Bite && Bite->IsEating()))
+	if (bEating || !bReady || !Hero || !PC || (UI && UI->IsOpen()) || (Bite && Bite->IsEating()))
 	{
 		ShowPrompt(false);
 		return;
@@ -647,13 +677,14 @@ void ALyudDiner::ApplyOpen(bool bInOpen)
 
 void ALyudDiner::ApplyLights()
 {
+	const bool bShown = LyudDiner::CVarDiner.GetValueOnGameThread() != 0;
 	for (UPointLightComponent* P : InsideLights)
 	{
-		P->SetVisibility(bLit);
+		P->SetVisibility(bLit && bShown);
 	}
 	for (UPointLightComponent* P : OutsideLights)
 	{
-		P->SetVisibility(bLit && bNight);
+		P->SetVisibility(bLit && bNight && bShown);
 	}
 	for (UMaterialInstanceDynamic* MID : GlowMIDs)
 	{
@@ -848,6 +879,11 @@ bool ALyudDiner::PourCoffee()
 	{
 		Hand->PutAway();
 	}
+	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+	{
+		UI->SetPrompt(this, FText::GetEmpty());
+	}
+	bCoffeePrompt = false;
 	// a clean mug from the tray (upside down there: it turns over on the way to the tap)
 	ALyudDinerDish* Mug = SpawnDish(TEXT("diner_coffee"), FTransform(YawToWorld(0.f), ToWorld(CoffeeMugs)), 1.f);
 	if (!Mug)
@@ -855,6 +891,7 @@ bool ALyudDiner::PourCoffee()
 		return false;
 	}
 	Mug->SetPoured(0.f);
+	Mug->SetReady(false);
 	PourMug = Mug;
 	Pour = EPour::ToTray;
 	PourT = 0.f;
@@ -1020,6 +1057,7 @@ void ALyudDiner::TickCoffee(float DeltaTime)
 			Reach->ClearOverrideHold();
 			// the mug stands under the tap, full: the left button drinks it (ALyudDinerDish)
 			Mug->SetPoured(1.f);
+			Mug->SetReady(true);
 			Pour = EPour::None;
 			UE_LOG(LogTemp, Display, TEXT("DINERTEST coffee: poured"));
 		}

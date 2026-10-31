@@ -62,7 +62,8 @@ Blender -b -P blender/transport/lint_mesh.py -- design/diner/game/SM_Diner_*.glb
 - `import` brings the kit to `/Game/Diner/Meshes` and the burger's stages to `/Game/Food`. It makes the flat materials
   `MI_DN_*`, clear glass, and the sign material `M_DN_Sign` (`Image`, `Glow`), and imports the sign pictures
   `/Game/Diner/Localized/<lang>/T_Sign_<name>`.
-- `place(face_y)` spawns the meshes (tagged `Diner`; the shell and insides also `Roof`, the insides drawn to 60 m),
+- `place(face_y)` spawns the meshes (tagged `Diner`; the shell and insides also `Roof`, the insides drawn to 60 m; the
+  stools are a mesh of their own without collision, so the hero stands right at the counter where a stool is),
   `ALyudDiner` and the three doors (the street and back ones tagged `DinerOuter`). `import_world.py` calls it, so
   `build_scene01.sh` keeps the diner.
 
@@ -139,5 +140,20 @@ The staff are three residents (`people.json`). They have no bodies of their own 
 
 ## Checks
 
+`lyud.Diner 0|1` hides the whole diner and its lamps. Use it for the one-process benchmark A/B:
+`tools/bench_systems.sh nodiner`.
+
 `unreal/scripts/test_diner.sh` runs offscreen; `DINER_STEPS=outside,inside,eat,coffee,burger,night`, `DINER_LANG`. It
 prints DINERTEST lines and writes shots to `Saved/DinerTest`.
+
+First runs (2026-10-31): the opening and locking, the lamps, serving, fork and spoon bites, the coffee pour and the cup, and
+the burger in the hand all ran. The shots are in `shots/` of the worktree (not committed).
+
+## Open
+
+- The fork's grip at the lips could look more natural.
+- The waitresses' own bodies (paid hi3d generation: ask Dima).
+- Sitting down on a stool or in a booth: the hero stands at the counter.
+- The coffee pour sound (`S_diner_pour_01`) and the plate's clink are looked up but not generated yet; bite sounds are
+  the food thread's.
+- The benchmark A/B ran under heavy swap and is not usable yet: rerun `tools/bench_systems.sh nodiner` alone.

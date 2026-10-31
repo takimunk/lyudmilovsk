@@ -1067,7 +1067,7 @@
  "ui.diner.served": "Вам принесли: {0}",
  "ui.diner.eat_prompt": "ЛКМ — есть: {0}",
  "ui.diner.drink_prompt": "ЛКМ — пить: {0}",
- "ui.diner.coffee_prompt": "E — налить кофе ({0} ₽)",
+ "ui.diner.coffee_prompt": "E — налить кофе ({0} руб.)",
  "ui.diner.no_money": "Не хватает денег на кофе",
  "sign.diner.name": "Закусочная «Чайка»",
  "sign.diner.band": "Завтраки · Обеды · Кофе весь день",
