@@ -40,8 +40,9 @@ from late August to the end of November, above all for jays and nutcrackers), **
 fed and nothing threatens). It remembers its own **stores** (up to 12; the oldest are forgotten and grow into oaks and hazels)
 and stores it **watched** others make. Toward the player it has a **bond** (from food: the palm, the feeder, thrown feed,
 even a snatch) and a **grudge** (from harm: running at it, throwing things, digging up its store under its eyes, taking what
-it was going for). Both fade slowly over game days; a bond makes it trust the player (it lets them nearer), a grudge keeps
-it farther off. The others learn both from it, a grudge fastest: when a crow scolds the player, the crows round it come to
+it was going for). Both fade slowly over game days; a bond makes it trust the player (it fears them less than a third as much, and after a fright
+its group comes back within seconds instead of keeping away two minutes), a grudge keeps it farther off, and a crow with a
+grudge that has the player in its eye shouts at them instead of only watching (from up to 100 m). The others learn both from it, a grudge fastest: when a crow scolds the player, the crows round it come to
 dislike them too.
 
 Every few seconds a free corvid (awake, its group not on the way to the roost, not frightened, within 500 m of the camera)
