@@ -47,8 +47,12 @@ def ground(w, x, y, z0=400.0):
 
 
 def place(w, loc, pitch, yaw, fov=0.0):
-    cmd(w, "fov %.2f" % fov)
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    cam = pc.get_controlled_pawn().get_component_by_class(unreal.CameraComponent)
+    if cam:
+        if "fov0" not in st:
+            st["fov0"] = cam.field_of_view
+        cam.set_field_of_view(fov if fov > 0.0 else st["fov0"])
     pc.get_controlled_pawn().set_actor_location(unreal.Vector(*loc), False, True)
     pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
 
@@ -153,6 +157,10 @@ def s_finds_close(w):
 @step
 def s_finds_close_shot(w):
     shot(w, "finds close up")
+
+
+@step
+def s_step_back(w):
     # the player steps back to watch from the door
     place(w, (LAWN[0] - 1400.0, LAWN[1] - 1400.0, st["lawn"].z + 180.0), -10, 45)
     st["eye"] = None

@@ -1247,6 +1247,12 @@ namespace LyudBirds
 			return false;
 		}
 		C.TaskTime += Dt;
+		// its feelings turned while it was at it: no present for an enemy, no scolding a friend
+		if (((C.Task == ETask::Gift || C.Task == ETask::Follow) && C.Bond < 0.3f) || (C.Task == ETask::Scold && C.Grudge < 0.2f))
+		{
+			End(W, B, C);
+			return true;
+		}
 		if (C.TaskTime > C.TaskLen)
 		{
 			if (C.Held >= 0 && C.Task != ETask::Cache && C.Task != ETask::Gift)
