@@ -24,6 +24,8 @@
     {"id": "school", "places": ["town_square"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "away": 1},
     {"id": "watch_door", "places": ["club_door", "club_forecourt"], "slots": ["stand"], "pose": "look", "wander": 1, "wander_m": [2.5, 20], "wander_pause": [20, 70], "minutes": [60, 60], "meets": {"sun": 0.6, "nature": 0.4, "social": 0.1}, "free": 0},
     {"id": "work_lab", "places": ["lab"], "pose": "hidden", "minutes": [60, 60], "meets": {"social": 0.25, "mind": 0.35, "hunger": 0.3}, "free": 0, "away": 1},
+    {"id": "work_diner", "places": ["diner"], "slots": ["counter", "grill"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "hunger": 0.25}, "free": 0},
+    {"id": "eat_diner", "places": ["diner"], "slots": ["booth_seat"], "pose": "eat", "minutes": [25, 45], "hours": [8, 21], "ages": [12, 200], "meets": {"hunger": 2.5, "social": 0.35, "fun": 0.1}, "base": -0.05, "trait": "social"},
     {"id": "work_shop", "places": ["shop"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.35}, "free": 0},
     {"id": "work_sea", "places": ["beach"], "pose": "hidden", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.4, "hunger": 0.2}, "free": 0, "away": 1},
     {"id": "shop", "places": ["shop"], "slots": ["stand"], "pose": "stand", "minutes": [4, 9], "hours": [9, 19], "days": [0, 1, 2, 3, 4, 5], "ages": [9, 200], "meets": {"hunger": 1.2, "social": 0.4}, "base": 0.0, "trait": "social"},

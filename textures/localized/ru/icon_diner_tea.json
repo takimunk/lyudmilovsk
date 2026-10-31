@@ -1,0 +1,10 @@
+{
+ "id": "icon_diner_tea",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/diner/icons_grid.png",
+ "cell": [
+  0,
+  2
+ ]
+}

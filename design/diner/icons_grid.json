@@ -1,0 +1,25 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "job_id": "96716c78-0f3c-4cc2-a2ce-b861b4f93183",
+ "date": "2026-10-31",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_205949_96716c78-0f3c-4cc2-a2ce-b861b4f93183.png",
+ "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text or lettering anywhere. The china is a heavy 1940s American diner set: off-white with one dark red band near the rim. Row 1, left: three thin Russian blini folded in quarters fanned on a diner plate, a dollop of sour cream and a spoon of dark cherry jam. Row 1, middle: two fried eggs sunny side up, two crisp wavy bacon strips and two triangles of toast on a diner plate. Row 1, right: spaghetti in tomato sauce with three meatballs on a diner plate, a fork twirled into it. Row 2, left: Baltic fish soup (ukha) in a diner bowl on a plate: clear golden broth, chunks of white fish, potato cubes, fresh dill. Row 2, middle: a slice of apple pie with a lattice crust on a small diner plate. Row 2, right: a classic cheeseburger with a sesame-free domed bun, melted cheese and lettuce, on a diner plate. Row 3, left: strong black tea in a faceted Soviet glass (granyonyi stakan) set in an ornate nickel glass holder (podstakannik) with a handle. Row 3, middle: dark red cherry kompot in a plain faceted glass, a few cherries at the bottom. Row 3, right: a thick off-white diner coffee mug with a dark red band, full of black coffee, a little steam.",
+ "ids": [
+  "diner_pancakes",
+  "diner_eggs",
+  "diner_spaghetti",
+  "diner_soup",
+  "diner_pie",
+  "diner_burger",
+  "diner_tea",
+  "diner_kompot",
+  "diner_coffee"
+ ],
+ "note": "3x3 grid of the diner's menu icons (no words: one picture for every language); cut by tools/diner_assets.py into textures/localized/ru/icon_<id>.jpg.",
+ "credits": 1
+}

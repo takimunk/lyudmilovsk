@@ -316,6 +316,69 @@
    "aspect": "1:1",
    "prompt": "See design/grocery/icons_grid.json (cell of kefir).",
    "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_diner_pancakes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_pancakes).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_eggs": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_eggs).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_spaghetti": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_spaghetti).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_soup": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_soup).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_pie": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_pie).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_burger": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_burger).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_tea": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_tea).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_kompot": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_kompot).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_diner_coffee": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/diner/icons_grid.json (cell of diner_coffee).",
+   "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
   }
  }
 }

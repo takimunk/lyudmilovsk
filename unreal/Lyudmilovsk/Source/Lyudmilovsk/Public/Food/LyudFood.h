@@ -29,6 +29,8 @@ struct FLyudFoodDef
 	float ChewSeconds = 20.f;
 	/** The wrapper or napkin it comes in rustles when it comes out of the pocket. */
 	bool bWrapped = false;
+	/** Served on a plate or in a cup where it is bought (the diner: ALyudDiner), not handed over across the counter. */
+	bool bPlated = false;
 };
 
 /**

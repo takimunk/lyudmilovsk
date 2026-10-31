@@ -8,6 +8,12 @@
              {"item": "feed_rowan", "price": 25, "count": 5}, {"item": "feed_mealworm", "price": 35, "count": 5},
              {"item": "feed_grain", "price": 15, "count": 5}, {"item": "feed_peanuts", "price": 30, "count": 5},
              {"item": "bird_feed", "price": 10, "count": 5}, {"item": "feeder", "price": 80, "count": 1},
-             {"item": "bread_loaf", "price": 12, "count": 1}, {"item": "kefir", "price": 14, "count": 1}]}
+             {"item": "bread_loaf", "price": 12, "count": 1}, {"item": "kefir", "price": 14, "count": 1}]},
+  {"person": "zhukova_lena", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
+  {"person": "frolova_masha", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
+  {"person": "hayashi_rina", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]}
  ]
 }

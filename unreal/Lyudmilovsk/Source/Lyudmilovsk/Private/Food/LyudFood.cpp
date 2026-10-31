@@ -81,6 +81,7 @@ namespace
 				F.Texture = FName(*Texture);
 			}
 			O->TryGetBoolField(TEXT("wrapped"), F.bWrapped);
+			O->TryGetBoolField(TEXT("plated"), F.bPlated);
 			Out.Add(FName(*It.Key), F);
 		}
 		return Out;
@@ -218,6 +219,10 @@ void ULyudFoodSubsystem::Deinitialize()
 
 void ULyudFoodSubsystem::OnBought(FName Id, int32)
 {
+	if (FindFood(Id).bPlated)
+	{
+		return;              // the diner serves it on a plate (ALyudDiner)
+	}
 	Bought.AddUnique(Id);
 }
 

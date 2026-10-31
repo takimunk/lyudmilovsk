@@ -1084,6 +1084,79 @@ def build_gastronom():
             "path": slots[1]["path"], "slots": slots, "_plan": P, "_xf": xf, "_misses": misses, "_door": door}
 
 
+# --- the diner by the lower station (blender/diner/building.py, unreal/Lyudmilovsk/Content/Diner/layout.json) ----------------------------
+
+DINER_LAYOUT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Diner", "layout.json")
+
+
+def build_diner():
+    """The diner (kind diner): in by the street door up the steps, its staff behind the counter (counter, three spots) and at
+    the grill, its customers in the booths (booth_seat, the way they face the table); the diner's frame (building.py)."""
+    if not os.path.exists(DINER_LAYOUT):
+        return None
+    with open(DINER_LAYOUT) as f:
+        L = json.load(f)
+    floor_rel = L["floor_z"] - W.academ_z()
+    ox, oy = W.DINER_LOCAL
+
+    def ue(p):
+        return ens_to_ue((ox + p[0], oy + p[1], floor_rel + p[2]))
+    x0, x1, y0, y1 = L["box"]["inside"][:4]
+    P = Plan(x0 - 1.0, y0 - 4.0, x1 + 1.0, L["box"]["kitchen"][3] + 3.0)
+    P.room(x0, 7.4, y0, y1)                                       # the straight part of the car (the nose stays out)
+    k = L["box"]["kitchen"]
+    P.room(k[0], k[1], k[2] - 0.2, k[3])
+    front = next(d for d in L["doors"] if d["name"] == "front")
+    kit = next(d for d in L["doors"] if d["name"] == "kitchen")
+    for d in (front, kit):
+        w = d["hole"][0] / 2 - DOOR_SIDE
+        P.rect(d["at"][0] - w, d["at"][0] + w, d["at"][1] - 0.6, d["at"][1] + 0.6, 1)
+    dx = front["at"][0]
+    P.rect(dx - 0.7, dx + 0.7, y0 - 3.5, y0, 1)                  # the landing and the steps
+    cx = L["counter"]["x"]
+    P.block(cx[0] - 0.04, cx[1] + 0.04, 0.28, 1.02)
+    P.block(-5.0, 7.3, 1.95, y1)                                   # the back bar
+    P.block(-7.18, -6.62, -1.62, -0.42)                            # the coffee table
+    for s_ in L["counter"]["serving"]:
+        sx, sy = s_["stool"][:2]
+        P.block(sx - 0.15, sx + 0.15, sy - 0.15, sy + 0.15)
+    door = (dx, y0 - 3.2)
+    P.flood(door)
+
+    def zp(q):
+        # outside on the steps the floor falls to the ground (the walk grid's), inside the floor
+        if q[1] < y0 - 1.1:
+            return (q[0], q[1], -0.85 * min(1.0, (y0 - 1.1 - q[1]) / 1.5))
+        return (q[0], q[1], 0.0)
+
+    misses = []
+
+    def yaw(p, a):
+        u, v = ue(zp(p)), ue((p[0] + 0.5 * math.cos(a), p[1] + 0.5 * math.sin(a), 0.0))
+        return ang(math.degrees(math.atan2(v[1] - u[1], v[0] - u[0])))
+
+    def slot(kind, xy, face, seat_h=0.0):
+        w = P.way(xy)
+        if w is None:
+            misses.append("diner %s at %s: unreachable" % (kind, xy))
+        q = zp(xy)
+        return {"kind": kind, "pos": rp(ue(q)), "yaw": yaw(q, face), "capacity": 1, "height": seat_h,
+                "approach": rp(ue(q)), "path": None if w is None else [rp(ue(zp(t))) for t in w]}
+    slots = []
+    for st in L["staff"]:
+        if st["name"] == "stove":
+            continue
+        kind = "grill" if st["name"] == "grill" else "counter"
+        slots.append(slot(kind, st["at"][:2], math.radians(st["yaw"])))
+    for se in L["booth_seats"]:
+        # the seat's front edge (where they stand before sitting down) is the aisle's side; they face along x
+        fx = 1.0 if se["yaw"] == 0.0 else -1.0
+        slots.append(slot("booth_seat", (se["at"][0], se["at"][1]), 0.0 if fx > 0 else math.pi, 0.46))
+    dp = rp(ue(zp(door)))
+    return {"id": "diner", "kind": "diner", "tag": "diner", "door": dp, "pos": dp, "yaw": yaw(door, math.pi / 2),
+            "path": slots[0]["path"], "slots": slots, "_plan": P, "_misses": misses, "_door": door}
+
+
 # --- the sea railway's halts and the sea island (tools/railway.py, Content/Railway/railway_built.json) -------------
 
 RAIL_BUILT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Railway", "railway_built.json")
@@ -1478,6 +1551,7 @@ def main():
     stairs, flats, plot_rows = build_flats(data)
     library = build_library(data, data["houses"]["Novikova1"]["frame"])
     gastronom = build_gastronom()
+    diner = build_diner()
     with open(a.scene) as f:
         scene = json.load(f)
     if "stations" in scene:
@@ -1486,7 +1560,7 @@ def main():
         with open(OUT) as f:
             club = dict(json.load(f)["club"])
         print("people_map: %s has no stations: the club kept from %s" % (a.scene, OUT))
-    places = build_outdoor(grid) + build_academ_extra(grid) + [gastronom] + build_stalls(grid)
+    places = build_outdoor(grid) + build_academ_extra(grid) + [gastronom] + ([diner] if diner else []) + build_stalls(grid)
     bad = check_outdoor(grid, places, stairs, club, library)
     rail, patches = build_rail(grid)
     for p in rail:
@@ -1498,7 +1572,7 @@ def main():
                 bad.append("%s pos (%.1f, %.1f)" % (p["id"], q[0], q[1]))
             p["island"] = 0
     places += rail
-    misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"] + gastronom["_misses"]
+    misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"] + gastronom["_misses"] + (diner["_misses"] if diner else [])
     doc = {"version": 1, "frame": "unreal_metres", "face_y_cm": FACE_Y,
            "yaw": "Unreal degrees, 0 = +X, 90 = +Y; seats: the way the seated person faces; beds: head to foot; stand: the way the person looks",
            "islands": "0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (sea_island: by the train), -1 not on the walk grid",
