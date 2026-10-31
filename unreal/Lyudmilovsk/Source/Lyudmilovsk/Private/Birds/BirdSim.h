@@ -353,6 +353,8 @@ namespace LyudBirds
 		FMurmuration* Murmuration() const { return Murm.get(); }
 		/** The crow family's minds and the things they carry (BirdCorvid.h). */
 		FCorvids* Corvids() const { return Corv.get(); }
+		/** Turns the corvids' minds on or off while running (off: their items go, they live like the other birds; A/B). */
+		void SetCorvids(bool bOn);
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
 		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */

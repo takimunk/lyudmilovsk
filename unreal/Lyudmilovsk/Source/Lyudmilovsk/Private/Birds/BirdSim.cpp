@@ -819,6 +819,26 @@ namespace LyudBirds
 		BuildHash();
 	}
 
+	void FWorld::SetCorvids(bool bOn)
+	{
+		Opt.bCorvids = bOn;
+		if (bOn && !Corv)
+		{
+			Corv = std::make_shared<FCorvids>();
+		}
+		else if (!bOn && Corv)
+		{
+			Corv.reset();
+			for (FBird& B : Birds)
+			{
+				if (B.Act == EAct::Mob && B.Target < 0 && !B.bGone)
+				{
+					SetAct(B, EAct::Fly, 0.f);       // (a corvid's own flight) lands at its spot
+				}
+			}
+		}
+	}
+
 	int FWorld::AddBird(int Species, const V3& P)
 	{
 		return AddFlock(Species, P, 1, 1.2f);
@@ -2127,6 +2147,10 @@ namespace LyudBirds
 	{
 		Dt = Clamp(Dt, 0.f, 0.25f);
 		Time += Dt;
+		if (Corv)
+		{
+			Corv->Events.clear();      // (last step's: the game read them after it, if anybody did)
+		}
 		Player.ExtraThreat = std::max(0.f, Player.ExtraThreat - Dt * 1.5f);
 		UpdateTiers();
 		BuildHash();
