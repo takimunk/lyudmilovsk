@@ -62,6 +62,11 @@ namespace
 		return S.Id == "TreeSparrow" ? FName(TEXT("SM_NestBox_Sparrow")) : FName(TEXT("SM_NestBox_Tit"));
 	}
 
+	bool Mesh_IsTreeHole(const FBreedKind& K, const FSpecies& S, EHabitat Site)
+	{
+		return K.Nest == ENest::Cavity && CavityMesh(S, Site) == FName(TEXT("SM_TreeHole"));
+	}
+
 	const TCHAR* AgeName(float Age, float NestlingDays)
 	{
 		const float T = Age / FMath::Max(1.f, NestlingDays);
@@ -346,7 +351,9 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 		const FName Id(S.Id.c_str());
 		const FRotator Rot(0.f, FMath::RadiansToDegrees(Nest.Yaw) + KitYaw, 0.f);
 		const FVector At = ToUE(Nest.Pos);
-		const FTransform NestXf(Rot, At, FVector(Nest.DrawScale));
+		// (a tree hole's bark patch: only a narrow rim round the hole, so the trunk's own bark shows round it)
+		const FTransform NestXf(Rot, At, Mesh_IsTreeHole(K, S, World.Sites[Nest.Site].Kind)
+			? FVector(Nest.DrawScale, Nest.DrawScale * 0.45f, Nest.DrawScale * 0.45f) : FVector(Nest.DrawScale));
 		const bool bHidden = K.Nest == ENest::Cavity || K.Nest == ENest::Eave || K.Nest == ENest::Burrow;
 		// the nest itself
 		FName Mesh = NAME_None;
@@ -402,7 +409,8 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 			}
 			if (K.Nest == ENest::Burrow)
 			{
-				X.AddToTranslation(-Rot.Vector() * 4.0);
+				X.AddToTranslation(-Rot.Vector() * 1.0);
+				X.SetScale3D(FVector(1.0, 0.6, 0.6));      // a smaller clay lip: the cliff's own face round the hole
 			}
 			Add(Mesh, X);
 		}
