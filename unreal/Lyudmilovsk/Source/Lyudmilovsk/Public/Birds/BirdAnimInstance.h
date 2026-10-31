@@ -35,6 +35,25 @@ struct FBirdLook
 	float Weight = 0.f;
 	/** Extra roll of the head (one eye on the thing), degrees. */
 	float Tilt = 0.f;
+	/** 0..1: the neck raised and stretched, the head drawn up and back over the body (a bird looking down at its own
+	 *  breast or round at its wing). */
+	float NeckLift = 0.f;
+	/** Where a fully lifted neck puts the head, from where the clip has it (component space, cm). */
+	FVector NeckReach = FVector::ZeroVector;
+	/** Worn from its own eye: the head turns exactly to the target, as far as a bird's neck goes, the neck taking more. */
+	bool bDirect = false;
+};
+
+/** The feet closed round a branch (component space, cm): a point on its axis, its direction, its radius. */
+USTRUCT()
+struct FBirdGrip
+{
+	GENERATED_BODY()
+
+	float Weight = 0.f;
+	FVector Centre = FVector::ZeroVector;
+	FVector Axis = FVector::YAxisVector;
+	float Radius = 1.f;
 };
 
 /** The player's wings set directly each frame (ABirdActor::SetWingPose), instead of from the clips. */
@@ -70,6 +89,7 @@ struct FBirdAnimProxy : public FAnimInstanceProxy
 	virtual bool Evaluate(FPoseContext& Output) override;
 	void ApplyWingsLocal(FCompactPose& Pose) const;
 	void ApplyWingsCS(FCSPose<FCompactPose>& CS) const;
+	void ApplyGrip(FCSPose<FCompactPose>& CS) const;
 
 	TArray<FBirdClipLayer, TInlineAllocator<4>> Layers;
 	FBirdLook Look;
@@ -79,6 +99,7 @@ struct FBirdAnimProxy : public FAnimInstanceProxy
 	/** Length of the outermost tail feathers (a female swallow's shorter streamers). */
 	float StreamerScale = 1.f;
 	FBirdWingPose Wings;
+	FBirdGrip Grip;
 	/** Where the folded wings and the lowered legs come from (Idle) and the tucked legs (Glide), sampled at 0. */
 	UAnimSequence* FoldSeq = nullptr;
 	UAnimSequence* TuckSeq = nullptr;
@@ -107,6 +128,7 @@ public:
 	float TailPitchDeg = 0.f;
 	float StreamerScale = 1.f;
 	FBirdWingPose Wings;
+	FBirdGrip Grip;
 	UPROPERTY(Transient) TObjectPtr<UAnimSequence> FoldSeq;
 	UPROPERTY(Transient) TObjectPtr<UAnimSequence> TuckSeq;
 

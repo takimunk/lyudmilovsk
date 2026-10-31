@@ -1,7 +1,11 @@
 """One bird species, rigged and animated, from Content/BirdsData/species.json (size, wingspan, flight style) and
 blender/birds/species_art.py (shape and plumage).
 
-    Blender -b --python blender/birds/build_bird.py -- Rook [--previews] [--no-export] [--lods]
+    Blender -b --python blender/birds/build_bird.py -- Rook [--hero] [--previews] [--all-views] [--head] [--lint]
+        [--no-export] [--no-separate] [--stats]
+
+--lint runs lint_bird.py on every mesh built (report in <Tag>_lint.json); every mesh is first passed through
+lint_bird.separate (near-coplanar feather cards lifted apart) unless --no-separate.
 
 Generalises Murmuration's hero starling (tools/blender/starling_hero.py): the starling is the template, every species is
 that bird warped (torso, neck, head, beak), with its own wing and tail lengths and shapes, legs, and its own feather atlas
@@ -286,6 +290,34 @@ def setup_legs():
         bone(f"toes.{side}", foot, foot + V(0, -0.0004, 0.019 * M["toes"]), f"tarsus.{side}")
         hd = FEET[M["foot"]](sx)[3][0]
         bone(f"hallux.{side}", foot, foot + V(math.sin(hd), -0.04, math.cos(hd)) * 0.011 * M["toes"] * M["hallux"], f"tarsus.{side}")
+    # the toes' outer halves (they curl round a branch): appended last so every older bone keeps its index
+    for side, sx in (("L", 1), ("R", -1)):
+        foot = LEG[side][3]
+        toes = FEET[M["foot"]](sx)
+        for nm, (ang, Lt, _), par in (("toetip", toes[0], "toes"), ("halluxtip", toes[3], "hallux")):
+            a_, b_ = toe_point(foot, ang, Lt, TOE_JOINT), toe_point(foot, ang, Lt, 1.0)
+            bone(f"{nm}.{side}", a_, b_, f"{par}.{side}")
+
+
+TOE_JOINT = 0.5
+
+
+def toe_point(foot, ang, Lt, t):
+    """A point on a toe's centre line (Lt before the species' toe scale), t 0 at the foot .. 1 at the tip."""
+    d = V(math.sin(ang), 0, math.cos(ang))
+    return foot + d * Lt * M["toes"] * t + V(0, -0.0003 * t, 0)
+
+
+def toe_w(bn, side, t):
+    """Weights along a toe: its base bone, blended over ~20% of its length into the tip bone at the joint."""
+    tip = "halluxtip" if bn == "hallux" else "toetip"
+    k = smooth(TOE_JOINT - 0.1, TOE_JOINT + 0.1, t)
+    w = {}
+    if k < 0.999:
+        w[f"{bn}.{side}"] = 1 - k
+    if k > 0.001:
+        w[f"{tip}.{side}"] = k
+    return w
 
 
 def order():
@@ -424,7 +456,7 @@ def cell(kind, style, variant=0):
 
 
 def bare_cells():
-    for k, (w, h) in {"body": (256, 256), "beak": (128, 128), "legs": (128, 64), "eye": (64, 64), "eyering": (32, 32)}.items():
+    for k, (w, h) in {"body": (256, 256), "beak": (128, 128), "legs": (128, 64), "eye": (256, 256) if HERO else (128, 128), "eyering": (32, 32)}.items():
         ATL.request(k, k, None, w, h, 0, {})
 
 
@@ -450,11 +482,8 @@ def paint_atlas(variant=""):
             c = PL.L(B["legs"]) * (0.82 + 0.18 * sc)[..., None]
             a, hh, r, ir = np.ones((h, w)), sc, np.full((h, w), 0.5), np.zeros((h, w))
         elif kind == "eye":
-            yy, xx = np.mgrid[0:h, 0:w] + 0.5
-            rr = np.hypot(xx / w - 0.5, yy / h - 0.5) * 2
-            c = np.where((rr < 0.42)[..., None], PL.L("#050404"), PL.L(B["iris"]) * (0.8 + 0.2 * np.sin(np.arctan2(yy - h / 2, xx - w / 2) * 24))[..., None])
-            c = np.where((rr > 0.95)[..., None], PL.L(B["iris"]) * 0.5, c)
-            a, hh, r, ir = np.ones((h, w)), np.zeros((h, w)), np.full((h, w), 0.05), np.zeros((h, w))
+            c, hh = paint_eye(w, h, B)
+            a, r, ir = np.ones((h, w)), np.full((h, w), 0.04), np.zeros((h, w))
         elif kind == "eyering":
             c = np.broadcast_to(PL.L(B.get("eyering", "#2a2522")), (h, w, 3)).copy()
             a, hh, r, ir = np.ones((h, w)), np.zeros((h, w)), np.full((h, w), 0.45), np.zeros((h, w))
@@ -518,6 +547,33 @@ def body_zs():
     return [-0.056 + (0.0825 + 0.056) * (0.5 - 0.5 * math.cos(math.pi * i / NZ_BODY)) for i in range(NZ_BODY + 1)]
 
 
+def paint_eye(w, h, B):
+    """The eyeball seen along its axis (uv radius = sin of the angle from the axis): pupil, iris with radial fibres
+    and rings, a dark limbal ring, then the dark rest of the ball under the lids."""
+    yy, xx = np.mgrid[0:h, 0:w] + 0.5
+    dx, dy = xx / w - 0.5, yy / h - 0.5
+    rr = np.hypot(dx, dy) * 2
+    ang = np.arctan2(dy, dx)
+    R = np.random.default_rng(zlib.crc32(SPECIES.encode()) % 1000)
+    iris = PL.L(B["iris"])
+    P_R, I_R = 0.28 * B.get("pupil", 1.0), 0.60
+    fib = np.zeros((h, w))
+    for k, amp in ((23, 0.5), (41, 0.3), (67, 0.2)):
+        fib += amp * np.sin(ang * k + R.uniform(0, 6) + 3 * rr)
+    rings = 0.5 + 0.5 * np.sin((rr - P_R) / (I_R - P_R) * math.pi * 5)
+    t = np.clip((rr - P_R) / (I_R - P_R), 0, 1)
+    shade = 0.62 + 0.25 * t + 0.1 * fib * (1 - 0.5 * t) - 0.08 * rings
+    c = iris * shade[..., None]
+    c = c * (1 + 0.35 * np.exp(-((rr - (P_R + 0.05)) / 0.03) ** 2))[..., None]   # the collarette, a paler ring by the pupil
+    lim = np.clip((rr - I_R + 0.05) / 0.08, 0, 1)                                    # limbal ring: the iris darkens to its edge
+    c = c * (1 - 0.7 * lim)[..., None]
+    c = np.where((rr > I_R + 0.06)[..., None], iris * 0.12 + PL.L("#1a1412") * 0.5, c)
+    pup = np.clip((P_R - rr) / 0.02, 0, 1)
+    c = c * (1 - pup)[..., None] + PL.L("#030303") * pup[..., None]
+    hh = np.where(rr < I_R, 0.3 * fib * (rr > P_R), 0.0)
+    return np.clip(c, 0, 1), hh
+
+
 def paint_body(w, h):
     """The skin under the feathers, coloured by tract (seen between feathers and on far LODs)."""
     zs = body_zs()
@@ -565,13 +621,24 @@ def paint_beak(w, h, B):
 
 
 # ====================================================================== mesh builder with skin weights
-PLUMAGE, BARE, EYE = range(3)
+PLUMAGE, BARE, EYE, SKULL = range(4)
 
 
 class SkinBuilder:
+    """faces: (vertex ids, material, uvs, part, zt). part: one card / tube / shell (the lint's unit: faces of one part
+    may touch, two parts must not z-fight); zt: template z of the feather's root for the hero's Skull slot (None: never)."""
+
     def __init__(self):
         self.verts, self.weights, self.faces = [], [], []
         self.w = {"body": 1.0}
+        self.part = 0
+        self.zt = None
+        self.names = {}
+
+    def new_part(self, name="?"):
+        self.part += 1
+        self.names[self.part] = name
+        return self.part
 
     def v(self, p, w=None):
         self.verts.append(tuple(float(c) for c in p))
@@ -579,7 +646,7 @@ class SkinBuilder:
         return len(self.verts) - 1
 
     def f(self, idx, uvs, mat):
-        self.faces.append((tuple(idx), mat, uvs))
+        self.faces.append((tuple(idx), mat, uvs, self.part, self.zt))
 
     def mirror_from(self, start_v, start_f, rename):
         off = len(self.verts) - start_v
@@ -588,13 +655,24 @@ class SkinBuilder:
             self.verts.append((-p[0], p[1], p[2]))
             self.weights.append({rename(k): w for k, w in self.weights[i].items()})
         nf = len(self.faces)
+        poff = self.part + 1
+        top = self.part
         for j in range(start_f, nf):
-            idx, m, uvs = self.faces[j]
-            self.faces.append((tuple(reversed([i + off for i in idx])), m, list(reversed(uvs)) if uvs else None))
+            idx, m, uvs, part, zt = self.faces[j]
+            self.faces.append((tuple(reversed([i + off for i in idx])), m, list(reversed(uvs)) if uvs else None, part + poff, zt))
+            self.names[part + poff] = self.names.get(part, "?") + "_R"
+            top = max(top, part + poff)
+        self.part = top
 
 
 def swap_side(name):
     return name.replace(".L", ".R") if name.endswith(".L") or ".L." in name else name
+
+
+def uvp(item, du, dv):
+    """A rect uv item nudged by (du, dv) cell units: faces that sample one colour still get a real (tiny) uv area, so
+    tangents are defined (zero-area uvs break MikkTSpace tangents and the normal map)."""
+    return ("r", item[1], item[2] + du, item[3] + dv)
 
 
 def blend_w(z):
@@ -690,15 +768,24 @@ def build_body(sb, lod=0):
         idx.append(NZ_BODY)
     na = 10 if lod >= 3 else NA_BODY
     rings = []
+    sb.new_part("body")
     for i in idx:
         z = zall[i]
+        if i == NZ_BODY:   # the front pole (inside the bill's base): one vertex, a fan, no collapsed quads
+            rings.append([sb.v(warp(surf(z, 0.0)), blend_w(z))] * (na + 1))
+            continue
         rings.append([sb.v(warp(surf(z, 2 * math.pi * k / na)), blend_w(z)) for k in range(na + 1)])
     for r in range(len(idx) - 1):
         v0, v1 = idx[r] / NZ_BODY, idx[r + 1] / NZ_BODY
+        sb.zt = zall[idx[r]]
         for k in range(na):
             uv = [ATL.uv_rect("body", k / na, v0), ATL.uv_rect("body", k / na, v1),
                   ATL.uv_rect("body", (k + 1) / na, v1), ATL.uv_rect("body", (k + 1) / na, v0)]
+            if idx[r + 1] == NZ_BODY:
+                sb.f((rings[r][k], rings[r + 1][k], rings[r][k + 1]), [uv[0], ATL.uv_rect("body", (k + 0.5) / na, v1), uv[3]], PLUMAGE)
+                continue
             sb.f((rings[r][k], rings[r + 1][k], rings[r + 1][k + 1], rings[r][k + 1]), uv, PLUMAGE)
+    sb.zt = None
 
 
 def beak_section(t):
@@ -723,6 +810,7 @@ def build_beak_eyes(sb, lod=0):
     nt = 4 if lod >= 3 else 16
     hook = M["beak_hook"]
     for half, (a0, a1), bonew, u0 in (("upper", (0.0, math.pi), {"head": 1.0}, 0.0), ("lower", (math.pi, 2 * math.pi), {"jaw": 1.0}, 0.5)):
+        sb.new_part("beak_" + half)
         rings = []
         for i in range(nt + 1):
             t = i / nt
@@ -741,6 +829,17 @@ def build_beak_eyes(sb, lod=0):
                       ATL.uv_rect("beak", u0 + 0.45 * (k + 1) / n, (i + 1) / nt), ATL.uv_rect("beak", u0 + 0.45 * (k + 1) / n, i / nt)]
                 q = (rings[i][k], rings[i + 1][k], rings[i + 1][k + 1], rings[i][k + 1])
                 sb.f(q, uv, BARE)
+        # the base closed (from the eye, looking down the bill, it is a solid bill, not a hollow shell)
+        if lod < 3:
+            hw, hu, hd, cy, z = beak_section(0.0)
+            # bulging back a little (into the head): seen from the eye end-on it is a solid, convex end; dished in, the
+            # mouth faces at the base would show in front of it
+            cbase = sb.v(warp((0, cy + (0.4 * hu if half == "upper" else -0.4 * hd), z - 0.0012)), bonew)
+            for k in range(n):
+                a_, b_ = rings[0][k], rings[0][k + 1]
+                uvb = [ATL.uv_rect("beak", u0 + 0.45 * k / n, 0.0), ATL.uv_rect("beak", u0 + 0.45 * (k + 0.5) / n, 0.03),
+                       ATL.uv_rect("beak", u0 + 0.45 * (k + 1) / n, 0.0)]
+                face_out(sb, (a_, cbase, b_), uvb, BARE, np.asarray(sb.verts[rings[-1][n // 2]]))
         # tip: the upper mandible may hook over the lower
         hw, hu, hd, cy, z = beak_section(1.0)
         if half == "upper":
@@ -748,44 +847,128 @@ def build_beak_eyes(sb, lod=0):
         else:
             tip = sb.v(warp((0, cy - 0.0004, z - hook * 0.0008)), bonew)
         for k in range(n):
-            sb.f((rings[-1][k], tip, rings[-1][k + 1]), [ATL.uv_rect("beak", u0 + 0.45 * k / n, 0.98)] * 3, BARE)
-        # the cutting edge face, mouth-coloured (seen when the beak opens)
-        for i in range(nt):
-            q = (rings[i][0], rings[i + 1][0], rings[i + 1][n], rings[i][n])
-            sb.f(q if half == "lower" else tuple(reversed(q)), [ATL.uv_rect("beak", 0.97, i / nt)] * 4, BARE)
-    # eyes
+            sb.f((rings[-1][k], tip, rings[-1][k + 1]), [ATL.uv_rect("beak", u0 + 0.45 * k / n, 0.97), ATL.uv_rect("beak", u0 + 0.45 * (k + 0.5) / n, 1.0),
+                                                         ATL.uv_rect("beak", u0 + 0.45 * (k + 1) / n, 0.97)], BARE)
+        # the cutting edge face, mouth-coloured (seen when the beak opens): its own vertices a hair inside each half, so
+        # the two halves' faces don't lie in one plane when the bill is shut
+        sb.new_part("mouth_" + half)
+        inner = []
+        ntm = max(2, int(nt * 0.85))   # short of the tip, where the shells close on each other
+        for i in range(ntm + 1):
+            hw, hu, hd, cy, z = beak_section(max(i / nt, 0.06))   # starting inside the bill, behind its closed base
+            dy = 0.25 * (hu if half == "upper" else -hd)
+            k = 0.85
+            inner.append((sb.v(warp((hw * k, cy + dy, z)), bonew), sb.v(warp((-hw * k, cy + dy, z)), bonew)))
+        for i in range(ntm):
+            q = (inner[i][0], inner[i + 1][0], inner[i + 1][1], inner[i][1])
+            uv = [ATL.uv_rect("beak", 0.955, i / nt), ATL.uv_rect("beak", 0.955, (i + 1) / nt), ATL.uv_rect("beak", 0.995, (i + 1) / nt),
+                  ATL.uv_rect("beak", 0.995, i / nt)]
+            sb.f(q if half == "lower" else tuple(reversed(q)), uv if half == "lower" else list(reversed(uv)), BARE)
     for sx in (1, -1):
-        c = V(sx * EYE_T[0], EYE_T[1], EYE_T[2])
-        r = 0.0029 * M["eye"]
-        nl, na = (3, 5) if lod >= 3 else (8, 12)
-        grid = []
-        for i in range(nl + 1):
-            ph = -math.pi / 2 + math.pi * i / nl
-            row = []
-            for k in range(na + 1):
-                d = V(sx * math.cos(ph) * math.cos(2 * math.pi * k / na), math.sin(ph), math.cos(ph) * math.sin(2 * math.pi * k / na))
-                row.append((sb.v(warp(c + r * d), {"head": 1.0}), d))
-            grid.append(row)
-        for i in range(nl):
-            for k in range(na):
-                q = [grid[i][k], grid[i + 1][k], grid[i + 1][k + 1], grid[i][k + 1]]
-                uv = [ATL.uv_rect("eye", 0.5 + 0.5 * d[2], 0.5 + 0.5 * d[1]) for _, d in q]
-                idx = tuple(g[0] for g in q)
-                sb.f(idx if sx < 0 else tuple(reversed(idx)), uv if sx < 0 else list(reversed(uv)), EYE)
-        if lod >= 3:
-            continue
-        ring_pts = []
-        rr = 0.0031 * M["eye"]
-        wr = 0.82 - 0.25 * M["eyering_w"]
-        for k in range(17):
-            a = 2 * math.pi * k / 16
-            ring_pts.append(c + V(sx * 0.0006, rr * math.cos(a), rr * math.sin(a)) * (1 + 0.3 * M["eyering_w"]))
-        for k in range(16):
-            a, b = ring_pts[k], ring_pts[k + 1]
-            q = [sb.v(warp(a), {"head": 1.0}), sb.v(warp(b), {"head": 1.0}), sb.v(warp(c + (b - c) * wr + V(sx * 0.0008, 0, 0)), {"head": 1.0}),
-                 sb.v(warp(c + (a - c) * wr + V(sx * 0.0008, 0, 0)), {"head": 1.0})]
-            sb.f(tuple(q) if sx > 0 else tuple(reversed(q)), [ATL.uv_rect("eyering", 0.5, 0.5)] * 4, BARE)
+        build_eye(sb, sx, lod)
     sb.w = {"body": 1.0}
+
+
+def face_out(sb, idx, uv, mat, centre):
+    """A face wound so its normal points away from centre (species space)."""
+    P = [np.asarray(sb.verts[i]) for i in idx]
+    nrm_ = np.cross(P[1] - P[0], P[-1] - P[0]) if len(P) == 3 else np.cross(P[2] - P[0], P[3] - P[1])
+    if np.dot(nrm_, sum(P) / len(P) - centre) < 0:
+        idx, uv = tuple(reversed(idx)), list(reversed(uv))
+    sb.f(tuple(idx), uv, mat)
+
+
+EYE_LID = 0.78     # the lid's opening, angle from the eye's axis (rad, ~45 deg)
+
+
+def body_point(q, out=0.0):
+    """The body surface point under a template-space point q (on the ray from the body axis through q), pushed out."""
+    hw, hu, hd, cy = station(q[2])
+    hh = hu if q[1] > cy else hd
+    th = math.atan2((q[1] - cy) / max(hh, 1e-6), q[0] / max(hw, 1e-6))
+    for _ in range(3):   # the superellipse is not a circle: refine the angle once or twice
+        p = surf(q[2], th)
+        d = math.atan2(q[1] - cy, q[0]) - math.atan2(p[1] - cy, p[0])
+        th += d * 0.8
+    return surf(q[2], th) + surf_normal(q[2], th) * out, th
+
+
+def build_eye(sb, sx, lod):
+    """Eyeball: a sphere with a domed cornea over the iris (the glossy Eye material shows it), iris and pupil painted;
+    a lid seat (Bare, the eye ring's colour) from the eyeball out to the skin, so no gap shows around the eye."""
+    r = 0.0029 * M["eye"]
+    ax = V(sx, 0, 0)
+    # set into the head (the eye bone stays the socket): only the cornea's dome stands proud of the skin
+    c = V(sx * EYE_T[0], EYE_T[1], EYE_T[2]) - ax * r * 0.35
+    e1, e2 = V(0, 1, 0), V(0, 0, 1)
+    nl, na = (2, 5) if lod >= 3 else ((11, 22) if HERO else (8, 16))
+
+    def eye_pt(ph, be, k=1.0):
+        dome = 0.11 * smooth(math.cos(0.75), 1.0, math.cos(ph))   # the cornea bulges over the iris
+        d = ax * math.cos(ph) + (e1 * math.cos(be) + e2 * math.sin(be)) * math.sin(ph)
+        return c + d * r * (1 + dome) * k
+
+    def eye_uv(ph, be):
+        rr = math.sin(ph)   # (the back half, inside the head, repeats the front: no squeezed uvs)
+        return ATL.uv_rect("eye", 0.5 + 0.5 * rr * math.sin(be), 0.5 + 0.5 * rr * math.cos(be))
+    sb.new_part("eyeball")
+    # the front of the ball only (to 105 deg from its axis): the rest lies inside the head behind the lid seat, and an
+    # open cap seen from inside is culled by the one-sided eye material, so it never blocks the first-person view
+    PH_END = math.radians(105)
+    phs = [PH_END * i / nl for i in range(nl + 1)]
+    grid = []
+    for i, ph in enumerate(phs):
+        if i == 0:
+            vi = sb.v(warp(eye_pt(ph, 0.0)), {"head": 1.0})
+            grid.append([vi] * (na + 1))
+            continue
+        grid.append([sb.v(warp(eye_pt(ph, 2 * math.pi * k / na)), {"head": 1.0}) for k in range(na + 1)])
+
+    cw = warp(c)
+
+    def put(idx, uv, mat=EYE):
+        face_out(sb, idx, uv, mat, cw)
+    for i in range(nl):
+        for k in range(na):
+            b0, b1 = 2 * math.pi * k / na, 2 * math.pi * (k + 1) / na
+            if i == 0:
+                put((grid[0][k], grid[1][k + 1], grid[1][k]), [eye_uv(0, (b0 + b1) / 2), eye_uv(phs[1], b1), eye_uv(phs[1], b0)])
+            else:
+                put((grid[i][k], grid[i][k + 1], grid[i + 1][k + 1], grid[i + 1][k]),
+                    [eye_uv(phs[i], b0), eye_uv(phs[i], b1), eye_uv(phs[i + 1], b1), eye_uv(phs[i + 1], b0)])
+    if lod >= 3:
+        return
+    # the lid seat: loops from the eyeball's surface at the opening, over a soft rim, down onto the skin
+    nb = 24 if HERO else 16
+    ring_w = 1 + 0.35 * M["eyering_w"]
+    loops = [(EYE_LID, 1.03), (EYE_LID + 0.12, 1.08 + 0.03 * M["eyering_w"]), (EYE_LID + 0.40, 1.10 * ring_w)]
+    pts = []
+    for ph, k in loops:
+        pts.append([eye_pt(ph, 2 * math.pi * j / nb, k) for j in range(nb + 1)])
+    skin = []
+    for j in range(nb + 1):
+        q = eye_pt(EYE_LID + 0.75, 2 * math.pi * j / nb, 1.3 * ring_w)
+        p, _ = body_point(q, -0.0003)
+        skin.append(p)
+    pts.append(skin)
+    vid = [[sb.v(warp(p), {"head": 1.0}) for p in row] for row in pts]
+    for li in range(len(pts) - 1):
+        sb.new_part("lid%d" % li)
+        bare = li < 2
+        if not bare:
+            sb.zt = EYE_T[2]   # the skin round the eye: hidden with the skull in first person
+        for j in range(nb):
+            q = (vid[li][j], vid[li][j + 1], vid[li + 1][j + 1], vid[li + 1][j])
+            if bare:
+                v0, v1 = 0.45 + 0.05 * li, 0.5 + 0.05 * li   # one colour: a thin strip of the cell, about square texels
+                uv = [ATL.uv_rect("eyering", j / nb, v0), ATL.uv_rect("eyering", (j + 1) / nb, v0),
+                      ATL.uv_rect("eyering", (j + 1) / nb, v1), ATL.uv_rect("eyering", j / nb, v1)]
+            else:
+                th = [body_point(pts[li + a][jj])[1] for a, jj in ((0, j), (0, j + 1), (1, j + 1), (1, j))]
+                zz = [pts[li + a][jj][2] for a, jj in ((0, j), (0, j + 1), (1, j + 1), (1, j))]
+                uv = [body_uv_at(z_, t_) for z_, t_ in zip(zz, th)]
+            put(q, uv, BARE if bare else PLUMAGE)
+        sb.zt = None
 
 
 def body_uv_at(z, th):
@@ -796,6 +979,10 @@ def body_uv_at(z, th):
 
 
 def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True, uv_const=None):
+    """close: True (both ends), False, or (start, end): leave out a cap that sits inside another tube (it would lie
+    on that tube's cap)."""
+    c_start, c_end = (close, close) if isinstance(close, bool) else close
+    sb.new_part("tube")
     rings = []
     for i, p in enumerate(pts):
         d = nrm(pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)])
@@ -808,20 +995,27 @@ def tube(sb, pts, radii, weights, mat, n=8, uv_key=None, close=True, uv_const=No
     for i in range(len(rings) - 1):
         for k in range(n):
             uv = None
-            if uv_const is not None:
-                uv = [uv_const] * 4
+            if uv_const is not None:   # one colour, but a small real uv patch (tangents)
+                a0, a1 = 2 * math.pi * k / n, 2 * math.pi * (k + 1) / n
+                e = 0.012
+                uv = [uvp(uv_const, e * math.cos(a0), e * i / len(rings)), uvp(uv_const, e * math.cos(a0), e * (i + 1) / len(rings)),
+                      uvp(uv_const, e * math.cos(a1), e * (i + 1) / len(rings)), uvp(uv_const, e * math.cos(a1), e * i / len(rings))]
             elif uv_key:
                 uv = [ATL.uv_rect(uv_key, k / n, i / len(rings)), ATL.uv_rect(uv_key, k / n, (i + 1) / len(rings)),
                       ATL.uv_rect(uv_key, (k + 1) / n, (i + 1) / len(rings)), ATL.uv_rect(uv_key, (k + 1) / n, i / len(rings))]
             sb.f((rings[i][k], rings[i + 1][k], rings[i + 1][k + 1], rings[i][k + 1]), uv, mat)
-    if close:
+    if c_start or c_end:
         c0 = sb.v(pts[0], weights[0])
         c1 = sb.v(pts[-1], weights[-1])
-        e0 = [uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 0.0)] * 3
-        e1 = [uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 1.0)] * 3
+        b0 = uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 0.06)
+        b1 = uv_const or ATL.uv_rect(uv_key or "legs", 0.5, 0.94)
         for k in range(n):
-            sb.f((c0, rings[0][k + 1], rings[0][k]), e0, mat)
-            sb.f((c1, rings[-1][k], rings[-1][k + 1]), e1, mat)
+            a0, a1 = 2 * math.pi * k / n, 2 * math.pi * (k + 1) / n
+            e = 0.02
+            if c_start:
+                sb.f((c0, rings[0][k + 1], rings[0][k]), [b0, uvp(b0, e * math.cos(a1), e * math.sin(a1)), uvp(b0, e * math.cos(a0), e * math.sin(a0))], mat)
+            if c_end:
+                sb.f((c1, rings[-1][k], rings[-1][k + 1]), [b1, uvp(b1, e * math.cos(a0), e * math.sin(a0)), uvp(b1, e * math.cos(a1), e * math.sin(a1))], mat)
 
 
 FEET = {   # (angle from forward, length, bone) per toe; the order is middle, inner, outer, then the fourth
@@ -842,9 +1036,10 @@ def build_legs(sb, lod=0):
         if lod >= 3:   # far: a stick and three toes
             tube(sb, [knee, ankle, foot], [0.004 * lt, 0.0021 * lt, 0.0018 * lt], [{f"shin.{side}": 1}, {f"tarsus.{side}": 1}, {f"tarsus.{side}": 1}],
                  BARE, n=4, uv_key="legs", close=False)
-            for ang in (0.0, -sx * 0.45, sx * 0.45):
-                d = V(math.sin(ang), 0, math.cos(ang))
-                tube(sb, [foot, foot + d * 0.018 * M["toes"]], [0.0013 * lt, 0.001 * lt], [{f"toes.{side}": 1}] * 2, BARE, n=3, uv_key="legs", close=False)
+            for ang in (0.0, -sx * 0.45, sx * 0.45):   # three front toes: base on toes, the outer half on toetip
+                tp = [toe_point(foot, ang, 0.018, t) for t in (0.0, TOE_JOINT, 1.0)]
+                tube(sb, tp, [0.0013 * lt, 0.00115 * lt, 0.001 * lt], [toe_w("toes", side, t) for t in (0.0, TOE_JOINT, 1.0)], BARE, n=3,
+                     uv_key="legs", close=False)
             continue
         # waders (bare_shin): the feathers stop part way down the shin, the rest is bare skin like the tarsus
         bs = M["bare_shin"]
@@ -863,62 +1058,246 @@ def build_legs(sb, lod=0):
                  0.008 * M["trousers"] ** 0.5, tro, {f"shin.{side}": 1}, segs=2, lift=0.0006 * M["trousers"])
         pts = [ankle + (foot - ankle) * t for t in np.linspace(0, 1, 9)]
         rad = [(0.0021 - 0.0003 * t + 0.00018 * (i % 2)) * lt for i, t in enumerate(np.linspace(0, 1, 9))]
-        tube(sb, pts, rad, [{f"tarsus.{side}": 1}] * 9, BARE, n=8, uv_key="legs")
+        tube(sb, pts, rad, [{f"tarsus.{side}": 1}] * 9, BARE, n=8, uv_key="legs", close=False)   # ends inside the trousers / toes
         toes = FEET[M["foot"]](sx)
         tips = []
+        nts = 9 if lod == 0 else 6
         for (ang, Lt, bn) in toes:
             d = V(math.sin(ang), 0, math.cos(ang))
-            Lt *= M["toes"]
-            pts = [foot + d * Lt * t + V(0, -0.0003 * t, 0) for t in np.linspace(0, 1, 5)]
-            tube(sb, pts, [r * lt for r in (0.0015, 0.0013, 0.0012, 0.0011, 0.0009)], [{f"{bn}.{side}": 1}] * 5, BARE, n=6, uv_key="legs")
+            ts = list(np.linspace(0, 1, nts))
+            pts = [toe_point(foot, ang, Lt, t) for t in ts]
+            pts[0] = foot + V(0, 0.0006, 0) + d * 0.0003   # the root inside the tarsus' end, thin: toes don't share their base shells
+            # rounder, a little thicker, with the scutes' rings (a bend at the joint reads as a toe, not a bent straw)
+            rad = [(0.00165 - 0.0006 * t) * lt * (1 + (0.07 * (1 - 2 * (j % 2)) if lod == 0 and 0 < j < nts - 1 else 0)) for j, t in enumerate(ts)]
+            rad[0] *= 0.45
+            rad[1] *= 0.8
+            tube(sb, pts, rad, [toe_w(bn, side, t) for t in ts], BARE, n=7 if lod == 0 else 6, uv_key="legs", close=(False, True))
             tipp = pts[-1]
             tips.append(tipp)
-            cl = [tipp, tipp + d * 0.0022 * M["claw"] + V(0, -0.0006, 0), tipp + d * 0.0038 * M["claw"] + V(0, -0.0016, 0)]
-            tube(sb, cl, [0.0009 * lt, 0.0006 * lt, 0.0001], [{f"{bn}.{side}": 1}] * 3, BARE, n=5, uv_key="eyering")
+            tipw = toe_w(bn, side, 1.0)
+            # the claw starts inside the toe's tip (its base cap hidden, not lying on the toe's end cap)
+            cl = [tipp - d * 0.0007, tipp + d * 0.0003, tipp + d * 0.0022 * M["claw"] + V(0, -0.0006, 0), tipp + d * 0.0038 * M["claw"] + V(0, -0.0016, 0)]
+            tube(sb, cl, [0.0004 * lt, 0.0009 * lt, 0.0006 * lt, 0.00012], [tipw] * 4, BARE, n=5, uv_key="eyering", close=(False, True))
         if M["webbed"] or M["foot"] == "toti":  # webs between the front toes (the cormorant: all four), both faces
             pairs = ((3, 1), (1, 0), (0, 2)) if M["foot"] == "toti" else ((1, 0), (0, 2))
             for a_, b_ in pairs:
                 for t0, t1 in ((0.0, 0.5), (0.5, 0.95)):
                     pa0, pa1 = foot + (tips[a_] - foot) * t0, foot + (tips[a_] - foot) * t1
                     pb0, pb1 = foot + (tips[b_] - foot) * t0, foot + (tips[b_] - foot) * t1
-                    q = [sb.v(p + V(0, -0.0002, 0), {f"toes.{side}": 1}) for p in (pa0, pa1, pb1, pb0)]
-                    uv = [ATL.uv_rect("legs", 0.5, 0.5)] * 4
-                    sb.f(tuple(q), uv, BARE)
-                    sb.f(tuple(reversed(q)), uv, BARE)
+                    sb.new_part("web")
+                    wa, wb = toes[a_][2], toes[b_][2]
+                    q = [sb.v(p + V(0, -0.0002, 0), toe_w(bn_, side, tt)) for p, tt, bn_ in ((pa0, t0, wa), (pa1, t1, wa), (pb1, t1, wb), (pb0, t0, wb))]
+                    uv = [ATL.uv_rect("legs", 0.3, t0), ATL.uv_rect("legs", 0.3, t1), ATL.uv_rect("legs", 0.7, t1), ATL.uv_rect("legs", 0.7, t0)]
+                    if t0 == 0.0:   # at the foot both edges start in one point: a triangle
+                        q, uv = q[:3], [ATL.uv_rect("legs", 0.5, 0.0)] + uv[1:3]
+                    sb.f(tuple(q), uv, BARE)   # one face: the Bare material is two-sided
         sb.w = {"body": 1.0}
 
 
 # ---------------------------------------------------------------- feather cards
+THIN_Q = float(os.environ.get('BIRD_THIN_Q', 0.85))
+SMALL = 1.0
 SKIP = set(os.environ.get("BIRD_SKIP", "").split(","))   # debugging: leave out cards of these kinds
 
 
-def card(sb, root, d, up, Lc, Wc, key, weights, segs=5, camber=0.0, flip=False, lift=0.0, tw=0.0, mat=PLUMAGE):
+def card(sb, root, d, up, Lc, Wc, key, weights, segs=5, camber=0.0, flip=False, lift=0.0, tw=0.0, mat=PLUMAGE,
+         vane=None, xcam=0.0, ridge=None, thick=0.0, shingle=0.0, cols=None):
+    """A feather card from root along d (up: its upper side). camber bends it along its length (t^2), lift raises it
+    linearly, tw twists it. A flight feather (vane = its atlas kind) gets a real cross-section: cropped to its own vane
+    outline (outer vane narrower), cambered across (xcam: the vane falls from the rachis to the edges, a fraction of the
+    half-width), a raised rachis (ridge), and with thick > 0 a second, under layer (reversed) so edge-on it has a body.
+    shingle: the outer edge (s < 0 side) raised by this much and the other lowered, so neighbours in a row overlap like
+    tiles instead of lying in one plane."""
     if key.split(":")[0] in SKIP:
         return
+    sb.new_part(key.split(":")[0])
     d, up = nrm(d), nrm(up)
     side = nrm(np.cross(d, up))
     up = nrm(np.cross(side, d))
-    rows = []
-    for i in range(segs + 1):
-        t = i / segs
-        row = []
-        for s in (-1.0, 0.0, 1.0):
-            p = root + d * Lc * t + side * (-s) * Wc * 0.5 + up * (camber * t * t + lift * t - 0.0005 * abs(s) * min(1, t * 3) * (Wc / 0.01) ** 0.5 + tw * s * t)
+    kw = (Wc / 0.01) ** 0.5
+    if cols is None:
+        cols = (-1.0, 0.0, 1.0) if vane is None else (-1.0, -0.55, -0.12, 0.0, 0.12, 0.55, 1.0)
+    rh = 0.00025 * kw if ridge is None else ridge
+    shp = SHAPE.get(vane, {}) if vane else {}
+
+    def extent(t):
+        """the widest the outline gets between this row and its neighbours: the straight edges between rows then
+        always enclose the painted feather (a round tip stays round, never cut to a point)"""
+        if vane is None:
+            return 1.0, 1.0
+        ts = np.linspace(max(0.0, t - 1.0 / segs), min(1.0, t + 1.0 / segs), 7)
+        o = max(PL.vane_extent(vane, x, shp)[0] for x in ts)
+        i = max(PL.vane_extent(vane, x, shp)[1] for x in ts)
+        return (i, o) if flip else (o, i)    # geometric -s side is the uv's outer vane unless the uv is flipped
+
+    def pos(s, t, below=0.0):
+        h = camber * t * t + lift * t + tw * s * t - shingle * s
+        if vane is None:
+            h += -0.0005 * abs(s) * min(1, t * 3) * kw
             if s == 0:
-                p = p + up * 0.00025 * (Wc / 0.01) ** 0.5
-            row.append(sb.v(p, weights))
-        rows.append(row)
-    for i in range(segs):
-        for j in range(2):
-            s0, s1 = -1 + j, j
-            uv = [ATL.uv(key, s0, i / segs, flip), ATL.uv(key, s0, (i + 1) / segs, flip), ATL.uv(key, s1, (i + 1) / segs, flip), ATL.uv(key, s1, i / segs, flip)]
-            sb.f((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]), uv, mat)
+                h += rh
+        else:
+            h += -xcam * Wc * 0.5 * s * s * min(1.0, 0.25 + t * 3)
+            if s == 0 and below == 0:
+                h += rh * (1 - 0.75 * t)
+        # the under layer closes in toward the root (where neighbours crowd and the coverts hide it)
+        return root + d * Lc * t + side * (-s) * Wc * 0.5 + up * (h - below * (0.25 + 0.75 * smooth(0.0, 0.35, t)))
+
+    def layer(cs, below, rev):
+        rows = []
+        for i in range(segs + 1):
+            t = i / segs
+            lo, hi = extent(t)
+            row = []
+            for c in cs:
+                s = c * lo if c < 0 else c * hi
+                row.append((sb.v(pos(s, t, below), weights), s))
+            rows.append(row)
+        for i in range(segs):
+            for j in range(len(cs) - 1):
+                q = (rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1])
+                tt = (i / segs, (i + 1) / segs, (i + 1) / segs, i / segs)
+                uv = [ATL.uv(key, sv, t_, flip) for (_, sv), t_ in zip(q, tt)]
+                idx = tuple(v for v, _ in q)
+                if rev:
+                    sb.f(tuple(reversed(idx)), list(reversed(uv)), mat)
+                else:
+                    sb.f(idx, uv, mat)
+    layer(cols, 0.0, False)
+    if thick > 0:   # the under layer: the vane's middle (under a neighbour's overlapping edge there is one layer only)
+        layer((-0.6, -0.3, 0.0, 0.3, 0.6), thick, True)
+
+
+def warp_jac(p, e=1e-4):
+    return np.column_stack([(warp(p + V(*d) * e) - warp(p - V(*d) * e)) / (2 * e) for d in ((1, 0, 0), (0, 1, 0), (0, 0, 1))])
+
+
+def place_card(sb, s0, root, flow, nn, extra=0.0):
+    """Carry a body feather built in template space onto the species: rigidly at its root (scaled), not vertex by
+    vertex through the warp, which squashes or shears it where the neck is short or long (a squashed feather reads
+    as a stretched texture). It keeps its own proportions at the local mean scale (build_contour spaces rings and
+    cards by the local stretch instead), and each vertex keeps its template height over the skin, measured to the
+    warped skin under it (a bending neck would otherwise sink cards into it or stand them off). extra: a lift off
+    the skin in species units."""
+    J = warp_jac(root)
+    side = nrm(np.cross(flow, nn))
+    jf, js = J @ flow, J @ side
+    lf, ls = np.linalg.norm(jf), np.linalg.norm(js)
+    g = math.sqrt(lf * ls)
+    F = nrm(jf)
+    N = nrm(np.linalg.inv(J).T @ nn)
+    N = nrm(N - F * np.dot(N, F))
+    Sd = np.cross(N, F)
+    if np.dot(Sd, js) < 0:
+        Sd = -Sd
+    sf, ss = g, g
+    w0 = warp(root)
+    for vi in range(s0, len(sb.verts)):
+        qt = np.asarray(sb.verts[vi])
+        q = qt - root
+        v = w0 + F * sf * np.dot(q, flow) + Sd * ss * np.dot(q, side)
+        # its height over the skin as it was in template space (scaled), measured to the warped skin under it: the
+        # rigid placement alone would let a card on a bending neck sink into the skin or stand off it
+        sp, th_ = body_point(qt)
+        ht = float(np.dot(qt - sp, surf_normal(sp[2], th_)))
+        sw = warp(sp)
+        v = v + N * (np.dot(sw - v, N) + ht * max(g, 0.85) + extra)   # (a squeezed spot keeps its layers apart)
+        sb.verts[vi] = tuple(v)
+
+
+def seg_dist(p, a, b):
+    ab = b - a
+    t = min(1.0, max(0.0, float(np.dot(p - a, ab) / (np.dot(ab, ab) + 1e-12))))
+    return float(np.linalg.norm(p - (a + ab * t)))
 
 
 def spacing(points, i):
     a = points[max(i - 1, 0)]
     b = points[min(i + 1, len(points) - 1)]
     return np.linalg.norm(b - a) / (2 if 0 < i < len(points) - 1 else 1)
+
+
+FL_XCAM = 0.12      # flight feathers: the vane's fall from the rachis to the edge, a fraction of the half-width
+FL_RIDGE = 0.0003   # their rachis ridge (template m, times the wing factor)
+
+
+def feather_thick():
+    """The gap between a flight feather's upper and lower layer, template m (about 0.4 mm on a starling, 0.6-0.9 mm on
+    a gull or swan once scaled)."""
+    return 0.0004 / max(S, 0.2) ** 0.6
+
+
+def flight_args(lod):
+    """card() keywords for a flight feather at this LOD: LOD0 two layers, cambered, a rachis ridge; LOD1-2 one cambered
+    layer; LOD3 the plain card (thousands of flock birds)."""
+    def f(kind, k):
+        if lod >= 3:
+            return dict(shingle=0.00025 * k)
+        if lod == 0:
+            return dict(vane=kind, xcam=FL_XCAM, ridge=FL_RIDGE * k, thick=feather_thick(), shingle=0.00025 * k)
+        return dict(vane=kind, xcam=FL_XCAM, ridge=FL_RIDGE * k, cols=(-1.0, 0.0, 1.0), shingle=0.00025 * k)
+    return f
+
+
+def flight_under(lod, k):
+    """How far below a flight feather's rachis line its underside reaches (the under layer)."""
+    return (feather_thick() if lod == 0 else 0.0) + 0.0002 * k
+
+
+class HField:
+    """Plan-view height field of a wing's surface (template x/z -> the highest top laid so far)."""
+    RES = 0.0005
+
+    def __init__(self):
+        self.h = {}
+
+    def _pts(self, root, d, side, L, Wc, ts=None):
+        nt = max(3, int(L / self.RES) + 1)
+        ns = max(3, int(Wc / self.RES) + 1)
+        ts = np.linspace(0, 1, nt) if ts is None else np.asarray(ts)
+        ss = np.linspace(-1, 1, ns)
+        T, Sg = np.meshgrid(ts, ss, indexing="ij")
+        P = root[None, None, :] + d[None, None, :] * (L * T)[..., None] + side[None, None, :] * (Sg * Wc * 0.5)[..., None]
+        return T, np.round(P[..., 0] / self.RES).astype(int), np.round(P[..., 2] / self.RES).astype(int)
+
+    def stamp(self, root, d, side, L, Wc, hfun):
+        T, ix, iz = self._pts(root, d, side, L, Wc)
+        for t, a, b in zip(T.ravel(), ix.ravel(), iz.ravel()):
+            v = hfun(t)
+            if v > self.h.get((a, b), -1e9):
+                self.h[(a, b)] = v
+
+    def at(self, root, d, side, L, Wc, t, dt=0.06):
+        T, ix, iz = self._pts(root, d, side, L, Wc, ts=np.linspace(max(0, t - dt), min(1, t + dt), 3))
+        vals = [self.h.get((a, b), -1e9) for a, b in zip(ix.ravel(), iz.ravel())]
+        return max(vals)
+
+
+SHINGLE = 0.0004   # coverts: the outer edge raised / inner edge lowered by this (times the wing factor)
+
+
+def lay_card(sb, field, r, d, up, off, L, Wc, key, weights, ck, gap, lod, segs=2, vane=None, below=False, floor=(-1e9, -1e9)):
+    """A covert on the height field `field`: root at r + off (x/z), straight, a gap above everything under its
+    footprint (below=True: under, the field holding depths). Returns its stamp (root, d, side, L, Wc, top(t))."""
+    sg = -1.0 if below else 1.0
+    base = r + V(off[0], 0, off[2])
+    side = nrm(np.cross(d, V(0, 1, 0)))
+    ts = np.linspace(0, 1, 6)
+    hs = np.array([field.at(base, d, side, L, Wc * 0.5, t) for t in ts]) + gap
+    ok = hs > -1e8
+    # a straight card over everything under it, its slope held to what a covert does (it lies on the wing: down to
+    # its tip by at most ~12 deg, never rising), so no row stands up off the wing where the field is empty
+    b_ = float(np.clip(hs[ok][-1] - hs[ok][0], -0.2 * L, 0.0)) if ok.sum() >= 2 else 0.0
+    a_ = max(float(np.max(hs[ok] - b_ * ts[ok])) if ok.any() else -1e9, sg * r[1] + gap, floor[0])
+    root = V(base[0], sg * a_, base[2])
+    tipp = V(base[0] + d[0] * L, sg * (a_ + b_), base[2] + d[2] * L)
+    dd = nrm(tipp - root)
+    kw = dict(segs=segs, shingle=SHINGLE * ck)
+    if vane and lod < 3:
+        kw.update(vane=vane, xcam=0.07, cols=(-1.0, -0.5, 0.0, 0.5, 1.0) if lod <= 1 else (-1.0, 0.0, 1.0))
+    card(sb, root, dd, up, float(np.linalg.norm(tipp - root)), Wc, key, weights, **kw)
+    ridge = 0.00025 * (Wc / 0.01) ** 0.5 + SHINGLE * ck   # its ridge and the shingle's raised edge
+    return (base, d, side, L, Wc, lambda t, a_=a_, b_=b_: a_ + b_ * t + ridge), (a_, a_ + b_)  # floor: root only
 
 
 def build_wing(sb, lod=0):
@@ -936,49 +1315,90 @@ def build_wing(sb, lod=0):
     chain = [c + V(0, -0.0012, 0) * kr for c in chain]
     tube(sb, chain, [(r[1] * kr * 0.62, r[0] * kr * 0.62) for r in rad], wts, PLUMAGE, n=4 if lod >= 3 else 10,
          uv_const=body_uv_at(0.015, math.pi * 0.3))   # the arm wears the shoulder's plumage
-    fseg = 2 if lod >= 3 else None
+    fseg = 2 if lod >= 3 else (None if lod == 0 else 4)
     proots = [p_root(i) for i in range(P_N)]
     sroots = [s_root(i) for i in range(S_TOTAL)]
     pw = M["prim_width"]
+    FL = flight_args(lod)
     for i in range(P_N):
         Lp = W["P_LEN"][i]
         wc = max(Lp * 96 / 576 * 1.05 * pw, spacing(proots, i) * 2.0)
-        card(sb, proots[i], p_dir(i), up, Lp, wc, cell("primary", tract("primary", i)), {f"p{i + 1}.L": 1}, camber=-0.004 * k, segs=fseg or (9 if HERO else 6))
+        card(sb, proots[i], p_dir(i), up, Lp, wc, cell("primary", tract("primary", i)), {f"p{i + 1}.L": 1}, camber=-0.004 * k,
+             segs=fseg or (8 if HERO else 5), **FL("primary", k))
     for i in range(S_TOTAL):
         kind = "tertial" if i >= S_N else "secondary"
         cw = max(W["S_LEN"][i] * (96 / 416 if kind == "tertial" else 96 / 480) * 1.08 * M["sec_width"], spacing(sroots, i) * 2.2)
         nm = tract(kind, i - S_N if kind == "tertial" else i)
-        card(sb, sroots[i], s_dir(i), up, W["S_LEN"][i], cw, cell(kind, nm), {f"s{i + 1}.L": 1}, camber=-0.002 * k, segs=fseg or (8 if HERO else 5))
+        card(sb, sroots[i], s_dir(i), up, W["S_LEN"][i], cw, cell(kind, nm), {f"s{i + 1}.L": 1}, camber=-0.002 * k,
+             segs=fseg or (8 if HERO else 5), **FL(kind, k))
+    # the coverts: rows that shingle over the flight feathers like roof tiles. Every row is laid on a height field of
+    # everything under it (plan x/z -> top height), a gap above, sloping from the arm down to its tip: the wing reads
+    # as one smooth airfoil (not a stack of shelves), and no covert lies in the plane of a feather under it
     ck = k * M["sec"]
+    under = flight_under(lod, k)
+    top, bot = HField(), HField()
+    sides = lambda d, u: nrm(np.cross(d, u))   # noqa: E731
+    for i in range(P_N):
+        Lp = W["P_LEN"][i]
+        wc = max(Lp * 96 / 576 * 1.05 * pw, spacing(proots, i) * 2.0)
+        r = proots[i]
+        top.stamp(r, p_dir(i), sides(p_dir(i), up), Lp, wc * 0.8, lambda t, r=r: r[1] + FL_RIDGE * k)
+        bot.stamp(r, p_dir(i), sides(p_dir(i), up), Lp, wc * 0.8, lambda t, r=r, wc=wc: -(r[1] - under - FL_XCAM * wc * 0.5))
     for i in range(S_TOTAL):
-        r, d = sroots[i], s_dir(i)
-        fwd = V(0, 0, 0.003) * ck
-        gw = max(0.026 * 128 / 384 * 1.25 * ck, spacing(sroots, i) * 2.0)
-        card(sb, r + fwd + V(0, 0.0022, 0) * ck, d, up, 0.026 * ck * M["covert"], gw, cell("gcovert", tract("gcovert", i)), {f"s{i + 1}.L": 1},
-             camber=-0.0015 * ck, segs=fseg or 3)
-        if lod >= 3:
-            continue
-        if lod <= 1:
-            card(sb, r + fwd * 2.2 + V(0, 0.0034, 0) * ck, d, up, 0.016 * ck * M["covert"], max(0.0105 * ck, spacing(sroots, i) * 1.8),
-                 cell("contour", tract("mcovert", i), i % 2), {f"s{i + 1}.L": 1}, camber=-0.001 * ck, segs=2)
-            for row in range(2):
-                card(sb, r + fwd * (3.4 + 1.2 * row) + V(0.001 * row, 0.0041 + 0.0006 * row, 0) * ck, d, up, (0.010 - 0.002 * row) * ck,
-                     max(0.0075 * ck, spacing(sroots, i) * 1.6), cell("contour", tract("lcovert", i), (i + row) % 2), {f"s{i + 1}.L": 1},
-                     camber=-0.0006 * ck, segs=2)
-        card(sb, r + V(0, -0.0032, 0.001) * ck, d, V(0, -1, 0), 0.024 * ck, max(0.009 * ck, spacing(sroots, i) * 1.9),
-             cell("underwing", tract("underwing", i)), {f"s{i + 1}.L": 1}, camber=0.001 * ck, segs=2)
-    for i in range(P_N if lod < 3 else 0):
-        r, d = proots[i], p_dir(i)
-        sp = spacing(proots, i)
-        card(sb, r + V(0, 0.0026, 0.002) * k - d * 0.002 * k, d, up, 0.022 * k * M["covert"], max(0.022 * 128 / 320 * 1.2 * k, sp * 2.0),
-             cell("pcovert", tract("pcovert", i)), {f"p{i + 1}.L": 1}, camber=-0.001 * k, segs=3)
-        if lod <= 1:
-            card(sb, r + V(0, 0.0036, 0.004) * k - d * 0.003 * k, d, up, 0.011 * k, max(0.008 * k, sp * 1.6), cell("contour", tract("lcovert"), i % 2),
-                 {f"p{i + 1}.L": 1}, segs=2)
-        card(sb, r + V(0, -0.003, 0.001) * k, d, V(0, -1, 0), 0.02 * k, max(0.008 * k, sp * 1.8), cell("underwing", tract("underwing")), {f"p{i + 1}.L": 1}, segs=2)
+        cw = W["S_LEN"][i] * 0.23
+        r = sroots[i]
+        top.stamp(r, s_dir(i), sides(s_dir(i), up), W["S_LEN"][i], cw * 0.8, lambda t, r=r: r[1] + FL_RIDGE * k)
+        bot.stamp(r, s_dir(i), sides(s_dir(i), up), W["S_LEN"][i], cw * 0.8, lambda t, r=r, cw=cw: -(r[1] - under - FL_XCAM * cw * 0.5))
+    rows = []   # per row: [(root, d, off, L, Wc, key, weights, kw)]
+    gk = [(sroots[i], s_dir(i), V(0, 0, 0.003) * ck, 0.026 * ck * M["covert"], max(0.026 * 128 / 384 * 1.25 * ck, spacing(sroots, i) * 2.0),
+           cell("gcovert", tract("gcovert", i)), {f"s{i + 1}.L": 1}, dict(segs=fseg or 3, vane="gcovert" if lod < 3 else None)) for i in range(S_TOTAL)]
+    if lod < 3:
+        gk += [(proots[i], p_dir(i), V(0, 0, 0.002) * k - p_dir(i) * 0.002 * k, 0.022 * k * M["covert"],
+                max(0.022 * 128 / 320 * 1.2 * k, spacing(proots, i) * 2.0), cell("pcovert", tract("pcovert", i)), {f"p{i + 1}.L": 1},
+                dict(segs=3, vane="pcovert")) for i in range(P_N)]
+    rows.append(gk)
+    if lod <= 1:
+        rows.append([(sroots[i], s_dir(i), V(0, 0, 0.0066) * ck, 0.016 * ck * M["covert"], max(0.0105 * ck, spacing(sroots, i) * 1.8),
+                      cell("contour", tract("mcovert", i), i % 2), {f"s{i + 1}.L": 1}, dict(segs=2)) for i in range(S_TOTAL)]
+                    + [(proots[i], p_dir(i), V(0, 0, 0.004) * k - p_dir(i) * 0.003 * k, 0.011 * k, max(0.008 * k, spacing(proots, i) * 1.6),
+                        cell("contour", tract("lcovert"), i % 2), {f"p{i + 1}.L": 1}, dict(segs=2)) for i in range(P_N)])
+        for row in range(2):
+            rows.append([(sroots[i], s_dir(i), V(0.001 * row, 0, 0.0102 + 0.0036 * row) * ck, (0.010 - 0.002 * row) * ck,
+                          max(0.0075 * ck, spacing(sroots, i) * 1.6), cell("contour", tract("lcovert", i), (i + row) % 2), {f"s{i + 1}.L": 1},
+                          dict(segs=2)) for i in range(S_TOTAL)])
+    gap = 0.00045 * ck
+
+    def lay_row(row, field, upv, below):
+        """A row's cards in tiling order (outer to inner: secondaries s1 -> body, primaries p10 -> p1; under the wing the
+        other way), each root never lower than the one before: with the shingle's tilt the inner card always lies on
+        its outer neighbour. Stamped once the whole row is down (a row's cards lie side by side, not stacked)."""
+        groups = {}
+        for item in row:
+            name = next(iter(item[6]))
+            groups.setdefault(name[0], []).append(item)
+        stamps = []
+        for g, items in groups.items():
+            if g == "p":
+                items = items[::-1]
+            if below and os.environ.get("BIRD_UW_REV"):
+                items = items[::-1]
+            fl = (-1e9, -1e9)
+            for rt, d, off, L, Wc, key, w, kw in items:
+                st_, fl = lay_card(sb, field, rt, d, upv, off, L, Wc, key, w, ck, gap, lod, below=below, floor=fl, **kw)
+                stamps.append(st_)
+        for args in stamps:
+            field.stamp(*args)
+    for row in rows:
+        lay_row(row, top, up, False)
+    if lod < 3:   # underwing coverts: the same, under the flight feathers (below their lower layer and drooping edges)
+        uw = [(sroots[i], s_dir(i), V(0, 0, 0.001) * ck, 0.024 * ck, max(0.009 * ck, spacing(sroots, i) * 1.9), cell("underwing", tract("underwing", i)),
+               {f"s{i + 1}.L": 1}) for i in range(S_TOTAL)]
+        uw += [(proots[i], p_dir(i), V(0, 0, 0.001) * k, 0.02 * k, max(0.008 * k, spacing(proots, i) * 1.8), cell("underwing", tract("underwing")),
+                {f"p{i + 1}.L": 1}) for i in range(P_N)]
+        lay_row([u + (dict(segs=2),) for u in uw], bot, V(0, -1, 0), True)
     for j in range(3 if lod < 3 else 0):
-        card(sb, W["WRIST"] + V(0.002 * j, 0.004 + 0.0004 * j, 0.004) * k, nrm(V(1, 0, 0.25 - 0.1 * j)), up, (0.016 - 0.002 * j) * k, 0.006 * k,
-             cell("alula", tract("alula")), {"hand.L": 1}, segs=3)
+        card(sb, W["WRIST"] + V(0.002 * j, 0.004 + 0.0009 * j, 0.004) * k, nrm(V(1, 0, 0.25 - 0.1 * j)), up, (0.016 - 0.002 * j) * k, 0.006 * k,
+             cell("alula", tract("alula")), {"hand.L": 1}, segs=3, shingle=0.0003 * k)
     for row in range(2 if lod < 3 else 0):   # scapulars: two overlapping rows from the shoulder back over the folded wing's base
         for j in range(5):
             r = W["SHOULDER"] + V(-0.006 + 0.0035 * j + 0.002 * row, 0.0058 - 0.0008 * row, 0.006 - 0.007 * row) * M["body_w"]
@@ -996,43 +1416,68 @@ def build_tail(sb, lod=0):
             wd = (0.064 - 0.0012 * k) * M["tail"] * 96 / 528 * 1.15 * M["tail_width"]
             if k == TF_N - 1 and M["streamer"] > 0:
                 wd *= 0.8
-            card(sb, h + V(0, 0.0004 * (TF_N - k), 0), d, V(0, 1, 0), Lt, wd, cell("tail", tract("tail", k)), {f"tf.{side}.{k + 1}": 1},
-                 camber=0.0015, segs=2 if lod >= 3 else (6 if Lt > 0.07 else 5), flip=(sx < 0))
+            card(sb, h + V(0, 0.0007 * (TF_N - k) - (0.00035 if side == "R" else 0.0), 0), d, V(0, 1, 0), Lt, wd, cell("tail", tract("tail", k)), {f"tf.{side}.{k + 1}": 1},
+                 camber=0.0015, segs=2 if lod >= 3 else ((6 if Lt > 0.07 else 5) if lod == 0 else 4), flip=(sx < 0),
+                 **(dict(flight_args(lod)("tail", 1.0), xcam=0.08) if lod < 3 else flight_args(lod)("tail", 1.0)))
     if lod >= 3:
         return
     for k in range(6):
-        for sx in (1, -1):
-            r = warp(V(sx * 0.003 * k, 0.0455, -0.040))
+        for sx in ((1,) if k == 0 else (1, -1)):   # the central one once (two would lie in one place)
+            # the central ones lowest (outermost under the tail, seen from below), each pair's right one a step under
+            r = warp(V(sx * 0.003 * k, 0.0455 - 0.00018 * SMALL * (6 - k) - (0.0001 * SMALL if sx < 0 else 0.0), -0.040))
             card(sb, r, nrm(V(sx * 0.1 * k, 0.05, -1)), V(0, -1, 0), (0.026 - 0.002 * k) * M["tail"] ** 0.5 * M["body_len"], 0.012 * M["body_w"],
-                 cell("contour", tract("undertail"), k % 2), {"tail": 1}, segs=3)
+                 cell("contour", tract("undertail"), k % 2), {"tail": 1}, segs=3, shingle=0.0002 * sx)
     for k in range(5):  # uppertail coverts over the tail base
-        for sx in (1, -1):
-            r = warp(V(sx * 0.0028 * k, 0.0555, -0.036))
+        for sx in ((1,) if k == 0 else (1, -1)):
+            r = warp(V(sx * 0.0028 * k, 0.0555 + 0.00018 * SMALL * (5 - k) + (0.0001 * SMALL if sx < 0 else 0.0), -0.036))
             card(sb, r, nrm(V(sx * 0.08 * k, -0.08, -1)), V(0, 1, 0), (0.022 - 0.002 * k) * M["tail"] ** 0.5 * M["body_len"], 0.012 * M["body_w"],
-                 cell("contour", resolve("uppertail"), k % 2), {"tail": 1}, segs=2, lift=0.0005)
+                 cell("contour", resolve("uppertail"), k % 2), {"tail": 1}, segs=2, lift=0.0005, shingle=0.0002 * sx)
 
 
 def build_contour(sb, lod=0):
     n = 0
     z = -0.052
     fl = M["fluff"] * (1.35 if lod == 1 else 1.0)
+    ec = [V(sx * EYE_T[0], EYE_T[1], EYE_T[2]) for sx in (1, -1)]
+    ring = -1
+    er = 0.0029 * M["eye"]
     while z < 0.0775:
         Lc = 0.017 if z < -0.02 else (0.015 if z < 0.03 else (0.011 if z < 0.05 else 0.0072))
         if z > 0.068:
             Lc = 0.0058
+        head = z > 0.044
+        if head and lod == 0:   # head and neck: more, smaller feathers, so the head reads round and soft close up
+            Lc *= 0.9 if HERO else 0.85
         Lc *= fl
         hw, hu, hd, cy = station(z)
         per = math.pi * (hw + (hu + hd) / 2)
         Wc = Lc * 0.8
-        kk = max(6, int(per / (Wc * (0.22 if HERO else 0.45))))
+        # the species' warp stretches some rings (a swan's neck) and squeezes others: keep the feathers isotropic there
+        # (place_card scales them by the local mean) and space rings and cards by the local stretch instead
+        Jr = warp_jac(surf(z, math.pi / 2))
+        lz, lc = np.linalg.norm(Jr[:, 2]), np.linalg.norm(Jr[:, 0])
+        gr = math.sqrt(lz * lc)
+        kz, kc = min(max(lz / gr, 0.25), 4.0), min(max(lc / gr, 0.25), 4.0)
+        kk = max(6, int(per * kc / (Wc * (0.3 if HERO else 0.45))))
+        kk += kk % 2   # even: the alternating lift below closes round the ring without two equal neighbours
         phase = rng.uniform(0, 1)
+        ring += 1
         for j in range(kk):
             th = 2 * math.pi * (j + phase + rng.uniform(-0.2, 0.2)) / kk
-            zz = z + rng.uniform(-0.15, 0.15) * Lc
+            zz = z + rng.uniform(-0.06, 0.06) * Lc / kz   # (less than half a ring step: rings never land on each other)
             p = surf(zz, th)
-            if any(np.linalg.norm(p - V(sx * EYE_T[0], EYE_T[1], EYE_T[2])) < 0.0050 * M["eye"] for sx in (1, -1)):   # keep the eye clear
+            if any(np.linalg.norm(p - e) < 0.0036 * M["eye"] for e in ec):   # keep the eye clear (up to its lid)
                 continue
             if zz > 0.0785:
+                continue
+            # where the warp squeezes the skin more here than at the ring's top (a short neck's throat and face), the
+            # ring's cards crowd: keep only the share the skin has room for, so no two lie in one plane
+            e = 1e-4
+            Jp = warp_jac(p)
+            tz = (surf(zz + e, th) - surf(zz - e, th)) / (2 * e)
+            tc = (surf(zz, th + e) - surf(zz, th - e)) / (2 * e)
+            q = (np.linalg.norm(Jp @ nrm(tz)) * np.linalg.norm(Jp @ nrm(tc))) / (lz * lc)
+            if q < THIN_Q and rng.random() > (q / THIN_Q) ** 1.5:
                 continue
             stname = style_for(zz, th)
             st = PLUM["styles"][stname]
@@ -1044,24 +1489,47 @@ def build_contour(sb, lod=0):
             flow = nrm(back / (np.linalg.norm(back) + 1e-9) + down)
             flow = nrm(flow - nn * np.dot(flow, nn))
             Ls = Lc * rng.uniform(0.85, 1.15)
-            root = p - flow * Ls * 0.28 - nn * 0.0004
-            # card in template space, then warped vertex by vertex: it follows the species' shape
+            # a feather in front of the eye must not lie over it: shorten it until its shaft clears the eyeball
+            for _ in range(4):
+                root = p - flow * Ls * 0.28 - nn * 0.0007
+                if all(seg_dist(e, root, root + flow * Ls) > er * 1.05 for e in ec):
+                    break
+                Ls *= 0.75
+            else:
+                continue
+            # bend it along its length with the body's own curvature, so on a small round head the tip lies on the
+            # feathers behind instead of standing off as a flat chip
+            # (measured from the root's own tangent: the card then keeps a steady rise above the surface from root to
+            # tip, so the cards of the rings behind, which it overlaps, stay under it all along)
+            root_s = body_point(p - flow * Ls * 0.28)[0]
+            tip_l = root_s + flow * Ls
+            dev = float(np.dot(body_point(tip_l)[0] - tip_l, nn))
+            # only on the head and upper neck (small radius: there a flat card stands off as a chip); clamped, so a card
+            # never bends into the skin
+            bend = max(min(0.0, dev), -0.0009) if zz > 0.046 else 0.0
             w = blend_w(zz)
             key = cell("contour", stname, rng.randrange(2))
             s0 = len(sb.verts)
-            card(sb, root, flow, nn, Ls, Wc * rng.uniform(0.9, 1.1), key, w, segs=2, lift=(0.0005 + 0.0003 * rng.random()) * st.get("loft", 1.0),
-                 flip=rng.random() < 0.5)
+            sb.zt = zz
+            sh = max(0.00025 * (Wc / 0.008), 0.00018) * SMALL   # tile the ring: each card's one edge over its neighbour's
+
+            card(sb, root, flow, nn, Ls, Wc * rng.uniform(0.9, 1.1), key, w, segs=2, camber=bend,
+                 lift=(0.0016 + 0.00035 * (j % 2) * SMALL + 0.00015 * rng.random()) * st.get("loft", 1.0), flip=rng.random() < 0.5, shingle=sh)
             if lod == 0 and zz < 0.070 and rng.random() < min(1.0, M["fluff_layer"] * (1.4 if HERO else 1.0)):
                 # a plume over it: mostly loose barbs, lifted and turned a little, so the surface reads soft and
                 # the silhouette fuzzy (the down and semiplumes showing between contour feathers)
                 turn = rot_axis(nn, rng.uniform(-0.45, 0.45))
-                card(sb, root + nn * 0.0007 + flow * Ls * 0.15, turn @ flow, nn, Ls * rng.uniform(0.65, 0.85), Wc * rng.uniform(0.85, 1.05),
-                     cell("plume", stname, rng.randrange(2)), w, segs=2, lift=(0.0011 + 0.0006 * rng.random()) * st.get("loft", 1.0),
-                     flip=rng.random() < 0.5)
-            for vi in range(s0, len(sb.verts)):
-                sb.verts[vi] = tuple(warp(sb.verts[vi]))
+                card(sb, root + nn * 0.0010 + flow * Ls * 0.15, turn @ flow, nn, Ls * rng.uniform(0.65, 0.85), Wc * rng.uniform(0.85, 1.05),
+                     cell("plume", stname, rng.randrange(2)), w, segs=2, camber=bend * 0.7,
+                     lift=(0.0020 + 0.0003 * (j % 2) + 0.0003 * rng.random()) * st.get("loft", 1.0), flip=rng.random() < 0.5, shingle=sh)
+            sb.zt = None
+            # every other card of a ring a step up, and every other ring: real mm, after the warp (a squeezed neck
+            # would squeeze a template-space step to nothing)
+            place_card(sb, s0, root, flow, nn)
             n += 1
-        z += Lc * ((0.19 if HERO else 0.33) if lod == 0 else 0.6)
+        # never closer than ~0.45 mm (real) ring to ring: the rise between rings (lift over a card) must keep the
+        # rings' cards more than the lint's 0.1 mm apart, small birds' short cards included
+        z += max(Lc * ((0.17 if HERO else (0.29 if head else 0.33)) if lod == 0 else 0.6) / kz, 0.00045 / (lz * S))
     # crest (waxwing): long lanceolate feathers from the crown, swept back and up
     if M["crest"] > 0:
         for j in range(9):
@@ -1070,8 +1538,10 @@ def build_contour(sb, lod=0):
             p = surf(zz, th)
             Ls = 0.022 * M["crest"] * (0.6 + 0.4 * j / 8)
             s0 = len(sb.verts)
+            sb.zt = zz
             card(sb, p - V(0, 0.0005, 0), nrm(V(0, 0.55, -1)), V(0, 1, 0.2), Ls, 0.0075 * M["crest"] ** 0.5, cell("crest", resolve("crest")), {"head": 1.0}, segs=3,
                  camber=-0.002)
+            sb.zt = None
             for vi in range(s0, len(sb.verts)):
                 sb.verts[vi] = tuple(warp(sb.verts[vi]))
     return n
@@ -1099,6 +1569,8 @@ def solve_size():
     build_skeleton(wk)
     while setup_legs() == "again":
         pass
+    global SMALL
+    SMALL = max(1.0, 1.0 / max(S, 0.2) ** 0.7)   # small birds: the same separations in real mm need more template room
     span = 2 * max((p_root(i) + p_dir(i) * WING["P_LEN"][i])[0] for i in range(P_N)) * S
     print(f"SIZE {SPECIES}: S={S:.3f} wing k={wk:.3f} length {SP['lengthCm']} cm span {span * 100:.1f} cm (want {SP['wingspanCm']})")
 
@@ -1110,7 +1582,10 @@ def make_materials(albedo, normal, params):
         t.location = loc
         return t
     mats = []
-    for name, alpha, rough, spec in (("Plumage", True, 0.55, 0.35), ("Bare", False, 0.35, 0.5), ("Eye", False, 0.03, 0.9)):
+    slots = [("Plumage", True, 0.55, 0.35), ("Bare", False, 0.35, 0.5), ("Eye", False, 0.03, 0.5)]
+    if HERO:   # the head round the eyes, hidden in first person (same look as Plumage)
+        slots.append(("Skull", True, 0.55, 0.35))
+    for name, alpha, rough, spec in slots:
         m = bpy.data.materials.new(f"M_{SPECIES}_{name}")
         m.use_nodes = True
         nt = m.node_tree
@@ -1144,8 +1619,8 @@ def make_materials(albedo, normal, params):
         if "Specular IOR Level" in p.inputs:
             p.inputs["Specular IOR Level"].default_value = spec
         if name == "Eye" and "Coat Weight" in p.inputs:
-            p.inputs["Coat Weight"].default_value = 1.0
-            p.inputs["Coat Roughness"].default_value = 0.02
+            p.inputs["Coat Weight"].default_value = 0.5
+            p.inputs["Coat Roughness"].default_value = 0.04
         mats.append(m)
     return mats
 
@@ -1159,15 +1634,35 @@ def build_mesh(mats, lod=0):
     build_tail(sb, lod)
     nc = build_contour(sb, lod) if lod <= 1 else 0
     print("contour feathers", nc, "lod", lod)
+    if "--stats" in FLAGS:
+        from collections import Counter
+        cnt = Counter()
+        for f in sb.faces:
+            cnt[sb.names.get(f[3], "?").replace("_R", "")] += len(f[0]) - 2
+        print("STATS lod", lod, sorted(cnt.items(), key=lambda kv: -kv[1]))
     return sb
 
 
-def bake_mesh(sb, mats, name):
+SKULL_ZT = float(os.environ.get("BIRD_SKULL_ZT", 0.047))   # template z: the head and the upper neck (the neck runs 0.034-0.052)
+
+
+def skull_face(f, sb, E):
+    """Hero: a Plumage face of the head round the camera (eye midpoint E, species space) goes to the Skull slot."""
+    idx, mat, _, _, zt = f
+    return mat == PLUMAGE and zt is not None and zt >= SKULL_ZT
+
+
+def bake_mesh(sb, mats, name, skull=False):
     me = bpy.data.meshes.new(name)
     me.from_pydata([C.to_blender(tuple(np.asarray(p) * S)) for p in sb.verts], [], [f[0] for f in sb.faces])
     uvl = me.uv_layers.new(name="UVMap")
+    E = warp(EYE_T * V(0, 1, 1))
+    nskull = 0
     for poly, f in zip(me.polygons, sb.faces):
         poly.material_index = f[1]
+        if skull and skull_face(f, sb, E):
+            poly.material_index = SKULL
+            nskull += 1
         poly.use_smooth = True
         if f[2]:
             for li, uv in zip(poly.loop_indices, f[2]):
@@ -1175,8 +1670,18 @@ def bake_mesh(sb, mats, name):
         else:
             for li in poly.loop_indices:
                 uvl.data[li].uv = ATL.resolve(ATL.uv_rect("body", 0.5, 0.5))
-    me.validate(clean_customdata=False)
+    pa = me.attributes.new("lint_part", "INT", "FACE")   # removed before export
+    pa.data.foreach_set("value", [f[3] for f in sb.faces])
+    if "--no-separate" not in FLAGS:
+        import lint_bird
+        tmp = bpy.data.objects.new(name + "_tmp", me)
+        lint_bird.separate(tmp, sb.names)
+        bpy.data.objects.remove(tmp)
+    if me.validate(clean_customdata=False):
+        print("WARNING validate changed", name)
     me.update()
+    if skull:
+        print("SKULL faces", nskull)
     ob = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(ob)
     for m in mats:
@@ -1330,6 +1835,9 @@ def solve_pose(P):
             deform(f"tarsus.{side}", Rtar)
             deform(f"toes.{side}", Rtar @ rx(math.radians(70 * tuck * (1 - trail) + 88 * trail)))
             deform(f"hallux.{side}", Rtar @ rx(math.radians(-40 * tuck * (1 - trail) - 122 * trail)))
+    for side in ("L", "R"):
+        deform(f"toetip.{side}", R[f"toes.{side}"])
+        deform(f"halluxtip.{side}", R[f"hallux.{side}"])
     return R, H, P.get("breath", 0.0), P.get("fluffup", 0.0)
 
 
@@ -1626,7 +2134,7 @@ def build_actions(arm):
 
 
 # ====================================================================== previews
-def render(name, cam, tgt, lens=50, res=(900, 700), bg=(0.55, 0.6, 0.7)):
+def render(name, cam, tgt, lens=50, res=(900, 700), bg=(0.55, 0.6, 0.7), raw=False):
     sc = bpy.context.scene
     C.set_engine(sc)
     sc.render.resolution_x, sc.render.resolution_y = res
@@ -1643,7 +2151,8 @@ def render(name, cam, tgt, lens=50, res=(900, 700), bg=(0.55, 0.6, 0.7)):
     co = bpy.data.objects.get("PCam") or bpy.data.objects.new("PCam", cd)
     if co.name not in sc.collection.objects:
         sc.collection.objects.link(co)
-    cam = np.asarray(tgt) + (np.asarray(cam) - np.asarray(tgt)) * EXT
+    if not raw:
+        cam = np.asarray(tgt) + (np.asarray(cam) - np.asarray(tgt)) * EXT
     co.location = C.to_blender(tuple(np.asarray(cam) * S))
     d = mathutils.Vector(C.to_blender(tuple(np.asarray(tgt) * S))) - co.location
     co.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
@@ -1658,6 +2167,137 @@ def render(name, cam, tgt, lens=50, res=(900, 700), bg=(0.55, 0.6, 0.7)):
     sc.render.filepath = os.path.join(OUTDIR, "previews", name + ".png")
     bpy.ops.render.render(write_still=True)
     print("PREVIEW", sc.render.filepath)
+
+
+def render_closeups(arm, Acts):
+    """Grazing close-ups for artefacts: the spread wing edge-on, the tail from below, the head from above the bill."""
+    L0 = SP["lengthCm"] / 100 / S
+    P = glide_pose(0)
+    R, H, _, _ = solve_pose(P)
+    show(arm, Acts["Glide"], 0)
+    half = SP["wingspanCm"] / 200 / S
+    hand = H["hand.L"]
+    mid = (H["forearm.L"] + hand) / 2
+    # from ahead of the leading edge at the wing's own height: the whole span edge-on (thickness, camber, layers)
+    render(f"{SPECIES}_wing_edge", tuple(mid + V(0.0, 0.012 * L0, 1.1 * half)), tuple(mid + V(0.0, 0, 0)), lens=50, raw=True)
+    tl = H["tail"]
+    render(f"{SPECIES}_tail_below", tuple(tl + V(0.25, -0.9, -0.5) * L0), tuple(tl + V(0, 0, -0.2) * L0), lens=50, raw=True)
+    show(arm, Acts["Idle"], 0)
+    R, H, _, _ = solve_pose(PERCH)
+    hc = H["head"]
+    render(f"{SPECIES}_head_close", tuple(hc + V(0.25, 0.35, 0.55) * L0), tuple(hc + V(0, 0, 0.06) * L0), lens=50, raw=True, res=(800, 700))
+
+
+def render_fpv(ob, arm, Acts):
+    """First person from the eye midpoint, the Skull slot hidden (one-sided eyeballs, as in Unreal's M_BirdEye):
+    ahead (bill tip at the bottom), down 65 deg (breast and feet, joined through the neck), 70 deg to the side (the wing).
+    Counts Plumage faces within 2 cm of the camera inside each view (they would block it)."""
+    sc = bpy.context.scene
+    hid = bpy.data.materials.new("FPV_hidden")
+    hid.use_nodes = True
+    pr = C.principled(hid)
+    pr.inputs["Alpha"].default_value = 0.0
+    if hasattr(hid, "surface_render_method"):
+        hid.surface_render_method = "DITHERED"
+    keep = ob.material_slots[SKULL].material
+    if not os.environ.get("FPV_SHOW_SKULL"):
+        ob.material_slots[SKULL].material = hid
+    eye_m = ob.material_slots[EYE].material
+    eye_m.use_backface_culling = True
+    blocks = {}
+    for name, clipn, frame, view in (("fpv_ahead", "Idle", 0, "ahead"), ("fpv_down", "Idle", 0, "down"), ("fpv_side", "Glide", 0, "side")):
+        show(arm, Acts[clipn], frame)
+        mw = arm.matrix_world
+        pb = arm.pose.bones
+        el, er = mw @ pb["eye_l"].head, mw @ pb["eye_r"].head
+        cam = (el + er) / 2
+        if view == "ahead":
+            cam_idle = cam.copy()
+        # the view is levelled (a game camera keeps the horizon): heading from the head bone, up = world up
+        Fv = (mw @ pb["head"].tail - mw @ pb["head"].head)
+        Fv.z = 0.0
+        Fv.normalize()
+        Uv = mathutils.Vector((0, 0, 1))
+        Lv = Uv.cross(Fv).normalized()
+        if view == "ahead":
+            D, Up = Fv, Uv
+        elif view == "down":
+            a = math.radians(65)
+            D, Up = Fv * math.cos(a) - Uv * math.sin(a), Fv * math.sin(a) + Uv * math.cos(a)
+        else:
+            a = math.radians(70)
+            D, Up = Fv * math.cos(a) + Lv * math.sin(a), Uv
+        cd = bpy.data.cameras.get("FCam") or bpy.data.cameras.new("FCam")
+        cd.lens, cd.sensor_width, cd.clip_start, cd.clip_end = 11.0, 36.0, 0.001, 100.0
+        co = bpy.data.objects.get("FCam") or bpy.data.objects.new("FCam", cd)
+        if co.name not in sc.collection.objects:
+            sc.collection.objects.link(co)
+        Xc = Up.cross(-D).normalized()
+        co.matrix_world = mathutils.Matrix(((Xc.x, Up.x, -D.x, cam.x), (Xc.y, Up.y, -D.y, cam.y), (Xc.z, Up.z, -D.z, cam.z), (0, 0, 0, 1)))
+        sc.camera = co
+        tipw = mw @ pb["jaw"].tail
+        tv = (tipw - cam).normalized()
+        print("FPV_DEBUG", name, "cam", tuple(round(x, 4) for x in cam), "D", tuple(round(x, 3) for x in D), "tip dir", tuple(round(x, 3) for x in tv),
+              "right", round(tv.dot(Xc), 3), "up", round(tv.dot(Up), 3), "fwd", round(tv.dot(D), 3))
+        sc.render.resolution_x, sc.render.resolution_y = 900, 700
+        sc.render.filepath = os.path.join(OUTDIR, "previews", f"{SPECIES}_{name}.png")
+        bpy.ops.render.render(write_still=True)
+        print("PREVIEW", sc.render.filepath)
+        # blockers: visible Plumage / Bare faces (not the bill or the eyes) within 2 cm, inside this view's cone
+        dg = bpy.context.evaluated_depsgraph_get()
+        ev = ob.evaluated_get(dg)
+        me = ev.to_mesh()
+        n = 0
+        cone = math.cos(math.radians(52))
+        for poly in me.polygons:
+            if poly.material_index not in (PLUMAGE,):
+                continue
+            c = ev.matrix_world @ poly.center
+            v = c - cam
+            dist = v.length
+            if dist < 0.02 and dist > 1e-6 and v.normalized().dot(D) > cone:
+                n += 1
+        ev.to_mesh_clear()
+        blocks[name] = n
+    # a cutaway from outside: what stays visible in first person, the camera at the red dot
+    show(arm, Acts["Idle"], 0)
+    mk = bpy.data.objects.new("FPVmark", None)
+    sc.collection.objects.link(mk)
+    dot = bpy.ops.mesh.primitive_uv_sphere_add(radius=0.0015 * S, location=cam_idle)
+    dob = bpy.context.active_object
+    dm = bpy.data.materials.new("dot")
+    dm.use_nodes = True
+    C.principled(dm).inputs["Base Color"].default_value = (1, 0, 0, 1)
+    C.principled(dm).inputs["Emission Color"].default_value = (1, 0, 0, 1)
+    C.principled(dm).inputs["Emission Strength"].default_value = 5.0
+    dob.data.materials.append(dm)
+    hc = warp(H0)
+    ls_ = SP["lengthCm"] / 100 / S / 0.2
+    render(f"{SPECIES}_fpv_cutaway", tuple(hc + V(0.17, 0.0, -0.03) * ls_), tuple(hc + V(0, -0.028, -0.022) * ls_), lens=50, raw=True)
+    bpy.data.objects.remove(dob)
+    bpy.data.objects.remove(mk)
+    del dot
+    ob.material_slots[SKULL].material = keep
+    eye_m.use_backface_culling = False
+    print("FPV_BLOCK", SPECIES, blocks)
+    with open(os.path.join(OUTDIR, f"{TAG}_fpv.json"), "w") as fh:
+        json.dump(blocks, fh)
+
+
+def render_lod3(ob, arm, Acts, mats):
+    """LOD3 (the far flock bird) at its real on-screen size, and a closer look, LOD0 hidden."""
+    sb = build_mesh(None, 3)
+    o = bake_mesh(sb, mats, f"LOD3_preview_{SPECIES}")
+    o.parent = arm
+    m = o.modifiers.new("Armature", "ARMATURE")
+    m.object = arm
+    ob.hide_render = True
+    show(arm, Acts["Idle"], 0)
+    render(f"{SPECIES}_lod3_small", (0.2, 0.11, 0.21), (0, 0.05, 0.005), lens=50, res=(160, 125))
+    show(arm, Acts["Flap"], 9)
+    render(f"{SPECIES}_lod3_fly", (0.0, 0.55, -0.05), (0, 0.05, -0.01), lens=40, res=(450, 350))
+    ob.hide_render = False
+    bpy.data.objects.remove(o)
 
 
 def show(arm, act, frame):
@@ -1684,7 +2324,7 @@ def main():
         paint_atlas(variant=suffix)
         PLUM["styles"], PLUM["bare"] = base
     mats = make_materials(albedo, normal, params)
-    ob = bake_mesh(sb, mats, f"SK_{SPECIES}")
+    ob = bake_mesh(sb, mats, f"SK_{SPECIES}", skull=HERO)
     arm = build_armature()
     ob.parent = arm
     mod = ob.modifiers.new("Armature", "ARMATURE")
@@ -1705,6 +2345,10 @@ def main():
            "head": ue(BONES["head"][0]), "lengthCm": SP["lengthCm"], "wingspanCm": SP["wingspanCm"], "tris": len(ob.data.loop_triangles),
            "atlas": ATL.size, "clips": sorted(Acts), "gloss_hue": M.get("gloss_hue", 0.0)}
     json.dump(rig, open(os.path.join(OUTDIR, f"{TAG}_rig.json"), "w"), indent=1)
+    LINT = {}
+    if "--lint" in FLAGS:
+        import lint_bird
+        LINT["LOD0" if not HERO else "Hero"] = lint_bird.lint(ob, ATL, f"{TAG} {'Hero' if HERO else 'LOD0'}", sb.names)
     if "--debug-top" in FLAGS:
         show(arm, Acts["Idle"], 0)
         dg = bpy.context.evaluated_depsgraph_get()
@@ -1733,7 +2377,14 @@ def main():
         render(f"{SPECIES}_glide_below", (0.05, -0.32, 0.18), (0, 0.05, 0.0), lens=40)
         show(arm, Acts["Walk" if SP["gait"] == "Walk" else "Hop"], 10)
         render(f"{SPECIES}_gait", (-0.30, 0.06, 0.03), (0, 0.04, 0.0), lens=50)
+        render_closeups(arm, Acts)
+        if HERO:
+            render_fpv(ob, arm, Acts)
+        else:
+            render_lod3(ob, arm, Acts, mats)
         del L0
+    if os.environ.get("BIRD_SAVE_BLEND"):
+        bpy.ops.wm.save_as_mainfile(filepath=os.environ["BIRD_SAVE_BLEND"])
     if "--no-export" in FLAGS:
         return
     for o in list(bpy.data.objects):
@@ -1745,6 +2396,10 @@ def main():
         pb.rotation_quaternion = (1, 0, 0, 0)
         pb.scale = (1, 1, 1)
     if HERO:   # one mesh, no LODs, no clips (it plays SKEL_<Id>'s) and no far poses
+        if LINT:
+            json.dump(LINT, open(os.path.join(OUTDIR, f"{TAG}_lint.json"), "w"), indent=1, default=str)
+        if "lint_part" in ob.data.attributes:
+            ob.data.attributes.remove(ob.data.attributes["lint_part"])
         ob.name = f"SK_{SPECIES}_Hero"
         bpy.ops.object.select_all(action="DESELECT")
         ob.select_set(True)
@@ -1758,7 +2413,12 @@ def main():
         bpy.ops.export_scene.gltf(**{k: v for k, v in kw.items() if k in props or k == "filepath"})
         print("EXPORTED", path, os.path.getsize(path), "bytes")
         return
-    lods = build_lods(arm, mats)
+    lods = build_lods(arm, mats, LINT)
+    if LINT:
+        json.dump({k: {kk: vv for kk, vv in v.items()} for k, v in LINT.items()}, open(os.path.join(OUTDIR, f"{TAG}_lint.json"), "w"), indent=1, default=str)
+    for o in [ob] + list(lods.values()):
+        if "lint_part" in o.data.attributes:
+            o.data.attributes.remove(o.data.attributes["lint_part"])
     # one glb, the LODs named LODn_<mesh>: Interchange folds them into one skeletal mesh with LODs (a second
     # Interchange import in the same Unreal process comes back empty, so everything rides in this one)
     ob.name = f"LOD0_SK_{SPECIES}"
@@ -1786,13 +2446,16 @@ POSES = {  # static meshes for instanced far birds: (clip, frame at 30 fps)
 }
 
 
-def build_lods(arm, mats):
+def build_lods(arm, mats, lint=None):
     """Lighter skinned meshes on the same rig: 1 fewer, larger body feathers; 2 no body feathers (the painted body and
     the flight feathers); 3 a coarse body and the flight feathers only."""
     lods = {}
     for lod in (1, 2, 3):
         sb = build_mesh(None, lod)
         o = bake_mesh(sb, mats, f"LOD{lod}_SK_{SPECIES}")
+        if lint is not None and "--lint" in FLAGS:
+            import lint_bird
+            lint[f"LOD{lod}"] = lint_bird.lint(o, ATL, f"{TAG} LOD{lod}", sb.names)
         o.parent = arm
         m = o.modifiers.new("Armature", "ARMATURE")
         m.object = arm

@@ -350,6 +350,87 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			S->Add(1.5f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(10.f, -100.f + 60.f * FMath::FRand(), 0.f); return false; });
 		}
 	}
+	else if (Kind == TEXT("perch"))
+	{
+		// Q onto a branch of the upland's forest; the feet checked against the branch's surface (within 1 cm), then the
+		// feet seen from the eye and from beside; off again and onto another branch
+		auto Check = [](FCtx& X)
+		{
+			FVector Axis, Dir;
+			float R = 0.f;
+			ABirdActor* A = X.Bird->GetOutsideBody();
+			if (!X.Bird->GetGrip(Axis, Dir, R) || !A)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("BIRDPERCH no branch: %s at %s"), *X.Bird->DebugLine().Left(60), *X.Bird->FeetLocation().ToCompactString());
+				return;
+			}
+			float Worst = 0.f;
+			FString Line;
+			for (const TCHAR* B : { TEXT("toes_L"), TEXT("toetip_L"), TEXT("hallux_L"), TEXT("halluxtip_L"), TEXT("toes_R"), TEXT("toetip_R"), TEXT("hallux_R"), TEXT("halluxtip_R") })
+			{
+				const FVector P = A->GetBoneWorld(B);
+				if (P.IsZero()) continue;
+				const float D = FMath::PointDistToLine(P, Dir, Axis) - R;
+				Worst = FMath::Max(Worst, FMath::Abs(D));
+				Line += FString::Printf(TEXT(" %s %.2f"), B, D);
+			}
+			const float Feet = FMath::PointDistToLine(A->GetActorLocation(), Dir, Axis) - R;
+			Worst = FMath::Max(Worst, FMath::Abs(Feet));
+			UE_LOG(LogTemp, Warning, TEXT("BIRDPERCH branch r=%.2f cm at %s; feet %.2f;%s -> worst %.2f cm %s"), R, *Axis.ToCompactString(), Feet, *Line, Worst,
+				Worst <= 1.f ? TEXT("PASS") : TEXT("FAIL"));
+		};
+		auto Mark = [](FCtx& X, const TCHAR* Name, float Len)
+		{
+			if (X.T + X.Dt >= Len) UE_LOG(LogTemp, Warning, TEXT("BIRD fpv %s frame %d"), Name, X.Sys->GetRecordFrame());
+		};
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const FVector At(-6000.f, PortalFaceY - 9000.f, 0.f);
+			FBirdAir A; A.Init(X.Sys->GetWorld());
+			X.Sys->BecomeSpecies(X.PC, Species, At + FVector(0, 0, A.GroundZ(FVector2D(At)) + 2500.f), -100.f, FVector(-200.f, -1000.f, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-20.f, -100.f, 0.f));
+			return true;
+		});
+		for (int32 K = 0; K < 2; K++)
+		{
+			S->Add(20.f, [](FCtx& X)
+			{
+				X.C.Magnet = true;
+				if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD magnet t=%.0f %s at %s"), X.T, *X.Bird->DebugLine().Left(60), *X.Bird->GetActorLocation().ToCompactString());
+				return X.Bird->GetMode() == EBirdMode::Ground;
+			});
+			S->Add(1.5f, [Mark, K](FCtx& X) { Mark(X, K == 0 ? TEXT("perch1_landed") : TEXT("perch2_landed"), 1.5f); return false; });
+			S->Add(0.05f, [Check](FCtx& X) { Check(X); return true; });
+			S->Add(2.f, [Mark, K](FCtx& X)
+			{
+				X.Bird->SetFakeHead(FRotator(-75.f, 0.f, 0.f) * FMath::SmoothStep(0.f, 1.f, X.T), true);
+				Mark(X, K == 0 ? TEXT("perch1_fp_down") : TEXT("perch2_fp_down"), 2.f);
+				return false;
+			});
+			S->Add(2.f, [Mark, K](FCtx& X)
+			{
+				X.Bird->SetFakeHead(FRotator::ZeroRotator, false);
+				CVar(TEXT("lyud.Bird.ChaseCam"), 1); CVar(TEXT("lyud.Bird.ChaseDist"), 0.22f); CVar(TEXT("lyud.Bird.ChasePitch"), 8); CVar(TEXT("lyud.Bird.ChaseYaw"), 90);
+				Mark(X, K == 0 ? TEXT("perch1_side") : TEXT("perch2_side"), 2.f);
+				return false;
+			});
+			S->Add(2.f, [Mark, K](FCtx& X)
+			{
+				CVar(TEXT("lyud.Bird.ChaseYaw"), 30); CVar(TEXT("lyud.Bird.ChasePitch"), -12);
+				Mark(X, K == 0 ? TEXT("perch1_below") : TEXT("perch2_below"), 2.f);
+				return false;
+			});
+			S->Add(0.05f, [Check](FCtx& X)
+			{
+				Check(X);
+				CVar(TEXT("lyud.Bird.ChaseCam"), 0); CVar(TEXT("lyud.Bird.ChaseDist"), 1); CVar(TEXT("lyud.Bird.ChasePitch"), 12); CVar(TEXT("lyud.Bird.ChaseYaw"), 0);
+				return true;
+			});
+			S->Add(1.5f, [](FCtx& X) { X.C.Space = true; X.bAim = true; X.Aim = FRotator(15.f, -100.f + 120.f * FMath::FRand(), 0.f); return false; });
+		}
+	}
 	else if (Kind == TEXT("call"))
 	{
 		// on the ground among birds of the kind (lyud.Birds.SpawnNear puts them there): call, three times
@@ -368,6 +449,68 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 		for (int32 K = 0; K < 3; K++)
 		{
 			S->Add(8.f, [](FCtx& X) { X.C.Call = X.T < X.Dt * 1.5f; if (FMath::Fmod(X.T, 1.f) < X.Dt) UE_LOG(LogTemp, Warning, TEXT("BIRD call t=%.0f energy %.2f note %s"), X.T, X.Bird->GetEnergy(), *X.Bird->GetNote()); return false; });
+		}
+	}
+	else if (Kind == TEXT("fpv"))
+	{
+		// the first-person view held still: ahead, a wing, down at the breast, a beat; then standing on the ground.
+		// "BIRD fpv <view> frame <n>" marks the frame to look at
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const APawn* H = X.PC ? X.PC->GetPawn() : nullptr;
+			const FVector At = (H ? H->GetActorLocation() : FVector::ZeroVector) + FVector(400.f, 0.f, 500.f);
+			X.Sys->BecomeSpecies(X.PC, Species, At, 0.f, FVector(1000.f, 0, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-5.f, 0.f, 0.f));
+			CVar(TEXT("lyud.Bird.Freeze"), 1);
+			return true;
+		});
+		struct FView { const TCHAR* Name; FRotator Head; bool bBeat; };
+		auto Hold = [](FCtx& X, const FView& V, float Len)
+		{
+			X.C.Space = V.bBeat;
+			const float A = FMath::SmoothStep(0.f, 1.f, FMath::Clamp(X.T / (Len * 0.5f), 0.f, 1.f));
+			X.Bird->SetFakeHead(V.Head * A, true);
+			if (X.T + X.Dt >= Len)
+			{
+				// where the eye is on the body (cm: forward, right, up from between the feet), to check the neck
+				const ABirdActor* OB = X.Bird->GetOutsideBody();
+				const FVector Eye = OB ? OB->GetActorTransform().InverseTransformPositionNoScale(OB->GetEyeTransform().GetLocation()) : FVector::ZeroVector;
+				UE_LOG(LogTemp, Warning, TEXT("BIRD fpv %s frame %d eye %s"), V.Name, X.Sys->GetRecordFrame(), *Eye.ToCompactString());
+			}
+			return false;
+		};
+		for (const FView V : { FView{ TEXT("air_ahead"), FRotator::ZeroRotator, false }, FView{ TEXT("air_side"), FRotator(-15.f, -85.f, 0.f), false },
+		                        FView{ TEXT("air_down"), FRotator(-70.f, 0.f, 0.f), false }, FView{ TEXT("air_beat"), FRotator::ZeroRotator, true } })
+		{
+			S->Add(2.f, [V, Hold](FCtx& X) { return Hold(X, V, 2.f); });
+		}
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			CVar(TEXT("lyud.Bird.Freeze"), 0);
+			X.Bird->SetFakeHead(FRotator::ZeroRotator, false);
+			X.Sys->ReturnToHero(true);
+			return true;
+		});
+		S->Add(0.3f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const APawn* H = X.PC ? X.PC->GetPawn() : nullptr;
+			if (!H) return true;
+			const FVector At = H->GetActorLocation() + FVector(300.f, 0.f, 0.f);
+			FHitResult Hit;
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdFpv), false, H);
+			const FVector Ground = X.Sys->GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0, 0, 100.f), At - FVector(0, 0, 500.f), ECC_Visibility, Q) ? Hit.ImpactPoint : At - FVector(0, 0, 95.f);
+			X.Sys->BecomeSpecies(X.PC, Species, Ground, 0.f, FVector::ZeroVector, true, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-5.f, 0.f, 0.f));
+			return true;
+		});
+		S->Add(0.5f, [](FCtx&) { return false; });
+		for (const FView V : { FView{ TEXT("ground_ahead"), FRotator::ZeroRotator, false }, FView{ TEXT("ground_down"), FRotator(-65.f, 0.f, 0.f), false },
+		                        FView{ TEXT("ground_side"), FRotator(-10.f, 90.f, 0.f), false } })
+		{
+			S->Add(2.f, [V, Hold](FCtx& X) { return Hold(X, V, 2.f); });
 		}
 	}
 	else if (Kind == TEXT("look"))

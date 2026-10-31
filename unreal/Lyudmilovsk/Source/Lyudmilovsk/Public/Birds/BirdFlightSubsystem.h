@@ -61,6 +61,8 @@ public:
 	/** Plays a scripted flight after WarmSeconds of wall clock; Record is a folder for one screenshot per
 	 *  1/30 s of game time (fixed time step from then on). */
 	void RunScript(const FString& Name, const FString& Record, bool bQuitAfter, float WarmSeconds = 0.f);
+	/** The number of the next recorded frame (scripts log it to mark a view). */
+	int32 GetRecordFrame() const { return RecordFrame; }
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;

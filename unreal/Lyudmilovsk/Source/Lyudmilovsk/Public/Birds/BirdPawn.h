@@ -99,6 +99,8 @@ public:
 	bool HasLandingSpot(FVector& Out) const { Out = LandingSpot; return bLandingSpot; }
 	/** Q held and a perch picked: the HUD draws the pull to it. */
 	bool IsPulledToPerch() const { return bMagnet; }
+	/** Perched on a branch: a point on its axis under the feet, its direction and radius (cm); false otherwise. */
+	bool GetGrip(FVector& OutAxis, FVector& OutDir, float& OutRadius) const { OutAxis = GripAxis; OutDir = GripDir; OutRadius = GripRadius; return bGripping && bAnchored; }
 	bool IsHeadTracked() const;
 	FString DebugLine() const;
 	UPrimitiveComponent* GetRootPrimitive() const;
@@ -189,6 +191,12 @@ private:
 	TSharedPtr<FBirdPerches> Perches;
 	bool bMagnet = false, bMagnetBranch = false;
 	FVector MagnetPoint = FVector::ZeroVector;
+	/** The branch the magnet pulls to, then the one the feet hold (a point on its axis, its direction, radius, cm). */
+	FVector MagnetAxis = FVector::ZeroVector, MagnetDir = FVector::ForwardVector;
+	float MagnetRadius = 0.f;
+	bool bGripping = false;
+	FVector GripAxis = FVector::ZeroVector, GripDir = FVector::ForwardVector;
+	float GripRadius = 0.f;
 	float MagnetSearch = 0.f, MagnetBest = 1e9f, MagnetStall = 0.f;
 	bool bMagnetHeldOnGround = true;
 	bool bSwims = false;
@@ -242,4 +250,7 @@ private:
 	bool bOwnOutsideBody = false;
 	bool bInsideView = true;
 	bool bFirstPersonBody = false;
+	/** 0..1 eased: the view widened by lyud.Bird.TurnFov; the neck lifted for a look down and a look round (first person). */
+	float LookWiden = 0.f;
+	float NeckDown = 0.f, NeckSide = 0.f;
 };

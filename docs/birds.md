@@ -26,7 +26,21 @@ distance, palette, calls, diet, months present in the Baltic, winter months and 
   tail feather) and rules for marks across tracts (the great tit's tie, the goldfinch's mask, the gull's hood).
 * `plumage.py`: paints every (feather shape, style) the species uses into its 2048 atlas (albedo + alpha, normal, params:
   R roughness, G gloss), body skin coloured by tract underneath.
-* Output `blender/birds/export/<Id>/` (not in git): `<Id>.glb` with LOD0..3 (`LODn_SK_<Id>`, ~15k / 10k / 7.6k / 1.2k
+* Feathers up close: every flight feather (primaries, secondaries, tertials, tail) is a cambered card cropped to its own
+  vane outline (outer vane narrower), with a rachis ridge and, on LOD0 and hero bodies, a second under layer so edge-on
+  it has a body; the atlas paints soft, frayed vane edges with split barbs (`plumage.outline_long`, `vane_extent`).
+  Coverts are laid row by row on a height field of everything under them (`HField`, `lay_card`): one smooth airfoil,
+  tiled within a row (outer edge raised), never in a feather's plane. Body feathers are carried onto the species
+  rigidly at their root (`place_card`, no shear on short or long necks), denser and bent with the surface on the head.
+  Eyes: a domed cornea over a painted iris and pupil (front cap only), set in a lid seat that meets the skin.
+  Toes curl: `toetip.L/R` (outer half of the three front toes) and `halluxtip.L/R`, the last bones of the rig.
+* `lint_bird.py` (`--lint`): degenerate faces, zero-area / stretched uvs, uvs leaving their atlas cell, z-fighting
+  (parallel overlapping faces of different parts closer than 0.1 mm) and faces inside faces, per mesh, to
+  `<Tag>_lint.json`. `separate()` (run on every build) lifts near-coplanar cards apart before export.
+* `--hero`: the first-person body, 4 slots `M_<Id>_Plumage`, `_Bare`, `_Eye`, `_Skull` (the head and upper neck round
+  the eye midpoint, hidden in first person; the bill, eyes and lid rings stay). Previews `fpv_ahead/down/side` from
+  the eye midpoint with the skull hidden, and `fpv_cutaway`. Import renames the slot to `Skull`.
+* Output `blender/birds/export/<Id>/` (not in git): `<Id>.glb` with LOD0..3 (`LODn_SK_<Id>`, ~24-29k / 10-13k / 7.7-9k / 1.2-1.7k
   triangles) and 15 clips, `<Id>_pose_<Pose>.glb` (static far poses), textures, `<Id>_rig.json`, `previews/`.
 
 Clips (30 fps, in place): Idle Look Alert Hop Walk Peck Eat Preen Call Takeoff Flap Glide Bound Land Sleep. Flap is one
@@ -39,7 +53,8 @@ wagtail bob the head when they walk, the wagtail pumps its tail, gulls soar on b
 textures and import, one Unreal process each: Interchange imports only once per commandlet process here).
 
 * `/Game/Birds/Materials/M_BirdPlumage` (masked, two-sided foliage: backlit feathers glow; thin-film gloss that shows at
-  grazing angles, hue per species), `M_BirdBare`, `M_BirdEye`; per species `MI_<Id>_*` and `MI_<Id>_*_Winter`.
+  grazing angles, hue per species), `M_BirdBare` (two-sided), `M_BirdEye` (one-sided: from the bird's own eye the
+  eyeball's inside is culled); per species `MI_<Id>_*` and `MI_<Id>_*_Winter`.
 * `/Game/Birds/<Id>/SK_<Id>` (+ `SKEL_`, `PHYS_`), bones as in BirdSpecies.h, eye bones `eye_l` / `eye_r` as sockets,
   LOD screen sizes 1 / 0.16 / 0.06 / 0.02. `Anims/A_<Id>_<Clip>`. `SM_<Id>_<Pose>`: Perch Peck Hop Walk Glide Sleep Flap0-3.
 * `ABirdActor` (`Public/Birds/BirdActor.h`): one bird up close, animated by state (see the header). It never moves itself.

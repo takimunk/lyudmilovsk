@@ -54,6 +54,11 @@ namespace
 	TAutoConsoleVariable<int32> CVarBodyDebug(TEXT("lyud.Bird.BodyDebug"), 0, TEXT("Log the first-person body's place against the camera."));
 	TAutoConsoleVariable<float> CVarBodySweep(TEXT("lyud.Bird.BodySweep"), 60.f, TEXT("First-person species body: degrees the wings are drawn swept forward (ABirdActor::ViewSweepDeg)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
+	TAutoConsoleVariable<float> CVarTurnFov(TEXT("lyud.Bird.TurnFov"), 20.f, TEXT("Degrees the view widens by (eased) with the head turned fully sideways or down."));
+	TAutoConsoleVariable<float> CVarNeckUp(TEXT("lyud.Bird.NeckUp"), 1.5f, TEXT("First person, looking straight down: the head raised by this many body radii."));
+	TAutoConsoleVariable<float> CVarNeckBack(TEXT("lyud.Bird.NeckBack"), 0.45f, TEXT("First person, looking straight down: the head drawn back by this share of the torso's length."));
+	TAutoConsoleVariable<float> CVarEyeUp(TEXT("lyud.Bird.EyeUp"), 1.2f, TEXT("First person: the camera raised this many bill depths (the eyes to the jaw's hinge) above the point between the eyes."));
+	TAutoConsoleVariable<float> CVarEyeForward(TEXT("lyud.Bird.EyeForward"), -0.1f, TEXT("First person: the camera moved this many body radii forward of the point between the eyes."));
 
 	/** Seconds a click waits for the other button to make it a full beat. */
 	constexpr double PairWindow = 0.07;
@@ -168,6 +173,8 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 	Sound->bAirRush = false;
 	Params->Hops = Row.Gait == EBirdGait::Hop || Row.Gait == EBirdGait::Both;
 	Body->Build(InSpecies, Row.LengthCm, Row.WingspanCm, Head);
+	// the feet close round branches from a twig to about the body's own half width
+	Perches->SetBird(FMath::Max(0.3f, Body->BodyRadius() * 0.14f), FMath::Max(1.2f, Body->BodyRadius() * 0.55f), Body->BodyRadius(), Body->StandHeight());
 	Collision->SetSphereRadius(FMath::Max(Body->BodyRadius() * 0.85f, 1.5f));
 	// the sea's surface is water, not ground (StepAir and StepSwim deal with it)
 	if (ALyudSea* Sea = ALyudSea::Get(this))
@@ -617,6 +624,9 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 				bMagnet = true;
 				MagnetPoint = Perch.Point;
 				bMagnetBranch = Perch.bBranch;
+				MagnetAxis = Perch.Axis;
+				MagnetDir = Perch.Dir;
+				MagnetRadius = Perch.Radius;
 			}
 		}
 	}
@@ -643,6 +653,13 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 			// the wind is cancelled on the way in, or a headwind would hold the bird off its perch
 			Flight->Vel += BirdFlight::V3(-LastAir.X, -LastAir.Y, 0) * FMath::Min(1.0, 3.0 * Dt);
 		}
+		else
+		{
+			// the last metres: the line reels the bird straight onto the perch at a landing speed (it never hangs short of it)
+			const FVector Want3 = To.GetSafeNormal() * FMath::Max((float)P.Stall * 0.6f, 1.5f) - LastAir;
+			const double K = FMath::Min(1.0, 5.0 * Dt);
+			Flight->Vel = Flight->Vel * (1.0 - K) + BirdFlight::V3(Want3.X, Want3.Y, Want3.Z) * K;
+		}
 		In.Flare = Flare;
 		In.TuckL = In.TuckR = 0.f;
 		if ((V < VWant * 0.9f || (To.Z > 60.f && V < P.Cruise)) && TakeoffAssist <= 0.f)
@@ -657,17 +674,34 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 		}
 		LandingSpot = MagnetPoint;
 		bLandingSpot = true;
-		// close and no longer getting closer (twigs of a live tree in the way): it hops the last bit
+		// it lands only on the perch itself: right there, or it lets go and flies on (no stopping in the air short of it)
 		MagnetBest = FMath::Min(MagnetBest, To.Size());
 		MagnetStall = To.Size() > MagnetBest - 5.f ? MagnetStall + Dt : 0.f;
-		if (To.Size() < FMath::Max(40.f, V * 100.f * Dt * 2.f) || (To.Size() < 500.f && MagnetStall > 0.5f))
+		if (To.Size() < FMath::Max(Body->BodyRadius() * 1.5f, V * 100.f * Dt * 1.5f))
 		{
 			const bool bTwig = bMagnetBranch;
+			if (bTwig)
+			{
+				// across the branch, facing the way that is nearest to where it was going
+				FVector Across = FVector::CrossProduct(FVector::UpVector, MagnetDir).GetSafeNormal2D();
+				const FVector Heading = FRotator(0.f, BodyRot.Yaw, 0.f).Vector();
+				if (FVector::DotProduct(Across, Heading) < 0.f) Across = -Across;
+				BodyRot.Yaw = Across.Rotation().Yaw;
+			}
 			Land(MagnetPoint, FVector::UpVector);
-			// a twig has no collision under it: the bird holds on where it is
+			// a branch has no collision under it: the bird holds on where it is, its toes round the wood
 			bAnchored = bTwig;
+			bGripping = bTwig;
+			GripAxis = MagnetAxis;
+			GripDir = MagnetDir;
+			GripRadius = MagnetRadius;
 			bMagnet = false;
 			return;
+		}
+		if (MagnetStall > 2.f)
+		{
+			bMagnet = false;
+			MagnetSearch = 1.5f;
 		}
 	}
 	else
@@ -844,6 +878,7 @@ void ABirdPawn::Land(const FVector& Point, const FVector& Normal)
 	Mode = EBirdMode::Ground;
 	Feet = Point;
 	bAnchored = false;
+	bGripping = false;
 	// a key still held from the flight (Q) doesn't take off again at once
 	bMagnetHeldOnGround = true;
 	bHopping = false;
@@ -1080,13 +1115,23 @@ void ABirdPawn::UpdateHead(const FBirdControls& C, float Dt)
 		Eye += Gaze.Vector() * Peck * Body->BodyRadius() * 0.8f;
 	}
 	FVector EyeWorld = GetActorLocation() + Eye;
+	// turning round or looking down: the neck lifts and stretches, drawing the head up and back over the body (the
+	// wing, the breast and the feet come into view), and the view widens a little
+	const float RelYaw = FMath::Abs(FRotator::NormalizeAxis(Gaze.Yaw - BodyRot.Yaw));
+	const float RelDown = FRotator::NormalizeAxis(BodyRot.Pitch - Gaze.Pitch);
+	const float Side01 = FMath::Clamp((RelYaw - 20.f) / 80.f, 0.f, 1.f), Down01 = FMath::Clamp((RelDown - 15.f) / 50.f, 0.f, 1.f);
+	NeckDown = Dt > 0.f ? FMath::FInterpTo(NeckDown, FMath::SmoothStep(0.f, 1.f, Down01), Dt, 6.f) : Down01;
+	NeckSide = Dt > 0.f ? FMath::FInterpTo(NeckSide, FMath::SmoothStep(0.f, 1.f, Side01), Dt, 6.f) : Side01;
+	const float WidenWant = FMath::SmoothStep(0.f, 1.f, FMath::Max(Down01, Side01));
+	LookWiden = Dt > 0.f ? FMath::FInterpTo(LookWiden, WidenWant, Dt, 2.5f) : WidenWant;
 	if (bFirstPersonBody && OutsideBody)
 	{
-		// the camera sits between the body's own eyes
-		// turning round or looking down, the neck lifts and draws the head back over the body (the wing, the breast in view)
-		const float Bend = FMath::Max(Turn, Down);
-		EyeWorld = OutsideBody->GetEyeTransform().GetLocation() + FVector(0, 0, Body->BodyRadius() * (0.6f * Turn + 1.4f * Down))
-			- FRotator(0.f, BodyRot.Yaw, 0.f).Vector() * Body->TorsoLength() * 0.45f * Bend;
+		// the camera rides on the head: between the posed body's own eyes (this frame's exact eye is taken in BirdView;
+		// here last frame's pose moved with the body to where it is now)
+		const FTransform Was = OutsideBody->GetActorTransform();
+		const FVector EyeLocal = Was.InverseTransformPosition(OutsideBody->GetEyeTransform().GetLocation());
+		const FQuat Q = BodyRot.Quaternion();
+		EyeWorld = FTransform(Q, GetActorLocation() - Q.GetUpVector() * Body->StandHeight(), Was.GetScale3D()).TransformPosition(EyeLocal);
 	}
 	Head->SetWorldLocationAndRotation(EyeWorld, Gaze);
 }
@@ -1097,8 +1142,22 @@ FMinimalViewInfo ABirdPawn::BirdView() const
 	V.Location = Head->GetComponentLocation();
 	V.Rotation = Head->GetComponentRotation();
 	const float Speed = Mode == EBirdMode::Air ? BirdFlight::Speed(*Flight) : 0.f;
-	V.FOV = CVarFov.GetValueOnGameThread() + 8.f * FMath::Clamp((float)((Speed - Params->Cruise) / FMath::Max(1.0, Params->MaxSpeed - Params->Cruise)), 0.f, 1.f);
+	V.FOV = CVarFov.GetValueOnGameThread() + 8.f * FMath::Clamp((float)((Speed - Params->Cruise) / FMath::Max(1.0, Params->MaxSpeed - Params->Cruise)), 0.f, 1.f)
+		+ CVarTurnFov.GetValueOnGameThread() * LookWiden;
 	V.PerspectiveNearClipPlane = NearClip;
+	if (bFirstPersonBody && OutsideBody && bInsideView)
+	{
+		// the eye exactly where the head bone has it this frame (the camera updates after the body's pose)
+		// a little above the line between the eyes (they are level with the top of the bill): the bill is seen from
+		// above at the bottom of the view, as each eye sees it from beside it, never end-on from its root
+		const FTransform EyeXf = OutsideBody->GetEyeTransform();
+		const FVector Up = EyeXf.GetRotation().GetUpVector();
+		// by the bill's own depth (the eyes down to the jaw's hinge): a thick finch's bill needs more than a pigeon's
+		const FVector Jaw = OutsideBody->GetBoneWorld(TEXT("jaw"));
+		const float BillDepth = Jaw.IsZero() ? Body->BodyRadius() * 0.3f : FMath::Clamp((float)FVector::DotProduct(EyeXf.GetLocation() - Jaw, Up), 0.1f, Body->BodyRadius());
+		V.Location = EyeXf.GetLocation() + Up * BillDepth * CVarEyeUp.GetValueOnGameThread()
+			+ V.Rotation.Vector() * Body->BodyRadius() * CVarEyeForward.GetValueOnGameThread();
+	}
 	return V;
 }
 
@@ -1221,9 +1280,26 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 	}
 	// the actor's origin is between its feet: below the body's centre along its up
 	const FQuat Q = BodyRot.Quaternion();
-	A->SetActorLocationAndRotation(GetActorLocation() - Q.GetUpVector() * Body->StandHeight(), Q);
+	// standing, the origin (between the feet) is exactly where the feet are: on the ground, or on top of the branch
+	const bool bStanding = Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming;
+	A->SetActorLocationAndRotation(bStanding ? Feet : GetActorLocation() - Q.GetUpVector() * Body->StandHeight(), Q);
 	A->SetVelocity(GetVelocityCm());
 	A->SetLookTarget(Head->GetComponentLocation() + Head->GetForwardVector() * 500.f, true);
+	{
+		// looking down the head goes up and back over the breast (so the breast and the feet are under the eye), turning
+		// round it goes up (the wing seen from above); sizes from the body
+		const FQuat BQ = BodyRot.Quaternion();
+		const float Down = NeckDown, Side = NeckSide;
+		const FVector Reach = BQ.GetUpVector() * Body->BodyRadius() * (CVarNeckUp.GetValueOnGameThread() * Down + 0.6f * Side)
+			- BQ.GetForwardVector() * Body->TorsoLength() * CVarNeckBack.GetValueOnGameThread() * Down;
+		A->SetNeckLift(bFirstPersonBody ? 1.f : 0.f, Reach);
+	}
+	{
+		FVector GA, GD;
+		float GR = 0.f;
+		const bool bG = GetGrip(GA, GD, GR) && Mode == EBirdMode::Ground;
+		A->SetGrip(bG, GA, GD, GR);
+	}
 	const BirdFlight::FState& S = *Flight;
 	EBirdState Want = A->GetState();
 	if (Mode == EBirdMode::Air)

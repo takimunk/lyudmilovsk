@@ -13,7 +13,9 @@ run() {
 for s in "$@"; do
     case "$s" in
         masters) run masters ;;
-        hero:*) run herotextures "${s#hero:}"; run hero "${s#hero:}" ;;   # hero:<Id>: the player's detailed body
+        hero:*)   # hero:<Id>: the player's detailed body (the old one's file removed first: deleted in Unreal it stays on disk)
+            rm -f "$ROOT/unreal/Lyudmilovsk/Content/Birds/${s#hero:}/SK_${s#hero:}_Hero.uasset"
+            run herotextures "${s#hero:}"; run hero "${s#hero:}" ;;
         *) run textures "$s"; run import "$s" ;;
     esac
 done

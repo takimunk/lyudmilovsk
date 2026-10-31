@@ -27,7 +27,7 @@ never shake it.
 | Mouse | The head: look, and the body steers after the look |
 | Space | Both wings beat; hold it to flap at the species' natural rhythm and pattern, its easy travelling flight at cruise speed (keyboard-only play) |
 | Shift | Flare: tail fanned, wings forward, feet down. Brakes, and lands on whatever is under or in front of you |
-| Q (hold) | The landing magnet: the nearest perch ahead (a twig in a crown, a treetop, a roof, a rail) pulls you in like a web line; the bird beats and brakes by itself and lands there. From the ground it takes off and goes for the next one |
+| Q (hold) | The landing magnet: the nearest perch ahead (a real branch of a tree, a roof, a wall top, a rail) pulls you in like a web line; the bird beats and brakes by itself and lands there, its toes closing round the branch. Nothing within reach: Q does nothing and you fly on. From the ground it takes off and goes for the next one |
 | Ctrl | Wings pulled in, same as holding both buttons |
 | A / D | Roll with the tail (fine trim, keyboard-only turns) |
 | C (hold) or middle mouse | Free look: the head turns, the course stays |
@@ -50,13 +50,17 @@ back to centre over half a second instead of snapping. Without AirPods, C / midd
 with the mouse. Optional (console `lyud.Bird.HeadSteer 1`): tilting your head banks the bird, for hands-free
 gliding.
 
-**What you see of yourself.** The beak tip at the bottom of the view (a bird sees its own beak; it
-moves with the head, so it is also the bird's natural sight: the beak points where you go), the
-leading edges of both wings at the screen edges when they are spread, the primaries sweeping through the
-lower corners on each downstroke, your breast and folded feet when you look down, the feet coming out on a
-flare. Turn the head (C or AirPods) and you see the whole wing: separate primaries, secondaries and
-coverts, the tips bending up under load and fluttering at speed, the wing folding in when you hold both
-buttons. The view is wide (100 degrees, up to 108 at speed), because a bird's is.
+**What you see of yourself.** You are inside your own body: every species wears its detailed hero body
+(`SK_<Id>_Hero`) and the camera sits between its two eyes, on the head bone, so it moves with the head and the neck.
+Only the skull around the eyes is hidden (the material slot `Skull`): the bill stays, at the bottom of the view, small
+as a bird sees its own bill, pointing where you look; the eyes' rims and the edges of the cheeks show at the sides.
+The head always goes exactly where you look (the neck takes half of a turn, the head the rest, up to 170 degrees
+round). Look down and the neck lifts and stretches, drawing the head up and back over the breast, so you see your
+breast, belly and feet under you, joined to you through the neck; turn round and the head rises, so you see the wing
+from above. Turn the head (C or AirPods) and you see the whole wing: separate primaries, secondaries and coverts, the
+tips bending up under load and fluttering at speed, the wing folding in when you hold both buttons. The view is wide
+(100 degrees, up to 108 at speed), because a bird's is, and widens smoothly by up to 20 more as the head turns to the
+side or down (`lyud.Bird.TurnFov`).
 
 **Seeing your wings.** A bird sees almost all the way round; a 100 degree screen does not. So the
 bird's own body is drawn with a far wider first-person field of view (118 degrees, `lyud.Bird.WingFov`), and the spread wings are drawn swept a little forward from beside the eye:
@@ -65,7 +69,8 @@ with every beat. Turning the head toward a wing eases that back to the true view
 
 **Comfort.** The head-stabilised camera is also what keeps this from making anyone sick: the horizon
 stays put (at most 8 degrees of the body's roll reach it, none while slow), there is no camera bob from the
-wings, no motion blur, and the field of view changes only with airspeed and slowly.
+wings, no motion blur, and the field of view changes only slowly: with airspeed, and eased in and out as the head
+turns.
 
 ## Flight
 
@@ -96,6 +101,16 @@ The bird is a point mass with an airspeed vector, a body orientation and two win
 - **Landing and perching.** Shift near any walkable surface (ground, roof, rail, a wall top, a branch with
   collision) aims the bird at it: a faint ring marks the spot, the bird flares and its feet grip. Perched,
   the mouse looks around, Space or a beat takes off.
+- **Perches are real.** The magnet only ever lands on something that is there: a branch, from the same branch
+  skeleton the tree's wood is drawn from (`FPlantSkeleton` with the tree's seed, age and season; a forest's tree near
+  the camera is the live plant standing in for it, of its own age), or a surface the traces hit (roofs, wall tops,
+  rails, the cable car's crossarms and railings, the ground). A branch is good when the feet can close round it (from
+  0.14 to 0.55 of the body's radius), it is near level, it is a limb or the inner third of a twig (which hardly sway),
+  and the body has room above it; the outer branches come first. The bird lands across it, its origin (between the
+  feet) on the top of the wood; each leg reaches for the branch right above its axis (two-bone IK, knee to ankle to
+  foot) and each toe closes round it joint by joint, every piece a chord of the circle round the wood (`FBirdGrip`,
+  `ABirdActor::SetGrip`), in first person and from outside alike. If the bird cannot reach the perch (it stops getting
+  closer for 2 s) it lets go and flies on; it never stops in the air.
 - **On the ground.** Hops (or walks, by species) with WASD, the head bobs with each step; E pecks.
 
 ### Species
@@ -209,8 +224,9 @@ Saving while a bird saves the game as the hero standing where he is; loading put
 - `BirdPawn` — the player bird: input, head, camera, and the body that shows.
 - `BirdFlightModel` — the flight physics (pure C++, no engine state, so it is tested headless).
 - `BirdFlightStyle` — per-species flight parameters derived from the species table.
-- `BirdSelfBody` — the close-up body you see in first person: beak, wings of separate feathers, breast,
-  tail, feet.
+- `BirdSelfBody` — the old close-up body of separate parts (beak, feathers, breast): only for a species that has no
+  hero body with a `Skull` slot (every species has one now).
+- `BirdPerches` — where the magnet lands: tree branches from their branch skeletons, surfaces by traces.
 - `BirdAir` — wind, cliff updrafts, thermals.
 - `HeadTracker` — AirPods head pose from the helper app (Mac only; elsewhere it reports nothing).
 
@@ -228,7 +244,16 @@ helper, or another platform: the game simply has no head tracking and C / middle
 ```sh
 unreal/scripts/test_bird_flight.sh            # physics checks (glide ratio, stall, takeoff, ridge lift, landing)
 unreal/scripts/record_bird_flight.sh <name>   # an offscreen flight, recorded to renders/bird_flight/<name>.mp4
+unreal/scripts/shoot_bird_fpv.sh <out> HouseSparrow MuteSwan ...     # first person: ahead, a wing, down, a beat, standing
+unreal/scripts/shoot_bird_fpv.sh <out> perch:HouseSparrow            # Q onto two branches; BIRDPERCH lines check the feet
 ```
+
+`Bird.Script fpv:<Id>` holds the bird still and logs `BIRD fpv <view> frame <n> eye <where the eye is on the body>`;
+`Bird.Script perch:<Id>` lands on two branches of the upland forest and logs, for every foot bone, its distance from
+the branch's surface (`BIRDPERCH ... worst 0.10 cm PASS`, the limit 1 cm), then shoots the feet from the eye, from
+beside and from below. Tuning: `lyud.Bird.NeckUp` / `NeckBack` (how far the head goes up and back looking down),
+`lyud.Bird.EyeUp` (the camera a little above the line between the eyes, so the bill is seen from above, never end-on
+from its root), `lyud.Bird.TurnFov`.
 
 The recordings play scripted input (clicks, mouse moves, a fake head turn) through the same input layer
 as the player, at a fixed 30 fps time step.

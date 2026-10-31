@@ -10,6 +10,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Materials/MaterialInterface.h"
 #include "Plants/GameCalendar.h"
+#include "Rendering/SkeletalMeshRenderData.h"
 
 namespace
 {
@@ -267,11 +268,22 @@ void ABirdActor::SetFirstPerson(bool bOn)
 	{
 		return;
 	}
-	const int32 Skull = Mesh->GetMaterials().IndexOfByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName == FName(TEXT("Skull")); });
+	const int32 Skull = Mesh->GetMaterials().IndexOfByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName.ToString().EndsWith(TEXT("Skull")); });
 	if (Skull != INDEX_NONE)
 	{
-		// sections are per LOD; the hero body has one LOD, and its sections are in slot order
-		Body->ShowMaterialSection(Skull, Skull, !bOn, 0);
+		// sections are per LOD (the hero body has one): every section drawn with the Skull slot
+		const FSkeletalMeshRenderData* RD = Mesh->GetResourceForRendering();
+		if (RD && RD->LODRenderData.Num() > 0)
+		{
+			const TArray<FSkelMeshRenderSection>& Sections = RD->LODRenderData[0].RenderSections;
+			for (int32 Si = 0; Si < Sections.Num(); Si++)
+			{
+				if (Sections[Si].MaterialIndex == Skull)
+				{
+					Body->ShowMaterialSection(Skull, Si, !bOn, 0);
+				}
+			}
+		}
 	}
 	Body->SetForcedLOD(bOn ? 1 : 0);
 	Body->SetBoundsScale(bOn ? 4.f : 1.f);
@@ -281,6 +293,22 @@ void ABirdActor::SetFirstPerson(bool bOn)
 		A->Wings.SweepDeg = bOn ? ViewSweepDeg : 0.f;
 		A->Wings.DroopRad = bOn ? ViewDroopRad : 0.f;
 	}
+}
+
+void ABirdActor::SetGrip(bool bOn, FVector AxisPoint, FVector Direction, float Radius)
+{
+	bGrip = bOn;
+	if (bOn)
+	{
+		GripPoint = AxisPoint;
+		GripDir = Direction.GetSafeNormal();
+		GripRadius = FMath::Max(Radius, 0.05f);
+	}
+}
+
+FVector ABirdActor::GetBoneWorld(FName Bone) const
+{
+	return Body && Body->GetBoneIndex(Bone) != INDEX_NONE ? Body->GetBoneLocation(Bone) : FVector::ZeroVector;
 }
 
 void ABirdActor::SetViewSweep(float SweepDeg, float DroopRad)
@@ -434,14 +462,31 @@ void ABirdActor::Tick(float DeltaSeconds)
 		LookTilt = Rng.FRandRange(-25.f, 25.f);
 		LookShown = LookShown.IsNearlyZero() ? WantCS : LookShown;
 	}
-	if (bLookActive)
+	if (bFirstPerson)
+	{
+		// worn from its own eye the head is the camera: it goes exactly where the player looks, no saccades, no tilt
+		LookShown = WantCS;
+		LookTilt = 0.f;
+	}
+	else if (bLookActive)
 	{
 		LookShown = FMath::VInterpTo(LookShown, WantCS, DeltaSeconds, LookHold > 0.15f ? 18.f : 4.f);
 	}
-	LookWeight = FMath::FInterpTo(LookWeight, bLookActive ? 1.f : 0.f, DeltaSeconds, 6.f);
+	LookWeight = FMath::FInterpTo(LookWeight, bLookActive ? 1.f : 0.f, DeltaSeconds, bFirstPerson ? 20.f : 6.f);
 	A->Look.Target = LookShown;
-	A->Look.Weight = State == EBirdState::Sleep || State == EBirdState::Preen ? 0.f : LookWeight;
+	A->Look.Weight = !bFirstPerson && (State == EBirdState::Sleep || State == EBirdState::Preen) ? 0.f : LookWeight;
 	A->Look.Tilt = LookTilt * LookWeight;
+	A->Look.bDirect = bFirstPerson;
+	// the toes round the branch (fast: a bird's grip closes as it lands)
+	A->Grip.Weight = FMath::FInterpTo(A->Grip.Weight, bGrip ? 1.f : 0.f, DeltaSeconds, bGrip ? 14.f : 8.f);
+	if (bGrip)
+	{
+		A->Grip.Centre = CT.InverseTransformPosition(GripPoint);
+		A->Grip.Axis = CT.InverseTransformVectorNoScale(GripDir);
+		A->Grip.Radius = GripRadius / FMath::Max((float)CT.GetScale3D().X, 0.01f);
+	}
+	A->Look.NeckLift = bFirstPerson ? NeckLift : 0.f;
+	A->Look.NeckReach = CT.InverseTransformVector(NeckReach);
 }
 
 namespace

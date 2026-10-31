@@ -190,7 +190,7 @@ USkeletalMesh* UBirdSpeciesLibrary::LoadHeroMesh(FName Id)
 bool UBirdSpeciesLibrary::HasFirstPersonBody(FName Id)
 {
 	const USkeletalMesh* Mesh = LoadHeroMesh(Id);
-	return Mesh && Mesh->GetMaterials().ContainsByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName == FName(TEXT("Skull")); });
+	return Mesh && Mesh->GetMaterials().ContainsByPredicate([](const FSkeletalMaterial& M) { return M.MaterialSlotName.ToString().EndsWith(TEXT("Skull")); });
 }
 
 namespace

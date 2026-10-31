@@ -145,6 +145,7 @@ void FBirdAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	TailPitchDeg = Bird->TailPitchDeg;
 	StreamerScale = Bird->StreamerScale;
 	Wings = Bird->Wings;
+	Grip = Bird->Grip;
 	FoldSeq = Bird->FoldSeq;
 	TuckSeq = Bird->TuckSeq;
 }
@@ -416,6 +417,7 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 		}
 	}
 	// the head turns to the target: the neck takes a third, the head the rest; a bird can look ~150 degrees round
+	// (worn from its own eye: as far as the neck goes, so the bill stays where the camera looks)
 	if (Look.Weight > 1e-3f)
 	{
 		const FTransform HeadCS = CS.GetComponentSpaceTransform(Head);
@@ -427,11 +429,22 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 		{
 			// keep within reach of the body's forward (+X): yaw up to 150, pitch -70..60 degrees
 			const FRotator R = Want.Rotation();
-			const FRotator Clamped(FMath::Clamp(R.Pitch, -70.f, 60.f), FMath::Clamp(FRotator::NormalizeAxis(R.Yaw), -150.f, 150.f), 0.f);
+			const FRotator Clamped(FMath::Clamp(R.Pitch, Look.bDirect ? -88.f : -70.f, Look.bDirect ? 80.f : 60.f),
+			                       FMath::Clamp(FRotator::NormalizeAxis(R.Yaw), Look.bDirect ? -170.f : -150.f, Look.bDirect ? 170.f : 150.f), 0.f);
 			Want = Clamped.Vector();
 			const FQuat Full = FQuat::FindBetweenNormals(Cur, Want);
 			const FQuat Turn = FQuat::Slerp(FQuat::Identity, Full, FMath::Clamp(Look.Weight, 0.f, 1.f));
-			RotateCS(CS, Neck, FQuat::Slerp(FQuat::Identity, Turn, 0.35f));
+			if (Look.bDirect)
+			{
+				// worn from its own eye the neck only swings sideways (half the turn, about the body's up): pitched, it would
+				// throw the head forward and down in front of the breast; the head does the rest
+				const float Delta = FRotator::NormalizeAxis(Want.Rotation().Yaw - Cur.Rotation().Yaw);
+				RotateCS(CS, Neck, FQuat(FVector::ZAxisVector, FMath::DegreesToRadians(0.5f * Delta) * FMath::Clamp(Look.Weight, 0.f, 1.f)));
+			}
+			else
+			{
+				RotateCS(CS, Neck, FQuat::Slerp(FQuat::Identity, Turn, 0.35f));
+			}
 			const FTransform HeadAfterNeck = CS.GetComponentSpaceTransform(Head);
 			const FVector Cur2 = HeadAfterNeck.GetRotation().RotateVector(Fwd0).GetSafeNormal();
 			FQuat Rest = FQuat::FindBetweenNormals(Cur2, FQuat::Slerp(FQuat::Identity, Full, Look.Weight).RotateVector(Cur));
@@ -442,6 +455,120 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 			RotateCS(CS, Head, Rest);
 		}
 	}
+	// the neck lifts: the head goes to where NeckReach puts it, the neck swung round toward it from its root and
+	// stretched to reach it (a bird's long neck comes out of its feathers), so the head rides up and back over the
+	// breast; it keeps looking where it looked
+	if (Look.NeckLift > 1e-3f && !Look.NeckReach.IsNearlyZero())
+	{
+		const float Lift = FMath::Clamp(Look.NeckLift, 0.f, 1.f);
+		const FVector Base = CS.GetComponentSpaceTransform(Neck).GetLocation();
+		const FTransform Was = CS.GetComponentSpaceTransform(Head);
+		const FVector Want = Was.GetLocation() + Look.NeckReach * Lift;
+		if (!(Was.GetLocation() - Base).IsNearlyZero() && !(Want - Base).IsNearlyZero())
+		{
+			RotateCS(CS, Neck, FQuat::FindBetweenVectors(Was.GetLocation() - Base, Want - Base));
+			FTransform H = CS.GetComponentSpaceTransform(Head);
+			H.SetLocation(Want);
+			H.SetRotation(Was.GetRotation());
+			TArray<FBoneTransform> Out;
+			Out.Add(FBoneTransform(Head, H));
+			CS.SafeSetCSBoneTransforms(Out);
+		}
+	}
+	if (Grip.Weight > 1e-3f)
+	{
+		ApplyGrip(CS);
+	}
 	FCSPose<FCompactPose>::ConvertComponentPosesToLocalPoses(MoveTemp(CS), Output.Pose);
 	return true;
+}
+
+void FBirdAnimProxy::ApplyGrip(FCSPose<FCompactPose>& CS) const
+{
+	// each toe (two bones: the toe and its tip) bent round the branch, joint by joint: every piece a chord of the
+	// circle the toe's own line runs on (the branch's radius plus the toe's thickness) in the plane across the branch
+	const FBoneContainer& Bones = CS.GetPose().GetBoneContainer();
+	const FVector A = Grip.Axis.GetSafeNormal();
+	if (A.IsNearlyZero())
+	{
+		return;
+	}
+	const float W = FMath::Clamp(Grip.Weight, 0.f, 1.f);
+	const FVector UpAcross = (FVector::ZAxisVector - A * A.Z).GetSafeNormal();
+	for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
+	{
+		// the leg first: knee to ankle to foot as two bones, the foot put on top of the branch right above its axis
+		// (one foot may be higher than the other on a sloping branch), the knee bending the way it bent
+		const FCompactPoseBoneIndex Shin = FindBone(Bones, *FString::Printf(TEXT("shin_%s"), Side));
+		const FCompactPoseBoneIndex Tarsus = FindBone(Bones, *FString::Printf(TEXT("tarsus_%s"), Side));
+		const FCompactPoseBoneIndex Foot = FindBone(Bones, *FString::Printf(TEXT("toes_%s"), Side));
+		const FCompactPoseBoneIndex Tip = FindBone(Bones, *FString::Printf(TEXT("toetip_%s"), Side));
+		if (Shin.IsValid() && Tarsus.IsValid() && Foot.IsValid() && !UpAcross.IsNearlyZero())
+		{
+			const FVector Knee = CS.GetComponentSpaceTransform(Shin).GetLocation();
+			const FVector Ankle = CS.GetComponentSpaceTransform(Tarsus).GetLocation();
+			const FVector F = CS.GetComponentSpaceTransform(Foot).GetLocation();
+			const float ToeHalf = Tip.IsValid() ? FVector::Dist(F, CS.GetComponentSpaceTransform(Tip).GetLocation()) : FVector::Dist(Ankle, F) * 0.3f;
+			const FVector OnAxis = Grip.Centre + A * FVector::DotProduct(F - Grip.Centre, A);
+			const FVector Target = FMath::Lerp(F, OnAxis + UpAcross * (Grip.Radius + ToeHalf * 0.12f), W);
+			const float La = FVector::Dist(Knee, Ankle), Lb = FVector::Dist(Ankle, F);
+			const FVector KT = Target - Knee;
+			const float D = FMath::Clamp((float)KT.Size(), FMath::Abs(La - Lb) + 1e-3f, La + Lb - 1e-3f);
+			const FVector Dk = KT.GetSafeNormal();
+			FVector Pole = (Ankle - Knee) - Dk * FVector::DotProduct(Ankle - Knee, Dk);
+			if (Pole.Normalize() && !Dk.IsNearlyZero())
+			{
+				const float X = (La * La - Lb * Lb + D * D) / (2.f * D);
+				const FVector AnkleNew = Knee + Dk * X + Pole * FMath::Sqrt(FMath::Max(0.f, La * La - X * X));
+				RotateCS(CS, Shin, FQuat::FindBetweenVectors(Ankle - Knee, AnkleNew - Knee));
+				const FVector FootNow = CS.GetComponentSpaceTransform(Foot).GetLocation();
+				const FVector AnkleNow = CS.GetComponentSpaceTransform(Tarsus).GetLocation();
+				RotateCS(CS, Tarsus, FQuat::FindBetweenVectors(FootNow - AnkleNow, Knee + Dk * D - AnkleNow));
+			}
+		}
+		for (const TCHAR* Toe : { TEXT("toes"), TEXT("hallux") })
+		{
+			const FCompactPoseBoneIndex B0 = FindBone(Bones, *FString::Printf(TEXT("%s_%s"), Toe, Side));
+			const FCompactPoseBoneIndex B1 = FindBone(Bones, *FString::Printf(TEXT("%stip_%s"), Toe[0] == TEXT('t') ? TEXT("toe") : Toe, Side));
+			if (!B0.IsValid() || !B1.IsValid())
+			{
+				continue;
+			}
+			const FVector Root = CS.GetComponentSpaceTransform(B0).GetLocation();
+			const FVector Joint = CS.GetComponentSpaceTransform(B1).GetLocation();
+			const float L = FVector::Dist(Root, Joint);   // the joint sits halfway: both pieces are this long
+			if (L < 1e-3f)
+			{
+				continue;
+			}
+			FVector Dir = (Joint - Root) / L;
+			// the circle: round the branch's axis, through the toe's root (never inside the wood plus the toe's thickness)
+			const FVector OnAxis = Grip.Centre + A * FVector::DotProduct(Root - Grip.Centre, A);
+			const float Rr = FMath::Max(FVector::Dist(Root, OnAxis), Grip.Radius + L * 0.12f);
+			float Wrapped = 0.f;
+			for (const FCompactPoseBoneIndex Bi : { B0, B1 })
+			{
+				const FVector P = CS.GetComponentSpaceTransform(Bi).GetLocation();
+				const FVector C = Grip.Centre + A * FVector::DotProduct(P - Grip.Centre, A);
+				const FVector Out = (P - C).GetSafeNormal();
+				FVector Flat = Dir - A * FVector::DotProduct(Dir, A);
+				const float LFlat = L * Flat.Size();
+				Flat = Flat.GetSafeNormal();
+				if (Out.IsNearlyZero() || Flat.IsNearlyZero())
+				{
+					break;
+				}
+				// the tangent at P the way the toe points, and the chord's angle in from it toward the axis
+				FVector Tangent = FVector::CrossProduct(A, Out);
+				if (FVector::DotProduct(Tangent, Flat) < 0.f) Tangent = -Tangent;
+				float Phi = 2.f * FMath::Asin(FMath::Clamp(LFlat / (2.f * Rr), 0.f, 1.f));
+				Phi = FMath::Min(Phi, FMath::Max(0.f, FMath::DegreesToRadians(300.f) - Wrapped));   // the claws stop short of the root
+				Wrapped += Phi;
+				const FVector Want = Tangent * FMath::Cos(Phi * 0.5f) - Out * FMath::Sin(Phi * 0.5f);
+				const FQuat Q = FQuat::Slerp(FQuat::Identity, FQuat::FindBetweenNormals(Flat, Want), W);
+				RotateCS(CS, Bi, Q);
+				Dir = Q.RotateVector(Dir);
+			}
+		}
+	}
 }

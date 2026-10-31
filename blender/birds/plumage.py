@@ -91,11 +91,44 @@ def outline_long(w, h, kind, seed, emarg=0.0, narrow=1.0, pointed=0.0):
         step = np.clip((t - 0.55) / 0.08, 0, 1)
         vane = vane * (1 - emarg * step * np.where(s < 0, 0.55, 0.4))
     barb = (t * h - np.abs(s) * w * 0.9) * 0.55
-    ragged = 0.94 + 0.06 * np.sin(barb * 1.3 + R.uniform(0, 6)) * np.sin(barb * 0.37)
+    ragged = 0.95 + 0.05 * np.sin(barb * 1.3 + R.uniform(0, 6)) * np.sin(barb * 0.37)
     lim = vane * prof * ragged
-    a = (np.abs(s) < lim).astype(float)
-    a = np.where(np.abs(s) < 0.035, (t < 0.995).astype(float), a)  # rachis to the tip
+    # splits: here and there a few barbs have parted, a thin V notch in from the margin (a real vane is never a clean cut)
+    g = np.floor(barb / 5.5)
+    side = (s > 0).astype(float)
+    rnd = np.abs(np.sin(g * 12.9898 + side * 78.233 + seed * 0.37) * 43758.5453) % 1.0
+    ph = (barb / 5.5) % 1.0
+    notch = (rnd > 0.84) & (ph < 0.22) & (t > 0.18) & (t < 0.97)
+    depth = 0.18 + 0.22 * ((rnd - 0.84) / 0.16)
+    lim = np.where(notch, lim * (1 - depth * (1 - np.abs(ph - 0.11) / 0.11)), lim)
+    # soft, frayed margin: the barb tips stand apart over the last ~3 px, so the edge fades in strands, not a cut line
+    soft = 3.0 * 2.0 / w
+    strands = 0.5 + 0.5 * np.sin(barb * 2.2)
+    fade = np.clip((lim - np.abs(s)) / soft, 0, 1)
+    a = np.where(fade < 1, fade * (0.35 + 0.65 * strands), 1.0)
+    a = np.clip(a * 1.25 - 0.1, 0, 1)
+    # the downy afterfeather at the base: loose, half transparent
+    fluff = (t < 0.09) & (np.abs(s) < vane * 0.75) & (R.random((h, w)) > 0.55)
+    a = np.where(fluff, np.maximum(a, 0.6), a)
+    a = np.where(np.abs(s) < 0.035, ((t < 0.995) & (t > 0.004)).astype(float), a)  # rachis to the tip
     return a, s, t, barb, lim
+
+
+def vane_extent(kind, t, shape):
+    """Geometry crop for a long feather card at t (0 base .. 1 tip): (outer, inner) |s| the vane reaches, with a margin,
+    from the same outline outline_long paints (so the card hugs the feather and edge-on it is the feather's own shape)."""
+    wo, wi, t0, rnd = SHAPES[kind]
+    nar = shape.get("narrow", 1.0)
+    wo, wi = wo * nar, wi * nar
+    rnd = rnd * (1 - 0.6 * shape.get("pointed", 0.0))
+    base = min(1.0, max(t, 0.0) / 0.1) ** 0.5
+    tip = (max(0.0, 1 - ((t - t0) / (1 - t0 + 1e-6)) ** (2 / rnd)) ** 0.5) if t > t0 else 1.0
+    prof = max(base, 0.6) * tip
+    em = shape.get("emarg", 0.0)
+    step = min(1.0, max(0.0, (t - 0.55) / 0.08)) if em > 0 else 0.0
+    o = wo * prof * (1 - em * step * 0.55)
+    i = wi * prof * (1 - em * step * 0.4)
+    return min(1.0, max(o + 0.07, 0.09)), min(1.0, max(i + 0.07, 0.09))
 
 
 def outline_contour(n, seed, w=None, h=None, slim=1.0, core=0.78, reach=1.15):
@@ -218,7 +251,7 @@ def apply_style(style, a, s, t, barb, lim, w, h, seed, contour):
         shaft_c_arr = np.broadcast_to(shaft_c, col.shape)
     col = np.where(rach[..., None], shaft_c_arr, col)
     # a low shaft ridge (a tall one glints along the whole card: a white streak down the back)
-    height = np.where(rach, 0.45 if contour else 0.6, 0.0) + 0.12 * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
+    height = np.where(rach, 0.45 if contour else 0.7, 0.0) + (0.12 if contour else 0.22) * stripes * a + (1.2 if contour else 0.8) * np.clip(e * 0.3, 0, 0.35)
     rough = np.full((h, w), max(0.6, style.get("rough", 0.74)))   # feathers are never mirror-like; gloss is the film tint
     irid = np.full((h, w), style.get("gloss", 0.0)) * np.clip(t * 1.4, 0, 1) * (a > 0)
     return np.clip(col, 0, 1), height, rough, irid
@@ -254,25 +287,28 @@ class Atlas:
         return key
 
     def pack(self):
+        """Rows of cells with a gutter between them (alpha 0, colour bled into it), so mips don't mix neighbours."""
         reqs = sorted(self.requests, key=lambda r: -r[4])
         while True:
-            x = y = row_h = 0
-            ok = True
-            cells = {}
-            for r in reqs:
-                w, h = r[3], r[4]
-                if x + w > self.size:
-                    x, y = 0, y + row_h
-                    row_h = 0
-                if y + h > self.size:
-                    ok = False
-                    break
-                cells[r[0]] = (x, y, w, h)
-                x += w
-                row_h = max(row_h, h)
-            if ok:
-                self.cells = cells
-                return
+            for G in (4, 2, 0):
+                x = y = row_h = 0
+                ok = True
+                cells = {}
+                for r in reqs:
+                    w, h = r[3], r[4]
+                    if x + w > self.size:
+                        x, y = 0, y + row_h + G
+                        row_h = 0
+                    if y + h > self.size:
+                        ok = False
+                        break
+                    cells[r[0]] = (x, y, w, h)
+                    x += w + G
+                    row_h = max(row_h, h)
+                if ok:
+                    self.cells = cells
+                    self.gutter = G
+                    return
             self.size *= 2
 
     def uv(self, key, s, t, flip=False):

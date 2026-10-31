@@ -105,6 +105,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	void SetViewSweep(float SweepDeg, float DroopRad);
 
+	/** The player looking down or round: the neck raised and stretched, the head moved by Reach (world, cm) times
+	 *  Lift (0..1) from where the clip has it, up and back over the body. */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetNeckLift(float Lift, FVector Reach) { NeckLift = FMath::Clamp(Lift, 0.f, 1.f); NeckReach = Reach; }
+
+	/** Perched on a branch: the toes close round it (a point on its axis, its direction, its radius; world, cm).
+	 *  bOn false lets go. The actor's origin (between the feet) should be on top of the branch. */
+	UFUNCTION(BlueprintCallable, Category = "Bird")
+	void SetGrip(bool bOn, FVector AxisPoint, FVector Direction, float Radius);
+
+	/** Where a foot bone is now (world), e.g. "toes_L", "toetip_R"; zero if there is no such bone. */
+	FVector GetBoneWorld(FName Bone) const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bird")
 	float ViewSweepDeg = 45.f;
 
@@ -138,6 +151,11 @@ private:
 	float LookTilt = 0.f;
 	bool bPlayer = false;
 	bool bFirstPerson = false;
+	float NeckLift = 0.f;
+	FVector NeckReach = FVector::ZeroVector;
+	bool bGrip = false;
+	FVector GripPoint = FVector::ZeroVector, GripDir = FVector::YAxisVector;
+	float GripRadius = 1.f;
 	float WingPoseAge = 1e3f;
 	void ApplyMorph();
 	float InFlap = 1.f, InFold = 0.f, InBank = 0.f, InPitch = 0.f;

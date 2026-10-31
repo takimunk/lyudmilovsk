@@ -99,6 +99,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumTrees() const { return Trees.Num(); }
 	/** Every tree: Fn(Species, Transform, Age) (the bird life perches on their crowns). */
 	template <typename FFn> void ForEachTree(FFn&& Fn) const { for (const FTree& T : Trees) Fn(T.Species, T.Xf, T.Age); }
+	/** Every tree with the seed its wood is built from: Fn(Species, Seed, Transform, Age) (the player bird perches on its branches). */
+	template <typename FFn> void ForEachTreeSeeded(FFn&& Fn) const { for (const FTree& T : Trees) Fn(T.Species, T.BakeSeed, T.Xf, T.Age); }
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumBaked() const;
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumLive() const { return LiveCount; }
 	UFUNCTION(BlueprintCallable, Category = "Forest") FString DescribeState() const;

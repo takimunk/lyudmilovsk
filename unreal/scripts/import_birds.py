@@ -108,7 +108,9 @@ def make_master(name, plumage, eye=False):
         m.set_editor_property("dithered_lod_transition", True)
     else:
         m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_OPAQUE)
-        m.set_editor_property("two_sided", True)   # bill halves and toe webs are open shells; the eyeball faces either way
+        # bill halves and toe webs are open shells (two-sided); the eyeball is a closed cap facing out, one-sided, so
+        # from the bird's own eye (first person) its inside is culled and does not block the view
+        m.set_editor_property("two_sided", not eye)
         m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
     alb = tex_param(m, "Albedo", -900, -200, unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
     nrm = tex_param(m, "Normal", -900, 150, unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
@@ -255,8 +257,14 @@ def do_textures(sid):
     """Step 1 (own process): a clean folder and the textures (Interchange won't import them after the .glb in one process)."""
     src_dir = os.path.join(EXPORT, sid)
     dest = "%s/%s" % (BIRDS, sid)
-    if eal.does_directory_exist(dest):
-        eal.delete_directory(dest)
+    # the species' generated assets go; its skeleton stays (the hero body and the clips are bound to it), and so do
+    # what others put here (Sounds/, the hero body)
+    for p in eal.list_assets(dest, True) if eal.does_directory_exist(dest) else []:
+        name = p.split("/")[-1].split(".")[0]
+        if "/Sounds/" in p or "_Hero" in name or name == "SKEL_%s" % sid:
+            continue
+        if name in ("SK_%s" % sid, "PHYS_%s" % sid) or "/Anims/" in p or name.startswith("SM_%s_" % sid):
+            eal.delete_asset(p)
     for kind, suffix in TEX:
         f = os.path.join(src_dir, "T_%s_%s.png" % (sid, suffix))
         if os.path.exists(f):
@@ -273,7 +281,18 @@ def do_import(sid):
     params = unreal.ImportAssetParameters()
     params.is_automated = True
     params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFPipeline.DefaultGLTFPipeline"))
-    params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFAssetsPipeline.DefaultGLTFAssetsPipeline"))
+    old_skel = unreal.load_asset("%s/SKEL_%s" % (dest, sid)) if eal.does_asset_exist("%s/SKEL_%s" % (dest, sid)) else None
+    if old_skel:
+        # onto the species' own skeleton (new bones merge in), so the hero body and anything bound to it keep working
+        pipe_path = dest + "/_pipe/IP_Bird"
+        if eal.does_asset_exist(pipe_path):
+            eal.delete_asset(pipe_path)
+        pipe = tools.duplicate_asset("IP_Bird", dest + "/_pipe", unreal.load_asset("/Interchange/Pipelines/DefaultGLTFAssetsPipeline"))
+        pipe.get_editor_property("common_skeletal_meshes_and_animations_properties").set_editor_property("skeleton", old_skel)
+        eal.save_loaded_asset(pipe)
+        params.override_pipelines.append(unreal.SoftObjectPath(pipe.get_path_name()))
+    else:
+        params.override_pipelines.append(unreal.SoftObjectPath("/Interchange/Pipelines/DefaultGLTFAssetsPipeline.DefaultGLTFAssetsPipeline"))
     mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
     mgr.import_asset(tmp, src, params)
     mgr.wait_until_all_tasks_done(True)
@@ -341,9 +360,12 @@ def do_import(sid):
             poses += import_pose(os.path.join(src_dir, f), dest, sid, pose, mis)
     for p in eal.list_assets(tmp, True):
         eal.delete_asset(p)
-    if eal.does_directory_exist(tmp):
-        eal.delete_directory(tmp)
+    for d in (tmp, dest + "/_pipe"):
+        if eal.does_directory_exist(d):
+            eal.delete_directory(d)
     eal.save_directory(dest)
+    if old_skel:
+        log("%s: onto the existing SKEL_%s (mesh skeleton %s)" % (sid, sid, mesh.skeleton.get_path_name() if mesh.skeleton else "none"))
     b = mesh.get_bounds().box_extent
     log("%s: %d materials, %d LODs, %d clips, %d poses, bounds %.1f x %.1f x %.1f cm" % (sid, len(mats), lods + 1, len(eal.list_assets(dest + "/Anims")), poses, b.x * 2, b.y * 2, b.z * 2))
 
@@ -450,6 +472,8 @@ def do_hero(sid):
     mats = sk.get_editor_property("materials")
     for i in range(len(mats)):
         sm = mats[i]
+        if "Skull" in str(sm.material_slot_name):   # M_<Id>_Skull: the head round the eyes, Plumage's look, hidden in first person
+            sm.material_slot_name = "Skull"          # the name ABirdActor::SetFirstPerson / HasFirstPersonBody look for
         sm.material_interface = mis[next((k for k in mis if k in str(sm.material_slot_name)), "Plumage")]
         mats[i] = sm
     sk.set_editor_property("materials", mats)
