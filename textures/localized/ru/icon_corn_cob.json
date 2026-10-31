@@ -1,0 +1,10 @@
+{
+ "id": "icon_corn_cob",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/food/icons_grid.png",
+ "cell": [
+  0,
+  0
+ ]
+}
