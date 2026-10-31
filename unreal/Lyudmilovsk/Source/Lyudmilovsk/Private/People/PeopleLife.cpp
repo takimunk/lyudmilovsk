@@ -1,6 +1,8 @@
 #include "People/PeopleLife.h"
 #include "People/LyudBodyAnim.h"
 #include "Transport/LyudTransport.h"
+#include "Bikes/LyudBike.h"
+#include "Bikes/LyudBikeSubsystem.h"
 
 #include "PeopleSim.h"
 #include "Animation/AnimSequence.h"
@@ -704,7 +706,16 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 			}
 		}
 		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
-		Body->Drive(At, P.Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
+		// with their bicycle in hand (Bikes/LyudBikeSubsystem): the bike's side places the body on it or beside it
+		ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
+		if (BikeSys && P.Bike >= 0 && (P.BikeMode > 0 || P.BikeAct != LP::EBikeAct::None))
+		{
+			BikeSys->PresentPerson(P.Id, Body, DeltaTime);
+		}
+		else
+		{
+			Body->Drive(At, P.Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
+		}
 	}
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
@@ -1178,6 +1189,10 @@ void ANpcBody::PlayVaried(FName InRole, std::initializer_list<FName> Variants, f
 
 void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
 {
+	if (bOnBike)
+	{
+		DriveBike(nullptr, FLyudBikeRide(), FVector::ZeroVector, 0.f, 0.f, DeltaTime);
+	}
 	// turn smoothly, except into a seat or a bed (the clip starts from the slot's facing)
 	if (bSnap || Transit != 0 || !bPlaced)
 	{

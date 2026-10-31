@@ -135,6 +135,7 @@ void FHeroAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	WalkClipSpeed = Hero->WalkClipSpeed;
 	JogClipSpeed = Hero->JogClipSpeed;
 	Reach = Hero->Reach;
+	Bike = Hero->Bike;
 }
 
 bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
@@ -223,6 +224,8 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	HandReach::ApplyCrouch(Output.Pose, State.Crouch, CrouchDrop);
 	// on a bench (a train's): the clips' idle stands, the body sits
 	HandReach::ApplySit(Output.Pose, State.Sit, State.SeatZ);
+	// on a bicycle: hips on the saddle, feet on the pedals, the trunk leaned to the bars (the arms come after the look)
+	LyudBikeRider::ApplyBody(Output.Pose, Bike);
 
 	// reaching for something: the body crouches and leans to it first (the look builds on that)
 	const FPalmFrame AnimPalm = Reach.IsActive() ? HandReach::CurrentPalm(Output.Pose) : FPalmFrame();
@@ -273,5 +276,6 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		HandReach::ApplyArm(Output.Pose, Reach, AnimPalm);
 	}
+	LyudBikeRider::ApplyArms(Output.Pose, Bike);
 	return true;
 }

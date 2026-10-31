@@ -1017,5 +1017,8 @@
  "ui.guide.asleep": "asleep",
  "ui.diary.birds_on": "birds on the map: hide",
  "ui.diary.birds_off": "birds on the map: show",
- "ui.help.guide": "B: the bird guide (once you have it)"
+ "ui.help.guide": "B: the bird guide (once you have it)",
+ "ui.bike.prompt": "[E] Get on the bike   [R] Walk it by the bars",
+ "ui.bike.prompt_lead": "[E] Get on   [R] Put it on its stand",
+ "ui.bike.prompt_off": "[E] Get off"
 }

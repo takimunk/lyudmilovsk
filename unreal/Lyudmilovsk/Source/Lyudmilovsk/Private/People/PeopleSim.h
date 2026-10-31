@@ -117,6 +117,7 @@ namespace LyudPeople
 		std::vector<int> Slots;
 		// flats
 		std::string House;
+		std::string Stair;          // the stair it is up (its entrance)
 		int Floor = 0, Number = 0;
 		std::vector<int> Residents; // reservation of the flat (people ids)
 	};
@@ -149,6 +150,20 @@ namespace LyudPeople
 	};
 
 	/** Fixed hours of a person: work or school. */
+	/** What someone does with their bicycle at a stop of their way (docs/bikes.md). */
+	enum class EBikeAct : uint8_t
+	{
+		None,
+		Take,       // takes it from where it stands (its place in the entrance), by the bars
+		Mount,      // gets on (outside the door)
+		Dismount,   // gets off (a few metres short of where they go)
+		Park,       // puts it on its stand (by the door they go in at), or back in its place in the entrance
+		TakeMount,  // takes it from where it stands outdoors and gets on at once
+		Num
+	};
+	/** How long each takes, s. */
+	float BikeActSeconds(EBikeAct A);
+
 	struct FDuty
 	{
 		std::string Activity;
@@ -208,7 +223,8 @@ namespace LyudPeople
 		// Kind 0 outdoors (the walk grid's ground, or the island's), 1 indoors, 2 the cable car from here (Ride s) to the next,
 		// 3 the train from here (a boarding point) to the next (the other halt's boarding point), 4 outdoors along a fixed
 		// line in 3D (to a halt, its stair and platform); ToIsland: where a ride comes out; RailFrom/RailTo: the halts' places
-		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; int8_t ToIsland = -1; int RailFrom = -1, RailTo = -1; };
+		// Bike: how they go to this point (0 on foot, 1 leading their bicycle, 2 riding it); BikeAct: what they do with it there
+		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; int8_t ToIsland = -1; int RailFrom = -1, RailTo = -1; uint8_t Bike = 0; EBikeAct BikeAct = EBikeAct::None; };
 		std::vector<FWay> Path;
 		int PathI = 0;
 		float Think = 0.f;
@@ -222,6 +238,12 @@ namespace LyudPeople
 		float SweepSent = -1.f;     // how far the winter was last told
 		double DoorsAt = 0.0;       // waiting: when the doors open (sim seconds)
 		double RideUntil = 0.0;     // riding the train: when it opens its doors at the other halt
+		// their bicycle (FWorld::Bikes) while they have it or go to take it, -1 none; 1 leading it by the bars, 2 riding it;
+		// what they do with it now (a stop on the way: getting on, off, parking) and from when till when (sim s)
+		int Bike = -1;
+		uint8_t BikeMode = 0;
+		EBikeAct BikeAct = EBikeAct::None;
+		double BikeActStart = 0.0, BikeActUntil = 0.0;
 		uint32_t Rng = 1;
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
@@ -291,6 +313,34 @@ namespace LyudPeople
 		std::string Scores(int Id) const;
 		/** Forces an activity now (tests, console): goes there and does it. */
 		bool Order(int Person, const std::string& Activity, const std::string& PlaceId = std::string());
+
+		/** Bicycles (docs/bikes.md): a household's bike lives in its entrance (a place on the stair's way in, Home) and
+		 *  goes where its rider leaves it. People ride it for an outdoor way of MinBikeWay or more on the valley's ground
+		 *  when it stands at home (their way out passes it) or near where they set off. */
+		struct FBike
+		{
+			std::string Id;
+			std::string Stair;          // the entrance it lives in ("" none: the player's bikes)
+			std::string Owner;          // the household that rides it ("" nobody)
+			V3 Home;                    // its place in the entrance, on the stair's way in
+			float HomeYaw = 0.f;
+			V3 Pos;                     // where it stands now
+			float Yaw = 0.f;
+			int Rider = -1;             // who has it or goes to take it
+			bool bHeld = false;         // the player has it
+		};
+		std::vector<FBike> Bikes;
+		float MinBikeWay = 110.f;       // m outdoors
+		float BikeSpeed = 4.4f;         // m/s riding (over 60: 3.6)
+		/** A stair's way in: its id, the street door's outside, the lobby inside it (a point people pass). */
+		struct FLobby { std::string Stair; V3 Street, Lobby; };
+		std::vector<FLobby> Lobbies;
+		/** Adds a bike standing at Pos (its home, in Stair's entrance when Stair isn't empty); its index. */
+		int AddBike(const std::string& Id, const std::string& Stair, const V3& Pos, float Yaw);
+		/** Gives each entrance's bike to a household living up that stair (adults under 77), one bike a household. */
+		void AssignBikes();
+		/** The player takes a bike (it isn't ridden by its owner while held) or leaves it at Pos. */
+		void SetBikeHeld(int Bike, bool bHeld, const V3& Pos, float Yaw);
 
 		/** The cable car (ULyudTransportSubsystem): called when someone gets to the station to ride from From to the station by To
 		 *  (both Unreal metres); true if a real cabin will carry them, and then the ride ends only with EndRide (or after an hour,
@@ -372,6 +422,12 @@ namespace LyudPeople
 		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
 		void Sweep(FPerson& P, float Dt);
 		void OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const;
+		/** Rewrites a fresh way to go part of it by bike (theirs, if it suits). */
+		void PlanBike(FPerson& P);
+		/** At a stop of the way with something to do with the bike. */
+		void BikeStop(FPerson& P, EBikeAct Act);
+		/** Whatever they have in hand is left standing where they are. */
+		void DropBike(FPerson& P);
 		float Rand(uint32_t& S) const;
 		void Emit(EEvent E, const FPerson& P, int Other = -1) { Events.push_back({ E, P.Id, Other, P.Place }); }
 	};

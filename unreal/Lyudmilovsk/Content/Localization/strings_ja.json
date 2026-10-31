@@ -1017,5 +1017,8 @@
  "ui.guide.asleep": "眠っている",
  "ui.diary.birds_on": "地図の鳥：消す",
  "ui.diary.birds_off": "地図の鳥：出す",
- "ui.help.guide": "B：野鳥図鑑（持っていれば）"
+ "ui.help.guide": "B：野鳥図鑑（持っていれば）",
+ "ui.bike.prompt": "[E] 自転車に乗る   [R] ハンドルを持って押す",
+ "ui.bike.prompt_lead": "[E] 乗る   [R] スタンドを立てる",
+ "ui.bike.prompt_off": "[E] 降りる"
 }

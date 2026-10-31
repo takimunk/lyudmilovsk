@@ -1,0 +1,16 @@
+{
+ "about": "Where the town's bicycles stand at a new game (docs/bikes.md). bikes: free-standing ones, at [x, y] in Unreal metres (the ground is found under it), yaw in degrees, on the kickstand (or lean: degrees against a wall, + to its right). entrances: one bike in the lobby of each stair (people_places.json stairs), against the lobby's nearer wall, belonging to a household living up that stair (PeopleSim AssignBikes). paint: index into paints (sRGB 0..255).",
+ "paints": [[150, 22, 20], [26, 58, 128], [222, 222, 214], [30, 92, 52], [158, 163, 168], [204, 96, 24], [28, 28, 32]],
+ "bikes": [
+  {"id": "club", "at": [-4.9, 12.6], "yaw": 95, "paint": 0},
+  {"id": "academ", "at": [-243.4, 531.6], "yaw": 180, "paint": 1}
+ ],
+ "entrances": [
+  {"stair": "Novikova1.s0", "paint": 2},
+  {"stair": "Novikova1.s2", "paint": 3},
+  {"stair": "Novikova3.s0", "paint": 4},
+  {"stair": "Novikova3.s1", "paint": 5},
+  {"stair": "Novikova3.s2", "paint": 6},
+  {"stair": "Maksimova8.s1", "paint": 0}
+ ]
+}

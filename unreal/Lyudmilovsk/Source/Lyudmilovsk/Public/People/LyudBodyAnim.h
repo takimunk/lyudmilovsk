@@ -4,6 +4,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Bikes/LyudBikeRider.h"
 #include "LyudBodyAnim.generated.h"
 
 class UAnimSequence;
@@ -49,6 +50,8 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	 *  up onto the surface under it, forward to it when the chair stands back from the desk. */
 	float HandIKAlpha = 0.f;
 	FVector HandOffset[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	/** On a bicycle or leading one by the bars (ALyudBike::RiderPose): the body bent onto its saddle, pedals and bars. */
+	FBikeRiderPose Bike;
 
 	virtual void Update(float DeltaSeconds) override;
 	virtual bool Evaluate(FPoseContext& Output) override;
@@ -113,6 +116,10 @@ public:
 	static bool SpeakLine(USkeletalMeshComponent* Mesh, const FString& LineKey);
 	static void StopLine(USkeletalMeshComponent* Mesh);
 
+	/** On a bicycle or leading one (ULyudBikeSubsystem every frame; Weight 0 = off): the targets of the saddle, the
+	 *  pedals and the bars in this mesh's component space. */
+	void SetBikeRider(const FBikeRiderPose& Pose) { BikePose = Pose; }
+
 protected:
 	virtual FAnimInstanceProxy* CreateAnimInstanceProxy() override { return new FLyudBodyAnimProxy(this); }
 	virtual void DestroyAnimInstanceProxy(FAnimInstanceProxy* InProxy) override { delete InProxy; }
@@ -120,6 +127,7 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 private:
+	FBikeRiderPose BikePose;
 	bool bFace = false;
 	bool bEyesShut = false;
 	bool bChatter = false;
