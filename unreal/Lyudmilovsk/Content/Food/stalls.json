@@ -1,0 +1,9 @@
+{
+ "_doc": "Street food stalls (docs/food.md). tools/people_map.py resolves each against the walk grid's ground into stalls_built.json (the game spawns the mesh there: ULyudStallSubsystem) and adds a place of kind <id> to people_places.json with the seller's counter slot and customers' stand slots. frame: map = tools/world_map.py metres (X west, Y out of the club's door), academ = the Academgorodok's ensemble metres (x east, y north); at: where the stall's middle stands; face: the way its front (the counter, the customers' side) looks, degrees in that frame (0 = +x, 90 = +y). Offsets in the stall's own frame, metres: x out of its front, y to its left. mesh: /Game/Food/Stalls/<mesh> (blender/food/build_stalls.py), origin on the ground at the middle, front +X.",
+ "stalls": [
+  {"id": "cheese_tent", "mesh": "SM_Stall_CheeseTent", "frame": "map", "at": [-7.8, 11.5], "face": 0.0,
+   "seller": [-0.75, 0.0], "customers": [[1.25, -0.7], [1.25, 0.7]], "half": [1.3, 1.6]},
+  {"id": "corn_stall", "mesh": "SM_Stall_Corn", "frame": "academ", "at": [21.0, 16.0], "face": -90.0,
+   "seller": [-0.7, 0.2], "customers": [[1.1, -0.5], [1.1, 0.5]], "half": [0.7, 1.0]}
+ ]
+}

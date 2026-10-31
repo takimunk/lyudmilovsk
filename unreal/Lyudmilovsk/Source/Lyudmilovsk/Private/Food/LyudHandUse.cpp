@@ -1,8 +1,9 @@
-#include "LyudHandUse.h"
+#include "Food/LyudHandUse.h"
 
 #include "Components/PrimitiveComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
+#include "Food/LyudBite.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -86,6 +87,11 @@ bool ULyudHandUse::Hold(FLyudHandThing InThing)
 	if (bHas)
 	{
 		Drop(false);
+	}
+	// one thing at the mouth at a time: a meal at a table ends first
+	if (ULyudBiteSubsystem* Meal = ULyudBiteSubsystem::Get(this); Meal && Meal->IsEating())
+	{
+		Meal->EndMeal();
 	}
 	Thing = MoveTemp(InThing);
 	bHas = true;

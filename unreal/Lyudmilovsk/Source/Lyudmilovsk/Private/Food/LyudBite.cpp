@@ -1,5 +1,7 @@
 #include "Food/LyudBite.h"
 
+#include "Food/LyudHandUse.h"
+
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -45,6 +47,11 @@ bool ULyudBiteSubsystem::BeginMeal(const FLyudMeal& InMeal)
 	if (bActive)
 	{
 		Finish(false);
+	}
+	// one thing at the mouth at a time: a food or cigarette in the hand goes away first
+	if (ULyudHandUse* Hand = ULyudHandUse::Get(this))
+	{
+		Hand->PutAway();
 	}
 	Meal = InMeal;
 	bActive = true;

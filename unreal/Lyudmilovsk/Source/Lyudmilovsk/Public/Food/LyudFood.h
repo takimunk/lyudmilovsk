@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "LyudHandUse.h"
+#include "Food/LyudHandUse.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "LyudFood.generated.h"
 

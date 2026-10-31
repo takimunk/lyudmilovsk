@@ -1,4 +1,4 @@
-#include "LyudFood.h"
+#include "Food/LyudFood.h"
 
 #include "Audio/LyudSoundscape.h"
 #include "Components/StaticMeshComponent.h"
