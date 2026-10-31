@@ -9,6 +9,8 @@
 #include "Birds/BirdFeeder.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -1732,4 +1734,34 @@ static FAutoConsoleCommandWithWorldAndArgs GBirdsNestCmd(TEXT("lyud.Birds.Nest")
 			PC->SetControlRotation((Info.Location - Eye).Rotation());
 		}
 		UE_LOG(LogTemp, Display, TEXT("BirdLife: %s nest %d (%s) on day %.1f at %s"), *Args[0], Id, *Info.Kind.ToString(), Day, *Info.Location.ToString());
+	}));
+
+/** lyud.Birds.ViewFrom <x> <y> <z> <pitch> <yaw> [fov]: the view from a free camera there (tests: close-ups without the hero's
+ *  body or its collision in the way); no arguments: back to the pawn. */
+static FAutoConsoleCommandWithWorldAndArgs GBirdsViewFromCmd(TEXT("lyud.Birds.ViewFrom"),
+	TEXT("lyud.Birds.ViewFrom <x> <y> <z> <pitch> <yaw> [fov]: view from a free camera (cm, degrees); no arguments: the pawn's view again."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+		if (!PC)
+		{
+			return;
+		}
+		static TWeakObjectPtr<ACameraActor> Cam;
+		if (Args.Num() < 5)
+		{
+			PC->SetViewTargetWithBlend(PC->GetPawn(), 0.f);
+			return;
+		}
+		const FVector At(FCString::Atof(*Args[0]), FCString::Atof(*Args[1]), FCString::Atof(*Args[2]));
+		const FRotator Rot(FCString::Atof(*Args[3]), FCString::Atof(*Args[4]), 0.f);
+		if (!Cam.IsValid() || Cam->GetWorld() != World)
+		{
+			FActorSpawnParameters P;
+			P.ObjectFlags |= RF_Transient;
+			Cam = World->SpawnActor<ACameraActor>(At, Rot, P);
+		}
+		Cam->SetActorLocationAndRotation(At, Rot);
+		Cam->GetCameraComponent()->SetFieldOfView(Args.Num() > 5 ? FCString::Atof(*Args[5]) : 60.f);
+		PC->SetViewTargetWithBlend(Cam.Get(), 0.f);
 	}));

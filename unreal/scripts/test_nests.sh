@@ -12,8 +12,9 @@ mkdir -p "$(dirname "$LOG")"
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_nests.py" > "$LOG.stdout" 2>&1 &
 PID=$!
 # a watchdog: no test takes 25 minutes
-( sleep "${TIMEOUT:-1500}"; kill "$PID" 2>/dev/null ) &
+# (it checks that the pid is still this test before it kills, and goes with its sleep when the test ends)
+( sleep "${TIMEOUT:-1500}"; ps -p "$PID" -o args= | grep -q test_nests.py && kill "$PID" 2>/dev/null ) &
 DOG=$!
+trap 'pkill -P "$DOG" 2>/dev/null; kill "$DOG" 2>/dev/null' EXIT
 wait "$PID" || true
-kill "$DOG" 2>/dev/null || true
 grep -E "NESTTEST|BirdLife:" "$LOG" | sed 's/.*\(NESTTEST\|BirdLife:\)/\1/' || true

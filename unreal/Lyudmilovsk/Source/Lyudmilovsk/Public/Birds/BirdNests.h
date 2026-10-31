@@ -63,6 +63,8 @@ public:
 	int32 InstancesLastUpdate = 0;
 	int32 Rebuilds = 0;
 	int32 Placed = 0;
+	/** Placed on a tree's wood, a wall or cliff face, the ground; left where the simulation guessed (nothing found near). */
+	int32 PlacedOn[4] = {};
 
 private:
 	struct FPiece
@@ -83,6 +85,7 @@ private:
 	TSharedPtr<FBirdPerches> Perches;
 	float StaticTimer = 0.f;
 	TMap<int32, double> LastFeed;
+	FString Nearest;
 	/** Per near chick nest: where its chicks sit (built with the static set), animated in place. */
 	struct FBrood
 	{

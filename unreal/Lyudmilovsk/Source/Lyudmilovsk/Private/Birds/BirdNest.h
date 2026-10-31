@@ -138,6 +138,7 @@ namespace LyudBirds
 		int FirstYear = 0;            // the year it was built first
 		uint32_t Seed = 1;
 		bool bPlaced = false;         // the game has put it on real wood or a wall (Pos, Yaw final)
+		float DrawScale = 1.f;        // the game's fit (a tree hole to the trunk's girth)
 		// the year's plan (cached; PlanYear says for which)
 		int PlanYear = -1;
 		std::vector<FAttempt> Plan;

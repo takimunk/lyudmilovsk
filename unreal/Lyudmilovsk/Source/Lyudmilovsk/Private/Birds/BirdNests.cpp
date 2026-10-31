@@ -233,16 +233,22 @@ void ABirdNestRenderer::Place(FWorld& World, int32 NestId)
 		});
 		if (Best < 1e19f)
 		{
+			PlacedOn[0]++;
 			if (bTrunk)
 			{
 				const FVector Dir = BestDir.IsNearlyZero() ? Fwd : BestDir;
 				Nest.Pos = FromUE(BestP + Dir * BestR);
 				Nest.Yaw = FMath::Atan2((float)Dir.Y, (float)Dir.X);
+				Nest.DrawScale = FMath::Clamp(BestR / 17.f, 0.45f, 1.2f);     // the tree hole's bark patch is cut for a 17 cm trunk
 			}
 			else
 			{
 				Nest.Pos = FromUE(BestP + FVector(0.0, 0.0, BestR * 0.8f));
 			}
+		}
+		else
+		{
+			PlacedOn[3]++;
 		}
 		return;
 	}
@@ -261,13 +267,25 @@ void ABirdNestRenderer::Place(FWorld& World, int32 NestId)
 				Nest.Yaw = FMath::Atan2((float)Hit.ImpactNormal.Y, (float)Hit.ImpactNormal.X);
 			}
 		}
+		PlacedOn[Best < 1e19f ? 1 : 3]++;
 		return;
 	}
-	// on the ground, a ledge or a roof
-	if (UW->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 300.0), At - FVector(0.0, 0.0, 800.0), ECC_Visibility, Q))
+	// on the ground, a ledge or a roof: somewhere level (a scrape on the cliff goes to its top or a ledge, not the face)
+	bool bFound = false;
+	for (int32 Ring = 0; Ring < 3 && !bFound; Ring++)
 	{
-		Nest.Pos = FromUE(Hit.ImpactPoint);
+		for (int32 Pt = 0; Pt < (Ring ? 8 : 1) && !bFound; Pt++)
+		{
+			const float Ang = Pt * PI / 4.f + Ring * 0.3f;
+			const FVector P = At + FVector(FMath::Cos(Ang), FMath::Sin(Ang), 0.0) * (Ring * 150.0);
+			if (UW->LineTraceSingleByChannel(Hit, P + FVector(0.0, 0.0, 300.0), P - FVector(0.0, 0.0, 800.0), ECC_Visibility, Q) && Hit.ImpactNormal.Z > 0.75)
+			{
+				Nest.Pos = FromUE(Hit.ImpactPoint);
+				bFound = true;
+			}
+		}
 	}
+	PlacedOn[bFound ? 2 : 3]++;
 }
 
 void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
@@ -282,10 +300,18 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 		Want.FindOrAdd(Mesh).Add(X);
 	};
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
+	Nearest = FString();
+	float NearestD = 1e9f;
 	for (FNest& Nest : N.Nests)
 	{
 		const FBreedKind& K = BreedTable()[Nest.Kind];
 		const float Dist = (Nest.Pos - Cam).Len();
+		if (Dist < NearestD)
+		{
+			NearestD = Dist;
+			Nearest = FString::Printf(TEXT("nearest nest %d %s %.1f m (range %.0f), stage %s"), Nest.Id, UTF8_TO_TCHAR(K.Id), Dist, NestRange(K),
+				UTF8_TO_TCHAR(StageName(Nest.State.Stage)));
+		}
 		const float Range = NestRange(K);
 		if (Dist > Range && Dist > 160.f)
 		{
@@ -305,7 +331,7 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 		const FName Id(S.Id.c_str());
 		const FRotator Rot(0.f, FMath::RadiansToDegrees(Nest.Yaw) + KitYaw, 0.f);
 		const FVector At = ToUE(Nest.Pos);
-		const FTransform NestXf(Rot, At);
+		const FTransform NestXf(Rot, At, FVector(Nest.DrawScale));
 		const bool bHidden = K.Nest == ENest::Cavity || K.Nest == ENest::Eave || K.Nest == ENest::Burrow;
 		// the nest itself
 		FName Mesh = NAME_None;
@@ -344,9 +370,20 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 				Mesh = FName(*FString::Printf(TEXT("SM_Nest_%s_%s"), *Id.ToString(), Stage));
 			}
 		}
-		if (!Mesh.IsNone() && SetFor(Mesh, false))
+		if (FDrawSet* Set = !Mesh.IsNone() ? SetFor(Mesh, false) : nullptr)
 		{
-			Add(Mesh, NestXf);
+			FTransform X = NestXf;
+			if (K.Nest == ENest::Cavity && Mesh != FName(TEXT("SM_TreeHole")))
+			{
+				// a box: its origin is the hole on its front; its back goes against the trunk or the wall
+				const float Depth = -(float)Set->ISM->GetStaticMesh()->GetBoundingBox().Min.X;
+				X = FTransform(Rot, At + Rot.Vector() * Depth);
+			}
+			Add(Mesh, X);
+		}
+		if (Dist <= NearestD)
+		{
+			Nearest += FString::Printf(TEXT(" mesh %s%s at %s"), *Mesh.ToString(), Mesh.IsNone() || Missing.Contains(Mesh) ? TEXT(" (none)") : TEXT(""), *At.ToString());
 		}
 		// eggs and chicks, close up
 		const float Near = FMath::Max(20.f, S.Length * 45.f);
@@ -575,6 +612,6 @@ FString ABirdNestRenderer::Describe() const
 	{
 		Meshes += P.Value.Xf.Num() > 0 ? 1 : 0;
 	}
-	return FString::Printf(TEXT("nest drawing: %d instances of %d meshes, %d broods near, %d placed, %d rebuilds, %d meshes missing"),
-		InstancesLastUpdate, Meshes, Broods.Num(), Placed, Rebuilds, Missing.Num());
+	return Nearest + TEXT("; ") + FString::Printf(TEXT("nest drawing: %d instances of %d meshes, %d broods near, %d placed (wood %d, wall %d, ground %d, left as guessed %d), %d rebuilds, %d meshes missing"),
+		InstancesLastUpdate, Meshes, Broods.Num(), Placed, PlacedOn[0], PlacedOn[1], PlacedOn[2], PlacedOn[3], Rebuilds, Missing.Num());
 }

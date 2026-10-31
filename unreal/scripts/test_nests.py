@@ -57,17 +57,14 @@ def nest(w, i):
 
 
 def place_camera(w, target, yaw, dist, up):
-    """The camera dist cm from target along the nest's facing (yaw), up cm above it, looking at it."""
+    """A camera dist cm from target along yaw, up cm above it, looking at it (a CameraActor as the view target: the
+    hero's own camera sits on its head and its body is in the way)."""
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
-    pawn = pc.get_controlled_pawn()
     fwd = unreal.Rotator(roll=0, pitch=0, yaw=yaw).get_forward_vector()
     eye = unreal.Vector(target.x + fwd.x * dist, target.y + fwd.y * dist, target.z + up)
     rot = unreal.MathLibrary.find_look_at_rotation(eye, target)
-    pawn.set_actor_location(eye, False, True)
-    pc.set_control_rotation(rot)
-    cam = pc.player_camera_manager.get_camera_location()
-    pawn.set_actor_location(pawn.get_actor_location() + (eye - cam), False, True)
-    pc.set_control_rotation(rot)
+    cmd(w, "lyud.Birds.ViewFrom %.1f %.1f %.1f %.2f %.2f 60" % (eye.x, eye.y, eye.z, rot.pitch, rot.yaw))
+    pc.get_controlled_pawn().set_actor_location(eye + unreal.Vector(0, 0, 400), False, True)
 
 
 STEPS = []
@@ -89,52 +86,59 @@ def s_start(w):
     log("start: %d nests %s; %s" % (len(near), kinds, life(w).report()))
 
 
+HIDDEN_KINDS = ("Cavity", "Eave", "Burrow", "MudCup")
+
+
+def trees(w, hidden):
+    """Hides the forests and the live trees (the nest stays where it was put: on their wood or floating, which shows)."""
+    for cls in (unreal.ProceduralForest, unreal.ProceduralPlant):
+        for a in unreal.GameplayStatics.get_all_actors_of_class(w, cls):
+            a.set_actor_hidden_in_game(hidden)
+
+
 def make_case(sp, stage, frac, dist):
     def s_go(w):
         cmd(w, "lyud.Birds.Nest %s %s %.2f" % (sp, stage, frac))
-        st["case"] = (sp, stage)
 
     def s_look(w):
         pc = unreal.GameplayStatics.get_player_controller(w, 0)
         i = life(w).find_nest(sp, pc.get_controlled_pawn().get_actor_location())
-        n = nest(w, i)
+        n = nest(w, i) if i >= 0 else None
         if not n or n.id < 0:
-            log("%s %s: no nest" % (sp, stage))
+            log("%s %s: no nest (find %d)" % (sp, stage, i))
             st["n"] = None
             return
         st["n"] = n
-        log("%s %s: nest %d %s stage %s eggs %d chicks %d age %.1f progress %.2f placed %s at %s yaw %.0f" % (
-            sp, stage, n.id, n.kind, n.stage, n.eggs, n.chicks, n.chick_age, n.progress, n.placed, n.location, n.yaw))
-        place_camera(w, n.location, n.yaw + 25.0, dist, dist * 0.45)
+        log("%s %s: nest %d %s stage %s eggs %d chicks %d age %.1f progress %.2f placed %s at %.0f %.0f %.0f yaw %.0f" % (
+            sp, stage, n.id, n.kind, n.stage, n.eggs, n.chicks, n.chick_age, n.progress, n.placed, n.location.x, n.location.y,
+            n.location.z, n.yaw))
+        if str(n.kind) in HIDDEN_KINDS:
+            # from in front of the hole or the box, a little above
+            place_camera(w, n.location, n.yaw, dist, dist * 0.15)
+        else:
+            # from above and to one side: into the cup
+            place_camera(w, n.location, n.yaw + 30.0, dist * 0.75, dist * 0.8)
 
     def s_shot1(w):
         if st.get("n") and SHOTS:
-            log("shot %s %s near" % (sp, stage))
+            rep = life(w).report()
+            log("shot %s %s scene: %d birds within 15 m; %s" % (sp, stage, len(life(w).find_birds_near(st["n"].location, 1500)),
+                                                                  rep[rep.find("nearest nest"):][:400]))
             cmd(w, "HighResShot 1600x900")
 
-    def s_grazing(w):
-        n = st.get("n")
-        if n:
-            place_camera(w, n.location + unreal.Vector(0, 0, 4), n.yaw - 40.0, dist * 0.6, dist * 0.06)
+    def s_bare(w):
+        if st.get("n"):
+            trees(w, True)
 
     def s_shot2(w):
         if st.get("n") and SHOTS:
-            log("shot %s %s grazing" % (sp, stage))
+            log("shot %s %s bare (trees hidden)" % (sp, stage))
             cmd(w, "HighResShot 1600x900")
 
-    def s_wide(w):
-        n = st.get("n")
-        if n:
-            place_camera(w, n.location, n.yaw + 60.0, dist * 4.0, dist * 1.5)
+    def s_back(w):
+        trees(w, False)
 
-    def s_shot3(w):
-        n = st.get("n")
-        if n and SHOTS:
-            near = life(w).find_birds_near(n.location, 3000)
-            log("shot %s %s wide: %d birds within 30 m; parents %d %d" % (sp, stage, len(near), n.male, n.female))
-            cmd(w, "HighResShot 1600x900")
-
-    for fn, wait in ((s_go, 6.0), (s_look, 4.0), (s_shot1, 3.0), (s_grazing, 2.5), (s_shot2, 3.0), (s_wide, 3.0), (s_shot3, 3.0)):
+    for fn, wait in ((s_go, 6.0), (s_look, 4.0), (s_shot1, 3.0), (s_bare, 1.5), (s_shot2, 3.0), (s_back, 0.5)):
         STEPS.append((fn, wait))
 
 
