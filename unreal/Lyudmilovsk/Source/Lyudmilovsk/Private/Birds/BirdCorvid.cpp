@@ -2427,7 +2427,7 @@ namespace LyudBirds
 		{
 			return 1.f;
 		}
-		float K = 1.f + 0.6f * C->Grudge - 0.3f * C->Bond;
+		float K = std::max(0.3f, 1.f + 0.6f * C->Grudge - 0.7f * C->Bond);      // a friend sits still a few steps off
 		switch (C->Task)
 		{
 		case ETask::Snatch: K *= 0.25f; break;

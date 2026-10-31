@@ -53,6 +53,7 @@ def place(w, loc, pitch, yaw, fov=0.0):
         if "fov0" not in st:
             st["fov0"] = cam.field_of_view
         cam.set_field_of_view(fov if fov > 0.0 else st["fov0"])
+    cmd(w, "fov %.2f" % fov)
     pc.get_controlled_pawn().set_actor_location(unreal.Vector(*loc), False, True)
     pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
 
@@ -85,7 +86,8 @@ def shot(w, name):
     if SHOTS:
         fix_eye(w)
         cmd(w, "HighResShot 1600x900")
-        log("shot %s" % name)
+        pcm = unreal.GameplayStatics.get_player_controller(w, 0).player_camera_manager
+        log("shot %s (fov %.1f, pitch %.1f)" % (name, pcm.get_fov_angle(), pcm.get_camera_rotation().pitch))
 
 
 def report(w):
@@ -119,8 +121,24 @@ def s_start(w):
     log("start " + report(w))
 
 
+def paved(w, x, y):
+    """Whether the ground at x, y is a path or paving (small finds show there; in the grass the blades hide them)."""
+    hit = unreal.SystemLibrary.line_trace_single(w, unreal.Vector(x, y, 2400.0), unreal.Vector(x, y, -4000.0),
+                                                 unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [], unreal.DrawDebugTrace.NONE, True)
+    a = hit.to_tuple()[9] if hit else None
+    name = a.get_name() if a else ""
+    return name and "Landscape" not in name, name
+
+
 @step
 def s_setup(w):
+    global LAWN
+    for x, y in [(-193.0, 1500.0), (-193.0, 1800.0), (-193.0, 2100.0), (-300.0, 2400.0), (-100.0, 2400.0), (-500.0, 2400.0)]:
+        ok, name = paved(w, x, y)
+        log("ground at %.0f %.0f: %s" % (x, y, name))
+        if ok:
+            LAWN = (x, y)
+            break
     x0, y0 = LAWN
     z = ground(w, x0, y0)
     st["lawn"] = unreal.Vector(x0, y0, z)
@@ -151,7 +169,7 @@ def s_finds_shot(w):
 
 @step
 def s_finds_close(w):
-    look(w, st["lawn"], 300.0, 70.0, -60.0)
+    look(w, st["lawn"], 300.0, 40.0, -60.0)
 
 
 @step
@@ -258,7 +276,7 @@ def s_grudge(w):
     cmd(w, "lyud.Corvids.Feel 0 0.9 120")
 
 
-step(lambda w: (log("scolding after 10 s: %d" % (count(w, "Scold") - st["scold0"])), party(w)), 10.0)
+step(lambda w: (log("scolding after 20 s: %d" % (count(w, "Scold") - st["scold0"])), party(w)), 20.0)
 step(lambda w: shot(w, "scolded"), 2.0)
 step(lambda w: shot(w, "scolded 2"), 4.0)
 
