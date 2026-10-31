@@ -24,6 +24,8 @@ OUT="$ROOT/bench/results/$MACHINE/$NAME.json"
 LOG="$ROOT/unreal/Lyudmilovsk/Saved/Logs/bench_$NAME.log"
 mkdir -p "$(dirname "$OUT")" "$(dirname "$LOG")"
 
+# a benchmark runs alone (tools/wait_ue_queue.sh: other offscreen runs wait while one has -LyudBench)
+"$ROOT/tools/wait_ue_queue.sh" 7200 --exclusive || exit 1
 BUSY=$(pgrep -f "UnrealEditor|UnrealEditor-Cmd|ShaderCompileWorker|clang" | wc -l | tr -d ' ')
 if [ "$BUSY" -gt 0 ]; then echo "bench: warning, $BUSY other Unreal/compiler processes are running; numbers will be noisy"; fi
 # the editor's -game keeps resolution and scalability in Saved/Config/MacEditor/GameUserSettings.ini: run without
