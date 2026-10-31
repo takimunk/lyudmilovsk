@@ -1,0 +1,10 @@
+{
+ "id": "icon_feed_mealworm",
+ "lang": "ja",
+ "service": "higgsfield",
+ "grid": "design/grocery/icons_grid_ja.png",
+ "cell": [
+  0,
+  1
+ ]
+}

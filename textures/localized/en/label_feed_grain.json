@@ -1,0 +1,10 @@
+{
+ "id": "label_feed_grain",
+ "lang": "en",
+ "service": "higgsfield",
+ "grid": "design/grocery/labels_grid_en.png",
+ "cell": [
+  1,
+  1
+ ]
+}

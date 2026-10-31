@@ -1,0 +1,10 @@
+{
+ "id": "icon_feed_grain",
+ "lang": "ja",
+ "service": "higgsfield",
+ "grid": "design/grocery/icons_grid_ja.png",
+ "cell": [
+  1,
+  1
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "label_feed_peanuts",
+ "lang": "en",
+ "service": "higgsfield",
+ "grid": "design/grocery/labels_grid_en.png",
+ "cell": [
+  2,
+  1
+ ]
+}
