@@ -46,6 +46,11 @@ def ground(w, x, y, z0=400.0):
     return hit.to_tuple()[4].z if hit else 0.0
 
 
+def at(w, x, y):
+    """Where the hero stands at x, y: on whatever is there (a slope, a step), not inside it or in the air."""
+    return (x, y, ground(w, x, y, st["lawn"].z) + 100.0)
+
+
 def place(w, loc, pitch, yaw, fov=0.0):
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
     cam = pc.get_controlled_pawn().get_component_by_class(unreal.CameraComponent)
@@ -180,7 +185,7 @@ def s_finds_close_shot(w):
 @step
 def s_step_back(w):
     # the player steps back to watch from the door
-    place(w, (LAWN[0] - 1400.0, LAWN[1] - 1400.0, st["lawn"].z + 180.0), -10, 45)
+    place(w, at(w, LAWN[0] - 1400.0, LAWN[1] - 1400.0), -10, 45)
     st["eye"] = None
 
 
@@ -225,7 +230,7 @@ def s_fish_shot(w):
 @step
 def s_gift_setup(w):
     # the player stands still at the lawn's edge; the corvids round here like them now
-    place(w, (LAWN[0] - 500.0, LAWN[1] - 300.0, st["lawn"].z + 180.0), -12, 60)
+    place(w, at(w, LAWN[0] - 500.0, LAWN[1] - 300.0), -12, 60)
     st["eye"] = None
     st["gifts0"] = count(w, "Gift")
     cmd(w, "lyud.Corvids.Feel 0.9 0 120")
@@ -241,7 +246,7 @@ def _gift_wait(w):
     party(w)
 
 
-for _ in range(6):
+for _ in range(9):
     step(_gift_wait, 15.0)
 
 
@@ -257,7 +262,7 @@ def s_take(w):
     # the player picks up whatever lies in reach in front of them (a present, or one of the finds walked up to)
     cmd(w, "lyud.Corvids.Take")
     x0, y0 = LAWN
-    place(w, (x0 - 30.0, y0 - 110.0, st["lawn"].z + 180.0), -55, 80)
+    place(w, at(w, x0 - 30.0, y0 - 110.0), -55, 80)
 
 
 @step
@@ -270,7 +275,7 @@ step(lambda w: log("after the take: " + report(w)), 3.0)
 
 @step
 def s_grudge(w):
-    place(w, (LAWN[0] - 400.0, LAWN[1] + 200.0, st["lawn"].z + 180.0), 10, 60)
+    place(w, at(w, LAWN[0] - 400.0, LAWN[1] + 200.0), 10, 60)
     st["eye"] = None
     st["scold0"] = count(w, "Scold")
     cmd(w, "lyud.Corvids.Feel 0 0.9 120")
@@ -290,7 +295,7 @@ def s_grudge_check(w):
 
 @step
 def s_throw(w):
-    place(w, (LAWN[0] - 300.0, LAWN[1] - 500.0, st["lawn"].z + 180.0), -20, 80)
+    place(w, at(w, LAWN[0] - 300.0, LAWN[1] - 500.0), -20, 80)
     st["eye"] = None
     cmd(w, "lyud.Corvids.Throw")
     log("feed thrown")
