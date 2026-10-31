@@ -145,6 +145,14 @@
    {
     "item": "amber_charm",
     "price": 90
+   },
+   {
+    "item": "cigarettes",
+    "price": 38
+   },
+   {
+    "item": "lighter",
+    "price": 12
    }
   ]
  },

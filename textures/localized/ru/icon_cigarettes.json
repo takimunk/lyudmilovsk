@@ -1,0 +1,10 @@
+{
+ "id": "icon_cigarettes",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/smoking/icons_grid.png",
+ "cell": [
+  0,
+  0
+ ]
+}

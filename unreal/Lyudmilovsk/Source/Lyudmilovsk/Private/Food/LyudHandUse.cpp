@@ -98,7 +98,7 @@ bool ULyudHandUse::Hold(FLyudHandThing InThing)
 	Phase = EPhase::Carry;
 	AtLips = 0.f;
 	PhaseTime = PressTime = SteadyTime = HoldTime = 0.f;
-	bWasDown = bClickQueued = bClickDown = bAttached = false;
+	bWasDown = bClickQueued = bClickDown = bAttached = bWaitUp = bReachedLips = false;
 	// the fingers close on its shape (in the palm's frame); without one, on its visible parts' bounds
 	if (Thing.Shape.IsEmpty())
 	{
@@ -205,6 +205,25 @@ FVector ULyudHandUse::MouthPoint() const
 FVector ULyudHandUse::LipsLocation() const
 {
 	return Lips;
+}
+
+FVector ULyudHandUse::LipsInLook()
+{
+	return LipsPos;
+}
+
+void ULyudHandUse::Interrupt()
+{
+	if (!bHas)
+	{
+		return;
+	}
+	bWaitUp = true;
+	if (Phase == EPhase::ToLips || Phase == EPhase::Use || Phase == EPhase::Steady)
+	{
+		Phase = EPhase::FromLips;
+		PhaseTime = 0.f;
+	}
 }
 
 FHeroHoldPose ULyudHandUse::PoseNow(float Push) const
@@ -314,7 +333,12 @@ void ULyudHandUse::Tick(float DeltaTime)
 	}
 
 	// the button: a press starts the hand to the lips; still down when it gets there makes it a big use, then on and on
-	const bool bDown = HoldTime > 0.35f && ButtonDown(PC);
+	bool bDown = HoldTime > 0.35f && ButtonDown(PC);
+	if (bWaitUp)
+	{
+		bWaitUp = bDown;
+		bDown = false;
+	}
 	const bool bPressed = bDown && !bWasDown;
 	bWasDown = bDown;
 	if (bDown)
@@ -339,6 +363,7 @@ void ULyudHandUse::Tick(float DeltaTime)
 		{
 			Kind = bDown ? ELyudMouthUse::Big : ELyudMouthUse::Small;
 			Phase = EPhase::Use;
+			bReachedLips = true;
 			PhaseTime = 0.f;
 			Use(Kind);
 		}
@@ -426,7 +451,7 @@ void ULyudHandUse::Tick(float DeltaTime)
 			bAttached = true;
 		}
 	}
-	if (bAttached && bHidden)
+	if (bAttached && bHidden && (!Thing.bHiddenTillLips || bReachedLips))
 	{
 		SetHidden(false);
 	}

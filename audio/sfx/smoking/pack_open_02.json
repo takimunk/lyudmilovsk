@@ -1,0 +1,23 @@
+{
+ "id": "pack_open",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/smoking/pack_open_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A small cardboard flip-top cigarette pack opened with the thumb: a soft papery click of the lid, then a cigarette sliding out of the pack, close, quiet room, no voices",
+  "duration_seconds": 0.8
+ },
+ "hash": "d3ebef823f0f",
+ "fal_request_id": "01a1939e-2092-7a13-80d1-90af9621c05d",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a155/3jG0QK4xYCEQ_kBjvZMh1_sound_effect.mp3",
+ "created": "2026-10-31T20:19:39Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -12 dBFS",
+ "sha256": "df4a955f9cc75ddb8372d70f3e62aaba42e8fd5a62f25dba60a3f55f856f390a",
+ "seconds": 0.68,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "smoking"
+}

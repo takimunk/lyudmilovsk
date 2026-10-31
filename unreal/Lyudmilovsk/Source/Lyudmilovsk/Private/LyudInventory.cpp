@@ -139,6 +139,18 @@ namespace
 		Good(TEXT("cheese_braid"), K::Food, L::Pack, FVector(3.5f, 4.5f, 22.f), FLinearColor(0.8f, 0.5f, 0.2f), 25, 2.f);
 		Good(TEXT("cheese_round_small"), K::Food, L::Pack, FVector(11.f, 11.f, 5.f), FLinearColor(0.95f, 0.93f, 0.86f), 40, 5.5f);
 		Good(TEXT("cheese_round_big"), K::Food, L::Pack, FVector(17.f, 17.f, 7.5f), FLinearColor(0.95f, 0.93f, 0.86f), 110, 8.5f);
+		// cigarettes (docs/smoking.md): one item per pack of ten (the open pack's share left in Started), taken out into the hand by
+		// ULyudSmoking; the lighter lights them
+		FLyudItemDef Cigs;
+		Cigs.Id = TEXT("cigarettes");
+		Cigs.Slot = ELyudEquipSlot::Hand;
+		Cigs.Look = ELyudItemLook::Pack;
+		Cigs.Size = FVector(1.8f, 4.2f, 8.8f);
+		Cigs.Tint = FLinearColor(0.09f, 0.17f, 0.34f);
+		Cigs.Price = 35;
+		Cigs.Radius = 2.2f;
+		D.Add(Cigs);
+		Good(TEXT("lighter"), K::Misc, L::Pack, FVector(1.1f, 2.4f, 7.3f), FLinearColor(0.95f, 0.45f, 0.05f), 10, 1.3f);
 		FLyudItemDef Feeder;
 		Feeder.Id = TEXT("feeder");
 		Feeder.Kind = ELyudItemKind::Place;

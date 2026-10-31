@@ -1038,5 +1038,21 @@
  "npc.guseva_valentina.name": "ワレンチナ・グセワ",
  "npc.guseva_valentina.role": "アカデムゴロドクでゆでトウモロコシを売っている",
  "line.guseva_valentina.first.1": "トウモロコシは熱々、ゆでたてだよ。塩はたっぷり、先に言っておくね。",
- "line.guseva_valentina.again1.1": "ダーチャで採れたやわらかいのだよ。季節のうちに買っておきな。"
+ "line.guseva_valentina.again1.1": "ダーチャで採れたやわらかいのだよ。季節のうちに買っておきな。",
+ "item.cigarettes.name": "タバコ「スクヴォレツ」",
+ "item.cigarettes.desc": "フィルター付き十本入りのパック。喫煙は健康を害すると正直に書いてある。",
+ "item.lighter.name": "ライター",
+ "item.lighter.desc": "火打ち車の付いたオレンジ色のプラスチックライター。",
+ "label.cigarettes.brand": "スクヴォレツ",
+ "label.cigarettes.warning": "喫煙はあなたの健康を害します",
+ "label.cigarettes.count": "フィルター付き 10本",
+ "ui.smoke.hint_unlit": "左クリック — 火をつける   右クリック — 箱に戻す",
+ "ui.smoke.hint_lit": "左クリック — 口元へ、長押し — 吸う   右クリック — 消して捨てる",
+ "ui.smoke.no_lighter": "火がない",
+ "ui.smoke.take_pack": "[E] タバコとライターを取る",
+ "ui.smoke.take_lighter": "[E] ライターを取る",
+ "ui.smoke.empty": "箱は空だ",
+ "line.hero.cough.1": "(coughs) (coughs) ゴホッ…ゴホゴホ。",
+ "line.hero.cough.2": "(coughs) ケホッ…(coughs) (gasps) うっ…",
+ "line.hero.cough.3": "(coughs) (coughs) (coughs) まずい…"
 }

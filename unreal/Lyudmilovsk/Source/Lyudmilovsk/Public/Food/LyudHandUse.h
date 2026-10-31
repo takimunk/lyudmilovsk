@@ -62,6 +62,8 @@ struct FLyudHandThing
 	TFunction<void(float /*Left*/)> OnPutAway;
 	/** The prompt line while it is in the hand (the keys); empty: "LMB — bite · hold — eat · Q — put away". */
 	FText Prompt;
+	/** Stays hidden until the hand first gets it to the lips (taken from the mouth: a cigarette the lips held while it was lit). */
+	bool bHiddenTillLips = false;
 };
 
 /**
@@ -105,6 +107,12 @@ public:
 	void Click() { bClickQueued = true; }
 	/** Where the thing touches the lips (world), for sounds. */
 	FVector LipsLocation() const;
+	/** The thing in the hand, to change on the way (its poses, its mouth point, what is left); null when the hand is empty. */
+	FLyudHandThing* Edit() { return bHas ? &Thing : nullptr; }
+	/** Takes the hand down from the lips now (a cough), and the button must go up before it takes it there again. */
+	void Interrupt();
+	/** The lips in the look's yaw frame from the eyes (forward, right, up), cm: where MouthFull goes. */
+	static FVector LipsInLook();
 
 	/** Every use of every thing: its item, the kind, what is left. */
 	DECLARE_MULTICAST_DELEGATE_ThreeParams(FUsed, FName /*Item*/, ELyudMouthUse /*Kind*/, float /*Left*/);
@@ -140,6 +148,9 @@ private:
 	bool bAttached = false;
 	bool bHidden = false;
 	bool bPrompted = false;
+	/** Interrupt(): the button is ignored until it goes up. */
+	bool bWaitUp = false;
+	bool bReachedLips = false;
 	/** The hand has been in the carry hold since (s): the thing shows once the hand is up. */
 	float HoldTime = 0.f;
 	/** The last frame's lips point (world). */

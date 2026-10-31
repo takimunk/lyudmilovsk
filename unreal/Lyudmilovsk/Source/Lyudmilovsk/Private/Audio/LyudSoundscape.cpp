@@ -282,6 +282,9 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Food"), TEXT("food_bite_crisp") }, { TEXT("Food"), TEXT("food_bite_soft") }, { TEXT("Food"), TEXT("food_bite_squeak") },
 		{ TEXT("Food"), TEXT("food_bite_chewy") }, { TEXT("Food"), TEXT("food_bite_crunch") }, { TEXT("Food"), TEXT("food_chew") },
 		{ TEXT("Food"), TEXT("food_swallow") }, { TEXT("Food"), TEXT("food_wrap") },
+		// cigarettes (ULyudSmoking: the pack, the lighter, a drag, a breath out, a butt)
+		{ TEXT("Smoking"), TEXT("pack_open") }, { TEXT("Smoking"), TEXT("lighter_flick") }, { TEXT("Smoking"), TEXT("cig_drag") },
+		{ TEXT("Smoking"), TEXT("smoke_exhale") }, { TEXT("Smoking"), TEXT("cig_putout") },
 	};
 	for (const auto& G : Groups)
 	{

@@ -1,0 +1,23 @@
+{
+ "id": "cig_putout",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/smoking/cig_putout_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A cigarette end flicked away and landing on concrete: a tiny soft tap and a faint hiss, close, outdoors, quiet, no voices",
+  "duration_seconds": 1.0
+ },
+ "hash": "e7698d32afcc",
+ "fal_request_id": "01a1939e-421c-7b83-84ef-aa11d3966aad",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a156/lEINPcLMpRRvz2GmHgo5S_sound_effect.mp3",
+ "created": "2026-10-31T20:19:48Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -12 dBFS",
+ "sha256": "5b2bef993bc203dc3a5daa0098750dbbce6bb2d9c84ee61dc00c313d954ab01f",
+ "seconds": 1.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "smoking"
+}
