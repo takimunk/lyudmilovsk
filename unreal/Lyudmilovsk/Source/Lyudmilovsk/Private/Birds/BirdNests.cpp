@@ -358,7 +358,7 @@ void ABirdNestRenderer::BuildStatic(FWorld& World, const FVector& Camera)
 		auto Ring = [&](int32 I, int32 Count, float Size, float& Yaw) -> FVector
 		{
 			const float Ang = (I + 0.5f) / FMath::Max(1, Count) * 2.f * PI + (Hash32(R + I) % 1000) * 0.0006f;
-			const float Rr = Count <= 1 ? 0.f : FMath::Min(K.NestRadius * 0.45f, Size * 0.55f * FMath::Sqrt((float)Count)) * 100.f;
+			const float Rr = Count <= 1 ? 0.f : FMath::Min(K.NestRadius * 0.25f, Size * 0.55f * FMath::Sqrt((float)Count)) * 100.f;
 			Yaw = FMath::RadiansToDegrees(Ang);
 			return FVector(FMath::Cos(Ang) * Rr, FMath::Sin(Ang) * Rr, 0.0);
 		};

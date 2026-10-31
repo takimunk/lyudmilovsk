@@ -53,3 +53,6 @@ design/railway/game/
 blender/animals/gen/*/model.glb
 blender/animals/gen/*/ue/
 blender/animals/gen/*/views/
+# the nest and chick kits (blender/birds/nests, blender/birds/chicks): rebuilt by their scripts, imported to /Game/Birds/Nests
+blender/birds/nests/export/
+blender/birds/chicks/export/
