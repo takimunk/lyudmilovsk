@@ -1544,6 +1544,35 @@ def build_contour(sb, lod=0):
             sb.zt = None
             for vi in range(s0, len(sb.verts)):
                 sb.verts[vi] = tuple(warp(sb.verts[vi]))
+    # nasal bristles (crows): stiff feathers from the forehead and lores lying forward over the nostrils, a third of the
+    # bill; each laid on the bill's own section (outward normal), lifted clear of it all along
+    if M.get("bristles", 0.0) > 0 and lod <= 1:
+        Lb = 0.027 * M["beak_len"]
+        reach = 0.32 * M["bristles"]
+
+        def bill_pt(t, a, out):
+            hw, hu, hd, cy, z = beak_section(t)
+            c_, s_ = math.cos(a), math.sin(a)
+            p = V(hw * c_ * (1 - 0.18 * max(s_, 0)), cy + hu * s_, z)
+            nn = nrm(V(c_ / max(hw, 1e-6), s_ / max(hu, 1e-6), 0.0))
+            return p + nn * out, nn
+        key = cell("crest", resolve("forehead"), 0)
+        rows = [(-0.03, 0.0006, 11), (0.0, 0.0010, 10), (0.04, 0.0014, 9)]   # back to front, each a little higher
+        for ri, (t0, out, na) in enumerate(rows):
+            for j in range(na):
+                a = math.radians(24 + 132 * (j + 0.5 * (ri % 2)) / (na - 1 + 0.5 * (ri % 2)))
+                if a > math.radians(156):
+                    continue
+                root, nn = bill_pt(max(t0, 0.0), a, out)
+                root[2] = BEAK_Z0 + t0 * Lb
+                tip, _ = bill_pt(reach * (0.8 + 0.2 * math.sin(a)) * (1.0 - 0.12 * ri), a, out * 0.8)
+                d = tip - root
+                Ls = float(np.linalg.norm(d))
+                s0 = len(sb.verts)
+                card(sb, root, d, nn, Ls, 0.0042 * (1.0 - 0.1 * ri), key, {"head": 1.0}, segs=3, camber=-0.0003,
+                     lift=0.0001, flip=j % 2 == 1)
+                for vi in range(s0, len(sb.verts)):
+                    sb.verts[vi] = tuple(warp(sb.verts[vi]))
     return n
 
 

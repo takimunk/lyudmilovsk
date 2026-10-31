@@ -21,7 +21,7 @@ MORPH_DEFAULTS = dict(
     fluff=1.0, crest=0.0, fluff_layer=0.55,
     n_prim=9, n_sec=6, n_tail=6, p_outer=1.0, n_neck=1, neck_s=0.0, foot="aniso", keel=0.0, rear_taper=0.0,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
-    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0, fly_neck_s=None, fly_trail=0.0, bare_shin=0.0,
+    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0, fly_neck_s=None, fly_trail=0.0, bare_shin=0.0, bristles=0.0,
     feather_shapes={},
 )
 
@@ -981,3 +981,84 @@ species("BlackBrowedAlbatross", dict(GULL, body_len=1.18, body_w=1.25, body_h=1.
 # the new birds' plume layers: sleek raptors and the albatross, the shaggy raven
 for _n, _f in {"WhiteTailedEagle": 0.3, "GoldenEagle": 0.3, "CommonBuzzard": 0.4, "Raven": 0.2, "GreyHeron": 0.2, "BlackBrowedAlbatross": 0.25}.items():
     SPECIES[_n]["morph"]["fluff_layer"] = _f
+
+
+# ---------------------------------------------------------------- the corvids round: jay, nutcracker, carrion crow
+# Eurasian jay (Garrulus glandarius, Baltic race): pinkish-buff, a streaked black-and-white crown it raises as a little crest,
+# a black moustache, pale throat, white rump against a black tail, the barred blue patch on the outer wing (greater and primary
+# coverts, alula), a white patch at the secondaries' bases, chestnut lesser coverts, a pale bluish-white iris, pinkish legs
+species("Jay", dict(CORVID, body_len=0.98, body_w=1.06, body_h=1.1, head=1.16, crown_h=1.12, flat_crown=-0.2, throat=1.1, crest=0.9,
+                    beak_len=0.7, beak_depth=1.55, beak_width=1.25, beak_round=1.3, beak_curve=0.001, eye=1.25, arm=0.92, hand=0.84,
+                    prim_profile=ROUNDED, fingers=0.45, feather_shapes={"primary": {"emarg": 0.3}}, tail=1.15, bristles=0.7, tail_shape="round",
+                    tarsus=1.1, leg_thick=1.4, toes=1.14, fluff=1.05, fluff_layer=0.45, gloss_hue=0.6, tail_flick=1.4,
+                    n_prim=10, p_outer=0.55, n_sec=9), dict(
+    styles={
+        "body": st("#c39a88", ("down", "#8a7064"), rough=0.6),
+        "mantle": st("#ab8a80", ("down", "#7a6660"), rough=0.6),
+        "belly": st("#d8bcae", ("down", "#a08a80")),
+        "crown": st("#ece6e0", ("streak", "#121214", 0.42), ("down", "#9a908a")),
+        "black": st("#111114", ("down", "#2a2a2c")),
+        "throat": st("#f2eee8", ("down", "#c8c0b8")),
+        "white": st("#f6f4f0", ("down", "#d8d4d0")),
+        "chestnut": st("#ad7c6a", ("down", "#6a4a40")),
+        "blue": st("#2f72d6", ("grad", "#8cc4f2", 0.55), ("bars", "#0b0d16", 7, 0.3), ("inner", "#131318"), gloss=0.3),
+        "blue_alula": st("#2f72d6", ("grad", "#8cc4f2", 0.5), ("bars", "#0b0d16", 6, 0.3), gloss=0.3),
+        "prim": st("#16161a", ("fringe", "#c4cad6", 0.1, "outer")),
+        "sec": st("#141418", ("base", "#f4f4f0", 0.74), ("fringe", "#2c4c8c", 0.06, "outer")),
+        "tert": st("#18161a", ("inner", "#6a3426")),
+        "tail": st("#111114", ("grad", "#16182a", 0.3), gloss=0.35),
+        "underwing": st("#b4aaa6"),
+    },
+    regions={"upper": "mantle", "under": "body", "belly": "belly", "head": "body", "crown": "crown", "forehead": "crown", "crest": "crown",
+             "nape": "body", "chin": "throat", "throat": "throat", "lore": "throat", "ear": "body", "malar": "body", "rump": "white",
+             "uppertail": "white", "vent": "white", "undertail": "white", "scapular": "mantle", "lcovert": "chestnut", "mcovert": "chestnut",
+             "gcovert": "blue", "pcovert": "blue", "alula": "blue_alula", "primary": "prim", "secondary": "sec", "tertial": "tert",
+             "tail": "tail", "underwing": "underwing", "trousers": "belly"},
+    rules=[(lambda q: q.head and q.region in ("malar", "throat", "chin") and -0.0105 < q.dy < -0.0052 and q.c > 0.18 and q.dz > -0.006, "black"),
+           (lambda q: q.head and q.region == "lore" and q.dy > 0.0, "crown")],
+    bare=dict(beak="#1c1c20", beak_tip="#141416", lower="#2a2a2e", legs="#b98f7e", iris="#cfdde8", eyering="#3a3436", mouth="#8a5a5a",
+              beak_rough=0.4),
+))
+# Spotted nutcracker (Nucifraga caryocatactes): chocolate brown, densely spotted with white drops (head sides, mantle, breast, belly),
+# a plain dark cap, blackish wings, white undertail, a black tail with a broad white tip, a long black dagger bill
+species("Nutcracker", dict(CORVID, body_len=0.98, body_w=1.08, body_h=1.1, head=1.14, crown_h=1.06, flat_crown=0.1, throat=1.08,
+                           beak_len=1.12, beak_depth=1.4, beak_width=1.1, beak_round=1.25, beak_taper=0.65, beak_curve=0.0006, eye=1.12, bristles=0.6,
+                           arm=1.0, hand=0.9, prim_profile=ROUNDED, prim_width=1.1, fingers=0.7, feather_shapes={"primary": {"emarg": 0.35}},
+                           tail=1.05, tail_shape="round", tarsus=1.08, leg_thick=1.45, toes=1.16, fluff=1.0, fluff_layer=0.35, gloss_hue=0.5,
+                           n_prim=10, p_outer=0.58, n_sec=9), dict(
+    styles={
+        "brown": st("#4a3426", ("spot", "#f2eee6", 0.24, 0.74), ("down", "#30241c"), rough=0.6),
+        "brown_dense": st("#4a3426", ("spot", "#f4f0e8", 0.3, 0.7), ("down", "#30241c"), rough=0.6),
+        "mantle": st("#45311f", ("spot", "#ece6dc", 0.18, 0.78), ("down", "#2e2219"), rough=0.6),
+        "cap": st("#2c2018", ("down", "#1e1610")),
+        "rump": st("#3a2a1e", ("down", "#261c14")),
+        "white": st("#f4f2ec", ("down", "#d8d4cc")),
+        "wing": st("#131317", ("down", "#1e1e22"), gloss=0.5, rough=0.4),
+        "flight": st("#121216", ("shaft", "#1a1a1e"), gloss=0.45, rough=0.4),
+        "tail_c": st("#121216", ("tip", "#f4f2ec", 0.1), gloss=0.4),
+        "tail": st("#121216", ("tip", "#f4f2ec", 0.24), gloss=0.4),
+        "tail_o": st("#121216", ("tip", "#f4f2ec", 0.34), gloss=0.4),
+        "underwing": st("#1c1a1c"),
+    },
+    regions={"upper": "mantle", "under": "brown", "head": "brown_dense", "crown": "cap", "forehead": "cap", "nape": "cap", "lore": "brown",
+             "ear": "brown_dense", "malar": "brown_dense", "chin": "brown", "throat": "brown_dense", "breast": "brown_dense",
+             "rump": "rump", "uppertail": "rump", "vent": "white", "undertail": "white", "scapular": "mantle", "lcovert": "wing",
+             "mcovert": "wing", "gcovert": "wing", "pcovert": "wing", "alula": "wing", "primary": "flight", "secondary": "flight",
+             "tertial": "wing", "tail": ["tail_c", "tail", "tail", "tail_o", "tail_o", "tail_o"], "underwing": "underwing", "trousers": "brown"},
+    rules=[(lambda q: q.head and q.region == "supercilium" and q.dz < 0.0 and q.dy > 0.001, "cap")],
+    bare=dict(beak="#141416", beak_tip="#0e0e10", lower="#1e1e22", legs="#18181b", iris="#2a1c14", eyering="#1e1a18", mouth="#6a4a50",
+              beak_rough=0.4),
+))
+# Carrion crow (Corvus corone): the hooded crow's build, all black with a blue-purple gloss, black bill and legs
+species("CarrionCrow", dict(get("HoodedCrow")["morph"], gloss_hue=0.68, bristles=1.0), dict(
+    styles={
+        "black": st("#0b0b10", ("down", "#1a1a22"), gloss=0.8, rough=0.33),
+        "black_dull": st("#0d0d12", ("down", "#1a1a20"), gloss=0.5, rough=0.42),
+        "flight": st("#0a0a0f", ("shaft", "#141418"), gloss=0.7, rough=0.33),
+        "under": st("#141418", gloss=0.25),
+    },
+    regions={"upper": "black", "under": "black_dull", "head": "black", "breast": "black", "primary": "flight", "secondary": "flight",
+             "tertial": "flight", "tail": "flight", "underwing": "under"},
+    bare=dict(beak="#141416", beak_tip="#0e0e10", lower="#18181a", legs="#141416", iris="#120e0c", eyering="#141416", mouth="#5a4048",
+              beak_rough=0.38),
+))

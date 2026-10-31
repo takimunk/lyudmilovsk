@@ -410,6 +410,11 @@ def separate(ob, part_names, iters=40, verbose=True):
                 vec = nn_ * need
                 if np.linalg.norm(total.get(tgt, 0.0) + vec) > 0.0025:   # never more than 2.5 mm off its place
                     continue
+            elif names[pj] in MOVABLE and names[pi_] in MOVABLE:
+                # two movable cards: always the later one moves (away from the other), or the pair, reported both
+                # ways round, trades places pass after pass and never parts
+                tgt = max(pi_, pj)
+                vec = n_ * need if tgt == pj else -n_ * need
             elif names[pj] in MOVABLE:
                 tgt, vec = pj, n_ * need
             elif names[pi_] in MOVABLE:

@@ -79,6 +79,9 @@ flushes into cover, and tits, crows, fieldfares, blackbirds and swallows mob the
 leaves. When one bird flushes in fright its whole group goes up (a wave over ~0.1-0.5 s) and other birds near
 it are startled.
 
+**The crow family** has a mind of its own on top of all this (needs, stores, a bond or a grudge toward the player) and
+carries real things about: see docs/corvids.md.
+
 **The player.** Each bird sees the player within its sight range and field of view (with a line-of-sight
 trace near the camera) and hears footsteps (running 25 m, walking 10 m, crouching 2.5 m). The danger is
 `FleeDistance × threat`, where 1 is a person walking straight at the bird looking at it: running, walking at
@@ -134,6 +137,9 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 | Golden eagle | +15 | — | fields, the cliff | the cliff, conifers | — | the cliff, -15 | — | soars wide and high (for the mountains to come) | — |
 | Common buzzard | +20 | — | fields (voles, worms) | wires, posts, crowns | — | conifers, -20 | — | soars, sits long on a lookout | — |
 | Raven | -10 | 5 | the beach, fields, the cliff | the cliff, conifers, tower | — | conifers, 0 | rarely | steals, mobs, plays in a gale | — |
+| Jay | -15 | 10 | oaks, the forest floor, gardens | broadleaf, conifers | — | conifers, -10 | sometimes | buries acorns all autumn (docs/corvids.md) | oaks, gardens |
+| Nutcracker | -10 | 10 | spruces, the forest floor, gardens | conifers | — | conifers, -15 | sometimes | hides hazelnuts and cones far off, very tame | conifers, gardens |
+| Carrion crow | -20 | 15 | beach (low tide), fields, streets | conifers, roofs, tower | tall trees, 30 min | conifers (with the hooded crows), 0 | sometimes | as the hooded crow | as the hooded crow |
 | Grey heron | -20 | 10 | the reed, the sand at low tide | conifers, the reed | — | conifers (communal heronry), +10 | — | stalks the waterline | — |
 | Black-browed albatross | 0 | — | the sea | on the sea | — | on the sea, +30 | — | a lost wanderer: sits on the sea in a calm, soars low over the waves in a blow | — |
 

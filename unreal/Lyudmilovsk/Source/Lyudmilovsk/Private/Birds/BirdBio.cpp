@@ -44,6 +44,9 @@ namespace BirdBio
 			{ "CommonBuzzard",           180,    30,   0.8,     0, false,  0.0,     15,   1.2,   15,   13 },
 			{ "Raven",                   600,    35,   1.1,     0, false,  0.0,     19,   2.0,   22,    9 },  // rolls and tumbles in a gale
 			{ "GreyHeron",               900,    25,   0.6,     0, false,  0.0,     15,   1.3,   15,    9 },  // slow deep beats, neck drawn in
+			{ "Jay",                      60,    20,   1.1,     0, false,  0.0,     13,   2.0,    9,    0 },  // rounded wings, an unhurried bounding flight
+			{ "Nutcracker",              120,    22,   1.0,     0, false,  0.0,     14,   2.0,   11,    0 },  // carries nuts kilometres to its stores
+			{ "CarrionCrow",             240,    30,   1.0,     0, false,  0.0,     18,   2.0,   15,    0 },
 		};
 		const FBio Fallback = { "", 150, 25, 1.0, 0, false, 0, 0, 2.0, 12, 0 };
 	}

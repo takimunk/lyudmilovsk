@@ -335,6 +335,38 @@ def albatross_bray():
     return seq(caw(260, 0.45, [(600, 220, 1.0), (1200, 300, 0.6), (2000, 400, 0.25)], 0.7, 0.85), silence(0.08), clatter)
 
 
+# the corvids round: jay, nutcracker, carrion crow
+def jay_kschaak():
+    # Eurasian jay: a harsh, tearing screech "kschaak", noisy and broadband, often twice
+    def one(d):
+        n = int(d * SR)
+        rasp = caw(620, d, [(1300, 450, 1.0), (2500, 700, 0.8), (3900, 900, 0.45)], 1.4, 0.82)
+        hiss = noise_band(d, 3000, 1400) * env(n, 0.01, 0.06)
+        return rasp + 0.55 * hiss[:len(rasp)]
+    return seq(one(0.34), silence(0.2), one(0.3))
+
+
+def jay_mew():
+    # the jay's mimicry: a buzzard's mew, a touch shorter, thinner and rougher than the real thing
+    f = contour([(0, 1450), (0.15, 2150), (0.55, 1850), (1, 1200)], 0.85)
+    y = whistle(f, 0.85, (1.0, 0.45, 0.2, 0.08), vib=0.015, vib_hz=55, attack=0.03, release=0.2)
+    return y + 0.18 * noise_band(0.85, 2200, 800) * env(int(0.85 * SR), 0.03, 0.2)
+
+
+def nutcracker_krrah():
+    # spotted nutcracker: a dry, rasping, far-carrying "krrrah", a rattle of quick pulses, often repeated
+    def one(d):
+        pulses = trill(lambda i: caw(560, 0.022, [(1200, 400, 1.0), (2300, 600, 0.6)], 1.0, 0.95), int(d / 0.034), 0.012)
+        return pulses * env(len(pulses), 0.02, 0.1)
+    return seq(one(0.45), silence(0.25), one(0.4), silence(0.25), one(0.42))
+
+
+def carrion_kraa():
+    # carrion crow: "kraa", like the hooded crow's but harder and more clipped, rolled r
+    p = [(820, 230, 1.0), (1550, 330, 0.75), (2500, 480, 0.35)]
+    return seq(caw(400, 0.3, p, 0.75, 0.88), silence(0.2), caw(395, 0.28, p, 0.75, 0.88), silence(0.2), caw(390, 0.3, p, 0.75, 0.86))
+
+
 CALLS = {
     ("WhiteTailedEagle", "klee"): eagle_klee, ("GoldenEagle", "yelp"): golden_yelp, ("CommonBuzzard", "mew"): buzzard_mew,
     ("Raven", "kronk"): raven_kronk, ("GreyHeron", "frank"): heron_frank, ("BlackBrowedAlbatross", "bray"): albatross_bray,
@@ -352,6 +384,8 @@ CALLS = {
     ("BarnSwallow", "vit"): swallow_vit, ("BarnSwallow", "twitter"): swallow_twitter, ("SandMartin", "tschr"): martin_tschr,
     ("Cormorant", "grunt"): cormorant_grunt, ("Sparrowhawk", "kek"): lambda: hawk_kek(5, 2400),
     ("Peregrine", "kek_kek"): lambda: hawk_kek(7, 1900),
+    ("Jay", "kschaak"): jay_kschaak, ("Jay", "mew"): jay_mew, ("Nutcracker", "krrah"): nutcracker_krrah,
+    ("CarrionCrow", "kraa"): carrion_kraa,
 }
 
 
