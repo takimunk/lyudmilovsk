@@ -86,6 +86,8 @@ public:
 	void PlayClip(UAnimSequence* Seq, bool bLoop, float Rate, float BlendTime = 0.3f, float StartTime = 0.f);
 	void SetClipRate(float Rate);
 	UAnimSequence* CurrentClip() const;
+	/** Where the current clip is, 0..1 of its length (0 with none). */
+	float CurrentClipPhase() const;
 
 	/** Something worth a look (world cm), instead of the player's eyes when within 6 m (the default). Call every frame;
 	 *  bValid false = nothing. */

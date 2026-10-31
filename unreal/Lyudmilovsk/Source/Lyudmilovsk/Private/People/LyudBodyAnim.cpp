@@ -338,6 +338,13 @@ UAnimSequence* ULyudBodyAnimInstance::CurrentClip() const
 	return GetProxyOnGameThread<FLyudBodyAnimProxy>().Cur.Seq;
 }
 
+float ULyudBodyAnimInstance::CurrentClipPhase() const
+{
+	const FLyudBodyClip& C = GetProxyOnGameThread<FLyudBodyAnimProxy>().Cur;
+	const float L = C.Seq ? C.Seq->GetPlayLength() : 0.f;
+	return L > 0.f ? FMath::Frac(C.Time / L) : 0.f;
+}
+
 void ULyudBodyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();

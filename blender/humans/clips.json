@@ -1,5 +1,5 @@
 {
- "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) and the computer loops (sit_pc.py), both posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) the computer loops (sit_pc.py) and the run (run_clip.py), all posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
  "target": "blender/characters/guy_a/export/human_guy_a.glb",
  "sources": {
   "ual1": {
@@ -24,6 +24,10 @@
   },
   "push": {
    "file": "Saved/ClipSources/push_scraper.glb",
+   "ref": "rest"
+  },
+  "run": {
+   "file": "Saved/ClipSources/run.glb",
    "ref": "rest"
   }
  },
@@ -146,8 +150,8 @@
    "pelvis": "abs"
   },
   "Run": {
-   "source": "ual1",
-   "action": "Jog_Fwd_Loop",
+   "source": "run",
+   "action": "Run_Run",
    "walk": true
   },
   "Push": {

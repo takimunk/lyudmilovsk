@@ -1113,12 +1113,25 @@ void ANpcBody::Play(FName Name, bool bLoop, float Rate)
 	ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance());
 	if (Playing != Name)
 	{
+		const FName Was = Playing;
 		Playing = Name;
 		if (UAnimSequence* A = Clip(Name))
 		{
 			if (Anim)
 			{
-				Anim->PlayClip(A, bLoop, Rate);
+				// a loop starts at this person's own moment of it, so a group setting off together doesn't march in step;
+				// walk <-> run picks up on the same foot (the left foot lands at 0.156 of the walk, at 0 of the run)
+				float Start = 0.f;
+				if (bLoop)
+				{
+					const bool bGait = Name == TEXT("Walk") || Name == TEXT("Run");
+					const bool bFromGait = Was == TEXT("Walk") || Was == TEXT("Run");
+					const float Phase = bGait && bFromGait && Was != Name
+						? Anim->CurrentClipPhase() + (Name == TEXT("Run") ? -0.156f : 0.156f)
+						: GetUniqueID() * 0.6180339f;
+					Start = FMath::Frac(Phase) * A->GetPlayLength();
+				}
+				Anim->PlayClip(A, bLoop, Rate, 0.3f, Start);
 			}
 			else
 			{
