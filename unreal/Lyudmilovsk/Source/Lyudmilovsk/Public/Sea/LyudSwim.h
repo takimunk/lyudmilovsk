@@ -119,6 +119,9 @@ public:
 
 	/** Goes under from the surface now (tests, a scripted dive); false if not at the surface. */
 	UFUNCTION(BlueprintCallable, Category = "Swim") bool Dive();
+	/** The body is let into the water under the surface (out of the hatch to Europa, ALyudAirlock): it starts diving,
+	 *  not at the surface; the sea takes it into its water within a moment. */
+	UFUNCTION(BlueprintCallable, Category = "Swim") void EnterUnder();
 	/** Sets the air left 0..1 (tests). */
 	UFUNCTION(BlueprintCallable, Category = "Swim") void SetAir(float InAir);
 	/** Up, down or along the look under water: the hero's move input calls this (true: used). */
@@ -170,6 +173,7 @@ private:
 	float IceUndersideZ(const FVector& At) const;
 
 	ELyudSwimState State = ELyudSwimState::Dry;
+	double EnterUnderUntil = 0.0;
 	FVector Eye = FVector::ZeroVector;
 	float EyeDepth = 0.f;
 	float BottomBelow = 0.f;

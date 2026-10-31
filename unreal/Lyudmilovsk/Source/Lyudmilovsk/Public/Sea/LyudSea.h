@@ -159,6 +159,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsCameraUnderwater() const { return bCameraUnder; }
 	/** Is this point in the sea's water (under the wavy surface, over the bed, on the sea side)? */
 	UFUNCTION(BlueprintCallable, Category = "Sea") bool IsSwimmable(const FVector& Location) const;
+	/** World boxes the sea leaves out (ALyudAirlock: a dry room under the bed): no swimming and no underwater look in
+	 *  them, the water volume's swimming kept off the body there. One box per owner; an empty box takes it away. */
+	void SetDryZone(const UObject* Owner, const FBox& Box);
+	bool IsInDryZone(const FVector& Location) const;
+	/** While any owner holds it the sea leaves the player's body alone (a scripted climb through a hatch). */
+	void SetPlayerScripted(const UObject* Owner, bool bScripted);
 	/** The water physics volume over the sea in play (null outside play or with bWaterVolume off). */
 	UFUNCTION(BlueprintCallable, Category = "Sea") APhysicsVolume* GetWaterVolume() const { return WaterVolume; }
 	/** Is the ground's depth map read in yet? */
@@ -238,6 +244,10 @@ private:
 	TWeakObjectPtr<ACharacter> Swimmer;
 	bool bHoldingSwimmer = false;
 	bool bSwimmerDiving = false;
+	TMap<TWeakObjectPtr<const UObject>, FBox> DryZones;
+	TSet<TWeakObjectPtr<const UObject>> ScriptHolders;
+	/** The body was kept out of the water volume (dry zone, script): give it back its volume on leaving. */
+	bool bKeptDry = false;
 
 	/** Depth map: still-water depth in m over a rectangle of the world (m), read row by row from the landscape. */
 	TArray<float> Depth;

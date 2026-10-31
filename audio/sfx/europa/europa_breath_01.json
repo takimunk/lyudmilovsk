@@ -1,0 +1,25 @@
+{
+ "id": "europa_breath",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/europa_breath_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A teenage boy's own slow, slightly nervous breathing heard from inside his head, close and intimate, muffled, no wind, no room sound, total silence around, seamless loop",
+  "duration_seconds": 12.0,
+  "loop": true
+ },
+ "hash": "1abd8e7b0891",
+ "fal_request_id": "01a193a3-bdfc-7552-85eb-ec081c001c72",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a17a/vSn7ZYbWn3qg4GSScUabs_sound_effect.mp3",
+ "created": "2026-10-31T20:25:49Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "709f1a0b1a62605e476dfc9469f517022ab504aee72d07c6d2642c179cbb8b89",
+ "seconds": 11.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa",
+ "loop": true
+}

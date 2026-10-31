@@ -819,6 +819,29 @@ void ALyudSea::KeepSwimmerHeadUp(float DeltaSeconds)
 	{
 		return;
 	}
+	// a dry room under the bed (the water volume reaches down past it) or a scripted move: not the sea's to hold
+	ScriptHolders.Remove(nullptr);
+	if (ScriptHolders.Num() > 0 || IsInDryZone(C->GetActorLocation()))
+	{
+		bHoldingSwimmer = false;
+		Root->SetShouldUpdatePhysicsVolume(false);
+		if (Root->GetPhysicsVolume() == WaterVolume)
+		{
+			Root->SetPhysicsVolume(World->GetDefaultPhysicsVolume(), true);
+		}
+		if (Move->IsSwimming() && ScriptHolders.Num() == 0)
+		{
+			Move->SetMovementMode(MOVE_Falling);
+		}
+		bKeptDry = true;
+		return;
+	}
+	if (bKeptDry)
+	{
+		bKeptDry = false;
+		Root->SetShouldUpdatePhysicsVolume(true);
+		Root->UpdatePhysicsVolume(true);
+	}
 	// The water volume's flat top knows nothing of the waves: a swimmer lifted on a crest would pop out of
 	// it, fall, drop back in. So while the player's body is in the sea and the water is deeper than a
 	// standing man's chest, the sea holds them in its water itself; shallower, they find their feet.
@@ -932,7 +955,7 @@ void ALyudSea::Tick(float DeltaSeconds)
 		const double Snap = MinStepCm * 2.0;
 		Surface->SetWorldLocation(FVector(FMath::GridSnap(Eye.X, Snap), FMath::GridSnap(Eye.Y, Snap), SeaLevel()));
 		const FLyudSeaSample S = SampleSurface(Eye);
-		bCameraUnder = S.bIsSea && S.Immersion > 2.f;
+		bCameraUnder = S.bIsSea && S.Immersion > 2.f && !IsInDryZone(Eye);
 		Underwater->BlendWeight = bCameraUnder ? 1.f : 0.f;
 		if (bCameraUnder && UnderMID)
 		{
@@ -1135,4 +1158,40 @@ namespace
 			B->RegisterComponent();
 			UE_LOG(LogTemp, Log, TEXT("LyudSea: floating crate at %s"), *At.ToString());
 		}));
+}
+
+void ALyudSea::SetDryZone(const UObject* Owner, const FBox& Box)
+{
+	if (Box.IsValid)
+	{
+		DryZones.Add(Owner, Box);
+	}
+	else
+	{
+		DryZones.Remove(Owner);
+	}
+}
+
+bool ALyudSea::IsInDryZone(const FVector& Location) const
+{
+	for (const TPair<TWeakObjectPtr<const UObject>, FBox>& Z : DryZones)
+	{
+		if (Z.Key.IsValid() && Z.Value.IsInsideOrOn(Location))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void ALyudSea::SetPlayerScripted(const UObject* Owner, bool bScripted)
+{
+	if (bScripted)
+	{
+		ScriptHolders.Add(Owner);
+	}
+	else
+	{
+		ScriptHolders.Remove(Owner);
+	}
 }

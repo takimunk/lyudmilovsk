@@ -343,6 +343,65 @@
    "variants": 3,
    "duration": 2.5,
    "prompt": "A teenage boy coughing up water, three or four wet hacking coughs, then catching his breath, close, no other sounds"
+  },
+  {
+   "id": "hatch_open",
+   "group": "europa",
+   "variants": 2,
+   "duration": 2.0,
+   "prompt": "A heavy round steel hatch being unlatched: a handwheel spun, dogs clunking free, then the thick lid swinging open on a stiff hinge with a low metallic groan, close, no other sounds"
+  },
+  {
+   "id": "hatch_close",
+   "group": "europa",
+   "variants": 2,
+   "duration": 1.8,
+   "prompt": "A heavy round steel hatch lid swung shut: a deep resonant metal clang, then the handwheel spun and latches clunking home, close, no other sounds"
+  },
+  {
+   "id": "airlock_drain",
+   "group": "europa",
+   "variants": 1,
+   "duration": 10.0,
+   "loop": true,
+   "prompt": "Water being pumped out of a small steel airlock chamber: a deep electric pump droning, water gurgling and sucking down a floor drain, pipes rumbling, enclosed metal room, seamless loop, no other sounds"
+  },
+  {
+   "id": "airlock_fill",
+   "group": "europa",
+   "variants": 1,
+   "duration": 10.0,
+   "loop": true,
+   "prompt": "Sea water flooding into a small closed steel chamber through valves: a strong rushing, churning inflow with bubbling and hissing, rising water, enclosed metal room, seamless loop, no other sounds"
+  },
+  {
+   "id": "airlock_beep",
+   "group": "europa",
+   "variants": 2,
+   "duration": 0.8,
+   "prompt": "A short old Soviet control panel confirmation tone: two low electronic beeps and a relay click, close, dry, no other sounds"
+  },
+  {
+   "id": "ladder_step",
+   "group": "europa",
+   "variants": 4,
+   "duration": 0.6,
+   "prompt": "A hand gripping and a boot stepping on a steel ladder rung in a narrow metal shaft: a short dull metallic knock, close, no other sounds"
+  },
+  {
+   "id": "europa_breath",
+   "group": "europa",
+   "variants": 1,
+   "duration": 12.0,
+   "loop": true,
+   "prompt": "A teenage boy's own slow, slightly nervous breathing heard from inside his head, close and intimate, muffled, no wind, no room sound, total silence around, seamless loop"
+  },
+  {
+   "id": "europa_step",
+   "group": "europa",
+   "variants": 4,
+   "duration": 0.7,
+   "prompt": "A single footstep on hard ice heard only through the body, as if in a vacuum: a soft muffled low thud with a faint dull crunch, no air, no echo, close, no other sounds"
   }
  ],
  "music": [
@@ -521,6 +580,15 @@
    "seconds": 110,
    "seed": 20101,
    "prompt": "Crystalline ambient, music box and soft glass pads, slow, D minor, 60 BPM, snow falling on a quiet northern town, no drums, no vocals"
+  },
+  {
+   "id": "europa_1",
+   "mood": [
+    "europa"
+   ],
+   "seconds": 120,
+   "seed": 30101,
+   "prompt": "Cinematic ambient, slow swelling warm analog synth pads and distant low strings, a lone glassy piano motif, D minor, 64 BPM, awe and quiet vertigo of seeing a whole small world hanging in a black sky, rising to a wide swell then fading out, no drums, no vocals"
   }
  ]
 }

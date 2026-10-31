@@ -253,6 +253,18 @@ def railway_holes():
         return []
 
 
+def europa_holes():
+    """The hatch to Europa on the sea bed (docs/europa.md): the landscape's hole under its collar, (i, j) grid vertices
+    from Content/Europa/europa.json's terrain_holes (tools/europa/europa_site.py)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "unreal", "Lyudmilovsk", "Content", "Europa",
+                        "europa.json")
+    try:
+        with open(path) as f:
+            return [tuple(h) for h in json.load(f).get("terrain_holes", [])]
+    except (OSError, ValueError):
+        return []
+
+
 def write_inputs(out_dir, log=print):
     """Samples the macro shape on the landscape grid and writes terrain_in.json/.bin for the C++
     build. About a minute of pure Python."""
@@ -325,7 +337,7 @@ def _write_inputs(out_dir, log):
     for j in range(HOLE_Y[0], HOLE_Y[1]):
         for i in range(HOLE_X[0], HOLE_X[1]):
             hole[(j - GRID_Y0) * GRID_NX + (i - GRID_X0)] = 255
-    for i, j in railway_holes():
+    for i, j in railway_holes() + europa_holes():
         if 0 <= i - GRID_X0 < GRID_NX and 0 <= j - GRID_Y0 < GRID_NY:
             hole[(j - GRID_Y0) * GRID_NX + (i - GRID_X0)] = 255
     with open(os.path.join(out_dir, "terrain_in.bin"), "wb") as f:

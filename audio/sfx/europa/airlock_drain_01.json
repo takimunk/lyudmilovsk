@@ -1,0 +1,25 @@
+{
+ "id": "airlock_drain",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/airlock_drain_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Water being pumped out of a small steel airlock chamber: a deep electric pump droning, water gurgling and sucking down a floor drain, pipes rumbling, enclosed metal room, seamless loop, no other sounds",
+  "duration_seconds": 10.0,
+  "loop": true
+ },
+ "hash": "8a3e3e35b4aa",
+ "fal_request_id": "01a193a3-1bb2-76e0-af69-7d6dffc71150",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a176/9V_lS2C299jLEIx2bh0Zn_sound_effect.mp3",
+ "created": "2026-10-31T20:25:09Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "46194004e6b48dfc0dd81b00d39dd3b74ef521bb30d405d03e7c6c81ea8126b5",
+ "seconds": 9.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa",
+ "loop": true
+}

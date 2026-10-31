@@ -1,0 +1,23 @@
+{
+ "id": "airlock_beep",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/airlock_beep_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A short old Soviet control panel confirmation tone: two low electronic beeps and a relay click, close, dry, no other sounds",
+  "duration_seconds": 0.8
+ },
+ "hash": "215df3334630",
+ "fal_request_id": "01a193a3-6028-7833-a433-f20ace10669c",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a178/CfA9py14rxnZGkXvp--eT_sound_effect.mp3",
+ "created": "2026-10-31T20:25:24Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "a4fa5b1e1d22c202a8c86932aca9dd4576d1fdee920d3fc3d445d2b1963cda13",
+ "seconds": 0.8,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa"
+}

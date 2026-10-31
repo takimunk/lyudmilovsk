@@ -290,6 +290,8 @@ def places(out_json):
         ("upland", -300.0, -450.0, 0.0, "land", True),
         ("north_hills", -400.0, 1850.0, 0.0, "land", True),
         ("sea", 900.0, 1200.0, 0.0, "water", True),
+        # the hatch on the sea bed (docs/europa.md, tools/europa/europa_site.py)
+        ("europa_hatch", 573.0, 100.0, 12.0, "building", True),
     ]
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",

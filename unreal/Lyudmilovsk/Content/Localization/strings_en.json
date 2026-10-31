@@ -1018,5 +1018,20 @@
  "ui.diary.birds_on": "birds on the map: hide",
  "ui.diary.birds_off": "birds on the map: show",
  "ui.help.guide": "B: the bird guide (once you have it)",
- "line.hero.swim_breath.1": "Wait... I'm breathing. Right here, under the water. ...Okay then. Guess that works too."
+ "line.hero.swim_breath.1": "Wait... I'm breathing. Right here, under the water. ...Okay then. Guess that works too.",
+ "place.europa_hatch.name": "The hatch on the sea bed",
+ "ui.europa.open_sea": "[E] Open the hatch",
+ "ui.europa.enter_sea": "[E] Climb down into the hatch",
+ "ui.europa.climb_sea": "[E] Climb up to the sea",
+ "ui.europa.climb_europa": "[E] Climb the other ladder",
+ "ui.europa.console": "[E] Airlock: press the button",
+ "ui.europa.open_europa": "[E] Open the hatch",
+ "ui.europa.enter_europa": "[E] Climb back down",
+ "ui.europa.stuck": "The hatch won't budge: the pressure's different on the other side.",
+ "ui.europa.need_water": "The sea's up there. Fill the airlock first.",
+ "ui.europa.need_dry": "Pump the water out first.",
+ "ui.europa.shut_sea": "The upper hatch is open.",
+ "ui.europa.shut_inner": "The inner hatch is open.",
+ "ui.europa.busy": "Wait: the airlock is cycling.",
+ "line.hero.europa_planet.1": "Is that... us? There's nothing there. Just the sea... and our island."
 }

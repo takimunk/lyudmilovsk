@@ -71,6 +71,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetUmbrella(float Amount);
 	/** Windows near the player indoors 0..1 (rain ticks on the glass; a place that knows it has them calls this). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetNearWindows(float Amount);
+	/** No air around the listener (Europa, ULyudEuropaSubsystem): the bed, the far sounds, the steps and the music
+	 *  go quiet; what is heard there its own system plays. */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void SetVacuum(bool bOn) { bVacuum = bOn; }
+	UFUNCTION(BlueprintPure, Category = "Sound") bool IsVacuum() const { return bVacuum; }
 	/** Text for logs and tests: every input of the bed and the music's state. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FString DebugReport() const;
 
@@ -120,6 +124,7 @@ private:
 	float StrideLeft = 0.3f;
 	bool bLeftFoot = false;
 	bool bBirdFlying = false;
+	bool bVacuum = false;
 	TMap<FIntPoint, FTreeCell> TreeGrid;
 	bool bTreeGridBuilt = false;
 	float LastWind = 0.f, LastGust = 0.f;

@@ -333,6 +333,17 @@ void ULyudSwimComponent::SetState(ELyudSwimState New)
 	OnStateChanged.Broadcast(Old, New);
 }
 
+void ULyudSwimComponent::EnterUnder()
+{
+	if (CVarSwim.GetValueOnGameThread() == 0)
+	{
+		return;
+	}
+	// a couple of seconds: at a low frame rate the sea's hold may come a few frames later
+	EnterUnderUntil = GetWorld()->GetTimeSeconds() + 2.0;
+	SetState(ELyudSwimState::Under);
+}
+
 bool ULyudSwimComponent::Dive()
 {
 	ACharacter* C = Cast<ACharacter>(GetOwner());
@@ -423,8 +434,15 @@ void ULyudSwimComponent::UpdateWater(ACharacter& C, ALyudSea& Sea)
 	const float TopZ = bUnderIce ? IceZ : S.SurfaceZ;
 	BottomBelow = S.bIsSea ? FMath::Max(0.f, Eye.Z - (Sea.SeaLevel() - S.Depth)) : 0.f;
 
-	// the sea holds a body in deep water in its volume (MOVE_Swimming); out of it, the swimming is over
-	if (!Move->IsSwimming())
+	// the sea holds a body in deep water in its volume (MOVE_Swimming); out of it (or in a dry room under the bed,
+	// ALyudAirlock), the swimming is over
+	const bool bDryHere = Sea.IsInDryZone(C.GetActorLocation());
+	if (!bDryHere && !Move->IsSwimming() && GetWorld()->GetTimeSeconds() < EnterUnderUntil)
+	{
+		// let into the water under the surface: the sea takes the body into its volume in a moment
+		return;
+	}
+	if (!Move->IsSwimming() || bDryHere)
 	{
 		const bool bFalling = Move->IsFalling();
 		FallSpeed = bFalling ? FMath::Max(0.f, -float(Move->Velocity.Z)) : 0.f;
@@ -450,7 +468,9 @@ void ULyudSwimComponent::UpdateWater(ACharacter& C, ALyudSea& Sea)
 	{
 		EyeDepth = FMath::Max(0.f, TopZ - Eye.Z);
 		const bool bRising = Move->Velocity.Z > -10.f;
-		if (!bUnderIce && StateTime > 0.4f && (EyeDepth < SurfaceWithinCm && bRising || Eye.Z > S.SurfaceZ + 5.f))
+		// (not while just let in under it: the eyes may still be where the body was a moment ago)
+		if (!bUnderIce && StateTime > 0.4f && GetWorld()->GetTimeSeconds() >= EnterUnderUntil
+			&& (EyeDepth < SurfaceWithinCm && bRising || Eye.Z > S.SurfaceZ + 5.f))
 		{
 			SetState(ELyudSwimState::Surface);
 		}

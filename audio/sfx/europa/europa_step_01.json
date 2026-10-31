@@ -1,0 +1,23 @@
+{
+ "id": "europa_step",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/europa_step_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A single footstep on hard ice heard only through the body, as if in a vacuum: a soft muffled low thud with a faint dull crunch, no air, no echo, close, no other sounds",
+  "duration_seconds": 0.7
+ },
+ "hash": "842325f0806b",
+ "fal_request_id": "01a193a3-d4d1-72b1-9940-ef47f73698c5",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a17b/wHhq6wkmCcxcB4xKCdjB6_sound_effect.mp3",
+ "created": "2026-10-31T20:25:52Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "a3dce1c94572b1a7f8133c8697fed8898d605682216990413ad428d4b2dd283d",
+ "seconds": 0.68,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa"
+}

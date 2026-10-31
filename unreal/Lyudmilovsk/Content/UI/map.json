@@ -120,6 +120,14 @@
    "r": 0.0,
    "kind": "water",
    "known": true
+  },
+  {
+   "id": "europa_hatch",
+   "x": 573.0,
+   "y": 100.0,
+   "r": 12.0,
+   "kind": "building",
+   "known": true
   }
  ]
 }
