@@ -252,7 +252,7 @@ void AProceduralForest::SetHidden(FTree& T, bool bHidden)
 	if (T.Group == INDEX_NONE || T.Instance == INDEX_NONE || !Groups[T.Group].Comp) return;
 	FTransform Xf = T.Xf;
 	if (bHidden) Xf.SetScale3D(FVector(0.0001));
-	Groups[T.Group].Comp->UpdateInstanceTransform(T.Instance, Xf, true, true, true);
+	Groups[T.Group].Comp->UpdateInstanceTransform(T.Instance, Xf, true, false, true);
 }
 
 bool AProceduralForest::Interactive(FName Species) const

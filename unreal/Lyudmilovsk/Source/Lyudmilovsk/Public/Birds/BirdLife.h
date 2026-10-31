@@ -276,6 +276,8 @@ private:
 		/** NumPoses components for males, then (species with a female plumage) NumPoses for females. */
 		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Poses;
 		TArray<TArray<FTransform>> Xf;
+		/** Per pose, the instances shown at the last sync (0: all already hidden, nothing to send). */
+		TArray<int32> Shown;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
 		float Scale = 1.f;
 		/** Origin of the flight poses above the feet, cm. */
@@ -301,6 +303,6 @@ private:
 	TArray<uint8> Why;
 	TArray<uint8> LastWhy;
 
-	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr);
+	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);
 };

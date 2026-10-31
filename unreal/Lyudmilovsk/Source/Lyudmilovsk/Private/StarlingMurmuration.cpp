@@ -69,6 +69,9 @@ namespace
 		C->SetMobility(EComponentMobility::Movable);
 		// Scene 01's outside sun lights channel 1 only
 		C->LightingChannels.bChannel1 = true;
+		// out of the Lumen scene: a flock moving every frame would have Lumen recapture its cards every frame
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
 	}
 }
 
@@ -420,7 +423,7 @@ void AStarlingMurmuration::SyncInstances(UInstancedStaticMeshComponent* ISM, TAr
 	}
 	if (Arr.Num() > 0)
 	{
-		ISM->BatchUpdateInstancesTransforms(0, Arr, false, true, true);
+		ISM->BatchUpdateInstancesTransforms(0, Arr, false, false, true);
 	}
 }
 

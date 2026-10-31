@@ -1057,6 +1057,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		// females get their own components where the species' female plumage differs (same poses, female materials)
 		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
 		D.Xf.SetNum(NumPoses * Sets);
+		D.Shown.Init(0, NumPoses * Sets);
 		for (int32 Set = 0; Set < Sets; Set++)
 		{
 			TArray<FString> Suffixes;
@@ -1082,6 +1083,10 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 				ISM->bDisableCollision = true;
 				ISM->SetCanEverAffectNavigation(false);
 				ISM->LightingChannels.bChannel1 = true;     // Scene 01's outdoor sun and moon light channel 1 only
+				// birds give no bounce light worth having, and an instanced component in the Lumen scene that moves
+				// every frame makes Lumen recapture its cards every frame (the frame's biggest cost before this)
+				ISM->bAffectDynamicIndirectLighting = false;
+				ISM->bAffectDistanceFieldLighting = false;
 				ISM->NumCustomDataFloats = 0;
 				UStaticMesh* Mesh = nullptr;
 				if (D.bOwnMeshes)
@@ -1123,12 +1128,16 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 	}
 }
 
-void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr)
+void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown)
 {
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
 	const int32 Want = Arr.Num();
 	const int32 Have = ISM->GetInstanceCount();
-	if (Want == 0 && Have == 0)
+	// no bird in this pose now nor at the last sync: its instances are hidden already, and rewriting them
+	// every frame would make the renderer update the component for nothing
+	const bool bNothing = Want == 0 && Shown == 0;
+	Shown = Want;
+	if ((Have == 0 && Want == 0) || bNothing)
 	{
 		return;
 	}
@@ -1143,7 +1152,7 @@ void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransfo
 	{
 		Arr[J] = Hidden;
 	}
-	ISM->BatchUpdateInstancesTransforms(0, Arr, false, true, true);
+	ISM->BatchUpdateInstancesTransforms(0, Arr, false, false, true);
 }
 
 void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float PixelScale)
@@ -1352,7 +1361,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	{
 		for (int32 P = 0; P < D.Poses.Num(); P++)
 		{
-			Sync(D.Poses[P], D.Xf[P]);
+			Sync(D.Poses[P], D.Xf[P], D.Shown[P]);
 		}
 	}
 }

@@ -348,6 +348,9 @@ void ALyudCableway::BuildRopes(const LyudTransport::FNetwork& Net, int32 L)
 	C->SetStaticMesh(BasicShape(TEXT("cyl")));
 	C->SetMaterial(0, Mat(TEXT("rope")));
 	C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// moved every frame near the viewer: out of the Lumen scene, or Lumen recaptures all its instances every frame
+	C->bAffectDynamicIndirectLighting = false;
+	C->bAffectDistanceFieldLighting = false;
 	C->SetupAttachment(RootComponent);
 	C->RegisterComponent();
 	AddInstanceComponent(C);
@@ -379,7 +382,6 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 		{
 			continue;
 		}
-		bool bAny = false;
 		auto Point = [&](int32 I, bool bMove)
 		{
 			LyudTransport::V3 P = Ln.Loop[I];
@@ -400,11 +402,6 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 			}
 			C->UpdateInstanceTransform(I, RodTransform(Point(I, bNear), Point(I + 1, bNear), 4.5f), true, false, true);
 			RopeMoved[L][I] = bNear;
-			bAny = true;
-		}
-		if (bAny)
-		{
-			C->MarkRenderStateDirty();
 		}
 	}
 }

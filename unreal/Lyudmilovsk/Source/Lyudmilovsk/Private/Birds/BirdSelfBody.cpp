@@ -355,6 +355,9 @@ void UBirdSelfBody::Build(FName SpeciesId, float LengthCm, float WingspanCm, USc
 		if (FeatherMID) C->SetMaterial(0, FeatherMID);
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->NumCustomDataFloats = FPaint::NumFloats;
+		// rewritten every frame: out of the Lumen scene, or Lumen recaptures it every frame
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
 		C->SetupAttachment(this);
 		C->RegisterComponent();
 	}
@@ -691,7 +694,7 @@ void UBirdSelfBody::ApplyPose(const FBirdBodyPose& Pose, float Time)
 	PoseWing(-1, Pose, Time, Out);
 	PoseWing(1, Pose, Time, Out);
 	PoseTail(Pose, Time, Out);
-	Flight->BatchUpdateInstancesTransforms(0, Out, false, true, true);
+	Flight->BatchUpdateInstancesTransforms(0, Out, false, false, true);
 
 	// legs: tucked back under the tail in flight, down and gripping when standing or landing
 	const float Down = FMath::Clamp(Pose.Legs, 0.f, 1.f);

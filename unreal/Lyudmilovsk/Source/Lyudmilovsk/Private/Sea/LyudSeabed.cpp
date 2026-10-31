@@ -105,6 +105,8 @@ void ULyudSeabedComponent::EnsureComponents()
 		C->SetCastShadow(Looks[K].bShadow);
 		C->SetGenerateOverlapEvents(false);
 		C->bAffectDistanceFieldLighting = false;
+		// the fish and jellies move every frame: out of the Lumen scene, or Lumen recaptures them every frame
+		C->bAffectDynamicIndirectLighting = false;
 		C->LightingChannels.bChannel0 = true;
 		C->LightingChannels.bChannel1 = true;
 		C->SetCullDistances(0, int32(Radius * 1.2f));
@@ -350,7 +352,7 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 	}
 	else
 	{
-		J->BatchUpdateInstancesTransforms(0, JX, true, true);
+		J->BatchUpdateInstancesTransforms(0, JX, true, false);
 	}
 
 	// the school: a centre wanders between goals near the camera at mid water, the fish keep stations
@@ -392,7 +394,7 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 	}
 	else
 	{
-		F->BatchUpdateInstancesTransforms(0, FX, true, true);
+		F->BatchUpdateInstancesTransforms(0, FX, true, false);
 	}
 
 	// flounders: a burst off the sand when the camera comes within reach, then a glide down a few metres on
@@ -429,7 +431,7 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 					L.Pos += To.GetSafeNormal() * Step;
 					L.Yaw = FMath::RadiansToDegrees(FMath::Atan2(To.Y, To.X));
 				}
-				Fl->UpdateInstanceTransform(I, FTransform(FRotator(0.f, L.Yaw, 0.f), L.Pos + FVector(0.f, 0.f, L.Fleeing > 0.f ? Lift : 0.f), FVector(L.Scale)), true, true);
+				Fl->UpdateInstanceTransform(I, FTransform(FRotator(0.f, L.Yaw, 0.f), L.Pos + FVector(0.f, 0.f, L.Fleeing > 0.f ? Lift : 0.f), FVector(L.Scale)), true, false);
 			}
 		}
 	}

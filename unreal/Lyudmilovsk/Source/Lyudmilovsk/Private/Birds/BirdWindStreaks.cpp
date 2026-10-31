@@ -68,6 +68,8 @@ void UBirdWindStreaks::OnRegister()
 	Cards->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Cards->SetCastShadow(false);
 	Cards->NumCustomDataFloats = 1;
+	Cards->bAffectDynamicIndirectLighting = false;
+	Cards->bAffectDistanceFieldLighting = false;
 	Cards->SetUsingAbsoluteLocation(true);
 	Cards->SetUsingAbsoluteRotation(true);
 	Cards->SetupAttachment(this);
@@ -121,5 +123,5 @@ void UBirdWindStreaks::UpdateStreaks(const FVector& CamLoc, const FVector& AirMs
 		Xf[I] = FTransform(Q, S.Pos, FVector(LenCm * S.Len, 7.f, 1.f));
 		Cards->SetCustomDataValue(I, 0, Fade * Show, false);
 	}
-	Cards->BatchUpdateInstancesTransforms(0, Xf, true, true, true);
+	Cards->BatchUpdateInstancesTransforms(0, Xf, true, false, true);
 }

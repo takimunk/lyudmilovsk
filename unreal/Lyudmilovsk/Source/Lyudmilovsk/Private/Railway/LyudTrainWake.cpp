@@ -45,6 +45,9 @@ void ULyudTrainWake::EnsureParts()
 		I->SetUsingAbsoluteRotation(true);
 		I->SetUsingAbsoluteScale(true);
 		I->LightingChannels.bChannel1 = true;
+		// moved every frame: out of the Lumen scene, or Lumen recaptures it every frame
+		I->bAffectDynamicIndirectLighting = false;
+		I->bAffectDistanceFieldLighting = false;
 		if (Paint)
 		{
 			UMaterialInstanceDynamic* D = UMaterialInstanceDynamic::Create(Paint, Owner);
@@ -322,7 +325,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		}
 		if (Ts.Num())
 		{
-			Ism->BatchUpdateInstancesTransforms(0, Ts, true, true, true);
+			Ism->BatchUpdateInstancesTransforms(0, Ts, true, false, true);
 		}
 	};
 	Push(DropIsm, DT);
