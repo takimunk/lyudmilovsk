@@ -1581,16 +1581,20 @@ S = 1.0   # global scale (species space -> metres)
 EXT = 1.0
 
 
-def solve_size():
-    """Template-space length -> S for the species length; then the wing factor for its wingspan."""
-    global S
+def wing_length():
+    """Folded wing length as a ringer measures it: wrist to the longest primary's tip (template m)."""
+    return max(np.linalg.norm(p_root(i) + p_dir(i) * WING["P_LEN"][i] - WING["WRIST"]) for i in range(P_N))
+
+
+def fit_once():
+    """S for the species length, then the wing factor for its wingspan (one pass at the current morph)."""
+    global S, EXT
     build_skeleton(1.0)
     while setup_legs() == "again":
         pass
     tip = warp((0, 0.056, BEAK_Z0 + 0.027 * M["beak_len"] + 0.0007))[2]
     tail = min(BONES[f"tf.L.{k + 1}"][1][2] for k in range(TF_N))
     S = SP["lengthCm"] / 100.0 / (tip - tail)
-    global EXT
     EXT = (tip - tail) / 0.20   # template length relative to the starling's: preview cameras step back by it
     reach1 = max((p_root(i) + p_dir(i) * WING["P_LEN"][i])[0] for i in range(P_N)) - WING["SHOULDER"][0]
     half = SP["wingspanCm"] / 100.0 / 2 / S
@@ -1598,6 +1602,61 @@ def solve_size():
     build_skeleton(wk)
     while setup_legs() == "again":
         pass
+    return wk
+
+
+def solve_size():
+    """Template-space length -> S for the species length; then the wing factor for its wingspan. With a SKELETON entry
+    in species_art the tail, tarsus, folded wing length (arm against hand) and wing chord are fitted to the species'
+    own proportions first (a few passes: the tail changes the length, the hand the wing factor)."""
+    K = {} if os.environ.get("BIRD_NO_SKELETON") else dict(ART.SKELETON.get(SPECIES, {}))
+    if os.environ.get("BIRD_SKELETON_KEYS"):   # debugging: fit only these (e.g. "tail,tarsus")
+        K = {k: v for k, v in K.items() if k in os.environ["BIRD_SKELETON_KEYS"].split(",")}
+    L = SP["lengthCm"] / 100.0
+    # how far the fit may move the feathers from the species' own morph: the template's cards and coverts are laid for
+    # it, and much longer primaries or secondaries fold through the body (small birds first)
+    base = {k: M[k] for k in ("hand", "prim", "sec")}
+    lim = {"hand": (0.85, 1.25), "prim": (0.75, 1.6), "sec": (0.7, 1.5)}
+
+    def clamp(k):
+        lo, hi = lim[k]
+        M[k] = min(max(M[k], base[k] * lo), base[k] * hi)
+    for _ in range(12 if K else 1):
+        wk = fit_once()
+        if not K:
+            break
+        half = SP["wingspanCm"] / 200.0
+        err = 0.0
+        if K.get("tail"):
+            k = K["tail"] / (np.linalg.norm(BONES["tf.L.1"][1] - BONES["tf.L.1"][0]) * S / L)
+            M["tail"] *= k
+            err = max(err, abs(k - 1))
+        if K.get("tarsus"):
+            k = K["tarsus"] / (np.linalg.norm(LEG["L"][3] - LEG["L"][2]) * S / L)
+            M["tarsus"] *= k
+            err = max(err, abs(k - 1))
+        if K.get("wing"):
+            # mostly longer primaries, a little the hand bone (a doubled hand folds through the body); a longer wing
+            # shortens the wing factor (the span is fixed), so overshoot a little
+            k = (K["wing"] / (wing_length() * S / L)) ** 1.6
+            M["hand"] *= k ** 0.3
+            M["prim"] *= k
+            clamp("hand")
+            clamp("prim")
+            err = max(err, abs(k - 1))
+        if K.get("ar"):
+            k = (0.255 * (7.0 / K["ar"]) ** 0.9) / (np.mean(WING["S_LEN"][:S_N]) * S / half)
+            M["sec"] *= k
+            clamp("sec")
+            err = max(err, abs(k - 1))
+        if err < 0.004:
+            break
+    if K:
+        wk = fit_once()   # the bones from the last adjusted morph (the mesh reads the same morph)
+        print(f"SKELETON {SPECIES}: tail {np.linalg.norm(BONES['tf.L.1'][1] - BONES['tf.L.1'][0]) * S / L:.3f} "
+              f"tarsus {np.linalg.norm(LEG['L'][3] - LEG['L'][2]) * S / L:.3f} wing {wing_length() * S / L:.3f} "
+              f"chord {np.mean(WING['S_LEN'][:S_N]) * S / (SP['wingspanCm'] / 200.0):.3f} "
+              f"(morph tail {M['tail']:.2f} tarsus {M['tarsus']:.2f} hand {M['hand']:.2f} prim {M['prim']:.2f} sec {M['sec']:.2f})")
     global SMALL
     SMALL = max(1.0, 1.0 / max(S, 0.2) ** 0.7)   # small birds: the same separations in real mm need more template room
     span = 2 * max((p_root(i) + p_dir(i) * WING["P_LEN"][i])[0] for i in range(P_N)) * S
@@ -1701,25 +1760,25 @@ def bake_mesh(sb, mats, name, skull=False):
                 uvl.data[li].uv = ATL.resolve(ATL.uv_rect("body", 0.5, 0.5))
     pa = me.attributes.new("lint_part", "INT", "FACE")   # removed before export
     pa.data.foreach_set("value", [f[3] for f in sb.faces])
-    if "--no-separate" not in FLAGS:
-        import lint_bird
-        tmp = bpy.data.objects.new(name + "_tmp", me)
-        lint_bird.separate(tmp, sb.names)
-        bpy.data.objects.remove(tmp)
-    if me.validate(clean_customdata=False):
-        print("WARNING validate changed", name)
-    me.update()
-    if skull:
-        print("SKULL faces", nskull)
     ob = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(ob)
-    for m in mats:
-        me.materials.append(m)
+    # weights first, by the builder's vertex order: separate() may delete crowded cards' vertices, which renumbers
+    # the rest (weighting afterwards by the old numbers tore every later card onto the wrong bones)
     groups = {n: ob.vertex_groups.new(name=n) for n in BONES}
     for i, w in enumerate(sb.weights):
         tot = sum(w.values()) or 1.0
         for k, val in w.items():
             groups[k].add([i], val / tot, "REPLACE")
+    if "--no-separate" not in FLAGS:
+        import lint_bird
+        lint_bird.separate(ob, sb.names)
+    if me.validate(clean_customdata=False):
+        print("WARNING validate changed", name)
+    me.update()
+    if skull:
+        print("SKULL faces", nskull)
+    for m in mats:
+        me.materials.append(m)
     return ob
 
 

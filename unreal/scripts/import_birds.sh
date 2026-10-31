@@ -5,9 +5,10 @@ set -e
 UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
-run() {
+run() {   # one Unreal process per step, in the UE queue, quiet (no Dock focus, no mouse capture)
+    "${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200 > /dev/null
     "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" -run=pythonscript \
-        -script="$ROOT/unreal/scripts/import_birds.py $*" -unattended -nullrhi -nosplash -stdout 2>&1 \
+        -script="$ROOT/unreal/scripts/import_birds.py $*" -nullrhi $("$ROOT/tools/ue_quiet_args.sh") -stdout 2>&1 \
         | grep -E "BIRDS|Error:|Traceback|  File|Exception" | grep -v LogInit
 }
 for s in "$@"; do

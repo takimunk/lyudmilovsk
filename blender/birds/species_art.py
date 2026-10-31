@@ -1062,3 +1062,122 @@ species("CarrionCrow", dict(get("HoodedCrow")["morph"], gloss_hue=0.68, bristles
     bare=dict(beak="#141416", beak_tip="#0e0e10", lower="#18181a", legs="#141416", iris="#120e0c", eyering="#141416", mouth="#5a4048",
               beak_rough=0.38),
 ))
+
+
+# ---------------------------------------------------------------- the skeleton, measured like a museum skin (bird-skeleton round)
+# Each species' own proportions as ratios to its total length L (bill tip to tail tip), from ringing and field-guide
+# measurements; build_bird.solve_size fits the bones to them (blender/birds/measure_skeleton.py prints what was built):
+#   wing    folded wing length (wrist to the longest primary's tip) / L: with the wingspan it sets arm against hand
+#   tail    central tail feather / L (forks, wedges and streamers keep their shape round it)
+#   tarsus  tarsus / L
+#   ar      aspect ratio of the spread wing (span / mean chord, the starling ~7): sets the secondaries' length
+# None leaves that part as the morph built it (the swift's chord is all hand; its secondaries stay as they are).
+SKELETON = {
+    # tits, finches, sparrows: short rounded wings, long tails for their size, short legs (the robin stands tall)
+    "BlueTit": dict(wing=0.53, tail=0.42, tarsus=0.135, ar=5.0),
+    "GreatTit": dict(wing=0.54, tail=0.45, tarsus=0.14, ar=5.0),
+    "Goldfinch": dict(wing=0.62, tail=0.37, tarsus=0.11, ar=5.8),
+    "Chaffinch": dict(wing=0.59, tail=0.43, tarsus=0.13, ar=5.6),
+    "Bullfinch": dict(wing=0.53, tail=0.43, tarsus=0.11, ar=5.3),
+    "HouseSparrow": dict(wing=0.51, tail=0.38, tarsus=0.13, ar=5.3),
+    "TreeSparrow": dict(wing=0.54, tail=0.40, tarsus=0.13, ar=5.4),
+    "Robin": dict(wing=0.51, tail=0.42, tarsus=0.18, ar=5.2),
+    # thrushes, starling, wagtail, waxwing
+    "Starling": dict(wing=0.62, tail=0.30, tarsus=0.14, ar=7.0),
+    "SongThrush": dict(wing=0.53, tail=0.36, tarsus=0.15, ar=5.8),
+    "Fieldfare": dict(wing=0.56, tail=0.40, tarsus=0.13, ar=6.0),
+    "Blackbird": dict(wing=0.52, tail=0.44, tarsus=0.14, ar=5.6),
+    "WhiteWagtail": dict(wing=0.50, tail=0.50, tarsus=0.13, ar=6.0),
+    "Waxwing": dict(wing=0.60, tail=0.33, tarsus=0.105, ar=6.8),
+    # aerial feeders: the swift's wings reach far past its tail, tiny legs
+    "CommonSwift": dict(wing=1.0, tail=0.30, tarsus=0.06, ar=None),
+    "BarnSwallow": dict(wing=0.66, tail=0.26, tarsus=0.06, ar=8.0),
+    "SandMartin": dict(wing=0.87, tail=0.40, tarsus=0.09, ar=7.5),
+    # crows: long fingered wings that reach the tail tip (rook, raven), the magpie's short round wing and long tail
+    "Rook": dict(wing=0.69, tail=0.38, tarsus=0.12, ar=6.3),
+    "HoodedCrow": dict(wing=0.67, tail=0.37, tarsus=0.125, ar=6.3),
+    "CarrionCrow": dict(wing=0.67, tail=0.37, tarsus=0.125, ar=6.3),
+    "Jackdaw": dict(wing=0.69, tail=0.37, tarsus=0.13, ar=6.3),
+    "Raven": dict(wing=0.66, tail=0.37, tarsus=0.11, ar=6.8),
+    "Magpie": dict(wing=0.42, tail=0.53, tarsus=0.11, ar=4.7),
+    "Jay": dict(wing=0.53, tail=0.44, tarsus=0.13, ar=5.0),
+    "Nutcracker": dict(wing=0.56, tail=0.36, tarsus=0.115, ar=5.3),
+    # pigeons: long pointed wings, short legs
+    "FeralPigeon": dict(wing=0.69, tail=0.34, tarsus=0.09, ar=7.2),
+    "WoodPigeon": dict(wing=0.60, tail=0.37, tarsus=0.08, ar=7.2),
+    # gulls and the albatross: long arms, wingtips past the tail, narrow wings
+    "HerringGull": dict(wing=0.72, tail=0.28, tarsus=0.11, ar=10.0),
+    "CommonGull": dict(wing=0.85, tail=0.31, tarsus=0.12, ar=10.0),
+    "BlackHeadedGull": dict(wing=0.80, tail=0.30, tarsus=0.12, ar=9.5),
+    "BlackBrowedAlbatross": dict(wing=0.61, tail=0.25, tarsus=0.10, ar=15.0),
+    # water birds and the heron
+    "Cormorant": dict(wing=0.40, tail=0.18, tarsus=0.074, ar=7.5),
+    "MuteSwan": dict(wing=0.40, tail=0.15, tarsus=0.073, ar=8.5),
+    "GreyHeron": dict(wing=0.48, tail=0.18, tarsus=0.17, ar=6.5),
+    # raptors: the sparrowhawk's short round wing and long tail, the falcon's long pointed wing, broad fingered eagles
+    "Sparrowhawk": dict(wing=0.64, tail=0.50, tarsus=0.17, ar=5.5),
+    "Peregrine": dict(wing=0.76, tail=0.36, tarsus=0.12, ar=8.0),
+    "CommonBuzzard": dict(wing=0.74, tail=0.41, tarsus=0.14, ar=6.0),
+    "GoldenEagle": dict(wing=0.73, tail=0.39, tarsus=0.11, ar=6.2),
+    "WhiteTailedEagle": dict(wing=0.74, tail=0.32, tarsus=0.11, ar=6.2),
+}
+
+# ---------------------------------------------------------------- build and stance by species (bird-skeleton round)
+# Morph overrides on top of the species above, so each family's silhouette reads at a glance: neck shown or sunk,
+# legs (shin) raising the body, body depth and length, head size, how upright it stands and how the head is carried.
+TUNE = {
+    # gulls: a visible neck, the bare tibia shows below the belly, a level back, sleek
+    "HerringGull": dict(neck=1.3, neck_up=0.003, head=1.0, shin=1.5, perch_pitch=12, perch_neck=14, perch_head=-10, fluff=0.75,
+                        fluff_layer=0.18, body_h=1.05, belly=0.95),
+    "CommonGull": dict(neck=1.25, neck_up=0.003, shin=1.5, perch_pitch=12, perch_neck=12, perch_head=-8, fluff=0.75, fluff_layer=0.18,
+                       body_h=1.02, belly=0.95),
+    "BlackHeadedGull": dict(neck=1.2, neck_up=0.002, shin=1.45, perch_pitch=10, perch_neck=10, perch_head=-8, fluff=0.75,
+                            fluff_layer=0.18, body_h=0.98, belly=0.92),
+    # the albatross: a heavy barrel body, a thick short neck, a big head on it, short legs, lying level
+    "BlackBrowedAlbatross": dict(body_w=1.4, body_h=1.25, belly=1.1, head=1.15, neck=1.05, neck_up=0.002, shin=1.0, perch_pitch=3,
+                                 perch_neck=10, perch_head=-6, fluff=0.7, fluff_layer=0.15, throat=1.25),
+    # crows: long legs with trousers, a strong neck, standing half upright; the raven shaggy-throated, the jackdaw compact
+    "Rook": dict(shin=1.3, neck=1.05, perch_pitch=30, perch_neck=4, fluff=0.8),
+    "HoodedCrow": dict(shin=1.3, neck=1.05, perch_pitch=30, perch_neck=4, fluff=0.8),
+    "CarrionCrow": dict(shin=1.3, neck=1.05, perch_pitch=30, perch_neck=4, fluff=0.8),
+    "Raven": dict(shin=1.3, neck=1.15, throat=1.35, head=1.15, perch_pitch=24, perch_neck=6, perch_head=-8, fluff=0.8),
+    "Jackdaw": dict(shin=1.2, neck=0.85, head=1.28, body_len=0.92, perch_pitch=30, perch_neck=0, fluff=0.9),
+    "Magpie": dict(shin=1.2, perch_pitch=22, perch_tail=2, body_len=0.9, body_h=1.08),
+    "Jay": dict(shin=1.1, neck=0.8, body_h=1.18, belly=1.08, perch_pitch=30, perch_neck=-4, fluff=1.1),
+    "Nutcracker": dict(shin=1.1, neck=0.9, head=1.2, perch_pitch=36, perch_neck=2),
+    # pigeons: a small head held up over a full breast, level, on short legs
+    "FeralPigeon": dict(body_h=1.24, belly=1.12, perch_pitch=14, perch_neck=12, perch_head=-8, neck=1.05, neck_up=0.002),
+    "WoodPigeon": dict(body_h=1.26, belly=1.14, body_len=1.1, perch_pitch=12, perch_neck=12, perch_head=-8, neck=1.05, neck_up=0.002),
+    # tits: balls with big heads, no neck; finches and sparrows chunky; the bullfinch hunched and level
+    "GreatTit": dict(perch_pitch=30, fluff=1.2),
+    "BlueTit": dict(perch_pitch=32, fluff=1.25, body_h=1.12),
+    "Goldfinch": dict(perch_pitch=26, body_w=1.0),
+    "Chaffinch": dict(perch_pitch=28, body_len=0.95),
+    "Bullfinch": dict(perch_pitch=16, perch_neck=-12, body_h=1.18, belly=1.12),
+    "HouseSparrow": dict(perch_pitch=20, body_w=1.12, body_h=1.08),
+    "TreeSparrow": dict(perch_pitch=22, body_w=1.1),
+    # chats and thrushes: the robin upright on thin long legs, thrushes upright and alert, the blackbird's tail held up
+    "Robin": dict(perch_pitch=40, perch_neck=-10, perch_tail=-18, shin=1.35, body_h=1.14, belly=1.08),
+    "SongThrush": dict(perch_pitch=36, shin=1.25, perch_neck=0),
+    "Fieldfare": dict(perch_pitch=36, shin=1.25, perch_neck=2),
+    "Blackbird": dict(perch_pitch=28, shin=1.25, perch_tail=-2),
+    # the starling level and sharp-faced, the wagtail level on long legs with its long tail straight out
+    "Starling": dict(perch_pitch=18, shin=1.15, neck=1.0),
+    "WhiteWagtail": dict(perch_pitch=8, shin=1.4, perch_tail=4, body_w=0.82, body_h=0.88, neck=0.9),
+    "Waxwing": dict(perch_pitch=32, perch_neck=-10, body_h=1.12, belly=1.06),
+    # aerial feeders: slim, legs hidden
+    "BarnSwallow": dict(perch_pitch=16, body_h=0.88),
+    "SandMartin": dict(perch_pitch=14),
+    # the cormorant upright with its neck in an S, the swan's neck tall over a level body, the heron standing alert
+    "Cormorant": dict(perch_pitch=55, perch_neck=-30, perch_head=-34, shin=1.3),
+    "MuteSwan": dict(perch_pitch=0, perch_neck=80, perch_head=-70, shin=1.2),
+    "GreyHeron": dict(perch_pitch=34, perch_neck=38, perch_head=-36, body_w=0.8),
+    # raptors: upright; the sparrowhawk long-legged with a long tail hanging, the falcon compact, buzzards hunched, eagles big-headed
+    "Sparrowhawk": dict(perch_pitch=56, perch_neck=-14, perch_tail=-14, shin=1.2),
+    "Peregrine": dict(perch_pitch=62, perch_neck=-16, perch_tail=-26, body_w=1.18, body_h=1.16, neck=0.8),
+    "CommonBuzzard": dict(perch_pitch=56, perch_neck=-14, perch_tail=-26, neck=0.8, body_h=1.16),
+    "GoldenEagle": dict(perch_pitch=46, perch_neck=-4, perch_tail=-24, head=1.05, neck=0.95),
+    "WhiteTailedEagle": dict(perch_pitch=44, perch_neck=2, perch_tail=-20, head=1.08, neck=1.15, throat=1.2),
+}
+for _n, _t in ({} if __import__("os").environ.get("BIRD_NO_TUNE") else TUNE).items():   # BIRD_NO_TUNE=1: the old builds
+    SPECIES[_n]["morph"].update(_t)
