@@ -471,28 +471,60 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 		return Box;
 	}
 	TSharedRef<SWrapBox> Grid = SNew(SWrapBox).PreferredSize(PageW - 2 * Margin - 28).InnerSlotPadding(FVector2D(8.f, 10.f));
-	// an item's name under its sketch: two lines of the cell's width at most (the hand's own line height is tall: pressed together), a smaller hand for a long name; a name without
-	// spaces (Japanese) is broken into even lines, so no character is left alone on the second
+	// an item's name under its sketch: two lines of the cell's width at most (the hand's own line height is tall: pressed
+	// together), a smaller hand for a long name
 	const TSharedRef<FSlateFontMeasure> Measure = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
-	constexpr float NameW = 142.f;
-	auto NameText = [&Measure](const FText& Name)
+	const float NameW = 142.f;
+	auto NameText = [&Measure, NameW](const FText& Name)
 	{
+		FString Str = Name.ToString();
 		float Size = 24.f;
-		float W = Measure->Measure(Name, Hand(Size)).X;
-		while (Size > 17.f && W > 2.f * NameW * 0.92f)
+		float W = Measure->Measure(Str, Hand(Size)).X;
+		if (!Str.Contains(TEXT(" ")))
 		{
-			Size -= 3.5f;
-			W = Measure->Measure(Name, Hand(Size)).X;
+			// no spaces (Japanese): broken by hand into two even lines, the second not starting with a small kana, a long
+			// mark or a closing bracket, in a smaller hand until both lines fit (Slate's own breaking left a lone ツ or
+			// a third line, clipped)
+			// a break where the script changes (干し|ナナカマド, 穀物ミックス|「ハト」) is taken over an even one when both lines fit
+			auto NoStart = [](TCHAR C) { return FString(TEXT("ーッャュョァィゥェォっゃゅょぁぃぅぇぉ」』）。、・")).Contains(FString(1, &C)); };
+			auto Script = [](TCHAR C) { return (C >= 0x30A0 && C <= 0x30FF) ? 1 : (C >= 0x3040 && C <= 0x309F) ? 2 : (C >= 0x4E00 && C <= 0x9FFF) ? 3 : 0; };
+			int32 Best = -1;
+			float BestW = W;
+			bool bBestAtChange = false;
+			for (int32 I = 1; W > NameW && I < Str.Len(); ++I)
+			{
+				const float Wide = FMath::Max(Measure->Measure(Str.Left(I), Hand(Size)).X, Measure->Measure(Str.Mid(I), Hand(Size)).X);
+				const bool bAtChange = Script(Str[I - 1]) != Script(Str[I]) && Wide <= NameW;
+				if (!NoStart(Str[I]) && (bAtChange && !bBestAtChange || (bAtChange == bBestAtChange && Wide < BestW)))
+				{
+					Best = I;
+					BestW = Wide;
+					bBestAtChange = bAtChange;
+				}
+			}
+			if (Best > 0)
+			{
+				Str = Str.Left(Best) + TEXT("\n") + Str.Mid(Best);
+				W = BestW;
+			}
+			while (Size > 17.f && W > NameW)
+			{
+				W *= (Size - 3.5f) / Size;
+				Size -= 3.5f;
+			}
 		}
-		float Wrap = NameW;
-		if (!Name.ToString().Contains(TEXT(" ")) && W > NameW)
+		else
 		{
-			Wrap = FMath::Min(NameW, W / FMath::CeilToFloat(W / NameW) + Size * 0.6f);
+			while (Size > 17.f && W > 2.f * NameW * 0.92f)
+			{
+				Size -= 3.5f;
+				W = Measure->Measure(Str, Hand(Size)).X;
+			}
 		}
 		constexpr float LineH = 0.8f;
 		return SNew(SBox).MaxDesiredHeight(2.f * LineH * Measure->GetMaxCharacterHeight(Hand(Size)) + 4.f).Clipping(EWidgetClipping::ClipToBounds)
 		[
-			SNew(STextBlock).Text(Name).Font(Hand(Size)).ColorAndOpacity(Ink).WrapTextAt(Wrap).LineHeightPercentage(LineH)
+			SNew(STextBlock).Text(FText::FromString(Str)).Font(Hand(Size)).ColorAndOpacity(Ink).WrapTextAt(NameW).LineHeightPercentage(LineH)
 			.WrappingPolicy(ETextWrappingPolicy::AllowPerCharacterWrapping).Justification(ETextJustify::Center)
 		];
 	};
