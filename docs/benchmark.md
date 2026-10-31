@@ -152,5 +152,11 @@ off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noa
   instances every frame with `bMarkRenderStateDirty` (or calls `MarkRenderStateDirty()` after the loop) rebuilds its
   proxy, and Lumen recaptures all its instances. Fixed in 68e1e243 (15 captures a frame; route 39.6 -> 32.3 ms at
   1080p, hall 34 -> 26, flight 41 -> 33). See it with `r.LumenScene.SurfaceCache.LogUpdates 2` in `SETUP`.
-- Still on the table (quality calls): Lumen at High (`lumenlow`) about -20%, `r.ScreenPercentage 75` about -9%;
-  Lumen off entirely about -38%.
+- Since cdeeade0 Epic runs Lumen GI and reflections at the engine's High settings (Config/DefaultScalability.ini) and
+  renders at 75% with TSR (`r.ScreenPercentage=75` in DefaultEngine.ini): route 32.5 -> 23.7 ms, forest 79 -> 69, hall
+  26 -> 18, ~0.5-1 GB less. Lumen off entirely would be another ~38%.
+- Editor memory (unreal/scripts/probe_memory.sh MODE=pie): idle with Lvl_Scene01 14.0 GB (14.9 before
+  ULyudNavStripSubsystem freed the meshes' nav collision), Play ~26 GB, after Play stops ~23-24.6 GB and it stays: GC,
+  `mi.MemoryResetDelay 0` and `r.RenderTargetPoolMin 0` give back under 0.3 GB, the render-target pool and RHI
+  resources are back to idle (+0.4 GB); what stays is Metal textures (LLM +2.5 GB) and untagged CPU memory (+1.5 GB),
+  driver and engine caches. Restart the editor after long play sessions.
