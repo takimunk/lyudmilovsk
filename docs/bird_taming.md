@@ -42,7 +42,7 @@ over its counter while she is at work (Mon–Sat 9–19; `T` when she is in fron
 
 What each species thinks of each feed is `Content/BirdsData/feeds.json` (`like` 0..1 per species, `default` for the
 rest; `LyudBirdFeeds::Like`). The labels on the packs (`textures/localized/ru/label_<id>.jpg`, shown on the packet's
-front by `ALyudGoodsItem`) and the icons are cut out of two Higgsfield grids by `tools/grocery_assets.py`
+front by `ALyudGoodsItem`) and the icons are cut out of Higgsfield grids by `tools/grocery_assets.py`, one pair per language (en and ja redraw the ru sheets with their own words)
 (`design/grocery/*_grid.json` pin the requests).
 
 **On the palm.** Any feed can be held and offered (F); a bird that doesn't like it only looks (`ui.tame.dislike`), one

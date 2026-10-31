@@ -1,0 +1,44 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "medias": [
+  {
+   "role": "image_references",
+   "value": "4e2c573b-7673-4942-a812-d5c89a59489f (icons_grid, ru)"
+  },
+  {
+   "role": "image_references",
+   "value": "dff1e589-a189-478e-b912-0878a3d90550 (labels_grid_ja)"
+  }
+ ],
+ "job_id": "6ff0e1ba-f859-4cd3-be9b-71b86fab51ae",
+ "date": "2026-10-31",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_000952_6ff0e1ba-f859-4cd3-be9b-71b86fab51ae.png",
+ "prompt": "Redraw the first reference image exactly: the same nine inventory icons in the same 3 by 3 grid of equal square cells, the same objects, positions, scale, lighting, painterly realistic style and plain dark warm-grey cloth background with a faint vignette, no borders or lines between cells, nothing crossing a cell edge. Change only the printed labels on the six packets of the first two rows: each packet now wears the matching label from the second reference image (a sheet of six labels, 3 columns and 2 rows, in the same order), with its Japanese words exactly as printed there; no Cyrillic letters anywhere, no other text. The bird feeder, the bread loaf and the kefir bottle in the third row stay exactly as they are, without any text.",
+ "ids": [
+  "feed_suet",
+  "feed_niger",
+  "feed_rowan",
+  "feed_mealworm",
+  "feed_grain",
+  "feed_peanuts",
+  "feeder",
+  "bread_loaf",
+  "kefir"
+ ],
+ "ship": [
+  "feed_suet",
+  "feed_niger",
+  "feed_rowan",
+  "feed_mealworm",
+  "feed_grain",
+  "feed_peanuts"
+ ],
+ "lang": "ja",
+ "note": "the ru icon sheet with the ja labels on the packets; only the six feed icons ship (textures/localized/ja), the rest carry no words and fall back to ru",
+ "credits": 1
+}

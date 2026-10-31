@@ -2,21 +2,23 @@
 
   design/grocery/labels_grid.png   3x2 packet labels of the bird feeds (Russian words) -> textures/localized/ru/label_<id>.jpg
   design/grocery/icons_grid.png    3x3 inventory icons (feeds, feeder, bread, kefir)    -> textures/localized/ru/icon_<id>.jpg
+  design/grocery/labels_grid_<lang>.png, icons_grid_<lang>.png   the same in English and Japanese (the ru sheets redrawn
+                                   with the words of strings_<lang>.json, labels_relang_prompt.txt) -> textures/localized/<lang>/
+                                   (only the icons whose packets carry words: the feeder, bread and kefir fall back to ru)
 
-The grids' sidecars (design/grocery/*_grid.json) hold the request and the output URL; a missing grid is downloaded from it.
-Other languages fall back to ru (LyudText::LoadTexture). Then: python3 tools/ui_diary_icons.py <ids> (the diary's sketches),
+The grids' sidecars (design/grocery/*_grid*.json) hold the request and the output URL; a missing grid is downloaded from it. Then: python3 tools/ui_diary_icons.py <ids> (the diary's sketches),
 unreal/scripts/import_hall_assets.py (T_Icon_<id>, T_Label_<id>) and unreal/scripts/import_diary_assets.py.
 
-  python3 tools/grocery_assets.py
+  python3 tools/grocery_assets.py [lang ...]     (default ru en ja)
 """
 import json
 import os
+import sys
 import urllib.request
 
 from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUT = os.path.join(ROOT, "textures", "localized", "ru")
 
 
 def grid(name):
@@ -57,23 +59,28 @@ def sidecar(path, data):
         json.dump(data, f, indent=1, ensure_ascii=False)
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
-    spec, img, rel = grid("labels_grid")
-    for i, name in enumerate(spec["ids"]):
-        c, r = i % 3, i // 3
-        label = trim(cut(img, 3, 2, c, r, 0.01)).resize((512, 768), Image.LANCZOS)
-        label.save(os.path.join(OUT, "label_%s.jpg" % name), quality=92)
-        sidecar(os.path.join(OUT, "label_%s.json" % name), {"id": "label_" + name, "lang": "ru", "service": "higgsfield", "grid": rel, "cell": [c, r]})
-    print(len(spec["ids"]), "labels")
-    spec, img, rel = grid("icons_grid")
-    for i, name in enumerate(spec["ids"]):
-        c, r = i % 3, i // 3
-        icon = cut(img, 3, 3, c, r, 0.025).resize((512, 512), Image.LANCZOS)
-        icon.save(os.path.join(OUT, "icon_%s.jpg" % name), quality=90)
-        sidecar(os.path.join(OUT, "icon_%s.json" % name), {"id": "icon_" + name, "lang": "ru", "service": "higgsfield", "grid": rel, "cell": [c, r]})
-    print(len(spec["ids"]), "icons")
-
+def main(langs):
+    for lang in langs:
+        sfx = "" if lang == "ru" else "_" + lang
+        out = os.path.join(ROOT, "textures", "localized", lang)
+        os.makedirs(out, exist_ok=True)
+        spec, img, rel = grid("labels_grid" + sfx)
+        for i, name in enumerate(spec["ids"]):
+            c, r = i % 3, i // 3
+            label = trim(cut(img, 3, 2, c, r, 0.01)).resize((512, 768), Image.LANCZOS)
+            label.save(os.path.join(out, "label_%s.jpg" % name), quality=92)
+            sidecar(os.path.join(out, "label_%s.json" % name), {"id": "label_" + name, "lang": lang, "service": "higgsfield", "grid": rel, "cell": [c, r]})
+        print(lang, len(spec["ids"]), "labels")
+        spec, img, rel = grid("icons_grid" + sfx)
+        ids = spec.get("ship", spec["ids"])
+        for i, name in enumerate(spec["ids"]):
+            if name not in ids:
+                continue
+            c, r = i % 3, i // 3
+            icon = cut(img, 3, 3, c, r, 0.025).resize((512, 512), Image.LANCZOS)
+            icon.save(os.path.join(out, "icon_%s.jpg" % name), quality=90)
+            sidecar(os.path.join(out, "icon_%s.json" % name), {"id": "icon_" + name, "lang": lang, "service": "higgsfield", "grid": rel, "cell": [c, r]})
+        print(lang, len(ids), "icons")
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:] or ["ru", "en", "ja"])

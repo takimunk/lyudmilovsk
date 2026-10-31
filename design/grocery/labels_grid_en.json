@@ -1,0 +1,30 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "medias": [
+  {
+   "role": "image_references",
+   "value": "6df3e31c-ffba-4fd7-a9c9-f15644115df6 (labels_grid, ru)"
+  }
+ ],
+ "job_id": "da6b3207-5af4-4087-a412-e6ad4dc502d8",
+ "date": "2026-10-31",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_000907_da6b3207-5af4-4087-a412-e6ad4dc502d8.png",
+ "prompt_template": "design/grocery/labels_relang_prompt.txt (<<key>> = strings_en.json)",
+ "prompt": "Redraw the reference image exactly: the same sheet of six flat paper packet labels for bird food in a grid of 3 columns and 2 rows of equal tall portrait cells on the same plain off-white background with the same small even gaps, every label the same size, position, colours, inks, illustration and layout as in the reference, vintage Soviet 1950s-1960s lithograph print on matte paper. Change only the printed words: replace the Russian words on each label with the words given here, set in the same place, size and style of lettering (Latin letters, bold vintage poster lettering), every word exactly as given and spelled exactly; no other words anywhere, no Cyrillic letters left.\nRow 1, left (great tit and suet cake): title \"Tit Cake\", small line \"bird food\".\nRow 1, middle (goldfinch on a thistle): title \"Goldfinch Mix\", small line \"bird food\".\nRow 1, right (waxwing and rowan berries): title \"Rowan\", small line \"bird food\".\nRow 2, left (robin and mealworms): title \"Mealworms\", small line \"bird food\".\nRow 2, middle (pigeon with wheat and peas): title \"Dove\", small line \"bird food\".\nRow 2, right (blue tit on a peanut bag): title \"Peanuts\", small line \"bird food\".\n",
+ "lang": "en",
+ "ids": [
+  "feed_suet",
+  "feed_niger",
+  "feed_rowan",
+  "feed_mealworm",
+  "feed_grain",
+  "feed_peanuts"
+ ],
+ "note": "the ru label sheet redrawn with the en words; cut by tools/grocery_assets.py into textures/localized/en/label_<id>.jpg",
+ "credits": 1
+}

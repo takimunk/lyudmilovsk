@@ -1,0 +1,7 @@
+Redraw the reference image exactly: the same sheet of six flat paper packet labels for bird food in a grid of 3 columns and 2 rows of equal tall portrait cells on the same plain off-white background with the same small even gaps, every label the same size, position, colours, inks, illustration and layout as in the reference, vintage Soviet 1950s-1960s lithograph print on matte paper. Change only the printed words: replace the Russian words on each label with the words given here, set in the same place, size and style of lettering (<<script>>), every word exactly as given and spelled exactly; no other words anywhere, no Cyrillic letters left.
+Row 1, left (great tit and suet cake): title "<<label.feed_suet.title>>", small line "<<label.feed.sub>>".
+Row 1, middle (goldfinch on a thistle): title "<<label.feed_niger.title>>", small line "<<label.feed.sub>>".
+Row 1, right (waxwing and rowan berries): title "<<label.feed_rowan.title>>", small line "<<label.feed.sub>>".
+Row 2, left (robin and mealworms): title "<<label.feed_mealworm.title>>", small line "<<label.feed.sub>>".
+Row 2, middle (pigeon with wheat and peas): title "<<label.feed_grain.title>>", small line "<<label.feed.sub>>".
+Row 2, right (blue tit on a peanut bag): title "<<label.feed_peanuts.title>>", small line "<<label.feed.sub>>".
