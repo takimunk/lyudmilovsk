@@ -501,9 +501,15 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsRight()
 						]
 					]
 					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)[Sketch(UI, Id, 108.f)]
-					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(4, 2, 4, 0)
+					// the name at the cell's width, two lines at most: AutoWrapText in a centred slot wraps at the text's own last
+					// width, which for Japanese (no spaces) collapsed to a character a line running over the next row
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Fill).Padding(4, 2, 4, 0)
 					[
-						SNew(STextBlock).Text(ULyudInventory::ItemName(Id)).Font(Hand(24.f)).ColorAndOpacity(Ink).AutoWrapText(true).Justification(ETextJustify::Center)
+						SNew(SBox).MaxDesiredHeight(64.f).Clipping(EWidgetClipping::ClipToBounds)
+						[
+							SNew(STextBlock).Text(ULyudInventory::ItemName(Id)).Font(Hand(24.f)).ColorAndOpacity(Ink).WrapTextAt(150.f)
+							.WrappingPolicy(ETextWrappingPolicy::AllowPerCharacterWrapping).Justification(ETextJustify::Center)
+						]
 					]
 				]
 			]
