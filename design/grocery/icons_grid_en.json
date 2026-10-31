@@ -15,10 +15,10 @@
    "value": "da6b3207-5af4-4087-a412-e6ad4dc502d8 (labels_grid_en)"
   }
  ],
- "job_id": "d48be019-528d-451a-833c-ce08ea3ebf41",
+ "job_id": "badd94fd-206f-4bdc-911e-4d0fe51a9e59",
  "date": "2026-10-31",
- "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_000950_d48be019-528d-451a-833c-ce08ea3ebf41.png",
- "prompt": "Redraw the first reference image exactly: the same nine inventory icons in the same 3 by 3 grid of equal square cells, the same objects, positions, scale, lighting, painterly realistic style and plain dark warm-grey cloth background with a faint vignette, no borders or lines between cells, nothing crossing a cell edge. Change only the printed labels on the six packets of the first two rows: each packet now wears the matching label from the second reference image (a sheet of six labels, 3 columns and 2 rows, in the same order), with its English words exactly as printed there; no Cyrillic letters anywhere, no other text. The bird feeder, the bread loaf and the kefir bottle in the third row stay exactly as they are, without any text.",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_001646_badd94fd-206f-4bdc-911e-4d0fe51a9e59.png",
+ "prompt": "Redraw the first reference image exactly: the same nine inventory icons in the same 3 by 3 grid of equal square cells, the same objects, positions, scale, lighting, painterly realistic style and plain dark warm-grey cloth background with a faint vignette, no borders or lines between cells, nothing crossing a cell edge. Change only the printed labels on the six packets of the first two rows: each packet now wears the matching label from the second reference image (a sheet of six labels, 3 columns and 2 rows, in the same order), complete with both lines of English text exactly as printed there: the big title at the top and, at the bottom of every label, the small line \"bird food\" (on the peanut bag's paper tag too, under the bird). Titles: \"Tit Cake\", \"Goldfinch Mix\", \"Rowan\", \"Mealworms\", \"Dove\", \"Peanuts\". No Cyrillic letters anywhere, no other text. The bird feeder, the bread loaf and the kefir bottle in the third row stay exactly as they are, without any text.",
  "ids": [
   "feed_suet",
   "feed_niger",
@@ -40,5 +40,6 @@
  ],
  "lang": "en",
  "note": "the ru icon sheet with the en labels on the packets; only the six feed icons ship (textures/localized/en), the rest carry no words and fall back to ru",
- "credits": 1
+ "credits": 1,
+ "replaces": "d48be019-528d-451a-833c-ce08ea3ebf41 (no small line under the titles)"
 }
