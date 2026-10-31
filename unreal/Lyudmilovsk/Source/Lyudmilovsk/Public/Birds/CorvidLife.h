@@ -65,6 +65,7 @@ public:
 	static FName FindItemId(int32 Kind);
 
 	/** One line: items, tasks, events (console: lyud.Corvids.Report). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
 	FString Report() const;
 
 	/** Sets bond and grudge of every corvid within Radius (cm) of Location (developer mode, tests). */

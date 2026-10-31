@@ -132,7 +132,7 @@ def s_setup(w):
         i = birds(w).spawn_bird(sp, unreal.Vector(x0 + dx, y0 + dy, ground(w, x0 + dx, y0 + dy, z)))
         st["party"].append((sp, i))
     log("party %s" % " ".join("%s:%d" % p for p in st["party"]))
-    look(w, st["lawn"], 250.0, 120.0)
+    look(w, st["lawn"], 220.0, 90.0, -60.0)
 
 
 @step
@@ -142,7 +142,7 @@ def s_finds_shot(w):
 
 @step
 def s_finds_close(w):
-    look(w, st["lawn"], 90.0, 45.0, 30.0)
+    look(w, st["lawn"], 70.0, 40.0, -60.0)
 
 
 @step
