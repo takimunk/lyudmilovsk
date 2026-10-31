@@ -373,8 +373,11 @@ FString UCorvidLifeSubsystem::DescribeCorvid(int32 BirdId) const
 	{
 		return FString();
 	}
-	return FString::Printf(TEXT("%s step %d holds %s bond %.2f grudge %.2f"), UTF8_TO_TCHAR(TaskName(M->Task)), M->Step,
-		M->Held >= 0 ? UTF8_TO_TCHAR(ItemName(C->Items[M->Held].Kind)) : TEXT("-"), M->Bond, M->Grudge);
+	const FBird& B = W->Birds[BirdId];
+	const float PlayerD = W->Player.bPresent ? (B.Pos - W->Player.Feet).Len() : -1.f;
+	return FString::Printf(TEXT("%s step %d holds %s bond %.2f grudge %.2f; %s alert %.2f tier %d plan %d player %.0f m cool %.1f"),
+		UTF8_TO_TCHAR(TaskName(M->Task)), M->Step, M->Held >= 0 ? UTF8_TO_TCHAR(ItemName(C->Items[M->Held].Kind)) : TEXT("-"), M->Bond,
+		M->Grudge, UTF8_TO_TCHAR(ActName(B.Act)), B.Alert, (int32)B.Tier, (int32)W->Groups[B.Group].Plan, PlayerD, M->Cooldown);
 }
 
 void UCorvidLifeSubsystem::Take(int32 Item)

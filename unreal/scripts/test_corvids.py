@@ -46,31 +46,35 @@ def ground(w, x, y, z0=400.0):
     return hit.to_tuple()[4].z if hit else 0.0
 
 
-def place(w, loc, pitch, yaw):
+def place(w, loc, pitch, yaw, fov=0.0):
+    cmd(w, "fov %.2f" % fov)
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
     pc.get_controlled_pawn().set_actor_location(unreal.Vector(*loc), False, True)
     pc.set_control_rotation(unreal.Rotator(roll=0, pitch=pitch, yaw=yaw))
 
 
-def look(w, target, dist, up, yaw_off=0.0):
-    """The camera dist cm off target (from the south-west, turned by yaw_off), up cm higher, looking at it."""
+def look(w, target, dist, span, yaw_off=0.0):
+    """The camera at eye height dist cm off target (from the south-west, turned by yaw_off), zoomed in so that about span
+    cm round the target fill the frame (the hero's eye can't go down to a nut on the ground, the lens can)."""
     import math
     a = math.radians(-120.0 + yaw_off)
-    eye = unreal.Vector(target.x + math.cos(a) * dist, target.y + math.sin(a) * dist, target.z + up)
+    eye = unreal.Vector(target.x + math.cos(a) * dist, target.y + math.sin(a) * dist, target.z + 165.0)
     r = unreal.MathLibrary.find_look_at_rotation(eye, target)
-    place(w, (eye.x, eye.y, eye.z - 70.0), r.pitch, r.yaw)
-    st["eye"] = (eye, r)
+    fov = max(4.0, min(70.0, math.degrees(2.0 * math.atan(span * 0.5 / dist))))
+    place(w, (eye.x, eye.y, target.z + 95.0), r.pitch, r.yaw, fov)
+    st["eye"] = (eye, target)
 
 
 def fix_eye(w):
     if not st.get("eye"):
         return
-    eye, r = st["eye"]
+    eye, target = st["eye"]
     pc = unreal.GameplayStatics.get_player_controller(w, 0)
     cam = pc.player_camera_manager.get_camera_location()
     pawn = pc.get_controlled_pawn()
-    pawn.set_actor_location(pawn.get_actor_location() + (eye - cam), False, True)
-    pc.set_control_rotation(r)
+    d = unreal.Vector(eye.x - cam.x, eye.y - cam.y, 0.0)      # the eye stays where the hero's height puts it
+    pawn.set_actor_location(pawn.get_actor_location() + d, False, True)
+    pc.set_control_rotation(unreal.MathLibrary.find_look_at_rotation(cam + d, target))
 
 
 def shot(w, name):
@@ -125,14 +129,15 @@ def s_setup(w):
     fx, fy = x0 + 900.0, y0 + 300.0
     st["fish"] = corv(w).spawn_item("Fish", unreal.Vector(fx, fy, ground(w, fx, fy, z)))
     st["fish_at"] = unreal.Vector(fx, fy, ground(w, fx, fy, z))
-    party = [("HoodedCrow", 600, 200), ("HoodedCrow", 700, -300), ("CarrionCrow", -600, 250), ("Magpie", -400, -350), ("Jackdaw", 300, 600),
+    flock = [("HoodedCrow", 600, 200), ("HoodedCrow", 700, -300), ("CarrionCrow", -600, 250), ("Magpie", -400, -350), ("Jackdaw", 300, 600),
              ("Jackdaw", 350, 650), ("Rook", -300, 650), ("Raven", 1200, 500), ("Jay", -800, -100), ("Nutcracker", -700, 400)]
     st["party"] = []
-    for sp, dx, dy in party:
+    for sp, dx, dy in flock:
         i = birds(w).spawn_bird(sp, unreal.Vector(x0 + dx, y0 + dy, ground(w, x0 + dx, y0 + dy, z)))
         st["party"].append((sp, i))
     log("party %s" % " ".join("%s:%d" % p for p in st["party"]))
-    look(w, st["lawn"], 220.0, 90.0, -60.0)
+    party(w)
+    look(w, st["lawn"], 400.0, 320.0, -60.0)
 
 
 @step
@@ -142,7 +147,7 @@ def s_finds_shot(w):
 
 @step
 def s_finds_close(w):
-    look(w, st["lawn"], 70.0, 40.0, -60.0)
+    look(w, st["lawn"], 300.0, 70.0, -60.0)
 
 
 @step
@@ -166,7 +171,7 @@ def s_carrier(w):
         b = b[1] if isinstance(b, tuple) else b
         st["carrier_at"] = b.location
         log("carrier %d %s: %s" % (st["carrier"], b.species_id, corv(w).describe_corvid(st["carrier"])))
-        look(w, b.location, 160.0, 40.0)
+        look(w, b.location, 700.0, 120.0)
     else:
         log("nobody carries anything now")
 
@@ -176,13 +181,13 @@ def s_carrier_shot(w):
     if st.get("carrier") is not None:
         b = birds(w).get_bird(st["carrier"])
         b = b[1] if isinstance(b, tuple) else b
-        look(w, b.location, 160.0, 40.0)
+        look(w, b.location, 700.0, 120.0)
         shot(w, "a corvid with something in its bill")
 
 
 @step
 def s_fish(w):
-    look(w, st["fish_at"], 700.0, 300.0)
+    look(w, st["fish_at"], 1200.0, 700.0)
 
 
 @step
@@ -200,8 +205,14 @@ def s_gift_setup(w):
     cmd(w, "lyud.Corvids.Feel 0.9 0 120")
 
 
+def party(w):
+    for sp, i in st["party"]:
+        log("  %s %d: %s" % (sp, i, corv(w).describe_corvid(i)))
+
+
 def _gift_wait(w):
     log("waiting for a present: %d (since start)" % count(w, "Gift"))
+    party(w)
 
 
 for _ in range(6):
@@ -239,7 +250,7 @@ def s_grudge(w):
     cmd(w, "lyud.Corvids.Feel 0 0.9 120")
 
 
-step(lambda w: log("scolding after 10 s: %d" % (count(w, "Scold") - st["scold0"])), 10.0)
+step(lambda w: (log("scolding after 10 s: %d" % (count(w, "Scold") - st["scold0"])), party(w)), 10.0)
 step(lambda w: shot(w, "scolded"), 2.0)
 step(lambda w: shot(w, "scolded 2"), 4.0)
 

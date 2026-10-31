@@ -1225,7 +1225,9 @@ namespace LyudBirds
 		}
 		if (C.Task == ETask::None)
 		{
-			if (C.Cooldown > 0.f || B.Tier > 2 || B.Act == EAct::Flee || B.Act == EAct::Watch || B.Alert > 0.45f)
+			// a crow with a grudge that has the player in its eye shouts at them instead of only watching
+			const bool bAngry = C.Grudge > 0.35f && W.Player.bPresent && B.Act == EAct::Watch;
+			if (C.Cooldown > 0.f || B.Tier > 2 || B.Act == EAct::Flee || ((B.Act == EAct::Watch || B.Alert > 0.45f) && !bAngry))
 			{
 				return false;
 			}
@@ -1240,7 +1242,7 @@ namespace LyudBirds
 			}
 		}
 		// fear first: a watching bird watches (BirdSim), the task waits
-		if (B.Act == EAct::Watch || B.Act == EAct::Flee)
+		if (B.Act == EAct::Flee || (B.Act == EAct::Watch && C.Task != ETask::Scold))
 		{
 			return false;
 		}
@@ -2416,6 +2418,12 @@ namespace LyudBirds
 		default: break;
 		}
 		return K;
+	}
+
+	float FCorvids::PlayerWariness(const FBird& B) const
+	{
+		const FCorvid* C = Mind(B.Id);
+		return C ? std::clamp(1.f - 0.9f * C->Bond + 0.5f * C->Grudge, 0.1f, 1.5f) : 1.f;
 	}
 
 	float FCorvids::BeastScale(const FBird& B, const FBeast& M) const

@@ -1488,7 +1488,7 @@ namespace LyudBirds
 		// it stays watchful a good while, and the group keeps away from the danger
 		B.Wary = 45.f + Rand(B.Rng) * 45.f;
 		const bool bPlayer = Cause == -1 || (Player.bPresent && (From - Player.Feet).Len() < 3.f);
-		G.AvoidUntil = Time + (bPlayer ? 120.0 : 60.0);
+		G.AvoidUntil = Time + (bPlayer ? 120.0 * (Corv ? Corv->PlayerWariness(B) : 1.f) : 60.0);
 		G.Avoid = From;
 		G.AvoidR = 2.5f * S.FleeDistance + 15.f;
 		G.bAvoidPlayer = bPlayer;
