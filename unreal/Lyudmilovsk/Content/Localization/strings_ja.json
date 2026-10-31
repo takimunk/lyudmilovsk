@@ -1017,5 +1017,7 @@
  "ui.guide.asleep": "眠っている",
  "ui.diary.birds_on": "地図の鳥：消す",
  "ui.diary.birds_off": "地図の鳥：出す",
- "ui.help.guide": "B：野鳥図鑑（持っていれば）"
+ "ui.help.guide": "B：野鳥図鑑（持っていれば）",
+ "ui.eat.prompt": "左クリック：ひと口　長押し：たっぷり",
+ "ui.eat.prompt_drink": "左クリック：ひと口　長押し：ごくごく"
 }

@@ -1017,5 +1017,7 @@
  "ui.guide.asleep": "asleep",
  "ui.diary.birds_on": "birds on the map: hide",
  "ui.diary.birds_off": "birds on the map: show",
- "ui.help.guide": "B: the bird guide (once you have it)"
+ "ui.help.guide": "B: the bird guide (once you have it)",
+ "ui.eat.prompt": "LMB — a little bite, hold — a big one",
+ "ui.eat.prompt_drink": "LMB — a sip, hold — drink"
 }
