@@ -44,6 +44,14 @@ including the women and Yuki.
 
 ## Cost (fal, actual prices from api.fal.ai/v1/models/pricing)
 
+**Chosen variant (Dima asked for cheaper, 2026-11-01): no voice design.** Yuki, Nina and Valentina use MiniMax's built-in
+system voices (Lovely_Girl, Wise_Woman, Abbess) through speech-2.6-hd: **total ≈ $1.00** for all 96 takes. Their design prompts
+stay in `voice.json` under `design_later` in case a built-in voice doesn't fit ($3 each then). Cheaper TTS models exist
+(ElevenLabs turbo-v2.5 $0.05, MiniMax turbo $0.06, Chatterbox multilingual $0.025 per 1000 chars) but would save only ~$0.5 and
+the new speakers wouldn't match the rest of the cast's quality (turbo-v2.5 doesn't act out direction tags), so they aren't used.
+
+The first estimate, with designed voices:
+
 - TTS: ElevenLabs v3 and MiniMax speech-2.6-hd are both $0.10 per 1000 characters → 9 997 chars = **$1.00**.
 - New designed voices (`fal-ai/minimax/voice-design`): $3 each × 3 = **$9.00** (the preview audio is $30/1M chars, under a cent).
 - **Total ≈ $10.** Without designing voices for the two grandmothers (giving them premade adult voices instead) it would be ≈ $4.
@@ -61,9 +69,9 @@ I used premade voices the club cast doesn't use wherever there were enough.
 | zotova_galina | Alice | warm, chatty, fondly exasperated with her husband |
 | sato_kei | Eric | quiet, precise, softly puzzled |
 | sato_mila | Lily | brisk, caring, a doctor's matter-of-fact warmth |
-| sato_yuki | **MiniMax, new design** | small girl, very high bright child's voice, lively, eager, a little breathless |
+| sato_yuki | **MiniMax built-in Lovely_Girl** | (design prompt kept as design_later) |
 | korneev_ivan | Bill | an old man, slow, a little gravelly, contented |
-| korneeva_nina | **MiniMax, new design** | warm, lively older woman's voice, slightly thin with age, talkative, kind (speed 0.95) |
+| korneeva_nina | **MiniMax built-in Wise_Woman** | speed 0.95 |
 | belov_misha | Liam | easygoing, amused, self-ironic |
 | orlova_tanya | Aria | brisk, deadpan, a bit sassy |
 | lange_pyotr | Brian | gruff, unhurried, few words |
@@ -72,7 +80,7 @@ I used premade voices the club cast doesn't use wherever there were enough.
 | valiev_rustam | Roger | confident, dry, matter-of-fact |
 | nishimura_aya | Matilda (also girl_a at the club) | calm, soft, contemplative |
 | sorokin_oleg | River | retired scholar, calm, dry humour, slower |
-| guseva_valentina | **MiniMax, new design** | village grandmother: strong, hearty, slightly hoarse, loud and good-natured |
+| guseva_valentina | **MiniMax built-in Abbess** | |
 | khuazhev_aslan (food branch) | Brian (shared with Pyotr) | hearty, generous, proud of the family cheese |
 
 The design prompts avoid ages (fal's checker rejects them, docs/localization.md). The script records each designed voice's median
@@ -100,7 +108,7 @@ Voicing it as the hero would be ≈ 3 300 characters ≈ $0.35 for three languag
 
 ```
 tools/voice/voice_all.sh --cost   # free: the estimate above, recomputed from the tables
-tools/voice/voice_all.sh          # design 3 voices -> voice 96 takes (ru, en, ja) -> import into this checkout's project
+tools/voice/voice_all.sh          # (no voices to design now) voice 96 takes (ru, en, ja) -> import into this checkout's project
 ```
 
 The script reads `FAL_API_KEY` from `~/projects/asmrx3000/.env` and never writes it anywhere. `--design` writes the new voice_ids
