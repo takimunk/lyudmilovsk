@@ -28,6 +28,7 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Layout/SWrapBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/SCompoundWidget.h"
@@ -460,7 +461,9 @@ private:
 	TSharedPtr<STextBlock> Label;
 };
 
-/** A trader's screen: the goods with their icons, price and a buy button; the hero's money on top. */
+/** A trader's screen: the goods with their icons, price and a buy button; the hero's money on top.
+    The goods scroll (wheel anywhere on the screen, arrows/W S/d-pad move the selection, Enter/A buys it);
+    the screen eats clicks and the wheel so nothing behind it reacts. */
 class SLyudShop : public SCompoundWidget
 {
 public:
@@ -477,29 +480,86 @@ public:
 		Inventory = InArgs._Inventory;
 		Title = InArgs._Title;
 		Goods = InArgs._Goods;
+		const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 18);
+		const FSlateFontInfo Small = FCoreStyle::GetDefaultFontStyle("Regular", 14);
+		ChildSlot
+		[
+			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center)
+			[
+				SNew(SBorder)
+				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+				.BorderBackgroundColor(FLinearColor(0.03f, 0.03f, 0.04f, 0.93f))
+				.Padding(24.f)
+				[
+					SNew(SBox).WidthOverride(700.f)
+					[
+						SNew(SVerticalBox)
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
+						[
+							SNew(SHorizontalBox)
+							+ SHorizontalBox::Slot().FillWidth(1.f)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 26)).Text(Title)]
+							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+							[
+								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
+								.Text_Lambda([this]
+								{
+									const ULyudInventory* Inv = Inventory.Get();
+									return LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv ? Inv->Rubles : 0) });
+								})
+							]
+						]
+						// the list is as tall as the screen allows (header and footer take ~260 px of it)
+						+ SVerticalBox::Slot().AutoHeight()
+						[
+							SNew(SBox).MaxDesiredHeight_Lambda([this] { return FMath::Max(200.f, ViewHeight - 300.f); })
+							[
+								SAssignNew(Scroll, SScrollBox).ScrollBarAlwaysVisible(false).AnimateWheelScrolling(true)
+							]
+						]
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 4, 0, 0)
+						[
+							SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(0.6f, 0.9f, 0.6f)).Text_Lambda([this] { return Status; })
+						]
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 0)
+						[
+							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f)).AutoWrapText(true)
+							.Text(FText::FromString(LyudText::Get(TEXT("ui.shop.keys")).ToString() + TEXT("   ") + LyudText::Get(TEXT("ui.shop.close")).ToString()))
+						]
+					]
+				]
+			]
+		];
 		Rebuild();
 	}
 
+	/** Refills the rows (money or stock changed); the scroll position and selection stay. */
 	void Rebuild()
 	{
 		ULyudInventory* Inv = Inventory.Get();
 		ULyudInventoryUI* UI = Owner.Get();
-		if (!Inv || !UI)
+		if (!Inv || !UI || !Scroll)
 		{
 			return;
 		}
 		const FSlateFontInfo Body = FCoreStyle::GetDefaultFontStyle("Regular", 18);
 		const FSlateFontInfo Small = FCoreStyle::GetDefaultFontStyle("Regular", 14);
-		TSharedRef<SVerticalBox> List = SNew(SVerticalBox);
+		Scroll->ClearChildren();
+		Rows.Reset();
 		for (int32 GoodIndex = 0; GoodIndex < Goods.Num(); ++GoodIndex)
 		{
 			const FLyudShopGood G = Goods[GoodIndex];
 			const bool bCanPay = Inv->Rubles >= G.Price;
-			List->AddSlot().AutoHeight().Padding(0, 0, 0, 8)
-			[
-				SNew(SBorder)
+			TSharedRef<SBorder> Row = SNew(SBorder)
 				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
-				.BorderBackgroundColor(FLinearColor(0.1f, 0.1f, 0.12f, 1.f))
+				.BorderBackgroundColor_Lambda([this, GoodIndex]
+				{
+					return GoodIndex == Selected ? FLinearColor(0.22f, 0.19f, 0.1f, 1.f) : FLinearColor(0.1f, 0.1f, 0.12f, 1.f);
+				})
+				.OnMouseButtonDown_Lambda([this, GoodIndex](const FGeometry&, const FPointerEvent&)
+				{
+					Selected = GoodIndex;
+					return FReply::Handled();
+				})
 				.Padding(10.f)
 				[
 					SNew(SHorizontalBox)
@@ -528,58 +588,102 @@ public:
 					]
 					+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 					[
-						SNew(SButton).IsEnabled(bCanPay)
-						.OnClicked_Lambda([this, G, GoodIndex]()
+						// not focusable: keyboard focus stays with the game so the arrows and Enter reach ULyudInventoryUI::Tick
+						SNew(SButton).IsEnabled(bCanPay).IsFocusable(false)
+						.OnClicked_Lambda([this, GoodIndex]()
 						{
-							ULyudInventoryUI* U = Owner.Get();
-							Status = U && U->BuyShopGood(GoodIndex) ? LyudText::Get(TEXT("ui.shop.bought"), { FStringFormatArg(ULyudInventory::ItemName(G.Item).ToString()) })
-							                                         : LyudText::Get(TEXT("ui.shop.nomoney"));
-							Rebuild();
+							Selected = GoodIndex;
+							Buy();
 							return FReply::Handled();
 						})
 						[
 							SNew(STextBlock).Font(Body).Text(FText::FromString(TEXT("  ") + LyudText::Get(TEXT("ui.shop.buy")).ToString() + TEXT("  ")))
 						]
 					]
-				]
-			];
+				];
+			Rows.Add(Row);
+			Scroll->AddSlot().Padding(0, 0, 0, 8)[Row];
 		}
-		ChildSlot
-		[
-			SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Center)
-			[
-				SNew(SBorder)
-				.BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
-				.BorderBackgroundColor(FLinearColor(0.03f, 0.03f, 0.04f, 0.93f))
-				.Padding(24.f)
-				[
-					SNew(SBox).WidthOverride(700.f)
-					[
-						SNew(SVerticalBox)
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 14)
-						[
-							SNew(SHorizontalBox)
-							+ SHorizontalBox::Slot().FillWidth(1.f)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 26)).Text(Title)]
-							+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-							[
-								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
-								.Text(LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv->Rubles) }))
-							]
-						]
-						+ SVerticalBox::Slot().AutoHeight()[List]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 4, 0, 0)
-						[
-							SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(0.6f, 0.9f, 0.6f)).Text(Status)
-						]
-						+ SVerticalBox::Slot().AutoHeight().Padding(0, 10, 0, 0)
-						[
-							SNew(STextBlock).Font(Small).ColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f)).Text(LyudText::Get(TEXT("ui.shop.close")))
-						]
-					]
-				]
-			]
-		];
+		Selected = Goods.Num() > 0 ? FMath::Clamp(Selected, 0, Goods.Num() - 1) : -1;
 	}
+
+	void Buy()
+	{
+		ULyudInventoryUI* U = Owner.Get();
+		if (!Goods.IsValidIndex(Selected) || !U)
+		{
+			return;
+		}
+		const FName Item = Goods[Selected].Item;
+		// a purchase fires the pocket's OnChanged, which rebuilds the rows
+		Status = U->BuyShopGood(Selected) ? LyudText::Get(TEXT("ui.shop.bought"), { FStringFormatArg(ULyudInventory::ItemName(Item).ToString()) })
+		                                  : LyudText::Get(TEXT("ui.shop.nomoney"));
+	}
+
+	/** Moves the selection by Delta rows and brings it into view. */
+	void Select(int32 Delta)
+	{
+		if (Goods.Num() == 0)
+		{
+			return;
+		}
+		Selected = FMath::Clamp(Selected + Delta, 0, Goods.Num() - 1);
+		StickToEnd = 0.f;
+		if (!Scroll)
+		{
+			return;
+		}
+		// the ends snap all the way (a row can grow when its text wraps, IntoView then stops a little short)
+		if (Selected == Goods.Num() - 1)
+		{
+			Scroll->ScrollToEnd();
+			StickToEnd = 0.5f;
+		}
+		else if (Selected == 0)
+		{
+			Scroll->ScrollToStart();
+		}
+		else if (Rows.IsValidIndex(Selected))
+		{
+			Scroll->ScrollDescendantIntoView(Rows[Selected], true, EDescendantScrollDestination::IntoView);
+		}
+	}
+
+	/** Scrolls the list by Notches wheel steps (wheel over the screen but outside the list, or a test). */
+	void ScrollBy(float Notches)
+	{
+		StickToEnd = 0.f;
+		if (Scroll)
+		{
+			Scroll->SetScrollOffset(FMath::Clamp(Scroll->GetScrollOffset() - Notches * 96.f, 0.f, Scroll->GetScrollOffsetOfEnd()));
+		}
+	}
+
+	int32 GetSelected() const { return Selected; }
+	float GetScrollOffset() const { return Scroll ? Scroll->GetScrollOffset() : 0.f; }
+	float GetScrollEnd() const { return Scroll ? Scroll->GetScrollOffsetOfEnd() : 0.f; }
+
+	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override
+	{
+		SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
+		ViewHeight = AllottedGeometry.GetLocalSize().Y;
+		// the end moves for a few frames while the rows' wrapped text settles: stay on it
+		if (StickToEnd > 0.f && Scroll)
+		{
+			StickToEnd -= InDeltaTime;
+			Scroll->ScrollToEnd();
+		}
+	}
+
+	// the list's own SScrollBox takes the wheel over it; anywhere else on the screen it scrolls the list too
+	virtual FReply OnMouseWheel(const FGeometry&, const FPointerEvent& E) override
+	{
+		ScrollBy(E.GetWheelDelta());
+		return FReply::Handled();
+	}
+
+	// clicks around the window stay here (no hand reaching, no food bitten behind the trade screen)
+	virtual FReply OnMouseButtonDown(const FGeometry&, const FPointerEvent&) override { return FReply::Handled(); }
 
 private:
 	TWeakObjectPtr<ULyudInventoryUI> Owner;
@@ -587,6 +691,11 @@ private:
 	FText Title;
 	TArray<FLyudShopGood> Goods;
 	FText Status;
+	TSharedPtr<SScrollBox> Scroll;
+	TArray<TSharedRef<SWidget>> Rows;
+	int32 Selected = 0;
+	float ViewHeight = 1080.f;
+	float StickToEnd = 0.f;
 };
 
 ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
@@ -664,6 +773,38 @@ void ULyudInventoryUI::Tick(float)
 		{
 			CloseShop();
 		}
+		else if (Shop)
+		{
+			// the screen leaves keyboard focus with the game (GameAndUI), so the keys are read here
+			auto Pressed = [PC](std::initializer_list<FKey> Keys)
+			{
+				for (const FKey& K : Keys)
+				{
+					if (PC->WasInputKeyJustPressed(K))
+					{
+						return true;
+					}
+				}
+				return false;
+			};
+			const int32 Step = (Pressed({ EKeys::Down, EKeys::S, EKeys::Gamepad_DPad_Down, EKeys::Gamepad_LeftStick_Down }) ? 1 : 0)
+				- (Pressed({ EKeys::Up, EKeys::W, EKeys::Gamepad_DPad_Up, EKeys::Gamepad_LeftStick_Up }) ? 1 : 0)
+				+ (Pressed({ EKeys::PageDown }) ? 5 : 0) - (Pressed({ EKeys::PageUp }) ? 5 : 0);
+			if (Step != 0)
+			{
+				Shop->Select(Step);
+			}
+			// the wheel outside the window reaches the game, not Slate
+			const float Wheel = (PC->WasInputKeyJustPressed(EKeys::MouseScrollUp) ? 1.f : 0.f) - (PC->WasInputKeyJustPressed(EKeys::MouseScrollDown) ? 1.f : 0.f);
+			if (Wheel != 0.f)
+			{
+				Shop->ScrollBy(Wheel);
+			}
+			if (Pressed({ EKeys::Enter, EKeys::Gamepad_FaceButton_Bottom }))
+			{
+				Shop->Buy();
+			}
+		}
 	}
 	if (bUsing)
 	{
@@ -733,6 +874,34 @@ bool ULyudInventoryUI::BuyShopGood(int32 Index)
 	}
 	Inv->Add(ShopGoods[Index].Item, ShopGoods[Index].Count);
 	OnShopBought.Broadcast(ShopGoods[Index].Item, ShopGoods[Index].Count);
+	return true;
+}
+
+void ULyudInventoryUI::ShopSelect(int32 Delta)
+{
+	if (Shop)
+	{
+		Shop->Select(Delta);
+	}
+}
+
+void ULyudInventoryUI::ShopScroll(float Notches)
+{
+	if (Shop)
+	{
+		Shop->ScrollBy(Notches);
+	}
+}
+
+bool ULyudInventoryUI::ShopState(int32& OutSelected, float& OutOffset, float& OutEnd) const
+{
+	if (!Shop)
+	{
+		return false;
+	}
+	OutSelected = Shop->GetSelected();
+	OutOffset = Shop->GetScrollOffset();
+	OutEnd = Shop->GetScrollEnd();
 	return true;
 }
 
@@ -1030,6 +1199,35 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TE
 		{
 			Inv->Equip(Args.Num() > 0 && Args[0] != TEXT("none") ? FName(*Args[0]) : FName());
 		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GShopScroll(TEXT("Shop.Scroll"),
+	TEXT("Shop.Scroll wheel <notches> | select <rows> | end: scrolls or moves the selection of the open trade list and logs SHOPSCROLL (checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+		if (!UI)
+		{
+			return;
+		}
+		const FString What = Args.Num() > 0 ? Args[0] : TEXT("");
+		const float N = Args.Num() > 1 ? FCString::Atof(*Args[1]) : 1.f;
+		if (What == TEXT("wheel"))
+		{
+			UI->ShopScroll(N);
+		}
+		else if (What == TEXT("select"))
+		{
+			UI->ShopSelect(FMath::RoundToInt(N));
+		}
+		else if (What == TEXT("end"))
+		{
+			UI->ShopSelect(1000);
+		}
+		int32 Sel = -1;
+		float Offset = 0.f, End = 0.f;
+		const bool bOpen = UI->ShopState(Sel, Offset, End);
+		UE_LOG(LogTemp, Warning, TEXT("SHOPSCROLL open %d selected %d offset %.0f end %.0f"), bOpen ? 1 : 0, Sel, Offset, End);
 	}));
 
 static FAutoConsoleCommandWithWorldAndArgs GShopOpen(TEXT("Shop.Open"), TEXT("Shop.Open [buy index | close]: opens the club owner's trade screen (headless checks); with an index, buys that good; close closes it"),

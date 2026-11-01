@@ -871,7 +871,8 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 		TickEuropa(*Hero, *PC, DeltaTime);
 	}
 	UpdateAction(*Hero, *PC);
-	if (PC->WasInputKeyJustPressed(EKeys::E) && !Action.IsEmpty())
+	const ULyudInventoryUI* ScreenUI = ULyudInventoryUI::Get(this);
+	if (PC->WasInputKeyJustPressed(EKeys::E) && !Action.IsEmpty() && !(ScreenUI && ScreenUI->IsOpen()))
 	{
 		// polled, never consumed: E belongs to several things at once
 		Use();

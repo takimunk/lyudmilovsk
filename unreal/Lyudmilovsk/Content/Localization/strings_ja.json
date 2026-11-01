@@ -29,6 +29,7 @@
  "ui.shop.bought": "買った：{0}",
  "ui.shop.nomoney": "お金が足りない",
  "ui.shop.close": "T、Tab または I で閉じる",
+ "ui.shop.keys": "ホイールまたは↑↓でスクロール、Enterで選んだ品を買う",
  "ui.menu.game_time": "ゲーム内 {0}時間{1}分",
  "ui.menu.slot_subtitle": "{0}  ·  {1}",
  "ui.menu.title": "リュドミロフスク",

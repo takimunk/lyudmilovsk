@@ -195,6 +195,11 @@ public:
 	void OpenShop(const FText& Title, const TArray<FLyudShopGood>& Goods);
 	/** Shop.Open close (headless checks). */
 	void CloseShopForTest() { CloseShop(); }
+	/** The trade list: move the selection by Delta rows (into view), or scroll it by wheel notches (keys, Shop.Scroll checks). */
+	void ShopSelect(int32 Delta);
+	void ShopScroll(float Notches);
+	/** Selected row, scroll offset and its end (px) of the open trade list, for checks; false when no trade screen. */
+	bool ShopState(int32& OutSelected, float& OutOffset, float& OutEnd) const;
 	/** Closes the game screen. */
 	void Close();
 

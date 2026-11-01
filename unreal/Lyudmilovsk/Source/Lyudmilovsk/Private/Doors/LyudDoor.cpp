@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudInventory.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -788,8 +789,9 @@ void ULyudDoorSubsystem::Tick(float DeltaTime)
 {
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
-		// polled, never consumed: E belongs to several things at once
-		if (PC->WasInputKeyJustPressed(EKeys::E))
+		// polled, never consumed: E belongs to several things at once; not while a trade or game screen is up
+		const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+		if (PC->WasInputKeyJustPressed(EKeys::E) && !(UI && UI->IsOpen()))
 		{
 			PlayerInteract();
 		}
