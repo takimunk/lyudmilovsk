@@ -61,7 +61,8 @@ localization/voice.json  (speakers: voice + direction, per-line directions, TTS 
   Check a new voice by its pitch (median F0: men ~100-130 Hz, women ~220, children 250-300) before voicing all lines.
   Regenerate: `export FAL_API_KEY=…` (from `~/projects/asmrx3000/.env`, never committed), then
   `python3 tools/gen_voice.py --lang ru --stale` (one line: add its key and `--force`), the same for `en` and `ja`, then
-  `unreal/scripts/import_voice.py`. Cost: about 0.1 $ per 1000 characters, the whole NPC set (83 lines, about 20 000 characters with the direction tags) is roughly 2 $ for all three languages.
+  `unreal/scripts/import_voice.py`; all at once: `tools/voice/voice_all.sh` (`--cost` = the estimate, free; `gen_voice.py --design`
+  designs the missing MiniMax voices, $3 each; a speaker with `skip` is left unvoiced). Cost: about 0.1 $ per 1000 characters, the whole NPC set (83 lines, about 20 000 characters with the direction tags) is roughly 2 $ for all three languages.
 * Money, dates and numbers in text: pass as arguments, format per language in the string (`{0} руб.` / `{0} rub.` / `{0}ルーブル`).
 
 ## 4. What not to do

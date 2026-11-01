@@ -118,6 +118,131 @@
    "voice": "Sarah",
    "voice_id": "EXAVITQu4vr4xnSDxMaL",
    "direction": "[calm, clear, warm station announcer, unhurried]"
+  },
+  "zotov_lev": {
+   "voice": "George",
+   "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+   "voice_id": "JBFqnCBsd6RMkjVDRZzb"
+  },
+  "zotova_galina": {
+   "voice": "Alice",
+   "direction": "[warm, chatty, fondly exasperated with her husband]",
+   "voice_id": "Xb7hH8MSUJpSbSDYk0k2"
+  },
+  "sato_kei": {
+   "voice": "Eric",
+   "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+   "voice_id": "cjVigY5qzO86Huf0OWal"
+  },
+  "sato_mila": {
+   "voice": "Lily",
+   "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+   "voice_id": "pFZP5JQG7iQjIQuC4Bku"
+  },
+  "sato_yuki": {
+   "engine": "minimax",
+   "model": "fal-ai/minimax/speech-2.6-hd",
+   "voice_id": "",
+   "design": {
+    "endpoint": "fal-ai/minimax/voice-design",
+    "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, lively and eager, a little breathless, proud to tell what she saw, natural everyday speech",
+    "preview_text": "А ты знаешь, что поезд ездит по морю? Я сама видела."
+   },
+   "voice_setting": {
+    "speed": 1,
+    "pitch": 0,
+    "vol": 1
+   },
+   "direction": ""
+  },
+  "korneev_ivan": {
+   "voice": "Bill",
+   "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+   "voice_id": "pqHfZKP75CvOlQylNhV4"
+  },
+  "korneeva_nina": {
+   "engine": "minimax",
+   "model": "fal-ai/minimax/speech-2.6-hd",
+   "voice_id": "",
+   "design": {
+    "endpoint": "fal-ai/minimax/voice-design",
+    "prompt": "Grandmother of the courtyard, a retired schoolteacher: a warm, lively older woman's voice, slightly thin and soft with age, talkative and a bit nosy, kind, natural everyday speech",
+    "preview_text": "Новенький? Я тут всех знаю. Тебя пока не знаю, но это ненадолго."
+   },
+   "voice_setting": {
+    "speed": 0.95,
+    "pitch": 0,
+    "vol": 1
+   },
+   "direction": ""
+  },
+  "belov_misha": {
+   "voice": "Liam",
+   "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+   "voice_id": "TX3LPaxmHKxFdv7VOQHJ"
+  },
+  "orlova_tanya": {
+   "voice": "Aria",
+   "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+   "voice_id": "9BWtsMINqrJLrRacOk9x"
+  },
+  "lange_pyotr": {
+   "voice": "Brian",
+   "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+   "voice_id": "nPczCjzI2devNBz1zQrb"
+  },
+  "kimura_dasha": {
+   "voice": "Charlotte",
+   "direction": "[a tired physics student, wry, self-ironic]",
+   "voice_id": "XB0fDUnXU5powFXDhCwa"
+  },
+  "li_vika": {
+   "voice": "Laura",
+   "direction": "[playful, quick, a lab assistant joking about her work]",
+   "voice_id": "FGY2WhTYpPnrIDTdsKH5"
+  },
+  "valiev_rustam": {
+   "voice": "Roger",
+   "direction": "[confident, dry, matter-of-fact engineer]",
+   "voice_id": "CwhRBWXzGAHq8TQ4Fs17"
+  },
+  "nishimura_aya": {
+   "voice": "Matilda",
+   "direction": "[calm, soft, contemplative, a painter talking about the light]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX"
+  },
+  "sorokin_oleg": {
+   "voice": "River",
+   "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+   "voice_id": "SAz9YHcvj6GT2YYXdXww"
+  },
+  "khuazheva_susanna": {
+   "voice": "Matilda",
+   "direction": "[warm, hearty, a market seller's sing-song]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX",
+   "skip": "wt/food-signs replaces this seller with Aslan Khuazhev (same lines, new key line.khuazhev_aslan.*); do not voice until that branch decides"
+  },
+  "guseva_valentina": {
+   "engine": "minimax",
+   "model": "fal-ai/minimax/speech-2.6-hd",
+   "voice_id": "",
+   "design": {
+    "endpoint": "fal-ai/minimax/voice-design",
+    "prompt": "Village grandmother selling corn at a stall: a strong, hearty, slightly hoarse older woman's voice, loud and good-natured, plain-spoken, natural everyday speech",
+    "preview_text": "Кукуруза горячая, только сварила. Соли не жалею, сразу говорю."
+   },
+   "voice_setting": {
+    "speed": 1,
+    "pitch": 0,
+    "vol": 1
+   },
+   "direction": ""
+  },
+  "khuazhev_aslan": {
+   "voice": "Brian",
+   "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+   "voice_id": "nPczCjzI2devNBz1zQrb",
+   "note": "lines come with wt/food-signs; Brian is shared with lange_pyotr (Academgorodok vs the club's tent): give him a designed voice if that clashes"
   }
  },
  "lines": {
