@@ -53,6 +53,7 @@ def place_mesh(b, src, M):
         b.faces.append(tuple(base + i for i in poly.vertices))
         b.uvs.append([tuple(uvl[li].uv) for li in poly.loop_indices])
         b.parts.append(b.part)
+        b.mats.append(None)
 
 
 def cheap_cob(b, M, rnd):
@@ -68,6 +69,7 @@ def cheap_cob(b, M, rnd):
         b.faces.append(tuple(off + i for i in f))
         b.uvs.append(uv)
         b.parts.append(b.part)
+        b.mats.append(None)
 
 
 def cheap_braid(b, M, length=0.2, sides=5):
@@ -148,7 +150,7 @@ def cheese_tent(rounds):
     # the sign card leaning on the table's front, on the ground
     sx = T1 + 0.09
     sw = 0.32
-    b.new_part().face("sign_cheese", [(sx + 0.08, -sw, 0.0), (sx + 0.08, sw, 0.0), (sx, sw, 0.64), (sx, -sw, 0.64)],
+    b.new_part().face("sign:cheese", [(sx + 0.08, -sw, 0.0), (sx + 0.08, sw, 0.0), (sx, sw, 0.64), (sx, -sw, 0.64)],
                       [(0, 0), (1, 0), (1, 1), (0, 1)])
     b.new_part().face("card", [(sx - 0.004, -sw, 0.64), (sx - 0.004, sw, 0.64), (sx + 0.076, sw, 0.0), (sx + 0.076, -sw, 0.0)],
                       [(0, 0), (1, 0), (1, 0.05), (0, 0.05)])
@@ -213,6 +215,7 @@ def corn_cart():
         b.faces.append(tuple(off + i for i in f))
         b.uvs.append(uv)
         b.parts.append(b.part)
+        b.mats.append(None)
     for i in range(7):
         a = 2 * math.pi * i / 7
         M = Matrix.Translation((px + 0.11 * math.cos(a), py + 0.11 * math.sin(a), H + 0.17)) @ \
@@ -244,8 +247,8 @@ def corn_cart():
         b.new_part().face("umbrella", [tuple(v + n * 0.0025) for v in p], uvq)
         b.new_part().face("umbrella", [tuple(v - n * 0.0025) for v in p[::-1]], uvq[::-1])
     # the sign on the cart's front
-    b.new_part().face("card", [(D + 0.006, -0.22, 0.36), (D + 0.006, 0.22, 0.36), (D + 0.006, 0.22, 0.78), (D + 0.006, -0.22, 0.78)],
-                      [(0.04, 0.05), (0.96, 0.05), (0.96, 0.95), (0.04, 0.95)])
+    b.new_part().face("sign:corn", [(D + 0.006, -0.22, 0.36), (D + 0.006, 0.22, 0.36), (D + 0.006, 0.22, 0.78), (D + 0.006, -0.22, 0.78)],
+                      [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)])
     # the seller's folding stool behind
     b.new_part().box("wood", (-D - 0.6, -0.17, 0.44), (-D - 0.3, 0.17, 0.47), scale=2.0)
     for x in (-D - 0.57, -D - 0.33):

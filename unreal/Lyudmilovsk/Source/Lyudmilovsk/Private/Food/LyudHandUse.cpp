@@ -22,6 +22,8 @@ namespace
 	TAutoConsoleVariable<int32> CVarHandUse(TEXT("lyud.HandUse"), 1,
 		TEXT("Things in the hand used at the mouth with the left mouse button (food, cigarettes). 0: the button does nothing."));
 
+	TAutoConsoleVariable<int32> CVarHandDebug(TEXT("lyud.HandUse.Debug"), 0, TEXT("1: log how far the thing at the lips is from them (HANDUSE debug)."));
+
 	float Ease(float T)
 	{
 		return FMath::SmoothStep(0.f, 1.f, FMath::Clamp(T, 0.f, 1.f));
@@ -457,6 +459,17 @@ void ULyudHandUse::Tick(float DeltaTime)
 	}
 	Lips = A->GetActorTransform().TransformPosition(MouthPoint());
 	SetPrompted(bAttached);
+	if (CVarHandDebug.GetValueOnGameThread() != 0 && (Phase == EPhase::Use || Phase == EPhase::Steady))
+	{
+		// where the lips are wanted vs where the thing's mouth point is, and where the palm was sent vs where the bones put it
+		const APlayerController* P = Cast<APlayerController>(Hero->GetController());
+		const FTransform Frame(FRotator(0.f, P ? P->GetControlRotation().Yaw : 0.f, 0.f), Hero->EyeLocation());
+		const FVector Want = Frame.TransformPosition(LipsPos);
+		FTransform Palm;
+		BonePalm(Hero->GetMesh(), Reach->HoldNormal(), Reach->HoldFinger(), Palm);
+		UE_LOG(LogTemp, Display, TEXT("HANDUSE debug lips miss %.1f (%s local) palm miss %.1f w %.2f"), (Lips - Want).Size(),
+			*Frame.InverseTransformVector(Lips - Want).ToString(), (Palm.GetLocation() - Reach->HoldPalm()).Size(), Reach->HoldWeight());
+	}
 }
 
 // --- console: the button without a mouse (offscreen checks) ---
