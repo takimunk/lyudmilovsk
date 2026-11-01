@@ -1,0 +1,39 @@
+{
+ "service": "hi3d MCP",
+ "date": "2026-11-01",
+ "views": {
+  "tool": "create_image_generation",
+  "operation": "text_to_image",
+  "multi_view": true,
+  "model_name": "Nano-Banana 2",
+  "aspect_ratio": "1:1",
+  "prompt": "Full-body character reference for 3D modelling of a 24-year-old Russian diner waitress: medium height, soft round face, dark brown wavy hair in a low bun with a few loose strands, red lipstick; a 1950s-style short-sleeved light mint-green waitress dress to the knee with white collar and white cuffs, a white half apron, skin-coloured tights, black low flat shoes. Strict T-pose: standing straight, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Neutral calm expression, mouth closed, eyes open. Whole body visible from the top of the hair to the soles of the shoes, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no props, no bag, no text, photorealistic, realistic body proportions.",
+  "task_id": "e723c4ae2fd34d158839b0a58045c525",
+  "points": 8
+ },
+ "model": {
+  "tool": "quote_generation + create_generation",
+  "date": "2026-11-01",
+  "approved": "Dima in the project thread, 'давай' (3 x 45 points, the diner's waitresses)",
+  "source_images": [
+   {
+    "task_id": "e723c4ae2fd34d158839b0a58045c525",
+    "image_index": 0
+   },
+   {
+    "task_id": "e723c4ae2fd34d158839b0a58045c525",
+    "image_index": 1
+   }
+  ],
+  "version": "v3.0",
+  "model_type": "high_quality",
+  "generation_type": "model_with_texture",
+  "pbr": true,
+  "task_id": "2b333f60ca26446d8a04abdd6b27a02f",
+  "points": 45,
+  "file": "blender/characters/frolova_masha/gen/model.glb (local, ignored)",
+  "sha256": "f01dd2115df76bfa462285cbbaeadbd94d13fdebdd02aaaab503f1d9e58306ec",
+  "bytes": 47374192,
+  "downloaded": "2026-11-01 by the API right when ready"
+ }
+}

@@ -1,0 +1,95 @@
+{
+ "_doc": "Lena Zhukova (Лена Жукова), morning waitress at the diner «Чайка»: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "zhukova_lena",
+ "model": "model_face",
+ "height": 1.66,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "face": {
+  "normal_strength": 0.4,
+  "subdivide": false,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/zhukova_lena.png (5120 px/m, centre z 1.5108): the automatic ones were off (asymmetric)",
+   "ipd": 0.0664,
+   "eyes": [
+    {
+     "x": 0.0332,
+     "z": 1.521,
+     "iris": [
+      0.3,
+      0.34,
+      0.36
+     ],
+     "w": 0.031,
+     "h": 0.01
+    },
+    {
+     "x": -0.0332,
+     "z": 1.521,
+     "iris": [
+      0.3,
+      0.34,
+      0.36
+     ],
+     "w": 0.031,
+     "h": 0.01
+    }
+   ],
+   "mouth": {
+    "x": 0.0,
+    "z": 1.4543,
+    "w": 0.0543
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0342,
+    "cz": 1.5203,
+    "hw": 0.0135,
+    "up": 0.0042,
+    "lo": 0.0043,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0325,
+    "cz": 1.5205,
+    "hw": 0.0122,
+    "up": 0.004,
+    "lo": 0.004,
+    "tilt": 0.0
+   }
+  ]
+ },
+ "face_protect": true,
+ "skirt": {
+  "hem_z": 0.77,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 1.0,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "min": 1.0,
+  "_doc": "the short waist apron wholly on the pelvis like Tanya's (a stride split it between the thighs)"
+ },
+ "inner": [
+  {
+   "_doc": "the front of her trousers behind the apron moves with it",
+   "box": [
+    -0.2,
+    0.2,
+    -1,
+    0.0,
+    0.76,
+    1.0
+   ],
+   "near_donor": 0.03,
+   "not_olive": false,
+   "dark": 0.2
+  }
+ ]
+}

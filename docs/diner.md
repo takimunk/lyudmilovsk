@@ -115,14 +115,16 @@ waits on the drip tray to be drunk.
 
 ## The staff and the customers
 
-The staff are three residents (`people.json`). They have no bodies of their own yet and are shown by existing models
-(`mesh`).
+The staff are three residents (`people.json`), each with a body of her own (2026-11-01, hi3d like the Academgorodok's
+residents: `design/people/<key>/gen.json`, `blender/characters/<key>/character.json`, `tools/characters/fix_hi3d.sh`).
+Before that they borrowed the club's models, so Nika the streamer also stood behind the counter (docs/people.md,
+'One person, one body').
 
-| Key | Name | Age | Shift | Shown by | Lives |
-|---|---|---|---|---|---|
-| `zhukova_lena` | Лена Жукова | 22 | 6:45–15:00, Mon–Fri | Crowd_12 | own flat |
-| `frolova_masha` | Маша Фролова | 24 | 14:30–22:00, Mon–Fri | Streamer | shares a flat with Рина |
-| `hayashi_rina` | Рина Хаяси | 23 | 8:00–21:00, Sat–Sun | Girl_b | shares a flat with Маша |
+| Key | Name | Age | Shift | Body | Looks | Lives |
+|---|---|---|---|---|---|---|
+| `zhukova_lena` | Лена Жукова | 22 | 6:45–15:00, Mon–Fri | Zhukova_lena | ash-blonde ponytail, cream shirt with a red collar, red waist apron | own flat |
+| `frolova_masha` | Маша Фролова | 24 | 14:30–22:00, Mon–Fri | Frolova_masha | dark bun, mint 1950s dress, white half apron | shares a flat with Рина |
+| `hayashi_rina` | Рина Хаяси | 23 | 8:00–21:00, Sat–Sun | Hayashi_rina | black bob, white shirt, long burgundy bib apron | shares a flat with Маша |
 
 - `activities.json` `work_diner` (slots `counter`, `grill`). Townspeople also eat there (`eat_diner`, 8–21, the booth
   seats).
@@ -152,7 +154,6 @@ the burger in the hand all ran. The shots are in `shots/` of the worktree (not c
 ## Open
 
 - The fork's grip at the lips could look more natural.
-- The waitresses' own bodies (paid hi3d generation: ask Dima).
 - Sitting down on a stool or in a booth: the hero stands at the counter.
 - The coffee pour sound (`S_diner_pour_01`) and the plate's clink are looked up but not generated yet; bite sounds are
   the food thread's.

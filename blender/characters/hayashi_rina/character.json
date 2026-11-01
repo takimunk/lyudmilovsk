@@ -1,0 +1,45 @@
+{
+ "_doc": "Rina Hayashi (Рина Хаяси), weekend waitress at the diner «Чайка»: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "hayashi_rina",
+ "model": "model_face",
+ "height": 1.56,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "face": {
+  "normal_strength": 0.4,
+  "subdivide": false,
+  "eye_open": [
+   {
+    "cx": 0.0318,
+    "cz": 1.4358,
+    "hw": 0.0118,
+    "up": 0.0043,
+    "lo": 0.0042,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0309,
+    "cz": 1.4354,
+    "hw": 0.013,
+    "up": 0.0043,
+    "lo": 0.0042,
+    "tilt": 0.0
+   }
+  ]
+ },
+ "face_protect": true,
+ "skirt": {
+  "hem_z": 0.4,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "_doc": "the bib apron to the knees over trousers: weights smoothed through space like Galina's skirt (wholly on the pelvis it stood out like a board seated)"
+ }
+}

@@ -180,7 +180,8 @@ def clean(m, min_island=40):
 def optimize(m, spec):
     """Game budget (docs/characters.md): the generator's ~2M faces become `faces` triangles, smooth shaded; the detail
     lost is baked from a 400k copy into a `texture`-sized normal map; the base colour is scaled to the same size."""
-    clean(m)
+    # character.json min_island: bigger loose shells to drop (Masha's model has floating lid and lash shells by her eyes)
+    clean(m, spec.get("min_island", 40))
     tex = spec.get("texture", 2048)
     high = None
     if spec.get("bake_normal", True):

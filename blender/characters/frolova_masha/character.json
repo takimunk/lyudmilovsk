@@ -1,0 +1,95 @@
+{
+ "_doc": "Masha Frolova (Маша Фролова), evening waitress at the diner «Чайка»: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "frolova_masha",
+ "model": "model_face",
+ "height": 1.64,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "face": {
+  "normal_strength": 0.4,
+  "subdivide": false,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/frolova_masha.png (5120 px/m, centre z 1.4925): the automatic ones were off (asymmetric)",
+   "ipd": 0.0644,
+   "eyes": [
+    {
+     "x": 0.0322,
+     "z": 1.4988,
+     "iris": [
+      0.2,
+      0.15,
+      0.12
+     ],
+     "w": 0.03,
+     "h": 0.011
+    },
+    {
+     "x": -0.0322,
+     "z": 1.4988,
+     "iris": [
+      0.2,
+      0.15,
+      0.12
+     ],
+     "w": 0.03,
+     "h": 0.011
+    }
+   ],
+   "mouth": {
+    "x": 0.0,
+    "z": 1.4339,
+    "w": 0.0564
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0327,
+    "cz": 1.4988,
+    "hw": 0.0145,
+    "up": 0.005,
+    "lo": 0.005,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0337,
+    "cz": 1.4983,
+    "hw": 0.0152,
+    "up": 0.0055,
+    "lo": 0.005,
+    "tilt": 0.0
+   }
+  ]
+ },
+ "face_protect": true,
+ "skirt": {
+  "hem_z": 0.47,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "_doc": "the dress to the knee and its half apron, weights smoothed through space like Galina's skirt (a stride tore it)"
+ },
+ "inner": [
+  {
+   "_doc": "her legs under the dress move with it (in tights: no colour test)",
+   "box": [
+    -0.3,
+    0.3,
+    -1,
+    1,
+    0.49,
+    0.78
+   ],
+   "near_donor": 0.02,
+   "not_olive": false
+  }
+ ],
+ "min_island": 4000,
+ "_min_island": "hi3d left loose lid and lash shells floating by her eyes (eye_shots): islands under 4000 of the raw model's vertices are dropped"
+}
