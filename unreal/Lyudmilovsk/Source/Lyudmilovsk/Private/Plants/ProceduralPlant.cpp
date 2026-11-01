@@ -1152,7 +1152,9 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	// far with no bake yet (a time-lapse asks for a new one at every year): keep the shape it has, unseen at this distance
 	const bool bFarWaiting = bFar && !bSummary && !bShownSummary && WoodAge >= 0.f;
 	const bool bChanged = bSummary != bShownSummary || (!bFarWaiting && (FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f)) || bLitterDirty || bNewBake;
-	const bool bWoodDue = !bSummary && !bFarWaiting && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
+	// in the time-lapse the wood (~50 ms for a grown poplar) is rebuilt every 2 s, not every half second: a hitch a second
+	const float WoodEvery = bDemoGrowth && Age < DemoTargetAge ? FMath::Max(WoodUpdateInterval, 2.f) : WoodUpdateInterval;
+	const bool bWoodDue = !bSummary && !bFarWaiting && SinceWood >= WoodEvery && FMath::Abs(Age - WoodAge) > 0.001f;
 	if (bChanged || bWoodDue)
 	{
 		const FString Why = FString::Printf(TEXT("summary %d/%d age %.4f/%.4f/%.4f day %.3f/%.3f litter %d wood %d bake %d"), bSummary ? 1 : 0, bShownSummary ? 1 : 0, Age, ShownAge, WoodAge, Day, ShownDay, bLitterDirty ? 1 : 0, bWoodDue ? 1 : 0, bNewBake ? 1 : 0);
