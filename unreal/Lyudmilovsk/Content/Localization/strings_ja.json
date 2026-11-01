@@ -1153,5 +1153,8 @@
  "sign.diner.coffee": "コーヒーはセルフサービス",
  "sign.diner.menu.title": "メニュー",
  "sign.diner.menu.price": "{0}ルーブル",
- "sign.diner.menu.hours": "月～金 7～22時・土日 8～21時"
+ "sign.diner.menu.hours": "月～金 7～22時・土日 8～21時",
+ "ui.bike.prompt": "[E] 自転車に乗る   [R] ハンドルを持って押す",
+ "ui.bike.prompt_lead": "[E] 乗る   [R] スタンドを立てる",
+ "ui.bike.prompt_off": "[E] 降りる"
 }

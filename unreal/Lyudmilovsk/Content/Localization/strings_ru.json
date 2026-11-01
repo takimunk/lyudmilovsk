@@ -1153,5 +1153,8 @@
  "sign.diner.coffee": "Кофе — наливайте сами",
  "sign.diner.menu.title": "Меню",
  "sign.diner.menu.price": "{0} ₽",
- "sign.diner.menu.hours": "Пн–пт 7–22 · сб, вс 8–21"
+ "sign.diner.menu.hours": "Пн–пт 7–22 · сб, вс 8–21",
+ "ui.bike.prompt": "[E] Сесть на велосипед   [R] Вести за руль",
+ "ui.bike.prompt_lead": "[E] Сесть   [R] Поставить на подножку",
+ "ui.bike.prompt_off": "[E] Слезть"
 }

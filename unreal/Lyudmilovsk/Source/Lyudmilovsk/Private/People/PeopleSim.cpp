@@ -389,6 +389,11 @@ namespace LyudPeople
 				St.Floors[K] = Line(F["path"]);
 			}
 			Stairs.push_back(St);
+			// the lobby inside the street door (where a bike can stand): the ground floor's way a few metres in
+			if (!St.Floors.empty() && St.Floors[0].size() >= 4)
+			{
+				Lobbies.push_back({ St.Id, St.Street, St.Floors[0][3] });
+			}
 		}
 
 		for (const LyudJson::FValue& F : J["flats"].Items)
@@ -413,6 +418,7 @@ namespace LyudPeople
 				continue;
 			}
 			Pl.Portal = St->Street;
+			Pl.Stair = St->Id;
 			std::vector<V3> ToDoor;
 			if (Pl.Floor < (int)St->Floors.size())
 			{
@@ -1558,6 +1564,7 @@ namespace LyudPeople
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
+		PlanBike(P);
 		// late: a duty (not bed) that will have begun before they'd get there walking
 		P.bHurry = false;
 		float WayM = 0.f;
@@ -1789,6 +1796,14 @@ namespace LyudPeople
 
 	float FWorld::Pace(const FPerson& P) const
 	{
+		if (P.Bike >= 0 && P.BikeMode == 2)
+		{
+			return P.Age > 60 ? std::min(BikeSpeed, 3.6f) : BikeSpeed;
+		}
+		if (P.Bike >= 0 && P.BikeMode == 1)
+		{
+			return P.WalkSpeed * 0.95f;
+		}
 		const bool bRush = P.bHurry || (bRain && !P.bIndoors && P.State == EState::Going);
 		if (!bRush)
 		{
@@ -1800,6 +1815,22 @@ namespace LyudPeople
 
 	void FWorld::Move(FPerson& P, float Dt)
 	{
+		// a stop with the bike (taking it, getting on or off, parking): they stand there till it's done
+		if (P.BikeAct != EBikeAct::None)
+		{
+			P.Speed = 0.f;
+			if (Time < P.BikeActUntil)
+			{
+				return;
+			}
+			if (P.BikeAct == EBikeAct::Park && P.Bike >= 0)
+			{
+				Bikes[P.Bike].Rider = -1;
+				P.Bike = -1;
+				P.BikeMode = 0;
+			}
+			P.BikeAct = EBikeAct::None;
+		}
 		const float Speed = Pace(P);
 		float Budget = Speed * Dt;
 		P.Speed = Speed;
@@ -1842,6 +1873,16 @@ namespace LyudPeople
 					return;
 				}
 				P.PathI++;
+				if (W.BikeAct != EBikeAct::None && P.Bike >= 0)
+				{
+					BikeStop(P, W.BikeAct);
+					if (P.Bike >= 0 && P.BikeMode > 0)
+					{
+						Bikes[P.Bike].Pos = P.Pos;
+						Bikes[P.Bike].Yaw = P.Yaw;
+					}
+					return;
+				}
 				continue;
 			}
 			P.Pos = P.Pos + D * (Budget / L);
@@ -1850,6 +1891,11 @@ namespace LyudPeople
 		if (!P.bIndoors && !bLine)
 		{
 			P.Pos.Z = GroundAt(P.Pos);
+		}
+		if (P.Bike >= 0 && P.BikeMode > 0)
+		{
+			Bikes[P.Bike].Pos = P.Pos;
+			Bikes[P.Bike].Yaw = P.Yaw;
 		}
 		if (P.PathI >= (int)P.Path.size())
 		{
@@ -1939,6 +1985,7 @@ namespace LyudPeople
 
 	void FWorld::Arrive(FPerson& P)
 	{
+		DropBike(P);
 		P.Speed = 0.f;
 		P.bHurry = false;
 		P.Path.clear();
@@ -2474,6 +2521,9 @@ namespace LyudPeople
 			P.State = EState::Idle;
 			P.bTrain = false;
 			P.bRideExternal = false;
+			P.Bike = -1;
+			P.BikeMode = 0;
+			P.BikeAct = EBikeAct::None;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - P.Wake;
 			if (Awake < 0.f)
@@ -2487,6 +2537,16 @@ namespace LyudPeople
 			{
 				P.Pos = Places[P.Home].Portal;
 				P.Island = std::max(0, Places[P.Home].Island);
+			}
+		}
+		// the bikes back in their entrances (one the player has or left somewhere stays)
+		for (FBike& B : Bikes)
+		{
+			B.Rider = -1;
+			if (!B.bHeld && B.Pos.Len2D() > 0.f && !B.Stair.empty())
+			{
+				B.Pos = B.Home;
+				B.Yaw = B.HomeYaw;
 			}
 		}
 		for (FPerson& P : People)
@@ -2563,6 +2623,312 @@ namespace LyudPeople
 		}
 		const FActivity& Act = Activities[A];
 		return Start(P, A, Best, (Act.MinMinutes + Act.MaxMinutes) * 0.5f, false, "ordered");
+	}
+
+	float BikeActSeconds(EBikeAct A)
+	{
+		switch (A)
+		{
+		case EBikeAct::Take: return 2.f;
+		case EBikeAct::Mount: return 1.8f;
+		case EBikeAct::Dismount: return 1.5f;
+		case EBikeAct::Park: return 1.6f;
+		case EBikeAct::TakeMount: return 3.6f;
+		default: return 0.f;
+		}
+	}
+
+	int FWorld::AddBike(const std::string& Id, const std::string& Stair, const V3& Pos, float Yaw)
+	{
+		FBike B;
+		B.Id = Id;
+		B.Stair = Stair;
+		B.Home = B.Pos = Pos;
+		B.HomeYaw = B.Yaw = Yaw;
+		Bikes.push_back(B);
+		return (int)Bikes.size() - 1;
+	}
+
+	void FWorld::AssignBikes()
+	{
+		std::vector<std::string> Has;
+		for (FBike& B : Bikes)
+		{
+			B.Owner.clear();
+		}
+		for (FBike& B : Bikes)
+		{
+			if (B.Stair.empty())
+			{
+				continue;
+			}
+			// the households up this stair, the first that has a grown-up who'd ride and no bike yet
+			for (const FPerson& P : People)
+			{
+				if (P.Home < 0 || P.bChild || P.Age > 76 || Places[P.Home].Stair != B.Stair
+					|| std::find(Has.begin(), Has.end(), P.Household) != Has.end())
+				{
+					continue;
+				}
+				B.Owner = P.Household;
+				Has.push_back(P.Household);
+				break;
+			}
+		}
+	}
+
+	void FWorld::SetBikeHeld(int Bike, bool bHeld, const V3& Pos, float Yaw)
+	{
+		if (Bike < 0 || Bike >= (int)Bikes.size())
+		{
+			return;
+		}
+		FBike& B = Bikes[Bike];
+		if (bHeld && B.Rider >= 0)
+		{
+			// taken from under its owner's nose (before they got to it): they go on foot
+			FPerson& P = People[B.Rider];
+			if (P.Bike == Bike)
+			{
+				for (FPerson::FWay& W : P.Path)
+				{
+					W.Bike = 0;
+					W.BikeAct = EBikeAct::None;
+				}
+				P.Bike = -1;
+				P.BikeMode = 0;
+				P.BikeAct = EBikeAct::None;
+			}
+			B.Rider = -1;
+		}
+		B.bHeld = bHeld;
+		B.Pos = Pos;
+		B.Yaw = Yaw;
+	}
+
+	void FWorld::DropBike(FPerson& P)
+	{
+		if (P.Bike < 0)
+		{
+			return;
+		}
+		FBike& B = Bikes[P.Bike];
+		if (P.BikeMode > 0)
+		{
+			B.Pos = P.Pos;
+			B.Yaw = P.Yaw;
+		}
+		B.Rider = -1;
+		P.Bike = -1;
+		P.BikeMode = 0;
+		P.BikeAct = EBikeAct::None;
+	}
+
+	void FWorld::BikeStop(FPerson& P, EBikeAct Act)
+	{
+		FBike& B = Bikes[P.Bike];
+		switch (Act)
+		{
+		case EBikeAct::Take: P.BikeMode = 1; P.Yaw = B.Yaw; break;
+		case EBikeAct::TakeMount: P.BikeMode = 2; P.Yaw = B.Yaw; break;
+		case EBikeAct::Mount: P.BikeMode = 2; break;
+		case EBikeAct::Dismount: P.BikeMode = 1; break;
+		case EBikeAct::Park:
+			// in its place in the entrance as it always stands, else facing the way they came
+			if ((P.Pos - B.Home).Len() < 0.05f)
+			{
+				B.Pos = B.Home;
+				B.Yaw = B.HomeYaw;
+			}
+			else
+			{
+				B.Pos = P.Pos;
+				B.Yaw = P.Yaw;
+			}
+			break;
+		default: break;
+		}
+		P.BikeAct = Act;
+		P.BikeActStart = Time;
+		P.BikeActUntil = Time + BikeActSeconds(Act);
+	}
+
+	void FWorld::PlanBike(FPerson& P)
+	{
+		DropBike(P);
+		if (P.bChild || P.Age > 76 || P.Path.empty() || Bikes.empty())
+		{
+			return;
+		}
+		int Bi = -1;
+		for (int I = 0; I < (int)Bikes.size() && Bi < 0; I++)
+		{
+			const FBike& B = Bikes[I];
+			if (!B.Owner.empty() && B.Owner == P.Household && B.Rider < 0 && !B.bHeld)
+			{
+				Bi = I;
+			}
+		}
+		if (Bi < 0)
+		{
+			return;
+		}
+		// on the valley's ground only (no cable car, no train), and far enough
+		int First = -1, Last = -1;
+		for (int I = 0; I < (int)P.Path.size(); I++)
+		{
+			if (P.Path[I].Kind >= 2)
+			{
+				return;
+			}
+			if (P.Path[I].Kind == 0)
+			{
+				if (First < 0)
+				{
+					First = I;
+				}
+				else if (Last != I - 1)
+				{
+					return;          // out, in and out again: not a single stretch
+				}
+				Last = I;
+			}
+		}
+		if (First < 0 || Last <= First)
+		{
+			return;
+		}
+		float L = 0.f;
+		for (int I = First + 1; I <= Last; I++)
+		{
+			L += (P.Path[I].P - P.Path[I - 1].P).Len2D();
+		}
+		if (L < MinBikeWay)
+		{
+			return;
+		}
+		FBike& Bk = Bikes[Bi];
+		const bool bAtHome = (Bk.Pos - Bk.Home).Len() < 0.05f && !Bk.Stair.empty();
+		int TakeAt = -1;
+		const V3 Start = First > 0 ? P.Path[First - 1].P : P.Pos;
+		if (bAtHome)
+		{
+			for (int I = 0; I < First; I++)
+			{
+				if ((P.Path[I].P - Bk.Home).Len() < 0.05f)
+				{
+					TakeAt = I;
+					break;
+				}
+			}
+			if (TakeAt < 0)
+			{
+				return;              // not setting off by its stair
+			}
+		}
+		else if ((Bk.Pos - Start).Len2D() > 25.f)
+		{
+			return;
+		}
+		int HomeAt = -1;
+		for (int I = Last + 1; I < (int)P.Path.size() && !Bk.Stair.empty(); I++)
+		{
+			if ((P.Path[I].P - Bk.Home).Len() < 0.05f)
+			{
+				HomeAt = I;
+				break;
+			}
+		}
+		std::vector<FPerson::FWay> Out;
+		auto Copy = [&](int I, uint8_t Bike)
+		{
+			Out.push_back(P.Path[I]);
+			Out.back().Bike = Bike;
+		};
+		if (TakeAt >= 0)
+		{
+			// down the stair to the bike, out of the door with it, on outside
+			for (int I = 0; I <= TakeAt; I++)
+			{
+				Copy(I, 0);
+			}
+			Out.back().BikeAct = EBikeAct::Take;
+			for (int I = TakeAt + 1; I < First; I++)
+			{
+				Copy(I, 1);
+			}
+			if (Out.back().BikeAct == EBikeAct::Take)
+			{
+				Out.back().BikeAct = EBikeAct::TakeMount;
+			}
+			else
+			{
+				Out.back().BikeAct = EBikeAct::Mount;
+			}
+		}
+		else
+		{
+			for (int I = 0; I < First; I++)
+			{
+				Copy(I, 0);
+			}
+			FPerson::FWay W;
+			W.P = Bk.Pos;
+			W.BikeAct = EBikeAct::TakeMount;
+			Out.push_back(W);
+		}
+		// riding, off a few metres short of the goal
+		const V3 Goal = P.Path[Last].P;
+		int D = First;
+		for (int I = First; I < Last; I++)
+		{
+			if ((P.Path[I].P - Goal).Len2D() >= 4.f)
+			{
+				D = I;
+			}
+		}
+		for (int I = First; I <= D; I++)
+		{
+			Copy(I, 2);
+		}
+		Out.back().BikeAct = EBikeAct::Dismount;
+		if (HomeAt >= 0)
+		{
+			// home: led in through the door to its place
+			for (int I = D + 1; I <= HomeAt; I++)
+			{
+				Copy(I, 1);
+			}
+			Out.back().BikeAct = EBikeAct::Park;
+			for (int I = HomeAt + 1; I < (int)P.Path.size(); I++)
+			{
+				Copy(I, 0);
+			}
+		}
+		else
+		{
+			// left on its stand beside the way, a step short of the door
+			const V3 From = P.Path[D].P;
+			V3 Dir = (Goal - From).Flat();
+			Dir = Dir.Len2D() > 0.1f ? Dir.Norm() : V3(1.f, 0.f, 0.f);
+			const V3 Right(-Dir.Y, Dir.X, 0.f);
+			V3 Spot = Goal - Dir * 1.6f + Right * 1.3f;
+			Spot.Z = GroundAt(Spot);
+			FPerson::FWay W;
+			W.P = Spot;
+			W.Bike = 1;
+			W.BikeAct = EBikeAct::Park;
+			Out.push_back(W);
+			for (int I = D + 1; I < (int)P.Path.size(); I++)
+			{
+				Copy(I, 0);
+			}
+		}
+		P.Path = Out;
+		P.PathI = 0;
+		P.Bike = Bi;
+		P.BikeMode = 0;
+		Bk.Rider = P.Id;
 	}
 
 	float FWorld::Ground_Z(const V3& P) const

@@ -9,7 +9,9 @@
 namespace LyudPeople { class FWorld; }
 class ABoothOwner;
 class ANpcBody;
+class ALyudBike;
 class USkeletalMeshComponent;
+struct FLyudBikeRide;
 
 /** How someone looks now (the simulation's poses, Private/People/PeopleSim.h EPose, in the same order). */
 UENUM(BlueprintType)
@@ -214,6 +216,11 @@ public:
 	 *  the bed's head to foot), the pose, the transition (1 sit down, 2 stand up, 3 lie down, 4 get up), the walking speed
 	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). */
 	void Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap);
+	/** On a bicycle, getting on or off it, or leading it by the bars (ULyudBikeSubsystem::PresentPerson does this instead of
+	 *  Drive while the person has their bike in hand); a null Bike lets go of it. Ground: the feet's point, cm. */
+	void DriveBike(ALyudBike* Bike, const FLyudBikeRide& Ride, const FVector& Ground, float Yaw, float Speed, float DeltaTime);
+	/** Body size against the clips' body (pelvis height / the clips'). */
+	float GetBodyScale() const { return BodyScale; }
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -223,6 +230,7 @@ private:
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<class UAnimSequence>> Clips;
 	FString ComputerClip;
 	FName Playing;
+	bool bOnBike = false;
 	float Facing = 0.f;
 	bool bPlaced = false;
 	/** Body size against the body the shared clips are baked on (Guy_a: pelvis height / 93.7 cm). */

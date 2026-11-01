@@ -692,6 +692,95 @@ static void Snow(FWorld& W)
 	W.SnowProgress = nullptr;
 }
 
+
+/** Bicycles (docs/bikes.md): a bike in each of five entrances, owned by a household up that stair; two days. */
+static void Bikes(FWorld& W)
+{
+	std::printf("bicycles:\n");
+	W.NewGame();
+	int N = 0;
+	for (const FWorld::FLobby& L : W.Lobbies)
+	{
+		if (N < 5)
+		{
+			W.AddBike("bike_" + L.Stair, L.Stair, L.Lobby, 0.f);
+			N++;
+		}
+	}
+	W.AssignBikes();
+	int Owned = 0;
+	for (const FWorld::FBike& B : W.Bikes)
+	{
+		Owned += B.Owner.empty() ? 0 : 1;
+		std::printf("        %s owner %s\n", B.Id.c_str(), B.Owner.empty() ? "-" : B.Owner.c_str());
+	}
+	CHECK(Owned >= 3, "entrance bikes have owners (%d of %d)", Owned, (int)W.Bikes.size());
+	FClock C;
+	C.Seconds = (1 * 24 + 6) * 3600.0;       // Tuesday 06:00
+	C.Set(W);
+	W.Resettle();
+	FWatch Watch;
+	std::map<std::string, int> Rides;
+	int Takes = 0, Parks = 0, ParksHome = 0, HiddenWithBike = 0, LongStops = 0, Ridden = 0;
+	double RideM = 0.0;
+	std::map<int, double> StopSince;
+	Run(W, C, 40.f, 1.f, Watch, [&]()
+	{
+		for (const FPerson& P : W.People)
+		{
+			if (P.Bike >= 0 && P.BikeMode > 0 && (P.Pose == EPose::Hidden || P.State == EState::Away))
+			{
+				HiddenWithBike++;
+			}
+			if (P.BikeAct != EBikeAct::None)
+			{
+				if (!StopSince.count(P.Id))
+				{
+					StopSince[P.Id] = W.Time;
+					if (P.BikeAct == EBikeAct::Take || P.BikeAct == EBikeAct::TakeMount)
+					{
+						Takes++;
+						Rides[P.Key]++;
+					}
+					if (P.BikeAct == EBikeAct::Park)
+					{
+						Parks++;
+						ParksHome += (W.Bikes[P.Bike].Pos - W.Bikes[P.Bike].Home).Len() < 0.05f ? 1 : 0;
+					}
+				}
+				else if (W.Time - StopSince[P.Id] > 10.0)
+				{
+					LongStops++;
+				}
+			}
+			else
+			{
+				StopSince.erase(P.Id);
+			}
+			if (P.Bike >= 0 && P.BikeMode == 2 && P.State == EState::Going)
+			{
+				Ridden++;
+				RideM += P.Speed;
+			}
+		}
+	});
+	for (const auto& R : Rides)
+	{
+		std::printf("        %s took their bike %d times\n", R.first.c_str(), R.second);
+	}
+	CHECK(Takes >= 4, "residents take their bikes (%d times, %.1f km ridden)", Takes, RideM / 1000.0);
+	CHECK(Parks >= Takes - (int)W.Bikes.size(), "and park them again (%d, %d back in their entrance)", Parks, ParksHome);
+	CHECK(ParksHome >= 1, "a bike goes back home into its entrance");
+	CHECK(HiddenWithBike == 0, "nobody away or hidden with a bike in hand (%d s)", HiddenWithBike);
+	CHECK(LongStops == 0, "no stop with a bike lasts over 10 s (%d)", LongStops);
+	int Riders = 0;
+	for (const FWorld::FBike& B : W.Bikes)
+	{
+		Riders += B.Rider >= 0 && W.People[B.Rider].BikeMode == 0 && W.People[B.Rider].State != EState::Going ? 1 : 0;
+	}
+	CHECK(Riders == 0, "no bike reserved by someone who isn't on the way to it (%d)", Riders);
+}
+
 static int Test()
 {
 	std::printf("a made-up town:\n");
@@ -733,6 +822,7 @@ static int Test()
 		Checks(W, true);
 		IslandOrder(W);
 		Snow(W);
+		Bikes(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
 	}

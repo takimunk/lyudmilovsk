@@ -75,6 +75,11 @@ public:
 	/** Gets up and steps off the seat, forward. */
 	void StandUp();
 	bool IsSeated() const { return SeatBase.IsValid(); }
+	/** On a bicycle (getting on, riding, getting off: UHeroBikeComponent moves the body), or leading one by the bars. */
+	bool IsOnBike() const;
+	bool IsLeadingBike() const;
+	/** The way the body faces (a bike turns it). */
+	void SetBodyYaw(float Yaw) { BodyYaw = Yaw; }
 	/** The seat's frame in the world now (identity when not seated). */
 	FTransform SeatWorld() const;
 

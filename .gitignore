@@ -56,3 +56,5 @@ design/birds_diary/gen/
 blender/animals/gen/*/model.glb
 blender/animals/gen/*/ue/
 blender/animals/gen/*/views/
+# the bicycle kit built by blender/bikes/build_bike.py (unreal/scripts/import_bikes.sh imports it)
+design/bikes/game/

@@ -1,0 +1,251 @@
+{
+ "version": 1,
+ "units": "cm, Unreal frame: X forward, Y right, Z up, origin on the ground under the bottom bracket",
+ "_doc": "Made by blender/bikes/build_bike.py. Every part's mesh is relative to its pivot (pivot given here at rest: crank angle 0, bars straight, stand down).",
+ "parts": {
+  "SM_Bike_Frame": {
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "SM_Bike_Steer": {
+   "pivot": [
+    43.405,
+    0.0,
+    70.653
+   ]
+  },
+  "SM_Bike_WheelF": {
+   "pivot": [
+    59.5,
+    0.0,
+    33.4
+   ]
+  },
+  "SM_Bike_WheelR": {
+   "pivot": [
+    -40.5,
+    0.0,
+    33.4
+   ]
+  },
+  "SM_Bike_Crank": {
+   "pivot": [
+    0.0,
+    0.0,
+    27.0
+   ]
+  },
+  "SM_Bike_PedalR": {
+   "pivot": [
+    17.0,
+    15.5,
+    27.0
+   ]
+  },
+  "SM_Bike_PedalL": {
+   "pivot": [
+    -17.0,
+    -15.5,
+    27.0
+   ]
+  },
+  "SM_Bike_Chain": {
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "SM_Bike_Stand": {
+   "pivot": [
+    -16.5,
+    -7.567,
+    29.594
+   ]
+  },
+  "SM_BikeRack": {
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "wheel_radius": 33.4,
+ "axle_front": [
+  59.5,
+  0.0,
+  33.4
+ ],
+ "axle_rear": [
+  -40.5,
+  0.0,
+  33.4
+ ],
+ "bb": [
+  0.0,
+  0.0,
+  27.0
+ ],
+ "crank_length": 17.0,
+ "crank_note": "SM_Bike_Crank turns about the Y axis through bb; at angle 0 the right arm points +X, the left -X. Pedalling turns the right arm's end down (-Z) as it passes forward. The pedals are separate parts that stay level at the crank ends.",
+ "pedal_r": {
+  "y": 15.5
+ },
+ "pedal_l": {
+  "y": -15.5
+ },
+ "steer_axis": {
+  "point": [
+   43.405,
+   0.0,
+   70.653
+  ],
+  "dir": [
+   -0.29237,
+   0.0,
+   0.9563
+  ]
+ },
+ "saddle_top": [
+  -27.517,
+  0.0,
+  98.008
+ ],
+ "saddle_nose": [
+  -7.517,
+  0.0,
+  99.253
+ ],
+ "hoods": {
+  "l": [
+   54.441,
+   -21.0,
+   95.304
+  ],
+  "r": [
+   54.441,
+   21.0,
+   95.304
+  ],
+  "grip_axis_l": [
+   0.99901,
+   0.0,
+   0.0444
+  ],
+  "grip_axis_r": [
+   0.99901,
+   0.0,
+   0.0444
+  ]
+ },
+ "hood_radius": 2.01,
+ "bar_tops": {
+  "l": [
+   46.726,
+   -10.0,
+   92.5
+  ],
+  "r": [
+   46.726,
+   10.0,
+   92.5
+  ],
+  "radius": 1.45
+ },
+ "drops": {
+  "l": [
+   43.774,
+   -21.0,
+   79.196
+  ],
+  "r": [
+   43.774,
+   21.0,
+   79.196
+  ],
+  "radius": 1.45
+ },
+ "stand": {
+  "hinge": [
+   -16.5,
+   -7.567,
+   29.594
+  ],
+  "axis": [
+   -0.1577,
+   0.9592,
+   -0.23468
+  ],
+  "up_angle_deg": 89.252,
+  "park_roll_deg": 7.0,
+  "leg_dir_down": [
+   -0.15902,
+   -0.25922,
+   -0.95264
+  ],
+  "leg_dir_up": [
+   -0.97659,
+   -0.11629,
+   0.18095
+  ],
+  "foot": [
+   -21.0,
+   -15.0,
+   1.842
+  ],
+  "note": "Rotate SM_Bike_Stand about its pivot (the hinge) by +up_angle_deg about 'axis' with FQuat(axis, angle) to fold it up along the left chain stay; rolling the bike park_roll_deg to the LEFT about the X axis through the two tyre contact points puts the foot on the ground."
+ },
+ "chain": {
+  "pitch": 1.27,
+  "links": 108,
+  "length_m": 1.3716,
+  "plane_y": 5.1
+ },
+ "rack": {
+  "slots": [
+   [
+    0.0,
+    68.0,
+    0.0
+   ],
+   [
+    0.0,
+    34.0,
+    0.0
+   ],
+   [
+    0.0,
+    -0.0,
+    0.0
+   ],
+   [
+    0.0,
+    -34.0,
+    0.0
+   ],
+   [
+    0.0,
+    -68.0,
+    0.0
+   ]
+  ],
+  "pitch": 34.0,
+  "length": 170.0
+ },
+ "bounds": {
+  "min": [
+   -73.9,
+   -23.28,
+   0.0
+  ],
+  "max": [
+   92.9,
+   23.28,
+   99.25
+  ]
+ }
+}

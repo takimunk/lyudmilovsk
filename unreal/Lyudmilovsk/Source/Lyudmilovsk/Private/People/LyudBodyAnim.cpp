@@ -172,6 +172,12 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 		Output.Curve.Set(FaceCurveNames()[I], FaceCurves[I]);
 	}
 	Procedural(Output);
+	// on a bicycle: the hips on the saddle, the feet on the pedals, the hands on the bars (Bikes/LyudBikeRider)
+	if (Bike.IsActive())
+	{
+		LyudBikeRider::ApplyBody(Output.Pose, Bike);
+		LyudBikeRider::ApplyArms(Output.Pose, Bike);
+	}
 	return true;
 }
 
@@ -422,6 +428,7 @@ void ULyudBodyAnimInstance::StopLine(USkeletalMeshComponent* Mesh)
 void ULyudBodyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
+	GetProxyOnGameThread<FLyudBodyAnimProxy>().Bike = BikePose;
 	USkeletalMeshComponent* Mesh = GetSkelMeshComponent();
 	if (!Mesh || DeltaSeconds <= 0.f)
 	{

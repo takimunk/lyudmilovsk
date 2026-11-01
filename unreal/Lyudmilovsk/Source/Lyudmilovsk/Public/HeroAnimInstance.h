@@ -4,6 +4,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "HandReach.h"
+#include "Bikes/LyudBikeRider.h"
 #include "HeroAnimInstance.generated.h"
 
 class UAnimSequence;
@@ -71,6 +72,7 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	void PlaceSwimmer(FCompactPose& Pose);
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
 	FHeroReachPose Reach;
+	FBikeRiderPose Bike;
 	/** How far the hips go down in a full crouch, cm. */
 	static constexpr float CrouchDrop = 34.f;
 
@@ -97,6 +99,9 @@ public:
 
 	/** Where the right hand goes (UHeroReachComponent sets it every frame; Weight 0 leaves the animation alone). */
 	FHeroReachPose Reach;
+
+	/** On a bicycle or leading one by the bars (UHeroBikeComponent every frame; Weight 0 leaves the body alone). */
+	FBikeRiderPose Bike;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimSequence> Idle;

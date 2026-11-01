@@ -1153,5 +1153,8 @@
  "sign.diner.coffee": "Coffee — help yourself",
  "sign.diner.menu.title": "Menu",
  "sign.diner.menu.price": "{0} rub",
- "sign.diner.menu.hours": "Mon–Fri 7–22 · Sat, Sun 8–21"
+ "sign.diner.menu.hours": "Mon–Fri 7–22 · Sat, Sun 8–21",
+ "ui.bike.prompt": "[E] Get on the bike   [R] Walk it by the bars",
+ "ui.bike.prompt_lead": "[E] Get on   [R] Put it on its stand",
+ "ui.bike.prompt_off": "[E] Get off"
 }

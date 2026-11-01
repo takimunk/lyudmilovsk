@@ -17,6 +17,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "HeroAnimInstance.h"
+#include "Bikes/HeroBike.h"
 #include "HeroReachComponent.h"
 #include "HeroSeat.h"
 #include "HeroShadowMesh.h"
@@ -176,8 +177,24 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
+bool AHeroCharacter::IsOnBike() const
+{
+	const UHeroBikeComponent* B = UHeroBikeComponent::Get(this);
+	return B && B->IsOnBike();
+}
+
+bool AHeroCharacter::IsLeadingBike() const
+{
+	const UHeroBikeComponent* B = UHeroBikeComponent::Get(this);
+	return B && B->IsLeading();
+}
+
 void AHeroCharacter::OnJumpPressed()
 {
+	if (IsOnBike())
+	{
+		return;
+	}
 	if (IsSeated())
 	{
 		StandUp();
@@ -190,6 +207,12 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 {
 	// as the template, but along the look (the body turns on its own)
 	const FVector2D V = Value.Get<FVector2D>();
+	if (UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this); Bike && Bike->IsOnBike())
+	{
+		// pedals, brakes and bars
+		Bike->SetMoveInput(V);
+		return;
+	}
 	if (IsSeated())
 	{
 		// a step gets you up
@@ -220,16 +243,22 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	ReadInput(DeltaSeconds);
+	UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this);
 	if (IsSeated())
 	{
 		KeepSeated();
 	}
-	else
+	else if (!(Bike && Bike->IsOnBike()))
 	{
 		TurnBody(DeltaSeconds);
 	}
 	SitAlpha = FMath::FInterpConstantTo(SitAlpha, IsSeated() ? 1.f : 0.f, DeltaSeconds, 1.8f);
 	FeedAnimation(DeltaSeconds);
+	// a bicycle moves the body and bends it onto the saddle, pedals and bars (after the animation's state, before it runs)
+	if (Bike)
+	{
+		Bike->HeroTick(DeltaSeconds);
+	}
 	if (CVarHeroDebugBones.GetValueOnGameThread())
 	{
 		const FColor Colors[] = { FColor::Red, FColor::Yellow, FColor::Green, FColor::Cyan };
@@ -275,12 +304,13 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 		Cam->ViewPitchMax = PitchMax;
 	}
 
-	bWantsWalk = !PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift));
+	// leading a bike by the bars is a walk
+	bWantsWalk = IsLeadingBike() || (!PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift)));
 	UCharacterMovementComponent* Move = GetCharacterMovement();
 	Move->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
 	Move->MaxWalkSpeedCrouched = bWantsWalk ? CrouchCreepSpeed : CrouchSpeed;
 
-	if (IsSeated())
+	if (IsSeated() || IsOnBike() || IsLeadingBike())
 	{
 		bCrouchToggled = false;
 		CrouchAlpha = FMath::FInterpConstantTo(CrouchAlpha, 0.f, DeltaSeconds, 2.2f);
@@ -445,6 +475,10 @@ void AHeroCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 {
 	Super::CalcCamera(DeltaTime, OutResult);
 	OutResult.Location = EyeLocation();
+	if (UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this))
+	{
+		OutResult.Location = Bike->SmoothEye(OutResult.Location, DeltaTime);
+	}
 	const float Behind = CVarHeroViewBehind.GetValueOnGameThread();
 	if ((Behind > 0.f) != bHeadShown && GetMesh()->GetSkeletalMeshAsset())
 	{
