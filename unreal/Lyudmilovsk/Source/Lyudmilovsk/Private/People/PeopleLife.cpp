@@ -1,4 +1,5 @@
 #include "People/PeopleLife.h"
+#include "World/LyudPrefetch.h"
 #include "People/LyudBodyAnim.h"
 #include "Transport/LyudTransport.h"
 #include "Bikes/LyudBike.h"
@@ -571,6 +572,19 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 	if (!Bodies[Id])
 	{
 		const LP::FPerson& P = Sim->People[Id];
+		// their model and the shared clips loaded in the background first: a body made on the spot stalls the frame
+		auto ModelPath = [](const std::string& Name)
+		{
+			const FString N = UTF8_TO_TCHAR(Name.c_str());
+			return FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *N, *N, *N);
+		};
+		const bool bBody = ULyudPrefetch::Ready(this, ModelPath(P.Body));
+		const bool bMesh = ULyudPrefetch::Ready(this, ModelPath(P.Mesh));
+		const bool bClips = ULyudPrefetch::FolderReady(this, TEXT("/Game/Characters/Humans/Anims"));
+		if (!bBody || !bMesh || !bClips)
+		{
+			return nullptr;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

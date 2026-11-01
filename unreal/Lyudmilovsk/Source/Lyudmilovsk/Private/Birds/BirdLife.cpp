@@ -1,4 +1,5 @@
 #include "Birds/BirdLife.h"
+#include "World/LyudPrefetch.h"
 
 #include "BirdSim.h"
 #include "BirdMurmur.h"
@@ -728,6 +729,10 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 		return;
 	}
 	TArray<USoundBase*>* Found = Sounds.Find(R->Id);
+	if (!Found && !ULyudPrefetch::FolderReady(this, FString::Printf(TEXT("/Game/Birds/%s/Sounds"), *R->Id.ToString())))
+	{
+		return;   // loading in the background; the next call is heard
+	}
 	if (!Found)
 	{
 		Found = &Sounds.Add(R->Id);
@@ -1388,6 +1393,12 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	{
 		const int32 Id = Near[K].Value;
 		if (!Species[World.Birds[Id].Species].bHasBody)
+		{
+			continue;
+		}
+		// a new body waits (drawn instanced meanwhile) until its species' mesh, clips, plumage and calls are loaded in the
+		// background: made on the spot it stalls the frame
+		if (!BodyOf(Id) && !ULyudPrefetch::FolderReady(this, FString::Printf(TEXT("/Game/Birds/%s"), UTF8_TO_TCHAR(SpeciesTable()[World.Birds[Id].Species].Id.c_str())), TEXT("_Hero")))
 		{
 			continue;
 		}

@@ -1,4 +1,5 @@
 #include "Animals/AnimalLife.h"
+#include "World/LyudPrefetch.h"
 
 #include "AnimalSim.h"
 #include "Animals/AnimalActor.h"
@@ -870,6 +871,11 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 			const FTransform At(FRotator(0.f, FMath::RadiansToDegrees(A.Yaw), 0.f), ToUE(World.RenderPos(A)));
 			if (!Body)
 			{
+				// the breed's mesh, clips and coats loaded in the background first (made on the spot they stall the frame)
+				if (!ULyudPrefetch::FolderReady(this, FString::Printf(TEXT("/Game/Animals/%s"), *Breed.ToString())))
+				{
+					continue;
+				}
 				Body = GetWorld()->SpawnActorDeferred<AAnimalActor>(AAnimalActor::StaticClass(), At, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 				if (!Body)
 				{
