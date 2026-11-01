@@ -62,8 +62,9 @@ float grain = dot(a1.rgb, 0.333);
 float patch = dot(a2.rgb, 0.333);
 // cliffs: the slope and the bake's fresh exposure; strata in the walls (layered ice), wavering
 float cliff = saturate(max(smoothstep(0.8, 0.45, n.z), m.g * 0.85));
-float strata = 0.5 + 0.5 * sin(p.z * 3.7 + 2.0 * sin(p.x * 0.05 + p.y * 0.04) + patch * 4.0);
-strata = lerp(strata, 0.5 + 0.5 * sin(p.z * 11.0 + patch * 9.0), 0.35);
+// strata: a few soft layers, their height wandering along the wall (no straight bands)
+float wander = 3.0 * sin(p.x * 0.031 + p.y * 0.027) + 1.6 * sin(p.x * 0.11 - p.y * 0.083) + patch * 2.5;
+float strata = 0.5 + 0.5 * sin((p.z + wander) * 0.9);
 float3 frost = float3(0.80, 0.82, 0.85);
 float3 plains = float3(0.70, 0.69, 0.68);
 float3 salts = float3(0.46, 0.31, 0.21);
@@ -71,12 +72,12 @@ float3 young = float3(0.50, 0.64, 0.74);
 float brown = saturate(m.r * (0.7 + 0.8 * patch));
 float3 col = lerp(plains, frost, saturate(m.b * 1.4 + smoothstep(0.9, 1.0, n.z) * 0.2));
 col = lerp(col, salts, brown);
-col = lerp(col, young * lerp(0.82, 1.08, strata), cliff);
+col = lerp(col, young * lerp(0.93, 1.04, strata) * lerp(0.9, 1.08, grain), cliff);
 col *= lerp(0.7, 1.18, grain) * lerp(0.86, 1.1, patch);
 col *= 1.0 - 0.45 * saturate(m.a);
 Rough = lerp(lerp(0.78, 0.62, brown), 0.32 + 0.15 * strata, cliff);
 // the detail normal on top of the ground's own (world space)
-float k = Bump * lerp(1.0, 1.6, cliff);
+float k = Bump * lerp(1.0, 0.8, cliff);
 float3 d = w.x * float3(0, nx.x, nx.y) + w.y * float3(ny.x, 0, ny.y) + w.z * float3(nz.x, nz.y, 0);
 Normal = normalize(n + d * k);
 return col * Albedo;
@@ -158,7 +159,7 @@ float t0 = max(-b - sq, 0), t1 = -b + sq;
 float dp = b * b - (dot(o, o) - 1.0);
 if (dp > 0) { float tp = -b - sqrt(dp); if (tp > 0) t1 = min(t1, tp); }
 if (t1 <= t0) return 0;
-float H = (Ra - 1.0) * 0.26;
+float H = (Ra - 1.0) * 0.22;
 float3 Ls = normalize(SunDir.xyz);
 float3 beta = float3(0.175, 0.41, 1.0);
 float K = 60.0 * Air.y;
@@ -175,7 +176,7 @@ float tauV = 0;
     float z = degrees(acos(clamp(mu, -1, 1)));
     float ch = 1.0 / max(mu + 0.15 * pow(max(93.885 - z, 0.01), -1.253), 0.03);
     float edge = -sqrt(max(1.0 - 1.0 / (r * r), 0.0));
-    float lit = smoothstep(edge - 0.015, edge + 0.02, mu);
+    float lit = smoothstep(edge - 0.005, edge + 0.03, mu) * smoothstep(-0.25, 0.05, mu);
     float3 T = exp(-beta * K * H * (tauV + rho * ch));
     acc += rho * T * lit * ds;
     tauV += rho * ds / H;

@@ -7,6 +7,7 @@ ladder up and out under the sea (the swimming takes over). EUROPATEST lines in t
 'shot' lines (unreal/scripts/test_europa.sh copies them to Saved/EuropaTest). EUROPATEST_ONLY=europa|hatch runs a short part.
 """
 import math
+import os
 
 import unreal
 
@@ -119,7 +120,11 @@ def look_lid(w):
 def summary(w):
     report(w)
     check(S["drain_seen"], "the water went down while draining")
-    check(S["music"], "the Europa music played")
+    # -nosound (the default offscreen run) has no audio device: the music can't start then (SOUND=1 test_europa.sh)
+    if os.environ.get("SOUND") == "1":
+        check(S["music"], "the Europa music played")
+    else:
+        log("skip the music check (no sound device; SOUND=1 to run it)")
     check(S["jump_max"] > 400.0, "a high jump on Europa (%.0f cm)" % S["jump_max"])
 
 
@@ -440,7 +445,7 @@ elif os.environ.get("EUROPATEST_ONLY") == "lead":
           (t + 2.0, lambda w: cmd(w, "lyud.Ladder.Spawn 16 70")), (t + 3.0, lambda w: cmd(w, "lyud.Ladder.Grab")),
           (t + 4.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0.2")), (t + 7.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0"))]
     t += 7.5
-    for i, pitch in enumerate((-20.0, -35.0, 10.0)):
+    for i, pitch in enumerate((-20.0, -35.0, 10.0, -55.0, -70.0, 35.0, 55.0)):
         # toward the ladder: its -X is the way the climber faces
         face = lambda w: unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudLadder)[0].get_actor_rotation().yaw + 180.0
         P += [(t, lambda w, p=pitch: pc(w).set_control_rotation(unreal.Rotator(0.0, p, face(w)))),

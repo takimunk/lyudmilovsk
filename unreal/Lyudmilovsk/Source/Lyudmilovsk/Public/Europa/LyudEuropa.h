@@ -162,7 +162,7 @@ public:
 	double SiteLatDeg = 38.0;
 	double SiteLonDeg = -41.0;
 	/** The planet's air: its shell's radius over the planet's and the glow's strength (M_EU_PlanetAir). */
-	float AirRadius = 1.045f;
+	float AirRadius = 1.022f;
 	float AirStrength = 1.f;
 	/** The stars' brightness and how much they twinkle (M_EU_Space). */
 	float StarGain = 1.f;
