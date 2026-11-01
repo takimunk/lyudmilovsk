@@ -7,6 +7,7 @@ with the material instance MI_FoodKit of M_FoodKit (base colour, normal, roughne
 
 Nanite off. Foods: no collision (they ride on the hand). Stalls: their own triangles as collision (people walk round them).
 """
+import glob
 import os
 
 import unreal
@@ -115,6 +116,38 @@ def master():
     log("material M_FoodKit + MI_FoodKit")
 
 
+def import_signs():
+    """The stalls' signs, one picture per language: /Game/Food/Localized/<lang>/T_FoodSign_<name> and M_FoodSign (Image),
+    the material of every FoodSign_<name> slot; ULyudStallSubsystem sets the picture of the game's language."""
+    n = 0
+    for lang in ("ru", "en", "ja"):
+        for src in sorted(glob.glob(os.path.join(EXPORT, "signs", lang, "T_FoodSign_*.png"))):
+            t = unreal.AssetImportTask()
+            t.filename = src
+            t.destination_path = "%s/Localized/%s" % (DEST, lang)
+            t.destination_name = os.path.basename(src)[:-4]
+            t.automated = True
+            t.replace_existing = True
+            t.save = True
+            tools.import_asset_tasks([t])
+            n += 1
+    m = get_or_create("M_FoodSign", DEST, unreal.Material, unreal.MaterialFactoryNew())
+    mel.delete_all_material_expressions(m)
+    t = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -500, 0)
+    t.set_editor_property("parameter_name", "Image")
+    tex = eal.load_asset("%s/Localized/ru/T_FoodSign_cheese" % DEST)
+    if tex:
+        t.set_editor_property("texture", tex)
+    mel.connect_material_property(t, "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
+    r = node(m, unreal.MaterialExpressionConstant, -300, 200)
+    r.set_editor_property("r", 0.85)
+    mel.connect_material_property(r, "", unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    log("signs: %d pictures, M_FoodSign" % n)
+    return m
+
+
 def import_kit(step):
     folder, name, kit, dest = KITS[step]
     glb = os.path.join(folder, name + ".glb")
@@ -131,6 +164,7 @@ def import_kit(step):
     mgr.import_scene(tmp, src, params)
     mgr.wait_until_all_tasks_done(True)
     mi = eal.load_asset("%s/MI_%s" % (DEST, kit))
+    sign_mat = import_signs() if step == "stalls" else None
     n = 0
     for path in eal.list_assets(tmp, True):
         a = eal.load_asset(path)
@@ -148,8 +182,9 @@ def import_kit(step):
         s.enabled = False
         a.set_editor_property("nanite_settings", s)
         if mi:
-            for slot in range(len(a.get_editor_property("static_materials"))):
-                a.set_material(slot, mi)
+            for slot, sm in enumerate(a.get_editor_property("static_materials")):
+                is_sign = str(sm.get_editor_property("material_slot_name")).startswith("FoodSign_")
+                a.set_material(slot, sign_mat if is_sign and sign_mat else mi)
         body = a.get_editor_property("body_setup")
         if body and step == "stalls":
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)

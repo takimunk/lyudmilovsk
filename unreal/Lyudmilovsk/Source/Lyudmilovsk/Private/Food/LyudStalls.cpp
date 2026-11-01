@@ -8,6 +8,8 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "HAL/IConsoleManager.h"
+#include "LyudText.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
@@ -79,5 +81,54 @@ void ULyudStallSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		A->Tags.Add(TEXT("NoTree"));
 		Stalls.Add(A);
 		UE_LOG(LogTemp, Display, TEXT("Stalls: %s at %s"), *Name, *At.ToString());
+	}
+}
+
+void ULyudStallSubsystem::Tick(float DeltaTime)
+{
+	SignTimer -= DeltaTime;
+	if (SignTimer > 0.f)
+	{
+		return;
+	}
+	SignTimer = 0.5f;
+	if (SignLanguage != LyudText::Language())
+	{
+		SignLanguage = LyudText::Language();
+		ApplySigns();
+	}
+}
+
+void ULyudStallSubsystem::ApplySigns()
+{
+	for (const TWeakObjectPtr<AStaticMeshActor>& W : Stalls)
+	{
+		UStaticMeshComponent* C = W.IsValid() ? W->GetStaticMeshComponent() : nullptr;
+		if (!C)
+		{
+			continue;
+		}
+		for (const FName& Slot : C->GetMaterialSlotNames())
+		{
+			const FString S = Slot.ToString();
+			if (!S.StartsWith(TEXT("FoodSign_")))
+			{
+				continue;
+			}
+			UTexture2D* Tex = LyudText::LoadTexture(TEXT("Food"), TEXT("T_") + S);
+			const int32 Index = C->GetMaterialIndex(Slot);
+			UMaterialInterface* Base = C->GetMaterial(Index);
+			if (!Tex || !Base)
+			{
+				continue;
+			}
+			UMaterialInstanceDynamic* MID = Cast<UMaterialInstanceDynamic>(Base);
+			if (!MID)
+			{
+				MID = UMaterialInstanceDynamic::Create(Base, C);
+				C->SetMaterial(Index, MID);
+			}
+			MID->SetTextureParameterValue(TEXT("Image"), Tex);
+		}
 	}
 }
