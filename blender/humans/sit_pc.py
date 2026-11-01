@@ -18,7 +18,7 @@ back, stretches, scrolls and reads in an order of their own:
     PC_Game      left hand on WASD, right on the mouse, quick flicks and clicks (a shooter)
     PC_Scroll    leaning back a little, scrolling with the index finger, slow; the left hand on the desk
     PC_Read      leaning in, the chin on the left hand, an occasional scroll
-    PC_LeanBack  slumped back, hands in the lap, watching
+    PC_LeanBack  slumped back, hands resting on the stomach, watching
     PC_Stretch   a stretch with both arms up, back to the keys (one-shot)
     PC_Gamepad   holding a gamepad in the lap, thumbs busy, jolts when something happens (the prop: SM_Gamepad on hand_r)
 """
@@ -271,8 +271,10 @@ def pc_read(p, t, T):
 def pc_lean_back(p, t, T):
     seated(p, lean=-12.0, slump=0.05, legs="out", look=(3.0 * math.sin(t * TAU / T), -2.0))
     for s, sign in (("l", 1), ("r", -1)):
-        lap = Vector((sign * 0.10, -0.24 - 0.02 * math.sin(t * TAU / T + sign), SEAT + 0.17))
-        arm(p, s, lap, (-sign * 0.6, -0.8, -0.3), palm=(0, 0, -1), pole=(sign * 0.35, 0.3, -1.0))
+        # the hands rest on the stomach, one over the other's fingers: the lap (seat + 17 cm, 24 cm ahead) is an arm's
+        # whole length from a leaned-back shoulder and locked the elbows straight
+        belly = Vector((sign * 0.065, -0.13 - 0.01 * math.sin(t * TAU / T + sign), SEAT + 0.27 + 0.004 * math.sin(t * TAU / 4.2)))
+        arm(p, s, belly, (-sign * 0.85, -0.45, -0.25), palm=(0, 0.35, -1), pole=(sign * 0.45, 0.35, -1.0))
         p.curl(s, 30.0, thumb=10.0)
 
 

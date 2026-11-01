@@ -256,19 +256,43 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 			}
 		}
 	}
-	// the hands onto the desk under them (club desks stand at their own heights)
+	// the hands onto the desk under them (club desks stand at their own heights, their chairs at their own distances)
+	const TCHAR* Arms[2][3] = { { TEXT("upperarm_l"), TEXT("lowerarm_l"), TEXT("hand_l") }, { TEXT("upperarm_r"), TEXT("lowerarm_r"), TEXT("hand_r") } };
+	FCompactPoseBoneIndex Arm[2][3];
+	for (int32 S = 0; S < 2; S++)
+	{
+		for (int32 J = 0; J < 3; J++)
+		{
+			Arm[S][J] = Bone(Arms[S][J]);
+		}
+		// where the clip puts the hand, for the game side's desk traces (read after this evaluation)
+		ClipHand[S] = Arm[S][2].IsValid() ? CS.GetComponentSpaceTransform(Arm[S][2]).GetLocation() : FVector::ZeroVector;
+	}
 	if (HandIKAlpha > 0.01f)
 	{
-		const TCHAR* Arms[2][3] = { { TEXT("upperarm_l"), TEXT("lowerarm_l"), TEXT("hand_l") }, { TEXT("upperarm_r"), TEXT("lowerarm_r"), TEXT("hand_r") } };
+		// a desk further than the clip's (its keyboard 47 cm ahead of the seat): the body leans in toward it instead of the
+		// arms reaching out straight; the head keeps most of its look at the screen
+		const float Ahead = FMath::Max(HandOffset[0].Y, HandOffset[1].Y) * HandIKAlpha;
+		const float DeskLean = FMath::Clamp((Ahead - 6.f) * 0.55f, 0.f, 14.f);
+		Turn(Bone(TEXT("spine_01")), FVector::XAxisVector, -DeskLean * 0.4f);
+		Turn(Bone(TEXT("spine_02")), FVector::XAxisVector, -DeskLean * 0.35f);
+		Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -DeskLean * 0.25f);
+		Turn(Bone(TEXT("head")), FVector::XAxisVector, DeskLean * 0.6f);
 		for (int32 S = 0; S < 2; S++)
 		{
-			const FCompactPoseBoneIndex A = Bone(Arms[S][0]), Bi = Bone(Arms[S][1]), C = Bone(Arms[S][2]);
+			const FCompactPoseBoneIndex A = Arm[S][0], Bi = Arm[S][1], C = Arm[S][2];
 			if (!A.IsValid() || !Bi.IsValid() || !C.IsValid() || HandOffset[S].SizeSquared() < 0.04f)
 			{
 				continue;
 			}
 			FTransform Up = CS.GetComponentSpaceTransform(A), Lo = CS.GetComponentSpaceTransform(Bi), Ha = CS.GetComponentSpaceTransform(C);
-			const FVector Want = Ha.GetLocation() + HandOffset[S] * HandIKAlpha;
+			// the hand goes where the desk is from the clip's hand, the lean having brought the shoulder closer; never
+			// further from the shoulder than an arm bent ~115 deg at the elbow (or the clip's own reach): an arm on a
+			// desk is never locked straight
+			FVector Want = FMath::Lerp(Ha.GetLocation(), ClipHand[S] + HandOffset[S], HandIKAlpha);
+			const float Len = (Lo.GetLocation() - Up.GetLocation()).Size() + (Ha.GetLocation() - Lo.GetLocation()).Size();
+			const float MaxReach = FMath::Max(0.84f * Len, (float)(Ha.GetLocation() - Up.GetLocation()).Size());
+			Want = Up.GetLocation() + (Want - Up.GetLocation()).GetClampedToMaxSize(MaxReach);
 			const FVector Mid = (Up.GetLocation() + Ha.GetLocation()) * 0.5f;
 			const FVector Pole = Lo.GetLocation() + (Lo.GetLocation() - Mid).GetSafeNormal() * 40.f;
 			const FQuat HandRot = Ha.GetRotation();
@@ -652,18 +676,22 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 			FHitResult Hit;
 			float Off = 0.f;
 			FVector N = FVector::UpVector;
-			if (GetWorld()->LineTraceSingleByChannel(Hit, FVector(F.X, F.Y, Pos.Z + 50.f), FVector(F.X, F.Y, Pos.Z - 60.f), ECC_Visibility, Q))
+			// only the ground itself: from a step's height (not from the knee, where a counter's plinth, a shelf or a
+			// till stand) down, and only what stands still (not another person, a cat, a bag on the floor); a hit that
+			// isn't something to stand on (a wall, a riser, a counter's side) leaves the foot where the clip has it
+			if (GetWorld()->LineTraceSingleByObjectType(Hit, FVector(F.X, F.Y, Pos.Z + 30.f), FVector(F.X, F.Y, Pos.Z - 60.f), FCollisionObjectQueryParams(ECC_WorldStatic), Q)
+				&& !Hit.bStartPenetrating)
 			{
-				Off = FMath::Clamp((float)(Hit.ImpactPoint.Z - Pos.Z), -40.f, 40.f);
-				N = C.InverseTransformVectorNoScale(Hit.ImpactNormal).GetSafeNormal();
-				if (N.Z < 0.6f)
+				const FVector Nw = C.InverseTransformVectorNoScale(Hit.ImpactNormal).GetSafeNormal();
+				if (Nw.Z >= 0.7f)
 				{
-					N = FVector::UpVector;                // a wall, a step's riser: stay level
+					Off = FMath::Clamp((float)(Hit.ImpactPoint.Z - Pos.Z), -40.f, 25.f);
+					N = Nw;
 				}
 			}
 			FootOff[S] += (Off - FootOff[S]) * FMath::Min(1.f, Dt * 12.f);
 			FootNor[S] = FMath::Lerp(FootNor[S], N, FMath::Min(1.f, Dt * 8.f)).GetSafeNormal();
-			P.FootOffset[S] = FootOff[S];
+			P.FootOffset[S] = FootOff[S] / FMath::Max((float)C.GetScale3D().Z, 0.1f);     // in the (scaled) mesh's own cm
 			P.FootNormal[S] = FootNor[S];
 		}
 	}
@@ -674,15 +702,15 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	if (HandAlpha > 0.01f && GetWorld())
 	{
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(LyudHands), false, Mesh->GetOwner());
-		const TCHAR* Hands[2] = { TEXT("hand_l"), TEXT("hand_r") };
 		const FVector Fwd = C.GetRotation().RotateVector(FVector::YAxisVector);            // the mesh faces +Y
 		for (int32 S = 0; S < 2; S++)
 		{
-			// where the clip puts the hand (this frame's hand less the shift already applied), then the desk: right under
-			// it, or a little further forward (the chair stands back), its top within a hand's height of the clip's
-			const FVector H = Mesh->GetSocketLocation(Hands[S]) - C.TransformVectorNoScale(HandOff[S]);
+			// where the clip puts the hand (before the IK, the last evaluation), then the desk: right under it, or a little
+			// further forward (the chair stands back), its top within a hand's height of the clip's
+			const FVector Clip = P.ClipHand[S];
+			const FVector H = C.TransformPosition(Clip);
 			FVector Off = FVector::ZeroVector;
-			for (float D = 0.f; D <= 30.f; D += 5.f)
+			for (float D = 0.f; D <= 30.f && !Clip.IsNearlyZero(); D += 5.f)
 			{
 				const FVector At = H + Fwd * D;
 				FHitResult Hit;
@@ -690,7 +718,8 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 					&& Hit.ImpactNormal.Z > 0.8f)
 				{
 					const FVector World(At.X + Fwd.X * (D > 0.f ? 4.f : 0.f), At.Y + Fwd.Y * (D > 0.f ? 4.f : 0.f), Hit.ImpactPoint.Z + 3.f);
-					Off = C.InverseTransformVectorNoScale(World - H);
+					// in the mesh's own (scaled) space: a child's body is a scaled grown-up's
+					Off = C.InverseTransformPosition(World) - Clip;
 					Off.Z = FMath::Clamp((float)Off.Z, -12.f, 10.f);
 					break;
 				}

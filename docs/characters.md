@@ -118,7 +118,10 @@ weights before importing.
   target's; the pelvis moves `scale` (standing), `seat` (onto the house chair: pelvis (0, 1, 56.7) cm, seat 47) or `abs`
   (the bed layout). The wrists: a hand twisted past 120 degrees against the forearm is turned back (seat_anims' mouse
   hand was baked upside down) and half of the remaining twist goes to the forearm (no twist bones). `calm` tones a
-  clip down toward another (Talk at 55% of UAL's gesturing).
+  clip down toward another (Talk at 55% of UAL's gesturing). `stance` re-plants a standing clip's feet: every UAL idle
+  (Idle_Loop, Talking, FoldArms, Phone, Yes/No) stands in a wide fighter's 'ready' stance, ankles 36 cm apart and 40 cm
+  front to back, which on our people read as a lunge with broken legs; StandIdle, Talk, Nod, ShakeHead, FoldArms and
+  Phone get ankles 22 x 9 cm apart (leg IK per frame, the body raised to keep the legs' stretch).
 - **Sleeping** (`LieDown`, `Sleep` loop, `GetUp`) is on the side: `blender/humans/sleep_clips.py` poses it on Guy_a
   (left side, facing out of the bed, knees bent, the lower arm under the pillow, the head ~12 cm over the mattress,
   5 s breaths; LieDown sits on the edge, props on the elbow and rolls in; GetUp is it backward) into
@@ -133,11 +136,16 @@ weights before importing.
   `PC_Gamepad` plays, `SM_Gamepad` (`blender/humans/gamepad.py`, `unreal/scripts/import_gamepad.py`) sits between the
   hands. The old per-person `A_<Name>_Sit_*` clips stay only as the style's name. Club desks stand at their own heights
   and distances: while a hands-on-desk loop plays (Type, Game, Scroll), a trace under each hand (and up to 30 cm ahead
-  of it, when the chair stands back) finds the desk and two-bone IK puts the hand on it.
+  of it, when the chair stands back) finds the desk and two-bone IK puts the hand on it. The trace starts where the clip
+  itself put the hand (`ClipHand`, read back from the last evaluation). A desk further than the clip's makes the body
+  lean in (up to 14 degrees) rather than the arms reach, and a hand never goes further from the shoulder than an arm
+  bent ~115 degrees: arms on a desk are never locked straight (the high stools stand back from their desks).
+  `unreal/scripts/test_poses.sh` measures elbows and knees of the club's workers and the sellers and shoots them.
 - **Run**: UAL `Jog_Fwd_Loop`, ~2.6 m/s at rate 1; `ANpcBody` runs from 1.9 m/s (back to walking under 1.6).
 - **On top of every clip** (`FLyudBodyAnimProxy::Procedural`): breathing (chest, shoulders; ~4 s, deeper and quicker
   after walking or running), the lean into starts, stops and turns, and on their feet (`SetOnFeet`) the feet on the
-  ground: a trace under each foot, two-bone IK (`AnimationCore::SolveTwoBoneIK`), the pelvis down to the lower foot,
+  ground: a trace under each foot (static ground only, from a step's height, a hit only on something to stand on: a
+  counter's plinth or another person never lifts a foot), two-bone IK (`AnimationCore::SolveTwoBoneIK`), the pelvis down to the lower foot,
   the planted foot tilted to the slope. `lyud.Face.Log 1` logs it once a second; `make_body_test_level.py` +
   `test_bodies.py` shoot desks, a ramp and a step.
 - **Walk speed**: the walk covers 0.92 m/s at rate 1 on Guy_a (`life_anims_report.json` `speed_m_s`); `ANpcBody` plays

@@ -1,5 +1,5 @@
 {
- "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) the computer loops (sit_pc.py) and the run (run_clip.py), all posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked).",
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) the computer loops (sit_pc.py) and the run (run_clip.py), all posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked). stance: the standing idles' feet re-planted [across, along] m apart (UAL stands in a wide lunge).",
  "target": "blender/characters/guy_a/export/human_guy_a.glb",
  "sources": {
   "ual1": {
@@ -39,7 +39,11 @@
   },
   "StandIdle": {
    "source": "ual1",
-   "action": "Idle_Loop"
+   "action": "Idle_Loop",
+   "stance": [
+    0.22,
+    0.09
+   ]
   },
   "Talk": {
    "source": "ual1",
@@ -47,6 +51,10 @@
    "calm": [
     "Idle_Loop",
     0.55
+   ],
+   "stance": [
+    0.22,
+    0.09
    ]
   },
   "SitDown": {
@@ -83,19 +91,35 @@
    "calm_keep": [
     "neck_01",
     "head"
+   ],
+   "stance": [
+    0.22,
+    0.09
    ]
   },
   "ShakeHead": {
    "source": "ual2",
-   "action": "Idle_No_Loop"
+   "action": "Idle_No_Loop",
+   "stance": [
+    0.22,
+    0.09
+   ]
   },
   "FoldArms": {
    "source": "ual2",
-   "action": "Idle_FoldArms_Loop"
+   "action": "Idle_FoldArms_Loop",
+   "stance": [
+    0.22,
+    0.09
+   ]
   },
   "Phone": {
    "source": "ual2",
-   "action": "Idle_TalkingPhone_Loop"
+   "action": "Idle_TalkingPhone_Loop",
+   "stance": [
+    0.22,
+    0.09
+   ]
   },
   "Eat": {
    "source": "old",

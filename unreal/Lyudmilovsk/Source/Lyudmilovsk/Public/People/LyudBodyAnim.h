@@ -50,6 +50,9 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	 *  up onto the surface under it, forward to it when the chair stands back from the desk. */
 	float HandIKAlpha = 0.f;
 	FVector HandOffset[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	/** Where the clip itself put each hand at the last evaluation (component space, before any IK): the game side traces
+	 *  the desk from here. */
+	FVector ClipHand[2] = { FVector::ZeroVector, FVector::ZeroVector };
 	/** On a bicycle or leading one by the bars (ALyudBike::RiderPose): the body bent onto its saddle, pedals and bars. */
 	FBikeRiderPose Bike;
 

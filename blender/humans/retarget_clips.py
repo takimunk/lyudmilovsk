@@ -20,6 +20,8 @@ Bone lengths stay the target's; only root and pelvis translate:
     pelvis "scale": the source's pelvis offset from its reference, times hip height ratio (standing, walking)
     calm [action, w]: every bone's rotation only w of the way from that (calmer) clip toward this one
     calm_keep [bones]: these bones keep all of the clip's own motion (Nod: the head nods over the idle's body)
+    stance [across, along]: a standing clip's ankles re-planted that far apart (m), the legs by IK, the body raised to
+                    keep the legs' stretch (plant_feet: UAL's idles stand in a wide 'ready' lunge)
     pelvis "seat":  the seated pelvis lands on the house's chair point (UE (0, 1, 56.7) cm for a body like Guy_a,
                     seat top 47 cm, docs in life_anims.py); offsets from the source's seated pelvis are scaled.
 Clips are in place (root stays at the origin), 30 fps, Blender character space faces -Y.
@@ -205,6 +207,65 @@ def wrist(pose, b, q, flip, rl, trest):
     return q
 
 
+def two_bone(pose, upper, lower, end, target):
+    """Bends upper/lower (armature-space mats in pose) so end's joint lands on target, the knee turning the way it
+    already bends; end keeps its rotation. Returns {bone: new matrix}."""
+    H, K, A = (pose[b].translation for b in (upper, lower, end))
+    a, b = (K - H).length, (A - K).length
+    to = target - H
+    d = max(abs(a - b) + 1e-4, min(to.length, (a + b) * 0.9999))
+    u = to.normalized()
+    bend = (K - H) - u * (K - H).dot(u)
+    if bend.length < 1e-4:
+        bend = Vector((0.0, -1.0, 0.0)) + u * u.y                   # straight leg: the knee forward (-Y)
+    v = bend.normalized()
+    ca = (a * a + d * d - b * b) / (2 * a * d)
+    k2 = H + u * (a * ca) + v * (a * math.sqrt(max(0.0, 1 - ca * ca)))
+    r1 = (K - H).rotation_difference(k2 - H)
+    r2 = (r1 @ (A - K)).rotation_difference(H + u * d - k2)
+    q_up, q_lo = pose[upper].to_quaternion(), pose[lower].to_quaternion()
+    return {upper: Matrix.Translation(H) @ (r1 @ q_up).to_matrix().to_4x4(),
+            lower: Matrix.Translation(k2) @ (r2 @ r1 @ q_lo).to_matrix().to_4x4(),
+            end: Matrix.Translation(H + u * d) @ pose[end].to_quaternion().to_matrix().to_4x4()}
+
+
+def plant_feet(pose, names, parent_of, stance):
+    """A standing clip's feet set to a calm stance (stance [across, along] m between the ankles), the body raised so the
+    legs stay as straight as in the clip. UAL's idles all stand in a wide, staggered 'ready' stance (ankles 36 cm apart
+    across and 40 cm front to back): on a shop assistant or a pensioner it reads as a lunge, the legs broken."""
+    across, along = stance
+    al, ar = pose["foot_l"].translation, pose["foot_r"].translation
+    mid = (al + ar) * 0.5
+    front = 1.0 if al.y < ar.y else -1.0                         # -Y is forward: which foot the clip has ahead
+    want = {"l": Vector((mid.x + across / 2, mid.y - front * along / 2, al.z)),
+            "r": Vector((mid.x - across / 2, mid.y + front * along / 2, ar.z))}
+    # the pelvis up by as much as keeps each leg's hip-to-ankle reach (mean of both, never past a straight leg)
+    rise = []
+    for s in "lr":
+        h, a = pose["thigh_" + s].translation, pose["foot_" + s].translation
+        reach = (a - h).length
+        horiz = (want[s] - h).to_2d().length
+        full = (pose["calf_" + s].translation - h).length + (a - pose["calf_" + s].translation).length
+        r = math.sqrt(max(0.0, min(reach, full * 0.995) ** 2 - horiz ** 2)) - (h.z - want[s].z)
+        rise.append(r)
+    dz = max(0.0, sum(rise) / 2)
+    lift = Matrix.Translation((0.0, 0.0, dz))
+    for b in names:
+        if b != "root":
+            pose[b] = lift @ pose[b]
+    old = dict(pose)
+    delta = {}
+    for s in "lr":
+        for b, m in two_bone(pose, "thigh_" + s, "calf_" + s, "foot_" + s, want[s]).items():
+            delta[b] = m @ old[b].inverted()
+            pose[b] = m
+    for b in names:                                              # what hangs below a moved bone (ball, toes) follows it
+        p = parent_of.get(b)
+        if b not in delta and p in delta:
+            delta[b] = delta[p]
+            pose[b] = delta[b] @ old[b]
+
+
 def bake(target, src, name, spec):
     act = src.acts[spec["action"]] if spec.get("action") else next(iter(src.acts.values()))
     tarm = target
@@ -241,6 +302,7 @@ def bake(target, src, name, spec):
     calm = (src.acts[spec["calm"][0]], spec["calm"][1]) if spec.get("calm") else None
     calm_keep = set(spec.get("calm_keep", ()))                   # bones that keep all of this clip's motion
     hand_of = {c.name for s_ in "lr" for c in tarm.data.bones["hand_" + s_].children_recursive}
+    parent_of = {b: tarm.data.bones[b].parent.name for b in names if tarm.data.bones[b].parent}
     new = bpy.data.actions.new("Life_" + name)
     set_action(tarm, new)
     prev = {}
@@ -286,6 +348,8 @@ def bake(target, src, name, spec):
             else:
                 loc = (pose[parent.name] @ rl[b]).translation
             pose[b] = Matrix.Translation(loc) @ q.to_matrix().to_4x4()
+        if spec.get("stance"):
+            plant_feet(pose, names, parent_of, spec["stance"])
         for b in names:
             pb = tarm.pose.bones[b]
             parent = tarm.data.bones[b].parent
