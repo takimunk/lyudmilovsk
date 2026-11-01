@@ -962,6 +962,54 @@ def build_outdoor(grid):
     return places
 
 
+# --- street food stalls (Content/Food/stalls.json, docs/food.md): the seller's counter and the customers' spots ---------
+
+STALLS = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Food", "stalls.json")
+STALLS_BUILT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Food", "stalls_built.json")
+
+
+def build_stalls(grid):
+    """One place per stall (kind = its id: a counter slot behind it, stand slots in front) and stalls_built.json: where the
+    game puts each stall's mesh (Unreal cm, yaw, ground z of the walk grid)."""
+    if not os.path.exists(STALLS):
+        return []
+    with open(STALLS) as f:
+        src = json.load(f)
+    places, built = [], []
+    for st in src["stalls"]:
+        if st["frame"] == "academ":
+            to = lambda x, y: ens_to_ue((x, y, 0.0))[:2]
+        else:
+            to = lambda x, y: map_to_ue(x, y, 0.0)[:2]
+        ax, ay = st["at"]
+        a = math.radians(st["face"])
+        fx, fy = math.cos(a), math.sin(a)
+        lx, ly = -fy, fx
+
+        def local(ox, oy):
+            return to(ax + fx * ox + lx * oy, ay + fy * ox + ly * oy)
+        c = to(ax, ay)
+        f = local(1.0, 0.0)
+        yaw = face_to(c, f)
+        gz = grid.ground(*c)
+
+        def slot(kind, o, face):
+            x, y = local(*o)
+            z = grid.ground(x, y)
+            return {"kind": kind, "pos": [r2(x), r2(y), r2(z)], "yaw": ang(face), "capacity": 1, "height": 0.0,
+                    "approach": [r2(x), r2(y), r2(z)]}
+        slots = [slot("counter", st["seller"], yaw)]
+        slots += [slot("stand", o, yaw + 180.0) for o in st["customers"]]
+        places.append({"id": st["id"], "kind": st["id"], "pos": slots[1]["pos"], "yaw": ang(yaw + 180.0), "slots": slots,
+                       "tag": "stall"})
+        built.append({"id": st["id"], "mesh": st["mesh"], "pos_cm": [r2(c[0] * 100.0), r2(c[1] * 100.0), r2(gz * 100.0)],
+                      "yaw": ang(yaw), "walkable": bool(grid.walkable(*c))})
+    with open(STALLS_BUILT, "w") as f:
+        json.dump({"_doc": "made by tools/people_map.py from stalls.json; do not edit", "stalls": built}, f, indent=1)
+    print("people_map: %d stalls -> %s" % (len(built), STALLS_BUILT), [(b["id"], b["pos_cm"], b["walkable"]) for b in built])
+    return places
+
+
 # --- by the Academgorodok: Laboratory No. 2's gate and the Gastronom's kiosk (proposals, docs/people.md) ----------
 
 def near_walkable(grid, x, y, rmax=12.0):
@@ -1438,7 +1486,7 @@ def main():
         with open(OUT) as f:
             club = dict(json.load(f)["club"])
         print("people_map: %s has no stations: the club kept from %s" % (a.scene, OUT))
-    places = build_outdoor(grid) + build_academ_extra(grid) + [gastronom]
+    places = build_outdoor(grid) + build_academ_extra(grid) + [gastronom] + build_stalls(grid)
     bad = check_outdoor(grid, places, stairs, club, library)
     rail, patches = build_rail(grid)
     for p in rail:

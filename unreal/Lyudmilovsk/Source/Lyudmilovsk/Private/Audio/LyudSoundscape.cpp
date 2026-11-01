@@ -282,6 +282,10 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Swim"), TEXT("swim_stroke") }, { TEXT("Swim"), TEXT("swim_dive") }, { TEXT("Swim"), TEXT("swim_surface") },
 		{ TEXT("Swim"), TEXT("swim_inhale") }, { TEXT("Swim"), TEXT("swim_bubbles") }, { TEXT("Swim"), TEXT("swim_underwater") },
 		{ TEXT("Swim"), TEXT("swim_choke") }, { TEXT("Swim"), TEXT("swim_gasp") }, { TEXT("Swim"), TEXT("swim_cough") },
+		// food in the hand (ULyudFoodSubsystem: a bite by what it is, chewing, a swallow, the paper it comes in)
+		{ TEXT("Food"), TEXT("food_bite_crisp") }, { TEXT("Food"), TEXT("food_bite_soft") }, { TEXT("Food"), TEXT("food_bite_squeak") },
+		{ TEXT("Food"), TEXT("food_bite_chewy") }, { TEXT("Food"), TEXT("food_bite_crunch") }, { TEXT("Food"), TEXT("food_chew") },
+		{ TEXT("Food"), TEXT("food_swallow") }, { TEXT("Food"), TEXT("food_wrap") },
 	};
 	for (const auto& G : Groups)
 	{

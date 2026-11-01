@@ -1,0 +1,10 @@
+{
+ "id": "icon_cheese_round_big",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/food/icons_grid.png",
+ "cell": [
+  1,
+  1
+ ]
+}

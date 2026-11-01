@@ -157,3 +157,11 @@ again = nishimura_aya.again1.1
 [Sorokin_oleg]
 first = sorokin_oleg.first.1
 again = sorokin_oleg.again1.1
+
+[Khuazheva_susanna]
+first = khuazheva_susanna.first.1
+again = khuazheva_susanna.again1.1
+
+[Guseva_valentina]
+first = guseva_valentina.first.1
+again = guseva_valentina.again1.1

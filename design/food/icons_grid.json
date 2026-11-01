@@ -1,0 +1,15 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "job_id": "07c74cf9-0add-43c1-a2e6-eedacc0ee93a",
+ "date": "2026-10-31",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_204422_07c74cf9-0add-43c1-a2e6-eedacc0ee93a.png",
+ "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text. Row 1, left: one hot boiled corn cob, bright yellow kernels glistening, sprinkled with coarse salt, its lower end wrapped in a white paper napkin, lying diagonally. Row 1, right: one smoked Adyghe cheese braid (chechil-style plaited string cheese), three strands plaited into a braid, glossy amber-orange smoked skin, lying diagonally. Row 2, left: one small round of fresh white Adyghe cheese, about palm size, with a basket-weave pattern pressed into its sides and top, soft rounded edges. Row 2, right: one large round of fresh white Adyghe cheese, a kilogram wheel, basket-weave pattern on its sides and top, slightly glistening with whey, seen from a three-quarter view.",
+ "ids": ["corn_cob", "cheese_braid", "cheese_round_small", "cheese_round_big"],
+ "note": "2x2 grid of the street food's item icons (no words: ru only, the other languages fall back to it); cut by tools/food_icons.py into textures/localized/ru/icon_<id>.jpg.",
+ "credits": 1
+}

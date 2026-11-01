@@ -132,6 +132,13 @@ namespace
 		FeedGood(TEXT("feed_peanuts"), FVector(5.f, 10.f, 15.f), FLinearColor(0.85f, 0.4f, 0.1f), 30);
 		Good(TEXT("bread_loaf"), K::Food, L::Pack, FVector(8.f, 10.f, 28.f), FLinearColor(0.82f, 0.6f, 0.32f), 12, 5.f);
 		Good(TEXT("kefir"), K::Drink, L::Bottle, FVector(6.4f, 6.4f, 20.f), FLinearColor(0.92f, 0.93f, 0.9f), 14, 3.2f);
+		// street food (docs/food.md): Adyghe cheese from the tent by the club's door (a smoked braid, a small and a big round), boiled
+		// corn from the stall in the Academgorodok; held in the hand and eaten by bites (ULyudFoodSubsystem: their own bite-stage
+		// meshes, the look here is only a fallback)
+		Good(TEXT("corn_cob"), K::Food, L::Pack, FVector(5.f, 5.f, 20.f), FLinearColor(0.95f, 0.78f, 0.25f), 15, 2.6f);
+		Good(TEXT("cheese_braid"), K::Food, L::Pack, FVector(3.5f, 4.5f, 22.f), FLinearColor(0.8f, 0.5f, 0.2f), 25, 2.f);
+		Good(TEXT("cheese_round_small"), K::Food, L::Pack, FVector(11.f, 11.f, 5.f), FLinearColor(0.95f, 0.93f, 0.86f), 40, 5.5f);
+		Good(TEXT("cheese_round_big"), K::Food, L::Pack, FVector(17.f, 17.f, 7.5f), FLinearColor(0.95f, 0.93f, 0.86f), 110, 8.5f);
 		FLyudItemDef Feeder;
 		Feeder.Id = TEXT("feeder");
 		Feeder.Kind = ELyudItemKind::Place;
@@ -211,6 +218,7 @@ void ULyudInventory::Reset()
 	Rubles = 100;
 	Equipped = NAME_None;
 	Worn.Reset();
+	Started.Reset();
 	for (const TCHAR* Clothes : { TEXT("overshirt"), TEXT("hoodie"), TEXT("cargo_trousers"), TEXT("sneakers") })
 	{
 		Counts.Add(Clothes, 1);
@@ -246,6 +254,7 @@ bool ULyudInventory::Remove(FName Id, int32 N)
 	if (*C <= 0)
 	{
 		Counts.Remove(Id);
+		Started.Remove(Id);
 		if (Equipped == Id)
 		{
 			Equipped = NAME_None;
@@ -690,6 +699,7 @@ bool ULyudInventoryUI::BuyShopGood(int32 Index)
 		return false;
 	}
 	Inv->Add(ShopGoods[Index].Item, ShopGoods[Index].Count);
+	OnShopBought.Broadcast(ShopGoods[Index].Item, ShopGoods[Index].Count);
 	return true;
 }
 
@@ -854,6 +864,16 @@ void ULyudInventoryUI::Use(FName Id)
 	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
 	if (!Inv || !Def || !Reach || Reach->IsBusy() || Inv->Count(Id) < 1 || Def->Kind == ELyudItemKind::Misc || Def->Kind == ELyudItemKind::Feed || Def->Kind == ELyudItemKind::Place)
 	{
+		return;
+	}
+	if (Def->Kind == ELyudItemKind::Food)
+	{
+		// food comes into the hand and is eaten there with the mouse (ULyudFoodSubsystem, ULyudHandUse)
+		Inv->Equip(Id);
+		if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this); GameScreen && GameScreen->IsOpen())
+		{
+			GameScreen->Close();
+		}
 		return;
 	}
 	if (ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this); GameScreen && GameScreen->IsOpen())
