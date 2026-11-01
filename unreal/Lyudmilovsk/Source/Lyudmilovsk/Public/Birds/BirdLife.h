@@ -11,7 +11,8 @@ class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UStaticMesh;
 class USoundBase;
-namespace LyudBirds { class FWorld; }
+namespace LyudBirds { class FWorld; struct FBird; struct FSite; struct V3; }
+class FBirdPerches;
 
 /** What a wild bird is doing (the bird life's own states; ABirdActor's EBirdState is the body's animation). */
 UENUM(BlueprintType)
@@ -97,6 +98,22 @@ public:
 	/** Food held out in the hand: call every frame while it is (palm, world cm), and once with bOn false when it goes. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	void SetOffer(FVector PalmLocation, FName Food, bool bOn);
+
+	/**
+	 * A handful of feed (an item in Content/BirdsData/feeds.json) thrown on the ground at Location (cm, G): birds round about
+	 * that like it and spot it come and peck it up (docs/bird_taming.md "Birds come to the feed"). Returns its id, -1 if the
+	 * birds aren't running.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	int32 AddFeedPile(FVector Location, FName Feed, float Handfuls = 1.f);
+
+	/** Tests: the birds sitting near the camera and how many have nothing under their feet (console lyud.Birds.PerchAudit). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	FString PerchAudit(float Radius = 6000.f);
+
+	/** How many birds are at the feed in the player's hand now (waiting round them, or coming), and at thrown piles. */
+	UFUNCTION(BlueprintPure, Category = "Birds")
+	int32 NumAtFeed(bool bThrown = false) const;
 
 	/** Something the player did that a bird minds (a dropped item, a shout): 0..2, fades in a second. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
@@ -237,6 +254,8 @@ private:
 	int32 StartCount = 0;
 	/** The food in the hand (SetOffer) and how much each species wants it. */
 	FName OfferFood;
+	/** The feed whose likes are in the sim's player now (refilled when it changes). */
+	FName FeedLiked;
 	float StartDelay = 0.f;
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;
@@ -255,6 +274,13 @@ private:
 	float SaveTimer = 0.f;
 	struct FSightCache { double Time = -1.0; bool bClear = true; };
 	TMap<int32, FSightCache> Sight;
+	/** The real branches and roofs under the wild birds' perches near the camera (the bird life's Perch check). */
+	TSharedPtr<FBirdPerches> Perches;
+	/** The sim's Perch check (kept while lyud.Birds.PerchCheck switches it off and on). */
+	TFunction<int(const LyudBirds::FBird&, const LyudBirds::FSite&, LyudBirds::V3&)> PerchFn;
+	/** People near the camera, refreshed a few times a second (flying birds steer round them). */
+	float BodiesTimer = 0.f;
+	void UpdateBodies(float DeltaTime);
 	/** Per species, its calls (raw pointers, kept alive by SoundRefs: a TMap of arrays can't be a UPROPERTY). */
 	TMap<FName, TArray<USoundBase*>> Sounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
@@ -306,6 +332,9 @@ public:
 	TArray<FString> PopLog;
 
 	static constexpr int32 NumPoses = 7;   // Perch, Peck, Sleep, Flap0, Flap1, Flap2, Glide
+	static constexpr int32 NumFarPoses = 4;   // Perch, Flap0, Flap2, Glide (the placeholder starling's)
+	/** Birds drawn last frame as far silhouettes. */
+	int32 FarLastFrame = 0;
 
 private:
 	struct FSpeciesDraw
@@ -322,6 +351,12 @@ private:
 		bool bOwnMeshes = false;
 		bool bHasBody = false;
 		float FemaleScale = 1.f;
+		/** Far away (past lyud.Birds.FullDetail lengths): a few-dozen-triangle silhouette in the species' colour instead of
+		 *  its own feathered pose (NumFarPoses: sitting, wings up, wings down, gliding). */
+		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Far;
+		TArray<TArray<FTransform>> FarXf;
+		TArray<int32> FarShown;
+		float FarScale = 1.f;
 	};
 	TArray<FSpeciesDraw> Species;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> PlaceholderMeshes;
@@ -339,6 +374,11 @@ private:
 	/** Per bird this frame: why it wasn't drawn (0 drawn, 1 gone, 2 tier, 3 claimed, 4 out of range, 5 under water). */
 	TArray<uint8> Why;
 	TArray<uint8> LastWhy;
+
+	struct FDrawItem { int32 Id; int32 Species; int32 Slot; FTransform Xf; float Px; bool bFar; };
+	TArray<FDrawItem> ItemScratch;
+	TArray<TPair<float, int32>> NearScratch;
+	TArray<float> PxScratch;
 
 	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);

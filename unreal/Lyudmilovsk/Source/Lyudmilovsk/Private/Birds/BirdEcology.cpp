@@ -199,6 +199,25 @@ namespace LyudBirds
 		};
 		// clang-format on
 
+		/**
+		 * How each species finds food people bring (docs/bird_taming.md "Birds come to the feed"): how far off it spots feed in
+		 * a hand or thrown down, and how near the person it then lands to wait. Town birds that live off people (pigeons,
+		 * sparrows, gulls, the crows) see a bag or a thrown crust from far and come close; woodland birds notice only near and
+		 * keep their distance. Birds not listed (hawks, swifts and swallows, the seabirds, herons, eagles) never come to it.
+		 */
+		struct FFoodSense { const char* Id; float Notice, Beg; };
+		// clang-format off
+		const FFoodSense FoodSenses[] = {
+			{ "FeralPigeon", 60.f, 1.2f }, { "HouseSparrow", 45.f, 1.0f }, { "TreeSparrow", 35.f, 1.6f }, { "WoodPigeon", 30.f, 5.f },
+			{ "HerringGull", 90.f, 3.f }, { "BlackHeadedGull", 80.f, 2.5f }, { "CommonGull", 70.f, 3.f },
+			{ "Jackdaw", 60.f, 2.5f }, { "Rook", 55.f, 5.f }, { "HoodedCrow", 70.f, 4.f }, { "CarrionCrow", 70.f, 4.f }, { "Magpie", 50.f, 3.5f },
+			{ "Raven", 60.f, 8.f }, { "Jay", 35.f, 5.f }, { "Nutcracker", 35.f, 1.5f },
+			{ "Starling", 55.f, 1.8f }, { "Blackbird", 25.f, 2.5f }, { "SongThrush", 15.f, 4.f }, { "Fieldfare", 25.f, 6.f }, { "Robin", 20.f, 1.0f },
+			{ "GreatTit", 30.f, 1.5f }, { "BlueTit", 25.f, 1.5f }, { "Chaffinch", 30.f, 1.8f }, { "Bullfinch", 20.f, 3.f }, { "Goldfinch", 25.f, 3.f },
+			{ "Waxwing", 30.f, 2.5f }, { "WhiteWagtail", 20.f, 2.5f }, { "MuteSwan", 40.f, 2.f },
+		};
+		// clang-format on
+
 		std::vector<FSpecies> MakeTable()
 		{
 			std::vector<FSpecies> Out;
@@ -259,6 +278,14 @@ namespace LyudBirds
 					}
 				}
 				S.bMurmurates = S.Id == "Starling";
+				for (const FFoodSense& F : FoodSenses)
+				{
+					if (S.Id == F.Id)
+					{
+						S.FoodNotice = F.Notice;
+						S.BegDistance = F.Beg;
+					}
+				}
 				// the flying qualities (BirdBio)
 				const BirdBio::FBio& Bio = BirdBio::Get(D.Id);
 				S.Sprint = Bio.SprintMs > 0 ? (float)Bio.SprintMs : S.Cruise * 1.3f;

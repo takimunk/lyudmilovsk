@@ -291,6 +291,18 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSettings()
 			.Text_Lambda([] { return LyudText::Get(LyudSettings::HudShown() ? TEXT("ui.settings.hud_on") : TEXT("ui.settings.hud_off")); })
 		]
 	];
+	// how far off the wild birds are still seen (a click steps through near .. very far)
+	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)
+	[
+		SNew(SButton)
+		.ButtonStyle(&Button())
+		.HAlign(HAlign_Center)
+		.OnClicked_Lambda([] { LyudSettings::SetBirdRange((LyudSettings::BirdRange() + 1) % LyudSettings::NumBirdRanges); return FReply::Handled(); })
+		[
+			SNew(STextBlock).Font(Font(18)).ColorAndOpacity(Text)
+			.Text_Lambda([] { return LyudText::Get(*FString::Printf(TEXT("ui.settings.birds_range.%d"), LyudSettings::BirdRange())); })
+		]
+	];
 	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 	return Box;
 }

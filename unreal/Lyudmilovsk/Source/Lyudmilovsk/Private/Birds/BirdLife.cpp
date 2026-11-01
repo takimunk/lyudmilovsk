@@ -2,6 +2,9 @@
 #include "World/LyudPrefetch.h"
 
 #include "BirdSim.h"
+#include "BirdPerches.h"
+#include "LyudInventory.h"
+#include "People/PeopleLife.h"
 #include "BirdMurmur.h"
 #include "BirdNest.h"
 #include "Birds/BirdNests.h"
@@ -52,8 +55,14 @@ static TAutoConsoleVariable<int32> CVarBirdsBodies(TEXT("lyud.Birds.Bodies"), 12
 	TEXT("Most birds near the camera drawn as animated bodies (ABirdActor) at once."));
 static TAutoConsoleVariable<int32> CVarBirdsIgnorePlayer(TEXT("lyud.Birds.IgnorePlayer"), 0,
 	TEXT("1: birds don't perceive the player (close-up screenshots, debugging)."));
-static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 700.f,
-	TEXT("Birds are drawn within this many of their own lengths from the camera."));
+static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 1200.f,
+	TEXT("Birds are drawn within this many of their own lengths from the camera (a starling 250 m off at 1200); the Settings page's 'Birds in the distance' sets it."));
+static TAutoConsoleVariable<int32> CVarBirdsPerchCheck(TEXT("lyud.Birds.PerchCheck"), 1,
+	TEXT("1: a perch near the camera goes on the real branch or roof under it (none there: the bird goes elsewhere); 0: off (A/B)."));
+static TAutoConsoleVariable<int32> CVarBirdsAvoid(TEXT("lyud.Birds.Avoid"), 1,
+	TEXT("1: flying birds swerve round the player and the people near; 0: off (A/B)."));
+static TAutoConsoleVariable<float> CVarBirdsFullDetail(TEXT("lyud.Birds.FullDetail"), 350.f,
+	TEXT("Within this many of their own lengths birds are drawn with their own feathered poses; farther, where they are a pixel or two, as a cheap silhouette in their colour."));
 static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
 	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,
@@ -191,6 +200,38 @@ bool UBirdLifeSubsystem::Start()
 	S.Opt.bMigration = CVarBirdsMigration.GetValueOnGameThread() != 0;
 
 	AddRealTrees();
+	// the cable car's two ropes (bird_habitats.py, pieces of ~15-20 m along the old line): the line was rebuilt (ALyudCableway)
+	// and a haul rope runs all day, so a bird there sat on air; the Academgorodok's wires (ALyudWires) are pieces of 4 m at most
+	for (FSite& Site : S.Sites)
+	{
+		if (Site.Kind == EHabitat::Wire && (Site.B - Site.A).Len() > 5.f)
+		{
+			Site.Flags |= 8;
+		}
+	}
+	S.RemoveSites(8);
+	// a perch near the camera goes on the real thing: a branch of the drawn tree, the roof or rail under it; none there is
+	// a spot in the air (a crown's guessed volume between bare twigs), and the bird goes elsewhere
+	Perches = MakeShared<FBirdPerches>();
+	PerchFn = [this, World](const FBird& B, const FSite& Site, V3& Spot) -> int
+	{
+		if (Site.Kind == EHabitat::Wire)
+		{
+			return 1;            // the wires are drawn from the same file the sites come from (ALyudWires)
+		}
+		const float Len = SpeciesTable()[B.Species].Length * 100.f;
+		Perches->SetBird(0.25f, FMath::Clamp(Len * 0.22f, 1.5f, 12.f), Len * 0.2f, Len * 0.3f);
+		const bool bTree = Site.Kind == EHabitat::Broadleaf || Site.Kind == EHabitat::Conifer || Site.Kind == EHabitat::Garden;
+		FBirdPerches::FPerch Out;
+		bool bUnknown = false;
+		if (Perches->FindNear(World, ToUE(Spot), bTree ? FMath::Max(150.f, Site.Radius * 60.f) : 120.f, bTree, Out, &bUnknown))
+		{
+			Spot = FromUE(Out.Point);
+			return 1;
+		}
+		return bUnknown ? -1 : 0;
+	};
+	S.Perch = PerchFn;
 
 	// the player's usual place: the club's door, at the map's origin (face y from the habitat file)
 	S.Opt.Focus = V3(0.f, 12.f, 0.f);
@@ -357,6 +398,8 @@ int32 UBirdLifeSubsystem::SpawnBird(FName Species, FVector Location)
 
 void UBirdLifeSubsystem::Stop()
 {
+	PerchFn = nullptr;
+	Perches.Reset();
 	if (Renderer)
 	{
 		Renderer->Destroy();
@@ -542,9 +585,22 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 		bOffer = false;
 	}
 	P.bOffer = bOffer;
-	if (bOffer)
+	// feed in the hand (the bag carried, or a handful held out): birds that like it notice it from their distance and come
+	FName Held = bOffer ? OfferFood : FName();
+	if (Held.IsNone() && !Pawn->IsHidden())
 	{
-		LyudBirdFeeds::LikeTable(OfferFood, P.OfferLike);
+		if (const ULyudInventory* Inv = ULyudInventory::Get(this))
+		{
+			const FName Item = Inv->EquippedItem();
+			const FLyudItemDef* Def = Item.IsNone() ? nullptr : ULyudInventory::FindDef(Item);
+			Held = Def && Def->Kind == ELyudItemKind::Feed ? Item : FName();
+		}
+	}
+	P.bFeed = !Held.IsNone();
+	if (P.bFeed && Held != FeedLiked)
+	{
+		LyudBirdFeeds::LikeTable(Held, P.OfferLike);
+		FeedLiked = Held;
 	}
 	P.Palm = FromUE(LastPalm);
 	P.HandSpeed = HandSpeed;
@@ -619,6 +675,25 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	{
 		MigrationTimer = 5.f;
 		S.UpdateMigration();
+		if (Perches)
+		{
+			Perches->TrimCache(48);
+		}
+	}
+	UpdateBodies(DeltaTime);
+	S.Opt.bAvoid = CVarBirdsAvoid.GetValueOnGameThread() != 0;
+	const bool bPerchCheck = CVarBirdsPerchCheck.GetValueOnGameThread() != 0 && (bool)PerchFn;
+	if (bPerchCheck != (bool)S.Perch)
+	{
+		S.Perch = nullptr;
+		if (bPerchCheck)
+		{
+			S.Perch = PerchFn;
+		}
+	}
+	if (Perches)
+	{
+		Perches->ResetBuildBudget(1);      // one tree's branch skeleton a frame at most (a few ms)
 	}
 	S.Step(DeltaTime);
 	DispatchEvents();
@@ -829,6 +904,124 @@ void UBirdLifeSubsystem::SetOffer(FVector PalmLocation, FName Food, bool bOn)
 	(void)Food;
 }
 
+int32 UBirdLifeSubsystem::AddFeedPile(FVector Location, FName Feed, float Handfuls)
+{
+	if (!Sim)
+	{
+		return -1;
+	}
+	float Like[64];
+	LyudBirdFeeds::LikeTable(Feed, Like);
+	return Sim->AddPile(FromUE(Location), Handfuls, Like);
+}
+
+FString UBirdLifeSubsystem::PerchAudit(float Radius)
+{
+	if (!Sim || !Perches)
+	{
+		return TEXT("not running");
+	}
+	// every bird sitting near the camera: on a perch, wood or a roof within 25 cm of its feet; on the ground, the ground
+	// within 30 cm (a trace); the ones in the air listed
+	UWorld* World = GetWorld();
+	const FWorld& S = *Sim;
+	int32 Perched = 0, OnGround = 0, InAir = 0;
+	TArray<FString> Bad;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdAudit), false);
+	if (APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		Q.AddIgnoredActor(Pawn);
+	}
+	if (ALyudSea* SeaActor = Sea.Get())
+	{
+		Q.AddIgnoredActor(SeaActor);
+	}
+	for (const FBird& B : S.Birds)
+	{
+		if (B.bGone || IsAirborne(B.Act) || B.Act == EAct::Claimed || B.Act == EAct::Eat || B.Act == EAct::Swim || (ToUE(B.Pos) - ToUE(S.Camera)).Size() > Radius)
+		{
+			continue;
+		}
+		const FVector P = ToUE(B.Pos);
+		const bool bGround = B.Site < 0 || IsGroundHabitat(S.Sites[B.Site].Kind);
+		bool bOk;
+		if (bGround)
+		{
+			OnGround++;
+			FHitResult Hit;
+			bOk = World->LineTraceSingleByChannel(Hit, P + FVector(0, 0, 30.f), P - FVector(0, 0, 30.f), ECC_Visibility, Q) || P.Z < S.SeaZ * 100.f + 30.f;
+		}
+		else
+		{
+			Perched++;
+			const LyudBirds::EHabitat Kind = S.Sites[B.Site].Kind;
+			if (Kind == EHabitat::Wire)
+			{
+				bOk = true;
+			}
+			else
+			{
+				FBirdPerches::FPerch Out;
+				const bool bTree = Kind == EHabitat::Broadleaf || Kind == EHabitat::Conifer || Kind == EHabitat::Garden;
+				Perches->ResetBuildBudget(1000);
+				bOk = Perches->FindNear(World, P, 25.f, bTree, Out);
+			}
+		}
+		if (!bOk)
+		{
+			InAir++;
+			if (Bad.Num() < 10)
+			{
+				Bad.Add(FString::Printf(TEXT("%s#%d %s on %s at %.0f %.0f %.0f"), UTF8_TO_TCHAR(SpeciesTable()[B.Species].Id.c_str()), B.Id, UTF8_TO_TCHAR(ActName(B.Act)),
+					B.Site >= 0 ? UTF8_TO_TCHAR(HabitatName(S.Sites[B.Site].Kind)) : TEXT("-"), P.X, P.Y, P.Z));
+			}
+		}
+	}
+	return FString::Printf(TEXT("within %.0f m: %d on perches, %d on the ground; in the air %d%s%s"), Radius / 100.f, Perched, OnGround, InAir,
+		Bad.Num() ? TEXT(": ") : TEXT(""), *FString::Join(Bad, TEXT(", ")));
+}
+
+int32 UBirdLifeSubsystem::NumAtFeed(bool bThrown) const
+{
+	int32 N = 0;
+	if (Sim)
+	{
+		for (const FBird& B : Sim->Birds)
+		{
+			N += bThrown ? B.Lure >= 0 : B.Lure == -1;
+		}
+	}
+	return N;
+}
+
+void UBirdLifeSubsystem::UpdateBodies(float DeltaTime)
+{
+	BodiesTimer -= DeltaTime;
+	if (BodiesTimer > 0.f)
+	{
+		return;
+	}
+	BodiesTimer = 0.25f;
+	// the people walking about near the camera (their bodies), the nearest few: flying birds swerve round them
+	FWorld& S = *Sim;
+	S.Bodies.clear();
+	const FVector Cam = ToUE(S.Camera);
+	for (TActorIterator<ANpcBody> It(GetWorld()); It; ++It)
+	{
+		if (It->IsHidden() || FVector::DistSquared2D(It->GetActorLocation(), Cam) > FMath::Square(8000.0))
+		{
+			continue;
+		}
+		FBody Body;
+		Body.Feet = FromUE(It->GetActorLocation());
+		S.Bodies.push_back(Body);
+		if (S.Bodies.size() >= 24)
+		{
+			break;
+		}
+	}
+}
+
 void UBirdLifeSubsystem::AddPlayerThreat(float Amount)
 {
 	if (Sim)
@@ -980,8 +1173,8 @@ FString UBirdLifeSubsystem::Report() const
 	{
 		return TEXT("BirdLife: not running");
 	}
-	return FString::Printf(TEXT("BirdLife: %s; calls played %d, sounds loaded %d; drawn %d (%s), bodies %d; pops %d, body spawns %d releases %d"), UTF8_TO_TCHAR(Sim->Report().c_str()), CallsPlayed, SoundRefs.Num(),
-		Renderer ? Renderer->DrawnLastFrame : 0, Renderer ? *Renderer->Describe() : TEXT(""), Renderer ? Renderer->BodiesLastFrame : 0,
+	return FString::Printf(TEXT("BirdLife: %s; calls played %d, sounds loaded %d; drawn %d + far %d (%s), bodies %d; pops %d, body spawns %d releases %d"), UTF8_TO_TCHAR(Sim->Report().c_str()), CallsPlayed, SoundRefs.Num(),
+		Renderer ? Renderer->DrawnLastFrame : 0, Renderer ? Renderer->FarLastFrame : 0, Renderer ? *Renderer->Describe() : TEXT(""), Renderer ? Renderer->BodiesLastFrame : 0,
 		Renderer ? Renderer->Pops : 0, Renderer ? Renderer->BodySpawns : 0, Renderer ? Renderer->BodyReleases : 0) + (NestRenderer ? TEXT("; ") + NestRenderer->Describe() : FString()) + (Renderer && Renderer->PopLog.Num() ? TEXT(" (last pops: ") + FString::Join(Renderer->PopLog, TEXT("; ")) + TEXT(")") : TEXT(""));
 }
 
@@ -1031,6 +1224,16 @@ static FAutoConsoleCommandWithWorldAndArgs GBirdsReportCmd(TEXT("lyud.Birds.Repo
 		if (const UBirdLifeSubsystem* B = UBirdLifeSubsystem::Get(World))
 		{
 			UE_LOG(LogTemp, Display, TEXT("%s"), *B->Report());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdsPerchAuditCmd(TEXT("lyud.Birds.PerchAudit"),
+	TEXT("lyud.Birds.PerchAudit [m=60]: BIRDPERCH line: the birds sitting within that distance of the camera, and how many have nothing (branch, roof, ground) under their feet."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UBirdLifeSubsystem* B = UBirdLifeSubsystem::Get(World))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("BIRDPERCH %s"), *B->PerchAudit(Args.Num() ? FCString::Atof(*Args[0]) * 100.f : 6000.f));
 		}
 	}));
 
@@ -1222,6 +1425,30 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 				D.Poses.Add(ISM);
 			}
 		}
+		// far away: the placeholder starling's few dozen triangles in the species' colour, no shadow
+		static const TCHAR* const FarNames[NumFarPoses] = { TEXT("Perch"), TEXT("Flap0"), TEXT("Flap2"), TEXT("Glide") };
+		static const int32 FarMesh[NumFarPoses] = { 0, 1, 3, 4 };
+		D.FarXf.SetNum(NumFarPoses);
+		D.FarShown.Init(0, NumFarPoses);
+		for (int32 P = 0; P < NumFarPoses; P++)
+		{
+			UInstancedStaticMeshComponent* ISM = NewObject<UInstancedStaticMeshComponent>(this, *FString::Printf(TEXT("ISM_%s_Far%s"), *Id.ToString(), FarNames[P]));
+			ISM->SetupAttachment(RootComponent);
+			ISM->SetMobility(EComponentMobility::Movable);
+			ISM->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			ISM->SetCastShadow(false);
+			ISM->bDisableCollision = true;
+			ISM->SetCanEverAffectNavigation(false);
+			ISM->LightingChannels.bChannel1 = true;
+			ISM->bAffectDynamicIndirectLighting = false;
+			ISM->bAffectDistanceFieldLighting = false;
+			ISM->NumCustomDataFloats = 0;
+			ISM->SetStaticMesh(PlaceholderMeshes[FarMesh[P]]);
+			ISM->SetMaterial(0, Mat);
+			ISM->RegisterComponent();
+			D.Far.Add(ISM);
+		}
+		D.FarScale = Length / 0.215f;
 	}
 }
 
@@ -1261,6 +1488,10 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			X.Reset();
 		}
+		for (TArray<FTransform>& X : D.FarXf)
+		{
+			X.Reset();
+		}
 	}
 	const int32 NumBirds = (int32)World.Birds.size();
 	if (Reach.Num() != NumBirds)
@@ -1272,14 +1503,16 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	const float Dt = FMath::Clamp(GetWorld()->GetDeltaSeconds(), 0.f, 0.25f);
 	const bool bSteady = CVarBirdsSteady.GetValueOnGameThread() != 0;
 	const float DrawLengths = CVarBirdsDrawScale.GetValueOnGameThread();
-	const float FarDist = World.Opt.FarDist;
+	const float FullLengths = CVarBirdsFullDetail.GetValueOnGameThread();
 	const int32 MaxBodies = BodyClass ? CVarBirdsBodies.GetValueOnGameThread() : 0;
 	// bodies: the nearest birds within 25 m (and the one coming to the hand, and the claimed one); a bird that has a
 	// body keeps it out to 30 m and against newcomers up to 5 m nearer, so the set doesn't churn in a flock
 	const float BodyIn = 25.f, BodyOut = bSteady ? 30.f : BodyIn, BodyHold = bSteady ? 5.f : 0.f;
-	TArray<TPair<float, int32>> Near;
-	struct FItem { int32 Id; int32 Species; int32 Slot; FTransform Xf; float Px; };
-	TArray<FItem> Items;
+	// (scratch arrays kept between frames: no allocations once they have grown)
+	TArray<TPair<float, int32>>& Near = NearScratch;
+	Near.Reset();
+	TArray<FDrawItem>& Items = ItemScratch;
+	Items.Reset();
 	Why.SetNumZeroed(NumBirds);
 	DrawnLastFrame = 0;
 	for (const FBird& B : World.Birds)
@@ -1296,8 +1529,8 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		const float WantReach = bMurmur ? 8.f : 1.f;
 		const float Ease = FMath::Exp(Dt * 0.2f);
 		R = bSteady ? (WantReach > R ? FMath::Min(WantReach, R * Ease) : FMath::Max(WantReach, R / Ease)) : WantReach;
-		Why[B.Id] = B.bGone ? 1 : (B.Act == EAct::Claimed ? 3 : 2);
-		if (B.bGone || (B.Tier > 2 && R < 1.5f) || B.Act == EAct::Claimed)
+		Why[B.Id] = B.bGone ? 1 : 3;
+		if (B.bGone || B.Act == EAct::Claimed)
 		{
 			continue;            // a claimed bird is drawn by the player's own body (bird flight)
 		}
@@ -1310,13 +1543,9 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		const float Young = Nests && Nests->YoungOf(B.Id) >= 0 ? Nests->BodyScale(World, B.Id) : 1.f;
 		const FVector P = ToUE(World.RenderPos(B));
 		const float Dist = (float)FVector::Dist(P, Camera) * 0.01f;
-		// fades (shrinks) over the last fifth of its range, and is done before the sim stops moving it (FarDist)
-		float Limit = S.Length * DrawLengths * R;
-		if (R < 1.5f && bSteady)
-		{
-			Limit = FMath::Min(Limit, FarDist * 0.95f);
-		}
-		const float Fade = bSteady ? FMath::Clamp((Limit - Dist) / (Limit * 0.2f), 0.f, 1.f) : (Dist > Limit ? 0.f : 1.f);
+		// fades (shrinks) over the last quarter of its range (the far tier still moves, in coarse steps the drawing smooths)
+		const float Limit = S.Length * DrawLengths * R;
+		const float Fade = bSteady ? FMath::Clamp((Limit - Dist) / (Limit * 0.25f), 0.f, 1.f) : (Dist > Limit ? 0.f : 1.f);
 		Why[B.Id] = Fade <= 0.f ? 4 : 5;
 		if (Fade <= 0.f || (B.Act == EAct::Peck && P.Z < -4350.0))
 		{
@@ -1329,6 +1558,8 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 			Near.Emplace(B.Act == EAct::Approach || B.Act == EAct::Eat ? -1000.f : Dist - (bHadBody ? BodyHold : 0.f), B.Id);
 		}
 		FSpeciesDraw& D = Species[B.Species];
+		// past FullDetail lengths it is a pixel or two: a cheap silhouette in its colour instead of its own feathered pose
+		const bool bFar = Dist > S.Length * FullLengths && B.Act != EAct::Approach && B.Act != EAct::Eat && !bHadBody;
 		// far birds keep at least ~1.2 px so they don't flicker away (1080 px, 90 degrees);
 		// a murmuration's birds keep ~2 px: the flock reads as a dark cloud against the evening sky, as it does
 		const float Px = S.Length / FMath::Max(Dist, 0.1f) * 540.f * PixelScale;
@@ -1377,6 +1608,14 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			Pose = 2;
 		}
+		if (bFar)
+		{
+			// sitting, wings up, wings down, gliding (the beat's frames 0 and 2; a bounding bird's shut wings read as sitting)
+			const int32 FarPose = Pose <= 2 ? 0 : (Pose == 3 ? 1 : (Pose == 5 ? 2 : (Pose == 6 ? 3 : 1)));
+			const float FarS = D.FarScale * FMath::Min(Grow, FMath::Lerp(3.f, 8.f, InFlock)) * Fade * (B.bFemale ? D.FemaleScale : 1.f) * Young;
+			Items.Add({ B.Id, B.Species, FarPose, FTransform(FRotator(Pitch, FMath::RadiansToDegrees(B.Yaw) - 90.f, Roll), P, FVector(FarS)), Px * Grow * Fade, true });
+			continue;
+		}
 		const FRotator Rot(Pitch, FMath::RadiansToDegrees(B.Yaw) + (D.bOwnMeshes ? 0.f : -90.f), Roll);
 		FVector At = P;
 		if (D.bOwnMeshes && bAir)
@@ -1384,7 +1623,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 			At.Z -= S.Length * 12.0;   // the species' poses stand on their feet; in the air the bird's position is its body
 		}
 		const FVector S3 = !D.bOwnMeshes && B.Act == EAct::Sleep ? FVector(Scale, Scale, Scale * 0.85f) : FVector(Scale);
-		Items.Add({ B.Id, B.Species, Pose + (B.bFemale && D.Xf.Num() > NumPoses ? NumPoses : 0), FTransform(Rot, At, S3), Px * Grow * Fade });
+		Items.Add({ B.Id, B.Species, Pose + (B.bFemale && D.Xf.Num() > NumPoses ? NumPoses : 0), FTransform(Rot, At, S3), Px * Grow * Fade, false });
 	}
 	// bodies
 	Near.Sort([](const TPair<float, int32>& A, const TPair<float, int32>& B) { return A.Key < B.Key; });
@@ -1425,12 +1664,18 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	}
 	BodiesLastFrame = Bodies.Num();
 	// a bird with a body is not drawn instanced as well, except the frame or two its new body needs to show posed
-	TArray<uint8> Shown;
-	Shown.Init(0, NumBirds);
-	TArray<float> NowPx;
+	TArray<float>& NowPx = PxScratch;
 	NowPx.Init(0.f, NumBirds);
-	for (const FItem& I : Items)
+	FarLastFrame = 0;
+	for (const FDrawItem& I : Items)
 	{
+		if (I.bFar)
+		{
+			Species[I.Species].FarXf[I.Slot].Add(I.Xf);
+			NowPx[I.Id] = I.Px;
+			FarLastFrame++;
+			continue;
+		}
 		const uint64* Born = BodyBorn.Find(I.Id);
 		const bool bBodyReady = Bodies.Contains(I.Id) && (!Born || GFrameCounter > *Born + (bSteady ? 1 : 0));
 		NowPx[I.Id] = I.Px;
@@ -1471,6 +1716,10 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		for (int32 P = 0; P < D.Poses.Num(); P++)
 		{
 			Sync(D.Poses[P], D.Xf[P], D.Shown[P]);
+		}
+		for (int32 P = 0; P < D.Far.Num(); P++)
+		{
+			Sync(D.Far[P], D.FarXf[P], D.FarShown[P]);
 		}
 	}
 }

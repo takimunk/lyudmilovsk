@@ -21,6 +21,9 @@ namespace
 	// the soundscape's own defaults
 	const float VolumeDefaults[] = { 1.f, 1.f, 0.45f, 1.f };
 
+	// lyud.Birds.DrawDistance per step of the Settings page's 'Birds in the distance' (a starling: 125, 250, 420, 630 m)
+	const float BirdRangeLengths[LyudSettings::NumBirdRanges] = { 600.f, 1200.f, 2000.f, 3000.f };
+
 	void Store(const TCHAR* Key, const FString& Value)
 	{
 		GConfig->SetString(Section, Key, *Value, GGameUserSettingsIni);
@@ -47,6 +50,32 @@ namespace LyudSettings
 		{
 			SetCVar(TEXT("lyud.Hud"), Value);
 		}
+		if (GConfig->GetString(Section, TEXT("BirdRange"), Value, GGameUserSettingsIni) && !Value.IsEmpty())
+		{
+			SetCVar(TEXT("lyud.Birds.DrawDistance"), FString::SanitizeFloat(BirdRangeLengths[FMath::Clamp(FCString::Atoi(*Value), 0, NumBirdRanges - 1)]));
+		}
+	}
+
+	int32 BirdRange()
+	{
+		const IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Birds.DrawDistance"));
+		const float Lengths = V ? V->GetFloat() : BirdRangeLengths[1];
+		int32 Best = 0;
+		for (int32 I = 1; I < NumBirdRanges; I++)
+		{
+			if (FMath::Abs(BirdRangeLengths[I] - Lengths) < FMath::Abs(BirdRangeLengths[Best] - Lengths))
+			{
+				Best = I;
+			}
+		}
+		return Best;
+	}
+
+	void SetBirdRange(int32 Range)
+	{
+		Range = FMath::Clamp(Range, 0, NumBirdRanges - 1);
+		SetCVar(TEXT("lyud.Birds.DrawDistance"), FString::SanitizeFloat(BirdRangeLengths[Range]));
+		Store(TEXT("BirdRange"), FString::FromInt(Range));
 	}
 
 	void SetLanguage(const FString& Lang)

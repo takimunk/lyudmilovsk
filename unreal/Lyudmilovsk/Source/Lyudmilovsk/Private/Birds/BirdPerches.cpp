@@ -3,6 +3,8 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/PhysicsVolume.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/PlayerController.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantModel.h"
 #include "Plants/PlantSpecies.h"
@@ -85,14 +87,21 @@ void FBirdPerches::BuildCrowns(UWorld* World)
 	}
 }
 
+uint64 FBirdPerches::KeyOf(const FTree& T) const
+{
+	return HashCombine(HashCombine(GetTypeHash(T.Species), T.Seed), HashCombine(GetTypeHash(BaseKey(T.Xf.GetLocation())), FMath::RoundToInt(T.Age * 20.f)));
+}
+
 const TArray<FBirdPerches::FSeg>& FBirdPerches::Branches(UWorld* World, const FTree& T)
 {
-	const uint64 Key = HashCombine(HashCombine(GetTypeHash(T.Species), T.Seed), HashCombine(GetTypeHash(BaseKey(T.Xf.GetLocation())), FMath::RoundToInt(T.Age * 20.f)));
+	const uint64 Key = KeyOf(T);
+	BranchUsed.Add(Key, ++Uses);
 	if (const TArray<FSeg>* Found = BranchCache.Find(Key))
 	{
 		return *Found;
 	}
 	TArray<FSeg>& Out = BranchCache.Add(Key);
+	BuildBudget--;
 	const FPlantSpecies* Sp = PlantSpeciesLibrary::Find(T.Species);
 	if (!Sp)
 	{
@@ -314,4 +323,161 @@ bool FBirdPerches::Find(UWorld* World, const FVector& From, const FVector& Dir, 
 		}
 	}
 	return Best < 1e19f;
+}
+
+void FBirdPerches::TrimCache(int32 Max)
+{
+	if (BranchCache.Num() <= Max)
+	{
+		return;
+	}
+	// drop the trees read longest ago, down to half the limit (a few skeletons rebuilt later beat a cache that only grows)
+	TArray<TPair<uint64, uint64>> ByUse;
+	for (const TPair<uint64, uint64>& U : BranchUsed)
+	{
+		ByUse.Add({ U.Value, U.Key });
+	}
+	ByUse.Sort([](const TPair<uint64, uint64>& A, const TPair<uint64, uint64>& B) { return A.Key < B.Key; });
+	for (int32 I = 0; I < ByUse.Num() && BranchCache.Num() > Max / 2; I++)
+	{
+		BranchCache.Remove(ByUse[I].Value);
+		BranchUsed.Remove(ByUse[I].Value);
+	}
+	BranchCache.Compact();
+	BranchUsed.Compact();
+}
+
+bool FBirdPerches::FindNear(UWorld* World, const FVector& At, float MaxDist, bool bTrees, FPerch& Out, bool* bUnknown)
+{
+	if (bUnknown)
+	{
+		*bUnknown = false;
+	}
+	if (!World)
+	{
+		return false;
+	}
+	if (!bBuilt)
+	{
+		BuildCrowns(World);
+	}
+	float Best = MaxDist;
+	bool bFound = false;
+	if (bTrees)
+	{
+		// the drawn tree near the camera is a live plant of its own age (it grows with the calendar)
+		const double Now = World->GetTimeSeconds();
+		if (Now - LiveAgesTime > 5.0)
+		{
+			LiveAgesTime = Now;
+			LiveAges.Reset();
+			for (TActorIterator<AProceduralPlant> It(World); It; ++It)
+			{
+				LiveAges.Add(BaseKey(It->GetActorLocation()), It->GetAge());
+			}
+		}
+		const FIntPoint C0 = CellOf(At);
+		struct FCand { float D; int32 Tree; FVector Feet; FVector Axis; FVector Dir; float Radius; };
+		TArray<FCand, TInlineAllocator<16>> Cands;
+		for (int32 Y = C0.Y - 1; Y <= C0.Y + 1; Y++)
+		{
+			for (int32 X = C0.X - 1; X <= C0.X + 1; X++)
+			{
+				const TArray<int32>* List = Grid.Find(FIntPoint(X, Y));
+				if (!List) continue;
+				for (const int32 Ti : *List)
+				{
+					FTree& T = Trees[Ti];
+					if (T.bPoint || FVector::Dist2D(FVector(T.Centre), At) > T.Radii.X + MaxDist)
+					{
+						continue;
+					}
+					if (const float* Age = LiveAges.Find(BaseKey(T.Xf.GetLocation())))
+					{
+						T.Age = *Age;
+					}
+					if (BuildBudget <= 0 && !BranchCache.Contains(KeyOf(T)))
+					{
+						// its skeleton isn't built yet and this frame's builds are spent: can't say now
+						if (bUnknown)
+						{
+							*bUnknown = true;
+						}
+						return false;
+					}
+					// the nearest limb or inner twig the feet can close round, near level, to the spot
+					const TArray<FSeg>& Segs = Branches(World, T);
+					FCand Near{ Best, Ti };
+					for (const FSeg& S : Segs)
+					{
+						if (S.Order == 0 || (S.Order >= 2 && S.Along > 0.5f)) continue;
+						const float Rad = 0.5f * (S.RA + S.RB);
+						if (Rad < MinRadius || Rad > MaxRadius) continue;
+						const FVector A(S.A), B(S.B);
+						const FVector Along = (B - A).GetSafeNormal();
+						if (FMath::Abs(Along.Z) > 0.45f) continue;
+						float U = 0.f;
+						const float D = DistToSegment(At, A, B, U);
+						if (D >= Near.D) continue;
+						const FVector Axis = A + (B - A) * U;
+						const FVector Up = (FVector::UpVector - Along * Along.Z).GetSafeNormal();
+						Near = { D, Ti, Axis + Up * Rad, Axis, Along, Rad };
+					}
+					if (Near.D < Best)
+					{
+						Cands.Add(Near);
+					}
+				}
+			}
+		}
+		Cands.Sort([](const FCand& A, const FCand& B) { return A.D < B.D; });
+		for (const FCand& C : Cands)
+		{
+			// room for the body over the feet, and the feet not inside other wood
+			const FVector BodyAt = C.Feet + FVector(0, 0, StandHeight);
+			bool bClear = true;
+			for (const FSeg& S : Branches(World, Trees[C.Tree]))
+			{
+				float U = 0.f;
+				if (DistToSegment(BodyAt, FVector(S.A), FVector(S.B), U) - FMath::Lerp(S.RA, S.RB, U) < BodyRadius
+					|| DistToSegment(C.Feet + FVector(0, 0, 1.f), FVector(S.A), FVector(S.B), U) - FMath::Lerp(S.RA, S.RB, U) < 0.f)
+				{
+					bClear = false;
+					break;
+				}
+			}
+			if (!bClear) continue;
+			Out = FPerch();
+			Out.Point = C.Feet;
+			Out.bBranch = true;
+			Out.Axis = C.Axis;
+			Out.Dir = C.Dir;
+			Out.Radius = C.Radius;
+			Best = C.D;
+			bFound = true;
+			break;
+		}
+	}
+	if (!bFound)
+	{
+		// something solid just under the spot: a roof, a wall top, a crossarm, a rail
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdPerchNear), false);
+		if (ALyudSea* Sea = ALyudSea::Get(World))
+		{
+			Q.AddIgnoredActor(Sea);
+			if (AActor* Vol = Sea->GetWaterVolume()) Q.AddIgnoredActor(Vol);
+		}
+		if (APawn* Pawn = World->GetFirstPlayerController() ? World->GetFirstPlayerController()->GetPawn() : nullptr)
+		{
+			Q.AddIgnoredActor(Pawn);
+		}
+		FHitResult Hit;
+		if (World->LineTraceSingleByChannel(Hit, At + FVector(0, 0, 60.f), At - FVector(0, 0, FMath::Max(MaxDist, 60.f)), ECC_Visibility, Q) && Hit.ImpactNormal.Z > 0.4f)
+		{
+			Out = FPerch();
+			Out.Point = Hit.ImpactPoint;
+			bFound = true;
+		}
+	}
+	return bFound;
 }

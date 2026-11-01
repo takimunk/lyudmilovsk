@@ -32,6 +32,20 @@ public:
 	/** The best perch within MaxDist (cm) of From, roughly the way Dir looks; false if there is none. */
 	bool Find(UWorld* World, const FVector& From, const FVector& Dir, float MaxDist, const AActor* Ignore, FPerch& Out);
 
+	/**
+	 * The perch nearest to At (cm) within MaxDist, for a wild bird that means to sit there (UBirdLifeSubsystem's perch check):
+	 * a branch of a tree whose crown is there (bTrees), else something solid just under it (a roof, a wall top, a rail: a
+	 * short trace down). False: nothing there, the spot is in the air.
+	 */
+	bool FindNear(UWorld* World, const FVector& At, float MaxDist, bool bTrees, FPerch& Out, bool* bUnknown = nullptr);
+
+	/** How many trees' branch skeletons FindNear may build before ResetBuildBudget (a skeleton takes milliseconds); a tree
+	 *  past it leaves FindNear unsure (bUnknown) instead. */
+	void ResetBuildBudget(int32 N) { BuildBudget = N; }
+
+	/** Keeps the branches of at most Max trees (the ones asked about last); the rest are rebuilt when needed. */
+	void TrimCache(int32 Max);
+
 	/** The branches (cm) of every tree within Radius of At, for tests: Fn(A, B, RadiusA, RadiusB). */
 	void ForEachBranch(UWorld* World, const FVector& At, float Radius, TFunctionRef<void(const FVector&, const FVector&, float, float)> Fn);
 
@@ -62,6 +76,14 @@ private:
 	TArray<FTree> Trees;
 	TMap<FIntPoint, TArray<int32>> Grid;   // 20 m cells -> Trees
 	TMap<uint64, TArray<FSeg>> BranchCache;
+	/** Per cached tree: the last FindNear/Find that read it (a counter), for TrimCache. */
+	TMap<uint64, uint64> BranchUsed;
+	uint64 Uses = 0;
+	/** The live plants' ages by their base (rebuilt now and then: they grow with the calendar). */
+	TMap<FIntVector, float> LiveAges;
+	double LiveAgesTime = -1e9;
+	int32 BuildBudget = 1000000;
+	uint64 KeyOf(const FTree& T) const;
 	bool bBuilt = false;
 	float MinRadius = 0.4f, MaxRadius = 3.f, BodyRadius = 5.f, StandHeight = 8.f;
 };

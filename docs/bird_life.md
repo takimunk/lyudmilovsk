@@ -166,9 +166,27 @@ and every species its sprint and wind limit from `BirdBio.cpp` (docs/bird_flight
 Birds within 40 m of the camera think every frame (perception with line of sight, each other, the hand),
 within 160 m every 0.12 s, within 500 m every 0.5 s and move in 0.1 s steps, beyond that every 2 s in 0.5 s
 steps. Positions in between are extrapolated for drawing. Drawn: instanced static poses (one component per
-species and pose), each bird only within 700 of its own lengths (a sparrow within 105 m, a gull within 420 m),
-kept at least ~1.2 px. The nearest 12 birds within 25 m become the species thread's animated `ABirdActor`
-bodies when the species has a skeletal mesh. Outside the engine a day of 1083 birds costs 0.014 ms a step
+species and pose) within 350 of its own lengths (`lyud.Birds.FullDetail`; a starling within 75 m), farther, where it
+is a pixel or two, a few-dozen-triangle silhouette in its colour (the placeholder starling's sitting, two wing and
+gliding poses, no shadow), out to `lyud.Birds.DrawDistance` of its own lengths (1200 by default: a starling 250 m off,
+a gull 720 m; the Settings page's "Birds in the distance" steps 600 / 1200 / 2000 / 3000), kept at least ~1.2 px.
+The far tier is drawn too (it moves in coarse steps the drawing smooths). The nearest 12 birds within 25 m become the
+species thread's animated `ABirdActor` bodies when the species has a skeletal mesh.
+
+Flying birds near the camera swerve round the player and the people walking about (their bodies, the nearest 24 within
+80 m, refreshed four times a second) and the cats and dogs (`AvoidBodies`: a capsule each, the part of the flight
+toward it taken off, a push out sideways; a bird coming to the palm keeps off the body only). `lyud.Birds.Avoid 0`
+for A/B; the report counts bird-steps inside the player ("through the player N").
+
+Perches near the camera are real (`FWorld::Perch`, BirdLife.cpp with `FBirdPerches::FindNear`): a crown spot is a
+random point in the crown's volume, which between bare November twigs is air, so before a bird flies to a perch within
+60 m (and when the camera comes to a bird already sitting) it is moved onto the nearest branch of the drawn tree's own
+skeleton that its feet can hold (or the roof or rail under it, by a short trace); nothing there and the bird goes to
+another spot, its group's place or the ground, and the place is given up for half an hour. A bird stopped mid-flight
+by something else is checked again where it sits. One tree's skeleton is built a frame at most (48 kept). The cable
+car's ropes from bird_habitats.py are dropped at the start (the line was rebuilt and a haul rope runs all day).
+`lyud.Birds.PerchCheck 0` for A/B; `lyud.Birds.PerchAudit [m]` lists the birds sitting near the camera with nothing under
+their feet (BIRDPERCH). Outside the engine a day of 1083 birds costs 0.014 ms a step
 (camera at the door).
 
 ## API (for befriending and bird flight)
@@ -189,8 +207,8 @@ swifts, swallows or martins in October; 0 keeps everybody), `lyud.Birds.Bodies`,
 `lyud.Birds.IgnorePlayer 1`, `lyud.Birds.TestRun <from x y z> <to x y> <cm/s> <s>` (tests). `lyud.Wires 0` leaves the
 Academgorodok's power lines down (read at the start); `lyud.Academ 0` hides them with the ensemble.
 
-Drawing without popping (the renderer, ABirdLifeRenderer::Draw): a bird shrinks to nothing over the last fifth of its
-draw range (and is gone before 0.95 x FarDist, where the sim stops moving it) instead of being cut at ~1.2 px; a
+Drawing without popping (the renderer, ABirdLifeRenderer::Draw): a bird shrinks to nothing over the last quarter of its
+draw range instead of being cut at ~1.2 px; a
 murmurating bird's range eases between 1x and 8x over ~10 s; a bird with a body keeps it to 30 m and against newcomers
 up to 5 m nearer (bodies are posed at once and the instance stays one more frame); late stragglers never leave from
 the near ring. `lyud.Birds.Steady 0` brings back the old hard cuts for A/B; the report ends with `pops N, body spawns

@@ -17,7 +17,7 @@
    "BlueTit": 0.6, "HouseSparrow": 0.5, "Chaffinch": 0.4, "TreeSparrow": 0.4, "CarrionCrow": 0.6, "Jay": 0.4}},
   "feed_grain": {"like": {
    "FeralPigeon": 1.0, "WoodPigeon": 1.0, "Rook": 0.8, "Jackdaw": 0.6, "HoodedCrow": 0.4, "HouseSparrow": 0.6, "TreeSparrow": 0.5,
-   "Chaffinch": 0.4, "MuteSwan": 0.6, "CarrionCrow": 0.5, "Jay": 0.3}},
+   "Chaffinch": 0.4, "MuteSwan": 0.6, "CarrionCrow": 0.5, "Jay": 0.3, "Starling": 0.4, "BlackHeadedGull": 0.4, "CommonGull": 0.3}},
   "feed_peanuts": {"like": {
    "GreatTit": 0.9, "BlueTit": 0.9, "Jackdaw": 0.6, "Magpie": 0.5, "Starling": 0.5, "HouseSparrow": 0.4, "HoodedCrow": 0.4, "Jay": 1.0, "Nutcracker": 1.0, "CarrionCrow": 0.8}}
  }

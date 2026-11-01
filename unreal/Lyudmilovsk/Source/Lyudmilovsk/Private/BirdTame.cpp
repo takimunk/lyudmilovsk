@@ -859,7 +859,18 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 	const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Inv->Count(Id)) });
 	// calling a friend holds the empty palm out too (F lowers it)
 	const TCHAR* HintKey = bWantOffer || IsCalling() ? TEXT("ui.held.hint_out") : Hero->bIsCrouched ? TEXT("ui.held.hint_crouched") : TEXT("ui.held.hint");
-	Hud->Set(UI->IconBrush(Id), Title, LyudText::Get(HintKey));
+	FText Hint = LyudText::Get(HintKey);
+#if LYUD_HAS_BIRDLIFE
+	// the birds that spotted the feed and came for it (they wait round the hero, docs/bird_taming.md "Birds come to the feed")
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		if (const int32 Waiting = Life->NumAtFeed(false); Waiting > 0)
+		{
+			Hint = FText::FromString(Hint.ToString() + TEXT("\n") + LyudText::Get(TEXT("ui.held.waiting"), { FStringFormatArg(Waiting) }).ToString());
+		}
+	}
+#endif
+	Hud->Set(UI->IconBrush(Id), Title, Hint);
 	// the bird the palm is held out to: how it feels about the hero, so creeping can be judged
 	FText Bird;
 	float Alert = 0.f, Trust = 0.f;

@@ -7,6 +7,8 @@
 // solar formula for the game's place (54.96 N, 20.40 E, UTC+2) on the game's date.
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdMurmur.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdCorvid.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdNest.h"
 
 #include <chrono>
 #include <cmath>
@@ -877,12 +879,340 @@ namespace
 		(void)Base;
 	}
 
+
+	/**
+	 * Birds come to the feed (docs/bird_taming.md "Birds come to the feed"): a person standing with starling feed in the hand
+	 * draws the starlings feeding in the field and the sparrows, and starlings flying past, from their notice distance; they
+	 * land round the person at their beg distance and wait; the palm then brings one to it. Shy species notice only near,
+	 * species that don't eat the feed never come; put away, the birds go. A thrown handful is pecked up. Birds fly round
+	 * the player, never through them, and never sit on a perch the game says isn't there.
+	 */
+	void Lures(FResult& R)
+	{
+		const int Star = FindSpecies("Starling"), Sparrow = FindSpecies("HouseSparrow"), Thrush = FindSpecies("SongThrush"),
+			Robin = FindSpecies("Robin"), Pigeon = FindSpecies("FeralPigeon");
+		auto Ground = [](FWorld& W, V3 P) { P.Z = W.GroundZ(P.X, P.Y); return P; };
+		auto Stand = [](FWorld& W, const V3& Feet, bool bFeed, bool bOffer)
+		{
+			W.Player.bPresent = true;
+			W.Player.Feet = Feet;
+			W.Player.Eye = Feet + V3(0.f, 0.f, bOffer ? 1.0f : 1.65f);
+			W.Player.bCrouched = bOffer;
+			W.Player.Vel = V3();
+			W.Player.Facing = V3(1.f, 0.f, 0.f);
+			W.Player.TurnRate = 0.f;
+			W.Player.bFeed = bFeed;
+			W.Player.bOffer = bOffer;
+			W.Player.Palm = W.Player.Eye + V3(0.45f, 0.f, -0.3f);
+			W.Player.HandSpeed = 0.f;
+			W.Camera = W.Player.Eye;
+		};
+		// starling feed: starlings love it, the town's generalists eat it, robins don't
+		float Like[64];
+		for (float& L : Like) L = 0.f;
+		Like[Star] = 1.f;
+		Like[Sparrow] = 0.6f;
+		Like[Pigeon] = 0.5f;
+		Like[Thrush] = 0.6f;
+		Like[Robin] = 0.f;
+
+		// --- standing with the feed in the hand ---
+		{
+			FWorld W;
+			V3 P(100.f, 100.f, 0.f);
+			Lone(W, "Starling", P);
+			W.Birds.clear();
+			W.Groups.clear();
+			const int Starlings = W.AddFlock(Star, Ground(W, P + V3(40.f, 6.f, 0.f)), 20, 6.f);
+			const int Sparrows = W.AddFlock(Sparrow, Ground(W, P + V3(-22.f, 12.f, 0.f)), 8, 3.f);
+			const int ThrushId = W.AddFlock(Thrush, Ground(W, P + V3(0.f, -25.f, 0.f)), 1, 1.f);
+			const int RobinId = W.AddFlock(Robin, Ground(W, P + V3(0.f, 9.f, 0.f)), 1, 1.f);
+			const V3 Feet = Ground(W, P);
+			for (int I = 0; I < 64; I++) W.Player.OfferLike[I] = Like[I];
+			int FirstLured = -1;
+			float FirstAt = -1.f;
+			for (int K = 0; K < 90 * 30; K++)
+			{
+				Stand(W, Feet, true, false);
+				W.Step(1.f / 30.f);
+				W.Events.clear();
+				for (const FBird& B : W.Birds)
+				{
+					if (FirstLured < 0 && B.Lure == -1)
+					{
+						FirstLured = B.Id;
+						FirstAt = K / 30.f;
+					}
+				}
+			}
+			int StarNear = 0, SparrowNear = 0, OnPlayer = 0, InAir = 0, Floating = 0;
+			float Nearest = 1e9f;
+			for (int I = Starlings; I < Starlings + 20; I++)
+			{
+				const FBird& B = W.Birds[I];
+				const float D = (B.Pos - Feet).Len2D();
+				if (std::getenv("BIRD_TRACE"))
+				{
+					std::printf("    starling %d lure %d %s d %.1f alert %.2f trust %.2f hunger %.2f cool %.0f\n", I, B.Lure, ActName(B.Act), D, B.Alert, B.Trust, B.Hunger, B.LureCool);
+				}
+				StarNear += D < 6.f && B.Lure == -1 && !IsAirborne(B.Act);
+			}
+			for (int I = Sparrows; I < Sparrows + 8; I++)
+			{
+				const FBird& B = W.Birds[I];
+				if (std::getenv("BIRD_TRACE"))
+				{
+					std::printf("    sparrow %d lure %d %s d %.1f alert %.2f wary %.0f hunger %.2f cool %.0f\n", I, B.Lure, ActName(B.Act), (B.Pos - Feet).Len2D(), B.Alert, B.Wary, B.Hunger, B.LureCool);
+				}
+				SparrowNear += (B.Pos - Feet).Len2D() < 9.f && B.Lure == -1 && !IsAirborne(B.Act);
+			}
+			for (const FBird& B : W.Birds)
+			{
+				if (B.Lure != -1)
+				{
+					continue;
+				}
+				const float D = (B.Pos - Feet).Len2D();
+				Nearest = std::min(Nearest, D);
+				OnPlayer += D < 0.8f;
+				InAir += IsAirborne(B.Act);
+				Floating += !IsAirborne(B.Act) && std::fabs(B.Pos.Z - W.GroundZ(B.Pos.X, B.Pos.Y)) > 0.3f;
+			}
+			std::printf("feed in the hand, 90 s: first bird set off after %.1f s; starlings round the player %d/20, sparrows %d/8, nearest %.1f m, in the air %d\n",
+				FirstAt, StarNear, SparrowNear, Nearest, InAir);
+			Check(R, FirstAt >= 0.f && FirstAt < 30.f, "feed: a bird notices the starling feed in the hand within half a minute");
+			Check(R, StarNear >= 10, "feed: most of the starling flock 40 m off comes and waits round the player");
+			Check(R, SparrowNear >= 3, "feed: the sparrows (generalists) come too");
+			Check(R, W.Birds[ThrushId].Lure == -2, "feed: a shy song thrush 25 m off doesn't notice it");
+			Check(R, W.Birds[RobinId].Lure == -2, "feed: a robin (doesn't eat it) stays where it is");
+			Check(R, OnPlayer == 0 && Nearest > 0.8f, "feed: they keep their distance (no bird on the player's feet)");
+			Check(R, Floating == 0, "feed: the waiting birds stand on the ground");
+
+			// the palm (crouched, held out): one comes to it and eats
+			float Ate = -1.f;
+			for (int K = 0; K < 60 * 30 && Ate < 0.f; K++)
+			{
+				Stand(W, Feet, true, true);
+				W.Step(1.f / 30.f);
+				for (const FEvent& E : W.Events)
+				{
+					if (E.Kind == EEvent::Eat && Ate < 0.f)
+					{
+						Ate = K / 30.f;
+					}
+				}
+				W.Events.clear();
+			}
+			std::printf("feed: palm held out to the waiting birds: one eats from it after %.1f s\n", Ate);
+			Check(R, Ate >= 0.f && Ate < 45.f, "feed: with the palm out a waiting bird comes to it and eats");
+
+			// put away: they go back to their flock
+			int Still = 0;
+			for (int K = 0; K < 30 * 30; K++)
+			{
+				Stand(W, Feet, false, false);
+				W.Step(1.f / 30.f);
+				W.Events.clear();
+			}
+			for (const FBird& B : W.Birds)
+			{
+				Still += B.Lure == -1;
+			}
+			Check(R, Still == 0, "feed: put away, no bird keeps waiting for it");
+		}
+
+		// --- starlings flying past 30 m off come down to it ---
+		{
+			FWorld W;
+			V3 P(100.f, 100.f, 0.f);
+			Lone(W, "Starling", P);
+			W.Birds.clear();
+			W.Groups.clear();
+			const V3 Feet = Ground(W, P);
+			const int First = W.AddFlock(Star, Ground(W, P + V3(-160.f, 30.f, 0.f)), 12, 4.f);
+			FSite Far;
+			Far.Kind = EHabitat::Meadow;
+			Far.A = Far.B = Ground(W, P + V3(170.f, 30.f, 0.f));
+			Far.Radius = 5.f;
+			Far.Capacity = 40;
+			W.Sites.push_back(Far);
+			W.Groups.back().Site = W.Groups.back().Roost = (int)W.Sites.size() - 1;
+			for (int I = First; I < First + 12; I++)
+			{
+				W.Birds[I].Site = -1;
+				W.Birds[I].Act = EAct::Perch;
+			}
+			for (int I = 0; I < 64; I++) W.Player.OfferLike[I] = Like[I];
+			int Diverted = 0;
+			for (int K = 0; K < 70 * 30; K++)
+			{
+				Stand(W, Feet, true, false);
+				if (K == 1)
+				{
+					for (int I = First; I < First + 12; I++)
+					{
+						FBird& B = W.Birds[I];
+						const FSite& S = W.Sites[W.Groups[B.Group].Site];
+						B.Site = W.Groups[B.Group].Site;
+						B.Spot = S.A;
+						B.Act = EAct::Fly;
+						B.Pos = B.Pos + V3(0.f, 0.f, 10.f);
+						B.Vel = V3(10.f, 0.f, 0.f);
+					}
+				}
+				W.Step(1.f / 30.f);
+				W.Events.clear();
+			}
+			for (int I = First; I < First + 12; I++)
+			{
+				const FBird& B = W.Birds[I];
+				Diverted += B.Lure == -1 && (B.Pos - Feet).Len2D() < 8.f && !IsAirborne(B.Act);
+			}
+			std::printf("feed: of 12 starlings flying past 30 m off, %d came down round the player\n", Diverted);
+			Check(R, Diverted >= 4, "feed: starlings flying past divert to the feed and land by it");
+		}
+
+		// --- a thrown handful: pigeons come and peck it up ---
+		{
+			FWorld W;
+			V3 P(100.f, 100.f, 0.f);
+			Lone(W, "FeralPigeon", P);
+			W.Birds.clear();
+			W.Groups.clear();
+			const V3 Feet = Ground(W, P);
+			const int First = W.AddFlock(Pigeon, Ground(W, P + V3(45.f, -10.f, 0.f)), 10, 4.f);
+			const int Pile = W.AddPile(Ground(W, P + V3(6.f, 0.f, 0.f)), 1.f, Like);
+			int Pecking = 0;
+			for (int K = 0; K < 90 * 30; K++)
+			{
+				Stand(W, Feet, false, false);
+				W.Step(1.f / 30.f);
+				W.Events.clear();
+				if (K == 40 * 30)
+				{
+					for (int I = First; I < First + 10; I++)
+					{
+						const FBird& B = W.Birds[I];
+						Pecking += B.Lure == Pile && (B.Pos - W.Piles[Pile].Pos).Len2D() < 1.f && !IsAirborne(B.Act);
+					}
+				}
+			}
+			std::printf("feed: thrown handful: %d pigeons at it after 40 s, %.2f of the handful left after 90 s\n", Pecking, W.Piles[Pile].Food);
+			Check(R, Pecking >= 4, "feed: pigeons come to a thrown handful and peck at it");
+			Check(R, W.Piles[Pile].Food < 0.6f, "feed: they eat it up");
+		}
+
+		// --- flying round the player, never through ---
+		{
+			float Closest = 1e9f, ClosestNo = 1e9f;
+			auto SegDist = [](const V3& P, const V3& Feet, float H)
+			{
+				const V3 Axis(Feet.X, Feet.Y, std::min(std::max(P.Z, Feet.Z), Feet.Z + H));
+				return (P - Axis).Len();
+			};
+			for (int Pass = 0; Pass < 2; Pass++)
+			{
+				FWorld W;
+				V3 P(100.f, 100.f, 0.f);
+				Lone(W, "FeralPigeon", P);
+				const V3 Feet = Ground(W, P);
+				// it takes off 6 m in front of the player for a spot 3 m behind them: the climb-out goes through them
+				W.Sites[0].A = W.Sites[0].B = Ground(W, P + V3(-2.5f, 0.f, 0.f));
+				W.Sites[0].Radius = 0.f;
+				W.Groups[0].bStayPut = false;
+				FBird& B = W.Birds[0];
+				B.Pos = Ground(W, P + V3(3.5f, 0.f, 0.f));
+				B.Habituation = 1.f;
+				B.Trust = 0.4f;
+				float& Min = Pass == 0 ? Closest : ClosestNo;
+				for (int K = 0; K < 6 * 60; K++)
+				{
+					Stand(W, Feet, false, false);
+					W.Player.bPresent = Pass == 0;
+					W.Player.Facing = V3(0.f, 1.f, 0.f);
+					if (K == 30)
+					{
+						W.FlyTo(W.Birds[0], 0, W.Sites[0].A);
+					}
+					W.Step(1.f / 60.f);
+					W.Events.clear();
+					Min = std::min(Min, SegDist(W.Birds[0].Pos, Feet, 1.85f));
+					if (std::getenv("BIRD_TRACE") && K % 15 == 0)
+					{
+						const FBird& T = W.Birds[0];
+						std::printf("    pass %d t %.2f %s pos %.2f %.2f %.2f d %.2f\n", Pass, K / 60.f, ActName(T.Act), T.Pos.X - Feet.X, T.Pos.Y - Feet.Y, T.Pos.Z - Feet.Z, SegDist(T.Pos, Feet, 1.85f));
+					}
+				}
+			}
+			std::printf("feed: a pigeon taking off past the player: nearest to the body %.2f m (without the player there %.2f m)\n", Closest, ClosestNo);
+			Check(R, ClosestNo < 0.3f && Closest > 0.4f, "a bird whose path goes through the player swerves round them");
+		}
+
+		// --- perches the game says aren't there are never sat on near the camera ---
+		{
+			FWorld W;
+			if (!Setup(W, 10.f))
+			{
+				Check(R, false, "perches: world loads");
+				return;
+			}
+			int Checks = 0;
+			W.Perch = [&](const FBird& B, const FSite& Site, V3& Spot)
+			{
+				Checks++;
+				const int Index = (int)(&Site - &W.Sites[0]);
+				if (Index % 4 == 0)
+				{
+					return 0;              // a "removed" roof or a guessed crown with no tree
+				}
+				if (Checks % 7 == 0)
+				{
+					return -1;             // a tree not built yet: can't tell this frame
+				}
+				Spot.Z = std::floor(Spot.Z) + 0.5f;    // the "real branch"
+				return 1;
+			};
+			int Bad = 0, Seen = 0;
+			Advance(W, 0.25f, 1.f / 20.f, [&]()
+			{
+				for (const FBird& B : W.Birds)
+				{
+					if (B.bGone || B.Tier != 0 || IsAirborne(B.Act) || B.Site < 0 || IsGroundHabitat(W.Sites[B.Site].Kind)
+						|| (W.Sites[B.Site].Flags & SiteFeeder) || B.Act == EAct::Claimed || (W.Nesting() && W.Nesting()->Busy(B.Id))
+						|| (W.Corvids() && W.Corvids()->Busy(B.Id)))
+					{
+						continue;
+					}
+					Seen++;
+					// a moment to hop over after it came near is allowed: count only birds checked and still off the wood
+					if (B.bSpotChecked && (B.Site % 4 == 0 || std::fabs(B.Pos.Z - (std::floor(B.Pos.Z) + 0.5f)) > 0.01f))
+					{
+						if (Bad++ < 12 && std::getenv("BIRD_TRACE"))
+						{
+							std::printf("    off the wood: %s#%d %s site %d %s z %.2f spot z %.2f\n", SpeciesTable()[B.Species].Id.c_str(), B.Id, ActName(B.Act), B.Site,
+								HabitatName(W.Sites[B.Site].Kind), B.Pos.Z, B.Spot.Z);
+						}
+					}
+				}
+			});
+			std::printf("perches: %d checks, %d moved onto the wood, %d refused; %d bird-frames on perches near the camera, %d off the wood\n",
+				Checks, W.PerchMoved, W.PerchRefused, Seen, Bad);
+			Check(R, Checks > 0 && Seen > 0 && Bad == 0, "perches: near the camera every perched bird sits where the game found wood or a roof");
+		}
+	}
+
 	int Test()
 	{
 		FResult R;
 		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "feeders"))
 		{
 			Feeders(R);
+			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
+			return R.Fail ? 1 : 0;
+		}
+		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "feed"))
+		{
+			Lures(R);
 			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 			return R.Fail ? 1 : 0;
 		}
@@ -1193,6 +1523,7 @@ namespace
 			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
 		}
 		Feeders(R);
+		Lures(R);
 		Routines(R);
 		int CorvidPasses = 0;
 		R.Fail += CorvidTests(&CorvidPasses);
