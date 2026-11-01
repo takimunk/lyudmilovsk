@@ -33,32 +33,32 @@ STEPS = [
     ("reef_close", ("seabed", 10, 2.0, 0.9), []),
     ("wrack", ("seabed", 1, 1.5, 0.5), []),
     ("cobbles", ("seabed", 11, 2.5, 1.2), []),
-    ("school_herring", ("fish", "Herring", 0.9), []),
-    ("school_sprat", ("fish", "Sprat", 0.6), []),
-    ("sandeels", ("fish", "SandEel", 0.7), []),
-    ("perch", ("fish", "Perch", 0.9), []),
-    ("cod", ("fish", "Cod", 1.2), []),
-    ("trout", ("fish", "SeaTrout", 1.3), []),
-    ("goby", ("fish", "RoundGoby", 0.5), []),
-    ("sandgoby", ("fish", "SandGoby", 0.35), []),
-    ("flounder", ("fish", "Flounder", 0.8), []),
-    ("turbot", ("fish", "Turbot", 0.9), []),
-    ("sculpin", ("fish", "Sculpin", 0.6), []),
-    ("eelpout", ("fish", "Eelpout", 0.6), []),
-    ("pipefish", ("fish", "Pipefish", 0.45), []),
+    ("school_herring", ("fish", "Herring", 2.6, 45), []),
+    ("school_sprat", ("fish", "Sprat", 2.3, 35), []),
+    ("sandeels", ("fish", "SandEel", 2.0, 20), []),
+    ("perch", ("fish", "Perch", 2.9, 19), []),
+    ("cod", ("fish", "Cod", 3.9, 32), []),
+    ("trout", ("fish", "SeaTrout", 5.2, 26), []),
+    ("goby", ("fish", "RoundGoby", 1.2, 32), []),
+    ("sandgoby", ("fish", "SandGoby", 0.8, 20), []),
+    ("flounder", ("fish", "Flounder", 2.0, 37), []),
+    ("turbot", ("fish", "Turbot", 2.1, 48), []),
+    ("sculpin", ("fish", "Sculpin", 0.8, 60), []),
+    ("eelpout", ("fish", "Eelpout", 0.9, 60), []),
+    ("pipefish", ("fish", "Pipefish", 0.8, 60), []),
     ("current_still", ("seabed", 0, 2.4, 0.8), ["lyud.Current.Speed 0"]),
     ("current_fast", ("seabed", 0, 2.4, 0.8), ["lyud.Current.Speed 0.6"]),
     ("current_reef", ("seabed", 1, 1.8, 0.6), ["lyud.Current.Speed 0.6"]),
     ("from_surface", ("depth", 3.0, 120.0, "surface"), ["lyud.Current.Speed -99"]),
-    ("night_reef", ("seabed", 10, 3.0, 1.2), ["lyud.SkyHourOffset 8"]),
+    ("night_reef", ("fixed", 59700.0, 7200.0, -5250.0, -12.0, 30.0), ["lyud.SkyHourOffset 8"]),
 ]
 # frame time A/B in this one process (UWTEST_PERF=1): in a meadow by a reef with everything, without the fish, without
 # any of the underwater life; then the same over the land (the door), where it must cost nothing
 PERF = [
-    ("perf_all", ("seabed", 0, 2.4, 0.8), ["lyud.SkyHourOffset -3.5", "lyud.SeaLife 1", "lyud.Seabed 1", "lyud.SeaLife.Fish 1"]),
-    ("perf_nofish", ("seabed", 0, 2.4, 0.8), ["lyud.SeaLife.Fish 0"]),
-    ("perf_none", ("seabed", 0, 2.4, 0.8), ["lyud.SeaLife 0", "lyud.Seabed 0"]),
-    ("perf_all2", ("seabed", 0, 2.4, 0.8), ["lyud.SeaLife 1", "lyud.Seabed 1", "lyud.SeaLife.Fish 1"]),
+    ("perf_all", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SkyHourOffset -3.5", "lyud.SeaLife 1", "lyud.Seabed 1", "lyud.SeaLife.Fish 1"]),
+    ("perf_nofish", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife.Fish 0"]),
+    ("perf_none", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife 0", "lyud.Seabed 0"]),
+    ("perf_all2", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife 1", "lyud.Seabed 1", "lyud.SeaLife.Fish 1"]),
     ("perf_land_on", ("land",), ["lyud.SeaLife 1", "lyud.Seabed 1"]),
     ("perf_land_off", ("land",), ["lyud.SeaLife 0", "lyud.Seabed 0"]),
 ]
@@ -72,6 +72,8 @@ st = {"t": 0.0, "i": -1, "phase": 0, "cam": None}
 
 
 class Cam:
+    fov = 80.0
+
     """The free camera of lyud.Underwater.View (the hero stays dry on the beach)."""
 
     def __init__(self, w):
@@ -83,8 +85,8 @@ class Cam:
         self.loc = loc
         if rot is not None:
             self.rot = rot
-        unreal.SystemLibrary.execute_console_command(self.w, "lyud.Underwater.View %f %f %f %f %f" % (
-            loc.x, loc.y, loc.z, self.rot.pitch, self.rot.yaw))
+        unreal.SystemLibrary.execute_console_command(self.w, "lyud.Underwater.View %f %f %f %f %f %f" % (
+            loc.x, loc.y, loc.z, self.rot.pitch, self.rot.yaw, self.fov))
 
     def get_actor_location(self):
         return self.loc
@@ -130,6 +132,7 @@ def place(w, step):
     eye = cam.get_actor_location()
     look = None
     kind = where[0]
+    cam.fov = where[3] if kind == "fish" else 80.0
     if kind == "depth":
         x = spot_at_depth(sea, where[1], where[2])
         ok_bed = sea.depth_at(at(x, where[2], 0.0))
@@ -141,6 +144,12 @@ def place(w, step):
         else:
             eye = at(x, where[2], bed_z + 140.0)
             look = at(x + 10.0, where[2], bed_z + 40.0)
+    elif kind == "fixed":
+        eye = unreal.Vector(where[1], where[2], where[3])
+        cam.set_actor_location(eye)
+        cam.set_actor_rotation(unreal.Rotator(roll=0.0, pitch=where[4], yaw=where[5]))
+        st["look"] = None
+        return
     elif kind == "land":
         eye = unreal.Vector(-193.0, 1150.0, 190.0)
         look = unreal.Vector(-193.0, 3150.0, 150.0)
