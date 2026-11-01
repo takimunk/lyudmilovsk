@@ -202,6 +202,10 @@ namespace LyudBirds
 		int WashUp(FWorld& W, const V3& P);
 		/** Puts an item on the ground (tests). */
 		int Spawn(FWorld& W, EItem Kind, const V3& P, uint16_t Flags = 0);
+		/** A stick (or anything) in this corvid's bill for another system's errand (the nests: BirdNest.cpp); -1 if it isn't a corvid. */
+		int GiveItem(FWorld& W, FBird& B, EItem Kind);
+		/** That errand used the item up (woven into the nest): false if the bird no longer holds it (dropped, stolen). */
+		bool UseItem(FWorld& W, FBird& B, int Item);
 		/** The world clock jumped: carried things go, tasks end. */
 		void Resettle(FWorld& W);
 

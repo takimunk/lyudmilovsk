@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Templates/PimplPtr.h"
+#include "Birds/BirdNests.h"
 #include "BirdLife.generated.h"
 
 class UInstancedStaticMeshComponent;
@@ -48,6 +49,8 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBirdLifeEvent, int32, BirdId);
+/** Something at a nest: BuildStart, Material, Lay, Hatch, Feed, Fledge, Fail, Alarm, Dive, Song, Beg (docs/bird_nests.md). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBirdNestEvent, int32, NestId, FName, What);
 
 /** A cat or dog the birds watch out for (the animal life's, docs/animals.md). */
 USTRUCT(BlueprintType)
@@ -189,6 +192,25 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdEat;
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdFlee;
 
+	/** Something happened at a nest (the breeding year, docs/bird_nests.md). */
+	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdNestEvent OnNestEvent;
+
+	/** The nests within Radius (cm) of Location, nearest first (tests, the diary). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	TArray<FBirdNestInfo> GetNestsNear(FVector Location, float Radius) const;
+	/** One nest now (false: no such nest). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	bool GetNest(int32 Id, FBirdNestInfo& Out) const;
+	/** The nearest nest of a species (species.json id) to Location (cm), searching the whole map; -1 none. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	int32 FindNest(FName Species, FVector Location) const;
+	/** A day of this year (from FromDay on) the nest is in a stage, Frac of the way through it (-1: never). Tests, the developer mode. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	float NestStageDay(int32 Id, FName Stage, float FromDay = 1.f, float Frac = 0.5f) const;
+	/** Puts the nest on its real branch or wall now (tests: before looking at it). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void PlaceNest(int32 Id);
+
 	/** Trust per bird id, kept with the save. */
 	UPROPERTY(SaveGame) TMap<int32, float> SavedTrust;
 
@@ -209,6 +231,7 @@ public:
 private:
 	TPimplPtr<LyudBirds::FWorld> Sim;
 	UPROPERTY(Transient) TObjectPtr<class ABirdLifeRenderer> Renderer;
+	UPROPERTY(Transient) TObjectPtr<class ABirdNestRenderer> NestRenderer;
 	bool bWantStart = false;
 	bool bStarted = false;
 	int32 StartCount = 0;

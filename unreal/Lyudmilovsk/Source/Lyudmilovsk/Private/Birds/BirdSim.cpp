@@ -2,6 +2,7 @@
 
 #include "BirdCorvid.h"
 #include "BirdMurmur.h"
+#include "BirdNest.h"
 
 #include <algorithm>
 #include <cmath>
@@ -609,6 +610,11 @@ namespace LyudBirds
 		{
 			Corv = std::make_shared<FCorvids>();
 		}
+		Nest.reset();
+		if (Opt.bNests)
+		{
+			Nest = std::make_shared<FNesting>();
+		}
 		if (OffshoreD.empty())
 		{
 			BuildOffshore();
@@ -814,6 +820,10 @@ namespace LyudBirds
 				Predators.push_back(P);
 			}
 		}
+		if (Nest)
+		{
+			Nest->Setup(*this);     // after the groups: pairs, nest sites, the fledgling pool
+		}
 		Approacher = -1;
 		UpdateMigration();
 		BuildHash();
@@ -903,6 +913,10 @@ namespace LyudBirds
 		if (Corv)
 		{
 			Corv->Resettle(*this);
+		}
+		if (Nest)
+		{
+			Nest->Resettle(*this);
 		}
 		for (FGroup& G : Groups)
 		{
@@ -1073,9 +1087,9 @@ namespace LyudBirds
 				continue;
 			}
 			Present++;
-			if (Corv && Corv->Busy(Id))
+			if ((Corv && Corv->Busy(Id)) || (Nest && Nest->Busy(Id)))
 			{
-				continue;            // (a corvid on an errand of its own comes back by itself)
+				continue;            // (a corvid on an errand of its own, a bird busy at its nest, comes back by itself)
 			}
 			bBusy |= B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Flee || B.Act == EAct::Chase || B.Act == EAct::Mob;
 			bScattered |= B.Site != G.Site && !(G.Plan == 2 && InRoost(G, B.Site)) && B.Act != EAct::Murmur && B.Target != -6;
@@ -1244,7 +1258,7 @@ namespace LyudBirds
 		{
 			FBird& B = Birds[Id];
 			if (B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Murmur || B.bGone
-				|| (Corv && Corv->Busy(Id) && G.Plan != 2))
+				|| (Corv && Corv->Busy(Id) && G.Plan != 2) || (Nest && Nest->Busy(Id)))
 			{
 				continue;
 			}
@@ -1332,6 +1346,10 @@ namespace LyudBirds
 		B.Vel = V3();
 		B.Pos = B.Spot;
 		B.Target = -1;
+		if (Nest && Nest->Arrive(*this, B))
+		{
+			return;
+		}
 		if (Corv && Corv->Arrive(*this, B))
 		{
 			return;
@@ -1423,6 +1441,10 @@ namespace LyudBirds
 		if (Corv)
 		{
 			Corv->OnFlush(*this, B, From, Cause);
+		}
+		if (Nest)
+		{
+			Nest->OnFlush(*this, B, From, Cause);
 		}
 		// away from the danger: small birds dive into the nearest cover that is not toward it,
 		// the rest fly off a good way and decide later
@@ -1586,6 +1608,10 @@ namespace LyudBirds
 		if (Corv)
 		{
 			L *= Corv->DangerScale(B);      // a crow's grudge or bond, a magpie's grab at the hand
+		}
+		if (Nest)
+		{
+			L *= Nest->DangerScale(B);      // a bird on its eggs sits tight
 		}
 		return std::max(0.4f, S.FleeDistance * L * (1.f - 0.75f * B.Trust) / B.Boldness);
 	}
@@ -2257,6 +2283,10 @@ namespace LyudBirds
 		{
 			Corv->Step(*this, Dt);
 		}
+		if (Nest)
+		{
+			Nest->Step(*this, Dt);
+		}
 		if (bMoveFar)
 		{
 			StepAcc[2] = 0.f;
@@ -2345,7 +2375,11 @@ namespace LyudBirds
 			}
 		}
 
-		// a corvid busy with something of its own (BirdCorvid.cpp)
+		// a bird busy at its nest (BirdNest.cpp), a corvid busy with something of its own (BirdCorvid.cpp)
+		if (Nest && Nest->Think(*this, B, Dt))
+		{
+			return;
+		}
 		if (Corv && Corv->Think(*this, B, Dt))
 		{
 			return;
@@ -2725,6 +2759,10 @@ namespace LyudBirds
 			if (Corv)
 			{
 				Corv->FlightGoal(*this, B, Goal, Speed, bLanding);
+			}
+			if (Nest)
+			{
+				Nest->FlightGoal(*this, B, Goal, Speed, bLanding);
 			}
 			const V3 To = Goal - B.Pos;
 			const float Dist = To.Len();
@@ -3231,6 +3269,10 @@ namespace LyudBirds
 		if (Corv)
 		{
 			Out += "; " + Corv->Report(*this);
+		}
+		if (Nest)
+		{
+			Out += "; " + Nest->Report(*this);
 		}
 		return Out;
 	}

@@ -2,11 +2,15 @@
 
 #include "BirdSim.h"
 #include "BirdMurmur.h"
+#include "BirdNest.h"
+#include "Birds/BirdNests.h"
 #include "Sea/LyudSea.h"
 #include "Birds/BirdActor.h"
 #include "Birds/BirdFeeder.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -49,6 +53,8 @@ static TAutoConsoleVariable<int32> CVarBirdsIgnorePlayer(TEXT("lyud.Birds.Ignore
 	TEXT("1: birds don't perceive the player (close-up screenshots, debugging)."));
 static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 700.f,
 	TEXT("Birds are drawn within this many of their own lengths from the camera."));
+static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
+	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,
 	TEXT("The crow family's minds and items (docs/corvids.md): 0 = they live like the other birds and their items go (switches while running; tools/bench_systems.sh nocorvids)."));
 static TAutoConsoleVariable<int32> CVarBirdsSteady(TEXT("lyud.Birds.Steady"), 1,
@@ -177,6 +183,7 @@ bool UBirdLifeSubsystem::Start()
 	FWorld& S = *Sim;
 	S.Opt.PopulationScale = FMath::Max(0.f, CVarBirdsPopulation.GetValueOnGameThread());
 	S.Opt.Seed = 20261024u;
+	S.Opt.bNests = CVarBirdsNests.GetValueOnGameThread() != 0;
 	S.Opt.bCorvids = CVarBirdsCorvids.GetValueOnGameThread() != 0;
 
 	FillSpeciesFromTable();
@@ -226,6 +233,10 @@ bool UBirdLifeSubsystem::Start()
 	P.ObjectFlags |= RF_Transient;
 	Renderer = World->SpawnActor<ABirdLifeRenderer>(P);
 	Renderer->Setup(S);
+	if (S.Nesting())
+	{
+		NestRenderer = World->SpawnActor<ABirdNestRenderer>(P);
+	}
 	if (ULyudSaveSubsystem* Save = ULyudSaveSubsystem::Get(World))
 	{
 		Save->RegisterSaveObject(TEXT("BirdLife"), this);
@@ -350,6 +361,11 @@ void UBirdLifeSubsystem::Stop()
 		Renderer->Destroy();
 		Renderer = nullptr;
 	}
+	if (NestRenderer)
+	{
+		NestRenderer->Destroy();
+		NestRenderer = nullptr;
+	}
 	Sim.Reset();
 	bStarted = false;
 	bClockSeen = false;
@@ -460,6 +476,7 @@ void UBirdLifeSubsystem::UpdateClock()
 		SunDay = Day;
 		SunTimes(Now, S.Sunrise, S.Sunset);
 		S.DayOfYear = UGameCalendar::DayOfYear(Now);
+		S.Year = Now.GetYear();
 	}
 	if (bJumped)
 	{
@@ -569,6 +586,13 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		}
 	}
 	FWorld& S = *Sim;
+	// lyud.Birds.Nests switched while running (the benchmark's passes): start over with or without them
+	if ((CVarBirdsNests.GetValueOnGameThread() != 0) != S.Opt.bNests)
+	{
+		Stop();
+		bWantStart = true;
+		return;
+	}
 	if ((CVarBirdsCorvids.GetValueOnGameThread() != 0) != S.Opt.bCorvids)
 	{
 		S.SetCorvids(CVarBirdsCorvids.GetValueOnGameThread() != 0);
@@ -600,6 +624,10 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	if (Renderer)
 	{
 		Renderer->Draw(S, ToUE(S.Camera), 1.f);
+	}
+	if (NestRenderer)
+	{
+		NestRenderer->Draw(S, ToUE(S.Camera), DeltaTime);
 	}
 	SaveTimer -= DeltaTime;
 	if (SaveTimer <= 0.f)
@@ -657,6 +685,20 @@ void UBirdLifeSubsystem::DispatchEvents()
 		case EEvent::Eat: OnBirdEat.Broadcast(E.Bird); break;
 		case EEvent::Flee: OnBirdFlee.Broadcast(E.Bird); break;
 		default: break;
+		}
+	}
+	// the nests' (the feeds make the chicks gape; the rest is for whoever listens)
+	if (FNesting* N = S.Nesting())
+	{
+		const std::vector<FNestEvent> NestEvents = N->Events;
+		N->Events.clear();
+		for (const FNestEvent& E : NestEvents)
+		{
+			if (E.Kind == ENestEvent::Feed && NestRenderer)
+			{
+				NestRenderer->OnFeed(E.Nest);
+			}
+			OnNestEvent.Broadcast(E.Nest, FName(NestEventName(E.Kind)));
 		}
 	}
 }
@@ -935,7 +977,7 @@ FString UBirdLifeSubsystem::Report() const
 	}
 	return FString::Printf(TEXT("BirdLife: %s; calls played %d, sounds loaded %d; drawn %d (%s), bodies %d; pops %d, body spawns %d releases %d"), UTF8_TO_TCHAR(Sim->Report().c_str()), CallsPlayed, SoundRefs.Num(),
 		Renderer ? Renderer->DrawnLastFrame : 0, Renderer ? *Renderer->Describe() : TEXT(""), Renderer ? Renderer->BodiesLastFrame : 0,
-		Renderer ? Renderer->Pops : 0, Renderer ? Renderer->BodySpawns : 0, Renderer ? Renderer->BodyReleases : 0) + (Renderer && Renderer->PopLog.Num() ? TEXT(" (last pops: ") + FString::Join(Renderer->PopLog, TEXT("; ")) + TEXT(")") : TEXT(""));
+		Renderer ? Renderer->Pops : 0, Renderer ? Renderer->BodySpawns : 0, Renderer ? Renderer->BodyReleases : 0) + (NestRenderer ? TEXT("; ") + NestRenderer->Describe() : FString()) + (Renderer && Renderer->PopLog.Num() ? TEXT(" (last pops: ") + FString::Join(Renderer->PopLog, TEXT("; ")) + TEXT(")") : TEXT(""));
 }
 
 void UBirdLifeSubsystem::DumpDay(float StartHour, float Hours, const FString& OutCsv)
@@ -1255,6 +1297,12 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 			continue;            // a claimed bird is drawn by the player's own body (bird flight)
 		}
 		const FSpecies& S = SpeciesTable()[B.Species];
+		const FNesting* Nests = World.Nesting();
+		if (Nests && Nests->DownyYoung(B.Id))
+		{
+			continue;            // a cygnet, a gull chick: the nests draw it (the chick kit)
+		}
+		const float Young = Nests && Nests->YoungOf(B.Id) >= 0 ? Nests->BodyScale(World, B.Id) : 1.f;
 		const FVector P = ToUE(World.RenderPos(B));
 		const float Dist = (float)FVector::Dist(P, Camera) * 0.01f;
 		// fades (shrinks) over the last fifth of its range, and is done before the sim stops moving it (FarDist)
@@ -1271,7 +1319,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		}
 		Why[B.Id] = 0;
 		const bool bHadBody = BodyOf(B.Id) != nullptr;
-		if (MaxBodies > 0 && (Dist < (bHadBody ? BodyOut : BodyIn) || B.Act == EAct::Approach || B.Act == EAct::Eat))
+		if (MaxBodies > 0 && Young >= 1.f && (Dist < (bHadBody ? BodyOut : BodyIn) || B.Act == EAct::Approach || B.Act == EAct::Eat))
 		{
 			Near.Emplace(B.Act == EAct::Approach || B.Act == EAct::Eat ? -1000.f : Dist - (bHadBody ? BodyHold : 0.f), B.Id);
 		}
@@ -1281,7 +1329,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		const float Px = S.Length / FMath::Max(Dist, 0.1f) * 540.f * PixelScale;
 		const float InFlock = FMath::Clamp((R - 1.f) / 7.f, 0.f, 1.f);
 		const float Grow = FMath::Max(1.f, FMath::Lerp(1.2f, 2.f, InFlock) / FMath::Max(Px, 0.01f));
-		const float Scale = D.Scale * FMath::Min(Grow, FMath::Lerp(3.f, 8.f, InFlock)) * Fade * (B.bFemale ? D.FemaleScale : 1.f);
+		const float Scale = D.Scale * FMath::Min(Grow, FMath::Lerp(3.f, 8.f, InFlock)) * Fade * (B.bFemale ? D.FemaleScale : 1.f) * Young;
 		int32 Pose = 0;
 		float Pitch = 0.f, Roll = 0.f;
 		const bool bAir = IsAirborne(B.Act);
@@ -1591,3 +1639,186 @@ TArray<int32> UBirdLifeSubsystem::BirdsOnFeeder(int32 Id) const
 	}
 	return Out;
 }
+
+// --- nests (the breeding year, BirdNest.h, docs/bird_nests.md) -----------------------------------------
+
+namespace
+{
+	EStage StageFromName(FName Name)
+	{
+		for (int32 S = 0; S < (int32)EStage::Num; S++)
+		{
+			if (Name == FName(StageName((EStage)S)))
+			{
+				return (EStage)S;
+			}
+		}
+		return EStage::Num;
+	}
+
+	void FillNestInfo(const FNest& Nest, FBirdNestInfo& Out)
+	{
+		const FBreedKind& K = BreedTable()[Nest.Kind];
+		Out.Id = Nest.Id;
+		Out.SpeciesId = FName(SpeciesTable()[Nest.Species].Id.c_str());
+		Out.Kind = FName(NestName(K.Nest));
+		Out.Stage = FName(StageName(Nest.State.Stage));
+		Out.Location = ToUE(Nest.Pos);
+		Out.Yaw = FMath::RadiansToDegrees(Nest.Yaw);
+		Out.Progress = Nest.State.Progress;
+		Out.Eggs = Nest.State.Eggs;
+		Out.Chicks = Nest.State.Chicks;
+		Out.ChickAge = Nest.State.Age;
+		Out.bPlaced = Nest.bPlaced;
+		Out.Male = Nest.Male;
+		Out.Female = Nest.Female;
+	}
+}
+
+TArray<FBirdNestInfo> UBirdLifeSubsystem::GetNestsNear(FVector Location, float Radius) const
+{
+	TArray<FBirdNestInfo> Out;
+	const FNesting* N = Sim ? Sim->Nesting() : nullptr;
+	if (!N)
+	{
+		return Out;
+	}
+	for (const FNest& Nest : N->Nests)
+	{
+		if (FVector::Dist(ToUE(Nest.Pos), Location) < Radius)
+		{
+			FillNestInfo(Nest, Out.AddDefaulted_GetRef());
+		}
+	}
+	Out.Sort([&](const FBirdNestInfo& A, const FBirdNestInfo& B) { return FVector::DistSquared(A.Location, Location) < FVector::DistSquared(B.Location, Location); });
+	return Out;
+}
+
+bool UBirdLifeSubsystem::GetNest(int32 Id, FBirdNestInfo& Out) const
+{
+	const FNesting* N = Sim ? Sim->Nesting() : nullptr;
+	if (!N || Id < 0 || Id >= (int32)N->Nests.size())
+	{
+		return false;
+	}
+	FillNestInfo(N->Nests[Id], Out);
+	return true;
+}
+
+int32 UBirdLifeSubsystem::FindNest(FName Species, FVector Location) const
+{
+	const FNesting* N = Sim ? Sim->Nesting() : nullptr;
+	int32 Best = -1;
+	double BestD = 1e30;
+	if (N)
+	{
+		for (const FNest& Nest : N->Nests)
+		{
+			const double D = FVector::DistSquared(ToUE(Nest.Pos), Location);
+			if (FName(SpeciesTable()[Nest.Species].Id.c_str()) == Species && D < BestD)
+			{
+				BestD = D;
+				Best = Nest.Id;
+			}
+		}
+	}
+	return Best;
+}
+
+float UBirdLifeSubsystem::NestStageDay(int32 Id, FName Stage, float FromDay, float Frac) const
+{
+	FNesting* N = Sim ? Sim->Nesting() : nullptr;
+	const EStage Want = StageFromName(Stage);
+	if (!N || Id < 0 || Id >= (int32)N->Nests.size() || Want == EStage::Num)
+	{
+		return -1.f;
+	}
+	float First = -1.f, Last = -1.f;
+	for (float D = FMath::Max(1.f, FromDay); D < 366.f; D += 0.25f)
+	{
+		if (N->StateOn(Id, N->Year, D).Stage == Want)
+		{
+			First = First < 0.f ? D : First;
+			Last = D;
+		}
+		else if (First >= 0.f)
+		{
+			break;
+		}
+	}
+	return First < 0.f ? -1.f : First + (Last - First) * Frac;
+}
+
+void UBirdLifeSubsystem::PlaceNest(int32 Id)
+{
+	if (NestRenderer && Sim && Sim->Nesting() && Id >= 0 && Id < (int32)Sim->Nesting()->Nests.size())
+	{
+		NestRenderer->Place(*Sim, Id);
+	}
+}
+
+/** lyud.Birds.Nest <Species> [Stage] [frac]: the calendar to a day this year that species' nearest nest is in that stage (Eggs by
+ *  default), 10 o'clock, and the player 3 m from it, looking at it. */
+static FAutoConsoleCommandWithWorldAndArgs GBirdsNestCmd(TEXT("lyud.Birds.Nest"),
+	TEXT("lyud.Birds.Nest <Species> [Build|Eggs|Chicks|Fledged] [0..1]: go to that species' nearest nest on a day it is in that stage."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(World);
+		APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
+		UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
+		if (!Life || !Pawn || !Cal || Args.Num() < 1)
+		{
+			return;
+		}
+		const int32 Id = Life->FindNest(FName(*Args[0]), Pawn->GetActorLocation());
+		const FName Stage(Args.Num() > 1 ? *Args[1] : TEXT("Eggs"));
+		const float Day = Id >= 0 ? Life->NestStageDay(Id, Stage, 1.f, Args.Num() > 2 ? FCString::Atof(*Args[2]) : 0.5f) : -1.f;
+		if (Day < 0.f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("BirdLife: no %s nest %s this year"), *Args[0], *Stage.ToString());
+			return;
+		}
+		const FDateTime Now = Cal->Now();
+		Cal->SetNow(FDateTime(Now.GetYear(), 1, 1, 10, 0, 0) + FTimespan::FromDays(FMath::FloorToFloat(Day) - 1.f));
+		Life->PlaceNest(Id);
+		FBirdNestInfo Info;
+		Life->GetNest(Id, Info);
+		const FVector Away = FRotator(0.f, Info.Yaw, 0.f).Vector() * 300.0;
+		const FVector Eye = Info.Location + Away + FVector(0.0, 0.0, 60.0);
+		Pawn->SetActorLocation(Eye, false, nullptr, ETeleportType::TeleportPhysics);
+		if (APlayerController* PC = Cast<APlayerController>(Pawn->GetController()))
+		{
+			PC->SetControlRotation((Info.Location - Eye).Rotation());
+		}
+		UE_LOG(LogTemp, Display, TEXT("BirdLife: %s nest %d (%s) on day %.1f at %s"), *Args[0], Id, *Info.Kind.ToString(), Day, *Info.Location.ToString());
+	}));
+
+/** lyud.Birds.ViewFrom <x> <y> <z> <pitch> <yaw> [fov]: the view from a free camera there (tests: close-ups without the hero's
+ *  body or its collision in the way); no arguments: back to the pawn. */
+static FAutoConsoleCommandWithWorldAndArgs GBirdsViewFromCmd(TEXT("lyud.Birds.ViewFrom"),
+	TEXT("lyud.Birds.ViewFrom <x> <y> <z> <pitch> <yaw> [fov]: view from a free camera (cm, degrees); no arguments: the pawn's view again."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+		if (!PC)
+		{
+			return;
+		}
+		static TWeakObjectPtr<ACameraActor> Cam;
+		if (Args.Num() < 5)
+		{
+			PC->SetViewTargetWithBlend(PC->GetPawn(), 0.f);
+			return;
+		}
+		const FVector At(FCString::Atof(*Args[0]), FCString::Atof(*Args[1]), FCString::Atof(*Args[2]));
+		const FRotator Rot(FCString::Atof(*Args[3]), FCString::Atof(*Args[4]), 0.f);
+		if (!Cam.IsValid() || Cam->GetWorld() != World)
+		{
+			FActorSpawnParameters P;
+			P.ObjectFlags |= RF_Transient;
+			Cam = World->SpawnActor<ACameraActor>(At, Rot, P);
+		}
+		Cam->SetActorLocationAndRotation(At, Rot);
+		Cam->GetCameraComponent()->SetFieldOfView(Args.Num() > 5 ? FCString::Atof(*Args[5]) : 60.f);
+		PC->SetViewTargetWithBlend(Cam.Get(), 0.f);
+	}));

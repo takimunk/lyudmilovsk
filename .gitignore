@@ -59,3 +59,6 @@ blender/animals/gen/*/ue/
 blender/animals/gen/*/views/
 # the bicycle kit built by blender/bikes/build_bike.py (unreal/scripts/import_bikes.sh imports it)
 design/bikes/game/
+# the nest and chick kits (blender/birds/nests, blender/birds/chicks): rebuilt by their scripts, imported to /Game/Birds/Nests
+blender/birds/nests/export/
+blender/birds/chicks/export/

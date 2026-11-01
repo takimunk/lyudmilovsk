@@ -9,6 +9,8 @@ variant() {
     case "$1" in
         base)        echo "" ;;
         nobirds)     echo "lyud.Birds 0" ;;
+        nests)       echo "lyud.Birds.Nests 1" ;;
+        nonests)     echo "lyud.Birds.Nests 0" ;;
         nocorvids)   echo "lyud.Birds.Corvids 0" ;;
         nopeople)    echo "lyud.People 0" ;;
         noanimals)   echo "lyud.Animals 0" ;;
