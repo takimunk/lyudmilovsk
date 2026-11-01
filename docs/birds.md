@@ -38,6 +38,18 @@ distance, palette, calls, diet, months present in the Baltic, winter months and 
   rigidly at their root (`place_card`, no shear on short or long necks), denser and bent with the surface on the head.
   Eyes: a domed cornea over a painted iris and pupil (front cap only), set in a lid seat that meets the skin.
   Toes curl: `toetip.L/R` (outer half of the three front toes) and `halluxtip.L/R`, the last bones of the rig.
+* Every species' own skeleton (`species_art.SKELETON`, `solve_size`): the bones are fitted to field-guide and ringing
+  measurements as ratios to the total length: folded wing length (wrist to the longest primary tip; with the wingspan it
+  sets arm against hand, mostly through the primaries' length), central tail feather, tarsus, and the spread wing's
+  aspect ratio (the secondaries' length). The fit may move hand, primaries and secondaries only so far from the
+  species' morph (`lim` in `solve_size`): the template's coverts are laid for it. `species_art.TUNE` sets the build and
+  stance per species (neck shown or sunk, shin, body depth, head, how upright, tail carriage); a new stance keeps the
+  bill where it looked (level-ish). `BIRD_NO_SKELETON=1` / `BIRD_NO_TUNE=1` build the old shapes for comparison.
+* `measure_skeleton.py <Id ...>` prints what was built (ratios, a second per species, no mesh); `quick_look.py <out> <Id ...>`
+  builds LOD0 only and renders it perched and gliding (~30 s); `lineup.py <export dir> <out>` renders finished builds
+  the same way and `lineup_sheet.py <out> before=<dir> after=<dir>` composes true-scale lineups (perched from the side,
+  gliding from above) and a side-by-side grid. `tools/birds_rebuild_all.sh` rebuilds every species and hero body,
+  linted, with previews, three Blender processes at a time.
 * `lint_bird.py` (`--lint`): degenerate faces, zero-area / stretched uvs, uvs leaving their atlas cell, z-fighting
   (parallel overlapping faces of different parts closer than 0.1 mm) and faces inside faces, per mesh, to
   `<Tag>_lint.json`. `separate()` (run on every build) lifts near-coplanar cards apart before export.

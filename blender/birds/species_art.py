@@ -1170,14 +1170,19 @@ TUNE = {
     "SandMartin": dict(perch_pitch=14),
     # the cormorant upright with its neck in an S, the swan's neck tall over a level body, the heron standing alert
     "Cormorant": dict(perch_pitch=55, perch_neck=-30, perch_head=-34, shin=1.3),
-    "MuteSwan": dict(perch_pitch=0, perch_neck=80, perch_head=-70, shin=1.2),
+    "MuteSwan": dict(perch_pitch=0, perch_neck=72, perch_head=-52, shin=1.2),
     "GreyHeron": dict(perch_pitch=34, perch_neck=38, perch_head=-36, body_w=0.8),
     # raptors: upright; the sparrowhawk long-legged with a long tail hanging, the falcon compact, buzzards hunched, eagles big-headed
-    "Sparrowhawk": dict(perch_pitch=56, perch_neck=-14, perch_tail=-14, shin=1.2),
-    "Peregrine": dict(perch_pitch=62, perch_neck=-16, perch_tail=-26, body_w=1.18, body_h=1.16, neck=0.8),
-    "CommonBuzzard": dict(perch_pitch=56, perch_neck=-14, perch_tail=-26, neck=0.8, body_h=1.16),
-    "GoldenEagle": dict(perch_pitch=46, perch_neck=-4, perch_tail=-24, head=1.05, neck=0.95),
-    "WhiteTailedEagle": dict(perch_pitch=44, perch_neck=2, perch_tail=-20, head=1.08, neck=1.15, throat=1.2),
+    "Sparrowhawk": dict(perch_pitch=56, perch_neck=-14, perch_tail=-26, shin=1.2),
+    "Peregrine": dict(perch_pitch=62, perch_neck=-16, perch_tail=-30, body_w=1.18, body_h=1.16, neck=0.8),
+    "CommonBuzzard": dict(perch_pitch=56, perch_neck=-14, perch_tail=-30, neck=0.8, body_h=1.16),
+    "GoldenEagle": dict(perch_pitch=46, perch_neck=-4, perch_tail=-30, head=1.05, neck=0.95),
+    "WhiteTailedEagle": dict(perch_pitch=44, perch_neck=2, perch_tail=-28, head=1.08, neck=1.15, throat=1.2),
 }
 for _n, _t in ({} if __import__("os").environ.get("BIRD_NO_TUNE") else TUNE).items():   # BIRD_NO_TUNE=1: the old builds
+    _m = dict(MORPH_DEFAULTS, **SPECIES[_n]["morph"])
+    _gaze = _m["perch_pitch"] + _m["perch_neck"] + _m["perch_head"]
     SPECIES[_n]["morph"].update(_t)
+    if "perch_head" not in _t:   # a new stance keeps the bill where it looked (level-ish: never more than 12 deg up)
+        _m = dict(MORPH_DEFAULTS, **SPECIES[_n]["morph"])
+        SPECIES[_n]["morph"]["perch_head"] = min(_gaze, 12.0) - _m["perch_pitch"] - _m["perch_neck"]

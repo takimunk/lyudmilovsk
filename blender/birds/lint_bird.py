@@ -312,6 +312,7 @@ def _pname(names, p, m):
     return f"{nm}"
 
 
+LATE = 24   # separate(): the pass from which a card squeezed between two others is no longer sent across one
 BODYCARD = ("contour", "plume", "crest")
 MOVABLE = ("contour", "plume", "gcovert", "pcovert", "underwing", "alula", "crest", "primary", "secondary", "tertial", "tail")
 
@@ -393,22 +394,29 @@ def separate(ob, part_names, iters=40, verbose=True):
     xb = np.linspace(bodyv[:, 0].min(), bodyv[:, 0].max(), 40)
     zc = np.array([bodyv[np.abs(bodyv[:, 0] - x) < (xb[1] - xb[0])][:, 2].mean() if (np.abs(bodyv[:, 0] - x) < (xb[1] - xb[0])).any() else np.nan for x in xb])
     zc = np.where(np.isnan(zc), np.nanmean(zc), zc)
-    total = {}
+    total, side, order = {}, {}, {}
     for it in range(iters):
         push = _close_pairs(co[vi], tpart, faces)
         if not push:
             break
-        disp = {}
+        disp, grp = {}, {}
         for i, j, n_, d in push:
             pi_, pj = int(tpart[i]), int(tpart[j])
             need = ZF * 3.0 - d
+            c = co[vi[i]].mean(0)
+            out = c - np.array([c[0], 0.0, np.interp(c[0], xb, zc)])
             if names[pi_] in BODYCARD and names[pj] in BODYCARD:
                 tgt = max(pi_, pj)
-                c = co[vi[i]].mean(0)
-                out = c - np.array([c[0], 0.0, np.interp(c[0], xb, zc)])
                 nn_ = n_ if np.dot(n_, out) >= 0 else -n_
                 vec = nn_ * need
                 if np.linalg.norm(total.get(tgt, 0.0) + vec) > 0.0025:   # never more than 2.5 mm off its place
+                    continue
+            elif names[pi_] == "tube" and names[pj] == "tube":
+                # toes, claws and the tarsus meet at the foot in near-parallel shells: the later tube parts from the
+                # earlier one (a sub-mm shift of a toe), never far from its place
+                tgt = max(pi_, pj)
+                vec = n_ * need if tgt == pj else -n_ * need
+                if np.linalg.norm(total.get(tgt, 0.0) + vec) > 0.0015:
                     continue
             elif names[pj] in MOVABLE and names[pi_] in MOVABLE:
                 # two movable cards: always the later one moves (away from the other), or the pair, reported both
@@ -421,6 +429,50 @@ def separate(ob, part_names, iters=40, verbose=True):
                 tgt, vec = pi_, -n_ * need
             else:
                 continue
+            grp.setdefault((tgt, pj if tgt == pi_ else pi_), []).append((vec, d, out))
+        move = {}
+        if it < LATE:
+            # twisted cards cross the other's plane inside the lint's 0.1 mm band: their faces report opposite sides,
+            # and moving the card by the largest of them swaps the sides pass after pass. One direction per card
+            # pair: the one that clears every face of it with the least move (faces on the far side need their gap
+            # added)
+            for (tgt, oth), vs in grp.items():
+                dirs = np.array([v for v, _, _ in vs])
+                dirs /= np.linalg.norm(dirs, axis=1)[:, None]
+                ds = np.array([d for _, d, _ in vs])
+                best = None
+                for u in ((side[(tgt, oth)],) if (tgt, oth) in side else (dirs[np.argmin(ds)], -dirs[np.argmin(ds)])):
+                    req = np.max(np.where(dirs @ u > 0, ZF * 3.0 - ds, ZF * 3.0 + ds))
+                    if best is None or req < best[0]:
+                        best = (req, u)
+                side[(tgt, oth)] = best[1]   # once a card has gone to one side of another it stays there (faces
+                                             # still in the clear then may meet the other card on the next pass)
+                move[(tgt, oth)] = (best[1] * best[0], len(vs))
+        else:
+            # what is left is cards squeezed between others that sit in the reverse of part order, or whole stacks
+            # of them: part number no longer decides. Each pair keeps the order it has (the first report of it
+            # fixes which card is outward of the other) and only the outer one moves, outward, so a stack is lifted
+            # from the bottom up
+            late = {}
+            for (tgt, oth), vs in grp.items():
+                dirs = np.array([v for v, _, _ in vs])
+                dirs /= np.linalg.norm(dirs, axis=1)[:, None]
+                ds = np.array([d for _, d, _ in vs])
+                key = (min(tgt, oth), max(tgt, oth))
+                if key not in order:
+                    u0 = dirs[np.argmin(ds)]   # the closest face: tgt lies on its + side
+                    if u0 @ np.mean([o for _, _, o in vs], axis=0) >= 0:
+                        order[key] = (oth, tgt, u0)    # lower, upper, direction from lower to upper (outward)
+                    else:
+                        order[key] = (tgt, oth, -u0)
+                lo, hi, u = order[key]
+                late.setdefault((hi, lo), []).append((dirs if hi == tgt else -dirs, ds))
+            for (hi, lo), parts in late.items():
+                dirs = np.concatenate([p[0] for p in parts])
+                ds = np.concatenate([p[1] for p in parts])
+                u = order[(min(hi, lo), max(hi, lo))][2]
+                move[(hi, lo)] = (u * np.max(np.where(dirs @ u > 0, ZF * 3.0 - ds, ZF * 3.0 + ds)), len(ds))
+        for (tgt, _), (vec, _) in move.items():
             cur = disp.get(tgt)
             if cur is None or np.linalg.norm(vec) > np.linalg.norm(cur):
                 disp[tgt] = vec
@@ -432,15 +484,36 @@ def separate(ob, part_names, iters=40, verbose=True):
         for p_, vec in disp.items():
             co[vpart == p_] += vec
             total[p_] = total.get(p_, 0.0) + vec
-        # the moved cards' faces again; every 6th pass all faces (a capped pair elsewhere may have a free partner now)
-        faces = range(nt) if (it + 1) % 6 == 0 else np.where(np.isin(tpart, list(disp)))[0]
+        # the moved cards' faces again, and their partners' (both ways round: a twisted pair judged by one card's faces
+        # alone swaps sides); every 6th pass all faces (a capped pair elsewhere may have a free partner now)
+        faces = range(nt) if (it + 1) % 6 == 0 else np.where(np.isin(tpart, list(disp) + [o for t, o in move if t in disp]))[0]
         moved += len(disp)
         if verbose:
             print(f"SEPARATE {ob.name}: pass {it + 1}, {len(push)} pairs, {len(disp)} cards moved")
     me.vertices.foreach_set("co", co.ravel())
     me.update()
+    # the eyelid seat lies on the body's skin all round: its faces are lifted off it one by one (a vertex at a time, so
+    # the seat stays one surface; a fraction of a mm)
+    lift = np.zeros(len(co))
+    for _ in range(6):
+        fix = {}
+        for i, j, n_, d in _close_pairs(co[vi], tpart, range(nt)):
+            a, b = names[int(tpart[i])], names[int(tpart[j])]
+            if a.startswith("lid") and b == "body":
+                fix[i] = -n_ * (ZF * 3.0 - d)
+            elif b.startswith("lid") and a == "body":
+                fix[j] = n_ * (ZF * 3.0 - d)
+        if not fix:
+            break
+        for f, vec in fix.items():
+            for v in vi[f]:
+                if lift[v] < 0.0005:
+                    co[v] += vec
+                    lift[v] += np.linalg.norm(vec)
+    me.vertices.foreach_set("co", co.ravel())
+    me.update()
     # what is still in one plane after that: body feathers where a short neck crowds many rings into a few mm (they
-    # overlap five or more deep there). Leave the later card (a plume first) out: one card fewer in such a pile is
+    # overlap five or more deep there; or one squeezed between the body and its neighbour). Leave the later card (a plume first) out: one card fewer in such a pile is
     # not seen, two in one plane are
     left = _close_pairs(co[vi], tpart, range(nt))
     drop = set()
@@ -451,6 +524,10 @@ def separate(ob, part_names, iters=40, verbose=True):
         if names[a] in BODYCARD and names[b] in BODYCARD:
             pa, pb = names[a] == "plume", names[b] == "plume"
             drop.add(a if (pa and not pb) else b if (pb and not pa) else max(a, b))
+        elif names[a] in BODYCARD and names[b] == "body":
+            drop.add(a)   # squeezed between the body and a neighbour card with no room to move out
+        elif names[b] in BODYCARD and names[a] == "body":
+            drop.add(b)
     if drop:
         import bmesh
         bm = bmesh.new()
