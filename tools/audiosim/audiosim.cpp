@@ -4,6 +4,7 @@
 //   tools/audiosim/run.sh weather              the weather model's climate (weather.cpp)
 // Then tools/audiosim/spectrogram.py Saved/AudioSim/<scene>.wav draws what it sounds like.
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Audio/AmbienceDSP.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Audio/FountainDSP.h"
 
 #include <cmath>
 #include <cstdio>
@@ -406,10 +407,49 @@ namespace
 	}
 }
 
+/** The fountain (FountainDSP): 4 s off, it turns on, runs, turns off. Saved/AudioSim/fountain.wav, then checks the levels. */
+static int Fountain()
+{
+	FFountainVoice V;
+	V.Init(SR, 9);
+	std::vector<float> L, R;
+	std::vector<float> Rms;
+	float Out[Buf];
+	const int Blocks = int(24.f * SR / Buf);
+	float Peak = 0.f;
+	bool bNan = false;
+	double Sum = 0.0;
+	int N = 0;
+	for (int B = 0; B < Blocks; B++)
+	{
+		const float T = B * Buf / SR;
+		const float Flow = (T > 4.f && T < 18.f) ? 1.f : 0.f;
+		std::fill(Out, Out + Buf, 0.f);
+		V.Render(Out, Buf, Flow, 1.f);
+		for (float X : Out)
+		{
+			bNan |= !std::isfinite(X);
+			Peak = std::fmax(Peak, std::fabs(X));
+			L.push_back(X);
+			R.push_back(X);
+		}
+		if (T > 8.f && T < 17.f) { Sum += V.Rms; N++; }
+		Rms.push_back(V.Rms);
+	}
+	WriteWav("Saved/AudioSim/fountain.wav", L, R);
+	const float Mean = N ? float(Sum / N) : 0.f;
+	const float Before = Rms[size_t(2.f * SR / Buf)], After = Rms.back();
+	std::printf("fountain: running rms %.4f, peak %.3f, off before %.5f, after %.5f\n", Mean, Peak, Before, After);
+	const bool bOk = !bNan && Mean > 0.02f && Mean < 0.3f && Peak < 0.95f && Before < 1e-5f && After < 1e-3f;
+	std::printf("%s\n", bOk ? "all passed" : "FAILED");
+	return bOk ? 0 : 1;
+}
+
 int main(int Argc, char** Argv)
 {
 	const char* Cmd = Argc > 1 ? Argv[1] : "test";
 	if (!std::strcmp(Cmd, "weather")) return WeatherMain(Argc, Argv);
 	if (!std::strcmp(Cmd, "render")) return Render(Argc, Argv);
+	if (!std::strcmp(Cmd, "fountain")) return Fountain();
 	return Test();
 }
