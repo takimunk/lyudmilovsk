@@ -50,7 +50,18 @@ STEPS = [
     ("current_fast", ("seabed", 0, 2.4, 0.8), ["lyud.Current.Speed 0.6"]),
     ("current_reef", ("seabed", 1, 1.8, 0.6), ["lyud.Current.Speed 0.6"]),
     ("from_surface", ("depth", 3.0, 120.0, "surface"), ["lyud.Current.Speed -99"]),
+    # the surface's underside: from 3 m down over 9 m of water, looking up at the waves, into Snell's window and
+    # straight up; the same from 2.5 m over the water (the top side unchanged); then the same by night
+    ("up_settle", ("up", 9.0, 100.0, -3.0, 10.0, 0.0), ["lyud.Current.Speed -99"]),   # the sea's depth map reads in
+    ("up_window", ("up", 9.0, 100.0, -3.0, 50.0, 0.0), []),
+    ("up_edge", ("up", 9.0, 100.0, -3.0, 25.0, 0.0), []),
+    ("up_zenith", ("up", 9.0, 100.0, -3.0, 88.0, 0.0), []),
+    ("up_shallow", ("up", 9.0, 100.0, -1.2, 35.0, 90.0), []),
+    ("above_sea", ("up", 9.0, 100.0, 2.5, -14.0, 0.0), []),
     ("night_reef", ("fixed", 59700.0, 7200.0, -5250.0, -12.0, 30.0), ["lyud.SkyHourOffset 8"]),
+    ("up_night", ("up", 9.0, 100.0, -3.0, 50.0, 0.0), []),
+    ("up_night_zenith", ("up", 9.0, 100.0, -3.0, 88.0, 0.0), []),
+    ("above_night", ("up", 9.0, 100.0, 2.5, -14.0, 0.0), []),
 ]
 # frame time A/B in this one process (UWTEST_PERF=1): in a meadow by a reef with everything, without the fish, without
 # any of the underwater life; then the same over the land (the door), where it must cost nothing
@@ -59,6 +70,8 @@ PERF = [
     ("perf_nofish", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife.Fish 0"]),
     ("perf_none", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife 0", "lyud.Seabed 0"]),
     ("perf_all2", ("fixed", 56840.0, 9961.0, -5298.0, -8.0, -20.0), ["lyud.SeaLife 1", "lyud.Seabed 1", "lyud.SeaLife.Fish 1"]),
+    ("perf_up", ("up", 9.0, 100.0, -3.0, 50.0, 0.0), ["lyud.SeaLife 1", "lyud.Seabed 1"]),
+    ("perf_sea", ("up", 9.0, 100.0, 2.5, -14.0, 0.0), []),
     ("perf_land_on", ("land",), ["lyud.SeaLife 1", "lyud.Seabed 1"]),
     ("perf_land_off", ("land",), ["lyud.SeaLife 0", "lyud.Seabed 0"]),
 ]
@@ -144,6 +157,14 @@ def place(w, step):
         else:
             eye = at(x, where[2], bed_z + 140.0)
             look = at(x + 10.0, where[2], bed_z + 40.0)
+    elif kind == "up":
+        # ("up", spot depth m, map y, eye m over the still level, pitch, yaw)
+        x = spot_at_depth(sea, where[1], where[2])
+        eye = at(x, where[2], sea.sea_level() + where[3] * 100.0)
+        cam.set_actor_location(eye)
+        cam.set_actor_rotation(unreal.Rotator(roll=0.0, pitch=where[4], yaw=where[5]))
+        st["look"] = None
+        return
     elif kind == "fixed":
         eye = unreal.Vector(where[1], where[2], where[3])
         cam.set_actor_location(eye)

@@ -957,7 +957,8 @@ void ALyudSea::Tick(float DeltaSeconds)
 		const FLyudSeaSample S = SampleSurface(Eye);
 		bCameraUnder = S.bIsSea && S.Immersion > 2.f && !IsInDryZone(Eye);
 		Underwater->BlendWeight = bCameraUnder ? 1.f : 0.f;
-		if (bCameraUnder && UnderMID)
+		float Light = 1.f;
+		if (bCameraUnder)
 		{
 			// the light coming down through the surface: full by day, a glimmer at night
 			if (!Sky.IsValid())
@@ -966,11 +967,16 @@ void ALyudSea::Tick(float DeltaSeconds)
 				Sky = It ? *It : nullptr;
 			}
 			const float Alt = Sky.IsValid() ? Sky->SunAltitude() : 30.f;
-			UnderMID->SetScalarParameterValue(TEXT("Light"), 0.03f + 0.97f * FMath::SmoothStep(-4.f, 12.f, Alt));
+			Light = 0.03f + 0.97f * FMath::SmoothStep(-4.f, 12.f, Alt);
+			if (UnderMID)
+			{
+				UnderMID->SetScalarParameterValue(TEXT("Light"), Light);
+			}
 		}
 		if (SeaMID)
 		{
-			SeaMID->SetScalarParameterValue(TEXT("CameraUnder"), bCameraUnder ? 1.f : 0.f);
+			// the surface's underside (Snell's window, total reflection) is drawn while the camera is under
+			SeaMID->SetVectorParameterValue(TEXT("UnderLight"), FLinearColor(Light, bCameraUnder ? 1.f : 0.f, 0.f, 0.f));
 		}
 	}
 	if (SeaMID)

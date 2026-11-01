@@ -85,8 +85,9 @@ wind's weather comes from its synoptic chain (`FWindParams::bSynoptic`); `GetSky
   them out, drop, swim, pop out again) and keeps the camera `SwimEyeClearance` (22 cm) over the waves, whatever put
   them in the sea (a fall, the hand-over from a drowned bird); shallower they stand and walk out. Checked offscreen
   in the shallows, the open sea at 14 m/s and on the beach (`swim_*` steps of test_sea).
-- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour, dims it with depth,
-  lays caustics on the bed and shows the sky through Snell's window overhead (dark by night, from the sun's altitude).
+- **Under water**: a post process (`PP_LyudUnderwater`) fogs the view in the water's colour, dims it with depth
+  (from the sun's altitude: a glimmer by night), glows toward the sun and lays caustics on the bed. The surface
+  overhead is the sea's own mesh seen from below (see "The surface from below" in [underwater.md](underwater.md)).
 - **Buoyancy**: `ULyudBuoyancyComponent` on a simulating body (points, volume, drag). `lyud.Sea.SpawnFloat` drops
   a 1 m crate on the water to watch it ride.
 - **Quality**: `lyud.Sea.Quality` 0 phone (64 segments, 20 + 16 trains), 1, 2 desktop (128, 64 + 48); −1 = by

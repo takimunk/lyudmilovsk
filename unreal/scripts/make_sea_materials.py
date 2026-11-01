@@ -33,6 +33,7 @@ EXCL = unreal.WorldPositionIncludedOffsets.WPT_EXCLUDE_ALL_SHADER_OFFSETS
 # (coefficients per metre). Red goes first (the water itself), blue a little before green (a touch of the Baltic's
 # yellow substance); the scattering is low against the absorption, so deep water is dark.
 ABSORPTION = (0.42, 0.085, 0.13)
+UNDER_WATER_COLOR = (0.16, 0.30, 0.25)   # the underwater fog's colour (PP_LyudUnderwater WaterColor)
 SCATTERING = (0.016, 0.03, 0.03)
 SHALLOW_CLARITY = 0.03    # absorption and scattering in the first few tens of cm, of the open sea's
 SHALLOW_CLEAR_M = 6.0     # depth (m) from which the water is the open sea's
@@ -231,13 +232,44 @@ def sea_material(coll):
 
     rough = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=True, a=False)
     g.link(pix, rough)
-    g.out(g.add(rough, g.mul(foam, g.const(0.7))), MP.MP_ROUGHNESS)
-    g.out(g.const((0.86, 0.88, 0.86)), MP.MP_BASE_COLOR)
+
+    # the underside, when the camera is under the water (ALyudSea sets UnderLight = (light, under)): the same waves
+    # and normals seen from the water, Snell's window and total reflection (H.UNDER_RAY_HLSL, H.UNDERSIDE_HLSL). The
+    # base layer turns opaque and black there so the single-layer water (which assumes an eye in the air) adds
+    # nothing; the light is all emissive. With the camera over the water every output is as before.
+    ul = (g.vparam("UnderLight", (1.0, 0.0, 0.0, 0.0)), "RGBA")
+    under = g.custom("return UL.y;", [("UL", ul)], desc="Under")
+    ray = g.custom(H.UNDER_RAY_HLSL, [("N", nrm), ("V", view), ("Slope", g.param("UnderSlope", 0.5))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT4,
+                   desc="UnderRay")
+    ray_dir = g.node(X.MaterialExpressionComponentMask, r=True, g=True, b=True, a=False)
+    g.link(ray, ray_dir)
+    sky = g.node(X.MaterialExpressionSkyLightEnvMapSample)
+    g.link(ray_dir, sky, "Direction")
+    g.link(rough, sky, "Roughness")
+    amb = g.node(X.MaterialExpressionSkyLightEnvMapSample)
+    g.link(g.const((0.0, 0.0, 1.0)), amb, "Direction")
+    g.link(g.const(1.0), amb, "Roughness")
+    underside = g.custom(H.UNDERSIDE_HLSL % ABSORPTION,
+                     [("Ray", ray), ("Sky", sky), ("Amb", amb), ("Rough", rough), ("Foam", foam), ("UL", ul),
+                      ("UK", (g.vparam("UnderLook", (1.0, 1.0, 0.6, 1.0)), "RGBA")),
+                      ("WC", (g.vparam("UnderWaterColor", UNDER_WATER_COLOR + (1.0,)), "RGBA"))],
+                     out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="Underside")
+
+    def side(top, bottom):
+        """top's value over the water, bottom's under it"""
+        e = g.node(X.MaterialExpressionLinearInterpolate)
+        g.link(top, e, "A")
+        g.link(bottom, e, "B")
+        g.link(under, e, "Alpha")
+        return e
+
+    g.out(side(g.add(rough, g.mul(foam, g.const(0.7))), g.const(1.0)), MP.MP_ROUGHNESS)
+    g.out(side(g.const((0.86, 0.88, 0.86)), g.const((0.0, 0.0, 0.0))), MP.MP_BASE_COLOR)
     # lyud.Sea.DebugFoam: the foam glows, to see where it is
-    g.out(g.mul(foam, g.param("DebugFoam", 0.0)), MP.MP_EMISSIVE_COLOR)
+    g.out(side(g.mul(foam, g.param("DebugFoam", 0.0)), underside), MP.MP_EMISSIVE_COLOR)
     # single-layer water shows its base colour (the foam) as much as its opacity says
-    g.out(g.mul(foam, g.const(0.9)), MP.MP_OPACITY)
-    g.out(g.const(0.255), MP.MP_SPECULAR)
+    g.out(side(g.mul(foam, g.const(0.9)), g.const(1.0)), MP.MP_OPACITY)
+    g.out(side(g.const(0.255), g.const(0.0)), MP.MP_SPECULAR)
 
     wo = g.node(X.MaterialExpressionSingleLayerWaterMaterialOutput, x=0)
     # the water output takes its coefficients per centimetre (SingleLayerWaterShading.ush multiplies them by the
@@ -287,38 +319,35 @@ float3 absorb = float3(%f, %f, %f);
 float3 sigma = absorb + float3(%f, %f, %f);
 float3 lightDown = exp(-absorb * (camDepth + 0.5));
 float3 fogc = WaterColor.rgb * Bright * Light * lightDown;
-float3 col;
-if (dir.z > 0.0 && P.z > Sea.x - 60.0)
+// the water toward the sun glows (forward scattering round the sun's refracted direction, Henyey-Greenstein g 0.75)
+float3 sw = refract(View.DirectionalLightDirection.xyz, float3(0.0, 0.0, 1.0), 1.0 / 1.33);
+float cg = dot(dir, -sw);
+float hg = (1.0 - 0.5625) / pow(1.5625 - 1.5 * cg, 1.5) - 0.11;
+fogc *= 1.0 + 0.35 * max(hg, 0.0) * saturate(View.DirectionalLightDirection.z * -4.0);
+// everything seen, the surface's underside too (the sea material shades it from the water side: Snell's window,
+// total reflection), fades into the water's colour over the path from the eye
+float d = length(P - Cam) * 0.01;
+float3 T = exp(-sigma * d);
+float3 col = Scene.rgb;
+if (abs(SM.x - 10.0) > 0.5)
 {
-    // looking up at the surface: inside Snell's window (48.6 deg from straight up) the sky shines through,
-    // rippling; outside it the surface mirrors the dim water below; a bright rim at the window's edge
-    float ds = camDepth / max(dir.z, 0.05);
-    float3 T = exp(-sigma * ds);
-    float rip = 0.8 + 0.2 * sin(P.x * 0.05 + Sea.y * 1.3) * sin(P.y * 0.06 - Sea.y * 1.1);
-    float3 sky = SkyTint.rgb * Light * rip;
-    float win = smoothstep(0.63, 0.69, dir.z);
-    col = lerp(fogc, sky * T + fogc * (1.0 - T), win);
-    col += sky * T * 0.5 * exp(-pow((dir.z - 0.66) / 0.025, 2.0));
-}
-else
-{
-    float d = length(P - Cam) * 0.01;
-    float3 T = exp(-sigma * d);
-    // caustics: sunlight focused by the waves dancing over the bed, fading with depth
+    // caustics: sunlight focused by the waves dancing over the bed, fading with depth (not on the surface itself:
+    // shading model 10 is the single-layer water)
     float bed = max((Sea.x - P.z) * 0.01, 0.0);
     float2 q = P.xy * 0.01;
     float c1 = sin(q.x * 3.1 + Sea.y * 1.7 + sin(q.y * 2.3 + Sea.y)) * sin(q.y * 2.9 - Sea.y * 1.3 + sin(q.x * 1.9 - Sea.y * 0.7));
     float c2 = sin(q.x * 4.7 - Sea.y * 1.1 + sin(q.y * 3.7 - Sea.y * 0.9)) * sin(q.y * 5.3 + Sea.y * 1.4);
     float caustic = (pow(1.0 - abs(c1), 8.0) + 0.6 * pow(1.0 - abs(c2), 10.0)) * 1.4 * exp(-0.25 * bed) * saturate(N.z) * Light;
-    col = Scene.rgb * (1.0 + caustic) * T + fogc * (1.0 - T);
+    col *= 1.0 + caustic;
 }
-return col;
+return col * T + fogc * (1.0 - T);
 """
 
 
 def underwater_material(coll):
     """Under the surface: the scene fades into the water's own colour by distance, the light dims the deeper
-    the eye is, the bed carries caustics, and looking up the sky shows through Snell's window."""
+    the eye is and glows toward the sun, the bed carries caustics. The surface overhead (Snell's window) is the sea
+    material's own underside."""
     g = Graph("PP_LyudUnderwater", None)
     g.m.set_editor_property("material_domain", unreal.MaterialDomain.MD_POST_PROCESS)
     g.m.set_editor_property("blendable_location", unreal.BlendableLocation.BL_SCENE_COLOR_BEFORE_DOF)
@@ -327,9 +356,10 @@ def underwater_material(coll):
     pos = g.node(X.MaterialExpressionWorldPosition)
     cam = g.node(X.MaterialExpressionCameraPositionWS)
     sea = g.mpc(coll, "Sea")
+    sm = g.node(X.MaterialExpressionSceneTexture, scene_texture_id=unreal.SceneTextureId.PPI_SHADING_MODEL_ID)
     em = g.custom(UNDERWATER_HLSL % (ABSORPTION + SCATTERING),
-                  [("Scene", (scene, "Color")), ("N", (normal, "Color")), ("P", pos), ("Cam", cam), ("Sea", sea),
-                   ("WaterColor", g.vparam("WaterColor", (0.16, 0.30, 0.25, 1.0))), ("SkyTint", g.vparam("SkyTint", (1.8, 2.2, 2.3, 1.0))),
+                  [("Scene", (scene, "Color")), ("N", (normal, "Color")), ("SM", (sm, "Color")), ("P", pos), ("Cam", cam), ("Sea", sea),
+                   ("WaterColor", g.vparam("WaterColor", UNDER_WATER_COLOR + (1.0,))),
                    ("Bright", g.param("Brightness", 1.0)), ("Light", g.param("Light", 1.0))],
                   out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="Underwater")
     g.out(em, MP.MP_EMISSIVE_COLOR)

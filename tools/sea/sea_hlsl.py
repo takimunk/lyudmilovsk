@@ -254,7 +254,7 @@ float3 n = normalize(float3(Txy * Tyz - Txz * Tyy, Txz * Txy - Txx * Tyz, Txx * 
 // at grazing views a steep facet would mirror the water below the horizon (a black hole in the
 // reflection): tilt such facets back toward flat until they mirror the sky
 float3 v = normalize(V);
-for (int j = 0; j < 4; j++)
+for (int j = 0; j < 4 && v.z > 0.0; j++)
 {
     float3 r = 2.0 * dot(n, v) * n - v;
     if (r.z > 0.03) break;
@@ -281,6 +281,65 @@ float patchy = Lyud.Noise3(float3(p / 9.0, 2.0), 17u, 512u) * 0.5 + 0.5;
 float old = smoothstep(bar - 0.9, bar + 0.3, score) * st * patchy * w.y;
 wc = max(wc, old * saturate((U - 8.0) / 6.0) * 0.4);
 return float4(n.x, n.y, rough, saturate(wc));
+"""
+
+# The surface seen from under the water (the camera under: UnderLight.y = 1). From the water side the waves are the
+# same mesh and normals as from above; the ray from the eye meets the surface going up and is refracted into the air
+# (water to air, n = 1.33): inside Snell's window, 48.6 deg of straight up on still water, it leaves into the sky (the
+# whole sky squeezed into the cone, brighter by n^2 as radiance is), outside it is wholly reflected back down: the dark
+# deep water mirrored. The waves tilt every facet, so the window's edge ripples and breaks into patches, and on the
+# window's rim the reflection's share rises steeply (Fresnel). Returns the refracted ray (to look the sky up in) and
+# how much of the ray leaves (1 - R).
+# The slopes are scaled by Slope (the material's UnderSlope): the capillary ripples that break the sun
+# into glitter from above are steep enough that, seen from below, half the window would turn into totally reflecting
+# holes; the eye under the surface sees them blurred.
+# Inputs: N (the surface's upward normal), V (camera vector, from the surface to the eye), Slope.
+UNDER_RAY_HLSL = r"""
+float3 n = normalize(float3(N.xy * Slope, max(N.z, 0.05)));
+float3 d = -normalize(V);                       // the eye's ray, travelling up through the water
+float ci = dot(d, n);
+// a facet the ray meets from behind (the far slope of a wave): seen edge-on, it mirrors
+if (ci <= 0.0) { n = normalize(n - 2.0 * ci * d); ci = dot(d, n); }
+ci = max(ci, 1e-3);
+const float eta = 1.33;
+float s2 = eta * eta * (1.0 - ci * ci);
+if (s2 >= 1.0) return float4(0.0, 0.0, 1.0, 0.0);
+float ct = sqrt(1.0 - s2);
+float3 t = normalize(eta * d + (ct - eta * ci) * n);
+float rs = (eta * ci - ct) / (eta * ci + ct);
+float rp = (eta * ct - ci) / (eta * ct + ci);
+return float4(t, 1.0 - 0.5 * (rs * rs + rp * rp));
+"""
+
+# The underside's light (emissive; the base layer is made opaque and black there, so the single-layer water adds
+# nothing of its own: it assumes an eye in the air). Through the window: the sky along the refracted ray (Sky, from
+# the sky light's capture), x n^2, and the sun (or the moon) where the refracted ray meets it, spread by the ripples'
+# roughness: the sun's glitter dancing in the window. Reflected: the water under the surface, its upwelling light (the
+# underwater fog's colour as the light at the surface makes it, dimmer looking down). Foam and bubbles from below:
+# lit through, a soft grey-white. The underwater post process then fogs it all over the path from the eye.
+# Inputs: Ray (UNDER_RAY_HLSL), Sky (sky light sample along Ray.xyz), Amb (sky light sample straight up, rough),
+# Rough, Foam, UL = UnderLight (light 0..1 as the post process's, under 0/1), UK = UnderLook (sky gain, sun gain,
+# reflection gain, foam gain), WC = the underwater fog's water colour.
+UNDERSIDE_HLSL = r"""
+float3 absorb = float3(%f, %f, %f);
+float light = UL.x;
+float3 down = WC.rgb * light * exp(-absorb * 0.5);
+float tr = Ray.w;
+float3 col = down * UK.z * (1.0 - tr);
+if (tr > 0.0)
+{
+    float3 t = Ray.xyz;
+    col += Sky * tr * 1.7689 * UK.x;
+    // the sun: View.DirectionalLightDirection points from the light; its illuminance is colour x pi
+    float3 s = -View.DirectionalLightDirection.xyz;
+    float3 E = View.DirectionalLightColor.rgb * 3.14159265;
+    float w = 0.012 + 0.2 * Rough;
+    float c = saturate(dot(t, s));
+    float lobe = exp(-(1.0 - c) * 2.0 / (w * w)) / (3.14159265 * w * w);
+    col += E * min(lobe, 4000.0) * tr * 1.7689 * UK.y * step(0.0, s.z);
+}
+float3 foam = Amb * 0.6 + View.DirectionalLightColor.rgb * 3.14159265 * saturate(-View.DirectionalLightDirection.z) * 0.08;
+return lerp(col, foam * UK.w, saturate(Foam * 0.85));
 """
 
 # Surf over the shallows, as an amount of foam 0..1 (the Foam node draws it as lace, Lyud.Lace): a soft band on each

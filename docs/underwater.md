@@ -34,6 +34,26 @@ cobble field ~40 m east. From the spring-low waterline it is a ~110 m swim, from
 plain sand 30 m round it (fading out to 45 m); the hatch thread cuts its 2x2 m terrain hole there (`Content/Europa/europa.json`),
 and nothing of the seabed life grows, lies or settles within 4 m of it (`ULyudSeabedComponent::HabitatAt`).
 
+## The surface from below (`M_LyudSea`, `tools/sea/sea_hlsl.py` UNDER_RAY_HLSL / UNDERSIDE_HLSL)
+
+Looking up, the diver sees the same sea mesh, waves and normals as from above, from the water side. While the camera
+is under, `ALyudSea` sets the material's `UnderLight` = (light 0..1, 1) and every sea pixel is shaded as the underside:
+the eye's ray is refracted into the air (n = 1.33). Inside Snell's window (48.6° of straight up on still water) it
+leaves into the sky: the sky light's capture along the refracted ray, ×n² as radiance goes, and the sun or Europa (the
+view's directional light) where the refracted ray meets it, spread by the ripples' roughness, so the sun dances in
+the window. Outside the window the light is wholly reflected: the deep water's own dim light mirrored. The waves tilt
+every facet, so the window's edge ripples and breaks into patches, and toward the rim the reflection's share rises
+steeply (Fresnel). Foam from below is a soft lit grey-white. The single-layer water's own shading assumes an eye in
+the air (it would draw an opaque sheet of scattered light), so there the base layer is made opaque and black and the
+underside is all emissive; the post process fogs it over the path from the eye like everything else (no caustics on
+the surface: it skips shading model 10). With the camera over the water every output is as before. Tuning:
+`UnderSlope` (0.5: the slopes as the eye under the surface sees them; the capillary glitter from above would
+turn half the window into reflecting holes), `UnderLook` = (sky gain, sun gain, reflection gain, foam gain), `UnderWaterColor` (the fog's `WaterColor`).
+
+Before (to 2026-11-01) the post process drew a flat window of its own (a fixed tint, a fake ripple) over any pixel
+within 60 cm under the still level, and the real surface (an opaque sheet of scattered light) wherever a trough
+dipped lower: the blotches seen looking up.
+
 ## Plants (the plant system: `Private/Plants/PlantAlga.cpp`)
 
 A new herb form, `EPlantHerbForm::Alga` with `FPlantAlga` (ribbons, sheet, forked fronds flat or round with a midrib, air
@@ -103,6 +123,7 @@ idle out of the water). In an eelgrass meadow by a reef, 9 m down, ~400 fish rou
   eddies; the fish over four depths: never under the bed or out of the water, never faster than they swim, 14 of 16
   species about in October and no garfish, herring keep their school, a flounder glides off when approached.
 - `unreal/scripts/test_underwater.sh` (offscreen, `UWTEST_ONLY=a,b`): a line of depths off the beach, the hatch's spot, a
-  meadow, a reef, wrack, cobbles, each fish, the current still and at 0.6 m/s, from the surface, a reef at night →
-  `Saved/UnderwaterTest/<step>.png`.
+  meadow, a reef, wrack, cobbles, each fish, the current still and at 0.6 m/s, from the surface, a reef at night, the
+  surface from below by day and night (`up_*`: into the window, its edge, straight up, from just under) and the same
+  sea from 2.5 m over it (`above_sea`, `above_night`) → `Saved/UnderwaterTest/<step>.png`.
 - `blender/fish/`: `tools/fish_build.sh` builds, lints and previews the fish (`export/contact.png`).
