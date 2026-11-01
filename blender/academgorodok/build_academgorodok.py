@@ -1,7 +1,7 @@
 """Builds the Academgorodok of Laboratory No. 2 (Moscow, 1945-48) for Lyudmilovsk.
 
 Run headless from the repo root:
-    /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/academgorodok/build_academgorodok.py -- [--no-render] [--views a,b] [--lint]
+    /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/academgorodok/build_academgorodok.py -- [--no-render] [--views a,b] [--lint] [--parts=Square,...]
 
 Writes blender/export/academgorodok/<part>.glb (one mesh per house, the gates, the square) and
 blender/export/academgorodok/layout.json (ensemble frame), plus control renders matched to the
@@ -514,19 +514,28 @@ def export(parts):
             p = h.frame((x, y, z))
             layout["lights"].append({"at": list(p), "colour": col, "lumens": lm, "kind": kind})
     bpy.ops.object.select_all(action="DESELECT")
+    only = next((a.split("=", 1)[1].split(",") for a in ARGS if a.startswith("--parts=")), None)
     for name, ob in parts.items():
+        if only and name not in only:
+            continue
         loc = ob.matrix_world.translation.copy()
         ob.location = (0, 0, 0)
         ob.select_set(True)
         tris = sum(len(p.vertices) - 2 for p in ob.data.polygons)
         layout["parts"][name] = {"location": list(loc), "tris": tris}
         print("ACADEM part %s: %d tris" % (name, tris))
-    path = os.path.join(EXPORT_DIR, "academgorodok.glb")
+    # --parts=Square,...: only those, to academgorodok_parts.glb (import_academgorodok.sh STEPS=parts swaps them in);
+    # layout.json stays the full build's
+    path = os.path.join(EXPORT_DIR, "academgorodok_parts.glb" if only else "academgorodok.glb")
     bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=True, export_apply=True,
                               export_cameras=False, export_lights=False, export_materials="EXPORT",
                               export_image_format="NONE")      # slot names only: Unreal swaps in its own materials
     for name, ob in parts.items():
-        ob.location = layout["parts"][name]["location"]
+        if name in layout["parts"]:
+            ob.location = layout["parts"][name]["location"]
+    if only:
+        print("ACADEM exported", path)
+        return
     with open(os.path.join(EXPORT_DIR, "layout.json"), "w") as f:
         json.dump(layout, f, indent=1)
     print("ACADEM exported", path)

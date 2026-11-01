@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "frame": "unreal_metres",
+ "face_y_cm": 790.0,
+ "at": [
+  -244.655,
+  612.433,
+  -36.16
+ ],
+ "yaw": -98.0,
+ "stone": {
+  "lower_level": 1.235,
+  "lower_r": 0.865,
+  "lower_floor": 1.15,
+  "upper_level": 1.846,
+  "upper_r": 0.296,
+  "upper_floor": 1.815,
+  "lip_r": 0.333,
+  "lip_z": 1.838,
+  "nozzle_z": 2.36,
+  "stem_r": 0.085,
+  "neck_r": 0.05
+ }
+}
