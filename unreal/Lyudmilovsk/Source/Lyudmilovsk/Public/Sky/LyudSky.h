@@ -254,6 +254,15 @@ public:
 	 *  moonlight, the sky light down to SpaceSkyLight; the star with its light and the stars stay. */
 	UFUNCTION(BlueprintCallable, Category = "Sky") void SetSpaceView(bool bOn);
 	UFUNCTION(BlueprintPure, Category = "Sky") bool IsSpaceView() const { return bSpaceView; }
+	/** The glare (ULyudSunGlare, docs/sun.md): the photosphere drawn DiskGain times brighter (the unadapted eye: blown
+	 *  far over white, 1 = the adapted, detailed star) and the outdoor bloom BloomScale times stronger. The sky light's
+	 *  capture keeps the adapted star. */
+	void SetGlare(float DiskGain, float BloomScale) { GlareDiskGain = FMath::Max(DiskGain, 0.f); GlareBloomScale = FMath::Max(BloomScale, 0.f); }
+	float GetGlareDiskGain() const { return GlareDiskGain; }
+	/** How much of the sunlight the weather's haze and fog let through toward the eye now (the height fog along the
+	 *  sun's direction, as the sky material draws the star behind it; 1 without fog). */
+	float GetSunHazeThrough() const { return SunHazeThrough; }
+
 	/** The sky light's intensity in the space view (the stars and the star's disk light next to nothing). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Space") float SpaceSkyLight = 0.03f;
 
@@ -280,6 +289,12 @@ private:
 	void UpdateSkyFog();
 	TWeakObjectPtr<class UExponentialHeightFogComponent> HeightFog;
 	bool bSpaceView = false;
+	float GlareDiskGain = 1.f;
+	float GlareBloomScale = 1.f;
+	float SunHazeThrough = 1.f;
+	/** The dome's material has the SunGlare parameter (import_sky.py since the glare; an older build gets the gain on
+	 *  the whole star instead, its off-limb light scaled back). */
+	bool bSkyHasGlare = false;
 	/** How closed the low and middle cloud decks are 0..1 (UpdateExposure, from the weather). */
 	float DeckOpacity = 0.f;
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */

@@ -278,11 +278,13 @@ def sky_material():
     tr = g.custom(SH.TRANS_HLSL, [("Dir", view)], out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     look2 = vparam("SunLook2", (2.2, 0.0, 1.0, 0.0))
     sun_look = vparam("SunLook", (1.0, 0.25, 1.0, 1.0))
+    # the glare (ULyudSunGlare): the photosphere this many times brighter until the eye adapts
+    glare = vparam("SunGlare", (1.0, 0.0, 0.0, 0.0))
     # the star's activity (ULyudSunActivity sets these): active regions, prominences, the flare
     sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
                ("Tr", tr), ("Look", rgba(sun_look)),
                ("Look2", rgba(look2)), ("Hi", rgba(vparam("HighA", (0.0, 9.0, 0.0, 0.0)))),
-               ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0))))]
+               ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0)))), ("G", rgba(glare))]
     sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
     for k in "ABC":
         sun_ins += [("P%s%d" % (k, i), rgba(vparam("SunProm%s%d" % (k, i), (0.0, 0.0, 1.0, 0.0)))) for i in range(SH.SUN_PROMS)]
@@ -312,7 +314,9 @@ def sky_material():
     seen = g.custom(SH.FOG_DISK_HLSL, fog_ins, out=f3)
     sw = g.node(X.MaterialExpressionReflectionCapturePassSwitch)
     g.link(seen, sw, "Default")
-    g.link(sun, sw, "Reflection")
+    # the sky light's capture takes the adapted star: the glare is in the eye, it must not light the world
+    plain = g.custom("return S / max(G.x, 1.0);", [("S", sun), ("G", rgba(glare))], out=f3)
+    g.link(plain, sw, "Reflection")
     sun = sw
     uv = g.node(X.MaterialExpressionTextureCoordinate, u_tiling=12.0, v_tiling=6.0)
     stars = g.node(X.MaterialExpressionTextureSample, texture=unreal.load_asset("/Engine/EngineSky/T_Sky_Stars"))

@@ -47,6 +47,10 @@ namespace LyudSettings
 		{
 			SetCVar(TEXT("lyud.Hud"), Value);
 		}
+		if (GConfig->GetString(Section, TEXT("SunGlare"), Value, GGameUserSettingsIni) && !Value.IsEmpty())
+		{
+			SetCVar(TEXT("lyud.Sun.Glare"), Value);
+		}
 	}
 
 	void SetLanguage(const FString& Lang)
@@ -66,6 +70,18 @@ namespace LyudSettings
 	{
 		SetCVar(TEXT("lyud.Hud"), bShow ? TEXT("1") : TEXT("0"));
 		Store(TEXT("Hud"), bShow ? TEXT("1") : TEXT("0"));
+	}
+
+	bool SunGlareOn()
+	{
+		const IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Sun.Glare"));
+		return !V || V->GetInt() != 0;
+	}
+
+	void SetSunGlareOn(bool bOn)
+	{
+		SetCVar(TEXT("lyud.Sun.Glare"), bOn ? TEXT("1") : TEXT("0"));
+		Store(TEXT("SunGlare"), bOn ? TEXT("1") : TEXT("0"));
 	}
 
 	float Volume(EVolume Which)

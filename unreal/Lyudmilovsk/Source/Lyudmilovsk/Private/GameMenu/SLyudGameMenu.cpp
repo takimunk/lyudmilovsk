@@ -291,6 +291,18 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSettings()
 			.Text_Lambda([] { return LyudText::Get(LyudSettings::HudShown() ? TEXT("ui.settings.hud_on") : TEXT("ui.settings.hud_off")); })
 		]
 	];
+	// the sun's glare, blinks and afterimages on or off (flashes)
+	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)
+	[
+		SNew(SButton)
+		.ButtonStyle(&Button())
+		.HAlign(HAlign_Center)
+		.OnClicked_Lambda([] { LyudSettings::SetSunGlareOn(!LyudSettings::SunGlareOn()); return FReply::Handled(); })
+		[
+			SNew(STextBlock).Font(Font(18)).ColorAndOpacity(Text)
+			.Text_Lambda([] { return LyudText::Get(LyudSettings::SunGlareOn() ? TEXT("ui.settings.sun_glare_on") : TEXT("ui.settings.sun_glare_off")); })
+		]
+	];
 	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 	return Box;
 }

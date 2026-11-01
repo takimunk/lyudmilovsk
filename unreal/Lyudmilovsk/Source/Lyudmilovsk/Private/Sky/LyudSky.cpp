@@ -458,6 +458,8 @@ void ALyudSky::MakeInstances()
 	{
 		SkyMID = UMaterialInstanceDynamic::Create(SkyMaterial, this);
 		SkyMID->SetScalarParameterValue(TEXT("StarBrightness"), StarBrightness);
+		FLinearColor G;
+		bSkyHasGlare = SkyMID->GetVectorParameterValue(FHashedMaterialParameterInfo(TEXT("SunGlare")), G);
 		Dome->SetMaterial(0, SkyMID);
 	}
 	if (!CloudMID && CloudMaterial)
@@ -580,6 +582,7 @@ void ALyudSky::UpdateSkyFog()
 	if (!bDome || !F || !F->IsVisible() || !PC || !PC->PlayerCameraManager)
 	{
 		SkyMID->SetVectorParameterValue(TEXT("SkyFogD"), FLinearColor(0.f, 0.f, 0.f, 0.f));
+		SunHazeThrough = 1.f;
 		return;
 	}
 	// what the renderer makes of the component (FExponentialHeightFogSceneInfo, FSceneRenderer::InitFogConstants): the
@@ -593,6 +596,18 @@ void ALyudSky::UpdateSkyFog()
 	const float D0 = F->FogDensity / 1000.f, F0 = F->FogHeightFalloff / 1000.f;
 	const float D1 = F->SecondFogData.FogDensity / 1000.f, F1 = F->SecondFogData.FogHeightFalloff / 1000.f;
 	SkyMID->SetVectorParameterValue(TEXT("SkyFogA"), FLinearColor(AtEye(D0, F0, H0), F0, AtEye(D1, F1, H0 + F->SecondFogData.FogHeightOffset), F1));
+	{
+		// the haze toward the sun, as FOG_DISK_HLSL works it out (air mass of an exponential layer round the earth)
+		const float E = FMath::Max((float)SunDirection().Z, 0.f);
+		auto Depth = [E](float DensityAtEye, float Falloff)
+		{
+			const float Fo = FMath::Max(Falloff, 1e-9f);
+			const float C = FMath::Sqrt(2.f / (Fo * 0.693147f * PI * 6.371e8f));
+			return DensityAtEye / Fo / (E + C);
+		};
+		const float Tp = Depth(AtEye(D0, F0, H0), F0) + Depth(AtEye(D1, F1, H0 + F->SecondFogData.FogHeightOffset), F1);
+		SunHazeThrough = FMath::Clamp(FMath::Exp2(-Tp), 0.f, 1.f);
+	}
 	const FLinearColor In = F->FogInscatteringLuminance;
 	SkyMID->SetVectorParameterValue(TEXT("SkyFogB"), FLinearColor(In.R, In.G, In.B, 1.f - F->FogMaxOpacity));
 	// the fog's glow toward the sun: its own colour x the light's, and the atmosphere's sunlight on the ground
@@ -641,7 +656,14 @@ void ALyudSky::UpdateSkyMaterial()
 	const ULyudSunset* SunsetDay = ULyudSunset::Get(this);
 	const float SunsetDisk = SunsetDay ? SunsetDay->GetLook().DiskScale : 1.f;
 	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread() * (1.f + DiskLow * Low) * SunsetDisk;
-	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum, DaySeed, Spin));
+	// the glare (ULyudSunGlare): only the photosphere brighter; a material built before it takes the gain on the whole
+	// star, its aureole, prominences and corona scaled back (OffLimb)
+	const float OffLimb = bSkyHasGlare ? 1.f : 1.f / FMath::Max(GlareDiskGain, 1e-3f);
+	if (bSkyHasGlare)
+	{
+		SkyMID->SetVectorParameterValue(TEXT("SunGlare"), FLinearColor(GlareDiskGain, 0.f, 0.f, 0.f));
+	}
+	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum * (bSkyHasGlare ? 1.f : GlareDiskGain), DaySeed, Spin));
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
 	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));
@@ -649,8 +671,8 @@ void ALyudSky::UpdateSkyMaterial()
 	const float Dimming = CVarSunHorizonDimming.GetValueOnGameThread() >= 0.f ? CVarSunHorizonDimming.GetValueOnGameThread() : SunHorizonDimming;
 	// the aureole: its full width round a setting sun, a third of it higher up
 	const float AureoleK = FMath::Lerp(0.35f, 1.f, SunsetGlow()) * (SunsetDay ? SunsetDay->GetLook().AureoleScale : 1.f);
-	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * AureoleK * CVarSunAureole.GetValueOnGameThread(),
-		FMath::Clamp(Dimming, 0.f, 1.f), SunProminenceGain, SunCoronaGain));
+	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * AureoleK * CVarSunAureole.GetValueOnGameThread() * OffLimb,
+		FMath::Clamp(Dimming, 0.f, 1.f), SunProminenceGain * OffLimb, SunCoronaGain * OffLimb));
 	const float Detail = CVarSunDetail.GetValueOnGameThread() > 0.f ? CVarSunDetail.GetValueOnGameThread() : SunDetailContrast;
 	const float Rim = CVarSunRimClear.GetValueOnGameThread() >= 0.f ? CVarSunRimClear.GetValueOnGameThread() : SunRimClear;
 	const float LimbK = CVarSunLimb.GetValueOnGameThread() > 0.f ? CVarSunLimb.GetValueOnGameThread() : SunLimbDarkening;
@@ -678,7 +700,7 @@ void ALyudSky::UpdateSkyMaterial()
 	if (bSpaceView)
 	{
 		// the star bare: no aureole, no air to dim it at the (Earth's) horizon
-		SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(0.f, 0.f, SunProminenceGain, SunCoronaGain));
+		SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(0.f, 0.f, SunProminenceGain * OffLimb, SunCoronaGain * OffLimb));
 	}
 }
 
@@ -752,7 +774,7 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 	const ULyudSunset* SunsetDay = ULyudSunset::Get(this);
 	const float SunsetEV = SunsetDay ? SunsetDay->GetLook().ExposureEV : 0.f;
 	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night + DayAdaptEV + SunsetEV;
-	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
+	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night) * GlareBloomScale;
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }
 
@@ -762,8 +784,9 @@ FString ALyudSky::DebugReport() const
 		*ShownTime().ToString(TEXT("%Y-%m-%d %H:%M")), SunPos.AltitudeDeg, SunPos.AzimuthDeg, MoonPos.AltitudeDeg,
 		MoonPos.AzimuthDeg, MoonPhase, SunLight->Intensity, MoonLight->Intensity, bPlayerOutdoors ? 1 : 0,
 		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight, FMath::RadiansToDegrees(MoonPhaseAngle), MoonLawFactor,
-		MoonLight01, MoonPhaseEphemeris) + FString::Printf(TEXT(" | low sun %.2f sky light %.2f shafts %.2f spec %.4f mie g %.2f | %s"),
+		MoonLight01, MoonPhaseEphemeris) + FString::Printf(TEXT(" | low sun %.2f sky light %.2f shafts %.2f spec %.4f mie g %.2f | glare %.2f%s bloom x%.2f haze through %.3f | %s"),
 		LowSun(), SkyLight->Intensity, SunLight->BloomScale, SunLight->SpecularScale, Atmosphere->MieAnisotropy,
+		GlareDiskGain, bSkyHasGlare ? TEXT("") : TEXT(" (old sky material)"), GlareBloomScale, SunHazeThrough,
 		ULyudSunActivity::Get(this) ? *ULyudSunActivity::Get(this)->GetDebugLine() : TEXT("no activity"))
 		+ (ULyudSunset::Get(this) && ULyudSunset::Get(this)->GetLook().Weight > 0.f ? TEXT(" | ") + ULyudSunset::Get(this)->GetDebugLine() : FString());
 }

@@ -7,7 +7,7 @@ go, prominences stand on the limb, sway, erupt and fade, and the star flares.
 ## The light source
 
 A real sun is ~10^5 times brighter than the sky round it and blinding even on the horizon; we draw it capped (a
-physical one would be a white hole). The cap was too low: at noon the disk (`SunDiskGain` 0.14) was dimmer than the
+physical one would be a white hole) for the adapted eye; the fresh eye sees it far brighter (see *Glare* below). The cap was too low: at noon the disk (`SunDiskGain` 0.14) was dimmer than the
 clouds it lit, and at sunset the atmosphere left a dim red coin in a pale sky over a flat grey land. Now:
 
 - **The disk is brighter than anything it lights**: `SunDiskGain` 0.45 (a white wall in full sun is about
@@ -92,6 +92,76 @@ all (the deck's transmittance along the sun is ~0).
 
 The exposure already opens a little for a low sun (`lyud.Sky.LowSunEV`). Volumetric fog stays off (its cost); the
 shafts are the screen-space kind, so they show while the sun is on the screen or near it.
+
+## Glare: blinding until the eye adapts
+
+Dima (2026-11-01): wherever we are, on the coast or on Europa, the sun must be big and bright, blinding, and leave
+afterimages; staring at it the hero blinks and says "ай", and if he holds on the eye adapts and the star shows as it is
+drawn; a couple of seconds away and it blinds again. `ULyudSunGlare` (`Public/Sky/LyudSunGlare.h`, a world subsystem in
+game worlds) does this for whatever the camera is (the hero, a swimmer, the bird), with the same `ALyudSky` star on Earth
+and on Europa (`SetSpaceView`).
+
+- **How much of the star reaches the eye**, every frame: where the disk is on the screen and how far from the middle of
+  the view; how much of it the land, the trees, the buildings and the club hide (5 line traces over the disk, 10 times a
+  second, only while the star is near the view; `lyud.Sun.Glare.TraceKm` 30); the air (the same transmittance as the sky
+  material), the haze and fog along the sun (`ALyudSky::GetSunHazeThrough`, the height fog as `FOG_DISK_HLSL` sees it)
+  and the overcast (`GetOvercastSunScale`). Below the horizon or behind a hill it is nothing.
+- **The unadapted star** (`ALyudSky::SetGlare`): the photosphere is drawn `lyud.Sun.Glare.Gain` (14) times brighter, far
+  over white (the sky material's `SunGlare.x`, `SUN_HLSL`; the off-limb light, prominences and corona keep their own
+  brightness, and the sky light's capture takes the adapted star: the glare is in the eye, it lights nothing), the
+  outdoor bloom up to `lyud.Sun.Glare.Bloom` (2.5) times while it is in sight, and a glow in the eye round it over
+  everything in front plus a faint veil over the view (the overlay; `lyud.Sun.Glare.Halo`). Low down the glare gain fades
+  out (`lyud.Sun.Glare.HorizonGain` 0 of it on the horizon, all of it from 20 degrees up) and the photosphere itself is
+  drawn at `lyud.Sun.Glare.HorizonDisk` (0.3) of the sky's brightness on the horizon (all of it from 15 degrees up),
+  fresh or adapted: brighter, the setting disk blew out to pale yellow on the tonemapper even at physical dimming
+  (tuning sweep 2026-11-01); so the setting star stays orange, pink, red and can be looked at. A material built before the glare gets the gain on the whole star
+  with its off-limb light scaled back (rebuild with `import_sky.py`).
+- **Staring** (the star within ~14 degrees of the middle of the view): the hero squints (the eyelids come in), and after
+  `lyud.Sun.Glare.StareSeconds` (3) of it blinks, his head flinches and he says "ай" (`line.hero.sun_ow.1..3`, the hero's
+  designed voice, not subtitled, at most once in `lyud.Sun.Glare.OwEvery` 20 s). He keeps blinking while it still hurts.
+  Holding on, the eye adapts over `lyud.Sun.Glare.AdaptSeconds` (6): the gain, the bloom, the glow and the squint fade
+  and the star shows as drawn, granulation, spots, prominences. Looking elsewhere the adaptation goes with a time
+  constant so that after `lyud.Sun.Glare.RecoverSeconds` (2) a tenth is left: it blinds again. Shut eyes facing the sun
+  see red through the lids.
+- **Afterimages** are fixed to the retina, i.e. to the screen (the eye turns with the view): a 192x108 map of the retina
+  takes the disk's light where it falls (192x108). A fast positive afterimage follows the light (up in a quarter second, down in
+  under one): turning away, a bright blot in the star's colour stays a moment where it was, smeared along a pan. The
+  slow one is the bleach: it grows over several seconds of the star on the same spot and comes back over 2-6 s (longer
+  after a long look); it shows as a dark blot in the complementary colours, violet in the middle, green-teal round it,
+  with a slight drift. Nothing is drawn where the star shines now.
+- **Drawn** as a Slate overlay under the HUD (z 50: under the swimmer's meter, prompts, game screen and menu; nothing over
+  the menu or the game screen; the eye waits while they are open): the retina map as a 192x108 texture uploaded at most 30
+  times a second while an afterimage lasts (four buffers in turn, no allocation per frame), the eyelids and the glow as
+  textures made once. No material, no render target.
+- **Off**: the Settings page ("Sun glare (flashes, blinking)", `[Lyudmilovsk.Settings] SunGlare`) or `lyud.Sun.Glare 0`:
+  the star as drawn (the adapted look), no flashes, blinks or afterimages.
+
+- **Blinded by a sudden light** (API for other systems, e.g. climbing out of the hatch onto Europa the first time):
+  `ULyudSunGlare::BeginFlashBlind(float Strength = 1)` (`Public/Sky/LyudSunGlare.h`) washes the view toward white,
+  makes the eye fresh, the hero squints, says "ай" and blinks about once a second; each blink keeps
+  `lyud.Sun.Glare.FlashStep` (0.5) of the whiteout, so 3-5 blinks bring the view back, and the sun's own glare goes on
+  as usual. `ULyudSunGlare::FlashBlindOnce(FName Key, float Strength = 1)` does it only the first time for `Key`
+  (remembered in the save: `ULyudSunGlareMemory`, record "SunGlare"); true if it fired. Get the subsystem with
+  `ULyudSunGlare::Get(WorldContext)`. `lyud.Sun.Glare.FlashBlind [strength]` tries it from the console.
+
+| variable | default | what |
+|---|---|---|
+| `lyud.Sun.Glare` | 1 | the whole glare (0 = off; the Settings page stores it) |
+| `lyud.Sun.Glare.Gain` / `.HorizonGain` / `.HorizonDisk` | 14 / 0 / 0.3 | the photosphere's gain for the fresh eye / share of it on the horizon / the disk's brightness on the horizon |
+| `lyud.Sun.Glare.Bloom` / `.Halo` / `.Afterimage` | 2.5 / 1 / 1 | the bloom while it is in sight, the glow and veil in the eye, the afterimages |
+| `lyud.Sun.Glare.Blink` / `.Voice` | 1 / 1 | squint and blinks, the "ай" |
+| `lyud.Sun.Glare.StareSeconds` / `.AdaptSeconds` / `.RecoverSeconds` | 3 / 6 / 2 | to the "ай", to adapted, to blinding again |
+| `lyud.Sun.Glare.OwEvery` | 20 | at most one "ай" in this many seconds |
+| `lyud.Sun.Glare.Adapt` | -1 | holds the adaptation (tests) |
+| `lyud.Sun.Glare.Freeze` / `.FreezeAtShut` | 0 / 0 | 1: the eye and the retina stop (screenshots) / that is set when a blink shuts the eyes |
+| `lyud.Sun.Glare.Reset` | | a fresh eye |
+| `lyud.Sun.Glare.FlashBlind [s]` / `.FlashStep` | 1 / 0.5 | blinded by a sudden light / the whiteout kept per blink |
+| `lyud.Sun.Glare.Debug` | 0 | the `GLARE` line on screen |
+
+Test: `unreal/scripts/shoot_glare.py` (offscreen, "shot showui": the overlay is UI): the noon star wide and stared at,
+squint, blink, adapting, adapted, the afterimages 0.6, 2.4, 5.4 and 8 s after looking away, back at once and after 3 s
+away, the glare off, the sunsets fresh and adapted, the terrace, Europa. `GLARE_FILM=1` takes a frame a tick through
+one stare at slomo 0.2 for a video.
 
 ## A living star
 

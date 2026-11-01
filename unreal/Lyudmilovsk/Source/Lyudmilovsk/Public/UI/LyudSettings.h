@@ -15,6 +15,9 @@ namespace LyudSettings
 	void SetLanguage(const FString& Lang);
 	bool HudShown();
 	void SetHudShown(bool bShow);
+	/** The sun's glare, blinks and afterimages (lyud.Sun.Glare; off for players sensitive to flashes). */
+	bool SunGlareOn();
+	void SetSunGlareOn(bool bOn);
 
 	/** The sound volumes 0..1 (ULyudSoundscapeSubsystem::SetVolumes), stored and handed to every new world's soundscape. */
 	enum class EVolume : uint8 { Master, Ambience, Music, Effects, Count };
