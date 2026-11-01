@@ -27,19 +27,20 @@ Words: `item.bird_feed.*`, `ui.held.*`, `ui.tame.*`; the bird's name is `bird.<s
 Feed in the hand is seen (BirdSim.cpp `UpdateLure` / `LureThink`, docs/bird_life.md): carrying any feed (the bag in the
 hand, Tab "Взять в руку") is enough, the open palm (`F`) shows it a little farther, a handful thrown down (`G`) farther
 still. Each species has its own notice distance and the distance it then waits at (BirdEcology.cpp `FoodSenses`): the
-town's birds that live off people (pigeons 60 m, sparrows 45 m, gulls 70-90 m, crows and jackdaws 55-70 m, starlings
-55 m) come from far and close; woodland birds only near (a robin 20 m, a song thrush 15 m) and keep off; hawks, swifts,
+town's birds that live off people (pigeons 45 m, sparrows 35 m, gulls 50-70 m, crows and jackdaws 55-70 m, starlings
+40 m) come from far and close; woodland birds only near (a robin 20 m, a song thrush 15 m) and keep off; hawks, swifts,
 swallows, herons, cormorants, eagles never come. Hunger and boldness stretch it, a flock mate already at the food makes
-the rest follow (x1.5), a running player or a frightened bird stops it. Only birds that like the feed come (`feeds.json`,
+the rest follow (x1.5, and spot it sooner), a running player or a frightened bird stops it. Only birds that like the feed come (`feeds.json`,
 0.3 or more): a box of mealworms brings starlings, sparrows, blackbirds and the crows, «Голубка» the pigeons.
 
 A bird that spots it, perched or flying past, turns off and lands on the ground round the player on its side, out where
 the player doesn't make it uneasy (`WaitDist`: its beg distance, but at least where its alarm stays low, so it doesn't
 fly up and set the flock off): at first a few metres, hopping nearer as it gets used to them. There it waits: watches the
 hand, begs (calls), pecks about at the player's feet (pigeons, sparrows, crows), follows on foot or on the wing when the
-player walks on. With the palm out it trusts 2.5x faster, so one of the waiting birds soon comes to the palm and eats (the
-usual approach). It gives up after a minute or three without food, and goes when the feed goes back to the pocket.
-At most 24 birds wait at once. A thrown handful (`G`, `UBirdLifeSubsystem::AddFeedPile`, also the crows' heap) is
+player walks on. Kept easy to start but not free (Dima, 2026-11-01: keep the balance): the palm still needs the usual
+patience, crouched and still; the boldest of the waiting birds comes after a minute or two of waiting and a few seconds
+more of the palm (the usual approach), shy ones stay back. It gives up after a minute or three without food, and goes when the feed goes back to the pocket.
+At most 14 birds wait at once. A thrown handful (`G`, `UBirdLifeSubsystem::AddFeedPile`, also the crows' heap) is
 pecked up by every bird round about that likes it, a handful lasting ~10 birds about a minute and a half; a calm player
 near by is someone who brings food (trust up to 0.6, as at the feeder).
 

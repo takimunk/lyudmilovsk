@@ -923,7 +923,7 @@ namespace
 			Lone(W, "Starling", P);
 			W.Birds.clear();
 			W.Groups.clear();
-			const int Starlings = W.AddFlock(Star, Ground(W, P + V3(40.f, 6.f, 0.f)), 20, 6.f);
+			const int Starlings = W.AddFlock(Star, Ground(W, P + V3(30.f, 6.f, 0.f)), 20, 6.f);
 			const int Sparrows = W.AddFlock(Sparrow, Ground(W, P + V3(-22.f, 12.f, 0.f)), 8, 3.f);
 			const int ThrushId = W.AddFlock(Thrush, Ground(W, P + V3(0.f, -25.f, 0.f)), 1, 1.f);
 			const int RobinId = W.AddFlock(Robin, Ground(W, P + V3(0.f, 9.f, 0.f)), 1, 1.f);
@@ -981,7 +981,7 @@ namespace
 			std::printf("feed in the hand, 90 s: first bird set off after %.1f s; starlings round the player %d/20, sparrows %d/8, nearest %.1f m, in the air %d\n",
 				FirstAt, StarNear, SparrowNear, Nearest, InAir);
 			Check(R, FirstAt >= 0.f && FirstAt < 30.f, "feed: a bird notices the starling feed in the hand within half a minute");
-			Check(R, StarNear >= 10, "feed: most of the starling flock 40 m off comes and waits round the player");
+			Check(R, StarNear >= 8, "feed: most of the starling flock 30 m off comes and waits round the player");
 			Check(R, SparrowNear >= 3, "feed: the sparrows (generalists) come too");
 			Check(R, W.Birds[ThrushId].Lure == -2, "feed: a shy song thrush 25 m off doesn't notice it");
 			Check(R, W.Birds[RobinId].Lure == -2, "feed: a robin (doesn't eat it) stays where it is");
@@ -1004,7 +1004,7 @@ namespace
 				W.Events.clear();
 			}
 			std::printf("feed: palm held out to the waiting birds: one eats from it after %.1f s\n", Ate);
-			Check(R, Ate >= 0.f && Ate < 45.f, "feed: with the palm out a waiting bird comes to it and eats");
+			Check(R, Ate >= 12.f && Ate < 60.f, "feed: with the palm out a waiting bird comes to it and eats, not at once (it takes patience)");
 
 			// put away: they go back to their flock
 			int Still = 0;

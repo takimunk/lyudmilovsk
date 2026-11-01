@@ -36,7 +36,7 @@ platform runs it the same way.
    segments does not count as a hitch.
 6. Writes the JSON, restores the scalability it started with and quits.
 
-The route (`ULyudBenchmark::BuildRoute`), about 66 s per preset:
+The route (`ULyudBenchmark::BuildRoute`), about 84 s per preset:
 
 | segment | what | seconds |
 |---|---|---|
@@ -47,6 +47,7 @@ The route (`ULyudBenchmark::BuildRoute`), about 66 s per preset:
 | forest | a walk inside the old forest on the upland (eye height over the landscape) | 16 |
 | overlook | 25 m over the upland's edge, panning over the valley, the town and the far forests | 10 |
 | flight | a bird's line 25 m over the ground: over the old forest on the upland, down the slope and across the town | 30 |
+| academ | the Academgorodok's street between its houses, under the power lines and their birds (Unreal cm keys) | 18 |
 
 Outdoor keys are given in outdoor-map metres (`tools/world_map.py`) and follow the landscape. If the map moves,
 fix the keys there and check them with `-LyudBenchShots` (a screenshot per segment in `Saved/Benchmark/`).

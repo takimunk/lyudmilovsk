@@ -1703,7 +1703,7 @@ namespace LyudBirds
 		if (Dist < 30.f)
 		{
 			// (one that came for the feed has made up its mind about the person: it settles twice as fast)
-			B.Habituation = Clamp(B.Habituation + Dt * (Speed < 0.3f && Jerk <= 0.f ? (B.Lure != -2 ? 1.f / 4.f : 1.f / 8.f) : -(Speed / 1.5f + Jerk * 2.f)), 0.f, 1.f);
+			B.Habituation = Clamp(B.Habituation + Dt * (Speed < 0.3f && Jerk <= 0.f ? (B.Lure != -2 ? 1.f / 6.f : 1.f / 8.f) : -(Speed / 1.5f + Jerk * 2.f)), 0.f, 1.f);
 		}
 		float Target = 0.f;
 		float D = 0.f;
@@ -1739,8 +1739,7 @@ namespace LyudBirds
 			const float Calm = Clamp(1.f - (D / std::max(S.FleeDistance, 0.5f) - 0.3f), 0.f, 1.f);
 			// food it likes wins it over faster; food it doesn't eat hardly at all
 			const float Like = 0.15f + 0.85f * (B.Species < 64 ? Player.OfferLike[B.Species] : 1.f);
-			B.Trust = std::min(1.f, B.Trust + Dt * 0.05f * (0.2f + 0.8f * B.Habituation) * S.Tameness * (0.5f + 0.5f * B.Boldness) * (1.f - B.Alert) * Calm * (PalmDist < 8.f ? 1.4f : 1.f) * Like
-				* (B.Lure == -1 ? 2.5f : 1.f));
+			B.Trust = std::min(1.f, B.Trust + Dt * 0.05f * (0.2f + 0.8f * B.Habituation) * S.Tameness * (0.5f + 0.5f * B.Boldness) * (1.f - B.Alert) * Calm * (PalmDist < 8.f ? 1.4f : 1.f) * Like);
 		}
 		else if (B.bNoticed && Dist < 20.f && B.Alert < 0.3f)
 		{
@@ -2173,7 +2172,7 @@ namespace LyudBirds
 		const float Flock = G.Lured > 0 ? 1.5f : 1.f;
 		int Best = -2;
 		float BestD = 1e9f;
-		static const int MaxAtHand = 24;
+		static const int MaxAtHand = 14;
 		if (Player.bPresent && Player.bFeed && !Player.bClaimedBird && Player.Vel.Len2D() < 2.5f && LuredAtHand < MaxAtHand && B.Species < 64
 			&& Player.OfferLike[B.Species] >= 0.3f)
 		{
@@ -2203,7 +2202,7 @@ namespace LyudBirds
 			return;
 		}
 		// spotting it takes a moment: a glance down on the way, a look round from the perch; quicker after a flock mate
-		const float Rate = (G.Lured > 0 ? 1.5f : 0.45f) * (0.5f + S.Curiosity) * (IsAirborne(B.Act) ? 1.3f : 1.f);
+		const float Rate = (G.Lured > 0 ? 1.f : 0.3f) * (0.5f + S.Curiosity) * (IsAirborne(B.Act) ? 1.3f : 1.f);
 		if (Rand(B.Rng) > Dt * Rate)
 		{
 			return;

@@ -208,11 +208,11 @@ namespace LyudBirds
 		struct FFoodSense { const char* Id; float Notice, Beg; };
 		// clang-format off
 		const FFoodSense FoodSenses[] = {
-			{ "FeralPigeon", 60.f, 1.2f }, { "HouseSparrow", 45.f, 1.0f }, { "TreeSparrow", 35.f, 1.6f }, { "WoodPigeon", 30.f, 5.f },
-			{ "HerringGull", 90.f, 3.f }, { "BlackHeadedGull", 80.f, 2.5f }, { "CommonGull", 70.f, 3.f },
+			{ "FeralPigeon", 45.f, 1.5f }, { "HouseSparrow", 35.f, 1.3f }, { "TreeSparrow", 35.f, 1.6f }, { "WoodPigeon", 30.f, 5.f },
+			{ "HerringGull", 70.f, 3.5f }, { "BlackHeadedGull", 60.f, 3.f }, { "CommonGull", 50.f, 3.5f },
 			{ "Jackdaw", 60.f, 2.5f }, { "Rook", 55.f, 5.f }, { "HoodedCrow", 70.f, 4.f }, { "CarrionCrow", 70.f, 4.f }, { "Magpie", 50.f, 3.5f },
 			{ "Raven", 60.f, 8.f }, { "Jay", 35.f, 5.f }, { "Nutcracker", 35.f, 1.5f },
-			{ "Starling", 55.f, 1.8f }, { "Blackbird", 25.f, 2.5f }, { "SongThrush", 15.f, 4.f }, { "Fieldfare", 25.f, 6.f }, { "Robin", 20.f, 1.0f },
+			{ "Starling", 40.f, 2.2f }, { "Blackbird", 25.f, 2.5f }, { "SongThrush", 15.f, 4.f }, { "Fieldfare", 25.f, 6.f }, { "Robin", 20.f, 1.0f },
 			{ "GreatTit", 30.f, 1.5f }, { "BlueTit", 25.f, 1.5f }, { "Chaffinch", 30.f, 1.8f }, { "Bullfinch", 20.f, 3.f }, { "Goldfinch", 25.f, 3.f },
 			{ "Waxwing", 30.f, 2.5f }, { "WhiteWagtail", 20.f, 2.5f }, { "MuteSwan", 40.f, 2.f },
 		};
