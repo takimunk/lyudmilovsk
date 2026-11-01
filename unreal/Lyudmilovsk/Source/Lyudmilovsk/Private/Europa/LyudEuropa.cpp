@@ -215,6 +215,36 @@ namespace
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudEuropaSubsystem* E = EuropaOf(W)) { E->GoEuropa(); } }));
 	FAutoConsoleCommandWithWorld UseCmd(TEXT("lyud.Europa.Use"), TEXT("What E does at the hatch now."),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudEuropaSubsystem* E = EuropaOf(W)) { E->Use(); } }));
+	/** The hour offset (lyud.SkyHourOffset) within the next Days when the town faces Europa most squarely, by day (Day 1)
+	 *  or by night (Day 0): the ephemeris worked forward, nothing moved (tests and screenshots). */
+	FAutoConsoleCommandWithWorldAndArgs FindIslandCmd(TEXT("lyud.Europa.FindIsland"), TEXT("lyud.Europa.FindIsland [days] [day 1|night 0]: logs EUROPA island hour <offset>."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
+		{
+			ULyudEuropaSubsystem* E = EuropaOf(W);
+			TActorIterator<ALyudSky> Sky(W);
+			if (!E || !E->GetSite() || !Sky)
+			{
+				return;
+			}
+			const int32 Days = Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 30;
+			const bool bDay = Args.Num() > 1 ? FCString::Atoi(*Args[1]) != 0 : true;
+			const FDateTime Base = Sky->ShownUtc() - FTimespan::FromHours(IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.SkyHourOffset"))->GetFloat());
+			float Best = -2.f;
+			int32 BestH = 0;
+			for (int32 H = 0; H < Days * 24; ++H)
+			{
+				const ALyudEuropaSite::FSky S = E->GetSite()->SkyAt(Base + FTimespan::FromHours(H));
+				const float Lit = bDay ? S.TownSun : -S.TownSun;
+				const float Score = S.IslandUp + (Lit > 0.25f ? 0.f : -2.f);
+				if (Score > Best)
+				{
+					Best = Score;
+					BestH = H;
+				}
+			}
+			UE_LOG(LogTemp, Display, TEXT("EUROPA island hour %d (%s, score %.2f)"), BestH, bDay ? TEXT("day") : TEXT("night"), Best);
+			IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.SkyHourOffset"))->Set(*FString::FromInt(BestH), ECVF_SetByConsole);
+		}));
 	FAutoConsoleCommandWithWorld ReportCmd(TEXT("lyud.Europa.Report"), TEXT("Logs the hatch's state (EUROPA ...)."),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudEuropaSubsystem* E = EuropaOf(W)) { UE_LOG(LogTemp, Display, TEXT("%s"), *E->Report()); } }));
 }
@@ -732,6 +762,7 @@ ALyudEuropaSite::FSky ALyudEuropaSite::SkyAt(const FDateTime& Utc) const
 	const double TLa = FMath::DegreesToRadians(TownLat), TLo = Th + FMath::DegreesToRadians(TownLon);
 	const FVector Town(FMath::Cos(TLa) * FMath::Cos(TLo), FMath::Cos(TLa) * FMath::Sin(TLo), FMath::Sin(TLa));
 	Out.IslandUp = float(FVector::DotProduct(Town, M));
+	Out.TownSun = float(FVector::DotProduct(Town, S));
 	Out.bIslandFacing = Out.IslandUp > 0.05f;
 	return Out;
 }
@@ -938,12 +969,21 @@ void ALyudEuropaSite::BuildWater()
 	{
 		WaveTable = MakeLeadWaves();
 	}
-	WaterMID = StillWater(this, WaveTable, 12.f);
+	// the leads' own water (M_EU_LeadWater: the sea's absorption, Fresnel reflections of this sky, ripples, the shore's
+	// ice rim); the sea's single-layer material drew grey foam over the whole lead away from its depth map
+	if (UMaterialInterface* Lead = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Europa/Materials/M_EU_LeadWater.M_EU_LeadWater")))
+	{
+		SheenMID = UMaterialInstanceDynamic::Create(Lead, this);
+	}
+	else
+	{
+		WaterMID = StillWater(this, WaveTable, 12.f);
+	}
 	for (UStaticMeshComponent* W : Waters)
 	{
-		if (WaterMID)
+		if (SheenMID || WaterMID)
 		{
-			W->SetMaterial(0, WaterMID);
+			W->SetMaterial(0, SheenMID ? SheenMID.Get() : WaterMID.Get());
 		}
 	}
 }
@@ -1050,6 +1090,17 @@ void ALyudEuropaSite::UpdateLook()
 	}
 	// the planet's light on the ice: its lit share as seen from here (a full planet when the star is behind us)
 	const float Lit = 0.5f * (1.f + float(FVector::DotProduct(S, -LastSky.Planet)));
+	if (SheenMID)
+	{
+		const FVector P = LastSky.Planet;
+		const float PlanetCos = FMath::Cos(FMath::DegreesToRadians(PlanetDiameterDeg * 0.5f));
+		const float SunCos = FMath::Cos(FMath::DegreesToRadians(It->SunAngularDiameterDeg * 0.5f));
+		SheenMID->SetVectorParameterValue(TEXT("PlanetDir"), FLinearColor(float(P.X), float(P.Y), float(P.Z), PlanetCos));
+		SheenMID->SetVectorParameterValue(TEXT("PlanetLight"), Light * (1.8f * Dim * Lit));
+		SheenMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), SunCos));
+		SheenMID->SetVectorParameterValue(TEXT("SunLight"), It->SunColor * (It->SunIlluminance * It->SunDiskGain));
+		SheenMID->SetScalarParameterValue(TEXT("SunLit"), FMath::SmoothStep(-5.f, 5.f, SunAlt));
+	}
 	PlanetShine->SetIntensity(0.05f + 0.9f * FMath::Pow(Lit, 1.3f));
 }
 
@@ -1914,7 +1965,7 @@ FString ULyudEuropaSubsystem::Report() const
 		Airlock ? Airlock->InnerLid.Openness : -1.f, Site ? Site->Lid.Openness : -1.f, bOnEuropa ? 1 : 0, Climb.Num() > 0 ? 1 : 0, *Action,
 		Move ? Move->GravityScale : 0.f, Move ? int32(Move->MovementMode) : -1, HasSeenPlanet() ? 1 : 0, Music && Music->IsPlaying() ? 1 : 0,
 		Hero ? *Hero->GetActorLocation().ToString() : TEXT("none"))
-		+ FString::Printf(TEXT(" | island facing %d up %.2f"), Site && Site->IsIslandFacing() ? 1 : 0, Site ? Site->GetSky().IslandUp : 0.f)
+		+ FString::Printf(TEXT(" | island facing %d up %.2f townsun %.2f"), Site && Site->IsIslandFacing() ? 1 : 0, Site ? Site->GetSky().IslandUp : 0.f, Site ? Site->GetSky().TownSun : 0.f)
 		+ FString::Printf(TEXT(" | planet dir %s at %s scale %.0f shown %d | sun %s | swim %d"),
 		Site ? *Site->PlanetDir.ToString() : TEXT("-"), Site && Site->Planet ? *Site->Planet->GetComponentLocation().ToString() : TEXT("-"),
 		Site && Site->Planet ? Site->Planet->GetComponentScale().X : 0.f, Site ? int32(Site->IsShown()) : -1,

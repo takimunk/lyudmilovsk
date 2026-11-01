@@ -208,6 +208,8 @@ PLAN = [
     (59.0, lambda w: use(w, "climb_europa")),
     (59.6, lambda w: shot(w, "inner_hatch_open")),
     (66.0, on_europa),
+    # the line waits for the island on the planet's face toward us: an hour when it is (the ephemeris says)
+    (66.2, lambda w: cmd(w, "lyud.Europa.FindIsland 30 1")),
     (66.5, lambda w: look_at(w, eu(w).get_site().get_actor_location())),
     (68.0, lambda w: shot(w, "europa_hatch")),
     (68.5, look_planet),
@@ -296,10 +298,14 @@ elif os.environ.get("EUROPATEST_ONLY") == "moon":
         P.append((t, find_hours))
         P.append((t + 0.8, note_hour))
         t += 1.2
-    P += [(t, lambda w: hour(w, "on")), (t + 2.0, look_planet), (t + 4.0, lambda w: shot(w, "earth_island_facing")),
-          (t + 4.3, report), (t + 4.5, lambda w: look_dir(w, eu(w).planet_direction(), 30.0)),
-          (t + 6.0, lambda w: shot(w, "earth_over_ground"))]
-    t += 7.0
+    # the town toward Europa by day (Europa over it near noon: near new moon) and by night (its lights), found from the
+    # ephemeris itself (lyud.Europa.FindIsland), nothing placed by hand
+    P += [(t, lambda w: cmd(w, "lyud.SkyHourOffset 0")), (t + 0.5, lambda w: cmd(w, "lyud.Europa.FindIsland 30 1")),
+          (t + 2.5, look_planet), (t + 4.0, lambda w: shot(w, "earth_island_day")), (t + 4.3, report),
+          (t + 4.5, lambda w: look_dir(w, eu(w).planet_direction(), 30.0)), (t + 6.0, lambda w: shot(w, "earth_island_over_ground")),
+          (t + 6.5, lambda w: cmd(w, "lyud.SkyHourOffset 0")), (t + 7.0, lambda w: cmd(w, "lyud.Europa.FindIsland 30 0")),
+          (t + 9.0, look_planet), (t + 10.5, lambda w: shot(w, "earth_island_night_lights")), (t + 10.8, report)]
+    t += 11.5
     P += [(t, lambda w: hour(w, "off")), (t + 2.0, look_planet), (t + 4.0, lambda w: shot(w, "earth_ocean_only")), (t + 4.3, report)]
     t += 5.0
     # the stars: straight up and away from the sun
@@ -361,20 +367,23 @@ elif os.environ.get("EUROPATEST_ONLY") == "moon":
           (t + 8.5, lambda w: cmd(w, "lyud.Hero.ViewBehind 0"))]
     t += 9.0
     # the near lead: from its rim, looking down into the water
-    def at_lead(w):
+    def at_lead(w, k=0, side=1.0):
         # the near lead from Content/Europa/moon.json: on its rim, looking across and down into it
         import json
         with open(os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_content_dir()), "Europa", "moon.json")) as f:
-            lead = json.load(f)["water"][0]
+            lead = json.load(f)["water"][k]
         c, st = lead["centre_cm"], lead["strike"]
-        n = (-st[1], st[0])
+        n = (-st[1] * side, st[0] * side)
         off = lead["half_width_cm"] * 0.6 + 900.0
         p = ground_at(w, c[0] + n[0] * off + st[0] * 6000.0, c[1] + n[1] * off + st[1] * 6000.0)
         pawn(w).set_actor_location(p, False, True)
         M["lead"] = unreal.Vector(-n[0], -n[1], 0.0)
-    P += [(t, at_lead), (t + 3.0, lambda w: look_dir(w, M["lead"], 20.0)), (t + 4.5, lambda w: shot(w, "water_lead")),
-          (t + 5.0, lambda w: look_dir(w, M["lead"], 38.0)), (t + 6.5, lambda w: shot(w, "water_lead_down"))]
-    t += 7.0
+    for k, side in ((0, 1.0), (0, -1.0), (1, 1.0), (1, -1.0)):
+        P += [(t, lambda w, k=k, side=side: at_lead(w, k, side)), (t + 3.0, lambda w: look_dir(w, M["lead"], 18.0)),
+              (t + 4.5, lambda w, k=k, side=side: shot(w, "water_lead%d_%s" % (k, "a" if side > 0 else "b"))),
+              (t + 5.0, lambda w: look_dir(w, M["lead"], 40.0)),
+              (t + 6.5, lambda w, k=k, side=side: shot(w, "water_lead%d_%s_down" % (k, "a" if side > 0 else "b")))]
+        t += 7.0
     # a ladder on the ice, climbed hand over hand
     P += [(t, lambda w: eu(w).go_europa()), (t + 1.0, lambda w: look(w, 0.0, 0.0)), (t + 1.5, lambda w: cmd(w, "lyud.Ladder.Spawn 16 70")),
           (t + 2.5, lambda w: cmd(w, "lyud.Ladder.Grab")), (t + 3.5, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0.2"))]
@@ -387,10 +396,56 @@ elif os.environ.get("EUROPATEST_ONLY") == "moon":
     P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 110")), (t + 0.05, lambda w: look(w, body(w) + 25.0, 30.0)),
           (t + 0.3, lambda w: shot(w, "ladder_hands_shoulder")), (t + 0.35, lambda w: cmd(w, "lyud.Hero.ViewBehind 0"))]
     t += 0.5
-    P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 0")), (t + 0.05, lambda w: look(w, body(w), 15.0)), (t + 0.3, lambda w: shot(w, "ladder_hands_fpv")),
-          (t + 0.6, lambda w: look(w, body(w), -60.0)), (t + 0.9, lambda w: shot(w, "ladder_feet_fpv")),
+    def look_ladder(w, up):
+        lad = unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudLadder)
+        if lad:
+            eye = pawn(w).get_actor_location() + unreal.Vector(0, 0, 70)
+            d = lad[0].get_actor_location() + unreal.Vector(0, 0, eye.z - lad[0].get_actor_location().z + up) - eye
+            pc(w).set_control_rotation(unreal.Rotator(0.0, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))), math.degrees(math.atan2(d.y, d.x))))
+    P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 0")), (t + 0.05, lambda w: look_ladder(w, 25.0)), (t + 0.3, lambda w: shot(w, "ladder_hands_fpv")),
+          (t + 0.6, lambda w: look_ladder(w, -70.0)), (t + 0.9, lambda w: shot(w, "ladder_feet_fpv")),
           (t + 1.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0"))]
     t += 1.5
+    P += [(t, report), (t + 0.5, lambda w: S.update(phase="done"))]
+    PLAN = P
+elif os.environ.get("EUROPATEST_ONLY") == "lead":
+    # the leads' water by Europa's day, from above and from the rim, and the hands on the rungs from the eyes
+    import json
+
+    def lead(k):
+        with open(os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_content_dir()), "Europa", "moon.json")) as f:
+            return json.load(f)["water"][k]
+
+    def over(w, k, back, up, pitch):
+        L = lead(k)
+        s = eu(w).get_site().get_actor_location()
+        c = unreal.Vector(s.x + L["centre_cm"][0], s.y + L["centre_cm"][1], s.z + L["z_cm"])
+        n = unreal.Vector(-L["strike"][1], L["strike"][0], 0.0)
+        cam = c + n * back + unreal.Vector(0, 0, up)
+        pawn(w).set_actor_location(cam, False, True)
+        pawn(w).get_editor_property("character_movement").set_movement_mode(unreal.MovementMode.MOVE_FLYING)
+        d = c - cam
+        pc(w).set_control_rotation(unreal.Rotator(0.0, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))) + pitch, math.degrees(math.atan2(d.y, d.x))))
+
+    P = [(30.0, start), (30.5, lambda w: cmd(w, "lyud.Europa.Fast 0")), (31.0, lambda w: eu(w).go_europa()),
+         (32.0, lambda w: cmd(w, "lyud.SkyHourOffset 96"))]
+    t = 34.0
+    for k in (0, 1):
+        for i, (back, up, pitch) in enumerate(((0.0, 9000.0, 0.0), (3500.0, 900.0, 0.0), (-3500.0, 900.0, 0.0), (1500.0, 300.0, -5.0))):
+            P += [(t, lambda w, k=k, b=back, u=up, p=pitch: over(w, k, b, u, p)),
+                  (t + 2.5, lambda w, k=k, i=i: shot(w, "lead%d_view%d" % (k, i)))]
+            t += 3.0
+    P += [(t, lambda w: pawn(w).get_editor_property("character_movement").set_movement_mode(unreal.MovementMode.MOVE_FALLING)),
+          (t + 0.5, lambda w: eu(w).go_europa()), (t + 1.5, lambda w: pc(w).set_control_rotation(unreal.Rotator(0.0, 0.0, 0.0))),
+          (t + 2.0, lambda w: cmd(w, "lyud.Ladder.Spawn 16 70")), (t + 3.0, lambda w: cmd(w, "lyud.Ladder.Grab")),
+          (t + 4.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0.2")), (t + 7.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0"))]
+    t += 7.5
+    for i, pitch in enumerate((-20.0, -35.0, 10.0)):
+        # toward the ladder: its -X is the way the climber faces
+        face = lambda w: unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudLadder)[0].get_actor_rotation().yaw + 180.0
+        P += [(t, lambda w, p=pitch: pc(w).set_control_rotation(unreal.Rotator(0.0, p, face(w)))),
+              (t + 0.4, lambda w, i=i: shot(w, "ladder_eyes_%d" % i))]
+        t += 0.6
     P += [(t, report), (t + 0.5, lambda w: S.update(phase="done"))]
     PLAN = P
 elif os.environ.get("EUROPATEST_ONLY") == "hatch":

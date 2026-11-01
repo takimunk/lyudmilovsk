@@ -180,6 +180,8 @@ public:
 		/** The town on the planet faces Europa (Europa is over its horizon), and how far over, -1..1. */
 		bool bIslandFacing = false;
 		float IslandUp = 0.f;
+		/** The sun's height over the town's horizon, -1..1 (the island is lit by day). */
+		float TownSun = 0.f;
 	};
 	FSky SkyAt(const FDateTime& Utc) const;
 	/** The island is on the planet's face toward us now. */
@@ -200,7 +202,7 @@ public:
 	/** The old ice disc and blocks (only when moon.json is missing). */
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Ground;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Blocks;
-	/** The ground's tiles, the far skyline, the boulders, and the leads' water (the sea's own water material). */
+	/** The ground's tiles, the far skyline, the boulders, and the leads' water (M_EU_LeadWater). */
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TArray<TObjectPtr<UStaticMeshComponent>> Terrain;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TArray<TObjectPtr<UStaticMeshComponent>> Waters;
 	/** The planet's air (a shell round it, additive) and the star sphere round the site. */
@@ -224,6 +226,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> AirMID;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> StarMID;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WaterMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SheenMID;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;
 	bool bShown = true;
 	bool bGroundBuilt = false;

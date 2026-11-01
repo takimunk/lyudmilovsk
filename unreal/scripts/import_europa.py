@@ -253,7 +253,7 @@ def planet():
     clo = g.node(X.MaterialExpressionTextureObjectParameter, parameter_name="Clouds", texture=tex("T_EU_clouds"))
     c = g.custom(PLANET_HLSL, [("UV", uv), ("P", pos), ("C", ctr), ("V", cam), ("SunDir", (g.vector("SunDir", (0.3, 0.2, 0.9, 0)), "RGBA")),
                                ("SunLight", (g.vector("SunLight", (12.7, 10.5, 8.6, 0)), "RGBA")), ("T", g.node(X.MaterialExpressionTime)),
-                               ("Gain", g.scalar("Gain", 2.2)), ("Lights", g.scalar("Lights", 5.0)), ("Albedo", alb), ("Clouds", clo)])
+                               ("Gain", g.scalar("Gain", 2.2)), ("Lights", g.scalar("Lights", 20.0)), ("Albedo", alb), ("Clouds", clo)])
     g.out(c, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     return g.finish()
 

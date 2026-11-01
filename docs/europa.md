@@ -77,8 +77,11 @@ ice, frost and cavity for `M_EU_Terrain` (triplanar ice, strata in the cliffs: n
 imports them into `/Game/Europa/Moon` (Nanite; complex collision from the fallback mesh: 35 % of the near tiles'
 triangles, 50 % further; none on the skyline). The glb itself is not committed (rebuilt from the json in ~2 min).
 
-The leads' water is the sea's own material (`M_LyudSea`, single-layer water: depth, absorption, reflections) with a
-small table of slow ripples for 0.13 g and no depth map; its surface holds you up (no swimming on Europa).
+The leads' water is `M_EU_LeadWater` (translucent): the sea's own absorption per metre (clear over the bed at the
+shore, black-teal where deep), Fresnel reflections of this sky (the planet's disk and glow, the star's glitter), slow
+ripples for 0.13 g, a little scattered light, and a rim of new ice where it thins against the shore; `ALyudEuropaSite`
+feeds it the planet's and the star's directions and light. (The sea's single-layer `M_LyudSea` drew grey foam over a
+whole lead away from its depth map; it stays the fallback.) Its surface holds you up (no swimming on Europa).
 
 ## The sky from Europa
 

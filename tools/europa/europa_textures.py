@@ -30,7 +30,7 @@ SEED = 4417
 # the island on the planet (degrees): where the town really is (ALyudSky's place), so the planet seen from Europa turns
 # it into view only while Europa stands over the town's horizon (ALyudEuropaSite::SkyAt)
 ISLAND_LON, ISLAND_LAT = 20.40, 54.96
-ISLAND_SIZE = 5.0          # degrees across, roughly
+ISLAND_SIZE = 9.0          # degrees across, roughly: seen from Europa it must read, near the limb too
 
 
 def periodic_noise(n, beta, seed):

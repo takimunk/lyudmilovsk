@@ -188,6 +188,61 @@ return acc * K * (beta * phaseR + phaseM) * SunLight.rgb * 0.12;
 """
 
 
+LEAD_HLSL = r"""
+// the leads' water (ALyudEuropaSite): the sea's own absorption (make_sea_materials.py ABSORPTION, per metre) seen
+// through to the bed where it is thin and black-teal where deep, a skin of slow ripples (0.13 g), its Fresnel mirror of
+// the planet's disk and glow and the star's glitter, a little light scattered inside, and a rim of new ice where it
+// thins against the shore. Translucent: the colour is what is added over the scene behind, as much as the water hides it.
+float3 V = normalize(Cam - WP);
+float2 p = (WP.xy - OP.xy) * 0.01;
+float2 g = 0;
+g += float2(0.8, 0.6) * cos(dot(p, float2(0.8, 0.6)) * 4.1 - T * 1.1) * 0.035;
+g += float2(-0.5, 0.86) * cos(dot(p, float2(-0.5, 0.86)) * 7.3 - T * 1.6 + 1.3) * 0.025;
+g += float2(0.2, -0.98) * cos(dot(p, float2(0.2, -0.98)) * 12.7 - T * 2.3 + 2.1) * 0.016;
+g += float2(0.97, 0.24) * cos(dot(p, float2(0.97, 0.24)) * 21.0 - T * 3.0 + 0.4) * 0.011;
+g += float2(-0.7, -0.7) * cos(dot(p, float2(-0.7, -0.7)) * 37.0 - T * 4.1 + 2.7) * 0.007;
+float3 n = normalize(float3(-g, 1.0));
+float ndv = saturate(dot(n, V));
+float F = 0.02 + 0.98 * pow(1.0 - ndv, 5.0);
+float3 R = reflect(-V, n);
+float3 pd = normalize(PD.xyz);
+float disk = smoothstep(PD.w - 0.004, PD.w + 0.004, dot(R, pd));
+float glow = exp(-acos(clamp(dot(R, pd), -1, 1)) / 0.35) * 0.04;
+float3 sd = normalize(SD.xyz);
+float glint = smoothstep(SD.w - 0.003, SD.w + 0.003, dot(R, sd));
+float3 refl = PL.rgb * (disk + glow) + SL.rgb * glint + 0.002;
+// the path through the water to what lies under it, metres
+float path = max(SceneD - PixD, 0.0) * 0.01;
+float3 Tw = exp(-float3(0.42, 0.085, 0.13) * path * 1.6);
+float tavg = dot(Tw, float3(0.2, 0.5, 0.3));
+float3 lightNow = PL.rgb * 0.03 + SL.rgb * 0.05 * Lit + 0.002;
+float3 body = float3(0.05, 0.22, 0.24) * lightNow * (1.0 - tavg);
+float rim = exp(-path / 0.25) * (0.6 + 0.4 * frac(sin(dot(floor(p * 3.0), float2(12.9898, 78.233))) * 43758.5453));
+float3 ice = float3(0.75, 0.82, 0.86) * lightNow * 8.0;
+float op = saturate(1.0 - (1.0 - F) * tavg * (1.0 - rim));
+float3 add = F * refl + (1.0 - F) * body + rim * ice;
+return float4(add / max(op, 0.02), op);
+"""
+
+
+def lead_water_material():
+    g = E.Graph("M_EU_LeadWater", shading=unreal.MaterialShadingModel.MSM_UNLIT, blend=unreal.BlendMode.BLEND_TRANSLUCENT)
+    vec = lambda n, v: (g.vector(n, v), "RGBA")
+    c = g.custom(LEAD_HLSL, [("WP", g.node(X.MaterialExpressionWorldPosition)), ("OP", g.node(X.MaterialExpressionObjectPositionWS)),
+                             ("Cam", g.node(X.MaterialExpressionCameraPositionWS)), ("T", g.node(X.MaterialExpressionTime)),
+                             ("SceneD", g.node(X.MaterialExpressionSceneDepth)), ("PixD", g.node(X.MaterialExpressionPixelDepth)),
+                             ("PD", vec("PlanetDir", (0, 0, 1, 0.974))), ("PL", vec("PlanetLight", (5, 6, 8, 0))),
+                             ("SD", vec("SunDir", (0, 0, 1, 0.996))), ("SL", vec("SunLight", (18, 15, 12, 0))),
+                             ("Lit", g.scalar("SunLit", 1.0))], out=unreal.CustomMaterialOutputType.CMOT_FLOAT4)
+    rgb = g.node(X.MaterialExpressionComponentMask, r=True, g=True, b=True, a=False)
+    g.link(c, rgb)
+    a = g.node(X.MaterialExpressionComponentMask, r=False, g=False, b=False, a=True)
+    g.link(c, a)
+    g.out(rgb, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    g.out(a, unreal.MaterialProperty.MP_OPACITY)
+    return g.finish()
+
+
 def terrain_material():
     g = E.Graph("M_EU_Terrain")
     g.m.set_editor_property("tangent_space_normal", False)
@@ -314,6 +369,7 @@ def main():
     nanite_usage(boulder)
     space_material()
     air_material()
+    lead_water_material()
     # the planet's textures (the island where the town is, its lights) and its material, back on its mesh
     E.import_textures()
     planet = E.planet()
