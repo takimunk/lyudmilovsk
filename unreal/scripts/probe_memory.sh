@@ -7,10 +7,10 @@ OUT="${1:?out dir}"; ROOT="${2:-$(cd "$(dirname "$0")/../.." && pwd)}"
 UE="/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 HERE="$(cd "$(dirname "$0")" && pwd)"
-if [ "$MODE" = pie ]; then ARGS="-unattended -nosplash -gameslotprobe"; SCRIPT="$HERE/probe_pie.py"  # -game* so tools/wait_ue_queue.sh counts it
+if [ "$MODE" = pie ]; then ARGS="-unattended -nosplash -gameslotprobe -ueexclusive"; SCRIPT="$HERE/probe_pie.py"  # -game* so tools/wait_ue_queue.sh counts it
 else ARGS="-game -ResX=1280 -ResY=720 -windowed -nosound -dpcvars=lyud.MainMenuOnStart=0"; SCRIPT="$HERE/probe_memory.py"; fi
 mkdir -p "$OUT"
-"$(dirname "$0")/../../tools/wait_ue_queue.sh" 7200 || exit 1
+"$(dirname "$0")/../../tools/wait_ue_queue.sh" 7200 --exclusive || exit 1
 "$UE" "$PROJ" /Game/Scene01/Lvl_Scene01 -RenderOffscreen $ARGS -abslog="$OUT/game.log" "-ExecCmds=py $SCRIPT" > /dev/null 2>&1 &
 PID=$!
 T=0
