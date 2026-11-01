@@ -25,6 +25,61 @@ VIEWS = {
 }
 
 
+TEX = os.path.join(ROOT, "textures", "diner")
+
+
+def apply_textures(C):
+    """Slots in C.MAT_TEX with textures/diner/<set>_{D,N,R}: D (sRGB) -> Base Color, R mask (Non-Color) red -> Roughness,
+    N (DirectX green-down, so G is inverted for Blender) -> Normal Map. UV (metres) x 1/tile via a Mapping node."""
+    def img(path, srgb):
+        im = bpy.data.images.load(path, check_existing=True)
+        im.colorspace_settings.name = "sRGB" if srgb else "Non-Color"
+        return im
+    for m in bpy.data.materials:
+        key = m.name.split(".")[0]
+        if key not in C.MAT_TEX or not m.node_tree:
+            continue
+        name, tile, strength = C.MAT_TEX[key]
+        pd, pn, pr = (os.path.join(TEX, "%s_%s" % (name, s)) for s in ("D.jpg", "N.png", "R.jpg"))
+        if not os.path.exists(pd):
+            continue
+        nt = m.node_tree
+        b = nt.nodes.get("Principled BSDF")
+        if not b:
+            continue
+        uv = nt.nodes.new("ShaderNodeUVMap")
+        mp = nt.nodes.new("ShaderNodeMapping")
+        mp.inputs["Scale"].default_value = (1.0 / tile, 1.0 / tile, 1.0)
+        nt.links.new(uv.outputs["UV"], mp.inputs["Vector"])
+
+        def tex(path, srgb):
+            t = nt.nodes.new("ShaderNodeTexImage")
+            t.image = img(path, srgb)
+            t.interpolation = "Cubic"
+            nt.links.new(mp.outputs["Vector"], t.inputs["Vector"])
+            return t
+        nt.links.new(tex(pd, True).outputs["Color"], b.inputs["Base Color"])
+        if os.path.exists(pr):
+            sep = nt.nodes.new("ShaderNodeSeparateColor")
+            nt.links.new(tex(pr, False).outputs["Color"], sep.inputs["Color"])
+            nt.links.new(sep.outputs["Red"], b.inputs["Roughness"])
+        if os.path.exists(pn):
+            sp = nt.nodes.new("ShaderNodeSeparateColor")
+            nt.links.new(tex(pn, False).outputs["Color"], sp.inputs["Color"])
+            inv = nt.nodes.new("ShaderNodeMath")
+            inv.operation = "SUBTRACT"
+            inv.inputs[0].default_value = 1.0
+            nt.links.new(sp.outputs["Green"], inv.inputs[1])
+            cb = nt.nodes.new("ShaderNodeCombineColor")
+            nt.links.new(sp.outputs["Red"], cb.inputs["Red"])
+            nt.links.new(inv.outputs["Value"], cb.inputs["Green"])
+            nt.links.new(sp.outputs["Blue"], cb.inputs["Blue"])
+            nm = nt.nodes.new("ShaderNodeNormalMap")
+            nm.inputs["Strength"].default_value = strength
+            nt.links.new(cb.outputs["Color"], nm.inputs["Color"])
+            nt.links.new(nm.outputs["Normal"], b.inputs["Normal"])
+
+
 def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     for a in [a for a in args if "=" in a]:                 # a custom close-up: name=ex,ey,ez,tx,ty,tz,lens
@@ -51,6 +106,7 @@ def main():
             b.inputs["Metallic"].default_value = metal
         elif key.startswith("DN_Sign_"):
             b.inputs["Base Color"].default_value = sign + (1,)
+    apply_textures(C)
     for o in bpy.context.scene.objects:
         if o.type == "MESH" and "Glass" in o.name:
             for m in o.data.materials:
