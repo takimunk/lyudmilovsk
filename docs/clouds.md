@@ -76,6 +76,18 @@ An altostratus is thin (vertical optical depth 0.3-1.5), so the sun shows throug
 - `lyud.Clouds.Debug 1` prints the layers.
 - `lyud.Weather.Preset` drives the clouds through the weather.
 
+## Noise and the sunset tint
+
+- **Noise.** The clouds use their own full-range 16-bit noise volumes, `VT_CloudShape` (128^3 Perlin-Worley) and
+  `VT_CloudErosion` (32^3 Worley fbm). `tools/sky/cloud_noise.py` generates them (seeded) into
+  `textures/sky/cloud_*.png`, and `import_sky.py` imports them uncompressed. The engine's volumes held one 8-bit
+  channel in a narrow band; spread to full range in the shader, that showed as a coarse mottled grain, worst against
+  a low sun. The new volumes are histogram-matched to what the shader saw from the old ones, so the tuning holds.
+- **Sunset tint.** `ULyudSunset` gives `CloudAmbientTint`, the afterglow's hue, which comes in as the sun goes down.
+  `ULyudCloudSubsystem` puts it on `M_LyudClouds`' `AmbientTint`, which multiplies the albedo. Backlit edges after
+  sunset then take the evening's colour instead of staying cream; the direct light is tinted separately, through
+  `CloudScatteredLuminanceScale`.
+
 ## Gotchas
 
 - The engine's cloud noise volumes (`T_VolumeNoiseShape128`, `T_VolumeNoiseErosion32`) hold one channel packed into

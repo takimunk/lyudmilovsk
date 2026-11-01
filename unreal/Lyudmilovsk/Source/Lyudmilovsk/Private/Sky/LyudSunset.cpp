@@ -92,6 +92,16 @@ const FLyudSunsetLook& ULyudSunset::Update(ALyudSky* Sky, const FDateTime& Local
 	Look.MieGAdd = L.MieGAdd;
 	Look.LightTint = ToLinear(L.LightTint);
 	Look.CloudTint = ToLinear(L.CloudTint);
+	{
+		// the clouds in the sky's light: the cloud glow's hue (brightest channel 1, so it only takes away), coming in as
+		// the sun goes down and holding through the afterglow
+		const FLinearColor C = Look.CloudTint;
+		const float Peak = FMath::Max3(C.R, C.G, C.B);
+		const FLinearColor Hue = Peak > 1e-4f ? FLinearColor(C.R / Peak, C.G / Peak, C.B / Peak) : FLinearColor::White;
+		const float After = FMath::Clamp((3.f - SunAltDeg) / 6.f, 0.f, 1.f);
+		const float K = L.Weight * After * (0.45f + 0.55f * Profile->Afterglow);
+		Look.CloudAmbientTint = FMath::Lerp(FLinearColor::White, Hue, FMath::Clamp(K, 0.f, 1.f));
+	}
 	Look.AureoleScale = L.AureoleScale;
 	Look.DiskScale = L.DiskScale;
 	Look.ExposureEV = L.ExposureEV;

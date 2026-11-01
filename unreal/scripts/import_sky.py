@@ -108,6 +108,44 @@ class Graph:
         return self.m
 
 
+def cloud_noise_volume(png, name):
+    """One of the clouds' noise volumes (tools/sky/cloud_noise.py): the committed 16-bit strip of z slices imported as a
+    texture, then a VolumeTexture made from it, both under DEST and rebuilt every time. Uncompressed: block compression
+    on a noise the shader thresholds shows as grain in the clouds."""
+    task = unreal.AssetImportTask()
+    task.set_editor_property("filename", os.path.join(REPO, "textures", "sky", png))
+    task.set_editor_property("destination_path", DEST)
+    task.set_editor_property("destination_name", name + "_Slices")
+    task.set_editor_property("automated", True)
+    task.set_editor_property("replace_existing", True)
+    task.set_editor_property("save", True)
+    unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+    tex = unreal.load_asset(DEST + "/" + name + "_Slices")
+    tex.set_editor_property("srgb", False)
+    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+    tex.set_editor_property("mip_gen_settings", unreal.TextureMipGenSettings.TMGS_NO_MIPMAPS)
+    tex.set_editor_property("never_stream", True)
+    eal.save_loaded_asset(tex)
+    # kept and refreshed if it is there (deleting it fails while a loaded material still points at it)
+    vol = unreal.load_asset(DEST + "/" + name) if eal.does_asset_exist(DEST + "/" + name) else None
+    if not isinstance(vol, unreal.VolumeTexture):
+        vol = unreal.AssetToolsHelpers.get_asset_tools().create_asset(name, DEST, unreal.VolumeTexture, unreal.VolumeTextureFactory())
+    vol.set_editor_property("source2d_texture", None)
+    # each change rebuilds the volume from the strip (PostEditChange), and setting the texture guesses its own tile
+    # sizes: so the texture first, then square tiles as tall as the strip
+    n = tex.blueprint_get_size_y()
+    vol.set_editor_property("source2d_texture", tex)
+    vol.set_editor_property("source2d_tile_size_x", n)
+    vol.set_editor_property("source2d_tile_size_y", n)
+    vol.set_editor_property("srgb", False)
+    vol.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+    vol.set_editor_property("address_mode", unreal.TextureAddress.TA_WRAP)
+    vol.set_editor_property("never_stream", True)
+    eal.save_loaded_asset(vol)
+    _log("cloud noise %s: tiles %dx%d" % (name, vol.get_editor_property("source2d_tile_size_x"), vol.get_editor_property("source2d_tile_size_y")))
+    return vol
+
+
 def europa_texture(path, name, srgb):
     """One of Europa's baked maps as a texture under DEST (imported every build from the committed PNG)."""
     task = unreal.AssetImportTask()
@@ -166,9 +204,9 @@ def cloud_material():
     rgba = lambda n: (n, "RGBA")
     ins = [("P", g.node(X.MaterialExpressionWorldPosition)), ("Cam", g.node(X.MaterialExpressionCameraPositionWS))]
     ins.append(("Shape", g.node(X.MaterialExpressionTextureObject, -900,
-                                texture=unreal.load_asset("/Engine/EngineSky/VolumetricClouds/T_VolumeNoiseShape128"))))
+                                texture=cloud_noise_volume("cloud_shape128.png", "VT_CloudShape"))))
     ins.append(("Erosion", g.node(X.MaterialExpressionTextureObject, -900,
-                                  texture=unreal.load_asset("/Engine/EngineSky/VolumetricClouds/T_VolumeNoiseErosion32"))))
+                                  texture=cloud_noise_volume("cloud_erosion32.png", "VT_CloudErosion"))))
     defaults = {"A": (0.0, 1.0, 2.0, 1.0), "B": (1.5, 0.0, 0.6, 0.0), "C": (0.5, 1.3, 0.05, 0.0), "D": (0.0, 0.0, 1.0, 0.0),
                 "E": (0.0, 0.3, 0.6, 0.0)}
     for li in (0, 1):
@@ -186,7 +224,9 @@ def cloud_material():
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3)
     g.out(ext, unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
     albedo = vparam("Albedo", (0.93, 0.93, 0.95, 0.0))
-    g.out(albedo, unreal.MaterialProperty.MP_BASE_COLOR)
+    # AmbientTint: the sunset's afterglow hue (ULyudSunset via ULyudCloudSubsystem), white outside it
+    tint = vparam("AmbientTint", (1.0, 1.0, 1.0, 0.0))
+    g.out(g.op(X.MaterialExpressionMultiply, albedo, tint, a_pin="RGB", b_pin="RGB"), unreal.MaterialProperty.MP_BASE_COLOR)
     ao = g.custom("return D.y;", [("D", d)])
     g.out(ao, unreal.MaterialProperty.MP_AMBIENT_OCCLUSION)
     flash = vparam("FlashColor", (0.75, 0.8, 1.0, 0.0))

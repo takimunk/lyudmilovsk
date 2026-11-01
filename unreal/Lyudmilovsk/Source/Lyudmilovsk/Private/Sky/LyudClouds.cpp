@@ -7,6 +7,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Sky/LyudSky.h"
+#include "Sky/LyudSunset.h"
 #include "Weather/LyudWeather.h"
 
 static TAutoConsoleVariable<FString> CVarCloudPreset(TEXT("lyud.Clouds.Preset"), TEXT(""),
@@ -538,6 +539,9 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 		const float Sin = FMath::Max(FMath::Sin(FMath::DegreesToRadians(FMath::Max(SunAlt, 0.f))), 0.15f);
 		const float Glow = (Sky->SunIlluminance * Sin / PI * 0.55f * SkyLightThrough * Day + 0.006f) * DeckClosed;
 		CloudMid->SetVectorParameterValue(TEXT("DeckGlow"), Sky->SunColor * Glow);
+		// the day's sunset tints the clouds in the sky's light (ULyudSunset: the afterglow's hue)
+		const ULyudSunset* SunsetDay = ULyudSunset::Get(this);
+		CloudMid->SetVectorParameterValue(TEXT("AmbientTint"), SunsetDay ? SunsetDay->GetLook().CloudAmbientTint : FLinearColor::White);
 	}
 	if (UMaterialInstanceDynamic* SkyMid = Sky->GetSkyMID())
 	{

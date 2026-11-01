@@ -30,9 +30,9 @@ struct FLyudCloudLib
 {
     float H2(float2 p) { p = frac(p * float2(0.1031, 0.1030)); p += dot(p, p.yx + 33.33); return frac((p.x + p.y) * p.x); }
     float Remap(float v, float a, float b) { return saturate((v - a) / max(b - a, 1e-4)); }
-    // the engine's cloud noise volumes hold one Perlin-Worley channel packed into a narrow band: spread it to 0..1
-    float S(float v) { return saturate((v - 0.80) / 0.17); }
-    float Er(float v) { return saturate((v - 0.55) / 0.33); }
+    // the noise volumes (tools/sky/cloud_noise.py) are full-range: kept as hooks where the engine's narrow ones were spread
+    float S(float v) { return saturate(v); }
+    float Er(float v) { return saturate(v); }
     float N2(float2 x)
     {
         float2 i = floor(x), f = frac(x);
@@ -147,10 +147,10 @@ for (int li = 0; li < 2; li++)
         // erosion by fine detail: billows on the tops, wisps at the base
         if (d > 0.0 && C.x > 0.0 && far < 0.99)
         {
-            float3 pe = p3 * 4.1 + float3(0, 0, t * E.z * 3e-4);
+            float3 pe = p3 * 6.0 + float3(0, 0, t * E.z * 3e-4);
             float ef = K.Er(Erosion.SampleLevel(ErosionSampler, pe, 0).r) * 0.65 + K.Er(Erosion.SampleLevel(ErosionSampler, pe * 2.3 + 0.5, 0).r) * 0.35;
             ef = lerp(1.0 - ef, ef, saturate(tb * 5.0));
-            float k = ef * C.x * 0.45 * (1.0 - far);
+            float k = ef * C.x * 0.6 * (1.0 - far);
             d = saturate((d - k) / max(1.0 - k, 0.05));
         }
         // no faint translucent fringe: a cloud's edge goes from clear to its body over a short band, so the few

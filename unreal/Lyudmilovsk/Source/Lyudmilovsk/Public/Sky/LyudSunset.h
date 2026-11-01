@@ -16,6 +16,9 @@ struct FLyudSunsetLook
 	float MieGAdd = 0.f;
 	FLinearColor LightTint = FLinearColor::White;
 	FLinearColor CloudTint = FLinearColor::White;
+	/** The clouds' colour in the sky's own light (ULyudCloudSubsystem tints M_LyudClouds' albedo with it): the
+	 * afterglow's hue once the sun is down, so backlit edges after sunset glow pink or orange instead of cream. */
+	FLinearColor CloudAmbientTint = FLinearColor::White;
 	float AureoleScale = 1.f;
 	float DiskScale = 1.f;
 	float ExposureEV = 0.f;

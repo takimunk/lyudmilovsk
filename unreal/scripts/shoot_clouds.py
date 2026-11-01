@@ -55,6 +55,9 @@ SHOTS = [
     ("sunset_weather015", "off", D(2026, 10, 20, 16, 45), 0, "sun", "fov 30;lyud.Weather.BlendSeconds 0;lyud.Weather.Cloud 0.15"),
     ("sunset_sc", "sc", SUNSET, 0, "sun-wide"),
     ("sunset_ci", "ci", SUNSET, 0, "sun-wide"),
+    # after sunset: backlit edges take the afterglow's hue (ULyudSunset), not cream
+    ("dusk_cu", "cu", D(2026, 10, 20, 17, 25), 4, "sun-wide"),
+    ("dusk_sc", "sc", D(2026, 10, 20, 17, 25), 4, "sun-wide"),
     ("night_sc", "sc", NIGHT, 10, "moon"),
     ("weather_now", "off", AFTERNOON, 12, 10),
     ("weather_ground", "off", AFTERNOON, -25, 100),
