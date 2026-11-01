@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again1.1",
+ "lang": "ru",
+ "text": "На острове скворцы садятся ровно перед закатом. Как будто сверяют часы с солнцем.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] На острове скворцы садятся ровно перед закатом. Как будто сверяют часы с солнцем.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-2ff4-7e23-b82d-4ac5001b6790",
+ "hash": "6e5a1dd6d079"
+}

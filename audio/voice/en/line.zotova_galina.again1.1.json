@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again1.1",
+ "lang": "en",
+ "text": "Fresh bread at the kiosk today. Tanya tells everyone, but keeps some only for her own.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Fresh bread at the kiosk today. Tanya tells everyone, but keeps some only for her own.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-e937-70e0-ae5a-c8399bc7cebb",
+ "hash": "1bccb7c454de"
+}

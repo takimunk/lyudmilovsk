@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.first.1",
+ "lang": "ru",
+ "text": "Вы не из Лаборатории? Жаль. Там как раз нужен кто-нибудь, кто ничего не знает.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Вы не из Лаборатории? Жаль. Там как раз нужен кто-нибудь, кто ничего не знает.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19794-77df-73e2-a827-030cf0e18f13",
+ "hash": "9bbcb76305c8"
+}

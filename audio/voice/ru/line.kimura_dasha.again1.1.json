@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again1.1",
+ "lang": "ru",
+ "text": "После лекций уеду на остров. Там вайфая нет, зато есть горизонт.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] После лекций уеду на остров. Там вайфая нет, зато есть горизонт.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19794-e20e-7a30-a780-f03da39adf29",
+ "hash": "fcbc1937f80b"
+}

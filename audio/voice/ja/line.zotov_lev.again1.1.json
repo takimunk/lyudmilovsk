@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again1.1",
+ "lang": "ja",
+ "text": "計器を長く見ていると、向こうもこちらを見る。物理じゃない、経験だ。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 計器を長く見ていると、向こうもこちらを見る。物理じゃない、経験だ。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979b-4384-7e61-8ae3-4a47a58a207a",
+ "hash": "53bf93d4855b"
+}

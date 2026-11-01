@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.again1.1",
+ "lang": "ja",
+ "text": "休みの日は島へ行くの。電車が水の上を走るから、ユキは毎回きゃあきゃあ言うのよ。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] 休みの日は島へ行くの。電車が水の上を走るから、ユキは毎回きゃあきゃあ言うのよ。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-9fa1-7410-97ea-ac8af5bba95d",
+ "hash": "4083c37c9b83"
+}

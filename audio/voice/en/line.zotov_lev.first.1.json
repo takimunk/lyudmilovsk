@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.first.1",
+ "lang": "en",
+ "text": "Not from the Laboratory? Pity. They need someone there who knows nothing.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Not from the Laboratory? Pity. They need someone there who knows nothing.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-d630-78b1-8f80-82b3a10e20ab",
+ "hash": "c3b4159ad334"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.first.1",
+ "lang": "ja",
+ "text": "物理を勉強してるの。今のところ、物理のほうが私を勉強してる。手加減なしで。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 物理を勉強してるの。今のところ、物理のほうが私を勉強してる。手加減なしで。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a19799-6abd-7150-914c-115c71ae46e1",
+ "hash": "a8088dc1c691"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.first.1",
+ "lang": "ru",
+ "text": "Сорокин. Да, и птиц изучаю. Фамилия обязывает.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Сорокин. Да, и птиц изучаю. Фамилия обязывает.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-44c7-7673-87c7-403b93eb6a63",
+ "hash": "26c6dc696a4c"
+}

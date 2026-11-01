@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.again1.1",
+ "lang": "en",
+ "text": "Cobs from the dacha, still milky. Take some while the season lasts.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Cobs from the dacha, still milky. Take some while the season lasts.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19796-d498-7113-8334-5b0585731c8f",
+ "hash": "2fa91ec4d02a"
+}

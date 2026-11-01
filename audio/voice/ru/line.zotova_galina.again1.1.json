@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again1.1",
+ "lang": "ru",
+ "text": "В киоске сегодня свежий хлеб. Таня всем говорит, но оставляет только своим.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] В киоске сегодня свежий хлеб. Таня всем говорит, но оставляет только своим.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-8cb2-75f0-b905-5328c46f2dbb",
+ "hash": "f962307a532d"
+}

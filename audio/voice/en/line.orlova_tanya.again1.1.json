@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again1.1",
+ "lang": "en",
+ "text": "That's Nina's third time today. Not for bread, of course. To talk.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] That's Nina's third time today. Not for bread, of course. To talk.",
+  "voice": "Aria",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19797-d94c-7661-830b-8d5965b15013",
+ "hash": "686148848ba2"
+}

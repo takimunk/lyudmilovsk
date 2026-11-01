@@ -116,3 +116,16 @@ into `voice.json` and keeps each preview with its request in `audio/voice/design
 `audio/voice/<lang>/<key>.wav|json` sidecar as before. The import waits for a UE queue slot and runs under
 `nice -n 19 taskpolicy -b`, touching only the new keys plus the hall announcements (`IMPORT_ONLY` now takes a comma list).
 Steps can be run separately: `STEPS=design`, `STEPS=voice`, `STEPS=import`.
+
+## Result (generated 2026-11-01 with Dima's OK, the ~$1 variant)
+
+- 96 takes (32 lines × ru/en/ja, 9 997 characters ≈ $1.00), no voice design. All 164 lines are now voiced in all three languages,
+  except `khuazheva_susanna` (2 lines, skipped: see above). Imported: the 96 new takes plus the 9 hall announcements
+  that were never imported (105 new `/Game/Voice/<lang>/V_*` assets).
+- Checks: every clip has its sidecar; the length fits the text (ru/en 9-19 characters a second, ja 4-6.6); no clip is cut off;
+  median pitch per speaker: men 90-140 Hz, women 160-310 Hz, Yuki 231-261 Hz (the built-in Lovely_Girl, at the bottom
+  of the child range), Nina 166-222 Hz, Valentina 211-239 Hz.
+- Listen first: **sorokin_oleg** (River, 158-195 Hz) is high for a man in his sixties: if he sounds wrong, retake him with
+  another voice (6 takes, ≈ $0.07). Yuki's built-in voice may sound like a young woman rather than a girl: a designed child voice is $3.
+- Bug fixed on the way: `voice_all.sh` imports every wav that has no asset yet (it used to take the list of unvoiced lines,
+  so a separate voice step left nothing to import).

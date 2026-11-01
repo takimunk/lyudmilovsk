@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.first.1",
+ "lang": "en",
+ "text": "I paint the same island every day. It's different every day.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] I paint the same island every day. It's different every day.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19797-c6c0-7b20-89ae-4d26fd13222d",
+ "hash": "a4fbd4cfde92"
+}

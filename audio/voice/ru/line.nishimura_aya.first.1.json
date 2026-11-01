@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.first.1",
+ "lang": "ru",
+ "text": "Я каждый день пишу один и тот же остров. Он каждый день другой.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Я каждый день пишу один и тот же остров. Он каждый день другой.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-9c09-76e1-b493-981f59b4aa1b",
+ "hash": "bb3dbb670805"
+}

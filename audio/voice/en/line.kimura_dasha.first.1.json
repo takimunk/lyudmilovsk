@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.first.1",
+ "lang": "en",
+ "text": "I'm studying physics. So far physics is studying me, and not gently.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] I'm studying physics. So far physics is studying me, and not gently.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19797-06ea-7642-941e-ebcd1c55f931",
+ "hash": "9c63428579bf"
+}

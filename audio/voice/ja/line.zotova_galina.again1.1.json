@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again1.1",
+ "lang": "ja",
+ "text": "今日は売店に焼きたてのパン。ターニャはみんなに言うけど、取っておくのは身内の分だけ。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 今日は売店に焼きたてのパン。ターニャはみんなに言うけど、取っておくのは身内の分だけ。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979b-6e3a-7693-ba14-335dea53dcbb",
+ "hash": "6e566b8816b4"
+}

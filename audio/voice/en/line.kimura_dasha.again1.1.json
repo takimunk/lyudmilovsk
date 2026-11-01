@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again1.1",
+ "lang": "en",
+ "text": "After lectures I'm off to the island. No wi-fi there, but there's a horizon.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] After lectures I'm off to the island. No wi-fi there, but there's a horizon.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19796-f3e2-7893-b428-46e3ef01dc2f",
+ "hash": "6fbd96442867"
+}

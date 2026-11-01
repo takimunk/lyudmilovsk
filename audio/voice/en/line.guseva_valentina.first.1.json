@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.first.1",
+ "lang": "en",
+ "text": "The corn's hot, just boiled. I don't spare the salt, I'll tell you that now.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "The corn's hot, just boiled. I don't spare the salt, I'll tell you that now.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19796-e4d4-76c3-9321-c641b55625df",
+ "hash": "a6910bc71e36"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again1.1",
+ "lang": "ru",
+ "text": "Утренний поезд самый лучший: солнце сзади, и вода как стекло.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Утренний поезд самый лучший: солнце сзади, и вода как стекло.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-8983-76f0-9221-77cf8f364bd2",
+ "hash": "667337064ce4"
+}

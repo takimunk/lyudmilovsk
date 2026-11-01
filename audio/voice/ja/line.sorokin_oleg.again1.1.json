@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again1.1",
+ "lang": "ja",
+ "text": "島のムクドリは日没の直前に降りる。太陽で時計を合わせているみたいに。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 島のムクドリは日没の直前に降りる。太陽で時計を合わせているみたいに。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-edf1-79e0-bf4d-9d828557fde8",
+ "hash": "9c86c93f019d"
+}

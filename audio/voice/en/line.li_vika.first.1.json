@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.first.1",
+ "lang": "en",
+ "text": "I wash flasks for great discoveries. So far only the window has opened.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] I wash flasks for great discoveries. So far only the window has opened.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19797-a436-7733-831d-0ced21987b15",
+ "hash": "f4c6026e746f"
+}

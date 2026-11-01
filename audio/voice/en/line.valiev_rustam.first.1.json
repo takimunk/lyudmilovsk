@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.first.1",
+ "lang": "en",
+ "text": "Engineer. Meaning I'll say \"no\" first and then build it.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Engineer. Meaning I'll say \"no\" first and then build it.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-b484-76b0-9b85-37aeadea9eb1",
+ "hash": "c590bca01bba"
+}

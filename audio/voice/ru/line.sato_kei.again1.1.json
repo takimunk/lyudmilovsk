@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again1.1",
+ "lang": "ru",
+ "text": "Юки говорит, что солнце садится в воду. Я не спорю. Приборы тоже не спорят.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Юки говорит, что солнце садится в воду. Я не спорю. Приборы тоже не спорят.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-cb88-7510-9819-8851020fc3cf",
+ "hash": "350cdc875f18"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.first.1",
+ "lang": "ja",
+ "text": "パン、牛乳、ケフィア。マッチもあるわ。日差しはないわよ、入荷しないから。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] パン、牛乳、ケフィア。マッチもあるわ。日差しはないわよ、入荷しないから。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-6410-7090-a65d-12271c7a2cb6",
+ "hash": "4b0236acc2b6"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.first.1",
+ "lang": "en",
+ "text": "At the Laboratory I solder what the scientists dream up. Sometimes it works first time.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] At the Laboratory I solder what the scientists dream up. Sometimes it works first time.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19796-c3e5-7d72-9da7-b93beb4ed4d4",
+ "hash": "017ea2008e80"
+}

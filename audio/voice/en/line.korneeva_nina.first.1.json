@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.first.1",
+ "lang": "en",
+ "text": "New here? I know everyone. I don't know you yet, but not for long.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "New here? I know everyone. I don't know you yet, but not for long.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19797-5b40-7ab1-bc60-a19395059c26",
+ "hash": "b76818379efb"
+}

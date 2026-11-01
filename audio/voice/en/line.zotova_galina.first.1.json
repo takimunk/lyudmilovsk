@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.first.1",
+ "lang": "en",
+ "text": "Lev will be late again. He says \"just a minute\", and his minutes last an hour.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Lev will be late again. He says \"just a minute\", and his minutes last an hour.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-fb4e-79a2-8514-9490f99c3288",
+ "hash": "36ece19a17f8"
+}

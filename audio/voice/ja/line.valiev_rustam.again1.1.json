@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again1.1",
+ "lang": "ja",
+ "text": "ここは全部まじめに建てられてる。階段の静けさまで図面どおりみたいだ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] ここは全部まじめに建てられてる。階段の静けさまで図面どおりみたいだ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979b-1b78-7092-8ee7-0d839825e503",
+ "hash": "c199386ddaf3"
+}

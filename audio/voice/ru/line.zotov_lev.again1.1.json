@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again1.1",
+ "lang": "ru",
+ "text": "Если долго смотреть на прибор, он начинает смотреть на тебя. Это не физика, это опыт.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Если долго смотреть на прибор, он начинает смотреть на тебя. Это не физика, это опыт.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-7abe-7051-9378-dfc85d5673b2",
+ "hash": "f31e312d0e94"
+}

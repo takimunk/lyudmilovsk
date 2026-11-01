@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.first.1",
+ "lang": "ja",
+ "text": "大発見のためにフラスコを洗ってる。今のところ開いたのは小窓だけ。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] 大発見のためにフラスコを洗ってる。今のところ開いたのは小窓だけ。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-13b6-7de0-b0ea-7ff7db425bb1",
+ "hash": "56aae2b2eec1"
+}

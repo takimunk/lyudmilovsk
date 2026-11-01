@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.first.1",
+ "lang": "ru",
+ "text": "Я в Лаборатории паяю то, что учёные придумали. Иногда работает с первого раза.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Я в Лаборатории паяю то, что учёные придумали. Иногда работает с первого раза.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19794-be12-7a62-8e49-3e1bd6a1be1b",
+ "hash": "fa9376fa509b"
+}

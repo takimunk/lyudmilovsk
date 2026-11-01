@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.again1.1",
+ "lang": "ja",
+ "text": "ダーシャはまた島へ。最終電車で帰るって。やっぱりね。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] ダーシャはまた島へ。最終電車で帰るって。やっぱりね。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a19799-ffbc-7380-8fbc-e0269cad5d7a",
+ "hash": "deb2fa99bba0"
+}

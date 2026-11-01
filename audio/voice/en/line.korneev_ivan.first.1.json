@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.first.1",
+ "lang": "en",
+ "text": "I remember this house when the plaster still smelled fresh. Forty years fixing what breaks.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] I remember this house when the plaster still smelled fresh. Forty years fixing what breaks.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19797-3182-7943-a579-a7b1999e8a00",
+ "hash": "240014aaa7f4"
+}

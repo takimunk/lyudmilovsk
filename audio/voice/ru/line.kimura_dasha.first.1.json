@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.first.1",
+ "lang": "ru",
+ "text": "Я учусь на физика. Пока что физика учит меня, и не очень бережно.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Я учусь на физика. Пока что физика учит меня, и не очень бережно.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19794-f4fc-7a60-b994-e61c2343071a",
+ "hash": "410a60027df6"
+}

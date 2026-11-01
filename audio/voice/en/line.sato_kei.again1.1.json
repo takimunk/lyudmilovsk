@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again1.1",
+ "lang": "en",
+ "text": "Yuki says the sun sets into the water. I don't argue. Neither do the instruments.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Yuki says the sun sets into the water. I don't argue. Neither do the instruments.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-00d6-7170-bf03-303dd3c0a042",
+ "hash": "d4f6a6d005db"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.again1.1",
+ "lang": "ja",
+ "text": "展望台から見ると、町全体が回路図みたいだ。ラベルがないだけで。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 展望台から見ると、町全体が回路図みたいだ。ラベルがないだけで。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a19799-1072-73a1-a276-59ff8d170f2b",
+ "hash": "1c6f7b9267bb"
+}

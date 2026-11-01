@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.first.1",
+ "lang": "ja",
+ "text": "研究所で、学者たちが考えたものをはんだ付けしてる。たまに一発で動く。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 研究所で、学者たちが考えたものをはんだ付けしてる。たまに一発で動く。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a19799-2213-7153-8fb9-8bdf314d397f",
+ "hash": "6d42cfb8a2e6"
+}

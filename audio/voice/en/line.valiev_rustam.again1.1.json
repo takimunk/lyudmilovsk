@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again1.1",
+ "lang": "en",
+ "text": "Everything here is built to last. Even the quiet on the stairs seems drawn to plan.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Everything here is built to last. Even the quiet on the stairs seems drawn to plan.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-a295-7412-afd0-541cf6b5066d",
+ "hash": "b3b870288778"
+}

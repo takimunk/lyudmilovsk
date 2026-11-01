@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.again1.1",
+ "lang": "en",
+ "text": "Mum says the birds on the island aren't scared of anyone. Not even me.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Mum says the birds on the island aren't scared of anyone. Not even me.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19798-5017-7812-8e97-8a1517c59f29",
+ "hash": "d4ce04d85146"
+}

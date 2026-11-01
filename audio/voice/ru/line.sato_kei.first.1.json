@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.first.1",
+ "lang": "ru",
+ "text": "Свет у моря другой. Я меряю его каждый день и всё равно не могу объяснить.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Свет у моря другой. Я меряю его каждый день и всё равно не могу объяснить.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-dd65-7f21-bfc6-7fd4ed5c4501",
+ "hash": "c1cd76813742"
+}

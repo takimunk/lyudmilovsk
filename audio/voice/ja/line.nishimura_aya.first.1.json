@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.first.1",
+ "lang": "ja",
+ "text": "毎日同じ島を描いてる。島は毎日ちがう。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 毎日同じ島を描いてる。島は毎日ちがう。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-3da5-7a72-8ff5-9e6bc40950cd",
+ "hash": "d6ce0757bb04"
+}

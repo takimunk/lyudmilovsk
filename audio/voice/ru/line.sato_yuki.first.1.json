@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.first.1",
+ "lang": "ru",
+ "text": "А ты знаешь, что поезд ездит по морю? Я сама видела. Колёса мокрые.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "А ты знаешь, что поезд ездит по морю? Я сама видела. Колёса мокрые.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19794-38aa-7a32-9683-497581966d9f",
+ "hash": "072547a84aff"
+}

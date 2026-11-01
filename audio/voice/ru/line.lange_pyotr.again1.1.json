@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.again1.1",
+ "lang": "ru",
+ "text": "Утром поезд идёт мимо моей лодки. Машинист всегда гудит. Я машу.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Утром поезд идёт мимо моей лодки. Машинист всегда гудит. Я машу.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-4148-7b01-8769-4fd7e0b09749",
+ "hash": "56d9de46f2a4"
+}

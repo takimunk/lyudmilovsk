@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again1.1",
+ "lang": "ru",
+ "text": "Тут всё построено на совесть. Даже тишина в подъезде как будто по чертежу.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Тут всё построено на совесть. Даже тишина в подъезде как будто по чертежу.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-560b-7700-a89b-e034c3344b6b",
+ "hash": "302f4abc55e0"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.first.1",
+ "lang": "ru",
+ "text": "Лев опять задержится. Он говорит «на минутку», а минутки у него по часу.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Лев опять задержится. Он говорит «на минутку», а минутки у него по часу.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19796-9dc9-70e2-9b83-6e617d9a7aab",
+ "hash": "6e1df8733ddd"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again1.1",
+ "lang": "ja",
+ "text": "朝の電車がいちばん。太陽が後ろにあって、水がガラスみたい。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 朝の電車がいちばん。太陽が後ろにあって、水がガラスみたい。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-293e-7d63-9524-f3cdb79c60d1",
+ "hash": "01c01e915720"
+}

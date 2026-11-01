@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again1.1",
+ "lang": "ja",
+ "text": "ユキは太陽が海に沈むと言う。僕は反論しない。計器もしない。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] ユキは太陽が海に沈むと言う。僕は反論しない。計器もしない。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979a-77ca-7bb3-a57b-061c02863162",
+ "hash": "09dc52e5e1d7"
+}

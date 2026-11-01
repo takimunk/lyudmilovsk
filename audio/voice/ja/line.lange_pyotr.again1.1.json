@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.again1.1",
+ "lang": "ja",
+ "text": "朝、電車が俺の船のそばを通る。運転士はいつも汽笛を鳴らす。俺は手を振る。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 朝、電車が俺の船のそばを通る。運転士はいつも汽笛を鳴らす。俺は手を振る。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a19799-d755-72d3-a118-ef72b8fe89ad",
+ "hash": "3cc43537cf57"
+}

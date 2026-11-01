@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.first.1",
+ "lang": "ja",
+ "text": "研究所の人じゃない？残念だ。何も知らない人がちょうど必要なんだが。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 研究所の人じゃない？残念だ。何も知らない人がちょうど必要なんだが。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1979b-58d9-7c52-bb69-421df903225e",
+ "hash": "74742d58b9d5"
+}

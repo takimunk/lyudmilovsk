@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.again1.1",
+ "lang": "ja",
+ "text": "ダーチャで採れたやわらかいのだよ。季節のうちに買っておきな。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ダーチャで採れたやわらかいのだよ。季節のうちに買っておきな。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a19799-38bc-7f13-8af6-d2d3faff0de9",
+ "hash": "acd7f8daff6c"
+}

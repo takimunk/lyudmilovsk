@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.first.1",
+ "lang": "ru",
+ "text": "В море выхожу затемно. Возвращаюсь, когда вы только просыпаетесь.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] В море выхожу затемно. Возвращаюсь, когда вы только просыпаетесь.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a19795-54bf-7b81-9317-d37d7ee3f60a",
+ "hash": "b2e6e7aefe2f"
+}

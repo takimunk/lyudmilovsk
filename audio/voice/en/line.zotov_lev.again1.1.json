@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again1.1",
+ "lang": "en",
+ "text": "Stare at an instrument long enough and it stares back. That's not physics, that's experience.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Stare at an instrument long enough and it stares back. That's not physics, that's experience.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a19798-c3c8-7a51-b254-fbb98f47c0b8",
+ "hash": "07b946727d16"
+}
