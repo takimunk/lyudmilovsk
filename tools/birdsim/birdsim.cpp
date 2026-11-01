@@ -22,6 +22,8 @@
 
 using namespace LyudBirds;
 
+int CorvidTests(int* Passed);    // corvids_test.cpp
+
 namespace
 {
 	const float Pi = 3.14159265f;
@@ -883,6 +885,10 @@ namespace
 			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 			return R.Fail ? 1 : 0;
 		}
+		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "corvids"))
+		{
+			return CorvidTests(nullptr) ? 1 : 0;
+		}
 		if (std::getenv("BIRD_ONLY"))
 		{
 			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only; wind: the gale only)
@@ -1183,6 +1189,9 @@ namespace
 		}
 		Feeders(R);
 		Routines(R);
+		int CorvidPasses = 0;
+		R.Fail += CorvidTests(&CorvidPasses);
+		R.Pass += CorvidPasses;
 		std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 		return R.Fail ? 1 : 0;
 	}

@@ -184,6 +184,15 @@ namespace
 		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
 		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
 		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
+		// finds: what the crows, jackdaws and jays drop, hide or bring the player (UCorvidLifeSubsystem, docs/corvids.md)
+		for (const TCHAR* Find : { TEXT("find_acorn"), TEXT("find_hazelnut"), TEXT("find_walnut"), TEXT("find_pinecone"), TEXT("find_mussel"),
+			TEXT("find_bottlecap"), TEXT("find_foil"), TEXT("find_ring"), TEXT("find_button"), TEXT("find_coin"), TEXT("find_key"), TEXT("find_seaglass") })
+		{
+			FLyudItemDef I;
+			I.Id = Find;
+			I.Radius = 1.5f;
+			D.Add(I);
+		}
 		return D;
 	}
 }

@@ -272,6 +272,7 @@ namespace LyudBirds
 	};
 
 	class FMurmuration;
+	class FCorvids;
 
 	struct FOptions
 	{
@@ -290,6 +291,8 @@ namespace LyudBirds
 		float StepFar = 0.1f, StepDormant = 0.5f;
 		/** Murmurations keep within this many metres of the shore over the sea (never deep out). */
 		float MurmurOffshore = 250.f;
+		/** The crow family's minds and items (BirdCorvid.h); off = they live like the other birds (A/B, lyud.Birds.Corvids 0). */
+		bool bCorvids = true;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -348,6 +351,10 @@ namespace LyudBirds
 		float Inland(float X, float Y) const;
 		/** The starlings' evening murmuration (null when no species murmurates). */
 		FMurmuration* Murmuration() const { return Murm.get(); }
+		/** The crow family's minds and the things they carry (BirdCorvid.h). */
+		FCorvids* Corvids() const { return Corv.get(); }
+		/** Turns the corvids' minds on or off while running (off: their items go, they live like the other birds; A/B). */
+		void SetCorvids(bool bOn);
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
 		int AddBird(int Species, const V3& P);
 		/** Count calm birds feeding within Radius of P, one flock that keeps to that place (returns the first id). */
@@ -403,6 +410,8 @@ namespace LyudBirds
 		std::vector<uint16_t> OffshoreD, InlandD;   // dm from land / from the sea, per grid cell
 		std::shared_ptr<FMurmuration> Murm;
 		friend class FMurmuration;
+		std::shared_ptr<FCorvids> Corv;
+		friend class FCorvids;
 		std::vector<int> NearScratch;
 		float StepAcc[4] = {};
 		double LastThink[4] = {};

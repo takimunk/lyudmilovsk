@@ -32,6 +32,7 @@ SPECIES_COLOURS = {
     "BarnSwallow": (30, 50, 140), "SandMartin": (170, 150, 120), "Sparrowhawk": (255, 0, 255), "Peregrine": (0, 255, 255),
     "MuteSwan": (250, 250, 240), "WhiteTailedEagle": (120, 80, 30), "GoldenEagle": (200, 150, 60), "CommonBuzzard": (150, 100, 60),
     "Raven": (60, 0, 80), "GreyHeron": (140, 150, 170), "BlackBrowedAlbatross": (255, 160, 40),
+    "Jay": (190, 150, 135), "Nutcracker": (90, 60, 40), "CarrionCrow": (35, 30, 55),
 }
 AIR = {"Takeoff", "Fly", "Land", "Hawk", "Soar", "Flee", "Chase", "Mob", "Approach", "Murmur"}
 

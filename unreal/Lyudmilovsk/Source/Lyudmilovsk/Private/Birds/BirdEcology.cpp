@@ -114,6 +114,12 @@ namespace LyudBirds
 			{ "Raven",        0.64f, 1.2f,  4, 1, 2,   2000, "Beach 1, Meadow .8, Cliff .3",                "Cliff 1, Conifer 1, Tower .5",                "Conifer 1, Cliff .6",    false, EFlight::Flap,      12.5f,30.f, false, 1.1f, 50.f,200.f,0.1f, 0.5f, 105,true,  true,  false, 0.f,  -10.f, 0.f,  0.3f, 1.f,  0.f,  0x0a0a0e, false },
 			{ "GreyHeron",    0.94f, 1.5f,  4, 1, 2,   1500, "Reed 1, Beach .6, Meadow .4",                 "Conifer 1, Broadleaf .6, Reed .5",            "Conifer 1, Broadleaf .8",true,  EFlight::Flap,      12.f, 20.f, false, 0.5f, 60.f,150.f,0.05f,0.1f, 90, false, false, false, 0.f,  -20.f, 10.f, 0.4f, 0.2f, 0.f,  0x8a909a, false },
 			{ "BlackBrowedAlbatross",0.85f,3.5f,1,1,1,  2600, "Sea 1",                                       "Sea 1",                                       "Sea 1",                  false, EFlight::Soar,      13.5f, 6.f, false, 0.4f, 15.f,200.f,0.5f, 0.5f, 110,false, false, false, 0.f,  0.f,   30.f, 0.3f, 0.1f, 0.f,  0xf4f4f0, false },
+			// the rest of the crow family (docs/corvids.md): jays in the oaks and the gardens, burying acorns all October; a few
+			// nutcrackers in the spruces, tame as they come (in an invasion autumn they turn up in town gardens after hazelnuts);
+			// a carrion crow pair or two among the hooded crows (the coast is in their hybrid zone)
+			{ "Jay",          0.34f, 0.17f, 16, 1, 2,   800,  "Broadleaf 1, ForestFloor 1, Garden .6, Conifer .3", "Broadleaf 1, Conifer .8, Garden .5",     "Conifer 1, Broadleaf .6",false, EFlight::Flap,       9.f, 10.f, true,  0.8f, 25.f, 70.f, 0.15f,0.4f, 50, false, true,  false, 0.3f, -15.f, -10.f,0.3f, 1.f,  0.f,  0xc8a088, false },
+			{ "Nutcracker",   0.33f, 0.17f,  6, 1, 2,   1000, "Conifer 1, ForestFloor .8, Garden .5",        "Conifer 1, Broadleaf .5, Wire .2",            "Conifer 1",              false, EFlight::Flap,       9.f, 12.f, true,  0.8f,  8.f, 60.f, 0.45f,0.6f, 50, false, true,  false, 0.3f, -10.f, -15.f,0.3f, 0.8f, 0.f,  0x4a3426, false },
+			{ "CarrionCrow",  0.47f, 0.51f,  4, 1, 2,   900,  "Beach 1, Meadow .8, Street .6, Sea .1",       "Conifer .8, Broadleaf .8, Roof .5, Tower .3, Wire .3", "Conifer 1",   true,  EFlight::Flap,      11.f, 16.f, false, 1.0f, 28.f, 100.f,0.15f, 0.4f, 86, true,  true,  false, 0.f,  -20.f, 0.f,  0.3f, 1.5f, 0.5f, 0x0c0c10, false },
 		};
 		// clang-format on
 
@@ -187,6 +193,9 @@ namespace LyudBirds
 			{ "Raven",          "",                                       0.f,  5.f, 0.1f, false,false,false,false, "",                                               1.f },
 			{ "GreyHeron",      "",                                       0.f, 10.f, 0.f,  true, false,false,false, "",                                               1.f },
 			{ "BlackBrowedAlbatross","",                                  0.f,  0.f, 0.f,  false,false,false,false, "",                                               1.f },
+			{ "Jay",            "",                                       0.f, 10.f, 0.3f, false,false,false,false, "Broadleaf 1, Garden 1, ForestFloor .8",         1.f },
+			{ "Nutcracker",     "",                                       0.f, 10.f, 0.2f, false,false,false,false, "Conifer 1, Garden .8",                           1.f },
+			{ "CarrionCrow",    "Conifer 1, Broadleaf .6",               30.f, 15.f, 0.2f, true, false,false,false, "Beach 1, Street .8, Meadow .6",                  1.f },
 		};
 		// clang-format on
 
