@@ -72,7 +72,10 @@ public:
 	 *  the floor under the cushion's front edge, X the way the sitter faces), SeatZ the cushion's height, cm. The hero
 	 *  stays on it, carried with Base, until StandUp (any step, Space, or the seat's own key). */
 	void SitOn(USceneComponent* Base, const FTransform& SeatLocal, float SeatZ);
-	/** Gets up and steps off the seat, forward. */
+	/** The same, getting up onto ExitLocal (a floor point in Base's frame, cm) instead of a step forward: a booth's seat
+	 *  has its table in front, the way out is to the aisle. */
+	void SitOn(USceneComponent* Base, const FTransform& SeatLocal, float SeatZ, const FVector& ExitLocal);
+	/** Gets up and steps off the seat, forward (or onto the seat's exit). */
 	void StandUp();
 	bool IsSeated() const { return SeatBase.IsValid(); }
 	/** On a bicycle (getting on, riding, getting off: UHeroBikeComponent moves the body), or leading one by the bars. */
@@ -165,6 +168,7 @@ private:
 	TWeakObjectPtr<USceneComponent> SeatBase;
 	FTransform SeatLocal;
 	float SeatZ = 42.f;
+	TOptional<FVector> SeatExit;
 	float SitAlpha = 0.f;
 	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
 };

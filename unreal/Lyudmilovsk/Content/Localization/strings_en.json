@@ -1146,6 +1146,8 @@
  "ui.diner.eat_prompt": "LMB — eat: {0}",
  "ui.diner.drink_prompt": "LMB — drink: {0}",
  "ui.diner.coffee_prompt": "E — pour a coffee ({0} rub)",
+ "ui.diner.sit": "[E] Sit down",
+ "ui.diner.stand": "[E] Stand up",
  "ui.diner.no_money": "Not enough money for a coffee",
  "sign.diner.name": "Chaika Diner",
  "sign.diner.band": "Breakfast · Lunch · Coffee all day",

@@ -1146,6 +1146,8 @@
  "ui.diner.eat_prompt": "左クリック：{0}を食べる",
  "ui.diner.drink_prompt": "左クリック：{0}を飲む",
  "ui.diner.coffee_prompt": "E：コーヒーを注ぐ（{0}ルーブル）",
+ "ui.diner.sit": "[E] 座る",
+ "ui.diner.stand": "[E] 立つ",
  "ui.diner.no_money": "コーヒー代が足りない",
  "sign.diner.name": "ダイナー「チャイカ」",
  "sign.diner.band": "朝食・ランチ・コーヒーは一日中",
