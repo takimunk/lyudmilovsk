@@ -134,7 +134,9 @@ for k, a in ORDERS:
     # the camera there first: a body is made only near it, once its model has loaded in the background
     step(lambda w, k=k: look_at(w, k, 230.0, 0.0, 120.0, 85.0), 0.3)
     step(fix_eye, float(os.environ.get("POSE_SHOW", "12")))
-    for n, (side, d) in enumerate([(0.0, 230.0), (3.0, 70.0), (0.35, -200.0)]):
+    # POSE_REPEAT rounds of the views a few seconds apart: a standing person changes clips (StandIdle, FoldArms) every 6-12 s
+    views = [(0.0, 230.0), (3.0, 70.0), (0.35, -200.0)] if os.environ.get("POSE_BEHIND", "1") != "0" else [(0.0, 230.0), (3.0, 70.0)]
+    for n, (side, d) in enumerate(views * int(os.environ.get("POSE_REPEAT", "1"))):
         step(lambda w, k=k, side=side, d=d: look_at(w, k, d, side, 120.0, 85.0), 0.3)
         step(fix_eye, 0.3)
         step(lambda w, k=k, n=n: shot(w, "%s_stand_%d" % (k, n), k), 3.0)
