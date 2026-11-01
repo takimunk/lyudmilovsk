@@ -56,6 +56,7 @@ static TAutoConsoleVariable<float> CVarLowSunMieG(TEXT("lyud.Sky.LowSunMieG"), -
 static TAutoConsoleVariable<int32> CVarDomeFog(TEXT("lyud.Sky.DomeFog"), 1, TEXT("1: the weather's height fog over the star dome too, the star drawn behind it with its own transmittance; 0: no fog on the dome (the fog cut off at 150 km), the star as drawn (the old look, for comparison)."));
 static TAutoConsoleVariable<float> CVarSunHaze(TEXT("lyud.Sky.SunHaze"), -1.f, TEXT("Overrides ALyudSky::SunHazeDimming when >= 0 (tuning: the share of the haze's dimming the star keeps)."));
 static TAutoConsoleVariable<float> CVarSunVeil(TEXT("lyud.Sky.SunVeil"), -1.f, TEXT("Overrides ALyudSky::SunVeilClear when >= 0 (tuning: the haze's glow taken off over the star)."));
+static TAutoConsoleVariable<float> CVarSunsetDiskTint(TEXT("lyud.Sunset.DiskTint"), 1.f, TEXT("How much of the day's sunset colour the photosphere takes (ULyudSunset's DiskTint; 0 = the air's colour alone)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
@@ -664,6 +665,9 @@ void ALyudSky::UpdateSkyMaterial()
 		SkyMID->SetVectorParameterValue(TEXT("SunGlare"), FLinearColor(GlareDiskGain, 0.f, 0.f, 0.f));
 	}
 	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum * (bSkyHasGlare ? 1.f : GlareDiskGain), DaySeed, Spin));
+	// the day's sunset colours the photosphere itself: deep red through a hazy evening, golden in clean air
+	const float TintK = FMath::Clamp(CVarSunsetDiskTint.GetValueOnGameThread(), 0.f, 2.f);
+	SkyMID->SetVectorParameterValue(TEXT("SunDiskTint"), SunsetDay && !bSpaceView ? FMath::Lerp(FLinearColor::White, SunsetDay->GetLook().DiskTint, TintK) : FLinearColor::White);
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
 	SkyMID->SetVectorParameterValue(TEXT("SunSpots"), FLinearColor(NoonSpin, SunSpotUmbra, SunGranulation, SunFaculae));

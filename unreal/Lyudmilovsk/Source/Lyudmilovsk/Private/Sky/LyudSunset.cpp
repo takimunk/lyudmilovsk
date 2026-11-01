@@ -104,6 +104,7 @@ const FLyudSunsetLook& ULyudSunset::Update(ALyudSky* Sky, const FDateTime& Local
 	}
 	Look.AureoleScale = L.AureoleScale;
 	Look.DiskScale = L.DiskScale;
+	Look.DiskTint = FLinearColor(L.DiskTint.R, L.DiskTint.G, L.DiskTint.B, 1.f);
 	Look.ExposureEV = L.ExposureEV;
 
 	const double Now = FPlatformTime::Seconds();

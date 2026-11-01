@@ -222,6 +222,14 @@ namespace LyudSunset
 		// the disk and its glow: hazy evenings a bigger softer aureole and a dimmer disk
 		L.AureoleScale = 1.f + Wb * (0.9f * Aerosol - 0.25f);
 		L.DiskScale = 1.f - Wb * (0.35f * Aerosol + 0.25f * Dull);
+		// and its colour: the long path through a hazy evening's aerosol takes the green and blue out (a deep red, dim
+		// disk), clean washed air leaves it golden-orange (the sky material multiplies the photosphere by it)
+		const float Redden = Sat(Wb * (0.9f * Aerosol + 0.35f * Hue - 0.2f));
+		const float Gold = Sat(Wb * (0.6f * A.Clean + 0.4f * (1.f - Aerosol))) * (1.f - Redden);
+		const float Dim = 1.f - 0.3f * Redden;
+		L.DiskTint.R = Dim;
+		L.DiskTint.G = Dim * (1.f - 0.85f * Redden) * (1.f + 0.3f * Gold);
+		L.DiskTint.B = Dim * (1.f - 0.95f * Redden) * (1.f + 0.1f * Gold);
 		// the eye: ALyudSky opens the exposure for the night from 8 degrees up (~3 stops at -4), which blew the glowing
 		// twilight sky and the afterglow on the clouds out to cream whatever their colour; held back here while the band
 		// lasts (gone by -9, where the night's exposure is wanted)

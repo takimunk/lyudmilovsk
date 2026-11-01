@@ -304,8 +304,13 @@ their luminance loss given back, so a red evening is a little darker than a gold
 luminance (the first try) changed the bright sunset sky by a few percent on the tonemapper's shoulder. A dull evening
 mixes toward a cool grey, which takes the atmosphere's own orange out instead of only fading the tint. After sunset
 the clouds keep more of their tint but get dimmer, not brighter. No new shader, no new material parameter, no per-frame allocation: each value is set only when it
-changes by more than 0.2%. The disk's own colour is still `TRANS_HLSL`'s fixed air (and the weather's fog, which
-reddens it in haze); its brightness follows the day.
+changes by more than 0.2%. The disk's own colour follows the day too (`FLook::DiskTint` -> `FLyudSunsetLook::DiskTint` ->
+the sky material's `SunDiskTint`, multiplied into the photosphere in `SUN_HLSL`, on top of `TRANS_HLSL`'s fixed air and
+the weather's fog): the evening's aerosol and hue redden it (`Redden = Wb (0.9 Aerosol + 0.35 Hue - 0.2)`: green
+x(1 - 0.85 Redden), blue x(1 - 0.95 Redden), all x(1 - 0.3 Redden): the red channel is on the tonemapper's shoulder, so
+a milder tint did not show), so a hazy evening has a deep red, dim disk; clean washed air makes it a little
+more golden (green up to x1.3). The glare's afterimages take the same colour. `lyud.Sunset.DiskTint 0` = the air's
+colour alone (before).
 
 ### Console
 
@@ -315,6 +320,7 @@ reddens it in haze); its brightness follows the day.
 | `lyud.Sunset.Intensity` | 1 | scales every change (0 = off, for comparison) |
 | `lyud.Sunset.Seed` | 0 | another run of evenings |
 | `lyud.Sunset.Clean`, `lyud.Sunset.Haze` | -1 | override the air's clean and haze shares 0..1 (tests) |
+| `lyud.Sunset.DiskTint` | 1 | how much of the day's colour the disk takes (0 = the air's colour alone) |
 | `lyud.Sunset.Debug` | 0 | the profile on screen (`SUNSET` line; also in `ALyudSky`'s debug report while it is on) |
 
 ### Tests
@@ -330,8 +336,7 @@ reddens it in haze); its brightness follows the day.
 
 Still open: the clouds' own ambient (the sky light and multiple scattering) is not tinted, so cloud edges lit from
 behind after sunset stay cream whatever the evening (the sunlight's share of their light is tinted); a tint in
-M_LyudClouds would be the clouds thread's. The disk's own colour does not follow the day's aerosol (`TRANS_HLSL` has
-fixed coefficients; a shader change, left to the sun-disk thread).
+M_LyudClouds would be the clouds thread's.
 
 ## Console
 

@@ -21,6 +21,8 @@ struct FLyudSunsetLook
 	FLinearColor CloudAmbientTint = FLinearColor::White;
 	float AureoleScale = 1.f;
 	float DiskScale = 1.f;
+	/** The photosphere's colour on top of the air's (the sky material's SunDiskTint): deep red in haze, golden when clean. */
+	FLinearColor DiskTint = FLinearColor::White;
 	float ExposureEV = 0.f;
 };
 

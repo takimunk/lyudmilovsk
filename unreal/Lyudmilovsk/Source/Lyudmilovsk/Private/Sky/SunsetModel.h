@@ -63,6 +63,7 @@ namespace LyudSunset
 		FRGB CloudTint;          // on top for the clouds: their glow colour and strength
 		float AureoleScale = 1.f;
 		float DiskScale = 1.f;
+		FRGB DiskTint;           // the photosphere's own colour on top of the air's: a hazy evening's deep red, a clean one's gold
 		float ExposureEV = 0.f;  // stops added to the outdoor exposure (negative: the twilight's colour kept, not opened to cream)
 	};
 

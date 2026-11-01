@@ -284,7 +284,8 @@ def sky_material():
     sun_ins = [("V", view), ("S", rgba(sun_dir)), ("P", rgba(pole)), ("D", rgba(sun_disk)), ("Spots", rgba(spots)), ("T", t),
                ("Tr", tr), ("Look", rgba(sun_look)),
                ("Look2", rgba(look2)), ("Hi", rgba(vparam("HighA", (0.0, 9.0, 0.0, 0.0)))),
-               ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0)))), ("G", rgba(glare))]
+               ("Hb", rgba(vparam("HighB", (0.0, 0.0, 0.0, 0.0)))), ("G", rgba(glare)),
+               ("DT", rgba(vparam("SunDiskTint", (1.0, 1.0, 1.0, 0.0))))]
     sun_ins += [("R%d" % i, rgba(vparam("SunRegion%d" % i, (0.0, 0.0, 0.0, 0.0)))) for i in range(SH.SUN_REGIONS)]
     for k in "ABC":
         sun_ins += [("P%s%d" % (k, i), rgba(vparam("SunProm%s%d" % (k, i), (0.0, 0.0, 1.0, 0.0)))) for i in range(SH.SUN_PROMS)]

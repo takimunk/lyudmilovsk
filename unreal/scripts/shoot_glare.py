@@ -66,6 +66,16 @@ SCENES = [
         (0.5, "sun", "lyud.Sun.Glare.Adapt 1", "sunset_low_adapted"),
         (0.5, "sun", "lyud.Sun.Glare.Adapt -1;lyud.Sun.Glare.Reset", None),
     ]),
+    # the day's sunset colouring the disk (ULyudSunset DiskTint): clean air (golden) vs haze (deep red), and the same
+    # without the tint (lyud.Sunset.DiskTint 0, the disk coloured by the air alone: before)
+    ("sunset_haze", SET1, BROW, [
+        (3.0, "sun", "lyud.Sunset.Haze 0;lyud.Sunset.Clean 1;lyud.Sun.Glare.Adapt 1", "sunset_clean_air"),
+        (3.0, "sun", "lyud.Sunset.Haze 1;lyud.Sunset.Clean 0", "sunset_hazy_air"),
+        (1.0, "sun", "lyud.Sunset.DiskTint 0", "sunset_hazy_air_before"),
+        (1.0, "sun", "lyud.Sunset.Haze 0;lyud.Sunset.Clean 1", "sunset_clean_air_before"),
+        (1.0, "sun", "lyud.Sunset.DiskTint 1;lyud.Sunset.Haze 1;lyud.Sunset.Clean 0;lyud.Sun.Glare.Adapt -1;lyud.Sun.Glare.Reset", "sunset_hazy_air_fresh"),
+        (0.2, "sun", "lyud.Sunset.Haze -1;lyud.Sunset.Clean -1", None),
+    ]),
     ("terrace", SET1, (TERRACE[0], TERRACE[1] + 25.0), [
         (2.0, "sun-wide", "lyud.Sun.Glare.Reset", "terrace_sunset_bright"),
     ]),

@@ -103,7 +103,8 @@ struct FLyudSkyLib
 # detail contrast, the haze cleared round the disk (DISK_MASK_HLSL), the limb darkening steepened, 0), R0..R7 (SunRegion*: latitude,
 # star longitude, strength, seed), PA/PB/PC0..15 (SunPromA/B/C*: anchor xyz + height; foot axis xyz + half length;
 # brightness, kind 0 loop 1 hedgerow 2 surge, lift, seed), all from ULyudSunActivity; Hi, Hb (the high clouds' HighA,
-# HighB: a thin veil in front softens the disk), G (SunGlare: x the photosphere's gain for the unadapted eye, docs/sun.md).
+# HighB: a thin veil in front softens the disk), G (SunGlare: x the photosphere's gain for the unadapted eye, docs/sun.md), DT (SunDiskTint: the day's sunset colour on
+# the photosphere, ULyudSunset).
 SUN_REGIONS = 8
 SUN_PROMS = 16
 SUN_HLSL = r"""
@@ -316,7 +317,7 @@ if (r < 1.0)
     col = base * limb * pow(max(gran * spot * filament, 1e-3), Look2.x) * faculae;
     // the photosphere as the unadapted eye sees it: G.x (SunGlare, ULyudSunGlare) times brighter, blown far over white
     // until the eye adapts (1 = the adapted, detailed star; the off-limb light keeps its own brightness)
-    col *= max(G.x, 0.0);
+    col *= max(G.x, 0.0) * max(DT.rgb, 0.0);
     // a soft edge, a pixel or so wide
     col *= saturate((1.0 - r) / fw);
 }

@@ -18,6 +18,7 @@
 #include "LyudText.h"
 #include "Rendering/DrawElements.h"
 #include "Sky/LyudSky.h"
+#include "Sky/LyudSunset.h"
 #include "Sound/SoundBase.h"
 #include "TextureResource.h"
 #include "UI/LyudGameScreen.h"
@@ -468,7 +469,12 @@ bool ULyudSunGlare::Look(float DeltaTime)
 	InGaze = InEye * (1.f - Smooth(RadDeg * 0.6f, RadDeg + 14.f, GazeDeg));
 	// its colour as the eye takes it: the red dwarf's (1, .26, .055) through the air, blown toward white when bright
 	const float Gain = FMath::Max(CVarGain.GetValueOnGameThread(), 1.f) * (1.f - Smooth(0.f, 1.f, Adapt)) + Smooth(0.f, 1.f, Adapt);
-	const FLinearColor C = FLinearColor(1.f * Tr.R, 0.26f * Tr.G, 0.055f * Tr.B) * (Gain * 3.f / FMath::Max(TrY, 0.05f) * FMath::Pow(TrY, 0.6f));
+	FLinearColor C = FLinearColor(1.f * Tr.R, 0.26f * Tr.G, 0.055f * Tr.B) * (Gain * 3.f / FMath::Max(TrY, 0.05f) * FMath::Pow(TrY, 0.6f));
+	if (const ULyudSunset* Sunset = ULyudSunset::Get(this); Sunset && !S->IsSpaceView())
+	{
+		// the day's sunset colours the disk itself (deep red in haze)
+		C *= Sunset->GetLook().DiskTint;
+	}
 	const FLinearColor T(C.R / (1.f + C.R), C.G / (1.f + C.G), C.B / (1.f + C.B), 1.f);
 	const float Top = FMath::Max3(T.R, T.G, T.B);
 	SunTint = Top > 1e-4f ? FLinearColor(T.R / Top, T.G / Top, T.B / Top, 1.f) : FLinearColor::White;
