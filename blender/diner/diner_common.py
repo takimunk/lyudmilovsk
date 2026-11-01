@@ -16,7 +16,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-OUT = os.path.join(ROOT, "design", "diner", "game")
+OUT = os.environ.get("DINER_OUT") or os.path.join(ROOT, "design", "diner", "game")     # DINER_OUT: a scratch dir for trial builds
 
 # name: (hex, roughness, metallic, emissive)
 MAT_SPEC = {
@@ -42,6 +42,17 @@ MAT_SPEC = {
     "DN_Coffee": ("#2E1A0E", 0.08, 0.0, 0.0),
     "DN_China": ("#F4F1E8", 0.18, 0.0, 0.0),          # plates, mugs, saucers
     "DN_ChinaRim": ("#7E1D22", 0.2, 0.0, 0.0),        # the red band of the diner's china
+    # fittings (the quality rebuild, 2026-11)
+    "DN_Aluminum": ("#C9CDD1", 0.3, 1.0, 0.0),        # ribbed table and counter edging (texture: ribs along u)
+    "DN_Brass": ("#B48C55", 0.28, 1.0, 0.0),          # register trim, urn taps' collars, kick plates
+    "DN_Bakelite": ("#16130F", 0.32, 0.0, 0.0),       # black knobs, handles, register keys' rims
+    "DN_EnamelWhite": ("#ECEAE3", 0.22, 0.0, 0.0),    # appliances: the fridge, the range, the mixer
+    "DN_CastIron": ("#2B2826", 0.65, 0.5, 0.0),       # the griddle plate, the range's grates
+    "DN_Paper": ("#F4F1E8", 0.85, 0.0, 0.0),          # napkins, check pads, the jukebox's title cards
+    "DN_RedPlastic": ("#B3161C", 0.3, 0.0, 0.0),      # ketchup bottles
+    "DN_YellowPlastic": ("#E0B01E", 0.3, 0.0, 0.0),   # mustard bottles
+    "DN_Rubber": ("#272422", 0.85, 0.0, 0.0),         # mats, glides, door stops
+    "DN_Neon": ("#FF5A40", 0.4, 0.0, 6.0),            # neon tubes (lit; ALyudDiner dims them with the signs)
     # food (tableware.py)
     "DN_Pancake": ("#C98A43", 0.6, 0.0, 0.0),
     "DN_Syrup": ("#7A3510", 0.1, 0.0, 0.0),
@@ -69,6 +80,29 @@ MAT_SPEC = {
 }
 MATS = list(MAT_SPEC)
 
+# slot: (texture set, metres per texture tile, normal strength): textures/diner/<set>_{D,N,R}.* (tools/diner_textures.py; D
+# base colour sRGB, N tangent normal DirectX green, R mask: R roughness, G ambient occlusion). UV 0 is in metres (1 unit = 1 m),
+# so Unreal's Tiling = 1 / metres. A slot without an entry stays a flat colour (MAT_SPEC). The D maps carry the colour, so the
+# MAT_SPEC colour of a textured slot is only the preview's and the fallback's.
+MAT_TEX = {
+    "DN_EnamelRed": ("enamel_red", 1.0, 0.6),
+    "DN_EnamelCream": ("enamel_cream", 1.0, 0.6),
+    "DN_Steel": ("steel_brushed", 0.5, 0.5),
+    "DN_Mahogany": ("mahogany", 1.2, 0.8),
+    "DN_Formica": ("formica", 0.6, 0.4),
+    "DN_Vinyl": ("vinyl_red", 0.25, 1.0),
+    "DN_FloorTile": ("floor_checker", 1.0, 1.0),
+    "DN_FloorDark": ("floor_border", 0.5, 0.8),
+    "DN_WallTile": ("wall_tile", 0.4, 1.0),
+    "DN_Ceiling": ("ceiling", 1.22, 0.8),
+    "DN_Brick": ("brick", 1.0, 1.0),
+    "DN_Concrete": ("concrete", 1.0, 0.8),
+    "DN_Plaster": ("plaster", 1.0, 0.6),
+    "DN_KitchenTile": ("kitchen_tile", 0.6, 1.0),
+    "DN_Roof": ("roof", 1.0, 0.8),
+    "DN_Aluminum": ("aluminum_ribbed", 0.05, 1.0),
+}
+
 
 def M(name):
     """Material index of a slot."""
@@ -79,6 +113,35 @@ def _lin(hx):
     hx = hx.lstrip("#")
     c = [int(hx[i:i + 2], 16) / 255.0 for i in (0, 2, 4)]
     return tuple(x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4 for x in c)
+
+
+# ---- UVs ----------------------------------------------------------------------------------------------------------------
+# UV 0 is in metres. Faces made by lathe/tube/sphere/sweep carry their own UVs (u round the axis = arc length, v along the
+# profile = its length: brushed steel and grain run round a stool's column without seams); every other face is box-projected
+# at export by its dominant normal (z: (x, y), y: (x, z), x: (y, z)). own_uv() marks faces that already have theirs.
+
+def _uvl(bm):
+    return bm.loops.layers.uv.verify()
+
+
+def _uvflag(bm):
+    return bm.faces.layers.int.get("uvset") or bm.faces.layers.int.new("uvset")
+
+
+def ensure_uv(bm):
+    """Makes bm's UV and flag layers. Call it before making faces you will give own_uv(): adding a layer to a bmesh
+    invalidates the faces made before (ReferenceError)."""
+    _uvl(bm)
+    _uvflag(bm)
+
+
+def own_uv(bm, face, uvs):
+    """Gives face its own UVs (one (u, v) per loop, metres) and marks it so export keeps them (ensure_uv(bm) first)."""
+    lay = bm.loops.layers.uv.active
+    assert lay is not None and bm.faces.layers.int.get("uvset") is not None, "ensure_uv(bm) before making the faces"
+    for lp, uv in zip(face.loops, uvs):
+        lp[lay].uv = uv
+    face[_uvflag(bm)] = 1
 
 
 # ---- primitives (each adds faces to a bmesh with a material index) ------------------------------------------------------
@@ -104,7 +167,39 @@ def bx(bm, mi, x0, x1, y0, y1, z0, z1, faces="all"):
     box(bm, ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), (x1 - x0, y1 - y0, z1 - z0), mi, faces=faces)
 
 
+def rbox(bm, mi, x0, x1, y0, y1, z0, z1, r=0.01, seg=2, edges="all", rot=None, pivot=None):
+    """A closed box x0..x1 / y0..y1 / z0..z1 with its edges rounded (radius r, seg segments): edges "all", "top" (the 4 top
+    edges), "vert" (the 4 upright ones) or "topvert". rot: a 3x3 matrix turning it about pivot (default its centre).
+    Returns the new faces."""
+    before = set(bm.faces)
+    box(bm, ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), (x1 - x0, y1 - y0, z1 - z0), mi)
+    new = [f for f in bm.faces if f not in before]
+    vs = {v for f in new for v in f.verts}
+    es = {e for f in new for e in f.edges}
+    zt = max(v.co.z for v in vs)
+
+    def keep(e):
+        a, b = e.verts
+        vert = abs(a.co.z - b.co.z) > 1e-6
+        top = not vert and abs(a.co.z - zt) < 1e-6 and abs(b.co.z - zt) < 1e-6
+        return edges == "all" or (edges == "top" and top) or (edges == "vert" and vert) or (edges == "topvert" and (top or vert))
+    sel = [e for e in es if keep(e)]
+    if r > 0 and sel:
+        r = min(r, 0.49 * min(x1 - x0, y1 - y0, z1 - z0))
+        res = bmesh.ops.bevel(bm, geom=sel + list({v for e in sel for v in e.verts}), offset=r, offset_type="OFFSET", segments=seg,
+                              profile=0.5, affect="EDGES", clamp_overlap=True)
+        for f in res.get("faces", []):
+            f.material_index = mi
+    new = [f for f in bm.faces if f not in before]
+    if rot is not None:
+        c = Vector(pivot) if pivot is not None else Vector(((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2))
+        for v in {v for f in new for v in f.verts}:
+            v.co = c + rot @ (v.co - c)
+    return new
+
+
 def tube(bm, a, b, r, mi, seg=10, caps=True, r1=None):
+    ensure_uv(bm)
     a, b = Vector(a), Vector(b)
     x = (b - a).normalized()
     up = Vector((0, 0, 1)) if abs(x.z) < 0.95 else Vector((1, 0, 0))
@@ -113,9 +208,13 @@ def tube(bm, a, b, r, mi, seg=10, caps=True, r1=None):
     rb_ = r if r1 is None else r1
     ra = [bm.verts.new(a + (y * math.cos(2 * math.pi * i / seg) + z * math.sin(2 * math.pi * i / seg)) * r) for i in range(seg)]
     rb = [bm.verts.new(b + (y * math.cos(2 * math.pi * i / seg) + z * math.sin(2 * math.pi * i / seg)) * rb_) for i in range(seg)]
+    L = (b - a).length
     for i in range(seg):
         j = (i + 1) % seg
-        bm.faces.new((ra[i], ra[j], rb[j], rb[i])).material_index = mi
+        f = bm.faces.new((ra[i], ra[j], rb[j], rb[i]))
+        f.material_index = mi
+        ua = math.pi * (r + rb_) / seg
+        own_uv(bm, f, ((ua * i, 0.0), (ua * (i + 1), 0.0), (ua * (i + 1), L), (ua * i, L)))
     if caps:
         bm.faces.new(ra[::-1]).material_index = mi
         bm.faces.new(rb).material_index = mi
@@ -123,15 +222,25 @@ def tube(bm, a, b, r, mi, seg=10, caps=True, r1=None):
 
 def lathe(bm, prof, mats, seg=24, c=(0, 0, 0), cap0=True, cap1=True, sx=1.0, sy=1.0):
     """Turns prof [(r, z), ...] round the z axis at c; mats: material per band (the last repeats)."""
+    ensure_uv(bm)
     if isinstance(mats, int):
         mats = [mats]
     c = Vector(c)
     rings = [[bm.verts.new(c + Vector((max(r, 1e-4) * sx * math.cos(2 * math.pi * i / seg), max(r, 1e-4) * sy * math.sin(2 * math.pi * i / seg), z)))
               for i in range(seg)] for r, z in prof]
+    vs = [0.0]
+    for (r0, z0), (r1, z1) in zip(prof, prof[1:]):
+        vs.append(vs[-1] + math.hypot(r1 - r0, z1 - z0))
     for k in range(len(rings) - 1):
         for i in range(seg):
             j = (i + 1) % seg
-            bm.faces.new((rings[k][i], rings[k][j], rings[k + 1][j], rings[k + 1][i])).material_index = mats[min(k, len(mats) - 1)]
+            f = bm.faces.new((rings[k][i], rings[k][j], rings[k + 1][j], rings[k + 1][i]))
+            f.material_index = mats[min(k, len(mats) - 1)]
+            # a band that runs up the axis wraps round it (one scale for both rings: no shear); a band that runs out across
+            # it (a disk, a rim's top) is left to the box projection, flat over it
+            if abs(prof[k + 1][1] - prof[k][1]) >= abs(prof[k + 1][0] - prof[k][0]):
+                ua = 2 * math.pi * (prof[k][0] + prof[k + 1][0]) / 2 * (sx + sy) / 2 / seg
+                own_uv(bm, f, ((ua * i, vs[k]), (ua * (i + 1), vs[k]), (ua * (i + 1), vs[k + 1]), (ua * i, vs[k + 1])))
     if cap0 and prof[0][0] > 1e-3:
         bm.faces.new(rings[0][::-1]).material_index = mats[0]
     if cap1 and prof[-1][0] > 1e-3:
@@ -160,10 +269,18 @@ def prism(bm, poly, z0, z1, mi, mi_top=None, mi_side=None, top=True, bottom=True
 # ---- export -----------------------------------------------------------------------------------------------------------
 
 def metre_uv(me, picture=None):
-    """Box-projected UVs in metres; faces of the picture slots (DN_Sign_*) get 0..1 over their own extent."""
-    uv = me.uv_layers.new(name="UVMap")
+    """Box-projected UVs in metres for the faces without their own (own_uv); faces of the picture slots (DN_Sign_*) get 0..1
+    over their own extent."""
+    uv = me.uv_layers[0] if len(me.uv_layers) else me.uv_layers.new(name="UVMap")
+    uv.name = "UVMap"
+    flag = me.attributes.get("uvset")
+    own = [0] * len(me.polygons)
+    if flag is not None:
+        flag.data.foreach_get("value", own)
     pic = {i for i, m in enumerate(me.materials) if m and m.name.startswith("DN_Sign_")}
     for poly in me.polygons:
+        if own[poly.index] and poly.material_index not in pic:
+            continue
         n = poly.normal
         ax = max(range(3), key=lambda i: abs(n[i]))
         co = [me.vertices[me.loops[li].vertex_index].co for li in poly.loop_indices]
@@ -192,6 +309,8 @@ def _object(bm, name, extra_mats=()):
         me.materials.append(mat)
     me.update()
     metre_uv(me)
+    if me.attributes.get("uvset") is not None:
+        me.attributes.remove(me.attributes["uvset"])
     # drop unused slots so Unreal gets only the materials the mesh has
     used = sorted({p.material_index for p in me.polygons})
     keep = [me.materials[i] for i in used]
@@ -214,9 +333,10 @@ def _write(o, path):
     bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_format="GLB", export_yup=True, export_apply=True)
 
 
-def export(bm, name, out=None, extra_mats=(), split_glass=True, smooth=None):
+def export(bm, name, out=None, extra_mats=(), split_glass=True, smooth=None, angle=None):
     """Writes <out>/<name>.glb (and <name>_Glass.glb with the DN_Glass faces when there are any); frees bm.
-    smooth: material names to shade smooth (rounded things: china, food, vinyl)."""
+    smooth: material names to shade smooth (rounded things: china, food, vinyl); angle (degrees): instead shade every face
+    smooth and keep edges sharper than angle hard (bevelled furniture: round where it is rounded, crisp where it is cut)."""
     out = out or OUT
     os.makedirs(out, exist_ok=True)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
@@ -235,7 +355,10 @@ def export(bm, name, out=None, extra_mats=(), split_glass=True, smooth=None):
         os.remove(os.path.join(out, name + "_Glass.glb"))
     o = _object(bm, name, extra_mats)
     bm.free()
-    if smooth:
+    if angle is not None:
+        o.data.shade_smooth()
+        o.data.set_sharp_from_angle(angle=math.radians(angle))
+    elif smooth:
         names = set(smooth)
         for p in o.data.polygons:
             m = o.data.materials[p.material_index]

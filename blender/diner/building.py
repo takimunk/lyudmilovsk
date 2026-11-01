@@ -24,7 +24,11 @@ from mathutils import Matrix, Vector
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import diner_common as C  # noqa: E402
-from diner_common import M, bx, box, tube, lathe, sphere  # noqa: E402
+from diner_common import M, bx, box, rbox, tube, lathe, sphere  # noqa: E402,F401
+from building_util import oq, ybox  # noqa: E402,F401
+import seating  # noqa: E402
+import counter  # noqa: E402
+import kitchen  # noqa: E402
 
 sys.path.insert(0, os.path.join(C.ROOT, "tools"))
 try:
@@ -34,67 +38,10 @@ except Exception as e:  # noqa: BLE001
     W = T = None
     print("DINER no map (%s): flat ground" % e)
 
-LAYOUT = os.path.join(C.ROOT, "unreal", "Lyudmilovsk", "Content", "Diner", "layout.json")     # read by ALyudDiner and people_map.py
+LAYOUT = (os.path.join(os.environ["DINER_OUT"], "layout.json") if os.environ.get("DINER_OUT") else
+          os.path.join(C.ROOT, "unreal", "Lyudmilovsk", "Content", "Diner", "layout.json"))     # read by ALyudDiner and people_map.py
 
-# ---- the car --------------------------------------------------------------------------------------------------------------
-WD = 5.4                    # outer width
-TH = 0.12                   # wall thickness
-YF, YB = -WD / 2, WD / 2    # street front, back (outer faces)
-XW = -7.3                   # west end (outer face)
-XE = 7.4                    # the nose's centre: straight sides end here, a half circle of radius WD/2 beyond
-R = WD / 2
-NOSE_SEG = 16
-EAVE, CROWN = 2.45, 3.2     # outer wall top and roof crown over the floor
-EAVE_IN, CROWN_IN = 2.36, 3.02
-WALL_Z0 = -0.15             # the car's skirt under the floor line (the brick foundation below it)
-SILL, HEAD = 0.95, 2.05     # the window band
-FLOOR_OVER_GROUND = 0.7
-DOOR_HOLE = (1.22, 2.22)    # CharacterStandard: clear 110 x 215 -> hole 120 x 218 (+2 cm each way)
-DOOR_X = 0.0
-KITCHEN_DOOR_X = -6.0
-# the kitchen annex behind the west half
-AX0, AX1, AY1 = -7.3, -2.0, 6.3
-ATH = 0.2
-A_TOP = 2.38
-BACK_DOOR_X = -3.4
-
-# ---- inside ----------------------------------------------------------------------------------------------------------------
-YI_F, YI_B = YF + TH, YB - TH          # inner faces of the long walls
-XI_W = XW + TH
-COUNTER_X = (-4.6, 3.8)
-COUNTER_Y = (0.38, 0.95)               # its body; the top overhangs 0.28..1.02
-COUNTER_TOP = 1.02
-STOOL_Y, STOOL_SEAT = 0.06, 0.76
-STOOLS = [-4.0 + 0.72 * i for i in range(11)]
-BOOTHS = [(-2.7, -0.9), (-4.5, -2.7), (-6.3, -4.5), (0.9, 2.7), (2.7, 4.5), (4.5, 6.3)]
-BOOTH_Y = -1.76                         # the seats' aisle edge
-BACKBAR_Y = 1.95                        # its front; the work aisle behind the counter is 0.95..1.95
-BACKBAR_X = (-5.0, XE - 0.1)
-BACKBAR_TOP = 0.92
-GRILL_X = (4.4, 5.8)
-URNS_X = (-4.25, -3.65)
-MENU = (-1.6, 2.4, 1.42, 2.08)          # the menu board on the back wall: x0, x1, z0, z1
-STATION = (-7.18, -6.62, -1.62, -0.42)  # the self-service coffee table against the west wall: x0, x1, y0, y1
-STATION_TOP = 0.92
-URN_SELF = (-6.94, -0.82)
-NOSE_TABLES = [(XE + 1.35, -0.85), (XE + 1.35, 0.85)]
-
-
-def oq(bm, pts, mi, want):
-    """A face with its normal along want."""
-    vs = [Vector(p) for p in pts]
-    n = (vs[1] - vs[0]).cross(vs[2] - vs[0])
-    if n.length < 1e-12 and len(vs) > 3:
-        n = (vs[2] - vs[0]).cross(vs[3] - vs[0])
-    if n.dot(Vector(want)) < 0:
-        vs.reverse()
-    f = bm.faces.new([bm.verts.new(v) for v in vs])
-    f.material_index = mi
-    return f
-
-
-def ybox(bm, mi, c, size, yaw, faces="all"):
-    box(bm, c, size, mi, rot=Matrix.Rotation(yaw, 3, "Z"), faces=faces)
+from plan import *  # noqa: E402,F401,F403  (the shared measures)
 
 
 # ---- walls -----------------------------------------------------------------------------------------------------------------
@@ -411,237 +358,6 @@ def steps(sh, x, y_wall, s, ground):
 
 # ---- inside --------------------------------------------------------------------------------------------------------------
 
-def stool(bm, x, y):
-    lathe(bm, [(0.17, 0.0), (0.17, 0.02), (0.06, 0.04)], M("DN_Chrome"), seg=16, c=(x, y, 0.0), cap0=False)
-    tube(bm, (x, y, 0.04), (x, y, STOOL_SEAT - 0.06), 0.035, M("DN_Chrome"), seg=10, caps=False)
-    lathe(bm, [(0.05, STOOL_SEAT - 0.07), (0.19, STOOL_SEAT - 0.05), (0.195, STOOL_SEAT - 0.02)], M("DN_Chrome"), seg=20, c=(x, y, 0.0), cap0=False, cap1=False)
-    lathe(bm, [(0.195, STOOL_SEAT - 0.02), (0.19, STOOL_SEAT + 0.01), (0.15, STOOL_SEAT + 0.035), (0.0, STOOL_SEAT + 0.045)],
-          M("DN_Vinyl"), seg=20, c=(x, y, 0.0), cap0=False)
-
-
-def counter(bm):
-    x0, x1 = COUNTER_X
-    y0, y1 = COUNTER_Y
-    # the body: a recessed dark kick, the stainless front, a mahogany rail under the top
-    bx(bm, M("DN_Dark"), x0 + 0.05, x1 - 0.05, y0 + 0.06, y1, 0.0, 0.12, faces="xXyYZ")
-    bx(bm, M("DN_Steel"), x0, x1, y0, y1, 0.12, 0.86, faces="xXyYz")
-    bx(bm, M("DN_Mahogany"), x0, x1, y0 - 0.03, y1, 0.86, COUNTER_TOP - 0.04, faces="xXyYzZ")
-    bx(bm, M("DN_Formica"), x0 - 0.04, x1 + 0.04, 0.28, 1.02, COUNTER_TOP - 0.04, COUNTER_TOP, faces="Z")
-    bx(bm, M("DN_Chrome"), x0 - 0.04, x1 + 0.04, 0.28, 1.02, COUNTER_TOP - 0.04, COUNTER_TOP, faces="xXyYz")
-    # the foot rail on posts
-    tube(bm, (x0 + 0.1, 0.24, 0.2), (x1 - 0.1, 0.24, 0.2), 0.022, M("DN_Chrome"), seg=8)
-    for xp in (x0 + 0.25, (x0 + x1) / 2, x1 - 0.25):
-        tube(bm, (xp, 0.24, 0.18), (xp, y0 + 0.005, 0.18), 0.016, M("DN_Chrome"), seg=6, caps=False)
-    # the staff side: open shelves under the top
-    bx(bm, M("DN_Steel"), x0, x1, y1, y1 + 0.02, 0.12, 0.86, faces="Y")
-    for z in (0.12, 0.5):
-        bx(bm, M("DN_Steel"), x0 + 0.02, x1 - 0.02, y1 + 0.02, 1.0, z, z + 0.02, faces="Zz")
-    # napkin holders, sugar pourers, salt and pepper every two stools; a cash register at the east end
-    for i, x in enumerate(STOOLS[::2]):
-        xx = x + 0.36
-        if xx > x1 - 0.4:
-            break
-        bx(bm, M("DN_Steel"), xx - 0.06, xx + 0.06, 0.62, 0.68, COUNTER_TOP, COUNTER_TOP + 0.1, faces="xXyYZ")
-        lathe(bm, [(0.03, COUNTER_TOP), (0.032, COUNTER_TOP + 0.09), (0.02, COUNTER_TOP + 0.11)], M("DN_Glass"), seg=10, c=(xx + 0.12, 0.65, 0), cap0=False)
-        lathe(bm, [(0.02, COUNTER_TOP + 0.11), (0.012, COUNTER_TOP + 0.14), (0.0, COUNTER_TOP + 0.145)], M("DN_Chrome"), seg=10, c=(xx + 0.12, 0.65, 0), cap0=False)
-        for k_, dx in enumerate((-0.15, -0.11)):
-            lathe(bm, [(0.017, COUNTER_TOP), (0.017, COUNTER_TOP + 0.07), (0.0, COUNTER_TOP + 0.085)], M("DN_Glass") if k_ == 0 else M("DN_Glass"),
-                  seg=8, c=(xx + dx, 0.65, 0), cap0=False)
-    rx = x1 - 0.32
-    bx(bm, M("DN_Dark"), rx - 0.2, rx + 0.2, 0.6, 0.98, COUNTER_TOP, COUNTER_TOP + 0.12, faces="xXyYZ")
-    ybox(bm, M("DN_Chrome"), (rx, 0.72, COUNTER_TOP + 0.2), (0.38, 0.22, 0.14), 0.0)
-    ybox(bm, M("DN_Dark"), (rx, 0.9, COUNTER_TOP + 0.3), (0.3, 0.06, 0.12), 0.0)
-
-
-def booth(bm, xa, xb):
-    """Two benches facing over a table, the backs at xa and xb, against the street front's inner face."""
-    y0, y1 = YI_F, BOOTH_Y
-    for xs, s in ((xa, 1), (xb, -1)):
-        xback = xs + s * 0.09
-        seat_out = xs + s * 0.55
-        lo, hi = sorted((xs, xback))
-        bx(bm, M("DN_Mahogany"), lo, hi, y0, y1, 0.0, 1.12, faces="xXYZ")                 # the back
-        lo, hi = sorted((xback, seat_out))
-        bx(bm, M("DN_Mahogany"), lo, hi, y0, y1 - 0.04, 0.0, 0.38, faces="xXY" if s > 0 else "xXY")
-        bx(bm, M("DN_Vinyl"), lo, hi, y0, y1, 0.38, 0.46, faces="xXYZ")                    # the seat cushion
-        # the back cushion facing the table
-        bc0, bc1 = (xback, xback + s * 0.07)
-        lo, hi = sorted((bc0, bc1))
-        bx(bm, M("DN_Vinyl"), lo, hi, y0, y1 - 0.03, 0.5, 1.05, faces=("X" if s > 0 else "x") + "YZz")
-    # the table: Formica top with a chrome edge on a pedestal, its long side at the wall
-    tx0, tx1 = xa + 0.62, xb - 0.62
-    bx(bm, M("DN_Formica"), tx0, tx1, y0, y1 - 0.08, 0.735, 0.765, faces="Z")
-    bx(bm, M("DN_Chrome"), tx0, tx1, y0, y1 - 0.08, 0.735, 0.765, faces="xXYz")
-    tube(bm, ((tx0 + tx1) / 2, (y0 + y1) / 2, 0.0), ((tx0 + tx1) / 2, (y0 + y1) / 2, 0.735), 0.04, M("DN_Chrome"), seg=10, caps=False)
-    lathe(bm, [(0.22, 0.0), (0.2, 0.025), (0.04, 0.04)], M("DN_Chrome"), seg=16, c=((tx0 + tx1) / 2, (y0 + y1) / 2, 0.0), cap0=False)
-    # a jukebox selector on the wall over the table, between the windows' sills
-    cx = (tx0 + tx1) / 2
-    bx(bm, M("DN_Chrome"), cx - 0.11, cx + 0.11, y0, y0 + 0.09, 0.8, 0.93, faces="xXYZz")
-
-
-def nose_bench(bm):
-    """A curved bench along the nose's inner wall (-60..60 degrees) and two round tables."""
-    r_wall = R - TH
-    for j in range(NOSE_SEG):
-        a0 = -math.pi / 2 + math.pi * j / NOSE_SEG
-        a1 = -math.pi / 2 + math.pi * (j + 1) / NOSE_SEG
-        am = (a0 + a1) / 2
-        if abs(am) > math.radians(62):
-            continue
-        for r0, r1, z0, z1, mi, keep in ((r_wall - 0.55, r_wall, 0.38, 0.46, M("DN_Vinyl"), "top"),
-                                         (r_wall - 0.52, r_wall, 0.0, 0.38, M("DN_Mahogany"), "front"),
-                                         (r_wall - 0.09, r_wall, 0.46, 1.1, M("DN_Mahogany"), "back")):
-            q = lambda r, a, z: (XE + r * math.cos(a), r * math.sin(a), z)  # noqa: E731
-            if keep == "top":
-                oq(bm, [q(r0, a0, z1), q(r0, a1, z1), q(r1, a1, z1), q(r1, a0, z1)], mi, (0, 0, 1))
-                oq(bm, [q(r0, a0, z0), q(r0, a1, z0), q(r0, a1, z1), q(r0, a0, z1)], mi, (-math.cos(am), -math.sin(am), 0))
-            elif keep == "front":
-                oq(bm, [q(r0, a0, z0), q(r0, a1, z0), q(r0, a1, z1), q(r0, a0, z1)], mi, (-math.cos(am), -math.sin(am), 0))
-            else:
-                oq(bm, [q(r0, a0, z0), q(r0, a1, z0), q(r0, a1, z1), q(r0, a0, z1)], mi, (-math.cos(am), -math.sin(am), 0))
-                oq(bm, [q(r0, a0, z1), q(r0, a1, z1), q(r1, a1, z1), q(r1, a0, z1)], mi, (0, 0, 1))
-        # the bench's open ends
-    for am in (math.radians(-60), math.radians(60)):
-        for r0, r1, z0, z1, mi in ((r_wall - 0.55, r_wall, 0.0, 0.46, M("DN_Mahogany")), (r_wall - 0.09, r_wall, 0.46, 1.1, M("DN_Mahogany"))):
-            s = -1 if am < 0 else 1
-            t = Vector((-math.sin(am), math.cos(am), 0)) * s
-            a = Vector((XE + r0 * math.cos(am), r0 * math.sin(am), 0))
-            b = Vector((XE + r1 * math.cos(am), r1 * math.sin(am), 0))
-            oq(bm, [(a.x, a.y, z0), (b.x, b.y, z0), (b.x, b.y, z1), (a.x, a.y, z1)], mi, tuple(t))
-    for x, y in NOSE_TABLES:
-        lathe(bm, [(0.0, 0.765), (0.34, 0.765)], M("DN_Formica"), seg=24, c=(x, y, 0), cap0=False, cap1=False)
-        lathe(bm, [(0.34, 0.765), (0.345, 0.75), (0.34, 0.735), (0.0, 0.735)], M("DN_Chrome"), seg=24, c=(x, y, 0), cap0=False, cap1=False)
-        tube(bm, (x, y, 0.0), (x, y, 0.735), 0.04, M("DN_Chrome"), seg=10, caps=False)
-        lathe(bm, [(0.22, 0.0), (0.2, 0.025), (0.04, 0.04)], M("DN_Chrome"), seg=16, c=(x, y, 0.0), cap0=False)
-
-
-def back_bar(bm):
-    x0, x1 = BACKBAR_X
-    y0, y1 = BACKBAR_Y, YI_B
-    bx(bm, M("DN_Dark"), x0, x1, y0 + 0.06, y1, 0.0, 0.1, faces="xXyZ")
-    bx(bm, M("DN_Steel"), x0, x1, y0, y1, 0.1, BACKBAR_TOP - 0.03, faces="xXyz")
-    bx(bm, M("DN_Steel"), x0 - 0.02, x1 + 0.02, y0 - 0.03, y1, BACKBAR_TOP - 0.03, BACKBAR_TOP, faces="xXyzZ")
-    # cupboard doors (raised 6 mm off the front)
-    n = int((x1 - x0) // 0.6)
-    w = (x1 - x0) / n
-    for i in range(n):
-        a = x0 + i * w + 0.02
-        bx(bm, M("DN_Steel"), a, a + w - 0.04, y0 - 0.016, y0, 0.14, BACKBAR_TOP - 0.08, faces="yxXzZ")
-        tube(bm, (a + w / 2 - 0.08, y0 - 0.03, BACKBAR_TOP - 0.15), (a + w / 2 + 0.08, y0 - 0.03, BACKBAR_TOP - 0.15), 0.008, M("DN_Chrome"), seg=6)
-    # the stainless backsplash up to the menu board and the window sills, with a mahogany shelf
-    bx(bm, M("DN_Steel"), x0, x1, y1 - 0.015, y1, BACKBAR_TOP, 1.4, faces="y")
-    bx(bm, M("DN_Mahogany"), x0, x1, y1 - 0.2, y1 - 0.015, 1.4, 1.43, faces="xXyzZ")
-    # the grill with its hood
-    gx0, gx1 = GRILL_X
-    bx(bm, M("DN_Dark"), gx0, gx1, y0 + 0.02, y1 - 0.1, BACKBAR_TOP, BACKBAR_TOP + 0.03, faces="xXyYZ")
-    bx(bm, M("DN_Steel"), gx0 - 0.1, gx1 + 0.1, y1 - 0.55, y1 - 0.015, 1.95, 2.25, faces="xXyzZ")
-    # the urns: two tall stainless urns with brass-less chrome taps facing the counter
-    for x in URNS_X:
-        urn(bm, x, y1 - 0.3, BACKBAR_TOP, -1)
-    # the pie case at the back bar's west end
-    px = -2.9
-    bx(bm, M("DN_Chrome"), px - 0.35, px + 0.35, y1 - 0.45, y1 - 0.1, BACKBAR_TOP, BACKBAR_TOP + 0.03, faces="xXyYZ")
-    bx(bm, M("DN_Glass"), px - 0.34, px + 0.34, y1 - 0.44, y1 - 0.11, BACKBAR_TOP + 0.03, BACKBAR_TOP + 0.4, faces="xXyYZ")
-    for z in (BACKBAR_TOP + 0.03, BACKBAR_TOP + 0.21):
-        for k_, dx in enumerate((-0.17, 0.17)):
-            lathe(bm, [(0.11, z + 0.002), (0.11, z + 0.02), (0.1, z + 0.08), (0.0, z + 0.085)], M("DN_Crust"), seg=16,
-                  c=(px + dx, y1 - 0.27, 0), cap0=False)
-    # mugs upside down on the shelf (the staff's)
-    for i in range(6):
-        lathe(bm, [(0.042, 1.43), (0.042, 1.525), (0.0, 1.527)], M("DN_China"), seg=12, c=(x0 + 0.35 + i * 0.12, y1 - 0.1, 0), cap0=False)
-
-
-def urn(bm, x, y, z, face):
-    """A stainless coffee urn standing at z on three short legs, its tap facing face (+1 +y, -1 -y; 2 +x)."""
-    for k in range(3):
-        a = 2 * math.pi * k / 3 + 0.5
-        tube(bm, (x + 0.12 * math.cos(a), y + 0.12 * math.sin(a), z), (x + 0.12 * math.cos(a), y + 0.12 * math.sin(a), z + 0.12), 0.012, M("DN_Chrome"), seg=6, caps=False)
-    lathe(bm, [(0.0, z + 0.12), (0.155, z + 0.12), (0.16, z + 0.16), (0.16, z + 0.58), (0.15, z + 0.62), (0.09, z + 0.66), (0.0, z + 0.67)],
-          M("DN_Steel"), seg=24, c=(x, y, 0), cap0=False)
-    sphere(bm, (x, y, z + 0.69), 0.03, M("DN_Dark"), seg=10, rings=5)
-    # a glass gauge tube up its side
-    gdir = Vector((0.0, face * 1.0, 0.0)) if face in (-1, 1) else Vector((1.0, 0.0, 0.0))
-    side = Vector((gdir.y, -gdir.x, 0)) * 0.1
-    g = Vector((x, y, 0)) + gdir * 0.162 + side
-    tube(bm, (g.x, g.y, z + 0.2), (g.x, g.y, z + 0.55), 0.008, M("DN_Glass"), seg=6)
-    # the tap: a spout out of the body, the lever on top
-    t0 = Vector((x, y, 0)) + gdir * 0.16
-    t1 = Vector((x, y, 0)) + gdir * 0.25
-    tube(bm, (t0.x, t0.y, z + 0.24), (t1.x, t1.y, z + 0.24), 0.014, M("DN_Chrome"), seg=8)
-    tube(bm, (t1.x, t1.y, z + 0.24), (t1.x, t1.y, z + 0.2), 0.012, M("DN_Chrome"), seg=8)
-    ybox(bm, M("DN_Dark"), (t1.x, t1.y, z + 0.29), (0.025, 0.025, 0.08), 0.0)
-    return (t1.x, t1.y, z + 0.2)
-
-
-def coffee_station(bm):
-    x0, x1, y0, y1 = STATION
-    bx(bm, M("DN_Mahogany"), x0, x1, y0, y1, 0.0, STATION_TOP - 0.03, faces="XyYZ")
-    bx(bm, M("DN_Formica"), x0, x1 + 0.02, y0 - 0.02, y1 + 0.02, STATION_TOP - 0.03, STATION_TOP, faces="Z")
-    bx(bm, M("DN_Chrome"), x0, x1 + 0.02, y0 - 0.02, y1 + 0.02, STATION_TOP - 0.03, STATION_TOP, faces="XyYz")
-    ux, uy = URN_SELF
-    tap = urn(bm, ux, uy, STATION_TOP, 2)
-    # the drip tray under the tap
-    bx(bm, M("DN_Chrome"), tap[0] - 0.07, tap[0] + 0.07, tap[1] - 0.08, tap[1] + 0.08, STATION_TOP, STATION_TOP + 0.015, faces="xXyYZ")
-    # a tray of clean mugs upside down, a sugar pourer and a creamer
-    mx, my = -6.85, -1.33
-    bx(bm, M("DN_Steel"), mx - 0.16, mx + 0.16, my - 0.2, my + 0.2, STATION_TOP, STATION_TOP + 0.012, faces="xXyYZ")
-    for i in range(2):
-        for j in range(3):
-            lathe(bm, [(0.042, STATION_TOP + 0.012), (0.042, STATION_TOP + 0.107), (0.0, STATION_TOP + 0.109)], M("DN_China"), seg=12,
-                  c=(mx - 0.07 + i * 0.14, my - 0.12 + j * 0.12, 0), cap0=False)
-    lathe(bm, [(0.03, STATION_TOP), (0.032, STATION_TOP + 0.09), (0.02, STATION_TOP + 0.11)], M("DN_Glass"), seg=10, c=(-6.95, -0.5, 0), cap0=False)
-    lathe(bm, [(0.02, STATION_TOP + 0.11), (0.012, STATION_TOP + 0.14), (0.0, STATION_TOP + 0.145)], M("DN_Chrome"), seg=10, c=(-6.95, -0.5, 0), cap0=False)
-    return {"tap": [round(v, 4) for v in tap], "mug_under_tap": [round(tap[0], 4), round(tap[1], 4), STATION_TOP + 0.015],
-            "mugs": [mx, my, STATION_TOP + 0.012], "stand": [x1 + 0.45, (y0 + y1) / 2, 0.0]}
-
-
-def kitchen(bm):
-    """Stove, sink, worktable, shelves and a fridge in the annex, clear of both doors' swing zones."""
-    xi0, xi1, yi0, yi1 = AX0 + ATH, AX1 - ATH, YB, AY1 - ATH
-    # the range against the east wall, a hood over it
-    bx(bm, M("DN_Dark"), xi1 - 0.7, xi1, 3.0, 4.5, 0.0, 0.9, faces="xyYZ")
-    for i in range(2):
-        for j in range(2):
-            lathe(bm, [(0.11, 0.9), (0.11, 0.92), (0.0, 0.92)], M("DN_Steel"), seg=12, c=(xi1 - 0.5 + i * 0.3, 3.4 + j * 0.65, 0), cap0=False)
-    bx(bm, M("DN_Steel"), xi1 - 0.75, xi1, 2.95, 4.55, 1.85, 2.1, faces="xyYz")
-    # the sink and the fridge along the back wall, west of the back door's clear zone
-    bx(bm, M("DN_Steel"), xi0, xi0 + 1.2, yi1 - 0.6, yi1, 0.0, 0.9, faces="XyZ")
-    bx(bm, M("DN_Dark"), xi0 + 0.35, xi0 + 0.85, yi1 - 0.5, yi1 - 0.1, 0.9, 0.92, faces="xXyYZ")
-    bx(bm, M("DN_EnamelCream"), xi0 + 1.3, xi0 + 2.0, yi1 - 0.7, yi1, 0.0, 1.8, faces="xXyZ")
-    tube(bm, (xi0 + 1.38, yi1 - 0.73, 1.0), (xi0 + 1.38, yi1 - 0.73, 1.5), 0.012, M("DN_Chrome"), seg=6)
-    # shelves on the west wall
-    for z in (1.0, 1.4, 1.8):
-        bx(bm, M("DN_Steel"), xi0, xi0 + 0.35, 3.9, 5.3, z, z + 0.02, faces="XyYzZ")
-    for k in range(5):
-        lathe(bm, [(0.09, 1.02), (0.09, 1.2), (0.0, 1.2)], M("DN_Steel"), seg=12, c=(xi0 + 0.18, 4.05 + k * 0.28, 0), cap0=False)
-    # a worktable in the middle
-    bx(bm, M("DN_Steel"), -5.0, -3.9, 4.0, 4.7, 0.86, 0.9, faces="xXyYzZ")
-    for x in (-4.95, -3.95):
-        for y in (4.05, 4.65):
-            tube(bm, (x, y, 0.0), (x, y, 0.86), 0.02, M("DN_Steel"), seg=6, caps=False)
-
-
-def lamps(bm):
-    """Opal globes on chrome stems along the crown, one in the nose, two in the kitchen, one over the door outside."""
-    out = []
-    for x in (-6.0, -3.6, -1.2, 1.2, 3.6, 6.0, XE + 1.2):
-        top = CROWN_IN - 0.01 if x <= XE else EAVE_IN + (CROWN_IN - EAVE_IN) * math.sqrt(max(0.0, 1 - ((x - XE) / (R - TH)) ** 2)) - 0.01
-        tube(bm, (x, 0, top), (x, 0, top - 0.25), 0.01, M("DN_Chrome"), seg=6, caps=False)
-        lathe(bm, [(0.0, top - 0.24), (0.06, top - 0.25), (0.07, top - 0.28), (0.0, top - 0.285)], M("DN_Chrome"), seg=14, c=(x, 0, 0), cap0=False)
-        sphere(bm, (x, 0, top - 0.4), 0.13, M("DN_Opal"), seg=16, rings=8)
-        out.append({"at": [x, 0.0, top - 0.4], "lumens": 900, "colour": "#FFE2B8", "kind": "inside"})
-    for x, y in ((-5.8, 3.9), (-3.5, 4.9)):
-        z = A_TOP - 0.12
-        bx(bm, M("DN_Opal"), x - 0.5, x + 0.5, y - 0.1, y + 0.1, z - 0.06, z, faces="xXyYz")
-        out.append({"at": [x, y, z - 0.2], "lumens": 1100, "colour": "#F4F1EA", "kind": "kitchen"})
-    # the gooseneck lamp over the front door (outside)
-    tube(bm, (DOOR_X, YF + 0.0, 2.32), (DOOR_X, YF - 0.3, 2.42), 0.018, M("DN_Chrome"), seg=6, caps=False)
-    lathe(bm, [(0.0, 2.44), (0.12, 2.36), (0.13, 2.33), (0.0, 2.34)], M("DN_EnamelRed"), seg=16, c=(DOOR_X, YF - 0.42, 0), cap0=False, cap1=False)
-    sphere(bm, (DOOR_X, YF - 0.42, 2.335), 0.05, M("DN_Opal"), seg=10, rings=5)
-    out.append({"at": [DOOR_X, YF - 0.42, 2.25], "lumens": 600, "colour": "#FFD8A0", "kind": "outside"})
-    return out
-
-
 def signs(sh):
     """Picture quads (DN_Sign_<name>, their own slot) 6 mm off their faces; the roof sign on a stainless frame."""
     quads = []
@@ -698,22 +414,16 @@ def main():
     back_ground = GROUND(BACK_DOOR_X, AY1 + 1.6)
     sh, gl = build_shell(found_z, door_ground, back_ground)
     extra = signs(sh)
-    ins = bmesh.new()
-    counter(ins)
-    stools = bmesh.new()             # their own mesh without collision: the hero stands at the counter where a stool is
-    for x in STOOLS:
-        stool(stools, x, STOOL_Y)
-    for xa, xb in BOOTHS:
-        booth(ins, min(xa, xb), max(xa, xb))
-    nose_bench(ins)
-    back_bar(ins)
-    station = coffee_station(ins)
-    kitchen(ins)
-    lights = lamps(ins)
-    # the glass bits of the inside (sugar pourers, the pie case, gauges) go to the glass mesh with the panes
-    C.export(sh, "SM_Diner_Shell", extra_mats=extra, split_glass=False)
-    tris_in = C.export(ins, "SM_Diner_Inside", smooth=["DN_Chrome", "DN_China", "DN_Vinyl", "DN_Opal", "DN_Steel", "DN_Crust"])
-    C.export(stools, "SM_Diner_Stools", smooth=["DN_Chrome", "DN_Vinyl"])
+    parts = {"inside": bmesh.new(), "stools": bmesh.new(), "small": bmesh.new()}
+    got = {}
+    for mod in (seating, counter, kitchen):
+        got.update(mod.build(parts))
+    station, lights = got["coffee"], got["lights"]
+    # the glass bits of the insides (sugar pourers, the pie case, gauges) go to their _Glass meshes
+    C.export(sh, "SM_Diner_Shell", extra_mats=extra, split_glass=False, angle=40)
+    tris_in = C.export(parts["inside"], "SM_Diner_Inside", angle=40)
+    tris_small = C.export(parts["small"], "SM_Diner_Small", angle=40)
+    tris_stools = C.export(parts["stools"], "SM_Diner_Stools", angle=40)
     C.export(gl, "SM_Diner_Glass", split_glass=False)
     # ---- the layout for the game (diner frame, metres) ------------------------------------------------------------------
     serving = []
@@ -738,7 +448,8 @@ def main():
                 "tools/world_map.py diner() / diner_to_map() put it on the map, floor_z is the floor's map height.",
         "prototype": "Modern Diner, Pawtucket RI (Sterling Streamliner, J. B. Judkins Co., 1940)",
         "floor_z": round(floor, 3),
-        "parts": ["SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Inside_Glass", "SM_Diner_Glass", "SM_Diner_Stools"],
+        "parts": [p for p in ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Inside_Glass", "SM_Diner_Small", "SM_Diner_Small_Glass",
+                              "SM_Diner_Stools", "SM_Diner_Glass") if os.path.isfile(os.path.join(C.OUT, p + ".glb"))],
         "box": {"inside": [XI_W, XE + R - TH, YI_F, YI_B, 0.0, CROWN_IN], "kitchen": [AX0 + ATH, AX1 - ATH, YB, AY1 - ATH, 0.0, A_TOP]},
         "doors": doors,
         "lights": lights,
@@ -756,7 +467,8 @@ def main():
         ],
         "entrance": {"outside": [DOOR_X, YF - 1.1 - 0.3 * 5, None], "inside": [DOOR_X, YF + 1.2, 0.0],
                      "back_outside": [BACK_DOOR_X, AY1 + 2.6, None], "back_inside": [BACK_DOOR_X, AY1 - 1.0, 0.0]},
-        "tris_inside": tris_in,
+        "hero_seats": got.get("hero_seats", []),
+        "tris": {"inside": tris_in, "small": tris_small, "stools": tris_stools},
     }
     os.makedirs(os.path.dirname(LAYOUT), exist_ok=True)
     with open(LAYOUT, "w") as f:

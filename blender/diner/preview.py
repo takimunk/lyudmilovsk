@@ -1,5 +1,6 @@
 """Renders the diner's meshes (design/diner/game/SM_Diner_*.glb) from a few cameras to design/diner/previews/ (Eevee, a sun and
-the sky): Blender -b -P blender/diner/preview.py [-- view ...]"""
+the sky): Blender -b -P blender/diner/preview.py [-- view ... | name=ex,ey,ez,tx,ty,tz,lens ...]
+DINER_OUT / DINER_PREVIEW_OUT: read the meshes from / write the pictures to other folders (trial builds)."""
 import math
 import os
 import sys
@@ -8,8 +9,8 @@ import bpy
 from mathutils import Vector
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-GAME = os.path.join(ROOT, "design", "diner", "game")
-OUT = os.path.join(ROOT, "design", "diner", "previews")
+GAME = os.environ.get("DINER_OUT") or os.path.join(ROOT, "design", "diner", "game")
+OUT = os.environ.get("DINER_PREVIEW_OUT") or os.path.join(ROOT, "design", "diner", "previews")
 # name: (eye, target, lens mm); diner frame (Blender: x, y, z)
 VIEWS = {
     "front": ((-9.0, -14.0, 2.2), (0.5, 0.0, 1.6), 24),
@@ -26,9 +27,14 @@ VIEWS = {
 
 def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    for a in [a for a in args if "=" in a]:                 # a custom close-up: name=ex,ey,ez,tx,ty,tz,lens
+        k, v = a.split("=", 1)
+        n = [float(t) for t in v.split(",")]
+        VIEWS[k] = (tuple(n[0:3]), tuple(n[3:6]), n[6] if len(n) > 6 else 24)
+    args = [a.split("=", 1)[0] for a in args]
     bpy.ops.wm.read_factory_settings(use_empty=True)
     for f in sorted(os.listdir(GAME)):
-        if f.startswith("SM_Diner_") and f.endswith(".glb") and ("Shell" in f or "Inside" in f or f == "SM_Diner_Glass.glb"):
+        if f.startswith("SM_Diner_") and f.endswith(".glb") and any(k in f for k in ("Shell", "Inside", "Small", "Stools", "SM_Diner_Glass")):
             bpy.ops.import_scene.gltf(filepath=os.path.join(GAME, f))
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import diner_common as C
