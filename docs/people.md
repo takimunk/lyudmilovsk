@@ -192,12 +192,34 @@ It runs the simulation on the game calendar (its time scale), in steps of at mos
   door is in the build, so doors open in front of them and shut behind them.
 - **Save:** `Homes` (household -> flat) and everybody's needs; after a load everybody is where they'd be at that hour.
 
+### One person, one body
+
+Every named person is seen once, wherever the camera is. `UPeopleLifeSubsystem::ResolveModels` (at start) is the one
+registry of who looks like whom: a model (`/Game/Characters/Humans/<Model>/SK_<Model>`) belongs to one person only.
+Their own body comes first (people.json `body`; the club's people's `mesh` is their own); somebody whose body isn't made
+yet is shown by the stand-in people.json names only if that model is nobody else's, otherwise they live unseen (the
+simulation, the diner's or the stall's opening hours go on; the log says `... lives unseen`) until their model is
+imported. `ANpcBody`s are made only by `BodyFor`, one per person, with that model. The club's placed actors are bound by
+model: a station shows its own person's placed actor; any other placed actor with somebody's model (a copy left in the
+level) is hidden while the life runs (`... hidden (one person, one body)` in the log). `import_scene01.py` leaves a crowd
+station empty rather than seat a club regular's copy there.
+
+Why: residents without a body of their own used to borrow a club regular's model, so Nika (the streamer, `SK_Streamer`)
+also stood behind the diner's counter as Masha Frolova and walked about as Tanya Orlova on a checkout without her body;
+Girl_a, Girl_b and Crowd_12 had up to four look-alikes each. Still to make (2026-11-01): the bodies of `zhukova_lena`,
+`frolova_masha`, `hayashi_rina` (the diner), `khuazheva_susanna` (cheese) and `guseva_valentina` (corn), unseen till then.
+
+`lyud.People.Unique` (`InstanceReport`) counts every visible human model in the world by whose model it is, whatever
+actor shows it. `unreal/scripts/test_unique_people.sh` runs it offscreen at 03:00, 10:00, 15:00, 21:00 and after a
+save and a load, from the club and the places of people far apart, with everybody outdoors drawn; it fails if anybody is
+seen twice and prints where everybody is at each hour and who is awake at 03:00.
+
 API: `UPeopleLifeSubsystem::Get(World)`: `GetPerson(Id, Info)` (profile, home, activity, place, state, pose, needs,
 partner, the actor that shows them), `FindPerson(Key)`, `Order(Id, Activity, Place)`, `SetHome(Household, Flat)`,
-`Flats()`, `Report()`, `Describe(Id)`; `OnPersonEvent(Id, Event, Other)` with Start, Arrive, Leave, TalkStart, TalkEnd,
+`Flats()`, `Report()`, `Describe(Id)`, `ShownModel(Id)`, `ModelOwner(Model)`, `InstanceReport(Duplicates)`; `OnPersonEvent(Id, Event, Other)` with Start, Arrive, Leave, TalkStart, TalkEnd,
 Ride, Away, Back.
 
-Console: `lyud.People 0|1`, `lyud.People.Report [key]`, `lyud.People.Order <key> <activity> [place]`,
+Console: `lyud.People 0|1`, `lyud.People.Report [key]`, `lyud.People.Unique`, `lyud.People.Order <key> <activity> [place]`,
 `lyud.People.Flats`, `lyud.People.DrawDistance`, `lyud.People.AnyMap 1`; the clock: `lyud.Birds.Time <h> [m]`.
 
 ## Tests

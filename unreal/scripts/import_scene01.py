@@ -1263,6 +1263,10 @@ for v in LAYOUT.get("visitors", []):
         # the crowd has its own bodies (Crowd_11..13, people.json crowd_11..13) on the seated loops it borrows
         body = "Crowd_%02d" % v["index"] if crowd and eal.does_asset_exist(HUMANS + "Crowd_%02d/SK_Crowd_%02d" % (
             v["index"], v["index"])) else None
+        if crowd and not body:
+            # never a second copy of a club regular (one person, one body): an empty chair till the crowd's model is made
+            log("no SK_Crowd_%02d: station %02d left empty" % (v["index"], v["index"]))
+            continue
         who, clip = v["person"], CROWD_ANIM.get(v["index"], ANIM.get(v["person"], "Sit_Idle"))
         if body and body in PEOPLE_CLIPS:      # the clip people.json gives that body ("<Owner>/<Clip>")
             who, clip = PEOPLE_CLIPS[body].split("/", 1)

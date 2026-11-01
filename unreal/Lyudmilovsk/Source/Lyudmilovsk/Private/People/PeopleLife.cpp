@@ -23,7 +23,9 @@
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
+#include "Misc/PackageName.h"
 #include "Misc/Paths.h"
+#include "UObject/UObjectIterator.h"
 #include "NpcDialogue.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
@@ -90,6 +92,36 @@ namespace PeopleLifeLocal
 			}
 			Prev = Sun.AltitudeDeg;
 		}
+	}
+
+	/** A person's model: /Game/Characters/Humans/<Model>/SK_<Model>. */
+	FString PeopleModelPath(const FString& Model)
+	{
+		return FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *Model, *Model, *Model);
+	}
+
+	/** Whose look a skeletal mesh is: <Model> of /Game/Characters/Humans/<Model>/SK_<Model>, else "" (not a person's model). */
+	FString PeopleModelOf(const USkeletalMeshComponent* C)
+	{
+		const USkeletalMesh* M = C ? C->GetSkeletalMeshAsset() : nullptr;
+		if (!M)
+		{
+			return FString();
+		}
+		const FString Root = TEXT("/Game/Characters/Humans/");
+		const FString Path = M->GetPathName();
+		if (!Path.StartsWith(Root))
+		{
+			return FString();
+		}
+		FString Folder = Path.Mid(Root.Len());
+		int32 Slash = INDEX_NONE;
+		if (!Folder.FindChar(TEXT('/'), Slash))
+		{
+			return FString();
+		}
+		Folder.LeftInline(Slash);
+		return M->GetName() == TEXT("SK_") + Folder ? Folder : FString();
 	}
 
 	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back") };
@@ -162,6 +194,7 @@ bool UPeopleLifeSubsystem::Start()
 	}
 	Sim = MoveTemp(W);
 	UpdateClock(true);
+	ResolveModels();
 	BindClub();
 	BindRailway();
 	BindWinter();
@@ -211,6 +244,13 @@ void UPeopleLifeSubsystem::Stop()
 		ShowPlaced(Pair.Value, true);
 	}
 	ClubActors.Reset();
+	for (AActor* Stray : StrayActors)
+	{
+		ShowPlaced(Stray, true);
+	}
+	StrayActors.Reset();
+	ShownModels.Reset();
+	ModelOwners.Reset();
 	if (Owner)
 	{
 		Owner->SetAway(false);
@@ -519,35 +559,164 @@ void UPeopleLifeSubsystem::BindClub()
 	{
 		Owner = *It;
 	}
+	// the scene's people: every placed actor with somebody's model (people.json's people, ResolveModels)
+	struct FPlacedPerson
+	{
+		AActor* Actor;
+		int32 Person;
+	};
+	TArray<FPlacedPerson> Placed;
+	for (TActorIterator<ASkeletalMeshActor> It(World); It; ++It)
+	{
+		const int32* Who = ModelOwners.Find(PeopleModelOf(It->GetSkeletalMeshComponent()));
+		if (Who)
+		{
+			Placed.Add({ *It, *Who });
+		}
+	}
+	// a station shows its own person's placed actor (the one with their model nearest its chair), nobody else's
+	TSet<AActor*> Bound;
 	for (const LP::FSlot& Sl : S.Slots)
 	{
 		if (Sl.Kind != "club_seat")
 		{
 			continue;
 		}
+		int32 Sitter = -1;
+		for (const LP::FPerson& P : S.People)
+		{
+			if (P.ClubSeat == Sl.Tag)
+			{
+				Sitter = P.Id;
+				break;
+			}
+		}
 		const FVector Chair = PeopleToUE(Sl.Pos);
 		AActor* Best = nullptr;
-		double BestD = 45.0;
-		for (TActorIterator<ASkeletalMeshActor> It(World); It; ++It)
+		double BestD = 150.0;
+		for (const FPlacedPerson& A : Placed)
 		{
-			const USkeletalMeshComponent* M = It->GetSkeletalMeshComponent();
-			const USkeletalMesh* Asset = M ? M->GetSkeletalMeshAsset() : nullptr;
-			if (!Asset || !Asset->GetName().StartsWith(TEXT("SK_")) || Asset->GetName().Contains(TEXT("desk")))
-			{
-				continue;
-			}
-			const double D = FVector::Dist2D(It->GetActorLocation(), Chair);
-			if (D < BestD)
+			const double D = FVector::Dist2D(A.Actor->GetActorLocation(), Chair);
+			if (A.Person == Sitter && !Bound.Contains(A.Actor) && D < BestD)
 			{
 				BestD = D;
-				Best = *It;
+				Best = A.Actor;
 			}
 		}
 		if (Best)
 		{
 			ClubActors.Add(UTF8_TO_TCHAR(Sl.Tag.c_str()), Best);
+			Bound.Add(Best);
 		}
 	}
+	// any other copy of somebody (their model at a station not theirs, a stand-in left in the level) is never shown
+	for (const FPlacedPerson& A : Placed)
+	{
+		if (!Bound.Contains(A.Actor))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: %s in the level shows %hs away from their station: hidden (one person, one body)"),
+				*A.Actor->GetActorNameOrLabel(), S.People[A.Person].Key.c_str());
+			StrayActors.Add(A.Actor);
+			ShowPlaced(A.Actor, false);
+		}
+	}
+}
+
+void UPeopleLifeSubsystem::ResolveModels()
+{
+	const LP::FWorld& S = *Sim;
+	ShownModels.Init(FString(), (int32)S.People.size());
+	ModelOwners.Reset();
+	auto Exists = [](const FString& Model)
+	{
+		return !Model.IsEmpty() && FPackageName::DoesPackageExist(FPackageName::ObjectPathToPackageName(PeopleModelPath(Model)));
+	};
+	// their own models first: the body made for them (the club's people's mesh is their own)
+	for (const LP::FPerson& P : S.People)
+	{
+		const FString Own = UTF8_TO_TCHAR(P.Body.c_str());
+		if (!Exists(Own))
+		{
+			continue;
+		}
+		if (const int32* Other = ModelOwners.Find(Own))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: %hs and %hs have the same body %s in people.json: only %hs is shown"),
+				S.People[*Other].Key.c_str(), P.Key.c_str(), *Own, S.People[*Other].Key.c_str());
+			continue;
+		}
+		ModelOwners.Add(Own, P.Id);
+		ShownModels[P.Id] = Own;
+	}
+	// then those whose body isn't made yet: the stand-in people.json names, only while it is nobody else's face
+	for (const LP::FPerson& P : S.People)
+	{
+		if (!ShownModels[P.Id].IsEmpty())
+		{
+			continue;
+		}
+		const FString Stand = UTF8_TO_TCHAR(P.Mesh.c_str());
+		const int32* Other = ModelOwners.Find(Stand);
+		if (Exists(Stand) && !Other)
+		{
+			ModelOwners.Add(Stand, P.Id);
+			ShownModels[P.Id] = Stand;
+			continue;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("PeopleLife: %hs has no model of their own yet (%s) and %s is %hs: lives unseen"),
+			P.Key.c_str(), *PeopleModelPath(UTF8_TO_TCHAR(P.Body.c_str())), *Stand,
+			Other ? S.People[*Other].Key.c_str() : "missing");
+	}
+}
+
+FString UPeopleLifeSubsystem::ShownModel(int32 Id) const
+{
+	return ShownModels.IsValidIndex(Id) ? ShownModels[Id] : FString();
+}
+
+int32 UPeopleLifeSubsystem::ModelOwner(const FString& Model) const
+{
+	const int32* Who = ModelOwners.Find(Model);
+	return Who ? *Who : -1;
+}
+
+FString UPeopleLifeSubsystem::InstanceReport(int32& Duplicates) const
+{
+	Duplicates = 0;
+	const UWorld* World = GetWorld();
+	if (!Sim || !World)
+	{
+		return TEXT("not running");
+	}
+	// every visible human model in the world, whatever actor shows it
+	TMap<FString, TArray<FString>> Seen;
+	for (TObjectIterator<USkeletalMeshComponent> It; It; ++It)
+	{
+		const USkeletalMeshComponent* C = *It;
+		const AActor* A = C->GetOwner();
+		if (C->GetWorld() != World || !C->IsRegistered() || !C->IsVisible() || !A || A->IsHidden())
+		{
+			continue;
+		}
+		const FString Model = PeopleModelOf(C);
+		if (Model.IsEmpty())
+		{
+			continue;
+		}
+		const int32 Who = ModelOwner(Model);
+		const FString Key = Who >= 0 ? FString(UTF8_TO_TCHAR(Sim->People[Who].Key.c_str())) : TEXT("nobody:") + Model;
+		const FVector L = C->GetComponentLocation();
+		Seen.FindOrAdd(Key).Add(FString::Printf(TEXT("%s (%.0f %.0f %.0f)"), *A->GetActorNameOrLabel(), L.X, L.Y, L.Z));
+	}
+	TArray<FString> Lines;
+	for (const TPair<FString, TArray<FString>>& Pair : Seen)
+	{
+		Duplicates += Pair.Value.Num() > 1 ? 1 : 0;
+		Lines.Add(FString::Printf(TEXT("%s%s x%d at %s"), Pair.Value.Num() > 1 ? TEXT("TWICE ") : TEXT(""), *Pair.Key, Pair.Value.Num(),
+			*FString::Join(Pair.Value, TEXT(", "))));
+	}
+	Lines.Sort([](const FString& A, const FString& B) { return A.StartsWith(TEXT("TWICE")) != B.StartsWith(TEXT("TWICE")) ? A.StartsWith(TEXT("TWICE")) : A < B; });
+	return FString::Printf(TEXT("%d seen, %d twice; "), Seen.Num(), Duplicates) + FString::Join(Lines, TEXT("; "));
 }
 
 void UPeopleLifeSubsystem::ShowPlaced(AActor* Actor, bool bShow)
@@ -572,16 +741,16 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 	if (!Bodies[Id])
 	{
 		const LP::FPerson& P = Sim->People[Id];
-		// their model and the shared clips loaded in the background first: a body made on the spot stalls the frame
-		auto ModelPath = [](const std::string& Name)
+		// the one model that is theirs (ResolveModels): none, and they aren't drawn in somebody else's face
+		const FString Model = ShownModel(Id);
+		if (Model.IsEmpty() || ModelOwner(Model) != Id)
 		{
-			const FString N = UTF8_TO_TCHAR(Name.c_str());
-			return FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *N, *N, *N);
-		};
-		const bool bBody = ULyudPrefetch::Ready(this, ModelPath(P.Body));
-		const bool bMesh = ULyudPrefetch::Ready(this, ModelPath(P.Mesh));
+			return nullptr;
+		}
+		// their model and the shared clips loaded in the background first: a body made on the spot stalls the frame
+		const bool bModel = ULyudPrefetch::Ready(this, PeopleModelPath(Model));
 		const bool bClips = ULyudPrefetch::FolderReady(this, TEXT("/Game/Characters/Humans/Anims"));
-		if (!bBody || !bMesh || !bClips)
+		if (!bModel || !bClips)
 		{
 			return nullptr;
 		}
@@ -593,11 +762,9 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 		{
 			return nullptr;
 		}
-		// their own body when it is made, else the model people.json names for now
-		if (!(P.Body != P.Mesh && Body->Setup(UTF8_TO_TCHAR(P.Body.c_str()), UTF8_TO_TCHAR(P.ComputerClip.c_str())))
-			&& !Body->Setup(UTF8_TO_TCHAR(P.Mesh.c_str()), UTF8_TO_TCHAR(P.ComputerClip.c_str())))
+		if (!Body->Setup(Model, UTF8_TO_TCHAR(P.ComputerClip.c_str())))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no model for %s (%s)"), UTF8_TO_TCHAR(P.Key.c_str()), UTF8_TO_TCHAR(P.Mesh.c_str()));
+			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no model for %s (%s)"), UTF8_TO_TCHAR(P.Key.c_str()), *Model);
 		}
 		Body->TalkId = UTF8_TO_TCHAR(P.Body.c_str());
 		if (P.Key.rfind("crowd", 0) == 0)
@@ -863,7 +1030,7 @@ bool UPeopleLifeSubsystem::GetPerson(int32 Id, FPersonInfo& Out) const
 	const LP::FPerson& P = S.People[Id];
 	Out.Id = Id;
 	Out.Key = UTF8_TO_TCHAR(P.Key.c_str());
-	Out.Mesh = FName(UTF8_TO_TCHAR(P.Mesh.c_str()));
+	Out.Mesh = ShownModels.IsValidIndex(Id) && !ShownModels[Id].IsEmpty() ? FName(*ShownModels[Id]) : NAME_None;
 	Out.Body = FName(UTF8_TO_TCHAR(P.Body.c_str()));
 	Out.Age = P.Age;
 	Out.Occupation = UTF8_TO_TCHAR(P.Occupation.c_str());
@@ -1460,7 +1627,8 @@ void ANpcBody::BuildBlanket()
 	if (!BlanketMesh)
 	{
 		BlanketMesh = NewObject<UStaticMesh>(this);
-		static UMaterialInterface* Linen = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Academgorodok/Materials/MI_AC_FLinen.MI_AC_FLinen"));
+		// looked up per blanket, never kept in a static: after a load opens the level again the old pointer was freed (crash)
+		UMaterialInterface* Linen = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Academgorodok/Materials/MI_AC_FLinen.MI_AC_FLinen"));
 		BlanketMesh->GetStaticMaterials().Add(FStaticMaterial(Linen ? Linen : UMaterial::GetDefaultMaterial(MD_Surface)));
 	}
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
@@ -1485,6 +1653,17 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleReport(TEXT("lyud.People.Repor
 				return;
 			}
 			UE_LOG(LogTemp, Warning, TEXT("People: %s"), *People->Report());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleUnique(TEXT("lyud.People.Unique"),
+	TEXT("lyud.People.Unique: everybody seen in the world now by whose model it is; a person seen twice is a bug."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+	{
+		if (const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World))
+		{
+			int32 Twice = 0;
+			UE_LOG(LogTemp, Warning, TEXT("People: %s"), *People->InstanceReport(Twice));
 		}
 	}));
 

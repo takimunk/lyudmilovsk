@@ -124,6 +124,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "People")
 	FString Describe(int32 Id) const;
 
+	/**
+	 * The model a person is shown by (/Game/Characters/Humans/<Model>/SK_<Model>): their own body, else the stand-in
+	 * people.json names while it is unmade if that model is nobody else's; "" if none (then they live unseen, never in
+	 * somebody else's face). One model, one person: ResolveModels.
+	 */
+	UFUNCTION(BlueprintPure, Category = "People")
+	FString ShownModel(int32 Id) const;
+
+	/** Whose model this is (-1 nobody's). */
+	UFUNCTION(BlueprintPure, Category = "People")
+	int32 ModelOwner(const FString& Model) const;
+
+	/**
+	 * Everybody seen in the world now, whatever shows them (the life's bodies, the club's placed actors, the booth's
+	 * owner, any other human model in the level), counted by whose model it is: one line per person seen ("key xN at
+	 * ..."), Duplicates = how many people are seen more than once (console lyud.People.Unique).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "People")
+	FString InstanceReport(int32& Duplicates) const;
+
 	/** Start, Arrive, Leave, TalkStart, TalkEnd, Ride, Away, Back. */
 	UPROPERTY(BlueprintAssignable, Category = "People") FPeopleLifeEvent OnPersonEvent;
 
@@ -159,8 +179,13 @@ private:
 
 	/** One body per person, made when first needed. */
 	UPROPERTY(Transient) TArray<TObjectPtr<ANpcBody>> Bodies;
-	/** The club's placed actors (the scene's people at their stations), by station tag. */
+	/** The club's placed actors (the scene's people at their stations), by station tag: the seat's own person's model only. */
 	UPROPERTY(Transient) TMap<FString, TObjectPtr<AActor>> ClubActors;
+	/** Placed human actors that are a second copy of somebody (their model, not at that person's station): hidden while the life runs. */
+	UPROPERTY(Transient) TArray<TObjectPtr<AActor>> StrayActors;
+	/** The one registry of who is shown by what: the model per person id ("" none) and the person per model. */
+	TArray<FString> ShownModels;
+	TMap<FString, int32> ModelOwners;
 	UPROPERTY(Transient) TObjectPtr<ABoothOwner> Owner;
 	TSet<int32> Talkable;
 
@@ -168,6 +193,8 @@ private:
 	void Stop();
 	/** The hour, weekday and sun from the game's calendar; true if it jumped (everybody resettled). */
 	bool UpdateClock(bool bFirst);
+	/** Gives everybody one model nobody else has (ShownModels, ModelOwners); before BindClub and any body. */
+	void ResolveModels();
 	void BindClub();
 	void Present(float DeltaTime);
 	void DispatchEvents();
