@@ -206,8 +206,8 @@ station empty rather than seat a club regular's copy there.
 
 Why: residents without a body of their own used to borrow a club regular's model, so Nika (the streamer, `SK_Streamer`)
 also stood behind the diner's counter as Masha Frolova and walked about as Tanya Orlova on a checkout without her body;
-Girl_a, Girl_b and Crowd_12 had up to four look-alikes each. The diner's three waitresses got bodies of their own the same day
-(docs/diner.md); still to make: `khuazheva_susanna` (cheese) and `guseva_valentina` (corn), unseen till then.
+Girl_a, Girl_b and Crowd_12 had up to four look-alikes each. The diner's three waitresses (docs/diner.md) and Valentina
+Guseva (corn) got bodies of their own the same day; still to make: `khuazheva_susanna` (cheese), unseen till then.
 
 `lyud.People.Unique` (`InstanceReport`) counts every visible human model in the world by whose model it is, whatever
 actor shows it. `unreal/scripts/test_unique_people.sh` runs it offscreen at 03:00, 10:00, 15:00, 21:00 and after a

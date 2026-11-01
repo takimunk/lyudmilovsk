@@ -1,0 +1,93 @@
+{
+ "_doc": "Valentina Guseva (Валентина Гусева), pensioner who sells boiled corn in the Academgorodok: rig_character.py from the hi3d model (docs/characters.md)",
+ "id": "guseva_valentina",
+ "model": "model_face",
+ "height": 1.55,
+ "donor": "blender/humans/export/human_girl_a.glb",
+ "faces": 40000,
+ "texture": 2048,
+ "bake_normal": true,
+ "hands": {},
+ "skirt": {
+  "hem_z": 0.3,
+  "gap": 0.015,
+  "blend": 0.06,
+  "pelvis": 0.4,
+  "smooth": {
+   "radius": 0.05,
+   "iterations": 6
+  },
+  "_doc": "wool skirt to mid-calf and an apron to the knees, weights smoothed through space like Galina's skirt"
+ },
+ "inner": [
+  {
+   "_doc": "her legs under the skirt move with it (in tights: no colour test)",
+   "box": [
+    -0.3,
+    0.3,
+    -1,
+    1,
+    0.32,
+    0.72
+   ],
+   "near_donor": 0.02,
+   "not_olive": false
+  }
+ ],
+ "face": {
+  "normal_strength": 0.4,
+  "subdivide": false,
+  "marks": {
+   "_doc": "by hand from the unprojected Saved/FaceShots/guseva_valentina.png (5120 px/m, centre z 1.4111): the automatic ones were a few mm off",
+   "ipd": 0.0664,
+   "eyes": [
+    {
+     "x": 0.0332,
+     "z": 1.3813,
+     "iris": [
+      0.22,
+      0.22,
+      0.24
+     ],
+     "w": 0.031,
+     "h": 0.011
+    },
+    {
+     "x": -0.0332,
+     "z": 1.3813,
+     "iris": [
+      0.22,
+      0.22,
+      0.24
+     ],
+     "w": 0.031,
+     "h": 0.011
+    }
+   ],
+   "mouth": {
+    "x": 0.0,
+    "z": 1.3126,
+    "w": 0.06
+   }
+  },
+  "eye_open": [
+   {
+    "cx": 0.0352,
+    "cz": 1.3825,
+    "hw": 0.012,
+    "up": 0.0053,
+    "lo": 0.0052,
+    "tilt": 0.0
+   },
+   {
+    "cx": -0.0347,
+    "cz": 1.3816,
+    "hw": 0.0135,
+    "up": 0.0047,
+    "lo": 0.0048,
+    "tilt": 0.0
+   }
+  ]
+ },
+ "face_protect": true
+}
