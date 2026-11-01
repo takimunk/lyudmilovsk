@@ -1,0 +1,23 @@
+{
+ "id": "swim_bubbles",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_bubbles_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Heard from under water: a slow stream of air bubbles rising from the mouth of a diver, muffled, gentle bubbling, close",
+  "duration_seconds": 2.0
+ },
+ "hash": "cd2d85d5538a",
+ "fal_request_id": "01a19393-7ccd-7d40-ae47-d1f7df072147",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a110/CaC69LnNgH1tNy_Afoio3_sound_effect.mp3",
+ "created": "2026-10-31T20:08:03Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "4ae4b92af32786f08af42397ecb2ae19f479efa103ddff46d28fd81efeb77154",
+ "seconds": 2.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

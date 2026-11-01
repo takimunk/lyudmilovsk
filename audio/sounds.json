@@ -279,6 +279,70 @@
    "variants": 2,
    "duration": 1.0,
    "prompt": "Several pages of a thick paper notebook riffled quickly with a thumb, a quick flutter of paper, close, quiet room, no voices"
+  },
+  {
+   "id": "swim_stroke",
+   "group": "swim",
+   "variants": 4,
+   "duration": 1.5,
+   "prompt": "A single breaststroke swimming stroke at the surface of calm sea water, close to the ear: hands pushing water, a soft splash and trickle, no voice, no other sounds"
+  },
+  {
+   "id": "swim_dive",
+   "group": "swim",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A person duck-diving head first into the sea from the surface: a short splash then the muffled rush of water closing over the head, close, no voice"
+  },
+  {
+   "id": "swim_surface",
+   "group": "swim",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "Head breaking through the surface of the sea from under water: water streaming off, a short splash and drips close to the ears, no voice"
+  },
+  {
+   "id": "swim_inhale",
+   "group": "swim",
+   "variants": 3,
+   "duration": 1.2,
+   "prompt": "A teenage boy taking one quick deep breath in through the mouth before diving under water, close, dry, no other sounds"
+  },
+  {
+   "id": "swim_bubbles",
+   "group": "swim",
+   "variants": 4,
+   "duration": 2.0,
+   "prompt": "Heard from under water: a slow stream of air bubbles rising from the mouth of a diver, muffled, gentle bubbling, close"
+  },
+  {
+   "id": "swim_underwater",
+   "group": "swim",
+   "variants": 1,
+   "duration": 12.0,
+   "prompt": "Under water ambience in a shallow northern sea: deep muffled hush, faint low rumble of waves above, tiny distant clicks, calm, continuous",
+   "loop": true
+  },
+  {
+   "id": "swim_choke",
+   "group": "swim",
+   "variants": 4,
+   "duration": 2.0,
+   "prompt": "A teenage boy choking under water, out of breath: muffled strained throat sounds and gurgling, panicked short spasms, bubbles bursting out, heard from under water, close"
+  },
+  {
+   "id": "swim_gasp",
+   "group": "swim",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A teenage boy bursting up out of the water and gasping desperately for air, two or three ragged loud breaths in, water splashing, close"
+  },
+  {
+   "id": "swim_cough",
+   "group": "swim",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "A teenage boy coughing up water, three or four wet hacking coughs, then catching his breath, close, no other sounds"
   }
  ],
  "music": [

@@ -31,6 +31,7 @@
 #include "../Weather/WaveModel.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
+#include "Winter/LyudWinter.h"
 
 namespace
 {
@@ -849,13 +850,18 @@ void ALyudSea::KeepSwimmerHeadUp(float DeltaSeconds)
 	{
 		Move->SetMovementMode(MOVE_Swimming);
 	}
-	if (SwimEyeClearance <= 0.f)
+	if (SwimEyeClearance <= 0.f || bSwimmerDiving)
 	{
 		return;
 	}
 	// the eyes ride the waves: a swimming body floats with its head out, whatever put it in the water
 	// (a fall, the hand-over from a drowned bird)
 	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+	// under the winter's sea ice there is no surface to come up to (ULyudSwimComponent holds the head under it)
+	if (const ULyudWinterSubsystem* Winter = ULyudWinterSubsystem::Get(this); Winter && Winter->GetIceAt(Eye) >= 0.5f)
+	{
+		return;
+	}
 	const FLyudSeaSample S = SampleSurface(Eye);
 	const float Want = S.SurfaceZ + SwimEyeClearance;
 	if (Eye.Z >= Want)

@@ -1,0 +1,25 @@
+{
+ "id": "swim_underwater",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_underwater_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Under water ambience in a shallow northern sea: deep muffled hush, faint low rumble of waves above, tiny distant clicks, calm, continuous",
+  "duration_seconds": 12.0,
+  "loop": true
+ },
+ "hash": "fe4dc1be050a",
+ "fal_request_id": "01a19393-be12-7c50-9b7d-efcd57cbe4f4",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a111/JuSWhbbZUUBCRTcpGuSLX_sound_effect.mp3",
+ "created": "2026-10-31T20:08:24Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "6a5663cbccc9e5397bcab62e89297eb97b54a8479909b562b0628476b7406b04",
+ "seconds": 11.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim",
+ "loop": true
+}

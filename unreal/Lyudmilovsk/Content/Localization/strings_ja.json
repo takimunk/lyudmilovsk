@@ -1041,5 +1041,6 @@
  "ui.guide.asleep": "眠っている",
  "ui.diary.birds_on": "地図の鳥：消す",
  "ui.diary.birds_off": "地図の鳥：出す",
- "ui.help.guide": "B：野鳥図鑑（持っていれば）"
+ "ui.help.guide": "B：野鳥図鑑（持っていれば）",
+ "line.hero.swim_breath.1": "待って…息、できてる。水の中なのに。…まあ、いいか。こういうのもアリなんだ。"
 }

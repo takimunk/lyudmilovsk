@@ -12,6 +12,13 @@ namespace
 		return LoadObject<UAnimSequence>(nullptr, *FString::Printf(TEXT("/Game/Characters/Hero/Anims/A_Hero_%s.A_Hero_%s"), *Name, *Name));
 	}
 
+	/** One of the cast's shared clips (same skeleton): /Game/Characters/Humans/Anims/A_Human_<Name>. */
+	UAnimSequence* LoadHumanAnim(const TCHAR* Name)
+	{
+		return LoadObject<UAnimSequence>(nullptr, *FString::Printf(TEXT("/Game/Characters/Humans/Anims/A_Human_%s.A_Human_%s"), Name, Name),
+			nullptr, LOAD_NoWarn | LOAD_Quiet);
+	}
+
 	// clockwise from ahead, 45 degrees apart
 	const TCHAR* Directions[] = { TEXT("Fwd"), TEXT("Fwd_Right"), TEXT("Right"), TEXT("Bwd_Right"),
 		TEXT("Bwd"), TEXT("Bwd_Left"), TEXT("Left"), TEXT("Fwd_Left") };
@@ -95,10 +102,57 @@ void FHeroAnimProxy::KeepHandsOutsideClothes(FCompactPose& Pose)
 	}
 }
 
+void FHeroAnimProxy::PlaceSwimmer(FCompactPose& Pose)
+{
+	const FBoneContainer& Bones = Pose.GetBoneContainer();
+	const int32 HeadMesh = Bones.GetPoseBoneIndexForBoneName(TEXT("head"));
+	if (HeadMesh == INDEX_NONE)
+	{
+		return;
+	}
+	const FCompactPoseBoneIndex Head = Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(HeadMesh));
+	if (!Head.IsValid())
+	{
+		return;
+	}
+	auto HeadCS = [&](const FCompactPose& P)
+	{
+		FTransform T = P[Head];
+		for (FCompactPoseBoneIndex Up = P.GetParentBoneIndex(Head); Up.IsValid(); Up = P.GetParentBoneIndex(Up))
+		{
+			T = T * P[Up];
+		}
+		return T.GetLocation();
+	};
+	if (!bStandHead && Idle)
+	{
+		FCompactPose Stand;
+		Stand.SetBoneContainer(&Bones);
+		FBlendedCurve Curve;
+		Curve.InitFrom(Bones);
+		UE::Anim::FStackAttributeContainer Attr;
+		FAnimationPoseData Data(Stand, Curve, Attr);
+		Idle->GetAnimationPose(Data, FAnimExtractContext(0.0, false));
+		Stand[FCompactPoseBoneIndex(0)].SetTranslation(FVector::ZeroVector);
+		StandHead = HeadCS(Stand);
+		bStandHead = true;
+	}
+	// the head where a standing one is (the eyes, the camera, stay put), the body turned about it: lying along the
+	// stroke (the mesh faces +Y, so pitching the head up is a turn about +X)
+	const FVector H = HeadCS(Pose);
+	const FQuat Q = FQuat::Slerp(FQuat::Identity, FQuat(FVector::XAxisVector, FMath::DegreesToRadians(State.SwimPitch)), State.Swim);
+	const FVector Want = FMath::Lerp(H, StandHead, State.Swim);
+	const FTransform R(Q, Want - Q.RotateVector(H));
+	const FCompactPoseBoneIndex Root(0);
+	Pose[Root] = Pose[Root] * R;
+}
+
 void UHeroAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	Idle = LoadAnim(TEXT("Idle"));
+	SwimIdle = LoadHumanAnim(TEXT("SwimIdle"));
+	SwimFwd = LoadHumanAnim(TEXT("SwimFwd"));
 	Walk.Reset();
 	Jog.Reset();
 	WalkStride.Reset();
@@ -132,6 +186,8 @@ void FHeroAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	Jog = Hero->Jog;
 	WalkStride = Hero->WalkStride;
 	JogStride = Hero->JogStride;
+	SwimIdle = Hero->SwimIdle;
+	SwimFwd = Hero->SwimFwd;
 	WalkClipSpeed = Hero->WalkClipSpeed;
 	JogClipSpeed = Hero->JogClipSpeed;
 	Reach = Hero->Reach;
@@ -148,17 +204,20 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	// idle, walk and jog by speed, the two nearest of 8 directions by the direction of travel; every
 	// clip is played by distance over its own stride, so the planted foot doesn't slip
 	struct FEntry { const UAnimSequence* Seq; double Time; float Weight; };
-	TArray<FEntry, TInlineAllocator<5>> Entries;
+	TArray<FEntry, TInlineAllocator<7>> Entries;
+	// in the water the swim clips take over (treading water, the forward stroke), played by their own clock
+	const float Swim = SwimIdle && SwimFwd ? State.Swim : 0.f;
+	const float Land = 1.f - Swim;
 	const bool bLoco = Walk.Num() == 8 && Jog.Num() == 8;
 	// crouched the steps are short and slow: the walk plays in full from a slow creep on (played by distance its feet stay planted),
 	// not half-blended with the idle, which would slide them
 	const float Moving = bLoco ? FMath::Lerp(FMath::Clamp(State.Speed / WalkClipSpeed, 0.f, 1.f), FMath::Clamp(State.Speed / 30.f, 0.f, 1.f), State.Crouch) : 0.f;
 	const float Run = FMath::Clamp((State.Speed - WalkClipSpeed) / (JogClipSpeed - WalkClipSpeed), 0.f, 1.f);
-	if (Moving < 1.f)
+	if (Moving < 1.f && Land > 1e-3f)
 	{
-		Entries.Add({ Idle, FMath::Fmod(State.IdleTime, (double)Idle->GetPlayLength()), 1.f - Moving });
+		Entries.Add({ Idle, FMath::Fmod(State.IdleTime, (double)Idle->GetPlayLength()), (1.f - Moving) * Land });
 	}
-	if (Moving > 0.f)
+	if (Moving > 0.f && Land > 1e-3f)
 	{
 		const float A = FMath::Fmod(State.MoveAngle + 360.f, 360.f) / 45.f;
 		const int32 I0 = FMath::FloorToInt(A) % 8;
@@ -166,15 +225,27 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 		const float F = A - FMath::FloorToFloat(A);
 		auto Add = [&](const TArray<TObjectPtr<UAnimSequence>>& Set, const TArray<float>& Stride, int32 I, float W)
 		{
-			if (W > 1e-3f && Set[I])
+			if (W * Land > 1e-3f && Set[I])
 			{
-				Entries.Add({ Set[I], FMath::Fmod(State.Distance, (double)Stride[I]) / Stride[I] * Set[I]->GetPlayLength(), W });
+				Entries.Add({ Set[I], FMath::Fmod(State.Distance, (double)Stride[I]) / Stride[I] * Set[I]->GetPlayLength(), W * Land });
 			}
 		};
 		Add(Walk, WalkStride, I0, Moving * (1.f - Run) * (1.f - F));
 		Add(Walk, WalkStride, I1, Moving * (1.f - Run) * F);
 		Add(Jog, JogStride, I0, Moving * Run * (1.f - F));
 		Add(Jog, JogStride, I1, Moving * Run * F);
+	}
+	if (Swim > 1e-3f)
+	{
+		const float Fwd = FMath::Clamp(State.SwimMove, 0.f, 1.f);
+		if (Fwd < 1.f)
+		{
+			Entries.Add({ SwimIdle, FMath::Fmod(State.SwimTime, (double)SwimIdle->GetPlayLength()), Swim * (1.f - Fwd) });
+		}
+		if (Fwd > 0.f)
+		{
+			Entries.Add({ SwimFwd, FMath::Fmod(State.SwimTime, (double)SwimFwd->GetPlayLength()), Swim * Fwd });
+		}
 	}
 
 	auto Sample = [](const FEntry& E, FCompactPose& Pose, FBlendedCurve& Curve, UE::Anim::FStackAttributeContainer& Attr)
@@ -188,10 +259,10 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	}
 	else
 	{
-		TArray<FCompactPose, TInlineAllocator<5>> Poses;
-		TArray<FBlendedCurve, TInlineAllocator<5>> Curves;
-		TArray<UE::Anim::FStackAttributeContainer, TInlineAllocator<5>> Attrs;
-		TArray<float, TInlineAllocator<5>> Weights;
+		TArray<FCompactPose, TInlineAllocator<7>> Poses;
+		TArray<FBlendedCurve, TInlineAllocator<7>> Curves;
+		TArray<UE::Anim::FStackAttributeContainer, TInlineAllocator<7>> Attrs;
+		TArray<float, TInlineAllocator<7>> Weights;
 		Poses.SetNum(Entries.Num());
 		Curves.SetNum(Entries.Num());
 		Attrs.SetNum(Entries.Num());
@@ -214,6 +285,10 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	// in place: the capsule moves the body
 	const FCompactPoseBoneIndex RootIndex(0);
 	Output.Pose[RootIndex].SetTranslation(FVector::ZeroVector);
+	if (Swim > 1e-3f)
+	{
+		PlaceSwimmer(Output.Pose);
+	}
 
 	// the mannequin's arms swing close to its slim body; the hero's oversized overshirt and hoodie are
 	// far wider, so the hands would pass through the clothes (and, running, in front of the eyes)

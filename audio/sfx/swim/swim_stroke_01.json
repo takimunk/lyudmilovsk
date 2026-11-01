@@ -1,0 +1,23 @@
+{
+ "id": "swim_stroke",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_stroke_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A single breaststroke swimming stroke at the surface of calm sea water, close to the ear: hands pushing water, a soft splash and trickle, no voice, no other sounds",
+  "duration_seconds": 1.5
+ },
+ "hash": "d14bef3fda63",
+ "fal_request_id": "01a19392-24a8-7223-9ba6-594e984ce2e3",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a107/okL9l7e5yvWKpuTx79EG3_sound_effect.mp3",
+ "created": "2026-10-31T20:06:35Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "ae9d80a418caf899df0361a16cb93a7a45d98eca3f523eb42a1da8b6c421c36f",
+ "seconds": 1.22,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

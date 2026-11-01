@@ -1,0 +1,23 @@
+{
+ "id": "swim_gasp",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_gasp_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A teenage boy bursting up out of the water and gasping desperately for air, two or three ragged loud breaths in, water splashing, close",
+  "duration_seconds": 2.0
+ },
+ "hash": "41e0c2f0af2e",
+ "fal_request_id": "01a19394-541b-7433-81c5-2cf683f1d67d",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a115/qzOIShQ48p_Sm0eiCiAux_sound_effect.mp3",
+ "created": "2026-10-31T20:08:57Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "d16de5a2f6b76412179afd655b2fc13630169c4d6aa4f95102d9d3da097509e9",
+ "seconds": 1.98,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

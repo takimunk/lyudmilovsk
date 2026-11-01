@@ -1,0 +1,23 @@
+{
+ "id": "swim_inhale",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/swim/swim_inhale_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A teenage boy taking one quick deep breath in through the mouth before diving under water, close, dry, no other sounds",
+  "duration_seconds": 1.2
+ },
+ "hash": "ac57d773f58f",
+ "fal_request_id": "01a19393-2dfe-7cd2-a91f-2bd2abf2c597",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a10e/sIfcZplNgxEk0qIcc4Pra_sound_effect.mp3",
+ "created": "2026-10-31T20:07:43Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "d89f3619cd325226b7355cf445946c3448a3e8186414c14a695e75834c22fbd4",
+ "seconds": 1.02,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "swim"
+}

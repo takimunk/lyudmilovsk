@@ -278,6 +278,10 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// the diary (ULyudGameScreen: taken out, opened, a page turned, shut)
 		{ TEXT("Diary"), TEXT("diary_take") }, { TEXT("Diary"), TEXT("diary_open") }, { TEXT("Diary"), TEXT("diary_close") },
 		{ TEXT("Diary"), TEXT("diary_page") }, { TEXT("Diary"), TEXT("diary_pages") },
+		// swimming and diving (ULyudSwimComponent)
+		{ TEXT("Swim"), TEXT("swim_stroke") }, { TEXT("Swim"), TEXT("swim_dive") }, { TEXT("Swim"), TEXT("swim_surface") },
+		{ TEXT("Swim"), TEXT("swim_inhale") }, { TEXT("Swim"), TEXT("swim_bubbles") }, { TEXT("Swim"), TEXT("swim_underwater") },
+		{ TEXT("Swim"), TEXT("swim_choke") }, { TEXT("Swim"), TEXT("swim_gasp") }, { TEXT("Swim"), TEXT("swim_cough") },
 	};
 	for (const auto& G : Groups)
 	{
