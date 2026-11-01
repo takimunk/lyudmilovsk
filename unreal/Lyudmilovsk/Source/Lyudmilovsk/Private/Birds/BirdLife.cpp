@@ -1547,9 +1547,9 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		const float Limit = S.Length * DrawLengths * R;
 		const float Fade = bSteady ? FMath::Clamp((Limit - Dist) / (Limit * 0.25f), 0.f, 1.f) : (Dist > Limit ? 0.f : 1.f);
 		Why[B.Id] = Fade <= 0.f ? 4 : 5;
-		if (Fade <= 0.f || (B.Act == EAct::Peck && P.Z < -4350.0))
+		if (Fade <= 0.f || (B.Act == EAct::Peck && P.Z < World.SeaZ * 100.f - 50.f))
 		{
-			continue;            // too small to see, or a cormorant under water
+			continue;            // too small to see, or a cormorant under water (a gull pecking at the tide's edge is not)
 		}
 		Why[B.Id] = 0;
 		const bool bHadBody = BodyOf(B.Id) != nullptr;

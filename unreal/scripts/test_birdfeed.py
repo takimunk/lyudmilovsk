@@ -68,10 +68,29 @@ def report(w):
     return " | ".join(keep)[:600]
 
 
+def lured(w):
+    """The birds at the feed: species and metres from the hero, nearest first."""
+    x, y, z = st["feet"]
+    out = []
+    for i in birds(w).find_birds_near(unreal.Vector(x, y, z), 2500.0):
+        r = birds(w).get_bird(i)
+        b = r[1] if isinstance(r, tuple) and r[0] else (r if not isinstance(r, tuple) else None)
+        if b:
+            d = ((b.location.x - x) ** 2 + (b.location.y - y) ** 2) ** 0.5 / 100.0
+            out.append((d, str(b.species_id), str(b.activity).split(".")[-1].split(":")[0], b.location))
+    return out
+
+
 def view_from_side(w, dist=750.0, up=280.0, side_yaw=200.0):
     """A free camera dist cm off the hero, looking at their feet (the ring of birds round them)."""
     x, y, z = st["feet"]
     import math
+    near = [b for b in lured(w) if b[0] < 12.0]
+    if near:
+        # behind the birds, looking over them at the hero
+        bx = sum(b[3].x for b in near) / len(near)
+        by = sum(b[3].y for b in near) / len(near)
+        side_yaw = math.degrees(math.atan2(by - y, bx - x))
     a = math.radians(side_yaw)
     cx, cy, cz = x + math.cos(a) * dist, y + math.sin(a) * dist, z + up
     look = unreal.MathLibrary.find_look_at_rotation(unreal.Vector(cx, cy, cz), unreal.Vector(x, y, z + 40.0))
@@ -96,6 +115,12 @@ def s_start(w):
 
 
 # --- perches: one minute with the check off, one with it on, an audit after each (near the club's garden and here) ---
+@step
+def s_quick(w):
+    if os.environ.get("BIRDFEED_QUICK"):
+        st["i"] = next(i for i, (f, _) in enumerate(STEPS) if getattr(f, "__name__", "") == "s_feed")
+
+
 @step
 def s_perch_off(w):
     cmd(w, "lyud.Birds.PerchCheck 0")
@@ -130,7 +155,7 @@ def s_perch_on_audit(w):
 # --- the feed in the hand at the Academgorodok ---
 @step
 def s_feed(w):
-    cmd(w, "lyud.Birds.Time 9 30")
+    cmd(w, "lyud.Birds.Time 12 0")
     place(w, ACADEM[0], ACADEM[1], -12, 0)
     cmd(w, "Inventory.Give %s 5" % FEED)
     cmd(w, "Inventory.Equip %s" % FEED)
@@ -138,15 +163,16 @@ def s_feed(w):
     log("holding %s" % FEED)
 
 
-for _k in range(12):
+for _k in range(8):
     def _watch(w, k=_k):
         log("feed +%2ds: at the hand %d %s" % ((k + 1) * 5, birds(w).num_at_feed(False), report(w)))
-        if k in (3, 7, 11):
+        log("  near the hero: " + ", ".join("%s %s %.1fm" % (b[1], b[2], b[0]) for b in lured(w)[:16]))
+        if k in (3, 7):
             view_from_side(w)
     step(_watch, 2.0)
 
     def _snap(w, k=_k):
-        if k in (3, 7, 11):
+        if k in (3, 7):
             shot(w, "feed_%02ds_side" % ((k + 1) * 5))
     step(_snap, 3.0)
 
@@ -160,6 +186,21 @@ def s_feed_eyes(w):
 @step
 def s_feed_eyes_shot(w):
     shot(w, "feed_eyes")
+
+
+# --- the palm: one of the waiting birds comes to it ---
+@step
+def s_offer(w):
+    view_from_side(w, 420.0, 160.0, 160.0)
+    cmd(w, "Tame.Offer 1")
+    st["offer_t"] = st["t"]
+
+
+for _k in range(10):
+    def _offer(w, k=_k):
+        log("palm +%2ds: at the hand %d %s" % ((k + 1) * 4, birds(w).num_at_feed(False), report(w)))
+        shot(w, "palm_%02ds" % ((k + 1) * 4))
+    step(_offer, 4.0)
 
 
 # --- flying round the player: the ring of birds keeps coming and going; through-the-body count with the swerve off, then on ---
@@ -191,21 +232,6 @@ def intrusions(w):
     r = birds(w).report()
     i = r.find("through the player ")
     return int(r[i + len("through the player "):].split(";")[0].split(" ")[0]) if i >= 0 else -1
-
-
-# --- the palm: one of the waiting birds comes to it ---
-@step
-def s_offer(w):
-    view_from_side(w, 420.0, 160.0, 160.0)
-    cmd(w, "Tame.Offer 1")
-    st["offer_t"] = st["t"]
-
-
-for _k in range(8):
-    def _offer(w, k=_k):
-        log("palm +%2ds: at the hand %d %s" % ((k + 1) * 4, birds(w).num_at_feed(False), report(w)))
-        shot(w, "palm_%02ds" % ((k + 1) * 4))
-    step(_offer, 4.0)
 
 
 @step
