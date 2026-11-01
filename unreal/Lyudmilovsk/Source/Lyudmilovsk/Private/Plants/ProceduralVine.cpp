@@ -98,6 +98,38 @@ namespace
 	}
 
 	/**
+	 * One simple palmate blade (m: Boston ivy's three lobes), its stalk joining at Base in the blade's middle, the
+	 * middle lobe along M, facing Bn: a fan round the stalk's point, cupped back a little (fewer rim points far away).
+	 */
+	void AddPalmate(FLeafMesh& D, const FPlantLeafShape& L, float Length, const FVector3f& Base, const FVector3f& M, const FVector3f& Bn, int32 Lod)
+	{
+		const FVector3f Side = FVector3f::CrossProduct(Bn, M).GetSafeNormal();
+		const int32 N = Lod == 0 ? 26 : (Lod == 1 ? 12 : 6);
+		const int32 Lobes = FMath::Max(L.Lobes, 1);
+		// the side lobes stand ~65 degrees off the middle one; the rim runs round to the sinus at the stalk
+		const float Spread = Lobes > 1 ? 0.36f * PI : 0.f, Spacing = Lobes > 1 ? 2.f * Spread / (Lobes - 1) : PI;
+		const float Mid = (Lobes - 1) * 0.5f, Back = 0.8f * PI, Shoulder = Spread + 0.5f * Spacing;
+		// PlantMeshes::BuildLeafDetail draws a palmate leaf's veins 1.44 pi / (Lobes - 1) apart: map the lobes onto them
+		const float TexScale = Lobes > 1 ? (1.44f * PI / (Lobes - 1)) / Spacing : 1.f;
+		const int32 C = D.Add((Base + Bn * (L.Fold * Length * 0.3f)) * 100.f, Bn, Side, FVector2f(0.5f, 0.5f));
+		for (int32 I = 0; I <= N; I++)
+		{
+			const float Phi = -Back + 2.f * Back * I / N;
+			const int32 K = FMath::Clamp(FMath::RoundToInt((Phi + Spread) / Spacing), 0, Lobes - 1);
+			const float LobeLen = Mid > 0.f ? 1.f - 0.22f * FMath::Abs(K - Mid) / Mid : 1.f;
+			const float Cc = FMath::Clamp(1.f - FMath::Abs(Phi - (-Spread + K * Spacing)) / (Spacing * 0.5f), 0.f, 1.f);
+			float R = Length * LobeLen * ((1.f - L.LobeDepth) + L.LobeDepth * FMath::Pow(Cc, 1.4f));
+			const float Beyond = FMath::Clamp((FMath::Abs(Phi) - Shoulder) / FMath::Max(Back - Shoulder, 0.01f), 0.f, 1.f);
+			R *= 1.f - 0.55f * FMath::Pow(Beyond, 1.5f);
+			const float X = FMath::Sin(Phi) * R * L.Width * 0.9f, Y = FMath::Cos(Phi) * R;
+			const FVector3f P = Base + Side * X + M * Y - Bn * (0.12f * Length * FMath::Square(R / Length));
+			const float PhiT = FMath::Clamp(Phi * TexScale, -0.95f * PI, 0.95f * PI);
+			D.Add(P * 100.f, Bn, Side, FVector2f(0.5f + FMath::Sin(PhiT) * R / (2.2f * Length), 0.5f - FMath::Cos(PhiT) * R / (2.2f * Length)));
+			if (I > 0) D.Tris.Add(FIntVector3(C, C + I, C + I + 1));
+		}
+	}
+
+	/**
 	 * The vine's leaf cluster in instance space (cm): Z out of the wall, Y down the wall. Each leaf's stalk rises
 	 * out of the wall and bends down; its blade faces out and a little up, the leaflets fanned around a point.
 	 */
@@ -136,7 +168,8 @@ namespace
 				const float Phi = Leaflets > 1 ? FMath::DegreesToRadians(72.f) * (K - Mid) / FMath::Max(Mid, 1.f) : 0.f;
 				const FVector3f M = (Ay * FMath::Cos(Phi) + Ax * FMath::Sin(Phi)).GetSafeNormal();
 				const float Len = L.Length * Scale * (Leaflets > 1 ? 1.f - 0.38f * FMath::Square((K - Mid) / FMath::Max(Mid, 1.f)) : 1.f);
-				AddLeaflet(D, L, Len, Tip + M * 0.006f, M, Bn, Lod);
+				if (L.Form == EPlantLeafForm::Palmate && Leaflets == 1) AddPalmate(D, L, Len, Tip, M, Bn, Lod);
+				else AddLeaflet(D, L, Len, Tip + M * 0.006f, M, Bn, Lod);
 			}
 		}
 		// every triangle faces the blade's way (Unreal's front face: (P2 - P0) x (P1 - P0))
@@ -265,6 +298,9 @@ AProceduralVine::AProceduralVine()
 		L->NumCustomDataFloats = 1;
 		L->SetWorldPositionOffsetDisableDistance(2500); // the leaves flutter near the camera only
 		OutdoorLighting(L);
+		// they flutter (WPO): no Lumen cards or distance fields for them (perf checklist)
+		L->bAffectDistanceFieldLighting = false;
+		L->bAffectDynamicIndirectLighting = false;
 		LeafComponents.Add(L);
 	}
 	Berries = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Berries"));
@@ -273,6 +309,8 @@ AProceduralVine::AProceduralVine()
 	Berries->bDisableCollision = true;
 	Berries->SetCastShadow(false);
 	OutdoorLighting(Berries);
+	Berries->bAffectDistanceFieldLighting = false;
+	Berries->bAffectDynamicIndirectLighting = false;
 }
 
 AProceduralVine::~AProceduralVine() = default;
@@ -360,6 +398,7 @@ bool AProceduralVine::TraceWall(const FVector& From, const FVector& To, FHitResu
 {
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(VineGrow), true, this);
 	const FCollisionObjectQueryParams Objects(ECC_WorldStatic);
+	bTracePassedSlippery = false;
 	for (int32 Try = 0; Try < 4; Try++)
 	{
 		TraceCount++;
@@ -371,9 +410,10 @@ bool AProceduralVine::TraceWall(const FVector& From, const FVector& To, FHitResu
 		bool bSlippery = C && Slippery.Contains(C);
 		if (C && !bSlippery)
 		{
-			// glass is too smooth for the adhesive pads: a translucent surface is never held
+			// glass is too smooth for the adhesive pads: a translucent surface is never held; nor is anything that
+			// moves (a door leaf: the leaves would be left floating when it opens)
 			const UMaterialInterface* M = C->GetMaterial(0);
-			if (M && M->GetBlendMode() != BLEND_Opaque && M->GetBlendMode() != BLEND_Masked)
+			if (C->Mobility == EComponentMobility::Movable || (M && M->GetBlendMode() != BLEND_Opaque && M->GetBlendMode() != BLEND_Masked))
 			{
 				Slippery.Add(C);
 				bSlippery = true;
@@ -383,6 +423,7 @@ bool AProceduralVine::TraceWall(const FVector& From, const FVector& To, FHitResu
 		{
 			return true;
 		}
+		bTracePassedSlippery = true;
 		Q.AddIgnoredComponent(C);
 	}
 	return false;
@@ -407,8 +448,14 @@ AProceduralVine::EMove AProceduralVine::MoveOnSurface(const FVector& P, const FV
 	const FVector A = P + N * Off;
 	const FVector B = A + D * StepCm;
 	FHitResult Hit;
-	// something in the way (an inner corner, a sill, a cornice's underside): carry on over it
-	if (TraceWall(A, B + D * 2.f, Hit) && FVector::DotProduct(Hit.ImpactNormal, D) < -0.2f)
+	// something in the way (an inner corner, a sill, a cornice's underside): carry on over it. Glass or a door leaf
+	// in the way is the edge of a hole: never through it (along a window's reveal into the room)
+	const bool bAhead = TraceWall(A, B + D * 2.f, Hit);
+	if (bTracePassedSlippery)
+	{
+		return EMove::Opening;
+	}
+	if (bAhead && FVector::DotProduct(Hit.ImpactNormal, D) < -0.2f)
 	{
 		OutP = Hit.ImpactPoint;
 		OutN = Hit.ImpactNormal;
@@ -416,8 +463,9 @@ AProceduralVine::EMove AProceduralVine::MoveOnSurface(const FVector& P, const FV
 		OutD = Nd.SizeSquared() > 0.04f ? Nd.GetSafeNormal() : OnPlane(N, OutN).GetSafeNormal(UE_SMALL_NUMBER, N);
 		return EMove::Ok;
 	}
-	// the same surface, or one bending gently away
-	if (TraceWall(B, B - N * (Off + Depth), Hit) && FVector::DotProduct(Hit.ImpactNormal, N) > 0.3f)
+	// the same surface, or one bending gently away; not a face sunk well behind it (a window or door frame set back
+	// in its hole: that is the hole's edge, below)
+	if (TraceWall(B, B - N * (Off + Depth), Hit) && !bTracePassedSlippery && FVector::DotProduct(Hit.ImpactNormal, N) > 0.3f && FVector::DotProduct(Hit.ImpactPoint - P, N) > -8.f)
 	{
 		OutP = Hit.ImpactPoint;
 		OutN = Hit.ImpactNormal;
@@ -436,7 +484,7 @@ AProceduralVine::EMove AProceduralVine::MoveOnSurface(const FVector& P, const FV
 	}
 	// an outer corner: the face round it, looking back toward where the shoot came from
 	const FVector W = B - N * (Off + 4.f);
-	if (TraceWall(W, W - D * (StepCm * 1.5f), Hit) && FVector::DotProduct(Hit.ImpactNormal, D) > 0.4f)
+	if (TraceWall(W, W - D * (StepCm * 1.5f), Hit) && !bTracePassedSlippery && FVector::DotProduct(Hit.ImpactNormal, D) > 0.4f)
 	{
 		OutP = Hit.ImpactPoint;
 		OutN = Hit.ImpactNormal;
@@ -468,7 +516,21 @@ void AProceduralVine::StartGrowth()
 		RootP = Hit.ImpactPoint;
 		FHitResult Ground;
 		RootP.Z = TraceWall(RootP + RootN * 6.f, RootP + RootN * 6.f - FVector(0, 0, 300.f), Ground) ? Ground.ImpactPoint.Z + 2.f : At.Z;
+		// the foot of the wall may stand proud of it (a plinth), or start a little above the ground: the root goes
+		// on the lowest face there is
+		for (const float Up : { 8.f, 25.f, 45.f })
+		{
+			FHitResult Foot;
+			const FVector Low = RootP + FVector(0, 0, Up);
+			if (TraceWall(Low + RootN * 60.f, Low - RootN * 30.f, Foot) && FVector::DotProduct(Foot.ImpactNormal, RootN) > 0.5f)
+			{
+				RootP = FVector(Foot.ImpactPoint.X, Foot.ImpactPoint.Y, RootP.Z + Up - 8.f);
+				RootN = OnPlane(Foot.ImpactNormal, FVector::UpVector).GetSafeNormal(UE_SMALL_NUMBER, RootN);
+				break;
+			}
+		}
 	}
+	UE_LOG(LogVine, Log, TEXT("%s (%s): root at %s facing %s, %.0f cm over its actor"), *GetName(), *Species.ToString(), *RootP.ToCompactString(), *RootN.ToCompactString(), RootP.Z - At.Z);
 	FNode& Root = Nodes.AddDefaulted_GetRef();
 	Root.P = RootP;
 	Root.N = RootN;
@@ -776,7 +838,8 @@ void AProceduralVine::EnsureMeshes()
 	{
 		LeafComponents[K]->SetCullDistances(0, (int32)LeafCullDistance);
 	}
-	Berries->SetCullDistances(0, (int32)FMath::Min(LeafCullDistance, 6000.f));
+	// 6 mm berries (engine spheres) are lost to sight past ~15 m
+	Berries->SetCullDistances(0, (int32)FMath::Min(LeafCullDistance, 1500.f));
 	Wood->SetCachedMaxDrawDistance(FarWood);
 	Wood->LDMaxDrawDistance = FarWood;
 }
@@ -954,8 +1017,15 @@ FString AProceduralVine::DescribeState() const
 {
 	float Age, Day;
 	CurrentTarget(Age, Day);
-	return FString::Printf(TEXT("%s age %.2f day %.1f growth %.2f (simulated to %.2f): %d/%d steps, %d shoots, %d tips left, %d leaf clusters, %d berries, ~%.1f m2 of wall, wraps %d slides %d hangs %d; sim %.1f ms, %d traces"),
-		*Species.ToString(), Age, Day, ShownG, SimulatedTo, LastLiveNodes, Nodes.Num(), Shoots.Num(), Tips.Num(), LastLeaves, LastBerries, LastArea, Wraps, Slides, Hangs, SimSeconds * 1000.0, SimTraces);
+	// memory: the stems' mesh, the leaf and berry instances (render and game copies), the growth record
+	const double WoodKb = WoodMesh ? WoodMesh->GetResourceSizeBytes(EResourceSizeMode::EstimatedTotal) / 1024.0 : 0.0;
+	double InstKb = Berries->GetResourceSizeBytes(EResourceSizeMode::EstimatedTotal) / 1024.0;
+	for (UHierarchicalInstancedStaticMeshComponent* L : LeafComponents) InstKb += L->GetResourceSizeBytes(EResourceSizeMode::EstimatedTotal) / 1024.0;
+	SIZE_T SimBytes = Nodes.GetAllocatedSize() + Shoots.GetAllocatedSize() + Tips.GetAllocatedSize() + Taken.GetAllocatedSize();
+	for (const FShoot& Sh : Shoots) SimBytes += Sh.Nodes.GetAllocatedSize();
+	const double SimKb = SimBytes / 1024.0;
+	return FString::Printf(TEXT("%s age %.2f day %.1f growth %.2f (simulated to %.2f): %d/%d steps, %d shoots, %d tips left, %d leaf clusters, %d berries, ~%.1f m2 of wall, wraps %d slides %d hangs %d; sim %.1f ms, %d traces; memory stems %.0f KB, instances %.0f KB, growth %.0f KB"),
+		*Species.ToString(), Age, Day, ShownG, SimulatedTo, LastLiveNodes, Nodes.Num(), Shoots.Num(), Tips.Num(), LastLeaves, LastBerries, LastArea, Wraps, Slides, Hangs, SimSeconds * 1000.0, SimTraces, WoodKb, InstKb, SimKb);
 }
 
 void AProceduralVine::OnConstruction(const FTransform& Transform)

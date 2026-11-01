@@ -65,11 +65,64 @@ namespace
 		S.AutumnLeafColourLate = FLinearColor(0.66f, 0.17f, 0.012f); // scarlet and orange last
 		return V;
 	}
+
+	/**
+	 * Boston ivy, Parthenocissus tricuspidata (девичий виноград триостренный): the vine that drapes old arches and
+	 * gateways. Simple glossy three-lobed leaves, 10..20 cm, on long stalks that hold them out from the wall,
+	 * overlapping like shingles into a flat close mat; climbs by short tendrils with adhesive discs, 1..2 m a summer
+	 * (slower and closer than Virginia creeper). Bronze-red when young, wine-red, purple and orange from early
+	 * October, the last leaves gone by mid-November; small blue-black berries.
+	 */
+	FVineSpecies BostonIvy()
+	{
+		FVineSpecies V = VirginiaCreeper();
+		V.Name = TEXT("BostonIvy");
+		FPlantSpecies& S = V.Plant;
+		S.Name = V.Name;
+		// one blade: three broad lobes, the middle one longest, shallow teeth
+		S.Leaf.Form = EPlantLeafForm::Palmate;
+		S.Leaf.Length = 0.1f;
+		S.Leaf.Width = 1.05f;
+		S.Leaf.Lobes = 3;
+		S.Leaf.LobeDepth = 0.42f;
+		S.Leaf.Teeth = 5;
+		S.Leaf.TeethDepth = 0.06f;
+		S.Leaf.Fold = 0.06f;
+		S.Leaf.PerCluster = 3;
+		V.Leaflets = 1;
+		V.PetioleLength = 0.085f;
+		V.LeafChance = 0.95f;
+		S.Sway = 2.f;
+		// a tighter mat: slower, more side shoots, closer spacing
+		V.Speed = 1.7f;
+		V.Spacing = 0.16f;
+		V.BranchSpacing = 0.32f;
+		V.BranchChance = 0.9f;
+		V.Wobble = 0.5f;
+		V.SideUpPull = 0.25f;
+		V.MaxReach = 7.f;
+		V.MaxHeight = 13.f;
+		V.FreeLength = 0.55f;
+		S.FruitChance = 0.18f;
+		S.FruitSize = 0.006f;
+		// colours a little later than the creeper and holds its leaves longer
+		S.BudBreakDay = 128.f;
+		S.FullLeafDay = 155.f;
+		S.ColourStartDay = 266.f;
+		S.ColourFullDay = 292.f;
+		S.LeafDropStartDay = 292.f;
+		S.BareDay = 322.f;
+		S.SpringLeafColour = FLinearColor(0.2f, 0.12f, 0.03f);   // bronze-red young leaves
+		S.SummerLeafColour = FLinearColor(0.03f, 0.095f, 0.02f); // dark glossy green
+		S.AutumnLeafColour = FLinearColor(0.26f, 0.012f, 0.03f);  // wine-red and purple first
+		S.AutumnLeafColourLate = FLinearColor(0.6f, 0.11f, 0.015f); // then scarlet and orange
+		return V;
+	}
 }
 
 const TArray<FVineSpecies>& VineSpeciesLibrary::All()
 {
-	static const TArray<FVineSpecies> Species = { VirginiaCreeper() };
+	static const TArray<FVineSpecies> Species = { VirginiaCreeper(), BostonIvy() };
 	return Species;
 }
 

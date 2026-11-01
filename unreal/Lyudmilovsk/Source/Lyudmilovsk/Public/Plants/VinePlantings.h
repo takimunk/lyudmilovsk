@@ -13,7 +13,8 @@ class AProceduralVine;
  * lyud.Academ hides it with the house).
  *
  * Now: Virginia creeper at the two end bays of the courtyard (west) face of Novikova 1 in the
- * Academgorodok (the square's front is kept clear).
+ * Academgorodok (the square's front is kept clear), and Boston ivy over the south gate's two arches and
+ * the house walls beside them, on the street and the yard faces.
  */
 UCLASS()
 class LYUDMILOVSK_API UVinePlantings : public UWorldSubsystem

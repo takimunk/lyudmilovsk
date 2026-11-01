@@ -1,5 +1,5 @@
 """Offscreen shots of the climbing vines (AProceduralVine, planted by UVinePlantings on Novikova 1's
-courtyard face) in Lvl_Scene01: each shot puts the camera at a spot, holds every vine at an age and day
+courtyard face and over the south gate's arches) in Lvl_Scene01: each shot puts the camera at a spot, holds every vine at an age and day
 (Vine.ShowAt), waits for the growth to be simulated and drawn, logs "VINESHOT <name>" with frame times
 and the vines' state (Vine.Report), and takes a HighResShot.
 
@@ -24,8 +24,37 @@ S_CLOSE = ((-11.5, -25.0, 1.6), (-6.4, -27.5, 2.6))
 S_CORNER = ((-17.0, -40.0, 2.0), (-6.0, -30.0, 6.0))
 YARD = ((-48.0, 0.0, 3.0), (-7.0, 0.0, 8.0))
 FAR = ((-140.0, -5.0, 8.0), (-7.0, 0.0, 8.0))
+# the south gate (Boston ivy over both arches, VinePlantings.cpp): its line runs north at x ~ 9 from Maksimova 8's
+# corner (y -45.3) to Novikova 1's (y -29.9); the arches are at y -43.8 and -31.4
+G_STREET = ((24.0, -38.5, 1.7), (9.0, -37.8, 4.0))
+G_YARD = ((-6.0, -37.0, 1.7), (9.0, -37.8, 4.0))
+G_FAR = ((46.0, -40.0, 2.5), (9.0, -37.5, 5.0))
+G_CLOSE_N1 = ((13.2, -32.6, 1.6), (9.4, -31.0, 2.8))
+G_CLOSE_M8 = ((4.6, -42.2, 1.6), (8.6, -44.6, 2.8))
+G_ARCH_UP = ((12.2, -43.8, 1.0), (9.6, -43.84, 4.3))
+G_PASSAGE = ((11.4, -31.43, 1.6), (4.0, -31.43, 1.8))
+G_CORNER = ((15.5, -50.0, 1.7), (10.0, -45.0, 4.5))
 # (name, (camera, target), console commands): the first holds the oldest age, so the growth is simulated once
 SHOTS = [
+    ("g_street", G_STREET, ["Vine.ShowAt"]),                  # the calendar: late October
+    ("g_yard", G_YARD, ["Vine.ShowAt"]),
+    ("g_far", G_FAR, ["Vine.ShowAt"]),
+    ("g_close_n1", G_CLOSE_N1, ["Vine.ShowAt"]),
+    ("g_close_m8", G_CLOSE_M8, ["Vine.ShowAt"]),
+    ("g_arch_up", G_ARCH_UP, ["Vine.ShowAt"]),
+    ("g_passage", G_PASSAGE, ["Vine.ShowAt"]),
+    ("g_corner", G_CORNER, ["Vine.ShowAt"]),
+    ("g_street_summer", G_STREET, ["Vine.ShowAt 14.6 200"]),
+    ("g_close_summer", G_CLOSE_N1, ["Vine.ShowAt 14.6 200"]),
+    ("g_street_sept", G_STREET, ["Vine.ShowAt 14.7 272"]),
+    ("g_street_winter", G_STREET, ["Vine.ShowAt 15.1 30"]),
+    ("g_gab_on", G_STREET, ["Vine.ShowAt", "lyud.Vines 1"]),
+    ("g_gab_off", G_STREET, ["lyud.Vines 0"]),
+    ("g_gab_close_on", G_CLOSE_N1, ["lyud.Vines 1"]),
+    ("g_gab_close_off", G_CLOSE_N1, ["lyud.Vines 0"]),
+    ("g_gab_yard_on", G_YARD, ["lyud.Vines 1"]),
+    ("g_gab_yard_off", G_YARD, ["lyud.Vines 0"]),
+
     ("s_oct", S_WIDE, ["Vine.ShowAt"]),                       # the calendar: late October
     ("s_close_oct", S_CLOSE, ["Vine.ShowAt"]),
     ("s_corner_oct", S_CORNER, ["Vine.ShowAt"]),

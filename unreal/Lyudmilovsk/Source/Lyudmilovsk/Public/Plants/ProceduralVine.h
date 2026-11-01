@@ -157,6 +157,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> BerryMaterial;
 	/** Translucent surfaces found while growing (glass): never held. */
 	mutable TSet<TWeakObjectPtr<const UPrimitiveComponent>> Slippery;
+	/** The last TraceWall went through one of them (glass, a door leaf) on its way. */
+	mutable bool bTracePassedSlippery = false;
 
 	TArray<FNode> Nodes;
 	TArray<FShoot> Shoots;
