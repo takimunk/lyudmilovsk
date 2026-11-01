@@ -60,10 +60,10 @@ an `ALyudSky`; `lyud.Food.Stalls 0` leaves them out). Not in the level: a scene 
 
 | Stall | Where | Seller | Hours | Goods |
 |---|---|---|---|---|
-| Adyghe cheese tent (red and white) | 7.8 m east of the path, 11.5 m out of the club's door, front to the path | Сусанна Хуажева (54), `work_cheese` | 10–20, closed Mondays | braid 25, small round 40, big round 110 |
+| Adyghe cheese tent (red and white) | on the flat forecourt by the club's door, 4.7 m east of it and 5.6 m out, front to the path | Аслан Хуажев (56), `work_cheese` | 10–20, closed Mondays | braid 25, small round 40, big round 110 |
 | Boiled corn cart (yellow umbrella) | the Academgorodok's square, 14.5 m north of the fountain, front to it | Валентина Гусева (67), `work_corn` | 11–18 daily | corn 15 |
 
-Sellers: `people.json` (bodies `Khuazheva_susanna`, `Guseva_valentina` don't exist yet: they are shown by the `Girl_a` and
+Sellers: `people.json` (bodies `Khuazhev_aslan`, `Guseva_valentina` don't exist yet: they are shown by the `Clerk` and
 `Girl_b` models until generated), `activities.json`, `counters.json` (T trades while they are at work), lines in the strings
 and `npc_dialogue.txt`.
 

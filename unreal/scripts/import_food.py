@@ -120,8 +120,13 @@ def import_signs():
     """The stalls' signs, one picture per language: /Game/Food/Localized/<lang>/T_FoodSign_<name> and M_FoodSign (Image),
     the material of every FoodSign_<name> slot; ULyudStallSubsystem sets the picture of the game's language."""
     n = 0
-    for lang in ("ru", "en", "ja"):
+    # twice: the first texture a fresh Interchange process imports can vanish (docs/academgorodok gotcha); the second pass
+    # only redoes what is missing
+    for attempt in range(2):
+      for lang in ("ru", "en", "ja"):
         for src in sorted(glob.glob(os.path.join(EXPORT, "signs", lang, "T_FoodSign_*.png"))):
+            if attempt and eal.does_asset_exist("%s/Localized/%s/%s" % (DEST, lang, os.path.basename(src)[:-4])):
+                continue
             t = unreal.AssetImportTask()
             t.filename = src
             t.destination_path = "%s/Localized/%s" % (DEST, lang)

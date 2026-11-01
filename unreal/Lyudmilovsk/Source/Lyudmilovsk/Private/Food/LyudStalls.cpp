@@ -120,6 +120,7 @@ void ULyudStallSubsystem::ApplySigns()
 			UMaterialInterface* Base = C->GetMaterial(Index);
 			if (!Tex || !Base)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Stalls: sign %s has no picture (%d) or material (%d)"), *S, Tex ? 1 : 0, Base ? 1 : 0);
 				continue;
 			}
 			UMaterialInstanceDynamic* MID = Cast<UMaterialInstanceDynamic>(Base);
@@ -129,6 +130,7 @@ void ULyudStallSubsystem::ApplySigns()
 				C->SetMaterial(Index, MID);
 			}
 			MID->SetTextureParameterValue(TEXT("Image"), Tex);
+			UE_LOG(LogTemp, Display, TEXT("Stalls: sign %s -> %s on %s"), *S, *Tex->GetPathName(), *Base->GetName());
 		}
 	}
 }
