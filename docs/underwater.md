@@ -31,7 +31,8 @@ rebuild (`unreal/scripts/build_scene01.sh`).
 beach, 11 m under the datum (bed at map Z -54.0, Unreal -5400 cm), so 6.5 m deep at the lowest spring water and 9 m at
 neaps' low. It lies between the railway's bank (y -60) and the next tidal channel north (y ~270); the nearest stones are a
 cobble field ~40 m east. From the spring-low waterline it is a ~110 m swim, from the high-water line ~440 m. The bed is kept
-plain sand 30 m round it (fading out to 45 m).
+plain sand 30 m round it (fading out to 45 m); the hatch thread cuts its 2x2 m terrain hole there (`Content/Europa/europa.json`),
+and nothing of the seabed life grows, lies or settles within 4 m of it (`ULyudSeabedComponent::HabitatAt`).
 
 ## Plants (the plant system: `Private/Plants/PlantAlga.cpp`)
 
@@ -90,6 +91,11 @@ the instances and the fish are freed. The weed and stones are rebuilt only when 
 their instances in place every frame (no render state rebuild), out of Lumen and the distance fields, without shadows.
 Console: `lyud.SeaLife 0`, `lyud.SeaLife.Fish 0`, `lyud.SeaLife.Motes 0`, `lyud.SeaLife.Density`, `lyud.SeaLife.Debug 1`,
 `lyud.Current.Speed <m/s>` (forced along the coast), `lyud.Seabed 0`, `lyud.Seabed.Radius <m>`.
+
+Measured 2026-11-01 (offscreen, the shared Mac under load, so absolute times are high): the bench route with
+`lyud.SeaLife 0; lyud.Seabed 0` against everything on, one process, two rounds: 0% everywhere (hall to flight: the life is
+idle out of the water). In an eelgrass meadow by a reef, 9 m down, ~400 fish round the eye: 55-65 ms with everything,
+57 ms with no underwater life at all (`UWTEST_PERF=1`), within the run's noise.
 
 ## Checks
 
