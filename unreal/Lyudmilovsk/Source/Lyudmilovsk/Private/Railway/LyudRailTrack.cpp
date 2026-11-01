@@ -567,6 +567,7 @@ void ALyudRailTrack::BuildIsland(const TSharedPtr<FJsonObject>& Built)
 			Plant->Species = Sp;
 			Plant->Seed = 1000 + N;
 			Plant->AgeAtStart = Sp == TEXT("DunePine") ? Rnd.FRandRange(18.f, 45.f) : Rnd.FRandRange(8.f, 20.f);
+			Plant->bDemoGrowth = false;   // the class default is the time-lapse: grown to 30 in two minutes, re-shaped every half second
 			Plant->FinishSpawning(FTransform(FRotator(0.0, Rnd.FRandRange(0.0, 360.0), 0.0), Hit.ImpactPoint));
 			N++;
 		}

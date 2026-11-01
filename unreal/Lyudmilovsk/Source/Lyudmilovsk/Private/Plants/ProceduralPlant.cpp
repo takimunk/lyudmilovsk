@@ -22,6 +22,10 @@
 #include "Plants/TreeBakeCache.h"
 #include "StaticMeshResources.h"
 #include "UObject/ConstructorHelpers.h"
+#include "HAL/IConsoleManager.h"
+
+static TAutoConsoleVariable<float> CVarPlantShapeBudget(TEXT("lyud.Plants.ShapeBudgetMs"), 3.f,
+	TEXT("Milliseconds a frame the live plants spend re-shaping (one always runs); the rest wait for the next frames. Running past a garden turned dozens from their bake to the full shape in one frame: a freeze of a minute."));
 
 namespace
 {
@@ -1118,9 +1122,22 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	{
 		return;
 	}
+	// every live plant shares a re-shaping budget a frame; past it, a plant tries again next frame (SinceUpdate stays due)
+	static uint64 BudgetFrame = 0;
+	static double BudgetUsedMs = 0.0;
+	if (BudgetFrame != GFrameCounter)
+	{
+		BudgetFrame = GFrameCounter;
+		BudgetUsedMs = 0.0;
+	}
+	if (BudgetUsedMs > CVarPlantShapeBudget.GetValueOnGameThread())
+	{
+		return;
+	}
 	SinceUpdate = 0.f;
 	const float Age = GetAge(), Day = CurrentDay();
 	bool bSummary = WantsSummary();
+	const bool bFar = bSummary;
 	bool bNewBake = false;
 	if (bSummary)
 	{
@@ -1132,11 +1149,21 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 		if (!bShownSummary) bSummary = Far && Far->Mesh;
 	}
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
-	const bool bChanged = bSummary != bShownSummary || FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f || bLitterDirty || bNewBake;
-	const bool bWoodDue = !bSummary && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
+	// far with no bake yet (a time-lapse asks for a new one at every year): keep the shape it has, unseen at this distance
+	const bool bFarWaiting = bFar && !bSummary && !bShownSummary && WoodAge >= 0.f;
+	const bool bChanged = bSummary != bShownSummary || (!bFarWaiting && (FMath::Abs(Age - ShownAge) > 0.01f || FMath::Abs(Day - ShownDay) > 0.25f)) || bLitterDirty || bNewBake;
+	const bool bWoodDue = !bSummary && !bFarWaiting && SinceWood >= WoodUpdateInterval && FMath::Abs(Age - WoodAge) > 0.001f;
 	if (bChanged || bWoodDue)
 	{
+		const FString Why = FString::Printf(TEXT("summary %d/%d age %.4f/%.4f/%.4f day %.3f/%.3f litter %d wood %d bake %d"), bSummary ? 1 : 0, bShownSummary ? 1 : 0, Age, ShownAge, WoodAge, Day, ShownDay, bLitterDirty ? 1 : 0, bWoodDue ? 1 : 0, bNewBake ? 1 : 0);
+		const double T0 = FPlatformTime::Seconds();
 		Apply(Age, Day, bSummary, bWoodDue);
+		const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+		BudgetUsedMs += Ms;
+		if (Ms > 50.0)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Plant: re-shaping %s (%s) took %.0f ms (%s)"), *GetName(), *GetSpecies().Name.ToString(), Ms, *Why);
+		}
 		if (bWoodDue)
 		{
 			SinceWood = 0.f;

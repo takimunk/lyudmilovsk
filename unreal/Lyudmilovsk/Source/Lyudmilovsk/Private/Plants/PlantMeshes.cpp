@@ -1,4 +1,5 @@
 #include "Plants/PlantMeshes.h"
+#include "Engine/World.h"
 
 #include "Engine/StaticMesh.h"
 #include "Misc/FileHelper.h"
@@ -70,6 +71,14 @@ namespace
 		for (const FIntVector3& T : D.Tris)
 		{
 			MD.CreateTriangle(PG, { Inst[T.X], Inst[T.Y], Inst[T.Z] });
+		}
+		// in play a re-shape builds a new mesh rather than over the one drawn: rebuilding a mesh with render resources makes
+		// the engine look through every static mesh component, flush the render thread and wait for the GPU (a poplar
+		// growing in the time-lapse stalled ~0.1-3 s every half second); the old one is collected once nothing draws it
+		const UWorld* World = Outer ? Outer->GetWorld() : nullptr;
+		if (Mesh && Mesh->AreRenderingResourcesInitialized() && World && World->IsGameWorld())
+		{
+			Mesh = nullptr;
 		}
 		if (!Mesh)
 		{
