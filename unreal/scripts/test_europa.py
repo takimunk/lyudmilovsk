@@ -243,6 +243,156 @@ import os
 if os.environ.get("EUROPATEST_ONLY") == "europa":
     PLAN = [(30.0, start), (31.0, lambda w: eu(w).go_europa()), (34.0, look_planet), (36.0, lambda w: shot(w, "europa_planet")),
             (36.5, lambda w: report(w)), (37.0, lambda w: S.update(phase="done"))]
+elif os.environ.get("EUROPATEST_ONLY") == "moon":
+    # the Moon's look (docs/europa.md): the ground from eye level and from above, the planet with its town turned
+    # toward us and away, the stars, a lead's water, a ladder climbed hand over hand (a free-standing one on the ice,
+    # watched from the side and from the eyes). MOON_HOUR_ON / MOON_HOUR_OFF pin the hour offsets (else searched).
+    M = {"on": None, "off": None, "h": -12}
+
+    def find_hours(w):
+        # step the sky's hour until the town faces Europa and until it doesn't
+        if M["h"] > 12:
+            return
+        cmd(w, "lyud.SkyHourOffset %d" % M["h"])
+
+    def note_hour(w):
+        f = eu(w).is_island_facing()
+        rep = str(eu(w).report())
+        up = float(rep.split("up ")[1].split(" ")[0]) if "up " in rep else 0.0
+        # the hour the town faces Europa most squarely
+        if f and up > M.get("best", 0.0):
+            M["best"] = up
+            M["on"] = M["h"]
+        if not f and M["off"] is None:
+            M["off"] = M["h"]
+        M["h"] += 2
+
+    def hour(w, which):
+        h = os.environ.get("MOON_HOUR_" + which.upper())
+        h = int(h) if h else M[which]
+        log("hour offset for island %s: %s" % (which, h))
+        cmd(w, "lyud.SkyHourOffset %s" % (h if h is not None else 0))
+
+    def look(w, yaw, pitch):
+        pc(w).set_control_rotation(unreal.Rotator(0.0, pitch, yaw))
+
+    def ground_at(w, x, y):
+        s = eu(w).get_site().get_actor_location()
+        a, b = unreal.Vector(s.x + x, s.y + y, s.z + 30000.0), unreal.Vector(s.x + x, s.y + y, s.z - 30000.0)
+        hit = unreal.SystemLibrary.line_trace_single(w, a, b, unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [pawn(w)],
+                                                     unreal.DrawDebugTrace.NONE, True)
+        z = hit.to_tuple()[4].z if hit else s.z
+        return unreal.Vector(s.x + x, s.y + y, z + 120.0)
+
+    def go(w, x, y):
+        pawn(w).set_actor_location(ground_at(w, x, y), False, True)
+
+    def look_dir(w, d, down=0.0):
+        pc(w).set_control_rotation(unreal.Rotator(0.0, math.degrees(math.asin(max(-1, min(1, d.z)))) - down, math.degrees(math.atan2(d.y, d.x))))
+
+    P = [(30.0, start), (30.5, lambda w: cmd(w, "lyud.Europa.Fast 0")), (31.0, lambda w: eu(w).go_europa())]
+    t = 32.0
+    for k in range(13):
+        P.append((t, find_hours))
+        P.append((t + 0.8, note_hour))
+        t += 1.2
+    P += [(t, lambda w: hour(w, "on")), (t + 2.0, look_planet), (t + 4.0, lambda w: shot(w, "earth_island_facing")),
+          (t + 4.3, report), (t + 4.5, lambda w: look_dir(w, eu(w).planet_direction(), 30.0)),
+          (t + 6.0, lambda w: shot(w, "earth_over_ground"))]
+    t += 7.0
+    P += [(t, lambda w: hour(w, "off")), (t + 2.0, look_planet), (t + 4.0, lambda w: shot(w, "earth_ocean_only")), (t + 4.3, report)]
+    t += 5.0
+    # the stars: straight up and away from the sun
+    P += [(t, lambda w: look(w, 300.0, 70.0)), (t + 2.0, lambda w: shot(w, "stars_up")), (t + 2.5, lambda w: look(w, 30.0, 25.0)),
+          (t + 4.0, lambda w: shot(w, "stars_horizon"))]
+    t += 5.0
+    # Europa's day: its sun up (its day is a month long: step the hour by two days at a time)
+    D = {"h": 0, "day": None}
+
+    def sky_actor(w):
+        return unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudSky)[0]
+
+    def find_day(w):
+        if D["day"] is None:
+            cmd(w, "lyud.SkyHourOffset %d" % D["h"])
+
+    def note_day(w):
+        if D["day"] is None:
+            alt = sky_actor(w).sun_altitude()
+            log("hour offset %d: Europa's sun at %.1f deg" % (D["h"], alt))
+            if 18.0 < alt < 50.0:
+                D["day"] = D["h"]
+            D["h"] += 48
+
+    def day(w):
+        h = os.environ.get("MOON_HOUR_DAY")
+        h = int(h) if h else (D["day"] if D["day"] is not None else 0)
+        log("hour offset for Europa's day: %d (sun at %.1f)" % (h, sky_actor(w).sun_altitude()))
+        cmd(w, "lyud.SkyHourOffset %d" % h)
+
+    for k in range(16):
+        P += [(t, find_day), (t + 0.8, note_day)]
+        t += 1.2
+    P += [(t, day), (t + 2.0, look_planet), (t + 4.0, lambda w: shot(w, "earth_day")), (t + 4.3, report)]
+    t += 5.0
+    # frame time on the ice by day (ms over ~4 s; a busy shared machine: compare only within one run)
+    FT = {"n": 0, "s": 0.0, "on": False}
+
+    def ft_on(w):
+        FT.update(on=True, n=0, s=0.0)
+
+    def ft_off(w):
+        FT["on"] = False
+        log("frame time on Europa by day: %.1f ms over %d frames" % (1000.0 * FT["s"] / max(FT["n"], 1), FT["n"]))
+    S["ft"] = FT
+    P += [(t, lambda w: look(w, 125.0, -4.0)), (t + 1.0, ft_on), (t + 5.0, ft_off)]
+    t += 5.5
+    # the ground at eye level all round, and a wide look from high over the hatch
+    for i, yaw in enumerate((0.0, 60.0, 125.0, 190.0, 250.0, 310.0)):
+        P += [(t, lambda w, yaw=yaw: look(w, yaw, -4.0)), (t + 1.5, lambda w, i=i: shot(w, "ground_eye_%d" % i))]
+        t += 2.0
+    for i, (x, y, yaw) in enumerate(((-12000.0, -3000.0, 160.0), (26000.0, 52000.0, 230.0), (3000.0, -30000.0, 80.0))):
+        P += [(t, lambda w, x=x, y=y: go(w, x, y)), (t + 3.0, lambda w, yaw=yaw: look(w, yaw, -6.0)),
+              (t + 4.5, lambda w, i=i: shot(w, "ground_far_%d" % i))]
+        t += 5.0
+    P += [(t, lambda w: eu(w).go_europa()), (t + 1.0, lambda w: cmd(w, "lyud.Hero.ViewBehind 9000")),
+          (t + 2.0, lambda w: look(w, 300.0, -28.0)), (t + 5.0, lambda w: shot(w, "ground_wide")),
+          (t + 5.5, lambda w: look(w, 125.0, -22.0)), (t + 8.0, lambda w: shot(w, "ground_wide_planet")),
+          (t + 8.5, lambda w: cmd(w, "lyud.Hero.ViewBehind 0"))]
+    t += 9.0
+    # the near lead: from its rim, looking down into the water
+    def at_lead(w):
+        # the near lead from Content/Europa/moon.json: on its rim, looking across and down into it
+        import json
+        with open(os.path.join(unreal.Paths.convert_relative_path_to_full(unreal.Paths.project_content_dir()), "Europa", "moon.json")) as f:
+            lead = json.load(f)["water"][0]
+        c, st = lead["centre_cm"], lead["strike"]
+        n = (-st[1], st[0])
+        off = lead["half_width_cm"] * 0.6 + 900.0
+        p = ground_at(w, c[0] + n[0] * off + st[0] * 6000.0, c[1] + n[1] * off + st[1] * 6000.0)
+        pawn(w).set_actor_location(p, False, True)
+        M["lead"] = unreal.Vector(-n[0], -n[1], 0.0)
+    P += [(t, at_lead), (t + 3.0, lambda w: look_dir(w, M["lead"], 20.0)), (t + 4.5, lambda w: shot(w, "water_lead")),
+          (t + 5.0, lambda w: look_dir(w, M["lead"], 38.0)), (t + 6.5, lambda w: shot(w, "water_lead_down"))]
+    t += 7.0
+    # a ladder on the ice, climbed hand over hand
+    P += [(t, lambda w: eu(w).go_europa()), (t + 1.0, lambda w: look(w, 0.0, 0.0)), (t + 1.5, lambda w: cmd(w, "lyud.Ladder.Spawn 16 70")),
+          (t + 2.5, lambda w: cmd(w, "lyud.Ladder.Grab")), (t + 3.5, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0.2"))]
+    t += 4.0
+    for i in range(6):
+        P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 260")), (t + 0.05, lambda w: look(w, pawn(w).get_actor_rotation().yaw + 90.0, 5.0)),
+              (t + 0.3, lambda w, i=i: shot(w, "ladder_side_%d" % i)), (t + 0.35, lambda w: cmd(w, "lyud.Ladder.Report"))]
+        t += 0.45
+    body = lambda w: pawn(w).get_actor_rotation().yaw
+    P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 110")), (t + 0.05, lambda w: look(w, body(w) + 25.0, 30.0)),
+          (t + 0.3, lambda w: shot(w, "ladder_hands_shoulder")), (t + 0.35, lambda w: cmd(w, "lyud.Hero.ViewBehind 0"))]
+    t += 0.5
+    P += [(t, lambda w: cmd(w, "lyud.Hero.ViewBehind 0")), (t + 0.05, lambda w: look(w, body(w), 15.0)), (t + 0.3, lambda w: shot(w, "ladder_hands_fpv")),
+          (t + 0.6, lambda w: look(w, body(w), -60.0)), (t + 0.9, lambda w: shot(w, "ladder_feet_fpv")),
+          (t + 1.0, lambda w: cmd(w, "lyud.Ladder.AutoClimb 0"))]
+    t += 1.5
+    P += [(t, report), (t + 0.5, lambda w: S.update(phase="done"))]
+    PLAN = P
 elif os.environ.get("EUROPATEST_ONLY") == "hatch":
     PLAN = [(30.0, start), (31.0, at_hatch), (31.2, lambda w: report(w)), (31.5, look_lid), (32.0, lambda w: report(w)),
             (33.0, lambda w: report(w)), (34.0, lambda w: action(w, "open_sea")), (34.5, lambda w: S.update(phase="done"))]
@@ -253,6 +403,9 @@ def tick(dt):
     if not w:
         return
     try:
+        if S.get("ft") and S["ft"]["on"]:
+            S["ft"]["n"] += 1
+            S["ft"]["s"] += dt
         dt = min(dt, 0.25)
         S["t"] += dt
         if S["phase"] == "quit":

@@ -73,6 +73,7 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	float WalkClipSpeed = 290.f, JogClipSpeed = 580.f;
 	FHeroReachPose Reach;
 	FBikeRiderPose Bike;
+	FBikeRiderPose Ladder;
 	/** How far the hips go down in a full crouch, cm. */
 	static constexpr float CrouchDrop = 34.f;
 
@@ -102,6 +103,9 @@ public:
 
 	/** On a bicycle or leading one by the bars (UHeroBikeComponent every frame; Weight 0 leaves the body alone). */
 	FBikeRiderPose Bike;
+
+	/** On a ladder (ULyudLadderClimber every frame): hands round the rungs, feet on them; Weight 0 leaves the body alone. */
+	FBikeRiderPose Ladder;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimSequence> Idle;

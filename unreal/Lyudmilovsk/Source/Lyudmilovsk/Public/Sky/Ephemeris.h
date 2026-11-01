@@ -26,4 +26,10 @@ namespace LyudEphemeris
 	LYUDMILOVSK_API FSkyPosition Moon(const FDateTime& Utc, double LatitudeDeg, double LongitudeDeg, double* PhaseFraction = nullptr);
 	/** Local hour angles of the sun and the moon (geocentric), degrees 0..360 west of the meridian: what drives the tide. */
 	LYUDMILOVSK_API void HourAngles(const FDateTime& Utc, double LongitudeDeg, double& SunHaDeg, double& MoonHaDeg);
+	/** Geocentric unit vectors toward the sun and the moon in the equatorial frame of the date (x toward the equinox,
+	 *  z toward the celestial north pole): what the moon's own sky is worked out from (ULyudEuropaSubsystem). */
+	LYUDMILOVSK_API FVector SunEquatorial(const FDateTime& Utc);
+	LYUDMILOVSK_API FVector MoonEquatorial(const FDateTime& Utc);
+	/** Local sidereal time at a longitude, degrees 0..360 (0 longitude: Greenwich's): how far the Earth has turned. */
+	LYUDMILOVSK_API double SiderealDeg(const FDateTime& Utc, double LongitudeDeg);
 }

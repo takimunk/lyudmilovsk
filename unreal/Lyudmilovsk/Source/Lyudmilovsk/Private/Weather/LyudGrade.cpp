@@ -148,7 +148,7 @@ void ULyudGradeSubsystem::Tick(float DeltaTime)
 	S.ColorContrast = Tint(1.f - 0.5f * F, 1.f - 0.5f * F, 1.f - 0.5f * F);
 
 	// indoors it eases out over a few seconds (the eye's own adaptation is ALyudSky's)
-	Outdoor = FMath::FInterpConstantTo(Outdoor, Sky->IsPlayerOutdoors() ? 1.f : 0.f, DeltaTime, 0.35f);
+	Outdoor = FMath::FInterpConstantTo(Outdoor, Sky->IsPlayerOutdoors() && !Sky->IsSpaceView() ? 1.f : 0.f, DeltaTime, 0.35f);
 	Grade->BlendWeight = Outdoor * (K > 0.f ? 1.f : 0.f);
 
 	// the sky's haze as a factor for ALyudSky's own Mie (it owns MieScatteringScale): crisp dry air, a little milkier

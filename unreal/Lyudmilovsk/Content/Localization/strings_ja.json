@@ -1072,6 +1072,7 @@
  "ui.europa.enter_sea": "[E] ハッチを降りる",
  "ui.europa.climb_sea": "[E] 海へ上る",
  "ui.europa.climb_europa": "[E] もう一つのはしごを上る",
+ "ui.ladder.climb": "[E] はしごにつかまる（W/Sで上下、スペースで離す）",
  "ui.europa.console": "[E] エアロック：ボタンを押す",
  "ui.europa.open_europa": "[E] ハッチを開ける",
  "ui.europa.enter_europa": "[E] 下へ戻る",

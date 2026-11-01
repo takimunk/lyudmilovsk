@@ -27,8 +27,9 @@ sys.path.insert(0, os.path.join(REPO, "tools", "sky"))
 import europa_bake as EB  # noqa: E402  (vnoise / fbm on 3D points)
 
 SEED = 4417
-# the island on the planet (degrees): a little north of the equator on the face that turns toward Europa's sky
-ISLAND_LON, ISLAND_LAT = 0.0, 18.0
+# the island on the planet (degrees): where the town really is (ALyudSky's place), so the planet seen from Europa turns
+# it into view only while Europa stands over the town's horizon (ALyudEuropaSite::SkyAt)
+ISLAND_LON, ISLAND_LAT = 20.40, 54.96
 ISLAND_SIZE = 5.0          # degrees across, roughly
 
 
@@ -228,7 +229,19 @@ def planet(w=2048, h=1024):
     belt = 0.45 + 0.25 * np.exp(-((np.abs(latd) - 45) / 18) ** 2) + 0.15 * np.exp(-(latd / 8) ** 2)
     cover = smooth(0.62 - 0.25 * belt, 0.85 - 0.2 * belt, c)
     cover *= smooth(ISLAND_SIZE * 0.9, ISLAND_SIZE * 3.0, ang)
-    save_rgb("T_EU_clouds.png", np.repeat(cover[..., None], 3, -1))
+    # G: the town's lights on the island's night side (a few warm clusters along its coast and one bright centre)
+    lights = np.zeros_like(cover)
+    rng = np.random.default_rng(SEED + 70)
+    for k in range(9):
+        a = rng.uniform(0, 2 * math.pi)
+        rr = ISLAND_SIZE * (0.05 if k == 0 else rng.uniform(0.15, 0.4))
+        clat = ISLAND_LAT + rr * math.sin(a)
+        clon = ISLAND_LON + rr * math.cos(a) / math.cos(math.radians(ISLAND_LAT))
+        C = np.array([math.cos(math.radians(clat)) * math.cos(math.radians(clon)),
+                      math.cos(math.radians(clat)) * math.sin(math.radians(clon)), math.sin(math.radians(clat))])
+        d = np.degrees(np.arccos(np.clip((P * C).sum(-1), -1, 1)))
+        lights = np.maximum(lights, (1.0 if k == 0 else rng.uniform(0.35, 0.7)) * np.exp(-(d / (ISLAND_SIZE * (0.22 if k == 0 else 0.12))) ** 2))
+    save_rgb("T_EU_clouds.png", np.stack([cover, np.clip(lights, 0, 1), cover], -1))
 
 
 def main():

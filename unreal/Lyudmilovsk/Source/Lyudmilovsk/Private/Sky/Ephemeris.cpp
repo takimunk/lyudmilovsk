@@ -166,3 +166,32 @@ void LyudEphemeris::HourAngles(const FDateTime& Utc, double LongitudeDeg, double
 	RaDec(Lon, Lat, D, Ra, Dec);
 	MoonHaDeg = Rev(Lst - Ra);
 }
+
+namespace
+{
+	FVector EquatorialUnit(double Lon, double Lat, double D)
+	{
+		double Ra, Dec;
+		RaDec(Lon, Lat, D, Ra, Dec);
+		return FVector(CosD(Dec) * CosD(Ra), CosD(Dec) * SinD(Ra), SinD(Dec));
+	}
+}
+
+FVector LyudEphemeris::SunEquatorial(const FDateTime& Utc)
+{
+	const double D = DayNumber(Utc);
+	return EquatorialUnit(SunLongitude(D), 0.0, D);
+}
+
+FVector LyudEphemeris::MoonEquatorial(const FDateTime& Utc)
+{
+	const double D = DayNumber(Utc);
+	double Lon, Lat, R;
+	MoonEcliptic(D, Lon, Lat, R);
+	return EquatorialUnit(Lon, Lat, D);
+}
+
+double LyudEphemeris::SiderealDeg(const FDateTime& Utc, double LongitudeDeg)
+{
+	return SiderealTime(DayNumber(Utc), LongitudeDeg, Utc);
+}

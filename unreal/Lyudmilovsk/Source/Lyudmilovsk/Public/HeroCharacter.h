@@ -80,6 +80,8 @@ public:
 	bool IsLeadingBike() const;
 	/** The way the body faces (a bike turns it). */
 	void SetBodyYaw(float Yaw) { BodyYaw = Yaw; }
+	/** Keep the body at its yaw whatever the look (on a ladder: ULyudLadderClimber). */
+	void HoldBodyYaw(bool bHold) { bBodyYawHeld = bHold; }
 	/** The seat's frame in the world now (identity when not seated). */
 	FTransform SeatWorld() const;
 
@@ -147,6 +149,7 @@ private:
 	void FeedAnimation(float DeltaSeconds);
 
 	float BodyYaw = 0.f;
+	bool bBodyYawHeld = false;
 	/** Eyes relative to the actor while standing upright (cached when no reach bends the body). */
 	FVector StandEyeOffset = FVector(10.f, 0.f, 66.f);
 	double Distance = 0.0;

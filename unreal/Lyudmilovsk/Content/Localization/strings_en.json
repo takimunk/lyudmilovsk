@@ -1072,6 +1072,7 @@
  "ui.europa.enter_sea": "[E] Climb down into the hatch",
  "ui.europa.climb_sea": "[E] Climb up to the sea",
  "ui.europa.climb_europa": "[E] Climb the other ladder",
+ "ui.ladder.climb": "[E] Take hold of the ladder (W/S up/down, Space to let go)",
  "ui.europa.console": "[E] Airlock: press the button",
  "ui.europa.open_europa": "[E] Open the hatch",
  "ui.europa.enter_europa": "[E] Climb back down",

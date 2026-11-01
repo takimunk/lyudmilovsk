@@ -227,6 +227,18 @@ float ALyudSky::MoonSizeNowDeg() const
 	return FMath::Clamp(Pin > 0.f ? Pin : MoonSizeDeg, 0.1f, 40.f);
 }
 
+FSkyPosition ALyudSky::PositionOf(const FVector& World) const
+{
+	const FVector D = World.GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
+	const FVector North = FRotator(0.0, NorthYawDeg, 0.0).RotateVector(FVector(0.0, 1.0, 0.0));
+	const FVector East = FVector::CrossProduct(FVector::UpVector, North);
+	FSkyPosition P;
+	P.AltitudeDeg = FMath::RadiansToDegrees(FMath::Asin(FMath::Clamp(D.Z, -1.0, 1.0)));
+	const double Az = FMath::RadiansToDegrees(FMath::Atan2(FVector::DotProduct(D, East), FVector::DotProduct(D, North)));
+	P.AzimuthDeg = Az < 0.0 ? Az + 360.0 : Az;
+	return P;
+}
+
 FVector ALyudSky::BearingDirection(double BearingDeg) const
 {
 	const double B = FMath::DegreesToRadians(BearingDeg);
@@ -300,6 +312,14 @@ void ALyudSky::UpdateSky()
 	const FDateTime Utc = ShownTime() - FTimespan::FromHours(UtcOffsetHours);
 	SunPos = LyudEphemeris::Sun(Utc, LatitudeDeg, LongitudeDeg);
 	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhaseEphemeris);
+	if (bSpaceView && SpaceObserver)
+	{
+		// seen from another world: its own sky (the planet takes the moon's place, its light stays off)
+		FVector S = FVector::UpVector, P = FVector::UpVector;
+		SpaceObserver(Utc, S, P);
+		SunPos = PositionOf(S);
+		MoonPos = PositionOf(P);
+	}
 
 	// a directional light shines along its forward axis: from the body toward the ground
 	SunLight->SetWorldRotation((-WorldDirection(SunPos.EastNorthUp())).Rotation());
@@ -315,12 +335,14 @@ void ALyudSky::UpdateSky()
 	// a low sun: the atmosphere alone leaves its light weak and the scene flat and grey; the eye adapts to it and the
 	// lit faces still glow warm against long deep shadows, so its light is kept up, the sky light down, its mirror
 	// image on the sea stronger (the glitter path), and the haze's forward glow stronger
-	const float Low = LowSun() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
+	const float Low = bSpaceView ? 0.f : LowSun() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
 	// a flare on the star: up to a quarter brighter and whiter at a big one's peak (ALyudRareSky), a little for the
 	// activity's everyday flares (ULyudSunActivity)
 	const float Flare = FMath::Max(FlareBoost, ActivityFlare * ActivityFlareLight / 0.25f);
-	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt) * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare) * OvercastSunScale);
-	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare) * Sunset.LightTint);
+	// with no air the light goes as the disk sinks behind the horizon, and no cloud dims it or sunset tints it
+	const float SunUp = bSpaceView ? SmoothStep01(-0.5f * SunAngularDiameterDeg, 0.5f * SunAngularDiameterDeg, SunAlt) : SmoothStep01(-12.f, -4.f, SunAlt);
+	SunLight->SetIntensity(SunIlluminance * SunUp * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare) * (bSpaceView ? 1.f : OvercastSunScale));
+	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare) * (bSpaceView ? FLinearColor::White : Sunset.LightTint));
 	// the clouds get only LowSunCloudLight of that extra light, and the sky and the haze over the land (the aerial
 	// perspective) none: lit by the boosted light they paled to the disk's brightness, the clouds drawn over it and the
 	// haze round it washing the setting star out
@@ -435,6 +457,11 @@ void ALyudSky::SetSpaceView(bool bOn)
 		return;
 	}
 	bSpaceView = bOn;
+	// the dome's own stars stay home: the space has its own (ALyudEuropaSite's star field)
+	if (SkyMID)
+	{
+		SkyMID->SetScalarParameterValue(TEXT("StarBrightness"), bOn ? 0.f : StarBrightness);
+	}
 	Atmosphere->SetVisibility(!bOn);
 	Clouds->SetVisibility(!bOn);
 	UExponentialHeightFogComponent* F = HeightFog.Get();
@@ -765,7 +792,7 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 	const float Moonless = FMath::Clamp(-FMath::Log2(MoonLight01 + 0.03f) / 4.f, 0.f, MoonlessExposureEV);
 	// by day the eye adapts too: under a thick overcast and to a low winter sun (the weather's cloud, eased)
 	float Opacity = 0.f;
-	if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+	if (const ULyudWeatherSubsystem* Weather = bSpaceView ? nullptr : ULyudWeatherSubsystem::Get(this))
 	{
 		const LyudWeather::FWeatherState& W = Weather->GetModelState();
 		Opacity = 1.f - (1.f - W.Low.Cover * FMath::Clamp(W.Low.Density * 1.2f, 0.f, 1.f)) * (1.f - 0.7f * W.Mid.Cover * W.Mid.Density);

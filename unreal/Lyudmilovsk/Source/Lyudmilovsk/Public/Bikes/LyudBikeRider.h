@@ -53,6 +53,8 @@ struct FBikeRiderPose
 		FVector PalmNormal = -FVector::ZAxisVector;
 		FVector FingerDir = FVector::YAxisVector;
 		float Weight = 0.f;
+		/** How far the fingers close round the bar: 1 until they touch it, 0 open (a hand on its way to the next rung). */
+		float Close = 1.f;
 	};
 	FHand Hands[2];    // left, right
 

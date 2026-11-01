@@ -52,7 +52,8 @@ def import_textures():
             a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
             a.set_editor_property("srgb", False)
         elif f == "T_EU_clouds.png":
-            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+            # R the cover, G the town's lights
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
             a.set_editor_property("srgb", False)
         if "planet" in f or "clouds" in f:
             a.set_editor_property("address_y", unreal.TextureAddress.TA_CLAMP)
@@ -225,6 +226,7 @@ float3 v = normalize(V);
 float ndl = dot(n, l);
 float3 alb = Albedo.SampleLevel(AlbedoSampler, UV, 0).rgb;
 float c = Clouds.SampleLevel(CloudsSampler, UV + float2(T * 0.0004, 0.0), 0).r;
+float town = Clouds.SampleLevel(CloudsSampler, UV, 0).g;
 float3 surf = lerp(alb, float3(0.93, 0.94, 0.96), c);
 float lit = saturate(ndl);
 float3 col = surf * SunLight.rgb * lit;
@@ -234,9 +236,9 @@ col += float3(0.05, 0.11, 0.26) * SunLight.rgb * saturate(ndl + 0.1) * (0.6 + 0.
 // the sun's glint on the open sea
 float3 h = normalize(l + v);
 col += SunLight.rgb * pow(saturate(dot(n, h)), 160.0) * (1.0 - c) * 0.35 * step(0.0, ndl);
-// a thin blue rim of air, lit on the day side and a little past the terminator
-float rim = pow(1.0 - saturate(dot(n, v)), 4.0);
-col += float3(0.25, 0.5, 1.0) * rim * SunLight.rgb * 0.45 * saturate(ndl + 0.3);
+// the town's lights on the night side, under clear sky (the air round it is M_EU_PlanetAir, a shell of its own)
+float night = 1.0 - smoothstep(-0.12, 0.04, ndl);
+col += float3(1.0, 0.62, 0.3) * town * night * (1.0 - c) * Lights;
 return col * Gain;
 """
 
@@ -251,7 +253,7 @@ def planet():
     clo = g.node(X.MaterialExpressionTextureObjectParameter, parameter_name="Clouds", texture=tex("T_EU_clouds"))
     c = g.custom(PLANET_HLSL, [("UV", uv), ("P", pos), ("C", ctr), ("V", cam), ("SunDir", (g.vector("SunDir", (0.3, 0.2, 0.9, 0)), "RGBA")),
                                ("SunLight", (g.vector("SunLight", (12.7, 10.5, 8.6, 0)), "RGBA")), ("T", g.node(X.MaterialExpressionTime)),
-                               ("Gain", g.scalar("Gain", 2.2)), ("Albedo", alb), ("Clouds", clo)])
+                               ("Gain", g.scalar("Gain", 2.2)), ("Lights", g.scalar("Lights", 5.0)), ("Albedo", alb), ("Clouds", clo)])
     g.out(c, unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     return g.finish()
 
@@ -356,4 +358,5 @@ def main():
     log("kit: %d meshes into %s" % (n, MESHES))
 
 
-main()
+if __name__ == "__main__" and not os.environ.get("EUROPA_AS_MODULE"):
+    main()

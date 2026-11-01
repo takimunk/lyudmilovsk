@@ -1072,6 +1072,7 @@
  "ui.europa.enter_sea": "[E] Спуститься в люк",
  "ui.europa.climb_sea": "[E] Подняться к морю",
  "ui.europa.climb_europa": "[E] Подняться по второй лестнице",
+ "ui.ladder.climb": "[E] Взяться за лестницу (W/S — вверх/вниз, пробел — отпустить)",
  "ui.europa.console": "[E] Шлюз: нажать кнопку",
  "ui.europa.open_europa": "[E] Открыть люк",
  "ui.europa.enter_europa": "[E] Спуститься обратно",

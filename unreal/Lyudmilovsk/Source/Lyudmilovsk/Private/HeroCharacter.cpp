@@ -23,6 +23,7 @@
 #include "HeroShadowMesh.h"
 #include "LyudInventory.h"
 #include "Sea/LyudSwim.h"
+#include "World/LyudLadder.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
@@ -200,6 +201,11 @@ void AHeroCharacter::OnJumpPressed()
 		StandUp();
 		return;
 	}
+	// on a ladder Space lets go (ULyudLadderSubsystem); a scripted climb ignores it
+	if (const ULyudLadderClimber* Climber = FindComponentByClass<ULyudLadderClimber>(); Climber && Climber->IsOnLadder())
+	{
+		return;
+	}
 	Jump();
 }
 
@@ -211,6 +217,12 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 	{
 		// pedals, brakes and bars
 		Bike->SetMoveInput(V);
+		return;
+	}
+	if (ULyudLadderClimber* Climber = FindComponentByClass<ULyudLadderClimber>(); Climber && Climber->IsPlayerClimbing())
+	{
+		// W and S climb
+		Climber->SetClimbInput(V.Y);
 		return;
 	}
 	if (IsSeated())
@@ -247,6 +259,10 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 	if (IsSeated())
 	{
 		KeepSeated();
+	}
+	else if (bBodyYawHeld)
+	{
+		SetActorRotation(FRotator(0.f, BodyYaw, 0.f));
 	}
 	else if (!(Bike && Bike->IsOnBike()))
 	{

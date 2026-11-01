@@ -49,10 +49,9 @@ the hatch with it.
   room, inner lid, console (its screen a dynamic `M_EU_Screen`: `Level`, `Mode`), the water's disc, lamps, an underwater
   tint while the water goes down or up. Full, the room belongs to the sea (swimming, its underwater look); otherwise it is
   a dry zone.
-- `ALyudEuropaSite`: the ice disc, ice blocks, the ice-crusted collar, its lid, the shaft, the planet (`M_EU_Planet`, lit
-  by `ALyudSky`'s sun direction and light every half second; it hangs 35 degrees up on the side of the sky away from the
-  star, 15 degrees round, and follows it slowly, so its day side shows whatever the hour), a faint blue planetshine (lighting channel 2, Europa's
-  meshes only). Hidden unless the player is there.
+- `ALyudEuropaSite`: the ground (below), the ice-crusted collar, its lid, the shaft and its ladder, the planet with its air,
+  the star field, a faint blue planetshine (lighting channel 2, Europa's meshes only; as bright as the planet's lit share
+  seen from here). Hidden unless the player is there.
 - `ULyudEuropaSubsystem`: spawns both at play start (worlds with `ALyudSea` and `ALyudSky`; `lyud.Europa 0` leaves them
   out), polls E (never consumed) and sets the prompt, runs the climbs, switches Europa on and off by distance (a load on
   Europa comes back right), the line and the music.
@@ -63,6 +62,41 @@ Hooks in other systems (small on purpose): `ALyudSea::SetDryZone` / `IsInDryZone
 
 Console: `lyud.Europa.GoHatch`, `lyud.Europa.GoRoom`, `lyud.Europa.GoEuropa`, `lyud.Europa.Use` (= E),
 `lyud.Europa.Report`, `lyud.Europa.Fast 1` (climbs, lids and water five times faster).
+
+## The ground
+
+`tools/europa/moon_terrain.py` bakes it from `tools/europa/moon_terrain.json` (seed 2207 and every number; the same file
+gives the same ground: `Content/Europa/moon.json` pins the heights' SHA-1): a domain-warped ridged multifractal plain
+with ridged hummocks, ~80 crossing double ridges (younger over older) and cycloid chains, one 72 m double ridge with
+terraced flanks across the planet's side of the sky, three stepped fault scarps, a chaos field of tilted, drifted rafts
+of the old plain in a brown hummocky matrix (and a giant one beyond the walk that makes the skyline with far ridged
+massifs), two open leads (ice cliffs down to water), talus from thermal erosion on a 4 m grid kept mostly as fill, Europa's
+curve, ~1000 faceted boulders. Meshes: nested square levels of tiles (0.5 m spacing within 256 m, 2 m to 1 km, 8 m to the
+4.15 km disc, edges snapped to the coarser level, skirts) and a ring to 16 km; vertex colours carry the brown salts, fresh
+ice, frost and cavity for `M_EU_Terrain` (triplanar ice, strata in the cliffs: no UV seams). `unreal/scripts/import_moon.sh`
+imports them into `/Game/Europa/Moon` (Nanite; complex collision from the fallback mesh: 35 % of the near tiles'
+triangles, 50 % further; none on the skyline). The glb itself is not committed (rebuilt from the json in ~2 min).
+
+The leads' water is the sea's own material (`M_LyudSea`, single-layer water: depth, absorption, reflections) with a
+small table of slow ripples for 0.13 g and no depth map; its surface holds you up (no swimming on Europa).
+
+## The sky from Europa
+
+Europa keeps one face to the planet. The hatch stands at latitude 38, longitude -41 of its body frame (`moon.json`
+"site"; longitude 0 faces the planet), so the planet hangs still, 36 degrees up in the south-east. `ALyudEuropaSite::SkyAt`
+puts Europa where the ephemeris has the moon (`LyudEphemeris::MoonEquatorial`, the same as the coast's sky), its pole
+along its orbit's, and from there gives the sun's and the planet's directions, the planet's turn (its texture's
+longitudes are the Earth's, turned by sidereal time) and the stars' (the equator of the date). `ALyudSky::SetSpaceObserver`
+takes that sky in the space view: the star's disk, its light and shadows (it sets with its disk, no twilight), the day
+and the exposure follow Europa's own sky, which wheels round once a month. The island (`T_EU_planet_C`, at the town's
+real latitude and longitude, with its night lights in `T_EU_clouds` G) faces Europa only while Europa stands over the
+town's horizon; otherwise the planet shows ocean and clouds, and the hero's line waits for a look at the island.
+
+No air: no atmosphere, clouds (`ULyudCloudSubsystem` keeps them off, and the dome's high clouds), fog, grade or the dome's
+own stars. The stars are `M_EU_Space` on a 100 km sphere round the site (three procedural layers, the Milky Way band
+and bulge with dark lanes, each star twinkling subtly at its own beat, none over the star's disk). The planet's air is
+`M_EU_PlanetAir` on a shell 1.045 of its radius: single scattering, a blue glowing limb, a twilight ring past the
+terminator, nothing in its shadow.
 
 ## Assets
 

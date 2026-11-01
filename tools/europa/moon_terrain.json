@@ -1,0 +1,196 @@
+{
+ "_doc": "Europa's ground round the far hatch (tools/europa/moon_terrain.py; docs/europa.md 'The ground'). Every number that shapes it is here: the same file gives the same ground. Change a value, rerun the tool, re-import (unreal/scripts/import_moon.sh) and commit this file, Content/Europa/moon.json and the meshes together. Metres; x, y are Unreal's axes (x: west, y: north; the site's east is -x), z up; the hatch's lid seat at the origin.",
+ "seed": 2207,
+ "europa_radius_m": 1561000.0,
+ "site": {
+  "_doc": "Where the hatch is on Europa (body frame: longitude 0 faces the planet, the moon tidally locked): the planet stands where this puts it in the sky, for good.",
+  "lat_deg": 38.0,
+  "lon_deg": -41.0
+ },
+ "site_z": -0.35,
+ "apron": [
+  3.0,
+  11.0
+ ],
+ "plains": {
+  "amp": 13.0,
+  "wavelength": 640.0,
+  "octaves": 8,
+  "warp": 140.0,
+  "warp_wavelength": 900.0,
+  "ridged_offset": 1.0,
+  "ridged_gain": 2.1,
+  "fine_amp": 0.32,
+  "fine_wavelength": 7.0,
+  "fine_octaves": 4,
+  "hummock_amp": 6.0,
+  "hummock_wavelength": 150.0
+ },
+ "big_ridge": {
+  "_doc": "the double ridge across the planet's side of the sky",
+  "dist": 430.0,
+  "height": 72.0,
+  "half_sep": 165.0,
+  "crest_width": 70.0,
+  "length": 9000.0,
+  "terraces": 7,
+  "trough": 0.35
+ },
+ "lineae": {
+  "count": 70,
+  "extent": 9000.0,
+  "height": [
+   3.0,
+   22.0
+  ],
+  "spacing_k": 2.6,
+  "length": [
+   900.0,
+   6000.0
+  ],
+  "wander": 0.025,
+  "cycloids": 9,
+  "cycloid_arc": [
+   180.0,
+   420.0
+  ]
+ },
+ "scarps": [
+  {
+   "_doc": "a fault scarp near the hatch, stepped",
+   "at_bearing_deg": -58.0,
+   "dist": 290.0,
+   "strike_deg": 35.0,
+   "height": 38.0,
+   "steps": 4,
+   "riser": 7.0,
+   "length": 2600.0,
+   "up_side": 1
+  },
+  {
+   "at_bearing_deg": 160.0,
+   "dist": 2500.0,
+   "strike_deg": 75.0,
+   "height": 120.0,
+   "steps": 6,
+   "riser": 14.0,
+   "length": 7000.0,
+   "up_side": -1
+  },
+  {
+   "at_bearing_deg": 20.0,
+   "dist": 1600.0,
+   "strike_deg": -20.0,
+   "height": 55.0,
+   "steps": 3,
+   "riser": 9.0,
+   "length": 3000.0,
+   "up_side": 1
+  }
+ ],
+ "chaos": [
+  {
+   "_doc": "a field of broken, tilted, drifted rafts of the old plains in a hummocky matrix",
+   "at_bearing_deg": 32.0,
+   "dist": 900.0,
+   "radius": 620.0,
+   "drop": 16.0,
+   "cell": 95.0,
+   "small_cell": 38.0,
+   "raft_height": [
+    8.0,
+    40.0
+   ],
+   "tilt_deg": 11.0,
+   "cliff": 5.0
+  },
+  {
+   "at_bearing_deg": -150.0,
+   "dist": 7500.0,
+   "radius": 3200.0,
+   "drop": 30.0,
+   "cell": 260.0,
+   "small_cell": 90.0,
+   "raft_height": [
+    60.0,
+    380.0
+   ],
+   "tilt_deg": 9.0,
+   "cliff": 18.0
+  }
+ ],
+ "rifts": [
+  {
+   "_doc": "an open lead near the hatch: the ocean under the ice showing, black water between ice cliffs",
+   "at_bearing_deg": 105.0,
+   "dist": 150.0,
+   "strike_deg": 20.0,
+   "length": 640.0,
+   "half_width": 26.0,
+   "drop": 7.0,
+   "wall": 4.5,
+   "bed": 5.0
+  },
+  {
+   "at_bearing_deg": 70.0,
+   "dist": 1500.0,
+   "strike_deg": -30.0,
+   "length": 1800.0,
+   "half_width": 42.0,
+   "drop": 10.0,
+   "wall": 6.0,
+   "bed": 7.0
+  }
+ ],
+ "far": {
+  "_doc": "beyond the walk: massifs that make the skyline",
+  "start": 4600.0,
+  "amp": 420.0,
+  "wavelength": 5200.0,
+  "octaves": 6
+ },
+ "erosion": {
+  "cell": 4.0,
+  "iterations": 70,
+  "talus_deg": 34.0,
+  "rate": 0.22,
+  "keep_cut": 0.25,
+  "keep_fill": 0.85
+ },
+ "mesh": {
+  "_doc": "nested square levels of tiles (spacing m, half-size m, tile m) out to the disc, then a ring to the far skyline",
+  "levels": [
+   [
+    0.5,
+    256.0,
+    256.0
+   ],
+   [
+    2.0,
+    1024.0,
+    512.0
+   ],
+   [
+    8.0,
+    4096.0,
+    1024.0
+   ]
+  ],
+  "disc_radius": 4150.0,
+  "ring": [
+   3950.0,
+   16000.0,
+   1024
+  ],
+  "skirt": 0.6
+ },
+ "boulders": {
+  "count": 2600,
+  "radius": 1600.0,
+  "size": [
+   0.25,
+   5.5
+  ],
+  "seed_offset": 77
+ }
+}

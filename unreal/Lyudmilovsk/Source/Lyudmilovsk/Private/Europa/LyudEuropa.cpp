@@ -11,6 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
@@ -39,6 +40,9 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SOverlay.h"
 #include "Widgets/Text/STextBlock.h"
+#include "World/LyudLadder.h"
+#include "World/LyudPrefetch.h"
+#include "Sky/LyudSunGlare.h"
 
 namespace
 {
@@ -48,6 +52,8 @@ namespace
 	const TCHAR* PlanetLine = TEXT("line.hero.europa_planet.1");
 	const TCHAR* MusicPath = TEXT("/Game/Audio/Music/MU_europa_1.MU_europa_1");
 	const TCHAR* Meshes = TEXT("/Game/Europa/Meshes/");
+	/** The ground's meshes (unreal/scripts/import_moon.py). */
+	const TCHAR* MoonMeshes = TEXT("/Game/Europa/Moon/");
 
 	/** The kit's measures (Content/Europa/kit.json, blender/europa/europa_kit.py), cm in the hatch frame. */
 	struct FKitData
@@ -55,12 +61,27 @@ namespace
 		FVector SeaHinge = FVector(-70, 0, 5), InnerHinge = FVector(-250, 0, -325);
 		FVector EuropaShaft = FVector(-180, 0, 0), RoomCenter = FVector(-90, 0, 0);
 		float EuropaTop = -90.f, ShaftBBottom = -320.f, Floor = -580.f, Ceiling = -320.f, RoomRadius = 200.f;
-		float OpenRadius = 60.f, SiteZ = -35.f;
+		float OpenRadius = 60.f, SiteZ = -35.f, LadderOffset = 42.f;
 		FVector ConsoleAt = FVector(-90, 194, -580);
 		float ConsoleYaw = -90.f;
 		FVector Screen = FVector(-90, 160, -480);
 		TArray<FVector> Lamps;
 		bool bLoaded = false;
+
+		/** A shaft's ladder as europa_kit.py's ladder() makes it: the rung line LadderOffset toward +X of the shaft's
+		 *  axis, rungs every 30 cm from 25 cm over its foot while under the rails' top less 5 cm. Foot: the rung line
+		 *  at the shaft's floor, kit frame; the climber faces +X. */
+		void SetupLadder(ULyudLadderComponent* L, const FVector& Foot, float RailTop) const
+		{
+			L->SetRelativeLocationAndRotation(Foot, FRotator(0.f, 180.f, 0.f));
+			L->RungSpacing = 30.f;
+			L->FirstRungZ = 25.f;
+			L->RungCount = FMath::Max(1, FMath::CeilToInt((RailTop - 5.f - (Foot.Z + 25.f)) / 30.f));
+			L->HalfWidth = 22.5f;
+			L->RungRadius = 1.6f;
+			L->BodyStandoff = 26.f;
+			L->bInteractive = false;
+		}
 	};
 
 	TSharedPtr<FJsonObject> ReadJson(const FString& Rel)
@@ -109,6 +130,7 @@ namespace
 		K.RoomRadius = J->GetNumberField(TEXT("room_radius"));
 		K.OpenRadius = J->GetNumberField(TEXT("open_radius"));
 		K.SiteZ = J->GetNumberField(TEXT("site_z"));
+		K.LadderOffset = J->GetNumberField(TEXT("ladder_offset"));
 		if (const TSharedPtr<FJsonObject>* C = nullptr; J->TryGetObjectField(TEXT("console"), C))
 		{
 			K.ConsoleAt = Vec(*C, TEXT("at"), K.ConsoleAt);
@@ -129,9 +151,9 @@ namespace
 		return K;
 	}
 
-	UStaticMesh* Mesh(const TCHAR* Name)
+	UStaticMesh* Mesh(const TCHAR* Name, const TCHAR* Folder = Meshes)
 	{
-		const FString Path = FString(Meshes) + Name + TEXT(".") + Name;
+		const FString Path = FString(Folder) + Name + TEXT(".") + Name;
 		UStaticMesh* M = LoadObject<UStaticMesh>(nullptr, *Path);
 		if (!M)
 		{
@@ -262,6 +284,10 @@ ALyudAirlock::ALyudAirlock()
 	Underwater = CreateDefaultSubobject<UPostProcessComponent>(TEXT("Underwater"));
 	Underwater->SetupAttachment(RootComponent);
 	Underwater->bUnbound = true;
+	SeaLadder = CreateDefaultSubobject<ULyudLadderComponent>(TEXT("SeaLadder"));
+	SeaLadder->SetupAttachment(RootComponent);
+	EuropaLadder = CreateDefaultSubobject<ULyudLadderComponent>(TEXT("EuropaLadder"));
+	EuropaLadder->SetupAttachment(RootComponent);
 	Underwater->Priority = 1100.f;
 	Underwater->BlendWeight = 0.f;
 	FPostProcessSettings& S = Underwater->Settings;
@@ -303,6 +329,8 @@ void ALyudAirlock::Build()
 		}
 		Quiet(Lid.Mesh);
 	};
+	K.SetupLadder(SeaLadder, FVector(K.LadderOffset, 0.f, K.Floor), -12.f);
+	K.SetupLadder(EuropaLadder, FVector(K.EuropaShaft.X + K.LadderOffset, 0.f, K.Floor), K.EuropaTop - 10.f);
 	MakeLid(SeaLid, TEXT("SeaLid"), K.SeaHinge, false);
 	SeaLid.Mesh->SetLightingChannels(true, true, false);
 	MakeLid(InnerLid, TEXT("InnerLid"), K.InnerHinge, true);
@@ -581,6 +609,80 @@ void ALyudAirlock::Sound(FName Pool, const FVector& Where, float Volume) const
 
 // ------------------------------------------------------------------ Europa
 
+namespace
+{
+	/** The town on the planet (ALyudSky's place), degrees. */
+	constexpr double TownLat = 54.96;
+	constexpr double TownLon = 20.40;
+	const TCHAR* SeaMaterial = TEXT("/Game/Sea/M_LyudSea.M_LyudSea");
+
+	/** Europa's water: a few slow ripples under 0.13 g (deep-water dispersion with Europa's gravity), the sea's own
+	 *  material reading them from a table like ALyudSea's (dir x, dir y, k, amplitude m; omega, phase, wavelength). */
+	UTexture2D* MakeLeadWaves()
+	{
+		constexpr int32 W = 128;
+		UTexture2D* T = UTexture2D::CreateTransient(W, 2, PF_A32B32G32R32F, TEXT("T_EU_LeadWaves"));
+		T->SRGB = false;
+		T->Filter = TF_Nearest;
+		T->NeverStream = true;
+		T->AddressX = TA_Clamp;
+		T->AddressY = TA_Clamp;
+		T->UpdateResource();
+		FLinearColor* Data = new FLinearColor[W * 2];
+		FMemory::Memzero(Data, sizeof(FLinearColor) * W * 2);
+		const float G = 9.81f * 0.13f;
+		const float Lambda[] = { 4.1f, 2.6f, 1.7f, 1.15f, 0.8f, 0.55f };
+		const float Amp[] = { 0.006f, 0.004f, 0.003f, 0.002f, 0.0014f, 0.001f };
+		const float Dir[] = { 0.3f, 1.4f, 2.6f, 0.9f, 3.7f, 5.1f };
+		for (int32 I = 0; I < 6; ++I)
+		{
+			const float K = 2.f * PI / Lambda[I];
+			Data[I] = FLinearColor(FMath::Cos(Dir[I]), FMath::Sin(Dir[I]), K, Amp[I]);
+			Data[W + I] = FLinearColor(FMath::Sqrt(G * K), 1.7f * I, Lambda[I], 0.f);
+		}
+		FUpdateTextureRegion2D* Region = new FUpdateTextureRegion2D(0, 0, 0, 0, W, 2);
+		T->UpdateTextureRegions(0, 1, Region, W * sizeof(FLinearColor), sizeof(FLinearColor), (uint8*)Data,
+			[](uint8* Src, const FUpdateTextureRegion2D* Regions) { delete[] (FLinearColor*)Src; delete Regions; });
+		return T;
+	}
+
+	/** The sea's water material on a mesh, for still water away from the sea (no depth map: everywhere OpenDepth
+	 *  deep), with these ripples. */
+	UMaterialInstanceDynamic* StillWater(UObject* Outer, UTexture2D* Waves, float DepthM)
+	{
+		UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, SeaMaterial);
+		if (!M)
+		{
+			return nullptr;
+		}
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(M, Outer);
+		MID->SetTextureParameterValue(TEXT("WaveTable"), Waves);
+		MID->SetVectorParameterValue(TEXT("SeaParams"), FLinearColor(0.2f, 0.02f, 6.f, 0.f));
+		MID->SetVectorParameterValue(TEXT("DepthRect"), FLinearColor(0.f, 0.f, 0.f, 0.f));
+		MID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor(0.f, 128.f, 0.25f, DepthM));
+		MID->SetScalarParameterValue(TEXT("Tide"), 0.f);
+		MID->SetScalarParameterValue(TEXT("LandSideX"), -1.0e7f);
+		MID->SetVectorParameterValue(TEXT("Glitter"), FLinearColor(0.035f, 0.015f, 0.f, 0.f));
+		return MID;
+	}
+
+	/** An equatorial direction (right-handed: x the equinox, z the pole) in the site's world: east is -X, north +Y. */
+	struct FSiteFrame
+	{
+		FVector E, N, U;
+		FVector World(const FVector& D) const
+		{
+			return FVector(-FVector::DotProduct(D, E), FVector::DotProduct(D, N), FVector::DotProduct(D, U));
+		}
+		/** A rotation taking a mesh made in a right-handed frame (Blender's: its Y mirrored by the import) with axes
+		 *  Ax, Ay, Az (equatorial) onto the world. */
+		FQuat Turn(const FVector& Ax, const FVector& Ay, const FVector& Az) const
+		{
+			return FMatrix(World(Ax).GetSafeNormal(), -World(Ay).GetSafeNormal(), World(Az).GetSafeNormal(), FVector::ZeroVector).ToQuat().GetNormalized();
+		}
+	};
+}
+
 ALyudEuropaSite::ALyudEuropaSite()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -596,6 +698,42 @@ ALyudEuropaSite::ALyudEuropaSite()
 	PlanetShine->SetCastShadows(false);
 	PlanetShine->bAffectsWorld = true;
 	PlanetShine->SetAtmosphereSunLight(false);
+	ShaftLadder = CreateDefaultSubobject<ULyudLadderComponent>(TEXT("ShaftLadder"));
+	ShaftLadder->SetupAttachment(RootComponent);
+	ShaftLadder->bInteractive = false;
+}
+
+ALyudEuropaSite::FSky ALyudEuropaSite::SkyAt(const FDateTime& Utc) const
+{
+	FSky Out;
+	// Europa where the ephemeris has the moon: the planet from there is straight back down that line
+	const FVector M = LyudEphemeris::MoonEquatorial(Utc);
+	const FVector M2 = LyudEphemeris::MoonEquatorial(Utc + FTimespan::FromHours(1.0));
+	const FVector S = LyudEphemeris::SunEquatorial(Utc);
+	// its body frame, tidally locked: x toward the planet, z along its orbit's pole
+	const FVector Xb = -M;
+	FVector Zb = FVector::CrossProduct(M, M2).GetSafeNormal(UE_SMALL_NUMBER, FVector::ZAxisVector);
+	Zb = (Zb - Xb * FVector::DotProduct(Zb, Xb)).GetSafeNormal();
+	const FVector Yb = FVector::CrossProduct(Zb, Xb);
+	// the hatch's place on it: up, east, north (right-handed)
+	const double La = FMath::DegreesToRadians(SiteLatDeg), Lo = FMath::DegreesToRadians(SiteLonDeg);
+	FSiteFrame F;
+	F.U = (Xb * (FMath::Cos(La) * FMath::Cos(Lo)) + Yb * (FMath::Cos(La) * FMath::Sin(Lo)) + Zb * FMath::Sin(La)).GetSafeNormal();
+	F.E = (Xb * -FMath::Sin(Lo) + Yb * FMath::Cos(Lo)).GetSafeNormal();
+	F.N = FVector::CrossProduct(F.U, F.E);
+	Out.Sun = F.World(S).GetSafeNormal();
+	Out.Planet = F.World(Xb).GetSafeNormal();
+	// the planet turned with the day: its mesh's longitudes are the Earth's (Greenwich at the texture's middle)
+	const double Th = FMath::DegreesToRadians(LyudEphemeris::SiderealDeg(Utc, 0.0));
+	const FVector Ex(FMath::Cos(Th), FMath::Sin(Th), 0.0), Ey(-FMath::Sin(Th), FMath::Cos(Th), 0.0);
+	Out.PlanetTurn = F.Turn(Ex, Ey, FVector::ZAxisVector);
+	Out.StarTurn = F.Turn(FVector::XAxisVector, FVector::YAxisVector, FVector::ZAxisVector);
+	// the town faces Europa when Europa stands over its horizon
+	const double TLa = FMath::DegreesToRadians(TownLat), TLo = Th + FMath::DegreesToRadians(TownLon);
+	const FVector Town(FMath::Cos(TLa) * FMath::Cos(TLo), FMath::Cos(TLa) * FMath::Sin(TLo), FMath::Sin(TLa));
+	Out.IslandUp = float(FVector::DotProduct(Town, M));
+	Out.bIslandFacing = Out.IslandUp > 0.05f;
+	return Out;
 }
 
 void ALyudEuropaSite::BeginPlay()
@@ -603,19 +741,8 @@ void ALyudEuropaSite::BeginPlay()
 	Super::BeginPlay();
 	const FKitData& K = KitData();
 	USceneComponent* Root = GetRootComponent();
-	auto Outdoor = [](UStaticMeshComponent* C)
-	{
-		// the star's light (channel 1) and the planet's (channel 2)
-		C->SetLightingChannels(false, true, true);
-	};
-	Ground = MakeMesh(this, TEXT("Ground"), Root);
-	Ground->SetStaticMesh(Mesh(TEXT("SM_EU_Ground")));
-	Outdoor(Ground);
-	Quiet(Ground);
-	Blocks = MakeMesh(this, TEXT("Blocks"), Root);
-	Blocks->SetStaticMesh(Mesh(TEXT("SM_EU_IceBlocks")));
-	Outdoor(Blocks);
-	Quiet(Blocks);
+	// the ground (~130 MB of Nanite meshes) is made when it is first needed (EnsureGround): the subsystem loads it in
+	// the background while the player is in the airlock
 	Collar = MakeMesh(this, TEXT("Collar"), Root);
 	Collar->SetStaticMesh(Mesh(TEXT("SM_EU_Collar")));
 	// the sea's collar, its concrete and crust iced over
@@ -630,17 +757,20 @@ void ALyudEuropaSite::BeginPlay()
 			}
 		}
 	}
-	Outdoor(Collar);
+	Collar->SetLightingChannels(false, true, true);
 	Shaft = MakeMesh(this, TEXT("Shaft"), Root);
 	Shaft->SetStaticMesh(Mesh(TEXT("SM_EU_ShaftB")));
 	Quiet(Shaft);
+	// the shaft's ladder (the same as the kit's: rungs every 30 cm from 25 cm over its floor, on its +X side)
+	K.SetupLadder(ShaftLadder, FVector(K.LadderOffset, 0.f, K.ShaftBBottom), -12.f);
+	ShaftLadder->GripVolume = 0.3f;
 	Lid.Pivot = NewObject<USceneComponent>(this, TEXT("LidPivot"));
 	Lid.Pivot->SetupAttachment(Root);
 	Lid.Pivot->SetRelativeLocation(K.SeaHinge);
 	Lid.Pivot->RegisterComponent();
 	Lid.Mesh = MakeMesh(this, TEXT("Lid"), Lid.Pivot);
 	Lid.Mesh->SetStaticMesh(Mesh(TEXT("SM_EU_Lid")));
-	Outdoor(Lid.Mesh);
+	Lid.Mesh->SetLightingChannels(false, true, true);
 	Lid.Snap(false);
 	// the same dim lamp as in the room's Europa shaft, at the same place under the top (the two shafts look alike)
 	ShaftLight = NewObject<UPointLightComponent>(this, TEXT("ShaftLight"));
@@ -653,6 +783,7 @@ void ALyudEuropaSite::BeginPlay()
 	ShaftLight->SetCastShadows(false);
 	ShaftLight->RegisterComponent();
 
+	// the planet, its air, and the stars round the whole site
 	Planet = MakeMesh(this, TEXT("Planet"), Root);
 	Planet->SetStaticMesh(Mesh(TEXT("SM_EU_Planet")));
 	Planet->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -660,8 +791,178 @@ void ALyudEuropaSite::BeginPlay()
 	Quiet(Planet);
 	Planet->bNeverDistanceCull = true;
 	PlanetMID = Planet->CreateDynamicMaterialInstance(0);
+	PlanetAir = MakeMesh(this, TEXT("PlanetAir"), Root);
+	PlanetAir->SetStaticMesh(Mesh(TEXT("SM_EU_Planet")));
+	PlanetAir->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PlanetAir->SetCastShadow(false);
+	Quiet(PlanetAir);
+	PlanetAir->bNeverDistanceCull = true;
+	if (UMaterialInterface* Air = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Europa/Materials/M_EU_PlanetAir.M_EU_PlanetAir")))
+	{
+		AirMID = UMaterialInstanceDynamic::Create(Air, this);
+		PlanetAir->SetMaterial(0, AirMID);
+	}
+	else
+	{
+		PlanetAir->SetVisibility(false);
+	}
+	Stars = MakeMesh(this, TEXT("Stars"), Root);
+	Stars->SetStaticMesh(Mesh(TEXT("SM_EU_Planet")));
+	Stars->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Stars->SetCastShadow(false);
+	Quiet(Stars);
+	Stars->bNeverDistanceCull = true;
+	// 100 km round the hatch: past the planet (60 km), inside the coast's sky dome; the mesh is a 1 m sphere
+	Stars->SetRelativeScale3D(FVector(1.0e5f));
+	if (UMaterialInterface* Space = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Europa/Materials/M_EU_Space.M_EU_Space")))
+	{
+		StarMID = UMaterialInstanceDynamic::Create(Space, this);
+		Stars->SetMaterial(0, StarMID);
+	}
+	else
+	{
+		Stars->SetVisibility(false);
+	}
 	Place(PlanetDir, PlanetDistance, PlanetDiameterDeg);
 	SetShown(false);
+}
+
+void ALyudEuropaSite::EnsureGround()
+{
+	if (!bGroundBuilt)
+	{
+		bGroundBuilt = true;
+		BuildGround();
+		SetActorHiddenInGame(!bShown);
+	}
+}
+
+void ALyudEuropaSite::BuildGround()
+{
+	USceneComponent* Root = GetRootComponent();
+	const TSharedPtr<FJsonObject> J = ReadJson(TEXT("Europa/moon.json"));
+	auto Outdoor = [](UStaticMeshComponent* C)
+	{
+		// the star's light (channel 1) and the planet's (channel 2)
+		C->SetLightingChannels(false, true, true);
+	};
+	if (!J)
+	{
+		// the old ice disc and blocks
+		UE_LOG(LogTemp, Warning, TEXT("Europa: no Content/Europa/moon.json (tools/europa/moon_terrain.py), the old ice disc"));
+		Ground = MakeMesh(this, TEXT("Ground"), Root);
+		Ground->SetStaticMesh(Mesh(TEXT("SM_EU_Ground")));
+		Outdoor(Ground);
+		Quiet(Ground);
+		Blocks = MakeMesh(this, TEXT("Blocks"), Root);
+		Blocks->SetStaticMesh(Mesh(TEXT("SM_EU_IceBlocks")));
+		Outdoor(Blocks);
+		Quiet(Blocks);
+		return;
+	}
+	if (const TSharedPtr<FJsonObject>* Site = nullptr; J->TryGetObjectField(TEXT("site"), Site))
+	{
+		SiteLatDeg = (*Site)->GetNumberField(TEXT("lat_deg"));
+		SiteLonDeg = (*Site)->GetNumberField(TEXT("lon_deg"));
+	}
+	TArray<FString> Names;
+	const TArray<TSharedPtr<FJsonValue>>* Tiles = nullptr;
+	if (J->TryGetArrayField(TEXT("tiles"), Tiles))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *Tiles)
+		{
+			Names.Add(V->AsObject()->GetStringField(TEXT("name")));
+		}
+	}
+	Names.Add(J->GetStringField(TEXT("horizon")));
+	Names.Add(J->GetStringField(TEXT("boulders")));
+	for (const FString& N : Names)
+	{
+		UStaticMesh* SM = Mesh(*N, MoonMeshes);
+		if (!SM)
+		{
+			continue;
+		}
+		UStaticMeshComponent* C = MakeMesh(this, *N, Root);
+		C->SetStaticMesh(SM);
+		// the ground stands still: the sun's shadows and Lumen's distance fields keep it (only far skyline casts none)
+		C->SetMobility(EComponentMobility::Movable);
+		Outdoor(C);
+		if (N.Contains(TEXT("Horizon")))
+		{
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			C->bNeverDistanceCull = true;
+		}
+		Terrain.Add(C);
+	}
+	const TArray<TSharedPtr<FJsonValue>>* W = nullptr;
+	if (J->TryGetArrayField(TEXT("water"), W))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *W)
+		{
+			const TSharedPtr<FJsonObject> O = V->AsObject();
+			FLead L;
+			const FVector C = Vec(O, TEXT("centre_cm"), FVector::ZeroVector);
+			const TArray<TSharedPtr<FJsonValue>>& St = O->GetArrayField(TEXT("strike"));
+			L.Centre = FVector2D(C.X, C.Y);
+			L.Strike = FVector2D(St[0]->AsNumber(), St[1]->AsNumber());
+			L.Length = O->GetNumberField(TEXT("length_cm"));
+			L.HalfWidth = O->GetNumberField(TEXT("half_width_cm"));
+			L.Z = O->GetNumberField(TEXT("z_cm"));
+			Leads.Add(L);
+			if (UStaticMesh* SM = Mesh(*O->GetStringField(TEXT("name")), MoonMeshes))
+			{
+				UStaticMeshComponent* M = MakeMesh(this, *O->GetStringField(TEXT("name")), Root);
+				M->SetStaticMesh(SM);
+				M->SetCastShadow(false);
+				Quiet(M);
+				// the water's skin holds you up (no swimming here): you stand at its edge, not in it
+				M->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+				M->SetCollisionResponseToAllChannels(ECR_Block);
+				Waters.Add(M);
+			}
+		}
+	}
+	BuildWater();
+	UE_LOG(LogTemp, Display, TEXT("EUROPA ground: %d meshes, %d leads (seed %d, heights %s)"), Terrain.Num(), Waters.Num(),
+		int32(J->GetNumberField(TEXT("seed"))), *J->GetStringField(TEXT("heights_sha1")));
+}
+
+void ALyudEuropaSite::BuildWater()
+{
+	if (Waters.Num() == 0)
+	{
+		return;
+	}
+	if (!WaveTable)
+	{
+		WaveTable = MakeLeadWaves();
+	}
+	WaterMID = StillWater(this, WaveTable, 12.f);
+	for (UStaticMeshComponent* W : Waters)
+	{
+		if (WaterMID)
+		{
+			W->SetMaterial(0, WaterMID);
+		}
+	}
+}
+
+bool ALyudEuropaSite::WaterAt(const FVector& World, float& OutZ) const
+{
+	const FVector L = GetActorTransform().InverseTransformPosition(World);
+	for (const FLead& Lead : Leads)
+	{
+		const FVector2D D = FVector2D(L.X, L.Y) - Lead.Centre;
+		const float Along = float(FVector2D::DotProduct(D, Lead.Strike));
+		const float Across = float(FVector2D::CrossProduct(Lead.Strike, D));
+		if (FMath::Abs(Along) < Lead.Length * 0.5f && FMath::Abs(Across) < Lead.HalfWidth)
+		{
+			OutZ = float(GetActorLocation().Z) + Lead.Z;
+			return true;
+		}
+	}
+	return false;
 }
 
 void ALyudEuropaSite::Place(const FVector& InPlanetDir, float DistanceCm, float DiameterDeg)
@@ -675,12 +976,18 @@ void ALyudEuropaSite::Place(const FVector& InPlanetDir, float DistanceCm, float 
 	}
 	// the mesh is a sphere of 1 m (100 cm) radius
 	const float R = DistanceCm * FMath::Tan(FMath::DegreesToRadians(DiameterDeg * 0.5f));
+	const FVector At = GetActorLocation() + PlanetDir * DistanceCm;
+	Planet->SetWorldLocationAndRotation(At, LastSky.PlanetTurn);
 	Planet->SetWorldScale3D(FVector(R / 100.f));
-	Planet->SetWorldLocation(GetActorLocation() + PlanetDir * DistanceCm);
-	// the island (lon 0, lat 18 on the mesh) turned to face Europa
-	const float Lat = FMath::DegreesToRadians(18.f);
-	const FVector Island(FMath::Cos(Lat), 0.f, FMath::Sin(Lat));
-	Planet->SetWorldRotation(FQuat::FindBetweenNormals(Island, -PlanetDir));
+	if (PlanetAir)
+	{
+		PlanetAir->SetWorldLocationAndRotation(At, LastSky.PlanetTurn);
+		PlanetAir->SetWorldScale3D(FVector(R * AirRadius / 100.f));
+	}
+	if (Stars)
+	{
+		Stars->SetWorldRotation(LastSky.StarTurn);
+	}
 	PlanetShine->SetWorldRotation((-PlanetDir).Rotation());
 }
 
@@ -691,11 +998,59 @@ void ALyudEuropaSite::SetShown(bool bInShown)
 		return;
 	}
 	bShown = bInShown;
+	if (bShown)
+	{
+		EnsureGround();
+	}
 	Lid.Snap(Lid.bOpen);
 	SunTimer = 0.f;
 	SetActorHiddenInGame(!bShown);
 	PlanetShine->SetVisibility(bShown);
 	SetActorTickEnabled(bShown);
+	if (bShown)
+	{
+		UpdateLook();
+	}
+}
+
+void ALyudEuropaSite::UpdateLook()
+{
+	TActorIterator<ALyudSky> It(GetWorld());
+	if (!It)
+	{
+		return;
+	}
+	LastSky = SkyAt(It->ShownUtc());
+	const FVector S = LastSky.Sun;
+	// the planet where Europa's orbit puts it, turned with the day; the stars with Europa's month
+	Place(LastSky.Planet, PlanetDistance, PlanetDiameterDeg);
+	const FLinearColor Light = It->SunColor * (It->SunIlluminance / PI);
+	// the eye opens up in Europa's night (ALyudSky's night exposure follows its sun): the planet and its air are drawn
+	// that much dimmer, so a gibbous planet over a dark plain is bright, not a white blot; the stars a little
+	const float SunAlt = FMath::RadiansToDegrees(FMath::Asin(FMath::Clamp(float(S.Z), -1.f, 1.f)));
+	const float NightEV = It->NightExposureEV * (1.f - FMath::SmoothStep(-8.f, 8.f, SunAlt));
+	const float Dim = FMath::Pow(2.f, -0.85f * NightEV);
+	if (PlanetMID)
+	{
+		PlanetMID->SetScalarParameterValue(TEXT("Gain"), 2.2f * Dim);
+		PlanetMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), 0.f));
+		PlanetMID->SetVectorParameterValue(TEXT("SunLight"), Light);
+	}
+	if (AirMID)
+	{
+		AirMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), 0.f));
+		AirMID->SetVectorParameterValue(TEXT("SunLight"), Light);
+		AirMID->SetVectorParameterValue(TEXT("Air"), FLinearColor(AirRadius, AirStrength, 0.f, 0.f));
+		AirMID->SetScalarParameterValue(TEXT("Gain"), 2.2f * Dim);
+	}
+	if (StarMID)
+	{
+		StarMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), FMath::DegreesToRadians(It->SunAngularDiameterDeg * 0.5f)));
+		StarMID->SetVectorParameterValue(TEXT("Look"), FLinearColor(StarGain * FMath::Pow(2.f, -0.5f * NightEV), StarTwinkle, 0.f, 0.f));
+	}
+	// the planet's light on the ice: its lit share as seen from here (a full planet when the star is behind us)
+	const float Lit = 0.5f * (1.f + float(FVector::DotProduct(S, -LastSky.Planet)));
+	PlanetShine->SetIntensity(0.05f + 0.9f * FMath::Pow(Lit, 1.3f));
 }
 
 void ALyudEuropaSite::Tick(float DeltaSeconds)
@@ -703,33 +1058,19 @@ void ALyudEuropaSite::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	const float Fast = CVarEuropaFast.GetValueOnGameThread() > 0 ? 5.f : 1.f;
 	Lid.Update(DeltaSeconds * Fast, 1.6f);
+	if (WaterMID)
+	{
+		// the ripples' clock (wrapped as the sea's)
+		const float T = float(FMath::Fmod(GetWorld()->GetTimeSeconds(), 1200.0));
+		WaterMID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor(T, 128.f, 0.25f, 12.f));
+	}
 	SunTimer -= DeltaSeconds;
-	if (SunTimer > 0.f || !PlanetMID)
+	if (SunTimer > 0.f)
 	{
 		return;
 	}
 	SunTimer = 0.5f;
-	// the planet lit by the same star as Lyudmilovsk (ALyudSky's sun direction and light)
-	if (TActorIterator<ALyudSky> It(GetWorld()); It)
-	{
-		const FVector S = It->SunDirection();
-		PlanetMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), 0.f));
-		const FLinearColor L = It->SunColor * (It->SunIlluminance / PI);
-		PlanetMID->SetVectorParameterValue(TEXT("SunLight"), L);
-		// the planet hangs on the side of the sky away from the star, so we see its day side (a gibbous world)
-		FVector Away = FVector(-S.X, -S.Y, 0.0).GetSafeNormal();
-		if (Away.IsNearlyZero())
-		{
-			Away = FVector::ForwardVector;
-		}
-		Away = Away.RotateAngleAxis(PlanetSunOffsetDeg, FVector::UpVector);
-		const float El = FMath::DegreesToRadians(PlanetElevationDeg);
-		const FVector Want = (Away * FMath::Cos(El) + FVector::UpVector * FMath::Sin(El)).GetSafeNormal();
-		if (FVector::DotProduct(Want, PlanetDir) < FMath::Cos(FMath::DegreesToRadians(0.3f)))
-		{
-			Place(Want, PlanetDistance, PlanetDiameterDeg);
-		}
-	}
+	UpdateLook();
 }
 
 // ------------------------------------------------------------------ the subsystem
@@ -817,12 +1158,24 @@ bool ULyudEuropaSubsystem::TrySpawn()
 		const TSharedPtr<FJsonObject>* PO = nullptr;
 		if (J->TryGetObjectField(TEXT("planet"), PO))
 		{
-			Site->PlanetElevationDeg = (*PO)->GetNumberField(TEXT("elevation_deg"));
-			Site->PlanetSunOffsetDeg = (*PO)->GetNumberField(TEXT("sun_offset_deg"));
 			Site->PlanetDistance = (*PO)->GetNumberField(TEXT("distance_cm"));
 			Site->PlanetDiameterDeg = (*PO)->GetNumberField(TEXT("diameter_deg"));
 		}
 		UGameplayStatics::FinishSpawningActor(Site, FTransform(SiteOrigin));
+		// the sky seen from the ice: Europa's own (the sun and the planet where its orbit has them)
+		TWeakObjectPtr<ALyudEuropaSite> WeakSite = Site;
+		for (TActorIterator<ALyudSky> It(World); It; ++It)
+		{
+			It->SetSpaceObserver([WeakSite](const FDateTime& Utc, FVector& OutSun, FVector& OutPlanet)
+			{
+				if (const ALyudEuropaSite* S = WeakSite.Get())
+				{
+					const ALyudEuropaSite::FSky Sky = S->SkyAt(Utc);
+					OutSun = Sky.Sun;
+					OutPlanet = Sky.Planet;
+				}
+			});
+		}
 	}
 	UE_LOG(LogTemp, Display, TEXT("EUROPA spawned: hatch %s, Europa %s"), *Hatch.ToString(), *SiteOrigin.ToString());
 	return true;
@@ -843,6 +1196,11 @@ FVector ULyudEuropaSubsystem::PlanetDirection() const
 	return Site ? Site->PlanetDir : FVector::UpVector;
 }
 
+bool ULyudEuropaSubsystem::IsIslandFacing() const
+{
+	return Site && Site->IsIslandFacing();
+}
+
 bool ULyudEuropaSubsystem::IsMusicPlaying() const
 {
 	return Music && Music->IsPlaying();
@@ -859,6 +1217,11 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	if (Climb.Num() > 0)
 	{
 		TickClimb(*Hero, DeltaTime * Speed());
+	}
+	// Europa's ground loads in the background while the player is in the airlock (built at once if it isn't by the time)
+	if (!Site->HasGround() && Airlock->IsInside(Hero->GetActorLocation()) && ULyudPrefetch::FolderReady(this, TEXT("/Game/Europa/Moon")))
+	{
+		Site->EnsureGround();
 	}
 	// on Europa: anywhere near the far site (a climb jumps there and back; a load may land there too)
 	const bool bThere = FVector::Dist(Hero->GetActorLocation(), SiteOrigin) < SpaceRadius;
@@ -1024,6 +1387,14 @@ void ULyudEuropaSubsystem::Use()
 
 // ------------------------------------------------------------------ climbing
 
+namespace
+{
+	/** The room's Europa shaft and the one under Europa's hatch are alike from the top, but their rungs sit 10 cm apart
+	 *  on that measure: the jump between them shifts the feet by this (not the shafts' tops' 90 cm), so hands and feet
+	 *  land on the same rungs and nothing pops; the tops differ by 10 cm, out of sight up the shaft. */
+	constexpr float ShaftJump = 80.f;
+}
+
 FVector ULyudEuropaSubsystem::FeetOf(const ACharacter& Hero) const
 {
 	return Hero.GetActorLocation() - FVector(0, 0, Hero.GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
@@ -1034,13 +1405,23 @@ void ULyudEuropaSubsystem::SetFeet(ACharacter& Hero, const FVector& Feet) const
 	Hero.SetActorLocation(Feet + FVector(0, 0, Hero.GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), false, nullptr, ETeleportType::TeleportPhysics);
 }
 
-void ULyudEuropaSubsystem::Rungs(TArray<FKey>& Keys, const FVector& From, const FVector& To) const
+void ULyudEuropaSubsystem::Rungs(TArray<FKey>& Keys, ULyudLadderComponent* Ladder, const FVector& From, const FVector& To) const
 {
 	FKey& K = Keys.AddDefaulted_GetRef();
-	K.Feet = To;
-	K.bRungs = true;
-	// a rung (30 cm) every 0.34 s
-	K.Seconds = FMath::Max(0.3f, float(FMath::Abs(To.Z - From.Z)) / 30.f * 0.34f);
+	// on the ladder the body hangs out from its rungs
+	K.Feet = Ladder ? Ladder->ToWorld(FVector(Ladder->BodyStandoff, 0.f, Ladder->FromWorld(To).Z)) : To;
+	K.Ladder = Ladder;
+	// a rung (30 cm) every 0.42 s: hand over hand, each limb two rungs a cycle
+	K.Seconds = FMath::Max(0.3f, float(FMath::Abs(To.Z - From.Z)) / 30.f * 0.42f);
+}
+
+void ULyudEuropaSubsystem::Hold(TArray<FKey>& Keys, ULyudLadderComponent* Ladder, float Seconds) const
+{
+	const FVector At = Keys.Num() > 0 ? Keys.Last().Feet : FVector::ZeroVector;
+	FKey& K = Keys.AddDefaulted_GetRef();
+	K.Feet = At;
+	K.Ladder = Ladder;
+	K.Seconds = Seconds;
 }
 
 void ULyudEuropaSubsystem::StartClimb(TArray<FKey>&& Keys, TFunction<void()> Done)
@@ -1056,7 +1437,6 @@ void ULyudEuropaSubsystem::StartClimb(TArray<FKey>&& Keys, TFunction<void()> Don
 	ClimbTime = 0.f;
 	ClimbFrom = FeetOf(*Hero);
 	ClimbDone = MoveTemp(Done);
-	StepTimer = 0.f;
 	if (ALyudSea* Sea = ALyudSea::Get(this))
 	{
 		Sea->SetPlayerScripted(this, true);
@@ -1074,32 +1454,52 @@ void ULyudEuropaSubsystem::StartClimb(TArray<FKey>&& Keys, TFunction<void()> Don
 void ULyudEuropaSubsystem::TickClimb(ACharacter& Hero, float DeltaTime)
 {
 	FKey& K = Climb[ClimbIndex];
+	ULyudLadderClimber* Climber = ULyudLadderClimber::Get(&Hero);
+	ULyudLadderComponent* L = K.Ladder.Get();
 	if (K.bJump)
 	{
 		SetFeet(Hero, K.Feet);
+		if (L && Climber)
+		{
+			// into the other shaft, on the same rungs (ShaftJump)
+			Climber->Attach(L, float(L->FromWorld(K.Feet).Z), 0.f);
+		}
 	}
 	else
 	{
 		ClimbTime += DeltaTime;
 		const float T = FMath::Clamp(ClimbTime / FMath::Max(K.Seconds, 1e-3f), 0.f, 1.f);
-		float A = Smooth01(T);
-		if (K.bRungs)
+		if (L && Climber)
 		{
-			// hand over hand: each rung a quick pull and a pause
-			const float N = FMath::Max(1.f, FMath::RoundToFloat(float(FMath::Abs(K.Feet.Z - ClimbFrom.Z)) / 30.f));
-			const float R = T * N;
-			A = (FMath::FloorToFloat(R) + Smooth01(FMath::Frac(R) * 1.6f)) / N;
-			StepTimer -= DeltaTime;
-			if (StepTimer <= 0.f && T < 1.f)
+			// hand over hand while the hands still find rungs above; over the top the body goes on by itself
+			const float Z0 = float(L->FromWorld(ClimbFrom).Z), Z1 = float(L->FromWorld(K.Feet).Z);
+			const float Z = FMath::Lerp(Z0, Z1, T);
+			const float Reach = L->TopRungZ() - Climber->HandAboveFeet + L->RungSpacing;
+			if (Z <= Reach)
 			{
-				StepTimer = K.Seconds / N;
-				if (ULyudSoundscapeSubsystem* S = ULyudSoundscapeSubsystem::Get(this))
+				if (Climber->GetLadder() != L || !Climber->IsOnLadder())
 				{
-					S->PlayEffect(TEXT("ladder_step"), Hero.GetActorLocation(), bOnEuropa ? 0.3f : 0.7f);
+					Climber->Attach(L, Z, 0.35f);
 				}
+				Climber->SetFeetZ(Z);
+			}
+			else
+			{
+				if (Climber->IsOnLadder())
+				{
+					Climber->Release(0.5f);
+				}
+				SetFeet(Hero, L->ToWorld(FVector(L->BodyStandoff, 0.f, Z)));
 			}
 		}
-		SetFeet(Hero, FMath::Lerp(ClimbFrom, K.Feet, FMath::Min(A, 1.f)));
+		else
+		{
+			if (Climber && Climber->IsOnLadder())
+			{
+				Climber->Release(0.4f);
+			}
+			SetFeet(Hero, FMath::Lerp(ClimbFrom, K.Feet, Smooth01(T)));
+		}
 		if (T < 1.f)
 		{
 			return;
@@ -1107,7 +1507,6 @@ void ULyudEuropaSubsystem::TickClimb(ACharacter& Hero, float DeltaTime)
 	}
 	ClimbFrom = K.Feet;
 	ClimbTime = 0.f;
-	StepTimer = 0.f;
 	TFunction<void()> Reach = K.OnReach;
 	++ClimbIndex;
 	if (Reach)
@@ -1124,6 +1523,10 @@ void ULyudEuropaSubsystem::EndClimb(ACharacter& Hero)
 {
 	Climb.Reset();
 	ClimbIndex = 0;
+	if (ULyudLadderClimber* Climber = ULyudLadderClimber::Get(&Hero, false))
+	{
+		Climber->Release(0.4f);
+	}
 	Hero.SetActorEnableCollision(true);
 	Hero.GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	if (APlayerController* PC = Cast<APlayerController>(Hero.GetController()))
@@ -1152,16 +1555,15 @@ void ULyudEuropaSubsystem::ClimbDownFromSea()
 	FKey& K0 = Keys.AddDefaulted_GetRef();
 	K0.Feet = Above;
 	K0.Seconds = 1.0f;
-	FVector From = Above;
 	const FVector Shut = A->Kit(FVector(0, 0, -230));
-	Rungs(Keys, From, Shut);
+	Rungs(Keys, A->SeaLadder, Above, Shut);
 	// the head under the rim: pull the lid shut over it
 	Keys.Last().OnReach = [A]() { A->SetSeaLidOpen(false); };
 	const FVector Floor = A->Kit(FVector(0, 0, K.Floor + 2.f));
-	Rungs(Keys, Shut, Floor);
+	Rungs(Keys, A->SeaLadder, Shut, Floor);
 	FKey& Off = Keys.AddDefaulted_GetRef();
 	Off.Feet = A->Kit(FVector(-55, 25, K.Floor + 2.f));
-	Off.Seconds = 0.6f;
+	Off.Seconds = 0.8f;
 	StartClimb(MoveTemp(Keys), [this, A]()
 	{
 		// a full lock is the sea's: swim in it, under
@@ -1184,12 +1586,10 @@ void ULyudEuropaSubsystem::ClimbUpToSea()
 	K0.Feet = A->Kit(FVector(0, 0, K.Floor + 2.f));
 	K0.Seconds = 0.6f;
 	const FVector Under = A->Kit(FVector(0, 0, -260));
-	Rungs(Keys, K0.Feet, Under);
+	Rungs(Keys, A->SeaLadder, K0.Feet, Under);
 	Keys.Last().OnReach = [A]() { A->SetSeaLidOpen(true); };
-	FKey& Wait = Keys.AddDefaulted_GetRef();
-	Wait.Feet = Under;
-	Wait.Seconds = A->LidSeconds + 0.2f;
-	Rungs(Keys, Under, A->Kit(FVector(0, 0, 20)));
+	Hold(Keys, A->SeaLadder, A->LidSeconds + 0.2f);
+	Rungs(Keys, A->SeaLadder, Under, A->Kit(FVector(0, 0, 20)));
 	// out over the collar onto the bed beside it
 	FKey& Out = Keys.AddDefaulted_GetRef();
 	Out.Feet = A->Kit(FVector(200, 0, K.SiteZ + 10.f));
@@ -1218,30 +1618,37 @@ void ULyudEuropaSubsystem::ClimbUpToEuropa()
 	FKey& Wait = Keys.AddDefaulted_GetRef();
 	Wait.Feet = K0.Feet;
 	Wait.Seconds = A->LidSeconds + 0.2f;
-	// up into the shaft until the eyes are well inside it, then the same place in Europa's shaft (they match from the
-	// top: the room's ends at EuropaTop, Europa's at its lid seat)
-	const float JumpFeet = K.Ceiling - 75.f;
+	// up into the shaft until the eyes are well inside it, then the same place in Europa's shaft (on the same rungs:
+	// ShaftJump)
+	const float JumpFeet = K.Ceiling - 15.f;
 	const FVector InA = A->Kit(K.EuropaShaft + FVector(0, 0, JumpFeet));
-	Rungs(Keys, K0.Feet, InA);
+	Rungs(Keys, A->EuropaLadder, K0.Feet, InA);
 	FKey& Jump = Keys.AddDefaulted_GetRef();
 	Jump.bJump = true;
-	Jump.Feet = S->Kit(FVector(0, 0, JumpFeet - K.EuropaTop));
+	Jump.Ladder = S->ShaftLadder;
+	Jump.Feet = S->ShaftLadder->ToWorld(FVector(S->ShaftLadder->BodyStandoff, 0.f, S->ShaftLadder->FromWorld(S->Kit(FVector(0, 0, JumpFeet + ShaftJump))).Z));
 	Jump.OnReach = [this, A]()
 	{
 		A->SetInnerLidOpen(false, true);
 		SetOnEuropa(true);
 	};
 	const FVector Under = S->Kit(FVector(0, 0, -150));
-	Rungs(Keys, Jump.Feet, Under);
+	Rungs(Keys, S->ShaftLadder, Jump.Feet, Under);
 	Keys.Last().OnReach = [S]() { S->Lid.bOpen = true; };
-	FKey& Wait2 = Keys.AddDefaulted_GetRef();
-	Wait2.Feet = Under;
-	Wait2.Seconds = 1.8f;
-	Rungs(Keys, Under, S->Kit(FVector(0, 0, 20)));
+	Hold(Keys, S->ShaftLadder, 1.8f);
+	Rungs(Keys, S->ShaftLadder, Under, S->Kit(FVector(0, 0, 20)));
 	FKey& Out = Keys.AddDefaulted_GetRef();
 	Out.Feet = S->Kit(FVector(200, 0, K.SiteZ + 5.f));
 	Out.Seconds = 1.2f;
-	Out.OnReach = [S]() { S->Lid.bOpen = false; };
+	// out of the dark shaft into the bare star's light: blinded the first time (the sun-glare thread's effect)
+	Keys.Last().OnReach = [this, S]()
+	{
+		S->Lid.bOpen = false;
+		if (ULyudSunGlare* Glare = ULyudSunGlare::Get(this))
+		{
+			Glare->FlashBlindOnce(TEXT("EuropaHatch"), 1.f);
+		}
+	};
 	StartClimb(MoveTemp(Keys), nullptr);
 }
 
@@ -1255,24 +1662,25 @@ void ULyudEuropaSubsystem::ClimbDownFromEuropa()
 	K0.Feet = S->Kit(FVector(0, 0, 30));
 	K0.Seconds = 1.0f;
 	const FVector Shut = S->Kit(FVector(0, 0, -230));
-	Rungs(Keys, K0.Feet, Shut);
+	Rungs(Keys, S->ShaftLadder, K0.Feet, Shut);
 	Keys.Last().OnReach = [S]() { S->Lid.bOpen = false; };
-	const float JumpFeet = K.Ceiling - 75.f;
-	const FVector InB = S->Kit(FVector(0, 0, JumpFeet - K.EuropaTop));
-	Rungs(Keys, Shut, InB);
+	const float JumpFeet = K.Ceiling - 15.f;
+	const FVector InB = S->Kit(FVector(0, 0, JumpFeet + ShaftJump));
+	Rungs(Keys, S->ShaftLadder, Shut, InB);
 	FKey& Jump = Keys.AddDefaulted_GetRef();
 	Jump.bJump = true;
-	Jump.Feet = A->Kit(K.EuropaShaft + FVector(0, 0, JumpFeet));
+	Jump.Ladder = A->EuropaLadder;
+	Jump.Feet = A->EuropaLadder->ToWorld(FVector(A->EuropaLadder->BodyStandoff, 0.f, A->EuropaLadder->FromWorld(A->Kit(K.EuropaShaft + FVector(0, 0, JumpFeet))).Z));
 	Jump.OnReach = [this, A]()
 	{
 		A->SetInnerLidOpen(true, true);
 		SetOnEuropa(false);
 	};
 	const FVector Floor = A->Kit(K.EuropaShaft + FVector(0, 0, K.Floor + 2.f));
-	Rungs(Keys, Jump.Feet, Floor);
+	Rungs(Keys, A->EuropaLadder, Jump.Feet, Floor);
 	FKey& Off = Keys.AddDefaulted_GetRef();
 	Off.Feet = A->Kit(K.EuropaShaft + FVector(75, -30, K.Floor + 2.f));
-	Off.Seconds = 0.6f;
+	Off.Seconds = 0.8f;
 	Off.OnReach = [A]() { A->SetInnerLidOpen(false); };
 	StartClimb(MoveTemp(Keys), nullptr);
 }
@@ -1379,8 +1787,9 @@ void ULyudEuropaSubsystem::TickEuropa(ACharacter& Hero, APlayerController& PC, f
 			}
 		}
 	}
-	// the planet: the first good look at it from the ice (not from the shaft)
-	if (!Airlock->bPlanetSeen && Climb.Num() == 0 && Site)
+	// the planet: the first good look at it from the ice (not from the shaft), with the island on its face toward us
+	// ("only the sea... and our island"); while the town is turned away it is all ocean and cloud, and he says nothing
+	if (!Airlock->bPlanetSeen && Climb.Num() == 0 && Site && Site->IsIslandFacing())
 	{
 		const FVector Eye = PC.PlayerCameraManager ? PC.PlayerCameraManager->GetCameraLocation() : Hero.GetPawnViewLocation();
 		const FVector Fwd = PC.GetControlRotation().Vector();
@@ -1505,6 +1914,7 @@ FString ULyudEuropaSubsystem::Report() const
 		Airlock ? Airlock->InnerLid.Openness : -1.f, Site ? Site->Lid.Openness : -1.f, bOnEuropa ? 1 : 0, Climb.Num() > 0 ? 1 : 0, *Action,
 		Move ? Move->GravityScale : 0.f, Move ? int32(Move->MovementMode) : -1, HasSeenPlanet() ? 1 : 0, Music && Music->IsPlaying() ? 1 : 0,
 		Hero ? *Hero->GetActorLocation().ToString() : TEXT("none"))
+		+ FString::Printf(TEXT(" | island facing %d up %.2f"), Site && Site->IsIslandFacing() ? 1 : 0, Site ? Site->GetSky().IslandUp : 0.f)
 		+ FString::Printf(TEXT(" | planet dir %s at %s scale %.0f shown %d | sun %s | swim %d"),
 		Site ? *Site->PlanetDir.ToString() : TEXT("-"), Site && Site->Planet ? *Site->Planet->GetComponentLocation().ToString() : TEXT("-"),
 		Site && Site->Planet ? Site->Planet->GetComponentScale().X : 0.f, Site ? int32(Site->IsShown()) : -1,

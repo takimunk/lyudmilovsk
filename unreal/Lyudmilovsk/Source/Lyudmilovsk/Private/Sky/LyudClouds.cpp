@@ -485,7 +485,8 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 		Top = FMath::Max(Top, LensA.Z + 0.25f);
 	}
 	UVolumetricCloudComponent* Clouds = Sky->Clouds;
-	const bool bAny = Top > 0.f;
+	// on another world (the space view) no cloud of ours is in its sky
+	const bool bAny = Top > 0.f && !Sky->IsSpaceView();
 	// the ray march goes this far from the eye; the shader fades the clouds out before it
 	const float TraceKm = FMath::RoundToFloat(DeckTraceKm / 5.f) * 5.f;
 	if (Clouds)
@@ -545,7 +546,7 @@ void ULyudCloudSubsystem::Apply(ALyudSky* Sky, float Dt)
 	}
 	if (UMaterialInstanceDynamic* SkyMid = Sky->GetSkyMID())
 	{
-		SkyMid->SetVectorParameterValue(TEXT("HighA"), Vec(HighA));
+		SkyMid->SetVectorParameterValue(TEXT("HighA"), Sky->IsSpaceView() ? FLinearColor::Transparent : Vec(HighA));
 		SkyMid->SetVectorParameterValue(TEXT("HighB"), Vec(HighB));
 		SkyMid->SetVectorParameterValue(TEXT("HighD"), FLinearColor(float(Drift[2].X), float(Drift[2].Y), float(DUp.X), float(DUp.Y)));
 	}

@@ -265,6 +265,12 @@ public:
 
 	/** The sky light's intensity in the space view (the stars and the star's disk light next to nothing). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Space") float SpaceSkyLight = 0.03f;
+	/** Where the sky is seen from in the space view (ULyudEuropaSubsystem: Europa's ice): for a UTC time, world unit
+	 *  vectors toward the sun and toward the planet. While one is set and the space view is on, the star, its light and
+	 *  shadows, the day and the exposure follow that sky instead of the coast's; the planet stands where the moon was. */
+	void SetSpaceObserver(TFunction<void(const FDateTime& Utc, FVector& OutSun, FVector& OutPlanet)> InObserver) { SpaceObserver = MoveTemp(InObserver); }
+	/** The UTC time the sky shows now. */
+	FDateTime ShownUtc() const { return ShownTime() - FTimespan::FromHours(UtcOffsetHours); }
 
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
@@ -295,6 +301,9 @@ private:
 	/** The dome's material has the SunGlare parameter (import_sky.py since the glare; an older build gets the gain on
 	 *  the whole star instead, its off-limb light scaled back). */
 	bool bSkyHasGlare = false;
+	TFunction<void(const FDateTime& Utc, FVector& OutSun, FVector& OutPlanet)> SpaceObserver;
+	/** A world direction as altitude and azimuth (WorldDirection's inverse). */
+	FSkyPosition PositionOf(const FVector& World) const;
 	/** How closed the low and middle cloud decks are 0..1 (UpdateExposure, from the weather). */
 	float DeckOpacity = 0.f;
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */

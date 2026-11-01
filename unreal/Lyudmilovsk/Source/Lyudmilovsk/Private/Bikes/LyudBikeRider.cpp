@@ -355,7 +355,7 @@ namespace LyudBikeRider
 						break;
 					}
 				}
-				Amount *= HW;
+				Amount *= HW * FMath::Clamp(H.Close, 0.f, 1.f);
 				for (int32 J = 0; J < F.Bones.Num(); ++J)
 				{
 					BikeTurn(Pose, F.Bones[J], FQuat(Ax, FMath::DegreesToRadians(F.MaxFold[J] * Amount)));

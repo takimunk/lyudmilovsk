@@ -11,7 +11,9 @@ class APlayerController;
 class SLyudEuropaSubtitle;
 class UAudioComponent;
 class UDirectionalLightComponent;
+class ULyudLadderComponent;
 class UMaterialInstanceDynamic;
+class UTexture2D;
 class UPointLightComponent;
 class UPostProcessComponent;
 class UStaticMesh;
@@ -112,6 +114,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Airlock") TObjectPtr<UStaticMeshComponent> Console;
 	UPROPERTY(VisibleAnywhere, Category = "Airlock") TObjectPtr<UStaticMeshComponent> Water;
 	UPROPERTY(VisibleAnywhere, Category = "Airlock") TObjectPtr<UPostProcessComponent> Underwater;
+	/** The ladders of the sea shaft and of the shaft toward Europa (ULyudLadderClimber climbs them hand over hand). */
+	UPROPERTY(VisibleAnywhere, Category = "Airlock") TObjectPtr<ULyudLadderComponent> SeaLadder;
+	UPROPERTY(VisibleAnywhere, Category = "Airlock") TObjectPtr<ULyudLadderComponent> EuropaLadder;
 
 private:
 	UPROPERTY(SaveGame) ELyudAirlockState State = ELyudAirlockState::Flooded;
@@ -129,9 +134,14 @@ private:
 };
 
 /**
- * Europa: a disc of ice 4 km round the far hatch, curving away with the moon (ALyudEuropaSite's origin is that hatch's
- * lid seat), blocks of ice, the hatch and its shaft, and the planet over it. Far from the map (europa.json), hidden
- * unless the player is there.
+ * Europa (docs/europa.md): its ground round the far hatch (tools/europa/moon_terrain.py: ridged plains, double ridges,
+ * terraced scarps, chaos rafts, open leads with the ocean's water in them, boulders, a far skyline; ALyudEuropaSite's
+ * origin is that hatch's lid seat), the hatch and its shaft, and the sky from there: black, with its own twinkling stars,
+ * the star, and the planet where Europa's orbit puts it. Europa keeps one face to the planet (tidally locked), so from
+ * the hatch (Content/Europa/moon.json "site") the planet hangs still in the sky; the star and the stars wheel round with
+ * Europa's month, from the same ephemeris that puts Europa in the coast's sky, and the planet turns once a day: its
+ * island shows only while Europa is over the town's horizon, otherwise its other side, ocean and clouds. Far from the
+ * map (europa.json), hidden unless the player is there.
  */
 UCLASS()
 class LYUDMILOVSK_API ALyudEuropaSite : public AActor
@@ -143,13 +153,40 @@ public:
 
 	FLyudHatchLid Lid;
 
-	/** Unit vector to the planet's centre and its angular diameter, degrees. The planet stands PlanetElevationDeg up,
-	 *  PlanetSunOffsetDeg round from straight away from the star (it follows the star slowly), so its face is lit. */
+	/** Unit vector to the planet's centre (from the sky's frame, UpdateSky) and its angular diameter, degrees. */
 	FVector PlanetDir = FVector(0.3, 0.45, 0.84).GetSafeNormal();
-	float PlanetElevationDeg = 35.f;
-	float PlanetSunOffsetDeg = 15.f;
 	float PlanetDistance = 6.0e6f;
 	float PlanetDiameterDeg = 26.f;
+	/** Where the hatch is on Europa (moon.json "site": latitude, longitude in its body frame, longitude 0 facing the
+	 *  planet). */
+	double SiteLatDeg = 38.0;
+	double SiteLonDeg = -41.0;
+	/** The planet's air: its shell's radius over the planet's and the glow's strength (M_EU_PlanetAir). */
+	float AirRadius = 1.045f;
+	float AirStrength = 1.f;
+	/** The stars' brightness and how much they twinkle (M_EU_Space). */
+	float StarGain = 1.f;
+	float StarTwinkle = 0.35f;
+
+	/** The sky from Europa at a UTC time (world unit vectors; the planet's and the stars' turns). */
+	struct FSky
+	{
+		FVector Sun = FVector::UpVector;
+		FVector Planet = FVector::UpVector;
+		/** The planet mesh's rotation (its texture: the Earth's longitudes and latitudes, turned with the day). */
+		FQuat PlanetTurn = FQuat::Identity;
+		/** The star sphere's rotation (its frame: the equator of the date, M_EU_Space). */
+		FQuat StarTurn = FQuat::Identity;
+		/** The town on the planet faces Europa (Europa is over its horizon), and how far over, -1..1. */
+		bool bIslandFacing = false;
+		float IslandUp = 0.f;
+	};
+	FSky SkyAt(const FDateTime& Utc) const;
+	/** The island is on the planet's face toward us now. */
+	bool IsIslandFacing() const { return LastSky.bIslandFacing; }
+	const FSky& GetSky() const { return LastSky; }
+	/** The ladder in the shaft under the hatch. */
+	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<ULyudLadderComponent> ShaftLadder;
 
 	void Place(const FVector& InPlanetDir, float DistanceCm, float DiameterDeg);
 	/** Shows or hides it all (it is drawn only while the player is on Europa). */
@@ -160,8 +197,15 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	/** The old ice disc and blocks (only when moon.json is missing). */
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Ground;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Blocks;
+	/** The ground's tiles, the far skyline, the boulders, and the leads' water (the sea's own water material). */
+	UPROPERTY(VisibleAnywhere, Category = "Europa") TArray<TObjectPtr<UStaticMeshComponent>> Terrain;
+	UPROPERTY(VisibleAnywhere, Category = "Europa") TArray<TObjectPtr<UStaticMeshComponent>> Waters;
+	/** The planet's air (a shell round it, additive) and the star sphere round the site. */
+	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> PlanetAir;
+	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Stars;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Collar;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Shaft;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UStaticMeshComponent> Planet;
@@ -169,10 +213,27 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UDirectionalLightComponent> PlanetShine;
 	UPROPERTY(VisibleAnywhere, Category = "Europa") TObjectPtr<UPointLightComponent> ShaftLight;
 
+	/** Makes the ground (once). */
+	void EnsureGround();
+	bool HasGround() const { return bGroundBuilt; }
+	/** A world point is over a lead's open water (moon.json "water"): the water's level there, else false. */
+	bool WaterAt(const FVector& World, float& OutZ) const;
+
 private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> PlanetMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> AirMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> StarMID;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WaterMID;
+	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;
 	bool bShown = true;
+	bool bGroundBuilt = false;
 	float SunTimer = 0.f;
+	FSky LastSky;
+	struct FLead { FVector2D Centre; FVector2D Strike; float Length = 0.f; float HalfWidth = 0.f; float Z = 0.f; };
+	TArray<FLead> Leads;
+	void BuildGround();
+	void BuildWater();
+	void UpdateLook();
 };
 
 /**
@@ -210,6 +271,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Europa") FVector PlanetDirection() const;
 	/** The Europa music is playing. */
 	UFUNCTION(BlueprintPure, Category = "Europa") bool IsMusicPlaying() const;
+	/** The planet's town faces Europa now (its island on the planet's face toward us). */
+	UFUNCTION(BlueprintPure, Category = "Europa") bool IsIslandFacing() const;
 
 	/** E: do CurrentAction. */
 	UFUNCTION(BlueprintCallable, Category = "Europa") void Use();
@@ -228,14 +291,15 @@ protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
 
 private:
-	/** One stretch of a scripted climb: the feet to Feet in Seconds (rung by rung if bRungs), or at once (bJump);
-	 *  OnReach when there. */
+	/** One stretch of a scripted climb: the feet to Feet in Seconds, or at once (bJump); on a Ladder the body climbs it
+	 *  hand over hand (ULyudLadderClimber) while the feet are within its reach, off it they move on their own; OnReach
+	 *  when there. */
 	struct FKey
 	{
 		FVector Feet = FVector::ZeroVector;
 		float Seconds = 0.f;
-		bool bRungs = false;
 		bool bJump = false;
+		TWeakObjectPtr<ULyudLadderComponent> Ladder;
 		TFunction<void()> OnReach;
 	};
 
@@ -263,13 +327,15 @@ private:
 	float ClimbTime = 0.f;
 	FVector ClimbFrom = FVector::ZeroVector;
 	TFunction<void()> ClimbDone;
-	float StepTimer = 0.f;
 	void StartClimb(TArray<FKey>&& Keys, TFunction<void()> Done);
 	void TickClimb(ACharacter& Hero, float DeltaTime);
 	void EndClimb(ACharacter& Hero);
 	FVector FeetOf(const ACharacter& Hero) const;
 	void SetFeet(ACharacter& Hero, const FVector& Feet) const;
-	void Rungs(TArray<FKey>& Keys, const FVector& From, const FVector& To) const;
+	/** Up or down a ladder from the feet's From to To (world; only the heights count: the body is on the ladder). */
+	void Rungs(TArray<FKey>& Keys, ULyudLadderComponent* Ladder, const FVector& From, const FVector& To) const;
+	/** A pause on a ladder (a lid swinging). */
+	void Hold(TArray<FKey>& Keys, ULyudLadderComponent* Ladder, float Seconds) const;
 	void ClimbDownFromSea();
 	void ClimbUpToSea();
 	void ClimbUpToEuropa();
