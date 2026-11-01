@@ -253,7 +253,7 @@
    "aspect": "1:1",
    "prompt": "A thick cloth-bound bird field guide in dark bottle-green, lying at a slight angle, its cover stamped in faded gold with a simple line drawing of a gull in flight above a small round map with a compass rose, no lettering anywhere, a red ribbon bookmark hanging out at the bottom, slightly worn corners and spine.",
    "source": "Higgsfield nano_banana_2_1, 1k, seed 4172, job 4c196266-0e28-4e1b-93fa-ea0ef32803ad (style icon + prompt), resized to 512 px"
-   },
+  },
   "icon_feed_suet": {
    "kind": "icon",
    "style": "icon",
@@ -316,6 +316,20 @@
    "aspect": "1:1",
    "prompt": "See design/grocery/icons_grid.json (cell of kefir).",
    "source": "design/grocery/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/grocery_assets.py (the game-assets rule)"
+  },
+  "icon_cigarettes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/smoking/icons_grid.json (cell of cigarettes).",
+   "source": "design/smoking/icons_grid.json: one 2x2 Higgsfield grid, cut by tools/smoking_pack.py (the game-assets rule)"
+  },
+  "icon_lighter": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/smoking/icons_grid.json (cell of lighter).",
+   "source": "design/smoking/icons_grid.json: one 2x2 Higgsfield grid, cut by tools/smoking_pack.py (the game-assets rule)"
   }
  }
 }

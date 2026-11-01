@@ -387,7 +387,7 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			}
 		});
 	}
-	else if (Def->Kind == ELyudItemKind::Feed || Def->Kind == ELyudItemKind::Food)
+	else if (Def->Kind == ELyudItemKind::Feed || Def->Kind == ELyudItemKind::Food || Def->Slot == ELyudEquipSlot::Hand)
 	{
 		const bool bInHand = Inv->EquippedItem() == Id;
 		AddAction(bInHand ? TEXT("ui.use.unequip") : TEXT("ui.use.equip"), [WeakInv, WeakUI, Id, bInHand]

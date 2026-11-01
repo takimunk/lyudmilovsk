@@ -1100,5 +1100,21 @@
  "npc.guseva_valentina.name": "Валентина Гусева",
  "npc.guseva_valentina.role": "продаёт варёную кукурузу в Академгородке",
  "line.guseva_valentina.first.1": "Кукуруза горячая, только сварила. Соли не жалею, сразу говорю.",
- "line.guseva_valentina.again1.1": "Початки с дачи, молочные. Пока сезон, бери."
+ "line.guseva_valentina.again1.1": "Початки с дачи, молочные. Пока сезон, бери.",
+ "item.cigarettes.name": "Сигареты «Скворец»",
+ "item.cigarettes.desc": "Пачка на десять сигарет с фильтром. На пачке честно написано, что курение вредит здоровью.",
+ "item.lighter.name": "Зажигалка",
+ "item.lighter.desc": "Оранжевая пластмассовая зажигалка с колёсиком.",
+ "label.cigarettes.brand": "Скворец",
+ "label.cigarettes.warning": "Курение вредит вашему здоровью",
+ "label.cigarettes.count": "10 сигарет с фильтром",
+ "ui.smoke.hint_unlit": "ЛКМ — прикурить   ПКМ — убрать в пачку",
+ "ui.smoke.hint_lit": "ЛКМ — к губам, держать — затянуться   ПКМ — потушить и выбросить",
+ "ui.smoke.no_lighter": "Нечем прикурить",
+ "ui.smoke.take_pack": "[E] Взять сигареты и зажигалку",
+ "ui.smoke.take_lighter": "[E] Взять зажигалку",
+ "ui.smoke.empty": "Пачка пуста",
+ "line.hero.cough.1": "(coughs) (coughs) Кха… кха-кха.",
+ "line.hero.cough.2": "(coughs) Кх-кх… (coughs) (gasps) Ох…",
+ "line.hero.cough.3": "(coughs) (coughs) (coughs) Гадость…"
 }

@@ -1,0 +1,40 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "date": "2026-10-31",
+ "credits": 1,
+ "aspect_ratio": "16:9",
+ "job_id": "d9f783d2-19e5-4caf-90e7-ca46e5d79267",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_201125_d9f783d2-19e5-4caf-90e7-ca46e5d79267.png",
+ "prompt": "Print artwork for the cardboard panels of an original fictional Soviet-era 1980s cigarette pack brand (no real brand), arranged as 4 tall equal vertical cells side by side in one picture (4 columns, 1 row), flat orthographic view, each cell filled edge to edge by its printed panel, no borders, gaps or lines between the cells, absolutely no text, no letters, no numbers anywhere. Shared art direction: offset print on matte cardboard, a deep Baltic sea blue and warm cream palette with a thin gold accent, slightly worn ink, subtle paper grain. Cell 1 (front panel): cream background, a large elegant stylised starling bird in flight in deep blue and gold in the upper half, a thin gold double border line along the panel edge, the lower 40 percent of the panel left as a plain cream empty area. Cell 2 (back panel): deep blue background with a faint pattern of small flying starlings like a murmuration and a low line of sea waves at the very bottom, the middle 50 percent left as a plain calm blue empty area. Cell 3 (side panel): a vertical stripe pattern, deep blue with one thin gold and one cream stripe, a tiny starling silhouette near the top. Cell 4 (top lid and inner card): plain cream cardboard with a small gold starling emblem in a circle in the middle.",
+ "cells": {
+  "front": [
+   0.0089,
+   0.0158,
+   0.2567,
+   0.984
+  ],
+  "back": [
+   0.2645,
+   0.004,
+   0.5859,
+   0.996
+  ],
+  "side": [
+   0.5904,
+   0.004,
+   0.6931,
+   0.996
+  ],
+  "lid": [
+   0.6998,
+   0.004,
+   0.9978,
+   0.996
+  ]
+ },
+ "note": "The pack's printed panels without words (cells measured on the sheet: x0 y0 x1 y1 as fractions; the model made them unequal). tools/smoking_pack.py lays them into the pack's atlas and prints the words of strings_<lang>.json."
+}

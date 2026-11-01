@@ -1,0 +1,23 @@
+{
+ "id": "cig_drag",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/smoking/cig_drag_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Close-up of a single slow drag on a cigarette: a soft, faint crackling sizzle of burning tobacco and paper with a quiet steady inhale of air through the filter, very close and intimate, quiet room, no voices, no coughing",
+  "duration_seconds": 2.5
+ },
+ "hash": "d93cdf27d217",
+ "fal_request_id": "01a1939d-94b8-7b70-aa10-cc0101db11cc",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a152/CTddstAYUlKEn642VqWfu_sound_effect.mp3",
+ "created": "2026-10-31T20:19:05Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -12 dBFS",
+ "sha256": "8d31a9033fcbe503c9e0e50a089b36ff1aabc0e411544b2868b4ab08030dcae2",
+ "seconds": 2.48,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "smoking"
+}

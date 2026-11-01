@@ -1,0 +1,23 @@
+{
+ "id": "lighter_flick",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/smoking/lighter_flick_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A cheap disposable gas lighter lit with the thumb: a sharp metallic flint wheel scrape and click, then a soft whoosh of the small gas flame catching, close, quiet room, no voices",
+  "duration_seconds": 1.2
+ },
+ "hash": "6d5c175f412c",
+ "fal_request_id": "01a1939d-1c07-7300-a119-4f4586632a92",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a14f/U0QZuJNu0tFj-JqWoo3mD_sound_effect.mp3",
+ "created": "2026-10-31T20:18:35Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -12 dBFS",
+ "sha256": "dd44085c9ae9b4c708caf09f3eb2f437f665da26906b198fa7f3193598a14b53",
+ "seconds": 0.9,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "smoking"
+}

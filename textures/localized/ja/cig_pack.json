@@ -1,0 +1,15 @@
+{
+ "id": "cig_pack",
+ "lang": "ja",
+ "art": "design/smoking/pack_art_grid.png (higgsfield, no words)",
+ "words": [
+  "label.cigarettes.brand",
+  "label.cigarettes.warning",
+  "label.cigarettes.count"
+ ],
+ "fonts": [
+  "DelaGothicOne-Regular.ttf",
+  "MPLUS1p-Bold.ttf"
+ ],
+ "made_by": "tools/smoking_pack.py"
+}

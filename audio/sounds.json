@@ -402,6 +402,41 @@
    "variants": 4,
    "duration": 0.7,
    "prompt": "A single footstep on hard ice heard only through the body, as if in a vacuum: a soft muffled low thud with a faint dull crunch, no air, no echo, close, no other sounds"
+  },
+  {
+   "id": "lighter_flick",
+   "group": "smoking",
+   "variants": 3,
+   "duration": 1.2,
+   "prompt": "A cheap disposable gas lighter lit with the thumb: a sharp metallic flint wheel scrape and click, then a soft whoosh of the small gas flame catching, close, quiet room, no voices"
+  },
+  {
+   "id": "cig_drag",
+   "group": "smoking",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Close-up of a single slow drag on a cigarette: a soft, faint crackling sizzle of burning tobacco and paper with a quiet steady inhale of air through the filter, very close and intimate, quiet room, no voices, no coughing"
+  },
+  {
+   "id": "smoke_exhale",
+   "group": "smoking",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A person slowly exhaling a breath of cigarette smoke through slightly parted lips: a soft, long, airy breath out, close, quiet room, no voice, no words, no coughing"
+  },
+  {
+   "id": "pack_open",
+   "group": "smoking",
+   "variants": 2,
+   "duration": 0.8,
+   "prompt": "A small cardboard flip-top cigarette pack opened with the thumb: a soft papery click of the lid, then a cigarette sliding out of the pack, close, quiet room, no voices"
+  },
+  {
+   "id": "cig_putout",
+   "group": "smoking",
+   "variants": 2,
+   "duration": 1.0,
+   "prompt": "A cigarette end flicked away and landing on concrete: a tiny soft tap and a faint hiss, close, outdoors, quiet, no voices"
   }
  ],
  "music": [

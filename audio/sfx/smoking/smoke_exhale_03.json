@@ -1,0 +1,23 @@
+{
+ "id": "smoke_exhale",
+ "variant": 3,
+ "kind": "sfx",
+ "file": "audio/sfx/smoking/smoke_exhale_03.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A person slowly exhaling a breath of cigarette smoke through slightly parted lips: a soft, long, airy breath out, close, quiet room, no voice, no words, no coughing",
+  "duration_seconds": 2.0
+ },
+ "hash": "a0facfe8b544",
+ "fal_request_id": "01a1939d-f9a8-7261-823c-135f2a977906",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a154/jSpfoOypLsaZBZa4cORYl_sound_effect.mp3",
+ "created": "2026-10-31T20:19:29Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -12 dBFS",
+ "sha256": "0ac3de44228044e3ea26b1b7f9dfc4f8905e801ea629ea86187e047d4cf19a2e",
+ "seconds": 2.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "smoking"
+}

@@ -1100,5 +1100,21 @@
  "npc.guseva_valentina.name": "Valentina Guseva",
  "npc.guseva_valentina.role": "sells boiled corn in the Academgorodok",
  "line.guseva_valentina.first.1": "The corn's hot, just boiled. I don't spare the salt, I'll tell you that now.",
- "line.guseva_valentina.again1.1": "Cobs from the dacha, still milky. Take some while the season lasts."
+ "line.guseva_valentina.again1.1": "Cobs from the dacha, still milky. Take some while the season lasts.",
+ "item.cigarettes.name": "Skvorets cigarettes",
+ "item.cigarettes.desc": "A pack of ten filter cigarettes. The pack says it honestly: smoking harms your health.",
+ "item.lighter.name": "Lighter",
+ "item.lighter.desc": "An orange plastic lighter with a spark wheel.",
+ "label.cigarettes.brand": "Skvorets",
+ "label.cigarettes.warning": "Smoking harms your health",
+ "label.cigarettes.count": "10 filter cigarettes",
+ "ui.smoke.hint_unlit": "LMB — light it   RMB — put it back",
+ "ui.smoke.hint_lit": "LMB — to the lips, hold — take a drag   RMB — put it out and throw it away",
+ "ui.smoke.no_lighter": "Nothing to light it with",
+ "ui.smoke.take_pack": "[E] Take the cigarettes and the lighter",
+ "ui.smoke.take_lighter": "[E] Take the lighter",
+ "ui.smoke.empty": "The pack is empty",
+ "line.hero.cough.1": "(coughs) (coughs) Ugh… (coughs)",
+ "line.hero.cough.2": "(coughs) Khh… (coughs) (gasps) Oh…",
+ "line.hero.cough.3": "(coughs) (coughs) (coughs) Gross…"
 }

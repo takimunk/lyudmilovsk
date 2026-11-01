@@ -1,0 +1,24 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "date": "2026-10-31",
+ "credits": 1,
+ "aspect_ratio": "1:1",
+ "job_id": "e171d01d-20e3-40ec-8c7a-d21a1924b6a6",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261031_201127_e171d01d-20e3-40ec-8c7a-d21a1924b6a6.png",
+ "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters anywhere. Row 1, left: a slim cardboard flip-top pack of ten cigarettes, lid open, the white filters of the cigarettes visible in two rows inside, the pack printed cream and deep Baltic blue with a gold stylised starling bird, a plain white warning panel on the front (empty, no letters). Row 1, right: a cheap translucent orange plastic disposable gas lighter with a silver metal hood and spark wheel, standing at a slight angle. Row 2, left: a single cigarette with an orange cork-pattern filter and white paper, lying diagonally. Row 2, right: a crushed cigarette butt with a charred end and a little grey ash, lying on the cloth.",
+ "ids": [
+  "cigarettes",
+  "lighter",
+  "cigarette",
+  "cigarette_butt"
+ ],
+ "ship": [
+  "cigarettes",
+  "lighter"
+ ],
+ "note": "2x2 grid of the smoking kit's icons; cut by tools/smoking_pack.py into textures/localized/ru/icon_<id>.jpg (no words: one language). The cigarette and the butt are spare (no items)."
+}
