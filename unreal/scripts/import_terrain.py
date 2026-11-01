@@ -222,6 +222,9 @@ float now = Tide.x;
 float top = max(Tide.z, now) + 10.0;
 float wet = (1.0 - smoothstep(top - 5.0, top + 25.0, z)) * (1.0 - smoothstep(Tide.y + 15.0, Tide.y + 45.0, z));
 float sheen = wet * (1.0 - saturate((z - now) / max(top - now, 40.0)));
+// under the water there is no film of water on the sand: no sheen, no glints, the ripples keep their relief
+sheen *= smoothstep(now - 25.0, now - 3.0, z);
+wet *= smoothstep(now - 400.0, now - 3.0, z) * 0.5 + 0.5;
 // pools: the hollows the ebb cannot drain keep water up to their rim (the sea's depth map: r = bed under the datum,
 // g = the water a hollow keeps, both m; ALyudSea hands it over as TidePools / PoolRect)
 struct FWetLib

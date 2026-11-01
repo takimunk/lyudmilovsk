@@ -115,6 +115,74 @@ enum class EPlantHerbForm : uint8
 	Trailing,
 	/** A ribbed column, with arms (cactus). */
 	Column,
+	/** Seaweed or sea grass under water (FPlantHerb::Alga): ribbons, sheets, forked fronds, filaments, a kelp. */
+	Alga,
+};
+
+UENUM(BlueprintType)
+enum class EPlantAlgaForm : uint8
+{
+	/** Shoots of strap leaves from a creeping rhizome, standing up in the water (eelgrass, Zostera). */
+	Ribbons,
+	/** A few broad thin ruffled sheets from a tiny holdfast (sea lettuce, Ulva). */
+	Sheet,
+	/** Fronds that fork again and again from a holdfast: flat with a midrib and air bladders (wracks, Fucus) or round
+	 * stems (Furcellaria), by Flat. */
+	Forked,
+	/** A tuft of fine branched threads (Cladophora). */
+	Filaments,
+	/** A holdfast, a stiff stalk and one broad blade, split into fingers (kelps, Laminaria). */
+	Kelp,
+};
+
+/**
+ * A seaweed's or sea grass's build (EPlantHerbForm::Alga). The plant's size is FPlantHerb Height and Spread, its fronds'
+ * colour the species' leaf colours (SummerLeafColour; AutumnLeafColour for the browned tips), the stalks' StemColour,
+ * bladders and receptacles CentreColour. Under water it stands up by its buoyancy and leans with the current and the
+ * waves in its material (M_LyudSeaAlga), never in the mesh.
+ */
+USTRUCT(BlueprintType)
+struct FPlantAlga
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") EPlantAlgaForm Form = EPlantAlgaForm::Ribbons;
+	/** Shoots (ribbons), sheets, fronds from the holdfast, threads (filaments), blades (kelp: 1). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") int32 Fronds = 4;
+	/** Ribbons: leaves per shoot. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") int32 LeavesPerShoot = 4;
+	/** Width of a ribbon, a flat frond or a finger, or a round stem's diameter, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Width = 0.006f;
+	/** Times a frond forks (Forked, Filaments) and the angle between its arms, degrees. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") int32 Forks = 4;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float ForkAngle = 35.f;
+	/** 0 round stems .. 1 flat fronds. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Flat = 1.f;
+	/** A raised midrib down the flat fronds (wracks). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") bool bMidrib = false;
+	/** Air bladders: pairs per frond segment (bladderwrack: about one), their diameter, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Bladders = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float BladderSize = 0.012f;
+	/** Swollen reproductive tips (wracks' receptacles), 0 none .. 1 fat; in their months (BloomStart..BloomEnd). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Receptacles = 0.f;
+	/** How wavy the edges of sheets and blades are, 0..1. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Ruffle = 0.f;
+	/** Kelp: fingers the blade splits into (0 or 1 = whole), the stalk's share of the height and its radius, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") int32 Fingers = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Stipe = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float StipeRadius = 0.006f;
+	/** 0 lying on the bed .. 1 standing straight up in still water (buoyancy). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Upright = 0.8f;
+	/** Twist along a ribbon, degrees; how far a clump's shoots spread from its centre, m. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Twist = 60.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Clump = 0.1f;
+	/** The year: fronds longest and thickest on PeakDay, shrunk to LowScale (of length, and of their number) half a year
+	 * off it (1 = the same all year: a perennial wrack); browned tips after the peak up to TipBrown of the length. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float PeakDay = 220.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float LowScale = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float TipBrown = 0.f;
+	/** Translucency of the fronds in the material (thin sheets glow green against the light), 0..1. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Alga") float Translucent = 0.5f;
 };
 
 UENUM(BlueprintType)
@@ -232,6 +300,10 @@ struct FPlantHerb
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Column") int32 Ribs = 8;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Column") int32 Arms = 0;
+
+	// --- Alga (seaweed, sea grass)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Alga") FPlantAlga Alga;
 
 	// --- Flowers
 

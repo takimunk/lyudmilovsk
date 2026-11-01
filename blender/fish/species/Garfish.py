@@ -1,0 +1,45 @@
+"""Garfish, Belone belone: very long slender body, both jaws drawn out into a needle beak (~1/5 of the length), dorsal and anal fins far back
+opposite each other, small forked tail, blue-green back, silver sides, 60 cm."""
+SPEC = dict(
+    id="Garfish", latin="Belone belone", length=0.60, seed=53, tris=3400,
+    body_end=0.925, nose_len=0.004, nose_len_bot=0.006,
+    profile=dict(
+        top=[(0, 0.0014), (0.04, 0.0020), (0.10, 0.0030), (0.17, 0.0046), (0.21, 0.0120), (0.25, 0.0230), (0.29, 0.0300), (0.36, 0.0345),
+             (0.5, 0.0360), (0.65, 0.0340), (0.78, 0.0270), (0.86, 0.0185), (0.925, 0.0120)],
+        bot=[(0, 0.0020), (0.04, 0.0024), (0.10, 0.0034), (0.17, 0.0052), (0.21, 0.0120), (0.25, 0.0215), (0.29, 0.0285), (0.36, 0.0330),
+             (0.5, 0.0345), (0.65, 0.0325), (0.78, 0.0255), (0.86, 0.0175), (0.925, 0.0115)],
+        wid=[(0, 0.0014), (0.04, 0.0020), (0.10, 0.0028), (0.17, 0.0042), (0.21, 0.0105), (0.25, 0.0175), (0.29, 0.0215), (0.36, 0.0240),
+             (0.5, 0.0250), (0.65, 0.0235), (0.78, 0.0185), (0.86, 0.0130), (0.925, 0.0085)],
+        n=2.4),
+    head=dict(gill_t=0.262, gill_ridge=0.015, mouth_len=0.196, mouth_hold=0.88, mouth_depth=0.38, mouth_p=0.5, mouth_w=0.30),
+    lod0=dict(m=8, rings=70, nose_rings=2), lod1=dict(m=5, nose_rings=2),
+    eyes=[dict(t=0.222, q=0.36, r=0.0112, sunk=0.25)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.655, t1=0.845, h=0.046, shape="pointed", peak=0.14, rake=22, rays=16, segs=9,
+             col=(88, 112, 112), ray=(48, 72, 78), alpha=0.5, edge=(30, 52, 60), edge_a=0.5),
+        dict(name="A", kind="median", side="anal", t0=0.665, t1=0.855, h=0.034, shape="pointed", peak=0.14, rake=22, rays=18, segs=9,
+             col=(185, 198, 196), ray=(120, 140, 142), alpha=0.45, edge=(80, 100, 105), edge_a=0.3),
+        dict(name="C", kind="caudal", span_top=0.050, span_bot=0.055, shape="forked", fork=0.42, rays=17, segs=11,
+             col=(82, 108, 110), ray=(44, 66, 74), alpha=0.6, edge=(28, 48, 56), edge_a=0.55, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.272, q0=0.60, q1=0.68, len=0.050, shape="pointed", ang0=5, ang1=40, splay=30, rays=11, segs=5,
+             col=(190, 200, 198), ray=(130, 148, 148), alpha=0.42),
+        dict(name="Pel", kind="paired", t=0.575, dt=0.012, q0=0.93, q1=0.95, len=0.040, shape="pointed", ang0=30, ang1=55, splay=30, rays=6, segs=3,
+             col=(200, 208, 205), ray=(140, 155, 155), alpha=0.42),
+    ],
+    paint=dict(
+        ramp=[(0.0, (22, 70, 82)), (0.12, (30, 96, 104)), (0.28, (48, 124, 126)), (0.42, (150, 182, 182)), (0.55, (205, 218, 216)),
+              (0.75, (232, 238, 236)), (1.0, (240, 242, 238))],
+        grain=0.05,
+        layers=[
+            dict(type="stripe", at=0.46, w=0.05, col=(214, 226, 224), a=0.5, soft=0.05, t=(0.2, 0.93)),
+            dict(type="sheen", at=0.58, w=0.13, col=(246, 248, 246), a=0.5),
+            dict(type="lateral", path=[(0.0, 0.62), (0.3, 0.62), (0.6, 0.60), (0.92, 0.5)], w=0.0010, col=(105, 135, 140), a=0.45, t0=0.26, t1=0.93),
+            dict(type="scales", size=0.0034, edge=0.05, sheen=0.04, q=(0.0, 0.9)),
+            dict(type="flush", col=(14, 40, 44), q=(0.0, 0.5), t=(0.0, 0.215), a=0.75, qsoft=0.12, tsoft=0.02),
+            dict(type="flush", col=(120, 40, 30), q=(0.0, 1.0), t=(0.0, 0.012), a=0.4, qsoft=0.1, tsoft=0.004),
+        ],
+        head=dict(tint=(150, 175, 160), amount=0.18, curve=0.02, line=(60, 80, 80), line_a=0.5),
+        mouth=dict(col=(30, 40, 38), w=0.0004),
+        eye=dict(iris=(215, 205, 150), iris2=(120, 120, 80), rim=(60, 70, 66), pupil=(3, 4, 5), pupil_r=0.48),
+    ),
+)

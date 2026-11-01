@@ -1,0 +1,47 @@
+"""Viviparous eelpout, Zoarces viviparus: eel-like bottom fish, big blunt head with thick lips, one continuous dorsal-tail-anal fringe,
+big rounded pectorals, yellowish brown with dark blotches along the dorsal fin, 28 cm.
+The fringe is three median fins whose outlines meet at the caudal base (caudal base_h = dorsal end edge height)."""
+SPEC = dict(
+    id="Eelpout", latin="Zoarces viviparus", length=0.28, seed=67, tris=2600,
+    body_end=0.95, nose_len=0.035, nose_len_bot=0.028,
+    profile=dict(
+        top=[(0, 0), (0.03, 0.026), (0.08, 0.042), (0.15, 0.052), (0.22, 0.054), (0.35, 0.049), (0.5, 0.041), (0.65, 0.031),
+             (0.8, 0.021), (0.95, 0.011)],
+        bot=[(0, 0), (0.03, 0.024), (0.08, 0.038), (0.15, 0.046), (0.22, 0.048), (0.35, 0.043), (0.5, 0.036), (0.65, 0.028),
+             (0.8, 0.019), (0.95, 0.010)],
+        wid=[(0, 0), (0.03, 0.020), (0.08, 0.034), (0.15, 0.041), (0.22, 0.040), (0.35, 0.035), (0.5, 0.029), (0.65, 0.022),
+             (0.8, 0.015), (0.95, 0.008)],
+        n=2.3),
+    head=dict(gill_t=0.185, gill_ridge=0.02, mouth_len=0.11, mouth_depth=0.09, mouth_p=0.62),
+    eyes=[dict(t=0.075, q=0.24, r=0.0105, sunk=0.25)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.215, t1=0.938, h=0.0345, shape="spiny", peak=0.3, rake=0, rays=80, segs=28, ends=(0.0, 0.55),
+             col=(150, 124, 70), ray=(96, 76, 40), alpha=0.62, edge=(70, 52, 30), edge_a=0.45, rag=0.03,
+             spots=dict(col=(58, 38, 22), cell=0.2, r=0.42, prob=0.5, a=0.85)),
+        dict(name="A", kind="median", side="anal", t0=0.40, t1=0.938, h=0.0345, shape="spiny", peak=0.3, rake=0, rays=60, segs=22, ends=(0.0, 0.55),
+             col=(176, 150, 92), ray=(112, 90, 50), alpha=0.58, edge=(80, 62, 36), edge_a=0.35, rag=0.03),
+        dict(name="C", kind="caudal", span_top=0.0245, span_bot=0.0245, base_h=0.0273, shape="oval", rays=14, segs=10,
+             col=(150, 124, 70), ray=(96, 76, 40), alpha=0.62, edge=(70, 52, 30), edge_a=0.45, rag=0.03,
+             spots=dict(col=(58, 38, 22), cell=0.2, r=0.4, prob=0.4, a=0.7)),
+        dict(name="Pec", kind="paired", t=0.20, q0=0.40, q1=0.62, len=0.115, shape="rounded", ang0=-25, ang1=50, splay=26, rays=18, segs=7,
+             col=(184, 158, 98), ray=(120, 96, 54), alpha=0.5, edge=(100, 78, 44), edge_a=0.4),
+        dict(name="Pel", kind="paired", t=0.14, dt=0.01, q0=0.93, q1=0.96, len=0.026, shape="pointed", ang0=25, ang1=60, splay=20, rays=4, segs=3,
+             col=(215, 195, 140), ray=(160, 140, 90), alpha=0.5),
+    ],
+    paint=dict(
+        ramp=[(0.0, (92, 70, 36)), (0.2, (134, 108, 56)), (0.42, (168, 140, 74)), (0.62, (196, 170, 100)), (0.80, (222, 204, 144)),
+              (1.0, (232, 220, 170))],
+        grain=0.08,
+        layers=[
+            dict(type="mottle", scale=0.05, thr=0.5, soft=0.1, col=(88, 64, 32), q=(0.0, 0.7), a=0.5, seed=1),
+            dict(type="mottle", scale=0.022, thr=0.6, soft=0.07, col=(204, 176, 100), q=(0.1, 0.8), a=0.35, seed=2),
+            dict(type="bars", t0=0.22, t1=0.94, period=0.062, w=0.034, col=(52, 34, 20), a=0.75, q=(0.0, 0.30), wob=0.01, soft=0.012, qsoft=0.07),
+            dict(type="spots", cell=0.02, r=(0.002, 0.005), prob=0.6, col=(60, 42, 22), q=(0.25, 0.7), a=0.5, seed=3),
+            dict(type="scales", size=0.0030, edge=0.03, sheen=0.02, q=(0.0, 0.8)),
+            dict(type="flush", col=(214, 186, 112), q=(0.52, 0.66), t=(0.0, 0.085), a=0.45, qsoft=0.05, tsoft=0.015),
+        ],
+        head=dict(tint=(150, 118, 64), amount=0.2, curve=0.015, line=(66, 48, 26), line_a=0.5),
+        mouth=dict(col=(70, 44, 28), w=0.0010),
+        eye=dict(iris=(190, 150, 70), iris2=(100, 74, 34), rim=(40, 32, 20), pupil=(3, 3, 3), pupil_r=0.5),
+    ),
+)

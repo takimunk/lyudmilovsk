@@ -31,6 +31,7 @@ public:
 	UPROPERTY() TArray<uint8> DuneGrass;
 	UPROPERTY() TArray<uint8> Wetness;
 	UPROPERTY() TArray<uint8> ForestFloor;
+	UPROPERTY() TArray<uint8> SeaStone;
 
 	/** 0..1, bilinear; 0 outside the map. */
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetGrassDensity(const FVector& WorldLocation) const { return Sample(Grass, WorldLocation); }
@@ -39,6 +40,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetWetness(const FVector& WorldLocation) const { return Sample(Wetness, WorldLocation); }
 	/** 0..1 forest floor the ground cover grows on (AForestFloor): under the forest, off its tracks, rock and sand. */
 	UFUNCTION(BlueprintPure, Category = "Terrain") float GetForestFloor(const FVector& WorldLocation) const { return Sample(ForestFloor, WorldLocation); }
+	/** 0..1 stone cover on the sea bed (moraine reefs, boulder and cobble fields; docs/underwater.md). */
+	UFUNCTION(BlueprintPure, Category = "Terrain") float GetSeaStone(const FVector& WorldLocation) const { return Sample(SeaStone, WorldLocation); }
+	/** A mask built before the sea bed's relief has no stone channel (the seabed life then goes by its own noise). */
+	bool HasSeaStone() const { return SeaStone.Num() == Width * Height && Width > 1; }
 	/** A mask built before the forest floor channel existed has none (AForestFloor then goes by the trees alone). */
 	bool HasForestFloor() const { return ForestFloor.Num() == Width * Height && Width > 1; }
 

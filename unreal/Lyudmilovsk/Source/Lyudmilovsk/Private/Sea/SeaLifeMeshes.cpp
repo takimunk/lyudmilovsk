@@ -302,6 +302,59 @@ namespace LyudSeaLife
 		return Mesh = Build(TEXT("SM_SeaBoulder"), B);
 	}
 
+	UStaticMesh* ReefRock(int32 Variant)
+	{
+		static UStaticMesh* Meshes[3] = {};
+		Variant = FMath::Clamp(Variant, 0, 2);
+		if (Meshes[Variant]) return Meshes[Variant];
+		// the till's blocks: granite and gneiss erratics, rounded by the ice but broken and flattened, their feet in the sand;
+		// G shades the faces (darker undersides come from the material's light), R unused
+		FBuilder B;
+		if (Variant == 0)
+		{
+			B.Ellipsoid(FVector3f(0, 0, 20.f), FVector3f(55.f, 42.f, 36.f), FQuat4f(FVector3f::UpVector, 0.4f), 22, 12, FLinearColor(0.f, 0.55f, 0.f), 0.34f, 17);
+		}
+		else if (Variant == 1)
+		{
+			// a slab split along its grain, tilted
+			B.Ellipsoid(FVector3f(0, 0, 14.f), FVector3f(60.f, 38.f, 20.f), FQuat4f(FVector3f::XAxisVector, 0.18f), 22, 10, FLinearColor(0.f, 0.45f, 0.f), 0.3f, 29);
+		}
+		else
+		{
+			// two blocks leaning together with a gap under them (a fish's hole)
+			B.Ellipsoid(FVector3f(-22.f, 0, 18.f), FVector3f(38.f, 33.f, 30.f), FQuat4f(FVector3f::YAxisVector, 0.25f), 18, 10, FLinearColor(0.f, 0.6f, 0.f), 0.3f, 41);
+			B.FaceNormals(0);
+			const int32 From = B.P.Num();
+			B.Ellipsoid(FVector3f(30.f, 8.f, 22.f), FVector3f(34.f, 30.f, 28.f), FQuat4f(FVector3f::YAxisVector, -0.35f), 18, 10, FLinearColor(0.f, 0.4f, 0.f), 0.32f, 53);
+			B.FaceNormals(From);
+			return Meshes[Variant] = Build(TEXT("SM_SeaReefRock2"), B);
+		}
+		B.FaceNormals(0);
+		return Meshes[Variant] = Build(Variant == 0 ? TEXT("SM_SeaReefRock0") : TEXT("SM_SeaReefRock1"), B);
+	}
+
+	UStaticMesh* Cobbles(int32 Variant)
+	{
+		static UStaticMesh* Meshes[3] = {};
+		Variant = FMath::Clamp(Variant, 0, 2);
+		if (Meshes[Variant]) return Meshes[Variant];
+		// rounded cobbles 5-25 cm and pebbles, half sunk in the sand, a few bigger in the middle
+		FBuilder B;
+		uint32 S = 909 + Variant * 131;
+		for (int32 K = 0; K < 22; K++)
+		{
+			const float A = Rnd(S) * 2.f * PI, R = 75.f * FMath::Sqrt(Rnd(S));
+			const float L = (2.5f + 10.f * Rnd(S) * Rnd(S)) * (1.3f - 0.5f * R / 75.f);
+			const FQuat4f Q = FQuat4f(FVector3f::UpVector, Rnd(S) * 2.f * PI) * FQuat4f(FVector3f::XAxisVector, (Rnd(S) - 0.5f) * 0.6f);
+			const int32 From = B.P.Num();
+			B.Ellipsoid(FVector3f(R * FMath::Cos(A), R * FMath::Sin(A), L * 0.25f), FVector3f(L, L * (0.6f + 0.3f * Rnd(S)), L * (0.45f + 0.2f * Rnd(S))), Q, 9, 5,
+				FLinearColor(0.f, 0.3f + 0.7f * Rnd(S), 0.f), 0.12f, K + Variant * 50);
+			B.FaceNormals(From);
+		}
+		static const TCHAR* Names[3] = { TEXT("SM_SeaCobbles0"), TEXT("SM_SeaCobbles1"), TEXT("SM_SeaCobbles2") };
+		return Meshes[Variant] = Build(Names[Variant], B);
+	}
+
 	UStaticMesh* Mussels()
 	{
 		static UStaticMesh* Mesh = nullptr;

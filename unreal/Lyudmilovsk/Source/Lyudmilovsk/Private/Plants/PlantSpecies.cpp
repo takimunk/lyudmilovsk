@@ -1266,6 +1266,7 @@ const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 		for (FPlantSpecies& S : Out) ApplyBlossom(S);
 		Out.Append(PlantHerbs::Species());
 		Out.Append(PlantHerbs::FloorSpecies());
+		Out.Append(PlantHerbs::SeaSpecies());
 		return Out;
 	}();
 	return Species;

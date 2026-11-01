@@ -1,0 +1,41 @@
+"""Greater (broad-nosed) pipefish, Syngnathus typhle: very slender bony-ringed body, long tube snout, tiny tail fan, 22 cm."""
+SPEC = dict(
+    id="Pipefish", latin="Syngnathus typhle", length=0.22, seed=41, tris=1700,
+    body_end=0.945, nose_len=0.004,
+    profile=dict(
+        top=[(0, 0.0032), (0.03, 0.0036), (0.065, 0.0046), (0.09, 0.0075), (0.125, 0.0112), (0.17, 0.0125), (0.3, 0.0125), (0.46, 0.0112),
+             (0.55, 0.0098), (0.7, 0.0068), (0.85, 0.0044), (0.945, 0.0028)],
+        bot=[(0, 0.0032), (0.03, 0.0036), (0.065, 0.0046), (0.09, 0.0074), (0.125, 0.0108), (0.17, 0.0122), (0.3, 0.0122), (0.46, 0.0108),
+             (0.55, 0.0095), (0.7, 0.0066), (0.85, 0.0042), (0.945, 0.0026)],
+        wid=[(0, 0.0030), (0.03, 0.0033), (0.065, 0.0042), (0.09, 0.0068), (0.125, 0.0096), (0.17, 0.0108), (0.3, 0.0108), (0.46, 0.0098),
+             (0.55, 0.0086), (0.7, 0.0060), (0.85, 0.0040), (0.945, 0.0026)],
+        n=2.7),
+    head=dict(gill_t=0.125, gill_ridge=0.03, mouth_len=0.012, mouth_depth=0.0, mouth_p=0.7),
+    lod0=dict(m=5, rings=60, nose_rings=3), lod1=dict(m=4, nose_rings=2),
+    eyes=[dict(t=0.083, q=0.30, r=0.0072, sunk=0.25)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.50, t1=0.635, h=0.020, shape="trapezoid", rake=10, rays=39, segs=10,
+             col=(180, 175, 140), ray=(120, 112, 70), alpha=0.4, edge=(90, 80, 50), edge_a=0.35,
+             spots=dict(col=(80, 70, 40), cell=0.25, r=0.2, prob=0.3, a=0.5)),
+        dict(name="C", kind="caudal", span_top=0.0135, span_bot=0.0135, base_h=0.006, shape="rounded", rays=10, segs=4,
+             col=(120, 108, 62), ray=(70, 60, 32), alpha=0.65, edge=(60, 50, 26), edge_a=0.6, rag=0.03,
+             bands=[(0.0, 0.3, (200, 195, 160), 0.4)]),
+        dict(name="Pec", kind="paired", t=0.125, q0=0.22, q1=0.52, len=0.026, shape="rounded", ang0=-15, ang1=40, splay=38, rays=12, segs=3,
+             col=(200, 198, 175), ray=(140, 135, 100), alpha=0.4),
+    ],
+    paint=dict(
+        ramp=[(0.0, (78, 76, 36)), (0.25, (104, 100, 50)), (0.5, (132, 124, 68)), (0.75, (162, 152, 98)), (1.0, (196, 188, 134))],
+        grain=0.07,
+        layers=[
+            dict(type="bars", t0=0.13, t1=0.93, period=0.052, w=0.016, col=(206, 198, 152), a=0.5, wob=0.006, soft=0.006),
+            dict(type="bars", t0=0.155, t1=0.93, period=0.052, w=0.010, col=(62, 56, 26), a=0.5, wob=0.006, soft=0.006),
+            dict(type="rings", t0=0.125, t1=0.47, period=0.0185, w=0.00045, col=(52, 48, 22), a=0.55),
+            dict(type="rings", t0=0.47, t1=0.945, period=0.0128, w=0.00045, col=(52, 48, 22), a=0.55),
+            dict(type="stripe", at=0.26, w=0.03, col=(205, 195, 140), a=0.35, t=(0.12, 0.95)),
+            dict(type="flush", col=(70, 62, 30), q=(0.3, 0.7), t=(0.0, 0.1), a=0.4),
+            dict(type="spots", cell=0.011, r=(0.0006, 0.0013), prob=0.4, col=(222, 214, 170), a=0.6, seed=2, q=(0.1, 0.8)),
+        ],
+        head=dict(tint=(170, 158, 100), amount=0.18, curve=0.005, line=(60, 52, 28), line_a=0.5),
+        eye=dict(iris=(196, 158, 70), iris2=(90, 70, 30), rim=(50, 46, 28), pupil=(3, 3, 3), pupil_r=0.48),
+    ),
+)
