@@ -1168,9 +1168,11 @@ def build_rail(grid):
     """The halts (rail_stop: from the ground up the stair at the platform's east end onto the deck, eight boarding
     points along it facing the track) and the island's spots (island_spot), its ground as a height field. The game
     moves the stairs' feet and the boarding points to the railway's own (ULyudRailwaySubsystem GetStopEntrance /
-    GetBoardingPoint). Returns (places, patches); nothing without railway_built.json."""
+    GetBoardingPoint). Returns (places, patches). railway_built.json is generated and git-ignored: a checkout without
+    it would silently write a map without the train (the halts and the island lost, as once from a fresh worktree),
+    so it stops instead."""
     if not os.path.exists(RAIL_BUILT):
-        return [], []
+        sys.exit("people_map: no %s (git-ignored): run python3 tools/railway.py first" % RAIL_BUILT)
     import railway as R
     with open(RAIL_BUILT) as f:
         built = json.load(f)

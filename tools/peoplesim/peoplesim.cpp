@@ -87,11 +87,12 @@ struct FClock
 	static FClock At(int Weekday, float Hour) { FClock C; C.Seconds = (Weekday * 24.0 + Hour) * 3600.0; return C; }
 };
 
-/** A small made-up town: two houses of flats, the library, the club, a bench, the square, a lookout, two stations, town. */
+/** A small made-up town: eight houses of flats, the library, the club, a bench, the square, a lookout, two stations, town. */
 static std::string TestPlaces()
 {
+	const int Houses = 8;     // four flats each: room for every household of people.json (25 now) and a few more
 	std::string S = "{\"stairs\": [";
-	for (int H = 0; H < 6; H++)
+	for (int H = 0; H < Houses; H++)
 	{
 		char B[512];
 		std::snprintf(B, sizeof B, "%s{\"id\": \"h%d.s0\", \"house\": \"H%d\", \"street\": [%d, 0, 0], \"floors\": [{\"floor\": 0, \"path\": [[%d, 2, 0], [%d, 4, 0]]}, {\"floor\": 1, \"path\": [[%d, 2, 0], [%d, 4, 3], [%d, 4, 3.8]]}]}",
@@ -100,7 +101,7 @@ static std::string TestPlaces()
 	}
 	S += "], \"flats\": [";
 	bool bFirst = true;
-	for (int H = 0; H < 6; H++)
+	for (int H = 0; H < Houses; H++)
 	{
 		for (int F = 0; F < 2; F++)
 		{
@@ -216,7 +217,9 @@ static void Run(FWorld& W, FClock& C, float Hours, float Dt, FWatch& Watch, cons
 					Watch.TrainBy[P.Key]++;
 				}
 			}
-			if (E.Kind == EEvent::Arrive && P.Activity >= 0 && (W.Activities[P.Activity].Id == "eat_home" || W.Activities[P.Activity].Id == "eat_club"))
+			// a meal: at home, in the club or at the diner's booths (snacks and the staff's bites at work aren't meals)
+			const std::string& Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string();
+			if (E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_club" || Act == "eat_diner"))
 			{
 				Watch.Meals[P.Key]++;
 			}
@@ -396,7 +399,7 @@ static void Checks(FWorld& W, bool bReal)
 			std::printf("        %s very hungry for %.0f min\n", P.Key.c_str(), Watch.HungerHigh[P.Key]);
 		}
 	}
-	CHECK(bFed, "everybody eats (at home or in the club) at least 3 times in 2 days");
+	CHECK(bFed, "everybody eats (at home, in the club or at the diner) at least 3 times in 2 days");
 	CHECK(bNotStarved, "nobody awake stays very hungry for more than 2 hours");
 	CHECK(Watch.Overbooked == 0, "no slot ever holds more people than it has room for (%d)", Watch.Overbooked);
 	CHECK(Watch.Talks > 0, "people talk to each other (%d conversations)", Watch.Talks);
