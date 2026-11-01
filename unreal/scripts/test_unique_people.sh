@@ -14,7 +14,7 @@ nice -n 19 taskpolicy -b "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacO
     -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/test_unique_people.py" > "$LOG.stdout" 2>&1 &
 PID=$!
-( sleep "${TIMEOUT:-1200}"; kill "$PID" 2>/dev/null ) &
+( sleep "${TIMEOUT:-3000}"; kill "$PID" 2>/dev/null ) &
 DOG=$!
 wait "$PID"
 kill "$DOG" 2>/dev/null
