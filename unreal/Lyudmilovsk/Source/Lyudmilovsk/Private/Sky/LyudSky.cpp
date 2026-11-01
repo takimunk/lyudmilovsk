@@ -1,6 +1,7 @@
 #include "Sky/LyudSky.h"
 
 #include "Sky/LyudSunActivity.h"
+#include "Sky/LyudSunset.h"
 
 #include "Weather/LyudGrade.h"
 #include "Weather/LyudWeather.h"
@@ -306,6 +307,10 @@ void ALyudSky::UpdateSky()
 	// The atmosphere reddens and dims the sun near the horizon by itself; below it the sun still lights
 	// the upper air (twilight) until it is well down, but no longer the ground.
 	const float SunAlt = (float)SunPos.AltitudeDeg;
+	// the day's own sunset or sunrise (ULyudSunset: its colour, haze and cloud glow), neutral outside ~-9..11 degrees
+	static const FLyudSunsetLook NoSunset;
+	ULyudSunset* SunsetDay = ULyudSunset::Get(this);
+	const FLyudSunsetLook& Sunset = SunsetDay ? SunsetDay->Update(this, ShownTime(), SunAlt) : NoSunset;
 	// a low sun: the atmosphere alone leaves its light weak and the scene flat and grey; the eye adapts to it and the
 	// lit faces still glow warm against long deep shadows, so its light is kept up, the sky light down, its mirror
 	// image on the sea stronger (the glitter path), and the haze's forward glow stronger
@@ -314,15 +319,16 @@ void ALyudSky::UpdateSky()
 	// activity's everyday flares (ULyudSunActivity)
 	const float Flare = FMath::Max(FlareBoost, ActivityFlare * ActivityFlareLight / 0.25f);
 	SunLight->SetIntensity(SunIlluminance * SmoothStep01(-12.f, -4.f, SunAlt) * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare) * OvercastSunScale);
-	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare));
+	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare) * Sunset.LightTint);
 	// the clouds get only LowSunCloudLight of that extra light, and the sky and the haze over the land (the aerial
 	// perspective) none: lit by the boosted light they paled to the disk's brightness, the clouds drawn over it and the
 	// haze round it washing the setting star out
 	const float CloudShare = CVarLowSunCloud.GetValueOnGameThread() >= 0.f ? CVarLowSunCloud.GetValueOnGameThread() : LowSunCloudLight;
 	const float CloudK = (1.f + LowSunLightGain * Low * CloudShare) / (1.f + LowSunLightGain * Low);
-	if (!FMath::IsNearlyEqual(SunLight->CloudScatteredLuminanceScale.R, CloudK, 1e-3f))
+	const FLinearColor CloudLight = FLinearColor(CloudK, CloudK, CloudK) * Sunset.CloudTint;
+	if (!SunLight->CloudScatteredLuminanceScale.Equals(CloudLight, 1e-3f))
 	{
-		SunLight->CloudScatteredLuminanceScale = FLinearColor(CloudK, CloudK, CloudK);
+		SunLight->CloudScatteredLuminanceScale = CloudLight;
 		SunLight->MarkRenderStateDirty();
 	}
 	const float HazeK = 1.f / (1.f + LowSunLightGain * Low);
@@ -382,12 +388,12 @@ void ALyudSky::UpdateSky()
 	// (the late-autumn sun stays under 25 degrees all day: a warm glow over the horizon at noon)
 	const float Glow = SunsetGlow() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
 	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt)) * ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
-		* (1.f + LowSunMieGain * Glow);
+		* (1.f + LowSunMieGain * Glow) * Sunset.MieScale;
 	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
 	}
-	const float MieG = FMath::Lerp(0.62f, CVarLowSunMieG.GetValueOnGameThread() > 0.f ? CVarLowSunMieG.GetValueOnGameThread() : LowSunMieAnisotropy, FMath::Clamp(Glow, 0.f, 1.f));
+	const float MieG = FMath::Lerp(0.62f, CVarLowSunMieG.GetValueOnGameThread() > 0.f ? CVarLowSunMieG.GetValueOnGameThread() : LowSunMieAnisotropy, FMath::Clamp(Glow, 0.f, 1.f)) + Sunset.MieGAdd;
 	if (!FMath::IsNearlyEqual(Atmosphere->MieAnisotropy, MieG, 1e-3f))
 	{
 		Atmosphere->SetMieAnisotropy(MieG);
@@ -632,7 +638,9 @@ void ALyudSky::UpdateSkyMaterial()
 	// kept up: UpdateSky scales the atmosphere's sky and haze back, SkyLumScale stays 1)
 	const float Low = LowSun() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
 	const float DiskLow = CVarLowSunDiskGain.GetValueOnGameThread() >= 0.f ? CVarLowSunDiskGain.GetValueOnGameThread() : LowSunDiskGain;
-	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread() * (1.f + DiskLow * Low);
+	const ULyudSunset* SunsetDay = ULyudSunset::Get(this);
+	const float SunsetDisk = SunsetDay ? SunsetDay->GetLook().DiskScale : 1.f;
+	const float SunLum = SunIlluminance * SunDiskGain * CVarSunDiskGain.GetValueOnGameThread() * (1.f + DiskLow * Low) * SunsetDisk;
 	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum, DaySeed, Spin));
 	// the day's spots are put on the face the star turns to us at noon, so they cross the disk while it is up
 	const float NoonSpin = float(FMath::Fmod((DaySeed + 0.5) / FMath::Max(SunRotationDays, 0.1f), 1.0) * 2.0 * PI);
@@ -640,7 +648,7 @@ void ALyudSky::UpdateSkyMaterial()
 	// the aureole, how much of the air's dimming the disk keeps, the prominences' and the corona's gains
 	const float Dimming = CVarSunHorizonDimming.GetValueOnGameThread() >= 0.f ? CVarSunHorizonDimming.GetValueOnGameThread() : SunHorizonDimming;
 	// the aureole: its full width round a setting sun, a third of it higher up
-	const float AureoleK = FMath::Lerp(0.35f, 1.f, SunsetGlow());
+	const float AureoleK = FMath::Lerp(0.35f, 1.f, SunsetGlow()) * (SunsetDay ? SunsetDay->GetLook().AureoleScale : 1.f);
 	SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(SunAureole * AureoleK * CVarSunAureole.GetValueOnGameThread(),
 		FMath::Clamp(Dimming, 0.f, 1.f), SunProminenceGain, SunCoronaGain));
 	const float Detail = CVarSunDetail.GetValueOnGameThread() > 0.f ? CVarSunDetail.GetValueOnGameThread() : SunDetailContrast;
@@ -740,7 +748,10 @@ void ALyudSky::UpdateExposure(float DeltaSeconds)
 	const float LowSun = SmoothStep01(25.f, 5.f, (float)SunPos.AltitudeDeg);
 	const float DayEV = (1.f - Night) * (CVarOvercastEV.GetValueOnGameThread() * Opacity + CVarLowSunEV.GetValueOnGameThread() * LowSun);
 	DayAdaptEV = FMath::FInterpTo(DayAdaptEV, DayEV, DeltaSeconds, 0.5f);
-	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night + DayAdaptEV;
+	// the day's sunset holds the eye back while the twilight glows (ULyudSunset)
+	const ULyudSunset* SunsetDay = ULyudSunset::Get(this);
+	const float SunsetEV = SunsetDay ? SunsetDay->GetLook().ExposureEV : 0.f;
+	OutdoorExposure->Settings.AutoExposureBias = BaseExposureBias + (NightExposureEV + Moonless) * Night + DayAdaptEV + SunsetEV;
 	OutdoorExposure->Settings.BloomIntensity = FMath::Lerp(OutdoorBloom, NightBloom, Night);
 	OutdoorExposure->BlendWeight = OutdoorWeight;
 }
@@ -753,5 +764,6 @@ FString ALyudSky::DebugReport() const
 		OutdoorExposure->Settings.AutoExposureBias, OutdoorWeight, FMath::RadiansToDegrees(MoonPhaseAngle), MoonLawFactor,
 		MoonLight01, MoonPhaseEphemeris) + FString::Printf(TEXT(" | low sun %.2f sky light %.2f shafts %.2f spec %.4f mie g %.2f | %s"),
 		LowSun(), SkyLight->Intensity, SunLight->BloomScale, SunLight->SpecularScale, Atmosphere->MieAnisotropy,
-		ULyudSunActivity::Get(this) ? *ULyudSunActivity::Get(this)->GetDebugLine() : TEXT("no activity"));
+		ULyudSunActivity::Get(this) ? *ULyudSunActivity::Get(this)->GetDebugLine() : TEXT("no activity"))
+		+ (ULyudSunset::Get(this) && ULyudSunset::Get(this)->GetLook().Weight > 0.f ? TEXT(" | ") + ULyudSunset::Get(this)->GetDebugLine() : FString());
 }

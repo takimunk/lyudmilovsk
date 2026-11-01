@@ -169,6 +169,100 @@ flare goes on. Never narrower than ~1.5 pixels (energy kept): no hard lines or a
 in 2-5 star minutes and decays over 6-36. When the region is near the limb a post-flare loop arcade (six loops across
 the neutral line, projected from the star) stands on the limb and brightens as the flare fades.
 
+## Sunsets
+
+No two evenings are alike: one is a pale golden glow and gone, the next an orange sky, pink clouds and a violet blue
+hour, a deep red sun in haze, a dramatic crimson, or only a grey strip under the overcast. Sunrises have their own.
+`ULyudSunset` (`Public/Sky/LyudSunset.h`, a world subsystem) wraps a plain C++ model (`Private/Sky/SunsetModel.{h,cpp}`)
+that, like the star's activity, is a **pure function of the shown date**: a save, a clock jump or a second machine
+see the same sunset, and nothing has to be saved.
+
+### The day's character
+
+`Profile(seed, day, sunrise, month)` draws a kind and its own numbers for every evening and every morning:
+
+| kind | hue | aerosol | what it looks like |
+|---|---|---|---|
+| golden | 0.04 | low | clean dry air: a short warm glow, pale gold clouds |
+| orange | 0.27 | moderate | the everyday one |
+| pink | 0.5 | low | clean upper air: pink cloud undersides, a violet blue hour (more ozone), a long afterglow |
+| red | 0.74 | high | hazier: a deeper red sun and sky |
+| crimson | 0.96 | high | dramatic: the strongest cloud glow, a long afterglow |
+| grey | 0.3 | very high | milky, washed out whatever the weather |
+
+The odds lean with the month (hazy summers bring more golden, orange and red evenings, clean winter air more pink and
+crimson ones) and mornings are cleaner (more pink and golden dawns, fewer red and grey ones). Every kind varies by day
+(hue +-0.08, intensity +-15%, aerosol, ozone, cloud glow, afterglow). About one evening in twenty is **spectacular**:
+pink or crimson, the colours and the cloud glow at their strongest, the longest afterglow. The sunrise and the sunset
+of a day are drawn separately (the morning's look holds before noon, the evening's after; at noon the look is off, so
+the switch never shows).
+
+### The weather makes or spoils it
+
+`AirOf(weather)` reads five continuous shares from the weather state, with the cloud layers as the clouds draw them
+(a `lyud.Clouds.Preset` counts):
+
+- **overcast** (the same deck opacity the exposure adapts to): the colours fade to a dull grey (intensity down to a
+  fifth, tints toward grey), the clouds' glow nearly gone, a dimmer disk;
+- **broken** (high cirrus, altocumulus with gaps, heaped low cloud; none under a closed deck): the clouds catch the low
+  light, up to twice the glow: the most vivid pink and red undersides;
+- **clean** (wet ground and nothing falling, or a fresh wind): less Mie (to ~0.55x), saturated colours;
+- **haze** (humid air, poor visibility, fog, an inversion): more and deeper Mie, the hue pushed toward red, a dimmer
+  disk in a bigger, softer aureole, less contrast;
+- **rain** falling now: dull.
+
+### What it changes
+
+All of it is weighted by `Band(alt)`: 0 above 11 degrees and below -9, 1 from -5 to 4. Outside the band every value is
+exactly neutral and the subsystem does nothing (it puts the atmosphere back once on leaving it). `lyud.Sunset.Intensity`
+scales every change (0 = off).
+
+| lever | owner | what |
+|---|---|---|
+| Mie scattering, anisotropy | `ALyudSky` (x `MieScale`, + `MieGAdd`) | the haze's density: clean 0.55x .. thick 2.25x |
+| Mie absorption, the haze's scale height | `ULyudSunset` | a duller, smoky haze on grey evenings; deeper haze reddens the horizon more |
+| Rayleigh scale | `ULyudSunset` | a little more for the red kinds: deeper colour near the horizon |
+| ozone (other absorption) | `ULyudSunset` | the violet blue hour after a pink sunset (up to 2.6x) |
+| sky luminance tint (`SkyLuminanceFactor`) | `ULyudSunset` | the sky's hue (golden .. pink .. crimson), not the haze over the land |
+| the sunlight's colour | `ALyudSky` (x `LightTint`) | the land, the sea's glitter and the clouds; luminance-normalised, so only the hue changes (grey: a little dimmer) |
+| the clouds' light (`CloudScatteredLuminanceScale`) | `ALyudSky` (x `CloudTint`) | the cloud glow's colour and strength: by how much the sky catches the light (broken cloud), up to 1.6x; after the sun has set the afterglow holds it up for a while (to -9 degrees) |
+| the aureole, the disk | `ALyudSky` (`SunLook.x`, `SunDisk.y`) | hazy evenings a bigger aureole and a dimmer disk |
+| the exposure | `ALyudSky::UpdateExposure` (+ `ExposureEV`) | held back by 0.4 stops round sunset and 1.5 just after (`Dusk`, 1 below -3 degrees), gone by -9: the night's exposure opens from 8 degrees up (~3 stops at -4) and blew the glowing twilight and the afterglow out to cream whatever their colour |
+
+The tints are deep multipliers (a crimson light is ~(1, 0.42, 0.40) of the atmosphere's own colour), with only part of
+their luminance loss given back, so a red evening is a little darker than a golden one: tints normalised to the same
+luminance (the first try) changed the bright sunset sky by a few percent on the tonemapper's shoulder. A dull evening
+mixes toward a cool grey, which takes the atmosphere's own orange out instead of only fading the tint. After sunset
+the clouds keep more of their tint but get dimmer, not brighter. No new shader, no new material parameter, no per-frame allocation: each value is set only when it
+changes by more than 0.2%. The disk's own colour is still `TRANS_HLSL`'s fixed air (and the weather's fog, which
+reddens it in haze); its brightness follows the day.
+
+### Console
+
+| variable | default | what |
+|---|---|---|
+| `lyud.Sunset.Profile` | -1 | force the kind: 0 golden, 1 orange, 2 pink, 3 red, 4 crimson, 5 grey, 6 spectacular (-1 = the day's own) |
+| `lyud.Sunset.Intensity` | 1 | scales every change (0 = off, for comparison) |
+| `lyud.Sunset.Seed` | 0 | another run of evenings |
+| `lyud.Sunset.Clean`, `lyud.Sunset.Haze` | -1 | override the air's clean and haze shares 0..1 (tests) |
+| `lyud.Sunset.Debug` | 0 | the profile on screen (`SUNSET` line; also in `ALyudSky`'s debug report while it is on) |
+
+### Tests
+
+- `tools/sky/sunset/run.sh [test]`: a month of evenings, each kind in each weather, and the checks (deterministic,
+  the sunrise its own, ~5% spectacular, every kind 4-40% of evenings, neighbouring evenings mostly differ, exactly
+  neutral outside the band and at intensity 0, continuous in the sun's altitude and in the weather, overcast dull,
+  broken cloud glowing most, haze redder with a dimmer disk, after rain cleaner, tints bounded).
+- `unreal/scripts/shoot_sunset.py` offscreen: the same view from the club's cliff toward the sun for every kind, two
+  days left to their own character and the look without it, in clean clear air, broken altocumulus, overcast, after
+  rain and haze at +2 degrees, in broken cloud at -1 and in clear air and broken cloud at -4; the town across the light and three sunrises.
+  `tools/sky/sunset/sheet.py <log> <screenshots> <out.png>` lays them out in one sheet.
+
+Still open: the clouds' own ambient (the sky light and multiple scattering) is not tinted, so cloud edges lit from
+behind after sunset stay cream whatever the evening (the sunlight's share of their light is tinted); a tint in
+M_LyudClouds would be the clouds thread's. The disk's own colour does not follow the day's aerosol (`TRANS_HLSL` has
+fixed coefficients; a shader change, left to the sun-disk thread).
+
 ## Console
 
 | variable | default | what |
