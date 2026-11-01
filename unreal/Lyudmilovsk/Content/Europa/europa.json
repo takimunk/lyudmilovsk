@@ -1,0 +1,47 @@
+{
+ "_doc": "Written by tools/europa/europa_site.py: do not edit by hand. The hatch to Europa (docs/europa.md); UE cm.",
+ "hatch_map_m": [
+  573.0,
+  100.0
+ ],
+ "hatch_cm": [
+  57300.0,
+  10790.0,
+  -5193.2
+ ],
+ "bed_m": -52.28,
+ "depth_high_water_m": 9.28,
+ "depth_spring_low_m": 4.78,
+ "terrain_holes": [
+  [
+   572,
+   99
+  ],
+  [
+   572,
+   100
+  ],
+  [
+   573,
+   99
+  ],
+  [
+   573,
+   100
+  ]
+ ],
+ "europa_origin_cm": [
+  0.0,
+  -8000000.0,
+  500000.0
+ ],
+ "planet": {
+  "elevation_deg": 35.0,
+  "sun_offset_deg": 15.0,
+  "distance_cm": 6000000.0,
+  "diameter_deg": 26.0
+ },
+ "gravity": 0.13,
+ "space_radius_cm": 600000.0,
+ "walk_radius_cm": 350000.0
+}

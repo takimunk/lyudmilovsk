@@ -411,7 +411,39 @@ void ALyudSky::UpdateSky()
 	}
 	SunLight->SetForwardShadingPriority(bSunShadows ? 1 : 0);
 	MoonLight->SetForwardShadingPriority(bSunShadows ? 0 : 1);
+	if (bSpaceView)
+	{
+		// no air: no Europa over the head (we stand on it), no sky glow to light the shadows, no god rays
+		MoonLight->SetVisibility(false);
+		SkyLight->SetIntensity(SpaceSkyLight);
+		SunLight->SetBloomScale(0.f);
+	}
 	UpdateSkyMaterial();
+}
+
+void ALyudSky::SetSpaceView(bool bOn)
+{
+	if (bSpaceView == bOn)
+	{
+		return;
+	}
+	bSpaceView = bOn;
+	Atmosphere->SetVisibility(!bOn);
+	Clouds->SetVisibility(!bOn);
+	UExponentialHeightFogComponent* F = HeightFog.Get();
+	if (!F)
+	{
+		if (TActorIterator<AExponentialHeightFog> It(GetWorld()); It)
+		{
+			F = It->GetComponent();
+			HeightFog = F;
+		}
+	}
+	if (F)
+	{
+		F->SetVisibility(!bOn);
+	}
+	UpdateSky();
 }
 
 void ALyudSky::MakeInstances()
@@ -633,8 +665,13 @@ void ALyudSky::UpdateSkyMaterial()
 	{
 		MoonLight->SetLightSourceAngle(MoonSize);
 	}
-	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonSize * 0.5f), MoonLum, 0.012f, 1.f - Day));
-	SkyMID->SetVectorParameterValue(TEXT("NightGlow"), NightSkyGlow * ((1.f - Day) * NightK));
+	SkyMID->SetVectorParameterValue(TEXT("MoonDisk"), FLinearColor(FMath::DegreesToRadians(MoonSize * 0.5f), bSpaceView ? 0.f : MoonLum, 0.012f, 1.f - Day));
+	SkyMID->SetVectorParameterValue(TEXT("NightGlow"), bSpaceView ? FLinearColor::Black : NightSkyGlow * ((1.f - Day) * NightK));
+	if (bSpaceView)
+	{
+		// the star bare: no aureole, no air to dim it at the (Earth's) horizon
+		SkyMID->SetVectorParameterValue(TEXT("SunLook"), FLinearColor(0.f, 0.f, SunProminenceGain, SunCoronaGain));
+	}
 }
 
 void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)

@@ -1,0 +1,23 @@
+{
+ "id": "hatch_close",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/hatch_close_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A heavy round steel hatch lid swung shut: a deep resonant metal clang, then the handwheel spun and latches clunking home, close, no other sounds",
+  "duration_seconds": 1.8
+ },
+ "hash": "91b5ca3520a1",
+ "fal_request_id": "01a193a2-f21b-7803-8a05-2942620f473f",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a175/yVLAiql1PNwmY3u670yzE_sound_effect.mp3",
+ "created": "2026-10-31T20:24:56Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "f3946157cbc153601be312ff4918b8e4d25cc2d9a1db395d84c8315dd27c4a4c",
+ "seconds": 1.02,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa"
+}

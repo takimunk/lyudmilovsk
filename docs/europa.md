@@ -1,0 +1,96 @@
+# The hatch to Europa
+
+An unknown round hatch lies on the sea bed some 440 m off the beach under the club. Under it a shaft goes down into a
+small airlock buried in the bed; a second ladder in the airlock climbs a shaft that comes out on **Europa**: ice to the
+horizon, a black sky with the red star, and overhead the planet, which is only ocean, clouds and one small island,
+Lyudmilovsk. The hero says so (`line.hero.europa_planet.1`) and the music starts. The world is a simulation: the fourth
+wall shows.
+
+## Where
+
+| | |
+|---|---|
+| Hatch | map (573, 100) m, UE (57300, 10790, ≈ -5193) cm: lid seat 0.35 m over the bed |
+| Depth | ~9.3 m of water at high tide, ~4.8 m at spring low water (more on the underwater world's deeper bed) |
+| Map | marker `europa_hatch` ("Люк на дне" / "The hatch on the sea bed" / "海底のハッチ"), known from the start |
+| Europa | UE (0, -8 000 000, 500 000) cm: 80 km south and 5 km up, off the sea mesh (30 km), inside the sky dome (200 km) |
+
+The spot is kept clear for the hatch by the underwater world (plain sand, no reefs within 30 m); it is 160 m north of the
+sea railway's bank and clear of the tidal channels. `tools/europa/europa_site.py` resolves it against the ground
+(`terrain.ground_z` round the collar) and writes `Content/Europa/europa.json` (hatch, Europa's origin, the planet, the
+gravity, the radii, and `terrain_holes`: a 2 x 2 m hole in the landscape under the shaft, read by `tools/terrain.py`
+`europa_holes()` when Lvl_Scene01 is built). At play the bed is traced again round the collar, so a changed sea bed moves
+the hatch with it.
+
+## The flow
+
+1. **Swim** to the hatch (`ULyudSwimComponent`: dive with C/Ctrl, W along the look). `[E] Open the hatch`: the lid swings
+   open (only with the lock full: the sea on both sides of it; else "the hatch won't budge").
+2. `[E] Climb down into the hatch`: a scripted climb (the sea and the swimming let go of the body meanwhile), the lid
+   shuts over the head, down the ladder into the full lock; there the swimming takes over again, under water.
+3. The **computer** (`[E] Airlock: press the button`): drains the lock (14 s; the water's surface goes down, the pump,
+   the screen's gauge and lamp). Drained, the room is dry ground (`ALyudSea::SetDryZone`).
+4. `[E] Climb the other ladder`: the inner lid swings down, up the shaft; halfway up the climb jumps to the same place in
+   the identical shaft under Europa, its lid opens, and he steps out on the ice.
+5. **Europa**: the sky's space view (`ALyudSky::SetSpaceView`: no air, clouds, fog, moon disk or moonlight; the star and
+   the stars stay, the sky light down to 0.03), the soundscape's vacuum (`SetVacuum`: no bed, far sounds, steps or
+   music), rain effects off; 0.13 g (a jump goes ~7 m up), air control up; his own breathing and steps only, through the
+   body; a soft fence 3.5 km out (the ice ends at 4 km). The first look at the planet (within 24 degrees of it, from the
+   ice) says the line, shows its subtitle and starts `MU_europa_1`; saved (`ALyudAirlock::bPlanetSeen`).
+6. Back: `[E] Open the hatch` (only with the lock dry), `[E] Climb back down`, the jump back halfway, down into the room.
+   The computer fills the lock; `[E] Climb up to the sea`: the lid opens near the top, out onto the bed, and the
+   swimming takes over under water (`ULyudSwimComponent::EnterUnder`).
+
+## Code
+
+`Public/Europa/LyudEuropa.h`, `Private/Europa/LyudEuropa.cpp`:
+
+- `ALyudAirlock` (named `EuropaAirlock`, saved: the water's state and whether the planet has been seen): collar, sea lid,
+  room, inner lid, console (its screen a dynamic `M_EU_Screen`: `Level`, `Mode`), the water's disc, lamps, an underwater
+  tint while the water goes down or up. Full, the room belongs to the sea (swimming, its underwater look); otherwise it is
+  a dry zone.
+- `ALyudEuropaSite`: the ice disc, ice blocks, the ice-crusted collar, its lid, the shaft, the planet (`M_EU_Planet`, lit
+  by `ALyudSky`'s sun direction and light every half second; it hangs 35 degrees up on the side of the sky away from the
+  star, 15 degrees round, and follows it slowly, so its day side shows whatever the hour), a faint blue planetshine (lighting channel 2, Europa's
+  meshes only). Hidden unless the player is there.
+- `ULyudEuropaSubsystem`: spawns both at play start (worlds with `ALyudSea` and `ALyudSky`; `lyud.Europa 0` leaves them
+  out), polls E (never consumed) and sets the prompt, runs the climbs, switches Europa on and off by distance (a load on
+  Europa comes back right), the line and the music.
+
+Hooks in other systems (small on purpose): `ALyudSea::SetDryZone` / `IsInDryZone` / `SetPlayerScripted`;
+`ULyudSwimComponent::EnterUnder` and its dry-zone check in `UpdateWater`; `ALyudSky::SetSpaceView`;
+`ULyudSoundscapeSubsystem::SetVacuum`.
+
+Console: `lyud.Europa.GoHatch`, `lyud.Europa.GoRoom`, `lyud.Europa.GoEuropa`, `lyud.Europa.Use` (= E),
+`lyud.Europa.Report`, `lyud.Europa.Fast 1` (climbs, lids and water five times faster).
+
+## Assets
+
+- Meshes: `blender/europa/europa_kit.py` (Blender 5.3, clean primitives, booleans for the ceiling's holes, metre UVs,
+  `blender/railway/kit_lint.py` on every piece: 0 findings) -> `design/europa/game/europa_kit.glb` +
+  `Content/Europa/kit.json` (the measures the game reads). The clear opening of every hatch and shaft is 1.20 m (over the
+  character standard's 1.08); the room is 4 m across and 2.6 m clear.
+- Textures: `tools/europa/europa_textures.py` (procedural, seed 4417) -> `textures/europa/` (painted steel, steel,
+  concrete, algae, ice + normal, the planet and its clouds: ocean all round, one island at lon 0, lat 18).
+- `unreal/scripts/import_europa.sh`: meshes, textures and materials into `/Game/Europa`, then the sounds and the voice.
+- Sounds (`audio/sounds.json`, group `europa`, ElevenLabs through fal): `hatch_open`, `hatch_close`, `airlock_drain`
+  and `airlock_fill` (loops), `airlock_beep`, `ladder_step`, `europa_breath` (loop), `europa_step`. Music:
+  `europa_1` (Stable Audio 2.5, seed 30101). Voice: `line.hero.europa_planet.1` (ru/en/ja, the hero's MiniMax voice,
+  `localization/voice.json`).
+
+## Test
+
+`unreal/scripts/test_europa.sh` (offscreen Lvl_Scene01, `test_europa.py`): the whole way there and back with
+`lyud.Europa.Use`, checks (spawned, each E's action, in the room, drained, on Europa, 0.13 g, space view, planet seen,
+music, jump height, filled, back in the sea swimming) and screenshots into `Saved/EuropaTest`. The level must be built
+with the hatch's landscape hole (`unreal/scripts/build_scene01.sh`, or only the ground of a copied level).
+`EUROPATEST_ONLY=europa` (the planet only) or `EUROPATEST_ONLY=hatch` (the approach only) run a short part.
+
+## Cost
+
+Nothing per frame while the player is away: the site is hidden and does not tick, the airlock's tick returns at once
+when nothing moves, the prompt and the water's disc are set only when they change, every moving part (lids, water,
+planet) is out of the distance field and the dynamic GI. Memory: the ice disc (144k triangles), the planet (16k) and
+eight textures, ~30 MB. Benchmark (Epic, one route, 2026-10-31, a busy machine: ~100 ms frames instead of ~24, so only
+"no change beyond noise" can be read): lyud.Europa 0: 108.7 ms median, 21 320 MB; on: 105.3 ms, 21 180 MB
+(bench/results/Mac17-7-AppleM5Max/*_europa_off/on.json).

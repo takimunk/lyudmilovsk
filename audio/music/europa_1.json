@@ -1,0 +1,27 @@
+{
+ "id": "europa_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/europa_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Cinematic ambient, slow swelling warm analog synth pads and distant low strings, a lone glassy piano motif, D minor, 64 BPM, awe and quiet vertigo of seeing a whole small world hanging in a black sky, rising to a wide swell then fading out, no drums, no vocals",
+  "seconds_total": 120,
+  "seed": 30101
+ },
+ "hash": "f679f604f502",
+ "fal_request_id": "01a193a4-1370-7f03-b46b-964c9ccd649b",
+ "seed": 30101,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a17c/uYGvbHWXkUyV3Zo90VdlE_rBb0Yp3M.wav",
+ "created": "2026-10-31T20:26:13Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "b41be33644c153bfb820b185ee57fa7a625bb0dd60a863184ee60ed7ca9420b1",
+ "seconds": 120.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "europa"
+ ]
+}

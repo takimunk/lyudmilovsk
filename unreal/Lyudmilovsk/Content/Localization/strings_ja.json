@@ -1042,5 +1042,20 @@
  "ui.diary.birds_on": "地図の鳥：消す",
  "ui.diary.birds_off": "地図の鳥：出す",
  "ui.help.guide": "B：野鳥図鑑（持っていれば）",
- "line.hero.swim_breath.1": "待って…息、できてる。水の中なのに。…まあ、いいか。こういうのもアリなんだ。"
+ "line.hero.swim_breath.1": "待って…息、できてる。水の中なのに。…まあ、いいか。こういうのもアリなんだ。",
+ "place.europa_hatch.name": "海底のハッチ",
+ "ui.europa.open_sea": "[E] ハッチを開ける",
+ "ui.europa.enter_sea": "[E] ハッチを降りる",
+ "ui.europa.climb_sea": "[E] 海へ上る",
+ "ui.europa.climb_europa": "[E] もう一つのはしごを上る",
+ "ui.europa.console": "[E] エアロック：ボタンを押す",
+ "ui.europa.open_europa": "[E] ハッチを開ける",
+ "ui.europa.enter_europa": "[E] 下へ戻る",
+ "ui.europa.stuck": "ハッチが動かない。向こう側と圧力が違うみたいだ。",
+ "ui.europa.need_water": "上は海だ。先にエアロックに水を入れないと。",
+ "ui.europa.need_dry": "先に水を抜かないと。",
+ "ui.europa.shut_sea": "上のハッチが開いている。",
+ "ui.europa.shut_inner": "内側のハッチが開いている。",
+ "ui.europa.busy": "待って。エアロックが動いている。",
+ "line.hero.europa_planet.1": "あれが…僕らの？何もない。海だけ…それと、僕らの島。"
 }

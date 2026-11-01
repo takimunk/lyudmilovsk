@@ -1,0 +1,25 @@
+{
+ "id": "airlock_fill",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/airlock_fill_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "Sea water flooding into a small closed steel chamber through valves: a strong rushing, churning inflow with bubbling and hissing, rising water, enclosed metal room, seamless loop, no other sounds",
+  "duration_seconds": 10.0,
+  "loop": true
+ },
+ "hash": "192b44597908",
+ "fal_request_id": "01a193a3-3710-7f70-b4e6-b37d40cee7e6",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a177/xOG7Egiz7V22QUsKZNH4r_sound_effect.mp3",
+ "created": "2026-10-31T20:25:15Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "b2de34c1f7b801a203b9aab6aa4907fb910ce9c522f261d047eebc195768a6da",
+ "seconds": 9.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa",
+ "loop": true
+}

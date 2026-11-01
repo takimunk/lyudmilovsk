@@ -250,6 +250,13 @@ public:
 	/** The clouds draw with their instance (its shaders are ready). */
 	bool IsCloudMaterialReady() const { return bCloudMIDSet; }
 
+	/** On another world (Europa, ULyudEuropaSubsystem): no air, no clouds, no fog, no Europa on the sky and no
+	 *  moonlight, the sky light down to SpaceSkyLight; the star with its light and the stars stay. */
+	UFUNCTION(BlueprintCallable, Category = "Sky") void SetSpaceView(bool bOn);
+	UFUNCTION(BlueprintPure, Category = "Sky") bool IsSpaceView() const { return bSpaceView; }
+	/** The sky light's intensity in the space view (the stars and the star's disk light next to nothing). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky|Space") float SpaceSkyLight = 0.03f;
+
 	/** Move the sun and moon to the shown time. */
 	UFUNCTION(BlueprintCallable, CallInEditor, Category = "Sky") void UpdateSky();
 	/** Text for logs and tests: time, sun and moon altitude/azimuth, phase. */
@@ -272,6 +279,7 @@ private:
 	/** The weather's height fog as the sky material sees it over the dome (SkyFogA..E), for drawing the star behind it. */
 	void UpdateSkyFog();
 	TWeakObjectPtr<class UExponentialHeightFogComponent> HeightFog;
+	bool bSpaceView = false;
 	/** How closed the low and middle cloud decks are 0..1 (UpdateExposure, from the weather). */
 	float DeckOpacity = 0.f;
 	/** The clouds' instance (CloudDensityScale on the material's "Cloud_GlobalDensity"). */

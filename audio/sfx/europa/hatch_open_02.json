@@ -1,0 +1,23 @@
+{
+ "id": "hatch_open",
+ "variant": 2,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/hatch_open_02.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A heavy round steel hatch being unlatched: a handwheel spun, dogs clunking free, then the thick lid swinging open on a stiff hinge with a low metallic groan, close, no other sounds",
+  "duration_seconds": 2.0
+ },
+ "hash": "e13a631916e6",
+ "fal_request_id": "01a193a2-de1d-76f3-aacf-b383abb82407",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a174/1XEYvQOlXQ-T1z6nVyiqX_sound_effect.mp3",
+ "created": "2026-10-31T20:24:51Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "1ef5852a2f7c2ce97c34b168ae339a760c381f5818dbafdab9a046ccfef6000b",
+ "seconds": 2.0,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa"
+}

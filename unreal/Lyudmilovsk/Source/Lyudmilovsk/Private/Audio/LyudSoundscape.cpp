@@ -531,7 +531,7 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 	UWorld* World = GetWorld();
 	LyudAudio::FAmbienceParams P;
 	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarBed.GetValueOnGameThread() > 0;
-	P.Master = bOn ? MasterVolume * AmbienceVolume : 0.f;
+	P.Master = bOn && !bVacuum ? MasterVolume * AmbienceVolume : 0.f;
 
 	// indoors: the sky's own test (the pawn under open sky), eased; without a sky there is no outside to hear
 	bool bOutdoorsNow = false;
@@ -732,7 +732,7 @@ void ULyudSoundscapeSubsystem::UpdateSteps(float DeltaTime)
 	const APlayerController* PC = World->GetFirstPlayerController();
 	const ACharacter* Hero = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	const UCharacterMovementComponent* Move = Hero ? Hero->GetCharacterMovement() : nullptr;
-	if (!Bed || !Move || !Move->IsMovingOnGround() || Outdoors < 0.5f || CVarSteps.GetValueOnGameThread() <= 0 || CVarSound.GetValueOnGameThread() <= 0)
+	if (!Bed || !Move || bVacuum || !Move->IsMovingOnGround() || Outdoors < 0.5f || CVarSteps.GetValueOnGameThread() <= 0 || CVarSound.GetValueOnGameThread() <= 0)
 	{
 		StrideLeft = 0.3f;
 		return;
@@ -858,7 +858,7 @@ void ULyudSoundscapeSubsystem::OnAnimalEvent(int32 AnimalId, FName Event)
 void ULyudSoundscapeSubsystem::UpdateFar(float DeltaTime)
 {
 	FarTimer -= DeltaTime;
-	if (FarTimer > 0.f || CVarSound.GetValueOnGameThread() <= 0)
+	if (FarTimer > 0.f || bVacuum || CVarSound.GetValueOnGameThread() <= 0)
 	{
 		return;
 	}
@@ -1084,7 +1084,7 @@ void ULyudSoundscapeSubsystem::UpdateMusic()
 	{
 		return;
 	}
-	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0;
+	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0 && !bVacuum;
 	UAudioComponent* Cur = bMusicOnA ? MusicA : MusicB;
 	const FName NewMood = ComputeMood();
 	const bool bMoodChanged = NewMood != Mood;

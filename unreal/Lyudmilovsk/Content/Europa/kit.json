@@ -1,0 +1,77 @@
+{
+ "_doc": "Made by blender/europa/europa_kit.py. UE centimetres in the airlock's frame (origin = the sea hatch's lid seat, X toward the ladders); the actor ALyudAirlock reads it.",
+ "open_radius": 60.0,
+ "lid_radius": 80.0,
+ "sea_hinge": [
+  -70.0,
+  0,
+  5.0
+ ],
+ "inner_hinge": [
+  -250.0,
+  0,
+  -325.0
+ ],
+ "sea_shaft": [
+  0,
+  0,
+  0
+ ],
+ "europa_shaft": [
+  -180.0,
+  0,
+  0
+ ],
+ "europa_top": -90.0,
+ "shaft_b_bottom": -320.0,
+ "ladder_offset": 42.0,
+ "floor": -580.0,
+ "ceiling": -320.0,
+ "room_center": [
+  -90.0,
+  -0.0,
+  0
+ ],
+ "room_radius": 200.0,
+ "console": {
+  "at": [
+   -90.0,
+   194.0,
+   -580.0
+  ],
+  "yaw": -90.0,
+  "screen": [
+   23.38,
+   0.0,
+   97.99
+  ],
+  "button": [
+   53.0,
+   26.0,
+   72.0
+  ]
+ },
+ "lamps": [
+  [
+   46.8,
+   95.79,
+   -355.0
+  ],
+  [
+   -234.63,
+   -83.5,
+   -355.0
+  ]
+ ],
+ "collar_bottom": -95.0,
+ "site_z": -35.0,
+ "ground_radius": 400000.0,
+ "europa_radius_m": 1561000.0,
+ "tiles": {
+  "tx_paint": 200.0,
+  "tx_steel": 100.0,
+  "tx_concrete": 200.0,
+  "tx_algae": 100.0,
+  "tx_ice": 1600.0
+ }
+}

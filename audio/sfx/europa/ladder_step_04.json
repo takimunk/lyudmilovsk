@@ -1,0 +1,23 @@
+{
+ "id": "ladder_step",
+ "variant": 4,
+ "kind": "sfx",
+ "file": "audio/sfx/europa/ladder_step_04.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A hand gripping and a boot stepping on a steel ladder rung in a narrow metal shaft: a short dull metallic knock, close, no other sounds",
+  "duration_seconds": 0.6
+ },
+ "hash": "46f3508b9a6b",
+ "fal_request_id": "01a193a3-ae5e-7693-aa7e-bcb3e466ba31",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab0a17a/in23vGCGR854zM6k-gvWY_sound_effect.mp3",
+ "created": "2026-10-31T20:25:43Z",
+ "postprocess": "afconvert -> 48 kHz mono; silence trimmed (-45 dB), 5/40 ms fades; peak -6 dBFS",
+ "sha256": "5bcfdf515227d6dc2e12037e347e8791e45f84446d47ce13fb0ecf81bc46c418",
+ "seconds": 0.6,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "europa"
+}
