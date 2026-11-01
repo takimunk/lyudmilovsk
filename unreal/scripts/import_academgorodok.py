@@ -4,6 +4,9 @@
           blender/academgorodok/build_academgorodok.py) -> /Game/Academgorodok/Meshes/SM_<part>,
           one static mesh per house, the gates and the square; Nanite, exact collision, the
           materials of unreal/scripts/academ_materials.py by slot name (AC_*).
+  parts:  blender/export/academgorodok/academgorodok_parts.glb (build_academgorodok.py -- --parts=Square,...)
+          replaces only those SM_<part> in place: same path (the level's actors keep them), the old
+          mesh's materials by slot name, the same Nanite and collision settings.
   place:  place(face_y) puts them on the map (tools/world_map.py academ()), tagged "Academ"
           (console lyud.Academ 0/1 hides them), with the square's trees.
 
@@ -298,9 +301,64 @@ def place(face_y, report=False):
                                                                   len(layout.get("plants", [])), W.academ()[:2], yaw))
 
 
+def reimport_parts():
+    """Swaps the meshes of academgorodok_parts.glb in for their SM_<part>, keeping the old one's materials."""
+    tmp = DEST + "/_parts"
+    if eal.does_directory_exist(tmp):
+        eal.delete_directory(tmp)
+    glb = os.path.join(EXPORT, "academgorodok_parts.glb")
+    # a file of one mesh gets the file's name from Interchange: take the parts' names from the glb's own nodes
+    with open(glb, "rb") as f:
+        f.seek(12)
+        n = int.from_bytes(f.read(4), "little")
+        f.read(4)
+        names = [nd["name"] for nd in json.loads(f.read(n))["nodes"] if "mesh" in nd]
+    src = unreal.InterchangeManager.create_source_data(glb)
+    params = unreal.ImportAssetParameters()
+    params.is_automated = True
+    mgr = unreal.InterchangeManager.get_interchange_manager_scripted()
+    mgr.import_asset(tmp, src, params)
+    mgr.wait_until_all_tasks_done(True)
+    count = 0
+    for path in eal.list_assets(tmp, True):
+        sm = eal.load_asset(path)
+        if not isinstance(sm, unreal.StaticMesh):
+            continue
+        name = sm.get_name().replace("SM_", "")
+        if name == "academgorodok_parts" and len(names) == 1:
+            name = names[0]
+        target = MESHES + "/SM_" + name
+        old = eal.load_asset(target)
+        if not old:
+            log("parts: no %s to replace" % target)
+            continue
+        mats = {str(sl.material_slot_name): sl.material_interface for sl in old.get_editor_property("static_materials")}
+        for i, sl in enumerate(sm.get_editor_property("static_materials")):
+            key = str(sl.material_slot_name)
+            mi = mats.get(key) or next((v for k, v in mats.items() if key.startswith(k) or k.startswith(key)), None)
+            if mi is None:
+                raise RuntimeError("parts: no material for slot %s on %s" % (key, target))
+            sm.set_material(i, mi)
+        body = sm.get_editor_property("body_setup")
+        if body:
+            body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
+        sm.set_editor_property("nanite_settings", old.get_editor_property("nanite_settings"))
+        eal.save_loaded_asset(sm)
+        del old
+        eal.delete_asset(target)
+        eal.rename_asset(sm.get_path_name(), target)
+        count += 1
+        log("parts: replaced %s" % target)
+    eal.delete_directory(tmp)
+    eal.save_directory(MESHES)
+    log("parts: replaced %d meshes" % count)
+
+
 if __name__ == "__main__":
     if "import" in sys.argv[1:]:
         import_meshes()
+    if "parts" in sys.argv[1:]:
+        reimport_parts()
     if "place" in sys.argv[1:]:
         with open(os.path.join(REPO, "blender", "export", "scene01_layout.json")) as f:
             face_y = json.load(f).get("outside", {}).get("portal_face_y", 790.0)

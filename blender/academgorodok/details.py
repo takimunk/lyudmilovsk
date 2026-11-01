@@ -2090,7 +2090,10 @@ def flowerbed_railing(radius=5.7, h=0.45, module=0.21):
     m = C / nm
     zr0 = kh + 0.03
     hp = h - 0.03
-    start_v = len(b.bm.verts)
+    # the kerb's own vertices, as a set: its bevels free vertex slots that the railing's new vertices reuse, so
+    # an index (bm.verts[start:]) left some railing vertices unwrapped at the axis (a white bar from the rim to
+    # the fountain, the "string") and wrapped some of the kerb's
+    kerb_v = set(b.bm.verts)
     b.bm.verts.ensure_lookup_table()
     fr = ((0, -0.008, 0), (1, 0, 0), (0, 0, 1), (0, 1, 0))
     for i in range(nm):
@@ -2116,8 +2119,7 @@ def flowerbed_railing(radius=5.7, h=0.45, module=0.21):
     for k in range(npost):
         u = C * k / npost
         b.box((u - 0.012, -0.012, kh - 0.05), (u + 0.012, 0.012, zr0 + hp + 0.05), I)
-    b.bm.verts.ensure_lookup_table()
-    for v in b.bm.verts[start_v:]:
+    for v in [v for v in b.bm.verts if v not in kerb_v]:
         u, vr, z = v.co
         a = u / R
         rr = R + vr
@@ -2216,7 +2218,7 @@ def bay_window(w=4.2, depth=1.1, h=8.0):
             m = Matrix(((d.x, nrm.x, 0, (A.x + B2.x) / 2), (d.y, nrm.y, 0, (A.y + B2.y) / 2),
                         (0, 0, 1, 0), (0, 0, 0, 1)))
             post = 0.10
-            start = len(b.bm.verts)
+            before = set(b.bm.verts)        # not an index: freed vertex slots get reused
             cols = max(1, int(round((L - 2 * post) / 0.6)))
             _glazed_rect(b, -L / 2 + post, L / 2 - post, gz0, gz1, cols=cols, transom=0.45, fw=0.05,
                          y_face=0.0)
@@ -2226,9 +2228,7 @@ def bay_window(w=4.2, depth=1.1, h=8.0):
             # back of the glass: dark interior
             b.quad([(-L / 2, -0.35, gz0), (L / 2, -0.35, gz0), (L / 2, -0.35, gz1), (-L / 2, -0.35, gz1)],
                    "AC_Iron")
-            b.bm.verts.ensure_lookup_table()
-            vv = b.bm.verts[start:]
-            bmesh.ops.transform(b.bm, matrix=m, verts=list(vv))
+            bmesh.ops.transform(b.bm, matrix=m, verts=[v for v in b.bm.verts if v not in before])
     # cornice + top
     zc = body_h
     b.prism(plan, zc, zc + 0.4, T, axis='z')
