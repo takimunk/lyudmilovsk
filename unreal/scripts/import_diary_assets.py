@@ -3,6 +3,7 @@
   /Game/UI/Diary/T_PaperLeft, T_PaperRight      textures/ui/diary_paper_left|right.png  (tools/ui_diary_paper.py)
   /Game/UI/Diary/T_MapInk                       textures/ui/map_ink.png                 (tools/ui_map_ink.py)
   /Game/Inventory/Localized/<lang>/T_Sketch_<id> textures/localized/<lang>/sketch_<id>.png (tools/ui_diary_icons.py)
+  /Game/UI/Diary/Birds/T_Bird_<Species>[_f]     textures/ui/birds/bird_<Species>[_f].png (tools/ui_diary_birds.py)
   /Game/UI/Diary/Fonts/FF_Caveat_Regular, FF_Caveat_Bold, FF_Yomogi_Regular   fonts/*.ttf (OFL)
   /Game/UI/Diary/M_DiaryPage                    the 3D book's open pages: unlit, the screen's picture of them (Page, a render
                                                 target with gamma-encoded colour) or plain paper (HasPage 0), times Bright,
@@ -65,6 +66,9 @@ for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"
     for path in sorted(glob.glob(os.path.join(lang_dir, "sketch_*.png"))):
         item = os.path.basename(path)[len("sketch_"):-4]
         import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Sketch_" + item, False)
+for path in sorted(glob.glob(os.path.join(ROOT, "textures", "ui", "birds", "bird_*.png"))):
+    name = os.path.basename(path)[len("bird_"):-4]
+    import_texture(path, DIARY + "/Birds", "T_Bird_" + name, True)
 
 # the handwriting: font faces, made in code (unreal.LyudFontTools: the .ttf factory asserts in a commandlet); the game
 # puts them together into one composite font (LyudDiaryStyle.cpp)

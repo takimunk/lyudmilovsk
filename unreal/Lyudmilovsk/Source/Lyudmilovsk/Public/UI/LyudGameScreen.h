@@ -21,6 +21,8 @@ enum class ELyudScreenTab : uint8
 	Map,
 	/** The diary's entries (its newest spread). */
 	Diary,
+	/** The birds met and befriended (K; B is the bird guide). */
+	Birds,
 };
 
 /**
@@ -70,6 +72,8 @@ public:
 	void ShowOnMap(FName Place);
 	/** Opens the journal on the diary. */
 	void ShowDiary();
+	/** Turns the open diary N spreads on (back if negative). */
+	void TurnBy(int32 N);
 
 	/** A short note on the HUD for a few seconds. */
 	void Toast(const FText& Text, bool bQuest = false);

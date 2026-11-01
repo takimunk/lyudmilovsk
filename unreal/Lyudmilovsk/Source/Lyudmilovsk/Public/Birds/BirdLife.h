@@ -114,6 +114,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	void SetClaimedBirdLocation(int32 Id, FVector Location, FVector Velocity);
 
+	/**
+	 * Calls a befriended bird to the hand (the diary's birds page): call every frame with where the palm is (world cm);
+	 * the bird flies to it from wherever it is (from far off it comes in from out of sight), lands on it and OnBirdEat fires.
+	 * False if it can't come: unknown, away for the winter, or the player is it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	bool SummonBird(int32 Id, FVector PalmLocation);
+	/** The call is over: the bird (if it is not the player's now) goes back to its flock. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void CancelSummon();
+	/** Has this bird left for the winter (migration)? */
+	UFUNCTION(BlueprintPure, Category = "Birds")
+	bool IsBirdAway(int32 Id) const;
+
 	/** Gives the bird back to the wild (it flies to its flock). */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	void ReleaseBird(int32 Id);

@@ -36,7 +36,7 @@ namespace LyudDiary
 	inline const FLinearColor Paper(0.95f, 0.93f, 0.87f);
 	inline const FLinearColor Sticky(1.f, 0.93f, 0.55f);
 
-	enum class ESection : uint8 { Things, Quests, Diary, Map, Num };
+	enum class ESection : uint8 { Things, Quests, Diary, Birds, Map, Num };
 
 	/** The index tabs' card, one colour per section (the same on the 3D book). */
 	FLinearColor TabColor(ESection S);
@@ -50,6 +50,9 @@ namespace LyudDiary
 	const FSlateBrush* StickyBrush();
 	/** The pencil sketch of an item (/Game/Inventory/Localized/<lang>/T_Sketch_<id>); null when it has none. */
 	const FSlateBrush* SketchBrush(FName Item);
+	/** Where index tab K is down the fore-edge (its centre, design units from the page's top); the 3D book's tabs match. */
+	inline float TabY(int32 K) { return 146.f + 196.f * K; }
+
 	/** The ink map (/Game/UI/Diary/T_MapInk); null when missing. */
 	UTexture2D* MapInk();
 

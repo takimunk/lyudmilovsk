@@ -31,7 +31,7 @@ pages' material `/Game/UI/Diary/M_DiaryPage` is unlit and undoes the eye's expos
 ## The pages
 
 `SLyudDiaryScreen` (`Private/UI/SLyudDiary.*`) lays out a spread of two A4 pages (840 × 1188 units, 40 per cm) and scales it onto
-the book. Spreads in order: Things, To do, the diary's entries (as many as they take, measured), Map. The index tabs stick out of
+the book. Spreads in order: Things, To do, the diary's entries (as many as they take, measured), Birds, Map. The index tabs stick out of
 whichever side their section lies on; the dog-eared bottom corners and A / D turn a page, a tab or another key riffles through
 several. A turning page (`SLyudDiaryFlip`) is a strip of the two spreads' pictures bent round its spine edge in perspective, shaded
 as it faces away, with its shadow on the page under it.
@@ -42,12 +42,46 @@ What can be clicked is underlined when the mouse is over it; what is chosen is c
 of their icons; done quests are struck through; the followed one has an arrow; the map is in ink with blue-pencil sea and red-pen
 marks, and a yellow sticky note says where the hero is.
 
+## Birds
+
+The fifth tab (K, lilac): the hero's bird book (`ULyudBirdBook`, `Public/Birds/BirdBook.h`, saved as "BirdBook"). A card for each
+species he has met, in the order he met them, three to a page: its drawing (pencil and watercolour, the female's for a species whose
+female looks different when she is the one met), the name and the Latin name, the day and place it was first met and how. Under it,
+in green, each befriended bird of that species: male or female, the day it first ate from his hand, how often it has come, and
+**call**.
+
+Met (once per species, a line in the diary and the quest event `bird_seen <Species>`):
+- the binoculars held on a bird for 1.5 s (within 2.5 degrees of the middle, 150 m, nothing in between);
+- a bird coming to the palm with feed (whether it eats or not);
+- being a bird of that species.
+
+A friend (per bird, bird life's id; `bird_tamed <Species>`): a bird that ate from the palm.
+
+**Call** puts the diary away and the hero holds out his empty palm (`UBirdTameSubsystem::Summon`). Bird life
+(`UBirdLifeSubsystem::SummonBird`, the sim's `FWorld::Summon`) sends that very bird to the palm: it ignores the player's moves,
+alarms and hawks on the way; one further than 80 m comes in from out of sight, 45 m behind and 18 m above the hero. It lands, sits a
+moment while the view narrows onto it, and the view goes into it, as after a befriending. F gives up the call; nobody comes after
+45 s; it can't come under a roof or while it is away for the winter (the note says so). The birdsim test checks a great tit from 25 m
+(on the palm in ~7 s) and from 600 m (~9 s).
+
+Drawings: `design/birds_diary/sheets.json` (6 Higgsfield `nano_banana_2_1` sheets, 3 x 2 cells, one style text; every run pinned
+there), cut by `tools/ui_diary_birds.py` into `textures/ui/birds/bird_<Species>[_f].png` (the paper made transparent against
+its own white fitted across the cell, as some sheets come on faintly tinted paper; each drawing taken as its own blots of pencil
+and paint, so a tail or wing tip over the cell's edge stays whole and a neighbour's twig stays out; `--check` also writes a contact
+sheet), imported as
+`/Game/UI/Diary/Birds/T_Bird_<name>`. A species without a drawing shows `T_Bird_Unknown` (an unfinished outline). New species (the
+big birds): add a sheet, generate, rerun.
+
+Console: `Birds.Book`, `Birds.Meet <Species> [tame]`, `Birds.Call [n]`, `Birds.Forget`, `Screen.Open birds`, `Screen.Turn [n]`.
+Check: `unreal/scripts/test_bird_diary.sh`.
+
 ## Assets
 
 | Asset | Made by | Import |
 |---|---|---|
 | `textures/ui/diary_paper_left.png`, `_right.png` | `tools/ui_diary_paper.py` (cream paper, 5 mm dot grid, fibres, the spine's shade) | `/Game/UI/Diary/T_PaperLeft`, `T_PaperRight` |
 | `textures/ui/map_ink.png` | `tools/ui_map_ink.py` (from `tools/world_map.py` and `tools/ui_map.py`; rerun after the world map changes) | `/Game/UI/Diary/T_MapInk` |
+| `textures/ui/birds/bird_<Species>[_f].png` | `tools/ui_diary_birds.py` (cut from the Higgsfield sheets of `design/birds_diary/sheets.json`) | `/Game/UI/Diary/Birds/T_Bird_<name>` |
 | `textures/localized/<lang>/sketch_<id>.png` | `tools/ui_diary_icons.py` (a pencil filter over each item's icon; every new item: rerun it for that id) | `/Game/Inventory/Localized/<lang>/T_Sketch_<id>` |
 | `fonts/Caveat-*.ttf`, `fonts/Yomogi-Regular.ttf` (OFL, `fonts/README.md`) | Google Fonts | `/Game/UI/Diary/Fonts/FF_*` |
 | `audio/sfx/diary/diary_{take,open,close,page,pages}_NN.wav` | `tools/gen_sounds.py diary_take ...` (audio/sounds.json) | `import_audio.py` → `/Game/Audio/Diary` |
