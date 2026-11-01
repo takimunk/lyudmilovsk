@@ -1,0 +1,3 @@
+# the game meshes are rebuilt by blender/diner/*.py (the uassets are committed); full-size renders stay local, small jpg previews are committed
+game/
+previews/*.png

@@ -88,6 +88,11 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         import import_academgorodok
         import_academgorodok.place(face_y)
 
+    # the diner by the lower station (its meshes are committed: unreal/scripts/import_diner.py)
+    if unreal.EditorAssetLibrary.does_directory_exist("/Game/Diner/Meshes"):
+        import import_diner
+        import_diner.place(face_y)
+
     if plants:
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
         for group, items in (("Alley", W.alley_trees()), ("Coast", W.coast_plants())):

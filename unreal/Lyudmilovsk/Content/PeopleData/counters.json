@@ -13,6 +13,12 @@
    "goods": [{"item": "cheese_braid", "price": 25, "count": 1}, {"item": "cheese_round_small", "price": 40, "count": 1},
              {"item": "cheese_round_big", "price": 110, "count": 1}]},
   {"person": "guseva_valentina", "activity": "work_corn", "title": "ui.shop.title_corn", "reach_cm": 280,
-   "goods": [{"item": "corn_cob", "price": 15, "count": 1}]}
+   "goods": [{"item": "corn_cob", "price": 15, "count": 1}]},
+  {"person": "zhukova_lena", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
+  {"person": "frolova_masha", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
+  {"person": "hayashi_rina", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+   "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]}
  ]
 }

@@ -50,6 +50,8 @@ struct FLyudMeal
 	float BigBite = 0.18f;
 	/** Fork/Spoon: what rides on it after a scoop (null: an engine sphere tinted LoadTint). Its own origin sits on the tines. */
 	UStaticMesh* LoadMesh = nullptr;
+	/** A big bite's load if it looks different (a twirl of spaghetti; null: LoadMesh, larger). */
+	UStaticMesh* LoadMeshBig = nullptr;
 	UMaterialInterface* LoadMaterial = nullptr;
 	FLinearColor LoadTint = FLinearColor(0.9f, 0.75f, 0.4f);
 	/** Fork/Spoon: the utensil (null: /Game/Food/Meshes/SM_Fork or SM_Spoon). Origin at the grip, tip along +X. */

@@ -15,6 +15,7 @@ variant() {
         norailway)   echo "lyud.Railway 0" ;;
         nosea)       echo "lyud.Sea 0" ;;
         noacadem)    echo "lyud.Academ 0" ;;
+        nodiner)     echo "lyud.Diner 0" ;;
         nofloor)     echo "lyud.ForestFloor 0" ;;
         nosound)     echo "lyud.Sound 0" ;;
         novines)     echo "lyud.Vines 0" ;;

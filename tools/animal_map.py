@@ -53,6 +53,10 @@ ACADEM_HOUSES = {
     "Novikova3": ((-12.83 - 2.05, 76.14 - 5.08), -34.6, 63.3, 19.8),
     "Maksimova8": ((-5.86 - 2.05, -68.74 - 5.08), -138.2, 63.3, 19.8),
     "Gastronom": ((-42.99, -22.1), 93.0, 21.45, 9.25),      # the grocery pavilion (blender/academgorodok/grocery.py footprint())
+    # the diner by the lower station (blender/diner/building.py; world_map.DINER_LOCAL + its frame): the car with its steps, the
+    # kitchen annex behind its west half
+    "Diner": ((124.0 + 1.4, 34.0 - 0.2), 0.0, 17.6, 5.8),
+    "DinerKitchen": ((124.0 - 4.65, 34.0 + 4.5), 0.0, 5.5, 3.8),
 }
 
 
@@ -276,6 +280,14 @@ def main():
         add("ShopDoor", x, y, gs[2] + math.pi / 2, 4, 0.2, 0.2, 1.0, "gastronom")
         x, y = box_point(gs, 4.0, -(gs[4] + 2.5))
         add("Bins", x, y, 0.0, 4, 0.0, 0.0, 0.7, "gastronom")
+    dn = ab.get("Diner")
+    if dn:
+        # the diner: cats wait by its street steps (house x 0, the front at house -y: the box's +v, the map is mirrored) and
+        # at the kitchen's back door (house +y: -v)
+        x, y = box_point(dn, -1.4 + 1.3, dn[4] + 1.8)
+        add("ShopDoor", x, y, dn[2] - math.pi / 2, 3, 0.2, 0.2, 1.0, "diner")
+        x, y = box_point(ab["DinerKitchen"], 0.5, -(ab["DinerKitchen"][4] + 2.6))
+        add("Bins", x, y, 0.0, 3, 0.0, 0.0, 0.8, "diner")
     if n1:
         x, y = box_point(n1, -12.0, n1[4] + 3.0)
         add("Feeder", x, y, 0.0, 6, 0.4, 0.0, 1.0, "academ")       # the lady from the second stair feeds the cats

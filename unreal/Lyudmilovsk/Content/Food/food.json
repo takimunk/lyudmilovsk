@@ -1,4 +1,5 @@
 {
+ "_doc_diner": "Diner dishes (ALyudDiner, docs/diner.md): plated: served at the counter, not handed over; utensil fork|spoon|cup|hand; dish plate|bowl|mug|tea_glass; food/fill/load: SM_Diner_<name> (blender/diner/tableware.py); fill_tint recolours the fill; the burger is held in the hand like the street food, its stages /Game/Food/SM_Food_diner_burger_<k>.",
  "_doc": "How each food is held and eaten (ULyudFoodSubsystem, Public/LyudFood.h). Frames: the palm's (cm): X along the fingers, Z out of the palm, origin the palm's middle; for the right hand +Y is the little finger's side, -Y the thumb's. stages: bite stage meshes /Game/Food/SM_Food_<id>_<k> (blender/food/build_food.py writes them in the palm's frame, so palm_loc/palm_rot stay 0); mouth_full/mouth_empty: the point that goes to the lips when whole and at the last bite (actor frame); mouth_fingers/mouth_palm: the palm's turn at the mouth in the look frame (forward, right, up) when it isn't across the mouth; bites: the share a click, a hold and each steady bite take; steady_every s; texture: the bite sound (crisp, soft, squeak, chewy, crunch); chew_seconds: chewing for the whole thing; wrapped: rustles out of the pocket. Foods not listed (or without mouth_full) are held by their plain look's size and bitten from the top.",
  "foods": {
   "corn_cob": {"stages": 8, "mouth_full": [0.5, -13.0, 5.6], "mouth_empty": [0.5, -1.0, 5.6],
@@ -18,6 +19,21 @@
   "pie": {"texture": "soft", "chew_seconds": 18, "wrapped": true},
   "seeds": {"texture": "crunch", "chew_seconds": 30, "wrapped": true},
   "candy": {"texture": "crunch", "chew_seconds": 10, "wrapped": true},
-  "bread_loaf": {"texture": "soft", "chew_seconds": 45, "bites": [0.04, 0.09, 0.035]}
+  "bread_loaf": {"texture": "soft", "chew_seconds": 45, "bites": [0.04, 0.09, 0.035]},
+  "diner_pancakes": {"plated": true, "utensil": "fork", "dish": "plate", "food": "Pancakes", "load": ["Load_Pancake"],
+                     "bites": [0.08, 0.17, 0.06], "texture": "soft", "chew_seconds": 30},
+  "diner_eggs": {"plated": true, "utensil": "fork", "dish": "plate", "food": "EggsBacon", "load": ["Load_Egg"],
+                 "bites": [0.07, 0.16, 0.06], "texture": "soft", "chew_seconds": 32},
+  "diner_spaghetti": {"plated": true, "utensil": "fork", "dish": "plate", "food": "Spaghetti", "load": ["Load_Noodles", "Load_Twirl"],
+                      "bites": [0.06, 0.16, 0.05], "texture": "soft", "chew_seconds": 34},
+  "diner_soup": {"plated": true, "utensil": "spoon", "dish": "bowl", "fill": "SoupFill", "load": ["Load_Soup"],
+                 "bites": [0.07, 0.12, 0.06], "texture": "soft", "chew_seconds": 12},
+  "diner_pie": {"plated": true, "utensil": "fork", "dish": "plate", "food": "ApplePie", "load": ["Load_Pie"],
+                "bites": [0.12, 0.25, 0.09], "texture": "soft", "chew_seconds": 20},
+  "diner_burger": {"plated": true, "utensil": "hand", "dish": "plate", "food": "Burger", "stages": 6, "mouth_full": [2.0, 0.0, 10.8],
+                   "mouth_empty": [2.0, 0.0, 3.4], "bites": [0.08, 0.17, 0.06], "steady_every": 0.9, "texture": "soft", "chew_seconds": 40},
+  "diner_tea": {"plated": true, "utensil": "cup", "dish": "tea_glass", "fill": "GlassFill", "fill_tint": "#7F3E0E", "bites": [0.1, 0.22, 0.08]},
+  "diner_kompot": {"plated": true, "utensil": "cup", "dish": "tea_glass", "fill": "GlassFill", "fill_tint": "#6E1A2A", "bites": [0.12, 0.25, 0.1]},
+  "diner_coffee": {"plated": true, "utensil": "cup", "dish": "mug", "fill": "CoffeeFill", "bites": [0.1, 0.2, 0.08]}
  }
 }

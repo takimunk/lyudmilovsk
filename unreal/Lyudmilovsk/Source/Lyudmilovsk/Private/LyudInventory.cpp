@@ -151,6 +151,18 @@ namespace
 		Cigs.Radius = 2.2f;
 		D.Add(Cigs);
 		Good(TEXT("lighter"), K::Misc, L::Pack, FVector(1.1f, 2.4f, 7.3f), FLinearColor(0.95f, 0.45f, 0.05f), 10, 1.3f);
+		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
+		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
+		// only fallbacks (a burger left in the pocket)
+		Good(TEXT("diner_pancakes"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.79f, 0.54f, 0.26f), 35, 8.f);
+		Good(TEXT("diner_eggs"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.96f, 0.9f, 0.75f), 40, 8.f);
+		Good(TEXT("diner_spaghetti"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.9f, 0.8f, 0.5f), 45, 8.f);
+		Good(TEXT("diner_soup"), K::Food, L::Pack, FVector(7.f, 16.f, 16.f), FLinearColor(0.78f, 0.54f, 0.27f), 40, 8.f);
+		Good(TEXT("diner_pie"), K::Food, L::Pack, FVector(5.f, 9.f, 11.f), FLinearColor(0.81f, 0.58f, 0.31f), 30, 4.f);
+		Good(TEXT("diner_burger"), K::Food, L::Pack, FVector(8.f, 10.f, 10.f), FLinearColor(0.77f, 0.45f, 0.19f), 50, 5.f);
+		Good(TEXT("diner_tea"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.5f, 0.24f, 0.05f), 10, 3.6f);
+		Good(TEXT("diner_kompot"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.43f, 0.1f, 0.16f), 12, 3.6f);
+		Good(TEXT("diner_coffee"), K::Drink, L::Cup, FVector(8.5f, 8.5f, 9.5f), FLinearColor(0.95f, 0.94f, 0.9f), 8, 4.25f);
 		FLyudItemDef Feeder;
 		Feeder.Id = TEXT("feeder");
 		Feeder.Kind = ELyudItemKind::Place;

@@ -478,6 +478,25 @@ ACADEM_VIEW_FROM = (-147.0, 346.0)    # half way down the rope
 ACADEM_VIEW_HALF = 45.0
 
 
+# --- the diner by the lower station (blender/diner, docs/diner.md) ------------------------------
+# A 1940 Sterling Streamliner lunch car (the Modern Diner, Pawtucket RI) across the street from the
+# station, on the ensemble's grid: its own frame is the ensemble's turned by nothing, origin DINER_LOCAL
+# (ensemble metres); x along the car (+x the rounded end, away from the square), its street front (-y)
+# toward the station.
+DINER_LOCAL = (124.0, 34.0)
+
+
+def diner():
+    """(X, Y, yaw) of the diner's origin on the map; yaw as academ()'s."""
+    x, y = academ_to_map(*DINER_LOCAL)
+    return (x, y, ACADEM_YAW)
+
+
+def diner_to_map(dx, dy):
+    """The diner's frame (metres) -> map (X, Y)."""
+    return academ_to_map(DINER_LOCAL[0] + dx, DINER_LOCAL[1] + dy)
+
+
 @functools.lru_cache(maxsize=1)
 def academ_z():
     ox, oy, _ = academ()

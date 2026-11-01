@@ -241,7 +241,16 @@ void ULyudBiteSubsystem::Tick(float DeltaTime)
 		{
 			if (LoadC)
 			{
-				LoadC->SetRelativeScale3D(FVector(Size == ELyudBiteSize::Big ? 1.f : 0.55f));
+				const bool bBigLoad = Size == ELyudBiteSize::Big && Meal.LoadMeshBig;
+				if (Meal.LoadMesh)
+				{
+					LoadC->SetStaticMesh(bBigLoad ? Meal.LoadMeshBig : Meal.LoadMesh);
+				}
+				// a mesh of its own is made to size (a big bite on the small load's mesh is a bigger helping of it); the stand-in
+				// engine sphere is 1 m across
+				const float Base = Meal.LoadMesh ? 1.f : 0.035f;
+				const float Big = Meal.LoadMesh ? 1.3f : 1.f, Small = Meal.LoadMesh ? 1.f : 0.55f;
+				LoadC->SetRelativeScale3D(FVector(Base * (bBigLoad ? 1.f : (Size == ELyudBiteSize::Big ? Big : Small))));
 				LoadC->SetVisibility(true);
 			}
 			StartPhase(EPhase::Up, 0.f);
@@ -424,7 +433,7 @@ void ULyudBiteSubsystem::SpawnUtensil()
 		MID->SetVectorParameterValue(TEXT("Color"), Meal.LoadTint);
 	}
 	// the load rides on the tines, 12 cm out from the grip
-	L->SetRelativeLocation(FVector(12.f, 0.f, 0.6f));
+	L->SetRelativeLocation(FVector(11.5f, 0.f, 0.6f));
 	L->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	L->SetCastShadow(false);
 	L->bAffectDynamicIndirectLighting = false;
