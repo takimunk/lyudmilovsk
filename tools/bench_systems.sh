@@ -18,6 +18,7 @@ variant() {
         nofloor)     echo "lyud.ForestFloor 0" ;;
         nosound)     echo "lyud.Sound 0" ;;
         novines)     echo "lyud.Vines 0" ;;
+        nosealife)   echo "lyud.SeaLife 0;lyud.Seabed 0" ;;
         noforest)    echo "lyud.Bench.ForestHide 1;lyud.Bench.LiveHide 1" ;;
         nolumen)     echo "r.DynamicGlobalIlluminationMethod 0;r.ReflectionMethod 2" ;;
         cardfreeze)  echo "r.LumenScene.SurfaceCache.Freeze 1" ;;

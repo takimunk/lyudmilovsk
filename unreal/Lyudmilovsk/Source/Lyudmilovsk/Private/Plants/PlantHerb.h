@@ -72,4 +72,14 @@ namespace PlantHerbs
 	TArray<FPlantSpecies> Species();
 	/** The forest floor's dwarf shrubs, ferns and wood sorrel (PlantSpeciesFloor.cpp, drawn by AForestFloor). */
 	TArray<FPlantSpecies> FloorSpecies();
+	/** Seaweeds and eelgrass (PlantAlga.cpp, drawn by ULyudSeabedComponent). */
+	TArray<FPlantSpecies> SeaSpecies();
+}
+
+/** The seaweeds' and sea grass's build (EPlantHerbForm::Alga, PlantAlga.cpp): Leaves the fronds, Stems the holdfast and
+ * stalk, Flowers the air bladders and ripe tips. In the fronds' UVs V runs 0 at the base .. 1 at the tip. */
+namespace PlantAlgae
+{
+	PlantHerbs::FState State(const FPlantSpecies& S, uint32 Seed, float Age, float Day);
+	void Build(const FPlantSpecies& S, uint32 Seed, const PlantHerbs::FState& St, PlantHerbs::FHerbGeometry& Out);
 }

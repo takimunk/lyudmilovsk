@@ -37,7 +37,7 @@ STEP = 4.0             # metres between samples of the centreline
 RAIL_OVER_BALLAST = 0.33   # rail head over the ballast's top (rail 0.15 + sleeper 0.14 + bed)
 BANK_TOP_HALF = 2.6    # the bank's crest each side of the centreline (ballast shoulder)
 BANK_SLOPE = 1.5       # horizontal per vertical on its sides (armour stones)
-SEABED_FAR = W.SEA_Z - 0.3 - 9.0   # the open Baltic past the map: ~9 m deep (world_map's sea bed)
+SEABED_FAR = W.SEA_Z + getattr(W, "OPEN_BED", -9.3)   # the open Baltic past the map (world_map's sea bed)
 
 
 def portal_face_y():

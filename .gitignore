@@ -36,6 +36,7 @@ blender/hero/*.blend
 unreal/Lyudmilovsk/Content/Characters/Hero/
 blender/birds/export/
 blender/animals/export/
+blender/fish/export/
 
 # generated character sources: sidecars committed, pictures and raw models local
 blender/characters/*/gen/*

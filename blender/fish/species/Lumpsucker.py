@@ -1,0 +1,51 @@
+"""Lumpsucker, Cyclopterus lumpus: round deep lumpy body with rows of bony tubercles, first dorsal hidden under a skin hump,
+pelvic fins joined into a round sucker disc on the belly, small tail, grey-green with darker blotches, 30 cm."""
+SPEC = dict(
+    id="Lumpsucker", latin="Cyclopterus lumpus", length=0.30, seed=83, tris=4200,
+    body_end=0.86, nose_len=0.05, nose_len_bot=0.05,
+    profile=dict(
+        top=[(0, 0), (0.03, 0.060), (0.08, 0.110), (0.16, 0.160), (0.25, 0.190), (0.34, 0.196), (0.44, 0.180), (0.55, 0.150),
+             (0.66, 0.108), (0.76, 0.064), (0.86, 0.030)],
+        bot=[(0, 0), (0.03, 0.050), (0.08, 0.090), (0.16, 0.128), (0.25, 0.150), (0.34, 0.152), (0.44, 0.140), (0.55, 0.115),
+             (0.66, 0.085), (0.76, 0.052), (0.86, 0.026)],
+        wid=[(0, 0), (0.03, 0.045), (0.08, 0.082), (0.16, 0.115), (0.25, 0.135), (0.34, 0.140), (0.44, 0.128), (0.55, 0.104),
+             (0.66, 0.072), (0.76, 0.042), (0.86, 0.020)],
+        n=2.0),
+    head=dict(gill_t=0.215, gill_ridge=0.012, mouth_len=0.07, mouth_depth=0.07, mouth_p=0.58),
+    lod0=dict(m=10, rings=34, nose_rings=4), lod1=dict(m=6),
+    eyes=[dict(t=0.092, q=0.24, r=0.0165, sunk=0.25)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.56, t1=0.79, h=0.070, shape="rounded", peak=0.4, ends=(0.2, 0.2), rake=10, rays=12, segs=10,
+             col=(92, 106, 92), ray=(52, 64, 54), alpha=0.58, edge=(40, 50, 44), edge_a=0.45),
+        dict(name="A", kind="median", side="anal", t0=0.60, t1=0.79, h=0.056, shape="rounded", peak=0.4, ends=(0.2, 0.2), rake=10, rays=11, segs=9,
+             col=(108, 120, 104), ray=(64, 76, 64), alpha=0.55, edge=(50, 60, 52), edge_a=0.4),
+        dict(name="C", kind="caudal", span_top=0.075, span_bot=0.075, shape="rounded", rays=15, segs=14,
+             col=(92, 106, 92), ray=(52, 64, 54), alpha=0.65, edge=(36, 46, 40), edge_a=0.55, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.235, q0=0.40, q1=0.62, len=0.145, shape="fan", ang0=-30, ang1=55, splay=20, rays=17, segs=8,
+             col=(112, 124, 108), ray=(64, 78, 66), alpha=0.55, edge=(50, 62, 54), edge_a=0.4),
+    ],
+    extras=[
+        dict(kind="cones", name="tubercles", seed=5, seg=5, bands=2, sink=0.4, col=(88, 102, 90), tip=(176, 184, 160), rows=[
+            dict(q=0.0, t0=0.14, t1=0.52, n=7, r=0.0125, h=0.016, var=0.35, jit=0.3),
+            dict(q=0.20, t0=0.17, t1=0.56, n=7, r=0.0115, h=0.014, var=0.35, jit=0.4, qjit=0.03),
+            dict(q=0.42, t0=0.20, t1=0.60, n=7, r=0.0115, h=0.014, var=0.35, jit=0.4, qjit=0.03),
+            dict(q=0.66, t0=0.26, t1=0.58, n=5, r=0.0100, h=0.012, var=0.35, jit=0.4, qjit=0.03),
+        ]),
+        dict(kind="sucker", name="sucker", t=0.255, a=0.062, b=0.062, h=0.015, col=(122, 130, 112), rim=(190, 192, 160), mid=(80, 88, 76)),
+    ],
+    paint=dict(
+        ramp=[(0.0, (58, 74, 66)), (0.2, (80, 98, 86)), (0.42, (112, 128, 108)), (0.62, (148, 156, 130)), (0.80, (188, 186, 150)),
+              (1.0, (206, 200, 160))],
+        grain=0.10,
+        layers=[
+            dict(type="mottle", scale=0.05, thr=0.5, soft=0.1, col=(44, 56, 50), q=(0.0, 0.7), a=0.65, seed=1),
+            dict(type="mottle", scale=0.022, thr=0.6, soft=0.07, col=(124, 140, 112), q=(0.1, 0.8), a=0.4, seed=2),
+            dict(type="spots", cell=0.04, r=(0.004, 0.011), prob=0.55, col=(40, 52, 46), q=(0.0, 0.6), a=0.6, seed=3),
+            dict(type="spots", cell=0.03, r=(0.002, 0.005), prob=0.4, col=(200, 196, 150), q=(0.4, 0.9), a=0.5, seed=4),
+            dict(type="scales", size=0.0060, edge=0.02, sheen=0.015, q=(0.2, 0.9)),
+        ],
+        head=dict(tint=(86, 100, 86), amount=0.15, curve=0.02, line=(40, 52, 46), line_a=0.5),
+        mouth=dict(col=(36, 40, 34), w=0.0014),
+        eye=dict(iris=(196, 170, 80), iris2=(100, 84, 36), rim=(30, 34, 28), pupil=(3, 3, 3), pupil_r=0.5),
+    ),
+)

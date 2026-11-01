@@ -2,15 +2,19 @@
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
-#include "GameFramework/PlayerController.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
-#include "LandscapeProxy.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Plants/GameCalendar.h"
+#include "Plants/PlantHerb.h"
+#include "Plants/ProceduralPlant.h"
 #include "Sea/LyudSea.h"
 #include "SeaLifeMeshes.h"
+#include "Sky/LyudSky.h"
+#include "Terrain/LyudTerrain.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -33,7 +37,7 @@ namespace
 		float R(float A, float B) { return A + (B - A) * F(); }
 	};
 
-	/** Smooth 0..1 noise over the ground (patches of boulders, meadows). */
+	/** Smooth 0..1 noise over the ground (patches of meadow, the stones where the terrain has no mask). */
 	float Patch(double X, double Y, double Cell, uint32 Seed)
 	{
 		const double U = X / Cell, V = Y / Cell;
@@ -43,26 +47,56 @@ namespace
 		return FMath::Lerp(FMath::Lerp(H(IX, IY), H(IX + 1, IY), FX), FMath::Lerp(H(IX, IY + 1), H(IX + 1, IY + 1), FX), FY);
 	}
 
-	/** Per kind: look (tint as base colour), how it is drawn. */
+	const ULyudTerrainMask* Mask()
+	{
+		// looked up once a minute at most (a missing mask must not be looked for every call)
+		static TWeakObjectPtr<ULyudTerrainMask> Cached;
+		static double Tried = -1e9;
+		if (!Cached.IsValid() && FPlatformTime::Seconds() - Tried > 60.0)
+		{
+			Tried = FPlatformTime::Seconds();
+			ULyudTerrainMask* M = ULyudTerrainMask::Get();
+			Cached = M && M->HasSeaStone() ? M : nullptr;
+		}
+		return Cached.Get();
+	}
+
 	struct FKindLook
 	{
 		const TCHAR* Name;
+		/** The plant species it grows (none: a rock or shell). */
+		const TCHAR* Species;
 		FLinearColor Tint;
-		float Sway;
 		float Roughness;
 		bool bShadow;
+		/** Gone into the murk beyond this, cm. */
+		float Cull;
+		/** How far the current bends it (the alga material's Flex). */
+		float Flex;
 	};
 	const FKindLook Looks[] = {
-		{ TEXT("Eelgrass"), FLinearColor(0.10f, 0.22f, 0.05f), 1.f, 0.5f, false },
-		{ TEXT("Fucus"), FLinearColor(0.20f, 0.17f, 0.05f), 0.6f, 0.45f, false },
-		{ TEXT("Furcellaria"), FLinearColor(0.22f, 0.05f, 0.05f), 0.4f, 0.5f, false },
-		{ TEXT("Boulder"), FLinearColor(0.2f, 0.19f, 0.18f), 0.f, 0.85f, true },
-		{ TEXT("Mussels"), FLinearColor(0.03f, 0.035f, 0.05f), 0.f, 0.3f, false },
-		{ TEXT("Shells"), FLinearColor(0.75f, 0.68f, 0.58f), 0.f, 0.6f, false },
-		{ TEXT("Flounder"), FLinearColor(0.30f, 0.26f, 0.18f), 0.f, 0.6f, false },
-		{ TEXT("Jellyfish"), FLinearColor(0.75f, 0.8f, 0.9f), 0.f, 0.2f, false },
-		{ TEXT("Fish"), FLinearColor(0.7f, 0.75f, 0.8f), 0.f, 0.3f, false },
+		{ TEXT("Eelgrass"), TEXT("Eelgrass"), FLinearColor::White, 0.45f, false, 2200.f, 1.3f },
+		{ TEXT("Bladderwrack"), TEXT("Bladderwrack"), FLinearColor::White, 0.4f, false, 3200.f, 0.6f },
+		{ TEXT("Furcellaria"), TEXT("Furcellaria"), FLinearColor::White, 0.55f, false, 2600.f, 0.35f },
+		{ TEXT("Boulder"), nullptr, FLinearColor(0.2f, 0.19f, 0.18f), 0.85f, true, 4500.f, 0.f },
+		{ TEXT("Mussels"), nullptr, FLinearColor(0.03f, 0.035f, 0.05f), 0.3f, false, 1800.f, 0.f },
+		{ TEXT("Shells"), nullptr, FLinearColor(0.75f, 0.68f, 0.58f), 0.6f, false, 1500.f, 0.f },
+		{ TEXT("Cladophora"), TEXT("Cladophora"), FLinearColor::White, 0.6f, false, 2000.f, 1.f },
+		{ TEXT("Jellyfish"), nullptr, FLinearColor(0.75f, 0.8f, 0.9f), 0.2f, false, 2500.f, 0.f },
+		{ TEXT("SeaLettuce"), TEXT("SeaLettuce"), FLinearColor::White, 0.4f, false, 2000.f, 1.f },
+		{ TEXT("Oarweed"), TEXT("Oarweed"), FLinearColor::White, 0.45f, false, 3500.f, 0.45f },
+		{ TEXT("ReefRock"), nullptr, FLinearColor(0.21f, 0.2f, 0.19f), 0.85f, true, 4500.f, 0.f },
+		{ TEXT("Cobbles"), nullptr, FLinearColor(0.26f, 0.24f, 0.21f), 0.75f, false, 2600.f, 0.f },
 	};
+
+	float DayNow(const UWorld* World)
+	{
+		if (TActorIterator<ALyudSky> It(World); It)
+		{
+			return UGameCalendar::DayOfYear(It->ShownTime());
+		}
+		return UGameCalendar::DayOfYear(UGameCalendar::NowIn(World));
+	}
 }
 
 ULyudSeabedComponent::ULyudSeabedComponent()
@@ -70,65 +104,136 @@ ULyudSeabedComponent::ULyudSeabedComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.TickGroup = TG_PrePhysics;
 	bTickInEditor = false;
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Weed(TEXT("/Game/Sea/M_SeaWeed.M_SeaWeed"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Alga(TEXT("/Game/Sea/Underwater/M_LyudSeaAlga.M_LyudSeaAlga"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Rock(TEXT("/Game/Sea/M_SeaRock.M_SeaRock"));
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Jelly(TEXT("/Game/Sea/M_SeaJelly.M_SeaJelly"));
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> FishM(TEXT("/Game/Sea/M_SeaFish.M_SeaFish"));
-	WeedMaterial = Weed.Succeeded() ? Weed.Object : nullptr;
+	AlgaMaterial = Alga.Succeeded() ? Alga.Object : nullptr;
 	RockMaterial = Rock.Succeeded() ? Rock.Object : nullptr;
 	JellyMaterial = Jelly.Succeeded() ? Jelly.Object : nullptr;
-	FishMaterial = FishM.Succeeded() ? FishM.Object : nullptr;
 }
 
-void ULyudSeabedComponent::OnRegister()
+namespace
 {
-	Super::OnRegister();
+	/** The Europa hatch on the bed (world cm; world_map.EUROPA_HATCH, Content/Europa/europa.json): nothing grows, lies or
+	 * settles within KeepClear of it. */
+	const FVector2D Hatch(57300.0, 10790.0);
+	constexpr double KeepClear = 400.0;
+}
+
+void ULyudSeabedComponent::HabitatAt(double X, double Y, float Depth, float& Sand, float& Stone, float& Weed)
+{
+	if (FVector2D::DistSquared(FVector2D(X, Y), Hatch) < KeepClear * KeepClear)
+	{
+		Sand = Stone = Weed = 0.f;
+		return;
+	}
+	const ULyudTerrainMask* M = Mask();
+	// stones: the terrain's reefs and boulder fields; without a mask (an old build) patches of noise as before
+	Stone = M ? M->GetSeaStone(FVector(X, Y, 0.0)) : FMath::Clamp((Patch(X * 0.01, Y * 0.01, 24.0, 5) - 0.6f) * 4.f, 0.f, 1.f) * FMath::SmoothStep(1.f, 3.f, Depth);
+	Sand = 1.f - Stone;
+	// eelgrass meadows on sand 1.5-7.5 m; wrack on the stones in the first metres
+	const float Meadow = FMath::SmoothStep(0.42f, 0.55f, Patch(X * 0.01, Y * 0.01, 17.0, 9)) * FMath::SmoothStep(1.5f, 2.2f, Depth) * (1.f - FMath::SmoothStep(6.5f, 7.5f, Depth));
+	Weed = FMath::Max(Meadow * Sand, Stone * (1.f - FMath::SmoothStep(4.f, 7.f, Depth)) * 0.8f);
 }
 
 void ULyudSeabedComponent::EnsureComponents()
 {
-	if (Kinds.Num() == NumKinds)
+	if (Kinds.Num() == NumKinds * Variants)
 	{
 		return;
 	}
 	AActor* Owner = GetOwner();
-	UStaticMesh* Meshes[NumKinds] = { LyudSeaLife::Eelgrass(), LyudSeaLife::Fucus(), LyudSeaLife::Furcellaria(), LyudSeaLife::Boulder(),
-		LyudSeaLife::Mussels(), LyudSeaLife::Shells(), LyudSeaLife::Flounder(), LyudSeaLife::Jellyfish(), LyudSeaLife::Fish() };
-	UMaterialInterface* Mats[NumKinds] = { WeedMaterial, WeedMaterial, WeedMaterial, RockMaterial, RockMaterial, RockMaterial, FishMaterial, JellyMaterial, FishMaterial };
+	PlantKeys.Init(0xFFFFFFFFu, NumKinds * Variants);
+	PlantMeshes.SetNum(NumKinds * Variants);
+	PlantMIDs.SetNum(NumKinds * Variants * PlantHerbs::NumSlots);
 	for (int32 K = 0; K < NumKinds; K++)
 	{
-		UInstancedStaticMeshComponent* C = NewObject<UInstancedStaticMeshComponent>(Owner, *FString::Printf(TEXT("Seabed_%s"), Looks[K].Name), RF_Transient);
-		C->SetupAttachment(this);
-		C->SetMobility(EComponentMobility::Movable);
-		C->SetStaticMesh(Meshes[K]);
-		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		C->SetCastShadow(Looks[K].bShadow);
-		C->SetGenerateOverlapEvents(false);
-		C->bAffectDistanceFieldLighting = false;
-		// the fish and jellies move every frame: out of the Lumen scene, or Lumen recaptures them every frame
-		C->bAffectDynamicIndirectLighting = false;
-		C->LightingChannels.bChannel0 = true;
-		C->LightingChannels.bChannel1 = true;
-		C->SetCullDistances(0, int32(Radius * 1.2f));
-		if (Mats[K])
+		for (int32 V = 0; V < Variants; V++)
 		{
-			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Mats[K], C);
-			M->SetVectorParameterValue(TEXT("Tint"), Looks[K].Tint);
-			M->SetScalarParameterValue(TEXT("Sway"), Looks[K].Sway);
-			M->SetScalarParameterValue(TEXT("Roughness"), Looks[K].Roughness);
-			if (K == Fish)
+			UInstancedStaticMeshComponent* C = NewObject<UInstancedStaticMeshComponent>(Owner, *FString::Printf(TEXT("Seabed_%s_%d"), Looks[K].Name, V), RF_Transient);
+			C->SetupAttachment(this);
+			C->SetMobility(EComponentMobility::Movable);
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			C->SetCastShadow(Looks[K].bShadow);
+			C->SetGenerateOverlapEvents(false);
+			C->bAffectDistanceFieldLighting = false;
+			// the jellies move every frame and the weed's material sways it: out of the Lumen scene
+			C->bAffectDynamicIndirectLighting = Looks[K].bShadow;
+			C->SetCullDistances(0, int32(Looks[K].Cull));
+			UStaticMesh* Mesh = nullptr;
+			if (K == Boulder) Mesh = LyudSeaLife::Boulder();
+			else if (K == ReefRock) Mesh = LyudSeaLife::ReefRock(V);
+			else if (K == Cobbles) Mesh = LyudSeaLife::Cobbles(V);
+			else if (K == Mussels) Mesh = LyudSeaLife::Mussels();
+			else if (K == Shells) Mesh = LyudSeaLife::Shells();
+			else if (K == Jelly) Mesh = LyudSeaLife::Jellyfish();
+			if (Mesh)
 			{
-				M->SetScalarParameterValue(TEXT("Metallic"), 0.35f);
-				M->SetScalarParameterValue(TEXT("Wiggle"), 1.f);
+				C->SetStaticMesh(Mesh);
+				UMaterialInterface* Base = K == Jelly ? JellyMaterial.Get() : RockMaterial.Get();
+				if (Base)
+				{
+					UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Base, C);
+					M->SetVectorParameterValue(TEXT("Tint"), Looks[K].Tint);
+					M->SetScalarParameterValue(TEXT("Roughness"), Looks[K].Roughness);
+					C->SetMaterial(0, M);
+				}
 			}
-			else if (K == Flounder)
-			{
-				M->SetScalarParameterValue(TEXT("Mottle"), 1.f);
-			}
-			C->SetMaterial(0, M);
+			C->RegisterComponent();
+			Kinds.Add(C);
 		}
-		C->RegisterComponent();
-		Kinds.Add(C);
+	}
+	UpdatePlants(true);
+}
+
+void ULyudSeabedComponent::UpdatePlants(bool bForce)
+{
+	const float Day = DayNow(GetWorld());
+	for (int32 K = 0; K < NumKinds; K++)
+	{
+		const FPlantSpecies* S = Looks[K].Species ? PlantSpeciesLibrary::Find(FName(Looks[K].Species)) : nullptr;
+		if (!S || !AlgaMaterial)
+		{
+			continue;
+		}
+		for (int32 V = 0; V < Variants; V++)
+		{
+			const int32 I = K * Variants + V;
+			const uint32 Seed = 0x5EAu + uint32(K) * 131u + uint32(V) * 7919u;
+			const PlantHerbs::FState St = PlantHerbs::State(*S, Seed, 3.f + V, Day);
+			UInstancedStaticMeshComponent* C = Kinds[I];
+			if (!bForce && St.Key == PlantKeys[I])
+			{
+				continue;
+			}
+			PlantKeys[I] = St.Key;
+			PlantHerbs::FHerbGeometry G;
+			float H = 0.f, R = 0.f;
+			PlantHerbs::Build(*S, Seed, St, G, H, R);
+			if (G.Pos.Num() == 0)
+			{
+				// gone for the season (Cladophora in winter): nothing drawn
+				C->SetStaticMesh(nullptr);
+				continue;
+			}
+			// regrown in place (the old mesh is reused, not leaked)
+			PlantMeshes[I] = PlantHerbs::BuildMesh(this, PlantMeshes[I], FName(*FString::Printf(TEXT("SM_Alga_%s_%d"), Looks[K].Name, V)), G);
+			C->SetStaticMesh(PlantMeshes[I]);
+			for (int32 Slot = 0; Slot < PlantHerbs::NumSlots; Slot++)
+			{
+				TObjectPtr<UMaterialInstanceDynamic>& M = PlantMIDs[I * PlantHerbs::NumSlots + Slot];
+				if (!M) M = UMaterialInstanceDynamic::Create(AlgaMaterial, C);
+				const FLinearColor Col = Slot == PlantHerbs::Leaves ? St.LeafColour : Slot == PlantHerbs::Stems ? S->Herb.StemColour : S->Herb.CentreColour;
+				M->SetVectorParameterValue(TEXT("Color"), Col);
+				M->SetVectorParameterValue(TEXT("TipColour"), S->AutumnLeafColour);
+				M->SetScalarParameterValue(TEXT("TipBrown"), Slot == PlantHerbs::Leaves ? St.Wither : 0.f);
+				M->SetScalarParameterValue(TEXT("Translucent"), S->Herb.Alga.Translucent);
+				M->SetScalarParameterValue(TEXT("HeightRef"), FMath::Max(H * 100.f, 5.f));
+				M->SetScalarParameterValue(TEXT("Flex"), Looks[K].Flex * (Slot == PlantHerbs::Stems ? 0.3f : 1.f));
+				M->SetScalarParameterValue(TEXT("Roughness"), Looks[K].Roughness);
+				C->SetMaterial(Slot, M);
+			}
+		}
 	}
 }
 
@@ -137,6 +242,17 @@ float ULyudSeabedComponent::GroundZ(double X, double Y, bool& bOk) const
 	const ALyudSea* Sea = Cast<ALyudSea>(GetOwner());
 	bOk = false;
 	return Sea ? Sea->GroundZ(X, Y, bOk) : 0.f;
+}
+
+void ULyudSeabedComponent::Clear()
+{
+	for (UInstancedStaticMeshComponent* C : Kinds)
+	{
+		if (C && C->GetInstanceCount()) C->ClearInstances();
+	}
+	bBuilt = false;
+	bJelliesPlaced = false;
+	BuiltTile = FIntPoint(INT32_MAX, INT32_MAX);
 }
 
 void ULyudSeabedComponent::Rebuild(const FVector& Eye)
@@ -148,17 +264,24 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 	}
 	// the bed's life stays where the water covers it even at the lowest spring tide (the flat above it dries)
 	const float SeaZ = Sea->LowWaterZ();
-	TArray<FTransform> Out[NumKinds];
-	Flounders.Reset();
+	TArray<FTransform> Out[NumKinds][Variants];
 	const int32 TX = FMath::FloorToInt(Eye.X / TileSize), TY = FMath::FloorToInt(Eye.Y / TileSize);
 	const int32 Reach = FMath::CeilToInt(AppliedRadius / TileSize);
 	const float Dens = Density;
+	// the season thins what grows (the plant state's share of fronds)
+	auto Present = [&](int32 K)
+	{
+		const FPlantSpecies* S = Looks[K].Species ? PlantSpeciesLibrary::Find(FName(Looks[K].Species)) : nullptr;
+		return S ? PlantHerbs::State(*S, 1u, 5.f, DayNow(GetWorld())).Present : 1.f;
+	};
+	const float CladoNow = Present(Cladophora), LettuceNow = Present(SeaLettuce), EelNow = Present(Eelgrass);
 	for (int32 Y = TY - Reach; Y <= TY + Reach; Y++)
 	{
 		for (int32 X = TX - Reach; X <= TX + Reach; X++)
 		{
 			const FVector Center((X + 0.5) * TileSize, (Y + 0.5) * TileSize, 0.0);
-			if (FVector::Dist2D(Center, Eye) > AppliedRadius + TileSize * 0.71f)
+			const float TileDist = FVector::Dist2D(Center, Eye);
+			if (TileDist > AppliedRadius + TileSize * 0.71f)
 			{
 				continue;
 			}
@@ -175,115 +298,142 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 			FRng R{ TileHash(X, Y, 77) };
 			auto Place = [&](double PX, double PY, float& OutZ, float& OutDepth) -> bool
 			{
+				if (FVector2D::DistSquared(FVector2D(PX, PY), Hatch) < FMath::Square(KeepClear + 150.0)) return false;
 				bool bOk;
 				OutZ = GroundZ(PX, PY, bOk);
 				OutDepth = (SeaZ - OutZ) * 0.01f;
 				return bOk && OutDepth > 0.15f;
 			};
 			const double X0 = X * TileSize, Y0 = Y * TileSize;
-			const float Rocky = Patch(Center.X * 0.01, Center.Y * 0.01, 24.0, 5);
-			const float Meadow = Patch(Center.X * 0.01, Center.Y * 0.01, 17.0, 9);
-			// boulders: fields of them in places, a stray one elsewhere
-			const int32 NB = Rocky > 0.6f ? int32(R.R(2.f, 5.f) * Dens) : (R.F() < 0.15f * Dens ? 1 : 0);
+			const bool bNearEye = TileDist < FMath::Min(AppliedRadius, 2200.f) + TileSize * 0.71f;
+			// the tile's stones: sampled at a few points (a reef's edge runs through tiles)
+			float Sand, Stone, Weed;
+			HabitatAt(Center.X, Center.Y, FMath::Max(MaxDepth * 0.01f, 0.f), Sand, Stone, Weed);
+			// rocks: a reef or boulder field is dense with blocks, the open sand has a stray erratic now and then
+			const int32 NB = int32((Stone * R.R(5.f, 11.f) + (R.F() < 0.1f ? 1.f : 0.f)) * Dens);
 			for (int32 B = 0; B < NB; B++)
 			{
 				const double PX = X0 + R.F() * TileSize, PY = Y0 + R.F() * TileSize;
 				float Z, D;
-				const float S = R.R(0.35f, 1.6f);
+				const float Big = R.F();
+				const int32 V = int32(R.F() * Variants) % Variants;
+				const float Yaw = R.R(0.f, 360.f), Tilt = R.R(-12.f, 12.f);
+				float S0, St, W0;
+				HabitatAt(PX, PY, 1.f, S0, St, W0);
+				if (St < 0.25f && Stone > 0.f && B > 0) continue;
 				if (!Place(PX, PY, Z, D))
 				{
 					continue;
 				}
-				const FVector At(PX, PY, Z - 10.f * S);
-				Out[Boulder].Add(FTransform(FRotator(R.R(-15.f, 15.f), R.R(0.f, 360.f), R.R(-15.f, 15.f)), At, FVector(S * R.R(0.8f, 1.2f), S * R.R(0.8f, 1.2f), S * R.R(0.6f, 1.f))));
-				// weed on its top: wrack in the shallows, the red weed deeper
-				const bool bShallow = D < 4.5f;
-				const int32 NW = int32(R.R(2.f, 5.f) * Dens);
+				// on a reef the blocks are big (0.6-2.5 m); in a field of cobbles mostly cobble patches, some boulders
+				const bool bReef = St > 0.6f;
+				const float S = bReef ? FMath::Lerp(0.6f, 2.4f, Big * Big) : FMath::Lerp(0.35f, 1.3f, Big * Big);
+				const int32 Kind = bReef ? (Big < 0.35f ? int32(Cobbles) : int32(ReefRock)) : (Big < 0.6f ? int32(Cobbles) : int32(Boulder));
+				const FVector At(PX, PY, Z - (Kind == Cobbles ? 2.f : 12.f * S));
+				const FVector Scale = Kind == Cobbles ? FVector(R.R(0.8f, 1.3f)) : FVector(S * R.R(0.85f, 1.15f), S * R.R(0.85f, 1.15f), S * R.R(0.65f, 1.f));
+				Out[Kind][Kind == Boulder ? 0 : V].Add(FTransform(FRotator(Tilt, Yaw, R.R(-10.f, 10.f)), At, Scale));
+				if (Kind == Cobbles)
+				{
+					continue;
+				}
+				// weed on its top by the depth: wrack (with green thread weed and sea lettuce in the first metres), the red
+				// Furcellaria from 4 m, a kelp on the deepest big blocks
+				const int32 NW = int32(R.R(2.f, 6.f) * S * Dens);
 				for (int32 W = 0; W < NW; W++)
 				{
-					const float A = R.F() * 2.f * PI, Rr = R.F() * 30.f * S;
-					const FVector P = At + FVector(Rr * FMath::Cos(A), Rr * FMath::Sin(A), 52.f * S * (1.f - 0.6f * (Rr / (30.f * S)) * (Rr / (30.f * S))));
-					if (P.Z > SeaZ - 20.f) continue;
-					Out[bShallow ? Fucus : Furcellaria].Add(FTransform(FRotator(R.R(-12.f, 12.f), R.R(0.f, 360.f), R.R(-12.f, 12.f)), P, FVector(R.R(0.7f, 1.3f))));
+					const float A = R.F() * 2.f * PI, Rr = R.F() * 38.f * S;
+					const FVector P = At + FVector(Rr * FMath::Cos(A), Rr * FMath::Sin(A), (Kind == ReefRock ? 50.f : 52.f) * S * (1.f - 0.65f * (Rr / (38.f * S)) * (Rr / (38.f * S))));
+					if (P.Z > SeaZ - 25.f) continue;
+					const float Wd = (SeaZ - P.Z) * 0.01f;
+					int32 Grow;
+					const float Pick = R.F();
+					if (Wd > 9.f && S > 1.3f && Pick < 0.12f) Grow = Oarweed;
+					else if (Wd < 2.5f && Pick < 0.25f * LettuceNow) Grow = SeaLettuce;
+					else if (Wd < 3.5f && Pick < 0.45f * CladoNow) Grow = Cladophora;
+					else if (Wd < FMath::Lerp(3.5f, 6.f, R.F())) Grow = Bladderwrack;
+					else Grow = Furcellaria;
+					Out[Grow][int32(R.F() * Variants) % Variants].Add(FTransform(FRotator(R.R(-15.f, 15.f), R.R(0.f, 360.f), R.R(-15.f, 15.f)), P, FVector(R.R(0.7f, 1.3f))));
 				}
-				// mussels in the crevice at its foot
-				if (R.F() < 0.7f)
+				// blue mussels in the crevices at its foot (Mytilus trossulus covers the Baltic's stones)
+				const int32 NM = int32(R.R(0.f, 2.6f) * Dens);
+				for (int32 Mi = 0; Mi < NM; Mi++)
 				{
 					const float A = R.F() * 2.f * PI;
-					Out[Mussels].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX + FMath::Cos(A) * 45.f * S, PY + FMath::Sin(A) * 45.f * S, Z - 1.f), FVector(R.R(0.7f, 1.4f))));
+					Out[Mussels][0].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX + FMath::Cos(A) * 48.f * S, PY + FMath::Sin(A) * 48.f * S, Z - 1.f), FVector(R.R(0.7f, 1.5f))));
 				}
 			}
-			// eelgrass meadows on sand from 1.5 m down to ~7 m
-			// (dense, so only near the eye: the water hides it beyond ~15 m anyway)
-			if (Meadow > 0.45f && FVector::Dist2D(Center, Eye) < FMath::Min(AppliedRadius, 2000.f) + TileSize * 0.71f)
+			// eelgrass meadows on sand from 1.5 m down to ~7 m (dense, so only near the eye: the water hides it beyond ~20 m)
+			if (bNearEye && Weed > 0.05f && Stone < 0.5f)
 			{
-				const int32 NE = int32((Meadow - 0.45f) * 260.f * Dens);
+				// thick round the eye, thinner where the murk takes it anyway
+				const float Near = 1.f + 1.5f * (1.f - FMath::SmoothStep(800.f, 1600.f, TileDist));
+				const int32 NE = int32(Weed * 150.f * Near * Dens * (0.4f + 0.6f * EelNow));
 				for (int32 E = 0; E < NE; E++)
 				{
 					const double PX = X0 + R.F() * TileSize, PY = Y0 + R.F() * TileSize;
 					float Z, D;
-					if (!Place(PX, PY, Z, D) || D < 1.5f || D > 7.5f) continue;
+					float S0, St, W0;
+					if (!Place(PX, PY, Z, D)) continue;
+					HabitatAt(PX, PY, D, S0, St, W0);
+					if (W0 * S0 < 0.12f + 0.25f * R.F() * (1.f - W0)) continue;
 					// shorter where the surf reaches down
-					const float H = FMath::Min(R.R(0.8f, 1.25f), D * 0.45f);
-					Out[Eelgrass].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX, PY, Z - 2.f), FVector(1.f, 1.f, H)));
+					const float H = FMath::Min(R.R(0.75f, 1.2f), D * 0.4f);
+					Out[Eelgrass][int32(R.F() * Variants) % Variants].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX, PY, Z - 2.f), FVector(1.f, 1.f, H)));
 				}
 			}
-			// shells on the sand everywhere but the deepest
-			if (R.F() < 0.6f * Dens)
+			// shells on the sand everywhere but the deepest; drifting loose mats of Furcellaria on the deep sand
+			if (R.F() < 0.7f * Dens)
 			{
 				const double PX = X0 + R.F() * TileSize, PY = Y0 + R.F() * TileSize;
 				float Z, D;
-				if (Place(PX, PY, Z, D) && D < 9.f)
+				if (Place(PX, PY, Z, D) && D < 11.f)
 				{
-					Out[Shells].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX, PY, Z - 0.5f), FVector(R.R(0.8f, 1.3f))));
+					Out[Shells][0].Add(FTransform(FRotator(0.f, R.R(0.f, 360.f), 0.f), FVector(PX, PY, Z - 0.5f), FVector(R.R(0.8f, 1.3f))));
 				}
 			}
-			// flounders on open sand
-			if (Rocky < 0.5f && R.F() < 0.2f * Dens)
+			if (MaxDepth > 700.f && R.F() < 0.5f * Dens)
 			{
-				const double PX = X0 + R.F() * TileSize, PY = Y0 + R.F() * TileSize;
-				float Z, D;
-				if (Place(PX, PY, Z, D) && D > 1.f)
+				const int32 NL = int32(R.R(1.f, 5.f));
+				const double CX = X0 + R.F() * TileSize, CY = Y0 + R.F() * TileSize;
+				for (int32 L = 0; L < NL; L++)
 				{
-					FFlounder F;
-					F.Rest = F.Pos = F.Target = FVector(PX, PY, Z - 0.8f);
-					F.Yaw = R.R(0.f, 360.f);
-					F.Scale = R.R(0.7f, 1.3f);
-					Flounders.Add(F);
-					Out[Flounder].Add(FTransform(FRotator(0.f, F.Yaw, 0.f), F.Pos, FVector(F.Scale)));
+					const double PX = CX + R.R(-120.f, 120.f), PY = CY + R.R(-120.f, 120.f);
+					float Z, D;
+					if (Place(PX, PY, Z, D) && D > 6.f)
+					{
+						// lying over: the loose form tumbles along the bed
+						Out[Furcellaria][int32(R.F() * Variants) % Variants].Add(FTransform(FRotator(R.R(50.f, 80.f), R.R(0.f, 360.f), 0.f), FVector(PX, PY, Z + 4.f), FVector(R.R(0.6f, 1.f))));
+					}
 				}
 			}
 		}
 	}
 	for (int32 K = 0; K < NumKinds; K++)
 	{
-		if (K == Jelly || K == Fish)
+		if (K == Jelly)
 		{
 			continue;
 		}
-		Kinds[K]->ClearInstances();
-		if (Out[K].Num())
+		for (int32 V = 0; V < Variants; V++)
 		{
-			Kinds[K]->AddInstances(Out[K], false, true);
+			UInstancedStaticMeshComponent* C = Mesh(K, V);
+			C->ClearInstances();
+			if (Out[K][V].Num() && C->GetStaticMesh())
+			{
+				C->AddInstances(Out[K][V], false, true, false);
+			}
 		}
 	}
+	bBuilt = true;
 }
 
-void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
+void ULyudSeabedComponent::UpdateJellies(const FVector& Eye, float Dt)
 {
 	ALyudSea* Sea = Cast<ALyudSea>(GetOwner());
-	const FLyudSeaSample Here = Sea->SampleSurface(Eye);
-	// only around a camera in or just over the water
-	const bool bNear = Here.bIsSea && Here.Depth > 80.f && Eye.Z < Here.SurfaceZ + 600.f;
-	UInstancedStaticMeshComponent* J = Kinds[Jelly];
-	UInstancedStaticMeshComponent* F = Kinds[Fish];
-	if (!bNear)
-	{
-		if (J->GetInstanceCount()) J->ClearInstances();
-		if (F->GetInstanceCount()) F->ClearInstances();
-		bSwimmersPlaced = false;
-		return;
-	}
+	UInstancedStaticMeshComponent* J = Mesh(Jelly, 0);
+	// moon jellies come with the summer's warmth and stay into the autumn's storms
+	const float Day = DayNow(GetWorld());
+	const int32 Want = (Day > 165.f && Day < 320.f) ? FMath::Max(Jellyfish, 0) : 0;
 	const float SeaZ = Sea->SeaLevel();
 	const float Box = FMath::Min(AppliedRadius, 1100.f);
 	FRng R{ uint32(Clock * 1000.0) + 13u };
@@ -294,10 +444,10 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 		Hi = SeaZ - 30.f;
 		return D > 80.f;
 	};
-	if (!bSwimmersPlaced)
+	if (!bJelliesPlaced || Jellies.Num() != Want)
 	{
-		bSwimmersPlaced = true;
-		Jellies.SetNum(FMath::Max(Jellyfish, 0));
+		bJelliesPlaced = true;
+		Jellies.SetNum(Want);
 		for (FSwimmer& S : Jellies)
 		{
 			float Lo, Hi;
@@ -307,19 +457,8 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 			S.Scale = R.R(0.6f, 1.4f);
 			S.Seed = R.F();
 		}
-		School.SetNum(FMath::Max(SchoolFish, 0));
-		SchoolCenter = SchoolGoal = FVector(Eye.X + 600.f, Eye.Y, FMath::Min(Eye.Z, SeaZ - 150.f));
-		for (FSwimmer& S : School)
-		{
-			S.Pos = SchoolCenter + FVector(R.R(-150.f, 150.f), R.R(-150.f, 150.f), R.R(-40.f, 40.f));
-			S.Vel = FVector(30.f, 0.f, 0.f);
-			S.Phase = R.R(0.f, 6.28f);
-			S.Scale = R.R(1.6f, 2.3f);   // Baltic herring, ~20 cm
-			S.Seed = R.F();
-		}
 	}
-
-	// moon jellies: pulse up a little, sink back, carried by the waves' orbits; recycled ahead of the camera
+	// pulse up a little, sink back, carried by the waves' orbits; recycled ahead of the camera
 	TArray<FTransform> JX;
 	JX.Reserve(Jellies.Num());
 	for (FSwimmer& S : Jellies)
@@ -348,92 +487,11 @@ void ULyudSeabedComponent::UpdateSwimmers(const FVector& Eye, float Dt)
 	if (J->GetInstanceCount() != JX.Num())
 	{
 		J->ClearInstances();
-		J->AddInstances(JX, false, true);
+		if (JX.Num()) J->AddInstances(JX, false, true, false);
 	}
-	else
+	else if (JX.Num())
 	{
 		J->BatchUpdateInstancesTransforms(0, JX, true, false);
-	}
-
-	// the school: a centre wanders between goals near the camera at mid water, the fish keep stations
-	// round it on slow loops; the whole school bolts when the camera comes close
-	SchoolClock += Dt;
-	const float Close = FVector::Dist(SchoolCenter, Eye);
-	if (FVector::Dist(SchoolCenter, SchoolGoal) < 150.f || SchoolClock > 12.f || Close < 250.f)
-	{
-		SchoolClock = 0.f;
-		const FVector2D Off = Close < 250.f ? FVector2D(SchoolCenter - Eye).GetSafeNormal() * 900.f : FVector2D(R.R(-1.f, 1.f), R.R(-1.f, 1.f)) * Box * 0.6f;
-		const FVector2D XY = FVector2D(Eye) + Off;
-		float Lo, Hi;
-		if (Column(XY, Lo, Hi))
-		{
-			SchoolGoal = FVector(XY, FMath::Lerp(Lo, Hi, R.R(0.3f, 0.7f)));
-		}
-	}
-	const float Pace = Close < 400.f ? 260.f : 70.f;
-	SchoolCenter += (SchoolGoal - SchoolCenter).GetClampedToMaxSize(Pace * Dt);
-	TArray<FTransform> FX;
-	FX.Reserve(School.Num());
-	for (int32 I = 0; I < School.Num(); I++)
-	{
-		FSwimmer& S = School[I];
-		S.Phase += Dt * (0.25f + 0.1f * S.Seed);
-		const float A = S.Phase + I * 0.7f;
-		const FVector Station = SchoolCenter + FVector(FMath::Cos(A) * (60.f + 90.f * S.Seed), FMath::Sin(A) * (60.f + 90.f * S.Seed), 25.f * FMath::Sin(A * 1.7f + S.Seed * 6.f));
-		const FVector Want = (Station - S.Pos) * 1.5f;
-		S.Vel += (Want - S.Vel).GetClampedToMaxSize(400.f * Dt);
-		S.Vel = S.Vel.GetClampedToMaxSize(Pace * 2.5f + 40.f);
-		S.Pos += S.Vel * Dt;
-		const FVector Dir = S.Vel.SizeSquared() > 1.f ? S.Vel.GetSafeNormal() : FVector::ForwardVector;
-		FX.Add(FTransform(Dir.Rotation(), S.Pos, FVector(S.Scale)));
-	}
-	if (F->GetInstanceCount() != FX.Num())
-	{
-		F->ClearInstances();
-		F->AddInstances(FX, false, true);
-	}
-	else
-	{
-		F->BatchUpdateInstancesTransforms(0, FX, true, false);
-	}
-
-	// flounders: a burst off the sand when the camera comes within reach, then a glide down a few metres on
-	UInstancedStaticMeshComponent* Fl = Kinds[Flounder];
-	if (Fl->GetInstanceCount() == Flounders.Num())
-	{
-		for (int32 I = 0; I < Flounders.Num(); I++)
-		{
-			FFlounder& L = Flounders[I];
-			if (L.Fleeing <= 0.f && FVector::Dist(L.Pos, Eye) < 180.f)
-			{
-				const FVector2D Away = FVector2D(L.Pos - Eye).GetSafeNormal();
-				const FVector2D XY = FVector2D(L.Pos) + Away * R.R(250.f, 450.f);
-				bool bOk;
-				const float Z = GroundZ(XY.X, XY.Y, bOk);
-				if (bOk && Z < SeaZ - 50.f)
-				{
-					L.Target = FVector(XY, Z - 0.8f);
-					L.Fleeing = 1.f;
-				}
-			}
-			if (L.Fleeing > 0.f)
-			{
-				const FVector To = L.Target - L.Pos;
-				const float Step = 250.f * Dt;
-				const float Lift = 25.f * FMath::Sin(PI * FMath::Clamp(1.f - To.Size2D() / 400.f, 0.f, 1.f));
-				if (To.Size() <= Step)
-				{
-					L.Pos = L.Target;
-					L.Fleeing = 0.f;
-				}
-				else
-				{
-					L.Pos += To.GetSafeNormal() * Step;
-					L.Yaw = FMath::RadiansToDegrees(FMath::Atan2(To.Y, To.X));
-				}
-				Fl->UpdateInstanceTransform(I, FTransform(FRotator(0.f, L.Yaw, 0.f), L.Pos + FVector(0.f, 0.f, L.Fleeing > 0.f ? Lift : 0.f), FVector(L.Scale)), true, false);
-			}
-		}
 	}
 }
 
@@ -463,6 +521,20 @@ void ULyudSeabedComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		return;
 	}
 	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+	// only round an eye in the water or a few metres over it (from the cliff or the town nothing of it shows)
+	const FLyudSeaSample Here = Sea->SampleSurface(Eye);
+	const bool bNear = Here.bIsSea && Here.Depth > 50.f && Eye.Z < Here.SurfaceZ + 800.f;
+	if (!bNear)
+	{
+		if (bBuilt) Clear();
+		return;
+	}
+	// the plants grow with the calendar: check their state now and then (a regrow only when it changed)
+	if ((PlantClock -= DeltaTime) <= 0.f)
+	{
+		PlantClock = 10.f;
+		UpdatePlants(false);
+	}
 	static IConsoleVariable* Quality = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Sea.Quality"));
 	int32 Q = Quality ? Quality->GetInt() : -1;
 	if (Q < 0)
@@ -476,32 +548,35 @@ void ULyudSeabedComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	const float Forced = CVarSeabedRadius.GetValueOnGameThread();
 	const float Rad = Forced >= 0.f ? Forced * 100.f : (Q == 0 ? 1500.f : Q == 1 ? 2500.f : Radius);
 	const FIntPoint Tile(FMath::FloorToInt(Eye.X / TileSize), FMath::FloorToInt(Eye.Y / TileSize));
-	if (Tile != BuiltTile || Q != BuiltQuality || Rad != AppliedRadius)
+	if (Tile != BuiltTile || Q != BuiltQuality || Rad != AppliedRadius || !bBuilt)
 	{
 		BuiltTile = Tile;
 		BuiltQuality = Q;
 		AppliedRadius = Rad;
-		for (int32 K = 0; K < Kinds.Num(); K++)
+		for (int32 K = 0; K < NumKinds; K++)
 		{
-			// small things vanish into the water first
-			const bool bSmall = K == Eelgrass || K == Shells || K == Mussels || K == Fish;
-			Kinds[K]->SetCullDistances(0, int32(bSmall ? FMath::Min(Rad, 2000.f) : Rad * 1.2f));
+			for (int32 V = 0; V < Variants; V++)
+			{
+				Mesh(K, V)->SetCullDistances(0, int32(FMath::Min(Looks[K].Cull, Rad * 1.2f)));
+			}
 		}
 		Rebuild(Eye);
 	}
-	UpdateSwimmers(Eye, DeltaTime);
+	UpdateJellies(Eye, DeltaTime);
 }
 
 FVector ULyudSeabedComponent::FindNearest(int32 Kind, const FVector& From) const
 {
 	FVector Best = From;
 	double BestD = DBL_MAX;
-	if (Kinds.IsValidIndex(Kind) && Kinds[Kind])
+	for (int32 V = 0; V < Variants; V++)
 	{
-		for (int32 I = 0; I < Kinds[Kind]->GetInstanceCount(); I++)
+		const UInstancedStaticMeshComponent* C = Mesh(Kind, V);
+		if (!C) continue;
+		for (int32 I = 0; I < C->GetInstanceCount(); I++)
 		{
 			FTransform T;
-			Kinds[Kind]->GetInstanceTransform(I, T, true);
+			C->GetInstanceTransform(I, T, true);
 			const double D = FVector::DistSquared(T.GetLocation(), From);
 			if (D < BestD)
 			{
@@ -526,9 +601,11 @@ int32 ULyudSeabedComponent::GetInstanceCount() const
 FString ULyudSeabedComponent::GetDebugReport() const
 {
 	FString S = TEXT("seabed:");
-	for (int32 K = 0; K < Kinds.Num(); K++)
+	for (int32 K = 0; K < NumKinds; K++)
 	{
-		S += FString::Printf(TEXT(" %s %d"), Looks[K].Name, Kinds[K] ? Kinds[K]->GetInstanceCount() : 0);
+		int32 N = 0;
+		for (int32 V = 0; V < Variants; V++) N += Mesh(K, V) ? Mesh(K, V)->GetInstanceCount() : 0;
+		S += FString::Printf(TEXT(" %s %d"), Looks[K].Name, N);
 	}
 	return S;
 }

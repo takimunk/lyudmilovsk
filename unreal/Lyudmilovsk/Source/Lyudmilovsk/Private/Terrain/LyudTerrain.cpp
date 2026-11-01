@@ -198,6 +198,7 @@ ALandscape* ULyudTerrainLibrary::BuildTerrain(UObject* WorldContextObject, const
 		Mask->DuneGrass.SetNumUninitialized(W * H);
 		Mask->Wetness.SetNumUninitialized(W * H);
 		Mask->ForestFloor.SetNumUninitialized(W * H);
+		Mask->SeaStone.SetNumUninitialized(W * H);
 		for (int32 Y = 0; Y < H; ++Y)
 		{
 			for (int32 X = 0; X < W; ++X)
@@ -207,6 +208,7 @@ ALandscape* ULyudTerrainLibrary::BuildTerrain(UObject* WorldContextObject, const
 				Mask->DuneGrass[Y * W + X] = Out.DuneGrass[I];
 				Mask->Wetness[Y * W + X] = Out.Wetness[I];
 				Mask->ForestFloor[Y * W + X] = Out.ForestFloor[I];
+				Mask->SeaStone[Y * W + X] = Out.SeaStone[I];
 			}
 		}
 		Mask->MarkPackageDirty();

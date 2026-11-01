@@ -16,6 +16,10 @@ namespace LyudSeaLife
 	UStaticMesh* Fucus();
 	UStaticMesh* Furcellaria();
 	UStaticMesh* Boulder();
+	/** Reef blocks of the moraine (Variant 0..2: a rounded erratic, a split slab, a heap of two), 1 m across. */
+	UStaticMesh* ReefRock(int32 Variant);
+	/** A patch of cobbles and pebbles, ~1.5 m across (Variant 0..2). */
+	UStaticMesh* Cobbles(int32 Variant);
 	UStaticMesh* Mussels();
 	UStaticMesh* Shells();
 	UStaticMesh* Flounder();

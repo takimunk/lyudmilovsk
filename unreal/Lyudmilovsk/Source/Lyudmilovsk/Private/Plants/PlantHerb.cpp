@@ -698,6 +698,10 @@ namespace
 FState PlantHerbs::State(const FPlantSpecies& S, uint32 Seed, float Age, float Day)
 {
 	const FPlantHerb& H = S.Herb;
+	if (H.Form == EPlantHerbForm::Alga)
+	{
+		return PlantAlgae::State(S, Seed, Age, Day);
+	}
 	FState St;
 	const float D = Day - (Hash01(Seed, 0x5EA5u) * 2.f - 1.f) * S.PhenologyJitter;
 	St.Maturity = FMath::Clamp(1.f - FMath::Exp(-FMath::Max(Age, 0.f) / FMath::Max(H.MatureYears, 0.05f)), 0.05f, 1.f);
@@ -750,6 +754,7 @@ void PlantHerbs::Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FH
 			break;
 		case EPlantHerbForm::Trailing: BuildBush(S, Seed, St, Out, true); break;
 		case EPlantHerbForm::Column: BuildColumn(S, Seed, St, Out); break;
+		case EPlantHerbForm::Alga: PlantAlgae::Build(S, Seed, St, Out); break;
 		default: break;
 		}
 	}

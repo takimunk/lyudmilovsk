@@ -28,6 +28,7 @@ namespace LyudTerrain
 		std::vector<uint8_t> Hole;               // 255 = quad cut out of the landscape (the portal)
 		std::vector<uint8_t> Cliff;              // 255 = on the face of the coastal bluff (the map's own hint; slope adds to it)
 		std::vector<uint8_t> RaiseOnly;          // 255 = the detail may raise the ground here, never lower it (over the corridor)
+		std::vector<uint8_t> SeaKeep;            // 255 = plain sand bed here, no reef or stones (the railway's bank, the hatch); may be empty
 		std::vector<std::vector<std::pair<float, float>>> Tracks;   // dirt tracks, map metres
 	};
 
@@ -39,12 +40,21 @@ namespace LyudTerrain
 		std::vector<uint8_t> DuneGrass;          // marram / lyme grass on the sand, 0..255
 		std::vector<uint8_t> Wetness;            // where water runs and stands, 0..255
 		std::vector<uint8_t> ForestFloor;        // forest floor the ground cover grows on (no track, rock, sand), 0..255
+		std::vector<uint8_t> SeaStone;           // on the sea bed: stone cover (moraine reefs, boulder and cobble fields), 0..255
 		std::string Report;
 	};
 
 	/** Reads terrain_in.json/.bin (tools/terrain.py). Empty string on success, else the error. */
 	std::string ReadInputs(const std::string& Dir, FInputs& Out);
 	void Generate(const FInputs& In, FOutputs& Out);
+
+	/**
+	 * The sea bed's natural detail at a map point (metres) whose macro bed lies Depth m under the datum: wave ripples
+	 * and megaripples on the sand, sand waves out deep, moraine reefs (ridges of boulders 1-3 m high, rough with stones)
+	 * past the drop-off, boulder and cobble fields; Keep 0..1 keeps the bed plain. Returns the height to add (m);
+	 * OutStone: stone cover 0..1, OutMud: silt in the deep hollows 0..1. Deterministic in (Seed, X, Y).
+	 */
+	float SeabedDetail(uint32_t Seed, double X, double Y, float Depth, float Keep, float& OutStone, float& OutMud);
 	/** Writes terrain_out.bin: the final heights as float32 on the same grid (tools/terrain.py ground_z). */
 	bool WriteHeights(const std::string& Dir, const FOutputs& Out);
 }

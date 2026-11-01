@@ -1,0 +1,47 @@
+"""Three-spined stickleback, Gasterosteus aculeatus (autumn dress, no red throat): small, three free dorsal spines, bony lateral plates,
+narrow caudal peduncle, olive back, silver sides, 6 cm."""
+SPEC = dict(
+    id="Stickleback", latin="Gasterosteus aculeatus", length=0.06, seed=63, tris=1300,
+    body_end=0.83, nose_len=0.040,
+    profile=dict(
+        top=[(0, 0), (0.04, 0.034), (0.10, 0.068), (0.22, 0.098), (0.34, 0.106), (0.48, 0.095), (0.62, 0.062), (0.72, 0.030), (0.78, 0.020), (0.83, 0.020)],
+        bot=[(0, 0), (0.04, 0.034), (0.10, 0.064), (0.22, 0.092), (0.34, 0.100), (0.48, 0.088), (0.62, 0.058), (0.72, 0.030), (0.78, 0.020), (0.83, 0.020)],
+        wid=[(0, 0), (0.04, 0.020), (0.10, 0.038), (0.22, 0.050), (0.34, 0.054), (0.48, 0.048), (0.62, 0.032), (0.72, 0.016), (0.78, 0.012), (0.83, 0.012)],
+        n=2.2),
+    head=dict(gill_t=0.26, gill_ridge=0.02, mouth_len=0.05, mouth_depth=0.15, mouth_p=0.55),
+    lod0=dict(m=6, rings=30, nose_rings=3), lod1=dict(m=4, nose_rings=2),
+    eyes=[dict(t=0.100, q=0.36, r=0.026)],
+    fins=[
+        dict(name="S1", kind="median", side="dorsal", t0=0.29, t1=0.375, h=0.095, shape="spiny", peak=0.3, rake=8, rays=3, segs=3,
+             col=(150, 150, 120), ray=(80, 80, 60), alpha=0.5, edge=(60, 60, 45), edge_a=0.4),
+        dict(name="S2", kind="median", side="dorsal", t0=0.38, t1=0.44, h=0.100, shape="spiny", peak=0.2, rake=14, rays=2, segs=3,
+             col=(150, 150, 120), ray=(80, 80, 60), alpha=0.5, edge=(60, 60, 45), edge_a=0.4),
+        dict(name="S3", kind="median", side="dorsal", t0=0.46, t1=0.51, h=0.062, shape="spiny", peak=0.2, rake=14, rays=2, segs=3,
+             col=(150, 150, 120), ray=(80, 80, 60), alpha=0.5, edge=(60, 60, 45), edge_a=0.4),
+        dict(name="D", kind="median", side="dorsal", t0=0.55, t1=0.67, h=0.050, shape="pointed", peak=0.3, rake=14, rays=10, segs=5,
+             col=(140, 145, 120), ray=(90, 95, 70), alpha=0.45, edge=(60, 65, 50), edge_a=0.4),
+        dict(name="A", kind="median", side="anal", t0=0.58, t1=0.69, h=0.044, shape="rounded", peak=0.4, rake=14, rays=9, segs=5,
+             col=(200, 205, 190), ray=(140, 145, 125), alpha=0.45),
+        dict(name="C", kind="caudal", span_top=0.062, span_bot=0.062, shape="truncate", rays=13, segs=6,
+             col=(135, 140, 112), ray=(85, 90, 65), alpha=0.55, edge=(60, 65, 45), edge_a=0.5, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.265, q0=0.50, q1=0.60, len=0.065, shape="rounded", ang0=-10, ang1=45, splay=22, rays=11, segs=4,
+             col=(205, 208, 190), ray=(150, 152, 130), alpha=0.4),
+        dict(name="Pel", kind="paired", t=0.31, q0=0.93, q1=0.96, len=0.070, shape="spiny", ang0=40, ang1=70, splay=25, rays=3, segs=3,
+             col=(215, 215, 195), ray=(120, 120, 100), alpha=0.5),
+    ],
+    paint=dict(
+        ramp=[(0.0, (72, 82, 46)), (0.2, (96, 108, 62)), (0.38, (150, 160, 118)), (0.55, (196, 202, 184)), (0.75, (226, 228, 218)), (1.0, (238, 238, 230))],
+        grain=0.06,
+        layers=[
+            dict(type="mottle", scale=0.03, thr=0.55, soft=0.1, col=(60, 66, 36), q=(0.0, 0.38), a=0.4, seed=1),
+            dict(type="sheen", at=0.55, w=0.14, col=(246, 246, 240), a=0.45),
+            dict(type="scales", size=0.0035, edge=0.04, sheen=0.04, q=(0.0, 0.9)),
+            # bony lateral plates: ~30 narrow vertical plates along the flank
+            dict(type="bars", t0=0.27, t1=0.82, period=0.030, w=0.012, col=(150, 156, 140), a=0.45, soft=0.006, q=(0.22, 0.72), qsoft=0.05, wob=0.002),
+            dict(type="flush", col=(50, 58, 34), q=(0.0, 0.4), t=(0.0, 0.05), a=0.45, qsoft=0.05, tsoft=0.012),
+        ],
+        head=dict(tint=(190, 190, 150), amount=0.18, curve=0.012, line=(60, 66, 50), line_a=0.5),
+        mouth=dict(col=(60, 50, 40), w=0.0010),
+        eye=dict(iris=(200, 190, 120), iris2=(110, 100, 60), rim=(70, 76, 60), pupil=(4, 5, 6), pupil_r=0.5),
+    ),
+)

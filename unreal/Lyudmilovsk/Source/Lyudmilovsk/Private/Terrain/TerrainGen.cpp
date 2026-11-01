@@ -322,9 +322,66 @@ std::string ReadInputs(const std::string& Dir, FInputs& Out)
 			A->resize(N);
 			Ok = Ok && std::fread(A->data(), 1, N, F) == N;
 		}
+		// written since the underwater relief (older inputs have none: no bed is kept plain)
+		Out.SeaKeep.resize(N);
+		if (!Ok || std::fread(Out.SeaKeep.data(), 1, N, F) != N) Out.SeaKeep.assign(N, 0);
 	}
 	std::fclose(F);
 	return Ok ? std::string() : "bad or short " + Path;
+}
+
+float SeabedDetail(uint32_t Seed, double X, double Y, float Depth, float Keep, float& OutStone, float& OutMud)
+{
+	// one set of noises per seed (the bed is sampled ~2.6M times: don't reshuffle per call)
+	struct FSet { uint32_t Seed; FNoise A, B, C; };
+	static thread_local FSet* Cache = nullptr;
+	if (!Cache || Cache->Seed != Seed)
+	{
+		delete Cache;
+		Cache = new FSet{Seed, FNoise(Seed * 31u + 101u), FNoise(Seed * 977u + 3u), FNoise(Seed * 7573u + 59u)};
+	}
+	const FNoise& A = Cache->A;
+	const FNoise& B = Cache->B;
+	const FNoise& C = Cache->C;
+	const float Free = 1.f - Clamp01(Keep);
+	float Ripples = 0.f, H = 0.f;
+
+	// wave ripples (crests along the shore, ~5 m apart, sharp crests and flat troughs) on the sand from 2 m to 9 m,
+	// under the surf's reach the waves smooth them away
+	{
+		const double W = X + 6.0 * A.Fbm(X, Y, 40.f, 2) + 0.06 * Y;
+		const float Ph = float(W / 4.6 + 3.0 * B.Fbm(X, Y, 120.f, 1));
+		const float Crest = std::pow(0.5f + 0.5f * std::cos(Ph * 6.2831853f), 2.2f);
+		const float On = Smooth(1.5f, 3.f, Depth) * (1.f - Smooth(8.f, 11.f, Depth)) * (0.6f + 0.4f * Smooth(-0.3f, 0.3f, C.Fbm(X, Y, 60.f, 2)));
+		Ripples = (Crest - 0.3f) * 0.14f * On;
+	}
+	// sand waves out deep: crests across the longshore current (along X), ~32 m apart, ~0.6 m high, the steep face north
+	{
+		const double W = Y + 9.0 * A.Fbm(X + 500.0, Y, 90.f, 2) + 0.25 * X;
+		float T = float(W / 32.0);
+		T -= std::floor(T);
+		const float Saw = T < 0.75f ? T / 0.75f : (1.f - T) / 0.25f;               // long gentle stoss, short lee
+		const float On = Smooth(10.f, 12.5f, Depth) * Smooth(-0.2f, 0.25f, B.Fbm(X - 900.0, Y + 300.0, 260.f, 2));
+		H += (Saw * Saw * (3.f - 2.f * Saw) - 0.5f) * 0.6f * On * Free;
+	}
+	// moraine reefs past the drop-off: shore-parallel ridges of the till (stretched along Y), in stretches of the coast
+	float Reef = 0.f;
+	{
+		const float Ridge = 1.f - std::fabs(A.Fbm(X * 1.6, Y * 0.55, 110.f, 3));
+		const float Where = Smooth(0.f, 0.28f, C.Fbm(X + 2000.0, Y - 1500.0, 420.f, 2) + 0.1f * B.Fbm(X, Y, 35.f, 2));
+		Reef = Smooth(0.7f, 0.9f, Ridge) * Where * Smooth(7.f, 9.5f, Depth) * Free;
+		// a lumpy crest of boulders and their gaps; outliers of single big blocks round it
+		const float Knob = std::max(0.f, B.Fbm(X, Y, 3.6f, 2)) * 0.7f + C.Fbm(X, Y, 9.f, 2) * 0.45f;
+		H += Reef * (2.3f + 0.8f * A.Fbm(X, Y, 45.f, 2)) + Knob * Smooth(0.15f, 0.6f, Reef);
+	}
+	// boulder and cobble fields: the glacial lag left on the bed in patches, from the outer flat down
+	const float Field = Smooth(0.22f, 0.42f, B.Fbm(X + 700.0, Y - 300.0, 90.f, 3) + 0.15f * C.Fbm(X, Y, 12.f, 2)) * Smooth(3.5f, 6.f, Depth) * Free;
+	H += Field * std::max(0.f, C.Fbm(X * 1.3, Y * 1.3, 2.5f, 2)) * 0.25f;
+	OutStone = Clamp01(std::max(Smooth(0.08f, 0.5f, Reef), Field * 0.6f));
+	// silt settles in the deep hollows between the reefs and sand waves
+	OutMud = Smooth(13.f, 14.5f, Depth) * (1.f - OutStone) * Smooth(-0.1f, 0.3f, A.Fbm(X - 300.0, Y + 800.0, 70.f, 2));
+	// never up to the surface: reef crests stay over 2 m under the lowest spring water
+	return Ripples + std::min(H, std::max(Depth - 6.6f, 0.f));
 }
 
 bool WriteHeights(const std::string& Dir, const FOutputs& Out)
@@ -430,6 +487,7 @@ void Generate(const FInputs& In, FOutputs& Out)
 
 	// --- natural detail: rolling land, small rises and dips, hummocks, dunes ---
 	std::vector<float> Free(N);
+	std::vector<float> SeaStone(N, 0.f), SeaMud(N, 0.f);
 	Out.Height.resize(N);
 	for (int Y = 0; Y < NY; ++Y)
 		for (int X = 0; X < NX; ++X)
@@ -462,6 +520,11 @@ void Generate(const FInputs& In, FOutputs& Out)
 			else
 			{
 				H += Noise.Fbm(WX, WY, 30.f, 2) * 0.25f;                        // sand ripples under water
+				float Stone, Mud;
+				const float Keep = In.SeaKeep.empty() ? 0.f : In.SeaKeep[I] / 255.f;
+				H += SeabedDetail(In.Seed, WX, WY, In.SeaZ - In.Height[I], Keep, Stone, Mud) * (1.f - P);
+				SeaStone[I] = Stone * (1.f - P);
+				SeaMud[I] = Mud;
 			}
 			Out.Height[I] = H;
 			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) : 0.f;
@@ -601,6 +664,8 @@ void Generate(const FInputs& In, FOutputs& Out)
 	Out.GrassDensity.assign(N, 0);
 	Out.DuneGrass.assign(N, 0);
 	Out.ForestFloor.assign(N, 0);
+	Out.SeaStone.assign(N, 0);
+	for (size_t I = 0; I < N; ++I) Out.SeaStone[I] = uint8_t(Clamp01(SeaStone[I]) * 255.f + 0.5f);
 	double Cover[NumLayers] = {};
 	for (int Y = 0; Y < NY; ++Y)
 		for (int X = 0; X < NX; ++X)
@@ -633,6 +698,12 @@ void Generate(const FInputs& In, FOutputs& Out)
 			float W[NumLayers] = {};
 			float Rem = 1.f;
 			auto Take = [&](ELayer L, float V) { W[L] = Rem * Clamp01(V); Rem -= W[L]; };
+			// the sea bed: the reefs' stones and the cobble fields as gravel, silt in the deep hollows, sand elsewhere
+			if (In.Kind[I] == Seabed)
+			{
+				Take(ELayer::Dirt, SeaStone[I] * (0.75f + 0.25f * Fine));
+				Take(ELayer::Mud, SeaMud[I] * 0.8f);
+			}
 			Take(ELayer::Sand, SandV);
 			Take(ELayer::Rock, In.Kind[I] == Land ? RockV : 0.f);
 			Take(ELayer::Mud, In.Kind[I] == Land ? MudV : 0.f);

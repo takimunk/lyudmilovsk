@@ -253,6 +253,28 @@ def railway_holes():
         return []
 
 
+def _railway_line_y():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "unreal", "Lyudmilovsk", "Content", "Railway",
+                        "railway.json")
+    try:
+        with open(path) as f:
+            return float(json.load(f)["line"]["y"])
+    except (OSError, ValueError, KeyError):
+        return None
+
+
+def sea_keep(x, y, rail_y):
+    """0..1: where the sea bed stays plain sand (no reef or stones, TerrainGen's SeabedDetail): along the railway's
+    bank (its armour stones are the bed there) and round the Europa hatch's spot (docs/underwater.md)."""
+    k = 0.0
+    if rail_y is not None:
+        k = 1.0 - min(1.0, max(0.0, (abs(y - rail_y) - 22.0) / 18.0))
+    hx, hy = getattr(W, "EUROPA_HATCH", (1e9, 1e9))
+    r = getattr(W, "EUROPA_HATCH_CLEAR", 30.0)
+    d = math.hypot(x - hx, y - hy)
+    return max(k, 1.0 - min(1.0, max(0.0, (d - r) / 15.0)))
+
+
 def write_inputs(out_dir, log=print):
     """Samples the macro shape on the landscape grid and writes terrain_in.json/.bin for the C++
     build. About a minute of pure Python."""
@@ -278,6 +300,8 @@ def _write_inputs(out_dir, log):
     forest = bytearray()
     cliff = bytearray()
     raise_ = bytearray()
+    keep = bytearray()
+    rail_y = _railway_line_y()
     has_cliff = hasattr(W, "cliff")
     hpack = struct.Struct("<f")
     woods = _woods()
@@ -318,6 +342,7 @@ def _write_inputs(out_dir, log):
             forest.append(int(255 * _forest(x, y, z, row_woods)) if near_woods else 0)
             cliff.append(int(255 * min(1.0, max(0.0, W.cliff(x, y)))) if has_cliff and 0 < s < 250 else 0)
             raise_.append(int(round(255 * raise_only(x, y))) if abs(x) < 25 and y < -25 else 0)
+            keep.append(int(round(255 * sea_keep(x, y, rail_y))) if s <= 0 else 0)
     low = [(x, y) for y in range(int(W.CORRIDOR_END_Y), 1, 10) for x in (-8, 0, 8) if W.height(x, y) < CORRIDOR_FLOOR]
     if low:
         log("terrain: WARNING the map's ground is under %.0f m over the corridor at %s" % (CORRIDOR_FLOOR, low[:6]))
@@ -334,12 +359,12 @@ def _write_inputs(out_dir, log):
         for t in tr:
             f.write(struct.pack("<i", len(t)))
             f.write(struct.pack("<%df" % (2 * len(t)), *[c for p in t for c in p]))
-        for blob in (height, prot, kind, forest, hole, cliff, raise_):
+        for blob in (height, prot, kind, forest, hole, cliff, raise_, keep):
             f.write(blob)
     meta = {"nx": GRID_NX, "ny": GRID_NY, "x0": GRID_X0, "y0": GRID_Y0, "cell": 1.0, "seed": SEED,
             "sea_z": W.SEA_Z, "beach_w": W.BEACH_W, "tracks": [[list(p) for p in t] for t in tr],
             "components": list(COMPONENTS), "component_quads": COMPONENT_QUADS,
-            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8"]}
+            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8", "sea_keep:u8"]}
     with open(os.path.join(out_dir, "terrain_in.json"), "w") as f:
         json.dump(meta, f)
     return meta

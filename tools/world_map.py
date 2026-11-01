@@ -197,12 +197,18 @@ def height(x, y):
 
 
 # The tidal flat: a broad gentle sand flat out from the high-water line that the ebb lays bare (~1:80 for
-# FLAT_W metres, ~340 m of it dry at spring low water), then the old shelving bed down to 9 m. On it, low
+# FLAT_W metres, ~340 m of it dry at spring low water), then the old shelving bed down to 9 m and on to ~15 m (the drop-off). On it, low
 # sand bars along the shore with runnels behind them, a few tidal channels winding out to sea that drain
 # the flat, and shallow hollows that keep their water at low tide (ALyudSea finds them).
 FLAT_W = 350.0
 FLAT_SLOPE = 1.0 / 80.0
 TIDE_CHANNELS = (-620.0, -180.0, 260.0, 720.0, 1180.0, 1700.0)    # map Y where the channels leave the beach
+# The Europa hatch's spot on the bed (another thread builds the hatch): 11 m under the datum (6.5 m at the lowest
+# spring water), on plain sand ~110 m out from the spring-low waterline off the club's beach, between the railway's bank
+# and the next channel north; the bed is kept plain round it (tools/terrain.py sea_keep, no reef or stones)
+EUROPA_HATCH = (573.0, 100.0)
+EUROPA_HATCH_CLEAR = 30.0
+OPEN_BED = -14.8     # the bed's floor out at sea under the datum, m (docs/underwater.md; tools/railway.py's bed past the map)
 
 
 def _hash01(i, j, k=0):
@@ -216,7 +222,11 @@ def tidal_flat(d, y):
     # the profile: the flat, a soft knee, then the old 6% bed
     k = _smooth((d - FLAT_W + 40.0) / 80.0)
     base = -0.3 - d * FLAT_SLOPE - k * (d - FLAT_W + 40.0) * 0.06 * 0.5 - max(d - FLAT_W - 40.0, 0.0) * 0.03
-    base = max(base, -9.3)
+    # past the old 9 m the bed keeps falling, ever more gently, toward the open Baltic's OPEN_BED (the drop-off
+    # beyond the flat: 11 m under the datum ~30 m past the knee, ~14 m some 120 m on); the same slope where it starts
+    if base < -9.3:
+        deep = -9.3 - OPEN_BED
+        base = -9.3 - deep * (1.0 - math.exp((base + 9.3) / deep))
     on = _smooth((d - 25.0) / 50.0) * (1.0 - _smooth((d - FLAT_W - 20.0) / 80.0))
     # bars: narrow crests and broad runnels, ~70 m apart, wavering along the shore
     w = d + 14.0 * math.sin(y / 95.0) + 7.0 * math.sin(y / 31.0 + 1.3)
