@@ -430,6 +430,184 @@
    "yaw": 180
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    -15.6,
+    9.9,
+    2.956
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -15.6,
+    20.3,
+    2.839
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -18.3,
+    17.4,
+    2.886
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -15.6,
+    30.7,
+    2.547
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    9.9,
+    2.556
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    20.3,
+    3.131
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -2.5,
+    17.4,
+    3.174
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    30.7,
+    2.589
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    9.9,
+    2.758
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    20.3,
+    2.701
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    2.5,
+    17.4,
+    2.745
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    30.7,
+    2.36
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    9.9,
+    3.148
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    20.3,
+    2.433
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    18.3,
+    17.4,
+    2.48
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    30.7,
+    2.25
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
  "flats": [],
  "windows": [],
  "light_tex": 64,
@@ -438,7 +616,7 @@
  ],
  "tris": {
   "shell": 15516,
-  "detail": 0,
+  "detail": 12288,
   "windows": 0
  }
 }

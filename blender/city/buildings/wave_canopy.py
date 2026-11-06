@@ -16,9 +16,12 @@ roof lights, uplighting of the underside at night (needs an emissive strip mater
 Material requests: none (CT_Plaster* for kiosks, CT_ConcreteWhite for the slab).
 """
 import math
+import random
 
 from citykit import box, DOOR_W
 from _sheet import thick_sheet
+import furn_int3 as fu
+from furn_int3 import Fr as MFr, lbox, cyl, blob
 
 INFO = {
     "name_ru": "Волнистый навес ярмарки", "name_en": "Wave Canopy",
@@ -159,6 +162,108 @@ def kiosk(B, s, side, k):
     B.spot("stall%d" % k, "stall", (ip[0], ip[1], 0.05), fr.yaw_dir(0, -1))
     cp = fr.p(0, -hd - 1.3)
     B.spot("counter%d" % k, "counter", (cp[0], cp[1], 0.0), fr.yaw_dir(0, 1))
+    kiosk_interior(B, fr, k, random.Random(1960 + k))
+
+
+KIOSK_TRADE = ["coffee", "icecream", "press", "toys", "snacks"]
+
+
+def kiosk_interior(B, fr, k, rnd):
+    """Furnish a kiosk: shelves with goods on the back and side walls, a counter under the serving window,
+    goods on it and a lamp. fr is the kiosk's Fr (local x = ex, local +y = ey)."""
+    yk = math.degrees(math.atan2(fr.ex[1], fr.ex[0]))
+    z0 = 0.05
+    trade = KIOSK_TRADE[(k - 1) % len(KIOSK_TRADE)]
+    cx, cy = fr.c
+    kf = MFr(cx, cy, yk, z0)                       # u = local x, w = -local y (out of the back wall into the room)
+    mats = {"coffee": ["CT_TileWhite", "CT_PlasterRed", "CT_WoodLight", "CT_PlasterYellow"],
+            "icecream": ["CT_PlasterPink", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterYellow"],
+            "press": ["CT_PlasterRed", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterGreen", "CT_PlasterYellow"],
+            "toys": ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterPink"],
+            "snacks": ["CT_PlasterYellow", "CT_WoodLight", "CT_PlasterRed", "CT_SteelRed", "CT_PlasterGreen"]}[trade]
+    kind = {"press": "book", "coffee": "jar", "icecream": "box"}.get(trade, "box")
+    # back wall (local y = +1.2): two shelf units either side of the door
+    for u0, u1 in ((-1.75, -0.7), (0.7, 1.75)):
+        fu.shelving(B, kf.sub(0, -1.2), u0, u1, rnd, depth=0.32, tiers=4, zmax=2.2, z0=0.1, kind=kind, mats=mats)
+    # side walls: left faces +local x (u runs +y), right faces -local x (u runs -y)
+    fu.shelving(B, kf.sub(-1.8, 0.4, 90), 0.0, 1.1, rnd, depth=0.3, tiers=4, zmax=2.1, z0=0.1, kind="box", mats=mats)
+    fu.shelving(B, kf.sub(1.8, -0.7, -90), 0.0, 1.1, rnd, depth=0.3, tiers=4, zmax=2.1, z0=0.1, kind="box", mats=mats)
+    # counter under the window (local y -1.2..-0.55, x -1.6..1.6, top 0.95): the stall-holder stands behind it
+    cr = MFr(cx, cy, yk, z0)         # u = local x; w = -local y (w > 0 toward the front wall)
+    lbox(B.m, "CT_WoodLight", cr, -1.6, 1.6, 0.55, 1.2, 0.0, 0.95)
+    lbox(B.detail, "CT_ConcreteDark", cr, -1.6, 1.6, 0.52, 1.22, 0.95, 0.99)
+    # goods on the counter, trade by trade
+    top = 0.99
+    if trade == "coffee":
+        for u in (-1.2, -0.6):
+            px, py, _ = cr.p(u, 0.85)
+            cyl(B.detail, "CT_TileWhite", px, py, top, top + 0.04, 0.2, 8, bottom=True)
+            cyl(B.detail, "CT_PlasterYellow", px, py, top + 0.04, top + 0.16, 0.15, 8)
+            blob(B.detail, "CT_Glass", px, py, top + 0.2, 0.17, 8)
+        lbox(B.detail, "CT_Steel", cr, 0.5, 1.2, 0.7, 1.05, top, top + 0.4, faces="xXyYZ")     # espresso machine
+        lbox(B.detail, "CT_SteelRed", cr, 0.55, 1.15, 0.72, 0.8, top + 0.4, top + 0.5, faces="xXyYZ")
+        for u in (-0.1, 0.1, 0.3):
+            px, py, _ = cr.p(u, 0.8)
+            cyl(B.detail, "CT_TileWhite", px, py, top, top + 0.09, 0.04, 6)
+    elif trade == "icecream":
+        lbox(B.m, "CT_TileWhite", cr, -1.5, 0.1, 0.62, 1.15, top, top + 0.4)           # freezer cabinet with a glass lid
+        lbox(B.detail, "CT_Glass", cr, -1.45, 0.05, 0.66, 1.1, top + 0.4, top + 0.46, faces="xXyYZ")
+        for u in [-1.35 + 0.18 * i for i in range(8)]:
+            lbox(B.detail, rnd.choice(mats), cr, u, u + 0.14, 0.75, 1.0, top + 0.18, top + 0.4, faces="xXyYZ")
+        for u in [0.4 + 0.12 * i for i in range(5)]:
+            px, py, _ = cr.p(u, 0.9)
+            cyl(B.detail, rnd.choice(mats), px, py, top, top + 0.26, 0.04, 5)
+    elif trade == "press":
+        for u in (-1.3, -0.5, 0.3, 1.0):
+            lbox(B.detail, rnd.choice(mats), cr, u, u + 0.45, 0.7, 1.05, top, top + 0.02 + rnd.choice((0.04, 0.08, 0.12)), faces="xXyYZ")
+        lbox(B.detail, "CT_Steel", cr, -1.5, -0.7, 1.12, 1.2, top, top + 0.7, faces="xXyYZ")  # a paper rack
+        for j in range(4):
+            lbox(B.detail, rnd.choice(mats), cr, -1.45 + 0.19 * j, -1.3 + 0.19 * j, 1.0, 1.12, top + 0.15, top + 0.62, faces="xXyYZ")
+    elif trade == "toys":
+        for j, u in enumerate((-1.2, -0.4, 0.4, 1.1)):
+            blob(B.detail, rnd.choice(mats), *cr.p(u, 0.85)[:2], top + 0.2, 0.17, 7)
+            lbox(B.detail, rnd.choice(mats), cr, u - 0.14, u + 0.14, 0.7, 1.0, top, top + 0.06, faces="xXyYZ")
+    else:
+        for u in (-1.2, -0.3, 0.6):
+            lbox(B.detail, "CT_WoodLight", cr, u, u + 0.7, 0.65, 1.1, top, top + 0.04, faces="xXyYZ")
+            for j in range(4):
+                lbox(B.detail, rnd.choice(mats), cr, u + 0.05 + 0.16 * j, u + 0.17 + 0.16 * j, 0.72, 1.0, top + 0.04, top + 0.14, faces="xXyYZ")
+    # lamp, a pendant under the roof slab (kiosk H = 2.9)
+    lx, ly, _ = kf.p(0.0, -0.1)
+    B.lamp((lx, ly, 2.6), lumens=520, colour="#FFD2A0", kind="public", radius=5.5)
+    lbox(B.detail, "CT_Steel", MFr(lx, ly), -0.01, 0.01, -0.01, 0.01, 2.68, 2.9, faces="xXyY")
+
+
+def string_lights(B, rnd):
+    """Festoons of bulbs under the canopy slab along two lines (t = +-0.32): lamps (kind lobby) every ~8 m, and a
+    sagging cable with small CT_Neon beads between the supports every 3.5 m."""
+    for li, t in enumerate((0.32, -0.32)):
+        s = 3.0 + 4.0 * li
+        k = 0
+        while s < LENGTH - 3.0:
+            x, y = surf(s, t)
+            zu = z_top(s, t) - thick(s, t) - 0.04
+            pts = []
+            # a catenary from here to the next support (3.5 m along s)
+            n_seg = 6
+            ds = 3.5
+            for i in range(n_seg + 1):
+                ss = s + ds * i / n_seg
+                if ss > LENGTH - 2.0:
+                    break
+                px, py = surf(ss, t)
+                sag = 0.34 * 4 * (i / n_seg) * (1 - i / n_seg)
+                pts.append((px, py, z_top(ss, t) - thick(ss, t) - 0.06 - sag))
+            for a, b in zip(pts, pts[1:]):
+                fu.rod(B.detail, "CT_Steel", a, b, 0.012, caps=False)
+            for (px, py, pz) in pts[1:-1] if len(pts) > 2 else []:
+                blob(B.detail, "CT_Opal", px, py, pz - 0.06, 0.05, 5)
+            if k % 2 == 0 and pts:
+                px, py, pz = pts[len(pts) // 2]
+                B.lamp((px, py, pz - 0.12), lumens=170, colour="#FFD9A0", kind="lobby", radius=6.0, fixture=False)
+                blob(B.detail, "CT_Opal", px, py, pz - 0.12, 0.09, 6)
+            s += ds
+            k += 1
 
 
 def build(B):
@@ -203,6 +308,7 @@ def build(B):
             n += 1
         s += 7.0
         i += 1
+    string_lights(B, None)
     # benches
     k = 0
     for ss, t in [(12, -0.35), (30, 0.4), (38, -0.4), (56, 0.35), (60, -0.35), (79, -0.4), (84, 0.4), (100, 0.35), (116, -0.4), (8, 0.45)]:

@@ -23,6 +23,7 @@ Material requests: none (CT_Tile, CT_TileWhite, CT_Cobogo, CT_Louvre cover it).
 import math
 import random
 
+import furn_int3 as fu
 from citykit import (box, offset_polyline, band, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H)
 import geom
 
@@ -369,6 +370,15 @@ def _lobby(B, i, cid, p0, p1, q0, q1, rnd):
     lbox(B.detail, "CT_ConcreteWhite", Ff, mid - 1.6, mid + 1.6, 0.0, 1.4, 2.65, 2.8, faces="yYzZxX")
     cx = ((p0[0] + p1[0] + q0[0] + q1[0]) / 4, (p0[1] + p1[1] + q0[1] + q1[1]) / 4)
     nl = left_normal(p0, p1)
+    # furnishing: letter boxes on the left wall, a doormat inside the front door, a plant, a lamp
+    tx, ty = (p1[0] - p0[0]) / Lb, (p1[1] - p0[1]) / Lb
+    D = math.dist(p0, q0)
+    yw_side = math.degrees(math.atan2(tx, -ty))              # out of the left wall, into the lobby (along +t)
+    fu.mailboxes(B, fu.Fr(p0[0] + tx * WALL, p0[1] + ty * WALL, yw_side, 0.01), WALL + 1.5, 0.95, cols=5, rows=3)
+    yw_u = math.degrees(math.atan2(ty, tx))                   # u along the front wall
+    fu.doormat(B, fu.Fr(p0[0] + tx * mid + nl[0] * (WALL + 0.5), p0[1] + ty * mid + nl[1] * (WALL + 0.5), yw_u, 0.01), 0.0, 0.0)
+    fu.plant(B, p1[0] - tx * (WALL + 0.45) + nl[0] * (D - WALL - 0.6), p1[1] - ty * (WALL + 0.45) + nl[1] * (D - WALL - 0.6), 0.01, 0.9, "CT_PlasterBlue")
+    B.lamp((cx[0], cx[1], PIL - 0.35), lumens=480, colour="#FFE0B0", kind="lobby", radius=5.5)
     B.spot("lobby_bench_%d" % cid, "bench", (cx[0], cx[1], 0.0), yaw_of((-nl[0], -nl[1])))
     B.spot("lobby_view_%d" % cid, "view", (cx[0] + nl[0] * 2, cx[1] + nl[1] * 2, 0.0), yaw_of(nl))
 

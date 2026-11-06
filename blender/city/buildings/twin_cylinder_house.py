@@ -26,6 +26,7 @@ Kit notes: windows are placed with B.window() and explicit CCW corners (hex hole
 import math
 
 from citykit import prism, triangulate, DOOR_W
+from _surrounds import add_surrounds
 
 INFO = {
     "name_ru": "Дом из двух цилиндров", "name_en": "Twin-Cylinder House",
@@ -46,6 +47,15 @@ YC = 2.9                          # notch back wall (chord wall) y
 HA, HB, HC = 0.38, 0.13, 0.70     # hexagon: half width at the points, half width of top/bottom, half height
 DEPTH = 0.22
 INNER = 0.35
+# ---- per-plot variant parameters
+NS = 3                            # storeys (3 -> 11.95 m; 4 -> 15.25 m: the maisonettes get one more floor)
+RAIL = "CT_SteelRed"              # balcony railings and door canopy
+CAP = "CT_PlasterRed"             # stair-head cap
+DRUM2 = "CT_Plaster"              # plaster of the back (honeycomb) drum
+VARIANTS = {
+    "P-T1H3": {"NS": 4, "RAIL": "CT_Steel", "CAP": "CT_PlasterBlue", "DRUM2": "CT_PlasterYellow"},    # 40 x 30, max 18 m
+    "P-T3H1": {"RAIL": "CT_SteelWhite", "CAP": "CT_PlasterGreen", "DRUM2": "CT_PlasterPink"},          # 25 x 20, max 12 m
+}
 
 
 def _pt(c, R, a):
@@ -194,6 +204,9 @@ def _panel(B, p0, p1, z0, z1, centres, mat="CT_Plaster", flat_of=None, kind="fla
 
 
 def build(B):
+    global ZW, ZR
+    ZW = NS * ST - 0.35
+    ZR = ZW + 0.35
     full = _ring_edges(False)
     cut = _ring_edges(True)
     outline_full = [e["p0"] for e in full]
@@ -215,7 +228,7 @@ def build(B):
         return "0-02" if zc < ST else "1-01"
 
     rows = []
-    for s in range(3):
+    for s in range(NS):
         rows += [s * ST + 0.92, s * ST + 2.42]
     for e in cut:
         p0, p1 = e["p0"], e["p1"]
@@ -228,7 +241,7 @@ def build(B):
                     elif e["tag"] == "c1" and e["k"] % 2 == 0 and r % 2 == 0:
                         cen.append(zc)
             fo = flat_c2 if e["tag"] == "c2" else flat_c1
-            _panel(B, p0, p1, 0.0, ZW, cen, flat_of=fo)
+            _panel(B, p0, p1, 0.0, ZW, cen, mat=DRUM2 if e["tag"] == "c2" else "CT_Plaster", flat_of=fo)
         elif e["tag"] == "chord":
             _chord(B, p0, p1)
         else:   # returns: plain, thick
@@ -239,7 +252,7 @@ def build(B):
         if e["tag"] not in ("c1", "c2"):
             continue
         W = _Wall(e["p0"], e["p1"])
-        for zb in (ST, 2 * ST):
+        for zb in [ST * i for i in range(1, NS)]:
             z0, z1, o = zb - 0.07, zb + 0.07, 0.05
             B.detail.face("CT_PlasterGrey", [W.w(0, z0, -o), W.w(W.L, z0, -o), W.w(W.L, z1, -o), W.w(0, z1, -o)])
             B.detail.face("CT_PlasterGrey", [W.w(0, z1, -o), W.w(W.L, z1, -o), W.w(W.L, z1, 0), W.w(0, z1, 0)])
@@ -251,18 +264,18 @@ def build(B):
     g = math.asin(NW / R1)
     arcpts = [_pt(C1, R1, 1.5 * math.pi + g - 2 * g * i / 8) for i in range(9)]       # right to left
     bal = [(cx - NW, YC), (cx + NW, YC)] + arcpts
-    for zt in (ST, 2 * ST):
+    for zt in [ST * i for i in range(1, NS)]:
         prism(B.m, "CT_Plaster", bal if _area(bal) > 0 else bal[::-1], zt - 0.25, zt, top=False, bottom=False)
         _flat(B.m, "CT_Concrete", bal, zt, True)
         _flat(B.m, "CT_Plaster", bal, zt - 0.25, False)
         inner = [(x + (cx - x) * 0.0, y) for x, y in arcpts]
         rl = [(x, y - 0.0) for x, y in arcpts[::-1]]
         rl = [(cx + (x - cx) * 0.97, C1[1] + (y - C1[1]) * 0.97) for x, y in rl]
-        B.railing([(cx - NW + 0.1, YC - 0.1)] + rl[:1] + rl[1:-1] + [(cx + NW - 0.1, rl[-1][1])][:0], zt, mat="CT_SteelRed")
-        B.railing(rl, zt, mat="CT_SteelRed")
+        B.railing([(cx - NW + 0.1, YC - 0.1)] + rl[:1] + rl[1:-1] + [(cx + NW - 0.1, rl[-1][1])][:0], zt, mat=RAIL)
+        B.railing(rl, zt, mat=RAIL)
 
     # ---- door canopy (red) and loggia ceiling light strip
-    prism(B.m, "CT_SteelRed", [(cx - 1.2, YC - 1.0), (cx + 1.2, YC - 1.0), (cx + 1.2, YC), (cx - 1.2, YC)], 2.75, 2.9,
+    prism(B.m, RAIL, [(cx - 1.2, YC - 1.0), (cx + 1.2, YC - 1.0), (cx + 1.2, YC), (cx - 1.2, YC)], 2.75, 2.9,
           top=True, bottom=True)
     B.entrance("main", (cx, YC, 0.0), 0.0, width=1.4, height=2.5, kind="street", leaves=1)
 
@@ -293,7 +306,7 @@ def build(B):
     prism(B.m, "CT_Plaster", drum, ZR, ZR + 1.8, top=False)
     cap = [(sc[0] + (sr + 0.25) * math.cos(2 * math.pi * k / 20), sc[1] + (sr + 0.25) * math.sin(2 * math.pi * k / 20))
            for k in range(20)]
-    prism(B.m, "CT_PlasterRed", cap, ZR + 1.8, ZR + 2.05, top=True, bottom=True)
+    prism(B.m, CAP, cap, ZR + 1.8, ZR + 2.05, top=True, bottom=True)
     for k in (-2, 0, 2):    # three stair windows facing the street side
         a = -math.pi / 2 + k * 0.42
         p0 = (sc[0] + sr * math.cos(a - 0.15), sc[1] + sr * math.sin(a - 0.15))
@@ -304,6 +317,7 @@ def build(B):
     B.footprint = _offset_ring(outline_full, 0.15)
     B.height = ZR + 2.05
     B.note("hex honeycomb on the back drum; loggia with curved balconies on the front drum")
+    add_surrounds(B, seed=2)
 
 
 def _chord(B, p0, p1):
@@ -319,7 +333,7 @@ def _chord(B, p0, p1):
     wins.append((u(cx) + dw + 0.3, L - 0.35, 0.9, 2.5, None, "stair", 1, 1))
     pier = 0.3
     bw = (L - 4 * pier) / 3
-    for si, (z0, z1) in enumerate(((ST, 2 * ST - 0.4), (2 * ST, 3 * ST - 0.5))):
+    for si, (z0, z1) in enumerate([(i * ST, (i + 1) * ST - (0.4 if i == 1 else 0.5)) for i in range(1, NS)]):
         for b in range(3):
             a = pier + b * (bw + pier)
             wins.append((a, a + bw, z0, z1, "1-01", "flat", 2, 1))

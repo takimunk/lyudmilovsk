@@ -22,6 +22,7 @@ import random
 
 from citykit import box, prism, ring, Facade, Mesh, wall_with_holes, DOOR_W
 import geom
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Санаторий «Корона»", "name_en": "Crown Sanatorium",
@@ -98,6 +99,86 @@ def tri_orient_up(pts2, z):
     area = sum(pts2[i][0] * pts2[(i + 1) % len(pts2)][1] - pts2[(i + 1) % len(pts2)][0] * pts2[i][1] for i in range(len(pts2)))
     p = pts2 if area > 0 else pts2[::-1]
     return [(x, y, z) for x, y in p]
+
+
+def _furnish_hall(B, hall, t):
+    """Round 2: the ground hall (annular sector R 12..18, angles -135..-45, ceiling 4.5): reception, dining, lounge, piano."""
+    f = Furn(B)
+    d = B.detail
+    WARM = "#FFD2A0"
+    # ---- reception desk dressing + key board on the inner wall behind it
+    box(d, "CT_Steel", 3.6, 4.1, 11.45, 11.9, 1.14, 1.5)
+    box(d, "CT_Frame", 3.55, 4.15, 11.5, 11.55, 1.2, 1.55)
+    f.cup(6.3, 11.6, 1.14, mat="CT_PlasterRed", h=0.07)
+    f.cup(5.6, 11.5, 1.14, mat="CT_PlasterYellow", h=0.07)
+    box(d, "CT_PlasterBlue", 3.05, 6.95, 11.17, 11.2, 0.15, 0.95, faces="y")
+    # the long walls are glazed: wall art goes on the solid end walls, a hanging sign over the desk
+    f.panel(5.0, 12.0, 2.95, 2.6, 0.5, 0.0, mat="CT_PlasterRed", frame="CT_Frame")
+    for sx in (3.9, 6.1):
+        box(d, "CT_Steel", sx - 0.01, sx + 0.01, 11.97, 11.99, 3.2, 4.5)
+    px, py = pol(14.9, -46.5)
+    f.panel(px, py, 2.4, 1.6, 1.0, 315.0, mat="CT_PlasterBlue", frame="CT_Wood")
+    px, py = pol(15.0, -133.4)
+    f.panel(px, py, 1.9, 1.4, 1.0, 45.0, mat="CT_PlasterYellow", frame="CT_Frame")
+    # ---- dining: chairs, cloths, tableware, pendants (tables are boxes 1.6 x 1.6 at the "dining_i" spots)
+    for i, th in enumerate((-128.0, -118.0, -108.0)):
+        x, y = pol(15.0, th)
+        box(d, "CT_TileWhite", x - 0.85, x + 0.85, y - 0.85, y + 0.85, 0.76, 0.772, faces="Z")
+        for dx, dy, yaw in ((-1.05, 0.0, 90.0), (1.05, 0.0, 270.0), (0.0, -1.05, 180.0), (0.0, 1.05, 0.0)):
+            f.chair(x + dx, y + dy, yaw=yaw, seat=("CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterPink")[i])
+        f.cup(x - 0.3, y - 0.3, 0.772, mat="CT_PlasterRed", h=0.18)
+        f.cup(x + 0.3, y + 0.25, 0.772, mat="CT_TileWhite", h=0.1)
+        f.cup(x + 0.3, y - 0.3, 0.772, mat="CT_PlasterYellow", h=0.06)
+        f.cup(x - 0.3, y + 0.3, 0.772, mat="CT_PlasterGreen", h=0.06)
+        f.pendant(x, y, 4.5, lumens=800, colour=WARM, radius=6.5, drop=1.1)
+    # ---- lounge: armchairs round a low table, a rug, plants
+    f.round_table(8.0, 12.9, r=0.4, h=0.42, top="CT_Wood")
+    f.armchair(7.0, 12.9, yaw=90.0, mat="CT_PlasterRed")
+    f.armchair(8.0, 11.9, yaw=180.0, mat="CT_PlasterRed")
+    f.armchair(9.0, 12.9, yaw=270.0, mat="CT_PlasterYellow")
+    f.rug(6.6, 9.5, 11.5, 14.0, mat="CT_PlasterBlue")
+    B.spot("lounge_1", "seat", (7.0, 12.9, 0.0), 90.0)
+    B.spot("lounge_2", "seat", (8.0, 11.9, 0.0), 180.0)
+    B.spot("lounge_3", "seat", (9.0, 12.9, 0.0), 270.0)
+    # ---- piano against the east end wall (radial line at -45 deg), stool in front
+    pxy = pol(15.0, -47.9)
+    def piano(m):
+        box(m, "CT_Frame", -0.75, 0.75, -0.1, 0.3, 0.2, 1.25)
+        box(m, "CT_Frame", -0.78, 0.78, -0.12, 0.3, 1.25, 1.28)
+        box(m, "CT_TileWhite", -0.7, 0.7, -0.38, -0.1, 0.68, 0.72)
+        box(m, "CT_Steel", -0.7, 0.7, -0.38, -0.34, 0.6, 0.68)
+        for sx in (-1, 1):
+            box(m, "CT_Frame", sx * 0.7 - 0.05, sx * 0.7 + 0.05, -0.34, 0.26, 0.0, 0.2)
+        box(m, "CT_Frame", -0.75, 0.75, -0.1, 0.3, 0.0, 0.2, faces="xXyY")
+    f.put(piano, pxy[0], pxy[1], 315.0, solid=True)
+    sx_, sy_ = pxy[0] - 0.75 * math.sin(math.radians(45)) * 1.0 - 0.0, pxy[1] - 0.75 * math.sin(math.radians(45))
+    f.stool(sx_ - 0.1, sy_ - 0.1, seat="CT_PlasterRed", h=0.5)
+    B.spot("piano", "seat", (sx_ - 0.1, sy_ - 0.1, 0.0), 135.0)
+    # ---- plants, floor border and skirting along the walls
+    for px, py in ((-1.9, 9.0), (1.9, 9.0), (-6.2, 10.0), pol(13.5, -131.5), pol(16.4, -131.5), pol(13.2, -54.0)):
+        f.plant(px, py, h=1.7, pot=("CT_PlasterRed", "CT_TileWhite")[int(px * 3) % 2])
+    q = inset_poly(hall, t)
+    nh = len(q)
+    for i in range(nh):
+        a, b = q[i], q[(i + 1) % nh]
+        if i == 3:
+            mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+            ux, uy = (b[0] - a[0]), (b[1] - a[1])
+            L = math.hypot(ux, uy)
+            ux, uy = ux / L, uy / L
+            f.skirting([a, (mx - ux * 1.3, my - uy * 1.3)], h=0.13)
+            f.skirting([(mx + ux * 1.3, my + uy * 1.3), b], h=0.13)
+            f.skirting([a, (mx - ux * 1.3, my - uy * 1.3)], h=0.012, t=0.4, mat="CT_ConcreteDark")
+            f.skirting([(mx + ux * 1.3, my + uy * 1.3), b], h=0.012, t=0.4, mat="CT_ConcreteDark")
+        else:
+            f.skirting([a, b], h=0.13)
+            f.skirting([a, b], h=0.012, t=0.4, mat="CT_ConcreteDark")
+    # doormat
+    box(d, "CT_PlasterGrey", -1.0, 1.0, 8.5, 9.5, 0.0, 0.014, faces="Z")
+    # ---- lamps
+    for th in (-125.0, -110.0, -98.0, -82.0, -66.0, -54.0):
+        x, y = pol(15.0, th)
+        B.lamp((x, y, 4.2), lumens=800, colour=WARM, kind="public", radius=7)
 
 
 def build(B):
@@ -223,6 +304,7 @@ def build(B):
         x, y = pol(15.0, th)
         box(m, "CT_Wood", x - 0.8, x + 0.8, y - 0.8, y + 0.8, 0.0, 0.76)
         B.spot("dining_%d" % i, "table", (x, y, 0.0), 0.0)
+    _furnish_hall(B, hall, t)
     # ------------------------------------------------------------------ struts under some balcony tips
     for k in range(0, NB, 3):
         th = bays[k]["th"] - HB + DELTA
@@ -241,7 +323,6 @@ def build(B):
         box(m, "CT_Wood", x - 0.15, x + 0.15, y - 0.15, y + 0.15, 0.08, 2.6)
         prism(m, "CT_Grass", ring(x, y, 1.7, 8), 2.4, 4.6, top=True, bottom=True)
     # ------------------------------------------------------------------ roof extras: stair cap, courtyard-side rail
-    B.railing([pol(R_IN + 0.3, -90 + 15 * k) for k in range(NB)] + [pol(R_IN + 0.3, -90)], ZT, h=1.0, mat="CT_SteelWhite", post=2.0) if False else None
     for k in range(0, NB, 4):
         x, y = pol(15.5, bays[k]["th"])
         box(m, "CT_ConcreteWhite", x - 1.2, x + 1.2, y - 1.2, y + 1.2, ZT, ZT + 2.2)

@@ -153,6 +153,149 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "wait_4",
+   "kind": "bench",
+   "pos": [
+    2.85,
+    6.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "wait_5",
+   "kind": "bench",
+   "pos": [
+    2.85,
+    8.4,
+    0.0
+   ],
+   "yaw": 270.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    5.2,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    8.7,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    12.15,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    -11.0,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -11.0,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.5,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.5,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -2.0,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -2.0,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    6.0,
+    13.5,
+    3.1
+   ],
+   "lumens": 700,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    11.0,
+    13.5,
+    3.1
+   ],
+   "lumens": 700,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
   }
  ],
  "flats": [],
@@ -875,8 +1018,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 1808,
-  "detail": 1218,
+  "shell": 2142,
+  "detail": 2942,
   "windows": 68
  }
 }

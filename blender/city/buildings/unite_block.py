@@ -24,6 +24,7 @@ Loggia panels use CT_PlasterGreen for green.
 import math
 import random
 
+import furn_int3 as fu
 from citykit import box, prism, band, ribbon_wall, DOOR_W, DOOR_H
 
 INFO = {
@@ -204,6 +205,14 @@ def build(B):
         box(B.m, "CT_ConcreteDark", xa, xz, LY - 0.3, Y_F, 3.9, 4.2)                           # canopy
         box(B.detail, "CT_Wood", xm - 1.2, xm + 1.2, 6.5, 7.0, 0.4, 0.5)
         B.spot(lid + "_bench", "bench", (xm, 6.2, 0.0), 0.0)
+        # furnishing: letter boxes on the left wall (inner face x = xa + 0.3), a doormat inside the door, plants, lamps
+        fu.mailboxes(B, fu.Fr(xa + 0.3, LY + 0.3, 90.0, 0.02), 4.0, 0.95, cols=6, rows=3)
+        fu.doormat(B, fu.Fr(xm, LY + 0.3, 0.0, 0.02), 0.0, -0.5)
+        fu.plant(B, xz - 0.8, 2.0, 0.02, 0.9, "CT_PlasterRed")
+        fu.plant(B, xa + 0.8, 8.4, 0.02, 0.9, "CT_PlasterBlue")
+        for ly_ in (3.2, 6.8):
+            B.lamp((xm, ly_, 3.5), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0)
+            box(B.detail, "CT_Steel", xm - 0.01, xm + 0.01, ly_ - 0.01, ly_ + 0.01, 3.58, 3.9, faces="xXyY")
 
     # ---------------------------------------------------------------- back wall, ends
     for i in range(NB):

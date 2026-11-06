@@ -119,6 +119,52 @@
    "yaw": 0.0
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    -25.2,
+    3.2,
+    3.5
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -25.2,
+    6.8,
+    3.5
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    25.2,
+    3.2,
+    3.5
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    25.2,
+    6.8,
+    3.5
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  }
+ ],
  "flats": [
   {
    "flat": "1-01",
@@ -23066,7 +23112,7 @@
  ],
  "tris": {
   "shell": 38760,
-  "detail": 30328,
+  "detail": 31484,
   "windows": 1870
  }
 }

@@ -26,8 +26,9 @@ Ideas for later: stairs inside the hall to the gym, interior corridors, sliding 
 """
 import math
 
-from citykit import box, prism, DOOR_W
+from citykit import box, prism, ring, DOOR_W
 from _cons_util import wall, win, hface, rect
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Дом-коммуна", "name_en": "Commune Slab",
@@ -47,6 +48,14 @@ CORR = (7.0, 13.0)
 XB0, XB1 = -35.0, -22.0     # communal block
 YB0, YB1 = 1.0, 13.0
 HALL_H = 6.4
+# ---- per-plot variant parameters
+ACC_P = "CT_PlasterRed"      # accent plaster (stair tower)
+ACC_S = "CT_SteelRed"        # accent steel (canopies, gym edge band)
+MIRROR = False               # mirrored left-right (communal block on the east, stair tower on the west)
+VARIANTS = {
+    "P-T2H2": {},
+    "P-T3H3": {"MIRROR": True, "ACC_P": "CT_PlasterBlue", "ACC_S": "CT_Steel"},
+}
 
 
 def fid_of(f, k):
@@ -54,6 +63,34 @@ def fid_of(f, k):
 
 
 def build(B):
+    _build(B)
+    if MIRROR:
+        _mirror(B)
+
+
+def _mirror(B):
+    """Mirror the finished building about x = 0 (x -> -x; faces re-wound, yaws negated)."""
+    for mesh in (B.m, B.detail, B.win):
+        mesh.verts = [(-x, y, z) for x, y, z in mesh.verts]
+        mesh.faces = [(mt, idx[::-1], uv[::-1]) for mt, idx, uv in mesh.faces]
+    for w in B.windows:
+        w["centre"][0] = -w["centre"][0]
+        w["normal"][0] = -w["normal"][0]
+    for f in B.flats.values():
+        if f["door"]:
+            f["door"][0] = -f["door"][0]
+    for e in B.entrances:
+        e["pos"][0] = -e["pos"][0]
+        e["yaw"] = (-e["yaw"]) % 360
+    for sp in B.spots:
+        sp["pos"][0] = -sp["pos"][0]
+        sp["yaw"] = (-sp["yaw"]) % 360
+    for l in B.lamps:
+        l["pos"][0] = -l["pos"][0]
+    B.footprint = [(-x, y) for x, y in B.footprint][::-1]
+
+
+def _build(B):
     m, det = B.m, B.detail
     # ---------------------------------------------------------------- slab: soffit, roof, pilotis
     prism(m, "CT_ConcreteDark", rect(SX0, SX1, SY0, SY1), ZB, FL[0], top=False, bottom=True, side_mat="CT_Plaster")
@@ -121,23 +158,23 @@ def build(B):
     tx0, tx1, ty0, ty1 = 31.0, 35.0, 0.5, 12.5
     TH = 17.8
     hface(m, "CT_Paving", rect(tx0, tx1, ty0, ty1), 0.0, True)
-    wall(B, (tx0, ty0), (tx1, ty0), 0.0, TH, "CT_PlasterRed",
+    wall(B, (tx0, ty0), (tx1, ty0), 0.0, TH, ACC_P,
          holes=[(0.5, 2.1, 0.0, 2.5), (2.7, 3.5, 0.5, 3.1), (2.7, 3.5, 4.6, 17.0)], depth=0.4, mat_in="CT_Plaster")
     win(B, (tx0, ty0), (tx1, ty0), 2.7, 3.5, 0.5, 3.1, kind="stair", rows=2, inset=0.2, frame=0.05)
     win(B, (tx0, ty0), (tx1, ty0), 2.7, 3.5, 4.6, 17.0, kind="stair", rows=8, inset=0.2, frame=0.05)
-    wall(B, (tx1, ty0), (tx1, ty1), 0.0, TH, "CT_PlasterRed",
+    wall(B, (tx1, ty0), (tx1, ty1), 0.0, TH, ACC_P,
          holes=[(5.4, 6.6, 0.5, 3.1), (5.4, 6.6, 4.6, 17.0)], depth=0.4, mat_in="CT_Plaster")
     win(B, (tx1, ty0), (tx1, ty1), 5.4, 6.6, 0.5, 3.1, kind="stair", rows=2, inset=0.2, frame=0.05)
     win(B, (tx1, ty0), (tx1, ty1), 5.4, 6.6, 4.6, 17.0, kind="stair", rows=8, inset=0.2, frame=0.05)
-    wall(B, (tx1, ty1), (tx0, ty1), 0.0, TH, "CT_PlasterRed", holes=[(1.5, 2.5, 4.6, 17.0)], depth=0.4,
+    wall(B, (tx1, ty1), (tx0, ty1), 0.0, TH, ACC_P, holes=[(1.5, 2.5, 4.6, 17.0)], depth=0.4,
          mat_in="CT_Plaster")
     win(B, (tx1, ty1), (tx0, ty1), 1.5, 2.5, 4.6, 17.0, kind="stair", rows=8, inset=0.2, frame=0.05)
-    wall(B, (tx0, ty1), (tx0, ty0), 0.0, ZB, "CT_PlasterRed", depth=0.4, mat_in="CT_Plaster")
+    wall(B, (tx0, ty1), (tx0, ty0), 0.0, ZB, ACC_P, depth=0.4, mat_in="CT_Plaster")
     tr = rect(tx0 - 0.25, tx1 + 0.25, ty0 - 0.25, ty1 + 0.25)
     prism(m, "CT_Plaster", tr, TH, TH + 0.6, top=False, bottom=True)
     hface(m, "CT_Roof", tr, TH + 0.6, True)
     B.entrance("main", ((tx0 + 0.5 + tx0 + 2.1) / 2, ty0, 0.0), 0.0, width=1.6, height=2.5, kind="street", leaves=2)
-    box(m, "CT_SteelRed", tx0 + 0.3, tx0 + 2.3, ty0 - 1.2, ty0, 3.0, 3.15)               # door canopy
+    box(m, ACC_S, tx0 + 0.3, tx0 + 2.3, ty0 - 1.2, ty0, 3.0, 3.15)               # door canopy
     # ---------------------------------------------------------------- roof terrace
     inset = rect(SX0 + 0.3, SX1 - 0.3, SY0 + 0.3, SY1 - 0.3)
     B.railing(inset + [inset[0]], ZR, h=1.05, mat="CT_Steel", post=1.5)
@@ -193,7 +230,7 @@ def _block(B):
     prism(m, "CT_ConcreteDark", rect(XB0, XB1, YB0, YB1), -0.4, 0.0, top=False, bottom=False)
     hface(m, "CT_Floor", rect(XB0, XB1, YB0, YB1), 0.0, True)
     prism(m, "CT_Plaster", rect(XB0, XB1, 0.3, YB1), HALL_H, 7.0, top=False, bottom=True, side_mat="CT_Plaster")
-    hface(m, "CT_Interior", rect(XB0, XB1, YB0, YB1), HALL_H, False)
+    hface(m, "CT_Interior", rect(XB0, XB1, YB0, YB1), HALL_H - 0.012, False)   # 12 mm under the slab soffit: no z-fight
     hface(m, "CT_Roof", rect(XB0, XB1, 0.3, YB1), 7.0, True)
     # hall walls
     fp0, fp1 = (XB0, YB0), (XB1, YB0)
@@ -225,8 +262,8 @@ def _block(B):
     prism(m, "CT_Plaster", ur, UZ1, UZ1 + 0.4, top=False, bottom=True)
     hface(m, "CT_Roof", ur, UZ1 + 0.4, True)
     # red canopy over the hall door, red edge band on the gym box
-    box(m, "CT_SteelRed", -30.4, -26.6, -0.9, YB0, 3.0, 3.15)
-    box(B.detail, "CT_SteelRed", XB0, XB1, 0.2, 0.34, UZ0 + 2.6, UZ0 + 2.9)
+    box(m, ACC_S, -30.4, -26.6, -0.9, YB0, 3.0, 3.15)
+    box(B.detail, ACC_S, XB0, XB1, 0.2, 0.34, UZ0 + 2.6, UZ0 + 2.9)
     B.entrance("hall", (-28.5, YB0, 0.0), 0.0, width=2.4, height=2.7, kind="street", leaves=2)
     # interior: serving counter, tables, laundry machines
     box(m, "CT_Wood", -33.2, -25.2, 11.2, 12.0, 0.0, 1.1)
@@ -241,3 +278,85 @@ def _block(B):
         y = 3.2 + i * 1.2
         box(m, "CT_Aluminium", -34.6, -33.8, y, y + 0.9, 0.0, 0.95)
         B.spot("work%d" % (i + 1), "work", (-33.2, y + 0.45, 0.0), 270.0)
+    _furnish_hall(B)
+
+
+def _furnish_hall(B):
+    """Round 2: the communal hall (x -34.6..-22.4, y 1.4..12.6, ceiling 6.4): canteen, serving line, laundry, gym corner."""
+    f = Furn(B)
+    d = B.detail
+    WARM = "#FFD2A0"
+    # ---- canteen: chairs at the table spots (the aisle x -28.8..-26.2 from the door stays free)
+    t = 0
+    for x in (-32.0, -29.0, -26.0):
+        for y in (4.2, 7.0):
+            t += 1
+            f.chair(x, y - 0.85, yaw=180.0, seat="CT_Wood")             # sitter faces +y
+            f.chair(x, y + 0.85, yaw=0.0, seat="CT_Wood")               # sitter faces -y
+            if x < -30:
+                f.chair(x - 0.9, y, yaw=90.0, seat="CT_PlasterRed")
+            if x > -27:
+                f.chair(x + 0.9, y, yaw=270.0, seat="CT_PlasterRed")
+            # a tray, plates and a jug on every table
+            f.tray(x - 0.25, y - 0.2, 0.75)
+            f.cup(x + 0.25, y + 0.2, 0.75, mat="CT_PlasterBlue", h=0.18)
+            f.cup(x + 0.1, y - 0.3, 0.75, mat="CT_PlasterYellow")
+            box(d, "CT_PlasterRed" if t % 2 else "CT_PlasterGreen", x - 0.55, x + 0.55, y - 0.55, y + 0.55, 0.745, 0.755, faces="Z")  # cloth
+            f.pendant(x, y, 6.4, lumens=900, colour=WARM, radius=6.5, drop=1.5)
+    # ---- the serving line: tray rail, steam pots, bowls, menu board, shelves behind
+    box(d, "CT_Aluminium", -33.2, -25.2, 10.55, 10.62, 0.82, 0.86)
+    for px, pat in zip((-32.6, -31.2, -29.8, -28.4, -27.0), (0, 1, 2, 0, 1)):
+        box(d, "CT_Steel", px - 0.3, px + 0.3, 11.35, 11.85, 1.1, 1.3)
+        box(d, "CT_Aluminium", px - 0.3, px + 0.3, 11.35, 11.85, 1.3, 1.32)
+        box(d, ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")[pat], px - 0.22, px + 0.22, 11.42, 11.78, 1.32, 1.35, faces="Z")
+    for i in range(4):
+        f.tray(-33.0 + i * 0.3, 10.85, 1.1)
+    box(d, "CT_PlasterRed", -33.2, -25.2, 10.64, 10.67, 0.1, 0.95, faces="y")                  # red front band
+    f.panel(-29.2, 12.6, 3.1, 5.2, 0.8, 0.0, mat="CT_TileWhite", frame="CT_Frame")             # menu board
+    for i in range(4):
+        box(d, "CT_SteelRed" if i % 2 == 0 else "CT_Steel", -31.4 + i * 1.3, -30.5 + i * 1.3, 12.55, 12.57, 2.9, 3.3, faces="y")
+    # the kitchen door behind the counter is not modelled; a pass shelf instead
+    # ---- laundry: drums, panels, a folding table, baskets
+    for i in range(5):
+        y = 3.2 + i * 1.2
+        box(d, "CT_Frame", -33.84, -33.8, y + 0.2, y + 0.7, 0.28, 0.78, faces="X")
+        box(d, "CT_Steel", -33.84, -33.8, y + 0.28, y + 0.62, 0.36, 0.7, faces="X")
+        box(d, "CT_SteelRed", -33.84, -33.8, y + 0.1, y + 0.8, 0.82, 0.93, faces="X")
+    box(d, "CT_TileWhite", -34.6, -34.57, 2.9, 9.6, 1.5, 2.3, faces="X")
+    f.panel(-34.6, 6.4, 2.0, 2.2, 0.55, 90.0, mat="CT_PlasterBlue", frame=None)
+    f.table(-32.4, 10.0, w=1.6, d=0.8, h=0.9, top="CT_Aluminium", leg="CT_Steel")
+    for i, (bx, by, mat) in enumerate(((-34.1, 10.4, "CT_PlasterYellow"), (-33.5, 9.9, "CT_PlasterGreen"))):
+        box(d, mat, bx - 0.25, bx + 0.25, by - 0.2, by + 0.2, 0.0, 0.3)
+    box(d, "CT_TileWhite", -32.9, -31.8, 9.8, 10.2, 0.9, 0.95)
+    # ---- gym corner (east end)
+    box(d, "CT_PlasterBlue", -24.7, -22.6, 8.0, 11.2, 0.0, 0.02, faces="Z")                     # mat
+    for (bx, by, mat) in ((-24.2, 8.5, "CT_PlasterRed"), (-23.8, 8.7, "CT_PlasterYellow"), (-24.3, 9.1, "CT_PlasterGreen")):
+        prism(d, mat, ring(bx, by, 0.15, 8), 0.02, 0.32, top=True, bottom=False)
+    for k in range(3):                                                                          # wall bars
+        y = 5.2 + k * 1.1
+        box(d, "CT_Wood", -22.46, -22.4, y, y + 0.06, 0.0, 2.6, faces="x")
+    for z in [0.25 + 0.22 * i for i in range(11)]:
+        box(d, "CT_Wood", -22.52, -22.42, 5.2, 8.2, z, z + 0.04)
+    for y in (5.2, 8.2):
+        box(d, "CT_Wood", -22.52, -22.42, y - 0.03, y + 0.03, 0.0, 2.6)
+    for px in (-23.9, -22.8):                                                                   # pull-up frame
+        box(d, "CT_Steel", px - 0.04, px + 0.04, 3.1, 3.18, 0.0, 2.4)
+    box(d, "CT_SteelRed", -23.9, -22.8, 3.1, 3.18, 2.32, 2.4)
+    f.bench(-23.6, 11.8, yaw=0.0, w=1.6)
+    B.spot("gym_mat", "stand", (-23.6, 9.6, 0.0), 270.0)
+    B.spot("gym_bar", "work", (-23.35, 2.6, 0.0), 180.0)
+    # ---- newspaper board, notice boards and plants, floor border, skirting
+    f.panel(-24.2, 12.6, 1.8, 1.5, 1.1, 0.0, mat="CT_PlasterYellow", frame="CT_Wood")
+    f.plant(-34.0, 12.0, h=1.9)
+    f.plant(-23.0, 12.0, h=1.9, pot="CT_TileWhite")
+    f.plant(-30.4, 2.1, h=1.5)
+    f.plant(-26.4, 2.1, h=1.5, pot="CT_TileWhite")
+    f.border(-34.6, -22.4, 1.4, 12.6, w=0.4, mat="CT_ConcreteDark")
+    box(d, "CT_PlasterGrey", -29.8, -27.2, 1.4, 2.5, 0.0, 0.014, faces="Z")                     # mat at the door
+    for seg in (((-34.6, 12.6), (-34.6, 1.4)), ((-34.6, 1.4), (-29.7, 1.4)), ((-27.3, 1.4), (-22.4, 1.4)),
+                ((-22.4, 1.4), (-22.4, 12.6)), ((-22.4, 12.6), (-34.6, 12.6))):
+        f.skirting(list(seg), h=0.14)
+    B.lamp((-23.4, 6.5, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
+    B.lamp((-28.5, 3.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
+    B.lamp((-31.0, 10.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
+    B.lamp((-26.5, 10.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)

@@ -123,6 +123,231 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "pingpong_a",
+   "kind": "stand",
+   "pos": [
+    -3.1,
+    9.5,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "pingpong_b",
+   "kind": "stand",
+   "pos": [
+    1.1,
+    9.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "cafe_table_1",
+   "kind": "table",
+   "pos": [
+    9.0,
+    9.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cafe_table_2",
+   "kind": "table",
+   "pos": [
+    12.5,
+    8.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cafe_table_3",
+   "kind": "table",
+   "pos": [
+    16.0,
+    8.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "exhibit_0",
+   "kind": "view",
+   "pos": [
+    -15.4,
+    4.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "exhibit_1",
+   "kind": "view",
+   "pos": [
+    -15.4,
+    7.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "exhibit_2",
+   "kind": "view",
+   "pos": [
+    -15.4,
+    11.0,
+    0.0
+   ],
+   "yaw": 90.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -15.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    -15.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    -9.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    -9.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    -3.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    -3.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    3.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    3.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    9.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    9.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    15.0,
+    4.0,
+    6.5
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    15.0,
+    9.0,
+    4.7
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    13.5,
+    10.5,
+    4.2
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6
   }
  ],
  "flats": [],
@@ -2548,8 +2773,8 @@
   "hall 38x12 m enterable; 115 cave windows"
  ],
  "tris": {
-  "shell": 9798,
-  "detail": 6800,
+  "shell": 10440,
+  "detail": 11914,
   "windows": 230
  }
 }

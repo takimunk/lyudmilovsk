@@ -168,6 +168,9 @@ def material(slot, night=False):
         alpha = nt.nodes.new("ShaderNodeMath"); alpha.operation = "MAXIMUM"
         nt.links.new(inside.outputs[0], alpha.inputs[0]); nt.links.new(notr.outputs[0], alpha.inputs[1])
         nt.links.new(alpha.outputs[0], bsdf.inputs["Alpha"])
+    if slot == "CT_Opal":
+        bsdf.inputs["Emission Color"].default_value = lin
+        bsdf.inputs["Emission Strength"].default_value = 3.0
     if slot == "CT_Neon" and night:
         bsdf.inputs["Emission Color"].default_value = lin
         bsdf.inputs["Emission Strength"].default_value = 8.0

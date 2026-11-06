@@ -93,6 +93,26 @@
  ],
  "spots": [
   {
+   "id": "keeper_seat",
+   "kind": "seat",
+   "pos": [
+    -0.4,
+    10.3,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "keeper_cot",
+   "kind": "bench",
+   "pos": [
+    -3.6,
+    8.1,
+    0.03
+   ],
+   "yaw": 90.0
+  },
+  {
    "id": "door_bench",
    "kind": "bench",
    "pos": [
@@ -141,6 +161,63 @@
     20.0
    ],
    "yaw": 30.00000000000001
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    0.0,
+    10.0,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -2.819,
+    5.974,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    2.598,
+    5.5,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    1.074,
+    11.009,
+    22.3
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.074,
+    2.991,
+    22.3
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 9.0
   }
  ],
  "flats": [],
@@ -319,8 +396,8 @@
   "118 stair treads up to 20.0 m; lattice 20 bars x2 x3 sections"
  ],
  "tris": {
-  "shell": 4016,
-  "detail": 6512,
+  "shell": 4088,
+  "detail": 6988,
   "windows": 16
  }
 }

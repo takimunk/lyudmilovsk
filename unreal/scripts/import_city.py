@@ -192,7 +192,7 @@ def make_materials():
             AM._set(mi, "v", "Color", unreal.LinearColor(c[0], c[1], c[2], 1))
             AM._set(mi, "s", "Roughness", rough)
             AM._set(mi, "s", "Metallic", 0.6 if slot == "CT_Aluminium" else (0.3 if "Steel" in slot else 0.0))
-            AM._set(mi, "s", "Emissive", 0.0)
+            AM._set(mi, "s", "Emissive", {"CT_Neon": 6.0, "CT_Opal": 3.0}.get(slot, 0.0))
         mel.update_material_instance(mi)
         eal.save_loaded_asset(mi, False)
         out[slot] = mi

@@ -17,9 +17,12 @@ mooring bollards at the base, a lit-room window card inside the base.
 Material requests: none.
 """
 import math
+import random
 
 from citykit import prism, band, band_down, ring, DOOR_W, DOOR_H, geom
 from geom import Mesh, Facade, wall_with_holes, reveal
+import furn_int3 as fu
+from furn_int3 import Fr, lbox, cyl, blob
 
 INFO = {
     "name_ru": "Гиперболоидная башня-маяк", "name_en": "Hyperboloid Lighthouse Tower",
@@ -172,7 +175,63 @@ def base(B):
         prism(B.m, "CT_Concrete", [a, b, (CX + (R_WALL - 0.05) * (b[0] - CX) / R_WALL, CY + (R_WALL - 0.05) * (b[1] - CY) / R_WALL),
                                    (CX + (R_WALL - 0.05) * (a[0] - CX) / R_WALL, CY + (R_WALL - 0.05) * (a[1] - CY) / R_WALL)],
               BASE_H - 0.4, BASE_H, top=True, bottom=True)
+    keeper_room(B)
     B.spot("door_bench", "bench", (CX + 2.2, CY - R_WALL - 1.8, 0.0), 180)
+
+
+def keeper_room(B):
+    """The keeper's room in the drum: a desk with a radio, a chair, a cabinet, a cot, buoys, rope and three lamps
+    (floor z = 0.03, ceiling underside 2.6; the spiral stair stands in the middle, r < 1.8, and the door is at -y)."""
+    z0 = 0.03
+    d = B.detail
+    rnd = random.Random(1923)
+    # desk at the back (+y) against the wall, facing the room
+    ydesk = CY + 4.15
+    fr = Fr(CX - 0.4, ydesk, 0.0, z0)
+    lbox(B.m, "CT_WoodLight", fr, -1.2, -0.9, 0.0, 0.7, 0.0, 0.72)
+    lbox(B.m, "CT_WoodLight", fr, 0.9, 1.2, 0.0, 0.7, 0.0, 0.72)
+    lbox(B.m, "CT_WoodLight", fr, -1.2, 1.2, 0.0, 0.7, 0.72, 0.76)
+    lbox(B.m, "CT_WoodLight", fr, -0.9, 0.9, 0.55, 0.62, 0.3, 0.72)             # modesty panel (the desk sits against the wall)
+    # radio set: a box with a dial and an antenna, a headset, a logbook and a mug, a map on the wall
+    lbox(d, "CT_ConcreteDark", fr, 0.2, 0.75, 0.1, 0.45, 0.76, 0.98, faces="xXyYZ")
+    lbox(d, "CT_Neon", fr, 0.28, 0.5, 0.45, 0.46, 0.84, 0.92, faces="y")
+    ax, ay, _ = fr.p(0.7, 0.15)
+    cyl(d, "CT_Steel", ax, ay, z0 + 0.98, z0 + 1.7, 0.012, 4)
+    lbox(d, "CT_PlasterBlue", fr, -0.8, -0.35, 0.15, 0.5, 0.76, 0.79, faces="xXyYZ")
+    lbox(d, "CT_TileWhite", fr, -0.7, -0.45, 0.2, 0.42, 0.79, 0.81, faces="xXyYZ")
+    cyl(d, "CT_PlasterRed", *fr.p(-0.1, 0.3)[:2], z0 + 0.76, z0 + 0.86, 0.04, 6)
+    lbox(d, "CT_TileWhite", Fr(CX - 0.4, CY + 4.9, 0.0, z0), -0.9, 0.5, 0.0, 0.03, 1.3, 2.0)       # chart on the wall
+    for k in range(4):
+        lbox(d, rnd.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow")), Fr(CX - 0.4, CY + 4.9, 0.0, z0),
+             -0.8 + 0.3 * k, -0.6 + 0.3 * k, 0.03, 0.04, 1.4 + 0.1 * k, 1.5 + 0.12 * k, faces="xXyYZ")
+    # the keeper's chair behind the desk, facing +y (the sitter faces the desk)
+    fu.chair(B, CX - 0.4, CY + 3.3, 180, "CT_PlasterRed", z=z0)
+    B.spot("keeper_seat", "seat", (CX - 0.4, CY + 3.3, z0), 180.0)
+    # tall cabinet on the east wall (angle ~0 deg), with shelves and tins
+    fc = Fr(CX + 4.88, CY - 0.6, 270, z0)             # faces -x into the room; u runs -y
+    lbox(B.m, "CT_WoodLight", fc, 0.0, 1.5, 0.0, 0.5, 0.0, 2.0)
+    for k in range(5):
+        lbox(d, "CT_ConcreteDark", fc, 0.04, 0.72, 0.5, 0.52, 0.2 + 0.38 * k, 0.22 + 0.38 * k, faces="Y")
+        lbox(d, "CT_ConcreteDark", fc, 0.78, 1.46, 0.5, 0.52, 0.2 + 0.38 * k, 0.22 + 0.38 * k, faces="Y")
+    lbox(d, "CT_Steel", fc, 0.7, 0.8, 0.5, 0.56, 0.9, 1.05)
+    # a cot along the west wall, a rolled blanket on it
+    fw = Fr(CX - 4.88, CY + 0.2, 90, z0)               # faces +x; u runs +y
+    lbox(B.m, "CT_Steel", fw, -0.1, 1.9, 0.0, 0.8, 0.0, 0.38)
+    lbox(d, "CT_PlasterGreen", fw, 0.0, 1.8, 0.02, 0.78, 0.38, 0.45, faces="xXyYZ")
+    cyl(d, "CT_PlasterRed", *fw.p(1.65, 0.4)[:2], z0 + 0.45, z0 + 0.6, 0.12, 6)
+    B.spot("keeper_cot", "bench", (CX - 3.6, CY + 1.1, z0), 90.0)
+    # life rings and a rope coil by the door; lifebuoys hang on the wall beside it
+    # a rope coil by the door side
+    rx, ry = CX - 3.2, CY - 3.2
+    cyl(d, "CT_WoodLight", rx, ry, z0, z0 + 0.35, 0.28, 8, top=False)
+    cyl(d, "CT_TileWhite", rx, ry, z0 + 0.35, z0 + 0.38, 0.28, 8)
+    cyl(d, "CT_ConcreteDark", rx, ry, z0 + 0.38, z0 + 0.4, 0.1, 6)
+    # lamps: over the desk, over the cot and over the door side
+    for a_deg in (90.0, 200.0, 330.0):
+        a = math.radians(a_deg)
+        x, y = CX + 3.0 * math.cos(a), CY + 3.0 * math.sin(a)
+        B.lamp((x, y, 2.3), lumens=640, colour="#FFD8A8", kind="public", radius=7.0)
+        lbox(d, "CT_Steel", Fr(x, y), -0.008, 0.008, -0.008, 0.008, 2.38, 2.6, faces="xXyY")
 
 
 def stair(B):
@@ -237,6 +296,12 @@ def platform(B, th_end):
             _prism_pt(d, "CT_Steel", prev_top, t, 0.04)
             _prism_pt(d, "CT_Steel", prev_mid, mm, 0.03)
         prev_top, prev_mid = t, mm
+    # two lamp posts on the gallery (lit dusk to dawn: the platform is lit for people up there)
+    for a in (math.radians(75), math.radians(255)):
+        px, py = CX + (r_out - 0.2) * math.cos(a), CY + (r_out - 0.2) * math.sin(a)
+        lbox(d, "CT_Steel", Fr(px, py), -0.03, 0.03, -0.03, 0.03, PLAT_Z, PLAT_Z + 2.15, faces="xXyY")
+        cyl(d, "CT_Steel", px, py, PLAT_Z, PLAT_Z + 0.12, 0.09, 6)
+        B.lamp((px, py, PLAT_Z + 2.3), lumens=700, colour="#FFE2B8", kind="lobby", radius=9.0)
     for j, a in enumerate((math.radians(30), math.radians(120), math.radians(210), math.radians(300))):
         p = (CX + (r_out - 0.9) * math.cos(a), CY + (r_out - 0.9) * math.sin(a), PLAT_Z)
         B.spot("view%d" % (j + 1), "view", p, math.degrees(math.atan2(math.cos(a), -math.sin(a))))

@@ -275,7 +275,19 @@
    "to": null
   }
  ],
- "spots": [],
+ "spots": [
+  {
+   "id": "sbench_main_0",
+   "kind": "bench",
+   "pos": [
+    -4.8,
+    2.15,
+    0.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [],
  "flats": [
   {
    "flat": "0-01",
@@ -3215,8 +3227,8 @@
   "hex honeycomb on the back drum; loggia with curved balconies on the front drum"
  ],
  "tris": {
-  "shell": 3660,
-  "detail": 6916,
+  "shell": 3676,
+  "detail": 7008,
   "windows": 262
  }
 }

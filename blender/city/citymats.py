@@ -37,6 +37,8 @@ MATERIALS = {
     "CT_Grass":         ("#4F6B33", 1.0, None, 1.0, "roof garden turf"),
     "CT_Interior":      ("#C9C0B0", 0.9, "plaster_white", 2.0, "inside walls of enterable halls"),
     "CT_Floor":         ("#8B8279", 0.7, "concrete", 1.0, "terrazzo-ish inside floors"),
+    "CT_Opal":          ("#FFF4E0", 0.3, None, 1.0, "opal glass of lamp fixtures (glows)"),
+    "CT_WoodLight":     ("#B48A5E", 0.6, "timber_stained", 1.0, "light varnished wood: school desks, café tables, counters"),
     "CT_Neon":          ("#FF6A3D", 0.4, None, 1.0, "neon letters / lamp glow (emissive at night)"),
     # windows: one opaque card per window (dark glass by day, a lit room at night); not in the shell
     "CT_Window":        ("#1F2A30", 0.05, None, 1.0, "window card: UV0 0..1 over the pane, UV1 = its light texel"),
@@ -44,4 +46,4 @@ MATERIALS = {
 }
 
 # Materials that emit at night (Unreal: driven by the light texture or the building's hours).
-EMISSIVE = {"CT_Window", "CT_Neon"}
+EMISSIVE = {"CT_Window", "CT_Neon", "CT_Opal"}

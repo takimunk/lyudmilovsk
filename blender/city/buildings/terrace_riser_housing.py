@@ -20,6 +20,7 @@ import math
 import random
 
 from citykit import box, prism, extrude_profile, DOOR_W, DOOR_H
+from _surrounds import add_surrounds
 
 INFO = {
     "name_ru": "Террасный дом у лестницы", "name_en": "Terrace Riser Housing",
@@ -103,6 +104,15 @@ def _slats(B, x0, x1, y, z0, z1, mat="CT_Wood", pitch=0.14):
 
 
 DOOR_COLOURS = ["CT_SteelRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_Wood", "CT_PlasterRed", "CT_PlasterPink"]
+# ---- per-plot variant parameters
+SLAT = "CT_Wood"            # window screens (slat screens and sliding panels)
+SEED = 1978                 # shrubs and planters
+VARIANTS = {
+    "P-RISER1": {},
+    "P-RISER2": {"SLAT": "CT_SteelWhite", "SEED": 2011,
+                 "DOOR_COLOURS": ["CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink", "CT_Steel", "CT_PlasterYellow",
+                                  "CT_Copper"]},
+}
 
 
 def _door_dressing(B, x, y, z, colour):
@@ -114,7 +124,7 @@ def _door_dressing(B, x, y, z, colour):
 
 
 def build(B):
-    rnd = random.Random(1978)
+    rnd = random.Random(SEED)
     m = B.m
     # ---------------------------------------------------------------- the stair
     _stair(B)
@@ -181,9 +191,9 @@ def build(B):
                 span = win_x1 - win_x0
                 if (i + k) % 3 != 1:
                     sx0, sx1 = (win_x0 + 0.1, win_x0 + span * 0.55) if (i + k) % 2 == 0 else (win_x1 - span * 0.55, win_x1 - 0.1)
-                    _slats(B, sx0, sx1, y0 - 0.35, wz0 - 0.1, wz1 + 0.1)
+                    _slats(B, sx0, sx1, y0 - 0.35, wz0 - 0.1, wz1 + 0.1, mat=SLAT)
                 else:
-                    box(B.detail, "CT_Wood", win_x0 + 0.1, win_x0 + span * 0.5, y0 - 0.38, y0 - 0.33, wz0 - 0.1, wz1 + 0.1)
+                    box(B.detail, SLAT, win_x0 + 0.1, win_x0 + span * 0.5, y0 - 0.38, y0 - 0.33, wz0 - 0.1, wz1 + 0.1)
                 # party-wall fins between the flats (thin concrete ribs projecting into the garden)
                 if i > 0:
                     box(B.detail, "CT_Concrete", fx0 - 0.12, fx0 + 0.12, y0 - 0.5, y0, f, zt - 0.1)
@@ -249,7 +259,7 @@ def build(B):
         for j, (u0, u1) in enumerate(wins):
             B.facade_window(Fu, u0, u1, UPPER_Z0 + 0.4, UPPER_Z0 + 2.0, flat=fid, cols=2, rows=1)
             if j % 2 == 0:
-                _slats(B, wx0 + u0 + 0.1, wx0 + u1 - 0.1, UPPER_Y0 - 0.35, UPPER_Z0 + 0.3, UPPER_Z0 + 2.1)
+                _slats(B, wx0 + u0 + 0.1, wx0 + u1 - 0.1, UPPER_Y0 - 0.35, UPPER_Z0 + 0.3, UPPER_Z0 + 2.1, mat=SLAT)
         # back facade (towards the upper terrace) with two windows
         p0, p1 = ((wx1, 18.0), (wx0, 18.0))
         hb = [(1.2, 3.0, UPPER_Z0 + 0.8, UPPER_Z0 + 1.9), (7.0, 8.8, UPPER_Z0 + 0.8, UPPER_Z0 + 1.9)]
@@ -321,6 +331,7 @@ def build(B):
     B.footprint = [(-XE, -0.3), (XE, -0.3), (XE, 18.0), (-XE, 18.0)]
     B.height = UPPER_Z1 + 2.6
     B.note("stepped terrace housing: %d flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)" % len(B.flats))
+    add_surrounds(B, kinds=("street", "flat_door"), max_z=8.0, bounds=(-XE, XE, -0.3, 18.0), seed=4)
 
 
 def _slope_rail(B, x, y0, z0, n, r):

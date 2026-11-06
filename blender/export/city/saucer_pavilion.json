@@ -767,6 +767,228 @@
    "yaw": 65.0
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    6.568,
+    14.76,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    4.808,
+    17.808,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -4.808,
+    17.808,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.568,
+    14.76,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.568,
+    11.24,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -4.808,
+    8.192,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -1.76,
+    6.432,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    1.76,
+    6.432,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    4.808,
+    8.192,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    6.568,
+    11.24,
+    6.35
+   ],
+   "lumens": 700,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    9.4,
+    13.0,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    4.7,
+    21.141,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -4.7,
+    21.141,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -9.4,
+    13.0,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -4.7,
+    4.859,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    4.7,
+    4.859,
+    7.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    2.381,
+    21.887,
+    7.25
+   ],
+   "lumens": 600,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -2.381,
+    21.887,
+    7.25
+   ],
+   "lumens": 600,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    0.0,
+    4.0,
+    2.85
+   ],
+   "lumens": 450,
+   "colour": "#FFD2A0",
+   "kind": "lobby",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    0.0,
+    8.0,
+    2.85
+   ],
+   "lumens": 450,
+   "colour": "#FFD2A0",
+   "kind": "lobby",
+   "radius": 5.0
+  }
+ ],
  "flats": [],
  "windows": [
   {
@@ -2329,8 +2551,8 @@
   "saucer hall at z 4.3; entrance tunnel -> glazed spiral core; closed underside"
  ],
  "tris": {
-  "shell": 2656,
-  "detail": 3458,
+  "shell": 4292,
+  "detail": 8528,
   "windows": 148
  }
 }

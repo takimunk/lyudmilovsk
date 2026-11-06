@@ -16,6 +16,9 @@ import math
 
 from citykit import box, prism, DOOR_H  # noqa: F401
 import geom
+import random
+import furn_int3 as fu
+from furn_int3 import Fr, lbox, cyl, blob
 
 INFO = {
     "name_ru": "Остановка-киоск", "name_en": "Bus-stop Kiosk",
@@ -138,7 +141,7 @@ def build(B):
     B.facade_window(F2, 0.55, 1.45, 1.0, 2.05, kind="public")
     # right (door hole)
     F3 = B.facade((kx1, ky0), (kx1, ky1), 0.0, kh, "CT_TileWhite", holes=[(0.9, 1.8, 0.0, 2.0)], depth=W)
-    box(d, "CT_Door", kx1 - W + 0.03, kx1 - W + 0.08, ky0 + 0.9, ky0 + 1.8, 0.02, 2.0)
+    # (the door leaf comes from the game's door actor: the hole stays open so the room reads from outside)
     B.entrance("staff", (kx1, 3.55, 0.0), 90.0, width=0.9, height=2.0, kind="service")
     # the back wall of the kiosk is the concrete wall; floor and roof
     box(m, "CT_Floor", kx0 - W, kx1, ky0 - W, ky1, 0.0, 0.02, faces="Z")
@@ -158,6 +161,38 @@ def build(B):
         box(d, "CT_Wood", bx0, bx1, 3.45 + j * 0.17, 3.45 + j * 0.17 + 0.14, 0.42, 0.47)
     # litter bin / pillar tiling accent
     box(m, "CT_Steel", -2.95, -2.7, 0.2, 0.45, 0.0, 0.75)
+    # ---- the kiosk's goods: counter, freezer, soda shelves, newspaper rack, lamp
+    rnd = random.Random(1964)
+    PACK = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_TileWhite", "CT_PlasterPink"]
+    box(m, "CT_WoodLight", kx0 + 0.15, kx1 - 0.15, ky0 + 0.15, ky0 + 0.7, 0.02, 0.92)          # the counter under the hatch
+    box(d, "CT_ConcreteDark", kx0 + 0.15, kx1 - 0.15, ky0 + 0.13, ky0 + 0.72, 0.92, 0.96)
+    # soda bottles in two rows on the counter, with a till and a cash tray
+    for row, yy in enumerate((ky0 + 0.35, ky0 + 0.52)):
+        for i in range(9):
+            cyl(d, PACK[(i + row) % 4], kx0 + 0.5 + i * 0.16, yy, 0.96, 0.96 + 0.2, 0.032, 5)
+            cyl(d, "CT_Steel", kx0 + 0.5 + i * 0.16, yy, 1.16, 1.2, 0.012, 4)
+    box(d, "CT_Steel", kx1 - 0.65, kx1 - 0.3, ky0 + 0.35, ky0 + 0.62, 0.96, 1.15)
+    # ice-cream freezer under the left (side) window: an open white chest with ice-cream tubs
+    box(m, "CT_TileWhite", kx0 + 0.15, kx0 + 0.75, 3.05, 4.15, 0.02, 0.7)
+    for j in range(5):
+        for i in range(2):
+            box(d, rnd.choice(["CT_PlasterPink", "CT_PlasterBlue", "CT_PlasterYellow", "CT_TileWhite", "CT_PlasterGreen"]),
+                kx0 + 0.22 + i * 0.25, kx0 + 0.42 + i * 0.25, 3.12 + j * 0.2, 3.26 + j * 0.2, 0.7, 0.88, faces="xXyYZ")
+    # soda / snack shelves on the back wall beside the door
+    fu.shelving(B, Fr(1.3, 4.2 - 0.0, 0), -0.55, 0.65, rnd, depth=0.3, tiers=4, zmax=2.2, z0=0.2, kind="box", mats=PACK)
+    # newspaper rack on the outside of the left wall near the back
+    rx = kx0 - 0.04
+    box(d, "CT_Steel", rx - 0.4, rx, 3.65, 4.1, 0.0, 0.05)
+    box(d, "CT_Steel", rx - 0.03, rx, 3.65, 4.1, 0.05, 1.55)
+    for zz in (0.45, 0.85, 1.25):
+        box(d, "CT_Steel", rx - 0.3, rx, 3.65, 4.1, zz, zz + 0.025)
+        box(d, "CT_Steel", rx - 0.3, rx - 0.27, 3.65, 4.1, zz, zz + 0.12)
+        for k in range(3):
+            box(d, rnd.choice(["CT_TileWhite", "CT_PlasterYellow", "CT_PlasterPink", "CT_TileWhite"]),
+                rx - 0.26, rx - 0.04, 3.7 + 0.14 * k, 3.82 + 0.14 * k, zz + 0.025, zz + 0.07 + 0.015 * k, faces="xXyYZ")
+    # one lamp
+    B.lamp((1.7, 3.3, 2.2), lumens=480, colour="#FFD2A0", kind="public", radius=4.5)
+    box(d, "CT_Steel", 1.69, 1.71, 3.29, 3.31, 2.28, kh, faces="xXyY")
     # ---- life
     B.spot("bench", "bench", (-1.25, 3.7, 0.0), 0.0)
     B.spot("counter", "counter", (1.5, 3.2, 0.0), 0.0)

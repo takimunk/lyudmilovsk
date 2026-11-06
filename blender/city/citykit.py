@@ -171,12 +171,12 @@ class Building:
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
         long: interiors need it), "stair"/"lobby": dusk to dawn. fixture: a small opal globe/pendant into B.detail
-        (material CT_Neon, which glows at night)."""
+        (material CT_Opal, which glows)."""
         self.lamps.append({"pos": [round(v, 3) for v in pos], "lumens": lumens, "colour": colour, "kind": kind,
                            "radius": radius})
         if fixture:
             x, y, z = pos
-            box(self.detail, "CT_Neon", x - 0.18, x + 0.18, y - 0.18, y + 0.18, z - 0.08, z + 0.08)
+            box(self.detail, "CT_Opal", x - 0.18, x + 0.18, y - 0.18, y + 0.18, z - 0.08, z + 0.08)
 
     # ---------------------------------------------------------------- solids
     def slab(self, poly, z0, z1, mat="CT_Concrete", m=None):

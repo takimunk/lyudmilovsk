@@ -423,6 +423,121 @@
     7.46
    ],
    "yaw": 90.0
+  },
+  {
+   "id": "sbench_t1e0_3",
+   "kind": "bench",
+   "pos": [
+    3.233,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t1w0_4",
+   "kind": "bench",
+   "pos": [
+    -15.3,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t1w1_5",
+   "kind": "bench",
+   "pos": [
+    -3.833,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t2e0_6",
+   "kind": "bench",
+   "pos": [
+    6.6,
+    9.37,
+    4.7
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t2w0_7",
+   "kind": "bench",
+   "pos": [
+    -18.667,
+    9.37,
+    4.7
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3e0_8",
+   "kind": "bench",
+   "pos": [
+    5.05,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3e1_9",
+   "kind": "bench",
+   "pos": [
+    17.65,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3w0_10",
+   "kind": "bench",
+   "pos": [
+    -12.9,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    10.433,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -13.3,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -12.633,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
   }
  ],
  "flats": [
@@ -2110,8 +2225,8 @@
   "stepped terrace housing: 24 flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)"
  ],
  "tris": {
-  "shell": 3016,
-  "detail": 15582,
+  "shell": 3448,
+  "detail": 18290,
   "windows": 124
  }
 }

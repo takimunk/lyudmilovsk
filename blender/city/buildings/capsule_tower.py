@@ -4,7 +4,9 @@ Metabolism (prefab capsules on cores), not a copy of any building."""
 import math
 import random
 
+import furn_int3 as fu
 from citykit import box, prism, ring, DOOR_W, DOOR_H
+from _surrounds import add_surrounds
 
 INFO = {
     "name_ru": "Капсульная башня", "name_en": "Capsule Tower",
@@ -18,6 +20,13 @@ STOREYS = 13
 CORE = 5.2                                    # each core is CORE x CORE
 GAP = 2.4                                     # the bridge between the two cores
 WIN_R = 0.62
+# ---- per-plot variant parameters
+SEED = 1972                                   # capsule layout (which capsules are missing, tilts)
+CAPS = ("CT_Aluminium",)                      # capsule skin colours, picked at random per capsule
+VARIANTS = {
+    "P-CAPSULE": {"SEED": 1981, "CAPS": ("CT_Aluminium", "CT_Aluminium", "CT_PlasterRed")},
+    "P-T5H1": {"SEED": 2007, "STOREYS": 15, "CAPS": ("CT_SteelWhite", "CT_SteelWhite", "CT_PlasterYellow", "CT_PlasterBlue")},
+}
 
 
 def _round_window(B, cx, cz, face_y, out, flat, axis="y", fx=None):
@@ -53,7 +62,8 @@ def _round_window(B, cx, cz, face_y, out, flat, axis="y", fx=None):
 
 
 def build(B):
-    rnd = random.Random(1972)
+    rnd = random.Random(SEED)
+    crnd = random.Random(SEED + 1)
     W = CORE * 2 + GAP
     x0 = -W / 2
     cores = [(x0, x0 + CORE), (x0 + CORE + GAP, x0 + W)]
@@ -92,6 +102,15 @@ def build(B):
                      kind="public", inset=0.0, frame=0.06)
     box(B.m, "CT_Steel", -2.0, 2.0, -0.6, lob[2], 3.3, 3.45)                                # canopy
     B.entrance("main", (0.0, lob[2], 0.0), 0.0, width=DOOR_W * 2, leaves=2, kind="street")
+    # lobby furnishing: letter boxes on each core's street face, a doormat, plants, two lamps under the roof slab
+    for (cx0_, cx1_) in cores:
+        fu.mailboxes(B, fu.Fr((cx0_ + cx1_) / 2, y0, 0.0, 0.0), 0.0, 1.0, cols=6, rows=3)
+    fu.doormat(B, fu.Fr(0.0, lob[2], 0.0, 0.0), 0.0, -0.6, size=(1.4, 0.7))
+    fu.plant(B, 3.4, lob[2] + 1.0, 0.0, 0.9, "CT_PlasterRed")
+    fu.plant(B, -6.2, lob[2] + 1.3, 0.0, 0.9, "CT_PlasterBlue")
+    for lx_ in (-3.0, 3.0):
+        B.lamp((lx_, 3.6, 3.3), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0)
+        box(B.detail, "CT_Steel", lx_ - 0.01, lx_ + 0.01, 3.59, 3.61, 3.38, 3.6, faces="xXyY")
     # capsules: on the outer faces of the cores, staggered, each a flat
     n_flat = 0
     sides = []
@@ -118,7 +137,7 @@ def build(B):
                         ya, yb = y1, y1 + CAP_D
                         face, out = yb, 1
                     za = zf + tilt
-                    box(B.m, "CT_Aluminium", u, u + CAP_W, ya, yb, za, za + CAP_H)
+                    box(B.m, crnd.choice(CAPS), u, u + CAP_W, ya, yb, za, za + CAP_H)
                     k += 1
                     fid = "%d-%02d" % (s, k)
                     B.flat(fid, storey=s, beds=1, door=((u + CAP_W / 2), y0 if side == "front" else y1, zf + 0.3),
@@ -134,7 +153,7 @@ def build(B):
                         continue
                     v = y0 + 0.1 + i * (CAP_W + 0.4)
                     za = zf + rnd.choice((0, 0, 0.35))
-                    box(B.m, "CT_Aluminium", xs[0], xs[1], v, v + CAP_W, za, za + CAP_H)
+                    box(B.m, crnd.choice(CAPS), xs[0], xs[1], v, v + CAP_W, za, za + CAP_H)
                     k += 1
                     fid = "%d-%02d" % (s, k)
                     fx = xs[0] if ci == 0 else xs[1]
@@ -145,3 +164,4 @@ def build(B):
     B.height = top + 2.4
     B.spot("lobby_bench", "bench", (-3.0, lob[2] + 1.5, 0.0), 0.0)
     B.note("%d capsule flats on %d storeys; capsules jut %.1f m over the street line at the front" % (n_flat, STOREYS, CAP_D - y0 if CAP_D > y0 else 0))
+    add_surrounds(B, seed=6)

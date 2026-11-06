@@ -17,6 +17,8 @@ import math
 
 from citykit import box, prism
 import geom
+import furn_int3 as fu
+from furn_int3 import Fr, lbox, cyl
 
 INFO = {
     "name_ru": "Спасательная вышка", "name_en": "Lifeguard Tower",
@@ -108,6 +110,33 @@ def build(B):
     while z < DECK_Z1 + 0.8:
         box(d, "CT_Steel", -0.25, 0.25, ly - 0.015, ly + 0.015, z, z + 0.03)
         z += 0.3
+    # ---- the cabin's furniture (inner floor z = DECK_Z1; the hatch x -0.4..0.4, y 1.15..1.88 and the path from it to
+    # the back door (x -0.6..0.3, y 3.3) stay clear)
+    z0 = DECK_Z1
+    # a shelf-desk along the right wall under the windows, with the first-aid box, a logbook and a flask
+    box(m, "CT_Wood", 0.62, 1.15, 1.6, 2.95, z0, z0 + 0.84)
+    box(d, "CT_ConcreteDark", 0.6, 1.15, 1.58, 2.97, z0 + 0.84, z0 + 0.88)
+    box(d, "CT_TileWhite", 0.72, 1.08, 1.7, 2.1, z0 + 0.88, z0 + 1.14, faces="xXyYZ")            # first-aid box
+    box(d, "CT_SteelRed", 0.9 - 0.02, 0.9 + 0.02, 1.7 - 0.005, 1.7, z0 + 0.94, z0 + 1.08, faces="y")
+    box(d, "CT_SteelRed", 0.9 - 0.07, 0.9 + 0.07, 1.7 - 0.005, 1.7, z0 + 1.0, z0 + 1.02, faces="y")
+    box(d, "CT_PlasterBlue", 0.78, 1.04, 2.35, 2.65, z0 + 0.88, z0 + 0.92, faces="xXyYZ")        # logbook
+    cyl(d, "CT_Steel", 0.9, 2.82, z0 + 0.88, z0 + 1.1, 0.045, 6)                                 # flask
+    # binoculars on a tripod by the front window
+    bx, by = -0.75, 1.2
+    top = z0 + 1.15
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        fu.rod(d, "CT_Steel", (bx, by, top), (bx + 0.28 * math.cos(a), by + 0.28 * math.sin(a), z0), 0.025)
+    box(d, "CT_Steel", bx - 0.02, bx + 0.02, by - 0.02, by + 0.02, top, top + 0.1)
+    box(d, "CT_ConcreteDark", bx - 0.12, bx + 0.12, by - 0.16, by + 0.06, top + 0.1, top + 0.22, faces="xXyYZ")
+    for dx in (-0.06, 0.06):
+        cyl(d, "CT_Steel", bx + dx, by - 0.2, top + 0.13, top + 0.2, 0.045, 6)
+    B.spot("binoculars", "stand", (bx, by + 0.45, z0), 0.0)
+    # the lookout's chair at the left window
+    fu.chair(B, -0.82, 2.45, 270, "CT_PlasterRed", z=z0)
+    B.spot("chair", "seat", (-0.82, 2.45, z0), 270.0)
+    B.lamp((0.0, 2.2, z0 + 2.2), lumens=450, colour="#FFE8C8", kind="public", radius=4.5)
+    box(d, "CT_Steel", -0.01, 0.01, 2.19, 2.21, z0 + 2.28, WALL_Z1, faces="xXyY")
     B.entrance("ladder", (0.0, ly - 0.05, 0.5), 0.0, width=0.5, height=2.0, kind="service")
     B.spot("view", "view", (0.0, 2.6, DECK_Z1), 0.0)
     B.footprint = [(-2.0, 0.0), (2.0, 0.0), (2.0, 4.0), (-2.0, 4.0)]

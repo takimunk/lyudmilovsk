@@ -45,6 +45,26 @@
  ],
  "spots": [
   {
+   "id": "binoculars",
+   "kind": "stand",
+   "pos": [
+    -0.75,
+    1.65,
+    5.6
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "chair",
+   "kind": "seat",
+   "pos": [
+    -0.82,
+    2.45,
+    5.6
+   ],
+   "yaw": 270.0
+  },
+  {
    "id": "view",
    "kind": "view",
    "pos": [
@@ -53,6 +73,19 @@
     5.6
    ],
    "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    0.0,
+    2.2,
+    7.8
+   ],
+   "lumens": 450,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 4.5
   }
  ],
  "flats": [],
@@ -187,8 +220,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 406,
-  "detail": 660,
+  "shell": 418,
+  "detail": 878,
   "windows": 12
  }
 }

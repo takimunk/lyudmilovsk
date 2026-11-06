@@ -773,6 +773,437 @@
    "yaw": -41.5145353293965
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    -35.327,
+    29.058,
+    2.6
+   ],
+   "lumens": 520,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -11.623,
+    28.864,
+    2.6
+   ],
+   "lumens": 520,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    1.085,
+    45.586,
+    2.6
+   ],
+   "lumens": 520,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    25.088,
+    37.963,
+    2.6
+   ],
+   "lumens": 520,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    40.926,
+    32.36,
+    2.6
+   ],
+   "lumens": 520,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -47.164,
+    38.074,
+    4.813
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -42.305,
+    33.02,
+    4.426
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -36.804,
+    28.949,
+    4.028
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -30.862,
+    26.226,
+    4.235
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -24.758,
+    26.046,
+    4.475
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -18.913,
+    28.413,
+    4.099
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -13.086,
+    31.865,
+    3.644
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -7.885,
+    36.472,
+    3.984
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -2.542,
+    41.114,
+    4.782
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    3.324,
+    45.497,
+    4.906
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    10.633,
+    47.885,
+    4.205
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    18.17,
+    46.227,
+    3.727
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    24.572,
+    42.616,
+    4.033
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    30.066,
+    38.077,
+    4.406
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    35.637,
+    33.829,
+    4.199
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    41.052,
+    29.719,
+    3.939
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    46.616,
+    26.334,
+    4.321
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -46.351,
+    32.937,
+    4.658
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -40.754,
+    28.577,
+    4.134
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -34.814,
+    24.368,
+    4.086
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -27.463,
+    22.315,
+    4.43
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -19.814,
+    23.563,
+    4.329
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -13.698,
+    27.758,
+    3.778
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -8.36,
+    32.473,
+    3.727
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -3.004,
+    36.951,
+    4.46
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    2.483,
+    40.975,
+    4.983
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    8.433,
+    43.415,
+    4.55
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    14.492,
+    44.15,
+    3.837
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    20.531,
+    41.922,
+    3.831
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    26.049,
+    37.977,
+    4.303
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    31.178,
+    33.282,
+    4.349
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    36.278,
+    28.304,
+    3.993
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    42.587,
+    24.553,
+    4.08
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    48.612,
+    22.664,
+    4.735
+   ],
+   "lumens": 170,
+   "colour": "#FFD9A0",
+   "kind": "lobby",
+   "radius": 6.0
+  }
+ ],
  "flats": [],
  "windows": [
   {
@@ -786,9 +1217,9 @@
     1.725
    ],
    "normal": [
-    0.526,
-    0.851,
-    -0.0
+    -0.526,
+    -0.851,
+    0.0
    ],
    "size": [
     3.3,
@@ -807,8 +1238,8 @@
     1.725
    ],
    "normal": [
-    0.626,
-    -0.78,
+    -0.626,
+    0.78,
     0.0
    ],
    "size": [
@@ -828,8 +1259,8 @@
     1.725
    ],
    "normal": [
-    -0.517,
-    0.856,
+    0.517,
+    -0.856,
     0.0
    ],
    "size": [
@@ -849,9 +1280,9 @@
     1.725
    ],
    "normal": [
-    -0.63,
-    -0.777,
-    0.0
+    0.63,
+    0.777,
+    -0.0
    ],
    "size": [
     3.3,
@@ -870,9 +1301,9 @@
     1.725
    ],
    "normal": [
-    0.598,
-    0.801,
-    -0.0
+    -0.598,
+    -0.801,
+    0.0
    ],
    "size": [
     3.3,
@@ -886,8 +1317,8 @@
   "canopy 123 m long (arc), 28 columns, 5 kiosks, 10 benches"
  ],
  "tris": {
-  "shell": 9236,
-  "detail": 60,
+  "shell": 10988,
+  "detail": 15446,
   "windows": 10
  }
 }

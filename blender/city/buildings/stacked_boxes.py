@@ -22,6 +22,7 @@ plain core face), and a sloped railing helper would be handy.
 import math
 import random
 
+import furn_int3 as fu
 from citykit import box, prism, Mesh, Facade, extrude_profile
 
 INFO = {
@@ -375,6 +376,12 @@ def build(B):
         m.face("CT_Floor", [(xa + 0.3, 0.3, 0.03), (xb - 0.3, 0.3, 0.03), (xb - 0.3, Y0 - 0.3, 0.03), (xa + 0.3, Y0 - 0.3, 0.03)])
         B.entrance(ent_of_canyon[j], ((xa + xb) / 2, 0.0, 0.0), 0.0, width=2.2, height=2.45, kind="street", leaves=2)
         B.spot("bench_%s" % ent_of_canyon[j], "bench", ((xa + xb) / 2 + 3.2, -0.6, 0.0), 0.0)
+        # lobby furnishing (floor z 0.03, inner walls 0.3 thick): letter boxes on the left wall, a mat, a plant, a lamp
+        fu.mailboxes(B, fu.Fr(xa + 0.3, 0.3, 90.0, 0.03), 1.5, 0.95, cols=3, rows=3)
+        fu.doormat(B, fu.Fr((xa + xb) / 2, 0.3, 0.0, 0.03), 0.0, -0.45)
+        fu.plant(B, xb - 0.75, Y0 - 0.7, 0.03, 0.9, "CT_PlasterRed")
+        B.lamp(((xa + xb) / 2, Y0 / 2, 2.4), lumens=380, colour="#FFE0B0", kind="lobby", radius=4.5)
+        box(d, "CT_Steel", (xa + xb) / 2 - 0.01, (xa + xb) / 2 + 0.01, Y0 / 2 - 0.01, Y0 / 2 + 0.01, 2.48, 2.7, faces="xXyY")
     # front yard planters with trees under each bay
     for c in range(NC):
         x0, x1 = bx0(c) + 0.6, bx0(c) + BW - 0.6

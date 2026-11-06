@@ -279,6 +279,147 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "lounge_1",
+   "kind": "seat",
+   "pos": [
+    7.0,
+    12.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lounge_2",
+   "kind": "seat",
+   "pos": [
+    8.0,
+    11.9,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lounge_3",
+   "kind": "seat",
+   "pos": [
+    9.0,
+    12.9,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "piano",
+   "kind": "seat",
+   "pos": [
+    9.426,
+    14.24,
+    0.0
+   ],
+   "yaw": 135.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -9.235,
+    14.18,
+    3.4
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -7.042,
+    12.756,
+    3.4
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -4.635,
+    11.734,
+    3.4
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -8.604,
+    13.713,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -5.13,
+    11.905,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -2.088,
+    11.146,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    2.088,
+    11.146,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    6.101,
+    12.297,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    8.817,
+    13.865,
+    4.2
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7
   }
  ],
  "flats": [
@@ -12443,8 +12584,8 @@
   "120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable; entrance at (0, 8)"
  ],
  "tris": {
-  "shell": 15632,
-  "detail": 14288,
+  "shell": 15926,
+  "detail": 16530,
   "windows": 986
  }
 }

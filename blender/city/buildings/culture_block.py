@@ -20,8 +20,9 @@ Material requests: none (a painted-timber material for the door surround would b
 import math
 import random
 
-from citykit import box, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes, triangulate
+from citykit import box, prism, ring, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes, triangulate
 import geom
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Дом культуры и спорта", "name_en": "Culture Block",
@@ -231,6 +232,98 @@ def inner_skin(B, x0, x1, y0, y1, t, z0, z1, hole_sets, mat="CT_Interior"):
         B.m.extend(Fi.apply(mi))
 
 
+def _furnish_hall(B, hx0, hx1, hy0, hy1):
+    """Round 2: the brick hall (inner x -18.6..18.6, y 1.4..12.6): workshop, ping-pong, exhibition, cafe, lamps."""
+    f = Furn(B)
+    d = B.detail
+    WARM = "#FFD2A0"
+
+    def soffit(y):
+        return 6.0 + 0.6 * ((y - hy0) % 4.0)
+    # ---- workshop benches: tools, stools, clamps
+    for i, wx in enumerate((4.0, 9.0, 14.0)):
+        f.stool(wx - 0.9, 5.9, seat=("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue")[i])
+        f.stool(wx + 0.9, 5.9, seat=("CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterYellow")[i])
+        box(d, "CT_Steel", wx - 1.2, wx - 0.9, 4.3, 4.6, 0.94, 1.04)                       # vice
+        box(d, "CT_Wood", wx - 0.6, wx + 0.3, 4.45, 4.75, 0.94, 0.99)                      # a plank
+        box(d, "CT_Wood", wx - 0.5, wx + 0.5, 4.8, 5.05, 0.94, 0.97)
+        for k, mat in enumerate(("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")):
+            prism(d, mat, ring(wx + 0.55 + 0.17 * k, 4.6, 0.065, 6), 0.94, 1.06, top=True, bottom=False)    # paint pots
+        box(d, "CT_Frame", wx + 0.95, wx + 1.3, 4.35, 4.6, 0.94, 0.99)
+    f.shelf(-9.0, 12.4, w=3.4, d=0.4, h=2.3, yaw=0.0, rows=5, seed=1)                      # materials on the back wall
+    f.shelf(0.0, 12.4, w=3.4, d=0.4, h=2.3, yaw=0.0, rows=5, seed=5)
+    # ---- the two long tables: chairs on both sides, a bowl of fruit and sketchbooks
+    for tx in (-12.0, -6.0):
+        for dx in (-1.0, 0.0, 1.0):
+            f.chair(tx + dx, 7.1 - 0.95, yaw=180.0, seat="CT_PlasterYellow" if tx < -9 else "CT_PlasterBlue")
+            f.chair(tx + dx, 7.1 + 0.95, yaw=0.0, seat="CT_PlasterYellow" if tx < -9 else "CT_PlasterBlue")
+        for k, mat in enumerate(("CT_TileWhite", "CT_PlasterRed", "CT_PlasterGreen", "CT_TileWhite")):
+            box(d, mat, tx - 1.2 + k * 0.6, tx - 0.8 + k * 0.6, 6.8, 7.1 + 0.15 * (k % 2), 0.78, 0.8)
+    # ---- ping-pong
+    px, py = -1.0, 9.5
+    box(B.m, "CT_PlasterBlue", px - 1.37, px + 1.37, py - 0.76, py + 0.76, 0.7, 0.76)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            box(B.m, "CT_Steel", px + sx * 1.2 - 0.04, px + sx * 1.2 + 0.04, py + sy * 0.65 - 0.04, py + sy * 0.65 + 0.04, 0.0, 0.7)
+    box(d, "CT_TileWhite", px - 0.01, px + 0.01, py - 0.76, py + 0.76, 0.76, 0.76 + 0.15)               # net
+    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py - 0.01, py + 0.01, 0.761, 0.763, faces="Z")
+    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py - 0.74, py - 0.72, 0.761, 0.763, faces="Z")
+    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py + 0.72, py + 0.74, 0.761, 0.763, faces="Z")
+    B.spot("pingpong_a", "stand", (px - 2.1, py, 0.0), 90.0)
+    B.spot("pingpong_b", "stand", (px + 2.1, py, 0.0), 270.0)
+    f.bench(-4.6, 11.9, yaw=0.0, w=1.6, back=True)
+    # ---- cafe: bar stools, espresso machine, cups, hanging menu, round tables
+    for sx in (11.2, 12.2, 14.8, 15.8):
+        f.stool(sx, 10.6, seat="CT_PlasterRed")
+    box(d, "CT_Steel", 10.4, 11.2, 11.45, 11.9, 1.14, 1.5)
+    box(d, "CT_SteelRed", 10.4, 11.2, 11.45, 11.9, 1.5, 1.56)
+    for k in range(5):
+        f.cup(12.3 + k * 0.35, 11.6, 1.14, mat=("CT_TileWhite", "CT_PlasterYellow")[k % 2])
+    f.tray(15.6, 11.7, 1.14)
+    box(d, "CT_PlasterRed", 10.05, 16.95, 11.17, 11.2, 0.15, 0.95, faces="y")
+    f.panel(13.5, 11.35, 3.0, 4.2, 0.7, 0.0, mat="CT_Frame", frame="CT_Wood")
+    for k in range(4):
+        box(d, "CT_TileWhite", 11.6 + k * 1.0, 12.4 + k * 1.0, 11.28, 11.30, 2.85, 3.2, faces="y")
+    for sx in (11.5, 15.5):
+        box(d, "CT_Steel", sx - 0.01, sx + 0.01, 11.34, 11.36, 3.3, soffit(11.35))
+    for i, (tx, ty) in enumerate(((9.0, 9.3), (12.5, 8.0), (16.0, 8.6))):
+        f.round_table(tx, ty, r=0.45, h=0.75, top="CT_TileWhite")
+        f.chair(tx - 0.75, ty, yaw=90.0, seat="CT_PlasterRed")
+        f.chair(tx + 0.75, ty, yaw=270.0, seat="CT_PlasterRed")
+        f.cup(tx, ty, 0.75, mat="CT_PlasterYellow")
+        B.spot("cafe_table_%d" % (i + 1), "table", (tx, ty, 0.0), 0.0)
+    # ---- exhibition: free-standing double-sided panels along the west bay + wall panels
+    for i, y in enumerate((4.6, 7.8, 11.0)):
+        box(B.m, "CT_Wood", -16.6, -16.54, y - 1.1, y + 1.1, 0.25, 2.3)
+        for sx in (-1, 1):
+            box(B.m, "CT_Steel", -16.75, -16.4, y + sx * 0.95 - 0.04, y + sx * 0.95 + 0.04, 0.0, 0.25)
+        for j, (mat, ox) in enumerate((("CT_PlasterRed", -0.55), ("CT_PlasterYellow", 0.45), ("CT_PlasterBlue", -0.1))):
+            w = 0.7 if j < 2 else 0.5
+            box(d, mat, -16.5, -16.46, y + ox - w / 2, y + ox + w / 2, 0.9 + 0.5 * (j % 2), 1.6 + 0.4 * (j % 2), faces="X")
+            box(d, mat, -16.68, -16.64, y + ox - w / 2 + 0.1, y + ox + w / 2 + 0.1, 1.0 + 0.3 * (j % 2), 1.6 + 0.3 * (j % 2), faces="x")
+        B.spot("exhibit_%d" % i, "view", (-15.4, y, 0.0), 90.0)
+    f.panel(9.0, 12.6, 1.9, 3.2, 1.7, 0.0, mat="CT_PlasterPink", frame="CT_Frame")
+    f.panel(-4.6, 1.4, 1.9, 2.6, 1.5, 180.0, mat="CT_PlasterGreen", frame="CT_Frame")
+    f.panel(4.5, 1.4, 1.9, 2.6, 1.5, 180.0, mat="CT_PlasterYellow", frame="CT_Frame")
+    f.panel(-18.6, 11.0, 1.9, 2.2, 1.4, 90.0, mat="CT_PlasterBlue", frame="CT_Frame")
+    f.panel(18.6, 11.0, 1.9, 2.2, 1.4, 270.0, mat="CT_PlasterRed", frame="CT_Frame")
+    for px_, py_, mat in ((-18.0, 12.0, "CT_PlasterRed"), (18.1, 12.1, "CT_TileWhite"), (-3.4, 2.2, "CT_PlasterRed"), (3.4, 2.2, "CT_TileWhite"),
+                          (18.1, 2.2, "CT_PlasterRed")):
+        f.plant(px_, py_, h=2.1, pot=mat)
+    f.border(hx0 + 0.4, hx1 - 0.4, hy0 + 0.4, hy1 - 0.4, w=0.45, mat="CT_ConcreteDark")
+    box(d, "CT_PlasterGrey", -1.3, 1.3, 1.4, 2.6, 0.0, 0.014, faces="Z")
+    ix0, ix1, iy0, iy1 = hx0 + 0.4, hx1 - 0.4, hy0 + 0.4, hy1 - 0.4
+    for seg in (((ix0, iy1), (ix0, iy0)), ((ix0, iy0), (-1.2, iy0)), ((1.2, iy0), (ix1, iy0)), ((ix1, iy0), (ix1, iy1)),
+                ((ix1, iy1), (ix0, iy1))):
+        f.skirting(list(seg), h=0.15, mat="CT_ConcreteDark")
+    # ---- lamps (pendants under the saw-tooth soffit)
+    for x in (-15.0, -9.0, -3.0, 3.0, 9.0, 15.0):
+        for y in (4.0, 9.0):
+            B.lamp((x, y, soffit(y) - 1.3), lumens=900, colour=WARM, kind="public", radius=8)
+            box(d, "CT_Steel", x - 0.008, x + 0.008, y - 0.008, y + 0.008, soffit(y) - 1.3 + 0.08, soffit(y))
+    B.lamp((13.5, 10.5, 4.2), lumens=700, colour=WARM, kind="public", radius=6)
+
+
 def build(B):
     rnd = random.Random(1977)
     # ------------------------------------------------------------------ towers
@@ -343,6 +436,7 @@ def build(B):
     for (a, b, z0, z1, mat) in ((-3.4, -1.2, 0.0, 4.9, "CT_Door"), (1.2, 3.4, 0.0, 4.9, "CT_Door"),
                                 (-3.4, 3.4, 3.2, 4.9, "CT_Door"), (-3.6, 3.6, 4.9, 5.25, "CT_SteelRed")):
         box(B.m, mat, a, b, hy0 - 0.2, hy0 + 0.05, z0, z1, faces="xXyZz" if z0 > 0 else "xXyZ")
+    _furnish_hall(B, hx0, hx1, hy0, hy1)
     # vertical colour strip on the brick between door and windows
     B.footprint = [(-19.0, 0.8), (19.0, 0.8), (19.0, 27.0), (-19.0, 27.0)]
     B.height = H1 + 2.4

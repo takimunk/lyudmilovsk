@@ -18,8 +18,9 @@ Requests: none.
 """
 import math
 
-from citykit import box, DOOR_H  # noqa: F401
+from citykit import box, prism, ring, DOOR_H  # noqa: F401
 import geom
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Школа", "name_en": "School",
@@ -90,6 +91,109 @@ def _desk(d, x, y):
     box(d, "CT_Steel", x - 0.22, x + 0.22, y - 0.22, y - 0.19, 0.47, 0.85)
     for dx in (-0.2, 0.2):
         box(d, "CT_Steel", x + dx - 0.015, x + dx + 0.015, y - 0.2, y + 0.18, 0.0, 0.44)
+
+
+def _coat_rail(f, x, y, yaw, n, seed=0):
+    """A wardrobe rail with hooks and coats hanging on the wall at (x, y) facing yaw (coats stick out of the wall)."""
+    cols = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_Steel", "CT_PlasterPink", "CT_Frame")
+
+    def g(m):
+        L = n * 0.32
+        box(m, "CT_Wood", -L / 2, L / 2, -0.04, 0.0, 1.45, 1.55)
+        for i in range(n):
+            u = -L / 2 + 0.16 + i * 0.32
+            if (i * 5 + seed) % 7 == 3:
+                continue                                      # an empty hook
+            h = 0.75 + 0.1 * ((i + seed) % 3)
+            box(m, cols[(i * 3 + seed) % len(cols)], u - 0.12, u + 0.12, -0.17, -0.05, 1.5 - h, 1.5)
+            box(m, "CT_Frame", u - 0.04, u + 0.04, -0.19, -0.14, 1.42, 1.5)       # a hood/collar
+    f.put(g, x, y, yaw)
+
+
+def _globe(f, x, y, z):
+    def g(m):
+        box(m, "CT_Wood", -0.09, 0.09, -0.09, 0.09, 0.0, 0.03)
+        prism(m, "CT_Steel", ring(0, 0, 0.012, 4), 0.0, 0.1, top=False, bottom=False)
+        for r, a, b in ((0.1, 0.1, 0.16), (0.16, 0.16, 0.22), (0.17, 0.22, 0.28), (0.12, 0.28, 0.33), (0.07, 0.33, 0.36)):
+            prism(m, "CT_Tile" if r > 0.1 else "CT_PlasterBlue", ring(0, 0, r, 8), a, b, top=(r < 0.1), bottom=False)
+    f.put(g, x, y, 0.0)
+
+
+def _kettle(B, x, y, z):
+    d = B.detail
+    prism(d, "CT_Aluminium", ring(x, y, 0.09, 8), z, z + 0.2, top=True, bottom=False)
+    box(d, "CT_SteelRed", x + 0.09, x + 0.13, y - 0.02, y + 0.02, z + 0.03, z + 0.18)
+
+
+def _furnish(B, IY0, IY1):
+    """Round 2: the hall (wardrobe hooks, notice boards, trophy cabinet, benches), classroom and staff room dressing."""
+    f = Furn(B)
+    d = B.detail
+    C = "#FFF0DC"
+    # ------------------------------------------------------------ entrance hall  x -7.35..7.35, y 6.3..15.7
+    for i, y in enumerate((7.9, 10.3)):
+        _coat_rail(f, -7.35, y, 90.0, 6, seed=i * 2)               # on the west partition, coats face +x
+    for i, y in enumerate((7.0, 9.15, 11.3)):
+        f.bench(-6.85, y + 0.0, yaw=90.0, w=1.6)
+        B.spot("hall_wardrobe_bench_%d" % i, "bench", (-6.85, y, 0.0), 90.0)
+    f.cabinet(6.95, 8.4, w=1.6, d=0.5, h=1.9, yaw=270.0, mat="CT_Wood")             # trophy cabinet
+    for k in range(3):                                                              # cups on its shelves
+        for r in range(3):
+            y = 7.85 + 0.45 * k + 0.1
+            box(d, "CT_Copper" if (k + r) % 2 else "CT_Steel", 6.95 - 0.04, 6.95 + 0.04, y - 0.04, y + 0.04, 0.45 + r * 0.45, 0.45 + r * 0.45 + 0.14)
+    f.panel(7.35, 10.9, 1.65, 1.4, 1.0, 270.0, mat="CT_PlasterGreen", frame="CT_Wood")        # notice boards
+    f.panel(7.35, 7.0, 1.7, 0.9, 1.2, 270.0, mat="CT_PlasterYellow", frame="CT_Wood")
+    for i, (cx, mat) in enumerate(((-5.5, "CT_PlasterBlue"), (5.5, "CT_PlasterRed"))):
+        f.panel(cx, 15.7, 1.9, 1.7, 1.1, 0.0, mat=mat, frame="CT_Frame")                # murals above the back benches
+        f.panel(cx + (1.3 if cx > 0 else -1.3) * 0.0, 15.7, 2.8, 0.7, 0.45, 0.0, mat="CT_PlasterYellow", frame=None)
+    f.plant(-4.4, 7.0, h=1.5)
+    f.plant(4.4, 7.0, h=1.5)
+    f.plant(-6.7, 14.7, h=1.1, pot="CT_TileWhite")
+    f.border(-7.35, 7.35, 6.3, 15.7, w=0.35, mat="CT_ConcreteDark")
+    # doormat before the street door
+    box(d, "CT_PlasterGrey", -1.0, 1.0, 6.3, 7.1, 0.0, 0.014, faces="Z")
+    f.skirting([(-7.35, 6.3), (-1.2, 6.3)], h=0.12)
+    f.skirting([(1.2, 6.3), (7.35, 6.3)], h=0.12)
+    f.skirting([(7.35, 6.3), (7.35, 12.4)], h=0.12)
+    f.skirting([(7.35, 13.6), (7.35, 15.7)], h=0.12)
+    f.skirting([(7.35, 15.7), (1.2, 15.7)], h=0.12)
+    f.skirting([(-1.2, 15.7), (-7.35, 15.7)], h=0.12)
+    f.skirting([(-7.35, 15.7), (-7.35, 13.6)], h=0.12)
+    f.skirting([(-7.35, 12.4), (-7.35, 6.3)], h=0.12)
+    for x in (-4.0, 0.0, 4.0):
+        for y in (8.8, 13.2):
+            B.lamp((x, y, 3.1), lumens=800, colour=C, kind="public", radius=7)
+    # ------------------------------------------------------------ classroom  x -18.6..-7.65, y 6.3..14.3
+    for i, y in enumerate((7.9, 10.4)):
+        f.shelf(-18.4, y, w=2.0, d=0.4, h=1.9, yaw=90.0, rows=4, seed=i * 3)                  # bookshelves on the west wall
+    f.panel(-18.6, 12.7, 1.7, 1.7, 1.15, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")        # wall map
+    f.panel(-18.6, 12.7, 1.7, 1.2, 0.7, 90.0, mat="CT_TileWhite", frame=None, off=0.02)
+    for i, x in enumerate((-16.2, -14.7, -13.2, -11.7)):                                        # portraits over the board
+        f.panel(x, IY1, 2.75, 0.42, 0.55, 0.0, mat=("CT_Wood", "CT_Frame", "CT_PlasterGrey", "CT_Wood")[i], frame="CT_Steel")
+    _globe(f, -16.6, 12.8, 0.76)
+    box(d, "CT_PlasterGrey", -16.0, -11.0, IY1 - 0.1, IY1, 0.92, 0.96)                          # chalk ledge
+    f.plant(-8.1, 6.9, h=1.2)
+    f.border(-18.6, -7.65, 6.3, 14.3, w=0.3, mat="CT_ConcreteDark")
+    for x in (-15.5, -11.5):
+        for y in (8.4, 12.0):
+            B.lamp((x, y, 3.1), lumens=900, colour=C, kind="public", radius=7)
+    # ------------------------------------------------------------ staff room  x 7.65..14.85, y 6.3..14.3
+    f.sofa(14.45, 7.9, yaw=270.0, w=2.0, mat="CT_PlasterBlue")
+    f.round_table(14.0, 6.9, r=0.35, h=0.5, top="CT_Wood")
+    f.counter(13.7, 13.5, 2.2, d=0.5, h=0.9, yaw=0.0)                                           # kitchenette
+    _kettle(B, 13.1, 13.5, 0.9)
+    f.cup(13.5, 13.4, 0.9)
+    f.cup(13.65, 13.55, 0.9, mat="CT_PlasterRed")
+    f.cup(11.2, 10.5, 0.77, mat="CT_PlasterYellow")
+    f.cup(10.8, 10.3, 0.77)
+    f.cup(11.6, 10.7, 0.77, mat="CT_PlasterBlue")
+    f.panel(7.65, 8.0, 1.7, 1.4, 1.0, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")             # timetable on the partition
+    f.plant(8.3, 7.0, h=1.4)
+    f.plant(14.35, 12.2, h=1.0, pot="CT_TileWhite")
+    f.rug(9.6, 12.8, 9.2, 11.8, mat="CT_PlasterRed")
+    f.border(7.65, 14.85, 6.3, 14.3, w=0.3, mat="CT_ConcreteDark")
+    for x, y in ((9.6, 8.6), (13.0, 8.6), (11.2, 12.2)):
+        B.lamp((x, y, 3.1), lumens=800, colour=C, kind="public", radius=7)
 
 
 def build(B):
@@ -218,6 +322,7 @@ def build(B):
         for u in (x - 0.9, x + 0.8):
             box(d, "CT_Steel", u, u + 0.1, 14.65, 15.0, 0.0, 0.42)
         B.spot("hall_bench_%d" % (x > 0), "bench", (x, 14.8, 0.0), 180.0)
+    _furnish(B, IY0, IY1)
     _roof(m, -30, 30, SY0, SY1)
     # ================================================================== west and east wings
     for sgn in (-1, 1):

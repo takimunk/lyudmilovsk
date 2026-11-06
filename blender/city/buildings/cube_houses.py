@@ -21,6 +21,7 @@ import random
 
 from citykit import box, prism, offset_polyline, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H
 import geom
+from _surrounds import add_surrounds
 
 INFO = {
     "name_ru": "Кубические дома", "name_en": "Cube Houses",
@@ -341,6 +342,7 @@ def build(B):
     B.footprint = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
     B.height = top
     B.note("%d cube houses on hexagonal pillars, deck at z %.1f, max height %.1f m" % (n, DECK_Z, top))
+    add_surrounds(B, kinds=("street", "flat_door"), seed=5)
 
 
 def _flight(B, fr):

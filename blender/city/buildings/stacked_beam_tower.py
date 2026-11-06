@@ -18,7 +18,8 @@ Material requests: none.
 import math
 import random
 
-from citykit import box, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes
+from citykit import box, prism, ring, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Дом-мост (балочная башня)", "name_en": "Stacked Beam Tower",
@@ -136,6 +137,46 @@ def _ov(a, b):
     return a[0] < b[1] - 0.1 and a[1] > b[0] + 0.1
 
 
+def _furnish_lobby(B, lx0, lx1, ly0, ly1, lh):
+    """Round 2: lobby (inner x -6.7..6.7, y 3.3..14.7, ceiling 4.2): reception dressing, mailboxes, benches, plants, lamps."""
+    f = Furn(B)
+    d = B.detail
+    W = "#FFE0B8"
+    ix0, ix1, iy0, iy1 = lx0 + 0.3, lx1 - 0.3, ly0 + 0.3, ly1 - 0.3
+    # reception desk: fascia, monitor, bell, parcels, a lamp; the clerk's chair behind
+    box(d, "CT_SteelRed", 3.25, 6.35, 12.17, 12.2, 0.15, 0.95, faces="y")
+    box(d, "CT_Steel", 3.7, 4.2, 12.55, 12.9, 1.14, 1.45)
+    box(d, "CT_Frame", 3.65, 4.25, 12.58, 12.62, 1.2, 1.5)
+    f.cup(5.6, 12.4, 1.14, mat="CT_PlasterYellow", h=0.06)
+    f.cup(5.95, 12.55, 1.14, mat="CT_TileWhite", h=0.12)
+    box(d, "CT_Wood", 4.6, 5.1, 12.6, 12.9, 1.14, 1.28)
+    f.chair(4.8, 13.7, yaw=0.0, seat="CT_PlasterRed")
+    f.shelf(5.85, 14.5, w=1.3, d=0.35, h=2.0, yaw=0.0, rows=4, seed=3)                    # pigeonholes behind
+    # mailboxes (the residents' post) on the east wall between the windows
+    for r in range(6):
+        for c in range(4):
+            box(d, ("CT_Steel", "CT_Aluminium", "CT_SteelRed")[(r + c) % 3], 6.62, 6.7, 8.2 + c * 0.4, 8.2 + c * 0.4 + 0.36, 0.9 + r * 0.2, 0.9 + r * 0.2 + 0.17, faces="x")
+    f.panel(ix0, 9.0, 1.7, 1.6, 1.0, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")        # notice board on the west wall
+    f.bench(-6.2, 9.0, yaw=90.0, w=1.6, back=False)
+    B.spot("lobby_bench_n", "bench", (-6.2, 9.0, 0.0), 90.0)
+    f.bench(-6.2, 13.6, yaw=90.0, w=1.4, back=False)
+    B.spot("lobby_bench_nw", "bench", (-6.2, 13.6, 0.0), 90.0)
+    # lift: call button, floor indicator, a carpet runner, doormat, plants
+    box(d, "CT_Steel", 1.5, 1.6, 6.1, 6.15, 1.0, 1.3)
+    box(d, "CT_SteelRed", 1.53, 1.57, 6.07, 6.1, 1.1, 1.14)
+    box(d, "CT_PlasterRed", -1.0, 1.0, 3.3, 6.05, 0.0, 0.012, faces="Z")
+    box(d, "CT_PlasterGrey", -1.1, 1.1, 3.3, 4.2, 0.012, 0.024, faces="Z")
+    for px, py, pot in ((-3.0, 3.9, "CT_PlasterRed"), (3.0, 3.9, "CT_TileWhite"), (-6.1, 5.4, "CT_TileWhite"),
+                        (6.0, 6.0, "CT_PlasterRed"), (-3.2, 14.2, "CT_PlasterRed"), (6.1, 14.3, "CT_TileWhite")):
+        f.plant(px, py, h=1.9, pot=pot)
+    f.border(ix0, ix1, iy0, iy1, w=0.4, mat="CT_ConcreteDark")
+    for seg in (((ix0, iy1), (ix0, iy0)), ((ix0, iy0), (-1.1, iy0)), ((1.1, iy0), (ix1, iy0)), ((ix1, iy0), (ix1, iy1)),
+                ((ix1, iy1), (ix0, iy1))):
+        f.skirting(list(seg), h=0.14)
+    for x, y in ((-4.2, 5.0), (4.2, 5.0), (0.0, 4.6), (-4.4, 11.5), (4.8, 10.0), (0.0, 13.2)):
+        B.lamp((x, y, lh - 0.3), lumens=800, colour=W, kind="public", radius=7)
+
+
 def build(B):
     rnd = random.Random(1974)
     cnt = {"ids": {}}
@@ -239,12 +280,13 @@ def build(B):
     # lobby furniture: wood-clad lift front on the core, counter
     box(B.m, "CT_Wood", -2.5, 2.5, 6.15, 6.5, 0.0, 3.2, faces="xXyYZ")
     box(B.m, "CT_Wood", 3.2, 6.4, 12.2, 13.0, 0.0, 1.1)
-    box(B.detail, "CT_Steel", 3.2, 6.4, 12.2, 13.0, 1.1, 1.14)
-    B.spot("lobby_counter", "counter", (4.8, 11.8, 0.0), 0.0)
+    box(B.m, "CT_Steel", 3.2, 6.4, 12.2, 13.0, 1.1, 1.14)                 # solid since round 2: people walk round it
+    B.spot("lobby_counter", "counter", (4.8, 11.8, 0.0), 180.0)           # the customer faces +y, to the desk
     B.spot("lobby_bench_w", "bench", (-5.0, 4.5, 0.0), 0.0)
     B.spot("lobby_bench_e", "bench", (5.0, 4.5, 0.0), 0.0)
     for bx in (-5.5, 5.5):
         box(B.m, "CT_Wood", bx - 1.0, bx + 1.0, 4.1, 4.55, 0.0, 0.45)
+    _furnish_lobby(B, lx0, lx1, ly0, ly1, lh)
     # canopy over the street door
     box(B.m, "CT_Wood", -3.0, 3.0, 0.0, 3.0, 3.35, 3.6, faces="xXyYZz")
     B.spot("view", "view", (0.0, 16.0, z4b + 0.4), 0.0)

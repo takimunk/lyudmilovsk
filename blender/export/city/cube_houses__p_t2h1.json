@@ -185,6 +185,81 @@
     3.47
    ],
    "yaw": 183.7498015785489
+  },
+  {
+   "id": "sbench_c1_3",
+   "kind": "bench",
+   "pos": [
+    -20.522,
+    6.335,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_c3_4",
+   "kind": "bench",
+   "pos": [
+    -11.649,
+    5.282,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_c4_5",
+   "kind": "bench",
+   "pos": [
+    3.6,
+    5.15,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_c7_6",
+   "kind": "bench",
+   "pos": [
+    20.522,
+    6.335,
+    0.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -27.722,
+    5.735,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -19.698,
+    5.078,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -2.449,
+    4.682,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
   }
  ],
  "flats": [
@@ -1365,8 +1440,8 @@
   "7 cube houses on hexagonal pillars, deck at z 3.0, max height 13.8 m"
  ],
  "tris": {
-  "shell": 1451,
-  "detail": 2520,
+  "shell": 1699,
+  "detail": 4088,
   "windows": 98
  }
 }

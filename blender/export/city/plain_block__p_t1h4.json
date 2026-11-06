@@ -57,7 +57,74 @@
    "to": null
   }
  ],
- "spots": [],
+ "spots": [
+  {
+   "id": "sbench_A_0",
+   "kind": "bench",
+   "pos": [
+    -6.75,
+    2.25,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_B_1",
+   "kind": "bench",
+   "pos": [
+    12.25,
+    2.25,
+    0.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -9.5,
+    4.9,
+    2.45
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    9.5,
+    4.9,
+    2.45
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -13.95,
+    1.65,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    14.25,
+    1.65,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  }
+ ],
  "flats": [
   {
    "flat": "0-01",
@@ -3387,8 +3454,8 @@
   "20 flats, 2 stairs, 2 lobbies; loggia pairs meet in the middle"
  ],
  "tris": {
-  "shell": 5926,
-  "detail": 1280,
+  "shell": 6082,
+  "detail": 4056,
   "windows": 280
  }
 }

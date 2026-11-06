@@ -469,6 +469,356 @@
    "yaw": 0.0
   },
   {
+   "id": "shop_a_browse1",
+   "kind": "stand",
+   "pos": [
+    -36.4,
+    10.34,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_a_browse3",
+   "kind": "stand",
+   "pos": [
+    -33.9,
+    8.88,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_a_clerk",
+   "kind": "work",
+   "pos": [
+    -32.5,
+    12.28,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_a_queue",
+   "kind": "stand",
+   "pos": [
+    -32.5,
+    10.08,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_b_browse1",
+   "kind": "stand",
+   "pos": [
+    -21.4,
+    7.513,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_b_browse3",
+   "kind": "stand",
+   "pos": [
+    -16.85,
+    7.1,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_b_clerk",
+   "kind": "work",
+   "pos": [
+    -18.75,
+    10.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_b_queue",
+   "kind": "stand",
+   "pos": [
+    -18.75,
+    8.3,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_c_browse1",
+   "kind": "stand",
+   "pos": [
+    -8.9,
+    8.173,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_c_browse2",
+   "kind": "stand",
+   "pos": [
+    -3.6,
+    9.717,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_c_browse3",
+   "kind": "stand",
+   "pos": [
+    -8.7,
+    8.9,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_c_browse4",
+   "kind": "stand",
+   "pos": [
+    -3.8,
+    8.9,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_c_seat1",
+   "kind": "seat",
+   "pos": [
+    -7.0,
+    6.9,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_c_seat2",
+   "kind": "seat",
+   "pos": [
+    -5.5,
+    6.9,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_c_clerk",
+   "kind": "work",
+   "pos": [
+    -6.25,
+    12.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_c_queue",
+   "kind": "stand",
+   "pos": [
+    -6.25,
+    9.8,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_d_browse1",
+   "kind": "stand",
+   "pos": [
+    3.6,
+    11.038,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_d_browse2",
+   "kind": "stand",
+   "pos": [
+    11.4,
+    12.957,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_d_browse3",
+   "kind": "stand",
+   "pos": [
+    4.5,
+    12.063,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_d_browse4",
+   "kind": "stand",
+   "pos": [
+    10.5,
+    12.063,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_d_clerk",
+   "kind": "work",
+   "pos": [
+    7.5,
+    15.263,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_d_queue",
+   "kind": "stand",
+   "pos": [
+    7.5,
+    13.063,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_e_browse3",
+   "kind": "stand",
+   "pos": [
+    16.6,
+    13.334,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_e_browse4",
+   "kind": "stand",
+   "pos": [
+    18.4,
+    13.334,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_e_seat1",
+   "kind": "seat",
+   "pos": [
+    22.0,
+    11.065,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_e_seat2",
+   "kind": "seat",
+   "pos": [
+    22.0,
+    11.665,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_e_seat3",
+   "kind": "seat",
+   "pos": [
+    22.0,
+    12.265,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_e_clerk",
+   "kind": "work",
+   "pos": [
+    17.5,
+    16.484,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_e_queue",
+   "kind": "stand",
+   "pos": [
+    17.5,
+    14.284,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "shop_f_browse1",
+   "kind": "stand",
+   "pos": [
+    28.6,
+    12.582,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "shop_f_browse2",
+   "kind": "stand",
+   "pos": [
+    36.4,
+    10.415,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "shop_f_browse1",
+   "kind": "stand",
+   "pos": [
+    29.9,
+    10.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_f_browse2",
+   "kind": "stand",
+   "pos": [
+    35.1,
+    10.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_f_clerk",
+   "kind": "work",
+   "pos": [
+    32.5,
+    14.72,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "shop_f_queue",
+   "kind": "stand",
+   "pos": [
+    32.5,
+    12.52,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
    "id": "roof_bench_13",
    "kind": "bench",
    "pos": [
@@ -497,6 +847,393 @@
     54.9
    ],
    "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -35.733,
+    7.88,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -32.5,
+    7.88,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -29.267,
+    7.88,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -35.733,
+    12.68,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -32.5,
+    12.68,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -29.267,
+    12.68,
+    2.9
+   ],
+   "lumens": 760,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -25.0,
+    7.002,
+    2.9
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -20.55,
+    6.1,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -16.95,
+    6.1,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -20.55,
+    10.9,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -16.95,
+    10.9,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -8.05,
+    7.6,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -4.45,
+    7.6,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -8.05,
+    12.4,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -4.45,
+    12.4,
+    2.9
+   ],
+   "lumens": 720,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    0.0,
+    9.6,
+    2.9
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    4.267,
+    10.863,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    7.5,
+    10.863,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    10.733,
+    10.863,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    4.267,
+    15.663,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    7.5,
+    15.663,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    10.733,
+    15.663,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    14.267,
+    12.084,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    17.5,
+    12.084,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    20.733,
+    12.084,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    14.267,
+    16.884,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    17.5,
+    16.884,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    20.733,
+    16.884,
+    2.9
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    25.0,
+    12.198,
+    2.9
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    29.267,
+    10.32,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    32.5,
+    10.32,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    35.733,
+    10.32,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    29.267,
+    15.12,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    32.5,
+    15.12,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    35.733,
+    15.12,
+    2.9
+   ],
+   "lumens": 780,
+   "colour": "#FFC888",
+   "kind": "public",
+   "radius": 7.0
   }
  ],
  "flats": [
@@ -23125,8 +23862,8 @@
   "142 flats on 16 storeys, S-curved slab with undulating brise-soleil bands"
  ],
  "tris": {
-  "shell": 48196,
-  "detail": 13070,
+  "shell": 52158,
+  "detail": 55897,
   "windows": 1902
  }
 }

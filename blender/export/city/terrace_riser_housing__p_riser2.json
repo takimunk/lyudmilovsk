@@ -1,0 +1,2232 @@
+{
+ "type": "terrace_riser_housing",
+ "info": {
+  "name_ru": "Террасный дом у лестницы",
+  "name_en": "Terrace Riser Housing",
+  "style": "brutalism / metabolism",
+  "use": "residential",
+  "inspired_by": "Japanese hillside concrete-terrace housing of the 1970s-80s (stepped gardens, public stairs between terraces) crossed with stacked-box ideas"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -20.0,
+   -0.3
+  ],
+  [
+   20.0,
+   -0.3
+  ],
+  [
+   20.0,
+   18.0
+  ],
+  [
+   -20.0,
+   18.0
+  ]
+ ],
+ "height": 14.53,
+ "entrances": [
+  {
+   "id": "t0e0",
+   "pos": [
+    3.0,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t0e1",
+   "pos": [
+    12.867,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t0e2",
+   "pos": [
+    15.067,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t0w0",
+   "pos": [
+    -15.067,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t0w1",
+   "pos": [
+    -12.867,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t0w2",
+   "pos": [
+    -3.0,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1e0",
+   "pos": [
+    6.833,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1e1",
+   "pos": [
+    9.033,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1e2",
+   "pos": [
+    18.9,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1w0",
+   "pos": [
+    -18.9,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1w1",
+   "pos": [
+    -9.033,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t1w2",
+   "pos": [
+    -6.833,
+    5.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2e0",
+   "pos": [
+    3.0,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2e1",
+   "pos": [
+    12.867,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2e2",
+   "pos": [
+    15.067,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2w0",
+   "pos": [
+    -15.067,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2w1",
+   "pos": [
+    -12.867,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t2w2",
+   "pos": [
+    -3.0,
+    10.12,
+    4.7
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t3e0",
+   "pos": [
+    8.65,
+    15.04,
+    7.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t3e1",
+   "pos": [
+    10.85,
+    15.04,
+    7.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t3w0",
+   "pos": [
+    -16.5,
+    15.04,
+    7.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "t3w1",
+   "pos": [
+    -3.0,
+    15.04,
+    7.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "ue",
+   "pos": [
+    17.6,
+    13.45,
+    9.33
+   ],
+   "yaw": 90.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "uw",
+   "pos": [
+    -17.6,
+    13.45,
+    9.33
+   ],
+   "yaw": -90.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "flat_door",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "stair_bottom",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 3.8,
+   "height": 3.0,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "stair_top",
+   "pos": [
+    0.0,
+    18.0,
+    7.0
+   ],
+   "yaw": 180.0,
+   "width": 3.8,
+   "height": 3.0,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "bench_24",
+   "kind": "bench",
+   "pos": [
+    -1.45,
+    4.7,
+    2.86
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bench_47",
+   "kind": "bench",
+   "pos": [
+    -1.45,
+    9.62,
+    5.16
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bench_70",
+   "kind": "bench",
+   "pos": [
+    -1.45,
+    14.5,
+    7.46
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "sbench_t1e0_3",
+   "kind": "bench",
+   "pos": [
+    3.233,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t1w0_4",
+   "kind": "bench",
+   "pos": [
+    -15.3,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t1w1_5",
+   "kind": "bench",
+   "pos": [
+    -3.833,
+    4.45,
+    2.4
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t2e0_6",
+   "kind": "bench",
+   "pos": [
+    6.6,
+    9.37,
+    4.7
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t2w0_7",
+   "kind": "bench",
+   "pos": [
+    -18.667,
+    9.37,
+    4.7
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3e0_8",
+   "kind": "bench",
+   "pos": [
+    5.05,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3e1_9",
+   "kind": "bench",
+   "pos": [
+    17.65,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "sbench_t3w0_10",
+   "kind": "bench",
+   "pos": [
+    -12.9,
+    14.29,
+    7.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    10.433,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -13.3,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  },
+  {
+   "pos": [
+    -12.633,
+    3.85,
+    6.7
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  }
+ ],
+ "flats": [
+  {
+   "flat": "0-01",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    3.0,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0e0",
+   "windows": [
+    "0-01/w1",
+    "0-01/w2"
+   ]
+  },
+  {
+   "flat": "0-02",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    12.867,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0e1",
+   "windows": [
+    "0-02/w1",
+    "0-02/w2"
+   ]
+  },
+  {
+   "flat": "0-03",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    15.067,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0e2",
+   "windows": [
+    "0-03/w1",
+    "0-03/w2",
+    "0-03/w3"
+   ]
+  },
+  {
+   "flat": "0-04",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    -15.067,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0w0",
+   "windows": [
+    "0-04/w1",
+    "0-04/w2"
+   ]
+  },
+  {
+   "flat": "0-05",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    -12.867,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0w1",
+   "windows": [
+    "0-05/w1",
+    "0-05/w2"
+   ]
+  },
+  {
+   "flat": "0-06",
+   "storey": 0,
+   "beds": 2,
+   "door": [
+    -3.0,
+    1.5,
+    0.0
+   ],
+   "entrance": "t0w2",
+   "windows": [
+    "0-06/w1",
+    "0-06/w2",
+    "0-06/w3"
+   ]
+  },
+  {
+   "flat": "1-01",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    6.833,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1e0",
+   "windows": [
+    "1-01/w1",
+    "1-01/w2"
+   ]
+  },
+  {
+   "flat": "1-02",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    9.033,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1e1",
+   "windows": [
+    "1-02/w1",
+    "1-02/w2"
+   ]
+  },
+  {
+   "flat": "1-03",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    18.9,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1e2",
+   "windows": [
+    "1-03/w1",
+    "1-03/w2",
+    "1-03/w3"
+   ]
+  },
+  {
+   "flat": "1-04",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    -18.9,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1w0",
+   "windows": [
+    "1-04/w1",
+    "1-04/w2"
+   ]
+  },
+  {
+   "flat": "1-05",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    -9.033,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1w1",
+   "windows": [
+    "1-05/w1",
+    "1-05/w2"
+   ]
+  },
+  {
+   "flat": "1-06",
+   "storey": 1,
+   "beds": 3,
+   "door": [
+    -6.833,
+    6.7,
+    2.4
+   ],
+   "entrance": "t1w2",
+   "windows": [
+    "1-06/w1",
+    "1-06/w2",
+    "1-06/w3"
+   ]
+  },
+  {
+   "flat": "2-01",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    3.0,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2e0",
+   "windows": [
+    "2-01/w1",
+    "2-01/w2"
+   ]
+  },
+  {
+   "flat": "2-02",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    12.867,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2e1",
+   "windows": [
+    "2-02/w1",
+    "2-02/w2"
+   ]
+  },
+  {
+   "flat": "2-03",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    15.067,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2e2",
+   "windows": [
+    "2-03/w1",
+    "2-03/w2",
+    "2-03/w3"
+   ]
+  },
+  {
+   "flat": "2-04",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    -15.067,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2w0",
+   "windows": [
+    "2-04/w1",
+    "2-04/w2"
+   ]
+  },
+  {
+   "flat": "2-05",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    -12.867,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2w1",
+   "windows": [
+    "2-05/w1",
+    "2-05/w2"
+   ]
+  },
+  {
+   "flat": "2-06",
+   "storey": 2,
+   "beds": 2,
+   "door": [
+    -3.0,
+    11.62,
+    4.7
+   ],
+   "entrance": "t2w2",
+   "windows": [
+    "2-06/w1",
+    "2-06/w2",
+    "2-06/w3"
+   ]
+  },
+  {
+   "flat": "3-01",
+   "storey": 3,
+   "beds": 3,
+   "door": [
+    8.65,
+    16.54,
+    7.0
+   ],
+   "entrance": "t3e0",
+   "windows": [
+    "3-01/w1",
+    "3-01/w2"
+   ]
+  },
+  {
+   "flat": "3-02",
+   "storey": 3,
+   "beds": 3,
+   "door": [
+    10.85,
+    16.54,
+    7.0
+   ],
+   "entrance": "t3e1",
+   "windows": [
+    "3-02/w1",
+    "3-02/w2"
+   ]
+  },
+  {
+   "flat": "3-03",
+   "storey": 3,
+   "beds": 3,
+   "door": [
+    -16.5,
+    16.54,
+    7.0
+   ],
+   "entrance": "t3w0",
+   "windows": [
+    "3-03/w1",
+    "3-03/w2"
+   ]
+  },
+  {
+   "flat": "3-04",
+   "storey": 3,
+   "beds": 3,
+   "door": [
+    -3.0,
+    16.54,
+    7.0
+   ],
+   "entrance": "t3w1",
+   "windows": [
+    "3-04/w1",
+    "3-04/w2"
+   ]
+  },
+  {
+   "flat": "4-01",
+   "storey": 4,
+   "beds": 4,
+   "door": [
+    17.6,
+    13.45,
+    9.33
+   ],
+   "entrance": "ue",
+   "windows": [
+    "4-01/w1",
+    "4-01/w2",
+    "4-01/w3",
+    "4-01/w4",
+    "4-01/w5",
+    "4-01/w6"
+   ]
+  },
+  {
+   "flat": "4-02",
+   "storey": 4,
+   "beds": 4,
+   "door": [
+    -17.6,
+    13.45,
+    9.33
+   ],
+   "entrance": "uw",
+   "windows": [
+    "4-02/w1",
+    "4-02/w2",
+    "4-02/w3",
+    "4-02/w4",
+    "4-02/w5",
+    "4-02/w6"
+   ]
+  }
+ ],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "0-01/w1",
+   "flat": "0-01",
+   "kind": "flat",
+   "centre": [
+    5.074,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "0-01/w2",
+   "flat": "0-01",
+   "kind": "flat",
+   "centre": [
+    6.916,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 2,
+   "id": "0-02/w1",
+   "flat": "0-02",
+   "kind": "flat",
+   "centre": [
+    9.357,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 3,
+   "id": "0-02/w2",
+   "flat": "0-02",
+   "kind": "flat",
+   "centre": [
+    11.199,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 4,
+   "id": "0-03/w1",
+   "flat": "0-03",
+   "kind": "flat",
+   "centre": [
+    17.141,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 5,
+   "id": "0-03/w2",
+   "flat": "0-03",
+   "kind": "flat",
+   "centre": [
+    18.982,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 6,
+   "id": "0-04/w1",
+   "flat": "0-04",
+   "kind": "flat",
+   "centre": [
+    -18.576,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 7,
+   "id": "0-04/w2",
+   "flat": "0-04",
+   "kind": "flat",
+   "centre": [
+    -16.734,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 8,
+   "id": "0-05/w1",
+   "flat": "0-05",
+   "kind": "flat",
+   "centre": [
+    -10.793,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 9,
+   "id": "0-05/w2",
+   "flat": "0-05",
+   "kind": "flat",
+   "centre": [
+    -8.951,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 10,
+   "id": "0-06/w1",
+   "flat": "0-06",
+   "kind": "flat",
+   "centre": [
+    -6.509,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 11,
+   "id": "0-06/w2",
+   "flat": "0-06",
+   "kind": "flat",
+   "centre": [
+    -4.668,
+    0.0,
+    1.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 12,
+   "id": "0-03/w3",
+   "flat": "0-03",
+   "kind": "flat",
+   "centre": [
+    20.0,
+    2.6,
+    1.15
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 13,
+   "id": "0-06/w3",
+   "flat": "0-06",
+   "kind": "flat",
+   "centre": [
+    -20.0,
+    2.6,
+    1.15
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 14,
+   "id": "1-01/w1",
+   "flat": "1-01",
+   "kind": "flat",
+   "centre": [
+    3.324,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 15,
+   "id": "1-01/w2",
+   "flat": "1-01",
+   "kind": "flat",
+   "centre": [
+    5.166,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 16,
+   "id": "1-02/w1",
+   "flat": "1-02",
+   "kind": "flat",
+   "centre": [
+    11.107,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 17,
+   "id": "1-02/w2",
+   "flat": "1-02",
+   "kind": "flat",
+   "centre": [
+    12.949,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 18,
+   "id": "1-03/w1",
+   "flat": "1-03",
+   "kind": "flat",
+   "centre": [
+    15.391,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 19,
+   "id": "1-03/w2",
+   "flat": "1-03",
+   "kind": "flat",
+   "centre": [
+    17.232,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 20,
+   "id": "1-04/w1",
+   "flat": "1-04",
+   "kind": "flat",
+   "centre": [
+    -16.826,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 21,
+   "id": "1-04/w2",
+   "flat": "1-04",
+   "kind": "flat",
+   "centre": [
+    -14.985,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "1-05/w1",
+   "flat": "1-05",
+   "kind": "flat",
+   "centre": [
+    -12.543,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 23,
+   "id": "1-05/w2",
+   "flat": "1-05",
+   "kind": "flat",
+   "centre": [
+    -10.701,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "1-06/w1",
+   "flat": "1-06",
+   "kind": "flat",
+   "centre": [
+    -4.759,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 25,
+   "id": "1-06/w2",
+   "flat": "1-06",
+   "kind": "flat",
+   "centre": [
+    -2.918,
+    5.2,
+    3.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 26,
+   "id": "1-03/w3",
+   "flat": "1-03",
+   "kind": "flat",
+   "centre": [
+    20.0,
+    7.66,
+    3.55
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 27,
+   "id": "1-06/w3",
+   "flat": "1-06",
+   "kind": "flat",
+   "centre": [
+    -20.0,
+    7.66,
+    3.55
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 28,
+   "id": "2-01/w1",
+   "flat": "2-01",
+   "kind": "flat",
+   "centre": [
+    5.074,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 29,
+   "id": "2-01/w2",
+   "flat": "2-01",
+   "kind": "flat",
+   "centre": [
+    6.916,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 30,
+   "id": "2-02/w1",
+   "flat": "2-02",
+   "kind": "flat",
+   "centre": [
+    9.357,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 31,
+   "id": "2-02/w2",
+   "flat": "2-02",
+   "kind": "flat",
+   "centre": [
+    11.199,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 32,
+   "id": "2-03/w1",
+   "flat": "2-03",
+   "kind": "flat",
+   "centre": [
+    17.141,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 33,
+   "id": "2-03/w2",
+   "flat": "2-03",
+   "kind": "flat",
+   "centre": [
+    18.982,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 34,
+   "id": "2-04/w1",
+   "flat": "2-04",
+   "kind": "flat",
+   "centre": [
+    -18.576,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 35,
+   "id": "2-04/w2",
+   "flat": "2-04",
+   "kind": "flat",
+   "centre": [
+    -16.734,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 36,
+   "id": "2-05/w1",
+   "flat": "2-05",
+   "kind": "flat",
+   "centre": [
+    -10.793,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 37,
+   "id": "2-05/w2",
+   "flat": "2-05",
+   "kind": "flat",
+   "centre": [
+    -8.951,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 38,
+   "id": "2-06/w1",
+   "flat": "2-06",
+   "kind": "flat",
+   "centre": [
+    -6.509,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.948,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 39,
+   "id": "2-06/w2",
+   "flat": "2-06",
+   "kind": "flat",
+   "centre": [
+    -4.668,
+    10.12,
+    5.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.136,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 40,
+   "id": "2-03/w3",
+   "flat": "2-03",
+   "kind": "flat",
+   "centre": [
+    20.0,
+    12.58,
+    5.85
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 41,
+   "id": "2-06/w3",
+   "flat": "2-06",
+   "kind": "flat",
+   "centre": [
+    -20.0,
+    12.58,
+    5.85
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 42,
+   "id": "3-01/w1",
+   "flat": "3-01",
+   "kind": "flat",
+   "centre": [
+    3.887,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.074,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 43,
+   "id": "3-01/w2",
+   "flat": "3-01",
+   "kind": "flat",
+   "centre": [
+    6.637,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.826,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 44,
+   "id": "3-02/w1",
+   "flat": "3-02",
+   "kind": "flat",
+   "centre": [
+    13.487,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.074,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 45,
+   "id": "3-02/w2",
+   "flat": "3-02",
+   "kind": "flat",
+   "centre": [
+    16.237,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.826,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 46,
+   "id": "3-03/w1",
+   "flat": "3-03",
+   "kind": "flat",
+   "centre": [
+    -13.863,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.074,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 47,
+   "id": "3-03/w2",
+   "flat": "3-03",
+   "kind": "flat",
+   "centre": [
+    -11.113,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.826,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 48,
+   "id": "3-04/w1",
+   "flat": "3-04",
+   "kind": "flat",
+   "centre": [
+    -7.763,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.074,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 49,
+   "id": "3-04/w2",
+   "flat": "3-04",
+   "kind": "flat",
+   "centre": [
+    -5.013,
+    15.04,
+    8.15
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.826,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 50,
+   "id": "4-01/w1",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    4.213,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 51,
+   "id": "4-01/w2",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    7.737,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 52,
+   "id": "4-01/w3",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    11.262,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 53,
+   "id": "4-01/w4",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    14.788,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 54,
+   "id": "4-01/w5",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    15.5,
+    18.0,
+    10.68
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 55,
+   "id": "4-01/w6",
+   "flat": "4-01",
+   "kind": "flat",
+   "centre": [
+    9.7,
+    18.0,
+    10.68
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 56,
+   "id": "4-02/w1",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -15.288,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 57,
+   "id": "4-02/w2",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -11.763,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 58,
+   "id": "4-02/w3",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -8.238,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 59,
+   "id": "4-02/w4",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -4.712,
+    12.8,
+    10.53
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.025,
+    1.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 60,
+   "id": "4-02/w5",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -4.0,
+    18.0,
+    10.68
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 61,
+   "id": "4-02/w6",
+   "flat": "4-02",
+   "kind": "flat",
+   "centre": [
+    -9.8,
+    18.0,
+    10.68
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.1
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [
+  "stepped terrace housing: 24 flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)"
+ ],
+ "tris": {
+  "shell": 3448,
+  "detail": 18290,
+  "windows": 124
+ }
+}

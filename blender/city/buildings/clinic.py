@@ -14,8 +14,9 @@ Requests: none.
 """
 import math
 
-from citykit import box, DOOR_H  # noqa: F401
+from citykit import box, prism, ring, DOOR_H  # noqa: F401
 import geom
+from furn_int2 import Furn
 
 INFO = {
     "name_ru": "Поликлиника", "name_en": "Clinic",
@@ -74,6 +75,74 @@ def _chair(d, x, y, face):
     for dx in (-0.2, 0.2):
         for dy in (-0.2, 0.2):
             box(d, "CT_Steel", x + dx - 0.015, x + dx + 0.015, y + dy - 0.015, y + dy + 0.015, 0.0, 0.44)
+
+
+def _furnish(B, cx):
+    """Round 2: reception and waiting hall dressing, each doctor's room (sink, anatomy chart, screen, bin), lamps."""
+    f = Furn(B)
+    d = B.detail
+    C = "#FFF0DC"
+    # ---- reception: monitors, a bell, a hanging sign, folder shelves behind the desk
+    box(d, "CT_Steel", -8.3, -7.7, 11.45, 11.9, 1.14, 1.5)
+    box(d, "CT_Frame", -8.35, -7.65, 11.5, 11.55, 1.2, 1.55)
+    box(d, "CT_Steel", -5.9, -5.3, 11.45, 11.9, 1.14, 1.5)
+    f.cup(-4.4, 11.5, 1.14, mat="CT_SteelRed", h=0.06)
+    box(d, "CT_PlasterGreen", -9.2, -3.8, 11.28, 11.31, 0.2, 0.9, faces="y")       # a coloured fascia on the desk front
+    box(d, "CT_TileWhite", -7.5, -5.5, 15.62, 15.7, 2.75, 3.2, faces="y")          # sign board on the back wall
+    f.shelf(-9.0, 15.5, w=2.0, d=0.4, h=2.2, yaw=0.0, rows=5, seed=2)
+    # ---- waiting: another bench with a back, chairs, plants, water cooler, posters
+    f.bench(2.85, 6.4, yaw=270.0, w=1.8, back=True)
+    B.spot("wait_4", "bench", (2.85, 6.4, 0.0), 270.0)
+    f.bench(2.85, 8.4, yaw=270.0, w=1.8, back=True)
+    B.spot("wait_5", "bench", (2.85, 8.4, 0.0), 270.0)
+    f.plant(-12.8, 14.7, h=1.7)
+    f.plant(2.8, 14.8, h=1.6, pot="CT_TileWhite")
+    f.plant(-2.2, 5.1, h=1.3)
+    f.plant(-10.6, 5.1, h=1.3, pot="CT_TileWhite")
+    f.round_table(-6.2, 5.6, r=0.38, h=0.5)                    # a magazine table
+    box(d, "CT_PlasterRed", -6.35, -6.0, 5.5, 5.8, 0.5, 0.52)
+    box(d, "CT_PlasterBlue", -6.15, -5.85, 5.45, 5.7, 0.52, 0.54)
+    f.panel(-13.7, 9.5, 1.8, 0.9, 1.2, 90.0, mat="CT_PlasterYellow", frame="CT_FrameWhite")       # health posters (not over windows)
+    f.panel(-12.0, 4.3, 1.8, 0.9, 1.2, 180.0, mat="CT_PlasterGreen", frame="CT_FrameWhite")
+    f.panel(-0.2, 15.7, 1.7, 1.3, 0.9, 0.0, mat="CT_PlasterPink", frame="CT_FrameWhite")
+    # a water cooler by the corridor door and a notice board
+    box(d, "CT_FrameWhite", 2.85, 3.25, 11.4, 11.8, 0.0, 0.95)
+    box(d, "CT_PlasterBlue", 2.92, 3.18, 11.47, 11.73, 0.95, 1.4)
+    box(d, "CT_SteelRed", 3.2, 3.3, 11.5, 11.6, 0.6, 0.75)
+    f.panel(3.3, 14.6, 1.7, 1.5, 1.0, 270.0, mat="CT_PlasterGreen", frame="CT_Wood")
+    f.border(-13.7, 3.3, 4.3, 15.7, w=0.35, mat="CT_ConcreteDark")
+    f.border(3.6, 13.7, 11.3, 15.7, w=0.25, mat="CT_ConcreteDark")
+    box(d, "CT_PlasterGrey", -6.0, -3.5, 4.3, 5.2, 0.0, 0.014, faces="Z")           # doormat
+    for seg in (((-13.7, 15.7), (-13.7, 4.3)), ((-13.7, 4.3), (-5.9, 4.3)), ((-4.1, 4.3), (3.3, 4.3)),
+                ((3.3, 4.3), (3.3, 12.4)), ((3.3, 13.6), (3.3, 15.7)), ((3.3, 15.7), (-13.7, 15.7))):
+        f.skirting(list(seg), h=0.12)
+    # ---- the doctors' rooms
+    for i, c in enumerate(cx):
+        ex = c + 1.6 if i < 2 else 13.7                     # east wall of this room
+        eyaw = 270.0
+        # sink + mirror on the east wall
+        box(B.m, "CT_TileWhite", ex - 0.5, ex, 5.35, 5.95, 0.0, 0.85)
+        box(d, "CT_Steel", ex - 0.28, ex - 0.12, 5.6, 5.7, 0.85, 1.1)
+        box(d, "CT_Aluminium", ex - 0.04, ex, 5.4, 5.9, 1.25, 1.95)
+        # anatomy chart + eye chart
+        f.panel(ex, 8.9, 1.55, 0.85, 1.15, eyaw, mat="CT_TileWhite", frame="CT_Frame")
+        f.panel(ex, 8.9, 1.55, 0.5, 0.8, eyaw, mat="CT_SteelRed", frame=None, off=0.02)
+        # folding screen near the couch, bin, a desk lamp and papers on the desk
+        box(d, "CT_PlasterBlue", c - 1.55, c - 1.5, 8.5, 9.5, 0.0, 1.7)
+        box(d, "CT_PlasterBlue", c - 1.5, c - 1.0, 8.5, 8.55, 0.0, 1.7)
+        prism(d, "CT_Steel", ring(ex - 0.3, 7.0, 0.14, 8), 0.0, 0.3, top=True, bottom=False)
+        box(d, "CT_Steel", c + 0.35, c + 0.65, 7.75, 8.05, 0.76, 0.98)
+        box(d, "CT_TileWhite", c - 0.6, c - 0.2, 7.75, 8.15, 0.76, 0.775)
+        box(d, "CT_Steel", c - 0.55, c - 0.25, 7.85, 8.0, 0.775, 0.95)                 # a monitor
+        box(d, "CT_SteelWhite", c - 1.0, c - 0.4, 9.8, 10.9, 0.5, 0.56)               # the couch mattress strip
+        box(d, "CT_PlasterBlue", c - 1.0, c - 0.4, 10.6, 10.9, 0.5, 0.7)
+        B.lamp((c, 7.6, 3.1), lumens=800, colour=C, kind="public", radius=6)
+    # ---- the hall and corridor lamps
+    for x in (-11.0, -6.5, -2.0):
+        for y in (7.0, 12.8):
+            B.lamp((x, y, 3.1), lumens=900, colour=C, kind="public", radius=7.5)
+    for x in (6.0, 11.0):
+        B.lamp((x, 13.5, 3.1), lumens=700, colour=C, kind="public", radius=6)
 
 
 def build(B):
@@ -135,8 +204,8 @@ def build(B):
     for x in (6.8, 10.3):
         box(m, "CT_Interior", x, x + 0.3, IY0, 11.3, 0.0, H1)
     # ---- reception hall furniture
-    box(d, "CT_Wood", -9.5, -3.5, 11.3, 12.0, 0.0, 1.1)
-    box(d, "CT_Frame", -9.5, -3.5, 11.3, 12.0, 1.1, 1.14)
+    box(m, "CT_Wood", -9.5, -3.5, 11.3, 12.0, 0.0, 1.1)               # solid: people walk round it
+    box(m, "CT_Frame", -9.5, -3.5, 11.3, 12.0, 1.1, 1.14)
     B.spot("reception", "counter", (-6.5, 12.7, 0.0), 0.0)
     benches = [(-12.7, 7.2, 90.0, "x"), (-12.7, 9.4, 90.0, "x"), (-8.0, 8.0, 0.0, "y"), (-1.0, 8.0, 0.0, "y")]
     for i, (x, y, yaw, ax) in enumerate(benches):
@@ -160,6 +229,7 @@ def build(B):
         box(d, "CT_FrameWhite", c + 0.8, c + 1.4, 10.4, 10.9, 0.0, 1.8)               # cabinet
         B.spot("doctor_%d" % i, "work", (c, 9.3, 0.0), 0.0)
         B.spot("patient_%d" % i, "seat", (c, 6.4, 0.0), 180.0)
+    _furnish(B, cx)
     # ================================================================ canopy, cross panel, roof, fins
     box(m, "CT_ConcreteWhite", -8.5, -1.5, 0.8, Y0, 3.0, 3.25)
     box(m, "CT_PlasterRed", -8.5, -1.5, 0.75, 0.85, 2.9, 3.5)

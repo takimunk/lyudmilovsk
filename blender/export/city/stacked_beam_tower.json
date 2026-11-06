@@ -52,7 +52,7 @@
     11.8,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 180.0
   },
   {
    "id": "lobby_bench_w",
@@ -75,6 +75,26 @@
    "yaw": 0.0
   },
   {
+   "id": "lobby_bench_n",
+   "kind": "bench",
+   "pos": [
+    -6.2,
+    9.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lobby_bench_nw",
+   "kind": "bench",
+   "pos": [
+    -6.2,
+    13.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
    "id": "view",
    "kind": "view",
    "pos": [
@@ -83,6 +103,74 @@
     32.4
    ],
    "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -4.2,
+    5.0,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    4.2,
+    5.0,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    0.0,
+    4.6,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -4.4,
+    11.5,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    4.8,
+    10.0,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    0.0,
+    13.2,
+    3.9
+   ],
+   "lumens": 800,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 7
   }
  ],
  "flats": [
@@ -4666,8 +4754,8 @@
   "36 flats on 6 storeys, 4 crossing bars; main lobby + gallery 'view' spot at z=32.4"
  ],
  "tris": {
-  "shell": 6362,
-  "detail": 1712,
+  "shell": 6542,
+  "detail": 2930,
   "windows": 384
  }
 }

@@ -75,6 +75,19 @@
    "yaw": 180.0
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    1.7,
+    3.3,
+    2.2
+   ],
+   "lumens": 480,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 4.5
+  }
+ ],
  "flats": [],
  "windows": [
   {
@@ -123,8 +136,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 528,
-  "detail": 66,
+  "shell": 636,
+  "detail": 998,
   "windows": 4
  }
 }

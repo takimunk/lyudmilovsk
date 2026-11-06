@@ -19,6 +19,22 @@
   ],
   [
    17.5,
+   20.9
+  ],
+  [
+   18.5,
+   20.9
+  ],
+  [
+   18.5,
+   24.6
+  ],
+  [
+   17.5,
+   24.6
+  ],
+  [
+   17.5,
    30.45
   ],
   [
@@ -47,7 +63,7 @@
    "pos": [
     17.5,
     22.0,
-    0.0
+    0.96
    ],
    "yaw": 90.0,
    "width": 2.2,
@@ -55,6 +71,34 @@
    "kind": "side",
    "leaves": 1,
    "to": null
+  },
+  {
+   "id": "hall_e",
+   "pos": [
+    13.0,
+    12.2,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.0,
+   "height": 2.5,
+   "kind": "inner",
+   "leaves": 1,
+   "to": "hall"
+  },
+  {
+   "id": "hall_w",
+   "pos": [
+    -13.0,
+    12.2,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.0,
+   "height": 2.5,
+   "kind": "inner",
+   "leaves": 1,
+   "to": "hall"
   }
  ],
  "spots": [
@@ -67,6 +111,36 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "ticket_work",
+   "kind": "work",
+   "pos": [
+    -9.0,
+    11.75,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "coat_check",
+   "kind": "counter",
+   "pos": [
+    -15.9,
+    9.3,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "coat_work",
+   "kind": "work",
+   "pos": [
+    -15.9,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
   },
   {
    "id": "foyer_bench1",
@@ -107,6 +181,116 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "buffet",
+   "kind": "counter",
+   "pos": [
+    0.0,
+    9.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "buffet_work",
+   "kind": "work",
+   "pos": [
+    0.0,
+    11.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_table_1",
+   "kind": "table",
+   "pos": [
+    7.8,
+    8.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_stand_1_1",
+   "kind": "stand",
+   "pos": [
+    7.8,
+    7.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "buffet_stand_1_2",
+   "kind": "stand",
+   "pos": [
+    7.8,
+    8.75,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_table_2",
+   "kind": "table",
+   "pos": [
+    10.6,
+    6.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_stand_2_1",
+   "kind": "stand",
+   "pos": [
+    10.6,
+    5.45,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "buffet_stand_2_2",
+   "kind": "stand",
+   "pos": [
+    10.6,
+    6.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_table_3",
+   "kind": "table",
+   "pos": [
+    -1.5,
+    6.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "buffet_stand_3_1",
+   "kind": "stand",
+   "pos": [
+    -1.5,
+    5.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "buffet_stand_3_2",
+   "kind": "stand",
+   "pos": [
+    -1.5,
+    6.75,
+    0.0
+   ],
+   "yaw": 0.0
   },
   {
    "id": "seat1",
@@ -3609,6 +3793,305 @@
    "yaw": 0.0
   }
  ],
+ "lamps": [
+  {
+   "pos": [
+    -15.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -15.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -9.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -9.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -3.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -3.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    3.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    3.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    9.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    9.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    15.0,
+    5.5,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    15.0,
+    10.0,
+    4.7
+   ],
+   "lumens": 800,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -12.0,
+    16.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -12.0,
+    21.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -12.0,
+    26.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.0,
+    16.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.0,
+    21.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.0,
+    26.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    0.0,
+    16.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    0.0,
+    21.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    0.0,
+    26.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    6.0,
+    16.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    6.0,
+    21.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    6.0,
+    26.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    12.0,
+    16.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    12.0,
+    21.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    12.0,
+    26.5,
+    10.2
+   ],
+   "lumens": 650,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 9.0
+  }
+ ],
  "flats": [],
  "windows": [
   {
@@ -4331,8 +4814,8 @@
   "350 seats; three cantilevered volumes; side exit east"
  ],
  "tris": {
-  "shell": 1886,
-  "detail": 1904,
+  "shell": 2246,
+  "detail": 19491,
   "windows": 68
  }
 }

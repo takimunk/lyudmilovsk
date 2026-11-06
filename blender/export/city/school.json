@@ -259,6 +259,36 @@
    "yaw": 180.0
   },
   {
+   "id": "hall_wardrobe_bench_0",
+   "kind": "bench",
+   "pos": [
+    -6.85,
+    7.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "hall_wardrobe_bench_1",
+   "kind": "bench",
+   "pos": [
+    -6.85,
+    9.15,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "hall_wardrobe_bench_2",
+   "kind": "bench",
+   "pos": [
+    -6.85,
+    11.3,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
    "id": "court_bench_0",
    "kind": "bench",
    "pos": [
@@ -317,6 +347,151 @@
     0.0
    ],
    "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -4.0,
+    8.8,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -4.0,
+    13.2,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    0.0,
+    8.8,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    0.0,
+    13.2,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    4.0,
+    8.8,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    4.0,
+    13.2,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -15.5,
+    8.4,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -15.5,
+    12.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -11.5,
+    8.4,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -11.5,
+    12.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    9.6,
+    8.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    13.0,
+    8.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    11.2,
+    12.2,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7
   }
  ],
  "flats": [],
@@ -4042,8 +4217,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 4548,
-  "detail": 3680,
+  "shell": 5006,
+  "detail": 6126,
   "windows": 354
  }
 }

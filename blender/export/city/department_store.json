@@ -351,6 +351,444 @@
     0.03
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "f1_cashier",
+   "kind": "counter",
+   "pos": [
+    -6.0,
+    23.1,
+    4.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "f1_cashier_work",
+   "kind": "work",
+   "pos": [
+    -6.0,
+    24.8,
+    4.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "f1_bench_w",
+   "kind": "bench",
+   "pos": [
+    -15.0,
+    4.2,
+    4.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "f1_bench_e",
+   "kind": "bench",
+   "pos": [
+    15.0,
+    4.2,
+    4.9
+   ],
+   "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -18.4,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -18.4,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -18.4,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    8.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    16.5,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    25.0,
+    4.3
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -18.4,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -18.4,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -18.4,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -11.0,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    -3.7,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    3.7,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    11.0,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    8.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    16.5,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
+  },
+  {
+   "pos": [
+    18.4,
+    25.0,
+    9.1
+   ],
+   "lumens": 1500,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 10.5
   }
  ],
  "flats": [],
@@ -1495,8 +1933,8 @@
   "2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east"
  ],
  "tris": {
-  "shell": 2944,
-  "detail": 3072,
+  "shell": 3476,
+  "detail": 42682,
   "windows": 108
  }
 }
