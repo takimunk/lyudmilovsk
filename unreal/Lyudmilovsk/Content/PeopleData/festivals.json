@@ -1,0 +1,137 @@
+{
+  "_doc": "The town's holidays (docs/festivals.md). Every festival here is a proposal, not canon. when.rule: date (month, day), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, sunrise_point), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire). priority: who has a venue when two festivals want it at once.",
+  "festivals": [
+    {
+      "id": "weekend_market",
+      "when": {"rule": "weekly", "weekdays": [5]},
+      "decor": {"from": 7, "to": 15, "kinds": ["stalls", "bunting"]},
+      "program": [
+        {"id": "market", "hours": [8, 14], "venue": "fair", "mode": "fair", "pull": 0.45}
+      ],
+      "priority": 0
+    },
+    {
+      "id": "sea_festival",
+      "when": {"rule": "nth_weekday", "month": 10, "nth": 4, "weekday": 5},
+      "holiday": 1,
+      "decor": {"from": -6, "to": 26, "kinds": ["bunting", "flags", "lanterns", "stage", "stalls"], "venues": ["square", "fair", "promenade"]},
+      "program": [
+        {"id": "fair", "hours": [10, 17], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "concert", "hours": [17, 21.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.2, "show": ["music", "stage_lights"]},
+        {"id": "fireworks", "hours": [21.5, 22.1], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.7, "show": ["fireworks"]},
+        {"id": "dance", "hours": [22.1, 24.5], "venue": "square", "mode": "mingle", "pull": 0.7, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 5
+    },
+    {
+      "id": "lantern_night",
+      "when": {"rule": "nth_weekday", "month": 11, "nth": 2, "weekday": 5},
+      "decor": {"from": 12, "to": 24, "kinds": ["lanterns", "candles"], "venues": ["promenade", "beach"]},
+      "program": [
+        {"id": "lantern_walk", "hours": [16.5, 19], "venue": "promenade", "mode": "mingle", "pull": 0.6},
+        {"id": "sky_lanterns", "hours": [19, 20.5], "venue": "beach", "mode": "watch", "face": "sky", "pull": 1.3, "show": ["sky_lanterns"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "first_snow",
+      "when": {"rule": "trigger", "trigger": "first_snow", "offset": 1},
+      "decor": {"from": 10, "to": 20, "kinds": ["lanterns", "stalls"], "venues": ["park"]},
+      "program": [
+        {"id": "snow_play", "hours": [12, 16], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "winter_fair",
+      "when": {"rule": "date", "month": 12, "day": 18},
+      "days": 21,
+      "decor": {"from": 9, "to": 22, "kinds": ["tree", "lanterns", "stalls", "wreaths"], "venues": ["square", "fair"]},
+      "program": [
+        {"id": "fair", "day": -1, "hours": [12, 20], "venue": "fair", "mode": "fair", "pull": 0.7, "show": ["music"]}
+      ],
+      "priority": 1
+    },
+    {
+      "id": "new_year",
+      "when": {"rule": "date", "month": 12, "day": 31},
+      "days": 3,
+      "holiday": 1,
+      "decor": {"from": 10, "to": 22, "kinds": ["tree", "lanterns", "wreaths", "stage"], "venues": ["square"]},
+      "program": [
+        {"id": "eve", "hours": [22, 23.8], "venue": "square", "mode": "mingle", "face": "tree", "pull": 1.0, "show": ["music", "stage_lights"]},
+        {"id": "fireworks", "hours": [23.8, 24.6], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.8, "show": ["fireworks"]},
+        {"id": "dance", "hours": [24.6, 27], "venue": "square", "mode": "mingle", "pull": 0.6, "show": ["music", "stage_lights"]},
+        {"id": "walk", "day": 1, "hours": [13, 17], "venue": "park", "mode": "mingle", "pull": 0.5}
+      ],
+      "priority": 9
+    },
+    {
+      "id": "maslenitsa",
+      "when": {"rule": "easter_orthodox", "offset": -49},
+      "decor": {"from": 9, "to": 20, "kinds": ["flags", "stalls", "bunting"], "venues": ["fair", "square"]},
+      "program": [
+        {"id": "fair", "hours": [11, 16], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "bonfire", "hours": [16, 18], "venue": "beach", "mode": "watch", "face": "bonfire", "pull": 1.3, "show": ["bonfire"]}
+      ],
+      "priority": 4
+    },
+    {
+      "id": "bird_day",
+      "when": {"rule": "date", "month": 4, "day": 1},
+      "decor": {"from": 7, "to": 18, "kinds": ["birdhouses", "flags"], "venues": ["park"]},
+      "program": [
+        {"id": "birdwatch", "hours": [8, 12], "venue": "park", "mode": "mingle", "pull": 0.6}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "blossom",
+      "when": {"rule": "nth_weekday", "month": 5, "nth": 2, "weekday": 6},
+      "decor": {"from": 9, "to": 22, "kinds": ["lanterns"], "venues": ["park"]},
+      "program": [
+        {"id": "picnic", "hours": [11, 17], "venue": "park", "mode": "sit", "pull": 0.9},
+        {"id": "evening", "hours": [17, 21], "venue": "park", "mode": "mingle", "pull": 0.5, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "midsummer",
+      "when": {"rule": "date", "month": 6, "day": 23},
+      "decor": {"from": 12, "to": 30, "kinds": ["wreaths", "bunting", "lanterns"], "venues": ["beach", "promenade"]},
+      "program": [
+        {"id": "bonfire", "hours": [20, 26], "venue": "beach", "mode": "mingle", "face": "bonfire", "pull": 1.3, "show": ["bonfire", "music"]},
+        {"id": "sunrise", "hours": [27.6, 29.3], "venue": "sunrise_point", "mode": "watch", "face": "sunrise", "pull": 1.1}
+      ],
+      "priority": 5
+    },
+    {
+      "id": "fisherman_day",
+      "when": {"rule": "nth_weekday", "month": 7, "nth": 2, "weekday": 6},
+      "decor": {"from": 8, "to": 22, "kinds": ["flags", "stalls", "stage"], "venues": ["promenade", "square"]},
+      "program": [
+        {"id": "fish_fair", "hours": [10, 16], "venue": "promenade", "mode": "fair", "pull": 0.9},
+        {"id": "concert", "hours": [16, 19.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.0, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "perseids",
+      "when": {"rule": "date", "month": 8, "day": 12},
+      "decor": {"from": 20, "to": 27, "kinds": ["candles"], "venues": ["beach"]},
+      "program": [
+        {"id": "stars", "hours": [22.5, 26], "venue": "beach", "mode": "sit", "face": "sky", "pull": 0.8}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "harvest_fair",
+      "when": {"rule": "nth_weekday", "month": 9, "nth": 4, "weekday": 5},
+      "decor": {"from": 7, "to": 19, "kinds": ["stalls", "bunting", "flags"], "venues": ["fair", "square"]},
+      "program": [
+        {"id": "fair", "hours": [9, 17], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]}
+      ],
+      "priority": 3
+    }
+  ]
+}
