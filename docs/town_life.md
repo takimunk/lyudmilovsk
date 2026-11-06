@@ -22,7 +22,7 @@ Regenerate whenever the city plan, the buildings' flats, the public spaces or th
 
 ```
 python3 tools/town/town_life.py --summary            # inputs from the working tree
-python3 tools/town/town_life.py --ref origin/wt/city-buildings --ref origin/public-spaces   # inputs not merged yet
+python3 tools/town/town_life.py --refs-first --ref origin/public-spaces --ref origin/wt/city-buildings   # newer inputs on unmerged branches win
 ```
 
 Inputs: `Content/City/city_plan.json` (terraces, walls, stairs, wall dwellings, promenade units, plots with staff hints,

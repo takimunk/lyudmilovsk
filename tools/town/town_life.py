@@ -188,12 +188,13 @@ def spot_slots(spot, pos, extra):
 
 
 GIT_REFS = []
+REFS_FIRST = False
 
 
 def read_input(rel):
     """A file of the repo: from the working tree, else from one of the --ref branches (another thread's, not merged yet)."""
     path = os.path.join(ROOT, rel)
-    if os.path.exists(path):
+    if os.path.exists(path) and not REFS_FIRST:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     for ref in GIT_REFS:
@@ -202,6 +203,9 @@ def read_input(rel):
             return json.loads(out.decode("utf-8"))
         except (subprocess.CalledProcessError, ValueError):
             continue
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
     return None
 
 
@@ -749,6 +753,7 @@ def write(path, data):
 
 
 def main():
+    global REFS_FIRST
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=20261106)
     ap.add_argument("--wall-occupancy", type=float, default=0.5)
@@ -756,8 +761,10 @@ def main():
     ap.add_argument("--max-people", type=int, default=900)
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--ref", action="append", default=[], help="a branch to read inputs from that aren't in the working tree yet")
+    ap.add_argument("--refs-first", action="store_true", help="the --ref branches win over the working tree (their inputs are newer)")
     args = ap.parse_args()
     GIT_REFS.extend(args.ref)
+    REFS_FIRST = args.refs_first
     rnd = random.Random(args.seed)
     with open(PLAN, encoding="utf-8") as f:
         plan = json.load(f)
