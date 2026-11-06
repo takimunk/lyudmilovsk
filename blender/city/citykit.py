@@ -162,6 +162,8 @@ class Building:
                                "height": height, "kind": kind, "leaves": leaves, "to": to})
 
     def spot(self, sid, kind, pos, yaw=0.0):
+        """A place for the life simulation: pos on the floor; yaw = degrees of the way the person using it FACES
+        (0 = -y, toward the street; 90 = +x), the same convention as entrances."""
         self.spots.append({"id": sid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": yaw})
 
     # ---------------------------------------------------------------- solids
