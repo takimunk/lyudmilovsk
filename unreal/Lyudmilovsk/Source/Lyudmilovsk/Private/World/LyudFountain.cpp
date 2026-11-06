@@ -418,38 +418,57 @@ void ALyudFountain::BeginPlay()
 	Super::BeginPlay();
 }
 
-FDateTime ALyudFountain::FirstFrost(int32 Year)
+namespace
 {
-	const FDateTime Until(Year, 12, 1);
-	if (FrostYear != Year)
-	{
-		FrostYear = Year;
-		ScannedTo = HoursOf(FDateTime(Year, 9, 1));
-		FrostHours = -1.0;
-	}
-	if (FrostHours < 0.0)
-	{
-		// the weather engine's air at 2 m, hour by hour from 1 September (no forced values: the season is the clock's)
-		if (ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
-		{
-			W->GetModelState();     // pushes the climate into the shared chain
-		}
-		LyudWeather::FChain& Chain = LyudWeather::SharedChain();
-		const double End = HoursOf(Until);
-		for (; ScannedTo < End; ScannedTo += 1.0)
-		{
-			if (LyudWeather::Instant(ScannedTo, Chain).TempC < FrostC)
-			{
-				FrostHours = ScannedTo;
-				break;
-			}
-		}
-	}
-	return FrostHours >= 0.0 ? FDateTime(2000, 1, 1) + FTimespan::FromHours(FrostHours) : FDateTime();
+	/** The autumn's first-frost search, shared by every fountain (the weather chain is the world's): per year, scanned
+	 *  up to ScannedTo (hours since 2000), found at FrostHours (-1: not yet / none by 1 December). */
+	struct FFrostScan { double ScannedTo = 0.0, FrostHours = -1.0; bool bDone = false; };
+	TMap<int32, FFrostScan> GFrostScans;
+	constexpr int32 FrostHoursPerTick = 120;    // ~2200 hours from 1 September to 1 December: ~18 ticks, never one long frame
 }
 
-bool ALyudFountain::InSeason(const FDateTime& When)
+bool ALyudFountain::ScanFrost(int32 Year, int32 Budget)
 {
+	FFrostScan* S = GFrostScans.Find(Year);
+	if (!S)
+	{
+		S = &GFrostScans.Add(Year);
+		S->ScannedTo = HoursOf(FDateTime(Year, 9, 1));
+	}
+	if (S->bDone)
+	{
+		return true;
+	}
+	// the weather engine's air at 2 m, hour by hour from 1 September (no forced values: the season is the clock's)
+	if (ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+	{
+		W->GetModelState();     // pushes the climate into the shared chain
+	}
+	LyudWeather::FChain& Chain = LyudWeather::SharedChain();
+	const double End = HoursOf(FDateTime(Year, 12, 1));
+	for (int32 N = 0; S->ScannedTo < End && (Budget <= 0 || N < Budget); S->ScannedTo += 1.0, N++)
+	{
+		if (LyudWeather::Instant(S->ScannedTo, Chain).TempC < FrostC)
+		{
+			S->FrostHours = S->ScannedTo;
+			S->bDone = true;
+			return true;
+		}
+	}
+	S->bDone = S->ScannedTo >= End;
+	return S->bDone;
+}
+
+FDateTime ALyudFountain::FirstFrost(int32 Year)
+{
+	ScanFrost(Year, 0);
+	const FFrostScan& S = GFrostScans.FindChecked(Year);
+	return S.FrostHours >= 0.0 ? FDateTime(2000, 1, 1) + FTimespan::FromHours(S.FrostHours) : FDateTime();
+}
+
+bool ALyudFountain::InSeason(const FDateTime& When, bool& bKnown)
+{
+	bKnown = true;
 	const int32 Y = When.GetYear();
 	if (When < FDateTime(Y, 5, 1) || When >= FDateTime(Y, 12, 1))
 	{
@@ -459,8 +478,20 @@ bool ALyudFountain::InSeason(const FDateTime& When)
 	{
 		return true;
 	}
-	const FDateTime Frost = FirstFrost(Y);
-	return Frost == FDateTime() || When < Frost;
+	// autumn: running until the first frost; the search goes on a slice per tick, so an answer may wait a few ticks
+	ScanFrost(Y, FrostHoursPerTick);
+	const FFrostScan& S = GFrostScans.FindChecked(Y);
+	const double H = HoursOf(When);
+	if (S.FrostHours >= 0.0)
+	{
+		return H < S.FrostHours;
+	}
+	if (S.bDone || S.ScannedTo > H)
+	{
+		return true;                 // no frost up to now
+	}
+	bKnown = false;
+	return bRunning;
 }
 
 void ALyudFountain::SetRunning(bool bOn)
@@ -507,11 +538,30 @@ void ALyudFountain::UpdateSound()
 	{
 		Sound->Start();
 		bSoundPlaying = true;
+		SoundFadeLeft = 0.f;
 	}
-	else if (!bWant && bSoundPlaying && Dist > HearCm + 500.f)
+	else if (!bWant && bSoundPlaying)
 	{
-		Sound->Stop();
-		bSoundPlaying = false;
+		// walked out of earshot: stop at once; drained, hidden or the sound switched off: let the flow fade (~1.5 s), then stop
+		if (Dist > HearCm + 500.f)
+		{
+			SoundFadeLeft = 0.f;
+		}
+		else if (SoundFadeLeft <= 0.f)
+		{
+			SoundFadeLeft = 1.5f;
+		}
+		SoundFadeLeft -= GetWorld() ? GetWorld()->GetDeltaSeconds() : 0.25f;
+		if (SoundFadeLeft <= 0.f)
+		{
+			Sound->Stop();
+			bSoundPlaying = false;
+			SoundFadeLeft = 0.f;
+		}
+	}
+	else if (bWant)
+	{
+		SoundFadeLeft = 0.f;
 	}
 	Sound->SetFlow(bWant ? 1.f : 0.f, Gain);
 }
@@ -519,9 +569,11 @@ void ALyudFountain::UpdateSound()
 FString ALyudFountain::DebugReport()
 {
 	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
-	const FDateTime Frost = FirstFrost(Now.GetYear());
+	const FFrostScan* Scan = GFrostScans.Find(Now.GetYear());
+	const FDateTime Frost = Scan && Scan->FrostHours >= 0.0 ? FDateTime(2000, 1, 1) + FTimespan::FromHours(Scan->FrostHours) : FDateTime();
+	bool bKnownNow = true;
 	return FString::Printf(TEXT("%s, %s; now %s, first frost %s, force %d, sound %s rms %.4f"), bRunning ? TEXT("running") : TEXT("drained"),
-		InSeason(Now) ? TEXT("in season") : TEXT("out of season"), *Now.ToString(TEXT("%Y-%m-%d %H:%M")),
+		InSeason(Now, bKnownNow) ? TEXT("in season") : TEXT("out of season"), *Now.ToString(TEXT("%Y-%m-%d %H:%M")),
 		Frost == FDateTime() ? TEXT("none by December") : *Frost.ToString(TEXT("%Y-%m-%d %H:%M")), CVarFountainForce.GetValueOnGameThread(),
 		bSoundPlaying ? TEXT("on") : TEXT("off"), Sound ? Sound->GetRms() : 0.f);
 }
@@ -539,7 +591,16 @@ void ALyudFountain::Tick(float DeltaSeconds)
 	{
 		CheckTimer = 2.f;
 		const int32 Force = CVarFountainForce.GetValueOnGameThread();
-		SetRunning(Force >= 0 ? Force > 0 : InSeason(UGameCalendar::NowIn(GetWorld())));
+		bool bKnown = true;
+		const bool bOn = Force >= 0 ? Force > 0 : InSeason(UGameCalendar::NowIn(GetWorld()), bKnown);
+		if (bKnown)
+		{
+			SetRunning(bOn);
+		}
+		else
+		{
+			CheckTimer = 0.f;        // the frost search isn't up to today yet: another slice next tick
+		}
 		if (CVarFountainDebug.GetValueOnGameThread() > 0)
 		{
 			UE_LOG(LogTemp, Display, TEXT("LyudFountain: %s"), *DebugReport());
