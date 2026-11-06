@@ -100,7 +100,11 @@ bool ULyudCounterTradeSubsystem::IsOpen(int32 Counter, FVector* Where) const
 	}
 	// asked every frame: the seller's id and the activity's index once per run of the people's life, then a cheap read
 	const void* Run = People->GetSim();
-	if (Run != CacheRun)
+	if (!Run)
+	{
+		return false;  // the people's life hasn't started (or has stopped): nobody is at a counter
+	}
+	if (Run != CacheRun || CachePerson.Num() != Counters.Num() || CacheActivity.Num() != Counters.Num())
 	{
 		CacheRun = Run;
 		CachePerson.SetNum(Counters.Num());
