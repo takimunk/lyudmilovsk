@@ -344,6 +344,21 @@ def build_places(plan, extra, args):
         places.append(pl)
         workplaces.append(w)
 
+    # the benches the buildings put outside their doors and on their decks (the grannies' places): one bench place a plot
+    for p in plan["plots"]:
+        if not p.get("building"):
+            continue
+        data = flats_of_type(p["building"], p["id"])
+        if not data:
+            continue
+        front = ue_m(plan, p["front"])
+        out = [sp for sp in data.get("spots", []) if sp["kind"] == "bench" and not sp["id"].startswith(("lobby", "wait_", "hall"))
+               and sp.get("pos", [0, 0, 0])[2] < 1.0 and p["kind"] in ("residential", "pier", "hotel", "office")]
+        if out:
+            slots = [{"kind": "bench", "pos": local_to_world(front, p["yaw"], sp["pos"]), "yaw": round((p["yaw"] - sp.get("yaw", 0.0)) % 360, 1),
+                      "capacity": 2, "height": 0.45} for sp in out]
+            places.append({"id": p["id"] + "-BENCHES", "kind": "bench", "pos": slots[0]["pos"], "yaw": slots[0]["yaw"], "island": 0, "slots": slots})
+
     # homes: the flats in the terrace walls, the plot buildings' flats
     for d in plan["wall_dwellings"]:
         flats.append({"id": d["id"], "building": d["wall"], "door": from_ue_cm(d["door_ue"]), "yaw": d.get("yaw", 0.0),
