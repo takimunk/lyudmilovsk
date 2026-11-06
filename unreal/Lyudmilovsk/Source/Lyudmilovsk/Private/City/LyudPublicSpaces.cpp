@@ -512,6 +512,9 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	// the festivals' contract: they build no stage / stalls of their own when the plan's are up (any actor with these tags)
+	if (CountProps(TEXT("stage")) > 0) Tags.AddUnique(TEXT("PlanStage"));
+	if (CountProps(TEXT("stall")) > 0) Tags.AddUnique(TEXT("PlanStalls"));
 	UpdateSeason(true);
 	UpdateNight(true);
 	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: %d blocks, %d props in %d sets (%d kit triangles), %d lamps, %d trees, %d plants, built in %.0f ms"),
