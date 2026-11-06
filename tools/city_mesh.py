@@ -193,12 +193,15 @@ def walls(mesh):
             elif full and b["kind"] == "unit":
                 for kind, u, sill, ww, wh in C.UNIT_OPENINGS:
                     openings.append((u - ww / 2, u + ww / 2, lower + sill, lower + sill + wh, DOOR if kind == "door" else SHOPGLASS))
-            _face(prim_c, prims, b, o, a, n, half, lower - FOOT, upper, openings)
-            # the block's top (flush with the upper terrace) and its ends (seen where the fade steps it down)
-            _quad(prim_c, o, a, n, [(-half, 0, upper), (half, 0, upper), (half, -depth, upper), (-half, -depth, upper)], (0, 0, 1))
-            _quad(prim_c, o, a, n, [(-half, -depth, lower - FOOT), (-half, 0, lower - FOOT), (-half, 0, upper), (-half, -depth, upper)],
+            _face(prim_c, prims, b, o, a, n, half, lower - FOOT, upper + 0.02, openings)
+            # the block's top (with the upper terrace) and its ends (seen where the fade steps it down);
+            # 2 cm over the terrace: the landscape's ramp behind the face (city_plan.WALL_RAMP) is level with the upper
+            # terrace for the block's last 1.6 m, and a top at exactly that height would fight the ground there
+            top = upper + 0.02
+            _quad(prim_c, o, a, n, [(-half, 0, top), (half, 0, top), (half, -depth, top), (-half, -depth, top)], (0, 0, 1))
+            _quad(prim_c, o, a, n, [(-half, -depth, lower - FOOT), (-half, 0, lower - FOOT), (-half, 0, top), (-half, -depth, top)],
                   (-a[0], -a[1], 0.0))
-            _quad(prim_c, o, a, n, [(half, 0, lower - FOOT), (half, -depth, lower - FOOT), (half, -depth, upper), (half, 0, upper)],
+            _quad(prim_c, o, a, n, [(half, 0, lower - FOOT), (half, -depth, lower - FOOT), (half, -depth, top), (half, 0, top)],
                   (a[0], a[1], 0.0))
             # a plinth line and a drip course: the face is not a flat sheet
             _box(prim_c, o, a, n, -half, half, 0.0, 0.06, lower - 0.1, lower + 0.35)
