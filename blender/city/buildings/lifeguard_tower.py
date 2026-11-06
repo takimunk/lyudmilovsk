@@ -108,6 +108,7 @@ def build(B):
     while z < DECK_Z1 + 0.8:
         box(d, "CT_Steel", -0.25, 0.25, ly - 0.015, ly + 0.015, z, z + 0.03)
         z += 0.3
+    B.entrance("ladder", (0.0, ly - 0.05, 0.5), 0.0, width=0.5, height=2.0, kind="service")
     B.spot("view", "view", (0.0, 2.6, DECK_Z1), 0.0)
     B.footprint = [(-2.0, 0.0), (2.0, 0.0), (2.0, 4.0), (-2.0, 4.0)]
     B.height = 9.0

@@ -27,7 +27,22 @@
   ]
  ],
  "height": 9.0,
- "entrances": [],
+ "entrances": [
+  {
+   "id": "ladder",
+   "pos": [
+    0.0,
+    1.28,
+    0.5
+   ],
+   "yaw": 0.0,
+   "width": 0.5,
+   "height": 2.0,
+   "kind": "service",
+   "leaves": 1,
+   "to": null
+  }
+ ],
  "spots": [
   {
    "id": "view",

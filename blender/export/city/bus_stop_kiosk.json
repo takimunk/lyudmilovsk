@@ -27,7 +27,22 @@
   ]
  ],
  "height": 4.95,
- "entrances": [],
+ "entrances": [
+  {
+   "id": "staff",
+   "pos": [
+    2.8,
+    3.55,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 0.9,
+   "height": 2.0,
+   "kind": "service",
+   "leaves": 1,
+   "to": null
+  }
+ ],
  "spots": [
   {
    "id": "bench",

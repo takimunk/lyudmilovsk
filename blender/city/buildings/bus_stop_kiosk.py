@@ -139,6 +139,7 @@ def build(B):
     # right (door hole)
     F3 = B.facade((kx1, ky0), (kx1, ky1), 0.0, kh, "CT_TileWhite", holes=[(0.9, 1.8, 0.0, 2.0)], depth=W)
     box(d, "CT_Door", kx1 - W + 0.03, kx1 - W + 0.08, ky0 + 0.9, ky0 + 1.8, 0.02, 2.0)
+    B.entrance("staff", (kx1, 3.55, 0.0), 90.0, width=0.9, height=2.0, kind="service")
     # the back wall of the kiosk is the concrete wall; floor and roof
     box(m, "CT_Floor", kx0 - W, kx1, ky0 - W, ky1, 0.0, 0.02, faces="Z")
     box(m, "CT_Concrete", kx0 - 0.35, kx1 + 0.2, ky0 - 0.35, ky1, kh, kh + 0.15)
