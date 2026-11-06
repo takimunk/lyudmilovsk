@@ -346,10 +346,13 @@ def build_places(plan, extra, args):
                       "beds": d.get("beds", 2), "windows": [w["id"] for w in d.get("windows", [])], "terrace": d.get("terrace"),
                       "occupancy": args.wall_occupancy})
     for p in plan["plots"]:
-        if p["kind"] != "residential":
+        # homes are the residential plots' flats, and the flats a public building carries (the bridge house's 36 over
+        # its offices, the sanatorium's rooms: long-stay guests, fewer of them)
+        if not p.get("building") or (p["kind"] != "residential" and not (flats_of_type(p["building"], p["id"]) or {}).get("flats")):
             continue
         front = ue_m(plan, p["front"])
         data = flats_of_type(p["building"], p["id"])
+        occ = args.house_occupancy * (0.4 if p["kind"] == "hotel" else 1.0)
         if data:
             # in by the building's street entrance (the flats themselves aren't walked: the entrance is the flat's door)
             ents = {e["id"]: e for e in data.get("entrances", [])}
@@ -360,7 +363,7 @@ def build_places(plan, extra, args):
                 wins = [w if isinstance(w, str) else w.get("w") or w.get("id") for w in f.get("windows", [])]
                 flats.append({"id": fid, "building": p["id"], "door": door, "yaw": p["yaw"], "beds": max(1, f.get("beds", 2)),
                               "windows": ["%s/%s" % (p["id"], w) if not w.startswith(p["id"]) else w for w in wins], "terrace": p.get("terrace"),
-                              "occupancy": args.house_occupancy})
+                              "occupancy": occ})
         else:
             # not designed yet: provisional flats behind the front door, no windows of their own
             storeys = max(2, min(9, int((p.get("height_max") or 12) / 3.2)))
