@@ -232,29 +232,68 @@ void ALyudCityWindows::Refresh(bool bForceRebuild)
 	const bool bAll = CVarCityWindowsAll.GetValueOnGameThread() != 0;
 	for (FWindow& W : Windows)
 	{
-		const bool bLit = bAll || (W.External >= 0 ? W.External == 1 : ((!bExternal || W.bLamp) && ScheduleLit(W, Now, SunAlt)));
+		// a window the town's life has set stays as it set it; every other window (and every lamp) keeps the schedule
+		const bool bLit = bAll || (W.External >= 0 ? W.External == 1 : ScheduleLit(W, Now, SunAlt));
 		if (bLit != W.bLit)
 		{
 			W.bLit = bLit;
+			W.bChanged = true;
 			bDirty = true;
 		}
 	}
-	if (bDirty || bForceRebuild)
+	if (bForceRebuild)
 	{
 		RebuildInstances();
 	}
+	else if (bDirty)
+	{
+		ApplyChanges();
+	}
+}
+
+void ALyudCityWindows::ApplyChanges()
+{
+	// every window owns one instance for good (in its tint's mesh); unlit = scaled to nothing. Only the windows that
+	// changed are touched, and each touched mesh's render state is marked dirty once.
+	bDirty = false;
+	uint32 Touched = 0;
+	for (FWindow& W : Windows)
+	{
+		if (!W.bChanged || !Panes.IsValidIndex(W.Tint) || W.Instance < 0)
+		{
+			W.bChanged = false;
+			continue;
+		}
+		W.bChanged = false;
+		Panes[W.Tint]->UpdateInstanceTransform(W.Instance, W.bLit ? W.Pane : Hidden(W.Pane), true, false, true);
+		Touched |= 1u << W.Tint;
+	}
+	for (int32 T = 0; T < Panes.Num(); T++)
+	{
+		if (Touched & (1u << T))
+		{
+			Panes[T]->MarkRenderStateDirty();
+		}
+	}
+}
+
+FTransform ALyudCityWindows::Hidden(const FTransform& Pane)
+{
+	return FTransform(Pane.GetRotation(), Pane.GetLocation(), FVector(0.0001));
 }
 
 void ALyudCityWindows::RebuildInstances()
 {
+	// once, at the start: every window gets its instance (lit or hidden) in its tint's mesh
 	bDirty = false;
 	TArray<TArray<FTransform>> ByTint;
 	ByTint.SetNum(Panes.Num());
-	for (const FWindow& W : Windows)
+	for (FWindow& W : Windows)
 	{
-		if (W.bLit && Panes.IsValidIndex(W.Tint))
+		W.bChanged = false;
+		if (Panes.IsValidIndex(W.Tint))
 		{
-			ByTint[W.Tint].Add(W.Pane);
+			W.Instance = ByTint[W.Tint].Add(W.bLit ? W.Pane : Hidden(W.Pane));
 		}
 	}
 	for (int32 T = 0; T < Panes.Num(); T++)
@@ -282,7 +321,6 @@ void ALyudCityWindows::SetWindowLit(FName WindowId, bool bLit)
 {
 	if (const int32* I = ById.Find(WindowId))
 	{
-		bExternal = true;
 		Windows[*I].External = bLit ? 1 : 0;
 		if (Windows[*I].bLit != bLit)
 		{
@@ -299,7 +337,6 @@ bool ALyudCityWindows::IsWindowLit(FName WindowId) const
 
 void ALyudCityWindows::UseSchedule()
 {
-	bExternal = false;
 	for (FWindow& W : Windows)
 	{
 		W.External = -1;

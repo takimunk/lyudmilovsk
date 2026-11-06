@@ -14,14 +14,15 @@ class UMaterialInstanceDynamic;
  * is drawn dark by the wall meshes (tools/city_mesh.py). A lit window is an emissive pane just in front of the glass,
  * one instance in one of a few instanced meshes (warm lamp, cool lamp, TV flicker colour, shop light).
  *
- * Who decides which windows burn: whoever calls ULyudCityWindowsSubsystem::SetWindowLit (the town's life: a flat
- * lights up when its people are home and awake). Until someone does, every flat keeps a schedule of its own from a
- * hash of its id: lights on from dusk until a bedtime between 21:30 and 01:30, some again from 06:00 before dawn;
- * shops lit while open (9..21) in the dark.
+ * Who decides which windows burn: whoever calls ULyudCityWindowsSubsystem::SetWindowLit / SetFlatLit (the town's
+ * life: a flat lights up when its people are home and awake) decides for the windows it sets; every other window keeps
+ * a schedule of its own from a hash of its id: lights on from dusk until a bedtime between 21:30 and 01:30, some again
+ * from 06:00 before dawn; shops lit while open (9..21) in the dark; the street lamps whenever it is dark.
  *
- * Perf (docs/perf checklist): nothing per frame. The state is checked every CheckSeconds of real time and the instance
- * buffers are rebuilt only when a window changed; the panes cast no shadows, have no collision and stay out of Lumen's
- * scene and the distance fields.
+ * Perf (docs/perf checklist): nothing per frame. The state is checked every CheckSeconds of real time. Every window
+ * owns one instance for good (unlit = scaled to nothing); a change updates only the changed instances and marks each
+ * touched mesh dirty once. The panes cast no shadows, have no collision and stay out of Lumen's scene and the distance
+ * fields.
  */
 UCLASS(NotPlaceable, Transient)
 class LYUDMILOVSK_API ALyudCityWindows : public AActor
@@ -62,10 +63,11 @@ private:
 		bool bLit = false;
 		int8 Tint = 0;            // which instanced mesh when lit
 		int8 External = -1;       // -1 = schedule, 0 / 1 = set from outside
+		bool bChanged = false;    // lit state changed since the instances were last updated
+		int32 Instance = -1;      // its instance in Panes[Tint] (kept for good; unlit = scaled to nothing)
 	};
 	TArray<FWindow> Windows;
 	TMap<FName, int32> ById;
-	bool bExternal = false;
 	bool bDirty = true;
 	float Accum = 0.f;
 
@@ -74,6 +76,8 @@ private:
 
 	bool ScheduleLit(const FWindow& W, const FDateTime& Now, float SunAltitude) const;
 	void RebuildInstances();
+	void ApplyChanges();
+	static FTransform Hidden(const FTransform& Pane);
 };
 
 /** Spawns the town's window lights when the outdoor map starts (lyud.CityWindows 0: not at all). */
