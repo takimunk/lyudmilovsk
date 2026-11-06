@@ -437,6 +437,28 @@
    "variants": 2,
    "duration": 1.0,
    "prompt": "A cigarette end flicked away and landing on concrete: a tiny soft tap and a faint hiss, close, outdoors, quiet, no voices"
+  },
+  {
+   "id": "firework_launch",
+   "group": "festival",
+   "variants": 2,
+   "duration": 2.0,
+   "prompt": "A single firework mortar shell launched: a hollow thump and a rising whistle fading upward, outdoors by the sea at night, medium distance, no explosion, no voices"
+  },
+  {
+   "id": "firework_boom",
+   "group": "festival",
+   "variants": 3,
+   "duration": 3.0,
+   "prompt": "A single large firework shell exploding high over the sea at night, a deep boom with a long echo rolling off the shore and a soft crackling tail, heard from a beach, no voices, no music"
+  },
+  {
+   "id": "bonfire_loop",
+   "group": "festival",
+   "variants": 1,
+   "duration": 10.0,
+   "loop": true,
+   "prompt": "A big bonfire on a sandy beach burning steadily, crackling and popping logs, soft roar of flames, faint calm sea waves behind, seamless loop, no voices"
   }
  ],
  "music": [
@@ -624,6 +646,24 @@
    "seconds": 120,
    "seed": 30101,
    "prompt": "Cinematic ambient, slow swelling warm analog synth pads and distant low strings, a lone glassy piano motif, D minor, 64 BPM, awe and quiet vertigo of seeing a whole small world hanging in a black sky, rising to a wide swell then fading out, no drums, no vocals"
+  },
+  {
+   "id": "festival_1",
+   "mood": [
+    "festival"
+   ],
+   "seconds": 120,
+   "seed": 41101,
+   "prompt": "Cheerful outdoor town festival brass band, accordion and tuba, a lively Baltic seaside waltz then a polka, warm and nostalgic, 112 BPM, live acoustic, no vocals"
+  },
+  {
+   "id": "festival_2",
+   "mood": [
+    "festival"
+   ],
+   "seconds": 120,
+   "seed": 41201,
+   "prompt": "Joyful folk dance music for a town square celebration, fiddle, accordion, acoustic guitar, hand percussion, a mix of Eastern European and Celtic folk, bright major key, 124 BPM, no vocals"
   }
  ]
 }
