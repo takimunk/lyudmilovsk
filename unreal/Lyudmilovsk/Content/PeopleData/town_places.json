@@ -49502,6 +49502,1126 @@
    ]
   },
   {
+   "id": "P-STORE/0-01",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/0-01/w1",
+    "P-STORE/0-01/w2",
+    "P-STORE/0-01/w3",
+    "P-STORE/0-01/w4",
+    "P-STORE/0-01/w5",
+    "P-STORE/0-01/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/0-02",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/0-02/w1",
+    "P-STORE/0-02/w2",
+    "P-STORE/0-02/w3",
+    "P-STORE/0-02/w4",
+    "P-STORE/0-02/w5",
+    "P-STORE/0-02/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/0-03",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/0-03/w1",
+    "P-STORE/0-03/w2",
+    "P-STORE/0-03/w3",
+    "P-STORE/0-03/w4",
+    "P-STORE/0-03/w5",
+    "P-STORE/0-03/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/0-04",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/0-04/w1",
+    "P-STORE/0-04/w2",
+    "P-STORE/0-04/w3",
+    "P-STORE/0-04/w4",
+    "P-STORE/0-04/w5",
+    "P-STORE/0-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/1-01",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/1-01/w1",
+    "P-STORE/1-01/w2",
+    "P-STORE/1-01/w3",
+    "P-STORE/1-01/w4",
+    "P-STORE/1-01/w5",
+    "P-STORE/1-01/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/1-02",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/1-02/w1",
+    "P-STORE/1-02/w2",
+    "P-STORE/1-02/w3",
+    "P-STORE/1-02/w4",
+    "P-STORE/1-02/w5",
+    "P-STORE/1-02/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/1-03",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/1-03/w1",
+    "P-STORE/1-03/w2",
+    "P-STORE/1-03/w3",
+    "P-STORE/1-03/w4",
+    "P-STORE/1-03/w5",
+    "P-STORE/1-03/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/1-04",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/1-04/w1",
+    "P-STORE/1-04/w2",
+    "P-STORE/1-04/w3",
+    "P-STORE/1-04/w4",
+    "P-STORE/1-04/w5",
+    "P-STORE/1-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/2-01",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/2-01/w1",
+    "P-STORE/2-01/w2",
+    "P-STORE/2-01/w3",
+    "P-STORE/2-01/w4",
+    "P-STORE/2-01/w5",
+    "P-STORE/2-01/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/2-02",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/2-02/w1",
+    "P-STORE/2-02/w2",
+    "P-STORE/2-02/w3",
+    "P-STORE/2-02/w4",
+    "P-STORE/2-02/w5",
+    "P-STORE/2-02/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/2-03",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/2-03/w1",
+    "P-STORE/2-03/w2",
+    "P-STORE/2-03/w3",
+    "P-STORE/2-03/w4",
+    "P-STORE/2-03/w5",
+    "P-STORE/2-03/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/2-04",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/2-04/w1",
+    "P-STORE/2-04/w2",
+    "P-STORE/2-04/w3",
+    "P-STORE/2-04/w4",
+    "P-STORE/2-04/w5",
+    "P-STORE/2-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/3-01",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/3-01/w1",
+    "P-STORE/3-01/w2",
+    "P-STORE/3-01/w3",
+    "P-STORE/3-01/w4",
+    "P-STORE/3-01/w5",
+    "P-STORE/3-01/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/3-02",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/3-02/w1",
+    "P-STORE/3-02/w2",
+    "P-STORE/3-02/w3",
+    "P-STORE/3-02/w4",
+    "P-STORE/3-02/w5",
+    "P-STORE/3-02/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/3-03",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/3-03/w1",
+    "P-STORE/3-03/w2",
+    "P-STORE/3-03/w3",
+    "P-STORE/3-03/w4",
+    "P-STORE/3-03/w5",
+    "P-STORE/3-03/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/3-04",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/3-04/w1",
+    "P-STORE/3-04/w2",
+    "P-STORE/3-04/w3",
+    "P-STORE/3-04/w4",
+    "P-STORE/3-04/w5",
+    "P-STORE/3-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/4-01",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/4-01/w1",
+    "P-STORE/4-01/w2",
+    "P-STORE/4-01/w3",
+    "P-STORE/4-01/w4",
+    "P-STORE/4-01/w5",
+    "P-STORE/4-01/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/4-02",
+   "kind": "flat",
+   "door": [
+    -65.94,
+    977.09,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/4-02/w1",
+    "P-STORE/4-02/w2",
+    "P-STORE/4-02/w3",
+    "P-STORE/4-02/w4",
+    "P-STORE/4-02/w5",
+    "P-STORE/4-02/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/4-03",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/4-03/w1",
+    "P-STORE/4-03/w2",
+    "P-STORE/4-03/w3",
+    "P-STORE/4-03/w4",
+    "P-STORE/4-03/w5",
+    "P-STORE/4-03/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-STORE/4-04",
+   "kind": "flat",
+   "door": [
+    -67.7,
+    958.17,
+    -36.2
+   ],
+   "yaw": -5.3,
+   "island": 0,
+   "shell": 1,
+   "building": "P-STORE",
+   "windows": [
+    "P-STORE/4-04/w1",
+    "P-STORE/4-04/w2",
+    "P-STORE/4-04/w3",
+    "P-STORE/4-04/w4",
+    "P-STORE/4-04/w5",
+    "P-STORE/4-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
    "id": "P-T1H1/0-01",
    "kind": "flat",
    "door": [
@@ -98920,6 +100040,7795 @@
     "P-T4H2/4-04/w4",
     "P-T4H2/4-04/w5",
     "P-T4H2/4-04/w6"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-01",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-01/w1",
+    "P-SANATORIUM/1-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-02",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-02/w1",
+    "P-SANATORIUM/1-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-03",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-03/w1",
+    "P-SANATORIUM/1-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-04",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-04/w1",
+    "P-SANATORIUM/1-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-05",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-05/w1",
+    "P-SANATORIUM/1-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-06",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-06/w1",
+    "P-SANATORIUM/1-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-07",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-07/w1",
+    "P-SANATORIUM/1-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-08",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-08/w1",
+    "P-SANATORIUM/1-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-09",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-09/w1",
+    "P-SANATORIUM/1-09/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-10",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-10/w1",
+    "P-SANATORIUM/1-10/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-11",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-11/w1",
+    "P-SANATORIUM/1-11/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-12",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-12/w1",
+    "P-SANATORIUM/1-12/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-13",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-13/w1",
+    "P-SANATORIUM/1-13/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-14",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-14/w1",
+    "P-SANATORIUM/1-14/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-15",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-15/w1",
+    "P-SANATORIUM/1-15/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-16",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-16/w1",
+    "P-SANATORIUM/1-16/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-17",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-17/w1",
+    "P-SANATORIUM/1-17/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-18",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-18/w1",
+    "P-SANATORIUM/1-18/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-19",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-19/w1",
+    "P-SANATORIUM/1-19/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-20",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-20/w1",
+    "P-SANATORIUM/1-20/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-21",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-21/w1",
+    "P-SANATORIUM/1-21/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-22",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-22/w1",
+    "P-SANATORIUM/1-22/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-23",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-23/w1",
+    "P-SANATORIUM/1-23/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/1-24",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/1-24/w1",
+    "P-SANATORIUM/1-24/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-01",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-01/w1",
+    "P-SANATORIUM/2-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-02",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-02/w1",
+    "P-SANATORIUM/2-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-03",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-03/w1",
+    "P-SANATORIUM/2-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-04",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-04/w1",
+    "P-SANATORIUM/2-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-05",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-05/w1",
+    "P-SANATORIUM/2-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-06",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-06/w1",
+    "P-SANATORIUM/2-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-07",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-07/w1",
+    "P-SANATORIUM/2-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-08",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-08/w1",
+    "P-SANATORIUM/2-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-09",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-09/w1",
+    "P-SANATORIUM/2-09/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-10",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-10/w1",
+    "P-SANATORIUM/2-10/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-11",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-11/w1",
+    "P-SANATORIUM/2-11/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-12",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-12/w1",
+    "P-SANATORIUM/2-12/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-13",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-13/w1",
+    "P-SANATORIUM/2-13/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-14",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-14/w1",
+    "P-SANATORIUM/2-14/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-15",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-15/w1",
+    "P-SANATORIUM/2-15/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-16",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-16/w1",
+    "P-SANATORIUM/2-16/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-17",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-17/w1",
+    "P-SANATORIUM/2-17/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-18",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-18/w1",
+    "P-SANATORIUM/2-18/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-19",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-19/w1",
+    "P-SANATORIUM/2-19/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-20",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-20/w1",
+    "P-SANATORIUM/2-20/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-21",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-21/w1",
+    "P-SANATORIUM/2-21/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-22",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-22/w1",
+    "P-SANATORIUM/2-22/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-23",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-23/w1",
+    "P-SANATORIUM/2-23/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/2-24",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/2-24/w1",
+    "P-SANATORIUM/2-24/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-01",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-01/w1",
+    "P-SANATORIUM/3-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-02",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-02/w1",
+    "P-SANATORIUM/3-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-03",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-03/w1",
+    "P-SANATORIUM/3-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-04",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-04/w1",
+    "P-SANATORIUM/3-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-05",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-05/w1",
+    "P-SANATORIUM/3-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-06",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-06/w1",
+    "P-SANATORIUM/3-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-07",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-07/w1",
+    "P-SANATORIUM/3-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-08",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-08/w1",
+    "P-SANATORIUM/3-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-09",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-09/w1",
+    "P-SANATORIUM/3-09/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-10",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-10/w1",
+    "P-SANATORIUM/3-10/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-11",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-11/w1",
+    "P-SANATORIUM/3-11/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-12",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-12/w1",
+    "P-SANATORIUM/3-12/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-13",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-13/w1",
+    "P-SANATORIUM/3-13/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-14",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-14/w1",
+    "P-SANATORIUM/3-14/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-15",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-15/w1",
+    "P-SANATORIUM/3-15/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-16",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-16/w1",
+    "P-SANATORIUM/3-16/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-17",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-17/w1",
+    "P-SANATORIUM/3-17/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-18",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-18/w1",
+    "P-SANATORIUM/3-18/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-19",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-19/w1",
+    "P-SANATORIUM/3-19/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-20",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-20/w1",
+    "P-SANATORIUM/3-20/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-21",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-21/w1",
+    "P-SANATORIUM/3-21/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-22",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-22/w1",
+    "P-SANATORIUM/3-22/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-23",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-23/w1",
+    "P-SANATORIUM/3-23/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/3-24",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/3-24/w1",
+    "P-SANATORIUM/3-24/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-01",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-01/w1",
+    "P-SANATORIUM/4-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-02",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-02/w1",
+    "P-SANATORIUM/4-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-03",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-03/w1",
+    "P-SANATORIUM/4-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-04",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-04/w1",
+    "P-SANATORIUM/4-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-05",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-05/w1",
+    "P-SANATORIUM/4-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-06",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-06/w1",
+    "P-SANATORIUM/4-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-07",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-07/w1",
+    "P-SANATORIUM/4-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-08",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-08/w1",
+    "P-SANATORIUM/4-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-09",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-09/w1",
+    "P-SANATORIUM/4-09/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-10",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-10/w1",
+    "P-SANATORIUM/4-10/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-11",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-11/w1",
+    "P-SANATORIUM/4-11/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-12",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-12/w1",
+    "P-SANATORIUM/4-12/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-13",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-13/w1",
+    "P-SANATORIUM/4-13/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-14",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-14/w1",
+    "P-SANATORIUM/4-14/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-15",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-15/w1",
+    "P-SANATORIUM/4-15/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-16",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-16/w1",
+    "P-SANATORIUM/4-16/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-17",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-17/w1",
+    "P-SANATORIUM/4-17/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-18",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-18/w1",
+    "P-SANATORIUM/4-18/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-19",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-19/w1",
+    "P-SANATORIUM/4-19/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-20",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-20/w1",
+    "P-SANATORIUM/4-20/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-21",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-21/w1",
+    "P-SANATORIUM/4-21/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-22",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-22/w1",
+    "P-SANATORIUM/4-22/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-23",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-23/w1",
+    "P-SANATORIUM/4-23/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/4-24",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/4-24/w1",
+    "P-SANATORIUM/4-24/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-01",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-01/w1",
+    "P-SANATORIUM/5-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-02",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-02/w1",
+    "P-SANATORIUM/5-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-03",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-03/w1",
+    "P-SANATORIUM/5-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-04",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-04/w1",
+    "P-SANATORIUM/5-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-05",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-05/w1",
+    "P-SANATORIUM/5-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-06",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-06/w1",
+    "P-SANATORIUM/5-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-07",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-07/w1",
+    "P-SANATORIUM/5-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-08",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-08/w1",
+    "P-SANATORIUM/5-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-09",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-09/w1",
+    "P-SANATORIUM/5-09/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-10",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-10/w1",
+    "P-SANATORIUM/5-10/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-11",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-11/w1",
+    "P-SANATORIUM/5-11/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-12",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-12/w1",
+    "P-SANATORIUM/5-12/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-13",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-13/w1",
+    "P-SANATORIUM/5-13/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-14",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-14/w1",
+    "P-SANATORIUM/5-14/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-15",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-15/w1",
+    "P-SANATORIUM/5-15/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-16",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-16/w1",
+    "P-SANATORIUM/5-16/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-17",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-17/w1",
+    "P-SANATORIUM/5-17/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-18",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-18/w1",
+    "P-SANATORIUM/5-18/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-19",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-19/w1",
+    "P-SANATORIUM/5-19/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-20",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-20/w1",
+    "P-SANATORIUM/5-20/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-21",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-21/w1",
+    "P-SANATORIUM/5-21/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-22",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-22/w1",
+    "P-SANATORIUM/5-22/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-23",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-23/w1",
+    "P-SANATORIUM/5-23/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-SANATORIUM/5-24",
+   "kind": "flat",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-SANATORIUM",
+   "windows": [
+    "P-SANATORIUM/5-24/w1",
+    "P-SANATORIUM/5-24/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/1-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/1-01/w1",
+    "P-BRIDGEHOUSE/1-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/1-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/1-02/w1",
+    "P-BRIDGEHOUSE/1-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/1-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/1-03/w1",
+    "P-BRIDGEHOUSE/1-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/1-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/1-04/w1",
+    "P-BRIDGEHOUSE/1-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/2-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/2-01/w1",
+    "P-BRIDGEHOUSE/2-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/2-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/2-02/w1",
+    "P-BRIDGEHOUSE/2-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/2-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/2-03/w1",
+    "P-BRIDGEHOUSE/2-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/2-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/2-04/w1",
+    "P-BRIDGEHOUSE/2-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-01/w1",
+    "P-BRIDGEHOUSE/3-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-02/w1",
+    "P-BRIDGEHOUSE/3-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-03/w1",
+    "P-BRIDGEHOUSE/3-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-04/w1",
+    "P-BRIDGEHOUSE/3-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-05",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-05/w1",
+    "P-BRIDGEHOUSE/3-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/3-06",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/3-06/w1",
+    "P-BRIDGEHOUSE/3-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-01/w1",
+    "P-BRIDGEHOUSE/4-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-02/w1",
+    "P-BRIDGEHOUSE/4-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-03/w1",
+    "P-BRIDGEHOUSE/4-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-04/w1",
+    "P-BRIDGEHOUSE/4-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-05",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-05/w1",
+    "P-BRIDGEHOUSE/4-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/4-06",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/4-06/w1",
+    "P-BRIDGEHOUSE/4-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-01/w1",
+    "P-BRIDGEHOUSE/5-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-02/w1",
+    "P-BRIDGEHOUSE/5-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-03/w1",
+    "P-BRIDGEHOUSE/5-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-04/w1",
+    "P-BRIDGEHOUSE/5-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-05",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-05/w1",
+    "P-BRIDGEHOUSE/5-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-06",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-06/w1",
+    "P-BRIDGEHOUSE/5-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-07",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-07/w1",
+    "P-BRIDGEHOUSE/5-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/5-08",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/5-08/w1",
+    "P-BRIDGEHOUSE/5-08/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-01",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-01/w1",
+    "P-BRIDGEHOUSE/6-01/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-02",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-02/w1",
+    "P-BRIDGEHOUSE/6-02/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-03",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-03/w1",
+    "P-BRIDGEHOUSE/6-03/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-04",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-04/w1",
+    "P-BRIDGEHOUSE/6-04/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-05",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-05/w1",
+    "P-BRIDGEHOUSE/6-05/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-06",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-06/w1",
+    "P-BRIDGEHOUSE/6-06/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-07",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-07/w1",
+    "P-BRIDGEHOUSE/6-07/w2"
+   ],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-BRIDGEHOUSE/6-08",
+   "kind": "flat",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ],
+   "yaw": -5.2,
+   "island": 0,
+   "shell": 1,
+   "building": "P-BRIDGEHOUSE",
+   "windows": [
+    "P-BRIDGEHOUSE/6-08/w1",
+    "P-BRIDGEHOUSE/6-08/w2"
    ],
    "slots": [
     {
