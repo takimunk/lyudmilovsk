@@ -259,6 +259,19 @@ def render(type_id, B, night):
         moon.data.color = (0.6, 0.7, 1.0)
         moon.rotation_euler = (math.radians(50), 0, math.radians(-120))
         scn.collection.objects.link(moon)
+    # the building's own lamps (B.lamp): interiors read in the previews too
+    for i, l in enumerate(getattr(B, "lamps", [])):
+        if l["kind"] != "public" and not night:
+            continue
+        ld = bpy.data.lights.new("lamp%d" % i, "POINT")
+        ld.energy = l["lumens"] / 15.0
+        ld.shadow_soft_size = 0.2
+        hx = l["colour"]
+        ld.color = tuple(int(hx[k:k + 2], 16) / 255.0 for k in (1, 3, 5))
+        lo = bpy.data.objects.new("lamp%d" % i, ld)
+        lo.location = l["pos"]
+        lo.location.z -= 0.15
+        scn.collection.objects.link(lo)
     # ground
     me = bpy.data.meshes.new("ground")
     s = 400

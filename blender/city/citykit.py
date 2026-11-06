@@ -56,6 +56,7 @@ class Building:
         self.flats = {}                    # flat id -> {flat, storey, beds, door, entrance, windows[]}
         self.entrances = []                # {id, pos, yaw, width, height, kind, leaves, to}
         self.spots = []                    # {id, kind, pos, yaw}: benches, counters, stalls... for the life sim
+        self.lamps = []                    # {pos, lumens, colour, kind, radius}: real lights inside enterable rooms
         self.footprint = []                # outline [(x, y)] on the ground, CCW
         self.height = 0.0
         self.notes = []
@@ -166,6 +167,17 @@ class Building:
         (0 = -y, toward the street; 90 = +x), the same convention as entrances."""
         self.spots.append({"id": sid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": yaw})
 
+    def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
+        """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
+        light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
+        long: interiors need it), "stair"/"lobby": dusk to dawn. fixture: a small opal globe/pendant into B.detail
+        (material CT_Neon, which glows at night)."""
+        self.lamps.append({"pos": [round(v, 3) for v in pos], "lumens": lumens, "colour": colour, "kind": kind,
+                           "radius": radius})
+        if fixture:
+            x, y, z = pos
+            box(self.detail, "CT_Neon", x - 0.18, x + 0.18, y - 0.18, y + 0.18, z - 0.08, z + 0.08)
+
     # ---------------------------------------------------------------- solids
     def slab(self, poly, z0, z1, mat="CT_Concrete", m=None):
         prism(m or self.m, mat, poly, z0, z1, top=True, bottom=True)
@@ -213,7 +225,7 @@ class Building:
             "type": self.type, "info": info, "frame": "x along the street front, y into the plot, z up; origin "
             "on the front line, mid-frontage, z 0 = ground at the main entrance",
             "footprint": [[round(x, 3), round(y, 3)] for x, y in self.footprint], "height": round(self.height, 2),
-            "entrances": self.entrances, "spots": self.spots,
+            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps,
             "flats": sorted(self.flats.values(), key=lambda f: f["flat"]),
             "windows": self.windows, "light_tex": LIGHT_TEX, "notes": self.notes,
             "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count()},

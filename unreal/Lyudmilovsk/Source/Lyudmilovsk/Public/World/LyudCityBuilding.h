@@ -42,6 +42,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "City") TArray<ELyudWindowKind> WindowKinds;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FString> WindowFlats;
 
+	/** Real lamps inside the enterable rooms (B.lamp in blender/city), in the actor's local space (cm); kind 0 = on in the
+	 * open hours, 1 = dusk to dawn. Point lights are made at BeginPlay (no shadows, drawn near only). */
+	UPROPERTY(EditAnywhere, Category = "City") TArray<FVector> LampPositions;
+	UPROPERTY(EditAnywhere, Category = "City") TArray<float> LampLumens;
+	UPROPERTY(EditAnywhere, Category = "City") TArray<FLinearColor> LampColors;
+	UPROPERTY(EditAnywhere, Category = "City") TArray<float> LampRadii;
+	UPROPERTY(EditAnywhere, Category = "City") TArray<uint8> LampKinds;
+	/** Turns the lamps of one kind on or off (only touches them on a change). */
+	void SetLamps(uint8 Kind, bool bOn);
+
 	/** Public rooms are lit from OpenHour to CloseHour (local game time). */
 	UPROPERTY(EditAnywhere, Category = "City") float OpenHour = 8.f;
 	UPROPERTY(EditAnywhere, Category = "City") float CloseHour = 21.f;
@@ -63,6 +73,8 @@ private:
 	void MakeLightTexture();
 
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> LightTex;
+	UPROPERTY(Transient) TArray<TObjectPtr<class UPointLightComponent>> LampComps;
+	int8 LampState[2] = {-1, -1};
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WindowMID;
 	/** BGRA texels: R = light (the shader's red channel is B in memory order: we write [2]), G = warmth, B = curtain. */
 	TArray<uint8> Texels;

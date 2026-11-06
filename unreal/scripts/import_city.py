@@ -314,6 +314,12 @@ def place(face_y):
         b.set_editor_property("window_kinds", [kinds.get(w["kind"], kinds["public"]) if w["kind"] in kinds else
                                                (kinds["flat"] if w.get("flat") else kinds["public"]) for w in wins])
         b.set_editor_property("window_flats", [w.get("flat") or "" for w in wins])
+        lamps = data.get("lamps", [])
+        b.set_editor_property("lamp_positions", [unreal.Vector(l["pos"][0] * 100, -l["pos"][1] * 100, l["pos"][2] * 100) for l in lamps])
+        b.set_editor_property("lamp_lumens", [float(l["lumens"]) for l in lamps])
+        b.set_editor_property("lamp_colors", [unreal.LinearColor(*[(int(l["colour"][k:k + 2], 16) / 255.0) ** 2.2 for k in (1, 3, 5)], 1.0) for l in lamps])
+        b.set_editor_property("lamp_radii", [float(l.get("radius", 7.0)) * 100 for l in lamps])
+        b.set_editor_property("lamp_kinds", [0 if l["kind"] == "public" else 1 for l in lamps])
         oh = HOURS.get(t.split("__")[0], (8, 21))
         b.set_editor_property("open_hour", float(oh[0]))
         b.set_editor_property("close_hour", float(oh[1]))

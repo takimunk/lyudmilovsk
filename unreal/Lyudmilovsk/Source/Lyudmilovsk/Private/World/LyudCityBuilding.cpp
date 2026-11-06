@@ -1,6 +1,7 @@
 #include "World/LyudCityBuilding.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Components/PointLightComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
@@ -95,6 +96,24 @@ void ALyudCityBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 	MakeLightTexture();
+	const int32 NumLamps = FMath::Min(LampPositions.Num(), 96);
+	for (int32 i = 0; i < NumLamps; ++i)
+	{
+		UPointLightComponent* P = NewObject<UPointLightComponent>(this);
+		P->SetMobility(EComponentMobility::Movable);
+		P->SetupAttachment(Shell);
+		P->SetRelativeLocation(LampPositions[i]);
+		P->SetIntensityUnits(ELightUnits::Lumens);
+		P->SetIntensity(LampLumens.IsValidIndex(i) ? LampLumens[i] : 900.f);
+		P->SetLightColor(LampColors.IsValidIndex(i) ? LampColors[i] : FLinearColor(1.f, 0.85f, 0.66f));
+		P->SetAttenuationRadius(LampRadii.IsValidIndex(i) ? LampRadii[i] : 700.f);
+		P->SetCastShadows(false);
+		P->MaxDrawDistance = 4500.f;
+		P->MaxDistanceFadeRange = 600.f;
+		P->SetVisibility(false);
+		P->RegisterComponent();
+		LampComps.Add(P);
+	}
 	if (ULyudWindowLights* L = ULyudWindowLights::Get(this))
 	{
 		L->Register(this);
@@ -161,6 +180,23 @@ void ALyudCityBuilding::MakeLightTexture()
 		MID->SetTextureParameterValue(TEXT("Lights"), LightTex);
 		Windows->SetMaterial(i, MID);
 		WindowMID = MID;
+	}
+}
+
+void ALyudCityBuilding::SetLamps(uint8 Kind, bool bOn)
+{
+	if (Kind > 1 || LampState[Kind] == int8(bOn))
+	{
+		return;
+	}
+	LampState[Kind] = int8(bOn);
+	for (int32 i = 0; i < LampComps.Num(); ++i)
+	{
+		const uint8 K = LampKinds.IsValidIndex(i) ? LampKinds[i] : 0;
+		if (K == Kind && LampComps[i])
+		{
+			LampComps[i]->SetVisibility(bOn);
+		}
 	}
 }
 
@@ -419,6 +455,8 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			B->SetSlot(S, L);
 		}
 		B->Flush();
+		B->SetLamps(0, Mode == 2 ? false : (Mode == 1 || bOpen));
+		B->SetLamps(1, Mode == 2 ? false : (Mode == 1 || bNight));
 	}
 	LastMode = Mode;
 }
