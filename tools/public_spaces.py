@@ -197,21 +197,26 @@ def promenade(L):
             cx, cy = at((sa + sb) / 2, yc)
             L.box("promenade", cx, cy, sea_yaw(yc) + 90.0, dy + 0.03, sb - sa, z - PAVE - SLAB_DEPTH, z, skin)
         y += dy
-    # the railing on the seawall's edge, a gap at each flight of sea steps
-    y = y0 + 1.0
-    while y < y1 - 1.0:
-        if L.free(C.SEAWALL_S + 0.5, y) and abs(y - 905.0) > 7.0:
-            x, yy = at(rail_s, y)
-            L.prop("railing", x, yy, z, sea_yaw(y) + 90.0)
-        y += 2.0
+    # no railing on the seawall: its 0.45 m kerb (the plan lead's city_mesh.py, s 24.55..25) is the parapet and a
+    # seat; people sit on it facing the sea, three to every 2.5 m
+    kz = P.tz["T0"] + 0.45
+    y = y0 + 4.0
+    while y < y1 - 4.0:
+        run = [v for v in (y + k * 0.8 for k in range(12)) if L.free(C.SEAWALL_S - 0.2, v, 1.0)]
+        if len(run) >= 4 and abs(y + 4.5 - 905.0) > 9.0:
+            slots = [{"pos": L.ue(*at(C.SEAWALL_S - 0.25, v), kz), "yaw": sea_yaw(v), "height": 0.45} for v in run]
+            x, yy = at(C.SEAWALL_S - 0.25, run[len(run) // 2])
+            L.spot(L.uid("S-KERB-"), "promenade", x, yy, P.tz["T0"], sea_yaw(yy), seats=len(slots), slots=slots,
+                   sub="kerb", terrace="T0")
+        y += 20.0
     # lamps: the sea row every 30 m by the railing, the inner row offset by half a span
     y = y0 + 10.0
     k = 0
     while y < y1 - 10.0:
         if L.free(C.SEAWALL_S + 1.2, y, 1.0) and abs(y - 905.0) > 8.0:
             L.lamp(*at(C.SEAWALL_S + 1.2, y), z, area="promenade")
-        if L.free(56.0, y + 15.0, 1.0):
-            L.lamp(*at(56.0, y + 15.0), z, area="promenade")
+        if L.free(52.0, y + 15.0, 1.0):
+            L.lamp(*at(52.0, y + 15.0), z, area="promenade")
         y += 30.0
         k += 1
     # the plan's benches (S-BENCH-P*): backs to W1, facing the sea; a pair by the railing between them
@@ -559,10 +564,6 @@ def park(L):
             if blocked(s, y) or math.hypot(s - ps, y - py_) < ry + 4 or math.hypot(s - gs, y - gy) < 15:
                 continue
             L.tree(sp, *at(s, y), z, L.rnd.uniform(12, 30))
-    for k in range(int((y1 - y0) / 25.0)):
-        y = y0 + 12.0 + k * 25.0
-        if not blocked(s1 - 2.5, y):
-            L.tree("PyramidalPoplar", *at(s1 - 2.5, y), z, L.rnd.uniform(25, 35))
     for k in range(int((y1 - y0) / 4.0)):
         y = y0 + 2.0 + k * 4.0
         if abs(y - (y0 + 75.0)) < 4 or abs(y - (y0 + 225.0)) < 4 or blocked(s0 + 2.0, y):
@@ -673,6 +674,69 @@ def club_stair(L):
     L.d["club_stair"] = {"steps": steps, "bottom": L.ue(bx, by, bz), "top": L.ue(tx, ty, tz)}
 
 
+# --- the pier (its deck is the plan lead's: tools/city_mesh.py pier()) -----------------------------------------------
+PIER_Y, PIER_W, PIER_OUT, PIER_HEAD = 905.0, 12.0, -140.0, 26.0
+
+
+def pier(L):
+    """Railings on the deck's edge kerbs and round the head, lamps and benches down the deck; the head's middle is
+    the lighthouse's (the buildings thread), its rim the sunset/fishing/fireworks spot."""
+    z = L.P.tz["T0"]
+    x0, y0 = at(C.SEAWALL_S, PIER_Y)
+    x1, y1 = at(PIER_OUT, PIER_Y)
+    ln = math.hypot(x1 - x0, y1 - y0)
+    nx, ny = (x1 - x0) / ln, (y1 - y0) / ln            # out to sea
+    ux, uy = -ny, nx                                   # across
+    yaw_out = math.degrees(math.atan2(ny, nx))
+    hc = ln + PIER_HEAD / 2 - 2.0
+    head0 = hc - PIER_HEAD / 2
+
+    def P(u, d):
+        return x0 + ux * u + nx * d, y0 + uy * u + ny * d
+
+    for side in (-1, 1):
+        d = 2.0
+        while d < head0 - 1.0:
+            L.prop("railing", *P(side * (PIER_W / 2 - 0.15), d), z + 0.2, yaw_out)
+            d += 2.0
+    # round the head: three sides, the landward side open to the deck in its middle
+    h = PIER_HEAD / 2
+    for k in range(13):
+        o = -h + 1.0 + k * 2.0
+        L.prop("railing", *P(o, hc + h - 0.1), z, yaw_out + 90.0)
+        for side in (-1, 1):
+            L.prop("railing", *P(side * (h - 0.1), hc + o), z, yaw_out)
+        if abs(o) > PIER_W / 2 + 0.5:
+            L.prop("railing", *P(o, head0 + 0.1), z, yaw_out + 90.0)
+    d = 12.0
+    k = 0
+    while d < head0 - 4.0:
+        for side in (-1, 1):
+            if k % 2 == 0:
+                L.lamp(*P(side * (PIER_W / 2 - 0.8), d), z, area="pier")
+            else:
+                bx, by = P(side * (PIER_W / 2 - 1.1), d)
+                # back to the railing, facing across the deck
+                L.bench(L.uid("S-BENCH-PR"), bx, by, z, math.degrees(math.atan2(-uy * side, -ux * side)),
+                        style="promenade", area="pier", terrace="T0")
+        d += 14.0
+        k += 1
+    for cu, cd in ((-h + 1.5, hc - h + 1.5), (h - 1.5, hc - h + 1.5), (-h + 1.5, hc + h - 1.5), (h - 1.5, hc + h - 1.5)):
+        L.lamp(*P(cu, cd), z, area="pier")
+    for side in (-1, 1):
+        for o in (-6.0, 0.0, 6.0):
+            bx, by = P(side * (h - 1.6), hc + o)
+            L.bench(L.uid("S-BENCH-PR"), bx, by, z, math.degrees(math.atan2(uy * side, ux * side)), style="promenade",
+                    area="pier_head", terrace="T0", sub="sea")
+    sp = L.P.spots.get("S-PIER-HEAD", {})
+    slots = [{"pos": L.ue(*P(o, hc + h - 0.6), z), "yaw": round(yaw_out, 2), "height": 0.0} for o in range(-10, 11, 2)]
+    L.spot("S-PIER-HEAD", "pier", *P(0.0, hc + h - 1.5), z, yaw_out, seats=len(slots), slots=slots, sub="rail",
+           name_ru=sp.get("name_ru"), name_en=sp.get("name_en"), notes=sp.get("notes", ""),
+           path=[(*P(0.0, d), z) for d in range(2, int(head0), 10)] + [(*P(0.0, hc + h - 1.5), z)])
+    L.spot("S-PIER-SUNRISE", "sunrise_point", *P(0.0, head0 + 1.0), z, 180.0, seats=6, faces="sunrise")
+    L.d["areas"].append({"id": "pier", "name": "place.pier", "at": L.ue(*P(0.0, hc), z), "r": 20.0})
+
+
 def build():
     plan = Plan()
     L = Layout(plan)
@@ -681,6 +745,7 @@ def build():
     square(L)
     park(L)
     fair(L)
+    pier(L)
     club_stair(L)
     # the plan's other spots we don't furnish (cascade, lookouts, bonfire, pier head, the upper benches): passed on
     have = {s["id"] for s in L.d["spots"]}
