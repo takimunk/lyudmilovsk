@@ -43,7 +43,7 @@ public:
 	/** The first air frost of the autumn of Year (the fountain is turned off then); FDateTime() if none by 1 December. */
 	FDateTime FirstFrost(int32 Year);
 	/** Whether the season has the fountain running at When (1 May .. the first frost). */
-	bool InSeason(const FDateTime& When);
+	bool InSeason(const FDateTime& When, bool& bKnown);
 	/** The fountain's centre at its foot, world cm. */
 	FVector GetFoot() const { return Foot; }
 	/** One line for logs and tests. */
@@ -70,9 +70,10 @@ private:
 	bool bStateKnown = false;
 	bool bSoundPlaying = false;
 	float CheckTimer = 0.f;
-	/** The autumn frost search, cached per year: scanned up to ScannedTo (hours since 2000), found at FrostHours. */
-	int32 FrostYear = 0;
-	double ScannedTo = 0.0, FrostHours = -1.0;
+	/** The sound's fade before it stops when the fountain is drained (s). */
+	float SoundFadeLeft = 0.f;
+	/** Advances the year's first-frost search (shared by all fountains) by up to Budget hours (0: to the end); true when done. */
+	bool ScanFrost(int32 Year, int32 Budget);
 
 	UStaticMeshComponent* MakePart(class UStaticMesh* Mesh, const TCHAR* Name, const TCHAR* MaterialPath, bool bShadow, float DrawCm,
 		TFunctionRef<void(UMaterialInstanceDynamic*)> Setup);
