@@ -31,6 +31,8 @@
 #include "UI/LyudQuests.h"
 #include "Winter/LyudWinter.h"
 
+#include <type_traits>
+
 static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
 	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
 
@@ -122,15 +124,36 @@ namespace
 
 	// the people's life gets the gatherings when it has them (the town-life branch: SetGathering, ClearGathering,
 	// SetDayOff); before that the festivals still dress the town and put on their shows
-	template <class T>
-	auto TrySetGathering(T* P, int, FName Id, FName Place, float From, float To, float Pull, FName Mode, const FVector& Face)
-		-> decltype(P->SetGathering(Id, Place, From, To, Pull, Mode, Face), bool())
+	/** The type of SetGathering's sixth parameter (the mode: EPeopleGatherMode on the town-life branch, or an FName). */
+	template <class F> struct TGatherModeArg;
+	template <class C, class R, class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+	struct TGatherModeArg<R (C::*)(A1, A2, A3, A4, A5, A6, A7)> { using Type = std::decay_t<A6>; };
+
+	/** mingle, watch, sit, fair -> the people's mode (enum Mingle, Watch, Sit, Fair in that order) */
+	template <class M>
+	M GatherMode(const FString& Mode)
 	{
-		P->SetGathering(Id, Place, From, To, Pull, Mode, Face);
+		if constexpr (std::is_enum_v<M>)
+		{
+			const int32 I = Mode == TEXT("watch") ? 1 : (Mode == TEXT("sit") ? 2 : (Mode == TEXT("fair") ? 3 : 0));
+			return static_cast<M>(I);
+		}
+		else
+		{
+			return M(*Mode);
+		}
+	}
+
+	template <class T>
+	auto TrySetGathering(T* P, int, FName Id, FName Place, float From, float To, float Pull, const FString& Mode, const FVector& Face)
+		-> decltype(&T::SetGathering, bool())
+	{
+		using M = typename TGatherModeArg<decltype(&T::SetGathering)>::Type;
+		P->SetGathering(Id, Place, From, To, Pull, GatherMode<M>(Mode), Face);
 		return true;
 	}
 	template <class T>
-	bool TrySetGathering(T*, long, FName, FName, float, float, float, FName, const FVector&) { return false; }
+	bool TrySetGathering(T*, long, FName, FName, float, float, float, const FString&, const FVector&) { return false; }
 
 	template <class T>
 	auto TryClearGathering(T* P, int, FName Id) -> decltype(P->ClearGathering(Id), bool())
@@ -187,11 +210,12 @@ namespace
 			}
 			return false;
 		};
-		for (const TCHAR* K : { TEXT("ue_cm"), TEXT("pos_cm"), TEXT("center_cm"), TEXT("at_cm"), TEXT("cm") })
+		// the city plan's "ue" is UE cm ("map" is the map's own frame, not used)
+		for (const TCHAR* K : { TEXT("ue"), TEXT("ue_cm"), TEXT("pos_cm"), TEXT("center_cm"), TEXT("at_cm"), TEXT("cm") })
 		{
 			if (Read(O->TryGetField(K), 1.f)) return true;
 		}
-		for (const TCHAR* K : { TEXT("ue"), TEXT("ue_m"), TEXT("pos"), TEXT("center"), TEXT("at") })
+		for (const TCHAR* K : { TEXT("ue_m"), TEXT("pos"), TEXT("center"), TEXT("at") })
 		{
 			if (Read(O->TryGetField(K), 100.f)) return true;
 		}
@@ -453,7 +477,9 @@ void ULyudFestivalSubsystem::Update()
 				if (!Gatherings.Contains(Key) && People)
 				{
 					const FVector Face = FacePoint(Ve, UTF8_TO_TCHAR(P.Face.c_str()), Now);
-					bHasGatherings = TrySetGathering(People, 0, Key, *V, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FName(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
+					// the people's life knows the city plan's spots by id (S-SQUARE), else a kind of place
+					const FName Where = Ve.SpotId.IsEmpty() ? FName(*V) : FName(*Ve.SpotId);
+					bHasGatherings = TrySetGathering(People, 0, Key, Where, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FString(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
 				}
 				if (People && (!bHasGatherings || CVarFestivalStub.GetValueOnGameThread() > 0))
 				{
@@ -734,6 +760,23 @@ void ULyudFestivalSubsystem::Announce(const FString& Day, const FString& Id)
 FVector ULyudFestivalSubsystem::FacePoint(const FLyudVenue& V, const FString& Face, const FDateTime& Now) const
 {
 	const FVector Fwd = FRotator(0.f, V.Yaw, 0.f).Vector();
+	if (Face == TEXT("stage") && V.bPlanStage)
+	{
+		return V.StageAt + FVector(0.f, 0.f, 250.f);
+	}
+	if (Face == TEXT("tree") && V.bPlanStage)
+	{
+		const FVector D = (V.StageAt - V.Center).GetSafeNormal2D();
+		return V.Center + D * (900.f + (FVector::Dist2D(V.StageAt, V.Center) - 900.f) * 0.4f) + FVector(0.f, 0.f, 300.f);
+	}
+	if (Face == TEXT("bonfire"))
+	{
+		const FLyudVenue B = const_cast<ULyudFestivalSubsystem*>(this)->FindVenue(TEXT("bonfire"));
+		if (B.bValid && B.Source.StartsWith(TEXT("City/")))
+		{
+			return B.Center + FVector(0.f, 0.f, 100.f);
+		}
+	}
 	if (Face == TEXT("stage"))
 	{
 		return V.Center + Fwd * V.Radius * 0.65f + FVector(0.f, 0.f, 200.f);
@@ -843,7 +886,9 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 	}
 	else if (Show == TEXT("bonfire"))
 	{
-		const FVector At = Ground(V.Center + V.SeaDir * 600.f);
+		// the city plan's bonfire place on the beach, else a little way down the beach towards the sea
+		const FLyudVenue Place = FindVenue(TEXT("bonfire"));
+		const FVector At = Place.bValid && Place.Source.StartsWith(TEXT("City/")) ? Place.Center : Ground(V.Center + V.SeaDir * 600.f);
 		if (ALyudBonfire* B = World->SpawnActor<ALyudBonfire>(At, FRotator::ZeroRotator, SP))
 		{
 			B->Setup(At, Key.ToString().StartsWith(TEXT("maslenitsa.")), EndsAt);
@@ -952,10 +997,28 @@ bool ULyudFestivalSubsystem::ResolveFromPlan(const FString& File, const FString&
 			Out.Center = P;
 			double Yaw = 0.0, R = 0.0;
 			if (O->TryGetNumberField(TEXT("yaw"), Yaw)) Out.Yaw = (float)Yaw;
+			// how big: the spot's own radius, else by its kind (the square round its 18 m fountain)
+			Out.Radius = Kind == TEXT("square") ? 1900.f : (Kind == TEXT("park") ? 1600.f : (Kind == TEXT("beach") ? 1500.f
+				: (Kind == TEXT("pier") ? 600.f : (Kind == TEXT("promenade") ? 1200.f : 1400.f))));
 			if (O->TryGetNumberField(TEXT("radius_cm"), R)) Out.Radius = (float)R;
 			else if (O->TryGetNumberField(TEXT("radius"), R)) Out.Radius = (float)R * 100.f;
 			Out.Radius = FMath::Clamp(Out.Radius, 600.f, 4000.f);
 			Out.Source = File + TEXT(":") + Id;
+			Out.SpotId = Id;
+			// the plan's own stage near it (public_spaces.py builds it): the festival lights it instead of building one
+			for (const TSharedPtr<FJsonObject>& St : Spots)
+			{
+				FString SK;
+				FVector SP;
+				double SY = 0.0;
+				if (St->TryGetStringField(TEXT("kind"), SK) && SK == TEXT("stage") && SpotPos(St, SP) && FVector::Dist2D(SP, P) < 9000.f)
+				{
+					Out.bPlanStage = true;
+					Out.StageAt = SP;
+					St->TryGetNumberField(TEXT("yaw"), SY);
+					Out.StageYaw = (float)SY;
+				}
+			}
 			return true;
 		}
 	}
@@ -1026,6 +1089,25 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 		ResolveFromPeople(Want, V);
 	if (V.bValid)
 	{
+		// the fair's own stalls (public_spaces.py: spots S-FAIR-STALLnn in town_plan.json) stand there all year: no more
+		FString Text;
+		TSharedPtr<FJsonObject> Doc;
+		const TArray<TSharedPtr<FJsonValue>>* Arr;
+		if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("PeopleData/town_plan.json"))) &&
+			FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) && Doc && Doc->TryGetArrayField(TEXT("spots"), Arr))
+		{
+			for (const TSharedPtr<FJsonValue>& It : *Arr)
+			{
+				FString Id;
+				FVector P;
+				if (It->Type == EJson::Object && It->AsObject()->TryGetStringField(TEXT("id"), Id) && Id.Contains(TEXT("STALL")) &&
+					SpotPos(It->AsObject(), P) && FVector::Dist2D(P, V.Center) < 8000.f)
+				{
+					V.bPlanStalls = true;
+					break;
+				}
+			}
+		}
 		V.Center = Ground(V.Center);
 		V.SeaDir = SeaDirAt(V.Center);
 		// a place with no yaw of its own faces the sea (the stage's back to it on the square: watchers look inland
@@ -1466,7 +1548,28 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			K.Quad(M, Mid0, E0, E1, Mid1);
 		}
 	}
-	if (bStage)
+	// which way the stage is from the middle (the plan's stage, else the venue's far side)
+	const FVector StageDir = V.bPlanStage ? (V.StageAt - C).GetSafeNormal2D() : Fwd;
+	if (bStage && V.bPlanStage)
+	{
+		// the square has a stage of its own (public_spaces.py): footlights along its front and two coloured lights on it
+		const FVector Front = (C - V.StageAt).GetSafeNormal2D(), Side = FVector::CrossProduct(FVector::UpVector, Front);
+		const FVector Edge = GroundAt(V.StageAt + Front * 420.f);
+		for (int32 I = 0; I < 12; I++)
+		{
+			const FVector L = Edge + Side * (-550.f + I * 100.f) + FVector(0.f, 0.f, 12.f);
+			K.Box(TEXT("pole"), FTransform(Front.Rotation(), L - FVector(0.f, 0.f, 6.f)), FVector(10.f, 12.f, 6.f), false);
+			Glow.Box(*FString::Printf(TEXT("glow_stage%d"), I % 7), FTransform(Front.Rotation(), L + FVector(0.f, 0.f, 6.f)), FVector(4.f, 9.f, 6.f), false);
+		}
+		for (const float Y : { -350.f, 350.f })
+		{
+			UPointLightComponent* L = MakeLight(this, RootComponent, FLinearColor(1.f, 0.6f, 0.3f), 1600.f);
+			L->SetWorldLocation(V.StageAt + Front * 500.f + Side * Y + FVector(0.f, 0.f, 450.f));
+			Lights.Insert(L, 0);
+			NumStageLights++;
+		}
+	}
+	else if (bStage)
 	{
 		// a stage at the venue's far side facing the middle: a deck on trestles, steps, a truss with lights, a backdrop
 		const FVector S = GroundAt(C + Fwd * R * 0.65f);
@@ -1503,13 +1606,15 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			NumStageLights++;
 		}
 	}
-	if (Kinds.Contains(TEXT("stalls")))
+	if (Kinds.Contains(TEXT("stalls")) && !V.bPlanStalls)
 	{
 		// fair stalls round the venue, their fronts to the middle: a counter, four posts, a striped canopy
 		TArray<float> Angles;
 		if (bStage || bTree)
 		{
-			for (int32 I = 0; I < 5; I++) Angles.Add(V.Yaw + 125.f + I * 27.5f);
+			// on the side away from the stage, clear of the fountain in the middle
+			const float Away = (-StageDir).Rotation().Yaw;
+			for (int32 I = 0; I < 5; I++) Angles.Add(Away - 55.f + I * 27.5f);
 		}
 		else
 		{
@@ -1553,7 +1658,10 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	if (bTree)
 	{
 		// the New Year tree opposite the stage: tiers of fir, a spiral of bulbs, a star
-		const FVector T = GroundAt(C - Fwd * R * 0.55f);
+		// between the fountain and the stage when the plan has one (its notes: "holidays: concerts, the New Year tree"),
+		// else opposite the stage
+		const FVector T = V.bPlanStage ? GroundAt(C + StageDir * (900.f + (FVector::Dist2D(V.StageAt, C) - 900.f) * 0.4f))
+			: GroundAt(C - Fwd * R * 0.55f);
 		const float H = 950.f;
 		K.Rod(TEXT("wood"), T, T + FVector(0.f, 0.f, 120.f), 16.f, 8, true, true);
 		const int32 Tiers = 6;

@@ -34,6 +34,14 @@ struct LYUDMILOVSK_API FLyudVenue
 	/** Out to sea from here (unit, horizontal). */
 	UPROPERTY(BlueprintReadOnly, Category = "Festival") FVector SeaDir = FVector(1.f, 0.f, 0.f);
 	UPROPERTY(BlueprintReadOnly, Category = "Festival") bool bValid = false;
+	/** The city plan's spot id (S-SQUARE), what the people's gatherings are told; empty if it isn't a plan's spot. */
+	UPROPERTY(BlueprintReadOnly, Category = "Festival") FString SpotId;
+	/** The plan has a stage of its own by this venue (public_spaces.py builds it): where, which way. */
+	UPROPERTY(BlueprintReadOnly, Category = "Festival") bool bPlanStage = false;
+	UPROPERTY(BlueprintReadOnly, Category = "Festival") FVector StageAt = FVector::ZeroVector;
+	UPROPERTY(BlueprintReadOnly, Category = "Festival") float StageYaw = 0.f;
+	/** The plan has stalls of its own here (the fair's): no festival stalls added. */
+	UPROPERTY(BlueprintReadOnly, Category = "Festival") bool bPlanStalls = false;
 };
 
 /** One festival on now, for the UI and other systems (the restaurant's festival menu). */
