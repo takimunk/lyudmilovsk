@@ -181,6 +181,7 @@ BUILDING_TYPES = {
     "bus_stop_kiosk": ("Остановка-скульптура", "Sculptural kiosk", "Small concrete shelters and kiosks in wild shapes (after Soviet bus stops, 1960s-80s)"),
     "lifeguard_tower": ("Спасательная вышка", "Lifeguard tower", "A tall concrete lifeguard tower with a cabin on top"),
     "tidal_pool": ("Приливные бассейны", "Tidal pools", "Concrete sea pools set in the beach that fill at high water (after Siza's Leça pools, 1966)"),
+    "department_store": ("Универмаг", "Department store", "Glazed shop floors under a mosaic upper facade and a roof sign (Soviet univermag)"),
     "school": ("Школа", "School", "A low modernist school with a courtyard and sports ground"),
     "clinic": ("Поликлиника", "Clinic", "A small two-storey modernist clinic"),
     "plain_block": ("Дом", "Plain block", "An ordinary 4-5 storey house (filler; the buildings thread may swap it for any type)"),
@@ -247,8 +248,8 @@ def plots():
     a(_plot("P-CAFE", "cafe", "saucer_pavilion", 1, 110.0, 1040.0, 26, 26, "Кафе «Тарелка»", "Saucer café", height_max=10))
     a(_plot("P-MARKET", "market", "shell_market", 1, 250.0, 860.0, 50, 40, "Рынок", "Market hall", height_max=10,
             notes="grocery, fish and fruit stalls under the umbrellas; the town's shop"))
-    a(_plot("P-STORE", "shop", "plain_block", 1, 250.0, 960.0, 45, 30, "Универмаг", "Department store", height_max=14,
-            notes="two storeys of shop with flats over; the buildings thread may give it a type"))
+    a(_plot("P-STORE", "shop", "department_store", 1, 250.0, 960.0, 45, 30, "Универмаг", "Department store", height_max=14,
+            notes="glazed shop floors, a mosaic facade, a roof sign"))
     a(_plot("P-FAIR", "fair", "wave_canopy", 1, 140.0, 1210.0, 150, 70, "Ярмарка", "Fairground", height_max=8,
             notes="stalls, a carousel and a small Ferris wheel under and round the wavy canopy; holidays"))
     a(_plot("P-PARK", "park", None, 1, 255.0, 1220.0, 300, 120, "Приморский парк", "Seaside park",
@@ -344,88 +345,216 @@ def spots():
     return S
 
 
-def stairs():
-    """Stairs from one terrace up to the next: id, wall, bottom (on the lower terrace) and top (on the upper)
-    points, map metres. Wall stairs run along the wall's face (two flights and a landing, 2.4 m wide), drawn by
-    the wall build; the grand stairs go straight up the town's axes."""
+# --- the walls as bays -------------------------------------------------------------------------------------
+# Every wall is cut into bays along its face (by arc length, so the bends get the same rhythm): a bay is a flat
+# built into the wall, a stair, a set-piece plot, or blank concrete. tools/city_mesh.py draws the bays; the lists
+# below (stairs, wall_dwellings, promenade_units) are made from them.
+
+BAY = {"SEA": 10.0, "W1": 10.0}       # bay length along the face, metres
+DWELLING_W = 7.5                       # W2..W5: a flat per 7.5 m bay, two storeys
+STAIR_EVERY = 110.0                    # metres of face between wall stairs
+STAIR_BAYS = 2                         # a wall stair takes two bays (15 m: one straight flight of 40 steps + landings)
+GRAND_Y = (905.0, 760.0)               # the grand stairs: the main axis and the Cascade (W2..W5)
+GRAND_W = {905.0: 8.0, 760.0: 10.0}
+SEA_STEPS_EVERY = 80.0
+# Openings in a dwelling bay, (kind, u along the bay from its middle, sill z, width, height), u toward the bay's end
+DWELLING_OPENINGS = [("door", -2.0, 0.0, 1.1, 2.2), ("window", 1.6, 0.9, 1.6, 1.4),
+                     ("window", -1.9, 4.4, 1.6, 1.4), ("window", 1.6, 4.4, 1.6, 1.4)]
+UNIT_OPENINGS = [("door", -3.4, 0.0, 1.2, 2.3), ("shopfront", 1.0, 0.45, 6.0, 2.2)]
+
+
+def _wall_line(i):
+    """Dense polyline of wall i's face (or the seawall for i = -1): [(x, y, arc)], across the town and its fades."""
+    pts = []
+    y = CITY_Y0 - CITY_FADE
+    arc = 0.0
+    while y <= CITY_Y1 + CITY_FADE + 1e-6:
+        sw = SEAWALL_S if i < 0 else wall_s(i, y)
+        x, yy = to_map(sw, y)
+        if pts:
+            arc += math.hypot(x - pts[-1][0], yy - pts[-1][1])
+        pts.append((x, yy, arc))
+        y += 0.5
+    return pts
+
+
+def _at_arc(pts, a):
+    lo, hi = 0, len(pts) - 1
+    while hi - lo > 1:
+        m = (lo + hi) // 2
+        if pts[m][2] < a:
+            lo = m
+        else:
+            hi = m
+    p0, p1 = pts[lo], pts[hi]
+    t = (a - p0[2]) / max(p1[2] - p0[2], 1e-9)
+    return (p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t)
+
+
+def wall_id(i):
+    return "SEA" if i < 0 else WALLS[i][0]
+
+
+def _faces_and_levels(i):
+    lower = W.BEACH_TOP if i < 0 else TERRACES[i][3]
+    upper = TERRACES[0][3] if i < 0 else TERRACES[i + 1][3]
+    return lower, upper
+
+
+_BAYS = {}
+
+
+def wall_bays(i):
+    """Bays of wall i (0 = W1 .. 4 = W5; -1 = the seawall): dicts with id, wall, kind (dwelling | unit | stair |
+    grand | sea_steps | plot | blank), p0, p1 (map X, Y of the bay's ends on the face, south to north), mid, yaw (the face
+    looks this way, seaward), mask (the town's fade: the wall's height is (upper - lower) * mask), lower, upper z."""
+    if i in _BAYS:
+        return _BAYS[i]
+    wid = wall_id(i)
+    pts = _wall_line(i)
+    L = pts[-1][2]
+    bay = BAY.get(wid, DWELLING_W)
+    lower, upper = _faces_and_levels(i)
+    n = int(L // bay)
+    off = (L - n * bay) / 2
     out = []
-    # the seawall: steps from the promenade down to the beach every 80 m
-    for k, y in enumerate(range(420, 1441, 80)):
-        bx, by = to_map(SEAWALL_S - 4.0, float(y))
-        tx, ty = to_map(SEAWALL_S + 1.0, float(y))
-        out.append({"id": "ST-B%02d" % (k + 1), "wall": "SEA", "kind": "steps", "bottom": [round(bx, 2), by, W.BEACH_TOP],
-                    "top": [round(tx, 2), ty, TERRACES[0][3]]})
-    # wall stairs: every ~110 m along each wall, offset per wall so the way up zigzags
-    for i, (wid, _) in enumerate(WALLS):
-        y = CITY_Y0 + 30.0 + (i * 37.0) % 110.0
-        n = 0
-        while y < CITY_Y1 - 20.0:
-            ws = wall_s(i, y)
-            run = 13.0 if i > 0 else 7.0                  # the flight's length along the face
-            bx, by = to_map(ws - 1.5, y - run / 2)
-            tx, ty = to_map(ws + 1.0, y + run / 2)
-            n += 1
-            out.append({"id": "ST-%s-%02d" % (wid, n), "wall": wid, "kind": "wall_stair",
-                        "bottom": [round(bx, 2), round(by, 2), TERRACES[i][3]],
-                        "top": [round(tx, 2), round(ty, 2), TERRACES[i + 1][3]]})
-            y += 110.0
-    # the grand stair on the main axis Y 905 (W2..W5) and the cascade stair at the walls' bend
-    for i in range(1, len(WALLS)):
-        ws = wall_s(i, 905.0)
-        bx, by = to_map(ws - 14.0, 905.0)
-        tx, ty = to_map(ws + WALL_DEPTH, 905.0)
-        out.append({"id": "ST-AXIS-%s" % WALLS[i][0], "wall": WALLS[i][0], "kind": "grand_stair", "width": 8.0,
-                    "bottom": [round(bx, 2), by, TERRACES[i][3]], "top": [round(tx, 2), ty, TERRACES[i + 1][3]]})
-    for i in range(1, len(WALLS)):
-        ws = wall_s(i, 760.0)
-        bx, by = to_map(ws - 14.0, 760.0)
-        tx, ty = to_map(ws + WALL_DEPTH, 760.0)
-        out.append({"id": "ST-GRAND-%s" % WALLS[i][0], "wall": WALLS[i][0], "kind": "grand_stair", "width": 10.0,
-                    "bottom": [round(bx, 2), 760.0, TERRACES[i][3]], "top": [round(tx, 2), 760.0, TERRACES[i + 1][3]]})
+    for k in range(n):
+        a0, a1 = off + k * bay, off + (k + 1) * bay
+        p0, p1 = _at_arc(pts, a0), _at_arc(pts, a1)
+        mid = ((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2)
+        ax, ay = p1[0] - p0[0], p1[1] - p0[1]
+        yaw = round(math.degrees(math.atan2(-ax, ay)), 1)
+        out.append({"id": "%s-B%03d" % (wid, k + 1), "wall": wid, "kind": "blank", "arc": round((a0 + a1) / 2, 2),
+                    "p0": [round(p0[0], 3), round(p0[1], 3)], "p1": [round(p1[0], 3), round(p1[1], 3)],
+                    "mid": [round(mid[0], 3), round(mid[1], 3)], "yaw": yaw, "mask": round(city_mask(mid[1]), 4),
+                    "lower": lower, "upper": upper})
+    full = [b for b in out if b["mask"] >= 0.999]
+    if full:
+        a_first, a_last = full[0]["arc"], full[-1]["arc"]
+    if i < 0:                                           # the seawall: steps down to the sand
+        for b in full:
+            if (b["arc"] - a_first) % SEA_STEPS_EVERY < bay * 0.99:
+                b["kind"] = "sea_steps"
+        _BAYS[i] = out
+        return out
+    if i == 0:                                          # W1: shop units, a stair every STAIR_EVERY
+        for k, b in enumerate(full):
+            if (b["arc"] - a_first + 3 * bay) % STAIR_EVERY < bay * 0.99:
+                b["kind"] = "stair"
+            elif abs(b["mid"][1] - 905.0) < 30.0:
+                b["kind"] = "grand"                     # the square opens onto the promenade
+            elif k % 3 == 1:
+                b["kind"] = "unit"
+        _BAYS[i] = out
+        return out
+    # W2..W5: grand stairs, wall stairs, plots, then flats
+    for gy in GRAND_Y:
+        c = min(full, key=lambda b: abs(b["mid"][1] - gy))
+        for b in full:
+            if abs(b["arc"] - c["arc"]) < GRAND_W[gy] / 2 + DWELLING_W / 2:
+                b["kind"] = "grand"
+                b["grand_y"] = gy
+    phase = (i * 37.0) % STAIR_EVERY
+    k = 0
+    while k < len(full):
+        b = full[k]
+        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
+                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
+            full[k]["kind"] = full[k + 1]["kind"] = "stair"
+            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
+            k += STAIR_BAYS
+            continue
+        k += 1
+    pl = plots()
+    for b in full:
+        if b["kind"] != "blank":
+            continue
+        for p in pl:
+            px, py = p["map"][0], p["map"][1]
+            # the plot's footprint near the face: in the terrace frame, plots are boxes in (s, y)
+            ws = W.inland(b["mid"][0], b["mid"][1])
+            if abs(p["s"] - ws) < p["d"] / 2 + 4.0 and abs(p["y_along"] - b["mid"][1]) < p["w"] / 2 + 3.0:
+                b["kind"] = "plot"
+                b["plot"] = p["id"]
+                break
+        else:
+            b["kind"] = "dwelling"
+    _BAYS[i] = out
     return out
 
 
-DWELLING_W = 7.5          # a flat in the wall: 7.5 m of the face, two storeys (door + window below, two windows over)
+def _bay_point(b, u, s_off, z):
+    """A point on bay b: u metres from its middle toward p1, s_off metres in front of the face (seaward), at z."""
+    ax, ay = b["p1"][0] - b["p0"][0], b["p1"][1] - b["p0"][1]
+    l = math.hypot(ax, ay) or 1.0
+    ax, ay = ax / l, ay / l
+    nx, ny = ay, -ax                                   # seaward normal (the face looks this way)
+    return [round(b["mid"][0] + ax * u + nx * s_off, 3), round(b["mid"][1] + ay * u + ny * s_off, 3), round(z, 3)]
 
 
-def _near_stair(wid, y, st):
-    for s in st:
-        if s["wall"] == wid:
-            y0, y1 = sorted((s["bottom"][1], s["top"][1]))
-            if y0 - 4.0 <= y <= y1 + 4.0:
-                return True
-    return False
+def stairs():
+    """Stairs from one level up to the next: id, wall, kind, bottom (on the lower level) and top (on the upper)
+    points, map metres. Seawall steps go down to the sand; wall stairs run along a wall's face (one straight flight,
+    2.2 m wide, over two bays, rising northward); grand stairs go straight up, perpendicular to the wall, in front
+    of it."""
+    out = []
+    for i in range(-1, len(WALLS)):
+        bays = wall_bays(i)
+        n = 0
+        seen = set()
+        for k, b in enumerate(bays):
+            lower, upper = b["lower"], b["upper"]
+            if b["kind"] == "sea_steps":
+                n += 1
+                out.append({"id": "ST-SEA-%02d" % n, "wall": b["wall"], "kind": "sea_steps", "width": 3.0, "bay": b["id"],
+                            "bottom": _bay_point(b, 0.0, 4.2, lower), "top": _bay_point(b, 0.0, -1.0, upper)})
+            elif b["kind"] == "stair" and b.get("stair_part", 0) == 0 and i >= 1:
+                b2 = bays[k + 1]
+                n += 1
+                out.append({"id": "ST-%s-%02d" % (b["wall"], n), "wall": b["wall"], "kind": "wall_stair", "width": 2.2,
+                            "bays": [b["id"], b2["id"]],
+                            "bottom": _bay_point(b, -DWELLING_W / 2 + 0.6, 1.1, lower),
+                            "top": _bay_point(b2, DWELLING_W / 2 - 0.6, -1.0, upper)})
+            elif b["kind"] == "stair" and i == 0:
+                n += 1
+                out.append({"id": "ST-W1-%02d" % n, "wall": "W1", "kind": "wall_stair", "width": 2.2, "bays": [b["id"]],
+                            "bottom": _bay_point(b, -4.0, 1.1, lower), "top": _bay_point(b, 4.0, -1.0, upper)})
+            elif b["kind"] == "grand" and i >= 0:
+                gy = b.get("grand_y", 905.0)
+                if (gy, b["wall"]) in seen:
+                    continue
+                seen.add((gy, b["wall"]))
+                grp = [c for c in bays if c["kind"] == "grand" and c.get("grand_y", 905.0) == gy]
+                c = grp[len(grp) // 2]
+                run = (upper - lower) / 0.175 * 0.30
+                gid = "ST-AXIS-%s" % b["wall"] if gy == 905.0 else "ST-CASCADE-%s" % b["wall"]
+                out.append({"id": gid, "wall": b["wall"], "kind": "grand_stair", "width": GRAND_W.get(gy, 8.0) if i else 20.0,
+                            "bays": [g["id"] for g in grp],
+                            "bottom": _bay_point(c, 0.0, run + 0.5, lower), "top": _bay_point(c, 0.0, -1.0, upper)})
+    return out
 
 
 def wall_dwellings():
     """The flats built into the terrace walls W2..W5 (W1 holds shops and cafés facing the promenade): id, wall,
-    door (map, on the lower terrace in front of the face), windows [(id, map centre)], yaw of the face. Where a stair,
-    a plot or the town's fade is, the face is blank."""
-    st = stairs()
-    pl = plots()
+    bay, door (map, on the lower terrace in front of the face), windows [{id, map centre}], yaw of the face."""
     out = []
-    for i, (wid, _) in enumerate(WALLS):
-        if i == 0:
-            continue
-        y = CITY_Y0 + 10.0
+    for i in range(1, len(WALLS)):
         n = 0
-        while y < CITY_Y1 - DWELLING_W:
-            yc = y + DWELLING_W / 2
-            y += DWELLING_W
-            if city_mask(yc) < 1.0 or _near_stair(wid, yc, st):
-                continue
-            ws = wall_s(i, yc)
-            if any(abs(p["s"] - ws) < p["d"] / 2 + 4 and abs(p["y_along"] - yc) < p["w"] / 2 + 4 for p in pl):
+        for b in wall_bays(i):
+            if b["kind"] != "dwelling":
                 continue
             n += 1
-            z0 = TERRACES[i][3]
-            dx, dy = to_map(ws - 0.6, yc - 2.0)
+            did = "%s-D%03d" % (b["wall"], n)
+            b["dwelling"] = did
             wins = []
-            for k, (du, dz) in enumerate(((1.6, 1.5), (-2.2, 4.9), (1.6, 4.9))):
-                wx, wy = to_map(ws, yc + du)
-                wins.append({"id": "%s-D%03d-w%d" % (wid, n, k + 1), "map": [round(wx, 2), round(wy, 2), round(z0 + dz, 2)]})
-            out.append({"id": "%s-D%03d" % (wid, n), "wall": wid, "terrace": TERRACES[i][0],
-                        "door": [round(dx, 2), round(dy, 2), z0], "yaw": wall_yaw(i, yc), "windows": wins, "beds": 2})
+            door = None
+            for kind, u, sill, ww, wh in DWELLING_OPENINGS:
+                if kind == "door":
+                    door = _bay_point(b, u, 0.6, b["lower"])
+                else:
+                    wins.append({"id": "%s-w%d" % (did, len(wins) + 1), "map": _bay_point(b, u, 0.0, b["lower"] + sill + wh / 2)})
+            out.append({"id": did, "wall": b["wall"], "bay": b["id"], "terrace": TERRACES[i][0], "door": door,
+                        "yaw": b["yaw"], "windows": wins, "beds": 2})
     return out
 
 
@@ -434,16 +563,18 @@ def shops_in_seawall():
     out = []
     kinds = ["cafe", "shop", "kiosk", "workshop", "cafe", "shop"]
     names = [("Кафе «Чайка»", "Seagull café"), ("Рыбная лавка", "Fish shop"), ("Прокат", "Rentals"),
-             ("Мастерская", "Repair shop"), ("Пельменная", "Dumpling bar"), ("Сувениры", "Souvenirs")]
+             ("Мастерская", "Repair shop"), ("Пельменная", "Dumpling bar"), ("Сувениры", "Souvenirs"),
+             ("Булочная", "Bakery"), ("Фотоателье", "Photo studio"), ("Парикмахерская", "Barber"),
+             ("Книжный развал", "Book stall"), ("Пивной бар", "Beer bar"), ("Чебуречная", "Pasty bar")]
     n = 0
-    for y in range(500, 1400, 75):
-        if abs(y - 905) < 60:
+    for b in wall_bays(0):
+        if b["kind"] != "unit":
             continue
-        x, yy = to_map(WALLS[0][1][0][1] - 0.3, float(y))
-        k = n % len(kinds)
+        k = n % len(names)
         n += 1
-        out.append({"id": "W1-U%02d" % n, "kind": kinds[k], "name_ru": names[k][0], "name_en": names[k][1],
-                    "door": [round(x, 2), yy, TERRACES[0][3]], "yaw": wall_yaw(0, float(y)), "w": 10.0})
+        out.append({"id": "W1-U%02d" % n, "bay": b["id"], "kind": kinds[k % len(kinds)], "name_ru": names[k][0],
+                    "name_en": names[k][1], "door": _bay_point(b, UNIT_OPENINGS[0][1], 0.6, b["lower"]),
+                    "yaw": b["yaw"], "w": BAY["W1"], "staff": STAFF.get(kinds[k % len(kinds)])})
     return out
 
 
@@ -489,6 +620,7 @@ def build():
         "spots": spots(),
         "stairs": stairs(),
         "wall_dwellings": wall_dwellings(),
+        "wall_bays": {wall_id(i): wall_bays(i) for i in range(-1, len(WALLS))},
         "promenade_units": shops_in_seawall(),
         "links": links(),
     }
