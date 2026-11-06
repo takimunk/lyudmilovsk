@@ -27,7 +27,7 @@ class FJsonObject;
  * ground without a light per lamp. The beach's umbrellas and loungers are out from June to August.
  *
  * Tagged NoTree / NoGrass so the forests and the grass leave the paving bare.
- * Console: lyud.City.PublicSpaces 0 (at the next start), lyud.City.Lights N (pool size, 0 = none),
+ * Console: lyud.City.PublicSpaces 0 (at the next start), lyud.City.StreetLights N (pool size, 0 = none),
  *          lyud.City.Night -1 by the sun / 0 day / 1 night, lyud.City.Summer -1 by the date / 0 / 1.
  */
 UCLASS(NotPlaceable, Transient)

@@ -24,7 +24,7 @@
 
 static TAutoConsoleVariable<int32> CVarPublicSpaces(TEXT("lyud.City.PublicSpaces"), 1,
 	TEXT("The town's public spaces (ALyudPublicSpaces: promenade, square, park, fair, beach furniture): 1 built when the outdoor map starts, 0 not."));
-static TAutoConsoleVariable<int32> CVarCityLights(TEXT("lyud.City.Lights"), 14,
+static TAutoConsoleVariable<int32> CVarCityStreetLights(TEXT("lyud.City.StreetLights"), 14,
 	TEXT("How many real (shadowless point) lights follow the camera from street lamp to street lamp at night; 0 = the lamps only glow."));
 static TAutoConsoleVariable<int32> CVarCityNight(TEXT("lyud.City.Night"), -1,
 	TEXT("Street lamps: -1 lit by the sun (under ~1 degree), 0 off, 1 on."));
@@ -440,7 +440,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			}
 		}
 	}
-	const int32 PoolN = FMath::Clamp(CVarCityLights.GetValueOnGameThread(), 0, 64);
+	const int32 PoolN = FMath::Clamp(CVarCityStreetLights.GetValueOnGameThread(), 0, 64);
 	for (int32 I = 0; I < PoolN; I++)
 	{
 		UPointLightComponent* L = NewObject<UPointLightComponent>(this, *FString::Printf(TEXT("LampLight%d"), I));

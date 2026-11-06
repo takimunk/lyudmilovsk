@@ -52,13 +52,13 @@ only up close: Maple, Rowan, SilverBirch, WeepingBirch, BlackAlder, Apple), the 
   sound and season are `ALyudFountain`'s (docs/fountain.md), built from the same levels with `flow_scale` 1.8 (speeds
   x1.8, the jet and bell grow with it, more and bigger drops). `ULyudFountainSubsystem::GetFountains()` lists both.
 - **Lamps at night**: the glass glows (one MID parameter, fading over ~4 s when the sun drops under ~0.5 degree, off
-  after it rises over ~2.5 degrees); a pool of `lyud.City.Lights` (14) shadowless point lights moves to the lamps
+  after it rises over ~2.5 degrees); a pool of `lyud.City.StreetLights` (14) shadowless point lights moves to the lamps
   nearest the camera (re-picked when the camera has moved 1.5 m, at most 4 times a second), so the street is lit
   where you are without a light per lamp.
 - Tagged `NoTree`/`NoGrass`: the forests and the grass leave the paving bare.
 
 Console: `lyud.City.PublicSpaces 0` (not built at the next start), `lyud.City.Show 0|1` (hide everything, for A/B),
-`lyud.City.Lights N`, `lyud.City.Night -1|0|1`, `lyud.City.Summer -1|0|1`, `lyud.City.Ice -1|0|1`.
+`lyud.City.StreetLights N`, `lyud.City.Night -1|0|1`, `lyud.City.Summer -1|0|1`, `lyud.City.Ice -1|0|1`.
 
 ## Spots API
 
