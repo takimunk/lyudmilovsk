@@ -404,6 +404,62 @@
    "prompt": "A single footstep on hard ice heard only through the body, as if in a vacuum: a soft muffled low thud with a faint dull crunch, no air, no echo, close, no other sounds"
   },
   {
+   "id": "rod_swish",
+   "group": "fishing",
+   "variants": 3,
+   "duration": 1.0,
+   "prompt": "A fishing rod swung hard to cast: a sharp thin whoosh of a long flexible carbon rod cutting the air and the faint zip of line peeling off a spinning reel, outdoors by the sea, close, no voices"
+  },
+  {
+   "id": "float_plop",
+   "group": "fishing",
+   "variants": 4,
+   "duration": 1.0,
+   "prompt": "A small fishing float and sinker dropping into calm sea water a few metres away: a light wet plop and a tiny splash, gentle waves, no voices"
+  },
+  {
+   "id": "reel_click",
+   "group": "fishing",
+   "variants": 4,
+   "duration": 0.5,
+   "prompt": "A small spinning fishing reel being wound a few turns: a soft fast metallic ratchet clicking and the whirr of the spool, very close, outdoors, no voices"
+  },
+  {
+   "id": "reel_drag",
+   "group": "fishing",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "The drag of a spinning fishing reel giving line to a running fish: a buzzing high-pitched zzzzz of the clutch slipping and line pulled off the spool, close, outdoors, no voices"
+  },
+  {
+   "id": "line_snap",
+   "group": "fishing",
+   "variants": 3,
+   "duration": 0.6,
+   "prompt": "A taut fishing line snapping under strain: a sharp thin twang and a whip-like crack, then the slack line whispering back, close, outdoors, no voices"
+  },
+  {
+   "id": "fish_splash",
+   "group": "fishing",
+   "variants": 4,
+   "duration": 1.2,
+   "prompt": "A hooked fish thrashing at the surface of the sea close to shore: quick wet splashes and slaps of a tail on the water, no voices"
+  },
+  {
+   "id": "fish_flap",
+   "group": "fishing",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A freshly caught fish flapping wetly in the air on a fishing line and against a hand: short slick wet slaps and tail flicks, very close, no voices"
+  },
+  {
+   "id": "fish_bag",
+   "group": "fishing",
+   "variants": 3,
+   "duration": 0.8,
+   "prompt": "A wet fish put into a canvas shoulder bag: a soft muffled wet thud and rustle of thick fabric, very close, no voices"
+  },
+  {
    "id": "lighter_flick",
    "group": "smoking",
    "variants": 3,

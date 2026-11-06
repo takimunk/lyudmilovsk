@@ -17,6 +17,8 @@ struct FLyudCounter
 	/** How close the hero must be (cm) and look at them. */
 	float Reach = 320.f;
 	TArray<FLyudShopGood> Goods;
+	/** Buys the hero's catch ("buys_fish": Y sells every fish in the pocket, docs/fishing.md). */
+	bool bBuysFish = false;
 };
 
 /**
@@ -48,6 +50,10 @@ public:
 private:
 	TArray<FLyudCounter> Counters;
 	int32 Prompted = -1;
+	/** The fish the prompt last offered to sell (the line is rewritten when the catch changes). */
+	int32 PromptedFish = 0;
+	/** "Sold for N roubles" stays on the line until then (world seconds). */
+	double SoldUntil = 0.0;
 
 	void Load();
 	void SetPrompted(int32 Counter);

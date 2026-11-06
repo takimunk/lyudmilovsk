@@ -1,0 +1,37 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-06",
+ "credits": 1,
+ "job_id": "79ca70e0-0a0a-454e-8e1f-61fc596f4f6d",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_223301_79ca70e0-0a0a-454e-8e1f-61fc596f4f6d.png",
+ "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters anywhere. Fish lie on their side, head to the left, whole body inside the cell. Row 1, left: a telescopic float fishing rod collapsed to its short transport length, lying diagonally, dark green glossy blank, cork grip, a small grey spinning reel mounted under it, a red-and-white quill float clipped to its first ring. Row 1, middle: a small round tin can of sea worms with its lid half open, a few reddish-brown lugworms curling in damp grey sand inside. Row 1, right: a small round plastic bait box with a perforated lid opened, full of pale cream maggots in sawdust. Row 2, left: a silver oval fishing spoon lure with a small red tag and a treble hook on a split ring. Row 2, middle: a Baltic herring, slim, blue-green back and bright silver flanks, about 20 cm. Row 2, right: a sprat, small slim silver fish with a greenish back, 11 cm, smaller in its cell. Row 3, left: a sand eel, long thin eel-like silvery-yellow fish with a pointed snout. Row 3, middle: a three-spined stickleback, tiny fish with three dorsal spines, olive back and silver belly, small in its cell. Row 3, right: a European perch, olive-green with dark vertical bars, red-orange fins, spiny dorsal fin.",
+ "grid": 3,
+ "ids": [
+  "fishing_rod",
+  "bait_worm",
+  "bait_maggot",
+  "lure_spoon",
+  "fish_herring",
+  "fish_sprat",
+  "fish_sandeel",
+  "fish_stickleback",
+  "fish_perch"
+ ],
+ "ship": [
+  "fishing_rod",
+  "bait_worm",
+  "bait_maggot",
+  "lure_spoon",
+  "fish_herring",
+  "fish_sprat",
+  "fish_sandeel",
+  "fish_stickleback",
+  "fish_perch"
+ ],
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+}

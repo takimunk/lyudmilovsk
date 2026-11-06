@@ -363,6 +363,36 @@ namespace LyudFishing
 		}
 	}
 
+	void FSession::DebugBite(int Fish)
+	{
+		if (Fish < 0 || Fish >= GNumFish || (St != EState::Waiting && St != EState::Nibbling)) return;
+		BiteFish = Fish;
+		Emit(EEvent::Take);
+		TakeLeft = 2.5f;
+		Go(EState::Taking);
+	}
+
+	void FSession::DebugHook(int Fish)
+	{
+		if (Fish < 0 || Fish >= GNumFish) return;
+		if (St == EState::Idle || St == EState::Charging || St == EState::Swing || St == EState::Flying || St == EState::Winding)
+		{
+			Dist = std::max(Dist, 10.f);
+		}
+		BiteFish = Fish;
+		Hooked();
+	}
+
+	void FSession::Reset()
+	{
+		St = EState::Idle;
+		T = 0.f;
+		Dist = Dip = Tens = SideNow = ChargeT = 0.f;
+		NextBite = -1.f;
+		bRun = false;
+		Ev.clear();
+	}
+
 	void FSession::Step(float Dt, const FInput& In)
 	{
 		Ev.clear();

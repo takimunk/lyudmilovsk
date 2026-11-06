@@ -1,6 +1,7 @@
 #include "LyudInventory.h"
 
 #include "BoothOwner.h"
+#include "Fishing/FishingModel.h"
 #include "BottleItem.h"
 #include "LyudGoodsItem.h"
 #include "EngineUtils.h"
@@ -184,6 +185,41 @@ namespace
 		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
 		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
 		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
+		// fishing (docs/fishing.md): the float rod (taken in the hand), its baits (a bait taken in the hand goes on the rig; each unit is
+		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
+		FLyudItemDef Rod;
+		Rod.Id = TEXT("fishing_rod");
+		Rod.Slot = ELyudEquipSlot::Hand;
+		Rod.Look = ELyudItemLook::Pack;
+		Rod.Size = FVector(3.f, 3.f, 40.f);
+		Rod.Tint = FLinearColor(0.05f, 0.11f, 0.07f);
+		Rod.Price = 90;
+		Rod.Radius = 1.3f;
+		D.Add(Rod);
+		auto Bait = [&D](const TCHAR* Id, FVector Size, FLinearColor Tint, int32 Price)
+		{
+			FLyudItemDef I;
+			I.Id = Id;
+			I.Slot = ELyudEquipSlot::Hand;
+			I.Look = ELyudItemLook::Pack;
+			I.Size = Size;
+			I.Tint = Tint;
+			I.Price = Price;
+			I.Radius = 3.f;
+			D.Add(I);
+		};
+		Bait(TEXT("bait_worm"), FVector(7.f, 7.f, 4.f), FLinearColor(0.45f, 0.3f, 0.2f), 2);
+		Bait(TEXT("bait_maggot"), FVector(6.f, 6.f, 4.f), FLinearColor(0.85f, 0.8f, 0.65f), 1);
+		Bait(TEXT("lure_spoon"), FVector(0.4f, 2.5f, 7.f), FLinearColor(0.8f, 0.8f, 0.82f), 45);
+		for (int32 F = 0; F < LyudFishing::NumCatchable(); F++)
+		{
+			const LyudFishing::FCatchable& C = LyudFishing::Catchable(F);
+			FLyudItemDef I;
+			I.Id = FName(ANSI_TO_TCHAR(LyudFishing::ItemOf(C.Id).c_str()));
+			I.Radius = FMath::Max(1.f, C.Length * 100.f / 6.f);
+			I.Price = LyudFishing::PriceOf(F, C.K * FMath::Cube(C.Length * 100.f) / 100.f);
+			D.Add(I);
+		}
 		// finds: what the crows, jackdaws and jays drop, hide or bring the player (UCorvidLifeSubsystem, docs/corvids.md)
 		for (const TCHAR* Find : { TEXT("find_acorn"), TEXT("find_hazelnut"), TEXT("find_walnut"), TEXT("find_pinecone"), TEXT("find_mussel"),
 			TEXT("find_bottlecap"), TEXT("find_foil"), TEXT("find_ring"), TEXT("find_button"), TEXT("find_coin"), TEXT("find_key"), TEXT("find_seaglass") })

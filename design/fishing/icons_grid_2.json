@@ -1,0 +1,37 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-06",
+ "credits": 1,
+ "job_id": "67937e87-8e7e-40da-a90d-37010801eb6f",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_223300_67937e87-8e7e-40da-a90d-37010801eb6f.png",
+ "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters anywhere. Every cell holds one freshly caught Baltic fish lying on its side, head to the left, the whole body inside the cell. Row 1, left: an Atlantic cod, mottled olive-brown with a pale lateral line, chin barbel, three dorsal fins. Row 1, middle: a sea trout, silver with scattered black spots on the back and flanks, streamlined. Row 1, right: a garfish, very long thin needle-like fish with a long beak full of small teeth, green-blue back, silver sides, lying diagonally. Row 2, left: a round goby, chunky big-headed bottom fish, grey-brown blotched with a black spot on the first dorsal fin. Row 2, middle: a sand goby, small pale sandy speckled goby, small in its cell. Row 2, right: an eelpout, eel-like brownish yellow mottled fish with long continuous dorsal and anal fins. Row 3, left: a shorthorn sculpin, big spiny head, wide mouth, mottled brown and red-orange belly. Row 3, middle: a lumpsucker, round lumpy grey-blue fish with rows of bony tubercles and a sucker disc on its belly. Row 3, right: a European flounder, flat oval flatfish, eyed side up, olive-brown with faint orange spots.",
+ "grid": 3,
+ "ids": [
+  "fish_cod",
+  "fish_seatrout",
+  "fish_garfish",
+  "fish_roundgoby",
+  "fish_sandgoby",
+  "fish_eelpout",
+  "fish_sculpin",
+  "fish_lumpsucker",
+  "fish_flounder"
+ ],
+ "ship": [
+  "fish_cod",
+  "fish_seatrout",
+  "fish_garfish",
+  "fish_roundgoby",
+  "fish_sandgoby",
+  "fish_eelpout",
+  "fish_sculpin",
+  "fish_lumpsucker",
+  "fish_flounder"
+ ],
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+}

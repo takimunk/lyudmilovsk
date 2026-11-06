@@ -393,6 +393,216 @@
    "aspect": "1:1",
    "prompt": "See design/diner/icons_grid.json (cell of diner_coffee).",
    "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_fishing_rod": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fishing_rod).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_bait_worm": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of bait_worm).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_bait_maggot": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of bait_maggot).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_lure_spoon": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of lure_spoon).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_herring": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fish_herring).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_sprat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fish_sprat).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_sandeel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fish_sandeel).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_stickleback": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fish_stickleback).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_perch": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_1.json (cell of fish_perch).",
+   "source": "design/fishing/icons_grid_1.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_cod": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_cod).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_seatrout": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_seatrout).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_garfish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_garfish).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_roundgoby": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_roundgoby).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_sandgoby": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_sandgoby).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_eelpout": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_eelpout).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_sculpin": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_sculpin).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_lumpsucker": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_lumpsucker).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_flounder": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_2.json (cell of fish_flounder).",
+   "source": "design/fishing/icons_grid_2.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_turbot": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_turbot).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_smelt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_smelt).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_twaiteshad": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_twaiteshad).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_whitefish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_whitefish).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_salmon": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_salmon).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_roach": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_roach).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_vimba": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_vimba).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_eel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_eel).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_rockgunnel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_3.json (cell of fish_rockgunnel).",
+   "source": "design/fishing/icons_grid_3.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_fourhornsculpin": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_4.json (cell of fish_fourhornsculpin).",
+   "source": "design/fishing/icons_grid_4.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_blackgoby": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_4.json (cell of fish_blackgoby).",
+   "source": "design/fishing/icons_grid_4.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_ninespinestickleback": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_4.json (cell of fish_ninespinestickleback).",
+   "source": "design/fishing/icons_grid_4.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
   }
  }
 }

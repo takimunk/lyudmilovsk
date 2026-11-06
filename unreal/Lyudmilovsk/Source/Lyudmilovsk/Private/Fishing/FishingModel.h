@@ -152,6 +152,7 @@ namespace LyudFishing
 		bool IsBaited() const { return Bait >= 0 && bBaited; }
 		/** The caller put a fresh bait on (and took one from the pocket). */
 		void Rebait() { bBaited = Bait >= 0; }
+		void Unbait() { bBaited = false; }
 
 		void SetBiteWeights(const std::vector<float>& W) { Weights = W; }
 		/** The cast reached Water (or land) at Distance m from the rod tip. */
@@ -184,6 +185,14 @@ namespace LyudFishing
 		float MaxCast() const;
 		/** Mean bites a minute here now with this bait (for the prompt and tests). */
 		float BitesPerMinute() const;
+
+		/** Checks: a take now on the waiting float (Fish: a Catchable index), or that fish on the line now. */
+		void DebugBite(int Fish);
+		void DebugHook(int Fish);
+		/** The line pulled in to Distance (the hero walked off with it). */
+		void SetDistance(float Distance) { Dist = Distance; }
+		/** Wind everything in now (the rod put away, a screen opened): no fish, no events. */
+		void Reset();
 
 		/** Tuning (tests may change them). */
 		struct FTune

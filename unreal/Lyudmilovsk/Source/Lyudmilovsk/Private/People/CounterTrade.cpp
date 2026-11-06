@@ -2,6 +2,7 @@
 
 #include "Dom/JsonObject.h"
 #include "Engine/World.h"
+#include "Fishing/LyudFishing.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
@@ -58,6 +59,7 @@ void ULyudCounterTradeSubsystem::Load()
 		C.Person = O->GetStringField(TEXT("person"));
 		C.Activity = O->GetStringField(TEXT("activity"));
 		O->TryGetStringField(TEXT("title"), C.TitleKey);
+		O->TryGetBoolField(TEXT("buys_fish"), C.bBuysFish);
 		double Reach = 0.0;
 		if (O->TryGetNumberField(TEXT("reach_cm"), Reach) && Reach > 0.0)
 		{
@@ -124,15 +126,27 @@ bool ULyudCounterTradeSubsystem::OpenCounter(int32 Counter)
 
 void ULyudCounterTradeSubsystem::SetPrompted(int32 Counter)
 {
-	if (Counter == Prompted)
+	// a counter that buys the catch offers it too while there are fish in the pocket
+	int32 Fish = 0, Roubles = 0;
+	if (Counters.IsValidIndex(Counter) && Counters[Counter].bBuysFish)
+	{
+		if (const ULyudFishingState* State = ULyudFishingState::Get(this))
+		{
+			Fish = State->FishHeld(this, &Roubles);
+		}
+		if (Roubles <= 0) Fish = 0;
+	}
+	if (Counter == Prompted && Fish == PromptedFish)
 	{
 		return;
 	}
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
-		UI->SetPrompt(this, Counter >= 0 ? LyudText::Get(TEXT("ui.shop.prompt")) : FText::GetEmpty());
+		UI->SetPrompt(this, Counter < 0 ? FText::GetEmpty()
+			: (Fish > 0 ? LyudText::Get(TEXT("ui.shop.prompt_sell_fish"), { FStringFormatArg(Fish), FStringFormatArg(Roubles) }) : LyudText::Get(TEXT("ui.shop.prompt"))));
 	}
 	Prompted = Counter;
+	PromptedFish = Fish;
 }
 
 void ULyudCounterTradeSubsystem::Tick(float)
@@ -167,7 +181,24 @@ void ULyudCounterTradeSubsystem::Tick(float)
 			BestDist = Dist;
 		}
 	}
+	if (World->GetTimeSeconds() < SoldUntil)
+	{
+		return;
+	}
 	SetPrompted(Best);
+	if (Best >= 0 && PromptedFish > 0 && PC->WasInputKeyJustPressed(EKeys::Y))
+	{
+		if (ULyudFishingState* State = ULyudFishingState::Get(this))
+		{
+			const int32 Got = State->SellAll(this);
+			if (Got > 0 && UI)
+			{
+				Prompted = -1;
+				SoldUntil = World->GetTimeSeconds() + 2.5;
+				UI->SetPrompt(this, LyudText::Get(TEXT("ui.shop.sold_fish"), { FStringFormatArg(Got) }));
+			}
+		}
+	}
 	if (Best >= 0 && PC->WasInputKeyJustPressed(EKeys::T))
 	{
 		SetPrompted(-1);
