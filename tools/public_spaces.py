@@ -26,14 +26,17 @@ sys.path.insert(0, HERE)
 import world_map as W  # noqa: E402
 import city_plan as C  # noqa: E402
 
-try:
-    import terrain as T  # noqa: E402
+import terrain as T  # noqa: E402
 
-    def ground(x, y):
-        return T.ground_z(x, y)
-except Exception:  # noqa: BLE001
-    def ground(x, y):
-        return W.height(x, y)
+_TERRAIN_OUT = os.path.join(T.default_dir(), "terrain_out.bin")
+if not os.path.exists(_TERRAIN_OUT):
+    sys.stderr.write("\n*** public_spaces.py: WARNING: no %s - heights come from the macro shape, not the built ground.\n"
+                     "*** Copy or build the terrain first (the beach, the club stair and the cascade's rills follow it);\n"
+                     "*** --strict refuses to write without it.\n\n" % _TERRAIN_OUT)
+
+
+def ground(x, y):
+    return T.ground_z(x, y)
 
 REPO = os.path.normpath(os.path.join(HERE, ".."))
 CONTENT = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content")
@@ -101,6 +104,10 @@ def at(s, y):
 
 def sea_yaw(y):
     return C.seaward_yaw(y)
+
+
+def stand(L, x, y, z, yaw, kind="stand"):
+    return {"pos": L.ue(x, y, z), "yaw": round(yaw, 2), "height": 0.0, "kind": kind}
 
 
 class Layout:
@@ -197,15 +204,15 @@ def promenade(L):
             cx, cy = at((sa + sb) / 2, yc)
             L.box("promenade", cx, cy, sea_yaw(yc) + 90.0, dy + 0.03, sb - sa, z - PAVE - SLAB_DEPTH, z, skin)
         y += dy
-    # no railing on the seawall: its 0.45 m kerb (the plan lead's city_mesh.py, s 24.55..25) is the parapet and a
+    # no railing on the seawall: its 0.45 m kerb (the plan lead's city_mesh.py, s 25.0..25.45) is the parapet and a
     # seat; people sit on it facing the sea, three to every 2.5 m
     kz = P.tz["T0"] + 0.45
     y = y0 + 4.0
     while y < y1 - 4.0:
-        run = [v for v in (y + k * 0.8 for k in range(12)) if L.free(C.SEAWALL_S - 0.2, v, 1.0)]
-        if len(run) >= 4 and abs(y + 4.5 - 905.0) > 9.0:
-            slots = [{"pos": L.ue(*at(C.SEAWALL_S - 0.25, v), kz), "yaw": sea_yaw(v), "height": 0.45} for v in run]
-            x, yy = at(C.SEAWALL_S - 0.25, run[len(run) // 2])
+        run = [v for v in (y + k * 0.8 for k in range(12)) if L.free(C.SEAWALL_S + 0.2, v, 1.0) and abs(v - 905.0) > 7.5]
+        if len(run) >= 4:
+            slots = [{"pos": L.ue(*at(C.SEAWALL_S + 0.22, v), kz), "yaw": sea_yaw(v), "height": 0.45} for v in run]
+            x, yy = at(C.SEAWALL_S + 0.22, run[len(run) // 2])
             L.spot(L.uid("S-KERB-"), "promenade", x, yy, P.tz["T0"], sea_yaw(yy), seats=len(slots), slots=slots,
                    sub="kerb", terrace="T0")
         y += 20.0
@@ -237,7 +244,9 @@ def promenade(L):
     while y < y1 - 10.0:
         if L.free(C.SEAWALL_S + 0.9, y):
             x, yy = at(C.SEAWALL_S + 0.9, y)
-            L.spot(L.uid("S-RAIL-"), "promenade", x, yy, z, sea_yaw(y), seats=4, sub="rail", terrace="T0")
+            slots = [{"pos": L.ue(*at(C.SEAWALL_S + 0.8, y + o), z), "yaw": sea_yaw(y), "height": 0.0, "kind": "stand"}
+                     for o in (-1.8, -0.6, 0.6, 1.8)]
+            L.spot(L.uid("S-RAIL-"), "promenade", x, yy, z, sea_yaw(y), seats=4, slots=slots, sub="rail", terrace="T0")
         y += 40.0
     # trees in grates down the middle band, a maple every 20 m; bins by every other plan bench
     y = y0 + 10.0
@@ -252,17 +261,16 @@ def promenade(L):
             x, yy, _ = s["map"]
             bx, by = at(W.inland(x, yy), yy + 1.7)
             L.prop("bin", bx, by, z, s["yaw"])
-    # the stroll lines along it
-    for sid, s_line in (("S-PROMENADE-SEA", C.SEAWALL_S + 5.0), ("S-PROMENADE-TOWN", 52.0)):
-        pts = [(*at(s_line, yy), z) for yy in range(int(y0) + 5, int(y1) - 4, 15)]
-        L.spot(sid, "promenade", *at(s_line, 905.0), z, sea_yaw(905.0) + 90.0, seats=40, path=pts, sub="stroll",
-               terrace="T0")
-    sp = P.spots.get("S-PROMENADE")
-    if sp:
-        x, yy, _ = sp["map"]
-        pts = [(*at(C.SEAWALL_S + 5.0, v), z) for v in range(int(y0) + 5, int(y1) - 4, 15)]
-        L.spot("S-PROMENADE", "promenade", x, yy, z, sp["yaw"], seats=sp.get("seats", 0) or 60, path=pts,
-               terrace="T0", name_ru=sp.get("name_ru"), name_en=sp.get("name_en"))
+    # the stroll lines along it: by the sea, down the middle (the plan's S-PROMENADE), by the town (clear of the kiosks
+    # and the W1 stairs' feet); each with stand slots every ~10 m
+    sp = P.spots.get("S-PROMENADE", {})
+    for sid, s_line in (("S-PROMENADE-SEA", C.SEAWALL_S + 5.0), ("S-PROMENADE", 40.0), ("S-PROMENADE-TOWN", 57.0)):
+        pts = [(*at(s_line, yy), z) for yy in range(int(y0) + 5, int(y1) - 4, 15) if L.free(s_line, yy, 0.5)]
+        slots = [{"pos": L.ue(*at(s_line, yy), z), "yaw": round(sea_yaw(yy) + 90.0, 2), "height": 0.0, "kind": "stand"}
+                 for yy in range(int(y0) + 10, int(y1) - 4, 10) if L.free(s_line, yy, 1.0)]
+        extra = {"name_ru": sp.get("name_ru"), "name_en": sp.get("name_en")} if sid == "S-PROMENADE" else {}
+        L.spot(sid, "promenade", *at(s_line, 905.0), z, sea_yaw(905.0) + 90.0, seats=len(slots), path=pts, slots=slots,
+               sub="stroll", terrace="T0", **extra)
     L.d["areas"].append({"id": "promenade", "name": "place.promenade.name", "at": L.ue(*at(45.0, 905.0), z), "r": 540.0})
 
 
@@ -272,7 +280,15 @@ def beach(L):
     sb = P.spots.get("S-BEACH")
     if sb:
         x, y, zz = sb["map"]
-        L.spot("S-BEACH", "beach", x, y, ground(x, y), sb["yaw"], seats=sb["seats"], name_ru=sb.get("name_ru"),
+        slots = []
+        for k in range(sb["seats"]):
+            yy = 610.0 + (k * 13.3) % 780.0
+            ss = 8.0 + (k * 7) % 4 * 1.2
+            if abs(yy - 905.0) < 14.0:
+                yy += 28.0
+            qx, qy = at(ss, yy)
+            slots.append({"pos": L.ue(qx, qy, ground(qx, qy) + 0.02), "yaw": sea_yaw(yy), "height": 0.0, "kind": "sit_ground"})
+        L.spot("S-BEACH", "beach", x, y, ground(x, y), sb["yaw"], seats=len(slots), slots=slots, name_ru=sb.get("name_ru"),
                name_en=sb.get("name_en"))
     pier = P.plots.get("P-PIER")
     pier_y = pier["map"][1] if pier else 905.0
@@ -306,8 +322,11 @@ def beach(L):
         yy = 610.0 + k * 44.0 + 11.0
         if abs(yy - pier_y) < 14.0:
             continue
-        x, py = at(7.0, yy)
-        L.spot(L.uid("S-TOWEL-"), "beach", x, py, ground(x, py), sea_yaw(yy), seats=2, sub="towel", season="summer")
+        x, py = at(9.0, yy)
+        gz = ground(x, py)
+        slots = [{"pos": L.ue(*at(9.0, yy + o), ground(*at(9.0, yy + o)) + 0.02), "yaw": sea_yaw(yy), "height": 0.0,
+                  "kind": "lie"} for o in (-0.6, 0.6)]
+        L.spot(L.uid("S-TOWEL-"), "beach", x, py, gz, sea_yaw(yy), seats=2, slots=slots, sub="towel", season="summer")
     # year round: changing booths by every other flight of sea steps
     for k, b in enumerate(b for b in P.bays.get("SEA", []) if b["kind"] == "sea_steps"):
         if k % 2 == 0 and 560.0 < b["mid"][1] < 1420.0:
@@ -405,14 +424,41 @@ def square(L):
         gx, gy, _ = sg["map"]
         L.prop("stage", gx, gy, z, sg["yaw"])
         L.d["lights"].append({"at": L.ue(gx + 2.0, gy, z + 5.0), "area": "stage", "kind": "stage"})
-        L.spot("S-STAGE", "stage", gx, gy, z + 1.1, sg["yaw"], seats=0, name_ru=sg.get("name_ru"),
+        perf = [stand(L, *at(W.inland(gx, gy) + ds, gy + dy), z + 1.04, sea_yaw(gy)) for ds in (-1.0, -3.0)
+                for dy in (-3.0, -1.0, 1.0, 3.0)]
+        L.spot("S-STAGE", "stage", gx, gy, z + 1.04, sg["yaw"], seats=len(perf), slots=perf, name_ru=sg.get("name_ru"),
                name_en=sg.get("name_en"), audience=L.ue(gx + 18.0, gy, z))
     ss = P.spots.get("S-SQUARE")
     pts = [(fx + math.cos(2 * math.pi * j / 24) * 12.0, fy + math.sin(2 * math.pi * j / 24) * 12.0, z) for j in range(25)]
-    L.spot("S-SQUARE", "square", fx, fy, z, sf["yaw"], seats=(ss or {}).get("seats", 40) or 40, path=pts, sub="crowd",
+    crowd = []
+    for j in range(40):
+        a = 2 * math.pi * j / 40
+        r = 11.0 + (j % 3) * 1.2
+        crowd.append(stand(L, fx + math.cos(a) * r, fy + math.sin(a) * r, z, math.degrees(a) + 180.0))
+    L.spot("S-SQUARE", "square", fx, fy, z, sf["yaw"], seats=len(crowd), path=pts, slots=crowd, sub="crowd",
            name_ru=(ss or {}).get("name_ru"), name_en=(ss or {}).get("name_en"))
-    L.spot("S-SQUARE-AUDIENCE", "square", (gx + 20.0) if sg else fx, gy if sg else fy, z, 180.0, seats=300,
-           sub="audience")
+    if sg:
+        gs = W.inland(gx, gy)
+        obst = [(q["at"][0], q["at"][1] - L.P.face_y) for q in L.d["props"] if q["kind"] not in ("tree_grate",)]
+        aud = []
+        for row in range(26):
+            srow = gs - 8.0 - row * 1.3
+            for col in range(-18, 19):
+                yy = gy + col * 1.15
+                qx, qy = at(srow, yy)
+                if math.hypot(qx - fx, qy - fy) < st["rim_r"] + 1.5:
+                    continue
+                if any(abs(qx - ox) < 1.0 and abs(qy - oy) < 1.0 for ox, oy in obst):
+                    continue
+                if any(math.hypot(qx - fx - math.cos(2 * math.pi * (j + 0.5) / 4) * 26.0,
+                                  qy - fy - math.sin(2 * math.pi * (j + 0.5) / 4) * 26.0) < 4.0 for j in range(4)):
+                    continue
+                aud.append(stand(L, qx, qy, z, math.degrees(math.atan2(gy - qy, gx - qx))))
+                if len(aud) >= 300:
+                    break
+            if len(aud) >= 300:
+                break
+        L.spot("S-SQUARE-AUDIENCE", "square", gx + 20.0, gy, z, 180.0, seats=len(aud), slots=aud, sub="audience")
 
 
 def flowerbed(L, x, y, z, r, seed):
@@ -467,16 +513,17 @@ def park(L):
     # the pond: an oval of still water in a stone kerb, ducks; ice in winter
     rx, ry = 14.0, 22.0
     px, py = at(ps, py_)
-    L.d["waters"].append({"id": "pond", "at": L.ue(px, py, z + 0.22), "r": [rx, ry], "yaw": sea_yaw(py_),
-                          "kerb": 0.35, "ice": True})
-    L.prop("pond", px, py, z, sea_yaw(py_), r=[rx, ry])
+    # (laid square to the world's axes: the coast is only ~6 degrees off, and the kerb's seats, the ring path and the
+    # benches round it are placed in the same frame)
+    L.d["waters"].append({"id": "pond", "at": L.ue(px, py, z + 0.22), "r": [rx, ry], "yaw": 0.0, "kerb": 0.35, "ice": True})
+    L.prop("pond", px, py, z, 0.0, r=[rx, ry])
     psp = P.spots["S-POND"] if pond else {}
     slots = []
     for j in range(10):
         a = 2 * math.pi * j / 10
         qx, qy = px + math.cos(a) * (rx + 0.25), py + math.sin(a) * (ry + 0.25)
-        slots.append({"pos": L.ue(qx, qy, z + 0.4), "yaw": round(math.degrees(math.atan2(math.sin(a), math.cos(a))), 2),
-                      "height": 0.4})
+        slots.append({"pos": L.ue(qx, qy, z + 0.36), "yaw": round(math.degrees(math.atan2(math.sin(a), math.cos(a))), 2),
+                      "height": 0.36})
     L.spot("S-POND", "pond", px, py, z, sea_yaw(py_), seats=10, slots=slots,
            path=[(px + math.cos(2 * math.pi * j / 20) * (rx + 3.5), py + math.sin(2 * math.pi * j / 20) * (ry + 3.5), z)
                  for j in range(21)], name_ru=psp.get("name_ru"), name_en=psp.get("name_en"))
@@ -502,7 +549,9 @@ def park(L):
         x, yy = at(gs + ds, gy + dy)
         L.prop(kind, x, yy, z + 0.04, sea_yaw(gy))
     plp = P.spots.get("S-PLAYGROUND", {})
-    L.spot("S-PLAYGROUND", "playground", qx, qy, z, sea_yaw(gy), seats=8, name_ru=plp.get("name_ru"),
+    kids = [stand(L, *at(gs + ds, gy + dy), z + 0.04, sea_yaw(gy)) for ds, dy in
+            ((-4.0, -3.5), (-2.0, -6.0), (2.0, -4.0), (6.0, -6.0), (2.0, 5.0), (-2.0, 3.0), (0.0, 1.5), (-6.0, 5.0))]
+    L.spot("S-PLAYGROUND", "playground", qx, qy, z, sea_yaw(gy), seats=len(kids), slots=kids, name_ru=plp.get("name_ru"),
            name_en=plp.get("name_en"))
     for k, (ds, dy) in enumerate(((-11.0, -6.0), (-11.0, 0.0), (-11.0, 6.0))):
         bx, by = at(gs + ds, gy + dy)
@@ -544,7 +593,9 @@ def park(L):
             u = k / 6
             pts.append((*at(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u), z + 0.03))
     pk = P.spots.get("S-PARK", {})
-    L.spot("S-PARK", "park", *at(sm, (y0 + y1) / 2), z, sea_yaw((y0 + y1) / 2), seats=pk.get("seats", 30), path=pts + [pts[0]],
+    walkers = [stand(L, q[0], q[1], z + 0.03, 0.0) for q in pts]
+    L.spot("S-PARK", "park", *at(sm, (y0 + y1) / 2), z, sea_yaw((y0 + y1) / 2), seats=len(walkers), slots=walkers,
+           path=pts + [pts[0]],
            sub="stroll", name_ru=pk.get("name_ru"), name_en=pk.get("name_en"))
     # trees: the avenue of maples, rowan and birch groups on the lawns, apples in an orchard corner, poplars along the
     # inland edge; shrubs and a privet hedge on the fair's side
@@ -553,7 +604,8 @@ def park(L):
         if math.hypot(sm - ps, y - py_) < ry + 10:
             continue
         for side in (-1, 1):
-            L.tree("Maple", *at(sm + side * 5.0, y), z, L.rnd.uniform(20, 38))
+            if not blocked(sm + side * 5.0, y):
+                L.tree("Maple", *at(sm + side * 5.0, y), z, L.rnd.uniform(20, 38))
     groups = [((s0 + 28, y0 + 40), "Rowan", 5), ((s1 - 25, y0 + 45), "SilverBirch", 6), ((s0 + 30, y0 + 150), "Rowan", 4),
               ((s1 - 26, y0 + 150), "WeepingBirch", 4), ((s0 + 28, y1 - 40), "Apple", 8), ((s1 - 28, y1 - 30), "SilverBirch", 5)]
     for (gs_, gy_), sp, n in groups:
@@ -595,13 +647,14 @@ def fair(L):
                 y += 7.0
                 continue
             x, py = at(s, y)
-            yaw = sea_yaw(y) + (0.0 if face > 0 else 180.0)
+            yaw = sea_yaw(y) + (180.0 if face > 0 else 0.0)    # the lane's rows face it, the far row the promenade
             sid = "S-FAIR-STALL%02d" % (n + 1)
             g = goods[n % len(goods)]
             L.prop("stall", x, py, z, yaw, variant=n % 4, goods=g, id=sid)
             a = math.radians(yaw)
             fx, fy = math.cos(a), math.sin(a)
-            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, sub="customers",
+            cust = [stand(L, x + fx * 1.5 - fy * o, py + fy * 1.5 + fx * o, z, yaw + 180.0) for o in (-0.8, 0.0, 0.8)]
+            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, slots=cust, sub="customers",
                    seller={"pos": L.ue(x - fx * 0.7, py - fy * 0.7, z), "yaw": round(yaw, 2)}, goods=g)
             n += 1
             y += 7.0
@@ -617,8 +670,10 @@ def fair(L):
                     terrace="T1")
         L.prop("bin", *at(lane, yy), z, 0.0)
     fp = P.spots.get("S-FAIR", {})
-    pts = [(*at(lane, y0 + 4.0), z), (*at(lane, y1 - 4.0), z)]
-    L.spot("S-FAIR", "fair", *at(lane, yc), z, sea_yaw(yc), seats=fp.get("seats", 30) or 30, path=pts, sub="crowd",
+    pts = [(*at(lane, yy), z) for yy in range(int(y0) + 4, int(y1) - 3, 8)]
+    crowd = [stand(L, *at(lane + (1.6 if k % 2 else -1.6), y0 + 6.0 + k * 4.6), z, sea_yaw(yc) + (180.0 if k % 2 else 0.0))
+             for k in range(int((y1 - y0 - 12.0) / 4.6))]
+    L.spot("S-FAIR", "fair", *at(lane, yc), z, sea_yaw(yc), seats=len(crowd), path=pts, slots=crowd, sub="crowd",
            name_ru=fp.get("name_ru"), name_en=fp.get("name_en"))
 
 
@@ -714,6 +769,16 @@ def club_stair(L):
         flights += 1
         side = -side
     x, y = P(t, l)
+    # the last run to the link's top: straight, risers spread evenly over it
+    d = math.hypot(tx - x, ty - y)
+    if d > 0.4 or z < tz - 0.01:
+        k = max(1, int(math.ceil(max(tz - z, 0.0) / rise)), int(d / 0.9))
+        z0 = z
+        for j in range(1, k + 1):
+            qx, qy = x + (tx - x) * j / k, y + (ty - y) * j / k
+            tread_box(qx, qy, z0 + (tz - z0) * j / k, (tx - x) / max(d, 1e-3), (ty - y) / max(d, 1e-3), d / k)
+            n += 1
+        x, y, z = tx, ty, tz
     L.d["club_stair"] = {"steps": n, "flights": flights, "end": L.ue(x, y, z), "top": L.ue(tx, ty, tz),
                          "bottom": L.ue(bx, by, bz)}
 
@@ -855,8 +920,43 @@ def pier(L):
     L.spot("S-PIER-HEAD", "pier", *P(0.0, hc + h - 1.5), z, yaw_out, seats=len(slots), slots=slots, sub="rail",
            name_ru=sp.get("name_ru"), name_en=sp.get("name_en"), notes=sp.get("notes", ""),
            path=[(*P(0.0, d), z) for d in range(2, int(head0), 10)] + [(*P(0.0, hc + h - 1.5), z)])
-    L.spot("S-PIER-SUNRISE", "sunrise_point", *P(0.0, head0 + 1.0), z, 180.0, seats=6, faces="sunrise")
+    L.spot("S-PIER-SUNRISE", "sunrise_point", *P(0.0, head0 + 1.0), z, 180.0, seats=6, faces="sunrise",
+           slots=[stand(L, *P(o, head0 + 1.0), z, 180.0) for o in (-5.0, -3.0, -1.0, 1.0, 3.0, 5.0)])
     L.d["areas"].append({"id": "pier", "name": "place.pier.name", "at": L.ue(*P(0.0, hc), z), "r": 20.0})
+
+
+def validate(doc, plan):
+    """Every seat and standing place on dry, open, walkable ground: not inside a building's plot, not in the sea below
+    high water, not in the fountain's basin or the pond. Returns the problems."""
+    bad = []
+    rects = []
+    for pid, p in plan.plots.items():
+        if p.get("building") and p["kind"] not in ("fair", "pier"):
+            y = p["map"][1]
+            sp = W.inland(p["map"][0], y)
+            rects.append((pid, y - p["w"] / 2, y + p["w"] / 2, sp - p["d"] / 2, sp + p["d"] / 2))
+    f = doc["fountains"][0] if doc["fountains"] else None
+    pond = next((w for w in doc["waters"] if w["id"] == "pond"), None)
+    for sp in doc["spots"]:
+        for sl in sp.get("slots", []):
+            x, y, z = sl["pos"][0], sl["pos"][1] - plan.face_y, sl["pos"][2]
+            s_ = W.inland(x, y)
+            for pid, y0, y1, s0, s1 in rects:
+                if y0 < y < y1 and s0 < s_ < s1:
+                    bad.append("%s in plot %s" % (sp["id"], pid))
+            if s_ < C.SEAWALL_S and z < W.SEA_Z + 0.25:
+                bad.append("%s below high water (z %.2f)" % (sp["id"], z))
+            if f and math.hypot(x - f["at"][0], y + plan.face_y - f["at"][1]) < f["stone"]["rim_r"] - 0.6 and sp["kind"] != "fountain":
+                bad.append("%s in the fountain's basin" % sp["id"])
+            if pond:
+                a = math.radians(-pond["yaw"])
+                dx, dy = x - pond["at"][0], y + plan.face_y - pond["at"][1]
+                u, v = dx * math.cos(a) - dy * math.sin(a), dx * math.sin(a) + dy * math.cos(a)
+                if (u / pond["r"][0]) ** 2 + (v / pond["r"][1]) ** 2 < 0.95:
+                    bad.append("%s in the pond" % sp["id"])
+        if not sp.get("slots"):
+            bad.append("%s has no slots" % sp["id"])
+    return bad
 
 
 def build():
@@ -876,7 +976,10 @@ def build():
         if sid in have:
             continue
         x, y, z = s["map"]
-        L.spot(sid, s["kind"], x, y, z, s["yaw"], seats=s.get("seats", 0), name_ru=s.get("name_ru"),
+        n = max(1, s.get("seats", 0))
+        ring = [stand(L, x + math.cos(2.4 * k) * (0.6 + 0.35 * math.sqrt(k)), y + math.sin(2.4 * k) * (0.6 + 0.35 * math.sqrt(k)),
+                      z, s["yaw"]) for k in range(n)]
+        L.spot(sid, s["kind"], x, y, z, s["yaw"], seats=n, slots=ring, name_ru=s.get("name_ru"),
                name_en=s.get("name_en"), notes=s.get("notes", ""), furnished=False)
     doc = {"_doc": "Built by tools/public_spaces.py from Content/City/city_plan.json (docs/city/public_spaces.md); "
                    "do not edit by hand. Unreal metres, yaw Unreal degrees (0 = +x = the sea). boxes: solid blocks "
@@ -886,6 +989,7 @@ def build():
                    "PeopleData/town_plan.json.",
            "version": 2, "frame": "unreal_metres", "face_y": plan.face_y}
     doc.update(L.d)
+    doc["problems"] = validate(doc, plan)
     return doc
 
 
@@ -952,8 +1056,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--png")
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--strict", action="store_true", help="refuse without the built terrain or with any spot problem")
     a = ap.parse_args()
+    if a.strict and not os.path.exists(_TERRAIN_OUT):
+        sys.exit("no %s" % _TERRAIN_OUT)
     doc = build()
+    probs = doc.pop("problems")
+    for pr in probs[:40]:
+        print("PROBLEM", pr)
+    print("%d spot problems" % len(probs))
+    if a.strict and probs:
+        sys.exit(1)
     if not a.dry:
         write(doc)
     kinds = {}

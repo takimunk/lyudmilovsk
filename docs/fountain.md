@@ -2,7 +2,8 @@
 
 The white cast-stone two-tier fountain in the Academgorodok's square, before Novikova 1 (docs/academgorodok). Its stone
 is part of the square's mesh (`blender/academgorodok/details.py` `fountain()`); the water, the splashes and the sound are
-`ALyudFountain` (`Public/World/LyudFountain.h`), spawned by `ULyudFountainSubsystem` in Lvl_Scene01 and built in code.
+`ALyudFountain` (`Public/World/LyudFountain.h`), spawned by `ULyudFountainSubsystem` in Lvl_Scene01 and built in code. The town's Sun fountain on its square uses the same water
+from its own levels (docs/city/public_spaces.md).
 
 ## The water
 
@@ -28,11 +29,16 @@ distance) and checks the season every 2 s.
 `ULyudFountainSynth`: the procedural fountain (`Private/Audio/FountainDSP.*`, plain C++ like the outdoor bed): a wash of
 merged drops breathing as the veil wavers, bubbles ringing at their Minnaert pitch (~550 Hz - 3.3 kHz), the slaps of
 drops, a low burble of the jet on the upper bowl. Mono, spatialised from the lower basin: full within 1.5 m (all round
-you at the rim), natural falloff to 50 m, the highs dulling with distance, occluded behind houses. It plays only while
+you at the rim), natural falloff to 50 m, the highs dulling with distance. It plays only while
 the camera is within 50 m of a running fountain, at the settings' master x ambience volume, and swells in and out.
 `tools/audiosim/run.sh fountain` renders and checks it outside the engine (`Saved/AudioSim/fountain.wav`).
 
 ## The season
+
+The first-frost search (the weather engine's hours from 1 September) is shared by every fountain and goes a slice of 120
+hours per tick, the fountain keeping its state meanwhile, so a jump of the date never costs one long frame. Drained or
+hidden, the sound fades for 1.5 s and stops.
+
 
 The town runs the fountain from **1 May** until the **first frost** of the autumn: the first hour since 1 September
 when the weather engine's air at 2 m is under -0.5 C (`LyudWeather::Instant`, the same chain as the weather the player
