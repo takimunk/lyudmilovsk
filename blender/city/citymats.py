@@ -14,6 +14,7 @@ MATERIALS = {
     "CT_PlasterPink":   ("#D9A79A", 0.85, "plaster_white", 2.0, "faded terracotta-pink plaster"),
     "CT_PlasterBlue":   ("#8FA9B8", 0.85, "plaster_white", 2.0, "faded sky-blue plaster"),
     "CT_PlasterYellow": ("#E3C374", 0.85, "plaster_ochre", 2.0, "warm yellow plaster"),
+    "CT_PlasterGreen":  ("#6E9473", 0.85, "plaster_white", 2.0, "faded green plaster (loggia panels)"),
     "CT_PlasterRed":    ("#A8483A", 0.8, "plaster_white", 2.0, "constructivist red (accents, signs, stair towers)"),
     "CT_Brick":         ("#9C5040", 0.85, "brick_red", 1.0, "red brick"),
     "CT_Tile":          ("#3E6D8E", 0.3, None, 1.0, "blue glazed tile mosaic (azulejo murals, pilotis cladding)"),
