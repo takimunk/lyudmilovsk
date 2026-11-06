@@ -304,7 +304,7 @@ def _plots():
             notes="glazed shop floors, a mosaic facade, a roof sign"))
     a(_plot("P-FAIR", "fair", "wave_canopy", 1, 140.0, 1210.0, 150, 70, "Ярмарка", "Fairground", height_max=8,
             notes="stalls, a carousel and a small Ferris wheel under and round the wavy canopy; holidays"))
-    a(_plot("P-PARK", "park", None, 1, 255.0, 1220.0, 300, 120, "Приморский парк", "Seaside park",
+    a(_plot("P-PARK", "park", None, 1, 255.0, 1220.0, 256, 120, "Приморский парк", "Seaside park",
             notes="lawns, the pond, alleys, a playground, benches; trees by the plant system; open"))
     a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 36, "Дом культуры «Рассвет»", "Rassvet culture house",
             height_max=18, notes="cinema hall, dance hall, a hobby room; the cinema of the town"))
