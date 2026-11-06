@@ -40,9 +40,10 @@ TERRACES = [
     ("T4", "Четвёртая терраса", "Fourth terrace", -15.0),
     ("T5", "Верхняя терраса", "Upper terrace", -8.0),
 ]
-# Past the upper terrace's first TOP_FLAT metres the ground rises on gently into the inland ridge.
-TOP_FLAT = 220.0
-TOP_RISE = 0.05
+# The upper terrace runs on inland, level, until the land's own ridge rises over it (a smooth max, HILL_SOFT metres).
+HILL_SOFT = 1.5
+# The town's hook on the ground stops this far inland of W5's face (past it, the natural land).
+INLAND_END = 700.0
 
 # The walls: W1 holds the lower town over the promenade, W2..W5 the terraces. (y, s) control points; between
 # y 700 and 820 the walls swing seaward round the Academgorodok (its ground is T1, up to s ~540), so north of it
@@ -115,9 +116,6 @@ def terrace_z(x, y):
             break
         t = min(1.0, t)
         z = TERRACES[i][3] + (TERRACES[i + 1][3] - TERRACES[i][3]) * t
-    top0 = wall_s(len(WALLS) - 1, y) + TOP_FLAT
-    if s > top0:
-        z += (s - top0) * TOP_RISE
     return z
 
 
@@ -133,8 +131,20 @@ def height(x, y, natural):
     z = terrace_z(x, y)
     if z is None:
         return natural
-    z = max(z, natural) if natural > z + 2.0 and s > wall_s(len(WALLS) - 1, y) else z   # the ridge and the hills win
+    s5 = wall_s(len(WALLS) - 1, y) + WALL_DEPTH
+    if s > s5:
+        # behind W5: the land's own ridge and hills rise over the upper terrace, smoothly (no step anywhere), and far
+        # inland the town lets go of the ground altogether
+        k = HILL_SOFT
+        hi, lo = max(z, natural), min(z, natural)
+        z = hi + k * math.log1p(math.exp((lo - hi) / k))
+        z = natural + (z - natural) * (1.0 - _smoothstep((s - s5 - INLAND_END + 150.0) / 150.0))
     return natural + (z - natural) * m
+
+
+def _smoothstep(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
 
 
 TREE_FRONT = 12.0      # the street trees stand this far in front of a wall's face
@@ -168,6 +178,8 @@ def tree_free(x, y):
     if city_mask(y) <= 0.0:
         return False
     s = W.inland(x, y)
+    if not (wall_s(1, y) - 15.0 < s < wall_s(len(WALLS) - 1, y) + WALL_DEPTH + 25.0):
+        return False                                # only the town's terraces (the street-tree strips), not the forests
     for p in plots():
         if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
             return True
@@ -278,7 +290,7 @@ def _plots():
     P = []
     a = P.append
     # T0, the embankment: the pier, the kiosks, the beach's buildings
-    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -120.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
+    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -151.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
             height_max=36, notes="the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the "
                                  "high water); the tower stands on its head; on the town's main axis Y 905"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
@@ -370,7 +382,7 @@ def spots():
     a("S-STAGE", "stage", 205.0, 905.0, 1, "Сцена на площади", "Square stage", yaw=0.0,
       notes="faces the square and the sea; holidays: concerts, the New Year tree")
     a("S-SQUARE", "square", 150.0, 905.0, 1, "Площадь Солнца", "Sun Square", seats=40)
-    a("S-PIER-HEAD", "pier", -130.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
+    a("S-PIER-HEAD", "pier", -145.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
       notes="fishing, sunsets; fireworks are let off here on holidays")
     a("S-PROMENADE", "promenade", 45.0, 905.0, 0, "Променад", "Promenade",
       notes="the walk along T0, Y 380..1450; benches every 40 m (S-BENCH-P*)")

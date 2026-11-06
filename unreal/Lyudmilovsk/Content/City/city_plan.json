@@ -2553,16 +2553,16 @@
     ]
    ],
    "front": [
-    293.31,
+    324.31,
     904.43,
     -39.5
    ],
    "building": "hyperboloid_tower",
    "terrace": "T0",
-   "s": -120.0,
+   "s": -151.0,
    "y_along": 905.0,
    "map": [
-    286.34,
+    317.34,
     905.0,
     -39.5
    ],
@@ -2574,7 +2574,7 @@
    "name_en": "Pier and lighthouse",
    "notes": "the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the high water); the tower stands on its head; on the town's main axis Y 905",
    "ue": [
-    28634.0,
+    31734.0,
     91290.0,
     -3950.0
    ]
@@ -4260,7 +4260,7 @@
    "kind": "pier",
    "terrace": "T0",
    "map": [
-    296.34,
+    311.34,
     905.0,
     -39.5
    ],
@@ -4270,7 +4270,7 @@
    "name_en": "Pier head",
    "notes": "fishing, sunsets; fireworks are let off here on holidays",
    "ue": [
-    29634.0,
+    31134.0,
     91290.0,
     -3950.0
    ]
