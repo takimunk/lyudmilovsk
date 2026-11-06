@@ -553,7 +553,7 @@ FOREST_CELL = 40.0                # carving grid for keeping trees out of places
 def _tree_free(x, y):
     """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
     free = globals().get("academ_tree_free")
-    return bool(free and free(x, y))
+    return bool(free and free(x, y)) or _city().tree_free(x, y)
 
 
 def _carve(x, y, hx, hy):
@@ -621,6 +621,9 @@ def forests():
     for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
         add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
     # the dune bank along the valley's beach
+    # the town's street trees: an irregular row along each terrace, 12 m in front of its wall (docs/city_plan.md)
+    for x, y, hx, hy, z0, z1 in _city().tree_strips():
+        add(x, y, hx, hy, "town", z0, z1, 1.0)
     # (the valley's dune bank, wet copses and sparse town trees are gone: the town's terraces stand there now,
     # docs/city_plan.md; its parks and streets are planted by the town's own plants)
     return out

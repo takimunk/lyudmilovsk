@@ -135,6 +135,46 @@ def height(x, y, natural):
     return natural + (z - natural) * m
 
 
+TREE_FRONT = 12.0      # the street trees stand this far in front of a wall's face
+TREE_CHUNK = 60.0
+
+
+def tree_strips():
+    """Forest strips (x, y, half x, half y, min z, max z) for the street trees: one along the lower terrace in front of
+    W2..W5 and one on top of W5, in 60 m pieces, leaving out the Cascade's bend (the walls run diagonally there)."""
+    out = []
+    for i in range(1, len(WALLS) + 1):
+        y = CITY_Y0 + 15.0
+        while y + TREE_CHUNK <= CITY_Y1 - 10.0:
+            yc = y + TREE_CHUNK / 2
+            y += TREE_CHUNK
+            if 680.0 < yc < 840.0:
+                continue
+            if i < len(WALLS):
+                sc = wall_s(i, yc) - TREE_FRONT
+                z = TERRACES[i][3]
+            else:
+                sc = wall_s(len(WALLS) - 1, yc) + WALL_DEPTH + 15.0
+                z = TERRACES[-1][3]
+            x, _ = to_map(sc, yc)
+            out.append((x, yc, 3.0, TREE_CHUNK / 2, z - 1.0, z + 1.5))
+    return out
+
+
+def tree_free(x, y):
+    """True where the town's street trees must not stand: plots, grand stairs, the square."""
+    if city_mask(y) <= 0.0:
+        return False
+    s = W.inland(x, y)
+    for p in plots():
+        if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
+            return True
+    for gy in GRAND_Y:
+        if abs(y - gy) < 12.0:
+            return True
+    return False
+
+
 def to_map(s, y):
     return (W.shore_x(y) - s, y)
 
@@ -220,7 +260,17 @@ def _plot(pid, kind, building, terrace, s, y, w, d, ru, en, yaw=None, height_max
             "height_max": height_max, "name_ru": ru, "name_en": en, "notes": notes}
 
 
+_PLOTS = None
+
+
 def plots():
+    global _PLOTS
+    if _PLOTS is None:
+        _PLOTS = _plots()
+    return _PLOTS
+
+
+def _plots():
     """The plots: where each building stands. w is along the terrace (the frontage), d inland; yaw is the way the
     front faces (seaward unless said); map is the plot's centre at ground level."""
     P = []
