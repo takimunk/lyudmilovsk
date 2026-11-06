@@ -26,16 +26,23 @@ the plot's `front` point in `city_plan.json`; Unreal yaw = plot yaw − 90.
 Every window is one opaque card (`M_City_Window`): dark glass by day, a lit room with a curtain at night. UV 1 of the
 card points at one texel of a 64 × 64 texture per building (R light, G lamp warmth, B curtain). `ALyudCityBuilding`
 holds the meshes and the window table (`WindowIds`, `WindowKinds`, `WindowFlats`, filled by the import);
-`ULyudWindowLights` writes a texel only when a light changes (at most once a second, nothing per frame).
+`ULyudWindowLights` writes a texel only when a light changes and uploads changed buildings in batches (at most four
+times a second), never once per call. Slot row r sits at Blender v = (r + 0.5) / 64; glTF flips v, so the C++ writes
+it into texture row 63 - r (`TexelOf`).
 
 * Flats: the town life (`UPeopleLifeSubsystem`, branch town-life) calls `SetDriven(true)` and then
-  `SetFlatLit("<plot>/<flat>", bOn)` (by reflection). Without it a seeded evening runs: lights on at dusk when the
-  household is home, off between 21:30 and 01:30, some early risers.
+  `SetFlatLit("<plot>/<flat>", bOn)` (by reflection). Only windows it has set are its own; every other flat keeps
+  the seeded evening (lights on at dusk when the household is home, off between 21:30 and 01:30, some early risers).
+  If the town life goes away (`lyud.People 0`, no subsystem) or calls `SetDriven(false)`, all flats return to it.
+  The hour comes from `ALyudSky::ShownTime()`, so windows and sun agree.
 * Stair windows: dusk to dawn. Public rooms: open hours (`HOURS` in `import_city.py`).
-* Lamps (`B.lamp`): point lights without shadows, made at BeginPlay; public ones burn in open hours, lobby/stair ones
-  dusk to dawn.
+* Lamps (`B.lamp`, ~1900 in town): buildings own no light components. A shared pool of at most
+  `lyud.City.LampBudget` (default 32) movable point lights without shadows is handed every 0.5 s to the lit lamps
+  nearest the camera within 45 m (fading over the last 6 m); lights that keep their lamp are not touched. Public lamps
+  burn in open hours (0..24 = always), lobby/stair ones dusk to dawn.
 
-Console: `lyud.City 0|1`, `lyud.City.Lights 0|1|2` (auto / all on / all off), `lyud.City.Report`.
+Console: `lyud.City 0|1`, `lyud.City.Lights 0|1|2` (auto / all on / all off), `lyud.City.LampBudget N`, `lyud.City.Report`
+(windows lit per building, lamps in reach, pool lights on).
 
 ## Unreal
 
@@ -44,7 +51,7 @@ Blender -b -P blender/city/build_city.py -- all --no-render
 unreal/scripts/import_city.sh                 # import (/Game/City) then place on the plots of Lvl_Scene01
 ```
 
-`unreal/scripts/shoot_city.py` takes offscreen day and night shots of a plot from the street.
+`unreal/scripts/shoot_city_buildings.py` (quits on a Python error) takes offscreen day and night shots of a plot from the street.
 
 ## The types
 

@@ -3,6 +3,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Engine/Engine.h"
+#include "GameFramework/PlayerController.h"
+#include "Camera/PlayerCameraManager.h"
+#include "People/PeopleLife.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -47,6 +50,14 @@ namespace
 	TAutoConsoleVariable<int32> CVarCityLights(TEXT("lyud.City.Lights"), 0,
 		TEXT("Town windows: 0 = auto (the life simulation or the seeded evening), 1 = every window lit, 2 = all dark."), ECVF_Default);
 
+	TAutoConsoleVariable<int32> CVarCityLampBudget(TEXT("lyud.City.LampBudget"), 32,
+		TEXT("Town room lamps: at most this many point lights (no shadows), given to the lit lamps nearest the camera. 0 = none."),
+		ECVF_Default);
+
+	/** Lamps farther than this from the camera get no light (the pool fades them out over the last LampFade cm). */
+	constexpr float LampReach = 4500.f;
+	constexpr float LampFade = 600.f;
+
 	FAutoConsoleCommandWithWorld CmdCityReport(TEXT("lyud.City.Report"), TEXT("Town buildings and their lit windows."),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
 		{
@@ -66,6 +77,10 @@ namespace
 	/** Is Hour inside [From, To) on a 24 h clock (To may pass midnight)? */
 	bool InHours(float Hour, float From, float To)
 	{
+		if (To - From >= 24.f)
+		{
+			return true;                                   // open round the clock (lighthouse, sanatorium)
+		}
 		From = FMath::Fmod(From + 48.f, 24.f);
 		To = FMath::Fmod(To + 48.f, 24.f);
 		return From <= To ? (Hour >= From && Hour < To) : (Hour >= From || Hour < To);
@@ -73,6 +88,14 @@ namespace
 }
 
 // ------------------------------------------------------------------------------------------------ the building
+
+/** Slot -> first byte of its texel. citykit.slot_uv puts slot row r at v = (r + 0.5) / 64 in Blender; the glTF export
+ * writes 1 - v and Unreal keeps glTF UVs, so the card samples texture row 63 - r. */
+static int32 TexelOf(int32 Slot)
+{
+	const int32 N = ALyudCityBuilding::LightTexSize;
+	return ((N - 1 - Slot / N) * N + Slot % N) * 4;
+}
 
 ALyudCityBuilding::ALyudCityBuilding()
 {
@@ -96,23 +119,19 @@ void ALyudCityBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 	MakeLightTexture();
-	const int32 NumLamps = FMath::Min(LampPositions.Num(), 96);
-	for (int32 i = 0; i < NumLamps; ++i)
+	ClearOwned();
+	Seeds.SetNum(WindowIds.Num());
+	const FString Plot = PlotId.ToString();
+	for (int32 S = 0; S < WindowIds.Num(); ++S)
 	{
-		UPointLightComponent* P = NewObject<UPointLightComponent>(this);
-		P->SetMobility(EComponentMobility::Movable);
-		P->SetupAttachment(Shell);
-		P->SetRelativeLocation(LampPositions[i]);
-		P->SetIntensityUnits(ELightUnits::Lumens);
-		P->SetIntensity(LampLumens.IsValidIndex(i) ? LampLumens[i] : 900.f);
-		P->SetLightColor(LampColors.IsValidIndex(i) ? LampColors[i] : FLinearColor(1.f, 0.85f, 0.66f));
-		P->SetAttenuationRadius(LampRadii.IsValidIndex(i) ? LampRadii[i] : 700.f);
-		P->SetCastShadows(false);
-		P->MaxDrawDistance = 4500.f;
-		P->MaxDistanceFadeRange = 600.f;
-		P->SetVisibility(false);
-		P->RegisterComponent();
-		LampComps.Add(P);
+		FWindowSeed& D = Seeds[S];
+		const FString Full = Plot + TEXT("/") + (WindowFlats.IsValidIndex(S) ? WindowFlats[S] : FString());
+		D.Nobody = Hash01(Full, 1);
+		D.Bed = 21.5f + Hash01(Full, 2) * 4.0f;            // 21:30 .. 01:30
+		D.Home = 15.5f + Hash01(Full, 3) * 4.0f;           // 15:30 .. 19:30
+		D.Early = Hash01(Full, 4);
+		D.Up = 5.0f + Hash01(Full, 6) * 2.5f;
+		D.bRoom = Hash01(WindowIds[S], 5) < 0.7f;          // not every room of a lit flat burns
 	}
 	if (ULyudWindowLights* L = ULyudWindowLights::Get(this))
 	{
@@ -146,9 +165,10 @@ void ALyudCityBuilding::MakeLightTexture()
 	{
 		// per window, fixed: how warm its lamp is and how much curtain it has (the shader reads G and B)
 		const FString Key = PlotId.ToString() + TEXT("/") + WindowIds[S];
-		Texels[S * 4 + 1] = uint8(FMath::Clamp(Hash01(Key, 11) * 255.f, 0.f, 255.f));
-		Texels[S * 4 + 0] = uint8(FMath::Clamp(Hash01(Key, 23) * 255.f, 0.f, 255.f));
-		Texels[S * 4 + 3] = 255;
+		const int32 T = TexelOf(S);
+		Texels[T + 1] = uint8(FMath::Clamp(Hash01(Key, 11) * 255.f, 0.f, 255.f));
+		Texels[T + 0] = uint8(FMath::Clamp(Hash01(Key, 23) * 255.f, 0.f, 255.f));
+		Texels[T + 3] = 255;
 	}
 	LightTex = UTexture2D::CreateTransient(N, N, PF_B8G8R8A8, FName(*FString::Printf(TEXT("T_CityLights_%s"), *PlotId.ToString())));
 	if (!LightTex)
@@ -190,30 +210,34 @@ void ALyudCityBuilding::SetLamps(uint8 Kind, bool bOn)
 		return;
 	}
 	LampState[Kind] = int8(bOn);
-	for (int32 i = 0; i < LampComps.Num(); ++i)
-	{
-		const uint8 K = LampKinds.IsValidIndex(i) ? LampKinds[i] : 0;
-		if (K == Kind && LampComps[i])
-		{
-			LampComps[i]->SetVisibility(bOn);
-		}
-	}
 }
 
 void ALyudCityBuilding::SetSlot(int32 Slot, float Level)
 {
-	if (!Texels.IsValidIndex(Slot * 4 + 2))
+	if (Slot < 0 || Slot >= LightTexSize * LightTexSize || !Texels.IsValidIndex(TexelOf(Slot) + 2))
 	{
 		return;
 	}
+	const int32 T = TexelOf(Slot);
 	const uint8 V = uint8(FMath::Clamp(FMath::RoundToInt(Level * 255.f), 0, 255));
-	if (Texels[Slot * 4 + 2] == V)
+	if (Texels[T + 2] == V)
 	{
 		return;
 	}
-	Texels[Slot * 4 + 2] = V;
-	DirtyMin = FMath::Min(DirtyMin, Slot / LightTexSize);
-	DirtyMax = FMath::Max(DirtyMax, Slot / LightTexSize);
+	Texels[T + 2] = V;
+	const int32 Row = T / (LightTexSize * 4);
+	DirtyMin = FMath::Min(DirtyMin, Row);
+	DirtyMax = FMath::Max(DirtyMax, Row);
+}
+
+float ALyudCityBuilding::GetSlot(int32 Slot) const
+{
+	if (Slot < 0 || Slot >= LightTexSize * LightTexSize)
+	{
+		return 0.f;
+	}
+	const int32 T = TexelOf(Slot);
+	return Texels.IsValidIndex(T + 2) ? Texels[T + 2] / 255.f : 0.f;
 }
 
 void ALyudCityBuilding::Flush()
@@ -288,8 +312,51 @@ void ULyudWindowLights::Rebuild()
 
 void ULyudWindowLights::SetDriven(bool bInDriven)
 {
+	if (bDriven && !bInDriven)
+	{
+		for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
+		{
+			if (ALyudCityBuilding* B = W.Get())
+			{
+				B->ClearOwned();                           // every window back to the seeded pattern
+			}
+		}
+	}
 	bDriven = bInDriven;
 	Accum = 1e9f;
+}
+
+bool ULyudWindowLights::LifeAlive() const
+{
+	static IConsoleVariable* People = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.People"));
+	if (People && People->GetInt() == 0)
+	{
+		return false;
+	}
+	const UWorld* World = GetWorld();
+	return World && World->GetSubsystem<UPeopleLifeSubsystem>() != nullptr;
+}
+
+void ULyudWindowLights::FlushPending()
+{
+	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Pending)
+	{
+		if (ALyudCityBuilding* B = W.Get())
+		{
+			B->Flush();
+		}
+	}
+	Pending.Reset();
+}
+
+void ULyudWindowLights::Deinitialize()
+{
+	// the pool's actor and its lights are transient and go with the world
+	Pending.Reset();
+	LampPool.Reset();
+	PoolLamp.Reset();
+	PoolOwner.Reset();
+	Super::Deinitialize();
 }
 
 bool ULyudWindowLights::SetFlatLit(const FString& FlatId, bool bOn)
@@ -308,9 +375,10 @@ bool ULyudWindowLights::SetFlatLit(const FString& FlatId, bool bOn)
 		if (ALyudCityBuilding* B = R.B.Get())
 		{
 			// not every room of a lit flat burns: the seed leaves about a third of its windows dark
-			const bool bRoom = Hash01(B->WindowIds[R.Slot], 5) < 0.7f || Slots->Num() == 1;
+			const bool bRoom = Slots->Num() == 1 || (B->Seeds.IsValidIndex(R.Slot) && B->Seeds[R.Slot].bRoom);
 			B->SetSlot(R.Slot, (bOn && bRoom) ? 1.f : 0.f);
-			B->Flush();
+			B->SetOwned(R.Slot, true);
+			Pending.Add(R.B);                              // uploaded in a batch by Tick, not per call
 		}
 	}
 	return true;
@@ -329,7 +397,8 @@ bool ULyudWindowLights::SetWindowLit(const FString& WindowId, bool bOn)
 		return false;
 	}
 	B->SetSlot(R->Slot, bOn ? 1.f : 0.f);
-	B->Flush();
+	B->SetOwned(R->Slot, true);
+	Pending.Add(R->B);
 	return true;
 }
 
@@ -352,44 +421,189 @@ TArray<FString> ULyudWindowLights::AllFlats() const
 	return Out;
 }
 
-float ULyudWindowLights::SeededFlat(const FString& FullFlat, float Hour, float SunAlt) const
+float ULyudWindowLights::SeededFlat(const ALyudCityBuilding::FWindowSeed& D, float Hour, float SunAlt)
 {
 	// a household's evening: home most days, lights on once it's dark, off at bedtime; a few up before dawn
-	const bool bDark = SunAlt < 2.f;
-	if (!bDark)
+	if (SunAlt >= 2.f || D.Nobody > 0.82f)               // daylight, or nobody home tonight (a dark empty flat)
 	{
 		return 0.f;
 	}
-	if (Hash01(FullFlat, 1) > 0.82f)                       // nobody home tonight (or a dark empty flat)
-	{
-		return 0.f;
-	}
-	const float Bed = 21.5f + Hash01(FullFlat, 2) * 4.0f;   // 21:30 .. 01:30
-	const float Home = 15.5f + Hash01(FullFlat, 3) * 4.0f;  // 15:30 .. 19:30
-	if (InHours(Hour, Home, Bed))
+	if (InHours(Hour, D.Home, D.Bed))
 	{
 		return 1.f;
 	}
-	if (Hash01(FullFlat, 4) < 0.35f)                       // early risers
-	{
-		const float Up = 5.0f + Hash01(FullFlat, 6) * 2.5f;
-		if (InHours(Hour, Up, Up + 1.25f))
-		{
-			return 1.f;
-		}
-	}
-	return 0.f;
+	return (D.Early < 0.35f && InHours(Hour, D.Up, D.Up + 1.25f)) ? 1.f : 0.f;   // early risers
 }
 
 void ULyudWindowLights::Tick(float DeltaTime)
 {
-	Accum += DeltaTime;
-	if (Accum < 1.f)
+	FlushAccum += DeltaTime;
+	if (FlushAccum >= 0.25f && Pending.Num() > 0)
 	{
-		return;
+		FlushAccum = 0.f;
+		FlushPending();
 	}
-	Accum = 0.f;
-	UpdateAll(false);
+	Accum += DeltaTime;
+	if (Accum >= 1.f)
+	{
+		Accum = 0.f;
+		UpdateAll(false);
+	}
+	LampAccum += DeltaTime;
+	if (LampAccum >= 0.5f)
+	{
+		LampAccum = 0.f;
+		UpdateLamps();
+	}
+}
+
+void ULyudWindowLights::UpdateLamps()
+{
+	UWorld* World = GetWorld();
+	const int32 Budget = FMath::Clamp(CVarCityLampBudget.GetValueOnGameThread(), 0, 256);
+	FVector Cam = FVector::ZeroVector;
+	bool bCam = false;
+	if (APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr)
+	{
+		if (PC->PlayerCameraManager)
+		{
+			Cam = PC->PlayerCameraManager->GetCameraLocation();
+			bCam = true;
+		}
+	}
+	// the lit lamps in reach, nearest first (buildings out of reach are skipped by their bounds)
+	struct FCand { float D2; ALyudCityBuilding* B; int32 Lamp; };
+	TArray<FCand, TInlineAllocator<128>> Cands;
+	if (bCam && Budget > 0)
+	{
+		for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
+		{
+			ALyudCityBuilding* B = W.Get();
+			if (!B || B->IsHidden() || B->LampPositions.Num() == 0 || !B->Shell)
+			{
+				continue;
+			}
+			const FBoxSphereBounds& Bo = B->Shell->Bounds;
+			if (FVector::DistSquared(Bo.Origin, Cam) > FMath::Square(LampReach + Bo.SphereRadius))
+			{
+				continue;
+			}
+			const FTransform& X = B->GetActorTransform();
+			for (int32 i = 0; i < B->LampPositions.Num(); ++i)
+			{
+				if (!B->IsLampOn(i))
+				{
+					continue;
+				}
+				const float D2 = FVector::DistSquared(X.TransformPosition(B->LampPositions[i]), Cam);
+				if (D2 < LampReach * LampReach)
+				{
+					Cands.Add({D2, B, i});
+				}
+			}
+		}
+	}
+	LampCandidates = Cands.Num();
+	Cands.Sort([](const FCand& A, const FCand& C) { return A.D2 < C.D2; });
+	Cands.SetNum(FMath::Min(Cands.Num(), Budget), EAllowShrinking::No);
+
+	// grow the pool lazily, up to what is needed now (never more than the budget)
+	if (LampPool.Num() < Cands.Num() && World)
+	{
+		AActor* Owner = PoolOwner.Get();
+		if (!Owner)
+		{
+			FActorSpawnParameters SP;
+			SP.ObjectFlags |= RF_Transient;
+			Owner = World->SpawnActor<AActor>(AActor::StaticClass(), FTransform::Identity, SP);
+			if (Owner)
+			{
+				USceneComponent* Root = NewObject<USceneComponent>(Owner, TEXT("Root"));
+				Owner->SetRootComponent(Root);
+				Root->RegisterComponent();
+#if WITH_EDITOR
+				Owner->SetActorLabel(TEXT("CityLampPool"));
+#endif
+			}
+			PoolOwner = Owner;
+		}
+		while (Owner && LampPool.Num() < Cands.Num())
+		{
+			UPointLightComponent* P = NewObject<UPointLightComponent>(Owner);
+			P->SetMobility(EComponentMobility::Movable);
+			P->SetupAttachment(Owner->GetRootComponent());
+			P->SetIntensityUnits(ELightUnits::Lumens);
+			P->SetCastShadows(false);
+			P->bAffectTranslucentLighting = false;
+			P->MaxDrawDistance = LampReach;
+			P->MaxDistanceFadeRange = LampFade;
+			P->SetVisibility(false);
+			P->RegisterComponent();
+			LampPool.Add(P);
+			PoolLamp.Add(FLampRef());
+		}
+	}
+
+	// keep the pool lights whose lamp is still chosen (no render update for them), give the free ones the rest
+	TArray<bool, TInlineAllocator<128>> Taken;
+	Taken.Init(false, Cands.Num());
+	TArray<int32, TInlineAllocator<64>> Free;
+	for (int32 p = 0; p < LampPool.Num(); ++p)
+	{
+		const FLampRef& R = PoolLamp[p];
+		int32 Found = INDEX_NONE;
+		if (R.Lamp >= 0)
+		{
+			const ALyudCityBuilding* RB = R.B.Get();
+			for (int32 c = 0; c < Cands.Num(); ++c)
+			{
+				if (!Taken[c] && Cands[c].B == RB && Cands[c].Lamp == R.Lamp)
+				{
+					Found = c;
+					break;
+				}
+			}
+		}
+		if (Found != INDEX_NONE)
+		{
+			Taken[Found] = true;
+		}
+		else
+		{
+			Free.Add(p);
+		}
+	}
+	int32 f = 0;
+	for (int32 c = 0; c < Cands.Num(); ++c)
+	{
+		if (Taken[c] || f >= Free.Num())
+		{
+			continue;
+		}
+		const int32 p = Free[f++];
+		UPointLightComponent* P = LampPool[p];
+		ALyudCityBuilding* B = Cands[c].B;
+		const int32 i = Cands[c].Lamp;
+		if (!P)
+		{
+			continue;
+		}
+		P->SetWorldLocation(B->GetActorTransform().TransformPosition(B->LampPositions[i]));
+		P->SetIntensity(B->LampLumens.IsValidIndex(i) ? B->LampLumens[i] : 900.f);
+		P->SetLightColor(B->LampColors.IsValidIndex(i) ? B->LampColors[i] : FLinearColor(1.f, 0.85f, 0.66f));
+		P->SetAttenuationRadius(B->LampRadii.IsValidIndex(i) ? B->LampRadii[i] : 700.f);
+		P->SetVisibility(true);
+		PoolLamp[p] = FLampRef{B, i};
+	}
+	for (; f < Free.Num(); ++f)
+	{
+		const int32 p = Free[f];
+		if (PoolLamp[p].Lamp >= 0 && LampPool[p])
+		{
+			LampPool[p]->SetVisibility(false);
+		}
+		PoolLamp[p] = FLampRef();
+	}
 }
 
 void ULyudWindowLights::UpdateAll(bool bForce)
@@ -400,17 +614,27 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 	}
 	UWorld* World = GetWorld();
 	float SunAlt = -10.f;
+	FDateTime Now = UGameCalendar::NowIn(World);
 	if (World)
 	{
-		TActorIterator<ALyudSky> Sky(World);
-		if (Sky)
+		if (!Sky.IsValid())
 		{
-			SunAlt = Sky->SunAltitude();
+			TActorIterator<ALyudSky> It(World);
+			Sky = It ? *It : nullptr;
+		}
+		if (const ALyudSky* S = Sky.Get())
+		{
+			SunAlt = S->SunAltitude();
+			Now = S->ShownTime();                          // the hour the sky shows, so lights and sun agree
 		}
 	}
 	bNight = bNight ? SunAlt < 3.f : SunAlt < 0.5f;
-	const FDateTime Now = UGameCalendar::NowIn(World);
 	const float Hour = Now.GetHour() + Now.GetMinute() / 60.f;
+	if (bDriven && !LifeAlive())
+	{
+		UE_LOG(LogTemp, Display, TEXT("City lights: the town life is gone, windows back to the seeded evening"));
+		SetDriven(false);
+	}
 	const int32 Mode = CVarCityLights.GetValueOnGameThread();
 	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
 	{
@@ -419,7 +643,6 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 		{
 			continue;
 		}
-		const FString Plot = B->PlotId.ToString();
 		const bool bOpen = InHours(Hour, B->OpenHour, B->CloseHour);
 		for (int32 S = 0; S < B->WindowIds.Num(); ++S)
 		{
@@ -441,20 +664,19 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			{
 				L = bOpen ? (bNight ? 1.f : 0.35f) : 0.f;    // by day a shop's lamps still show a little
 			}
-			else
+			else if (bDriven && B->IsOwned(S))
 			{
-				if (bDriven)
-				{
-					continue;                                // the life sim owns the flats: leave them as it set them
-				}
-				const FString Flat = B->WindowFlats.IsValidIndex(S) ? B->WindowFlats[S] : FString();
-				const FString Full = Plot + TEXT("/") + Flat;
-				const bool bRoom = Hash01(B->WindowIds[S], 5) < 0.7f;
-				L = (SeededFlat(Full, Hour, SunAlt) > 0.f && bRoom) ? 1.f : 0.f;
+				continue;                                    // the life sim set this window: leave it as it is
+			}
+			else if (B->Seeds.IsValidIndex(S))
+			{
+				const ALyudCityBuilding::FWindowSeed& D = B->Seeds[S];
+				L = (D.bRoom && SeededFlat(D, Hour, SunAlt) > 0.f) ? 1.f : 0.f;
 			}
 			B->SetSlot(S, L);
 		}
 		B->Flush();
+		Pending.Remove(W);
 		B->SetLamps(0, Mode == 2 ? false : (Mode == 1 || bOpen));
 		B->SetLamps(1, Mode == 2 ? false : (Mode == 1 || bNight));
 	}
@@ -463,7 +685,13 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 
 FString ULyudWindowLights::Report() const
 {
-	FString Out = FString::Printf(TEXT("CITY lights: %d buildings, night %d, driven %d\n"), Buildings.Num(), bNight ? 1 : 0, bDriven ? 1 : 0);
+	int32 PoolOn = 0;
+	for (const FLampRef& R : PoolLamp)
+	{
+		PoolOn += R.Lamp >= 0 ? 1 : 0;
+	}
+	FString Out = FString::Printf(TEXT("CITY lights: %d buildings, night %d, driven %d; lamps: %d lit in reach, %d of %d pool lights on (budget %d)\n"),
+		Buildings.Num(), bNight ? 1 : 0, bDriven ? 1 : 0, LampCandidates, PoolOn, LampPool.Num(), CVarCityLampBudget.GetValueOnGameThread());
 	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
 	{
 		if (const ALyudCityBuilding* B = W.Get())

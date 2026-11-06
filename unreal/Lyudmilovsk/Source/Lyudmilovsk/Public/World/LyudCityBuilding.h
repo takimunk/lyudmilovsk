@@ -43,14 +43,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FString> WindowFlats;
 
 	/** Real lamps inside the enterable rooms (B.lamp in blender/city), in the actor's local space (cm); kind 0 = on in the
-	 * open hours, 1 = dusk to dawn. Point lights are made at BeginPlay (no shadows, drawn near only). */
+	 * open hours, 1 = dusk to dawn. The building makes no light components: ULyudWindowLights lends the nearest lit
+	 * lamps around the camera a small shared pool of point lights (lyud.City.LampBudget, no shadows). */
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FVector> LampPositions;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<float> LampLumens;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FLinearColor> LampColors;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<float> LampRadii;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<uint8> LampKinds;
-	/** Turns the lamps of one kind on or off (only touches them on a change). */
+	/** Turns the lamps of one kind on or off (a flag only: the shared pool reads it). */
 	void SetLamps(uint8 Kind, bool bOn);
+	bool IsLampOn(int32 Lamp) const
+	{
+		const uint8 K = LampKinds.IsValidIndex(Lamp) ? LampKinds[Lamp] : 0;
+		return K <= 1 && LampState[K] == 1;
+	}
 
 	/** Public rooms are lit from OpenHour to CloseHour (local game time). */
 	UPROPERTY(EditAnywhere, Category = "City") float OpenHour = 8.f;
@@ -58,10 +64,19 @@ public:
 
 	/** Light level of a slot, 0..1 (quantised to a byte). Marks the texture for upload. */
 	void SetSlot(int32 Slot, float Level);
-	float GetSlot(int32 Slot) const { return Texels.IsValidIndex(Slot * 4) ? Texels[Slot * 4 + 2] / 255.f : 0.f; }
+	float GetSlot(int32 Slot) const;
 	/** Uploads the changed texels (once, by ULyudWindowLights after a batch of changes). */
 	void Flush();
 	int32 NumWindows() const { return WindowIds.Num(); }
+	/** The life simulation has set this slot (it keeps it while driven; other slots follow the seeded pattern). */
+	void SetOwned(int32 Slot, bool bOwned) { if (Owned.IsValidIndex(Slot)) { Owned[Slot] = bOwned; } }
+	bool IsOwned(int32 Slot) const { return Owned.IsValidIndex(Slot) && Owned[Slot]; }
+	void ClearOwned() { Owned.Init(false, WindowIds.Num()); }
+
+	/** Per slot, fixed at BeginPlay (no strings or hashes per update): the seeded household of its flat and whether
+	 * this room burns when the flat is lit. */
+	struct FWindowSeed { float Nobody = 1.f, Home = 0.f, Bed = 0.f, Early = 1.f, Up = 0.f; bool bRoom = false; };
+	TArray<FWindowSeed> Seeds;
 
 	static constexpr int32 LightTexSize = 64;
 
@@ -73,8 +88,8 @@ private:
 	void MakeLightTexture();
 
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> LightTex;
-	UPROPERTY(Transient) TArray<TObjectPtr<class UPointLightComponent>> LampComps;
 	int8 LampState[2] = {-1, -1};
+	TBitArray<> Owned;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WindowMID;
 	/** BGRA texels: R = light (the shader's red channel is B in memory order: we write [2]), G = warmth, B = curtain. */
 	TArray<uint8> Texels;
@@ -85,11 +100,17 @@ private:
 /**
  * The town's lit windows. Who is home is the town life's business (UPeopleLifeSubsystem): it calls SetDriven(true)
  * and then SetFlatLit / SetWindowLit with full ids ("<plot>/<flat>" or "<plot>/<flat>/w<n>") whenever a light goes on
- * or off. Without it (lyud.People 0, other maps) a seeded evening pattern runs: flats light up at dusk and go dark
- * between 21:30 and 01:30, some early risers before dawn. Stair windows burn from dusk to dawn, public rooms in their
- * open hours. Works at most once a second and touches a building's texture only when one of its windows changed.
+ * or off. Only the windows it has set are its own: every other flat keeps the seeded pattern, and when the life
+ * simulation goes away (lyud.People 0, no UPeopleLifeSubsystem) or calls SetDriven(false) all windows go back to it.
+ * The seeded evening: flats light up at dusk and go dark between 21:30 and 01:30, some early risers before dawn.
+ * Stair windows burn from dusk to dawn, public rooms in their open hours. Window textures are uploaded in batches
+ * (at most four times a second, only buildings with a changed window), never once per call.
  *
- * Console: lyud.City 0|1 (hide/show every town building), lyud.City.Lights auto|on|off, lyud.City.Report.
+ * Room lamps: a pool of at most lyud.City.LampBudget point lights (default 32, no shadows) is handed every half
+ * second to the lit lamps nearest the camera within 45 m; a building owns no light components.
+ *
+ * Console: lyud.City 0|1 (hide/show every town building), lyud.City.Lights auto|on|off, lyud.City.LampBudget N,
+ * lyud.City.Report.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudWindowLights : public UTickableWorldSubsystem
@@ -117,21 +138,34 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 	virtual bool IsTickable() const override { return Buildings.Num() > 0; }
+	virtual void Deinitialize() override;
 	virtual bool DoesSupportWorldType(const EWorldType::Type T) const override { return T == EWorldType::Game || T == EWorldType::PIE; }
 
 private:
 	struct FSlotRef { TWeakObjectPtr<ALyudCityBuilding> B; int32 Slot = 0; };
+	struct FLampRef { TWeakObjectPtr<ALyudCityBuilding> B; int32 Lamp = -1; };
 	void Rebuild();
+	void UpdateLamps();
+	void FlushPending();
+	bool LifeAlive() const;
 	void UpdateAll(bool bForce);
-	float SeededFlat(const FString& FullFlat, float Hour, float SunAlt) const;
+	static float SeededFlat(const ALyudCityBuilding::FWindowSeed& D, float Hour, float SunAlt);
 
 	TArray<TWeakObjectPtr<ALyudCityBuilding>> Buildings;
 	TMap<FString, FSlotRef> WindowIndex;               // "<plot>/<id>" -> slot
 	TMap<FString, TArray<FSlotRef>> FlatIndex;          // "<plot>/<flat>" -> slots
+	TSet<TWeakObjectPtr<ALyudCityBuilding>> Pending;   // buildings with texels changed by SetFlatLit / SetWindowLit
+	UPROPERTY(Transient) TArray<TObjectPtr<class UPointLightComponent>> LampPool;
+	TArray<FLampRef> PoolLamp;                          // which building lamp each pool light shows (Lamp -1: none)
+	TWeakObjectPtr<AActor> PoolOwner;
+	TWeakObjectPtr<class ALyudSky> Sky;
+	int32 LampCandidates = 0;
 	bool bIndexDirty = true;
 	bool bDriven = false;
 	bool bNight = false;
 	float Accum = 1e9f;
+	float FlushAccum = 0.f;
+	float LampAccum = 1e9f;
 	int32 LastMode = -1;
 	float LastHourBucket = -1.f;
 };

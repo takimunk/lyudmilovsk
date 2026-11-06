@@ -61,6 +61,36 @@ def built_types():
 
 
 # ------------------------------------------------------------------------------------------------ materials
+def _lights_default():
+    """T_City_LightsDefault: 4x4 dark texels, linear (the window master's Lights parameter default)."""
+    import struct
+    import zlib
+    name = "T_City_LightsDefault"
+    t = eal.load_asset("%s/%s" % (MATS, name)) if eal.does_asset_exist("%s/%s" % (MATS, name)) else None
+    if t is None:
+        tmp = os.path.join(REPO, "unreal", "Lyudmilovsk", "Saved", "city_defaults")
+        os.makedirs(tmp, exist_ok=True)
+        f = os.path.join(tmp, name + ".png")
+        raw = b"".join(b"\x00" + bytes((0, 128, 0, 255)) * 4 for _ in range(4))
+
+        def chunk(k, d):
+            return struct.pack(">I", len(d)) + k + d + struct.pack(">I", zlib.crc32(k + d) & 0xffffffff)
+        with open(f, "wb") as fh:
+            fh.write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 4, 4, 8, 6, 0, 0, 0))
+                     + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
+        task = unreal.AssetImportTask()
+        for k, v in (("filename", f), ("destination_path", MATS), ("destination_name", name), ("automated", True),
+                     ("replace_existing", True), ("save", False), ("factory", unreal.TextureFactory())):
+            task.set_editor_property(k, v)
+        unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+        t = eal.load_asset("%s/%s" % (MATS, name))
+    t.set_editor_property("srgb", False)
+    t.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_VECTOR_DISPLACEMENTMAP)
+    t.set_editor_property("filter", unreal.TextureFilter.TF_NEAREST)
+    eal.save_loaded_asset(t)
+    return t
+
+
 def _window_master(path):
     """M_City_Window: one opaque (masked) card per window. By day dark glass with a sky reflection and, behind it,
     a faint room and curtain; at night the room glows when its texel of the building's Lights texture is lit
@@ -74,6 +104,8 @@ def _window_master(path):
     lights = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -2100, -300, parameter_name="Lights",
                   sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
     lights.set_editor_property("sampler_source", unreal.SamplerSourceMode.SSM_CLAMP_WORLD_GROUP_SETTINGS)
+    # a linear (non-sRGB) default, so the LINEAR_COLOR sampler compiles; every building's MID sets its own texture
+    lights.set_editor_property("texture", _lights_default())
     link(uv1, "", lights, "UVs")
     # pane coordinates 0..1 and the round flag
     fr = node(m, unreal.MaterialExpressionFrac, -2100, 200)

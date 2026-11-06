@@ -2,7 +2,7 @@
 plot at eye height, by day and by night, plus lyud.City.Report after each time change. Lines "CITYSHOT ..." in the log;
 shots land in Saved/Screenshots/MacEditor in order (HighResShot).
 
-  tools/play_offscreen.sh /Game/Scene01/Lvl_Scene01 unreal/scripts/shoot_city.py
+  tools/play_offscreen.sh /Game/Scene01/Lvl_Scene01 unreal/scripts/shoot_city_buildings.py
   env: CITY_PLOT (default P-CAPSULE), CITY_DIST (m, default 40), CITY_TIMES (default 13,22), CITY_RES (1600x900),
        CITY_WAIT (s per view, default 8)
 """
@@ -72,7 +72,7 @@ def ground(w, x, y, z_guess):
     return z_guess, None
 
 
-def tick(dt):
+def _tick(dt):
     st["t"] += dt
     w = world()
     if not w or st["t"] < 8.0:
@@ -132,4 +132,19 @@ def tick(dt):
         st["phase"] = 0
 
 
-unreal.register_slate_post_tick_callback(tick)
+def tick(dt):
+    # a Python error must not leave the offscreen run hanging forever: log it and quit the editor
+    try:
+        _tick(dt)
+    except Exception:
+        import traceback
+        log("ERROR " + traceback.format_exc())
+        try:
+            unreal.SystemLibrary.execute_console_command(world(), "quit")
+        except Exception:
+            pass
+        unreal.SystemLibrary.quit_editor()
+        unreal.unregister_slate_post_tick_callback(_handle)
+
+
+_handle = unreal.register_slate_post_tick_callback(tick)
