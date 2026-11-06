@@ -82,6 +82,8 @@ private:
 	int32 NodeOf(FName Id) const;
 
 	TPimplPtr<LyudEco::FModel> Model;
+	/** The level the web was last synced in (a new one may be a New Game: see Sync). */
+	TWeakObjectPtr<const UWorld> SyncedWorld;
 	/** Days of the fresh game's warm-up still to live (sliced over the syncs). */
 	float WarmLeft = 0.f;
 	/** LyudFish species index -> web node (-1 none), and each fish's numbers now (Relative x Here). */

@@ -145,7 +145,8 @@ int main()
 	Check(Kinds >= 11, "at least 11 species around in October");
 	Check(Seen[FindSpecies("Garfish")] == 0, "no garfish in October (they leave in September)");
 	if (SchoolN) std::printf("herring: mean distance to the school's centre %.2f m\n", SchoolSpread / SchoolN);
-	Check(SchoolN == 0 || SchoolSpread / SchoolN < 3.5f, "herring keep in a school");
+	// (a school with a hungry cod or seal near it opens up: the mean includes those)
+	Check(SchoolN == 0 || SchoolSpread / SchoolN < 4.f, "herring keep in a school");
 
 	// a flounder darts off when the eye comes close; it stays when the eye keeps away
 	{

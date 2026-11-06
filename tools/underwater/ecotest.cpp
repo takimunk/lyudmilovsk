@@ -184,8 +184,20 @@ int main(int Argc, char** Argv)
 		FModel L;
 		L.Load(K, V);
 		float Worst = 0.f;
-		for (int I = 0; I < NumNodes(); ++I) Worst = std::max(Worst, std::fabs(L.Biomass(I) - S.Biomass(I)) + std::fabs(L.Here(I) - S.Here(I)));
+		for (int I = 0; I < NumNodes(); ++I) Worst = std::max(Worst, std::fabs(L.Biomass(I) / S.Biomass(I) - 1.f) + std::fabs(L.Here(I) - S.Here(I)));
 		Check(Worst < 1e-6f && std::fabs(L.Local(Find("Perch"), 121.f, -36.f) - 0.5f) < 1e-6f, "saves and loads (biomass, here, local)", Worst);
+	}
+
+	// nonsense in (a NaN catch, an infinite console scale) changes nothing
+	{
+		FModel S = W;
+		S.Remove(Find("Cod"), std::nanf(""));
+		S.SetBiomass(Find("Cod"), INFINITY);
+		S.TakeLocal(Find("Cod"), std::nanf(""), 0.f, 0.5f);
+		S.Step(10.f, 30.f);
+		int Bad = 0;
+		for (int I = 0; I < NumNodes(); ++I) Bad += !std::isfinite(S.Biomass(I));
+		Check(Bad == 0, "a NaN or infinite input leaves the web finite (nodes gone bad)", Bad);
 	}
 
 	// the local thinning heals: roamers in days, bottom fish in weeks

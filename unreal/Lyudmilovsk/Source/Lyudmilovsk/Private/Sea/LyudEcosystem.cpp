@@ -15,13 +15,13 @@
 namespace
 {
 	/** The web is stepped in whole game hours; a jump of more than this is lived through at once (a load, a long sleep). */
-	constexpr double MaxCatchUpDays = 3.0 * 365.0;
+	constexpr double EcoMaxCatchUpDays = 3.0 * 365.0;
 	/** A fresh game starts from the base, lived through this many years of seasons first (the base has no seasons). */
-	constexpr int32 WarmYears = 6;
+	constexpr int32 EcoWarmYears = 6;
 	/** ... a slice of it at each sync (every two seconds of play, ~1 ms each), never all in one frame. */
-	constexpr float WarmSliceDays = 60.f;
+	constexpr float EcoWarmSliceDays = 60.f;
 
-	FAutoConsoleCommandWithWorldAndArgs CmdReport(TEXT("lyud.Eco.Report"), TEXT("Prints the coastal food web: every group's biomass against its base, here or away, what eats most of it."),
+	FAutoConsoleCommandWithWorldAndArgs CmdEcoReport(TEXT("lyud.Eco.Report"), TEXT("Prints the coastal food web: every group's biomass against its base, here or away, what eats most of it."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
 		{
 			if (ULyudEcosystem* E = ULyudEcosystem::Get(World))
@@ -32,17 +32,17 @@ namespace
 				for (const FString& L : Lines) UE_LOG(LogTemp, Display, TEXT("LyudEco: %s"), *L);
 			}
 		}));
-	FAutoConsoleCommandWithWorldAndArgs CmdDays(TEXT("lyud.Eco.Days"), TEXT("<days>: the food web lives that many days at once (from today's day of the year)."),
+	FAutoConsoleCommandWithWorldAndArgs CmdEcoDays(TEXT("lyud.Eco.Days"), TEXT("<days>: the food web lives that many days at once (from today's day of the year)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (ULyudEcosystem* E = ULyudEcosystem::Get(World); E && Args.Num()) E->LiveDays(FCString::Atof(*Args[0]));
 		}));
-	FAutoConsoleCommandWithWorldAndArgs CmdReset(TEXT("lyud.Eco.Reset"), TEXT("Back to the food web's base (warmed through a few years of seasons)."),
+	FAutoConsoleCommandWithWorldAndArgs CmdEcoReset(TEXT("lyud.Eco.Reset"), TEXT("Back to the food web's base (warmed through a few years of seasons)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
 		{
 			if (ULyudEcosystem* E = ULyudEcosystem::Get(World)) E->ResetWeb(World);
 		}));
-	FAutoConsoleCommandWithWorldAndArgs CmdScale(TEXT("lyud.Eco.Scale"), TEXT("<Id> <factor>: multiplies a group's biomass (lyud.Eco.Scale Cod 0.1: the cod fished out)."),
+	FAutoConsoleCommandWithWorldAndArgs CmdEcoScale(TEXT("lyud.Eco.Scale"), TEXT("<Id> <factor>: multiplies a group's biomass (lyud.Eco.Scale Cod 0.1: the cod fished out)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (ULyudEcosystem* E = ULyudEcosystem::Get(World); E && Args.Num() >= 2)
@@ -51,7 +51,7 @@ namespace
 			}
 		}));
 
-	float DayOfYear(const FDateTime& T) { return float(T.GetDayOfYear() - 1) + float(T.GetTimeOfDay().GetTotalHours() / 24.0); }
+	float EcoDayOfYear(const FDateTime& T) { return float(T.GetDayOfYear() - 1) + float(T.GetTimeOfDay().GetTotalHours() / 24.0); }
 }
 
 ULyudEcosystem::ULyudEcosystem() = default;
@@ -82,8 +82,8 @@ void ULyudEcosystem::Warm(const FDateTime& Now)
 	// the base is balanced but has no seasons: live a few years up to today so the plankton, the migrants and the
 	// young of the year are where the season puts them. Sliced over the next syncs (a minute or so of play) so a new
 	// game never hitches; until then the fish see the base, which is close.
-	WarmLeft = float(WarmYears * 365);
-	Model->Reset(DayOfYear(Now) - WarmLeft);
+	WarmLeft = float(EcoWarmYears * 365);
+	Model->Reset(EcoDayOfYear(Now) - WarmLeft);
 	SteppedTo = Now;
 	Refresh();
 }
@@ -93,6 +93,18 @@ void ULyudEcosystem::Sync(const UWorld* World)
 	if (!World) return;
 	FDateTime Now = UGameCalendar::NowIn(World);
 	if (TActorIterator<ALyudSky> It(const_cast<UWorld*>(World)); It) Now = It->ShownTime();
+	if (SyncedWorld.Get() != World)
+	{
+		// a new level: a New Game (the calendar starts again, earlier than the web) or a save without the web starts it
+		// fresh; a load with the web has already restored it (OnGameLoaded sets SyncedWorld); a trip to another level
+		// with the clock running on keeps it
+		SyncedWorld = World;
+		if (SteppedTo.GetTicks() != 0 && Now < SteppedTo)
+		{
+			SteppedTo = FDateTime(0);
+			WarmLeft = 0.f;
+		}
+	}
 	Sync(Now);
 }
 
@@ -106,8 +118,8 @@ void ULyudEcosystem::Sync(const FDateTime& Now)
 	}
 	if (WarmLeft > 0.f)
 	{
-		const float Slice = FMath::Min(WarmLeft, WarmSliceDays);
-		Model->Step(DayOfYear(SteppedTo) - WarmLeft, Slice);
+		const float Slice = FMath::Min(WarmLeft, EcoWarmSliceDays);
+		Model->Step(EcoDayOfYear(SteppedTo) - WarmLeft, Slice);
 		WarmLeft -= Slice;
 		Refresh();
 		return;
@@ -119,7 +131,7 @@ void ULyudEcosystem::Sync(const FDateTime& Now)
 		if (Days < 0.0) SteppedTo = Now;
 		return;
 	}
-	Model->Step(DayOfYear(SteppedTo), float(FMath::Min(Days, MaxCatchUpDays)));
+	Model->Step(EcoDayOfYear(SteppedTo), float(FMath::Min(Days, EcoMaxCatchUpDays)));
 	SteppedTo = Now;
 	Refresh();
 }
@@ -209,7 +221,7 @@ TMap<FName, float> ULyudEcosystem::GetBiteWeights(const FVector& Location) const
 void ULyudEcosystem::ReportCatch(FName Species, const FVector& Location, float Grams)
 {
 	const int32 N = NodeOf(Species);
-	if (!Model || N < 0) return;
+	if (!Model || N < 0 || !FMath::IsFinite(Grams) || Location.ContainsNaN()) return;
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
 	if (Grams < 0.f)
 	{
@@ -242,10 +254,10 @@ void ULyudEcosystem::LiveDays(float Days)
 	if (WarmLeft > 0.f)
 	{
 		// finish the warm-up first (a console command, not play)
-		Model->Step(DayOfYear(SteppedTo) - WarmLeft, WarmLeft);
+		Model->Step(EcoDayOfYear(SteppedTo) - WarmLeft, WarmLeft);
 		WarmLeft = 0.f;
 	}
-	Model->Step(DayOfYear(SteppedTo), FMath::Min(Days, float(MaxCatchUpDays)));
+	Model->Step(EcoDayOfYear(SteppedTo), FMath::Min(Days, float(EcoMaxCatchUpDays)));
 	Refresh();
 }
 
@@ -259,7 +271,7 @@ void ULyudEcosystem::ResetWeb(const UWorld* World)
 bool ULyudEcosystem::Scale(FName Id, float Factor)
 {
 	const int32 N = NodeOf(Id);
-	if (!Model || N < 0) return false;
+	if (!Model || N < 0 || !FMath::IsFinite(Factor)) return false;
 	Model->SetBiomass(N, Model->Biomass(N) * FMath::Max(Factor, 0.f));
 	Refresh();
 	return true;
@@ -297,7 +309,8 @@ void ULyudEcosystem::OnGameLoaded_Implementation()
 		V.push_back(SavedValues[I]);
 	}
 	WarmLeft = 0.f;
-	Model->Reset(DayOfYear(SteppedTo));
+	if (const UGameInstance* GI = GetGameInstance()) SyncedWorld = GI->GetWorld();
+	Model->Reset(EcoDayOfYear(SteppedTo));
 	Model->Load(K, V);
 	Refresh();
 }

@@ -39,6 +39,8 @@ public:
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> MoteMesh;
 	/** Species whose own mesh was missing (they swim as the old code-built stand-in). */
 	TArray<FName> StandIns;
+	/** The length each species' mesh was built at, m (its own: the species' length; the stand-in: 0.1). */
+	TArray<float> MeshLength;
 };
 
 /**

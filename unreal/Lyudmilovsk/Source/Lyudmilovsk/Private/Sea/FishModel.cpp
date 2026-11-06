@@ -212,8 +212,11 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 				const FSpecies& Sp = Table[S];
 				if (!IsSettled(Sp.Way)) continue;
 				const float Here = Season(S, Clock) * Density;
-				// try a few spots in the cell; each holds a fish with the chance its habitat gives
-				const int Tries = int(std::ceil(Sp.Abundance * CellSize * CellSize / 100.f * 2.f));
+				// try a few spots in the cell; each holds a fish with the chance its habitat gives, so the best habitat
+				// holds Abundance per 100 m2 (a rare one a fish in some cells, not one in every cell)
+				const float PerCell = Sp.Abundance * CellSize * CellSize / 100.f;
+				const int Tries = int(std::ceil(PerCell * 2.f));
+				const float PerTry = PerCell / float(Tries);
 				for (int T = 0; T < Tries; ++T)
 				{
 					const float PX = (X + R.F()) * CellSize, PY = (Y + R.F()) * CellSize;
@@ -223,7 +226,7 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 					if (!Env.Bed(PX, PY, Bz)) continue;
 					float Sand, Stone, Weed;
 					Env.Habitat(PX, PY, Sand, Stone, Weed);
-					const float P = Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * 0.5f * Env.Abundance(S, PX, PY);
+					const float P = Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * PerTry * Env.Abundance(S, PX, PY);
 					if (Roll >= P) continue;
 					FFish F;
 					F.Species = uint8_t(S);
@@ -319,7 +322,8 @@ void FSim::Roam(const FEnv& Env, const FV& Eye, const FClock& Clock, float Dt)
 		const float Want = bSea ? Sp.Abundance * Area * Suits(Sp, Sand, Stone, Weed, std::max(Depth, Sp.DepthMin)) * Season(S, Clock) * Density
 			* Env.Abundance(S, Eye.X, Eye.Y) : 0.f;
 		// a new group comes in now and then while there are fewer than the habitat holds
-		if (float(Have) < Want && Rand() < Dt * 0.5f * (Want - Have + 0.3f)) SpawnGroup(S, Env, Eye, Clock);
+		// (common ones top up quickly; a rare one, under one group's worth, only comes now and then: a seal every few minutes)
+		if (float(Have) < Want && Rand() < Dt * 0.5f * (Want - Have + (Want >= 1.f ? 0.3f : 0.f))) SpawnGroup(S, Env, Eye, Clock);
 	}
 	// groups that wandered off (or were all eaten or caught) are gone
 	for (int G = 0; G < int(Groups.size()); ++G)
