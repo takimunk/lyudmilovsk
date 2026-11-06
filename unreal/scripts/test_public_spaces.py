@@ -58,6 +58,17 @@ SHOTS = [
     ("fair_lane", p(135, 1140, T1 + 1.7), p(135, 1260, T1 + 1.5), DAY, [], ""),
     ("fair_night", p(135, 1140, T1 + 1.7), p(135, 1260, T1 + 1.5), NIGHT, [], "night"),
     ("club_stair", (21.0, 308.0, T1 + 1.7), (13.0, 215.0, -20.0), DAY, [], ""),
+    ("club_stair_top", (9.0, 172.0, 1.7), (14.0, 215.0, -25.0), DAY, [], ""),
+    # close-ups of the kit (the 3D glitch rule: seams, z-fighting, inside-out faces, stretched patterns)
+    ("kit_bench_square", p(FS + 15.2, FY + 2.0, T1 + 1.3), p(FS + 17.0, FY + 0.6, T1 + 0.4), DAY, [], ""),
+    ("kit_bench_promenade", p(58.0, 418.0, T0 + 1.2), p(62.0, 420.0, T0 + 0.5), DAY, [], ""),
+    ("kit_lamp", p(FS - 12.0, FY + 1.0, T1 + 4.0), p(FS - 15.0, FY, T1 + 4.6), DAY, [], ""),
+    ("kit_stall", p(126.0, 1160.0, T1 + 1.6), p(129.5, 1157.0, T1 + 1.2), DAY, [], ""),
+    ("kit_carousel", p(150.0, 1210.0, T1 + 2.5), p(163.0, 1210.0, T1 + 2.0), DAY, [], ""),
+    ("kit_stage", p(190.0, 896.0, T1 + 2.0), p(205.0, 905.0, T1 + 2.5), DAY, [], ""),
+    ("kit_beach", p(16.0, 645.0, -40.6), p(12.0, 648.0, -41.2), JULY, [], ""),
+    ("kit_pier_rail", p(5.0, 908.0, T0 + 1.5), p(-20.0, 910.5, T0 + 0.6), DAY, [], ""),
+    ("kit_fountain_sun", p(FS - 5.5, FY + 1.0, T1 + 3.0), p(FS, FY, T1 + 2.9), DAY, [], ""),
 ]
 if os.environ.get("CITY_AB"):
     SHOTS += [("ab_on", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), DAY, ["lyud.City.Show 1"], ""),

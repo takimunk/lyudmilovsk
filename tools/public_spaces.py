@@ -193,7 +193,7 @@ def promenade(L):
     while y < y1 - 0.01:
         dy = min(8.0, y1 - y)
         yc = y + dy / 2
-        for (sa, sb, skin) in ((C.SEAWALL_S, 44.0, "deck"), (44.0, 47.0, "granite"), (47.0, w1(yc), "deck")):
+        for (sa, sb, skin) in ((C.SEAWALL_S + 0.03, 44.0, "deck"), (44.0, 47.0, "granite"), (47.0, w1(yc), "deck")):
             cx, cy = at((sa + sb) / 2, yc)
             L.box("promenade", cx, cy, sea_yaw(yc) + 90.0, dy + 0.03, sb - sa, z - PAVE - SLAB_DEPTH, z, skin)
         y += dy
@@ -725,7 +725,8 @@ PIER_Y, PIER_W, PIER_OUT, PIER_HEAD = 905.0, 12.0, -140.0, 26.0
 def pier(L):
     """Railings on the deck's edge kerbs and round the head, lamps and benches down the deck; the head's middle is
     the lighthouse's (the buildings thread), its rim the sunset/fishing/fireworks spot."""
-    z = L.P.tz["T0"]
+    z = L.P.tz["T0"]                                   # the head's top
+    zd = z + 0.015                                     # the deck's (city_mesh.py: 1.5 cm over, no shared plane)
     x0, y0 = at(C.SEAWALL_S, PIER_Y)
     x1, y1 = at(PIER_OUT, PIER_Y)
     ln = math.hypot(x1 - x0, y1 - y0)
@@ -757,11 +758,11 @@ def pier(L):
     while d < head0 - 4.0:
         for side in (-1, 1):
             if k % 2 == 0:
-                L.lamp(*P(side * (PIER_W / 2 - 0.8), d), z, area="pier")
+                L.lamp(*P(side * (PIER_W / 2 - 0.8), d), zd, area="pier")
             else:
                 bx, by = P(side * (PIER_W / 2 - 1.1), d)
                 # back to the railing, facing across the deck
-                L.bench(L.uid("S-BENCH-PR"), bx, by, z, math.degrees(math.atan2(-uy * side, -ux * side)),
+                L.bench(L.uid("S-BENCH-PR"), bx, by, zd, math.degrees(math.atan2(-uy * side, -ux * side)),
                         style="promenade", area="pier", terrace="T0")
         d += 14.0
         k += 1
