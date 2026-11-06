@@ -12,11 +12,11 @@ INFO = {
     "inspired_by": "Japanese Metabolism of the early 1970s: prefabricated steel capsules bolted to concrete cores",
 }
 
-CAP_W, CAP_D, CAP_H = 2.5, 4.0, 2.5         # one capsule (a studio flat)
+CAP_W, CAP_D, CAP_H = 2.3, 3.6, 2.5         # one capsule (a studio flat)
 STOREY = 2.8
-STOREYS = 12
-CORE = 6.0                                    # each core is CORE x CORE
-GAP = 4.0                                     # the bridge between the two cores
+STOREYS = 13
+CORE = 5.2                                    # each core is CORE x CORE
+GAP = 2.4                                     # the bridge between the two cores
 WIN_R = 0.62
 
 
@@ -57,7 +57,7 @@ def build(B):
     W = CORE * 2 + GAP
     x0 = -W / 2
     cores = [(x0, x0 + CORE), (x0 + CORE + GAP, x0 + W)]
-    y0, y1 = 6.0, 6.0 + CORE                      # cores stand 6 m back from the street line
+    y0, y1 = 5.6, 5.6 + CORE                      # cores stand back from the street line: capsules + canopy in front
     top = STOREYS * STOREY + 2.0
     for cx0, cx1 in cores:
         prism(B.m, "CT_Concrete", [(cx0, y0), (cx1, y0), (cx1, y1), (cx0, y1)], 0, top)
@@ -109,7 +109,7 @@ def build(B):
                     if rnd.random() < 0.12:
                         continue
                     jitter = rnd.uniform(-0.15, 0.15)
-                    u = cx0 + 0.25 + i * (CAP_W + 0.5) + jitter
+                    u = cx0 + 0.1 + i * (CAP_W + 0.4) + jitter
                     tilt = rnd.choice((0, 0, 0.35))
                     if side == "front":
                         ya, yb = y0 - CAP_D, y0
@@ -132,7 +132,7 @@ def build(B):
                 for i in range(2):
                     if rnd.random() < 0.12:
                         continue
-                    v = y0 + 0.25 + i * (CAP_W + 0.5)
+                    v = y0 + 0.1 + i * (CAP_W + 0.4)
                     za = zf + rnd.choice((0, 0, 0.35))
                     box(B.m, "CT_Aluminium", xs[0], xs[1], v, v + CAP_W, za, za + CAP_H)
                     k += 1
@@ -142,7 +142,6 @@ def build(B):
                     _round_window(B, v + CAP_W / 2, za + CAP_H / 2 + 0.05, None, out, fid, axis="x", fx=fx)
         n_flat += k
     B.footprint = [(x0 - CAP_D, y0 - CAP_D), (x0 + W + CAP_D, y0 - CAP_D), (x0 + W + CAP_D, y1 + CAP_D), (x0 - CAP_D, y1 + CAP_D)]
-    B.footprint = [(min(p[0], lob[0]), min(p[1], lob[2])) if False else p for p in B.footprint]
     B.height = top + 2.4
     B.spot("lobby_bench", "bench", (-3.0, lob[2] + 1.5, 0.0), 0.0)
     B.note("%d capsule flats on %d storeys; capsules jut %.1f m over the street line at the front" % (n_flat, STOREYS, CAP_D - y0 if CAP_D > y0 else 0))

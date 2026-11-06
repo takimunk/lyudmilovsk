@@ -151,8 +151,8 @@ class Building:
 
     def facade_window(self, F, u0, u1, z0, z1, flat=None, kind=None, cols=1, rows=1, inset=0.18):
         """A window card in the hole (u0, u1, z0, z1) of facade F (made by B.facade)."""
-        pts = [F.to_building((u, 0.0, z)) for u, z in ((u1, z0), (u0, z0), (u0, z1), (u1, z1))]
-        # seen from outside u runs to the left (Facade's reflection), so (u1, z0) is the bottom-left
+        pts = [F.to_building((u, 0.0, z)) for u, z in ((u0, z0), (u1, z0), (u1, z1), (u0, z1))]
+        # seen from outside u runs to the viewer's right, so (u0, z0) is the bottom-left
         return self.window(pts, flat=flat, kind=kind, cols=cols, rows=rows, inset=inset)
 
     def entrance(self, eid, pos, yaw, width=DOOR_W, height=DOOR_H, kind="street", leaves=1, to=None):
