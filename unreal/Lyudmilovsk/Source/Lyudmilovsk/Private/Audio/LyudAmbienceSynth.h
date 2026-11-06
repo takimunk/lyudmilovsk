@@ -35,4 +35,8 @@ private:
 	LyudAudio::FAmbienceParams Params;
 	float Rms[LyudAudio::NumVoices] = {};
 	TArray<float> Left, Right;
+	// audio thread only: how long Master has been 0, and whether rendering is skipped for it
+	int32 Rate = 48000;
+	int32 MutedFrames = 0;
+	bool bAsleep = false;
 };

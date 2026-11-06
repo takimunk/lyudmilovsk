@@ -115,6 +115,11 @@ private:
 	/** Roof map: top height (cm) and 1 where it is the sea, 2 in a meadow, per cell, row-major from Origin. */
 	TArray<FVector2f> Roof;
 	TArray<uint8> Dirty;
+	/** The previous map while sliding (kept, so a cell crossing allocates nothing). */
+	TArray<FVector2f> RoofScratch;
+	TArray<uint8> DirtyScratch;
+	/** A fresh map being traced over a few frames. */
+	bool bFilling = false;
 	FIntPoint Origin = FIntPoint(MAX_int32, MAX_int32);
 	int32 Cursor = 0;
 	int32 DirtyLeft = 0;

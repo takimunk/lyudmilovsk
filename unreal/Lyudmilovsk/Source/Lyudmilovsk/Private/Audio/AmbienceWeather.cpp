@@ -67,6 +67,7 @@ namespace LyudAudio
 		G.Wait = Wait + int(R.Uniform() * WBlock);
 		G.Amp = Amp;
 		G.Pan = Pan;
+		PanGains(Pan, 1.f, G.GainL, G.GainR);
 		G.Freq = Freq;
 		G.Glide = Glide;
 		G.bNear = bNear;
@@ -112,8 +113,8 @@ namespace LyudAudio
 					G.F.Process(R.White());
 					V = G.Amp * G.F.Band;
 				}
-				float A = 0.f, B = 0.f;
-				PanTo(V, G.Pan, 1.f, A, B);
+				// gains fixed at birth: a ping never moves
+				const float A = V * G.GainL, B = V * G.GainR;
 				L[I] += A;
 				R2[I] += B;
 				E += double(A) * A + double(B) * B;

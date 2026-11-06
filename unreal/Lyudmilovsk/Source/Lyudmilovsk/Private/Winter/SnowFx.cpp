@@ -30,6 +30,10 @@ ALyudSnowFx::ALyudSnowFx()
 	Flakes->LightingChannels.bChannel0 = true;
 	Flakes->LightingChannels.bChannel1 = true;
 	Flakes->bUseAsOccluder = false;
+	// it follows the camera every frame: out of Lumen's scene, the distance fields and ray tracing
+	Flakes->bAffectDynamicIndirectLighting = false;
+	Flakes->bAffectDistanceFieldLighting = false;
+	Flakes->bVisibleInRayTracing = false;
 }
 
 void ALyudSnowFx::BuildMesh()
