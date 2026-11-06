@@ -119,6 +119,23 @@ namespace
 		K.Lathe(FTransform(Centre - FVector(0.f, 0.f, H * 0.5f)), P, M, Sides, false, false);
 	}
 
+	/** How far from the venue's middle the New Year tree stands toward the plan's stage: past the fountain, inside the square. */
+	float TreeDistance(const FLyudVenue& V)
+	{
+		const float Want = 900.f + (FVector::Dist2D(V.StageAt, V.Center) - 900.f) * 0.4f;
+		return FMath::Clamp(Want, 1150.f, FMath::Max(1150.f, V.Radius * 0.72f));
+	}
+
+	/** Where the tree stands (before grounding): toward the stage, turned to halfway between two of the strings across
+	 *  the square (they run at Yaw + 30 + k*60), so no string passes over it. */
+	FVector TreeSpot(const FLyudVenue& V)
+	{
+		const FVector D = (V.StageAt - V.Center).GetSafeNormal2D();
+		const float Ang = FMath::RadiansToDegrees(FMath::Atan2(D.Y, D.X));
+		const float Snapped = V.Yaw + FMath::RoundToFloat((Ang - V.Yaw) / 60.f) * 60.f;
+		return V.Center + FRotator(0.f, Snapped, 0.f).Vector() * TreeDistance(V);
+	}
+
 	/** Points along a hanging line from A to B with a sag in the middle. */
 	FVector Hang(const FVector& A, const FVector& B, float Sag, float T)
 	{
@@ -770,8 +787,7 @@ FVector ULyudFestivalSubsystem::FacePoint(const FLyudVenue& V, const FString& Fa
 	}
 	if (Face == TEXT("tree") && V.bPlanStage)
 	{
-		const FVector D = (V.StageAt - V.Center).GetSafeNormal2D();
-		return V.Center + D * (900.f + (FVector::Dist2D(V.StageAt, V.Center) - 900.f) * 0.4f) + FVector(0.f, 0.f, 300.f);
+		return TreeSpot(V) + FVector(0.f, 0.f, 300.f);
 	}
 	if (Face == TEXT("bonfire"))
 	{
@@ -1583,7 +1599,7 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 		for (int32 Si = 0; Si < Strings.Num(); Si++)
 		{
 			const FVector A = Strings[Si].Key, B = Strings[Si].Value;
-			const float Len = FVector::Dist(A, B), Sag = Len * (Si < Tops.Num() ? 0.06f : 0.09f);
+			const float Len = FVector::Dist(A, B), Sag = FMath::Min(Len * (Si < Tops.Num() ? 0.06f : 0.09f), Si < Tops.Num() ? 140.f : 90.f);
 			const int32 N = FMath::Max(4, FMath::CeilToInt(Len / 150.f));
 			FVector Prev = A;
 			for (int32 I = 1; I <= N; I++)
@@ -1611,7 +1627,7 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 		for (int32 Si = 0; Si < Strings.Num(); Si++)
 		{
 			const FVector A = Strings[Si].Key - FVector(0.f, 0.f, 40.f), B = Strings[Si].Value - FVector(0.f, 0.f, 40.f);
-			const float Len = FVector::Dist(A, B), Sag = Len * (Si < Tops.Num() ? 0.08f : 0.11f);
+			const float Len = FVector::Dist(A, B), Sag = FMath::Min(Len * (Si < Tops.Num() ? 0.08f : 0.11f), Si < Tops.Num() ? 160.f : 110.f);
 			const int32 N = FMath::Max(4, FMath::CeilToInt(Len / 150.f));
 			FVector Prev = A;
 			for (int32 I = 1; I <= N; I++)
@@ -1789,8 +1805,8 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	{
 		// the New Year tree opposite the stage: tiers of fir, a spiral of bulbs, a star
 		// between the fountain and the stage when the plan has one (its notes: "holidays: concerts, the New Year tree"),
-		// else opposite the stage
-		const FVector T = V.bPlanStage ? GroundAt(C + StageDir * (900.f + (FVector::Dist2D(V.StageAt, C) - 900.f) * 0.4f))
+		// kept inside the square and off the strings' lines; else opposite the stage
+		const FVector T = V.bPlanStage ? GroundAt(TreeSpot(V))
 			: GroundAt(C - Fwd * R * 0.55f);
 		const float H = 950.f;
 		K.Rod(TEXT("wood"), T, T + FVector(0.f, 0.f, 120.f), 16.f, 8, true, true);
