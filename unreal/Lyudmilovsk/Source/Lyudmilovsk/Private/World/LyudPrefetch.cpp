@@ -89,10 +89,10 @@ bool ULyudPrefetch::FolderReady(const UObject* WorldContext, const FString& Fold
 		return true;
 	}
 	const FString Key = Skip ? Folder + TEXT("|") + Skip : Folder;
-	TArray<FString>* Paths = Self->Folders.Find(Key);
-	if (!Paths)
+	FFolder* Entry = Self->Folders.Find(Key);
+	if (!Entry)
 	{
-		Paths = &Self->Folders.Add(Key);
+		Entry = &Self->Folders.Add(Key);
 		TArray<FAssetData> Assets;
 		if (IAssetRegistry* Registry = IAssetRegistry::Get())
 		{
@@ -102,14 +102,31 @@ bool ULyudPrefetch::FolderReady(const UObject* WorldContext, const FString& Fold
 		{
 			if (!Skip || !A.AssetName.ToString().Contains(Skip))
 			{
-				Paths->Add(A.GetObjectPathString());
+				Entry->Paths.Add(A.GetObjectPathString());
+				Entry->Packages.Add(A.PackageName);
 			}
 		}
 	}
-	bool bAll = true;
-	for (const FString& P : *Paths)
+	if (Entry->bReady)
 	{
-		bAll &= Self->ReadyPackage(FName(FPackageName::ObjectPathToPackageName(P)), P);
+		return true;
+	}
+	bool bAll = true;
+	for (int32 I = 0; I < Entry->Paths.Num(); ++I)
+	{
+		bAll &= Self->ReadyPackage(Entry->Packages[I], Entry->Paths[I]);
+	}
+	if (bAll)
+	{
+		// hold what someone else had loaded too, so the answer stays true (a GC would take it otherwise)
+		for (const FString& P : Entry->Paths)
+		{
+			if (UObject* Asset = FindObject<UObject>(nullptr, *P))
+			{
+				Self->Held.AddUnique(Asset);
+			}
+		}
+		Entry->bReady = true;
 	}
 	return bAll;
 }

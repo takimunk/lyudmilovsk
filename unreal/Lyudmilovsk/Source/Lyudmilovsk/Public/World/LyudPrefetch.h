@@ -37,5 +37,11 @@ private:
 
 	TSet<FName> Loading;
 	TSet<FName> Missing;
-	TMap<FString, TArray<FString>> Folders;   // folder -> object paths, from the asset registry
+	struct FFolder
+	{
+		TArray<FString> Paths;     // object paths, from the asset registry
+		TArray<FName> Packages;    // their packages, made once
+		bool bReady = false;       // everything was there once: held since, so no more checks
+	};
+	TMap<FString, FFolder> Folders;
 };

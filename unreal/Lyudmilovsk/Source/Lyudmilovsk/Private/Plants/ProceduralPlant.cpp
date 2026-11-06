@@ -23,6 +23,7 @@
 #include "StaticMeshResources.h"
 #include "UObject/ConstructorHelpers.h"
 #include "HAL/IConsoleManager.h"
+#include "Misc/ScopeExit.h"
 
 static TAutoConsoleVariable<float> CVarPlantShapeBudget(TEXT("lyud.Plants.ShapeBudgetMs"), 3.f,
 	TEXT("Milliseconds a frame the live plants spend re-shaping (one always runs); the rest wait for the next frames. Running past a garden turned dozens from their bake to the full shape in one frame: a freeze of a minute."));
@@ -894,6 +895,10 @@ void AProceduralPlant::TickFallingLeaves(float DeltaSeconds)
 	}
 	bLandedChanged = false;
 	TArray<FTransform> Air[FPlantSeason::NumBuckets];
+	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
+	{
+		Air[K].Reserve(Falling.Num() + Landed[K].Num() + 32);
+	}
 	for (int32 I = Falling.Num() - 1; I >= 0; I--)
 	{
 		FFallingLeaf& F = Falling[I];
@@ -918,7 +923,27 @@ void AProceduralPlant::TickFallingLeaves(float DeltaSeconds)
 	for (int32 K = 0; K < FPlantSeason::NumBuckets; K++)
 	{
 		Air[K].Append(Landed[K]);
-		SetInstances(FallingComponents[K], Air[K]);
+		// padded to a multiple of 32 with leaves too small to see: a leaf landing or letting go then rarely changes the count,
+		// and with the count unchanged only the transforms are sent (a clear and refill recreated the instances every frame)
+		if (!Air[K].IsEmpty())
+		{
+			const int32 Padded = FMath::DivideAndRoundUp(Air[K].Num(), 32) * 32;
+			// not exactly zero: a singular instance matrix could give NaN normals; this is far below a pixel, at the root
+			const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector(1e-4));
+			while (Air[K].Num() < Padded)
+			{
+				Air[K].Add(Hidden);
+			}
+		}
+		UInstancedStaticMeshComponent* ISM = FallingComponents[K];
+		if (!Air[K].IsEmpty() && ISM->GetInstanceCount() == Air[K].Num())
+		{
+			ISM->BatchUpdateInstancesTransforms(0, Air[K], false, false, true);
+		}
+		else
+		{
+			SetInstances(ISM, Air[K]);
+		}
 	}
 }
 
@@ -932,6 +957,7 @@ void AProceduralPlant::SetDevTime(float Age, float Day)
 void AProceduralPlant::Refresh()
 {
 	Apply(GetAge(), CurrentDay(), WantsSummary(), true);
+	UpdateTickRate();
 }
 
 FString AProceduralPlant::DescribeState() const
@@ -968,6 +994,22 @@ AFallenFruit* AProceduralPlant::AimedFruit() const
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 	if (!Pawn || !PC->PlayerCameraManager || GroundFruit.IsEmpty())
+	{
+		return nullptr;
+	}
+	// only a fruit within PickDistance can be the answer: no trace while none is (a far orchard traced every frame)
+	const FVector PawnAt = Pawn->GetActorLocation();
+	bool bAnyNear = false;
+	for (const TPair<int32, TWeakObjectPtr<AFallenFruit>>& F : GroundFruit)
+	{
+		const AFallenFruit* A = F.Value.Get();
+		if (A && FVector::DistSquared(PawnAt, A->GetActorLocation()) <= FMath::Square(PickDistance))
+		{
+			bAnyNear = true;
+			break;
+		}
+	}
+	if (!bAnyNear)
 	{
 		return nullptr;
 	}
@@ -1034,11 +1076,13 @@ void AProceduralPlant::OnGameLoaded_Implementation()
 	PendingDrops.Reset();
 	LastSeasonDay = -1000.f;
 	Apply(GetAge(), CurrentDay(), WantsSummary());
+	UpdateTickRate();
 }
 
 void AProceduralPlant::ShowAt(float Age, float DayOfYear, bool bSummary)
 {
 	Apply(Age, DayOfYear, bSummary);
+	UpdateTickRate();
 }
 
 void AProceduralPlant::OnConstruction(const FTransform& Transform)
@@ -1082,6 +1126,7 @@ void AProceduralPlant::BeginPlay()
 		}
 	}
 	Apply(GetAge(), CurrentDay(), WantsSummary());
+	UpdateTickRate();
 }
 
 void AProceduralPlant::EndPlay(const EEndPlayReason::Type Reason)
@@ -1090,9 +1135,42 @@ void AProceduralPlant::EndPlay(const EEndPlayReason::Type Reason)
 	Super::EndPlay(Reason);
 }
 
+void AProceduralPlant::UpdateTickRate()
+{
+	if (!GetWorld() || !GetWorld()->IsGameWorld())
+	{
+		return;
+	}
+	// due but over the shared budget, or something in motion: next frame
+	bool bEveryFrame = UpdateInterval <= 0.f || SinceUpdate + 0.001f >= UpdateInterval || !Falling.IsEmpty() || !PendingDrops.IsEmpty()
+		|| !PendingFruit.IsEmpty() || bLandedChanged || bPickPrompt;
+	if (!bEveryFrame && !GroundFruit.IsEmpty())
+	{
+		// the pick prompt follows the view every frame once the player is anywhere near the fruit
+		const APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+		const float Near = PickDistance + 1500.f;
+		for (const TPair<int32, TWeakObjectPtr<AFallenFruit>>& F : GroundFruit)
+		{
+			const AFallenFruit* A = F.Value.Get();
+			if (Pawn && A && FVector::DistSquared(Pawn->GetActorLocation(), A->GetActorLocation()) <= Near * Near)
+			{
+				bEveryFrame = true;
+				break;
+			}
+		}
+	}
+	const float Want = bEveryFrame ? 0.f : UpdateInterval;
+	if (PrimaryActorTick.TickInterval != Want)
+	{
+		PrimaryActorTick.UpdateTickIntervalAndCoolDown(Want);
+	}
+}
+
 void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	ON_SCOPE_EXIT { UpdateTickRate(); };
 	TickFallingLeaves(DeltaSeconds);
 	// "[E] pick up the apple" while one lies in reach and in view
 	if (!GroundFruit.IsEmpty() || bPickPrompt)
@@ -1118,7 +1196,8 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	}
 	SinceUpdate += DeltaSeconds;
 	SinceWood += DeltaSeconds;
-	if (SinceUpdate < UpdateInterval)
+	// ticking once per interval, the delta can come out a hair short of it
+	if (SinceUpdate + 0.001f < UpdateInterval)
 	{
 		return;
 	}

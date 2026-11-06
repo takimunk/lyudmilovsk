@@ -172,6 +172,8 @@ struct AForestFloor::FKind
 	int32 LintProblems = 0;
 	int32 Triangles = 0;
 	int32 Instances = 0;
+	/** The layout centre at its last commit: a relayout re-sends a wide-ring kind only once the camera has moved on enough. */
+	FVector CommittedAt = FVector(1e12);
 	/** Debris: its geometry (LOD 0, LOD 1 or none). */
 	FFM::FGeom Geom, GeomLod1;
 	EWood Wood = EWood::Pine;
@@ -1151,7 +1153,8 @@ void AForestFloor::LayCell(const FIntPoint& C, FCell& Cell, int32 Band)
 		It.Custom1 = C1;
 		It.Top = K.Top * S;
 		It.Kind = (uint16)KindIndex;
-		Cell.Items.Add(It);
+		if (Cell.ByKind.Num() <= KindIndex) Cell.ByKind.SetNum(Kinds.Num());
+		Cell.ByKind[KindIndex].Add(It);
 		return true;
 	};
 
@@ -1206,9 +1209,11 @@ void AForestFloor::LayCell(const FIntPoint& C, FCell& Cell, int32 Band)
 			}
 			continue;
 		}
-		if (K.Name == TEXT("PineCone") || K.Name == TEXT("SpruceCone") || K.Name == TEXT("BarkCurl"))
+		static const FName PineConeName(TEXT("PineCone")), SpruceConeName(TEXT("SpruceCone")), BarkCurlName(TEXT("BarkCurl"));
+		if (K.Name == PineConeName || K.Name == SpruceConeName || K.Name == BarkCurlName)
 		{
 			// under their own trees, thickest round the trunk
+			const bool bPineCone = K.Name == PineConeName, bSpruceCone = K.Name == SpruceConeName;
 			const int32 N = FMath::RoundToInt(K.Density * 64.f * Scale);
 			for (int32 I = 0; I < N; I++)
 			{
@@ -1217,7 +1222,7 @@ void AForestFloor::LayCell(const FIntPoint& C, FCell& Cell, int32 Band)
 				ForTreesNear(FVector(X, Y, 0.0), 700.f, [&](const FTreeRef& T, float D)
 				{
 					const FTreeClass& Cl = GClasses[T.Class];
-					const bool bMine = K.Name == TEXT("PineCone") ? Cl.bPine : K.Name == TEXT("SpruceCone") ? Cl.bSpruce : Cl.bBirch;
+					const bool bMine = bPineCone ? Cl.bPine : bSpruceCone ? Cl.bSpruce : Cl.bBirch;
 					if (bMine && T.Height > 500.f) W += FMath::Exp(-FMath::Square(D / T.Crown));
 				});
 				if (Hash01(KS, I, 3) > W * 0.6f) continue;
@@ -1228,33 +1233,45 @@ void AForestFloor::LayCell(const FIntPoint& C, FCell& Cell, int32 Band)
 		// everything else: a density per m2 here from the stand, the light and patches over metres
 		const float Wet = Mask ? Mask->GetWetness(Mid) : 0.f;
 		const FString Nm = K.Species.IsNone() ? K.Name.ToString() : K.Species.ToString();
+		// what the kind is, and its patch seed, found once per kind here, not per candidate piece (string compares and a hash)
+		enum class EWant : uint8 { Bilberry, Lingonberry, Heather, Bracken, BucklerFern, WoodSorrel, FeatherMoss, HaircapMoss, ReindeerLichen,
+			WavyHairGrass, Seedling, Cushion, Wood, Other };
+		const EWant WantKind = Nm == TEXT("Bilberry") ? EWant::Bilberry : Nm == TEXT("Lingonberry") ? EWant::Lingonberry
+			: Nm == TEXT("Heather") ? EWant::Heather : Nm == TEXT("Bracken") ? EWant::Bracken : Nm == TEXT("BucklerFern") ? EWant::BucklerFern
+			: Nm == TEXT("WoodSorrel") ? EWant::WoodSorrel : Nm == TEXT("FeatherMoss") ? EWant::FeatherMoss : Nm == TEXT("HaircapMoss") ? EWant::HaircapMoss
+			: Nm == TEXT("ReindeerLichen") ? EWant::ReindeerLichen : Nm == TEXT("WavyHairGrass") ? EWant::WavyHairGrass
+			: K.Type == EKindType::Seedling ? EWant::Seedling : Nm.StartsWith(TEXT("Cushion")) ? EWant::Cushion
+			: Nm.StartsWith(TEXT("Log_")) || Nm.StartsWith(TEXT("Stump_")) || Nm.StartsWith(TEXT("Branch_")) || Nm.StartsWith(TEXT("Stick_")) ? EWant::Wood
+			: EWant::Other;
+		const float SeedlingShare = WantKind != EWant::Seedling ? 0.f : Nm == TEXT("ScotsPine") ? Pine : Nm == TEXT("NorwaySpruce") ? Spruce
+			: Nm == TEXT("SilverBirch") ? Birch : Broad + Birch * 0.3f;
+		const bool bSmallWood = Nm.StartsWith(TEXT("Stick_")) || Nm.StartsWith(TEXT("Branch_"));
+		const uint32 Ps = HashCombineFast((uint32)Seed, GetTypeHash(Nm));
 		auto Want = [&](float X, float Y) -> float
 		{
-			const uint32 Ps = HashCombineFast((uint32)Seed, GetTypeHash(Nm));
 			const float P = Patch(Ps, X, Y, 900.f) * 0.7f + Patch(Ps + 1, X, Y, 300.f) * 0.3f;
-			if (Nm == TEXT("Bilberry")) return (Pine + Spruce * 1.1f + Birch * 0.4f) * SmoothStep(0.38f, 0.62f, P) * Canopy;
-			if (Nm == TEXT("Lingonberry")) return Pine * (1.f - Spruce) * SmoothStep(0.45f, 0.7f, P) * Canopy;
-			if (Nm == TEXT("Heather")) return Pine * Light * SmoothStep(0.5f, 0.72f, Patch(Ps, X, Y, 1500.f)) * (1.f - Wet);
-			if (Nm == TEXT("Bracken")) return (Birch + Broad + Pine * 0.4f) * Light * SmoothStep(0.55f, 0.75f, Patch(Ps, X, Y, 2000.f));
-			if (Nm == TEXT("BucklerFern")) return (Spruce + Broad * 0.5f) * (0.3f + Wet) * SmoothStep(0.45f, 0.7f, P);
-			if (Nm == TEXT("WoodSorrel")) return (Spruce + Broad * 0.3f) * SmoothStep(0.4f, 0.65f, P);
-			if (Nm == TEXT("FeatherMoss")) return (Pine * 0.7f + Spruce + Birch * 0.2f) * (0.25f + 0.75f * SmoothStep(0.3f, 0.6f, P)) * Canopy * 0.5f;
-			if (Nm == TEXT("HaircapMoss")) return (Spruce + Pine * 0.4f) * SmoothStep(0.5f, 0.7f, P) * (0.3f + Wet) * Canopy * 0.4f;
-			if (Nm == TEXT("ReindeerLichen")) return Pine * (1.f - Spruce) * Light * (1.f - Wet) * SmoothStep(0.55f, 0.75f, P) * 0.5f;
-			if (Nm == TEXT("WavyHairGrass")) return (Pine + Birch) * Light * SmoothStep(0.45f, 0.7f, P) * 0.25f;
-			if (K.Type == EKindType::Seedling)
+			switch (WantKind)
 			{
-				const float Share = Nm == TEXT("ScotsPine") ? Pine : Nm == TEXT("NorwaySpruce") ? Spruce : Nm == TEXT("SilverBirch") ? Birch : Broad + Birch * 0.3f;
-				return Share * Light * 1.5f;
-			}
-			if (Nm.StartsWith(TEXT("Cushion"))) return Canopy * (Spruce + Pine * 0.5f) * (0.5f + Wet);
-			if (Nm.StartsWith(TEXT("Log_")) || Nm.StartsWith(TEXT("Stump_")) || Nm.StartsWith(TEXT("Branch_")) || Nm.StartsWith(TEXT("Stick_")))
+			case EWant::Bilberry: return (Pine + Spruce * 1.1f + Birch * 0.4f) * SmoothStep(0.38f, 0.62f, P) * Canopy;
+			case EWant::Lingonberry: return Pine * (1.f - Spruce) * SmoothStep(0.45f, 0.7f, P) * Canopy;
+			case EWant::Heather: return Pine * Light * SmoothStep(0.5f, 0.72f, Patch(Ps, X, Y, 1500.f)) * (1.f - Wet);
+			case EWant::Bracken: return (Birch + Broad + Pine * 0.4f) * Light * SmoothStep(0.55f, 0.75f, Patch(Ps, X, Y, 2000.f));
+			case EWant::BucklerFern: return (Spruce + Broad * 0.5f) * (0.3f + Wet) * SmoothStep(0.45f, 0.7f, P);
+			case EWant::WoodSorrel: return (Spruce + Broad * 0.3f) * SmoothStep(0.4f, 0.65f, P);
+			case EWant::FeatherMoss: return (Pine * 0.7f + Spruce + Birch * 0.2f) * (0.25f + 0.75f * SmoothStep(0.3f, 0.6f, P)) * Canopy * 0.5f;
+			case EWant::HaircapMoss: return (Spruce + Pine * 0.4f) * SmoothStep(0.5f, 0.7f, P) * (0.3f + Wet) * Canopy * 0.4f;
+			case EWant::ReindeerLichen: return Pine * (1.f - Spruce) * Light * (1.f - Wet) * SmoothStep(0.55f, 0.75f, P) * 0.5f;
+			case EWant::WavyHairGrass: return (Pine + Birch) * Light * SmoothStep(0.45f, 0.7f, P) * 0.25f;
+			case EWant::Seedling: return SeedlingShare * Light * 1.5f;
+			case EWant::Cushion: return Canopy * (Spruce + Pine * 0.5f) * (0.5f + Wet);
+			case EWant::Wood:
 			{
 				const EWood Wd = K.Wood;
 				const float Share = Wd == EWood::Birch ? Birch + Broad : Wd == EWood::Spruce ? Spruce : Pine;
-				return Canopy * (Nm.StartsWith(TEXT("Stick_")) || Nm.StartsWith(TEXT("Branch_")) ? 1.f : Share * 2.f);
+				return Canopy * (bSmallWood ? 1.f : Share * 2.f);
 			}
-			return Canopy; // stones and boulders: all over the woods
+			default: return Canopy; // stones and boulders: all over the woods
+			}
 		};
 		const float Expect = K.Density * 64.f * Scale;
 		const int32 N = FMath::FloorToInt(Expect) + (Hash01(KS, 999) < FMath::Frac(Expect) ? 1 : 0);
@@ -1313,10 +1330,9 @@ void AForestFloor::CommitKind(int32 Index)
 		for (const TPair<FIntPoint, FCell>& P : Cells)
 		{
 			const FCell& Cell = P.Value;
-			if (!(Cell.Bands & (1 << K.Band))) continue;
-			for (const FCellItem& It : Cell.Items)
+			if (!(Cell.Bands & (1 << K.Band)) || !Cell.ByKind.IsValidIndex(Index)) continue;
+			for (const FCellItem& It : Cell.ByKind[Index])
 			{
-				if (It.Kind != Index) continue;
 				const FVector At(It.Xf.GetLocation());
 				if (FVector::DistSquared2D(At, Centre) > Reach2) continue;
 				// buried: the snow lies deeper than it stands (a log or a stone a little sooner: its last sliver over the
@@ -1339,6 +1355,7 @@ void AForestFloor::CommitKind(int32 Index)
 		C->MarkRenderStateDirty();
 	}
 	K.Instances = Xfs.Num();
+	K.CommittedAt = Centre;
 }
 
 void AForestFloor::RebuildAround(FVector Location)
@@ -1402,7 +1419,7 @@ FString AForestFloor::AuditMap(const FString& OutFile, FVector Location, float R
 			if (!bAny) continue;
 			for (int32 B = 0; B < 3; B++) LayCell(C, Cell, B);
 			CellsLaid++;
-			for (const FCellItem& It : Cell.Items)
+			for (const TArray<FCellItem>& KindItems : Cell.ByKind) for (const FCellItem& It : KindItems)
 			{
 				const FVector3f At = It.Xf.GetLocation();
 				int32 I;
@@ -1547,32 +1564,70 @@ void AForestFloor::UpdateWeather(float DeltaSeconds)
 void AForestFloor::UpdateLitterField(const FVector& Camera, float Day, bool bForce)
 {
 	const FVector2D Want(FMath::RoundToDouble(Camera.X / (LitterCell * 16.0)) * LitterCell * 16.0, FMath::RoundToDouble(Camera.Y / (LitterCell * 16.0)) * LitterCell * 16.0);
-	if (!bForce && Want == LitterCentre && FMath::Abs(Day - LitterDay) < 0.5f)
+	if (!bForce && LitterRow >= 0 && Want == LitterBuildCentre && FMath::Abs(Day - LitterBuildDay) < 0.5f)
 	{
+		// the field under way: a few more rows this frame, shown once it is all there (the 16k cells in one frame hitched)
+		constexpr int32 RowsPerFrame = 16;
+		const int32 J1 = FMath::Min(LitterRow + RowsPerFrame, LitterN);
+		LitterRows(LitterRow, J1);
+		LitterRow = J1;
+		if (LitterRow >= LitterN)
+		{
+			FinishLitterField();
+		}
 		return;
 	}
-	LitterCentre = Want;
-	LitterDay = Day;
-	const double X0 = Want.X - LitterN * LitterCell * 0.5, Y0 = Want.Y - LitterN * LitterCell * 0.5;
-	const bool bGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
-	TArray<FFloat16> Data;
-	Data.SetNumUninitialized(LitterN * LitterN * 4);
-	for (int32 J = 0; J < LitterN; J++)
+	if (!bForce && Want == LitterCentre && FMath::Abs(Day - LitterDay) < 0.5f)
+	{
+		// (back where the shown field is: one under way for elsewhere is dropped)
+		LitterRow = -1;
+		return;
+	}
+	LitterBuildCentre = Want;
+	LitterBuildDay = Day;
+	bLitterBuildGuard = CVarFloorGuard.GetValueOnGameThread() > 0;
+	LitterBack.SetNumUninitialized(LitterN * LitterN * 4);
+	// a step of the window (the old field still covers the camera) is worked out over the next frames; the first field,
+	// a jump (teleport, the floor shown again) or a forced one at once
+	const bool bStep = FVector2D::Distance(Want, LitterCentre) <= LitterN * LitterCell * 0.25;
+	if (bForce || !bStep)
+	{
+		LitterRows(0, LitterN);
+		FinishLitterField();
+		return;
+	}
+	LitterRow = 0;
+}
+
+void AForestFloor::LitterRows(int32 J0, int32 J1)
+{
+	const double X0 = LitterBuildCentre.X - LitterN * LitterCell * 0.5, Y0 = LitterBuildCentre.Y - LitterN * LitterCell * 0.5;
+	for (int32 J = J0; J < J1; J++)
 	{
 		for (int32 I = 0; I < LitterN; I++)
 		{
 			const double X = X0 + (I + 0.5) * LitterCell, Y = Y0 + (J + 0.5) * LitterCell;
-			const FForestLitter L = LitterFrom(FVector(X, Y, 0.0), Day);
+			const FForestLitter L = LitterFrom(FVector(X, Y, 0.0), LitterBuildDay);
 			// no litter on the ground in the town, the yards, by the paths: it fades in from 6 to 15 m off them
-			const float Site = bGuard ? SiteSoft(X, Y) : 1.f;
+			const float Site = bLitterBuildGuard ? SiteSoft(X, Y) : 1.f;
 			const int32 O = (J * LitterN + I) * 4;
 			// R needles, G leaves, B their hue, A their decay
-			Data[O] = FFloat16(L.Needles * Site);
-			Data[O + 1] = FFloat16(L.Leaves * Site);
-			Data[O + 2] = FFloat16(L.Hue);
-			Data[O + 3] = FFloat16(L.Decay);
+			LitterBack[O] = FFloat16(L.Needles * Site);
+			LitterBack[O + 1] = FFloat16(L.Leaves * Site);
+			LitterBack[O + 2] = FFloat16(L.Hue);
+			LitterBack[O + 3] = FFloat16(L.Decay);
 		}
 	}
+}
+
+void AForestFloor::FinishLitterField()
+{
+	LitterRow = -1;
+	LitterCentre = LitterBuildCentre;
+	LitterDay = LitterBuildDay;
+	const double X0 = LitterCentre.X - LitterN * LitterCell * 0.5, Y0 = LitterCentre.Y - LitterN * LitterCell * 0.5;
+	TArray<FFloat16> Data = MoveTemp(LitterBack);
+	LitterBack.Reset();
 	UploadHalf(LitterRT, LitterN, LitterN, MoveTemp(Data));
 	if (Collection)
 	{
@@ -1592,6 +1647,7 @@ void AForestFloor::ResetLayout()
 	KeepAlive.Reset();
 	Centre = FVector(1e12);
 	LitterCentre = FVector2D(1e12, 1e12);
+	LitterRow = -1;
 	bStarted = false;
 }
 
@@ -1605,6 +1661,7 @@ void AForestFloor::Tick(float DeltaSeconds)
 		for (UHierarchicalInstancedStaticMeshComponent* C : Comps) C->SetVisibility(bOn);
 		if (Collection) UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("LitterRect"), FLinearColor(0.f, 0.f, 0.f, bOn ? 1.f : 0.f));
 		LitterCentre = FVector2D(1e12, 1e12);
+		LitterRow = -1;
 	}
 	if (!bOn) return;
 	const double Now = GetWorld()->GetTimeSeconds();
@@ -1646,7 +1703,7 @@ void AForestFloor::Tick(float DeltaSeconds)
 			LaidDay = Day;
 			for (TPair<FIntPoint, FCell>& P : Cells)
 			{
-				P.Value.Items.RemoveAll([&](const FCellItem& It) { return Kinds[It.Kind]->Band == 0; });
+				for (int32 K = 0; K < P.Value.ByKind.Num() && K < Kinds.Num(); K++) if (Kinds[K]->Band == 0) P.Value.ByKind[K].Reset();
 				P.Value.Bands &= ~1;
 			}
 			for (int32 I = 0; I < Kinds.Num(); I++) if (Kinds[I]->Band == 0) DirtyKinds.AddUnique(I);
@@ -1668,7 +1725,15 @@ void AForestFloor::Tick(float DeltaSeconds)
 			return;
 		}
 		Centre = Camera;
-		for (int32 I = 0; I < Kinds.Num(); I++) DirtyKinds.AddUnique(I);
+		for (int32 I = 0; I < Kinds.Num(); I++)
+		{
+			// a kind is re-sent once the camera is a step on; relayouts come every Relayout metres and the commit can lag a few
+			// frames, so the step stays a relayout short of the margin (with today's 6 m / 12 m that is every relayout, as before;
+			// the gain is that a commit walks only its own kind's items). The falling leaves have no margin: every relayout.
+			const float Step = Kinds[I]->Type == EKindType::Falling ? Relayout
+				: FMath::Clamp(0.2f * Kinds[I]->Cull, Relayout, FMath::Max(Relayout, Margin - Relayout));
+			if (FVector::DistSquared2D(Centre, Kinds[I]->CommittedAt) > FMath::Square(Step)) DirtyKinds.AddUnique(I);
+		}
 		// drop the cells far behind
 		const float Drop2 = FMath::Square(MaxReach + Margin + 2.f * CellSize);
 		for (auto It = Cells.CreateIterator(); It; ++It)
