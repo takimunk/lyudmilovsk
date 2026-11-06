@@ -156,6 +156,19 @@ def _grand(prim, o, a, n, width, lower, upper, tread=TREAD, rise_t=RISE, cheeks=
     return n_steps * tread
 
 
+def _channel(prim, o, a, n, u0, width, lower, upper, tread=TREAD, rise_t=RISE):
+    """A stepped concrete channel from u0 to u0 + width (along), the grand stair's pitch, its bed CASCADE_BED under the
+    stair's steps, and an outer cheek 0.4 m thick standing 0.6 m over the steps."""
+    n_steps = max(1, int(round((upper - lower) / rise_t)))
+    rise = (upper - lower) / n_steps
+    bed = C.CASCADE_BED
+    for k in range(n_steps):
+        s_hi = (n_steps - k) * tread
+        _box(prim, o, a, n, u0, u0 + width, 0.0, s_hi, lower - FOOT if k == 0 else lower + k * rise - 0.4 - bed,
+             lower + (k + 1) * rise - bed)
+        _box(prim, o, a, n, u0 + width, u0 + width + 0.4, s_hi - tread, s_hi, lower - FOOT, lower + (k + 1) * rise + 0.6)
+
+
 def walls(mesh):
     """The terrace walls W1..W5: bays with flats (W2..W5) or shop units (W1), wall stairs, grand stairs."""
     prim_c = mesh.p(CONC)
@@ -251,13 +264,17 @@ def walls(mesh):
             else:
                 width = C.GRAND_W.get(gy, 8.0)
                 _grand(prim_c, o, a, n, width, c["lower"], c["upper"])
+                extra = 0.0
+                if gy == C.CASCADE_Y:                 # the water channel beside the stair's north cheek
+                    extra = C.CASCADE_W + 0.4
+                    _channel(prim_c, o, a, n, width / 2 + 0.4, C.CASCADE_W, c["lower"], c["upper"])
                 # parapets on the grand bays beside the stair
                 arc_c = sum(g["arc"] for g in grp[len(grp) // 2 - (1 - len(grp) % 2): len(grp) // 2 + 1]) / (2 - len(grp) % 2)
                 for g in grp:
                     go, ga, gn, gl = _frame(g)
                     u0, u1 = -gl / 2, gl / 2
                     lo_cut = arc_c - width / 2 - 0.4 - g["arc"]
-                    hi_cut = arc_c + width / 2 + 0.4 - g["arc"]
+                    hi_cut = arc_c + width / 2 + 0.4 + extra - g["arc"]
                     if lo_cut > u0:
                         _parapet(prim_c, go, ga, gn, u0, min(u1, lo_cut), g["upper"])
                     if hi_cut < u1:

@@ -406,6 +406,11 @@ STAIR_EVERY = 110.0                    # metres of face between wall stairs
 STAIR_BAYS = 2                         # a wall stair takes two bays (15 m: one straight flight of 40 steps + landings)
 GRAND_Y = (905.0, 760.0)               # the grand stairs: the main axis and the Cascade (W2..W5)
 GRAND_W = {905.0: 8.0, 760.0: 10.0}
+# The Cascade: a stepped water channel along the north cheek of the grand stair at Y 760 (W2..W5), the same pitch as
+# the stair; the public spaces put the water in it. CASCADE_W wide inside, between 0.4 m cheeks.
+CASCADE_Y = 760.0
+CASCADE_W = 3.5
+CASCADE_BED = 0.12      # the channel's step tops lie this far under the stair's
 SEA_STEPS_EVERY = 80.0
 # Openings in a dwelling bay, (kind, u along the bay from its middle, sill z, width, height), u toward the bay's end
 DWELLING_OPENINGS = [("door", -2.0, 0.0, 1.1, 2.2), ("window", 1.6, 0.9, 1.6, 1.4),
@@ -501,7 +506,8 @@ def wall_bays(i):
     for gy in GRAND_Y:
         c = min(full, key=lambda b: abs(b["mid"][1] - gy))
         for b in full:
-            if abs(b["arc"] - c["arc"]) < GRAND_W[gy] / 2 + DWELLING_W / 2:
+            extra = CASCADE_W + 0.8 if gy == CASCADE_Y else 0.0
+            if -(GRAND_W[gy] / 2 + DWELLING_W / 2) < b["arc"] - c["arc"] < GRAND_W[gy] / 2 + extra + DWELLING_W / 2:
                 b["kind"] = "grand"
                 b["grand_y"] = gy
     phase = (i * 37.0) % STAIR_EVERY
@@ -581,6 +587,40 @@ def stairs():
                 out.append({"id": gid, "wall": b["wall"], "kind": "grand_stair", "width": GRAND_W.get(gy, 8.0) if i else 20.0,
                             "bays": [g["id"] for g in grp],
                             "bottom": _bay_point(c, 0.0, run + 0.5, lower), "top": _bay_point(c, 0.0, -1.0, upper)})
+    return out
+
+
+def _grand_centre(grp):
+    """(map X, Y) on the face and the arc of a grand stair's middle (the group of its bays)."""
+    c = grp[len(grp) // 2]
+    if len(grp) % 2 == 0:
+        c0 = grp[len(grp) // 2 - 1]
+        return ((c0["mid"][0] + c["mid"][0]) / 2, (c0["mid"][1] + c["mid"][1]) / 2), (c0["arc"] + c["arc"]) / 2, c
+    return (c["mid"][0], c["mid"][1]), c["arc"], c
+
+
+def cascade():
+    """The Cascade's channel per wall W2..W5: wall, bottom (the channel's foot centre on the lower terrace) and top
+    (its head at the wall's face) map points, lower/upper z, width, steps and the step pitch (rise, tread)."""
+    out = []
+    for i in range(1, len(WALLS)):
+        grp = [b for b in wall_bays(i) if b["kind"] == "grand" and b.get("grand_y") == CASCADE_Y and b["mask"] >= 0.999]
+        if not grp:
+            continue
+        mid, _, c = _grand_centre(grp)
+        ax, ay = c["p1"][0] - c["p0"][0], c["p1"][1] - c["p0"][1]
+        l = math.hypot(ax, ay)
+        ax, ay = ax / l, ay / l
+        nx, ny = ay, -ax
+        u = GRAND_W[CASCADE_Y] / 2 + 0.4 + CASCADE_W / 2
+        lower, upper = c["lower"], c["upper"]
+        n = max(1, int(round((upper - lower) / 0.175)))
+        run = n * 0.30
+        out.append({"id": "CASCADE-%s" % c["wall"], "wall": c["wall"], "width": CASCADE_W, "steps": n,
+                    "rise": round((upper - lower) / n, 4), "tread": 0.30, "bed_below_stair": CASCADE_BED,
+                    "bottom": [round(mid[0] + ax * u + nx * run, 3), round(mid[1] + ay * u + ny * run, 3), lower],
+                    "top": [round(mid[0] + ax * u, 3), round(mid[1] + ay * u, 3), round(upper - CASCADE_BED, 3)],
+                    "along": [round(ax, 4), round(ay, 4)], "seaward": [round(nx, 4), round(ny, 4)]})
     return out
 
 
@@ -675,6 +715,7 @@ def build():
         "spots": spots(),
         "stairs": stairs(),
         "wall_dwellings": wall_dwellings(),
+        "cascade": cascade(),
         "wall_bays": {wall_id(i): wall_bays(i) for i in range(-1, len(WALLS))},
         "promenade_units": shops_in_seawall(),
         "links": links(),

@@ -119,7 +119,7 @@ Existing: the **Academgorodok** (Laboratory No. 2, Gastronom, library) and the *
 `S-PROMENADE`, `S-BENCH-P01..26` (promenade benches every 40 m), `S-BENCH-01..10` (the grannies' benches by
 entrances, the square, the park), `S-BEACH`, `S-BONFIRE`, `S-FAIR`, `S-PARK`, `S-POND`, `S-PLAYGROUND`,
 `S-SUNRISE` (dawn lookout on T5, faces inland/east), `S-SUNSET` (the edge of W5 over the town and the sea),
-`S-CASCADE` (water steps).
+`S-CASCADE` (water steps: the stepped channel beside each Cascade grand stair, `cascade` in the JSON, built by city_mesh, water by the public spaces).
 
 ## Links
 
