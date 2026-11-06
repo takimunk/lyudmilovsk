@@ -73,9 +73,6 @@ namespace LyudGraphics::Local
 	{
 		bool bValid = false;
 		Scalability::FQualityLevels Levels;
-		float MaxFps = 0.f;
-		float ScreenPercentage = 100.f;
-		float TSRHistory = 100.f;
 		int32 VSync = 0;
 	};
 
@@ -187,6 +184,19 @@ namespace LyudGraphics::Local
 		if (CanSet(V, By) && !FMath::IsNearlyEqual(V->GetFloat(), Value, 0.001f))
 		{
 			V->Set(Value, By);
+		}
+	}
+
+	/**
+	 * Takes back what this file set with SetByCode: the variable falls back to the highest priority still set (the
+	 * scalability's latest value, an ini's, the constructor's), as if the game had never set it. The engine records every
+	 * Set, also the ones a higher priority turned away (ConsoleManager.cpp, TrackHistory), in every build.
+	 */
+	void UnsetCode(const TCHAR* Name)
+	{
+		if (IConsoleVariable* V = Find(Name))
+		{
+			V->Unset(ECVF_SetByCode);
 		}
 	}
 
@@ -339,11 +349,16 @@ namespace LyudGraphics::Local
 		{
 			Want = FMath::Max(100.f, FMath::RoundToFloat(Base * FMath::Sqrt(Ref / static_cast<float>(Height))));
 		}
-		// the level's own value is the scalability's to set; the game takes the variable over only to lower it, then keeps it
-		if (Want != Base || LastHistory >= 0.f)
+		// the level's own value is the scalability's: the game sets the variable only while it wants less, then gives it back
+		if (Want != Base)
 		{
 			SetFloat(TEXT("r.TSR.History.ScreenPercentage"), Want, ECVF_SetByCode);
 			LastHistory = Want;
+		}
+		else if (LastHistory >= 0.f)
+		{
+			UnsetCode(TEXT("r.TSR.History.ScreenPercentage"));
+			LastHistory = -1.f;
 		}
 	}
 
@@ -400,6 +415,17 @@ namespace LyudGraphics::Local
 		{
 			LevelRef(Q, static_cast<EGroup>(I)) = S.Levels[I];
 		}
+		// the resolution and TSR's history are the game's by code, above the scalability: given back while the levels apply
+		// (else every level change logs "ignored as it is lower priority than the previous 'SetByCode'"), set again below
+		if (ManagesResolution())
+		{
+			UnsetCode(TEXT("r.ScreenPercentage"));
+		}
+		if (LastHistory >= 0.f)
+		{
+			UnsetCode(TEXT("r.TSR.History.ScreenPercentage"));
+			LastHistory = -1.f;
+		}
 		Scalability::SetQualityLevels(Q);
 		if (UGameUserSettings* GS = GameSettings())
 		{
@@ -433,14 +459,9 @@ namespace LyudGraphics::Local
 	{
 		GSnapshot.bValid = true;
 		GSnapshot.Levels = Scalability::GetQualityLevels();
-		const IConsoleVariable* Fps = Find(TEXT("t.MaxFPS"));
-		const IConsoleVariable* Sp = Find(TEXT("r.ScreenPercentage"));
 		const IConsoleVariable* VSync = Find(TEXT("r.VSync"));
-		const IConsoleVariable* History = Find(TEXT("r.TSR.History.ScreenPercentage"));
-		GSnapshot.MaxFps = Fps ? Fps->GetFloat() : 0.f;
-		GSnapshot.ScreenPercentage = Sp ? Sp->GetFloat() : 100.f;
-		GSnapshot.TSRHistory = History ? History->GetFloat() : 100.f;
 		GSnapshot.VSync = VSync ? VSync->GetInt() : 0;
+		// t.MaxFPS, r.ScreenPercentage and TSR's history the game sets by code and gives back when Play stops (UnsetCode).
 		// No need to turn r.Editor.Viewport.OverridePIEScreenPercentage off: a positive r.ScreenPercentage wins over the editor
 		// viewports' settings in Play too (LegacyScreenPercentageDriver.cpp, PullRunTimeRenderingSettings).
 	}
@@ -452,13 +473,13 @@ namespace LyudGraphics::Local
 			return;
 		}
 		GSnapshot.bValid = false;
+		// the game's own values first: the editor's ini and scalability values come back with their own priorities, so the
+		// editor's later level changes move them again (a value restored by code would stay above the scalability)
+		UnsetCode(TEXT("t.MaxFPS"));
+		UnsetCode(TEXT("r.ScreenPercentage"));
+		UnsetCode(TEXT("r.TSR.History.ScreenPercentage"));
+		LastHistory = -1.f;
 		Scalability::SetQualityLevels(GSnapshot.Levels);
-		SetFloat(TEXT("t.MaxFPS"), GSnapshot.MaxFps, ECVF_SetByCode);
-		SetFloat(TEXT("r.ScreenPercentage"), GSnapshot.ScreenPercentage, ECVF_SetByCode);
-		if (LastHistory >= 0.f)
-		{
-			SetFloat(TEXT("r.TSR.History.ScreenPercentage"), GSnapshot.TSRHistory, ECVF_SetByCode);
-		}
 		if (IConsoleVariable* V = Find(TEXT("r.VSync")); CanSet(V, ECVF_SetByGameSetting))
 		{
 			V->Set(GSnapshot.VSync, ECVF_SetByGameSetting);

@@ -51,6 +51,11 @@ static TAutoConsoleVariable<int32> CVarForestMinLod(TEXT("lyud.Bench.ForestMinLo
 namespace
 {
 	const float SettleSeconds = 1.0f;
+	/**
+	 * A run's first segment settles longer: its preset or pass just changed (the graphics settings resend the instanced
+	 * meshes when the view distance changes, Lumen captures their cards again, a new level's shaders come in).
+	 */
+	const float RunSettleSeconds = 3.0f;
 	const float WarmupSpeed = 3.f;
 	const double BakeTimeout = 300.0;
 
@@ -594,7 +599,7 @@ void ULyudBenchmark::Tick(float DeltaTime)
 	case EPhase::Settle:
 	{
 		PlaceCamera(Route[SegIdx], 0.f);
-		if (Now - PhaseStart >= SettleSeconds)
+		if (Now - PhaseStart >= (SegIdx == 0 ? RunSettleSeconds : SettleSeconds))
 		{
 			Phase = EPhase::Record;
 			CSV_EVENT_GLOBAL(TEXT("%s"), *Route[SegIdx].Name);

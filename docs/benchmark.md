@@ -32,8 +32,10 @@ platform runs it the same way.
 3. Runs the knobs and `-LyudBenchSetup` commands (a variant to compare).
 4. Flies the route once at triple speed, untimed, so shaders compile and textures stream in.
 5. For each preset (`scalability 0..3`: Low, Medium, High, Epic): flies the route at walking pace and records every
-   frame. Each segment starts with a second standing still at its first key (not recorded), so a cut between
-   segments does not count as a hitch.
+   frame. Each segment starts with a second standing still at its first key (not recorded; three at a run's first,
+   after its preset or pass changed), so a cut between segments does not count as a hitch. The levels are the game's (`Config/DefaultScalability.ini`, see
+   [graphics.md](graphics.md)), and the render resolution follows them as the game's Auto does (50 / 58 / 67 / 75% of
+   a 1080p or smaller view).
 6. Writes the JSON, restores the scalability it started with and quits.
 
 The route (`ULyudBenchmark::BuildRoute`), about 66 s per preset:
@@ -57,7 +59,8 @@ Per segment and for the whole route, per preset: frame time median, p95, p99, me
 render thread, RHI thread and GPU time (`stat unit`'s sources: `GGameThreadTime`, `GRenderThreadTime`,
 `GRHIThreadTime`, `RHIGetGPUFrameCycles`); draw calls and triangles (`GNumDrawCallsRHI`,
 `GNumPrimitivesDrawnRHI`); process memory. Plus the machine (device, CPU, GPU, RHI, RAM, OS), resolution, build,
-game time, number of trees and bake time.
+game time, number of trees and bake time. `screen_percentage` is the render resolution the frames were drawn at
+(`r.ScreenPercentage`), `tsr_history_percentage` TSR's history (of the output size).
 
 - **On a Mac (Metal) draw calls and triangles read 0** in this engine build (the CSV profiler shows the same);
   the report prints `n/a`. They work on D3D12 and Vulkan.
@@ -165,3 +168,37 @@ off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noa
   `mi.MemoryResetDelay 0` and `r.RenderTargetPoolMin 0` give back under 0.3 GB, the render-target pool and RHI
   resources are back to idle (+0.4 GB); what stays is Metal textures (LLM +2.5 GB) and untagged CPU memory (+1.5 GB),
   driver and engine caches. Restart the editor after long play sessions.
+
+## Graphics levels and settings (2026-11-07)
+
+`tools/bench_gfx.sh [variant ...]` flies the whole route at one level (`PRESET=`, Epic by default; one level per run,
+since a pass's console values stay set for the rest of the process) with each graphics setting changed in turn, in one
+process, the whole list twice, and prints each against `base` (the level as `Config/DefaultScalability.ini` has it):
+
+| variant | setup |
+|---|---|
+| tsr100 / tsr150 | `r.TSR.History.ScreenPercentage 100` / `150` (Epic's is 200: four times the output's pixels) |
+| sp67 / sp100 | `r.ScreenPercentage 67` / `100` instead of Auto's |
+| wind0 / wind60 / wind250 | `lyud.Forest.WindDistance 0` / `60` / `250`: trees sway everywhere, or out to 60 / 250 m |
+| fdist70 | `lyud.Forest.DistanceScale 0.7`: forests drawn to 70% of their distance |
+| noforestshadow | `lyud.Forest.Shadows 0` |
+| nolive | `lyud.Forest.MaxLive 0`: no fruit trees made live near the camera |
+| vsmbias10 / vsmbias05 | the sun's virtual shadow maps at `-1` / `-0.5` resolution bias (Epic's is `-1.5`) |
+| smrt4 | `r.Shadow.Virtual.SMRT.RayCountDirectional 4` (soft shadows' rays, Epic's 8) |
+| shadowlod2 | `r.Shadow.LODDistanceFactor 2`: coarser LODs in the shadow maps |
+| lodscale125 | `r.StaticMeshLODDistanceScale 1.25` |
+| vdist08 | `r.ViewDistanceScale 0.8` (High's) |
+| clouds075 / clouds05 | `lyud.Sky.CloudSamples 0.75` / `0.5` |
+| grass085 / floor075 | `lyud.GrassDensity 0.85` / `lyud.ForestFloor.Density 0.75` |
+| sea1 | `lyud.Sea.Quality 1` |
+| birds8 | `lyud.Birds.Bodies 8; lyud.Birds.DrawDistance 550` (Medium's) |
+| shafts0 | `r.LightShaftQuality 0` |
+
+- **Results from cdeeade0 (2026-10-31) until branch gfx ran every preset at 75%**: `r.ScreenPercentage=75` in
+  `DefaultEngine.ini` beats the scalability levels. The levels' own resolution came with the graphics settings; to
+  compare with older results, use Epic (75% in both) or a pass with `r.ScreenPercentage 75`.
+- A View distance change now reaches the forests' and other instanced meshes' draw and wind distances at once (the
+  game resends them); before, a preset changed in the benchmark kept the distances of the level the game started with.
+- `tools/check_scalability.py` checks the levels against the engine's `BaseScalability.ini` (a key set at one level
+  but not at another keeps the other level's value).
+
