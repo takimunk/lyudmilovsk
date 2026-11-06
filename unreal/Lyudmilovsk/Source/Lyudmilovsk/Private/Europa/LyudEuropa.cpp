@@ -1149,6 +1149,15 @@ void ULyudEuropaSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 void ULyudEuropaSubsystem::Deinitialize()
 {
 	ShowSubtitle(false);
+	// the rain's cvar outlives the world: leaving it while on Europa must not leave rain off in every later one
+	if (bOnEuropa && !SavedRainFx.IsEmpty())
+	{
+		if (IConsoleVariable* Rain = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Rain.Fx")))
+		{
+			Rain->Set(*SavedRainFx, ECVF_SetByCode);
+		}
+		bOnEuropa = false;
+	}
 	Super::Deinitialize();
 }
 

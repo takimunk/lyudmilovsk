@@ -361,13 +361,27 @@ void ULyudUnderwaterSubsystem::UpdateCollection(ALyudSea* Sea, const FVector& Ey
 	UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Current"), FLinearColor(EyeCurrent.X * 0.01f, EyeCurrent.Y * 0.01f, EyeCurrent.Z * 0.01f, Turb));
 	UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("CurrentDrift"), FLinearColor(Drift.X, Drift.Y, Drift.Z, T));
 	float Light = 1.f;
-	if (TActorIterator<ALyudSky> It(GetWorld()); It)
+	if (const ALyudSky* Sky = FindSky())
 	{
-		Light = 0.03f + 0.97f * FMath::SmoothStep(-4.f, 12.f, It->SunAltitude());
+		Light = 0.03f + 0.97f * FMath::SmoothStep(-4.f, 12.f, Sky->SunAltitude());
 	}
 	// the light fades with depth too (the water takes it in a few metres)
 	const float EyeDepthM = FMath::Max(Level - Eye.Z, 0.f) * 0.01f;
 	UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Eye"), FLinearColor(bUnder ? 1.f : 0.f, EyeDepthM, Level, Light * FMath::Exp(-EyeDepthM * 0.12f)));
+}
+
+ALyudSky* ULyudUnderwaterSubsystem::FindSky()
+{
+	ALyudSky* Sky = SkyRef.Get();
+	if (!Sky)
+	{
+		if (TActorIterator<ALyudSky> It(GetWorld()); It)
+		{
+			Sky = *It;
+			SkyRef = Sky;
+		}
+	}
+	return Sky;
 }
 
 void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
@@ -378,7 +392,7 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	const APlayerController* PC = World->GetFirstPlayerController();
 	if (!Sea || !PC || !PC->PlayerCameraManager || CVarSeaLife.GetValueOnGameThread() == 0)
 	{
-		if (bActive) Release();
+		if (bActive || Life.IsValid()) Release();
 		bActive = false;
 		return;
 	}
@@ -387,18 +401,44 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	UpdateDrive(Sea, DeltaTime);
 	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
 	const bool bUnder = Sea->IsCameraUnderwater();
-	// near: under the water, or over water at least a metre deep within a few metres over the surface
+	// near: under the water, or over water at least a metre deep within a few metres over the surface (leaving a
+	// little further out than coming in, so wading or a pier's edge does not flip it)
 	const float Level = Sea->SeaLevel();
-	const bool bNear = bUnder || (Sea->DepthAt(Eye) > 100.f && Eye.Z < Level + 500.f);
-	UpdateCollection(Sea, Eye, bUnder, DeltaTime);
+	const float EyeDepth = Sea->DepthAt(Eye);
+	const bool bNear = bUnder || (bActive ? EyeDepth > 50.f && Eye.Z < Level + 700.f : EyeDepth > 100.f && Eye.Z < Level + 500.f);
+	// the collection (current, drift, the eye) only matters round the water: the seabed's weed shows up to ~11 m over
+	// it. Far away it is written once more (the eye out of the water) and then left alone
+	const bool bCollect = bUnder || (EyeDepth > 20.f && Eye.Z < Level + 1500.f);
+	if (bCollect || !bCollectionFar)
+	{
+		UpdateCollection(Sea, Eye, bUnder, DeltaTime);
+		bCollectionFar = !bCollect;
+	}
 	if (!bNear || !Sea->IsDepthReady())
 	{
-		if (bActive) Release();
+		// hide at once, free after half a minute away
+		if (ALyudSeaLife* L = Life.Get())
+		{
+			AwayTime += DeltaTime;
+			if (AwayTime > 30.f)
+			{
+				Release();
+			}
+			else if (!L->IsHidden())
+			{
+				L->SetActorHiddenInGame(true);
+			}
+		}
 		bActive = false;
 		return;
 	}
 	bActive = true;
+	AwayTime = 0.f;
 	ALyudSeaLife* L = Life.Get();
+	if (L && L->IsHidden())
+	{
+		L->SetActorHiddenInGame(false);
+	}
 	if (!L)
 	{
 		FActorSpawnParameters P;
@@ -442,10 +482,10 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	LyudFish::FClock FC;
 	FDateTime Now = UGameCalendar::NowIn(World);
 	float SunAlt = 30.f;
-	if (TActorIterator<ALyudSky> It(World); It)
+	if (const ALyudSky* Sky = FindSky())
 	{
-		Now = It->ShownTime();
-		SunAlt = It->SunAltitude();
+		Now = Sky->ShownTime();
+		SunAlt = Sky->SunAltitude();
 	}
 	FC.Month = Now.GetMonth();
 	FC.Daylight = FMath::SmoothStep(-6.f, 6.f, SunAlt);
@@ -509,14 +549,15 @@ void ULyudUnderwaterSubsystem::DrawFish(float Dt)
 int32 ULyudUnderwaterSubsystem::GetFishCount(FName Species) const
 {
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
-	return Sim && S >= 0 ? Sim->Count(S) : 0;
+	// while the life is parked (hidden, away from the water) there are no fish, as before it was kept
+	return Sim && S >= 0 && bActive ? Sim->Count(S) : 0;
 }
 
 FVector ULyudUnderwaterSubsystem::FindNearestFish(FName Species, const FVector& From) const
 {
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
 	LyudFish::FV Out;
-	if (Sim && S >= 0 && Sim->Nearest(S, LyudFish::FV(From.X, From.Y, From.Z) * 0.01f, Out))
+	if (Sim && S >= 0 && bActive && Sim->Nearest(S, LyudFish::FV(From.X, From.Y, From.Z) * 0.01f, Out))
 	{
 		return FVector(Out.X, Out.Y, Out.Z) * 100.f;
 	}

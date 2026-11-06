@@ -4,6 +4,7 @@
 #include "Components/SceneComponent.h"
 #include "LyudSeabed.generated.h"
 
+class ALyudSky;
 class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
@@ -96,4 +97,9 @@ private:
 	TArray<FSwimmer> Jellies;
 	bool bJelliesPlaced = false;
 	double Clock = 0.0;
+	/** Away from the water: hidden at once, freed only after a while (a wave or a pier's edge no longer rebuilds it). */
+	bool bAwayHidden = false;
+	float AwayTime = 0.f;
+	/** The sky for the day (found once, not every frame). */
+	TWeakObjectPtr<ALyudSky> SkyRef;
 };

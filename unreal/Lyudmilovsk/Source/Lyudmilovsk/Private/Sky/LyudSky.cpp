@@ -322,8 +322,17 @@ void ALyudSky::UpdateSky()
 	}
 
 	// a directional light shines along its forward axis: from the body toward the ground
-	SunLight->SetWorldRotation((-WorldDirection(SunPos.EastNorthUp())).Rotation());
-	MoonLight->SetWorldRotation((-WorldDirection(MoonPos.EastNorthUp())).Rotation());
+	// each rotation of a directional light drops its cached shadow pages: turn it only once it has moved a hundredth
+	// of a degree (far below a visible step; the sky material's sun stays continuous)
+	auto TurnLight = [](UDirectionalLightComponent* Light, const FVector& Forward)
+	{
+		if (FVector::CrossProduct(Light->GetForwardVector(), Forward).Size() > 1.745e-4 || FVector::DotProduct(Light->GetForwardVector(), Forward) < 0.0)
+		{
+			Light->SetWorldRotation(Forward.Rotation());
+		}
+	};
+	TurnLight(SunLight, -WorldDirection(SunPos.EastNorthUp()));
+	TurnLight(MoonLight, -WorldDirection(MoonPos.EastNorthUp()));
 
 	// The atmosphere reddens and dims the sun near the horizon by itself; below it the sun still lights
 	// the upper air (twilight) until it is well down, but no longer the ground.
@@ -359,13 +368,14 @@ void ALyudSky::UpdateSky()
 	{
 		Atmosphere->SetSkyAndAerialPerspectiveLuminanceFactor(FLinearColor(HazeK, HazeK, HazeK));
 	}
-	const float SkyK = SkyLightIntensity * FMath::Lerp(1.f, LowSunAmbient, Low * SmoothStep01(-4.f, 2.f, SunAlt));
+	// with no air (space view) there is no sky glow to light the shadows: worked out here so each light is set once
+	const float SkyK = bSpaceView ? SpaceSkyLight : SkyLightIntensity * FMath::Lerp(1.f, LowSunAmbient, Low * SmoothStep01(-4.f, 2.f, SunAlt));
 	if (!FMath::IsNearlyEqual(SkyLight->Intensity, SkyK, 1e-3f))
 	{
 		SkyLight->SetIntensity(SkyK);
 	}
 	// god rays from the low star (a fifth of them when high), gone once it sets
-	const float Shafts = SunShaftBloom * CVarSunShafts.GetValueOnGameThread() * FMath::Lerp(0.2f, 1.f, Low) * SmoothStep01(-3.f, 1.f, SunAlt);
+	const float Shafts = bSpaceView ? 0.f : SunShaftBloom * CVarSunShafts.GetValueOnGameThread() * FMath::Lerp(0.2f, 1.f, Low) * SmoothStep01(-3.f, 1.f, SunAlt);
 	if (!FMath::IsNearlyEqual(SunLight->BloomScale, Shafts, 1e-3f))
 	{
 		SunLight->SetBloomScale(Shafts);
@@ -391,7 +401,8 @@ void ALyudSky::UpdateSky()
 	const float MoonLux = FullMoonIlluminance * MoonLight01 * CVarNightLight.GetValueOnGameThread();
 	MoonLight->SetIntensity(MoonLux);
 	MoonLight->SetLightColor(MoonColor * FLinearColor(Air.R / AirY, Air.G / AirY, Air.B / AirY));
-	MoonLight->SetVisibility(MoonLux > 1e-4f);
+	// no Europa over the head in the space view (we stand on it)
+	MoonLight->SetVisibility(!bSpaceView && MoonLux > 1e-4f);
 	// the night's ambient in the moonlight's aquamarine
 	const FLinearColor Ambient = FMath::Lerp(FLinearColor::White, NightAmbientTint, Dark);
 	if (!SkyLight->GetLightColor().Equals(Ambient, 1e-3f))
@@ -412,7 +423,8 @@ void ALyudSky::UpdateSky()
 	const float Glow = SunsetGlow() * FMath::Max(CVarLowSunLight.GetValueOnGameThread(), 0.f);
 	const float Mie = 0.0045f * FMath::Lerp(MieNight, 1.f, SmoothStep01(-10.f, 0.f, SunAlt)) * ULyudGradeSubsystem::GetSkyHazeScale(GetWorld())
 		* (1.f + LowSunMieGain * Glow) * Sunset.MieScale;
-	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, 1e-6f))
+	// relative test (as ULyudSunset): each setter re-creates the atmosphere's render state
+	if (!FMath::IsNearlyEqual(Atmosphere->MieScatteringScale, Mie, FMath::Max(FMath::Abs(Mie), 1e-6f) * 2e-3f))
 	{
 		Atmosphere->SetMieScatteringScale(Mie);
 	}
@@ -440,13 +452,7 @@ void ALyudSky::UpdateSky()
 	}
 	SunLight->SetForwardShadingPriority(bSunShadows ? 1 : 0);
 	MoonLight->SetForwardShadingPriority(bSunShadows ? 0 : 1);
-	if (bSpaceView)
-	{
-		// no air: no Europa over the head (we stand on it), no sky glow to light the shadows, no god rays
-		MoonLight->SetVisibility(false);
-		SkyLight->SetIntensity(SpaceSkyLight);
-		SunLight->SetBloomScale(0.f);
-	}
+	// (space view: moon light off, SpaceSkyLight and no god rays are already in the values above)
 	UpdateSkyMaterial();
 }
 
