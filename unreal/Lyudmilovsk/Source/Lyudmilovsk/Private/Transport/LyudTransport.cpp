@@ -1018,9 +1018,11 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		Want = FIntVector(PRide, RidingCabin, Net->Destination(RidingCabin));
 	}
 	PromptRefresh -= DeltaTime;
-	if (Want != PromptShown || (Want.X != PNone && PromptRefresh <= 0.f))
+	// a language switch rewrites the text too (the key alone doesn't change)
+	const bool bLangChanged = PromptLang != LyudText::Language();
+	if (Want != PromptShown || bLangChanged || (Want.X != PNone && PromptRefresh <= 0.f))
 	{
-		if (Want != PromptShown)
+		if (Want != PromptShown || bLangChanged)
 		{
 			switch (Want.X)
 			{
@@ -1040,6 +1042,7 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 			default: PromptText = FText::GetEmpty(); break;
 			}
 			PromptShown = Want;
+			PromptLang = LyudText::Language();
 		}
 		UI->SetPrompt(this, PromptText);
 		PromptRefresh = 0.25f;

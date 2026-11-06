@@ -168,6 +168,7 @@ private:
 	 * when that changes, and pushed again now and then (another prompt may have taken the line). */
 	FIntVector PromptShown = FIntVector(-1, -1, -1);
 	FText PromptText;
+	FString PromptLang;
 	float PromptRefresh = 0.f;
 
 	bool Start(UWorld& World);

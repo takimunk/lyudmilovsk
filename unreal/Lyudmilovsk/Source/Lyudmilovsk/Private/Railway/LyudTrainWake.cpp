@@ -301,7 +301,8 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		}
 	}
 	// a stable pool per ISM: it grows to the most ever shown and never shrinks; slots past the live ones get a zero scale
-	// (parked at the wheels, so the ISM's bounds stay round the train); only [0, max(last, now)) is sent each frame
+	// (parked at the wheels, so the ISM's bounds stay round the train): while anything shows or just went, the whole pool is
+	// sent, so the parked slots follow the train too (it's a few hundred at most); nothing at all is sent while idle
 	const FVector HideAt = Wheels.Num() ? Wheels[0] : GetComponentLocation();
 	auto Push = [&HideAt](UInstancedStaticMeshComponent* Ism, TArray<FTransform>& Ts, int32& Used)
 	{
@@ -328,7 +329,8 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			Ism->AddInstances(Add, false, true);
 		}
 		const FTransform Hidden(FQuat::Identity, HideAt, FVector::ZeroVector);
-		while (Ts.Num() < Span)
+		const int32 Pool = FMath::Max(Have, Now);
+		while (Ts.Num() < Pool)
 		{
 			Ts.Add(Hidden);
 		}
