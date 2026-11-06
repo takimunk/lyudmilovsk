@@ -899,10 +899,16 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 		const FVector Pos = Actor->GetActorLocation();
 		A.Velocity = (Pos - A.LastPos) / FMath::Max(DeltaTime, 1e-3f);
 		A.LastPos = Pos;
+		// a hidden body (a pooled townsperson gone indoors, a parked one) passes no door: it lets go of what it held
+		const bool bHidden = Actor->IsHidden();
+		if (bHidden && A.Holding.IsEmpty())
+		{
+			continue;
+		}
 		for (const FDoorReach& R : Reach)
 		{
 			ALyudDoorBase* Door = R.Door;
-			const bool bNear = R.bPass && FVector::DistSquared(Pos, R.Centre) <= R.Reach2;
+			const bool bNear = !bHidden && R.bPass && FVector::DistSquared(Pos, R.Centre) <= R.Reach2;
 			if (!bNear && A.Holding.IsEmpty())
 			{
 				continue;
