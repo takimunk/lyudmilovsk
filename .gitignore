@@ -63,3 +63,10 @@ design/bikes/game/
 blender/birds/nests/export/
 blender/birds/chicks/export/
 design/europa/game/moon_terrain.glb
+
+# the resident generator (blender/residents): vendored MakeHuman data, atlases and models are rebuilt by its scripts
+blender/residents/_vendor/
+blender/residents/export/
+blender/residents/atlases/
+blender/residents/cache/
+renders/residents/
