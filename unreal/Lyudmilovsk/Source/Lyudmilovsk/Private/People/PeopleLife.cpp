@@ -27,6 +27,7 @@
 #include "Misc/Paths.h"
 #include "UObject/UObjectIterator.h"
 #include "NpcDialogue.h"
+#include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
 #include "Weather/LyudWeather.h"
@@ -59,6 +60,10 @@ static TAutoConsoleVariable<int32> CVarPeople(TEXT("lyud.People"), 1,
 	TEXT("The people's life (UPeopleLifeSubsystem): 1 on, 0 off (the club's people stay at their stations as placed)."));
 static TAutoConsoleVariable<float> CVarPeopleDraw(TEXT("lyud.People.DrawDistance"), 150.f,
 	TEXT("People outdoors are drawn within this many metres of the camera (indoors within 40 m)."));
+static TAutoConsoleVariable<int32> CVarPeopleTownBodies(TEXT("lyud.People.TownBodies"), 48,
+	TEXT("At most this many townsfolk are drawn at once, the nearest to the camera (docs/town_life.md); the rest live unseen."));
+static TAutoConsoleVariable<float> CVarPeopleTownDraw(TEXT("lyud.People.TownDrawDistance"), 110.f,
+	TEXT("Townsfolk are drawn within this many metres of the camera (the story's people: lyud.People.DrawDistance)."));
 static TAutoConsoleVariable<int32> CVarPeopleAnyMap(TEXT("lyud.People.AnyMap"), 0,
 	TEXT("1: run the people's life in any game map (the town's data), not only Lvl_Scene01."));
 
@@ -193,6 +198,24 @@ bool UPeopleLifeSubsystem::Start()
 		return false;
 	}
 	Sim = MoveTemp(W);
+	FlatIndex.Reset();
+	WindowIndex.Reset();
+	for (int32 I = 0; I < (int32)Sim->Places.size(); I++)
+	{
+		const LP::FPlace& Pl = Sim->Places[I];
+		if (!Pl.Windows.empty())
+		{
+			FlatIndex.Add(FName(UTF8_TO_TCHAR(Pl.Id.c_str())), I);
+			for (const std::string& Win : Pl.Windows)
+			{
+				WindowIndex.Add(FName(UTF8_TO_TCHAR(Win.c_str())), I);
+			}
+		}
+	}
+	TownAllowed.Init(false, (int32)Sim->People.size());
+	bLightSinksBound = false;
+	LightSinks.Reset();
+	LightTimer = 0.f;
 	UpdateClock(true);
 	ResolveModels();
 	BindClub();
@@ -239,6 +262,18 @@ void UPeopleLifeSubsystem::Stop()
 		}
 	}
 	Bodies.Reset();
+	for (ANpcBody* Body : TownBodies)
+	{
+		if (IsValid(Body))
+		{
+			Body->Destroy();
+		}
+	}
+	TownBodies.Reset();
+	TownPool.Reset();
+	TownNear.Reset();
+	LightSinks.Reset();
+	bLightSinksBound = false;
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
 		ShowPlaced(Pair.Value, true);
@@ -418,6 +453,10 @@ void UPeopleLifeSubsystem::ApplySaved()
 	}
 	for (const TPair<FString, FString>& H : Homes)
 	{
+		if (H.Key.StartsWith(TEXT("t_")))
+		{
+			continue;       // a townsperson's household: their flat is townsfolk.json's (AssignHomes)
+		}
 		if (!S.SetHome(TCHAR_TO_UTF8(*H.Key), TCHAR_TO_UTF8(*H.Value)))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: the saved home %s of %s is gone"), *H.Value, *H.Key);
@@ -443,6 +482,10 @@ void UPeopleLifeSubsystem::SyncMemory(bool bToSave)
 		Homes.Reset();
 		for (const LP::FPerson& P : S.People)
 		{
+			if (P.bTown)
+			{
+				continue;       // hundreds of them: homes from townsfolk.json, needs guessed from the hour (Resettle)
+			}
 			if (P.Home >= 0)
 			{
 				Homes.Add(UTF8_TO_TCHAR(P.Household.c_str()), UTF8_TO_TCHAR(S.Places[P.Home].Id.c_str()));
@@ -622,6 +665,8 @@ void UPeopleLifeSubsystem::BindClub()
 	}
 }
 
+static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>& ShownModels);
+
 void UPeopleLifeSubsystem::ResolveModels()
 {
 	const LP::FWorld& S = *Sim;
@@ -634,6 +679,10 @@ void UPeopleLifeSubsystem::ResolveModels()
 	// their own models first: the body made for them (the club's people's mesh is their own)
 	for (const LP::FPerson& P : S.People)
 	{
+		if (P.bTown)
+		{
+			continue;
+		}
 		const FString Own = UTF8_TO_TCHAR(P.Body.c_str());
 		if (!Exists(Own))
 		{
@@ -651,7 +700,7 @@ void UPeopleLifeSubsystem::ResolveModels()
 	// then those whose body isn't made yet: the stand-in people.json names, only while it is nobody else's face
 	for (const LP::FPerson& P : S.People)
 	{
-		if (!ShownModels[P.Id].IsEmpty())
+		if (!ShownModels[P.Id].IsEmpty() || P.bTown)
 		{
 			continue;
 		}
@@ -667,6 +716,37 @@ void UPeopleLifeSubsystem::ResolveModels()
 			P.Key.c_str(), *PeopleModelPath(UTF8_TO_TCHAR(P.Body.c_str())), *Stand,
 			Other ? S.People[*Other].Key.c_str() : "missing");
 	}
+	UPeopleLifeSubsystem_TownModels(S, ShownModels);
+}
+
+static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>& ShownModels)
+{
+	// the townsfolk borrow models from the shared pool for now (a generator will make their own): many of a look, never
+	// one of the story's people's registry (ModelOwners), and drawn only near the camera
+	TMap<FString, bool> Known;
+	int32 Unseen = 0;
+	for (const LP::FPerson& P : S.People)
+	{
+		if (!P.bTown)
+		{
+			continue;
+		}
+		const FString Model = UTF8_TO_TCHAR(P.Mesh.c_str());
+		bool* Has = Known.Find(Model);
+		if (!Has)
+		{
+			Has = &Known.Add(Model, !Model.IsEmpty() && FPackageName::DoesPackageExist(FPackageName::ObjectPathToPackageName(PeopleModelPath(Model))));
+		}
+		if (*Has)
+		{
+			ShownModels[P.Id] = Model;
+		}
+		else
+		{
+			Unseen++;
+		}
+	}
+	UE_LOG(LogTemp, Display, TEXT("PeopleLife: townsfolk use %d models of the pool (%d live unseen: model missing)"), Known.Num(), Unseen);
 }
 
 FString UPeopleLifeSubsystem::ShownModel(int32 Id) const
@@ -694,9 +774,9 @@ FString UPeopleLifeSubsystem::InstanceReport(int32& Duplicates) const
 	{
 		const USkeletalMeshComponent* C = *It;
 		const AActor* A = C->GetOwner();
-		if (C->GetWorld() != World || !C->IsRegistered() || !C->IsVisible() || !A || A->IsHidden())
+		if (C->GetWorld() != World || !C->IsRegistered() || !C->IsVisible() || !A || A->IsHidden() || A->ActorHasTag(TEXT("Townsfolk")))
 		{
-			continue;
+			continue;       // (the townsfolk share the pool's models on purpose: docs/town_life.md)
 		}
 		const FString Model = PeopleModelOf(C);
 		if (Model.IsEmpty())
@@ -743,9 +823,25 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 		const LP::FPerson& P = Sim->People[Id];
 		// the one model that is theirs (ResolveModels): none, and they aren't drawn in somebody else's face
 		const FString Model = ShownModel(Id);
-		if (Model.IsEmpty() || ModelOwner(Model) != Id)
+		if (Model.IsEmpty() || (!P.bTown && ModelOwner(Model) != Id))
 		{
 			return nullptr;
+		}
+		// a townsperson: a free body of their look from the pool, if there is one
+		if (P.bTown)
+		{
+			if (TArray<TObjectPtr<ANpcBody>>* Free = TownPool.Find(Model))
+			{
+				while (Free->Num() > 0)
+				{
+					ANpcBody* Pooled = Free->Pop(EAllowShrinking::No);
+					if (IsValid(Pooled))
+					{
+						Bodies[Id] = Pooled;
+						return Pooled;
+					}
+				}
+			}
 		}
 		// their model and the shared clips loaded in the background first: a body made on the spot stalls the frame
 		const bool bModel = ULyudPrefetch::Ready(this, PeopleModelPath(Model));
@@ -767,9 +863,18 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no model for %s (%s)"), UTF8_TO_TCHAR(P.Key.c_str()), *Model);
 		}
 		Body->TalkId = UTF8_TO_TCHAR(P.Body.c_str());
-		if (P.Key.rfind("crowd", 0) == 0)
+		if (P.Key.rfind("crowd", 0) == 0 || P.bTown)
 		{
 			Body->Tags.Add(TEXT("NoTalk"));
+		}
+		if (P.bTown)
+		{
+			// many of them about: cheaper animation far off, out of Lumen's scene (perf checklist: moving meshes)
+			Body->Tags.Add(TEXT("Townsfolk"));
+			Body->Mesh->bEnableUpdateRateOptimizations = true;
+			Body->Mesh->bAffectDynamicIndirectLighting = false;
+			Body->Mesh->bAffectDistanceFieldLighting = false;
+			TownBodies.Add(Body);
 		}
 #if LYUD_HAS_DOORS
 		// doors open in front of them and shut behind them
@@ -795,6 +900,12 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		PC->GetPlayerViewPoint(Cam, CamRot);
 	}
 	const float Draw = CVarPeopleDraw.GetValueOnGameThread() * 100.f;
+	TownPickTimer -= DeltaTime;
+	if (TownPickTimer <= 0.f)
+	{
+		TownPickTimer = 0.25f;
+		PickTownBodies(Cam, FMath::Min(Draw, CVarPeopleTownDraw.GetValueOnGameThread() * 100.f));
+	}
 	TSet<FString> PlacedShown;
 	bool bOwnerHere = false;
 	for (const LP::FPerson& P : S.People)
@@ -853,7 +964,15 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 		const FVector Loc = PeopleToUE(P.Pos);
 		const float Dist = FVector::Dist(Loc, Cam);
-		const bool bShow = P.Pose != LP::EPose::Hidden && Dist < (P.bIndoors ? 4000.f : Draw);
+		// inside a town building (a shell: no rooms to walk), drawn by somebody else's actor (a waiter at the restaurant),
+		// or a townsperson not among the nearest few: not drawn
+		const bool bOut = S.InsideShell(P) || P.bExternal || (P.bTown && !TownAllowed[P.Id]);
+		const bool bShow = !bOut && P.Pose != LP::EPose::Hidden && Dist < (P.bIndoors ? 4000.f : Draw);
+		if (P.bTown && !bShow)
+		{
+			ReleaseBody(P.Id);
+			continue;
+		}
 		ANpcBody* Body = bShow ? BodyFor(P.Id) : (P.Id < Bodies.Num() ? Bodies[P.Id].Get() : nullptr);
 		if (!Body)
 		{
@@ -987,8 +1106,15 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	}
 	if (bJumped)
 	{
+		UpdateLights(true);
 		Present(DeltaTime);
 		return;
+	}
+	LightTimer -= DeltaTime;
+	if (LightTimer <= 0.f)
+	{
+		LightTimer = 2.f;
+		UpdateLights(false);
 	}
 	// the life runs on the game's calendar (its time scale), in steps of at most a second
 	double Dt = S.Time - Was;
@@ -1008,6 +1134,239 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 		SaveTimer = 5.f;
 		SyncMemory(true);
 	}
+}
+
+// --- the town ------------------------------------------------------------------------------------------
+
+void UPeopleLifeSubsystem::PickTownBodies(const FVector& Cam, float Draw)
+{
+	// the nearest townsfolk out and about get a body (lyud.People.TownBodies of them); a few times a second, no allocations
+	const LP::FWorld& S = *Sim;
+	if (TownAllowed.Num() != (int32)S.People.size())
+	{
+		TownAllowed.Init(false, (int32)S.People.size());
+	}
+	TownNear.Reset();
+	for (const LP::FPerson& P : S.People)
+	{
+		TownAllowed[P.Id] = false;
+		if (!P.bTown || P.bExternal || P.Pose == LP::EPose::Hidden || S.InsideShell(P) || P.State == LP::EState::Away)
+		{
+			continue;
+		}
+		const float D = FVector::Dist(PeopleToUE(P.Pos), Cam);
+		if (D < Draw)
+		{
+			TownNear.Emplace(D, P.Id);
+		}
+	}
+	const int32 Max = FMath::Max(0, CVarPeopleTownBodies.GetValueOnGameThread());
+	if (TownNear.Num() > Max)
+	{
+		// a few hundred pairs four times a second: a plain sort is cheap enough
+		TownNear.Sort([](const TPair<float, int32>& A, const TPair<float, int32>& B) { return A.Key < B.Key; });
+	}
+	for (int32 I = 0; I < FMath::Min(Max, TownNear.Num()); I++)
+	{
+		TownAllowed[TownNear[I].Value] = true;
+	}
+}
+
+void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
+{
+	// a townsperson's body back to the pool of its look (hidden), for whoever of that look comes near next
+	ANpcBody* Body = Id < Bodies.Num() ? Bodies[Id].Get() : nullptr;
+	if (!Body)
+	{
+		return;
+	}
+	Body->SetActorHiddenInGame(true);
+	TownPool.FindOrAdd(Body->MeshName).Add(Body);
+	Bodies[Id] = nullptr;
+}
+
+void UPeopleLifeSubsystem::BindLights()
+{
+	// the window lights live in other threads' code (the buildings' ULyudWindowLights, the terrace walls'
+	// ULyudCityWindowsSubsystem): found by name and called by reflection, so neither side needs the other to compile
+	bLightSinksBound = true;
+	LightSinks.Reset();
+	UWorld* World = GetWorld();
+	for (const TCHAR* Name : { TEXT("LyudWindowLights"), TEXT("LyudCityWindowsSubsystem") })
+	{
+		UClass* C = FindFirstObject<UClass>(Name, EFindFirstObjectOptions::NativeFirst);
+		if (!C || !C->IsChildOf(UWorldSubsystem::StaticClass()))
+		{
+			continue;
+		}
+		UWorldSubsystem* Sub = World->GetSubsystemBase(TSubclassOf<UWorldSubsystem>(C));
+		UFunction* Fn = Sub ? Sub->FindFunction(TEXT("SetFlatLit")) : nullptr;
+		if (!Fn)
+		{
+			continue;
+		}
+		if (UFunction* Driven = Sub->FindFunction(TEXT("SetDriven")))
+		{
+			uint8* Parms = (uint8*)FMemory_Alloca(FMath::Max(1, (int32)Driven->ParmsSize));
+			FMemory::Memzero(Parms, Driven->ParmsSize);
+			for (TFieldIterator<FBoolProperty> It(Driven); It; ++It)
+			{
+				It->SetPropertyValue_InContainer(Parms, true);
+			}
+			Sub->ProcessEvent(Driven, Parms);
+		}
+		LightSinks.Add({ Sub, Fn });
+		UE_LOG(LogTemp, Display, TEXT("PeopleLife: window lights driven through %s"), Name);
+	}
+}
+
+void UPeopleLifeSubsystem::SendFlatLight(const FString& FlatId, bool bOn)
+{
+	for (const FLightSink& Sink : LightSinks)
+	{
+		UObject* Obj = Sink.Object.Get();
+		if (!Obj || !Sink.Fn)
+		{
+			continue;
+		}
+		uint8* Parms = (uint8*)FMemory_Alloca(FMath::Max(1, (int32)Sink.Fn->ParmsSize));
+		FMemory::Memzero(Parms, Sink.Fn->ParmsSize);
+		for (TFieldIterator<FProperty> It(Sink.Fn); It && It->HasAnyPropertyFlags(CPF_Parm); ++It)
+		{
+			It->InitializeValue_InContainer(Parms);
+			if (FStrProperty* Str = CastField<FStrProperty>(*It))
+			{
+				Str->SetPropertyValue_InContainer(Parms, FlatId);
+			}
+			else if (FNameProperty* Nm = CastField<FNameProperty>(*It))
+			{
+				Nm->SetPropertyValue_InContainer(Parms, FName(*FlatId));
+			}
+			else if (FBoolProperty* B = CastField<FBoolProperty>(*It))
+			{
+				B->SetPropertyValue_InContainer(Parms, bOn);
+			}
+		}
+		Obj->ProcessEvent(Sink.Fn, Parms);
+		for (TFieldIterator<FProperty> It(Sink.Fn); It && It->HasAnyPropertyFlags(CPF_Parm); ++It)
+		{
+			It->DestroyValue_InContainer(Parms);
+		}
+	}
+}
+
+void UPeopleLifeSubsystem::UpdateLights(bool bAll)
+{
+	LP::FWorld& S = *Sim;
+	// the light owners appear with the level's actors: look for them till found (every 10 s)
+	static double LastBind = -1e9;
+	const double Now = FPlatformTime::Seconds();
+	if (!bLightSinksBound || (LightSinks.Num() == 0 && Now - LastBind > 10.0))
+	{
+		LastBind = Now;
+		BindLights();
+		bAll = bAll || LightSinks.Num() > 0;
+	}
+	if (bAll)
+	{
+		S.FlatLit.assign(S.Places.size(), -1);
+	}
+	S.UpdateLights(LightChanged);
+	for (const int I : LightChanged)
+	{
+		const FString Id = UTF8_TO_TCHAR(S.Places[I].Id.c_str());
+		const bool bOn = S.FlatLit[I] == 1;
+		SendFlatLight(Id, bOn);
+		OnFlatLight.Broadcast(FName(*Id), bOn);
+	}
+}
+
+FText UPeopleLifeSubsystem::GetDisplayName(int32 Id) const
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return FText::GetEmpty();
+	}
+	return LyudText::Get(FString::Printf(TEXT("npc.%hs.name"), Sim->People[Id].Key.c_str()));
+}
+
+bool UPeopleLifeSubsystem::IsTownsperson(int32 Id) const
+{
+	return Sim && Id >= 0 && Id < (int32)Sim->People.size() && Sim->People[Id].bTown;
+}
+
+void UPeopleLifeSubsystem::SetGathering(FName Id, FName PlaceOrKind, float FromHour, float ToHour, float Pull, EPeopleGatherMode Mode, FVector FacePoint)
+{
+	if (!Sim)
+	{
+		return;
+	}
+	const bool bFace = !FacePoint.IsNearlyZero();
+	Sim->SetGathering(TCHAR_TO_UTF8(*Id.ToString()), TCHAR_TO_UTF8(*PlaceOrKind.ToString()), FromHour, ToHour, Pull, (LP::EGatherMode)(uint8)Mode,
+		bFace, PeopleFromUE(FacePoint));
+	UE_LOG(LogTemp, Display, TEXT("PeopleLife: gathering %s at %s %.2f-%.2f pull %.2f"), *Id.ToString(), *PlaceOrKind.ToString(), FromHour, ToHour, Pull);
+}
+
+void UPeopleLifeSubsystem::ClearGathering(FName Id)
+{
+	if (Sim)
+	{
+		Sim->ClearGathering(TCHAR_TO_UTF8(*Id.ToString()));
+	}
+}
+
+void UPeopleLifeSubsystem::SetDayOff(bool bOff)
+{
+	if (Sim)
+	{
+		Sim->bDayOff = bOff;
+	}
+}
+
+bool UPeopleLifeSubsystem::IsDayOff() const
+{
+	return Sim && Sim->bDayOff;
+}
+
+TArray<int32> UPeopleLifeSubsystem::StaffOnShift(FName PlaceId, FName Role) const
+{
+	TArray<int32> Out;
+	if (!Sim)
+	{
+		return Out;
+	}
+	std::vector<int> Ids;
+	Sim->StaffOnShift(TCHAR_TO_UTF8(*PlaceId.ToString()), Role.IsNone() ? std::string() : std::string(TCHAR_TO_UTF8(*Role.ToString())), Ids);
+	for (const int Id : Ids)
+	{
+		Out.Add(Id);
+	}
+	return Out;
+}
+
+void UPeopleLifeSubsystem::SetPresentedExternally(int32 Id, bool bExternal)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return;
+	}
+	Sim->People[Id].bExternal = bExternal;
+	if (bExternal && Id < Bodies.Num() && Bodies[Id])
+	{
+		Bodies[Id]->SetActorHiddenInGame(true);
+	}
+}
+
+bool UPeopleLifeSubsystem::IsFlatLit(FName FlatId) const
+{
+	const int32* I = FlatIndex.Find(FlatId);
+	return Sim && I && *I < (int32)Sim->FlatLit.size() && Sim->FlatLit[*I] == 1;
+}
+
+bool UPeopleLifeSubsystem::IsWindowLit(FName WindowId) const
+{
+	const int32* I = WindowIndex.Find(WindowId);
+	return Sim && I && *I < (int32)Sim->FlatLit.size() && Sim->FlatLit[*I] == 1;
 }
 
 int32 UPeopleLifeSubsystem::NumPeople() const

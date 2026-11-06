@@ -7,6 +7,8 @@ more people live in the Academgorodok without coming to the club much: Laborator
 pensioners, a family, a fisherman, a student, a painter and an ornithologist who take the sea railway's train to the
 island.
 
+The town on the terraces has ~900 townsfolk of its own on the same simulation: docs/town_life.md.
+
 ## Files
 
 | What | Where |

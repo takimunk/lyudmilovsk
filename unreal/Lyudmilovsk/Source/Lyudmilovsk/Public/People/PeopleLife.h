@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Templates/PimplPtr.h"
+#include <vector>
 #include "PeopleLife.generated.h"
 
 namespace LyudPeople { class FWorld; }
@@ -60,6 +61,12 @@ struct LYUDMILOVSK_API FPersonMemory
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPeopleLifeEvent, int32, PersonId, FName, Event, int32, Other);
+/** A flat's (or a shop's) windows light up or go dark: somebody home and awake after dusk (docs/town_life.md). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPeopleFlatLight, FName, FlatId, bool, bLit);
+
+/** How people spend a gathering (SetGathering): talking in groups, facing a stage or the fireworks, seated, about the stalls. */
+UENUM(BlueprintType)
+enum class EPeopleGatherMode : uint8 { Mingle, Watch, Sit, Fair };
 
 /**
  * The town's people (docs/people.md): everybody who sits in the club has a life: a profile (name, age, occupation,
@@ -147,6 +154,49 @@ public:
 	/** Start, Arrive, Leave, TalkStart, TalkEnd, Ride, Away, Back. */
 	UPROPERTY(BlueprintAssignable, Category = "People") FPeopleLifeEvent OnPersonEvent;
 
+	// --- the town (docs/town_life.md) -------------------------------------------------------------------------
+
+	/** Their name in the game's language (npc.<key>.name: the story's people and the townsfolk alike). */
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	FText GetDisplayName(int32 Id) const;
+
+	/** A townsperson (townsfolk.json: generated, shown by a model of the shared pool), not one of the story's people. */
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	bool IsTownsperson(int32 Id) const;
+
+	/**
+	 * A holiday's phase (ULyudFestivalSubsystem): from FromHour till ToHour (To < From: over midnight) the town is drawn to a
+	 * place (its id) or to the places of a kind (square, promenade, fair, beach), by Pull (0..2, the sociable most).
+	 * Mode: how they spend it; FacePoint (UE cm, ZeroVector = none): what the watchers face. The same Id replaces it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void SetGathering(FName Id, FName PlaceOrKind, float FromHour, float ToHour, float Pull, EPeopleGatherMode Mode, FVector FacePoint);
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void ClearGathering(FName Id);
+
+	/** A public holiday: school, the offices and the clinic shut (activities.json holiday "off"); shops, cafés and the club work. */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void SetDayOff(bool bOff);
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	bool IsDayOff() const;
+
+	/** Who is at work at a place now (town_places.json id: restaurant, P-MARKET, W1-U01, ...), in a role (waiter, cook; None any). */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	TArray<int32> StaffOnShift(FName PlaceId, FName Role) const;
+
+	/** While true the life doesn't draw them (somebody else's actor shows them: the restaurant's waiter on shift). */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void SetPresentedExternally(int32 Id, bool bExternal);
+
+	/** Whether a flat's windows are lit now (a flat id: W3-D017, P-CAPSULE/5-03), and one window (<flat>/w<n>, W3-D017-w1). */
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	bool IsFlatLit(FName FlatId) const;
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	bool IsWindowLit(FName WindowId) const;
+
+	/** Fired when a flat's windows light up or go dark (and for every flat with windows when the life starts or the clock jumps). */
+	UPROPERTY(BlueprintAssignable, Category = "People|Town") FPeopleFlatLight OnFlatLight;
+
 	/** Household -> flat id. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Homes;
 	UPROPERTY(SaveGame) TMap<FString, FPersonMemory> Memory;
@@ -162,6 +212,27 @@ public:
 
 private:
 	TPimplPtr<LyudPeople::FWorld> Sim;
+
+	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
+	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */
+	TMap<FString, TArray<TObjectPtr<ANpcBody>>> TownPool;
+	/** Townsfolk allowed a body now (the nearest drawn ones), refreshed a few times a second. */
+	TBitArray<> TownAllowed;
+	TArray<TPair<float, int32>> TownNear;
+	float TownPickTimer = 0.f;
+	void PickTownBodies(const FVector& Cam, float Draw);
+	void ReleaseBody(int32 Id);
+	/** Lights: every couple of seconds the flats that changed are told to the window lights (the buildings' and the walls'). */
+	float LightTimer = 0.f;
+	std::vector<int> LightChanged;
+	TMap<FName, int32> FlatIndex;
+	TMap<FName, int32> WindowIndex;
+	struct FLightSink { TWeakObjectPtr<UObject> Object; UFunction* Fn = nullptr; };
+	TArray<FLightSink> LightSinks;
+	bool bLightSinksBound = false;
+	void BindLights();
+	void UpdateLights(bool bAll);
+	void SendFlatLight(const FString& FlatId, bool bOn);
 	bool bWantStart = false;
 	bool bStarted = false;
 	bool bLoaded = false;
@@ -179,6 +250,8 @@ private:
 
 	/** One body per person, made when first needed. */
 	UPROPERTY(Transient) TArray<TObjectPtr<ANpcBody>> Bodies;
+	/** Every townsfolk body made (shown or in the pool), kept so GC never takes one. */
+	UPROPERTY(Transient) TArray<TObjectPtr<ANpcBody>> TownBodies;
 	/** The club's placed actors (the scene's people at their stations), by station tag: the seat's own person's model only. */
 	UPROPERTY(Transient) TMap<FString, TObjectPtr<AActor>> ClubActors;
 	/** Placed human actors that are a second copy of somebody (their model, not at that person's station): hidden while the life runs. */

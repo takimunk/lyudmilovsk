@@ -133,7 +133,23 @@ namespace LyudPeople
 			LastError = "missing people_places.json, activities.json or people.json in " + Dir;
 			return false;
 		}
-		return LoadPlaces(Places_) && LoadActivities(Acts) && LoadPeople(Folk);
+		if (!(LoadPlaces(Places_) && LoadActivities(Acts) && LoadPeople(Folk)))
+		{
+			return false;
+		}
+		// the town (tools/town/town_life.py): its buildings and spots, and the people who live in them
+		const std::string TownPlaces = bLoadTown ? ReadFile(Dir + "/town_places.json") : std::string();
+		const std::string Townsfolk = bLoadTown ? ReadFile(Dir + "/townsfolk.json") : std::string();
+		if (!TownPlaces.empty() && !LoadTownPlaces(TownPlaces))
+		{
+			return false;
+		}
+		if (!Townsfolk.empty() && !LoadTownsfolk(Townsfolk))
+		{
+			return false;
+		}
+		Index();
+		return true;
 	}
 
 	bool FWorld::LoadActivities(const std::string& Text)
@@ -187,6 +203,15 @@ namespace LyudPeople
 			A.bTalk = V["talk"].F() > 0.f;
 			A.bWander = V["wander"].F() > 0.f;
 			A.bSnow = V["snow"].F() > 0.f;
+			A.bSunrise = V["sunrise"].F() > 0.f;
+			A.bHolidayOff = V["holiday"].S() == "off";
+			A.bGather = V["gather"].F() > 0.f;
+			A.bStaff = V["staff"].F() > 0.f;
+			if (A.bGather)
+			{
+				const std::string M = V["mode"].S("mingle");
+				A.GatherMode = M == "watch" ? (int)EGatherMode::Watch : M == "sit" ? (int)EGatherMode::Sit : M == "fair" ? (int)EGatherMode::Fair : (int)EGatherMode::Mingle;
+			}
 			if (V["wander_m"].Items.size() == 2)
 			{
 				A.WanderNear = V["wander_m"].Items[0].F();
@@ -230,9 +255,31 @@ namespace LyudPeople
 			return false;
 		}
 		People.clear();
+		return AddPeople(J, false);
+	}
+
+	bool FWorld::LoadTownsfolk(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "townsfolk.json: " + LastError;
+			return false;
+		}
+		const bool bOk = AddPeople(J, true);
+		Index();
+		return bOk;
+	}
+
+	bool FWorld::AddPeople(const LyudJson::FValue& J, bool bTown)
+	{
 		for (const LyudJson::FValue& V : J["people"].Items)
 		{
 			FPerson P;
+			P.bTown = bTown || V["town"].F() > 0.f;
+			P.Chronotype = V["chronotype"].S();
+			P.HomeId = V["home"].S();
+			P.Spread = V["spread"].F(0.f);
 			P.Id = (int)People.size();
 			P.Key = V["key"].S();
 			P.Mesh = V["mesh"].S();
@@ -257,6 +304,8 @@ namespace LyudPeople
 			{
 				FDuty Duty;
 				Duty.Activity = D["activity"].S();
+				Duty.PlaceId = D["place"].S();
+				Duty.Role = D["role"].S();
 				Duty.From = D["hours"][0].F(9.f);
 				Duty.To = D["hours"][1].F(17.f);
 				Duty.Days = 0;
@@ -609,8 +658,143 @@ namespace LyudPeople
 		return (R0[0] * (1.f - U) + R0[1] * U) * (1.f - V) + (R1[0] * (1.f - U) + R1[1] * U) * V;
 	}
 
+	int FWorld::FTownGround::LevelOf(float Z) const
+	{
+		int Best = 0;
+		for (int I = 1; I < (int)Levels.size(); I++)
+		{
+			if (std::fabs(Levels[I] - Z) < std::fabs(Levels[Best] - Z))
+			{
+				Best = I;
+			}
+		}
+		return Best;
+	}
+
+	void FWorld::TownWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const
+	{
+		const int LA = Town.LevelOf(From.Z), LB = Town.LevelOf(To.Z);
+		// the stairs' ends as nodes (2k bottom, 2k+1 top); a shortest way from From to To over them (Dijkstra, ~140 nodes)
+		const int N = (int)Town.Stairs.size() * 2;
+		auto NodeP = [&](int K) { const FTownGround::FStair& S = Town.Stairs[K / 2]; return K % 2 ? S.Top : S.Bottom; };
+		auto NodeL = [&](int K) { const FTownGround::FStair& S = Town.Stairs[K / 2]; return K % 2 ? S.Hi : S.Lo; };
+		std::vector<int> Via;
+		if (LA != LB && N > 0)
+		{
+			std::vector<float> Dist(N, 1e30f);
+			std::vector<int> Prev(N, -1);
+			std::vector<char> Done(N, 0);
+			for (int K = 0; K < N; K++)
+			{
+				if (NodeL(K) == LA)
+				{
+					Dist[K] = (NodeP(K) - From).Len2D();
+				}
+			}
+			int End = -1;
+			float EndD = 1e30f;
+			for (;;)
+			{
+				int U = -1;
+				for (int K = 0; K < N; K++)
+				{
+					if (!Done[K] && Dist[K] < 1e29f && (U < 0 || Dist[K] < Dist[U]))
+					{
+						U = K;
+					}
+				}
+				if (U < 0 || Dist[U] >= EndD)
+				{
+					break;
+				}
+				Done[U] = 1;
+				if (NodeL(U) == LB && Dist[U] + (NodeP(U) - To).Len2D() < EndD)
+				{
+					EndD = Dist[U] + (NodeP(U) - To).Len2D();
+					End = U;
+				}
+				// up or down its flight (a little dearer than the flat), or across the terrace to another stair
+				const int Other = U ^ 1;
+				const float Flight = (NodeP(U) - NodeP(Other)).Len() * 1.4f + 4.f;
+				if (Dist[U] + Flight < Dist[Other])
+				{
+					Dist[Other] = Dist[U] + Flight;
+					Prev[Other] = U;
+				}
+				for (int K = 0; K < N; K++)
+				{
+					if (K != U && NodeL(K) == NodeL(U) && !Done[K])
+					{
+						const float D = Dist[U] + (NodeP(K) - NodeP(U)).Len2D();
+						if (D < Dist[K])
+						{
+							Dist[K] = D;
+							Prev[K] = U;
+						}
+					}
+				}
+			}
+			for (int K = End; K >= 0; K = Prev[K])
+			{
+				Via.push_back(K);
+			}
+			std::reverse(Via.begin(), Via.end());
+		}
+		// a leg along one terrace: the walk grid's way if it has one, at the terrace's height; else straight
+		auto Leg = [&](const V3& A, const V3& B, int Level)
+		{
+			const float Z = Town.Levels[Level];
+			std::vector<V3> Pts;
+			if (!bHasGround || (A - B).Len2D() < 6.f || !Ground.FindPath(A, B, LyudAnimals::EKind::Dog, Pts) || Pts.size() > 400)
+			{
+				Pts.clear();
+				const int Steps = std::max(1, (int)std::ceil((B - A).Len2D() / 12.f));
+				for (int K = 1; K <= Steps; K++)
+				{
+					Pts.push_back(A + (B - A) * ((float)K / Steps));
+				}
+			}
+			for (const V3& Pt : Pts)
+			{
+				FPerson::FWay W;
+				W.P = V3(Pt.X, Pt.Y, Z);
+				Out.push_back(W);
+			}
+		};
+		V3 Cur = From;
+		int CurL = LA;
+		for (size_t I = 0; I < Via.size(); I++)
+		{
+			const int K = Via[I];
+			const V3 P = NodeP(K);
+			if (I > 0 && (Via[I - 1] ^ 1) == K)
+			{
+				// up or down a flight: along its line in 3D
+				FPerson::FWay W;
+				W.P = P;
+				W.Kind = 4;
+				Out.push_back(W);
+			}
+			else
+			{
+				Leg(Cur, P, CurL);
+			}
+			Cur = P;
+			CurL = NodeL(K);
+		}
+		Leg(Cur, To, CurL);
+		if (!Out.empty())
+		{
+			Out.back().P = To;
+		}
+	}
+
 	float FWorld::GroundAt(const V3& P) const
 	{
+		if (Town.Inside(P))
+		{
+			return Town.Levels[Town.LevelOf(P.Z)];     // on their terrace (the stairs are walked as lines)
+		}
 		for (const FPatch& Pa : Patches)
 		{
 			if (Pa.Has(P.X, P.Y))
@@ -837,6 +1021,340 @@ namespace LyudPeople
 		return -1;
 	}
 
+	// --- the town (town_places.json, townsfolk.json: docs/town_life.md) ------------------------------------
+
+	bool FWorld::LoadTownPlaces(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "town_places.json: " + LastError;
+			return false;
+		}
+		const LyudJson::FValue& T = J["town"];
+		if (!T.IsNull() && T["box"].Size() == 4)
+		{
+			Town = FTownGround();
+			Town.X0 = T["box"][0].F();
+			Town.Y0 = T["box"][1].F();
+			Town.X1 = T["box"][2].F();
+			Town.Y1 = T["box"][3].F();
+			for (const LyudJson::FValue& L : T["levels"].Items)
+			{
+				Town.Levels.push_back(L["z"].F());
+			}
+			Town.bValid = !Town.Levels.empty();
+			for (const LyudJson::FValue& S : T["stairs"].Items)
+			{
+				FTownGround::FStair St;
+				St.Bottom = Vec(S["bottom"]);
+				St.Top = Vec(S["top"]);
+				St.Lo = Town.LevelOf(St.Bottom.Z);
+				St.Hi = Town.LevelOf(St.Top.Z);
+				if (St.Lo != St.Hi)
+				{
+					Town.Stairs.push_back(St);
+				}
+			}
+		}
+		for (const LyudJson::FValue& V : J["places"].Items)
+		{
+			FPlace Pl;
+			Pl.Id = V["id"].S();
+			if (Pl.Id.empty() || FindPlace(Pl.Id) >= 0)
+			{
+				continue;
+			}
+			Pl.Kind = V["kind"].S();
+			Pl.Yaw = V["yaw"].F();
+			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Vec(V["pos"]);
+			Pl.bShell = V["shell"].F() > 0.f;
+			Pl.bIndoor = Pl.bShell;
+			Pl.Building = V["building"].S();
+			Pl.Island = V.Find("island") ? V["island"].I() : IslandOf(Pl.Portal);
+			for (const LyudJson::FValue& W : V["windows"].Items)
+			{
+				Pl.Windows.push_back(W.S());
+			}
+			for (const LyudJson::FValue& R : V["roles"].Items)
+			{
+				Pl.Roles.push_back(R.S());
+			}
+			const int PlaceIdx = (int)Places.size();
+			for (const LyudJson::FValue& S : V["slots"].Items)
+			{
+				FSlot Sl;
+				Sl.Kind = S["kind"].S("stand");
+				Sl.Place = PlaceIdx;
+				// a shell's slots are all at its door: whoever is in is inside, not drawn
+				Sl.Pos = Pl.bShell || S["pos"].IsNull() ? Pl.Portal : Vec(S["pos"]);
+				Sl.Yaw = S.Find("yaw") ? S["yaw"].F() : Pl.Yaw;
+				Sl.Approach = S.Find("approach") && !Pl.bShell ? Vec(S["approach"]) : Sl.Pos;
+				Sl.Height = S["height"].F();
+				Sl.Capacity = std::max(1, S["capacity"].I(1));
+				Sl.Tag = S["tag"].S();
+				Pl.Slots.push_back((int)Slots.size());
+				Slots.push_back(Sl);
+			}
+			if (Pl.Slots.empty())
+			{
+				FSlot Sl;
+				Sl.Kind = "stand";
+				Sl.Place = PlaceIdx;
+				Sl.Pos = Sl.Approach = Pl.Portal;
+				Sl.Yaw = Pl.Yaw;
+				Sl.Capacity = 8;
+				Pl.Slots.push_back((int)Slots.size());
+				Slots.push_back(Sl);
+			}
+			Places.push_back(Pl);
+		}
+		Index();
+		return true;
+	}
+
+	int FWorld::KindId(const std::string& Kind)
+	{
+		if (KindNames.empty())
+		{
+			KindNames = { "bed", "sofa", "flat", "snow" };
+		}
+		for (int I = 0; I < (int)KindNames.size(); I++)
+		{
+			if (KindNames[I] == Kind)
+			{
+				return I;
+			}
+		}
+		KindNames.push_back(Kind);
+		return (int)KindNames.size() - 1;
+	}
+
+	void FWorld::Index()
+	{
+		for (FSlot& Sl : Slots)
+		{
+			Sl.K = KindId(Sl.Kind);
+		}
+		for (FPlace& Pl : Places)
+		{
+			Pl.K = KindId(Pl.Kind);
+		}
+		for (FActivity& A : Activities)
+		{
+			A.SlotK.clear();
+			A.PlaceK.clear();
+			for (const std::string& K : A.Slots)
+			{
+				A.SlotK.push_back(KindId(K));
+			}
+			A.bHome = false;
+			for (const std::string& K : A.Places)
+			{
+				if (K == "home")
+				{
+					A.bHome = true;
+				}
+				else
+				{
+					A.PlaceK.push_back(KindId(K));
+				}
+			}
+			A.bK = true;
+			A.PlaceIdx.clear();
+			for (int Pi = 0; Pi < (int)Places.size(); Pi++)
+			{
+				if (Has(A.Places, Places[Pi].Kind))
+				{
+					A.PlaceIdx.push_back(Pi);
+				}
+			}
+		}
+		for (FPerson& P : People)
+		{
+			for (FDuty& D : P.Duties)
+			{
+				D.Place = D.PlaceId.empty() ? -1 : FindPlace(D.PlaceId);
+			}
+		}
+		FlatLit.assign(Places.size(), -1);
+		Indexed = Places.size();
+	}
+
+	const FDuty* FWorld::DutyFor(const FPerson& P, const FActivity& A) const
+	{
+		for (const FDuty& D : P.Duties)
+		{
+			if (D.Activity == A.Id && D.Place >= 0)
+			{
+				return &D;
+			}
+		}
+		return nullptr;
+	}
+
+	bool FWorld::InsideShell(const FPerson& P) const
+	{
+		return P.Place >= 0 && P.Slot >= 0 && Places[P.Place].bShell
+			&& (P.State == EState::Doing || P.State == EState::Settling || P.State == EState::Leaving);
+	}
+
+	void FWorld::StaffOnShift(const std::string& PlaceId, const std::string& Role, std::vector<int>& Out) const
+	{
+		Out.clear();
+		const int Pl = FindPlace(PlaceId);
+		if (Pl < 0)
+		{
+			return;
+		}
+		for (const FPerson& P : People)
+		{
+			if (P.Place != Pl || P.Activity < 0 || (P.State != EState::Doing && P.State != EState::Settling) || !Activities[P.Activity].bStaff)
+			{
+				continue;
+			}
+			const FDuty* D = DutyFor(P, Activities[P.Activity]);
+			if (D && D->Place == Pl && (Role.empty() || D->Role == Role))
+			{
+				Out.push_back(P.Id);
+			}
+		}
+	}
+
+	void FWorld::SetGathering(const std::string& Id, const std::string& PlaceOrKind, float From, float To, float Pull, EGatherMode Mode, bool bFace, const V3& Face)
+	{
+		ClearGathering(Id);
+		FGathering G;
+		G.Id = Id;
+		G.PlaceOrKind = PlaceOrKind;
+		G.From = From;
+		G.To = To;
+		G.Pull = std::max(0.f, std::min(Pull, 3.f));
+		G.Mode = Mode;
+		G.bFace = bFace;
+		G.Face = Face;
+		const int Pl = FindPlace(PlaceOrKind);
+		if (Pl >= 0)
+		{
+			G.Places.push_back(Pl);
+		}
+		else
+		{
+			for (int I = 0; I < (int)Places.size(); I++)
+			{
+				if (Places[I].Kind == PlaceOrKind && !Places[I].bShell)
+				{
+					G.Places.push_back(I);
+				}
+			}
+		}
+		Gatherings.push_back(G);
+	}
+
+	void FWorld::ClearGathering(const std::string& Id)
+	{
+		Gatherings.erase(std::remove_if(Gatherings.begin(), Gatherings.end(), [&](const FGathering& G) { return G.Id == Id; }), Gatherings.end());
+	}
+
+	const FWorld::FGathering* FWorld::GatheringAt(int Place) const
+	{
+		for (const FGathering& G : Gatherings)
+		{
+			if (InHours(G.From, G.To, Hour) && std::find(G.Places.begin(), G.Places.end(), Place) != G.Places.end())
+			{
+				return &G;
+			}
+		}
+		return nullptr;
+	}
+
+	bool FWorld::FlatLitNow(int Place) const
+	{
+		const FPlace& Pl = Places[Place];
+		// daylight indoors is enough till a little before sunset (and from a little after sunrise)
+		const bool bDark = !bSunUp || Hour > Sunset - 0.4f || Hour < Sunrise + 0.3f;
+		if (!bDark)
+		{
+			return false;
+		}
+		for (const int Id : Pl.Residents)
+		{
+			const FPerson& P = People[Id];
+			if (P.Place != Place || P.Activity < 0)
+			{
+				continue;
+			}
+			const bool bThere = P.State == EState::Doing || P.State == EState::Settling || P.State == EState::Leaving || P.State == EState::Idle;
+			if (!bThere)
+			{
+				continue;
+			}
+			if (Activities[P.Activity].Pose != EPose::Sleep)
+			{
+				return true;
+			}
+			// a lamp by the bed a while after lying down (some read, some put it out at once)
+			uint32_t H = (uint32_t)(P.Id * 2246822519u) ^ (uint32_t)(Time / 86400.0) * 3266489917u;
+			const double Lamp = 60.0 * (Rand(H) < 0.4f ? 2.0 : 6.0 + 20.0 * Rand(H));
+			if (P.State == EState::Settling || Time - P.StateStart < Lamp)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void FWorld::UpdateLights(std::vector<int>& Changed)
+	{
+		Changed.clear();
+		if (FlatLit.size() != Places.size())
+		{
+			FlatLit.assign(Places.size(), -1);
+		}
+		for (int I = 0; I < (int)Places.size(); I++)
+		{
+			if (Places[I].Windows.empty())
+			{
+				continue;
+			}
+			const int8_t Now = FlatLitNow(I) ? 1 : 0;
+			if (FlatLit[I] != Now)
+			{
+				FlatLit[I] = Now;
+				Changed.push_back(I);
+			}
+		}
+	}
+
+	void FWorld::RollDays()
+	{
+		DayRoll++;
+		for (FPerson& P : People)
+		{
+			if (P.Spread <= 0.f)
+			{
+				P.WakeJ = P.BedJ = 0.f;
+				continue;
+			}
+			uint32_t H = (uint32_t)(P.Id * 2654435761u) ^ (uint32_t)(DayRoll * 40503u) ^ Opt.Seed;
+			H |= 1u;
+			Rand(H);
+			// mostly near their usual, now and then a lot off (up before dawn, a late night)
+			const float A = Rand(H) * 2.f - 1.f, B = Rand(H) * 2.f - 1.f;
+			P.WakeJ = P.Spread * A * std::fabs(A);
+			P.BedJ = P.Spread * B * std::fabs(B);
+			// weekends: up later, to bed later (not the children)
+			if (!P.bChild && (Weekday == 4 || Weekday == 5))
+			{
+				P.BedJ += 0.6f * P.Spread;
+			}
+			if (!P.bChild && (Weekday == 4 || Weekday == 5))
+			{
+				P.WakeJ += 0.8f * P.Spread;
+			}
+		}
+	}
+
 	// --- homes -------------------------------------------------------------------------------------------
 
 	bool FWorld::SetHome(const std::string& Household, const std::string& FlatId)
@@ -907,6 +1425,16 @@ namespace LyudPeople
 			return N;
 		};
 		std::vector<std::string> Done;
+		// the townsfolk's flats are given by the generator (townsfolk.json home)
+		for (const FPerson& P : People)
+		{
+			if (P.Home < 0 && !P.HomeId.empty() && !Has(Done, P.Household))
+			{
+				Done.push_back(P.Household);
+				SetHome(P.Household, P.HomeId);
+			}
+		}
+		Done.clear();
 		for (const FPerson& P : People)
 		{
 			if (Has(Done, P.Household))
@@ -918,6 +1446,8 @@ namespace LyudPeople
 			{
 				continue;
 			}
+			// the Academgorodok's people keep to its flats, the town's to the town's buildings
+			auto Ok = [&](int F) { return Places[F].bShell == P.bTown; };
 			int Size = 0;
 			for (const FPerson& Q : People)
 			{
@@ -926,7 +1456,7 @@ namespace LyudPeople
 			int Pick = -1, PickBeds = -1;
 			for (const int F : Flats)
 			{
-				if (Places[F].Residents.empty() && Beds(F) >= Size)
+				if (Ok(F) && Places[F].Residents.empty() && Beds(F) >= Size)
 				{
 					Pick = F;
 					break;
@@ -935,7 +1465,7 @@ namespace LyudPeople
 			// none with enough beds left: the free flat with the most (the rest sleep on a sofa)
 			for (const int F : Flats)
 			{
-				if (Pick < 0 && Places[F].Residents.empty() && Beds(F) > PickBeds)
+				if (Pick < 0 && Ok(F) && Places[F].Residents.empty() && Beds(F) > PickBeds)
 				{
 					Pick = -1;
 					PickBeds = Beds(F);
@@ -943,7 +1473,7 @@ namespace LyudPeople
 			}
 			for (const int F : Flats)
 			{
-				if (Pick < 0 && PickBeds > 0 && Places[F].Residents.empty() && Beds(F) == PickBeds)
+				if (Pick < 0 && PickBeds > 0 && Ok(F) && Places[F].Residents.empty() && Beds(F) == PickBeds)
 				{
 					Pick = F;
 				}
@@ -1085,13 +1615,21 @@ namespace LyudPeople
 	int FWorld::DutyNow(const FPerson& P, bool& bSleep) const
 	{
 		bSleep = false;
-		if (InHours(P.BedTime, P.Wake, Hour))
+		if (InHours(BedOf(P), WakeOf(P), Hour))
 		{
 			bSleep = true;
 			return FindActivity("sleep");
 		}
 		for (const FDuty& D : P.Duties)
 		{
+			if (bDayOff)
+			{
+				const int A = FindActivity(D.Activity);
+				if (A >= 0 && Activities[A].bHolidayOff)
+				{
+					continue;       // a public holiday: no school, the offices shut
+				}
+			}
 			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
 			const bool bDay = (D.Days >> Weekday) & 1;
 			// set off a little early: they go there first
@@ -1105,7 +1643,7 @@ namespace LyudPeople
 
 	float FWorld::FreeHoursLeft(const FPerson& P) const
 	{
-		float Left = P.BedTime - Hour;
+		float Left = BedOf(P) - Hour;
 		if (Left < 0.f)
 		{
 			Left += 24.f;
@@ -1125,49 +1663,82 @@ namespace LyudPeople
 	{
 		const FSlot& Sl = Slots[S];
 		const FPlace& Pl = Places[Sl.Place];
-		if (!A.Slots.empty() && !Has(A.Slots, Sl.Kind))
+		// interned kinds (Index) when the slot and the place have them: no string compares in the hot loop
+		const bool bK = A.bK && Sl.K >= 0 && Pl.K >= 0;
+		if (bK)
 		{
-			return false;
-		}
-		bool bPlace = false;
-		for (const std::string& K : A.Places)
-		{
-			if (K == "home" ? Sl.Place == P.Home : K == Pl.Kind)
+			if (!A.SlotK.empty() && std::find(A.SlotK.begin(), A.SlotK.end(), Sl.K) == A.SlotK.end())
 			{
-				bPlace = true;
+				return false;
 			}
 		}
-		if (!bPlace || Pl.Island < 0 || (Pl.Kind == "snow" && Sl.SnowJob < 0))
+		else if (!A.Slots.empty() && !Has(A.Slots, Sl.Kind))
 		{
 			return false;
 		}
-		if (Sl.Owner >= 0 && Sl.Owner != P.Id && !(Sl.Kind == "bed" && Pl.Kind == "flat" && Sl.Place == P.Home && Sl.Capacity > 1))
+		const bool bBed = bK ? Sl.K == 0 : Sl.Kind == "bed";
+		const bool bSofa = bK ? Sl.K == 1 : Sl.Kind == "sofa";
+		const bool bFlat = bK ? Pl.K == 2 : Pl.Kind == "flat";
+		const bool bSnow = bK ? Pl.K == 3 : Pl.Kind == "snow";
+		bool bPlace = false;
+		if (A.bGather)
+		{
+			// a gathering's activity: only where one of its mode is on now
+			const FGathering* G = GatheringAt(Sl.Place);
+			bPlace = G && (int)G->Mode == A.GatherMode;
+		}
+		else if (A.bStaff)
+		{
+			// at work: their own workplace, a slot of their role (or one for anybody of its staff)
+			const FDuty* D = DutyFor(P, A);
+			bPlace = D && D->Place == Sl.Place && (Sl.Tag.empty() || Sl.Tag == D->Role);
+		}
+		else if (bK)
+		{
+			bPlace = (A.bHome && Sl.Place == P.Home) || std::find(A.PlaceK.begin(), A.PlaceK.end(), Pl.K) != A.PlaceK.end();
+		}
+		else
+		{
+			for (const std::string& K : A.Places)
+			{
+				if (K == "home" ? Sl.Place == P.Home : K == Pl.Kind)
+				{
+					bPlace = true;
+				}
+			}
+		}
+		if (!bPlace || Pl.Island < 0 || (bSnow && Sl.SnowJob < 0))
+		{
+			return false;
+		}
+		if (Sl.Owner >= 0 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
 		{
 			return false;
 		}
 		// a bed: only their own (a sofa at home for a nap is fine)
-		if (Sl.Kind == "bed" && S != P.BedSlot)
+		if (bBed && S != P.BedSlot)
 		{
 			return false;
 		}
 		// nobody else's flat
-		if (Pl.Kind == "flat" && Sl.Place != P.Home)
+		if (bFlat && Sl.Place != P.Home)
 		{
 			return false;
 		}
 		// a sofa somebody of the household sleeps on is theirs from a while before their bedtime
-		if (Sl.Kind == "sofa" && Pl.Kind == "flat")
+		if (bSofa && bFlat)
 		{
 			for (const int Id : Pl.Residents)
 			{
 				const FPerson& Q = People[Id];
-				if (Id != P.Id && Q.BedSlot == S && InHours(Q.BedTime - 1.6f, Q.Wake, Hour))
+				if (Id != P.Id && Q.BedSlot == S && InHours(BedOf(Q) - 1.6f, WakeOf(Q), Hour))
 				{
 					return false;
 				}
 			}
 		}
-		return Sl.Free(P.Id);
+		// away (work in another town, school, the lab's gate): a door to leave the world by, not a seat: no room to keep
+		return A.bAway || Sl.Free(P.Id);
 	}
 
 	int FWorld::PickSlot(const FPerson& P, const FActivity& A, float& OutMinutes) const
@@ -1181,18 +1752,52 @@ namespace LyudPeople
 		const int Island = P.Island;
 		int Best = -1;
 		float BestScore = 1e30f;
-		for (int Pi = 0; Pi < (int)Places.size(); Pi++)
+		// the places to look at: the activity's kinds (indexed), their home, a gathering's places, their own workplace
+		thread_local std::vector<int> Cand;
+		Cand.clear();
+		if (A.bGather)
+		{
+			for (const FGathering& G : Gatherings)
+			{
+				if (InHours(G.From, G.To, Hour) && (int)G.Mode == A.GatherMode)
+				{
+					Cand.insert(Cand.end(), G.Places.begin(), G.Places.end());
+				}
+			}
+		}
+		else if (A.bStaff)
+		{
+			if (const FDuty* D = DutyFor(P, A))
+			{
+				Cand.push_back(D->Place);
+			}
+		}
+		else if (Indexed == Places.size())
+		{
+			Cand = A.PlaceIdx;
+			if (P.Home >= 0 && Has(A.Places, "home"))
+			{
+				Cand.push_back(P.Home);
+			}
+		}
+		else
+		{
+			for (int Pi = 0; Pi < (int)Places.size(); Pi++)
+			{
+				bool bKind = false;
+				for (const std::string& K : A.Places)
+				{
+					bKind |= K == "home" ? Pi == P.Home : K == Places[Pi].Kind;
+				}
+				if (bKind)
+				{
+					Cand.push_back(Pi);
+				}
+			}
+		}
+		for (const int Pi : Cand)
 		{
 			const FPlace& Pl = Places[Pi];
-			bool bKind = false;
-			for (const std::string& K : A.Places)
-			{
-				bKind |= K == "home" ? Pi == P.Home : K == Pl.Kind;
-			}
-			if (!bKind)
-			{
-				continue;
-			}
 			for (const int S : Pl.Slots)
 			{
 				if (!SlotFits(P, A, S))
@@ -1256,6 +1861,10 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		if (A.bSunrise && !(Hour > Sunrise - 0.6f && Hour < Sunrise + 0.3f))
+		{
+			return -1e9f;
+		}
 		float Minutes = 0.f;
 		const int S = PickSlot(P, A, Minutes);
 		if (S < 0)
@@ -1291,6 +1900,15 @@ namespace LyudPeople
 			}
 		}
 		Score -= TravelH * Opt.WalkCostPerHour;
+		// a holiday on: the town comes out (the sociable ones most; children and the old a little less late at night)
+		if (A.bGather)
+		{
+			if (const FGathering* G = GatheringAt(Sl.Place))
+			{
+				const float Late = (Hour > 22.f || Hour < 5.f) && (P.bChild || P.Age > 70) ? 0.4f : 1.f;
+				Score += G->Pull * (0.45f + 0.9f * P.Social) * Late;
+			}
+		}
 		// friends there: company draws people (and the club's regulars)
 		if (A.bTalk || Places[Sl.Place].Kind == "club")
 		{
@@ -1353,15 +1971,19 @@ namespace LyudPeople
 		if (Slot >= 0)
 		{
 			Slots[Slot].Users.push_back(P.Id);
+			P.Reserved = Slot;
 		}
 	}
 
 	void FWorld::Unreserve(FPerson& P)
 	{
-		for (FSlot& S : Slots)
+		// one slot at a time (Reserve): only that one to let go of (a slot's users cleared meanwhile: nothing there)
+		if (P.Reserved >= 0 && P.Reserved < (int)Slots.size())
 		{
-			S.Users.erase(std::remove(S.Users.begin(), S.Users.end(), P.Id), S.Users.end());
+			std::vector<int>& U = Slots[P.Reserved].Users;
+			U.erase(std::remove(U.begin(), U.end(), P.Id), U.end());
 		}
+		P.Reserved = -1;
 	}
 
 	void FWorld::OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const
@@ -1382,6 +2004,11 @@ namespace LyudPeople
 				}
 				return;
 			}
+		}
+		if (Town.Inside(From) && Town.Inside(To))
+		{
+			TownWay(From, To, Out);
+			return;
 		}
 		std::vector<V3> Pts;
 		if (!bHasGround || !Ground.FindPath(From, To, LyudAnimals::EKind::Dog, Pts))
@@ -1527,7 +2154,14 @@ namespace LyudPeople
 			}
 			P.Partner = -1;
 		}
-		Reserve(P, Slot);
+		if (A.bAway)
+		{
+			Unreserve(P);       // gone from the world: holds no seat (any number go out by one door)
+		}
+		else
+		{
+			Reserve(P, Slot);
+		}
 		P.Activity = Act;
 		P.Place = Sl.Place;
 		P.Slot = Slot;
@@ -1657,7 +2291,7 @@ namespace LyudPeople
 			float Minutes = 0.f;
 			const int S = PickSlot(P, Activities[Duty], Minutes);
 			// it lasts till the duty's end (sleep: till they wake)
-			float End = bSleep ? P.Wake : 0.f;
+			float End = bSleep ? WakeOf(P) : 0.f;
 			for (const FDuty& D : P.Duties)
 			{
 				if (D.Activity == Activities[Duty].Id)
@@ -1675,6 +2309,8 @@ namespace LyudPeople
 				Start(P, Duty, S, Left * 60.f + 1.f, bSnap, bSleep ? "bedtime" : "duty");
 				return;
 			}
+			// nowhere for the duty now (its places full or cut off): free time for a while, not called back every step
+			P.DutyBlockedUntil = Time + 900.0;
 		}
 		int Best = -1, BestSlot = -1;
 		float BestScore = -1e8f;
@@ -2022,7 +2658,13 @@ namespace LyudPeople
 		}
 		P.State = EState::Doing;
 		P.Pose = A.Pose;
-		P.Yaw = A.Pose == EPose::Look ? SunYaw : Sl.Yaw;
+		P.Yaw = A.Pose == EPose::Look ? (A.bSunrise ? SunriseYaw : SunYaw) : Sl.Yaw;
+		if (A.bGather)
+		{
+			// a holiday: face the stage (or the fireworks over the sea) if there is one, else the spot's way
+			const FGathering* G = GatheringAt(Sl.Place);
+			P.Yaw = G && G->bFace ? YawTo(P.Pos, G->Face) : Sl.Yaw;
+		}
 	}
 
 	void FWorld::Leave(FPerson& P)
@@ -2093,7 +2735,8 @@ namespace LyudPeople
 		{
 			const FSlot& Sl = Slots[S];
 			const FPlace& Pl = Places[Sl.Place];
-			if (S == P.Slot || Pl.bIndoor || Pl.Island != Island || !Has(A.Places, Pl.Kind) || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
+			const bool bKind = A.bGather ? GatheringAt(Sl.Place) != nullptr : Has(A.Places, Pl.Kind);
+			if (S == P.Slot || Pl.bIndoor || Pl.Island != Island || !bKind || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
 			{
 				continue;
 			}
@@ -2316,6 +2959,12 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		// everybody's day is rolled once a day at 14:00 (tonight's bedtime, tomorrow's waking)
+		if (PrevHour >= 0.f && PrevHour < 14.f && Hour >= 14.f)
+		{
+			RollDays();
+		}
+		PrevHour = Hour;
 		PairTimer -= Dt;
 		if (PairTimer <= 0.f)
 		{
@@ -2388,7 +3037,7 @@ namespace LyudPeople
 				bool bSleep = false;
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep);
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
 				// a stretch of snow half cleared is finished first
 				const bool bMidSweep = P.SweepT >= 0.f;
 				if ((Time >= P.Until && !bMidSweep) || bDutyCalls || (P.Path.empty() && !bMidSweep && Interrupt(P, Dt)))
@@ -2525,7 +3174,7 @@ namespace LyudPeople
 			P.BikeMode = 0;
 			P.BikeAct = EBikeAct::None;
 			// how tired and hungry they'd be at this hour
-			float Awake = Hour - P.Wake;
+			float Awake = Hour - WakeOf(P);
 			if (Awake < 0.f)
 			{
 				Awake += 24.f;
@@ -2985,9 +3634,36 @@ namespace LyudPeople
 		char Buf[64];
 		std::snprintf(Buf, sizeof Buf, "%02d:%02d ", (int)Hour, (int)(std::fmod(Hour, 1.f) * 60.f));
 		S = Buf;
+		// the story's people one by one; the townsfolk counted by what they do (there are hundreds)
+		std::vector<std::pair<std::string, int>> Town;
+		int NTown = 0;
 		for (const FPerson& P : People)
 		{
-			S += P.Key + "=" + (P.Activity >= 0 ? Activities[P.Activity].Id : std::string("-")) + "/" + StateName(P.State) + " ";
+			const std::string Act = P.Activity >= 0 ? Activities[P.Activity].Id : std::string("-");
+			if (!P.bTown)
+			{
+				S += P.Key + "=" + Act + "/" + StateName(P.State) + " ";
+				continue;
+			}
+			NTown++;
+			auto It = std::find_if(Town.begin(), Town.end(), [&](const std::pair<std::string, int>& E) { return E.first == Act; });
+			if (It == Town.end())
+			{
+				Town.emplace_back(Act, 1);
+			}
+			else
+			{
+				It->second++;
+			}
+		}
+		if (NTown > 0)
+		{
+			std::sort(Town.begin(), Town.end(), [](const std::pair<std::string, int>& A, const std::pair<std::string, int>& B) { return A.second > B.second; });
+			S += "| townsfolk " + std::to_string(NTown) + ":";
+			for (const auto& E : Town)
+			{
+				S += " " + E.first + " " + std::to_string(E.second);
+			}
 		}
 		return S;
 	}
