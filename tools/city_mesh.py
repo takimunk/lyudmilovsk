@@ -331,12 +331,20 @@ def seawall(mesh):
         if steps:
             _box(prim, o, a, n, -1.9, 1.9, -1.5, 0.0, lower - 1.2, lower + 0.8, top=False)
         _box(prim, o, a, n, -half, half, -1.5, 0.0, lower + 0.8, upper)
+        # the sitting kerb, open where the steps come up and where the pier leaves the promenade
+        gaps = []
         if steps:
             _grand(kerb, o, a, n, 3.0, lower, upper, tread=0.32, rise_t=0.17, cheeks=True)
-            _box(kerb, o, a, n, -half, -1.9, -0.45, 0.02, upper - 0.05, upper + 0.45)
-            _box(kerb, o, a, n, 1.9, half, -0.45, 0.02, upper - 0.05, upper + 0.45)
-        else:
-            _box(kerb, o, a, n, -half, half, -0.45, 0.02, upper - 0.05, upper + 0.45)
+            gaps.append((-1.9, 1.9))
+        px, py = C.to_map(C.SEAWALL_S, PIER_Y)
+        up = (px - o[0]) * a[0] + (py - o[1]) * a[1]
+        if abs(up) < half + PIER_W / 2 + 0.5:
+            gaps.append((up - PIER_W / 2 - 0.5, up + PIER_W / 2 + 0.5))
+        u = -half
+        for g0, g1 in sorted(gaps) + [(half, half)]:
+            if g0 > u:
+                _box(kerb, o, a, n, u, min(g0, half), -0.45, 0.02, upper - 0.05, upper + 0.45)
+            u = max(u, g1)
 
 
 PIER_Y = 905.0

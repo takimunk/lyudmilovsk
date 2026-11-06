@@ -39,6 +39,8 @@ public:
 
 	/** External control: lights or darkens one window (city_plan.json window id). Turns the built-in schedule off. */
 	void SetWindowLit(FName WindowId, bool bLit);
+	/** Every window of a flat or a promenade unit (its city_plan.json id). */
+	void SetFlatLit(FName FlatId, bool bLit);
 	bool IsWindowLit(FName WindowId) const;
 	/** Back to the built-in schedule for all windows. */
 	void UseSchedule();
@@ -56,7 +58,8 @@ private:
 	{
 		FName Id;
 		FTransform Pane;          // the plane's transform (unit 1 m plane scaled to the window)
-		uint32 Hash = 0;
+		uint32 Hash = 0;          // of its flat
+		uint32 WinHash = 0;       // of the window itself
 		bool bShop = false;
 		bool bLamp = false;        // a street lamp's head (city_plan.json "lamps"): lit in the dark, not the life's
 		bool bUpper = false;
@@ -68,6 +71,7 @@ private:
 	};
 	TArray<FWindow> Windows;
 	TMap<FName, int32> ById;
+	TMap<FName, TArray<int32>> ByFlat;
 	bool bDirty = true;
 	float Accum = 0.f;
 

@@ -1,7 +1,7 @@
 """Offscreen shots of the town's terraces (docs/city_plan.md): a camera at a map point looking at another, at a given
 calendar time, 1920x1080. No PIE, no input, no window. Screenshots land in Saved/Screenshots/Mac in the order of SHOTS.
 
-  tools/play_offscreen.sh /Game/Scene01/Lvl_Scene01 unreal/scripts/shoot_city.py   (RES=1920x1080 GREP=CITYSHOT)
+  tools/play_offscreen.sh /Game/Scene01/Lvl_Scene01 unreal/scripts/shoot_city_terraces.py   (RES=1920x1080 GREP=CITYSHOT)
   CITY_SHOTS=pier,high runs just those; CITY_FACE_Y overrides the portal face (Unreal Y cm, default 790)
 """
 import datetime

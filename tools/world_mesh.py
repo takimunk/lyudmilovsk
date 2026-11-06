@@ -218,7 +218,10 @@ def write_glb(out, meshes, tex_dir):
             gl["images"].append({"uri": uri})
             gl["textures"].append({"source": len(gl["images"]) - 1, "sampler": 0})
             m["pbrMetallicRoughness"]["baseColorTexture"] = {"index": len(gl["textures"]) - 1}
-            m["pbrMetallicRoughness"]["baseColorFactor"] = [1, 1, 1, 1]
+            # the town's materials keep their tint over the photo (light and dark concrete from one texture); the older
+            # world materials stay as they were (white factor)
+            k = [min(1.0, c / 0.6) for c in rgb] if name.startswith("City_") else [1, 1, 1]
+            m["pbrMetallicRoughness"]["baseColorFactor"] = k + [1]
         gl["materials"].append(m)
         mat_ids[name] = len(gl["materials"]) - 1
         return mat_ids[name]

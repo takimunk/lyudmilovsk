@@ -940,11 +940,12 @@ def build_outdoor(grid):
     for k, y in enumerate(range(int(W.PROMENADE_Y[0]) + 30, int(W.PROMENADE_Y[1]), 60)):
         x = W.shore_x(y) - 10.0
         places.append(stand("beach_%d" % k, "beach", map_to_ue(x, y, 0.0)[:2], 0.0, grid, n=4, spread=1.5, tag="beach"))
-        xb = W.shore_x(y) - (W.BEACH_W - 5.0) - 1.6
+        xb = W.shore_x(y) - 62.0                          # on the promenade (T0), backs to W1 (docs/city_plan.md)
         places.append(bench("promenade_bench_%d" % k, "promenade_bench", map_to_ue(xb, y, 0.0)[:2], 0.0, grid,
                             tag="promenade"))
-    # the town square: benches round its two halves, facing their middles
-    cx, cy = W.TOWN_CENTER
+    # the town square (Sun Square, city_plan P-SQUARE): benches round its two halves, facing their middles
+    import city_plan
+    cx, cy = city_plan.to_map(150.0, 905.0)
     for k, (ox, oy) in enumerate(((-30.0, -25.0), (35.0, 30.0))):
         c0 = map_to_ue(cx + ox, cy + oy, 0.0)
         places.append(stand("town_square_%d" % k, "town_square", c0[:2], 0.0, grid, n=0, tag="town"))

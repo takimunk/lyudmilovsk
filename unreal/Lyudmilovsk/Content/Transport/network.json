@@ -25,7 +25,7 @@
     {"id": "polar",   "name": "transport.station.polar",   "at": [-360.0, 1660.0], "deck": 16.0,     "style": "star", "schema": [6, 1]},
     {"id": "mayak",   "name": "transport.station.mayak",   "at": [95.0, -400.0],   "deck": 30.0,     "style": "lantern", "schema": [1, 9]},
     {"id": "amber",   "name": "transport.station.amber",   "at": [95.0, 640.0],    "deck": -28.0,    "style": "arches", "schema": [1, 4]},
-    {"id": "horizon", "name": "transport.station.horizon", "at": [-1120.0, 1010.0], "deck": 9.0,     "style": "folded", "schema": [9, 4]}
+    {"id": "horizon", "name": "transport.station.horizon", "at": [-1120.0, 1010.0], "deck": 4.5,     "style": "folded", "schema": [9, 4]}
   ],
   "lines": [
     {"id": "sun", "name": "transport.line.sun", "color": "#E8962E", "number": 1,

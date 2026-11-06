@@ -105,8 +105,11 @@ bool ALyudCityWindows::Build()
 				Win.Pane = FTransform(Rot, At, Scale);
 				// each flat keeps one lamp colour, now and then a window shows the TV
 				const uint32 WH = HashName(Win.Id.ToString());
+				Win.WinHash = WH;
 				Win.Tint = bShop ? 3 : (Frac(WH, 7) < 0.15f ? 2 : (Frac(FlatHash, 3) < 0.7f ? 0 : 1));
-				ById.Add(Win.Id, Windows.Add(Win));
+				const int32 Index = Windows.Add(Win);
+				ById.Add(Win.Id, Index);
+				ByFlat.FindOrAdd(FName(*O->GetStringField(TEXT("id")))).Add(Index);
 			}
 		}
 	};
@@ -214,7 +217,7 @@ bool ALyudCityWindows::ScheduleLit(const FWindow& W, const FDateTime& Now, float
 	}
 	// not every room at once: the lower (kitchen) window most evenings, the upper rooms now and then
 	const float P = W.bUpper ? 0.55f : 0.85f;
-	return Frac(HashName(W.Id.ToString()), Day * 7 + uint32(H)) < P;
+	return Frac(W.WinHash, Day * 7 + uint32(H)) < P;
 }
 
 void ALyudCityWindows::Refresh(bool bForceRebuild)
@@ -398,14 +401,19 @@ bool ULyudCityWindowsSubsystem::IsWindowLit(FName WindowId) const
 
 void ULyudCityWindowsSubsystem::SetFlatLit(FName FlatId, bool bLit)
 {
-	ALyudCityWindows* A = Actor.Get();
-	if (!A)
+	if (ALyudCityWindows* A = Actor.Get())
 	{
-		return;
+		A->SetFlatLit(FlatId, bLit);
 	}
-	const FString Prefix = FlatId.ToString() + TEXT("-w");
-	for (int32 K = 1; K <= 4; K++)
+}
+
+void ALyudCityWindows::SetFlatLit(FName FlatId, bool bLit)
+{
+	if (const TArray<int32>* Is = ByFlat.Find(FlatId))
 	{
-		A->SetWindowLit(FName(*FString::Printf(TEXT("%s%d"), *Prefix, K)), bLit);
+		for (int32 I : *Is)
+		{
+			Windows[I].External = bLit ? 1 : 0;
+		}
 	}
 }
