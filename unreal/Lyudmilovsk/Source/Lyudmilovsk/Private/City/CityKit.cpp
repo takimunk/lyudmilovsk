@@ -734,6 +734,7 @@ namespace CityKit
 		else if (Skin == TEXT("granite")) { Top = Make(Srgb(122, 116, 112), 0.7f, EPattern::Setts, 0.2f); Side = Make(Srgb(112, 106, 104), 0.75f, EPattern::Masonry, 0.3f); }
 		else if (Skin == TEXT("gravel")) { Top = Make(Srgb(178, 158, 128), 0.95f, EPattern::Gravel, 0.f); Side = Make(Srgb(132, 124, 112), 0.9f); }
 		else if (Skin == TEXT("rubber")) { Top = Make(Srgb(152, 64, 54), 0.95f, EPattern::Rubber, 0.f); Side = Make(Srgb(90, 88, 84), 0.9f); }
+		else if (Skin == TEXT("basin")) { Top = Make(Srgb(78, 84, 76), 0.6f); Side = Make(Srgb(96, 98, 92), 0.7f); }
 		else if (Skin == TEXT("boards")) { Top = Make(Srgb(128, 96, 66), 0.75f, EPattern::Boards, 0.14f); Side = Make(Srgb(96, 72, 50), 0.8f); }
 		else { Top = Concrete(); Side = Concrete(); }
 	}

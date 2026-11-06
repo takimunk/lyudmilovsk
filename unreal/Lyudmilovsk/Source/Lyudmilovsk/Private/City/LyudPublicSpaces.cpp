@@ -20,6 +20,7 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "Sky/LyudSky.h"
+#include "World/LyudFountain.h"
 
 static TAutoConsoleVariable<int32> CVarPublicSpaces(TEXT("lyud.City.PublicSpaces"), 1,
 	TEXT("The town's public spaces (ALyudPublicSpaces: promenade, square, park, fair, beach furniture): 1 built when the outdoor map starts, 0 not."));
@@ -38,7 +39,29 @@ namespace
 {
 	const TCHAR* PropMatPath = TEXT("/Game/City/M_CityProp.M_CityProp");
 	const TCHAR* WaterMatPath = TEXT("/Game/Academgorodok/Fountain/M_FountainWater.M_FountainWater");
+	const TCHAR* StreamMatPath = TEXT("/Game/Academgorodok/Fountain/M_FountainStream.M_FountainStream");
 	const TCHAR* LayoutFile = TEXT("City/public_spaces.json");
+
+	/** A vertex of a flowing sheet for M_FountainStream: UV0 = (across in strands, the water's flight time s),
+	 *  UV1 = (0..1 along a fall, where it tears; kind 2 = a sheet). */
+	void SheetVert(CityKit::FMesh& M, const FVector& P, const FVector& N, float Across, float Time, float Tear)
+	{
+		CityKit::FSkin S;
+		M.Vert(P, N, S, FVector2f(Across * 14.f, Time));
+		M.UV1.Last() = FVector2f(Tear, 2.f);
+	}
+	/** A strip of sheet between two cross-sections (each: left and right point, time, tear). */
+	void SheetStrip(CityKit::FMesh& M, const FVector& L0, const FVector& R0, float T0, float A0, const FVector& L1, const FVector& R1,
+		float T1, float A1, const FVector& N, float W)
+	{
+		const int32 B = M.Pos.Num();
+		SheetVert(M, L0, N, 0.f, T0, A0);
+		SheetVert(M, R0, N, W, T0, A0);
+		SheetVert(M, R1, N, W, T1, A1);
+		SheetVert(M, L1, N, 0.f, T1, A1);
+		M.Tri(B, B + 1, B + 2, N);
+		M.Tri(B, B + 2, B + 3, N);
+	}
 
 	FVector Vec(const TArray<TSharedPtr<FJsonValue>>& A, double Scale = 100.0)
 	{
@@ -256,6 +279,36 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			for (const TSharedPtr<FJsonValue>& V : *Ws)
 			{
 				const TSharedPtr<FJsonObject> W = V->AsObject();
+				const TArray<TSharedPtr<FJsonValue>>* RectF = nullptr;
+				if (W->TryGetArrayField(TEXT("rect"), RectF))
+				{
+					// a rectangular basin of the Cascade: ripples from where the channel pours in
+					const float Ln = (*RectF)[0]->AsNumber(), Wd = (*RectF)[1]->AsNumber();
+					const FVector At = VecField(W, TEXT("at")), Ring = VecField(W, TEXT("ring"));
+					const FRotator Rot(0.f, W->GetNumberField(TEXT("yaw")), 0.f);
+					CityKit::FMesh Bm;
+					CityKit::FSkin S;
+					const FVector Rl = Rot.UnrotateVector(Ring - At) / 100.0;           // the pour point in the basin's frame, m
+					const int32 NX = 8, NY = 4;
+					for (int32 I = 0; I < NX; I++) for (int32 J = 0; J < NY; J++)
+					{
+						auto Pt = [&](int32 A, int32 B) { return FVector(-Ln * 0.5f + Ln * A / NX, -Wd * 0.5f + Wd * B / NY, 0.f); };
+						auto Uv = [&](const FVector& Q) { return FVector2f(Q.X - Rl.X, Q.Y - Rl.Y); };
+						const FVector Q0 = Pt(I, J), Q1 = Pt(I + 1, J), Q2 = Pt(I + 1, J + 1), Q3 = Pt(I, J + 1);
+						Bm.QuadUV(Q0, Q1, Q2, Q3, Uv(Q0), Uv(Q1), Uv(Q2), Uv(Q3), S);
+					}
+					UStaticMesh* BMesh = Bm.Build(this, *(TEXT("SM_Basin_") + W->GetStringField(TEXT("id"))), false);
+					Meshes.Add(BMesh);
+					UMaterialInstanceDynamic* Mid = WaterMat ? UMaterialInstanceDynamic::Create(WaterMat, this) : nullptr;
+					const bool bSpring = W->GetStringField(TEXT("kind")) == TEXT("spring");
+					if (Mid) Mid->SetVectorParameterValue(TEXT("Ring"), bSpring ? FLinearColor(0.15f, 0.5f, 0.6f, 3.f) : FLinearColor(0.25f, 0.9f, 0.9f, 4.f));
+					UStaticMeshComponent* C = MakePart(BMesh, TEXT("Basin_") + W->GetStringField(TEXT("id")), false, Mid, 30000.f, FTransform(Rot, At));
+					C->SetCastShadow(false);
+					C->bAffectDistanceFieldLighting = false;
+					C->bAffectDynamicIndirectLighting = false;
+					Cascade.Add(C);
+					continue;
+				}
 				const TArray<TSharedPtr<FJsonValue>>& R = W->GetArrayField(TEXT("r"));
 				const float Rx = R[0]->AsNumber(), Ry = R[1]->AsNumber();
 				const FVector At = VecField(W, TEXT("at"));
@@ -283,6 +336,95 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				I->SetCastShadow(false);
 				PondIce.Add(I);
 			}
+		}
+	}
+
+	// the Cascade: water sheets down the stepped channels and along the rills (one mesh, the stream material), the
+	// basins' still water above (with the pond); runs with the town's fountain
+	{
+		CityKit::FMesh Sheet;
+		const TArray<TSharedPtr<FJsonValue>>* Cs = nullptr;
+		if (Doc->TryGetArrayField(TEXT("cascades"), Cs))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *Cs)
+			{
+				const TSharedPtr<FJsonObject> C = V->AsObject();
+				const FVector Foot = VecField(C, TEXT("foot"), 1.0);
+				const TArray<TSharedPtr<FJsonValue>>& Dn = C->GetArrayField(TEXT("down"));
+				const TArray<TSharedPtr<FJsonValue>>& Ac = C->GetArrayField(TEXT("across"));
+				const FVector Down(Dn[0]->AsNumber(), Dn[1]->AsNumber(), 0.0), Across(Ac[0]->AsNumber(), Ac[1]->AsNumber(), 0.0);
+				const float W = C->GetNumberField(TEXT("width")) - 0.06f, Rise = C->GetNumberField(TEXT("rise")), Tread = C->GetNumberField(TEXT("tread"));
+				const float Bed = C->GetNumberField(TEXT("bed_below"));
+				const int32 N = (int32)C->GetNumberField(TEXT("steps"));
+				const float Film = 0.018f, Vh = 0.7f;                 // a film 2 cm deep sliding at 0.7 m/s
+				const float FallT = FMath::Sqrt(2.f * Rise / 9.81f);
+				float T = 0.f;
+				// from the head down: step k's tread spans (k+1)*tread .. k*tread from the foot, its bed at foot + (k+1)*rise - bed
+				for (int32 K = N - 1; K >= 0; K--)
+				{
+					const float Z = (K + 1) * Rise - Bed + Film;
+					const FVector A = Foot - Down * ((K + 1) * Tread) + FVector(0, 0, Z), B = Foot - Down * (K * Tread) + FVector(0, 0, Z);
+					const float T1 = T + Tread / Vh;
+					SheetStrip(Sheet, A - Across * W * 0.5f, A + Across * W * 0.5f, T, 0.f, B - Across * W * 0.5f, B + Across * W * 0.5f, T1, 0.02f,
+						FVector::UpVector, W);
+					T = T1;
+					// over the lip: a short ballistic curve down to the next tread (or the basin), a few segments
+					const float Zn = K > 0 ? K * Rise - Bed + Film : 0.27f;
+					const float H = Z - Zn;
+					const float Tf = FMath::Sqrt(2.f * FMath::Max(H, 0.02f) / 9.81f);
+					FVector PrevL = B - Across * W * 0.5f, PrevR = B + Across * W * 0.5f;
+					float PrevT = T;
+					for (int32 J = 1; J <= 4; J++)
+					{
+						const float Tj = Tf * J / 4.f;
+						const FVector P = B + Down * (Vh * Tj) - FVector(0, 0, 4.905f * Tj * Tj);
+						const FVector Nn = (Down * (9.81f * Tj) + FVector(0, 0, Vh)).GetSafeNormal();
+						SheetStrip(Sheet, PrevL, PrevR, PrevT, (J - 1) / 4.f * 0.6f, P - Across * W * 0.5f, P + Across * W * 0.5f, T + Tj,
+							J / 4.f * 0.6f, Nn, W);
+						PrevL = P - Across * W * 0.5f;
+						PrevR = P + Across * W * 0.5f;
+						PrevT = T + Tj;
+					}
+					T += Tf;
+				}
+				(void)FallT;
+			}
+		}
+		const TArray<TSharedPtr<FJsonValue>>* Rs = nullptr;
+		if (Doc->TryGetArrayField(TEXT("rills"), Rs))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *Rs)
+			{
+				const TSharedPtr<FJsonObject> R = V->AsObject();
+				const TArray<TSharedPtr<FJsonValue>>& Pts = R->GetArrayField(TEXT("points"));
+				const float W = R->GetNumberField(TEXT("width")) - 0.05f;
+				float T = 0.f;
+				for (int32 I = 0; I + 1 < Pts.Num(); I++)
+				{
+					const FVector A = Vec(Pts[I]->AsArray(), 1.0), B = Vec(Pts[I + 1]->AsArray(), 1.0);
+					const FVector D = (B - A).GetSafeNormal2D(), S(-D.Y, D.X, 0.0);
+					const int32 Segs = FMath::Max(1, FMath::CeilToInt((B - A).Size2D() / 4.0));
+					for (int32 J = 0; J < Segs; J++)
+					{
+						const FVector P0 = FMath::Lerp(A, B, double(J) / Segs), P1 = FMath::Lerp(A, B, double(J + 1) / Segs);
+						const float T1 = T + (P1 - P0).Size() / 0.45f;            // a gentle rill, ~0.45 m/s
+						SheetStrip(Sheet, P0 - S * W * 0.5f, P0 + S * W * 0.5f, T, 0.f, P1 - S * W * 0.5f, P1 + S * W * 0.5f, T1, 0.f, FVector::UpVector, W);
+						T = T1;
+					}
+				}
+			}
+		}
+		if (Sheet.Idx.Num() > 0)
+		{
+			UMaterialInterface* StreamMat = LoadObject<UMaterialInterface>(nullptr, StreamMatPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+			UStaticMesh* Mesh = Sheet.Build(this, TEXT("SM_CascadeWater"), false);
+			Meshes.Add(Mesh);
+			Tris += Sheet.Idx.Num() / 3;
+			UStaticMeshComponent* C = MakePart(Mesh, TEXT("CascadeWater"), false, StreamMat, 30000.f, FTransform::Identity);
+			C->SetCastShadow(false);
+			C->bAffectDistanceFieldLighting = false;
+			C->bAffectDynamicIndirectLighting = false;
+			Cascade.Add(C);
 		}
 	}
 
@@ -494,6 +636,13 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 		CheckTimer = 2.f;
 		UpdateNight(false);
 		UpdateSeason(false);
+		// the Cascade runs when the town's fountain does (its season, its switch)
+		bool bRun = false;
+		if (const ULyudFountainSubsystem* FS = GetWorld()->GetSubsystem<ULyudFountainSubsystem>())
+		{
+			for (ALyudFountain* F : FS->GetFountains()) if (F && F->ActorHasTag(TEXT("City")) && F->IsRunning()) bRun = true;
+		}
+		for (UStaticMeshComponent* C : Cascade) if (C) C->SetVisibility(bRun);
 		const bool bShow = CVarCityShow.GetValueOnGameThread() != 0;
 		if (bShow != bShown)
 		{
