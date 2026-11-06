@@ -195,11 +195,11 @@ void ALyudCityWindows::Refresh(bool bForceRebuild)
 	// the sky's shown time (the calendar plus lyud.SkyHourOffset), so the windows and the sun agree
 	FDateTime Now = UGameCalendar::NowIn(World);
 	float SunAlt = -10.f;
-	for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
+	TActorIterator<ALyudSky> It(GetWorld());
+	if (It)
 	{
 		Now = It->ShownTime();
 		SunAlt = It->SunAltitude();
-		break;
 	}
 	const bool bAll = CVarCityWindowsAll.GetValueOnGameThread() != 0;
 	for (FWindow& W : Windows)
