@@ -440,7 +440,8 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			}
 		}
 	}
-	const int32 PoolN = FMath::Clamp(CVarCityStreetLights.GetValueOnGameThread(), 0, 64);
+	// the pool is made once at its largest; lyud.City.StreetLights says how many of it are used (changeable in play)
+	const int32 PoolN = FMath::Clamp(FMath::Max(CVarCityStreetLights.GetValueOnGameThread(), 24), 0, 64);
 	for (int32 I = 0; I < PoolN; I++)
 	{
 		UPointLightComponent* L = NewObject<UPointLightComponent>(this, *FString::Printf(TEXT("LampLight%d"), I));
@@ -596,7 +597,10 @@ void ALyudPublicSpaces::UpdatePool()
 	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (!PC || !PC->PlayerCameraManager) return;
 	const FVector Cam = PC->PlayerCameraManager->GetCameraLocation();
-	if (FVector::DistSquared(Cam, LastPoolCam) < 150.f * 150.f) return;     // moved less than 1.5 m: same lamps
+	static int32 LastUse = -1;
+	const int32 UseNow = CVarCityStreetLights.GetValueOnGameThread();
+	if (UseNow == LastUse && FVector::DistSquared(Cam, LastPoolCam) < 150.f * 150.f) return;     // moved less than 1.5 m: same lamps
+	LastUse = UseNow;
 	LastPoolCam = Cam;
 	// the nearest lamp heads (a partial selection over ~150: cheap at 4 Hz)
 	TArray<TPair<float, int32>> Near;
@@ -607,10 +611,11 @@ void ALyudPublicSpaces::UpdatePool()
 		if (D < 9000.f * 9000.f) Near.Emplace(D, I);
 	}
 	Near.Sort([](const TPair<float, int32>& A, const TPair<float, int32>& B) { return A.Key < B.Key; });
+	const int32 Use = FMath::Clamp(CVarCityStreetLights.GetValueOnGameThread(), 0, Pool.Num());
 	for (int32 K = 0; K < Pool.Num(); K++)
 	{
 		UPointLightComponent* L = Pool[K];
-		if (K < Near.Num())
+		if (K < Near.Num() && K < Use)
 		{
 			const int32 I = Near[K].Value;
 			const FName Kind = LampKinds[I];
