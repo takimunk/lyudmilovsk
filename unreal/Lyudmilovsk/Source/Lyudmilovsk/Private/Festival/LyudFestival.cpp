@@ -126,6 +126,21 @@ namespace
 		return FMath::Clamp(Want, 1150.f, FMath::Max(1150.f, V.Radius * 0.72f));
 	}
 
+	/** "2026-10-24" into its numbers (the saved triggers' days). */
+	bool ParseDateKey(const FString& S, int32& Y, int32& M, int32& D)
+	{
+		TArray<FString> P;
+		S.ParseIntoArray(P, TEXT("-"));
+		if (P.Num() != 3 || !P[0].IsNumeric() || !P[1].IsNumeric() || !P[2].IsNumeric())
+		{
+			return false;
+		}
+		Y = FCString::Atoi(*P[0]);
+		M = FCString::Atoi(*P[1]);
+		D = FCString::Atoi(*P[2]);
+		return true;
+	}
+
 	/** Where the tree stands (before grounding): toward the stage, turned to halfway between two of the strings across
 	 *  the square (they run at Yaw + 30 + k*60), so no string passes over it. */
 	FVector TreeSpot(const FLyudVenue& V)
@@ -331,7 +346,7 @@ void ULyudFestivalSubsystem::LoadFired()
 	{
 		FString Trigger, Day;
 		LyudFest::FDate D;
-		if (S.Split(TEXT("|"), &Trigger, &Day) && FCString::Sscanf(*Day, TEXT("%d-%d-%d"), &D.Y, &D.M, &D.D) == 3)
+		if (S.Split(TEXT("|"), &Trigger, &Day) && ParseDateKey(Day, D.Y, D.M, D.D))
 		{
 			Calendar->Fire(TCHAR_TO_UTF8(*Trigger), D);
 		}
@@ -367,7 +382,7 @@ void ULyudFestivalSubsystem::CheckFirstSnow(const FDateTime& Now)
 	for (const FString& S : FiredTriggers)
 	{
 		int32 Y = 0, Mo = 0, D = 0;
-		if (S.StartsWith(TEXT("first_snow|")) && FCString::Sscanf(*S.Mid(11), TEXT("%d-%d-%d"), &Y, &Mo, &D) == 3 && (Mo >= 10 ? Y : Y - 1) == Winter)
+		if (S.StartsWith(TEXT("first_snow|")) && ParseDateKey(S.Mid(11), Y, Mo, D) && (Mo >= 10 ? Y : Y - 1) == Winter)
 		{
 			return;
 		}
@@ -377,7 +392,8 @@ void ULyudFestivalSubsystem::CheckFirstSnow(const FDateTime& Now)
 
 float ULyudFestivalSubsystem::Night() const
 {
-	for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
+	TActorIterator<ALyudSky> It(GetWorld());
+	if (It)
 	{
 		return FMath::Clamp((3.f - It->SunAltitude()) / 9.f, 0.f, 1.f);
 	}
@@ -403,6 +419,14 @@ void ULyudFestivalSubsystem::Update()
 	const LyudFest::FDate Today = ToDate(Now);
 	const float Hour = (float)Now.GetTimeOfDay().GetTotalHours();
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+	const FString DayKeyNow = DateKey(Today);
+	if (DayKeyNow != HeroDay)
+	{
+		HeroDay = DayKeyNow;
+		HeroVisited.Reset();
+		HeroWatched.Reset();
+		Watched.Reset();
+	}
 
 	// public holiday
 	std::string OffId;
@@ -456,9 +480,24 @@ void ULyudFestivalSubsystem::Update()
 			{
 				continue;
 			}
+			// the stage and the tree belong on the square, stalls on the fair; a festival without a square (or a fair) puts them
+			// at its first venue
+			const FString StageAt = DV.Contains(TEXT("square")) ? FString(TEXT("square")) : DV[0];
+			const FString StallsAt = DV.Contains(TEXT("fair")) ? FString(TEXT("fair")) : DV[0];
 			TArray<FString> Kinds;
-			for (const std::string& K : F.Decor) Kinds.Add(UTF8_TO_TCHAR(K.c_str()));
-			// the stage and the tree belong on the square, stalls on the fair (and wherever the festival has nothing else)
+			for (const std::string& K : F.Decor)
+			{
+				const FString Kind = UTF8_TO_TCHAR(K.c_str());
+				if (((Kind == TEXT("stage") || Kind == TEXT("tree")) && V != StageAt) || (Kind == TEXT("stalls") && V != StallsAt))
+				{
+					continue;
+				}
+				Kinds.Add(Kind);
+			}
+			if (Kinds.Num() == 0)
+			{
+				continue;
+			}
 			const FName Key(*(FId + TEXT(".") + V));
 			WantDecor.Add(Key, Kinds);
 			DecorVenue.Add(Key, Ve);
@@ -498,8 +537,9 @@ void ULyudFestivalSubsystem::Update()
 				if (!Gatherings.Contains(Key) && People)
 				{
 					const FVector Face = FacePoint(Ve, UTF8_TO_TCHAR(P.Face.c_str()), Now);
-					// the people's life knows the city plan's spots by id (S-SQUARE), else a kind of place
-					const FName Where = Ve.SpotId.IsEmpty() ? FName(*V) : FName(*Ve.SpotId);
+					// the people's life spreads a gathering over every place of a kind (the square's 25 + 300 audience slots, the
+					// fair's 56 stalls' places); a concert's watchers stand in the square's audience
+					const FName Where = (P.Face == "stage" && V == TEXT("square")) ? FName(TEXT("S-SQUARE-AUDIENCE")) : FName(*V);
 					bHasGatherings = TrySetGathering(People, 0, Key, Where, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FString(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
 				}
 				if (People && (!bHasGatherings || CVarFestivalStub.GetValueOnGameThread() > 0))
@@ -573,10 +613,12 @@ void ULyudFestivalSubsystem::Update()
 		}
 	}
 	const float NightNow = Night();
+	bool bBuilt = false;     // at most one decoration built per update (each is a few thousand triangles made in code)
 	for (const auto& W : WantDecor)
 	{
-		if (!Decor.Contains(W.Key))
+		if (!Decor.Contains(W.Key) && !bBuilt)
 		{
+			bBuilt = true;
 			FActorSpawnParameters SP;
 			SP.ObjectFlags |= RF_Transient;
 			const FLyudVenue& Ve = DecorVenue[W.Key];
@@ -643,6 +685,12 @@ void ULyudFestivalSubsystem::Update()
 		{
 			It.RemoveCurrent();
 		}
+		else if (!WantShows.Contains(It.Key()))
+		{
+			// its phase is over (or the calendar moved): a little while for the last shells and lanterns, then gone
+			It.Value()->SetLifeSpan(20.f);
+			It.RemoveCurrent();
+		}
 	}
 	for (auto It = Music.CreateIterator(); It; ++It)
 	{
@@ -661,8 +709,17 @@ void ULyudFestivalSubsystem::Update()
 	}
 	for (const auto& W : WantShows)
 	{
-		if (Shows.Contains(W.Key) || Music.Contains(W.Key))
+		if (Shows.Contains(W.Key))
 		{
+			continue;
+		}
+		if (UAudioComponent* const* M = Music.Find(W.Key))
+		{
+			// the tunes are about two minutes and not looped: the next one starts when one ends
+			if (!(*M)->IsPlaying())
+			{
+				(*M)->Play();
+			}
 			continue;
 		}
 		const FLyudVenue Ve = FindVenue(ShowVenue[W.Key]);
@@ -839,17 +896,23 @@ FVector ULyudFestivalSubsystem::FacePoint(const FLyudVenue& V, const FString& Fa
 void ULyudFestivalSubsystem::StartMusic(FName Key, const FLyudVenue& V)
 {
 	// a festival tune (audio/music/festival_<n>, tools/gen_sounds.py), a different one per festival where there are two
-	USoundBase* Sound = nullptr;
-	const int32 First = (Hash(Key.ToString()) >> 3) & 1;
-	for (int32 I = 0; I < 2 && !Sound; I++)
+	if (!bMusicLooked)
 	{
-		const FString N = FString::Printf(TEXT("MU_festival_%d"), 1 + (First + I) % 2);
-		Sound = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Audio/Music/%s.%s"), *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet);
+		bMusicLooked = true;
+		for (int32 I = 1; I <= 2; I++)
+		{
+			const FString N = FString::Printf(TEXT("MU_festival_%d"), I);
+			if (USoundBase* S = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Audio/Music/%s.%s"), *N, *N), nullptr, LOAD_NoWarn | LOAD_Quiet))
+			{
+				MusicSounds.Add(S);
+			}
+		}
 	}
-	if (!Sound)
+	if (MusicSounds.Num() == 0)
 	{
 		return;     // no festival music imported yet: the festival is quiet
 	}
+	USoundBase* Sound = MusicSounds[((Hash(Key.ToString()) >> 3) & 1) % MusicSounds.Num()];
 	FActorSpawnParameters SP;
 	SP.ObjectFlags |= RF_Transient;
 	AActor* Holder = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), V.Center + FVector(0.f, 0.f, 300.f), FRotator::ZeroRotator, SP);
@@ -859,7 +922,8 @@ void ULyudFestivalSubsystem::StartMusic(FName Key, const FLyudVenue& V)
 	}
 	UAudioComponent* A = NewObject<UAudioComponent>(Holder);
 	Holder->SetRootComponent(A);
-	A->SetWorldLocation(V.Center + FRotator(0.f, V.Yaw, 0.f).Vector() * V.Radius * 0.6f + FVector(0.f, 0.f, 300.f));
+	// from the stage when the square has one, else from the venue's far side
+	A->SetWorldLocation((V.bPlanStage ? V.StageAt : V.Center + FRotator(0.f, V.Yaw, 0.f).Vector() * V.Radius * 0.6f) + FVector(0.f, 0.f, 300.f));
 	A->SetSound(Sound);
 	A->bOverrideAttenuation = true;
 	A->AttenuationOverrides.bAttenuate = true;
@@ -882,12 +946,8 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 	{
 		// launched from a barge 120 m out to sea from the venue
 		FVector At = V.Center + V.SeaDir * 12000.f;
-		float SeaZ = V.Center.Z;
-		for (TActorIterator<ALyudSea> It(World); It; ++It)
-		{
-			SeaZ = It->SeaLevel();
-			break;
-		}
+		const ALyudSea* Sea = ALyudSea::Get(World);
+		const float SeaZ = Sea ? Sea->SeaLevel() : V.Center.Z;
 		At.Z = SeaZ + 150.f;
 		if (ALyudFireworks* F = World->SpawnActor<ALyudFireworks>(At, FRotator::ZeroRotator, SP))
 		{
@@ -965,7 +1025,7 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		Watched.Reset();
 		return;
 	}
-	const FString Day = DateKey(ToDate(UGameCalendar::NowIn(World)));
+	// no strings built per frame: today's key comes from Update, each event is sent once a day (HeroVisited / HeroWatched)
 	const FVector At = Hero->GetActorLocation();
 	// went to it: within a running phase's venue
 	for (const FLyudFestivalNow& A : Active)
@@ -977,8 +1037,12 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		const FLyudVenue* V = Venues.Find(A.Venue);
 		if (V && V->bValid && FVector::Dist2D(At, V->Center) < V->Radius * 1.4f + 1500.f)
 		{
-			HeroEvent(Day, TEXT("festival_visit"), A.Id.ToString() + TEXT(".") + A.Phase.ToString());
-			HeroEvent(Day, TEXT("festival_visit"), A.Id.ToString());
+			if (!HeroVisited.Contains(TPair<FName, FName>(A.Id, A.Phase)))
+			{
+				HeroVisited.Add(TPair<FName, FName>(A.Id, A.Phase));
+				HeroEvent(HeroDay, TEXT("festival_visit"), A.Id.ToString() + TEXT(".") + A.Phase.ToString());
+				HeroEvent(HeroDay, TEXT("festival_visit"), A.Id.ToString());
+			}
 		}
 	}
 	// watched it: half a minute in sight of a show (the fireworks from anywhere by the sea, the bonfire close up)
@@ -991,16 +1055,19 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		{
 			continue;
 		}
-		float Range = 40000.f;
-		if (Show->IsA<ALyudBonfire>()) Range = 600.f;
-		else if (Show->IsA<ALyudSkyLanterns>()) Range = 15000.f;
-		else if (Show->IsA<ALyudMeteors>()) Range = 1e9f;
 		if (ALyudSkyLanterns* L = Cast<ALyudSkyLanterns>(Show))
 		{
 			Lanterns = L;
 			bLanternHere = FVector::Dist2D(At, L->GetBeach()) < 3500.f;
 		}
-		if (FVector::Dist(At, Show->GetActorLocation()) > Range && !Show->IsA<ALyudMeteors>())
+		if (HeroWatched.Contains(It.Key))
+		{
+			continue;
+		}
+		float Range = 40000.f;
+		if (Show->IsA<ALyudBonfire>()) Range = 600.f;
+		else if (Show->IsA<ALyudSkyLanterns>()) Range = 15000.f;
+		if (!Show->IsA<ALyudMeteors>() && FVector::Dist(At, Show->GetActorLocation()) > Range)
 		{
 			continue;
 		}
@@ -1008,24 +1075,29 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		W += DeltaTime;
 		if (W > 30.f)
 		{
+			HeroWatched.Add(It.Key);
 			FString F, Rest;
 			It.Key.ToString().Split(TEXT("."), &F, &Rest);
 			FString Phase, ShowName;
 			Rest.Split(TEXT("."), &Phase, &ShowName);
-			HeroEvent(Day, TEXT("festival_watch"), ShowName);
-			HeroEvent(Day, TEXT("festival_watch"), F + TEXT(".") + ShowName);
+			HeroEvent(HeroDay, TEXT("festival_watch"), ShowName);
+			HeroEvent(HeroDay, TEXT("festival_watch"), F + TEXT(".") + ShowName);
 		}
 	}
 	// a sky lantern of his own: on the beach while they are being let go
 	const int32 Price = 30;
 	ULyudInventory* Inv = ULyudInventory::Get(this);
-	const bool bCan = Lanterns && bLanternHere && HeroLanternsTonight < 3 && !(UI && UI->IsOpen()) && Inv;
-	Prompt(bCan, LyudText::Get(TEXT("ui.festival.lantern_prompt"), { FStringFormatArg(Price) }));
+	const bool bCan = Lanterns && bLanternHere && HeroLanternsTonight < 3 && !(UI && UI->IsOpen()) && Inv && Lanterns->HasFree();
+	if (bCan != bLanternPrompt)
+	{
+		Prompt(bCan, bCan ? LyudText::Get(TEXT("ui.festival.lantern_prompt"), { FStringFormatArg(Price) }) : FText::GetEmpty());
+	}
 	if (bCan)
 	{
 		const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
 		if (PC && PC->WasInputKeyJustPressed(EKeys::E))
 		{
+			// paid only for a lantern that goes up (HasFree above; refunded should Release still fail)
 			if (!Inv->Spend(Price))
 			{
 				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.no_money")));
@@ -1033,9 +1105,13 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 			else if (Lanterns->Release(Hero->EyeLocation() + Hero->GetActorForwardVector() * 90.f - FVector(0.f, 0.f, 60.f), true))
 			{
 				HeroLanternsTonight++;
-				HeroEvent(Day + FString::FromInt(HeroLanternsTonight), TEXT("festival_lantern"), TEXT("sky_lantern"));
+				HeroEvent(HeroDay + FString::FromInt(HeroLanternsTonight), TEXT("festival_lantern"), TEXT("sky_lantern"));
 				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.lantern_up")));
 				Prompt(false, FText::GetEmpty());
+			}
+			else
+			{
+				Inv->Earn(Price);
 			}
 		}
 	}
@@ -1057,12 +1133,7 @@ FVector ULyudFestivalSubsystem::Ground(const FVector& At) const
 
 FVector ULyudFestivalSubsystem::SeaDirAt(const FVector& At) const
 {
-	const ALyudSea* Sea = nullptr;
-	for (TActorIterator<ALyudSea> It(GetWorld()); It; ++It)
-	{
-		Sea = *It;
-		break;
-	}
+	const ALyudSea* Sea = ALyudSea::Get(GetWorld());
 	if (!Sea)
 	{
 		return FVector(1.f, 0.f, 0.f);     // the map's west (docs/world_map.md)
@@ -1087,16 +1158,22 @@ FVector ULyudFestivalSubsystem::SeaDirAt(const FVector& At) const
 	return Sum.IsNearlyZero() ? FVector(1.f, 0.f, 0.f) : Sum.GetSafeNormal2D();
 }
 
-bool ULyudFestivalSubsystem::ResolveFromPlan(const FString& File, const FString& Want, FLyudVenue& Out) const
+/** The spots of a plan file (city_plan.json is 0.85 MB): parsed once a run and kept. */
+static const TArray<TSharedPtr<FJsonObject>>& PlanSpots(const FString& File)
 {
+	static TMap<FString, TArray<TSharedPtr<FJsonObject>>> Cache;
+	if (const TArray<TSharedPtr<FJsonObject>>* Found = Cache.Find(File))
+	{
+		return *Found;
+	}
+	TArray<TSharedPtr<FJsonObject>>& Spots = Cache.Add(File);
 	FString Text;
 	TSharedPtr<FJsonObject> Doc;
 	if (!FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / File)) ||
 		!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) || !Doc)
 	{
-		return false;
+		return Spots;
 	}
-	TArray<TSharedPtr<FJsonObject>> Spots;
 	const TArray<TSharedPtr<FJsonValue>>* Arr;
 	const TSharedPtr<FJsonObject>* Map;
 	if (Doc->TryGetArrayField(TEXT("spots"), Arr))
@@ -1118,6 +1195,12 @@ bool ULyudFestivalSubsystem::ResolveFromPlan(const FString& File, const FString&
 			}
 		}
 	}
+	return Spots;
+}
+
+bool ULyudFestivalSubsystem::ResolveFromPlan(const FString& File, const FString& Want, FLyudVenue& Out) const
+{
+	const TArray<TSharedPtr<FJsonObject>>& Spots = PlanSpots(File);
 	// an id first, then the kinds best first
 	TArray<FString> Kinds = VenueKinds(Want);
 	for (int32 Pass = 0; Pass <= Kinds.Num(); Pass++)
@@ -1221,6 +1304,15 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 			return *Found;
 		}
 	}
+	if (const double* Missed = VenueMissedAt.Find(Name))
+	{
+		if (FPlatformTime::Seconds() - *Missed < 30.0)
+		{
+			FLyudVenue None;
+			None.Name = Name;
+			return None;     // looked for a moment ago: again in half a minute (the people's life may start later)
+		}
+	}
 	FLyudVenue V;
 	V.Name = Name;
 	const FString Want = Name.ToString();
@@ -1228,25 +1320,40 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 		ResolveFromPeople(Want, V);
 	if (V.bValid)
 	{
-		// the fair's own stalls (public_spaces.py: spots S-FAIR-STALLnn in town_plan.json) stand there all year: no more
-		FString Text;
-		TSharedPtr<FJsonObject> Doc;
-		const TArray<TSharedPtr<FJsonValue>>* Arr;
-		if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("PeopleData/town_plan.json"))) &&
-			FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) && Doc && Doc->TryGetArrayField(TEXT("spots"), Arr))
+		// the plan's own stage and the fair's own stalls (public_spaces.py: S-STAGE, S-FAIR-STALLnn) count only once
+		// something has built them in the level: an actor named or tagged stage / stall near the spot. Until then the
+		// festival builds its own.
+		bool bStallSpot = false;
+		for (const TSharedPtr<FJsonObject>& O : PlanSpots(TEXT("PeopleData/town_plan.json")))
 		{
-			for (const TSharedPtr<FJsonValue>& It : *Arr)
+			FString Id;
+			FVector P;
+			if (O->TryGetStringField(TEXT("id"), Id) && Id.Contains(TEXT("STALL")) && SpotPos(O, P) && FVector::Dist2D(P, V.Center) < 8000.f)
 			{
-				FString Id;
-				FVector P;
-				if (It->Type == EJson::Object && It->AsObject()->TryGetStringField(TEXT("id"), Id) && Id.Contains(TEXT("STALL")) &&
-					SpotPos(It->AsObject(), P) && FVector::Dist2D(P, V.Center) < 8000.f)
+				bStallSpot = true;
+				break;
+			}
+		}
+		bool bStageBuilt = false, bStallsBuilt = false;
+		if (V.bPlanStage || bStallSpot)
+		{
+			for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+			{
+				const AActor* Act = *It;
+				const bool bStageName = Act->GetName().Contains(TEXT("Stage")) || Act->Tags.Contains(TEXT("Stage"));
+				const bool bStallName = Act->GetName().Contains(TEXT("Stall")) || Act->Tags.Contains(TEXT("Stall"));
+				if (bStageName && V.bPlanStage && FVector::Dist2D(Act->GetActorLocation(), V.StageAt) < 1500.f)
 				{
-					V.bPlanStalls = true;
-					break;
+					bStageBuilt = true;
+				}
+				if (bStallName && bStallSpot && FVector::Dist2D(Act->GetActorLocation(), V.Center) < 8000.f)
+				{
+					bStallsBuilt = true;
 				}
 			}
 		}
+		V.bPlanStage = V.bPlanStage && bStageBuilt;
+		V.bPlanStalls = bStallsBuilt;
 		V.Center = Ground(V.Center);
 		V.SeaDir = SeaDirAt(V.Center);
 		// a place with no yaw of its own faces the sea (the stage's back to it on the square: watchers look inland
@@ -1256,7 +1363,12 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 			V.Yaw = V.SeaDir.Rotation().Yaw;
 		}
 		UE_LOG(LogTemp, Display, TEXT("Festivals: venue %s = %s at %s, radius %.0f m"), *Want, *V.Source, *V.Center.ToString(), V.Radius / 100.f);
-		Venues.Add(Name, V);    // a missing venue is looked for again next time (the people's life may start later)
+		Venues.Add(Name, V);
+		VenueMissedAt.Remove(Name);
+	}
+	else
+	{
+		VenueMissedAt.Add(Name, FPlatformTime::Seconds());
 	}
 	return V;
 }
@@ -1270,16 +1382,26 @@ bool ULyudFestivalSubsystem::IsFestivalToday() const
 	{
 		return false;
 	}
+	// a real holiday, not the weekly market; and one whose night runs past midnight still counts until it ends
+	auto Counts = [this](int32 F) { return Calendar->Festivals[F].Rule != "weekly"; };
 	const LyudFest::FDate Today = ToDate(UGameCalendar::NowIn(GetWorld()));
 	for (int32 F = 0; F < (int32)Calendar->Festivals.size(); F++)
 	{
 		const LyudFest::FFestival& Fe = Calendar->Festivals[F];
-		for (int32 D = 0; D < Fe.Days; D++)
+		for (int32 D = 0; D < Fe.Days && Counts(F); D++)
 		{
 			if (Calendar->StartsOn(F, LyudFest::AddDays(Today, -D)))
 			{
 				return true;
 			}
+		}
+	}
+	for (const FLyudFestivalNow& A : Active)
+	{
+		const int32 F = Calendar->Find(TCHAR_TO_UTF8(*A.Id.ToString()));
+		if (F >= 0 && Counts(F))
+		{
+			return true;
 		}
 	}
 	return false;
@@ -1983,6 +2105,16 @@ void ALyudFireworks::Setup(const FVector& InLaunch, const FVector& SeaDir, doubl
 	Sea = SeaDir;
 	EndsAt = InEndsAt;
 	Rng = Hash(InLaunch.ToString()) ^ (uint32)InEndsAt;
+	// the sounds once (they may not be imported yet: then the shells are silent)
+	LaunchSound = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_firework_launch_01.S_firework_launch_01"), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	for (int32 I = 1; I <= 3; I++)
+	{
+		const FString Path = FString::Printf(TEXT("/Game/Audio/Festival/S_firework_boom_%02d.S_firework_boom_%02d"), I, I);
+		if (USoundBase* B = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+		{
+			BoomSounds.Add(B);
+		}
+	}
 	// one burst: 110 streaks out from the middle on a unit sphere (r 0.62..1 of 100 cm), scaled up as it opens
 	FLyudMeshKit B, T;
 	const int32 N = 110;
@@ -2058,9 +2190,18 @@ void ALyudFireworks::Fire(bool bFinale)
 	const int32 NC = UE_ARRAY_COUNT(FireColors);
 	Shells.Last().Color = FireColors[FMath::Min((int32)(Rand() * NC), NC - 1)];
 	BurstMats[Free]->SetVectorParameterValue(TEXT("Color"), Shells.Last().Color);
-	if (USoundBase* Launch1 = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_firework_launch_01.S_firework_launch_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
+	if (LaunchSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, Launch1, S.From, 0.6f, 0.9f + Rand() * 0.2f);
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, S.From, 0.6f, 0.9f + Rand() * 0.2f);
+	}
+}
+
+void ALyudFireworks::Boom(float Vol)
+{
+	if (BoomSounds.Num() > 0)
+	{
+		USoundBase* B = BoomSounds[FMath::Min((int32)(Rand() * BoomSounds.Num()), BoomSounds.Num() - 1)];
+		UGameplayStatics::PlaySound2D(this, B, Vol, 0.85f + Rand() * 0.3f);
 	}
 }
 
@@ -2105,6 +2246,12 @@ void ALyudFireworks::Tick(float DeltaTime)
 		if (T > S.Life)
 		{
 			Burst->SetVisibility(false);
+			if (!S.bBoom)
+			{
+				// far off: the burst has faded and its boom is still on the way
+				const float Dist = FVector::Dist(S.Burst, Cam);
+				PendingBooms.Add({ Dist / 34300.f - T, FMath::Clamp(1.2f - Dist / 120000.f, 0.25f, 1.f) });
+			}
 			Shells.RemoveAt(Si);
 			continue;
 		}
@@ -2132,13 +2279,16 @@ void ALyudFireworks::Tick(float DeltaTime)
 		if (!S.bBoom && T >= FVector::Dist(S.Burst, Cam) / 34300.f)
 		{
 			S.bBoom = true;
-			const int32 Var = 1 + (int32)(Rand() * 3.f) % 3;
-			const FString Path = FString::Printf(TEXT("/Game/Audio/Festival/S_firework_boom_%02d.S_firework_boom_%02d"), Var, Var);
-			if (USoundBase* Boom = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
-			{
-				const float Vol = FMath::Clamp(1.2f - FVector::Dist(S.Burst, Cam) / 120000.f, 0.25f, 1.f);
-				UGameplayStatics::PlaySound2D(this, Boom, Vol, 0.85f + Rand() * 0.3f);
-			}
+			Boom(FMath::Clamp(1.2f - FVector::Dist(S.Burst, Cam) / 120000.f, 0.25f, 1.f));
+		}
+	}
+	for (int32 Bi = PendingBooms.Num() - 1; Bi >= 0; Bi--)
+	{
+		PendingBooms[Bi].In -= DeltaTime;
+		if (PendingBooms[Bi].In <= 0.f)
+		{
+			Boom(PendingBooms[Bi].Vol);
+			PendingBooms.RemoveAtSwap(Bi);
 		}
 	}
 	for (int32 L = 0; L < 3; L++)
@@ -2150,7 +2300,7 @@ void ALyudFireworks::Tick(float DeltaTime)
 			Flashes[L]->SetLightColor(FlashCol[L]);
 		}
 	}
-	if (!bOn && Shells.Num() == 0)
+	if (!bOn && Shells.Num() == 0 && PendingBooms.Num() == 0)
 	{
 		Destroy();
 	}
@@ -2199,6 +2349,18 @@ void ALyudSkyLanterns::Setup(const FVector& InBeach, const FVector& SeaDir, doub
 		Comps.Add(C);
 		Lanterns.AddDefaulted();
 	}
+}
+
+bool ALyudSkyLanterns::HasFree() const
+{
+	for (const FLantern& L : Lanterns)
+	{
+		if (L.T < 0.f)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 bool ALyudSkyLanterns::Release(const FVector& At, bool bHero)

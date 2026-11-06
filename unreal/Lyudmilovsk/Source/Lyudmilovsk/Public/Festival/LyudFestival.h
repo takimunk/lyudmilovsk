@@ -12,6 +12,7 @@ class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UPointLightComponent;
 class UStaticMesh;
+class USoundBase;
 class UStaticMeshComponent;
 
 /** Where a festival happens: a spot of the city plan (Content/City/city_plan.json, Content/PeopleData/town_plan.json)
@@ -80,7 +81,7 @@ public:
 
 	static ULyudFestivalSubsystem* Get(const UObject* WorldContext);
 
-	/** Is any festival's day today (its decorations up or its program on)? The weekly market counts. */
+	/** Is a holiday on today (its day, or its night still running past midnight)? The weekly market does not count. */
 	UFUNCTION(BlueprintPure, Category = "Festival") bool IsFestivalToday() const;
 	/** The most important festival on now (None if none). */
 	UFUNCTION(BlueprintPure, Category = "Festival") FName ActiveFestival() const;
@@ -134,6 +135,11 @@ private:
 	/** Phases running (festival.phase) for the start/end events and the shows. */
 	TSet<FName> RunningPhases;
 	TMap<FName, FLyudVenue> Venues;
+	/** Venues not found, and when (real seconds): looked for again only after a while, not every update. */
+	TMap<FName, double> VenueMissedAt;
+	/** The festival tunes (looked for once). */
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> MusicSounds;
+	bool bMusicLooked = false;
 	/** Decorations up, by festival.venue. */
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<AActor>> Decor;
 	/** Shows running, by festival.phase.show. */
@@ -154,6 +160,11 @@ private:
 	TMap<FName, float> Watched;
 	/** Quest events already sent this festival day ("day|event|target"). */
 	TSet<FString> HeroEvents;
+	/** Today's date key for the hero's events (set by Update, so the frame's code builds no strings), and the
+	 *  venue visits / shows watched already sent today (by festival.phase / festival.phase.show). */
+	FString HeroDay;
+	TSet<TPair<FName, FName>> HeroVisited;
+	TSet<FName> HeroWatched;
 	bool bLanternPrompt = false;
 	int32 HeroLanternsTonight = 0;
 	void HeroEvent(const FString& Day, FName Event, const FString& Target);
@@ -214,6 +225,12 @@ public:
 private:
 	struct FShell { int32 Comp = -1; float T = -1.f; float Rise = 1.6f; float Life = 2.8f; float Radius = 4000.f; FVector From, Burst; FLinearColor Color = FLinearColor::White; bool bBoom = false; };
 	TArray<FShell> Shells;
+	/** Booms still on their way (a shell far off has faded before its sound arrives): seconds to go, volume. */
+	struct FBoom { float In = 0.f; float Vol = 1.f; };
+	TArray<FBoom> PendingBooms;
+	UPROPERTY(Transient) TObjectPtr<USoundBase> LaunchSound;
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> BoomSounds;
+	void Boom(float Vol);
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Bursts;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Trails;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> BurstMats;
@@ -239,6 +256,8 @@ public:
 	void Setup(const FVector& Beach, const FVector& SeaDir, double InEndsAt);
 	/** One more lantern let go at At (the hero's own: a little brighter, it goes up first). False if all are in the air. */
 	bool Release(const FVector& At, bool bHero);
+	/** Whether a lantern is left to let go. */
+	bool HasFree() const;
 	FVector GetBeach() const { return Beach; }
 	virtual void Tick(float DeltaTime) override;
 
