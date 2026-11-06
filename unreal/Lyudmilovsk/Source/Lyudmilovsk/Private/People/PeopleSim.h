@@ -190,6 +190,7 @@ namespace LyudPeople
 		std::string PlaceId;        // their own workplace (the town's: cafe_mar), "" any place of the activity's kinds
 		std::string Role;           // their job there (waiter, cook): slots tagged with it, else any staff slot
 		int Place = -1;
+		int Act = -1;               // Activity's index (Index())
 	};
 
 	struct FPerson
@@ -288,6 +289,7 @@ namespace LyudPeople
 	{
 		uint32_t Seed = 20261020;
 		float ThinkEvery = 2.f;         // s between decisions of an idle person
+		int SettleBatch = 0;            // >0: Resettle places the townsfolk this many a Step (the game: no long frame), 0 at once
 		float RideSeconds = 150.f;      // the cable car from station to station
 		float TrainSeconds = 280.f;     // the train between the halts when there is no timetable (TrainNext unset or -1): hidden
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
@@ -379,6 +381,8 @@ namespace LyudPeople
 		int FindPerson(const std::string& Key) const;
 		int FindPlace(const std::string& Id) const;
 		int FindActivity(const std::string& Id) const;
+		int ActOf(const FDuty& D) const { return D.Act >= 0 ? D.Act : FindActivity(D.Activity); }
+		int SleepAct = -1, RestHomeAct = -1;   // Index()
 		/** A route between two points (each indoors at a place's slot or outdoors); false = no way. */
 		bool Route(const FPerson& P, const V3& From, int FromSlot, int ToSlot, std::vector<FPerson::FWay>& Out) const;
 		/** Where they are drawn and which way they face (between steps it is Pos). */
@@ -515,6 +519,11 @@ namespace LyudPeople
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;
+		std::vector<int> SettleQueue;   // townsfolk Resettle hasn't placed yet (Opt.SettleBatch)
+		size_t SettleI = 0;
+	public:
+		bool Settling() const { return SettleI < SettleQueue.size(); }
+	private:
 		void Wander(FPerson& P);
 		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
 		void Sweep(FPerson& P, float Dt);

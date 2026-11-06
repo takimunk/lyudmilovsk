@@ -793,7 +793,9 @@ namespace LyudPeople
 	{
 		if (Town.Inside(P))
 		{
-			return Town.Levels[Town.LevelOf(P.Z)];     // on their terrace (the stairs are walked as lines)
+			// on their terrace (the stairs are walked as lines); below the lowest the sand slopes to the sea: as the way goes
+			const int L = Town.LevelOf(P.Z);
+			return L == 0 && P.Z < Town.Levels[0] ? P.Z : Town.Levels[L];
 		}
 		for (const FPatch& Pa : Patches)
 		{
@@ -1070,6 +1072,15 @@ namespace LyudPeople
 			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Vec(V["pos"]);
 			Pl.bShell = V["shell"].F() > 0.f;
 			Pl.bIndoor = Pl.bShell;
+			// a walked interior (the restaurant): in by its door and the way inside to each slot
+			std::vector<V3> Prefix;
+			const std::vector<V3> InPath = Line(V["path"]);
+			if (!Pl.bShell && !InPath.empty())
+			{
+				Pl.bIndoor = true;
+				Prefix.push_back(Pl.Portal);
+				Prefix.insert(Prefix.end(), InPath.begin(), InPath.end());
+			}
 			Pl.Building = V["building"].S();
 			Pl.Island = V.Find("island") ? V["island"].I() : IslandOf(Pl.Portal);
 			for (const LyudJson::FValue& W : V["windows"].Items)
@@ -1093,6 +1104,14 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
+				if (!Prefix.empty())
+				{
+					Sl.Inside = Prefix;
+					if (!Same(Sl.Inside.back(), Sl.Approach))
+					{
+						Sl.Inside.push_back(Sl.Approach);
+					}
+				}
 				Pl.Slots.push_back((int)Slots.size());
 				Slots.push_back(Sl);
 			}
@@ -1175,17 +1194,21 @@ namespace LyudPeople
 			for (FDuty& D : P.Duties)
 			{
 				D.Place = D.PlaceId.empty() ? -1 : FindPlace(D.PlaceId);
+				D.Act = FindActivity(D.Activity);
 			}
 		}
+		SleepAct = FindActivity("sleep");
+		RestHomeAct = FindActivity("rest_home");
 		FlatLit.assign(Places.size(), -1);
 		Indexed = Places.size();
 	}
 
 	const FDuty* FWorld::DutyFor(const FPerson& P, const FActivity& A) const
 	{
+		const int AI = (int)(&A - Activities.data());
 		for (const FDuty& D : P.Duties)
 		{
-			if (D.Activity == A.Id && D.Place >= 0)
+			if (D.Place >= 0 && (D.Act >= 0 ? D.Act == AI : D.Activity == A.Id))
 			{
 				return &D;
 			}
@@ -1618,13 +1641,13 @@ namespace LyudPeople
 		if (InHours(BedOf(P), WakeOf(P), Hour))
 		{
 			bSleep = true;
-			return FindActivity("sleep");
+			return SleepAct >= 0 ? SleepAct : FindActivity("sleep");
 		}
 		for (const FDuty& D : P.Duties)
 		{
 			if (bDayOff)
 			{
-				const int A = FindActivity(D.Activity);
+				const int A = ActOf(D);
 				if (A >= 0 && Activities[A].bHolidayOff)
 				{
 					continue;       // a public holiday: no school, the offices shut
@@ -1635,7 +1658,7 @@ namespace LyudPeople
 			// set off a little early: they go there first
 			if (bDay && InHours(D.From - 0.3f, D.To, Hour))
 			{
-				return FindActivity(D.Activity);
+				return ActOf(D);
 			}
 		}
 		return -1;
@@ -2168,7 +2191,8 @@ namespace LyudPeople
 		P.Minutes = (float)Minutes;
 		P.Why = Why;
 		P.Choices++;
-		P.StateStart = Time;
+		// snapped asleep (a load, a clock jump): they've been asleep a while, no bedside lamp just switched on
+		P.StateStart = bSnap && A.Id == "sleep" ? Time - 3600.0 : Time;
 		Emit(EEvent::Start, P);
 		if (bSnap)
 		{
@@ -2347,7 +2371,7 @@ namespace LyudPeople
 		if (Best < 0)
 		{
 			// nothing to do: go home
-			const int Home = FindActivity("rest_home");
+			const int Home = RestHomeAct >= 0 ? RestHomeAct : FindActivity("rest_home");
 			float M = 0.f;
 			if (Home >= 0)
 			{
@@ -2730,24 +2754,55 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const int Island = P.Island;
-		std::vector<int> Options;
-		for (int S = 0; S < (int)Slots.size(); S++)
+		// only the places of the activity's kinds (or the gatherings' places); one picked at random as they come, no list
+		int S = -1, Seen = 0;
+		auto Look = [&](int PlI)
 		{
-			const FSlot& Sl = Slots[S];
-			const FPlace& Pl = Places[Sl.Place];
-			const bool bKind = A.bGather ? GatheringAt(Sl.Place) != nullptr : Has(A.Places, Pl.Kind);
-			if (S == P.Slot || Pl.bIndoor || Pl.Island != Island || !bKind || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
+			const FPlace& Pl = Places[PlI];
+			if (Pl.bIndoor || Pl.Island != Island || (A.bGather ? GatheringAt(PlI) == nullptr : !Has(A.Places, Pl.Kind)))
 			{
-				continue;
+				return;
 			}
-			const float D = (Sl.Approach - P.Pos).Len2D();
-			if (D > A.WanderNear && D < A.WanderFar)
+			for (const int SI : Pl.Slots)
 			{
-				Options.push_back(S);
+				const FSlot& Sl = Slots[SI];
+				if (SI == P.Slot || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
+				{
+					continue;
+				}
+				const float D = (Sl.Approach - P.Pos).Len2D();
+				if (D > A.WanderNear && D < A.WanderFar && Rand(P.Rng) * (float)(++Seen) < 1.f)
+				{
+					S = SI;
+				}
+			}
+		};
+		if (A.bGather)
+		{
+			for (const FGathering& G : Gatherings)
+			{
+				for (const int PlI : G.Places)
+				{
+					Look(PlI);
+				}
+			}
+		}
+		else if (Indexed == Places.size())
+		{
+			for (const int PlI : A.PlaceIdx)
+			{
+				Look(PlI);
+			}
+		}
+		else
+		{
+			for (int PlI = 0; PlI < (int)Places.size(); PlI++)
+			{
+				Look(PlI);
 			}
 		}
 		P.WanderAt = Time + 1e9;
-		if (Options.empty())
+		if (S < 0)
 		{
 			if (A.bSnow)
 			{
@@ -2755,7 +2810,6 @@ namespace LyudPeople
 			}
 			return;
 		}
-		const int S = Options[(size_t)(Rand(P.Rng) * Options.size()) % Options.size()];
 		Reserve(P, S);
 		P.Slot = S;
 		P.Place = Slots[S].Place;
@@ -2888,18 +2942,33 @@ namespace LyudPeople
 
 	void FWorld::TalkPairs()
 	{
-		// people who came to talk find somebody free at the same place within a few metres; friends first
+		// people who came to talk find somebody free at the same place within a few metres; friends first.
+		// Everybody doing something is bucketed by place first (a town of ~900: no all-pairs scan)
+		static thread_local std::vector<int> Head, Next;
+		Head.assign(Places.size() + 1, -1);
+		Next.assign(People.size(), -1);
+		for (int I = (int)People.size() - 1; I >= 0; I--)
+		{
+			const FPerson& Q = People[I];
+			if (Q.State == EState::Doing && Q.Partner < 0 && Q.Activity >= 0 && Q.Place >= -1 && Q.Place < (int)Places.size())
+			{
+				Next[I] = Head[Q.Place + 1];
+				Head[Q.Place + 1] = I;
+			}
+		}
 		for (FPerson& P : People)
 		{
-			if (P.State != EState::Doing || P.Partner >= 0 || P.Activity < 0 || !Activities[P.Activity].bTalk)
+			if (P.State != EState::Doing || P.Partner >= 0 || P.Activity < 0 || !Activities[P.Activity].bTalk
+				|| P.Place < -1 || P.Place >= (int)Places.size())
 			{
 				continue;
 			}
 			int Best = -1;
 			float BestD = 1e9f;
-			for (FPerson& Q : People)
+			for (int QI = Head[P.Place + 1]; QI >= 0; QI = Next[QI])
 			{
-				if (Q.Id == P.Id || Q.State != EState::Doing || Q.Partner >= 0 || Q.Place != P.Place)
+				FPerson& Q = People[QI];
+				if (Q.Id == P.Id || Q.State != EState::Doing || Q.Partner >= 0)
 				{
 					continue;
 				}
@@ -2910,6 +2979,10 @@ namespace LyudPeople
 					continue;
 				}
 				float D = (Q.Pos - P.Pos).Len();
+				if (D >= 24.f)
+				{
+					continue;
+				}
 				if (Has(P.Friends, Q.Key))
 				{
 					D *= 0.5f;
@@ -2965,6 +3038,14 @@ namespace LyudPeople
 			RollDays();
 		}
 		PrevHour = Hour;
+		for (int N = 0; N < Opt.SettleBatch && SettleI < SettleQueue.size(); N++)
+		{
+			FPerson& P = People[SettleQueue[SettleI++]];
+			if (P.State == EState::Idle && P.Activity < 0)
+			{
+				Think(P, true);
+			}
+		}
 		PairTimer -= Dt;
 		if (PairTimer <= 0.f)
 		{
@@ -3198,8 +3279,18 @@ namespace LyudPeople
 				B.Yaw = B.HomeYaw;
 			}
 		}
+		SettleQueue.clear();
+		SettleI = 0;
 		for (FPerson& P : People)
 		{
+			if (P.bTown && Opt.SettleBatch > 0)
+			{
+				// placed over the next steps (a few hundred decisions at once is a long frame): unseen and still till then
+				P.Pose = EPose::Hidden;
+				P.Think = 1e9f;
+				SettleQueue.push_back(P.Id);
+				continue;
+			}
 			Think(P, true);
 		}
 		TalkPairs();
@@ -3635,7 +3726,7 @@ namespace LyudPeople
 		std::snprintf(Buf, sizeof Buf, "%02d:%02d ", (int)Hour, (int)(std::fmod(Hour, 1.f) * 60.f));
 		S = Buf;
 		// the story's people one by one; the townsfolk counted by what they do (there are hundreds)
-		std::vector<std::pair<std::string, int>> Town;
+		std::vector<std::pair<std::string, int>> TownActs;
 		int NTown = 0;
 		for (const FPerson& P : People)
 		{
@@ -3646,10 +3737,10 @@ namespace LyudPeople
 				continue;
 			}
 			NTown++;
-			auto It = std::find_if(Town.begin(), Town.end(), [&](const std::pair<std::string, int>& E) { return E.first == Act; });
-			if (It == Town.end())
+			auto It = std::find_if(TownActs.begin(), TownActs.end(), [&](const std::pair<std::string, int>& E) { return E.first == Act; });
+			if (It == TownActs.end())
 			{
-				Town.emplace_back(Act, 1);
+				TownActs.emplace_back(Act, 1);
 			}
 			else
 			{
@@ -3658,9 +3749,9 @@ namespace LyudPeople
 		}
 		if (NTown > 0)
 		{
-			std::sort(Town.begin(), Town.end(), [](const std::pair<std::string, int>& A, const std::pair<std::string, int>& B) { return A.second > B.second; });
+			std::sort(TownActs.begin(), TownActs.end(), [](const std::pair<std::string, int>& A, const std::pair<std::string, int>& B) { return A.second > B.second; });
 			S += "| townsfolk " + std::to_string(NTown) + ":";
-			for (const auto& E : Town)
+			for (const auto& E : TownActs)
 			{
 				S += " " + E.first + " " + std::to_string(E.second);
 			}

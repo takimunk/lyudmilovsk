@@ -22,7 +22,8 @@ Regenerate whenever the city plan, the buildings' flats, the public spaces or th
 
 ```
 python3 tools/town/town_life.py --summary            # inputs from the working tree
-python3 tools/town/town_life.py --refs-first --ref origin/public-spaces --ref origin/wt/city-buildings   # newer inputs on unmerged branches win
+python3 tools/town/town_life.py --ref origin/review/restaurant --ref origin/public-spaces --ref origin/wt/city-buildings   # inputs not merged yet
+# --refs-first: the --ref branches win over the working tree (a newer plan there)
 ```
 
 Inputs: `Content/City/city_plan.json` (terraces, walls, stairs, wall dwellings, promenade units, plots with staff hints,
@@ -49,7 +50,8 @@ spots), `blender/export/city/<type>[__<plot>].json` (the buildings' flats, beds,
 
 ## How it works
 
-- **Places**: every flat is a place with beds, a sofa, chairs and a desk; buildings without walkable interiors are
+- **Places**: the restaurant (its `seats.json` has an entrance) is walked: diners and staff go in by its front door to
+  their seats and posts. Every flat is a place with beds, a sofa, chairs and a desk; buildings without walkable interiors are
   *shells*: people inside aren't drawn and their slots sit at the entrance. Workplaces have staff slots tagged by role.
 - **Ways**: inside the town box people walk on the terraces' levels and route over the 68 stairs (Dijkstra, flights
   walked as lines); outside it they use the old walk grid.
@@ -68,6 +70,9 @@ spots), `blender/export/city/<type>[__<plot>].json` (the buildings' flats, beds,
 
 - `lyud.People.TownBodies` (48): at most this many townsfolk are drawn, the nearest to the camera, from a pool per model
   (bodies are reused, not spawned and destroyed). `lyud.People.TownDrawDistance` (110 m).
+- The nearest get a body, those who have one keep it a little longer (no flicker in a crowd), and a townsperson never
+  shows near the story person whose model they borrow.
+- After a load or a clock jump the townsfolk are placed 120 a step (no long frame); snapped sleepers have no bedside lamp.
 - Town bodies use update-rate optimisation, are kept out of Lumen and distance fields, and are tagged `NoTalk`.
 - The townsfolk aren't saved individually: the generator's seed recreates them; only the story's people's homes and
   memory go to the save.
@@ -85,4 +90,5 @@ the cost of a step (~0.3 ms for ~930 people). `run.sh test` (the residents) runs
 - Buildings' flats and the promenade units' windows come from branches not yet in main; rerun the generator after they
   merge.
 - Townsfolk share models (Dima: use the current ones for now).
+- On merge with perfhunt keep its GroundCache and its door fix (hidden pooled bodies don't hold doors open).
 - People inside shells are invisible; only buildings with interiors show them indoors.

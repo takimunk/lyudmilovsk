@@ -1005,13 +1005,36 @@ static int Town()
 	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);
 	CHECK(AtSquare > 40, "a holiday on the square at 20:00 draws the town (%d there)", AtSquare);
 	CHECK(Lit12 == 0, "windows dark at noon (%d lit)", Lit12);
-	CHECK(Lit21 > Occupied * 0.4, "windows lit at 21:00 (%d of %d lived-in flats with windows)", Lit21, Occupied);
+	CHECK(Lit21 > Occupied * 0.33, "windows lit at 21:00, a holiday on the square still on (%d of %d lived-in flats with windows)", Lit21, Occupied);
 	CHECK(Lit03 >= 0 && Lit03 < Occupied * 0.2, "few windows lit at 03:00 (%d)", Lit03);
 	CHECK(Fed > Town * 0.9, "townsfolk eat at least twice in 36 h (%d of %d)", Fed, Town);
 	CHECK(Starving < Town * 0.03, "few stay very hungry for 3 hours (%d)", Starving);
 	CHECK(Overbooked == 0, "no slot overbooked (%d)", Overbooked);
 	CHECK(Longest < 100 * 60, "nobody on the way for more than 100 min (the island by train included) (%.0f min, %s)", Longest / 60.0, LongestWho.c_str());
 	CHECK(Ms / Steps < 2.0, "a step of the whole town costs %.3f ms (%zu people)", Ms / Steps, W.People.size());
+	{
+		// a load at Friday 02:00, as the game does it: the townsfolk placed over a few steps, the windows mostly dark
+		W.Opt.SettleBatch = 120;
+		FClock::At(4, 2.f).Set(W);
+		auto T0 = std::chrono::steady_clock::now();
+		W.Resettle();
+		const double ResettleMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
+		double WorstMs = 0.0;
+		int SettleSteps = 0;
+		for (; SettleSteps < 60 && W.Settling(); SettleSteps++)
+		{
+			T0 = std::chrono::steady_clock::now();
+			W.Step(0.25f);
+			WorstMs = std::max(WorstMs, std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count());
+		}
+		W.FlatLit.assign(W.Places.size(), -1);
+		W.UpdateLights(Changed);
+		int LitLoad = 0, Unplaced = 0;
+		for (size_t I = 0; I < W.FlatLit.size(); I++) LitLoad += W.FlatLit[I] == 1 ? 1 : 0;
+		for (const FPerson& P : W.People) Unplaced += P.bTown && P.Activity < 0 && P.State == EState::Idle ? 1 : 0;
+		CHECK(!W.Settling() && Unplaced < Town * 0.05, "a load places the townsfolk over %d steps (%d unplaced; Resettle %.1f ms, worst step %.1f ms)", SettleSteps, Unplaced, ResettleMs, WorstMs);
+		CHECK(LitLoad < Occupied * 0.2, "after a load at 02:00 few windows are lit (%d of %d)", LitLoad, Occupied);
+	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
 }

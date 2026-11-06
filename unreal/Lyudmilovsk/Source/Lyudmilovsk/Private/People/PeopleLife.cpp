@@ -190,6 +190,7 @@ void UPeopleLifeSubsystem::Deinitialize()
 bool UPeopleLifeSubsystem::Start()
 {
 	TPimplPtr<LP::FWorld> W = MakePimpl<LP::FWorld>();
+	W->Opt.SettleBatch = 120;      // the townsfolk placed over a few frames after a load or a clock jump
 	const FString Dir = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("PeopleData"));
 	const FString Animals = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("AnimalsData"));
 	if (!W->Load(TCHAR_TO_UTF8(*Dir), TCHAR_TO_UTF8(*Animals)))
@@ -272,8 +273,10 @@ void UPeopleLifeSubsystem::Stop()
 	TownBodies.Reset();
 	TownPool.Reset();
 	TownNear.Reset();
+	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
 	bLightSinksBound = false;
+	LastLightBind = -1e9;
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
 		ShowPlaced(Pair.Value, true);
@@ -1154,11 +1157,32 @@ void UPeopleLifeSubsystem::PickTownBodies(const FVector& Cam, float Draw)
 		{
 			continue;
 		}
-		const float D = FVector::Dist(PeopleToUE(P.Pos), Cam);
-		if (D < Draw)
+		const FVector At = PeopleToUE(P.Pos);
+		float D = FVector::Dist(At, Cam);
+		// whoever has a body keeps it a little longer (no flicker of bodies passed back and forth in a crowd)
+		const ANpcBody* Has = P.Id < Bodies.Num() ? Bodies[P.Id].Get() : nullptr;
+		const bool bHas = Has && !Has->IsHidden();
+		if (bHas)
 		{
-			TownNear.Emplace(D, P.Id);
+			D *= 0.75f;
 		}
+		if (D >= Draw)
+		{
+			continue;
+		}
+		// a townsperson borrows a look from the pool, never next to the one whose own look it is
+		if (ShownModels.IsValidIndex(P.Id))
+		{
+			if (const int32* Owner = ModelOwners.Find(ShownModels[P.Id]))
+			{
+				const ANpcBody* OB = *Owner < Bodies.Num() ? Bodies[*Owner].Get() : nullptr;
+				if (OB && !OB->IsHidden() && FVector::Dist(OB->GetActorLocation(), At) < 6000.f)
+				{
+					continue;
+				}
+			}
+		}
+		TownNear.Emplace(D, P.Id);
 	}
 	const int32 Max = FMath::Max(0, CVarPeopleTownBodies.GetValueOnGameThread());
 	if (TownNear.Num() > Max)
@@ -1205,27 +1229,40 @@ void UPeopleLifeSubsystem::BindLights()
 		{
 			continue;
 		}
-		if (UFunction* Driven = Sub->FindFunction(TEXT("SetDriven")))
-		{
-			uint8* Parms = (uint8*)FMemory_Alloca(FMath::Max(1, (int32)Driven->ParmsSize));
-			FMemory::Memzero(Parms, Driven->ParmsSize);
-			for (TFieldIterator<FBoolProperty> It(Driven); It; ++It)
-			{
-				It->SetPropertyValue_InContainer(Parms, true);
-			}
-			Sub->ProcessEvent(Driven, Parms);
-		}
-		LightSinks.Add({ Sub, Fn });
+		LightSinks.Add({ Sub, Fn, FCString::Strcmp(Name, TEXT("LyudWindowLights")) == 0 });
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: window lights driven through %s"), Name);
+	}
+	SetLightsDriven(true);
+}
+
+void UPeopleLifeSubsystem::SetLightsDriven(bool bDriven)
+{
+	for (const FLightSink& Sink : LightSinks)
+	{
+		UObject* Obj = Sink.Object.Get();
+		UFunction* Driven = Obj ? Obj->FindFunction(TEXT("SetDriven")) : nullptr;
+		if (!Driven)
+		{
+			continue;
+		}
+		uint8* Parms = (uint8*)FMemory_Alloca(FMath::Max(1, (int32)Driven->ParmsSize));
+		FMemory::Memzero(Parms, Driven->ParmsSize);
+		for (TFieldIterator<FBoolProperty> It(Driven); It; ++It)
+		{
+			It->SetPropertyValue_InContainer(Parms, bDriven);
+		}
+		Obj->ProcessEvent(Driven, Parms);
 	}
 }
 
 void UPeopleLifeSubsystem::SendFlatLight(const FString& FlatId, bool bOn)
 {
+	int32 Slash = INDEX_NONE;
+	const bool bBuildingFlat = FlatId.FindChar(TEXT('/'), Slash);
 	for (const FLightSink& Sink : LightSinks)
 	{
 		UObject* Obj = Sink.Object.Get();
-		if (!Obj || !Sink.Fn)
+		if (!Obj || !Sink.Fn || Sink.bBuildings != bBuildingFlat)
 		{
 			continue;
 		}
@@ -1258,14 +1295,14 @@ void UPeopleLifeSubsystem::SendFlatLight(const FString& FlatId, bool bOn)
 void UPeopleLifeSubsystem::UpdateLights(bool bAll)
 {
 	LP::FWorld& S = *Sim;
-	// the light owners appear with the level's actors: look for them till found (every 10 s)
-	static double LastBind = -1e9;
+	// the light owners appear with the level's actors: look for both till found (every 10 s); a newcomer gets every flat
 	const double Now = FPlatformTime::Seconds();
-	if (!bLightSinksBound || (LightSinks.Num() == 0 && Now - LastBind > 10.0))
+	if (!bLightSinksBound || (LightSinks.Num() < 2 && Now - LastLightBind > 10.0))
 	{
-		LastBind = Now;
+		LastLightBind = Now;
+		const int32 Had = LightSinks.Num();
 		BindLights();
-		bAll = bAll || LightSinks.Num() > 0;
+		bAll = bAll || LightSinks.Num() > Had;
 	}
 	if (bAll)
 	{

@@ -151,7 +151,9 @@ def spot_slots(spot, pos, extra):
     """Slots of a gathering spot: the public spaces thread's seat points if it gave them, else laid out here."""
     kind, yaw, seats = spot["kind"], spot.get("yaw", 0.0), int(spot.get("seats") or 0)
     if extra and extra.get("slots"):
-        return [{"kind": s.get("kind", "bench"), "pos": s["pos"], "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45)} for s in extra["slots"]]
+        # a standing point holds a little group (a holiday crowd on the square: three to a point)
+        return [dict({"kind": s.get("kind", "bench"), "pos": s["pos"], "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45)},
+                     **({"capacity": 3} if s.get("kind") == "stand" else {})) for s in extra["slots"]]
     if extra and extra.get("path"):
         return [{"kind": "stand", "pos": p, "yaw": yaw, "capacity": 2} for p in extra["path"]]
     out = []
@@ -274,7 +276,8 @@ def build_places(plan, extra, args):
                      "staff": u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"])})
     rest = read_input("unreal/Lyudmilovsk/Content/Restaurant/seats.json")
     if rest and "restaurant" not in extra_work:
-        extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else [])}
+        extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else []),
+                                    "staff": rest.get("staff") or {}, "entrance": rest.get("entrance") or {}}
     plot_type = {p["id"]: p.get("building") for p in plan["plots"]}
     for w in work:
         x = extra_work.get(w["id"], {})
@@ -306,7 +309,20 @@ def build_places(plan, extra, args):
                            "roles": roles, "building": w["plot"]})
             workplaces.append(w)
             continue
+        # a walked interior (the restaurant's seats.json): in by the front door, staff at their posts inside
+        ent = x.get("entrance") or {}
+        inside = None
+        if seats and ent.get("outside") and ent.get("inside"):
+            w["door"] = ent["outside"]
+            inside = [ent["inside"]]
+        posts = x.get("staff") or {}
         for role, count, hours, days in w["staff"]:
+            post = posts.get(role) or (posts.get("pass") if role == "manager" else None)
+            if inside is not None and post:
+                for i in range(count):
+                    slots.append({"kind": "staff", "tag": role, "pos": offset(post["pos"], post.get("yaw", 0.0), 0.0, (i - (count - 1) / 2) * 0.8),
+                                  "yaw": post.get("yaw", 0.0)})
+                continue
             if shell:
                 slots.append({"kind": "staff", "tag": role, "capacity": count})
             else:
@@ -329,7 +345,9 @@ def build_places(plan, extra, args):
                 slots.append({"kind": "seat", "capacity": n or (24 if w["kind"] == "restaurant" else 14)})
         if w["kind"] == "school":
             slots.append({"kind": "staff", "tag": "pupil", "capacity": 600})     # the classes
-        if shell:
+        if inside is not None:
+            pass        # its visitors are its diners (the seats)
+        elif shell:
             # a hall's seats (the cinema's 350) hold its visitors; otherwise a dozen at a time
             n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic") else 0
             slots.append({"kind": "visit", "capacity": max(12, n)})
@@ -341,6 +359,8 @@ def build_places(plan, extra, args):
               "building": w["plot"]}
         if shell:
             pl["shell"] = 1
+        if inside is not None:
+            pl["path"] = inside
         places.append(pl)
         workplaces.append(w)
 
@@ -781,8 +801,7 @@ def main():
     GIT_REFS.extend(args.ref)
     REFS_FIRST = args.refs_first
     rnd = random.Random(args.seed)
-    with open(PLAN, encoding="utf-8") as f:
-        plan = json.load(f)
+    plan = read_input(os.path.relpath(PLAN, ROOT))     # --refs-first: a branch's newer plan
     extra = read_input(os.path.relpath(EXTRA, ROOT)) or {}
     places, flats, workplaces = build_places(plan, extra, args)
     people = build_people(plan, places, flats, workplaces, args, rnd)

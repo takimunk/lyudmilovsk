@@ -227,9 +227,12 @@ private:
 	std::vector<int> LightChanged;
 	TMap<FName, int32> FlatIndex;
 	TMap<FName, int32> WindowIndex;
-	struct FLightSink { TWeakObjectPtr<UObject> Object; UFunction* Fn = nullptr; };
+	/** bBuildings: the plot buildings' lights (flat ids "<plot>/<flat>"), else the terrace walls' (W2-D001) */
+	struct FLightSink { TWeakObjectPtr<UObject> Object; UFunction* Fn = nullptr; bool bBuildings = false; };
 	TArray<FLightSink> LightSinks;
 	bool bLightSinksBound = false;
+	double LastLightBind = -1e9;
+	void SetLightsDriven(bool bDriven);
 	void BindLights();
 	void UpdateLights(bool bAll);
 	void SendFlatLight(const FString& FlatId, bool bOn);
