@@ -66,6 +66,13 @@ Cascade (Y 760). Windows: warm light at night when the flat is occupied (`UPeopl
   some again before dawn; shops lit 9..21 in the dark). Console: `lyud.CityWindows 0` off, `lyud.CityWindows.All 1`
   every window lit. Nothing per frame: checked every 2 s, instance buffers rebuilt only on a change.
 
+### Lanes and lamps
+
+Along the foot of W2..W5 runs a lane: asphalt from the face out to 7 m (`LANE_W`) with a kerb on its outer edge, so
+the flats' doors open onto a street. A concrete street lamp stands on the kerb every fourth bay (~30 m; `lamps` in the
+JSON, ids `LAMP-W3-07`); ALyudCityWindows lights their heads whenever it is dark. The landscape's ramp behind each wall
+starts 1.1 m behind the face (`RAMP_START`), so no 1 m landscape cell that touches the face lifts the ground in front.
+
 ## The axis
 
 The town's main axis is map **Y 905**: the pier and its lighthouse -> the promenade -> **Sun Square** with the

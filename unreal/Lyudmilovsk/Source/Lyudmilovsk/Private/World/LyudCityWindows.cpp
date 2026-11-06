@@ -29,6 +29,7 @@ namespace
 		{ FLinearColor(1.f, 0.82f, 0.6f), 2.6f },
 		{ FLinearColor(0.38f, 0.5f, 1.f), 1.2f },
 		{ FLinearColor(1.f, 0.92f, 0.78f), 4.5f },
+		{ FLinearColor(1.f, 0.72f, 0.42f), 8.f },      // street lamps (warm LED)
 	};
 	constexpr int32 NumTints = UE_ARRAY_COUNT(Tints);
 
@@ -118,6 +119,29 @@ bool ALyudCityWindows::Build()
 	{
 		AddWindows(*Arr, true);
 	}
+	// the street lamps along the lanes at the foot of the walls: a glowing lens under each head, lit whenever it is dark
+	if (Doc->TryGetArrayField(TEXT("lamps"), Arr))
+	{
+		for (const TSharedPtr<FJsonValue>& LV : *Arr)
+		{
+			const TSharedPtr<FJsonObject> L = LV->AsObject();
+			const TArray<TSharedPtr<FJsonValue>>* Head = nullptr;
+			if (!L || !L->TryGetArrayField(TEXT("head_ue"), Head) || Head->Num() < 3)
+			{
+				continue;
+			}
+			const double Yaw = L->GetNumberField(TEXT("yaw"));
+			const FVector Along(-FMath::Sin(FMath::DegreesToRadians(Yaw)), FMath::Cos(FMath::DegreesToRadians(Yaw)), 0.0);
+			FWindow Lamp;
+			Lamp.Id = FName(*L->GetStringField(TEXT("id")));
+			Lamp.Hash = HashName(Lamp.Id.ToString());
+			Lamp.bLamp = true;
+			Lamp.Tint = 4;
+			Lamp.Pane = FTransform(FRotationMatrix::MakeFromZX(FVector(0.0, 0.0, -1.0), Along).Rotator(),
+				V3(*Head) - FVector(0.0, 0.0, 9.0), FVector(0.4, 0.55, 1.0));
+			ById.Add(Lamp.Id, Windows.Add(Lamp));
+		}
+	}
 
 	UStaticMesh* Plane = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
 	UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Transport/Materials/M_TR_Glow.M_TR_Glow"), nullptr, LOAD_NoWarn | LOAD_Quiet);
@@ -155,6 +179,10 @@ bool ALyudCityWindows::ScheduleLit(const FWindow& W, const FDateTime& Now, float
 	const float H = Now.GetHour() + Now.GetMinute() / 60.f;
 	const bool bDark = SunAltitude < 2.f;
 	const uint32 Day = uint32(Now.GetDayOfYear());
+	if (W.bLamp)
+	{
+		return SunAltitude < 4.f;
+	}
 	if (W.bShop)
 	{
 		return bDark && H >= 9.f && H < 21.f + Frac(W.Hash, 11) * 1.5f;
@@ -204,7 +232,7 @@ void ALyudCityWindows::Refresh(bool bForceRebuild)
 	const bool bAll = CVarCityWindowsAll.GetValueOnGameThread() != 0;
 	for (FWindow& W : Windows)
 	{
-		const bool bLit = bAll || (W.External >= 0 ? W.External == 1 : (!bExternal && ScheduleLit(W, Now, SunAlt)));
+		const bool bLit = bAll || (W.External >= 0 ? W.External == 1 : ((!bExternal || W.bLamp) && ScheduleLit(W, Now, SunAlt)));
 		if (bLit != W.bLit)
 		{
 			W.bLit = bLit;

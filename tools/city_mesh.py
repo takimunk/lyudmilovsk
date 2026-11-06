@@ -22,6 +22,7 @@ GLASS = "City_Glass"
 DOOR = "City_Door"
 SHOPGLASS = "City_ShopGlass"
 TIMBER = "City_Timber"
+ASPHALT = "City_Asphalt"
 DOORS = ["City_Door_Blue", "City_Door_Red", "City_Door_Green", "City_Door_Ochre", "City_Door"]   # painted steel doors
 
 RISE, TREAD = 0.175, 0.30
@@ -281,6 +282,33 @@ def walls(mesh):
                         _parapet(prim_c, go, ga, gn, max(u0, hi_cut), u1, g["upper"])
 
 
+def lanes(mesh):
+    """The lanes along the foot of W2..W5: asphalt from the face out to LANE_W with a granite-grey kerb on the outer edge,
+    and the street lamps (concrete poles with an arm; the heads glow at night: ALyudCityWindows reads city_plan's lamps)."""
+    for i in range(1, len(C.WALLS)):
+        for b in C.wall_bays(i):
+            if b["mask"] < 0.999 or b["kind"] == "plot":
+                continue
+            if hasattr(mesh, "at"):
+                mesh.at(b["mid"][1], b["wall"] + "L")
+            o, a, n, l = _frame(b)
+            half = l / 2 + 0.03
+            z = b["lower"]
+            _box(mesh.p(ASPHALT), o, a, n, -half, half, 0.0, C.LANE_W, z - 0.3, z + 0.05, tile=4.0)
+            _box(mesh.p(CONC_DARK), o, a, n, -half, half, C.LANE_W, C.LANE_W + 0.3, z - 0.3, z + 0.15)
+    for lp in C.lamps():
+        b = next(x for x in C.wall_bays(int(lp["wall"][1]) - 1) if x["id"] == lp["bay"])
+        if hasattr(mesh, "at"):
+            mesh.at(b["mid"][1], b["wall"] + "L")
+        o, a, n, l = _frame(b)
+        z = b["lower"]
+        pc = mesh.p(CONC)
+        s0 = C.LANE_W + 0.5
+        _box(pc, o, a, n, -0.11, 0.11, s0 - 0.11, s0 + 0.11, z, z + C.LAMP_H + 0.15)          # the pole
+        _box(pc, o, a, n, -0.05, 0.05, C.LANE_W - 0.9, s0, z + C.LAMP_H + 0.05, z + C.LAMP_H + 0.15)   # the arm
+        _box(mesh.p(DOOR), o, a, n, -0.22, 0.22, C.LANE_W - 1.0, C.LANE_W - 0.4, z + C.LAMP_H - 0.08, z + C.LAMP_H + 0.07)  # the head
+
+
 def seawall(mesh):
     """The promenade's seawall over the beach: a sloped-foot concrete face, a kerb to sit on, steps to the sand."""
     for b in C.wall_bays(-1):
@@ -377,7 +405,7 @@ class _Chunker:
 
 def build_meshes():
     """The town's meshes for world_mesh.build(): (name, fill function)."""
-    return [("City_Walls", walls), ("City_Seawall", seawall), ("City_Pier", pier)]
+    return [("City_Walls", walls), ("City_Lanes", lanes), ("City_Seawall", seawall), ("City_Pier", pier)]
 
 
 def build_chunked(mesh_cls):
@@ -404,6 +432,7 @@ MATERIALS = {
     "City_Door_Red": ((0.45, 0.12, 0.08), 0.5, None, 1.0),
     "City_Door_Green": ((0.14, 0.3, 0.2), 0.5, None, 1.0),
     "City_Door_Ochre": ((0.6, 0.42, 0.14), 0.5, None, 1.0),
+    ASPHALT: ((0.3, 0.3, 0.3), 0.9, "textures/academ/asphalt_D.jpg", 4.0),
     TIMBER: ((0.36, 0.26, 0.17), 0.8, None, 1.0),
 }
 

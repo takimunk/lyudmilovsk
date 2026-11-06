@@ -55,6 +55,8 @@ WALLS = [
     ("W4", [(300, 860.0), (700, 860.0), (820, 680.0), (1500, 680.0)]),
     ("W5", [(300, 1010.0), (700, 1010.0), (820, 830.0), (1500, 830.0)]),
 ]
+RAMP_START = 1.1     # the ramp starts this far behind the face: the landscape's 1 m cells that touch the face stay
+                     # level with the lower terrace (none of them lifts the ground in front of the wall or under its lane)
 WALL_RAMP = 6.0      # the landscape climbs from the lower terrace to the upper over this many metres behind the
                      # wall's face; the wall block (WALL_DEPTH deep) hides it
 WALL_DEPTH = 8.0
@@ -108,7 +110,7 @@ def terrace_z(x, y):
         z = TERRACES[0][3]
     for i in range(len(WALLS)):
         ws = wall_s(i, y)
-        t = (s - ws - 0.4) / WALL_RAMP
+        t = (s - ws - RAMP_START) / WALL_RAMP
         if t <= 0.0:
             break
         t = min(1.0, t)
@@ -304,7 +306,7 @@ def _plots():
             notes="stalls, a carousel and a small Ferris wheel under and round the wavy canopy; holidays"))
     a(_plot("P-PARK", "park", None, 1, 255.0, 1220.0, 300, 120, "Приморский парк", "Seaside park",
             notes="lawns, the pond, alleys, a playground, benches; trees by the plant system; open"))
-    a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 30, "Дом культуры «Рассвет»", "Rassvet culture house",
+    a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 36, "Дом культуры «Рассвет»", "Rassvet culture house",
             height_max=18, notes="cinema hall, dance hall, a hobby room; the cinema of the town"))
     for k, (s, y) in enumerate(((120.0, 450.0), (220.0, 450.0), (125.0, 560.0), (130.0, 680.0), (230.0, 1380.0))):
         a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "plain_block", "twin_cylinder_house", "plain_block",
@@ -624,6 +626,26 @@ def cascade():
     return out
 
 
+LANE_W = 7.0          # the lane along the foot of W2..W5: asphalt from the face out to 7 m, a kerb on its outer edge
+LAMP_EVERY = 4        # a street lamp every fourth bay (~30 m) on the lane's outer edge
+LAMP_H = 5.4
+
+
+def lamps():
+    """Street lamps along the lanes at the foot of W2..W5: id, pole foot and lamp head (map), yaw (the arm reaches
+    toward the wall)."""
+    out = []
+    for i in range(1, len(WALLS)):
+        n = 0
+        for k, b in enumerate(wall_bays(i)):
+            if b["mask"] < 0.999 or b["kind"] in ("grand", "plot") or k % LAMP_EVERY:
+                continue
+            n += 1
+            out.append({"id": "LAMP-%s-%02d" % (b["wall"], n), "wall": b["wall"], "bay": b["id"], "foot": _bay_point(b, 0.0, LANE_W + 0.5, b["lower"]),
+                        "head": _bay_point(b, 0.0, LANE_W - 0.7, b["lower"] + LAMP_H), "yaw": b["yaw"]})
+    return out
+
+
 def wall_dwellings():
     """The flats built into the terrace walls W2..W5 (W1 holds shops and cafés facing the promenade): id, wall,
     bay, door (map, on the lower terrace in front of the face), windows [{id, map centre}], yaw of the face."""
@@ -716,6 +738,7 @@ def build():
         "stairs": stairs(),
         "wall_dwellings": wall_dwellings(),
         "cascade": cascade(),
+        "lamps": lamps(),
         "wall_bays": {wall_id(i): wall_bays(i) for i in range(-1, len(WALLS))},
         "promenade_units": shops_in_seawall(),
         "links": links(),
@@ -729,6 +752,8 @@ def build():
             d["door_ue"] = ue(d["door"], face_y)
             for w in d["windows"]:
                 w["ue"] = ue(w["map"], face_y)
+        for lp in data["lamps"]:
+            lp["foot_ue"], lp["head_ue"] = ue(lp["foot"], face_y), ue(lp["head"], face_y)
         for d in data["promenade_units"]:
             d["door_ue"] = ue(d["door"], face_y)
             for w in d["windows"]:

@@ -57,6 +57,7 @@ private:
 		FTransform Pane;          // the plane's transform (unit 1 m plane scaled to the window)
 		uint32 Hash = 0;
 		bool bShop = false;
+		bool bLamp = false;        // a street lamp's head (city_plan.json "lamps"): lit in the dark, not the life's
 		bool bUpper = false;
 		bool bLit = false;
 		int8 Tint = 0;            // which instanced mesh when lit
