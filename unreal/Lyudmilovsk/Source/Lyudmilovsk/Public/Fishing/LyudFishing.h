@@ -57,7 +57,7 @@ public:
 	UPROPERTY(SaveGame) TMap<FName, float> BagGrams;
 
 	FLyudCatchRecord* Find(FName Species);
-	/** The fish in the pocket, and what the Gastronom pays for them all (roubles). */
+	/** The fish in the pocket the Gastronom buys, and what it pays for them all (roubles). */
 	int32 FishHeld(const UObject* WorldContext, int32* OutRoubles = nullptr) const;
 	/** Sells every fish in the pocket: the roubles go in, the fish out; returns the roubles (0: nothing to sell). */
 	int32 SellAll(const UObject* WorldContext);
@@ -212,7 +212,10 @@ private:
 	void PutAway();
 	void SyncBait();
 	void UpdateWeights();
-	void HandleEvents();
+	/** Handles this step's events from index From on (Fly adds Landed / Ashore after the first pass). */
+	void HandleEvents(int32 From = 0);
+	/** The fish shown after the catch goes into the pocket now. */
+	void Bag();
 	void Fly(float DeltaTime);
 	void Draw(float DeltaTime);
 	void Caught();
@@ -262,6 +265,12 @@ private:
 	float FishWriggle = 0.f;
 	FVector EndPos = FVector::ZeroVector;
 	FName ForcedHook;
+	/** Where the fish was hooked (the web's cell it came from, the diver's fish it was), and the ground the cast fell on. */
+	FVector HookPos = FVector::ZeroVector;
+	float FeetZ = 0.f, DryZ = 0.f;
+	bool bDryCast = false;
+	/** "No rod" stays on the line until it runs out. */
+	float NeedRodLeft = 0.f;
 	/** The hand's pose now (look frame), following the state's. */
 	FVector PosePos = FVector(40.f, 20.f, -28.f);
 	float PoseElev = 30.f, PoseYaw = -4.f;

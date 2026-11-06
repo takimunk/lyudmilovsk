@@ -2,6 +2,7 @@
 
 #include "../Sea/FishModel.h"
 #include "Audio/LyudSoundscape.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
 #include "FishingModel.h"
@@ -17,6 +18,7 @@
 #include "Plants/GameCalendar.h"
 #include "Sea/LyudEcosystem.h"
 #include "Sea/LyudSea.h"
+#include "Sea/LyudSwim.h"
 #include "Sea/LyudUnderwater.h"
 #include "UI/LyudGameScreen.h"
 
@@ -104,9 +106,39 @@ namespace
 		return TEXT("?");
 	}
 
-	FName FishItem(int32 Index)
+	/** The item and species names of each catchable, made once (asked every frame at a counter: no strings then). */
+	struct FFishNames
 	{
-		return FName(ANSI_TO_TCHAR(LyudF::ItemOf(LyudFishing::Catchable(Index).Id).c_str()));
+		TArray<FName> Items, Species;
+		TArray<float> Usual;
+		TMap<FName, int32> Baits;
+		FFishNames()
+		{
+			for (int32 C = 0; C < LyudF::NumCatchable(); C++)
+			{
+				const LyudF::FCatchable& F = LyudF::Catchable(C);
+				Items.Add(FName(ANSI_TO_TCHAR(LyudF::ItemOf(F.Id).c_str())));
+				Species.Add(FName(ANSI_TO_TCHAR(F.Id)));
+				Usual.Add(F.K * FMath::Cube(F.Length * 100.f) / 100.f);
+			}
+			for (int32 B = 0; B < LyudF::NumBaits(); B++)
+			{
+				Baits.Add(FName(ANSI_TO_TCHAR(LyudF::Bait(B).Item)), B);
+			}
+		}
+	};
+	const FFishNames& FishNames()
+	{
+		static const FFishNames Names;
+		return Names;
+	}
+	FName FishItem(int32 Index) { return FishNames().Items[Index]; }
+	FName FishSpeciesName(int32 Index) { return FishNames().Species[Index]; }
+	/** The bait index of an item (-1: not a bait), without a string. */
+	int32 FishBaitOf(FName Item)
+	{
+		const int32* B = FishNames().Baits.Find(Item);
+		return B ? *B : -1;
 	}
 	FText FishName(FName Species)
 	{
@@ -149,13 +181,14 @@ int32 ULyudFishingState::FishHeld(const UObject* WorldContext, int32* OutRoubles
 	int32 N = 0, Roubles = 0;
 	for (int32 C = 0; Inv && C < LyudF::NumCatchable(); C++)
 	{
-		const int32 Held = Inv->Count(FishItem(C));
+		// only what the Gastronom buys (SellAll leaves the sand gobies and sticklebacks in the pocket)
+		const int32 Held = LyudF::Catchable(C).PerKilo > 0 ? Inv->Count(FishItem(C)) : 0;
 		if (Held <= 0) continue;
 		N += Held;
 		// each priced at the mean weight of those held (a fish given or found: the species' usual weight)
-		const FName Species(ANSI_TO_TCHAR(LyudF::Catchable(C).Id));
+		const FName Species = FishSpeciesName(C);
 		const float* G = BagGrams.Find(Species);
-		const float Usual = LyudF::Catchable(C).K * FMath::Cube(LyudF::Catchable(C).Length * 100.f) / 100.f;
+		const float Usual = FishNames().Usual[C];
 		const float Each = G && *G > 0.f ? *G / Held : Usual;
 		Roubles += Held * LyudF::PriceOf(C, Each);
 	}
@@ -179,7 +212,7 @@ int32 ULyudFishingState::SellAll(const UObject* WorldContext)
 		if (Held > 0 && LyudF::Catchable(C).PerKilo > 0)
 		{
 			Inv->Remove(Item, Held);
-			BagGrams.Remove(FName(ANSI_TO_TCHAR(LyudF::Catchable(C).Id)));
+			BagGrams.Remove(FishSpeciesName(C));
 		}
 	}
 	Inv->Earn(Roubles);
@@ -196,8 +229,8 @@ FName ULyudFishingState::BiggestHeld(const UObject* WorldContext, float* OutGram
 	{
 		const int32 Held = Inv->Count(FishItem(C));
 		if (Held <= 0) continue;
-		const float* G = BagGrams.Find(FName(ANSI_TO_TCHAR(LyudF::Catchable(C).Id)));
-		const float Usual = LyudF::Catchable(C).K * FMath::Cube(LyudF::Catchable(C).Length * 100.f) / 100.f;
+		const float* G = BagGrams.Find(FishSpeciesName(C));
+		const float Usual = FishNames().Usual[C];
 		const float Each = G && *G > 0.f ? *G / Held : Usual;
 		if (Best.IsNone() || Each > BestGrams)
 		{
@@ -221,8 +254,8 @@ float ULyudFishingState::TakeOne(const UObject* WorldContext, FName Item)
 	for (int32 C = 0; C < LyudF::NumCatchable(); C++)
 	{
 		if (FishItem(C) != Item) continue;
-		const FName Species(ANSI_TO_TCHAR(LyudF::Catchable(C).Id));
-		const float Usual = LyudF::Catchable(C).K * FMath::Cube(LyudF::Catchable(C).Length * 100.f) / 100.f;
+		const FName Species = FishSpeciesName(C);
+		const float Usual = FishNames().Usual[C];
 		if (float* G = BagGrams.Find(Species); G && *G > 0.f)
 		{
 			Grams = *G / Held;
@@ -360,7 +393,8 @@ void ULyudFishing::Say(const FText& Text, float Seconds)
 void ULyudFishing::SetBait(FName Item)
 {
 	ULyudFishingState* State = ULyudFishingState::Get(this);
-	if (!State || State->Bait == Item)
+	// the rig is changed only with the line wound in (not with a float out or a fish on)
+	if (!State || State->Bait == Item || (Session && Session->State() != LyudF::EState::Idle))
 	{
 		return;
 	}
@@ -368,7 +402,7 @@ void ULyudFishing::SetBait(FName Item)
 	ULyudInventory* Inv = ULyudInventory::Get(this);
 	if (Inv && State->bBaited && !State->Bait.IsNone())
 	{
-		const int32 Old = LyudF::FindBait(TCHAR_TO_ANSI(*State->Bait.ToString()));
+		const int32 Old = FishBaitOf(State->Bait);
 		if (Old >= 0 && !LyudFishing::Bait(Old).bLure)
 		{
 			Inv->Add(State->Bait);
@@ -378,7 +412,9 @@ void ULyudFishing::SetBait(FName Item)
 	State->bBaited = false;
 	if (Session)
 	{
-		Session->SetBait(Item.IsNone() ? -1 : LyudF::FindBait(TCHAR_TO_ANSI(*Item.ToString())));
+		// the hook is bare now: SyncBait puts the new bait on from the pocket
+		Session->SetBait(Item.IsNone() ? -1 : FishBaitOf(Item));
+		Session->Unbait();
 	}
 	UE_LOG(LogTemp, Display, TEXT("FISHING bait %s"), *Item.ToString());
 }
@@ -417,7 +453,7 @@ void ULyudFishing::SyncBait()
 	{
 		return;
 	}
-	const int32 B = State->Bait.IsNone() ? -1 : LyudF::FindBait(TCHAR_TO_ANSI(*State->Bait.ToString()));
+	const int32 B = State->Bait.IsNone() ? -1 : FishBaitOf(State->Bait);
 	if (Session->GetBait() != B)
 	{
 		Session->SetBait(B);
@@ -508,7 +544,7 @@ void ULyudFishing::TakeOut()
 	Session->Reset();
 	if (ULyudFishingState* State = ULyudFishingState::Get(this))
 	{
-		Session->SetBait(State->Bait.IsNone() ? -1 : LyudF::FindBait(TCHAR_TO_ANSI(*State->Bait.ToString())));
+		Session->SetBait(State->Bait.IsNone() ? -1 : FishBaitOf(State->Bait));
 		if (State->bBaited) Session->Rebait();
 	}
 	PosePos = FVector(30.f, 22.f, -50.f);
@@ -519,6 +555,11 @@ void ULyudFishing::TakeOut()
 
 void ULyudFishing::PutAway()
 {
+	// a fish still shown in the hand goes into the pocket (it is already in the log), not lost with the rod
+	if (ShowLeft > 0.f)
+	{
+		Bag();
+	}
 	if (Session)
 	{
 		Session->Reset();
@@ -673,13 +714,15 @@ FHeroHoldPose ULyudFishing::PoseNow(float DeltaTime)
 	return RodPose(Pos, Elev, Yaw);
 }
 
-void ULyudFishing::HandleEvents()
+void ULyudFishing::HandleEvents(int32 From)
 {
 	ULyudInventory* Inv = ULyudInventory::Get(this);
 	ULyudFishingState* State = ULyudFishingState::Get(this);
 	ALyudFishingRod* R = Rod.Get();
-	for (LyudF::EEvent E : Session->Events())
+	const std::vector<LyudF::EEvent>& Events = Session->Events();
+	for (int32 I = FMath::Max(From, 0); I < int32(Events.size()); I++)
 	{
+		const LyudF::EEvent E = Events[I];
 		switch (E)
 		{
 		case LyudF::EEvent::CastStart:
@@ -694,8 +737,10 @@ void ULyudFishing::HandleEvents()
 			const float Up = FMath::Clamp(FRotator::NormalizeAxis(Look.Pitch), -10.f, 35.f);
 			const float Throw = Session->CastDistance() * (1.f + Up / 90.f) * 100.f;
 			FlyFrom = R ? R->Tip() : LookFrame().GetLocation();
-			const AActor* Hero = UGameplayStatics::GetPlayerPawn(this, 0);
+			const ACharacter* Hero = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 			Origin = Hero ? Hero->GetActorLocation() : FlyFrom;
+			FeetZ = Hero ? Origin.Z - Hero->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : Origin.Z;
+			bDryCast = false;
 			const FVector2D To = FVector2D(Origin) + FVector2D(Dir) * Throw;
 			FlyTo = OnWater(To, 0.f);
 			if (!IsWater(FlyTo))
@@ -724,13 +769,13 @@ void ULyudFishing::HandleEvents()
 			if (R && Session->BitingFish() >= 0)
 			{
 				// its look loads in the background while it nibbles, so the strike shows it without a hitch
-				R->PrefetchFish(FName(ANSI_TO_TCHAR(LyudF::Catchable(Session->BitingFish()).Id)));
+				R->PrefetchFish(FishSpeciesName(Session->BitingFish()));
 			}
 			break;
 		case LyudF::EEvent::Take:
 			if (R && Session->BitingFish() >= 0)
 			{
-				R->PrefetchFish(FName(ANSI_TO_TCHAR(LyudF::Catchable(Session->BitingFish()).Id)));
+				R->PrefetchFish(FishSpeciesName(Session->BitingFish()));
 			}
 			Sound(TEXT("float_plop"), EndPos, 0.35f);
 			UE_LOG(LogTemp, Display, TEXT("FISHING take"));
@@ -739,13 +784,10 @@ void ULyudFishing::HandleEvents()
 		{
 			Strike = 1.f;
 			const LyudF::FFish& F = Session->Fish();
-			const FName Species(ANSI_TO_TCHAR(LyudF::Catchable(F.Species).Id));
+			const FName Species = FishSpeciesName(F.Species);
 			if (R) R->SetFish(Species, F.Length);
-			// the one the diver would see there is this one
-			if (ULyudUnderwaterSubsystem* Under = ULyudUnderwaterSubsystem::Get(this))
-			{
-				Under->TakeFish(Species, EndPos, 1500.f);
-			}
+			// where it took: the web's cell and the diver's fish it is (taken out only if it is landed)
+			HookPos = EndPos;
 			Sound(TEXT("fish_splash"), EndPos, 0.6f);
 			UE_LOG(LogTemp, Display, TEXT("FISHING hooked %s %.0f g %.1f cm"), *Species.ToString(), F.Grams, F.Length * 100.f);
 			break;
@@ -772,7 +814,7 @@ void ULyudFishing::HandleEvents()
 			// a spoon goes with the line
 			if (State && Inv && !State->Bait.IsNone())
 			{
-				const int32 B = LyudF::FindBait(TCHAR_TO_ANSI(*State->Bait.ToString()));
+				const int32 B = FishBaitOf(State->Bait);
 				if (B >= 0 && LyudFishing::Bait(B).bLure) Inv->Remove(State->Bait);
 				State->bBaited = false;
 			}
@@ -807,7 +849,7 @@ void ULyudFishing::Caught()
 	{
 		return;
 	}
-	const FName Species(ANSI_TO_TCHAR(LyudF::Catchable(F.Species).Id));
+	const FName Species = FishSpeciesName(F.Species);
 	ULyudFishingState* State = ULyudFishingState::Get(this);
 	if (State)
 	{
@@ -817,10 +859,14 @@ void ULyudFishing::Caught()
 	ShowGrams = F.Grams;
 	ShowCm = F.Length * 100.f;
 	ShowLeft = 2.4f;
-	// out of the web and its spot
+	// out of the web and its spot where it was hooked (EndPos is at the rod's tip by now), and the one the diver would see there
 	if (ULyudEcosystem* Eco = ULyudEcosystem::Get(this))
 	{
-		Eco->ReportCatch(Species, EndPos, F.Grams);
+		Eco->ReportCatch(Species, HookPos, F.Grams);
+	}
+	if (ULyudUnderwaterSubsystem* Under = ULyudUnderwaterSubsystem::Get(this))
+	{
+		Under->TakeFish(Species, HookPos, 1500.f);
 	}
 	const bool bNew = State && State->Record(Species, F.Grams, ShowCm, UGameCalendar::NowIn(GetWorld()));
 	const bool bFirst = State && State->Find(Species) && State->Find(Species)->Count == 1;
@@ -828,6 +874,22 @@ void ULyudFishing::Caught()
 	Say(LyudText::Get(bFirst ? TEXT("ui.fish.caught_first") : (bNew ? TEXT("ui.fish.caught_record") : TEXT("ui.fish.caught")), Args), 4.f);
 	Sound(TEXT("fish_flap"), EndPos, 0.8f);
 	UE_LOG(LogTemp, Display, TEXT("FISHING caught %s %.0f g %.1f cm first %d record %d"), *Species.ToString(), F.Grams, ShowCm, bFirst ? 1 : 0, bNew ? 1 : 0);
+}
+
+void ULyudFishing::Bag()
+{
+	ShowLeft = -1.f;
+	if (ShowSpecies.IsNone())
+	{
+		return;
+	}
+	const int32 C = FishNames().Species.IndexOfByKey(ShowSpecies);
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	if (Inv && C != INDEX_NONE) Inv->Add(FishItem(C));
+	if (ULyudFishingState* State = ULyudFishingState::Get(this)) State->BagGrams.FindOrAdd(ShowSpecies) += ShowGrams;
+	if (const APawn* Hero = UGameplayStatics::GetPlayerPawn(this, 0)) Sound(TEXT("fish_bag"), Hero->GetActorLocation(), 0.6f);
+	if (ALyudFishingRod* R = Rod.Get()) R->PlaceFish(false, FVector::ZeroVector, FRotator::ZeroRotator, 0.f, 0.f);
+	ShowSpecies = NAME_None;
 }
 
 void ULyudFishing::Fly(float DeltaTime)
@@ -875,6 +937,9 @@ void ULyudFishing::Fly(float DeltaTime)
 	{
 		bFlying = false;
 		Session->SetLanded(bWater, FVector::Dist2D(Origin, At) * 0.01f);
+		// on land (the beach, the pier) it is wound back over the ground, not at the sea's height under it
+		bDryCast = !bWater;
+		DryZ = At.Z;
 		if (bWater)
 		{
 			// the line lies along the way it went
@@ -1003,6 +1068,13 @@ void ULyudFishing::Draw(float DeltaTime)
 			bFloat = true;
 			Lean = S == LyudF::EState::Winding ? 0.8f : 0.f;
 		}
+		if (S == LyudF::EState::Winding && (bDryCast || !IsWater(EndPos)))
+		{
+			// dragged back over dry ground: from where it fell down to the feet (never under the ground at sea level)
+			const float T = LastDist > 0.01f ? FMath::Clamp(Session->Distance() / LastDist, 0.f, 1.f) : 0.f;
+			EndPos.Z = FMath::Max(EndPos.Z, FMath::Lerp(FeetZ + 3.f, bDryCast ? DryZ + 2.f : EndPos.Z, T));
+			bSpoon = bLure;
+		}
 		break;
 	}
 	case LyudF::EState::Fighting:
@@ -1065,7 +1137,7 @@ void ULyudFishing::Tick(float DeltaTime)
 	}
 	// a bait taken in the hand goes on the rig (the rod comes back into the hand); a rod in the hand comes out
 	const FName Equipped = Inv->EquippedItem();
-	if (!Equipped.IsNone() && LyudF::FindBait(TCHAR_TO_ANSI(*Equipped.ToString())) >= 0)
+	if (!Equipped.IsNone() && FishBaitOf(Equipped) >= 0)
 	{
 		if (Inv->Count(RodId) > 0)
 		{
@@ -1077,7 +1149,15 @@ void ULyudFishing::Tick(float DeltaTime)
 			Inv->Equip(FName());
 			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World)) UI->SetPrompt(this, LyudText::Get(TEXT("ui.fish.need_rod")));
 			SayLeft = 0.f;
-			LastPrompt = LyudText::Get(TEXT("ui.fish.need_rod"));
+			NeedRodLeft = 2.5f;
+		}
+	}
+	if (NeedRodLeft > 0.f)
+	{
+		NeedRodLeft -= DeltaTime;
+		if (NeedRodLeft <= 0.f && !Rod.IsValid())
+		{
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World)) UI->SetPrompt(this, FText::GetEmpty());
 		}
 	}
 	if (Inv->EquippedItem() == RodId && !Rod.IsValid())
@@ -1099,9 +1179,17 @@ void ULyudFishing::Tick(float DeltaTime)
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	const bool bScreen = Screen && Screen->IsOpen();
-	const bool bBusy = bScreen || Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden();
+	const ULyudSwimComponent* Swim = Hero->FindComponentByClass<ULyudSwimComponent>();
+	const bool bSwimming = Swim && Swim->IsSwimming();
+	const bool bBusy = bScreen || Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden() || bSwimming;
 	if (bBusy)
 	{
+		// a swing held when the screen came up is dropped (it would cast by itself after); in the water everything is wound in
+		if (Session->State() == LyudF::EState::Charging || (bSwimming && Session->State() != LyudF::EState::Idle))
+		{
+			Session->Reset();
+			bFlying = false;
+		}
 		if (!bHidden)
 		{
 			R->SetActorHiddenInGame(true);
@@ -1121,12 +1209,7 @@ void ULyudFishing::Tick(float DeltaTime)
 		ShowLeft -= DeltaTime;
 		if (ShowLeft <= 0.f)
 		{
-			// into the bag
-			const int32 C = LyudF::FindCatchable(TCHAR_TO_ANSI(*ShowSpecies.ToString()));
-			if (C >= 0) Inv->Add(FishItem(C));
-			if (ULyudFishingState* State = ULyudFishingState::Get(World)) State->BagGrams.FindOrAdd(ShowSpecies) += ShowGrams;
-			Sound(TEXT("fish_bag"), Hero->GetActorLocation(), 0.6f);
-			R->PlaceFish(false, FVector::ZeroVector, FRotator::ZeroRotator, 0.f, 0.f);
+			Bag();
 		}
 	}
 
@@ -1170,9 +1253,9 @@ void ULyudFishing::Tick(float DeltaTime)
 	}
 	if (!ForcedHook.IsNone())
 	{
-		const int32 C = LyudF::FindCatchable(TCHAR_TO_ANSI(*ForcedHook.ToString()));
+		const int32 C = FishNames().Species.IndexOfByKey(ForcedHook);
 		ForcedHook = FName();
-		if (C >= 0)
+		if (C != INDEX_NONE)
 		{
 			if (Session->State() == LyudF::EState::Idle)
 			{
@@ -1193,7 +1276,10 @@ void ULyudFishing::Tick(float DeltaTime)
 	Session->Step(DeltaTime, In);
 	Strike = FMath::Max(0.f, Strike - DeltaTime * 5.f);
 	HandleEvents();
+	// the flight's end adds Landed / Ashore to this step's events: handled now, not lost to the next step
+	const int32 Handled = int32(Session->Events().size());
 	Fly(DeltaTime);
+	HandleEvents(Handled);
 	// walked off too far from the line (or the fish): it is wound in
 	if (IsLineOut() && !bFlying && FVector::Dist2D(Hero->GetActorLocation(), Origin) > 3000.f)
 	{
