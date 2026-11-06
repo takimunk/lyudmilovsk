@@ -174,6 +174,8 @@ namespace LyudFishing
 		/** The fish's way off the straight line out, -1..1 (it swims left and right); its depth 0..1. */
 		float Side() const { return SideNow; }
 		bool IsRunning() const { return bRun; }
+		/** The fish at the bait (Nibbling, Taking: a Catchable index), -1 none; the caller loads its look before the strike. */
+		int BitingFish() const { return (St == EState::Nibbling || St == EState::Taking) ? BiteFish : -1; }
 		/** The fish on the line (Fighting, Landing) and the one last caught (after Caught). */
 		const FFish& Fish() const { return Hook; }
 		/** The fish's strength left, 0..1. */

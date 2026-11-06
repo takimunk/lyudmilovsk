@@ -68,7 +68,10 @@ plate).
 - **Rod** (`Private/Fishing/FishingRod.cpp`, `ALyudFishingRod`): built in code from lathed profiles (cork grips, reel seat, reel
   with spool and turning handle, 8 blank segments on joints that bend toward the line's pull, guides), the line as one instanced
   mesh of 24 pieces (a sagging curve when slack, straight under water), the float, the spoon and hook, and the fish on the hook
-  (its swimming mesh `/Game/Sea/Fish/SM_<Id>` with the fish material's wriggle, or the sea-life stand-in). Perf: instance
+  (its swimming mesh `/Game/Sea/Fish/SM_<Id>` with the fish material's wriggle, or the sea-life stand-in). Perf: built once per world
+  (put away it is parked hidden, not destroyed), one material per colour (8, not one per part), the hooked fish's look loaded
+  in the background from the first nibble (ULyudPrefetch; the stand-in shows until it arrives, never a load on the strike), the
+  prompt rebuilt only when what it says changes; instance
   transforms are updated in place (`bMarkRenderStateDirty = false`), nothing collides, nothing goes into Lumen or distance
   fields, no allocation per frame. Meshes from blender/props/fishing can replace the stand-ins later.
 - **Shop** (`Content/PeopleData/counters.json`, `CounterTrade`): the goods on Orlova Tanya's counter and `"buys_fish": true`,

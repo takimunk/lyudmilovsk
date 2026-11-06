@@ -321,10 +321,12 @@ void ULyudFishing::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudFishing::Deinitialize()
 {
-	if (Rod.IsValid())
+	for (ALyudFishingRod* R : { Rod.Get(), Parked.Get() })
 	{
-		Rod->Destroy();
+		if (R) R->Destroy();
 	}
+	Rod.Reset();
+	Parked.Reset();
 	Super::Deinitialize();
 }
 
@@ -352,6 +354,7 @@ void ULyudFishing::Say(const FText& Text, float Seconds)
 {
 	Said = Text;
 	SayLeft = Seconds;
+	SayCount++;
 }
 
 void ULyudFishing::SetBait(FName Item)
@@ -481,7 +484,17 @@ void ULyudFishing::TakeOut()
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	const FTransform Look = LookFrame();
-	ALyudFishingRod* R = World->SpawnActor<ALyudFishingRod>(Look.TransformPosition(FVector(30.f, 20.f, -60.f)), Look.Rotator(), Params);
+	// the rod put away last time comes back out; only the first take-out in a world builds one
+	ALyudFishingRod* R = Parked.Get();
+	Parked.Reset();
+	if (R)
+	{
+		R->SetActorLocationAndRotation(Look.TransformPosition(FVector(30.f, 20.f, -60.f)), Look.Rotator());
+	}
+	else
+	{
+		R = World->SpawnActor<ALyudFishingRod>(Look.TransformPosition(FVector(30.f, 20.f, -60.f)), Look.Rotator(), Params);
+	}
 	if (!R)
 	{
 		return;
@@ -510,13 +523,15 @@ void ULyudFishing::PutAway()
 	{
 		Session->Reset();
 	}
-	if (Rod.IsValid())
+	if (ALyudFishingRod* R = Rod.Get())
 	{
-		Rod->Destroy();
+		R->Park();
+		Parked = R;
 	}
 	Rod.Reset();
 	bAttached = false;
 	bFlying = false;
+	PromptKey = ~0ull;
 	ShowLeft = -1.f;
 	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
 	{
@@ -706,8 +721,17 @@ void ULyudFishing::HandleEvents()
 			break;
 		case LyudF::EEvent::Nibble:
 			UE_LOG(LogTemp, Display, TEXT("FISHING nibble"));
+			if (R && Session->BitingFish() >= 0)
+			{
+				// its look loads in the background while it nibbles, so the strike shows it without a hitch
+				R->PrefetchFish(FName(ANSI_TO_TCHAR(LyudF::Catchable(Session->BitingFish()).Id)));
+			}
 			break;
 		case LyudF::EEvent::Take:
+			if (R && Session->BitingFish() >= 0)
+			{
+				R->PrefetchFish(FName(ANSI_TO_TCHAR(LyudF::Catchable(Session->BitingFish()).Id)));
+			}
 			Sound(TEXT("float_plop"), EndPos, 0.35f);
 			UE_LOG(LogTemp, Display, TEXT("FISHING take"));
 			break;
@@ -868,6 +892,17 @@ void ULyudFishing::Prompt()
 	{
 		return;
 	}
+	// built only when what it says changes (a new state, bait, words said, the tension by 5 %), not every frame
+	const LyudF::EState St = Session->State();
+	const bool bRunHint = St == LyudF::EState::Fighting && Session->IsRunning() && Session->Tension() > 0.55f;
+	const uint64 Key = uint64(St) | (uint64(SayLeft > 0.f) << 8) | (uint64(Session->GetBait() + 1) << 9) | (uint64(Session->IsBaited()) << 17)
+		| (uint64(bRunHint) << 18) | (uint64(St == LyudF::EState::Fighting && !bRunHint ? FMath::RoundToInt(Session->Tension() * 20.f) : 0) << 19)
+		| (uint64(SayCount) << 32);
+	if (Key == PromptKey)
+	{
+		return;
+	}
+	PromptKey = Key;
 	FText Text;
 	const ULyudFishingState* State = ULyudFishingState::Get(this);
 	const FText BaitName = State && !State->Bait.IsNone() && Session->IsBaited() ? ULyudInventory::ItemName(State->Bait) : LyudText::Get(TEXT("ui.fish.no_bait"));
@@ -887,7 +922,7 @@ void ULyudFishing::Prompt()
 		case LyudF::EState::Taking: Text = LyudText::Get(TEXT("ui.fish.hint_take")); break;
 		case LyudF::EState::Fighting:
 			Text = Session->IsRunning() && Session->Tension() > 0.55f ? LyudText::Get(TEXT("ui.fish.hint_run"))
-				: LyudText::Get(TEXT("ui.fish.hint_fight"), { FStringFormatArg(FMath::RoundToInt(Session->Tension() * 100.f)) });
+				: LyudText::Get(TEXT("ui.fish.hint_fight"), { FStringFormatArg(FMath::RoundToInt(Session->Tension() * 20.f) * 5) });
 			break;
 		default: break;
 		}

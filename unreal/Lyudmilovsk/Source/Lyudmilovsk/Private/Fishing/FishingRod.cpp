@@ -11,6 +11,7 @@
 #include "Misc/PackageName.h"
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
+#include "World/LyudPrefetch.h"
 
 // The rod is built in code from turned (lathe) profiles: cork grips, a reel seat, a tapered blank in segments with its rings,
 // a spinning reel, a quill float, a spoon. Sizes in cm, after an ordinary 2.7 m telescopic float rod with a 2000 reel.
@@ -20,13 +21,11 @@ namespace
 	constexpr float BlankBase = 0.62f;     // the blank's radius at the fore grip and at the tip
 	constexpr float BlankTip = 0.09f;
 
-	template <typename T>
-	T* RodLoadIfThere(const TCHAR* Path)
-	{
-		// never load just to see whether it exists (the perf checklist): ask the package first
-		const FString Package = FPackageName::ObjectPathToPackageName(FString(Path));
-		return FPackageName::DoesPackageExist(Package) ? LoadObject<T>(nullptr, Path) : nullptr;
-	}
+	FString RodFishMeshPath(const FString& Id) { return FString::Printf(TEXT("/Game/Sea/Fish/SM_%s.SM_%s"), *Id, *Id); }
+	FString RodFishSkinPath(const FString& Id) { return FString::Printf(TEXT("/Game/Sea/Fish/T_%s_D.T_%s_D"), *Id, *Id); }
+	const TCHAR* RodFishBodyPath = TEXT("/Game/Sea/Underwater/M_LyudFish.M_LyudFish");
+	const TCHAR* RodFishFinPath = TEXT("/Game/Sea/Underwater/M_LyudFishFin.M_LyudFishFin");
+	const TCHAR* RodStandInPath = TEXT("/Game/Sea/M_SeaFish.M_SeaFish");
 
 	/** A turned part about +X: Profile is (x, radius) from end to end (radius 0 closes an end; a closed loop makes a ring). */
 	UStaticMesh* RodLathe(UObject* Outer, const TCHAR* Name, const TArray<FVector2f>& Profile, int32 Sides)
@@ -150,20 +149,34 @@ UStaticMeshComponent* ALyudFishingRod::Part(const TCHAR* Name, UStaticMesh* Mesh
 	NoLumen(C);
 	C->SetStaticMesh(Mesh);
 	C->SetCastShadow(true);
-	static UMaterialInterface* Basic = nullptr;
-	if (!Basic)
+	if (UMaterialInstanceDynamic* M = Paint(Tint))
 	{
-		Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-	}
-	if (Basic)
-	{
-		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Basic, this);
-		M->SetVectorParameterValue(TEXT("Color"), Tint);
 		C->SetMaterial(0, M);
-		Mids.Add(M);
 	}
 	C->RegisterComponent();
 	return C;
+}
+
+UMaterialInstanceDynamic* ALyudFishingRod::Paint(const FLinearColor& Tint)
+{
+	if (UMaterialInstanceDynamic** Found = Paints.Find(Tint))
+	{
+		return *Found;
+	}
+	if (!BasicMat)
+	{
+		// engine content, loaded once per rod (and the rod is built once per world: it is parked, not destroyed)
+		BasicMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+	}
+	if (!BasicMat)
+	{
+		return nullptr;
+	}
+	UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(BasicMat, this);
+	M->SetVectorParameterValue(TEXT("Color"), Tint);
+	Mids.Add(M);
+	Paints.Add(Tint, M);
+	return M;
 }
 
 void ALyudFishingRod::BeginPlay()
@@ -236,12 +249,9 @@ void ALyudFishingRod::BuildStandIns()
 	Line->SetCastShadow(false);
 	UStaticMesh* Piece = RodLathe(this, TEXT("SM_LinePiece"), { { 0.f, 0.f }, { 0.f, 1.f }, { 1.f, 1.f }, { 1.f, 0.f } }, 4);
 	Line->SetStaticMesh(Piece);
-	if (UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial")))
+	if (UMaterialInstanceDynamic* M = Paint(FLinearColor(0.7f, 0.78f, 0.74f)))
 	{
-		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Basic, this);
-		M->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.7f, 0.78f, 0.74f));
 		Line->SetMaterial(0, M);
-		Mids.Add(M);
 	}
 	Line->RegisterComponent();
 	LineXf.SetNum(LinePieces);
@@ -284,6 +294,7 @@ void ALyudFishingRod::BuildStandIns()
 	Fish->SetUsingAbsoluteScale(true);
 	Fish->SetNumCustomDataFloats(3);
 	Fish->RegisterComponent();
+	ULyudPrefetch::Ready(this, RodStandInPath);
 	Fish->SetVisibility(false);
 	SetBend(0.f, FVector::DownVector);
 }
@@ -384,26 +395,36 @@ void ALyudFishingRod::SetSpoon(bool bShow, const FVector& Where, const FVector& 
 	}
 }
 
-void ALyudFishingRod::SetFish(FName Species, float LengthM)
+bool ALyudFishingRod::PrefetchFish(FName Species)
 {
-	if (!Fish) return;
-	if (Species == FishSpecies && Fish->GetInstanceCount() == 1)
-	{
-		return;
-	}
-	FishSpecies = Species;
-	Fish->ClearInstances();
 	const FString Id = Species.ToString();
-	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Id));
-	UStaticMesh* Mesh = RodLoadIfThere<UStaticMesh>(*FString::Printf(TEXT("/Game/Sea/Fish/SM_%s.SM_%s"), *Id, *Id));
-	bStandIn = Mesh == nullptr;
-	if (Mesh)
+	// all four asked every time, so each starts loading at once
+	const bool bMesh = ULyudPrefetch::Ready(this, RodFishMeshPath(Id));
+	const bool bSkin = ULyudPrefetch::Ready(this, RodFishSkinPath(Id));
+	const bool bBody = ULyudPrefetch::Ready(this, RodFishBodyPath);
+	const bool bFin = ULyudPrefetch::Ready(this, RodFishFinPath);
+	return bMesh && bSkin && bBody && bFin;
+}
+
+bool ALyudFishingRod::ApplyFishLook(FName Species)
+{
+	const FString Id = Species.ToString();
+	UStaticMesh* Mesh = FindObject<UStaticMesh>(nullptr, *RodFishMeshPath(Id));
+	UMaterialInterface* Body = FindObject<UMaterialInterface>(nullptr, RodFishBodyPath);
+	if (!Mesh || !Body)
 	{
-		Fish->SetStaticMesh(Mesh);
-		UTexture2D* Skin = RodLoadIfThere<UTexture2D>(*FString::Printf(TEXT("/Game/Sea/Fish/T_%s_D.T_%s_D"), *Id, *Id));
-		UMaterialInterface* Body = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/Underwater/M_LyudFish.M_LyudFish"));
-		UMaterialInterface* Fin = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/Underwater/M_LyudFishFin.M_LyudFishFin"));
-		for (int32 Slot = 0; Slot < Mesh->GetStaticMaterials().Num() && Body; Slot++)
+		return false;
+	}
+	Fish->SetStaticMesh(Mesh);
+	TArray<UMaterialInstanceDynamic*>* Made = FishMids.Find(Species);
+	if (!Made)
+	{
+		// the species' materials, made the first time it is hooked and kept
+		Made = &FishMids.Add(Species);
+		UTexture2D* Skin = FindObject<UTexture2D>(nullptr, *RodFishSkinPath(Id));
+		UMaterialInterface* Fin = FindObject<UMaterialInterface>(nullptr, RodFishFinPath);
+		const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Id));
+		for (int32 Slot = 0; Slot < Mesh->GetStaticMaterials().Num(); Slot++)
 		{
 			const bool bFin = Mesh->GetStaticMaterials()[Slot].MaterialSlotName.ToString().Contains(TEXT("Fin"));
 			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(bFin && Fin ? Fin : Body, this);
@@ -417,28 +438,59 @@ void ALyudFishingRod::SetFish(FName Species, float LengthM)
 				M->SetScalarParameterValue(TEXT("Amp"), Sp.Bend > 0.8f ? 0.07f : 0.11f);
 				M->SetScalarParameterValue(TEXT("Flat"), Sp.Way == LyudFish::EWay::Flat ? 1.f : 0.f);
 			}
-			Fish->SetMaterial(Slot, M);
+			Made->Add(M);
 			Mids.Add(M);
 		}
 	}
-	else
+	for (int32 Slot = 0; Slot < Made->Num(); Slot++)
 	{
-		// its own mesh not built yet: the code-built stand-in fish (a 10 cm sprat)
-		Fish->SetStaticMesh(LyudSeaLife::Fish());
-		if (UMaterialInterface* Old = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/M_SeaFish.M_SeaFish")))
+		Fish->SetMaterial(Slot, (*Made)[Slot]);
+	}
+	return true;
+}
+
+void ALyudFishingRod::SetFish(FName Species, float LengthM)
+{
+	if (!Fish) return;
+	const bool bNewLook = Species != FishSpecies || Fish->GetInstanceCount() != 1;
+	FishSpecies = Species;
+	FishLength = LengthM;
+	if (bNewLook)
+	{
+		const bool bReady = PrefetchFish(Species);
+		bStandIn = !(bReady && ApplyFishLook(Species));
+		// still loading: swapped in when it arrives; ready but not there: never built, the stand-in stays
+		PendingLook = bReady ? NAME_None : Species;
+		if (bStandIn)
 		{
-			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Old, this);
-			M->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.5f, 0.52f, 0.5f));
-			M->SetScalarParameterValue(TEXT("Wiggle"), 1.f);
-			Fish->SetMaterial(0, M);
-			Mids.Add(M);
+			// not in memory yet (or never built): the code-built stand-in (a 10 cm sprat) until it arrives
+			Fish->SetStaticMesh(LyudSeaLife::Fish());
+			if (!StandInMid)
+			{
+				if (UMaterialInterface* Old = FindObject<UMaterialInterface>(nullptr, RodStandInPath))
+				{
+					StandInMid = UMaterialInstanceDynamic::Create(Old, this);
+					StandInMid->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.5f, 0.52f, 0.5f));
+					StandInMid->SetScalarParameterValue(TEXT("Wiggle"), 1.f);
+				}
+			}
+			Fish->SetMaterial(0, StandInMid);
+		}
+		if (Fish->GetInstanceCount() != 1)
+		{
+			Fish->ClearInstances();
+			Fish->AddInstance(FTransform(FQuat::Identity, GetActorLocation(), FVector::OneVector), true);
+			const float Data[3] = { 0.f, 0.5f, 0.f };
+			Fish->SetCustomData(0, MakeArrayView(Data, 3), false);
 		}
 	}
-	// the mesh is built at its species' length (the stand-in at 10 cm)
+	// every fish its own size, the same species or not: the mesh is built at its species' length (the stand-in at 10 cm)
+	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
 	const float Built = bStandIn ? 0.1f : (S >= 0 ? LyudFish::Species(S).Length : 0.2f);
-	Fish->AddInstance(FTransform(FQuat::Identity, GetActorLocation(), FVector(LengthM / FMath::Max(Built, 0.01f))), true);
-	const float Data[3] = { 0.f, 0.5f, 0.f };
-	Fish->SetCustomData(0, MakeArrayView(Data, 3), false);
+	FTransform Was;
+	Fish->GetInstanceTransform(0, Was, true);
+	Was.SetScale3D(FVector(LengthM / FMath::Max(Built, 0.01f)));
+	Fish->UpdateInstanceTransform(0, Was, true, false, true);
 }
 
 void ALyudFishingRod::PlaceFish(bool bShow, const FVector& Where, const FRotator& Rot, float Wriggle, float DeltaTime)
@@ -446,6 +498,26 @@ void ALyudFishingRod::PlaceFish(bool bShow, const FVector& Where, const FRotator
 	if (!Fish) return;
 	if (Fish->IsVisible() != bShow) Fish->SetVisibility(bShow);
 	if (!bShow || Fish->GetInstanceCount() < 1) return;
+	// asked four times a second, not every frame (the paths are strings)
+	PendingCheck -= DeltaTime;
+	bool bArrived = false;
+	if (!PendingLook.IsNone() && PendingCheck <= 0.f)
+	{
+		PendingCheck = 0.25f;
+		bArrived = PrefetchFish(PendingLook);
+	}
+	if (bArrived)
+	{
+		// its look has loaded: put it on, at this fish's size
+		const FName Species = PendingLook;
+		PendingLook = NAME_None;
+		if (ApplyFishLook(Species))
+		{
+			bStandIn = false;
+			FishSpecies = Species;
+			SetFish(Species, FishLength);   // the same look now: only its size is set
+		}
+	}
 	FTransform Was;
 	Fish->GetInstanceTransform(0, Was, true);
 	Fish->UpdateInstanceTransform(0, FTransform(Rot, Where, Was.GetScale3D()), true, false, true);
@@ -460,4 +532,16 @@ void ALyudFishingRod::TurnReel(float Revs)
 	if (!ReelHandle || FMath::IsNearlyZero(Revs)) return;
 	ReelAngle = FMath::Fmod(ReelAngle + Revs * 360.f, 360.f);
 	ReelHandle->SetRelativeRotation(FRotator(ReelAngle, 0.f, 0.f));
+}
+
+void ALyudFishingRod::Park()
+{
+	HideLine();
+	SetFloat(false);
+	SetSpoon(false);
+	if (Fish && Fish->IsVisible()) Fish->SetVisibility(false);
+	PendingLook = NAME_None;
+	SetBend(0.f, FVector::DownVector);
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	SetActorHiddenInGame(true);
 }

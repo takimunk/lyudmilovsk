@@ -13,6 +13,7 @@ namespace LyudFishing { class FSession; }
 class UAudioComponent;
 class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
 class UStaticMesh;
 class UStaticMeshComponent;
 
@@ -100,17 +101,26 @@ public:
 	void SetFloat(bool bShow, const FVector& Where = FVector::ZeroVector, float Lean = 0.f);
 	/** The spoon at Where, turning as it is wound. */
 	void SetSpoon(bool bShow, const FVector& Where = FVector::ZeroVector, const FVector& Along = FVector::ForwardVector, float Spin = 0.f);
-	/** The fish on the hook (its own swimming mesh when imported: /Game/Sea/Fish/SM_<Id>), hanging head up or swimming, wriggling. */
+	/** Starts loading Species' swimming look in the background (ULyudPrefetch); true once it is in memory (or doesn't exist). */
+	bool PrefetchFish(FName Species);
+	/** The fish on the hook (its own swimming mesh when imported: /Game/Sea/Fish/SM_<Id>), hanging head up or swimming, wriggling.
+	 *  Never loads: until its look is in memory the stand-in shows, swapped for the real one when it arrives. */
 	void SetFish(FName Species, float LengthM);
 	void PlaceFish(bool bShow, const FVector& Where, const FRotator& Rot, float Wriggle, float DeltaTime);
 	/** The reel's handle and spool turning (wound in: + ; line going out: -). */
 	void TurnReel(float Revs);
+	/** Put away: everything hidden and straight (the rod is kept for the next time, not rebuilt). */
+	void Park();
 
 	virtual void BeginPlay() override;
 
 private:
 	void BuildStandIns();
 	UStaticMeshComponent* Part(const TCHAR* Name, UStaticMesh* Mesh, USceneComponent* Parent, const FLinearColor& Tint);
+	/** One plain-coloured material per colour, shared by the parts of that colour. */
+	UMaterialInstanceDynamic* Paint(const FLinearColor& Tint);
+	/** Puts Species' own mesh and materials on the hooked fish if they are in memory; false if not (the stand-in stays). */
+	bool ApplyFishLook(FName Species);
 
 	UPROPERTY() TObjectPtr<USceneComponent> Root;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Butt;
@@ -123,9 +133,18 @@ private:
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Spoon;
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Fish;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Mids;
+	UPROPERTY() TObjectPtr<UMaterialInterface> BasicMat;
+	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> StandInMid;
+	/** Each species' materials made once (rooted in Mids), by species. */
+	TMap<FName, TArray<UMaterialInstanceDynamic*>> FishMids;
+	TMap<FLinearColor, UMaterialInstanceDynamic*> Paints;
 
 	TArray<FTransform> LineXf;
 	FName FishSpecies;
+	float FishLength = 0.f;
+	/** The species whose look is still loading (the stand-in shows meanwhile). */
+	FName PendingLook;
+	float PendingCheck = 0.f;
 	float FishPhase = 0.f;
 	float ReelAngle = 0.f;
 	bool bLineShown = false;
@@ -207,6 +226,8 @@ private:
 
 	TPimplPtr<LyudFishing::FSession> Session;
 	TWeakObjectPtr<ALyudFishingRod> Rod;
+	/** The rod put away: hidden, kept for the next take-out (building one is ~20 meshes). */
+	TWeakObjectPtr<ALyudFishingRod> Parked;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> ReelLoop;
 
 	bool bAttached = false;
@@ -220,6 +241,9 @@ private:
 	float SayLeft = 0.f;
 	FText Said;
 	FText LastPrompt;
+	/** What the prompt was built from (state, bait, tension step, the last words said): rebuilt only when it changes. */
+	uint64 PromptKey = ~0ull;
+	uint32 SayCount = 0;
 	/** Where the cast went from (world, at the water's height) and which way (unit, flat); the float or fish lies at Origin + Dir(Side) * Distance. */
 	FVector Origin = FVector::ZeroVector;
 	FVector Dir = FVector::ForwardVector;
