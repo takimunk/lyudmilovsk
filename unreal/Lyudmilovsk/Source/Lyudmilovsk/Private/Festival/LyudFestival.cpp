@@ -31,6 +31,9 @@
 #include "UI/LyudQuests.h"
 #include "Winter/LyudWinter.h"
 
+static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
+	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
+
 static TAutoConsoleVariable<int32> CVarFestivals(TEXT("lyud.Festivals"), 1,
 	TEXT("The town's holidays (ULyudFestivalSubsystem, Content/PeopleData/festivals.json): 1 on, 0 off."));
 
@@ -450,7 +453,11 @@ void ULyudFestivalSubsystem::Update()
 				if (!Gatherings.Contains(Key) && People)
 				{
 					const FVector Face = FacePoint(Ve, UTF8_TO_TCHAR(P.Face.c_str()), Now);
-					TrySetGathering(People, 0, Key, *V, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FName(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
+					bHasGatherings = TrySetGathering(People, 0, Key, *V, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FName(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
+				}
+				if (People && (!bHasGatherings || CVarFestivalStub.GetValueOnGameThread() > 0))
+				{
+					StubGather(People, Key, Ve, UTF8_TO_TCHAR(P.Mode.c_str()), P.Pull);
 				}
 			}
 			for (const std::string& S : P.Show)
@@ -548,6 +555,15 @@ void ULyudFestivalSubsystem::Update()
 		}
 	}
 	Gatherings.Append(WantGather);
+	for (auto It = StubOrdered.CreateIterator(); It; ++It)
+	{
+		FString Phase, Who;
+		It->Split(TEXT("|"), &Phase, &Who);
+		if (!WantGather.Contains(FName(*Phase)))
+		{
+			It.RemoveCurrent();
+		}
+	}
 
 	// phase events
 	for (const FName& K : WantPhases)
@@ -615,6 +631,84 @@ void ULyudFestivalSubsystem::Update()
 		{
 			StartShow(W.Key, W.Value, Ve, ShowEnds[W.Key]);
 		}
+	}
+}
+
+void ULyudFestivalSubsystem::StubGather(UPeopleLifeSubsystem* People, FName Key, const FLyudVenue& V, const FString& Mode, float Pull)
+{
+	// Until the people's life has gatherings of its own (SetGathering), the festival sends some of the people who are free
+	// now to a place of theirs nearest the venue, with an activity that fits the phase's mode: they talk in groups on the
+	// square, look at the show from the beach, sit on the benches. Each person is asked once a phase, by a fixed chance.
+	const LyudPeople::FWorld* Sim = People->GetSim();
+	if (!Sim)
+	{
+		return;
+	}
+	struct FFit { const char* Activity; TArray<FString> Kinds; };
+	FFit Fit = { "chat", { TEXT("square"), TEXT("town_square") } };
+	if (Mode == TEXT("watch"))
+	{
+		Fit = { "sun_watch", { TEXT("beach"), TEXT("square"), TEXT("promenade_bench"), TEXT("lookout") } };
+	}
+	else if (Mode == TEXT("sit"))
+	{
+		Fit = { "sit_bench", { TEXT("promenade_bench"), TEXT("bench"), TEXT("town_bench") } };
+	}
+	if (Sim->FindActivity(Fit.Activity) < 0)
+	{
+		return;
+	}
+	// the people's places of those kinds nearest the venue (a few, so a crowd spreads over them)
+	TArray<TPair<float, FString>> Near;
+	for (const LyudPeople::FPlace& Pl : Sim->Places)
+	{
+		if (Pl.Island == 0 && Fit.Kinds.Contains(FString(UTF8_TO_TCHAR(Pl.Kind.c_str()))))
+		{
+			const float D = FVector::Dist2D(FVector(Pl.Portal.X, Pl.Portal.Y, 0.f) * 100.f, V.Center);
+			Near.Add({ D, UTF8_TO_TCHAR(Pl.Id.c_str()) });
+		}
+	}
+	if (Near.Num() == 0)
+	{
+		return;
+	}
+	Near.Sort([](const TPair<float, FString>& A, const TPair<float, FString>& B) { return A.Key < B.Key; });
+	const float Chance = FMath::Clamp(Pull * 0.45f, 0.05f, 0.9f);
+	int32 Sent = 0;
+	for (int32 Id = 0; Id < (int32)Sim->People.size(); Id++)
+	{
+		const LyudPeople::FPerson& P = Sim->People[Id];
+		const FString Mark = Key.ToString() + TEXT("|") + UTF8_TO_TCHAR(P.Key.c_str());
+		if (StubOrdered.Contains(Mark))
+		{
+			continue;
+		}
+		// only someone doing something of their own free time (not asleep, at work, at school, away or on a ride)
+		const bool bBusy = P.State == LyudPeople::EState::Riding || P.State == LyudPeople::EState::Away ||
+			P.State == LyudPeople::EState::Waiting || P.bTrain || P.Island != 0 ||
+			(P.Activity >= 0 && !Sim->Activities[P.Activity].bFree);
+		if (bBusy)
+		{
+			continue;
+		}
+		StubOrdered.Add(Mark);
+		uint32 H = Hash(Mark);
+		if (Rand01(H) > Chance * (P.bChild ? 0.8f : 1.f))
+		{
+			continue;
+		}
+		for (int32 I = 0; I < FMath::Min(3, Near.Num()); I++)
+		{
+			if (People->Order(Id, UTF8_TO_TCHAR(Fit.Activity), Near[(I + Id) % FMath::Min(3, Near.Num())].Value))
+			{
+				Sent++;
+				break;
+			}
+		}
+	}
+	if (Sent > 0)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Festivals: %d people sent to %s (%s at %s)"), Sent, *Key.ToString(), UTF8_TO_TCHAR(Fit.Activity), *Near[0].Value);
 	}
 }
 

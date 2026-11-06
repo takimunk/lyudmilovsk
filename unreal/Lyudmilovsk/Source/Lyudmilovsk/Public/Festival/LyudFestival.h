@@ -140,6 +140,12 @@ private:
 	void StartShow(FName Key, const FString& Show, const FLyudVenue& V, double EndsAt);
 	void StartMusic(FName Key, const FLyudVenue& V);
 	void Announce(const FString& Day, const FString& Id);
+	/** The stand-in for the people's gatherings: orders free people to the venue (lyud.Festival.Stub). */
+	void StubGather(class UPeopleLifeSubsystem* People, FName Key, const FLyudVenue& V, const FString& Mode, float Pull);
+	/** Whether UPeopleLifeSubsystem::SetGathering exists in this build (known after the first call). */
+	bool bHasGatherings = false;
+	/** "festival.phase|person" asked once by the stand-in. */
+	TSet<FString> StubOrdered;
 	bool ResolveFromPlan(const FString& File, const FString& Want, FLyudVenue& Out) const;
 	bool ResolveFromPeople(const FString& Want, FLyudVenue& Out) const;
 	FVector Ground(const FVector& At) const;
