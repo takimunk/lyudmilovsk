@@ -1,9 +1,11 @@
 // Checks of the sea's currents (SeaCurrent.cpp) and the fish (FishModel.cpp) outside the engine:
 //   tools/underwater/run.sh test   -> prints a summary, exits 1 on a failure
+#include "EcoModel.h"
 #include "FishModel.h"
 #include "SeaCurrent.h"
 
 #include <cmath>
+#include <algorithm>
 #include <cstdio>
 #include <vector>
 
@@ -93,6 +95,7 @@ int main()
 	const FV Spots[] = { FV(25.f, 0.f, -0.5f), FV(70.f, 0.f, -1.5f), FV(120.f, 0.f, -3.f), FV(250.f, 30.f, -7.f) };
 	std::vector<int> Seen(NumSpecies(), 0);
 	int Bad = 0, Fast = 0, Total = 0;
+	std::vector<int> BadBy(NumSpecies(), 0);
 	float SchoolSpread = 0.f;
 	int SchoolN = 0;
 	for (const FV& Eye : Spots)
@@ -106,7 +109,9 @@ int main()
 				if (F.bHidden) continue;
 				float Bz;
 				const bool bSea = Env.Bed(F.Pos.X, F.Pos.Y, Bz);
-				Bad += !bSea || F.Pos.Z < Bz - 0.05f || F.Pos.Z > Env.Level + 0.01f;
+				const bool bBad = !bSea || F.Pos.Z < Bz - 0.05f || F.Pos.Z > Env.Level + 0.01f;
+				if (bBad) BadBy[F.Species]++;
+				Bad += bBad;
 				Fast += F.Vel.Len() > Species(F.Species).Burst * 1.6f + 0.4f;
 				Total++;
 			}
@@ -130,6 +135,7 @@ int main()
 			}
 	}
 	std::printf("fish-frames %d, under the bed or over the water %d, too fast %d\n", Total, Bad, Fast);
+	for (int S = 0; S < NumSpecies(); ++S) if (BadBy[S]) std::printf("  out of place: %s %d\n", Species(S).Id, BadBy[S]);
 	Check(Bad == 0, "no fish under the bed or out of the water");
 	Check(Fast < Total / 200 + 1, "no fish faster than it can swim");
 	int Kinds = 0;
@@ -159,7 +165,70 @@ int main()
 			Check((Now - At).Len2D() > 1.5f, "a flounder glides off when you come close");
 		}
 	}
-	// sand eels go into the sand when a cod strikes them (the alarm), and come out again
+	// the food web among the fish round the eye: who eats whom comes from the coast's web (EcoModel)
+	{
+		bool bAllNodes = true;
+		for (int S = 0; S < NumSpecies(); ++S)
+			if (LyudEco::Find(Species(S).Id) < 0) { std::printf("  no food-web node for %s\n", Species(S).Id); bAllNodes = false; }
+		Check(bAllNodes, "every fish species is a node of the food web");
+		LyudEco::FModel Web;
+		FSim Eco;
+		for (int S = 0; S < NumSpecies(); ++S)
+			for (int P = 0; P < NumSpecies(); ++P)
+			{
+				const int J = LyudEco::Find(Species(S).Id), I = LyudEco::Find(Species(P).Id);
+				if (I >= 0 && J >= 0) Eco.SetDiet(S, P, Web.DietShare(J, I));
+			}
+		std::vector<int> Pairs(NumSpecies() * NumSpecies(), 0);
+		int Wrong = 0, Meals = 0;
+		const int Seal = FindSpecies("GreySeal");
+		float SealHigh = -100.f, SealNear = 1e9f;
+		bool bSealSeen = false;
+		for (const FV& Eye : { FV(120.f, 0.f, -2.5f), FV(250.f, 30.f, -6.f), FV(70.f, 10.f, -1.f) })
+		{
+			Eco.Clear();
+			for (int T = 0; T < 30 * 600; ++T)
+			{
+				Eco.Step(1.f / 30.f, Env, Eye, Clock);
+				for (const FEaten& E : Eco.Eaten())
+				{
+					Pairs[E.Predator * NumSpecies() + E.Prey]++;
+					Meals++;
+					Wrong += !Eco.Eats(E.Predator, E.Prey);
+				}
+				for (const FFish& F : Eco.Fish())
+					if (F.Species == Seal)
+					{
+						bSealSeen = true;
+						SealHigh = std::max(SealHigh, F.Pos.Z - Env.Level);
+						SealNear = std::min(SealNear, (F.Pos - Eye).Len());
+					}
+			}
+		}
+		std::printf("meals seen in 30 minutes at three spots: %d;", Meals);
+		std::vector<std::pair<int, int>> Top;
+		for (int K = 0; K < int(Pairs.size()); ++K) if (Pairs[K]) Top.push_back({ Pairs[K], K });
+		std::sort(Top.rbegin(), Top.rend());
+		for (int K = 0; K < int(Top.size()) && K < 12; ++K)
+			std::printf(" %s<-%s %d", Species(Top[K].second / NumSpecies()).Id, Species(Top[K].second % NumSpecies()).Id, Top[K].first);
+		std::printf("\n");
+		Check(Wrong == 0, "nothing is eaten by what does not eat it");
+		Check(Meals > 20 && Top.size() >= 6, "predators catch prey, of several kinds");
+		int Cruisers = 0, Ambushes = 0;
+		for (const auto& T : Top)
+		{
+			const EWay W = Species(T.second / NumSpecies()).Way;
+			(W == EWay::Cruiser ? Cruisers : Ambushes) += T.first;
+		}
+		Check(Cruisers > 0 && Ambushes > 0, "both hunters (cod, seals, trout) and ambushers (sculpins, gobies, perch) feed");
+		if (bSealSeen)
+		{
+			std::printf("grey seal: highest %.2f m from the surface, nearest the diver %.1f m\n", SealHigh, SealNear);
+			Check(SealHigh > -0.8f, "a grey seal comes up to breathe");
+			Check(SealNear < 6.f, "a grey seal comes to look at the diver");
+		}
+		else Check(false, "a grey seal about in 30 minutes");
+	}
 	std::printf("%s\n", Fails ? "FAILED" : "all ok");
 	return Fails ? 1 : 0;
 }

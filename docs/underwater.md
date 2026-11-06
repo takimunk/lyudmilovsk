@@ -86,6 +86,12 @@ the underwater fog) show the water moving.
 
 ## Fish (`Private/Sea/FishModel.cpp` plain C++; drawn by `ALyudSeaLife`)
 
+Since 2026-11-07 the fish live in a food web ([ecosystem.md](ecosystem.md)): 18 more animals (smelt, twaite shad, whitefish,
+salmon, roach, vimba, eel, rock gunnel, straightnose pipefish, fourhorn sculpin, black goby, ninespine stickleback, brown
+shrimp, Saduria, Harris mud crab, amphipods, mysids, grey seals), two new ways (crawlers on the bed, mysid swarms), their
+numbers from `ULyudEcosystem`, and hunters and ambushers that really catch what the web says they eat. The table below is
+the first sixteen.
+
 | Species | Way |
 |---|---|
 | Baltic herring, sprat | schools in mid water (autumn inshore); open round a diver; bolt from hunters |

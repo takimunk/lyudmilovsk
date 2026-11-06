@@ -15,6 +15,9 @@ class UStaticMeshComponent;
 namespace LyudFish { class FSim; }
 struct FLyudUnderwaterEnv;
 
+/** Something round the diver was eaten: the predator's and the prey's species Ids (Cod, Herring, GreySeal...), where (cm). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FLyudFishEaten, FName, Predator, FName, Prey, FVector, Location);
+
 /**
  * What draws the underwater life the subsystem simulates: one instanced mesh per fish species (the Blender-built
  * /Game/Sea/Fish/SM_<Id>, swimming in M_LyudFish by per-instance data: phase, beat, bend) and the motes drifting in the
@@ -41,8 +44,9 @@ public:
 /**
  * The underwater world's life (docs/underwater.md): the currents (LyudSeaCurrent: the tidal stream along the coast and
  * over the flat, the wind's longshore current, eddies over the reefs, slower toward the bed), fed to the materials through
- * /Game/Sea/Underwater/MPC_LyudUnderwater so weed leans and motes drift with them; and the fish (LyudFish::FSim: sixteen
- * Baltic species in schools, shoals, hunters and bottom dwellers, by habitat, month and light) round the eye.
+ * /Game/Sea/Underwater/MPC_LyudUnderwater so weed leans and motes drift with them; and the fish (LyudFish::FSim: the
+ * Baltic's fish, crustaceans, mysids and grey seals in schools, shoals, hunters and bottom dwellers, by habitat, month and
+ * light) round the eye, in the numbers the coastal food web (ULyudEcosystem) gives, eating what it says they eat.
  *
  * It only works while the eye is under the water or close over it; away from the sea everything is freed.
  * lyud.SeaLife 0 turns it off, lyud.SeaLife.Fish 0 only the fish, lyud.SeaLife.Density scales the fish,
@@ -73,6 +77,13 @@ public:
 	/** The species there are (Ids). */
 	UFUNCTION(BlueprintCallable, Category = "Underwater") TArray<FName> GetSpecies() const;
 	UFUNCTION(BlueprintCallable, Category = "Underwater") FString GetDebugReport() const;
+	/** Takes the nearest fish of a species within Reach (cm) of a point out of the water round the eye (a hook, a net): false if none. */
+	UFUNCTION(BlueprintCallable, Category = "Underwater") bool TakeFish(FName Species, const FVector& Location, float Reach = 100.f);
+
+	/** A predator round the diver caught something (a cod a herring, a sculpin a shrimp, a seal a flounder). */
+	UPROPERTY(BlueprintAssignable, Category = "Underwater") FLyudFishEaten OnFishEaten;
+	/** Meals seen since play began, "Predator<-Prey" -> count (lyud.SeaLife.Debug prints them). */
+	TMap<FString, int32> MealsSeen;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
@@ -101,6 +112,8 @@ private:
 	FVector EyeCurrent = FVector::ZeroVector;
 	bool bActive = false;
 	float DebugTimer = 0.f;
+	float EcoSyncTimer = 0.f;
+	bool bDietSet = false;
 	/** Per species: the transforms and the shader's data written last (reused, no allocations per frame). */
 	TArray<TArray<FTransform>> Xf;
 	TArray<TArray<float>> Data;

@@ -36,6 +36,8 @@ namespace LyudFish
 		Lurker,     // lies still among stones and weed, rarely moves (sculpin, eelpout, lumpsucker)
 		Flat,       // lies flat on the sand half buried, glides off in a puff when you come close (flounder, turbot)
 		Hover,      // hangs head up among the eelgrass, swaying with it (pipefish)
+		Crawler,    // walks the bed in short runs, stops, feels about (shrimp, the isopod Saduria, mud crabs, amphipods)
+		Swarm,      // a loose drifting cloud low over the bed, each one jittering (mysids)
 	};
 
 	struct FSpecies
@@ -59,9 +61,16 @@ namespace LyudFish
 		float PreyLength;
 		/** The body's swimming wave: waves along the body and how much of it bends (eel-like: more, from the head). */
 		float Waves, Bend;
-		/** Dives into the sand when chased (sand eels). */
+		/** Dives into the sand when chased (sand eels, shrimp). */
 		bool bBurrows;
+		/** Breathes air: goes up to the surface every minute or two (grey seals). */
+		bool bBreathes = false;
+		/** Comes to look at a diver instead of keeping off (grey seals). */
+		bool bCurious = false;
 	};
+
+	/** Ways that live on the bed in their own place (settled per cell), not roaming in groups. */
+	inline bool IsSettled(EWay W) { return W == EWay::Hopper || W == EWay::Lurker || W == EWay::Flat || W == EWay::Hover || W == EWay::Crawler; }
 
 	int NumSpecies();
 	const FSpecies& Species(int Index);
@@ -80,6 +89,15 @@ namespace LyudFish
 		virtual void Habitat(float X, float Y, float& Sand, float& Stone, float& Weed) const = 0;
 		/** The water's mean motion, m/s. */
 		virtual FV Current(const FV& P) const = 0;
+		/** How many of a species there are here against the usual (the food web's numbers, a spot fished out), 0.. */
+		virtual float Abundance(int Species, float X, float Y) const { return 1.f; }
+	};
+
+	/** Something seen eaten: who, whom, where. */
+	struct FEaten
+	{
+		int Predator = 0, Prey = 0;
+		FV Pos;
 	};
 
 	struct FClock
@@ -88,6 +106,11 @@ namespace LyudFish
 		/** 0 night .. 1 full day. */
 		float Daylight = 1.f;
 	};
+
+	/** How well a spot suits a species, 0..1 (its depth range and its liking for sand, stones, weed). */
+	float Suitability(int Species, float Sand, float Stone, float Weed, float Depth);
+	/** How active a species is now, 0..1 (here this month, by day or by night). */
+	float Activity(int Species, const FClock& Clock);
 
 	/** One fish as drawn: where, which way, how its body moves. */
 	struct FFish
@@ -102,6 +125,10 @@ namespace LyudFish
 		uint8_t State = 0;
 		/** Hidden in the sand (not drawn). */
 		bool bHidden = false;
+		/** Eaten this step (gone at the step's end). */
+		bool bEaten = false;
+		/** Seconds until it is hungry again after a catch. */
+		float Fed = 0.f;
 		float Timer = 0.f;
 		int Group = -1;
 		FV Slot, Goal;
@@ -133,6 +160,14 @@ namespace LyudFish
 		/** The nearest fish of a species to a point, or false. */
 		bool Nearest(int Species, const FV& From, FV& Out) const;
 
+		/** Who eats whom: the share of a predator's food a prey is (from the food web). Without it a hunter takes any fish small enough. */
+		void SetDiet(int Predator, int Prey, float Share);
+		bool Eats(int Predator, int Prey) const;
+		/** What was eaten in the last step. */
+		const std::vector<FEaten>& Eaten() const { return Events; }
+		/** Takes the nearest drawn fish of a species within Reach of a point (a hook, a net): false if none. */
+		bool Take(int Species, const FV& At, float Reach, FFish* Out = nullptr);
+
 	private:
 		struct FGroup
 		{
@@ -147,6 +182,12 @@ namespace LyudFish
 			/** A hunter's prey group, its rest after a strike. */
 			int Prey = -1;
 			float Hunger = 0.f;
+			/** A hunter's prey on the bed (a settled fish or crawler, by its seed), 0 none. */
+			uint32_t BedPrey = 0;
+			/** An air breather's time left under, s, and its time at the surface. */
+			float Breath = 0.f, AtSurface = 0.f;
+			/** A curious one's interest in the diver, s. */
+			float Look = 0.f;
 			bool bAlive = false;
 		};
 
@@ -155,13 +196,19 @@ namespace LyudFish
 		void SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock);
 		void StepGroup(int G, float Dt, const FEnv& Env, const FV& Eye);
 		void StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye);
+		void Ambush(FFish& F, const FEnv& Env);
+		void Hunt(FGroup& G, int Gi, float Dt, FV& Want, float& Speed);
+		FFish* FindSeed(uint32_t FishSeed);
 		float Rand();
 		float Season(int S, const FClock& Clock) const;
 
 		std::vector<FFish> All;
 		std::vector<FGroup> Groups;
 		std::unordered_map<uint64_t, int> Cells;
+		std::vector<float> Diet;
+		std::vector<FEaten> Events;
 		uint32_t Rng = 12345;
+		uint32_t Frame = 0;
 		double Time = 0.0;
 		float SettleTimer = 0.f;
 	};
