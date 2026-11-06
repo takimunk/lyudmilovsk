@@ -1549,12 +1549,19 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	const bool bRing = Kinds.Contains(TEXT("bunting")) || Kinds.Contains(TEXT("lanterns")) || Kinds.Contains(TEXT("wreaths"));
 	const int32 NPoles = 6;
 	const float PoleH = 520.f;
+	// along a walk (the promenade, the beach, the pier) the poles stand in a line along it, the strings swag between them;
+	// round a square they ring it, with strings across high over the middle
+	const FString VName = V.Name.ToString();
+	const bool bLine = VName == TEXT("promenade") || VName == TEXT("beach") || VName == TEXT("pier");
+	const FVector Along = FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal();
+	const int32 NLine = 8;
 	if (bRing)
 	{
-		for (int32 I = 0; I < NPoles; I++)
+		for (int32 I = 0; I < (bLine ? NLine : NPoles); I++)
 		{
 			const float A = V.Yaw + 30.f + I * 360.f / NPoles;
-			const FVector Base = GroundAt(C + FRotator(0.f, A, 0.f).Vector() * R * 0.95f);
+			const FVector Base = bLine ? GroundAt(C + Along * (-R * 1.6f + I * R * 3.2f / (NLine - 1)))
+				: GroundAt(C + FRotator(0.f, A, 0.f).Vector() * R * 0.95f);
 			K.Rod(TEXT("pole"), Base - FVector(0.f, 0.f, 30.f), Base + FVector(0.f, 0.f, PoleH), 6.f, 8, true, false);
 			K.CollideBox(FTransform(Base + FVector(0.f, 0.f, PoleH * 0.5f)), FVector(7.f, 7.f, PoleH * 0.5f));
 			Ball(K, TEXT("pole"), Base + FVector(0.f, 0.f, PoleH + 6.f), 9.f, 12.f);
@@ -1563,11 +1570,11 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	}
 	// the strings: round the ring, and three across it high over the middle (over the fountain)
 	TArray<TPair<FVector, FVector>> Strings;
-	for (int32 I = 0; I < Tops.Num(); I++)
+	for (int32 I = 0; I < Tops.Num() - (bLine ? 1 : 0); I++)
 	{
 		Strings.Add({ Tops[I], Tops[(I + 1) % Tops.Num()] });
 	}
-	for (int32 I = 0; I < Tops.Num() / 2; I++)
+	for (int32 I = 0; I < (bLine ? 0 : Tops.Num() / 2); I++)
 	{
 		Strings.Add({ Tops[I], Tops[I + Tops.Num() / 2] });
 	}
