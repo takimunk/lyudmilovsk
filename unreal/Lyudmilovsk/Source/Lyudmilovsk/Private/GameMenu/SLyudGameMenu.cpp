@@ -6,6 +6,7 @@
 #include "LyudGameMenu.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "UI/LyudGraphics.h"
 #include "UI/LyudSettings.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
@@ -42,6 +43,15 @@ namespace LyudMenuStyle
 			.SetDisabled(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.045f, 0.04f), 3.f))
 			.SetNormalPadding(FMargin(18.f, 9.f))
 			.SetPressedPadding(FMargin(18.f, 10.f, 18.f, 8.f));
+		return Style;
+	}
+
+	/** The small arrow buttons of a row of choices. */
+	static const FButtonStyle& Arrow()
+	{
+		static const FButtonStyle Style = FButtonStyle(Button())
+			.SetNormalPadding(FMargin(9.f, 3.f))
+			.SetPressedPadding(FMargin(9.f, 4.f, 9.f, 2.f));
 		return Style;
 	}
 
@@ -112,6 +122,7 @@ void SLyudGameMenu::BuildContent()
 						+ SWidgetSwitcher::Slot()[MakeSave()]
 						+ SWidgetSwitcher::Slot()[MakeLoad()]
 						+ SWidgetSwitcher::Slot()[MakeSettings()]
+						+ SWidgetSwitcher::Slot()[MakeGraphics()]
 					]
 					+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 14.f, 0.f, 0.f)
 					[
@@ -303,8 +314,218 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSettings()
 			.Text_Lambda([] { return LyudText::Get(LyudSettings::SunGlareOn() ? TEXT("ui.settings.sun_glare_on") : TEXT("ui.settings.sun_glare_off")); })
 		]
 	];
+	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.settings.graphics")), [this] { Show(EScreen::Graphics); })];
 	Box->AddSlot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 	return Box;
+}
+
+TSharedRef<SWidget> SLyudGameMenu::MakeCycler(const FText& Label, TFunction<FText()> Value, TFunction<void(int32)> Step, TAttribute<EVisibility> Visible)
+{
+	using namespace LyudMenuStyle;
+	auto ArrowButton = [Step](const TCHAR* Key, int32 Dir) -> TSharedRef<SWidget>
+	{
+		return SNew(SButton)
+			.ButtonStyle(&Arrow())
+			.VAlign(VAlign_Center)
+			.OnClicked_Lambda([Step, Dir] { Step(Dir); return FReply::Handled(); })
+			[
+				SNew(STextBlock).Text(LyudText::Get(Key)).Font(Font(15, "Bold")).ColorAndOpacity(Text)
+			];
+	};
+	return SNew(SBox)
+		.Padding(0.f, 2.f)
+		.Visibility(Visible)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(0.5f).VAlign(VAlign_Center)
+			[
+				SNew(STextBlock).Text(Label).Font(Font(15)).ColorAndOpacity(Text).AutoWrapText(true)
+			]
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[ArrowButton(TEXT("ui.gfx.prev"), -1)]
+			+ SHorizontalBox::Slot().FillWidth(0.5f).VAlign(VAlign_Center).Padding(6.f, 0.f)
+			[
+				SNew(STextBlock).Font(Font(15)).ColorAndOpacity(Text).Justification(ETextJustify::Center)
+				.Text_Lambda([Value] { return Value(); })
+			]
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[ArrowButton(TEXT("ui.gfx.next"), 1)]
+		];
+}
+
+// named: unity builds merge the anonymous namespaces of neighbouring files
+namespace LyudGfxPage
+{
+	FText LevelName(int32 Level)
+	{
+		return LyudText::Get(FString::Printf(TEXT("ui.gfx.level.%d"), FMath::Clamp(Level, 0, LyudGraphics::NumLevels - 1)));
+	}
+
+	FText OnOff(bool bOn)
+	{
+		return LyudText::Get(bOn ? TEXT("ui.gfx.on") : TEXT("ui.gfx.off"));
+	}
+
+	/** The index of Value in Options, else of the nearest one. */
+	int32 OptionIndex(const TArray<int32>& Options, int32 Value)
+	{
+		int32 Best = 0;
+		for (int32 I = 0; I < Options.Num(); ++I)
+		{
+			if (FMath::Abs(Options[I] - Value) < FMath::Abs(Options[Best] - Value))
+			{
+				Best = I;
+			}
+		}
+		return Best;
+	}
+}
+
+TSharedRef<SWidget> SLyudGameMenu::MakeGraphics()
+{
+	using namespace LyudMenuStyle;
+	using namespace LyudGfxPage;
+	TSharedRef<SVerticalBox> Rows = SNew(SVerticalBox);
+
+	// the preset: Auto (this machine's pick), Low .. Cinematic; "custom" once a group differs
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.preset")),
+			[]
+			{
+				const int32 P = LyudGraphics::Preset();
+				if (LyudGraphics::IsAuto())
+				{
+					return LyudText::Get(TEXT("ui.gfx.preset.auto"), { FStringFormatArg(LevelName(FMath::Max(P, 0)).ToString()) });
+				}
+				return P >= 0 ? LevelName(P) : LyudText::Get(TEXT("ui.gfx.preset.custom"));
+			},
+			[](int32 Dir)
+			{
+				const int32 P = LyudGraphics::Preset();
+				if (!LyudGraphics::IsAuto() && P < 0)
+				{
+					// from a custom mix: the lowest or the highest of its levels for all
+					int32 Lo = LyudGraphics::NumLevels - 1, Hi = 0;
+					for (int32 I = 0; I < LyudGraphics::NumGroups; ++I)
+					{
+						const int32 L = LyudGraphics::GroupLevel(static_cast<LyudGraphics::EGroup>(I));
+						Lo = FMath::Min(Lo, L);
+						Hi = FMath::Max(Hi, L);
+					}
+					LyudGraphics::SetPreset(Dir > 0 ? Hi : Lo);
+					return;
+				}
+				// 0 Auto, 1..5 Low..Cinematic
+				const int32 Index = LyudGraphics::IsAuto() ? 0 : P + 1;
+				const int32 Next = FMath::Clamp(Index + Dir, 0, LyudGraphics::NumLevels);
+				if (Next == Index)
+				{
+					return;
+				}
+				if (Next == 0)
+				{
+					LyudGraphics::SetAuto();
+				}
+				else
+				{
+					LyudGraphics::SetPreset(Next - 1);
+				}
+			})
+	];
+
+	// the render resolution: Auto (by the level and the window) or a fixed share of the window
+	static const TArray<int32> Resolutions = { 0, 50, 58, 67, 75, 85, 100 };
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.resolution")),
+			[]
+			{
+				const int32 R = LyudGraphics::Resolution();
+				const int32 Now = FMath::RoundToInt(LyudGraphics::ScreenPercentage());
+				return R > 0 ? LyudText::Get(TEXT("ui.gfx.percent"), { FStringFormatArg(R) }) : LyudText::Get(TEXT("ui.gfx.resolution.auto"), { FStringFormatArg(Now) });
+			},
+			[](int32 Dir)
+			{
+				const int32 I = OptionIndex(Resolutions, LyudGraphics::Resolution());
+				LyudGraphics::SetResolution(Resolutions[FMath::Clamp(I + Dir, 0, Resolutions.Num() - 1)]);
+			})
+	];
+
+	// the frame-rate limit
+	static const TArray<int32> Limits = { 30, 60, 90, 120, 0 };
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.fps")),
+			[]
+			{
+				const int32 F = LyudGraphics::FrameLimit();
+				return F > 0 ? LyudText::Get(TEXT("ui.gfx.fps.value"), { FStringFormatArg(F) }) : LyudText::Get(TEXT("ui.gfx.fps.none"));
+			},
+			[](int32 Dir)
+			{
+				const int32 F = LyudGraphics::FrameLimit();
+				const int32 I = F > 0 ? OptionIndex(Limits, F) : Limits.Num() - 1;
+				LyudGraphics::SetFrameLimit(Limits[FMath::Clamp(I + Dir, 0, Limits.Num() - 1)]);
+			})
+	];
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.vsync")), [] { return OnOff(LyudGraphics::VSync()); }, [](int32) { LyudGraphics::SetVSync(!LyudGraphics::VSync()); })
+	];
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.window")),
+			[] { return LyudText::Get(LyudGraphics::Fullscreen() ? TEXT("ui.gfx.window.full") : TEXT("ui.gfx.window.windowed")); },
+			[](int32) { LyudGraphics::SetFullscreen(!LyudGraphics::Fullscreen()); },
+			LyudGraphics::CanSetWindowMode() ? EVisibility::Visible : EVisibility::Collapsed)
+	];
+	Rows->AddSlot().AutoHeight()
+	[
+		MakeCycler(LyudText::Get(TEXT("ui.gfx.power")), [] { return OnOff(LyudGraphics::PowerSaving()); }, [](int32) { LyudGraphics::SetPowerSaving(!LyudGraphics::PowerSaving()); })
+	];
+
+	// each group on its own
+	Rows->AddSlot().AutoHeight().Padding(0.f, 12.f, 0.f, 4.f)
+	[
+		SNew(STextBlock).Text(LyudText::Get(TEXT("ui.gfx.details"))).Font(Font(14)).ColorAndOpacity(Dim)
+	];
+	for (int32 I = 0; I < LyudGraphics::NumGroups; ++I)
+	{
+		const LyudGraphics::EGroup G = static_cast<LyudGraphics::EGroup>(I);
+		Rows->AddSlot().AutoHeight()
+		[
+			MakeCycler(LyudText::Get(FString(TEXT("ui.gfx.group.")) + LyudGraphics::GroupName(G)),
+				[G] { return LevelName(LyudGraphics::GroupLevel(G)); },
+				[G](int32 Dir) { LyudGraphics::SetGroupLevel(G, FMath::Clamp(LyudGraphics::GroupLevel(G) + Dir, 0, LyudGraphics::NumLevels - 1)); })
+		];
+	}
+
+	// what it comes to: the machine, the pixels drawn for the window
+	Rows->AddSlot().AutoHeight().Padding(0.f, 10.f, 0.f, 0.f)
+	[
+		SNew(STextBlock).Font(Font(13)).ColorAndOpacity(Dim).AutoWrapText(true)
+		.Text_Lambda([]
+		{
+			const FIntPoint Out = LyudGraphics::OutputSize();
+			const float Share = LyudGraphics::ScreenPercentage() / 100.f;
+			return LyudText::Get(TEXT("ui.gfx.render_now"), { FStringFormatArg(FMath::RoundToInt(Out.X * Share)), FStringFormatArg(FMath::RoundToInt(Out.Y * Share)), FStringFormatArg(Out.X), FStringFormatArg(Out.Y) });
+		})
+	];
+	Rows->AddSlot().AutoHeight()
+	[
+		SNew(STextBlock).Font(Font(13)).ColorAndOpacity(Dim).AutoWrapText(true)
+		.Text(LyudText::Get(TEXT("ui.gfx.machine"), { FStringFormatArg(LyudGraphics::MachineGpu()), FStringFormatArg(LyudGraphics::MachineMemoryGB()) }))
+	];
+
+	return SNew(SVerticalBox)
+		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 0.f, 0.f, 8.f)
+		[
+			SNew(STextBlock).Text(LyudText::Get(TEXT("ui.settings.graphics"))).Font(Font(18, "Bold")).ColorAndOpacity(Text).Justification(ETextJustify::Center)
+		]
+		+ SVerticalBox::Slot().FillHeight(1.f)
+		[
+			SNew(SScrollBox) + SScrollBox::Slot()[Rows]
+		]
+		+ SVerticalBox::Slot().AutoHeight().Padding(0.f, 6.f, 0.f, 0.f)[MakeButton(LyudText::Get(TEXT("ui.menu.back")), [this] { Back(); })];
 }
 
 TSharedRef<SWidget> SLyudGameMenu::MakeSave()

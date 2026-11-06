@@ -16,7 +16,7 @@
 #include "UObject/ConstructorHelpers.h"
 
 static TAutoConsoleVariable<float> CVarGrassDensity(TEXT("lyud.GrassDensity"), 1.f,
-	TEXT("Multiplies every grass patch's tuft density (applied when a patch is built). 0.5 for a slow machine."), ECVF_Default);
+	TEXT("Multiplies every grass patch's tuft density (graphics levels: Foliage; a change lays the patches out again). 0.5 for a slow machine."), ECVF_Scalability);
 
 namespace
 {
@@ -147,6 +147,7 @@ void AProceduralGrass::ApplySeason(float Day)
 
 void AProceduralGrass::Scatter()
 {
+	BuiltDensity = CVarGrassDensity.GetValueOnGameThread();
 	NearTufts->ClearInstances();
 	FarTufts->ClearInstances();
 	Tufts = 0;
@@ -337,5 +338,10 @@ void AProceduralGrass::Tick(float DeltaSeconds)
 	if (FMath::Abs(Day - ShownDay) > 0.1f)
 	{
 		ApplySeason(Day);
+	}
+	// the graphics level changed the density: the tufts are laid out again (once per change of level, at this patch's tick)
+	if (BuiltDensity >= 0.f && CVarGrassDensity.GetValueOnGameThread() != BuiltDensity)
+	{
+		Rebuild();
 	}
 }

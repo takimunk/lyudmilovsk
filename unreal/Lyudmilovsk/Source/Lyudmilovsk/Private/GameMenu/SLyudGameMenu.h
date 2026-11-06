@@ -9,11 +9,11 @@ class SEditableTextBox;
 class SVerticalBox;
 class SWidgetSwitcher;
 
-/** The menu's screens: main menu, pause menu, save to a slot, load a slot, settings. */
+/** The menu's screens: main menu, pause menu, save to a slot, load a slot, settings, graphics. */
 class SLyudGameMenu : public SCompoundWidget
 {
 public:
-	enum class EScreen : uint8 { Main, Pause, Save, Load, Settings };
+	enum class EScreen : uint8 { Main, Pause, Save, Load, Settings, Graphics };
 
 	SLATE_BEGIN_ARGS(SLyudGameMenu) {}
 		SLATE_ARGUMENT(TWeakObjectPtr<ULyudGameMenuSubsystem>, Owner)
@@ -52,6 +52,9 @@ private:
 	TSharedRef<SWidget> MakeSave();
 	TSharedRef<SWidget> MakeLoad();
 	TSharedRef<SWidget> MakeSettings();
+	TSharedRef<SWidget> MakeGraphics();
+	/** A row "label  < value >": the arrows step the value back (-1) or on (+1). */
+	TSharedRef<SWidget> MakeCycler(const FText& Label, TFunction<FText()> Value, TFunction<void(int32)> Step, TAttribute<EVisibility> Visible = EVisibility::Visible);
 
 	TWeakObjectPtr<ULyudGameMenuSubsystem> Owner;
 	TSharedPtr<SWidgetSwitcher> Switcher;
