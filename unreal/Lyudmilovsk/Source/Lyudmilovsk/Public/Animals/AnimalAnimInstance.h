@@ -62,6 +62,13 @@ struct FAnimalAnimProxy : public FAnimInstanceProxy
 
 	TArray<FAnimalClipLayer, TInlineAllocator<4>> Layers;
 	FAnimalOverlay Over;
+
+	/** Evaluate's bones (head, neck_01, neck_02, jaw, tail_01..09, ear_l, ear_r) as compact pose indices, worked out once per
+	 *  bone container (its serial number changes with the LOD's bones): no name lookups per frame. */
+	static constexpr int32 NumBones = 15;
+	int32 BoneIdx[NumBones] = {};
+	const FBoneContainer* BonesFor = nullptr;
+	uint16 BonesSerial = 0;
 };
 
 UCLASS(Transient, NotBlueprintable)

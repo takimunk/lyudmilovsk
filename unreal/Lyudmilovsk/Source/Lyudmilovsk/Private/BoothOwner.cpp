@@ -29,6 +29,8 @@ ABoothOwner::ABoothOwner()
 	// the people's body (People/LyudBodyAnim.h): clips cross-fade, he breathes, blinks, looks about, works his computer
 	Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	Body->SetAnimInstanceClass(ULyudBodyAnimInstance::StaticClass());
+	// away (SetAway hides him) or off screen he doesn't animate (as ANpcBody)
+	Body->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 }
 
 void ABoothOwner::BeginPlay()

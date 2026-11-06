@@ -24,6 +24,9 @@ namespace
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->SetCanEverAffectNavigation(false);
 		C->SetGenerateOverlapEvents(false);
+		// the cord and the tag swing with the neck every frame: out of the distance fields and Lumen (perf checklist)
+		C->bAffectDistanceFieldLighting = false;
+		C->bAffectDynamicIndirectLighting = false;
 		// Scene 01's lights: the club's on channel 0, the outdoor sun and moon on channel 1 (as the body)
 		C->LightingChannels.bChannel0 = true;
 		C->LightingChannels.bChannel1 = true;

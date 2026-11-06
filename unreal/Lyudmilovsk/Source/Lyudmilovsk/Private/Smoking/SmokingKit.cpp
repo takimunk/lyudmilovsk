@@ -371,6 +371,7 @@ void ALyudSmokeFx::Emit(const FVector& Where, const FVector& Velocity, float Siz
 	P.Alpha = Alpha;
 	P.Rise = Rise;
 	P.Seed = FMath::FRand();
+	P.bHiddenWritten = false;
 	if (!bShown)
 	{
 		bShown = true;
@@ -400,9 +401,17 @@ void ALyudSmokeFx::Tick(float DeltaTime)
 	const FVector Cam = PC && PC->PlayerCameraManager ? PC->PlayerCameraManager->GetCameraLocation() : FVector::ZeroVector;
 	const float Dt = FMath::Min(DeltaTime, 0.1f);
 	Live = 0;
+	// only the instances that change are written: the live puffs and the ones that just went (once, hidden)
+	int32 Lo = Pool, Hi = -1;
 	for (int32 I = 0; I < Pool; ++I)
 	{
 		FPuff& P = All[I];
+		if (P.Age >= P.Life && P.bHiddenWritten)
+		{
+			continue;
+		}
+		Lo = FMath::Min(Lo, I);
+		Hi = I;
 		float Show = 0.f;
 		if (P.Age < P.Life)
 		{
@@ -421,9 +430,14 @@ void ALyudSmokeFx::Tick(float DeltaTime)
 		Xf[I] = FTransform(FRotationMatrix::MakeFromZ(ToCam).ToQuat() * FQuat(FVector::UpVector, P.Seed * 6.28f + P.Age * 0.4f), P.Pos, FVector(Size));
 		Puffs->SetCustomDataValue(I, 0, Show, false);
 		Puffs->SetCustomDataValue(I, 1, P.Seed, false);
+		P.bHiddenWritten = P.Age >= P.Life;
 	}
-	// incremental update (no proxy rebuild, perf checklist): the transforms and the custom data upload with it
-	Puffs->BatchUpdateInstancesTransforms(0, Xf, true, false, true);
+	// incremental update (no proxy rebuild, perf checklist): the transforms and the custom data upload with it; the
+	// untouched puffs inside the range get their own last transforms again
+	if (Hi >= Lo)
+	{
+		Puffs->BatchUpdateInstancesTransforms(Lo, TArrayView<const FTransform>(Xf.GetData() + Lo, Hi - Lo + 1), true, false, true);
+	}
 	if (Live == 0)
 	{
 		bShown = false;

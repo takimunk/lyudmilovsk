@@ -43,4 +43,7 @@ private:
 
 	void Call();
 	bool PlayerBusy() const;
+	/** The hero's seats (PlayerBusy asks each whether the player stands at it), gathered again every 2 s, not every frame. */
+	mutable TArray<TWeakObjectPtr<class AHeroSeat>> Seats;
+	mutable double SeatsAt = -1e9;
 };

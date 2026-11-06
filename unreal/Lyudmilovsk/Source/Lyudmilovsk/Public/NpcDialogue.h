@@ -137,6 +137,9 @@ private:
 	bool CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const FVector& CamDir) const;
 	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 	bool PlayerBusy() const;
+	/** The hero's seats (PlayerBusy asks each whether the player stands at it), gathered again every 2 s, not every frame. */
+	mutable TArray<TWeakObjectPtr<class AHeroSeat>> Seats;
+	mutable double SeatsAt = -1e9;
 	UNpcDialogueSubsystem* Dialogue() const;
 
 	TArray<FNpc> People;

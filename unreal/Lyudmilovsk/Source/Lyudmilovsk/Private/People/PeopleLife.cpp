@@ -244,6 +244,8 @@ void UPeopleLifeSubsystem::Stop()
 		ShowPlaced(Pair.Value, true);
 	}
 	ClubActors.Reset();
+	ClubSlotActors.Reset();
+	GroundCache.Reset();
 	for (AActor* Stray : StrayActors)
 	{
 		ShowPlaced(Stray, true);
@@ -289,15 +291,22 @@ void UPeopleLifeSubsystem::BindRailway()
 		return R;
 	};
 	// (the life's clock is negative before the start date: the doors' time is returned through Doors, never as -1)
-	Sim->TrainNext = [Self, Stops](const std::string& From, const std::string& To, double Time, double& Doors) -> bool
+	// asked from every score of every island activity: one line when the trains stop answering, not one per question
+	TSharedRef<bool> bSaidNoTrain = MakeShared<bool>(false);
+	Sim->TrainNext = [Self, Stops, bSaidNoTrain](const std::string& From, const std::string& To, double Time, double& Doors) -> bool
 	{
 		int32 A = -1, B = -1, Dir = 1;
 		const ULyudRailwaySubsystem* R = Stops(From, To, A, B, Dir);
 		if (!R)
 		{
-			UE_LOG(LogTemp, Log, TEXT("PeopleLife: no train %hs -> %hs (stops %d %d)"), From.c_str(), To.c_str(), A, B);
+			if (!*bSaidNoTrain)
+			{
+				*bSaidNoTrain = true;
+				UE_LOG(LogTemp, Log, TEXT("PeopleLife: no train %hs -> %hs (stops %d %d); quiet until the trains answer again"), From.c_str(), To.c_str(), A, B);
+			}
 			return false;
 		}
+		*bSaidNoTrain = false;
 		const double Off = Self->RailOffset;
 		const double When = R->NextDoorsOpen(A, Dir, Time + Off);
 		Doors = When - Off;
@@ -609,6 +618,16 @@ void UPeopleLifeSubsystem::BindClub()
 			Bound.Add(Best);
 		}
 	}
+	// the same by slot (each club seat: its tag's actor), for Present
+	ClubSlotActors.Reset();
+	ClubSlotActors.SetNum((int32)S.Slots.size());
+	for (int32 I = 0; I < (int32)S.Slots.size(); I++)
+	{
+		if (S.Slots[I].Kind == "club_seat")
+		{
+			ClubSlotActors[I] = ClubActors.FindRef(UTF8_TO_TCHAR(S.Slots[I].Tag.c_str()));
+		}
+	}
 	// any other copy of somebody (their model at a station not theirs, a stand-in left in the level) is never shown
 	for (const FPlacedPerson& A : Placed)
 	{
@@ -795,7 +814,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		PC->GetPlayerViewPoint(Cam, CamRot);
 	}
 	const float Draw = CVarPeopleDraw.GetValueOnGameThread() * 100.f;
-	TSet<FString> PlacedShown;
+	PlacedShown.Reset();
 	bool bOwnerHere = false;
 	for (const LP::FPerson& P : S.People)
 	{
@@ -814,10 +833,9 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		// at their own station: the scene's own actor of them sits there
 		if (Sl && Sl->Kind == "club_seat" && P.State == LP::EState::Doing && Sl->Tag == P.ClubSeat)
 		{
-			const FString Tag = UTF8_TO_TCHAR(Sl->Tag.c_str());
-			if (ClubActors.Contains(Tag))
+			if (AActor* Club = ClubSlotActors.IsValidIndex(P.Slot) ? ClubSlotActors[P.Slot].Get() : nullptr)
 			{
-				PlacedShown.Add(Tag);
+				PlacedShown.Add(Club);
 				if (P.Id < Bodies.Num() && Bodies[P.Id])
 				{
 					Bodies[P.Id]->SetActorHiddenInGame(true);
@@ -877,13 +895,27 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		FVector At = Loc;
 		if (!P.bIndoors && Dist < 6000.f)
 		{
-			// exact ground under them near the camera (steps, kerbs)
-			FHitResult Hit;
-			FCollisionQueryParams Q(SCENE_QUERY_STAT(PeopleGround), false);
-			Q.AddIgnoredActor(Body);
-			if (World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q))
+			// exact ground under them near the camera (steps, kerbs); someone standing still on the same spot keeps the last
+			// trace's ground for a little while
+			if (GroundCache.Num() <= P.Id)
 			{
-				At.Z = Hit.ImpactPoint.Z;
+				GroundCache.SetNum(P.Id + 1);
+			}
+			FGroundCache& G = GroundCache[P.Id];
+			G.Age += DeltaTime;
+			if (!G.At.Equals(Loc, 0.5f) || G.Age > 0.25f)
+			{
+				FHitResult Hit;
+				FCollisionQueryParams Q(SCENE_QUERY_STAT(PeopleGround), false);
+				Q.AddIgnoredActor(Body);
+				G.bHit = World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q);
+				G.Z = G.bHit ? (float)Hit.ImpactPoint.Z : 0.f;
+				G.At = Loc;
+				G.Age = 0.f;
+			}
+			if (G.bHit)
+			{
+				At.Z = G.Z;
 			}
 		}
 		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
@@ -900,7 +932,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 	}
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
-		ShowPlaced(Pair.Value, PlacedShown.Contains(Pair.Key));
+		ShowPlaced(Pair.Value, PlacedShown.Contains(Pair.Value.Get()));
 	}
 	if (Owner)
 	{
@@ -1018,6 +1050,37 @@ int32 UPeopleLifeSubsystem::NumPeople() const
 int32 UPeopleLifeSubsystem::FindPerson(const FString& Key) const
 {
 	return Sim ? Sim->FindPerson(TCHAR_TO_UTF8(*Key)) : -1;
+}
+
+int32 UPeopleLifeSubsystem::FindActivity(const FString& Id) const
+{
+	if (!Sim)
+	{
+		return -1;
+	}
+	const std::string Want = TCHAR_TO_UTF8(*Id);
+	for (int32 I = 0; I < (int32)Sim->Activities.size(); I++)
+	{
+		if (Sim->Activities[I].Id == Want)
+		{
+			return I;
+		}
+	}
+	return -1;
+}
+
+bool UPeopleLifeSubsystem::GetActivityState(int32 Id, int32& Activity, bool& bDoing, EPersonPose& Pose, FVector& Location) const
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return false;
+	}
+	const LP::FPerson& P = Sim->People[Id];
+	Activity = P.Activity;
+	bDoing = P.State == LP::EState::Doing;
+	Pose = (EPersonPose)(uint8)P.Pose;
+	Location = PeopleToUE(P.Pos);
+	return true;
 }
 
 bool UPeopleLifeSubsystem::GetPerson(int32 Id, FPersonInfo& Out) const
@@ -1151,6 +1214,9 @@ ANpcBody::ANpcBody()
 		Out->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		Out->SetVisibility(false);
 		Out->SetReceivesDecals(false);
+		// moved every frame while shovelling: out of the distance fields and Lumen (perf checklist)
+		Out->bAffectDistanceFieldLighting = false;
+		Out->bAffectDynamicIndirectLighting = false;
 		Out->LightingChannels.bChannel0 = true;
 		Out->LightingChannels.bChannel1 = true;
 		if (M)
@@ -1454,7 +1520,12 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	{
 		// the shared walk (Quaternius UAL Walk_Loop on Guy_a) covers ~93 cm/s at rate 1 (life_anims_report.json speed_m_s);
 		// the owner's (the fallback) 75
-		const bool bShared = Clip(TEXT("Walk")) && Clip(TEXT("Walk"))->GetName().StartsWith(TEXT("A_Human"));
+		if (SharedWalk < 0)
+		{
+			// decided once the clip is there (it may come with the body's prefetch a little later)
+			if (const UAnimSequence* W = Clip(TEXT("Walk"))) SharedWalk = W->GetName().StartsWith(TEXT("A_Human")) ? 1 : 0;
+		}
+		const bool bShared = SharedWalk == 1;
 		// a run (UAL Jog_Fwd_Loop, ~2.6 m/s at rate 1) from ~1.9 m/s, back to the walk under ~1.6 (a body's size scales both)
 		const bool bRun = Clip(TEXT("Run")) && Speed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
 		if (bRun)
@@ -1624,7 +1695,7 @@ void ANpcBody::BuildBlanket()
 			MD.CreateTriangle(Group, { b, d, c });
 		}
 	}
-	if (!BlanketMesh)
+	// a fresh mesh every time (the old one goes to GC): rebuilding a mesh that is drawn flushes the renderer and hitches
 	{
 		BlanketMesh = NewObject<UStaticMesh>(this);
 		// looked up per blanket, never kept in a static: after a load opens the level again the old pointer was freed (crash)

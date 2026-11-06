@@ -402,6 +402,9 @@ void AAnimalActor::UpdateEyes()
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->SetCastShadow(false);
 		C->SetReceivesDecals(false);
+		// they move with the head every frame: out of the distance fields and Lumen (perf checklist)
+		C->bAffectDistanceFieldLighting = false;
+		C->bAffectDynamicIndirectLighting = false;
 		C->SetLightingChannels(true, true, false);       // the sun is channel 1, as on the body
 		C->SetupAttachment(Body, TEXT("head"));
 		C->SetRelativeTransform(InMesh.GetRelativeTransform(HeadRef));

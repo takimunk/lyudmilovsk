@@ -48,6 +48,10 @@ public:
 private:
 	TArray<FLyudCounter> Counters;
 	int32 Prompted = -1;
+	/** IsOpen's lookups per counter (the seller's person id, the activity's index), valid for one run of the people's life. */
+	mutable const void* CacheRun = nullptr;
+	mutable TArray<int32> CachePerson;
+	mutable TArray<int32> CacheActivity;
 
 	void Load();
 	void SetPrompted(int32 Counter);

@@ -35,6 +35,7 @@ void ULyudCounterTradeSubsystem::Deinitialize()
 void ULyudCounterTradeSubsystem::Load()
 {
 	Counters.Reset();
+	CacheRun = nullptr;
 	FString Text;
 	if (!FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("PeopleData/counters.json"))))
 	{
@@ -97,16 +98,34 @@ bool ULyudCounterTradeSubsystem::IsOpen(int32 Counter, FVector* Where) const
 	{
 		return false;
 	}
-	FPersonInfo P;
-	if (!People->GetPerson(People->FindPerson(Counters[Counter].Person), P))
+	// asked every frame: the seller's id and the activity's index once per run of the people's life, then a cheap read
+	const void* Run = People->GetSim();
+	if (Run != CacheRun)
+	{
+		CacheRun = Run;
+		CachePerson.SetNum(Counters.Num());
+		CacheActivity.SetNum(Counters.Num());
+		for (int32 I = 0; I < Counters.Num(); ++I)
+		{
+			CachePerson[I] = People->FindPerson(Counters[I].Person);
+			CacheActivity[I] = People->FindActivity(Counters[I].Activity);
+		}
+	}
+	int32 Activity = -1;
+	bool bDoing = false;
+	EPersonPose Pose = EPersonPose::Hidden;
+	FVector At = FVector::ZeroVector;
+	if (!People->GetActivityState(CachePerson[Counter], Activity, bDoing, Pose, At))
 	{
 		return false;
 	}
 	if (Where)
 	{
-		*Where = P.Location;
+		*Where = At;
 	}
-	return P.Activity == Counters[Counter].Activity && P.State == TEXT("doing") && P.Pose != EPersonPose::Hidden;
+	// (an activity activities.json doesn't have never matches; none at all matches a person doing nothing)
+	const bool bKnown = CacheActivity[Counter] >= 0 || Counters[Counter].Activity.IsEmpty();
+	return bKnown && Activity == CacheActivity[Counter] && bDoing && Pose != EPersonPose::Hidden;
 }
 
 bool ULyudCounterTradeSubsystem::OpenCounter(int32 Counter)
