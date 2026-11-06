@@ -39,6 +39,9 @@ ABirdFeedBag::ABirdFeedBag()
 		C->SetRelativeLocation(Loc);
 		C->SetRelativeScale3D(Size / 100.f);
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// it rides on the hand, moving every frame: out of the Lumen scene, or Lumen recaptures it every frame
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
 		return C;
 	};
 	// the bag (X depth, Y width, Z height), the top rolled over twice, a printed paper band round its waist
@@ -91,6 +94,8 @@ ASeedHandful::ASeedHandful()
 		(*C)->SetStaticMesh(Sphere);
 		(*C)->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		(*C)->SetCastShadow(true);
+		(*C)->bAffectDynamicIndirectLighting = false;   // on the moving palm (see the bag)
+		(*C)->bAffectDistanceFieldLighting = false;
 	}
 }
 
@@ -132,6 +137,8 @@ void ASeedHandful::Build()
 	}
 	SeedCount = Seeds->GetInstanceCount();
 	MilletCount = Millet->GetInstanceCount();
+	SeedsShown = SeedCount;
+	MilletShown = MilletCount;
 }
 
 void ASeedHandful::Spill()
@@ -173,29 +180,28 @@ void ASeedHandful::SetLeft(float Left)
 	for (UInstancedStaticMeshComponent* C : { Seeds.Get(), Millet.Get() })
 	{
 		const int32 Full = C == Seeds ? SeedCount : MilletCount;
+		int32& Shown = C == Seeds ? SeedsShown : MilletShown;
 		const int32 Want = FMath::RoundToInt(Full * Left);
-		// the top grains go first; they are hidden (scaled to nothing) so the order stays
-		for (int32 I = 0; I < Full; ++I)
+		if (Want == Shown)
+		{
+			continue;       // called every frame while a bird eats: nothing to do until a grain goes
+		}
+		if (Want > Shown)
+		{
+			// grains back: rebuilt with the right scale
+			Build();
+			SetLeft(Left);
+			return;
+		}
+		// the top grains go first; they are hidden (scaled to nothing) so the order stays. The instance update
+		// reaches the renderer on its own (no render state rebuild)
+		for (int32 I = Want; I < Shown; ++I)
 		{
 			FTransform Xf;
 			C->GetInstanceTransform(I, Xf, false);
-			const bool bShown = I < Want;
-			if (bShown != !Xf.GetScale3D().IsNearlyZero(1e-6))
-			{
-				if (!bShown)
-				{
-					Xf.SetScale3D(FVector(1e-7f));
-				}
-				else
-				{
-					// rebuilt below with the right scale
-					Build();
-					SetLeft(Left);
-					return;
-				}
-				C->UpdateInstanceTransform(I, Xf, false, false, true);
-			}
+			Xf.SetScale3D(FVector(1e-7f));
+			C->UpdateInstanceTransform(I, Xf, false, false, true);
 		}
-		C->MarkRenderStateDirty();
+		Shown = Want;
 	}
 }

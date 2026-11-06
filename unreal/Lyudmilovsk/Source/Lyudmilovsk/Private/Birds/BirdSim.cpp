@@ -1637,7 +1637,13 @@ namespace LyudBirds
 			bSeen = Cos > std::cos(S.Fov * 0.5f * Pi / 180.f);
 			if (bSeen && B.Tier == 0 && Sight)
 			{
-				bSeen = Sight(B.Pos + V3(0.f, 0.f, 0.1f), Player.Eye);
+				// near birds think every frame: the trace is kept for 0.15 s (too short to see a lag in their reactions)
+				if (Time >= B.SightUntil)
+				{
+					B.bSightClear = Sight(B.Pos + V3(0.f, 0.f, 0.1f), Player.Eye);
+					B.SightUntil = Time + 0.15;
+				}
+				bSeen = B.bSightClear;
 			}
 		}
 		const bool bHeard = Dist < Hearing;
@@ -2049,8 +2055,10 @@ namespace LyudBirds
 		// hunt: the nearest worthwhile prey within 250 m, sooner near the player (so it can be seen); at dusk a bird on the
 		// murmuration's rim
 		int Best = bMurmHunt ? Murm->RimBird(*this, H.Rng) : -1;
-		float BestW = Best >= 0 ? 1e9f : 0.f;
-		for (int I = 0; I < (int)Birds.size(); I++)
+		float BestW = 0.f;
+		// a rim bird is the pick; otherwise the best by weight (testing Best inside the loop took the first one found)
+		const bool bRim = Best >= 0;
+		for (int I = 0; !bRim && I < (int)Birds.size(); I++)
 		{
 			const FBird& O = Birds[I];
 			const FSpecies& T = SpeciesTable()[O.Species];
@@ -2059,7 +2067,7 @@ namespace LyudBirds
 				continue;
 			}
 			const float D = (O.Pos - H.Pos).Len();
-			if (D > 250.f || Best >= 0)
+			if (D > 250.f)
 			{
 				continue;
 			}

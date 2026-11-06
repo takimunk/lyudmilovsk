@@ -8,6 +8,7 @@
 #include "BirdFeeder.generated.h"
 
 class UInstancedStaticMeshComponent;
+class UMaterialInstanceDynamic;
 class UStaticMeshComponent;
 
 /** The bird feeds' table (Content/BirdsData/feeds.json): how much each species wants each feed. */
@@ -55,6 +56,9 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Heap;
 	FName Shown;
 	int32 ShownGrains = -1;
+	/** The heap's material, made once and recoloured when the feed changes (not a new one per grain eaten). */
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> HeapMat;
+	FName HeapFeed;
 };
 
 /** One feeder in the save: where it stands and what is in it. */
@@ -141,4 +145,10 @@ private:
 	TArray<int32> SimIds;
 	int32 SimStart = -1;
 	bool bPrompt = false;
+	/** The prompt's text and what it was made from (formatted again only when one of them changes). */
+	FText PromptText;
+	FName PromptHeld, PromptFeed;
+	int32 PromptLeft = -1;
+	int32 PromptCase = -1;
+	FString PromptLanguage;
 };

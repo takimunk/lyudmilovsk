@@ -194,6 +194,8 @@ namespace LyudBirds
 		uint32_t Rng = 1;
 		float LeaveDay = 1e9f;      // a straggler leaves on this day of the year (migration)
 		float Struggle = 0.f;       // s it has been flying without making way against the wind
+		double SightUntil = -1.0;   // the sight line to the player is taken as it was until then (a trace per bird per frame was too many)
+		bool bSightClear = true;
 	};
 
 	struct FGroup

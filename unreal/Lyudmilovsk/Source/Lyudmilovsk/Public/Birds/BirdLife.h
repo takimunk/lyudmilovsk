@@ -241,6 +241,8 @@ private:
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;
 	TWeakObjectPtr<class ALyudSea> Sea;
+	/** Seconds to the next search for the sea (maps without one: not every frame). */
+	float SeaSearch = 0.f;
 	bool bClockSeen = false;
 	FVector TestRunFeet = FVector::ZeroVector, TestRunTarget = FVector::ZeroVector;
 	float TestRunSpeed = 0.f;
@@ -284,6 +286,7 @@ class LYUDMILOVSK_API ABirdLifeRenderer : public AActor
 
 public:
 	ABirdLifeRenderer();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Builds the components for the species of the simulation. */
 	void Setup(const LyudBirds::FWorld& World);
@@ -294,6 +297,8 @@ public:
 	FString Describe() const;
 	/** Promotes a bird to a body actor now (approach, claim). */
 	AActor* EnsureBody(const LyudBirds::FWorld& World, int32 Id);
+	/** Whether a body for this bird can be made now without loading on the spot (its species' assets are in). */
+	bool BodyLoaded(const LyudBirds::FWorld& World, int32 Id) const;
 	void ReleaseBody(int32 Id);
 
 	int32 DrawnLastFrame = 0;
@@ -322,6 +327,8 @@ private:
 		bool bOwnMeshes = false;
 		bool bHasBody = false;
 		float FemaleScale = 1.f;
+		/** /Game/Birds/<Id>, for the body prefetch check (not formatted per candidate per frame). */
+		FString Folder;
 	};
 	TArray<FSpeciesDraw> Species;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> PlaceholderMeshes;
@@ -339,6 +346,13 @@ private:
 	/** Per bird this frame: why it wasn't drawn (0 drawn, 1 gone, 2 tier, 3 claimed, 4 out of range, 5 under water). */
 	TArray<uint8> Why;
 	TArray<uint8> LastWhy;
+	/** Draw's per-frame scratch, kept so their capacity survives from frame to frame. */
+	struct FItem { int32 Id; int32 Species; int32 Slot; FTransform Xf; float Px; };
+	TArray<TPair<float, int32>> Near;
+	TArray<FItem> Items;
+	TArray<int32> Keep;
+	TArray<float> NowPx;
+	TArray<int32> PopIds;
 
 	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);
