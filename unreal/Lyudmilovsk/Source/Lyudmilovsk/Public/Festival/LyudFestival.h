@@ -148,6 +148,15 @@ private:
 	void StartShow(FName Key, const FString& Show, const FLyudVenue& V, double EndsAt);
 	void StartMusic(FName Key, const FLyudVenue& V);
 	void Announce(const FString& Day, const FString& Id);
+	/** The hero at the festival: prompts (light a sky lantern), what he watched and where he went (quest events). */
+	void TickHero(float DeltaTime);
+	/** Seconds the hero has spent watching each show now running (festival.phase.show). */
+	TMap<FName, float> Watched;
+	/** Quest events already sent this festival day ("day|event|target"). */
+	TSet<FString> HeroEvents;
+	bool bLanternPrompt = false;
+	int32 HeroLanternsTonight = 0;
+	void HeroEvent(const FString& Day, FName Event, const FString& Target);
 	/** The stand-in for the people's gatherings: orders free people to the venue (lyud.Festival.Stub). */
 	void StubGather(class UPeopleLifeSubsystem* People, FName Key, const FLyudVenue& V, const FString& Mode, float Pull);
 	/** Whether UPeopleLifeSubsystem::SetGathering exists in this build (known after the first call). */
@@ -228,6 +237,9 @@ class LYUDMILOVSK_API ALyudSkyLanterns : public AActor
 public:
 	ALyudSkyLanterns();
 	void Setup(const FVector& Beach, const FVector& SeaDir, double InEndsAt);
+	/** One more lantern let go at At (the hero's own: a little brighter, it goes up first). False if all are in the air. */
+	bool Release(const FVector& At, bool bHero);
+	FVector GetBeach() const { return Beach; }
 	virtual void Tick(float DeltaTime) override;
 
 private:
@@ -261,4 +273,29 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> FlameMat;
 	double StartsAt = 0.0, EndsAt = 0.0;
 	float Clock = 0.f;
+};
+
+/** Shooting stars (the Perseids): now and then a short bright streak high across the sky, seen from wherever the hero is. */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudMeteors : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudMeteors();
+	void Setup(double InEndsAt);
+	virtual void Tick(float DeltaTime) override;
+	/** How many have fallen so far (the hero's wish: the first one he sees). */
+	int32 NumFallen() const { return Fallen; }
+
+private:
+	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Streak;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> Glow;
+	double EndsAt = 0.0;
+	float Next = 3.f, T = -1.f, Life = 0.8f;
+	FVector From, Dir;
+	float Length = 0.f;
+	int32 Fallen = 0;
+	uint32 Rng = 99;
+	float Rand();
 };

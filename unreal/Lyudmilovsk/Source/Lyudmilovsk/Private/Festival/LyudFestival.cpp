@@ -14,6 +14,9 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "HeroCharacter.h"
+#include "InputCoreTypes.h"
+#include "LyudInventory.h"
 #include "LyudSave.h"
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -290,6 +293,7 @@ void ULyudFestivalSubsystem::Deinitialize()
 
 void ULyudFestivalSubsystem::Tick(float DeltaTime)
 {
+	TickHero(DeltaTime);
 	Timer -= DeltaTime;
 	if (Timer > 0.f)
 	{
@@ -884,6 +888,14 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 			Made = L;
 		}
 	}
+	else if (Show == TEXT("meteors"))
+	{
+		if (ALyudMeteors* M = World->SpawnActor<ALyudMeteors>(FVector::ZeroVector, FRotator::ZeroRotator, SP))
+		{
+			M->Setup(EndsAt);
+			Made = M;
+		}
+	}
 	else if (Show == TEXT("bonfire"))
 	{
 		// the city plan's bonfire place on the beach, else a little way down the beach towards the sea
@@ -899,6 +911,117 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 	{
 		Shows.Add(Key, Made);
 		UE_LOG(LogTemp, Display, TEXT("Festivals: show %s at %s"), *Key.ToString(), *Made->GetActorLocation().ToString());
+	}
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// the hero at the festival
+
+void ULyudFestivalSubsystem::HeroEvent(const FString& Day, FName Event, const FString& Target)
+{
+	const FString Mark = Day + TEXT("|") + Event.ToString() + TEXT("|") + Target;
+	if (HeroEvents.Contains(Mark))
+	{
+		return;
+	}
+	HeroEvents.Add(Mark);
+	ULyudQuests::Notify(this, Event, Target);
+	UE_LOG(LogTemp, Display, TEXT("Festivals: the hero %s %s"), *Event.ToString(), *Target);
+}
+
+void ULyudFestivalSubsystem::TickHero(float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	auto Prompt = [&](bool bOn, const FText& Text)
+	{
+		if (bOn != bLanternPrompt && UI)
+		{
+			UI->SetPrompt(this, bOn ? Text : FText::GetEmpty());
+		}
+		bLanternPrompt = bOn;
+	};
+	if (!Hero || Active.Num() == 0)
+	{
+		Prompt(false, FText::GetEmpty());
+		HeroLanternsTonight = 0;
+		Watched.Reset();
+		return;
+	}
+	const FString Day = DateKey(ToDate(UGameCalendar::NowIn(World)));
+	const FVector At = Hero->GetActorLocation();
+	// went to it: within a running phase's venue
+	for (const FLyudFestivalNow& A : Active)
+	{
+		if (A.Phase.IsNone())
+		{
+			continue;
+		}
+		const FLyudVenue* V = Venues.Find(A.Venue);
+		if (V && V->bValid && FVector::Dist2D(At, V->Center) < V->Radius * 1.4f + 1500.f)
+		{
+			HeroEvent(Day, TEXT("festival_visit"), A.Id.ToString() + TEXT(".") + A.Phase.ToString());
+			HeroEvent(Day, TEXT("festival_visit"), A.Id.ToString());
+		}
+	}
+	// watched it: half a minute in sight of a show (the fireworks from anywhere by the sea, the bonfire close up)
+	bool bLanternHere = false;
+	ALyudSkyLanterns* Lanterns = nullptr;
+	for (const auto& It : Shows)
+	{
+		AActor* Show = It.Value;
+		if (!IsValid(Show))
+		{
+			continue;
+		}
+		float Range = 40000.f;
+		if (Show->IsA<ALyudBonfire>()) Range = 600.f;
+		else if (Show->IsA<ALyudSkyLanterns>()) Range = 15000.f;
+		else if (Show->IsA<ALyudMeteors>()) Range = 1e9f;
+		if (ALyudSkyLanterns* L = Cast<ALyudSkyLanterns>(Show))
+		{
+			Lanterns = L;
+			bLanternHere = FVector::Dist2D(At, L->GetBeach()) < 3500.f;
+		}
+		if (FVector::Dist(At, Show->GetActorLocation()) > Range && !Show->IsA<ALyudMeteors>())
+		{
+			continue;
+		}
+		float& W = Watched.FindOrAdd(It.Key);
+		W += DeltaTime;
+		if (W > 30.f)
+		{
+			FString F, Rest;
+			It.Key.ToString().Split(TEXT("."), &F, &Rest);
+			FString Phase, ShowName;
+			Rest.Split(TEXT("."), &Phase, &ShowName);
+			HeroEvent(Day, TEXT("festival_watch"), ShowName);
+			HeroEvent(Day, TEXT("festival_watch"), F + TEXT(".") + ShowName);
+		}
+	}
+	// a sky lantern of his own: on the beach while they are being let go
+	const int32 Price = 30;
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	const bool bCan = Lanterns && bLanternHere && HeroLanternsTonight < 3 && !(UI && UI->IsOpen()) && Inv;
+	Prompt(bCan, LyudText::Get(TEXT("ui.festival.lantern_prompt"), { FStringFormatArg(Price) }));
+	if (bCan)
+	{
+		const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
+		if (PC && PC->WasInputKeyJustPressed(EKeys::E))
+		{
+			if (!Inv->Spend(Price))
+			{
+				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.no_money")));
+			}
+			else if (Lanterns->Release(Hero->EyeLocation() + Hero->GetActorForwardVector() * 90.f - FVector(0.f, 0.f, 60.f), true))
+			{
+				HeroLanternsTonight++;
+				HeroEvent(Day + FString::FromInt(HeroLanternsTonight), TEXT("festival_lantern"), TEXT("sky_lantern"));
+				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.lantern_up")));
+				Prompt(false, FText::GetEmpty());
+			}
+		}
 	}
 }
 
@@ -2055,6 +2178,25 @@ void ALyudSkyLanterns::Setup(const FVector& InBeach, const FVector& SeaDir, doub
 	}
 }
 
+bool ALyudSkyLanterns::Release(const FVector& At, bool bHero)
+{
+	for (int32 I = 0; I < Lanterns.Num(); I++)
+	{
+		if (Lanterns[I].T < 0.f)
+		{
+			FLantern& L = Lanterns[I];
+			L.T = 0.f;
+			L.P = At;
+			L.V = FVector(0.f, 0.f, bHero ? 85.f : 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f);
+			L.Phase = Rand() * 10.f;
+			Comps[I]->SetWorldLocation(L.P);
+			Comps[I]->SetVisibility(true);
+			return true;
+		}
+	}
+	return false;
+}
+
 void ALyudSkyLanterns::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -2217,4 +2359,91 @@ void ALyudBonfire::Tick(float DeltaTime)
 	{
 		Destroy();
 	}
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// shooting stars
+
+ALyudMeteors::ALyudMeteors()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
+
+float ALyudMeteors::Rand()
+{
+	return Rand01(Rng);
+}
+
+void ALyudMeteors::Setup(double InEndsAt)
+{
+	EndsAt = InEndsAt;
+	Rng = (uint32)InEndsAt | 1u;
+	// a thin streak 1 m long along X, scaled to its length; bright at the head
+	FLyudMeshKit K;
+	K.Rod(TEXT("glow"), FVector::ZeroVector, FVector(100.f, 0.f, 0.f), 1.f, 4, false, false);
+	TArray<FName> Slots;
+	UStaticMesh* Mesh = K.Build(this, TEXT("Meteor"), Slots);
+	UMaterialInterface* G = LoadObject<UMaterialInterface>(nullptr, GlowPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	Glow = UMaterialInstanceDynamic::Create(G, this);
+	Glow->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.85f, 0.92f, 1.f));
+	Streak = NewObject<UStaticMeshComponent>(this);
+	Streak->SetStaticMesh(Mesh);
+	Lightweight(Streak);
+	Streak->SetMaterial(0, Glow);
+	Streak->SetupAttachment(RootComponent);
+	Streak->SetVisibility(false);
+	Streak->RegisterComponent();
+}
+
+void ALyudMeteors::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	FVector Cam = FVector::ZeroVector;
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (PC->PlayerCameraManager) Cam = PC->PlayerCameraManager->GetCameraLocation();
+	}
+	const bool bOn = CalSeconds(GetWorld()) < EndsAt;
+	if (T < 0.f)
+	{
+		Next -= DeltaTime;
+		if (!bOn)
+		{
+			Destroy();
+			return;
+		}
+		if (Next > 0.f)
+		{
+			return;
+		}
+		// the radiant is in the north-east; they streak away from it, 30-70 degrees up, 3 km off
+		const float Az = FMath::DegreesToRadians(Rand() * 360.f), El = FMath::DegreesToRadians(30.f + Rand() * 40.f);
+		const FVector Sky(FMath::Cos(Az) * FMath::Cos(El), FMath::Sin(Az) * FMath::Cos(El), FMath::Sin(El));
+		From = Cam + Sky * 300000.f;
+		const FVector Radiant = FVector(-0.5f, 0.6f, 0.6f).GetSafeNormal();
+		Dir = (Sky - Radiant * FVector::DotProduct(Sky, Radiant)).GetSafeNormal();
+		Dir = (Dir - Sky * FVector::DotProduct(Dir, Sky)).GetSafeNormal();
+		if (Dir.IsNearlyZero()) Dir = FVector::CrossProduct(Sky, FVector::UpVector).GetSafeNormal();
+		Life = 0.5f + Rand() * 0.8f;
+		Length = 18000.f + Rand() * 30000.f;
+		T = 0.f;
+		Next = 4.f + Rand() * 22.f;
+		Fallen++;
+	}
+	T += DeltaTime;
+	const float U = T / Life;
+	if (U >= 1.f)
+	{
+		T = -1.f;
+		Streak->SetVisibility(false);
+		return;
+	}
+	// the head runs ahead, the tail follows and the streak flares and fades
+	const FVector Head = From + Dir * Length * U, Tail = From + Dir * Length * FMath::Max(0.f, U - 0.35f);
+	Streak->SetWorldLocation(Tail);
+	Streak->SetWorldRotation(Dir.Rotation());
+	Streak->SetWorldScale3D(FVector(FMath::Max(1.f, FVector::Dist(Head, Tail)) / 100.f, 60.f, 60.f));
+	Glow->SetScalarParameterValue(TEXT("Intensity"), 40.f * FMath::Sin(U * PI));
+	Streak->SetVisibility(true);
 }

@@ -41,6 +41,12 @@
     ],
      "reward": {"rubles": 50}}
    ]
-  }
+  },
+  {"id": "fest_sea_festival", "kind": "side", "start_on": {"event": "festival", "target": "sea_festival"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "sea_festival.fair"}, {"id": "fireworks", "event": "festival_watch", "target": "sea_festival.fireworks"}]}]},
+  {"id": "fest_lantern_night", "kind": "side", "start_on": {"event": "festival", "target": "lantern_night"}, "stages": [{"id": "go", "objectives": [{"id": "lantern", "event": "festival_lantern", "target": "sky_lantern"}]}]},
+  {"id": "fest_maslenitsa", "kind": "side", "start_on": {"event": "festival", "target": "maslenitsa"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "maslenitsa.fair"}, {"id": "effigy", "event": "festival_watch", "target": "maslenitsa.bonfire"}]}]},
+  {"id": "fest_midsummer", "kind": "side", "start_on": {"event": "festival", "target": "midsummer"}, "stages": [{"id": "go", "objectives": [{"id": "bonfire", "event": "festival_watch", "target": "midsummer.bonfire"}, {"id": "sunrise", "event": "festival_visit", "target": "midsummer.sunrise"}]}]},
+  {"id": "fest_new_year", "kind": "side", "start_on": {"event": "festival", "target": "new_year"}, "stages": [{"id": "go", "objectives": [{"id": "fireworks", "event": "festival_watch", "target": "new_year.fireworks"}]}]},
+  {"id": "fest_perseids", "kind": "side", "start_on": {"event": "festival", "target": "perseids"}, "stages": [{"id": "go", "objectives": [{"id": "stars", "event": "festival_watch", "target": "perseids.meteors"}]}]}
  ]
 }

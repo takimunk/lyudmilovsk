@@ -1,5 +1,5 @@
 {
-  "_doc": "The town's holidays (docs/festivals.md). Every festival here is a proposal, not canon. when.rule: date (month, day), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, sunrise_point), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire). priority: who has a venue when two festivals want it at once.",
+  "_doc": "The town's holidays (docs/festivals.md). Every festival here is a proposal, not canon. when.rule: date (month, day), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, sunrise_point), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire, meteors). priority: who has a venue when two festivals want it at once.",
   "festivals": [
     {
       "id": "weekend_market",
@@ -120,7 +120,7 @@
       "when": {"rule": "date", "month": 8, "day": 12},
       "decor": {"from": 20, "to": 27, "kinds": ["candles"], "venues": ["beach"]},
       "program": [
-        {"id": "stars", "hours": [22.5, 26], "venue": "beach", "mode": "sit", "face": "sky", "pull": 0.8}
+        {"id": "stars", "hours": [22.5, 26], "venue": "beach", "mode": "sit", "face": "sky", "pull": 0.8, "show": ["meteors"]}
       ],
       "priority": 2
     },

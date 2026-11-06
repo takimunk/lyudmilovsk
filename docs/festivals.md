@@ -71,6 +71,19 @@ the fair square from the Saturday market).
   lanterns and a bonfire. `ULyudQuests::Notify("festival", id)` at each phase's start; `OnPhaseStart` / `OnPhaseEnd`.
 - **Saved**: the fired triggers (first snow) and the notes already shown.
 
+**The hero at the festival** (`TickHero`, every frame while a festival is on):
+
+- On the beach while the sky lanterns go up: `E — зажечь небесный фонарик (30 руб.)` (`ui.festival.lantern_prompt`), up to
+  three a night; his lantern rises a little faster than the others (`ALyudSkyLanterns::Release`).
+- Quest events (ULyudQuests::Notify): `festival <id>` when a phase starts, `festival_visit <id>` and `<id>.<phase>` when
+  he is at a running phase's venue, `festival_watch <show>` and `<id>.<show>` after 30 s in sight of a show (the fireworks
+  within 400 m, the bonfire within 6 m, the lanterns within 150 m, the shooting stars anywhere), `festival_lantern
+  sky_lantern` for each lantern he lets go.
+- Side quests in `Content/UI/quests.json`, started by their festival: `fest_sea_festival` (the fair, the fireworks),
+  `fest_lantern_night` (a lantern of his own), `fest_maslenitsa` (the fair, the doll burning), `fest_midsummer` (the
+  bonfire, the sunrise), `fest_new_year` (the fireworks), `fest_perseids` (`ALyudMeteors`: shooting stars streaking away
+  from the radiant in the north-east every 4-26 s).
+
 API for other systems: `IsFestivalToday()`, `ActiveFestival()`, `ActivePhase()`, `ActiveFestivals()`, `IsDayOff()`,
 `Upcoming(days)`, `FestivalName(id)`, `FindVenue(name)`.
 
