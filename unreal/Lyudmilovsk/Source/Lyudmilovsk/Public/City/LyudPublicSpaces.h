@@ -65,7 +65,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> GlowMid;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PropMaterial;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> Pool;
-	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondWater, PondIce;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondWater, PondIce, Cascade;
 	TWeakObjectPtr<AProceduralForest> Forest;
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
 

@@ -718,6 +718,83 @@ def club_stair(L):
                          "bottom": L.ue(bx, by, bz)}
 
 
+# --- the Cascade's water (its stepped channels are the plan lead's: city_plan.json "cascade") -------------------------
+def cascade(L):
+    """Water down the stepped channels beside the Cascade's grand stairs (W5 at the top to W2), a basin at each foot and
+    a rill across each terrace from that basin to the next channel's head; a spring basin over the top one. The game
+    draws the sheets with the fountains' stream material (static, the water moves in the material)."""
+    cs = sorted(L.P.d.get("cascade", []), key=lambda c: -c["bottom"][2])      # top (W5) first
+    if not cs:
+        return
+    L.d["cascades"] = []
+    L.d["rills"] = []
+    for i, c in enumerate(cs):
+        fx, fy, fz = c["bottom"]
+        dx, dy = c["seaward"]                       # down the channel, out over the lower terrace
+        ax, ay = c["along"]                         # across it
+        w = c["width"]
+        L.d["cascades"].append({"id": c["id"], "foot": L.ue(fx, fy, fz), "down": r3((dx, dy)), "across": r3((ax, ay)),
+                                "width": w, "steps": c["steps"], "rise": c["rise"], "tread": c["tread"],
+                                "bed_below": c["bed_below_stair"]})
+        # the basin at the foot: 4.5 m out, the channel's width and its cheeks, a granite kerb 0.35 high
+        bl, bw = 4.5, w + 0.8
+        bx, by = fx + dx * bl / 2, fy + dy * bl / 2
+        yaw = math.degrees(math.atan2(dy, dx))
+        L.box("basin_floor", bx, by, yaw, bl, bw, fz - 0.4, fz + 0.03, "basin")
+        for side in (-1, 1):
+            L.box("basin_kerb", bx + ax * side * (bw / 2 + 0.15), by + ay * side * (bw / 2 + 0.15), yaw, bl + 0.6, 0.3,
+                  fz - 0.3, fz + 0.35, "granite")
+        L.box("basin_kerb", fx + dx * (bl + 0.15), fy + dy * (bl + 0.15), yaw, 0.3, bw, fz - 0.3, fz + 0.35, "granite")
+        L.d["waters"].append({"id": "cascade_" + c["wall"], "at": L.ue(bx, by, fz + 0.27), "rect": [bl, bw], "yaw": yaw,
+                              "ring": L.ue(fx + dx * 0.2, fy + dy * 0.2, fz + 0.27), "kind": "basin"})
+        sid = "S-CASCADE" if i == len(cs) - 1 else "S-CASCADE-" + c["wall"]
+        slots = [{"pos": L.ue(bx + ax * side * (bw / 2 + 0.15) + dx * o, by + ay * side * (bw / 2 + 0.15) + dy * o, fz + 0.35),
+                  "yaw": round(math.degrees(math.atan2(ay * side, ax * side)), 2), "height": 0.35}
+                 for side in (-1, 1) for o in (-1.4, 0.0, 1.4)]
+        sp = L.P.spots.get("S-CASCADE", {}) if sid == "S-CASCADE" else {}
+        L.spot(sid, "fountain", bx, by, fz, yaw, seats=len(slots), slots=slots, sub="cascade",
+               name_ru=sp.get("name_ru"), name_en=sp.get("name_en"))
+        # the rill to the next channel's head, across this foot's terrace: out of the basin's far end, round behind
+        # the next head (so it meets the channel from inland, not across the next grand stair's landing)
+        if i + 1 < len(cs):
+            n = cs[i + 1]
+            hx, hy, hz = n["top"]
+            ndx, ndy = n["seaward"]
+            ex, ey = fx + dx * (bl + 0.3), fy + dy * (bl + 0.3)
+            px, py = hx - ndx * 6.0, hy - ndy * 6.0
+            z = fz + 0.06
+            L.d["rills"].append({"id": "rill_" + c["wall"], "points": [L.ue(ex, ey, z), L.ue(px, py, z), L.ue(hx, hy, hz + 0.02)],
+                                 "width": 0.7})
+            for (ax0, ay0), (ax1, ay1) in (((ex, ey), (px, py)), ((px, py), (hx, hy))):
+                ln = math.hypot(ax1 - ax0, ay1 - ay0)
+                ux, uy = (ax1 - ax0) / ln, (ay1 - ay0) / ln
+                ya = math.degrees(math.atan2(uy, ux))
+                k = int(math.ceil(ln / 6.0))
+                for j in range(k):
+                    cx, cy = ax0 + ux * ln * (j + 0.5) / k, ay0 + uy * ln * (j + 0.5) / k
+                    L.box("rill_bed", cx, cy, ya, ln / k + 0.05, 0.7, fz - 0.3, fz + 0.02, "basin")
+                    for side in (-1, 1):
+                        L.box("rill_kerb", cx - uy * side * 0.45, cy + ux * side * 0.45, ya, ln / k + 0.05, 0.2,
+                              fz - 0.3, fz + 0.12, "granite")
+                # a footbridge where the rill passes the next grand stair's landing: a slab every 25 m
+                for j in range(1, int(ln / 25.0) + 1):
+                    cx, cy = ax0 + ux * j * 25.0, ay0 + uy * j * 25.0
+                    L.box("rill_bridge", cx, cy, ya, 1.6, 1.4, fz + 0.12, fz + 0.2, "granite")
+    # the spring over the top channel: a square basin on the upper terrace behind its head, water welling up
+    t = cs[0]
+    hx, hy, hz = t["top"]
+    ddx, ddy = t["seaward"]
+    sx, sy = hx - ddx * 3.0, hy - ddy * 3.0
+    yaw = math.degrees(math.atan2(ddy, ddx))
+    L.box("basin_floor", sx, sy, yaw, 4.0, t["width"] + 0.8, hz - 0.3, hz + 0.03, "basin")
+    for side in (-1, 1):
+        L.box("basin_kerb", sx + t["along"][0] * side * (t["width"] / 2 + 0.55), sy + t["along"][1] * side * (t["width"] / 2 + 0.55),
+              yaw, 4.6, 0.3, hz - 0.3, hz + 0.4, "granite")
+    L.box("basin_kerb", sx - ddx * 2.15, sy - ddy * 2.15, yaw, 0.3, t["width"] + 1.4, hz - 0.3, hz + 0.4, "granite")
+    L.d["waters"].append({"id": "cascade_spring", "at": L.ue(sx, sy, hz + 0.2), "rect": [4.0, t["width"] + 0.8], "yaw": yaw,
+                          "ring": L.ue(sx, sy, hz + 0.2), "kind": "spring"})
+
+
 # --- the pier (its deck is the plan lead's: tools/city_mesh.py pier()) -----------------------------------------------
 PIER_Y, PIER_W, PIER_OUT, PIER_HEAD = 905.0, 12.0, -140.0, 26.0
 
@@ -791,6 +868,7 @@ def build():
     park(L)
     fair(L)
     pier(L)
+    cascade(L)
     club_stair(L)
     # the plan's other spots we don't furnish (cascade, lookouts, bonfire, pier head, the upper benches): passed on
     have = {s["id"] for s in L.d["spots"]}
