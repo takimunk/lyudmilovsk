@@ -190,6 +190,7 @@ def spot_slots(spot, pos, extra):
 
 
 GIT_REFS = []
+LOOKS = {}
 REFS_FIRST = False
 
 
@@ -603,6 +604,8 @@ def household_plan(rnd, beds):
 
 
 def build_people(plan, places, flats, workplaces, args, rnd):
+    global LOOKS
+    LOOKS = (read_input("unreal/Lyudmilovsk/Content/PeopleData/town_looks.json") or {}).get("people", {})
     names = Names(rnd)
     pool = load_pool()
     used = {}
@@ -764,6 +767,10 @@ def build_people(plan, places, flats, workplaces, args, rnd):
                 p["occupation"] = rnd.choice(["artist", "writer", "musician", "programmer", "homemaker", "unemployed"])
         p["likes"] = likes_for(rnd, p["age"], female, p["chronotype"], p["occupation"])
         p["mesh"] = pick_model(rnd, pool, p["age"], female, used)
+        # their own model from the residents generator (blender/residents/looks.py), the pool's look as the fallback
+        own = LOOKS.get(p["key"], {}).get("model")
+        if own:
+            p["body"] = own
 
     # friends: neighbours of the same building, colleagues, people of an age
     by_building, by_work = {}, {}

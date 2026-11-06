@@ -102,7 +102,9 @@ namespace PeopleLifeLocal
 	/** A person's model: /Game/Characters/Humans/<Model>/SK_<Model>. */
 	FString PeopleModelPath(const FString& Model)
 	{
-		return FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *Model, *Model, *Model);
+		// "Dir/Name" (the townsfolk's own: Town/R_amada_tomohiko) -> /Game/Characters/Humans/Dir/Name/SK_Name
+		const FString Name = FPaths::GetCleanFilename(Model);
+		return FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *Model, *Name, *Name);
 	}
 
 	/** Whose look a skeletal mesh is: <Model> of /Game/Characters/Humans/<Model>/SK_<Model>, else "" (not a person's model). */
@@ -119,14 +121,9 @@ namespace PeopleLifeLocal
 		{
 			return FString();
 		}
-		FString Folder = Path.Mid(Root.Len());
-		int32 Slash = INDEX_NONE;
-		if (!Folder.FindChar(TEXT('/'), Slash))
-		{
-			return FString();
-		}
-		Folder.LeftInline(Slash);
-		return M->GetName() == TEXT("SK_") + Folder ? Folder : FString();
+		// the folder up to the mesh: <Model>/SK_<Model> or Dir/<Name>/SK_<Name>
+		FString Folder = FPaths::GetPath(Path.Mid(Root.Len()));
+		return !Folder.IsEmpty() && M->GetName() == TEXT("SK_") + FPaths::GetCleanFilename(Folder) ? Folder : FString();
 	}
 
 	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back") };
@@ -734,6 +731,13 @@ static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>
 		{
 			continue;
 		}
+		// their own model (the residents generator's, town_looks.json -> "body") once imported, else the pool's look
+		const FString Own = P.Body != P.Mesh ? FString(UTF8_TO_TCHAR(P.Body.c_str())) : FString();
+		if (!Own.IsEmpty() && FPackageName::DoesPackageExist(FPackageName::ObjectPathToPackageName(PeopleModelPath(Own))))
+		{
+			ShownModels[P.Id] = Own;
+			continue;
+		}
 		const FString Model = UTF8_TO_TCHAR(P.Mesh.c_str());
 		bool* Has = Known.Find(Model);
 		if (!Has)
@@ -1204,9 +1208,16 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 	{
 		return;
 	}
+	Bodies[Id] = nullptr;
+	// a look of their own nobody else wears: no pool, the body goes (it's loaded again, async, when they come near)
+	if (Sim && Id < (int32)Sim->People.size() && !Sim->People[Id].Body.empty() && Sim->People[Id].Body != Sim->People[Id].Mesh)
+	{
+		TownBodies.RemoveSwap(Body, EAllowShrinking::No);
+		Body->Destroy();
+		return;
+	}
 	Body->SetActorHiddenInGame(true);
 	TownPool.FindOrAdd(Body->MeshName).Add(Body);
-	Bodies[Id] = nullptr;
 }
 
 void UPeopleLifeSubsystem::BindLights()
