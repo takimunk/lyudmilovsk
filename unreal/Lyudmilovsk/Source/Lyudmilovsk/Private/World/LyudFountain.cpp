@@ -397,7 +397,9 @@ bool ALyudFountain::Build(TSharedPtr<FJsonObject> Doc, bool bAcadem)
 	A.LPFRadiusMax = 4000.f;
 	A.LPFFrequencyAtMin = 20000.f;
 	A.LPFFrequencyAtMax = 3500.f;
-	A.bEnableOcclusion = true;                              // behind a house it is a dull wash
+	// no occlusion: the source sits in the basin's middle, inside the stone's collision (the centrepiece), so every trace
+	// started there was blocked and the fountain always sounded muffled at -9 dB; a house between you and it is rare here
+	A.bEnableOcclusion = false;
 	A.OcclusionTraceChannel = ECC_Visibility;
 	A.OcclusionLowPassFilterFrequency = 1200.f;
 	A.OcclusionVolumeAttenuation = 0.35f;

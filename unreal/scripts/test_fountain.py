@@ -63,7 +63,7 @@ SHOTS = [
 ]
 if os.environ.get("FOUNTAIN_SHOTS"):
     SHOTS = [s for s in SHOTS if s[0] in os.environ["FOUNTAIN_SHOTS"].split(",")]
-WAIT = float(os.environ.get("FOUNTAIN_WAIT", "6"))
+WAIT = float(os.environ.get("FOUNTAIN_WAIT", "9"))
 st = {"t": 0.0, "i": -1, "phase": 0, "frames": [], "fail": 0, "levels": []}
 
 
@@ -135,7 +135,7 @@ def tick(dt):
         if st["t"] - st["t0"] > 2.0:
             st["frames"].append(dt)
             f = fountain(w)
-            if f and st["t"] - st["t0"] > 3.5:
+            if f and st["t"] - st["t0"] > 6.0:      # after a season jump: the frost search (a slice per tick) and the sound's 1.5 s fade
                 st["levels"].append(f.get_sound_level())
     elif st["phase"] == 1:
         name, _, _, _, want_run, want_sound = SHOTS[st["i"]]
