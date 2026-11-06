@@ -290,7 +290,7 @@ def _plots():
     P = []
     a = P.append
     # T0, the embankment: the pier, the kiosks, the beach's buildings
-    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -120.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
+    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -151.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
             height_max=36, notes="the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the "
                                  "high water); the tower stands on its head; on the town's main axis Y 905"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
@@ -382,7 +382,7 @@ def spots():
     a("S-STAGE", "stage", 205.0, 905.0, 1, "Сцена на площади", "Square stage", yaw=0.0,
       notes="faces the square and the sea; holidays: concerts, the New Year tree")
     a("S-SQUARE", "square", 150.0, 905.0, 1, "Площадь Солнца", "Sun Square", seats=40)
-    a("S-PIER-HEAD", "pier", -130.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
+    a("S-PIER-HEAD", "pier", -145.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
       notes="fishing, sunsets; fireworks are let off here on holidays")
     a("S-PROMENADE", "promenade", 45.0, 905.0, 0, "Променад", "Promenade",
       notes="the walk along T0, Y 380..1450; benches every 40 m (S-BENCH-P*)")
