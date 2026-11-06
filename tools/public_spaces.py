@@ -931,7 +931,7 @@ def validate(doc, plan):
     bad = []
     rects = []
     for pid, p in plan.plots.items():
-        if p.get("building") and p["kind"] not in ("fair", "pier"):
+        if p.get("building") and p["kind"] not in ("fair",):
             y = p["map"][1]
             sp = W.inland(p["map"][0], y)
             rects.append((pid, y - p["w"] / 2, y + p["w"] / 2, sp - p["d"] / 2, sp + p["d"] / 2))
