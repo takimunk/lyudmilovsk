@@ -12,6 +12,8 @@ class USkeletalMesh;
 class USkeletalMeshComponent;
 class UHeroShadowMesh;
 class ULyudSwimComponent;
+class UHeroBikeComponent;
+class UHeroReachComponent;
 
 /**
  * The player, seen from inside: the hero's whole body (SK_Hero: the Zoomer in Murmuration's clothes)
@@ -78,6 +80,9 @@ public:
 	/** On a bicycle (getting on, riding, getting off: UHeroBikeComponent moves the body), or leading one by the bars. */
 	bool IsOnBike() const;
 	bool IsLeadingBike() const;
+	/** The bike / reach component if the hero has one (FindComponentByClass, remembered: the hero asks several times a frame). */
+	UHeroBikeComponent* FindBike() const;
+	UHeroReachComponent* FindReach() const;
 	/** The way the body faces (a bike turns it). */
 	void SetBodyYaw(float Yaw) { BodyYaw = Yaw; }
 	/** Keep the body at its yaw whatever the look (on a ladder: ULyudLadderClimber). */
@@ -170,4 +175,9 @@ private:
 	float SeatZ = 42.f;
 	float SitAlpha = 0.f;
 	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
+	/** FindBike / FindReach: what was found, and how many components the hero had when it last looked (a new one: look again). */
+	mutable TWeakObjectPtr<UHeroBikeComponent> BikeCache;
+	mutable TWeakObjectPtr<UHeroReachComponent> ReachCache;
+	mutable int32 BikeScanCount = -1;
+	mutable int32 ReachScanCount = -1;
 };

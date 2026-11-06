@@ -19,6 +19,8 @@ public:
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 
 	void Toast(const FText& Text, bool bQuest);
+	/** The date and time line, rebuilt once a game minute. */
+	FText ClockText() const;
 	/** The quest lines changed. */
 	void RefreshQuest();
 
@@ -37,4 +39,7 @@ private:
 	TSharedPtr<FSlateBrush> MaskBrush;
 	FString Language;
 	bool bToastsDirty = false;
+	mutable FText ClockCache;
+	mutable FString ClockLanguage;
+	mutable int64 ClockMinute = -1;
 };

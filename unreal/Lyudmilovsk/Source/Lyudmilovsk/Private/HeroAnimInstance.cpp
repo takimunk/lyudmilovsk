@@ -37,7 +37,7 @@ namespace
 
 	/** Shares of the look carried by the spine, neck and head (Murmuration's first-person body):
 	 *  pitch up, twist (yaw), and the forward flex at full look-down (degrees). */
-	struct FLookShare { const TCHAR* Bone; float Up; float Twist; float FlexDeg; };
+	struct FLookShare { FName Bone; float Up; float Twist; float FlexDeg; };
 	const FLookShare LookShares[] = {
 		{ TEXT("spine_01"), 0.04f, 0.125f, 1.25f },
 		{ TEXT("spine_02"), 0.04f, 0.125f, 1.25f },
@@ -50,7 +50,7 @@ namespace
 void FHeroAnimProxy::KeepHandsOutsideClothes(FCompactPose& Pose)
 {
 	const FBoneContainer& Bones = Pose.GetBoneContainer();
-	auto Find = [&](const TCHAR* Name)
+	auto Find = [&](const FName Name)
 	{
 		const int32 M = Bones.GetPoseBoneIndexForBoneName(Name);
 		return M == INDEX_NONE ? FCompactPoseBoneIndex(INDEX_NONE) : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(M));
@@ -64,16 +64,19 @@ void FHeroAnimProxy::KeepHandsOutsideClothes(FCompactPose& Pose)
 		}
 		return T;
 	};
-	const FCompactPoseBoneIndex Pelvis = Find(TEXT("pelvis")), Chest = Find(TEXT("spine_03"));
+	// made once: this runs every evaluation
+	static const FName PelvisName(TEXT("pelvis")), ChestName(TEXT("spine_03"));
+	static const FName UpperNames[] = { TEXT("upperarm_l"), TEXT("upperarm_r") }, HandNames[] = { TEXT("hand_l"), TEXT("hand_r") };
+	const FCompactPoseBoneIndex Pelvis = Find(PelvisName), Chest = Find(ChestName);
 	if (!Pelvis.IsValid() || !Chest.IsValid())
 	{
 		return;
 	}
 	const float ZLow = (float)CS(Pelvis).GetLocation().Z - 25.f, ZHigh = (float)CS(Chest).GetLocation().Z + 15.f;
-	for (const TCHAR* Side : { TEXT("l"), TEXT("r") })
+	for (int32 Side = 0; Side < 2; ++Side)
 	{
-		const FCompactPoseBoneIndex Upper = Find(*FString::Printf(TEXT("upperarm_%s"), Side));
-		const FCompactPoseBoneIndex Hand = Find(*FString::Printf(TEXT("hand_%s"), Side));
+		const FCompactPoseBoneIndex Upper = Find(UpperNames[Side]);
+		const FCompactPoseBoneIndex Hand = Find(HandNames[Side]);
 		if (!Upper.IsValid() || !Hand.IsValid())
 		{
 			continue;

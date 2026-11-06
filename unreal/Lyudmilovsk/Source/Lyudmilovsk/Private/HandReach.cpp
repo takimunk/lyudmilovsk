@@ -28,6 +28,27 @@ namespace
 		return F;
 	}
 
+	/** Bone names the posture passes look up every evaluation: made once, not an FName from text each time. */
+	namespace BoneName
+	{
+		const FName calf_l(TEXT("calf_l"));
+		const FName calf_r(TEXT("calf_r"));
+		const FName foot_l(TEXT("foot_l"));
+		const FName foot_r(TEXT("foot_r"));
+		const FName hand_l(TEXT("hand_l"));
+		const FName hand_r(TEXT("hand_r"));
+		const FName head(TEXT("head"));
+		const FName lowerarm_l(TEXT("lowerarm_l"));
+		const FName lowerarm_r(TEXT("lowerarm_r"));
+		const FName spine_01(TEXT("spine_01"));
+		const FName spine_02(TEXT("spine_02"));
+		const FName spine_03(TEXT("spine_03"));
+		const FName thigh_l(TEXT("thigh_l"));
+		const FName thigh_r(TEXT("thigh_r"));
+		const FName upperarm_l(TEXT("upperarm_l"));
+		const FName upperarm_r(TEXT("upperarm_r"));
+	}
+
 	FCompactPoseBoneIndex Find(const FBoneContainer& Bones, FName Name)
 	{
 		const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Name);
@@ -266,7 +287,7 @@ namespace HandReach
 		}
 		const FBoneContainer& Bones = Pose.GetBoneContainer();
 		const FHand H(Bones);
-		const FCompactPoseBoneIndex Spine[] = { Find(Bones, TEXT("spine_01")), Find(Bones, TEXT("spine_02")), Find(Bones, TEXT("spine_03")) };
+		const FCompactPoseBoneIndex Spine[] = { Find(Bones, BoneName::spine_01), Find(Bones, BoneName::spine_02), Find(Bones, BoneName::spine_03) };
 		if (!H.IsValid() || !Spine[0].IsValid() || !Spine[1].IsValid() || !Spine[2].IsValid())
 		{
 			return;
@@ -279,7 +300,7 @@ namespace HandReach
 		const FVector Pivot = Loc(Pose, Spine[0]);
 		const float PalmReach = 0.6f * (float)(Loc(Pose, H.MiddleKnuckle) - Loc(Pose, H.Wrist)).Size();
 		const FVector WristTarget = Reach.Palm - Reach.FingerDir * PalmReach;
-		const FCompactPoseBoneIndex HeadBone = Find(Bones, TEXT("head"));
+		const FCompactPoseBoneIndex HeadBone = Find(Bones, BoneName::head);
 		const FVector Head = HeadBone.IsValid() ? Loc(Pose, HeadBone) : Shoulder + FVector(0.f, 0.f, 20.f);
 		constexpr float MaxLeanDeg = 100.f, HeadClear = 10.f;
 		float Best = MaxLeanDeg, BestDist = TNumericLimits<float>::Max();
@@ -309,7 +330,7 @@ namespace HandReach
 		// a hinge at the hips takes most of it (the thighs turned back so the legs stay where they stand,
 		// down to the floor), the back the rest, spread over the spine bones about their own joints
 		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
-		const FCompactPoseBoneIndex Thighs[] = { Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("thigh_r")) };
+		const FCompactPoseBoneIndex Thighs[] = { Find(Bones, BoneName::thigh_l), Find(Bones, BoneName::thigh_r) };
 		float Back = Lean;
 		if (Pel.IsValid() && Thighs[0].IsValid() && Thighs[1].IsValid())
 		{
@@ -340,11 +361,11 @@ namespace HandReach
 		}
 		const FBoneContainer& Bones = Pose.GetBoneContainer();
 		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
-		const FCompactPoseBoneIndex Spine1 = Find(Bones, TEXT("spine_01"));
+		const FCompactPoseBoneIndex Spine1 = Find(Bones, BoneName::spine_01);
 		struct FLeg { FCompactPoseBoneIndex Thigh, Calf, Foot; float Side; };
 		const FLeg Legs[] = {
-			{ Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("calf_l")), Find(Bones, TEXT("foot_l")), 1.f },
-			{ Find(Bones, TEXT("thigh_r")), Find(Bones, TEXT("calf_r")), Find(Bones, TEXT("foot_r")), -1.f },
+			{ Find(Bones, BoneName::thigh_l), Find(Bones, BoneName::calf_l), Find(Bones, BoneName::foot_l), 1.f },
+			{ Find(Bones, BoneName::thigh_r), Find(Bones, BoneName::calf_r), Find(Bones, BoneName::foot_r), -1.f },
 		};
 		if (!Pel.IsValid())
 		{
@@ -391,12 +412,12 @@ namespace HandReach
 		const FCompactPoseBoneIndex Pel = Find(Bones, Pelvis);
 		struct FLimb { FCompactPoseBoneIndex A, B, C; float Side; };
 		const FLimb Legs[] = {
-			{ Find(Bones, TEXT("thigh_l")), Find(Bones, TEXT("calf_l")), Find(Bones, TEXT("foot_l")), 1.f },
-			{ Find(Bones, TEXT("thigh_r")), Find(Bones, TEXT("calf_r")), Find(Bones, TEXT("foot_r")), -1.f },
+			{ Find(Bones, BoneName::thigh_l), Find(Bones, BoneName::calf_l), Find(Bones, BoneName::foot_l), 1.f },
+			{ Find(Bones, BoneName::thigh_r), Find(Bones, BoneName::calf_r), Find(Bones, BoneName::foot_r), -1.f },
 		};
 		const FLimb Arms[] = {
-			{ Find(Bones, TEXT("upperarm_l")), Find(Bones, TEXT("lowerarm_l")), Find(Bones, TEXT("hand_l")), 1.f },
-			{ Find(Bones, TEXT("upperarm_r")), Find(Bones, TEXT("lowerarm_r")), Find(Bones, TEXT("hand_r")), -1.f },
+			{ Find(Bones, BoneName::upperarm_l), Find(Bones, BoneName::lowerarm_l), Find(Bones, BoneName::hand_l), 1.f },
+			{ Find(Bones, BoneName::upperarm_r), Find(Bones, BoneName::lowerarm_r), Find(Bones, BoneName::hand_r), -1.f },
 		};
 		if (!Pel.IsValid())
 		{

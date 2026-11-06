@@ -21,10 +21,13 @@ namespace
 	// the soundscape's own defaults
 	const float VolumeDefaults[] = { 1.f, 1.f, 0.45f, 1.f };
 
-	void Store(const TCHAR* Key, const FString& Value)
+	void Store(const TCHAR* Key, const FString& Value, bool bFlush = true)
 	{
 		GConfig->SetString(Section, Key, *Value, GGameUserSettingsIni);
-		GConfig->Flush(false, GGameUserSettingsIni);
+		if (bFlush)
+		{
+			GConfig->Flush(false, GGameUserSettingsIni);
+		}
 	}
 }
 
@@ -97,8 +100,17 @@ namespace LyudSettings
 
 	void SetVolume(UWorld* World, EVolume Which, float Value)
 	{
-		Store(VolumeKeys[static_cast<int32>(Which)], FString::SanitizeFloat(FMath::Clamp(Value, 0.f, 1.f)));
+		// a slider drag sets it every mouse move: keep it in memory, written to disk by FlushStored (drag end, menu close)
+		Store(VolumeKeys[static_cast<int32>(Which)], FString::SanitizeFloat(FMath::Clamp(Value, 0.f, 1.f)), false);
 		ApplyVolumes(World);
+	}
+
+	void FlushStored()
+	{
+		if (GConfig)
+		{
+			GConfig->Flush(false, GGameUserSettingsIni);
+		}
 	}
 
 	void ApplyVolumes(UWorld* World)
@@ -119,6 +131,7 @@ static FAutoConsoleCommandWithWorldAndArgs GLyudVolumeCmd(TEXT("lyud.Settings.Vo
 			if (Args[0] == Names[I])
 			{
 				LyudSettings::SetVolume(World, static_cast<LyudSettings::EVolume>(I), FCString::Atof(*Args[1]));
+				LyudSettings::FlushStored();
 				const ULyudSoundscapeSubsystem* S = ULyudSoundscapeSubsystem::Get(World);
 				UE_LOG(LogTemp, Warning, TEXT("SETTINGSTEST %s %.2f -> soundscape %.2f %.2f %.2f %.2f"), Names[I], LyudSettings::Volume(static_cast<LyudSettings::EVolume>(I)),
 					S ? S->MasterVolume : -1.f, S ? S->AmbienceVolume : -1.f, S ? S->MusicVolume : -1.f, S ? S->EffectsVolume : -1.f);

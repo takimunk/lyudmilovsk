@@ -270,6 +270,7 @@ TSharedRef<SWidget> SLyudGameMenu::MakeSettings()
 				.SliderBarColor(Dim)
 				.SliderHandleColor(Text)
 				.OnValueChanged_Lambda([O, Which](float V) { LyudSettings::SetVolume(O.IsValid() ? O->GetWorld() : nullptr, Which, V); })
+				.OnMouseCaptureEnd_Lambda([] { LyudSettings::FlushStored(); })
 			]
 			+ SHorizontalBox::Slot().FillWidth(0.12f).VAlign(VAlign_Center)
 			[

@@ -39,7 +39,7 @@ UHeroReachComponent* UHeroReachComponent::Get(AHeroCharacter* InHero)
 	{
 		return nullptr;
 	}
-	UHeroReachComponent* C = InHero->FindComponentByClass<UHeroReachComponent>();
+	UHeroReachComponent* C = InHero->FindReach();
 	if (!C)
 	{
 		C = NewObject<UHeroReachComponent>(InHero, TEXT("HeroReach"));

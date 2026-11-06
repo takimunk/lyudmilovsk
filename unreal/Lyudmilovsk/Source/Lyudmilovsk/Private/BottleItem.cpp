@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "LyudGoodsItem.h"
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "MeshDescription.h"
@@ -149,10 +150,25 @@ namespace
 		return { FLinearColor(0.1f, 0.35f, 0.15f), FLinearColor(0.12f, 0.3f, 0.1f), FLinearColor(0.7f, 0.7f, 0.65f) };   // baikal
 	}
 
-	UMaterialInterface* LoadMaterial(const TCHAR* Path, const TCHAR* Fallback)
+	/** The bottle's base materials, looked up once (each kept alive by the shared instances made from it). */
+	struct FBottleBases { UMaterialInterface* Basic = nullptr; UMaterialInterface* Glass = nullptr; UMaterialInterface* Liquid = nullptr; UMaterialInterface* Label = nullptr; };
+	const FBottleBases& Bases()
 	{
-		UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, Path);
-		return M ? M : LoadObject<UMaterialInterface>(nullptr, Fallback);
+		static const FBottleBases B = []
+		{
+			FBottleBases R;
+			R.Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+			auto Load = [&R](const TCHAR* Path)
+			{
+				UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, Path);
+				return M ? M : R.Basic;
+			};
+			R.Glass = Load(TEXT("/Game/Hall/M_BottleGlass.M_BottleGlass"));
+			R.Liquid = Load(TEXT("/Game/Hall/M_BottleLiquid.M_BottleLiquid"));
+			R.Label = Load(TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel"));
+			return R;
+		}();
+		return B;
 	}
 }
 
@@ -167,6 +183,9 @@ ABottleItem::ABottleItem()
 		C->SetupAttachment(Root);
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->SetCastShadow(false);
+		// carried in the hand, it moves every frame: out of Lumen and distance-field lighting
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
 		return C;
 	};
 	Glass = Make(TEXT("Glass"));
@@ -184,24 +203,14 @@ void ABottleItem::Init(FName InFlavor, float InLevel)
 	Label->SetStaticMesh(M.Label);
 	Cap->SetStaticMesh(M.Cap);
 	const FFlavorLook Look = LookOf(Flavor);
-	UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-
-	auto Tinted = [this, Basic](UStaticMeshComponent* C, const TCHAR* AssetPath, const FLinearColor& Color) -> UMaterialInstanceDynamic*
-	{
-		UMaterialInterface* Base = LoadMaterial(AssetPath, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base ? Base : Basic, this);
-		MID->SetVectorParameterValue(TEXT("Color"), Color);
-		C->SetMaterial(0, MID);
-		return MID;
-	};
-	Tinted(Glass, TEXT("/Game/Hall/M_BottleGlass.M_BottleGlass"), Look.Glass);
-	LiquidMaterial = Tinted(Liquid, TEXT("/Game/Hall/M_BottleLiquid.M_BottleLiquid"), Look.Liquid);
-	Tinted(Cap, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"), Look.Cap);
-	UMaterialInstanceDynamic* LabelMat = Tinted(Label, TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel"), FLinearColor::White);
-	if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("Hall"), FString(TEXT("T_Label_")) + Flavor.ToString()))
-	{
-		LabelMat->SetTextureParameterValue(TEXT("Label"), Tex);
-	}
+	const FBottleBases& B = Bases();
+	// shared per flavour (ALyudGoodsItem::SharedMaterial): bottles of one drink draw with the same materials; nothing tints one bottle alone
+	Glass->SetMaterial(0, ALyudGoodsItem::SharedMaterial(B.Glass, Look.Glass));
+	LiquidMaterial = ALyudGoodsItem::SharedMaterial(B.Liquid, Look.Liquid);
+	Liquid->SetMaterial(0, LiquidMaterial);
+	Cap->SetMaterial(0, ALyudGoodsItem::SharedMaterial(B.Basic, Look.Cap));
+	UTexture2D* Tex = LyudText::LoadTexture(TEXT("Hall"), FString(TEXT("T_Label_")) + Flavor.ToString());
+	Label->SetMaterial(0, ALyudGoodsItem::SharedMaterial(B.Label, FLinearColor::White, Tex));
 	SetLevel(InLevel);
 }
 

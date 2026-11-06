@@ -13,6 +13,8 @@
 
 /** Screen centre in the seat's space: the screen is ~91 cm ahead of the chair and 114 cm up, the widget 3 mm in front of it. */
 static const FVector ScreenFromSeat(91.1, 0.0, 114.0);
+/** Seconds between repaints of the screen while it is not in use. */
+static constexpr float IdleRedrawTime = 0.5f;
 
 UAtonScreenComponent::UAtonScreenComponent()
 {
@@ -81,6 +83,8 @@ void AAtonComputer::BeginPlay()
 			}
 		});
 	Screen->SetSlateWidget(Desktop);
+	// nobody at the keyboard: repaint the 1024x768 screen (clock, open apps) twice a second, not every frame
+	Screen->SetRedrawTime(IdleRedrawTime);
 }
 
 void AAtonComputer::EndPlay(const EEndPlayReason::Type Reason)
@@ -145,6 +149,7 @@ void AAtonComputer::Activate(APlayerController* PC)
 	}
 	bActive = true;
 	ActivePC = PC;
+	Screen->SetRedrawTime(0.f);
 	PC->SetShowMouseCursor(true);
 	FInputModeUIOnly Mode;
 	Mode.SetWidgetToFocus(Desktop);
@@ -157,6 +162,7 @@ void AAtonComputer::Activate(APlayerController* PC)
 void AAtonComputer::Deactivate()
 {
 	bActive = false;
+	Screen->SetRedrawTime(IdleRedrawTime);
 	if (APlayerController* PC = ActivePC.Get())
 	{
 		PC->SetShowMouseCursor(false);

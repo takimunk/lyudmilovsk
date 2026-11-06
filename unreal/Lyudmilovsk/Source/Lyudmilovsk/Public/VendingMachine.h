@@ -93,4 +93,9 @@ private:
 	int32 Flavor = 0;
 	float Clock = 0.f;
 	bool bPromptShown = false;
+	/** The last prompt and what it was made for (PromptFor formats several strings). */
+	FText PromptCache;
+	FString PromptLanguage;
+	int32 PromptSel = -1;
+	int32 PromptRubles = -1;
 };

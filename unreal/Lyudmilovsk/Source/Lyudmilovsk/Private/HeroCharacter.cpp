@@ -178,15 +178,47 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
+namespace
+{
+	/** A's component of class T, remembered in Cache; looked up again only when A's set of components changes size. */
+	template <typename T>
+	T* FindCachedComponent(const AActor* A, TWeakObjectPtr<T>& Cache, int32& ScanCount)
+	{
+		if (T* C = Cache.Get())
+		{
+			return C;
+		}
+		const int32 Num = A->GetComponents().Num();
+		if (Num == ScanCount)
+		{
+			return nullptr;
+		}
+		ScanCount = Num;
+		T* C = A->FindComponentByClass<T>();
+		Cache = C;
+		return C;
+	}
+}
+
+UHeroBikeComponent* AHeroCharacter::FindBike() const
+{
+	return FindCachedComponent(this, BikeCache, BikeScanCount);
+}
+
+UHeroReachComponent* AHeroCharacter::FindReach() const
+{
+	return FindCachedComponent(this, ReachCache, ReachScanCount);
+}
+
 bool AHeroCharacter::IsOnBike() const
 {
-	const UHeroBikeComponent* B = UHeroBikeComponent::Get(this);
+	const UHeroBikeComponent* B = FindBike();
 	return B && B->IsOnBike();
 }
 
 bool AHeroCharacter::IsLeadingBike() const
 {
-	const UHeroBikeComponent* B = UHeroBikeComponent::Get(this);
+	const UHeroBikeComponent* B = FindBike();
 	return B && B->IsLeading();
 }
 
@@ -213,7 +245,7 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 {
 	// as the template, but along the look (the body turns on its own)
 	const FVector2D V = Value.Get<FVector2D>();
-	if (UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this); Bike && Bike->IsOnBike())
+	if (UHeroBikeComponent* Bike = FindBike(); Bike && Bike->IsOnBike())
 	{
 		// pedals, brakes and bars
 		Bike->SetMoveInput(V);
@@ -255,7 +287,7 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	ReadInput(DeltaSeconds);
-	UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this);
+	UHeroBikeComponent* Bike = FindBike();
 	if (IsSeated())
 	{
 		KeepSeated();
@@ -300,7 +332,7 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 			}
 		}
 	}
-	const UHeroReachComponent* Reach = FindComponentByClass<UHeroReachComponent>();
+	const UHeroReachComponent* Reach = FindReach();
 	if (!Reach || !Reach->IsBusy())
 	{
 		StandEyeOffset = GetActorTransform().InverseTransformPosition(EyeLocation());
@@ -491,7 +523,7 @@ void AHeroCharacter::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 {
 	Super::CalcCamera(DeltaTime, OutResult);
 	OutResult.Location = EyeLocation();
-	if (UHeroBikeComponent* Bike = UHeroBikeComponent::Get(this))
+	if (UHeroBikeComponent* Bike = FindBike())
 	{
 		OutResult.Location = Bike->SmoothEye(OutResult.Location, DeltaTime);
 	}
@@ -642,7 +674,7 @@ static FAutoConsoleCommandWithWorld GHeroDumpBones(TEXT("Hero.DumpBones"), TEXT(
 			UE_LOG(LogTemp, Warning, TEXT("HEROBONELIST %d %s <- %s"), I, *Body->GetBoneName(I).ToString(), *Body->GetParentBone(Body->GetBoneName(I)).ToString());
 		}
 		bListed = true;
-		if (const UHeroReachComponent* R = Hero->FindComponentByClass<UHeroReachComponent>(); R && R->HoldWeight() > 0.f)
+		if (const UHeroReachComponent* R = Hero->FindReach(); R && R->HoldWeight() > 0.f)
 		{
 			const FTransform A2 = Hero->GetActorTransform();
 			const FVector F = A2.InverseTransformVectorNoScale(R->HoldFinger()), N = A2.InverseTransformVectorNoScale(R->HoldNormal());
