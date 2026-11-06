@@ -237,7 +237,6 @@ ALyudFountain::ALyudFountain()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 0.25f;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	Tags.Add(TEXT("Academ"));
 }
 
 UStaticMeshComponent* ALyudFountain::MakePart(UStaticMesh* Mesh, const TCHAR* Name, const TCHAR* MaterialPath, bool bShadow, float DrawCm,
@@ -271,16 +270,26 @@ UStaticMeshComponent* ALyudFountain::MakePart(UStaticMesh* Mesh, const TCHAR* Na
 	return C;
 }
 
-bool ALyudFountain::Build()
+bool ALyudFountain::Build(TSharedPtr<FJsonObject> Doc, bool bAcadem)
 {
-	FString Text;
-	const FString Path = FPaths::ProjectContentDir() / TEXT("Academgorodok/fountain.json");
-	TSharedPtr<FJsonObject> Doc;
-	if (!FFileHelper::LoadFileToString(Text, *Path) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) || !Doc)
+	if (!Doc)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LyudFountain: no %s"), *Path);
-		return false;
+		FString Text;
+		const FString Path = FPaths::ProjectContentDir() / TEXT("Academgorodok/fountain.json");
+		if (!FFileHelper::LoadFileToString(Text, *Path) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) || !Doc)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LyudFountain: no %s"), *Path);
+			return false;
+		}
 	}
+	if (bAcadem)
+	{
+		Tags.Add(TEXT("Academ"));
+	}
+	// a bigger fountain throws its water harder: speeds x FS (the shapes grow as FS^2), drops a little bigger and more of them
+	const float FS = Doc->HasField(TEXT("flow_scale")) ? (float)Doc->GetNumberField(TEXT("flow_scale")) : 1.f;
+	const float DS = FMath::Sqrt(FS);
+	const int32 DN = FMath::RoundToInt(FS * FS);
 	const TArray<TSharedPtr<FJsonValue>>& At = Doc->GetArrayField(TEXT("at"));
 	Foot = FVector(At[0]->AsNumber(), At[1]->AsNumber(), At[2]->AsNumber()) * 100.0;
 	// moved once, then static like its parts (a static part can't hang from a movable root)
@@ -296,13 +305,13 @@ bool ALyudFountain::Build()
 
 	// the flows (m, m/s): the jet rises ~34 cm over the fleur, opens at its top into a bell falling into the upper
 	// bowl clear of the fleur's petals; the bowl spills over its lip in a veil landing ~12 cm out in the lower basin
-	const float JetV = 2.58f, TopZ = NozzleZ + JetV * JetV / (2.f * G), BellVr = 0.6f, VeilVr = 0.35f, VeilVz = -0.04f;
+	const float JetV = 2.58f * FS, TopZ = NozzleZ + JetV * JetV / (2.f * G), BellVr = 0.6f * FS, VeilVr = 0.35f * FS, VeilVz = -0.04f * FS;
 	const float BellLandR = 0.012f + BellVr * FallTime(TopZ, 0.f, UpZ);
 	const float VeilT = FallTime(LipZ, VeilVz, LowZ);
 	const float VeilLandR = LipR + VeilVr * VeilT;
 
 	FPartMesh Lower, Upper, Flow, Spray, Dry;
-	Disc(Lower, LowZ, StemR - 0.01f, LowR, 14, 72);
+	Disc(Lower, LowZ, StemR - 0.01f, LowR, FMath::Max(14, FMath::RoundToInt(LowR * 10.f)), FMath::Max(72, FMath::RoundToInt(LowR * 40.f)));
 	Disc(Upper, UpZ, NeckR - 0.01f, UpR, 6, 40);
 	Column(Flow, NozzleZ - 0.01f, JetV, 0.009f, 8, 10);
 	Sheet(Flow, 0.012f, TopZ, BellVr, 0.f, UpZ - 0.005f, JetV / G, 48, 14, 22.f, 1.f);
@@ -310,17 +319,17 @@ bool ALyudFountain::Build()
 
 	FRandomStream Rng(4113);
 	// the veil's landing: a crown of splashes all round, and drops off its broken strands
-	for (int32 I = 0; I < 220; I++)
+	for (int32 I = 0; I < 220 * DN; I++)
 	{
 		const float A = Rng.FRandRange(0.f, 2.f * PI);
 		const FVector Rd = Radial(A), Tg(-Rd.Y, Rd.X, 0.f);
 		const FVector P = Rd * (VeilLandR + Rng.FRandRange(-0.03f, 0.03f)) + FVector(0.f, 0.f, LowZ);
-		const float Vz = Rng.FRandRange(0.35f, 1.15f);
-		const FVector V = Rd * Rng.FRandRange(-0.25f, 0.45f) + Tg * Rng.FRandRange(-0.15f, 0.15f) + FVector(0.f, 0.f, Vz);
+		const float Vz = Rng.FRandRange(0.35f, 1.15f) * FS;
+		const FVector V = (Rd * Rng.FRandRange(-0.25f, 0.45f) + Tg * Rng.FRandRange(-0.15f, 0.15f)) * FS + FVector(0.f, 0.f, Vz);
 		const float Life = FallTime(LowZ, Vz, LowZ - 0.01f);
-		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.2f, 2.2f), Rng.FRand(), Rng.FRandRange(0.0018f, 0.0035f));
+		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.2f, 2.2f), Rng.FRand(), Rng.FRandRange(0.0018f, 0.0035f) * DS);
 	}
-	for (int32 I = 0; I < 90; I++)
+	for (int32 I = 0; I < 90 * DN; I++)
 	{
 		const float A = Rng.FRandRange(0.f, 2.f * PI);
 		const FVector Rd = Radial(A);
@@ -328,33 +337,33 @@ bool ALyudFountain::Build()
 		const float T0 = FallTime(LipZ, VeilVz, Z0);
 		const FVector P = Rd * (LipR + VeilVr * T0) + FVector(0.f, 0.f, Z0);
 		const float Vz = VeilVz - G * T0;
-		const FVector V = Rd * (VeilVr + Rng.FRandRange(0.f, 0.25f)) + FVector(0.f, 0.f, Vz);
+		const FVector V = Rd * (VeilVr + Rng.FRandRange(0.f, 0.25f) * FS) + FVector(0.f, 0.f, Vz);
 		const float Life = FallTime(Z0, Vz, LowZ);
-		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.5f, 3.f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.003f));
+		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.5f, 3.f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.003f) * DS);
 	}
 	// the bell's landing in the upper bowl, and the spray off the jet's top
-	for (int32 I = 0; I < 80; I++)
+	for (int32 I = 0; I < 80 * DN; I++)
 	{
 		const float A = Rng.FRandRange(0.f, 2.f * PI);
 		const FVector Rd = Radial(A);
 		const FVector P = Rd * FMath::Min(BellLandR + Rng.FRandRange(-0.02f, 0.02f), UpR - 0.02f) + FVector(0.f, 0.f, UpZ);
-		const float Vz = Rng.FRandRange(0.25f, 0.75f);
-		const FVector V = Rd * Rng.FRandRange(-0.2f, 0.2f) + FVector(0.f, 0.f, Vz);
+		const float Vz = Rng.FRandRange(0.25f, 0.75f) * FS;
+		const FVector V = Rd * Rng.FRandRange(-0.2f, 0.2f) * FS + FVector(0.f, 0.f, Vz);
 		const float Life = FallTime(UpZ, Vz, UpZ - 0.01f);
-		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.2f, 2.2f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.003f));
+		Drop(Spray, P, V, Life, Life * Rng.FRandRange(1.2f, 2.2f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.003f) * DS);
 	}
-	for (int32 I = 0; I < 50; I++)
+	for (int32 I = 0; I < 50 * DN; I++)
 	{
 		const float A = Rng.FRandRange(0.f, 2.f * PI);
 		const FVector Rd = Radial(A);
-		const float Vh = Rng.FRandRange(0.25f, 0.62f), Vz = Rng.FRandRange(-0.1f, 0.6f);
+		const float Vh = Rng.FRandRange(0.25f, 0.62f) * FS, Vz = Rng.FRandRange(-0.1f, 0.6f) * FS;
 		const FVector P = FVector(0.f, 0.f, TopZ - 0.02f) + Rd * 0.015f;
 		const float Life = FallTime(P.Z, Vz, UpZ);
-		Drop(Spray, P, Rd * Vh + FVector(0.f, 0.f, Vz), Life, Life * Rng.FRandRange(1.3f, 2.5f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.0028f));
+		Drop(Spray, P, Rd * Vh + FVector(0.f, 0.f, Vz), Life, Life * Rng.FRandRange(1.3f, 2.5f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.0028f) * DS);
 	}
 	// drained: the autumn's leaves on both floors
-	Disc(Dry, LowFloor + 0.004f, StemR + 0.005f, 0.6f, 4, 48);
-	Disc(Dry, UpFloor + 0.004f, NeckR + 0.004f, 0.22f, 2, 24);
+	Disc(Dry, LowFloor + 0.004f, StemR + 0.005f, FMath::Max(0.6f, LowR - 0.25f), 4, FMath::Max(48, FMath::RoundToInt(LowR * 40.f)));
+	Disc(Dry, UpFloor + 0.004f, NeckR + 0.004f, FMath::Max(0.22f, UpR - 0.07f), 2, 24);
 
 	const float Yaw = Doc->HasField(TEXT("yaw")) ? (float)Doc->GetNumberField(TEXT("yaw")) : 0.f;
 	LowerWater = MakePart(Lower.Build(this, TEXT("FountainLowerWater")), TEXT("FountainLowerWater"), WaterPath, false, 15000.f,
@@ -559,10 +568,34 @@ void ULyudFountainSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		if (F->Build())
 		{
 			Fountain = F;
+			All.Add(F);
 		}
 		else
 		{
 			F->Destroy();
+		}
+	}
+	// the town's own (Content/City/public_spaces.json "fountains": the Sun fountain on the square), same water, own stone
+	FString Text;
+	TSharedPtr<FJsonObject> Doc;
+	const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
+	if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("City/public_spaces.json"))) &&
+		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) && Doc && Doc->TryGetArrayField(TEXT("fountains"), Fs))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *Fs)
+		{
+			if (ALyudFountain* F = InWorld.SpawnActor<ALyudFountain>(SP))
+			{
+				if (F->Build(V->AsObject(), false))
+				{
+					F->Tags.Add(TEXT("City"));
+					All.Add(F);
+				}
+				else
+				{
+					F->Destroy();
+				}
+			}
 		}
 	}
 }

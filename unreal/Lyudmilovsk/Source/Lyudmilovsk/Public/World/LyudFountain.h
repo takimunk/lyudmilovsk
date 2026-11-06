@@ -34,8 +34,9 @@ class LYUDMILOVSK_API ALyudFountain : public AActor
 public:
 	ALyudFountain();
 
-	/** Reads the layout and builds the meshes; false if there is no fountain.json. */
-	bool Build();
+	/** Builds the water from a layout (at, yaw, stone levels, flow_scale; null: the Academgorodok's fountain.json); false if none.
+	 *  bAcadem: tagged Academ (lyud.Academ 0 hides it with the ensemble). */
+	bool Build(TSharedPtr<class FJsonObject> Doc = nullptr, bool bAcadem = true);
 
 	/** Whether the water runs now (by the season, or forced). */
 	UFUNCTION(BlueprintCallable, Category = "Fountain") bool IsRunning() const { return bRunning; }
@@ -91,7 +92,15 @@ public:
 
 	/** The fountain of this world (null outside Lvl_Scene01). For Python: unreal.LyudFountainSubsystem. */
 	UFUNCTION(BlueprintCallable, Category = "Fountain") ALyudFountain* GetFountain() const { return Fountain.Get(); }
+	/** Every fountain of this world: the Academgorodok's and the town's (Sun Square). */
+	UFUNCTION(BlueprintCallable, Category = "Fountain") TArray<ALyudFountain*> GetFountains() const
+	{
+		TArray<ALyudFountain*> Out;
+		for (const TWeakObjectPtr<ALyudFountain>& F : All) if (F.IsValid()) Out.Add(F.Get());
+		return Out;
+	}
 
 private:
 	TWeakObjectPtr<ALyudFountain> Fountain;
+	TArray<TWeakObjectPtr<ALyudFountain>> All;
 };
