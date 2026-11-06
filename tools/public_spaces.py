@@ -263,7 +263,7 @@ def promenade(L):
         pts = [(*at(C.SEAWALL_S + 5.0, v), z) for v in range(int(y0) + 5, int(y1) - 4, 15)]
         L.spot("S-PROMENADE", "promenade", x, yy, z, sp["yaw"], seats=sp.get("seats", 0) or 60, path=pts,
                terrace="T0", name_ru=sp.get("name_ru"), name_en=sp.get("name_en"))
-    L.d["areas"].append({"id": "promenade", "name": "place.promenade", "at": L.ue(*at(45.0, 905.0), z), "r": 540.0})
+    L.d["areas"].append({"id": "promenade", "name": "place.promenade.name", "at": L.ue(*at(45.0, 905.0), z), "r": 540.0})
 
 
 # --- the beach ---------------------------------------------------------------------------------------------------
@@ -314,7 +314,7 @@ def beach(L):
             y = b["mid"][1] + 9.0
             x, py = at(21.5, y)
             L.prop("changing_booth", x, py, ground(x, py), sea_yaw(y))
-    L.d["areas"].append({"id": "beach", "name": "place.beach", "at": L.ue(*at(12.0, 1000.0), W.SEA_Z + 1.2), "r": 450.0})
+    L.d["areas"].append({"id": "beach", "name": "place.beach.name", "at": L.ue(*at(12.0, 1000.0), W.SEA_Z + 1.2), "r": 450.0})
 
 
 # --- Sun Square --------------------------------------------------------------------------------------------------
@@ -352,7 +352,7 @@ def square(L):
                   z, "granite")
     L.d["fountains"].append({"id": "sun", "at": L.ue(fx, fy, z), "yaw": sf["yaw"], "stone": st,
                              "flow_scale": FLOW_SCALE, "build_stone": True})
-    L.d["areas"].append({"id": "square", "name": "place.square", "at": L.ue(fx, fy, z), "r": 60.0})
+    L.d["areas"].append({"id": "square", "name": "place.square.name", "at": L.ue(fx, fy, z), "r": 60.0})
     # the rim is a bench: 24 seats looking out (and at the town); facing in for those who watch the water
     slots = []
     for j in range(24):
@@ -463,7 +463,7 @@ def park(L):
     path((sm, y0 - 2.0), (sm, y1 + 2.0), 5.0, "square")
     for yy in (y0 + 75.0, y0 + 225.0):
         path((s0 - 2.0, yy), (s1 + 2.0, yy), 3.6)
-    L.d["areas"].append({"id": "park", "name": "place.park", "at": L.ue(*at(sm, (y0 + y1) / 2), z), "r": 160.0})
+    L.d["areas"].append({"id": "park", "name": "place.park.name", "at": L.ue(*at(sm, (y0 + y1) / 2), z), "r": 160.0})
     # the pond: an oval of still water in a stone kerb, ducks; ice in winter
     rx, ry = 14.0, 22.0
     px, py = at(ps, py_)
@@ -583,7 +583,7 @@ def fair(L):
     z = P.tz["T1"] + PAVE
     L.pave("fair", s0, s1, y0, y1, z - PAVE, "square", tile=8.0)
     yc = (y0 + y1) / 2
-    L.d["areas"].append({"id": "fair", "name": "place.fair", "at": L.ue(*at((s0 + s1) / 2, yc), z), "r": 80.0})
+    L.d["areas"].append({"id": "fair", "name": "place.fair.name", "at": L.ue(*at((s0 + s1) / 2, yc), z), "r": 80.0})
     goods = ["honey", "smoked_fish", "pastry", "toys", "pickles", "flowers", "amber", "tea", "berries", "knits",
              "pottery", "corn"]
     n = 0
@@ -624,54 +624,98 @@ def fair(L):
 
 # --- the old stair up to the club ---------------------------------------------------------------------------------
 def club_stair(L):
-    """L-CLUB-STAIR: from the town's south end up the spur's north slope to the club's alley. Steps of 15 cm follow
-    the slope where it is steep, landings where it is gentle; a railing each side, low lamps every ~12 m."""
+    """L-CLUB-STAIR: from the town's south end up the spur's north slope to the club's alley. On the gentle foot the steps
+    follow the ground straight towards the top; up the steep face (to ~38 degrees) the stair zigzags in flights of 8
+    risers (16.5 x 30 cm) set across the slope so each flight climbs at a walkable ~29 degrees on the ground, with a
+    landing at each turn. Posts and a handrail each side, low lamps at the turns."""
     lk = L.P.links.get("L-CLUB-STAIR")
     if not lk:
         return
     (bx, by, bz), (tx, ty, tz) = lk["bottom"], lk["top"]
+    width, rise, tread, grade = 2.4, 0.165, 0.30, 0.55
+
+    def grad(x, y):
+        e = 0.75
+        return ((ground(x + e, y) - ground(x - e, y)) / (2 * e), (ground(x, y + e) - ground(x, y - e)) / (2 * e))
+
+    def tread_box(x, y, z, dx, dy, ln):
+        foot = min(ground(x + dx * k * ln / 2 + sx * width / 2, y + dy * k * ln / 2 + sy * width / 2)
+                   for k in (-1, 1) for sx, sy in ((-dy, dx), (dy, -dx)))
+        L.box("club_stair", x, y, math.degrees(math.atan2(dy, dx)), ln + 0.02, width, min(foot - 0.3, z - 0.3), z, "granite")
+
     ln = math.hypot(tx - bx, ty - by)
-    ux, uy = (tx - bx) / ln, (ty - by) / ln
-    yaw = math.degrees(math.atan2(uy, ux))
-    width = 2.6
-    # the walking line: the ground smoothed over 5 m, never falling on the way up, from bz to tz
-    N = int(ln / 0.25)
-    gz = [ground(bx + ux * ln * i / N, by + uy * ln * i / N) for i in range(N + 1)]
-    sm = []
-    for i in range(N + 1):
-        lo, hi = max(0, i - 10), min(N, i + 10)
-        sm.append(sum(gz[lo:hi + 1]) / (hi - lo + 1))
-    sm[0], sm[-1] = bz, tz
-    for i in range(1, N + 1):
-        sm[i] = max(sm[i], sm[i - 1])
-    rise = 0.15
-    i = 0
-    level = bz
-    k = 0
-    steps = 0
-    while i < N:
-        # how far this tread runs: until the line climbs a riser over it (at least 0.34 m, at most a landing of 3 m)
-        j = i + 1
-        while j < N and sm[j] < level + rise * 0.5 and (j - i) * 0.25 < 3.0:
-            j += 1
-        j = max(j, i + 2) if j - i < 2 and j < N else j
-        d0, d1 = ln * i / N, ln * min(j, N) / N
-        cx, cy = bx + ux * (d0 + d1) / 2, by + uy * (d0 + d1) / 2
-        low = min(gz[i:j + 1]) - 0.4
-        L.box("club_stair", cx, cy, yaw, d1 - d0 + 0.02, width, min(low, level - 0.3), level, "granite")
-        steps += 1
-        if k % 40 == 20:
-            for side in (-1, 1):
-                L.lamp(cx - uy * side * (width / 2 + 0.3), cy + ux * side * (width / 2 + 0.3), level, kind="lamp_park",
-                       area="club_stair")
-        if k % 3 == 0:
-            for side in (-1, 1):
-                L.prop("railing_post", cx - uy * side * (width / 2 - 0.05), cy + ux * side * (width / 2 - 0.05), level,
-                       yaw)
-        k += 1
-        i = j
-        level = min(tz, level + rise) if i < N else tz
-    L.d["club_stair"] = {"steps": steps, "bottom": L.ue(bx, by, bz), "top": L.ue(tx, ty, tz)}
+    ux, uy = (tx - bx) / ln, (ty - by) / ln            # along the line, up
+    vx, vy = -uy, ux                                   # across it
+
+    def P(t, l):
+        return bx + ux * t + vx * l, by + uy * t + vy * l
+
+    t, l = 0.0, 0.0
+    z = max(bz, ground(bx, by))
+    side, n, flights = 1, 0, 0
+    NR = 8                                             # risers in a flight
+    Lf = NR * tread                                    # a flight's horizontal run
+    while t < ln - 0.5 and n < 1200 and z < tz - 0.05:
+        g_here = ground(*P(t, l))
+        steep = (ground(*P(t + 2.0, l)) - g_here) / 2.0 > grade * 0.8
+        if not steep:
+            # the gentle foot: straight on, a step wherever the ground has risen a riser
+            t += tread
+            x, y = P(t, l)
+            if ground(x, y) > z + rise * 0.6:
+                z = min(z + rise, tz)
+            tread_box(x, y, z, ux, uy, tread)
+            n += 1
+            if n % 12 == 0:
+                for sd in (-1, 1):
+                    L.prop("railing_post", x + vx * sd * (width / 2 - 0.05), y + vy * sd * (width / 2 - 0.05), z,
+                           math.degrees(math.atan2(uy, ux)))
+            continue
+        # a flight of 12 risers: how far along the line the ground rises 12 risers decides its angle to the line
+        want = min(tz, z + NR * rise)
+
+        def lat(f):
+            return Lf * math.sqrt(max(0.0, 1.0 - (f / Lf) ** 2))
+
+        if abs(l + side * lat(0.6 * Lf)) > 6.0:
+            side = -side
+        # the flight's end must land on the ground: search its forward run with the sideways run it implies, and
+        # keep every tread within reach of the ground on the way (no step buried in the slope)
+        def cost(f):
+            under = max(ground(*P(t + f * k / NR, l + side * lat(f) * k / NR)) - (z + rise * k) for k in range(1, NR + 1))
+            ex, ey = P(t + f, l + side * lat(f))
+            return max(0.0, under - 0.2) * 4.0 + abs(ground(ex, ey) - want)
+
+        f = min((0.6 + 0.05 * i for i in range(int((Lf - 0.6) / 0.05) + 1)), key=cost)
+        sin_a = lat(f) / Lf
+        dx, dy = ux * (f / Lf) + vx * side * sin_a, uy * (f / Lf) + vy * side * sin_a
+        yaw = math.degrees(math.atan2(dy, dx))
+        for k in range(NR):
+            t += f / NR
+            l += side * Lf * sin_a / NR
+            z = min(z + rise, tz)
+            x, y = P(t, l)
+            # an old stair on a hillside: where the slope bulges over the flight the step sits on it (a taller riser)
+            hump = max(ground(x + dx * a + dy * b, y + dy * a - dx * b) for a in (-0.15, 0.15) for b in (-1.1, 0.0, 1.1))
+            z = min(max(z, min(hump + 0.03, z + rise * 0.85)), tz)
+            tread_box(x, y, z, dx, dy, tread)
+            if k % 3 == 1:
+                for sd in (-1, 1):
+                    L.prop("railing_post", x - dy * sd * (width / 2 - 0.05), y + dx * sd * (width / 2 - 0.05), z, yaw)
+            n += 1
+            if z >= tz:
+                break
+        # the landing: a square of the stair's width at the turn, a step on along the line
+        t += 0.4
+        x, y = P(t, l)
+        tread_box(x, y, z, ux, uy, width)
+        if flights % 2 == 0:
+            L.lamp(*P(t, l - side * (width / 2 + 0.3)), z, kind="lamp_park", area="club_stair")
+        flights += 1
+        side = -side
+    x, y = P(t, l)
+    L.d["club_stair"] = {"steps": n, "flights": flights, "end": L.ue(x, y, z), "top": L.ue(tx, ty, tz),
+                         "bottom": L.ue(bx, by, bz)}
 
 
 # --- the pier (its deck is the plan lead's: tools/city_mesh.py pier()) -----------------------------------------------
@@ -734,7 +778,7 @@ def pier(L):
            name_ru=sp.get("name_ru"), name_en=sp.get("name_en"), notes=sp.get("notes", ""),
            path=[(*P(0.0, d), z) for d in range(2, int(head0), 10)] + [(*P(0.0, hc + h - 1.5), z)])
     L.spot("S-PIER-SUNRISE", "sunrise_point", *P(0.0, head0 + 1.0), z, 180.0, seats=6, faces="sunrise")
-    L.d["areas"].append({"id": "pier", "name": "place.pier", "at": L.ue(*P(0.0, hc), z), "r": 20.0})
+    L.d["areas"].append({"id": "pier", "name": "place.pier.name", "at": L.ue(*P(0.0, hc), z), "r": 20.0})
 
 
 def build():
@@ -838,7 +882,7 @@ def main():
         kinds[p["kind"]] = kinds.get(p["kind"], 0) + 1
     print("public spaces: %d boxes, %d props %s, %d plants, %d trees, %d lights, %d spots, club stair %s" % (
         len(doc["boxes"]), len(doc["props"]), kinds, len(doc["plants"]), len(doc["trees"]), len(doc["lights"]),
-        len(doc["spots"]), doc.get("club_stair", {}).get("steps")))
+        len(doc["spots"]), doc.get("club_stair")))
     if a.png:
         png(doc, a.png)
 

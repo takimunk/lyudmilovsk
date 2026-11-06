@@ -29,6 +29,8 @@ static TAutoConsoleVariable<int32> CVarCityNight(TEXT("lyud.City.Night"), -1,
 	TEXT("Street lamps: -1 lit by the sun (under ~1 degree), 0 off, 1 on."));
 static TAutoConsoleVariable<int32> CVarCitySummer(TEXT("lyud.City.Summer"), -1,
 	TEXT("Beach umbrellas and loungers: -1 out from June to August, 0 never, 1 always."));
+static TAutoConsoleVariable<int32> CVarCityShow(TEXT("lyud.City.Show"), 1,
+	TEXT("1 the public spaces drawn, 0 all hidden (props, paving, their trees and flowers, the lamps' lights): for A/B frame times in one process."));
 static TAutoConsoleVariable<int32> CVarCityIce(TEXT("lyud.City.Ice"), -1,
 	TEXT("The park pond: -1 frozen from mid December to mid March, 0 water, 1 ice."));
 
@@ -212,7 +214,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 					G.bGlow = CityKit::PropGlows(Kind);
 					const bool bBig = Kind == TEXT("stage") || Kind == TEXT("carousel") || Kind == TEXT("pond") || Kind.StartsWith(TEXT("lamp"));
 					G.Comp = MakeIsm(Mesh, TEXT("Props_") + Key.Replace(TEXT("."), TEXT("_")), bCollide,
-						G.bGlow && GlowMid ? (UMaterialInterface*)GlowMid : PropMaterial.Get(), bBig ? 40000.f : 15000.f);
+						G.bGlow && GlowMid ? static_cast<UMaterialInterface*>(GlowMid.Get()) : PropMaterial.Get(), bBig ? 40000.f : 15000.f);
 					// small things cast no shadow beyond the near ones (VSM pages), and no distance fields
 					G.Comp->bAffectDistanceFieldLighting = false;
 					G.Comp->bAffectDynamicIndirectLighting = bBig;
@@ -492,7 +494,19 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 		CheckTimer = 2.f;
 		UpdateNight(false);
 		UpdateSeason(false);
+		const bool bShow = CVarCityShow.GetValueOnGameThread() != 0;
+		if (bShow != bShown)
+		{
+			bShown = bShow;
+			SetActorHiddenInGame(!bShow);
+			if (AProceduralForest* F = Forest.Get()) F->SetActorHiddenInGame(!bShow);
+			for (const TWeakObjectPtr<AProceduralPlant>& P : Plants) if (P.IsValid()) P->SetActorHiddenInGame(!bShow);
+			if (!bShow) for (UPointLightComponent* L : Pool) L->SetVisibility(false);
+			LastPoolCam = FVector(1e9);
+			UpdateSeason(true);
+		}
 	}
+	if (!bShown) return;
 	// the glass fades up over ~4 s (a lamp warming), the pooled lights with it
 	const float Target = bNight ? 1.f : 0.f;
 	if (!FMath::IsNearlyEqual(Glow, Target, 0.001f))

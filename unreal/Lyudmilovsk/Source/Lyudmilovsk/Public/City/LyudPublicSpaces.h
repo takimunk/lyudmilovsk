@@ -71,7 +71,7 @@ private:
 
 	TArray<FVector> LampHeads;
 	TArray<FName> LampKinds;
-	bool bNight = false, bNightKnown = false, bSummer = false, bSummerKnown = false, bIce = false, bIceKnown = false;
+	bool bShown = true, bNight = false, bNightKnown = false, bSummer = false, bSummerKnown = false, bIce = false, bIceKnown = false;
 	float Glow = 0.f, CheckTimer = 0.f, PoolTimer = 0.f;
 	FVector LastPoolCam = FVector(1e9);
 
