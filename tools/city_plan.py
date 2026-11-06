@@ -55,6 +55,8 @@ WALLS = [
     ("W4", [(300, 860.0), (700, 860.0), (820, 680.0), (1500, 680.0)]),
     ("W5", [(300, 1010.0), (700, 1010.0), (820, 830.0), (1500, 830.0)]),
 ]
+RAMP_START = 1.1     # the ramp starts this far behind the face: the landscape's 1 m cells that touch the face stay
+                     # level with the lower terrace (none of them lifts the ground in front of the wall or under its lane)
 WALL_RAMP = 6.0      # the landscape climbs from the lower terrace to the upper over this many metres behind the
                      # wall's face; the wall block (WALL_DEPTH deep) hides it
 WALL_DEPTH = 8.0
@@ -108,7 +110,7 @@ def terrace_z(x, y):
         z = TERRACES[0][3]
     for i in range(len(WALLS)):
         ws = wall_s(i, y)
-        t = (s - ws - 0.4) / WALL_RAMP
+        t = (s - ws - RAMP_START) / WALL_RAMP
         if t <= 0.0:
             break
         t = min(1.0, t)
@@ -133,6 +135,46 @@ def height(x, y, natural):
         return natural
     z = max(z, natural) if natural > z + 2.0 and s > wall_s(len(WALLS) - 1, y) else z   # the ridge and the hills win
     return natural + (z - natural) * m
+
+
+TREE_FRONT = 12.0      # the street trees stand this far in front of a wall's face
+TREE_CHUNK = 60.0
+
+
+def tree_strips():
+    """Forest strips (x, y, half x, half y, min z, max z) for the street trees: one along the lower terrace in front of
+    W2..W5 and one on top of W5, in 60 m pieces, leaving out the Cascade's bend (the walls run diagonally there)."""
+    out = []
+    for i in range(1, len(WALLS) + 1):
+        y = CITY_Y0 + 15.0
+        while y + TREE_CHUNK <= CITY_Y1 - 10.0:
+            yc = y + TREE_CHUNK / 2
+            y += TREE_CHUNK
+            if 680.0 < yc < 840.0:
+                continue
+            if i < len(WALLS):
+                sc = wall_s(i, yc) - TREE_FRONT
+                z = TERRACES[i][3]
+            else:
+                sc = wall_s(len(WALLS) - 1, yc) + WALL_DEPTH + 15.0
+                z = TERRACES[-1][3]
+            x, _ = to_map(sc, yc)
+            out.append((x, yc, 3.0, TREE_CHUNK / 2, z - 1.0, z + 1.5))
+    return out
+
+
+def tree_free(x, y):
+    """True where the town's street trees must not stand: plots, grand stairs, the square."""
+    if city_mask(y) <= 0.0:
+        return False
+    s = W.inland(x, y)
+    for p in plots():
+        if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
+            return True
+    for gy in GRAND_Y:
+        if abs(y - gy) < 12.0:
+            return True
+    return False
 
 
 def to_map(s, y):
@@ -220,7 +262,17 @@ def _plot(pid, kind, building, terrace, s, y, w, d, ru, en, yaw=None, height_max
             "height_max": height_max, "name_ru": ru, "name_en": en, "notes": notes}
 
 
+_PLOTS = None
+
+
 def plots():
+    global _PLOTS
+    if _PLOTS is None:
+        _PLOTS = _plots()
+    return _PLOTS
+
+
+def _plots():
     """The plots: where each building stands. w is along the terrace (the frontage), d inland; yaw is the way the
     front faces (seaward unless said); map is the plot's centre at ground level."""
     P = []
@@ -254,7 +306,7 @@ def plots():
             notes="stalls, a carousel and a small Ferris wheel under and round the wavy canopy; holidays"))
     a(_plot("P-PARK", "park", None, 1, 255.0, 1220.0, 300, 120, "Приморский парк", "Seaside park",
             notes="lawns, the pond, alleys, a playground, benches; trees by the plant system; open"))
-    a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 30, "Дом культуры «Рассвет»", "Rassvet culture house",
+    a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 36, "Дом культуры «Рассвет»", "Rassvet culture house",
             height_max=18, notes="cinema hall, dance hall, a hobby room; the cinema of the town"))
     for k, (s, y) in enumerate(((120.0, 450.0), (220.0, 450.0), (125.0, 560.0), (130.0, 680.0), (230.0, 1380.0))):
         a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "plain_block", "twin_cylinder_house", "plain_block",
@@ -356,6 +408,11 @@ STAIR_EVERY = 110.0                    # metres of face between wall stairs
 STAIR_BAYS = 2                         # a wall stair takes two bays (15 m: one straight flight of 40 steps + landings)
 GRAND_Y = (905.0, 760.0)               # the grand stairs: the main axis and the Cascade (W2..W5)
 GRAND_W = {905.0: 8.0, 760.0: 10.0}
+# The Cascade: a stepped water channel along the north cheek of the grand stair at Y 760 (W2..W5), the same pitch as
+# the stair; the public spaces put the water in it. CASCADE_W wide inside, between 0.4 m cheeks.
+CASCADE_Y = 760.0
+CASCADE_W = 3.5
+CASCADE_BED = 0.12      # the channel's step tops lie this far under the stair's
 SEA_STEPS_EVERY = 80.0
 # Openings in a dwelling bay, (kind, u along the bay from its middle, sill z, width, height), u toward the bay's end
 DWELLING_OPENINGS = [("door", -2.0, 0.0, 1.1, 2.2), ("window", 1.6, 0.9, 1.6, 1.4),
@@ -451,7 +508,8 @@ def wall_bays(i):
     for gy in GRAND_Y:
         c = min(full, key=lambda b: abs(b["mid"][1] - gy))
         for b in full:
-            if abs(b["arc"] - c["arc"]) < GRAND_W[gy] / 2 + DWELLING_W / 2:
+            extra = CASCADE_W + 0.8 if gy == CASCADE_Y else 0.0
+            if -(GRAND_W[gy] / 2 + DWELLING_W / 2) < b["arc"] - c["arc"] < GRAND_W[gy] / 2 + extra + DWELLING_W / 2:
                 b["kind"] = "grand"
                 b["grand_y"] = gy
     phase = (i * 37.0) % STAIR_EVERY
@@ -534,6 +592,60 @@ def stairs():
     return out
 
 
+def _grand_centre(grp):
+    """(map X, Y) on the face and the arc of a grand stair's middle (the group of its bays)."""
+    c = grp[len(grp) // 2]
+    if len(grp) % 2 == 0:
+        c0 = grp[len(grp) // 2 - 1]
+        return ((c0["mid"][0] + c["mid"][0]) / 2, (c0["mid"][1] + c["mid"][1]) / 2), (c0["arc"] + c["arc"]) / 2, c
+    return (c["mid"][0], c["mid"][1]), c["arc"], c
+
+
+def cascade():
+    """The Cascade's channel per wall W2..W5: wall, bottom (the channel's foot centre on the lower terrace) and top
+    (its head at the wall's face) map points, lower/upper z, width, steps and the step pitch (rise, tread)."""
+    out = []
+    for i in range(1, len(WALLS)):
+        grp = [b for b in wall_bays(i) if b["kind"] == "grand" and b.get("grand_y") == CASCADE_Y and b["mask"] >= 0.999]
+        if not grp:
+            continue
+        mid, _, c = _grand_centre(grp)
+        ax, ay = c["p1"][0] - c["p0"][0], c["p1"][1] - c["p0"][1]
+        l = math.hypot(ax, ay)
+        ax, ay = ax / l, ay / l
+        nx, ny = ay, -ax
+        u = GRAND_W[CASCADE_Y] / 2 + 0.4 + CASCADE_W / 2
+        lower, upper = c["lower"], c["upper"]
+        n = max(1, int(round((upper - lower) / 0.175)))
+        run = n * 0.30
+        out.append({"id": "CASCADE-%s" % c["wall"], "wall": c["wall"], "width": CASCADE_W, "steps": n,
+                    "rise": round((upper - lower) / n, 4), "tread": 0.30, "bed_below_stair": CASCADE_BED,
+                    "bottom": [round(mid[0] + ax * u + nx * run, 3), round(mid[1] + ay * u + ny * run, 3), lower],
+                    "top": [round(mid[0] + ax * u, 3), round(mid[1] + ay * u, 3), round(upper - CASCADE_BED, 3)],
+                    "along": [round(ax, 4), round(ay, 4)], "seaward": [round(nx, 4), round(ny, 4)]})
+    return out
+
+
+LANE_W = 7.0          # the lane along the foot of W2..W5: asphalt from the face out to 7 m, a kerb on its outer edge
+LAMP_EVERY = 4        # a street lamp every fourth bay (~30 m) on the lane's outer edge
+LAMP_H = 5.4
+
+
+def lamps():
+    """Street lamps along the lanes at the foot of W2..W5: id, pole foot and lamp head (map), yaw (the arm reaches
+    toward the wall)."""
+    out = []
+    for i in range(1, len(WALLS)):
+        n = 0
+        for k, b in enumerate(wall_bays(i)):
+            if b["mask"] < 0.999 or b["kind"] in ("grand", "plot") or k % LAMP_EVERY:
+                continue
+            n += 1
+            out.append({"id": "LAMP-%s-%02d" % (b["wall"], n), "wall": b["wall"], "bay": b["id"], "foot": _bay_point(b, 0.0, LANE_W + 0.5, b["lower"]),
+                        "head": _bay_point(b, 0.0, LANE_W - 0.7, b["lower"] + LAMP_H), "yaw": b["yaw"]})
+    return out
+
+
 def wall_dwellings():
     """The flats built into the terrace walls W2..W5 (W1 holds shops and cafés facing the promenade): id, wall,
     bay, door (map, on the lower terrace in front of the face), windows [{id, map centre}], yaw of the face."""
@@ -552,7 +664,9 @@ def wall_dwellings():
                 if kind == "door":
                     door = _bay_point(b, u, 0.6, b["lower"])
                 else:
-                    wins.append({"id": "%s-w%d" % (did, len(wins) + 1), "map": _bay_point(b, u, 0.0, b["lower"] + sill + wh / 2)})
+                    # the glass sits in its reveal (tools/city_mesh.py REVEAL 0.28 m)
+                    wins.append({"id": "%s-w%d" % (did, len(wins) + 1), "map": _bay_point(b, u, -0.27, b["lower"] + sill + wh / 2),
+                                 "size": [ww, wh], "storey": 0 if sill < 2.0 else 1})
             out.append({"id": did, "wall": b["wall"], "bay": b["id"], "terrace": TERRACES[i][0], "door": door,
                         "yaw": b["yaw"], "windows": wins, "beds": 2})
     return out
@@ -572,8 +686,11 @@ def shops_in_seawall():
             continue
         k = n % len(names)
         n += 1
+        _, su, ssill, sw, sh = UNIT_OPENINGS[1]
         out.append({"id": "W1-U%02d" % n, "bay": b["id"], "kind": kinds[k % len(kinds)], "name_ru": names[k][0],
                     "name_en": names[k][1], "door": _bay_point(b, UNIT_OPENINGS[0][1], 0.6, b["lower"]),
+                    "windows": [{"id": "W1-U%02d-w1" % n, "map": _bay_point(b, su, -0.27, b["lower"] + ssill + sh / 2),
+                                 "size": [sw, sh], "storey": 0}],
                     "yaw": b["yaw"], "w": BAY["W1"], "staff": STAFF.get(kinds[k % len(kinds)])})
     return out
 
@@ -620,6 +737,8 @@ def build():
         "spots": spots(),
         "stairs": stairs(),
         "wall_dwellings": wall_dwellings(),
+        "cascade": cascade(),
+        "lamps": lamps(),
         "wall_bays": {wall_id(i): wall_bays(i) for i in range(-1, len(WALLS))},
         "promenade_units": shops_in_seawall(),
         "links": links(),
@@ -633,8 +752,12 @@ def build():
             d["door_ue"] = ue(d["door"], face_y)
             for w in d["windows"]:
                 w["ue"] = ue(w["map"], face_y)
+        for lp in data["lamps"]:
+            lp["foot_ue"], lp["head_ue"] = ue(lp["foot"], face_y), ue(lp["head"], face_y)
         for d in data["promenade_units"]:
             d["door_ue"] = ue(d["door"], face_y)
+            for w in d["windows"]:
+                w["ue"] = ue(w["map"], face_y)
         for s in data["stairs"]:
             s["bottom_ue"], s["top_ue"] = ue(s["bottom"], face_y), ue(s["top"], face_y)
     return data
