@@ -18,6 +18,7 @@ Everything is seeded: the same plan and seed give the same town (names, homes, j
 """
 import argparse
 import json
+import collections
 import math
 import os
 import random
@@ -270,12 +271,37 @@ def build_places(plan, extra, args):
     rest = read_input("unreal/Lyudmilovsk/Content/Restaurant/seats.json")
     if rest and "restaurant" not in extra_work:
         extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else [])}
+    plot_type = {p["id"]: p.get("building") for p in plan["plots"]}
     for w in work:
         x = extra_work.get(w["id"], {})
         seats = [s for s in x.get("seats", []) if not s.get("hero")]
         shell = w["kind"] in SHELL_KINDS and not seats
         slots = []
         rnd = random.Random(w["id"])
+        # the buildings thread's spots (building frame; a spot's yaw is the way its user faces, 0 = -y toward the street)
+        bdata = flats_of_type(plot_type[w["plot"]], w["plot"]) if plot_type.get(w["plot"]) else None
+        bspots = collections.defaultdict(list)
+        if bdata:
+            front = w["door"]
+            for sp in bdata.get("spots", []):
+                bspots[sp["kind"]].append({"pos": local_to_world(front, w["yaw"], sp["pos"]), "yaw": round((w["yaw"] - sp.get("yaw", 0.0)) % 360, 1)})
+            ent = next((e for e in bdata.get("entrances", []) if e.get("kind") == "street"), None)
+            if ent and shell:
+                w["door"] = local_to_world(front, w["yaw"], ent["pos"])
+        if w["kind"] == "kiosk" and bspots.get("counter"):
+            # the seller behind the kiosk's counter, a customer at its window, the stop's bench
+            c = bspots["counter"][0]
+            for role, count, hours, days in w["staff"]:
+                slots.append({"kind": "staff", "tag": role, "pos": c["pos"], "yaw": c["yaw"]})
+            for sp in bspots.get("stand", []):
+                slots.append({"kind": "visit", "pos": sp["pos"], "yaw": sp["yaw"]})
+            for sp in bspots.get("bench", []):
+                slots.append({"kind": "bench", "pos": sp["pos"], "yaw": sp["yaw"], "capacity": 2, "height": 0.45})
+            roles = sorted({r[0] for r in w["staff"]})
+            places.append({"id": w["id"], "kind": w["kind"], "door": w["door"], "yaw": w["yaw"], "island": 0, "slots": slots,
+                           "roles": roles, "building": w["plot"]})
+            workplaces.append(w)
+            continue
         for role, count, hours, days in w["staff"]:
             if shell:
                 slots.append({"kind": "staff", "tag": role, "capacity": count})
@@ -295,11 +321,14 @@ def build_places(plan, extra, args):
             if seats:
                 slots += [{"kind": "seat", "pos": s["pos"], "yaw": s.get("yaw", 0.0), "height": s.get("height", 0.45)} for s in seats]
             else:
-                slots.append({"kind": "seat", "capacity": 24 if w["kind"] == "restaurant" else 14})
+                n = len(bspots.get("seat", []))
+                slots.append({"kind": "seat", "capacity": n or (24 if w["kind"] == "restaurant" else 14)})
         if w["kind"] == "school":
             slots.append({"kind": "staff", "tag": "pupil", "capacity": 600})     # the classes
         if shell:
-            slots.append({"kind": "visit", "capacity": 12})
+            # a hall's seats (the cinema's 350) hold its visitors; otherwise a dozen at a time
+            n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic") else 0
+            slots.append({"kind": "visit", "capacity": max(12, n)})
         else:
             for i in range(6):
                 slots.append({"kind": "visit", "pos": offset(w["door"], w["yaw"], 2.0 + rnd.uniform(0, 3), rnd.uniform(-0.5, 0.5) * w["w"]), "yaw": (w["yaw"] + 180) % 360})
@@ -380,7 +409,7 @@ class Names:
             d = json.load(f)
         self.given = {"m": [g for g in d["given"] if g["sex"] == "m"], "f": [g for g in d["given"] if g["sex"] == "f"]}
         self.by_id = {g["id"]: g for g in d["given"]}
-        self.sur = d["surnames"]
+        self.sur = [s for s in d["surnames"] if not s.get("pinned_only")]
         self.sur_by_id = {s["id"]: s for s in d["surnames"]}
         self.rnd = rnd
         self.taken = set()
@@ -587,6 +616,8 @@ def build_people(plan, places, flats, workplaces, args, rnd):
         households[hh_i] = households[hh_i] + ((names.by_id.get(g), names.sur_by_id.get(s), post),)
         hh_i += 1
 
+    # the pinned people's full names are theirs alone
+    reserved = {"t_%s_%s" % (h[3][1]["id"], h[3][0]["id"]) for h in households if len(h) > 3 and h[3][0] and h[3][1]}
     for h in households:
         f, kind, members = h[0], h[1], h[2]
         pinned = h[3] if len(h) > 3 else None
@@ -599,10 +630,11 @@ def build_people(plan, places, flats, workplaces, args, rnd):
                 sur = names.surname() if mi else family_sur
             given = pinned[0] if pinned and pinned[0] and mi == 0 else None
             # no two of a household with one given name
-            for _ in range(6):
+            for _ in range(40):
                 if given is None:
                     cand = names.given_name("f" if female else "m")
-                    if all(q["_given"] != cand["id"] for q in people if q["household"] == house):
+                    full = "t_%s_%s" % (sur["id"], cand["id"])
+                    if full not in names.taken and full not in reserved and all(q["_given"] != cand["id"] for q in people if q["household"] == house):
                         given = cand
             p = new_person(age, female, sur, given, house, f["id"])
             p["_flat"] = f
