@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <vector>
 
@@ -228,6 +229,22 @@ int main()
 			Check(SealNear < 6.f, "a grey seal comes to look at the diver");
 		}
 		else Check(false, "a grey seal about in 30 minutes");
+	}
+	// the cost of a step with the food web on, at a busy spot (the ambush checks go through a grid)
+	{
+		LyudEco::FModel Web;
+		FSim Busy;
+		for (int S = 0; S < NumSpecies(); ++S)
+			for (int P = 0; P < NumSpecies(); ++P)
+				Busy.SetDiet(S, P, Web.DietShare(LyudEco::Find(Species(S).Id), LyudEco::Find(Species(P).Id)));
+		Busy.Density = 2.f;
+		const FV Eye(120.f, 0.f, -2.5f);
+		for (int T = 0; T < 900; ++T) Busy.Step(1.f / 30.f, Env, Eye, Clock);
+		const auto T0 = std::chrono::steady_clock::now();
+		for (int T = 0; T < 600; ++T) Busy.Step(1.f / 30.f, Env, Eye, Clock);
+		const double Ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count() / 600.0;
+		std::printf("a step with %d animals round the eye (double density): %.3f ms\n", int(Busy.Fish().size()), Ms);
+		Check(Ms < 0.5, "a step at a busy spot takes under 0.5 ms");
 	}
 	std::printf("%s\n", Fails ? "FAILED" : "all ok");
 	return Fails ? 1 : 0;

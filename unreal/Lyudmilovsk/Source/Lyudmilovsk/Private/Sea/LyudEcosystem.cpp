@@ -18,6 +18,8 @@ namespace
 	constexpr double MaxCatchUpDays = 3.0 * 365.0;
 	/** A fresh game starts from the base, lived through this many years of seasons first (the base has no seasons). */
 	constexpr int32 WarmYears = 6;
+	/** ... a slice of it at each sync (every two seconds of play, ~1 ms each), never all in one frame. */
+	constexpr float WarmSliceDays = 60.f;
 
 	FAutoConsoleCommandWithWorldAndArgs CmdReport(TEXT("lyud.Eco.Report"), TEXT("Prints the coastal food web: every group's biomass against its base, here or away, what eats most of it."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
@@ -78,10 +80,10 @@ void ULyudEcosystem::Initialize(FSubsystemCollectionBase& Collection)
 void ULyudEcosystem::Warm(const FDateTime& Now)
 {
 	// the base is balanced but has no seasons: live a few years up to today so the plankton, the migrants and the
-	// young of the year are where the season puts them
-	const float Today = DayOfYear(Now);
-	Model->Reset(Today);
-	Model->Step(Today, float(WarmYears * 365));
+	// young of the year are where the season puts them. Sliced over the next syncs (a minute or so of play) so a new
+	// game never hitches; until then the fish see the base, which is close.
+	WarmLeft = float(WarmYears * 365);
+	Model->Reset(DayOfYear(Now) - WarmLeft);
 	SteppedTo = Now;
 	Refresh();
 }
@@ -100,6 +102,14 @@ void ULyudEcosystem::Sync(const FDateTime& Now)
 	if (SteppedTo.GetTicks() == 0)
 	{
 		Warm(Now);
+		return;
+	}
+	if (WarmLeft > 0.f)
+	{
+		const float Slice = FMath::Min(WarmLeft, WarmSliceDays);
+		Model->Step(DayOfYear(SteppedTo) - WarmLeft, Slice);
+		WarmLeft -= Slice;
+		Refresh();
 		return;
 	}
 	const double Days = (Now - SteppedTo).GetTotalDays();
@@ -229,6 +239,12 @@ FString ULyudEcosystem::GetReport() const
 void ULyudEcosystem::LiveDays(float Days)
 {
 	if (!Model || Days <= 0.f) return;
+	if (WarmLeft > 0.f)
+	{
+		// finish the warm-up first (a console command, not play)
+		Model->Step(DayOfYear(SteppedTo) - WarmLeft, WarmLeft);
+		WarmLeft = 0.f;
+	}
 	Model->Step(DayOfYear(SteppedTo), FMath::Min(Days, float(MaxCatchUpDays)));
 	Refresh();
 }
@@ -280,6 +296,7 @@ void ULyudEcosystem::OnGameLoaded_Implementation()
 		K.emplace_back(TCHAR_TO_ANSI(*SavedKeys[I]));
 		V.push_back(SavedValues[I]);
 	}
+	WarmLeft = 0.f;
 	Model->Reset(DayOfYear(SteppedTo));
 	Model->Load(K, V);
 	Refresh();

@@ -321,11 +321,11 @@ void FSim::Roam(const FEnv& Env, const FV& Eye, const FClock& Clock, float Dt)
 		// a new group comes in now and then while there are fewer than the habitat holds
 		if (float(Have) < Want && Rand() < Dt * 0.5f * (Want - Have + 0.3f)) SpawnGroup(S, Env, Eye, Clock);
 	}
-	// groups that wandered off are gone
+	// groups that wandered off (or were all eaten or caught) are gone
 	for (int G = 0; G < int(Groups.size()); ++G)
 	{
 		FGroup& Gr = Groups[G];
-		if (Gr.bAlive && (Gr.Centre - Eye).Len2D() > Radius * 1.3f)
+		if (Gr.bAlive && ((Gr.Centre - Eye).Len2D() > Radius * 1.3f || Gr.Members <= 0))
 		{
 			Gr.bAlive = false;
 		}
@@ -498,12 +498,22 @@ void FSim::Ambush(FFish& F, const FEnv& Env)
 	const float Reach = 0.25f + F.Len * 1.5f;
 	FFish* Best = nullptr;
 	float BestD = Reach;
-	for (FFish& O : All)
-	{
-		if (&O == &F || O.bHidden || O.bEaten || O.Len > F.Len * 0.6f || !Eats(F.Species, O.Species)) continue;
-		const float D = (O.Pos - F.Pos).Len();
-		if (D < BestD) { BestD = D; Best = &O; }
-	}
+	// only the fish in the grid cells within reach (PreyGrid: built once a step, cells of PreyCell metres)
+	const int R = int(std::ceil(Reach / PreyCell));
+	const int CX = int(std::floor(F.Pos.X / PreyCell)), CY = int(std::floor(F.Pos.Y / PreyCell));
+	for (int Y = CY - R; Y <= CY + R; ++Y)
+		for (int X = CX - R; X <= CX + R; ++X)
+		{
+			const uint64_t Key = uint64_t(uint32_t(X)) << 32 | uint32_t(Y);
+			auto It = std::lower_bound(PreyGrid.begin(), PreyGrid.end(), std::make_pair(Key, 0u));
+			for (; It != PreyGrid.end() && It->first == Key; ++It)
+			{
+				FFish& O = All[It->second];
+				if (&O == &F || O.bHidden || O.bEaten || O.Len > F.Len * 0.6f || !Eats(F.Species, O.Species)) continue;
+				const float D = (O.Pos - F.Pos).Len();
+				if (D < BestD) { BestD = D; Best = &O; }
+			}
+		}
 	if (!Best) return;
 	F.Fed = 8.f + 20.f * Rand();
 	if (Rand() < 0.4f)
@@ -686,7 +696,6 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	if (F.bHidden)
 	{
 		// buried in the sand (a shrimp by day, or after a fright): out again a while later, when nothing is close
-		F.Timer -= Dt;
 		if (F.Timer <= 0.f && DE > Sp.Shy * 3.f) { F.bHidden = false; F.State = Rest; F.Timer = 2.f; }
 		return;
 	}
@@ -803,7 +812,16 @@ void FSim::Step(float Dt, const FEnv& Env, const FV& Eye, const FClock& Clock)
 	for (int G = 0; G < int(Groups.size()); ++G)
 		if (Groups[G].bAlive) StepGroup(G, Dt, Env, Eye);
 	for (FFish& F : All) StepFish(F, Dt, Env, Eye);
-	// the small hunters snap at what comes by: each fish looks every 16th step (staggered by its seed)
+	// the small hunters snap at what comes by: each fish looks every 16th step (staggered by its seed), through a grid
+	// of the fish small enough to be anyone's prey (sorted cell keys; the vector is kept, no allocations once grown)
+	PreyGrid.clear();
+	for (uint32_t I = 0; I < uint32_t(All.size()); ++I)
+	{
+		const FFish& F = All[I];
+		if (F.bHidden || F.Len > 0.3f) continue;
+		PreyGrid.push_back({ uint64_t(uint32_t(int(std::floor(F.Pos.X / PreyCell)))) << 32 | uint32_t(int(std::floor(F.Pos.Y / PreyCell))), I });
+	}
+	std::sort(PreyGrid.begin(), PreyGrid.end());
 	for (FFish& F : All)
 	{
 		F.Fed = std::max(0.f, F.Fed - Dt);

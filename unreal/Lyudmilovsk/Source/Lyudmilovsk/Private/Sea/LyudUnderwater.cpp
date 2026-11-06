@@ -601,5 +601,5 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 bool ULyudUnderwaterSubsystem::TakeFish(FName Species, const FVector& Location, float Reach)
 {
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
-	return Sim && S >= 0 && Sim->Take(S, LyudFish::FV(Location.X, Location.Y, Location.Z) * 0.01f, Reach * 0.01f);
+	return bActive && Sim && S >= 0 && Sim->Take(S, LyudFish::FV(Location.X, Location.Y, Location.Z) * 0.01f, Reach * 0.01f);
 }

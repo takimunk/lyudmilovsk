@@ -82,6 +82,8 @@ private:
 	int32 NodeOf(FName Id) const;
 
 	TPimplPtr<LyudEco::FModel> Model;
+	/** Days of the fresh game's warm-up still to live (sliced over the syncs). */
+	float WarmLeft = 0.f;
 	/** LyudFish species index -> web node (-1 none), and each fish's numbers now (Relative x Here). */
 	TArray<int32> FishNode;
 	TArray<float> FishNow;
