@@ -3,14 +3,15 @@
 
 Scalability only sets the keys a level's section lists, so a key that one level of a group sets and another does not
 keeps, at that other level, the value of whatever level came before: Epic's shadows stay on Low until the game restarts.
-This lists every such key (of the project's own sections and of the engine's), and the merged value of every key the
-project sets, level by level.
+This lists every such key, and the merged value of every key the project sets, level by level. A gap is the project's
+when the project sets the key at a level the engine leaves it out of; the engine's own (it leaves most Lumen keys out of
+the levels that turn Lumen off) stay the engine's when the project only changes their values.
 
     tools/check_scalability.py                       engine at $UE_ROOT (default /Users/Shared/Epic Games/UE_5.8)
     tools/check_scalability.py --engine <UE root>
     tools/check_scalability.py --cvars <file>        also flag keys that are not console variables of this engine:
                                                      the file has a variable name first on each line (`DumpCVars`)
-Exit status 1 when the project leaves a key out of a level (the engine's own gaps are only listed).
+Exit status 1 when the project leaves a key it adds out of a level (the engine's own gaps are only listed).
 """
 import argparse
 import os
@@ -92,8 +93,11 @@ def main():
         gaps = []
         for low, key in sorted(keys.items()):
             missing = [level for level in LEVELS if low not in merged[level]]
-            if missing:
-                gaps.append((low in own, key, missing))
+            if not missing:
+                continue
+            in_project = [level for level in LEVELS if low in project.get(f"{group}@{level}", {})]
+            ours = any(low not in base.get(f"{group}@{level}", {}) for level in in_project)
+            gaps.append((ours, key, missing, in_project))
         if own:
             print(f"[{group}]  {'  '.join('@' + l for l in LEVELS)}")
             for low in sorted(own):
@@ -107,10 +111,14 @@ def main():
                     flag = "   <- not a console variable of this engine"
                     failed = True
                 print(f"  {keys[low]:<62} {'  '.join(c.rjust(6) for c in cells)}{flag}")
-        for is_own, key, missing in gaps:
-            who = "PROJECT" if is_own else "engine"
-            print(f"  {'!' if is_own else '.'} {who} key {key} is not set at {', '.join('@' + m for m in missing)}")
-            failed = failed or is_own
+        for ours, key, missing, in_project in gaps:
+            where = ", ".join("@" + m for m in missing)
+            if ours:
+                print(f"  ! PROJECT key {key} is not set at {where}")
+            else:
+                also = f" (the project sets it at {', '.join('@' + l for l in in_project)})" if in_project else ""
+                print(f"  . engine key {key} is not set at {where}{also}")
+            failed = failed or ours
     print("(* = set by Config/DefaultScalability.ini; '.' lines are the engine's own gaps)")
     return 1 if failed else 0
 

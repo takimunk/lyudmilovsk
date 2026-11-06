@@ -77,8 +77,6 @@ namespace LyudGraphics::Local
 		float ScreenPercentage = 100.f;
 		float TSRHistory = 100.f;
 		int32 VSync = 0;
-		/** r.Editor.Viewport.OverridePIEScreenPercentage (-1: absent), off during Play so the game's resolution applies. */
-		int32 PIEOverride = -1;
 	};
 
 	FState GState;
@@ -443,13 +441,8 @@ namespace LyudGraphics::Local
 		GSnapshot.ScreenPercentage = Sp ? Sp->GetFloat() : 100.f;
 		GSnapshot.TSRHistory = History ? History->GetFloat() : 100.f;
 		GSnapshot.VSync = VSync ? VSync->GetInt() : 0;
-		// the editor's Play draws at the editor viewports' own screen percentage while this is on: off, so Play gets the game's
-		IConsoleVariable* Override = Find(TEXT("r.Editor.Viewport.OverridePIEScreenPercentage"));
-		GSnapshot.PIEOverride = Override ? Override->GetInt() : -1;
-		if (Override && Override->GetInt() != 0 && CanSet(Override, ECVF_SetByCode))
-		{
-			Override->Set(0, ECVF_SetByCode);
-		}
+		// No need to turn r.Editor.Viewport.OverridePIEScreenPercentage off: a positive r.ScreenPercentage wins over the editor
+		// viewports' settings in Play too (LegacyScreenPercentageDriver.cpp, PullRunTimeRenderingSettings).
 	}
 
 	void RestoreEditorSnapshot()
@@ -469,10 +462,6 @@ namespace LyudGraphics::Local
 		if (IConsoleVariable* V = Find(TEXT("r.VSync")); CanSet(V, ECVF_SetByGameSetting))
 		{
 			V->Set(GSnapshot.VSync, ECVF_SetByGameSetting);
-		}
-		if (IConsoleVariable* V = Find(TEXT("r.Editor.Viewport.OverridePIEScreenPercentage")); V && GSnapshot.PIEOverride >= 0 && CanSet(V, ECVF_SetByCode))
-		{
-			V->Set(GSnapshot.PIEOverride, ECVF_SetByCode);
 		}
 	}
 
