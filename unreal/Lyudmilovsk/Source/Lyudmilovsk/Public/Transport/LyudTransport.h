@@ -164,6 +164,11 @@ private:
 	/** Person id -> rider index of their trip. */
 	TMap<int32, int32> PeopleRides;
 	float PromptCooldown = 0.f;
+	/** The prompt last pushed, by what it says (kind and its cabin/state/destination): its text is built and pushed only
+	 * when that changes, and pushed again now and then (another prompt may have taken the line). */
+	FIntVector PromptShown = FIntVector(-1, -1, -1);
+	FText PromptText;
+	float PromptRefresh = 0.f;
 
 	bool Start(UWorld& World);
 	void UpdatePlayer(float DeltaTime);

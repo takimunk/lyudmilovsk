@@ -143,7 +143,7 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 	}
 	// how wet the wheels are: the water's height over each rail head, from the real waves and tide
 	float WetSum = 0.f;
-	TArray<TPair<FVector, float>> WetWheels;
+	WetWheels.Reset();
 	if (S && Wheels.Num())
 	{
 		for (const FVector& W : Wheels)
@@ -259,14 +259,16 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 		}
 	}
 	// draw: droplets as small spheres, foam as flat discs riding the surface, growing and thinning out
-	TArray<FTransform> DT;
-	DT.Reserve(Drops.Num());
+	TArray<FTransform>& DT = DropTs;
+	DT.Reset();
 	for (const FDrop& D : Drops)
 	{
 		DT.Add(FTransform(FQuat::Identity, D.P, FVector(D.Size)));
 	}
-	TArray<FTransform> FT, TT;
-	FT.Reserve(Foam.Num());
+	TArray<FTransform>& FT = FoamTs;
+	TArray<FTransform>& TT = TrailTs;
+	FT.Reset();
+	TT.Reset();
 	const float Level = S ? S->SeaLevel() : 0.f;
 	for (int32 I = 0; I < Foam.Num(); I++)
 	{
@@ -298,39 +300,43 @@ void ULyudTrainWake::Feed(const TArray<FVector>& Wheels, const FVector& Velocity
 			TT.Add(FTransform(FRotator(0.f, F.Yaw, 0.f), At, FVector(Len, Wid, 1.f)));
 		}
 	}
-	auto Push = [](UInstancedStaticMeshComponent* Ism, const TArray<FTransform>& Ts)
+	// a stable pool per ISM: it grows to the most ever shown and never shrinks; slots past the live ones get a zero scale
+	// (parked at the wheels, so the ISM's bounds stay round the train); only [0, max(last, now)) is sent each frame
+	const FVector HideAt = Wheels.Num() ? Wheels[0] : GetComponentLocation();
+	auto Push = [&HideAt](UInstancedStaticMeshComponent* Ism, TArray<FTransform>& Ts, int32& Used)
 	{
 		if (!Ism)
 		{
 			return;
 		}
+		const int32 Now = Ts.Num();
+		const int32 Span = FMath::Max(Now, Used);
+		Used = Now;
+		if (Span == 0)
+		{
+			return;
+		}
 		const int32 Have = Ism->GetInstanceCount();
-		if (Have < Ts.Num())
+		if (Have < Now)
 		{
 			TArray<FTransform> Add;
-			for (int32 I = Have; I < Ts.Num(); I++)
+			Add.Reserve(Now - Have);
+			for (int32 I = Have; I < Now; I++)
 			{
 				Add.Add(Ts[I]);
 			}
 			Ism->AddInstances(Add, false, true);
 		}
-		else if (Have > Ts.Num())
+		const FTransform Hidden(FQuat::Identity, HideAt, FVector::ZeroVector);
+		while (Ts.Num() < Span)
 		{
-			TArray<int32> Rem;
-			for (int32 I = Ts.Num(); I < Have; I++)
-			{
-				Rem.Add(I);
-			}
-			Ism->RemoveInstances(Rem);
+			Ts.Add(Hidden);
 		}
-		if (Ts.Num())
-		{
-			Ism->BatchUpdateInstancesTransforms(0, Ts, true, false, true);
-		}
+		Ism->BatchUpdateInstancesTransforms(0, Ts, true, false, true);
 	};
-	Push(DropIsm, DT);
-	Push(FoamIsm, FT);
-	Push(TrailIsm, TT);
+	Push(DropIsm, DT, DropUsed);
+	Push(FoamIsm, FT, FoamUsed);
+	Push(TrailIsm, TT, TrailUsed);
 	if (Hiss)
 	{
 		const float Vol = bNear ? FMath::Clamp(Wet * Speed / 900.f, 0.f, 1.2f) : 0.f;

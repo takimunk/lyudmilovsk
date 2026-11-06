@@ -391,6 +391,10 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 			}
 			return W(P.X, P.Y, P.Z);
 		};
+		// a segment's end is the next one's start: it is evaluated once (RopeOffset searches the spans) when both use it alike
+		int32 EndI = -1;
+		bool bEndMoved = false;
+		FVector End = FVector::ZeroVector;
 		for (int32 I = 0; I + 1 < SimNum(Ln.Loop); I++)
 		{
 			const FVector A0 = W(Ln.Loop[I].X, Ln.Loop[I].Y, Ln.Loop[I].Z);
@@ -400,7 +404,11 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 			{
 				continue;
 			}
-			C->UpdateInstanceTransform(I, RodTransform(Point(I, bNear), Point(I + 1, bNear), 4.5f), true, false, true);
+			const FVector Start = EndI == I && bEndMoved == bNear ? End : Point(I, bNear);
+			End = Point(I + 1, bNear);
+			EndI = I + 1;
+			bEndMoved = bNear;
+			C->UpdateInstanceTransform(I, RodTransform(Start, End, 4.5f), true, false, true);
 			RopeMoved[L][I] = bNear;
 		}
 	}
@@ -431,6 +439,8 @@ void ALyudCableway::BuildClubBoard(const LyudTransport::FNetwork& Net)
 	Board->SetWorldLocationAndRotation(F.TransformPosition(FVector(0.5f, 0.f, 175.f)), F.Rotator());
 	Board->SetWorldScale3D(FVector(0.2f));
 	Board->SetSlateWidget(SNew(SLyudTransitDiagram).bLive(true).bBoard(true));
+	// at the live diagram's own repaint rate (0.25 s), not every frame
+	Board->SetRedrawTime(0.25f);
 	AddInstanceComponent(Board);
 	ClubBoard = Board;
 	ClubBoardAt = F;
@@ -535,6 +545,11 @@ ALyudCabin::ALyudCabin()
 	Shell->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	DoorLeaf = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorLeaf"));
 	DoorLeaf->SetupAttachment(Root);
+	// the cabin moves every frame: out of Lumen's cards and the distance fields (perf checklist: movers out of Lumen)
+	Shell->bAffectDynamicIndirectLighting = false;
+	Shell->bAffectDistanceFieldLighting = false;
+	DoorLeaf->bAffectDynamicIndirectLighting = false;
+	DoorLeaf->bAffectDistanceFieldLighting = false;
 	Inside = CreateDefaultSubobject<UBoxComponent>(TEXT("Inside"));
 	Inside->SetupAttachment(Root);
 	Inside->SetBoxExtent(FVector(Length * 0.5f - 25.f, Width * 0.5f - 25.f, 105.f));
@@ -575,6 +590,9 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 			P->SetStaticMesh(LoadMesh(MeshName));
 			P->SetupAttachment(Root);
 			P->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+			// moves with the cabin every frame: out of Lumen and the distance fields
+			P->bAffectDynamicIndirectLighting = false;
+			P->bAffectDistanceFieldLighting = false;
 			P->RegisterComponent();
 			AddInstanceComponent(P);
 			Way->KitMaterials(P);
@@ -626,6 +644,8 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 			W->SetRelativeRotation(FRotationMatrix::MakeFromXZ(P.Normal, P.Up).Rotator());
 			W->SetRelativeScale3D(FVector(P.W / 1600.f));
 			W->SetSlateWidget(SNew(SLyudTransitDiagram).bLive(false).bBoard(false));
+			// a still poster (bLive false): it changes only with the language, so a slow redraw instead of every frame
+			W->SetRedrawTime(5.f);
 			AddInstanceComponent(W);
 			Posters.Add(W);
 		}
@@ -642,6 +662,8 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 	Board->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	Board->SetRelativeScale3D(FVector(0.13f));
 	Board->SetSlateWidget(SNew(SLyudCabinBoard).Cabin(InIndex));
+	// SLyudCabinBoard repaints every 0.5 s: the render target no more often
+	Board->SetRedrawTime(0.5f);
 	// the number and the name, painted on both sides under the windows
 	for (const float S : { -1.f, 1.f })
 	{
@@ -675,6 +697,8 @@ void ALyudCabin::Setup(ALyudCableway* Way, int32 InIndex, int32 Number, const FT
 		}
 		P->SetRelativeScale3D(FVector(bRoom ? 0.13f : 0.16f));
 		P->SetSlateWidget(SNew(SLyudCabinPlate).Number(Number).Name(Name).Color(LineColor));
+		// painted letters: a slow redraw (language changes) instead of every frame
+		P->SetRedrawTime(5.f);
 		AddInstanceComponent(P);
 		Plates.Add(P);
 	}
@@ -712,6 +736,9 @@ void ALyudCabin::SetupBoxes(ALyudCableway* Way, int32 InIndex, int32 Number, con
 		P->SetCollisionProfileName(bCollide ? UCollisionProfile::BlockAll_ProfileName : UCollisionProfile::NoCollision_ProfileName);
 		P->SetVisibility(bVisible);
 		P->SetCastShadow(false);
+		// moves with the cabin every frame: out of Lumen and the distance fields
+		P->bAffectDynamicIndirectLighting = false;
+		P->bAffectDistanceFieldLighting = false;
 		P->RegisterComponent();
 		AddInstanceComponent(P);
 		return P;

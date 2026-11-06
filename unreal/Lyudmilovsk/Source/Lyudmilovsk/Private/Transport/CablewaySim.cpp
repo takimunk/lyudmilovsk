@@ -145,6 +145,7 @@ namespace LyudTransport
 		Lines.clear();
 		Cabins.clear();
 		Riders.clear();
+		FreeRiders.clear();
 		Events.clear();
 		const LyudJson::FValue& JS = J["stations"];
 		for (size_t I = 0; I < JS.Size(); I++)
@@ -365,6 +366,7 @@ namespace LyudTransport
 	{
 		Time = 0.0;
 		Riders.clear();
+		FreeRiders.clear();
 		Events.clear();
 		std::vector<int> Slot(Lines.size(), 0);
 		std::vector<bool> Kept(Lines.size(), false);
@@ -524,6 +526,33 @@ namespace LyudTransport
 		return !Out.empty();
 	}
 
+	int FNetwork::AddRider(const FRider& R)
+	{
+		while (!FreeRiders.empty())
+		{
+			const int RI = FreeRiders.back();
+			FreeRiders.pop_back();
+			if (RI >= 0 && RI < (int)Riders.size() && Riders[RI].bFree)
+			{
+				Riders[RI] = R;
+				Riders[RI].bFree = false;
+				return RI;
+			}
+		}
+		Riders.push_back(R);
+		return (int)Riders.size() - 1;
+	}
+
+	void FNetwork::ReleaseRider(int RI)
+	{
+		if (bReuseRiders && RI >= 0 && RI < (int)Riders.size() && Riders[RI].State == ERiderState::Done && !Riders[RI].bFree)
+		{
+			// left as it is (state Done, its legs) till reused: every scan skips a Done trip
+			Riders[RI].bFree = true;
+			FreeRiders.push_back(RI);
+		}
+	}
+
 	int FNetwork::FindRider(int Who) const
 	{
 		for (int I = 0; I < (int)Riders.size(); I++)
@@ -575,8 +604,7 @@ namespace LyudTransport
 			return -1;
 		}
 		R.Asked = Time;
-		Riders.push_back(R);
-		const int RI = (int)Riders.size() - 1;
+		const int RI = AddRider(R);
 		StartLeg(Riders[RI]);
 		Assign(Riders[RI], RI);
 		return RI;
@@ -766,8 +794,7 @@ namespace LyudTransport
 		R.Cabin = CI;
 		R.Asked = R.Since = Time;
 		R.Seat = (int)C.Riders.size();
-		Riders.push_back(R);
-		RI = (int)Riders.size() - 1;
+		RI = AddRider(R);
 		C.Riders.push_back(RI);
 		if (std::find(C.Targets.begin(), C.Targets.end(), G.AlightStop) == C.Targets.end())
 		{
