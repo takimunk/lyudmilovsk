@@ -14,7 +14,14 @@ CLASSES = [("actors", unreal.Actor), ("components", unreal.ActorComponent), ("mi
 
 
 def world():
-    return unreal.UnrealEditorSubsystem().get_game_world()
+    # under -game there's no editor world subsystem answer: the world with a player controller
+    if s.get("w") is not None:
+        return s["w"]
+    for w in unreal.ObjectIterator(unreal.World):
+        if unreal.GameplayStatics.get_player_controller(w, 0):
+            s["w"] = w
+            return w
+    return None
 
 
 def count(cls):
