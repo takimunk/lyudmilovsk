@@ -387,7 +387,9 @@ def build_chunked(mesh_cls):
         ch = _Chunker(name, mesh_cls)
         ch.at(PIER_Y)
         fn(ch)
-        out.extend(m for _, m in sorted(ch.meshes.items()))
+        # a mesh with no triangles (the chunker's starting chunk when nothing lands there) is a glTF mesh without
+        # primitives, which Interchange refuses ("Bad MeshDescription")
+        out.extend(m for _, m in sorted(ch.meshes.items()) if any(p.idx for p in m.prims.values()))
     return out
 
 
