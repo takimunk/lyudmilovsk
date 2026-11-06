@@ -437,28 +437,6 @@
    "variants": 2,
    "duration": 1.0,
    "prompt": "A cigarette end flicked away and landing on concrete: a tiny soft tap and a faint hiss, close, outdoors, quiet, no voices"
-  },
-  {
-   "id": "firework_launch",
-   "group": "festival",
-   "variants": 2,
-   "duration": 2.0,
-   "prompt": "A single firework mortar shell launched: a hollow thump and a rising whistle fading upward, outdoors by the sea at night, medium distance, no explosion, no voices"
-  },
-  {
-   "id": "firework_boom",
-   "group": "festival",
-   "variants": 3,
-   "duration": 3.0,
-   "prompt": "A single large firework shell exploding high over the sea at night, a deep boom with a long echo rolling off the shore and a soft crackling tail, heard from a beach, no voices, no music"
-  },
-  {
-   "id": "bonfire_loop",
-   "group": "festival",
-   "variants": 1,
-   "duration": 10.0,
-   "loop": true,
-   "prompt": "A big bonfire on a sandy beach burning steadily, crackling and popping logs, soft roar of flames, faint calm sea waves behind, seamless loop, no voices"
   }
  ],
  "music": [

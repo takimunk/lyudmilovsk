@@ -62,8 +62,10 @@ the fair square from the Saturday market).
   rising and drifting out to sea. `ALyudBonfire`: a log tipi, three flickering tongues of flame and a light; on Maslenitsa
   a straw doll that burns in the first third. All moving parts are movable components with no shadows, no Lumen, no
   collision (perf checklist), pooled and only moved (never rebuilt).
-- **Sounds and music** load if present: `/Game/Audio/Music/MU_festival_1|2`, `/Game/Audio/Festival/S_firework_launch_01`,
-  `S_firework_boom_01..03`, `S_bonfire_loop_01` (audio/sounds.json, tools/gen_sounds.py). Without them the festival is quiet.
+- **Sounds and music** load if present: `/Game/Audio/Festival/S_firework_launch_01`, `S_firework_boom_01..03`,
+  `S_bonfire_loop_01` are procedural (`python3 tools/festival_sounds.py`, numpy, seeded; then `IMPORT_ONLY=festival
+  unreal/scripts/import_audio.py`); the music `/Game/Audio/Music/MU_festival_1|2` is generated (audio/sounds.json,
+  tools/gen_sounds.py --music festival_1 festival_2, about $0.40). Without them the festival is quiet.
 - **People.** Each running phase becomes a gathering in the people's life: `UPeopleLifeSubsystem::SetGathering(Id, venue,
   from, to, pull, mode, face point)` / `ClearGathering(Id)` and `SetDayOff(bool)` (the town-life branch). The festival code
   calls them only if they exist (a compile-time check), so it builds on main before they land.
