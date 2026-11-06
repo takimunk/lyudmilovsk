@@ -215,7 +215,8 @@ def export(type_id, obs):
         o.select_set(True)
     path = os.path.join(EXPORT, type_id + ".glb")
     bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_format="GLB", export_yup=True,
-                              export_apply=False, export_materials="PLACEHOLDER", export_attributes=False)
+                              export_apply=False, export_materials="EXPORT", export_image_format="NONE",
+                              export_attributes=False)      # slot names only (PLACEHOLDER drops them): Unreal swaps in its own
     return path
 
 
