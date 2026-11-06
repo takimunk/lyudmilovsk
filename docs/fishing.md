@@ -1,8 +1,9 @@
 # Fishing
 
 A telescopic float rod with a spinning reel, worms, maggots and a spoon, bought at the Gastronom No. 7 counter (Orlova Tanya:
-rod 90 roubles, worms 15 for ten, maggots 10 for ten, a spoon 45). The fish caught go into the pocket as `fish_<species>` and
-are sold back at the same counter (Y: «продать улов»), priced by weight.
+rod 90 roubles, worms 15 for ten, maggots 10 for ten, a spoon 45, the angler's book 40). The fish caught go into the pocket as
+`fish_<species>`; they are sold back at the same counter (Y: «продать улов»), priced by weight, or fried at the diner (Y there:
+the cook takes the biggest fish in the pocket for 15 roubles and a plate of fried fish with potatoes comes to the counter).
 
 ## Playing
 
@@ -20,6 +21,23 @@ rig; X changes to the next bait in the pocket. Then, standing at the sea (the pi
 
 With the rod in the hand the right mouse button is the rod's, not the binoculars'. The prompt at the bottom says what to do now.
 The first of a species and every record writes a line to the screen; the angler's log is saved.
+
+## The angler's book
+
+«Рыбы нашего берега» (`fish_book`, `ULyudFishBookScreen`, `Private/Fishing/LyudFishBook.cpp`): N, or «Открыть книгу» on the diary's
+Things page. On the left every fish one can catch here, its icon faded until the first one is caught, the count in pencil; on the
+right the chosen fish's page: its picture and description, its usual length, the baits it takes (from the bait likings), what the
+Gastronom pays a kilo, and in pencil the hero's own record of it from the angler's log (how many, the record grams and cm, the
+day of the first). At the foot: fish caught, kinds of the 26, fish fried at the diner. N or Esc shuts it; the game goes on.
+
+## Cooking the catch
+
+The diner's waitresses (`counters.json`: `"cooks_fish": 15`) offer «Y — пожарить: <the biggest fish> (15 ₽)» while there is a
+fish in the pocket. Y pays, takes that fish out of the pocket (and its grams out of `BagGrams`), and orders `diner_fish` the way a
+menu dish is ordered (`ULyudInventoryUI::OnShopBought`): `ALyudDiner` serves it on a plate in front of the hero 5-9 s later, eaten
+with the fork like the other dishes (`Content/Food/food.json`). The plate is `SM_Diner_FriedFish` (a whole fish floured and
+browned, three potatoes with dill, a lemon wedge) and the fork's load `SM_Diner_Load_Fish`, built by `blender/diner/tableware.py`
+like the rest of the diner's food (new materials `DN_FishSkin`, `DN_Potato`, `DN_Lemon`). `ULyudFishingState::Cooked` counts them.
 
 ## What bites
 
@@ -57,7 +75,7 @@ plate).
   which adds the sell prompt (`ui.shop.prompt_sell_fish`) and Y.
 - **Items** (`LyudInventory.cpp`): `fishing_rod`, `bait_worm`, `bait_maggot`, `lure_spoon` (hand items), and one `fish_<id>` per
   species. Names and descriptions in all three string tables (`item.*`, `ui.fish.*`).
-- **Icons**: four Higgsfield grid sheets (`design/fishing/icons_grid_*.json`, prompts and job ids pinned), cut by
+- **Icons**: five Higgsfield pictures (four grid sheets and the fried fish) (`design/fishing/icons_grid_*.json`, prompts and job ids pinned), cut by
   `tools/fishing_icons.py` into `textures/localized/ru/icon_<id>.jpg` (no words on them: one picture for every language), listed
   in `localization/assets.json`.
 - **Sounds** (`audio/sounds.json`, group `fishing`): rod swish, float plop, reel click, the clutch's drag, the line snapping,
@@ -69,5 +87,6 @@ plate).
   `GetBiteWeights`: bite rates, baits matching diets, sizes and prices, a good angler landing ~25-35 fish an hour, greedy reeling
   snapping the line on big fish, a salmon landed about 3 times in 5 with good play, the cost of a step.
 - Console: `lyud.Fish.Give` (rod and baits), `lyud.Fish.State`, `lyud.Fish.Press 1|0`, `lyud.Fish.Click`, `lyud.Fish.Bite`
-  (a take now), `lyud.Fish.Hook <Species>` (one on the line now), `lyud.Fish.Bait <item>`, `lyud.Fish.Log`. Log lines begin
+  (a take now), `lyud.Fish.Hook <Species>` (one on the line now), `lyud.Fish.Bait <item>`, `lyud.Fish.Log`, `lyud.Fish.Book [close|<Species>]`
+  (gives the book and opens it); the fried fish: `lyud.Diner.Serve diner_fish`. Log lines begin
   `FISHING`.

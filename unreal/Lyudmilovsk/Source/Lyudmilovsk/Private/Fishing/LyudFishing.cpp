@@ -23,6 +23,7 @@
 namespace LyudF = LyudFishing;
 
 const FName ULyudFishing::RodId(TEXT("fishing_rod"));
+const FName ULyudFishingState::DinerFishId(TEXT("diner_fish"));
 
 namespace
 {
@@ -139,6 +140,7 @@ void ULyudFishingState::Reset()
 	Log.Reset();
 	BagGrams.Reset();
 	Total = 0;
+	Cooked = 0;
 }
 
 int32 ULyudFishingState::FishHeld(const UObject* WorldContext, int32* OutRoubles) const
@@ -183,6 +185,76 @@ int32 ULyudFishingState::SellAll(const UObject* WorldContext)
 	Inv->Earn(Roubles);
 	UE_LOG(LogTemp, Display, TEXT("FISHING sold for %d roubles"), Roubles);
 	return Roubles;
+}
+
+FName ULyudFishingState::BiggestHeld(const UObject* WorldContext, float* OutGrams) const
+{
+	const ULyudInventory* Inv = ULyudInventory::Get(WorldContext);
+	FName Best;
+	float BestGrams = 0.f;
+	for (int32 C = 0; Inv && C < LyudF::NumCatchable(); C++)
+	{
+		const int32 Held = Inv->Count(FishItem(C));
+		if (Held <= 0) continue;
+		const float* G = BagGrams.Find(FName(ANSI_TO_TCHAR(LyudF::Catchable(C).Id)));
+		const float Usual = LyudF::Catchable(C).K * FMath::Cube(LyudF::Catchable(C).Length * 100.f) / 100.f;
+		const float Each = G && *G > 0.f ? *G / Held : Usual;
+		if (Best.IsNone() || Each > BestGrams)
+		{
+			Best = FishItem(C);
+			BestGrams = Each;
+		}
+	}
+	if (OutGrams) *OutGrams = BestGrams;
+	return Best;
+}
+
+float ULyudFishingState::TakeOne(const UObject* WorldContext, FName Item)
+{
+	ULyudInventory* Inv = ULyudInventory::Get(WorldContext);
+	const int32 Held = Inv ? Inv->Count(Item) : 0;
+	if (Held <= 0)
+	{
+		return 0.f;
+	}
+	float Grams = 0.f;
+	for (int32 C = 0; C < LyudF::NumCatchable(); C++)
+	{
+		if (FishItem(C) != Item) continue;
+		const FName Species(ANSI_TO_TCHAR(LyudF::Catchable(C).Id));
+		const float Usual = LyudF::Catchable(C).K * FMath::Cube(LyudF::Catchable(C).Length * 100.f) / 100.f;
+		if (float* G = BagGrams.Find(Species); G && *G > 0.f)
+		{
+			Grams = *G / Held;
+			*G -= Grams;
+			if (Held == 1) BagGrams.Remove(Species);
+		}
+		else
+		{
+			Grams = Usual;
+		}
+		break;
+	}
+	Inv->Remove(Item, 1);
+	return Grams;
+}
+
+bool ULyudFishingState::Cook(const UObject* WorldContext, FName Item, int32 Fee)
+{
+	ULyudInventory* Inv = ULyudInventory::Get(WorldContext);
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(WorldContext);
+	if (!Inv || !UI || Item.IsNone() || Inv->Count(Item) <= 0 || !Inv->Spend(Fee))
+	{
+		return false;
+	}
+	const float Grams = TakeOne(WorldContext, Item);
+	// the plate goes the way of anything ordered at the diner: into the pocket for a moment, then ALyudDiner takes it back out
+	// and the waitress brings it to the counter in front of the hero
+	Inv->Add(DinerFishId);
+	UI->OnShopBought.Broadcast(DinerFishId, 1);
+	Cooked++;
+	UE_LOG(LogTemp, Display, TEXT("FISHING cooked %s (%.0f g) for %d roubles"), *Item.ToString(), Grams, Fee);
+	return true;
 }
 
 FLyudCatchRecord* ULyudFishingState::Find(FName Species)

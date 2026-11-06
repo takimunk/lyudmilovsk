@@ -19,6 +19,9 @@ struct FLyudCounter
 	TArray<FLyudShopGood> Goods;
 	/** Buys the hero's catch ("buys_fish": Y sells every fish in the pocket, docs/fishing.md). */
 	bool bBuysFish = false;
+	/** Fries the hero's catch for this many roubles ("cooks_fish": Y gives the cook the biggest fish in the pocket, served on a
+	 *  plate at the diner's counter; 0: no). */
+	int32 CookFee = 0;
 };
 
 /**
@@ -50,9 +53,11 @@ public:
 private:
 	TArray<FLyudCounter> Counters;
 	int32 Prompted = -1;
-	/** The fish the prompt last offered to sell (the line is rewritten when the catch changes). */
-	int32 PromptedFish = 0;
-	/** "Sold for N roubles" stays on the line until then (world seconds). */
+	/** The line the prompt last showed (rewritten when the catch in the pocket changes) and what Y does there now. */
+	FString PromptedLine;
+	enum class EFishDeal : uint8 { None, Sell, Cook };
+	EFishDeal Deal = EFishDeal::None;
+	/** "Sold for N roubles" (or "the cook took it") stays on the line until then (world seconds). */
 	double SoldUntil = 0.0;
 
 	void Load();

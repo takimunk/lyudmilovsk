@@ -603,6 +603,20 @@
    "aspect": "1:1",
    "prompt": "See design/fishing/icons_grid_4.json (cell of fish_ninespinestickleback).",
    "source": "design/fishing/icons_grid_4.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_fish_book": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_4.json (cell of fish_book).",
+   "source": "design/fishing/icons_grid_4.json: a Higgsfield picture, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_diner_fish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/fishing/icons_grid_5.json (cell of diner_fish).",
+   "source": "design/fishing/icons_grid_5.json: a Higgsfield picture, cut by tools/fishing_icons.py (the game-assets rule)"
   }
  }
 }

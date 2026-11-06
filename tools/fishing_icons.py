@@ -1,5 +1,5 @@
-"""The fishing items' inventory icons (docs/fishing.md), cut out of four Higgsfield grids (design/fishing/icons_grid_<n>.json,
-3x3, 3x3, 3x3, 2x2; the prompts and job ids are pinned there). No words on them: one picture serves every language.
+"""The fishing items' inventory icons (docs/fishing.md), cut out of five Higgsfield pictures (design/fishing/icons_grid_<n>.json,
+3x3, 3x3, 3x3, 2x2 and a single one for the fried fish served at the diner; the prompts and job ids are pinned there). No words on them: one picture serves every language.
 
   python3 tools/fishing_icons.py        downloads each grid's png if missing (run it on the Mac: the cloud container can't reach
                                         Higgsfield's CDN), writes textures/localized/ru/icon_<id>.jpg (512 px) + a sidecar json
@@ -18,7 +18,7 @@ DESIGN = os.path.join(ROOT, "design", "fishing")
 def main():
     out = os.path.join(ROOT, "textures", "localized", "ru")
     os.makedirs(out, exist_ok=True)
-    for n in range(1, 5):
+    for n in range(1, 6):
         name = "icons_grid_%d" % n
         with open(os.path.join(DESIGN, name + ".json"), encoding="utf-8") as f:
             spec = json.load(f)

@@ -109,6 +109,8 @@ namespace
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
 		// the ornithological guide from the Academgorodok library's desk (docs/bird_guide.md): a cloth-bound book with a map of the live birds
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
+		// the angler's book from the Gastronom (docs/fishing.md): every fish one can catch, and the hero's own catches and records in it
+		Good(TEXT("fish_book"), K::Misc, L::Flat, FVector(1.6f, 12.f, 18.f), FLinearColor(0.2f, 0.26f, 0.33f), 40, 4.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
@@ -161,6 +163,8 @@ namespace
 		Good(TEXT("diner_soup"), K::Food, L::Pack, FVector(7.f, 16.f, 16.f), FLinearColor(0.78f, 0.54f, 0.27f), 40, 8.f);
 		Good(TEXT("diner_pie"), K::Food, L::Pack, FVector(5.f, 9.f, 11.f), FLinearColor(0.81f, 0.58f, 0.31f), 30, 4.f);
 		Good(TEXT("diner_burger"), K::Food, L::Pack, FVector(8.f, 10.f, 10.f), FLinearColor(0.77f, 0.45f, 0.19f), 50, 5.f);
+		// the hero's own catch fried by the diner's cook (docs/fishing.md: "cooks_fish" in counters.json), served on a plate
+		Good(TEXT("diner_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.72f, 0.47f, 0.18f), 15, 8.f);
 		Good(TEXT("diner_tea"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.5f, 0.24f, 0.05f), 10, 3.6f);
 		Good(TEXT("diner_kompot"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.43f, 0.1f, 0.16f), 12, 3.6f);
 		Good(TEXT("diner_coffee"), K::Drink, L::Cup, FVector(8.5f, 8.5f, 9.5f), FLinearColor(0.95f, 0.94f, 0.9f), 8, 4.25f);

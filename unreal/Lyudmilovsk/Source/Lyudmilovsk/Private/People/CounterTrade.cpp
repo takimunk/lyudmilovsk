@@ -60,6 +60,7 @@ void ULyudCounterTradeSubsystem::Load()
 		C.Activity = O->GetStringField(TEXT("activity"));
 		O->TryGetStringField(TEXT("title"), C.TitleKey);
 		O->TryGetBoolField(TEXT("buys_fish"), C.bBuysFish);
+		O->TryGetNumberField(TEXT("cooks_fish"), C.CookFee);
 		double Reach = 0.0;
 		if (O->TryGetNumberField(TEXT("reach_cm"), Reach) && Reach > 0.0)
 		{
@@ -126,27 +127,50 @@ bool ULyudCounterTradeSubsystem::OpenCounter(int32 Counter)
 
 void ULyudCounterTradeSubsystem::SetPrompted(int32 Counter)
 {
-	// a counter that buys the catch offers it too while there are fish in the pocket
-	int32 Fish = 0, Roubles = 0;
-	if (Counters.IsValidIndex(Counter) && Counters[Counter].bBuysFish)
+	// a counter that buys the catch offers it while there are fish in the pocket; the diner's offers to fry the biggest one
+	FText Line;
+	EFishDeal NewDeal = EFishDeal::None;
+	if (Counters.IsValidIndex(Counter))
 	{
-		if (const ULyudFishingState* State = ULyudFishingState::Get(this))
+		const FLyudCounter& C = Counters[Counter];
+		const ULyudFishingState* State = ULyudFishingState::Get(this);
+		int32 Fish = 0, Roubles = 0;
+		FName Biggest;
+		if (State && C.bBuysFish)
 		{
 			Fish = State->FishHeld(this, &Roubles);
 		}
-		if (Roubles <= 0) Fish = 0;
+		if (State && C.CookFee > 0)
+		{
+			Biggest = State->BiggestHeld(this);
+		}
+		if (Fish > 0 && Roubles > 0)
+		{
+			NewDeal = EFishDeal::Sell;
+			Line = LyudText::Get(TEXT("ui.shop.prompt_sell_fish"), { FStringFormatArg(Fish), FStringFormatArg(Roubles) });
+		}
+		else if (!Biggest.IsNone())
+		{
+			NewDeal = EFishDeal::Cook;
+			Line = LyudText::Get(TEXT("ui.shop.prompt_cook_fish"), { FStringFormatArg(ULyudInventory::ItemName(Biggest).ToString()), FStringFormatArg(C.CookFee) });
+		}
+		else
+		{
+			Line = LyudText::Get(TEXT("ui.shop.prompt"));
+		}
 	}
-	if (Counter == Prompted && Fish == PromptedFish)
+	const FString Key = Line.ToString();
+	if (Counter == Prompted && Key == PromptedLine)
 	{
 		return;
 	}
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
-		UI->SetPrompt(this, Counter < 0 ? FText::GetEmpty()
-			: (Fish > 0 ? LyudText::Get(TEXT("ui.shop.prompt_sell_fish"), { FStringFormatArg(Fish), FStringFormatArg(Roubles) }) : LyudText::Get(TEXT("ui.shop.prompt"))));
+		UI->SetPrompt(this, Line);
 	}
 	Prompted = Counter;
-	PromptedFish = Fish;
+	PromptedLine = Key;
+	Deal = NewDeal;
 }
 
 void ULyudCounterTradeSubsystem::Tick(float)
@@ -186,17 +210,29 @@ void ULyudCounterTradeSubsystem::Tick(float)
 		return;
 	}
 	SetPrompted(Best);
-	if (Best >= 0 && PromptedFish > 0 && PC->WasInputKeyJustPressed(EKeys::Y))
+	if (Best >= 0 && Deal != EFishDeal::None && PC->WasInputKeyJustPressed(EKeys::Y))
 	{
-		if (ULyudFishingState* State = ULyudFishingState::Get(this))
+		ULyudFishingState* State = ULyudFishingState::Get(this);
+		FText Said;
+		if (State && Deal == EFishDeal::Sell)
 		{
-			const int32 Got = State->SellAll(this);
-			if (Got > 0 && UI)
+			if (const int32 Got = State->SellAll(this); Got > 0)
 			{
-				Prompted = -1;
-				SoldUntil = World->GetTimeSeconds() + 2.5;
-				UI->SetPrompt(this, LyudText::Get(TEXT("ui.shop.sold_fish"), { FStringFormatArg(Got) }));
+				Said = LyudText::Get(TEXT("ui.shop.sold_fish"), { FStringFormatArg(Got) });
 			}
+		}
+		else if (State && Deal == EFishDeal::Cook)
+		{
+			const FName Fish = State->BiggestHeld(this);
+			Said = State->Cook(this, Fish, Counters[Best].CookFee)
+				? LyudText::Get(TEXT("ui.shop.cooking_fish"), { FStringFormatArg(ULyudInventory::ItemName(Fish).ToString()) })
+				: LyudText::Get(TEXT("ui.shop.nomoney"));
+		}
+		if (!Said.IsEmpty())
+		{
+			Prompted = -1;
+			SoldUntil = World->GetTimeSeconds() + 2.5;
+			UI->SetPrompt(this, Said);
 		}
 	}
 	if (Best >= 0 && PC->WasInputKeyJustPressed(EKeys::T))

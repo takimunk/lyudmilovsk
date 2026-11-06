@@ -134,7 +134,9 @@ Before that they borrowed the club's models, so Nika the streamer also stood beh
 ## Items, words, pictures
 
 - **Items** (`LyudInventory.cpp`): `diner_pancakes`, `diner_eggs`, `diner_spaghetti`, `diner_soup`, `diner_pie`,
-  `diner_burger`, `diner_tea`, `diner_kompot`, `diner_coffee`, with names and descriptions in ru/en/ja.
+  `diner_burger`, `diner_tea`, `diner_kompot`, `diner_coffee`, with names and descriptions in ru/en/ja. Also `diner_fish`, the
+  hero's own catch fried for 15 roubles: not on the menu, offered with Y when there is a fish in the pocket (docs/fishing.md);
+  its plate `FriedFish` and fork load `Load_Fish` come from `tableware.py`, its icon from `design/fishing/icons_grid_5.json`.
 - **Icons**: one Higgsfield 3x3 grid (`design/diner/icons_grid.json`, 1 credit), cut by `tools/diner_assets.py`. The
   diary sketches come from `tools/ui_diary_icons.py`.
 - **Signs**: `tools/make_diner_signs.py`, local fonts, no paid API. They are the name on the cream band, the band's words,

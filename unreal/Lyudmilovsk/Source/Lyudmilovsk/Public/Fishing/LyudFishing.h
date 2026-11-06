@@ -46,6 +46,11 @@ public:
 	UPROPERTY(SaveGame) bool bBaited = false;
 	UPROPERTY(SaveGame) TArray<FLyudCatchRecord> Log;
 	UPROPERTY(SaveGame) int32 Total = 0;
+	/** Fish the diner's cook has fried for the hero. */
+	UPROPERTY(SaveGame) int32 Cooked = 0;
+
+	/** The plate of fried fish the diner serves (Content/Food/food.json). */
+	static const FName DinerFishId;
 
 	/** Grams of each species in the pocket now (what the catch weighed; a sale prices it by this). */
 	UPROPERTY(SaveGame) TMap<FName, float> BagGrams;
@@ -55,6 +60,13 @@ public:
 	int32 FishHeld(const UObject* WorldContext, int32* OutRoubles = nullptr) const;
 	/** Sells every fish in the pocket: the roubles go in, the fish out; returns the roubles (0: nothing to sell). */
 	int32 SellAll(const UObject* WorldContext);
+	/** The fish item in the pocket that weighs the most each (none: no fish). */
+	FName BiggestHeld(const UObject* WorldContext, float* OutGrams = nullptr) const;
+	/** One fish of Item out of the pocket (and its share of the grams); the grams it weighed, 0 if there was none. */
+	float TakeOne(const UObject* WorldContext, FName Item);
+	/** The diner's cook fries one fish of Item for Fee roubles: paid, the fish goes, a plate of fried fish (diner_fish) is
+	 *  brought to the counter a few seconds later. False if there is no such fish or not the money. */
+	bool Cook(const UObject* WorldContext, FName Item, int32 Fee);
 	/** Writes a catch in the log; true if it is the first of its kind or the biggest yet. */
 	bool Record(FName Species, float Grams, float Cm, const FDateTime& When);
 };
