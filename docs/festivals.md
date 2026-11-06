@@ -51,7 +51,9 @@ the fair square from the Saturday market).
 - **Venues.** A venue is a spot kind or id of the city plan: `Content/City/city_plan.json` "spots" first, then
   `Content/PeopleData/town_plan.json` "spots", then the people's map (`people_places.json` places of a fitting kind, e.g.
   `pier` → beach / promenade; the place nearest the middle of all of that kind). It is grounded by a trace, and the way out
-  to sea is found from `ALyudSea`'s depths round it. The stage stands at the venue's far side facing its middle, the tree
+  to sea is found from `ALyudSea`'s depths round it. The plan's own stage and fair stalls count once an actor in the level carries the tag `PlanStage` /
+  `PlanStalls` (the public spaces' actor); until then the festival builds its own. Gatherings go to the whole kind of place
+  (`square`, `fair`, `bonfire`...), a concert's watchers to `S-SQUARE-AUDIENCE`. The stage stands at the venue's far side facing its middle, the tree
   opposite it, the stalls round the near side.
 - **Decorations** (`ALyudFestivalDecor`) are built once in code with the cable car's mesh kit and materials (M_TR_Paint,
   M_TR_Glow): two static meshes per venue, one solid (collision, shadows) and one of lights (no shadows, out of the
@@ -87,7 +89,8 @@ the fair square from the Saturday market).
   from the radiant in the north-east every 4-26 s).
 
 API for other systems: `IsFestivalToday()`, `ActiveFestival()`, `ActivePhase()`, `ActiveFestivals()`, `IsDayOff()`,
-`Upcoming(days)`, `FestivalName(id)`, `FindVenue(name)`.
+`Upcoming(days)`, `FestivalName(id)`, `FindVenue(name)`. `IsFestivalToday()` is a holiday's day or its night still running
+past midnight; the weekly market does not count.
 
 Console: `lyud.Festival.List [days]`, `lyud.Festival.Report`, `lyud.Festival.Go <id> [phase]` (moves the calendar:
 `lyud.Festival.Go sea_festival fireworks`), `lyud.Festival.Fire first_snow`; `lyud.Festivals 0` turns it all off.

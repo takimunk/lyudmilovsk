@@ -36,6 +36,9 @@
 
 #include <type_traits>
 
+/** The plan files' spots by file (PlanSpots), emptied at each play's start. */
+static TMap<FString, TArray<TSharedPtr<FJsonObject>>> GPlanSpotsCache;
+
 static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
 	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
 
@@ -288,6 +291,7 @@ void ULyudFestivalSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		return;
 	}
+	GPlanSpotsCache.Reset();     // the plans may have been rebuilt since the last play
 	FString Text;
 	const FString Path = FPaths::ProjectContentDir() / TEXT("PeopleData/festivals.json");
 	Calendar = MakePimpl<LyudFest::FCalendar>();
@@ -539,7 +543,7 @@ void ULyudFestivalSubsystem::Update()
 					const FVector Face = FacePoint(Ve, UTF8_TO_TCHAR(P.Face.c_str()), Now);
 					// the people's life spreads a gathering over every place of a kind (the square's 25 + 300 audience slots, the
 					// fair's 56 stalls' places); a concert's watchers stand in the square's audience
-					const FName Where = (P.Face == "stage" && V == TEXT("square")) ? FName(TEXT("S-SQUARE-AUDIENCE")) : FName(*V);
+					const FName Where = (P.Face == "stage" && V == TEXT("square") && Ve.bPlanStage) ? FName(TEXT("S-SQUARE-AUDIENCE")) : FName(*V);
 					bHasGatherings = TrySetGathering(People, 0, Key, Where, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FString(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
 				}
 				if (People && (!bHasGatherings || CVarFestivalStub.GetValueOnGameThread() > 0))
@@ -687,8 +691,9 @@ void ULyudFestivalSubsystem::Update()
 		}
 		else if (!WantShows.Contains(It.Key()))
 		{
-			// its phase is over (or the calendar moved): a little while for the last shells and lanterns, then gone
-			It.Value()->SetLifeSpan(20.f);
+			// its phase is over (or the calendar moved): a little while for the last shells, then gone; the sky lanterns
+			// already up fly on (they stop being let go by their own clock and go when the last one is out of sight)
+			It.Value()->SetLifeSpan(It.Value()->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
 			It.RemoveCurrent();
 		}
 	}
@@ -713,7 +718,7 @@ void ULyudFestivalSubsystem::Update()
 		{
 			continue;
 		}
-		if (UAudioComponent* const* M = Music.Find(W.Key))
+		if (const TObjectPtr<UAudioComponent>* M = Music.Find(W.Key))
 		{
 			// the tunes are about two minutes and not looped: the next one starts when one ends
 			if (!(*M)->IsPlaying())
@@ -1161,7 +1166,7 @@ FVector ULyudFestivalSubsystem::SeaDirAt(const FVector& At) const
 /** The spots of a plan file (city_plan.json is 0.85 MB): parsed once a run and kept. */
 static const TArray<TSharedPtr<FJsonObject>>& PlanSpots(const FString& File)
 {
-	static TMap<FString, TArray<TSharedPtr<FJsonObject>>> Cache;
+	TMap<FString, TArray<TSharedPtr<FJsonObject>>>& Cache = GPlanSpotsCache;
 	if (const TArray<TSharedPtr<FJsonObject>>* Found = Cache.Find(File))
 	{
 		return *Found;
@@ -1321,39 +1326,16 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 	if (V.bValid)
 	{
 		// the plan's own stage and the fair's own stalls (public_spaces.py: S-STAGE, S-FAIR-STALLnn) count only once
-		// something has built them in the level: an actor named or tagged stage / stall near the spot. Until then the
-		// festival builds its own.
-		bool bStallSpot = false;
-		for (const TSharedPtr<FJsonObject>& O : PlanSpots(TEXT("PeopleData/town_plan.json")))
-		{
-			FString Id;
-			FVector P;
-			if (O->TryGetStringField(TEXT("id"), Id) && Id.Contains(TEXT("STALL")) && SpotPos(O, P) && FVector::Dist2D(P, V.Center) < 8000.f)
-			{
-				bStallSpot = true;
-				break;
-			}
-		}
+		// something has built them in the level and says so with an actor tag "PlanStage" / "PlanStalls" (the public
+		// spaces' actor). Until then the festival builds its own.
 		bool bStageBuilt = false, bStallsBuilt = false;
-		if (V.bPlanStage || bStallSpot)
+		for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 		{
-			for (TActorIterator<AActor> It(GetWorld()); It; ++It)
-			{
-				const AActor* Act = *It;
-				const bool bStageName = Act->GetName().Contains(TEXT("Stage")) || Act->Tags.Contains(TEXT("Stage"));
-				const bool bStallName = Act->GetName().Contains(TEXT("Stall")) || Act->Tags.Contains(TEXT("Stall"));
-				if (bStageName && V.bPlanStage && FVector::Dist2D(Act->GetActorLocation(), V.StageAt) < 1500.f)
-				{
-					bStageBuilt = true;
-				}
-				if (bStallName && bStallSpot && FVector::Dist2D(Act->GetActorLocation(), V.Center) < 8000.f)
-				{
-					bStallsBuilt = true;
-				}
-			}
+			bStageBuilt |= It->Tags.Contains(TEXT("PlanStage"));
+			bStallsBuilt |= It->Tags.Contains(TEXT("PlanStalls"));
 		}
 		V.bPlanStage = V.bPlanStage && bStageBuilt;
-		V.bPlanStalls = bStallsBuilt;
+		V.bPlanStalls = bStallsBuilt && (Want == TEXT("fair") || V.SpotId.StartsWith(TEXT("S-FAIR")));
 		V.Center = Ground(V.Center);
 		V.SeaDir = SeaDirAt(V.Center);
 		// a place with no yaw of its own faces the sea (the stage's back to it on the square: watchers look inland
@@ -1399,7 +1381,7 @@ bool ULyudFestivalSubsystem::IsFestivalToday() const
 	for (const FLyudFestivalNow& A : Active)
 	{
 		const int32 F = Calendar->Find(TCHAR_TO_UTF8(*A.Id.ToString()));
-		if (F >= 0 && Counts(F))
+		if (F >= 0 && Counts(F) && A.Hours >= 0.f)
 		{
 			return true;
 		}
@@ -1691,14 +1673,18 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	// round a square they ring it, with strings across high over the middle
 	const FString VName = V.Name.ToString();
 	const bool bLine = VName == TEXT("promenade") || VName == TEXT("beach") || VName == TEXT("pier");
-	const FVector Along = FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal();
+	// on the pier the line runs along it, out to sea from the shore end and a little to one side; elsewhere along the shore
+	const bool bPier = VName == TEXT("pier");
+	const FVector LineDir = bPier ? V.SeaDir : FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal();
+	const FVector LineFrom = bPier ? C - V.SeaDir * R * 3.2f + FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal() * 180.f
+		: C - LineDir * R * 1.6f;
 	const int32 NLine = 8;
 	if (bRing)
 	{
 		for (int32 I = 0; I < (bLine ? NLine : NPoles); I++)
 		{
 			const float A = V.Yaw + 30.f + I * 360.f / NPoles;
-			const FVector Base = bLine ? GroundAt(C + Along * (-R * 1.6f + I * R * 3.2f / (NLine - 1)))
+			const FVector Base = bLine ? GroundAt(LineFrom + LineDir * (I * R * 3.2f / (NLine - 1)))
 				: GroundAt(C + FRotator(0.f, A, 0.f).Vector() * R * 0.95f);
 			K.Rod(TEXT("pole"), Base - FVector(0.f, 0.f, 30.f), Base + FVector(0.f, 0.f, PoleH), 6.f, 8, true, false);
 			K.CollideBox(FTransform(Base + FVector(0.f, 0.f, PoleH * 0.5f)), FVector(7.f, 7.f, PoleH * 0.5f));
