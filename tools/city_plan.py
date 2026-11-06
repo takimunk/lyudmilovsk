@@ -552,7 +552,9 @@ def wall_dwellings():
                 if kind == "door":
                     door = _bay_point(b, u, 0.6, b["lower"])
                 else:
-                    wins.append({"id": "%s-w%d" % (did, len(wins) + 1), "map": _bay_point(b, u, 0.0, b["lower"] + sill + wh / 2)})
+                    # the glass sits in its reveal (tools/city_mesh.py REVEAL 0.28 m)
+                    wins.append({"id": "%s-w%d" % (did, len(wins) + 1), "map": _bay_point(b, u, -0.27, b["lower"] + sill + wh / 2),
+                                 "size": [ww, wh], "storey": 0 if sill < 2.0 else 1})
             out.append({"id": did, "wall": b["wall"], "bay": b["id"], "terrace": TERRACES[i][0], "door": door,
                         "yaw": b["yaw"], "windows": wins, "beds": 2})
     return out
@@ -572,8 +574,11 @@ def shops_in_seawall():
             continue
         k = n % len(names)
         n += 1
+        _, su, ssill, sw, sh = UNIT_OPENINGS[1]
         out.append({"id": "W1-U%02d" % n, "bay": b["id"], "kind": kinds[k % len(kinds)], "name_ru": names[k][0],
                     "name_en": names[k][1], "door": _bay_point(b, UNIT_OPENINGS[0][1], 0.6, b["lower"]),
+                    "windows": [{"id": "W1-U%02d-w1" % n, "map": _bay_point(b, su, -0.27, b["lower"] + ssill + sh / 2),
+                                 "size": [sw, sh], "storey": 0}],
                     "yaw": b["yaw"], "w": BAY["W1"], "staff": STAFF.get(kinds[k % len(kinds)])})
     return out
 
@@ -635,6 +640,8 @@ def build():
                 w["ue"] = ue(w["map"], face_y)
         for d in data["promenade_units"]:
             d["door_ue"] = ue(d["door"], face_y)
+            for w in d["windows"]:
+                w["ue"] = ue(w["map"], face_y)
         for s in data["stairs"]:
             s["bottom_ue"], s["top_ue"] = ue(s["bottom"], face_y), ue(s["top"], face_y)
     return data

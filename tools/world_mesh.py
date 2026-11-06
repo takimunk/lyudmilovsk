@@ -20,8 +20,11 @@ import struct
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import city_mesh  # noqa: E402
 import terrain as T  # noqa: E402
 import world_map as W  # noqa: E402
+
+REPO = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 # Materials: name -> (rgb, roughness, texture file or None, uv metres per tile)
 MATERIALS = {
@@ -31,6 +34,7 @@ MATERIALS = {
     "World_Roof_Flat": ((0.25, 0.25, 0.26), 0.9, None, 1.0),
     "World_Steel": ((0.35, 0.36, 0.38), 0.5, None, 1.0),
 }
+MATERIALS.update(city_mesh.MATERIALS)      # the town's concrete, glass and doors
 
 
 class Prim:
@@ -198,9 +202,15 @@ def write_glb(out, meshes, tex_dir):
         rgb, rough, tex, _ = MATERIALS[name]
         m = {"name": name, "pbrMetallicRoughness": {"baseColorFactor": list(rgb) + [1.0], "metallicFactor": 0.0,
                                                     "roughnessFactor": rough}}
-        if tex and tex_dir and os.path.exists(os.path.join(tex_dir, tex)):
-            shutil.copy(os.path.join(tex_dir, tex), os.path.join(out_dir, tex))
-            gl["images"].append({"uri": tex})
+        src = None
+        if tex and "/" in tex:                      # repo-relative (the town's textures)
+            src = os.path.join(REPO, tex)
+        elif tex and tex_dir:
+            src = os.path.join(tex_dir, tex)
+        if src and os.path.exists(src):
+            uri = os.path.basename(src)
+            shutil.copy(src, os.path.join(out_dir, uri))
+            gl["images"].append({"uri": uri})
             gl["textures"].append({"source": len(gl["images"]) - 1, "sampler": 0})
             m["pbrMetallicRoughness"]["baseColorTexture"] = {"index": len(gl["textures"]) - 1}
             m["pbrMetallicRoughness"]["baseColorFactor"] = [1, 1, 1, 1]
@@ -259,10 +269,12 @@ def write_glb(out, meshes, tex_dir):
 def build(out, tex_dir=None):
     meshes = []
     # the cable car is the transport thread's: ULyudTransportSubsystem builds it at play from Content/Transport
-    for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade)):
+    # the town (tools/city_mesh.py) replaced the old promenade strip: its seawall, terrace walls, stairs and pier
+    for name, fn in (("World_Portal", portal), ("World_Path", path)):
         m = Mesh(name)
         fn(m)
         meshes.append(m)
+    meshes.extend(city_mesh.build_chunked(Mesh))
     return write_glb(out, meshes, tex_dir)
 
 

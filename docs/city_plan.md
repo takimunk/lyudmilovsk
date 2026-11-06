@@ -13,7 +13,6 @@ Every thread reads the JSON; ids are stable (move a plot freely, never reuse an 
 
 The ground itself: `tools/world_map.py` `height()` calls `city_plan.height()`, so the terrain build
 (`tools/terrain.py`, `import_terrain.py`) draws the terraces; `keep_flat` keeps them exact (no natural detail).
-(That hook and the walls land together from branch `city-terrain`; until then main's ground is the old valley.)
 
 ## Frame
 
@@ -54,6 +53,18 @@ climbs from the lower terrace to the upper over 6 m, hidden inside the block; th
 upper terrace. Wall stairs run along the face (two flights and a landing, 2.4 m wide) about every 110 m, offset from
 wall to wall so the way up zigzags; grand stairs (8-10 m wide) go straight up on the main axis (Y 905) and on the
 Cascade (Y 760). Windows: warm light at night when the flat is occupied (`UPeopleLifeSubsystem::OnWindowLight`).
+
+### Built by
+
+- `tools/city_mesh.py`: the walls bay by bay (faces with recessed doors and windows, door canopies, danchi balconies on
+  every third flat, painted steel doors, parapets), the wall stairs, the grand stairs, the seawall with its steps and
+  kerb, and the pier on piles. `tools/world_mesh.py` puts them into the world's .glb (`import_world.py`), chunked per
+  wall and per 60 m of coast (`City_Walls_W3_07`, ...). It replaced the old promenade strip.
+- `ALyudCityWindows` (`Source/.../World/LyudCityWindows.*`), spawned by `ULyudCityWindowsSubsystem` in Lvl_Scene01: the
+  lit window panes. The town's life drives them with `ULyudCityWindowsSubsystem::SetWindowLit(WindowId, bLit)` or
+  `SetFlatLit(FlatId, bLit)`; until it does, each flat has its own evening schedule (dusk to a bedtime 21:30..01:30,
+  some again before dawn; shops lit 9..21 in the dark). Console: `lyud.CityWindows 0` off, `lyud.CityWindows.All 1`
+  every window lit. Nothing per frame: checked every 2 s, instance buffers rebuilt only on a change.
 
 ## The axis
 

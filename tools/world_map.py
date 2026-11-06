@@ -188,10 +188,16 @@ def _edge_top(y):
     return plateau(x, y)
 
 
+def _city():
+    import city_plan                                 # imports this module: load it lazily
+    return city_plan
+
+
 def height(x, y):
-    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); level under the
-    Academgorodok."""
+    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); the town's terraces along the
+    beach (city_plan); level under the Academgorodok."""
     z = _height(x, y)
+    z = _city().height(x, y, z)                      # the town's terraces (tools/city_plan.py, docs/city_plan.md)
     k = academ_flat(x, y)
     return z + (academ_z() - z) * k if k > 0.0 else z
 
@@ -615,13 +621,8 @@ def forests():
     for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
         add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
     # the dune bank along the valley's beach
-    for yc in range(400, 1401, 200):
-        add(shore_x(yc) - BEACH_W - 25, yc, 25, 100, "dune", SEA_Z + 2.0, LOW_Z + 3.0, 0.5)
-    # wet copses on the valley floor, and trees between the houses (the houses are NoTree)
-    add(-760, 900, 110, 330, "wet", -100.0, LOW_Z + 3.0, 0.5)
-    add(-120, 1380, 260, 80, "wet", -100.0, LOW_Z + 3.0, 0.5)
-    add(TOWN_CENTER[0], STATION_DOWN[1] + 270, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
-    add(TOWN_CENTER[0], STATION_DOWN[1] + 790, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
+    # (the valley's dune bank, wet copses and sparse town trees are gone: the town's terraces stand there now,
+    # docs/city_plan.md; its parks and streets are planted by the town's own plants)
     return out
 
 
@@ -716,7 +717,10 @@ def keep_flat(x, y):
         k = max(k, _ramp(math.hypot(x - vx, y - vy), vr, 4.0))
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
-    k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))
+    # the town: its terraces, walls and streets keep the exact macro height (docs/city_plan.md)
+    C = _city()
+    if inland(x, y) > C.SEAWALL_S - 3.0:
+        k = max(k, C.city_mask(y))
     k = max(k, academ_flat(x, y))
     return k
 
