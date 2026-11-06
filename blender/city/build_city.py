@@ -286,15 +286,32 @@ def render(type_id, B, night):
     return scn.render.filepath
 
 
-def build_one(type_id):
+def variant_name(type_id, plot):
+    """A plot-specific variant of a type (module VARIANTS = {plot id: {module attr: value}}): '<type>__<plot>'."""
+    return "%s__%s" % (type_id, plot.lower().replace("-", "_"))
+
+
+def build_one(type_id, variant=None):
     mod = importlib.import_module(type_id)
     importlib.reload(mod)
+    variants = getattr(mod, "VARIANTS", {})
+    if variant is None and variants:
+        reports = []
+        for plot in variants:
+            reports += build_one(type_id, plot)
+        return reports
+    if variant is not None:
+        for k, v in variants[variant].items():
+            setattr(mod, k, v)
+        out_id = variant_name(type_id, variant)
+    else:
+        out_id = type_id
     B = citykit.Building(type_id)
     mod.build(B)
     report = lint(B)
     info = getattr(mod, "INFO", {})
     os.makedirs(EXPORT, exist_ok=True)
-    with open(os.path.join(EXPORT, type_id + ".json"), "w") as f:
+    with open(os.path.join(EXPORT, out_id + ".json"), "w") as f:
         json.dump(B.data(info), f, indent=1, ensure_ascii=False)
     results = {}
     for night in ([False, True] if DO_RENDER else [False]):
@@ -302,16 +319,16 @@ def build_one(type_id):
         _MATS.clear()
         rnd = random.Random(7)
         lit = {w["slot"] for w in B.windows if rnd.random() < (0.45 if w["flat"] else 0.8)} if night else set()
-        obs = [to_object("SM_" + type_id, B.m, night=night)]
+        obs = [to_object("SM_" + out_id, B.m, night=night)]
         if B.detail.faces:
-            obs.append(to_object("SM_%s_Detail" % type_id, B.detail, night=night))
+            obs.append(to_object("SM_%s_Detail" % out_id, B.detail, night=night))
         if B.win.faces:
-            obs.append(to_object("SM_%s_Windows" % type_id, B.win, slots=B.win_slot, lit=lit, night=night))
+            obs.append(to_object("SM_%s_Windows" % out_id, B.win, slots=B.win_slot, lit=lit, night=night))
         if not night:
-            results["glb"] = export(type_id, obs)
+            results["glb"] = export(out_id, obs)
         if DO_RENDER:
-            results["night" if night else "day"] = render(type_id, B, night)
-    print("CITY %s" % type_id)
+            results["night" if night else "day"] = render(out_id, B, night)
+    print("CITY %s" % out_id)
     for line in report:
         print("CITY   " + line)
     for k, v in results.items():

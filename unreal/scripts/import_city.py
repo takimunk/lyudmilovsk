@@ -274,6 +274,9 @@ def place(face_y):
     doors = []
     for p in plots():
         t = p.get("building")
+        tv = "%s__%s" % (t, p["id"].lower().replace("-", "_")) if t else None
+        if tv and os.path.exists(os.path.join(EXPORT, tv + ".json")):
+            t = tv                                          # this plot's own variant of the type
         jpath = os.path.join(EXPORT, "%s.json" % t) if t else None
         dest = "%s/Buildings/%s" % (DEST, t)
         if not t or not jpath or not os.path.exists(jpath) or not eal.does_asset_exist("%s/SM_%s" % (dest, t)):
@@ -311,7 +314,7 @@ def place(face_y):
         b.set_editor_property("window_kinds", [kinds.get(w["kind"], kinds["public"]) if w["kind"] in kinds else
                                                (kinds["flat"] if w.get("flat") else kinds["public"]) for w in wins])
         b.set_editor_property("window_flats", [w.get("flat") or "" for w in wins])
-        oh = HOURS.get(t, (8, 21))
+        oh = HOURS.get(t.split("__")[0], (8, 21))
         b.set_editor_property("open_hour", float(oh[0]))
         b.set_editor_property("close_hour", float(oh[1]))
         n += 1
