@@ -192,10 +192,12 @@ bool ALyudCityWindows::ScheduleLit(const FWindow& W, const FDateTime& Now, float
 void ALyudCityWindows::Refresh(bool bForceRebuild)
 {
 	const UWorld* World = GetWorld();
-	const FDateTime Now = UGameCalendar::NowIn(World);
+	// the sky's shown time (the calendar plus lyud.SkyHourOffset), so the windows and the sun agree
+	FDateTime Now = UGameCalendar::NowIn(World);
 	float SunAlt = -10.f;
 	for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
 	{
+		Now = It->ShownTime();
 		SunAlt = It->SunAltitude();
 		break;
 	}

@@ -67,15 +67,20 @@ class Prim:
             b, c = c, b
         self.idx.extend((a, b, c))
 
-    def quad(self, ps, n, tile=1.0):
-        """Flat quad, corners in order; UVs projected on the quad's plane."""
+    def quad(self, ps, n, tile=1.0, anchor=False):
+        """Flat quad, corners in order; UVs projected on the quad's plane. anchor: UVs from the plane's own axes in
+        world space instead of from the first corner, so the quads a face is cut into (round openings) carry one
+        continuous texture."""
         u_ax = [ps[1][i] - ps[0][i] for i in range(3)]
         lu = math.sqrt(sum(v * v for v in u_ax)) or 1.0
         u_ax = [v / lu for v in u_ax]
         v_ax = [n[1] * u_ax[2] - n[2] * u_ax[1], n[2] * u_ax[0] - n[0] * u_ax[2], n[0] * u_ax[1] - n[1] * u_ax[0]]
         ids = []
+        o = (0.0, 0.0, 0.0) if anchor else ps[0]
+        if anchor and abs(n[2]) > 0.999:          # level faces: plain map X/Y, the same on every neighbouring piece
+            u_ax, v_ax = [1.0, 0.0, 0.0], [0.0, 1.0 if n[2] > 0 else -1.0, 0.0]
         for p in ps:
-            d = [p[i] - ps[0][i] for i in range(3)]
+            d = [p[i] - o[i] for i in range(3)]
             ids.append(self.vert(p, n, (sum(d[i] * u_ax[i] for i in range(3)) / tile,
                                         sum(d[i] * v_ax[i] for i in range(3)) / tile)))
         self.tri(ids[0], ids[1], ids[2])

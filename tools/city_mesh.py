@@ -44,7 +44,8 @@ def _P(o, a, n, u, s, z):
 
 
 def _quad(prim, o, a, n, pts, normal, tile=2.0):
-    prim.quad([_P(o, a, n, *p) for p in pts], normal, tile)
+    # world-anchored UVs: a face cut into cells round its windows keeps one continuous concrete texture
+    prim.quad([_P(o, a, n, *p) for p in pts], normal, tile, anchor=True)
 
 
 def _box(prim, o, a, n, u0, u1, s0, s1, z0, z1, top=True, tile=2.0):
@@ -103,7 +104,8 @@ def _face(prim_c, prims, b, o, a, n, half, z0, z1, openings):
 
 
 def _parapet(prim, o, a, n, u0, u1, up):
-    _box(prim, o, a, n, u0, u1, -PARAPET_T, 0.0, up - 0.05, up + PARAPET_H)
+    # 2 cm proud of the wall's face: a coping line, not a 5 cm strip coplanar with the face below (z-fighting)
+    _box(prim, o, a, n, u0, u1, -PARAPET_T, 0.02, up - 0.05, up + PARAPET_H)
 
 
 def _stair_flight(prim, frames, a_start, lower, upper, width, s0=0.0, balustrade=True):
@@ -273,15 +275,20 @@ def seawall(mesh):
         if upper - lower < 0.25:
             continue
         # the face with a curved-back toe (a recurve wave wall, stepped): three setbacks
-        _box(prim, o, a, n, -half, half, -1.5, 0.9, lower - 1.2, lower + 0.35)
-        _box(prim, o, a, n, -half, half, -1.5, 0.45, lower + 0.35, lower + 0.8)
+        steps = b["kind"] == "sea_steps" and b["mask"] >= 0.999
+        # where the steps come down the toe and the setback stay off them (their tops lay 1 cm under the steps' treads)
+        for u0, u1 in ((-half, -1.9), (1.9, half)) if steps else ((-half, half),):
+            _box(prim, o, a, n, u0, u1, -1.5, 0.9, lower - 1.2, lower + 0.35)
+            _box(prim, o, a, n, u0, u1, -1.5, 0.45, lower + 0.35, lower + 0.8)
+        if steps:
+            _box(prim, o, a, n, -1.9, 1.9, -1.5, 0.0, lower - 1.2, lower + 0.8, top=False)
         _box(prim, o, a, n, -half, half, -1.5, 0.0, lower + 0.8, upper)
-        if b["kind"] == "sea_steps" and b["mask"] >= 0.999:
+        if steps:
             _grand(kerb, o, a, n, 3.0, lower, upper, tread=0.32, rise_t=0.17, cheeks=True)
-            _box(kerb, o, a, n, -half, -1.9, -0.45, 0.0, upper - 0.05, upper + 0.45)
-            _box(kerb, o, a, n, 1.9, half, -0.45, 0.0, upper - 0.05, upper + 0.45)
+            _box(kerb, o, a, n, -half, -1.9, -0.45, 0.02, upper - 0.05, upper + 0.45)
+            _box(kerb, o, a, n, 1.9, half, -0.45, 0.02, upper - 0.05, upper + 0.45)
         else:
-            _box(kerb, o, a, n, -half, half, -0.45, 0.0, upper - 0.05, upper + 0.45)
+            _box(kerb, o, a, n, -half, half, -0.45, 0.02, upper - 0.05, upper + 0.45)
 
 
 PIER_Y = 905.0
@@ -304,7 +311,8 @@ def pier(mesh):
     o = (x0, y0)
     nrm = (ax, ay)
     al = (-ay, ax)
-    _box(conc, o, al, nrm, -PIER_W / 2, PIER_W / 2, -0.5, L, PIER_DECK - 0.55, PIER_DECK)
+    # the deck runs 0.5 m onto the seawall's top: 1.5 cm proud of it, or the dark and the light concrete fight there
+    _box(conc, o, al, nrm, -PIER_W / 2, PIER_W / 2, -0.5, L, PIER_DECK - 0.55, PIER_DECK + 0.015)
     hc = L + PIER_HEAD / 2 - 2.0
     _box(conc, o, al, nrm, -PIER_HEAD / 2, PIER_HEAD / 2, hc - PIER_HEAD / 2, hc + PIER_HEAD / 2, PIER_DECK - 0.55, PIER_DECK)
     # a low kerb along both edges (the public spaces put railings on it)
