@@ -97,6 +97,9 @@ ALyudSnowNear::ALyudSnowNear()
 	Surface->LightingChannels.bChannel1 = true;
 	// no shadow of its own: a world-position-offset mesh would redraw the virtual shadow map every frame
 	Surface->SetCastShadow(false);
+	// it moves with the camera: keep it out of Lumen's scene and the distance fields (no recapture on every recentre)
+	Surface->bAffectDynamicIndirectLighting = false;
+	Surface->bAffectDistanceFieldLighting = false;
 	Trail.SetNumZeroed(TrailN * TrailN);
 	Ground.SetNumZeroed(GroundN * GroundN);
 	Lowered.SetNumZeroed(GroundN * GroundN);
@@ -160,6 +163,8 @@ void ALyudSnowNear::BuildMesh()
 	Surface->SetStaticMesh(Mesh);
 	GroundRT = LoadObject<UTextureRenderTarget2D>(nullptr, SnowNearGroundPath);
 	TrailRT = LoadObject<UTextureRenderTarget2D>(nullptr, SnowNearTrailPath);
+	// once here, not a LoadObject every frame in Drive
+	NearCollection = LoadObject<UMaterialParameterCollection>(nullptr, SnowNearCollectionPath);
 	if (GroundRT)
 	{
 		GroundRT->ResizeTarget(GroundN, GroundN);
@@ -205,12 +210,25 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	}
 	bFullUpload = true;
 	Centre = C;
+	// forget the walkers that are gone or far off (they start a fresh track when they come back, as after a jump)
+	for (auto It = Walkers.CreateIterator(); It; ++It)
+	{
+		const AActor* A = It.Key().Get();
+		if (!A || FVector2D::DistSquared(FVector2D(A->GetActorLocation()), C) > FMath::Square(2.0 * HalfCm))
+		{
+			It.RemoveCurrent();
+		}
+	}
 	// the ground's exact heights, 1 m, round the new centre
 	// on the landscape's own vertices (its 1 m grid from its origin), so the fine surface can follow its triangles
-	FVector2D LandOrigin(0.0, 0.0);
-	if (TActorIterator<ALandscapeProxy> It(World); It)
+	// the landscape does not move: found once, not an actor walk every recentre
+	if (!bHaveLandOrigin)
 	{
-		LandOrigin = FVector2D(It->GetActorLocation());
+		if (TActorIterator<ALandscapeProxy> It(World); It)
+		{
+			LandOrigin = FVector2D(It->GetActorLocation());
+			bHaveLandOrigin = true;
+		}
 	}
 	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
 	GroundOrigin = LandOrigin + FVector2D(FMath::RoundToDouble((GroundOrigin.X - LandOrigin.X) / GroundCm), FMath::RoundToDouble((GroundOrigin.Y - LandOrigin.Y) / GroundCm)) * GroundCm;
@@ -482,10 +500,11 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 		SnowNearUpload(TrailRT, Dirty.Min.X, Dirty.Min.Y, W, H, 1, MoveTemp(Bytes));
 		bDirty = false;
 	}
-	if (UMaterialParameterCollection* MPC = LoadObject<UMaterialParameterCollection>(nullptr, SnowNearCollectionPath))
+	if (UMaterialParameterCollection* MPC = NearCollection)
 	{
-		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearRect"), FLinearColor(float(C.X), float(C.Y), HalfCm, 600.f));
-		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearGround"), FLinearColor(float(GroundOrigin.X), float(GroundOrigin.Y), GroundCm, float(GroundN)));
-		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, TEXT("NearTrail"), FLinearColor(TrailCm, TrailCm * TrailN, 0.f, 0.f));
+		static const FName NearRectName(TEXT("NearRect")), NearGroundName(TEXT("NearGround")), NearTrailName(TEXT("NearTrail"));
+		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, NearRectName, FLinearColor(float(C.X), float(C.Y), HalfCm, 600.f));
+		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, NearGroundName, FLinearColor(float(GroundOrigin.X), float(GroundOrigin.Y), GroundCm, float(GroundN)));
+		UKismetMaterialLibrary::SetVectorParameterValue(World, MPC, NearTrailName, FLinearColor(TrailCm, TrailCm * TrailN, 0.f, 0.f));
 	}
 }

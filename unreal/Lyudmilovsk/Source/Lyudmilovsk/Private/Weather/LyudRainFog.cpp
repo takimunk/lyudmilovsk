@@ -380,8 +380,13 @@ void ALyudRainFx::UpdateRoofMap(const FVector& Camera)
 		// slide what is known; the new rows and columns are traced
 		const bool bFresh = Origin.X == MAX_int32;
 		const FIntPoint D = bFresh ? FIntPoint::ZeroValue : Want - Origin;
-		TArray<FVector2f> Old = Roof;
-		TArray<uint8> OldDirty = Dirty;
+		// the old map goes into the kept scratch arrays (a swap, no copy, no allocation once they have grown)
+		Swap(Roof, RoofScratch);
+		Swap(Dirty, DirtyScratch);
+		Roof.SetNumUninitialized(N * N);
+		Dirty.SetNumUninitialized(N * N);
+		const TArray<FVector2f>& Old = RoofScratch;
+		const TArray<uint8>& OldDirty = DirtyScratch;
 		const bool bFar = bFresh || FMath::Abs(D.X) >= N || FMath::Abs(D.Y) >= N;
 		DirtyLeft = 0;
 		for (int32 Y = 0; Y < N; ++Y)
@@ -458,8 +463,14 @@ void ALyudRainFx::UpdateRoofMap(const FVector& Camera)
 		DirtyLeft -= Dirty[I];
 		Dirty[I] = 0;
 	};
-	// a fresh map (spawn, a jump) is traced at once; then the new edges, then a slow refresh for things that move
-	int32 Budget = DirtyLeft > N * N / 2 ? N * N : TracesPerFrame;
+	// a fresh map (spawn, a jump) is traced over a few frames, 1024 cells each (not 4096 x 4 tries in one), the rain
+	// and the wet decal hidden till it is whole; then the new edges, then a slow refresh for things that move
+	if (DirtyLeft > N * N / 2 && !bFilling)
+	{
+		bFilling = true;
+		bRoofUploaded = false;
+	}
+	int32 Budget = bFilling ? FMath::Min(N * N, 1024) : TracesPerFrame;
 	for (int32 K = 0; K < N * N && Budget > 0 && DirtyLeft > 0; ++K)
 	{
 		const int32 I = (Cursor + K) % (N * N);
@@ -468,6 +479,10 @@ void ALyudRainFx::UpdateRoofMap(const FVector& Camera)
 			TraceCell(I);
 			--Budget;
 		}
+	}
+	if (DirtyLeft <= 0)
+	{
+		bFilling = false;
 	}
 	for (int32 K = 0; K < FMath::Min(Budget, TracesPerFrame / 4); ++K)
 	{
@@ -505,7 +520,7 @@ void ALyudRainFx::UpdateRoofMap(const FVector& Camera)
 				FMemory::Free(Data);
 				delete Regions;
 			});
-		bRoofUploaded = true;
+		bRoofUploaded = !bFilling;
 	}
 }
 
@@ -549,37 +564,40 @@ void ALyudRainFx::UpdateMaterials(const FLyudRainFogWeather& W, const FVector& C
 	WetDecal->SetVisibility(bOn && Wet > 0.02f && WetMID && bRoofUploaded && OpenSky > 0.001f);
 
 	const FLinearColor RoofP(Origin.X * RoofCellSize, Origin.Y * RoofCellSize, RoofCellSize, RoofCells);
-	if (DropMID)
+	// hidden parts keep their old parameters: set again the frame they show (this same call), not every dry frame
+	static const FName BoxName(TEXT("Box")), WindName(TEXT("Wind")), RoofPName(TEXT("RoofP")), LightName(TEXT("Light")),
+		AlphaName(TEXT("Alpha")), WetName(TEXT("Wet")), RainName(TEXT("Rain"));
+	if (DropMID && bDrops)
 	{
 		// drop speed: drizzle ~2 m/s, steady rain ~6, a downpour's big drops ~8
 		const float Fall = FMath::Lerp(550.f + 15.f * FMath::Min(Rate, 20.f), 200.f, Drizzle);
 		// how many of the streaks show: the drop count goes as the rate's ~0.6 power, drizzle is many tiny drops
 		const float Density = FMath::Clamp(FMath::Lerp(0.04f + FMath::Pow(Rate / 14.f, 0.6f), 0.55f, Drizzle), 0.f, 1.f);
-		DropMID->SetVectorParameterValue(TEXT("Box"), FLinearColor(DropBox.X, DropBox.Y, Fall, Density));
-		DropMID->SetVectorParameterValue(TEXT("Wind"), FLinearColor(W.Wind.X, W.Wind.Y, FMath::Lerp(0.022f, 0.012f, Drizzle), FMath::Lerp(0.16f, 0.06f, Drizzle)));
-		DropMID->SetVectorParameterValue(TEXT("RoofP"), RoofP);
-		DropMID->SetScalarParameterValue(TEXT("Light"), Light);
-		DropMID->SetScalarParameterValue(TEXT("Alpha"), FMath::Lerp(0.8f, 0.4f, Drizzle) * Smooth(0.02f, 0.3f, Rate));
+		DropMID->SetVectorParameterValue(BoxName, FLinearColor(DropBox.X, DropBox.Y, Fall, Density));
+		DropMID->SetVectorParameterValue(WindName, FLinearColor(W.Wind.X, W.Wind.Y, FMath::Lerp(0.022f, 0.012f, Drizzle), FMath::Lerp(0.16f, 0.06f, Drizzle)));
+		DropMID->SetVectorParameterValue(RoofPName, RoofP);
+		DropMID->SetScalarParameterValue(LightName, Light);
+		DropMID->SetScalarParameterValue(AlphaName, FMath::Lerp(0.8f, 0.4f, Drizzle) * Smooth(0.02f, 0.3f, Rate));
 	}
-	if (SplashMID)
+	if (SplashMID && Splashes->IsVisible())
 	{
 		const float Density = FMath::Clamp(FMath::Pow(Rate / 12.f, 0.7f), 0.f, 1.f) * (1.f - Drizzle);
-		SplashMID->SetVectorParameterValue(TEXT("Box"), FLinearColor(SplashBox, Density, 0.45f, 0.7f));
-		SplashMID->SetVectorParameterValue(TEXT("RoofP"), RoofP);
-		SplashMID->SetScalarParameterValue(TEXT("Light"), Light);
+		SplashMID->SetVectorParameterValue(BoxName, FLinearColor(SplashBox, Density, 0.45f, 0.7f));
+		SplashMID->SetVectorParameterValue(RoofPName, RoofP);
+		SplashMID->SetScalarParameterValue(LightName, Light);
 	}
-	if (WetMID)
+	if (WetMID && WetDecal->IsVisible())
 	{
 		// puddles come after the ground is soaked; rings on them while it rains
-		WetMID->SetVectorParameterValue(TEXT("Wet"), FLinearColor(Wet, Smooth(0.45f, 0.95f, Wet), FMath::Clamp(Rate / 8.f, 0.f, 1.f) * (1.f - 0.7f * Drizzle), 0.f));
-		WetMID->SetVectorParameterValue(TEXT("RoofP"), RoofP);
+		WetMID->SetVectorParameterValue(WetName, FLinearColor(Wet, Smooth(0.45f, 0.95f, Wet), FMath::Clamp(Rate / 8.f, 0.f, 1.f) * (1.f - 0.7f * Drizzle), 0.f));
+		WetMID->SetVectorParameterValue(RoofPName, RoofP);
 	}
 	// the sea draws its own rings (M_LyudSea reads Rain from the collection)
 	if (UMaterialParameterCollection* MPC = Collection.Get())
 	{
-		if (MPC->GetVectorParameterByName(TEXT("Rain")))
+		if (MPC->GetVectorParameterByName(RainName))
 		{
-			UKismetMaterialLibrary::SetVectorParameterValue(this, MPC, TEXT("Rain"),
+			UKismetMaterialLibrary::SetVectorParameterValue(this, MPC, RainName,
 				FLinearColor(FMath::Clamp(Rate / 8.f, 0.f, 1.f) * (1.f - 0.6f * Drizzle), Drizzle, 0.f, 0.f));
 		}
 	}
@@ -638,9 +656,8 @@ void ALyudRainFx::Tick(float DeltaSeconds)
 	{
 		return;
 	}
+	// the decal is attached at no offset: it follows with the actor, its top well above the camera
 	SetActorLocation(Camera);
-	// the decal sits over the map's middle, its top well above the camera
-	WetDecal->SetWorldLocation(FVector(Camera.X, Camera.Y, Camera.Z));
 	UpdateRoofMap(Camera);
 	OpenSky += (OpenSkyRaw - OpenSky) * (1.f - FMath::Exp(-DeltaSeconds / 0.5f));
 	const ULyudRainFogSubsystem* Sub = ULyudRainFogSubsystem::Get(this);

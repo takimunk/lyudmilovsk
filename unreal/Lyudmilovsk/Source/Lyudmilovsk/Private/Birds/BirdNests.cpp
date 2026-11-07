@@ -582,7 +582,10 @@ void ABirdNestRenderer::DrawMovers(FWorld& World, const FVector& Camera)
 	FNesting& N = *World.Nesting();
 	TMap<FName, TArray<FTransform>> Want;
 	const V3 Cam = FromUE(Camera);
-	static const TCHAR* const Mats[] = { nullptr, TEXT("Twigs"), TEXT("Twigs"), TEXT("Grass"), TEXT("Moss"), TEXT("Mud"), TEXT("Reed"), TEXT("Feathers") };
+	// the mesh names made once (this runs every frame: a Printf and an FName per carrying bird or chick was the cost)
+	static const FName MatMeshes[] = { NAME_None, FName(TEXT("SM_NestMat_Twigs")), FName(TEXT("SM_NestMat_Twigs")), FName(TEXT("SM_NestMat_Grass")),
+		FName(TEXT("SM_NestMat_Moss")), FName(TEXT("SM_NestMat_Mud")), FName(TEXT("SM_NestMat_Reed")), FName(TEXT("SM_NestMat_Feathers")) };
+	static TMap<int32, FName> ChickMeshes;     // by species, age and gape
 	for (const FBird& B : World.Birds)
 	{
 		if (B.bGone || B.Act == EAct::Claimed)
@@ -600,9 +603,15 @@ void ABirdNestRenderer::DrawMovers(FWorld& World, const FVector& Camera)
 		{
 			const FNest& Nest = N.Nests[N.YoungOf(B.Id)];
 			const FBreedKind& K = BreedTable()[Nest.Kind];
-			const float Down = K.Id == FString(TEXT("MuteSwan")) ? 70.f : 25.f;
-			const TCHAR* Age = Nest.State.Age < Down * 0.25f ? TEXT("Hatch") : (Nest.State.Age < Down * 0.65f ? TEXT("Mid") : TEXT("Late"));
-			const FName Mesh(*FString::Printf(TEXT("SM_Chick_%s_%s_%s"), UTF8_TO_TCHAR(S.Id.c_str()), Age, B.Act == EAct::Peck ? TEXT("Beg") : TEXT("Rest")));
+			const float Down = FCStringAnsi::Strcmp(K.Id, "MuteSwan") == 0 ? 70.f : 25.f;
+			const int32 AgeIdx = Nest.State.Age < Down * 0.25f ? 0 : (Nest.State.Age < Down * 0.65f ? 1 : 2);
+			const bool bBeg = B.Act == EAct::Peck;
+			FName& Mesh = ChickMeshes.FindOrAdd(B.Species * 8 + AgeIdx * 2 + (bBeg ? 1 : 0));
+			if (Mesh.IsNone())
+			{
+				static const TCHAR* const Ages[] = { TEXT("Hatch"), TEXT("Mid"), TEXT("Late") };
+				Mesh = FName(*FString::Printf(TEXT("SM_Chick_%s_%s_%s"), UTF8_TO_TCHAR(S.Id.c_str()), Ages[AgeIdx], bBeg ? TEXT("Beg") : TEXT("Rest")));
+			}
 			if (SetFor(Mesh, true))
 			{
 				Want.FindOrAdd(Mesh).Add(FTransform(FRotator(0.f, FMath::RadiansToDegrees(B.Yaw) + KitYaw, 0.f), ToUE(World.RenderPos(B))));
@@ -613,7 +622,7 @@ void ABirdNestRenderer::DrawMovers(FWorld& World, const FVector& Camera)
 		const EMaterial M = N.Carrying(B.Id);
 		if (M != EMaterial::None && Dist < 60.f)
 		{
-			const FName Mesh(*FString::Printf(TEXT("SM_NestMat_%s"), Mats[(int32)M]));
+			const FName Mesh = MatMeshes[(int32)M];
 			if (SetFor(Mesh, true))
 			{
 				const V3 Fwd(FMath::Cos(B.Yaw), FMath::Sin(B.Yaw), 0.f);

@@ -179,6 +179,8 @@ private:
 		float Alpha = 0.f;
 		float Rise = 0.f;
 		float Seed = 0.f;
+		/** Gone, and its instance already written hidden: Tick leaves it alone till it is emitted again. */
+		bool bHiddenWritten = true;
 	};
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Puffs;
 	TArray<FPuff> All;

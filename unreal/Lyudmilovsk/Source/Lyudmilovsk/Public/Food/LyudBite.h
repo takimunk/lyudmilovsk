@@ -142,6 +142,10 @@ private:
 	/** Sounds by kind (kept here: unreferenced sounds get collected while they play). */
 	UPROPERTY(Transient)
 	TMap<FName, TObjectPtr<USoundBase>> Sounds;
+	/** The meal's meshes and material, held for the meal: FLyudMeal is a plain struct the GC doesn't see, and a caller may
+	 * pass assets nothing else references (they'd be collected mid-meal and the next load swap would use a freed mesh). */
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<UObject>> MealAssets;
 
 	FTransform YawFrame() const;
 	FTransform KeyFor(EPhase P) const;

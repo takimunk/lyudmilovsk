@@ -33,8 +33,9 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	/** The head's turn toward what the person looks at, on top of the clip (deg; yaw toward the character's left). */
 	float HeadYaw = 0.f;
 	float HeadPitch = 0.f;
-	/** eyeBlinkLeft, eyeBlinkRight, jawOpen, mouthFunnel, mouthSmile, browUp (morph target curves). */
-	TArray<float> FaceCurves;
+	/** eyeBlinkLeft, eyeBlinkRight, jawOpen, mouthFunnel, mouthSmile, browUp (morph target curves); off until a face sets them. */
+	float FaceCurves[6] = {};
+	bool bFaceCurves = false;
 	/** Breathing: the phase (0 = breathed out, 1 = in) and depth (1 at rest, more after a walk). */
 	float Breath = 0.f;
 	float BreathDepth = 1.f;
@@ -58,6 +59,15 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 
 	virtual void Update(float DeltaSeconds) override;
 	virtual bool Evaluate(FPoseContext& Output) override;
+	/** The clips are held here only (not a UObject): GC has to be told, or a clip nobody else holds is freed under the worker. */
+	virtual void AddReferencedObjects(UAnimInstance* InAnimInstance, FReferenceCollector& Collector) override;
+
+	/** Procedural's bones as compact pose indices, worked out once per bone container (its serial number changes with the
+	 *  LOD's bones): no name lookups per evaluation. */
+	static constexpr int32 NumBones = 20;
+	int32 BoneIdx[NumBones] = {};
+	const FBoneContainer* BonesFor = nullptr;
+	uint16 BonesSerial = 0;
 
 private:
 	/** Breathing, lean, the head's turn and the feet on the ground, on top of the clip, in component space. */
@@ -161,6 +171,9 @@ private:
 	// speaking
 	TArray<uint8> Jaw, Funnel, Smile;
 	float SpeakStart = -1.f;
+	/** When the line started on the world's clock: the lips keep time with the voice even while the body went unseen
+	 *  (an unseen body's update doesn't run, so Clock stands still). */
+	double SpeakStartWorld = 0.0;
 	float ChatterNext = 0.f;
 	bool bChatterOn = false;
 	FVector Mouth = FVector::ZeroVector;           // smoothed jaw, funnel, smile
@@ -186,6 +199,18 @@ private:
 	float FootAlpha = 0.f;
 	float HandAlpha = 0.f;
 	FVector HandOff[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	/** The desk traces' last find per hand: from where (world cm), which step forward hit (cm) and the desk's top there
+	 *  (world z); a body sitting still keeps it for a while instead of tracing every frame (DeskFrom: its transform then). */
+	FVector DeskH[2] = { FVector::ZeroVector, FVector::ZeroVector };
+	float DeskD[2] = { 0.f, 0.f };
+	float DeskZ[2] = { 0.f, 0.f };
+	bool bDeskHit[2] = { false, false };
+	float DeskAge[2] = { 1e9f, 1e9f };
+	FTransform DeskFrom = FTransform::Identity;
+	/** The feet traces' last find (offset, normal, mesh space) and how long ago: far from the camera they are traced less often. */
+	float FootHitOff[2] = { 0.f, 0.f };
+	FVector FootHitNor[2] = { FVector::UpVector, FVector::UpVector };
+	float FootTraceAge = 1e9f;
 	float FootOff[2] = { 0.f, 0.f };
 	FVector FootNor[2] = { FVector::UpVector, FVector::UpVector };
 	FVector2D Lean = FVector2D::ZeroVector;

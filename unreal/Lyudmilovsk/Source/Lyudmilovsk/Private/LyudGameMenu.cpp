@@ -169,6 +169,8 @@ void ULyudGameMenuSubsystem::Close()
 		return;
 	}
 	bOpen = false;
+	// the volume sliders keep their values in memory while they move
+	LyudSettings::FlushStored();
 	if (UGameViewportClient* Viewport = World->GetGameViewport())
 	{
 		Viewport->RemoveViewportWidgetContent(Menu.ToSharedRef());

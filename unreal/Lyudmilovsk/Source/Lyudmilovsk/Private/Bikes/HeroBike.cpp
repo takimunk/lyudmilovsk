@@ -46,7 +46,29 @@ UHeroBikeComponent::UHeroBikeComponent()
 
 UHeroBikeComponent* UHeroBikeComponent::Get(const AActor* Hero)
 {
-	return Hero ? Hero->FindComponentByClass<UHeroBikeComponent>() : nullptr;
+	if (!Hero)
+	{
+		return nullptr;
+	}
+	// asked several times a frame (the bikes, the hero's tick): the last answer is kept (per thread, so any caller is safe);
+	// a hero without the component is searched again each time, as before
+	static thread_local TWeakObjectPtr<const AActor> CachedHero;
+	static thread_local TWeakObjectPtr<UHeroBikeComponent> CachedBike;
+	if (CachedHero.Get() == Hero)
+	{
+		UHeroBikeComponent* B = CachedBike.Get();
+		if (B && B->GetOwner() == Hero)
+		{
+			return B;
+		}
+	}
+	UHeroBikeComponent* B = Hero->FindComponentByClass<UHeroBikeComponent>();
+	if (B)
+	{
+		CachedHero = Hero;
+		CachedBike = B;
+	}
+	return B;
 }
 
 AHeroCharacter* UHeroBikeComponent::Hero() const
@@ -363,7 +385,15 @@ bool UHeroBikeComponent::GroundAt(const FVector& At, float& OutZ, bool& bOutLoos
 	OutZ = (float)Hit.ImpactPoint.Z;
 	// the town's landscape is earth, grass and gravel; paths, roads, floors and decks are hard
 	const UPrimitiveComponent* C = Hit.GetComponent();
-	bOutLoose = C && C->GetClass()->GetName().Contains(TEXT("Landscape"));
+	// the class's name is looked at once per class, not made into a string on every trace
+	static const UClass* LastClass = nullptr;
+	static bool bLastLoose = false;
+	if (C && C->GetClass() != LastClass)
+	{
+		LastClass = C->GetClass();
+		bLastLoose = LastClass->GetName().Contains(TEXT("Landscape"));
+	}
+	bOutLoose = C && bLastLoose;
 	return true;
 }
 

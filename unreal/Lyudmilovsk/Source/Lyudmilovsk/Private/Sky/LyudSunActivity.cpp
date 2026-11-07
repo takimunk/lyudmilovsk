@@ -129,12 +129,22 @@ float ULyudSunActivity::Update(UMaterialInstanceDynamic* SkyMID, const FDateTime
 		SkyMID->SetVectorParameterValue(N.Flare, V4(F.Lat, Lon, F.Strength, FMath::Max(F.Peak, 0.05f)));
 	}
 
-	DebugLine = FString::Printf(TEXT("SUNACT regions %d (sent %d) | prominences %d alive, %d on the limb, %d erupting, %d sent | flare %.2f (peak %.2f, %.1f min, face %.2f) light %.2f | spin %.1f deg"),
-		S.AliveRegions, S.NumRegions, S.AliveProms, S.LimbProms, S.Eruptions, S.NumProms, S.Flare.Strength, S.Flare.Peak,
-		S.Flare.AgeMin, S.Flare.Face, S.FlareLight, FMath::RadiansToDegrees(S.Spin));
+	// the debug line is only formatted when someone looks (it was a 12-argument Printf every frame)
 	if (CVarSunDebug.GetValueOnGameThread() != 0 && GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(int32(0x5A11), 0.f, FColor::Orange, DebugLine);
+		GEngine->AddOnScreenDebugMessage(int32(0x5A11), 0.f, FColor::Orange, GetDebugLine());
 	}
 	return FlareLight;
+}
+
+FString ULyudSunActivity::GetDebugLine() const
+{
+	if (!State)
+	{
+		return FString();
+	}
+	const LyudSunActivity::FState& S = *State;
+	return FString::Printf(TEXT("SUNACT regions %d (sent %d) | prominences %d alive, %d on the limb, %d erupting, %d sent | flare %.2f (peak %.2f, %.1f min, face %.2f) light %.2f | spin %.1f deg"),
+		S.AliveRegions, S.NumRegions, S.AliveProms, S.LimbProms, S.Eruptions, S.NumProms, S.Flare.Strength, S.Flare.Peak,
+		S.Flare.AgeMin, S.Flare.Face, S.FlareLight, FMath::RadiansToDegrees(S.Spin));
 }

@@ -1286,7 +1286,7 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	};
 	if (FMath::Fmod(Meet.T, 0.5f) < Dt)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
+		UE_LOG(LogTemp, Verbose, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
 	}
 	switch (Meet.Kind)
 	{
@@ -1295,12 +1295,19 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (D > 100.f)
 		{
 			Vel = To.GetSafeNormal2D() * 260.f;
-			A->SetState(EBirdState::Fly);
+			// only on a change: SetState restarts the clip (at a random frame for loops) every time it is called
+			if (A->GetState() != EBirdState::Fly)
+			{
+				A->SetState(EBirdState::Fly);
+			}
 		}
 		else if (D > Len * 1.1f)
 		{
 			Vel = To.GetSafeNormal2D() * 90.f;
-			A->SetState(EBirdState::Hop);
+			if (A->GetState() != EBirdState::Hop)
+			{
+				A->SetState(EBirdState::Hop);
+			}
 		}
 		else if (Meet.T >= Meet.NextPeck && Meet.Pecks < 3)
 		{
@@ -1326,7 +1333,11 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (D > Len * 1.8f && Meet.T > 1.2f)
 		{
 			Vel = To.GetSafeNormal2D() * 40.f;
-			A->SetState(Row && Row->Gait == EBirdGait::Walk ? EBirdState::Walk : EBirdState::Hop);
+			const EBirdState Gait = Row && Row->Gait == EBirdGait::Walk ? EBirdState::Walk : EBirdState::Hop;
+			if (A->GetState() != Gait)
+			{
+				A->SetState(Gait);
+			}
 		}
 		break;
 	case EAnswer::CallBack:
@@ -1338,7 +1349,10 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		}
 		break;
 	default:
-		A->SetState(EBirdState::Look);
+		if (A->GetState() != EBirdState::Look)
+		{
+			A->SetState(EBirdState::Look);
+		}
 		break;
 	}
 	if (!Vel.IsNearlyZero())

@@ -89,11 +89,20 @@ namespace
 		{ TEXT("Cobbles"), nullptr, FLinearColor(0.26f, 0.24f, 0.21f), 0.75f, false, 2600.f, 0.f },
 	};
 
-	float DayNow(const UWorld* World)
+	float DayNow(const UWorld* World, TWeakObjectPtr<ALyudSky>* Cache = nullptr)
 	{
-		if (TActorIterator<ALyudSky> It(World); It)
+		ALyudSky* Sky = Cache ? Cache->Get() : nullptr;
+		if (!Sky)
 		{
-			return UGameCalendar::DayOfYear(It->ShownTime());
+			if (TActorIterator<ALyudSky> It(World); It)
+			{
+				Sky = *It;
+				if (Cache) *Cache = Sky;
+			}
+		}
+		if (Sky)
+		{
+			return UGameCalendar::DayOfYear(Sky->ShownTime());
 		}
 		return UGameCalendar::DayOfYear(UGameCalendar::NowIn(World));
 	}
@@ -432,7 +441,7 @@ void ULyudSeabedComponent::UpdateJellies(const FVector& Eye, float Dt)
 	ALyudSea* Sea = Cast<ALyudSea>(GetOwner());
 	UInstancedStaticMeshComponent* J = Mesh(Jelly, 0);
 	// moon jellies come with the summer's warmth and stay into the autumn's storms
-	const float Day = DayNow(GetWorld());
+	const float Day = DayNow(GetWorld(), &SkyRef);
 	const int32 Want = (Day > 165.f && Day < 320.f) ? FMath::Max(Jellyfish, 0) : 0;
 	const float SeaZ = Sea->SeaLevel();
 	const float Box = FMath::Min(AppliedRadius, 1100.f);
@@ -508,7 +517,7 @@ void ULyudSeabedComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	EnsureComponents();
 	for (UInstancedStaticMeshComponent* C : Kinds)
 	{
-		C->SetVisibility(bOn);
+		C->SetVisibility(bOn && !bAwayHidden);
 	}
 	if (!bOn || !Sea->IsDepthReady())
 	{
@@ -522,12 +531,41 @@ void ULyudSeabedComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	}
 	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
 	// only round an eye in the water or a few metres over it (from the cliff or the town nothing of it shows)
+	// against the still level (a passing wave crest moved the edge), and leaving a little further out than coming in
 	const FLyudSeaSample Here = Sea->SampleSurface(Eye);
-	const bool bNear = Here.bIsSea && Here.Depth > 50.f && Eye.Z < Here.SurfaceZ + 800.f;
+	const bool bShown = bBuilt && !bAwayHidden;
+	const float Level = Sea->SeaLevel();
+	const bool bNear = Here.bIsSea && (bShown ? Here.Depth > 25.f && Eye.Z < Level + 1100.f : Here.Depth > 50.f && Eye.Z < Level + 800.f);
 	if (!bNear)
 	{
-		if (bBuilt) Clear();
+		if (bBuilt)
+		{
+			// hide now, free after half a minute away (coming back to the same tile then costs nothing)
+			if (!bAwayHidden)
+			{
+				bAwayHidden = true;
+				AwayTime = 0.f;
+				for (UInstancedStaticMeshComponent* C : Kinds)
+				{
+					C->SetVisibility(false);
+				}
+			}
+			AwayTime += DeltaTime;
+			if (AwayTime > 30.f)
+			{
+				Clear();
+				bAwayHidden = false;
+			}
+		}
 		return;
+	}
+	if (bAwayHidden)
+	{
+		bAwayHidden = false;
+		for (UInstancedStaticMeshComponent* C : Kinds)
+		{
+			C->SetVisibility(true);
+		}
 	}
 	// the plants grow with the calendar: check their state now and then (a regrow only when it changed)
 	if ((PlantClock -= DeltaTime) <= 0.f)
@@ -568,6 +606,7 @@ void ULyudSeabedComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 FVector ULyudSeabedComponent::FindNearest(int32 Kind, const FVector& From) const
 {
 	FVector Best = From;
+	if (bAwayHidden) return Best;  // parked away from the water: nothing on the bed, as before it was kept
 	double BestD = DBL_MAX;
 	for (int32 V = 0; V < Variants; V++)
 	{

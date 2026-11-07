@@ -252,6 +252,8 @@ bool ULyudTransportSubsystem::Start(UWorld& World)
 		UE_LOG(LogTemp, Error, TEXT("Transport: OFF: %s"), UTF8_TO_TCHAR(N->LastError.c_str()));
 		return false;
 	}
+	// finished trips' slots are reused (HandleEvents releases them once handled), or Riders grows all session
+	N->bReuseRiders = true;
 	Net = MoveTemp(N);
 	LyudTransit::SetActive(this);
 	// a level built before the network had world_mesh's placeholder cable car: hide it
@@ -665,6 +667,28 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 			A->Hum->SetPitchMultiplier(0.8f + 0.04f * C.Speed);
 		}
 		A->Lamp->SetVisibility(Dist < 8000.f);
+		// the cabin's widgets draw into render targets: the inside board and posters only near or aboard, the hull plates
+		// within 300 m (a few pixels further), like UpdateBoards does for the stations' boards
+		{
+			auto ShowWidget = [](UWidgetComponent* W, bool bOn)
+			{
+				if (W && W->IsVisible() != bOn)
+				{
+					W->SetVisibility(bOn);
+					W->SetTickMode(bOn ? ETickMode::Enabled : ETickMode::Disabled);
+				}
+			};
+			const bool bInsideNear = I == RidingCabin || Dist < 6000.f;
+			ShowWidget(A->Board, bInsideNear);
+			for (UWidgetComponent* W : A->Posters)
+			{
+				ShowWidget(W, bInsideNear);
+			}
+			for (UWidgetComponent* W : A->Plates)
+			{
+				ShowWidget(W, Dist < 30000.f);
+			}
+		}
 		// the box cabin's shell (an old kit) gets in the view from inside: the player aboard sees the boxes only; the
 		// hollow cabin is seen from inside as it is
 		if (!A->bRoom && A->Shell->GetStaticMesh() && A->Shell->IsVisible() == (I == RidingCabin))
@@ -830,6 +854,15 @@ void ULyudTransportSubsystem::HandleEvents()
 			}
 		}
 	}
+	// the trips that ended in these events: nothing points at them any more (PeopleRides dropped them above, the
+	// player's is found by FindRider), so their slots go to the next trips
+	for (const LT::FEvent& E : Events)
+	{
+		if (E.Kind == LT::EEvent::Done || E.Kind == LT::EEvent::Alight)
+		{
+			Net->ReleaseRider(E.Rider);
+		}
+	}
 }
 
 void ULyudTransportSubsystem::Announce(int32 Cabin, FName What, int32 Station)
@@ -907,7 +940,9 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 	{
 		return;
 	}
-	FText Prompt;
+	// what the prompt says, as a key (kind, a, b); its text is made below only when the key changes
+	enum : int32 { PNone, PDoor, PSeatUp, PSeatSit, PWhere, PCall, PBoard, PRide };
+	FIntVector Want(PNone, 0, 0);
 	int32 PanelStation = -1;
 	bool bClubBoard = false;
 	// a cabin standing at a station: E at its door opens or shuts it, like any door (before the call panel there,
@@ -945,49 +980,73 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 	}
 	if (DoorCabin >= 0)
 	{
-		const LT::FCabin& C = Net->Cabins[DoorCabin];
-		Prompt = LyudText::Get(C.Door > 0.5f ? TEXT("transport.prompt.cabin_shut") : TEXT("transport.prompt.cabin_open"),
-			{ FStringFormatArg(LyudText::Get(Key(C.Name)).ToString()) });
+		Want = FIntVector(PDoor, DoorCabin, Net->Cabins[DoorCabin].Door > 0.5f ? 1 : 0);
 	}
 	else if (SeatedCabin >= 0)
 	{
-		Prompt = LyudText::Get(TEXT("transport.prompt.seat_up"));
+		Want = FIntVector(PSeatUp, 0, 0);
 	}
 	else if (SeatK >= 0)
 	{
-		Prompt = LyudText::Get(TEXT("transport.prompt.seat_sit"));
+		Want = FIntVector(PSeatSit, 0, 0);
 	}
 	else if (WhereCabin >= 0)
 	{
-		Prompt = LyudText::Get(TEXT("transport.prompt.cabin_where"));
+		Want = FIntVector(PWhere, 0, 0);
 	}
-	if (Cableway && Prompt.IsEmpty())
+	if (Cableway && Want.X == PNone)
 	{
 		const int32 S = Cableway->StationAt(P);
 		if (S >= 0 && Cableway->PanelNear(S, P, PanelReach) >= 0)
 		{
 			PanelStation = S;
-			Prompt = LyudText::Get(TEXT("transport.prompt.call"));
+			Want = FIntVector(PCall, 0, 0);
 		}
 		else if (const int32 V = Cableway->VestibuleBoardNear(P, 250.f); V >= 0)
 		{
 			PanelStation = V;
-			Prompt = LyudText::Get(TEXT("transport.prompt.call"));
+			Want = FIntVector(PCall, 0, 0);
 		}
 		else if (Cableway->ClubBoardNear(P, 350.f))
 		{
 			bClubBoard = true;
-			Prompt = LyudText::Get(TEXT("transport.prompt.board"));
+			Want = FIntVector(PBoard, 0, 0);
 		}
 	}
-	if (RidingCabin >= 0 && Prompt.IsEmpty())
+	if (RidingCabin >= 0 && Want.X == PNone)
 	{
-		const LT::FCabin& C = Net->Cabins[RidingCabin];
-		const int32 Dest = Net->Destination(RidingCabin);
-		Prompt = LyudText::Get(TEXT("transport.prompt.ride"), { FStringFormatArg(LyudText::Get(Key(C.Name)).ToString()),
-			FStringFormatArg(Dest >= 0 ? StationName(Dest).ToString() : LyudText::Get(TEXT("transport.cabin.idle")).ToString()) });
+		Want = FIntVector(PRide, RidingCabin, Net->Destination(RidingCabin));
 	}
-	UI->SetPrompt(this, Prompt);
+	PromptRefresh -= DeltaTime;
+	// a language switch rewrites the text too (the key alone doesn't change)
+	const bool bLangChanged = PromptLang != LyudText::Language();
+	if (Want != PromptShown || bLangChanged || (Want.X != PNone && PromptRefresh <= 0.f))
+	{
+		if (Want != PromptShown || bLangChanged)
+		{
+			switch (Want.X)
+			{
+			case PDoor:
+				PromptText = LyudText::Get(Want.Z ? TEXT("transport.prompt.cabin_shut") : TEXT("transport.prompt.cabin_open"),
+					{ FStringFormatArg(LyudText::Get(Key(Net->Cabins[Want.Y].Name)).ToString()) });
+				break;
+			case PSeatUp: PromptText = LyudText::Get(TEXT("transport.prompt.seat_up")); break;
+			case PSeatSit: PromptText = LyudText::Get(TEXT("transport.prompt.seat_sit")); break;
+			case PWhere: PromptText = LyudText::Get(TEXT("transport.prompt.cabin_where")); break;
+			case PCall: PromptText = LyudText::Get(TEXT("transport.prompt.call")); break;
+			case PBoard: PromptText = LyudText::Get(TEXT("transport.prompt.board")); break;
+			case PRide:
+				PromptText = LyudText::Get(TEXT("transport.prompt.ride"), { FStringFormatArg(LyudText::Get(Key(Net->Cabins[Want.Y].Name)).ToString()),
+					FStringFormatArg(Want.Z >= 0 ? StationName(Want.Z).ToString() : LyudText::Get(TEXT("transport.cabin.idle")).ToString()) });
+				break;
+			default: PromptText = FText::GetEmpty(); break;
+			}
+			PromptShown = Want;
+			PromptLang = LyudText::Language();
+		}
+		UI->SetPrompt(this, PromptText);
+		PromptRefresh = 0.25f;
+	}
 	const bool bE = PromptCooldown <= 0.f && PC->WasInputKeyJustPressed(EKeys::E) && !UI->IsOpen();
 	if (bE && DoorCabin >= 0)
 	{

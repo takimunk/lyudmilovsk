@@ -124,6 +124,25 @@ namespace
 
 	const FName BlinkL(TEXT("eyeBlinkLeft")), BlinkR(TEXT("eyeBlinkRight")), JawOpen(TEXT("jawOpen")),
 		MouthFunnel(TEXT("mouthFunnel")), MouthSmile(TEXT("mouthSmile")), BrowUp(TEXT("browUp"));
+	const FName NamePcGamepad(TEXT("PC_Gamepad")), NamePcType(TEXT("PC_Type")), NamePcGame(TEXT("PC_Game")), NamePcScroll(TEXT("PC_Scroll"));
+
+	// FLyudBodyAnimProxy::BoneIdx's order: the legs and the arms (left, right; upper, lower, end), then the trunk and head
+	enum EBodyBone
+	{
+		BB_Pelvis, BB_ThighL, BB_CalfL, BB_FootL, BB_ThighR, BB_CalfR, BB_FootR,
+		BB_UpperarmL, BB_LowerarmL, BB_HandL, BB_UpperarmR, BB_LowerarmR, BB_HandR,
+		BB_Spine1, BB_Spine2, BB_Spine3, BB_Head, BB_ClavicleL, BB_ClavicleR, BB_Neck, BB_Num
+	};
+	static_assert(BB_Num == FLyudBodyAnimProxy::NumBones, "FLyudBodyAnimProxy::NumBones");
+
+	const FName& BodyBoneName(int32 I)
+	{
+		static const FName Names[BB_Num] = { TEXT("pelvis"), TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l"), TEXT("thigh_r"),
+			TEXT("calf_r"), TEXT("foot_r"), TEXT("upperarm_l"), TEXT("lowerarm_l"), TEXT("hand_l"), TEXT("upperarm_r"),
+			TEXT("lowerarm_r"), TEXT("hand_r"), TEXT("spine_01"), TEXT("spine_02"), TEXT("spine_03"), TEXT("head"),
+			TEXT("clavicle_l"), TEXT("clavicle_r"), TEXT("neck_01") };
+		return Names[I];
+	}
 }
 
 static TAutoConsoleVariable<int32> CVarFaceLog(TEXT("lyud.Face.Log"), 0, TEXT("1: log each body's face values once a second."));
@@ -167,9 +186,12 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 		FAnimationRuntime::BlendTwoPosesTogetherInPlace(OutData, FAnimationPoseData(From), W);
 	}
 	// the face's morph targets as curves (SK_Human_Skeleton marks them morph target curves, import_character.py)
-	for (int32 I = 0; I < FaceCurves.Num(); I++)
+	if (bFaceCurves)
 	{
-		Output.Curve.Set(FaceCurveNames()[I], FaceCurves[I]);
+		for (int32 I = 0; I < (int32)UE_ARRAY_COUNT(FaceCurves); I++)
+		{
+			Output.Curve.Set(FaceCurveNames()[I], FaceCurves[I]);
+		}
 	}
 	Procedural(Output);
 	// on a bicycle: the hips on the saddle, the feet on the pedals, the hands on the bars (Bikes/LyudBikeRider)
@@ -181,14 +203,27 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 	return true;
 }
 
+void FLyudBodyAnimProxy::AddReferencedObjects(UAnimInstance* InAnimInstance, FReferenceCollector& Collector)
+{
+	FAnimInstanceProxy::AddReferencedObjects(InAnimInstance, Collector);
+	Collector.AddReferencedObject(Cur.Seq, InAnimInstance);
+	Collector.AddReferencedObject(Prev.Seq, InAnimInstance);
+}
+
 void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 {
 	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
-	auto Bone = [&Bones](const TCHAR* Name)
+	if (BonesFor != &Bones || BonesSerial != Bones.GetSerialNumber() || BonesSerial == 0)
 	{
-		const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(Name);
-		return MeshIndex == INDEX_NONE ? FCompactPoseBoneIndex(INDEX_NONE) : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex));
-	};
+		BonesFor = &Bones;
+		BonesSerial = Bones.GetSerialNumber();
+		for (int32 I = 0; I < BB_Num; I++)
+		{
+			const int32 MeshIndex = Bones.GetPoseBoneIndexForBoneName(BodyBoneName(I));
+			BoneIdx[I] = MeshIndex == INDEX_NONE ? INDEX_NONE : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(MeshIndex)).GetInt();
+		}
+	}
+	auto Bone = [this](int32 Which) { return FCompactPoseBoneIndex(BoneIdx[Which]); };
 	FCSPose<FCompactPose> CS;
 	CS.InitPose(Output.Pose);
 	// turns a bone (and so its children) about a component-space axis through its joint; the mesh faces +Y, its left
@@ -203,17 +238,16 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 		}
 	};
 	// the feet first (they move the pelvis), then the upper body on top
-	const FCompactPoseBoneIndex Pelvis = Bone(TEXT("pelvis"));
+	const FCompactPoseBoneIndex Pelvis = Bone(BB_Pelvis);
 	if (FootIKAlpha > 0.01f && Pelvis.IsValid())
 	{
-		const TCHAR* Names[2][3] = { { TEXT("thigh_l"), TEXT("calf_l"), TEXT("foot_l") }, { TEXT("thigh_r"), TEXT("calf_r"), TEXT("foot_r") } };
 		FCompactPoseBoneIndex Leg[2][3];
 		bool bOk = true;
 		for (int32 S = 0; S < 2; S++)
 		{
 			for (int32 J = 0; J < 3; J++)
 			{
-				Leg[S][J] = Bone(Names[S][J]);
+				Leg[S][J] = Bone(BB_ThighL + S * 3 + J);
 				bOk &= Leg[S][J].IsValid();
 			}
 		}
@@ -257,13 +291,12 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 		}
 	}
 	// the hands onto the desk under them (club desks stand at their own heights, their chairs at their own distances)
-	const TCHAR* Arms[2][3] = { { TEXT("upperarm_l"), TEXT("lowerarm_l"), TEXT("hand_l") }, { TEXT("upperarm_r"), TEXT("lowerarm_r"), TEXT("hand_r") } };
 	FCompactPoseBoneIndex Arm[2][3];
 	for (int32 S = 0; S < 2; S++)
 	{
 		for (int32 J = 0; J < 3; J++)
 		{
-			Arm[S][J] = Bone(Arms[S][J]);
+			Arm[S][J] = Bone(BB_UpperarmL + S * 3 + J);
 		}
 		// where the clip puts the hand, for the game side's desk traces (read after this evaluation)
 		ClipHand[S] = Arm[S][2].IsValid() ? CS.GetComponentSpaceTransform(Arm[S][2]).GetLocation() : FVector::ZeroVector;
@@ -274,10 +307,10 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 		// arms reaching out straight; the head keeps most of its look at the screen
 		const float Ahead = FMath::Max(HandOffset[0].Y, HandOffset[1].Y) * HandIKAlpha;
 		const float DeskLean = FMath::Clamp((Ahead - 6.f) * 0.55f, 0.f, 14.f);
-		Turn(Bone(TEXT("spine_01")), FVector::XAxisVector, -DeskLean * 0.4f);
-		Turn(Bone(TEXT("spine_02")), FVector::XAxisVector, -DeskLean * 0.35f);
-		Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -DeskLean * 0.25f);
-		Turn(Bone(TEXT("head")), FVector::XAxisVector, DeskLean * 0.6f);
+		Turn(Bone(BB_Spine1), FVector::XAxisVector, -DeskLean * 0.4f);
+		Turn(Bone(BB_Spine2), FVector::XAxisVector, -DeskLean * 0.35f);
+		Turn(Bone(BB_Spine3), FVector::XAxisVector, -DeskLean * 0.25f);
+		Turn(Bone(BB_Head), FVector::XAxisVector, DeskLean * 0.6f);
 		for (int32 S = 0; S < 2; S++)
 		{
 			const FCompactPoseBoneIndex A = Arm[S][0], Bi = Arm[S][1], C = Arm[S][2];
@@ -305,19 +338,19 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 	}
 	// breathing: the chest lifts and opens, the shoulders rise a little, the head keeps still
 	const float B = (Breath - 0.5f) * BreathDepth;
-	Turn(Bone(TEXT("spine_02")), FVector::XAxisVector, -0.9f * B);
-	Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -1.3f * B);
-	Turn(Bone(TEXT("clavicle_l")), FVector::YAxisVector, -1.6f * B);
-	Turn(Bone(TEXT("clavicle_r")), FVector::YAxisVector, 1.6f * B);
-	Turn(Bone(TEXT("neck_01")), FVector::XAxisVector, 1.6f * B);
+	Turn(Bone(BB_Spine2), FVector::XAxisVector, -0.9f * B);
+	Turn(Bone(BB_Spine3), FVector::XAxisVector, -1.3f * B);
+	Turn(Bone(BB_ClavicleL), FVector::YAxisVector, -1.6f * B);
+	Turn(Bone(BB_ClavicleR), FVector::YAxisVector, 1.6f * B);
+	Turn(Bone(BB_Neck), FVector::XAxisVector, 1.6f * B);
 	// leaning with the motion: forward into a start or uphill, back when stopping, into a turn
-	Turn(Bone(TEXT("spine_01")), FVector::XAxisVector, -LeanPitch * 0.6f);
-	Turn(Bone(TEXT("spine_01")), FVector::YAxisVector, LeanRoll * 0.6f);
-	Turn(Bone(TEXT("spine_03")), FVector::XAxisVector, -LeanPitch * 0.4f);
+	Turn(Bone(BB_Spine1), FVector::XAxisVector, -LeanPitch * 0.6f);
+	Turn(Bone(BB_Spine1), FVector::YAxisVector, LeanRoll * 0.6f);
+	Turn(Bone(BB_Spine3), FVector::XAxisVector, -LeanPitch * 0.4f);
 	// the head's turn toward what the person looks at, a third in the neck and the rest in the head
 	if (FMath::Abs(HeadYaw) + FMath::Abs(HeadPitch) > 0.05f)
 	{
-		for (const TPair<const TCHAR*, float>& N : { TPair<const TCHAR*, float>(TEXT("neck_01"), 0.35f), TPair<const TCHAR*, float>(TEXT("head"), 0.65f) })
+		for (const TPair<int32, float>& N : { TPair<int32, float>(BB_Neck, 0.35f), TPair<int32, float>(BB_Head, 0.65f) })
 		{
 			const FCompactPoseBoneIndex I = Bone(N.Key);
 			if (I.IsValid())
@@ -424,6 +457,7 @@ bool ULyudBodyAnimInstance::Speak(const FString& LineKey)
 	Funnel = S->Funnel;
 	Smile = S->Smile;
 	SpeakStart = Clock;
+	SpeakStartWorld = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
 	// the speaker looks at whom they talk to
 	AttendUntil = Clock + 4.f;
 	bAttending = bCandidate;
@@ -475,7 +509,10 @@ void ULyudBodyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		UpdateBlink(Mesh);
 		UpdateMouth(Mesh, DeltaSeconds);
-		GetProxyOnGameThread<FLyudBodyAnimProxy>().FaceCurves = TArray<float>(Morph, 6);
+		FLyudBodyAnimProxy& P = GetProxyOnGameThread<FLyudBodyAnimProxy>();
+		static_assert(sizeof(P.FaceCurves) == sizeof(Morph), "FaceCurves");
+		FMemory::Memcpy(P.FaceCurves, Morph, sizeof(Morph));
+		P.bFaceCurves = true;
 	}
 }
 
@@ -582,7 +619,9 @@ void ULyudBodyAnimInstance::UpdateComputer(USkeletalMeshComponent* Mesh)
 
 void ULyudBodyAnimInstance::UpdateGamepad(USkeletalMeshComponent* Mesh)
 {
-	const bool bShow = PcClip == TEXT("PC_Gamepad") && CurrentClip() && CurrentClip()->GetName().EndsWith(TEXT("PC_Gamepad"));
+	// the gamepad loop itself playing (not still blending in from another): PcClips holds the clip loaded for PC_Gamepad
+	const TObjectPtr<UAnimSequence>* Pad = PcClip == NamePcGamepad ? PcClips.Find(NamePcGamepad) : nullptr;
+	const bool bShow = Pad && *Pad && CurrentClip() == Pad->Get();
 	if (bShow && !Gamepad && Mesh->GetOwner())
 	{
 		if (UStaticMesh* SM = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Gamepad.SM_Gamepad")))
@@ -590,6 +629,9 @@ void ULyudBodyAnimInstance::UpdateGamepad(USkeletalMeshComponent* Mesh)
 			Gamepad = NewObject<UStaticMeshComponent>(Mesh->GetOwner(), TEXT("Gamepad"));
 			Gamepad->SetStaticMesh(SM);
 			Gamepad->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			// moved every frame in the hands: out of the distance fields and Lumen (perf checklist)
+			Gamepad->bAffectDistanceFieldLighting = false;
+			Gamepad->bAffectDynamicIndirectLighting = false;
 			Gamepad->SetupAttachment(Mesh);
 			Gamepad->RegisterComponent();
 		}
@@ -662,33 +704,50 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	P.LeanRoll = Lean.Y;
 	// the feet on the ground: a trace under each foot (where it was last frame)
 	FootAlpha += ((bOnFeet ? 1.f : 0.f) - FootAlpha) * FMath::Min(1.f, Dt * 5.f);
+	FootTraceAge += Dt;
 	if (FootAlpha > 0.01f && GetWorld())
 	{
+		// near the camera (25 m) the feet are traced every frame; further off a few times a second (the smoothing below
+		// carries them between), where a foot's few cm can't be told
+		const APlayerCameraManager* Cam = UGameplayStatics::GetPlayerCameraManager(this, 0);
+		const bool bNear = !Cam || FVector::DistSquared(Cam->GetCameraLocation(), Pos) < 2500.f * 2500.f;
+		const bool bTrace = bNear || FootTraceAge >= 0.2f;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(LyudFeet), false, Mesh->GetOwner());
-		if (const APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0))
+		if (bTrace)
 		{
-			Q.AddIgnoredActor(Player);
+			FootTraceAge = 0.f;
+			if (const APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0))
+			{
+				Q.AddIgnoredActor(Player);
+			}
 		}
-		const TCHAR* Feet[2] = { TEXT("foot_l"), TEXT("foot_r") };
+		static const FName Feet[2] = { TEXT("foot_l"), TEXT("foot_r") };
 		for (int32 S = 0; S < 2; S++)
 		{
-			const FVector F = Mesh->GetSocketLocation(Feet[S]);
-			FHitResult Hit;
-			float Off = 0.f;
-			FVector N = FVector::UpVector;
-			// only the ground itself: from a step's height (not from the knee, where a counter's plinth, a shelf or a
-			// till stand) down, and only what stands still (not another person, a cat, a bag on the floor); a hit that
-			// isn't something to stand on (a wall, a riser, a counter's side) leaves the foot where the clip has it
-			if (GetWorld()->LineTraceSingleByObjectType(Hit, FVector(F.X, F.Y, Pos.Z + 30.f), FVector(F.X, F.Y, Pos.Z - 60.f), FCollisionObjectQueryParams(ECC_WorldStatic), Q)
-				&& !Hit.bStartPenetrating)
+			if (bTrace)
 			{
-				const FVector Nw = C.InverseTransformVectorNoScale(Hit.ImpactNormal).GetSafeNormal();
-				if (Nw.Z >= 0.7f)
+				const FVector F = Mesh->GetSocketLocation(Feet[S]);
+				FHitResult Hit;
+				float Off = 0.f;
+				FVector N = FVector::UpVector;
+				// only the ground itself: from a step's height (not from the knee, where a counter's plinth, a shelf or a
+				// till stand) down, and only what stands still (not another person, a cat, a bag on the floor); a hit that
+				// isn't something to stand on (a wall, a riser, a counter's side) leaves the foot where the clip has it
+				if (GetWorld()->LineTraceSingleByObjectType(Hit, FVector(F.X, F.Y, Pos.Z + 30.f), FVector(F.X, F.Y, Pos.Z - 60.f), FCollisionObjectQueryParams(ECC_WorldStatic), Q)
+					&& !Hit.bStartPenetrating)
 				{
-					Off = FMath::Clamp((float)(Hit.ImpactPoint.Z - Pos.Z), -40.f, 25.f);
-					N = Nw;
+					const FVector Nw = C.InverseTransformVectorNoScale(Hit.ImpactNormal).GetSafeNormal();
+					if (Nw.Z >= 0.7f)
+					{
+						Off = FMath::Clamp((float)(Hit.ImpactPoint.Z - Pos.Z), -40.f, 25.f);
+						N = Nw;
+					}
 				}
+				FootHitOff[S] = Off;
+				FootHitNor[S] = N;
 			}
+			const float Off = FootHitOff[S];
+			const FVector N = FootHitNor[S];
 			FootOff[S] += (Off - FootOff[S]) * FMath::Min(1.f, Dt * 12.f);
 			FootNor[S] = FMath::Lerp(FootNor[S], N, FMath::Min(1.f, Dt * 8.f)).GetSafeNormal();
 			P.FootOffset[S] = FootOff[S] / FMath::Max((float)C.GetScale3D().Z, 0.1f);     // in the (scaled) mesh's own cm
@@ -697,12 +756,17 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	}
 	P.FootIKAlpha = FootAlpha;
 	// at a computer with the hands on the desk: the surface under each hand
-	const bool bDeskHands = PcClip == TEXT("PC_Type") || PcClip == TEXT("PC_Game") || PcClip == TEXT("PC_Scroll");
+	const bool bDeskHands = PcClip == NamePcType || PcClip == NamePcGame || PcClip == NamePcScroll;
 	HandAlpha += ((bDeskHands ? 1.f : 0.f) - HandAlpha) * FMath::Min(1.f, Dt * 3.f);
 	if (HandAlpha > 0.01f && GetWorld())
 	{
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(LyudHands), false, Mesh->GetOwner());
 		const FVector Fwd = C.GetRotation().RotateVector(FVector::YAxisVector);            // the mesh faces +Y
+		// a body sitting still at its desk: the desk found last time stays where it was (traced again after a while, or
+		// when the body or the hand moves on)
+		const bool bBodyStill = C.GetLocation().Equals(DeskFrom.GetLocation(), 0.5f) && C.GetRotation().Equals(DeskFrom.GetRotation(), 1e-4f)
+			&& C.GetScale3D().Equals(DeskFrom.GetScale3D(), 1e-3f);
+		DeskFrom = C;
 		for (int32 S = 0; S < 2; S++)
 		{
 			// where the clip puts the hand (before the IK, the last evaluation), then the desk: right under it, or a little
@@ -710,19 +774,35 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 			const FVector Clip = P.ClipHand[S];
 			const FVector H = C.TransformPosition(Clip);
 			FVector Off = FVector::ZeroVector;
-			for (float D = 0.f; D <= 30.f && !Clip.IsNearlyZero(); D += 5.f)
+			DeskAge[S] += Dt;
+			if (!Clip.IsNearlyZero() && (!bBodyStill || DeskAge[S] > 0.25f || FVector::DistSquared(H, DeskH[S]) > 2.f * 2.f))
 			{
-				const FVector At = H + Fwd * D;
-				FHitResult Hit;
-				if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.f, 0.f, 12.f), At - FVector(0.f, 0.f, 20.f), ECC_Visibility, Q)
-					&& Hit.ImpactNormal.Z > 0.8f)
+				DeskAge[S] = 0.f;
+				DeskH[S] = H;
+				bDeskHit[S] = false;
+				for (float D = 0.f; D <= 30.f; D += 5.f)
 				{
-					const FVector World(At.X + Fwd.X * (D > 0.f ? 4.f : 0.f), At.Y + Fwd.Y * (D > 0.f ? 4.f : 0.f), Hit.ImpactPoint.Z + 3.f);
-					// in the mesh's own (scaled) space: a child's body is a scaled grown-up's
-					Off = C.InverseTransformPosition(World) - Clip;
-					Off.Z = FMath::Clamp((float)Off.Z, -12.f, 10.f);
-					break;
+					const FVector At = H + Fwd * D;
+					FHitResult Hit;
+					if (GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.f, 0.f, 12.f), At - FVector(0.f, 0.f, 20.f), ECC_Visibility, Q)
+						&& Hit.ImpactNormal.Z > 0.8f)
+					{
+						bDeskHit[S] = true;
+						DeskD[S] = D;
+						DeskZ[S] = (float)Hit.ImpactPoint.Z;
+						break;
+					}
 				}
+			}
+			if (!Clip.IsNearlyZero() && bDeskHit[S])
+			{
+				// the desk's top under (or ahead of) the clip's hand now: the flat desk keeps its height where it was found
+				const float D = DeskD[S];
+				const FVector At = H + Fwd * D;
+				const FVector World(At.X + Fwd.X * (D > 0.f ? 4.f : 0.f), At.Y + Fwd.Y * (D > 0.f ? 4.f : 0.f), DeskZ[S] + 3.f);
+				// in the mesh's own (scaled) space: a child's body is a scaled grown-up's
+				Off = C.InverseTransformPosition(World) - Clip;
+				Off.Z = FMath::Clamp((float)Off.Z, -12.f, 10.f);
 			}
 			HandOff[S] += (Off - HandOff[S]) * FMath::Min(1.f, Dt * 4.f);
 			P.HandOffset[S] = HandOff[S];
@@ -891,6 +971,9 @@ void ULyudBodyAnimInstance::MakeEyes(USkeletalMeshComponent* Mesh)
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		C->SetCastShadow(false);
 		C->SetReceivesDecals(false);
+		// they move with the head every frame: out of the distance fields and Lumen (perf checklist); a few cm, unshadowed
+		C->bAffectDistanceFieldLighting = false;
+		C->bAffectDynamicIndirectLighting = false;
 		C->SetupAttachment(Mesh, TEXT("head"));
 		C->SetRelativeTransform(InMesh.GetRelativeTransform(HeadRef));
 		C->RegisterComponent();
@@ -914,7 +997,9 @@ void ULyudBodyAnimInstance::UpdateMouth(USkeletalMeshComponent* Mesh, float Dt)
 	FVector Want = FVector::ZeroVector;
 	if (SpeakStart >= 0.f)
 	{
-		const float Frame = (Clock - SpeakStart) * 30.f;
+		// on the world's clock (the voice's), not the body's own: an unseen body's Clock stands still
+		const UWorld* World = GetWorld();
+		const float Frame = (World ? (float)(World->GetTimeSeconds() - SpeakStartWorld) : Clock - SpeakStart) * 30.f;
 		if (Frame >= (float)Jaw.Num())
 		{
 			SpeakStart = -1.f;
@@ -976,6 +1061,9 @@ void ULyudFaceSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		{
 			continue;
 		}
+		// hidden (their person away from the station, a stray copy) or off screen, they don't animate: the life's body or
+		// nobody shows them meanwhile (ANpcBody does the same); the lips keep the voice's time on the world clock (Speak)
+		Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 		// the instance plays AnimationData's clip itself (NativeInitializeAnimation)
 		Mesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		Mesh->SetAnimInstanceClass(ULyudBodyAnimInstance::StaticClass());

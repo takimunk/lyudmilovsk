@@ -218,6 +218,12 @@ void ALyudCableway::UpdateHallSound(const FVector& Viewer, float DeltaTime)
 	}
 	HallTimer.SetNum(Built.Num());
 	CabinNear.SetNum(Built.Num());
+	// where the cabins are: one actor walk a frame, not one per station
+	TArray<FVector, TInlineAllocator<32>> CabinAt;
+	for (TActorIterator<ALyudCabin> It(GetWorld()); It; ++It)
+	{
+		CabinAt.Add(It->GetActorLocation());
+	}
 	for (int32 S = 0; S < Built.Num(); S++)
 	{
 		const FLyudBuiltStation& B = Built[S];
@@ -229,9 +235,9 @@ void ALyudCableway::UpdateHallSound(const FVector& Viewer, float DeltaTime)
 		const bool bIn = FVector::Dist2D(Viewer, Room) < 900.f && FMath::Abs(Viewer.Z - Room.Z) < 450.f;
 		// a cabin comes in: within 90 m of the station and getting nearer (once until it has gone again)
 		bool bNear = false;
-		for (TActorIterator<ALyudCabin> It(GetWorld()); It; ++It)
+		for (const FVector& At : CabinAt)
 		{
-			bNear |= FVector::Dist(It->GetActorLocation(), StationCentres[S]) < 9000.f;
+			bNear |= FVector::Dist(At, StationCentres[S]) < 9000.f;
 		}
 		const bool bComing = bNear && !CabinNear[S];
 		CabinNear[S] = bNear;

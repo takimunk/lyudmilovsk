@@ -322,7 +322,14 @@ void ALyudRareSky::Tick(float DeltaSeconds)
 
 	Now.Kp = In.Kp;
 	Now.Aurora = S.Aurora.Visible;
-	Now.AuroraPhase = ANSI_TO_TCHAR(LyudRareSky::PhaseName(S.Aurora.Phase));
+	{
+		// a new FString only when the phase changes (the conversion buffer is on the stack)
+		const auto Phase = StringCast<TCHAR>(LyudRareSky::PhaseName(S.Aurora.Phase));
+		if (Now.AuroraPhase != Phase.Get())
+		{
+			Now.AuroraPhase = Phase.Get();
+		}
+	}
 	Now.AuroraEdgeKm = S.Aurora.EdgeKm;
 	Now.Halo = S.Halo.Strength;
 	Now.SunDogs = S.Halo.SunDogs;

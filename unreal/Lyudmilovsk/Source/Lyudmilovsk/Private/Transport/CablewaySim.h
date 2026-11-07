@@ -172,6 +172,7 @@ namespace LyudTransport
 		double Since = 0.0;         // when it started waiting
 		double Asked = 0.0;
 		int Station() const;        // where it waits / is
+		bool bFree = false;         // a finished trip's slot, given to the next new trip (FNetwork::ReleaseRider)
 	};
 
 	enum class EEvent : uint8_t { Launch, Arrive, Depart, Board, Alight, Done, Park, Num };
@@ -198,6 +199,7 @@ namespace LyudTransport
 		std::vector<FLine> Lines;
 		std::vector<FCabin> Cabins;
 		std::vector<FRider> Riders;
+		std::vector<int> FreeRiders;    // released slots of Riders (bReuseRiders)
 		std::vector<FEvent> Events;     // since the caller last cleared them
 		double Time = 0.0;
 		float PortalFaceY = 0.f;        // the map's frame in Unreal (cm): Y = PortalFaceY + map Y * 100
@@ -223,6 +225,11 @@ namespace LyudTransport
 		int PlayerBoard(int Cabin, int ToStation = -1);
 		/** The player got out (at a stop): their trip ends where the cabin stands. */
 		void PlayerAlight(int Cabin);
+		/** A Done trip's slot may be reused by the next Travel/PlayerBoard (Riders would grow all session otherwise). Only
+		 *  once nothing points at it any more (the game: after its events were handled); off unless bReuseRiders. */
+		void ReleaseRider(int Rider);
+		int AddRider(const FRider& R);      // a new trip's slot: a released one, else a new one
+		bool bReuseRiders = false;
 
 		/** Seconds till the next cabin that will stop at station St for line L heading Dir (-1 either way) gets there;
 		 *  if none is coming, how long one would take if called now. bCalled says which. */

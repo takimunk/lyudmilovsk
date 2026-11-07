@@ -414,6 +414,17 @@ void ANpcTalkDirector::AddPerson(FName Id, AActor* Actor, USkeletalMeshComponent
 	{
 		return;
 	}
+	// bodies of an earlier run of the people's life are gone: drop them, the list would only grow; the indices of the
+	// one being talked to and the one targeted move with it
+	if (TalkingIndex == INDEX_NONE)
+	{
+		const int32 Was = People.Num();
+		People.RemoveAll([](const FNpc& N) { return !N.Actor.IsValid(); });
+		if (People.Num() != Was)
+		{
+			TargetIndex = INDEX_NONE;
+		}
+	}
 	for (const FNpc& Npc : People)
 	{
 		if (Npc.Actor.Get() == Actor)
@@ -498,9 +509,19 @@ bool ANpcTalkDirector::PlayerBusy() const
 		return true;
 	}
 	// E at the hero's chair means "sit down"
-	for (TActorIterator<AHeroSeat> It(GetWorld()); It; ++It)
+	const double Now = GetWorld()->GetTimeSeconds();
+	if (Now - SeatsAt > 2.0 || Now < SeatsAt)
 	{
-		if (It->IsPlayerInRange())
+		SeatsAt = Now;
+		Seats.Reset();
+		for (TActorIterator<AHeroSeat> It(GetWorld()); It; ++It)
+		{
+			Seats.Add(*It);
+		}
+	}
+	for (const TWeakObjectPtr<AHeroSeat>& Seat : Seats)
+	{
+		if (Seat.IsValid() && Seat->IsPlayerInRange())
 		{
 			return true;
 		}

@@ -116,6 +116,8 @@ private:
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UMaterialInterface>> Mats;
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<USoundBase>> Sounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> GullSounds;
+	/** Each species' call, looked up once (null: it has none), so a call doesn't Printf a path and LoadObject. */
+	UPROPERTY(Transient) TMap<FName, TObjectPtr<USoundBase>> GullCalls;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> CabinLights;
 	UPROPERTY(Transient) TArray<TObjectPtr<USpotLightComponent>> HeadLights;
 	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> RunAtten;
@@ -131,6 +133,9 @@ private:
 	TWeakObjectPtr<AActor> Sky;
 	double LastS = 0.0;
 	bool bWasVisible = true;
+	// Place's per-frame scratch (Reset, not reallocated): the cars' transforms before the move, the wheels for the wake
+	TArray<FTransform> OldCars;
+	TArray<FVector> WakeWheels;
 	TWeakObjectPtr<APawn> Rider;
 	TWeakObjectPtr<APawn> TickOrderFor;    // the character made to tick after this train
 public:

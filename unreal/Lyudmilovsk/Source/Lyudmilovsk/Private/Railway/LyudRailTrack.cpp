@@ -474,6 +474,8 @@ void ALyudRailTrack::BuildHalt(const TSharedPtr<FJsonObject>& St)
 		Wc->SetWorldLocationAndRotation(BoardBase + FVector(0.0, Ny * 3.2, 175.0), FRotator(0.0, Ny > 0 ? 90.0 : -90.0, 0.0));
 		Wc->SetWorldScale3D(FVector(0.39f));
 		Wc->SetSlateWidget(W);
+		// a still sign: redraw rarely, not every frame
+		Wc->SetRedrawTime(5.f);
 		AddInstanceComponent(Wc);
 	}
 	// lamps: a post with a warm globe at either end of the deck, lit at dusk

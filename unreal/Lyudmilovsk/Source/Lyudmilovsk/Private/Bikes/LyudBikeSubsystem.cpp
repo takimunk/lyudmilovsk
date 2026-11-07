@@ -580,7 +580,12 @@ void ANpcBody::DriveBike(ALyudBike* Bike, const FLyudBikeRide& Ride, const FVect
 		SetActorLocationAndRotation(Ground, FRotator(0.f, Yaw - 90.f, 0.f));
 		if (Speed > 5.f)
 		{
-			const bool bShared = Clip(TEXT("Walk")) && Clip(TEXT("Walk"))->GetName().StartsWith(TEXT("A_Human"));
+			// the walk clip's name is looked at once per body (ANpcBody::SharedWalk), not made into a string every frame
+			if (SharedWalk < 0)
+			{
+				if (const UAnimSequence* W = Clip(TEXT("Walk"))) SharedWalk = W->GetName().StartsWith(TEXT("A_Human")) ? 1 : 0;
+			}
+			const bool bShared = SharedWalk == 1;
 			Play(TEXT("Walk"), true, FMath::Clamp(Speed / (bShared ? 93.f * BodyScale : 75.f), 0.3f, 2.5f));
 		}
 		else

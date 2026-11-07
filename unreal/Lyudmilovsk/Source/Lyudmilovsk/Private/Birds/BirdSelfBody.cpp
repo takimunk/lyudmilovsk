@@ -289,6 +289,9 @@ UStaticMeshComponent* UBirdSelfBody::AddPart(UStaticMesh* Mesh, USceneComponent*
 	C->SetStaticMesh(Mesh);
 	C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	C->SetCastShadow(true);
+	// re-posed every frame while the player is the bird: out of the Lumen scene (as the feathers are)
+	C->bAffectDynamicIndirectLighting = false;
+	C->bAffectDistanceFieldLighting = false;
 	C->SetupAttachment(Parent);
 	C->RegisterComponent();
 	return C;

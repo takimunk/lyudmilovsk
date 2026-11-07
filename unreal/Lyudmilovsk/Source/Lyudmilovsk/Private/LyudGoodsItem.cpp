@@ -1,6 +1,8 @@
 #include "LyudGoodsItem.h"
 
 #include "Components/StaticMeshComponent.h"
+#include "Components/PrimitiveComponent.h"
+#include "UObject/Package.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "LyudText.h"
@@ -19,6 +21,60 @@ ALyudGoodsItem::ALyudGoodsItem()
 	Root->SetMobility(EComponentMobility::Movable);
 }
 
+namespace
+{
+	UMaterialInterface* BasicShapeMaterial()
+	{
+		// kept alive by the shared instances made from it
+		static UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+		return Basic;
+	}
+}
+
+UMaterialInstanceDynamic* ALyudGoodsItem::SharedMaterial(UMaterialInterface* Base, const FLinearColor& Color, UTexture* Label)
+{
+	if (!Base)
+	{
+		return nullptr;
+	}
+	// raw rooted pointers, not static smart pointers (those are destroyed after the UObject system at exit)
+	static TMap<FString, UMaterialInstanceDynamic*> Cache;
+	const FString Key = FString::Printf(TEXT("%s|%s|%s"), *Base->GetPathName(), *Color.ToString(), Label ? *Label->GetPathName() : TEXT(""));
+	if (UMaterialInstanceDynamic* const* Found = Cache.Find(Key))
+	{
+		return *Found;
+	}
+	UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, GetTransientPackage());
+	MID->SetVectorParameterValue(TEXT("Color"), Color);
+	if (Label)
+	{
+		MID->SetTextureParameterValue(TEXT("Label"), Label);
+	}
+	MID->AddToRoot();
+	Cache.Add(Key, MID);
+	return MID;
+}
+
+void ALyudGoodsItem::SetShelfStock(AActor* Item)
+{
+	if (!Item)
+	{
+		return;
+	}
+	TInlineComponentArray<UPrimitiveComponent*> Prims(Item);
+	for (UPrimitiveComponent* P : Prims)
+	{
+		// 5..30 cm things behind glass: not drawn from across the hall or the cable car; a flag changed on a registered
+		// component needs its render state re-made (once, at stocking)
+		if (P->bAffectDistanceFieldLighting)
+		{
+			P->bAffectDistanceFieldLighting = false;
+			P->MarkRenderStateDirty();
+		}
+		P->SetCullDistance(2500.f);
+	}
+}
+
 UStaticMeshComponent* ALyudGoodsItem::Part(UStaticMesh* Mesh, const FVector& Loc, const FVector& Size, const FLinearColor& Color)
 {
 	UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
@@ -27,13 +83,14 @@ UStaticMeshComponent* ALyudGoodsItem::Part(UStaticMesh* Mesh, const FVector& Loc
 	C->SetRelativeLocation(Loc);
 	C->SetRelativeScale3D(Size / 100.f);
 	C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	C->RegisterComponent();
-	if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial")))
+	// carried in the hand, it moves every frame: out of Lumen and distance-field lighting
+	C->bAffectDynamicIndirectLighting = false;
+	C->bAffectDistanceFieldLighting = false;
+	if (UMaterialInstanceDynamic* MID = SharedMaterial(BasicShapeMaterial(), Color))
 	{
-		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
-		MID->SetVectorParameterValue(TEXT("Color"), Color);
 		C->SetMaterial(0, MID);
 	}
+	C->RegisterComponent();
 	return C;
 }
 
@@ -113,20 +170,15 @@ void ALyudGoodsItem::Init(FName InItem)
 		UStaticMeshComponent* Plate = Part(Cube, FVector(PlateX, 0.f, PlateZ), PlateSize, FLinearColor::White);
 		if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel")))
 		{
-			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, this);
-			if (Label)
+			UTexture* Picture = Label;
+			if (!Picture)
 			{
-				MID->SetTextureParameterValue(TEXT("Label"), Label);
-			}
-			else if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
-			{
-				if (UTexture2D* Tex = UI->IconTexture(Item))
+				if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 				{
-					MID->SetTextureParameterValue(TEXT("Label"), Tex);
+					Picture = UI->IconTexture(Item);
 				}
 			}
-			MID->SetVectorParameterValue(TEXT("Color"), FLinearColor::White);
-			Plate->SetMaterial(0, MID);
+			Plate->SetMaterial(0, SharedMaterial(Base, FLinearColor::White, Picture));
 		}
 	}
 }

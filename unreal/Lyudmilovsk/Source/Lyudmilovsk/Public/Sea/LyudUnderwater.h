@@ -7,6 +7,7 @@
 #include "LyudUnderwater.generated.h"
 
 class ALyudSea;
+class ALyudSky;
 class UInstancedStaticMeshComponent;
 class UMaterialInterface;
 class UMaterialParameterCollection;
@@ -100,6 +101,13 @@ private:
 	FVector Drift = FVector::ZeroVector;
 	FVector EyeCurrent = FVector::ZeroVector;
 	bool bActive = false;
+	/** Away from the water the life is only hidden for a while (AwayTime), then freed: a pier's edge no longer rebuilds it. */
+	float AwayTime = 0.f;
+	/** The collection was last written far from the water (it is left alone there). */
+	bool bCollectionFar = false;
+	/** The sky (sun altitude, shown time), found once. */
+	TWeakObjectPtr<ALyudSky> SkyRef;
+	ALyudSky* FindSky();
 	float DebugTimer = 0.f;
 	/** Per species: the transforms and the shader's data written last (reused, no allocations per frame). */
 	TArray<TArray<FTransform>> Xf;

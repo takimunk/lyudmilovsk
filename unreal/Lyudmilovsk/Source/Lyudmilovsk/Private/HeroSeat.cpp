@@ -124,6 +124,15 @@ void AHeroSeat::StartSit(APlayerController* PC, bool bSkipToEnd)
 	Settings.bHideHud = true;
 	Settings.bPauseAtEnd = true;
 
+	// a load while seated sits down again: the last sit's actor (paused at its end, hiding the player) goes first, not one more each load
+	if (IsValid(SequenceActor))
+	{
+		if (ULevelSequencePlayer* Old = SequenceActor->GetSequencePlayer())
+		{
+			Old->Stop();
+		}
+		SequenceActor->Destroy();
+	}
 	SequenceActor = GetWorld()->SpawnActorDeferred<ALevelSequenceActor>(ALevelSequenceActor::StaticClass(), FTransform::Identity);
 	SequenceActor->PlaybackSettings = Settings;
 	SequenceActor->SetSequence(Sequence);

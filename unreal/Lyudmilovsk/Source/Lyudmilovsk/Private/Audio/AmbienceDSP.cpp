@@ -183,6 +183,7 @@ namespace LyudAudio
 		{
 			FCricket& C = Crick[I];
 			C.Pan = R.White() * 0.9f;
+			PanGains(C.Pan, 1.f, C.GainL, C.GainR);
 			C.Freq = 4300.f + 700.f * R.Uniform();
 			C.Clock = R.Uniform();
 			C.RateJit = 0.9f + 0.2f * R.Uniform();
@@ -202,6 +203,7 @@ namespace LyudAudio
 		G.Wait = Wait + int(R.Uniform() * Block);
 		G.Amp = Amp;
 		G.Pan = Pan;
+		PanGains(Pan, 1.f, G.GainL, G.GainR);
 		G.Freq = Freq;
 		G.Decay = std::exp(-1.f / std::max(DecayS * Rate, 1.f));
 		if (Kind != 2)
@@ -222,6 +224,7 @@ namespace LyudAudio
 				S.Dist = std::max(DistanceM, 50.f);
 				S.Delay = S.Dist / 343.f;
 				S.Pan = Pan;
+				PanGains(Pan, 0.6f, S.GainL, S.GainR);
 				S.T = 0.f;
 				S.Roll = FDrift(R.Next());
 				// a near strike's crack is a train of claps: the kinks of the channel, each a shock wave of its own
@@ -484,7 +487,8 @@ namespace LyudAudio
 						C.Phase += C.Freq / Rate;
 						C.Phase -= std::floor(C.Phase);
 						const float V = 0.05f * C.Gain * Fade * Env * Env * std::sin(2.f * Pi * C.Phase);
-						PanTo(V, C.Pan, 1.f, OutL, OutR);
+						OutL += V * C.GainL;
+						OutR += V * C.GainR;
 					}
 				}
 			}
@@ -534,7 +538,8 @@ namespace LyudAudio
 					V += 0.11f * (1.f - S.Dist / 1500.f) * (Train + 0.6f * std::exp(-T / 0.25f)) * S.Fc.High;
 				}
 				float OutL = 0.f, OutR = 0.f;
-				PanTo(V, S.Pan, 0.6f, OutL, OutR);
+				OutL += V * S.GainL;
+				OutR += V * S.GainR;
 				L[I] += OutL * P.Gain[Thunder];
 				R2[I] += OutR * P.Gain[Thunder];
 				if (T > Length * 3.f)
@@ -595,11 +600,14 @@ namespace LyudAudio
 					}
 					if (G.Kind == 0)
 					{
-						PanTo(V, G.Pan, 1.f, LeafL, LeafR);
+						// gains fixed at birth: a grain never moves
+						LeafL += V * G.GainL;
+						LeafR += V * G.GainR;
 					}
 					else
 					{
-						PanTo(V, G.Pan, 1.f, GL, GR);
+						GL += V * G.GainL;
+						GR += V * G.GainR;
 					}
 					G.Amp *= G.Decay;
 					if (G.Amp < 1e-5f)

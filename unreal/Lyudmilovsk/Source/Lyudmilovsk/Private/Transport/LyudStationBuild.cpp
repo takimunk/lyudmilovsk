@@ -211,6 +211,9 @@ UWidgetComponent* ALyudCableway::Widget(int32 S, const TSharedRef<SWidget>& Slat
 	Wc->SetWorldLocationAndRotation(At.GetLocation(), At.Rotator());
 	Wc->SetWorldScale3D(FVector(Scale));
 	Wc->SetSlateWidget(Slate);
+	// the widget renderer repaints the whole tree on every draw, whatever the Slate widget's own timer says: signs and labels
+	// change only with the language, so a slow redraw; the live boards and diagrams set their own rate below
+	Wc->SetRedrawTime(5.f);
 	AddInstanceComponent(Wc);
 	if (Built.IsValidIndex(S))
 	{
@@ -563,7 +566,10 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 		{
 			B.Panels.Add(Sp * F);
 			const FTransform BoardAt(FRotator(0.f, 180.f, 0.f), FVector(0.f, 0.f, 290.f));
-			Widget(S, SNew(SLyudStationBoard).Station(S).Line(L), BoardAt * Sp * F, FVector2D(900.f, 360.f), 0.27f, true)->SetTwoSided(true);
+			UWidgetComponent* Bw = Widget(S, SNew(SLyudStationBoard).Station(S).Line(L), BoardAt * Sp * F, FVector2D(900.f, 360.f), 0.27f, true);
+			Bw->SetTwoSided(true);
+			// SLyudStationBoard repaints once a second
+			Bw->SetRedrawTime(1.f);
 		}
 	}
 }
@@ -1176,8 +1182,9 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				// a free-standing enamel stele with the live diagram on its face
 				K.BoxIn(TEXT("tx_enamel"), T, FVector(-10.f, 0.f, 120.f), FVector(16.f, 270.f, 240.f), true, TEXT("tx_amber"));
 				const FTransform At = FTransform(FRotator::ZeroRotator, FVector(-1.f, 0.f, 150.f)) * T * C;
+				// the live diagram's own repaint rate (SLyudTransitDiagram: 0.25 s)
 				Widget(S, SNew(SLyudTransitDiagram).bLive(true).bBoard(false).From(S), At,
-					FVector2D(1600.f, 900.f), 0.15f, true);
+					FVector2D(1600.f, 900.f), 0.15f, true)->SetRedrawTime(0.25f);
 				VestBoards.Add(FTransform(C.TransformPosition(T.TransformPosition(FVector(110.f, 0.f, 100.f)))));
 				VestBoardStation.Add(S);
 			}
@@ -1686,6 +1693,9 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 			C->SetupAttachment(Cab);
 			C->SetRelativeTransform(FTransform(FRotator(0.f, Yaw, 0.f), FVector::ZeroVector, FVector(Sc, Sc, 1.f)));
 			C->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+			// the cab moves up and down the shaft: out of Lumen and the distance fields like its glass
+			C->bAffectDistanceFieldLighting = false;
+			C->bAffectDynamicIndirectLighting = false;
 			C->RegisterComponent();
 			Way->KitMaterials(C);
 			AddInstanceComponent(C);
@@ -1765,11 +1775,32 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 	// the landing doors: two steel leaves at each stop, sliding apart
 	FLyudMeshKit Lf;
 	Lf.BoxIn(TEXT("tx_steel"), FTransform::Identity, FVector(0, 0, 111.f), FVector(4.f, 62.f, 222.f), true);
+	// every leaf is the same box: the mesh is built once (the first leaf), the others share it
+	UStaticMeshComponent* FirstLeaf = nullptr;
 	for (int32 I = 0; I < Stops.Num(); I++)
 	{
 		for (int32 Lr = 0; Lr < 2; Lr++)
 		{
-			Leaves.Add(Way->KitMesh(Lf, FTransform::Identity, TEXT("SM_LiftLeaf"), true, Root));
+			if (!FirstLeaf || !FirstLeaf->GetStaticMesh())
+			{
+				FirstLeaf = Way->KitMesh(Lf, FTransform::Identity, TEXT("SM_LiftLeaf"), true, Root);
+				Leaves.Add(FirstLeaf);
+				continue;
+			}
+			// as KitMesh makes it: movable, the kit's materials, blocking, on the lift's root
+			UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+			C->SetMobility(EComponentMobility::Movable);
+			C->SetStaticMesh(FirstLeaf->GetStaticMesh());
+			for (int32 M = 0; M < FirstLeaf->GetNumMaterials(); M++)
+			{
+				C->SetMaterial(M, FirstLeaf->GetMaterial(M));
+			}
+			C->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+			C->SetupAttachment(Root);
+			C->RegisterComponent();
+			C->SetRelativeTransform(FTransform::Identity);
+			AddInstanceComponent(C);
+			Leaves.Add(C);
 		}
 	}
 	Open.Init(0.f, Stops.Num());

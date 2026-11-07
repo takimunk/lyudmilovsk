@@ -159,6 +159,8 @@ void ALyudLevelCrossing::Setup(ULyudRailwaySubsystem* InRailway, const TSharedPt
 			Wc->SetRelativeLocationAndRotation(PostAt + FVector(0.0, F * 8.0, 205.0), FRotator(0.0, F > 0 ? 90.0 : -90.0, 0.0));
 			Wc->SetWorldScale3D(FVector(0.2f));
 			Wc->SetSlateWidget(W);
+			// a still sign: redraw rarely, not every frame
+			Wc->SetRedrawTime(5.f);
 			AddInstanceComponent(Wc);
 		}
 		// the barrier beside the post: its arm stands up, comes down across the path

@@ -9,6 +9,7 @@ class ABirdFeedBag;
 class AHeroCharacter;
 class ASeedHandful;
 class SLyudHeldItem;
+struct FSlateBrush;
 
 /**
  * Befriending a bird with feed, from the hero's side. Buy a bag of feed at the vending machine (slot 5), take it in the
@@ -105,6 +106,14 @@ private:
 	UPROPERTY(Transient) TObjectPtr<ABirdFeedBag> Bag;
 	UPROPERTY(Transient) TObjectPtr<ASeedHandful> Handful;
 	TSharedPtr<SLyudHeldItem> Hud;
+	/** What the held-item line was last built from (rebuilt only when one of them changes, not every frame). */
+	FName HudItem;
+	int32 HudCount = -1;
+	int32 HudHint = -1;
+	const FSlateBrush* HudBrush = nullptr;
+	FString HudLanguage;
+	/** The murmurations, found when the palm goes out (not searched every frame while it is out). */
+	TArray<TWeakObjectPtr<class AStarlingMurmuration>> Murmurations;
 
 	bool bWantOffer = false;
 	bool bApproaching = false;

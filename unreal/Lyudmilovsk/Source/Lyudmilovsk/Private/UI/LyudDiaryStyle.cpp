@@ -6,7 +6,6 @@
 #include "LyudText.h"
 #include "Rendering/DrawElements.h"
 #include "Styling/CoreStyle.h"
-#include "UObject/StrongObjectPtr.h"
 
 namespace LyudDiary
 {
@@ -17,6 +16,20 @@ namespace LyudDiary
 			return LoadObject<UTexture2D>(nullptr, Path, nullptr, LOAD_NoWarn | LOAD_Quiet);
 		}
 
+		/**
+		 * Kept for the run: rooted raw pointers, not static TStrongObjectPtr (whose destructors run after the UObject system has
+		 * shut down at exit and touch freed objects).
+		 */
+		template <typename T>
+		T* Keep(T* Object)
+		{
+			if (Object)
+			{
+				Object->AddToRoot();
+			}
+			return Object;
+		}
+
 		UFontFace* LoadFace(const TCHAR* Name)
 		{
 			return LoadObject<UFontFace>(nullptr, *FString::Printf(TEXT("/Game/UI/Diary/Fonts/%s.%s"), Name, Name), nullptr, LOAD_NoWarn | LOAD_Quiet);
@@ -25,7 +38,7 @@ namespace LyudDiary
 		struct FHandFonts
 		{
 			TSharedPtr<const FCompositeFont> Font;
-			TArray<TStrongObjectPtr<UFontFace>> Faces;
+			TArray<UFontFace*> Faces;
 			bool bTried = false;
 		};
 
@@ -51,7 +64,7 @@ namespace LyudDiary
 			{
 				if (Face)
 				{
-					F.Faces.Emplace(Face);
+					F.Faces.Add(Keep(Face));
 				}
 			}
 			TSharedRef<FCompositeFont> C = MakeShared<FCompositeFont>();
@@ -86,7 +99,9 @@ namespace LyudDiary
 		struct FBrushes
 		{
 			FSlateBrush PaperL, PaperR, Sticky;
-			TStrongObjectPtr<UTexture2D> TexL, TexR, Map;
+			UTexture2D* TexL = nullptr;
+			UTexture2D* TexR = nullptr;
+			UTexture2D* Map = nullptr;
 			bool bTried = false;
 			bool bMapTried = false;
 		};
@@ -97,11 +112,11 @@ namespace LyudDiary
 			if (!B.bTried)
 			{
 				B.bTried = true;
-				auto Make = [](FSlateBrush& Brush, TStrongObjectPtr<UTexture2D>& Keep, const TCHAR* Path, const FLinearColor& Tint)
+				auto Make = [](FSlateBrush& Brush, UTexture2D*& Kept, const TCHAR* Path, const FLinearColor& Tint)
 				{
 					if (UTexture2D* T = LoadTex(Path))
 					{
-						Keep.Reset(T);
+						Kept = Keep(T);
 						Brush.SetResourceObject(T);
 						Brush.ImageSize = FVector2D(T->GetSizeX(), T->GetSizeY());
 						Brush.DrawAs = ESlateBrushDrawType::Image;
@@ -165,18 +180,25 @@ namespace LyudDiary
 		if (!B.bMapTried)
 		{
 			B.bMapTried = true;
-			B.Map.Reset(LoadTex(TEXT("/Game/UI/Diary/T_MapInk.T_MapInk")));
+			B.Map = Keep(LoadTex(TEXT("/Game/UI/Diary/T_MapInk.T_MapInk")));
 		}
-		return B.Map.Get();
+		return B.Map;
 	}
 
 	const FSlateBrush* SketchBrush(FName Item)
 	{
-		struct FSketch { TSharedPtr<FSlateBrush> Brush; TStrongObjectPtr<UTexture2D> Tex; };
+		struct FSketch { TSharedPtr<FSlateBrush> Brush; UTexture2D* Tex = nullptr; };
 		static TMap<FName, FSketch> Cache;
 		static FString CacheLang;
 		if (CacheLang != LyudText::Language())
 		{
+			for (TPair<FName, FSketch>& Old : Cache)
+			{
+				if (Old.Value.Tex)
+				{
+					Old.Value.Tex->RemoveFromRoot();
+				}
+			}
 			Cache.Reset();
 			CacheLang = LyudText::Language();
 		}
@@ -187,7 +209,7 @@ namespace LyudDiary
 		FSketch& S = Cache.Add(Item);
 		if (UTexture2D* T = LyudText::LoadTexture(TEXT("Inventory"), FString(TEXT("T_Sketch_")) + Item.ToString()))
 		{
-			S.Tex.Reset(T);
+			S.Tex = Keep(T);
 			S.Brush = MakeShared<FSlateBrush>();
 			S.Brush->SetResourceObject(T);
 			S.Brush->ImageSize = FVector2D(T->GetSizeX(), T->GetSizeY());

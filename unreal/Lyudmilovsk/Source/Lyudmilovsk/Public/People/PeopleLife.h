@@ -105,6 +105,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "People")
 	int32 FindPerson(const FString& Key) const;
 
+	/** An activity's index (activities.json id), -1 if none: for GetActivityState. */
+	int32 FindActivity(const FString& Id) const;
+
+	/** A cheap read for per-frame checks (no strings built, unlike GetPerson): the person's activity index (-1 none), whether
+	 *  they are at it ("doing"), their pose and where they are (cm). False if there is no such person. */
+	bool GetActivityState(int32 Id, int32& Activity, bool& bDoing, EPersonPose& Pose, FVector& Location) const;
+
 	/** Sends someone to do something now (activities.json id), at a place (its id) or wherever suits them. */
 	UFUNCTION(BlueprintCallable, Category = "People")
 	bool Order(int32 Id, const FString& Activity, const FString& PlaceId = TEXT(""));
@@ -181,6 +188,14 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<ANpcBody>> Bodies;
 	/** The club's placed actors (the scene's people at their stations), by station tag: the seat's own person's model only. */
 	UPROPERTY(Transient) TMap<FString, TObjectPtr<AActor>> ClubActors;
+	/** The same actors by slot index (null where a slot has none): Present looks them up without building strings. */
+	UPROPERTY(Transient) TArray<TObjectPtr<AActor>> ClubSlotActors;
+	/** Present's scratch: the placed actors shown this frame (kept to reuse its memory). */
+	TSet<AActor*> PlacedShown;
+	/** Present's ground trace under each outdoor person: the spot traced (cm) and the ground's height found there; reused
+	 *  while they stand still on it (a short while), traced again when they move. */
+	struct FGroundCache { FVector At = FVector(FLT_MAX); float Z = 0.f; float Age = 0.f; bool bHit = false; };
+	TArray<FGroundCache> GroundCache;
 	/** Placed human actors that are a second copy of somebody (their model, not at that person's station): hidden while the life runs. */
 	UPROPERTY(Transient) TArray<TObjectPtr<AActor>> StrayActors;
 	/** The one registry of who is shown by what: the model per person id ("" none) and the person per model. */
@@ -271,6 +286,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BlanketMesh;
 	float StillAsleep = 0.f;
 	bool bBlanket = false;
+	/** Whether the walk clip is the shared one (A_Human_*), worked out once (-1 not yet): the clip never changes. */
+	int8 SharedWalk = -1;
 	/** The bed: the floor under the mattress's middle, head-to-foot yaw, mattress top (cm over that floor). */
 	FVector BedCenter = FVector::ZeroVector;
 	float BedYaw = 0.f;

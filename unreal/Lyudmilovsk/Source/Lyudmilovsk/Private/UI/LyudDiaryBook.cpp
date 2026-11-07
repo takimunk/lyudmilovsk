@@ -191,6 +191,9 @@ UStaticMeshComponent* ALyudDiaryBook::AddPart(USceneComponent* Parent, const FNa
 	C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	C->SetCastShadow(true);
 	C->bCastDynamicShadow = true;
+	// held before the eyes, it moves every frame while open: out of Lumen and distance-field lighting
+	C->bAffectDynamicIndirectLighting = false;
+	C->bAffectDistanceFieldLighting = false;
 	C->SetMaterial(0, Material);
 	C->RegisterComponent();
 	Parts.Add(C);

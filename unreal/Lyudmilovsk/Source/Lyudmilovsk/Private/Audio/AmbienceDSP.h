@@ -82,6 +82,8 @@ namespace LyudAudio
 
 	/** Equal-power pan of a mono sample into a stereo pair, Pan -1 .. 1. */
 	inline void PanTo(float X, float Pan, float Width, float& L, float& R);
+	/** The two gains PanTo uses, for a voice whose pan never changes (worked out once, not per sample). */
+	inline void PanGains(float Pan, float Width, float& GL, float& GR);
 
 	enum EVoice { Wind = 0, Leaves, Surf, Rain, Crickets, Thunder, Snow, Drips, Ice, Signal, Steps, NumVoices };
 
@@ -198,10 +200,10 @@ namespace LyudAudio
 		float VoiceRms[NumVoices] = {};
 
 	private:
-		struct FGrain { float Amp = 0.f, Decay = 0.f, Pan = 0.f, Freq = 0.f, Phase = 0.f, Ring = 0.f; FSvf F; int Kind = 0; int Wait = 0; };
+		struct FGrain { float Amp = 0.f, Decay = 0.f, Pan = 0.f, Freq = 0.f, Phase = 0.f, Ring = 0.f, GainL = 0.f, GainR = 0.f; FSvf F; int Kind = 0; int Wait = 0; };
 		struct FBreak { float T = 0.f, Size = 1.f, Crash = 1.f, Wash = 4.f; FSvf F, Fw; bool bLive = false; };
-		struct FCricket { float Pan = 0.f, Freq = 4600.f, Phase = 0.f, Clock = 0.f, RateJit = 1.f, Gain = 1.f; int Pulse = 0; };
-		struct FStrike { float Delay = 0.f, Dist = 1000.f, Pan = 0.f, T = 0.f; float Claps[5] = {}; FSvf F, Fc; FDrift Roll{ 3 }; bool bLive = false; };
+		struct FCricket { float Pan = 0.f, Freq = 4600.f, Phase = 0.f, Clock = 0.f, RateJit = 1.f, Gain = 1.f, GainL = 0.f, GainR = 0.f; int Pulse = 0; };
+		struct FStrike { float Delay = 0.f, Dist = 1000.f, Pan = 0.f, T = 0.f, GainL = 0.f, GainR = 0.f; float Claps[5] = {}; FSvf F, Fc; FDrift Roll{ 3 }; bool bLive = false; };
 
 		float Rate = 48000.f;
 		FRng R;
@@ -241,11 +243,19 @@ namespace LyudAudio
 		void AddGrain(int Kind, float Amp, float Pan, float Freq, float DecayS, float Q, int Wait);
 	};
 
-	inline void PanTo(float X, float Pan, float Width, float& L, float& R)
+	inline void PanGains(float Pan, float Width, float& GL, float& GR)
 	{
 		const float P = Pan < -1.f ? -1.f : (Pan > 1.f ? 1.f : Pan);
 		const float A = (P * Width + 1.f) * 0.25f * Pi;
-		L += X * std::cos(A);
-		R += X * std::sin(A);
+		GL = std::cos(A);
+		GR = std::sin(A);
+	}
+
+	inline void PanTo(float X, float Pan, float Width, float& L, float& R)
+	{
+		float GL, GR;
+		PanGains(Pan, Width, GL, GR);
+		L += X * GL;
+		R += X * GR;
 	}
 }
