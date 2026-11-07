@@ -1929,7 +1929,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 	{
 		Anim->SetEyesShut(Pose == EPersonPose::Sleep && Transit == 0);
-		Anim->SetChatter(Pose == EPersonPose::Talk && Transit == 0);
+		Anim->SetChatter((Pose == EPersonPose::Talk && Transit == 0) || Clock < ChatterUntil);
 		if (Transit != 0 || (Pose != EPersonPose::Computer && Pose != EPersonPose::Work))
 		{
 			Anim->SetComputer(NAME_None);

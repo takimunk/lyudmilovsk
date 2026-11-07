@@ -1,0 +1,321 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Ambient lines: said aloud to nobody in particular, by what the speaker is doing and where
+## ---------------------------------------------------------------------------------------------------------------
+
+[stroll]
+doing = stroll walk
+age = teen adult elder
+say town.stroll.1 | Надо чаще гулять. Каждый раз себе обещаю. | I should walk more often. I promise myself every time. | もっと散歩しなきゃ。毎回そう思うんだけど。
+say town.stroll.2 | Море сегодня какое-то серебряное. | The sea's sort of silver today. | 今日の海は、なんだか銀色だ。
+say town.stroll.3 | Сколько тут ступенек? Говорят, каждый раз выходит по-разному. | How many steps are there here? They say you get a different number every time. | ここの階段、何段あるんだろう。数えるたびに違うって話だ。
+say town.stroll.4 | Хорошо, что сделали набережную. Раньше тут был один песок. | Good thing they built the promenade. It used to be all sand here. | 遊歩道ができてよかった。前は砂ばかりだったんだ。
+say town.stroll.5 | Чайки опять что-то не поделили. | The gulls are squabbling over something again. | カモメがまた何かで揉めてる。
+say town.stroll.6 | Пахнет водорослями. Значит, ночью штормило. | Smells of seaweed. There was a storm last night, then. | 海藻のにおい。夜のうちに時化たんだな。
+
+[night_walk]
+doing = night_walk
+say town.night_walk.1 | Ночью город другой. Тише и честнее. | The town's different at night. Quieter, and more honest. | 夜の町は別物だ。静かで、正直で。
+say town.night_walk.2 | Вон окно горит. Тоже кто-то не спит. | There's a window lit over there. Someone else is awake. | あそこの窓、まだ明るい。誰かも起きてるんだ。
+say town.night_walk.3 | Маяк мигает. Раз, два... Раз, два. | The lighthouse blinks. One, two... One, two. | 灯台が光ってる。いち、に…いち、に。
+say town.night_walk.4 | Иногда кажется, что ночью кто-то перекрашивает море. | Sometimes I think someone repaints the sea at night. | 夜のあいだに、誰かが海を塗り直してる気がする。
+
+[night_walk_clear]
+doing = night_walk
+weather = clear
+say town.night_walk_clear.1 | Звёзды сегодня низко. Руку протяни — достанешь. | The stars are low tonight. Reach out and you'd touch one. | 今夜は星が低い。手をのばせば届きそうだ。
+
+[sunrise]
+sun = !cloudy !night
+doing = watch_sunrise
+say town.sunrise.1 | Вот оно. Каждое утро прихожу — и каждый раз как в первый. | There it is. I come every morning, and every time is like the first. | ほら、来た。毎朝来るけど、いつも初めてみたいだ。
+say town.sunrise.2 | Тёплое. Чувствуешь? Уже греет. | Warm. Feel it? It's warming already. | あたたかい。感じる？もう温めてくれてる。
+say town.sunrise.3 | Говорят, кто встречает солнце, тот его не потеряет. | They say whoever greets the sun will never lose it. | 朝日を迎える人は、太陽をなくさないんだって。
+say town.sunrise.4 | Ещё минутку. Сейчас будет самое красивое. | One more minute. The best bit's coming. | もうちょっと。今からがいちばんきれいなんだ。
+say town.sunrise.5 | Здравствуй, солнышко. | Hello, little sun. | おはよう、お日さま。
+
+[sunset]
+sun = !cloudy
+doing = sun_watch lookout_view
+say town.sunset.1 | Смотри, как садится. Будто нехотя. | Look how it's setting. As if it doesn't want to. | 見て、沈んでいく。名残惜しそうに。
+say town.sunset.2 | Каждый вечер сюда прихожу. Не знаю зачем. Просто надо. | I come here every evening. I don't know why. I just have to. | 毎晩ここに来る。理由はわからない。ただ、来なきゃいけない気がして。
+say town.sunset.3 | Завтра будет ветрено. Видишь, какое красное. | It'll be windy tomorrow. See how red it is. | 明日は風が強いぞ。あんなに赤い。
+say town.sunset.4 | Вот бы оно не садилось. Хоть разок. | If only it wouldn't set. Just once. | 一度でいいから、沈まないでほしいな。
+say town.sunset.5 | Ушло. Ну, до завтра. | Gone. Well, see you tomorrow. | 沈んだ。じゃあ、また明日。
+
+[sea]
+doing = sea_air swim_look
+say town.sea.1 | Если долго смотреть на горизонт, кажется, что он ближе. | Look at the horizon long enough and it seems to come closer. | 水平線をずっと見てると、近づいてくる気がする。
+say town.sea.2 | Поезд идёт по воде. Каждый раз не верю, что он не тонет. | The train's going over the water. Every time I can't believe it doesn't sink. | 電車が海の上を走ってる。沈まないのが毎回信じられない。
+say town.sea.3 | Янтарь ищу. После шторма бывает. | I'm looking for amber. You find it after a storm. | 琥珀を探してるんだ。時化のあとは見つかるから。
+say town.sea.4 | Волна сегодня ленивая. | Lazy waves today. | 今日の波はのんびりだ。
+
+[sea_summer]
+doing = sea_air swim_look
+months = 6-8
+say town.sea_summer.1 | Вода холодная. Но я всё равно окунусь. | The water's cold. I'm going in anyway. | 水は冷たい。でもちょっと入ってくる。
+
+[sea_fog]
+doing = sea_air swim_look sun_watch fish_shore
+weather = fog
+say town.sea_fog.1 | Где-то там остров. В тумане и не видно. | The island's out there somewhere. You can't see it in the fog. | あっちに島があるんだけど、霧で見えない。
+
+[fish_shore]
+doing = fish_shore
+say town.fish.1 | Тсс. Клюёт. | Shh. Got a bite. | しっ。かかった。
+say town.fish.2 | Вчера тут вот такая клевала. Не веришь? Ну и не верь. | Yesterday one this big was biting here. Don't believe me? Suit yourself. | 昨日はこーんなのがかかったんだ。信じない？まあいいさ。
+say town.fish.3 | Рыба любит тишину. И терпение. | Fish like quiet. And patience. | 魚は静けさが好きなんだ。それと辛抱。
+say town.fish.4 | Опять пусто. Зато воздух какой. | Nothing again. But what air. | また坊主だ。でも空気はうまい。
+
+[fish_shore_herring]
+doing = fish_shore
+months = 3-5 9-11
+say town.fish_herring.1 | На салаку сейчас самое время. | Now's the time for Baltic herring. | 今はニシンの季節だ。
+
+[fish_shore_sun]
+doing = fish_shore
+sun = day
+weather = clear
+say town.fish_sun.1 | Солнце на воде — рыбе в глаза. Подожду облачка. | The sun on the water's in the fishes' eyes. I'll wait for a cloud. | 水面に日が当たると魚がまぶしがる。雲を待とう。
+
+[bench]
+doing = sit_bench
+age = teen adult
+say town.bench.1 | Посижу минутку. Ноги гудят. | I'll sit for a minute. My legs are buzzing. | ちょっと座ろう。足がじんじんする。
+say town.bench.2 | Хорошо тут. Можно ничего не делать. | It's nice here. You can do nothing at all. | ここはいい。何もしなくていいんだ。
+say town.bench.3 | Голуби опять ждут. Нет у меня ничего, нет. | The pigeons are waiting again. I've got nothing, nothing. | ハトがまた待ってる。何もないよ、何も。
+
+[bench_sun]
+doing = sit_bench
+sun = day
+weather = clear
+say town.bench_sun.1 | Солнце пригрело. Глаза сами закрываются. | The sun's warm. My eyes are closing by themselves. | 日差しがあったかい。まぶたが勝手に閉じる。
+
+[playground]
+doing = playground
+age = kid
+say town.kid_play.1 | Чур, не я вожу! | Not it! | オニはやだ！
+say town.kid_play.2 | Смотри, как я высоко! | Look how high I am! | 見て、こんなに高いよ！
+say town.kid_play.3 | Мама, ещё пять минуточек! | Mum, five more minutes! | ママ、あと五分だけ！
+say town.kid_play.4 | А у меня молочный зуб шатается! | My baby tooth's wobbly! | 歯がぐらぐらするの！
+say town.kid_play.5 | Это не песок, это золото. Я его копаю. | It's not sand, it's gold. I'm digging it up. | これ砂じゃないよ、金だよ。掘ってるの。
+say town.kid_play.6 | Давай, кто дальше прыгнет! | Let's see who can jump furthest! | どっちが遠くまで跳べるか勝負！
+
+[kid_sun]
+at = outdoors
+age = kid
+sun = day low
+say town.kid_sun.1 | А куда солнце уходит на ночь? | Where does the sun go at night? | お日さまは夜どこに行くの？
+say town.kid_sun.2 | Я нарисую солнцу глаза. Чтобы оно на нас смотрело. | I'll draw the sun some eyes. So it can look at us. | お日さまに目をかいてあげるの。わたしたちを見てくれるように。
+
+[pupil_after_school]
+job = pupil
+doing = free
+hours = 13-20
+say town.pupil.1 | Завтра контрольная... Ну и ладно. | Test tomorrow... Oh well. | 明日テストだ…まあいいや。
+say town.pupil.2 | Нам задали сочинение про солнце. Странная тема, да? | We've got an essay to write about the sun. Weird topic, right? | 太陽についての作文が宿題なんだ。変なテーマだよね。
+say town.pupil.3 | Ура, домой! | Yay, home time! | やった、帰れる！
+say town.pupil.4 | Физрук сказал бегать до маяка. До маяка! | The PE teacher said to run to the lighthouse. The lighthouse! | 体育の先生が灯台まで走れって。灯台まで！
+
+[student]
+job = student
+doing = free
+say town.student.2 | Читаю про звёзды. Оказывается, солнце — тоже звезда. Обычная. Даже обидно. | I'm reading about stars. Turns out the sun's a star too. An ordinary one. Kind of hurtful. | 星の本を読んでる。太陽も星なんだって。ふつうの星。ちょっとくやしい。
+say town.student.3 | Вечером в ДК кино. Говорят, что-то старое. | There's a film at the culture house tonight. Something old, they say. | 夜は文化会館で映画だって。古い映画らしい。
+
+[student_beach]
+job = student
+doing = free
+at = beach
+say town.student.1 | Сессия скоро. А я на пляже. Логично. | Exams soon. And I'm on the beach. Makes sense. | もうすぐ試験なのに、浜辺にいる。理にかなってる。
+
+[commuter_morning]
+job = away
+hours = 6-9
+say town.commuter_morning.1 | Опять на поезд опаздываю. | Late for the train again. | また電車に遅れそうだ。
+
+[commuter_evening]
+job = away
+hours = 16-22
+say town.commuter_evening.1 | Целый день там, в городе. А тут море. | All day over there, in the city. And here there's the sea. | 一日じゅう向こうの町。でもここには海がある。
+say town.commuter_evening.2 | Домой. Наконец-то домой. | Home. Home at last. | 帰ろう。やっと帰れる。
+say town.commuter_evening.3 | Бывает, еду и думаю: а что там, за последней станцией? | Sometimes I'm on the train and wonder what's past the last station. | ときどき思うんだ、終点の先には何があるんだろうって。
+
+[homemaker]
+job = homemaker
+say town.homemaker.1 | Хлеб купить, молоко купить... Что-то ещё было. | Buy bread, buy milk... There was something else. | パンと牛乳と…あと何だったっけ。
+
+[homemaker_day]
+job = homemaker
+hours = 9-16
+say town.homemaker_day.1 | Пока все на работе, город мой. | While everyone's at work, the town's mine. | みんなが仕事に行ってるあいだは、町はわたしのもの。
+
+[homemaker_damp]
+job = homemaker
+weather = fog rain
+say town.homemaker_damp.1 | В такую сырость бельё не высохнет. | The washing won't dry in this damp. | こんなに湿っぽいと洗濯物が乾かない。
+
+[unemployed]
+job = unemployed
+say town.unemployed.1 | Работу ищу. Хотя, может, это она меня ищет. | I'm looking for work. Or maybe it's looking for me. | 仕事を探してる。いや、仕事のほうがこっちを探してるのかも。
+say town.unemployed.2 | Спешить некуда. Это тоже навык. | Nowhere to hurry to. That's a skill too. | 急ぐ用事はない。それも才能さ。
+
+[writer]
+job = writer
+doing = free
+say town.writer.1 | Первая фраза есть. Осталось триста страниц. | I've got the first sentence. Three hundred pages to go. | 最初の一文はできた。あと三百ページ。
+say town.writer.2 | Всё, что видишь, когда-нибудь станет книгой. | Everything you see will be a book one day. | 見たものは、いつか全部本になる。
+say town.writer.3 | Тут у всех есть история. Надо только спросить. | Everyone here has a story. You just have to ask. | ここの人はみんな物語を持ってる。聞けばいいだけ。
+
+[artist]
+job = artist
+doing = free
+say town.artist.1 | Такой свет бывает минут десять в день. Надо успеть. | Light like this lasts ten minutes a day. Got to catch it. | こういう光は一日十分しかない。急がなきゃ。
+say town.artist.2 | Море не нарисуешь. Можно только попробовать. | You can't paint the sea. You can only try. | 海は描けない。挑戦するだけさ。
+say town.artist.3 | Ультрамарин кончился. Придётся рисовать закат. | I'm out of ultramarine. I'll have to paint the sunset. | ウルトラマリンが切れた。夕焼けを描くしかないな。
+
+[musician]
+job = musician
+doing = free
+say town.musician.1 | Та-да-да... Нет, не то. Та-да... | Ta-da-da... No, not that. Ta-da... | タ、タタ…違うな。タ、タ…
+say town.musician.2 | Тут даже чайки кричат в тональности. Ля минор. | Even the gulls here cry in key. A minor. | ここはカモメまで調子が合ってる。イ短調だ。
+
+[musician_day]
+job = musician
+doing = free
+hours = 10-19
+near = hero
+say town.musician_day.1 | Вечером играем на набережной. Приходи. | We're playing on the promenade tonight. Come along. | 今夜、遊歩道で演奏するんだ。おいでよ。
+
+[programmer]
+job = programmer
+doing = free
+say town.programmer.1 | Работает. Не знаю почему, но работает. Не трогаю. | It works. I don't know why, but it works. I'm not touching it. | 動いてる。なんで動くのかわからないけど、触らない。
+say town.programmer.2 | Иногда кажется, что этот город кто-то написал. Слишком уж аккуратно. | Sometimes it feels like someone wrote this town. It's all too neat. | この町、誰かが書いたプログラムみたいだって思うことがある。きれいすぎるんだ。
+say town.programmer.3 | Ноутбук остался дома. Значит, сегодня выходной. | The laptop stayed at home. So today's a day off. | ノートパソコンは家に置いてきた。つまり今日は休みだ。
+
+[fisherman]
+job = fisherman
+doing = free
+say town.fisherman.2 | Ветер с запада — завтра не выходим. | Wind from the west: we're not going out tomorrow. | 西風だ。明日は漁に出ない。
+say town.fisherman.3 | Море не обманешь. Оно всё видит. | You can't fool the sea. It sees everything. | 海はごまかせない。全部お見通しだ。
+
+[fisherman_after]
+job = fisherman
+doing = free
+hours = 10-20
+say town.fisherman.1 | С четырёх утра в море. Теперь можно и на берегу посидеть. | At sea since four this morning. Now I can sit on the shore a bit. | 朝四時から海の上だった。やっと陸でひと休みだ。
+
+[owl]
+chrono = owl night
+hours = 0-4
+say town.owl.1 | Лучшее время — когда все спят. Ну, почти все. | The best time is when everyone's asleep. Well, almost everyone. | みんなが寝てる時間がいちばん。まあ、ほとんど、だけど。
+say town.owl.2 | Утром не встану. Ну и ладно. | I won't get up in the morning. Oh well. | 朝は起きられないな。まあいいや。
+say town.owl.3 | Ночью думается. Днём — живётся. | Nights are for thinking. Days are for living. | 夜は考える時間。昼は生きる時間。
+
+[lark]
+chrono = lark
+hours = 4-8
+say town.lark.1 | Кто рано встаёт, тому солнце первым улыбается. | The sun smiles first at those who get up early. | 早起きすると、お日さまが最初に笑いかけてくれる。
+
+[lark_five]
+chrono = lark
+hours = 4-6
+say town.lark.2 | Пять утра, а кофе уже выпит. | Five in the morning and the coffee's already gone. | 朝五時、コーヒーはもう飲み終わった。
+
+
+[hungry]
+at = outdoors
+need = hunger
+age = teen adult elder
+say town.hungry.1 | Есть хочется... Пельменей бы. | I'm starving... Pelmeni would be nice. | おなかすいた…ペリメニ食べたい。
+say town.hungry.2 | Где-то жарят рыбу. Живот сразу услышал. | Somebody's frying fish somewhere. My stomach heard it at once. | どこかで魚を焼いてる。お腹がすぐ気づいた。
+
+[tired]
+hours = 19-3
+at = !flat
+need = tired
+say town.tired.1 | Глаза слипаются. Домой, спать. | My eyes are closing. Home to bed. | まぶたが重い。帰って寝よう。
+
+[tired_bench]
+need = tired
+doing = sit_bench
+say town.tired_bench.1 | Ещё немного — и усну прямо на скамейке. | A bit longer and I'll fall asleep right here on the bench. | このままだとベンチで寝ちゃいそう。
+
+## the sun, by what it is doing now (docs/story/motifs.md): quiet hints, never everybody
+
+[sun_day]
+at = outdoors
+sun = day
+weather = clear warm
+age = teen adult elder
+say town.sun_day.1 | Ой, как тепло. Я чувствую, как солнце греет мою кожу. | Oh, it's so warm. I can feel the sun warming my skin. | ああ、あったかい。お日さまが肌をあたためてくれてる。
+say town.sun_day.2 | Постою минутку на солнце. Подзаряжусь. | I'll stand in the sun a minute. Recharge a bit. | ちょっと日なたにいよう。充電、充電。
+say town.sun_day.3 | Не смотри прямо на него. Просто знай, что оно там. | Don't look straight at it. Just know it's there. | まっすぐ見ちゃだめ。そこにあるって知ってればいい。
+
+[sun_october]
+at = outdoors
+sun = day
+months = 10
+weather = clear
+say town.sun_october.1 | Октябрь, а оно всё ещё греет. Как будто специально для нас. | October, and it's still warm. As if it's just for us. | 十月なのに、まだあたたかい。わたしたちのためみたいに。
+
+[sun_cloudy]
+at = outdoors
+sun = cloudy
+age = teen adult elder
+say town.sun_cloudy.1 | Ах, жаль, что сейчас нет солнца. Оно скрылось за облаками. | Oh, it's a shame there's no sun now. It's gone behind the clouds. | ああ、残念。お日さまが雲に隠れちゃった。
+say town.sun_cloudy.2 | Когда долго пасмурно, мне кажется, что всё вокруг становится тоньше. | When it's grey for a long time, I feel like everything around gets thinner. | 曇りが続くと、まわりのものが薄くなっていく気がする。
+say town.sun_cloudy.3 | Выйдет. Оно всегда выходит. | It'll come out. It always does. | 出てくるよ。いつだって出てくるんだから。
+
+[sun_low]
+at = outdoors
+sun = low
+hours = 14-23
+say town.sun_low.1 | Солнце садится. Надо успеть посмотреть. | The sun's going down. I must catch it. | 日が沈む。見に行かなきゃ。
+say town.sun_low.2 | Как всё оранжевое стало. | How orange everything's gone. | 何もかもオレンジ色になった。
+
+[sun_night]
+at = outdoors
+sun = night
+hours = 21-4
+say town.sun_night.1 | Солнце сейчас где-то с другой стороны. Кому-то светит. | The sun's on the other side somewhere now. Shining for someone. | お日さまは今、反対側のどこかで誰かを照らしてる。
+
+## the weather (ULyudWeatherSubsystem: rain, snow, fog, cold < 2 C, warm > 22 C)
+
+[sun_night_late]
+at = outdoors
+sun = night
+hours = 0-5
+say town.sun_night.2 | До рассвета ещё далеко. Ничего, дождёмся. | Dawn's a long way off. Never mind, we'll wait. | 夜明けはまだ先。いいさ、待とう。
+
+[weather_rain]
+at = outdoors
+weather = rain
+say town.rain.1 | Опять дождь. Ну хоть цветам хорошо. | Rain again. Good for the flowers, at least. | また雨。まあ花にはいいか。
+say town.rain.2 | Зонт, конечно, дома. | The umbrella's at home, of course. | 傘はもちろん家に置いてきた。
+say town.rain.3 | В дождь море пахнет сильнее. | In the rain the sea smells stronger. | 雨の日は海のにおいが強くなる。
+
+[weather_snow]
+at = outdoors
+weather = snow
+say town.snow.1 | Снег скрипит. Значит, мороз. | The snow's creaking. Means it's frosty. | 雪がきゅっきゅっ鳴る。冷えてるな。
+say town.snow.2 | Террасы под снегом — как торт. | The terraces under snow look like a cake. | 雪の段々、ケーキみたい。
+
+[weather_fog]
+at = outdoors
+weather = fog
+say town.fog.1 | Туман такой, что маяк режет его, как нож. | Fog so thick the lighthouse cuts it like a knife. | 霧が濃くて、灯台の光がナイフみたいに切ってる。
+say town.fog.2 | В тумане все звуки рядом. | In the fog every sound is close by. | 霧の中だと、音がみんな近くに聞こえる。
+
+[weather_cold]
+at = outdoors
+weather = cold
+say town.cold.1 | Бр-р... Шарф бы потеплее. | Brr... I could do with a warmer scarf. | ぶるっ…もっと厚いマフラーにすればよかった。
+say town.cold.2 | Нос мёрзнет. Скоро зима. | My nose is freezing. Winter's coming. | 鼻が冷たい。もうすぐ冬だね。
+
+[weather_warm]
+sun = day
+at = outdoors
+weather = warm
+say town.warm.1 | Жара! Все на пляж! | It's hot! Everyone to the beach! | 暑い！みんな海へ！
+say town.warm.2 | Солнце такое, что хочется сказать ему спасибо. | The sun's so lovely you want to say thank you to it. | こんなにいい天気だと、お日さまにお礼を言いたくなる。

@@ -1,0 +1,115 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Greetings: said to the hero when he walks past close (to = hero), by the hour and the speaker's age
+## ---------------------------------------------------------------------------------------------------------------
+
+[greet_early]
+to = hero
+age = adult
+hours = 4-7
+say town.greet_early.1 | Доброе утро. Ранняя пташка? | Good morning. An early bird? | おはよう。早起きだね。
+say town.greet_early.2 | Утро! Солнце вот-вот встанет. | Morning! The sun's about to come up. | おはよう！もうすぐ日が昇るよ。
+say town.greet_early.3 | Рано ты. Тоже не спится? | You're up early. Couldn't sleep either? | 早いね。君も眠れなかった？
+say town.greet_early.4 | Доброе утро. Тихо-то как, а? | Good morning. So quiet, isn't it? | おはよう。静かだねえ。
+say town.greet_early.5 | Здравствуй. Самое лучшее время, пока все спят. | Hello. The best time of day, while everyone's asleep. | おはよう。みんなが寝てる今が、いちばんいい時間なんだ。
+
+[greet_morning]
+to = hero
+age = adult
+hours = 7-11
+say town.greet_morning.1 | Доброе утро! | Good morning! | おはようございます！
+say town.greet_morning.2 | Утро доброе. В школу? Или каникулы? | Morning. Off to school? Or is it the holidays? | おはよう。学校？それとも休み？
+say town.greet_morning.3 | Доброе! Хороший будет день, по небу видно. | Morning! It'll be a good day, you can tell by the sky. | おはよう！いい日になりそうだ、空を見ればわかる。
+say town.greet_morning.4 | С добрым утром. Позавтракать успел? | Good morning. Had time for breakfast? | おはよう。朝ごはん、ちゃんと食べた？
+say town.greet_morning.5 | Утро! Осторожно, ступеньки с утра скользкие. | Morning! Careful, the steps are slippery in the mornings. | おはよう！朝は階段がすべるから気をつけて。
+
+[greet_day]
+to = hero
+age = adult
+hours = 11-17
+say town.greet_day.1 | Добрый день! | Good afternoon! | こんにちは！
+say town.greet_day.2 | День добрый. Гуляешь? | Afternoon. Out for a walk? | こんにちは。散歩かい？
+say town.greet_day.3 | Здравствуй. Хорошо сегодня у моря. | Hello. It's lovely by the sea today. | こんにちは。今日は海がいいね。
+say town.greet_day.4 | Привет-привет. Не заблудился? Тут лестниц много. | Hi there. Not lost? There are lots of stairs here. | やあ。迷ってない？ここは階段が多いから。
+say town.greet_day.5 | Добрый день. Ты ведь не местный? Я тут всех знаю. | Good afternoon. You're not from here, are you? I know everyone here. | こんにちは。この辺の子じゃないよね？ここの人はみんな知ってるんだ。
+
+[greet_evening]
+to = hero
+age = adult
+hours = 17-22
+say town.greet_evening.1 | Добрый вечер. | Good evening. | こんばんは。
+say town.greet_evening.2 | Вечер добрый. Закат сегодня видел? | Evening. Did you see the sunset today? | こんばんは。今日の夕日、見た？
+say town.greet_evening.3 | Добрый вечер! Домой уже? | Good evening! Heading home? | こんばんは！もう帰り？
+say town.greet_evening.4 | Вечер. Фонари зажглись, красиво, да? | Evening. The street lamps are on, pretty, isn't it? | こんばんは。街灯がついた。きれいだね。
+
+[greet_evening_dark]
+to = hero
+age = adult
+hours = 17-22
+months = 10-3
+say town.greet_evening_dark.1 | Здравствуй. Темнеть стало рано. | Hello. It gets dark early now. | こんばんは。暗くなるのが早くなったね。
+
+[greet_night]
+to = hero
+age = adult
+hours = 22-4
+say town.greet_night.1 | Доброй ночи. | Good night to you. | こんばんは。
+say town.greet_night.2 | Не спится? Мне тоже. | Can't sleep? Me neither. | 眠れないの？わたしも。
+say town.greet_night.3 | Поздно уже. Мама не заругает? | It's late. Won't your mum be cross? | もう遅いよ。お母さんに怒られない？
+say town.greet_night.4 | Ночью тут хорошо: только море и фонари. | It's nice here at night: just the sea and the lamps. | 夜はいいね。海と街灯だけ。
+say town.greet_night.5 | Тсс... Весь город спит. | Shh... The whole town's asleep. | しーっ…町じゅう眠ってるよ。
+
+[greet_elder_morning]
+to = hero
+age = elder
+hours = 5-11
+say town.greet_elder_morning.1 | Доброе утро, сынок. | Good morning, son. | おはよう、坊や。
+say town.greet_elder_morning.2 | Ох, доброе утро. Ноги с утра совсем не ходят. | Oh, good morning. My legs won't work in the mornings. | ああ、おはよう。朝は足が言うことを聞かなくてねえ。
+
+[greet_elder_morning_cold]
+to = hero
+age = elder
+hours = 5-11
+months = 10-4
+say town.greet_elder_morning_cold.1 | Утречко! Шапку бы надел, с моря дует. | Morning! You should put a hat on, there's a wind off the sea. | おはよう！帽子をかぶりなさい、海から風が来るよ。
+
+[greet_elder_day]
+to = hero
+age = elder
+hours = 11-17
+say town.greet_elder_day.1 | Здравствуй, милый. | Hello, dear. | こんにちは、坊や。
+say town.greet_elder_day.2 | Добрый день. А ты чей будешь? | Good afternoon. And whose boy are you? | こんにちは。あんた、どこの子だい？
+say town.greet_elder_day.3 | Здравствуй. Не беги так, всё успеешь. | Hello. Don't run like that, you'll make it. | こんにちは。そんなに急がなくても間に合うよ。
+
+[greet_elder_evening]
+to = hero
+age = elder
+hours = 17-23
+say town.greet_elder_evening.1 | Добрый вечер, сынок. | Good evening, son. | こんばんは、坊や。
+say town.greet_elder_evening.2 | Вечер добрый. Ступай домой, поздно уже. | Evening. Off home with you, it's late. | こんばんは。もう遅いよ、お帰り。
+say town.greet_elder_evening.3 | Добрый вечер. Видал, как сегодня солнце садилось? | Evening. Did you see the sun go down today? | こんばんは。今日の夕日、見たかい？
+
+[greet_kid]
+to = hero
+age = kid
+hours = 7-21
+say town.greet_kid.1 | Привет! | Hi! | こんにちは！
+say town.greet_kid.2 | Привет! А ты умеешь свистеть? | Hi! Can you whistle? | ねえ！口笛ふける？
+say town.greet_kid.3 | Ты кто? | Who are you? | だあれ？
+say town.greet_kid.4 | Смотри, у меня камушек с дырочкой! Это куриный бог. | Look, I've got a stone with a hole! It's a lucky stone. | 見て、穴のあいた石！お守りの石なんだよ。
+say town.greet_kid.5 | А мне мама разрешила до фонаря и обратно. | Mum said I can go as far as the lamp post and back. | ママがね、あの街灯までならいいって。
+
+[greet_teen]
+to = hero
+age = teen
+hours = 8-23
+say town.greet_teen.1 | Салют. | Hey. | よう。
+say town.greet_teen.2 | О, привет. Ты в клуб? | Oh, hi. Going to the club? | お、やあ。クラブ行くの？
+say town.greet_teen.3 | Привет. Видел, в клубе новую игру поставили? | Hi. Did you see there's a new game at the club? | やあ。クラブに新しいゲーム入ったの見た？
+say town.greet_teen.4 | Хай. | Hiya. | ちわっす。
+
+[greet_seller]
+to = hero
+job = seller fishmonger butcher vendor
+doing = work
+say town.greet_seller.1 | Молодой человек, заходите, посмотрите! | Young man, come and have a look! | お兄さん、ちょっと見ていって！
+say town.greet_seller.2 | Здравствуйте! Для вас — со скидкой. | Hello! A discount, just for you. | いらっしゃい！お兄さんには特別価格だよ。

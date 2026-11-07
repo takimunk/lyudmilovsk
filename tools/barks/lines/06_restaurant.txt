@@ -1,0 +1,198 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The restaurant «Янтарь»: the waiter (events of the hero's visit), the cook in the kitchen, the guests at their tables
+## Events (on = ...): rest_sit (the hero sat down at a table), rest_carry (the waiter takes a tray from the pass; the cook
+## says his line then), rest_serve (a dish set down on the hero's table), rest_bill (the bill brought), rest_bye (the
+## hero got up after eating).
+## ---------------------------------------------------------------------------------------------------------------
+
+[waiter_sit]
+on = rest_sit
+say town.waiter_sit.1 | Здравствуйте! Меню на столе, я сейчас подойду. | Hello! The menu's on the table, I'll be right with you. | いらっしゃいませ！メニューはテーブルにございます。
+say town.waiter_sit.2 | Добро пожаловать в «Янтарь». Хлеб и вода — от заведения. | Welcome to Yantar. Bread and water are on the house. | 「ヤンタル」へようこそ。パンとお水はサービスです。
+say town.waiter_sit.3 | Хороший столик. Отсюда закат лучше всего видно. | A good table. You get the best view of the sunset from here. | いいお席ですね。ここから夕日がいちばんよく見えます。
+
+[waiter_sit_evening]
+on = rest_sit
+hours = 17-24
+say town.waiter_sit_evening.1 | Добрый вечер! Загляните в меню, сегодня есть блюдо дня. | Good evening! Have a look at the menu, there's a dish of the day. | こんばんは！本日のおすすめがございます、メニューをご覧ください。
+
+[waiter_sit_festival]
+on = rest_sit
+festival = any
+weight = 2
+say town.waiter_sit_festival.1 | С праздником! Сегодня в меню праздничные блюда. | Happy holiday! There are festival dishes on the menu today. | おめでとうございます！今日はお祭りの特別メニューがございます。
+
+[waiter_carry]
+on = rest_carry
+job = waiter
+say town.waiter_carry.1 | Несу, несу! | Coming, coming! | ただいまお持ちします！
+say town.waiter_carry.2 | Горячее идёт! | Hot food coming through! | 熱いのが通ります！
+say town.waiter_carry.3 | Минутку, уже иду. | One moment, I'm on my way. | 少々お待ちを、すぐ参ります。
+
+[cook_carry]
+on = rest_carry
+job = cook
+say town.cook_ready.1 | Готово! Забирай! | Ready! Take it! | できたぞ！持ってって！
+say town.cook_ready.2 | Заказ на выдачу! | Order up! | 料理あがり！
+say town.cook_ready.3 | Неси, пока горячее! | Take it while it's hot! | 熱いうちに持ってけ！
+
+[waiter_serve]
+on = rest_serve
+say town.waiter_serve.1 | Приятного аппетита! | Enjoy your meal! | どうぞ、お召し上がりください。
+say town.waiter_serve.2 | Осторожно, горячее. | Careful, it's hot. | お熱いのでお気をつけください。
+say town.waiter_serve.3 | Ваш заказ. Приятного! | Your order. Enjoy! | ご注文の品です。どうぞ！
+say town.waiter_serve.4 | Пожалуйста. Повар просил передать: ешьте, пока солнце не село. | Here you are. The cook asked me to say: eat while the sun's still up. | どうぞ。シェフから伝言です、日が沈まないうちに召し上がれ、と。
+
+[waiter_bill]
+on = rest_bill
+say town.waiter_bill.1 | Ваш счёт. Всё уже оплачено. | Your bill. It's all paid already. | お会計でございます。お支払いはお済みです。
+say town.waiter_bill.2 | Уже уходите? Надеюсь, всё понравилось. | Leaving already? I hope you enjoyed everything. | もうお帰りですか？お口に合いましたか。
+say town.waiter_bill.3 | Пожалуйста. Приходите на блюдо дня, оно каждый день новое. | Here you are. Come back for the dish of the day, it's new every day. | どうぞ。日替わりは毎日変わりますので、またぜひ。
+
+[waiter_bye]
+on = rest_bye
+say town.waiter_bye.1 | Спасибо, приходите ещё! | Thank you, come again! | ありがとうございました、またお越しください！
+say town.waiter_bye.2 | До свидания! Завтра будет новое блюдо дня. | Goodbye! There'll be a new dish of the day tomorrow. | またどうぞ！明日は新しい日替わりですよ。
+say town.waiter_bye.3 | Всего доброго. Осторожно на ступеньках. | All the best. Mind the steps. | お気をつけて。階段にご注意を。
+
+[waiter_work]
+job = waiter
+doing = work
+at = restaurant
+say town.waiter_work.1 | Минутку, иду, иду! | One moment, coming, coming! | 少々お待ちを、ただいま！
+say town.waiter_work.2 | Сегодня все хотят уху. Как сговорились. | Everyone wants the fish soup today. As if they'd agreed. | 今日はみんなウハー。示し合わせたみたい。
+say town.waiter_work.3 | Поднос, улыбка, поднос, улыбка... | Tray, smile, tray, smile... | トレー、笑顔、トレー、笑顔…
+
+[cook_work]
+job = cook
+doing = work
+at = restaurant
+say town.cook.1 | Кто опять соль переставил?! | Who's moved the salt again?! | 誰だ、また塩の場所を変えたのは！
+say town.cook.2 | Уха любит терпение. | Fish soup likes patience. | ウハーは辛抱が大事だ。
+say town.cook.3 | Лук! Где мой лук? | Onions! Where are my onions? | 玉ねぎ！玉ねぎはどこ？
+say town.cook.4 | Огонь поменьше... Поменьше... Вот. | Lower the heat... Lower... There. | 火を弱めて…もう少し…よし。
+say town.cook.5 | Пельмени с утра лепили. Каждый — как маленькое солнце. | We've been making pelmeni since morning. Each one like a little sun. | 朝からペリメニを包んでた。一個一個が小さな太陽みたいだ。
+say town.cook.6 | Блюдо дня сегодня удалось. Не скажу какое — сами поймёте. | The dish of the day came out well. I won't say which, you'll see. | 今日の日替わりは上出来だ。どれかは言わない、食べればわかる。
+
+[guest]
+doing = eat_out
+at = restaurant
+say town.guest.1 | Борщ как у мамы. Даже лучше, только маме не говорите. | The borscht's like mum's. Even better, just don't tell her. | ボルシチ、母さんの味だ。いや、それ以上。母さんには内緒ね。
+say town.guest.2 | Отсюда лучший вид на море во всём городе. | This is the best sea view in the whole town. | ここは町でいちばん海がきれいに見える。
+say town.guest.3 | Можно нам ещё хлеба? | Could we have some more bread? | すみません、パンをもう少し。
+say town.guest.4 | Я сюда только ради медовика хожу. | I only come here for the medovik. | ここにはメドヴィクのためだけに来るの。
+say town.guest.5 | Хорошо, что сели у окна. Будто обедаем прямо в небе. | Good thing we sat by the window. It's like having lunch in the sky. | 窓際でよかった。空の中で食事してるみたい。
+say town.guest.6 | Пахнет укропом и морем. Лучший запах. | It smells of dill and the sea. The best smell. | ディルと海のにおい。最高の組み合わせ。
+say town.guest.7 | Счёт, пожалуйста. Ой, тут же сразу платят. | The bill, please. Oh, you pay as you order here. | お会計を…あ、ここは注文のときに払うんだった。
+
+[guest_sunset]
+doing = eat_out
+at = restaurant
+sun = low
+say town.guest_sunset.1 | Кофе остыл. Закат того стоил. | The coffee's gone cold. The sunset was worth it. | コーヒーが冷めちゃった。でも夕日を見てたんだから、いいか。
+
+[guest_special_mon]
+doing = eat_out
+at = restaurant
+weekday = mon
+weight = 2
+say town.guest_special.mon | Понедельник — день солянки. Это закон. | Monday is solyanka day. It's the law. | 月曜はソリャンカの日。決まりだよ。
+
+[guest_special_tue]
+doing = eat_out
+at = restaurant
+weekday = tue
+weight = 2
+say town.guest_special.tue | Голубцы по вторникам — как у бабушки. | Tuesday golubtsy, just like grandma's. | 火曜のゴルブツィ、おばあちゃんの味。
+
+[guest_special_wed]
+doing = eat_out
+at = restaurant
+weekday = wed
+weight = 2
+say town.guest_special.wed | Драники! Среда удалась. | Draniki! Wednesday's a success. | ドラニキだ！水曜日、最高。
+
+[guest_special_thu]
+doing = eat_out
+at = restaurant
+weekday = thu
+weight = 2
+say town.guest_special.thu | Рыбный четверг. Камбала сегодня будто сама с пирса пришла. | Fish Thursday. The flounder's so fresh it might have walked here from the pier. | 木曜は魚の日。カレイが桟橋から歩いてきたみたいに新鮮。
+
+[guest_special_fri]
+doing = eat_out
+at = restaurant
+weekday = fri
+weight = 2
+say town.guest_special.fri | Пятница, шашлык... Неделя прожита не зря. | Friday, shashlik... The week wasn't wasted. | 金曜はシャシリク。一週間がんばった甲斐がある。
+
+[guest_special_sat]
+doing = eat_out
+at = restaurant
+weekday = sat
+weight = 2
+say town.guest_special.sat | Суши у моря. Говорят, почти как в Японии. | Sushi by the sea. Almost like Japan, they say. | 海辺でお寿司。日本みたいって言うけど、どうかな。
+
+[guest_special_sun]
+doing = eat_out
+at = restaurant
+weekday = sun
+weight = 2
+say town.guest_special.sun | Блины с икрой в воскресенье. Не ресторан, а праздник. | Blini with caviar on a Sunday. It's not a restaurant, it's a holiday. | 日曜はイクラのブリヌイ。レストランというより、お祭りだ。
+
+[guest_festival]
+doing = eat_out
+at = restaurant
+festival = any
+weight = 2
+say town.guest_festival.1 | Праздничная уха! Её только по праздникам варят. | Festival fish soup! They only make it on holidays. | お祭りのウハーだ！祭りの日にしか作らないんだよ。
+say town.guest_festival.2 | Сбитень горячий, с мёдом. Праздник прямо внутри. | Hot sbiten with honey. The holiday's right inside you. | 蜂蜜入りの熱いスビーテン。お祭りが体の中にあるみたい。
+
+[guest_talk]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+weight = 3
+talk
+- town.guest_talk1.1 | Ты что заказываешь? | What are you having? | 何にする？
+- town.guest_talk1.2 | Пельмени. | Pelmeni. | ペリメニ。
+- town.guest_talk1.3 | И я. | Me too. | わたしも。
+- town.guest_talk1.4 | Значит, не ошиблись. | Then we can't go wrong. | じゃあ間違いないね。
+talk
+- town.guest_talk3.1 | Как суп? | How's the soup? | スープどう？
+- town.guest_talk3.2 | Как обычно. | Same as usual. | いつもどおり。
+- town.guest_talk3.3 | Как обычно хорошо или просто как обычно? | Usual good, or just usual? | いつもどおりおいしい？それともただのいつもどおり？
+- town.guest_talk3.4 | Как обычно хорошо. | Usual good. | いつもどおりおいしい。
+talk
+- town.guest_talk5.1 | Что здесь раньше было? | What used to be here? | ここ、前は何があったっけ？
+- town.guest_talk5.2 | Не помню. Кажется, всегда был ресторан. | I don't remember. Seems like there was always a restaurant. | 覚えてない。ずっとレストランだった気がする。
+- town.guest_talk5.3 | Он же новый. | But it's new. | でも新しいんでしょ？
+- town.guest_talk5.4 | Ну да. Новый. И всегда был. | Right. New. And always here. | そう。新しくて、ずっとあった。
+talk
+- town.guest_talk6.1 | Чаевые оставим? | Shall we leave a tip? | チップ置いていく？
+- town.guest_talk6.2 | Оставим. Сегодня хорошо обслужили. | Let's. The service was lovely today. | うん。今日はサービスがよかった。
+- town.guest_talk6.3 | Тут всегда хорошо обслуживают. | It's always lovely here. | ここはいつもいいよ。
+- town.guest_talk6.4 | Сегодня особенно. | Today especially. | 今日は特にね。
+
+[guest_talk_sun]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+sun = day low
+weight = 3
+talk
+- town.guest_talk2.1 | Смотри, солнце прямо в бокале. | Look, the sun's right in your glass. | 見て、グラスにお日さまが入ってる。
+- town.guest_talk2.2 | Не пей его. | Don't drink it. | 飲んじゃだめだよ。
+- town.guest_talk2.3 | Поздно. | Too late. | もう遅い。
+
+[guest_talk_dessert]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+weekday = tue wed thu fri sat sun
+weight = 3
+talk
+- town.guest_talk4.1 | Закажем десерт? | Shall we order dessert? | デザート頼もうか？
+- town.guest_talk4.2 | Мы же на диете. | But we're on a diet. | ダイエット中でしょ。
+- town.guest_talk4.3 | Мы на диете с понедельника. | We're on a diet from Monday. | ダイエットは月曜から。
+- town.guest_talk4.4 | А сегодня как раз не понедельник. | And today isn't Monday. | 今日は月曜じゃないしね。

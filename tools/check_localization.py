@@ -1,5 +1,7 @@
 """Checks the string tables: the same keys in every language, the same {0} placeholders, no empty values, every
-asset/voice placeholder known, and (--code) no literal Cyrillic or kana/kanji left in C++ UI code.
+asset/voice placeholder known, and (--code) no literal Cyrillic or kana/kanji left in C++ UI code. The generated tables
+in subfolders (Content/Localization/<sub>/strings_<lang>.json: the townsfolk's names, their lines) are checked the same
+way; LyudText merges them in, the hand-written keys winning.
 
     python3 tools/check_localization.py [--code]
 """
@@ -13,17 +15,39 @@ DIR = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Localization")
 langs = sorted(f[len("strings_"):-5] for f in os.listdir(DIR) if f.startswith("strings_"))
 tables = {l: json.load(open(os.path.join(DIR, "strings_%s.json" % l), encoding="utf-8")) for l in langs}
 bad = 0
-master = tables["ru"]
-for l in langs:
-    for k in master.keys() - tables[l].keys():
-        print("%s: missing %s" % (l, k)); bad += 1
-    for k in tables[l].keys() - master.keys():
-        print("%s: extra %s (not in ru)" % (l, k)); bad += 1
-    for k, v in tables[l].items():
-        if not v.strip():
-            print("%s: empty %s" % (l, k)); bad += 1
-        if k in master and sorted(re.findall(r"\{\d+\}", v)) != sorted(re.findall(r"\{\d+\}", master[k])):
-            print("%s: placeholders differ in %s" % (l, k)); bad += 1
+
+
+def check_tables(where, tables):
+    """The same keys in every language as in ru, no empty values, the same placeholders."""
+    global bad
+    master = tables["ru"]
+    for l in langs:
+        for k in master.keys() - tables[l].keys():
+            print("%s%s: missing %s" % (where, l, k)); bad += 1
+        for k in tables[l].keys() - master.keys():
+            print("%s%s: extra %s (not in ru)" % (where, l, k)); bad += 1
+        for k, v in tables[l].items():
+            if not v.strip():
+                print("%s%s: empty %s" % (where, l, k)); bad += 1
+            if k in master and sorted(re.findall(r"\{\d+\}", v)) != sorted(re.findall(r"\{\d+\}", master[k])):
+                print("%s%s: placeholders differ in %s" % (where, l, k)); bad += 1
+
+
+check_tables("", tables)
+master = dict(tables["ru"])
+for sub in sorted(os.listdir(DIR)):
+    if not os.path.isfile(os.path.join(DIR, sub, "strings_ru.json")):
+        continue
+    subt = {}
+    for l in langs:
+        f = os.path.join(DIR, sub, "strings_%s.json" % l)
+        subt[l] = json.load(open(f, encoding="utf-8")) if os.path.isfile(f) else {}
+    check_tables(sub + "/", subt)
+    shadowed = [k for k in subt["ru"] if k in tables["ru"]]
+    if shadowed:
+        print("%s/: %d keys are the hand-written table's (theirs are shown), e.g. %s" % (sub, len(shadowed), shadowed[0]))
+    for k, v in subt["ru"].items():
+        master.setdefault(k, v)
 man = json.load(open(os.path.join(ROOT, "localization", "assets.json"), encoding="utf-8"))
 used = set()
 for a in man["assets"].values():

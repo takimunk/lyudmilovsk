@@ -1,0 +1,191 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Grannies and grandpas on the benches: alone, to the hero, and talking to each other (two on one bench)
+## ---------------------------------------------------------------------------------------------------------------
+
+[granny_bench]
+age = elder
+sex = female
+doing = sit_bench
+weight = 2
+say town.granny.1 | В наше время на лестницах не сидели. | In our day nobody sat about on the stairs. | わたしらの頃は階段に座ったりしなかったよ。
+say town.granny.2 | Молоко опять подорожало. Скоро корову заведу. | Milk's gone up again. I'll be getting a cow soon. | 牛乳がまた値上がり。そのうち牛でも飼うよ。
+say town.granny.3 | Голуби, голуби... Нет у меня хлеба, весь раздала. | Pigeons, pigeons... I've no bread left, I gave it all away. | ハトさん、もうパンはないよ。全部あげちゃった。
+say town.granny.4 | Вон та, с собачкой, опять в новом пальто. | That one with the little dog's in a new coat again. | あの犬連れの人、また新しいコート着てるよ。
+say town.granny.5 | Я в этом доме сорок лет живу. Или пятьдесят. Всё одинаково. | I've lived in this building forty years. Or fifty. It's all the same. | この建物に四十年住んでる。いや五十年かね。どっちも同じさ。
+say town.granny.6 | Внук обещал позвонить. Позвонит, позвонит. | My grandson promised to ring. He will, he will. | 孫が電話するって言ってたよ。するさ、きっと。
+say town.granny.7 | Красота какая. И ведь каждый день новая. | Such beauty. And new every day. | きれいだねえ。毎日ちがう景色だよ。
+say town.granny.8 | Сидеть — тоже работа. Кто-то же должен за всем смотреть. | Sitting's work too. Someone's got to keep an eye on everything. | 座ってるのも仕事さ。誰かが見張ってなきゃね。
+
+[granny_cold]
+age = elder
+sex = female
+doing = sit_bench
+months = 10-4
+say town.granny_cold.1 | Опять молодёжь без шапок. Простынут же. | Young people with no hats again. They'll catch their death. | また若い子が帽子もかぶらないで。風邪ひくよ。
+
+[granny_sun]
+age = elder
+sex = female
+doing = sit_bench
+sun = day
+say town.granny_sun.1 | Солнышко... Посижу, погреюсь, пока светит. | Sunshine... I'll sit and warm myself while it shines. | お日さま…照ってるうちに、あったまっとこう。
+
+[granny_knees]
+age = elder
+doing = sit_bench
+sun = cloudy
+say town.granny_knees.1 | Ох, коленки... К дождю. | Oh, my knees... Rain's on the way. | ああ、膝が…雨が来るね。
+
+[granny_about_hero]
+age = elder
+sex = female
+doing = sit_bench
+near = hero
+weight = 2
+say town.granny_about_hero.1 | Это чей мальчик? Не наш вроде. | Whose boy is that? Not one of ours, I think. | あの子はどこの子だい？うちの辺の子じゃないねえ。
+say town.granny_about_hero.2 | Хороший мальчик. Тихий. Только худой. | A nice boy. Quiet. A bit thin, though. | いい子だねえ。おとなしくて。ちょっとやせてるけど。
+
+[granny_to_hero]
+to = hero
+age = elder
+sex = female
+weight = 2
+say town.granny_hero.1 | Сынок, ты поел сегодня? Худой какой. | Son, have you eaten today? You're so thin. | 坊や、ご飯食べたかい？やせてるねえ。
+say town.granny_hero.2 | Иди-ка сюда, конфетку дам. | Come here, I'll give you a sweet. | こっちおいで、飴あげるよ。
+say town.granny_hero.3 | Ты чей будешь? С какого дома? | Whose boy are you? Which building? | どこの子だい？どの建物？
+say town.granny_hero.4 | Не бегай по ступенькам, расшибёшься. | Don't run on the steps, you'll hurt yourself. | 階段を走るんじゃないよ、転ぶから。
+say town.granny_hero.5 | Ох, молодость... Иди гуляй, пока солнце. | Ah, youth... Off you go and play while there's sun. | 若いっていいねえ。お行き、日があるうちに遊んでおいで。
+
+[granny_talk]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+weight = 3
+talk
+- town.granny_talk1.1 | Видела, ресторан открыли? «Янтарь». | Did you see they've opened a restaurant? Yantar. | レストランができたの、見た？「ヤンタル」だって。
+- town.granny_talk1.2 | Видела. Дорого, небось. | I saw. Pricey, I bet. | 見たよ。高いんだろうねえ。
+- town.granny_talk1.3 | Борщ, говорят, как у мамы. | They say the borscht's like mum's. | ボルシチがおふくろの味なんだって。
+- town.granny_talk1.4 | У моей мамы был лучше. | My mum's was better. | うちの母さんのほうがおいしかったよ。
+talk
+- town.granny_talk2.1 | Как давление? | How's your blood pressure? | 血圧はどう？
+- town.granny_talk2.2 | Скачет. Погода. | Up and down. It's the weather. | 上がったり下がったり。天気のせいだよ。
+- town.granny_talk2.3 | И у меня. Всё погода. | Mine too. It's all the weather. | わたしもさ。ぜんぶ天気だね。
+talk
+- town.granny_talk3.1 | Говорят, на остров поезд прямо по воде ходит. | They say the train to the island runs right over the water. | 島まで電車が海の上を走ってるんだってね。
+- town.granny_talk3.2 | Сорок лет ходит. | It's been running forty years. | もう四十年走ってるよ。
+- town.granny_talk3.3 | А я всё никак не соберусь. | And I still haven't got round to going. | まだ一度も乗ってないの。
+- town.granny_talk3.4 | Соберёшься. Время есть. | You will. There's time. | そのうち乗れるさ。時間はあるよ。
+talk
+- town.granny_talk4.1 | Твой-то звонит? | Does your boy ring you? | 息子さん、電話くる？
+- town.granny_talk4.2 | По субботам. | On Saturdays. | 土曜日にね。
+- town.granny_talk4.3 | Мой — по праздникам. | Mine on holidays. | うちは祝日だけ。
+- town.granny_talk4.4 | Тоже хорошо. | That's good too. | それもいいじゃない。
+talk
+- town.granny_talk6.1 | Опять эти, с компьютерами, всю ночь сидели. | That lot were at their computers all night again. | また若い子たちが夜通しパソコンだよ。
+- town.granny_talk6.2 | Молодёжь. | Young people. | 若いからねえ。
+- town.granny_talk6.3 | Мы тоже всю ночь сидели. На танцах. | We were up all night too. At the dances. | わたしらも夜通しだったじゃない。ダンスで。
+- town.granny_talk6.4 | Это другое. | That's different. | それとこれとは別。
+talk
+- town.granny_talk7.1 | Пирог-то испекла? | Did you bake the pie? | パイ焼いたの？
+- town.granny_talk7.2 | Испекла. С капустой. | I did. Cabbage. | 焼いたよ。キャベツの。
+- town.granny_talk7.3 | Приду. | I'll come round. | あとで行くね。
+- town.granny_talk7.4 | Приходи. | Do. | おいで。
+talk
+- town.granny_talk8.1 | Помнишь, тут раньше до самого моря был песок? | Remember when it was sand all the way to the sea here? | 昔はここ、海まで砂浜だったの覚えてる？
+- town.granny_talk8.2 | Помню. | I remember. | 覚えてるよ。
+- town.granny_talk8.3 | А террас не было. | And there were no terraces. | 段々なんてなかったよね。
+- town.granny_talk8.4 | Не помню, чтобы их не было. | I don't remember them ever not being there. | なかった覚えはないねえ。
+talk
+- town.granny_talk9.1 | Видала, чайка утром у мальчишки пирожок утащила? | Did you see a gull snatch a pie off a boy this morning? | けさ、カモメが男の子のピロシキをさらってったの見た？
+- town.granny_talk9.2 | Наглые. | Cheeky things. | ずうずうしいねえ。
+- town.granny_talk9.3 | Зато красивые. | Pretty, though. | でも、きれいだよ。
+talk
+- town.granny_talk11.1 | В ДК опять хор собирают. | They're getting the choir together at the culture house again. | また文化会館で合唱団を集めてるって。
+- town.granny_talk11.2 | Пойдёшь? | Will you go? | 行くの？
+- town.granny_talk11.3 | Голос уже не тот. | My voice isn't what it was. | もう声が出ないよ。
+- town.granny_talk11.4 | Зато громкий. | It's loud, though. | 大きい声は出るじゃない。
+talk
+- town.granny_talk12.1 | Ночью на набережной опять кто-то пел. | Someone was singing on the promenade again last night. | ゆうべも遊歩道で誰か歌ってたよ。
+- town.granny_talk12.2 | Влюблённые. | Lovers. | 恋人たちだね。
+- town.granny_talk12.3 | Или пьяные. | Or drunks. | 酔っぱらいかも。
+- town.granny_talk12.4 | Одно другому не мешает. | One doesn't rule out the other. | どっちでもいいじゃない。
+
+[granny_talk_sun]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+sun = day
+weight = 3
+talk
+- town.granny_talk5.1 | Солнце-то сегодня какое. | What a sun today. | 今日はいいお日さまだねえ。
+- town.granny_talk5.2 | Тёплое. Как в детстве. | Warm. Like when we were little. | あったかい。子どもの頃みたい。
+- town.granny_talk5.3 | Оно всегда как в детстве. Это мы другие. | It's always like when we were little. We're the ones who've changed. | お日さまはいつも子どもの頃のまま。変わったのはわたしらさ。
+
+[granny_talk_autumn]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+months = 9-11
+weight = 3
+talk
+- town.granny_talk10.1 | Холодает. | It's getting cold. | 冷えてきたね。
+- town.granny_talk10.2 | Осень. | It's autumn. | 秋だもの。
+- town.granny_talk10.3 | А в прошлом году в это время купались. | Last year at this time we were swimming. | 去年の今ごろは泳いでたのにねえ。
+- town.granny_talk10.4 | Ты купалась. А я смотрела. | You were swimming. I was watching. | 泳いでたのはあんた。わたしは見てただけ。
+
+[grandpa_bench]
+age = elder
+sex = male
+doing = sit_bench
+weight = 2
+say town.grandpa.1 | В шахматы кто? Никого. Ладно, сам с собой. | Chess, anyone? Nobody. Fine, I'll play myself. | 誰かチェスやらんか？…おらんか。ひとりでやるか。
+say town.grandpa.2 | В молодости я с пирса вот такую рыбу таскал. Вот тогда была рыба! | When I was young I pulled fish this big off the pier. Now that was fish! | 若いころは桟橋でこんなに大きい魚を釣ったもんだ。あのころの魚はすごかった！
+say town.grandpa.3 | Газету бы. Хотя что там нового... | A newspaper would be nice. Though what's new... | 新聞でもあればな。まあ、新しいことなんてないか。
+say town.grandpa.4 | Ветер с моря. К перемене погоды. | Wind off the sea. The weather's turning. | 海風だ。天気が変わるぞ。
+say town.grandpa.5 | В моё время на танцы ходили. А сейчас — в клуб, к компьютерам. | In my day we went dancing. Now it's the club and the computers. | わしらの頃はダンスに行ったもんだ。今の若いのはクラブでコンピューターだ。
+say town.grandpa.6 | Хорошо сидим. Тихо. | Nice sitting here. Quiet. | いいね、静かで。
+
+[grandpa_talk]
+age = elder
+sex = male
+doing = sit_bench
+age2 = elder
+sex2 = male
+weight = 3
+talk
+- town.grandpa_talk1.1 | Ходи. | Your move. | ほら、あんたの番だ。
+- town.grandpa_talk1.2 | Думаю. | I'm thinking. | 考えとる。
+- town.grandpa_talk1.3 | Двадцать минут думаешь. | You've been thinking for twenty minutes. | 二十分も考えとるぞ。
+- town.grandpa_talk1.4 | Шахматы спешки не любят. | Chess doesn't like to be rushed. | チェスは急かすもんじゃない。
+talk
+- town.grandpa_talk2.1 | Раньше рыба сама на берег выпрыгивала. | The fish used to jump onto the shore by themselves. | 昔は魚が勝手に浜に跳ねてきたもんだ。
+- town.grandpa_talk2.2 | Раньше и мы прыгали. | We used to jump about too. | 昔はわしらも跳ねとった。
+talk
+- town.grandpa_talk3.1 | Видал новый ресторан? Кругом стекло. | Seen the new restaurant? Glass all round. | 新しいレストラン見たか？ぐるっとガラス張りだ。
+- town.grandpa_talk3.2 | Видал. Как аквариум. | I've seen it. Like an aquarium. | 見た。水槽みたいだな。
+- town.grandpa_talk3.3 | Только рыбы там не мы. | Only we're not the fish in there. | 中の魚はわしらじゃないがな。
+- town.grandpa_talk3.4 | Это как посмотреть. | Depends how you look at it. | それは見方しだいだ。
+talk
+- town.grandpa_talk4.1 | Как спина? | How's your back? | 腰はどうだ？
+- town.grandpa_talk4.2 | Погоду чует лучше синоптиков. | It feels the weather better than the forecasters. | 天気予報より当たるよ。
+- town.grandpa_talk4.3 | И что говорит? | And what does it say? | なんて言っとる？
+- town.grandpa_talk4.4 | Говорит: сиди дома. | It says: stay at home. | 家にいろとさ。
+
+[grandpa_talk_autumn_sun]
+age = elder
+sex = male
+doing = sit_bench
+age2 = elder
+months = 9-12
+sun = day low
+weight = 3
+talk
+- town.grandpa_talk5.1 | Низкое сегодня солнце. | The sun's low today. | 今日は日が低いな。
+- town.grandpa_talk5.2 | Осень. Оно к нам боком поворачивается. | It's autumn. It turns its side to us. | 秋だ。こっちに横顔を向けとる。
+- town.grandpa_talk5.3 | Ничего. Весной опять лицом повернётся. | Never mind. In spring it'll turn its face to us again. | なに、春になりゃまた正面を向くさ。

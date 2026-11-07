@@ -74,6 +74,8 @@ spots), `blender/export/city/<type>[__<plot>].json` (the buildings' flats, beds,
   shows near the story person whose model they borrow.
 - After a load or a clock jump the townsfolk are placed 120 a step (no long frame); snapped sleepers have no bedside lamp.
 - Town bodies use update-rate optimisation, are kept out of Lumen and distance fields, and are tagged `NoTalk`.
+- They can't be talked to, but they greet the player, say lines of their own and have short exchanges over their
+  heads (docs/town_talk.md).
 - The townsfolk aren't saved individually: the generator's seed recreates them; only the story's people's homes and
   memory go to the save.
 

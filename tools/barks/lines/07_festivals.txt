@@ -1,0 +1,364 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Festival days (Content/PeopleData/festivals.json, ULyudFestivalSubsystem::ActiveFestival / ActivePhase)
+## ---------------------------------------------------------------------------------------------------------------
+
+[fest_greet]
+to = hero
+festival = any
+age = teen adult
+weight = 4
+say town.fest_greet.1 | С праздником! | Happy holiday! | おめでとう！
+
+[fest_greet_day]
+to = hero
+festival = any
+age = teen adult
+hours = 6-18
+weight = 4
+say town.fest_greet.2 | С праздником! Вечером не пропусти самое интересное. | Happy holiday! Don't miss the best bit tonight. | おめでとう！夜のいちばんの見どころ、見逃さないでね。
+
+[fest_greet_elder]
+to = hero
+festival = any
+age = elder
+weight = 4
+say town.fest_greet_elder.1 | С праздничком, сынок! | Happy holiday, son! | おめでとうさん、坊や！
+
+[fest_greet_kid]
+to = hero
+festival = any
+age = kid
+weight = 4
+say town.fest_greet_kid.1 | Сегодня праздник! Ты знал? | It's a holiday today! Did you know? | 今日はお祭りだよ！知ってた？
+
+[fest_any]
+at = outdoors
+festival = any
+weight = 2
+say town.fest_any.1 | Весь город на улице. Люблю, когда так. | The whole town's outside. I love it like this. | 町じゅうが外に出てる。こういうの好きだな。
+say town.fest_any.2 | В праздник даже море наряднее. | On a holiday even the sea looks dressed up. | お祭りの日は海までおめかししてる。
+say town.fest_any.3 | Флажки развесили — значит, будет весело. | They've hung the bunting, so it'll be fun. | 旗が飾られた。楽しくなるぞ。
+
+[fest_fair]
+festival = any
+gather = fair
+weight = 3
+say town.fest_fair.1 | Тут всё такое вкусное, что денег не хватит. | Everything here's so tasty there won't be enough money. | 何でもおいしそうで、お金が足りない。
+say town.fest_fair.2 | Карусель работает! Пойдём? | The carousel's running! Shall we go? | メリーゴーラウンド動いてる！行こう？
+say town.fest_fair.3 | Не потеряйся в толпе! | Don't get lost in the crowd! | 人ごみで迷子にならないでね！
+
+[fest_watch]
+festival = any
+gather = watch
+weight = 2
+say town.fest_watch.1 | Как красиво... | How beautiful... | きれい…
+say town.fest_watch.2 | Ничего не видно! Пустите вперёд. | I can't see a thing! Let me through to the front. | 何も見えない！前に行かせて。
+
+[fest_concert]
+at = outdoors
+phase = concert carols
+weight = 3
+say town.fest_concert.1 | Хорошо поют. Особенно когда в ноты попадают. | They sing well. Especially when they hit the notes. | うまいね。音程が合ってるときは特に。
+say town.fest_concert.2 | Сцену поставили прямо у моря. Музыка плывёт по воде. | They've put the stage right by the sea. The music floats over the water. | ステージが海のすぐそば。音楽が水の上を流れていく。
+
+[fest_fireworks]
+at = outdoors
+phase = fireworks
+weight = 5
+say town.fest_fireworks.1 | Смотри, смотри! | Look, look! | 見て、見て！
+say town.fest_fireworks.2 | Ура-а-а! | Hurraaay! | たまやー！
+say town.fest_fireworks.3 | Вот этот зелёный — мой любимый. | That green one's my favourite. | あの緑のがいちばん好き。
+say town.fest_fireworks.4 | В воде отражается. Два салюта сразу. | It's reflected in the water. Two fireworks at once. | 水に映ってる。花火が二つだ。
+
+[fest_dance]
+at = outdoors
+phase = dance
+weight = 3
+say town.fest_dance.1 | Танцуют все! Даже те, кто не умеет. | Everyone's dancing! Even those who can't. | みんな踊ってる！踊れない人まで。
+say town.fest_dance.2 | Я не танцую. Я просто так двигаюсь. | I'm not dancing. I'm just sort of moving. | 踊ってないよ。ちょっと動いてるだけ。
+
+[fest_bonfire]
+at = outdoors
+phase = bonfire
+weight = 4
+say town.fest_bonfire.1 | От костра тепло, как от солнца. Только ближе. | The fire's as warm as the sun. Only closer. | 焚き火のあったかさは太陽みたい。もっと近いけど。
+say town.fest_bonfire.2 | Искры летят прямо к звёздам. | The sparks are flying right up to the stars. | 火の粉が星まで飛んでいく。
+
+[fest_firecrackers]
+at = outdoors
+phase = firecrackers
+weight = 5
+say town.fest_firecrackers.1 | Уши, уши закрой! | Cover your ears! | 耳ふさいで！
+say town.fest_firecrackers.2 | Хлопушки прогоняют всё плохое. Громко прогоняют. | Firecrackers chase away everything bad. Loudly. | 爆竹は悪いものを追い払うの。派手にね。
+
+[weekend_market]
+festival = weekend_market
+weight = 3
+say town.fest_market.1 | Суббота — ярмарка. Без ярмарки и суббота не суббота. | Saturday means the market. Without the market, Saturday isn't Saturday. | 土曜は市。市がなきゃ土曜じゃない。
+say town.fest_market.2 | Пойду за творогом, пока не разобрали. | I'm off for some cottage cheese before it's all gone. | カッテージチーズ買いに行かなきゃ、売り切れる前に。
+say town.fest_market.3 | На ярмарке опять тот дед с мёдом. Лучший мёд. | That old man with the honey's at the market again. The best honey. | 市にまたハチミツのおじいさんが来てる。あれが一番うまい。
+
+[sea_festival]
+festival = sea_festival
+weight = 3
+say town.fest_sea.1 | Праздник моря! Главный день в году. | The Sea Festival! The most important day of the year. | 海の祭りだ！一年でいちばん大事な日。
+say town.fest_sea.2 | Говорят, в этот день море добрее. | They say the sea is kinder on this day. | この日は海がやさしくなるんだって。
+say town.fest_sea.3 | Ухи наварили на весь город. | They've made enough fish soup for the whole town. | 町じゅうの分のウハーを作ったんだって。
+
+[sea_festival_before]
+festival = sea_festival
+hours = 8-21
+weight = 3
+say town.fest_sea_before.1 | Вечером салют над пирсом. Займи место пораньше. | Fireworks over the pier tonight. Get a spot early. | 夜は桟橋の上で花火。早めに場所取りしなよ。
+
+[lantern_night]
+festival = lantern_night
+weight = 3
+say town.fest_lantern.1 | Загадай желание на фонарик и отпусти. Только никому не говори. | Make a wish on your lantern and let it go. Just don't tell anyone. | 自分のランタンに願いをかけて飛ばすの。誰にも言っちゃだめ。
+
+[lantern_night_sky]
+at = outdoors
+phase = sky_lanterns
+weight = 5
+say town.fest_lantern_sky.1 | Сколько огоньков... Как будто звёзды возвращаются домой. | So many lights... As if the stars are going home. | こんなにたくさんの灯り…星が家に帰っていくみたい。
+say town.fest_lantern_sky.2 | Мой — вон тот. Нет, вон тот. Уже не различить. | Mine's that one. No, that one. I can't tell any more. | わたしのはあれ。ううん、あれかな。もうわからない。
+
+[first_snow]
+at = outdoors
+festival = first_snow
+weight = 3
+say town.fest_snow.1 | Снег! Первый! | Snow! The first snow! | 雪だ！初雪！
+say town.fest_snow.2 | Чай у лотков горячий, а пальцы всё равно мёрзнут. | The tea at the stalls is hot, but your fingers still freeze. | 屋台のお茶は熱いのに、指はかじかむ。
+say town.fest_snow.3 | Снежок — и прямо за шиворот! Кто бросил? | A snowball right down my collar! Who threw that? | 雪玉が襟に入った！誰だ？
+
+[winter_fair]
+festival = winter_fair
+weight = 3
+say town.fest_winter_fair.1 | Зимняя ярмарка — значит, скоро Новый год. | The winter fair means New Year's coming. | 冬の市が立つと、もうすぐお正月だ。
+say town.fest_winter_fair.2 | Глинтвейн, пряники, гирлянды... До весны доживём. | Mulled wine, gingerbread, fairy lights... We'll make it to spring. | ホットワイン、ジンジャーブレッド、電飾…春までなんとかなるさ。
+
+[new_year_eve]
+festival = new_year
+phase = eve
+weight = 4
+say town.fest_new_year_eve.1 | С наступающим! | Happy New Year's Eve! | よいお年を！
+say town.fest_new_year_eve.2 | Ёлка на площади — самая высокая за сорок лет. | The tree on the square is the tallest in forty years. | 広場のツリー、四十年でいちばん高いって。
+
+[new_year]
+at = outdoors
+festival = new_year
+phase = fireworks dance walk
+weight = 4
+say town.fest_new_year.1 | С Новым годом! | Happy New Year! | あけましておめでとう！
+say town.fest_new_year.2 | Новый год, а море то же самое. И хорошо. | A new year, and the sea's the same. That's good. | 年が明けても、海は同じ。それでいい。
+
+[new_year_hero]
+to = hero
+festival = new_year
+phase = eve fireworks
+weight = 5
+say town.fest_new_year_hero.1 | Желание загадал? В полночь надо успеть. | Made your wish? You've got to get it in at midnight. | 願いごとした？真夜中までにしないと。
+
+[maslenitsa]
+festival = maslenitsa
+weight = 3
+say town.fest_maslenitsa.1 | Блины! Кто сколько съел? У меня шестой. | Blini! Who's had how many? I'm on my sixth. | ブリヌイ！何枚食べた？わたしは六枚目。
+say town.fest_maslenitsa.2 | Блин — это маленькое солнце. Поэтому их и пекут. | A blin is a little sun. That's why they bake them. | ブリヌイは小さな太陽なんだ。だから焼くんだよ。
+say town.fest_maslenitsa.3 | Зима, уходи! Солнце, приходи! | Winter, go away! Sun, come back! | 冬よ、さようなら！お日さま、おいで！
+
+[maslenitsa_fire]
+at = outdoors
+festival = maslenitsa
+phase = bonfire
+weight = 5
+say town.fest_maslenitsa_fire.1 | Чучело немножко жалко. А зиму не жалко. | I feel a bit sorry for the effigy. But not for the winter. | かかしはちょっとかわいそう。でも冬はかわいそうじゃない。
+
+[bird_day]
+festival = bird_day
+weight = 3
+say town.fest_birds.1 | Скворечник повесили. Теперь ждём жильцов. | We've put up the nest box. Now we wait for the tenants. | 巣箱をかけた。あとは住人待ち。
+say town.fest_birds.2 | Скворцы вернулись! Слышишь? | The starlings are back! Hear them? | ムクドリが帰ってきた！聞こえる？
+
+[blossom]
+festival = blossom
+weight = 3
+say town.fest_blossom.1 | Под цветущими деревьями даже чай слаще. | Under the blossom even tea tastes sweeter. | 花の下だと、お茶まで甘くなる。
+say town.fest_blossom.2 | Лепестки в волосах. Не стряхивай, красиво. | Petals in your hair. Don't brush them off, it's pretty. | 髪に花びら。払わないで、きれいだから。
+
+[midsummer]
+festival = midsummer
+weight = 3
+say town.fest_midsummer.1 | Самая короткая ночь. Спать — преступление. | The shortest night. Sleeping would be a crime. | 一年でいちばん短い夜。寝るなんてもったいない。
+say town.fest_midsummer.2 | Дождёмся солнца. Сегодня оно встанет почти сразу. | Let's wait for the sun. Tonight it'll rise almost straight away. | 日の出を待とう。今夜はすぐに昇ってくるから。
+
+[midsummer_hero]
+to = hero
+festival = midsummer
+phase = bonfire
+weight = 5
+say town.fest_midsummer_hero.1 | Через костёр прыгнешь? На счастье. | Will you jump over the fire? For luck. | 焚き火、跳び越える？幸運のおまじない。
+
+[midsummer_sunrise]
+at = outdoors
+festival = midsummer
+phase = sunrise
+weight = 5
+say town.fest_sunrise.1 | Вот оно! Встаёт! | There it is! It's rising! | ほら！昇ってくる！
+say town.fest_sunrise.2 | Все молчат. Даже чайки. | Everyone's silent. Even the gulls. | みんな黙ってる。カモメまで。
+
+[fisherman_day]
+festival = fisherman_day
+weight = 3
+say town.fest_fisherman.1 | День рыбака! Сегодня каждый рыбак — герой. | Fisherman's Day! Today every fisherman's a hero. | 漁師の日だ！今日は漁師がみんな英雄。
+say town.fest_fisherman.2 | Самую большую рыбу ещё не поймали. Она нас ждёт. | The biggest fish hasn't been caught yet. It's waiting for us. | いちばん大きな魚はまだ釣られてない。待ってるんだ。
+
+[perseids]
+at = outdoors
+festival = perseids
+weight = 3
+say town.fest_perseids.1 | Вон, вон! Упала! | There, there! A shooting star! | あっ、あそこ！流れた！
+say town.fest_perseids.2 | Желание успели загадать? | Did you get your wish in? | 願いごと、間に合った？
+say town.fest_perseids.3 | Ложись и смотри. Небо само покажет. | Lie down and watch. The sky will show you. | 寝ころんで見てなよ。空が見せてくれる。
+
+[harvest_fair]
+festival = harvest_fair
+weight = 3
+say town.fest_harvest.1 | Тыквы в этом году — во! | The pumpkins this year are this big! | 今年のかぼちゃはこんなだよ！
+say town.fest_harvest.2 | Купим яблок на всю зиму. И варенья. | Let's buy apples for the whole winter. And jam. | 冬じゅうのりんごを買おう。ジャムもね。
+
+[lunar_new_year]
+festival = lunar_new_year
+weight = 3
+say town.fest_lunar.1 | С Новым годом по луне! | Happy Lunar New Year! | 春節おめでとう！
+say town.fest_lunar.2 | Красный — цвет удачи. Надень что-нибудь красное. | Red is the colour of luck. Wear something red. | 赤は幸運の色。何か赤いものを身につけて。
+say town.fest_lunar.3 | Пельмени лепим всей семьёй. В одном — монетка. | The whole family makes dumplings. One has a coin in it. | 家族みんなで餃子を包むの。ひとつにコインが入ってる。
+
+[lunar_drums]
+at = outdoors
+phase = drums
+weight = 5
+say town.fest_drums.1 | Барабаны прямо в груди стучат. | The drums are beating right inside my chest. | 太鼓が胸の中で鳴ってる。
+
+[holi]
+at = outdoors
+festival = holi
+weight = 3
+say town.fest_holi.1 | Холи! Береги куртку! Хотя уже поздно. | Holi! Mind your jacket! Though it's too late now. | ホーリーだ！上着に気をつけて！…もう遅いか。
+say town.fest_holi.2 | Сегодня все разноцветные. Даже чайки. | Everyone's every colour today. Even the gulls. | 今日はみんな色とりどり。カモメまで。
+say town.fest_holi.3 | Розовый в волосах ещё неделю будет. Ну и пусть. | The pink will stay in my hair for a week. Let it. | 髪のピンク、一週間は落ちないね。まあいいか。
+
+[nowruz]
+festival = nowruz
+weight = 3
+say town.fest_nowruz.1 | Навруз — Новый год весны. День с ночью сравнялись. | Nowruz is the spring New Year. Day and night are equal. | ノウルーズは春の新年。昼と夜が同じ長さになる日。
+say town.fest_nowruz.2 | Видишь пророщенную пшеницу? Это сабзе. На счастье. | See the sprouted wheat? That's sabzeh. For luck. | 芽が出た麦、見える？サブゼっていうの。幸運のしるし。
+
+[children_day]
+festival = children_day
+age = kid
+weight = 4
+say town.fest_children.1 | Сегодня наш день! Мороженое бесплатно! Ну, почти. | Today's our day! Free ice cream! Well, nearly. | 今日はこどもの日！アイスがタダ！…たぶん。
+say town.fest_children.2 | А мне шарик дали! Синий! | I got a balloon! A blue one! | 風船もらった！青いの！
+
+[children_day_adult]
+festival = children_day
+age = teen adult elder
+weight = 3
+say town.fest_children_adult.1 | Сегодня главные — дети. Впрочем, как всегда. | Today the children are in charge. As always, really. | 今日は子どもが主役。まあ、いつもだけど。
+
+[tanabata]
+festival = tanabata
+weight = 3
+say town.fest_tanabata.1 | Что написать на бумажке? Чтобы сбылось? | What should I write on the paper? So it comes true? | 短冊になんて書こう？かなうように。
+say town.fest_tanabata.2 | Ткачиха и пастух встречаются раз в году. Сегодня. | The weaver and the herdsman meet once a year. Today. | 織姫と彦星が会えるのは一年に一度。今日なんだ。
+say town.fest_tanabata.3 | Только бы облаков не было. Иначе не встретятся. | If only there are no clouds. Otherwise they won't meet. | 雲が出ませんように。じゃないと会えないから。
+
+[toro_nagashi]
+festival = toro_nagashi
+weight = 3
+say town.fest_toro.1 | Фонарик по воде — для тех, кто ушёл. Чтобы нашли дорогу. | A lantern on the water is for those who've gone. So they find the way. | 灯籠は亡くなった人のため。道に迷わないように。
+say town.fest_toro.2 | Смотри, как далеко уплыли. Море их бережёт. | Look how far they've drifted. The sea looks after them. | 見て、あんなに遠くまで。海が守ってくれてる。
+
+[mid_autumn]
+festival = mid_autumn
+weight = 3
+say town.fest_mid_autumn.1 | Луна сегодня самая круглая в году. | The moon's the roundest of the year tonight. | 今夜の月は一年でいちばんまるい。
+say town.fest_mid_autumn.2 | Лунный пряник с лотосом. Пополам? | A mooncake with lotus. Halves? | 蓮の月餅。半分こする？
+
+[halloween]
+festival = halloween
+weight = 3
+say town.fest_halloween.1 | Это не маска. Шучу. Или нет. | This isn't a mask. Kidding. Or am I. | これ、お面じゃないよ。うそ。…どうかな。
+
+[halloween_kid]
+festival = halloween
+age = kid
+weight = 4
+say town.fest_halloween_kid.1 | Сладость или гадость! | Trick or treat! | トリック・オア・トリート！
+say town.fest_halloween_kid.2 | Тыкву мы сами вырезали! Ну, папа помогал. | We carved the pumpkin ourselves! Well, Dad helped. | かぼちゃ、自分たちで彫ったの！パパも手伝ったけど。
+
+[dia_de_muertos]
+festival = dia_de_muertos
+weight = 3
+say town.fest_muertos.1 | Бархатцы — чтобы ушедшие нашли дорогу домой. | Marigolds are so those who've gone can find their way home. | マリーゴールドは、亡くなった人が家に帰る道しるべ。
+say town.fest_muertos.2 | Сегодня вспоминаем. Значит, они рядом. | Today we remember. So they're close. | 今日は思い出す日。だから、みんなそばにいる。
+
+[diwali]
+festival = diwali
+weight = 3
+say town.fest_diwali.1 | Счастливого Дивали! Пусть свет победит. | Happy Diwali! May the light win. | ディワリおめでとう！光が勝ちますように。
+say town.fest_diwali.2 | Каждый огонёк — против темноты. Зажги и свой. | Every little flame stands against the dark. Light yours too. | 灯りひとつひとつが闇に立ち向かう。きみも灯して。
+
+[loy_krathong]
+festival = loy_krathong
+weight = 3
+say town.fest_loy.1 | Кораблик из листьев, свеча, цветок — и отпускаешь всё плохое. | A little boat of leaves, a candle, a flower, and you let all the bad things go. | 葉っぱの舟にろうそくと花。悪いことを全部流すの。
+say town.fest_loy.2 | Полнолуние и свечи на воде. Красивее не бывает. | A full moon and candles on the water. It doesn't get prettier. | 満月と水の上のろうそく。これ以上きれいなものはない。
+
+[christmas]
+festival = christmas
+weight = 3
+say town.fest_christmas.1 | С Рождеством! | Merry Christmas! | メリークリスマス！
+say town.fest_christmas.2 | Свечи в окнах — чтобы путник нашёл дорогу. | Candles in the windows, so a traveller finds the way. | 窓のろうそくは、旅人が道に迷わないように。
+
+[christmas_carols]
+festival = christmas
+hours = 10-17
+weight = 3
+say town.fest_christmas_carols.1 | В пять колядки на площади. Голос у меня так себе, но я пойду. | Carols on the square at five. My voice is so-so, but I'm going. | 五時に広場でキャロル。声はいまいちだけど行くよ。
+
+[fest_talk]
+festival = any
+doing = gather_mingle chat
+weight = 4
+talk
+- town.fest_talk2.1 | Хороший праздник. | A lovely festival. | いいお祭りだね。
+- town.fest_talk2.2 | Лучший в году. | The best of the year. | 一年でいちばん。
+- town.fest_talk2.3 | Ты так про каждый говоришь. | You say that about every one. | 毎回そう言うよね。
+- town.fest_talk2.4 | И каждый раз правда. | And it's true every time. | 毎回ほんとなんだもの。
+talk
+- town.fest_talk3.1 | Музыка откуда? | Where's the music coming from? | 音楽、どこから？
+- town.fest_talk3.2 | Со сцены. | From the stage. | ステージから。
+- town.fest_talk3.3 | А кажется — с моря. | It sounds like it's coming from the sea. | 海から聞こえる気がする。
+
+[fest_talk_parents]
+festival = any
+doing = gather_mingle chat
+age = adult elder
+age2 = adult elder
+weight = 4
+talk
+- town.fest_talk4.1 | Дети где? | Where are the kids? | 子どもたちは？
+- town.fest_talk4.2 | Двоих вижу. | I can see two. | 二人見える。
+- town.fest_talk4.3 | А сколько было? | How many were there? | 何人だったっけ？
+- town.fest_talk4.4 | Двое. Вроде бы. | Two. I think. | 二人。たぶん。
+
+[fest_talk_fireworks]
+festival = sea_festival new_year lunar_new_year diwali
+doing = gather_mingle chat
+hours = 12-21
+weight = 5
+talk
+- town.fest_talk1.1 | На салют пойдёшь? | Are you going to the fireworks? | 花火見に行く？
+- town.fest_talk1.2 | Конечно. | Of course. | もちろん。
+- town.fest_talk1.3 | И я. Встретимся у пирса. | Me too. See you at the pier. | わたしも。桟橋で会おう。
