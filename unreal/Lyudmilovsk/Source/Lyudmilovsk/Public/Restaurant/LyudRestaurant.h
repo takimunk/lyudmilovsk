@@ -201,6 +201,9 @@ public:
 	virtual void OnGameLoaded_Implementation() override;
 	UPROPERTY(SaveGame)
 	int32 SavedRefund = 0;
+	/** The game day (of the year) the hero sold fish to this kitchen: the catch of the day then. */
+	UPROPERTY(SaveGame)
+	int32 CatchDay = -1;
 
 private:
 	struct FSeat
@@ -263,8 +266,8 @@ private:
 	bool bOpen = false, bLit = false, bNight = false, bLocked = false;
 	bool bKitchenClosing = false;
 	/** Fish sold at the kitchen door (the fishing's ULyudFishingState KitchenSold, read by name), the game day it last happened. */
-	int32 FishSoldSeen = -1;
-	int32 CatchDay = -1;
+	int32 FishSeenTaken = -1;
+	int32 FishSeenDay = -2;
 	/** The hero at the back door with fish (the fishing's kitchen point): the cook comes to the door. */
 	bool bCookAtDoor = false;
 	void UpdateFishing();

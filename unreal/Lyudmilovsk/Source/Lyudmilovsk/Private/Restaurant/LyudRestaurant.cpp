@@ -410,8 +410,9 @@ bool ALyudRestaurant::IsFestivalDish(const UObject* WorldContext, FName Id)
 
 namespace LyudRest
 {
-	/** ULyudFishingState::KitchenSold of the fishing branch (a game instance subsystem), read by name; -1 without it. */
-	int32 FishSold(const UObject* WorldContext)
+	/** The fishing branch's ULyudFishingState (a game instance subsystem): fish this kitchen took on its counting day (KitchenTaken[Kitchen],
+	 *  KitchenDay), read by name; false without it. */
+	bool FishTaken(const UObject* WorldContext, FName Kitchen, int32& OutTaken, int32& OutDay)
 	{
 		const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
 		static TWeakObjectPtr<UClass> Class;
@@ -423,11 +424,19 @@ namespace LyudRest
 		}
 		if (!World || !World->GetGameInstance() || !Class.IsValid() || !Class->IsChildOf(UGameInstanceSubsystem::StaticClass()))
 		{
-			return -1;
+			return false;
 		}
 		UObject* Sub = World->GetGameInstance()->GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem>(Class.Get()));
-		const FIntProperty* P = Sub ? CastField<FIntProperty>(Class->FindPropertyByName(TEXT("KitchenSold"))) : nullptr;
-		return P ? P->GetPropertyValue_InContainer(Sub) : -1;
+		const FMapProperty* Taken = Sub ? CastField<FMapProperty>(Class->FindPropertyByName(TEXT("KitchenTaken"))) : nullptr;
+		const FIntProperty* Day = Sub ? CastField<FIntProperty>(Class->FindPropertyByName(TEXT("KitchenDay"))) : nullptr;
+		if (!Taken || !Day || !CastField<FNameProperty>(Taken->KeyProp) || !CastField<FIntProperty>(Taken->ValueProp))
+		{
+			return false;
+		}
+		const TMap<FName, int32>& Map = *Taken->ContainerPtrToValuePtr<TMap<FName, int32>>(Sub);
+		OutTaken = Map.FindRef(Kitchen);
+		OutDay = Day->GetPropertyValue_InContainer(Sub);
+		return true;
 	}
 }
 
@@ -445,16 +454,22 @@ int32 ALyudRestaurant::PriceToday(const FLyudRestDishDef& D) const
 void ALyudRestaurant::UpdateFishing()
 {
 	// fish sold to the kitchen today: the Baltic plate is the catch of the day (fresher, cheaper)
-	const int32 Sold = LyudRest::FishSold(this);
-	if (Sold >= 0)
+	int32 Taken = 0, Day = 0;
+	if (LyudRest::FishTaken(this, TEXT("yantar"), Taken, Day))
 	{
-		if (FishSoldSeen >= 0 && Sold > FishSoldSeen)
+		// a new counting day starts from nothing; a load can bring a smaller count back: take it as the new baseline
+		if (Day != FishSeenDay || Taken < FishSeenTaken)
+		{
+			FishSeenTaken = FishSeenDay == -2 ? Taken : (Day != FishSeenDay ? 0 : Taken);
+			FishSeenDay = Day;
+		}
+		if (Taken > FishSeenTaken)
 		{
 			CatchDay = UGameCalendar::NowIn(GetWorld()).GetDayOfYear();
 			Effect(TEXT("rest_clink"), ToWorld(BackDoorOut), 0.5f);
-			UE_LOG(LogTemp, Display, TEXT("RESTTEST the cook took %d fish at the kitchen door: catch of the day"), Sold - FishSoldSeen);
+			UE_LOG(LogTemp, Display, TEXT("RESTTEST the cook took %d fish at the kitchen door: catch of the day"), Taken - FishSeenTaken);
+			FishSeenTaken = Taken;
 		}
-		FishSoldSeen = Sold;
 	}
 	// the hero at the back door while open: the cook comes to it
 	const AHeroCharacter* H = LyudRest::Hero(GetWorld());
@@ -1191,7 +1206,7 @@ void ALyudRestaurant::UpdateState()
 		LockReadySince = Now;
 	}
 	bLockReady = bReady;
-	const bool bWantLock = bReady && (Now - LockReadySince).GetTotalMinutes() >= 2.0 && !AnyoneOfLifeInside();
+	const bool bWantLock = bReady && (Now - LockReadySince).GetTotalMinutes() >= 2.0 && (bLocked || !bNear || !AnyoneOfLifeInside());
 	if (bWantLock != bLocked)
 	{
 		bLocked = bWantLock;
@@ -1218,23 +1233,19 @@ void ALyudRestaurant::UpdateState()
 
 bool ALyudRestaurant::AnyoneOfLifeInside() const
 {
-	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
-	if (!People || !People->IsRunning())
+	// only bodies being drawn can walk through a closed door: the life's ANpcBody actors (a few dozen near the camera), not every person
+	for (TActorIterator<ANpcBody> It(GetWorld()); It; ++It)
 	{
-		return false;
-	}
-	for (int32 Id = 0, N = People->NumPeople(); Id < N; ++Id)
-	{
-		FPersonInfo P;
-		if (People->GetPerson(Id, P) && P.Actor)
+		if (It->IsHidden() || *It == WaiterBody || *It == CookBody)
 		{
-			const FVector L = ToLocal(P.Location);
-			const bool bHall = FVector2D(L.X, L.Y).Size() < HallR + 0.5f && FMath::Abs(L.Z) < 2.f;
-			const bool bKitchen = L.X > KitchenMin.X - 0.5f && L.X < KitchenMax.X + 0.5f && L.Y > KitchenMin.Y && L.Y < KitchenMax.Y && FMath::Abs(L.Z) < 2.f;
-			if (bHall || bKitchen)
-			{
-				return true;
-			}
+			continue;
+		}
+		const FVector L = ToLocal(It->GetActorLocation());
+		const bool bHall = FVector2D(L.X, L.Y).Size() < HallR + 0.5f && FMath::Abs(L.Z) < 2.f;
+		const bool bKitchen = L.X > KitchenMin.X - 0.5f && L.X < KitchenMax.X + 0.5f && L.Y > KitchenMin.Y && L.Y < KitchenMax.Y && FMath::Abs(L.Z) < 2.f;
+		if (bHall || bKitchen)
+		{
+			return true;
 		}
 	}
 	return false;
