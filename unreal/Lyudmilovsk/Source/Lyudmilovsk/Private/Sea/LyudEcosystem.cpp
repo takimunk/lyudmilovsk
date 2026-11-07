@@ -74,6 +74,12 @@ void ULyudEcosystem::Initialize(FSubsystemCollectionBase& Collection)
 	if (ULyudSaveSubsystem* Saves = Collection.InitializeDependency<ULyudSaveSubsystem>())
 	{
 		Saves->RegisterSaveObject(TEXT("Ecosystem"), this);
+		// a New Game, or a save made before the web existed (no record: OnGameLoaded is never called), starts it over
+		Saves->OnNewGame.AddUObject(this, &ULyudEcosystem::StartOver);
+		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame* Save)
+		{
+			if (Save && !Save->Records.Contains(TEXT("Ecosystem"))) StartOver();
+		});
 	}
 }
 
@@ -121,7 +127,8 @@ void ULyudEcosystem::Sync(const FDateTime& Now)
 		const float Slice = FMath::Min(WarmLeft, EcoWarmSliceDays);
 		Model->Step(EcoDayOfYear(SteppedTo) - WarmLeft, Slice);
 		WarmLeft -= Slice;
-		Refresh();
+		// the fish keep the base's numbers until the warm-up is through (no swings while it runs)
+		if (WarmLeft <= 0.f) Refresh();
 		return;
 	}
 	const double Days = (Now - SteppedTo).GetTotalDays();
@@ -277,10 +284,24 @@ bool ULyudEcosystem::Scale(FName Id, float Factor)
 	return true;
 }
 
+void ULyudEcosystem::StartOver()
+{
+	SteppedTo = FDateTime(0);
+	WarmLeft = 0.f;
+	SyncedWorld = nullptr;
+}
+
 void ULyudEcosystem::OnGameSaving_Implementation()
 {
 	SavedKeys.Reset();
 	SavedValues.Reset();
+	if (Model && WarmLeft > 0.f)
+	{
+		// saved during a fresh game's warm-up: finish it now (WarmLeft is not saved), so the save holds a whole web
+		Model->Step(EcoDayOfYear(SteppedTo) - WarmLeft, WarmLeft);
+		WarmLeft = 0.f;
+		Refresh();
+	}
 	if (!Model) return;
 	std::vector<std::string> K;
 	std::vector<float> V;

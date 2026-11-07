@@ -89,7 +89,7 @@ namespace LyudEco
 		void TakeLocal(int Node, float X, float Y, float Fraction);
 		float Local(int Node, float X, float Y) const;
 
-		/** The state as (id, value) pairs: biomasses, the coastal fractions as "<id>@here", the local thinning as "<id>@x,y". */
+		/** The state as (id, value) pairs: biomass against the base as "<id>@rel", the coastal fractions as "<id>@here", the local thinning as "<id>@x,y". */
 		void Save(std::vector<std::string>& Keys, std::vector<float>& Values) const;
 		/** Restores what it knows; unknown ids are skipped, missing ones keep the base. */
 		void Load(const std::vector<std::string>& Keys, const std::vector<float>& Values);

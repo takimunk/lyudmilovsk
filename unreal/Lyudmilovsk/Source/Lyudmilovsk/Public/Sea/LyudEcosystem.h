@@ -78,6 +78,8 @@ protected:
 
 private:
 	void Warm(const FDateTime& Now);
+	/** Forget the web: the next sync starts it fresh (a New Game, a save without it). */
+	void StartOver();
 	void Refresh();
 	int32 NodeOf(FName Id) const;
 

@@ -384,7 +384,7 @@ void FModel::Save(std::vector<std::string>& Keys, std::vector<float>& Values) co
 	for (int I = 0; I < N; ++I)
 	{
 		// against the base, so a retuned table keeps the saved state's meaning
-		Keys.push_back(Table[I].Id);
+		Keys.push_back(std::string(Table[I].Id) + "@rel");
 		Values.push_back(B[I] / B0[I]);
 		Keys.push_back(std::string(Table[I].Id) + "@here");
 		Values.push_back(F[I]);
@@ -408,7 +408,8 @@ void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>
 		const size_t At = Key.find('@');
 		const int I = Find(Key.substr(0, At).c_str());
 		if (I < 0 || !std::isfinite(Values[K])) continue;
-		if (At == std::string::npos) B[I] = Clamp(Values[K] * B0[I], B0[I] * 1e-3f, B0[I] * 20.f);
+		if (At == std::string::npos) B[I] = Clamp(Values[K], B0[I] * 1e-3f, B0[I] * 20.f);   // early saves: g/m2
+		else if (Key.compare(At, std::string::npos, "@rel") == 0) B[I] = Clamp(Values[K] * B0[I], B0[I] * 1e-3f, B0[I] * 20.f);
 		else if (Key.compare(At, std::string::npos, "@here") == 0) F[I] = Clamp(Values[K], 0.f, 1.f);
 		else
 		{

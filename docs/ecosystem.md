@@ -60,7 +60,8 @@ the herring out takes the seals down by a quarter and the cod by a fifth, and do
 
 - **Numbers.** Each species' groups and settled fish come in proportion to its biomass against the base, times the local
   thinning (`FEnv::Abundance`). The months the fish model already knows (its own table): the web only scales. Bottom
-  dwellers settle at their table's Abundance per 100 m2 of the best habitat (a rare one in some cells only); a rare roamer
+  dwellers settle at three times their table's Abundance per 100 m2 of the best habitat (`BedShow`: the table keeps the real
+  densities, a dive should be lively; a rare one still only in some cells); a rare roamer
   (under one group's worth round the eye, like a seal) comes now and then, not on every dive.
 - **Who eats whom.** Hunters (cod, sea trout, salmon, grey seals) pick a school they eat within 12 m, chase and strike:
   the school bursts away, and now and then one is caught (35%, a seal 60%) and gone. Failing a school, a hunter noses

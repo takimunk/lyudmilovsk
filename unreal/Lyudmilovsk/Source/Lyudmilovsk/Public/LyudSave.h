@@ -178,6 +178,9 @@ public:
 	/** After a save has been restored into the world. */
 	FLyudSaveEvent OnAfterLoad;
 
+	/** A New Game's level has begun play (systems that outlive levels start over). */
+	FSimpleMulticastDelegate OnNewGame;
+
 	/** Called by the menu subsystem: the world has begun play / is going away. */
 	void NotifyWorldBeginPlay(UWorld& World);
 	void NotifyWorldEnding(UWorld& World);

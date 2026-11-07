@@ -100,6 +100,8 @@ namespace
 	}
 
 	constexpr float CellSize = 6.f;
+	/** The bed shows this many times its table's numbers (the table keeps the real densities; a dive should be lively). */
+	constexpr float BedShow = 3.f;
 
 	/** How well a spot suits a species, 0..1. */
 	float Suits(const FSpecies& S, float Sand, float Stone, float Weed, float Depth)
@@ -214,7 +216,7 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 				const float Here = Season(S, Clock) * Density;
 				// try a few spots in the cell; each holds a fish with the chance its habitat gives, so the best habitat
 				// holds Abundance per 100 m2 (a rare one a fish in some cells, not one in every cell)
-				const float PerCell = Sp.Abundance * CellSize * CellSize / 100.f;
+				const float PerCell = Sp.Abundance * CellSize * CellSize / 100.f * BedShow;
 				const int Tries = int(std::ceil(PerCell * 2.f));
 				const float PerTry = PerCell / float(Tries);
 				for (int T = 0; T < Tries; ++T)

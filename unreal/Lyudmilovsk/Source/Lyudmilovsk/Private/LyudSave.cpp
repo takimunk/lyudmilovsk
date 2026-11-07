@@ -215,6 +215,7 @@ void ULyudSaveSubsystem::NotifyWorldBeginPlay(UWorld& World)
 	{
 		bPendingNewGame = false;
 		ClockBase = -World.GetTimeSeconds();
+		OnNewGame.Broadcast();
 	}
 	if (Pending)
 	{

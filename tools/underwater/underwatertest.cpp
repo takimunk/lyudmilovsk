@@ -116,24 +116,25 @@ int main()
 				Fast += F.Vel.Len() > Species(F.Species).Burst * 1.6f + 0.4f;
 				Total++;
 			}
+			// a school's fish keep together (sampled once a second over the whole run)
+			if (T % 30 == 0)
+			{
+				const int H = FindSpecies("Herring");
+				for (const FFish& F : Sim.Fish())
+					if (F.Species == H)
+					{
+						FV C0;
+						int N = 0;
+						for (const FFish& O : Sim.Fish()) if (O.Group == F.Group) { C0 += O.Pos; N++; }
+						SchoolSpread += (F.Pos - C0 * (1.f / N)).Len();
+						SchoolN++;
+					}
+			}
 		}
 		for (int S = 0; S < NumSpecies(); ++S) Seen[S] += Sim.Count(S);
 		std::printf("eye x %.0f (%.1f m deep):", Eye.X, -Eye.Z);
 		for (int S = 0; S < NumSpecies(); ++S) if (Sim.Count(S)) std::printf(" %s %d", Species(S).Id, Sim.Count(S));
 		std::printf("\n");
-		// a school's fish keep together
-		const int H = FindSpecies("Herring");
-		std::vector<FV> Pts;
-		for (const FFish& F : Sim.Fish()) if (F.Species == H && F.Group == Sim.Fish().front().Group) Pts.push_back(F.Pos);
-		for (const FFish& F : Sim.Fish())
-			if (F.Species == H)
-			{
-				FV C0;
-				int N = 0;
-				for (const FFish& O : Sim.Fish()) if (O.Group == F.Group) { C0 += O.Pos; N++; }
-				SchoolSpread += (F.Pos - C0 * (1.f / N)).Len();
-				SchoolN++;
-			}
 	}
 	std::printf("fish-frames %d, under the bed or over the water %d, too fast %d\n", Total, Bad, Fast);
 	for (int S = 0; S < NumSpecies(); ++S) if (BadBy[S]) std::printf("  out of place: %s %d\n", Species(S).Id, BadBy[S]);
@@ -145,8 +146,7 @@ int main()
 	Check(Kinds >= 11, "at least 11 species around in October");
 	Check(Seen[FindSpecies("Garfish")] == 0, "no garfish in October (they leave in September)");
 	if (SchoolN) std::printf("herring: mean distance to the school's centre %.2f m\n", SchoolSpread / SchoolN);
-	// (a school with a hungry cod or seal near it opens up: the mean includes those)
-	Check(SchoolN == 0 || SchoolSpread / SchoolN < 4.f, "herring keep in a school");
+	Check(SchoolN == 0 || SchoolSpread / SchoolN < 3.5f, "herring keep in a school");
 
 	// a flounder darts off when the eye comes close; it stays when the eye keeps away
 	{
