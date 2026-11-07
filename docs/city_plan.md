@@ -13,7 +13,6 @@ Every thread reads the JSON; ids are stable (move a plot freely, never reuse an 
 
 The ground itself: `tools/world_map.py` `height()` calls `city_plan.height()`, so the terrain build
 (`tools/terrain.py`, `import_terrain.py`) draws the terraces; `keep_flat` keeps them exact (no natural detail).
-(That hook and the walls land together from branch `city-terrain`; until then main's ground is the old valley.)
 
 ## Frame
 
@@ -55,6 +54,25 @@ upper terrace. Wall stairs run along the face (two flights and a landing, 2.4 m 
 wall to wall so the way up zigzags; grand stairs (8-10 m wide) go straight up on the main axis (Y 905) and on the
 Cascade (Y 760). Windows: warm light at night when the flat is occupied (`UPeopleLifeSubsystem::OnWindowLight`).
 
+### Built by
+
+- `tools/city_mesh.py`: the walls bay by bay (faces with recessed doors and windows, door canopies, danchi balconies on
+  every third flat, painted steel doors, parapets), the wall stairs, the grand stairs, the seawall with its steps and
+  kerb, and the pier on piles. `tools/world_mesh.py` puts them into the world's .glb (`import_world.py`), chunked per
+  wall and per 60 m of coast (`City_Walls_W3_07`, ...). It replaced the old promenade strip.
+- `ALyudCityWindows` (`Source/.../World/LyudCityWindows.*`), spawned by `ULyudCityWindowsSubsystem` in Lvl_Scene01: the
+  lit window panes. The town's life drives them with `ULyudCityWindowsSubsystem::SetWindowLit(WindowId, bLit)` or
+  `SetFlatLit(FlatId, bLit)`; every window it has not set keeps its own evening schedule (dusk to a bedtime 21:30..01:30,
+  some again before dawn; shops lit 9..21 in the dark). Console: `lyud.CityWindows 0` off, `lyud.CityWindows.All 1`
+  every window lit. Nothing per frame: checked every 2 s, instance buffers rebuilt only on a change.
+
+### Lanes and lamps
+
+Along the foot of W2..W5 runs a lane: asphalt from the face out to 7 m (`LANE_W`) with a kerb on its outer edge, so
+the flats' doors open onto a street. A concrete street lamp stands on the kerb every fourth bay (~30 m; `lamps` in the
+JSON, ids `LAMP-W3-07`); ALyudCityWindows lights their heads whenever it is dark. The landscape's ramp behind each wall
+starts 1.1 m behind the face (`RAMP_START`), so no 1 m landscape cell that touches the face lifts the ground in front.
+
 ## The axis
 
 The town's main axis is map **Y 905**: the pier and its lighthouse -> the promenade -> **Sun Square** with the
@@ -82,16 +100,19 @@ the terrace) x `d` (inland) metres, `height_max`, `staff` (hints for the life th
 | P-FAIR | fair | wave_canopy: Niemeyer's Ibirapuera marquise | T1 |
 | P-PARK | park | open: lawns, pond, playground | T1 |
 | P-CLUB2 | club | workers_club: Melnikov's Rusakov club; cinema, dances | T1 |
-| P-T1H1..5 | residential | cube_houses, twin_cylinder_house, plain_block | T1 |
+| P-T1H1..5 | residential | cube_houses, cobogo_house (Costa's Parque Guinle), twin_cylinder_house, capsule_cluster, origami_row | T1 |
 | P-SERPENTINE | residential | serpentine_slab: Reidy's Pedregulho, 260 m along W3 | T2 |
 | P-SCHOOL, P-CLINIC | school, clinic | school, clinic | T2 |
+| P-CLUB3 | club | cog_club: Golosov's Zuev Club, a glazed drum | T2 |
 | P-T2H1, P-T2H2 | residential | cube_houses (Blom), commune_slab (Narkomfin) | T2 |
 | P-WAVE | residential | wave_tower: Niemeyer's Copan, the landmark from the sea | T3 |
 | P-T3SPORT | culture | culture_block: Bo Bardi's SESC Pompéia | T3 |
+| P-LIBRARY | library | capsule_library: metabolist reading capsules round a core | T3 |
 | P-T3H1..3 | residential | twin_cylinder_house (Melnikov), stacked_boxes (Habitat 67), commune_slab | T3 |
 | P-CAPSULE | residential | capsule_tower: Kurokawa's Nakagin | T4 |
 | P-UNITE | residential | unite_block: Le Corbusier's Unité | T4 |
-| P-T4H1, 2 | residential | plain_block | T4 |
+| P-T4H1, 2 | residential | pilotis_curve_slab (Niemeyer's Interbau), ribbon_corner_block (constructivist corner) | T4 |
+| P-HALL | hall | shell_chapel_hall: Niemeyer's Pampulha vaults; weddings, choir, meetings | T4 |
 | P-SANATORIUM | hotel | round_sanatorium: Druzhba, Yalta | T5 |
 | P-BRIDGEHOUSE | office | stacked_beam_tower: Tbilisi's Ministry of Highways | T5 |
 | P-T5H1 | residential | capsule_tower | T5 |
@@ -108,7 +129,7 @@ Existing: the **Academgorodok** (Laboratory No. 2, Gastronom, library) and the *
 `S-PROMENADE`, `S-BENCH-P01..26` (promenade benches every 40 m), `S-BENCH-01..10` (the grannies' benches by
 entrances, the square, the park), `S-BEACH`, `S-BONFIRE`, `S-FAIR`, `S-PARK`, `S-POND`, `S-PLAYGROUND`,
 `S-SUNRISE` (dawn lookout on T5, faces inland/east), `S-SUNSET` (the edge of W5 over the town and the sea),
-`S-CASCADE` (water steps).
+`S-CASCADE` (water steps: the stepped channel beside each Cascade grand stair, `cascade` in the JSON, built by city_mesh, water by the public spaces).
 
 ## Links
 
