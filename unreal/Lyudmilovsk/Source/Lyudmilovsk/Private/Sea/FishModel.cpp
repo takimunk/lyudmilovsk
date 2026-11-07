@@ -84,17 +84,17 @@ namespace
 		{ "Eider",                EWay::Cruiser, 0.6f,  0.6f,  1.4f, 1.0f, 15.f, 0.2f, 2.0f, 0.5f, 1.f,  0.6f, 0.004f, 2,  5,   M(10, 4), 1.f,  0.1f, 2.5f, 0.08f, 0.3f, 0.2f, false, true, false, 35.f, 45.f, true },
 	};
 	// the spawning months: herring spawn on the weed in April-May (the coastal spring spawners), perch lay their ribbons
-	// on it, sticklebacks build nests in it, roach and garfish spawn over it, pike in the flooded shallows in spring;
+	// on it, sticklebacks build nests in it, roach spawn over it, pike in the flooded shallows in spring;
 	// lumpsucker males guard their eggs on the stones, round, black and sand goby males their nests, the shorthorn
 	// sculpin's in winter
 	struct FSpawnRow { const char* Id; uint16_t Months; bool bGuards, bNests; };
 	const FSpawnRow SpawnRows[] = {
 		{ "Herring", M(4, 5), false, false }, { "Sprat", M(4, 6), false, false }, { "Smelt", M(3, 4), false, false },
 		{ "Stickleback", M(5, 7), false, true }, { "NinespineStickleback", M(5, 7), false, true }, { "Perch", M(4, 5), false, false },
-		{ "Roach", M(5, 6), false, false }, { "Garfish", M(5, 6), false, false }, { "Pike", M(3, 4), false, false },
+		{ "Roach", M(5, 6), false, false }, { "Pike", M(3, 4), false, false },
 		{ "Lumpsucker", M(3, 5), true, false }, { "RoundGoby", M(5, 8), true, false }, { "BlackGoby", M(5, 8), true, false },
 		{ "SandGoby", M(5, 7), true, false }, { "Sculpin", M(12, 2), true, false }, { "Flounder", M(4, 5), false, false },
-		{ "Turbot", M(6, 7), false, false }, { "Cod", M(3, 5), false, false },
+		{ "Turbot", M(6, 7), false, false },
 	};
 	constexpr int NumTable = int(sizeof(Table) / sizeof(Table[0]));
 	const bool bSpawnRows = []
@@ -108,7 +108,7 @@ namespace
 	/** Shrimp lie buried in the sand by day and come out at night. */
 	inline bool BuriesByDay(const FSpecies& Sp) { return Sp.bBurrows && Sp.Way == EWay::Crawler && Sp.Night > Sp.Day; }
 	/** Eels and eelpout lie in the stones by day and go about at night. */
-	inline bool NightRoamer(const FSpecies& Sp) { return Sp.Way == EWay::Lurker && Sp.Night > Sp.Day + 0.3f; }
+	inline bool NightRoamer(const FSpecies& Sp) { return Sp.Way == EWay::Lurker && Sp.Night >= Sp.Day + 0.5f; }
 
 	inline float Clamp(float V, float A, float B) { return V < A ? A : (V > B ? B : V); }
 	inline float Smooth(float E0, float E1, float V)
@@ -323,7 +323,10 @@ void FSim::SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock
 		FGroup G;
 		G.Species = S;
 		G.bAlive = true;
-		const float Over = Sp.OverBedMin < 0.f ? Depth - 0.5f : Sp.OverBedMin + (Sp.OverBedMax - Sp.OverBedMin) * Rand();
+		// spawning schools come in low over the weed (the young of the year don't spawn: decided below, so the low start
+		// goes by the season alone)
+		const bool bLow = (Sp.Way == EWay::School || Sp.Way == EWay::Shoal) && Spawning(S, Clock.Month);
+		const float Over = Sp.OverBedMin < 0.f ? Depth - 0.5f : bLow ? 0.2f + 0.8f * Rand() : Sp.OverBedMin + (Sp.OverBedMax - Sp.OverBedMin) * Rand();
 		G.Centre = FV(X, Y, std::min(Bz + Over, Water - 0.4f));
 		// swims across the eye's area, not straight at it
 		G.Heading = A + 3.14159265f + (Rand() - 0.5f) * 2.2f;
@@ -356,7 +359,8 @@ void FSim::SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock
 			const float Sz = Sp.Way == EWay::School ? 0.5f + std::sqrt(float(N)) * Sp.Length * LenK * 1.1f
 				: Sp.Way == EWay::Swarm ? 0.6f + std::sqrt(float(N)) * 0.07f : 0.6f + std::sqrt(float(N)) * Sp.Length * LenK * 2.2f;
 			F.Slot = FV((Rand() - 0.5f) * 2.f * Sz * 1.4f, (Rand() - 0.5f) * 2.f * Sz,
-				(Rand() - 0.5f) * Sz * (Sp.Way == EWay::Surface ? 0.2f : Sp.Way == EWay::Swarm ? 0.3f : 0.7f));
+				// air breathers side by side at one height (they come up together, a flock rests on the water)
+				Sp.bBreathes ? 0.f : (Rand() - 0.5f) * Sz * (Sp.Way == EWay::Surface ? 0.2f : Sp.Way == EWay::Swarm ? 0.3f : 0.7f));
 			F.Pos = G.Centre + F.Slot;
 			F.Yaw = G.Heading;
 			F.Seed = Hash(uint32_t(Gi), uint32_t(I), uint32_t(Time * 10.0));
@@ -769,7 +773,9 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 		// keep the place in the formation (turned with the group, spread when alarmed or at night), dodge the diver
 		const float Spread = (1.f + G.Alarm * 1.8f) * (Sp.Way == EWay::School || Sp.Way == EWay::Shoal ? 1.f + 0.8f * (1.f - Light) : 1.f);
 		const float C = std::cos(G.Heading), S = std::sin(G.Heading);
-		const FV Slot(F.Slot.X * C - F.Slot.Y * S, F.Slot.X * S + F.Slot.Y * C, F.Slot.Z);
+		// a spawning school spreads flat over the weed
+		const bool bSpawnFlat = (Sp.Way == EWay::School || Sp.Way == EWay::Shoal) && !G.bYoung && Spawning(F.Species, Month);
+		const FV Slot(F.Slot.X * C - F.Slot.Y * S, F.Slot.X * S + F.Slot.Y * C, F.Slot.Z * (bSpawnFlat ? 0.3f : 1.f));
 		FV Want = (G.Centre + Slot * Spread - F.Pos) * 1.4f + G.Vel;
 		const FV FromEye = F.Pos - Eye;
 		const float DE = FromEye.Len();
@@ -786,6 +792,8 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 		F.Pos += F.Vel * Dt;
 		float Bz;
 		if (Env.Bed(F.Pos.X, F.Pos.Y, Bz)) F.Pos.Z = std::max(F.Pos.Z, Bz + F.Len * 0.4f);
+		// up for air (a bird resting on the water): each one rises to the group's height, not just under it
+		if (Sp.bBreathes && G.AtSurface > 0.f) F.Pos.Z += (G.Centre.Z - F.Pos.Z) * Clamp(Dt * 4.f, 0.f, 1.f);
 		F.Pos.Z = std::min(F.Pos.Z, Water - (Sp.bBird ? 0.04f : 0.15f));
 		const float Turn = Face(F, NewRel.Len() > 0.04f ? NewRel : FV(std::cos(G.Heading), std::sin(G.Heading), 0.f), Dt, 4.f + 6.f * G.Alarm);
 		Beat(F, NewRel.Len(), Dt, Turn);
@@ -886,7 +894,9 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 			: bCrawler ? 0.08f + 0.35f * Rand() : 0.3f + (1.2f + 2.5f * Night) * Rand();
 		const float A = Rand() * 6.2831853f;
 		float Tz;
-		const FV To(F.Pos.X + std::cos(A) * Reach, F.Pos.Y + std::sin(A) * Reach, 0.f);
+		// a night roamer's moves are round its own stone (its home cell keeps it), not wherever it got to
+		const FV From = Night > 0.f ? F.Slot : F.Pos;
+		const FV To(From.X + std::cos(A) * Reach, From.Y + std::sin(A) * Reach, 0.f);
 		if (Sp.Way != EWay::Flat && Sp.Abundance > 0.f && Env.Bed(To.X, To.Y, Tz) && !(Sp.Way == EWay::Lurker && Sp.Cruise < 0.06f))
 		{
 			float Sand, Stone, Weed;

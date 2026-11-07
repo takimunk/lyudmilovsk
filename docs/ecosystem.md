@@ -87,7 +87,7 @@ the herring out takes the seals and the cod down by a fifth and more than double
 - **Day and night.** Brown shrimp lie buried in the sand by day and come out at night; the mysid clouds rise ~3 m off the
   bed at night; eels and eelpout go about at night (metres a minute) and keep to their stones by day; schools and shoals
   loosen in the dark.
-- **Spawning by the calendar.** Herring (April-May), perch, roach and garfish mill low over the weed; three- and
+- **Spawning by the calendar.** Herring (April-May), perch and roach mill low over the weed; three- and
   ninespine stickleback males (May-July) each keep a nest in the weed, hang over it and face a diver; lumpsucker males
   (March-May), round, black and sand gobies (summer) and shorthorn sculpins (winter) guard their eggs and will not leave
   them for a diver. Three to six months after spawning the young of the year come: schools of herring a third of the

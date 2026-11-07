@@ -97,8 +97,8 @@ namespace LyudEco
 
 		/** The state as (id, value) pairs: biomass against the base as "<id>@rel", the coastal fractions as "<id>@here", the local thinning as "<id>@x,y". */
 		void Save(std::vector<std::string>& Keys, std::vector<float>& Values) const;
-		/** Restores what it knows; unknown ids are skipped, missing ones keep the base. */
-		void Load(const std::vector<std::string>& Keys, const std::vector<float>& Values);
+		/** Restores what it knows; unknown ids are skipped, missing ones keep the base; a save without the young still to come gets the pool the day of the year (if given) would have grown. */
+		void Load(const std::vector<std::string>& Keys, const std::vector<float>& Values, float DayOfYear = -1.f);
 
 		/** A line per node: biomass against base, here or away, what eats most of it. */
 		std::string Report() const;
