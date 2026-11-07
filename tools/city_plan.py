@@ -44,6 +44,8 @@ TERRACES = [
 HILL_SOFT = 1.5
 # The town's hook on the ground stops this far inland of W5's face (past it, the natural land).
 INLAND_END = 700.0
+# world_map.keep_flat keeps the exact height this far past W5's block (the upper terrace's plots), then fades in 60 m
+TOP_KEEP = 300.0
 
 # The walls: W1 holds the lower town over the promenade, W2..W5 the terraces. (y, s) control points; between
 # y 700 and 820 the walls swing seaward round the Academgorodok (its ground is T1, up to s ~540), so north of it
@@ -178,14 +180,14 @@ def tree_free(x, y):
     if city_mask(y) <= 0.0:
         return False
     s = W.inland(x, y)
-    if not (wall_s(1, y) - 15.0 < s < wall_s(len(WALLS) - 1, y) + WALL_DEPTH + 25.0):
-        return False                                # only the town's terraces (the street-tree strips), not the forests
     for p in plots():
         if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
             return True
-    for gy in GRAND_Y:
-        if abs(y - gy) < 12.0:
-            return True
+    # the grand stairs' lanes only on the terraces (not across the forests inland)
+    if wall_s(1, y) - 15.0 < s < wall_s(len(WALLS) - 1, y) + WALL_DEPTH + 25.0:
+        for gy in GRAND_Y:
+            if abs(y - gy) < 12.0:
+                return True
     return False
 
 
@@ -359,9 +361,9 @@ def _plots():
     a(_plot("P-T5H1", "residential", "capsule_tower", 5, 1080.0, 560.0, 20, 20, "Капсульная башня 2", "Capsule tower 2",
             height_max=50))
     # set-pieces of stepped housing against walls
-    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 2, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
+    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 1, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
             notes="in front of W2, climbing it to T2's edge (the plot straddles the wall: s 330..350)"))
-    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 4, 685.0, 900.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
+    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 3, 685.0, 1010.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
             notes="straddles W4"))
     return P
 
@@ -516,7 +518,7 @@ def wall_bays(i):
                 b["kind"] = "unit"
         _BAYS[i] = out
         return out
-    # W2..W5: grand stairs, wall stairs, plots, then flats
+    # W2..W5: grand stairs, then plots (a building set against the wall wins over a wall stair), wall stairs, flats
     for gy in GRAND_Y:
         c = min(full, key=lambda b: abs(b["mid"][1] - gy))
         for b in full:
@@ -524,17 +526,6 @@ def wall_bays(i):
             if -(GRAND_W[gy] / 2 + DWELLING_W / 2) < b["arc"] - c["arc"] < GRAND_W[gy] / 2 + extra + DWELLING_W / 2:
                 b["kind"] = "grand"
                 b["grand_y"] = gy
-    phase = (i * 37.0) % STAIR_EVERY
-    k = 0
-    while k < len(full):
-        b = full[k]
-        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
-                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
-            full[k]["kind"] = full[k + 1]["kind"] = "stair"
-            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
-            k += STAIR_BAYS
-            continue
-        k += 1
     pl = plots()
     for b in full:
         if b["kind"] != "blank":
@@ -547,7 +538,19 @@ def wall_bays(i):
                 b["kind"] = "plot"
                 b["plot"] = p["id"]
                 break
-        else:
+    phase = (i * 37.0) % STAIR_EVERY
+    k = 0
+    while k < len(full):
+        b = full[k]
+        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
+                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
+            full[k]["kind"] = full[k + 1]["kind"] = "stair"
+            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
+            k += STAIR_BAYS
+            continue
+        k += 1
+    for b in full:
+        if b["kind"] == "blank":
             b["kind"] = "dwelling"
     _BAYS[i] = out
     return out
