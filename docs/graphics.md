@@ -132,7 +132,9 @@ it only while it wants less than the level's and gives it back to the scalabilit
   stops the editor gets its levels and VSync back, and the resolution, TSR history and frame cap go back to the
   editor's own values with their own priorities (`IConsoleVariable::Unset`).
 - **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): they keep the
-  levels they started with (not the player's stored ones: they share the checkout's `GameUserSettings.ini` with Play),
+  levels the engine started them with (the device profile's, then `GameUserSettings.ini`'s `[ScalabilityGroups]`,
+  which `FEngineLoop::PreInit` applies before any game code and only the game's own window writes), not the page's
+  stored ones (they share the checkout's `GameUserSettings.ini` with Play),
   `r.ScreenPercentage=75` of `DefaultEngine.ini`, their own `t.MaxFPS` and vsync. `lyud.Gfx.*` commands still change
   the run's levels, and `GameUserSettings.ini` is not written.
 - **The benchmark** (`-LyudBench`): its own presets, Auto resolution by them like a player whatever the player
