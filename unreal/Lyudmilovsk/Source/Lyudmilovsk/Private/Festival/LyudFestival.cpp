@@ -3238,7 +3238,7 @@ void ALyudFirecrackers::Setup(const FVector& At, const FVector& Facing, double I
 		Lightweight(C);
 		C->SetMaterial(0, SG);
 		C->SetupAttachment(RootComponent);
-		C->SetVisibility(false);
+		C->SetRelativeScale3D(FVector(0.001f));     // visible always, out of sight by scale till it pops
 		C->RegisterComponent();
 		Sparks.Add(C);
 		Pops.AddDefaulted();
