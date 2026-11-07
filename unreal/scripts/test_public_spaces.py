@@ -131,7 +131,9 @@ def api_test(w):
     sp = sub.get_spaces()
     check(sp is not None, "public spaces built")
     if sp:
-        for kind in ("bench_park", "bench_promenade", "lamp", "railing", "stall"):
+        tags = [str(t) for t in sp.tags]
+        check("PlanStage" in tags and "PlanStalls" in tags, "the festivals' tags PlanStage/PlanStalls set (%s)" % tags)
+        for kind in ("bench_park", "bench_promenade", "lamp", "railing", "stall", "wheel", "carousel"):
             check(sp.count_props(kind) > 0, "%s: %d" % (kind, sp.count_props(kind)))
     near = ue(p(FS + 17.0, FY, T1))
     bench = sub.find_nearest_free("bench", unreal.Vector(*near), 3000.0, "None")
