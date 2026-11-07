@@ -5,6 +5,7 @@
 #include "Restaurant/LyudRestaurant.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Brushes/SlateRoundedBoxBrush.h"
+#include "Misc/Paths.h"
 #include "Styling/CoreStyle.h"
 #include "UI/LyudDiaryStyle.h"
 #include "Widgets/Images/SImage.h"
@@ -30,6 +31,12 @@ namespace LyudRestMenu
 	FSlateFontInfo Font(int32 Size, const char* Face = "Regular")
 	{
 		return FCoreStyle::GetDefaultFontStyle(Face, Size);
+	}
+
+	/** Lines with a price: the engine's Roboto Regular and Bold have no ₽ (U+20BD), its Medium face has. */
+	FSlateFontInfo MoneyFont(int32 Size)
+	{
+		return FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Medium.ttf"), Size);
 	}
 
 	const FButtonStyle& Button()
@@ -69,7 +76,7 @@ int32 SLyudRestMenu::Total() const
 	{
 		if (const FLyudRestDishDef* D = ALyudRestaurant::FindDish(C.Key))
 		{
-			T += D->Price * C.Value;
+			T += (Owner.IsValid() ? Owner->PriceToday(*D) : D->Price) * C.Value;
 		}
 	}
 	return T;
@@ -111,7 +118,8 @@ bool SLyudRestMenu::Order()
 	}
 	Status = LyudText::Get(Result == ALyudRestaurant::EOrderResult::Closed ? TEXT("ui.rest.closed")
 		: Result == ALyudRestaurant::EOrderResult::NotSeated ? TEXT("ui.rest.not_seated")
-		: Result == ALyudRestaurant::EOrderResult::NoMoney ? TEXT("ui.rest.no_money") : TEXT("ui.rest.order_failed"));
+		: Result == ALyudRestaurant::EOrderResult::NoMoney ? TEXT("ui.rest.no_money")
+		: Result == ALyudRestaurant::EOrderResult::KitchenClosing ? TEXT("ui.rest.kitchen_closing") : TEXT("ui.rest.order_failed"));
 	Rebuild();
 	return false;
 }
@@ -138,13 +146,19 @@ TSharedRef<SWidget> SLyudRestMenu::Row(FName Id)
 			[
 				SNew(STextBlock).Font(Font(11)).ColorAndOpacity(InkSoft).AutoWrapText(true).Text(ULyudInventory::ItemDescription(Id))
 			]
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(STextBlock).Font(Font(11, "Bold")).ColorAndOpacity(Amber)
+				.Visibility(D && Owner.IsValid() && Owner->IsCatchOfDay(*D) ? EVisibility::Visible : EVisibility::Collapsed)
+				.Text(LyudText::Get(TEXT("ui.rest.catch_of_day")))
+			]
 		]
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(10, 0, 8, 0)
 		[
 			SNew(SBox).MinDesiredWidth(58.f)
 			[
-				SNew(STextBlock).Font(Font(15, "Bold")).ColorAndOpacity(AmberDeep).Justification(ETextJustify::Right)
-				.Text(D && D->Price > 0 ? LyudText::Get(TEXT("ui.rest.price"), { FStringFormatArg(D->Price) }) : LyudText::Get(TEXT("ui.rest.free")))
+				SNew(STextBlock).Font(MoneyFont(15)).ColorAndOpacity(AmberDeep).Justification(ETextJustify::Right)
+				.Text(D && D->Price > 0 ? LyudText::Get(TEXT("ui.rest.price"), { FStringFormatArg(Owner.IsValid() ? Owner->PriceToday(*D) : D->Price) }) : LyudText::Get(TEXT("ui.rest.free")))
 			]
 		]
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
@@ -252,7 +266,7 @@ void SLyudRestMenu::Rebuild()
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 								[
 									SNew(STextBlock).Font(Font(15)).ColorAndOpacity(FLinearColor(1.f, 0.92f, 0.8f))
-									.Text(LyudText::Get(bOpen ? TEXT("ui.rest.subtitle") : TEXT("ui.rest.closed")))
+									.Text(LyudText::Get(!bOpen ? TEXT("ui.rest.closed") : R->IsKitchenClosing() ? TEXT("ui.rest.kitchen_closing") : TEXT("ui.rest.subtitle")))
 								]
 							]
 						]
@@ -282,15 +296,15 @@ void SLyudRestMenu::Rebuild()
 								SNew(SHorizontalBox)
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(19, "Bold")).ColorAndOpacity(T > Money ? Warn : Ink).Text(Footer)
+									SNew(STextBlock).Font(MoneyFont(19)).ColorAndOpacity(T > Money ? Warn : Ink).Text(Footer)
 								]
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(14)).ColorAndOpacity(InkSoft).Text(Pocket)
+									SNew(STextBlock).Font(MoneyFont(14)).ColorAndOpacity(InkSoft).Text(Pocket)
 								]
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(14)).ColorAndOpacity(InkSoft).Text(TabLine)
+									SNew(STextBlock).Font(MoneyFont(14)).ColorAndOpacity(InkSoft).Text(TabLine)
 								]
 								+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
 								[
@@ -298,7 +312,7 @@ void SLyudRestMenu::Rebuild()
 								]
 								+ SHorizontalBox::Slot().AutoWidth().Padding(8, 0, 0, 0)
 								[
-									SNew(SButton).ButtonStyle(&Button()).IsEnabled(bOpen && T > 0 && T <= Money)
+									SNew(SButton).ButtonStyle(&Button()).IsEnabled(bOpen && !R->IsKitchenClosing() && T > 0 && T <= Money)
 									.OnClicked_Lambda([this]() { Order(); return FReply::Handled(); })
 									[SNew(STextBlock).Font(Font(17, "Bold")).ColorAndOpacity(Ink).Text(LyudText::Get(TEXT("ui.rest.order")))]
 								]

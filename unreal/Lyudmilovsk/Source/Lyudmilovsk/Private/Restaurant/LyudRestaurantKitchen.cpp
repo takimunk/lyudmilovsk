@@ -214,6 +214,17 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 		UE_LOG(LogTemp, Display, TEXT("RESTTEST cook on: person %d, model %s"), Person, *Mesh);
 	}
 	CookT += DeltaTime;
+	if (bCookAtDoor)
+	{
+		// at the open back door, facing out to the hero with his fish (the fishing's kitchen point; it buys them on Y)
+		const FVector Out = (ToWorld(BackDoorOut) - ToWorld(BackDoorIn)).GetSafeNormal2D();
+		CookBody->Drive(ToWorld(BackDoorIn), Out.Rotation().Yaw, EPersonPose::Talk, 0, 0.f, 0.f, DeltaTime, false);
+		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(CookBody->Mesh->GetAnimInstance()))
+		{
+			Anim->SetBikeRider(FBikeRiderPose());
+		}
+		return;
+	}
 	CookBody->Drive(ToWorld(CookAt), YawToWorld(CookYaw).Yaw, bCooking ? EPersonPose::Work : EPersonPose::Stand, 0, 0.f, 0.f, DeltaTime, false);
 
 	// the pan: on the range, shaken (a toss now and then) while anything cooks; the right hand on its handle

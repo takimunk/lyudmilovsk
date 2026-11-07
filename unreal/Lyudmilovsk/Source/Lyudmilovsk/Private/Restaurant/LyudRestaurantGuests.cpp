@@ -168,6 +168,15 @@ void ALyudRestaurant::TickProps()
 		if (!Pr.bOrdered && Now - Pr.SatAt > LyudRestGuests::ReadSeconds * FMath::Max(WaitScale, 0.2f))
 		{
 			Pr.bOrdered = true;
+			if (bKitchenClosing || !bOpen)
+			{
+				// too late: they only sit a while
+				if (AStaticMeshActor* C = Pr.Card.Get())
+				{
+					C->Destroy();
+				}
+				continue;
+			}
 			TArray<const FLyudRestDishDef*> Mains, Drinks;
 			for (const FLyudRestDishDef& D : Menu())
 			{

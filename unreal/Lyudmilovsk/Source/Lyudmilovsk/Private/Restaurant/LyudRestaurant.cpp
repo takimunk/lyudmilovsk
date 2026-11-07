@@ -139,6 +139,13 @@ namespace LyudRest
 	}
 }
 
+namespace LyudRest
+{
+	/** RestMesh's lookups (weak: the restaurant's MeshRefs hold them) and the names found missing (cleared at each play's preload). */
+	TMap<FName, TWeakObjectPtr<UStaticMesh>> MeshCache;
+	TSet<FName> MeshMissing;
+}
+
 // ---- the menu --------------------------------------------------------------------------------------------------------------------
 
 const TArray<FLyudRestDishDef>& ALyudRestaurant::Menu()
@@ -240,8 +247,8 @@ UStaticMesh* ALyudRestaurant::RestMesh(FName Name)
 		return nullptr;
 	}
 	// the restaurant preloads them all (PreloadMeshes) and holds them; this finds the loaded one, else loads it once (a cache miss)
-	static TMap<FName, TWeakObjectPtr<UStaticMesh>> Cache;
-	static TSet<FName> Missing;
+	TMap<FName, TWeakObjectPtr<UStaticMesh>>& Cache = LyudRest::MeshCache;
+	TSet<FName>& Missing = LyudRest::MeshMissing;
 	if (const TWeakObjectPtr<UStaticMesh>* W = Cache.Find(Name); W && W->IsValid())
 	{
 		return W->Get();
@@ -271,6 +278,12 @@ UStaticMesh* ALyudRestaurant::RestMesh(FName Name)
 void ALyudRestaurant::PreloadMeshes()
 {
 	IAssetRegistry& AR = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
+	// an uncooked -game run hasn't scanned /Game at startup (only the editor does)
+	if (!GIsEditor && !FPlatformProperties::RequiresCookedData())
+	{
+		AR.ScanPathsSynchronous({ TEXT("/Game/Restaurant/Meshes") }, false);
+	}
+	LyudRest::MeshMissing.Reset();
 	TArray<FAssetData> Assets;
 	AR.GetAssetsByPath(TEXT("/Game/Restaurant/Meshes"), Assets, true);
 	TArray<FSoftObjectPath> Paths;
@@ -393,6 +406,59 @@ bool ALyudRestaurant::IsFestival(const UObject* WorldContext)
 bool ALyudRestaurant::IsFestivalDish(const UObject* WorldContext, FName Id)
 {
 	return IsFestival(WorldContext) && LyudRest::FestivalBool(WorldContext, TEXT("IsFestivalDish"), &Id);
+}
+
+namespace LyudRest
+{
+	/** ULyudFishingState::KitchenSold of the fishing branch (a game instance subsystem), read by name; -1 without it. */
+	int32 FishSold(const UObject* WorldContext)
+	{
+		const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+		static TWeakObjectPtr<UClass> Class;
+		static bool bLooked = false;
+		if (!bLooked)
+		{
+			bLooked = true;
+			Class = FindFirstObject<UClass>(TEXT("LyudFishingState"), EFindFirstObjectOptions::None);
+		}
+		if (!World || !World->GetGameInstance() || !Class.IsValid() || !Class->IsChildOf(UGameInstanceSubsystem::StaticClass()))
+		{
+			return -1;
+		}
+		UObject* Sub = World->GetGameInstance()->GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem>(Class.Get()));
+		const FIntProperty* P = Sub ? CastField<FIntProperty>(Class->FindPropertyByName(TEXT("KitchenSold"))) : nullptr;
+		return P ? P->GetPropertyValue_InContainer(Sub) : -1;
+	}
+}
+
+bool ALyudRestaurant::IsCatchOfDay(const FLyudRestDishDef& D) const
+{
+	const UWorld* World = GetWorld();
+	return World && D.Id == TEXT("rs_baltic_fish") && CatchDay == UGameCalendar::NowIn(World).GetDayOfYear();
+}
+
+int32 ALyudRestaurant::PriceToday(const FLyudRestDishDef& D) const
+{
+	return IsCatchOfDay(D) ? FMath::RoundToInt(D.Price * 0.75f) : D.Price;
+}
+
+void ALyudRestaurant::UpdateFishing()
+{
+	// fish sold to the kitchen today: the Baltic plate is the catch of the day (fresher, cheaper)
+	const int32 Sold = LyudRest::FishSold(this);
+	if (Sold >= 0)
+	{
+		if (FishSoldSeen >= 0 && Sold > FishSoldSeen)
+		{
+			CatchDay = UGameCalendar::NowIn(GetWorld()).GetDayOfYear();
+			Effect(TEXT("rest_clink"), ToWorld(BackDoorOut), 0.5f);
+			UE_LOG(LogTemp, Display, TEXT("RESTTEST the cook took %d fish at the kitchen door: catch of the day"), Sold - FishSoldSeen);
+		}
+		FishSoldSeen = Sold;
+	}
+	// the hero at the back door while open: the cook comes to it
+	const AHeroCharacter* H = LyudRest::Hero(GetWorld());
+	bCookAtDoor = bOpen && H && FVector::Dist2D(H->GetActorLocation(), ToWorld(BackDoorOut)) < 300.f;
 }
 
 bool ALyudRestaurant::IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section)
@@ -751,6 +817,11 @@ void ALyudRestaurant::EndPlay(const EEndPlayReason::Type Reason)
 		Knife->Destroy();
 		Knife = nullptr;
 	}
+	if (Plaque)
+	{
+		Plaque->Destroy();
+		Plaque = nullptr;
+	}
 	Preload.Reset();
 	for (const int32 Id : HiddenStaff)
 	{
@@ -872,6 +943,14 @@ void ALyudRestaurant::LoadLayout()
 	{
 		WaiterHome = PassStand;
 		HomeYaw = PassYaw;
+	}
+	MenuSpot = LyudRest::Vec(L, TEXT("menu_spot"));
+	const TSharedPtr<FJsonObject>* Entrance = nullptr;
+	if (L->TryGetObjectField(TEXT("entrance"), Entrance))
+	{
+		BackDoorOut = LyudRest::Vec(*Entrance, TEXT("back_outside"));
+		BackDoorIn = LyudRest::Vec(*Entrance, TEXT("back_inside"));
+		BackDoorOut.Z = BackDoorIn.Z = 0.0;
 	}
 	const TSharedPtr<FJsonObject>* Cook = nullptr;
 	if (L->TryGetObjectField(TEXT("cook"), Cook))
@@ -1088,6 +1167,8 @@ void ALyudRestaurant::UpdateState()
 	const FVector Hours = LyudRest::Vec(LyudRest::Config(), TEXT("hours"));
 	const bool bByHours = Hours.Y > Hours.X ? Hour >= Hours.X && Hour < Hours.Y : true;
 	const bool bWant = ForceOpen >= 0 ? ForceOpen == 1 : (bStaffKnown ? bStaffOn : bByHours);
+	// last orders: the kitchen stops taking them 20 game minutes before the hours' end
+	bKitchenClosing = Hours.Y > Hours.X && Hour >= Hours.Y - 20.f / 60.f && Hour < Hours.Y && ForceOpen != 1;
 	if (bWant != bOpen)
 	{
 		bOpen = bWant;
@@ -1102,7 +1183,15 @@ void ALyudRestaurant::UpdateState()
 		bNight = bNight ? Alt < 4.f : Alt < 1.f;
 	}
 	// locked once closed and the hero is out (the staff finishing inside don't hold it open)
-	const bool bWantLock = !bOpen && !IsHeroInside() && Props.Num() == 0 && Waiter == EWaiter::Off && !CookBody;
+	// locked a couple of game minutes after everything holds (the last guests and the staff off shift walk out first), never with
+	// anybody of the life still in the hall
+	const bool bReady = !bOpen && !IsHeroInside() && Props.Num() == 0 && Waiter == EWaiter::Off && !CookBody;
+	if (bReady && !bLockReady)
+	{
+		LockReadySince = Now;
+	}
+	bLockReady = bReady;
+	const bool bWantLock = bReady && (Now - LockReadySince).GetTotalMinutes() >= 2.0 && !AnyoneOfLifeInside();
 	if (bWantLock != bLocked)
 	{
 		bLocked = bWantLock;
@@ -1123,7 +1212,32 @@ void ALyudRestaurant::UpdateState()
 	{
 		ApplySigns();
 	}
+	UpdateFishing();
 	ApplyLights();
+}
+
+bool ALyudRestaurant::AnyoneOfLifeInside() const
+{
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (!People || !People->IsRunning())
+	{
+		return false;
+	}
+	for (int32 Id = 0, N = People->NumPeople(); Id < N; ++Id)
+	{
+		FPersonInfo P;
+		if (People->GetPerson(Id, P) && P.Actor)
+		{
+			const FVector L = ToLocal(P.Location);
+			const bool bHall = FVector2D(L.X, L.Y).Size() < HallR + 0.5f && FMath::Abs(L.Z) < 2.f;
+			const bool bKitchen = L.X > KitchenMin.X - 0.5f && L.X < KitchenMax.X + 0.5f && L.Y > KitchenMin.Y && L.Y < KitchenMax.Y && FMath::Abs(L.Z) < 2.f;
+			if (bHall || bKitchen)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void ALyudRestaurant::ApplyLights()
@@ -1152,6 +1266,37 @@ void ALyudRestaurant::ApplyLights()
 void ALyudRestaurant::ApplySigns()
 {
 	SignLanguage = LyudText::Language();
+	// the plaque on the menu stand's top, tilted up to the reader coming to the door (the stand faces -y, the street side)
+	if (!Plaque && !MenuSpot.IsNearlyZero())
+	{
+		FActorSpawnParameters SP;
+		SP.ObjectFlags |= RF_Transient;
+		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		const FRotator Rot = (FRotator(0.f, YawToWorld(-90.f).Yaw, 0.f).Quaternion() * FRotator(-55.f, 0.f, 0.f).Quaternion()).Rotator();
+		Plaque = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), ToWorld(MenuSpot + FVector(0, 0, 0.035f)), Rot, SP);
+		if (Plaque)
+		{
+			Plaque->SetMobility(EComponentMobility::Movable);
+			Plaque->Tags.Add(TEXT("Restaurant"));
+			UStaticMeshComponent* C = Plaque->GetStaticMeshComponent();
+			C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
+			// 40 x 20 cm, 1 cm thick (the cube is 1 m): its +X face toward the reader
+			C->SetRelativeScale3D(FVector(0.01f, 0.40f, 0.20f));
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			C->bAffectDistanceFieldLighting = false;
+			if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Restaurant/Materials/MI_RS_SignPlaque.MI_RS_SignPlaque")))
+			{
+				PlaqueMID = C->CreateDynamicMaterialInstance(0, M);
+			}
+		}
+	}
+	if (PlaqueMID)
+	{
+		if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("Restaurant"), TEXT("T_Sign_plaque")))
+		{
+			PlaqueMID->SetTextureParameterValue(TEXT("Image"), Tex);
+		}
+	}
 }
 
 int32 ALyudRestaurant::PendingCount(bool bHeroOnly) const
@@ -1433,6 +1578,10 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 	{
 		return EOrderResult::Closed;
 	}
+	if (bKitchenClosing)
+	{
+		return EOrderResult::KitchenClosing;
+	}
 	if (!Inv || HeroSeatIx < 0)
 	{
 		return EOrderResult::NotSeated;
@@ -1445,7 +1594,7 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 		{
 			return EOrderResult::Unknown;
 		}
-		Total += D->Price * I.Value;
+		Total += PriceToday(*D) * I.Value;
 	}
 	if (Total <= 0)
 	{
