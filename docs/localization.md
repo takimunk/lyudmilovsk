@@ -16,6 +16,9 @@ localization/voice.json  (speakers: voice + direction, per-line directions, TTS 
 ## 1. Strings
 * `Content/Localization/strings_<lang>.json`, a flat `"key": "text"` object, same keys in every language. `ru` is the master; a key
   missing in another language falls back to `ru`, then to the key itself (so a gap is visible in game as `ui.something`).
+* Generated tables live in subfolders, `Content/Localization/<sub>/strings_<lang>.json` (`town`: the townsfolk's names and
+  jobs, tools/town/town_life.py; `barks`: the townsfolk's own lines, tools/barks/build_barks.py, docs/town_talk.md).
+  `LyudText` merges them in, the hand-written keys winning; `tools/check_localization.py` checks them the same way.
 * Key names, lowercase, dot-separated, stable (never reuse a key for other text):
   `ui.<screen>.<what>`, `item.<id>.name|desc`, `npc.<id>.name|role`, `line.<speaker>.<scene>.<n>` (spoken lines, also voiced),
   `label.*`, `poster.*`, `sign.*` (words printed on generated textures), `lang.name|script` (descriptors for prompts).

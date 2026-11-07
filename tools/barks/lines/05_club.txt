@@ -1,0 +1,101 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The computer club: at the computers (play_club), at the vending machine, neighbours talking over the screens
+## ---------------------------------------------------------------------------------------------------------------
+
+[gamer]
+doing = play_club
+weight = 2
+say town.gamer.1 | Да ладно! Опять лаг! | Oh, come on! Lag again! | うそだろ！またラグだ！
+say town.gamer.2 | Ещё одну катку — и домой. | One more match and I'm going home. | あと一試合だけ。そしたら帰る。
+say town.gamer.3 | Кто мою мышку трогал? | Who's been touching my mouse? | マウス触ったの誰？
+say town.gamer.4 | Почти! Ну почти же! | So close! So close! | 惜しい！あとちょっとだったのに！
+say town.gamer.5 | Сохранение... Где сохранение?! | The save... Where's the save?! | セーブ…セーブはどこ？！
+say town.gamer.6 | Этот уровень не пройти. Его кто-то нарочно так сделал. | You can't beat this level. Someone made it like that on purpose. | このステージ、クリア無理。誰かがわざとこう作ったんだ。
+say town.gamer.7 | Тише, я в наушниках, но всё слышу. | Quiet, I've got headphones on but I can hear everything. | 静かに。ヘッドホンしてても全部聞こえてるから。
+say town.gamer.8 | Газировки бы... Кто-нибудь, купите «Байкал». | I could do with a soda... Somebody buy me a Baikal. | 炭酸飲みたい…誰か「バイカル」買ってきて。
+say town.gamer.9 | Глаза слипаются. Это не я сплю, это персонаж. | My eyes are closing. It's not me falling asleep, it's my character. | まぶたが重い。寝てるのはキャラのほうだから。
+say town.gamer.10 | Я тут живу. Ну, почти. | I live here. Well, almost. | ここに住んでるようなもんだ。
+say town.gamer.11 | Если долго играть, кажется, что это игра играет в тебя. | Play long enough and it feels like the game is playing you. | ずっとやってると、ゲームのほうがこっちで遊んでる気がしてくる。
+say town.gamer.12 | Хозяин, ещё часик можно? | Boss, can I have another hour? | 店長、もう一時間いい？
+
+[gamer_kid]
+doing = play_club
+age = kid teen
+say town.gamer_kid.1 | Мама звонит. Не слышу, не слышу... | Mum's calling. Can't hear, can't hear... | ママから電話だ。聞こえない、聞こえない…
+say town.gamer_kid.2 | Уроки потом. Сначала босс. | Homework later. Boss first. | 宿題はあと。まずはボス。
+
+[gamer_adult]
+doing = play_club
+age = adult elder
+say town.gamer_adult.1 | Завтра на работу. Ну и что. | Work tomorrow. So what. | 明日は仕事。だから何だ。
+
+[gamer_old]
+doing = play_club
+age = 45-120
+say town.gamer_adult.2 | В мои годы на таком железе и не мечтали. | In my day we never dreamt of hardware like this. | 若い頃はこんなマシン、夢にも思わなかった。
+
+[gamer_morning]
+doing = play_club
+hours = 5-9
+say town.gamer_morning.1 | Уже утро? Как это — уже утро? | It's morning already? How is it morning already? | もう朝？なんで朝なの？
+
+[gamer_snack]
+doing = snack_club eat_club
+say town.gamer_snack.1 | Автомат опять сдачу не дал. | The machine didn't give me change again. | 自販機、またおつりが出ない。
+say town.gamer_snack.2 | Чипсы и «Тархун». Ужин чемпиона. | Crisps and a Tarragon. The champion's dinner. | ポテチと「タルフン」。チャンピオンの夕食。
+
+[gamer_talk]
+doing = play_club
+doing2 = play_club
+weight = 3
+talk
+- town.gamer_talk1.1 | Ты где? | Where are you? | どこにいる？
+- town.gamer_talk1.2 | Слева от тебя. | To your left. | きみの左。
+- town.gamer_talk1.3 | В игре! | In the game! | ゲームの中で！
+- town.gamer_talk1.4 | А, в игре — тоже слева. | Oh, in the game: also to your left. | ああ、ゲームでも左。
+talk
+- town.gamer_talk2.1 | Прикрой меня! | Cover me! | 援護して！
+- town.gamer_talk2.2 | Прикрываю! | Covering you! | してる！
+- town.gamer_talk2.3 | Где?! | Where?! | どこで？！
+- town.gamer_talk2.4 | Морально. | In spirit. | 心の中で。
+talk
+- town.gamer_talk3.1 | Сколько у тебя осталось? | How much time have you got left? | あと何分？
+- town.gamer_talk3.2 | Минут двадцать. | About twenty minutes. | 二十分くらい。
+- town.gamer_talk3.3 | И у меня. Потом домой? | Me too. Home after that? | こっちも。そのあと帰る？
+- town.gamer_talk3.4 | Потом ещё час. | After that, another hour. | そのあと、もう一時間。
+talk
+- town.gamer_talk4.1 | Видишь? Как я его, а? | See that? How I got him? | 今の見た？
+- town.gamer_talk4.2 | Вижу. Случайно вышло. | I saw. It was a fluke. | 見た。まぐれでしょ。
+- town.gamer_talk4.3 | Это был план! | It was a plan! | 作戦だよ！
+- town.gamer_talk4.4 | Конечно. | Of course it was. | はいはい。
+talk
+- town.gamer_talk5.1 | У тебя тоже экран мигнул? | Did your screen flicker too? | そっちも画面ちらついた？
+- town.gamer_talk5.2 | Мигнул. | It did. | ちらついた。
+- town.gamer_talk5.3 | Странно. Как будто кто-то моргнул. | Weird. As if someone blinked. | 変だな。誰かがまばたきしたみたい。
+- town.gamer_talk5.4 | Не говори так. | Don't say that. | やめてよ。
+talk
+- town.gamer_talk6.1 | Дай зарядку. | Lend me a charger. | 充電器貸して。
+- town.gamer_talk6.2 | Какую? | Which one? | どれ？
+- town.gamer_talk6.3 | Любую. Это не для телефона, это для души. | Any. It's not for my phone, it's for my soul. | どれでも。スマホじゃなくて心の充電。
+
+[gamer_talk_school]
+doing = play_club
+doing2 = play_club
+job = pupil
+job2 = pupil
+weight = 3
+talk
+- town.gamer_talk7.1 | Ты завтра в школу? | Are you going to school tomorrow? | 明日学校行く？
+- town.gamer_talk7.2 | А завтра школа? | Is there school tomorrow? | 明日って学校あるの？
+- town.gamer_talk7.3 | Не знаю. Поэтому и спрашиваю. | No idea. That's why I'm asking. | 知らない。だから聞いてるの。
+
+[gamer_talk_sunset]
+doing = play_club
+doing2 = play_club
+sun = low
+weight = 4
+talk
+- town.gamer_talk8.1 | Пойдём закат посмотрим? | Shall we go and watch the sunset? | 夕日見に行かない？
+- town.gamer_talk8.2 | В игре? | In the game? | ゲームの中の？
+- town.gamer_talk8.3 | Нет, настоящий. | No, the real one. | ううん、本物の。
+- town.gamer_talk8.4 | А там графика хуже? | Are the graphics worse there? | 本物ってグラフィック悪いの？

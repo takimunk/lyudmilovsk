@@ -328,6 +328,8 @@ public:
 	void DriveBike(ALyudBike* Bike, const FLyudBikeRide& Ride, const FVector& Ground, float Yaw, float Speed, float DeltaTime);
 	/** Body size against the clips' body (pelvis height / the clips'). */
 	float GetBodyScale() const { return BodyScale; }
+	/** Moves the mouth for Seconds whatever the pose: a line said over the head (ULyudTownTalkSubsystem, docs/town_talk.md). */
+	void Chatter(float Seconds) { ChatterUntil = Clock + Seconds; }
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -345,6 +347,7 @@ private:
 	/** Standing, looking and talking take turns among a few clips (a nod, folded arms) so nobody loops one gesture. */
 	FName Role;
 	float Clock = 0.f;
+	float ChatterUntil = 0.f;
 	float VariantUntil = 0.f;
 	uint32 Seed = 0;
 

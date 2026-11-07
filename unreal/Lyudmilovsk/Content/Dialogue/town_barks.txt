@@ -1,0 +1,1286 @@
+# What the townsfolk say on their own (docs/town_talk.md): a greeting to the player walking past, a line said aloud by
+# what they do and where, a short exchange between two of them, the restaurant's waiter and cook at the moments of the
+# player's visit. Only structure: the words are in Content/Localization/barks/strings_<lang>.json (line.town.<scene>.<n>).
+# Read by ULyudTownTalkSubsystem (Private/People/TownBarks.cpp, plain C++; tools/barksim tests it on the town's people).
+# Re-read at every level start (Play). Proposals, not canon: change the words in the string tables, the moments here.
+#
+# [name]      a set of lines and when they are said. Every condition given must hold; the values of one condition are
+#             alternatives (any of them), '!x' means not x.
+# job =       occupation (townsfolk.json) or job role (a duty's role): pensioner, pupil, student, away, seller, waiter, cook, ...
+# age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
+# sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
+# doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
+#             free: not on a duty
+# at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
+#             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
+# pose =      stand, walk, talk, look, sit, computer, eat, read, work
+# gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
+# chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
+# hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
+# sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
+# weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+# festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
+# near = hero the player is within 10 m of the speaker (remarks about him)
+# to = hero   a greeting: said to the player when he walks past close, once a day per person
+# on =        said at an event instead of on its own: rest_sit (the player sat down at a table), rest_carry (the waiter takes
+#             a tray from the kitchen pass; the cook says his line then), rest_serve, rest_bill, rest_bye (got up after eating)
+# weight =    how often against the other sets that fit (1; every condition given already counts for a little more)
+# say =       a line said alone: its key without 'line.'; a run of numbers in one: town.granny.1..8
+# talk =      an exchange of two people, A | B | A ...; job2, age2, sex2, doing2: conditions on the second (B)
+
+
+# Greetings: said to the hero when he walks past close (to = hero), by the hour and the speaker's age
+
+[greet_early]
+to = hero
+age = adult
+hours = 4-7
+say = town.greet_early.1..5
+
+[greet_morning]
+to = hero
+age = adult
+hours = 7-11
+say = town.greet_morning.1..5
+
+[greet_day]
+to = hero
+age = adult
+hours = 11-17
+say = town.greet_day.1..5
+
+[greet_evening]
+to = hero
+age = adult
+hours = 17-22
+say = town.greet_evening.1..4
+
+[greet_evening_dark]
+to = hero
+age = adult
+hours = 17-22
+months = 10-3
+say = town.greet_evening_dark.1
+
+[greet_night]
+to = hero
+age = adult
+hours = 22-4
+say = town.greet_night.1..5
+
+[greet_elder_morning]
+to = hero
+age = elder
+hours = 5-11
+say = town.greet_elder_morning.1..2
+
+[greet_elder_morning_cold]
+to = hero
+age = elder
+hours = 5-11
+months = 10-4
+say = town.greet_elder_morning_cold.1
+
+[greet_elder_day]
+to = hero
+age = elder
+hours = 11-17
+say = town.greet_elder_day.1..3
+
+[greet_elder_evening]
+to = hero
+age = elder
+hours = 17-23
+say = town.greet_elder_evening.1..3
+
+[greet_kid]
+to = hero
+age = kid
+hours = 7-21
+say = town.greet_kid.1..5
+
+[greet_teen]
+to = hero
+age = teen
+hours = 8-23
+say = town.greet_teen.1..4
+
+[greet_seller]
+to = hero
+job = seller fishmonger butcher vendor
+doing = work
+say = town.greet_seller.1..2
+
+# Ambient lines: said aloud to nobody in particular, by what the speaker is doing and where
+# the sun, by what it is doing now (docs/story/motifs.md): quiet hints, never everybody
+# the weather (ULyudWeatherSubsystem: rain, snow, fog, cold < 2 C, warm > 22 C)
+
+[stroll]
+doing = stroll walk
+age = teen adult elder
+say = town.stroll.1..6
+
+[night_walk]
+doing = night_walk
+say = town.night_walk.1..4
+
+[night_walk_clear]
+doing = night_walk
+weather = clear
+say = town.night_walk_clear.1
+
+[sunrise]
+sun = !cloudy !night
+doing = watch_sunrise
+say = town.sunrise.1..5
+
+[sunset]
+sun = !cloudy
+doing = sun_watch lookout_view
+say = town.sunset.1..5
+
+[sea]
+doing = sea_air swim_look
+say = town.sea.1..4
+
+[sea_summer]
+doing = sea_air swim_look
+months = 6-8
+say = town.sea_summer.1
+
+[sea_fog]
+doing = sea_air swim_look sun_watch fish_shore
+weather = fog
+say = town.sea_fog.1
+
+[fish_shore]
+doing = fish_shore
+say = town.fish.1..4
+
+[fish_shore_herring]
+doing = fish_shore
+months = 3-5 9-11
+say = town.fish_herring.1
+
+[fish_shore_sun]
+doing = fish_shore
+sun = day
+weather = clear
+say = town.fish_sun.1
+
+[bench]
+doing = sit_bench
+age = teen adult
+say = town.bench.1..3
+
+[bench_sun]
+doing = sit_bench
+sun = day
+weather = clear
+say = town.bench_sun.1
+
+[playground]
+doing = playground
+age = kid
+say = town.kid_play.1..6
+
+[kid_sun]
+at = outdoors
+age = kid
+sun = day low
+say = town.kid_sun.1..2
+
+[pupil_after_school]
+job = pupil
+doing = free
+hours = 13-20
+say = town.pupil.1..4
+
+[student]
+job = student
+doing = free
+say = town.student.2..3
+
+[student_beach]
+job = student
+doing = free
+at = beach
+say = town.student.1
+
+[commuter_morning]
+job = away
+hours = 6-9
+say = town.commuter_morning.1
+
+[commuter_evening]
+job = away
+hours = 16-22
+say = town.commuter_evening.1..3
+
+[homemaker]
+job = homemaker
+say = town.homemaker.1
+
+[homemaker_day]
+job = homemaker
+hours = 9-16
+say = town.homemaker_day.1
+
+[homemaker_damp]
+job = homemaker
+weather = fog rain
+say = town.homemaker_damp.1
+
+[unemployed]
+job = unemployed
+say = town.unemployed.1..2
+
+[writer]
+job = writer
+doing = free
+say = town.writer.1..3
+
+[artist]
+job = artist
+doing = free
+say = town.artist.1..3
+
+[musician]
+job = musician
+doing = free
+say = town.musician.1..2
+
+[musician_day]
+job = musician
+doing = free
+hours = 10-19
+near = hero
+say = town.musician_day.1
+
+[programmer]
+job = programmer
+doing = free
+say = town.programmer.1..3
+
+[fisherman]
+job = fisherman
+doing = free
+say = town.fisherman.2..3
+
+[fisherman_after]
+job = fisherman
+doing = free
+hours = 10-20
+say = town.fisherman.1
+
+[owl]
+chrono = owl night
+hours = 0-4
+say = town.owl.1..3
+
+[lark]
+chrono = lark
+hours = 4-8
+say = town.lark.1
+
+[lark_five]
+chrono = lark
+hours = 4-6
+say = town.lark.2
+
+[hungry]
+at = outdoors
+need = hunger
+age = teen adult elder
+say = town.hungry.1..2
+
+[tired]
+hours = 19-3
+at = !flat
+need = tired
+say = town.tired.1
+
+[tired_bench]
+need = tired
+doing = sit_bench
+say = town.tired_bench.1
+
+[sun_day]
+at = outdoors
+sun = day
+weather = clear warm
+age = teen adult elder
+say = town.sun_day.1..3
+
+[sun_october]
+at = outdoors
+sun = day
+months = 10
+weather = clear
+say = town.sun_october.1
+
+[sun_cloudy]
+at = outdoors
+sun = cloudy
+age = teen adult elder
+say = town.sun_cloudy.1..3
+
+[sun_low]
+at = outdoors
+sun = low
+hours = 14-23
+say = town.sun_low.1..2
+
+[sun_night]
+at = outdoors
+sun = night
+hours = 21-4
+say = town.sun_night.1
+
+[sun_night_late]
+at = outdoors
+sun = night
+hours = 0-5
+say = town.sun_night.2
+
+[weather_rain]
+at = outdoors
+weather = rain
+say = town.rain.1..3
+
+[weather_snow]
+at = outdoors
+weather = snow
+say = town.snow.1..2
+
+[weather_fog]
+at = outdoors
+weather = fog
+say = town.fog.1..2
+
+[weather_cold]
+at = outdoors
+weather = cold
+say = town.cold.1..2
+
+[weather_warm]
+sun = day
+at = outdoors
+weather = warm
+say = town.warm.1..2
+
+# Jobs: at work (doing = work: on their duty at its place) and off duty (doing = free)
+
+[seller_work]
+job = seller
+doing = work
+at = market kiosk fair fair_stall
+say = town.seller.1..2
+say = town.seller.4
+
+[seller_hero]
+job = seller
+doing = work
+near = hero
+say = town.seller.3
+
+[seller_morning]
+job = seller fishmonger vendor
+doing = work
+hours = 6-11
+say = town.seller_morning.1
+
+[seller_late]
+job = seller fishmonger vendor
+doing = work
+hours = 12-21
+say = town.seller_late.1
+
+[fishmonger_work]
+job = fishmonger
+doing = work
+say = town.fishmonger.1..4
+
+[butcher_work]
+job = butcher
+doing = work
+say = town.butcher.1..3
+
+[vendor_work]
+job = vendor
+doing = work
+say = town.vendor.1..3
+
+[vendor_cold]
+job = vendor seller
+doing = work
+weather = cold
+say = town.vendor_cold.1
+
+[carousel_work]
+job = carousel_operator
+doing = work
+say = town.carousel.1..2
+
+[carousel_old]
+job = carousel_operator
+doing = work
+age = 40-120
+say = town.carousel_old.1
+
+[lifeguard_work]
+job = lifeguard
+doing = work
+say = town.lifeguard.1
+
+[lifeguard_summer]
+job = lifeguard
+doing = work
+months = 5-9
+say = town.lifeguard_summer.1..2
+
+[lifeguard_offseason]
+at = beach promenade pier
+job = lifeguard
+months = 10-4
+say = town.lifeguard_off.1
+
+[keeper]
+job = lighthouse_keeper
+say = town.keeper.1..3
+
+[janitor]
+job = janitor caretaker cleaner
+say = town.janitor.1..2
+
+[janitor_autumn]
+job = janitor caretaker cleaner
+months = 9-11
+say = town.janitor_autumn.1
+
+[guard]
+hours = 6-12
+job = guard
+say = town.guard.2
+
+[guard_hero]
+job = guard
+near = hero
+say = town.guard.1
+
+[teacher]
+job = teacher
+doing = free
+say = town.teacher.2
+
+[teacher_hero]
+job = teacher
+doing = free
+near = hero
+say = town.teacher.1
+
+[teacher_sun]
+job = teacher
+doing = free
+sun = day
+say = town.teacher_sun.1
+
+[doctor]
+job = doctor nurse
+say = town.doctor.1..2
+
+[doctor_cold]
+job = doctor nurse
+months = 10-4
+near = hero
+say = town.doctor_cold.1
+
+[librarian]
+job = librarian
+say = town.librarian.2
+
+[librarian_hero]
+job = librarian
+near = hero
+say = town.librarian.1
+
+[barista]
+job = barista
+doing = free
+say = town.barista.2..3
+
+[barista_evening]
+job = barista
+doing = free
+hours = 15-24
+say = town.barista.1
+
+[cashier]
+job = cashier
+doing = free
+say = town.cashier.1..2
+
+[coach]
+job = coach
+say = town.coach.1
+
+[coach_hero]
+job = coach
+near = hero
+say = town.coach.2
+
+[dance_teacher]
+job = dance_teacher
+say = town.dance.1
+
+[dance_teacher_hero]
+job = dance_teacher
+near = hero
+say = town.dance.2
+
+[choir_leader]
+job = choir_leader
+say = town.choir.1..2
+
+[projectionist]
+job = projectionist
+say = town.projectionist.1..2
+
+[clerk]
+job = clerk
+doing = free
+say = town.clerk_off.1..2
+
+[receptionist]
+job = receptionist
+doing = free
+say = town.receptionist.1..2
+
+[manager]
+job = manager
+doing = free
+say = town.manager.1..2
+
+[director]
+job = director
+say = town.director.1..2
+
+[master]
+job = master
+say = town.master.1..2
+
+[cook_off]
+hours = 17-24
+job = cook
+doing = free
+say = town.cook_off.1
+
+[cook_off_hero]
+job = cook
+doing = free
+near = hero
+say = town.cook_off.2
+
+[waiter_off]
+hours = 17-24
+job = waiter
+doing = free
+say = town.waiter_off.1..2
+
+[seller_off]
+hours = 16-24
+job = seller fishmonger butcher vendor
+doing = free
+say = town.seller_off.1
+
+# Grannies and grandpas on the benches: alone, to the hero, and talking to each other (two on one bench)
+
+[granny_bench]
+age = elder
+sex = female
+doing = sit_bench
+weight = 2
+say = town.granny.1..8
+
+[granny_cold]
+age = elder
+sex = female
+doing = sit_bench
+months = 10-4
+say = town.granny_cold.1
+
+[granny_sun]
+age = elder
+sex = female
+doing = sit_bench
+sun = day
+say = town.granny_sun.1
+
+[granny_knees]
+age = elder
+doing = sit_bench
+sun = cloudy
+say = town.granny_knees.1
+
+[granny_about_hero]
+age = elder
+sex = female
+doing = sit_bench
+near = hero
+weight = 2
+say = town.granny_about_hero.1..2
+
+[granny_to_hero]
+to = hero
+age = elder
+sex = female
+weight = 2
+say = town.granny_hero.1..5
+
+[granny_talk]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+weight = 3
+talk = town.granny_talk1.1 | town.granny_talk1.2 | town.granny_talk1.3 | town.granny_talk1.4
+talk = town.granny_talk2.1 | town.granny_talk2.2 | town.granny_talk2.3
+talk = town.granny_talk3.1 | town.granny_talk3.2 | town.granny_talk3.3 | town.granny_talk3.4
+talk = town.granny_talk4.1 | town.granny_talk4.2 | town.granny_talk4.3 | town.granny_talk4.4
+talk = town.granny_talk6.1 | town.granny_talk6.2 | town.granny_talk6.3 | town.granny_talk6.4
+talk = town.granny_talk7.1 | town.granny_talk7.2 | town.granny_talk7.3 | town.granny_talk7.4
+talk = town.granny_talk8.1 | town.granny_talk8.2 | town.granny_talk8.3 | town.granny_talk8.4
+talk = town.granny_talk9.1 | town.granny_talk9.2 | town.granny_talk9.3
+talk = town.granny_talk11.1 | town.granny_talk11.2 | town.granny_talk11.3 | town.granny_talk11.4
+talk = town.granny_talk12.1 | town.granny_talk12.2 | town.granny_talk12.3 | town.granny_talk12.4
+
+[granny_talk_sun]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+sun = day
+weight = 3
+talk = town.granny_talk5.1 | town.granny_talk5.2 | town.granny_talk5.3
+
+[granny_talk_autumn]
+age = elder
+sex = female
+doing = sit_bench
+age2 = elder
+sex2 = female
+months = 9-11
+weight = 3
+talk = town.granny_talk10.1 | town.granny_talk10.2 | town.granny_talk10.3 | town.granny_talk10.4
+
+[grandpa_bench]
+age = elder
+sex = male
+doing = sit_bench
+weight = 2
+say = town.grandpa.1..6
+
+[grandpa_talk]
+age = elder
+sex = male
+doing = sit_bench
+age2 = elder
+sex2 = male
+weight = 3
+talk = town.grandpa_talk1.1 | town.grandpa_talk1.2 | town.grandpa_talk1.3 | town.grandpa_talk1.4
+talk = town.grandpa_talk2.1 | town.grandpa_talk2.2
+talk = town.grandpa_talk3.1 | town.grandpa_talk3.2 | town.grandpa_talk3.3 | town.grandpa_talk3.4
+talk = town.grandpa_talk4.1 | town.grandpa_talk4.2 | town.grandpa_talk4.3 | town.grandpa_talk4.4
+
+[grandpa_talk_autumn_sun]
+age = elder
+sex = male
+doing = sit_bench
+age2 = elder
+months = 9-12
+sun = day low
+weight = 3
+talk = town.grandpa_talk5.1 | town.grandpa_talk5.2 | town.grandpa_talk5.3
+
+# The computer club: at the computers (play_club), at the vending machine, neighbours talking over the screens
+
+[gamer]
+doing = play_club
+weight = 2
+say = town.gamer.1..12
+
+[gamer_kid]
+doing = play_club
+age = kid teen
+say = town.gamer_kid.1..2
+
+[gamer_adult]
+doing = play_club
+age = adult elder
+say = town.gamer_adult.1
+
+[gamer_old]
+doing = play_club
+age = 45-120
+say = town.gamer_adult.2
+
+[gamer_morning]
+doing = play_club
+hours = 5-9
+say = town.gamer_morning.1
+
+[gamer_snack]
+doing = snack_club eat_club
+say = town.gamer_snack.1..2
+
+[gamer_talk]
+doing = play_club
+doing2 = play_club
+weight = 3
+talk = town.gamer_talk1.1 | town.gamer_talk1.2 | town.gamer_talk1.3 | town.gamer_talk1.4
+talk = town.gamer_talk2.1 | town.gamer_talk2.2 | town.gamer_talk2.3 | town.gamer_talk2.4
+talk = town.gamer_talk3.1 | town.gamer_talk3.2 | town.gamer_talk3.3 | town.gamer_talk3.4
+talk = town.gamer_talk4.1 | town.gamer_talk4.2 | town.gamer_talk4.3 | town.gamer_talk4.4
+talk = town.gamer_talk5.1 | town.gamer_talk5.2 | town.gamer_talk5.3 | town.gamer_talk5.4
+talk = town.gamer_talk6.1 | town.gamer_talk6.2 | town.gamer_talk6.3
+
+[gamer_talk_school]
+doing = play_club
+doing2 = play_club
+job = pupil
+job2 = pupil
+weight = 3
+talk = town.gamer_talk7.1 | town.gamer_talk7.2 | town.gamer_talk7.3
+
+[gamer_talk_sunset]
+doing = play_club
+doing2 = play_club
+sun = low
+weight = 4
+talk = town.gamer_talk8.1 | town.gamer_talk8.2 | town.gamer_talk8.3 | town.gamer_talk8.4
+
+# The restaurant «Янтарь»: the waiter (events of the hero's visit), the cook in the kitchen, the guests at their tables
+# Events (on = ...): rest_sit (the hero sat down at a table), rest_carry (the waiter takes a tray from the pass; the cook
+# says his line then), rest_serve (a dish set down on the hero's table), rest_bill (the bill brought), rest_bye (the
+# hero got up after eating).
+
+[waiter_sit]
+on = rest_sit
+say = town.waiter_sit.1..3
+
+[waiter_sit_evening]
+on = rest_sit
+hours = 17-24
+say = town.waiter_sit_evening.1
+
+[waiter_sit_festival]
+on = rest_sit
+festival = any
+weight = 2
+say = town.waiter_sit_festival.1
+
+[waiter_carry]
+on = rest_carry
+job = waiter
+say = town.waiter_carry.1..3
+
+[cook_carry]
+on = rest_carry
+job = cook
+say = town.cook_ready.1..3
+
+[waiter_serve]
+on = rest_serve
+say = town.waiter_serve.1..4
+
+[waiter_bill]
+on = rest_bill
+say = town.waiter_bill.1..3
+
+[waiter_bye]
+on = rest_bye
+say = town.waiter_bye.1..3
+
+[waiter_work]
+job = waiter
+doing = work
+at = restaurant
+say = town.waiter_work.1..3
+
+[cook_work]
+job = cook
+doing = work
+at = restaurant
+say = town.cook.1..6
+
+[guest]
+doing = eat_out
+at = restaurant
+say = town.guest.1..7
+
+[guest_sunset]
+doing = eat_out
+at = restaurant
+sun = low
+say = town.guest_sunset.1
+
+[guest_special_mon]
+doing = eat_out
+at = restaurant
+weekday = mon
+weight = 2
+say = town.guest_special.mon
+
+[guest_special_tue]
+doing = eat_out
+at = restaurant
+weekday = tue
+weight = 2
+say = town.guest_special.tue
+
+[guest_special_wed]
+doing = eat_out
+at = restaurant
+weekday = wed
+weight = 2
+say = town.guest_special.wed
+
+[guest_special_thu]
+doing = eat_out
+at = restaurant
+weekday = thu
+weight = 2
+say = town.guest_special.thu
+
+[guest_special_fri]
+doing = eat_out
+at = restaurant
+weekday = fri
+weight = 2
+say = town.guest_special.fri
+
+[guest_special_sat]
+doing = eat_out
+at = restaurant
+weekday = sat
+weight = 2
+say = town.guest_special.sat
+
+[guest_special_sun]
+doing = eat_out
+at = restaurant
+weekday = sun
+weight = 2
+say = town.guest_special.sun
+
+[guest_festival]
+doing = eat_out
+at = restaurant
+festival = any
+weight = 2
+say = town.guest_festival.1..2
+
+[guest_talk]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+weight = 3
+talk = town.guest_talk1.1 | town.guest_talk1.2 | town.guest_talk1.3 | town.guest_talk1.4
+talk = town.guest_talk3.1 | town.guest_talk3.2 | town.guest_talk3.3 | town.guest_talk3.4
+talk = town.guest_talk5.1 | town.guest_talk5.2 | town.guest_talk5.3 | town.guest_talk5.4
+talk = town.guest_talk6.1 | town.guest_talk6.2 | town.guest_talk6.3 | town.guest_talk6.4
+
+[guest_talk_sun]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+sun = day low
+weight = 3
+talk = town.guest_talk2.1 | town.guest_talk2.2 | town.guest_talk2.3
+
+[guest_talk_dessert]
+doing = eat_out
+at = restaurant
+doing2 = eat_out
+weekday = tue wed thu fri sat sun
+weight = 3
+talk = town.guest_talk4.1 | town.guest_talk4.2 | town.guest_talk4.3 | town.guest_talk4.4
+
+# Festival days (Content/PeopleData/festivals.json, ULyudFestivalSubsystem::ActiveFestival / ActivePhase)
+
+[fest_greet]
+to = hero
+festival = any
+age = teen adult
+weight = 4
+say = town.fest_greet.1
+
+[fest_greet_day]
+to = hero
+festival = any
+age = teen adult
+hours = 6-18
+weight = 4
+say = town.fest_greet.2
+
+[fest_greet_elder]
+to = hero
+festival = any
+age = elder
+weight = 4
+say = town.fest_greet_elder.1
+
+[fest_greet_kid]
+to = hero
+festival = any
+age = kid
+weight = 4
+say = town.fest_greet_kid.1
+
+[fest_any]
+at = outdoors
+festival = any
+weight = 2
+say = town.fest_any.1..3
+
+[fest_fair]
+festival = any
+gather = fair
+weight = 3
+say = town.fest_fair.1..3
+
+[fest_watch]
+festival = any
+gather = watch
+weight = 2
+say = town.fest_watch.1..2
+
+[fest_concert]
+at = outdoors
+phase = concert carols
+weight = 3
+say = town.fest_concert.1..2
+
+[fest_fireworks]
+at = outdoors
+phase = fireworks
+weight = 5
+say = town.fest_fireworks.1..4
+
+[fest_dance]
+at = outdoors
+phase = dance
+weight = 3
+say = town.fest_dance.1..2
+
+[fest_bonfire]
+at = outdoors
+phase = bonfire
+weight = 4
+say = town.fest_bonfire.1..2
+
+[fest_firecrackers]
+at = outdoors
+phase = firecrackers
+weight = 5
+say = town.fest_firecrackers.1..2
+
+[weekend_market]
+festival = weekend_market
+weight = 3
+say = town.fest_market.1..3
+
+[sea_festival]
+festival = sea_festival
+weight = 3
+say = town.fest_sea.1..3
+
+[sea_festival_before]
+festival = sea_festival
+hours = 8-21
+weight = 3
+say = town.fest_sea_before.1
+
+[lantern_night]
+festival = lantern_night
+weight = 3
+say = town.fest_lantern.1
+
+[lantern_night_sky]
+at = outdoors
+phase = sky_lanterns
+weight = 5
+say = town.fest_lantern_sky.1..2
+
+[first_snow]
+at = outdoors
+festival = first_snow
+weight = 3
+say = town.fest_snow.1..3
+
+[winter_fair]
+festival = winter_fair
+weight = 3
+say = town.fest_winter_fair.1..2
+
+[new_year_eve]
+festival = new_year
+phase = eve
+weight = 4
+say = town.fest_new_year_eve.1..2
+
+[new_year]
+at = outdoors
+festival = new_year
+phase = fireworks dance walk
+weight = 4
+say = town.fest_new_year.1..2
+
+[new_year_hero]
+to = hero
+festival = new_year
+phase = eve fireworks
+weight = 5
+say = town.fest_new_year_hero.1
+
+[maslenitsa]
+festival = maslenitsa
+weight = 3
+say = town.fest_maslenitsa.1..3
+
+[maslenitsa_fire]
+at = outdoors
+festival = maslenitsa
+phase = bonfire
+weight = 5
+say = town.fest_maslenitsa_fire.1
+
+[bird_day]
+festival = bird_day
+weight = 3
+say = town.fest_birds.1..2
+
+[blossom]
+festival = blossom
+weight = 3
+say = town.fest_blossom.1..2
+
+[midsummer]
+festival = midsummer
+weight = 3
+say = town.fest_midsummer.1..2
+
+[midsummer_hero]
+to = hero
+festival = midsummer
+phase = bonfire
+weight = 5
+say = town.fest_midsummer_hero.1
+
+[midsummer_sunrise]
+at = outdoors
+festival = midsummer
+phase = sunrise
+weight = 5
+say = town.fest_sunrise.1..2
+
+[fisherman_day]
+festival = fisherman_day
+weight = 3
+say = town.fest_fisherman.1..2
+
+[perseids]
+at = outdoors
+festival = perseids
+weight = 3
+say = town.fest_perseids.1..3
+
+[harvest_fair]
+festival = harvest_fair
+weight = 3
+say = town.fest_harvest.1..2
+
+[lunar_new_year]
+festival = lunar_new_year
+weight = 3
+say = town.fest_lunar.1..3
+
+[lunar_drums]
+at = outdoors
+phase = drums
+weight = 5
+say = town.fest_drums.1
+
+[holi]
+at = outdoors
+festival = holi
+weight = 3
+say = town.fest_holi.1..3
+
+[nowruz]
+festival = nowruz
+weight = 3
+say = town.fest_nowruz.1..2
+
+[children_day]
+festival = children_day
+age = kid
+weight = 4
+say = town.fest_children.1..2
+
+[children_day_adult]
+festival = children_day
+age = teen adult elder
+weight = 3
+say = town.fest_children_adult.1
+
+[tanabata]
+festival = tanabata
+weight = 3
+say = town.fest_tanabata.1..3
+
+[toro_nagashi]
+festival = toro_nagashi
+weight = 3
+say = town.fest_toro.1..2
+
+[mid_autumn]
+festival = mid_autumn
+weight = 3
+say = town.fest_mid_autumn.1..2
+
+[halloween]
+festival = halloween
+weight = 3
+say = town.fest_halloween.1
+
+[halloween_kid]
+festival = halloween
+age = kid
+weight = 4
+say = town.fest_halloween_kid.1..2
+
+[dia_de_muertos]
+festival = dia_de_muertos
+weight = 3
+say = town.fest_muertos.1..2
+
+[diwali]
+festival = diwali
+weight = 3
+say = town.fest_diwali.1..2
+
+[loy_krathong]
+festival = loy_krathong
+weight = 3
+say = town.fest_loy.1..2
+
+[christmas]
+festival = christmas
+weight = 3
+say = town.fest_christmas.1..2
+
+[christmas_carols]
+festival = christmas
+hours = 10-17
+weight = 3
+say = town.fest_christmas_carols.1
+
+[fest_talk]
+festival = any
+doing = gather_mingle chat
+weight = 4
+talk = town.fest_talk2.1 | town.fest_talk2.2 | town.fest_talk2.3 | town.fest_talk2.4
+talk = town.fest_talk3.1 | town.fest_talk3.2 | town.fest_talk3.3
+
+[fest_talk_parents]
+festival = any
+doing = gather_mingle chat
+age = adult elder
+age2 = adult elder
+weight = 4
+talk = town.fest_talk4.1 | town.fest_talk4.2 | town.fest_talk4.3 | town.fest_talk4.4
+
+[fest_talk_fireworks]
+festival = sea_festival new_year lunar_new_year diwali
+doing = gather_mingle chat
+hours = 12-21
+weight = 5
+talk = town.fest_talk1.1 | town.fest_talk1.2 | town.fest_talk1.3
+
+# Small talk: two townsfolk talking (chat, gathering in groups) or sitting side by side
+
+[chat]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weight = 2
+talk = town.chat1.1 | town.chat1.2 | town.chat1.3
+talk = town.chat2.1 | town.chat2.2
+talk = town.chat3.1 | town.chat3.2 | town.chat3.3 | town.chat3.4
+talk = town.chat4.1 | town.chat4.2
+talk = town.chat5.1 | town.chat5.2 | town.chat5.3 | town.chat5.4
+talk = town.chat6.1 | town.chat6.2 | town.chat6.3
+talk = town.chat7.1 | town.chat7.2 | town.chat7.3
+talk = town.chat10.1 | town.chat10.2 | town.chat10.3 | town.chat10.4
+talk = town.chat12.1 | town.chat12.2 | town.chat12.3
+
+[chat_evening_sun]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+hours = 17-23
+weight = 3
+talk = town.chat8.1 | town.chat8.2 | town.chat8.3
+
+[chat_about_hero]
+doing = chat gather_mingle sit_bench
+age = adult elder
+age2 = adult elder
+near = hero
+weight = 4
+talk = town.chat9.1 | town.chat9.2 | town.chat9.3 | town.chat9.4
+
+[chat_morning]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+hours = 6-12
+weight = 3
+talk = town.chat11.1 | town.chat11.2 | town.chat11.3
+
+[chat_cold]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weather = cold
+weight = 3
+talk = town.chat13.1 | town.chat13.2 | town.chat13.3 | town.chat13.4
+
+[chat_rain]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weather = !rain !snow
+sun = cloudy
+weight = 3
+talk = town.chat14.1 | town.chat14.2
+
+[chat_teens]
+doing = chat gather_mingle sit_bench
+age = teen
+age2 = teen
+weight = 4
+talk = town.chat15.1 | town.chat15.2 | town.chat15.3 | town.chat15.4
+talk = town.chat16.1 | town.chat16.2 | town.chat16.3
+
+[chat_kids]
+doing = playground chat
+age = kid
+age2 = kid
+weight = 4
+talk = town.chat_kids1.1 | town.chat_kids1.2 | town.chat_kids1.3
+talk = town.chat_kids2.1 | town.chat_kids2.2 | town.chat_kids2.3
+talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3

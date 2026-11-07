@@ -1,0 +1,256 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Jobs: at work (doing = work: on their duty at its place) and off duty (doing = free)
+## ---------------------------------------------------------------------------------------------------------------
+
+[seller_work]
+job = seller
+doing = work
+at = market kiosk fair fair_stall
+say town.seller.1 | Подходите, не стесняйтесь! | Come on over, don't be shy! | いらっしゃい、どうぞ見てって！
+say town.seller.2 | Яблоки свои, без химии! | Our own apples, no chemicals! | うちのりんご、無農薬だよ！
+say town.seller.4 | Сдачи нет, давайте без сдачи. | No change, exact money please. | おつりがないんだ、ちょうどでお願い。
+
+[seller_hero]
+job = seller
+doing = work
+near = hero
+say town.seller.3 | Молодой человек, вам свеженького? Только привезли. | Young man, something fresh? It's just come in. | お兄さん、どう？今朝入ったばかりだよ。
+
+
+[seller_morning]
+job = seller fishmonger vendor
+doing = work
+hours = 6-11
+say town.seller_morning.1 | Утро, а полприлавка уже разобрали. | It's only morning and half the stall's gone already. | まだ朝なのに、もう半分売れたよ。
+
+[seller_late]
+job = seller fishmonger vendor
+doing = work
+hours = 12-21
+say town.seller_late.1 | Последнее осталось, за полцены отдам. | It's the last of it, I'll let it go for half price. | 残りもんだから半額でいいよ。
+
+[fishmonger_work]
+job = fishmonger
+doing = work
+say town.fishmonger.1 | Салака утренняя, ещё дышит! | This morning's herring, still breathing! | 朝獲れのニシン、まだ生きてるよ！
+say town.fishmonger.2 | Камбала! Свежая камбала! | Flounder! Fresh flounder! | カレイ！新鮮なカレイだよ！
+say town.fishmonger.3 | Угорь копчёный, своего копчения! | Smoked eel, smoked by us! | うちで燻した燻製ウナギ！
+say town.fishmonger.4 | Рыбу выбирают по глазам. Глаз ясный — бери. | You choose fish by the eyes. Clear eyes: take it. | 魚は目で選ぶんだ。目が澄んでたら買い。
+
+[butcher_work]
+job = butcher
+doing = work
+say town.butcher.1 | Парное мясо, только с утра! | Fresh meat, this morning's! | 今朝の新鮮な肉だよ！
+say town.butcher.2 | На котлеты? На суп? Говорите, подберу. | For cutlets? For soup? Tell me, I'll pick you something. | カツ用？スープ用？言ってくれれば選ぶよ。
+say town.butcher.3 | Топор наточить надо. Ещё вчера надо было. | The cleaver needs sharpening. It needed it yesterday. | 包丁を研がなきゃ。昨日のうちに研ぐはずだった。
+
+[vendor_work]
+job = vendor
+doing = work
+say town.vendor.1 | Сахарная вата! Розовая, как закат! | Candyfloss! Pink as the sunset! | わたあめ！夕焼けみたいなピンクだよ！
+say town.vendor.2 | Горячие пирожки! С капустой, с яйцом! | Hot pies! With cabbage, with egg! | 揚げたてピロシキ！キャベツと卵！
+say town.vendor.3 | Подходи, пробуй! За пробу денег не беру. | Come and try! Tasting's free. | 味見はタダだよ、どうぞ！
+
+[vendor_cold]
+job = vendor seller
+doing = work
+weather = cold
+say town.vendor_cold.1 | Чай из самовара! Греемся! | Tea from the samovar! Warm yourselves up! | サモワールのお茶だよ！あったまって！
+
+[carousel_work]
+job = carousel_operator
+doing = work
+say town.carousel.1 | Карусель! Кто следующий? | The carousel! Who's next? | メリーゴーラウンド！次は誰かな？
+say town.carousel.2 | Держитесь крепче, поехали! | Hold on tight, off we go! | しっかりつかまって、出発！
+
+[carousel_old]
+job = carousel_operator
+doing = work
+age = 40-120
+say town.carousel_old.1 | Двадцать лет её кручу, а голова не кружится. | Twenty years I've been turning it, and my head doesn't spin. | 二十年回してるけど、目は回らないね。
+
+[lifeguard_work]
+job = lifeguard
+doing = work
+say town.lifeguard.1 | Всё вижу. Работа такая. | I see everything. That's the job. | 全部見てるよ。それが仕事だから。
+
+[lifeguard_summer]
+job = lifeguard
+doing = work
+months = 5-9
+say town.lifeguard_summer.1 | За буйки не заплываем! | Don't swim past the buoys! | ブイより先には行かないで！
+say town.lifeguard_summer.2 | Вода сегодня шестнадцать. Для Балтики — курорт. | The water's sixteen degrees today. For the Baltic, that's a resort. | 今日の水温は十六度。バルト海にしちゃリゾートだ。
+
+[lifeguard_offseason]
+at = beach promenade pier
+job = lifeguard
+months = 10-4
+say town.lifeguard_off.1 | Не сезон. Сижу, на волны смотрю. | Off season. I sit and watch the waves. | シーズンオフだ。座って波を見てる。
+
+[keeper]
+job = lighthouse_keeper
+say town.keeper.1 | Маяк — это просто свет, который не спит. | A lighthouse is just a light that doesn't sleep. | 灯台ってのは、眠らない明かりのことさ。
+say town.keeper.2 | Ночью опять кто-то сигналил с моря. Три коротких. | Someone was signalling from the sea again last night. Three short. | ゆうべも沖から誰かが合図してた。短く三回。
+say town.keeper.3 | Стекло протереть надо. Соль садится. | I must wipe the glass. The salt settles on it. | レンズを拭かなきゃ。塩がつくんだ。
+
+[janitor]
+job = janitor caretaker cleaner
+say town.janitor.1 | Ноги вытираем! | Wipe your feet! | 足をふいてね！
+say town.janitor.2 | Кто опять прилепил жвачку на ступеньку? | Who's stuck gum on the step again? | また誰か階段にガムをつけたな。
+
+[janitor_autumn]
+job = janitor caretaker cleaner
+months = 9-11
+say town.janitor_autumn.1 | Листья, листья... Осенью метла — лучший друг. | Leaves, leaves... In autumn a broom's your best friend. | 落ち葉、落ち葉…秋はほうきが友だちだ。
+
+[guard]
+hours = 6-12
+job = guard
+say town.guard.2 | Ночная смена была. Теперь бы поспать. | I was on the night shift. Now if only I could sleep. | 夜勤明けだ。寝たいな。
+
+[guard_hero]
+job = guard
+near = hero
+say town.guard.1 | Проходите, не задерживайтесь. | Move along, don't linger. | 立ち止まらないで、どうぞ。
+
+
+[teacher]
+job = teacher
+doing = free
+say town.teacher.2 | Самое трудное в школе — звонок. Особенно последний. | The hardest thing at school is the bell. Especially the last one. | 学校でいちばん難しいのはチャイムだね。特に最後の。
+
+[teacher_hero]
+job = teacher
+doing = free
+near = hero
+say town.teacher.1 | Ты почему не в школе? А, выходной... | Why aren't you at school? Oh, it's a day off... | どうして学校にいないの？ああ、休みか。
+
+
+[teacher_sun]
+job = teacher
+doing = free
+sun = day
+say town.teacher_sun.1 | Тридцать тетрадей проверить. А солнце — вон какое. | Thirty exercise books to mark. And look at that sun. | ノート三十冊の採点。なのにこの日差し。
+
+[doctor]
+job = doctor nurse
+say town.doctor.1 | Больше гуляйте и спите. Лучшего рецепта не знаю. | Walk more and sleep more. I don't know a better prescription. | よく歩いて、よく眠る。それにまさる処方はないね。
+say town.doctor.2 | Солнце — лучший доктор. Только его не выпишешь. | The sun's the best doctor. Only you can't prescribe it. | 太陽は最高の医者だ。処方箋は書けないけどね。
+
+[doctor_cold]
+job = doctor nurse
+months = 10-4
+near = hero
+say town.doctor_cold.1 | Шарф надень, сквозит. | Put a scarf on, it's draughty. | マフラーしなさい、風が冷たいよ。
+
+[librarian]
+job = librarian
+say town.librarian.2 | В библиотеке все книги пахнут морем. Не спрашивай почему. | All the books in the library smell of the sea. Don't ask why. | 図書館の本はみんな海のにおいがする。理由は聞かないで。
+
+[librarian_hero]
+job = librarian
+near = hero
+say town.librarian.1 | Книгу вернуть не забудь. Две недели. | Don't forget to bring the book back. Two weeks. | 本は二週間以内に返してね。
+
+
+[barista]
+job = barista
+doing = free
+say town.barista.2 | Все пьют капучино. Хоть бы кто попросил что-нибудь странное. | Everyone drinks cappuccino. If only someone would ask for something strange. | みんなカプチーノ。誰か変わった注文してくれないかな。
+say town.barista.3 | На пенке рисую сердечко или солнышко. Солнышко просят чаще. | I draw a heart or a little sun in the foam. People ask for the sun more. | ラテアートはハートか太陽。太陽のほうが人気なんだ。
+
+[barista_evening]
+job = barista
+doing = free
+hours = 15-24
+say town.barista.1 | Двести чашек сегодня. Руки до сих пор пахнут кофе. | Two hundred cups today. My hands still smell of coffee. | 今日は二百杯。手がまだコーヒーのにおい。
+
+[cashier]
+job = cashier
+doing = free
+say town.cashier.1 | Пик, пик, пик... Мне это ночью снится. | Beep, beep, beep... I dream about it at night. | ピッ、ピッ、ピッ…夢にまで出てくる。
+say town.cashier.2 | Пакет нужен? Ой, я же не на работе. Привычка. | Need a bag? Oh, I'm not at work. Habit. | 袋いりますか？あ、仕事じゃなかった。くせで。
+
+[coach]
+job = coach
+say town.coach.1 | Утром пробежка до маяка и обратно. Кто со мной? | A morning run to the lighthouse and back. Who's with me? | 朝は灯台まで往復ラン。一緒にどう？
+
+[coach_hero]
+job = coach
+near = hero
+say town.coach.2 | Спину ровно! Это я не тебе, это себе. | Back straight! Not you, me. | 背筋を伸ばせ！…君じゃない、自分に言ったんだ。
+
+
+[dance_teacher]
+job = dance_teacher
+say town.dance.1 | Раз-два-три, раз-два-три... Вальс — это просто ходить красиво. | One-two-three, one-two-three... A waltz is just walking beautifully. | ワン、ツー、スリー…ワルツはきれいに歩くことよ。
+
+[dance_teacher_hero]
+job = dance_teacher
+near = hero
+say town.dance.2 | В субботу танцы в ДК. Приходи, научу. | Dancing at the culture house on Saturday. Come, I'll teach you. | 土曜は文化会館でダンス。おいで、教えてあげる。
+
+
+[choir_leader]
+job = choir_leader
+say town.choir.1 | Хор собираем по вечерам в зале. Голоса нужны, особенно мужские. | Choir in the hall in the evenings. We need voices, men's especially. | 夕方はホールで合唱。声が足りないの、特に男声。
+say town.choir.2 | Когда поёшь хором, даже море подпевает. | When you sing in a choir, even the sea joins in. | みんなで歌うと、海まで一緒に歌いだす。
+
+[projectionist]
+job = projectionist
+say town.projectionist.1 | Сегодня крутим старое кино. Плёнка шуршит, как прибой. | We're showing an old film tonight. The reel rustles like the surf. | 今夜は古い映画。フィルムが波みたいにさらさら鳴る。
+say town.projectionist.2 | В кино главное — темнота. И чтобы кто-то рядом. | The main thing in a cinema is the dark. And someone next to you. | 映画で大事なのは暗さ。それと隣に誰かいること。
+
+[clerk]
+job = clerk
+doing = free
+say town.clerk_off.1 | Отчёт сдан. Отчёт сдан! Можно жить. | The report's in. The report's in! I can live again. | 報告書を出した。出したぞ！生き返った。
+say town.clerk_off.2 | Печать, подпись, ещё печать. Город стоит на бумагах. | Stamp, signature, another stamp. The town runs on paper. | はんこ、サイン、またはんこ。町は書類でできてる。
+
+[receptionist]
+job = receptionist
+doing = free
+say town.receptionist.1 | В санатории заезд. Сорок человек, и все хотят окно на море. | New arrivals at the sanatorium. Forty people, and they all want a sea view. | 療養所に四十人到着。全員が海の見える部屋をご希望。
+say town.receptionist.2 | «Добро пожаловать». Я это даже во сне говорю. | "Welcome." I say it even in my sleep. | 「ようこそ」って、寝言でも言ってる。
+
+[manager]
+job = manager
+doing = free
+say town.manager.1 | Поставки, графики, жалобы. А хотелось бы просто пообедать. | Deliveries, rotas, complaints. And I'd just like to have lunch. | 納品、シフト、クレーム。ただお昼を食べたいだけなのに。
+say town.manager.2 | Если все довольны — значит, что-то упущено. | If everyone's happy, something's been missed. | みんな満足してるなら、何か見落としてる。
+
+[director]
+job = director
+say town.director.1 | Пришло письмо сверху: чтобы дети чаще бывали на солнце. Странное письмо. | A letter came from above: the children are to spend more time in the sun. A strange letter. | 上から通達が来た。子どもたちをもっと日に当てるように、だって。妙な通達だ。
+say town.director.2 | Ремонт спортзала обещали к лету. К какому лету — не уточнили. | They promised to fix the gym by summer. Which summer, they didn't say. | 体育館の修理は夏までにって。どの夏かは言ってなかった。
+
+[master]
+job = master
+say town.master.1 | Всё можно починить. Кроме времени. | Everything can be fixed. Except time. | 何でも直せる。時間以外はね。
+say town.master.2 | Принесли часы, а они идут назад. Говорю: так и задумано. | Someone brought me a clock that runs backwards. I said: that's how it's meant to be. | 逆に回る時計を持ってきた人がいてね。それで正しいんですよって言っといた。
+
+[cook_off]
+hours = 17-24
+job = cook
+doing = free
+say town.cook_off.1 | Весь день у плиты, а дома — бутерброд. Классика. | All day at the stove, and at home a sandwich. Classic. | 一日じゅうコンロの前、家ではサンドイッチ。お決まりだ。
+
+[cook_off_hero]
+job = cook
+doing = free
+near = hero
+say town.cook_off.2 | Нашу уху пробовал? Нет? Обидно. Приходи. | Have you tried our fish soup? No? That hurts. Come by. | うちのウハー食べた？まだ？それはないよ。おいで。
+
+
+[waiter_off]
+hours = 17-24
+job = waiter
+doing = free
+say town.waiter_off.1 | Ноги гудят. Сегодня был полный зал. | My feet are buzzing. Full house today. | 足が棒だ。今日は満席だった。
+say town.waiter_off.2 | Самый вежливый человек на свете — официант после смены. Он молчит. | The politest person in the world is a waiter after a shift. They say nothing at all. | 世界一礼儀正しいのは、仕事終わりのウェイター。何も言わないから。
+
+[seller_off]
+hours = 16-24
+job = seller fishmonger butcher vendor
+doing = free
+say town.seller_off.1 | Весь день кричать «подходите» — вечером голоса нет. | Shouting "come over" all day, by evening you've no voice left. | 一日じゅう「いらっしゃい」って叫んで、夜は声が出ない。

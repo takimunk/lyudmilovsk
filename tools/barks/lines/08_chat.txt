@@ -1,0 +1,136 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Small talk: two townsfolk talking (chat, gathering in groups) or sitting side by side
+## ---------------------------------------------------------------------------------------------------------------
+
+[chat]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weight = 2
+talk
+- town.chat1.1 | Поезд на остров опять пришёл минута в минуту. | The island train came in on the dot again. | 島行きの電車、また時間ぴったりだったよ。
+- town.chat1.2 | Он всегда минута в минуту. | It's always on the dot. | いつもぴったりだよ。
+- town.chat1.3 | Вот это и странно. | That's what's strange. | そこが変なんだよね。
+talk
+- town.chat2.1 | Как дела? | How are things? | 調子どう？
+- town.chat2.2 | Как у моря: то прилив, то отлив. | Like the sea: tide in, tide out. | 海と同じ。満ちたり引いたり。
+talk
+- town.chat3.1 | Клуб опять до утра светился. | The club was lit up till morning again. | クラブ、また朝まで明かりがついてたね。
+- town.chat3.2 | Там всегда светится. | It's always lit. | いつもついてるよ。
+- town.chat3.3 | Даже когда никого нет? | Even when nobody's there? | 誰もいないときも？
+- town.chat3.4 | Особенно когда никого нет. | Especially when nobody's there. | 誰もいないときほどね。
+talk
+- town.chat4.1 | Какая завтра погода? | What's the weather tomorrow? | 明日の天気は？
+- town.chat4.2 | Как всегда — разная. | Same as always: all sorts. | いつもどおり、いろいろ。
+talk
+- town.chat5.1 | Ты куда? | Where are you off to? | どこ行くの？
+- town.chat5.2 | К морю. | To the sea. | 海。
+- town.chat5.3 | Зачем? | What for? | なんで？
+- town.chat5.4 | Просто посмотреть, как оно там. | Just to see how it's doing. | 元気かなって、見に行くだけ。
+talk
+- town.chat6.1 | Цены на рынке видели? | Seen the prices at the market? | 市場の値段、見た？
+- town.chat6.2 | Лучше не смотреть. | Better not to look. | 見ないほうがいいよ。
+- town.chat6.3 | Я и не смотрю. Я покупаю. | I don't look. I buy. | 見ないで買うの。
+talk
+- town.chat7.1 | Мне сон приснился: будто мы все в чьей-то книжке. | I had a dream: as if we were all in somebody's book. | 夢を見たの。わたしたちみんな、誰かの本の中にいるの。
+- town.chat7.2 | И чем кончилось? | And how did it end? | どんな結末？
+- town.chat7.3 | Не знаю. Дальше не дочитали. | I don't know. They didn't read any further. | わからない。そこまで読まれなかった。
+talk
+- town.chat10.1 | Завтра на остров едем? | Are we going to the island tomorrow? | 明日、島に行く？
+- town.chat10.2 | Если поезд придёт. | If the train comes. | 電車が来たらね。
+- town.chat10.3 | Он всегда приходит. | It always comes. | いつも来るじゃない。
+- town.chat10.4 | Тогда едем. | Then we're going. | じゃあ行こう。
+talk
+- town.chat12.1 | Чайки сегодня кричат. | The gulls are noisy today. | 今日はカモメがうるさいね。
+- town.chat12.2 | К ветру. | Wind's coming. | 風が出るね。
+- town.chat12.3 | Или им просто есть что сказать. | Or they just have something to say. | それか、言いたいことがあるのかも。
+
+[chat_evening_sun]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+hours = 17-23
+weight = 3
+talk
+- town.chat8.1 | Сегодня солнце долго не садилось. | The sun took a long time to set today. | 今日は日が沈むのが遅かったね。
+- town.chat8.2 | Тоже заметили? | You noticed too? | 気づいた？
+- town.chat8.3 | Все заметили. Никто не говорит. | Everyone noticed. Nobody's saying. | みんな気づいてる。誰も言わないだけ。
+
+[chat_about_hero]
+doing = chat gather_mingle sit_bench
+age = adult elder
+age2 = adult elder
+near = hero
+weight = 4
+talk
+- town.chat9.1 | Новенького у нас видели? | Have you seen the new boy? | 町に新しい子が来たの、見た？
+- town.chat9.2 | Это который в клуб ходит? | The one who goes to the club? | クラブに通ってる子？
+- town.chat9.3 | Он самый. | That's him. | そうそう。
+- town.chat9.4 | Хороший мальчик. Тихий. | A nice boy. Quiet. | いい子だよ。おとなしくて。
+
+[chat_morning]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+hours = 6-12
+weight = 3
+talk
+- town.chat11.1 | Как спалось? | Sleep well? | よく眠れた？
+- town.chat11.2 | Мне снилось солнце. Близко-близко. | I dreamt of the sun. Really close. | お日さまの夢を見た。すごく近くに。
+- town.chat11.3 | И мне. | So did I. | わたしも。
+
+[chat_cold]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weather = cold
+weight = 3
+talk
+- town.chat13.1 | Холодно что-то. | It's a bit chilly. | なんだか寒いね。
+- town.chat13.2 | Море остывает. | The sea's cooling down. | 海が冷えてきたから。
+- town.chat13.3 | А мы? | And us? | わたしたちは？
+- town.chat13.4 | А мы греемся. | We keep warm. | あったまっていこう。
+
+[chat_rain]
+doing = chat gather_mingle sit_bench
+age = teen adult elder
+age2 = teen adult elder
+weather = !rain !snow
+sun = cloudy
+weight = 3
+talk
+- town.chat14.1 | Дождь собирается. | Looks like rain. | 雨になりそう。
+- town.chat14.2 | Пусть. Я без зонта, зато с настроением. | Let it. No umbrella, but I'm in a good mood. | いいよ。傘はないけど、気分はいい。
+
+[chat_teens]
+doing = chat gather_mingle sit_bench
+age = teen
+age2 = teen
+weight = 4
+talk
+- town.chat15.1 | Пойдём в клуб? | Want to go to the club? | クラブ行く？
+- town.chat15.2 | Денег нет. | No money. | お金ない。
+- town.chat15.3 | Посмотрим, как другие играют. | We'll watch the others play. | ほかの人がやるの見てようよ。
+- town.chat15.4 | Ну пойдём. | Okay, let's go. | じゃあ行こう。
+talk
+- town.chat16.1 | Ночью на маяке кто-то стоял. На самом верху. | Someone was standing on the lighthouse last night. Right at the top. | ゆうべ、灯台のてっぺんに誰か立ってた。
+- town.chat16.2 | Смотритель. | The keeper. | 灯台守でしょ。
+- town.chat16.3 | Смотритель был внизу. | The keeper was downstairs. | 灯台守は下にいたよ。
+
+[chat_kids]
+doing = playground chat
+age = kid
+age2 = kid
+weight = 4
+talk
+- town.chat_kids1.1 | Давай играть, что пол — это лава! | Let's play the floor is lava! | 床はマグマごっこしよう！
+- town.chat_kids1.2 | Тут же песок. | It's sand here. | ここ砂だよ。
+- town.chat_kids1.3 | Значит, песок — это лава! | Then the sand is lava! | じゃあ砂がマグマ！
+talk
+- town.chat_kids2.1 | Знаешь, почему море солёное? | Do you know why the sea's salty? | 海がなんでしょっぱいか知ってる？
+- town.chat_kids2.2 | Почему? | Why? | なんで？
+- town.chat_kids2.3 | Не знаю. Я у тебя спрашиваю. | I don't know. I'm asking you. | 知らない。きみに聞いてるんだよ。
+talk
+- town.chat_kids3.1 | А солнце нас видит? | Can the sun see us? | お日さまって、こっちのこと見えてるの？
+- town.chat_kids3.2 | Конечно. Оно же смотрит. | Of course. It's looking. | もちろん。見てるもん。
+- town.chat_kids3.3 | Тогда помаши ему. | Then wave to it. | じゃあ手をふろう。
