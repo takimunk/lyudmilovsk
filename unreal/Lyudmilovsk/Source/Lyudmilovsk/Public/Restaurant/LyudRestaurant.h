@@ -142,6 +142,10 @@ public:
 	static UStaticMesh* RestMesh(FName Name);
 	/** Festival day (the holidays thread's subsystem when it exists, or lyud.Restaurant.Festival 1). */
 	static bool IsFestival(const UObject* WorldContext);
+	/** The holidays' own dishes of today (ULyudFestivalSubsystem::IsFestivalDish, by name): shown in the festival section too. */
+	static bool IsFestivalDish(const UObject* WorldContext, FName Id);
+	/** In the menu card's Section today. */
+	static bool IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section);
 	/** On the menu today: not a festival dish on an ordinary day, a daily special only on its weekday (the game's calendar). */
 	static bool IsOnMenuToday(const UObject* WorldContext, const FLyudRestDishDef& D);
 

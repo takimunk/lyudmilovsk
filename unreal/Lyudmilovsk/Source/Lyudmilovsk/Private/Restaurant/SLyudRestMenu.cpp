@@ -180,7 +180,7 @@ TSharedRef<SWidget> SLyudRestMenu::Column(const TArray<FName>& Sections)
 	for (const FName& S : Sections)
 	{
 		// a heading only over dishes that are on today
-		if (!ALyudRestaurant::Menu().ContainsByPredicate([&](const FLyudRestDishDef& D) { return D.Section == S && ALyudRestaurant::IsOnMenuToday(Owner.Get(), D); }))
+		if (!ALyudRestaurant::Menu().ContainsByPredicate([&](const FLyudRestDishDef& D) { return ALyudRestaurant::IsInSectionToday(Owner.Get(), D, S); }))
 		{
 			continue;
 		}
@@ -196,7 +196,7 @@ TSharedRef<SWidget> SLyudRestMenu::Column(const TArray<FName>& Sections)
 		];
 		for (const FLyudRestDishDef& D : ALyudRestaurant::Menu())
 		{
-			if (D.Section == S && ALyudRestaurant::IsOnMenuToday(Owner.Get(), D))
+			if (ALyudRestaurant::IsInSectionToday(Owner.Get(), D, S))
 			{
 				Col->AddSlot().AutoHeight().Padding(0, 3)[Row(D.Id)];
 			}
