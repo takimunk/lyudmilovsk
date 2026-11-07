@@ -484,9 +484,9 @@ void ALyudFishingRod::SetFish(FName Species, float LengthM)
 			Fish->SetCustomData(0, MakeArrayView(Data, 3), false);
 		}
 	}
-	// every fish its own size, the same species or not: the mesh is built at its species' length (the stand-in at 10 cm)
+	// every fish its own size, the same species or not: the mesh is built at its species' length (the stand-in at LyudSeaLife::FishLength)
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
-	const float Built = bStandIn ? 0.1f : (S >= 0 ? LyudFish::Species(S).Length : 0.2f);
+	const float Built = bStandIn ? LyudSeaLife::FishLength : (S >= 0 ? LyudFish::Species(S).Length : 0.2f);
 	FTransform Was;
 	Fish->GetInstanceTransform(0, Was, true);
 	Was.SetScale3D(FVector(LengthM / FMath::Max(Built, 0.01f)));

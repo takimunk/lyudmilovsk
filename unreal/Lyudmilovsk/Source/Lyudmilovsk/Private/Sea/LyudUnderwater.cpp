@@ -219,7 +219,7 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	// tiny things (mysids, amphipods, crabs) are not seen past a dozen metres anyway
 	C->SetCullDistances(0, S.Length < 0.04f ? 1200 : 4500);
 	C->SetNumCustomDataFloats(3);
-	MeshLength[Species] = (Mesh && Body) ? S.Length : 0.1f;
+	MeshLength[Species] = (Mesh && Body) ? S.Length : LyudSeaLife::FishLength;
 	if (Mesh && Body)
 	{
 		C->SetStaticMesh(Mesh);
