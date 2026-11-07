@@ -1,6 +1,6 @@
 # Sea-life builder (non-fish underwater animals, Lyudmilovsk)
 
-Crustaceans and the grey seal, built so the **fish import path and material work unchanged**: they are written into
+Crustaceans, a grey seal, diving birds and a porpoise, built so the **fish import path and material work unchanged**: they are written into
 `blender/fish/export/` with the fish conventions, `unreal/scripts/import_fish.py` imports them like any species and
 `M_LyudFish` bends them by their vertex colours.
 
@@ -21,6 +21,11 @@ rasteriser / sliver threshold), `species/<Id>.py` (`SPEC` dict + `build(K)`).
 | Gammarus | *Gammarus* sp. | 1.8 cm along the curved body | 1638 |
 | Mysid | *Neomysis integer* | 1.5 cm | 134 (<= 150, drawn in clouds) |
 | GreySeal | *Halichoerus grypus*, adult male | 2.0 m nose to hind-flipper tips | 5484 |
+| Prawn | *Palaemon adspersus* | 5.5 cm rostrum tip to telson | 2024 |
+| MittenCrab | *Eriocheir sinensis* | 7 cm carapace width (r_len 11 cm) | 2338 |
+| Cormorant | *Phalacrocorax carbo sinensis*, diving glide | 0.85 m beak to tail tip | 4058 |
+| Eider | *Somateria mollissima*, drake diving | 0.6 m bill to tail tip | 3894 |
+| Porpoise | *Phocoena phocoena* | 1.5 m snout to fluke tips | 4840 |
 
 ## Conventions (same as the fish, see `blender/fish/README.md`)
 - Metres, real size. Head +X, back +Z, the animal's left side +Y, origin on the body axis at half the body length.
@@ -62,3 +67,7 @@ LOD0 over `tris` (+12 %, or `tris_max`), LOD1 ratio outside 18-45 %, real size o
 ## Known limits
 Crab carapace teeth and the seal's whiskers are not modelled (painted pores only). Glassy translucency (mysid, shrimp) can only be suggested
 by pale colours: `Body` is opaque. Leg joints are smooth bends of one tube, not separate articles.
+Birds: plumage is painted on a smooth body (no feather geometry); folded / half-open wings are flattened tubes. Their feet (and the eider's
+wings) are the paddles: B = 1, feet in the flexible rear. The porpoise's flukes are horizontal (true shape) but the shader bends sideways,
+so its G stays low (0.35 max at the flukes). Mitten crab hair is painted only (the shared material has no fuzz). Previews of these five:
+`export/contact_sealife2.png`.
