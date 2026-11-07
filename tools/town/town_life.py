@@ -827,9 +827,8 @@ def build_people(plan, places, flats, workplaces, args, rnd):
         p["likes"] = likes_for(rnd, p["age"], female, p["chronotype"], p["occupation"])
         p["mesh"] = pick_model(rnd, pool, p["age"], female, used)
         # their own model from the residents generator (blender/residents/looks.py), the pool's look as the fallback
-        own = LOOKS.get(p["key"], {}).get("model")
-        if own:
-            p["body"] = own
+        # (always named after the key: the generator names its models so; until one is imported the pool's look shows)
+        p["body"] = LOOKS.get(p["key"], {}).get("model") or "Town/R_" + p["key"][2:]
 
     # friends: neighbours of the same building, colleagues, people of an age
     by_building, by_work = {}, {}
