@@ -114,6 +114,30 @@ here gets a dish before them (a prop, partly eaten).
 **Console**: `lyud.Restaurant.State`, `.Open 1|0|-1`, `.Sit [seat]`, `.Stand`, `.Menu [0]`, `.Order <id>..`, `.Bill`, `.Eat [id]`,
 `.Finish [id]`, `.Look x y z`, `.WaitScale x`, `lyud.Restaurant 0|1` (all hidden: `tools/bench_systems.sh`), `lyud.Restaurant.Festival`.
 
+## The kitchen, the guests, the hours
+
+- **The kitchen** (`Private/Restaurant/LyudRestaurantKitchen.cpp`): the cook stands at the range (the town life's cook on shift, else
+  `standin.cook_mesh`). The right hand is on the pan's handle and the pan is shaken while anything cooks. A stock pot stands beside
+  it, and the order tickets hang over the pass. A dish that is ready comes out onto the pass's shelf and the chrome bell is rung; the
+  waiter takes it from there.
+- **Guests** (`LyudRestaurantGuests.cpp`): see "Townspeople" above. They read the menu card in both hands, order a main (every other
+  one a drink too), are served the same way and eat with a fork, plate to mouth. When they get up they pay (coins). A main and a cup
+  are kept separately.
+- **Hours**: open 11–23 (`restaurant.json hours`, or the town life's staff on shift). Last orders stop 20 game minutes before closing
+  ("kitchen closing" on the card; guests then only sit). A waiter whose shift ends mid-job finishes it as the same person. The doors
+  lock two game minutes after everything holds (closed, the hero out, no guests, staff gone), and never with anybody of the life
+  still inside.
+- **Sounds** (`tools/restaurant/sounds.py` → `audio/sfx/restaurant`, `/Game/Audio/Restaurant/S_rest_*`, the soundscape's `rest_*`
+  pools): room tone and quiet 1960s bossa (loops while open), the kitchen's clatter, the sizzle while cooking, plates and glasses set
+  down, the bell, the tray, the menu, coins.
+- **Fishing** (PR #10, kitchen `yantar` in `Content/Fishing/fishing.json`, 1.5 m outside the back door): while the hero stands there
+  during opening hours, the cook comes to the back doorway. Fish sold there (`ULyudFishingState::KitchenSold`, read by name) make the
+  Baltic fish plate the **catch of the day**: 25 % cheaper and marked on the card.
+- **The sign**: the rooftop «ЯНТАРЬ» stays Cyrillic. A plaque on the menu stand by the door reads in the player's language
+  (`tools/restaurant/signs.py`, `sign.rest.*`, `/Game/Restaurant/Localized/<lang>/T_Sign_plaque`). Prices on the menu card are drawn
+  in Roboto Medium, which has ₽; toasts and prompts say «руб.».
+- **Saving**: the visit itself isn't saved. What the hero paid for and wasn't served is refunded after a load.
+
 ## Checks
 
 `unreal/scripts/test_restaurant.sh` runs offscreen at low priority. `REST_STEPS` takes any of
