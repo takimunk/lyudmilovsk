@@ -42,17 +42,6 @@ namespace LyudRestWaiter
 		return Var && Var->GetInt() == 0;
 	}
 
-	USoundBase* SoundPlate()
-	{
-		for (const TCHAR* Name : { TEXT("/Game/Restaurant/Audio/S_rest_plate_01"), TEXT("/Game/Audio/Food/S_diner_plate_01"), TEXT("/Game/Audio/Food/S_clink_01") })
-		{
-			if (FPackageName::DoesPackageExist(Name))
-			{
-				return LoadObject<USoundBase>(nullptr, *(FString(Name) + TEXT(".") + FPaths::GetBaseFilename(Name)));
-			}
-		}
-		return nullptr;
-	}
 }
 
 FName ALyudRestaurant::NearestNode(const FVector2D& P) const
@@ -175,7 +164,7 @@ bool ALyudRestaurant::EnsureWaiter()
 {
 	// who is on shift (RefreshStaff, once a second): the town life's waiter, else the stand-in while open or finishing a job
 	const int32 Person = StaffWaiter;
-	const bool bBusy = Job != EJob::None || (Waiter != EWaiter::Off && Waiter != EWaiter::Idle) || PendingCount() > 0;
+	const bool bBusy = Job != EJob::None || (Waiter != EWaiter::Off && Waiter != EWaiter::Idle) || PendingCount(false) > 0;
 	if (Person < 0 && !bOpen && !bBusy)
 	{
 		return false;
@@ -282,7 +271,7 @@ void ALyudRestaurant::StartJob()
 	// the bill once everything is on the table, then what is ready at the pass, then clearing the empty plates
 	const bool bAllServed = !Orders.ContainsByPredicate([](const FOrder& O) { return !O.bGuest && O.State != FOrder::EState::Served; });
 	const bool bReady = Orders.ContainsByPredicate([](const FOrder& O) { return O.State == FOrder::EState::Ready; });
-	const float ClearAfter = (float)FMath::Max(3.0, 25.0 * WaitScale);
+	const float ClearAfter = FMath::Max(3.f, ClearAfterS * WaitScale);
 	const bool bEmpty = HeroDishes.ContainsByPredicate([ClearAfter](const ALyudRestDish* D)
 	{
 		return D && D->IsEmpty() && !D->IsEating() && D->SecondsEmpty() > ClearAfter;
@@ -421,7 +410,7 @@ void ALyudRestaurant::PoseWaiter(float DeltaTime, bool bWalking)
 void ALyudRestaurant::TickWaiter(float DeltaTime)
 {
 	// closed: the job in hand and what is paid for still get finished, then the waiter goes off
-	const bool bNeeded = bOpen || Job != EJob::None || PendingCount() > 0 || (Waiter != EWaiter::Off && Waiter != EWaiter::Idle);
+	const bool bNeeded = bOpen || Job != EJob::None || PendingCount(false) > 0 || (Waiter != EWaiter::Off && Waiter != EWaiter::Idle);
 	if (!bNeeded)
 	{
 		if (Waiter != EWaiter::Off)
@@ -640,10 +629,11 @@ void ALyudRestaurant::TickWaiter(float DeltaTime)
 			if (bGuest)
 			{
 				// a townsperson's: theirs to eat (LyudRestaurantGuests.cpp); gone already, it goes back to the kitchen
-				FProp* Pr = Props.FindByPredicate([Seat](const FProp& P) { return P.Seat == Seat; });
-				if (Pr && !Pr->Dish.IsValid())
+				FProp* Pr = Props.FindByPredicate([Seat](const FProp& Pp) { return Pp.Seat == Seat; });
+				TWeakObjectPtr<ALyudRestDish>* Into = Pr ? (Def.IsCup() ? &Pr->Cup : &Pr->Dish) : nullptr;
+				if (Into && !Into->IsValid())
 				{
-					Pr->Dish = D;
+					*Into = D;
 				}
 				else
 				{

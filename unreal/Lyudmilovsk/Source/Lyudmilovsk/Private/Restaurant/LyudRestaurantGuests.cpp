@@ -41,12 +41,19 @@ namespace LyudRestGuests
 	}
 }
 
-void ALyudRestaurant::GuestLeft(FProp& P)
+void ALyudRestaurant::GuestLeft(FProp& P, bool bPaid)
 {
 	if (ALyudRestDish* D = P.Dish.Get())
 	{
-		Effect(TEXT("rest_coins"), D->GetActorLocation(), 0.4f);
+		if (bPaid)
+		{
+			Effect(TEXT("rest_coins"), D->GetActorLocation(), 0.4f);
+		}
 		D->Destroy();
+	}
+	if (ALyudRestDish* C = P.Cup.Get())
+	{
+		C->Destroy();
 	}
 	if (AStaticMeshActor* C = P.Card.Get())
 	{
@@ -109,8 +116,9 @@ void ALyudRestaurant::TickProps()
 				continue;
 			}
 			Seen.Add(Best);
-			if (Props.ContainsByPredicate([Best](const FProp& Pr) { return Pr.Seat == Best; }))
+			if (FProp* Known = Props.FindByPredicate([Best](const FProp& Pr) { return Pr.Seat == Best; }))
 			{
+				Known->Body = Cast<ANpcBody>(P.Actor);
 				continue;
 			}
 			FProp Pr;
@@ -118,6 +126,7 @@ void ALyudRestaurant::TickProps()
 			Pr.Person = Id;
 			Pr.SatAt = Now;
 			Pr.BiteT = (Id % 7) * 0.9f;
+			Pr.Body = Cast<ANpcBody>(P.Actor);
 			if (!bOpen || Waiter == EWaiter::Off)
 			{
 				// nobody to serve: a dish of theirs is just there, partly eaten
@@ -151,7 +160,7 @@ void ALyudRestaurant::TickProps()
 		if (!Seen.Contains(Pr.Seat))
 		{
 			UE_LOG(LogTemp, Display, TEXT("RESTTEST guest %d leaves seat %d"), Pr.Person, Pr.Seat);
-			GuestLeft(Pr);
+			GuestLeft(Pr, true);
 			Props.RemoveAt(I);
 			continue;
 		}
@@ -203,12 +212,7 @@ void ALyudRestaurant::TickGuests(float DeltaTime)
 	}
 	for (FProp& Pr : Props)
 	{
-		FPersonInfo P;
-		if (!People->GetPerson(Pr.Person, P))
-		{
-			continue;
-		}
-		ANpcBody* Body = Cast<ANpcBody>(P.Actor);
+		ANpcBody* Body = Pr.Body.Get();
 		ULyudBodyAnimInstance* Anim = Body ? Cast<ULyudBodyAnimInstance>(Body->Mesh->GetAnimInstance()) : nullptr;
 		if (!Anim || FVector::Dist(Body->GetActorLocation(), Cam) > LyudRestGuests::DrawCm)
 		{

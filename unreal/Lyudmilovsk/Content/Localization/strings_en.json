@@ -1282,5 +1282,7 @@
  "item.rs_fest_kulebyaka.desc": "Festival days only: a pie of fish, rice and egg.",
  "item.rs_fest_sbiten.name": "Sbiten",
  "item.rs_fest_sbiten.desc": "Festival days only: a hot honey drink with spices.",
- "ui.rest.refund": "The restaurant refunded {0} ₽ for an order not served"
+ "ui.rest.refund": "The restaurant refunded {0} ₽ for an order not served",
+ "ui.rest.not_seated": "Sit down at a table first",
+ "ui.rest.order_failed": "That order can't be taken now"
 }

@@ -30,6 +30,8 @@ S = {
  "ui.rest.served": ("Принесли: {0}", "Served: {0}", "{0}が運ばれてきた"),
  "ui.rest.served_by": ("{0} — подаёт {1}", "{1} serves: {0}", "{1}が{0}を運んできた"),
  "ui.rest.refund": ("Ресторан вернул {0} ₽ за неподанный заказ", "The restaurant refunded {0} ₽ for an order not served", "出されなかった注文の代金{0}₽が返金された"),
+ "ui.rest.not_seated": ("Сначала сядьте за столик", "Sit down at a table first", "まず席に座って"),
+ "ui.rest.order_failed": ("Этот заказ сейчас не принять", "That order can't be taken now", "その注文は今は受けられない"),
  "ui.rest.bill_asked": ("Официант сейчас принесёт счёт", "The waiter will bring the bill", "ウェイターが伝票を持ってくる"),
  "ui.rest.bill_toast": ("Счёт: {0} ₽, оплачено. Спасибо, приходите ещё!", "The bill: {0} ₽, paid. Thank you, come again!", "お会計{0}₽、支払い済み。またお越しください！"),
  "ui.rest.bill_prompt": ("Счёт: {0} ₽ (оплачен)", "The bill: {0} ₽ (paid)", "伝票：{0}₽（支払い済み）"),
