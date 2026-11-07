@@ -18,6 +18,7 @@ with open(os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "City", "city_p
     PLAN = json.load(f)
 FACE_Y = PLAN.get("portal_face_y", 790.0)
 PLOTS = {p["id"]: p for p in PLAN["plots"]}
+NEAR = [n for n in os.environ.get("CITY_NEAR", "P-STORE,P-CAFE,P-CLUB2").split(",") if n in PLOTS]
 st = {"t": 0.0, "step": 0}
 
 
@@ -103,8 +104,28 @@ def tick(dt):
         cmd(w, "lyud.City.Lights 0")
         st["step"], st["t0"] = 4, st["t"]
     elif s == 4 and st["t"] - st["t0"] > 1:
-        cmd(w, "quit")
-        st["step"] = 5
+        # the lamp pool follows the player: stand in front of each NEAR plot at night and report
+        if st.setdefault("near", 0) < len(NEAR):
+            pid = NEAR[st["near"]]
+            p = PLOTS[pid]
+            fx, fy, fz = p["front"]
+            r = math.radians(p["yaw"])
+            x, y = (fx + math.cos(r) * 10.0) * 100.0, FACE_Y + (fy + math.sin(r) * 10.0) * 100.0
+            z, _who, _c = trace(w, x, y, fz * 100.0)
+            pawn = unreal.GameplayStatics.get_player_controller(w, 0).get_controlled_pawn()
+            if hasattr(pawn, "character_movement"):
+                pawn.character_movement.set_movement_mode(unreal.MovementMode.MOVE_FLYING)
+            pawn.set_actor_enable_collision(False)
+            pawn.set_actor_location(unreal.Vector(x, y, (z if z is not None else fz * 100.0) + 100.0), False, True)
+            log("pawn near %s (%s) at %s" % (pid, p.get("building"), pawn.get_actor_location()))
+            st["step"], st["t0"] = 5, st["t"]
+        else:
+            cmd(w, "quit")
+            st["step"] = 9
+    elif s == 5 and st["t"] - st["t0"] > 4:
+        cmd(w, "lyud.City.Report")
+        st["near"] += 1
+        st["step"], st["t0"] = 4, st["t"]
 
 
 unreal.register_slate_post_tick_callback(tick)
