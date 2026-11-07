@@ -42,5 +42,8 @@ private:
 	TSharedPtr<SWidget> Page;
 	uint64 OpenedFrame = 0;
 	int32 LastRead = 0;
+	/** The fish pictures loaded in the background once the book is owned (checked once a second until they are). */
+	bool bIconsReady = false;
+	float IconsIn = 0.f;
 	void Lock(bool bLock);
 };

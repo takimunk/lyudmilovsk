@@ -12,6 +12,7 @@
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "UI/LyudBirdGuide.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudUIStyle.h"
 #include "UI/LyudUIText.h"
@@ -24,6 +25,7 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SOverlay.h"
 #include "Widgets/Text/STextBlock.h"
+#include "World/LyudPrefetch.h"
 
 namespace LyudFishBook
 {
@@ -310,7 +312,9 @@ void ULyudFishBookScreen::Open(FName Species)
 	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
 	const ULyudGameScreen* GameScreen = ULyudGameScreen::Get(World);
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
-	if (IsOpen() || !Viewport || !UI || !IsOwned(World) || (GameScreen && GameScreen->IsOpen()) || UI->IsOpen())
+	// one book open at a time: not over the bird guide
+	const ULyudBirdGuideScreen* Guide = ULyudBirdGuideScreen::Get(World);
+	if (IsOpen() || !Viewport || !UI || !IsOwned(World) || (GameScreen && GameScreen->IsOpen()) || UI->IsOpen() || (Guide && Guide->IsOpen()))
 	{
 		return;
 	}
@@ -342,16 +346,38 @@ void ULyudFishBookScreen::Close()
 		}
 	}
 	Page.Reset();
-	Lock(false);
+	// the pause menu or the diary opening over it (Esc in a packaged game) set the input themselves: leave it to them
+	UWorld* World = GetWorld();
+	const ULyudGameMenuSubsystem* Menu = World ? World->GetSubsystem<ULyudGameMenuSubsystem>() : nullptr;
+	const ULyudGameScreen* GameScreen = ULyudGameScreen::Get(World);
+	if (!(Menu && Menu->IsOpen()) && !(GameScreen && GameScreen->IsOpen()))
+	{
+		Lock(false);
+	}
 }
 
-void ULyudFishBookScreen::Tick(float)
+void ULyudFishBookScreen::Tick(float DeltaTime)
 {
 	UWorld* World = GetWorld();
 	APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
 	if (!PC || !World->IsGameWorld())
 	{
 		return;
+	}
+	// once the book is in the pocket its pictures load in the background, so the first opening doesn't stop the game
+	IconsIn -= DeltaTime;
+	if (!bIconsReady && IconsIn <= 0.f && IsOwned(World))
+	{
+		IconsIn = 1.f;
+		bIconsReady = true;
+		for (int32 C = 0; C < LyudFishing::NumCatchable(); C++)
+		{
+			const FString Name = FString(TEXT("T_Icon_")) + LyudFishBook::ItemOfFish(C).ToString();
+			for (const FString& Lang : { LyudText::Language(), FString(TEXT("ru")) })
+			{
+				bIconsReady &= ULyudPrefetch::Ready(World, FString::Printf(TEXT("/Game/Inventory/Localized/%s/%s.%s"), *Lang, *Name, *Name));
+			}
+		}
 	}
 	const bool bN = PC->WasInputKeyJustPressed(EKeys::N);
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();

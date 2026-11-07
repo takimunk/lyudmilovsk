@@ -53,10 +53,22 @@ public:
 private:
 	TArray<FLyudCounter> Counters;
 	int32 Prompted = -1;
-	/** The line the prompt last showed (rewritten when the catch in the pocket changes) and what Y does there now. */
-	FString PromptedLine;
+	/** What Y does at the counter in view now. */
 	enum class EFishDeal : uint8 { None, Sell, Cook };
 	EFishDeal Deal = EFishDeal::None;
+	/** What the prompt line was built from: rewritten only when one of these changes (not every frame). */
+	struct FPromptKey
+	{
+		int32 Counter = -1;
+		EFishDeal Deal = EFishDeal::None;
+		int32 Fish = 0, Roubles = 0, Fee = 0;
+		FName Biggest;
+		bool operator==(const FPromptKey& O) const
+		{
+			return Counter == O.Counter && Deal == O.Deal && Fish == O.Fish && Roubles == O.Roubles && Fee == O.Fee && Biggest == O.Biggest;
+		}
+	};
+	FPromptKey PromptedKey;
 	/** "Sold for N roubles" (or "the cook took it") stays on the line until then (world seconds). */
 	double SoldUntil = 0.0;
 

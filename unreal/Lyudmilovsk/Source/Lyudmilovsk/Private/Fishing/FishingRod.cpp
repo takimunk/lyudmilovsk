@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "HAL/IConsoleManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "MeshDescription.h"
 #include "Misc/PackageName.h"
@@ -26,6 +27,19 @@ namespace
 	const TCHAR* RodFishBodyPath = TEXT("/Game/Sea/Underwater/M_LyudFish.M_LyudFish");
 	const TCHAR* RodFishFinPath = TEXT("/Game/Sea/Underwater/M_LyudFishFin.M_LyudFishFin");
 	const TCHAR* RodStandInPath = TEXT("/Game/Sea/M_SeaFish.M_SeaFish");
+
+	/** An asset ULyudPrefetch said is ready: in memory, never loaded here; with lyud.Prefetch 0 (the old synchronous loads, A/B)
+	 *  loaded now as everything else then is. */
+	template <typename T>
+	T* RodFind(const FString& Path)
+	{
+		if (T* Found = FindObject<T>(nullptr, *Path))
+		{
+			return Found;
+		}
+		static IConsoleVariable* Prefetch = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Prefetch"));
+		return Prefetch && Prefetch->GetInt() == 0 ? LoadObject<T>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet) : nullptr;
+	}
 
 	/** A turned part about +X: Profile is (x, radius) from end to end (radius 0 closes an end; a closed loop makes a ring). */
 	UStaticMesh* RodLathe(UObject* Outer, const TCHAR* Name, const TArray<FVector2f>& Profile, int32 Sides)
@@ -409,8 +423,8 @@ bool ALyudFishingRod::PrefetchFish(FName Species)
 bool ALyudFishingRod::ApplyFishLook(FName Species)
 {
 	const FString Id = Species.ToString();
-	UStaticMesh* Mesh = FindObject<UStaticMesh>(nullptr, *RodFishMeshPath(Id));
-	UMaterialInterface* Body = FindObject<UMaterialInterface>(nullptr, RodFishBodyPath);
+	UStaticMesh* Mesh = RodFind<UStaticMesh>(RodFishMeshPath(Id));
+	UMaterialInterface* Body = RodFind<UMaterialInterface>(RodFishBodyPath);
 	if (!Mesh || !Body)
 	{
 		return false;
@@ -421,8 +435,8 @@ bool ALyudFishingRod::ApplyFishLook(FName Species)
 	{
 		// the species' materials, made the first time it is hooked and kept
 		Made = &FishMids.Add(Species);
-		UTexture2D* Skin = FindObject<UTexture2D>(nullptr, *RodFishSkinPath(Id));
-		UMaterialInterface* Fin = FindObject<UMaterialInterface>(nullptr, RodFishFinPath);
+		UTexture2D* Skin = RodFind<UTexture2D>(RodFishSkinPath(Id));
+		UMaterialInterface* Fin = RodFind<UMaterialInterface>(RodFishFinPath);
 		const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Id));
 		for (int32 Slot = 0; Slot < Mesh->GetStaticMaterials().Num(); Slot++)
 		{
@@ -452,7 +466,8 @@ bool ALyudFishingRod::ApplyFishLook(FName Species)
 void ALyudFishingRod::SetFish(FName Species, float LengthM)
 {
 	if (!Fish) return;
-	const bool bNewLook = Species != FishSpecies || Fish->GetInstanceCount() != 1;
+	// a stand-in left from before (its look was still loading when the rod was put away) asks for the look again
+	const bool bNewLook = Species != FishSpecies || Fish->GetInstanceCount() != 1 || bStandIn;
 	FishSpecies = Species;
 	FishLength = LengthM;
 	if (bNewLook)
@@ -467,7 +482,7 @@ void ALyudFishingRod::SetFish(FName Species, float LengthM)
 			Fish->SetStaticMesh(LyudSeaLife::Fish());
 			if (!StandInMid)
 			{
-				if (UMaterialInterface* Old = FindObject<UMaterialInterface>(nullptr, RodStandInPath))
+				if (UMaterialInterface* Old = RodFind<UMaterialInterface>(RodStandInPath))
 				{
 					StandInMid = UMaterialInstanceDynamic::Create(Old, this);
 					StandInMid->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.5f, 0.52f, 0.5f));

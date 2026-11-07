@@ -127,50 +127,52 @@ bool ULyudCounterTradeSubsystem::OpenCounter(int32 Counter)
 
 void ULyudCounterTradeSubsystem::SetPrompted(int32 Counter)
 {
-	// a counter that buys the catch offers it while there are fish in the pocket; the diner's offers to fry the biggest one
-	FText Line;
-	EFishDeal NewDeal = EFishDeal::None;
+	// a counter that buys the catch offers it while there are fish in the pocket; the diner's offers to fry the biggest one.
+	// What decides the line is gathered first (numbers and names, no strings); the line is built only when it changes.
+	FPromptKey Key;
+	Key.Counter = Counter;
 	if (Counters.IsValidIndex(Counter))
 	{
 		const FLyudCounter& C = Counters[Counter];
 		const ULyudFishingState* State = ULyudFishingState::Get(this);
-		int32 Fish = 0, Roubles = 0;
-		FName Biggest;
 		if (State && C.bBuysFish)
 		{
-			Fish = State->FishHeld(this, &Roubles);
+			Key.Fish = State->FishHeld(this, &Key.Roubles);
 		}
 		if (State && C.CookFee > 0)
 		{
-			Biggest = State->BiggestHeld(this);
+			Key.Biggest = State->BiggestHeld(this);
+			Key.Fee = C.CookFee;
 		}
-		if (Fish > 0 && Roubles > 0)
-		{
-			NewDeal = EFishDeal::Sell;
-			Line = LyudText::Get(TEXT("ui.shop.prompt_sell_fish"), { FStringFormatArg(Fish), FStringFormatArg(Roubles) });
-		}
-		else if (!Biggest.IsNone())
-		{
-			NewDeal = EFishDeal::Cook;
-			Line = LyudText::Get(TEXT("ui.shop.prompt_cook_fish"), { FStringFormatArg(ULyudInventory::ItemName(Biggest).ToString()), FStringFormatArg(C.CookFee) });
-		}
-		else
-		{
-			Line = LyudText::Get(TEXT("ui.shop.prompt"));
-		}
+		Key.Deal = Key.Fish > 0 && Key.Roubles > 0 ? EFishDeal::Sell : (!Key.Biggest.IsNone() ? EFishDeal::Cook : EFishDeal::None);
 	}
-	const FString Key = Line.ToString();
-	if (Counter == Prompted && Key == PromptedLine)
+	if (Key == PromptedKey)
 	{
 		return;
+	}
+	PromptedKey = Key;
+	Prompted = Counter;
+	Deal = Key.Deal;
+	FText Line;
+	if (Counter >= 0)
+	{
+		switch (Key.Deal)
+		{
+		case EFishDeal::Sell:
+			Line = LyudText::Get(TEXT("ui.shop.prompt_sell_fish"), { FStringFormatArg(Key.Fish), FStringFormatArg(Key.Roubles) });
+			break;
+		case EFishDeal::Cook:
+			Line = LyudText::Get(TEXT("ui.shop.prompt_cook_fish"), { FStringFormatArg(ULyudInventory::ItemName(Key.Biggest).ToString()), FStringFormatArg(Key.Fee) });
+			break;
+		default:
+			Line = LyudText::Get(TEXT("ui.shop.prompt"));
+			break;
+		}
 	}
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
 		UI->SetPrompt(this, Line);
 	}
-	Prompted = Counter;
-	PromptedLine = Key;
-	Deal = NewDeal;
 }
 
 void ULyudCounterTradeSubsystem::Tick(float)
@@ -231,6 +233,7 @@ void ULyudCounterTradeSubsystem::Tick(float)
 		if (!Said.IsEmpty())
 		{
 			Prompted = -1;
+			PromptedKey.Counter = -2;
 			SoldUntil = World->GetTimeSeconds() + 2.5;
 			UI->SetPrompt(this, Said);
 		}

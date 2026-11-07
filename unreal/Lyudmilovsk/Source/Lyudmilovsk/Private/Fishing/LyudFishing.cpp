@@ -555,7 +555,7 @@ void ULyudFishing::TakeOut()
 
 void ULyudFishing::PutAway()
 {
-	// a fish still shown in the hand goes into the pocket (it is already in the log), not lost with the rod
+	// a fish still shown in the hand: the showing ends (it is in the pocket already)
 	if (ShowLeft > 0.f)
 	{
 		Bag();
@@ -620,8 +620,10 @@ void ULyudFishing::ForceBite()
 			}
 		}
 	}
+	// only the events it adds (the last step's are already handled)
+	const int32 Before = int32(Session->Events().size());
 	Session->DebugBite(Best);
-	HandleEvents();
+	HandleEvents(Before);
 }
 
 void ULyudFishing::ForceHook(FName Species)
@@ -859,6 +861,15 @@ void ULyudFishing::Caught()
 	ShowGrams = F.Grams;
 	ShowCm = F.Length * 100.f;
 	ShowLeft = 2.4f;
+	// into the pocket now, with the log (shown in the hand for a moment after, only for the look)
+	if (ULyudInventory* Inv = ULyudInventory::Get(this))
+	{
+		Inv->Add(FishItem(F.Species));
+	}
+	if (State)
+	{
+		State->BagGrams.FindOrAdd(Species) += F.Grams;
+	}
 	// out of the web and its spot where it was hooked (EndPos is at the rod's tip by now), and the one the diver would see there
 	if (ULyudEcosystem* Eco = ULyudEcosystem::Get(this))
 	{
@@ -878,15 +889,12 @@ void ULyudFishing::Caught()
 
 void ULyudFishing::Bag()
 {
+	// the end of the showing: into the bag (it is already in the pocket since the catch: a save meanwhile keeps it)
 	ShowLeft = -1.f;
 	if (ShowSpecies.IsNone())
 	{
 		return;
 	}
-	const int32 C = FishNames().Species.IndexOfByKey(ShowSpecies);
-	ULyudInventory* Inv = ULyudInventory::Get(this);
-	if (Inv && C != INDEX_NONE) Inv->Add(FishItem(C));
-	if (ULyudFishingState* State = ULyudFishingState::Get(this)) State->BagGrams.FindOrAdd(ShowSpecies) += ShowGrams;
 	if (const APawn* Hero = UGameplayStatics::GetPlayerPawn(this, 0)) Sound(TEXT("fish_bag"), Hero->GetActorLocation(), 0.6f);
 	if (ALyudFishingRod* R = Rod.Get()) R->PlaceFish(false, FVector::ZeroVector, FRotator::ZeroRotator, 0.f, 0.f);
 	ShowSpecies = NAME_None;
@@ -1008,6 +1016,13 @@ void ULyudFishing::Draw(float DeltaTime)
 	}
 	const LyudF::EState S = Session->State();
 	const FVector Tip = R->Tip();
+	if (S == LyudF::EState::Winding && !bWasWinding)
+	{
+		// how far out and how high it was when the winding began (the dry drag eases from there to the feet)
+		WindFrom = Session->Distance();
+		WindFromZ = bDryCast ? DryZ : EndPos.Z;
+	}
+	bWasWinding = S == LyudF::EState::Winding;
 	const bool bLure = Session->GetBait() >= 0 && LyudFishing::Bait(Session->GetBait()).bLure;
 	const ALyudSea* Sea = ALyudSea::Get(this);
 	// the float or fish lies along the cast's way, the fish off to its side as it swims
@@ -1070,9 +1085,21 @@ void ULyudFishing::Draw(float DeltaTime)
 		}
 		if (S == LyudF::EState::Winding && (bDryCast || !IsWater(EndPos)))
 		{
-			// dragged back over dry ground: from where it fell down to the feet (never under the ground at sea level)
-			const float T = LastDist > 0.01f ? FMath::Clamp(Session->Distance() / LastDist, 0.f, 1.f) : 0.f;
-			EndPos.Z = FMath::Max(EndPos.Z, FMath::Lerp(FeetZ + 3.f, bDryCast ? DryZ + 2.f : EndPos.Z, T));
+			// dragged back over dry ground (the beach, the pier): on whatever is under it, found by a trace down; without a hit,
+			// from where the winding began down to the feet (never under the ground at the sea's height)
+			FHitResult Hit;
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(FishingWind), false, R);
+			Q.AddIgnoredActor(UGameplayStatics::GetPlayerPawn(this, 0));
+			const FVector Top(EndPos.X, EndPos.Y, FMath::Max3(Tip.Z, DryZ, FeetZ) + 150.f);
+			if (GetWorld()->LineTraceSingleByChannel(Hit, Top, FVector(EndPos.X, EndPos.Y, EndPos.Z - 300.f), ECC_Visibility, Q))
+			{
+				EndPos.Z = FMath::Max(EndPos.Z, Hit.ImpactPoint.Z + 2.f);
+			}
+			else
+			{
+				const float T = WindFrom > 0.01f ? FMath::Clamp(Session->Distance() / WindFrom, 0.f, 1.f) : 0.f;
+				EndPos.Z = FMath::Max(EndPos.Z, FMath::Lerp(FeetZ + 3.f, bDryCast ? DryZ + 2.f : WindFromZ, T));
+			}
 			bSpoon = bLure;
 		}
 		break;
@@ -1262,8 +1289,9 @@ void ULyudFishing::Tick(float DeltaTime)
 				Origin = Hero->GetActorLocation();
 				Dir = FVector(FVector2D(LookFrame().GetRotation().GetForwardVector()).GetSafeNormal(), 0.f);
 			}
+			const int32 Before = int32(Session->Events().size());
 			Session->DebugHook(C);
-			HandleEvents();
+			HandleEvents(Before);
 		}
 	}
 	// the weights where the float lies, now and then

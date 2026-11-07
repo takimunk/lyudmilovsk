@@ -214,7 +214,7 @@ private:
 	void UpdateWeights();
 	/** Handles this step's events from index From on (Fly adds Landed / Ashore after the first pass). */
 	void HandleEvents(int32 From = 0);
-	/** The fish shown after the catch goes into the pocket now. */
+	/** The catch's showing in the hand ends (the fish went into the pocket at the catch). */
 	void Bag();
 	void Fly(float DeltaTime);
 	void Draw(float DeltaTime);
@@ -269,6 +269,9 @@ private:
 	FVector HookPos = FVector::ZeroVector;
 	float FeetZ = 0.f, DryZ = 0.f;
 	bool bDryCast = false;
+	/** Where the winding of an empty line began (distance, m; height, cm). */
+	float WindFrom = 0.f, WindFromZ = 0.f;
+	bool bWasWinding = false;
 	/** "No rod" stays on the line until it runs out. */
 	float NeedRodLeft = 0.f;
 	/** The hand's pose now (look frame), following the state's. */
