@@ -16,7 +16,7 @@ Walls are boxes (closed, no open ends); the floors are CT_Floor slabs; furniture
 into the shell. Windows: public cards only (kind public), no flats. Lamps: 14 pendants hang from the vaults.
 Spots: 60 "seat" in the hall, "work" on stage / bar / kitchen, "stand", "table" + "seat" in the dance room, "counter".
 Entrances: "main" (street, double leaves), "staff" (service).
-Open hours: about 10..23 (INFO "hours"; the importer's HOURS table has no entry yet, see the kit wishes).
+Open hours: 9..23 (HOURS in unreal/scripts/import_city.py; the caretaker starts at 9).
 Material requests: none.
 """
 import math

@@ -157,7 +157,7 @@ def build(B):
                 holes = [(BW / 2 - 0.8, BW / 2 + 0.8, 0.0, 2.4), (0.5, 1.6, 0.5, 2.5), (BW - 1.6, BW - 0.5, 0.5, 2.5)]
                 wall(B, q0, q1, 0.0, ZF[1] - SL, "CT_ConcreteWhite", holes=holes, depth=0.3, mat_in="CT_Interior")
                 for h in holes[1:]:
-                    win(B, q0, q1, h[0], h[1], h[2], h[3], kind="public", cols=2, rows=1, inset=0.2)
+                    win(B, q0, q1, h[0], h[1], h[2], h[3], kind="stair", cols=2, rows=1, inset=0.2)   # lobby: dusk to dawn
                 Fq = Facade(q0, q1)
                 B.entrance("rear", Fq.to_building((BW / 2, 0.0, 0.0)), 180.0, 1.6, 2.4, "street", leaves=2)
                 continue
@@ -216,7 +216,7 @@ def build(B):
         u = k * BW
         z0 = ZF[1] - SL if k == 5 else 0.0
         u0, u1 = max(0.0, u - 0.15), min(NB * BW, u + 0.15)
-        _lbox(det, "CT_ConcreteWhite", F, u0, u1, -0.14, 0.06, z0, top + 0.04)
+        _lbox(m if z0 == 0.0 else det, "CT_ConcreteWhite", F, u0, u1, -0.14, 0.06, z0, top + 0.04)   # ground mullions solid
     nblk = 0
     holes_v = (0.31, 0.27, 0.34)
     for b in range(NB):
@@ -230,22 +230,23 @@ def build(B):
             if s == 0 and b == 2:
                 cu = (b + 0.5) * BW
                 skip = (lambda uc, zc, cu=cu: abs(uc - cu) < 1.0 and zc < 2.7)
-            nblk += cobogo_screen(det, F, ua, ub, zlo, zhi, y_front=0.0, thick=0.14, block=0.6,
+            # the ground storey's screen is solid to walk into (shell); the upper ones are detail
+            nblk += cobogo_screen(m if s == 0 else det, F, ua, ub, zlo, zhi, y_front=0.0, thick=0.14, block=0.6,
                                   hole=holes_v[(b + s) % 3], skip=skip)
             # beams at the floor lines (between the mullions)
             if s < 3:
-                _lbox(det, "CT_ConcreteWhite", F, ua, ub, -0.14, 0.06, zhi, ZF[s + 1] + 0.17)
+                _lbox(m if s == 0 else det, "CT_ConcreteWhite", F, ua, ub, -0.14, 0.06, zhi, ZF[s + 1] + 0.17)
         if b != 4:
             if b == 2:
                 cu = (b + 0.5) * BW
-                _lbox(det, "CT_ConcreteDark", F, ua, cu - 1.0, -0.14, 0.06, 0.0, 0.25)
-                _lbox(det, "CT_ConcreteDark", F, cu + 1.0, ub, -0.14, 0.06, 0.0, 0.25)
+                _lbox(m, "CT_ConcreteDark", F, ua, cu - 1.0, -0.14, 0.06, 0.0, 0.25)
+                _lbox(m, "CT_ConcreteDark", F, cu + 1.0, ub, -0.14, 0.06, 0.0, 0.25)
             else:
-                _lbox(det, "CT_ConcreteDark", F, ua, ub, -0.14, 0.06, 0.0, 0.25)
+                _lbox(m, "CT_ConcreteDark", F, ua, ub, -0.14, 0.06, 0.0, 0.25)
     # lintel and jambs of the doorway
     cu = (2 + 0.5) * BW
     for (u0, u1) in ((cu - 1.0 - 0.12, cu - 1.0), (cu + 1.0, cu + 1.0 + 0.12)):
-        _lbox(det, "CT_ConcreteWhite", F, u0, u1, -0.14, 0.1, 0.0, 2.95)
+        _lbox(m, "CT_ConcreteWhite", F, u0, u1, -0.14, 0.1, 0.0, 2.95)
     # entrance
     B.entrance("front", (XLOB, YS, 0.0), 0.0, 1.8, DOOR_H + 0.1, "street", leaves=2)
     # canopy over the doorway
@@ -298,7 +299,7 @@ def build(B):
     box(det, "CT_Concrete", 13.3, 13.45, 4.6, 5.0, 0.0, 0.42)
     box(det, "CT_Concrete", 14.75, 14.9, 4.6, 5.0, 0.0, 0.42)
     B.spot("garden_bench", "bench", (14.1, 4.8, 0.0), 0)
-    B.lamp((15.0, 5.0, ZF[1] - 0.5), lumens=700, colour="#FFD9A8", kind="public", radius=7.0)
+    B.lamp((15.0, 5.0, ZF[1] - 0.5), lumens=700, colour="#FFD9A8", kind="lobby", radius=7.0)
     for (x, y, h, r) in ((-17.0, 24.0, 3.8, 1.8), (-2.0, 22.0, 3.2, 1.5), (9.0, 26.0, 4.0, 1.9), (17.0, 20.0, 3.4, 1.6),
                          (-12.0, 19.0, 3.0, 1.4)):
         tree(B, x, y, h, r, "CT_Grass")

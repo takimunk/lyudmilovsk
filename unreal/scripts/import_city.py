@@ -38,7 +38,7 @@ FOLDER = "Outside/City/Buildings"
 HOURS = {"shell_market": (7, 19), "department_store": (9, 20), "saucer_pavilion": (8, 22), "workers_club": (10, 23),
          "school": (7.5, 17), "clinic": (8, 20), "bus_stop_kiosk": (8, 22), "culture_block": (8, 22),
          "hyperboloid_tower": (0, 24), "round_sanatorium": (0, 24), "lifeguard_tower": (9, 19),
-         "cog_club": (10, 23), "capsule_library": (9, 21), "shell_chapel_hall": (10, 23)}
+         "cog_club": (10, 23), "capsule_library": (7, 21), "shell_chapel_hall": (9, 23)}   # staff come before opening
 
 eal = unreal.EditorAssetLibrary
 mel = unreal.MaterialEditingLibrary
@@ -58,7 +58,10 @@ def _mod(name, path):
 
 
 def built_types():
-    return sorted(f[:-4] for f in os.listdir(EXPORT) if f.endswith(".glb")) if os.path.isdir(EXPORT) else []
+    # a glb counts only with its json (committed): stale glbs of removed variants are not imported
+    if not os.path.isdir(EXPORT):
+        return []
+    return sorted(f[:-4] for f in os.listdir(EXPORT) if f.endswith(".glb") and os.path.exists(os.path.join(EXPORT, f[:-4] + ".json")))
 
 
 # ------------------------------------------------------------------------------------------------ materials

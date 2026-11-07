@@ -320,10 +320,10 @@ def build(B):
     ZH = ZR + HH
     hfl, hfr, hbr, hbl = W2(hu0, hv0), W2(hu1, hv0), W2(hu1, hv1), W2(hu0, hv1)
     FH = Facade(hfl, hfr)
-    cobogo_screen(det, FH, 0.0, FH.length, ZR + 0.45, ZH, y_front=0.0, thick=0.14, block=0.6)
+    cobogo_screen(m, FH, 0.0, FH.length, ZR + 0.45, ZH, y_front=0.0, thick=0.14, block=0.6)   # roof edge: solid
     wall_line(m, "CT_TileWhite", hfl, hfr, (-FH.n[0] * 0.2, -FH.n[1] * 0.2), ZR, ZR + 0.45)
     FBk = Facade(hbr, hbl)
-    cobogo_screen(det, FBk, 0.0, FBk.length, ZR + 0.45, ZH, y_front=0.0, thick=0.14, block=0.6)
+    cobogo_screen(m, FBk, 0.0, FBk.length, ZR + 0.45, ZH, y_front=0.0, thick=0.14, block=0.6)
     wall_line(m, "CT_TileWhite", hbr, hbl, (-FBk.n[0] * 0.2, -FBk.n[1] * 0.2), ZR, ZR + 0.45)
     wall(B, hbl, hfl, ZR, ZH, "CT_Tile", depth=0.2, mat_in="CT_TileWhite")
     wall(B, hfr, hbr, ZR, ZH, "CT_Tile", holes=[(0.9, 0.9 + DOOR_W, 0.0, DOOR_H)], depth=0.2, mat_in="CT_TileWhite")
@@ -338,7 +338,7 @@ def build(B):
     holes = [(mid - 1.1, mid + 1.1, 0.0, DOOR_H), (1.6, 3.0, 0.3, 2.7), (5.6, 7.0, 0.3, 2.7)]
     wall(B, f0, f1, 0.0, PIL - SL, "CT_Tile", holes=holes, depth=WALL, mat_in="CT_Tile")
     for h in holes[1:]:
-        win(B, f0, f1, h[0], h[1], h[2], h[3], kind="public", cols=2, rows=1, inset=0.2)
+        win(B, f0, f1, h[0], h[1], h[2], h[3], kind="stair", cols=2, rows=1, inset=0.2)   # lobby glass: dusk to dawn
     tile_pattern(det, Fc, 0.35, 1.45, 0.4, 2.8)
     tile_pattern(det, Fc, LC - 1.45, LC - 0.35, 0.4, 2.8)
     tile_pattern(det, Fc, 1.6, 3.0, 2.9, PIL - SL - 0.05, cell=0.35)
@@ -350,7 +350,7 @@ def build(B):
     holes = [(Lb / 2 - DOOR_W / 2, Lb / 2 + DOOR_W / 2, 0.0, DOOR_H), (1.0, 2.6, 0.3, 2.7), (Lb - 2.6, Lb - 1.0, 0.3, 2.7)]
     wall(B, br, bl, 0.0, PIL - SL, "CT_Tile", holes=holes, depth=WALL, mat_in="CT_Tile")
     for h in holes[1:]:
-        win(B, br, bl, h[0], h[1], h[2], h[3], kind="public", cols=2, rows=1, inset=0.2)
+        win(B, br, bl, h[0], h[1], h[2], h[3], kind="stair", cols=2, rows=1, inset=0.2)
     B.entrance("rear", FbC.to_building((Lb / 2, 0.0, 0.0)), yaw_of(FbC.n), DOOR_W, DOOR_H, "street")
     for kk in (CORE, CORE + 1):                                  # lobby side walls, tiled both sides
         t = th[kk]
@@ -465,7 +465,7 @@ def build(B):
         box(det, "CT_Wood", x - 1.0, x + 1.0, y - 0.25, y + 0.25, 0.42, 0.48)
         box(det, "CT_Concrete", x - 0.9, x - 0.7, y - 0.2, y + 0.2, 0.0, 0.42)
         box(det, "CT_Concrete", x + 0.7, x + 0.9, y - 0.2, y + 0.2, 0.0, 0.42)
-        B.spot("forecourt_bench_%d" % kk, "bench", (x, y, 0.48), yaw_of(radial(t)) + 180)
+        B.spot("forecourt_bench_%d" % kk, "bench", (x, y, 0.0), yaw_of(radial(t)) + 180)
 
     B.footprint = [P(R, t) for t in th] + [P(RG, t) for t in reversed(th)]
     B.height = 17.9

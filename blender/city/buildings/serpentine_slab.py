@@ -262,7 +262,7 @@ def build(B):
             box(det, "CT_Wood", bx0 - 1.0, bx0 + 1.0, by0 - 0.25, by0 + 0.25, 0.42, 0.48)
             box(det, "CT_Concrete", bx0 - 0.9, bx0 - 0.7, by0 - 0.2, by0 + 0.2, 0.0, 0.42)
             box(det, "CT_Concrete", bx0 + 0.7, bx0 + 0.9, by0 - 0.2, by0 + 0.2, 0.0, 0.42)
-            B.spot("pilotis_bench_%d" % i, "bench", (bx0, by0, 0.48), yaw_of(left_normal(FP[i], FP[i + 1])))
+            B.spot("pilotis_bench_%d" % i, "bench", (bx0, by0, 0.0), yaw_of(left_normal(FP[i], FP[i + 1])))
     B.note("%d flats on %d storeys, %d bays of %.1f m, S bend %.1f deg (axis offset +-%.1f m)" % (
         len(B.flats), NST, N, BAY, CURVE_DEG, max(abs(p[1]) for p in FP)))
 

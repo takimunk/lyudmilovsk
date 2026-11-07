@@ -172,7 +172,7 @@
    "pos": [
     -21.279,
     2.875,
-    0.48
+    0.0
    ],
    "yaw": 11.406104254919171
   },
@@ -182,7 +182,7 @@
    "pos": [
     -4.283,
     4.915,
-    0.48
+    0.0
    ],
    "yaw": 2.2812208509838285
   },
@@ -192,7 +192,7 @@
    "pos": [
     12.822,
     4.233,
-    0.48
+    0.0
    ],
    "yaw": 353.1563374470485
   },
@@ -2294,9 +2294,9 @@
   },
   {
    "slot": 76,
-   "id": "pub/w1",
+   "id": "stair/w17",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     2.298,
     5.308,
@@ -2315,9 +2315,9 @@
   },
   {
    "slot": 77,
-   "id": "pub/w2",
+   "id": "stair/w18",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     6.295,
     5.149,
@@ -2336,9 +2336,9 @@
   },
   {
    "slot": 78,
-   "id": "pub/w3",
+   "id": "stair/w19",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     7.476,
     13.702,
@@ -2357,9 +2357,9 @@
   },
   {
    "slot": 79,
-   "id": "pub/w4",
+   "id": "stair/w20",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     1.799,
     13.928,
@@ -2378,7 +2378,7 @@
   },
   {
    "slot": 80,
-   "id": "pub/w5",
+   "id": "pub/w1",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2399,7 +2399,7 @@
   },
   {
    "slot": 81,
-   "id": "pub/w6",
+   "id": "pub/w2",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2420,7 +2420,7 @@
   },
   {
    "slot": 82,
-   "id": "pub/w7",
+   "id": "pub/w3",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2441,7 +2441,7 @@
   },
   {
    "slot": 83,
-   "id": "pub/w8",
+   "id": "pub/w4",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2462,7 +2462,7 @@
   },
   {
    "slot": 84,
-   "id": "pub/w9",
+   "id": "pub/w5",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2483,7 +2483,7 @@
   },
   {
    "slot": 85,
-   "id": "pub/w10",
+   "id": "pub/w6",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2508,8 +2508,8 @@
   "20 flats, 247 cobogo blocks on the core front"
  ],
  "tris": {
-  "shell": 7812,
-  "detail": 8414,
+  "shell": 8644,
+  "detail": 7582,
   "windows": 172
  }
 }

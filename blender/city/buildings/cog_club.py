@@ -399,7 +399,7 @@ def _tower(B):
     tr = rect(TX0 - 0.15, TX1 + 0.15, TY0 - 0.15, TY1 + 0.15)
     prism(m, "CT_Concrete", tr, TH - 0.4, TH, top=False, bottom=True)
     hface(m, "CT_Roof", tr, TH, True)
-    box(det, "CT_Steel", -1.0, 1.0, TY0 + 1.0, TY0 + 1.06, TH, TH + 0.9)           # beacon mast
+    box(det, "CT_Steel", -1.0, 1.0, TY0 + 1.0, TY0 + 1.06, TH, min(TH + 0.9, 18.0))           # beacon mast
     ix0, ix1, iy0, iy1 = TX0 + WT, TX1 - WT, TY0 + WT, TY1 - WT
     y_flight0 = 29.5
     n, going = 14, 0.28
