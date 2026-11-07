@@ -37,7 +37,8 @@ FOLDER = "Outside/City/Buildings"
 # public rooms' open hours by building type (the rest: 8..21)
 HOURS = {"shell_market": (7, 19), "department_store": (9, 20), "saucer_pavilion": (8, 22), "workers_club": (10, 23),
          "school": (7.5, 17), "clinic": (8, 20), "bus_stop_kiosk": (8, 22), "culture_block": (8, 22),
-         "hyperboloid_tower": (0, 24), "round_sanatorium": (0, 24), "lifeguard_tower": (9, 19)}
+         "hyperboloid_tower": (0, 24), "round_sanatorium": (0, 24), "lifeguard_tower": (9, 19),
+         "cog_club": (10, 23), "capsule_library": (9, 21), "shell_chapel_hall": (10, 23)}
 
 eal = unreal.EditorAssetLibrary
 mel = unreal.MaterialEditingLibrary

@@ -1,0 +1,2149 @@
+{
+ "type": "capsule_library",
+ "info": {
+  "name_ru": "Библиотека-капсулы",
+  "name_en": "Capsule Library",
+  "style": "metabolism",
+  "use": "public",
+  "kind": "library",
+  "hours": [
+   9,
+   21
+  ],
+  "inspired_by": "Japanese Metabolism of the 1960s-70s (Kurokawa, Kikutake): prefab capsules cantilevered from a concrete service core; here as reading pods round a tall core over a glass-walled library hall"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -13.0,
+   3.0
+  ],
+  [
+   13.0,
+   3.0
+  ],
+  [
+   13.0,
+   27.0
+  ],
+  [
+   -13.0,
+   27.0
+  ]
+ ],
+ "height": 19.0,
+ "entrances": [
+  {
+   "id": "staff",
+   "pos": [
+    13.0,
+    22.5,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 1.4,
+   "height": 2.3,
+   "kind": "service",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "main",
+   "pos": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.4,
+   "height": 2.55,
+   "kind": "street",
+   "leaves": 2,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "pod_1_01",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    10.163,
+    4.5
+   ],
+   "yaw": 45.0
+  },
+  {
+   "id": "pod_1_02",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    8.16,
+    4.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "pod_1_03",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    19.837,
+    4.5
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "pod_1_04",
+   "kind": "seat",
+   "pos": [
+    6.84,
+    15.0,
+    4.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "pod_1_05",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    21.84,
+    4.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "pod_1_06",
+   "kind": "seat",
+   "pos": [
+    -4.837,
+    19.837,
+    4.5
+   ],
+   "yaw": 225.0
+  },
+  {
+   "id": "pod_2_01",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    8.16,
+    8.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "pod_2_02",
+   "kind": "seat",
+   "pos": [
+    6.84,
+    15.0,
+    8.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "pod_2_03",
+   "kind": "seat",
+   "pos": [
+    -4.837,
+    19.837,
+    8.5
+   ],
+   "yaw": 225.0
+  },
+  {
+   "id": "pod_2_04",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    10.163,
+    8.5
+   ],
+   "yaw": 45.0
+  },
+  {
+   "id": "pod_2_05",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    19.837,
+    8.5
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "pod_2_06",
+   "kind": "seat",
+   "pos": [
+    -4.837,
+    10.163,
+    8.5
+   ],
+   "yaw": 315.0
+  },
+  {
+   "id": "pod_3_01",
+   "kind": "seat",
+   "pos": [
+    -4.837,
+    19.837,
+    12.5
+   ],
+   "yaw": 225.0
+  },
+  {
+   "id": "pod_3_02",
+   "kind": "seat",
+   "pos": [
+    -6.84,
+    15.0,
+    12.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "pod_3_03",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    10.163,
+    12.5
+   ],
+   "yaw": 45.0
+  },
+  {
+   "id": "pod_3_04",
+   "kind": "seat",
+   "pos": [
+    4.837,
+    19.837,
+    12.5
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "pod_3_05",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    21.84,
+    12.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "pod_3_06",
+   "kind": "seat",
+   "pos": [
+    6.84,
+    15.0,
+    12.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stair_foot",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    5.76,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lending_counter",
+   "kind": "counter",
+   "pos": [
+    -9.5,
+    6.9,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lending_counter_2",
+   "kind": "counter",
+   "pos": [
+    -7.5,
+    6.9,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "librarian",
+   "kind": "work",
+   "pos": [
+    -9.5,
+    9.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "librarian_2",
+   "kind": "work",
+   "pos": [
+    -7.4,
+    9.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "catalogue",
+   "kind": "stand",
+   "pos": [
+    5.2,
+    5.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "catalogue_2",
+   "kind": "stand",
+   "pos": [
+    4.0,
+    5.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stack_7_a",
+   "kind": "stand",
+   "pos": [
+    6.3,
+    10.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stack_7_b",
+   "kind": "stand",
+   "pos": [
+    8.1,
+    16.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "stack_10_a",
+   "kind": "stand",
+   "pos": [
+    9.5,
+    10.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stack_10_b",
+   "kind": "stand",
+   "pos": [
+    11.3,
+    16.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "core_wall_90",
+   "kind": "stand",
+   "pos": [
+    4.9,
+    15.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "core_wall_135",
+   "kind": "stand",
+   "pos": [
+    3.465,
+    18.465,
+    0.0
+   ],
+   "yaw": 315.0
+  },
+  {
+   "id": "core_wall_225",
+   "kind": "stand",
+   "pos": [
+    -3.465,
+    18.465,
+    0.0
+   ],
+   "yaw": 45.0
+  },
+  {
+   "id": "core_wall_315",
+   "kind": "stand",
+   "pos": [
+    -3.465,
+    11.535,
+    0.0
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "core_wall_45",
+   "kind": "stand",
+   "pos": [
+    3.465,
+    11.535,
+    0.0
+   ],
+   "yaw": 225.0
+  },
+  {
+   "id": "hall_seat_-9_20_0",
+   "kind": "seat",
+   "pos": [
+    -10.1,
+    19.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-9_20_1",
+   "kind": "seat",
+   "pos": [
+    -8.9,
+    19.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-9_20_2",
+   "kind": "seat",
+   "pos": [
+    -10.1,
+    21.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_-9_20_3",
+   "kind": "seat",
+   "pos": [
+    -8.9,
+    21.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_table_-9_20",
+   "kind": "table",
+   "pos": [
+    -9.5,
+    20.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_-9_24_0",
+   "kind": "seat",
+   "pos": [
+    -10.1,
+    23.18,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-9_24_1",
+   "kind": "seat",
+   "pos": [
+    -8.9,
+    23.18,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-9_24_2",
+   "kind": "seat",
+   "pos": [
+    -10.1,
+    24.82,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_-9_24_3",
+   "kind": "seat",
+   "pos": [
+    -8.9,
+    24.82,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_table_-9_24",
+   "kind": "table",
+   "pos": [
+    -9.5,
+    24.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_-2_23_0",
+   "kind": "seat",
+   "pos": [
+    -3.0,
+    22.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-2_23_1",
+   "kind": "seat",
+   "pos": [
+    -1.8,
+    22.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_-2_23_2",
+   "kind": "seat",
+   "pos": [
+    -3.0,
+    24.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_-2_23_3",
+   "kind": "seat",
+   "pos": [
+    -1.8,
+    24.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_table_-2_23",
+   "kind": "table",
+   "pos": [
+    -2.4,
+    23.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_3_23_0",
+   "kind": "seat",
+   "pos": [
+    2.6,
+    22.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_3_23_1",
+   "kind": "seat",
+   "pos": [
+    3.8,
+    22.68,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_3_23_2",
+   "kind": "seat",
+   "pos": [
+    2.6,
+    24.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_3_23_3",
+   "kind": "seat",
+   "pos": [
+    3.8,
+    24.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_table_3_23",
+   "kind": "table",
+   "pos": [
+    3.2,
+    23.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_9_24_0",
+   "kind": "seat",
+   "pos": [
+    9.0,
+    23.18,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_9_24_1",
+   "kind": "seat",
+   "pos": [
+    10.2,
+    23.18,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_seat_9_24_2",
+   "kind": "seat",
+   "pos": [
+    9.0,
+    24.82,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_seat_9_24_3",
+   "kind": "seat",
+   "pos": [
+    10.2,
+    24.82,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_table_9_24",
+   "kind": "table",
+   "pos": [
+    9.6,
+    24.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "window_seat_0_0",
+   "kind": "seat",
+   "pos": [
+    -4.95,
+    4.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "window_seat_0_1",
+   "kind": "seat",
+   "pos": [
+    -3.45,
+    4.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "window_seat_1_0",
+   "kind": "seat",
+   "pos": [
+    7.05,
+    4.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "window_seat_1_1",
+   "kind": "seat",
+   "pos": [
+    8.55,
+    4.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "sbench_main_63",
+   "kind": "bench",
+   "pos": [
+    -3.6,
+    2.25,
+    0.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -0.8,
+    12.65,
+    3.9
+   ],
+   "lumens": 420,
+   "colour": "#FFE4B8",
+   "kind": "stair",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -0.8,
+    12.65,
+    7.9
+   ],
+   "lumens": 420,
+   "colour": "#FFE4B8",
+   "kind": "stair",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -0.8,
+    12.65,
+    11.9
+   ],
+   "lumens": 420,
+   "colour": "#FFE4B8",
+   "kind": "stair",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -0.8,
+    12.65,
+    14.6
+   ],
+   "lumens": 420,
+   "colour": "#FFE4B8",
+   "kind": "stair",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    4.455,
+    10.545,
+    6.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    4.455,
+    19.455,
+    6.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    0.0,
+    21.3,
+    6.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    0.0,
+    8.7,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -4.455,
+    19.455,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    4.455,
+    19.455,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -4.455,
+    19.455,
+    14.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    4.455,
+    10.545,
+    14.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    0.0,
+    21.3,
+    14.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -9.0,
+    8.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    9.0,
+    8.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    -9.0,
+    22.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    9.0,
+    22.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    0.0,
+    6.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    -9.0,
+    15.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    9.0,
+    15.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    3.6,
+    1.65,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "stair/w1",
+   "flat": null,
+   "kind": "stair",
+   "centre": [
+    0.0,
+    19.0,
+    10.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "stair/w2",
+   "flat": null,
+   "kind": "stair",
+   "centre": [
+    -4.0,
+    15.0,
+    10.25
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 2,
+   "id": "stair/w3",
+   "flat": null,
+   "kind": "stair",
+   "centre": [
+    -2.828,
+    12.172,
+    6.25
+   ],
+   "normal": [
+    -0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    0.7,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 3,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.828,
+    12.172,
+    14.55
+   ],
+   "normal": [
+    -0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    1.8,
+    2.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 4,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    11.0,
+    14.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.8,
+    2.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 5,
+   "id": "pub/w3",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    9.202,
+    6.05
+   ],
+   "normal": [
+    0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 6,
+   "id": "pub/w4",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    6.8,
+    6.05
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 7,
+   "id": "pub/w5",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    20.798,
+    6.05
+   ],
+   "normal": [
+    0.707,
+    0.707,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 8,
+   "id": "pub/w6",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.2,
+    15.0,
+    6.05
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 9,
+   "id": "pub/w7",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    23.2,
+    6.05
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 10,
+   "id": "pub/w8",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.798,
+    20.798,
+    6.05
+   ],
+   "normal": [
+    -0.707,
+    0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 11,
+   "id": "pub/w9",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    6.8,
+    10.05
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 12,
+   "id": "pub/w10",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.2,
+    15.0,
+    10.05
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 13,
+   "id": "pub/w11",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.798,
+    20.798,
+    10.05
+   ],
+   "normal": [
+    -0.707,
+    0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 14,
+   "id": "pub/w12",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    9.202,
+    10.05
+   ],
+   "normal": [
+    0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 15,
+   "id": "pub/w13",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    20.798,
+    10.05
+   ],
+   "normal": [
+    0.707,
+    0.707,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 16,
+   "id": "pub/w14",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.798,
+    9.202,
+    10.05
+   ],
+   "normal": [
+    -0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 17,
+   "id": "pub/w15",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.798,
+    20.798,
+    14.05
+   ],
+   "normal": [
+    -0.707,
+    0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 18,
+   "id": "pub/w16",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.2,
+    15.0,
+    14.05
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 19,
+   "id": "pub/w17",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    9.202,
+    14.05
+   ],
+   "normal": [
+    0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 20,
+   "id": "pub/w18",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.798,
+    20.798,
+    14.05
+   ],
+   "normal": [
+    0.707,
+    0.707,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 21,
+   "id": "pub/w19",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    23.2,
+    14.05
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w20",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.2,
+    15.0,
+    14.05
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w21",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -11.556,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w22",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.667,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 25,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.778,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 26,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.889,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 27,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    3.0,
+    2.975
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    0.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 28,
+   "id": "pub/w26",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    2.889,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 29,
+   "id": "pub/w27",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.778,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 30,
+   "id": "pub/w28",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.667,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 31,
+   "id": "pub/w29",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.556,
+    3.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 32,
+   "id": "pub/w30",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    4.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 33,
+   "id": "pub/w31",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    7.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 34,
+   "id": "pub/w32",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    10.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 35,
+   "id": "pub/w33",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    13.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 36,
+   "id": "pub/w34",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    16.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 37,
+   "id": "pub/w35",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    19.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 38,
+   "id": "pub/w36",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    22.5,
+    2.85
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 39,
+   "id": "pub/w37",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.0,
+    25.5,
+    1.775
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 40,
+   "id": "pub/w38",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.556,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 41,
+   "id": "pub/w39",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.667,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 42,
+   "id": "pub/w40",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.778,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 43,
+   "id": "pub/w41",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    2.889,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 44,
+   "id": "pub/w42",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.0,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 45,
+   "id": "pub/w43",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.889,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 46,
+   "id": "pub/w44",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.778,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 47,
+   "id": "pub/w45",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.667,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 48,
+   "id": "pub/w46",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -11.556,
+    27.0,
+    1.775
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    2.449,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 49,
+   "id": "pub/w47",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    25.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 50,
+   "id": "pub/w48",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    22.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 51,
+   "id": "pub/w49",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    19.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 52,
+   "id": "pub/w50",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    16.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 53,
+   "id": "pub/w51",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    13.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 54,
+   "id": "pub/w52",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    10.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 55,
+   "id": "pub/w53",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    7.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 56,
+   "id": "pub/w54",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.0,
+    4.5,
+    1.775
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.56,
+    3.05
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [
+  "18 reading pods on 3 levels round an octagonal core; glazed hall; open stair to level 1"
+ ],
+ "tris": {
+  "shell": 7456,
+  "detail": 19400,
+  "windows": 114
+ }
+}

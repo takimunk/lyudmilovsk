@@ -52,7 +52,9 @@ ROOF = "flat"       # "flat" | "pergola" (roof terrace with timber pergola) | "p
 BALCONY = "panel"   # loggia front: "panel" (solid coloured parapet) | "rail" (low panel + steel rail) | "screen" (panel + fins)
 SHOP = ()           # flat numbers (nn of "<storey>-<nn>") whose GROUND flat is a shop (that flat does not exist then)
 SHOP_COL = "CT_PlasterRed"              # shop sign board colour
-VARIANTS = {
+# Round 3 (2026-11-07): the five plain_block plots now hold new types; these variants are kept as presets for a
+# future filler plot (rename the key to that plot to use one).
+VARIANT_PRESETS = {
     "P-T1H2": {"ACC": ["CT_PlasterGreen", "CT_Plaster", "CT_PlasterYellow"], "ROOF": "pergola",
                "CANOPY": ("CT_PlasterRed",)},
     "P-T1H4": {"ACC": ["CT_PlasterPink", "CT_Plaster", "CT_PlasterBlue"], "BALCONY": "rail", "ROOF": "pitched",
@@ -65,6 +67,7 @@ VARIANTS = {
     "P-T4H2": {"ACC": ["CT_PlasterYellow", "CT_PlasterPink", "CT_PlasterGreen"], "BALCONY": "rail", "ROOF": "pitched",
                "SHOP": (1,), "TOWER": ("CT_PlasterBlue",), "CANOPY": ("CT_SteelRed",), "SHOP_COL": "CT_PlasterGreen"},
 }
+VARIANTS = {}
 
 
 def build(B):
