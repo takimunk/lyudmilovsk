@@ -673,7 +673,7 @@ def fair(L):
     for (s, face) in ((lane - 5.5, 1), (lane + 5.5, -1), (s1 - 6.0, -1)):
         y = y0 + 8.0
         while y < y1 - 8.0:
-            if s == s1 - 6.0 and abs(y - yc) < 22.0:
+            if s == s1 - 6.0 and (abs(y - yc) < 22.0 or y > y1 - 34.0):
                 y += 7.0
                 continue
             x, py = at(s, y)
@@ -698,7 +698,29 @@ def fair(L):
     # a carousel in the open middle of the far row, lamps along the lane, benches at its ends
     cx, cy = at(s1 - 12.0, yc)
     L.prop("carousel", cx, cy, z, 0.0)
+    L.d.setdefault("rides", []).append({"kind": "carousel", "at": L.ue(cx, cy, z), "yaw": 0.0})
     L.d["lights"].append({"at": L.ue(cx, cy, z + 5.5), "area": "fair", "kind": "carousel"})
+    seats = []
+    for k in range(8):
+        a = 2 * math.pi * k / 8
+        seats.append({"pos": L.ue(cx + math.cos(a) * 3.2, cy + math.sin(a) * 3.2, z + 1.18), "yaw": round(math.degrees(a) + 90.0, 2),
+                      "height": 0.83, "kind": "ride"})
+    L.spot("S-FAIR-CAROUSEL", "fair", cx, cy, z, 0.0, seats=8, slots=seats, sub="ride",
+           queue=[stand(L, *at(s1 - 12.0 - 5.6, yc + dy), z, sea_yaw(yc) + 180.0) for dy in (-1.5, -0.5, 0.5, 1.5)],
+           notes="the seats at the rest angle: the carousel stands still for boarding 90 s of every 240 s (ALyudFairRides)")
+    # the Ferris wheel at the far corner, its plane along the coast
+    wx, wy = at(s1 - 14.0, y1 - 24.0)
+    wyaw = sea_yaw(y1 - 24.0) + 90.0
+    L.prop("wheel", wx, wy, z, wyaw)
+    L.d["rides"].append({"kind": "wheel", "at": L.ue(wx, wy, z), "yaw": wyaw})
+    L.d["lights"].append({"at": L.ue(wx, wy, z + 9.2), "area": "fair", "kind": "carousel"})
+    a = math.radians(sea_yaw(y1 - 24.0))
+    L.spot("S-FAIR-WHEEL", "fair", wx, wy, z, sea_yaw(y1 - 24.0), seats=4, sub="ride",
+           slots=[{"pos": L.ue(wx + math.cos(a) * 0.6 * sd, wy + math.sin(a) * 0.6 * sd, z + 0.44 + 0.37), "yaw": wyaw + (0 if sd > 0 else 180),
+                   "height": 0.37, "kind": "ride"} for sd in (-1, -1, 1, 1)],
+           queue=[stand(L, wx + math.cos(a) * (2.4 + k * 0.8), wy + math.sin(a) * (2.4 + k * 0.8), z, sea_yaw(y1 - 24.0) + 180.0)
+                  for k in range(4)],
+           notes="the lowest gondola at the platform while the wheel stands (90 s of every 240 s)")
     for k in range(7):
         L.lamp(*at(lane, y0 + 10.0 + k * 22.0), z, area="fair")
     for yy, sgn in ((y0 + 3.0, 1), (y1 - 3.0, -1)):

@@ -25835,74 +25835,200 @@
    "goods": "drinks"
   },
   {
-   "id": "S-FAIR-STALL51",
+   "id": "S-FAIR-CAROUSEL",
    "kind": "fair",
    "pos": [
-    33.094,
-    1262.73,
+    32.68,
+    1217.9,
     -36.16
    ],
-   "yaw": 173.5,
-   "seats": 3,
+   "yaw": 0.0,
+   "seats": 8,
    "slots": [
     {
      "pos": [
-      33.003,
-      1261.935,
+      35.88,
+      1217.9,
+      -34.98
+     ],
+     "yaw": 90.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      34.943,
+      1220.163,
+      -34.98
+     ],
+     "yaw": 135.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      32.68,
+      1221.1,
+      -34.98
+     ],
+     "yaw": 180.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      30.417,
+      1220.163,
+      -34.98
+     ],
+     "yaw": 225.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      29.48,
+      1217.9,
+      -34.98
+     ],
+     "yaw": 270.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      30.417,
+      1215.637,
+      -34.98
+     ],
+     "yaw": 315.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      32.68,
+      1214.7,
+      -34.98
+     ],
+     "yaw": 360.0,
+     "height": 0.83,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      34.943,
+      1215.637,
+      -34.98
+     ],
+     "yaw": 405.0,
+     "height": 0.83,
+     "kind": "ride"
+    }
+   ],
+   "sub": "ride",
+   "queue": [
+    {
+     "pos": [
+      38.122,
+      1216.4,
       -36.16
      ],
-     "yaw": 173.5,
+     "yaw": 174.0,
      "height": 0.0,
      "kind": "stand"
     },
     {
      "pos": [
-      33.094,
-      1262.73,
+      38.227,
+      1217.4,
       -36.16
      ],
-     "yaw": 173.5,
+     "yaw": 174.0,
      "height": 0.0,
      "kind": "stand"
     },
     {
      "pos": [
-      33.184,
-      1263.525,
+      38.333,
+      1218.4,
       -36.16
      ],
-     "yaw": 173.5,
+     "yaw": 174.0,
+     "height": 0.0,
+     "kind": "stand"
+    },
+    {
+     "pos": [
+      38.439,
+      1219.4,
+      -36.16
+     ],
+     "yaw": 174.0,
      "height": 0.0,
      "kind": "stand"
     }
    ],
-   "sub": "customers",
-   "staffed": false,
-   "seller": {
-    "pos": [
-     30.908,
-     1262.979,
-     -36.16
-    ],
-    "yaw": -6.5
-   },
-   "goods": "sweets"
+   "notes": "the seats at the rest angle: the carousel stands still for boarding 90 s of every 240 s (ALyudFairRides)"
   },
   {
-   "id": "S-FAIR-STALL52",
+   "id": "S-FAIR-WHEEL",
    "kind": "fair",
    "pos": [
-    33.893,
-    1269.728,
+    40.288,
+    1268.9,
     -36.16
    ],
-   "yaw": 173.4,
-   "seats": 3,
+   "yaw": -6.6,
+   "seats": 4,
    "slots": [
     {
      "pos": [
-      33.801,
-      1268.933,
+      39.692,
+      1268.969,
+      -35.35
+     ],
+     "yaw": 263.4,
+     "height": 0.37,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      39.692,
+      1268.969,
+      -35.35
+     ],
+     "yaw": 263.4,
+     "height": 0.37,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      40.884,
+      1268.831,
+      -35.35
+     ],
+     "yaw": 83.4,
+     "height": 0.37,
+     "kind": "ride"
+    },
+    {
+     "pos": [
+      40.884,
+      1268.831,
+      -35.35
+     ],
+     "yaw": 83.4,
+     "height": 0.37,
+     "kind": "ride"
+    }
+   ],
+   "sub": "ride",
+   "queue": [
+    {
+     "pos": [
+      42.673,
+      1268.624,
       -36.16
      ],
      "yaw": 173.4,
@@ -25911,8 +26037,8 @@
     },
     {
      "pos": [
-      33.893,
-      1269.728,
+      43.467,
+      1268.532,
       -36.16
      ],
      "yaw": 173.4,
@@ -25921,8 +26047,18 @@
     },
     {
      "pos": [
-      33.985,
-      1270.522,
+      44.262,
+      1268.44,
+      -36.16
+     ],
+     "yaw": 173.4,
+     "height": 0.0,
+     "kind": "stand"
+    },
+    {
+     "pos": [
+      45.057,
+      1268.348,
       -36.16
      ],
      "yaw": 173.4,
@@ -25930,125 +26066,7 @@
      "kind": "stand"
     }
    ],
-   "sub": "customers",
-   "staffed": false,
-   "seller": {
-    "pos": [
-     31.708,
-     1269.98,
-     -36.16
-    ],
-    "yaw": -6.6
-   },
-   "goods": "amber"
-  },
-  {
-   "id": "S-FAIR-STALL53",
-   "kind": "fair",
-   "pos": [
-    34.704,
-    1276.728,
-    -36.16
-   ],
-   "yaw": 173.4,
-   "seats": 3,
-   "slots": [
-    {
-     "pos": [
-      34.612,
-      1275.933,
-      -36.16
-     ],
-     "yaw": 173.4,
-     "height": 0.0,
-     "kind": "stand"
-    },
-    {
-     "pos": [
-      34.704,
-      1276.728,
-      -36.16
-     ],
-     "yaw": 173.4,
-     "height": 0.0,
-     "kind": "stand"
-    },
-    {
-     "pos": [
-      34.796,
-      1277.522,
-      -36.16
-     ],
-     "yaw": 173.4,
-     "height": 0.0,
-     "kind": "stand"
-    }
-   ],
-   "sub": "customers",
-   "staffed": false,
-   "seller": {
-    "pos": [
-     32.519,
-     1276.98,
-     -36.16
-    ],
-    "yaw": -6.6
-   },
-   "goods": "snacks"
-  },
-  {
-   "id": "S-FAIR-STALL54",
-   "kind": "fair",
-   "pos": [
-    35.525,
-    1283.725,
-    -36.16
-   ],
-   "yaw": 173.3,
-   "seats": 3,
-   "slots": [
-    {
-     "pos": [
-      35.432,
-      1282.93,
-      -36.16
-     ],
-     "yaw": 173.3,
-     "height": 0.0,
-     "kind": "stand"
-    },
-    {
-     "pos": [
-      35.525,
-      1283.725,
-      -36.16
-     ],
-     "yaw": 173.3,
-     "height": 0.0,
-     "kind": "stand"
-    },
-    {
-     "pos": [
-      35.618,
-      1284.52,
-      -36.16
-     ],
-     "yaw": 173.3,
-     "height": 0.0,
-     "kind": "stand"
-    }
-   ],
-   "sub": "customers",
-   "staffed": false,
-   "seller": {
-    "pos": [
-     33.34,
-     1283.982,
-     -36.16
-    ],
-    "yaw": -6.7
-   },
-   "goods": "corn"
+   "notes": "the lowest gondola at the platform while the wheel stands (90 s of every 240 s)"
   },
   {
    "id": "S-BENCH-FR01",
