@@ -40,9 +40,12 @@ TERRACES = [
     ("T4", "Четвёртая терраса", "Fourth terrace", -15.0),
     ("T5", "Верхняя терраса", "Upper terrace", -8.0),
 ]
-# Past the upper terrace's first TOP_FLAT metres the ground rises on gently into the inland ridge.
-TOP_FLAT = 220.0
-TOP_RISE = 0.05
+# The upper terrace runs on inland, level, until the land's own ridge rises over it (a smooth max, HILL_SOFT metres).
+HILL_SOFT = 1.5
+# The town's hook on the ground stops this far inland of W5's face (past it, the natural land).
+INLAND_END = 700.0
+# world_map.keep_flat keeps the exact height this far past W5's block (the upper terrace's plots), then fades in 60 m
+TOP_KEEP = 300.0
 
 # The walls: W1 holds the lower town over the promenade, W2..W5 the terraces. (y, s) control points; between
 # y 700 and 820 the walls swing seaward round the Academgorodok (its ground is T1, up to s ~540), so north of it
@@ -115,9 +118,6 @@ def terrace_z(x, y):
             break
         t = min(1.0, t)
         z = TERRACES[i][3] + (TERRACES[i + 1][3] - TERRACES[i][3]) * t
-    top0 = wall_s(len(WALLS) - 1, y) + TOP_FLAT
-    if s > top0:
-        z += (s - top0) * TOP_RISE
     return z
 
 
@@ -133,8 +133,20 @@ def height(x, y, natural):
     z = terrace_z(x, y)
     if z is None:
         return natural
-    z = max(z, natural) if natural > z + 2.0 and s > wall_s(len(WALLS) - 1, y) else z   # the ridge and the hills win
+    s5 = wall_s(len(WALLS) - 1, y) + WALL_DEPTH
+    if s > s5:
+        # behind W5: the land's own ridge and hills rise over the upper terrace, smoothly (no step anywhere), and far
+        # inland the town lets go of the ground altogether
+        k = HILL_SOFT
+        hi, lo = max(z, natural), min(z, natural)
+        z = hi + k * math.log1p(math.exp((lo - hi) / k))
+        z = natural + (z - natural) * (1.0 - _smoothstep((s - s5 - INLAND_END + 150.0) / 150.0))
     return natural + (z - natural) * m
+
+
+def _smoothstep(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
 
 
 TREE_FRONT = 12.0      # the street trees stand this far in front of a wall's face
@@ -171,9 +183,11 @@ def tree_free(x, y):
     for p in plots():
         if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
             return True
-    for gy in GRAND_Y:
-        if abs(y - gy) < 12.0:
-            return True
+    # the grand stairs' lanes only on the terraces (not across the forests inland)
+    if wall_s(1, y) - 15.0 < s < wall_s(len(WALLS) - 1, y) + WALL_DEPTH + 25.0:
+        for gy in GRAND_Y:
+            if abs(y - gy) < 12.0:
+                return True
     return False
 
 
@@ -278,7 +292,7 @@ def _plots():
     P = []
     a = P.append
     # T0, the embankment: the pier, the kiosks, the beach's buildings
-    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -120.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
+    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -151.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
             height_max=36, notes="the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the "
                                  "high water); the tower stands on its head; on the town's main axis Y 905"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
@@ -347,9 +361,9 @@ def _plots():
     a(_plot("P-T5H1", "residential", "capsule_tower", 5, 1080.0, 560.0, 20, 20, "Капсульная башня 2", "Capsule tower 2",
             height_max=50))
     # set-pieces of stepped housing against walls
-    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 2, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
+    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 1, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
             notes="in front of W2, climbing it to T2's edge (the plot straddles the wall: s 330..350)"))
-    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 4, 685.0, 900.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
+    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 3, 685.0, 1010.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
             notes="straddles W4"))
     return P
 
@@ -370,7 +384,7 @@ def spots():
     a("S-STAGE", "stage", 205.0, 905.0, 1, "Сцена на площади", "Square stage", yaw=0.0,
       notes="faces the square and the sea; holidays: concerts, the New Year tree")
     a("S-SQUARE", "square", 150.0, 905.0, 1, "Площадь Солнца", "Sun Square", seats=40)
-    a("S-PIER-HEAD", "pier", -130.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
+    a("S-PIER-HEAD", "pier", -145.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
       notes="fishing, sunsets; fireworks are let off here on holidays")
     a("S-PROMENADE", "promenade", 45.0, 905.0, 0, "Променад", "Promenade",
       notes="the walk along T0, Y 380..1450; benches every 40 m (S-BENCH-P*)")
@@ -504,7 +518,7 @@ def wall_bays(i):
                 b["kind"] = "unit"
         _BAYS[i] = out
         return out
-    # W2..W5: grand stairs, wall stairs, plots, then flats
+    # W2..W5: grand stairs, then plots (a building set against the wall wins over a wall stair), wall stairs, flats
     for gy in GRAND_Y:
         c = min(full, key=lambda b: abs(b["mid"][1] - gy))
         for b in full:
@@ -512,17 +526,6 @@ def wall_bays(i):
             if -(GRAND_W[gy] / 2 + DWELLING_W / 2) < b["arc"] - c["arc"] < GRAND_W[gy] / 2 + extra + DWELLING_W / 2:
                 b["kind"] = "grand"
                 b["grand_y"] = gy
-    phase = (i * 37.0) % STAIR_EVERY
-    k = 0
-    while k < len(full):
-        b = full[k]
-        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
-                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
-            full[k]["kind"] = full[k + 1]["kind"] = "stair"
-            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
-            k += STAIR_BAYS
-            continue
-        k += 1
     pl = plots()
     for b in full:
         if b["kind"] != "blank":
@@ -535,7 +538,19 @@ def wall_bays(i):
                 b["kind"] = "plot"
                 b["plot"] = p["id"]
                 break
-        else:
+    phase = (i * 37.0) % STAIR_EVERY
+    k = 0
+    while k < len(full):
+        b = full[k]
+        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
+                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
+            full[k]["kind"] = full[k + 1]["kind"] = "stair"
+            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
+            k += STAIR_BAYS
+            continue
+        k += 1
+    for b in full:
+        if b["kind"] == "blank":
             b["kind"] = "dwelling"
     _BAYS[i] = out
     return out
