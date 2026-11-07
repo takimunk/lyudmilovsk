@@ -393,6 +393,188 @@
    "aspect": "1:1",
    "prompt": "See design/diner/icons_grid.json (cell of diner_coffee).",
    "source": "design/diner/icons_grid.json: one 3x3 Higgsfield grid, cut by tools/diner_assets.py (the game-assets rule)"
+  },
+  "icon_rs_olivier": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_olivier).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_baltic_fish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_baltic_fish).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_borscht": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_borscht).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_ramen": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_ramen).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_pelmeni": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_pelmeni).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_pasta": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_pasta).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_khachapuri": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_khachapuri).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_steak": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_steak).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_syrniki": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_syrniki).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_medovik": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_medovik).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_plombir": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_plombir).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_coffee": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_coffee).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_mors": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_mors).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_water": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_water).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_bread": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid.json (cell of rs_bread).",
+   "source": "design/restaurant/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_solyanka": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_solyanka).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_golubtsy": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_golubtsy).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_draniki": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_draniki).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_fried_flounder": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_fried_flounder).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_shashlik": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_shashlik).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_sushi_set": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_sushi_set).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_blini_caviar": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_blini_caviar).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_tea": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_tea).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_fest_ukha": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_fest_ukha).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_fest_kulebyaka": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_fest_kulebyaka).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
+  },
+  "icon_rs_fest_sbiten": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/restaurant/icons_grid2.json (cell of rs_fest_sbiten).",
+   "source": "design/restaurant/icons_grid2.json: one 4x3 Higgsfield grid, cut by tools/restaurant/icons.py (the game-assets rule)"
   }
  }
 }

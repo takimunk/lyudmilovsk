@@ -1,0 +1,21 @@
+{
+ "name": "rest_tray_02",
+ "asset": "/Game/Audio/Restaurant/S_rest_tray_02",
+ "pool": "rest_tray",
+ "file": "audio/sfx/restaurant/rest_tray_02.wav",
+ "generator": "tools/restaurant/sounds.py:tray",
+ "seed": 852052401,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 2,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.753,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -20.72,
+ "dc": 5e-07,
+ "params": {
+  "ring_hz": 3595.791
+ }
+}

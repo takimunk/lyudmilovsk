@@ -1,0 +1,23 @@
+{
+ "name": "rest_kitchen_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_kitchen_01",
+ "pool": "rest_kitchen",
+ "file": "audio/sfx/restaurant/rest_kitchen_01.wav",
+ "generator": "tools/restaurant/sounds.py:kitchen_loop",
+ "seed": 1983160745,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 12.0,
+ "peak_dbfs": -7.49,
+ "rms_dbfs": -26.0,
+ "dc": -0.0,
+ "params": {
+  "seconds": 12,
+  "lowpass_hz": 1900
+ },
+ "seam_click_ratio": 0.038
+}

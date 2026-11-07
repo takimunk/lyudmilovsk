@@ -1,0 +1,40 @@
+{
+ "_doc": "The restaurant «Янтарь» (docs/restaurant.md). Where it stands is the city plan's plot (Content/City/city_plan.json plots[id=plot]: map, yaw, ground); podium = the floor over that ground (m). Hours are used while no waiter of the town life is on shift (open from..to, game hours). Waits: each dish's cook seconds (menu.json) times wait_scale. standin: the waiter (mesh) and the cook (cook_mesh) drawn by the restaurant itself before the town life's staff exist (a model of /Game/Characters/Humans; its name from the strings).",
+ "plot": "P-RESTAURANT",
+ "podium": 0.6,
+ "place_id": "restaurant",
+ "hours": [
+  11,
+  23
+ ],
+ "wait_scale": 1.0,
+ "bread_after_s": 12,
+ "clear_after_s": 25,
+ "table_reset_s": 90,
+ "waiter_speed_cm_s": 125,
+ "standin": {
+  "key": "rs_waiter_standin",
+  "mesh": "Guy_b",
+  "cook_mesh": "Crowd_11",
+  "name": "npc.rs_waiter_standin.name"
+ },
+ "festival": {
+  "cvar": "lyud.Restaurant.Festival",
+  "subsystem": "LyudFestivalSubsystem",
+  "function": "IsFestivalToday",
+  "outdoor_tables": 3
+ },
+ "kitchen_door": {
+  "_doc": "the fishing's kitchen yantar (Content/Fishing/fishing.json kitchens): the same point (cm from the plot's ue), radius and hours; the cook comes to the back door while the hero is there",
+  "offset_cm": [
+   -1571,
+   349,
+   0
+  ],
+  "radius_cm": 220,
+  "hours": [
+   11,
+   23
+  ]
+ }
+}

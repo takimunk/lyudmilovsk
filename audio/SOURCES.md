@@ -193,3 +193,5 @@ tools/gen_sounds.py.
 
 - sfx (fal-ai/elevenlabs/sound-effects/v2): Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.
 - music (fal-ai/stable-audio-25/text-to-audio): Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.
+
+- `sfx/restaurant/rest_*`: procedural (numpy/scipy), `tools/restaurant/sounds.py`; every WAV has a sidecar with its seed and parameters (docs/restaurant.md).

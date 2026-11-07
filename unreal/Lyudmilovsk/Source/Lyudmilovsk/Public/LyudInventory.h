@@ -223,6 +223,9 @@ public:
 	void Lock(bool bLock);
 	/** Nothing else is going on that a screen would get in the way of. bNeedHero: only on foot (not as a bird). */
 	bool CanOpen(bool bNeedHero = true) const;
+	/** A screen of another system is up (the restaurant's menu card): IsOpen is true and no other screen opens over it; Key null
+	 *  when it closes (its closing key press then opens nothing else this frame). */
+	void SetExternalScreen(const UObject* Key);
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
@@ -238,6 +241,7 @@ private:
 	bool bShop = false;
 	TSharedPtr<SLyudPrompt> Prompt;
 	TWeakObjectPtr<const UObject> PromptKey;
+	TWeakObjectPtr<const UObject> ExternalScreen;
 	bool bLocked = false;
 	uint64 ShopClosedFrame = 0;
 	/** The frame a shop opened: its own T press must not shut it again (the traders' ticks and this one run in any order). */

@@ -1,0 +1,21 @@
+{
+ "name": "rest_clink_03",
+ "asset": "/Game/Audio/Restaurant/S_rest_clink_03",
+ "pool": "rest_clink",
+ "file": "audio/sfx/restaurant/rest_clink_03.wav",
+ "generator": "tools/restaurant/sounds.py:clink",
+ "seed": 545149951,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 3,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.73,
+ "peak_dbfs": -3.55,
+ "rms_dbfs": -21.72,
+ "dc": -2.3e-06,
+ "params": {
+  "ring_hz": 4385.062
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "name": "rest_room_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_room_01",
+ "pool": "rest_room",
+ "file": "audio/sfx/restaurant/rest_room_01.wav",
+ "generator": "tools/restaurant/sounds.py:room_loop",
+ "seed": 387138269,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 20.0,
+ "peak_dbfs": -8.91,
+ "rms_dbfs": -26.0,
+ "dc": 0.0,
+ "params": {
+  "voices": 6,
+  "layers": "murmur, air, faint cutlery, far plates"
+ },
+ "seam_click_ratio": 0.202
+}

@@ -74,6 +74,7 @@ struct FHeroAnimProxy : public FAnimInstanceProxy
 	FHeroReachPose Reach;
 	FBikeRiderPose Bike;
 	FBikeRiderPose Ladder;
+	FBikeRiderPose Table;
 	/** How far the hips go down in a full crouch, cm. */
 	static constexpr float CrouchDrop = 34.f;
 
@@ -106,6 +107,10 @@ public:
 
 	/** On a ladder (ULyudLadderClimber every frame): hands round the rungs, feet on them; Weight 0 leaves the body alone. */
 	FBikeRiderPose Ladder;
+
+	/** Seated at a table (ALyudRestaurant every frame while eating): the left hand on a knife; only Hands are used, Weight 0 leaves
+	 *  the body alone. */
+	FBikeRiderPose Table;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UAnimSequence> Idle;
