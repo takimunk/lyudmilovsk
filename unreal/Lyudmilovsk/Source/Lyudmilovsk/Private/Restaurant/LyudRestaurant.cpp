@@ -455,7 +455,13 @@ void ALyudRestaurant::UpdateFishing()
 {
 	// fish sold to the kitchen today: the Baltic plate is the catch of the day (fresher, cheaper)
 	int32 Taken = 0, Day = 0;
-	if (LyudRest::FishTaken(this, TEXT("yantar"), Taken, Day))
+	if (FishSettle > 0)
+	{
+		// just started or loaded: the next settled read is only the baseline, never a sale
+		--FishSettle;
+		FishSeenDay = -2;
+	}
+	else if (LyudRest::FishTaken(this, TEXT("yantar"), Taken, Day))
 	{
 		// a new counting day starts from nothing; a load can bring a smaller count back: take it as the new baseline
 		if (Day != FishSeenDay || Taken < FishSeenTaken)
@@ -1674,6 +1680,9 @@ void ALyudRestaurant::OnGameLoaded_Implementation()
 	ReleaseWaiter();
 	// the save's objects (the pocket's roubles, this actor's SavedRefund) are read after this call: refund on the next tick
 	RefundNextTick();
+	// the fishing's counts come back a tick later too: don't take them for new sales
+	FishSettle = 2;
+	FishSeenDay = -2;
 }
 
 void ALyudRestaurant::RefundNextTick()
