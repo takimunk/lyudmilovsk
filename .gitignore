@@ -63,3 +63,12 @@ design/bikes/game/
 blender/birds/nests/export/
 blender/birds/chicks/export/
 design/europa/game/moon_terrain.glb
+
+# the resident generator (blender/residents): vendored MakeHuman data, atlases and models are rebuilt by its scripts
+blender/residents/_vendor/
+blender/residents/export/
+blender/residents/atlases/
+blender/residents/cache/
+renders/residents/
+# their Unreal import (unreal/scripts/import_residents.sh): ~900 meshes, made again by the script, never in git/LFS
+unreal/Lyudmilovsk/Content/Characters/Humans/Town/
