@@ -2269,6 +2269,16 @@ namespace LyudPeople
 		{
 			if (P.N[(int)N] > (N == ENeed::Hunger ? 0.85f : 0.96f) && Cur.Need[(int)N] <= 0.f)
 			{
+				// whoever works where food is (the restaurant's, the café's, the fair's people) eats there, in the kitchen
+				if (N == ENeed::Hunger && Duty == P.Activity && P.bTown && P.Place >= 0)
+				{
+					const std::string& K = Places[P.Place].Kind;
+					if (K == "restaurant" || K == "cafe" || K == "fair_stall" || K == "kiosk" || K == "market")
+					{
+						P.N[(int)ENeed::Hunger] = 0.15f;
+						return false;
+					}
+				}
 				if (Duty == P.Activity)
 				{
 					P.bBreak = true;    // a break from work to eat; back to it after
@@ -2385,6 +2395,10 @@ namespace LyudPeople
 		// free time ends before bed (or the next duty)
 		const float Left = FreeHoursLeft(P);
 		Minutes = std::max(Activities[Best].MinMinutes * 0.5f, std::min(Minutes, Left * 60.f - 25.f));
+		if (bBreakNow)
+		{
+			Minutes = std::min(Minutes, 35.f);
+		}
 		char Why[96];
 		std::snprintf(Why, sizeof Why, bBreakNow ? "a break %.2f" : "free %.2f", BestScore);
 		Start(P, Best, BestSlot, Minutes, bSnap, Why);
@@ -3127,7 +3141,9 @@ namespace LyudPeople
 				bool bSleep = false;
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// (a break from work lasts 50 min at most, the way there and back included)
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep && Time - P.StateStart < 3000.0)
+					&& (bSleep || Time >= P.DutyBlockedUntil);
 				// a stretch of snow half cleared is finished first
 				const bool bMidSweep = P.SweepT >= 0.f;
 				if ((Time >= P.Until && !bMidSweep) || bDutyCalls || (P.Path.empty() && !bMidSweep && Interrupt(P, Dt)))

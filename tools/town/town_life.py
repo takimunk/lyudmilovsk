@@ -61,6 +61,7 @@ DAYS = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 # occupations (npc.<key>.role): ru, en, ja
 ROLES = {
     "waiter": ("официант", "waiter", "ウェイター"),
+    "waiter_f": ("официантка", "waitress", "ウェイトレス"),
     "waitress": ("официантка", "waitress", "ウェイトレス"),
     "cook": ("повар", "cook", "料理人"),
     "manager": ("управляющий", "manager", "支配人"),
@@ -75,8 +76,10 @@ ROLES = {
     "vendor": ("торговец на ярмарке", "fair vendor", "屋台の売り子"),
     "vendor_f": ("торговка на ярмарке", "fair vendor", "屋台の売り子"),
     "carousel_operator": ("смотритель карусели", "carousel operator", "回転木馬の係員"),
+    "carousel_operator_f": ("смотрительница карусели", "carousel operator", "回転木馬の係員"),
     "projectionist": ("киномеханик", "projectionist", "映写技師"),
     "dance_teacher": ("учитель танцев", "dance teacher", "ダンスの先生"),
+    "dance_teacher_f": ("учительница танцев", "dance teacher", "ダンスの先生"),
     "clerk": ("служащий", "office clerk", "事務員"),
     "clerk_f": ("служащая", "office clerk", "事務員"),
     "teacher": ("учитель", "teacher", "教師"),
@@ -92,14 +95,23 @@ ROLES = {
     "cleaner": ("уборщик", "cleaner", "清掃員"),
     "cleaner_f": ("уборщица", "cleaner", "清掃員"),
     "guard": ("охранник", "guard", "警備員"),
+    "guard_f": ("охранница", "guard", "警備員"),
     "lighthouse_keeper": ("смотритель маяка", "lighthouse keeper", "灯台守"),
+    "lighthouse_keeper_f": ("смотрительница маяка", "lighthouse keeper", "灯台守"),
+    "librarian": ("библиотекарь", "librarian", "司書"),
+    "caretaker": ("смотритель зала", "caretaker", "管理人"),
+    "caretaker_f": ("смотрительница зала", "caretaker", "管理人"),
+    "choir_leader": ("руководитель хора", "choir leader", "合唱団の指揮者"),
     "renter": ("прокатчик", "rentals attendant", "レンタル係"),
     "repairman": ("мастер", "repairman", "修理屋"),
+    "repairman_f": ("мастер", "repairwoman", "修理屋"),
+    "master": ("мастер", "repairman", "修理屋"),          # the plan's workshop units
+    "master_f": ("мастер", "repairwoman", "修理屋"),
     "away": ("работает в городе", "works out of town", "町の外で働く"),
     "student": ("студент", "student", "大学生"),
     "student_f": ("студентка", "student", "大学生"),
-    "pupil": ("школьник", "schoolboy", "小学生"),
-    "pupil_f": ("школьница", "schoolgirl", "小学生"),
+    "pupil": ("школьник", "schoolboy", "生徒"),         # 7..17: 小学生 would be primary school only
+    "pupil_f": ("школьница", "schoolgirl", "生徒"),
     "pensioner": ("пенсионер", "pensioner", "年金生活者"),
     "pensioner_f": ("пенсионерка", "pensioner", "年金生活者"),
     "artist": ("художник", "artist", "画家"),
@@ -109,6 +121,7 @@ ROLES = {
     "musician": ("музыкант", "musician", "音楽家"),
     "programmer": ("программист", "programmer", "プログラマー"),
     "fisherman": ("рыбак", "fisherman", "漁師"),
+    "fisherman_f": ("рыбачка", "fisherwoman", "漁師"),
     "homemaker": ("домохозяин", "homemaker", "主夫"),
     "homemaker_f": ("домохозяйка", "homemaker", "主婦"),
     "unemployed": ("ищет работу", "between jobs", "求職中"),
@@ -152,7 +165,9 @@ def spot_slots(spot, pos, extra):
     kind, yaw, seats = spot["kind"], spot.get("yaw", 0.0), int(spot.get("seats") or 0)
     if extra and extra.get("slots"):
         # a standing point holds a little group (a holiday crowd on the square: three to a point)
-        return [dict({"kind": s.get("kind", "bench"), "pos": s["pos"], "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45)},
+        # their seat points are on the seat's surface; the simulation's slot is the floor under it (+ height)
+        return [dict({"kind": s.get("kind", "bench"), "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45),
+                      "pos": [s["pos"][0], s["pos"][1], round(s["pos"][2] - (s.get("height") or 0.0), 3)]},
                      **({"capacity": 3} if s.get("kind") == "stand" else {})) for s in extra["slots"]]
     if extra and extra.get("path"):
         return [{"kind": "stand", "pos": p, "yaw": yaw, "capacity": 2} for p in extra["path"]]
@@ -258,6 +273,23 @@ def build_places(plan, extra, args):
         pl = {"id": s["id"], "kind": s["kind"], "pos": pos, "yaw": s.get("yaw", 0.0), "island": 0, "slots": spot_slots(s, pos, s)}
         places.append(pl)
         done.add(s["id"])
+    # the fair's staffed stalls (public spaces' fair_goods.json): a seller of their own each, who sells over the counter
+    goods = read_input("unreal/Lyudmilovsk/Content/City/fair_goods.json") or {}
+    goods = goods.get("stalls", goods) if isinstance(goods, dict) else {}
+    spots_by_id = {s["id"]: s for s in extra.get("spots", [])}
+    for sid, g in sorted(goods.items()):
+        sp = spots_by_id.get(sid)
+        if not isinstance(g, dict) or not sp or not sp.get("seller") or not (g.get("staffed") or sp.get("staffed")):
+            continue
+        sel = sp["seller"]
+        hours = g.get("hours") or [10, 19]
+        days = g.get("days") or "sat-sun"
+        pid = sid + "-SELLER"
+        places.append({"id": pid, "kind": "fair_stall", "door": sel["pos"], "yaw": sel.get("yaw", 0.0), "island": 0, "roles": ["vendor"],
+                       "slots": [{"kind": "staff", "tag": "vendor", "pos": sel["pos"], "yaw": sel.get("yaw", 0.0)}]})
+        workplaces.append({"id": pid, "plot": sid, "kind": "fair_stall", "door": sel["pos"], "yaw": sel.get("yaw", 0.0),
+                           "staff": [["vendor", 1, hours, days]], "w": 3.0, "d": 2.0, "centre": sel["pos"],
+                           "counter": {"title": g.get("title") or g.get("title_key"), "goods": g.get("goods") or []}})
     for s in plan["spots"]:
         if s["id"] in done:
             continue
@@ -352,7 +384,7 @@ def build_places(plan, extra, args):
             pass        # its visitors are its diners (the seats)
         elif shell:
             # a hall's seats (the cinema's 350) hold its visitors; otherwise a dozen at a time
-            n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic") else 0
+            n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic", "library", "hall") else 0
             slots.append({"kind": "visit", "capacity": max(12, n)})
         else:
             for i in range(6):
@@ -718,7 +750,7 @@ def build_people(plan, places, flats, workplaces, args, rnd):
         post = p.get("_post")
         female = bool(p["female"])
         if post:
-            act = "work_office" if post["kind"] in HOLIDAY_OFF_KINDS else "work_town"
+            act = "work_office" if post["kind"] in HOLIDAY_OFF_KINDS else ("work_fair" if post["kind"] == "fair_stall" else "work_town")
             p["duties"].append({"activity": act, "place": post["place"], "role": post["role"], "hours": post["hours"], "days": post["days"]})
             p["occupation"] = post["role"]
             p["_work"] = post["place"]
@@ -789,6 +821,38 @@ def build_people(plan, places, flats, workplaces, args, rnd):
     return people
 
 
+def write_counters(people, workplaces):
+    """The fair's sellers sell over their stall's counter (ULyudCounterTradeSubsystem): their entries in counters.json,
+    marked "town": 1 and replaced on every run; the file's other entries are left as they are, line for line."""
+    path = os.path.join(CONTENT, "PeopleData", "counters.json")
+    if not os.path.exists(path):
+        return
+    stalls = {w["id"]: w["counter"] for w in workplaces if w.get("counter")}
+    entries = []
+    for p in people:
+        for d in p["duties"]:
+            c = stalls.get(d.get("place"))
+            if d["activity"] == "work_fair" and c and c.get("goods"):
+                entries.append({"person": p["key"], "activity": "work_fair", "title": c.get("title") or "ui.shop.title_fair",
+                                "reach_cm": 260, "goods": c["goods"], "town": 1})
+    with open(path, encoding="utf-8") as f:
+        lines = [l for l in f.read().split("\n") if '"town": 1' not in l]
+    close = max(i for i, l in enumerate(lines) if l.strip() == "]")
+    body = [l for l in lines[:close]]
+    while body and not body[-1].strip():
+        body.pop()
+    if entries:
+        if not body[-1].rstrip().endswith(("[", ",")):
+            body[-1] = body[-1].rstrip() + ","
+        body += ["  " + json.dumps(e, ensure_ascii=False) + ("," if i + 1 < len(entries) else "") for i, e in enumerate(entries)]
+    elif body[-1].rstrip().endswith(","):
+        body[-1] = body[-1].rstrip()[:-1]
+    text = "\n".join(body + lines[close:])
+    json.loads(text)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
 def write(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -835,12 +899,17 @@ def main():
                      "Content/Localization/town/strings_<lang>.json. mesh: a model borrowed from the shared pool until their own is made.",
                      "seed": args.seed, "people": folk})
     # names and occupations in the three languages
+    untranslated = sorted({p["occupation"] for p in people if p["occupation"] not in ROLES})
+    if untranslated:
+        print("town_life: WARNING: no ru/en/ja in ROLES for %s: the tables get the raw id" % ", ".join(untranslated), file=sys.stderr)
     for i, lang in enumerate(("ru", "en", "ja")):
         table = {}
         for p in people:
             table["npc.%s.name" % p["key"]] = p["_name"][lang]
             table["npc.%s.role" % p["key"]] = ROLES[role_key(p["occupation"], bool(p["female"]))][i] if p["occupation"] in ROLES else p["occupation"]
         write(os.path.join(OUT_STRINGS, "strings_%s.json" % lang), table)
+
+    write_counters(people, workplaces)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)

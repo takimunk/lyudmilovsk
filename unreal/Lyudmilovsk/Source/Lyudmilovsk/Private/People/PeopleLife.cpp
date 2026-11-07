@@ -750,6 +750,11 @@ static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>
 	if (IAssetRegistry* Registry = IAssetRegistry::Get())
 	{
 		TArray<FAssetData> Assets;
+		// an uncooked -game run (offscreen tests, standalone) hasn't scanned the content: that folder once, synchronously
+		if (!GIsEditor && !FPlatformProperties::RequiresCookedData())
+		{
+			Registry->ScanPathsSynchronous({ TEXT("/Game/Characters/Humans/Town") }, false);
+		}
 		Registry->GetAssetsByPath(FName(TEXT("/Game/Characters/Humans/Town")), Assets, true);
 		for (const FAssetData& A : Assets)
 		{
@@ -1221,9 +1226,9 @@ void UPeopleLifeSubsystem::PickTownBodies(const FVector& Cam, float Draw)
 		// a townsperson borrows a look from the pool, never next to the one whose own look it is
 		if (ShownModels.IsValidIndex(P.Id))
 		{
-			if (const int32* Owner = ModelOwners.Find(ShownModels[P.Id]))
+			if (const int32* LookOwner = ModelOwners.Find(ShownModels[P.Id]))
 			{
-				const ANpcBody* OB = *Owner < Bodies.Num() ? Bodies[*Owner].Get() : nullptr;
+				const ANpcBody* OB = *LookOwner < Bodies.Num() ? Bodies[*LookOwner].Get() : nullptr;
 				if (OB && !OB->IsHidden() && FVector::Dist(OB->GetActorLocation(), At) < 6000.f)
 				{
 					continue;
@@ -1713,7 +1718,7 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 {
 	MeshName = InMesh;
 	ComputerClip = InComputerClip;
-	const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *InMesh, *InMesh, *InMesh);
+	const FString Path = PeopleModelPath(InMesh);
 	USkeletalMesh* Asset = LoadObject<USkeletalMesh>(nullptr, *Path);
 	if (!Asset)
 	{
@@ -1765,7 +1770,7 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 				{
 					C.Split(TEXT("/"), &Who, &What);
 				}
-				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *Who, *Who, *What));
+				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *Who, *FPaths::GetCleanFilename(Who), *What));
 			}
 		}
 		if (!A)
