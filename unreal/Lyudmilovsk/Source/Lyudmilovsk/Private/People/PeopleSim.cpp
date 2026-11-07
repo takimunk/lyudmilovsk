@@ -3141,9 +3141,8 @@ namespace LyudPeople
 				bool bSleep = false;
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
-				// (a break from work lasts 50 min at most, the way there and back included)
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep && Time - P.StateStart < 3000.0)
-					&& (bSleep || Time >= P.DutyBlockedUntil);
+				// (a break from work: the way there, 35 min at most, the way back)
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
 				// a stretch of snow half cleared is finished first
 				const bool bMidSweep = P.SweepT >= 0.f;
 				if ((Time >= P.Until && !bMidSweep) || bDutyCalls || (P.Path.empty() && !bMidSweep && Interrupt(P, Dt)))

@@ -24807,152 +24807,6 @@
    ]
   },
   {
-   "id": "S-FAIR-CAROUSEL",
-   "kind": "fair",
-   "pos": [
-    32.68,
-    1217.9,
-    -36.16
-   ],
-   "yaw": 0.0,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "ride",
-     "yaw": 90.0,
-     "height": 0.83,
-     "pos": [
-      35.88,
-      1217.9,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 135.0,
-     "height": 0.83,
-     "pos": [
-      34.943,
-      1220.163,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 180.0,
-     "height": 0.83,
-     "pos": [
-      32.68,
-      1221.1,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 225.0,
-     "height": 0.83,
-     "pos": [
-      30.417,
-      1220.163,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 270.0,
-     "height": 0.83,
-     "pos": [
-      29.48,
-      1217.9,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 315.0,
-     "height": 0.83,
-     "pos": [
-      30.417,
-      1215.637,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 360.0,
-     "height": 0.83,
-     "pos": [
-      32.68,
-      1214.7,
-      -35.81
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 405.0,
-     "height": 0.83,
-     "pos": [
-      34.943,
-      1215.637,
-      -35.81
-     ]
-    }
-   ]
-  },
-  {
-   "id": "S-FAIR-WHEEL",
-   "kind": "fair",
-   "pos": [
-    40.288,
-    1268.9,
-    -36.16
-   ],
-   "yaw": -6.6,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "ride",
-     "yaw": 263.4,
-     "height": 0.37,
-     "pos": [
-      39.692,
-      1268.969,
-      -35.72
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 263.4,
-     "height": 0.37,
-     "pos": [
-      39.692,
-      1268.969,
-      -35.72
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 83.4,
-     "height": 0.37,
-     "pos": [
-      40.884,
-      1268.831,
-      -35.72
-     ]
-    },
-    {
-     "kind": "ride",
-     "yaw": 83.4,
-     "height": 0.37,
-     "pos": [
-      40.884,
-      1268.831,
-      -35.72
-     ]
-    }
-   ]
-  },
-  {
    "id": "S-BENCH-FR01",
    "kind": "bench",
    "pos": [
@@ -29242,12 +29096,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
+     "tag": "fishmonger",
      "capacity": 2
     },
     {
@@ -29256,8 +29105,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "fishmonger"
    ],
    "building": "W1-U02",
    "shell": 1
@@ -29275,7 +29123,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
+     "tag": "renter",
      "pos": [
       72.88,
       456.97,
@@ -29339,7 +29187,7 @@
     }
    ],
    "roles": [
-    "seller"
+    "renter"
    ],
    "building": "W1-U03"
   },
@@ -29356,7 +29204,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "master",
+     "tag": "repairman",
      "capacity": 1
     },
     {
@@ -29365,7 +29213,7 @@
     }
    ],
    "roles": [
-    "master"
+    "repairman"
    ],
    "building": "W1-U04",
    "shell": 1
@@ -29383,12 +29231,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "cook",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "waiter",
      "capacity": 1
     },
     {
@@ -29401,8 +29249,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "cook",
+    "waiter"
    ],
    "building": "W1-U05",
    "shell": 1
@@ -29421,12 +29269,7 @@
     {
      "kind": "staff",
      "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -29434,7 +29277,6 @@
     }
    ],
    "roles": [
-    "cashier",
     "seller"
    ],
    "building": "W1-U06",
@@ -29453,12 +29295,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "baker",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "seller",
      "capacity": 1
     },
     {
@@ -29471,8 +29313,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "baker",
+    "seller"
    ],
    "building": "W1-U07",
    "shell": 1
@@ -29490,13 +29332,8 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "tag": "photographer",
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -29504,8 +29341,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "photographer"
    ],
    "building": "W1-U08",
    "shell": 1
@@ -29523,10 +29359,20 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
+     "tag": "barber",
      "pos": [
-      81.57,
-      666.76,
+      81.54,
+      666.16,
+      -39.5
+     ],
+     "yaw": -2.9
+    },
+    {
+     "kind": "staff",
+     "tag": "barber",
+     "pos": [
+      81.6,
+      667.36,
       -39.5
      ],
      "yaw": -2.9
@@ -29587,7 +29433,7 @@
     }
    ],
    "roles": [
-    "seller"
+    "barber"
    ],
    "building": "W1-U09"
   },
@@ -29604,7 +29450,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "master",
+     "tag": "bookseller",
      "capacity": 1
     },
     {
@@ -29613,7 +29459,7 @@
     }
    ],
    "roles": [
-    "master"
+    "bookseller"
    ],
    "building": "W1-U10",
    "shell": 1
@@ -29631,13 +29477,8 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
+     "tag": "bartender",
      "capacity": 2
-    },
-    {
-     "kind": "staff",
-     "tag": "cook",
-     "capacity": 1
     },
     {
      "kind": "seat",
@@ -29649,8 +29490,7 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "bartender"
    ],
    "building": "W1-U11",
    "shell": 1
@@ -29668,13 +29508,13 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
+     "tag": "cook",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "tag": "seller",
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -29682,7 +29522,7 @@
     }
    ],
    "roles": [
-    "cashier",
+    "cook",
     "seller"
    ],
    "building": "W1-U12",
@@ -29738,12 +29578,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
+     "tag": "fishmonger",
      "capacity": 2
     },
     {
@@ -29752,8 +29587,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "fishmonger"
    ],
    "building": "W1-U14",
    "shell": 1
@@ -29771,7 +29605,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
+     "tag": "renter",
      "pos": [
       92.4,
       846.41,
@@ -29835,7 +29669,7 @@
     }
    ],
    "roles": [
-    "seller"
+    "renter"
    ],
    "building": "W1-U15"
   },
@@ -29852,7 +29686,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "master",
+     "tag": "repairman",
      "capacity": 1
     },
     {
@@ -29861,7 +29695,7 @@
     }
    ],
    "roles": [
-    "master"
+    "repairman"
    ],
    "building": "W1-U16",
    "shell": 1
@@ -29879,12 +29713,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "cook",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "waiter",
      "capacity": 1
     },
     {
@@ -29897,8 +29731,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "cook",
+    "waiter"
    ],
    "building": "W1-U17",
    "shell": 1
@@ -29917,12 +29751,7 @@
     {
      "kind": "staff",
      "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -29930,7 +29759,6 @@
     }
    ],
    "roles": [
-    "cashier",
     "seller"
    ],
    "building": "W1-U18",
@@ -29949,12 +29777,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "baker",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "seller",
      "capacity": 1
     },
     {
@@ -29967,8 +29795,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "baker",
+    "seller"
    ],
    "building": "W1-U19",
    "shell": 1
@@ -29986,13 +29814,8 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "tag": "photographer",
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -30000,8 +29823,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "photographer"
    ],
    "building": "W1-U20",
    "shell": 1
@@ -30019,10 +29841,20 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
+     "tag": "barber",
      "pos": [
-      113.76,
-      1085.42,
+      113.7,
+      1084.83,
+      -39.5
+     ],
+     "yaw": -5.5
+    },
+    {
+     "kind": "staff",
+     "tag": "barber",
+     "pos": [
+      113.81,
+      1086.02,
       -39.5
      ],
      "yaw": -5.5
@@ -30083,7 +29915,7 @@
     }
    ],
    "roles": [
-    "seller"
+    "barber"
    ],
    "building": "W1-U21"
   },
@@ -30100,7 +29932,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "master",
+     "tag": "bookseller",
      "capacity": 1
     },
     {
@@ -30109,7 +29941,7 @@
     }
    ],
    "roles": [
-    "master"
+    "bookseller"
    ],
    "building": "W1-U22",
    "shell": 1
@@ -30127,13 +29959,8 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
+     "tag": "bartender",
      "capacity": 2
-    },
-    {
-     "kind": "staff",
-     "tag": "cook",
-     "capacity": 1
     },
     {
      "kind": "seat",
@@ -30145,8 +29972,7 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "bartender"
    ],
    "building": "W1-U23",
    "shell": 1
@@ -30164,13 +29990,13 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
+     "tag": "cook",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "tag": "seller",
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -30178,7 +30004,7 @@
     }
    ],
    "roles": [
-    "cashier",
+    "cook",
     "seller"
    ],
    "building": "W1-U24",
@@ -30234,12 +30060,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
+     "tag": "fishmonger",
      "capacity": 2
     },
     {
@@ -30248,8 +30069,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "fishmonger"
    ],
    "building": "W1-U26",
    "shell": 1
@@ -30267,7 +30087,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
+     "tag": "renter",
      "pos": [
       135.48,
       1294.26,
@@ -30331,7 +30151,7 @@
     }
    ],
    "roles": [
-    "seller"
+    "renter"
    ],
    "building": "W1-U27"
   },
@@ -30348,7 +30168,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "master",
+     "tag": "repairman",
      "capacity": 1
     },
     {
@@ -30357,7 +30177,7 @@
     }
    ],
    "roles": [
-    "master"
+    "repairman"
    ],
    "building": "W1-U28",
    "shell": 1
@@ -30375,12 +30195,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "cook",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "waiter",
      "capacity": 1
     },
     {
@@ -30393,8 +30213,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "cook",
+    "waiter"
    ],
    "building": "W1-U29",
    "shell": 1
@@ -30413,12 +30233,7 @@
     {
      "kind": "staff",
      "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -30426,7 +30241,6 @@
     }
    ],
    "roles": [
-    "cashier",
     "seller"
    ],
    "building": "W1-U30",
@@ -30445,12 +30259,12 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "barista",
-     "capacity": 2
+     "tag": "baker",
+     "capacity": 1
     },
     {
      "kind": "staff",
-     "tag": "cook",
+     "tag": "seller",
      "capacity": 1
     },
     {
@@ -30463,8 +30277,8 @@
     }
    ],
    "roles": [
-    "barista",
-    "cook"
+    "baker",
+    "seller"
    ],
    "building": "W1-U31",
    "shell": 1
@@ -30482,13 +30296,8 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "seller",
-     "capacity": 4
-    },
-    {
-     "kind": "staff",
-     "tag": "cashier",
-     "capacity": 2
+     "tag": "photographer",
+     "capacity": 1
     },
     {
      "kind": "visit",
@@ -30496,8 +30305,7 @@
     }
    ],
    "roles": [
-    "cashier",
-    "seller"
+    "photographer"
    ],
    "building": "W1-U32",
    "shell": 1
