@@ -40,7 +40,7 @@ static TAutoConsoleVariable<float> CVarMoonDiskGain(TEXT("lyud.Sky.MoonDiskGain"
 static TAutoConsoleVariable<float> CVarSunSpecular(TEXT("lyud.Sky.SunSpecular"), 1.f, TEXT("Multiplies the sunlight's specular (tuning: the sea's glitter path)."));
 static TAutoConsoleVariable<float> CVarCloudDensity(TEXT("lyud.Sky.CloudDensity"), 1.f, TEXT("Multiplies the clouds' density (tuning)."));
 static TAutoConsoleVariable<float> CVarCloudOpaque(TEXT("lyud.Sky.CloudOpaque"), 1.f, TEXT("Multiplies the clouds' opaque cut-off CloudOpaqueBelow (0 = the engine's tracing to the end; tuning)."));
-static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (tuning)."));
+static TAutoConsoleVariable<float> CVarCloudSamples(TEXT("lyud.Sky.CloudSamples"), 1.f, TEXT("Multiplies the clouds' ray-march samples (graphics levels: Effects)."), ECVF_Scalability);
 static TAutoConsoleVariable<float> CVarNightMie(TEXT("lyud.Sky.NightMie"), -1.f, TEXT("Overrides NightMieShare when >= 0 (tuning: the haze round the moon)."));
 static TAutoConsoleVariable<float> CVarMoonSize(TEXT("lyud.Sky.MoonSizeDeg"), 0.f, TEXT("Europa's apparent size, degrees across, when > 0 (overrides ALyudSky::MoonSizeDeg)."));
 static TAutoConsoleVariable<float> CVarSunAureole(TEXT("lyud.Sky.SunAureole"), 1.f, TEXT("Multiplies the warm glow round the sun in the haze (tuning)."));

@@ -15,13 +15,14 @@
  *
  * Auto (the default of a new install) picks the level from the machine: Apple silicon by its tier (Max and Ultra Epic,
  * Pro High and Epic from the M4 Pro, the plain chip Medium and High from the M5), other GPUs by the engine's quick hardware
- * benchmark, capped by the memory. The render resolution's Auto renders at the level's share of a 1080p window (Low 50%,
+ * benchmark, capped by the memory; phones and tablets keep their device profile's levels and resolution.
+ * The render resolution's Auto renders at the level's share of a 1080p window (Low 50%,
  * Medium 58%, High 67%, Epic 75%, Cinematic 100%) and lower in bigger windows (x sqrt(1080 / height): 4K Epic 53%), where
  * TSR upscales as well from fewer pixels; TSR's history shrinks the same way (Epic's 200% would be 4x a Retina window).
  * In the editor's Play the game's settings apply too and the editor's come back when Play stops. Power saving holds the
  * frame rate down while the game is in the background (lyud.Gfx.BackgroundFps) or under the menu (lyud.Gfx.MenuFps).
- * Offscreen, unattended and fixed-step runs keep their own frame rate and resolution; the benchmark gets the resolution
- * a player would.
+ * Offscreen, unattended and fixed-step runs start at the default levels (not GameUserSettings.ini's) and keep their own
+ * frame rate and resolution; the benchmark gets the resolution a player would.
  */
 namespace LyudGraphics
 {
@@ -39,7 +40,7 @@ namespace LyudGraphics
 
 	/** The preset: 0..4 when every group is on that level, -1 when they differ (custom). */
 	int32 Preset();
-	/** The levels are the machine's own pick (Auto), re-picked when the GPU changes. */
+	/** The levels are the machine's own pick (Auto), re-picked when the GPU changes (not in the editor's Play before any are stored). */
 	bool IsAuto();
 	void SetPreset(int32 Level);
 	void SetAuto();

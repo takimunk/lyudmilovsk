@@ -26,7 +26,7 @@
 #include "Misc/ScopeExit.h"
 
 static TAutoConsoleVariable<float> CVarPlantShapeBudget(TEXT("lyud.Plants.ShapeBudgetMs"), 3.f,
-	TEXT("Milliseconds a frame the live plants spend re-shaping (one always runs); the rest wait for the next frames. Running past a garden turned dozens from their bake to the full shape in one frame: a freeze of a minute."));
+	TEXT("Milliseconds a frame the live plants spend re-shaping (one always runs); the rest wait for the next frames. Running past a garden turned dozens from their bake to the full shape in one frame: a freeze of a minute. Graphics levels: Foliage."), ECVF_Scalability);
 
 namespace
 {

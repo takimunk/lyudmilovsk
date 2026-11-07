@@ -110,10 +110,20 @@ int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
 	G.Comp->LightingChannels.bChannel0 = false;
 	G.Comp->LightingChannels.bChannel1 = true;
 	// the graphics level's draw distance, shadows and wind (ApplyQuality keeps them up to date)
-	G.Comp->SetCullDistances(0, (int32)GetDrawDistance());
-	G.Comp->CastShadow = QualityShadows();
-	G.Comp->WorldPositionOffsetDisableDistance = QualityWindDistance();
+	const float Draw = GetDrawDistance();
+	const int32 Shadows = QualityShadows() ? 1 : 0;
+	const int32 Wind = QualityWindDistance();
+	G.Comp->SetCullDistances(0, (int32)Draw);
+	G.Comp->CastShadow = Shadows != 0;
+	G.Comp->WorldPositionOffsetDisableDistance = Wind;
 	G.Comp->RegisterComponent();
+	if (Groups.IsEmpty())
+	{
+		// the first kind is built with the level as it is: nothing for ApplyQuality to wait its turn for at the start
+		AppliedDraw = Draw;
+		AppliedShadows = Shadows;
+		AppliedWind = Wind;
+	}
 	return Groups.Add(MoveTemp(G));
 }
 
@@ -139,26 +149,28 @@ int32 AProceduralForest::QualityWindDistance() const
 	return FMath::Max(0, FMath::RoundToInt((BenchM >= 0.f ? BenchM : CVarForestWindDistance.GetValueOnGameThread()) * 100.f));
 }
 
-void AProceduralForest::ApplyQuality(bool bForce)
+bool AProceduralForest::ApplyQuality(bool bForce)
 {
 	const float Draw = GetDrawDistance();
 	const int32 Shadows = QualityShadows() ? 1 : 0;
 	const int32 Wind = QualityWindDistance();
 	const bool bChanged = Draw != AppliedDraw || Shadows != AppliedShadows || Wind != AppliedWind;
 	// a change of level: one forest a frame across the world (each resends its kinds' components, all of them in one frame
-	// would stall it); a forest waiting for its frame ticks every frame until then. Forced (the benchmark's knobs): now.
+	// would stall it); a forest waiting for its frame ticks every frame until then, and does nothing else in those ticks.
+	// Forced (the benchmark's knobs), or nothing built yet: now.
 	static uint64 ForestQualityFrame = 0;
-	const bool bNow = bForce || (bChanged && ForestQualityFrame != GFrameCounter);
-	const float Interval = bChanged && !bNow ? 0.f : ForestTickSeconds;
+	const bool bNow = bForce || Groups.IsEmpty() || (bChanged && ForestQualityFrame != GFrameCounter);
+	const bool bWaiting = bChanged && !bNow;
+	const float Interval = bWaiting ? 0.f : ForestTickSeconds;
 	if (GetActorTickInterval() != Interval)
 	{
 		SetActorTickInterval(Interval);
 	}
-	if (!bNow)
+	if (!bNow || (!bChanged && !bForce))
 	{
-		return;
+		return bWaiting;
 	}
-	if (!bForce)
+	if (!bForce && !Groups.IsEmpty())
 	{
 		ForestQualityFrame = GFrameCounter;
 	}
@@ -176,6 +188,7 @@ void AProceduralForest::ApplyQuality(bool bForce)
 		G.Comp->SetCastShadow(Shadows != 0);
 		G.Comp->SetWorldPositionOffsetDisableDistance(Wind);
 	}
+	return false;
 }
 
 void AProceduralForest::AddTree(FName Species, FVector Location, float Age, int32 Variant, float Yaw, float Scale)
@@ -367,6 +380,28 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 		}
 	}
 	Wanted.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key < B.Key; });
+	const int32 MaxNow = CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive;
+	if (LiveCount > MaxNow)
+	{
+		// a lighter graphics level allows fewer live plants: the farthest go back to their bakes now (once per change)
+		TArray<TPair<double, int32>> LiveTrees;
+		for (int32 I = 0; I < Trees.Num(); I++)
+		{
+			if (Trees[I].Live.IsValid())
+			{
+				LiveTrees.Emplace(FVector::DistSquared(Camera, Trees[I].Xf.GetLocation()), I);
+			}
+		}
+		LiveTrees.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key > B.Key; });
+		for (int32 K = 0; K < LiveTrees.Num() && LiveCount > MaxNow; K++)
+		{
+			FTree& T = Trees[LiveTrees[K].Value];
+			T.Live->Destroy();
+			T.Live.Reset();
+			LiveCount--;
+			SetHidden(T, false);
+		}
+	}
 	// a camera that is flying or running past does not need a plant built under it
 	const double Now = GetWorld()->GetTimeSeconds();
 	double Speed = 0.0;
@@ -387,7 +422,7 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 	{
 		// a live plant builds its skeleton, wood and leaves in this tick: a few at most per tick, the nearest first
 		if (Built >= LivePerTick) break;
-		if (LiveCount >= (CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive)) break;
+		if (LiveCount >= MaxNow) break;
 		FTree& T = Trees[W.Value];
 		FActorSpawnParameters Params;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -418,7 +453,8 @@ void AProceduralForest::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	const UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld()) return;
-	ApplyQuality(false);
+	// waiting for its frame to take a new graphics level: only that, every frame, until its turn
+	if (ApplyQuality(false)) return;
 	SyncBakes(CurrentDay());
 	const APlayerController* PC = World->GetFirstPlayerController();
 	if (PC && PC->PlayerCameraManager && !Trees.IsEmpty())

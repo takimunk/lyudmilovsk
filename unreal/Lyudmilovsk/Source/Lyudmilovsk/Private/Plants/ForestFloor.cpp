@@ -45,7 +45,7 @@
 
 static TAutoConsoleVariable<int32> CVarFloor(TEXT("lyud.ForestFloor"), 1, TEXT("0 hides the forest floor's ground cover, litter and debris (AForestFloor)."));
 static TAutoConsoleVariable<float> CVarFloorDensity(TEXT("lyud.ForestFloor.Density"), 1.f,
-	TEXT("Multiplies the forest floor's density (applied at the next layout). 0.5 for a slow machine."));
+	TEXT("Multiplies the forest floor's density (applied at the next layout; graphics levels: Foliage). 0.5 for a slow machine."), ECVF_Scalability);
 static TAutoConsoleVariable<int32> CVarFloorShadows(TEXT("lyud.ForestFloor.Shadows"), 1, TEXT("0: no forest floor piece casts a shadow (logs, stumps, boulders, branches, roots do by default)."));
 static TAutoConsoleVariable<int32> CVarFloorDebug(TEXT("lyud.ForestFloor.Debug"), 0, TEXT("1: print the forest floor's state on screen."));
 static TAutoConsoleVariable<float> CVarFloorWet(TEXT("lyud.ForestFloor.Wet"), -1.f, TEXT("Force the forest floor's wetness 0..1 (negative: the weather's)."));

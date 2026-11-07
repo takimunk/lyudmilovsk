@@ -49,11 +49,11 @@ static TAutoConsoleVariable<int32> CVarBirdsDoorFlock(TEXT("lyud.Birds.DoorFlock
 static TAutoConsoleVariable<int32> CVarBirdsAnyMap(TEXT("lyud.Birds.AnyMap"), 0,
 	TEXT("Start the bird life in any game map, not only Lvl_Scene01."));
 static TAutoConsoleVariable<int32> CVarBirdsBodies(TEXT("lyud.Birds.Bodies"), 12,
-	TEXT("Most birds near the camera drawn as animated bodies (ABirdActor) at once."));
+	TEXT("Most birds near the camera drawn as animated bodies (ABirdActor) at once (graphics levels: View distance)."), ECVF_Scalability);
 static TAutoConsoleVariable<int32> CVarBirdsIgnorePlayer(TEXT("lyud.Birds.IgnorePlayer"), 0,
 	TEXT("1: birds don't perceive the player (close-up screenshots, debugging)."));
 static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 700.f,
-	TEXT("Birds are drawn within this many of their own lengths from the camera."));
+	TEXT("Birds are drawn within this many of their own lengths from the camera (graphics levels: View distance)."), ECVF_Scalability);
 static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
 	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,

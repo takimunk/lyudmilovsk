@@ -869,7 +869,7 @@
  "ui.gfx.window.full": "フルスクリーン",
  "ui.gfx.window.windowed": "ウィンドウ",
  "ui.gfx.power": "メニュー中とバックグラウンドで省電力",
- "ui.gfx.details": "詳細",
+ "ui.gfx.details": "詳細設定",
  "ui.gfx.group.view_distance": "描画距離",
  "ui.gfx.group.shadow": "影",
  "ui.gfx.group.gi": "間接光",

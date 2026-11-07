@@ -13,7 +13,10 @@ the levels that turn Lumen off) stay the engine's when the project only changes 
                                                      the file has a variable name first on each line (`DumpCVars`)
     tools/check_scalability.py --platform IOS        a platform's levels: the engine's and the project's
                                                      Config/<platform>/<platform>Scalability.ini on top (IOS, Android)
-Exit status 1 when the project leaves a key it adds out of a level (the engine's own gaps are only listed).
+The game's own variables (lyud.*) a level sets must carry ECVF_Scalability where Source defines them: the engine drops
+a Scalability.ini line for any variable without it (with an ensure; UE::ConfigUtilities::OnSetCVarFromIniEntry).
+Exit status 1 when the project leaves a key it adds out of a level (the engine's own gaps are only listed), or a lyud.*
+key is not a variable of Source with ECVF_Scalability.
 """
 import argparse
 import os
@@ -22,6 +25,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Config", "DefaultScalability.ini")
+SOURCE = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source")
 LEVELS = ["0", "1", "2", "3", "Cine"]
 GROUPS = ["ViewDistanceQuality", "AntiAliasingQuality", "ShadowQuality", "GlobalIlluminationQuality",
           "ReflectionQuality", "PostProcessQuality", "TextureQuality", "EffectsQuality", "FoliageQuality",
@@ -47,6 +51,21 @@ def read_ini(path):
             key = key.strip().lstrip("+-.!")
             current[key.lower()] = (key, value.split(";")[0].strip())
     return sections
+
+
+def game_variables(source_root):
+    """{name (lower case): its definition from the name to the `);` ending it} of the game's lyud.* variables in Source."""
+    found = {}
+    for dirpath, _, files in os.walk(source_root):
+        for name in files:
+            if not name.endswith((".cpp", ".h")):
+                continue
+            with open(os.path.join(dirpath, name), encoding="utf-8", errors="replace") as f:
+                text = f.read()
+            for m in re.finditer(r'\b(?:TAutoConsoleVariable\s*<[^>]*>|FAutoConsoleVariableRef|FAutoConsoleVariable)\s+\w+\s*'
+                                 r'\(\s*TEXT\("(lyud\.[\w.]+)"\)(.*?\)\s*;)[ \t]*(?://[^\n]*)?$', text, re.S | re.M):
+                found.setdefault(m.group(1).lower(), m.group(2))
+    return found
 
 
 def merge(into, more):
@@ -86,6 +105,7 @@ def main():
                 if m:
                     known.add(m.group(1).lower())
 
+    game = game_variables(SOURCE)
     failed = False
     for section in project:
         group = section.split("@")[0]
@@ -127,6 +147,13 @@ def main():
                 if known is not None and low not in known:
                     flag = "   <- not a console variable of this engine"
                     failed = True
+                if low.startswith("lyud."):
+                    if low not in game:
+                        flag += "   <- not a variable of the game's Source"
+                        failed = True
+                    elif "ECVF_Scalability" not in game[low]:
+                        flag += "   <- no ECVF_Scalability in Source: the engine drops this line"
+                        failed = True
                 print(f"  {keys[low]:<62} {'  '.join(c.rjust(6) for c in cells)}{flag}")
         for ours, key, missing, in_project in gaps:
             where = ", ".join("@" + m for m in missing)
