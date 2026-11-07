@@ -1285,8 +1285,8 @@
  "ui.rest.refund": "出されなかった注文の代金{0}ルーブルが返金された",
  "ui.rest.not_seated": "先に席に着いてください",
  "ui.rest.order_failed": "その注文は今は受けられない",
- "ui.rest.kitchen_closing": "厨房はまもなく閉店。ご注文は締め切りました",
- "ui.rest.catch_of_day": "本日の水揚げ：今朝の新鮮な魚、お安く",
+ "ui.rest.kitchen_closing": "厨房はまもなく閉まります。ご注文は締め切りました",
+ "ui.rest.catch_of_day": "本日の水揚げ：今朝の新鮮な魚をお安く",
  "sign.rest.plaque": "海辺のレストラン",
  "sign.rest.hours": "毎日 11:00～23:00"
 }
