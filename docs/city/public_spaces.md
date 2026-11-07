@@ -54,7 +54,7 @@ only up close: Maple, Rowan, SilverBirch, WeepingBirch, BlackAlder, Apple), the 
   sound and season are `ALyudFountain`'s (docs/fountain.md), built from the same levels with `flow_scale` 1.8 (speeds
   x1.8, the jet and bell grow with it, more and bigger drops). `ULyudFountainSubsystem::GetFountains()` lists both.
 - **Lamps at night**: the glass glows (one MID parameter, fading over ~4 s when the sun drops under ~0.5 degree, off
-  after it rises over ~2.5 degrees); a pool of `lyud.City.StreetLights` (14) shadowless point lights moves to the lamps
+  after it rises over ~2.5 degrees); a pool of `lyud.City.StreetLights` (12; with the buildings' lyud.City.LampBudget 24 that is 36 lights at most) shadowless point lights moves to the lamps
   nearest the camera (re-picked when the camera has moved 1.5 m, at most 4 times a second), so the street is lit
   where you are without a light per lamp.
 - Tagged `NoTree`/`NoGrass`: the forests and the grass leave the paving bare; `PlanStage` / `PlanStalls` once the stage and the fair stalls are built (the festivals then build none of their own).

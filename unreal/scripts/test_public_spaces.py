@@ -84,9 +84,9 @@ if os.environ.get("CITY_AB"):
               ("abn_on2", p(40, 840, T0 + 1.7), p(40, 960, T0 + 1.2), NIGHT, ["lyud.City.Show 1"], ""),
               ("abn_off2", p(40, 840, T0 + 1.7), p(40, 960, T0 + 1.2), NIGHT, ["lyud.City.Show 0"], ""),
               # the street lights alone at night (the pool against glow only), on the square and the promenade
-              ("abl_on", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.Show 1", "lyud.City.StreetLights 14"], ""),
+              ("abl_on", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.Show 1", "lyud.City.StreetLights 12"], ""),
               ("abl_off", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 0"], ""),
-              ("abl_on2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 14"], ""),
+              ("abl_on2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 12"], ""),
               ("abl_off2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 0"], ""),
               ("abl8", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 8"], "")]
 if os.environ.get("CITY_SHOTS"):

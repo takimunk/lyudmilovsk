@@ -1,0 +1,1128 @@
+{
+ "_doc": "The fair's stalls (tools/public_spaces.py, docs/city/public_spaces.md): theme, shop title key, goods [{item, price, count}] (LyudInventory items). staffed: town_life.py gives it a seller (place S-FAIR-STALLnn-SELLER at the spot's seller pos, activity work_fair, Sat-Sun 10-19) and the counters.json entry (ULyudCounterTradeSubsystem: T to trade).",
+ "stalls": {
+  "S-FAIR-STALL01": {
+   "theme": "dairy",
+   "title_key": "ui.shop.title_fair_dairy",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "bread_loaf",
+     "price": 12,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL02": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL03": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL04": {
+   "theme": "amber",
+   "title_key": "ui.shop.title_fair_amber",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "amber_charm",
+     "price": 85,
+     "count": 3
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 10
+    },
+    {
+     "item": "badge",
+     "price": 11,
+     "count": 5
+    }
+   ]
+  },
+  "S-FAIR-STALL05": {
+   "theme": "snacks",
+   "title_key": "ui.shop.title_fair_snacks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "chips",
+     "price": 32,
+     "count": 6
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL06": {
+   "theme": "corn",
+   "title_key": "ui.shop.title_fair_corn",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "corn_cob",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL07": {
+   "theme": "news",
+   "title_key": "ui.shop.title_fair_news",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "daily_paper",
+     "price": 5,
+     "count": 8
+    },
+    {
+     "item": "magazine_science",
+     "price": 38,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 38,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL08": {
+   "theme": "pastry",
+   "title_key": "ui.shop.title_fair_pastry",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "pie",
+     "price": 15,
+     "count": 6
+    },
+    {
+     "item": "cookies",
+     "price": 18,
+     "count": 4
+    },
+    {
+     "item": "bread_loaf",
+     "price": 11,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL09": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL10": {
+   "theme": "cheese",
+   "title_key": "ui.shop.title_fair_cheese",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "cheese_braid",
+     "price": 24,
+     "count": 4
+    },
+    {
+     "item": "cheese_round_small",
+     "price": 38,
+     "count": 2
+    },
+    {
+     "item": "cheese_round_big",
+     "price": 100,
+     "count": 1
+    }
+   ]
+  },
+  "S-FAIR-STALL11": {
+   "theme": "dairy",
+   "title_key": "ui.shop.title_fair_dairy",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "bread_loaf",
+     "price": 12,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL12": {
+   "theme": "corn",
+   "title_key": "ui.shop.title_fair_corn",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "corn_cob",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL13": {
+   "theme": "tea",
+   "title_key": "ui.shop.title_fair_tea",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "tea",
+     "price": 12,
+     "count": 8
+    },
+    {
+     "item": "coffee",
+     "price": 25,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL14": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL15": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL16": {
+   "theme": "amber",
+   "title_key": "ui.shop.title_fair_amber",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "amber_charm",
+     "price": 85,
+     "count": 3
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 10
+    },
+    {
+     "item": "badge",
+     "price": 11,
+     "count": 5
+    }
+   ]
+  },
+  "S-FAIR-STALL17": {
+   "theme": "snacks",
+   "title_key": "ui.shop.title_fair_snacks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "chips",
+     "price": 32,
+     "count": 6
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL18": {
+   "theme": "corn",
+   "title_key": "ui.shop.title_fair_corn",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "corn_cob",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL19": {
+   "theme": "news",
+   "title_key": "ui.shop.title_fair_news",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "daily_paper",
+     "price": 5,
+     "count": 8
+    },
+    {
+     "item": "magazine_science",
+     "price": 38,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 38,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL20": {
+   "theme": "cheese",
+   "title_key": "ui.shop.title_fair_cheese",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "cheese_braid",
+     "price": 24,
+     "count": 4
+    },
+    {
+     "item": "cheese_round_small",
+     "price": 38,
+     "count": 2
+    },
+    {
+     "item": "cheese_round_big",
+     "price": 100,
+     "count": 1
+    }
+   ]
+  },
+  "S-FAIR-STALL21": {
+   "theme": "fruit",
+   "title_key": "ui.shop.title_fair_fruit",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "apple",
+     "price": 6,
+     "count": 12
+    }
+   ]
+  },
+  "S-FAIR-STALL22": {
+   "theme": "pastry",
+   "title_key": "ui.shop.title_fair_pastry",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "pie",
+     "price": 15,
+     "count": 6
+    },
+    {
+     "item": "cookies",
+     "price": 18,
+     "count": 4
+    },
+    {
+     "item": "bread_loaf",
+     "price": 11,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL23": {
+   "theme": "tea",
+   "title_key": "ui.shop.title_fair_tea",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "tea",
+     "price": 12,
+     "count": 8
+    },
+    {
+     "item": "coffee",
+     "price": 25,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL24": {
+   "theme": "birds",
+   "title_key": "ui.shop.title_fair_birds",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "bird_feed",
+     "price": 9,
+     "count": 6
+    },
+    {
+     "item": "feed_grain",
+     "price": 14,
+     "count": 4
+    },
+    {
+     "item": "feed_peanuts",
+     "price": 28,
+     "count": 4
+    }
+   ]
+  },
+  "S-FAIR-STALL25": {
+   "theme": "dairy",
+   "title_key": "ui.shop.title_fair_dairy",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "bread_loaf",
+     "price": 12,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL26": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL27": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL28": {
+   "theme": "amber",
+   "title_key": "ui.shop.title_fair_amber",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "amber_charm",
+     "price": 85,
+     "count": 3
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 10
+    },
+    {
+     "item": "badge",
+     "price": 11,
+     "count": 5
+    }
+   ]
+  },
+  "S-FAIR-STALL29": {
+   "theme": "fruit",
+   "title_key": "ui.shop.title_fair_fruit",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "apple",
+     "price": 6,
+     "count": 12
+    }
+   ]
+  },
+  "S-FAIR-STALL30": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL31": {
+   "theme": "news",
+   "title_key": "ui.shop.title_fair_news",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "daily_paper",
+     "price": 5,
+     "count": 8
+    },
+    {
+     "item": "magazine_science",
+     "price": 38,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 38,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL32": {
+   "theme": "birds",
+   "title_key": "ui.shop.title_fair_birds",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "bird_feed",
+     "price": 9,
+     "count": 6
+    },
+    {
+     "item": "feed_grain",
+     "price": 14,
+     "count": 4
+    },
+    {
+     "item": "feed_peanuts",
+     "price": 28,
+     "count": 4
+    }
+   ]
+  },
+  "S-FAIR-STALL33": {
+   "theme": "snacks",
+   "title_key": "ui.shop.title_fair_snacks",
+   "staffed": true,
+   "goods": [
+    {
+     "item": "chips",
+     "price": 32,
+     "count": 6
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL34": {
+   "theme": "pastry",
+   "title_key": "ui.shop.title_fair_pastry",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "pie",
+     "price": 15,
+     "count": 6
+    },
+    {
+     "item": "cookies",
+     "price": 18,
+     "count": 4
+    },
+    {
+     "item": "bread_loaf",
+     "price": 11,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL35": {
+   "theme": "tea",
+   "title_key": "ui.shop.title_fair_tea",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "tea",
+     "price": 12,
+     "count": 8
+    },
+    {
+     "item": "coffee",
+     "price": 25,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL36": {
+   "theme": "birds",
+   "title_key": "ui.shop.title_fair_birds",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "bird_feed",
+     "price": 9,
+     "count": 6
+    },
+    {
+     "item": "feed_grain",
+     "price": 14,
+     "count": 4
+    },
+    {
+     "item": "feed_peanuts",
+     "price": 28,
+     "count": 4
+    }
+   ]
+  },
+  "S-FAIR-STALL37": {
+   "theme": "dairy",
+   "title_key": "ui.shop.title_fair_dairy",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "bread_loaf",
+     "price": 12,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL38": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL39": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL40": {
+   "theme": "amber",
+   "title_key": "ui.shop.title_fair_amber",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "amber_charm",
+     "price": 85,
+     "count": 3
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 10
+    },
+    {
+     "item": "badge",
+     "price": 11,
+     "count": 5
+    }
+   ]
+  },
+  "S-FAIR-STALL41": {
+   "theme": "snacks",
+   "title_key": "ui.shop.title_fair_snacks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "chips",
+     "price": 32,
+     "count": 6
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL42": {
+   "theme": "corn",
+   "title_key": "ui.shop.title_fair_corn",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "corn_cob",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL43": {
+   "theme": "news",
+   "title_key": "ui.shop.title_fair_news",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "daily_paper",
+     "price": 5,
+     "count": 8
+    },
+    {
+     "item": "magazine_science",
+     "price": 38,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 38,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL44": {
+   "theme": "cheese",
+   "title_key": "ui.shop.title_fair_cheese",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "cheese_braid",
+     "price": 24,
+     "count": 4
+    },
+    {
+     "item": "cheese_round_small",
+     "price": 38,
+     "count": 2
+    },
+    {
+     "item": "cheese_round_big",
+     "price": 100,
+     "count": 1
+    }
+   ]
+  },
+  "S-FAIR-STALL45": {
+   "theme": "fruit",
+   "title_key": "ui.shop.title_fair_fruit",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "apple",
+     "price": 6,
+     "count": 12
+    }
+   ]
+  },
+  "S-FAIR-STALL46": {
+   "theme": "pastry",
+   "title_key": "ui.shop.title_fair_pastry",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "pie",
+     "price": 15,
+     "count": 6
+    },
+    {
+     "item": "cookies",
+     "price": 18,
+     "count": 4
+    },
+    {
+     "item": "bread_loaf",
+     "price": 11,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL47": {
+   "theme": "tea",
+   "title_key": "ui.shop.title_fair_tea",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "tea",
+     "price": 12,
+     "count": 8
+    },
+    {
+     "item": "coffee",
+     "price": 25,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL48": {
+   "theme": "birds",
+   "title_key": "ui.shop.title_fair_birds",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "bird_feed",
+     "price": 9,
+     "count": 6
+    },
+    {
+     "item": "feed_grain",
+     "price": 14,
+     "count": 4
+    },
+    {
+     "item": "feed_peanuts",
+     "price": 28,
+     "count": 4
+    }
+   ]
+  },
+  "S-FAIR-STALL49": {
+   "theme": "dairy",
+   "title_key": "ui.shop.title_fair_dairy",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "bread_loaf",
+     "price": 12,
+     "count": 3
+    }
+   ]
+  },
+  "S-FAIR-STALL50": {
+   "theme": "drinks",
+   "title_key": "ui.shop.title_fair_drinks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "drink_baikal",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_buratino",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_dyushes",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "drink_tarkhun",
+     "price": 18,
+     "count": 6
+    },
+    {
+     "item": "water",
+     "price": 15,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL51": {
+   "theme": "sweets",
+   "title_key": "ui.shop.title_fair_sweets",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "candy",
+     "price": 7,
+     "count": 10
+    },
+    {
+     "item": "chocolate",
+     "price": 22,
+     "count": 4
+    },
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL52": {
+   "theme": "amber",
+   "title_key": "ui.shop.title_fair_amber",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "amber_charm",
+     "price": 85,
+     "count": 3
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 10
+    },
+    {
+     "item": "badge",
+     "price": 11,
+     "count": 5
+    }
+   ]
+  },
+  "S-FAIR-STALL53": {
+   "theme": "snacks",
+   "title_key": "ui.shop.title_fair_snacks",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "chips",
+     "price": 32,
+     "count": 6
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  },
+  "S-FAIR-STALL54": {
+   "theme": "corn",
+   "title_key": "ui.shop.title_fair_corn",
+   "staffed": false,
+   "goods": [
+    {
+     "item": "corn_cob",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "seeds",
+     "price": 9,
+     "count": 6
+    }
+   ]
+  }
+ }
+}

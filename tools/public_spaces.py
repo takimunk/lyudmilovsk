@@ -233,6 +233,13 @@ def promenade(L):
             x, yy, _ = s["map"]
             L.bench(sid, x, yy, z, s["yaw"], style="promenade", terrace="T0", area="promenade",
                     name_ru=s.get("name_ru"), name_en=s.get("name_en"))
+    # more by W1, halfway between the plan's (the grannies fill these first: backs to the shops, the sea in front)
+    for sid, sp_ in sorted(P.spots.items()):
+        if sid.startswith("S-BENCH-P") and sid[9:].isdigit():
+            bx0, by0, _ = sp_["map"]
+            yy = by0 + 20.0
+            if yy < y1 - 6.0 and L.free(62.0, yy, 1.5) and abs(yy - 905.0) > 36.0:
+                L.bench(L.uid("S-BENCH-PM"), *at(62.0, yy), z, sea_yaw(yy), style="promenade", terrace="T0", area="promenade")
     y = y0 + 40.0
     while y < y1 - 10.0:
         sy = y + 20.0
@@ -554,9 +561,9 @@ def park(L):
             ((-4.0, -3.5), (-2.0, -6.0), (2.0, -4.0), (6.0, -6.0), (2.0, 5.0), (-2.0, 3.0), (0.0, 1.5), (-6.0, 5.0))]
     L.spot("S-PLAYGROUND", "playground", qx, qy, z, sea_yaw(gy), seats=len(kids), slots=kids, name_ru=plp.get("name_ru"),
            name_en=plp.get("name_en"))
-    for k, (ds, dy) in enumerate(((-11.0, -6.0), (-11.0, 0.0), (-11.0, 6.0))):
+    for k, (ds, dy) in enumerate(((-11.0, -6.0), (-11.0, 0.0), (-11.0, 6.0), (11.0, -6.0), (11.0, 0.0), (11.0, 6.0))):
         bx, by = at(gs + ds, gy + dy)
-        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(gy) + 180.0, area="playground", terrace="T1",
+        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(gy) + (180.0 if ds < 0 else 0.0), area="playground", terrace="T1",
                 sub="parents")
     # benches and lamps along the loop and the avenue
     for a, b in zip(loop, loop[1:]):
@@ -581,6 +588,10 @@ def park(L):
         if math.hypot(sm - ps, y - py_) < ry + 4:
             continue
         L.lamp(*at(sm + (3.4 if k % 2 else -3.4), y), z, kind="lamp_park", area="park")
+    # the south entrance: a pair facing each other across the avenue's mouth (the grannies' first stop)
+    for side in (-1, 1):
+        bx, by = at(sm + side * 4.6, y0 + 3.0)
+        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(y0) + (180.0 if side > 0 else 0.0), area="park_entrance", terrace="T1")
     for sid in ("S-BENCH-03", "S-BENCH-04"):
         s = P.spots.get(sid)
         if s:
@@ -629,6 +640,24 @@ def park(L):
         flowerbed(L, *at(sm + side * 14.0, y0 + 75.0), z, 2.6, 10 + side)
 
 
+# the fair's stall themes and their goods (items of LyudInventory.cpp: icons and names exist): item, price, count
+FAIR_THEMES = {
+    "pastry": [("pie", 15, 6), ("cookies", 18, 4), ("bread_loaf", 11, 3)],
+    "sweets": [("candy", 7, 10), ("chocolate", 22, 4), ("ice_cream", 28, 6)],
+    "cheese": [("cheese_braid", 24, 4), ("cheese_round_small", 38, 2), ("cheese_round_big", 100, 1)],
+    "dairy": [("kefir", 13, 6), ("bread_loaf", 12, 3)],
+    "corn": [("corn_cob", 14, 8), ("seeds", 9, 6)],
+    "tea": [("tea", 12, 8), ("coffee", 25, 6)],
+    "amber": [("amber_charm", 85, 3), ("postcard", 4, 10), ("badge", 11, 5)],
+    "fruit": [("apple", 6, 12)],
+    "drinks": [("drink_baikal", 18, 6), ("drink_buratino", 18, 6), ("drink_dyushes", 18, 6), ("drink_tarkhun", 18, 6),
+               ("water", 15, 6)],
+    "news": [("daily_paper", 5, 8), ("magazine_science", 38, 3), ("magazine_travel", 38, 3)],
+    "birds": [("bird_feed", 9, 6), ("feed_grain", 14, 4), ("feed_peanuts", 28, 4)],
+    "snacks": [("chips", 32, 6), ("seeds", 9, 6)],
+}
+
+
 # --- the fair ------------------------------------------------------------------------------------------------------
 def fair(L):
     P = L.P
@@ -637,9 +666,9 @@ def fair(L):
     L.pave("fair", s0, s1, y0, y1, z - PAVE, "square", tile=8.0)
     yc = (y0 + y1) / 2
     L.d["areas"].append({"id": "fair", "name": "place.fair.name", "at": L.ue(*at((s0 + s1) / 2, yc), z), "r": 80.0})
-    goods = ["honey", "smoked_fish", "pastry", "toys", "pickles", "flowers", "amber", "tea", "berries", "knits",
-             "pottery", "corn"]
+    goods = list(FAIR_THEMES)
     n = 0
+    n_staffed = 0
     lane = s0 + 30.0
     for (s, face) in ((lane - 5.5, 1), (lane + 5.5, -1), (s1 - 6.0, -1)):
         y = y0 + 8.0
@@ -650,12 +679,19 @@ def fair(L):
             x, py = at(s, y)
             yaw = sea_yaw(y) + (180.0 if face > 0 else 0.0)    # the lane's rows face it, the far row the promenade
             sid = "S-FAIR-STALL%02d" % (n + 1)
-            g = goods[n % len(goods)]
+            staffed = s != s1 - 6.0 and abs(y - yc) < 22.0          # the twelve stalls in the lane's middle have sellers
+            if staffed:
+                g = goods[n_staffed % len(goods)]                   # one of each theme among the staffed
+                n_staffed += 1
+            else:
+                g = goods[(n * 5 + 3) % len(goods)]
             L.prop("stall", x, py, z, yaw, variant=n % 4, goods=g, id=sid)
+            L.d.setdefault("fair_goods", {})[sid] = {"theme": g, "title_key": "ui.shop.title_fair_" + g, "staffed": staffed,
+                                                     "goods": [{"item": i, "price": pr, "count": c} for i, pr, c in FAIR_THEMES[g]]}
             a = math.radians(yaw)
             fx, fy = math.cos(a), math.sin(a)
             cust = [stand(L, x + fx * 1.5 - fy * o, py + fy * 1.5 + fx * o, z, yaw + 180.0) for o in (-0.8, 0.0, 0.8)]
-            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, slots=cust, sub="customers",
+            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, slots=cust, sub="customers", staffed=staffed,
                    seller={"pos": L.ue(x - fx * 0.7, py - fy * 0.7, z), "yaw": round(yaw, 2)}, goods=g)
             n += 1
             y += 7.0
@@ -1009,6 +1045,14 @@ def write(doc):
                           "points (height = seat over the ground); path = a stroll polyline; furnished false = only "
                           "passed on from city_plan.json.")
     plan["spots"] = doc["spots"]
+    fg = {"_doc": "The fair's stalls (tools/public_spaces.py, docs/city/public_spaces.md): theme, shop title key, goods "
+                  "[{item, price, count}] (LyudInventory items). staffed: town_life.py gives it a seller (place "
+                  "S-FAIR-STALLnn-SELLER at the spot's seller pos, activity work_fair, Sat-Sun 10-19) and the counters.json "
+                  "entry (ULyudCounterTradeSubsystem: T to trade).",
+          "stalls": doc.get("fair_goods", {})}
+    with open(os.path.join(os.path.dirname(OUT), "fair_goods.json"), "w") as f:
+        json.dump(fg, f, ensure_ascii=False, indent=1)
+        f.write("\n")
     with open(TOWN_PLAN, "w") as f:
         json.dump(plan, f, ensure_ascii=False, indent=1)
         f.write("\n")

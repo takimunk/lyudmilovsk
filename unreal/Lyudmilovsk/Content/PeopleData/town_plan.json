@@ -6855,6 +6855,426 @@
    "name_en": "Promenade bench"
   },
   {
+   "id": "S-BENCH-PM01",
+   "kind": "bench",
+   "pos": [
+    79.359,
+    447.9,
+    -39.46
+   ],
+   "yaw": -2.0,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      79.388,
+      447.319,
+      -39.01
+     ],
+     "yaw": -2.0,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      79.408,
+      447.898,
+      -39.01
+     ],
+     "yaw": -2.0,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      79.429,
+      448.478,
+      -39.01
+     ],
+     "yaw": -2.0,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM02",
+   "kind": "bench",
+   "pos": [
+    82.28,
+    527.9,
+    -39.46
+   ],
+   "yaw": -2.2,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      82.308,
+      527.319,
+      -39.01
+     ],
+     "yaw": -2.2,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      82.33,
+      527.898,
+      -39.01
+     ],
+     "yaw": -2.2,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      82.352,
+      528.478,
+      -39.01
+     ],
+     "yaw": -2.2,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM03",
+   "kind": "bench",
+   "pos": [
+    83.879,
+    567.9,
+    -39.46
+   ],
+   "yaw": -2.4,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      83.904,
+      567.318,
+      -39.01
+     ],
+     "yaw": -2.4,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      83.928,
+      567.898,
+      -39.01
+     ],
+     "yaw": -2.4,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      83.953,
+      568.477,
+      -39.01
+     ],
+     "yaw": -2.4,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM04",
+   "kind": "bench",
+   "pos": [
+    93.96,
+    767.9,
+    -39.46
+   ],
+   "yaw": -3.5,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      93.974,
+      767.318,
+      -39.01
+     ],
+     "yaw": -3.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      94.01,
+      767.897,
+      -39.01
+     ],
+     "yaw": -3.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      94.045,
+      768.476,
+      -39.01
+     ],
+     "yaw": -3.5,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM05",
+   "kind": "bench",
+   "pos": [
+    113.0,
+    1007.9,
+    -39.46
+   ],
+   "yaw": -5.7,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      112.992,
+      1007.318,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      113.05,
+      1007.895,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      113.107,
+      1008.472,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM06",
+   "kind": "bench",
+   "pos": [
+    116.935,
+    1047.9,
+    -39.46
+   ],
+   "yaw": -5.5,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      116.929,
+      1047.318,
+      -39.01
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      116.985,
+      1047.895,
+      -39.01
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      117.04,
+      1048.473,
+      -39.01
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM07",
+   "kind": "bench",
+   "pos": [
+    128.561,
+    1167.9,
+    -39.46
+   ],
+   "yaw": -5.7,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      128.554,
+      1167.318,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      128.611,
+      1167.895,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      128.669,
+      1168.472,
+      -39.01
+     ],
+     "yaw": -5.7,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM08",
+   "kind": "bench",
+   "pos": [
+    141.508,
+    1287.9,
+    -39.46
+   ],
+   "yaw": -6.8,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      141.489,
+      1287.318,
+      -39.01
+     ],
+     "yaw": -6.8,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      141.558,
+      1287.894,
+      -39.01
+     ],
+     "yaw": -6.8,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      141.626,
+      1288.47,
+      -39.01
+     ],
+     "yaw": -6.8,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM09",
+   "kind": "bench",
+   "pos": [
+    151.88,
+    1367.9,
+    -39.46
+   ],
+   "yaw": -8.1,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      151.848,
+      1367.319,
+      -39.01
+     ],
+     "yaw": -8.1,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      151.93,
+      1367.893,
+      -39.01
+     ],
+     "yaw": -8.1,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      152.011,
+      1368.467,
+      -39.01
+     ],
+     "yaw": -8.1,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
+   "id": "S-BENCH-PM10",
+   "kind": "bench",
+   "pos": [
+    157.815,
+    1407.9,
+    -39.46
+   ],
+   "yaw": -8.8,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      157.775,
+      1407.319,
+      -39.01
+     ],
+     "yaw": -8.8,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      157.864,
+      1407.892,
+      -39.01
+     ],
+     "yaw": -8.8,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      157.953,
+      1408.466,
+      -39.01
+     ],
+     "yaw": -8.8,
+     "height": 0.45
+    }
+   ],
+   "terrace": "T0",
+   "area": "promenade"
+  },
+  {
    "id": "S-BENCH-R01",
    "kind": "bench",
    "pos": [
@@ -21026,6 +21446,135 @@
    "id": "S-BENCH-PK10",
    "kind": "bench",
    "pos": [
+    -52.021,
+    1151.9,
+    -36.2
+   ],
+   "yaw": -5.6,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      -52.028,
+      1151.318,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -51.971,
+      1151.895,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -51.914,
+      1152.472,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    }
+   ],
+   "area": "playground",
+   "terrace": "T1",
+   "sub": "parents"
+  },
+  {
+   "id": "S-BENCH-PK11",
+   "kind": "bench",
+   "pos": [
+    -51.43,
+    1157.9,
+    -36.2
+   ],
+   "yaw": -5.6,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      -51.437,
+      1157.318,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -51.38,
+      1157.895,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -51.324,
+      1158.472,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    }
+   ],
+   "area": "playground",
+   "terrace": "T1",
+   "sub": "parents"
+  },
+  {
+   "id": "S-BENCH-PK12",
+   "kind": "bench",
+   "pos": [
+    -50.836,
+    1163.9,
+    -36.2
+   ],
+   "yaw": -5.6,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      -50.843,
+      1163.318,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -50.787,
+      1163.895,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -50.73,
+      1164.472,
+      -35.75
+     ],
+     "yaw": -5.6,
+     "height": 0.45
+    }
+   ],
+   "area": "playground",
+   "terrace": "T1",
+   "sub": "parents"
+  },
+  {
+   "id": "S-BENCH-PK13",
+   "kind": "bench",
+   "pos": [
     -44.042,
     1110.5,
     -36.2
@@ -21065,7 +21614,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK11",
+   "id": "S-BENCH-PK14",
    "kind": "bench",
    "pos": [
     -70.042,
@@ -21107,7 +21656,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK12",
+   "id": "S-BENCH-PK15",
    "kind": "bench",
    "pos": [
     -96.042,
@@ -21149,7 +21698,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK13",
+   "id": "S-BENCH-PK16",
    "kind": "bench",
    "pos": [
     -117.375,
@@ -21191,7 +21740,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK14",
+   "id": "S-BENCH-PK17",
    "kind": "bench",
    "pos": [
     -115.029,
@@ -21233,7 +21782,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK15",
+   "id": "S-BENCH-PK18",
    "kind": "bench",
    "pos": [
     -112.639,
@@ -21275,7 +21824,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK16",
+   "id": "S-BENCH-PK19",
    "kind": "bench",
    "pos": [
     -110.188,
@@ -21317,7 +21866,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK17",
+   "id": "S-BENCH-PK20",
    "kind": "bench",
    "pos": [
     -107.66,
@@ -21359,7 +21908,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK18",
+   "id": "S-BENCH-PK21",
    "kind": "bench",
    "pos": [
     -105.038,
@@ -21401,7 +21950,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK19",
+   "id": "S-BENCH-PK22",
    "kind": "bench",
    "pos": [
     -102.306,
@@ -21443,7 +21992,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK20",
+   "id": "S-BENCH-PK23",
    "kind": "bench",
    "pos": [
     -99.448,
@@ -21485,7 +22034,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK21",
+   "id": "S-BENCH-PK24",
    "kind": "bench",
    "pos": [
     -96.448,
@@ -21527,7 +22076,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK22",
+   "id": "S-BENCH-PK25",
    "kind": "bench",
    "pos": [
     -70.239,
@@ -21569,7 +22118,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK23",
+   "id": "S-BENCH-PK26",
    "kind": "bench",
    "pos": [
     -44.239,
@@ -21611,7 +22160,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK24",
+   "id": "S-BENCH-PK27",
    "kind": "bench",
    "pos": [
     -18.239,
@@ -21653,7 +22202,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK25",
+   "id": "S-BENCH-PK28",
    "kind": "bench",
    "pos": [
     2.352,
@@ -21695,7 +22244,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK26",
+   "id": "S-BENCH-PK29",
    "kind": "bench",
    "pos": [
     -0.648,
@@ -21737,7 +22286,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK27",
+   "id": "S-BENCH-PK30",
    "kind": "bench",
    "pos": [
     -3.506,
@@ -21779,7 +22328,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK28",
+   "id": "S-BENCH-PK31",
    "kind": "bench",
    "pos": [
     -6.238,
@@ -21821,7 +22370,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK29",
+   "id": "S-BENCH-PK32",
    "kind": "bench",
    "pos": [
     -8.86,
@@ -21863,7 +22412,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK30",
+   "id": "S-BENCH-PK33",
    "kind": "bench",
    "pos": [
     -11.388,
@@ -21905,7 +22454,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK31",
+   "id": "S-BENCH-PK34",
    "kind": "bench",
    "pos": [
     -13.839,
@@ -21947,7 +22496,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK32",
+   "id": "S-BENCH-PK35",
    "kind": "bench",
    "pos": [
     -16.229,
@@ -21989,7 +22538,7 @@
    "terrace": "T1"
   },
   {
-   "id": "S-BENCH-PK33",
+   "id": "S-BENCH-PK36",
    "kind": "bench",
    "pos": [
     -18.575,
@@ -22028,6 +22577,90 @@
     }
    ],
    "area": "park",
+   "terrace": "T1"
+  },
+  {
+   "id": "S-BENCH-PK37",
+   "kind": "bench",
+   "pos": [
+    -66.172,
+    1102.9,
+    -36.2
+   ],
+   "yaw": -5.5,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      -66.178,
+      1102.318,
+      -35.75
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -66.123,
+      1102.895,
+      -35.75
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -66.067,
+      1103.473,
+      -35.75
+     ],
+     "yaw": -5.5,
+     "height": 0.45
+    }
+   ],
+   "area": "park_entrance",
+   "terrace": "T1"
+  },
+  {
+   "id": "S-BENCH-PK38",
+   "kind": "bench",
+   "pos": [
+    -75.372,
+    1102.9,
+    -36.2
+   ],
+   "yaw": 174.5,
+   "seats": 3,
+   "slots": [
+    {
+     "pos": [
+      -75.367,
+      1103.482,
+      -35.75
+     ],
+     "yaw": 174.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -75.422,
+      1102.905,
+      -35.75
+     ],
+     "yaw": 174.5,
+     "height": 0.45
+    },
+    {
+     "pos": [
+      -75.478,
+      1102.327,
+      -35.75
+     ],
+     "yaw": 174.5,
+     "height": 0.45
+    }
+   ],
+   "area": "park_entrance",
    "terrace": "T1"
   },
   {
@@ -22544,6 +23177,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      60.08,
@@ -22552,7 +23186,7 @@
     ],
     "yaw": 174.4
    },
-   "goods": "honey"
+   "goods": "dairy"
   },
   {
    "id": "S-FAIR-STALL02",
@@ -22597,6 +23231,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      60.769,
@@ -22605,7 +23240,7 @@
     ],
     "yaw": 174.4
    },
-   "goods": "smoked_fish"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL03",
@@ -22650,6 +23285,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      61.461,
@@ -22658,7 +23294,7 @@
     ],
     "yaw": 174.3
    },
-   "goods": "pastry"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL04",
@@ -22703,6 +23339,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      62.159,
@@ -22711,7 +23348,7 @@
     ],
     "yaw": 174.3
    },
-   "goods": "toys"
+   "goods": "amber"
   },
   {
    "id": "S-FAIR-STALL05",
@@ -22756,6 +23393,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      62.861,
@@ -22764,7 +23402,7 @@
     ],
     "yaw": 174.3
    },
-   "goods": "pickles"
+   "goods": "snacks"
   },
   {
    "id": "S-FAIR-STALL06",
@@ -22809,6 +23447,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      63.567,
@@ -22817,7 +23456,7 @@
     ],
     "yaw": 174.2
    },
-   "goods": "flowers"
+   "goods": "corn"
   },
   {
    "id": "S-FAIR-STALL07",
@@ -22862,6 +23501,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      64.28,
@@ -22870,7 +23510,7 @@
     ],
     "yaw": 174.2
    },
-   "goods": "amber"
+   "goods": "news"
   },
   {
    "id": "S-FAIR-STALL08",
@@ -22915,6 +23555,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      64.998,
@@ -22923,7 +23564,7 @@
     ],
     "yaw": 174.1
    },
-   "goods": "tea"
+   "goods": "pastry"
   },
   {
    "id": "S-FAIR-STALL09",
@@ -22968,6 +23609,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      65.723,
@@ -22976,7 +23618,7 @@
     ],
     "yaw": 174.1
    },
-   "goods": "berries"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL10",
@@ -23021,6 +23663,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      66.455,
@@ -23029,7 +23672,7 @@
     ],
     "yaw": 174.0
    },
-   "goods": "knits"
+   "goods": "cheese"
   },
   {
    "id": "S-FAIR-STALL11",
@@ -23074,6 +23717,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      67.194,
@@ -23082,7 +23726,7 @@
     ],
     "yaw": 173.9
    },
-   "goods": "pottery"
+   "goods": "dairy"
   },
   {
    "id": "S-FAIR-STALL12",
@@ -23127,6 +23771,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      67.94,
@@ -23180,6 +23825,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      68.694,
@@ -23188,7 +23834,7 @@
     ],
     "yaw": 173.8
    },
-   "goods": "honey"
+   "goods": "tea"
   },
   {
    "id": "S-FAIR-STALL14",
@@ -23233,6 +23879,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      69.457,
@@ -23241,7 +23888,7 @@
     ],
     "yaw": 173.7
    },
-   "goods": "smoked_fish"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL15",
@@ -23286,6 +23933,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      70.228,
@@ -23294,7 +23942,7 @@
     ],
     "yaw": 173.7
    },
-   "goods": "pastry"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL16",
@@ -23339,6 +23987,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      71.009,
@@ -23347,7 +23996,7 @@
     ],
     "yaw": 173.6
    },
-   "goods": "toys"
+   "goods": "amber"
   },
   {
    "id": "S-FAIR-STALL17",
@@ -23392,6 +24041,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      71.799,
@@ -23400,7 +24050,7 @@
     ],
     "yaw": 173.5
    },
-   "goods": "pickles"
+   "goods": "snacks"
   },
   {
    "id": "S-FAIR-STALL18",
@@ -23445,6 +24095,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      72.599,
@@ -23453,7 +24104,7 @@
     ],
     "yaw": 173.4
    },
-   "goods": "flowers"
+   "goods": "corn"
   },
   {
    "id": "S-FAIR-STALL19",
@@ -23498,6 +24149,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      73.409,
@@ -23506,7 +24158,7 @@
     ],
     "yaw": 173.4
    },
-   "goods": "amber"
+   "goods": "news"
   },
   {
    "id": "S-FAIR-STALL20",
@@ -23551,6 +24203,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      74.231,
@@ -23559,7 +24212,7 @@
     ],
     "yaw": 173.3
    },
-   "goods": "tea"
+   "goods": "cheese"
   },
   {
    "id": "S-FAIR-STALL21",
@@ -23604,6 +24257,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      47.686,
@@ -23612,7 +24266,7 @@
     ],
     "yaw": -5.6
    },
-   "goods": "berries"
+   "goods": "fruit"
   },
   {
    "id": "S-FAIR-STALL22",
@@ -23657,6 +24311,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      48.375,
@@ -23665,7 +24320,7 @@
     ],
     "yaw": -5.6
    },
-   "goods": "knits"
+   "goods": "pastry"
   },
   {
    "id": "S-FAIR-STALL23",
@@ -23710,6 +24365,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      49.068,
@@ -23718,7 +24374,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "pottery"
+   "goods": "tea"
   },
   {
    "id": "S-FAIR-STALL24",
@@ -23763,6 +24419,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      49.765,
@@ -23771,7 +24428,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "corn"
+   "goods": "birds"
   },
   {
    "id": "S-FAIR-STALL25",
@@ -23816,6 +24473,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      50.467,
@@ -23824,7 +24482,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "honey"
+   "goods": "dairy"
   },
   {
    "id": "S-FAIR-STALL26",
@@ -23869,6 +24527,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      51.175,
@@ -23877,7 +24536,7 @@
     ],
     "yaw": -5.8
    },
-   "goods": "smoked_fish"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL27",
@@ -23922,6 +24581,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      51.887,
@@ -23930,7 +24590,7 @@
     ],
     "yaw": -5.8
    },
-   "goods": "pastry"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL28",
@@ -23975,6 +24635,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      52.606,
@@ -23983,7 +24644,7 @@
     ],
     "yaw": -5.9
    },
-   "goods": "toys"
+   "goods": "amber"
   },
   {
    "id": "S-FAIR-STALL29",
@@ -24028,6 +24689,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      53.331,
@@ -24036,7 +24698,7 @@
     ],
     "yaw": -5.9
    },
-   "goods": "pickles"
+   "goods": "fruit"
   },
   {
    "id": "S-FAIR-STALL30",
@@ -24081,6 +24743,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      54.063,
@@ -24089,7 +24752,7 @@
     ],
     "yaw": -6.0
    },
-   "goods": "flowers"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL31",
@@ -24134,6 +24797,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      54.801,
@@ -24142,7 +24806,7 @@
     ],
     "yaw": -6.1
    },
-   "goods": "amber"
+   "goods": "news"
   },
   {
    "id": "S-FAIR-STALL32",
@@ -24187,6 +24851,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      55.548,
@@ -24195,7 +24860,7 @@
     ],
     "yaw": -6.1
    },
-   "goods": "tea"
+   "goods": "birds"
   },
   {
    "id": "S-FAIR-STALL33",
@@ -24240,6 +24905,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": true,
    "seller": {
     "pos": [
      56.302,
@@ -24248,7 +24914,7 @@
     ],
     "yaw": -6.2
    },
-   "goods": "berries"
+   "goods": "snacks"
   },
   {
    "id": "S-FAIR-STALL34",
@@ -24293,6 +24959,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      57.065,
@@ -24301,7 +24968,7 @@
     ],
     "yaw": -6.3
    },
-   "goods": "knits"
+   "goods": "pastry"
   },
   {
    "id": "S-FAIR-STALL35",
@@ -24346,6 +25013,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      57.837,
@@ -24354,7 +25022,7 @@
     ],
     "yaw": -6.3
    },
-   "goods": "pottery"
+   "goods": "tea"
   },
   {
    "id": "S-FAIR-STALL36",
@@ -24399,6 +25067,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      58.617,
@@ -24407,7 +25076,7 @@
     ],
     "yaw": -6.4
    },
-   "goods": "corn"
+   "goods": "birds"
   },
   {
    "id": "S-FAIR-STALL37",
@@ -24452,6 +25121,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      59.408,
@@ -24460,7 +25130,7 @@
     ],
     "yaw": -6.5
    },
-   "goods": "honey"
+   "goods": "dairy"
   },
   {
    "id": "S-FAIR-STALL38",
@@ -24505,6 +25175,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      60.208,
@@ -24513,7 +25184,7 @@
     ],
     "yaw": -6.6
    },
-   "goods": "smoked_fish"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL39",
@@ -24558,6 +25229,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      61.019,
@@ -24566,7 +25238,7 @@
     ],
     "yaw": -6.6
    },
-   "goods": "pastry"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL40",
@@ -24611,6 +25283,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      61.84,
@@ -24619,7 +25292,7 @@
     ],
     "yaw": -6.7
    },
-   "goods": "toys"
+   "goods": "amber"
   },
   {
    "id": "S-FAIR-STALL41",
@@ -24664,6 +25337,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      19.186,
@@ -24672,7 +25346,7 @@
     ],
     "yaw": -5.6
    },
-   "goods": "pickles"
+   "goods": "snacks"
   },
   {
    "id": "S-FAIR-STALL42",
@@ -24717,6 +25391,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      19.875,
@@ -24725,7 +25400,7 @@
     ],
     "yaw": -5.6
    },
-   "goods": "flowers"
+   "goods": "corn"
   },
   {
    "id": "S-FAIR-STALL43",
@@ -24770,6 +25445,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      20.568,
@@ -24778,7 +25454,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "amber"
+   "goods": "news"
   },
   {
    "id": "S-FAIR-STALL44",
@@ -24823,6 +25499,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      21.265,
@@ -24831,7 +25508,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "tea"
+   "goods": "cheese"
   },
   {
    "id": "S-FAIR-STALL45",
@@ -24876,6 +25553,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      21.967,
@@ -24884,7 +25562,7 @@
     ],
     "yaw": -5.7
    },
-   "goods": "berries"
+   "goods": "fruit"
   },
   {
    "id": "S-FAIR-STALL46",
@@ -24929,6 +25607,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      22.675,
@@ -24937,7 +25616,7 @@
     ],
     "yaw": -5.8
    },
-   "goods": "knits"
+   "goods": "pastry"
   },
   {
    "id": "S-FAIR-STALL47",
@@ -24982,6 +25661,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      23.387,
@@ -24990,7 +25670,7 @@
     ],
     "yaw": -5.8
    },
-   "goods": "pottery"
+   "goods": "tea"
   },
   {
    "id": "S-FAIR-STALL48",
@@ -25035,6 +25715,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      28.565,
@@ -25043,7 +25724,7 @@
     ],
     "yaw": -6.3
    },
-   "goods": "corn"
+   "goods": "birds"
   },
   {
    "id": "S-FAIR-STALL49",
@@ -25088,6 +25769,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      29.337,
@@ -25096,7 +25778,7 @@
     ],
     "yaw": -6.3
    },
-   "goods": "honey"
+   "goods": "dairy"
   },
   {
    "id": "S-FAIR-STALL50",
@@ -25141,6 +25823,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      30.117,
@@ -25149,7 +25832,7 @@
     ],
     "yaw": -6.4
    },
-   "goods": "smoked_fish"
+   "goods": "drinks"
   },
   {
    "id": "S-FAIR-STALL51",
@@ -25194,6 +25877,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      30.908,
@@ -25202,7 +25886,7 @@
     ],
     "yaw": -6.5
    },
-   "goods": "pastry"
+   "goods": "sweets"
   },
   {
    "id": "S-FAIR-STALL52",
@@ -25247,6 +25931,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      31.708,
@@ -25255,7 +25940,7 @@
     ],
     "yaw": -6.6
    },
-   "goods": "toys"
+   "goods": "amber"
   },
   {
    "id": "S-FAIR-STALL53",
@@ -25300,6 +25985,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      32.519,
@@ -25308,7 +25994,7 @@
     ],
     "yaw": -6.6
    },
-   "goods": "pickles"
+   "goods": "snacks"
   },
   {
    "id": "S-FAIR-STALL54",
@@ -25353,6 +26039,7 @@
     }
    ],
    "sub": "customers",
+   "staffed": false,
    "seller": {
     "pos": [
      33.34,
@@ -25361,7 +26048,7 @@
     ],
     "yaw": -6.7
    },
-   "goods": "flowers"
+   "goods": "corn"
   },
   {
    "id": "S-BENCH-FR01",
