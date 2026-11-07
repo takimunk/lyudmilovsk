@@ -487,8 +487,10 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 		for (const LyudFish::FEaten& E : Sim->Eaten())
 		{
 			const FName Predator(ANSI_TO_TCHAR(LyudFish::Species(E.Predator).Id)), Prey(ANSI_TO_TCHAR(LyudFish::Species(E.Prey).Id));
-			MealsSeen.FindOrAdd(Predator.ToString() + TEXT("<-") + Prey.ToString())++;
-			OnFishEaten.Broadcast(Predator, Prey, FVector(E.Pos.X, E.Pos.Y, E.Pos.Z) * 100.f);
+			const FVector At = FVector(E.Pos.X, E.Pos.Y, E.Pos.Z) * 100.f;
+			MealsSeen.FindOrAdd(Predator.ToString() + (E.bCaught ? TEXT("<-") : TEXT("<-(missed)")) + Prey.ToString())++;
+			OnFishHunt.Broadcast(Predator, Prey, At, E.bCaught);
+			if (E.bCaught) OnFishEaten.Broadcast(Predator, Prey, At);
 		}
 	}
 	else

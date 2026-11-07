@@ -10,7 +10,7 @@ namespace LyudEco { class FModel; }
 
 /**
  * The coastal sea's food web (docs/ecosystem.md; the model is LyudEco::FModel in Private/Sea/EcoModel.cpp, plain C++):
- * 44 groups from the phytoplankton and the weed through zooplankton, mysids, amphipods, shrimp, the isopod Saduria,
+ * 49 groups from the diatoms, the blue-greens and the weed through zooplankton, mysids, amphipods, shrimp, the isopod Saduria,
  * clams and mussels to the fish, grey seals, fish-eating birds and the winter's sea ducks; who eats whom and how much
  * of each lives here, stepped by the game's calendar (the spring bloom, the summer's warmth, the migrants coming and
  * going) and saved with the game. The fish round the diver (ULyudUnderwaterSubsystem) come in the numbers it gives and
@@ -38,7 +38,7 @@ public:
 	void Sync(const UWorld* World);
 	void Sync(const FDateTime& Now);
 
-	/** A group's numbers here now against the usual (1 = as usual; 0 when it is away for the season). Ids as the fish's (Herring, Cod...) or the web's (Zoo, Mussel, SeaDucks...). */
+	/** A group's numbers here now against the usual (1 = as usual; 0 when it is away for the season). Ids as the fish's (Herring, Cod...) or the web's (Zoo, Mussel, Eider...). */
 	UFUNCTION(BlueprintCallable, Category = "Ecosystem") float GetAbundance(FName Id) const;
 	/** The same at a place: a spot fished out recently has fewer (40 m cells). */
 	UFUNCTION(BlueprintCallable, Category = "Ecosystem") float GetLocalAbundance(FName Id, const FVector& Location) const;

@@ -1,7 +1,7 @@
 # The coastal food web
 
-Under the club's beach the sea is not a set of fish placed by habitat any more: it is a food web. 44 groups from the
-plankton to the grey seals live, eat each other and come and go with the seasons, the fish round the diver come in the
+Under the club's beach the sea is not a set of fish placed by habitat any more: it is a food web. 49 groups from the
+diatoms to the grey seals, porpoises and cormorants live, eat each other and come and go with the seasons, the fish round the diver come in the
 numbers the web gives and hunt what it says they eat, and what the player takes out comes out of it.
 
 Code: `Private/Sea/EcoModel.cpp` (plain C++, `LyudEco::FModel`), `ULyudEcosystem` (`Public/Sea/LyudEcosystem.h`, a game
@@ -20,13 +20,19 @@ Ecopath with Ecosim (Christensen & Walters 2004), cut to what the game needs:
   `Q = a v Bi Bj / (2v + a Bj)`: only the part of the prey out in the open can be taken (vulnerability K = 2, mixed
   control), which keeps the web from the boom and bust of plain Lotka-Volterra. `a` and `v` come out of the base so the
   base's flows come out at the base.
-- **Producers** grow `Pmax B / (1 + B/B0)` by the light: the phytoplankton has the spring bloom in April (×3.4), the
-  blue-greens in late July and August, a small autumn bloom, a dark winter; the weed grows with the warmth.
+- **Producers** grow `Pmax B / (1 + B/B0)` by their drive: the diatoms (`Phyto`) with the light and the nutrients, the
+  spring bloom in April (×3.4), a thin summer, a small autumn bloom, a dark winter; the blue-greens (`Cyano`: Nodularia,
+  Aphanizomenon) only in the warm calm water of late July and August, twenty times May's and barely eaten (they sink to
+  the detritus); the weed grows with the warmth.
+- **The young of the year.** For 22 groups (herring, sprat, sticklebacks, perch, pike, cod, gobies, flatfish, shrimp,
+  prawns, amphipods, mysids...) part of the production (30-50%) goes to the eggs and larvae, out of sight and uneaten,
+  and joins the group over the two months round its recruitment day (herring's mid July): the herring stock is a third
+  bigger in August than in June. Saved as `<id>@young`.
 - **Warmth.** The water runs from ~1 °C in February to ~18 °C in mid August; every cold-blooded group eats by it
   (Q10 2.2, mean 1). Seals and birds eat the same all year.
 - **Migrants.** Groups that are only here some months (sprat in the cold half, garfish May-September, lumpsuckers
   February-June, twaite shad May-July, smelt and whitefish for the winter, salmon in autumn, vimba April-November,
-  moon jellies June-November, the sea ducks October-April) move in and out over ~12 days. The part away belongs to the
+  moon jellies June-November, the eiders October-April) move in and out over ~12 days. The part away belongs to the
   open Baltic's stock and drifts back toward the base over a year; it neither eats nor is eaten here.
 - **Local thinning.** The coast-wide numbers barely notice a few fish; the spot does. A catch thins its species in that
   40 m cell (a bottom fish by a quarter, a roamer by 8%); it heals as fish move back in: roamers in ~3 days, the ones
@@ -36,23 +42,25 @@ Ecopath with Ecosim (Christensen & Walters 2004), cut to what the game needs:
 
 | Level | Groups |
 |---|---|
-| Producers | phytoplankton, the weed (eelgrass, wrack, red and green algae) |
+| Producers | diatoms, blue-greens, the weed (eelgrass, wrack, red and green algae) |
 | Detritus | everything dead and uneaten |
 | Plankton | zooplankton (copepods, cladocerans), moon jellies |
-| Bed and water invertebrates | mysids, amphipods (Gammarus), worms (Hediste and the rest), Baltic clam (Macoma), blue mussels, brown shrimp (Crangon), the isopod Saduria, Harris mud crab |
+| Bed and water invertebrates | mysids, amphipods (Gammarus), worms (Hediste and the rest), Baltic clam (Macoma), blue mussels, brown shrimp (Crangon), rockpool prawn (Palaemon), the isopod Saduria, Harris mud crab, Chinese mitten crab |
 | Plankton-eating fish | herring, sprat, sand eel, three- and ninespine sticklebacks, smelt, twaite shad, garfish, both pipefish |
 | Bottom-feeding fish | round, sand and black gobies, flounder, roach, vimba, whitefish, eelpout, rock gunnel, sculpins (shorthorn and fourhorn), lumpsucker (jellies) |
-| Fish-eating fish | cod, sea trout, salmon, perch, turbot, eel |
-| Top | grey seals, fish-eating birds (cormorants, mergansers, terns), sea ducks (eiders, long-tailed ducks on the mussels) |
+| Fish-eating fish | cod, sea trout, salmon, perch, pike, turbot, eel |
+| Top | grey seals, harbour porpoises, cormorants (for all the fish-eating birds), eiders (for the sea ducks on the mussels) |
 
 The diets follow the Baltic stomach studies' broad picture: herring and sprat on zooplankton (herring also mysids); cod on
 the coast on Saduria, shrimp, gobies and clupeids; round gobies crush mussels; flounders take clams and mussels;
 lumpsuckers eat jellies; grey seals herring, cod and flatfish; cormorants gobies, perch and herring.
 
+Squid: none. The Baltic off Sambia is brackish (~7 psu) and no cephalopod lives in it (the nearest are in the Kattegat).
+
 What the checks show (`tools/underwater/run.sh eco -v`): thirty years of seasons from the base keep every group within
-0.8-1.8 of its base (the plankton-eaters a little up, whitefish a little down), a year to the next within 1%. Fishing the
+0.75-2 of its base (the sprat and sand eels up, whitefish a little down), a year to the next within 1%. Fishing the
 cod out for ten years lets Saduria grow by 40% and the sprat by a quarter; the grey seals switch to herring and hold. Fishing
-the herring out takes the seals down by a quarter and the cod by a fifth, and doubles the mysids they ate.
+the herring out takes the seals and the cod down by a fifth and more than doubles the mysids they ate.
 
 ## The fish round the diver
 
@@ -70,6 +78,20 @@ the herring out takes the seals down by a quarter and the cod by a fifth, and do
 - **Ambush.** Everything else that eats fish or crustaceans snaps at what comes within reach (a quarter metre plus one and
   a half of its own lengths) if it is under 60% of its own length: a sculpin at a shrimp, a goby at an amphipod, a perch at
   a goby, sticklebacks and herring through a mysid cloud (40% catch, then 8-28 s until hungry again).
+- **Pike** lie still a hand over the bed in the weed and lunge at what comes within two and a half metres.
+- **Cormorants** float on the surface for half a minute or so, dive head first and chase fish for half a minute; **eiders**
+  (in flocks, October-April) dive to the mussel beds and pick the amphipods and shrimp off them. **Harbour porpoises**
+  (rare: a glimpse) breathe every half minute and keep off a diver.
+- **Every strike is a moment**, caught or missed: the predator lunges either way, a missed shrimp digs in, a missed school
+  bursts. `ULyudUnderwaterSubsystem::OnFishHunt(Predator, Prey, Location, bCaught)`; `OnFishEaten` has the catches.
+- **Day and night.** Brown shrimp lie buried in the sand by day and come out at night; the mysid clouds rise ~3 m off the
+  bed at night; eels and eelpout go about at night (metres a minute) and keep to their stones by day; schools and shoals
+  loosen in the dark.
+- **Spawning by the calendar.** Herring (April-May), perch, roach and garfish mill low over the weed; three- and
+  ninespine stickleback males (May-July) each keep a nest in the weed, hang over it and face a diver; lumpsucker males
+  (March-May), round, black and sand gobies (summer) and shorthorn sculpins (winter) guard their eggs and will not leave
+  them for a diver. Three to six months after spawning the young of the year come: schools of herring a third of the
+  size in July-October, small gobies and flatfish on the bed.
 - **Grey seals** come up to breathe every one to three minutes (4-9 s at the surface) and come to look at a diver: in to
   ~4 m, round them for up to 40 s, then off for at least a minute and a half.
 - Every meal is an event: `ULyudUnderwaterSubsystem::OnFishEaten(Predator, Prey, Location)` (a journal, a sound, a
@@ -100,6 +122,12 @@ on round gobies, grey seals on herring...
 | Amphipods (Gammarus) | crawler | stones and weed |
 | Mysids (Neomysis integer) | swarm: a drifting cloud low over the bed | everywhere |
 | Grey seal (Halichoerus grypus) | hunter, breathes, curious | the open coast from 2 m |
+| Pike (Esox lucius) | lurker, lunges | weed in the shallows |
+| Rockpool prawn (Palaemon elegans/adspersus) | crawler | stones and weed |
+| Chinese mitten crab (Eriocheir sinensis) | crawler | stones, rare |
+| Harbour porpoise (Phocoena phocoena) | hunter, breathes | open water from 3 m, very rare |
+| Great cormorant (Phalacrocorax carbo) | diving bird | all year, by day |
+| Common eider (Somateria mollissima) | diving bird, flocks | stones and mussel beds, October-April |
 
 Two new ways in the fish model: **Crawler** (settled per 6 m cell like the bottom fish; short walks of 8-43 cm, rests of
 1-5 s, a dart or a dive into the sand when frightened) and **Swarm** (a wide flat cloud of 80-250 drifting with the water,
@@ -135,5 +163,8 @@ n days at once), `lyud.Eco.Reset`, `lyud.Eco.Scale <Id> <factor>` (`lyud.Eco.Sca
 - `tools/underwater/run.sh eco [-v]`: the base balances, thirty years of seasons stay bounded and settle, the spring bloom
   and the migrants, the two cascades (cod, herring), save and load, the local thinning heals, the cost.
 - `tools/underwater/run.sh test`: the fish as before, plus every fish species is a node of the web, nothing is eaten by
-  what does not eat it, hunters and ambushers both feed, a grey seal comes up to breathe and comes to look.
-- `unreal/scripts/test_underwater.sh`: a shot of each new animal (`smelt` ... `seal`).
+  what does not eat it, hunters and ambushers both feed (and miss more than they catch), a grey seal comes up to breathe
+  and comes to look; shrimp buried by day, mysids up at night, eels out at night; herring spawning low in April,
+  stickleback nests in June, young herring in August, a lumpsucker guarding in March; a pike strikes and catches,
+  cormorants float and dive, eiders reach the bed.
+- `unreal/scripts/test_underwater.sh`: a shot of each new animal (`smelt` ... `seal`, `pike` ... `eider`).

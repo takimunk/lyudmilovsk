@@ -245,8 +245,12 @@ void ULyudEcosystem::ReportCatch(FName Species, const FVector& Location, float G
 
 float ULyudEcosystem::GetBloom() const
 {
-	const int32 N = LyudEco::Find("Phyto");
-	return Model && N >= 0 ? Model->Relative(N) : 1.f;
+	// the diatoms' spring bloom and the blue-greens' August bloom, together against their usual
+	const int32 P = LyudEco::Find("Phyto"), C = LyudEco::Find("Cyano");
+	if (!Model || P < 0 || C < 0) return 1.f;
+	const float Now = Model->Biomass(P) + Model->Biomass(C);
+	const float Usual = LyudEco::Node(P).B + LyudEco::Node(C).B;
+	return Usual > 0.f ? Now / Usual : 1.f;
 }
 
 FString ULyudEcosystem::GetReport() const

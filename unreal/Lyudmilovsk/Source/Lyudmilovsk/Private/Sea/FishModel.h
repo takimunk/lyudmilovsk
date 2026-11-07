@@ -68,6 +68,18 @@ namespace LyudFish
 		bool bBreathes = false;
 		/** Comes to look at a diver instead of keeping off (grey seals). */
 		bool bCurious = false;
+		/** An air breather's dive and its time at the surface, s (0: a seal's 1-3 minutes under, 4-9 s up). */
+		float Dive = 0.f, Rest = 0.f;
+		/** A bird: floats on the surface between dives (cormorants after fish, eiders down to the mussels). */
+		bool bBird = false;
+		/** Months it spawns (bit 0 January): schools and shoals go low over the weed, guards stay by their eggs. */
+		uint16_t Spawn = 0;
+		/** Guards its eggs while spawning: stays put, faces a diver (lumpsucker males, round gobies). */
+		bool bGuards = false;
+		/** Builds a nest while spawning: the males settle over it in the weed (three-spined sticklebacks). */
+		bool bNests = false;
+		/** An ambusher's reach, body lengths (a pike lunges far), and its rest height over the bed, m (a pike in the weed). */
+		float Lunge = 1.5f, Hang = 0.f;
 	};
 
 	/** Ways that live on the bed in their own place (settled per cell), not roaming in groups. */
@@ -94,11 +106,12 @@ namespace LyudFish
 		virtual float Abundance(int Species, float X, float Y) const { return 1.f; }
 	};
 
-	/** Something seen eaten: who, whom, where. */
+	/** A hunting moment seen: who struck at whom, where, and whether it was caught (a miss: the prey got away). */
 	struct FEaten
 	{
 		int Predator = 0, Prey = 0;
 		FV Pos;
+		bool bCaught = true;
 	};
 
 	struct FClock
@@ -112,6 +125,10 @@ namespace LyudFish
 	float Suitability(int Species, float Sand, float Stone, float Weed, float Depth);
 	/** How active a species is now, 0..1 (here this month, by day or by night). */
 	float Activity(int Species, const FClock& Clock);
+	/** Spawning this month. */
+	bool Spawning(int Species, int Month);
+	/** The share of the young of the year among them this month (some months after spawning: Jul-Oct for the herring). */
+	float YoungShare(int Species, int Month);
 
 	/** One fish as drawn: where, which way, how its body moves. */
 	struct FFish
@@ -128,6 +145,8 @@ namespace LyudFish
 		bool bHidden = false;
 		/** Eaten this step (gone at the step's end). */
 		bool bEaten = false;
+		/** A young of the year (smaller), a nest keeper. */
+		bool bYoung = false, bNest = false;
 		/** Seconds until it is hungry again after a catch. */
 		float Fed = 0.f;
 		float Timer = 0.f;
@@ -164,7 +183,7 @@ namespace LyudFish
 		/** Who eats whom: the share of a predator's food a prey is (from the food web). Without it a hunter takes any fish small enough. */
 		void SetDiet(int Predator, int Prey, float Share);
 		bool Eats(int Predator, int Prey) const;
-		/** What was eaten in the last step. */
+		/** The hunting moments of the last step, caught and missed. */
 		const std::vector<FEaten>& Eaten() const { return Events; }
 		/** Takes the nearest drawn fish of a species within Reach of a point (a hook, a net): false if none. */
 		bool Take(int Species, const FV& At, float Reach, FFish* Out = nullptr);
@@ -190,6 +209,7 @@ namespace LyudFish
 			/** A curious one's interest in the diver, s. */
 			float Look = 0.f;
 			bool bAlive = false;
+			bool bYoung = false;
 		};
 
 		void Settle(const FEnv& Env, const FV& Eye, const FClock& Clock);
@@ -215,5 +235,8 @@ namespace LyudFish
 		uint32_t Frame = 0;
 		double Time = 0.0;
 		float SettleTimer = 0.f;
+		/** The clock of this step: 0 night .. 1 day, and the month. */
+		float Light = 1.f;
+		int Month = 10;
 	};
 }

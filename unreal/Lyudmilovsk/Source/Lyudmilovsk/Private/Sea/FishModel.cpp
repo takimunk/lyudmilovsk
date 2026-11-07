@@ -26,7 +26,7 @@ namespace
 	// garfish come in May to spawn on the weed and leave in September; round gobies (invasive, everywhere now) perch on
 	// stones, sand gobies on the sand; eelpout and sculpin lurk among stones; lumpsuckers come to the shallow stones in
 	// spring to spawn; flounders on sand, turbot on sand and gravel near stones; pipefish in the eelgrass in summer.
-	const FSpecies Table[] = {
+	FSpecies Table[] = {
 		// Id            Way           Len   Cruise Burst DMin  DMax  OBMin OBMax Sand Stone Weed Abund Gmin Gmax Months       Day   Night Shy  Prey  Waves Bend Burrow
 		{ "Herring",     EWay::School,  0.20f, 0.45f, 1.6f, 3.0f, 30.f, 1.0f, 6.0f, 1.f, 0.7f, 0.6f, 0.05f, 40, 110, AllYear,  1.f,  0.6f, 2.0f, 0.f,  0.9f, 0.6f, false },
 		{ "Sprat",       EWay::School,  0.11f, 0.35f, 1.2f, 4.0f, 30.f, 1.5f, 8.0f, 1.f, 0.6f, 0.5f, 0.04f, 60, 160, M(9, 5),  1.f,  0.6f, 1.8f, 0.f,  0.9f, 0.6f, false },
@@ -71,8 +71,44 @@ namespace
 		{ "Gammarus",             EWay::Crawler, 0.018f, 0.04f, 0.25f, 0.3f, 10.f, 0.f, 0.f,  0.1f, 0.8f, 1.f,  3.0f,   1,  1,   AllYear,  0.6f, 1.f,  0.2f, 0.f,   0.8f, 0.3f, false },
 		{ "Mysid",                EWay::Swarm,   0.015f, 0.05f, 0.4f, 0.5f, 20.f, 0.1f, 1.0f, 0.8f, 0.6f, 0.6f, 0.03f,  80, 250, AllYear,  0.6f, 1.f,  0.4f, 0.f,   0.8f, 0.3f, false },
 		{ "GreySeal",             EWay::Cruiser, 2.0f,  1.2f,  5.0f, 2.0f, 30.f, 0.5f, 8.0f, 0.7f, 0.8f, 0.4f, 0.0015f, 1, 1,   AllYear,  1.f,  1.f,  2.5f, 0.6f,  0.5f, 0.35f, false, true, true },
+		// the third wave (2026-11): the pike in the weed (an ambusher: lies still a hand over the bed, lunges metres), the
+		// rockpool prawn among stones and weed, the Chinese mitten crab (invasive, rare, stones), the harbour porpoise
+		// (the Baltic's rarest: a glimpse, breathes every half minute), the cormorant (floats, dives half a minute after
+		// fish, more after gobies on the bed) and the eider (winters here in flocks, dives to the mussel beds).
+		// Id                     Way            Len    Cruise Burst DMin  DMax  OBMin OBMax Sand Stone Weed Abund  Gmin Gmax Months    Day   Night Shy   Prey   Waves Bend  Burrow Breathes Curious Dive Rest Bird  Spawn Guards Nests Lunge Hang
+		{ "Pike",                 EWay::Lurker,  0.70f, 0.12f, 4.0f, 0.8f, 10.f, 0.f,  0.f,  0.1f, 0.3f, 1.f,  0.05f,  1,  1,   AllYear,  1.f,  0.5f, 1.0f, 0.3f,  0.9f, 0.5f, false, false, false, 0.f, 0.f, false, 0, false, false, 3.5f, 0.4f },
+		{ "Prawn",                EWay::Crawler, 0.05f, 0.06f, 0.5f, 0.3f, 10.f, 0.f,  0.f,  0.2f, 0.7f, 1.f,  0.6f,   1,  1,   AllYear,  0.5f, 1.f,  0.4f, 0.f,   0.5f, 0.2f, false },
+		{ "MittenCrab",           EWay::Crawler, 0.08f, 0.05f, 0.3f, 1.0f, 20.f, 0.f,  0.f,  0.5f, 1.f,  0.3f, 0.02f,  1,  1,   AllYear,  0.3f, 1.f,  0.5f, 0.f,   0.5f, 0.05f, false },
+		{ "Porpoise",             EWay::Cruiser, 1.5f,  1.5f,  4.5f, 3.0f, 30.f, 1.0f, 8.0f, 0.8f, 0.6f, 0.3f, 0.0004f, 1, 2,   AllYear,  1.f,  1.f,  6.0f, 0.3f,  0.5f, 0.3f, false, true, false, 35.f, 3.f },
+		{ "Cormorant",            EWay::Cruiser, 0.85f, 1.0f,  2.2f, 1.0f, 20.f, 0.3f, 4.0f, 0.8f, 1.f,  0.8f, 0.002f, 1,  2,   AllYear,  1.f,  0.f,  3.0f, 0.3f,  0.3f, 0.2f, false, true, false, 30.f, 40.f, true },
+		{ "Eider",                EWay::Cruiser, 0.6f,  0.6f,  1.4f, 1.0f, 15.f, 0.2f, 2.0f, 0.5f, 1.f,  0.6f, 0.004f, 2,  5,   M(10, 4), 1.f,  0.1f, 2.5f, 0.08f, 0.3f, 0.2f, false, true, false, 35.f, 45.f, true },
+	};
+	// the spawning months: herring spawn on the weed in April-May (the coastal spring spawners), perch lay their ribbons
+	// on it, sticklebacks build nests in it, roach and garfish spawn over it, pike in the flooded shallows in spring;
+	// lumpsucker males guard their eggs on the stones, round, black and sand goby males their nests, the shorthorn
+	// sculpin's in winter
+	struct FSpawnRow { const char* Id; uint16_t Months; bool bGuards, bNests; };
+	const FSpawnRow SpawnRows[] = {
+		{ "Herring", M(4, 5), false, false }, { "Sprat", M(4, 6), false, false }, { "Smelt", M(3, 4), false, false },
+		{ "Stickleback", M(5, 7), false, true }, { "NinespineStickleback", M(5, 7), false, true }, { "Perch", M(4, 5), false, false },
+		{ "Roach", M(5, 6), false, false }, { "Garfish", M(5, 6), false, false }, { "Pike", M(3, 4), false, false },
+		{ "Lumpsucker", M(3, 5), true, false }, { "RoundGoby", M(5, 8), true, false }, { "BlackGoby", M(5, 8), true, false },
+		{ "SandGoby", M(5, 7), true, false }, { "Sculpin", M(12, 2), true, false }, { "Flounder", M(4, 5), false, false },
+		{ "Turbot", M(6, 7), false, false }, { "Cod", M(3, 5), false, false },
 	};
 	constexpr int NumTable = int(sizeof(Table) / sizeof(Table[0]));
+	const bool bSpawnRows = []
+	{
+		for (const FSpawnRow& R : SpawnRows)
+			for (FSpecies& Sp : Table)
+				if (std::strcmp(Sp.Id, R.Id) == 0) { Sp.Spawn = R.Months; Sp.bGuards = R.bGuards; Sp.bNests = R.bNests; }
+		return true;
+	}();
+	inline bool MonthIn(uint16_t Months, int Month) { return (Months >> ((Month - 1 + 12) % 12)) & 1u; }
+	/** Shrimp lie buried in the sand by day and come out at night. */
+	inline bool BuriesByDay(const FSpecies& Sp) { return Sp.bBurrows && Sp.Way == EWay::Crawler && Sp.Night > Sp.Day; }
+	/** Eels and eelpout lie in the stones by day and go about at night. */
+	inline bool NightRoamer(const FSpecies& Sp) { return Sp.Way == EWay::Lurker && Sp.Night > Sp.Day + 0.3f; }
 
 	inline float Clamp(float V, float A, float B) { return V < A ? A : (V > B ? B : V); }
 	inline float Smooth(float E0, float E1, float V)
@@ -141,7 +177,19 @@ float Activity(int S, const FClock& Clock)
 	if (!(Sp.Months & (1u << ((Clock.Month - 1) % 12)))) return 0.f;
 	return Sp.Day * Clock.Daylight + Sp.Night * (1.f - Clock.Daylight);
 }
-const FSpecies& Species(int Index) { return Table[Index]; }
+const FSpecies& Species(int Index) { (void)bSpawnRows; return Table[Index]; }
+bool Spawning(int S, int Month) { return Table[S].Spawn && MonthIn(Table[S].Spawn, Month); }
+float YoungShare(int S, int Month)
+{
+	const uint16_t Sp = Table[S].Spawn;
+	if (!Sp) return 0.f;
+	int First = 1;
+	// the first month of the spawning (a run that wraps the year, the sculpin's Dec-Feb, starts after the gap)
+	while (First <= 12 && !(MonthIn(Sp, First) && !MonthIn(Sp, First == 1 ? 12 : First - 1))) ++First;
+	if (First > 12) return 0.f;
+	const int Since = (Month - First + 12) % 12;
+	return Since >= 3 && Since <= 6 ? 0.4f : 0.f;
+}
 int FindSpecies(const char* Id)
 {
 	for (int I = 0; I < NumTable; ++I)
@@ -212,11 +260,13 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 			for (int S = 0; S < NumTable; ++S)
 			{
 				const FSpecies& Sp = Table[S];
-				if (!IsSettled(Sp.Way)) continue;
+				// the stickleback males hold a nest each in the weed while they spawn (the rest still shoal)
+				const bool bNester = Sp.bNests && Spawning(S, Clock.Month);
+				if (!IsSettled(Sp.Way) && !bNester) continue;
 				const float Here = Season(S, Clock) * Density;
 				// try a few spots in the cell; each holds a fish with the chance its habitat gives, so the best habitat
 				// holds Abundance per 100 m2 (a rare one a fish in some cells, not one in every cell)
-				const float PerCell = Sp.Abundance * CellSize * CellSize / 100.f * BedShow;
+				const float PerCell = Sp.Abundance * (bNester ? 20.f : 1.f) * CellSize * CellSize / 100.f * BedShow;
 				const int Tries = int(std::ceil(PerCell * 2.f));
 				const float PerTry = PerCell / float(Tries);
 				for (int T = 0; T < Tries; ++T)
@@ -228,17 +278,22 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 					if (!Env.Bed(PX, PY, Bz)) continue;
 					float Sand, Stone, Weed;
 					Env.Habitat(PX, PY, Sand, Stone, Weed);
-					const float P = Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * PerTry * Env.Abundance(S, PX, PY);
+					const float P = (bNester ? (Weed > 0.4f ? 1.f : 0.f) : 1.f) * Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * PerTry * Env.Abundance(S, PX, PY);
 					if (Roll >= P) continue;
 					FFish F;
 					F.Species = uint8_t(S);
-					F.Len = Sp.Length * Size;
+					// the young of the year, a few months after the spawning: a third of the size
+					F.bYoung = !bNester && float(Hash(FishSeed, 7u, 3u) % 1000u) * 0.001f < YoungShare(S, Clock.Month);
+					F.bNest = bNester;
+					F.Len = Sp.Length * (F.bYoung ? 0.3f + 0.15f * Size : Size);
 					F.Pos = F.Goal = FV(PX, PY, Bz);
 					F.Yaw = Turn - 3.14159265f;
 					F.Seed = FishSeed;
 					F.Cell = Key;
 					F.Timer = 2.f + float(FishSeed % 1000) * 0.01f;
 					F.Phase = float(FishSeed % 628) * 0.01f;
+					F.Slot = F.Pos;   // a nest keeper's nest
+					if (BuriesByDay(Sp) && Clock.Daylight > 0.6f) { F.bHidden = true; F.Timer = 10.f + float(FishSeed % 5000) * 0.01f; }
 					All.push_back(F);
 				}
 			}
@@ -274,9 +329,19 @@ void FSim::SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock
 		G.Heading = A + 3.14159265f + (Rand() - 0.5f) * 2.2f;
 		G.Goal = G.Centre;
 		G.Hunger = 10.f + 30.f * Rand();
-		G.Breath = 30.f + 90.f * Rand();
+		G.Breath = Sp.Dive > 0.f ? Sp.Dive * (0.3f + 0.7f * Rand()) : 30.f + 90.f * Rand();
+		if (Sp.bBird)
+		{
+			// a bird comes in on the surface (flown in, out of sight), rests a while, then dives
+			G.Centre.Z = Water - 0.05f;
+			G.AtSurface = Sp.Rest * (0.3f + 0.7f * Rand());
+		}
+		// the young of the year school apart, more of them, a third of the size
+		G.bYoung = (Sp.Way == EWay::School || Sp.Way == EWay::Shoal) && Rand() < YoungShare(S, Clock.Month);
 		// a night school is looser and fewer stay together
-		const int N = Sp.GroupMin + int((Sp.GroupMax - Sp.GroupMin) * Rand() * (0.5f + 0.5f * Clock.Daylight));
+		int N = Sp.GroupMin + int((Sp.GroupMax - Sp.GroupMin) * Rand() * (0.5f + 0.5f * Clock.Daylight));
+		if (G.bYoung) N = N * 3 / 2;
+		const float LenK = G.bYoung ? 0.35f : 1.f;
 		const int Gi = int(Groups.size());
 		Groups.push_back(G);
 		for (int I = 0; I < std::max(N, 1); ++I)
@@ -284,11 +349,12 @@ void FSim::SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock
 			FFish F;
 			F.Species = uint8_t(S);
 			F.Group = Gi;
-			F.Len = Sp.Length * (0.82f + 0.36f * Rand());
+			F.Len = Sp.Length * LenK * (0.82f + 0.36f * Rand());
+			F.bYoung = G.bYoung;
 			// a place in the formation: a school is longer along its way, flat-ish; a shoal looser
 			// a mysid cloud is wide and flat over the bed
-			const float Sz = Sp.Way == EWay::School ? 0.5f + std::sqrt(float(N)) * Sp.Length * 1.1f
-				: Sp.Way == EWay::Swarm ? 0.6f + std::sqrt(float(N)) * 0.07f : 0.6f + std::sqrt(float(N)) * Sp.Length * 2.2f;
+			const float Sz = Sp.Way == EWay::School ? 0.5f + std::sqrt(float(N)) * Sp.Length * LenK * 1.1f
+				: Sp.Way == EWay::Swarm ? 0.6f + std::sqrt(float(N)) * 0.07f : 0.6f + std::sqrt(float(N)) * Sp.Length * LenK * 2.2f;
 			F.Slot = FV((Rand() - 0.5f) * 2.f * Sz * 1.4f, (Rand() - 0.5f) * 2.f * Sz,
 				(Rand() - 0.5f) * Sz * (Sp.Way == EWay::Surface ? 0.2f : Sp.Way == EWay::Swarm ? 0.3f : 0.7f));
 			F.Pos = G.Centre + F.Slot;
@@ -449,10 +515,12 @@ void FSim::Hunt(FGroup& G, int Gi, float Dt, FV& Want, float& Speed)
 				{
 					Caught->bEaten = true;
 					P.Members--;
-					Events.push_back({ G.Species, Caught->Species, Caught->Pos });
+					Events.push_back({ G.Species, Caught->Species, Caught->Pos, true });
 					G.Hunger = 40.f + 80.f * Rand();
 				}
+				else Events.push_back({ G.Species, P.Species, P.Centre, false });
 			}
+			else Events.push_back({ G.Species, P.Species, P.Centre, false });
 		}
 		else if (To.Len() > 16.f)
 		{
@@ -471,12 +539,13 @@ void FSim::Hunt(FGroup& G, int Gi, float Dt, FV& Want, float& Speed)
 			if (Rand() < 0.5f)
 			{
 				Bed->bEaten = true;
-				Events.push_back({ G.Species, Bed->Species, Bed->Pos });
+				Events.push_back({ G.Species, Bed->Species, Bed->Pos, true });
 				G.Hunger = 30.f + 60.f * Rand();
 			}
 			else
 			{
 				// missed: it bolts (a shrimp into the sand)
+				Events.push_back({ G.Species, Bed->Species, Bed->Pos, false });
 				Bed->Timer = -1.f;
 				Bed->State = 3;
 				G.Hunger = 6.f + 10.f * Rand();
@@ -501,7 +570,7 @@ void FSim::Ambush(FFish& F, const FEnv& Env)
 	// a perch at a goby, herring through a mysid cloud)
 	if (F.bHidden || F.bEaten || F.Fed > 0.f) return;
 	const FSpecies& Sp = Table[F.Species];
-	const float Reach = 0.25f + F.Len * 1.5f;
+	const float Reach = 0.25f + F.Len * Sp.Lunge;
 	FFish* Best = nullptr;
 	float BestD = Reach;
 	// only the fish in the grid cells within reach (PreyGrid: built once a step, cells of PreyCell metres)
@@ -522,19 +591,21 @@ void FSim::Ambush(FFish& F, const FEnv& Env)
 		}
 	if (!Best) return;
 	F.Fed = 8.f + 20.f * Rand();
+	// the lunge: a settled fish jumps to where its prey was (a pike a couple of metres, in a blur), caught or not
+	if (F.Group < 0 && Sp.Way != EWay::Hover)
+	{
+		float Bz;
+		if (Env.Bed(Best->Pos.X, Best->Pos.Y, Bz)) { F.Goal = FV(Best->Pos.X, Best->Pos.Y, Bz); F.State = 2; }
+	}
 	if (Rand() < 0.4f)
 	{
 		Best->bEaten = true;
 		if (Best->Group >= 0) Groups[Best->Group].Members--;
-		Events.push_back({ int(F.Species), int(Best->Species), Best->Pos });
-		// the lunge: a settled fish jumps to where its prey was
-		if (F.Group < 0 && Sp.Way != EWay::Hover)
-		{
-			float Bz;
-			if (Env.Bed(Best->Pos.X, Best->Pos.Y, Bz)) { F.Goal = FV(Best->Pos.X, Best->Pos.Y, Bz); F.State = 2; }
-		}
+		Events.push_back({ int(F.Species), int(Best->Species), Best->Pos, true });
+		return;
 	}
-	else if (Best->Group < 0) { Best->Timer = -1.f; Best->State = 3; }
+	Events.push_back({ int(F.Species), int(Best->Species), Best->Pos, false });
+	if (Best->Group < 0) { Best->Timer = -1.f; Best->State = 3; }
 	else Groups[Best->Group].Alarm = std::max(Groups[Best->Group].Alarm, 0.6f), Groups[Best->Group].From = F.Pos;
 }
 
@@ -554,7 +625,16 @@ void FSim::StepGroup(int Gi, float Dt, const FEnv& Env, const FV& Eye)
 	}
 	float Speed = Sp.Cruise;
 	FV Want(std::cos(G.Heading), std::sin(G.Heading), 0.f);
-	if (Sp.Way == EWay::Cruiser)
+	const bool bSpawn = (Sp.Way == EWay::School || Sp.Way == EWay::Shoal) && !G.bYoung && Spawning(G.Species, Month);
+	if (bSpawn) Speed *= 0.5f;
+	if (Sp.bBird && G.AtSurface > 0.f)
+	{
+		// a bird on the water: paddles about slowly, no hunting till it dives
+		G.Prey = -1;
+		G.BedPrey = 0;
+		Speed = Sp.Cruise * 0.3f;
+	}
+	else if (Sp.Way == EWay::Cruiser)
 	{
 		Hunt(G, Gi, Dt, Want, Speed);
 		const bool bHunting = G.Prey >= 0 || G.BedPrey != 0;
@@ -592,7 +672,7 @@ void FSim::StepGroup(int Gi, float Dt, const FEnv& Env, const FV& Eye)
 	if (G.Timer <= 0.f)
 	{
 		G.Timer = 3.f + 6.f * Rand();
-		G.Goal = FV((Rand() - 0.5f) * 1.6f, 0.f, 0.f);
+		G.Goal = FV((Rand() - 0.5f) * (bSpawn ? 4.f : 1.6f), 0.f, 0.f);
 	}
 	G.Heading += G.Goal.X * Dt * 0.35f;
 	const FV Ahead = G.Centre + FV(std::cos(G.Heading), std::sin(G.Heading), 0.f) * 4.f;
@@ -606,32 +686,54 @@ void FSim::StepGroup(int Gi, float Dt, const FEnv& Env, const FV& Eye)
 		const float Depth = Water - Here;
 		float Lo = Here + std::max(Sp.OverBedMin, 0.2f), Hi = std::min(Here + Sp.OverBedMax, Water - 0.4f);
 		if (Sp.OverBedMin < 0.f) { Lo = std::max(Water - 1.2f, Here + 0.3f); Hi = Water - 0.3f; }
+		// spawning herring, perch, sticklebacks mill low over the weed; the mysids rise off the bed at night
+		if (bSpawn) { Lo = Here + 0.2f; Hi = std::min(Here + 1.f, Water - 0.4f); }
+		if (Sp.Way == EWay::Swarm)
+		{
+			const float Rise = (1.f - Light) * 3.f;
+			Lo = std::min(Lo + Rise, Water - 0.6f);
+			Hi = std::min(Hi + Rise, Water - 0.4f);
+		}
+		// an eider under water goes down to the mussel bed and works along it
+		if (Sp.bBird && Sp.PreyLength < 0.15f && G.AtSurface <= 0.f && G.Breath > 0.f) Hi = Lo = Here + 0.25f;
 		if (Depth < 1.f) Hi = Lo = Here + Depth * 0.5f;
 		const float Z = Clamp(G.Centre.Z, Lo, std::max(Lo, Hi));
 		Want.Z += Clamp((Z - G.Centre.Z) * 0.6f, -0.6f, 0.6f);
+		// a mysid cloud barely swims across, but rises and sinks on its own (a few centimetres a second)
+		if (Sp.Way == EWay::Swarm) G.Centre.Z += Clamp(Z - G.Centre.Z, -0.08f * Dt, 0.08f * Dt);
 		if (G.Alarm <= 0.f && Sp.Way != EWay::Cruiser) Want.Z += std::sin(float(Time) * 0.13f + Gi) * 0.05f;
 	}
 	if (Sp.bBreathes)
 	{
-		// up for air every minute or two, a few breaths at the surface, then down again
+		// up for air every minute or two (a porpoise every half minute), a few breaths at the surface, then down again;
+		// a bird floats between its dives and goes down head first, hungry
+		const float SurfaceZ = Water - (Sp.bBird ? 0.05f : 0.35f);
 		if (G.AtSurface > 0.f)
 		{
 			G.AtSurface -= Dt;
-			Want.Z = Clamp((Water - 0.35f - G.Centre.Z) * 2.f, -0.5f, 0.5f);
-			Speed = Sp.Cruise * 0.4f;
-			if (G.AtSurface <= 0.f) G.Breath = 60.f + 120.f * Rand();
+			Want.Z = Clamp((SurfaceZ - G.Centre.Z) * 2.f, -0.5f, 0.5f);
+			Speed = Sp.Cruise * (Sp.bBird ? 0.3f : 0.4f);
+			if (G.AtSurface <= 0.f)
+			{
+				G.Breath = Sp.Dive > 0.f ? Sp.Dive * (0.7f + 0.6f * Rand()) : 60.f + 120.f * Rand();
+				if (Sp.bBird) G.Hunger = 0.f;
+			}
 		}
 		else if ((G.Breath -= Dt) <= 0.f)
 		{
 			Want = FV(Want.X * 0.4f, Want.Y * 0.4f, 1.f);
 			Speed = Sp.Cruise;
-			if (G.Centre.Z > Water - 0.7f) G.AtSurface = 4.f + 5.f * Rand();
+			G.Prey = -1;
+			G.BedPrey = 0;
+			if (G.Centre.Z > SurfaceZ - 0.35f) G.AtSurface = Sp.Rest > 0.f ? Sp.Rest * (0.6f + 0.8f * Rand()) : 4.f + 5.f * Rand();
 		}
+		else if (Sp.bBird && G.Breath > (Sp.Dive > 0.f ? Sp.Dive : 60.f) * 0.55f && G.Prey < 0 && !G.BedPrey)
+			Want.Z -= 1.2f;   // the dive: down at once
 	}
 	const FV Target = Want.Norm() * Speed + Env.Current(G.Centre) * (Sp.Way == EWay::Swarm ? 0.9f : 0.5f);
 	G.Vel += (Target - G.Vel).Clamped(Dt * (0.6f + 2.5f * G.Alarm));
 	G.Centre += G.Vel * Dt;
-	G.Centre.Z = std::min(G.Centre.Z, Water - std::max(0.25f, Sp.Length * 0.15f));
+	G.Centre.Z = std::min(G.Centre.Z, Water - (Sp.bBird ? 0.05f : std::max(0.25f, Sp.Length * 0.15f)));
 	if (G.Vel.Len2D() > 0.05f) G.Heading += WrapPi(std::atan2(G.Vel.Y, G.Vel.X) - G.Heading) * Clamp(Dt * 0.8f, 0.f, 1.f);
 }
 
@@ -665,7 +767,7 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 			}
 		}
 		// keep the place in the formation (turned with the group, spread when alarmed or at night), dodge the diver
-		const float Spread = 1.f + G.Alarm * 1.8f;
+		const float Spread = (1.f + G.Alarm * 1.8f) * (Sp.Way == EWay::School || Sp.Way == EWay::Shoal ? 1.f + 0.8f * (1.f - Light) : 1.f);
 		const float C = std::cos(G.Heading), S = std::sin(G.Heading);
 		const FV Slot(F.Slot.X * C - F.Slot.Y * S, F.Slot.X * S + F.Slot.Y * C, F.Slot.Z);
 		FV Want = (G.Centre + Slot * Spread - F.Pos) * 1.4f + G.Vel;
@@ -684,7 +786,7 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 		F.Pos += F.Vel * Dt;
 		float Bz;
 		if (Env.Bed(F.Pos.X, F.Pos.Y, Bz)) F.Pos.Z = std::max(F.Pos.Z, Bz + F.Len * 0.4f);
-		F.Pos.Z = std::min(F.Pos.Z, Water - 0.15f);
+		F.Pos.Z = std::min(F.Pos.Z, Water - (Sp.bBird ? 0.04f : 0.15f));
 		const float Turn = Face(F, NewRel.Len() > 0.04f ? NewRel : FV(std::cos(G.Heading), std::sin(G.Heading), 0.f), Dt, 4.f + 6.f * G.Alarm);
 		Beat(F, NewRel.Len(), Dt, Turn);
 		F.Roll = Clamp(-Turn * 0.08f, -0.5f, 0.5f);
@@ -699,12 +801,42 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	F.Timer -= Dt;
 	enum { Rest = 0, Move = 1, Flee = 2, Startled = 3 };
 	const bool bCrawler = Sp.Way == EWay::Crawler;
+	const bool bDayBuried = BuriesByDay(Sp) && Light > 0.6f;
 	if (F.bHidden)
 	{
-		// buried in the sand (a shrimp by day, or after a fright): out again a while later, when nothing is close
-		if (F.Timer <= 0.f && DE > Sp.Shy * 3.f) { F.bHidden = false; F.State = Rest; F.Timer = 2.f; }
+		// buried in the sand (a shrimp by day, or after a fright): out again a while later, when nothing is close (a
+		// shrimp only once it is dark)
+		if (F.Timer <= 0.f && bDayBuried) F.Timer = 5.f + 10.f * Rand();
+		else if (F.Timer <= 0.f && DE > Sp.Shy * 3.f) { F.bHidden = false; F.State = Rest; F.Timer = 2.f; }
 		return;
 	}
+	if (bDayBuried && F.State == Rest && Rand() < Dt * 0.2f)
+	{
+		F.bHidden = true;
+		F.Timer = 20.f + 40.f * Rand();
+		F.Pos.Z = Bz;
+		return;
+	}
+	if (F.bNest)
+	{
+		// a stickleback male over his nest in the weed: hangs a hand above it, turns about, faces a diver who comes
+		// close and darts at whatever comes in; never more than half a metre off
+		const FV Nest = F.Slot;
+		const float T = float(Time) * 0.7f + float(F.Seed % 97);
+		FV To = Nest + FV(std::cos(T) * 0.12f, std::sin(T * 1.3f) * 0.12f, 0.1f + 0.04f * std::sin(T * 2.1f)) - F.Pos;
+		if (F.State == Flee) { To = F.Goal + FV(0.f, 0.f, 0.1f) - F.Pos; if (To.Len() < 0.05f || (F.Pos - Nest).Len2D() > 0.5f) F.State = Rest; }
+		const FV V = To.Clamped(Sp.Burst) * 2.f;
+		F.Vel = V.Clamped(F.State == Flee ? Sp.Burst : Sp.Cruise);
+		F.Pos += F.Vel * Dt;
+		const float Turn = DE < 1.5f ? Face(F, FV(-FromEye.X, -FromEye.Y, 0.f), Dt, 5.f) : Face(F, F.Vel.Len() > 0.01f ? F.Vel : FV(std::cos(F.Yaw), std::sin(F.Yaw), 0.f), Dt, 3.f);
+		F.Pitch = 0.f;
+		Beat(F, F.Vel.Len() + 0.05f, Dt, Turn);
+		float Nz;
+		if (Env.Bed(F.Pos.X, F.Pos.Y, Nz)) F.Pos.Z = std::max(F.Pos.Z, Nz + 0.04f);
+		return;
+	}
+	// a guard by its eggs (a lumpsucker male, a goby in its nest) does not leave them for a diver: it faces them
+	const bool bGuarding = Sp.bGuards && Spawning(F.Species, Month);
 	if (F.State == Startled || (Sp.bBurrows && F.State != Flee && DE < Sp.Shy))
 	{
 		// a hunter missed it (or a diver is on it): a burrower digs in, the rest dart off
@@ -726,7 +858,13 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 		}
 		else F.State = Rest;
 	}
-	if (F.State != Flee && DE < Sp.Shy && Sp.Way != EWay::Hover)
+	if (bGuarding && DE < 3.f && F.State != Flee)
+	{
+		Face(F, FV(-FromEye.X, -FromEye.Y, 0.f), Dt, 2.f);
+		F.State = Rest;
+		F.Timer = std::max(F.Timer, 1.f);
+	}
+	else if (F.State != Flee && DE < Sp.Shy && Sp.Way != EWay::Hover)
 	{
 		// off, away from the diver and a little aside, for a few body lengths (a flatfish glides metres)
 		const float A = std::atan2(FromEye.Y, FromEye.X) + (Rand() - 0.5f) * 1.2f;
@@ -742,8 +880,10 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	}
 	else if (F.State == Rest && F.Timer <= 0.f)
 	{
+		// an eel goes about at night (longer moves, short rests); by day it keeps to its stone
+		const float Night = NightRoamer(Sp) ? 1.f - Light : 0.f;
 		const float Reach = Sp.Way == EWay::Hopper ? 0.2f + 0.5f * Rand() : Sp.Way == EWay::Hover ? 0.3f * Rand()
-			: bCrawler ? 0.08f + 0.35f * Rand() : 0.3f + 1.2f * Rand();
+			: bCrawler ? 0.08f + 0.35f * Rand() : 0.3f + (1.2f + 2.5f * Night) * Rand();
 		const float A = Rand() * 6.2831853f;
 		float Tz;
 		const FV To(F.Pos.X + std::cos(A) * Reach, F.Pos.Y + std::sin(A) * Reach, 0.f);
@@ -757,9 +897,9 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 				F.State = Move;
 			}
 		}
-		F.Timer = Sp.Way == EWay::Hopper ? 2.f + 6.f * Rand() : bCrawler ? 1.f + 4.f * Rand() : 10.f + 30.f * Rand();
+		F.Timer = Sp.Way == EWay::Hopper ? 2.f + 6.f * Rand() : bCrawler ? 1.f + 4.f * Rand() : (10.f + 30.f * Rand()) * (1.f - 0.85f * Night);
 	}
-	const float Lift = Sp.Way == EWay::Hover ? 0.25f + 0.35f * float(F.Seed % 100) * 0.01f : Sp.Way == EWay::Flat ? 0.f : bCrawler ? F.Len * 0.12f : F.Len * 0.1f;
+	const float Lift = Sp.Hang + (Sp.Way == EWay::Hover ? 0.25f + 0.35f * float(F.Seed % 100) * 0.01f : Sp.Way == EWay::Flat ? 0.f : bCrawler ? F.Len * 0.12f : F.Len * 0.1f);
 	if (F.State == Move || F.State == Flee)
 	{
 		const FV To = F.Goal - F.Pos;
@@ -807,6 +947,8 @@ void FSim::Step(float Dt, const FEnv& Env, const FV& Eye, const FClock& Clock)
 	Dt = Clamp(Dt, 0.f, 0.1f);
 	Time += Dt;
 	Events.clear();
+	Light = Clock.Daylight;
+	Month = Clock.Month;
 	++Frame;
 	SettleTimer -= Dt;
 	if (SettleTimer <= 0.f)

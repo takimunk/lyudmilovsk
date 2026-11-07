@@ -119,16 +119,27 @@ int main(int Argc, char** Argv)
 		FModel S = W;
 		float Peak = 0.f, PeakDay = 0.f;
 		float SpratJul = 1.f, DucksJan = 0.f, DucksJul = 1.f, JellyAug = 0.f, JellyMar = 1.f;
+		float CyPeak = 0.f, CyDay = 0.f, CyMay = 0.f;
+		const int Herring = Find("Herring"), Cyano = Find("Cyano");
+		float YoungJun = 0.f, YoungSep = 1.f, HerJun = 0.f, HerAug = 0.f;
 		for (int D = 0; D < 365; ++D)
 		{
 			S.Step(float(D), 1.f);
 			if (S.Biomass(0) > Peak) { Peak = S.Biomass(0); PeakDay = float(D); }
-			if (D == 200) { SpratJul = S.Here(Find("Sprat")); DucksJul = S.Here(Find("SeaDucks")); }
-			if (D == 20) DucksJan = S.Here(Find("SeaDucks"));
+			if (S.Biomass(Cyano) > CyPeak) { CyPeak = S.Biomass(Cyano); CyDay = float(D); }
+			if (D == 135) CyMay = S.Biomass(Cyano);
+			if (D == 160) { YoungJun = S.YoungToCome(Herring) / S.Biomass(Herring); HerJun = S.Biomass(Herring); }
+			if (D == 230) HerAug = S.Biomass(Herring);
+			if (D == 226) YoungSep = S.YoungToCome(Herring) / S.Biomass(Herring);
+			if (D == 200) { SpratJul = S.Here(Find("Sprat")); DucksJul = S.Here(Find("Eider")); }
+			if (D == 20) DucksJan = S.Here(Find("Eider"));
 			if (D == 225) JellyAug = S.Here(Find("Jelly"));
 			if (D == 75) JellyMar = S.Here(Find("Jelly"));
 		}
 		Check(PeakDay > 90.f && PeakDay < 135.f, "the phytoplankton peaks in the spring bloom (day)", PeakDay);
+		Check(CyDay > 205.f && CyDay < 245.f && CyPeak > 20.f * CyMay, "the blue-greens bloom in August, twenty times May's (day)", CyDay);
+		std::printf("  herring: young to come in June %.2f, mid August %.2f of the stock; stock August/June %.2f\n", YoungJun, YoungSep, HerAug / HerJun);
+		Check(YoungJun > 0.1f && YoungSep < 0.01f && HerAug > 1.1f * HerJun, "the young herring join the stock in July and August (August/June)", HerAug / HerJun);
 		Check(SpratJul < 0.05f, "the sprat are offshore in July (share here)", SpratJul);
 		Check(DucksJan > 0.95f && DucksJul < 0.05f, "the sea ducks winter here and leave for the summer (January share)", DucksJan);
 		Check(JellyAug > 0.95f && JellyMar < 0.05f, "moon jellies in August, none in March (August share)", JellyAug);
