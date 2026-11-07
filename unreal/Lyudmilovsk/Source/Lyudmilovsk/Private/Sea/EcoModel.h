@@ -53,6 +53,10 @@ namespace LyudEco
 	/** The seasons' drive by day of the year (0..365): the light for the plankton and weed, the water's warmth, both mean 1. */
 	float LightFactor(float DayOfYear);
 	float WarmthFactor(float DayOfYear);
+	/** The blue-greens' drive (warm calm water, late July and August), mean 1. */
+	float CyanoFactor(float DayOfYear);
+	/** The day of the year a node's young of the year join it (its recruitment pulse), or -1. */
+	float RecruitDay(int Node);
 
 	class FModel
 	{
@@ -69,6 +73,8 @@ namespace LyudEco
 		float Relative(int Node) const;
 		/** How much of the node is in the coastal sea now (0..1: the migrants come and go). */
 		float Here(int Node) const { return F[Node]; }
+		/** The year's young still growing up out of sight (eggs, larvae), g/m2: they join the group round its RecruitDay. */
+		float YoungToCome(int Node) const { return Young[Node]; }
 		void SetBiomass(int Node, float Value);
 
 		/** Base mass balance: how much of each node's production is eaten (EE, Ecopath's ecotrophic efficiency, must be <= 1). */
@@ -102,7 +108,8 @@ namespace LyudEco
 		void SubStep(float DayOfYear, float Dt);
 
 		int N = 0;
-		std::vector<float> B, B0, F, M0, GE, BaseEE, Dc, A, V, LastQ, Pmax, Hp;
+		std::vector<float> B, B0, F, M0, GE, BaseEE, Dc, A, V, LastQ, Pmax, Hp, RecDay, RecShare, Young;
+		int IPhyto = -1, ICyano = -1;
 		std::vector<float> ScratchC, ScratchGain, ScratchLoss;
 		float DetExport = 0.f;
 		struct FCell { std::vector<std::pair<int, float>> Taken; };

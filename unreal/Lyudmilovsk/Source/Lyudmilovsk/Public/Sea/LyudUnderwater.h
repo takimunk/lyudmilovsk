@@ -18,6 +18,8 @@ struct FLyudUnderwaterEnv;
 
 /** Something round the diver was eaten: the predator's and the prey's species Ids (Cod, Herring, GreySeal...), where (cm). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FLyudFishEaten, FName, Predator, FName, Prey, FVector, Location);
+/** A hunting moment round the diver: a strike, caught or missed (a pike's lunge, a cormorant's chase, a cod at a school). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FLyudFishHunt, FName, Predator, FName, Prey, FVector, Location, bool, bCaught);
 
 /**
  * What draws the underwater life the subsystem simulates: one instanced mesh per fish species (the Blender-built
@@ -85,6 +87,8 @@ public:
 
 	/** A predator round the diver caught something (a cod a herring, a sculpin a shrimp, a seal a flounder). */
 	UPROPERTY(BlueprintAssignable, Category = "Underwater") FLyudFishEaten OnFishEaten;
+	/** Every strike seen, caught or missed (OnFishEaten has only the catches). */
+	UPROPERTY(BlueprintAssignable, Category = "Underwater") FLyudFishHunt OnFishHunt;
 	/** Meals seen since play began, "Predator<-Prey" -> count (lyud.SeaLife.Debug prints them). */
 	TMap<FString, int32> MealsSeen;
 

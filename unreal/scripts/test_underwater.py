@@ -63,6 +63,13 @@ STEPS = [
     ("gammarus", ("fish", "Gammarus", 0.15, 30), []),
     ("mysids", ("fish", "Mysid", 1.2, 50), []),
     ("seal", ("fish", "GreySeal", 7.0, 45), []),
+    # the third wave: the pike in the weed, prawns, the mitten crab, the porpoise, the diving birds
+    ("pike", ("fish", "Pike", 2.0, 35), []),
+    ("prawn", ("fish", "Prawn", 0.3, 30), []),
+    ("mittencrab", ("fish", "MittenCrab", 0.4, 30), []),
+    ("porpoise", ("fish", "Porpoise", 5.5, 40), []),
+    ("cormorant", ("fish", "Cormorant", 2.5, 40), []),
+    ("eider", ("fish", "Eider", 2.0, 40), []),
     ("current_still", ("seabed", 0, 2.4, 0.8), ["lyud.Current.Speed 0"]),
     ("current_fast", ("seabed", 0, 2.4, 0.8), ["lyud.Current.Speed 0.6"]),
     ("current_reef", ("seabed", 1, 1.8, 0.6), ["lyud.Current.Speed 0.6"]),
