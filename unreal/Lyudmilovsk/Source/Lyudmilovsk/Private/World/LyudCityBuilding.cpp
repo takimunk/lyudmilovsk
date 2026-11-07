@@ -50,7 +50,7 @@ namespace
 	TAutoConsoleVariable<int32> CVarCityLights(TEXT("lyud.City.Lights"), 0,
 		TEXT("Town windows: 0 = auto (the life simulation or the seeded evening), 1 = every window lit, 2 = all dark."), ECVF_Default);
 
-	TAutoConsoleVariable<int32> CVarCityLampBudget(TEXT("lyud.City.LampBudget"), 48,
+	TAutoConsoleVariable<int32> CVarCityLampBudget(TEXT("lyud.City.LampBudget"), 24,
 		TEXT("Town room lamps: at most this many point lights (no shadows), given to the lit lamps nearest the camera. 0 = none."),
 		ECVF_Default);
 

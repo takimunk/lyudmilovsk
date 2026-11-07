@@ -37,7 +37,7 @@ it into texture row 63 - r (`TexelOf`).
   The hour comes from `ALyudSky::ShownTime()`, so windows and sun agree.
 * Stair windows: dusk to dawn. Public rooms: open hours (`HOURS` in `import_city.py`).
 * Lamps (`B.lamp`, ~1900 in town): buildings own no light components. A shared pool of at most
-  `lyud.City.LampBudget` (default 48) movable point lights without shadows is handed every 0.5 s to the lit lamps
+  `lyud.City.LampBudget` (default 24; with public spaces' lyud.City.StreetLights 12 a shared 36 until GPU numbers) movable point lights without shadows is handed every 0.5 s to the lit lamps
   nearest the camera within 45 m (fading over the last 6 m). A held lamp keeps its light unless another is 4 m nearer,
   a newly lit one comes up over two updates; lights that keep their lamp are not touched. Public lamps
   burn in open hours (0..24 = always), lobby/stair ones dusk to dawn.

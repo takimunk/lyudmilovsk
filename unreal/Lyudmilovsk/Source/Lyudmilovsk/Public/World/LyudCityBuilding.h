@@ -106,7 +106,7 @@ private:
  * Stair windows burn from dusk to dawn, public rooms in their open hours. Window textures are uploaded in batches
  * (at most four times a second, only buildings with a changed window), never once per call.
  *
- * Room lamps: a pool of at most lyud.City.LampBudget point lights (default 48, no shadows) is handed every half
+ * Room lamps: a pool of at most lyud.City.LampBudget point lights (default 24, no shadows; one shared night budget with the street lamps) is handed every half
  * second to the lit lamps nearest the camera within 45 m (a held lamp keeps its light unless another is 4 m nearer;
  * a new one comes up over two updates); a building owns no light components.
  *
