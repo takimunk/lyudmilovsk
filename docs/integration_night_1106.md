@@ -7,13 +7,14 @@ merge. This page records what conflicted, how each conflict was resolved here, w
 the branch owners. Done in the cloud on 2026-11-07 (no Unreal build: the UE Mac is busy, and it can't run the game until
 the Metal Toolchain is reinstalled).
 
-It took six rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
+It took seven rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
 started. Round 2 merged the newer heads on top, in the same order, and the four branches that moved again while it ran
 (eco, fishing, public-spaces, town-life) a second time at the end. Round 3 merged perfhunt, the restaurant and festivals
 once more, after they pushed again at about 01:35 UTC. Round 4 took the small fixes that the buildings, public spaces,
 town life, the restaurant, eco and perfhunt pushed by 01:55 UTC. Round 5 took the restaurant's `998223bb` (PR #11),
 fishing's `92df3cec` and `loc/night-1106`. Round 6 added `dialogue/residents` (after town-life) and `residents`
-(PR #15). The branch holds every head as of 02:24 UTC. Later pushes aren't in
+(PR #15). Round 7 took what city-terrain (its bird fix), fishing and the restaurant pushed by 02:31 UTC. The branch
+holds every head as of 02:31 UTC. Later pushes aren't in
 it, but the order and resolutions here still apply to them.
 
 ## Order
@@ -22,12 +23,12 @@ it, but the order and resolutions here still apply to them.
 |---|---|---|---|---|---|
 | 1 | `perfhunt` (PR #13) | `07dfbbc5` | `63b7f908` | 19 | none |
 | 2 | `underwater-eco` (PR #9) | `0e9e8a53` | `3615e1d3` | 9 | none |
-| 3 | `fishing` (PR #10) | `a67d5961` | `92df3cec` | 24 (PR #9 up to `0e9e8a53` included) | `CounterTrade.h` (1), `DefaultGame.ini` (2) |
-| 4 | `city-terrain` | `72b39c18` | `72b39c18` | 16 | none |
+| 3 | `fishing` (PR #10) | `a67d5961` | `118aba5b` | 26 (PR #9 up to `0e9e8a53` included) | `CounterTrade.h` (1), `DefaultGame.ini` (2) |
+| 4 | `city-terrain` | `72b39c18` | `19237568` | 17 | none |
 | 5 | `wt/city-buildings` | `bafbcc72` | `1f3d5861` | 26 | none |
 | 6 | `public-spaces` (PR #14) | `e8968eea` | `0514738a` | 61 | none |
 | 7 | `town-life` | `bde10d42` | `d974e189` | 29 | `PeopleLife.cpp` (1), `counters.json` (2) |
-| 8 | `review/restaurant` (PR #11) | `9cf4e4bc` | `998223bb` | 17 (its commits rebased onto main, merged with the old head) | `strings_{ru,en,ja}.json`, `localization/assets.json`, `LyudSoundscape.cpp` (1); `strings_ja.json` (2); `strings_{ru,en,ja}.json` (3) |
+| 8 | `review/restaurant` (PR #11) | `9cf4e4bc` | `26b8eefc` | 19 (its commits rebased onto main, merged with the old head) | `strings_{ru,en,ja}.json`, `localization/assets.json`, `LyudSoundscape.cpp` (1); `strings_ja.json` (2); `strings_{ru,en,ja}.json` (3) |
 | 9 | `festivals` | `9a3bcbec` | `1c40e985` | 16 | `strings_{ru,en,ja}.json` (1) |
 | 10 | `gfx` (PR #12) | `33643981` | `e10d5ac3` | 9 | `LyudGameMenu.cpp` (1), `PeopleLife.cpp` (2) |
 | 11 | `loc/night-1106` | (round 5) | `caeb8eb8` | 1 | none |
@@ -104,7 +105,7 @@ Round 6:
     `renders/residents/`.
 
 perfhunt's five new commits (save order, doors, prefetch, small speed-ups, its report) and festivals' review fixes
-merged by themselves, and so did all of rounds 4 and 5 and `dialogue/residents`.
+merged by themselves, and so did all of rounds 4, 5 and 7 and `dialogue/residents`.
 
 When the branches go to main one by one in this order, the same files conflict again, and the resolutions above apply
 as they are. The one difference: `DefaultGame.ini` then conflicts when city-terrain goes in after fishing.
@@ -169,7 +170,9 @@ in the resolutions.
     `BillFolder` (object `UPROPERTY`s), `HeroDishes` and `OnTray` (arrays), and the festivals' `ActiveFestival()` /
     `ActivePhase()` (`UFUNCTION`s returning `FName`). All of them exist in the merge with those types.
   - fishing's kitchen buyer at the Amber (`fishing.json` kitchen `yantar`) now stands at the restaurant's staff door,
-    about 1.7 m from `seats.json`'s `back_outside` (fishing `2a4cfff9`, from the restaurant thread).
+    about 1.7 m from `seats.json`'s `back_outside` (fishing `2a4cfff9`, from the restaurant thread). The restaurant's
+    cook-at-the-door trigger (`restaurant.json` `kitchen_door`, `26b8eefc`) has the same point, radius and hours as
+    `fishing.json`: offset [-1571, 349, 0] cm from the plot, 220 cm, 11..23.
 - **Generated data:**
   - `tools/city_plan.py` regenerates `Content/City/city_plan.json` byte for byte.
   - `tools/town/town_life.py` run on the merged inputs (the plan, the buildings' flats, the public spaces' spots, the
@@ -204,14 +207,15 @@ last commit), round 3 `f589d679`, and round 4 `e756a240` (`animalsim` and `winte
 last commit). Round 4 ran every suite except birdsim, because it changes none of the bird sim's sources or data. Round 5
 ran every suite on `559683ce`. After it, fishing's last commit got `fishing` and both `underwater` targets again (on
 `b8fae5b7`), and `loc/night-1106` changes only the string tables, which no suite reads. Round 6 ran every suite on
-`edd4be6c`, including the new `barksim`. All six rounds gave the same results; the bird sim's output is the same line
-for line apart from timings.
+`edd4be6c`, including the new `barksim`, and round 7 on `f3817a2d`. Rounds 1 to 6 gave the same results, and the bird
+sim's output was the same line for line apart from timings. In round 7, city-terrain's bird fix changes birdsim (below);
+every other suite gives the same results as before.
 
 | Suite | main | merge |
 |---|---|---|
 | `animalsim test` | all passed | all passed |
 | `audiosim test` | 2 failed (thunderstorm peak, far-storm rumble) | the same 2 failed |
-| `birdsim test` | 121 passed, 1 failed (albatross); on the UE Mac 120 / 2 | 117 passed, 5 failed (see below); on the UE Mac 119 / 3 |
+| `birdsim test` | 121 passed, 1 failed (albatross); on the UE Mac 120 / 2 | rounds 1-6: 117 passed, 5 failed (see below), on the UE Mac 119 / 3; round 7 (city-terrain `19237568`): 116 passed, 6 failed |
 | `peoplesim test` | all ok without `railway_built.json`; 1 failed with it ("a bike goes back home into its entrance") | all ok both ways |
 | `peoplesim town` (town-life) | n/a | all ok (both ways) |
 | `railsim test` | ok | ok |
@@ -249,8 +253,18 @@ The two blackbird checks come from city-terrain's regenerated bird world (`72b39
 the terraced ground): they fail on city-terrain alone and on the merge. The other three appear only when perfhunt's
 change to the bird sim (`33a04151`) meets that new world. That change is more than a speed-up: the sight line to the
 player is kept for 0.15 s, and the hawk now takes the best prey by weight where it used to take the first one found.
-perfhunt's later commits (rounds 3 and 4) don't touch the bird sim's sources and city-terrain hasn't moved, so this
-is still the state.
+perfhunt's later commits (rounds 3 and 4) don't touch the bird sim's sources, so this held up to round 6.
+
+Round 7 brought city-terrain's bird fix (`19237568`: gardens back on the terraced town, 30 -> 446 Garden sites, and
+the blackbird check run over five seasons). On Linux it fixes the two blackbird checks, but other checks move:
+
+| Tree (Linux) | Failed checks |
+|---|---|
+| city-terrain `19237568` alone | 114 passed, 8 failed: six feeder checks (suet and grain: birds come after a couple of hours, only the right birds come, the feed goes down, a feed nobody eats stays empty), "and sleep in the reed", the albatross |
+| the merge `f3817a2d` | 116 passed, 6 failed: feeder: birds come to suet after a couple of hours; the feed goes down as they peck; every starling is asleep in the reed by dusk + 1 h; they leave the roost before sunrise; and sleep in the reed; the albatross |
+
+The peregrine, gale and blackbird checks now pass on the merge. The feeder and starling checks fail instead. These
+round 7 numbers are Linux only: nobody has run them on the Mac yet.
 
 Cloud quirks (not branch problems):
 - The `run.sh` scripts were run with bash. On the Mac `/bin/sh` is bash; Ubuntu's dash rejects main's `"${@:2}"` in
@@ -270,7 +284,9 @@ to do:
    new ground); the feeder, peregrine and gale checks show up only with perfhunt's hawk and sight change on that
    ground; perfhunt alone also fails the low-tide gull check. On the UE Mac, the perf thread finds one failure more
    than main (119 / 3 against 120 / 2), and that one is city-terrain's. The Mac is the platform the game is tested
-   on, so its list is the one to fix against.
+   on, so its list is the one to fix against. city-terrain's fix `19237568` (round 7) makes the blackbird checks pass
+   on Linux, but it breaks the feeder and starling checks (116 / 6 on the merge, 114 / 8 on city-terrain alone, above).
+   Run it on the Mac before calling it done.
 2. **public-spaces:** rerun `tools/public_spaces.py --strict` on the Mac with the built terrain after city-terrain is in
    main. The layout is unchanged on the merged plan, but heights from the built ground couldn't be checked here.
 3. **fishing:** the 37 icon pictures (`tools/fishing_icons.py` on the Mac), already known.
