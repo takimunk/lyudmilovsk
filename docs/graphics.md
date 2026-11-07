@@ -131,10 +131,14 @@ it only while it wants less than the level's and gives it back to the scalabilit
   limit. When Play
   stops the editor gets its levels and VSync back, and the resolution, TSR history and frame cap go back to the
   editor's own values with their own priorities (`IConsoleVariable::Unset`).
-- **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): they keep the
-  levels the engine started them with (the device profile's, then `GameUserSettings.ini`'s `[ScalabilityGroups]`,
-  which `FEngineLoop::PreInit` applies before any game code and only the game's own window writes), not the page's
-  stored ones (they share the checkout's `GameUserSettings.ini` with Play),
+- **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): at the first
+  world's start they go to the default levels (the device profile's, Epic where it sets none) and drop a frame limit
+  the engine took from `GameUserSettings.ini`. The engine applies that file's `[ScalabilityGroups]` and frame limit
+  before any game code (`FEngineLoop::PreInit`, `UGameEngine::Init`) and every `-game` run saves its levels back there
+  when it exits (`UGameEngine::PreExit`), so without this an offscreen test would render at the level of the last run
+  of the checkout that changed it, windowed or a test's own `scalability 1`. `-ExecCmds` run at the first tick, after
+  this, so a test's own levels still apply. Not the page's stored levels either (they share the checkout's
+  `GameUserSettings.ini` with Play);
   `r.ScreenPercentage=75` of `DefaultEngine.ini`, their own `t.MaxFPS` and vsync. `lyud.Gfx.*` commands still change
   the run's levels, and `GameUserSettings.ini` is not written.
 - **The benchmark** (`-LyudBench`): its own presets, Auto resolution by them like a player whatever the player

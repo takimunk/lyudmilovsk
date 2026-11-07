@@ -452,7 +452,8 @@ namespace LyudGraphics::Local
 			return;
 		}
 		LastFpsCap = Want;
-		// as UEngine::SetMaxFPS sets it; t.MaxFPS from the console or -ExecCmds (the benchmark's 0) stays
+		// by code, over the limit the engine took from GameUserSettings.ini at startup (UEngine::SetMaxFPS, at the
+		// scalability's priority); t.MaxFPS from the console or -ExecCmds (the benchmark's 0) stays
 		SetFloat(TEXT("t.MaxFPS"), Want, ECVF_SetByCode);
 	}
 
@@ -560,25 +561,62 @@ namespace LyudGraphics::Local
 	}
 
 	/**
-	 * Phones and tablets: the level the device profile gives each group (its sg.* values, Config/IOS and Config/Android
-	 * over the engine's profiles), the start levels where it sets none. Built on every platform, called on phones only.
+	 * The level the device profile gives each group (its sg.* values: on phones Config/IOS and Config/Android over the
+	 * engine's profiles; desktops' profiles set none), Fallback's where it sets none.
 	 */
-	void DeviceProfileLevels(int32 (&Out)[NumGroups])
+	void DeviceProfileLevels(int32 (&Out)[NumGroups], const int32 (&Fallback)[NumGroups])
 	{
 		static const TCHAR* const Vars[NumGroups] = {
 			TEXT("sg.ViewDistanceQuality"), TEXT("sg.ShadowQuality"), TEXT("sg.GlobalIlluminationQuality"), TEXT("sg.ReflectionQuality"),
 			TEXT("sg.FoliageQuality"), TEXT("sg.EffectsQuality"), TEXT("sg.PostProcessQuality"), TEXT("sg.TextureQuality"),
 			TEXT("sg.ShadingQuality"), TEXT("sg.AntiAliasingQuality") };
-		const FState& S = State();
 		UDeviceProfile* const Profile = UDeviceProfileManager::Get().GetActiveProfile();
 		for (int32 I = 0; I < NumGroups; ++I)
 		{
-			int32 Value = S.StartLevels[I];
+			int32 Value = Fallback[I];
 			if (int32 FromProfile = 0; Profile && Profile->GetConsolidatedCVarValue(Vars[I], FromProfile))
 			{
 				Value = FromProfile;
 			}
 			Out[I] = FMath::Clamp(Value, 0, NumLevels - 1);
+		}
+	}
+
+	/**
+	 * A game run nobody watches (offscreen, unattended, the benchmark) starts where the engine starts without a player: the
+	 * device profile's levels, Epic where it sets none, and no frame limit. The engine applied GameUserSettings.ini's
+	 * [ScalabilityGroups] and frame limit before any game code (FEngineLoop::PreInit, UGameEngine::Init), and every -game
+	 * run saves its levels back there when it exits (UGameEngine::PreExit, UGameUserSettings::SaveSettings): after any run
+	 * of the checkout at Medium, windowed or a test's `scalability 1`, the next offscreen test would render at Medium.
+	 * (-ExecCmds run at the first tick, after this: a test's own levels still apply.)
+	 */
+	void StartUnwatched()
+	{
+		int32 Epic[NumGroups];
+		for (int32& L : Epic)
+		{
+			L = 3;
+		}
+		int32 Want[NumGroups];
+		DeviceProfileLevels(Want, Epic);
+		int32 Now[NumGroups];
+		EngineLevels(Now);
+		if (FMemory::Memcmp(Want, Now, sizeof(Want)) != 0)
+		{
+			Scalability::FQualityLevels Q = Scalability::GetQualityLevels();
+			for (int32 I = 0; I < NumGroups; ++I)
+			{
+				LevelRef(Q, static_cast<EGroup>(I)) = Want[I];
+			}
+			Scalability::SetQualityLevels(Q);
+			UE_LOG(LogTemp, Log, TEXT("Graphics: a run nobody watches starts at the default levels, not GameUserSettings.ini's"));
+		}
+		// the engine's frame limit from that file came at the scalability's priority (UEngine::SetMaxFPS keeps the last
+		// priority, the scalability's over the constructor's); one from the console or the command line stays
+		if (IConsoleVariable* Fps = Find(TEXT("t.MaxFPS")); Fps && Fps->GetFloat() > 0.f
+			&& (static_cast<uint32>(Fps->GetFlags()) & ECVF_SetByMask) == static_cast<uint32>(ECVF_SetByScalability))
+		{
+			Fps->Set(0.f, ECVF_SetByScalability);
 		}
 	}
 
@@ -616,7 +654,7 @@ namespace LyudGraphics
 		// phones and tablets: the device profile has chosen, group by group (PickAutoLevels); its lowest group stands for it.
 		// No memory cap: the profile knows the phone, and phones have far less than a desktop anyway
 		int32 Profile[NumGroups];
-		DeviceProfileLevels(Profile);
+		DeviceProfileLevels(Profile, State().StartLevels);
 		Level = NumLevels - 1;
 		for (int32 I = 0; I < NumGroups; ++I)
 		{
@@ -660,7 +698,7 @@ namespace LyudGraphics
 		FState& S = State();
 		const int32 Level = DetectLevel(OutGpu, OutMemoryGB);
 #if PLATFORM_IOS || PLATFORM_ANDROID
-		DeviceProfileLevels(S.Levels);
+		DeviceProfileLevels(S.Levels, S.StartLevels);
 #else
 		SetAllLevels(Level);
 #endif
@@ -677,12 +715,17 @@ namespace LyudGraphics
 		bApplied = true;
 		bWorldIsPIE = World && World->WorldType == EWorldType::PIE;
 		// the stored levels, vsync and limit are the player's: offscreen tests, recordings and the benchmark (which share the
-		// checkout's GameUserSettings.ini with Play) keep the levels they started with; the benchmark sets its own
+		// checkout's GameUserSettings.ini with Play) start at the default levels; the benchmark sets its own
 		const bool bPlayer = Interactive();
 		FState& S = State();
-		if (!S.bStored)
+		if (!bPlayer && !bWorldIsPIE)
 		{
-			// nothing of the player's yet: the page shows the levels the engine runs (in the editor's Play the editor's)
+			StartUnwatched();
+		}
+		if (!S.bStored || !bPlayer)
+		{
+			// nothing of the player's yet, or a run nobody watches: the page shows the levels the engine runs (in the
+			// editor's Play the editor's)
 			EngineLevels(S.Levels);
 		}
 		if (bWorldIsPIE && bPlayer)

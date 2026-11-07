@@ -21,8 +21,8 @@
  * TSR upscales as well from fewer pixels; TSR's history shrinks the same way (Epic's 200% would be 4x a Retina window).
  * In the editor's Play the game's settings apply too and the editor's come back when Play stops. Power saving holds the
  * frame rate down while the game is in the background (lyud.Gfx.BackgroundFps) or under the menu (lyud.Gfx.MenuFps).
- * Offscreen, unattended and fixed-step runs keep their own frame rate and resolution; the benchmark gets the resolution
- * a player would.
+ * Offscreen, unattended and fixed-step runs start at the default levels (not GameUserSettings.ini's) and keep their own
+ * frame rate and resolution; the benchmark gets the resolution a player would.
  */
 namespace LyudGraphics
 {
