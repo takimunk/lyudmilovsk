@@ -23,5 +23,18 @@
   "subsystem": "LyudFestivalSubsystem",
   "function": "IsFestivalToday",
   "outdoor_tables": 3
+ },
+ "kitchen_door": {
+  "_doc": "the fishing's kitchen yantar (Content/Fishing/fishing.json kitchens): the same point (cm from the plot's ue), radius and hours; the cook comes to the back door while the hero is there",
+  "offset_cm": [
+   -1571,
+   349,
+   0
+  ],
+  "radius_cm": 220,
+  "hours": [
+   11,
+   23
+  ]
  }
 }
