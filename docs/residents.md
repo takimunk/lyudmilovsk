@@ -142,8 +142,9 @@ have the six morphs (`--report`) and that the sections come in as Skin/Cloth/Hai
 `SK_Human_Skeleton` has the six face curves (the cast's import adds them; the prepare run warns). The game finds a
 person's mesh through `town_looks.json`: town_life.py copies `Town/R_<key>` into the person's townsfolk.json `body`,
 and PeopleLife loads it asynchronously near the camera, keeping the pool model in `mesh` until the package exists
-(branch town-life). The package is `/Game/Characters/Humans/Town/R_<key>/SK_R_<key>`: the `SK_` name is the model's
-last segment (town-life's `PeopleModelPath` at dca19e8 still built `SK_Town/R_<key>`; asked to fix).
+(branch town-life). The package is `/Game/Characters/Humans/Town/R_<key>/SK_R_<key>`: `PeopleModelPath` and
+`ANpcBody::Setup` take the model's last segment for the `SK_` name and `PeopleModelOf` gives `Town/R_<key>` back
+(town-life 4c32ae3).
 
 ## Limits and next steps
 
