@@ -394,7 +394,9 @@ TSharedRef<SWidget> SLyudGameMenu::MakeGraphics()
 				const int32 P = LyudGraphics::Preset();
 				if (LyudGraphics::IsAuto())
 				{
-					return LyudText::Get(TEXT("ui.gfx.preset.auto"), { FStringFormatArg(LevelName(FMath::Max(P, 0)).ToString()) });
+					// a phone's device profile may give its groups different levels: "Auto (Custom)"
+					const FText Level = P >= 0 ? LevelName(P) : LyudText::Get(TEXT("ui.gfx.preset.custom"));
+					return LyudText::Get(TEXT("ui.gfx.preset.auto"), { FStringFormatArg(Level.ToString()) });
 				}
 				return P >= 0 ? LevelName(P) : LyudText::Get(TEXT("ui.gfx.preset.custom"));
 			},
