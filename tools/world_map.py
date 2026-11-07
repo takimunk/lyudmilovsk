@@ -188,10 +188,16 @@ def _edge_top(y):
     return plateau(x, y)
 
 
+def _city():
+    import city_plan                                 # imports this module: load it lazily
+    return city_plan
+
+
 def height(x, y):
-    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); level under the
-    Academgorodok."""
+    """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); the town's terraces along the
+    beach (city_plan); level under the Academgorodok."""
     z = _height(x, y)
+    z = _city().height(x, y, z)                      # the town's terraces (tools/city_plan.py, docs/city_plan.md)
     k = academ_flat(x, y)
     return z + (academ_z() - z) * k if k > 0.0 else z
 
@@ -547,7 +553,7 @@ FOREST_CELL = 40.0                # carving grid for keeping trees out of places
 def _tree_free(x, y):
     """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
     free = globals().get("academ_tree_free")
-    return bool(free and free(x, y))
+    return bool(free and free(x, y)) or _city().tree_free(x, y)
 
 
 def _carve(x, y, hx, hy):
@@ -615,13 +621,11 @@ def forests():
     for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
         add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
     # the dune bank along the valley's beach
-    for yc in range(400, 1401, 200):
-        add(shore_x(yc) - BEACH_W - 25, yc, 25, 100, "dune", SEA_Z + 2.0, LOW_Z + 3.0, 0.5)
-    # wet copses on the valley floor, and trees between the houses (the houses are NoTree)
-    add(-760, 900, 110, 330, "wet", -100.0, LOW_Z + 3.0, 0.5)
-    add(-120, 1380, 260, 80, "wet", -100.0, LOW_Z + 3.0, 0.5)
-    add(TOWN_CENTER[0], STATION_DOWN[1] + 270, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
-    add(TOWN_CENTER[0], STATION_DOWN[1] + 790, TOWN_R, 260, "town", -100.0, LOW_Z + 4.0, 0.12)
+    # the town's street trees: an irregular row along each terrace, 12 m in front of its wall (docs/city_plan.md)
+    for x, y, hx, hy, z0, z1 in _city().tree_strips():
+        add(x, y, hx, hy, "town", z0, z1, 1.0)
+    # (the valley's dune bank, wet copses and sparse town trees are gone: the town's terraces stand there now,
+    # docs/city_plan.md; its parks and streets are planted by the town's own plants)
     return out
 
 
@@ -716,7 +720,14 @@ def keep_flat(x, y):
         k = max(k, _ramp(math.hypot(x - vx, y - vy), vr, 4.0))
     if PROMENADE_Y[0] - 10 < y < PROMENADE_Y[1] + 10:
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
-    k = max(k, _ramp(math.hypot(x - TOWN_CENTER[0], y - TOWN_CENTER[1]), TOWN_R, 60.0) * (1 - _smooth(raised(x, y) / 3.0)))
+    # the town: its terraces, walls and streets keep the exact macro height (docs/city_plan.md)
+    C = _city()
+    s = inland(x, y)
+    if s > C.SEAWALL_S - 3.0:
+        # the terraces and the upper terrace's built strip (its plots reach ~130 m past W5); the ridge beyond gets its
+        # natural detail again
+        s_top = C.wall_s(len(C.WALLS) - 1, y) + C.WALL_DEPTH + C.TOP_KEEP
+        k = max(k, C.city_mask(y) * _ramp(max(0.0, s - s_top), 0.0, 60.0))
     k = max(k, academ_flat(x, y))
     return k
 

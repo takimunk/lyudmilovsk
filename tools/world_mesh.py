@@ -20,8 +20,11 @@ import struct
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import city_mesh  # noqa: E402
 import terrain as T  # noqa: E402
 import world_map as W  # noqa: E402
+
+REPO = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 # Materials: name -> (rgb, roughness, texture file or None, uv metres per tile)
 MATERIALS = {
@@ -31,6 +34,7 @@ MATERIALS = {
     "World_Roof_Flat": ((0.25, 0.25, 0.26), 0.9, None, 1.0),
     "World_Steel": ((0.35, 0.36, 0.38), 0.5, None, 1.0),
 }
+MATERIALS.update(city_mesh.MATERIALS)      # the town's concrete, glass and doors
 
 
 class Prim:
@@ -63,15 +67,20 @@ class Prim:
             b, c = c, b
         self.idx.extend((a, b, c))
 
-    def quad(self, ps, n, tile=1.0):
-        """Flat quad, corners in order; UVs projected on the quad's plane."""
+    def quad(self, ps, n, tile=1.0, anchor=False):
+        """Flat quad, corners in order; UVs projected on the quad's plane. anchor: UVs from the plane's own axes in
+        world space instead of from the first corner, so the quads a face is cut into (round openings) carry one
+        continuous texture."""
         u_ax = [ps[1][i] - ps[0][i] for i in range(3)]
         lu = math.sqrt(sum(v * v for v in u_ax)) or 1.0
         u_ax = [v / lu for v in u_ax]
         v_ax = [n[1] * u_ax[2] - n[2] * u_ax[1], n[2] * u_ax[0] - n[0] * u_ax[2], n[0] * u_ax[1] - n[1] * u_ax[0]]
         ids = []
+        o = (0.0, 0.0, 0.0) if anchor else ps[0]
+        if anchor and abs(n[2]) > 0.999:          # level faces: plain map X/Y, the same on every neighbouring piece
+            u_ax, v_ax = [1.0, 0.0, 0.0], [0.0, 1.0 if n[2] > 0 else -1.0, 0.0]
         for p in ps:
-            d = [p[i] - ps[0][i] for i in range(3)]
+            d = [p[i] - o[i] for i in range(3)]
             ids.append(self.vert(p, n, (sum(d[i] * u_ax[i] for i in range(3)) / tile,
                                         sum(d[i] * v_ax[i] for i in range(3)) / tile)))
         self.tri(ids[0], ids[1], ids[2])
@@ -198,12 +207,21 @@ def write_glb(out, meshes, tex_dir):
         rgb, rough, tex, _ = MATERIALS[name]
         m = {"name": name, "pbrMetallicRoughness": {"baseColorFactor": list(rgb) + [1.0], "metallicFactor": 0.0,
                                                     "roughnessFactor": rough}}
-        if tex and tex_dir and os.path.exists(os.path.join(tex_dir, tex)):
-            shutil.copy(os.path.join(tex_dir, tex), os.path.join(out_dir, tex))
-            gl["images"].append({"uri": tex})
+        src = None
+        if tex and "/" in tex:                      # repo-relative (the town's textures)
+            src = os.path.join(REPO, tex)
+        elif tex and tex_dir:
+            src = os.path.join(tex_dir, tex)
+        if src and os.path.exists(src):
+            uri = os.path.basename(src)
+            shutil.copy(src, os.path.join(out_dir, uri))
+            gl["images"].append({"uri": uri})
             gl["textures"].append({"source": len(gl["images"]) - 1, "sampler": 0})
             m["pbrMetallicRoughness"]["baseColorTexture"] = {"index": len(gl["textures"]) - 1}
-            m["pbrMetallicRoughness"]["baseColorFactor"] = [1, 1, 1, 1]
+            # the town's materials keep their tint over the photo (light and dark concrete from one texture); the older
+            # world materials stay as they were (white factor)
+            k = [min(1.0, c / 0.6) for c in rgb] if name.startswith("City_") else [1, 1, 1]
+            m["pbrMetallicRoughness"]["baseColorFactor"] = k + [1]
         gl["materials"].append(m)
         mat_ids[name] = len(gl["materials"]) - 1
         return mat_ids[name]
@@ -259,10 +277,12 @@ def write_glb(out, meshes, tex_dir):
 def build(out, tex_dir=None):
     meshes = []
     # the cable car is the transport thread's: ULyudTransportSubsystem builds it at play from Content/Transport
-    for name, fn in (("World_Portal", portal), ("World_Path", path), ("World_Promenade", promenade)):
+    # the town (tools/city_mesh.py) replaced the old promenade strip: its seawall, terrace walls, stairs and pier
+    for name, fn in (("World_Portal", portal), ("World_Path", path)):
         m = Mesh(name)
         fn(m)
         meshes.append(m)
+    meshes.extend(city_mesh.build_chunked(Mesh))
     return write_glb(out, meshes, tex_dir)
 
 
