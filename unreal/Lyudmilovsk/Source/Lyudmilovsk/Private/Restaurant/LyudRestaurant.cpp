@@ -139,6 +139,13 @@ namespace LyudRest
 	}
 }
 
+namespace LyudRest
+{
+	/** RestMesh's lookups (weak: the restaurant's MeshRefs hold them) and the names found missing (cleared at each play's preload). */
+	TMap<FName, TWeakObjectPtr<UStaticMesh>> MeshCache;
+	TSet<FName> MeshMissing;
+}
+
 // ---- the menu --------------------------------------------------------------------------------------------------------------------
 
 const TArray<FLyudRestDishDef>& ALyudRestaurant::Menu()
@@ -240,8 +247,8 @@ UStaticMesh* ALyudRestaurant::RestMesh(FName Name)
 		return nullptr;
 	}
 	// the restaurant preloads them all (PreloadMeshes) and holds them; this finds the loaded one, else loads it once (a cache miss)
-	static TMap<FName, TWeakObjectPtr<UStaticMesh>> Cache;
-	static TSet<FName> Missing;
+	TMap<FName, TWeakObjectPtr<UStaticMesh>>& Cache = LyudRest::MeshCache;
+	TSet<FName>& Missing = LyudRest::MeshMissing;
 	if (const TWeakObjectPtr<UStaticMesh>* W = Cache.Find(Name); W && W->IsValid())
 	{
 		return W->Get();
@@ -271,6 +278,12 @@ UStaticMesh* ALyudRestaurant::RestMesh(FName Name)
 void ALyudRestaurant::PreloadMeshes()
 {
 	IAssetRegistry& AR = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(TEXT("AssetRegistry")).Get();
+	// an uncooked -game run hasn't scanned /Game at startup (only the editor does)
+	if (!GIsEditor && !FPlatformProperties::RequiresCookedData())
+	{
+		AR.ScanPathsSynchronous({ TEXT("/Game/Restaurant/Meshes") }, false);
+	}
+	LyudRest::MeshMissing.Reset();
 	TArray<FAssetData> Assets;
 	AR.GetAssetsByPath(TEXT("/Game/Restaurant/Meshes"), Assets, true);
 	TArray<FSoftObjectPath> Paths;
