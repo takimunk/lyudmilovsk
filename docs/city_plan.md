@@ -100,16 +100,19 @@ the terrace) x `d` (inland) metres, `height_max`, `staff` (hints for the life th
 | P-FAIR | fair | wave_canopy: Niemeyer's Ibirapuera marquise | T1 |
 | P-PARK | park | open: lawns, pond, playground | T1 |
 | P-CLUB2 | club | workers_club: Melnikov's Rusakov club; cinema, dances | T1 |
-| P-T1H1..5 | residential | cube_houses, twin_cylinder_house, plain_block | T1 |
+| P-T1H1..5 | residential | cube_houses, cobogo_house (Costa's Parque Guinle), twin_cylinder_house, capsule_cluster, origami_row | T1 |
 | P-SERPENTINE | residential | serpentine_slab: Reidy's Pedregulho, 260 m along W3 | T2 |
 | P-SCHOOL, P-CLINIC | school, clinic | school, clinic | T2 |
+| P-CLUB3 | club | cog_club: Golosov's Zuev Club, a glazed drum | T2 |
 | P-T2H1, P-T2H2 | residential | cube_houses (Blom), commune_slab (Narkomfin) | T2 |
 | P-WAVE | residential | wave_tower: Niemeyer's Copan, the landmark from the sea | T3 |
 | P-T3SPORT | culture | culture_block: Bo Bardi's SESC Pompéia | T3 |
+| P-LIBRARY | library | capsule_library: metabolist reading capsules round a core | T3 |
 | P-T3H1..3 | residential | twin_cylinder_house (Melnikov), stacked_boxes (Habitat 67), commune_slab | T3 |
 | P-CAPSULE | residential | capsule_tower: Kurokawa's Nakagin | T4 |
 | P-UNITE | residential | unite_block: Le Corbusier's Unité | T4 |
-| P-T4H1, 2 | residential | plain_block | T4 |
+| P-T4H1, 2 | residential | pilotis_curve_slab (Niemeyer's Interbau), ribbon_corner_block (constructivist corner) | T4 |
+| P-HALL | hall | shell_chapel_hall: Niemeyer's Pampulha vaults; weddings, choir, meetings | T4 |
 | P-SANATORIUM | hotel | round_sanatorium: Druzhba, Yalta | T5 |
 | P-BRIDGEHOUSE | office | stacked_beam_tower: Tbilisi's Ministry of Highways | T5 |
 | P-T5H1 | residential | capsule_tower | T5 |
