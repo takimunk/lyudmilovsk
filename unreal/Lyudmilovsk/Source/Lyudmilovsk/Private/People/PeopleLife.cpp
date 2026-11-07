@@ -1227,7 +1227,7 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 	}
 	Bodies[Id] = nullptr;
 	// a look of their own nobody else wears: no pool, the body goes (it's loaded again, async, when they come near)
-	if (Sim && Id < (int32)Sim->People.size() && !Sim->People[Id].Body.empty() && Sim->People[Id].Body != Sim->People[Id].Mesh)
+	if (ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str()))
 	{
 		TownBodies.RemoveSwap(Body, EAllowShrinking::No);
 		Body->Destroy();
