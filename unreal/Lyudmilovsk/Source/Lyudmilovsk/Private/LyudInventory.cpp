@@ -218,7 +218,7 @@ namespace
 		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
 		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
 		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
-		// fishing (docs/fishing.md): the float rod (taken in the hand), its baits (a bait taken in the hand goes on the rig; each unit is
+		// fishing (docs/fishing.md): the rods (taken in the hand), their baits (a bait taken in the hand goes on the rig; each unit is
 		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
 		FLyudItemDef Rod;
 		Rod.Id = TEXT("fishing_rod");
@@ -229,6 +229,19 @@ namespace
 		Rod.Price = 90;
 		Rod.Radius = 1.3f;
 		D.Add(Rod);
+		// the shop's better rods: a carbon spinning rod with a braided line, a thick sea bottom rod with a 100 g lead
+		FLyudItemDef Spin = Rod;
+		Spin.Id = TEXT("rod_spinning");
+		Spin.Tint = FLinearColor(0.07f, 0.09f, 0.13f);
+		Spin.Price = 220;
+		D.Add(Spin);
+		FLyudItemDef Sea = Rod;
+		Sea.Id = TEXT("rod_sea");
+		Sea.Size = FVector(4.f, 4.f, 45.f);
+		Sea.Tint = FLinearColor(0.62f, 0.55f, 0.32f);
+		Sea.Price = 380;
+		Sea.Radius = 2.f;
+		D.Add(Sea);
 		auto Bait = [&D](const TCHAR* Id, FVector Size, FLinearColor Tint, int32 Price)
 		{
 			FLyudItemDef I;
@@ -244,6 +257,9 @@ namespace
 		Bait(TEXT("bait_worm"), FVector(7.f, 7.f, 4.f), FLinearColor(0.45f, 0.3f, 0.2f), 2);
 		Bait(TEXT("bait_maggot"), FVector(6.f, 6.f, 4.f), FLinearColor(0.85f, 0.8f, 0.65f), 1);
 		Bait(TEXT("lure_spoon"), FVector(0.4f, 2.5f, 7.f), FLinearColor(0.8f, 0.8f, 0.82f), 45);
+		Bait(TEXT("bait_shrimp"), FVector(7.f, 7.f, 4.f), FLinearColor(0.85f, 0.55f, 0.45f), 3);
+		Bait(TEXT("bait_dough"), FVector(6.f, 6.f, 4.f), FLinearColor(0.92f, 0.86f, 0.7f), 1);
+		Bait(TEXT("lure_wobbler"), FVector(1.5f, 2.f, 9.f), FLinearColor(0.3f, 0.45f, 0.75f), 70);
 		for (int32 F = 0; F < LyudFishing::NumCatchable(); F++)
 		{
 			const LyudFishing::FCatchable& C = LyudFishing::Catchable(F);

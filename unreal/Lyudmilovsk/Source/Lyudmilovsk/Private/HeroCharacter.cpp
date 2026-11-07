@@ -230,7 +230,10 @@ void AHeroCharacter::OnJumpPressed()
 	}
 	if (IsSeated())
 	{
-		StandUp();
+		if (!SeatLeave || SeatLeave())
+		{
+			StandUp();
+		}
 		return;
 	}
 	// on a ladder Space lets go (ULyudLadderSubsystem); a scripted climb ignores it
@@ -255,6 +258,11 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 	{
 		// W and S climb
 		Climber->SetClimbInput(V.Y);
+		return;
+	}
+	if (IsSeated() && SeatMove)
+	{
+		SeatMove(V);
 		return;
 	}
 	if (IsSeated())
@@ -483,6 +491,8 @@ void AHeroCharacter::StandUp()
 	}
 	const FTransform W = SeatWorld();
 	SeatBase.Reset();
+	SeatMove = nullptr;
+	SeatLeave = nullptr;
 	// a step forward off the cushion, standing on the floor
 	const FVector At = W.TransformPosition(StandOffset) + FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f);
 	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);

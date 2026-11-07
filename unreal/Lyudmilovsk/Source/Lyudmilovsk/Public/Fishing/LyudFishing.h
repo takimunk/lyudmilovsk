@@ -10,6 +10,8 @@
 #include "LyudFishing.generated.h"
 
 namespace LyudFishing { class FSession; }
+class APawn;
+class APlayerController;
 class UAudioComponent;
 class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
@@ -29,6 +31,22 @@ struct FLyudCatchRecord
 	UPROPERTY(SaveGame) float BiggestCm = 0.f;
 	/** The calendar's day of the first one. */
 	UPROPERTY(SaveGame) FDateTime First;
+};
+
+/** One fish in the angler's journal: when, what, how big, where and with what. */
+USTRUCT()
+struct FLyudCatchEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(SaveGame) FDateTime When;
+	UPROPERTY(SaveGame) FName Species;
+	UPROPERTY(SaveGame) float Grams = 0.f;
+	UPROPERTY(SaveGame) float Cm = 0.f;
+	/** The spot (Content/Fishing/fishing.json: pier_head, pier, promenade, beach), boat, or none: the shore. */
+	UPROPERTY(SaveGame) FName Spot;
+	UPROPERTY(SaveGame) FName Bait;
+	UPROPERTY(SaveGame) FName Rod;
 };
 
 /** What of fishing goes into the save ("Fishing"): the bait the hero fishes with, the hook baited or bare, the catch log. */
@@ -56,7 +74,23 @@ public:
 	/** Grams of each species in the pocket now (what the catch weighed; a sale prices it by this). */
 	UPROPERTY(SaveGame) TMap<FName, float> BagGrams;
 
+	/** The angler's journal: the last JournalMax fish, oldest first. */
+	static constexpr int32 JournalMax = 60;
+	UPROPERTY(SaveGame) TArray<FLyudCatchEntry> Journal;
+	/** The rod last fished with (fishing_rod, rod_spinning, rod_sea): a bait taken in the hand brings it out. */
+	UPROPERTY(SaveGame) FName Rod;
+	/** The kitchens' buying: the calendar day it counts, fish each took that day, all they paid. */
+	UPROPERTY(SaveGame) int32 KitchenDay = -1;
+	UPROPERTY(SaveGame) TMap<FName, int32> KitchenTaken;
+	UPROPERTY(SaveGame) int32 KitchenRoubles = 0;
+	UPROPERTY(SaveGame) int32 KitchenSold = 0;
+
 	FLyudCatchRecord* Find(FName Species);
+	void Note(const FLyudCatchEntry& Entry);
+	/** What a kitchen would buy now (the prized kinds of a good size, its day's want left: PerDay fish): how many, for how much. */
+	int32 KitchenOffer(const UObject* WorldContext, FName Kitchen, int32 PerDay, int32* OutRoubles = nullptr) const;
+	/** Sells it those; the roubles (0: nothing it wants). */
+	int32 SellToKitchen(const UObject* WorldContext, FName Kitchen, int32 PerDay);
 	/** The fish in the pocket the Gastronom buys, and what it pays for them all (roubles). */
 	int32 FishHeld(const UObject* WorldContext, int32* OutRoubles = nullptr) const;
 	/** Sells every fish in the pocket: the roubles go in, the fish out; returns the roubles (0: nothing to sell). */
@@ -101,6 +135,10 @@ public:
 	void SetFloat(bool bShow, const FVector& Where = FVector::ZeroVector, float Lean = 0.f);
 	/** The spoon at Where, turning as it is wound. */
 	void SetSpoon(bool bShow, const FVector& Where = FVector::ZeroVector, const FVector& Along = FVector::ForwardVector, float Spin = 0.f);
+	/** The bottom rig's lead (the sea rod: no float). */
+	void SetSinker(bool bShow, const FVector& Where = FVector::ZeroVector);
+	/** The rod's look for a LyudFishing::FindTackle index (0 the float rod, 1 the spinning rod, 2 the sea rod): the blank's colour and thickness. */
+	void SetTier(int32 Tackle);
 	/** Starts loading Species' swimming look in the background (ULyudPrefetch); true once it is in memory (or doesn't exist). */
 	bool PrefetchFish(FName Species);
 	/** The fish on the hook (its own swimming mesh when imported: /Game/Sea/Fish/SM_<Id>), hanging head up or swimming, wriggling.
@@ -131,6 +169,7 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Line;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Float;
 	UPROPERTY() TObjectPtr<UStaticMeshComponent> Spoon;
+	UPROPERTY() TObjectPtr<UStaticMeshComponent> Sinker;
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Fish;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Mids;
 	UPROPERTY() TObjectPtr<UMaterialInterface> BasicMat;
@@ -149,6 +188,7 @@ private:
 	float ReelAngle = 0.f;
 	bool bLineShown = false;
 	bool bStandIn = false;
+	int32 Tier = 0;
 };
 
 /**
@@ -176,7 +216,12 @@ public:
 	virtual ~ULyudFishing() override;
 
 	static ULyudFishing* Get(const UObject* WorldContext);
+	/** The basic float rod (the shop's others: rod_spinning, rod_sea). */
 	static const FName RodId;
+	/** Any of the rods. */
+	static bool IsRod(FName Item);
+	/** A line on how the fish are biting now and why (the dusk, the falling glass, a gale), for the angler's book. */
+	static FText Forecast(const UObject* WorldContext);
 
 	/** The rod is in the hand: the mouse buttons and Q are the rod's. */
 	static bool HasHand(const UObject* WorldContext);
@@ -209,6 +254,12 @@ protected:
 
 private:
 	void TakeOut();
+	/** The rod a bait taken in the hand brings out: the one last used if it is still owned, else the best owned; none: no rod. */
+	FName RodToUse() const;
+	/** The kitchens that buy fish (fishing.json): the prompt and Y close by. */
+	void Kitchens(float DeltaTime, APawn* Hero, APlayerController* PC);
+	/** The boat at the pier, put on the water once the sea is there. */
+	void LaunchBoat();
 	void PutAway();
 	void SyncBait();
 	void UpdateWeights();
@@ -228,6 +279,15 @@ private:
 	bool IsWater(const FVector& Where) const;
 
 	TPimplPtr<LyudFishing::FSession> Session;
+	/** The rod in the hand now (one of the rods' items). */
+	FName RodItem;
+	float KitchenIn = 0.f;
+	int32 KitchenNear = -1;
+	uint64 KitchenKey = 0;
+	bool bBoatTried = false;
+	/** The food in each fish's reach from the web (Catchable index), refreshed now and then. */
+	TArray<float> HungerOf;
+	float HungerIn = 0.f;
 	TWeakObjectPtr<ALyudFishingRod> Rod;
 	/** The rod put away: hidden, kept for the next take-out (building one is ~20 meshes). */
 	TWeakObjectPtr<ALyudFishingRod> Parked;

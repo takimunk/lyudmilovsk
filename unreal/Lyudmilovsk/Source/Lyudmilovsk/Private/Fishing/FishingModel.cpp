@@ -50,6 +50,12 @@ namespace LyudFishing
 			{ "bait_maggot", false, { 0.9f, 0.35f, 1.0f, 0.1f } },
 			// a silver spoon, cast and wound in: the hunters'
 			{ "lure_spoon",  true,  { 0.15f, 0.03f, 0.45f, 1.0f } },
+			// a peeled shrimp (the Baltic prawn): cod, eelpout, the flatfish, a sea trout in the shallows
+			{ "bait_shrimp", false, { 0.3f, 0.8f, 0.5f, 0.9f } },
+			// a pinch of bread dough with a drop of sunflower oil: roach and vimba, nothing else much
+			{ "bait_dough",  false, { 0.2f, 0.04f, 0.85f, 0.f } },
+			// a floating wobbler, silver and blue, that dives and wags when wound: sea trout, salmon, garfish, perch; it flies less far
+			{ "lure_wobbler", true, { 0.05f, 0.02f, 0.4f, 1.1f }, 0.85f },
 		};
 		constexpr int GNumBaits = int(sizeof(GBaits) / sizeof(GBaits[0]));
 
@@ -62,6 +68,15 @@ namespace LyudFishing
 				{ "Whitefish", "lure_spoon", 0.15f }, { "Garfish", "bait_worm", 0.15f }, { "SeaTrout", "bait_worm", 0.3f },
 				{ "Salmon", "bait_worm", 0.1f }, { "Cod", "bait_worm", 0.9f }, { "Turbot", "bait_worm", 0.7f },
 				{ "Herring", "lure_spoon", 0.15f }, { "Eel", "bait_maggot", 0.1f }, { "Lumpsucker", "bait_worm", 0.15f },
+				{ "Cod", "bait_shrimp", 1.1f }, { "Eelpout", "bait_shrimp", 1.0f }, { "Turbot", "bait_shrimp", 1.0f },
+				{ "Flounder", "bait_shrimp", 0.95f }, { "SeaTrout", "bait_shrimp", 0.7f }, { "Salmon", "bait_shrimp", 0.2f },
+				{ "Garfish", "bait_shrimp", 0.3f }, { "Roach", "bait_shrimp", 0.15f },
+				{ "Roach", "bait_dough", 1.0f }, { "Vimba", "bait_dough", 0.95f }, { "Whitefish", "bait_dough", 0.4f },
+				{ "Perch", "bait_dough", 0.08f }, { "Herring", "bait_dough", 0.1f },
+				{ "SeaTrout", "lure_wobbler", 1.3f }, { "Salmon", "lure_wobbler", 1.3f }, { "Garfish", "lure_wobbler", 1.0f },
+				{ "Perch", "lure_wobbler", 1.0f }, { "Cod", "lure_wobbler", 0.7f }, { "TwaiteShad", "lure_wobbler", 0.9f },
+				{ "Turbot", "lure_wobbler", 0.3f }, { "Herring", "lure_wobbler", 0.05f }, { "Roach", "lure_wobbler", 0.02f },
+				{ "Vimba", "lure_wobbler", 0.02f },
 			};
 			for (const FO& X : O)
 			{
@@ -69,6 +84,15 @@ namespace LyudFishing
 			}
 			return -1.f;
 		}
+
+		// the shop's rods: the basic telescopic float rod; a spinning rod with a better reel and a braided line;
+		// a sea bottom rod with a 100 g sinker and a thick line
+		const FTackle GTackle[] = {
+			{ "fishing_rod",  18.f, 30.f, 1.0f,  1.0f,  false },
+			{ "rod_spinning", 20.f, 42.f, 1.7f,  1.35f, false },
+			{ "rod_sea",      45.f, 32.f, 2.0f,  0.9f,  true },
+		};
+		constexpr int GNumTackle = int(sizeof(GTackle) / sizeof(GTackle[0]));
 
 		float Clamp01(float X) { return X < 0.f ? 0.f : (X > 1.f ? 1.f : X); }
 		float Approach(float X, float Goal, float Rate, float Dt) { return X + (Goal - X) * (1.f - std::exp(-Rate * Dt)); }
@@ -113,6 +137,100 @@ namespace LyudFishing
 		return F.Diet == EDiet::None ? 0.f : GBaits[BaitIndex].Like[int(F.Diet)] * Mouth;
 	}
 
+	int NumTackle() { return GNumTackle; }
+	const FTackle& Tackle(int Index) { return GTackle[Index >= 0 && Index < GNumTackle ? Index : 0]; }
+	int FindTackle(const char* Item)
+	{
+		for (int I = 0; I < GNumTackle; I++)
+		{
+			if (!std::strcmp(GTackle[I].Item, Item)) return I;
+		}
+		return -1;
+	}
+
+	float RigLiking(int Fish, int TackleIndex, int BaitIndex)
+	{
+		if (Fish < 0 || Fish >= GNumFish || !Tackle(TackleIndex).bBottom) return 1.f;
+		if (BaitIndex >= 0 && BaitIndex < GNumBaits && GBaits[BaitIndex].bLure) return 1.f;
+		const FCatchable& F = GFish[Fish];
+		// the bait lies on the bed far out: what feeds there finds it, what feeds high in the water does not
+		if (!std::strcmp(F.Id, "Cod") || !std::strcmp(F.Id, "Turbot") || !std::strcmp(F.Id, "Eel")) return 1.5f;
+		switch (F.Diet)
+		{
+		case EDiet::Bottom: return 1.4f;
+		case EDiet::Mixed: return 0.8f;
+		case EDiet::Hunter: return 0.6f;
+		case EDiet::Plankton: return 0.25f;
+		default: return 0.f;
+		}
+	}
+
+	namespace
+	{
+		float SunUp(const FConditions& C) { const float X = Clamp01((C.SunAltitude + 6.f) / 12.f); return X * X * (3.f - 2.f * X); }
+		float Dusk(const FConditions& C) { return Clamp01(1.f - std::fabs(C.SunAltitude - 1.f) / 10.f); }
+		/** A bright still noon: the sun high, no cloud, no ripple (the fish see the line and the angler). */
+		float Glare(const FConditions& C) { return Clamp01((C.SunAltitude - 20.f) / 30.f) * (1.f - Clamp01(C.Cloud)) * Clamp01(1.f - C.Wind / 5.f); }
+	}
+
+	float BiteMood(const FConditions& C, int Fish, bool bLure)
+	{
+		if (Fish < 0 || Fish >= GNumFish) return 1.f;
+		const FCatchable& F = GFish[Fish];
+		const EDiet D = F.Diet;
+		const bool bHunts = D == EDiet::Hunter || D == EDiet::Mixed;
+		float M = 1.f;
+		// the evening and morning rise: the hunters most, the bottom fish hardly
+		const float Tw = Dusk(C);
+		M *= 1.f + Tw * (D == EDiet::Hunter ? 0.8f : D == EDiet::Bottom ? 0.2f : 0.5f);
+		// a bright still noon: the shy keep off
+		M *= 1.f - 0.45f * Glare(C) * F.Shy;
+		// the pressure falling before a front: they feed; rising fast after it: they sulk
+		if (C.PressureTendency < 0.f) M *= 1.f + std::min(0.4f, -C.PressureTendency * 0.13f) * (bHunts ? 1.f : 0.5f);
+		else M *= 1.f - std::min(0.3f, C.PressureTendency * 0.1f);
+		// a little ripple hides the line; a gale stirs the shallows and the float cannot be watched
+		if (C.Wind > 2.5f && C.Wind < 8.f) M *= 1.08f;
+		if (C.Wind > 10.f) M *= 1.f - std::min(0.55f, (C.Wind - 10.f) * 0.08f);
+		// a soft rain brings food in and dims the light; a downpour or thunder put them down
+		if (C.Rain > 0.2f && C.Rain < 5.f) M *= 1.15f;
+		else if (C.Rain >= 8.f) M *= 0.8f;
+		M *= 1.f - 0.45f * Clamp01(C.Thunder);
+		// a lure is seen: less in the dark and in murky water (the bloom); a bait is smelt
+		if (bLure)
+		{
+			M *= 0.35f + 0.65f * std::max(SunUp(C), Tw);
+			M *= std::max(0.55f, std::min(1.1f, 1.3f - 0.3f * C.Murk));
+		}
+		return std::max(0.15f, std::min(2.5f, M));
+	}
+
+	float Hunger(float Food)
+	{
+		return std::max(0.6f, std::min(1.7f, 1.f / std::sqrt(std::max(Food, 0.05f))));
+	}
+
+	EMoodWhy MoodWhy(const FConditions& C)
+	{
+		if (C.Thunder > 0.3f || C.Rain >= 8.f) return EMoodWhy::Storm;
+		if (C.Wind > 12.f) return EMoodWhy::Gale;
+		if (C.PressureTendency < -1.5f) return EMoodWhy::Falling;
+		if (Dusk(C) > 0.5f) return EMoodWhy::Twilight;
+		if (C.PressureTendency > 2.f) return EMoodWhy::Rising;
+		if (Glare(C) > 0.5f) return EMoodWhy::Bright;
+		if (C.Rain > 0.2f) return EMoodWhy::Rain;
+		if (SunUp(C) < 0.2f) return EMoodWhy::Night;
+		if (C.Murk > 1.8f) return EMoodWhy::Murky;
+		return EMoodWhy::Plain;
+	}
+
+	int RestaurantPrice(int Species, float Grams, float Length)
+	{
+		if (Species < 0 || Species >= GNumFish) return 0;
+		const FCatchable& C = GFish[Species];
+		if (C.PerKilo < 200 || Length < 0.85f * C.Length) return 0;
+		return int(std::lround(1.6f * float(PriceOf(Species, Grams))));
+	}
+
 	float FRand::Normal()
 	{
 		const float A = std::max(U(), 1e-6f), B = U();
@@ -148,41 +266,72 @@ namespace LyudFishing
 
 	// ------------------------------------------------------------------ the session
 
+	const FTackle& FSession::Gear() const { return Tackle(Rig); }
+
 	float FSession::MaxCast() const
 	{
-		return Bait >= 0 && GBaits[Bait].bLure ? Tune.LureCast : Tune.FloatCast;
+		// the basic rod's distances are the tuning's (tests change them); the others' scale from it
+		const FTackle& G = Gear();
+		if (Bait >= 0 && GBaits[Bait].bLure) return Tune.LureCast * (G.LureCast / GTackle[0].LureCast) * GBaits[Bait].Cast;
+		return Tune.FloatCast * (G.FloatCast / GTackle[0].FloatCast);
 	}
 
-	float FSession::RichNow(bool bLure) const
+	void FSession::SetConditions(const FConditions& C, const std::vector<float>& HungerOf)
 	{
-		(void)bLure;
-		float Sum = 0.f;
+		MoodBait.assign(GNumFish, 1.f);
+		MoodLure.assign(GNumFish, 1.f);
+		for (int I = 0; I < GNumFish; I++)
+		{
+			const float H = I < int(HungerOf.size()) ? HungerOf[I] : 1.f;
+			MoodBait[I] = BiteMood(C, I, false) * H;
+			MoodLure[I] = BiteMood(C, I, true) * H;
+		}
+	}
+
+	float FSession::Keenness(int Fish) const
+	{
+		const bool bLure = Bait >= 0 && GBaits[Bait].bLure;
+		const std::vector<float>& M = bLure ? MoodLure : MoodBait;
+		return Fish >= 0 && Fish < int(M.size()) ? M[Fish] : 1.f;
+	}
+
+	float FSession::Draw(int Fish, int B) const
+	{
+		return Weights[Fish] * BaitLiking(Fish, B) * RigLiking(Fish, Rig, B) * Keenness(Fish);
+	}
+
+	float FSession::BiteRate(bool bLure) const
+	{
+		// the fish's numbers (x liking) saturate toward the ceiling; their keenness scales the whole rate, so a dusk rise
+		// shows at a rich spot too, not only at a poor one
+		float Rich = 0.f, Keen = 0.f;
 		const int B = IsBaited() ? Bait : -1;
 		for (int I = 0; I < int(Weights.size()) && I < GNumFish; I++)
 		{
-			Sum += Weights[I] * BaitLiking(I, B);
+			const float D = Weights[I] * BaitLiking(I, B) * RigLiking(I, Rig, B);
+			Rich += D;
+			Keen += D * Keenness(I);
 		}
-		return Sum;
+		if (Rich <= 0.f) return 0.f;
+		const float Every = bLure ? Tune.LureEvery : Tune.BiteEvery;
+		return std::min(3.f / Every, (2.f / Every) * Keen / (Rich + Tune.RichWeight));
 	}
 
 	float FSession::BitesPerMinute() const
 	{
-		const bool bLure = Bait >= 0 && GBaits[Bait].bLure;
-		const float Rich = RichNow(bLure);
-		const float Every = bLure ? Tune.LureEvery : Tune.BiteEvery;
-		return 60.f * (2.f / Every) * Rich / (Rich + Tune.RichWeight);
+		return 60.f * BiteRate(Bait >= 0 && GBaits[Bait].bLure);
 	}
 
 	int FSession::PickFish()
 	{
 		const int B = IsBaited() ? Bait : -1;
 		float Sum = 0.f;
-		for (int I = 0; I < int(Weights.size()) && I < GNumFish; I++) Sum += Weights[I] * BaitLiking(I, B);
+		for (int I = 0; I < int(Weights.size()) && I < GNumFish; I++) Sum += Draw(I, B);
 		if (Sum <= 0.f) return -1;
 		float X = R.U() * Sum;
 		for (int I = 0; I < int(Weights.size()) && I < GNumFish; I++)
 		{
-			X -= Weights[I] * BaitLiking(I, B);
+			X -= Draw(I, B);
 			if (X <= 0.f) return I;
 		}
 		return std::min(int(Weights.size()), GNumFish) - 1;
@@ -269,7 +418,8 @@ namespace LyudFishing
 			}
 		}
 		const float Strength = 0.35f + 0.65f * Stam;
-		const float Pull = Hook.Pull * (bRun ? 1.f : 0.25f) * Strength;
+		// a stronger line and blank feel the same fish as less of their breaking strain
+		const float Pull = Hook.Pull * (bRun ? 1.f : 0.25f) * Strength / Gear().Strength;
 		const float Speed = Hook.RunSpeed * (0.4f + 0.6f * Stam);
 		float Goal;
 		if (bReel)
@@ -277,7 +427,7 @@ namespace LyudFishing
 			// the reel locked and turning: the rod takes the pull and the line comes in when the fish gives
 			Goal = Pull + 0.12f;
 			const float Give = std::max(0.f, 1.f - Pull / 0.9f);
-			Dist -= Tune.FightReel * (bRun ? 0.15f : 1.f) * Give * Dt;
+			Dist -= Tune.FightReel * Gear().Reel * (bRun ? 0.15f : 1.f) * Give * Dt;
 		}
 		else
 		{
@@ -287,8 +437,10 @@ namespace LyudFishing
 			{
 				Goal = Tune.ClutchCap;
 			}
-			// a run against the clutch's brake goes slower than a free one
-			Dist += (bRun ? Speed * (Goal >= Tune.ClutchCap ? 0.6f : 1.f) : 0.04f) * Dt;
+			// a run against the clutch's brake goes slower than a free one: the brake is a force (a stronger line's clutch is set
+			// tighter for the same share of its strain)
+			const float Brake = std::min(1.f, Goal * Gear().Strength / Tune.ClutchCap);
+			Dist += (bRun ? Speed * (1.f - 0.4f * Brake) : 0.04f) * Dt;
 		}
 		Tens = Approach(Tens, Goal, bReel ? 9.f : 6.f, Dt);
 		SideNow = Approach(SideNow, SideGoal, 1.5f, Dt);
@@ -315,7 +467,7 @@ namespace LyudFishing
 			OverT = 0.f;
 		}
 		// slack: the hook may come out
-		if (Tens < Tune.SlackTension && Hook.Pull > 0.08f)
+		if (Tens * Gear().Strength < Tune.SlackTension && Hook.Pull > 0.08f)
 		{
 			SlackT += Dt;
 			if (SlackT > Tune.SlackAfter && R.U() < 0.6f * Dt)
@@ -452,7 +604,7 @@ namespace LyudFishing
 			}
 			if (bLure && bWind)
 			{
-				Dist -= Tune.ReelSpeed * 0.75f * Dt;
+				Dist -= Tune.ReelSpeed * Gear().Reel * 0.75f * Dt;
 				if (Dist <= Tune.LandAt)
 				{
 					Emit(EEvent::Retrieved);
@@ -462,9 +614,7 @@ namespace LyudFishing
 			}
 			if (NextBite < 0.f)
 			{
-				const float Rich = RichNow(bLure);
-				const float Every = bLure ? Tune.LureEvery : Tune.BiteEvery;
-				const float Rate = (2.f / Every) * Rich / (Rich + Tune.RichWeight);
+				const float Rate = BiteRate(bLure);
 				NextBite = Rate > 1e-5f ? -std::log(std::max(R.U(), 1e-6f)) / Rate : 1e9f;
 			}
 			// a spoon is only taken while it moves; a float's bait whenever the fish come
@@ -521,7 +671,8 @@ namespace LyudFishing
 				else
 				{
 					Emit(EEvent::Take);
-					TakeLeft = GFish[BiteFish].TakeTime * R.Range(0.8f, 1.3f);
+					// the bottom rig's tip pulls round slower than a float goes under: more time to strike
+					TakeLeft = GFish[BiteFish].TakeTime * R.Range(0.8f, 1.3f) * (Gear().bBottom && !bLure ? 1.5f : 1.f);
 					Go(EState::Taking);
 					// a spoon hit while winding hooks itself as often as not
 					if (bLure && In.bButton && R.U() < 0.55f)
@@ -581,7 +732,7 @@ namespace LyudFishing
 			}
 			break;
 		case EState::Winding:
-			Dist -= Tune.ReelSpeed * 1.6f * Dt;
+			Dist -= Tune.ReelSpeed * Gear().Reel * 1.6f * Dt;
 			if (Dist <= 0.5f)
 			{
 				Dist = 0.f;

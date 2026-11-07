@@ -1,0 +1,32 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "3:2",
+ "date": "2026-11-07",
+ "credits": 1,
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261107_011435_7e904eb1-0257-4ae6-aeb1-fbc6bedb5004.png",
+ "prompt": "Six inventory icons for a moody adventure game, arranged as a 3 by 2 grid of equal square cells on one picture (three cells across, two rows): in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters, no logos anywhere. Long objects lie diagonally from the lower left to the upper right so they fit inside the cell. Row 1, left: a slim dark grey-blue carbon spinning rod with a cork handle and a small silver spinning reel, the rod folded in two sections side by side, diagonal. Row 1, middle: a thick pale yellowish fibreglass sea fishing rod with a big black reel and a pear-shaped grey lead sinker hanging on its line, diagonal. Row 1, right: a small round tin of peeled pink Baltic shrimps, open, a few shrimps beside it. Row 2, left: a small ball of pale bread dough in a plastic lid, a pinch of it rolled on a fish hook beside it. Row 2, middle: a floating minnow fishing lure, silver belly and blue back, a clear diving lip at the front and two small treble hooks underneath, lying on its side. Row 2, right: a small old wooden rowing boat seen from above at an angle, painted pale blue-grey outside, plain wood inside, two oars resting inside.",
+ "grid": 3,
+ "cols": 3,
+ "rows": 2,
+ "ids": [
+  "rod_spinning",
+  "rod_sea",
+  "bait_shrimp",
+  "bait_dough",
+  "lure_wobbler",
+  "boat"
+ ],
+ "ship": [
+  "rod_spinning",
+  "rod_sea",
+  "bait_shrimp",
+  "bait_dough",
+  "lure_wobbler"
+ ],
+ "note": "3x2 grid of the second round's tackle; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language). The boat cell is kept for a later map or diary picture, not shipped.",
+ "job_id": "7e904eb1-0257-4ae6-aeb1-fbc6bedb5004"
+}
