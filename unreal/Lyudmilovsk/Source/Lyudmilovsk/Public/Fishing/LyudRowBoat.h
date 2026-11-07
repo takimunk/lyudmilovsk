@@ -38,6 +38,11 @@ public:
 	bool Leave();
 	/** Back to the mooring now (checks). */
 	void Home();
+	/** Where it is tied up and where the hero steps out onto the pier (the water's point found at spring low water). */
+	void SetMooring(const FVector2D& InMooring, const FVector2D& InLanding);
+	/** Into the save's fields and back (ULyudFishingState): where it lies, the hire, the hero in it. */
+	void Store(class ULyudFishingState& State) const;
+	void Restore(const class ULyudFishingState& State);
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -73,5 +78,8 @@ private:
 	FName Note;
 	float NoteLeft = 0.f;
 	FVector2D Pos = FVector2D::ZeroVector;
+	FVector2D Mooring = FVector2D::ZeroVector, Landing = FVector2D::ZeroVector;
+	/** Its hull's box swept along each move (the pier's piles, a boulder stop it). */
+	bool Blocked(const FVector2D& From, const FVector2D& To, float AtYaw) const;
 	uint64 PromptKey = 0;
 };

@@ -33,6 +33,16 @@ struct FLyudCatchRecord
 	UPROPERTY(SaveGame) FDateTime First;
 };
 
+/** One fish in the pocket and what it weighed (the kitchen picks by each fish's own size). */
+USTRUCT()
+struct FLyudBagFish
+{
+	GENERATED_BODY()
+
+	UPROPERTY(SaveGame) FName Species;
+	UPROPERTY(SaveGame) float Grams = 0.f;
+};
+
 /** One fish in the angler's journal: when, what, how big, where and with what. */
 USTRUCT()
 struct FLyudCatchEntry
@@ -51,7 +61,7 @@ struct FLyudCatchEntry
 
 /** What of fishing goes into the save ("Fishing"): the bait the hero fishes with, the hook baited or bare, the catch log. */
 UCLASS()
-class LYUDMILOVSK_API ULyudFishingState : public UGameInstanceSubsystem
+class LYUDMILOVSK_API ULyudFishingState : public UGameInstanceSubsystem, public ILyudSaveable
 {
 	GENERATED_BODY()
 
@@ -73,6 +83,23 @@ public:
 
 	/** Grams of each species in the pocket now (what the catch weighed; a sale prices it by this). */
 	UPROPERTY(SaveGame) TMap<FName, float> BagGrams;
+	/** The same fish one by one (a fish without an entry, given or found, counts at its share of BagGrams). */
+	UPROPERTY(SaveGame) TArray<FLyudBagFish> BagFish;
+
+	/** The rowing boat (ALyudRowBoat): where it lies, which way, the day it was hired, the hero in it. Written on saving. */
+	UPROPERTY(SaveGame) bool bBoatSaved = false;
+	UPROPERTY(SaveGame) FVector BoatPos = FVector::ZeroVector;
+	UPROPERTY(SaveGame) float BoatYaw = 0.f;
+	UPROPERTY(SaveGame) int32 BoatPaidDay = -1;
+	UPROPERTY(SaveGame) bool bBoatAboard = false;
+	/** Its mooring and landing as found (a load spawns it at once there, not after the sea's depth map is read). */
+	UPROPERTY(SaveGame) FVector BoatMooring = FVector::ZeroVector;
+	UPROPERTY(SaveGame) FVector BoatLanding = FVector::ZeroVector;
+
+	virtual void OnGameSaving_Implementation() override;
+	virtual void OnGameLoaded_Implementation() override;
+	/** A caught fish into the pocket's weights. */
+	void Pocket(FName Species, float Grams);
 
 	/** The angler's journal: the last JournalMax fish, oldest first. */
 	static constexpr int32 JournalMax = 60;
@@ -99,6 +126,8 @@ public:
 	FName BiggestHeld(const UObject* WorldContext, float* OutGrams = nullptr) const;
 	/** One fish of Item out of the pocket (and its share of the grams); the grams it weighed, 0 if there was none. */
 	float TakeOne(const UObject* WorldContext, FName Item);
+	/** One fish of Catchable C out of the pocket: the one weighing Grams (>= 0), the biggest (-2), or one not listed (-1); its grams. */
+	float TakeFish(const UObject* WorldContext, int32 C, float Grams);
 	/** The diner's cook fries one fish of Item for Fee roubles: paid, the fish goes, a plate of fried fish (diner_fish) is
 	 *  brought to the counter a few seconds later. False if there is no such fish or not the money. */
 	bool Cook(const UObject* WorldContext, FName Item, int32 Fee);

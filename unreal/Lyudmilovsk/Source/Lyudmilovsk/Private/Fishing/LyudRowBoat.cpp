@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "FishingPlaces.h"
+#include "Fishing/LyudFishing.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -297,18 +298,84 @@ void ALyudRowBoat::BeginPlay()
 	Build();
 	Pos = FVector2D(GetActorLocation());
 	Yaw = GetActorRotation().Yaw;
+	if (Mooring.IsZero())
+	{
+		Mooring = Pos;
+		Landing = LyudFishPlaces::Get().Boat.Landing;
+	}
 }
 
 bool ALyudRowBoat::WaterFor(const FVector& Where) const
 {
 	const ALyudSea* Sea = ALyudSea::Get(this);
 	const LyudFishPlaces::FBoatDef& D = LyudFishPlaces::Get().Boat;
-	return Sea && Sea->DepthAt(Where) > D.MinDepth && FVector2D::Distance(FVector2D(Where), D.Mooring) < D.Range;
+	return Sea && Sea->DepthAt(Where) > D.MinDepth && FVector2D::Distance(FVector2D(Where), Mooring) < D.Range;
 }
 
 bool ALyudRowBoat::NearMooring() const
 {
-	return FVector2D::Distance(Pos, LyudFishPlaces::Get().Boat.Mooring) < 1200.f;
+	return FVector2D::Distance(Pos, Mooring) < 1200.f;
+}
+
+void ALyudRowBoat::SetMooring(const FVector2D& InMooring, const FVector2D& InLanding)
+{
+	Mooring = InMooring;
+	Landing = InLanding;
+}
+
+void ALyudRowBoat::Store(ULyudFishingState& State) const
+{
+	State.bBoatSaved = true;
+	State.BoatPos = FVector(Pos, 0.f);
+	State.BoatYaw = Yaw;
+	State.BoatPaidDay = PaidDay;
+	State.bBoatAboard = bAboard;
+	State.BoatMooring = FVector(Mooring, 0.f);
+	State.BoatLanding = FVector(Landing, 0.f);
+}
+
+void ALyudRowBoat::Restore(const ULyudFishingState& State)
+{
+	if (!State.bBoatSaved)
+	{
+		return;
+	}
+	Pos = FVector2D(State.BoatPos);
+	Yaw = State.BoatYaw;
+	PaidDay = State.BoatPaidDay;
+	Speed = Turn = 0.f;
+	SetActorLocationAndRotation(FVector(Pos, GetActorLocation().Z), FRotator(0.f, Yaw, 0.f));
+	// saved in it: back on the thwart (the hire is paid: PaidDay is today's)
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (State.bBoatAboard && Hero && !bAboard)
+	{
+		Board(Hero, false);
+	}
+	else if (!State.bBoatAboard && bAboard && Hero && Hero->IsSeated())
+	{
+		Hero->StandUp();
+	}
+}
+
+bool ALyudRowBoat::Blocked(const FVector2D& From, const FVector2D& To, float AtYaw) const
+{
+	// the hull's box above the water line (the bed under it is the depth test's), swept from here to there
+	const float Z = GetActorLocation().Z + 50.f;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(BoatSweep), false, this);
+	if (const AActor* R = Rower.Get()) Q.AddIgnoredActor(R);
+	FHitResult Hit;
+	if (!GetWorld()->SweepSingleByChannel(Hit, FVector(From, Z), FVector(To, Z), FRotator(0.f, AtYaw, 0.f).Quaternion(), ECC_Visibility,
+		FCollisionShape::MakeBox(FVector(BoatHalfLen, BoatHalfBeam, 20.f)), Q))
+	{
+		return false;
+	}
+	// already touching it (a teleport, something left on the mooring): moving or turning away from it is free
+	if (Hit.bStartPenetrating)
+	{
+		const FVector2D Move = To - From;
+		return Move.SizeSquared() > 1.f && FVector2D::DotProduct(Move, FVector2D(Hit.Normal)) < 0.f;
+	}
+	return true;
 }
 
 bool ALyudRowBoat::Board(AHeroCharacter* Hero, bool bCheckReach)
@@ -346,7 +413,9 @@ bool ALyudRowBoat::Board(AHeroCharacter* Hero, bool bCheckReach)
 	TWeakObjectPtr<ALyudRowBoat> WeakThis(this);
 	Hero->SeatMove = [WeakThis](const FVector2D& V)
 	{
-		if (ALyudRowBoat* B = WeakThis.Get())
+		ALyudRowBoat* B = WeakThis.Get();
+		const APlayerController* PC = B ? UGameplayStatics::GetPlayerController(B, 0) : nullptr;
+		if (B && !(PC && PC->IsMoveInputIgnored()))
 		{
 			B->Input = V;
 			B->InputFrame = GFrameCounter;
@@ -387,9 +456,8 @@ bool ALyudRowBoat::Leave()
 
 void ALyudRowBoat::Home()
 {
-	const LyudFishPlaces::FBoatDef& D = LyudFishPlaces::Get().Boat;
-	Pos = D.Mooring;
-	Yaw = D.Yaw;
+	Pos = Mooring;
+	Yaw = LyudFishPlaces::Get().Boat.Yaw;
 	Speed = Turn = 0.f;
 }
 
@@ -402,12 +470,21 @@ void ALyudRowBoat::Ride(float DeltaTime)
 	// one oar pulled turns it even at rest; faster under way
 	const float TurnGoal = In.X * 26.f * (0.55f + 0.45f * FMath::Min(1.f, FMath::Abs(Speed) / 150.f));
 	Turn += (TurnGoal - Turn) * (1.f - FMath::Exp(-2.f * DeltaTime));
-	Yaw = FRotator::NormalizeAxis(Yaw + Turn * DeltaTime);
+	// turning against a pile: it stays as it was
+	const float NewYaw = FRotator::NormalizeAxis(Yaw + Turn * DeltaTime);
+	if (FMath::Abs(Turn) > 0.5f && Blocked(Pos, Pos + FVector2D(0.1f, 0.f), NewYaw))
+	{
+		Turn = 0.f;
+	}
+	else
+	{
+		Yaw = NewYaw;
+	}
 	const FVector2D Fwd(FMath::Cos(FMath::DegreesToRadians(Yaw)), FMath::Sin(FMath::DegreesToRadians(Yaw)));
 	const FVector2D Next = Pos + Fwd * Speed * DeltaTime;
 	// the end going first needs water under it (the pier's piles, a beach: it stops, bumped back a little)
 	const FVector2D Lead = Next + Fwd * (Speed >= 0.f ? BoatHalfLen : -BoatHalfLen);
-	if (WaterFor(FVector(Lead, 0.f)))
+	if (WaterFor(FVector(Lead, 0.f)) && (FMath::Abs(Speed) < 1.f || !Blocked(Pos, Next, Yaw)))
 	{
 		Pos = Next;
 	}
@@ -446,7 +523,9 @@ void ALyudRowBoat::Prompt(AHeroCharacter* Hero)
 		return;
 	}
 	// what it says: a word for a moment (no money, too deep), else E close by, else the oars' keys a while after boarding
-	const bool bNear = !bAboard && Hero && !Hero->IsSeated() && FVector::Dist2D(Hero->GetActorLocation(), GetActorLocation()) < 280.f;
+	const ULyudSwimComponent* Swim = Hero ? Hero->FindComponentByClass<ULyudSwimComponent>() : nullptr;
+	const bool bNear = !bAboard && Hero && !Hero->IsSeated() && !(Swim && Swim->IsSwimming())
+		&& FVector::Dist2D(Hero->GetActorLocation(), GetActorLocation()) < 280.f;
 	const bool bRent = bNear && NearMooring() && PaidDay != BoatDay(GetWorld());
 	uint64 Key = 0;
 	if (NoteLeft > 0.f) Key = 1;
@@ -490,7 +569,7 @@ void ALyudRowBoat::Tick(float DeltaTime)
 			if (NearMooring())
 			{
 				// up the pier's steps onto the deck (found by a trace down), the boat tied up again
-				const FVector2D L = LyudFishPlaces::Get().Boat.Landing;
+				const FVector2D L = Landing;
 				FVector At(L, GetActorLocation().Z + 120.f);
 				FHitResult Hit;
 				FCollisionQueryParams Q(SCENE_QUERY_STAT(BoatLanding), false, this);
@@ -512,6 +591,8 @@ void ALyudRowBoat::Tick(float DeltaTime)
 	if (!bAboard && !bNearHero)
 	{
 		if (PromptKey != 0) Prompt(Hero);
+		// left somewhere else: the boatman brings it back to the pier by the next day
+		if (PaidDay != BoatDay(World) && !NearMooring()) Home();
 		return;
 	}
 	if (bAboard)
@@ -531,7 +612,9 @@ void ALyudRowBoat::Tick(float DeltaTime)
 	const FVector C(Pos, 0.f);
 	const FVector F = R0.RotateVector(FVector(BoatHalfLen * 0.8f, 0.f, 0.f)), S = R0.RotateVector(FVector(0.f, BoatHalfBeam, 0.f));
 	const float ZB = Sea->SurfaceZ(C + F), ZS = Sea->SurfaceZ(C - F), ZR = Sea->SurfaceZ(C + S), ZL = Sea->SurfaceZ(C - S);
-	const float Z = 0.25f * (ZB + ZS + ZR + ZL) - BoatDraft + (bAboard ? -3.f : 0.f);
+	// never under the bed: at low water it sits on the sand (the ground is the sea's level less the depth there)
+	const float Ground = Sea->SeaLevel() - Sea->DepthAt(C);
+	const float Z = FMath::Max(0.25f * (ZB + ZS + ZR + ZL) - BoatDraft + (bAboard ? -3.f : 0.f), Ground + 2.f);
 	const float Pitch = FMath::RadiansToDegrees(FMath::Atan2(ZB - ZS, 2.f * BoatHalfLen * 0.8f)) * 0.7f;
 	const float Roll = FMath::RadiansToDegrees(FMath::Atan2(ZR - ZL, 2.f * BoatHalfBeam)) * 0.6f - Turn * 0.08f;
 	SetActorLocationAndRotation(FVector(Pos, Z), FRotator(Pitch, Yaw, -Roll));
