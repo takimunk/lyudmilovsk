@@ -722,8 +722,12 @@ def keep_flat(x, y):
         k = max(k, _ramp(abs(inland(x, y) - (BEACH_W - 5.0)), 5.0, 3.0))
     # the town: its terraces, walls and streets keep the exact macro height (docs/city_plan.md)
     C = _city()
-    if inland(x, y) > C.SEAWALL_S - 3.0:
-        k = max(k, C.city_mask(y))
+    s = inland(x, y)
+    if s > C.SEAWALL_S - 3.0:
+        # the terraces and the upper terrace's built strip (its plots reach ~130 m past W5); the ridge beyond gets its
+        # natural detail again
+        s_top = C.wall_s(len(C.WALLS) - 1, y) + C.WALL_DEPTH + C.TOP_KEEP
+        k = max(k, C.city_mask(y) * _ramp(max(0.0, s - s_top), 0.0, 60.0))
     k = max(k, academ_flat(x, y))
     return k
 
