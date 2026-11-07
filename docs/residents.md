@@ -82,6 +82,9 @@ T = Atlas(UV0);  tint = (UV1.x, UV1.y, UV2.x);  amount = UV2.y * (Cloth ? T.a : 
 BaseColor = lerp(T.rgb, T.rgb * 2 * tint, amount)
 ```
 
+(In Blender. glTF stores every UV with V flipped and Unreal keeps glTF's convention, so in Unreal it reads
+`1 - UV1.y` and `1 - UV2.y`: the masters' `TintFlipV` switch.)
+
 Tinted cloth in the atlas is grey detail with a linear mean of 0.5 per tint slot (so the mean of the result is the
 tint), logos painted out (`clean`), texels that must stay as painted (a white shirt under a suit: `keep_texels`) have
 alpha 0. The skin's tint is half its tone multiplier; hair, brows and beards are grey detail times the hair colour.

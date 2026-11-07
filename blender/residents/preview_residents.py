@@ -154,8 +154,16 @@ def main():
     ap.add_argument("--res", type=int, default=1)
     ap.add_argument("--fast", action="store_true", help="Workbench, textures without tints: geometry checks")
     ap.add_argument("--samples", type=int, default=12)
+    ap.add_argument("--rows", type=int, default=1, help="a crowd: rows going back, seen from a little above")
+    ap.add_argument("--random", type=int, default=0, help="pick this many models at random (seeded)")
     a = ap.parse_args(argv)
-    models = [m for m in a.models.split(",") if m] or sorted(f[:-4] for f in os.listdir(a.export) if f.endswith(".glb"))[:a.limit]
+    models = [m for m in a.models.split(",") if m] or sorted(f[:-4] for f in os.listdir(a.export) if f.endswith(".glb"))
+    if a.random:
+        import random
+        random.Random(7).shuffle(models)
+        models = models[:a.random]
+    elif not a.models:
+        models = models[:a.limit]
     bpy.ops.wm.read_factory_settings(use_empty=True)
     with open(os.path.join(a.atlases, "layout.json"), encoding="utf-8") as f:
         layout = json.load(f)
@@ -165,7 +173,12 @@ def main():
         im.alpha_mode = "CHANNEL_PACKED"
     n = len(models)
     gap = 0.75
-    sc = setup_scene(max(640, int(260 * n)) * a.res, 900 * a.res)
+    rows = max(1, a.rows)
+    cols = (n + rows - 1) // rows
+    if rows > 1:
+        sc = setup_scene(1920 * a.res, 1080 * a.res)
+    else:
+        sc = setup_scene(max(640, int(260 * n)) * a.res, 900 * a.res)
     try:
         sc.eevee.taa_render_samples = a.samples
     except Exception:
@@ -178,10 +191,16 @@ def main():
     heads = []
     for i, m in enumerate(models):
         objs = import_glb(os.path.join(a.export, m + ".glb"))
-        x = (i - (n - 1) / 2) * gap
+        if rows > 1:
+            r_, c_ = i // cols, i % cols
+            x = (c_ - (cols - 1) / 2) * gap + (0.37 if r_ % 2 else 0.0)
+            y = r_ * 1.1
+        else:
+            x, y = (i - (n - 1) / 2) * gap, 0.0
         roots = [o for o in objs if o.parent is None]
         for r in roots:
             r.location.x += x
+            r.location.y += y
         for o in objs:
             if o.type != "MESH":
                 continue
@@ -199,11 +218,17 @@ def main():
             if hb:
                 heads.append(arm[0].matrix_world @ hb.head)
     os.makedirs(a.out, exist_ok=True)
-    width = n * gap + 0.4
+    width = (cols if rows > 1 else n) * gap + 0.4
     aspect = sc.render.resolution_x / sc.render.resolution_y
     ortho = max(width, 2.1 * aspect) if aspect >= 1 else 2.1
-    # front lineup (the glTF import faces the people to -Y)
-    camera(sc, (0, -12, 0.98), (math.radians(90), 0, 0), ortho=ortho)
+    if rows > 1:
+        # a crowd photo: perspective, a little above eye height, the rows going back
+        hfov = 2 * math.atan(18.0 / 40.0)
+        dist = (width / 2) / math.tan(hfov / 2) * 1.02
+        camera(sc, (0, -dist, 1.05 + dist * math.tan(math.radians(9))), (math.radians(81), 0, 0), lens=40)
+    else:
+        # front lineup (the glTF import faces the people to -Y)
+        camera(sc, (0, -12, 0.98), (math.radians(90), 0, 0), ortho=ortho)
     sc.render.filepath = os.path.join(a.out, a.name + "_front.png")
     bpy.ops.render.render(write_still=True)
     if a.side:

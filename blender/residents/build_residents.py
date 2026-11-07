@@ -39,7 +39,7 @@ LOOKS = os.path.join(HERE, "cache", "looks.json")
 SCAN = os.path.join(HERE, "cache", "wardrobe")
 ATLASES = os.path.join(HERE, "atlases")
 EXPORT = os.path.join(HERE, "export")
-BUILD_VERSION = 1          # bump when the build itself changes (forces every model to rebuild)
+BUILD_VERSION = 2          # bump when the build itself changes (forces every model to rebuild)
 
 MAX_BODY_M = 1.88          # CharacterStandard.h MaxNpcHeight 195 cm with hair, shoes and headroom
 BUDGET = 24000             # docs/characters.md: 24k triangles for an adult (18k for a hi3d child; MakeHuman children
@@ -712,6 +712,7 @@ def add_accessories(look, bm, arm):
     ctx = dict(basemesh=bm, armature=arm, hair_volume=hair_vol, sex=look["sex"], age=look["age"])
     seed = int(look["hash"][:6], 16)
     kinds, params = [], {}
+    hands = ["r", "l"]                                     # a cane and a bag: one in each hand
     for a in acc:
         kind, _, style = a.partition(":")
         if kind not in getattr(A, "KINDS", []):
@@ -723,6 +724,10 @@ def add_accessories(look, bm, arm):
         t = look.get("accessory_tints", {}).get(a)
         if t:
             p["tint"] = tuple(t)
+        if kind in ("cane", "string_bag", "shopping_bag"):
+            if not hands:
+                continue                                   # two hands full already
+            p["hand"] = hands.pop(0)
         kinds.append(kind)
         params[kind] = p
     try:

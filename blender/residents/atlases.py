@@ -335,7 +335,12 @@ def build(size, pad, out_dir):
 
 
 def main():
-    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
+    if "--" in sys.argv:
+        argv = sys.argv[sys.argv.index("--") + 1:]
+    elif "-P" in sys.argv or "--python" in sys.argv:       # Blender -b -P atlases.py with no arguments
+        argv = []
+    else:
+        argv = sys.argv[1:]
     ap = argparse.ArgumentParser()
     ap.add_argument("--tile", type=int, default=512)
     ap.add_argument("--pad", type=int, default=0, help="default: tile / 32")
