@@ -33,8 +33,22 @@ the data.
 | fisherman_day | День рыбака | 2nd Sunday of July | fish fair on the promenade, concert on the square |
 | perseids | Ночь Персеид | 12 August | on the beach watching the shooting stars 22:30–02 |
 | harvest_fair | Ярмарка урожая | 4th Saturday of September | fair 9–17 |
+| lunar_new_year | Новый год по лунному календарю (China, East Asia) | the new moon from 21 Jan (China's date) | dumpling fair, drums on the square 17, firecrackers and fireworks at midnight; red lanterns |
+| holi | Холи (India) | the day after the full moon from 24 Feb (India's date) | colour powder and drums in the park 11–14 |
+| nowruz | Навруз (Iran, Central Asia) | 21 March | picnic in the park, a bonfire in the evening |
+| children_day | День защиты детей | 1 June | balloons and games in the park |
+| tanabata | Танабата (Japan) | 7 July | wish bamboo on the promenade (the hero ties a wish), stars at night |
+| toro_nagashi | Торо-нагаси (Japan, Obon) | 15 August | floating lanterns from the beach at dusk (the hero sets one afloat, 20 ₽) |
+| mid_autumn | Праздник середины осени (China, Vietnam) | the full moon from 8 Sep | lanterns on the square, watching the moon from the promenade |
+| halloween | Хэллоуин (Ireland, USA) | 31 October | carved pumpkins on the square and promenade, costumes |
+| dia_de_muertos | День мёртвых (Mexico) | 1–2 November | marigolds and candles in the park |
+| diwali | Дивали (India) | the day before the new moon from 18 Oct (India's date) | lamps and marigolds on the promenade, firecrackers, fireworks |
+| loy_krathong | Лой Кратонг (Thailand) | the full moon from 30 Oct (Thailand's date) | candle boats on the sea |
+| christmas | Рождество (Western Europe) | 24–25 December | carols and bells by the tree, the fair |
 
-`festivals.json`: `when.rule` is `date` (month, day), `nth_weekday` (month, nth 1..5 or −1 last, weekday 0 Monday),
+`festivals.json`: `when.rule` is `date` (month, day), `new_moon` / `full_moon` (the first such moon on or after month/day
+within `window` days, its date reckoned in `tz` hours from UTC; Meeus ch. 49 in `FestivalCalendar.cpp`, tested against
+2026–2028 dates), `nth_weekday` (month, nth 1..5 or −1 last, weekday 0 Monday),
 `easter_orthodox` / `easter_western` (offset days), `weekly` (weekdays, months) or `trigger` (the game fires it); `offset`
 shifts any rule's day. `days` is its length; `holiday` closes offices and schools (`holiday_days`: which of its days).
 Hours count from 00:00 of the festival's first day and may pass 24 (`26.5` = 02:30 the next night); a phase with
@@ -42,7 +56,10 @@ Hours count from 00:00 of the festival's first day and may pass 24 (`26.5` = 02:
 `decor.kinds`, `decor.venues`. A phase: `venue`, `mode` (how people take part: `mingle`, `watch`, `sit`, `fair`), `pull`
 (0..2), `face` (`stage`, `sea`, `bonfire`, `tree`, `sky`, `sunrise`), `show` (`music`, `stage_lights`, `fireworks`,
 `sky_lanterns`, `bonfire`). `priority` decides who has a venue when two festivals want it at once (the Sea Festival takes
-the fair square from the Saturday market).
+the fair square from the Saturday market). `menu`: the restaurant's dishes of its day (`Content/Restaurant/menu.json`
+ids); `foods`: what the fair stalls sell; `late`: people stay up till this hour of its first day (may pass 24); `origin`:
+where in the world it comes from. Decor kinds also `red_lanterns`, `balloons`, `pumpkins`, `marigolds`, `wish_tree`;
+shows also `drums`, `bells`, `firecrackers`, `color_powder`, `water_lanterns`; `face` also `moon`.
 
 ## How it works in the game
 
@@ -64,8 +81,15 @@ the fair square from the Saturday market).
   rising and drifting out to sea. `ALyudBonfire`: a log tipi, three flickering tongues of flame and a light; on Maslenitsa
   a straw doll that burns in the first third. All moving parts are movable components with no shadows, no Lumen, no
   collision (perf checklist), pooled and only moved (never rebuilt).
+- **More shows.** `ALyudFirecrackers` (two poles of red cracker strings rattling in bursts, sparks, a flickering light),
+  `ALyudColorPowder` (Holi: puffs of coloured powder over the crowd), `ALyudSkyLanterns` in water mode (floating
+  lanterns riding the tide out to sea). Every running phase with pull ≥ 0.6 has the crowd's murmur at its venue; drums and
+  bells play by the stage; the crowd cheers when the last firework shell is gone.
+- **Food and late nights.** `FestivalDishes()` / `IsFestivalDish(id)` list today's restaurant dishes (the restaurant can
+  call them by name, like `IsFestivalToday`), `FestivalFoods()` the fair's. `StayUpUntil()` is tonight's late hour; it is
+  sent to the people's life as `SetStayUpUntil(hour)` when that exists (compile-time check, like `SetGathering`).
 - **Sounds and music** load if present: `/Game/Audio/Festival/S_firework_launch_01`, `S_firework_boom_01..03`,
-  `S_bonfire_loop_01` are procedural (`python3 tools/festival_sounds.py`, numpy, seeded; then `IMPORT_ONLY=festival
+  `S_bonfire_loop_01`, `S_firecrackers_01..02`, `S_drums_loop_01`, `S_bells_01`, `S_crowd_loop_01`, `S_cheer_01` are procedural (`python3 tools/festival_sounds.py`, numpy, seeded; then `IMPORT_ONLY=festival
   unreal/scripts/import_audio.py`); the music `/Game/Audio/Music/MU_festival_1|2` is generated (audio/sounds.json,
   tools/gen_sounds.py --music festival_1 festival_2, about $0.40). Without them the festival is quiet.
 - **People.** Each running phase becomes a gathering in the people's life: `UPeopleLifeSubsystem::SetGathering(Id, venue,
@@ -86,7 +110,9 @@ the fair square from the Saturday market).
 - Side quests in `Content/UI/quests.json`, started by their festival: `fest_sea_festival` (the fair, the fireworks),
   `fest_lantern_night` (a lantern of his own), `fest_maslenitsa` (the fair, the doll burning), `fest_midsummer` (the
   bonfire, the sunrise), `fest_new_year` (the fireworks), `fest_perseids` (`ALyudMeteors`: shooting stars streaking away
-  from the radiant in the north-east every 4-26 s).
+  from the radiant in the north-east every 4-26 s), `fest_lunar_new_year` (the drums, the firecrackers), `fest_holi` (the
+  colours), `fest_tanabata` (`festival_wish tanabata`: E by the bamboo), `fest_toro_nagashi` (`festival_lantern
+  water_lantern`: E at the water's edge), `fest_mid_autumn` (the moon from the promenade).
 
 API for other systems: `IsFestivalToday()`, `ActiveFestival()`, `ActivePhase()`, `ActiveFestivals()`, `IsDayOff()`,
 `Upcoming(days)`, `FestivalName(id)`, `FindVenue(name)`. `IsFestivalToday()` is a holiday's day or its night still running

@@ -47,6 +47,11 @@
   {"id": "fest_maslenitsa", "kind": "side", "start_on": {"event": "festival", "target": "maslenitsa"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "maslenitsa.fair"}, {"id": "effigy", "event": "festival_watch", "target": "maslenitsa.bonfire"}]}]},
   {"id": "fest_midsummer", "kind": "side", "start_on": {"event": "festival", "target": "midsummer"}, "stages": [{"id": "go", "objectives": [{"id": "bonfire", "event": "festival_watch", "target": "midsummer.bonfire"}, {"id": "sunrise", "event": "festival_visit", "target": "midsummer.sunrise"}]}]},
   {"id": "fest_new_year", "kind": "side", "start_on": {"event": "festival", "target": "new_year"}, "stages": [{"id": "go", "objectives": [{"id": "fireworks", "event": "festival_watch", "target": "new_year.fireworks"}]}]},
-  {"id": "fest_perseids", "kind": "side", "start_on": {"event": "festival", "target": "perseids"}, "stages": [{"id": "go", "objectives": [{"id": "stars", "event": "festival_watch", "target": "perseids.meteors"}]}]}
+  {"id": "fest_perseids", "kind": "side", "start_on": {"event": "festival", "target": "perseids"}, "stages": [{"id": "go", "objectives": [{"id": "stars", "event": "festival_watch", "target": "perseids.meteors"}]}]},
+  {"id": "fest_lunar_new_year", "kind": "side", "start_on": {"event": "festival", "target": "lunar_new_year"}, "stages": [{"id": "go", "objectives": [{"id": "drums", "event": "festival_visit", "target": "lunar_new_year.drums"}, {"id": "firecrackers", "event": "festival_watch", "target": "lunar_new_year.firecrackers"}]}]},
+  {"id": "fest_holi", "kind": "side", "start_on": {"event": "festival", "target": "holi"}, "stages": [{"id": "go", "objectives": [{"id": "colours", "event": "festival_watch", "target": "holi.color_powder"}]}]},
+  {"id": "fest_tanabata", "kind": "side", "start_on": {"event": "festival", "target": "tanabata"}, "stages": [{"id": "go", "objectives": [{"id": "wish", "event": "festival_wish", "target": "tanabata"}]}]},
+  {"id": "fest_toro_nagashi", "kind": "side", "start_on": {"event": "festival", "target": "toro_nagashi"}, "stages": [{"id": "go", "objectives": [{"id": "lantern", "event": "festival_lantern", "target": "water_lantern"}]}]},
+  {"id": "fest_mid_autumn", "kind": "side", "start_on": {"event": "festival", "target": "mid_autumn"}, "stages": [{"id": "go", "objectives": [{"id": "moon", "event": "festival_visit", "target": "mid_autumn.moon"}]}]}
  ]
 }

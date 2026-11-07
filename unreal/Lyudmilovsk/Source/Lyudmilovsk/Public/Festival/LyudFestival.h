@@ -91,6 +91,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Festival") TArray<FLyudFestivalNow> ActiveFestivals() const { return Active; }
 	/** Is today a public holiday (offices and schools closed)? */
 	UFUNCTION(BlueprintPure, Category = "Festival") bool IsDayOff() const { return bDayOff; }
+	/** The restaurant's dishes for today's holidays (festivals.json "menu": item ids of Content/Restaurant/menu.json). */
+	UFUNCTION(BlueprintPure, Category = "Festival") TArray<FName> FestivalDishes() const;
+	/** What the fair's stalls sell today (festivals.json "foods"). */
+	UFUNCTION(BlueprintPure, Category = "Festival") TArray<FName> FestivalFoods() const;
+	/** Is this restaurant dish one of today's holidays' (the restaurant calls it by name)? */
+	UFUNCTION(BlueprintPure, Category = "Festival") bool IsFestivalDish(FName ItemId) const;
+	/** Till what hour (from today's 00:00, may pass 24) people stay up tonight for a festival; 0 their own bedtimes. */
+	UFUNCTION(BlueprintPure, Category = "Festival") float StayUpUntil() const { return StayUp; }
 	/** The festivals of the next Days days (date, id), for the diary and posters. */
 	UFUNCTION(BlueprintCallable, Category = "Festival") TArray<FString> Upcoming(int32 Days = 30) const;
 	/** The localized name of a festival. */
@@ -130,6 +138,9 @@ private:
 	bool bDayOffSent = false;
 	int32 LastDay = -1;
 	TArray<FLyudFestivalNow> Active;
+	TArray<FName> Dishes, Foods;
+	float StayUp = 0.f;
+	bool bStayUpSent = false;
 	/** Gatherings told to the people (id -> still on this update). */
 	TSet<FName> Gatherings;
 	/** Phases running (festival.phase) for the start/end events and the shows. */
@@ -153,6 +164,10 @@ private:
 	FVector FacePoint(const FLyudVenue& V, const FString& Face, const FDateTime& Now) const;
 	void StartShow(FName Key, const FString& Show, const FLyudVenue& V, double EndsAt);
 	void StartMusic(FName Key, const FLyudVenue& V);
+	/** A sound of a phase (drums, bells, the crowd) from /Game/Audio/Festival, looping by being started again. */
+	void StartSound(FName Key, const TCHAR* Asset, const FVector& At, float Volume, float Size);
+	/** Those sounds by asset name, looked for once (null: not imported). */
+	UPROPERTY(Transient) TMap<FName, TObjectPtr<USoundBase>> LoopSounds;
 	void Announce(const FString& Day, const FString& Id);
 	/** The hero at the festival: prompts (light a sky lantern), what he watched and where he went (quest events). */
 	void TickHero(float DeltaTime);
@@ -165,7 +180,8 @@ private:
 	FString HeroDay;
 	TSet<TPair<FName, FName>> HeroVisited;
 	TSet<FName> HeroWatched;
-	bool bLanternPrompt = false;
+	int32 PromptKind = 0;
+	bool HeroWished = false;
 	int32 HeroLanternsTonight = 0;
 	void HeroEvent(const FString& Day, FName Event, const FString& Target);
 	/** The stand-in for the people's gatherings: orders free people to the venue (lyud.Festival.Stub). */
@@ -193,6 +209,8 @@ public:
 	void Build(const FLyudVenue& Venue, const TArray<FString>& Kinds, uint32 Seed);
 	/** Lights: 0 off (day) .. 1 full; Party: the stage lights' show on. */
 	void SetLights(float Night, bool bParty);
+	/** Where the wish bamboo stands (Tanabata), the hero ties a wish on it. */
+	const TArray<FVector>& GetWishTrees() const { return WishTrees; }
 	virtual void Tick(float DeltaTime) override;
 
 private:
@@ -203,6 +221,7 @@ private:
 	TArray<float> GlowBase;
 	float LightLevel = -1.f;
 	int32 NumStageLights = 0;
+	TArray<FVector> WishTrees;
 	bool bParty = false;
 	float Clock = 0.f;
 	UMaterialInterface* Mat(FName Name);
@@ -230,6 +249,8 @@ private:
 	TArray<FBoom> PendingBooms;
 	UPROPERTY(Transient) TObjectPtr<USoundBase> LaunchSound;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> BoomSounds;
+	UPROPERTY(Transient) TObjectPtr<USoundBase> CheerSound;
+	bool bCheered = false;
 	void Boom(float Vol);
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Bursts;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Trails;
@@ -253,7 +274,9 @@ class LYUDMILOVSK_API ALyudSkyLanterns : public AActor
 
 public:
 	ALyudSkyLanterns();
-	void Setup(const FVector& Beach, const FVector& SeaDir, double InEndsAt);
+	/** bOnWater: floating lanterns (toro nagashi, Loy Krathong) set on the sea at Beach (its Z the water's) drifting out. */
+	void Setup(const FVector& Beach, const FVector& SeaDir, double InEndsAt, bool bOnWater = false);
+	bool IsOnWater() const { return bWater; }
 	/** One more lantern let go at At (the hero's own: a little brighter, it goes up first). False if all are in the air. */
 	bool Release(const FVector& At, bool bHero);
 	/** Whether a lantern is left to let go. */
@@ -267,6 +290,9 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Comps;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> Glow;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> Mesh;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WoodMat;
+	TWeakObjectPtr<class ALyudSea> SeaActor;
+	bool bWater = false;
 	FVector Beach = FVector::ZeroVector, Sea = FVector(1.f, 0.f, 0.f);
 	double EndsAt = 0.0;
 	float NextRelease = 0.f;
@@ -316,5 +342,55 @@ private:
 	float Length = 0.f;
 	int32 Fallen = 0;
 	uint32 Rng = 99;
+	float Rand();
+};
+
+/** Firecrackers (Lunar New Year, Diwali): long red strings of them on a pole going off in a rattle of flashes, sparks
+ *  jumping on the ground, a flickering light and the rattle's sound, till the phase ends. */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudFirecrackers : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudFirecrackers();
+	void Setup(const FVector& At, const FVector& Facing, double InEndsAt);
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	struct FPop { float T = -1.f; float Life = 0.1f; };
+	TArray<FPop> Pops;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Sparks;
+	UPROPERTY(Transient) TObjectPtr<UPointLightComponent> Light;
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> Sounds;
+	FVector Base = FVector::ZeroVector, Side = FVector(0.f, 1.f, 0.f);
+	double EndsAt = 0.0;
+	float Next = 0.f, Burn = 0.f;
+	uint32 Rng = 11;
+	float Rand();
+};
+
+/** Holi's colours: clouds of coloured powder thrown up over the crowd, billowing out and settling. */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudColorPowder : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudColorPowder();
+	void Setup(const FVector& At, float Radius, double InEndsAt);
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	struct FPuff { float T = -1.f; float Life = 2.5f; float Size = 200.f; FVector P, Drift; };
+	TArray<FPuff> Puffs;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Comps;
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> Mats;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> Mesh;
+	FVector Center = FVector::ZeroVector;
+	float Radius = 1200.f;
+	double EndsAt = 0.0;
+	float Next = 0.f;
+	uint32 Rng = 13;
 	float Rand();
 };

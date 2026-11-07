@@ -211,6 +211,17 @@ namespace
 	template <class T>
 	bool TrySetDayOff(T*, long, bool) { return false; }
 
+	/** People stay up late on a festival night (the town-life branch: SetStayUpUntil(hour from today's 00:00, may pass 24;
+	 *  0 = their own bedtimes)). */
+	template <class T>
+	auto TrySetStayUp(T* P, int, float Until) -> decltype(P->SetStayUpUntil(Until), bool())
+	{
+		P->SetStayUpUntil(Until);
+		return true;
+	}
+	template <class T>
+	bool TrySetStayUp(T*, long, float) { return false; }
+
 	/** Kinds to look for when a venue's own kind isn't in the plans yet, best first. */
 	TArray<FString> VenueKinds(const FString& Want)
 	{
@@ -220,6 +231,7 @@ namespace
 		if (Want == TEXT("beach")) return { TEXT("beach"), TEXT("promenade"), TEXT("promenade_bench") };
 		if (Want == TEXT("promenade")) return { TEXT("promenade"), TEXT("embankment"), TEXT("promenade_bench"), TEXT("beach") };
 		if (Want == TEXT("park")) return { TEXT("park"), TEXT("square"), TEXT("town_square"), TEXT("bench") };
+		if (Want == TEXT("bonfire")) return { TEXT("bonfire"), TEXT("beach") };
 		if (Want == TEXT("sunrise_point")) return { TEXT("sunrise_point"), TEXT("lookout"), TEXT("beach") };
 		return { Want };
 	}
@@ -430,6 +442,7 @@ void ULyudFestivalSubsystem::Update()
 		HeroVisited.Reset();
 		HeroWatched.Reset();
 		Watched.Reset();
+		HeroWished = false;
 	}
 
 	// public holiday
@@ -450,6 +463,8 @@ void ULyudFestivalSubsystem::Update()
 	TMap<FName, FName> ShowVenue;
 	TMap<FString, int32> Claimed;               // venue -> festival
 	TArray<FLyudFestivalNow> NewActive;
+	TArray<FName> NewDishes, NewFoods;
+	float WantStayUp = 0.f;
 	const double NowCal = CalSeconds(World);
 
 	for (const LyudFest::FActive& A : Calendar->At(Today, Hour))
@@ -551,6 +566,14 @@ void ULyudFestivalSubsystem::Update()
 					StubGather(People, Key, Ve, UTF8_TO_TCHAR(P.Mode.c_str()), P.Pull);
 				}
 			}
+			if (P.Pull >= 0.6f && Ve.bValid)
+			{
+				// the crowd's murmur where people gather
+				const FName CrowdKey(*(Key.ToString() + TEXT(".crowd")));
+				WantShows.Add(CrowdKey, TEXT("crowd"));
+				ShowEnds.Add(CrowdKey, Ends);
+				ShowVenue.Add(CrowdKey, *V);
+			}
 			for (const std::string& S : P.Show)
 			{
 				const FString Show = UTF8_TO_TCHAR(S.c_str());
@@ -581,7 +604,8 @@ void ULyudFestivalSubsystem::Update()
 				if (A.Rel >= From - 0.17f && A.Rel < From && !P.Show.empty())
 				{
 					const FString Show = UTF8_TO_TCHAR(P.Show[0].c_str());
-					if (Show == TEXT("fireworks") || Show == TEXT("sky_lanterns") || Show == TEXT("bonfire"))
+					if (Show == TEXT("fireworks") || Show == TEXT("sky_lanterns") || Show == TEXT("bonfire") || Show == TEXT("firecrackers") ||
+						Show == TEXT("water_lanterns"))
 					{
 						const FString Mark = DateKey(Today) + TEXT("|") + FId + TEXT(".") + UTF8_TO_TCHAR(P.Id.c_str());
 						if (!Announced.Contains(Mark))
@@ -596,6 +620,20 @@ void ULyudFestivalSubsystem::Update()
 				}
 			}
 		}
+		// tonight people stay up for it (Late counts from its first day's 00:00), and its dishes are on the menu today
+		if (F.Late > 0.f && A.Rel >= 0.f)
+		{
+			const float DayStartRel = FMath::FloorToFloat(A.Rel / 24.f) * 24.f;
+			if (A.Rel < F.Late)
+			{
+				WantStayUp = FMath::Max(WantStayUp, F.Late - DayStartRel);
+			}
+		}
+		if (A.Rel >= 0.f && F.Rule != "weekly")
+		{
+			for (const std::string& D : F.Menu) NewDishes.AddUnique(UTF8_TO_TCHAR(D.c_str()));
+			for (const std::string& D : F.Foods) NewFoods.AddUnique(UTF8_TO_TCHAR(D.c_str()));
+		}
 		if (bAny)
 		{
 			NewActive.Add(Entry);
@@ -606,6 +644,13 @@ void ULyudFestivalSubsystem::Update()
 		}
 	}
 	Active = NewActive;
+	Dishes = NewDishes;
+	Foods = NewFoods;
+	if (!FMath::IsNearlyEqual(WantStayUp, StayUp) || !bStayUpSent)
+	{
+		StayUp = WantStayUp;
+		bStayUpSent = People && TrySetStayUp(People, 0, StayUp);
+	}
 
 	// decorations: up / down
 	for (auto It = Decor.CreateIterator(); It; ++It)
@@ -735,6 +780,13 @@ void ULyudFestivalSubsystem::Update()
 		if (W.Value == TEXT("music"))
 		{
 			StartMusic(W.Key, Ve);
+		}
+		else if (W.Value == TEXT("drums") || W.Value == TEXT("bells") || W.Value == TEXT("crowd"))
+		{
+			// sounds of the phase (procedural, tools/festival_sounds.py): drums by the stage, bells, the crowd's murmur
+			const TCHAR* Name = W.Value == TEXT("drums") ? TEXT("S_drums_loop_01") : (W.Value == TEXT("bells") ? TEXT("S_bells_01") : TEXT("S_crowd_loop_01"));
+			const FVector At = W.Value == TEXT("crowd") ? Ve.Center : (Ve.bPlanStage ? Ve.StageAt : Ve.Center + FRotator(0.f, Ve.Yaw, 0.f).Vector() * Ve.Radius * 0.6f);
+			StartSound(W.Key, Name, At + FVector(0.f, 0.f, 200.f), W.Value == TEXT("crowd") ? 0.45f : 0.9f, Ve.Radius);
 		}
 		else if (ShowEnds[W.Key] > NowCal)
 		{
@@ -879,6 +931,17 @@ FVector ULyudFestivalSubsystem::FacePoint(const FLyudVenue& V, const FString& Fa
 	{
 		return V.Center + V.SeaDir * 6000.f + FVector(0.f, 0.f, 30000.f);
 	}
+	if (Face == TEXT("moon"))
+	{
+		// where the moon is now (local time UTC+2), else up over the sea
+		const FSkyPosition Moon = LyudEphemeris::Moon(Now - FTimespan::FromHours(2), 54.96, 20.40);
+		if (Moon.AltitudeDeg > -2.0)
+		{
+			const double A = FMath::DegreesToRadians(Moon.AzimuthDeg), Alt = FMath::DegreesToRadians(FMath::Max(Moon.AltitudeDeg, 2.0));
+			return V.Center + FVector(-FMath::Sin(A) * FMath::Cos(Alt), FMath::Cos(A) * FMath::Cos(Alt), FMath::Sin(Alt)) * 50000.f;
+		}
+		return V.Center + V.SeaDir * 6000.f + FVector(0.f, 0.f, 20000.f);
+	}
 	if (Face == TEXT("sunrise"))
 	{
 		// where the sun comes up that morning (the club's latitude; local time UTC+2 like the people's sun times)
@@ -988,6 +1051,37 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 			Made = B;
 		}
 	}
+	else if (Show == TEXT("water_lanterns"))
+	{
+		// set on the water at the beach's edge, drifting out
+		const ALyudSea* Sea = ALyudSea::Get(World);
+		FVector At = V.Center + V.SeaDir * FMath::Max(V.Radius * 1.1f, 1200.f);
+		At.Z = Sea ? Sea->SeaLevel() : At.Z;
+		if (ALyudSkyLanterns* L = World->SpawnActor<ALyudSkyLanterns>(At, FRotator::ZeroRotator, SP))
+		{
+			L->Setup(At, V.SeaDir, EndsAt, true);
+			Made = L;
+		}
+	}
+	else if (Show == TEXT("firecrackers"))
+	{
+		// on the venue's side towards the stage (or the sea), clear of the middle
+		const FVector Dir = V.bPlanStage ? (V.StageAt - V.Center).GetSafeNormal2D() : FRotator(0.f, V.Yaw, 0.f).Vector();
+		const FVector At = Ground(V.Center + Dir * V.Radius * 0.55f + FVector::CrossProduct(FVector::UpVector, Dir) * V.Radius * 0.3f);
+		if (ALyudFirecrackers* F = World->SpawnActor<ALyudFirecrackers>(At, FRotator::ZeroRotator, SP))
+		{
+			F->Setup(At, -Dir, EndsAt);
+			Made = F;
+		}
+	}
+	else if (Show == TEXT("color_powder"))
+	{
+		if (ALyudColorPowder* C = World->SpawnActor<ALyudColorPowder>(V.Center, FRotator::ZeroRotator, SP))
+		{
+			C->Setup(V.Center, V.Radius, EndsAt);
+			Made = C;
+		}
+	}
 	if (Made)
 	{
 		Shows.Add(Key, Made);
@@ -997,6 +1091,40 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 
 // ---------------------------------------------------------------------------------------------------------------------
 // the hero at the festival
+
+void ULyudFestivalSubsystem::StartSound(FName Key, const TCHAR* Asset, const FVector& At, float Volume, float Size)
+{
+	TObjectPtr<USoundBase>* Cached = LoopSounds.Find(Asset);
+	if (!Cached)
+	{
+		USoundBase* Loaded = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Audio/Festival/%s.%s"), Asset, Asset), nullptr, LOAD_NoWarn | LOAD_Quiet);
+		Cached = &LoopSounds.Add(Asset, Loaded);       // a missing one is remembered as missing
+	}
+	USoundBase* Sound = Cached->Get();
+	if (!Sound)
+	{
+		return;
+	}
+	FActorSpawnParameters SP;
+	SP.ObjectFlags |= RF_Transient;
+	AActor* Holder = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), At, FRotator::ZeroRotator, SP);
+	if (!Holder)
+	{
+		return;
+	}
+	UAudioComponent* A = NewObject<UAudioComponent>(Holder);
+	Holder->SetRootComponent(A);
+	A->SetWorldLocation(At);
+	A->SetSound(Sound);
+	A->bOverrideAttenuation = true;
+	A->AttenuationOverrides.bAttenuate = true;
+	A->AttenuationOverrides.bSpatialize = true;
+	A->AttenuationOverrides.AttenuationShapeExtents = FVector(Size, 0.f, 0.f);
+	A->AttenuationOverrides.FalloffDistance = 6000.f;
+	A->RegisterComponent();
+	A->FadeIn(2.f, Volume);
+	Music.Add(Key, A);      // stops with its phase and starts again when it ends, like the music
+}
 
 void ULyudFestivalSubsystem::HeroEvent(const FString& Day, FName Event, const FString& Target)
 {
@@ -1015,17 +1143,22 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 	UWorld* World = GetWorld();
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
-	auto Prompt = [&](bool bOn, const FText& Text)
+	// the E prompt: 0 none, 1 a sky lantern, 2 a floating lantern, 3 a wish on the bamboo (text built only on a change)
+	auto Prompt = [&](int32 Kind)
 	{
-		if (bOn != bLanternPrompt && UI)
+		if (Kind != PromptKind && UI)
 		{
-			UI->SetPrompt(this, bOn ? Text : FText::GetEmpty());
+			FText Text;
+			if (Kind == 1) Text = LyudText::Get(TEXT("ui.festival.lantern_prompt"), { FStringFormatArg(30) });
+			else if (Kind == 2) Text = LyudText::Get(TEXT("ui.festival.water_lantern_prompt"), { FStringFormatArg(20) });
+			else if (Kind == 3) Text = LyudText::Get(TEXT("ui.festival.wish_prompt"));
+			UI->SetPrompt(this, Text);
 		}
-		bLanternPrompt = bOn;
+		PromptKind = Kind;
 	};
 	if (!Hero || Active.Num() == 0)
 	{
-		Prompt(false, FText::GetEmpty());
+		Prompt(0);
 		HeroLanternsTonight = 0;
 		Watched.Reset();
 		return;
@@ -1071,6 +1204,8 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		}
 		float Range = 40000.f;
 		if (Show->IsA<ALyudBonfire>()) Range = 600.f;
+		else if (Show->IsA<ALyudFirecrackers>()) Range = 3000.f;
+		else if (Show->IsA<ALyudColorPowder>()) Range = 2500.f;
 		else if (Show->IsA<ALyudSkyLanterns>()) Range = 15000.f;
 		if (!Show->IsA<ALyudMeteors>() && FVector::Dist(At, Show->GetActorLocation()) > Range)
 		{
@@ -1089,36 +1224,66 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 			HeroEvent(HeroDay, TEXT("festival_watch"), F + TEXT(".") + ShowName);
 		}
 	}
-	// a sky lantern of his own: on the beach while they are being let go
-	const int32 Price = 30;
+	// a sky lantern of his own on the beach while they are being let go, a floating one at the water's edge; a wish
+	// tied on the Tanabata bamboo
 	ULyudInventory* Inv = ULyudInventory::Get(this);
-	const bool bCan = Lanterns && bLanternHere && HeroLanternsTonight < 3 && !(UI && UI->IsOpen()) && Inv && Lanterns->HasFree();
-	if (bCan != bLanternPrompt)
+	const bool bFree = !(UI && UI->IsOpen()) && Inv;
+	const bool bWaterLantern = Lanterns && Lanterns->IsOnWater();
+	const int32 Price = bWaterLantern ? 20 : 30;
+	int32 Kind = (Lanterns && bLanternHere && HeroLanternsTonight < 3 && bFree && Lanterns->HasFree()) ? (bWaterLantern ? 2 : 1) : 0;
+	if (Kind == 0 && bFree && !HeroWished)
 	{
-		Prompt(bCan, bCan ? LyudText::Get(TEXT("ui.festival.lantern_prompt"), { FStringFormatArg(Price) }) : FText::GetEmpty());
-	}
-	if (bCan)
-	{
-		const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
-		if (PC && PC->WasInputKeyJustPressed(EKeys::E))
+		for (const auto& D : Decor)
 		{
-			// paid only for a lantern that goes up (HasFree above; refunded should Release still fail)
-			if (!Inv->Spend(Price))
+			const ALyudFestivalDecor* Dec = Cast<ALyudFestivalDecor>(D.Value);
+			if (!Dec)
 			{
-				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.no_money")));
+				continue;
 			}
-			else if (Lanterns->Release(Hero->EyeLocation() + Hero->GetActorForwardVector() * 90.f - FVector(0.f, 0.f, 60.f), true))
+			for (const FVector& W : Dec->GetWishTrees())
 			{
-				HeroLanternsTonight++;
-				HeroEvent(HeroDay + FString::FromInt(HeroLanternsTonight), TEXT("festival_lantern"), TEXT("sky_lantern"));
-				if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World)) Screen->Toast(LyudText::Get(TEXT("ui.festival.lantern_up")));
-				Prompt(false, FText::GetEmpty());
-			}
-			else
-			{
-				Inv->Earn(Price);
+				if (FVector::Dist2D(At, W) < 260.f)
+				{
+					Kind = 3;
+				}
 			}
 		}
+	}
+	Prompt(Kind);
+	if (Kind == 0)
+	{
+		return;
+	}
+	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
+	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		return;
+	}
+	ULyudGameScreen* Screen = ULyudGameScreen::Get(World);
+	if (Kind == 3)
+	{
+		// a strip of paper with his wish on it, tied on a branch (once a festival day)
+		HeroWished = true;
+		HeroEvent(HeroDay, TEXT("festival_wish"), TEXT("tanabata"));
+		if (Screen) Screen->Toast(LyudText::Get(TEXT("ui.festival.wish_tied")));
+		Prompt(0);
+		return;
+	}
+	// paid only for a lantern that goes up (HasFree above; refunded should Release still fail)
+	if (!Inv->Spend(Price))
+	{
+		if (Screen) Screen->Toast(LyudText::Get(TEXT("ui.festival.no_money")));
+	}
+	else if (Lanterns->Release(Hero->EyeLocation() + Hero->GetActorForwardVector() * 90.f - FVector(0.f, 0.f, 60.f), true))
+	{
+		HeroLanternsTonight++;
+		HeroEvent(HeroDay + FString::FromInt(HeroLanternsTonight), TEXT("festival_lantern"), bWaterLantern ? TEXT("water_lantern") : TEXT("sky_lantern"));
+		if (Screen) Screen->Toast(LyudText::Get(bWaterLantern ? TEXT("ui.festival.water_lantern_up") : TEXT("ui.festival.lantern_up")));
+		Prompt(0);
+	}
+	else
+	{
+		Inv->Earn(Price);
 	}
 }
 
@@ -1389,6 +1554,21 @@ bool ULyudFestivalSubsystem::IsFestivalToday() const
 	return false;
 }
 
+TArray<FName> ULyudFestivalSubsystem::FestivalDishes() const
+{
+	return Dishes;
+}
+
+TArray<FName> ULyudFestivalSubsystem::FestivalFoods() const
+{
+	return Foods;
+}
+
+bool ULyudFestivalSubsystem::IsFestivalDish(FName ItemId) const
+{
+	return Dishes.Contains(ItemId);
+}
+
 FName ULyudFestivalSubsystem::ActiveFestival() const
 {
 	return Active.Num() ? Active[0].Id : NAME_None;
@@ -1557,6 +1737,17 @@ UMaterialInterface* ALyudFestivalDecor::Mat(FName Name)
 			Base = 25.f;
 			Min = 0.1f;
 		}
+		else if (S == TEXT("glow_red"))
+		{
+			C = FLinearColor(1.f, 0.08f, 0.04f);
+			Base = 4.f;
+			Min = 0.35f;        // red paper by day, glowing by night
+		}
+		else if (S == TEXT("glow_pumpkin"))
+		{
+			C = FLinearColor(1.f, 0.45f, 0.08f);
+			Base = 6.f;
+		}
 		else if (S == TEXT("glow_candle"))
 		{
 			C = FLinearColor(1.f, 0.6f, 0.25f);
@@ -1630,6 +1821,42 @@ UMaterialInterface* ALyudFestivalDecor::Mat(FName Name)
 			C = FLinearColor(0.02f, 0.12f, 0.05f);
 			Rough = 0.9f;
 		}
+		else if (S == TEXT("gold"))
+		{
+			C = FLinearColor(0.85f, 0.6f, 0.15f);
+			Rough = 0.35f;
+			Metal = 0.9f;
+		}
+		else if (S.StartsWith(TEXT("marigold_")))
+		{
+			C = Index() % 2 ? FLinearColor(0.95f, 0.42f, 0.02f) : FLinearColor(0.98f, 0.62f, 0.03f);
+			Rough = 0.85f;
+		}
+		else if (S == TEXT("clay"))
+		{
+			C = FLinearColor(0.45f, 0.18f, 0.08f);
+			Rough = 0.9f;
+		}
+		else if (S.StartsWith(TEXT("balloon_")))
+		{
+			C = Palette[Index() % UE_ARRAY_COUNT(Palette)];
+			Rough = 0.25f;
+		}
+		else if (S == TEXT("pumpkin"))
+		{
+			C = FLinearColor(0.85f, 0.32f, 0.03f);
+			Rough = 0.6f;
+		}
+		else if (S == TEXT("bamboo"))
+		{
+			C = FLinearColor(0.32f, 0.45f, 0.12f);
+			Rough = 0.55f;
+		}
+		else if (S == TEXT("leaf"))
+		{
+			C = FLinearColor(0.12f, 0.32f, 0.05f);
+			Rough = 0.8f;
+		}
 		else if (S == TEXT("straw"))
 		{
 			C = FLinearColor(0.62f, 0.5f, 0.24f);
@@ -1666,7 +1893,8 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 
 	// the ring of poles the strings hang from (bunting, lanterns, wreaths)
 	TArray<FVector> Tops;
-	const bool bRing = Kinds.Contains(TEXT("bunting")) || Kinds.Contains(TEXT("lanterns")) || Kinds.Contains(TEXT("wreaths"));
+	const bool bRing = Kinds.Contains(TEXT("bunting")) || Kinds.Contains(TEXT("lanterns")) || Kinds.Contains(TEXT("wreaths")) ||
+		Kinds.Contains(TEXT("red_lanterns")) || Kinds.Contains(TEXT("marigolds")) || Kinds.Contains(TEXT("balloons"));
 	const int32 NPoles = 6;
 	const float PoleH = 520.f;
 	// along a walk (the promenade, the beach, the pier) the poles stand in a line along it, the strings swag between them;
@@ -1984,6 +2212,160 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 		}
 	}
 
+	if (Kinds.Contains(TEXT("red_lanterns")))
+	{
+		// big red paper lanterns (Lunar New Year, Mid-Autumn): gold caps, a tassel, every 3.4 m along the strings, a little
+		// lower than the bunting so the two never touch
+		for (int32 Si = 0; Si < Strings.Num(); Si++)
+		{
+			const FVector A = Strings[Si].Key - FVector(0.f, 0.f, 20.f), B = Strings[Si].Value - FVector(0.f, 0.f, 20.f);
+			const float Len = FVector::Dist(A, B), Sag = FMath::Min(Len * (Si < Tops.Num() ? 0.07f : 0.1f), Si < Tops.Num() ? 150.f : 100.f);
+			if (!Kinds.Contains(TEXT("bunting")))
+			{
+				const int32 N = FMath::Max(4, FMath::CeilToInt(Len / 150.f));
+				FVector Prev = A;
+				for (int32 I = 1; I <= N; I++)
+				{
+					const FVector P = Hang(A, B, Sag, (float)I / N);
+					K.Rod(TEXT("rope"), Prev, P, 0.6f, 4, false, false);
+					Prev = P;
+				}
+			}
+			const int32 NL = FMath::Max(2, FMath::FloorToInt(Len / 340.f));
+			for (int32 I = 1; I < NL; I++)
+			{
+				const FVector P = Hang(A, B, Sag, (float)I / NL);
+				const FVector Mid = P - FVector(0.f, 0.f, 62.f);
+				K.Rod(TEXT("rope"), P, Mid + FVector(0.f, 0.f, 26.f), 0.5f, 4, false, false);
+				Ball(Glow, TEXT("glow_red"), Mid, 30.f, 44.f, 12);
+				K.Rod(TEXT("gold"), Mid + FVector(0.f, 0.f, 20.f), Mid + FVector(0.f, 0.f, 27.f), 12.f, 10, true, false);
+				K.Rod(TEXT("gold"), Mid - FVector(0.f, 0.f, 27.f), Mid - FVector(0.f, 0.f, 20.f), 12.f, 10, true, false);
+				K.Rod(TEXT("canvas_a"), Mid - FVector(0.f, 0.f, 27.f), Mid - FVector(0.f, 0.f, 58.f), 2.2f, 5, true, false);
+			}
+		}
+	}
+	if (Kinds.Contains(TEXT("marigolds")))
+	{
+		// garlands of marigolds (Diwali, Holi, the Day of the Dead) swagged deep between the poles round the venue, and
+		// a pot of them at every pole's foot
+		for (int32 Si = 0; Si < FMath::Min(Strings.Num(), Tops.Num()); Si++)
+		{
+			const FVector A = Strings[Si].Key - FVector(0.f, 0.f, 70.f), B = Strings[Si].Value - FVector(0.f, 0.f, 70.f);
+			const float Len = FVector::Dist(A, B), Sag = FMath::Min(Len * 0.14f, 220.f);
+			const int32 NB = FMath::FloorToInt(Len / 11.f);
+			for (int32 I = 0; I <= NB; I++)
+			{
+				const FVector P = Hang(A, B, Sag, (float)I / NB);
+				K.Box(*FString::Printf(TEXT("marigold_%d"), (I / 9) % 2), FTransform(FRotator(Rand01(Rng) * 90.f, Rand01(Rng) * 90.f, 0.f), P),
+					FVector(6.f, 6.f, 6.f), false);
+			}
+		}
+		for (const FVector& T : Tops)
+		{
+			const FVector Base = T - FVector(0.f, 0.f, PoleH - 10.f);
+			const FVector In = (C - T).GetSafeNormal2D();
+			const FVector Pot = Base + In * 45.f;
+			K.Rod(TEXT("clay"), Pot, Pot + FVector(0.f, 0.f, 32.f), 20.f, 10, true, true);
+			for (int32 I = 0; I < 14; I++)
+			{
+				const float A = I * 2.39996f, Rr = 6.f + 10.f * FMath::Sqrt((I + 0.5f) / 14.f);
+				K.Box(*FString::Printf(TEXT("marigold_%d"), I % 2), FTransform(FRotator(0.f, A * 57.f, 0.f), Pot + FVector(FMath::Cos(A) * Rr, FMath::Sin(A) * Rr, 38.f + Rand01(Rng) * 6.f)),
+					FVector(5.f, 5.f, 5.f), false);
+			}
+		}
+	}
+	if (Kinds.Contains(TEXT("balloons")))
+	{
+		// a bunch of balloons tied to every pole's top (Children's Day)
+		for (int32 Pi = 0; Pi < Tops.Num(); Pi++)
+		{
+			const FVector T = Tops[Pi] + FVector(0.f, 0.f, 16.f);
+			for (int32 I = 0; I < 6; I++)
+			{
+				const float A = (I + Pi) * 1.9f;
+				const FVector At = T + FVector(FMath::Cos(A) * 34.f, FMath::Sin(A) * 34.f, 70.f + (I % 3) * 32.f + Rand01(Rng) * 20.f);
+				K.Rod(TEXT("rope"), T, At - FVector(0.f, 0.f, 18.f), 0.3f, 3, false, false);
+				Ball(K, *FString::Printf(TEXT("balloon_%d"), (I + Pi) % 5), At, 15.f, 21.f, 10);
+			}
+		}
+	}
+	if (Kinds.Contains(TEXT("pumpkins")))
+	{
+		// carved pumpkins with a candle in them round the venue (Halloween): ribbed, a stem, a glowing face to the middle
+		const int32 NP = 18;
+		for (int32 I = 0; I < NP; I++)
+		{
+			// round a square; along a walk in two rows facing each other
+			const float Ang = V.Yaw + 10.f + I * 360.f / NP;
+			const FVector Side = FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal();
+			const FVector Dir = bLine ? (I % 2 ? V.SeaDir : -V.SeaDir) : FRotator(0.f, Ang, 0.f).Vector();
+			const FVector P = bLine ? GroundAt(C + Side * (-R * 1.5f + (I / 2) * R * 3.f / (NP / 2 - 1)) + Dir * 300.f)
+				: GroundAt(C + Dir * R * (I % 2 ? 0.86f : 0.8f));
+			const float Rr = 20.f + Rand01(Rng) * 9.f, H = Rr * 1.35f;
+			TArray<FVector2D> Prof;
+			for (int32 J = 0; J <= 6; J++)
+			{
+				const float A = PI * J / 6;
+				Prof.Add(FVector2D(FMath::Sin(A) * Rr, H * 0.5f - FMath::Cos(A) * H * 0.5f));
+			}
+			TArray<FName> M;
+			M.Init(TEXT("pumpkin"), Prof.Num() - 1);
+			K.Lathe(FTransform(FRotator(0.f, Rand01(Rng) * 30.f, 0.f), P), Prof, M, 10, false, false);
+			K.Rod(TEXT("fir"), P + FVector(0.f, 0.f, H - 3.f), P + FVector(0.f, 0.f, H + 8.f), 2.5f, 5, true, false);
+			const FVector In = -Dir;
+			const FRotator Face = In.Rotation();
+			const FVector F0 = P + In * (Rr - 1.5f) + FVector(0.f, 0.f, H * 0.55f);
+			const FVector SideV = FVector::CrossProduct(FVector::UpVector, In);
+			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 + SideV * Rr * 0.32f), FVector(1.f, 3.f, 3.f), false);      // the eyes
+			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 - SideV * Rr * 0.32f), FVector(1.f, 3.f, 3.f), false);
+			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 - FVector(0.f, 0.f, H * 0.25f)), FVector(1.f, Rr * 0.45f, 2.2f), false);     // the grin
+		}
+	}
+	if (Kinds.Contains(TEXT("wish_tree")))
+	{
+		// Tanabata: tall bamboo with leafy tops, hung with paper wishes (tanzaku) in five colours; the hero ties one on
+		const FVector LineDirW = FVector::CrossProduct(FVector::UpVector, V.SeaDir).GetSafeNormal();
+		for (int32 I = 0; I < 5; I++)
+		{
+			const FVector Base = GroundAt(C + LineDirW * (-R * 1.2f + I * R * 0.6f) - V.SeaDir * 250.f);
+			const FVector Lean = FVector(Rand01(Rng) - 0.5f, Rand01(Rng) - 0.5f, 0.f) * 50.f;
+			const FVector Top = Base + FVector(0.f, 0.f, 520.f) + Lean;
+			K.Rod(TEXT("bamboo"), Base - FVector(0.f, 0.f, 30.f), Top, 5.5f, 8, true, false);
+			K.CollideBox(FTransform(Base + FVector(0.f, 0.f, 150.f)), FVector(8.f, 8.f, 150.f));
+			for (int32 J = 0; J < 6; J++)
+			{
+				K.Rod(TEXT("bamboo"), Base + FVector(0.f, 0.f, 60.f + J * 80.f) + Lean * (J / 6.f), Base + FVector(0.f, 0.f, 64.f + J * 80.f) + Lean * (J / 6.f), 6.5f, 8, true, false);
+			}
+			// branches with leaves and the wishes hanging from them
+			for (int32 J = 0; J < 9; J++)
+			{
+				const float A = J * 2.39996f + I;
+				const FVector From = Base + FVector(0.f, 0.f, 260.f + J * 28.f) + Lean * ((260.f + J * 28.f) / 520.f);
+				const FVector To = From + FVector(FMath::Cos(A) * 110.f, FMath::Sin(A) * 110.f, 45.f);
+				K.Rod(TEXT("bamboo"), From, To, 1.4f, 4, false, false);
+				for (int32 L = 0; L < 4; L++)
+				{
+					const FVector Lf = FMath::Lerp(From, To, 0.35f + L * 0.2f);
+					const FVector Dir = FVector(FMath::Cos(A + L), FMath::Sin(A + L), -0.4f).GetSafeNormal();
+					const FVector Sd = FVector::CrossProduct(Dir, FVector::UpVector).GetSafeNormal() * 4.f;
+					K.Tri(TEXT("leaf"), Lf + Sd, Lf - Sd, Lf + Dir * 32.f);
+					K.Tri(TEXT("leaf"), Lf - Sd, Lf + Sd, Lf + Dir * 32.f);
+				}
+				for (int32 W = 0; W < 3; W++)
+				{
+					const FVector Hk = FMath::Lerp(From, To, 0.3f + W * 0.28f);
+					const FVector Face = FVector(FMath::Cos(A + 1.6f), FMath::Sin(A + 1.6f), 0.f) * 3.5f;
+					const FVector T0 = Hk - FVector(0.f, 0.f, 6.f), T1 = T0 - FVector(0.f, 0.f, 22.f);
+					const FName M(*FString::Printf(TEXT("flag_%d"), (J + W + I) % 5));
+					K.Rod(TEXT("rope"), Hk, T0, 0.2f, 3, false, false);
+					K.Quad(M, T1 - Face, T1 + Face, T0 + Face, T0 - Face);
+					K.Quad(M, T0 - Face, T0 + Face, T1 + Face, T1 - Face);
+				}
+			}
+			WishTrees.Add(Base);
+		}
+	}
+
 	auto Make = [this](FLyudMeshKit& Kit, const TCHAR* Name, bool bSolid)
 	{
 		if (Kit.IsEmpty())
@@ -2093,6 +2475,7 @@ void ALyudFireworks::Setup(const FVector& InLaunch, const FVector& SeaDir, doubl
 	Rng = Hash(InLaunch.ToString()) ^ (uint32)InEndsAt;
 	// the sounds once (they may not be imported yet: then the shells are silent)
 	LaunchSound = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_firework_launch_01.S_firework_launch_01"), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	CheerSound = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_cheer_01.S_cheer_01"), nullptr, LOAD_NoWarn | LOAD_Quiet);
 	for (int32 I = 1; I <= 3; I++)
 	{
 		const FString Path = FString::Printf(TEXT("/Game/Audio/Festival/S_firework_boom_%02d.S_firework_boom_%02d"), I, I);
@@ -2286,6 +2669,15 @@ void ALyudFireworks::Tick(float DeltaTime)
 			Flashes[L]->SetLightColor(FlashCol[L]);
 		}
 	}
+	if (!bOn && !bCheered && Shells.Num() == 0)
+	{
+		// the last shell gone: the crowd on the shore cheers
+		bCheered = true;
+		if (CheerSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, CheerSound, Launch - Sea * 12000.f + FVector(0.f, 0.f, 200.f), 1.f);
+		}
+	}
 	if (!bOn && Shells.Num() == 0 && PendingBooms.Num() == 0)
 	{
 		Destroy();
@@ -2306,29 +2698,53 @@ float ALyudSkyLanterns::Rand()
 	return Rand01(Rng);
 }
 
-void ALyudSkyLanterns::Setup(const FVector& InBeach, const FVector& SeaDir, double InEndsAt)
+void ALyudSkyLanterns::Setup(const FVector& InBeach, const FVector& SeaDir, double InEndsAt, bool bOnWater)
 {
 	Beach = InBeach;
 	Sea = SeaDir;
 	EndsAt = InEndsAt;
+	bWater = bOnWater;
 	Rng = Hash(InBeach.ToString()) ^ 0x5bd1e995u;
-	// a paper lantern: a tall tapering shade, open below
 	FLyudMeshKit K;
-	const TArray<FVector2D> P = { { 20.f, 0.f }, { 26.f, 30.f }, { 28.f, 58.f }, { 0.f, 62.f } };
-	const TArray<FName> M = { TEXT("glow"), TEXT("glow"), TEXT("glow") };
-	K.Lathe(FTransform::Identity, P, M, 8, false, false);
+	if (bWater)
+	{
+		// a floating lantern (toro nagashi, a krathong): a paper box lit inside, on a little wooden float
+		K.Box(TEXT("wood"), FTransform(FVector(0.f, 0.f, 2.5f)), FVector(17.f, 17.f, 2.5f), false);
+		K.Box(TEXT("glow"), FTransform(FVector(0.f, 0.f, 18.f)), FVector(11.f, 11.f, 13.f), false);
+		K.Box(TEXT("wood"), FTransform(FVector(0.f, 0.f, 32.f)), FVector(13.f, 13.f, 1.2f), false);
+	}
+	else
+	{
+		// a paper lantern: a tall tapering shade, open below
+		const TArray<FVector2D> P = { { 20.f, 0.f }, { 26.f, 30.f }, { 28.f, 58.f }, { 0.f, 62.f } };
+		const TArray<FName> M = { TEXT("glow"), TEXT("glow"), TEXT("glow") };
+		K.Lathe(FTransform::Identity, P, M, 8, false, false);
+	}
 	TArray<FName> Slots;
-	Mesh = K.Build(this, TEXT("SkyLantern"), Slots);
+	Mesh = K.Build(this, bWater ? TEXT("WaterLantern") : TEXT("SkyLantern"), Slots);
 	UMaterialInterface* G = LoadObject<UMaterialInterface>(nullptr, GlowPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 	Glow = UMaterialInstanceDynamic::Create(G, this);
-	Glow->SetVectorParameterValue(TEXT("Color"), FLinearColor(1.f, 0.48f, 0.14f));
-	Glow->SetScalarParameterValue(TEXT("Intensity"), 9.f);
-	for (int32 I = 0; I < 70; I++)
+	Glow->SetVectorParameterValue(TEXT("Color"), bWater ? FLinearColor(1.f, 0.62f, 0.22f) : FLinearColor(1.f, 0.48f, 0.14f));
+	Glow->SetScalarParameterValue(TEXT("Intensity"), bWater ? 6.f : 9.f);
+	UMaterialInstanceDynamic* Wood = nullptr;
+	if (bWater)
+	{
+		UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, PaintPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+		Wood = UMaterialInstanceDynamic::Create(Paint, this);
+		Wood->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.3f, 0.19f, 0.1f));
+		Wood->SetScalarParameterValue(TEXT("Roughness"), 0.8f);
+		Wood->SetScalarParameterValue(TEXT("Metallic"), 0.f);
+		WoodMat = Wood;
+	}
+	for (int32 I = 0; I < (bWater ? 50 : 70); I++)
 	{
 		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
 		C->SetStaticMesh(Mesh);
 		Lightweight(C);
-		C->SetMaterial(0, Glow);
+		for (int32 Si = 0; Si < Slots.Num(); Si++)
+		{
+			C->SetMaterial(Si, Slots[Si] == TEXT("wood") && Wood ? (UMaterialInterface*)Wood : (UMaterialInterface*)Glow);
+		}
 		C->SetupAttachment(RootComponent);
 		C->SetVisibility(false);
 		C->RegisterComponent();
@@ -2358,8 +2774,14 @@ bool ALyudSkyLanterns::Release(const FVector& At, bool bHero)
 			FLantern& L = Lanterns[I];
 			L.T = 0.f;
 			L.P = At;
-			L.V = FVector(0.f, 0.f, bHero ? 85.f : 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f);
+			L.V = bWater ? Sea * (bHero ? 38.f : 22.f + Rand() * 16.f)
+				: FVector(0.f, 0.f, bHero ? 85.f : 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f);
 			L.Phase = Rand() * 10.f;
+			if (bWater)
+			{
+				// set down on the water's edge in front of him
+				L.P = FVector(At.X, At.Y, Beach.Z) + Sea * 150.f;
+			}
 			Comps[I]->SetWorldLocation(L.P);
 			Comps[I]->SetVisibility(true);
 			return true;
@@ -2376,18 +2798,39 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 	const FVector Side = FVector::CrossProduct(FVector::UpVector, Sea);
 	if (bOn && NextRelease <= 0.f)
 	{
-		NextRelease = 2.5f + Rand() * 6.f;
+		NextRelease = bWater ? 1.5f + Rand() * 3.f : 2.5f + Rand() * 6.f;
 		for (int32 I = 0; I < Lanterns.Num(); I++)
 		{
 			if (Lanterns[I].T < 0.f)
 			{
 				FLantern& L = Lanterns[I];
 				L.T = 0.f;
-				L.P = Beach + Side * (Rand() - 0.5f) * 3000.f + Sea * (Rand() - 0.5f) * 500.f + FVector(0.f, 0.f, 120.f);
-				L.V = FVector(0.f, 0.f, 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f) + Side * (Rand() - 0.5f) * 30.f;
+				if (bWater)
+				{
+					L.P = Beach + Side * (Rand() - 0.5f) * 3000.f;
+					L.V = Sea * (22.f + Rand() * 16.f) + Side * (Rand() - 0.5f) * 10.f;
+				}
+				else
+				{
+					L.P = Beach + Side * (Rand() - 0.5f) * 3000.f + Sea * (Rand() - 0.5f) * 500.f + FVector(0.f, 0.f, 120.f);
+					L.V = FVector(0.f, 0.f, 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f) + Side * (Rand() - 0.5f) * 30.f;
+				}
 				L.Phase = Rand() * 10.f;
 				break;
 			}
+		}
+	}
+	// floating ones ride the water as the tide moves it
+	float WaterZ = Beach.Z;
+	if (bWater)
+	{
+		if (!SeaActor.IsValid())
+		{
+			SeaActor = ALyudSea::Get(this);
+		}
+		if (const ALyudSea* SeaPtr = SeaActor.Get())
+		{
+			WaterZ = SeaPtr->SeaLevel();
 		}
 	}
 	int32 Alive = 0;
@@ -2399,6 +2842,23 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 			continue;
 		}
 		L.T += DeltaTime;
+		if (bWater)
+		{
+			// a slow drift out to sea, bobbing on the swell, slowly spinning; gone when far out or burnt down
+			L.P += L.V * DeltaTime + FVector(FMath::Sin(L.T * 0.3f + L.Phase), FMath::Cos(L.T * 0.25f + L.Phase), 0.f) * 6.f * DeltaTime;
+			L.P.Z = WaterZ + FMath::Sin(L.T * 1.3f + L.Phase) * 4.f;
+			if (L.T > 1500.f || FVector::Dist2D(L.P, Beach) > 40000.f)
+			{
+				L.T = -1.f;
+				Comps[I]->SetVisibility(false);
+				continue;
+			}
+			Alive++;
+			Comps[I]->SetWorldLocation(L.P);
+			Comps[I]->SetWorldRotation(FRotator(FMath::Sin(L.T * 1.1f + L.Phase) * 3.f, L.Phase * 30.f + L.T * 2.f, FMath::Cos(L.T * 0.9f + L.Phase) * 3.f));
+			Comps[I]->SetVisibility(true);
+			continue;
+		}
 		// a slow climb that eases off as the air in them cools, a little sway
 		const float Lift = FMath::Max(0.25f, 1.f - L.T / 900.f);
 		L.P += (L.V * FVector(1.f, 1.f, Lift)) * DeltaTime + FVector(FMath::Sin(L.T * 0.4f + L.Phase), FMath::Cos(L.T * 0.33f + L.Phase), 0.f) * 8.f * DeltaTime;
@@ -2617,4 +3077,263 @@ void ALyudMeteors::Tick(float DeltaTime)
 	Streak->SetWorldScale3D(FVector(FMath::Max(1.f, FVector::Dist(Head, Tail)) / 100.f, 60.f, 60.f));
 	Glow->SetScalarParameterValue(TEXT("Intensity"), 40.f * FMath::Sin(U * PI));
 	Streak->SetVisibility(true);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// firecrackers
+
+ALyudFirecrackers::ALyudFirecrackers()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
+
+float ALyudFirecrackers::Rand()
+{
+	return Rand01(Rng);
+}
+
+void ALyudFirecrackers::Setup(const FVector& At, const FVector& Facing, double InEndsAt)
+{
+	Base = At;
+	Side = FVector::CrossProduct(FVector::UpVector, Facing.GetSafeNormal2D());
+	EndsAt = InEndsAt;
+	Rng = Hash(At.ToString()) ^ 0x2545F491u;
+	// two poles with long strings of red crackers hanging off a crossbar (static, solid), and a pool of sparks (moving)
+	FLyudMeshKit K, S;
+	for (const float Y : { -180.f, 180.f })
+	{
+		const FVector P = At + Side * Y;
+		K.Rod(TEXT("pole"), P - FVector(0.f, 0.f, 30.f), P + FVector(0.f, 0.f, 420.f), 5.f, 8, true, false);
+	}
+	K.Rod(TEXT("pole"), At - Side * 190.f + FVector(0.f, 0.f, 410.f), At + Side * 190.f + FVector(0.f, 0.f, 410.f), 3.f, 6, true, true);
+	for (int32 I = 0; I < 5; I++)
+	{
+		const FVector Top = At + Side * (-120.f + I * 60.f) + FVector(0.f, 0.f, 405.f);
+		for (int32 J = 0; J < 34; J++)
+		{
+			const FVector C = Top - FVector(0.f, 0.f, 12.f + J * 10.f);
+			const FVector Out = FRotator(0.f, J * 67.f, 0.f).Vector() * 4.f;
+			K.Rod(TEXT("cracker"), C + Out - FVector(0.f, 0.f, 3.f), C + Out * 2.6f + FVector(0.f, 0.f, 2.f), 1.4f, 4, true, false);
+		}
+		K.Rod(TEXT("rope"), Top, Top - FVector(0.f, 0.f, 350.f), 0.5f, 3, false, false);
+	}
+	for (int32 I = 0; I < 6; I++)
+	{
+		const FVector D = FRotator(I * 30.f, I * 60.f, 0.f).Vector();
+		S.Rod(TEXT("glow"), -D * 18.f, D * 18.f, 1.6f, 3, false, false);
+	}
+	TArray<FName> Slots;
+	UStaticMesh* PoleMesh = K.Build(this, TEXT("Firecrackers"), Slots);
+	UStaticMeshComponent* PC = NewObject<UStaticMeshComponent>(this);
+	PC->SetStaticMesh(PoleMesh);
+	UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, PaintPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	UMaterialInterface* G = LoadObject<UMaterialInterface>(nullptr, GlowPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	for (int32 I = 0; I < Slots.Num(); I++)
+	{
+		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Paint, this);
+		const bool bCracker = Slots[I] == TEXT("cracker"), bRope = Slots[I] == TEXT("rope");
+		M->SetVectorParameterValue(TEXT("Color"), bCracker ? FLinearColor(0.75f, 0.04f, 0.03f) : (bRope ? FLinearColor(0.05f, 0.05f, 0.05f) : FLinearColor(0.18f, 0.19f, 0.2f)));
+		M->SetScalarParameterValue(TEXT("Roughness"), bCracker ? 0.7f : 0.5f);
+		M->SetScalarParameterValue(TEXT("Metallic"), bCracker || bRope ? 0.f : 0.6f);
+		PC->SetMaterial(I, M);
+	}
+	PC->SetMobility(EComponentMobility::Movable);
+	PC->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PC->SetCastShadow(false);
+	PC->bAffectDistanceFieldLighting = false;
+	PC->SetupAttachment(RootComponent);
+	PC->RegisterComponent();
+	UStaticMesh* SparkMesh = S.Build(this, TEXT("FirecrackerSpark"), Slots);
+	UMaterialInstanceDynamic* SG = UMaterialInstanceDynamic::Create(G, this);
+	SG->SetVectorParameterValue(TEXT("Color"), FLinearColor(1.f, 0.8f, 0.45f));
+	SG->SetScalarParameterValue(TEXT("Intensity"), 40.f);
+	for (int32 I = 0; I < 14; I++)
+	{
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+		C->SetStaticMesh(SparkMesh);
+		Lightweight(C);
+		C->SetMaterial(0, SG);
+		C->SetupAttachment(RootComponent);
+		C->SetVisibility(false);
+		C->RegisterComponent();
+		Sparks.Add(C);
+		Pops.AddDefaulted();
+	}
+	Light = MakeLight(this, RootComponent, FLinearColor(1.f, 0.7f, 0.4f), 2500.f);
+	Light->SetWorldLocation(At + FVector(0.f, 0.f, 200.f));
+	for (int32 I = 1; I <= 2; I++)
+	{
+		const FString Path = FString::Printf(TEXT("/Game/Audio/Festival/S_firecrackers_%02d.S_firecrackers_%02d"), I, I);
+		if (USoundBase* Snd = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+		{
+			Sounds.Add(Snd);
+		}
+	}
+}
+
+void ALyudFirecrackers::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	const bool bOn = CalSeconds(GetWorld()) < EndsAt;
+	// they go off in bursts of a few seconds with short pauses (a string burnt, the next one lit)
+	Burn -= DeltaTime;
+	if (bOn && Burn < -1.5f - Rand() * 2.f)
+	{
+		Burn = 3.f + Rand() * 4.f;
+		if (Sounds.Num() > 0)
+		{
+			USoundBase* Snd = Sounds[FMath::Min((int32)(Rand() * Sounds.Num()), Sounds.Num() - 1)];
+			UGameplayStatics::PlaySoundAtLocation(this, Snd, Base + FVector(0.f, 0.f, 150.f), 1.f, 0.9f + Rand() * 0.2f);
+		}
+	}
+	float Flash = 0.f;
+	Next -= DeltaTime;
+	if (bOn && Burn > 0.f && Next <= 0.f)
+	{
+		Next = 0.02f + Rand() * 0.06f;
+		for (int32 I = 0; I < Pops.Num(); I++)
+		{
+			if (Pops[I].T < 0.f)
+			{
+				Pops[I].T = 0.f;
+				Pops[I].Life = 0.05f + Rand() * 0.08f;
+				// up the strings, or jumping on the ground below them
+				const bool bGround = Rand() < 0.4f;
+				const FVector P = Base + Side * (-120.f + (int32)(Rand() * 5.f) * 60.f) + FVector(0.f, 0.f, bGround ? 8.f + Rand() * 30.f : 60.f + Rand() * 330.f)
+					+ (bGround ? FVector(Rand() - 0.5f, Rand() - 0.5f, 0.f) * 240.f : FVector::ZeroVector);
+				Sparks[I]->SetWorldLocationAndRotation(P, FRotator(Rand() * 360.f, Rand() * 360.f, 0.f));
+				Sparks[I]->SetWorldScale3D(FVector(0.6f + Rand() * 0.8f));
+				Sparks[I]->SetVisibility(true);
+				break;
+			}
+		}
+	}
+	int32 Alive = 0;
+	for (int32 I = 0; I < Pops.Num(); I++)
+	{
+		if (Pops[I].T < 0.f)
+		{
+			continue;
+		}
+		Pops[I].T += DeltaTime;
+		if (Pops[I].T > Pops[I].Life)
+		{
+			Pops[I].T = -1.f;
+			Sparks[I]->SetVisibility(false);
+			continue;
+		}
+		Alive++;
+		Flash = FMath::Max(Flash, 1.f - Pops[I].T / Pops[I].Life);
+	}
+	Light->SetIntensity(Flash * 9000.f);
+	if (!bOn && Alive == 0)
+	{
+		Destroy();
+	}
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Holi's colours
+
+ALyudColorPowder::ALyudColorPowder()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
+
+float ALyudColorPowder::Rand()
+{
+	return Rand01(Rng);
+}
+
+void ALyudColorPowder::Setup(const FVector& At, float InRadius, double InEndsAt)
+{
+	Center = At;
+	Radius = InRadius;
+	EndsAt = InEndsAt;
+	Rng = Hash(At.ToString()) ^ 0x68E31DA4u;
+	// a lumpy cloud: three overlapping balls
+	FLyudMeshKit K;
+	Ball(K, TEXT("powder"), FVector(0.f, 0.f, 50.f), 50.f, 80.f, 10);
+	Ball(K, TEXT("powder"), FVector(28.f, 12.f, 40.f), 36.f, 56.f, 8);
+	Ball(K, TEXT("powder"), FVector(-22.f, -20.f, 62.f), 34.f, 50.f, 8);
+	TArray<FName> Slots;
+	Mesh = K.Build(this, TEXT("ColorPowder"), Slots);
+	UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, PaintPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	for (int32 I = 0; I < 28; I++)
+	{
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+		C->SetStaticMesh(Mesh);
+		Lightweight(C);
+		UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Paint, this);
+		M->SetScalarParameterValue(TEXT("Roughness"), 1.f);
+		M->SetScalarParameterValue(TEXT("Metallic"), 0.f);
+		C->SetMaterial(0, M);
+		C->SetupAttachment(RootComponent);
+		C->SetVisibility(false);
+		C->RegisterComponent();
+		Comps.Add(C);
+		Mats.Add(M);
+		Puffs.AddDefaulted();
+	}
+}
+
+void ALyudColorPowder::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	static const FLinearColor Colors[] = {
+		FLinearColor(0.95f, 0.1f, 0.45f), FLinearColor(1.f, 0.75f, 0.05f), FLinearColor(0.1f, 0.75f, 0.2f),
+		FLinearColor(0.15f, 0.35f, 0.95f), FLinearColor(0.6f, 0.1f, 0.85f), FLinearColor(1.f, 0.4f, 0.05f),
+	};
+	const bool bOn = CalSeconds(GetWorld()) < EndsAt;
+	Next -= DeltaTime;
+	if (bOn && Next <= 0.f)
+	{
+		Next = 0.25f + Rand() * 0.7f;
+		for (int32 I = 0; I < Puffs.Num(); I++)
+		{
+			if (Puffs[I].T < 0.f)
+			{
+				FPuff& P = Puffs[I];
+				P.T = 0.f;
+				P.Life = 2.f + Rand() * 1.5f;
+				P.Size = 1.2f + Rand() * 1.6f;
+				const float A = Rand() * 2.f * PI, D = FMath::Sqrt(Rand()) * Radius * 0.7f;
+				P.P = Center + FVector(FMath::Cos(A) * D, FMath::Sin(A) * D, 120.f + Rand() * 80.f);
+				P.Drift = FVector(Rand() - 0.5f, Rand() - 0.5f, 0.f) * 60.f + FVector(0.f, 0.f, 25.f);
+				Mats[I]->SetVectorParameterValue(TEXT("Color"), Colors[FMath::Min((int32)(Rand() * 6.f), 5)]);
+				Comps[I]->SetVisibility(true);
+				break;
+			}
+		}
+	}
+	int32 Alive = 0;
+	for (int32 I = 0; I < Puffs.Num(); I++)
+	{
+		FPuff& P = Puffs[I];
+		if (P.T < 0.f)
+		{
+			continue;
+		}
+		P.T += DeltaTime;
+		const float U = P.T / P.Life;
+		if (U >= 1.f)
+		{
+			P.T = -1.f;
+			Comps[I]->SetVisibility(false);
+			continue;
+		}
+		Alive++;
+		// thrown up fast, billowing out, then thinning away (it only shrinks: the paint is opaque)
+		const float Grow = 1.f - FMath::Exp(-P.T / 0.25f);
+		const float Scale = P.Size * Grow * (U < 0.6f ? 1.f : 1.f - (U - 0.6f) / 0.4f);
+		P.P += P.Drift * DeltaTime;
+		Comps[I]->SetWorldLocation(P.P);
+		Comps[I]->SetWorldScale3D(FVector(FMath::Max(0.01f, Scale)));
+	}
+	if (!bOn && Alive == 0)
+	{
+		Destroy();
+	}
 }
