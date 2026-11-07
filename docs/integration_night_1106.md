@@ -6,23 +6,25 @@ merge. This page records what conflicted, how each conflict was resolved here, w
 the branch owners. Done in the cloud on 2026-11-07 (no Unreal build: the UE Mac is busy, and it can't run the game until
 the Metal Toolchain is reinstalled).
 
-It took three rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
+It took four rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
 started. Round 2 merged the newer heads on top, in the same order, and the four branches that moved again while it ran
 (eco, fishing, public-spaces, town-life) a second time at the end. Round 3 merged perfhunt, the restaurant and festivals
-once more, after they pushed again at about 01:35 UTC. The branch holds every head as of 01:37 UTC.
+once more, after they pushed again at about 01:35 UTC. Round 4 took the small fixes that the buildings, public spaces,
+town life, the restaurant, eco and perfhunt pushed by 01:55 UTC. The branch holds every head as of 01:55 UTC. Later
+pushes aren't in it, but the order and resolutions here still apply to them.
 
 ## Order
 
 | # | Branch | Round 1 head | Head now merged | Commits over main | Conflicts (round) |
 |---|---|---|---|---|---|
-| 1 | `perfhunt` | `07dfbbc5` | `6261a150` | 18 | none |
-| 2 | `underwater-eco` (PR #9) | `0e9e8a53` | `603dd73a` | 8 | none |
+| 1 | `perfhunt` | `07dfbbc5` | `63b7f908` | 19 | none |
+| 2 | `underwater-eco` (PR #9) | `0e9e8a53` | `3615e1d3` | 9 | none |
 | 3 | `fishing` (PR #10) | `a67d5961` | `bb8b0277` | 23 (PR #9 up to `0e9e8a53` included) | `CounterTrade.h` (1), `DefaultGame.ini` (2) |
 | 4 | `city-terrain` | `72b39c18` | `72b39c18` | 16 | none |
-| 5 | `wt/city-buildings` | `bafbcc72` | `45b95f22` | 24 | none |
-| 6 | `public-spaces` | `e8968eea` | `8d564842` | 58 | none |
-| 7 | `town-life` | `bde10d42` | `76811bf1` | 26 | `PeopleLife.cpp` (1), `counters.json` (2) |
-| 8 | `review/restaurant` (PR #11) | `9cf4e4bc` | `e8532a6a` | 14 (its commits rebased onto main, merged with the old head) | `strings_{ru,en,ja}.json`, `localization/assets.json`, `LyudSoundscape.cpp` (1); `strings_ja.json` (2); `strings_{ru,en,ja}.json` (3) |
+| 5 | `wt/city-buildings` | `bafbcc72` | `1f3d5861` | 26 | none |
+| 6 | `public-spaces` | `e8968eea` | `0514738a` | 61 | none |
+| 7 | `town-life` | `bde10d42` | `d974e189` | 29 | `PeopleLife.cpp` (1), `counters.json` (2) |
+| 8 | `review/restaurant` (PR #11) | `9cf4e4bc` | `69b74848` | 16 (its commits rebased onto main, merged with the old head) | `strings_{ru,en,ja}.json`, `localization/assets.json`, `LyudSoundscape.cpp` (1); `strings_ja.json` (2); `strings_{ru,en,ja}.json` (3) |
 | 9 | `festivals` | `9a3bcbec` | `1c40e985` | 16 | `strings_{ru,en,ja}.json` (1) |
 | 10 | `gfx` | `33643981` | `e10d5ac3` | 9 | `LyudGameMenu.cpp` (1), `PeopleLife.cpp` (2) |
 
@@ -38,7 +40,7 @@ and are exactly city-terrain's versions.
 
 ## Conflicts and how they were resolved
 
-Eleven conflicts over the three rounds, all of them mechanical (both sides added things at the same spot). No change of
+Eleven conflicts over the four rounds, all of them mechanical (both sides added things at the same spot). No change of
 behaviour was needed on either side.
 
 Round 1:
@@ -90,7 +92,7 @@ Round 3:
     each language, in the same order.
 
 perfhunt's five new commits (save order, doors, prefetch, small speed-ups, its report) and festivals' review fixes
-merged by themselves.
+merged by themselves, and so did all of round 4.
 
 When the branches go to main one by one in this order, the same files conflict again, and the resolutions above apply
 as they are. The one difference: `DefaultGame.ini` then conflicts when city-terrain goes in after fishing.
@@ -114,8 +116,9 @@ Files that two branches changed and git merged without a conflict, checked for m
 - `GameMenu/SLyudGameMenu.cpp` (perfhunt × gfx): the sliders' `OnMouseCaptureEnd` flush and the Graphics page.
 - `audio/sounds.json` (festivals × fishing): parses, holds fishing's group and the festivals' two music entries
   (`festival_1`, `festival_2`; its fireworks and bonfire are procedural, `tools/festival_sounds.py`).
-- perfhunt's people `GroundCache` (`38ca628d`), door fixes (`49f51a0e`, `29ea4729`), meal assets (`e8085366`) and
-  bird sim change (`33a04151`) are in the merge as on perfhunt; no other branch touched the doors.
+- perfhunt's people `GroundCache` (`38ca628d`), door fixes (`49f51a0e`, `29ea4729`), meal assets (`e8085366`), bird
+  sim change (`33a04151`) and save hook for late-starting animals (`63b7f908`) are in the merge as on perfhunt; no
+  other branch touched the doors.
 - `LyudSave.{h,cpp}` (perfhunt × eco, which fishing contains): perfhunt's `60d8e699` runs `OnBeforeSave` before the
   registered objects are written and adds guards (a new slot never overwrites one on disk, a broken slot can't feed NaN
   to the clock or the player); eco's `0e9e8a53` adds `OnNewGame`. Different spots. Only main's birds, corvids, animals
@@ -170,15 +173,17 @@ fallback (above). Nothing was lost in the resolutions.
 - **Mac-only compile errors:** every plain C++ file the suites build was compiled with `-Wshadow
   -Wunreachable-code-loop-increment`, which the Mac UE build treats as errors and the suites' `-Wall` misses. The game
   sources are clean. Only test drivers warn: `tools/sea/seatest.cpp` and `tools/weather/weathertest.cpp` as on main, and
-  `tools/underwater/underwatertest.cpp:179,424` from eco. UBT doesn't build test drivers, so these are harmless. The
+  `tools/underwater/underwatertest.cpp:179,432` from eco. UBT doesn't build test drivers, so these are harmless. The
   Unreal-only files, which can't be compiled here, were searched for locals and parameters named like a field of their
   class: no real hits (the three new matches are a static method, a template argument and a lambda).
 
 ## Offline suites
 
 Every `tools/*/run.sh` test target, on main `bb083dd0` and on the merge: round 1 `9be09292`, round 2 `947c7191`
-(`peoplesim` also on `9c3d9f4a`, after town-life's last commit) and round 3 `f589d679`, the merge as it stands. All
-three rounds gave the same results; the bird sim's output is the same line for line apart from timings.
+(`peoplesim` also on `9c3d9f4a`, after town-life's last commit), round 3 `f589d679`, and round 4 `e756a240` (`animalsim`
+and `winter` also on `b8d79afa`, after perfhunt's last commit). Round 4 ran every suite except birdsim, because it
+changes none of the bird sim's sources or data. All four rounds gave the same results; the bird sim's output is the same
+line for line apart from timings.
 
 | Suite | main | merge |
 |---|---|---|
@@ -212,8 +217,8 @@ The two blackbird checks come from city-terrain's regenerated bird world (`72b39
 the terraced ground): they fail on city-terrain alone and on the merge. The other three appear only when perfhunt's
 change to the bird sim (`33a04151`) meets that new world. That change is more than a speed-up: the sight line to the
 player is kept for 0.15 s, and the hawk now takes the best prey by weight where it used to take the first one found.
-perfhunt's round 3 commits don't touch the bird sim's sources and city-terrain hasn't moved, so this is still the
-state.
+perfhunt's later commits (rounds 3 and 4) don't touch the bird sim's sources and city-terrain hasn't moved, so this
+is still the state.
 
 Cloud quirks (not branch problems):
 - The `run.sh` scripts were run with bash. On the Mac `/bin/sh` is bash; Ubuntu's dash rejects main's `"${@:2}"` in
@@ -237,7 +242,7 @@ to do:
 3. **fishing:** the 37 icon pictures (`tools/fishing_icons.py` on the Mac), already known.
 4. **city plan / buildings: the tidal pools.** `P-TIDALPOOL` (`tidal_pool`) has been on main's plan since the first city
    plan, but none of the ten branches has a script or an export for it, so nothing stands there yet.
-5. **underwater-eco (optional):** `tools/underwater/underwatertest.cpp:179,424` shadow a local. This is a test driver,
+5. **underwater-eco (optional):** `tools/underwater/underwatertest.cpp:179,432` shadow a local. This is a test driver,
    not a game build error.
 6. **review/restaurant (optional, packaging only):** the game reads four files from `Content/Restaurant/`, which isn't
    in `DefaultGame.ini`'s `DirectoriesToAlwaysStageAsNonUFS`, so a packaged build won't have them. Main has the same
