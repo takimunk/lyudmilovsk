@@ -1066,8 +1066,11 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 	else if (Show == TEXT("firecrackers"))
 	{
 		// on the venue's side towards the stage (or the sea), clear of the middle
-		const FVector Dir = V.bPlanStage ? (V.StageAt - V.Center).GetSafeNormal2D() : FRotator(0.f, V.Yaw, 0.f).Vector();
-		const FVector At = Ground(V.Center + Dir * V.Radius * 0.55f + FVector::CrossProduct(FVector::UpVector, Dir) * V.Radius * 0.3f);
+		// toward the stage, turned to halfway between the strings across the square (like the tree) and clear of the stalls
+		const FVector Want = V.bPlanStage ? (V.StageAt - V.Center).GetSafeNormal2D() : FRotator(0.f, V.Yaw, 0.f).Vector();
+		const float Ang = FMath::RadiansToDegrees(FMath::Atan2(Want.Y, Want.X));
+		const FVector Dir = FRotator(0.f, V.Yaw + FMath::RoundToFloat((Ang - V.Yaw) / 60.f) * 60.f + 60.f, 0.f).Vector();
+		const FVector At = Ground(V.Center + Dir * V.Radius * 0.6f);
 		if (ALyudFirecrackers* F = World->SpawnActor<ALyudFirecrackers>(At, FRotator::ZeroRotator, SP))
 		{
 			F->Setup(At, -Dir, EndsAt);
@@ -1720,7 +1723,7 @@ UMaterialInterface* ALyudFestivalDecor::Mat(FName Name)
 		M = UMaterialInstanceDynamic::Create(G ? G : Basic, this);
 		FLinearColor C(1.f, 0.72f, 0.38f);
 		float Base = 6.f, Min = 0.f;
-		if (S.StartsWith(TEXT("glow_c")))
+		if (S.StartsWith(TEXT("glow_c")) && S != TEXT("glow_candle"))
 		{
 			C = FireColors[Index() % UE_ARRAY_COUNT(FireColors)];
 			Base = 8.f;
@@ -2189,9 +2192,21 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 		{
 			for (float S = -Len * 0.5f; S <= Len * 0.5f; S += 130.f)
 			{
-				const FVector P = GroundAt(C + Along * S + V.SeaDir * Off);
-				K.Box(TEXT("canvas_b"), FTransform(FRotator(0.f, Rand01(Rng) * 90.f, 0.f), P + FVector(0.f, 0.f, 13.f)), FVector(9.f, 7.f, 13.f), false);
-				Glow.Box(TEXT("glow_candle"), FTransform(P + FVector(0.f, 0.f, 8.f)), FVector(2.5f, 2.5f, 6.f), false);
+				const FVector Flat = C + Along * S + V.SeaDir * Off;
+				// round a square: only on the paving, clear of the fountain basin in the middle
+				const float FromMid = FVector::Dist2D(Flat, C);
+				if (!bLine && (FromMid > R * 0.92f || FromMid < 1050.f))
+				{
+					continue;
+				}
+				const FVector P = GroundAt(Flat);
+				// an open paper bag (four walls), the candle's flame standing up in it to just above the rim
+				const FTransform Bag(FRotator(0.f, Rand01(Rng) * 90.f, 0.f), P);
+				K.BoxIn(TEXT("canvas_b"), Bag, FVector(8.f, 0.f, 11.f), FVector(1.f, 14.f, 22.f), false);
+				K.BoxIn(TEXT("canvas_b"), Bag, FVector(-8.f, 0.f, 11.f), FVector(1.f, 14.f, 22.f), false);
+				K.BoxIn(TEXT("canvas_b"), Bag, FVector(0.f, 7.f, 11.f), FVector(16.f, 1.f, 22.f), false);
+				K.BoxIn(TEXT("canvas_b"), Bag, FVector(0.f, -7.f, 11.f), FVector(16.f, 1.f, 22.f), false);
+				Glow.Box(TEXT("glow_candle"), FTransform(P + FVector(0.f, 0.f, 18.f)), FVector(2.f, 2.f, 6.f), false);
 			}
 		}
 	}
@@ -2269,7 +2284,7 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			for (int32 I = 0; I < 14; I++)
 			{
 				const float A = I * 2.39996f, Rr = 6.f + 10.f * FMath::Sqrt((I + 0.5f) / 14.f);
-				K.Box(*FString::Printf(TEXT("marigold_%d"), I % 2), FTransform(FRotator(0.f, A * 57.f, 0.f), Pot + FVector(FMath::Cos(A) * Rr, FMath::Sin(A) * Rr, 38.f + Rand01(Rng) * 6.f)),
+				K.Box(*FString::Printf(TEXT("marigold_%d"), I % 2), FTransform(FRotator(0.f, A * 57.f, 0.f), Pot + FVector(FMath::Cos(A) * Rr, FMath::Sin(A) * Rr, 30.f + Rand01(Rng) * 6.f)),
 					FVector(5.f, 5.f, 5.f), false);
 			}
 		}
@@ -2282,10 +2297,10 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			const FVector T = Tops[Pi] + FVector(0.f, 0.f, 16.f);
 			for (int32 I = 0; I < 6; I++)
 			{
-				const float A = (I + Pi) * 1.9f;
-				const FVector At = T + FVector(FMath::Cos(A) * 34.f, FMath::Sin(A) * 34.f, 70.f + (I % 3) * 32.f + Rand01(Rng) * 20.f);
-				K.Rod(TEXT("rope"), T, At - FVector(0.f, 0.f, 18.f), 0.3f, 3, false, false);
-				Ball(K, *FString::Printf(TEXT("balloon_%d"), (I + Pi) % 5), At, 15.f, 21.f, 10);
+				const float A = Pi + I * 2.39996f;
+				const FVector At = T + FVector(FMath::Cos(A) * 34.f, FMath::Sin(A) * 34.f, 70.f + I * 24.f + Rand01(Rng) * 8.f);
+				K.Rod(TEXT("rope"), T, At - FVector(0.f, 0.f, 19.f), 0.3f, 3, false, false);
+				Ball(K, *FString::Printf(TEXT("balloon_%d"), (I + Pi) % 5), At, 15.f, 38.f, 10);
 			}
 		}
 	}
@@ -2301,7 +2316,7 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			const FVector Dir = bLine ? (I % 2 ? V.SeaDir : -V.SeaDir) : FRotator(0.f, Ang, 0.f).Vector();
 			const FVector P = bLine ? GroundAt(C + Side * (-R * 1.5f + (I / 2) * R * 3.f / (NP / 2 - 1)) + Dir * 300.f)
 				: GroundAt(C + Dir * R * (I % 2 ? 0.86f : 0.8f));
-			const float Rr = 20.f + Rand01(Rng) * 9.f, H = Rr * 1.35f;
+			const float Rr = 32.f + Rand01(Rng) * 12.f, H = Rr * 1.3f;
 			TArray<FVector2D> Prof;
 			for (int32 J = 0; J <= 6; J++)
 			{
@@ -2310,15 +2325,38 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			}
 			TArray<FName> M;
 			M.Init(TEXT("pumpkin"), Prof.Num() - 1);
-			K.Lathe(FTransform(FRotator(0.f, Rand01(Rng) * 30.f, 0.f), P), Prof, M, 10, false, false);
+			K.Lathe(FTransform(FRotator(0.f, Rand01(Rng) * 30.f, 0.f), P), Prof, M, 14, false, false);
+			// its ribs: shallow ridges from top to bottom
+			for (int32 J = 0; J < 8; J++)
+			{
+				const FVector Rd = FRotator(0.f, J * 45.f + 22.5f, 0.f).Vector();
+				FVector Prev = P + FVector(0.f, 0.f, 2.f);
+				for (int32 Q = 1; Q <= 5; Q++)
+				{
+					const float A = PI * Q / 6;
+					const FVector Pt = P + Rd * (FMath::Sin(A) * Rr * 1.02f) + FVector(0.f, 0.f, H * 0.5f - FMath::Cos(A) * H * 0.5f);
+					K.Rod(TEXT("pumpkin"), Prev, Pt, Rr * 0.09f, 5, false, false);
+					Prev = Pt;
+				}
+			}
 			K.Rod(TEXT("fir"), P + FVector(0.f, 0.f, H - 3.f), P + FVector(0.f, 0.f, H + 8.f), 2.5f, 5, true, false);
 			const FVector In = -Dir;
 			const FRotator Face = In.Rotation();
-			const FVector F0 = P + In * (Rr - 1.5f) + FVector(0.f, 0.f, H * 0.55f);
 			const FVector SideV = FVector::CrossProduct(FVector::UpVector, In);
-			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 + SideV * Rr * 0.32f), FVector(1.f, 3.f, 3.f), false);      // the eyes
-			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 - SideV * Rr * 0.32f), FVector(1.f, 3.f, 3.f), false);
-			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, F0 - FVector(0.f, 0.f, H * 0.25f)), FVector(1.f, Rr * 0.45f, 2.2f), false);     // the grin
+			// the face sits on the surface: the body's radius at that height (an ellipsoid), less the sideways offset
+			auto OnSkin = [&](float Z, float Lat)
+			{
+				const float U = (Z - H * 0.5f) / (H * 0.5f);
+				const float Rz = Rr * FMath::Sqrt(FMath::Max(0.f, 1.f - U * U)) * FMath::Cos(PI / 14.f);     // the lathe's flat faces
+				return P + In * (FMath::Sqrt(FMath::Max(0.f, Rz * Rz - Lat * Lat)) - 0.6f) + SideV * Lat + FVector(0.f, 0.f, Z);
+			};
+			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, OnSkin(H * 0.6f, Rr * 0.3f)), FVector(1.f, Rr * 0.12f, Rr * 0.12f), false);      // the eyes
+			Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, OnSkin(H * 0.6f, -Rr * 0.3f)), FVector(1.f, Rr * 0.12f, Rr * 0.12f), false);
+			for (int32 Q = -2; Q <= 2; Q++)     // the grin, in five pieces round the curve
+			{
+				const float Lat = Q * Rr * 0.13f;
+				Glow.Box(TEXT("glow_pumpkin"), FTransform(Face, OnSkin(H * 0.36f + FMath::Abs(Q) * Rr * 0.04f, Lat)), FVector(1.f, Rr * 0.07f, Rr * 0.06f), false);
+			}
 		}
 	}
 	if (Kinds.Contains(TEXT("wish_tree")))

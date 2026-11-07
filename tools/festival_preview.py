@@ -8,7 +8,8 @@ Everything below works in UE space (cm, X forward, Y right, Z up, yaw degrees, 0
 points are converted to Blender (m, right-handed: y is mirrored) only when a mesh is emitted.
 
     python festival_preview.py <scene> <out.png> [--blend out.blend] [--w 1600 --h 900 --samples 64]
-    scenes: square_day, square_night, new_year_night, lantern_beach
+    scenes: square_day, square_night, new_year_night, lantern_beach, lunar_new_year_night, halloween_night,
+    tanabata_day, toro_nagashi_night, holi_day
 
 The venues are the plan's (city_plan.json, git origin/town-life): the square S-SQUARE (radius 1900 cm, own stage
 S-STAGE 5500 cm inland, yaw -4.7), the sea toward +X.  The square is put at the origin of a flat ground.
@@ -37,9 +38,21 @@ PAINT = {  # name -> (colour, roughness, metallic)
     'ph_concrete': ((0.32, 0.32, 0.33), 0.9, 0), 'ph_pave': ((0.22, 0.21, 0.20), 0.95, 0),
     'ph_water': ((0.04, 0.12, 0.2), 0.12, 0), 'ph_ground': ((0.10, 0.14, 0.07), 1.0, 0),
     'ph_sand': ((0.62, 0.52, 0.36), 1.0, 0),
+    # ALyudFestivalDecor::Mat, the newer kinds
+    'gold': ((0.85, 0.6, 0.15), 0.35, 0.9), 'clay': ((0.45, 0.18, 0.08), 0.9, 0),
+    'marigold_0': ((0.98, 0.62, 0.03), 0.85, 0), 'marigold_1': ((0.95, 0.42, 0.02), 0.85, 0),
+    'pumpkin': ((0.85, 0.32, 0.03), 0.6, 0), 'bamboo': ((0.32, 0.45, 0.12), 0.55, 0),
+    'leaf': ((0.12, 0.32, 0.05), 0.8, 0),
+    # ALyudFirecrackers::Setup's own paints, ALyudSkyLanterns' float, ALyudColorPowder (rough 1)
+    'cracker': ((0.75, 0.04, 0.03), 0.7, 0), 'fc_pole': ((0.18, 0.19, 0.2), 0.5, 0.6), 'fc_rope': ((0.05, 0.05, 0.05), 0.5, 0),
+    'wood_float': ((0.3, 0.19, 0.1), 0.8, 0),
 }
+POWDER = [(0.95, 0.1, 0.45), (1.0, 0.75, 0.05), (0.1, 0.75, 0.2), (0.15, 0.35, 0.95), (0.6, 0.1, 0.85), (1.0, 0.4, 0.05)]
+for _i, _c in enumerate(POWDER):
+    PAINT['powder_%d' % _i] = (_c, 1.0, 0)
 for _i, _c in enumerate(PALETTE):
     PAINT['flag_%d' % _i] = (_c, 0.85, 0)
+    PAINT['balloon_%d' % _i] = (_c, 0.25, 0)
 
 
 def glow_spec(name, night):
@@ -52,7 +65,11 @@ def glow_spec(name, night):
         c, base, mn = ((1.0, 0.25, 0.08) if idx % 2 else (1.0, 0.55, 0.15)), 3.0, 0.25
     elif name == 'glow_star':
         c, base, mn = (1.0, 0.85, 0.4), 25.0, 0.1
-    elif name == 'glow_candle':
+    elif name == 'glow_red':
+        c, base, mn = (1.0, 0.08, 0.04), 4.0, 0.35
+    elif name == 'glow_pumpkin':
+        c, base = (1.0, 0.45, 0.08), 6.0
+    elif name == 'glow_candle':     # NB: unreachable in the C++ too: 'glow_c' matches first (see the report)
         c, base = (1.0, 0.6, 0.25), 4.0
     elif name.startswith('glow_stage'):
         c = FIRE[idx % 7]
@@ -249,16 +266,19 @@ def build(Vn, kinds, seed):
     b_stage, b_tree = 'stage' in kinds, 'tree' in kinds
     rng = Rand(seed)
 
-    b_ring = any(k in kinds for k in ('bunting', 'lanterns', 'wreaths'))
+    b_ring = any(k in kinds for k in ('bunting', 'lanterns', 'wreaths', 'red_lanterns', 'marigolds', 'balloons'))
     NPOLES, POLE_H = 6, 520.0
     b_line = Vn.name in ('promenade', 'beach', 'pier')
+    b_pier = Vn.name == 'pier'
     along = norm2d(cross(UP, Vn.sea_dir))
+    line_dir = Vn.sea_dir if b_pier else along
+    line_from = (C - Vn.sea_dir * R * 3.2 + along * 180.0) if b_pier else (C - line_dir * R * 1.6)
     NLINE = 8
     tops = out.tops
     if b_ring:
         for i in range(NLINE if b_line else NPOLES):
             A = Vn.yaw + 30.0 + i * 360.0 / NPOLES
-            base = (ground_at(C + along * (-R * 1.6 + i * R * 3.2 / (NLINE - 1))) if b_line
+            base = (ground_at(line_from + line_dir * (i * R * 3.2 / (NLINE - 1))) if b_line
                     else ground_at(C + yaw_vec(A) * R * 0.95))
             K.rod('pole', base - V(0, 0, 30), base + V(0, 0, POLE_H), 6.0, 8, True)
             ball(K, 'pole', base + V(0, 0, POLE_H + 6), 9.0, 12.0)
@@ -403,7 +423,7 @@ def build(Vn, kinds, seed):
             want = 900.0 + (dist - 900.0) * 0.4
             td = min(max(want, 1150.0), max(1150.0, R * 0.72))
             ang = math.degrees(math.atan2(stage_dir[1], stage_dir[0]))
-            snapped = math.radians(Vn.yaw + round((ang - Vn.yaw) / 60.0) * 60.0)
+            snapped = math.radians(Vn.yaw + math.floor((ang - Vn.yaw) / 60.0 + 0.5) * 60.0)   # RoundToFloat
             T = ground_at(C + V(math.cos(snapped), math.sin(snapped), 0) * td)
         else:
             T = ground_at(C - fwd * R * 0.55)
@@ -456,6 +476,114 @@ def build(Vn, kinds, seed):
             K.box_in('planks', F, V(0, 0, 260), V(22, 22, 32))
             K.prism('wood', Xf(rot_matrix(0, face, 90), base + V(0, 0, 291)), [(-16, -15), (16, -15), (0, 4)], -17.0, 17.0)
             K.box_in('backdrop', F, V(11.5, 0, 266), V(1, 6, 6))
+
+    if 'red_lanterns' in kinds:
+        for si, (A0, B0) in enumerate(strings):
+            A, B_ = A0 - V(0, 0, 20), B0 - V(0, 0, 20)
+            Ln = np.linalg.norm(B_ - A)
+            sag = min(Ln * (0.07 if si < ntops else 0.1), 150.0 if si < ntops else 100.0)
+            if 'bunting' not in kinds:
+                N = max(4, math.ceil(Ln / 150.0))
+                prev = A
+                for i in range(1, N + 1):
+                    p = hang(A, B_, sag, i / N)
+                    K.rod('rope', prev, p, 0.6, 4)
+                    prev = p
+            NL = max(2, int(Ln // 340.0))
+            for i in range(1, NL):
+                p = hang(A, B_, sag, i / NL)
+                mid = p - V(0, 0, 62)
+                K.rod('rope', p, mid + V(0, 0, 26), 0.5, 4)
+                ball(Glow, 'glow_red', mid, 30.0, 44.0, 12)
+                K.rod('gold', mid + V(0, 0, 20), mid + V(0, 0, 27), 12.0, 10, True)
+                K.rod('gold', mid - V(0, 0, 27), mid - V(0, 0, 20), 12.0, 10, True)
+                K.rod('canvas_a', mid - V(0, 0, 27), mid - V(0, 0, 58), 2.2, 5, True)
+
+    if 'marigolds' in kinds:
+        for si in range(min(len(strings), ntops)):
+            A, B_ = strings[si][0] - V(0, 0, 70), strings[si][1] - V(0, 0, 70)
+            Ln = np.linalg.norm(B_ - A)
+            sag = min(Ln * 0.14, 220.0)
+            NB = int(Ln // 11.0)
+            for i in range(NB + 1):
+                p = hang(A, B_, sag, i / NB)
+                rp, ry = rng() * 90.0, rng() * 90.0
+                K.box('marigold_%d' % ((i // 9) % 2), Xf(rot_matrix(rp, ry, 0), p), V(6, 6, 6))
+        for T in tops:
+            base = T - V(0, 0, POLE_H - 10.0)
+            In = norm2d(C - T)
+            pot = base + In * 45.0
+            K.rod('clay', pot, pot + V(0, 0, 32), 20.0, 10, True)
+            for i in range(14):
+                a = i * 2.39996
+                rr = 6.0 + 10.0 * math.sqrt((i + 0.5) / 14)
+                K.box('marigold_%d' % (i % 2), Xf(rot_matrix(0, a * 57.0, 0), pot + V(math.cos(a) * rr, math.sin(a) * rr, 38.0 + rng() * 6.0)),
+                      V(5, 5, 5))
+
+    if 'balloons' in kinds:
+        for pi, top0 in enumerate(tops):
+            T = top0 + V(0, 0, 16)
+            for i in range(6):
+                a = (i + pi) * 1.9
+                x, y = math.cos(a) * 34.0, math.sin(a) * 34.0
+                at = T + V(x, y, 70.0 + (i % 3) * 32.0 + rng() * 20.0)
+                K.rod('rope', T, at - V(0, 0, 18), 0.3, 3)
+                ball(K, 'balloon_%d' % ((i + pi) % 5), at, 15.0, 21.0, 10)
+
+    if 'pumpkins' in kinds:
+        NP = 18
+        for i in range(NP):
+            ang = Vn.yaw + 10.0 + i * 360.0 / NP
+            side_ = norm2d(cross(UP, Vn.sea_dir))
+            d = (Vn.sea_dir if i % 2 else -Vn.sea_dir) if b_line else yaw_vec(ang)
+            if b_line:
+                P = ground_at(C + side_ * (-R * 1.5 + (i // 2) * R * 3.0 / (NP // 2 - 1)) + d * 300.0)
+            else:
+                P = ground_at(C + d * R * (0.86 if i % 2 else 0.8))
+            rr = 20.0 + rng() * 9.0
+            H = rr * 1.35
+            prof = [(math.sin(math.pi * j / 6) * rr, H * 0.5 - math.cos(math.pi * j / 6) * H * 0.5) for j in range(7)]
+            K.lathe(Xf(rot_matrix(0, rng() * 30.0, 0), P), prof, ['pumpkin'], 10)
+            K.rod('fir', P + V(0, 0, H - 3), P + V(0, 0, H + 8), 2.5, 5, True)
+            In = -d
+            face = rot_matrix(0, yaw_of(In), 0)
+            F0 = P + In * (rr - 1.5) + V(0, 0, H * 0.55)
+            sv = cross(UP, In)
+            Glow.box('glow_pumpkin', Xf(face, F0 + sv * rr * 0.32), V(1, 3, 3))
+            Glow.box('glow_pumpkin', Xf(face, F0 - sv * rr * 0.32), V(1, 3, 3))
+            Glow.box('glow_pumpkin', Xf(face, F0 - V(0, 0, H * 0.25)), V(1, rr * 0.45, 2.2))
+
+    if 'wish_tree' in kinds:
+        line_w = norm2d(cross(UP, Vn.sea_dir))
+        for i in range(5):
+            base = ground_at(C + line_w * (-R * 1.2 + i * R * 0.6) - Vn.sea_dir * 250.0)
+            lean = V(rng() - 0.5, rng() - 0.5, 0) * 50.0
+            top = base + V(0, 0, 520) + lean
+            K.rod('bamboo', base - V(0, 0, 30), top, 5.5, 8, True)
+            for j in range(6):
+                K.rod('bamboo', base + V(0, 0, 60 + j * 80) + lean * (j / 6.0), base + V(0, 0, 64 + j * 80) + lean * (j / 6.0), 6.5, 8, True)
+            for j in range(9):
+                a = j * 2.39996 + i
+                fr = base + V(0, 0, 260 + j * 28) + lean * ((260.0 + j * 28.0) / 520.0)
+                to = fr + V(math.cos(a) * 110.0, math.sin(a) * 110.0, 45.0)
+                K.rod('bamboo', fr, to, 1.4, 4)
+                for l in range(4):
+                    lf = fr + (to - fr) * (0.35 + l * 0.2)
+                    dr = V(math.cos(a + l), math.sin(a + l), -0.4)
+                    dr /= np.linalg.norm(dr)
+                    sd = cross(dr, UP)
+                    sd = sd / np.linalg.norm(sd) * 4.0
+                    K.tri('leaf', lf + sd, lf - sd, lf + dr * 32.0)
+                    K.tri('leaf', lf - sd, lf + sd, lf + dr * 32.0)
+                for w in range(3):
+                    hk = fr + (to - fr) * (0.3 + w * 0.28)
+                    fc = V(math.cos(a + 1.6), math.sin(a + 1.6), 0) * 3.5
+                    t0 = hk - V(0, 0, 6)
+                    t1 = t0 - V(0, 0, 22)
+                    m = 'flag_%d' % ((j + w + i) % 5)
+                    K.rod('rope', hk, t0, 0.2, 3)
+                    K.quad(m, t1 - fc, t1 + fc, t0 + fc, t0 - fc)
+                    K.quad(m, t0 - fc, t0 + fc, t1 + fc, t1 - fc)
     return out
 
 
@@ -478,6 +606,64 @@ def sky_lantern(kit, centre, yaw, tilt_p, tilt_r, mat='glow_sky'):
     """ALyudSkyLanterns::Setup lathe: {20,0},{26,30},{28,58},{0,62}, 8 sides."""
     F = Xf(rot_matrix(tilt_p, yaw, tilt_r), centre)
     kit.lathe(F, [(20, 0), (26, 30), (28, 58), (0, 62)], [mat], 8)
+
+
+
+def water_lantern(solid, glow, centre, yaw, tilt_p, tilt_r):
+    """ALyudSkyLanterns::Setup bOnWater mesh: a wooden float, a lit paper box, a lid (centre = the component's origin)."""
+    F = Xf(rot_matrix(tilt_p, yaw, tilt_r), centre)
+    solid.box('wood_float', Xf(F.R, F.pos(V(0, 0, 2.5))), V(17, 17, 2.5))
+    glow.box('glow_water', Xf(F.R, F.pos(V(0, 0, 18))), V(11, 11, 13))
+    solid.box('wood_float', Xf(F.R, F.pos(V(0, 0, 32))), V(13, 13, 1.2))
+
+
+def firecrackers(solid, glow, light_out, at, facing, rng):
+    """ALyudFirecrackers::Setup (+ a few sparks frozen mid-pop, positions as Tick picks them)."""
+    side = cross(UP, norm2d(facing))
+    for y in (-180.0, 180.0):
+        p = at + side * y
+        solid.rod('fc_pole', p - V(0, 0, 30), p + V(0, 0, 420), 5.0, 8, True)
+    solid.rod('fc_pole', at - side * 190 + V(0, 0, 410), at + side * 190 + V(0, 0, 410), 3.0, 6, True)
+    for i in range(5):
+        top = at + side * (-120.0 + i * 60.0) + V(0, 0, 405)
+        for j in range(34):
+            c = top - V(0, 0, 12 + j * 10)
+            out = yaw_vec(j * 67.0) * 4.0
+            solid.rod('cracker', c + out - V(0, 0, 3), c + out * 2.6 + V(0, 0, 2), 1.4, 4, True)
+        solid.rod('fc_rope', top, top - V(0, 0, 350), 0.5, 3)
+    n = 0
+    while n < 7:
+        ground = rng() < 0.4
+        p = at + side * (-120.0 + int(rng() * 5.0) * 60.0) + V(0, 0, (8.0 + rng() * 30.0) if ground else (60.0 + rng() * 330.0))
+        if ground:
+            p = p + V(rng() - 0.5, rng() - 0.5, 0) * 240.0
+        pit, yaw = rng() * 360.0, rng() * 360.0
+        sc = 0.6 + rng() * 0.8
+        R = rot_matrix(pit, yaw, 0)
+        for i in range(6):
+            d = yaw_vec(i * 60.0) * math.cos(math.radians(i * 30.0)) + V(0, 0, math.sin(math.radians(i * 30.0)))
+            glow.rod('glow_spark', p + R @ (-d * 18 * sc), p + R @ (d * 18 * sc), 1.6 * sc, 3)
+        n += 1
+    light_out.append((at + V(0, 0, 200), (1.0, 0.7, 0.4), 9000.0 * 0.5))
+
+
+def powder_puffs(kits, centre, radius, rng, count):
+    """ALyudColorPowder: puffs frozen at mid-life (u = 0.5), a lumpy cloud of three balls each, coloured from Colors."""
+    for i in range(count):
+        life = 2.0 + rng() * 1.5
+        size = 1.2 + rng() * 1.6
+        a, d = rng() * 2 * math.pi, math.sqrt(rng()) * radius * 0.7
+        p = centre + V(math.cos(a) * d, math.sin(a) * d, 120.0 + rng() * 80.0)
+        drift = V(rng() - 0.5, rng() - 0.5, 0) * 60.0 + V(0, 0, 25)
+        col = min(int(rng() * 6.0), 5)
+        t = 0.5 * life
+        grow = 1.0 - math.exp(-t / 0.25)
+        scale = max(0.01, size * grow)        # u = 0.5 < 0.6: no thinning yet
+        p = p + drift * t
+        k = kits.setdefault(col, Kit())
+        m = 'powder_%d' % col
+        for (c, r, h, sd) in ((V(0, 0, 50), 50, 80, 10), (V(28, 12, 40), 36, 56, 8), (V(-22, -20, 62), 34, 50, 8)):
+            ball(k, m, p + c * scale, r * scale, h * scale, sd)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -503,6 +689,10 @@ def material(name, night=1.0):
     if name.startswith('glow') or name.startswith('fw_'):
         if name == 'glow_sky':
             c, inten = (1.0, 0.48, 0.14), 9.0
+        elif name == 'glow_water':      # ALyudSkyLanterns water mode
+            c, inten = (1.0, 0.62, 0.22), 6.0
+        elif name == 'glow_spark':      # ALyudFirecrackers spark
+            c, inten = (1.0, 0.8, 0.45), 40.0
         elif name.startswith('fw_'):
             c, inten = FIRE[int(name[3:])], 9.0 / GLOW_K
         else:
@@ -688,8 +878,107 @@ def fireworks_scene():
     emit_kit(fk, 'fireworks')
 
 
+def fireworks_few():
+    fk = Kit()
+    for (x, y, z, r, ci) in [(11000, -4200, 9000, 3200, 1), (15000, 3000, 12500, 4000, 0), (12500, 7500, 8000, 2600, 4)]:
+        firework_burst(V(x, y, z), r, 'fw_%d' % ci, fk)
+        add_light_point(V(x, y, z), FIRE[ci], 1.2e5, 20)
+    emit_kit(fk, 'fireworks')
+
+
+NEW_SCENES = ('lunar_new_year_night', 'halloween_night', 'tanabata_day', 'toro_nagashi_night', 'holi_day')
+
+
+def run_new(scene, out, blend, w, h, samples):
+    night = scene.endswith('night')
+    nv = 1.0 if night else 0.0
+    extra_lights = []
+    solid_extra, glow_extra = Kit(), Kit()
+    if scene == 'lunar_new_year_night':
+        v = square_venue()
+        dec = build(v, ['red_lanterns', 'bunting', 'stalls'], 1634)
+        d = norm2d(v.stage_at - v.center)                      # the "firecrackers" show's placement
+        at = ground_at(v.center + d * v.radius * 0.55 + cross(UP, d) * v.radius * 0.3)
+        firecrackers(solid_extra, glow_extra, extra_lights, at, -d, Rand(77))
+        add_square_placeholders()
+        world(True)
+        add_sun(35, 140, 0.05, (0.45, 0.55, 1.0))
+        fireworks_few()
+        set_camera(V(-2300, 100, 200), V(2400, -1500, 1200), 20.0)
+    elif scene == 'halloween_night':
+        v = square_venue()
+        dec = build(v, ['pumpkins', 'candles', 'bunting'], 1634)
+        add_square_placeholders()
+        world(True)
+        add_sun(35, 140, 0.08, (0.45, 0.55, 1.0))
+        set_camera(V(900, -1650, 90), V(1300, 300, 80), 22.0)
+    elif scene == 'tanabata_day':
+        v = Venue('promenade', V(), 1200.0, 0.0, SEA)
+        dec = build(v, ['wish_tree', 'lanterns'], 7777)
+        k = Kit()
+        k.box('ph_pave', Xf(None, V(-100, 0, -10)), V(1200, 2600, 10))          # the promenade's paving
+        emit_kit(k, 'promenade')
+        plane('ground', -80000, 1100, -80000, 80000, -30.0, 'ph_ground')
+        plane('sea', 1100, 400000, -400000, 400000, -80.0, 'ph_water')
+        world(False, 38)
+        add_sun(38, 200, 1.8, (1.0, 0.95, 0.85))
+        set_camera(V(-950, -1450, 190), V(-250, -250, 330), 20.0)
+    elif scene == 'toro_nagashi_night':
+        v = Venue('beach', V(), 1500.0, 0.0, SEA)
+        dec = build(v, ['lanterns', 'candles'], 4242)
+        k = Kit()
+        k.box('ph_sand', Xf(None, V(-30000, 0, -6)), V(31500, 60000, 14))       # the sand: top at +8, ends at x = 1500
+        emit_kit(k, 'sand')
+        plane('sea', 1000, 500000, -500000, 500000, 0.0, 'ph_water')
+        world(True)
+        add_sun(28, 60, 0.35, (0.55, 0.65, 1.0))
+        # Show 'water_lanterns': at = centre + sea * max(R * 1.1, 1200); drift out at 22..38 cm/s, bobbing; 30 of the pool of 50
+        at = v.center + SEA * max(v.radius * 1.1, 1200.0)
+        side = norm2d(cross(UP, SEA))
+        rng = Rand(31)
+        for n in range(30):
+            p = at + side * (rng() - 0.5) * 3000.0
+            vel = SEA * (22.0 + rng() * 16.0) + side * (rng() - 0.5) * 10.0
+            phase = rng() * 10.0
+            t_end = 3.0 + rng() * 100.0
+            tt = 0.0
+            while tt < t_end:
+                dt = min(0.5, t_end - tt)
+                tt += dt
+                p = p + vel * dt + V(math.sin(tt * 0.3 + phase), math.cos(tt * 0.25 + phase), 0) * 6.0 * dt
+            p[2] = 0.0 + math.sin(tt * 1.3 + phase) * 4.0
+            water_lantern(solid_extra, glow_extra, p, phase * 30.0 + tt * 2.0, math.sin(tt * 1.1 + phase) * 3.0, math.cos(tt * 0.9 + phase) * 3.0)
+        set_camera(V(-700, -700, 130), V(2400, 500, 40), 20.0)
+    else:   # holi_day
+        v = Venue('park', V(), 1600.0, 0.0, SEA)
+        dec = build(v, ['bunting', 'flags', 'marigolds'], 2468)
+        plane('ground', -80000, 80000, -80000, 80000, 0.0, 'ph_ground')
+        kits = {}
+        powder_puffs(kits, V(), 1600.0, Rand(5150), 12)
+        for ci, kk in kits.items():
+            emit_kit(kk, 'powder%d' % ci, 0.0)
+        world(False, 42)
+        add_sun(42, 200, 1.8, (1.0, 0.95, 0.85))
+        set_camera(V(1500, 1200, 170), V(-600, -300, 250), 18.0)
+    emit_kit(dec.solid, 'decor', nv)
+    emit_kit(dec.glow, 'lights', nv)
+    emit_kit(solid_extra, 'show_solid', nv)
+    emit_kit(glow_extra, 'show_glow', nv)
+    for (pos, col, cd) in dec.lights:
+        add_light_point(pos, col, cd * 0.12, 5.0)
+    for (pos, col, cd) in extra_lights:
+        add_light_point(pos, col, cd * 0.12, 5.0)
+    setup_render(w, h, samples, night, {'halloween_night': 2.5, 'toro_nagashi_night': 1.0}.get(scene, 1.0 if night else -0.4))
+    bpy.context.scene.render.filepath = out
+    if blend:
+        bpy.ops.wm.save_as_mainfile(filepath=blend)
+    bpy.ops.render.render(write_still=True)
+
+
 def run(scene, out, blend, w, h, samples):
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    if scene in NEW_SCENES:
+        return run_new(scene, out, blend, w, h, samples)
     night = not scene.startswith('square_day')
     nv = 1.0 if night else 0.0
     if scene in ('square_day', 'square_day_stalls', 'square_night'):
@@ -753,7 +1042,7 @@ def run(scene, out, blend, w, h, samples):
 if __name__ == '__main__':
     argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
     ap = argparse.ArgumentParser()
-    ap.add_argument('scene', choices=['square_day', 'square_day_stalls', 'square_night', 'new_year_night', 'lantern_beach'])
+    ap.add_argument('scene', choices=['square_day', 'square_day_stalls', 'square_night', 'new_year_night', 'lantern_beach'] + list(NEW_SCENES))
     ap.add_argument('out')
     ap.add_argument('--blend')
     ap.add_argument('--w', type=int, default=1600)
