@@ -1647,7 +1647,7 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 {
 	MeshName = InMesh;
 	ComputerClip = InComputerClip;
-	const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *InMesh, *InMesh, *InMesh);
+	const FString Path = PeopleModelPath(InMesh);
 	USkeletalMesh* Asset = LoadObject<USkeletalMesh>(nullptr, *Path);
 	if (!Asset)
 	{
@@ -1699,7 +1699,7 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 				{
 					C.Split(TEXT("/"), &Who, &What);
 				}
-				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *Who, *Who, *What));
+				A = Load(FString::Printf(TEXT("/Game/Characters/Humans/%s/Anims/A_%s_%s"), *Who, *FPaths::GetCleanFilename(Who), *What));
 			}
 		}
 		if (!A)

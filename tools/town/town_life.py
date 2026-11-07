@@ -371,7 +371,7 @@ def build_places(plan, extra, args):
             pass        # its visitors are its diners (the seats)
         elif shell:
             # a hall's seats (the cinema's 350) hold its visitors; otherwise a dozen at a time
-            n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic") else 0
+            n = len(bspots.get("seat", [])) if w["kind"] in ("culture_club", "culture", "clinic", "library", "hall") else 0
             slots.append({"kind": "visit", "capacity": max(12, n)})
         else:
             for i in range(6):
