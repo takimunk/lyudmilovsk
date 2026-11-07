@@ -151,8 +151,9 @@ def api_test(w):
     sub.release_all(who[2])
     rim = sub.find_nearest_free("fountain", unreal.Vector(*near), 3000.0, "None")
     check(str(rim) == "S-FOUNTAIN", "the fountain's rim is a spot: %s" % rim)
-    found, spot = sub.get_spot("S-FOUNTAIN")
-    if found:
+    res = sub.get_spot("S-FOUNTAIN")
+    spot = res[1] if isinstance(res, tuple) else res       # Python gets the out struct (and maybe the bool)
+    if spot is not None:
         check(len(spot.seats) == 24, "the rim seats 24 (%d)" % len(spot.seats))
     fs = first(unreal.LyudFountainSubsystem, w)
     if fs:
