@@ -386,8 +386,8 @@ FOUNTAIN_STONE = {
     # Sun fountain: an 18 m round basin whose rim is a bench, a two-tier centrepiece; ALyudFountain's water reads the
     # levels (metres over the foot), ALyudPublicSpaces builds the stone from the same numbers
     "lower_level": 0.40, "lower_r": 8.55, "lower_floor": 0.06, "rim_r": 9.0, "rim_z": 0.46, "rim_w": 0.45,
-    "upper_level": 2.42, "upper_r": 1.35, "upper_floor": 2.26, "lip_r": 1.45, "lip_z": 2.42,
-    "nozzle_z": 3.45, "stem_r": 0.36, "neck_r": 0.18, "tier_r": 2.6, "tier_level": 1.02, "tier_lip_z": 1.02,
+    "upper_level": 2.75, "upper_r": 1.9, "upper_floor": 2.58, "lip_r": 2.0, "lip_z": 2.75,
+    "nozzle_z": 4.0, "stem_r": 0.48, "neck_r": 0.24,
 }
 FLOW_SCALE = 1.8
 
