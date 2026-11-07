@@ -272,7 +272,21 @@ void ULyudQuests::Initialize(FSubsystemCollectionBase& Collection)
 	if (ULyudSaveSubsystem* Saves = Collection.InitializeDependency<ULyudSaveSubsystem>())
 	{
 		Saves->RegisterSaveObject(TEXT("Quests"), this);
-		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { OnChanged.Broadcast(); });
+		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*)
+		{
+			// the save may be older than quests.json: keep each active quest on a real stage with one count per objective
+			for (FLyudQuestProgress& P : Progress)
+			{
+				const FLyudQuestDef* Def = FindDef(P.Quest);
+				if (!Def || P.State != ELyudQuestState::Active || Def->Stages.IsEmpty())
+				{
+					continue;
+				}
+				P.Stage = FMath::Clamp(P.Stage, 0, Def->Stages.Num() - 1);
+				P.Counts.SetNumZeroed(Def->Stages[P.Stage].Objectives.Num());
+			}
+			OnChanged.Broadcast();
+		});
 	}
 }
 
@@ -361,6 +375,11 @@ bool ULyudQuests::Start(FName Quest)
 
 void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 {
+	if (!Def.Stages.IsValidIndex(P.Stage))
+	{
+		P.Counts.Reset();
+		return;
+	}
 	const FLyudQuestStage& S = Def.Stages[P.Stage];
 	P.Counts.Init(0, S.Objectives.Num());
 	const FString Log = FString::Printf(TEXT("quest.%s.%s.log"), *Def.Id.ToString(), *S.Id.ToString());
@@ -386,6 +405,12 @@ void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 
 void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 {
+	if (Def.Stages.IsEmpty())
+	{
+		return;
+	}
+	// a stage out of range (an old save, quests.json edited) finishes the nearest real one, so callers still move on
+	P.Stage = FMath::Clamp(P.Stage, 0, Def.Stages.Num() - 1);
 	const FLyudQuestStage& S = Def.Stages[P.Stage];
 	if (ULyudInventory* Inv = ULyudInventory::Get(GetGameInstance()->GetWorld()))
 	{
@@ -483,6 +508,11 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				continue;
 			}
 			const FLyudQuestStage& S = Def->Stages[Progress[QI].Stage];
+			// one count per objective, whatever the save held (keeps the counts there are)
+			if (Progress[QI].Counts.Num() != S.Objectives.Num())
+			{
+				Progress[QI].Counts.SetNumZeroed(S.Objectives.Num());
+			}
 			bool bAll = true;
 			for (int32 I = 0; I < S.Objectives.Num(); ++I)
 			{
@@ -524,7 +554,7 @@ void ULyudQuests::Advance(FName Quest)
 {
 	FLyudQuestProgress* P = Progress.FindByPredicate([Quest](const FLyudQuestProgress& X) { return X.Quest == Quest; });
 	const FLyudQuestDef* Def = FindDef(Quest);
-	if (P && Def && P->State == ELyudQuestState::Active)
+	if (P && Def && P->State == ELyudQuestState::Active && !Def->Stages.IsEmpty())
 	{
 		FinishStage(*P, *Def);
 		OnChanged.Broadcast();

@@ -885,6 +885,8 @@ void UBirdFlightSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 void UBirdFlightSubsystem::Deinitialize()
 {
+	// the hint sits on the persistent game viewport: take it off with the world, or it stays (and piles up) over the next one
+	SetHeroHint(FText::GetEmpty());
 	if (ULyudSaveSubsystem* Save = GetWorld() ? ULyudSaveSubsystem::Get(GetWorld()) : nullptr)
 	{
 		Save->OnBeforeSave.Remove(SaveHandle);
@@ -1277,8 +1279,9 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	{
 		if (Row && !Row->Calls.IsEmpty())
 		{
-			const FString Id = Meet.Species.ToString(), Call = Row->Calls[0].ToString();
-			if (USoundBase* Snd = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Id, *Id, *Call, *Id, *Call), nullptr, LOAD_NoWarn | LOAD_Quiet))
+			// cached in BirdLife: not a LoadObject per call
+			UBirdLifeSubsystem* Life = GetWorld() ? GetWorld()->GetSubsystem<UBirdLifeSubsystem>() : nullptr;
+			if (USoundBase* Snd = Life ? Life->CallSound(Meet.Species, Row->Calls[0]) : nullptr)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, Snd, Where);
 			}

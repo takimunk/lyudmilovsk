@@ -15,6 +15,7 @@
 #include "BirdHud.h"
 #include "BirdSelfBody.h"
 #include "Birds/BirdActor.h"
+#include "Birds/BirdLife.h"
 #include "Birds/BirdSpecies.h"
 #include "Plants/GameCalendar.h"
 #include "Camera/CameraComponent.h"
@@ -1498,8 +1499,9 @@ void ABirdPawn::PlayCall()
 		return;
 	}
 	const FName Call = Row->Calls[FMath::RandRange(0, Row->Calls.Num() - 1)];
-	const FString Path = FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Species.ToString(), *Species.ToString(), *Call.ToString(), *Species.ToString(), *Call.ToString());
-	if (USoundBase* CallSound = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+	// cached in BirdLife: not a LoadObject (and a lookup of a missing asset) on every call key
+	UBirdLifeSubsystem* Life = GetWorld() ? GetWorld()->GetSubsystem<UBirdLifeSubsystem>() : nullptr;
+	if (USoundBase* CallSound = Life ? Life->CallSound(Species, Call) : nullptr)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, CallSound, Head->GetComponentLocation());
 	}
