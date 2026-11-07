@@ -1285,5 +1285,6 @@
  "ui.rest.refund": "出されなかった注文の代金{0}₽が返金された",
  "ui.rest.not_seated": "まず席に座って",
  "ui.rest.order_failed": "その注文は今は受けられない",
- "ui.rest.kitchen_closing": "厨房はまもなく閉店。ご注文は締め切りました"
+ "ui.rest.kitchen_closing": "厨房はまもなく閉店。ご注文は締め切りました",
+ "ui.rest.catch_of_day": "本日の水揚げ：今朝の新鮮な魚、お安く"
 }

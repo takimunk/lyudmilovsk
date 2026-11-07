@@ -33,6 +33,7 @@ S = {
  "ui.rest.not_seated": ("Сначала сядьте за столик", "Sit down at a table first", "まず席に座って"),
  "ui.rest.order_failed": ("Этот заказ сейчас не принять", "That order can't be taken now", "その注文は今は受けられない"),
  "ui.rest.kitchen_closing": ("Кухня закрывается — заказы больше не принимаются", "The kitchen is closing: no more orders", "厨房はまもなく閉店。ご注文は締め切りました"),
+ "ui.rest.catch_of_day": ("Улов дня — свежая рыба с утра, дешевле", "Catch of the day: fresh this morning, cheaper", "本日の水揚げ：今朝の新鮮な魚、お安く"),
  "ui.rest.bill_asked": ("Официант сейчас принесёт счёт", "The waiter will bring the bill", "ウェイターが伝票を持ってくる"),
  "ui.rest.bill_toast": ("Счёт: {0} ₽, оплачено. Спасибо, приходите ещё!", "The bill: {0} ₽, paid. Thank you, come again!", "お会計{0}₽、支払い済み。またお越しください！"),
  "ui.rest.bill_prompt": ("Счёт: {0} ₽ (оплачен)", "The bill: {0} ₽ (paid)", "伝票：{0}₽（支払い済み）"),

@@ -69,7 +69,7 @@ int32 SLyudRestMenu::Total() const
 	{
 		if (const FLyudRestDishDef* D = ALyudRestaurant::FindDish(C.Key))
 		{
-			T += D->Price * C.Value;
+			T += (Owner.IsValid() ? Owner->PriceToday(*D) : D->Price) * C.Value;
 		}
 	}
 	return T;
@@ -139,13 +139,19 @@ TSharedRef<SWidget> SLyudRestMenu::Row(FName Id)
 			[
 				SNew(STextBlock).Font(Font(11)).ColorAndOpacity(InkSoft).AutoWrapText(true).Text(ULyudInventory::ItemDescription(Id))
 			]
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(STextBlock).Font(Font(11, "Bold")).ColorAndOpacity(Amber)
+				.Visibility(D && Owner.IsValid() && Owner->IsCatchOfDay(*D) ? EVisibility::Visible : EVisibility::Collapsed)
+				.Text(LyudText::Get(TEXT("ui.rest.catch_of_day")))
+			]
 		]
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(10, 0, 8, 0)
 		[
 			SNew(SBox).MinDesiredWidth(58.f)
 			[
 				SNew(STextBlock).Font(Font(15, "Bold")).ColorAndOpacity(AmberDeep).Justification(ETextJustify::Right)
-				.Text(D && D->Price > 0 ? LyudText::Get(TEXT("ui.rest.price"), { FStringFormatArg(D->Price) }) : LyudText::Get(TEXT("ui.rest.free")))
+				.Text(D && D->Price > 0 ? LyudText::Get(TEXT("ui.rest.price"), { FStringFormatArg(Owner.IsValid() ? Owner->PriceToday(*D) : D->Price) }) : LyudText::Get(TEXT("ui.rest.free")))
 			]
 		]
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)

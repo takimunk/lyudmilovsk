@@ -146,6 +146,9 @@ public:
 	static bool IsFestivalDish(const UObject* WorldContext, FName Id);
 	/** In the menu card's Section today. */
 	static bool IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section);
+	/** The price today: the catch of the day is cheaper after the hero sold fish at the kitchen door (the fishing's kitchen "yantar"). */
+	int32 PriceToday(const FLyudRestDishDef& D) const;
+	bool IsCatchOfDay(const FLyudRestDishDef& D) const;
 	/** On the menu today: not a festival dish on an ordinary day, a daily special only on its weekday (the game's calendar). */
 	static bool IsOnMenuToday(const UObject* WorldContext, const FLyudRestDishDef& D);
 
@@ -242,7 +245,7 @@ private:
 	TArray<FSeat> Seats;
 	TArray<FTable> Tables;
 	TArray<FVector> PassShelf;
-	FVector PassStand, WaiterHome, CookAt;
+	FVector PassStand, WaiterHome, CookAt, BackDoorOut, BackDoorIn;
 	float PassYaw = 0.f, HomeYaw = 0.f, CookYaw = 0.f;
 	TMap<FName, FVector2D> Nodes;
 	TMap<FName, TArray<FName>> Edges;
@@ -255,6 +258,12 @@ private:
 	// state
 	bool bOpen = false, bLit = false, bNight = false, bLocked = false;
 	bool bKitchenClosing = false;
+	/** Fish sold at the kitchen door (the fishing's ULyudFishingState KitchenSold, read by name), the game day it last happened. */
+	int32 FishSoldSeen = -1;
+	int32 CatchDay = -1;
+	/** The hero at the back door with fish (the fishing's kitchen point): the cook comes to the door. */
+	bool bCookAtDoor = false;
+	void UpdateFishing();
 	/** The game time since which everything for locking up has held (nobody left inside, staff gone). */
 	FDateTime LockReadySince;
 	bool bLockReady = false;

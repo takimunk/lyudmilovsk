@@ -395,6 +395,59 @@ bool ALyudRestaurant::IsFestivalDish(const UObject* WorldContext, FName Id)
 	return IsFestival(WorldContext) && LyudRest::FestivalBool(WorldContext, TEXT("IsFestivalDish"), &Id);
 }
 
+namespace LyudRest
+{
+	/** ULyudFishingState::KitchenSold of the fishing branch (a game instance subsystem), read by name; -1 without it. */
+	int32 FishSold(const UObject* WorldContext)
+	{
+		const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+		static TWeakObjectPtr<UClass> Class;
+		static bool bLooked = false;
+		if (!bLooked)
+		{
+			bLooked = true;
+			Class = FindFirstObject<UClass>(TEXT("LyudFishingState"), EFindFirstObjectOptions::None);
+		}
+		if (!World || !World->GetGameInstance() || !Class.IsValid() || !Class->IsChildOf(UGameInstanceSubsystem::StaticClass()))
+		{
+			return -1;
+		}
+		UObject* Sub = World->GetGameInstance()->GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem>(Class.Get()));
+		const FIntProperty* P = Sub ? CastField<FIntProperty>(Class->FindPropertyByName(TEXT("KitchenSold"))) : nullptr;
+		return P ? P->GetPropertyValue_InContainer(Sub) : -1;
+	}
+}
+
+bool ALyudRestaurant::IsCatchOfDay(const FLyudRestDishDef& D) const
+{
+	const UWorld* World = GetWorld();
+	return World && D.Id == TEXT("rs_baltic_fish") && CatchDay == UGameCalendar::NowIn(World).GetDayOfYear();
+}
+
+int32 ALyudRestaurant::PriceToday(const FLyudRestDishDef& D) const
+{
+	return IsCatchOfDay(D) ? FMath::RoundToInt(D.Price * 0.75f) : D.Price;
+}
+
+void ALyudRestaurant::UpdateFishing()
+{
+	// fish sold to the kitchen today: the Baltic plate is the catch of the day (fresher, cheaper)
+	const int32 Sold = LyudRest::FishSold(this);
+	if (Sold >= 0)
+	{
+		if (FishSoldSeen >= 0 && Sold > FishSoldSeen)
+		{
+			CatchDay = UGameCalendar::NowIn(GetWorld()).GetDayOfYear();
+			Effect(TEXT("rest_clink"), ToWorld(BackDoorOut), 0.5f);
+			UE_LOG(LogTemp, Display, TEXT("RESTTEST the cook took %d fish at the kitchen door: catch of the day"), Sold - FishSoldSeen);
+		}
+		FishSoldSeen = Sold;
+	}
+	// the hero at the back door while open: the cook comes to it
+	const AHeroCharacter* H = LyudRest::Hero(GetWorld());
+	bCookAtDoor = bOpen && H && FVector::Dist2D(H->GetActorLocation(), ToWorld(BackDoorOut)) < 300.f;
+}
+
 bool ALyudRestaurant::IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section)
 {
 	// a holiday's own dishes show in the festival section as well as in their own
@@ -873,6 +926,13 @@ void ALyudRestaurant::LoadLayout()
 		WaiterHome = PassStand;
 		HomeYaw = PassYaw;
 	}
+	const TSharedPtr<FJsonObject>* Entrance = nullptr;
+	if (L->TryGetObjectField(TEXT("entrance"), Entrance))
+	{
+		BackDoorOut = LyudRest::Vec(*Entrance, TEXT("back_outside"));
+		BackDoorIn = LyudRest::Vec(*Entrance, TEXT("back_inside"));
+		BackDoorOut.Z = BackDoorIn.Z = 0.0;
+	}
 	const TSharedPtr<FJsonObject>* Cook = nullptr;
 	if (L->TryGetObjectField(TEXT("cook"), Cook))
 	{
@@ -1133,6 +1193,7 @@ void ALyudRestaurant::UpdateState()
 	{
 		ApplySigns();
 	}
+	UpdateFishing();
 	ApplyLights();
 }
 
@@ -1483,7 +1544,7 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 		{
 			return EOrderResult::Unknown;
 		}
-		Total += D->Price * I.Value;
+		Total += PriceToday(*D) * I.Value;
 	}
 	if (Total <= 0)
 	{
