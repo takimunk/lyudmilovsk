@@ -152,7 +152,9 @@ def spot_slots(spot, pos, extra):
     kind, yaw, seats = spot["kind"], spot.get("yaw", 0.0), int(spot.get("seats") or 0)
     if extra and extra.get("slots"):
         # a standing point holds a little group (a holiday crowd on the square: three to a point)
-        return [dict({"kind": s.get("kind", "bench"), "pos": s["pos"], "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45)},
+        # their seat points are on the seat's surface; the simulation's slot is the floor under it (+ height)
+        return [dict({"kind": s.get("kind", "bench"), "yaw": s.get("yaw", yaw), "height": s.get("height", 0.45),
+                      "pos": [s["pos"][0], s["pos"][1], round(s["pos"][2] - (s.get("height") or 0.0), 3)]},
                      **({"capacity": 3} if s.get("kind") == "stand" else {})) for s in extra["slots"]]
     if extra and extra.get("path"):
         return [{"kind": "stand", "pos": p, "yaw": yaw, "capacity": 2} for p in extra["path"]]
@@ -258,6 +260,23 @@ def build_places(plan, extra, args):
         pl = {"id": s["id"], "kind": s["kind"], "pos": pos, "yaw": s.get("yaw", 0.0), "island": 0, "slots": spot_slots(s, pos, s)}
         places.append(pl)
         done.add(s["id"])
+    # the fair's staffed stalls (public spaces' fair_goods.json): a seller of their own each, who sells over the counter
+    goods = read_input("unreal/Lyudmilovsk/Content/City/fair_goods.json") or {}
+    goods = goods.get("stalls", goods) if isinstance(goods, dict) else {}
+    spots_by_id = {s["id"]: s for s in extra.get("spots", [])}
+    for sid, g in sorted(goods.items()):
+        sp = spots_by_id.get(sid)
+        if not isinstance(g, dict) or not sp or not sp.get("seller") or not (g.get("staffed") or sp.get("staffed")):
+            continue
+        sel = sp["seller"]
+        hours = g.get("hours") or [10, 19]
+        days = g.get("days") or "sat-sun"
+        pid = sid + "-SELLER"
+        places.append({"id": pid, "kind": "fair_stall", "door": sel["pos"], "yaw": sel.get("yaw", 0.0), "island": 0, "roles": ["vendor"],
+                       "slots": [{"kind": "staff", "tag": "vendor", "pos": sel["pos"], "yaw": sel.get("yaw", 0.0)}]})
+        workplaces.append({"id": pid, "plot": sid, "kind": "fair_stall", "door": sel["pos"], "yaw": sel.get("yaw", 0.0),
+                           "staff": [["vendor", 1, hours, days]], "w": 3.0, "d": 2.0, "centre": sel["pos"],
+                           "counter": {"title": g.get("title") or g.get("title_key"), "goods": g.get("goods") or []}})
     for s in plan["spots"]:
         if s["id"] in done:
             continue
@@ -718,7 +737,7 @@ def build_people(plan, places, flats, workplaces, args, rnd):
         post = p.get("_post")
         female = bool(p["female"])
         if post:
-            act = "work_office" if post["kind"] in HOLIDAY_OFF_KINDS else "work_town"
+            act = "work_office" if post["kind"] in HOLIDAY_OFF_KINDS else ("work_fair" if post["kind"] == "fair_stall" else "work_town")
             p["duties"].append({"activity": act, "place": post["place"], "role": post["role"], "hours": post["hours"], "days": post["days"]})
             p["occupation"] = post["role"]
             p["_work"] = post["place"]
@@ -789,6 +808,38 @@ def build_people(plan, places, flats, workplaces, args, rnd):
     return people
 
 
+def write_counters(people, workplaces):
+    """The fair's sellers sell over their stall's counter (ULyudCounterTradeSubsystem): their entries in counters.json,
+    marked "town": 1 and replaced on every run; the file's other entries are left as they are, line for line."""
+    path = os.path.join(CONTENT, "PeopleData", "counters.json")
+    if not os.path.exists(path):
+        return
+    stalls = {w["id"]: w["counter"] for w in workplaces if w.get("counter")}
+    entries = []
+    for p in people:
+        for d in p["duties"]:
+            c = stalls.get(d.get("place"))
+            if d["activity"] == "work_fair" and c and c.get("goods"):
+                entries.append({"person": p["key"], "activity": "work_fair", "title": c.get("title") or "ui.shop.title_fair",
+                                "reach_cm": 260, "goods": c["goods"], "town": 1})
+    with open(path, encoding="utf-8") as f:
+        lines = [l for l in f.read().split("\n") if '"town": 1' not in l]
+    close = max(i for i, l in enumerate(lines) if l.strip() == "]")
+    body = [l for l in lines[:close]]
+    while body and not body[-1].strip():
+        body.pop()
+    if entries:
+        if not body[-1].rstrip().endswith(("[", ",")):
+            body[-1] = body[-1].rstrip() + ","
+        body += ["  " + json.dumps(e, ensure_ascii=False) + ("," if i + 1 < len(entries) else "") for i, e in enumerate(entries)]
+    elif body[-1].rstrip().endswith(","):
+        body[-1] = body[-1].rstrip()[:-1]
+    text = "\n".join(body + lines[close:])
+    json.loads(text)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
 def write(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -841,6 +892,8 @@ def main():
             table["npc.%s.name" % p["key"]] = p["_name"][lang]
             table["npc.%s.role" % p["key"]] = ROLES[role_key(p["occupation"], bool(p["female"]))][i] if p["occupation"] in ROLES else p["occupation"]
         write(os.path.join(OUT_STRINGS, "strings_%s.json" % lang), table)
+
+    write_counters(people, workplaces)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)
