@@ -111,7 +111,8 @@ bool SLyudRestMenu::Order()
 	}
 	Status = LyudText::Get(Result == ALyudRestaurant::EOrderResult::Closed ? TEXT("ui.rest.closed")
 		: Result == ALyudRestaurant::EOrderResult::NotSeated ? TEXT("ui.rest.not_seated")
-		: Result == ALyudRestaurant::EOrderResult::NoMoney ? TEXT("ui.rest.no_money") : TEXT("ui.rest.order_failed"));
+		: Result == ALyudRestaurant::EOrderResult::NoMoney ? TEXT("ui.rest.no_money")
+		: Result == ALyudRestaurant::EOrderResult::KitchenClosing ? TEXT("ui.rest.kitchen_closing") : TEXT("ui.rest.order_failed"));
 	Rebuild();
 	return false;
 }
@@ -252,7 +253,7 @@ void SLyudRestMenu::Rebuild()
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 								[
 									SNew(STextBlock).Font(Font(15)).ColorAndOpacity(FLinearColor(1.f, 0.92f, 0.8f))
-									.Text(LyudText::Get(bOpen ? TEXT("ui.rest.subtitle") : TEXT("ui.rest.closed")))
+									.Text(LyudText::Get(!bOpen ? TEXT("ui.rest.closed") : R->IsKitchenClosing() ? TEXT("ui.rest.kitchen_closing") : TEXT("ui.rest.subtitle")))
 								]
 							]
 						]
@@ -298,7 +299,7 @@ void SLyudRestMenu::Rebuild()
 								]
 								+ SHorizontalBox::Slot().AutoWidth().Padding(8, 0, 0, 0)
 								[
-									SNew(SButton).ButtonStyle(&Button()).IsEnabled(bOpen && T > 0 && T <= Money)
+									SNew(SButton).ButtonStyle(&Button()).IsEnabled(bOpen && !R->IsKitchenClosing() && T > 0 && T <= Money)
 									.OnClicked_Lambda([this]() { Order(); return FReply::Handled(); })
 									[SNew(STextBlock).Font(Font(17, "Bold")).ColorAndOpacity(Ink).Text(LyudText::Get(TEXT("ui.rest.order")))]
 								]

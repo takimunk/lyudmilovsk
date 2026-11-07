@@ -1088,6 +1088,8 @@ void ALyudRestaurant::UpdateState()
 	const FVector Hours = LyudRest::Vec(LyudRest::Config(), TEXT("hours"));
 	const bool bByHours = Hours.Y > Hours.X ? Hour >= Hours.X && Hour < Hours.Y : true;
 	const bool bWant = ForceOpen >= 0 ? ForceOpen == 1 : (bStaffKnown ? bStaffOn : bByHours);
+	// last orders: the kitchen stops taking them 20 game minutes before the hours' end
+	bKitchenClosing = Hours.Y > Hours.X && Hour >= Hours.Y - 20.f / 60.f && Hour < Hours.Y && ForceOpen != 1;
 	if (bWant != bOpen)
 	{
 		bOpen = bWant;
@@ -1102,7 +1104,15 @@ void ALyudRestaurant::UpdateState()
 		bNight = bNight ? Alt < 4.f : Alt < 1.f;
 	}
 	// locked once closed and the hero is out (the staff finishing inside don't hold it open)
-	const bool bWantLock = !bOpen && !IsHeroInside() && Props.Num() == 0 && Waiter == EWaiter::Off && !CookBody;
+	// locked a couple of game minutes after everything holds (the last guests and the staff off shift walk out first), never with
+	// anybody of the life still in the hall
+	const bool bReady = !bOpen && !IsHeroInside() && Props.Num() == 0 && Waiter == EWaiter::Off && !CookBody;
+	if (bReady && !bLockReady)
+	{
+		LockReadySince = Now;
+	}
+	bLockReady = bReady;
+	const bool bWantLock = bReady && (Now - LockReadySince).GetTotalMinutes() >= 2.0 && !AnyoneOfLifeInside();
 	if (bWantLock != bLocked)
 	{
 		bLocked = bWantLock;
@@ -1124,6 +1134,30 @@ void ALyudRestaurant::UpdateState()
 		ApplySigns();
 	}
 	ApplyLights();
+}
+
+bool ALyudRestaurant::AnyoneOfLifeInside() const
+{
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (!People || !People->IsRunning())
+	{
+		return false;
+	}
+	for (int32 Id = 0, N = People->NumPeople(); Id < N; ++Id)
+	{
+		FPersonInfo P;
+		if (People->GetPerson(Id, P) && P.Actor)
+		{
+			const FVector L = ToLocal(P.Location);
+			const bool bHall = FVector2D(L.X, L.Y).Size() < HallR + 0.5f && FMath::Abs(L.Z) < 2.f;
+			const bool bKitchen = L.X > KitchenMin.X - 0.5f && L.X < KitchenMax.X + 0.5f && L.Y > KitchenMin.Y && L.Y < KitchenMax.Y && FMath::Abs(L.Z) < 2.f;
+			if (bHall || bKitchen)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void ALyudRestaurant::ApplyLights()
@@ -1432,6 +1466,10 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 	if (!bOpen)
 	{
 		return EOrderResult::Closed;
+	}
+	if (bKitchenClosing)
+	{
+		return EOrderResult::KitchenClosing;
 	}
 	if (!Inv || HeroSeatIx < 0)
 	{

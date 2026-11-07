@@ -167,7 +167,9 @@ public:
 	bool IsMenuOpen() const { return Menu_.IsValid(); }
 	/** Orders these dishes for the hero's table: pays for them (false and nothing ordered when he can't). */
 	/** Why an order was refused (PlaceOrder). */
-	enum class EOrderResult : uint8 { Ok, Closed, NotSeated, NoMoney, Unknown };
+	enum class EOrderResult : uint8 { Ok, Closed, NotSeated, NoMoney, KitchenClosing, Unknown };
+	/** The last 20 game minutes before closing: the kitchen takes no new orders. */
+	bool IsKitchenClosing() const { return bKitchenClosing; }
 	EOrderResult PlaceOrder(const TMap<FName, int32>& Items);
 	void AskBill();
 	/** The hero's table's dish nearest the look (or the first): starts eating it. */
@@ -252,6 +254,11 @@ private:
 
 	// state
 	bool bOpen = false, bLit = false, bNight = false, bLocked = false;
+	bool bKitchenClosing = false;
+	/** The game time since which everything for locking up has held (nobody left inside, staff gone). */
+	FDateTime LockReadySince;
+	bool bLockReady = false;
+	bool AnyoneOfLifeInside() const;
 	float StateEvery = 0.f;
 	float PropsEvery = 0.f;
 

@@ -163,13 +163,15 @@ FTransform ALyudRestaurant::TrayWorld() const
 bool ALyudRestaurant::EnsureWaiter()
 {
 	// who is on shift (RefreshStaff, once a second): the town life's waiter, else the stand-in while open or finishing a job
-	const int32 Person = StaffWaiter;
 	const bool bBusy = Job != EJob::None || (Waiter != EWaiter::Off && Waiter != EWaiter::Idle) || PendingCount(false) > 0;
+	// a shift that ends with work in hand: the same person (the same body) finishes it, still drawn here, before going home
+	const bool bKeep = bBusy && WaiterBody && StaffWaiter != WaiterPerson;
+	const int32 Person = bKeep ? WaiterPerson : StaffWaiter;
 	if (Person < 0 && !bOpen && !bBusy)
 	{
 		return false;
 	}
-	const FString Mesh = StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh;
+	const FString Mesh = bKeep ? WaiterMesh : (StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh);
 	if (Person != WaiterPerson)
 	{
 		if (WaiterPerson >= 0)
