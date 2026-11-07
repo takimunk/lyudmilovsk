@@ -28054,6 +28054,45 @@
    "shell": 1
   },
   {
+   "id": "P-CLUB3",
+   "kind": "culture_club",
+   "door": [
+    -158.16,
+    1227.77,
+    -29.0
+   ],
+   "yaw": -6.1,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "projectionist",
+     "capacity": 1
+    },
+    {
+     "kind": "staff",
+     "tag": "dance_teacher",
+     "capacity": 1
+    },
+    {
+     "kind": "staff",
+     "tag": "clerk",
+     "capacity": 1
+    },
+    {
+     "kind": "visit",
+     "capacity": 12
+    }
+   ],
+   "roles": [
+    "clerk",
+    "dance_teacher",
+    "projectionist"
+   ],
+   "building": "P-CLUB3",
+   "shell": 1
+  },
+  {
    "id": "P-T3SPORT",
    "kind": "culture",
    "door": [
@@ -28090,6 +28129,76 @@
     "lifeguard"
    ],
    "building": "P-T3SPORT",
+   "shell": 1
+  },
+  {
+   "id": "P-LIBRARY",
+   "kind": "library",
+   "door": [
+    -411.06,
+    996.44,
+    -22.0
+   ],
+   "yaw": -5.6,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "librarian",
+     "capacity": 2
+    },
+    {
+     "kind": "staff",
+     "tag": "cleaner",
+     "capacity": 1
+    },
+    {
+     "kind": "read_seat",
+     "capacity": 24
+    },
+    {
+     "kind": "visit",
+     "capacity": 12
+    }
+   ],
+   "roles": [
+    "cleaner",
+    "librarian"
+   ],
+   "building": "P-LIBRARY",
+   "shell": 1
+  },
+  {
+   "id": "P-HALL",
+   "kind": "hall",
+   "door": [
+    -540.4,
+    1296.1,
+    -15.0
+   ],
+   "yaw": -6.9,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "caretaker",
+     "capacity": 1
+    },
+    {
+     "kind": "staff",
+     "tag": "choir_leader",
+     "capacity": 1
+    },
+    {
+     "kind": "visit",
+     "capacity": 12
+    }
+   ],
+   "roles": [
+    "caretaker",
+    "choir_leader"
+   ],
+   "building": "P-HALL",
    "shell": 1
   },
   {
@@ -29567,41 +29676,6 @@
    ]
   },
   {
-   "id": "P-T1H2-BENCHES",
-   "kind": "bench",
-   "pos": [
-    -65.06,
-    471.4,
-    -36.2
-   ],
-   "yaw": 358.0,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "bench",
-     "pos": [
-      -65.06,
-      471.4,
-      -36.2
-     ],
-     "yaw": 358.0,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -65.98,
-      445.22,
-      -36.2
-     ],
-     "yaw": 358.0,
-     "capacity": 2,
-     "height": 0.45
-    }
-   ]
-  },
-  {
    "id": "P-T1H3-BENCHES",
    "kind": "bench",
    "pos": [
@@ -29620,76 +29694,6 @@
       -36.2
      ],
      "yaw": 357.6,
-     "capacity": 2,
-     "height": 0.45
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4-BENCHES",
-   "kind": "bench",
-   "pos": [
-    34.53,
-    693.97,
-    -36.2
-   ],
-   "yaw": 357.0,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "bench",
-     "pos": [
-      34.53,
-      693.97,
-      -36.2
-     ],
-     "yaw": 357.0,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      33.53,
-      674.99,
-      -36.2
-     ],
-     "yaw": 357.0,
-     "capacity": 2,
-     "height": 0.45
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5-BENCHES",
-   "kind": "bench",
-   "pos": [
-    0.38,
-    1392.72,
-    -36.2
-   ],
-   "yaw": 351.6,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "bench",
-     "pos": [
-      0.38,
-      1392.72,
-      -36.2
-     ],
-     "yaw": 351.6,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -2.4,
-      1373.92,
-      -36.2
-     ],
-     "yaw": 351.6,
      "capacity": 2,
      "height": 0.45
     }
@@ -30069,98 +30073,6 @@
       -15.0
      ],
      "yaw": 354.2,
-     "capacity": 2,
-     "height": 0.45
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1-BENCHES",
-   "kind": "bench",
-   "pos": [
-    -775.7,
-    583.81,
-    -15.0
-   ],
-   "yaw": 357.6,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "bench",
-     "pos": [
-      -775.7,
-      583.81,
-      -15.0
-     ],
-     "yaw": 357.6,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -776.49,
-      564.83,
-      -15.0
-     ],
-     "yaw": 357.6,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -777.29,
-      545.84,
-      -15.0
-     ],
-     "yaw": 357.6,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -778.24,
-      556.49,
-      -14.9
-     ],
-     "yaw": 357.6,
-     "capacity": 2,
-     "height": 0.45
-    }
-   ]
-  },
-  {
-   "id": "P-T4H2-BENCHES",
-   "kind": "bench",
-   "pos": [
-    -524.57,
-    1393.45,
-    -15.0
-   ],
-   "yaw": 351.6,
-   "island": 0,
-   "slots": [
-    {
-     "kind": "bench",
-     "pos": [
-      -524.57,
-      1393.45,
-      -15.0
-     ],
-     "yaw": 351.6,
-     "capacity": 2,
-     "height": 0.45
-    },
-    {
-     "kind": "bench",
-     "pos": [
-      -527.35,
-      1374.65,
-      -15.0
-     ],
-     "yaw": 351.6,
      "capacity": 2,
      "height": 0.45
     }
@@ -58087,253 +57999,26 @@
    ]
   },
   {
-   "id": "P-T1H2/0-01",
-   "kind": "flat",
-   "door": [
-    -65.94,
-    467.83,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/0-01/w1",
-    "P-T1H2/0-01/w2",
-    "P-T1H2/0-01/w3",
-    "P-T1H2/0-01/w4",
-    "P-T1H2/0-01/w5",
-    "P-T1H2/0-01/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/0-02",
-   "kind": "flat",
-   "door": [
-    -65.94,
-    467.83,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/0-02/w1",
-    "P-T1H2/0-02/w2",
-    "P-T1H2/0-02/w3",
-    "P-T1H2/0-02/w4",
-    "P-T1H2/0-02/w5",
-    "P-T1H2/0-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/0-03",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/0-03/w1",
-    "P-T1H2/0-03/w2",
-    "P-T1H2/0-03/w3",
-    "P-T1H2/0-03/w4",
-    "P-T1H2/0-03/w5",
-    "P-T1H2/0-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/0-04",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/0-04/w1",
-    "P-T1H2/0-04/w2",
-    "P-T1H2/0-04/w3",
-    "P-T1H2/0-04/w4",
-    "P-T1H2/0-04/w5",
-    "P-T1H2/0-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
    "id": "P-T1H2/1-01",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/1-01/w1",
-    "P-T1H2/1-01/w2",
-    "P-T1H2/1-01/w3",
-    "P-T1H2/1-01/w4",
-    "P-T1H2/1-01/w5",
-    "P-T1H2/1-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -58351,6 +58036,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -58370,134 +58059,15 @@
    "id": "P-T1H2/1-02",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/1-02/w1",
-    "P-T1H2/1-02/w2",
-    "P-T1H2/1-02/w3",
-    "P-T1H2/1-02/w4",
-    "P-T1H2/1-02/w5",
-    "P-T1H2/1-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/1-03",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/1-03/w1",
-    "P-T1H2/1-03/w2",
-    "P-T1H2/1-03/w3",
-    "P-T1H2/1-03/w4",
-    "P-T1H2/1-03/w5",
-    "P-T1H2/1-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/1-04",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/1-04/w1",
-    "P-T1H2/1-04/w2",
-    "P-T1H2/1-04/w3",
-    "P-T1H2/1-04/w4",
-    "P-T1H2/1-04/w5",
-    "P-T1H2/1-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -58538,22 +58108,15 @@
    "id": "P-T1H2/2-01",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/2-01/w1",
-    "P-T1H2/2-01/w2",
-    "P-T1H2/2-01/w3",
-    "P-T1H2/2-01/w4",
-    "P-T1H2/2-01/w5",
-    "P-T1H2/2-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -58594,26 +58157,23 @@
    "id": "P-T1H2/2-02",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/2-02/w1",
-    "P-T1H2/2-02/w2",
-    "P-T1H2/2-02/w3",
-    "P-T1H2/2-02/w4",
-    "P-T1H2/2-02/w5",
-    "P-T1H2/2-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -58635,114 +58195,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/2-03",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/2-03/w1",
-    "P-T1H2/2-03/w2",
-    "P-T1H2/2-03/w3",
-    "P-T1H2/2-03/w4",
-    "P-T1H2/2-03/w5",
-    "P-T1H2/2-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/2-04",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/2-04/w1",
-    "P-T1H2/2-04/w2",
-    "P-T1H2/2-04/w3",
-    "P-T1H2/2-04/w4",
-    "P-T1H2/2-04/w5",
-    "P-T1H2/2-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
     },
     {
      "kind": "kitchen_seat",
@@ -58762,22 +58214,15 @@
    "id": "P-T1H2/3-01",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/3-01/w1",
-    "P-T1H2/3-01/w2",
-    "P-T1H2/3-01/w3",
-    "P-T1H2/3-01/w4",
-    "P-T1H2/3-01/w5",
-    "P-T1H2/3-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -58818,134 +58263,15 @@
    "id": "P-T1H2/3-02",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/3-02/w1",
-    "P-T1H2/3-02/w2",
-    "P-T1H2/3-02/w3",
-    "P-T1H2/3-02/w4",
-    "P-T1H2/3-02/w5",
-    "P-T1H2/3-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/3-03",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/3-03/w1",
-    "P-T1H2/3-03/w2",
-    "P-T1H2/3-03/w3",
-    "P-T1H2/3-03/w4",
-    "P-T1H2/3-03/w5",
-    "P-T1H2/3-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H2/3-04",
-   "kind": "flat",
-   "door": [
-    -66.6,
-    448.84,
-    -36.2
-   ],
-   "yaw": -2.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/3-04/w1",
-    "P-T1H2/3-04/w2",
-    "P-T1H2/3-04/w3",
-    "P-T1H2/3-04/w4",
-    "P-T1H2/3-04/w5",
-    "P-T1H2/3-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -58986,26 +58312,23 @@
    "id": "P-T1H2/4-01",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/4-01/w1",
-    "P-T1H2/4-01/w2",
-    "P-T1H2/4-01/w3",
-    "P-T1H2/4-01/w4",
-    "P-T1H2/4-01/w5",
-    "P-T1H2/4-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -59023,6 +58346,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -59042,22 +58369,15 @@
    "id": "P-T1H2/4-02",
    "kind": "flat",
    "door": [
-    -65.94,
-    467.83,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/4-02/w1",
-    "P-T1H2/4-02/w2",
-    "P-T1H2/4-02/w3",
-    "P-T1H2/4-02/w4",
-    "P-T1H2/4-02/w5",
-    "P-T1H2/4-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -59095,25 +58415,18 @@
    ]
   },
   {
-   "id": "P-T1H2/4-03",
+   "id": "P-T1H2/5-01",
    "kind": "flat",
    "door": [
-    -66.6,
-    448.84,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/4-03/w1",
-    "P-T1H2/4-03/w2",
-    "P-T1H2/4-03/w3",
-    "P-T1H2/4-03/w4",
-    "P-T1H2/4-03/w5",
-    "P-T1H2/4-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -59151,29 +58464,26 @@
    ]
   },
   {
-   "id": "P-T1H2/4-04",
+   "id": "P-T1H2/5-02",
    "kind": "flat",
    "door": [
-    -66.6,
-    448.84,
+    -63.3,
+    457.38,
     -36.2
    ],
    "yaw": -2.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H2",
-   "windows": [
-    "P-T1H2/4-04/w1",
-    "P-T1H2/4-04/w2",
-    "P-T1H2/4-04/w3",
-    "P-T1H2/4-04/w4",
-    "P-T1H2/4-04/w5",
-    "P-T1H2/4-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -59191,6 +58501,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -59592,253 +58906,26 @@
    ]
   },
   {
-   "id": "P-T1H4/0-01",
-   "kind": "flat",
-   "door": [
-    33.97,
-    697.6,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/0-01/w1",
-    "P-T1H4/0-01/w2",
-    "P-T1H4/0-01/w3",
-    "P-T1H4/0-01/w4",
-    "P-T1H4/0-01/w5",
-    "P-T1H4/0-01/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/0-02",
-   "kind": "flat",
-   "door": [
-    33.97,
-    697.6,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/0-02/w1",
-    "P-T1H4/0-02/w2",
-    "P-T1H4/0-02/w3",
-    "P-T1H4/0-02/w4",
-    "P-T1H4/0-02/w5",
-    "P-T1H4/0-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/0-03",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/0-03/w1",
-    "P-T1H4/0-03/w2",
-    "P-T1H4/0-03/w3",
-    "P-T1H4/0-03/w4",
-    "P-T1H4/0-03/w5",
-    "P-T1H4/0-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/0-04",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/0-04/w1",
-    "P-T1H4/0-04/w2",
-    "P-T1H4/0-04/w3",
-    "P-T1H4/0-04/w4",
-    "P-T1H4/0-04/w5",
-    "P-T1H4/0-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
    "id": "P-T1H4/1-01",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/1-01/w1",
-    "P-T1H4/1-01/w2",
-    "P-T1H4/1-01/w3",
-    "P-T1H4/1-01/w4",
-    "P-T1H4/1-01/w5",
-    "P-T1H4/1-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -59856,6 +58943,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -59875,134 +58966,15 @@
    "id": "P-T1H4/1-02",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/1-02/w1",
-    "P-T1H4/1-02/w2",
-    "P-T1H4/1-02/w3",
-    "P-T1H4/1-02/w4",
-    "P-T1H4/1-02/w5",
-    "P-T1H4/1-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/1-03",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/1-03/w1",
-    "P-T1H4/1-03/w2",
-    "P-T1H4/1-03/w3",
-    "P-T1H4/1-03/w4",
-    "P-T1H4/1-03/w5",
-    "P-T1H4/1-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/1-04",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/1-04/w1",
-    "P-T1H4/1-04/w2",
-    "P-T1H4/1-04/w3",
-    "P-T1H4/1-04/w4",
-    "P-T1H4/1-04/w5",
-    "P-T1H4/1-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60043,22 +59015,15 @@
    "id": "P-T1H4/2-01",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/2-01/w1",
-    "P-T1H4/2-01/w2",
-    "P-T1H4/2-01/w3",
-    "P-T1H4/2-01/w4",
-    "P-T1H4/2-01/w5",
-    "P-T1H4/2-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60099,26 +59064,23 @@
    "id": "P-T1H4/2-02",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/2-02/w1",
-    "P-T1H4/2-02/w2",
-    "P-T1H4/2-02/w3",
-    "P-T1H4/2-02/w4",
-    "P-T1H4/2-02/w5",
-    "P-T1H4/2-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -60140,114 +59102,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/2-03",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/2-03/w1",
-    "P-T1H4/2-03/w2",
-    "P-T1H4/2-03/w3",
-    "P-T1H4/2-03/w4",
-    "P-T1H4/2-03/w5",
-    "P-T1H4/2-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/2-04",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/2-04/w1",
-    "P-T1H4/2-04/w2",
-    "P-T1H4/2-04/w3",
-    "P-T1H4/2-04/w4",
-    "P-T1H4/2-04/w5",
-    "P-T1H4/2-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
     },
     {
      "kind": "kitchen_seat",
@@ -60267,22 +59121,15 @@
    "id": "P-T1H4/3-01",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/3-01/w1",
-    "P-T1H4/3-01/w2",
-    "P-T1H4/3-01/w3",
-    "P-T1H4/3-01/w4",
-    "P-T1H4/3-01/w5",
-    "P-T1H4/3-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60323,134 +59170,15 @@
    "id": "P-T1H4/3-02",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/3-02/w1",
-    "P-T1H4/3-02/w2",
-    "P-T1H4/3-02/w3",
-    "P-T1H4/3-02/w4",
-    "P-T1H4/3-02/w5",
-    "P-T1H4/3-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/3-03",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/3-03/w1",
-    "P-T1H4/3-03/w2",
-    "P-T1H4/3-03/w3",
-    "P-T1H4/3-03/w4",
-    "P-T1H4/3-03/w5",
-    "P-T1H4/3-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H4/3-04",
-   "kind": "flat",
-   "door": [
-    32.97,
-    678.63,
-    -36.2
-   ],
-   "yaw": -3.0,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/3-04/w1",
-    "P-T1H4/3-04/w2",
-    "P-T1H4/3-04/w3",
-    "P-T1H4/3-04/w4",
-    "P-T1H4/3-04/w5",
-    "P-T1H4/3-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60491,26 +59219,23 @@
    "id": "P-T1H4/4-01",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/4-01/w1",
-    "P-T1H4/4-01/w2",
-    "P-T1H4/4-01/w3",
-    "P-T1H4/4-01/w4",
-    "P-T1H4/4-01/w5",
-    "P-T1H4/4-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -60528,6 +59253,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -60547,22 +59276,15 @@
    "id": "P-T1H4/4-02",
    "kind": "flat",
    "door": [
-    33.97,
-    697.6,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/4-02/w1",
-    "P-T1H4/4-02/w2",
-    "P-T1H4/4-02/w3",
-    "P-T1H4/4-02/w4",
-    "P-T1H4/4-02/w5",
-    "P-T1H4/4-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60600,25 +59322,18 @@
    ]
   },
   {
-   "id": "P-T1H4/4-03",
+   "id": "P-T1H4/5-01",
    "kind": "flat",
    "door": [
-    32.97,
-    678.63,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/4-03/w1",
-    "P-T1H4/4-03/w2",
-    "P-T1H4/4-03/w3",
-    "P-T1H4/4-03/w4",
-    "P-T1H4/4-03/w5",
-    "P-T1H4/4-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -60656,29 +59371,26 @@
    ]
   },
   {
-   "id": "P-T1H4/4-04",
+   "id": "P-T1H4/5-02",
    "kind": "flat",
    "door": [
-    32.97,
-    678.63,
+    36.42,
+    687.11,
     -36.2
    ],
    "yaw": -3.0,
    "island": 0,
    "shell": 1,
    "building": "P-T1H4",
-   "windows": [
-    "P-T1H4/4-04/w1",
-    "P-T1H4/4-04/w2",
-    "P-T1H4/4-04/w3",
-    "P-T1H4/4-04/w4",
-    "P-T1H4/4-04/w5",
-    "P-T1H4/4-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -60700,170 +59412,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/0-01",
-   "kind": "flat",
-   "door": [
-    0.16,
-    1396.39,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/0-01/w1",
-    "P-T1H5/0-01/w2",
-    "P-T1H5/0-01/w3",
-    "P-T1H5/0-01/w4",
-    "P-T1H5/0-01/w5",
-    "P-T1H5/0-01/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/0-02",
-   "kind": "flat",
-   "door": [
-    0.16,
-    1396.39,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/0-02/w1",
-    "P-T1H5/0-02/w2",
-    "P-T1H5/0-02/w3",
-    "P-T1H5/0-02/w4",
-    "P-T1H5/0-02/w5",
-    "P-T1H5/0-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/0-04",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/0-04/w1",
-    "P-T1H5/0-04/w2",
-    "P-T1H5/0-04/w3",
-    "P-T1H5/0-04/w4",
-    "P-T1H5/0-04/w5",
-    "P-T1H5/0-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
     },
     {
      "kind": "kitchen_seat",
@@ -60883,26 +59431,23 @@
    "id": "P-T1H5/1-01",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/1-01/w1",
-    "P-T1H5/1-01/w2",
-    "P-T1H5/1-01/w3",
-    "P-T1H5/1-01/w4",
-    "P-T1H5/1-01/w5",
-    "P-T1H5/1-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -60920,6 +59465,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -60939,134 +59488,15 @@
    "id": "P-T1H5/1-02",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/1-02/w1",
-    "P-T1H5/1-02/w2",
-    "P-T1H5/1-02/w3",
-    "P-T1H5/1-02/w4",
-    "P-T1H5/1-02/w5",
-    "P-T1H5/1-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/1-03",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/1-03/w1",
-    "P-T1H5/1-03/w2",
-    "P-T1H5/1-03/w3",
-    "P-T1H5/1-03/w4",
-    "P-T1H5/1-03/w5",
-    "P-T1H5/1-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/1-04",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/1-04/w1",
-    "P-T1H5/1-04/w2",
-    "P-T1H5/1-04/w3",
-    "P-T1H5/1-04/w4",
-    "P-T1H5/1-04/w5",
-    "P-T1H5/1-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61107,22 +59537,15 @@
    "id": "P-T1H5/2-01",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/2-01/w1",
-    "P-T1H5/2-01/w2",
-    "P-T1H5/2-01/w3",
-    "P-T1H5/2-01/w4",
-    "P-T1H5/2-01/w5",
-    "P-T1H5/2-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61163,26 +59586,23 @@
    "id": "P-T1H5/2-02",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/2-02/w1",
-    "P-T1H5/2-02/w2",
-    "P-T1H5/2-02/w3",
-    "P-T1H5/2-02/w4",
-    "P-T1H5/2-02/w5",
-    "P-T1H5/2-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -61204,114 +59624,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/2-03",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/2-03/w1",
-    "P-T1H5/2-03/w2",
-    "P-T1H5/2-03/w3",
-    "P-T1H5/2-03/w4",
-    "P-T1H5/2-03/w5",
-    "P-T1H5/2-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/2-04",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/2-04/w1",
-    "P-T1H5/2-04/w2",
-    "P-T1H5/2-04/w3",
-    "P-T1H5/2-04/w4",
-    "P-T1H5/2-04/w5",
-    "P-T1H5/2-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
     },
     {
      "kind": "kitchen_seat",
@@ -61331,22 +59643,15 @@
    "id": "P-T1H5/3-01",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/3-01/w1",
-    "P-T1H5/3-01/w2",
-    "P-T1H5/3-01/w3",
-    "P-T1H5/3-01/w4",
-    "P-T1H5/3-01/w5",
-    "P-T1H5/3-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61387,134 +59692,15 @@
    "id": "P-T1H5/3-02",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/3-02/w1",
-    "P-T1H5/3-02/w2",
-    "P-T1H5/3-02/w3",
-    "P-T1H5/3-02/w4",
-    "P-T1H5/3-02/w5",
-    "P-T1H5/3-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/3-03",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/3-03/w1",
-    "P-T1H5/3-03/w2",
-    "P-T1H5/3-03/w3",
-    "P-T1H5/3-03/w4",
-    "P-T1H5/3-03/w5",
-    "P-T1H5/3-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T1H5/3-04",
-   "kind": "flat",
-   "door": [
-    -2.61,
-    1377.59,
-    -36.2
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/3-04/w1",
-    "P-T1H5/3-04/w2",
-    "P-T1H5/3-04/w3",
-    "P-T1H5/3-04/w4",
-    "P-T1H5/3-04/w5",
-    "P-T1H5/3-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61555,26 +59741,23 @@
    "id": "P-T1H5/4-01",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/4-01/w1",
-    "P-T1H5/4-01/w2",
-    "P-T1H5/4-01/w3",
-    "P-T1H5/4-01/w4",
-    "P-T1H5/4-01/w5",
-    "P-T1H5/4-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -61592,6 +59775,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -61611,22 +59798,15 @@
    "id": "P-T1H5/4-02",
    "kind": "flat",
    "door": [
-    0.16,
-    1396.39,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/4-02/w1",
-    "P-T1H5/4-02/w2",
-    "P-T1H5/4-02/w3",
-    "P-T1H5/4-02/w4",
-    "P-T1H5/4-02/w5",
-    "P-T1H5/4-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61664,25 +59844,18 @@
    ]
   },
   {
-   "id": "P-T1H5/4-03",
+   "id": "P-T1H5/5-01",
    "kind": "flat",
    "door": [
-    -2.61,
-    1377.59,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/4-03/w1",
-    "P-T1H5/4-03/w2",
-    "P-T1H5/4-03/w3",
-    "P-T1H5/4-03/w4",
-    "P-T1H5/4-03/w5",
-    "P-T1H5/4-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -61720,29 +59893,26 @@
    ]
   },
   {
-   "id": "P-T1H5/4-04",
+   "id": "P-T1H5/5-02",
    "kind": "flat",
    "door": [
-    -2.61,
-    1377.59,
+    1.62,
+    1385.71,
     -36.2
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T1H5",
-   "windows": [
-    "P-T1H5/4-04/w1",
-    "P-T1H5/4-04/w2",
-    "P-T1H5/4-04/w3",
-    "P-T1H5/4-04/w4",
-    "P-T1H5/4-04/w5",
-    "P-T1H5/4-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -61760,6 +59930,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -104779,253 +102953,26 @@
    ]
   },
   {
-   "id": "P-T4H1/0-01",
-   "kind": "flat",
-   "door": [
-    -776.3,
-    587.44,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/0-01/w1",
-    "P-T4H1/0-01/w2",
-    "P-T4H1/0-01/w3",
-    "P-T4H1/0-01/w4",
-    "P-T4H1/0-01/w5",
-    "P-T4H1/0-01/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/0-02",
-   "kind": "flat",
-   "door": [
-    -776.3,
-    587.44,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/0-02/w1",
-    "P-T4H1/0-02/w2",
-    "P-T4H1/0-02/w3",
-    "P-T4H1/0-02/w4",
-    "P-T4H1/0-02/w5",
-    "P-T4H1/0-02/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/0-05",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/0-05/w1",
-    "P-T4H1/0-05/w2",
-    "P-T4H1/0-05/w3",
-    "P-T4H1/0-05/w4",
-    "P-T4H1/0-05/w5",
-    "P-T4H1/0-05/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/0-06",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/0-06/w1",
-    "P-T4H1/0-06/w2",
-    "P-T4H1/0-06/w3",
-    "P-T4H1/0-06/w4",
-    "P-T4H1/0-06/w5",
-    "P-T4H1/0-06/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
    "id": "P-T4H1/1-01",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-01/w1",
-    "P-T4H1/1-01/w2",
-    "P-T4H1/1-01/w3",
-    "P-T4H1/1-01/w4",
-    "P-T4H1/1-01/w5",
-    "P-T4H1/1-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -105043,6 +102990,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -105062,22 +103013,15 @@
    "id": "P-T4H1/1-02",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-02/w1",
-    "P-T4H1/1-02/w2",
-    "P-T4H1/1-02/w3",
-    "P-T4H1/1-02/w4",
-    "P-T4H1/1-02/w5",
-    "P-T4H1/1-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105118,22 +103062,15 @@
    "id": "P-T4H1/1-03",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-03/w1",
-    "P-T4H1/1-03/w2",
-    "P-T4H1/1-03/w3",
-    "P-T4H1/1-03/w4",
-    "P-T4H1/1-03/w5",
-    "P-T4H1/1-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105174,26 +103111,23 @@
    "id": "P-T4H1/1-04",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-04/w1",
-    "P-T4H1/1-04/w2",
-    "P-T4H1/1-04/w3",
-    "P-T4H1/1-04/w4",
-    "P-T4H1/1-04/w5",
-    "P-T4H1/1-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -105215,114 +103149,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/1-05",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-05/w1",
-    "P-T4H1/1-05/w2",
-    "P-T4H1/1-05/w3",
-    "P-T4H1/1-05/w4",
-    "P-T4H1/1-05/w5",
-    "P-T4H1/1-05/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/1-06",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/1-06/w1",
-    "P-T4H1/1-06/w2",
-    "P-T4H1/1-06/w3",
-    "P-T4H1/1-06/w4",
-    "P-T4H1/1-06/w5",
-    "P-T4H1/1-06/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
     },
     {
      "kind": "kitchen_seat",
@@ -105342,22 +103168,15 @@
    "id": "P-T4H1/2-01",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-01/w1",
-    "P-T4H1/2-01/w2",
-    "P-T4H1/2-01/w3",
-    "P-T4H1/2-01/w4",
-    "P-T4H1/2-01/w5",
-    "P-T4H1/2-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105398,22 +103217,15 @@
    "id": "P-T4H1/2-02",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-02/w1",
-    "P-T4H1/2-02/w2",
-    "P-T4H1/2-02/w3",
-    "P-T4H1/2-02/w4",
-    "P-T4H1/2-02/w5",
-    "P-T4H1/2-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105454,26 +103266,23 @@
    "id": "P-T4H1/2-03",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-03/w1",
-    "P-T4H1/2-03/w2",
-    "P-T4H1/2-03/w3",
-    "P-T4H1/2-03/w4",
-    "P-T4H1/2-03/w5",
-    "P-T4H1/2-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -105491,6 +103300,10 @@
     {
      "kind": "desk_seat",
      "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -105510,134 +103323,15 @@
    "id": "P-T4H1/2-04",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-04/w1",
-    "P-T4H1/2-04/w2",
-    "P-T4H1/2-04/w3",
-    "P-T4H1/2-04/w4",
-    "P-T4H1/2-04/w5",
-    "P-T4H1/2-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/2-05",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-05/w1",
-    "P-T4H1/2-05/w2",
-    "P-T4H1/2-05/w3",
-    "P-T4H1/2-05/w4",
-    "P-T4H1/2-05/w5",
-    "P-T4H1/2-05/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/2-06",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/2-06/w1",
-    "P-T4H1/2-06/w2",
-    "P-T4H1/2-06/w3",
-    "P-T4H1/2-06/w4",
-    "P-T4H1/2-06/w5",
-    "P-T4H1/2-06/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105678,22 +103372,15 @@
    "id": "P-T4H1/3-01",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-01/w1",
-    "P-T4H1/3-01/w2",
-    "P-T4H1/3-01/w3",
-    "P-T4H1/3-01/w4",
-    "P-T4H1/3-01/w5",
-    "P-T4H1/3-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105734,26 +103421,23 @@
    "id": "P-T4H1/3-02",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-02/w1",
-    "P-T4H1/3-02/w2",
-    "P-T4H1/3-02/w3",
-    "P-T4H1/3-02/w4",
-    "P-T4H1/3-02/w5",
-    "P-T4H1/3-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -105783,6 +103467,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -105790,22 +103478,15 @@
    "id": "P-T4H1/3-03",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-03/w1",
-    "P-T4H1/3-03/w2",
-    "P-T4H1/3-03/w3",
-    "P-T4H1/3-03/w4",
-    "P-T4H1/3-03/w5",
-    "P-T4H1/3-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -105846,134 +103527,15 @@
    "id": "P-T4H1/3-04",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-04/w1",
-    "P-T4H1/3-04/w2",
-    "P-T4H1/3-04/w3",
-    "P-T4H1/3-04/w4",
-    "P-T4H1/3-04/w5",
-    "P-T4H1/3-04/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/3-05",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-05/w1",
-    "P-T4H1/3-05/w2",
-    "P-T4H1/3-05/w3",
-    "P-T4H1/3-05/w4",
-    "P-T4H1/3-05/w5",
-    "P-T4H1/3-05/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H1/3-06",
-   "kind": "flat",
-   "door": [
-    -777.89,
-    549.47,
-    -15.0
-   ],
-   "yaw": -2.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/3-06/w1",
-    "P-T4H1/3-06/w2",
-    "P-T4H1/3-06/w3",
-    "P-T4H1/3-06/w4",
-    "P-T4H1/3-06/w5",
-    "P-T4H1/3-06/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106014,26 +103576,23 @@
    "id": "P-T4H1/4-01",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-01/w1",
-    "P-T4H1/4-01/w2",
-    "P-T4H1/4-01/w3",
-    "P-T4H1/4-01/w4",
-    "P-T4H1/4-01/w5",
-    "P-T4H1/4-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -106063,6 +103622,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -106070,22 +103633,15 @@
    "id": "P-T4H1/4-02",
    "kind": "flat",
    "door": [
-    -776.3,
-    587.44,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-02/w1",
-    "P-T4H1/4-02/w2",
-    "P-T4H1/4-02/w3",
-    "P-T4H1/4-02/w4",
-    "P-T4H1/4-02/w5",
-    "P-T4H1/4-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106126,22 +103682,15 @@
    "id": "P-T4H1/4-03",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-03/w1",
-    "P-T4H1/4-03/w2",
-    "P-T4H1/4-03/w3",
-    "P-T4H1/4-03/w4",
-    "P-T4H1/4-03/w5",
-    "P-T4H1/4-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106182,26 +103731,23 @@
    "id": "P-T4H1/4-04",
    "kind": "flat",
    "door": [
-    -777.09,
-    568.45,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-04/w1",
-    "P-T4H1/4-04/w2",
-    "P-T4H1/4-04/w3",
-    "P-T4H1/4-04/w4",
-    "P-T4H1/4-04/w5",
-    "P-T4H1/4-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -106231,29 +103777,26 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
   {
-   "id": "P-T4H1/4-05",
+   "id": "P-T4H1/5-01",
    "kind": "flat",
    "door": [
-    -777.89,
-    549.47,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-05/w1",
-    "P-T4H1/4-05/w2",
-    "P-T4H1/4-05/w3",
-    "P-T4H1/4-05/w4",
-    "P-T4H1/4-05/w5",
-    "P-T4H1/4-05/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106291,25 +103834,18 @@
    ]
   },
   {
-   "id": "P-T4H1/4-06",
+   "id": "P-T4H1/5-02",
    "kind": "flat",
    "door": [
-    -777.89,
-    549.47,
+    -774.13,
+    567.48,
     -15.0
    ],
    "yaw": -2.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H1",
-   "windows": [
-    "P-T4H1/4-06/w1",
-    "P-T4H1/4-06/w2",
-    "P-T4H1/4-06/w3",
-    "P-T4H1/4-06/w4",
-    "P-T4H1/4-06/w5",
-    "P-T4H1/4-06/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106347,29 +103883,26 @@
    ]
   },
   {
-   "id": "P-T4H2/0-02",
+   "id": "P-T4H1/5-03",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -774.13,
+    567.48,
     -15.0
    ],
-   "yaw": -8.4,
+   "yaw": -2.4,
    "island": 0,
    "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/0-02/w1",
-    "P-T4H2/0-02/w2",
-    "P-T4H2/0-02/w3",
-    "P-T4H2/0-02/w4",
-    "P-T4H2/0-02/w5",
-    "P-T4H2/0-02/w6"
-   ],
+   "building": "P-T4H1",
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -106399,58 +103932,6 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H2/0-03",
-   "kind": "flat",
-   "door": [
-    -527.56,
-    1378.32,
-    -15.0
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/0-03/w1",
-    "P-T4H2/0-03/w2",
-    "P-T4H2/0-03/w3",
-    "P-T4H2/0-03/w4",
-    "P-T4H2/0-03/w5",
-    "P-T4H2/0-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
     },
     {
      "kind": "kitchen_seat",
@@ -106459,25 +103940,18 @@
    ]
   },
   {
-   "id": "P-T4H2/0-04",
+   "id": "P-T4H1/5-04",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -774.13,
+    567.48,
     -15.0
    ],
-   "yaw": -8.4,
+   "yaw": -2.4,
    "island": 0,
    "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/0-04/w1",
-    "P-T4H2/0-04/w2",
-    "P-T4H2/0-04/w3",
-    "P-T4H2/0-04/w4",
-    "P-T4H2/0-04/w5",
-    "P-T4H2/0-04/w6"
-   ],
+   "building": "P-T4H1",
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106518,26 +103992,23 @@
    "id": "P-T4H2/1-01",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/1-01/w1",
-    "P-T4H2/1-01/w2",
-    "P-T4H2/1-01/w3",
-    "P-T4H2/1-01/w4",
-    "P-T4H2/1-01/w5",
-    "P-T4H2/1-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -106567,6 +104038,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -106574,22 +104049,15 @@
    "id": "P-T4H2/1-02",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/1-02/w1",
-    "P-T4H2/1-02/w2",
-    "P-T4H2/1-02/w3",
-    "P-T4H2/1-02/w4",
-    "P-T4H2/1-02/w5",
-    "P-T4H2/1-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106630,78 +104098,15 @@
    "id": "P-T4H2/1-03",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/1-03/w1",
-    "P-T4H2/1-03/w2",
-    "P-T4H2/1-03/w3",
-    "P-T4H2/1-03/w4",
-    "P-T4H2/1-03/w5",
-    "P-T4H2/1-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H2/1-04",
-   "kind": "flat",
-   "door": [
-    -527.56,
-    1378.32,
-    -15.0
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/1-04/w1",
-    "P-T4H2/1-04/w2",
-    "P-T4H2/1-04/w3",
-    "P-T4H2/1-04/w4",
-    "P-T4H2/1-04/w5",
-    "P-T4H2/1-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106742,26 +104147,23 @@
    "id": "P-T4H2/2-01",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/2-01/w1",
-    "P-T4H2/2-01/w2",
-    "P-T4H2/2-01/w3",
-    "P-T4H2/2-01/w4",
-    "P-T4H2/2-01/w5",
-    "P-T4H2/2-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -106791,6 +104193,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -106798,22 +104204,15 @@
    "id": "P-T4H2/2-02",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/2-02/w1",
-    "P-T4H2/2-02/w2",
-    "P-T4H2/2-02/w3",
-    "P-T4H2/2-02/w4",
-    "P-T4H2/2-02/w5",
-    "P-T4H2/2-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106854,78 +104253,15 @@
    "id": "P-T4H2/2-03",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/2-03/w1",
-    "P-T4H2/2-03/w2",
-    "P-T4H2/2-03/w3",
-    "P-T4H2/2-03/w4",
-    "P-T4H2/2-03/w5",
-    "P-T4H2/2-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H2/2-04",
-   "kind": "flat",
-   "door": [
-    -527.56,
-    1378.32,
-    -15.0
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/2-04/w1",
-    "P-T4H2/2-04/w2",
-    "P-T4H2/2-04/w3",
-    "P-T4H2/2-04/w4",
-    "P-T4H2/2-04/w5",
-    "P-T4H2/2-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -106966,26 +104302,23 @@
    "id": "P-T4H2/3-01",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/3-01/w1",
-    "P-T4H2/3-01/w2",
-    "P-T4H2/3-01/w3",
-    "P-T4H2/3-01/w4",
-    "P-T4H2/3-01/w5",
-    "P-T4H2/3-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -107015,6 +104348,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -107022,22 +104359,15 @@
    "id": "P-T4H2/3-02",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/3-02/w1",
-    "P-T4H2/3-02/w2",
-    "P-T4H2/3-02/w3",
-    "P-T4H2/3-02/w4",
-    "P-T4H2/3-02/w5",
-    "P-T4H2/3-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -107078,78 +104408,15 @@
    "id": "P-T4H2/3-03",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/3-03/w1",
-    "P-T4H2/3-03/w2",
-    "P-T4H2/3-03/w3",
-    "P-T4H2/3-03/w4",
-    "P-T4H2/3-03/w5",
-    "P-T4H2/3-03/w6"
-   ],
-   "slots": [
-    {
-     "kind": "bed",
-     "capacity": 2,
-     "tag": "bedroom"
-    },
-    {
-     "kind": "bed",
-     "tag": "bedroom"
-    },
-    {
-     "kind": "sofa",
-     "tag": "living"
-    },
-    {
-     "kind": "armchair",
-     "tag": "living"
-    },
-    {
-     "kind": "desk_seat",
-     "tag": "living"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    },
-    {
-     "kind": "kitchen_seat",
-     "tag": "kitchen"
-    }
-   ]
-  },
-  {
-   "id": "P-T4H2/3-04",
-   "kind": "flat",
-   "door": [
-    -527.56,
-    1378.32,
-    -15.0
-   ],
-   "yaw": -8.4,
-   "island": 0,
-   "shell": 1,
-   "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/3-04/w1",
-    "P-T4H2/3-04/w2",
-    "P-T4H2/3-04/w3",
-    "P-T4H2/3-04/w4",
-    "P-T4H2/3-04/w5",
-    "P-T4H2/3-04/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -107190,26 +104457,23 @@
    "id": "P-T4H2/4-01",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/4-01/w1",
-    "P-T4H2/4-01/w2",
-    "P-T4H2/4-01/w3",
-    "P-T4H2/4-01/w4",
-    "P-T4H2/4-01/w5",
-    "P-T4H2/4-01/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
      "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
      "tag": "bedroom"
     },
     {
@@ -107239,6 +104503,10 @@
     {
      "kind": "kitchen_seat",
      "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
     }
    ]
   },
@@ -107246,22 +104514,15 @@
    "id": "P-T4H2/4-02",
    "kind": "flat",
    "door": [
-    -524.79,
-    1397.12,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/4-02/w1",
-    "P-T4H2/4-02/w2",
-    "P-T4H2/4-02/w3",
-    "P-T4H2/4-02/w4",
-    "P-T4H2/4-02/w5",
-    "P-T4H2/4-02/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -107302,22 +104563,15 @@
    "id": "P-T4H2/4-03",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/4-03/w1",
-    "P-T4H2/4-03/w2",
-    "P-T4H2/4-03/w3",
-    "P-T4H2/4-03/w4",
-    "P-T4H2/4-03/w5",
-    "P-T4H2/4-03/w6"
-   ],
+   "windows": [],
    "slots": [
     {
      "kind": "bed",
@@ -107355,25 +104609,124 @@
    ]
   },
   {
-   "id": "P-T4H2/4-04",
+   "id": "P-T4H2/5-01",
    "kind": "flat",
    "door": [
-    -527.56,
-    1378.32,
+    -523.33,
+    1386.44,
     -15.0
    ],
    "yaw": -8.4,
    "island": 0,
    "shell": 1,
    "building": "P-T4H2",
-   "windows": [
-    "P-T4H2/4-04/w1",
-    "P-T4H2/4-04/w2",
-    "P-T4H2/4-04/w3",
-    "P-T4H2/4-04/w4",
-    "P-T4H2/4-04/w5",
-    "P-T4H2/4-04/w6"
+   "windows": [],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-T4H2/5-02",
+   "kind": "flat",
+   "door": [
+    -523.33,
+    1386.44,
+    -15.0
    ],
+   "yaw": -8.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-T4H2",
+   "windows": [],
+   "slots": [
+    {
+     "kind": "bed",
+     "capacity": 2,
+     "tag": "bedroom"
+    },
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "sofa",
+     "tag": "living"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "P-T4H2/5-03",
+   "kind": "flat",
+   "door": [
+    -523.33,
+    1386.44,
+    -15.0
+   ],
+   "yaw": -8.4,
+   "island": 0,
+   "shell": 1,
+   "building": "P-T4H2",
+   "windows": [],
    "slots": [
     {
      "kind": "bed",

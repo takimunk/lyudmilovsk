@@ -37,7 +37,7 @@ OUT_FOLK = os.path.join(CONTENT, "PeopleData", "townsfolk.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "town")
 
 # plot kinds whose staff work indoors (a shell: not drawn while inside) or out in the open (drawn at their post)
-SHELL_KINDS = {"restaurant", "cafe", "shop", "school", "clinic", "culture", "hotel", "office", "culture_club", "workshop", "pier"}
+SHELL_KINDS = {"restaurant", "cafe", "shop", "school", "clinic", "culture", "hotel", "office", "culture_club", "workshop", "pier", "library", "hall"}
 OPEN_KINDS = {"market", "kiosk", "fair", "lifeguard"}
 # a duty skipped on a public holiday (SetDayOff): the offices, the school, the clinic's day hours
 HOLIDAY_OFF_KINDS = {"school", "office", "clinic"}
@@ -344,6 +344,8 @@ def build_places(plan, extra, args):
             else:
                 n = len(bspots.get("seat", []))
                 slots.append({"kind": "seat", "capacity": n or (24 if w["kind"] == "restaurant" else 14)})
+        if w["kind"] == "library":
+            slots.append({"kind": "read_seat", "capacity": 24})     # the reading room
         if w["kind"] == "school":
             slots.append({"kind": "staff", "tag": "pupil", "capacity": 600})     # the classes
         if inside is not None:
