@@ -18,6 +18,7 @@
 #include "MeshDescription.h"
 #include "Misc/PackageName.h"
 #include "Plants/GameCalendar.h"
+#include "Sea/LyudEcosystem.h"
 #include "Sea/LyudSea.h"
 #include "Sea/LyudSeabed.h"
 #include "SeaCurrent.h"
@@ -43,7 +44,14 @@ namespace
 	};
 	FLook LookOf(const LyudFish::FSpecies& S)
 	{
-		const bool bSilver = S.Way == LyudFish::EWay::School || S.Way == LyudFish::EWay::Surface || FCString::Strcmp(ANSI_TO_TCHAR(S.Id), TEXT("SeaTrout")) == 0;
+		using LyudFish::EWay;
+		const FString Id = ANSI_TO_TCHAR(S.Id);
+		const bool bSilver = (S.Way == EWay::School || S.Way == EWay::Surface || Id == TEXT("SeaTrout") || Id == TEXT("Salmon")
+			|| Id == TEXT("Whitefish") || Id == TEXT("Roach") || Id == TEXT("Vimba"));
+		// the crustaceans barely bend (a flick of the tail fan), a mysid glints, a seal sweeps its hind flippers
+		if (S.Way == EWay::Crawler) return { 0.f, 0.02f };
+		if (S.Way == EWay::Swarm) return { 0.2f, 0.05f };
+		if (S.bBreathes) return { 0.f, 0.09f };
 		return { bSilver ? 0.35f : 0.f, S.Bend > 0.8f ? 0.07f : 0.11f };
 	}
 
@@ -174,6 +182,12 @@ struct FLyudUnderwaterEnv : LyudFish::FEnv
 		const FVector U = Owner->CurrentCm(FVector(P.X, P.Y, P.Z) * 100.f, false) * 0.01f;
 		return LyudFish::FV(U.X, U.Y, U.Z);
 	}
+	TWeakObjectPtr<const ULyudEcosystem> Eco;
+	virtual float Abundance(int Species, float X, float Y) const override
+	{
+		const ULyudEcosystem* E = Eco.Get();
+		return E ? E->FishAbundance(Species, X, Y) : 1.f;
+	}
 };
 
 ALyudSeaLife::ALyudSeaLife()
@@ -185,6 +199,7 @@ ALyudSeaLife::ALyudSeaLife()
 UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 {
 	if (Fish.Num() < LyudFish::NumSpecies()) Fish.SetNum(LyudFish::NumSpecies());
+	if (MeshLength.Num() < LyudFish::NumSpecies()) MeshLength.Init(0.f, LyudFish::NumSpecies());
 	if (Fish[Species]) return Fish[Species];
 	const LyudFish::FSpecies& S = LyudFish::Species(Species);
 	const FString Id = ANSI_TO_TCHAR(S.Id);
@@ -201,8 +216,10 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	// they move every frame: out of the Lumen scene and distance fields (the perf checklist)
 	C->bAffectDynamicIndirectLighting = false;
 	C->bAffectDistanceFieldLighting = false;
-	C->SetCullDistances(0, 4500);
+	// tiny things (mysids, amphipods, crabs) are not seen past a dozen metres anyway
+	C->SetCullDistances(0, S.Length < 0.04f ? 1200 : 4500);
 	C->SetNumCustomDataFloats(3);
+	MeshLength[Species] = (Mesh && Body) ? S.Length : 0.1f;
 	if (Mesh && Body)
 	{
 		C->SetStaticMesh(Mesh);
@@ -223,7 +240,7 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	}
 	else
 	{
-		// no model built for it yet: the old code-built fish (20 cm), so the behaviour still shows
+		// no model built for it yet: the old code-built fish (10 cm, scaled to the animal in DrawFish), so the behaviour still shows
 		StandIns.AddUnique(FName(*Id));
 		C->SetStaticMesh(LyudSeaLife::Fish());
 		if (UMaterialInterface* Old = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/M_SeaFish.M_SeaFish")))
@@ -384,6 +401,13 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	}
 	SeaRef = Sea;
 	Clock += DeltaTime;
+	// the food web follows the calendar (it steps in whole game hours; a check every couple of seconds is plenty)
+	ULyudEcosystem* Eco = ULyudEcosystem::Get(World);
+	if (Eco && (EcoSyncTimer -= DeltaTime) <= 0.f)
+	{
+		EcoSyncTimer = 2.f;
+		Eco->Sync(World);
+	}
 	UpdateDrive(Sea, DeltaTime);
 	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
 	const bool bUnder = Sea->IsCameraUnderwater();
@@ -437,7 +461,15 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 		Env->Owner = this;
 	}
 	Env->Sea = Sea;
+	Env->Eco = Eco;
 	Env->Level = Level * 0.01f;
+	if (Eco && !bDietSet)
+	{
+		// who eats whom among the fish: from the food web
+		bDietSet = true;
+		LyudFish::FSim* S = Sim.Get();
+		Eco->ForEachFishDiet([S](int32 Predator, int32 Prey, float Share) { S->SetDiet(Predator, Prey, Share); });
+	}
 	Sim->Density = FMath::Max(CVarSeaLifeDensity.GetValueOnGameThread(), 0.f);
 	LyudFish::FClock FC;
 	FDateTime Now = UGameCalendar::NowIn(World);
@@ -452,6 +484,14 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	if (CVarSeaLifeFish.GetValueOnGameThread() != 0)
 	{
 		Sim->Step(DeltaTime, *Env, LyudFish::FV(Eye.X, Eye.Y, Eye.Z) * 0.01f, FC);
+		for (const LyudFish::FEaten& E : Sim->Eaten())
+		{
+			const FName Predator(ANSI_TO_TCHAR(LyudFish::Species(E.Predator).Id)), Prey(ANSI_TO_TCHAR(LyudFish::Species(E.Prey).Id));
+			const FVector At = FVector(E.Pos.X, E.Pos.Y, E.Pos.Z) * 100.f;
+			MealsSeen.FindOrAdd(Predator.ToString() + (E.bCaught ? TEXT("<-") : TEXT("<-(missed)")) + Prey.ToString())++;
+			OnFishHunt.Broadcast(Predator, Prey, At, E.bCaught);
+			if (E.bCaught) OnFishEaten.Broadcast(Predator, Prey, At);
+		}
 	}
 	else
 	{
@@ -491,6 +531,11 @@ void ULyudUnderwaterSubsystem::DrawFish(float Dt)
 	{
 		UInstancedStaticMeshComponent* C = (Xf[S].Num() || (L->Fish.IsValidIndex(S) && L->Fish[S])) ? L->SpeciesMesh(S) : nullptr;
 		if (!C) continue;
+		// the transforms scale the species' length; a stand-in mesh (10 cm) is scaled to the animal's real size
+		const float MeshLen = L->MeshLength.IsValidIndex(S) && L->MeshLength[S] > 0.f ? L->MeshLength[S] : LyudFish::Species(S).Length;
+		const float Fix = LyudFish::Species(S).Length / MeshLen;
+		if (!FMath::IsNearlyEqual(Fix, 1.f))
+			for (FTransform& T : Xf[S]) T.SetScale3D(T.GetScale3D() * Fix);
 		if (C->GetInstanceCount() != Xf[S].Num())
 		{
 			// the number changed (a school came or went): rebuild this species' instances (rare)
@@ -546,6 +591,11 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 		}
 	}
 	Out += FString::Printf(TEXT("; fish %d"), Total);
+	if (MealsSeen.Num())
+	{
+		Out += TEXT("; meals seen:");
+		for (const TPair<FString, int32>& M : MealsSeen) Out += FString::Printf(TEXT(" %s %d"), *M.Key, M.Value);
+	}
 	if (const ALyudSeaLife* L = Life.Get())
 	{
 		if (L->StandIns.Num())
@@ -555,4 +605,10 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 		}
 	}
 	return Out;
+}
+
+bool ULyudUnderwaterSubsystem::TakeFish(FName Species, const FVector& Location, float Reach)
+{
+	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
+	return bActive && Sim && S >= 0 && Sim->Take(S, LyudFish::FV(Location.X, Location.Y, Location.Z) * 0.01f, Reach * 0.01f);
 }

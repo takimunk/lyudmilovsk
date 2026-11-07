@@ -1,0 +1,42 @@
+"""European smelt, Osmerus eperlanus: slender translucent fish, greenish-olive back, bright silver lateral band, big mouth with protruding lower jaw,
+adipose fin, forked tail, 18 cm."""
+SPEC = dict(
+    id="Smelt", latin="Osmerus eperlanus", length=0.18, seed=81, tris=1900,
+    body_end=0.87, nose_len=0.05, nose_len_bot=0.06,
+    profile=dict(
+        top=[(0, 0), (0.04, 0.026), (0.10, 0.044), (0.22, 0.060), (0.38, 0.066), (0.52, 0.064), (0.66, 0.052), (0.78, 0.036), (0.87, 0.024)],
+        bot=[(0, 0), (0.04, 0.024), (0.10, 0.042), (0.22, 0.056), (0.38, 0.062), (0.52, 0.060), (0.66, 0.048), (0.78, 0.034), (0.87, 0.024)],
+        wid=[(0, 0), (0.04, 0.016), (0.10, 0.030), (0.22, 0.040), (0.38, 0.044), (0.52, 0.042), (0.66, 0.032), (0.78, 0.020), (0.87, 0.012)],
+        n=2.2),
+    lod0=dict(nose_rings=2),
+    head=dict(gill_t=0.235, gill_ridge=0.02, mouth_len=0.10, mouth_depth=0.2, mouth_p=0.66),
+    eyes=[dict(t=0.075, q=0.36, r=0.0185)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.455, t1=0.535, h=0.062, shape="pointed", peak=0.25, rake=14, rays=11, segs=7,
+             col=(150, 160, 140), ray=(95, 110, 95), alpha=0.45, edge=(70, 85, 70), edge_a=0.4),
+        dict(name="Ad", kind="median", side="dorsal", t0=0.775, t1=0.815, h=0.020, shape="rounded", peak=0.5, rake=0, rays=3, segs=4,
+             col=(150, 160, 135), ray=(100, 110, 90), alpha=0.6),
+        dict(name="A", kind="median", side="anal", t0=0.64, t1=0.75, h=0.040, shape="pointed", peak=0.2, rake=15, rays=13, segs=6,
+             col=(212, 218, 208), ray=(160, 170, 160), alpha=0.4),
+        dict(name="C", kind="caudal", span_top=0.082, span_bot=0.082, shape="forked", fork=0.5, rays=19, segs=12,
+             col=(150, 160, 145), ray=(90, 105, 95), alpha=0.55, edge=(60, 75, 70), edge_a=0.5, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.245, q0=0.78, q1=0.88, len=0.055, shape="pointed", ang0=10, ang1=45, splay=28, rays=13, segs=6,
+             col=(215, 220, 210), ray=(165, 175, 165), alpha=0.38),
+        dict(name="Pel", kind="paired", t=0.47, q0=0.93, q1=0.95, len=0.045, shape="pointed", ang0=35, ang1=60, splay=35, rays=8, segs=4,
+             col=(220, 225, 215), ray=(170, 180, 170), alpha=0.38),
+    ],
+    paint=dict(
+        ramp=[(0.0, (70, 90, 55)), (0.16, (100, 125, 80)), (0.32, (140, 165, 130)), (0.38, (214, 232, 232)), (0.52, (214, 228, 228)), (0.62, (226, 230, 226)),
+              (0.80, (236, 238, 234)), (1.0, (242, 242, 238))],
+        grain=0.04,
+        layers=[
+            dict(type="stripe", at=0.42, w=0.13, col=(225, 245, 248), a=0.85, soft=0.04),
+            dict(type="spots", cell=0.012, r=(0.0007, 0.0014), prob=0.3, col=(40, 55, 40), q=(0.02, 0.26), t=(0.1, 0.85), a=0.5, seed=2),
+            dict(type="scales", size=0.0050, edge=0.05, sheen=0.04, q=(0.0, 0.9)),
+            dict(type="flush", col=(50, 65, 45), q=(0.0, 0.30), t=(0.0, 0.05), a=0.45, qsoft=0.05, tsoft=0.012),
+        ],
+        head=dict(tint=(190, 200, 170), amount=0.2, curve=0.012, line=(80, 90, 75), line_a=0.5),
+        mouth=dict(col=(70, 62, 55), w=0.0008),
+        eye=dict(iris=(215, 215, 200), iris2=(130, 130, 110), rim=(170, 178, 175), pupil=(4, 5, 7), pupil_r=0.5),
+    ),
+)
