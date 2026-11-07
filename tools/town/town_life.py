@@ -61,6 +61,7 @@ DAYS = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 # occupations (npc.<key>.role): ru, en, ja
 ROLES = {
     "waiter": ("официант", "waiter", "ウェイター"),
+    "waiter_f": ("официантка", "waitress", "ウェイトレス"),
     "waitress": ("официантка", "waitress", "ウェイトレス"),
     "cook": ("повар", "cook", "料理人"),
     "manager": ("управляющий", "manager", "支配人"),
@@ -75,8 +76,10 @@ ROLES = {
     "vendor": ("торговец на ярмарке", "fair vendor", "屋台の売り子"),
     "vendor_f": ("торговка на ярмарке", "fair vendor", "屋台の売り子"),
     "carousel_operator": ("смотритель карусели", "carousel operator", "回転木馬の係員"),
+    "carousel_operator_f": ("смотрительница карусели", "carousel operator", "回転木馬の係員"),
     "projectionist": ("киномеханик", "projectionist", "映写技師"),
     "dance_teacher": ("учитель танцев", "dance teacher", "ダンスの先生"),
+    "dance_teacher_f": ("учительница танцев", "dance teacher", "ダンスの先生"),
     "clerk": ("служащий", "office clerk", "事務員"),
     "clerk_f": ("служащая", "office clerk", "事務員"),
     "teacher": ("учитель", "teacher", "教師"),
@@ -92,14 +95,23 @@ ROLES = {
     "cleaner": ("уборщик", "cleaner", "清掃員"),
     "cleaner_f": ("уборщица", "cleaner", "清掃員"),
     "guard": ("охранник", "guard", "警備員"),
+    "guard_f": ("охранница", "guard", "警備員"),
     "lighthouse_keeper": ("смотритель маяка", "lighthouse keeper", "灯台守"),
+    "lighthouse_keeper_f": ("смотрительница маяка", "lighthouse keeper", "灯台守"),
+    "librarian": ("библиотекарь", "librarian", "司書"),
+    "caretaker": ("смотритель зала", "caretaker", "管理人"),
+    "caretaker_f": ("смотрительница зала", "caretaker", "管理人"),
+    "choir_leader": ("руководитель хора", "choir leader", "合唱団の指揮者"),
     "renter": ("прокатчик", "rentals attendant", "レンタル係"),
     "repairman": ("мастер", "repairman", "修理屋"),
+    "repairman_f": ("мастер", "repairwoman", "修理屋"),
+    "master": ("мастер", "repairman", "修理屋"),          # the plan's workshop units
+    "master_f": ("мастер", "repairwoman", "修理屋"),
     "away": ("работает в городе", "works out of town", "町の外で働く"),
     "student": ("студент", "student", "大学生"),
     "student_f": ("студентка", "student", "大学生"),
-    "pupil": ("школьник", "schoolboy", "小学生"),
-    "pupil_f": ("школьница", "schoolgirl", "小学生"),
+    "pupil": ("школьник", "schoolboy", "生徒"),         # 7..17: 小学生 would be primary school only
+    "pupil_f": ("школьница", "schoolgirl", "生徒"),
     "pensioner": ("пенсионер", "pensioner", "年金生活者"),
     "pensioner_f": ("пенсионерка", "pensioner", "年金生活者"),
     "artist": ("художник", "artist", "画家"),
@@ -109,6 +121,7 @@ ROLES = {
     "musician": ("музыкант", "musician", "音楽家"),
     "programmer": ("программист", "programmer", "プログラマー"),
     "fisherman": ("рыбак", "fisherman", "漁師"),
+    "fisherman_f": ("рыбачка", "fisherwoman", "漁師"),
     "homemaker": ("домохозяин", "homemaker", "主夫"),
     "homemaker_f": ("домохозяйка", "homemaker", "主婦"),
     "unemployed": ("ищет работу", "between jobs", "求職中"),
@@ -886,6 +899,9 @@ def main():
                      "Content/Localization/town/strings_<lang>.json. mesh: a model borrowed from the shared pool until their own is made.",
                      "seed": args.seed, "people": folk})
     # names and occupations in the three languages
+    untranslated = sorted({p["occupation"] for p in people if p["occupation"] not in ROLES})
+    if untranslated:
+        print("town_life: WARNING: no ru/en/ja in ROLES for %s: the tables get the raw id" % ", ".join(untranslated), file=sys.stderr)
     for i, lang in enumerate(("ru", "en", "ja")):
         table = {}
         for p in people:
