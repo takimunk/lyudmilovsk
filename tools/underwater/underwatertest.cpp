@@ -217,7 +217,7 @@ int main()
 		std::printf("\n");
 		Check(Wrong == 0, "nothing is eaten by what does not eat it");
 		Check(Meals > 20 && Top.size() >= 6, "predators catch prey, of several kinds");
-		Check(Misses > Meals / 2, "more strikes miss than catch: the prey get away too");
+		Check(Misses > Meals / 2, "strikes often miss (over half as many misses as catches): the prey get away too");
 		int Cruisers = 0, Ambushes = 0;
 		for (const auto& T : Top)
 		{
@@ -299,6 +299,13 @@ int main()
 							++I;
 						}
 				});
+				if (K)
+				{
+					float Far = 0.f;
+					for (const FFish& F : R.Fish()) if (F.Species == Ee) Far = std::max(Far, (F.Pos - F.Slot).Len2D());
+					std::printf("eels after a night hour's minute: farthest from its stone %.1f m\n", Far);
+					Check(Far < 6.f, "a night roaming eel keeps within a few metres of its stone");
+				}
 				Over[K] = N ? float(Sum / N) : 0.f;
 				Path[K] = NE ? float(Walk / NE) * 60.f : 0.f;
 			}
@@ -413,6 +420,7 @@ int main()
 				PikeStrikes, PikeCaught, CoHigh, CoLow, CoSurf + CoUnder ? 100 * CoSurf / (CoSurf + CoUnder) : 0, CoMeals, EiBed);
 			Check(PikeStrikes > 0 && PikeCaught > 0, "a pike in the weed strikes, and catches");
 			Check(CoHigh > -0.1f && CoLow < -1.f && CoSurf > 0 && CoUnder > 0, "cormorants float on the surface and dive");
+			Check(CoSurf > CoUnder, "a resting cormorant floats on the water, not under it (more time up than down)");
 			Check(bEiSeen && EiBed < 0.6f, "eiders dive down to the bed");
 		}
 	}

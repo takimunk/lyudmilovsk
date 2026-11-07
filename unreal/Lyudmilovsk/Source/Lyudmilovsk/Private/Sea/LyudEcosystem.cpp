@@ -336,6 +336,6 @@ void ULyudEcosystem::OnGameLoaded_Implementation()
 	WarmLeft = 0.f;
 	if (const UGameInstance* GI = GetGameInstance()) SyncedWorld = GI->GetWorld();
 	Model->Reset(EcoDayOfYear(SteppedTo));
-	Model->Load(K, V);
+	Model->Load(K, V, EcoDayOfYear(SteppedTo));
 	Refresh();
 }

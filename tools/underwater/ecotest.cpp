@@ -140,6 +140,23 @@ int main(int Argc, char** Argv)
 		Check(CyDay > 205.f && CyDay < 245.f && CyPeak > 20.f * CyMay, "the blue-greens bloom in August, twenty times May's (day)", CyDay);
 		std::printf("  herring: young to come in June %.2f, mid August %.2f of the stock; stock August/June %.2f\n", YoungJun, YoungSep, HerAug / HerJun);
 		Check(YoungJun > 0.1f && YoungSep < 0.01f && HerAug > 1.1f * HerJun, "the young herring join the stock in July and August (August/June)", HerAug / HerJun);
+		{
+			// an older save without the young still to come, loaded at the end of May: August's herring as a normal run's
+			FModel Run = W, Old;
+			Run.Step(0.f, 150.f);
+			std::vector<std::string> K;
+			std::vector<float> V, V2;
+			Run.Save(K, V);
+			std::vector<std::string> K2;
+			for (size_t I = 0; I < K.size(); ++I)
+				if (K[I].find("@young") == std::string::npos) { K2.push_back(K[I]); V2.push_back(V[I]); }
+			Old.Reset(150.f);
+			Old.Load(K2, V2, 150.f);
+			Run.Step(150.f, 80.f);
+			Old.Step(150.f, 80.f);
+			const float R = Old.Biomass(Herring) / Run.Biomass(Herring);
+			Check(R > 0.93f && R < 1.07f, "a save from before the young were kept still gets August's young herring (old/normal)", R);
+		}
 		Check(SpratJul < 0.05f, "the sprat are offshore in July (share here)", SpratJul);
 		Check(DucksJan > 0.95f && DucksJul < 0.05f, "the sea ducks winter here and leave for the summer (January share)", DucksJan);
 		Check(JellyAug > 0.95f && JellyMar < 0.05f, "moon jellies in August, none in March (August share)", JellyAug);

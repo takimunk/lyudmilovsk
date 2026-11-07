@@ -463,9 +463,10 @@ void FModel::Save(std::vector<std::string>& Keys, std::vector<float>& Values) co
 		}
 }
 
-void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>& Values)
+void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>& Values, float DayOfYear)
 {
 	Cells.clear();
+	std::vector<char> HasYoung(N, 0);
 	for (size_t K = 0; K < Keys.size() && K < Values.size(); ++K)
 	{
 		const std::string& Key = Keys[K];
@@ -478,7 +479,7 @@ void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>
 		if (At == std::string::npos) B[I] = Clamp(Values[K], B0[I] * 1e-3f, B0[I] * 20.f);   // early saves: g/m2
 		else if (Key.compare(At, std::string::npos, "@rel") == 0) B[I] = Clamp(Values[K] * B0[I], B0[I] * 1e-3f, B0[I] * 20.f);
 		else if (Key.compare(At, std::string::npos, "@here") == 0) F[I] = Clamp(Values[K], 0.f, 1.f);
-		else if (Key.compare(At, std::string::npos, "@young") == 0) Young[I] = Clamp(Values[K], 0.f, 20.f) * B0[I];
+		else if (Key.compare(At, std::string::npos, "@young") == 0) { Young[I] = Clamp(Values[K], 0.f, 20.f) * B0[I]; HasYoung[I] = 1; }
 		else
 		{
 			const char* P = Key.c_str() + At + 1;
@@ -491,6 +492,17 @@ void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>
 			}
 		}
 	}
+	// an older save (before the young were kept): the pool its share of the production would have grown since the
+	// group's last recruitment (none mid-recruitment: that part has joined)
+	if (DayOfYear >= 0.f)
+		for (int I = 0; I < N; ++I)
+			if (RecShare[I] > 0.f && !HasYoung[I])
+			{
+				const float Since = Wrap(DayOfYear - RecDay[I] - RecruitDays);
+				const float Off = FromDay(DayOfYear, RecDay[I]);
+				const float Grown = std::fabs(Off) <= RecruitDays ? (RecruitDays - Off) / (2.f * RecruitDays) * (365.f - 2.f * RecruitDays) : Since;
+				Young[I] = RecShare[I] * Table[I].PB * B[I] * F[I] * Grown / 365.f;
+			}
 }
 
 std::string FModel::Report() const
