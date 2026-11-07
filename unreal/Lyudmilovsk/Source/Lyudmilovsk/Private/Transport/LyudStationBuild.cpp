@@ -1804,6 +1804,7 @@ void ALyudStationLift::Setup(ALyudCableway* Way, const TArray<float>& InStops, c
 		}
 	}
 	Open.Init(0.f, Stops.Num());
+	bLeavesPlaced = false;
 	Cab->SetRelativeLocation(FVector(0, 0, Z));
 }
 
@@ -1890,10 +1891,19 @@ void ALyudStationLift::Tick(float DeltaTime)
 	}
 	// the doors at the cab's stop open while it stands there; they shut before it moves
 	const bool bLeaving = Target >= 0 && Target != Here;
+	bool bOpenMoved = false;
 	for (int32 I = 0; I < Stops.Num(); I++)
 	{
 		const bool bWant = I == Here && FMath::IsNearlyEqual(Z, Stops[I], 1.f) && !bLeaving;
+		const float Was = Open[I];
 		Open[I] = FMath::FInterpConstantTo(Open[I], bWant ? 1.f : 0.f, DeltaTime, 1.6f);
+		bOpenMoved |= Open[I] != Was;
+	}
+	// idle, doors settled and already placed, the player well away from the shaft: the leaves stay as they are
+	const bool bPawnFar = !Pawn || FVector2D(Local.X, Local.Y).Size() > ShaftHalf + 600.f;
+	if (Target < 0 && !bOpenMoved && bLeavesPlaced && bPawnFar)
+	{
+		return;
 	}
 	if (Target >= 0)
 	{
@@ -1977,4 +1987,5 @@ void ALyudStationLift::Tick(float DeltaTime)
 			Lf->SetCollisionEnabled(Ease > 0.8f ? ECollisionEnabled::NoCollision : ECollisionEnabled::QueryAndPhysics);
 		}
 	}
+	bLeavesPlaced = true;
 }

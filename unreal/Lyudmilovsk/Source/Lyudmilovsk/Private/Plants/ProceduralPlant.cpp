@@ -1236,13 +1236,16 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 	const bool bWoodDue = !bSummary && !bFarWaiting && SinceWood >= WoodEvery && FMath::Abs(Age - WoodAge) > 0.001f;
 	if (bChanged || bWoodDue)
 	{
-		const FString Why = FString::Printf(TEXT("summary %d/%d age %.4f/%.4f/%.4f day %.3f/%.3f litter %d wood %d bake %d"), bSummary ? 1 : 0, bShownSummary ? 1 : 0, Age, ShownAge, WoodAge, Day, ShownDay, bLitterDirty ? 1 : 0, bWoodDue ? 1 : 0, bNewBake ? 1 : 0);
+		// the state before Apply (it changes some), formatted only when the re-shape was slow
+		const bool bWasSummary = bSummary, bWasShownSummary = bShownSummary, bWasLitterDirty = bLitterDirty, bWasNewBake = bNewBake;
+		const float WasAge = Age, WasShownAge = ShownAge, WasWoodAge = WoodAge, WasDay = Day, WasShownDay = ShownDay;
 		const double T0 = FPlatformTime::Seconds();
 		Apply(Age, Day, bSummary, bWoodDue);
 		const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
 		BudgetUsedMs += Ms;
 		if (Ms > 50.0)
 		{
+			const FString Why = FString::Printf(TEXT("summary %d/%d age %.4f/%.4f/%.4f day %.3f/%.3f litter %d wood %d bake %d"), bWasSummary ? 1 : 0, bWasShownSummary ? 1 : 0, WasAge, WasShownAge, WasWoodAge, WasDay, WasShownDay, bWasLitterDirty ? 1 : 0, bWoodDue ? 1 : 0, bWasNewBake ? 1 : 0);
 			UE_LOG(LogTemp, Log, TEXT("Plant: re-shaping %s (%s) took %.0f ms (%s)"), *GetName(), *GetSpecies().Name.ToString(), Ms, *Why);
 		}
 		if (bWoodDue)

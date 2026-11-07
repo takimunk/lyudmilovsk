@@ -754,11 +754,21 @@ void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)
 		return;
 	}
 
+	// sampled at 10 Hz (a new pawn at once): the vote moves at 5/s, so the switch comes at the same time give or take a sample
+	RoofSampleClock += DeltaSeconds;
+	if (RoofSampleClock < 0.1f && LitPawn == Pawn)
+	{
+		return;
+	}
+	const float SampleSeconds = RoofSampleClock;
+	RoofSampleClock = 0.f;
+
 	// Under the open sky when nothing is above the head, or only outdoor meshes (channel 1: a tree, the
 	// porch over the door, the cable car's roof), which cast the sun's shadow themselves.
 	const FVector Head = Pawn->GetPawnViewLocation();
 	FHitResult Hit;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(LyudSkyRoof), false, Pawn);
+	// (heap array: GetAttachedActors takes only the default allocator; it runs at the 10 Hz sample now)
 	TArray<AActor*> Attached;
 	Pawn->GetAttachedActors(Attached, true, true);
 	Params.AddIgnoredActors(Attached);
@@ -770,7 +780,7 @@ void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)
 		bOpen = C && C->LightingChannels.bChannel1 && !(C->GetOwner() && C->GetOwner()->ActorHasTag(TEXT("Roof")));
 	}
 	// a short vote so a gap between ceiling tiles or a door frame overhead does not flicker the light
-	OutdoorsVote = FMath::FInterpConstantTo(OutdoorsVote, bOpen ? 1.f : 0.f, DeltaSeconds, 5.f);
+	OutdoorsVote = FMath::FInterpConstantTo(OutdoorsVote, bOpen ? 1.f : 0.f, SampleSeconds, 5.f);
 	const bool bNow = bPlayerOutdoors ? OutdoorsVote > 0.3f : OutdoorsVote > 0.7f;
 	if (bNow == bPlayerOutdoors && LitPawn == Pawn)
 	{
@@ -778,9 +788,8 @@ void ALyudSky::UpdatePlayerChannels(float DeltaSeconds)
 	}
 	bPlayerOutdoors = bNow;
 	LitPawn = Pawn;
-	TArray<AActor*> Actors = Attached;
-	Actors.Add(Pawn);
-	for (AActor* A : Actors)
+	Attached.Add(Pawn);
+	for (AActor* A : Attached)
 	{
 		TInlineComponentArray<UPrimitiveComponent*> Prims(A);
 		for (UPrimitiveComponent* P : Prims)

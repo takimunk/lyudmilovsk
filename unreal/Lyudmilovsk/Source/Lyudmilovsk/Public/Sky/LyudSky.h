@@ -331,6 +331,8 @@ private:
 	double MoonPhaseEphemeris = 0.0;
 	bool bPlayerOutdoors = false;
 	float OutdoorsVote = 0.f;
+	/** Time gathered since the last roof trace: the trace runs at 10 Hz, the vote takes the whole step. */
+	float RoofSampleClock = 0.f;
 	float LastShift = 0.f;
 	/** The level's own exposure bias (the club's post process volume), read at BeginPlay. */
 	float BaseExposureBias = 0.f;

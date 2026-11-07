@@ -79,6 +79,8 @@ public:
 private:
 	float Speed = 0.f;
 	float Offset = 0.f;
+	/** The stopped state (offset, silent motor) is already written: an empty, stopped belt can skip its tick. */
+	bool bIdleWritten = false;
 
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> BeltMaterials;
