@@ -164,6 +164,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<class AAnimalLifeRenderer> Renderer;
 	UPROPERTY(Transient) TObjectPtr<class AAnimalNameTags> NameTags;
 	bool bWantStart = false;
+	bool bSaveHooked = false;
+	void HookSave();
 	bool bStarted = false;
 	float StartDelay = 0.f;
 	int32 SunDay = -1;
