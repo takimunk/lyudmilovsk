@@ -240,6 +240,14 @@ BUILDING_TYPES = {
     "department_store": ("Универмаг", "Department store", "Glazed shop floors under a mosaic upper facade and a roof sign (Soviet univermag)"),
     "school": ("Школа", "School", "A low modernist school with a courtyard and sports ground"),
     "clinic": ("Поликлиника", "Clinic", "A small two-storey modernist clinic"),
+    "cobogo_house": ("Дом с кобогó", "Cobogó house", "Brazilian modernism: a low block behind a screen of cobogó breeze blocks (after Lucio Costa's Parque Guinle, Rio, 1948-54)"),
+    "capsule_cluster": ("Капсульный куст", "Capsule cluster", "Japanese metabolism: capsule flats plugged onto three short cores (after Kurokawa's Nakagin and Takara Beautilion, 1970-72)"),
+    "origami_row": ("Дома-оригами", "Origami row", "Terrace houses under folded concrete roof plates (after the folded-plate modernism of the 1950s-60s)"),
+    "pilotis_curve_slab": ("Изогнутый дом на ножках", "Curved pilotis slab", "Brazilian modernism: a curved slab on V-shaped pilotis with brise-soleil (after Niemeyer's Interbau block, Berlin, 1957, and his Rio housing)"),
+    "ribbon_corner_block": ("Угловой дом", "Ribbon corner block", "Constructivism: ribbon windows wrapping a corner and a glazed stair drum (after the 1920s-30s workers' housing of Moscow and Leningrad)"),
+    "cog_club": ("Клуб-шестерня", "Cog club", "Constructivism: a workers' club with a glazed drum and cantilevered halls in a gear-like plan (after Golosov's Zuev Club, Moscow, 1928, and Melnikov's clubs)"),
+    "capsule_library": ("Библиотека-капсула", "Capsule library", "Japanese metabolism: reading-room capsules plugged round a concrete core (after Kurokawa's capsules and Kikutake's Miyakonojo Civic Hall, 1966)"),
+    "shell_chapel_hall": ("Дом собраний под сводами", "Shell vault hall", "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"),
     "plain_block": ("Дом", "Plain block", "An ordinary 4-5 storey house (filler; the buildings thread may swap it for any type)"),
 }
 
@@ -260,6 +268,8 @@ STAFF = {
     "lifeguard": [("lifeguard", 1, [10, 19], "mon-sun")],
     "fair": [("carousel_operator", 2, [12, 22], "fri-sun"), ("vendor", 6, [11, 22], "fri-sun")],
     "pier": [("lighthouse_keeper", 1, [18, 7], "mon-sun")],
+    "library": [("librarian", 2, [10, 20], "tue-sun"), ("cleaner", 1, [7, 10], "mon-sat")],
+    "hall": [("caretaker", 1, [9, 22], "mon-sun"), ("choir_leader", 1, [17, 21], "wed-sun")],
     "workshop": [("master", 1, [10, 19], "mon-sat")],
 }
 
@@ -323,8 +333,8 @@ def _plots():
     a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 36, "Дом культуры «Рассвет»", "Rassvet culture house",
             height_max=18, notes="cinema hall, dance hall, a hobby room; the cinema of the town"))
     for k, (s, y) in enumerate(((120.0, 450.0), (220.0, 450.0), (125.0, 560.0), (130.0, 680.0), (230.0, 1380.0))):
-        a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "plain_block", "twin_cylinder_house", "plain_block",
-                                                     "plain_block")[k], 1, s, y, 40, 30, "Дом T1-%d" % (k + 1),
+        a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "cobogo_house", "twin_cylinder_house", "capsule_cluster",
+                                                     "origami_row")[k], 1, s, y, 40, 30, "Дом T1-%d" % (k + 1),
                 "House T1-%d" % (k + 1), height_max=18))
     # T2
     a(_plot("P-SERPENTINE", "residential", "serpentine_slab", 2, 455.0, 1000.0, 260, 16, "Дом-змеевик", "Serpentine house",
@@ -335,6 +345,9 @@ def _plots():
     a(_plot("P-T2H1", "residential", "cube_houses", 2, 400.0, 1150.0, 60, 25, "Кубические дома", "Cube houses", height_max=14))
     a(_plot("P-T2H2", "residential", "commune_slab", 2, 640.0, 520.0, 70, 14, "Дом-коммуна", "Commune house", height_max=20,
             notes="south part of T2, behind the Academgorodok"))
+    a(_plot("P-CLUB3", "club", "cog_club", 2, 375.0, 1222.0, 40, 40, "Клуб «Шестерня»", "Cog workers' club",
+            height_max=18, notes="the upper town's club between the cube houses and the school: hobby circles, a small "
+                                 "hall for meetings and dances"))
     # T3
     a(_plot("P-WAVE", "residential", "wave_tower", 3, 570.0, 1100.0, 80, 22, "Дом «Волна»", "Wave house", height_max=60,
             notes="the town's landmark seen from the sea"))
@@ -346,13 +359,17 @@ def _plots():
             height_max=40, notes="pool, gym, a sky bridge to the zenit station"))
     a(_plot("P-T3H3", "residential", "commune_slab", 3, 790.0, 520.0, 70, 14, "Дом-коммуна 2", "Commune house 2",
             height_max=20))
+    a(_plot("P-LIBRARY", "library", "capsule_library", 3, 600.0, 990.0, 30, 30, "Библиотека", "Capsule library",
+            height_max=20, notes="the town library and reading room, a short walk north of the zenit station"))
     # T4
     a(_plot("P-CAPSULE", "residential", "capsule_tower", 4, 740.0, 1180.0, 20, 20, "Капсульная башня", "Capsule tower",
             height_max=50))
     a(_plot("P-UNITE", "residential", "unite_block", 4, 760.0, 980.0, 130, 22, "Жилая единица", "Unité block", height_max=56,
             notes="shops street half way up, a roof terrace with a running track"))
-    a(_plot("P-T4H1", "residential", "plain_block", 4, 930.0, 560.0, 60, 20, "Дом T4-1", "House T4-1", height_max=18))
-    a(_plot("P-T4H2", "residential", "plain_block", 4, 750.0, 1380.0, 50, 20, "Дом T4-2", "House T4-2", height_max=18))
+    a(_plot("P-T4H1", "residential", "pilotis_curve_slab", 4, 930.0, 560.0, 60, 20, "Дом T4-1", "House T4-1", height_max=18))
+    a(_plot("P-T4H2", "residential", "ribbon_corner_block", 4, 750.0, 1380.0, 50, 20, "Дом T4-2", "House T4-2", height_max=18))
+    a(_plot("P-HALL", "hall", "shell_chapel_hall", 4, 760.0, 1290.0, 40, 30, "Дом собраний «Своды»", "Vaults community hall",
+            height_max=14, notes="weddings, the choir, concerts and the residents' meetings; open to the sea view"))
     # T5
     a(_plot("P-SANATORIUM", "hotel", "round_sanatorium", 5, 930.0, 1250.0, 60, 60, "Санаторий «Дружба»", "Druzhba sanatorium",
             height_max=30, notes="a hotel and sanatorium with the sea view over the whole town"))
