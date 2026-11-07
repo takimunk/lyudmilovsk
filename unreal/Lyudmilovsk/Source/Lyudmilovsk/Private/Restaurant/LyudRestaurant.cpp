@@ -314,6 +314,72 @@ bool ALyudRestaurant::IsOnMenuToday(const UObject* WorldContext, const FLyudRest
 	return true;
 }
 
+namespace LyudRest
+{
+	/** The holidays thread's ULyudFestivalSubsystem when it is in the game (looked up by name: no link to its code). */
+	UObject* FestivalSubsystem(const UObject* WorldContext)
+	{
+		const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+		static TWeakObjectPtr<UClass> Class;
+		static bool bLooked = false;
+		if (!bLooked)
+		{
+			bLooked = true;
+			Class = FindFirstObject<UClass>(TEXT("LyudFestivalSubsystem"), EFindFirstObjectOptions::None);
+		}
+		if (!World || !Class.IsValid())
+		{
+			return nullptr;
+		}
+		if (Class->IsChildOf(UWorldSubsystem::StaticClass()))
+		{
+			return World->GetSubsystemBase(TSubclassOf<UWorldSubsystem>(Class.Get()));
+		}
+		if (Class->IsChildOf(UGameInstanceSubsystem::StaticClass()) && World->GetGameInstance())
+		{
+			return World->GetGameInstance()->GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem>(Class.Get()));
+		}
+		return nullptr;
+	}
+
+	/** Calls a bool UFUNCTION of the festival subsystem with no argument or one FName. */
+	bool FestivalBool(const UObject* WorldContext, FName Function, const FName* Arg)
+	{
+		UObject* Sub = FestivalSubsystem(WorldContext);
+		UFunction* F = Sub ? Sub->FindFunction(Function) : nullptr;
+		if (!F || F->NumParms != (Arg ? 2 : 1))
+		{
+			return false;
+		}
+		uint8* Parms = (uint8*)FMemory_Alloca(FMath::Max<int32>(F->ParmsSize, 1));
+		FMemory::Memzero(Parms, F->ParmsSize);
+		FBoolProperty* Ret = nullptr;
+		for (TFieldIterator<FProperty> It(F); It && It->HasAnyPropertyFlags(CPF_Parm); ++It)
+		{
+			It->InitializeValue_InContainer(Parms);
+			if (It->HasAnyPropertyFlags(CPF_ReturnParm))
+			{
+				Ret = CastField<FBoolProperty>(*It);
+			}
+			else if (FNameProperty* N = CastField<FNameProperty>(*It); N && Arg)
+			{
+				N->SetPropertyValue_InContainer(Parms, *Arg);
+			}
+		}
+		bool bOut = false;
+		if (Ret)
+		{
+			Sub->ProcessEvent(F, Parms);
+			bOut = Ret->GetPropertyValue_InContainer(Parms);
+		}
+		for (TFieldIterator<FProperty> It(F); It && It->HasAnyPropertyFlags(CPF_Parm); ++It)
+		{
+			It->DestroyValue_InContainer(Parms);
+		}
+		return bOut;
+	}
+}
+
 bool ALyudRestaurant::IsFestival(const UObject* WorldContext)
 {
 	const int32 Forced = LyudRest::CVarFestival.GetValueOnGameThread();
@@ -321,36 +387,22 @@ bool ALyudRestaurant::IsFestival(const UObject* WorldContext)
 	{
 		return Forced == 1;
 	}
-	// the holidays thread's ULyudFestivalSubsystem, when it is in the game: called by name (no link to its code)
-	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
-	static TWeakObjectPtr<UClass> Class;
-	static bool bLooked = false;
-	if (!bLooked)
+	return LyudRest::FestivalBool(WorldContext, TEXT("IsFestivalToday"), nullptr);
+}
+
+bool ALyudRestaurant::IsFestivalDish(const UObject* WorldContext, FName Id)
+{
+	return IsFestival(WorldContext) && LyudRest::FestivalBool(WorldContext, TEXT("IsFestivalDish"), &Id);
+}
+
+bool ALyudRestaurant::IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section)
+{
+	// a holiday's own dishes show in the festival section as well as in their own
+	if (Section == TEXT("festival") && !D.bFree && D.Section != Section && IsFestivalDish(WorldContext, D.Id))
 	{
-		bLooked = true;
-		Class = FindFirstObject<UClass>(TEXT("LyudFestivalSubsystem"), EFindFirstObjectOptions::None);
+		return true;
 	}
-	if (!World || !Class.IsValid())
-	{
-		return false;
-	}
-	UObject* Sub = nullptr;
-	if (Class->IsChildOf(UWorldSubsystem::StaticClass()))
-	{
-		Sub = World->GetSubsystemBase(TSubclassOf<UWorldSubsystem>(Class.Get()));
-	}
-	else if (Class->IsChildOf(UGameInstanceSubsystem::StaticClass()) && World->GetGameInstance())
-	{
-		Sub = World->GetGameInstance()->GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem>(Class.Get()));
-	}
-	UFunction* F = Sub ? Sub->FindFunction(TEXT("IsFestivalToday")) : nullptr;
-	if (!F || F->ParmsSize != sizeof(bool) || F->NumParms != 1)
-	{
-		return false;
-	}
-	struct { bool bReturn = false; } Parms;
-	Sub->ProcessEvent(F, &Parms);
-	return Parms.bReturn;
+	return D.Section == Section && IsOnMenuToday(WorldContext, D);
 }
 
 // ---- the dish ----------------------------------------------------------------------------------------------------------------------
