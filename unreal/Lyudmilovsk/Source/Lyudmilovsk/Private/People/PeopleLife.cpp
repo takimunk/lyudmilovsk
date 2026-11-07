@@ -731,6 +731,11 @@ static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>
 	if (IAssetRegistry* Registry = IAssetRegistry::Get())
 	{
 		TArray<FAssetData> Assets;
+		// an uncooked -game run (offscreen tests, standalone) hasn't scanned the content: that folder once, synchronously
+		if (!GIsEditor && !FPlatformProperties::RequiresCookedData())
+		{
+			Registry->ScanPathsSynchronous({ TEXT("/Game/Characters/Humans/Town") }, false);
+		}
 		Registry->GetAssetsByPath(FName(TEXT("/Game/Characters/Humans/Town")), Assets, true);
 		for (const FAssetData& A : Assets)
 		{
