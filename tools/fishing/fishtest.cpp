@@ -389,6 +389,13 @@ int main(int Argc, char** Argv)
 		Check(BiteMood(Front, Trout, true) > 1.2f * BiteMood(Grey, Trout, true), "a falling glass and soft rain: the hunters feed");
 		Check(BiteMood(Gale, Trout, true) < BiteMood(Grey, Trout, true) && BiteMood(Storm, Trout, true) < 0.6f, "a gale and a thunderstorm put them down");
 		Check(BiteMood(Murky, Trout, true) < BiteMood(Grey, Trout, true) && BiteMood(Murky, Goby, false) == BiteMood(Grey, Goby, false), "murky water hides a lure, not a worm");
+		{
+			// an August blue-green bloom (GetBloom ~2.4): a lure is seen less, but not ruined
+			FConditions Aug = Grey; Aug.Murk = 2.4f;
+			const float R = BiteMood(Aug, Trout, true) / BiteMood(Grey, Trout, true);
+			std::printf("    an August bloom (murk 2.4): a lure %.2f of a clear day's\n", R);
+			Check(R > 0.7f && R < 0.9f && MoodWhy(Aug) == EMoodWhy::Murky, "an August bloom dims a lure to ~0.8, the forecast says murky");
+		}
 		Check(MoodWhy(Dusk) == EMoodWhy::Twilight && MoodWhy(Front) == EMoodWhy::Falling && MoodWhy(Storm) == EMoodWhy::Storm && MoodWhy(Noon) == EMoodWhy::Bright, "the forecast's reasons");
 		Check(Hunger(0.5f) > 1.2f && Hunger(2.f) < 0.8f && Hunger(1.f) == 1.f, "a hungry fish takes more readily, a full one less");
 		const std::vector<float> W = Weights(Spots[2], 9, 1.f);

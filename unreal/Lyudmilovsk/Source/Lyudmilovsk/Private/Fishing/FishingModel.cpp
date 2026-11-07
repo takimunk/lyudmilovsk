@@ -199,7 +199,8 @@ namespace LyudFishing
 		if (bLure)
 		{
 			M *= 0.35f + 0.65f * std::max(SunUp(C), Tw);
-			M *= std::max(0.55f, std::min(1.1f, 1.3f - 0.3f * C.Murk));
+			// (Murk is the web's bloom with the blue-greens: ~1 in winter, up to ~2.4 in an August bloom: a lure then 0.8)
+			M *= std::max(0.7f, std::min(1.05f, 1.15f - 0.15f * C.Murk));
 		}
 		return std::max(0.15f, std::min(2.5f, M));
 	}
@@ -219,7 +220,7 @@ namespace LyudFishing
 		if (Glare(C) > 0.5f) return EMoodWhy::Bright;
 		if (C.Rain > 0.2f) return EMoodWhy::Rain;
 		if (SunUp(C) < 0.2f) return EMoodWhy::Night;
-		if (C.Murk > 1.8f) return EMoodWhy::Murky;
+		if (C.Murk > 2.f) return EMoodWhy::Murky;
 		return EMoodWhy::Plain;
 	}
 

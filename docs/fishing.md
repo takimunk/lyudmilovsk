@@ -77,7 +77,7 @@ from it; its catches are written "from the boat". Console: `lyud.Fish.Boat [boar
 weather (`FConditions`: the sun's altitude, wind, rain, thunder, cloud, the pressure's tendency; the web's bloom as the water's
 murk) and `BiteMood` gives each fish's keenness: the dawn and dusk rise (hunters x1.8, bottom fish x1.2), a bright still noon
 puts shy fish off, a falling glass before a front makes the hunters feed (to x1.4), a gale (from 10 m/s) and thunder put them
-down, a soft rain helps, a lure is seen less at night and in the bloom's murky water. Each fish's hunger comes from the web:
+down, a soft rain helps, a lure is seen less at night and in the bloom's murky water (GetBloom counts the blue-greens: ~2.4 in an August bloom, a lure then 0.8 of a clear day's; the forecast says "murky" over 2). Each fish's hunger comes from the web:
 its prey's numbers now against the usual (`ULyudEcosystem::GetAbundance` over its diet), `Hunger` = 1/sqrt(food), 0.6..1.7
 (every 30 s). Keenness scales the bite rate even at a rich spot (the numbers saturate, the keenness does not).
 
