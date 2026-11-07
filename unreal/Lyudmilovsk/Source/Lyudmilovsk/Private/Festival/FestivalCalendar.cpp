@@ -3,6 +3,7 @@
 #include "../People/MiniJson.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace LyudFest
 {
@@ -48,6 +49,52 @@ namespace LyudFest
 			return bLeap ? 29 : 28;
 		}
 		return N[(M - 1 + 12) % 12];
+	}
+
+	double MoonPhaseJDE(int K, double Phase)
+	{
+		const double Kf = K + Phase, T = Kf / 1236.85, T2 = T * T, T3 = T2 * T, T4 = T3 * T;
+		const double Rad = 3.14159265358979323846 / 180.0;
+		double Jde = 2451550.09766 + 29.530588861 * Kf + 0.00015437 * T2 - 0.000000150 * T3 + 0.00000000073 * T4;
+		const double E = 1.0 - 0.002516 * T - 0.0000074 * T2;
+		const double M = (2.5534 + 29.10535670 * Kf - 0.0000014 * T2 - 0.00000011 * T3) * Rad;
+		const double Mp = (201.5643 + 385.81693528 * Kf + 0.0107582 * T2 + 0.00001238 * T3 - 0.000000058 * T4) * Rad;
+		const double F = (160.7108 + 390.67050284 * Kf - 0.0016118 * T2 - 0.00000227 * T3 + 0.000000011 * T4) * Rad;
+		const double Om = (124.7746 - 1.56375588 * Kf + 0.0020672 * T2 + 0.00000215 * T3) * Rad;
+		const bool bFull = Phase > 0.25;
+		Jde += (bFull ? -0.40614 : -0.40720) * std::sin(Mp)
+			+ (bFull ? 0.17302 : 0.17241) * E * std::sin(M)
+			+ (bFull ? 0.01614 : 0.01608) * std::sin(2.0 * Mp)
+			+ (bFull ? 0.01043 : 0.01039) * std::sin(2.0 * F)
+			+ (bFull ? 0.00734 : 0.00739) * E * std::sin(Mp - M)
+			- (bFull ? 0.00515 : 0.00514) * E * std::sin(Mp + M)
+			+ (bFull ? 0.00209 : 0.00208) * E * E * std::sin(2.0 * M)
+			- 0.00111 * std::sin(Mp - 2.0 * F)
+			- 0.00057 * std::sin(Mp + 2.0 * F)
+			+ 0.00056 * E * std::sin(2.0 * Mp + M)
+			- 0.00042 * std::sin(3.0 * Mp)
+			+ 0.00042 * E * std::sin(M + 2.0 * F)
+			+ 0.00038 * E * std::sin(M - 2.0 * F)
+			- 0.00024 * E * std::sin(2.0 * Mp - M)
+			- 0.00017 * std::sin(Om);
+		return Jde;
+	}
+
+	FDate MoonOnOrAfter(const FDate& From, double Phase, float TzHours)
+	{
+		// days since 1970 -> lunations since 2000-01-06; start a lunation early and walk forward
+		const int Day0 = DaysFromCivil(From);
+		int K = (int)std::floor((Day0 - 10962.0) / 29.530588861) - 1;
+		for (int I = 0; I < 4; I++, K++)
+		{
+			const double Local = MoonPhaseJDE(K, Phase) - 2440587.5 + TzHours / 24.0;
+			const int Day = (int)std::floor(Local);
+			if (Day >= Day0)
+			{
+				return CivilFromDays(Day);
+			}
+		}
+		return CivilFromDays(Day0 + 40);
 	}
 
 	FDate OrthodoxEaster(int Y)
@@ -147,6 +194,12 @@ namespace LyudFest
 			F.Weekdays = Ints(W["weekdays"]);
 			F.Months = Ints(W["months"]);
 			F.Trigger = W["trigger"].S();
+			F.Window = std::max(1, W["window"].I(30));
+			F.Tz = W["tz"].F(2.f);
+			F.Menu = Strings(V["menu"]);
+			F.Foods = Strings(V["foods"]);
+			F.Late = V["late"].F(-1.f);
+			F.Origin = V["origin"].S();
 			F.Days = std::max(1, V["days"].I(1));
 			F.bHoliday = V["holiday"].F() > 0.f;
 			F.HolidayDays = Ints(V["holiday_days"]);
@@ -218,6 +271,20 @@ namespace LyudFest
 			{
 				const FDate E = F.Rule == "easter_orthodox" ? OrthodoxEaster(Y) : WesternEaster(Y);
 				if (AddDays(E, F.Offset) == Date)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		if (F.Rule == "new_moon" || F.Rule == "full_moon")
+		{
+			// the window's start in this year or the one before (a window can run over New Year)
+			for (const int Y : { D.Y - 1, D.Y })
+			{
+				const FDate From = { Y, F.Month, F.DayOfMonth };
+				const FDate Moon = MoonOnOrAfter(From, F.Rule == "full_moon" ? 0.5 : 0.0, F.Tz);
+				if (Moon == D && DaysFromCivil(Moon) - DaysFromCivil(From) < F.Window)
 				{
 					return true;
 				}

@@ -35,6 +35,11 @@ namespace LyudFest
 	FDate WesternEaster(int Y);
 	/** The Nth (1..5; -1 = last) weekday Wd (0 Monday) of month M; false if there is none. */
 	bool NthWeekday(int Y, int M, int N, int Wd, FDate& Out);
+	/** The Julian Ephemeris Day of the K-th new moon (Phase 0) or full moon (Phase 0.5) after 2000-01-06 (Meeus ch. 49,
+	 *  the main periodic terms: a few minutes). */
+	double MoonPhaseJDE(int K, double Phase);
+	/** The local date (UTC + TzHours) of the first new (Phase 0) or full (0.5) moon on or after From; within 40 days. */
+	FDate MoonOnOrAfter(const FDate& From, double Phase, float TzHours);
 
 	/** One part of a festival's program. */
 	struct FPhase
@@ -52,13 +57,19 @@ namespace LyudFest
 	struct FFestival
 	{
 		std::string Id;                 // strings: festival.<id>.name / .desc
-		std::string Rule = "date";      // date, nth_weekday, easter_orthodox, easter_western, weekly, trigger
+		std::string Rule = "date";      // date, nth_weekday, easter_orthodox, easter_western, weekly, trigger, new_moon, full_moon
 		int Month = 1, DayOfMonth = 1;  // date; nth_weekday: Month
 		int Nth = 1, Wd = 5;            // nth_weekday: the Nth weekday Wd (0 Monday) of Month
 		int Offset = 0;                 // easter_*: days from Easter Sunday; any rule: shifts the found day
 		std::vector<int> Weekdays;      // weekly: which weekdays
 		std::vector<int> Months;        // weekly (or any): only in these months (empty = all)
 		std::string Trigger;            // trigger: the game's event (first_snow)
+		int Window = 30;                // new_moon / full_moon: the first such moon in [Month/DayOfMonth, + Window days)
+		float Tz = 2.f;                 // new_moon / full_moon: the hours from UTC its date is reckoned in (8: China)
+		std::vector<std::string> Menu;  // the restaurant's dishes for it (item ids, Content/Restaurant/menu.json)
+		std::vector<std::string> Foods; // what the fair's stalls sell on its day (item ids)
+		float Late = -1.f;              // people stay up till this hour of its first day (26 = 02:00 the next night); -1 not
+		std::string Origin;             // where in the world it comes from (a note: festival.<id>.origin)
 		int Days = 1;
 		bool bHoliday = false;          // a public holiday: offices and schools are closed on its days
 		std::vector<int> HolidayDays;   // which of its days are days off (empty = all of them, if bHoliday)

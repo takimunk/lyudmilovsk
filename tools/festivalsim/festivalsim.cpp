@@ -4,6 +4,7 @@
 //   festivalsim at YYYY-MM-DD HH.H   what is on at a moment
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Festival/FestivalCalendar.h"
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
@@ -75,6 +76,15 @@ static int Test(FCalendar& C)
 	CHECK(NthWeekday(2026, 10, -1, 5, N) && N == (FDate{ 2026, 10, 31 }), "last Saturday of October 2026");
 	CHECK(!NthWeekday(2026, 2, 5, 0, N), "no 5th Monday in February 2026");
 
+	// the moon (Meeus): new moon 2026-02-17 12:01 UTC, full moon 2026-03-03 11:38 UTC (an eclipse), 2026-09-26 16:49 UTC
+	CHECK(MoonOnOrAfter({ 2026, 2, 1 }, 0.0, 0.f) == (FDate{ 2026, 2, 17 }), "new moon 2026-02-17");
+	CHECK(MoonOnOrAfter({ 2026, 2, 20 }, 0.5, 0.f) == (FDate{ 2026, 3, 3 }), "full moon 2026-03-03");
+	CHECK(MoonOnOrAfter({ 2026, 9, 8 }, 0.5, 2.f) == (FDate{ 2026, 9, 26 }), "full moon 2026-09-26");
+	{
+		const double Jd = MoonPhaseJDE(323, 0.0);      // 2026-02-17 12:01 UTC = JD 2461089.0
+		CHECK(std::fabs(Jd - 2461089.0) < 0.05, "new moon 2026-02-17 to the hour (JDE %.3f)", Jd);
+	}
+
 	// the data
 	CHECK(C.Festivals.size() >= 10, "festivals.json has %d festivals", (int)C.Festivals.size());
 	const int City = C.Find("sea_festival"), Market = C.Find("weekend_market"), NewYear = C.Find("new_year"), Mas = C.Find("maslenitsa");
@@ -121,6 +131,21 @@ static int Test(FCalendar& C)
 	{
 		auto A = C.At({ 2026, 6, 24 }, 4.f);
 		CHECK(!A.empty() && A[0].Festival == Mid && C.Festivals[Mid].Phases[A[0].Phase].Id == "sunrise", "04:00 on 24 June: the sunrise");
+	}
+	// the world's festivals by the moon
+	{
+		const int Lny = C.Find("lunar_new_year"), Holi = C.Find("holi"), Diwali = C.Find("diwali"), Loy = C.Find("loy_krathong");
+		CHECK(Lny >= 0 && Holi >= 0 && Diwali >= 0 && Loy >= 0, "the moon festivals are there");
+		CHECK(C.StartsOn(Lny, { 2026, 2, 17 }) && C.StartsOn(Lny, { 2027, 2, 6 }) && C.StartsOn(Lny, { 2028, 1, 26 }), "Lunar New Year 2026-02-17, 2027-02-06, 2028-01-26");
+		CHECK(C.StartsOn(Holi, { 2026, 3, 4 }), "Holi 2026-03-04");
+		CHECK(C.StartsOn(Diwali, { 2026, 11, 8 }), "Diwali 2026-11-08");
+		CHECK(C.StartsOn(Loy, { 2026, 11, 24 }), "Loy Krathong 2026-11-24");
+		int Count = 0;
+		for (int Y = 2026; Y < 2036; Y++)
+		{
+			for (int D = 0; D < 366; D++) Count += C.StartsOn(Lny, AddDays({ Y, 1, 1 }, D)) && AddDays({ Y, 1, 1 }, D).Y == Y;
+		}
+		CHECK(Count == 10, "Lunar New Year once a year (%d in 10 years)", Count);
 	}
 	// a trigger
 	CHECK(!C.StartsOn(Snow, { 2026, 11, 20 }), "no snow yet");
