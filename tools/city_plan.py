@@ -40,9 +40,12 @@ TERRACES = [
     ("T4", "Четвёртая терраса", "Fourth terrace", -15.0),
     ("T5", "Верхняя терраса", "Upper terrace", -8.0),
 ]
-# Past the upper terrace's first TOP_FLAT metres the ground rises on gently into the inland ridge.
-TOP_FLAT = 220.0
-TOP_RISE = 0.05
+# The upper terrace runs on inland, level, until the land's own ridge rises over it (a smooth max, HILL_SOFT metres).
+HILL_SOFT = 1.5
+# The town's hook on the ground stops this far inland of W5's face (past it, the natural land).
+INLAND_END = 700.0
+# world_map.keep_flat keeps the exact height this far past W5's block (the upper terrace's plots), then fades in 60 m
+TOP_KEEP = 300.0
 
 # The walls: W1 holds the lower town over the promenade, W2..W5 the terraces. (y, s) control points; between
 # y 700 and 820 the walls swing seaward round the Academgorodok (its ground is T1, up to s ~540), so north of it
@@ -115,9 +118,6 @@ def terrace_z(x, y):
             break
         t = min(1.0, t)
         z = TERRACES[i][3] + (TERRACES[i + 1][3] - TERRACES[i][3]) * t
-    top0 = wall_s(len(WALLS) - 1, y) + TOP_FLAT
-    if s > top0:
-        z += (s - top0) * TOP_RISE
     return z
 
 
@@ -133,8 +133,20 @@ def height(x, y, natural):
     z = terrace_z(x, y)
     if z is None:
         return natural
-    z = max(z, natural) if natural > z + 2.0 and s > wall_s(len(WALLS) - 1, y) else z   # the ridge and the hills win
+    s5 = wall_s(len(WALLS) - 1, y) + WALL_DEPTH
+    if s > s5:
+        # behind W5: the land's own ridge and hills rise over the upper terrace, smoothly (no step anywhere), and far
+        # inland the town lets go of the ground altogether
+        k = HILL_SOFT
+        hi, lo = max(z, natural), min(z, natural)
+        z = hi + k * math.log1p(math.exp((lo - hi) / k))
+        z = natural + (z - natural) * (1.0 - _smoothstep((s - s5 - INLAND_END + 150.0) / 150.0))
     return natural + (z - natural) * m
+
+
+def _smoothstep(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
 
 
 TREE_FRONT = 12.0      # the street trees stand this far in front of a wall's face
@@ -171,9 +183,11 @@ def tree_free(x, y):
     for p in plots():
         if abs(p["s"] - s) < p["d"] / 2 + 5.0 and abs(p["y_along"] - y) < p["w"] / 2 + 5.0:
             return True
-    for gy in GRAND_Y:
-        if abs(y - gy) < 12.0:
-            return True
+    # the grand stairs' lanes only on the terraces (not across the forests inland)
+    if wall_s(1, y) - 15.0 < s < wall_s(len(WALLS) - 1, y) + WALL_DEPTH + 25.0:
+        for gy in GRAND_Y:
+            if abs(y - gy) < 12.0:
+                return True
     return False
 
 
@@ -226,6 +240,14 @@ BUILDING_TYPES = {
     "department_store": ("Универмаг", "Department store", "Glazed shop floors under a mosaic upper facade and a roof sign (Soviet univermag)"),
     "school": ("Школа", "School", "A low modernist school with a courtyard and sports ground"),
     "clinic": ("Поликлиника", "Clinic", "A small two-storey modernist clinic"),
+    "cobogo_house": ("Дом с кобогó", "Cobogó house", "Brazilian modernism: a low block behind a screen of cobogó breeze blocks (after Lucio Costa's Parque Guinle, Rio, 1948-54)"),
+    "capsule_cluster": ("Капсульный куст", "Capsule cluster", "Japanese metabolism: capsule flats plugged onto three short cores (after Kurokawa's Nakagin and Takara Beautilion, 1970-72)"),
+    "origami_row": ("Дома-оригами", "Origami row", "Terrace houses under folded concrete roof plates (after the folded-plate modernism of the 1950s-60s)"),
+    "pilotis_curve_slab": ("Изогнутый дом на ножках", "Curved pilotis slab", "Brazilian modernism: a curved slab on V-shaped pilotis with brise-soleil (after Niemeyer's Interbau block, Berlin, 1957, and his Rio housing)"),
+    "ribbon_corner_block": ("Угловой дом", "Ribbon corner block", "Constructivism: ribbon windows wrapping a corner and a glazed stair drum (after the 1920s-30s workers' housing of Moscow and Leningrad)"),
+    "cog_club": ("Клуб-шестерня", "Cog club", "Constructivism: a workers' club with a glazed drum and cantilevered halls in a gear-like plan (after Golosov's Zuev Club, Moscow, 1928, and Melnikov's clubs)"),
+    "capsule_library": ("Библиотека-капсула", "Capsule library", "Japanese metabolism: reading-room capsules plugged round a concrete core (after Kurokawa's capsules and Kikutake's Miyakonojo Civic Hall, 1966)"),
+    "shell_chapel_hall": ("Дом собраний под сводами", "Shell vault hall", "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"),
     "plain_block": ("Дом", "Plain block", "An ordinary 4-5 storey house (filler; the buildings thread may swap it for any type)"),
 }
 
@@ -246,6 +268,8 @@ STAFF = {
     "lifeguard": [("lifeguard", 1, [10, 19], "mon-sun")],
     "fair": [("carousel_operator", 2, [12, 22], "fri-sun"), ("vendor", 6, [11, 22], "fri-sun")],
     "pier": [("lighthouse_keeper", 1, [18, 7], "mon-sun")],
+    "library": [("librarian", 2, [10, 20], "tue-sun"), ("cleaner", 1, [7, 10], "mon-sat")],
+    "hall": [("caretaker", 1, [9, 22], "mon-sun"), ("choir_leader", 1, [17, 21], "wed-sun")],
     "workshop": [("master", 1, [10, 19], "mon-sat")],
 }
 
@@ -278,7 +302,7 @@ def _plots():
     P = []
     a = P.append
     # T0, the embankment: the pier, the kiosks, the beach's buildings
-    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -120.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
+    a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -151.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
             height_max=36, notes="the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the "
                                  "high water); the tower stands on its head; on the town's main axis Y 905"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
@@ -309,8 +333,8 @@ def _plots():
     a(_plot("P-CLUB2", "club", "workers_club", 1, 260.0, 1060.0, 35, 36, "Дом культуры «Рассвет»", "Rassvet culture house",
             height_max=18, notes="cinema hall, dance hall, a hobby room; the cinema of the town"))
     for k, (s, y) in enumerate(((120.0, 450.0), (220.0, 450.0), (125.0, 560.0), (130.0, 680.0), (230.0, 1380.0))):
-        a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "plain_block", "twin_cylinder_house", "plain_block",
-                                                     "plain_block")[k], 1, s, y, 40, 30, "Дом T1-%d" % (k + 1),
+        a(_plot("P-T1H%d" % (k + 1), "residential", ("cube_houses", "cobogo_house", "twin_cylinder_house", "capsule_cluster",
+                                                     "origami_row")[k], 1, s, y, 40, 30, "Дом T1-%d" % (k + 1),
                 "House T1-%d" % (k + 1), height_max=18))
     # T2
     a(_plot("P-SERPENTINE", "residential", "serpentine_slab", 2, 455.0, 1000.0, 260, 16, "Дом-змеевик", "Serpentine house",
@@ -321,6 +345,9 @@ def _plots():
     a(_plot("P-T2H1", "residential", "cube_houses", 2, 400.0, 1150.0, 60, 25, "Кубические дома", "Cube houses", height_max=14))
     a(_plot("P-T2H2", "residential", "commune_slab", 2, 640.0, 520.0, 70, 14, "Дом-коммуна", "Commune house", height_max=20,
             notes="south part of T2, behind the Academgorodok"))
+    a(_plot("P-CLUB3", "club", "cog_club", 2, 375.0, 1222.0, 40, 40, "Клуб «Шестерня»", "Cog workers' club",
+            height_max=18, notes="the upper town's club between the cube houses and the school: hobby circles, a small "
+                                 "hall for meetings and dances"))
     # T3
     a(_plot("P-WAVE", "residential", "wave_tower", 3, 570.0, 1100.0, 80, 22, "Дом «Волна»", "Wave house", height_max=60,
             notes="the town's landmark seen from the sea"))
@@ -332,13 +359,17 @@ def _plots():
             height_max=40, notes="pool, gym, a sky bridge to the zenit station"))
     a(_plot("P-T3H3", "residential", "commune_slab", 3, 790.0, 520.0, 70, 14, "Дом-коммуна 2", "Commune house 2",
             height_max=20))
+    a(_plot("P-LIBRARY", "library", "capsule_library", 3, 600.0, 990.0, 30, 30, "Библиотека", "Capsule library",
+            height_max=20, notes="the town library and reading room, a short walk north of the zenit station"))
     # T4
     a(_plot("P-CAPSULE", "residential", "capsule_tower", 4, 740.0, 1180.0, 20, 20, "Капсульная башня", "Capsule tower",
             height_max=50))
     a(_plot("P-UNITE", "residential", "unite_block", 4, 760.0, 980.0, 130, 22, "Жилая единица", "Unité block", height_max=56,
             notes="shops street half way up, a roof terrace with a running track"))
-    a(_plot("P-T4H1", "residential", "plain_block", 4, 930.0, 560.0, 60, 20, "Дом T4-1", "House T4-1", height_max=18))
-    a(_plot("P-T4H2", "residential", "plain_block", 4, 750.0, 1380.0, 50, 20, "Дом T4-2", "House T4-2", height_max=18))
+    a(_plot("P-T4H1", "residential", "pilotis_curve_slab", 4, 930.0, 560.0, 60, 20, "Дом T4-1", "House T4-1", height_max=18))
+    a(_plot("P-T4H2", "residential", "ribbon_corner_block", 4, 750.0, 1380.0, 50, 20, "Дом T4-2", "House T4-2", height_max=18))
+    a(_plot("P-HALL", "hall", "shell_chapel_hall", 4, 760.0, 1290.0, 40, 30, "Дом собраний «Своды»", "Vaults community hall",
+            height_max=14, notes="weddings, the choir, concerts and the residents' meetings; open to the sea view"))
     # T5
     a(_plot("P-SANATORIUM", "hotel", "round_sanatorium", 5, 930.0, 1250.0, 60, 60, "Санаторий «Дружба»", "Druzhba sanatorium",
             height_max=30, notes="a hotel and sanatorium with the sea view over the whole town"))
@@ -347,9 +378,9 @@ def _plots():
     a(_plot("P-T5H1", "residential", "capsule_tower", 5, 1080.0, 560.0, 20, 20, "Капсульная башня 2", "Capsule tower 2",
             height_max=50))
     # set-pieces of stepped housing against walls
-    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 2, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
+    a(_plot("P-RISER1", "residential", "terrace_riser_housing", 1, 335.0, 1100.0, 40, 18, "Ступенчатый дом", "Stepped house",
             notes="in front of W2, climbing it to T2's edge (the plot straddles the wall: s 330..350)"))
-    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 4, 685.0, 900.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
+    a(_plot("P-RISER2", "residential", "terrace_riser_housing", 3, 685.0, 1010.0, 40, 18, "Ступенчатый дом 2", "Stepped house 2",
             notes="straddles W4"))
     return P
 
@@ -370,7 +401,7 @@ def spots():
     a("S-STAGE", "stage", 205.0, 905.0, 1, "Сцена на площади", "Square stage", yaw=0.0,
       notes="faces the square and the sea; holidays: concerts, the New Year tree")
     a("S-SQUARE", "square", 150.0, 905.0, 1, "Площадь Солнца", "Sun Square", seats=40)
-    a("S-PIER-HEAD", "pier", -130.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
+    a("S-PIER-HEAD", "pier", -145.0, 905.0, 0, "Конец пирса", "Pier head", seats=6,
       notes="fishing, sunsets; fireworks are let off here on holidays")
     a("S-PROMENADE", "promenade", 45.0, 905.0, 0, "Променад", "Promenade",
       notes="the walk along T0, Y 380..1450; benches every 40 m (S-BENCH-P*)")
@@ -504,7 +535,7 @@ def wall_bays(i):
                 b["kind"] = "unit"
         _BAYS[i] = out
         return out
-    # W2..W5: grand stairs, wall stairs, plots, then flats
+    # W2..W5: grand stairs, then plots (a building set against the wall wins over a wall stair), wall stairs, flats
     for gy in GRAND_Y:
         c = min(full, key=lambda b: abs(b["mid"][1] - gy))
         for b in full:
@@ -512,17 +543,6 @@ def wall_bays(i):
             if -(GRAND_W[gy] / 2 + DWELLING_W / 2) < b["arc"] - c["arc"] < GRAND_W[gy] / 2 + extra + DWELLING_W / 2:
                 b["kind"] = "grand"
                 b["grand_y"] = gy
-    phase = (i * 37.0) % STAIR_EVERY
-    k = 0
-    while k < len(full):
-        b = full[k]
-        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
-                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
-            full[k]["kind"] = full[k + 1]["kind"] = "stair"
-            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
-            k += STAIR_BAYS
-            continue
-        k += 1
     pl = plots()
     for b in full:
         if b["kind"] != "blank":
@@ -535,7 +555,19 @@ def wall_bays(i):
                 b["kind"] = "plot"
                 b["plot"] = p["id"]
                 break
-        else:
+    phase = (i * 37.0) % STAIR_EVERY
+    k = 0
+    while k < len(full):
+        b = full[k]
+        if (b["arc"] - a_first - phase) % STAIR_EVERY < bay * 0.99 and k + 1 < len(full) and \
+                full[k]["kind"] == "blank" and full[k + 1]["kind"] == "blank":
+            full[k]["kind"] = full[k + 1]["kind"] = "stair"
+            full[k]["stair_part"], full[k + 1]["stair_part"] = 0, 1
+            k += STAIR_BAYS
+            continue
+        k += 1
+    for b in full:
+        if b["kind"] == "blank":
             b["kind"] = "dwelling"
     _BAYS[i] = out
     return out
