@@ -13,6 +13,8 @@ class UStaticMesh;
 class UStaticMeshComponent;
 class AProceduralForest;
 class AProceduralPlant;
+class ALyudFairRides;
+class ALyudFountain;
 class FJsonObject;
 
 /**
@@ -104,7 +106,8 @@ class LYUDMILOVSK_API ALyudFairRides : public AActor
 
 public:
 	ALyudFairRides();
-	/** Kind "carousel" or "wheel" at a place (cm) and yaw; Mat for the bulbs (the street lamps' MID, glowing at night). */
+	/** Kind "carousel" or "wheel" at a place (cm) and yaw. The rotors (with their bulbs) get GlowMat (the street lamps' MID,
+	 *  glowing at night); the gondolas get Mat. */
 	void AddRide(const FString& Kind, const FVector& At, float Yaw, UMaterialInterface* Mat, UMaterialInterface* GlowMat);
 	UFUNCTION(BlueprintCallable, Category = "City") bool IsRunning() const { return Speed > 0.01f; }
 	UFUNCTION(BlueprintCallable, Category = "City") FString DebugReport() const;
@@ -115,7 +118,9 @@ private:
 	{
 		bool bWheel = false;
 		FVector Hub = FVector::ZeroVector;     // the carousel's foot / the wheel's axle, world cm
-		float Yaw = 0.f, Angle = 0.f, Radius = 0.f;
+		float Yaw = 0.f, Radius = 0.f;
+		double Angle = 0.0, V = 0.0, Target = 0.0;     // degrees (unwrapped), deg/s, where it is braking to
+		bool bStopping = false;
 		TWeakObjectPtr<UStaticMeshComponent> Rotor;
 		TWeakObjectPtr<UInstancedStaticMeshComponent> Gondolas;
 		int32 NumGondolas = 0;
