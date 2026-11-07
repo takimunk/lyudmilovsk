@@ -891,8 +891,9 @@ void ALyudFairRides::Pose(FRide& R)
 	if (UStaticMeshComponent* C = R.Rotor.Get())
 	{
 		// the carousel turns about +Z; the wheel about its axle (its local Y)
-		const FRotator Rot = R.bWheel ? (FRotator(0.f, R.Yaw, 0.f).Quaternion() * FQuat(FVector::YAxisVector, FMath::DegreesToRadians(R.Angle))).Rotator()
-			: FRotator(0.f, R.Yaw + R.Angle, 0.f);
+		const float Ang = (float)FMath::Fmod(R.Angle, 360.0);
+		const FRotator Rot = R.bWheel ? (FRotator(0.f, R.Yaw, 0.f).Quaternion() * FQuat(FVector::YAxisVector, FMath::DegreesToRadians(Ang))).Rotator()
+			: FRotator(0.f, R.Yaw + Ang, 0.f);
 		C->SetWorldRotation(Rot);
 	}
 	if (UInstancedStaticMeshComponent* I = R.Gondolas.Get())
@@ -902,7 +903,7 @@ void ALyudFairRides::Pose(FRide& R)
 		{
 			// the rim's pivot K sits at angle 2 pi K / N in the rotor's XZ plane; turning the rotor by Angle about its Y moves it to
 			// (cos(a - Angle), sin(a - Angle)) (FQuat about +Y)
-			const float A = 2.f * PI * K / R.NumGondolas - FMath::DegreesToRadians(R.Angle);
+			const float A = 2.f * PI * K / R.NumGondolas - FMath::DegreesToRadians((float)FMath::Fmod(R.Angle, 360.0));
 			const FVector Local(FMath::Cos(A) * R.Radius * 100.f, 0.f, FMath::Sin(A) * R.Radius * 100.f);
 			// incremental update, no render-state rebuild (docs/benchmark.md "Live systems and Lumen")
 			I->UpdateInstanceTransform(K, FTransform(Up, R.Hub + Up.RotateVector(Local)), true, false, true);
@@ -920,30 +921,58 @@ void ALyudFairRides::Tick(float DeltaSeconds)
 		bOpen = OpenNow();
 		bOpenKnown = true;
 	}
-	// a run of 150 s, 90 s standing for boarding; ramps of ~6 s
+	// a run of 150 s, 90 s standing for boarding; ~6 s to speed up, and on the way down each ride brakes onto the next
+	// multiple of its step (the carousel's 45 degrees, the wheel's 30) so the seats meet their spots and a gondola the platform
 	Cycle = FMath::Fmod(Cycle + DeltaSeconds, 240.f);
 	const bool bRun = bOpen && Cycle < 150.f && !IsHidden();
-	Speed = FMath::FInterpConstantTo(Speed, bRun ? 1.f : 0.f, DeltaSeconds, 1.f / 6.f);
-	if (Speed > 0.001f)
+	float Fastest = 0.f;
+	for (FRide& R : Rides)
 	{
-		for (FRide& R : Rides)
+		const double Full = R.bWheel ? 3.6 : 360.0 / 14.0;        // deg/s: the wheel a turn in 100 s, the carousel in 14 s
+		const double Step = R.bWheel ? 360.0 / R.NumGondolas : 45.0;
+		const double Acc = Full / 6.0;
+		if (bRun)
 		{
-			// the carousel a turn in 14 s; the wheel a turn in 100 s
-			R.Angle = FMath::Fmod(R.Angle + DeltaSeconds * Speed * (R.bWheel ? 3.6f : 360.f / 14.f), 360.f);
-			Pose(R);
+			R.bStopping = false;
+			R.V = FMath::Min(Full, R.V + Acc * DeltaSeconds);
+			R.Angle += R.V * DeltaSeconds;
 		}
-		SetActorTickInterval(0.f);          // every frame while it moves
+		else if (R.V > 0.0)
+		{
+			if (!R.bStopping)
+			{
+				R.bStopping = true;
+				R.Target = FMath::CeilToDouble((R.Angle + R.V * R.V / (2.0 * Acc)) / Step) * Step;
+			}
+			const double Rem = FMath::Max(0.0, R.Target - R.Angle);
+			R.V = FMath::Min(R.V, FMath::Sqrt(2.0 * Acc * Rem) + 0.05);
+			R.Angle = FMath::Min(R.Target, R.Angle + R.V * DeltaSeconds);
+			if (R.Target - R.Angle < 1e-3)
+			{
+				R.Angle = R.Target;
+				R.V = 0.0;
+			}
+		}
+		else
+		{
+			continue;
+		}
+		if (R.Angle > 36000.0)                 // keep the unwrapped angle small, on a whole turn
+		{
+			R.Angle -= 36000.0;
+			R.Target -= 36000.0;
+		}
+		Pose(R);
+		Fastest = FMath::Max(Fastest, float(R.V / Full));
 	}
-	else
-	{
-		SetActorTickInterval(0.5f);
-	}
+	Speed = Fastest;
+	SetActorTickInterval(Speed > 0.f ? 0.f : 0.5f);     // every frame only while something moves
 }
 
 FString ALyudFairRides::DebugReport() const
 {
 	return FString::Printf(TEXT("rides %d, open %d, speed %.2f, cycle %.0f s, angles %s"), Rides.Num(), bOpen ? 1 : 0, Speed, Cycle,
-		Rides.Num() ? *FString::Printf(TEXT("%.0f/%.0f"), Rides[0].Angle, Rides.Last().Angle) : TEXT("-"));
+		Rides.Num() ? *FString::Printf(TEXT("%.1f/%.1f"), FMath::Fmod(Rides[0].Angle, 360.0), FMath::Fmod(Rides.Last().Angle, 360.0)) : TEXT("-"));
 }
 
 // --- the spots --------------------------------------------------------------------------------------------------
