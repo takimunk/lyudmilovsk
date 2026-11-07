@@ -126,12 +126,24 @@ void UAnimalLifeSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	bWantStart = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarAnimalsAnyMap.GetValueOnGameThread() >= 2;
 	StartDelay = 0.6f;     // after the forests have scattered their trees
 	// registered now, once per world, so the load (next tick) reaches Saved before Start() reads it
-	if (ULyudSaveSubsystem* Save = bWantStart ? ULyudSaveSubsystem::Get(&InWorld) : nullptr)
+	if (bWantStart)
 	{
-		Save->RegisterSaveObject(TEXT("AnimalLife"), this);
-		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(false); });
-		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(true); });
+		HookSave();
 	}
+}
+
+void UAnimalLifeSubsystem::HookSave()
+{
+	// once per world: from OnWorldBeginPlay where the animals start with the map, else when they start (AnyMap 1)
+	ULyudSaveSubsystem* Save = !bSaveHooked ? ULyudSaveSubsystem::Get(GetWorld()) : nullptr;
+	if (!Save)
+	{
+		return;
+	}
+	bSaveHooked = true;
+	Save->RegisterSaveObject(TEXT("AnimalLife"), this);
+	Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(false); });
+	Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(true); });
 }
 
 void UAnimalLifeSubsystem::Deinitialize()
@@ -482,6 +494,7 @@ void UAnimalLifeSubsystem::Tick(float DeltaTime)
 			return;
 		}
 		bWantStart = false;
+		HookSave();
 		bStarted = Start();
 		if (!bStarted)
 		{
