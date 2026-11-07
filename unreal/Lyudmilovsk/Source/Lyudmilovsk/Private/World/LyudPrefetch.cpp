@@ -76,6 +76,16 @@ bool ULyudPrefetch::ReadyPackage(FName Package, const FString& ObjectPath)
 	return false;
 }
 
+void ULyudPrefetch::Release(const UObject* WorldContext, const FString& ObjectPath)
+{
+	const UWorld* World = WorldContext ? WorldContext->GetWorld() : nullptr;
+	ULyudPrefetch* Self = World ? World->GetSubsystem<ULyudPrefetch>() : nullptr;
+	if (UObject* Asset = Self ? FindObject<UObject>(nullptr, *ObjectPath) : nullptr)
+	{
+		Self->Held.RemoveSwap(Asset, EAllowShrinking::No);
+	}
+}
+
 bool ULyudPrefetch::FolderReady(const UObject* WorldContext, const FString& Folder, const TCHAR* Skip)
 {
 	if (CVarPrefetch.GetValueOnGameThread() == 0)
