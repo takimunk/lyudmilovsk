@@ -181,6 +181,7 @@ private:
 	TSet<TPair<FName, FName>> HeroVisited;
 	TSet<FName> HeroWatched;
 	int32 PromptKind = 0;
+	TWeakObjectPtr<class ANpcTalkDirector> TalkDirector;
 	bool HeroWished = false;
 	int32 HeroLanternsTonight = 0;
 	void HeroEvent(const FString& Day, FName Event, const FString& Target);
@@ -250,6 +251,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<USoundBase> LaunchSound;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> BoomSounds;
 	UPROPERTY(Transient) TObjectPtr<USoundBase> CheerSound;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> LaunchAtt;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> CheerAtt;
 	bool bCheered = false;
 	void Boom(float Vol);
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Bursts;
@@ -363,6 +366,7 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Sparks;
 	UPROPERTY(Transient) TObjectPtr<UPointLightComponent> Light;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> Sounds;
+	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> Att;
 	FVector Base = FVector::ZeroVector, Side = FVector(0.f, 1.f, 0.f);
 	double EndsAt = 0.0;
 	float Next = 0.f, Burn = 0.f;

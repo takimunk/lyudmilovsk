@@ -20,6 +20,7 @@
 #include "LyudSave.h"
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "NpcDialogue.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "People/PeopleLife.h"
@@ -29,6 +30,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "Sky/Ephemeris.h"
 #include "Sky/LyudSky.h"
+#include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
@@ -77,6 +79,18 @@ namespace
 		S ^= S >> 17;
 		S ^= S << 5;
 		return (S & 0xFFFFFF) / float(0x1000000);
+	}
+
+	/** A one-shot's attenuation (import_audio.py sets none, so a sound without it plays at full volume map-wide). */
+	USoundAttenuation* MakeAttenuation(UObject* Outer, float Inner, float Falloff)
+	{
+		USoundAttenuation* A = NewObject<USoundAttenuation>(Outer);
+		A->Attenuation.bAttenuate = true;
+		A->Attenuation.bSpatialize = true;
+		A->Attenuation.AttenuationShape = EAttenuationShape::Sphere;
+		A->Attenuation.AttenuationShapeExtents = FVector(Inner, 0.f, 0.f);
+		A->Attenuation.FalloffDistance = Falloff;
+		return A;
 	}
 
 	/** A moving part: no shadows, nothing in Lumen or the distance fields, no collision (docs/perf_checklist.md 2). */
@@ -629,11 +643,6 @@ void ULyudFestivalSubsystem::Update()
 				WantStayUp = FMath::Max(WantStayUp, F.Late - DayStartRel);
 			}
 		}
-		if (A.Rel >= 0.f && F.Rule != "weekly")
-		{
-			for (const std::string& D : F.Menu) NewDishes.AddUnique(UTF8_TO_TCHAR(D.c_str()));
-			for (const std::string& D : F.Foods) NewFoods.AddUnique(UTF8_TO_TCHAR(D.c_str()));
-		}
 		if (bAny)
 		{
 			NewActive.Add(Entry);
@@ -644,6 +653,29 @@ void ULyudFestivalSubsystem::Update()
 		}
 	}
 	Active = NewActive;
+	// the dishes: every holiday whose day it is (all day, like IsFestivalToday), or whose night still runs past midnight
+	for (int32 Fi = 0; Fi < (int32)Calendar->Festivals.size(); Fi++)
+	{
+		const LyudFest::FFestival& Fe = Calendar->Festivals[Fi];
+		if (Fe.Rule == "weekly" || (Fe.Menu.empty() && Fe.Foods.empty()))
+		{
+			continue;
+		}
+		bool bToday = false;
+		for (int32 D = 0; D < Fe.Days && !bToday; D++)
+		{
+			bToday = Calendar->StartsOn(Fi, LyudFest::AddDays(Today, -D));
+		}
+		for (const FLyudFestivalNow& A : Active)
+		{
+			bToday |= A.Hours >= 0.f && A.Id == FName(UTF8_TO_TCHAR(Fe.Id.c_str()));
+		}
+		if (bToday)
+		{
+			for (const std::string& D : Fe.Menu) NewDishes.AddUnique(UTF8_TO_TCHAR(D.c_str()));
+			for (const std::string& D : Fe.Foods) NewFoods.AddUnique(UTF8_TO_TCHAR(D.c_str()));
+		}
+	}
 	Dishes = NewDishes;
 	Foods = NewFoods;
 	if (!FMath::IsNearlyEqual(WantStayUp, StayUp) || !bStayUpSent)
@@ -768,7 +800,7 @@ void ULyudFestivalSubsystem::Update()
 			// the tunes are about two minutes and not looped: the next one starts when one ends
 			if (!(*M)->IsPlaying())
 			{
-				(*M)->Play();
+				(*M)->FadeIn(1.f, (*M)->GetName().Contains(TEXT("crowd")) ? 0.45f : 0.8f);
 			}
 			continue;
 		}
@@ -1230,7 +1262,14 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 	// a sky lantern of his own on the beach while they are being let go, a floating one at the water's edge; a wish
 	// tied on the Tanabata bamboo
 	ULyudInventory* Inv = ULyudInventory::Get(this);
-	const bool bFree = !(UI && UI->IsOpen()) && Inv;
+	// E is the talk's while he faces somebody or is talking (one press must not both talk and buy a lantern)
+	if (!TalkDirector.IsValid())
+	{
+		TActorIterator<ANpcTalkDirector> It(World);
+		TalkDirector = It ? *It : nullptr;
+	}
+	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
+	const bool bFree = !(UI && UI->IsOpen()) && Inv && !bTalk;
 	const bool bWaterLantern = Lanterns && Lanterns->IsOnWater();
 	const int32 Price = bWaterLantern ? 20 : 30;
 	int32 Kind = (Lanterns && bLanternHere && HeroLanternsTonight < 3 && bFree && Lanterns->HasFree()) ? (bWaterLantern ? 2 : 1) : 0;
@@ -2513,6 +2552,8 @@ void ALyudFireworks::Setup(const FVector& InLaunch, const FVector& SeaDir, doubl
 	Rng = Hash(InLaunch.ToString()) ^ (uint32)InEndsAt;
 	// the sounds once (they may not be imported yet: then the shells are silent)
 	LaunchSound = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_firework_launch_01.S_firework_launch_01"), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	LaunchAtt = MakeAttenuation(this, 3000.f, 60000.f);
+	CheerAtt = MakeAttenuation(this, 2500.f, 20000.f);
 	CheerSound = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_cheer_01.S_cheer_01"), nullptr, LOAD_NoWarn | LOAD_Quiet);
 	for (int32 I = 1; I <= 3; I++)
 	{
@@ -2599,7 +2640,7 @@ void ALyudFireworks::Fire(bool bFinale)
 	BurstMats[Free]->SetVectorParameterValue(TEXT("Color"), Shells.Last().Color);
 	if (LaunchSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, S.From, 0.6f, 0.9f + Rand() * 0.2f);
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, S.From, 0.6f, 0.9f + Rand() * 0.2f, 0.f, LaunchAtt);
 	}
 }
 
@@ -2713,7 +2754,7 @@ void ALyudFireworks::Tick(float DeltaTime)
 		bCheered = true;
 		if (CheerSound)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, CheerSound, Launch - Sea * 12000.f + FVector(0.f, 0.f, 200.f), 1.f);
+			UGameplayStatics::PlaySoundAtLocation(this, CheerSound, Launch - Sea * 12000.f + FVector(0.f, 0.f, 200.f), 1.f, 1.f, 0.f, CheerAtt);
 		}
 	}
 	if (!bOn && Shells.Num() == 0 && PendingBooms.Num() == 0)
@@ -2781,7 +2822,7 @@ void ALyudSkyLanterns::Setup(const FVector& InBeach, const FVector& SeaDir, doub
 		Lightweight(C);
 		for (int32 Si = 0; Si < Slots.Num(); Si++)
 		{
-			C->SetMaterial(Si, Slots[Si] == TEXT("wood") && Wood ? (UMaterialInterface*)Wood : (UMaterialInterface*)Glow);
+			C->SetMaterial(Si, Slots[Si] == TEXT("wood") && Wood ? static_cast<UMaterialInterface*>(Wood) : static_cast<UMaterialInterface*>(Glow.Get()));
 		}
 		C->SetupAttachment(RootComponent);
 		C->SetVisibility(false);
@@ -2818,7 +2859,8 @@ bool ALyudSkyLanterns::Release(const FVector& At, bool bHero)
 			if (bWater)
 			{
 				// set down on the water's edge in front of him
-				L.P = FVector(At.X, At.Y, Beach.Z) + Sea * 150.f;
+				const FVector Side = FVector::CrossProduct(FVector::UpVector, Sea);
+				L.P = Beach + Side * FMath::Clamp(FVector::DotProduct(At - Beach, Side), -1500.f, 1500.f);
 			}
 			Comps[I]->SetWorldLocation(L.P);
 			Comps[I]->SetVisibility(true);
@@ -2837,7 +2879,10 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 	if (bOn && NextRelease <= 0.f)
 	{
 		NextRelease = bWater ? 1.5f + Rand() * 3.f : 2.5f + Rand() * 6.f;
-		for (int32 I = 0; I < Lanterns.Num(); I++)
+		// the town keeps a few back, so the hero can always light one of his own
+		int32 Free = 0;
+		for (const FLantern& Q : Lanterns) Free += Q.T < 0.f;
+		for (int32 I = 0; I < (Free > 3 ? Lanterns.Num() : 0); I++)
 		{
 			if (Lanterns[I].T < 0.f)
 			{
@@ -3200,6 +3245,7 @@ void ALyudFirecrackers::Setup(const FVector& At, const FVector& Facing, double I
 	}
 	Light = MakeLight(this, RootComponent, FLinearColor(1.f, 0.7f, 0.4f), 2500.f);
 	Light->SetWorldLocation(At + FVector(0.f, 0.f, 200.f));
+	Att = MakeAttenuation(this, 1500.f, 25000.f);
 	for (int32 I = 1; I <= 2; I++)
 	{
 		const FString Path = FString::Printf(TEXT("/Game/Audio/Festival/S_firecrackers_%02d.S_firecrackers_%02d"), I, I);
@@ -3222,7 +3268,7 @@ void ALyudFirecrackers::Tick(float DeltaTime)
 		if (Sounds.Num() > 0)
 		{
 			USoundBase* Snd = Sounds[FMath::Min((int32)(Rand() * Sounds.Num()), Sounds.Num() - 1)];
-			UGameplayStatics::PlaySoundAtLocation(this, Snd, Base + FVector(0.f, 0.f, 150.f), 1.f, 0.9f + Rand() * 0.2f);
+			UGameplayStatics::PlaySoundAtLocation(this, Snd, Base + FVector(0.f, 0.f, 150.f), 1.f, 0.9f + Rand() * 0.2f, 0.f, Att);
 		}
 	}
 	float Flash = 0.f;
@@ -3242,7 +3288,6 @@ void ALyudFirecrackers::Tick(float DeltaTime)
 					+ (bGround ? FVector(Rand() - 0.5f, Rand() - 0.5f, 0.f) * 240.f : FVector::ZeroVector);
 				Sparks[I]->SetWorldLocationAndRotation(P, FRotator(Rand() * 360.f, Rand() * 360.f, 0.f));
 				Sparks[I]->SetWorldScale3D(FVector(0.6f + Rand() * 0.8f));
-				Sparks[I]->SetVisibility(true);
 				break;
 			}
 		}
@@ -3258,7 +3303,7 @@ void ALyudFirecrackers::Tick(float DeltaTime)
 		if (Pops[I].T > Pops[I].Life)
 		{
 			Pops[I].T = -1.f;
-			Sparks[I]->SetVisibility(false);
+			Sparks[I]->SetWorldScale3D(FVector(0.001f));     // out of sight without a render-state rebuild
 			continue;
 		}
 		Alive++;
