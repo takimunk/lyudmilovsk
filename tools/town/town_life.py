@@ -48,6 +48,20 @@ UNIT_STAFF = {
     "kiosk": [["renter", 1, [9, 20], "mon-sun"]],
     "workshop": [["repairman", 1, [9, 18], "mon-sat"]],
 }
+# a promenade unit's staff by what it is (its name in the plan), over the plan's hints by kind
+UNIT_STAFF_BY_NAME = {
+    "Прокат": [["renter", 1, [9, 20], "mon-sun"]],
+    "Мастерская": [["repairman", 1, [9, 18], "mon-sat"]],
+    "Фотоателье": [["photographer", 1, [10, 19], "tue-sat"]],
+    "Парикмахерская": [["barber", 2, [9, 20], "tue-sun"]],
+    "Книжный развал": [["bookseller", 1, [10, 19], "mon-sun"]],
+    "Рыбная лавка": [["fishmonger", 2, [7, 15], "mon-sat"]],
+    "Сувениры": [["seller", 1, [10, 20], "mon-sun"]],
+    "Чебуречная": [["cook", 1, [10, 21], "mon-sun"], ["seller", 1, [10, 21], "mon-sun"]],
+    "Пивной бар": [["bartender", 2, [14, 24], "mon-sun"]],
+    "Булочная": [["baker", 1, [5, 13], "mon-sat"], ["seller", 1, [7, 19], "mon-sun"]],
+    "Пельменная": [["cook", 1, [10, 21], "mon-sun"], ["waiter", 1, [11, 21], "mon-sun"]],
+}
 # the restaurant thread's place id and the three it named
 PLOT_ALIAS = {"P-RESTAURANT": "restaurant"}
 PINNED = {
@@ -72,6 +86,13 @@ ROLES = {
     "cashier": ("кассир", "cashier", "レジ係"),
     "butcher": ("мясник", "butcher", "肉屋"),
     "fishmonger": ("торговец рыбой", "fishmonger", "魚屋"),
+    "photographer": ("фотограф", "photographer", "写真家"),
+    "barber": ("парикмахер", "barber", "理容師"),
+    "bookseller": ("букинист", "bookseller", "古本屋"),
+    "bookseller_f": ("букинистка", "bookseller", "古本屋"),
+    "bartender": ("бармен", "bartender", "バーテンダー"),
+    "bartender_f": ("барменша", "bartender", "バーテンダー"),
+    "baker": ("пекарь", "baker", "パン職人"),
     "fishmonger_f": ("торговка рыбой", "fishmonger", "魚屋"),
     "vendor": ("торговец на ярмарке", "fair vendor", "屋台の売り子"),
     "vendor_f": ("торговка на ярмарке", "fair vendor", "屋台の売り子"),
@@ -264,6 +285,10 @@ def build_places(plan, extra, args):
     done = set()
     fair_sellers = []
     for s in extra.get("spots", []):
+        # the fair's rides turn on their own cycle (ALyudFairRides): nobody stands on them till they seat riders themselves
+        if s.get("sub") == "ride":
+            done.add(s["id"])
+            continue
         if s.get("season") == "summer" or s.get("sub") == "customers" and s.get("seller"):
             if s.get("seller"):
                 fair_sellers.append(s["seller"])
@@ -306,7 +331,7 @@ def build_places(plan, extra, args):
                      "centre": from_ue_cm(p["ue"])})
     for u in plan.get("promenade_units", []):
         work.append({"id": u["id"], "plot": u["id"], "kind": u["kind"], "door": from_ue_cm(u["door_ue"]), "yaw": u["yaw"],
-                     "staff": u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"])})
+                     "staff": UNIT_STAFF_BY_NAME.get(u.get("name_ru")) or u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"])})
     rest = read_input("unreal/Lyudmilovsk/Content/Restaurant/seats.json")
     if rest and "restaurant" not in extra_work:
         extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else []),
