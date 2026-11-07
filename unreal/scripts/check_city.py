@@ -1,4 +1,4 @@
-"""Checks the placed town buildings in -game (works with -nullrhi): lyud.City.Report at 13:00 and 22:00, and for every
+"""Checks the placed town buildings in -game (works with -nullrhi): lyud.City.Report at 13:00, 22:00 and 22:00 with lyud.City.Lights 1, and for every
 plot with a placed building a downward line trace 5 m inland of the plot's front (should hit the building's shell,
 or the ground inside an open building) and 5 m out in front (the street: the terrain), each compared with the
 plot's ground z in city_plan.json. Lines "CITYCHECK ..." in the log.
@@ -95,10 +95,16 @@ def tick(dt):
         st["step"], st["t0"] = 2, st["t"]
     elif s == 2 and st["t"] - st["t0"] > 5:
         cmd(w, "lyud.City.Report")
+        cmd(w, "lyud.City.Lights 1")
+        log("lights 1")
         st["step"], st["t0"] = 3, st["t"]
-    elif s == 3 and st["t"] - st["t0"] > 1:
+    elif s == 3 and st["t"] - st["t0"] > 3:
+        cmd(w, "lyud.City.Report")
+        cmd(w, "lyud.City.Lights 0")
+        st["step"], st["t0"] = 4, st["t"]
+    elif s == 4 and st["t"] - st["t0"] > 1:
         cmd(w, "quit")
-        st["step"] = 4
+        st["step"] = 5
 
 
 unreal.register_slate_post_tick_callback(tick)
