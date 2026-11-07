@@ -293,6 +293,12 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Fishing"), TEXT("rod_swish") }, { TEXT("Fishing"), TEXT("float_plop") }, { TEXT("Fishing"), TEXT("reel_click") },
 		{ TEXT("Fishing"), TEXT("reel_drag") }, { TEXT("Fishing"), TEXT("line_snap") }, { TEXT("Fishing"), TEXT("fish_splash") },
 		{ TEXT("Fishing"), TEXT("fish_flap") }, { TEXT("Fishing"), TEXT("fish_bag") },
+		// the restaurant «Янтарь» (ALyudRestaurant: china and cutlery, the pass's bell, the kitchen and the room, its quiet music)
+		{ TEXT("Restaurant"), TEXT("rest_plate") }, { TEXT("Restaurant"), TEXT("rest_clink") }, { TEXT("Restaurant"), TEXT("rest_glass") },
+		{ TEXT("Restaurant"), TEXT("rest_pour") }, { TEXT("Restaurant"), TEXT("rest_bell") }, { TEXT("Restaurant"), TEXT("rest_sizzle") },
+		{ TEXT("Restaurant"), TEXT("rest_kitchen") }, { TEXT("Restaurant"), TEXT("rest_room") }, { TEXT("Restaurant"), TEXT("rest_music") },
+		{ TEXT("Restaurant"), TEXT("rest_door") }, { TEXT("Restaurant"), TEXT("rest_menu") }, { TEXT("Restaurant"), TEXT("rest_tray") },
+		{ TEXT("Restaurant"), TEXT("rest_coins") },
 	};
 	for (const auto& G : Groups)
 	{

@@ -74,6 +74,9 @@ public:
 	 *  the floor under the cushion's front edge, X the way the sitter faces), SeatZ the cushion's height, cm. The hero
 	 *  stays on it, carried with Base, until StandUp (any step, Space, or the seat's own key). */
 	void SitOn(USceneComponent* Base, const FTransform& SeatLocal, float SeatZ);
+	/** Where StandUp puts the feet, in the seat's frame (cm; the default a step forward off a bench). A chair at a table stands
+	 *  up beside or behind itself: set after SitOn. */
+	void SetStandUpOffset(const FVector& SeatFrameOffset) { StandOffset = SeatFrameOffset; }
 	/** Gets up and steps off the seat, forward. */
 	void StandUp();
 	bool IsSeated() const { return SeatBase.IsValid(); }
@@ -174,6 +177,7 @@ private:
 	FTransform SeatLocal;
 	float SeatZ = 42.f;
 	float SitAlpha = 0.f;
+	FVector StandOffset = FVector(38.f, 0.f, 0.f);
 	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
 	/** FindBike / FindReach: what was found, and how many components the hero had when it last looked (a new one: look again). */
 	mutable TWeakObjectPtr<UHeroBikeComponent> BikeCache;

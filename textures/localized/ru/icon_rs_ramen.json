@@ -1,0 +1,10 @@
+{
+ "id": "icon_rs_ramen",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/restaurant/icons_grid.png",
+ "cell": [
+  3,
+  0
+ ]
+}

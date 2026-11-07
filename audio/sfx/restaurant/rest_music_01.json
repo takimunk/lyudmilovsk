@@ -1,0 +1,39 @@
+{
+ "name": "rest_music_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_music_01",
+ "pool": "rest_music",
+ "file": "audio/sfx/restaurant/rest_music_01.wav",
+ "generator": "tools/restaurant/sounds.py:music_loop",
+ "seed": 2087005438,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 64.0,
+ "peak_dbfs": -10.13,
+ "rms_dbfs": -25.0,
+ "dc": -0.0,
+ "params": {
+  "key": "C major / A minor",
+  "tempo_bpm": 120,
+  "time_signature": "4/4",
+  "bars": 32,
+  "seconds": 64.0,
+  "progression": [
+   "Cmaj9",
+   "Am9",
+   "Dm9",
+   "G13",
+   "Em7",
+   "A7b9",
+   "Dm9",
+   "G13"
+  ],
+  "form": "8-bar cycle x4",
+  "feel": "bossa nova, straight eighths",
+  "instruments": "FM electric piano comp, vibraphone melody, plucked bass, brushes, rim clicks, foot chick"
+ },
+ "seam_click_ratio": 0.068
+}

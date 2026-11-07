@@ -1,0 +1,312 @@
+{
+ "_doc": "The menu of «Янтарь» (docs/restaurant.md). id = the inventory item (LyudInventory.cpp, item.<id>.name/desc in the strings); dish = the meshes' name in design/restaurant/tableware.json dishes (SM_RF_<dish>_<k> bite stages, SM_RF_Load_<dish>_S/B, SM_RF_<dish>_Fill); section: the menu card's heading (ui.rest.section.<s>); price in roubles; cook: seconds from the order to the pass (times restaurant.json wait_scale); bites: the share a small and a big bite take; free: brought to the table unasked (bread and water, once per visit); festival: only on festival days. special: the weekday (0 Monday .. 6 Sunday) it is the daily special (only that day, in its own section).",
+ "sections": [
+  "special",
+  "starters",
+  "soups",
+  "mains",
+  "desserts",
+  "drinks",
+  "festival"
+ ],
+ "dishes": [
+  {
+   "id": "rs_olivier",
+   "dish": "olivier",
+   "section": "starters",
+   "price": 45,
+   "cook": 40,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_baltic_fish",
+   "dish": "baltic_fish",
+   "section": "starters",
+   "price": 90,
+   "cook": 50,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_borscht",
+   "dish": "borscht",
+   "section": "soups",
+   "price": 55,
+   "cook": 60,
+   "bites": [
+    0.07,
+    0.14
+   ]
+  },
+  {
+   "id": "rs_ramen",
+   "dish": "ramen",
+   "section": "soups",
+   "price": 85,
+   "cook": 80,
+   "bites": [
+    0.07,
+    0.15
+   ]
+  },
+  {
+   "id": "rs_pelmeni",
+   "dish": "pelmeni",
+   "section": "mains",
+   "price": 70,
+   "cook": 75,
+   "bites": [
+    0.085,
+    0.17
+   ]
+  },
+  {
+   "id": "rs_pasta",
+   "dish": "pasta",
+   "section": "mains",
+   "price": 75,
+   "cook": 80,
+   "bites": [
+    0.08,
+    0.16
+   ]
+  },
+  {
+   "id": "rs_khachapuri",
+   "dish": "khachapuri",
+   "section": "mains",
+   "price": 80,
+   "cook": 100,
+   "bites": [
+    0.09,
+    0.18
+   ]
+  },
+  {
+   "id": "rs_steak",
+   "dish": "steak",
+   "section": "mains",
+   "price": 150,
+   "cook": 120,
+   "bites": [
+    0.08,
+    0.16
+   ]
+  },
+  {
+   "id": "rs_syrniki",
+   "dish": "syrniki",
+   "section": "desserts",
+   "price": 45,
+   "cook": 55,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_medovik",
+   "dish": "medovik",
+   "section": "desserts",
+   "price": 40,
+   "cook": 40,
+   "bites": [
+    0.12,
+    0.24
+   ]
+  },
+  {
+   "id": "rs_plombir",
+   "dish": "plombir",
+   "section": "desserts",
+   "price": 30,
+   "cook": 35,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_coffee",
+   "dish": "coffee",
+   "section": "drinks",
+   "price": 20,
+   "cook": 30,
+   "bites": [
+    0.12,
+    0.25
+   ]
+  },
+  {
+   "id": "rs_mors",
+   "dish": "mors",
+   "section": "drinks",
+   "price": 15,
+   "cook": 25,
+   "bites": [
+    0.12,
+    0.25
+   ]
+  },
+  {
+   "id": "rs_water",
+   "dish": "water",
+   "section": "drinks",
+   "price": 0,
+   "cook": 0,
+   "bites": [
+    0.12,
+    0.25
+   ],
+   "free": true
+  },
+  {
+   "id": "rs_bread",
+   "dish": "bread",
+   "section": "starters",
+   "price": 0,
+   "cook": 0,
+   "bites": [
+    0.1,
+    0.2
+   ],
+   "free": true
+  },
+  {
+   "id": "rs_solyanka",
+   "dish": "solyanka",
+   "section": "special",
+   "special": 0,
+   "price": 65,
+   "cook": 65,
+   "bites": [
+    0.07,
+    0.14
+   ]
+  },
+  {
+   "id": "rs_golubtsy",
+   "dish": "golubtsy",
+   "section": "special",
+   "special": 1,
+   "price": 70,
+   "cook": 80,
+   "bites": [
+    0.08,
+    0.16
+   ]
+  },
+  {
+   "id": "rs_draniki",
+   "dish": "draniki",
+   "section": "special",
+   "special": 2,
+   "price": 50,
+   "cook": 60,
+   "bites": [
+    0.09,
+    0.18
+   ]
+  },
+  {
+   "id": "rs_fried_flounder",
+   "dish": "fried_flounder",
+   "section": "special",
+   "special": 3,
+   "price": 95,
+   "cook": 95,
+   "bites": [
+    0.08,
+    0.16
+   ]
+  },
+  {
+   "id": "rs_shashlik",
+   "dish": "shashlik",
+   "section": "special",
+   "special": 4,
+   "price": 120,
+   "cook": 110,
+   "bites": [
+    0.09,
+    0.18
+   ]
+  },
+  {
+   "id": "rs_sushi_set",
+   "dish": "sushi_set",
+   "section": "special",
+   "special": 5,
+   "price": 110,
+   "cook": 90,
+   "bites": [
+    0.083,
+    0.166
+   ]
+  },
+  {
+   "id": "rs_blini_caviar",
+   "dish": "blini_caviar",
+   "section": "special",
+   "special": 6,
+   "price": 130,
+   "cook": 70,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_tea",
+   "dish": "tea",
+   "section": "drinks",
+   "price": 12,
+   "cook": 20,
+   "bites": [
+    0.12,
+    0.25
+   ]
+  },
+  {
+   "id": "rs_fest_ukha",
+   "dish": "fest_ukha",
+   "section": "festival",
+   "festival": true,
+   "price": 70,
+   "cook": 70,
+   "bites": [
+    0.07,
+    0.14
+   ]
+  },
+  {
+   "id": "rs_fest_kulebyaka",
+   "dish": "fest_kulebyaka",
+   "section": "festival",
+   "festival": true,
+   "price": 60,
+   "cook": 50,
+   "bites": [
+    0.1,
+    0.2
+   ]
+  },
+  {
+   "id": "rs_fest_sbiten",
+   "dish": "fest_sbiten",
+   "section": "festival",
+   "festival": true,
+   "price": 18,
+   "cook": 25,
+   "bites": [
+    0.12,
+    0.25
+   ]
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_rs_fest_kulebyaka",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/restaurant/icons_grid2.png",
+ "cell": [
+  1,
+  2
+ ]
+}

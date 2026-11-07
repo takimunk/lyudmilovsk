@@ -22,6 +22,10 @@ enum class ELyudUtensil : uint8
 	Hand,
 	/** The dish is a cup or a glass in the hand: a bite is a sip. */
 	Cup,
+	/** Chopsticks from the bowl to the mouth (the restaurant's ramen): like a fork, the load hangs under the tips. */
+	Chopsticks,
+	/** Fingers: a piece is torn off the dish and brought up in the hand (bread, khachapuri); the load sits between the fingers. */
+	Fingers,
 };
 
 UENUM()
@@ -54,8 +58,10 @@ struct FLyudMeal
 	UStaticMesh* LoadMeshBig = nullptr;
 	UMaterialInterface* LoadMaterial = nullptr;
 	FLinearColor LoadTint = FLinearColor(0.9f, 0.75f, 0.4f);
-	/** Fork/Spoon: the utensil (null: /Game/Food/Meshes/SM_Fork or SM_Spoon). Origin at the grip, tip along +X. */
+	/** Fork/Spoon/Chopsticks: the utensil (null: /Game/Food/Meshes/SM_Fork or SM_Spoon). Origin at the grip, tip along +X. */
 	UStaticMesh* UtensilMesh = nullptr;
+	/** Where the load rides from the utensil's grip (cm, its frame; X the tip); the default is the fork's tines. */
+	FVector LoadOffset = FVector(11.5f, 0.f, 0.6f);
 	/** Hand/Cup: the dish's radius and half height (cm) the fingers close on, and where its rim is above its origin (Cup). */
 	float DishRadius = 4.f;
 	float DishHalfHeight = 5.f;
@@ -90,6 +96,10 @@ public:
 	void EndMeal();
 	bool IsEating() const { return bActive; }
 	float AmountLeft() const { return Meal.Amount; }
+	/** 0..1 through the scoop (the fork in the food: a knife saws then), -1 in any other phase. */
+	float ScoopPhase() const;
+	/** The dish being eaten (null when idle). */
+	AActor* MealDish() const { return bActive ? Meal.Dish.Get() : nullptr; }
 	FName MealItem() const { return Meal.Item; }
 
 	/** Takes one bite as if the button was clicked (Small) or held (Big): tests and scripted scenes. */

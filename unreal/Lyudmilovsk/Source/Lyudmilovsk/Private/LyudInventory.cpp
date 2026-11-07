@@ -168,6 +168,35 @@ namespace
 		Good(TEXT("diner_tea"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.5f, 0.24f, 0.05f), 10, 3.6f);
 		Good(TEXT("diner_kompot"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.43f, 0.1f, 0.16f), 12, 3.6f);
 		Good(TEXT("diner_coffee"), K::Drink, L::Cup, FVector(8.5f, 8.5f, 9.5f), FLinearColor(0.95f, 0.94f, 0.9f), 8, 4.25f);
+		// the restaurant «Янтарь» (docs/restaurant.md): ordered from the menu card at a table, carried there by the waiter and eaten seated
+		// (ALyudRestaurant, Content/Restaurant/menu.json); items only for their names, prices and icons (never in the pocket)
+		Good(TEXT("rs_olivier"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.93f, 0.88f, 0.7f), 45, 9.f);
+		Good(TEXT("rs_baltic_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.75f, 0.5f, 0.25f), 90, 9.f);
+		Good(TEXT("rs_borscht"), K::Food, L::Pack, FVector(7.f, 18.f, 18.f), FLinearColor(0.6f, 0.1f, 0.12f), 55, 9.f);
+		Good(TEXT("rs_ramen"), K::Food, L::Pack, FVector(9.f, 18.f, 18.f), FLinearColor(0.85f, 0.65f, 0.35f), 85, 9.f);
+		Good(TEXT("rs_pelmeni"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.95f, 0.9f, 0.8f), 70, 9.f);
+		Good(TEXT("rs_pasta"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.93f, 0.82f, 0.55f), 75, 9.f);
+		Good(TEXT("rs_khachapuri"), K::Food, L::Pack, FVector(5.f, 22.f, 36.f), FLinearColor(0.85f, 0.6f, 0.3f), 80, 11.f);
+		Good(TEXT("rs_steak"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.4f, 0.2f, 0.12f), 150, 9.f);
+		Good(TEXT("rs_syrniki"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.85f, 0.6f, 0.3f), 45, 9.f);
+		Good(TEXT("rs_medovik"), K::Food, L::Pack, FVector(7.f, 10.f, 12.f), FLinearColor(0.85f, 0.65f, 0.35f), 40, 6.f);
+		Good(TEXT("rs_plombir"), K::Food, L::Pack, FVector(12.f, 9.f, 9.f), FLinearColor(0.97f, 0.95f, 0.9f), 30, 4.5f);
+		Good(TEXT("rs_coffee"), K::Drink, L::Cup, FVector(7.f, 7.f, 7.f), FLinearColor(0.95f, 0.94f, 0.9f), 20, 3.5f);
+		Good(TEXT("rs_mors"), K::Drink, L::Glass, FVector(7.f, 7.f, 11.f), FLinearColor(0.55f, 0.05f, 0.12f), 15, 3.6f);
+		Good(TEXT("rs_water"), K::Drink, L::Glass, FVector(7.f, 7.f, 11.f), FLinearColor(0.8f, 0.88f, 0.92f), 0, 3.6f);
+		Good(TEXT("rs_bread"), K::Food, L::Pack, FVector(8.f, 14.f, 22.f), FLinearColor(0.55f, 0.35f, 0.2f), 0, 7.f);
+		// its daily specials (one a weekday) and the festival menu
+		Good(TEXT("rs_solyanka"), K::Food, L::Pack, FVector(7.f, 18.f, 18.f), FLinearColor(0.7f, 0.35f, 0.15f), 65, 9.f);
+		Good(TEXT("rs_golubtsy"), K::Food, L::Pack, FVector(6.f, 18.f, 18.f), FLinearColor(0.75f, 0.3f, 0.15f), 70, 9.f);
+		Good(TEXT("rs_draniki"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.8f, 0.55f, 0.25f), 50, 9.f);
+		Good(TEXT("rs_fried_flounder"), K::Food, L::Pack, FVector(4.f, 18.f, 26.f), FLinearColor(0.7f, 0.5f, 0.25f), 95, 10.f);
+		Good(TEXT("rs_shashlik"), K::Food, L::Pack, FVector(5.f, 22.f, 36.f), FLinearColor(0.45f, 0.25f, 0.15f), 120, 11.f);
+		Good(TEXT("rs_sushi_set"), K::Food, L::Pack, FVector(5.f, 18.f, 26.f), FLinearColor(0.9f, 0.55f, 0.45f), 110, 10.f);
+		Good(TEXT("rs_blini_caviar"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.85f, 0.45f, 0.2f), 130, 9.f);
+		Good(TEXT("rs_tea"), K::Drink, L::Glass, FVector(8.f, 8.f, 11.f), FLinearColor(0.45f, 0.2f, 0.05f), 12, 4.f);
+		Good(TEXT("rs_fest_ukha"), K::Food, L::Pack, FVector(8.f, 18.f, 18.f), FLinearColor(0.75f, 0.6f, 0.35f), 70, 9.f);
+		Good(TEXT("rs_fest_kulebyaka"), K::Food, L::Pack, FVector(6.f, 10.f, 12.f), FLinearColor(0.8f, 0.55f, 0.3f), 60, 6.f);
+		Good(TEXT("rs_fest_sbiten"), K::Drink, L::Glass, FVector(9.f, 8.f, 11.f), FLinearColor(0.75f, 0.45f, 0.1f), 18, 4.f);
 		FLyudItemDef Feeder;
 		Feeder.Id = TEXT("feeder");
 		Feeder.Kind = ELyudItemKind::Place;
@@ -663,7 +692,16 @@ void ULyudInventoryUI::Deinitialize()
 bool ULyudInventoryUI::IsOpen() const
 {
 	const ULyudGameScreen* GameScreen = ULyudGameScreen::Get(this);
-	return bShop || (GameScreen && GameScreen->IsOpen());
+	return bShop || ExternalScreen.IsValid() || (GameScreen && GameScreen->IsOpen());
+}
+
+void ULyudInventoryUI::SetExternalScreen(const UObject* Key)
+{
+	if (!Key && ExternalScreen.IsValid())
+	{
+		ShopClosedFrame = GFrameCounter;
+	}
+	ExternalScreen = Key;
 }
 
 bool ULyudInventoryUI::CanOpen(bool bNeedHero) const

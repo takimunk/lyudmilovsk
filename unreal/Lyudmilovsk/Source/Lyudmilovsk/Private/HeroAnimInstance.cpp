@@ -196,6 +196,7 @@ void FHeroAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSeconds
 	Reach = Hero->Reach;
 	Bike = Hero->Bike;
 	Ladder = Hero->Ladder;
+	Table = Hero->Table;
 }
 
 bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
@@ -359,5 +360,6 @@ bool FHeroAnimProxy::Evaluate(FPoseContext& Output)
 	}
 	LyudBikeRider::ApplyArms(Output.Pose, Bike);
 	LyudBikeRider::ApplyArms(Output.Pose, Ladder);
+	LyudBikeRider::ApplyArms(Output.Pose, Table);
 	return true;
 }

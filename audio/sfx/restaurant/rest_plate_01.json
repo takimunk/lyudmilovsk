@@ -1,0 +1,21 @@
+{
+ "name": "rest_plate_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_plate_01",
+ "pool": "rest_plate",
+ "file": "audio/sfx/restaurant/rest_plate_01.wav",
+ "generator": "tools/restaurant/sounds.py:plate",
+ "seed": 446201446,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.493,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -24.98,
+ "dc": -2.79e-05,
+ "params": {
+  "ring_hz": 2364.743
+ }
+}
