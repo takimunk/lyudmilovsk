@@ -83,7 +83,7 @@ its prey's numbers now against the usual (`ULyudEcosystem::GetAbundance` over it
 
 ## The restaurant's kitchen
 
-`fishing.json` "kitchens": the «Янтарь»'s service door at the back of P-RESTAURANT (20 m landward of its middle). Open 11-23,
+`fishing.json` "kitchens": the «Янтарь»'s staff door at the back of its kitchen block (1.5 m outside it, set by the restaurant thread; its cook stands in the doorway while the hero is near). Open 11-23,
 close by: «Y — сдать рыбу повару (N шт., X ₽)». It takes only the prized kinds (200 roubles a kilo and up at the Gastronom) of a
 good size (0.85 of the usual length), dearest first, 8 a day, at 1.6 x the Gastronom's price (`LyudFishing::RestaurantPrice`;
 `ULyudFishingState::KitchenOffer / SellToKitchen`, the day's count saved). The restaurant's own building and cooks are another

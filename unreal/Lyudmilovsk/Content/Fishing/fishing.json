@@ -12,7 +12,7 @@
     "fee": 30, "range": 60000, "min_depth": 70
   },
   "kitchens": [
-    { "id": "yantar", "plan": "P-RESTAURANT", "ue": [5158, 77790, -3620], "at": [-2000, 130, 0], "radius": 300,
+    { "id": "yantar", "plan": "P-RESTAURANT", "ue": [5158, 77790, -3620], "at": [-1571, 349, 0], "radius": 220,
       "open": 11, "close": 23, "per_day": 8 }
   ]
 }
