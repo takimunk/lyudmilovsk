@@ -78,7 +78,8 @@ private:
 	UStaticMeshComponent* MakePart(class UStaticMesh* Mesh, const TCHAR* Name, const TCHAR* MaterialPath, bool bShadow, float DrawCm,
 		TFunctionRef<void(UMaterialInstanceDynamic*)> Setup);
 	void SetRunning(bool bOn);
-	void UpdateSound();
+	void UpdateSound(float DeltaSeconds);
+	bool bSoundWanted = false;
 };
 
 /** Puts the fountain's water in when the outdoor map starts (lyud.Fountain 0: not at all). */
@@ -93,7 +94,11 @@ public:
 
 	/** The fountain of this world (null outside Lvl_Scene01). For Python: unreal.LyudFountainSubsystem. */
 	UFUNCTION(BlueprintCallable, Category = "Fountain") ALyudFountain* GetFountain() const { return Fountain.Get(); }
-	/** Every fountain of this world: the Academgorodok's and the town's (Sun Square). */
+	/** Every fountain of this world: the Academgorodok's and the town's (Sun Square, built by ALyudPublicSpaces). */
+	const TArray<TWeakObjectPtr<ALyudFountain>>& GetAllFountains() const { return All; }
+	/** A fountain built elsewhere (the town's, by ALyudPublicSpaces) joins the list. */
+	void Register(ALyudFountain* F);
+	/** For Python and tests (a copy). */
 	UFUNCTION(BlueprintCallable, Category = "Fountain") TArray<ALyudFountain*> GetFountains() const
 	{
 		TArray<ALyudFountain*> Out;

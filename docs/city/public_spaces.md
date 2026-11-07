@@ -12,7 +12,9 @@ this part lays the paving, the benches, the lamps, the railings, the fountain, t
     python3 tools/public_spaces.py --png p.png  # a plan drawing (not committed)
 
 `tools/public_spaces.py` reads the plan (plots, spots, wall bays, links, terraces; `city_plan.py`'s
-`to_map`/`wall_s`/`seaward_yaw`) and writes one layout. Rerun it after the plan changes: nothing is hand-placed.
+`to_map`/`wall_s`/`seaward_yaw`) and writes one layout. Rerun it after the plan changes: nothing is hand-placed. Heights on the beach, the club stair and the rills come
+from the built ground (`Saved/World/terrain_out.bin`, gitignored: build the terrain or copy it in first); without it the
+script warns loudly and falls back to the macro shape, and `--strict` refuses to write.
 Frames: the plan's terrace frame `(s, y)` (metres inland from the high-water line, map Y) for laying out; the JSON is
 in Unreal metres, yaw in Unreal degrees (0 = +x = the sea, 90 = north).
 
@@ -68,7 +70,7 @@ For the town life and the holidays: every place people use, by a stable id. The 
 
 Entry: `id`, `kind` (bench, fountain, promenade, beach, fair, square, park, pond, playground, pier, stage,
 sunrise_point, sunset_point, bonfire), `sub` (rail, kerb, stroll, crowd, audience, towel, loungers, customers,
-parents, bandstand...), `pos` [x, y, z] Unreal metres, `yaw`, `seats`; `slots` [{pos, yaw, height}] seat points for
+parents, bandstand...), `pos` [x, y, z] Unreal metres, `yaw`, `seats`; `slots` [{pos, yaw, height, kind}] places (kind: bench = sit at `height`, stand, sit_ground, lie; every spot has them) for
 benches, the fountain's rim (24), the seawall kerb, the pond's kerb, loungers; `path` stroll polylines (the promenade
 by the sea and by the town, the park's loop, round the pond, the fair's lane, the pier); `season: summer` for the beach
 ones; fair stalls carry `seller` {pos, yaw} and `goods`; `furnished: false` marks the plan's spots passed on without
@@ -86,7 +88,7 @@ Runtime (`Public/City/LyudPublicSpaces.h`):
     FTransform At = S->GetSeat(Bench, Seat);                             // walk there, sit facing its rotation
     S->Release(Bench, Person);                                           // or ReleaseAll(Person) going home
 
-`GetSpots(Kind)`, `GetSpot(Id, Out)`, `FreePlaces(Id)`. Seatless spots (a crowd, a stroll) hand out places on a
+`GetSpots(Kind)`, `GetSpot(Id, Out)` (`Seats`, `SeatHeights`, `SeatKinds`), `FreePlaces(Id)`. Seatless spots (a crowd, a stroll) hand out places on a
 spiral round the spot or spread along its path. Summer-only spots are skipped by `FindNearestFree` out of season.
 Reservations live only in memory (people re-pick their seats after a load).
 

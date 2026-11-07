@@ -290,7 +290,13 @@ bool ALyudFountain::Build(TSharedPtr<FJsonObject> Doc, bool bAcadem)
 	const float FS = Doc->HasField(TEXT("flow_scale")) ? (float)Doc->GetNumberField(TEXT("flow_scale")) : 1.f;
 	const float DS = FMath::Sqrt(FS);
 	const int32 DN = FMath::RoundToInt(FS * FS);
-	const TArray<TSharedPtr<FJsonValue>>& At = Doc->GetArrayField(TEXT("at"));
+	const TArray<TSharedPtr<FJsonValue>>* AtP = nullptr;
+	if (!Doc->TryGetArrayField(TEXT("at"), AtP) || AtP->Num() < 3 || !Doc->HasTypedField<EJson::Object>(TEXT("stone")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LyudFountain: a layout without 'at' [x,y,z] or 'stone'"));
+		return false;
+	}
+	const TArray<TSharedPtr<FJsonValue>>& At = *AtP;
 	Foot = FVector(At[0]->AsNumber(), At[1]->AsNumber(), At[2]->AsNumber()) * 100.0;
 	// moved once, then static like its parts (a static part can't hang from a movable root)
 	RootComponent->SetMobility(EComponentMobility::Movable);
@@ -518,7 +524,7 @@ void ALyudFountain::SetRunning(bool bOn)
 	UE_LOG(LogTemp, Display, TEXT("LyudFountain: %s (%s)"), bOn ? TEXT("running") : TEXT("drained"), *DebugReport());
 }
 
-void ALyudFountain::UpdateSound()
+void ALyudFountain::UpdateSound(float DeltaSeconds)
 {
 	if (!Sound)
 	{
@@ -531,6 +537,7 @@ void ALyudFountain::UpdateSound()
 		Dist = (float)FVector::Dist(Cam->GetCameraLocation(), Sound->GetComponentLocation());
 	}
 	const bool bWant = bRunning && !IsHidden() && Dist < HearCm && (!SoundOn || SoundOn->GetInt() > 0);
+	bSoundWanted = bWant;
 	float Gain = 0.5f;
 	if (const ULyudSoundscapeSubsystem* Scape = ULyudSoundscapeSubsystem::Get(this))
 	{
@@ -553,7 +560,7 @@ void ALyudFountain::UpdateSound()
 		{
 			SoundFadeLeft = 1.5f;
 		}
-		SoundFadeLeft -= GetWorld() ? GetWorld()->GetDeltaSeconds() : 0.25f;
+		SoundFadeLeft -= DeltaSeconds;
 		if (SoundFadeLeft <= 0.f)
 		{
 			Sound->Stop();
@@ -582,7 +589,7 @@ FString ALyudFountain::DebugReport()
 
 float ALyudFountain::GetSoundLevel() const
 {
-	return Sound && bSoundPlaying ? Sound->GetRms() : 0.f;
+	return Sound && bSoundPlaying && bSoundWanted ? Sound->GetRms() : 0.f;     // a fading voice reports silence
 }
 
 void ALyudFountain::Tick(float DeltaSeconds)
@@ -608,7 +615,7 @@ void ALyudFountain::Tick(float DeltaSeconds)
 			UE_LOG(LogTemp, Display, TEXT("LyudFountain: %s"), *DebugReport());
 		}
 	}
-	UpdateSound();
+	UpdateSound(DeltaSeconds);
 }
 
 bool ULyudFountainSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -638,27 +645,12 @@ void ULyudFountainSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 			F->Destroy();
 		}
 	}
-	// the town's own (Content/City/public_spaces.json "fountains": the Sun fountain on the square), same water, own stone
-	FString Text;
-	TSharedPtr<FJsonObject> Doc;
-	const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
-	if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("City/public_spaces.json"))) &&
-		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Doc) && Doc && Doc->TryGetArrayField(TEXT("fountains"), Fs))
+}
+
+void ULyudFountainSubsystem::Register(ALyudFountain* F)
+{
+	if (F)
 	{
-		for (const TSharedPtr<FJsonValue>& V : *Fs)
-		{
-			if (ALyudFountain* F = InWorld.SpawnActor<ALyudFountain>(SP))
-			{
-				if (F->Build(V->AsObject(), false))
-				{
-					F->Tags.Add(TEXT("City"));
-					All.Add(F);
-				}
-				else
-				{
-					F->Destroy();
-				}
-			}
-		}
+		All.AddUnique(F);
 	}
 }

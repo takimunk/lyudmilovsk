@@ -56,7 +56,7 @@ private:
 		FString Kind;
 		bool bSummer = false;
 		bool bGlow = false;
-		TObjectPtr<UInstancedStaticMeshComponent> Comp;
+		TWeakObjectPtr<UInstancedStaticMeshComponent> Comp;      // held by Comps (UPROPERTY)
 	};
 	TArray<FGroup> Groups;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> Meshes;
@@ -68,6 +68,8 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondWater;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondIce;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Cascade;
+	UPROPERTY(Transient) TArray<TObjectPtr<class ALyudFountain>> Fountains;
+	TArray<TPair<float, int32>> NearLamps;
 	TWeakObjectPtr<AProceduralForest> Forest;
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
 
@@ -105,6 +107,8 @@ struct FLyudPublicSpot
 	UPROPERTY(BlueprintReadOnly, Category = "City") TArray<FTransform> Seats;
 	/** Seat heights over the ground, cm, per seat. */
 	UPROPERTY(BlueprintReadOnly, Category = "City") TArray<float> SeatHeights;
+	/** What each seat is: bench (sit at its height), stand, sit_ground, lie. */
+	UPROPERTY(BlueprintReadOnly, Category = "City") TArray<FName> SeatKinds;
 	/** A stroll line (world cm) for walks: the promenade, the park's loop, round the pond. */
 	UPROPERTY(BlueprintReadOnly, Category = "City") TArray<FVector> Path;
 	/** Only in summer (beach loungers, towels). */

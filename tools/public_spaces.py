@@ -209,7 +209,8 @@ def promenade(L):
     kz = P.tz["T0"] + 0.45
     y = y0 + 4.0
     while y < y1 - 4.0:
-        run = [v for v in (y + k * 0.8 for k in range(12)) if L.free(C.SEAWALL_S + 0.2, v, 1.0) and abs(v - 905.0) > 7.5]
+        run = [v for v in (y + k * 0.8 for k in range(12)) if L.free(C.SEAWALL_S + 0.2, v, 1.0) and abs(v - 905.0) > 7.5
+               and C.CITY_Y0 + 1.0 < v < C.CITY_Y1 - 1.0]
         if len(run) >= 4:
             slots = [{"pos": L.ue(*at(C.SEAWALL_S + 0.22, v), kz), "yaw": sea_yaw(v), "height": 0.45} for v in run]
             x, yy = at(C.SEAWALL_S + 0.22, run[len(run) // 2])

@@ -175,9 +175,9 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				const FString Skin = B->GetStringField(TEXT("skin"));
 				const FVector C = VecField(B, TEXT("c"), 1.0), S = VecField(B, TEXT("size"), 1.0);
 				const float Yaw = B->GetNumberField(TEXT("yaw"));
-				const FIntPoint Cell(FMath::FloorToInt(C.X / 100.0), FMath::FloorToInt(C.Y / 100.0));
-				FCell& Ce = Cells.FindOrAdd(FString::Printf(TEXT("%s_%d_%d"), *Skin, Cell.X, Cell.Y));
-				if (Ce.M.Pos.Num() == 0) Ce.Origin = FVector(Cell.X * 100.0 + 50.0, Cell.Y * 100.0 + 50.0, C.Z);
+				const FIntPoint CellXY(FMath::FloorToInt(C.X / 100.0), FMath::FloorToInt(C.Y / 100.0));
+				FCell& Ce = Cells.FindOrAdd(FString::Printf(TEXT("%s_%d_%d"), *Skin, CellXY.X, CellXY.Y));
+				if (Ce.M.Pos.Num() == 0) Ce.Origin = FVector(CellXY.X * 100.0 + 50.0, CellXY.Y * 100.0 + 50.0, C.Z);
 				CityKit::AddBlock(Ce.M, C - Ce.Origin, Yaw, S, Skin, C.Z);
 				Coll->AddInstance(FTransform(FRotator(0.f, Yaw, 0.f), C * 100.0, S), true);
 				NumBlocks++;
@@ -239,12 +239,12 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 					G.Comp = MakeIsm(Mesh, TEXT("Props_") + Key.Replace(TEXT("."), TEXT("_")), bCollide,
 						G.bGlow && GlowMid ? static_cast<UMaterialInterface*>(GlowMid.Get()) : PropMaterial.Get(), bBig ? 40000.f : 15000.f);
 					// small things cast no shadow beyond the near ones (VSM pages), and no distance fields
-					G.Comp->bAffectDistanceFieldLighting = false;
-					G.Comp->bAffectDynamicIndirectLighting = bBig;
+					G.Comp.Get()->bAffectDistanceFieldLighting = false;
+					G.Comp.Get()->bAffectDynamicIndirectLighting = bBig;
 					Gi = &GroupOf.Add(Key, Groups.Add(G));
 				}
 				if (*Gi == INDEX_NONE) continue;
-				Groups[*Gi].Comp->AddInstance(FTransform(FRotator(0.f, P->GetNumberField(TEXT("yaw")), 0.f), VecField(P, TEXT("at"))), true);
+				Groups[*Gi].Comp.Get()->AddInstance(FTransform(FRotator(0.f, P->GetNumberField(TEXT("yaw")), 0.f), VecField(P, TEXT("at"))), true);
 				NumProps++;
 			}
 		}
@@ -266,6 +266,35 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				Tris += M.Idx.Num() / 3;
 				MakePart(Mesh, TEXT("FountainStone_") + F->GetStringField(TEXT("id")), true, PropMaterial, 60000.f,
 					FTransform(FRotator(0.f, F->GetNumberField(TEXT("yaw")), 0.f), VecField(F, TEXT("at"))));
+			}
+		}
+	}
+
+	// the town fountains' water, drops and sound (ALyudFountain, the same as the Academgorodok's, from the same levels):
+	// ours, so lyud.City.PublicSpaces 0 builds none and lyud.City.Show 0 hides them
+	{
+		const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
+		ULyudFountainSubsystem* FSub = GetWorld()->GetSubsystem<ULyudFountainSubsystem>();
+		static IConsoleVariable* FountainOn = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Fountain"));
+		if (Doc->TryGetArrayField(TEXT("fountains"), Fs) && (!FountainOn || FountainOn->GetInt() != 0))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *Fs)
+			{
+				FActorSpawnParameters SP;
+				SP.ObjectFlags |= RF_Transient;
+				if (ALyudFountain* F = GetWorld()->SpawnActor<ALyudFountain>(SP))
+				{
+					if (F->Build(V->AsObject(), false))
+					{
+						F->Tags.Add(TEXT("City"));
+						Fountains.Add(F);
+						if (FSub) FSub->Register(F);
+					}
+					else
+					{
+						F->Destroy();
+					}
+				}
 			}
 		}
 	}
@@ -526,6 +555,8 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 void ALyudPublicSpaces::EndPlay(const EEndPlayReason::Type Reason)
 {
 	if (AProceduralForest* F = Forest.Get()) F->Destroy();
+	for (const TObjectPtr<ALyudFountain>& F : Fountains) if (F) F->Destroy();
+	Fountains.Reset();
 	for (const TWeakObjectPtr<AProceduralPlant>& P : Plants) if (P.IsValid()) P->Destroy();
 	Plants.Reset();
 	Super::EndPlay(Reason);
@@ -572,10 +603,10 @@ void ALyudPublicSpaces::UpdateSeason(bool bForce)
 		bSummerKnown = true;
 		for (FGroup& G : Groups)
 		{
-			if (G.bSummer && G.Comp)
+			if (G.bSummer && G.Comp.IsValid())
 			{
-				G.Comp->SetVisibility(bSum);
-				G.Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				G.Comp.Get()->SetVisibility(bSum);
+				G.Comp.Get()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			}
 		}
 	}
@@ -606,8 +637,8 @@ void ALyudPublicSpaces::UpdatePool()
 	LastUse = UseNow;
 	LastPoolCam = Cam;
 	// the nearest lamp heads (a partial selection over ~150: cheap at 4 Hz)
-	TArray<TPair<float, int32>> Near;
-	Near.Reserve(LampHeads.Num());
+	TArray<TPair<float, int32>>& Near = NearLamps;      // kept between calls: no allocation at 4 Hz
+	Near.Reset();
 	for (int32 I = 0; I < LampHeads.Num(); I++)
 	{
 		const float D = FVector::DistSquared(LampHeads[I], Cam);
@@ -646,10 +677,7 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 		UpdateSeason(false);
 		// the Cascade runs when the town's fountain does (its season, its switch)
 		bool bRun = false;
-		if (const ULyudFountainSubsystem* FS = GetWorld()->GetSubsystem<ULyudFountainSubsystem>())
-		{
-			for (ALyudFountain* F : FS->GetFountains()) if (F && F->ActorHasTag(TEXT("City")) && F->IsRunning()) bRun = true;
-		}
+		for (const TObjectPtr<ALyudFountain>& F : Fountains) if (F && F->IsRunning()) bRun = true;
 		for (UStaticMeshComponent* C : Cascade) if (C) C->SetVisibility(bRun);
 		const bool bShow = CVarCityShow.GetValueOnGameThread() != 0;
 		if (bShow != bShown)
@@ -657,6 +685,7 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 			bShown = bShow;
 			SetActorHiddenInGame(!bShow);
 			if (AProceduralForest* F = Forest.Get()) F->SetActorHiddenInGame(!bShow);
+			for (const TObjectPtr<ALyudFountain>& F : Fountains) if (F) F->SetActorHiddenInGame(!bShow);
 			for (const TWeakObjectPtr<AProceduralPlant>& P : Plants) if (P.IsValid()) P->SetActorHiddenInGame(!bShow);
 			if (!bShow) for (UPointLightComponent* L : Pool) L->SetVisibility(false);
 			LastPoolCam = FVector(1e9);
@@ -679,7 +708,7 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 int32 ALyudPublicSpaces::CountProps(const FString& Kind) const
 {
 	int32 N = 0;
-	for (const FGroup& G : Groups) if (G.Kind == Kind && G.Comp) N += G.Comp->GetInstanceCount();
+	for (const FGroup& G : Groups) if (G.Kind == Kind && G.Comp.IsValid()) N += G.Comp.Get()->GetInstanceCount();
 	return N;
 }
 
@@ -688,7 +717,7 @@ FString ALyudPublicSpaces::DebugReport() const
 	int32 Lit = 0;
 	for (const UPointLightComponent* L : Pool) Lit += L->IsVisible() ? 1 : 0;
 	int32 Props = 0;
-	for (const FGroup& G : Groups) Props += G.Comp ? G.Comp->GetInstanceCount() : 0;
+	for (const FGroup& G : Groups) Props += G.Comp.IsValid() ? G.Comp->GetInstanceCount() : 0;
 	return FString::Printf(TEXT("night %d glow %.2f, %d pooled lights lit of %d, summer %d, ice %d, %d props, %d trees (%d baked), %d plants"),
 		bNight ? 1 : 0, Glow, Lit, Pool.Num(), bSummer ? 1 : 0, bIce ? 1 : 0, Props, Forest.IsValid() ? Forest->NumTrees() : 0,
 		Forest.IsValid() ? Forest->NumBaked() : 0, Plants.Num());
@@ -736,6 +765,8 @@ void ULyudPublicSpotsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 				const TSharedPtr<FJsonObject> SO = SV->AsObject();
 				S.Seats.Add(FTransform(FRotator(0.f, SO->GetNumberField(TEXT("yaw")), 0.f), VecField(SO, TEXT("pos"))));
 				S.SeatHeights.Add(SO->GetNumberField(TEXT("height")) * 100.f);
+				FString SK;
+				S.SeatKinds.Add(FName(SO->TryGetStringField(TEXT("kind"), SK) ? *SK : (SO->GetNumberField(TEXT("height")) > 0.0 ? TEXT("bench") : TEXT("stand"))));
 			}
 			S.Capacity = S.Seats.Num();
 		}
