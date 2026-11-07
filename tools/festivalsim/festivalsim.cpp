@@ -137,8 +137,10 @@ static int Test(FCalendar& C)
 		const int Lny = C.Find("lunar_new_year"), Holi = C.Find("holi"), Diwali = C.Find("diwali"), Loy = C.Find("loy_krathong");
 		CHECK(Lny >= 0 && Holi >= 0 && Diwali >= 0 && Loy >= 0, "the moon festivals are there");
 		CHECK(C.StartsOn(Lny, { 2026, 2, 17 }) && C.StartsOn(Lny, { 2027, 2, 6 }) && C.StartsOn(Lny, { 2028, 1, 26 }), "Lunar New Year 2026-02-17, 2027-02-06, 2028-01-26");
-		CHECK(C.StartsOn(Holi, { 2026, 3, 4 }), "Holi 2026-03-04");
-		CHECK(C.StartsOn(Diwali, { 2026, 11, 8 }), "Diwali 2026-11-08");
+		CHECK(C.StartsOn(Holi, { 2027, 3, 22 }) && C.StartsOn(Holi, { 2028, 3, 11 }) && C.StartsOn(Holi, { 2030, 3, 20 }), "Holi 2027-03-22, 2028-03-11, 2030-03-20");
+		CHECK(C.StartsOn(Diwali, { 2026, 11, 8 }) && C.StartsOn(Diwali, { 2027, 10, 29 }) && C.StartsOn(Diwali, { 2028, 10, 17 }), "Diwali 2026-11-08, 2027-10-29, 2028-10-17");
+		const int Moon = C.Find("mid_autumn");
+		CHECK(Moon >= 0 && C.StartsOn(Moon, { 2026, 9, 25 }) && C.StartsOn(Moon, { 2027, 9, 15 }) && C.StartsOn(Moon, { 2030, 9, 12 }), "Mid-Autumn 2026-09-25, 2027-09-15, 2030-09-12");
 		CHECK(C.StartsOn(Loy, { 2026, 11, 24 }), "Loy Krathong 2026-11-24");
 		int Count = 0;
 		for (int Y = 2026; Y < 2036; Y++)

@@ -106,6 +106,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void Interact();
 
+	/** Is E his now: somebody in front of him to talk to, or a talk going on (others who use E step aside). */
+	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE; }
+
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;
 

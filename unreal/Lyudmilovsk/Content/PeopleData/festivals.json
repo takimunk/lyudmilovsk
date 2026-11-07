@@ -163,7 +163,7 @@
     },
     {
       "id": "holi",
-      "when": {"rule": "full_moon", "month": 2, "day": 24, "window": 30, "tz": 5.5, "offset": 1},
+      "when": {"rule": "full_moon", "month": 2, "day": 24, "window": 30, "tz": 11, "offset": 0},
       "origin": "in",
       "menu": ["rs_syrniki", "rs_mors"],
       "decor": {"from": 9, "to": 18, "kinds": ["bunting", "flags", "marigolds"], "venues": ["park"]},
@@ -222,7 +222,7 @@
     },
     {
       "id": "mid_autumn",
-      "when": {"rule": "full_moon", "month": 9, "day": 8, "window": 30, "tz": 2},
+      "when": {"rule": "new_moon", "month": 8, "day": 23, "window": 30, "tz": 8, "offset": 14},
       "origin": "cn",
       "menu": ["rs_medovik", "rs_tea"],
       "late": 23.5,
@@ -259,7 +259,7 @@
     },
     {
       "id": "diwali",
-      "when": {"rule": "new_moon", "month": 10, "day": 18, "window": 31, "tz": 5.5, "offset": -1},
+      "when": {"rule": "new_moon", "month": 10, "day": 18, "window": 31, "tz": 11.5, "offset": -1},
       "origin": "in",
       "menu": ["rs_syrniki", "rs_tea"],
       "late": 23,
