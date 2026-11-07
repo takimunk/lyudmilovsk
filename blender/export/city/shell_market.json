@@ -1,0 +1,622 @@
+{
+ "type": "shell_market",
+ "info": {
+  "name_ru": "Рынок под оболочками",
+  "name_en": "Shell Market",
+  "style": "mexican shell modernism",
+  "use": "public",
+  "inspired_by": "1950s Mexican concrete umbrella shells (inverted hypar umbrellas on one column) - original layout and proportions"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -21.4,
+   1.2
+  ],
+  [
+   21.4,
+   1.2
+  ],
+  [
+   21.4,
+   34.0
+  ],
+  [
+   -21.4,
+   34.0
+  ]
+ ],
+ "height": 5.67,
+ "entrances": [],
+ "spots": [
+  {
+   "id": "counter1",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    8.9,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall1",
+   "kind": "stall",
+   "pos": [
+    -15.6,
+    10.9,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter2",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall2",
+   "kind": "stall",
+   "pos": [
+    -15.6,
+    21.3,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter3",
+   "kind": "counter",
+   "pos": [
+    -17.3,
+    17.4,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "stall3",
+   "kind": "stall",
+   "pos": [
+    -19.3,
+    17.4,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "counter4",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    29.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall4",
+   "kind": "stall",
+   "pos": [
+    -15.6,
+    31.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter5",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    8.9,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall5",
+   "kind": "stall",
+   "pos": [
+    -5.2,
+    10.9,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter6",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall6",
+   "kind": "stall",
+   "pos": [
+    -5.2,
+    21.3,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter7",
+   "kind": "counter",
+   "pos": [
+    -3.5,
+    17.4,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "stall7",
+   "kind": "stall",
+   "pos": [
+    -1.5,
+    17.4,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "counter8",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    29.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall8",
+   "kind": "stall",
+   "pos": [
+    -5.2,
+    31.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter9",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    8.9,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall9",
+   "kind": "stall",
+   "pos": [
+    5.2,
+    10.9,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter10",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall10",
+   "kind": "stall",
+   "pos": [
+    5.2,
+    21.3,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter11",
+   "kind": "counter",
+   "pos": [
+    3.5,
+    17.4,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "stall11",
+   "kind": "stall",
+   "pos": [
+    1.5,
+    17.4,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "counter12",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    29.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall12",
+   "kind": "stall",
+   "pos": [
+    5.2,
+    31.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter13",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    8.9,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall13",
+   "kind": "stall",
+   "pos": [
+    15.6,
+    10.9,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter14",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall14",
+   "kind": "stall",
+   "pos": [
+    15.6,
+    21.3,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "counter15",
+   "kind": "counter",
+   "pos": [
+    17.3,
+    17.4,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "stall15",
+   "kind": "stall",
+   "pos": [
+    19.3,
+    17.4,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "counter16",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    29.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "stall16",
+   "kind": "stall",
+   "pos": [
+    15.6,
+    31.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "bench1",
+   "kind": "bench",
+   "pos": [
+    -19.9,
+    4.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench2",
+   "kind": "bench",
+   "pos": [
+    -19.9,
+    25.1,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench3",
+   "kind": "bench",
+   "pos": [
+    -10.4,
+    14.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench4",
+   "kind": "bench",
+   "pos": [
+    0.0,
+    4.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench5",
+   "kind": "bench",
+   "pos": [
+    0.0,
+    25.1,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench6",
+   "kind": "bench",
+   "pos": [
+    10.4,
+    14.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench7",
+   "kind": "bench",
+   "pos": [
+    19.9,
+    4.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "bench8",
+   "kind": "bench",
+   "pos": [
+    19.9,
+    25.1,
+    0
+   ],
+   "yaw": 180
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -15.6,
+    9.9,
+    2.956
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -15.6,
+    20.3,
+    2.839
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -18.3,
+    17.4,
+    2.886
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -15.6,
+    30.7,
+    2.547
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    9.9,
+    2.556
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    20.3,
+    3.131
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -2.5,
+    17.4,
+    3.174
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -5.2,
+    30.7,
+    2.589
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    9.9,
+    2.758
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    20.3,
+    2.701
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    2.5,
+    17.4,
+    2.745
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.2,
+    30.7,
+    2.36
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    9.9,
+    3.148
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    20.3,
+    2.433
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    18.3,
+    17.4,
+    2.48
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.6,
+    30.7,
+    2.25
+   ],
+   "lumens": 820,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "12 umbrellas, 16 stalls, 8 benches"
+ ],
+ "tris": {
+  "shell": 15516,
+  "detail": 12288,
+  "windows": 0
+ }
+}

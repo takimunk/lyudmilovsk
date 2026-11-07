@@ -1,0 +1,403 @@
+{
+ "type": "hyperboloid_tower",
+ "info": {
+  "name_ru": "Гиперболоидная башня-маяк",
+  "name_en": "Hyperboloid Lighthouse Tower",
+  "style": "constructivism",
+  "use": "public",
+  "inspired_by": "Russian hyperboloid lattice towers of the 1890s-1920s (straight steel bars between rings) - original proportions and use"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -1.053,
+   1.704
+  ],
+  [
+   1.053,
+   1.704
+  ],
+  [
+   3.0,
+   2.51
+  ],
+  [
+   4.49,
+   4.0
+  ],
+  [
+   5.296,
+   5.947
+  ],
+  [
+   5.296,
+   8.053
+  ],
+  [
+   4.49,
+   10.0
+  ],
+  [
+   3.0,
+   11.49
+  ],
+  [
+   1.053,
+   12.296
+  ],
+  [
+   -1.053,
+   12.296
+  ],
+  [
+   -3.0,
+   11.49
+  ],
+  [
+   -4.49,
+   10.0
+  ],
+  [
+   -5.296,
+   8.053
+  ],
+  [
+   -5.296,
+   5.947
+  ],
+  [
+   -4.49,
+   4.0
+  ],
+  [
+   -3.0,
+   2.51
+  ]
+ ],
+ "height": 36.45,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    0.0,
+    1.704,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.1,
+   "height": 2.2,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "keeper_seat",
+   "kind": "seat",
+   "pos": [
+    -0.4,
+    10.3,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "keeper_cot",
+   "kind": "bench",
+   "pos": [
+    -3.6,
+    8.1,
+    0.03
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "door_bench",
+   "kind": "bench",
+   "pos": [
+    2.2,
+    -0.2,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "view1",
+   "kind": "view",
+   "pos": [
+    2.988,
+    8.725,
+    20.0
+   ],
+   "yaw": 119.99999999999999
+  },
+  {
+   "id": "view2",
+   "kind": "view",
+   "pos": [
+    -1.725,
+    9.988,
+    20.0
+   ],
+   "yaw": -150.0
+  },
+  {
+   "id": "view3",
+   "kind": "view",
+   "pos": [
+    -2.988,
+    5.275,
+    20.0
+   ],
+   "yaw": -59.99999999999999
+  },
+  {
+   "id": "view4",
+   "kind": "view",
+   "pos": [
+    1.725,
+    4.012,
+    20.0
+   ],
+   "yaw": 30.00000000000001
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    0.0,
+    10.0,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -2.819,
+    5.974,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    2.598,
+    5.5,
+    2.3
+   ],
+   "lumens": 640,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    1.074,
+    11.009,
+    22.3
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.074,
+    2.991,
+    22.3
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 9.0
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    2.239,
+    7.6,
+    32.725
+   ],
+   "normal": [
+    0.966,
+    0.259,
+    -0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.639,
+    8.639,
+    32.725
+   ],
+   "normal": [
+    0.707,
+    0.707,
+    -0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 2,
+   "id": "pub/w3",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.6,
+    9.239,
+    32.725
+   ],
+   "normal": [
+    -0.259,
+    0.966,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 3,
+   "id": "pub/w4",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.639,
+    8.639,
+    32.725
+   ],
+   "normal": [
+    -0.707,
+    0.707,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 4,
+   "id": "pub/w5",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.239,
+    6.4,
+    32.725
+   ],
+   "normal": [
+    -0.966,
+    -0.259,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 5,
+   "id": "pub/w6",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.639,
+    5.361,
+    32.725
+   ],
+   "normal": [
+    -0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 6,
+   "id": "pub/w7",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.6,
+    4.761,
+    32.725
+   ],
+   "normal": [
+    0.259,
+    -0.966,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 7,
+   "id": "pub/w8",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.639,
+    5.361,
+    32.725
+   ],
+   "normal": [
+    0.707,
+    -0.707,
+    0.0
+   ],
+   "size": [
+    0.682,
+    1.65
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [
+  "118 stair treads up to 20.0 m; lattice 20 bars x2 x3 sections"
+ ],
+ "tris": {
+  "shell": 4088,
+  "detail": 6988,
+  "windows": 16
+ }
+}

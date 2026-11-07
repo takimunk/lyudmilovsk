@@ -63,3 +63,6 @@ design/bikes/game/
 blender/birds/nests/export/
 blender/birds/chicks/export/
 design/europa/game/moon_terrain.glb
+
+# town buildings: built by blender/city/build_city.py
+blender/export/city/*.glb

@@ -1,0 +1,1025 @@
+{
+ "type": "clinic",
+ "info": {
+  "name_ru": "Поликлиника",
+  "name_en": "Clinic",
+  "style": "modernism",
+  "use": "public",
+  "inspired_by": "1960s European health centres: white ribbon-window blocks with glazed stair towers"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -14.4,
+   0.75
+  ],
+  [
+   14.4,
+   0.75
+  ],
+  [
+   14.4,
+   16.4
+  ],
+  [
+   -14.4,
+   16.4
+  ]
+ ],
+ "height": 9.9,
+ "entrances": [
+  {
+   "id": "main",
+   "pos": [
+    -5.0,
+    4.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.8,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 2,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "reception",
+   "kind": "counter",
+   "pos": [
+    -6.5,
+    12.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wait_0",
+   "kind": "bench",
+   "pos": [
+    -12.7,
+    7.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "wait_1",
+   "kind": "bench",
+   "pos": [
+    -12.7,
+    9.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "wait_2",
+   "kind": "bench",
+   "pos": [
+    -8.0,
+    8.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wait_3",
+   "kind": "bench",
+   "pos": [
+    -1.0,
+    8.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "doctor_0",
+   "kind": "work",
+   "pos": [
+    5.2,
+    9.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "patient_0",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    6.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "doctor_1",
+   "kind": "work",
+   "pos": [
+    8.7,
+    9.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "patient_1",
+   "kind": "seat",
+   "pos": [
+    8.7,
+    6.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "doctor_2",
+   "kind": "work",
+   "pos": [
+    12.15,
+    9.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "patient_2",
+   "kind": "seat",
+   "pos": [
+    12.15,
+    6.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "wait_4",
+   "kind": "bench",
+   "pos": [
+    2.85,
+    6.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "wait_5",
+   "kind": "bench",
+   "pos": [
+    2.85,
+    8.4,
+    0.0
+   ],
+   "yaw": 270.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    5.2,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    8.7,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    12.15,
+    7.6,
+    3.1
+   ],
+   "lumens": 800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    -11.0,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -11.0,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.5,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -6.5,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -2.0,
+    7.0,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -2.0,
+    12.8,
+    3.1
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    6.0,
+    13.5,
+    3.1
+   ],
+   "lumens": 700,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  },
+  {
+   "pos": [
+    11.0,
+    13.5,
+    3.1
+   ],
+   "lumens": 700,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 6
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.25,
+    4.0,
+    1.65
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    3.5,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.35,
+    4.0,
+    1.65
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    6.3,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 2,
+   "id": "pub/w3",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.2,
+    4.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 3,
+   "id": "pub/w4",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.7,
+    4.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 4,
+   "id": "pub/w5",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.2,
+    4.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 5,
+   "id": "pub/w6",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.657,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 6,
+   "id": "pub/w7",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.686,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 7,
+   "id": "pub/w8",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.8,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 8,
+   "id": "pub/w9",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.286,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 9,
+   "id": "pub/w10",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.771,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 10,
+   "id": "pub/w11",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.257,
+    4.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.886,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 11,
+   "id": "pub/w12",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -11.0,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 12,
+   "id": "pub/w13",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.0,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 13,
+   "id": "pub/w14",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.0,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 14,
+   "id": "pub/w15",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 15,
+   "id": "pub/w16",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.0,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 16,
+   "id": "pub/w17",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.5,
+    16.0,
+    1.75
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.8,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 17,
+   "id": "pub/w18",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -11.071,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 18,
+   "id": "pub/w19",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.214,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 19,
+   "id": "pub/w20",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.357,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 20,
+   "id": "pub/w21",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.5,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 21,
+   "id": "pub/w22",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.357,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.214,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.071,
+    16.0,
+    5.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    3.257,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.0,
+    7.0,
+    1.75
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 25,
+   "id": "pub/w26",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.0,
+    13.0,
+    1.75
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 26,
+   "id": "pub/w27",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.0,
+    7.0,
+    5.55
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 27,
+   "id": "pub/w28",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.0,
+    13.0,
+    5.55
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 28,
+   "id": "pub/w29",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.0,
+    7.0,
+    1.75
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    3.0,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 29,
+   "id": "pub/w30",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.0,
+    12.0,
+    1.75
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    3.0,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 30,
+   "id": "pub/w31",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.0,
+    7.0,
+    5.55
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    3.0,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 31,
+   "id": "pub/w32",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.0,
+    12.0,
+    5.55
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    3.0,
+    2.1
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 32,
+   "id": "stair/w1",
+   "flat": null,
+   "kind": "stair",
+   "centre": [
+    -12.2,
+    1.6,
+    4.025
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.7,
+    7.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 33,
+   "id": "stair/w2",
+   "flat": null,
+   "kind": "stair",
+   "centre": [
+    -14.0,
+    2.8,
+    4.025
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.6,
+    7.75
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [],
+ "tris": {
+  "shell": 2142,
+  "detail": 2942,
+  "windows": 68
+ }
+}
