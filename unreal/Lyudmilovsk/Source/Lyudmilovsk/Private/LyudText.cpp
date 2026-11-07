@@ -3,6 +3,7 @@
 #include "Engine/Texture2D.h"
 #include "Sound/SoundBase.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/ScopeLock.h"
@@ -80,9 +81,30 @@ namespace
 		{
 			return *T;
 		}
+		const FString Dir = FPaths::ProjectContentDir() / TEXT("Localization");
+		const FString File = FString::Printf(TEXT("strings_%s.json"), *Lang);
 		FString Text;
-		FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("Localization") / FString::Printf(TEXT("strings_%s.json"), *Lang)));
-		return Tables().Add(Lang, ParseFlat(Text));
+		FFileHelper::LoadFileToString(Text, *(Dir / File));
+		TMap<FString, FString> Out = ParseFlat(Text);
+		// generated tables (the townsfolk's names and roles, tools/town/town_life.py) live in subfolders and are merged in;
+		// hand-written keys win
+		TArray<FString> Subs;
+		IFileManager::Get().FindFiles(Subs, *(Dir / TEXT("*")), false, true);
+		for (const FString& Sub : Subs)
+		{
+			FString More;
+			if (FFileHelper::LoadFileToString(More, *(Dir / Sub / File)))
+			{
+				for (const TPair<FString, FString>& KV : ParseFlat(More))
+				{
+					if (!Out.Contains(KV.Key))
+					{
+						Out.Add(KV.Key, KV.Value);
+					}
+				}
+			}
+		}
+		return Tables().Add(Lang, MoveTemp(Out));
 	}
 }
 

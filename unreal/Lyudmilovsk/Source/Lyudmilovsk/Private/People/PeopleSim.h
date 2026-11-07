@@ -17,6 +17,8 @@
 #include "../Animals/AnimalSim.h"
 #include "MiniJson.h"
 
+#include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -96,6 +98,7 @@ namespace LyudPeople
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
 		std::vector<int> Users;     // who is using or going to it now
+		int K = -1;                 // Kind interned (FWorld::Index; -1 not yet: compared by name)
 		bool Free(int Person) const;
 	};
 
@@ -120,6 +123,13 @@ namespace LyudPeople
 		std::string Stair;          // the stair it is up (its entrance)
 		int Floor = 0, Number = 0;
 		std::vector<int> Residents; // reservation of the flat (people ids)
+		// the town's buildings (town_places.json, docs/town_life.md): a shell has no rooms to walk; whoever is in it is
+		// inside (not drawn), at its door. A flat's windows light up while somebody is home and awake after dusk.
+		bool bShell = false;
+		std::string Building;       // the plot / building id (T2-05)
+		std::vector<std::string> Windows;   // window ids (T2-05/3-02/w1)
+		std::vector<std::string> Roles;     // a workplace's job roles (waiter, cook, seller, ...)
+		int K = -1;                 // Kind interned
 	};
 
 	/** One row of activities.json: what people can do and what it gives them. */
@@ -147,6 +157,15 @@ namespace LyudPeople
 		bool bFree = true;                  // chosen in free time (false: only by a duty: sleep, work, school)
 		int Days = 0x7F;                    // the weekdays it can be chosen on (bit 0 Monday; a shop closed on Sundays)
 		bool bSnow = false;                 // clears snow off the paths: at a snow place's stretches, one after another
+		bool bSunrise = false;              // only around sunrise (see the sun come up: early risers)
+		bool bHolidayOff = false;           // a duty skipped on a day off (holiday: "off": school, offices)
+		bool bGather = false;               // a gathering (a holiday on the square): only at a place with one on now
+		int GatherMode = -1;                // a gathering's activity: the mode it is for (EGatherMode), -1 not one
+		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
+		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
+		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
+		bool bHome = false;                 // "home" among its places
+		bool bK = false;                    // interned
 	};
 
 	/** Fixed hours of a person: work or school. */
@@ -169,6 +188,10 @@ namespace LyudPeople
 		std::string Activity;
 		float From = 9.f, To = 17.f;
 		int Days = 0x1F;            // bit 0 Monday .. bit 6 Sunday
+		std::string PlaceId;        // their own workplace (the town's: cafe_mar), "" any place of the activity's kinds
+		std::string Role;           // their job there (waiter, cook): slots tagged with it, else any staff slot
+		int Place = -1;
+		int Act = -1;               // Activity's index (Index())
 	};
 
 	struct FPerson
@@ -187,7 +210,15 @@ namespace LyudPeople
 		float WalkSpeed = 1.25f;    // m/s
 		// temper 0..1
 		float Social = 0.5f, Active = 0.5f, Studious = 0.5f, Gamer = 0.5f, NatureLove = 0.5f, SunLove = 0.5f;
-		float Wake = 7.5f, BedTime = 23.f;  // hours
+		float Wake = 7.5f, BedTime = 23.f;  // hours (the usual; today's is Wake + WakeJ, BedTime + BedJ)
+		float Spread = 0.f;         // how much their day moves from day to day (h): today's wake and bed are rolled at 14:00
+		float WakeJ = 0.f, BedJ = 0.f;
+		bool bTown = false;         // a townsperson (townsfolk.json): generated, shown by a model of the shared pool
+		std::string Chronotype;     // lark, owl, night, usual (townsfolk.json; debug and the summary)
+		std::string HomeId;         // townsfolk.json: their flat (a place id) given by the generator
+		bool bExternal = false;     // drawn by somebody else's actor now (the restaurant's waiter on shift)
+		int Reserved = -1;          // the slot they hold (one at a time: Reserve)
+		double DutyBlockedUntil = -1e18;    // a duty with nowhere to be done: not called to it again till then
 		std::vector<FDuty> Duties;
 		std::string ClubSeat;       // their usual station in the club ("4"); "" none
 		std::vector<std::string> Friends;
@@ -250,6 +281,8 @@ namespace LyudPeople
 	};
 
 	enum class EEvent : uint8_t { Start, Arrive, Leave, TalkStart, TalkEnd, Ride, Away, Back, Num };
+	/** How people spend a gathering (a holiday's phase): in groups talking, facing a point (a stage, fireworks), seated, about the stalls. */
+	enum class EGatherMode : uint8_t { Mingle, Watch, Sit, Fair };
 	const char* EventName(EEvent E);
 	struct FEvent { EEvent Kind; int Person; int Other; int Place; };
 
@@ -257,6 +290,7 @@ namespace LyudPeople
 	{
 		uint32_t Seed = 20261020;
 		float ThinkEvery = 2.f;         // s between decisions of an idle person
+		int SettleBatch = 0;            // >0: Resettle places the townsfolk this many a Step (the game: no long frame), 0 at once
 		float RideSeconds = 150.f;      // the cable car from station to station
 		float TrainSeconds = 280.f;     // the train between the halts when there is no timetable (TrainNext unset or -1): hidden
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
@@ -282,10 +316,101 @@ namespace LyudPeople
 		int Weekday = 1;                // 0 Monday .. 6 Sunday
 		float Sunrise = 7.5f, Sunset = 17.f;
 		float SunYaw = 225.f;           // where the sun sets/stands, yaw (deg) in the UE frame
+		float SunriseYaw = 45.f;        // where it comes up (the early risers face it)
 		bool bSunUp = true;
 		bool bRain = false;             // raining: people outdoors hurry (the wrapper sets it from the weather)
+		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
+
+		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places
+		 *  of a kind, from From till To (hours, To < From over midnight) by Pull (0..2), more the more social they are. */
+		struct FGathering
+		{
+			std::string Id;
+			std::string PlaceOrKind;
+			std::vector<int> Places;
+			float From = 0.f, To = 24.f, Pull = 1.f;
+			EGatherMode Mode = EGatherMode::Mingle;
+			bool bFace = false;
+			V3 Face;
+		};
+		std::vector<FGathering> Gatherings;
+		void SetGathering(const std::string& Id, const std::string& PlaceOrKind, float From, float To, float Pull, EGatherMode Mode, bool bFace, const V3& Face);
+		void ClearGathering(const std::string& Id);
+		/** The gathering on now at a place, or null. */
+		const FGathering* GatheringAt(int Place) const;
+
+		/** Adds the town's places (town_places.json) and its people (townsfolk.json); after Load. */
+		bool LoadTownPlaces(const std::string& Text);
+		bool LoadTownsfolk(const std::string& Text);
+		/** After loading: activities' place lists, duties' workplaces. Load and the town loaders call it. */
+		void Index();
+		/** Somebody inside a shell (a town building): not drawn. */
+		bool InsideShell(const FPerson& P) const;
+		/** Who works at a place now (in their role, "" any), on their shift and there. */
+		void StaffOnShift(const std::string& PlaceId, const std::string& Role, std::vector<int>& Out) const;
+		/** Window lights: whether each flat with windows is lit (somebody home and awake after dusk); the flats that changed
+		 *  since the last call are put in Changed (all of them on the first call). */
+		void UpdateLights(std::vector<int>& Changed);
+		std::vector<int8_t> FlatLit;    // per place: -1 unknown, 0 dark, 1 lit
+		bool FlatLitNow(int Place) const;
+		/** Today's wake and bedtime (their usual, moved by the day's roll). */
+		float WakeOf(const FPerson& P) const
+		{
+			const float W = std::fmod(P.Wake + P.WakeJ + 24.f, 24.f);
+			// the morning after a festival night: up as much later as they stayed up (4 h at most)
+			const float Late = StayLate(P);
+			return Late > 0.f ? std::fmod(W + Late, 24.f) : W;
+		}
+		float BedOf(const FPerson& P) const
+		{
+			const float B = std::fmod(P.BedTime + P.BedJ + 24.f, 24.f);
+			return Time < StayUntil && StayLate(P) > 0.f ? StayHourFor(P) : B;
+		}
+		/** A festival night (SetStayUp): nobody but the small children goes to bed before StayUntil (sim seconds). */
+		void SetStayUp(float UntilHour)
+		{
+			// UntilHour from today's 00:00 (26.5: 02:30 tonight); 0: the night is over (the morning after still starts late)
+			if (UntilHour > 0.f)
+			{
+				StayUntil = StayEnd = Time + ((double)UntilHour - (double)Hour) * 3600.0;
+				StayHour = std::fmod(UntilHour, 24.f);
+			}
+			else
+			{
+				StayUntil = 0.0;
+				if (StayEnd > Time)
+				{
+					StayHour = std::fmod(StayHour - (float)((StayEnd - Time) / 3600.0) + 48.f, 24.f);
+					StayEnd = Time;
+				}
+			}
+		}
+		double StayUntil = 0.0, StayEnd = -1e18;
+		float StayHour = 0.f;
+		float StayHourFor(const FPerson& P) const
+		{
+			const float S = StayHour;
+			return P.Age < 12 ? (NightH(S) > 23.f ? 23.f : S) : S;
+		}
+		/** hours past their own bedtime the festival keeps them (0: none, or it's long over) */
+		float StayLate(const FPerson& P) const
+		{
+			if (Time > StayEnd + 14.0 * 3600.0 || Time < StayEnd - 20.0 * 3600.0)
+			{
+				return 0.f;
+			}
+			const float D = NightH(StayHourFor(P)) - NightH(std::fmod(P.BedTime + P.BedJ + 24.f, 24.f));
+			return D > 0.f ? (D > 4.f ? 4.f : D) : 0.f;
+		}
+		static float NightH(float H) { return H < 12.f ? H + 24.f : H; }
+		/** Rolls everybody's day (wake and bed moved by Spread); the step does it at 14:00 each day. */
+		void RollDays();
+		float PrevHour = -1.f;
+		int DayRoll = 0;
 		V3 Camera;
 
+		/** Load the town too (town_places.json, townsfolk.json in Dir) when they are there. */
+		bool bLoadTown = true;
 		/** activities.json, people.json, people_places.json from Dir; the walk grid from AnimalsDir ("" = no grid). */
 		bool Load(const std::string& Dir, const std::string& AnimalsDir);
 		bool LoadActivities(const std::string& Text);
@@ -304,6 +429,8 @@ namespace LyudPeople
 		int FindPerson(const std::string& Key) const;
 		int FindPlace(const std::string& Id) const;
 		int FindActivity(const std::string& Id) const;
+		int ActOf(const FDuty& D) const { return D.Act >= 0 ? D.Act : FindActivity(D.Activity); }
+		int SleepAct = -1, RestHomeAct = -1;   // Index()
 		/** A route between two points (each indoors at a place's slot or outdoors); false = no way. */
 		bool Route(const FPerson& P, const V3& From, int FromSlot, int ToSlot, std::vector<FPerson::FWay>& Out) const;
 		/** Where they are drawn and which way they face (between steps it is Pos). */
@@ -383,6 +510,22 @@ namespace LyudPeople
 		struct FPatch { float X0 = 0.f, Y0 = 0.f, Cell = 4.f; int NX = 0, NY = 0; std::vector<float> Z; bool Has(float X, float Y) const; float At(float X, float Y) const; };
 		std::vector<FPatch> Patches;
 
+		/** The town's terraces (town_places.json "town"): flat levels joined by stairs. Inside its box people keep to their
+		 *  terrace's height and go up and down by the stairs (until the walk grid knows the terraces). */
+		struct FTownGround
+		{
+			bool bValid = false;
+			float X0 = 0.f, Y0 = 0.f, X1 = 0.f, Y1 = 0.f;
+			std::vector<float> Levels;
+			struct FStair { V3 Bottom, Top; int Lo = 0, Hi = 0; };
+			std::vector<FStair> Stairs;
+			bool Inside(const V3& P) const { return bValid && P.X >= X0 && P.X <= X1 && P.Y >= Y0 && P.Y <= Y1; }
+			int LevelOf(float Z) const;
+		};
+		FTownGround Town;
+		/** A way between two points of the town: along the terrace, and over the stairs between terraces. */
+		void TownWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const;
+
 	private:
 		int StationOf(int Island) const;
 		void ReserveOwnSlots();
@@ -405,6 +548,12 @@ namespace LyudPeople
 		int PickSlot(const FPerson& P, const FActivity& A, float& OutMinutes) const;
 		bool SlotFits(const FPerson& P, const FActivity& A, int Slot) const;
 		float Trait(const FPerson& P, const std::string& T) const;
+		bool AddPeople(const LyudJson::FValue& J, bool bTown);
+		/** Their duty's own workplace for an activity (-1 none) and role. */
+		const FDuty* DutyFor(const FPerson& P, const FActivity& A) const;
+		size_t Indexed = 0;
+		std::vector<std::string> KindNames;     // interned kinds: 0 bed, 1 sofa, 2 flat, 3 snow
+		int KindId(const std::string& Kind);        // the places Index saw (a place added after it: the slow look over all)
 		V3 Where(const FPerson& P) const;
 		void Reserve(FPerson& P, int Slot);
 		/** The hops between two islands: (kind 2 cable car | 3 train, the place to set off from, the place to come out at, the island). */
@@ -418,6 +567,11 @@ namespace LyudPeople
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;
+		std::vector<int> SettleQueue;   // townsfolk Resettle hasn't placed yet (Opt.SettleBatch)
+		size_t SettleI = 0;
+	public:
+		bool Settling() const { return SettleI < SettleQueue.size(); }
+	private:
 		void Wander(FPerson& P);
 		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
 		void Sweep(FPerson& P, float Dt);

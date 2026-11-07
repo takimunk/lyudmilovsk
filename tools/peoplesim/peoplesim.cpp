@@ -798,8 +798,9 @@ static int Test()
 	std::ifstream Real(std::string(DataDir) + "/people_places.json");
 	if (Real)
 	{
-		std::printf("the real map:\n");
+		std::printf("the real map (the story's people; the town: run.sh town):\n");
 		FWorld W;
+		W.bLoadTown = false;
 		if (!W.Load(DataDir, AnimalsDir))
 		{
 			std::printf("load failed: %s\n", W.LastError.c_str());
@@ -828,6 +829,239 @@ static int Test()
 		Bikes(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
+	}
+	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+	return Failures ? 1 : 0;
+}
+
+
+/** The town's life (docs/town_life.md): the townsfolk of townsfolk.json in the town's places, a day and a night. */
+static int Town()
+{
+	FWorld W;
+	if (!W.Load(DataDir, AnimalsDir))
+	{
+		std::printf("load failed: %s\n", W.LastError.c_str());
+		return 1;
+	}
+	W.AssignHomes();
+	AttachRail(W);
+	int Town = 0, Homed = 0, Wrong = 0;
+	for (const FPerson& P : W.People)
+	{
+		if (!P.bTown)
+		{
+			continue;
+		}
+		Town++;
+		Homed += P.Home >= 0 ? 1 : 0;
+		Wrong += P.Home >= 0 && W.Places[P.Home].Id != P.HomeId ? 1 : 0;
+	}
+	std::printf("the town: %d townsfolk, %zu places, %zu slots\n", Town, W.Places.size(), W.Slots.size());
+	CHECK(Town > 100, "townsfolk loaded (%d)", Town);
+	CHECK(Homed == Town && Wrong == 0, "every townsperson lives in their own flat (%d of %d, %d elsewhere)", Homed, Town, Wrong);
+	// Wednesday 04:00 to Thursday 16:00
+	FClock C = FClock::At(2, 4.f);
+	C.Set(W);
+	W.Resettle();
+	std::map<std::string, double> Minutes;      // activity -> person-minutes (townsfolk)
+	std::map<std::string, int> Meals;
+	std::map<std::string, float> Hungry;
+	int Lit21 = -1, Lit03 = -1, Lit12 = -1, Occupied = 0, Asleep03 = 0, Awake03 = 0, AwakeNightType03 = 0;
+	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
+	double Longest = 0.0;
+	std::string LongestWho;
+	std::map<int, double> Since;
+	for (const FPlace& Pl : W.Places)
+	{
+		Occupied += !Pl.Windows.empty() && !Pl.Residents.empty() ? 1 : 0;
+	}
+	std::vector<int> Changed, Staff;
+	double Ms = 0.0;
+	long Steps = 0;
+	const float Dt = 1.f;
+	bool bGather = false, bDayOff = false;
+	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
+	{
+		C.Seconds += Dt;
+		C.Set(W);
+		const float H = W.Hour;
+		const int Day = W.Weekday;
+		// a holiday on the square Wednesday 18-22 (as ULyudFestivalSubsystem would set it)
+		if (!bGather && Day == 2 && H >= 17.9f)
+		{
+			W.SetGathering("test_fest", "S-SQUARE", 18.f, 22.f, 1.6f, EGatherMode::Mingle, false, V3());
+			bGather = true;
+		}
+		if (bGather && Day == 2 && H >= 22.f)
+		{
+			W.ClearGathering("test_fest");
+		}
+		// Thursday is a day off: no school
+		if (!bDayOff && Day == 3 && H >= 6.f)
+		{
+			W.bDayOff = true;
+			bDayOff = true;
+		}
+		const auto T0 = std::chrono::high_resolution_clock::now();
+		W.Step(Dt);
+		Ms += std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - T0).count();
+		Steps++;
+		for (const FEvent& E : W.Events)
+		{
+			const FPerson& P = W.People[E.Person];
+			const std::string Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string();
+			if (P.bTown && E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_out" || Act == "eat_diner" || Act == "eat_club"))
+			{
+				Meals[P.Key]++;
+			}
+		}
+		W.Events.clear();
+		const int Sec = (int)std::lround(std::fmod(C.Seconds, 86400.0));
+		const bool bTick = Sec % 60 == 0;
+		if (bTick)
+		{
+			for (const FPerson& P : W.People)
+			{
+				if (!P.bTown)
+				{
+					continue;
+				}
+				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
+				{
+					Minutes[W.Activities[P.Activity].Id] += 1.0;
+				}
+				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
+				{
+					Hungry[P.Key] += 1.f;
+				}
+				const bool bWay = P.State == EState::Going || P.State == EState::Waiting || P.State == EState::Riding;
+				if (!bWay)
+				{
+					Since.erase(P.Id);
+				}
+				else if (!Since.count(P.Id))
+				{
+					Since[P.Id] = W.Time;
+				}
+				else if (W.Time - Since[P.Id] > Longest)
+				{
+					Longest = W.Time - Since[P.Id];
+					LongestWho = P.Key;
+				}
+			}
+			for (const FSlot& S : W.Slots)
+			{
+				Overbooked += (int)S.Users.size() > S.Capacity ? 1 : 0;
+			}
+		}
+		W.UpdateLights(Changed);
+		auto LitNow = [&]() { int N = 0; for (size_t I = 0; I < W.FlatLit.size(); I++) N += W.FlatLit[I] == 1 ? 1 : 0; return N; };
+		if (Day == 2 && Sec == 21 * 3600) Lit21 = LitNow();
+		if (Day == 2 && Sec == 12 * 3600) Lit12 = LitNow();
+		if (Day == 2 && Sec == 12 * 3600) { W.StaffOnShift("restaurant", "waiter", Staff); Waiters12 = (int)Staff.size(); }
+		if (Day == 2 && Sec == 10 * 3600) { W.StaffOnShift("P-MARKET", "seller", Staff); Sellers10 = (int)Staff.size(); W.StaffOnShift("P-SCHOOL", "pupil", Staff); Pupils10 = (int)Staff.size(); }
+		if (Day == 3 && Sec == 10 * 3600) { W.StaffOnShift("P-SCHOOL", "pupil", Staff); PupilsOff = (int)Staff.size(); }
+		if (Day == 2 && Sec == 20 * 3600)
+		{
+			const int Sq = W.FindPlace("S-SQUARE");
+			AtSquare = 0;
+			for (const FPerson& P : W.People) AtSquare += P.Place == Sq && P.State == EState::Doing ? 1 : 0;
+		}
+		if (Day == 3 && Sec == 3 * 3600)
+		{
+			Lit03 = LitNow();
+			for (const FPerson& P : W.People)
+			{
+				if (!P.bTown) continue;
+				const bool bSleep = P.Pose == EPose::Sleep && P.Place == P.Home;
+				(bSleep ? Asleep03 : Awake03)++;
+				AwakeNightType03 += !bSleep && (P.Chronotype == "night" || P.Chronotype == "owl") ? 1 : 0;
+			}
+		}
+	}
+	int Fed = 0, Starving = 0;
+	for (const FPerson& P : W.People)
+	{
+		if (P.bTown)
+		{
+			Fed += Meals[P.Key] >= 2 ? 1 : 0;
+			Starving += Hungry[P.Key] > 180.f ? 1 : 0;
+		}
+	}
+	std::printf("  minutes by activity (townsfolk, 36 h):");
+	for (const auto& M : Minutes) std::printf(" %s %.0f", M.first.c_str(), M.second);
+	std::printf("\n");
+	CHECK(Asleep03 > Town * 0.8, "Thursday 03:00: most asleep in their own beds (%d asleep, %d up)", Asleep03, Awake03);
+	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
+	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
+	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
+	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
+	CHECK(Minutes["work_town"] > 3000 && Minutes["work_office"] > 1000, "the town's shops, cafés and offices are staffed (%.0f / %.0f person-minutes)", Minutes["work_town"], Minutes["work_office"]);
+	CHECK(Minutes["eat_out"] + Minutes["coffee"] > 200, "people eat out and have coffee (%.0f + %.0f)", Minutes["eat_out"], Minutes["coffee"]);
+	CHECK(Waiters12 > 0, "Wednesday 12:00: waiters on shift at the restaurant (%d)", Waiters12);
+	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
+	CHECK(Pupils10 > 10, "Wednesday 10:00: pupils at school (%d)", Pupils10);
+	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);
+	CHECK(AtSquare > 40, "a holiday on the square at 20:00 draws the town (%d there)", AtSquare);
+	CHECK(Lit12 == 0, "windows dark at noon (%d lit)", Lit12);
+	CHECK(Lit21 > Occupied * 0.33, "windows lit at 21:00, a holiday on the square still on (%d of %d lived-in flats with windows)", Lit21, Occupied);
+	CHECK(Lit03 >= 0 && Lit03 < Occupied * 0.2, "few windows lit at 03:00 (%d)", Lit03);
+	CHECK(Fed > Town * 0.9, "townsfolk eat at least twice in 36 h (%d of %d)", Fed, Town);
+	CHECK(Starving < Town * 0.03, "few stay very hungry for 3 hours (%d)", Starving);
+	CHECK(Overbooked == 0, "no slot overbooked (%d)", Overbooked);
+	CHECK(Longest < 100 * 60, "nobody on the way for more than 100 min (the island by train included) (%.0f min, %s)", Longest / 60.0, LongestWho.c_str());
+	CHECK(Ms / Steps < 2.0, "a step of the whole town costs %.3f ms (%zu people)", Ms / Steps, W.People.size());
+	{
+		// a load at Friday 02:00, as the game does it: the townsfolk placed over a few steps, the windows mostly dark
+		W.Opt.SettleBatch = 120;
+		FClock::At(4, 2.f).Set(W);
+		auto T0 = std::chrono::steady_clock::now();
+		W.Resettle();
+		const double ResettleMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
+		double WorstMs = 0.0;
+		int SettleSteps = 0;
+		for (; SettleSteps < 60 && W.Settling(); SettleSteps++)
+		{
+			T0 = std::chrono::steady_clock::now();
+			W.Step(0.25f);
+			WorstMs = std::max(WorstMs, std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count());
+		}
+		W.FlatLit.assign(W.Places.size(), -1);
+		W.UpdateLights(Changed);
+		int LitLoad = 0, Unplaced = 0;
+		for (size_t I = 0; I < W.FlatLit.size(); I++) LitLoad += W.FlatLit[I] == 1 ? 1 : 0;
+		for (const FPerson& P : W.People) Unplaced += P.bTown && P.Activity < 0 && P.State == EState::Idle ? 1 : 0;
+		CHECK(!W.Settling() && Unplaced < Town * 0.05, "a load places the townsfolk over %d steps (%d unplaced; Resettle %.1f ms, worst step %.1f ms)", SettleSteps, Unplaced, ResettleMs, WorstMs);
+		CHECK(LitLoad < Occupied * 0.2, "after a load at 02:00 few windows are lit (%d of %d)", LitLoad, Occupied);
+	}
+	{
+		// a festival night: Saturday's dance on the square till 02:30, everybody up for it but the small children
+		W.Opt.SettleBatch = 0;
+		FClock N = FClock::At(5, 19.f);
+		N.Set(W);
+		W.Resettle();
+		W.SetGathering("test_dance", "S-SQUARE", 21.f, 2.5f, 1.6f, EGatherMode::Mingle, false, V3());
+		W.SetStayUp(26.5f);
+		const double End = N.Seconds + 6.5 * 3600.0;   // 01:30
+		while (N.Seconds < End)
+		{
+			N.Seconds += 1.0;
+			N.Set(W);
+			W.Step(1.f);
+		}
+		const int Sq = W.FindPlace("S-SQUARE");
+		int Dancing = 0, KidsUp = 0;
+		for (const FPerson& P : W.People)
+		{
+			if (!P.bTown) continue;
+			Dancing += P.Place == Sq && P.State == EState::Doing && P.Age >= 12 ? 1 : 0;
+			KidsUp += P.Age < 12 && P.Activity >= 0 && W.Activities[P.Activity].Pose != EPose::Sleep ? 1 : 0;
+		}
+		W.SetStayUp(0.f);
+		W.ClearGathering("test_dance");
+		CHECK(Dancing > 40, "a festival night: at 01:30 the square still dances (%d)", Dancing);
+		CHECK(KidsUp < 10, "... but the small children are in bed (%d up)", KidsUp);
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
@@ -981,6 +1215,10 @@ int main(int Argc, char** Argv)
 	if (Mode == "test")
 	{
 		return Test();
+	}
+	if (Mode == "town")
+	{
+		return Town();
 	}
 	if (Mode == "day")
 	{
