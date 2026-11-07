@@ -680,6 +680,24 @@
    "seconds": 120,
    "seed": 30101,
    "prompt": "Cinematic ambient, slow swelling warm analog synth pads and distant low strings, a lone glassy piano motif, D minor, 64 BPM, awe and quiet vertigo of seeing a whole small world hanging in a black sky, rising to a wide swell then fading out, no drums, no vocals"
+  },
+  {
+   "id": "festival_1",
+   "mood": [
+    "festival"
+   ],
+   "seconds": 120,
+   "seed": 41101,
+   "prompt": "Cheerful outdoor town festival brass band, accordion and tuba, a lively Baltic seaside waltz then a polka, warm and nostalgic, 112 BPM, live acoustic, no vocals"
+  },
+  {
+   "id": "festival_2",
+   "mood": [
+    "festival"
+   ],
+   "seconds": 120,
+   "seed": 41201,
+   "prompt": "Joyful folk dance music for a town square celebration, fiddle, accordion, acoustic guitar, hand percussion, a mix of Eastern European and Celtic folk, bright major key, 124 BPM, no vocals"
   }
  ]
 }

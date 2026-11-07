@@ -1,0 +1,300 @@
+{
+  "_doc": "The town's holidays (docs/festivals.md). Every festival here is a proposal, not canon. when.rule: date (month, day), new_moon / full_moon (the first such moon from month/day within window days, its date in tz hours from UTC; offset shifts it), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, bonfire, sunrise_point; the people gather over every place of that kind), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire, meteors). priority: who has a venue when two festivals want it at once. menu: the restaurant dishes of its day (menu.json ids); foods: what the fair stalls sell; late: people stay up till this hour of its first day (may pass 24); origin: where in the world it comes from (festival.origin.<origin>). New decor kinds: red_lanterns, balloons, pumpkins, marigolds, wish_tree. New shows: drums, firecrackers, color_powder, water_lanterns, bells. face moon: the moon.",
+  "festivals": [
+    {
+      "id": "weekend_market",
+      "when": {"rule": "weekly", "weekdays": [5]},
+      "decor": {"from": 7, "to": 15, "kinds": ["stalls", "bunting"]},
+      "program": [
+        {"id": "market", "hours": [8, 14], "venue": "fair", "mode": "fair", "pull": 0.45}
+      ],
+      "priority": 0
+    },
+    {
+      "id": "sea_festival",
+      "menu": ["rs_fest_ukha", "rs_baltic_fish", "rs_fest_sbiten"], "late": 25, "origin": "town",
+      "when": {"rule": "nth_weekday", "month": 10, "nth": 4, "weekday": 5},
+      "holiday": 1,
+      "decor": {"from": -6, "to": 26, "kinds": ["bunting", "flags", "lanterns", "stage", "stalls"], "venues": ["square", "fair", "promenade"]},
+      "program": [
+        {"id": "fair", "hours": [10, 17], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "concert", "hours": [17, 21.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.2, "show": ["music", "stage_lights"]},
+        {"id": "fireworks", "hours": [21.5, 22.1], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.7, "show": ["fireworks"]},
+        {"id": "dance", "hours": [22.1, 24.5], "venue": "square", "mode": "mingle", "pull": 0.7, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 5
+    },
+    {
+      "id": "lantern_night",
+      "menu": ["rs_tea", "rs_medovik"], "late": 21.5, "origin": "town",
+      "when": {"rule": "nth_weekday", "month": 11, "nth": 2, "weekday": 5},
+      "decor": {"from": 12, "to": 24, "kinds": ["lanterns", "candles"], "venues": ["promenade", "beach"]},
+      "program": [
+        {"id": "lantern_walk", "hours": [16.5, 19], "venue": "promenade", "mode": "mingle", "pull": 0.6},
+        {"id": "sky_lanterns", "hours": [19, 20.5], "venue": "beach", "mode": "watch", "face": "sky", "pull": 1.3, "show": ["sky_lanterns"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "first_snow",
+      "menu": ["rs_fest_sbiten", "rs_tea"],
+      "when": {"rule": "trigger", "trigger": "first_snow", "offset": 1},
+      "decor": {"from": 10, "to": 20, "kinds": ["lanterns", "stalls"], "venues": ["park"]},
+      "program": [
+        {"id": "snow_play", "hours": [12, 16], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "winter_fair",
+      "menu": ["rs_fest_sbiten", "rs_fest_kulebyaka"],
+      "when": {"rule": "date", "month": 12, "day": 18},
+      "days": 21,
+      "decor": {"from": 9, "to": 22, "kinds": ["tree", "lanterns", "stalls", "wreaths"], "venues": ["square", "fair"]},
+      "program": [
+        {"id": "fair", "day": -1, "hours": [12, 20], "venue": "fair", "mode": "fair", "pull": 0.7, "show": ["music"]}
+      ],
+      "priority": 1
+    },
+    {
+      "id": "new_year",
+      "menu": ["rs_olivier", "rs_fest_kulebyaka", "rs_medovik"], "late": 27.5, "origin": "ru",
+      "when": {"rule": "date", "month": 12, "day": 31},
+      "days": 3,
+      "holiday": 1,
+      "decor": {"from": 10, "to": 22, "kinds": ["tree", "lanterns", "wreaths", "stage"], "venues": ["square"]},
+      "program": [
+        {"id": "eve", "hours": [22, 23.8], "venue": "square", "mode": "mingle", "face": "tree", "pull": 1.0, "show": ["music", "stage_lights"]},
+        {"id": "fireworks", "hours": [23.8, 24.6], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.8, "show": ["fireworks"]},
+        {"id": "dance", "hours": [24.6, 27], "venue": "square", "mode": "mingle", "pull": 0.6, "show": ["music", "stage_lights"]},
+        {"id": "walk", "day": 1, "hours": [13, 17], "venue": "park", "mode": "mingle", "pull": 0.5}
+      ],
+      "priority": 9
+    },
+    {
+      "id": "maslenitsa",
+      "menu": ["rs_blini_caviar", "rs_fest_sbiten"], "origin": "ru",
+      "when": {"rule": "easter_orthodox", "offset": -49},
+      "decor": {"from": 9, "to": 20, "kinds": ["flags", "stalls", "bunting"], "venues": ["fair", "square"]},
+      "program": [
+        {"id": "fair", "hours": [11, 16], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "bonfire", "hours": [16, 18], "venue": "bonfire", "mode": "watch", "face": "bonfire", "pull": 1.3, "show": ["bonfire"]}
+      ],
+      "priority": 4
+    },
+    {
+      "id": "bird_day",
+      "when": {"rule": "date", "month": 4, "day": 1},
+      "decor": {"from": 7, "to": 18, "kinds": ["birdhouses", "flags"], "venues": ["park"]},
+      "program": [
+        {"id": "birdwatch", "hours": [8, 12], "venue": "park", "mode": "mingle", "pull": 0.6}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "blossom",
+      "menu": ["rs_sushi_set"], "origin": "jp",
+      "when": {"rule": "nth_weekday", "month": 5, "nth": 2, "weekday": 6},
+      "decor": {"from": 9, "to": 22, "kinds": ["lanterns"], "venues": ["park"]},
+      "program": [
+        {"id": "picnic", "hours": [11, 17], "venue": "park", "mode": "mingle", "pull": 0.9},
+        {"id": "evening", "hours": [17, 21], "venue": "park", "mode": "mingle", "pull": 0.5, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "midsummer",
+      "menu": ["rs_shashlik", "rs_mors"], "late": 29.5, "origin": "baltic",
+      "when": {"rule": "date", "month": 6, "day": 23},
+      "decor": {"from": 12, "to": 30, "kinds": ["wreaths", "bunting", "lanterns"], "venues": ["beach", "promenade"]},
+      "program": [
+        {"id": "bonfire", "hours": [20, 26], "venue": "bonfire", "mode": "mingle", "face": "bonfire", "pull": 1.3, "show": ["bonfire", "music"]},
+        {"id": "sunrise", "hours": [27.6, 29.3], "venue": "sunrise_point", "mode": "watch", "face": "sunrise", "pull": 1.1}
+      ],
+      "priority": 5
+    },
+    {
+      "id": "fisherman_day",
+      "menu": ["rs_fried_flounder", "rs_fest_ukha", "rs_baltic_fish"], "origin": "ru",
+      "when": {"rule": "nth_weekday", "month": 7, "nth": 2, "weekday": 6},
+      "decor": {"from": 8, "to": 22, "kinds": ["flags", "stalls", "stage"], "venues": ["promenade", "square"]},
+      "program": [
+        {"id": "fish_fair", "hours": [10, 16], "venue": "promenade", "mode": "fair", "pull": 0.9},
+        {"id": "concert", "hours": [16, 19.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.0, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "perseids",
+      "late": 26.5,
+      "when": {"rule": "date", "month": 8, "day": 12},
+      "decor": {"from": 20, "to": 27, "kinds": ["candles"], "venues": ["beach"]},
+      "program": [
+        {"id": "stars", "hours": [22.5, 26], "venue": "beach", "mode": "watch", "face": "sky", "pull": 0.8, "show": ["meteors"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "harvest_fair",
+      "menu": ["rs_draniki", "rs_mors"],
+      "when": {"rule": "nth_weekday", "month": 9, "nth": 4, "weekday": 5},
+      "decor": {"from": 7, "to": 19, "kinds": ["stalls", "bunting", "flags"], "venues": ["fair", "square"]},
+      "program": [
+        {"id": "fair", "hours": [9, 17], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "lunar_new_year",
+      "when": {"rule": "new_moon", "month": 1, "day": 21, "window": 30, "tz": 8},
+      "origin": "cn",
+      "menu": ["rs_pelmeni", "rs_ramen", "rs_tea"],
+      "foods": ["rs_pelmeni"],
+      "late": 25,
+      "decor": {"from": -6, "to": 26, "kinds": ["red_lanterns", "bunting", "stalls"], "venues": ["square", "fair", "promenade"]},
+      "program": [
+        {"id": "fair", "hours": [11, 17], "venue": "fair", "mode": "fair", "pull": 0.9, "show": ["music"]},
+        {"id": "drums", "hours": [17, 18.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.1, "show": ["drums"]},
+        {"id": "lantern_walk", "hours": [18.5, 23.8], "venue": "promenade", "mode": "mingle", "pull": 0.6},
+        {"id": "firecrackers", "hours": [23.8, 24.3], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.4, "show": ["firecrackers"]},
+        {"id": "fireworks", "hours": [23.95, 24.45], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.4, "show": ["fireworks"]}
+      ],
+      "priority": 6
+    },
+    {
+      "id": "holi",
+      "when": {"rule": "full_moon", "month": 2, "day": 24, "window": 30, "tz": 5.5, "offset": 1},
+      "origin": "in",
+      "menu": ["rs_syrniki", "rs_mors"],
+      "decor": {"from": 9, "to": 18, "kinds": ["bunting", "flags", "marigolds"], "venues": ["park"]},
+      "program": [
+        {"id": "colours", "hours": [11, 14], "venue": "park", "mode": "mingle", "pull": 1.0, "show": ["color_powder", "drums"]},
+        {"id": "picnic", "hours": [14, 17], "venue": "park", "mode": "mingle", "pull": 0.6, "show": ["music"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "nowruz",
+      "when": {"rule": "date", "month": 3, "day": 21},
+      "origin": "ir",
+      "menu": ["rs_shashlik", "rs_tea"],
+      "decor": {"from": 9, "to": 21, "kinds": ["lanterns", "flags"], "venues": ["park"]},
+      "program": [
+        {"id": "picnic", "hours": [12, 17], "venue": "park", "mode": "mingle", "pull": 0.7, "show": ["music"]},
+        {"id": "bonfire", "hours": [18, 20], "venue": "bonfire", "mode": "watch", "face": "bonfire", "pull": 0.9, "show": ["bonfire"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "children_day",
+      "when": {"rule": "date", "month": 6, "day": 1},
+      "origin": "intl",
+      "menu": ["rs_plombir", "rs_syrniki", "rs_mors"],
+      "decor": {"from": 8, "to": 20, "kinds": ["balloons", "flags", "bunting"], "venues": ["park"]},
+      "program": [
+        {"id": "games", "hours": [10, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "tanabata",
+      "when": {"rule": "date", "month": 7, "day": 7},
+      "origin": "jp",
+      "menu": ["rs_ramen", "rs_sushi_set"],
+      "late": 23.5,
+      "decor": {"from": 10, "to": 24, "kinds": ["wish_tree", "lanterns"], "venues": ["promenade"]},
+      "program": [
+        {"id": "wishes", "hours": [16, 21.5], "venue": "promenade", "mode": "mingle", "pull": 0.7},
+        {"id": "stars", "hours": [21.5, 23.5], "venue": "beach", "mode": "watch", "face": "sky", "pull": 0.6}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "toro_nagashi",
+      "when": {"rule": "date", "month": 8, "day": 15},
+      "origin": "jp",
+      "late": 22.5,
+      "decor": {"from": 15, "to": 23, "kinds": ["lanterns", "candles"], "venues": ["beach"]},
+      "program": [
+        {"id": "water_lanterns", "hours": [19.5, 22], "venue": "beach", "mode": "watch", "face": "sea", "pull": 1.0, "show": ["water_lanterns"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "mid_autumn",
+      "when": {"rule": "full_moon", "month": 9, "day": 8, "window": 30, "tz": 2},
+      "origin": "cn",
+      "menu": ["rs_medovik", "rs_tea"],
+      "late": 23.5,
+      "decor": {"from": 12, "to": 24, "kinds": ["red_lanterns", "lanterns"], "venues": ["promenade", "square"]},
+      "program": [
+        {"id": "lantern_walk", "hours": [18, 20.5], "venue": "square", "mode": "mingle", "pull": 0.7},
+        {"id": "moon", "hours": [20.5, 23.5], "venue": "promenade", "mode": "watch", "face": "moon", "pull": 0.9}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "halloween",
+      "when": {"rule": "date", "month": 10, "day": 31},
+      "origin": "ie",
+      "menu": ["rs_borscht", "rs_medovik"],
+      "late": 23,
+      "decor": {"from": 12, "to": 24, "kinds": ["pumpkins", "candles", "bunting"], "venues": ["square", "promenade"]},
+      "program": [
+        {"id": "costumes", "hours": [17, 22], "venue": "square", "mode": "mingle", "pull": 0.8, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "dia_de_muertos",
+      "when": {"rule": "date", "month": 11, "day": 1},
+      "days": 2,
+      "origin": "mx",
+      "menu": ["rs_mors", "rs_syrniki"],
+      "decor": {"from": 10, "to": 23, "kinds": ["marigolds", "candles"], "venues": ["park"]},
+      "program": [
+        {"id": "altars", "day": -1, "hours": [16, 21], "venue": "park", "mode": "mingle", "pull": 0.5, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "diwali",
+      "when": {"rule": "new_moon", "month": 10, "day": 18, "window": 31, "tz": 5.5, "offset": -1},
+      "origin": "in",
+      "menu": ["rs_syrniki", "rs_tea"],
+      "late": 23,
+      "decor": {"from": 12, "to": 24, "kinds": ["candles", "marigolds", "lanterns"], "venues": ["promenade", "square"]},
+      "program": [
+        {"id": "lamps", "hours": [17.5, 22.5], "venue": "promenade", "mode": "mingle", "pull": 0.8},
+        {"id": "firecrackers", "hours": [20.5, 21], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.0, "show": ["firecrackers"]},
+        {"id": "fireworks", "hours": [21, 21.4], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.2, "show": ["fireworks"]}
+      ],
+      "priority": 4
+    },
+    {
+      "id": "loy_krathong",
+      "when": {"rule": "full_moon", "month": 10, "day": 30, "window": 30, "tz": 7},
+      "origin": "th",
+      "menu": ["rs_ramen", "rs_mors"],
+      "late": 22.5,
+      "decor": {"from": 15, "to": 23, "kinds": ["lanterns", "marigolds"], "venues": ["beach"]},
+      "program": [
+        {"id": "water_lanterns", "hours": [19, 22], "venue": "beach", "mode": "watch", "face": "sea", "pull": 1.0, "show": ["water_lanterns"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "christmas",
+      "when": {"rule": "date", "month": 12, "day": 24},
+      "days": 2,
+      "origin": "eu",
+      "menu": ["rs_fest_kulebyaka", "rs_medovik", "rs_fest_sbiten"],
+      "decor": {"from": 9, "to": 22, "kinds": ["tree", "candles", "wreaths", "lanterns", "stalls"], "venues": ["square", "fair"]},
+      "program": [
+        {"id": "carols", "hours": [17, 19], "venue": "square", "mode": "watch", "face": "tree", "pull": 0.9, "show": ["bells", "music"]},
+        {"id": "fair", "day": -1, "hours": [12, 20], "venue": "fair", "mode": "fair", "pull": 0.7, "show": ["music"]}
+      ],
+      "priority": 2
+    }
+  ]
+}
