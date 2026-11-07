@@ -92,6 +92,9 @@ public:
 	UPROPERTY(SaveGame) float BoatYaw = 0.f;
 	UPROPERTY(SaveGame) int32 BoatPaidDay = -1;
 	UPROPERTY(SaveGame) bool bBoatAboard = false;
+	/** Its mooring and landing as found (a load spawns it at once there, not after the sea's depth map is read). */
+	UPROPERTY(SaveGame) FVector BoatMooring = FVector::ZeroVector;
+	UPROPERTY(SaveGame) FVector BoatLanding = FVector::ZeroVector;
 
 	virtual void OnGameSaving_Implementation() override;
 	virtual void OnGameLoaded_Implementation() override;

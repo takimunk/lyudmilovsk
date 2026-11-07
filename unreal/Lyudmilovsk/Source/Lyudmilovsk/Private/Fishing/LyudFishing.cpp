@@ -865,6 +865,23 @@ void ULyudFishing::LaunchBoat()
 {
 	const LyudFishPlaces::FBoatDef& D = LyudFishPlaces::Get().Boat;
 	const ALyudSea* Sea = ALyudSea::Get(this);
+	const ULyudFishingState* Saved = ULyudFishingState::Get(this);
+	if (Sea && D.bValid && Saved && Saved->bBoatSaved && !Saved->BoatMooring.IsZero() && !ALyudRowBoat::Get(this))
+	{
+		// a loaded game: the boat where it was at once (the hero may be sitting in it), its mooring as found then
+		bBoatTried = true;
+		FActorSpawnParameters P;
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		P.bDeferConstruction = true;
+		const FVector At(FVector2D(Saved->BoatPos), Sea->SurfaceZ(Saved->BoatPos));
+		if (ALyudRowBoat* Boat = GetWorld()->SpawnActor<ALyudRowBoat>(At, FRotator(0.f, Saved->BoatYaw, 0.f), P))
+		{
+			Boat->SetMooring(FVector2D(Saved->BoatMooring), FVector2D(Saved->BoatLanding));
+			Boat->FinishSpawning(FTransform(FRotator(0.f, Saved->BoatYaw, 0.f), At));
+			Boat->Restore(*Saved);
+		}
+		return;
+	}
 	// the sea's depth map first (until it is read every point says open sea)
 	if (!Sea || !Sea->IsDepthReady())
 	{

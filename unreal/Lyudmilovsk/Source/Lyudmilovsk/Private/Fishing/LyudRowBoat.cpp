@@ -330,6 +330,8 @@ void ALyudRowBoat::Store(ULyudFishingState& State) const
 	State.BoatYaw = Yaw;
 	State.BoatPaidDay = PaidDay;
 	State.bBoatAboard = bAboard;
+	State.BoatMooring = FVector(Mooring, 0.f);
+	State.BoatLanding = FVector(Landing, 0.f);
 }
 
 void ALyudRowBoat::Restore(const ULyudFishingState& State)
@@ -362,8 +364,18 @@ bool ALyudRowBoat::Blocked(const FVector2D& From, const FVector2D& To, float AtY
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(BoatSweep), false, this);
 	if (const AActor* R = Rower.Get()) Q.AddIgnoredActor(R);
 	FHitResult Hit;
-	return GetWorld()->SweepSingleByChannel(Hit, FVector(From, Z), FVector(To, Z), FRotator(0.f, AtYaw, 0.f).Quaternion(), ECC_Visibility,
-		FCollisionShape::MakeBox(FVector(BoatHalfLen, BoatHalfBeam, 20.f)), Q);
+	if (!GetWorld()->SweepSingleByChannel(Hit, FVector(From, Z), FVector(To, Z), FRotator(0.f, AtYaw, 0.f).Quaternion(), ECC_Visibility,
+		FCollisionShape::MakeBox(FVector(BoatHalfLen, BoatHalfBeam, 20.f)), Q))
+	{
+		return false;
+	}
+	// already touching it (a teleport, something left on the mooring): moving or turning away from it is free
+	if (Hit.bStartPenetrating)
+	{
+		const FVector2D Move = To - From;
+		return Move.SizeSquared() > 1.f && FVector2D::DotProduct(Move, FVector2D(Hit.Normal)) < 0.f;
+	}
+	return true;
 }
 
 bool ALyudRowBoat::Board(AHeroCharacter* Hero, bool bCheckReach)
