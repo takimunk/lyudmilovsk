@@ -9,10 +9,10 @@ what was fixed, how to check each one in a run, and the independent reviews of t
   were already there).
 - **Host tests pass:** audiosim (30 renders byte-identical to baseline), weather, winter, sea, transportsim, peoplesim, railsim.
   birdsim: 120 pass and 2 fail, the same 2 that fail on baseline c983e2ad (gulls on the low-tide sand; the albatross in a calm).
-- **Not run in the engine yet.** Xcode updated itself to 27.2 on Nov 4 and its Metal Toolchain is uninstalled, so every
+- **Engine runs:** blocked overnight. Xcode updated itself to 27.2 on Nov 4 and its Metal Toolchain is uninstalled, so every
   UnrealEditor run on this Mac quits at startup ("cannot execute tool 'metal' due to missing Metal Toolchain"): bench, soak,
   offscreen tests, Dima's editor, every thread. The fix is `xcodebuild -downloadComponent MetalToolchain` (Apple, ~0.7-1 GB);
-  it waits for Dima's OK. **So there are no before/after frame or memory numbers yet**, and no offscreen screenshots.
+  it waits for Dima's OK. (Installed 2026-11-07 morning with Dima's OK; numbers below.)
 - To get them once the toolchain is in: the baseline binaries of c983e2ad are saved in
   `~/projects/lyudmilovsk-wt/perfhunt_base_bin/Binaries`. Copy them over `unreal/Lyudmilovsk/Binaries` and run
   `tools/bench.sh 3` and `tools/soak.sh <dir>`. Then rebuild perfhunt (tools/wait_ubt_queue.sh) and run the same two. Run
@@ -20,6 +20,51 @@ what was fixed, how to check each one in a run, and the independent reviews of t
 - The soak tool (`tools/soak.sh` + `unreal/scripts/soak_clock.py`): the Epic bench route flown ROUNDS times (default 20,
   ~33 min) with the game clock at 60x, so one run sees day, night and dawn. It writes the process footprint every 60 s and
   SOAK lines (mean frame ms, live actors/components/MIDs/static meshes/textures/RTs/audio components) to show any growth.
+
+## Measurements (2026-11-07 morning, M5 Max, editor -game offscreen 1280x720, Epic route, each run alone)
+
+Once the Metal Toolchain was in: main's binaries (c983e2ad, saved before the fixes) and perfhunt's (63b7f908) were swapped in
+the same checkout and content. A Brave tab held the GPU at ~60% the whole time (no UE running; perf checklist 7b), and the
+machine drifted slower run after run (main alone went 20.5 -> 24.3 -> 28.2 ms). Frame and GPU times are therefore **not
+conclusive**; the CPU-side numbers are consistent.
+
+| run (in order) | route median | game thread | RHI | GPU | hall | corridor | forest | flight | mem GB |
+|---|---|---|---|---|---|---|---|---|---|
+| main | 20.51 | 5.49 | 2.95 | 23.5 | 15.6 | 19.6 | 67.2 | 19.7 | 20.46 |
+| perfhunt (after the main soak) | 23.39 | 5.14 | 3.27 | 27.7 | 17.0 | 21.7 | 74.1 | 22.7 | 20.27 |
+| main | 24.33 | 5.96 | 3.58 | 29.5 | 16.8 | 22.3 | 69.5 | 23.9 | 20.44 |
+| perfhunt | 28.65 | 4.57 | 2.83 | 33.3 | 21.6 | 29.7 | 81.4 | 25.6 | 20.38 |
+| main | 28.23 | 5.42 | 3.07 | 32.4 | 22.3 | 28.3 | 78.2 | 25.7 | 20.37 |
+| perfhunt | 27.37 | 4.50 | 2.71 | 31.6 | 21.3 | 26.9 | 76.9 | 25.4 | 20.32 |
+
+- **Game thread: -16%** (main 5.62 ms mean of 3, perfhunt 4.74), in every run and segment group. Outdoors it's -18..-27%
+  (forest 6.1 -> 5.0, flight 5.5 -> 4.6). RHI thread -8%.
+- **Frame / GPU: within noise.** The interleaved pairs were +4.3 and -0.9 ms against the run before; GPU-bound under the
+  foreign load.
+- **Memory:** the same within 0.1-0.2 GB in the bench.
+
+Soak (`tools/soak.sh`, 20 laps of the route, ~33 min, game clock x60 from 16:00 through the night to the next evening):
+
+| | main | perfhunt |
+|---|---|---|
+| lap medians: mean / median of laps (ms) | 26.16 / 27.69 | 26.88 / 28.84 |
+| memory over the run (bench mem, MB) | 20370 -> 21220 | 19900 -> 21200 |
+| footprint (GB, coarse) | 18 -> 21 | 18 -> 21 |
+| actors first -> last | 5220 -> 5179 | 5226 -> 5176 |
+| MIDs first -> last | 7669 -> 7790 (+121) | 7358 -> 7470 (+112) |
+| static meshes | 1951 -> 2040 | 1928 -> 2022 |
+| render targets | 82 -> 92 | 24 -> 62 |
+| crashes / ensures | none | none |
+
+- Neither build leaks over 33 min. Actor counts rise in the game's morning and fall back by evening; MIDs and meshes grow
+  ~1.5% (streaming/plants), and the growth is the same in both.
+- perfhunt holds ~310 fewer MIDs (shared goods materials) and ~58 fewer render targets at the start (cabin widgets drawn
+  only near).
+- Prefetch in -game: every folder reported a non-zero asset count ("Prefetch: /Game/Birds/Starling has 66 assets",
+  Animals/Cat 58, Humans/Anims 27, ...), so the registry fallback isn't needed but is harmless.
+- **To finish:** with the Brave tab closed (`ioreg ... "Device Utilization %"` near 0 while idle), run main/perfhunt/main/
+  perfhunt again: `cp -cR ~/projects/lyudmilovsk-wt/perfhunt_{base,ph}_bin/Binaries/. unreal/Lyudmilovsk/Binaries/` then
+  `tools/bench.sh 3`.
 
 ## Audit
 

@@ -43,12 +43,12 @@ def tick(dt):
         if cals:
             cals[0].set_time_scale(SCALE)
             s["scaled"] = True
-            unreal.log_warning("SOAK clock x%.0f from %s" % (SCALE, cals[0].now()))
+            unreal.log_warning("SOAK clock x%.0f from day %.3f" % (SCALE, cals[0].day_of_year()))
     if s["t"] - s["last"] >= EVERY:
         cals = [c for c in unreal.ObjectIterator(unreal.GameCalendar) if c.get_world() == w]
         counts = " ".join("%s=%d" % (n, count(c)) for n, c in CLASSES)
         unreal.log_warning("SOAK t=%.0f game=%s frames=%d mean_ms=%.2f %s" % (
-            s["t"], cals[0].now() if cals else "?", s["frames"], 1000.0 * s["acc"] / max(1, s["frames"]), counts))
+            s["t"], "%.3f" % cals[0].day_of_year() if cals else "?", s["frames"], 1000.0 * s["acc"] / max(1, s["frames"]), counts))
         s["last"] = s["t"]; s["frames"] = 0; s["acc"] = 0.0
 
 
