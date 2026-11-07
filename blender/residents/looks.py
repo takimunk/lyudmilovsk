@@ -264,6 +264,7 @@ def choose_outfit(rnd, sex, age, occupation, temper):
         out += [rnd.choice(tops), rnd.choice(bottoms)]
     else:
         out.append(rnd.choice(suits))
+    out = [AUTUMN_SWAP.get(g, g) for g in out]
     # coat over it: the town is on the Baltic and the game begins in late October
     p_coat = {"elder": 0.45, "smart": 0.3, "casual": 0.22, "work": 0.12, "kid": 0.08, "sport": 0.03}.get(style, 0.0)
     bare = any(g in BARE_ARMS for g in out)
@@ -285,7 +286,9 @@ def choose_outfit(rnd, sex, age, occupation, temper):
 
 FRINGE_OVER_EYE = {"bob01", "bob02"}    # glasses would show through the hair over one eye
 BARE_ARMS = {"punkduck_sleeveless", "punkduck_vneck_top", "wolgade_female_top_01", "mindfront_tank_top_01",
-             "mindfront_f_dress_02", "mindfront_f_beach_dress_01"}
+             "mindfront_f_dress_02", "mindfront_f_beach_dress_01", "female_sportsuit01"}   # (its top shows the belly)
+# summer clothes swapped for their autumn sibling after the draw (late October; the swap keeps everybody else's draws)
+AUTUMN_SWAP = {"female_casualsuit02": "female_casualsuit01"}      # a tee and denim shorts -> a tee and jeans
 
 
 def tint_for(rnd, garment, slot, style, extras, age):

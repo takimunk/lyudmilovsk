@@ -48,8 +48,9 @@ its seed and its inputs, so a change to the plan, the buildings or the public sp
   greying from 35, dyed now and then; men may go bald from 30, grow a moustache or a beard.
 - **Clothes** (`wardrobe.py`): style from the job (cook, waiter, doctor's white coat, worker's overalls...), age (kid,
   elder) and temper (sporty, smart); a dress, a suit or a top with a bottom, a coat for some (the game begins in late
-  October on the Baltic; everybody in straps or a sleeveless dress gets one, children too, a third of the town in all),
-  shoes or winter boots. Every tinted part of a garment gets a colour from a palette (elders quieter, kids brighter).
+  October on the Baltic; everybody in straps, a crop top or a sleeveless dress gets one, children too, a third of the
+  town in all), shoes or winter boots. No shorts: MakeHuman's tee-and-denim-shorts suit is swapped for the tee and
+  jeans after the draw (`AUTUMN_SWAP`). Every tinted part of a garment gets a colour from a palette (elders quieter, kids brighter).
 - **Accessories** (`accessories.py`, our own meshes): flat caps, knit beanies, baseball caps, sun hats, headscarves,
   chef's toques, backpacks, shoulder bags, string bags (avoska), shopping bags, scarves, aprons, round/rectangular
   glasses and sunglasses, a cane, moustaches and beards; one thing on the head at most, no glasses under a fringe
