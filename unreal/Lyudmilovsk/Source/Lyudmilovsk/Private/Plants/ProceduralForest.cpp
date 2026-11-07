@@ -2,6 +2,7 @@
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "CoreGlobals.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
@@ -35,6 +36,9 @@ namespace
 {
 	using PlantModel::Hash01;
 
+	/** A forest looks at the camera, its bakes and its graphics level this often, seconds. */
+	constexpr float ForestTickSeconds = 0.25f;
+
 	/** A benchmark knob (Bench/LyudBenchmark.cpp, registered with the module): -1 when unset or absent. */
 	float ForestBenchKnob(IConsoleVariable* const& Var)
 	{
@@ -45,7 +49,7 @@ namespace
 AProceduralForest::AProceduralForest()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 0.25f;
+	PrimaryActorTick.TickInterval = ForestTickSeconds;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Mix = { FForestMix() };
 }
@@ -140,9 +144,23 @@ void AProceduralForest::ApplyQuality(bool bForce)
 	const float Draw = GetDrawDistance();
 	const int32 Shadows = QualityShadows() ? 1 : 0;
 	const int32 Wind = QualityWindDistance();
-	if (!bForce && Draw == AppliedDraw && Shadows == AppliedShadows && Wind == AppliedWind)
+	const bool bChanged = Draw != AppliedDraw || Shadows != AppliedShadows || Wind != AppliedWind;
+	// a change of level: one forest a frame across the world (each resends its kinds' components, all of them in one frame
+	// would stall it); a forest waiting for its frame ticks every frame until then. Forced (the benchmark's knobs): now.
+	static uint64 ForestQualityFrame = 0;
+	const bool bNow = bForce || (bChanged && ForestQualityFrame != GFrameCounter);
+	const float Interval = bChanged && !bNow ? 0.f : ForestTickSeconds;
+	if (GetActorTickInterval() != Interval)
+	{
+		SetActorTickInterval(Interval);
+	}
+	if (!bNow)
 	{
 		return;
+	}
+	if (!bForce)
+	{
+		ForestQualityFrame = GFrameCounter;
 	}
 	AppliedDraw = Draw;
 	AppliedShadows = Shadows;

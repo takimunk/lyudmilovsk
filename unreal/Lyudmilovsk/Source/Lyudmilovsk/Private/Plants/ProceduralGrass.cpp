@@ -2,6 +2,7 @@
 #include "Winter/LyudWinter.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "CoreGlobals.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -20,6 +21,9 @@ static TAutoConsoleVariable<float> CVarGrassDensity(TEXT("lyud.GrassDensity"), 1
 
 namespace
 {
+	/** A patch checks its season and its density this often, seconds. */
+	constexpr float GrassPatchTickSeconds = 2.f;
+
 	using PlantModel::Hash01;
 
 	/** The ground under a world point: its height, and whether grass may grow on it. */
@@ -58,7 +62,7 @@ namespace
 AProceduralGrass::AProceduralGrass()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 2.f;
+	PrimaryActorTick.TickInterval = GrassPatchTickSeconds;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	NearTufts = MakeTufts(this, TEXT("NearTufts"), RootComponent);
 	FarTufts = MakeTufts(this, TEXT("FarTufts"), RootComponent);
@@ -339,9 +343,19 @@ void AProceduralGrass::Tick(float DeltaSeconds)
 	{
 		ApplySeason(Day);
 	}
-	// the graphics level changed the density: the tufts are laid out again (once per change of level, at this patch's tick)
-	if (BuiltDensity >= 0.f && CVarGrassDensity.GetValueOnGameThread() != BuiltDensity)
+	// the graphics level changed the density: the tufts are laid out again, one patch a frame across the world (the patches
+	// tick on the same beat, and all of them in one frame would stall it); a patch waiting for its frame ticks every frame
+	static uint64 GrassRebuildFrame = 0;
+	bool bWaiting = BuiltDensity >= 0.f && CVarGrassDensity.GetValueOnGameThread() != BuiltDensity;
+	if (bWaiting && GrassRebuildFrame != GFrameCounter)
 	{
+		GrassRebuildFrame = GFrameCounter;
 		Rebuild();
+		bWaiting = false;
+	}
+	const float Interval = bWaiting ? 0.f : GrassPatchTickSeconds;
+	if (GetActorTickInterval() != Interval)
+	{
+		SetActorTickInterval(Interval);
 	}
 }

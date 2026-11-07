@@ -80,6 +80,8 @@ namespace LyudGraphics
 	FString Describe();
 }
 
+class UInstancedStaticMeshComponent;
+
 /**
  * Keeps the frame rate, the render resolution and TSR's history where the graphics settings want them while the window,
  * the menu and the focus change, and resends the instanced meshes when the view distance changes (a few cvar reads a
@@ -100,11 +102,17 @@ public:
 	virtual bool IsTickable() const override { return bStarted; }
 
 private:
-	/** Sends the world's instanced meshes to the renderer again (their distances take r.ViewDistanceScale in only then). */
+	/** Queues the world's instanced meshes to go to the renderer again (their distances take r.ViewDistanceScale in only then). */
 	void RefreshInstances();
+	/** Resends the next queued instanced meshes, lyud.Gfx.RefreshInstances.PerFrame instances a frame. */
+	void ResendQueued();
 
 	bool bStarted = false;
 	/** r.ViewDistanceScale as the world's instanced meshes last took it in; RefreshCountdown frames until they take the new one. */
 	float SeenViewDistanceScale = -1.f;
 	int32 RefreshCountdown = 0;
+	/** The instanced meshes still to resend, from RefreshNext on; RefreshSent of them sent so far. */
+	TArray<TWeakObjectPtr<UInstancedStaticMeshComponent>> RefreshQueue;
+	int32 RefreshNext = 0;
+	int32 RefreshSent = 0;
 };

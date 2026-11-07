@@ -6,7 +6,7 @@ page (F10 → Settings → Graphics). A level means the same thing everywhere: t
 
 | what | where |
 |---|---|
-| the levels: the engine's `BaseScalability.ini` with the game's changes and its own `lyud.*` knobs | `Config/DefaultScalability.ini` |
+| the levels: the engine's `BaseScalability.ini` with the game's changes and its own `lyud.*` knobs | `Config/DefaultScalability.ini`; phones also `Config/IOS`, `Config/Android` |
 | Auto detection, render resolution, TSR history, frame cap, power saving, the saved settings | `Source/.../UI/LyudGraphics.{h,cpp}` (`LyudGraphics::`, `ULyudGraphicsSubsystem`) |
 | the Graphics page | `Source/.../GameMenu/SLyudGameMenu.cpp` (`MakeGraphics`), strings `ui.gfx.*` |
 | checks and measurements | `tools/check_scalability.py`, `tools/bench_gfx.sh`, `tools/bench.sh` |
@@ -44,7 +44,7 @@ What the game changes against the engine's levels (everything else is the engine
 | Reflections | screen-space, quality 1 (engine: sky only) | engine | engine | Lumen at the engine's High | engine |
 | Textures | one mip down (engine: MipBias 16, the smallest mips) | engine | engine | engine | engine |
 | Effects: clouds' ray-march samples | 0.5 | 0.7 | 0.85 | 1 | 1 |
-| sea (0 phone, 1 medium, 2 desktop), fish, motes in the water | 0, 0.5, off | 1, 0.75, on | 2, 1, on | 2, 1, on | 2, 1, on |
+| sea (0 phone, 1 medium, 2 desktop), fish, motes in the water | 0, 0.5, off | 1, 0.75, on | the platform's (2), 1, on | same | same |
 | Post process | engine | light shafts on | engine | engine | engine |
 | Plants: grass tufts, forest floor, live plants' shaping ms a frame | 0.4, 0.5, 1.5 | 0.65, 0.75, 2 | 0.85, 1, 3 | 1, 1, 3 | 1, 1, 3 |
 | forest: fruit trees made live near the camera; wind out to (m) | 3; 30 | 5; 42 | 8; 64 | 10; 120 | 10; everywhere |
@@ -53,6 +53,8 @@ What the game changes against the engine's levels (everything else is the engine
 - Material quality stays High and detail mode Epic at every level: the game's materials have no quality switches,
   and a change of either would cost seconds of a frozen menu (every material's shaders cached again, every
   component sent to the renderer again) for nothing visible.
+- A level change reaches the game's plants without a stall: one forest and one grass patch a frame take it, and a
+  View distance change resends the world's instanced meshes 20000 instances a frame.
 - `r.ViewDistanceScale` (the engine's 0.4 / 0.6 / 0.8 / 1 / 10) also scales every draw distance: the forests' 500 m
   becomes 200 m at Low, 300 at Medium, 400 at High, 5 km at Cinematic. The wind distances in the table already
   include it (`lyud.Forest.WindDistance` 75 / 70 / 80 / 120 / 0 x the scale). Trees past the wind distance stand
@@ -65,6 +67,18 @@ What the game changes against the engine's levels (everything else is the engine
 tools/check_scalability.py                                   # the engine at $UE_ROOT
 tools/check_scalability.py --cvars <DumpCVars output>        # also: every key is a console variable of this engine
 ```
+
+## Phones
+
+Phones get their levels from the device profile and never Cinematic: in 5.8 iPhone 13 and 15 Pro .. 18 Pro are Epic,
+iPhone 8 .. 11 High, the first iPhone SE Low; Android goes by its GPU (Low .. Epic). The engine's
+`IOSScalability.ini` and `AndroidScalability.ini` tune shadows, reflections and post process for the mobile renderer.
+`Config/IOS/IOSScalability.ini` and `Config/Android/AndroidScalability.ini` give back the engine's phone values for what
+the project raised for desktops: no shadows, AO or screen-space reflections at Low, Low's small texture mips, the
+engine's material quality and detail mode and light shafts (on iOS at Epic only), and the phone's own sea at every
+level.
+`tools/check_scalability.py --platform IOS` (or `Android`) checks a phone's levels. Nothing of it has run on a phone
+yet.
 
 ## Auto
 
@@ -104,10 +118,11 @@ it only while it wants less than the level's and gives it back to the scalabilit
   Play); without them Play keeps the editor's levels, and still gets Auto resolution and the 60 fps limit. When Play
   stops the editor gets its levels and VSync back, and the resolution, TSR history and frame cap go back to the
   editor's own values with their own priorities (`IConsoleVariable::Unset`).
-- **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): nothing of
-  the resolution, history or frame cap is touched; they keep `r.ScreenPercentage=75` of `DefaultEngine.ini` and
-  their own `t.MaxFPS`. `GameUserSettings.ini` is not written.
-- **The benchmark** (`-LyudBench`): Auto resolution by its presets' levels like a player (offscreen draws 1280x720:
+- **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): they keep the
+  levels they started with (not the player's stored ones: they share the checkout's `GameUserSettings.ini` with Play),
+  `r.ScreenPercentage=75` of `DefaultEngine.ini`, their own `t.MaxFPS` and vsync. `lyud.Gfx.*` commands still change
+  the run's levels, and `GameUserSettings.ini` is not written.
+- **The benchmark** (`-LyudBench`): its own presets, Auto resolution by them like a player (offscreen draws 1280x720:
   50 / 58 / 67 / 75%), no frame cap; a pass's `r.ScreenPercentage` or `r.TSR.History.ScreenPercentage` from the
   console wins.
 
@@ -121,8 +136,8 @@ it only while it wants less than the level's and gives it back to the scalabilit
   resolution per change (the page gives its values back while it applies the levels: no warning).
 - **View distance and instanced meshes.** The engine multiplies the instances' cull and wind distances by
   `r.ViewDistanceScale` only when a component is sent to the renderer; a change of the scale alone resends nothing.
-  Two frames after the scale changes the game resends every instanced mesh of the world once
-  (`lyud.Gfx.RefreshInstances`), else a View distance change would only show after a restart.
+  Two frames after the scale changes the game resends every instanced mesh of the world once, a budget a frame
+  (`lyud.Gfx.RefreshInstances`, `.PerFrame`), else a View distance change would only show after a restart.
 - **Instance LODs.** Plain instanced meshes pick their LOD per instance on the GPU, by `r.StaticMeshLODDistanceScale`;
   `foliage.LODDistanceScale` only reaches hierarchical ones, which this game does not use (they add a CPU walk per
   view). Shadows of non-Nanite meshes take the camera's LOD; `r.Shadow.LODDistanceFactor` is the only lever.
@@ -144,7 +159,7 @@ it only while it wants less than the level's and gives it back to the scalabilit
 | `lyud.Gfx.FrameLimit <fps>` | 0 is none |
 | `lyud.Gfx.MenuFps`, `lyud.Gfx.BackgroundFps` | the power-saving caps (30, 10) |
 | `lyud.Gfx.Governor` | the power-saving caps: 1 on, 0 off, -1 only in a window someone watches |
-| `lyud.Gfx.AutoResolution.RefHeight`, `lyud.Gfx.AutoTSRHistory`, `lyud.Gfx.RefreshInstances` | see above |
+| `lyud.Gfx.AutoResolution.RefHeight`, `lyud.Gfx.AutoTSRHistory`, `lyud.Gfx.RefreshInstances`, `.PerFrame` | see above |
 
 `scalability N` and `sg.<Group>Quality N` work as in any Unreal game; the page shows its stored settings, which
 the console does not change. The game's knobs in the levels: `lyud.Birds.Bodies`, `lyud.Birds.DrawDistance`,

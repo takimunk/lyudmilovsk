@@ -11,6 +11,8 @@ the levels that turn Lumen off) stay the engine's when the project only changes 
     tools/check_scalability.py --engine <UE root>
     tools/check_scalability.py --cvars <file>        also flag keys that are not console variables of this engine:
                                                      the file has a variable name first on each line (`DumpCVars`)
+    tools/check_scalability.py --platform IOS        a platform's levels: the engine's and the project's
+                                                     Config/<platform>/<platform>Scalability.ini on top (IOS, Android)
 Exit status 1 when the project leaves a key it adds out of a level (the engine's own gaps are only listed).
 """
 import argparse
@@ -47,11 +49,18 @@ def read_ini(path):
     return sections
 
 
+def merge(into, more):
+    """The sections of `more` over `into` (a platform's file over the general one)."""
+    for name, keys in more.items():
+        into.setdefault(name, {}).update(keys)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--engine", default=os.environ.get("UE_ROOT", "/Users/Shared/Epic Games/UE_5.8"))
     ap.add_argument("--project", default=PROJECT)
     ap.add_argument("--cvars", help="a list of this engine's console variables, one name first on each line")
+    ap.add_argument("--platform", help="IOS, Android: merge the engine's and the project's <platform>Scalability.ini too")
     args = ap.parse_args()
 
     base_path = os.path.join(args.engine, "Engine", "Config", "BaseScalability.ini")
@@ -60,6 +69,14 @@ def main():
         return 2
     base = read_ini(base_path)
     project = read_ini(args.project)
+    if args.platform:
+        p = args.platform
+        engine_platform = os.path.join(args.engine, "Engine", "Config", p, f"{p}Scalability.ini")
+        project_platform = os.path.join(os.path.dirname(args.project), p, f"{p}Scalability.ini")
+        for path, into in ((engine_platform, base), (project_platform, project)):
+            if os.path.exists(path):
+                merge(into, read_ini(path))
+                print(f"(+ {path})")
     known = None
     if args.cvars:
         known = set()
@@ -119,7 +136,8 @@ def main():
                 also = f" (the project sets it at {', '.join('@' + l for l in in_project)})" if in_project else ""
                 print(f"  . engine key {key} is not set at {where}{also}")
             failed = failed or ours
-    print("(* = set by Config/DefaultScalability.ini; '.' lines are the engine's own gaps)")
+    print("(* = set by the project's Config/DefaultScalability.ini%s; '.' lines are the engine's own gaps)"
+          % (f" or Config/{args.platform}/{args.platform}Scalability.ini" if args.platform else ""))
     return 1 if failed else 0
 
 

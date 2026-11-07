@@ -43,6 +43,10 @@ static TAutoConsoleVariable<int32> CVarGfxRefreshInstances(
 	TEXT("lyud.Gfx.RefreshInstances"), 1,
 	TEXT("1: when r.ViewDistanceScale changes (the View distance level) the world's instanced meshes go to the renderer again, since the engine bakes the scale into their draw and wind distances only then."));
 
+static TAutoConsoleVariable<int32> CVarGfxRefreshPerFrame(
+	TEXT("lyud.Gfx.RefreshInstances.PerFrame"), 20000,
+	TEXT("Instances resent a frame after a view distance change (at least one component a frame), so the change spreads over frames instead of stalling one."));
+
 // a named namespace: unity builds put neighbouring files (LyudSettings.cpp has its own Section, bApplied, ...) in one unit
 namespace LyudGraphics::Local
 {
@@ -145,11 +149,14 @@ namespace LyudGraphics::Local
 		return S;
 	}
 
+	bool Interactive();
+
 	void Store()
 	{
 		FState& S = State();
 		S.bStored = true;
-		if (!GConfig)
+		// a run nobody watches (an offscreen test calling lyud.Gfx.Preset) changes its own state only, not the player's ini
+		if (!GConfig || !Interactive())
 		{
 			return;
 		}
@@ -293,7 +300,9 @@ namespace LyudGraphics::Local
 
 	void UpdateScreenPercentage(bool bForce)
 	{
-		if (!ManagesResolution())
+		// only while a game world runs with the settings applied (not in the editor between Plays), in a player's or the
+		// benchmark's run
+		if (!bApplied || !ManagesResolution())
 		{
 			return;
 		}
@@ -323,7 +332,7 @@ namespace LyudGraphics::Local
 	 */
 	void UpdateTSRHistory(bool bForce)
 	{
-		if (!ManagesResolution())
+		if (!bApplied || !ManagesResolution())
 		{
 			return;
 		}
@@ -364,8 +373,9 @@ namespace LyudGraphics::Local
 
 	void UpdateFrameCap(bool bForce)
 	{
-		// the limit is the player's: offscreen, unattended and benchmark runs draw as fast as they can and keep their own t.MaxFPS
-		if (!Interactive() && CVarGfxGovernor.GetValueOnGameThread() <= 0)
+		// the limit is the player's: offscreen, unattended and benchmark runs draw as fast as they can and keep their own t.MaxFPS;
+		// and nothing after Play stopped (the game menu closing after this subsystem went must not cap the editor)
+		if (!bApplied || (!Interactive() && CVarGfxGovernor.GetValueOnGameThread() <= 0))
 		{
 			return;
 		}
@@ -394,6 +404,10 @@ namespace LyudGraphics::Local
 
 	void ApplyVSync()
 	{
+		if (!bApplied || !Interactive())
+		{
+			return;
+		}
 		const FState& S = State();
 		if (IConsoleVariable* V = Find(TEXT("r.VSync")); CanSet(V, ECVF_SetByGameSetting) && V->GetInt() != (S.bVSync ? 1 : 0))
 		{
@@ -409,6 +423,11 @@ namespace LyudGraphics::Local
 
 	void ApplyLevels()
 	{
+		// between Plays in the editor the levels are only stored; the next Play applies them
+		if (!bApplied)
+		{
+			return;
+		}
 		const FState& S = State();
 		Scalability::FQualityLevels Q = Scalability::GetQualityLevels();
 		for (int32 I = 0; I < NumGroups; ++I)
@@ -561,12 +580,15 @@ namespace LyudGraphics
 		}
 		bApplied = true;
 		bWorldIsPIE = World && World->WorldType == EWorldType::PIE;
+		// the stored levels, vsync and limit are the player's: offscreen tests, recordings and the benchmark (which share the
+		// checkout's GameUserSettings.ini with Play) keep the levels they started with; the benchmark sets its own
+		const bool bPlayer = Interactive();
 		FState& S = State();
-		if (bWorldIsPIE)
+		if (bWorldIsPIE && bPlayer)
 		{
 			TakeEditorSnapshot();
 		}
-		else if (S.bAuto && Interactive() && GConfig)
+		else if (!bWorldIsPIE && S.bAuto && bPlayer && GConfig)
 		{
 			// a new install, or the settings came to another machine: pick the level for this one
 			FString Last;
@@ -583,7 +605,7 @@ namespace LyudGraphics
 			}
 		}
 		// the editor's Play without settings of its own keeps the editor's levels
-		if (S.bStored || !bWorldIsPIE)
+		if (bPlayer && (S.bStored || !bWorldIsPIE))
 		{
 			ApplyLevels();
 		}
@@ -663,7 +685,8 @@ namespace LyudGraphics
 
 	float ScreenPercentage()
 	{
-		const IConsoleVariable* Sp = Find(TEXT("r.ScreenPercentage"));
+		// the page asks at every paint: looked up once (FindConsoleVariable builds a string)
+		static const IConsoleVariable* const Sp = Find(TEXT("r.ScreenPercentage"));
 		return Sp ? Sp->GetFloat() : 100.f;
 	}
 
@@ -844,24 +867,53 @@ void ULyudGraphicsSubsystem::Tick(float DeltaTime)
 	{
 		RefreshInstances();
 	}
+	if (RefreshNext < RefreshQueue.Num())
+	{
+		ResendQueued();
+	}
 }
 
 void ULyudGraphicsSubsystem::RefreshInstances()
 {
 	// instanced meshes (forests, grass, the forest floor, the seabed, birds) carry their draw and wind distances x
 	// r.ViewDistanceScale into the GPU scene when they are sent to the renderer, and a change of the scale alone resends
-	// nothing (UnrealEngine.cpp, ScalabilityCVarsSinkCallback): once per change of the View distance level, never per frame
+	// nothing (UnrealEngine.cpp, ScalabilityCVarsSinkCallback): once per change of the View distance level, never per frame,
+	// and spread over frames (ResendQueued)
 	const UWorld* World = GetWorld();
-	int32 Count = 0;
+	RefreshQueue.Reset();
+	RefreshNext = 0;
+	RefreshSent = 0;
 	for (TObjectIterator<UInstancedStaticMeshComponent> It; It; ++It)
 	{
 		if (It->GetWorld() == World && It->IsRegistered())
 		{
-			It->MarkRenderStateDirty();
-			++Count;
+			RefreshQueue.Add(*It);
 		}
 	}
-	UE_LOG(LogTemp, Log, TEXT("Graphics: view distance x%.2f, %d instanced meshes resent to the renderer"), SeenViewDistanceScale, Count);
+	UE_LOG(LogTemp, Log, TEXT("Graphics: view distance x%.2f, %d instanced meshes to resend"), SeenViewDistanceScale, RefreshQueue.Num());
+}
+
+void ULyudGraphicsSubsystem::ResendQueued()
+{
+	// a budget of instances a frame, at least one component: every forest, grass patch and bird at once would stall a frame
+	const int32 Budget = FMath::Max(1, CVarGfxRefreshPerFrame.GetValueOnGameThread());
+	int32 Instances = 0;
+	while (RefreshNext < RefreshQueue.Num() && Instances < Budget)
+	{
+		if (UInstancedStaticMeshComponent* C = RefreshQueue[RefreshNext].Get(); C && C->IsRegistered())
+		{
+			C->MarkRenderStateDirty();
+			Instances += FMath::Max(1, C->GetInstanceCount());
+			++RefreshSent;
+		}
+		++RefreshNext;
+	}
+	if (RefreshNext >= RefreshQueue.Num())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Graphics: %d instanced meshes resent to the renderer"), RefreshSent);
+		RefreshQueue.Reset();
+		RefreshNext = 0;
+	}
 }
 
 static FAutoConsoleCommand GLyudGfxCmd(TEXT("lyud.Gfx"), TEXT("lyud.Gfx: prints the graphics settings and what they resolve to now."),

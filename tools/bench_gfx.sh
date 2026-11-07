@@ -44,7 +44,20 @@ for V in ${*:-$ALL}; do
     [ "$S" = "?" ] && { echo "unknown variant $V"; exit 1; }
     PASSES="$PASSES|$V=$(echo "$S" | tr ' ' '+')"
 done
-LABEL="gfx" EXTRA="${SEGMENTS:+-LyudBenchSegments=$SEGMENTS} -LyudBenchPasses=$PASSES -LyudBenchRounds=${ROUNDS:-2} $EXTRA" \
-    "$ROOT/tools/bench.sh" "${PRESET:-3}" | grep -E "^bench:|BENCH (start|forests baked|wrote)"
-F="$(ls -t "$ROOT"/bench/results/*/*_gfx.json 2>/dev/null | head -1)"
-[ -n "$F" ] && python3 "$ROOT/tools/bench_report.py" --passes "$F"
+# the run's own result only (an older *_gfx.json is not this run's), and bench.sh's exit status
+MARK="$(mktemp)"
+{ LABEL="gfx" EXTRA="${SEGMENTS:+-LyudBenchSegments=$SEGMENTS} -LyudBenchPasses=$PASSES -LyudBenchRounds=${ROUNDS:-2} $EXTRA" \
+    "$ROOT/tools/bench.sh" "${PRESET:-3}"; echo $? > "$MARK.rc"; } | grep -E "^bench:|BENCH (start|forests baked|wrote)"
+RC="$(cat "$MARK.rc" 2>/dev/null || echo 1)"
+F=""
+for J in $(find "$ROOT/bench/results" -name '*_gfx.json' -newer "$MARK" 2>/dev/null); do
+    { [ -z "$F" ] || [ "$J" -nt "$F" ]; } && F="$J"
+done
+rm -f "$MARK" "$MARK.rc"
+if [ -n "$F" ]; then
+    python3 "$ROOT/tools/bench_report.py" --passes "$F"
+else
+    echo "bench_gfx: no new result (bench.sh exit $RC)"
+    [ "$RC" -eq 0 ] && RC=1
+fi
+exit "$RC"
