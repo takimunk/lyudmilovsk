@@ -107,9 +107,10 @@ public:
 	/**
 	 * The draw distance, shadows and wind of the graphics level (lyud.Forest.DistanceScale, .Shadows, .WindDistance, set per
 	 * level by Config/DefaultScalability.ini; the benchmark's lyud.Bench.Forest* knobs win when set) onto every kind's
-	 * instances. Checked every tick; it touches the components only when a value changes (or bForce).
+	 * instances. Checked every tick; it touches the components only when a value changes (or bForce), one forest a frame.
+	 * Returns true while this forest waits for its frame (its tick does nothing else then).
 	 */
-	void ApplyQuality(bool bForce = false);
+	bool ApplyQuality(bool bForce = false);
 	/** Trees farther than this are not drawn now, cm (CullDistance x lyud.Forest.DistanceScale). */
 	float GetDrawDistance() const;
 	bool QualityShadows() const;

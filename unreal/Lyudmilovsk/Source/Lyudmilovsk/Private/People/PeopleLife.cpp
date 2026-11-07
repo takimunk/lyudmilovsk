@@ -58,7 +58,7 @@ namespace LP = LyudPeople;
 static TAutoConsoleVariable<int32> CVarPeople(TEXT("lyud.People"), 1,
 	TEXT("The people's life (UPeopleLifeSubsystem): 1 on, 0 off (the club's people stay at their stations as placed)."));
 static TAutoConsoleVariable<float> CVarPeopleDraw(TEXT("lyud.People.DrawDistance"), 150.f,
-	TEXT("People outdoors are drawn within this many metres of the camera (indoors within 40 m)."));
+	TEXT("People outdoors are drawn within this many metres of the camera (indoors within 40 m; graphics levels: View distance)."), ECVF_Scalability);
 static TAutoConsoleVariable<int32> CVarPeopleAnyMap(TEXT("lyud.People.AnyMap"), 0,
 	TEXT("1: run the people's life in any game map (the town's data), not only Lvl_Scene01."));
 

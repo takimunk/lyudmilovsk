@@ -2,6 +2,8 @@
 
 #include "Components/InstancedStaticMeshComponent.h"
 #include "CoreGlobals.h"
+#include "DeviceProfiles/DeviceProfile.h"
+#include "DeviceProfiles/DeviceProfileManager.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
@@ -12,6 +14,7 @@
 #include "Misc/App.h"
 #include "Misc/CommandLine.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Misc/Optional.h"
 #include "Misc/Parse.h"
 #include "RHIGlobals.h"
 #include "Scalability.h"
@@ -62,10 +65,15 @@ namespace LyudGraphics::Local
 	struct FState
 	{
 		bool bLoaded = false;
-		/** The player's graphics are stored (else a new install: Auto, the engine's levels until detected). */
+		/**
+		 * The player's levels are stored (Levels and Auto in the ini). Else a new install, or only the editor's Play so far:
+		 * Levels are the engine's as they run (the editor's in Play) until Auto picks or the player does.
+		 */
 		bool bStored = false;
 		bool bAuto = true;
 		int32 Levels[NumGroups];
+		/** The engine's levels when the game first looked (on phones and tablets the device profile's, unless stored ones came back over them). */
+		int32 StartLevels[NumGroups];
 		int32 Resolution = 0;
 		int32 FrameLimit = 60;
 		bool bVSync = false;
@@ -75,8 +83,8 @@ namespace LyudGraphics::Local
 	/** The editor's own state before a Play applied the player's, put back when Play stops. */
 	struct FEditorSnapshot
 	{
-		bool bValid = false;
-		Scalability::FQualityLevels Levels;
+		/** Taken when Play starts (an FQualityLevels reads the scalability variables as it is built: nothing for static init). */
+		TOptional<Scalability::FQualityLevels> Levels;
 		int32 VSync = 0;
 	};
 
@@ -110,6 +118,16 @@ namespace LyudGraphics::Local
 		}
 	}
 
+	/** The levels the engine runs now. */
+	void EngineLevels(int32 (&Out)[NumGroups])
+	{
+		Scalability::FQualityLevels Q = Scalability::GetQualityLevels();
+		for (int32 I = 0; I < NumGroups; ++I)
+		{
+			Out[I] = FMath::Clamp(LevelRef(Q, static_cast<EGroup>(I)), 0, NumLevels - 1);
+		}
+	}
+
 	FState& State()
 	{
 		FState& S = GState;
@@ -118,12 +136,10 @@ namespace LyudGraphics::Local
 			return S;
 		}
 		S.bLoaded = true;
-		// until something is stored: the levels the engine started with (GameUserSettings.ini's [ScalabilityGroups], Epic by default)
-		Scalability::FQualityLevels Q = Scalability::GetQualityLevels();
-		for (int32 I = 0; I < NumGroups; ++I)
-		{
-			S.Levels[I] = FMath::Clamp(LevelRef(Q, static_cast<EGroup>(I)), 0, NumLevels - 1);
-		}
+		// until something is stored: the levels the engine started with (the device profile's, GameUserSettings.ini's
+		// [ScalabilityGroups], Epic by default)
+		EngineLevels(S.StartLevels);
+		FMemory::Memcpy(S.Levels, S.StartLevels, sizeof(S.Levels));
 		if (!GConfig)
 		{
 			return S;
@@ -151,22 +167,28 @@ namespace LyudGraphics::Local
 
 	bool Interactive();
 
+	/**
+	 * Writes the settings to the player's ini. The levels only once they are the player's (bStored: picked by Auto or by
+	 * the player): a frame limit changed in the editor's first Play must not store the editor's levels as the player's.
+	 */
 	void Store()
 	{
-		FState& S = State();
-		S.bStored = true;
+		const FState& S = State();
 		// a run nobody watches (an offscreen test calling lyud.Gfx.Preset) changes its own state only, not the player's ini
 		if (!GConfig || !Interactive())
 		{
 			return;
 		}
-		TArray<FString> Parts;
-		for (int32 I = 0; I < NumGroups; ++I)
+		if (S.bStored)
 		{
-			Parts.Add(FString::FromInt(S.Levels[I]));
+			TArray<FString> Parts;
+			for (int32 I = 0; I < NumGroups; ++I)
+			{
+				Parts.Add(FString::FromInt(S.Levels[I]));
+			}
+			GConfig->SetString(Section, TEXT("Levels"), *FString::Join(Parts, TEXT(",")), GGameUserSettingsIni);
+			GConfig->SetBool(Section, TEXT("Auto"), S.bAuto, GGameUserSettingsIni);
 		}
-		GConfig->SetString(Section, TEXT("Levels"), *FString::Join(Parts, TEXT(",")), GGameUserSettingsIni);
-		GConfig->SetBool(Section, TEXT("Auto"), S.bAuto, GGameUserSettingsIni);
 		GConfig->SetInt(Section, TEXT("Resolution"), S.Resolution, GGameUserSettingsIni);
 		GConfig->SetInt(Section, TEXT("FrameLimit"), S.FrameLimit, GGameUserSettingsIni);
 		GConfig->SetBool(Section, TEXT("VSync"), S.bVSync, GGameUserSettingsIni);
@@ -210,12 +232,13 @@ namespace LyudGraphics::Local
 	/** A run someone watches: not offscreen, not unattended, not a benchmark or a fixed-step recording, not a commandlet. */
 	bool Interactive()
 	{
-		static const bool bInteractive = [] {
+		// what the command line decides, once; an automation test or a fixed-step recording (Movie Render Queue) can start later
+		static const bool bByCommandLine = [] {
 			const TCHAR* Cmd = FCommandLine::Get();
-			return FApp::CanEverRender() && !FApp::IsUnattended() && !IsRunningCommandlet() && !GIsAutomationTesting && !FApp::UseFixedTimeStep()
+			return FApp::CanEverRender() && !FApp::IsUnattended() && !IsRunningCommandlet()
 				&& !FParse::Param(Cmd, TEXT("RenderOffscreen")) && !FParse::Param(Cmd, TEXT("LyudBench"));
 		}();
-		return bInteractive;
+		return bByCommandLine && !GIsAutomationTesting && !FApp::UseFixedTimeStep();
 	}
 
 	/**
@@ -285,16 +308,21 @@ namespace LyudGraphics::Local
 		return FMath::Clamp(FMath::RoundToFloat(AutoBase[L] * Scale), L == 0 ? 40.f : 50.f, 100.f);
 	}
 
+	/** The render resolution the player picked, percent, 0 Auto. The benchmark measures Auto whatever the player's ini says. */
+	int32 ManualPercent()
+	{
+		return Interactive() ? State().Resolution : 0;
+	}
+
 	/** The render resolution the settings want for the window now. */
 	float WantedPercent()
 	{
-		const FState& S = State();
-		if (S.Resolution > 0)
+		if (const int32 Manual = ManualPercent(); Manual > 0)
 		{
-			return static_cast<float>(S.Resolution);
+			return static_cast<float>(Manual);
 		}
 		// Auto follows the anti-aliasing (TSR) level as it is now, so `scalability N` and the benchmark move it too
-		static IConsoleVariable* AA = Find(TEXT("sg.AntiAliasingQuality"));
+		static IConsoleVariable* const AA = Find(TEXT("sg.AntiAliasingQuality"));
 		return AutoPercent(AA ? AA->GetInt() : 3, ViewSize().Y);
 	}
 
@@ -306,13 +334,33 @@ namespace LyudGraphics::Local
 		{
 			return;
 		}
+		// every frame: looked up once (FindConsoleVariable builds a string)
+		static IConsoleVariable* const Sp = Find(TEXT("r.ScreenPercentage"));
+#if PLATFORM_IOS || PLATFORM_ANDROID
+		// phones and tablets: Auto is the device profile's resolution (r.MobileContentScaleFactor, its r.ScreenPercentage)
+		if (ManualPercent() <= 0)
+		{
+			if (LastPercent >= 0.f)
+			{
+				UnsetCode(TEXT("r.ScreenPercentage"));
+				LastPercent = -1.f;
+			}
+			return;
+		}
+#endif
 		const float Want = WantedPercent();
-		if (!bForce && FMath::IsNearlyEqual(Want, LastPercent))
+		// set again when the variable lost the value too (given back to a lower priority); a value the console or the
+		// command line set stays theirs
+		const bool bCanSet = CanSet(Sp, ECVF_SetByCode);
+		if (!bForce && FMath::IsNearlyEqual(Want, LastPercent) && (!bCanSet || FMath::IsNearlyEqual(Sp->GetFloat(), Want, 0.001f)))
 		{
 			return;
 		}
 		LastPercent = Want;
-		SetFloat(TEXT("r.ScreenPercentage"), Want, ECVF_SetByCode);
+		if (bCanSet && !FMath::IsNearlyEqual(Sp->GetFloat(), Want, 0.001f))
+		{
+			Sp->Set(Want, ECVF_SetByCode);
+		}
 	}
 
 	/** r.TSR.History.ScreenPercentage of an anti-aliasing level (Config/DefaultScalability.ini over the engine's), 0 when it sets none. */
@@ -350,6 +398,12 @@ namespace LyudGraphics::Local
 		const float Base = LevelTSRHistory(Level);
 		if (Base <= 0.f)
 		{
+			// a level that sets no history size of its own: what the game set for the last one goes back
+			if (LastHistory >= 0.f)
+			{
+				UnsetCode(TEXT("r.TSR.History.ScreenPercentage"));
+				LastHistory = -1.f;
+			}
 			return;
 		}
 		const float Ref = FMath::Max(240.f, CVarGfxAutoRefHeight.GetValueOnGameThread());
@@ -476,8 +530,7 @@ namespace LyudGraphics::Local
 
 	void TakeEditorSnapshot()
 	{
-		GSnapshot.bValid = true;
-		GSnapshot.Levels = Scalability::GetQualityLevels();
+		GSnapshot.Levels.Emplace(Scalability::GetQualityLevels());
 		const IConsoleVariable* VSync = Find(TEXT("r.VSync"));
 		GSnapshot.VSync = VSync ? VSync->GetInt() : 0;
 		// t.MaxFPS, r.ScreenPercentage and TSR's history the game sets by code and gives back when Play stops (UnsetCode).
@@ -487,21 +540,45 @@ namespace LyudGraphics::Local
 
 	void RestoreEditorSnapshot()
 	{
-		if (!GSnapshot.bValid)
+		if (!GSnapshot.Levels.IsSet())
 		{
 			return;
 		}
-		GSnapshot.bValid = false;
+		const Scalability::FQualityLevels Levels = GSnapshot.Levels.GetValue();
+		GSnapshot.Levels.Reset();
 		// the game's own values first: the editor's ini and scalability values come back with their own priorities, so the
 		// editor's later level changes move them again (a value restored by code would stay above the scalability)
 		UnsetCode(TEXT("t.MaxFPS"));
 		UnsetCode(TEXT("r.ScreenPercentage"));
 		UnsetCode(TEXT("r.TSR.History.ScreenPercentage"));
 		LastHistory = -1.f;
-		Scalability::SetQualityLevels(GSnapshot.Levels);
+		Scalability::SetQualityLevels(Levels);
 		if (IConsoleVariable* V = Find(TEXT("r.VSync")); CanSet(V, ECVF_SetByGameSetting))
 		{
 			V->Set(GSnapshot.VSync, ECVF_SetByGameSetting);
+		}
+	}
+
+	/**
+	 * Phones and tablets: the level the device profile gives each group (its sg.* values, Config/IOS and Config/Android
+	 * over the engine's profiles), the start levels where it sets none. Built on every platform, called on phones only.
+	 */
+	void DeviceProfileLevels(int32 (&Out)[NumGroups])
+	{
+		static const TCHAR* const Vars[NumGroups] = {
+			TEXT("sg.ViewDistanceQuality"), TEXT("sg.ShadowQuality"), TEXT("sg.GlobalIlluminationQuality"), TEXT("sg.ReflectionQuality"),
+			TEXT("sg.FoliageQuality"), TEXT("sg.EffectsQuality"), TEXT("sg.PostProcessQuality"), TEXT("sg.TextureQuality"),
+			TEXT("sg.ShadingQuality"), TEXT("sg.AntiAliasingQuality") };
+		const FState& S = State();
+		UDeviceProfile* const Profile = UDeviceProfileManager::Get().GetActiveProfile();
+		for (int32 I = 0; I < NumGroups; ++I)
+		{
+			int32 Value = S.StartLevels[I];
+			if (int32 FromProfile = 0; Profile && Profile->GetConsolidatedCVarValue(Vars[I], FromProfile))
+			{
+				Value = FromProfile;
+			}
+			Out[I] = FMath::Clamp(Value, 0, NumLevels - 1);
 		}
 	}
 
@@ -536,12 +613,14 @@ namespace LyudGraphics
 		if (OutMemoryGB) { *OutMemoryGB = MemoryGB; }
 		int32 Level = 3;
 #if PLATFORM_IOS || PLATFORM_ANDROID
-		// phones and tablets: the device profile has already chosen
-		Scalability::FQualityLevels Q = Scalability::GetQualityLevels();
+		// phones and tablets: the device profile has chosen, group by group (PickAutoLevels); its lowest group stands for it.
+		// No memory cap: the profile knows the phone, and phones have far less than a desktop anyway
+		int32 Profile[NumGroups];
+		DeviceProfileLevels(Profile);
 		Level = NumLevels - 1;
 		for (int32 I = 0; I < NumGroups; ++I)
 		{
-			Level = FMath::Min(Level, LevelRef(Q, static_cast<EGroup>(I)));
+			Level = FMath::Min(Level, Profile[I]);
 		}
 #else
 		const int32 Gen = AppleGeneration(Gpu);
@@ -559,7 +638,6 @@ namespace LyudGraphics
 			const Scalability::FQualityLevels Q = Scalability::BenchmarkQualityLevels();
 			Level = FMath::Min3(Q.ShadowQuality, Q.GlobalIlluminationQuality, Q.PostProcessQuality);
 		}
-#endif
 		// the world holds ~13-20 GB (the forests' baked trees): less memory, lighter levels
 		if (MemoryGB > 0 && MemoryGB < 16)
 		{
@@ -569,7 +647,25 @@ namespace LyudGraphics
 		{
 			Level = FMath::Min(Level, 2);
 		}
+#endif
 		return FMath::Clamp(Level, 0, 3);
+	}
+
+	/**
+	 * Auto's levels into the state (and marks them the player's): on desktops DetectLevel's for every group, on phones and
+	 * tablets the device profile's for each. Returns DetectLevel's.
+	 */
+	int32 PickAutoLevels(FString* OutGpu, int32* OutMemoryGB)
+	{
+		FState& S = State();
+		const int32 Level = DetectLevel(OutGpu, OutMemoryGB);
+#if PLATFORM_IOS || PLATFORM_ANDROID
+		DeviceProfileLevels(S.Levels);
+#else
+		SetAllLevels(Level);
+#endif
+		S.bStored = true;
+		return Level;
 	}
 
 	void ApplySaved(UWorld* World)
@@ -584,6 +680,11 @@ namespace LyudGraphics
 		// checkout's GameUserSettings.ini with Play) keep the levels they started with; the benchmark sets its own
 		const bool bPlayer = Interactive();
 		FState& S = State();
+		if (!S.bStored)
+		{
+			// nothing of the player's yet: the page shows the levels the engine runs (in the editor's Play the editor's)
+			EngineLevels(S.Levels);
+		}
 		if (bWorldIsPIE && bPlayer)
 		{
 			TakeEditorSnapshot();
@@ -597,8 +698,7 @@ namespace LyudGraphics
 			{
 				FString Gpu;
 				int32 Memory = 0;
-				const int32 Level = DetectLevel(&Gpu, &Memory);
-				SetAllLevels(Level);
+				const int32 Level = PickAutoLevels(&Gpu, &Memory);
 				GConfig->SetString(Section, TEXT("DetectedGpu"), *Gpu, GGameUserSettingsIni);
 				Store();
 				UE_LOG(LogTemp, Log, TEXT("Graphics: Auto picked level %d for %s, %d GB"), Level, *Gpu, Memory);
@@ -630,13 +730,16 @@ namespace LyudGraphics
 
 	bool IsAuto()
 	{
-		return State().bAuto;
+		// the editor's Play before anything is stored runs the editor's levels, not Auto's
+		const FState& S = State();
+		return S.bAuto && (S.bStored || !bWorldIsPIE);
 	}
 
 	void SetPreset(int32 Level)
 	{
 		FState& S = State();
 		S.bAuto = false;
+		S.bStored = true;
 		SetAllLevels(Level);
 		Store();
 		ApplyLevels();
@@ -647,8 +750,9 @@ namespace LyudGraphics
 		FState& S = State();
 		S.bAuto = true;
 		FString Gpu;
-		SetAllLevels(DetectLevel(&Gpu));
-		if (GConfig)
+		PickAutoLevels(&Gpu, nullptr);
+		// (only a player's run writes the ini: the engine flushes what was set at exit, an offscreen run's too)
+		if (GConfig && Interactive())
 		{
 			GConfig->SetString(Section, TEXT("DetectedGpu"), *Gpu, GGameUserSettingsIni);
 		}
@@ -664,8 +768,16 @@ namespace LyudGraphics
 	void SetGroupLevel(EGroup Group, int32 Level)
 	{
 		FState& S = State();
+		const int32 G = FMath::Clamp(static_cast<int32>(Group), 0, NumGroups - 1);
+		const int32 L = FMath::Clamp(Level, 0, NumLevels - 1);
+		// a press past either end of the range changes nothing (Auto stays, nothing is applied again)
+		if (S.Levels[G] == L)
+		{
+			return;
+		}
 		S.bAuto = false;
-		S.Levels[FMath::Clamp(static_cast<int32>(Group), 0, NumGroups - 1)] = FMath::Clamp(Level, 0, NumLevels - 1);
+		S.bStored = true;
+		S.Levels[G] = L;
 		Store();
 		ApplyLevels();
 	}
@@ -798,7 +910,7 @@ namespace LyudGraphics
 		const IConsoleVariable* Fps = Find(TEXT("t.MaxFPS"));
 		const IConsoleVariable* History = Find(TEXT("r.TSR.History.ScreenPercentage"));
 		return FString::Printf(TEXT("preset %d%s [%s] stored %d | render %.0f%% (%s) of %dx%d, tsr history %.0f%%, view distance x%.2f | fps cap %.0f (limit %d, menu %d, background %d, power saving %d, governor %d) vsync %d | detect %d (%s, %d GB)"),
-			Preset(), S.bAuto ? TEXT(" auto") : TEXT(""), *FString::Join(Levels, TEXT(" ")), S.bStored ? 1 : 0,
+			Preset(), IsAuto() ? TEXT(" auto") : TEXT(""), *FString::Join(Levels, TEXT(" ")), S.bStored ? 1 : 0,
 			ScreenPercentage(), S.Resolution > 0 ? *FString::Printf(TEXT("%d%%"), S.Resolution) : TEXT("auto"), Size.X, Size.Y,
 			History ? History->GetFloat() : 0.f, ViewDistanceScale(),
 			Fps ? Fps->GetFloat() : 0.f, S.FrameLimit, bMenuOpen ? 1 : 0, AppInBackground() ? 1 : 0, S.bPowerSaving ? 1 : 0, GovernorOn() ? 1 : 0,

@@ -334,14 +334,37 @@ void ULyudBenchmark::ApplyPass(const FString& Cmds)
 		C.TrimStartAndEndInline();
 		FString Name, Arg;
 		if (!C.Split(TEXT(" "), &Name, &Arg)) Name = C;
-		if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(*Name)) Restore.Emplace(Name, V->GetString());
+		if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(*Name))
+		{
+			// held below the console's priority before (a scalability level, an ini, the game's code): given back by Unset
+			// after the pass, not set again from the console, which would freeze it for every later run
+			const uint32 By = static_cast<uint32>(V->GetFlags()) & ECVF_SetByMask;
+			FRestore& R = Restore.AddDefaulted_GetRef();
+			R.Name = Name;
+			R.Value = V->GetString();
+			R.bUnset = By < static_cast<uint32>(ECVF_SetByConsole);
+		}
 		Exec(C);
 	}
 }
 
 void ULyudBenchmark::RestorePass()
 {
-	for (int32 I = Restore.Num() - 1; I >= 0; I--) Exec(Restore[I].Key + TEXT(" ") + Restore[I].Value);
+	for (int32 I = Restore.Num() - 1; I >= 0; I--)
+	{
+		const FRestore& R = Restore[I];
+		IConsoleVariable* V = R.bUnset ? IConsoleManager::Get().FindConsoleVariable(*R.Name) : nullptr;
+		if (V)
+		{
+			// the variable falls back to the highest priority still set, with its latest value (also one set while the
+			// pass held it: the engine records every set)
+			V->Unset(ECVF_SetByConsole);
+		}
+		else
+		{
+			Exec(R.Name + TEXT(" ") + R.Value);
+		}
+	}
 	Restore.Reset();
 }
 

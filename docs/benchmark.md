@@ -171,9 +171,11 @@ off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noa
 
 ## Graphics levels and settings (2026-11-07)
 
-`tools/bench_gfx.sh [variant ...]` flies the whole route at one level (`PRESET=`, Epic by default; one level per run,
-since a pass's console values stay set for the rest of the process) with each graphics setting changed in turn, in one
-process, the whole list twice, and prints each against `base` (the level as `Config/DefaultScalability.ini` has it):
+`tools/bench_gfx.sh [variant ...]` flies the whole route at one level (`PRESET=`, Epic by default) with each graphics
+setting changed in turn, in one process, the whole list twice, and prints each against `base` (the level as
+`Config/DefaultScalability.ini` has it). A pass gives its variables back after its runs: one the levels, an ini or the
+game's code held before goes back to them (`Unset` of the console's priority), so the next run's level reaches it again;
+one the console held before gets its old value:
 
 | variant | setup |
 |---|---|

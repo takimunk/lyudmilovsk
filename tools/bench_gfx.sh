@@ -5,7 +5,7 @@
 #   tools/bench_gfx.sh                       every variant below
 #   tools/bench_gfx.sh tsr100 wind0          base and these
 #   PRESET=2 tools/bench_gfx.sh              the same at High
-# Env: PRESET (default 3 = Epic; one level per run: a pass's console values stay set for the rest of the process),
+# Env: PRESET (default 3 = Epic; one level per run, to keep it short: a pass gives its values back after its runs),
 #      ROUNDS (default 2), SEGMENTS (default: the whole route), RES (default 1920x1080; 3024x1964 is a fullscreen Retina).
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 variant() {

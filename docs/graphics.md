@@ -27,7 +27,8 @@ the editor's Play) also keeps the engine's `UGameUserSettings` in step: levels, 
 - **Power saving** (on by default): 30 fps while the menu is open over the paused world, 10 fps while the game's
   window is in the background or minimized (`lyud.Gfx.MenuFps`, `lyud.Gfx.BackgroundFps`).
 - **Details**: each of the ten groups on its own (View distance, Shadows, Global illumination, Reflections, Plants,
-  Sky/sea/effects, Post process, Textures, Shading, Anti-aliasing).
+  Sky/sea/effects, Post process, Textures, Shading, Anti-aliasing). A press past either end changes nothing (Auto
+  stays).
 - Below: the pixels drawn now for the window ("1440×810 for a 1920×1080 window") and the GPU and memory.
 
 ## The levels
@@ -53,8 +54,9 @@ What the game changes against the engine's levels (everything else is the engine
 - Material quality stays High and detail mode Epic at every level: the game's materials have no quality switches,
   and a change of either would cost seconds of a frozen menu (every material's shaders cached again, every
   component sent to the renderer again) for nothing visible.
-- A level change reaches the game's plants without a stall: one forest and one grass patch a frame take it, and a
-  View distance change resends the world's instanced meshes 20000 instances a frame.
+- A level change reaches the game's plants without a stall: one forest and one grass patch a frame take it (one
+  waiting for its frame does nothing else), a lighter level sends the farthest live plants back to their bakes at
+  once, and a View distance change resends the world's instanced meshes 20000 instances a frame.
 - `r.ViewDistanceScale` (the engine's 0.4 / 0.6 / 0.8 / 1 / 10) also scales every draw distance: the forests' 500 m
   becomes 200 m at Low, 300 at Medium, 400 at High, 5 km at Cinematic. The wind distances in the table already
   include it (`lyud.Forest.WindDistance` 75 / 70 / 80 / 120 / 0 x the scale). Trees past the wind distance stand
@@ -62,6 +64,13 @@ What the game changes against the engine's levels (everything else is the engine
 - **Every key a level sets is set at all five levels** (here or in the engine's file). Scalability only sets the
   keys a level lists, so a key missing at one level keeps whatever the level before left there (Epic's shadows
   would stay on Low until a restart). `tools/check_scalability.py` checks it against the engine:
+
+- **The game's own knobs carry `ECVF_Scalability`** where Source defines them. The engine drops a scalability line
+  for any variable without the flag (an ensure, and the value is ignored: `UE::ConfigUtilities::OnSetCVarFromIniEntry`);
+  until 2026-11-07 eleven of the sixteen `lyud.*` knobs lacked it, so the birds, people, animals, forest floor, sea,
+  sea life, clouds and plant-shaping lines did nothing.
+
+`tools/check_scalability.py` checks both against the engine and Source:
 
 ```sh
 tools/check_scalability.py                                   # the engine at $UE_ROOT
@@ -77,8 +86,10 @@ iPhone 8 .. 11 High, the first iPhone SE Low; Android goes by its GPU (Low .. Ep
 the project raised for desktops: no shadows, AO or screen-space reflections at Low, Low's small texture mips, the
 engine's material quality and detail mode and light shafts (on iOS at Epic only), and the phone's own sea at every
 level.
-`tools/check_scalability.py --platform IOS` (or `Android`) checks a phone's levels. Nothing of it has run on a phone
-yet.
+Auto on a phone takes the device profile's level for each group (its `sg.*` values), without the desktops' memory
+cap, and Auto resolution there is the device profile's (`r.MobileContentScaleFactor`); only a fixed share on the page
+changes it. `tools/check_scalability.py --platform IOS` (or `Android`) checks a phone's levels. Nothing of it has run
+on a phone yet.
 
 ## Auto
 
@@ -90,8 +101,8 @@ A new install, or settings that came from another machine (`DetectedGpu` differs
 | Apple M Pro | High; Epic from the M4 Pro on |
 | Apple M (plain) | Medium; High from the M5 on |
 | other desktops | the engine's quick CPU and GPU test (`Scalability::BenchmarkQualityLevels`), the lowest of shadows, GI, post process |
-| iOS, Android | what the device profile chose |
-| under 24 GB of memory / under 16 GB | at most High / at most Medium (the world holds 13-20 GB) |
+| iOS, Android | what the device profile chose, group by group (no memory cap) |
+| desktops under 24 GB of memory / under 16 GB | at most High / at most Medium (the world holds 13-20 GB) |
 
 ## Render resolution and TSR's history
 
@@ -115,16 +126,19 @@ it only while it wants less than the level's and gives it back to the scalabilit
 
 - **The game** (a window someone watches): all of the above.
 - **The editor's Play**: the settings stored in the editor's `GameUserSettings.ini` apply (set them on the page in
-  Play); without them Play keeps the editor's levels, and still gets Auto resolution and the 60 fps limit. When Play
+  Play); without stored levels Play keeps the editor's levels (the page shows them, not Auto, and a frame limit or a
+  resolution set there is stored without making them the player's), and still gets Auto resolution and the 60 fps
+  limit. When Play
   stops the editor gets its levels and VSync back, and the resolution, TSR history and frame cap go back to the
   editor's own values with their own priorities (`IConsoleVariable::Unset`).
 - **Offscreen and unattended runs** (`-RenderOffscreen`, `-unattended`, a fixed time step, commandlets): they keep the
   levels they started with (not the player's stored ones: they share the checkout's `GameUserSettings.ini` with Play),
   `r.ScreenPercentage=75` of `DefaultEngine.ini`, their own `t.MaxFPS` and vsync. `lyud.Gfx.*` commands still change
   the run's levels, and `GameUserSettings.ini` is not written.
-- **The benchmark** (`-LyudBench`): its own presets, Auto resolution by them like a player (offscreen draws 1280x720:
-  50 / 58 / 67 / 75%), no frame cap; a pass's `r.ScreenPercentage` or `r.TSR.History.ScreenPercentage` from the
-  console wins.
+- **The benchmark** (`-LyudBench`): its own presets, Auto resolution by them like a player whatever the player
+  stored (offscreen draws 1280x720: 50 / 58 / 67 / 75%), no frame cap; a pass's `r.ScreenPercentage` or
+  `r.TSR.History.ScreenPercentage` from the console wins, and after the pass `Unset` of the console's priority gives
+  them back to the game's code (the engine keeps every priority's latest value, also one it refused).
 
 ## The engine's ways (UE 5.8, Mac)
 
