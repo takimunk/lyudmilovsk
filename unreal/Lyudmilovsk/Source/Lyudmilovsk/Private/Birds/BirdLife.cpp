@@ -161,6 +161,13 @@ void UBirdLifeSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	const bool bMap = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarBirdsAnyMap.GetValueOnGameThread() != 0;
 	bWantStart = bMap;
 	StartDelay = 0.5f;      // the forests scatter their trees in their own BeginPlay
+	// registered now, once per world, so the load (next tick) reaches SavedTrust before Start() reads it
+	if (ULyudSaveSubsystem* Save = bMap ? ULyudSaveSubsystem::Get(&InWorld) : nullptr)
+	{
+		Save->RegisterSaveObject(TEXT("BirdLife"), this);
+		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(false); });
+		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(true); });
+	}
 }
 
 void UBirdLifeSubsystem::Deinitialize()
@@ -237,12 +244,6 @@ bool UBirdLifeSubsystem::Start()
 	if (S.Nesting())
 	{
 		NestRenderer = World->SpawnActor<ABirdNestRenderer>(P);
-	}
-	if (ULyudSaveSubsystem* Save = ULyudSaveSubsystem::Get(World))
-	{
-		Save->RegisterSaveObject(TEXT("BirdLife"), this);
-		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(false); });
-		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(true); });
 	}
 	UE_LOG(LogTemp, Display, TEXT("BirdLife: %d birds of %d species in %d groups on %d sites; sun %.2f..%.2f"), (int32)S.Birds.size(),
 		(int32)SpeciesTable().size(), (int32)S.Groups.size(), (int32)S.Sites.size(), S.Sunrise, S.Sunset);
@@ -367,6 +368,7 @@ void UBirdLifeSubsystem::Stop()
 		NestRenderer->Destroy();
 		NestRenderer = nullptr;
 	}
+	SyncTrust(true);       // a restart keeps the trust earned since the last save
 	Sim.Reset();
 	bStarted = false;
 	bClockSeen = false;
@@ -775,6 +777,23 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 	CallsPlayed++;
 }
 
+USoundBase* UBirdLifeSubsystem::CallSound(FName InSpecies, FName Call)
+{
+	const TPair<FName, FName> Key(InSpecies, Call);
+	if (USoundBase** Found = CallCache.Find(Key))
+	{
+		return *Found;
+	}
+	const FString Id = InSpecies.ToString(), C = Call.ToString();
+	USoundBase* Sound = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Id, *Id, *C, *Id, *C), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (Sound)
+	{
+		SoundRefs.Add(Sound);      // or the garbage collector unloads it between calls
+	}
+	CallCache.Add(Key, Sound);
+	return Sound;
+}
+
 void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 {
 	if (!Sim)
@@ -796,9 +815,9 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	}
 	for (const TPair<int32, float>& T : SavedTrust)
 	{
-		if (T.Key >= 0 && T.Key < (int32)S.Birds.size())
+		if (T.Key >= 0 && T.Key < (int32)S.Birds.size() && FMath::IsFinite(T.Value))
 		{
-			S.Birds[T.Key].Trust = T.Value;
+			S.Birds[T.Key].Trust = FMath::Clamp(T.Value, 0.f, 1.f);
 		}
 	}
 }
@@ -1504,7 +1523,10 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	{
 		for (int32 P = 0; P < D.Poses.Num(); P++)
 		{
-			Sync(D.Poses[P], D.Xf[P], D.Shown[P]);
+			if (UInstancedStaticMeshComponent* ISM = D.Poses[P].Get())
+			{
+				Sync(ISM, D.Xf[P], D.Shown[P]);
+			}
 		}
 	}
 }
@@ -1517,9 +1539,9 @@ FString ABirdLifeRenderer::Describe() const
 	{
 		for (int32 P = 0; P < Species[I].Poses.Num(); P++)
 		{
-			const UInstancedStaticMeshComponent* ISM = Species[I].Poses[P];
+			const UInstancedStaticMeshComponent* ISM = Species[I].Poses[P].Get();
 			const TArray<FTransform>& X = Species[I].Xf[P];
-			if (X.Num() && X[0].GetScale3D().X > 0.0)
+			if (ISM && X.Num() && X[0].GetScale3D().X > 0.0)
 			{
 				Out += FString::Printf(TEXT("%s/%d n%d vis%d [%.0f %.0f %.0f s%.2f] "), UTF8_TO_TCHAR(SpeciesTable()[I].Id.c_str()), P, ISM->GetInstanceCount(),
 					ISM->IsVisible() ? 1 : 0, X[0].GetLocation().X, X[0].GetLocation().Y, X[0].GetLocation().Z, X[0].GetScale3D().X);

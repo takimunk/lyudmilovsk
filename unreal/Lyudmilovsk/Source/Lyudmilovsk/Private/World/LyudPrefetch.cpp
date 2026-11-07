@@ -3,6 +3,7 @@
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Engine/World.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/PlatformProperties.h"
 #include "Misc/PackageName.h"
 #include "UObject/UObjectGlobals.h"
 
@@ -97,6 +98,14 @@ bool ULyudPrefetch::FolderReady(const UObject* WorldContext, const FString& Fold
 		if (IAssetRegistry* Registry = IAssetRegistry::Get())
 		{
 			Registry->GetAssetsByPath(FName(Folder), Assets, true);
+			// an uncooked -game (bench, soak, offscreen tests) may ask before the registry's background scan reached the
+			// folder: scan it once, so the prefetch isn't silently empty there
+			if (Assets.IsEmpty() && !GIsEditor && !FPlatformProperties::RequiresCookedData())
+			{
+				Registry->ScanPathsSynchronous({ Folder });
+				Registry->GetAssetsByPath(FName(Folder), Assets, true);
+			}
+			UE_LOG(LogTemp, Log, TEXT("Prefetch: %s has %d assets"), *Folder, Assets.Num());
 		}
 		for (const FAssetData& A : Assets)
 		{

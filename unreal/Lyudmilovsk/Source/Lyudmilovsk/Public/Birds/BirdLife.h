@@ -220,6 +220,8 @@ public:
 	/** Runs the simulation headless over game hours (no frames), writing a day CSV like tools/birdsim (for render_birds.py). */
 	void DumpDay(float StartHour, float Hours, const FString& OutCsv);
 	LyudBirds::FWorld* GetSim() const { return Sim.Get(); }
+	/** One call of a species (species.json id, call name): loaded on first use and kept; null if the asset is missing. */
+	USoundBase* CallSound(FName Species, FName Call);
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
@@ -260,6 +262,8 @@ private:
 	/** Per species, its calls (raw pointers, kept alive by SoundRefs: a TMap of arrays can't be a UPROPERTY). */
 	TMap<FName, TArray<USoundBase*>> Sounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
+	/** CallSound's cache (missing assets too, as null, so they are not looked up again); kept alive by SoundRefs. */
+	TMap<TPair<FName, FName>, USoundBase*> CallCache;
 	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> Attenuation;
 	int32 SoundsThisSecond = 0;
 	int32 CallsPlayed = 0;
@@ -315,8 +319,9 @@ public:
 private:
 	struct FSpeciesDraw
 	{
-		/** NumPoses components for males, then (species with a female plumage) NumPoses for females. */
-		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Poses;
+		/** NumPoses components for males, then (species with a female plumage) NumPoses for females.
+		 *  Weak: this struct is not reflected, so the GC would not null a destroyed component here. */
+		TArray<TWeakObjectPtr<UInstancedStaticMeshComponent>> Poses;
 		TArray<TArray<FTransform>> Xf;
 		/** Per pose, the instances shown at the last sync (0: all already hidden, nothing to send). */
 		TArray<int32> Shown;

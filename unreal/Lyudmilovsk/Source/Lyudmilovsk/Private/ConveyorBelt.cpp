@@ -54,10 +54,16 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	// stopped and nobody in the zone: nothing to move, scroll or hum (no overlap lists built)
+	if (bIdleWritten && Speed == 0.f && Zone->GetOverlapInfos().Num() == 0)
+	{
+		return;
+	}
+
 	TArray<AActor*> Overlapping;
 	Zone->GetOverlappingActors(Overlapping, ACharacter::StaticClass());
 
-	TArray<ACharacter*> Riders;
+	TArray<ACharacter*, TInlineAllocator<4>> Riders;
 	for (AActor* Actor : Overlapping)
 	{
 		ACharacter* Character = Cast<ACharacter>(Actor);
@@ -97,10 +103,11 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 		}
 	}
 
+	static const FName OffsetName(TEXT("Offset"));
 	Offset = FMath::Fmod(Offset + Speed * DeltaSeconds / TreadSpacing, 1.f);
 	for (UMaterialInstanceDynamic* Material : BeltMaterials)
 	{
-		Material->SetScalarParameterValue(TEXT("Offset"), Offset);
+		Material->SetScalarParameterValue(OffsetName, Offset);
 	}
 	if (Motor->IsPlaying())
 	{
@@ -108,4 +115,5 @@ void AConveyorBelt::Tick(float DeltaSeconds)
 		Motor->SetVolumeMultiplier(0.6f * Load);
 		Motor->SetPitchMultiplier(0.8f + 0.6f * Load);
 	}
+	bIdleWritten = Speed == 0.f;
 }

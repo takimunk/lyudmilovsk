@@ -74,7 +74,8 @@ public:
 	/** The boards' words (wait times) and the lifts, a few times a second. */
 	void UpdateBoards(const LyudTransport::FNetwork& Net, const FVector& Viewer, float DeltaTime);
 
-	TArray<FLyudBuiltStation> Built;
+	/** UPROPERTY so the GC sees each station's Boards/Lift/Door. */
+	UPROPERTY(Transient) TArray<FLyudBuiltStation> Built;
 
 	/** Where a waiting person stands on station S's platform for line L (spot K of a few). */
 	FTransform WaitSpot(int32 Station, int32 Line, int32 K) const;
@@ -234,6 +235,8 @@ public:
 	/** Two sliding steel leaves per stop (the landing doors), shut but where the cab stands still. */
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Leaves;
 	TArray<float> Open;
+	/** The leaves stand where Open says (placed since the last change): an idle lift far from the player skips them. */
+	bool bLeavesPlaced = false;
 	float Dwell = 0.f;
 	float LogT = 0.f;
 	/** The cab brought the player here: it stays until they step out. */

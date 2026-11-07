@@ -136,7 +136,12 @@ void ABirdNestRenderer::Commit(FDrawSet& S, TArray<FTransform>& Want, bool bForc
 		return;
 	}
 	S.Hash = H;
-	UInstancedStaticMeshComponent* ISM = S.ISM;
+	UInstancedStaticMeshComponent* ISM = S.ISM.Get();
+	if (!ISM)
+	{
+		S.Xf = Want;
+		return;
+	}
 	if (ISM->GetInstanceCount() == Want.Num() && Want.Num() > 0)
 	{
 		// the same number: move them in place (no proxy rebuild)

@@ -5,6 +5,7 @@
 #include "CurtainPusher.generated.h"
 
 class UMaterialParameterCollection;
+class UMaterialParameterCollectionInstance;
 
 /**
  * Feeds the positions of up to two nearby characters into a material parameter collection, so
@@ -26,4 +27,10 @@ public:
 	float Range = 400.f;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+private:
+	/** The world's instance of Collection (looked up once). */
+	TWeakObjectPtr<UMaterialParameterCollectionInstance> CollectionInstance;
+	/** The "nobody near" value is in the collection: no write until someone comes in range. */
+	bool bWroteFar = false;
 };

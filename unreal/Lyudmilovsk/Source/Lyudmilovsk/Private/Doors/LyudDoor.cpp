@@ -914,7 +914,9 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 				continue;
 			}
 			const bool bHolding = A.Holding.Contains(Door);
-			bool bWants = false;
+			// a body hidden while still in the leaf's sweep keeps its door until it is out of it (released earlier the door
+			// would wait to close every frame with the body in the way)
+			bool bWants = bHidden && bHolding && Door->IsInSweep(Pos, A.Radius);
 			if (bNear)
 			{
 				const FTransform& T = Door->GetActorTransform();
