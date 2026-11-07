@@ -1,0 +1,19 @@
+{
+ "name": "rest_menu_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_menu_01",
+ "pool": "rest_menu",
+ "file": "audio/sfx/restaurant/rest_menu_01.wav",
+ "generator": "tools/restaurant/sounds.py:menu",
+ "seed": 265542492,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.635,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -21.68,
+ "dc": 0.0,
+ "params": {}
+}

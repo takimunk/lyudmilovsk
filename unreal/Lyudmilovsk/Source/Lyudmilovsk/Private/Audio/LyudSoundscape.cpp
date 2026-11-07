@@ -289,6 +289,12 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// cigarettes (ULyudSmoking: the pack, the lighter, a drag, a breath out, a butt)
 		{ TEXT("Smoking"), TEXT("pack_open") }, { TEXT("Smoking"), TEXT("lighter_flick") }, { TEXT("Smoking"), TEXT("cig_drag") },
 		{ TEXT("Smoking"), TEXT("smoke_exhale") }, { TEXT("Smoking"), TEXT("cig_putout") },
+		// the restaurant «Янтарь» (ALyudRestaurant: china and cutlery, the pass's bell, the kitchen and the room, its quiet music)
+		{ TEXT("Restaurant"), TEXT("rest_plate") }, { TEXT("Restaurant"), TEXT("rest_clink") }, { TEXT("Restaurant"), TEXT("rest_glass") },
+		{ TEXT("Restaurant"), TEXT("rest_pour") }, { TEXT("Restaurant"), TEXT("rest_bell") }, { TEXT("Restaurant"), TEXT("rest_sizzle") },
+		{ TEXT("Restaurant"), TEXT("rest_kitchen") }, { TEXT("Restaurant"), TEXT("rest_room") }, { TEXT("Restaurant"), TEXT("rest_music") },
+		{ TEXT("Restaurant"), TEXT("rest_door") }, { TEXT("Restaurant"), TEXT("rest_menu") }, { TEXT("Restaurant"), TEXT("rest_tray") },
+		{ TEXT("Restaurant"), TEXT("rest_coins") },
 	};
 	for (const auto& G : Groups)
 	{

@@ -93,6 +93,11 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         import import_diner
         import_diner.place(face_y)
 
+    # the restaurant «Янтарь» on the city plan's plot over the promenade (its meshes are committed: unreal/scripts/import_restaurant.py)
+    if unreal.EditorAssetLibrary.does_directory_exist("/Game/Restaurant/Meshes"):
+        import import_restaurant
+        import_restaurant.place(face_y)
+
     if plants:
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
         for group, items in (("Alley", W.alley_trees()), ("Coast", W.coast_plants())):

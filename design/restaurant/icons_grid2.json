@@ -1,0 +1,30 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "4:3",
+ "resolution": "2k",
+ "quality": "medium",
+ "job_id": "40c5f02b-b548-419d-9e40-48613060afcc",
+ "date": "2026-11-06",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_230653_40c5f02b-b548-419d-9e40-48613060afcc.png",
+ "prompt": "Twelve menu icons ... see the request: 4x3 grid of the daily specials (solyanka, golubtsy, draniki, fried flounder, shashlik, sushi set, blini with red caviar), tea in a podstakannik, festival ukha in a clay bowl, kulebyaka, sbiten in a glass mug, a chrome service bell; same style line as icons_grid.json",
+ "ids": [
+  "rs_solyanka",
+  "rs_golubtsy",
+  "rs_draniki",
+  "rs_fried_flounder",
+  "rs_shashlik",
+  "rs_sushi_set",
+  "rs_blini_caviar",
+  "rs_tea",
+  "rs_fest_ukha",
+  "rs_fest_kulebyaka",
+  "rs_fest_sbiten",
+  ""
+ ],
+ "note": "4x3 grid of the restaurant's second menu icons (no words); cut by tools/restaurant/icons.py. The bell cell is not an item.",
+ "credits": 1,
+ "cols": 4,
+ "rows": 3
+}

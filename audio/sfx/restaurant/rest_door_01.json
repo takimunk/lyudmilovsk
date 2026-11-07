@@ -1,0 +1,19 @@
+{
+ "name": "rest_door_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_door_01",
+ "pool": "rest_door",
+ "file": "audio/sfx/restaurant/rest_door_01.wav",
+ "generator": "tools/restaurant/sounds.py:door",
+ "seed": 459779296,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.784,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -24.76,
+ "dc": 3e-07,
+ "params": {}
+}
