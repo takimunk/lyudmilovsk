@@ -136,7 +136,8 @@ def api_test(w):
     near = ue(p(FS + 17.0, FY, T1))
     bench = sub.find_nearest_free("bench", unreal.Vector(*near), 3000.0, "None")
     check(str(bench) != "None", "a free bench by the fountain: %s" % bench)
-    who = [unreal.Object(), unreal.Object(), unreal.Object(), unreal.Object()]
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    who = [pc, pc.get_controlled_pawn(), sub, w]          # any four objects stand for four people
     seats = [sub.reserve(bench, x) for x in who]
     check(seats[:3] == [0, 1, 2] and seats[3] == -1, "three seats then full: %s" % seats)
     check(sub.reserve(bench, who[1]) == 1, "the same sitter keeps its seat")
@@ -166,7 +167,10 @@ def tick(dt):
     pawn = pc.get_controlled_pawn()
     if not st["api"]:
         st["api"] = True
-        api_test(w)
+        try:
+            api_test(w)
+        except Exception as e:  # noqa: BLE001
+            check(False, "the spots API test raised %s" % e)
     if st["phase"] == 0:
         st["i"] += 1
         if st["i"] >= len(SHOTS):

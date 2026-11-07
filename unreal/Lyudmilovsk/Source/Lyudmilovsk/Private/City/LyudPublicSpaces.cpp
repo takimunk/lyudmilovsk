@@ -149,6 +149,14 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	GlowMid = PropMaterial ? UMaterialInstanceDynamic::Create(PropMaterial, this) : nullptr;
 	if (GlowMid) GlowMid->SetScalarParameterValue(TEXT("Glow"), 0.f);
 	int32 NumBlocks = 0, NumProps = 0, Tris = 0;
+	double Stamp = FPlatformTime::Seconds();
+	TStringBuilder<512> Times;
+	auto Lap = [&Stamp, &Times](const TCHAR* What)
+	{
+		const double Now = FPlatformTime::Seconds();
+		Times.Appendf(TEXT(" %s %.0f"), What, (Now - Stamp) * 1000.0);
+		Stamp = Now;
+	};
 
 	// the blocks: paving, steps, the stair. Drawn as merged meshes per skin and 100 m cell (true sizes, so the slab joints
 	// meet the edges); their collision is a hidden instanced unit cube per block
@@ -195,6 +203,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("blocks"));
 	// the props: one mesh per kind (and variant / size), instanced; summer-only ones in their own sets
 	{
 		TMap<FString, int32> GroupOf;
@@ -250,6 +259,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("props"));
 	// fountain stones built from their profiles (the water is ALyudFountain's, from the same numbers)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
@@ -270,6 +280,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("stones"));
 	// the town fountains' water, drops and sound (ALyudFountain, the same as the Academgorodok's, from the same levels):
 	// ours, so lyud.City.PublicSpaces 0 builds none and lyud.City.Show 0 hides them
 	{
@@ -299,6 +310,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("fountains"));
 	// still water: the pond (the fountains' water material, no landing ring) and its winter ice
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ws = nullptr;
@@ -368,6 +380,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("waters"));
 	// the Cascade: water sheets down the stepped channels and along the rills (one mesh, the stream material), the
 	// basins' still water above (with the pond); runs with the town's fountain
 	{
@@ -457,6 +470,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("cascade"));
 	// lamp heads for the light pool
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ls = nullptr;
@@ -489,6 +503,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		Pool.Add(L);
 	}
 
+	Lap(TEXT("lights"));
 	// trees: one forest of hand-placed trees (shared bakes, live plants only up close)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ts = nullptr;
@@ -514,40 +529,30 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			}
 		}
 	}
-	// flowers, shrubs and hedges: single procedural plants
+	Lap(TEXT("trees"));
+	// flowers, shrubs and hedges: single procedural plants, queued and spawned a few per tick nearest the camera first
+	// (each builds its mesh as it starts: ~100 ms apiece, all at once was a ~19 s hitch at the map's start)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ps = nullptr;
 		if (Doc->TryGetArrayField(TEXT("plants"), Ps))
 		{
+			FRandomStream R(1958);
 			for (const TSharedPtr<FJsonValue>& V : *Ps)
 			{
 				const TSharedPtr<FJsonObject> P = V->AsObject();
-				const FTransform Xf(FRotator(0.f, FMath::FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
-				if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Xf, nullptr, nullptr,
-					ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
-				{
-					Pl->Species = FName(*P->GetStringField(TEXT("species")));
-					Pl->Seed = (int32)P->GetNumberField(TEXT("seed"));
-					Pl->AgeAtStart = P->GetNumberField(TEXT("age"));
-					Pl->bDemoGrowth = false;
-					Pl->bSnapToGround = false;
-					Pl->Pot = EPlantPot::None;
-					Pl->SummaryDistance = 3500.f;
-					Pl->Tags.Add(TEXT("City"));
-					Pl->FinishSpawning(Xf);
-					Plants.Add(Pl);
-				}
+				FPendingPlant Q;
+				Q.Species = FName(*P->GetStringField(TEXT("species")));
+				Q.Seed = (int32)P->GetNumberField(TEXT("seed"));
+				Q.Age = P->GetNumberField(TEXT("age"));
+				Q.Xf = FTransform(FRotator(0.f, R.FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
+				PendingPlants.Add(Q);
 			}
 		}
 	}
-
-	// the festivals' contract: they build no stage / stalls of their own when the plan's are up (any actor with these tags)
-	if (CountProps(TEXT("stage")) > 0) Tags.AddUnique(TEXT("PlanStage"));
-	if (CountProps(TEXT("stall")) > 0) Tags.AddUnique(TEXT("PlanStalls"));
-	UpdateSeason(true);
-	UpdateNight(true);
+	Lap(TEXT("plants"));
+	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: ms per part:%s"), Times.ToString());
 	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: %d blocks, %d props in %d sets (%d kit triangles), %d lamps, %d trees, %d plants, built in %.0f ms"),
-		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, Plants.Num(),
+		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, PendingPlants.Num(),
 		(FPlatformTime::Seconds() - T0) * 1000.0);
 	return true;
 }
@@ -692,6 +697,7 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 			UpdateSeason(true);
 		}
 	}
+	SpawnPendingPlants();
 	if (!bShown) return;
 	// the glass fades up over ~4 s (a lamp warming), the pooled lights with it
 	const float Target = bNight ? 1.f : 0.f;
@@ -703,6 +709,44 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 		if (Glow <= 0.001f) for (UPointLightComponent* L : Pool) L->SetVisibility(false);
 	}
 	UpdatePool();
+}
+
+void ALyudPublicSpaces::SpawnPendingPlants()
+{
+	if (PendingPlants.Num() == 0) return;
+	FVector Cam = FVector::ZeroVector;
+	if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (PC->PlayerCameraManager) Cam = PC->PlayerCameraManager->GetCameraLocation();
+	}
+	const double Until = FPlatformTime::Seconds() + 0.004;      // ~4 ms a tick (the actor ticks 4 times a second)
+	do
+	{
+		int32 Best = 0;
+		double BestD = 1e30;
+		for (int32 I = 0; I < PendingPlants.Num(); I++)
+		{
+			const double D = FVector::DistSquared(PendingPlants[I].Xf.GetLocation(), Cam);
+			if (D < BestD) { BestD = D; Best = I; }
+		}
+		const FPendingPlant Q = PendingPlants[Best];
+		PendingPlants.RemoveAtSwap(Best);
+		if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Pl->Species = Q.Species;
+			Pl->Seed = Q.Seed;
+			Pl->AgeAtStart = Q.Age;
+			Pl->bDemoGrowth = false;
+			Pl->bSnapToGround = false;
+			Pl->Pot = EPlantPot::None;
+			Pl->SummaryDistance = 3500.f;
+			Pl->Tags.Add(TEXT("City"));
+			Pl->FinishSpawning(Q.Xf);
+			Pl->SetActorHiddenInGame(!bShown);
+			Plants.Add(Pl);
+		}
+	} while (PendingPlants.Num() > 0 && FPlatformTime::Seconds() < Until);
 }
 
 int32 ALyudPublicSpaces::CountProps(const FString& Kind) const
@@ -718,9 +762,9 @@ FString ALyudPublicSpaces::DebugReport() const
 	for (const UPointLightComponent* L : Pool) Lit += L->IsVisible() ? 1 : 0;
 	int32 Props = 0;
 	for (const FGroup& G : Groups) Props += G.Comp.IsValid() ? G.Comp->GetInstanceCount() : 0;
-	return FString::Printf(TEXT("night %d glow %.2f, %d pooled lights lit of %d, summer %d, ice %d, %d props, %d trees (%d baked), %d plants"),
+	return FString::Printf(TEXT("night %d glow %.2f, %d pooled lights lit of %d, summer %d, ice %d, %d props, %d trees (%d baked), %d plants (%d to come)"),
 		bNight ? 1 : 0, Glow, Lit, Pool.Num(), bSummer ? 1 : 0, bIce ? 1 : 0, Props, Forest.IsValid() ? Forest->NumTrees() : 0,
-		Forest.IsValid() ? Forest->NumBaked() : 0, Plants.Num());
+		Forest.IsValid() ? Forest->NumBaked() : 0, Plants.Num(), PendingPlants.Num());
 }
 
 // --- the spots --------------------------------------------------------------------------------------------------

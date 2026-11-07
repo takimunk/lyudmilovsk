@@ -72,6 +72,9 @@ private:
 	TArray<TPair<float, int32>> NearLamps;
 	TWeakObjectPtr<AProceduralForest> Forest;
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
+	struct FPendingPlant { FName Species; int32 Seed = 0; float Age = 1.f; FTransform Xf; };
+	TArray<FPendingPlant> PendingPlants;
+	void SpawnPendingPlants();
 
 	TArray<FVector> LampHeads;
 	TArray<FName> LampKinds;
