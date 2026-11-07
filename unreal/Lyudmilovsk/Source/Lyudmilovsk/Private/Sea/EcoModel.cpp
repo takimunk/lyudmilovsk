@@ -245,11 +245,15 @@ void FModel::Reset(float DayOfYear)
 
 float FModel::Relative(int Node) const { return B0[Node] > 0.f ? B[Node] / B0[Node] : 1.f; }
 
-void FModel::SetBiomass(int Node, float Value) { B[Node] = std::max(Value, 0.f); }
+void FModel::SetBiomass(int Node, float Value)
+{
+	if (Node < 0 || Node >= N || !std::isfinite(Value)) return;
+	B[Node] = Clamp(Value, B0[Node] * 1e-3f, B0[Node] * 20.f);
+}
 
 void FModel::Remove(int Node, float Grams)
 {
-	if (Node < 0 || Node >= N) return;
+	if (Node < 0 || Node >= N || !std::isfinite(Grams) || Grams <= 0.f) return;
 	B[Node] = std::max(B[Node] - Grams / AreaM2, B0[Node] * 1e-3f);
 }
 
@@ -265,7 +269,7 @@ float FModel::LocalHeal(int Node) const
 
 void FModel::TakeLocal(int Node, float X, float Y, float Fraction)
 {
-	if (Node < 0 || Node >= N) return;
+	if (Node < 0 || Node >= N || !std::isfinite(Fraction) || !std::isfinite(X) || !std::isfinite(Y)) return;
 	FCell& C = Cells[CellKey(X, Y)];
 	for (auto& T : C.Taken)
 		if (T.first == Node)
@@ -347,6 +351,7 @@ void FModel::SubStep(float D, float DtDays)
 	{
 		const float Old = B[I];
 		float New = Old > 1e-9f ? (Old + Dt * Gain[I]) / (1.f + Dt * Loss[I] / Old) : Old + Dt * Gain[I];
+		if (!std::isfinite(New)) New = B0[I];
 		B[I] = Clamp(New, B0[I] * 1e-3f, B0[I] * 20.f);
 	}
 	// the local thinning heals
@@ -378,8 +383,9 @@ void FModel::Save(std::vector<std::string>& Keys, std::vector<float>& Values) co
 	Values.clear();
 	for (int I = 0; I < N; ++I)
 	{
-		Keys.push_back(Table[I].Id);
-		Values.push_back(B[I]);
+		// against the base, so a retuned table keeps the saved state's meaning
+		Keys.push_back(std::string(Table[I].Id) + "@rel");
+		Values.push_back(B[I] / B0[I]);
 		Keys.push_back(std::string(Table[I].Id) + "@here");
 		Values.push_back(F[I]);
 	}
@@ -402,7 +408,8 @@ void FModel::Load(const std::vector<std::string>& Keys, const std::vector<float>
 		const size_t At = Key.find('@');
 		const int I = Find(Key.substr(0, At).c_str());
 		if (I < 0 || !std::isfinite(Values[K])) continue;
-		if (At == std::string::npos) B[I] = Clamp(Values[K], B0[I] * 1e-3f, B0[I] * 20.f);
+		if (At == std::string::npos) B[I] = Clamp(Values[K], B0[I] * 1e-3f, B0[I] * 20.f);   // early saves: g/m2
+		else if (Key.compare(At, std::string::npos, "@rel") == 0) B[I] = Clamp(Values[K] * B0[I], B0[I] * 1e-3f, B0[I] * 20.f);
 		else if (Key.compare(At, std::string::npos, "@here") == 0) F[I] = Clamp(Values[K], 0.f, 1.f);
 		else
 		{

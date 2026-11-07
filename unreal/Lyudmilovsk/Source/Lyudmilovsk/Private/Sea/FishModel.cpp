@@ -100,6 +100,8 @@ namespace
 	}
 
 	constexpr float CellSize = 6.f;
+	/** The bed shows this many times its table's numbers (the table keeps the real densities; a dive should be lively). */
+	constexpr float BedShow = 3.f;
 
 	/** How well a spot suits a species, 0..1. */
 	float Suits(const FSpecies& S, float Sand, float Stone, float Weed, float Depth)
@@ -212,8 +214,11 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 				const FSpecies& Sp = Table[S];
 				if (!IsSettled(Sp.Way)) continue;
 				const float Here = Season(S, Clock) * Density;
-				// try a few spots in the cell; each holds a fish with the chance its habitat gives
-				const int Tries = int(std::ceil(Sp.Abundance * CellSize * CellSize / 100.f * 2.f));
+				// try a few spots in the cell; each holds a fish with the chance its habitat gives, so the best habitat
+				// holds Abundance per 100 m2 (a rare one a fish in some cells, not one in every cell)
+				const float PerCell = Sp.Abundance * CellSize * CellSize / 100.f * BedShow;
+				const int Tries = int(std::ceil(PerCell * 2.f));
+				const float PerTry = PerCell / float(Tries);
 				for (int T = 0; T < Tries; ++T)
 				{
 					const float PX = (X + R.F()) * CellSize, PY = (Y + R.F()) * CellSize;
@@ -223,7 +228,7 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 					if (!Env.Bed(PX, PY, Bz)) continue;
 					float Sand, Stone, Weed;
 					Env.Habitat(PX, PY, Sand, Stone, Weed);
-					const float P = Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * 0.5f * Env.Abundance(S, PX, PY);
+					const float P = Suits(Sp, Sand, Stone, Weed, Water - Bz) * Here * PerTry * Env.Abundance(S, PX, PY);
 					if (Roll >= P) continue;
 					FFish F;
 					F.Species = uint8_t(S);
@@ -319,13 +324,14 @@ void FSim::Roam(const FEnv& Env, const FV& Eye, const FClock& Clock, float Dt)
 		const float Want = bSea ? Sp.Abundance * Area * Suits(Sp, Sand, Stone, Weed, std::max(Depth, Sp.DepthMin)) * Season(S, Clock) * Density
 			* Env.Abundance(S, Eye.X, Eye.Y) : 0.f;
 		// a new group comes in now and then while there are fewer than the habitat holds
-		if (float(Have) < Want && Rand() < Dt * 0.5f * (Want - Have + 0.3f)) SpawnGroup(S, Env, Eye, Clock);
+		// (common ones top up quickly; a rare one, under one group's worth, only comes now and then: a seal every few minutes)
+		if (float(Have) < Want && Rand() < Dt * 0.5f * (Want - Have + (Want >= 1.f ? 0.3f : 0.f))) SpawnGroup(S, Env, Eye, Clock);
 	}
-	// groups that wandered off are gone
+	// groups that wandered off (or were all eaten or caught) are gone
 	for (int G = 0; G < int(Groups.size()); ++G)
 	{
 		FGroup& Gr = Groups[G];
-		if (Gr.bAlive && (Gr.Centre - Eye).Len2D() > Radius * 1.3f)
+		if (Gr.bAlive && ((Gr.Centre - Eye).Len2D() > Radius * 1.3f || Gr.Members <= 0))
 		{
 			Gr.bAlive = false;
 		}
@@ -498,12 +504,22 @@ void FSim::Ambush(FFish& F, const FEnv& Env)
 	const float Reach = 0.25f + F.Len * 1.5f;
 	FFish* Best = nullptr;
 	float BestD = Reach;
-	for (FFish& O : All)
-	{
-		if (&O == &F || O.bHidden || O.bEaten || O.Len > F.Len * 0.6f || !Eats(F.Species, O.Species)) continue;
-		const float D = (O.Pos - F.Pos).Len();
-		if (D < BestD) { BestD = D; Best = &O; }
-	}
+	// only the fish in the grid cells within reach (PreyGrid: built once a step, cells of PreyCell metres)
+	const int R = int(std::ceil(Reach / PreyCell));
+	const int CX = int(std::floor(F.Pos.X / PreyCell)), CY = int(std::floor(F.Pos.Y / PreyCell));
+	for (int Y = CY - R; Y <= CY + R; ++Y)
+		for (int X = CX - R; X <= CX + R; ++X)
+		{
+			const uint64_t Key = uint64_t(uint32_t(X)) << 32 | uint32_t(Y);
+			auto It = std::lower_bound(PreyGrid.begin(), PreyGrid.end(), std::make_pair(Key, 0u));
+			for (; It != PreyGrid.end() && It->first == Key; ++It)
+			{
+				FFish& O = All[It->second];
+				if (&O == &F || O.bHidden || O.bEaten || O.Len > F.Len * 0.6f || !Eats(F.Species, O.Species)) continue;
+				const float D = (O.Pos - F.Pos).Len();
+				if (D < BestD) { BestD = D; Best = &O; }
+			}
+		}
 	if (!Best) return;
 	F.Fed = 8.f + 20.f * Rand();
 	if (Rand() < 0.4f)
@@ -686,7 +702,6 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	if (F.bHidden)
 	{
 		// buried in the sand (a shrimp by day, or after a fright): out again a while later, when nothing is close
-		F.Timer -= Dt;
 		if (F.Timer <= 0.f && DE > Sp.Shy * 3.f) { F.bHidden = false; F.State = Rest; F.Timer = 2.f; }
 		return;
 	}
@@ -803,7 +818,16 @@ void FSim::Step(float Dt, const FEnv& Env, const FV& Eye, const FClock& Clock)
 	for (int G = 0; G < int(Groups.size()); ++G)
 		if (Groups[G].bAlive) StepGroup(G, Dt, Env, Eye);
 	for (FFish& F : All) StepFish(F, Dt, Env, Eye);
-	// the small hunters snap at what comes by: each fish looks every 16th step (staggered by its seed)
+	// the small hunters snap at what comes by: each fish looks every 16th step (staggered by its seed), through a grid
+	// of the fish small enough to be anyone's prey (sorted cell keys; the vector is kept, no allocations once grown)
+	PreyGrid.clear();
+	for (uint32_t I = 0; I < uint32_t(All.size()); ++I)
+	{
+		const FFish& F = All[I];
+		if (F.bHidden || F.Len > 0.3f) continue;
+		PreyGrid.push_back({ uint64_t(uint32_t(int(std::floor(F.Pos.X / PreyCell)))) << 32 | uint32_t(int(std::floor(F.Pos.Y / PreyCell))), I });
+	}
+	std::sort(PreyGrid.begin(), PreyGrid.end());
 	for (FFish& F : All)
 	{
 		F.Fed = std::max(0.f, F.Fed - Dt);

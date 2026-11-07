@@ -59,7 +59,10 @@ the herring out takes the seals down by a quarter and the cod by a fifth, and do
 `FSim` (the fish model, see [underwater.md](underwater.md#fish)) takes from the web:
 
 - **Numbers.** Each species' groups and settled fish come in proportion to its biomass against the base, times the local
-  thinning (`FEnv::Abundance`). The months the fish model already knows (its own table): the web only scales.
+  thinning (`FEnv::Abundance`). The months the fish model already knows (its own table): the web only scales. Bottom
+  dwellers settle at three times their table's Abundance per 100 m2 of the best habitat (`BedShow`: the table keeps the real
+  densities, a dive should be lively; a rare one still only in some cells); a rare roamer
+  (under one group's worth round the eye, like a seal) comes now and then, not on every dive.
 - **Who eats whom.** Hunters (cod, sea trout, salmon, grey seals) pick a school they eat within 12 m, chase and strike:
   the school bursts away, and now and then one is caught (35%, a seal 60%) and gone. Failing a school, a hunter noses
   down for something on the bed it eats: a shrimp, a goby, a flounder (half the strikes catch; a missed shrimp digs into
@@ -102,6 +105,9 @@ Two new ways in the fish model: **Crawler** (settled per 6 m cell like the botto
 1-5 s, a dart or a dive into the sand when frightened) and **Swarm** (a wide flat cloud of 80-250 drifting with the water,
 each one jittering). Meshes: the fish by `blender/fish/species/<Id>.py`, the crustaceans, mysids and the seal by
 `blender/sealife/` (same export conventions, so `unreal/scripts/import_fish.sh` and `M_LyudFish` take them as they are).
+Build on the Mac: `tools/fish_build.sh <Ids>` and `tools/sealife_build.sh`, then `unreal/scripts/import_fish.sh`. In a cloud
+container without Blender: `pip install bpy` (+ `apt-get install libegl1 libgl1-mesa-dri` for the EEVEE previews) and run the
+builders with a tiny wrapper that sets `sys.argv = ["blender", "--", ...]` and `runpy`s the script.
 Names: `fish.<id>.name`, the web's other groups `eco.<id>.name`.
 
 ## For fishing

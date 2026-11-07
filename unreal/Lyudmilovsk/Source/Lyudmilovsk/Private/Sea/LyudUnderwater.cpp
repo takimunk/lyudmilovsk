@@ -199,6 +199,7 @@ ALyudSeaLife::ALyudSeaLife()
 UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 {
 	if (Fish.Num() < LyudFish::NumSpecies()) Fish.SetNum(LyudFish::NumSpecies());
+	if (MeshLength.Num() < LyudFish::NumSpecies()) MeshLength.Init(0.f, LyudFish::NumSpecies());
 	if (Fish[Species]) return Fish[Species];
 	const LyudFish::FSpecies& S = LyudFish::Species(Species);
 	const FString Id = ANSI_TO_TCHAR(S.Id);
@@ -218,6 +219,7 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	// tiny things (mysids, amphipods, crabs) are not seen past a dozen metres anyway
 	C->SetCullDistances(0, S.Length < 0.04f ? 1200 : 4500);
 	C->SetNumCustomDataFloats(3);
+	MeshLength[Species] = (Mesh && Body) ? S.Length : 0.1f;
 	if (Mesh && Body)
 	{
 		C->SetStaticMesh(Mesh);
@@ -238,7 +240,7 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	}
 	else
 	{
-		// no model built for it yet: the old code-built fish (20 cm), so the behaviour still shows
+		// no model built for it yet: the old code-built fish (10 cm, scaled to the animal in DrawFish), so the behaviour still shows
 		StandIns.AddUnique(FName(*Id));
 		C->SetStaticMesh(LyudSeaLife::Fish());
 		if (UMaterialInterface* Old = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/M_SeaFish.M_SeaFish")))
@@ -527,6 +529,11 @@ void ULyudUnderwaterSubsystem::DrawFish(float Dt)
 	{
 		UInstancedStaticMeshComponent* C = (Xf[S].Num() || (L->Fish.IsValidIndex(S) && L->Fish[S])) ? L->SpeciesMesh(S) : nullptr;
 		if (!C) continue;
+		// the transforms scale the species' length; a stand-in mesh (10 cm) is scaled to the animal's real size
+		const float MeshLen = L->MeshLength.IsValidIndex(S) && L->MeshLength[S] > 0.f ? L->MeshLength[S] : LyudFish::Species(S).Length;
+		const float Fix = LyudFish::Species(S).Length / MeshLen;
+		if (!FMath::IsNearlyEqual(Fix, 1.f))
+			for (FTransform& T : Xf[S]) T.SetScale3D(T.GetScale3D() * Fix);
 		if (C->GetInstanceCount() != Xf[S].Num())
 		{
 			// the number changed (a school came or went): rebuild this species' instances (rare)
@@ -601,5 +608,5 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 bool ULyudUnderwaterSubsystem::TakeFish(FName Species, const FVector& Location, float Reach)
 {
 	const int32 S = LyudFish::FindSpecies(TCHAR_TO_ANSI(*Species.ToString()));
-	return Sim && S >= 0 && Sim->Take(S, LyudFish::FV(Location.X, Location.Y, Location.Z) * 0.01f, Reach * 0.01f);
+	return bActive && Sim && S >= 0 && Sim->Take(S, LyudFish::FV(Location.X, Location.Y, Location.Z) * 0.01f, Reach * 0.01f);
 }

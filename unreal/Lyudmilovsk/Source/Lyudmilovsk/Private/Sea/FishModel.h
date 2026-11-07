@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace LyudFish
@@ -206,6 +207,9 @@ namespace LyudFish
 		std::vector<FGroup> Groups;
 		std::unordered_map<uint64_t, int> Cells;
 		std::vector<float> Diet;
+		/** Prey candidates by grid cell (key, index into All), sorted; rebuilt each step for the ambush checks. */
+		std::vector<std::pair<uint64_t, uint32_t>> PreyGrid;
+		static constexpr float PreyCell = 1.f;
 		std::vector<FEaten> Events;
 		uint32_t Rng = 12345;
 		uint32_t Frame = 0;

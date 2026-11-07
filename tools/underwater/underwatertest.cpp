@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <vector>
 
@@ -115,24 +116,25 @@ int main()
 				Fast += F.Vel.Len() > Species(F.Species).Burst * 1.6f + 0.4f;
 				Total++;
 			}
+			// a school's fish keep together (sampled once a second over the whole run)
+			if (T % 30 == 0)
+			{
+				const int H = FindSpecies("Herring");
+				for (const FFish& F : Sim.Fish())
+					if (F.Species == H)
+					{
+						FV C0;
+						int N = 0;
+						for (const FFish& O : Sim.Fish()) if (O.Group == F.Group) { C0 += O.Pos; N++; }
+						SchoolSpread += (F.Pos - C0 * (1.f / N)).Len();
+						SchoolN++;
+					}
+			}
 		}
 		for (int S = 0; S < NumSpecies(); ++S) Seen[S] += Sim.Count(S);
 		std::printf("eye x %.0f (%.1f m deep):", Eye.X, -Eye.Z);
 		for (int S = 0; S < NumSpecies(); ++S) if (Sim.Count(S)) std::printf(" %s %d", Species(S).Id, Sim.Count(S));
 		std::printf("\n");
-		// a school's fish keep together
-		const int H = FindSpecies("Herring");
-		std::vector<FV> Pts;
-		for (const FFish& F : Sim.Fish()) if (F.Species == H && F.Group == Sim.Fish().front().Group) Pts.push_back(F.Pos);
-		for (const FFish& F : Sim.Fish())
-			if (F.Species == H)
-			{
-				FV C0;
-				int N = 0;
-				for (const FFish& O : Sim.Fish()) if (O.Group == F.Group) { C0 += O.Pos; N++; }
-				SchoolSpread += (F.Pos - C0 * (1.f / N)).Len();
-				SchoolN++;
-			}
 	}
 	std::printf("fish-frames %d, under the bed or over the water %d, too fast %d\n", Total, Bad, Fast);
 	for (int S = 0; S < NumSpecies(); ++S) if (BadBy[S]) std::printf("  out of place: %s %d\n", Species(S).Id, BadBy[S]);
@@ -228,6 +230,22 @@ int main()
 			Check(SealNear < 6.f, "a grey seal comes to look at the diver");
 		}
 		else Check(false, "a grey seal about in 30 minutes");
+	}
+	// the cost of a step with the food web on, at a busy spot (the ambush checks go through a grid)
+	{
+		LyudEco::FModel Web;
+		FSim Busy;
+		for (int S = 0; S < NumSpecies(); ++S)
+			for (int P = 0; P < NumSpecies(); ++P)
+				Busy.SetDiet(S, P, Web.DietShare(LyudEco::Find(Species(S).Id), LyudEco::Find(Species(P).Id)));
+		Busy.Density = 2.f;
+		const FV Eye(120.f, 0.f, -2.5f);
+		for (int T = 0; T < 900; ++T) Busy.Step(1.f / 30.f, Env, Eye, Clock);
+		const auto T0 = std::chrono::steady_clock::now();
+		for (int T = 0; T < 600; ++T) Busy.Step(1.f / 30.f, Env, Eye, Clock);
+		const double Ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count() / 600.0;
+		std::printf("a step with %d animals round the eye (double density): %.3f ms\n", int(Busy.Fish().size()), Ms);
+		Check(Ms < 0.5, "a step at a busy spot takes under 0.5 ms");
 	}
 	std::printf("%s\n", Fails ? "FAILED" : "all ok");
 	return Fails ? 1 : 0;
