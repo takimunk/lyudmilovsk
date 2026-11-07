@@ -13,14 +13,15 @@ python3 tools/residents/mhdata_assets.py               # once: MakeHuman assets 
 python3 blender/residents/looks.py [--ref origin/town-life] [--summary]   # looks.json + Content/PeopleData/town_looks.json
 Blender -b -P blender/residents/wardrobe_scan.py       # once per asset set: tint slots + masks of every garment
 Blender -b -P blender/residents/atlases.py -- [--tile 512]                # the four shared texture atlases
-for i in 0 1 2; do Blender -b -P blender/residents/build_residents.py -- --shard $i/3 & done; wait
+for i in 0 1 2 3; do Blender -b -P blender/residents/build_residents.py -- --shard $i/4 & done; wait
+python3 blender/residents/check_export.py              # the models as the import expects them (no Blender needed)
 Blender -b -P blender/residents/preview_residents.py -- --limit 12 --faces    # renders/residents/*.png
 unreal/scripts/import_residents.sh                     # into /Game/Characters/Humans/Town/ (see "Unreal")
 ```
 
 In the cloud `Blender -b -P x.py -- args` is `python3 run.py x.py -- args` with pip bpy 5.2 (a three-line runner that
 sets sys.argv and runs the script). Build output (`blender/residents/export/`, `atlases/`, `cache/`) is local only,
-like every generated model (LFS quota): the scripts rebuild it. A person takes 3-7 s, all 898 about 45 minutes on four
+like every generated model (LFS quota): the scripts rebuild it. A person takes 3-7 s, all 898 about 20 minutes on four
 cores. Builds are incremental: a model is rebuilt only when its look's hash or `BUILD_VERSION` changed.
 
 ## Looks (`looks.py`, plain Python)
@@ -128,9 +129,13 @@ The import is incremental: each mesh carries its sidecar's `hash/build` as the m
 `Saved/ImportResidents/models/<Model>.json` records every import, so a rerun only imports new or rebuilt people.
 `--force` re-imports, `--retry-failed` retries failures, `--only key,key` and `--limit N` select people, `--prune`
 deletes folders no longer in `town_looks.json`. `python3 unreal/scripts/import_residents.py --report` gives the tally
-without the engine; the log is `Saved/ImportResidents/import.log`.
+without the engine; the log is `Saved/ImportResidents/import.log`. Before any editor starts, the wrapper runs
+`blender/residents/check_export.py` (no Blender, no engine; `CHECK=0` skips it) and stops if a model is off: one skin on
+the 56 bones of `SK_Human_Skeleton`, the four sections, the six morphs on every section, UV0-2, normals, weights that
+sum to 1, every UV inside 0..1, no degenerate triangles.
 
 ```sh
+python3 blender/residents/check_export.py                # no engine: 898 models checked, 0 with problems
 python3 unreal/scripts/import_residents.py --report      # no engine: 898 to import
 unreal/scripts/import_residents.sh --limit 3             # shared assets + 3 people: look at them in the editor first
 unreal/scripts/import_residents.sh                       # the whole town; stop and restart any time, it resumes

@@ -7,6 +7,7 @@
 #   unreal/scripts/import_residents.sh [--only key,key] [--limit N] [--force] [--retry-failed] [--prune]
 #   JOBS=2 unreal/scripts/import_residents.sh     two editors at once, every other person each (two queue slots)
 #   PRIO= unreal/scripts/import_residents.sh      full speed (default nice -n 19 taskpolicy -b: the efficiency cores)
+#   CHECK=0 unreal/scripts/import_residents.sh    skip the exports' check (blender/residents/check_export.py, no engine)
 # unreal/Lyudmilovsk/Saved/ImportResidents: import.log (what each run did), run_*.log (the last runs whole), broke_*.log
 # (runs that ended without their last word: a crash, a hang). The tally any time:
 #   python3 unreal/scripts/import_residents.py --report
@@ -43,6 +44,15 @@ if ps -A -o args= | grep -F "$PROJ" | grep -v -e " -run=" -e " -game" -e grep | 
 fi
 mkdir -p "$OUT"
 echo "== $(date '+%Y-%m-%d %H:%M') import_residents.sh $PRUNE $ARGS (jobs $JOBS)" >> "$LOG"
+
+# the exports first, without the engine (56 bones, four sections, six morphs, UV0-2, weights): a broken model never
+# gets near SK_Human_Skeleton
+if [ "${CHECK:-1}" != 0 ]; then
+    python3 "$ROOT/blender/residents/check_export.py" > "$OUT/check_export.log" 2>&1; C=$?
+    tail -n 20 "$OUT/check_export.log"
+    cat "$OUT/check_export.log" >> "$LOG"
+    [ "$C" = 0 ] || { echo "the exports have problems ($OUT/check_export.log): rebuild them, or CHECK=0 to import anyway"; exit 1; }
+fi
 
 # importing a mesh onto SK_Human_Skeleton can rewrite the skeleton's reference pose from that mesh, and every shared
 # clip then bends the others' arms into their bodies (fix_hi3d.sh): after each run it is put back as it was
