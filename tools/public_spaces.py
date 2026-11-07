@@ -264,6 +264,14 @@ def promenade(L):
             L.tree("Maple", x, yy, z, L.rnd.uniform(18, 32))
             L.prop("tree_grate", x, yy, z, sea_yaw(y))
         y += 20.0
+    # small round beds in the granite band, every 120 m halfway between two maples
+    y = y0 + 70.0
+    k = 0
+    while y < y1 - 20.0:
+        if L.free(45.5, y, 2.0) and abs(y - 905.0) > 16.0:
+            flowerbed(L, *at(45.5, y), z, 1.25, 20 + k, outer=5, inner=0)
+            k += 1
+        y += 120.0
     for k, (sid, s) in enumerate(sorted((i, s) for i, s in P.spots.items() if i.startswith("S-BENCH-P"))):
         if k % 2 == 0:
             x, yy, _ = s["map"]
@@ -342,6 +350,35 @@ def beach(L):
             x, py = at(21.5, y)
             L.prop("changing_booth", x, py, ground(x, py), sea_yaw(y))
     L.d["areas"].append({"id": "beach", "name": "place.beach.name", "at": L.ue(*at(12.0, 1000.0), W.SEA_Z + 1.2), "r": 450.0})
+
+
+# --- planters along the top of W1 (the lower town's edge over the promenade) ---------------------------------------
+def w1_planters(L):
+    """Long low planters on T1 just behind W1's parapet, every 45 m where no stair, grand flight or plot is: spiraea and
+    day lilies over the promenade. Clear of the plan lead's street-tree strips (those stand in front of W2..W5)."""
+    P = L.P
+    z = P.tz["T1"]
+    y = C.CITY_Y0 + 20.0
+    k = 0
+    rects = []
+    for pid, p in P.plots.items():
+        yy = p["map"][1]
+        sp = W.inland(p["map"][0], yy)
+        rects.append((yy - p["w"] / 2 - 3, yy + p["w"] / 2 + 3, sp - p["d"] / 2 - 3, sp + p["d"] / 2 + 3))
+    near_stair = [b["mid"][1] for b in P.bays.get("W1", []) if b["kind"] in ("stair", "grand")]
+    while y < C.CITY_Y1 - 20.0:
+        s = C.wall_s(0, y) + 2.4
+        if not any(abs(y - sy) < 12.0 for sy in near_stair) and not any(a < y < b and c < s < d for a, b, c, d in rects):
+            x, yy = at(s, y)
+            yaw = sea_yaw(y) + 90.0
+            L.box("planter", x, yy, yaw, 6.0, 1.1, z - 0.2, z + 0.45, "granite")
+            a = math.radians(yaw)
+            for j in range(3):
+                o = (j - 1) * 1.9
+                L.plant("Spiraea" if j != 1 else ("DayLily" if k % 2 else "Aster"), x + math.cos(a) * o, yy + math.sin(a) * o, z + 0.45,
+                        4.0 if j != 1 else 2.0)
+            k += 1
+        y += 45.0
 
 
 # --- Sun Square --------------------------------------------------------------------------------------------------
@@ -469,18 +506,28 @@ def square(L):
         L.spot("S-SQUARE-AUDIENCE", "square", gx + 20.0, gy, z, 180.0, seats=len(aud), slots=aud, sub="audience")
 
 
-def flowerbed(L, x, y, z, r, seed):
+# flowerbed mixes (outer ring, inner ring, middle): each bed takes one by its seed, so the town's beds differ
+BED_MIXES = [
+    (("Marigold", "Aster"), ("Cosmos",), "DayLily"),
+    (("Cosmos", "Marigold"), ("Aster",), "Spiraea"),
+    (("Aster", "Cosmos"), ("DayLily",), "DayLily"),
+    (("Heather", "Marigold"), ("Cosmos",), "Spiraea"),
+]
+
+
+def flowerbed(L, x, y, z, r, seed, outer=10, inner=5):
     """A round raised bed: a granite kerb (prop), flowers inside (procedural plants of the season)."""
     L.prop("flowerbed", x, y, z, 0.0, r=r)
     rnd = random.Random(seed * 7 + 3)
     zz = z + 0.32
-    for j in range(10):
-        a = 2 * math.pi * j / 10 + rnd.uniform(-0.1, 0.1)
-        L.plant("Marigold" if j % 2 else "Aster", x + math.cos(a) * r * 0.74, y + math.sin(a) * r * 0.74, zz, 1.0)
-    for j in range(5):
-        a = 2 * math.pi * j / 5 + 0.4
-        L.plant("Cosmos", x + math.cos(a) * r * 0.4, y + math.sin(a) * r * 0.4, zz, 1.0)
-    L.plant("DayLily", x, y, zz, 2.0)
+    o, i, mid = BED_MIXES[seed % len(BED_MIXES)]
+    for j in range(outer):
+        a = 2 * math.pi * j / outer + rnd.uniform(-0.1, 0.1)
+        L.plant(o[j % len(o)], x + math.cos(a) * r * 0.74, y + math.sin(a) * r * 0.74, zz, 1.0)
+    for j in range(inner):
+        a = 2 * math.pi * j / max(inner, 1) + 0.4
+        L.plant(i[j % len(i)], x + math.cos(a) * r * 0.4, y + math.sin(a) * r * 0.4, zz, 1.0)
+    L.plant(mid, x, y, zz, 2.0 if mid != "Spiraea" else 4.0)
 
 
 # --- the seaside park ----------------------------------------------------------------------------------------------
@@ -628,8 +675,8 @@ def park(L):
             if blocked(s, y) or math.hypot(s - ps, y - py_) < ry + 4 or math.hypot(s - gs, y - gy) < 15:
                 continue
             L.tree(sp, *at(s, y), z, L.rnd.uniform(12, 30))
-    for k in range(int((y1 - y0) / 4.0)):
-        y = y0 + 2.0 + k * 4.0
+    for k in range(int((y1 - y0) / 5.0)):
+        y = y0 + 2.5 + k * 5.0
         if abs(y - (y0 + 75.0)) < 4 or abs(y - (y0 + 225.0)) < 4 or blocked(s0 + 2.0, y):
             continue
         L.plant("Privet", *at(s0 + 2.0, y), z, 6.0)
@@ -638,6 +685,31 @@ def park(L):
             L.plant("Spiraea", *at(gs_ + k * 1.6, gy_ + (k % 2) * 1.4), z, 5.0)
     for side in (-1, 1):
         flowerbed(L, *at(sm + side * 14.0, y0 + 75.0), z, 2.6, 10 + side)
+        flowerbed(L, *at(sm + side * 14.0, y0 + 225.0), z, 2.2, 12 + side)
+    # a conifer corner (pines and spruce over lingonberry and bilberry), an aspen copse, ferns under the birches,
+    # heather and juniper on the pond's inland side
+    for k, (sp, n) in enumerate((("ScotsPine", 4), ("NorwaySpruce", 3))):
+        for j in range(n):
+            a = L.rnd.uniform(0, 2 * math.pi)
+            ss, yy = s1 - 22 + math.cos(a) * L.rnd.uniform(2, 9), y1 - 70 + math.sin(a) * L.rnd.uniform(2, 9)
+            if not blocked(ss, yy) and math.hypot(ss - ps, yy - py_) > ry + 6:
+                L.tree(sp, *at(ss, yy), z, L.rnd.uniform(25, 45))
+    for j in range(8):
+        ss, yy = s1 - 22 + L.rnd.uniform(-8, 8), y1 - 70 + L.rnd.uniform(-8, 8)
+        if not blocked(ss, yy) and math.hypot(ss - ps, yy - py_) > ry + 4:
+            L.plant("Lingonberry" if j % 2 else "Bilberry", *at(ss, yy), z, 3.0)
+    for j in range(5):
+        a = L.rnd.uniform(0, 2 * math.pi)
+        ss, yy = s0 + 26 + math.cos(a) * L.rnd.uniform(2, 7), y0 + 110 + math.sin(a) * L.rnd.uniform(2, 7)
+        if not blocked(ss, yy) and math.hypot(ss - gs, yy - gy) > 16:
+            L.tree("Aspen", *at(ss, yy), z, L.rnd.uniform(14, 28))
+    for (gs_, gy_) in ((s1 - 25, y0 + 45), (s1 - 26, y0 + 150), (s1 - 28, y1 - 30)):
+        for j in range(4):
+            L.plant("Bracken" if j % 2 else "BucklerFern", *at(gs_ + L.rnd.uniform(-5, 5), gy_ + L.rnd.uniform(-5, 5)), z, 3.0)
+    for j in range(7):
+        a = math.pi * 0.15 + math.pi * 0.7 * j / 6
+        L.plant("Heather" if j % 3 else "Juniper", px - math.cos(a) * (rx + 2.0), py + math.sin(a) * (ry + 2.0) * 0.0 + (j - 3) * 3.2, z,
+                4.0 if j % 3 else 8.0)
 
 
 # the fair's stall themes and their goods (items of LyudInventory.cpp: icons and names exist): item, price, count
@@ -1026,6 +1098,7 @@ def build():
     square(L)
     park(L)
     fair(L)
+    w1_planters(L)
     pier(L)
     cascade(L)
     club_stair(L)
