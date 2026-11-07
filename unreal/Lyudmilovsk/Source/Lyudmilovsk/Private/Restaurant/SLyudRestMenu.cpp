@@ -5,6 +5,7 @@
 #include "Restaurant/LyudRestaurant.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Brushes/SlateRoundedBoxBrush.h"
+#include "Misc/Paths.h"
 #include "Styling/CoreStyle.h"
 #include "UI/LyudDiaryStyle.h"
 #include "Widgets/Images/SImage.h"
@@ -30,6 +31,12 @@ namespace LyudRestMenu
 	FSlateFontInfo Font(int32 Size, const char* Face = "Regular")
 	{
 		return FCoreStyle::GetDefaultFontStyle(Face, Size);
+	}
+
+	/** Lines with a price: the engine's Roboto Regular and Bold have no ₽ (U+20BD), its Medium face has. */
+	FSlateFontInfo MoneyFont(int32 Size)
+	{
+		return FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Medium.ttf"), Size);
 	}
 
 	const FButtonStyle& Button()
@@ -150,7 +157,7 @@ TSharedRef<SWidget> SLyudRestMenu::Row(FName Id)
 		[
 			SNew(SBox).MinDesiredWidth(58.f)
 			[
-				SNew(STextBlock).Font(Font(15, "Bold")).ColorAndOpacity(AmberDeep).Justification(ETextJustify::Right)
+				SNew(STextBlock).Font(MoneyFont(15)).ColorAndOpacity(AmberDeep).Justification(ETextJustify::Right)
 				.Text(D && D->Price > 0 ? LyudText::Get(TEXT("ui.rest.price"), { FStringFormatArg(Owner.IsValid() ? Owner->PriceToday(*D) : D->Price) }) : LyudText::Get(TEXT("ui.rest.free")))
 			]
 		]
@@ -289,15 +296,15 @@ void SLyudRestMenu::Rebuild()
 								SNew(SHorizontalBox)
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(19, "Bold")).ColorAndOpacity(T > Money ? Warn : Ink).Text(Footer)
+									SNew(STextBlock).Font(MoneyFont(19)).ColorAndOpacity(T > Money ? Warn : Ink).Text(Footer)
 								]
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(14)).ColorAndOpacity(InkSoft).Text(Pocket)
+									SNew(STextBlock).Font(MoneyFont(14)).ColorAndOpacity(InkSoft).Text(Pocket)
 								]
 								+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 24, 0)
 								[
-									SNew(STextBlock).Font(Font(14)).ColorAndOpacity(InkSoft).Text(TabLine)
+									SNew(STextBlock).Font(MoneyFont(14)).ColorAndOpacity(InkSoft).Text(TabLine)
 								]
 								+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
 								[

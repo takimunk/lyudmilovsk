@@ -91,6 +91,19 @@ def make_materials():
         mel.update_material_instance(mi)
         eal.save_loaded_asset(mi, False)
         out[slot] = mi
+    # the localized plaque by the main door (tools/restaurant/signs.py): pictures per language, a sign material like the diner's
+    import import_diner
+    sign = import_diner.build_sign_master(MATS + "/M_RS_Sign")
+    loc = os.path.join(REPO, "textures", "localized")
+    for lang in sorted(os.listdir(loc)):
+        f = os.path.join(loc, lang, "rest_sign_plaque.png")
+        if os.path.exists(f):
+            tex = A.import_image(f, DEST + "/Localized/" + lang, "T_Sign_plaque", sub="")
+            if lang == "ru":
+                mi = A.instance(MATS + "/MI_RS_SignPlaque", sign)
+                A._set(mi, "t", "Image", tex)
+                mel.update_material_instance(mi)
+                eal.save_loaded_asset(mi, False)
     return out
 
 

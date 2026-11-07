@@ -1286,5 +1286,7 @@
  "ui.rest.not_seated": "Sit down at a table first",
  "ui.rest.order_failed": "That order can't be taken now",
  "ui.rest.kitchen_closing": "The kitchen is closing: no more orders",
- "ui.rest.catch_of_day": "Catch of the day: fresh this morning, cheaper"
+ "ui.rest.catch_of_day": "Catch of the day: fresh this morning, cheaper",
+ "sign.rest.plaque": "restaurant on the promenade",
+ "sign.rest.hours": "daily 11:00–23:00"
 }

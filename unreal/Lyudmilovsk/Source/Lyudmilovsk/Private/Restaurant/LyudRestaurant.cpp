@@ -804,6 +804,11 @@ void ALyudRestaurant::EndPlay(const EEndPlayReason::Type Reason)
 		Knife->Destroy();
 		Knife = nullptr;
 	}
+	if (Plaque)
+	{
+		Plaque->Destroy();
+		Plaque = nullptr;
+	}
 	Preload.Reset();
 	for (const int32 Id : HiddenStaff)
 	{
@@ -926,6 +931,7 @@ void ALyudRestaurant::LoadLayout()
 		WaiterHome = PassStand;
 		HomeYaw = PassYaw;
 	}
+	MenuSpot = LyudRest::Vec(L, TEXT("menu_spot"));
 	const TSharedPtr<FJsonObject>* Entrance = nullptr;
 	if (L->TryGetObjectField(TEXT("entrance"), Entrance))
 	{
@@ -1247,6 +1253,37 @@ void ALyudRestaurant::ApplyLights()
 void ALyudRestaurant::ApplySigns()
 {
 	SignLanguage = LyudText::Language();
+	// the plaque on the menu stand's top, tilted up to the reader coming to the door (the stand faces -y, the street side)
+	if (!Plaque && !MenuSpot.IsNearlyZero())
+	{
+		FActorSpawnParameters SP;
+		SP.ObjectFlags |= RF_Transient;
+		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		const FRotator Rot = (FRotator(0.f, YawToWorld(-90.f).Yaw, 0.f).Quaternion() * FRotator(-55.f, 0.f, 0.f).Quaternion()).Rotator();
+		Plaque = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), ToWorld(MenuSpot + FVector(0, 0, 0.035f)), Rot, SP);
+		if (Plaque)
+		{
+			Plaque->SetMobility(EComponentMobility::Movable);
+			Plaque->Tags.Add(TEXT("Restaurant"));
+			UStaticMeshComponent* C = Plaque->GetStaticMeshComponent();
+			C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
+			// 40 x 20 cm, 1 cm thick (the cube is 1 m): its +X face toward the reader
+			C->SetRelativeScale3D(FVector(0.01f, 0.40f, 0.20f));
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			C->bAffectDistanceFieldLighting = false;
+			if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Restaurant/Materials/MI_RS_SignPlaque.MI_RS_SignPlaque")))
+			{
+				PlaqueMID = C->CreateDynamicMaterialInstance(0, M);
+			}
+		}
+	}
+	if (PlaqueMID)
+	{
+		if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("Restaurant"), TEXT("T_Sign_plaque")))
+		{
+			PlaqueMID->SetTextureParameterValue(TEXT("Image"), Tex);
+		}
+	}
 }
 
 int32 ALyudRestaurant::PendingCount(bool bHeroOnly) const

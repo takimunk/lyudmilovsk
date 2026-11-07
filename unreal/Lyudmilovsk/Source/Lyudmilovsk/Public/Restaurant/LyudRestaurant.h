@@ -254,6 +254,10 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> OutsideLights;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> GlowMIDs;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> SignMIDs;
+	/** The localized plaque on the menu stand by the main door (its picture swapped with the language). */
+	UPROPERTY(Transient) TObjectPtr<AStaticMeshActor> Plaque;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> PlaqueMID;
+	FVector MenuSpot = FVector::ZeroVector;
 
 	// state
 	bool bOpen = false, bLit = false, bNight = false, bLocked = false;

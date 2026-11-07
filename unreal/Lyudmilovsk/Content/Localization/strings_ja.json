@@ -1286,5 +1286,7 @@
  "ui.rest.not_seated": "先に席に着いてください",
  "ui.rest.order_failed": "その注文は今は受けられない",
  "ui.rest.kitchen_closing": "厨房はまもなく閉店。ご注文は締め切りました",
- "ui.rest.catch_of_day": "本日の水揚げ：今朝の新鮮な魚、お安く"
+ "ui.rest.catch_of_day": "本日の水揚げ：今朝の新鮮な魚、お安く",
+ "sign.rest.plaque": "海辺のレストラン",
+ "sign.rest.hours": "毎日 11:00～23:00"
 }
