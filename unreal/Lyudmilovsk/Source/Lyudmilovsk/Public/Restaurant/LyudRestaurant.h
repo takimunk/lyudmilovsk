@@ -162,7 +162,9 @@ public:
 	void CloseMenu();
 	bool IsMenuOpen() const { return Menu_.IsValid(); }
 	/** Orders these dishes for the hero's table: pays for them (false and nothing ordered when he can't). */
-	bool PlaceOrder(const TMap<FName, int32>& Items);
+	/** Why an order was refused (PlaceOrder). */
+	enum class EOrderResult : uint8 { Ok, Closed, NotSeated, NoMoney, Unknown };
+	EOrderResult PlaceOrder(const TMap<FName, int32>& Items);
 	void AskBill();
 	/** The hero's table's dish nearest the look (or the first): starts eating it. */
 	bool EatNearest(FName Id = NAME_None);
@@ -172,8 +174,8 @@ public:
 	void LookAtLocal(const FVector& M);
 	int32 TabTotal() const { return Tab; }
 	bool IsBillAsked() const { return bBillAsked; }
-	/** Orders waiting in the kitchen or being carried. */
-	int32 PendingCount() const;
+	/** Orders waiting in the kitchen or being carried (the hero's only, or the guests' too). */
+	int32 PendingCount(bool bHeroOnly = true) const;
 	FString StateReport() const;
 	void DishGone(ALyudRestDish* Dish);
 
@@ -338,12 +340,20 @@ private:
 		float BiteT = 0.f;
 		TWeakObjectPtr<AStaticMeshActor> Card;
 		TWeakObjectPtr<AStaticMeshActor> Fork;
+		/** Their drink (the main is Dish). */
+		TWeakObjectPtr<ALyudRestDish> Cup;
+		/** Their body now (refreshed every 2 s with the seats, not looked up each frame). */
+		TWeakObjectPtr<ANpcBody> Body;
 	};
 	TArray<FProp> Props;
 	/** The table the waiter's job is for. */
 	int32 JobTable = -1;
 	void TickGuests(float DeltaTime);
-	void GuestLeft(FProp& P);
+	/** bPaid: they got up and paid (coins); false when the visit is just dropped (EndPlay, a load). */
+	void GuestLeft(FProp& P, bool bPaid);
+	/** Staff of the place on shift that the restaurant hides (all but the waiter and the cook it draws). */
+	TSet<int32> HiddenStaff;
+	void RefundNextTick();
 
 	void LoadLayout();
 	void FindParts();

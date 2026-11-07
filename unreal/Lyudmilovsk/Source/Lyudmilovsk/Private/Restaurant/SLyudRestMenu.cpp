@@ -101,14 +101,17 @@ bool SLyudRestMenu::Order()
 		Rebuild();
 		return false;
 	}
-	if (R->PlaceOrder(Counts))
+	const ALyudRestaurant::EOrderResult Result = R->PlaceOrder(Counts);
+	if (Result == ALyudRestaurant::EOrderResult::Ok)
 	{
 		Status = LyudText::Get(TEXT("ui.rest.ordered"));
 		Counts.Reset();
 		Rebuild();
 		return true;
 	}
-	Status = LyudText::Get(TEXT("ui.rest.no_money"));
+	Status = LyudText::Get(Result == ALyudRestaurant::EOrderResult::Closed ? TEXT("ui.rest.closed")
+		: Result == ALyudRestaurant::EOrderResult::NotSeated ? TEXT("ui.rest.not_seated")
+		: Result == ALyudRestaurant::EOrderResult::NoMoney ? TEXT("ui.rest.no_money") : TEXT("ui.rest.order_failed"));
 	Rebuild();
 	return false;
 }

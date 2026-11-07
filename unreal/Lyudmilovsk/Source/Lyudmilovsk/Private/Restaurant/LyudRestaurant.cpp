@@ -126,19 +126,6 @@ namespace LyudRest
 		return C;
 	}
 
-	USoundBase* Sound(const TCHAR* Name)
-	{
-		for (const TCHAR* Dir : { TEXT("/Game/Audio/Food/"), TEXT("/Game/Restaurant/Audio/") })
-		{
-			const FString Pkg = FString(Dir) + Name;
-			if (FPackageName::DoesPackageExist(Pkg))
-			{
-				return LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("%s.%s"), *Pkg, Name));
-			}
-		}
-		return nullptr;
-	}
-
 	/** The vessel's own size from its mesh (cm): radius and half height. */
 	void MeshSize(const UStaticMesh* M, float& Radius, float& HalfHeight)
 	{
@@ -254,18 +241,30 @@ UStaticMesh* ALyudRestaurant::RestMesh(FName Name)
 	}
 	// the restaurant preloads them all (PreloadMeshes) and holds them; this finds the loaded one, else loads it once (a cache miss)
 	static TMap<FName, TWeakObjectPtr<UStaticMesh>> Cache;
+	static TSet<FName> Missing;
 	if (const TWeakObjectPtr<UStaticMesh>* W = Cache.Find(Name); W && W->IsValid())
 	{
 		return W->Get();
 	}
+	if (Missing.Contains(Name))
+	{
+		return nullptr;
+	}
 	const FString N = Name.ToString();
-	const FString Path = TEXT("/Game/Restaurant/Meshes/") + N + TEXT(".") + N;
-	UStaticMesh* M = FindObject<UStaticMesh>(nullptr, *Path);
+	const FString AssetPath = TEXT("/Game/Restaurant/Meshes/") + N + TEXT(".") + N;
+	UStaticMesh* M = FindObject<UStaticMesh>(nullptr, *AssetPath);
 	if (!M && FPackageName::DoesPackageExist(TEXT("/Game/Restaurant/Meshes/") + N))
 	{
-		M = LoadObject<UStaticMesh>(nullptr, *Path);
+		M = LoadObject<UStaticMesh>(nullptr, *AssetPath);
 	}
-	Cache.Add(Name, M);
+	if (M)
+	{
+		Cache.Add(Name, M);
+	}
+	else
+	{
+		Missing.Add(Name);
+	}
 	return M;
 }
 
@@ -679,7 +678,7 @@ void ALyudRestaurant::EndPlay(const EEndPlayReason::Type Reason)
 	ReleaseCook();
 	for (FProp& Pr : Props)
 	{
-		GuestLeft(Pr);
+		GuestLeft(Pr, false);
 	}
 	Props.Reset();
 	for (ALyudRestDish* D : HeroDishes)
@@ -701,6 +700,11 @@ void ALyudRestaurant::EndPlay(const EEndPlayReason::Type Reason)
 		Knife = nullptr;
 	}
 	Preload.Reset();
+	for (const int32 Id : HiddenStaff)
+	{
+		LyudRestaurantStaff::SetPresentedExternally(this, Id, false);
+	}
+	HiddenStaff.Reset();
 	for (AStaticMeshActor* A : KitchenProps)
 	{
 		if (A)
@@ -995,6 +999,30 @@ void ALyudRestaurant::RefreshStaff()
 	};
 	Pick(TEXT("waiter"), StaffWaiter, StaffWaiterMesh);
 	Pick(TEXT("cook"), StaffCook, StaffCookMesh);
+	// the rest of the staff on shift (more waiters, a second cook, the manager) would stand at the same posts: hidden while here
+	TSet<int32> Extra;
+	for (const int32 Id : LyudRestaurantStaff::OnShift(this, PlaceId, NAME_None))
+	{
+		if (Id != StaffWaiter && Id != StaffCook)
+		{
+			Extra.Add(Id);
+		}
+	}
+	for (const int32 Id : HiddenStaff)
+	{
+		if (!Extra.Contains(Id))
+		{
+			LyudRestaurantStaff::SetPresentedExternally(this, Id, false);
+		}
+	}
+	for (const int32 Id : Extra)
+	{
+		if (!HiddenStaff.Contains(Id))
+		{
+			LyudRestaurantStaff::SetPresentedExternally(this, Id, true);
+		}
+	}
+	HiddenStaff = MoveTemp(Extra);
 }
 
 void ALyudRestaurant::UpdateState()
@@ -1022,7 +1050,7 @@ void ALyudRestaurant::UpdateState()
 		bNight = bNight ? Alt < 4.f : Alt < 1.f;
 	}
 	// locked once closed and the hero is out (the staff finishing inside don't hold it open)
-	const bool bWantLock = !bOpen && !IsHeroInside();
+	const bool bWantLock = !bOpen && !IsHeroInside() && Props.Num() == 0 && Waiter == EWaiter::Off && !CookBody;
 	if (bWantLock != bLocked)
 	{
 		bLocked = bWantLock;
@@ -1074,12 +1102,12 @@ void ALyudRestaurant::ApplySigns()
 	SignLanguage = LyudText::Language();
 }
 
-int32 ALyudRestaurant::PendingCount() const
+int32 ALyudRestaurant::PendingCount(bool bHeroOnly) const
 {
 	int32 N = 0;
 	for (const FOrder& O : Orders)
 	{
-		N += O.State != FOrder::EState::Served ? 1 : 0;
+		N += O.State != FOrder::EState::Served && (!bHeroOnly || !O.bGuest) ? 1 : 0;
 	}
 	return N;
 }
@@ -1112,6 +1140,10 @@ void ALyudRestaurant::Toast(const FText& Text) const
 
 void ALyudRestaurant::SetPrompt(const FString& Key, const TArray<FStringFormatArg>& Args)
 {
+	if (Key.IsEmpty() && Prompted.IsEmpty())
+	{
+		return;
+	}
 	FString Full = Key;
 	for (const FStringFormatArg& A : Args)
 	{
@@ -1342,12 +1374,16 @@ ALyudRestaurant::FOrder& ALyudRestaurant::AddOrder(FName Item, int32 Seat, float
 	return O;
 }
 
-bool ALyudRestaurant::PlaceOrder(const TMap<FName, int32>& Items)
+ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int32>& Items)
 {
 	ULyudInventory* Inv = ULyudInventory::Get(this);
-	if (!Inv || HeroSeatIx < 0 || !bOpen)
+	if (!bOpen)
 	{
-		return false;
+		return EOrderResult::Closed;
+	}
+	if (!Inv || HeroSeatIx < 0)
+	{
+		return EOrderResult::NotSeated;
 	}
 	int32 Total = 0;
 	for (const TPair<FName, int32>& I : Items)
@@ -1355,14 +1391,18 @@ bool ALyudRestaurant::PlaceOrder(const TMap<FName, int32>& Items)
 		const FLyudRestDishDef* D = FindDish(I.Key);
 		if (!D || I.Value <= 0)
 		{
-			return false;
+			return EOrderResult::Unknown;
 		}
 		Total += D->Price * I.Value;
 	}
-	if (Total <= 0 || !Inv->Spend(Total))
+	if (Total <= 0)
+	{
+		return EOrderResult::Unknown;
+	}
+	if (!Inv->Spend(Total))
 	{
 		Toast(LyudText::Get(TEXT("ui.rest.no_money")));
-		return false;
+		return EOrderResult::NoMoney;
 	}
 	Tab += Total;
 	const float Now = GetWorld()->GetTimeSeconds();
@@ -1385,7 +1425,7 @@ bool ALyudRestaurant::PlaceOrder(const TMap<FName, int32>& Items)
 	}
 	Toast(LyudText::Get(TEXT("ui.rest.order_toast"), { FStringFormatArg(Total) }));
 	UE_LOG(LogTemp, Display, TEXT("RESTTEST order:%s paid %d, money left %d"), *Log, Total, Inv->Rubles);
-	return true;
+	return EOrderResult::Ok;
 }
 
 void ALyudRestaurant::OnGameSaving_Implementation()
@@ -1407,7 +1447,7 @@ void ALyudRestaurant::OnGameLoaded_Implementation()
 	StandHero();
 	for (FProp& Pr : Props)
 	{
-		GuestLeft(Pr);
+		GuestLeft(Pr, false);
 	}
 	Props.Reset();
 	ResetHeroTable();
@@ -1420,16 +1460,28 @@ void ALyudRestaurant::OnGameLoaded_Implementation()
 	}
 	Orders.Reset();
 	ReleaseWaiter();
-	if (SavedRefund > 0)
+	// the save's objects (the pocket's roubles, this actor's SavedRefund) are read after this call: refund on the next tick
+	RefundNextTick();
+}
+
+void ALyudRestaurant::RefundNextTick()
+{
+	TWeakObjectPtr<ALyudRestaurant> Self(this);
+	GetWorldTimerManager().SetTimerForNextTick([Self]()
 	{
-		if (ULyudInventory* Inv = ULyudInventory::Get(this))
+		ALyudRestaurant* R = Self.Get();
+		if (!R || R->SavedRefund <= 0)
 		{
-			Inv->Earn(SavedRefund);
+			return;
 		}
-		Toast(LyudText::Get(TEXT("ui.rest.refund"), { FStringFormatArg(SavedRefund) }));
-		UE_LOG(LogTemp, Display, TEXT("RESTTEST refund on load: %d"), SavedRefund);
-		SavedRefund = 0;
-	}
+		if (ULyudInventory* Inv = ULyudInventory::Get(R))
+		{
+			Inv->Earn(R->SavedRefund);
+		}
+		R->Toast(LyudText::Get(TEXT("ui.rest.refund"), { FStringFormatArg(R->SavedRefund) }));
+		UE_LOG(LogTemp, Display, TEXT("RESTTEST refund on load: %d"), R->SavedRefund);
+		R->SavedRefund = 0;
+	});
 }
 
 void ALyudRestaurant::AskBill()
@@ -1452,14 +1504,15 @@ void ALyudRestaurant::ResetHeroTable()
 		}
 	}
 	HeroDishes.Reset();
+	// the hero's orders only: the townspeople's go on being cooked and served
 	for (FOrder& O : Orders)
 	{
-		if (O.State == FOrder::EState::Ready && O.Dish.IsValid())
+		if (!O.bGuest && O.State == FOrder::EState::Ready && O.Dish.IsValid())
 		{
 			O.Dish->Destroy();
 		}
 	}
-	Orders.RemoveAll([](const FOrder& O) { return O.State != FOrder::EState::Carried; });
+	Orders.RemoveAll([](const FOrder& O) { return !O.bGuest && O.State != FOrder::EState::Carried; });
 	if (BillFolder)
 	{
 		BillFolder->Destroy();
@@ -1854,7 +1907,7 @@ namespace LyudRest
 				{
 					Items.FindOrAdd(FName(*A))++;
 				}
-				const bool bOk = R->PlaceOrder(Items);
+				const bool bOk = R->PlaceOrder(Items) == ALyudRestaurant::EOrderResult::Ok;
 				UE_LOG(LogTemp, Display, TEXT("RESTTEST order command %s"), bOk ? TEXT("ok") : TEXT("refused"));
 			}
 		}));

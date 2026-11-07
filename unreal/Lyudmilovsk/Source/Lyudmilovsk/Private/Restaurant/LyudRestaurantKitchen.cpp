@@ -111,6 +111,8 @@ void ALyudRestaurant::SetLoops(bool bOpenNow, bool bCooking)
 		}
 		else if (!bOn && A)
 		{
+			// gone once faded (not left behind as a stopped component)
+			A->bAutoDestroy = true;
 			A->FadeOut(1.5f, 0.f);
 			A = nullptr;
 		}
