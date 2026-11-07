@@ -1,17 +1,19 @@
 # Test-merge of the 2026-11-06 night branches (`integration/night-1106`)
 
-A throwaway branch: main `bb083dd0` with tonight's ten branches merged into it (and, from round 5, the text fixes on
-`loc/night-1106`), to see that they fit together and pass the offline suites. It is not meant to be merged to main as it is: each branch still goes in through its own PR or
+A throwaway branch: main `bb083dd0` with tonight's ten branches merged into it, to see that they fit together and pass
+the offline suites. Round 5 added the text fixes on `loc/night-1106`, and round 6 added the townsfolk's lines
+(`dialogue/residents`) and the residents generator (PR #15). It is not meant to be merged to main as it is: each branch still goes in through its own PR or
 merge. This page records what conflicted, how each conflict was resolved here, what was checked, and what is left for
 the branch owners. Done in the cloud on 2026-11-07 (no Unreal build: the UE Mac is busy, and it can't run the game until
 the Metal Toolchain is reinstalled).
 
-It took five rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
+It took six rounds, because the owners kept pushing. Round 1 (`9be09292`) merged the heads as they were when the work
 started. Round 2 merged the newer heads on top, in the same order, and the four branches that moved again while it ran
 (eco, fishing, public-spaces, town-life) a second time at the end. Round 3 merged perfhunt, the restaurant and festivals
 once more, after they pushed again at about 01:35 UTC. Round 4 took the small fixes that the buildings, public spaces,
 town life, the restaurant, eco and perfhunt pushed by 01:55 UTC. Round 5 took the restaurant's `998223bb` (PR #11),
-fishing's `92df3cec` and `loc/night-1106`. The branch holds every head as of 02:07 UTC. Later pushes aren't in
+fishing's `92df3cec` and `loc/night-1106`. Round 6 added `dialogue/residents` (after town-life) and `residents`
+(PR #15). The branch holds every head as of 02:24 UTC. Later pushes aren't in
 it, but the order and resolutions here still apply to them.
 
 ## Order
@@ -29,6 +31,8 @@ it, but the order and resolutions here still apply to them.
 | 9 | `festivals` | `9a3bcbec` | `1c40e985` | 16 | `strings_{ru,en,ja}.json` (1) |
 | 10 | `gfx` (PR #12) | `33643981` | `e10d5ac3` | 9 | `LyudGameMenu.cpp` (1), `PeopleLife.cpp` (2) |
 | 11 | `loc/night-1106` | (round 5) | `caeb8eb8` | 1 | none |
+| 12 | `dialogue/residents` | (round 6) | `c31977b7` | 21 (on an older town-life, `8d16ee62`) | none |
+| 13 | `residents` (PR #15) | (round 6) | `1f19b3e0` | 8 | `.gitignore` (6) |
 
 Why this order: perfhunt first, because the restaurant needs its `e8085366` (the bite subsystem roots `FLyudMeal`'s
 meshes) and its people `GroundCache` and door fix stay as they are. PR #9 before PR #10, since `fishing` contains #9.
@@ -42,7 +46,7 @@ and are exactly city-terrain's versions.
 
 ## Conflicts and how they were resolved
 
-Eleven conflicts over the five rounds, all of them mechanical (both sides added things at the same spot). No change of
+Twelve conflicts over the six rounds, all of them mechanical (both sides added things at the same spot). No change of
 behaviour was needed on either side.
 
 Round 1:
@@ -93,8 +97,14 @@ Round 3:
     prices, now «руб.» where they had ₽. 3-way per-key merge as in 3. No key was changed on both sides; 1644 keys in
     each language, in the same order.
 
+Round 6:
+
+12. **`.gitignore`** (residents × wt/city-buildings). Both appended an ignore block at the end. Kept the buildings'
+    `blender/export/city/*.glb`, then the residents' `blender/residents/{_vendor,export,atlases,cache}/` and
+    `renders/residents/`.
+
 perfhunt's five new commits (save order, doors, prefetch, small speed-ups, its report) and festivals' review fixes
-merged by themselves, and so did all of rounds 4 and 5.
+merged by themselves, and so did all of rounds 4 and 5 and `dialogue/residents`.
 
 When the branches go to main one by one in this order, the same files conflict again, and the resolutions above apply
 as they are. The one difference: `DefaultGame.ini` then conflicts when city-terrain goes in after fishing.
@@ -132,13 +142,14 @@ Files that two branches changed and git merged without a conflict, checked for m
 
 And a line count over everything: every line of code (C++, Python, ini, shell) that a branch adds over main is in the
 merge, except lines a later branch changed again. Those are fishing's copy of eco's older code (eco has changed it
-since), public-spaces' copies of city-terrain's older `city_plan.py` / `world_map.py` lines, and eco's fish length
-fallback (above). Nothing was lost in the resolutions.
+since), public-spaces' copies of city-terrain's older `city_plan.py` / `world_map.py` lines, `dialogue/residents`'
+copies of town-life's older lines (it branched from `8d16ee62`), and eco's fish length fallback (above). Nothing was lost
+in the resolutions.
 
 ## Cross-branch checks on the merged tree
 
-- **Console names:** 427 `lyud.*` registrations (354 on main), none registered twice, no names that differ only by case.
-- **Types:** 274 reflected types (240 on main), no name defined twice; header names unique in the module; every
+- **Console names:** 434 `lyud.*` registrations (354 on main), none registered twice, no names that differ only by case.
+- **Types:** 275 reflected types (240 on main), no name defined twice; header names unique in the module; every
   `.generated.h` include matches its file.
 - **Unity builds:** no file-scope name (static, anonymous namespace, console variable, macro) is newly shared by two
   `.cpp` files. (`LYUD_HAS_BIRDLIFE` is defined the same way in `BirdTame.cpp` and `BirdFlightSubsystem.cpp`, as on
@@ -154,6 +165,9 @@ fallback (above). Nothing was lost in the resolutions.
   - The restaurant's calls by name, `IsFestivalToday` and `IsFestivalDish`, are `UFUNCTION`s on
     `ULyudFestivalSubsystem`; every dish in `festivals.json` menus is in the restaurant's `menu.json`.
   - The spot ids festivals names (`S-FAIR`, `S-SQUARE-AUDIENCE`) exist in the plan.
+  - The townsfolk's lines (`TownTalk.cpp`, `dialogue/residents`) read by name the restaurant's `WaiterBody`, `CookBody`,
+    `BillFolder` (object `UPROPERTY`s), `HeroDishes` and `OnTray` (arrays), and the festivals' `ActiveFestival()` /
+    `ActivePhase()` (`UFUNCTION`s returning `FName`). All of them exist in the merge with those types.
   - fishing's kitchen buyer at the Amber (`fishing.json` kitchen `yantar`) now stands at the restaurant's staff door,
     about 1.7 m from `seats.json`'s `back_outside` (fishing `2a4cfff9`, from the restaurant thread).
 - **Generated data:**
@@ -171,8 +185,8 @@ fallback (above). Nothing was lost in the resolutions.
   - Buildings: every building type on the plan has its `blender/city/buildings/<type>.py` and an export, except
     `amber_pavilion` (the restaurant's own pavilion) and `tidal_pool` (see the owners' list). The old `plain_block__*`
     exports are gone.
-- **Localization** (`tools/check_localization.py`): 1645 keys in 3 languages, no missing keys and no placeholder
-  mismatches. Every literal text key the code asks `LyudText` for is in the tables. `loc/night-1106` adds the one that
+- **Localization** (`tools/check_localization.py`, which `dialogue/residents` extends to its `Localization/barks/`
+  tables): 4035 keys in 3 languages (1645 in the main tables), no missing keys and no placeholder mismatches. Every literal text key the code asks `LyudText` for is in the tables. `loc/night-1106` adds the one that
   main lacked, `corvid.prompt.take`, and its Japanese fixes don't touch any key another branch changed. It reports 53 problems: main's 16 (the `find_*` items have no icon entries) plus 37 fishing icon pictures
   not generated yet (made on the Mac by `tools/fishing_icons.py`).
 - **Mac-only compile errors:** every plain C++ file the suites build was compiled with `-Wshadow
@@ -189,8 +203,9 @@ Every `tools/*/run.sh` test target, run in the cloud (Linux; birdsim below says 
 last commit), round 3 `f589d679`, and round 4 `e756a240` (`animalsim` and `winter` also on `b8d79afa`, after perfhunt's
 last commit). Round 4 ran every suite except birdsim, because it changes none of the bird sim's sources or data. Round 5
 ran every suite on `559683ce`. After it, fishing's last commit got `fishing` and both `underwater` targets again (on
-`b8fae5b7`), and `loc/night-1106` changes only the string tables, which no suite reads. All five rounds gave the same
-results; the bird sim's output is the same line for line apart from timings.
+`b8fae5b7`), and `loc/night-1106` changes only the string tables, which no suite reads. Round 6 ran every suite on
+`edd4be6c`, including the new `barksim`. All six rounds gave the same results; the bird sim's output is the same line
+for line apart from timings.
 
 | Suite | main | merge |
 |---|---|---|
@@ -208,6 +223,7 @@ results; the bird sim's output is the same line for line apart from timings.
 | `winter test` | all ok | all ok |
 | `fishing/run.sh` (fishing) | n/a | ALL OK |
 | `festivalsim test` (festivals) | n/a | all festival checks pass |
+| `barksim/run.sh` (dialogue/residents) | n/a | all ok |
 
 **birdsim** is the one suite that gets worse. Its counts depend on the platform. All the numbers on this page are from
 the cloud: Linux x86_64, Ubuntu clang 18.1.3, libstdc++ 13, glibc 2.39. On one platform the bird world is
@@ -294,3 +310,5 @@ Done since round 1: wt/city-buildings built the eight types of main's "buildings
   sounds, fish and sealife meshes, icons).
 - Benchmarks (perf checklist: frame time and memory against main before merging). They have to run alone on the Mac.
 - Heights from the built terrain (`Saved/World/terrain_out.bin`) in `public_spaces.json`.
+- The residents generator's own checks (`blender/residents/check_export.py`, `test_accessories.py`): they need the
+  models built in Blender (`blender/residents/export`, not in git) and the vendored MakeHuman data.
