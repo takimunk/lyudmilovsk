@@ -2779,11 +2779,20 @@ namespace LyudPeople
 		};
 		if (A.bGather)
 		{
-			for (const FGathering& G : Gatherings)
+			for (size_t GI = 0; GI < Gatherings.size(); GI++)
 			{
-				for (const int PlI : G.Places)
+				for (const int PlI : Gatherings[GI].Places)
 				{
-					Look(PlI);
+					// a place in two gatherings counts once
+					bool bEarlier = false;
+					for (size_t GJ = 0; GJ < GI && !bEarlier; GJ++)
+					{
+						bEarlier = std::find(Gatherings[GJ].Places.begin(), Gatherings[GJ].Places.end(), PlI) != Gatherings[GJ].Places.end();
+					}
+					if (!bEarlier)
+					{
+						Look(PlI);
+					}
 				}
 			}
 		}

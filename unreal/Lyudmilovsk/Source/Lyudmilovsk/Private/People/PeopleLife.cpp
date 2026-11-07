@@ -28,6 +28,7 @@
 #include "UObject/UObjectIterator.h"
 #include "NpcDialogue.h"
 #include "LyudText.h"
+#include "AssetRegistry/IAssetRegistry.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
 #include "Weather/LyudWeather.h"
@@ -725,6 +726,17 @@ static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>
 	// one of the story's people's registry (ModelOwners), and drawn only near the camera
 	TMap<FString, bool> Known;
 	int32 Unseen = 0;
+	// the townsfolk's own models, all in one registry query (not a file check each)
+	TSet<FName> OwnPackages;
+	if (IAssetRegistry* Registry = IAssetRegistry::Get())
+	{
+		TArray<FAssetData> Assets;
+		Registry->GetAssetsByPath(FName(TEXT("/Game/Characters/Humans/Town")), Assets, true);
+		for (const FAssetData& A : Assets)
+		{
+			OwnPackages.Add(A.PackageName);
+		}
+	}
 	for (const LP::FPerson& P : S.People)
 	{
 		if (!P.bTown)
@@ -733,7 +745,7 @@ static void UPeopleLifeSubsystem_TownModels(const LP::FWorld& S, TArray<FString>
 		}
 		// their own model (the residents generator's, town_looks.json -> "body") once imported, else the pool's look
 		const FString Own = P.Body != P.Mesh ? FString(UTF8_TO_TCHAR(P.Body.c_str())) : FString();
-		if (!Own.IsEmpty() && FPackageName::DoesPackageExist(FPackageName::ObjectPathToPackageName(PeopleModelPath(Own))))
+		if (!Own.IsEmpty() && OwnPackages.Contains(FName(*FPackageName::ObjectPathToPackageName(PeopleModelPath(Own)))))
 		{
 			ShownModels[P.Id] = Own;
 			continue;
