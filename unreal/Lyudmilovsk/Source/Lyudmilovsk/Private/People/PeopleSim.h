@@ -17,6 +17,7 @@
 #include "../Animals/AnimalSim.h"
 #include "MiniJson.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <functional>
@@ -353,8 +354,55 @@ namespace LyudPeople
 		std::vector<int8_t> FlatLit;    // per place: -1 unknown, 0 dark, 1 lit
 		bool FlatLitNow(int Place) const;
 		/** Today's wake and bedtime (their usual, moved by the day's roll). */
-		float WakeOf(const FPerson& P) const { return std::fmod(P.Wake + P.WakeJ + 24.f, 24.f); }
-		float BedOf(const FPerson& P) const { return std::fmod(P.BedTime + P.BedJ + 24.f, 24.f); }
+		float WakeOf(const FPerson& P) const
+		{
+			const float W = std::fmod(P.Wake + P.WakeJ + 24.f, 24.f);
+			// the morning after a festival night: up as much later as they stayed up (4 h at most)
+			const float Late = StayLate(P);
+			return Late > 0.f ? std::fmod(W + Late, 24.f) : W;
+		}
+		float BedOf(const FPerson& P) const
+		{
+			const float B = std::fmod(P.BedTime + P.BedJ + 24.f, 24.f);
+			return Time < StayUntil && StayLate(P) > 0.f ? StayHourFor(P) : B;
+		}
+		/** A festival night (SetStayUp): nobody but the small children goes to bed before StayUntil (sim seconds). */
+		void SetStayUp(float UntilHour)
+		{
+			// UntilHour from today's 00:00 (26.5: 02:30 tonight); 0: the night is over (the morning after still starts late)
+			if (UntilHour > 0.f)
+			{
+				StayUntil = StayEnd = Time + ((double)UntilHour - (double)Hour) * 3600.0;
+				StayHour = std::fmod(UntilHour, 24.f);
+			}
+			else
+			{
+				StayUntil = 0.0;
+				if (StayEnd > Time)
+				{
+					StayHour = std::fmod(StayHour - (float)((StayEnd - Time) / 3600.0) + 48.f, 24.f);
+					StayEnd = Time;
+				}
+			}
+		}
+		double StayUntil = 0.0, StayEnd = -1e18;
+		float StayHour = 0.f;
+		float StayHourFor(const FPerson& P) const
+		{
+			const float S = StayHour;
+			return P.Age < 12 ? (NightH(S) > 23.f ? 23.f : S) : S;
+		}
+		/** hours past their own bedtime the festival keeps them (0: none, or it's long over) */
+		float StayLate(const FPerson& P) const
+		{
+			if (Time > StayEnd + 14.0 * 3600.0 || Time < StayEnd - 20.0 * 3600.0)
+			{
+				return 0.f;
+			}
+			const float D = NightH(StayHourFor(P)) - NightH(std::fmod(P.BedTime + P.BedJ + 24.f, 24.f));
+			return D > 0.f ? (D > 4.f ? 4.f : D) : 0.f;
+		}
+		static float NightH(float H) { return H < 12.f ? H + 24.f : H; }
 		/** Rolls everybody's day (wake and bed moved by Spread); the step does it at 14:00 each day. */
 		void RollDays();
 		float PrevHour = -1.f;

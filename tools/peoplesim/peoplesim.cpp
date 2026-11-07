@@ -1035,6 +1035,34 @@ static int Town()
 		CHECK(!W.Settling() && Unplaced < Town * 0.05, "a load places the townsfolk over %d steps (%d unplaced; Resettle %.1f ms, worst step %.1f ms)", SettleSteps, Unplaced, ResettleMs, WorstMs);
 		CHECK(LitLoad < Occupied * 0.2, "after a load at 02:00 few windows are lit (%d of %d)", LitLoad, Occupied);
 	}
+	{
+		// a festival night: Saturday's dance on the square till 02:30, everybody up for it but the small children
+		W.Opt.SettleBatch = 0;
+		FClock N = FClock::At(5, 19.f);
+		N.Set(W);
+		W.Resettle();
+		W.SetGathering("test_dance", "S-SQUARE", 21.f, 2.5f, 1.6f, EGatherMode::Mingle, false, V3());
+		W.SetStayUp(26.5f);
+		const double End = N.Seconds + 6.5 * 3600.0;   // 01:30
+		while (N.Seconds < End)
+		{
+			N.Seconds += 1.0;
+			N.Set(W);
+			W.Step(1.f);
+		}
+		const int Sq = W.FindPlace("S-SQUARE");
+		int Dancing = 0, KidsUp = 0;
+		for (const FPerson& P : W.People)
+		{
+			if (!P.bTown) continue;
+			Dancing += P.Place == Sq && P.State == EState::Doing && P.Age >= 12 ? 1 : 0;
+			KidsUp += P.Age < 12 && P.Activity >= 0 && W.Activities[P.Activity].Pose != EPose::Sleep ? 1 : 0;
+		}
+		W.SetStayUp(0.f);
+		W.ClearGathering("test_dance");
+		CHECK(Dancing > 40, "a festival night: at 01:30 the square still dances (%d)", Dancing);
+		CHECK(KidsUp < 10, "... but the small children are in bed (%d up)", KidsUp);
+	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
 }

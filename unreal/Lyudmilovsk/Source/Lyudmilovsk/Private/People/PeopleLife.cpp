@@ -1383,6 +1383,14 @@ void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 	}
 }
 
+void UPeopleLifeSubsystem::SetStayUpUntil(float Hour)
+{
+	if (Sim)
+	{
+		Sim->SetStayUp(Hour);
+	}
+}
+
 bool UPeopleLifeSubsystem::IsDayOff() const
 {
 	return Sim && Sim->bDayOff;

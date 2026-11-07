@@ -179,6 +179,10 @@ public:
 	void SetDayOff(bool bOff);
 	UFUNCTION(BlueprintPure, Category = "People|Town")
 	bool IsDayOff() const;
+	/** A festival night: grown-ups and teens stay up till Hour (from today's 00:00, may pass 24: 26.5 = 02:30 tonight),
+	 *  small children till 23 at most, and everyone sleeps in as much (4 h at most); 0 ends it. */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void SetStayUpUntil(float Hour);
 
 	/** Who is at work at a place now (town_places.json id: restaurant, P-MARKET, W1-U01, ...), in a role (waiter, cook; None any). */
 	UFUNCTION(BlueprintCallable, Category = "People|Town")
