@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "UI/LyudGraphics.h"
 #include "UI/LyudSettings.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
@@ -131,6 +132,10 @@ void ULyudGameMenuSubsystem::Deinitialize()
 	Input.Reset();
 	Menu.Reset();
 	MenuButton.Reset();
+	if (bOpen)
+	{
+		LyudGraphics::SetMenuOpen(false);
+	}
 	bOpen = false;
 	Super::Deinitialize();
 }
@@ -149,6 +154,8 @@ void ULyudGameMenuSubsystem::Open(bool bMain)
 		bWasPaused = UGameplayStatics::IsGamePaused(World);
 		Viewport->AddViewportWidgetContent(Menu.ToSharedRef(), 100);
 		UGameplayStatics::SetGamePaused(World, true);
+		// the world stands still behind the menu: fewer frames of it (power saving)
+		LyudGraphics::SetMenuOpen(true);
 	}
 	Menu->ShowRoot(bMain ? SLyudGameMenu::EScreen::Main : SLyudGameMenu::EScreen::Pause, bMain);
 	if (APlayerController* PC = World->GetFirstPlayerController())
@@ -171,6 +178,7 @@ void ULyudGameMenuSubsystem::Close()
 	bOpen = false;
 	// the volume sliders keep their values in memory while they move
 	LyudSettings::FlushStored();
+	LyudGraphics::SetMenuOpen(false);
 	if (UGameViewportClient* Viewport = World->GetGameViewport())
 	{
 		Viewport->RemoveViewportWidgetContent(Menu.ToSharedRef());
