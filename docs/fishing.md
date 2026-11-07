@@ -64,10 +64,10 @@ beach; else "the shore"). Console: `lyud.Fish.Journal`, `lyud.Fish.Mood`.
 The spots take their places from `Content/City/city_plan.json` (S-PIER-HEAD, P-PIER, S-PROMENADE, S-BEACH) by plan id, so they
 follow the city plan; the pier head is deep water (more cod, flounder, turbot, garfish by the food web's suitability). A wooden
 rowing boat (`ALyudRowBoat`, built in code: a lofted hull, thwarts, oars) lies moored on the pier's south side, 155 m from its
-head (if the water there is too shallow, it is moved out along the pier until it floats). E close by hires it (30 roubles a day,
+head (once the sea's depth map is read, moved out along the pier until it floats at spring low water, `LowWaterZ`; the landing moves with it). E close by hires it (30 roubles a day,
 paid when taken from the mooring), the hero sits on the middle thwart facing the bow (`AHeroCharacter::SitOn` on the hull, the
 seat's `SeatMove` / `SeatLeave` hooks); W/S row (2.2 m/s at most), A/D turn (one oar pulls), the hull rides the waves (the sea's
-surface under its ends and sides). It goes only over 70 cm of water and within 600 m of the mooring. Space gets out at the pier
+surface under its ends and sides). It goes only over 70 cm of water and within 600 m of the mooring, its hull's box swept along each move and turn (the pier's piles stop it), and never sinks under the bed (at low water it sits on the sand). Where it lies, the hire and the hero in it are saved (`ULyudFishingState` BoatPos / BoatPaidDay / bBoatAboard); a boat left elsewhere is back at the pier the next day. Space gets out at the pier
 (onto the deck, the boat tied up again) or where the water is under 1.1 m deep; out at sea it says to row back. The rod works
 from it; its catches are written "from the boat". Console: `lyud.Fish.Boat [board|leave|home]`.
 
@@ -85,7 +85,7 @@ its prey's numbers now against the usual (`ULyudEcosystem::GetAbundance` over it
 
 `fishing.json` "kitchens": the «Янтарь»'s staff door at the back of its kitchen block (1.5 m outside it, set by the restaurant thread; its cook stands in the doorway while the hero is near). Open 11-23,
 close by: «Y — сдать рыбу повару (N шт., X ₽)». It takes only the prized kinds (200 roubles a kilo and up at the Gastronom) of a
-good size (0.85 of the usual length), dearest first, 8 a day, at 1.6 x the Gastronom's price (`LyudFishing::RestaurantPrice`;
+good size (0.85 of the usual length, each fish by its own weight: `ULyudFishingState::BagFish`), dearest first, 8 a day, at 1.6 x the Gastronom's price (`LyudFishing::RestaurantPrice`;
 `ULyudFishingState::KitchenOffer / SellToKitchen`, the day's count saved). The restaurant's own building and cooks are another
 branch's: when it lands, its kitchen can call `SellToKitchen` itself, or the door's place in `fishing.json` moves to its pass.
 Console: `lyud.Fish.Kitchen [sell]`.

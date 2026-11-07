@@ -239,6 +239,10 @@ void ULyudFishingState::Reset()
 	bBaited = false;
 	Log.Reset();
 	BagGrams.Reset();
+	BagFish.Reset();
+	bBoatSaved = false;
+	bBoatAboard = false;
+	BoatPaidDay = -1;
 	Total = 0;
 	Cooked = 0;
 	Journal.Reset();
@@ -261,7 +265,7 @@ void ULyudFishingState::Note(const FLyudCatchEntry& Entry)
 namespace
 {
 	/** One fish a kitchen would take: its catchable, its price there. */
-	struct FKitchenPick { int32 Fish; int32 Price; };
+	struct FKitchenPick { int32 Fish; int32 Price; float Grams; };
 	using FKitchenPicks = TArray<FKitchenPick, TInlineAllocator<32>>;
 
 	/** The fish in the pocket a kitchen wants, dearest first, at most Left of them. */
@@ -272,10 +276,26 @@ namespace
 		{
 			const int32 Held = Inv->Count(FishItem(C));
 			if (Held <= 0) continue;
-			const float* G = State.BagGrams.Find(FishSpeciesName(C));
-			const float Each = G && *G > 0.f ? *G / Held : FishNames().Usual[C];
-			const int32 Price = LyudF::RestaurantPrice(C, Each, FishLengthOf(C, Each));
-			for (int32 K = 0; Price > 0 && K < Held; K++) Out.Add({ C, Price });
+			// each fish by its own weight (a big cod is wanted even with small ones beside it); those without an entry at the rest's share
+			const FName Species = FishSpeciesName(C);
+			int32 Listed = 0;
+			float ListedGrams = 0.f;
+			for (const FLyudBagFish& B : State.BagFish)
+			{
+				if (B.Species != Species || Listed >= Held) continue;
+				Listed++;
+				ListedGrams += B.Grams;
+				const int32 Price = LyudF::RestaurantPrice(C, B.Grams, FishLengthOf(C, B.Grams));
+				if (Price > 0) Out.Add({ C, Price, B.Grams });
+			}
+			if (Listed < Held)
+			{
+				const float* G = State.BagGrams.Find(Species);
+				const float Rest = G ? FMath::Max(*G - ListedGrams, 0.f) : 0.f;
+				const float Each = Rest > 0.f ? Rest / (Held - Listed) : FishNames().Usual[C];
+				const int32 Price = LyudF::RestaurantPrice(C, Each, FishLengthOf(C, Each));
+				for (int32 K = Listed; Price > 0 && K < Held; K++) Out.Add({ C, Price, -1.f });
+			}
 		}
 		Out.Sort([](const FKitchenPick& A, const FKitchenPick& B) { return A.Price > B.Price; });
 		if (Out.Num() > Left) Out.SetNum(FMath::Max(Left, 0));
@@ -308,7 +328,7 @@ int32 ULyudFishingState::SellToKitchen(const UObject* WorldContext, FName Kitche
 	int32 Roubles = 0;
 	for (const FKitchenPick& P : Picks)
 	{
-		TakeOne(WorldContext, FishItem(P.Fish));
+		TakeFish(WorldContext, P.Fish, P.Grams);
 		Roubles += P.Price;
 	}
 	if (Inv && Roubles > 0)
@@ -360,6 +380,8 @@ int32 ULyudFishingState::SellAll(const UObject* WorldContext)
 		{
 			Inv->Remove(Item, Held);
 			BagGrams.Remove(FishSpeciesName(C));
+			const FName Species = FishSpeciesName(C);
+			BagFish.RemoveAll([Species](const FLyudBagFish& B) { return B.Species == Species; });
 		}
 	}
 	Inv->Earn(Roubles);
@@ -391,32 +413,78 @@ FName ULyudFishingState::BiggestHeld(const UObject* WorldContext, float* OutGram
 
 float ULyudFishingState::TakeOne(const UObject* WorldContext, FName Item)
 {
+	// the biggest of that kind (the cook fries the biggest)
+	const int32 C = FishNames().Items.IndexOfByKey(Item);
+	return C == INDEX_NONE ? 0.f : TakeFish(WorldContext, C, -2.f);
+}
+
+float ULyudFishingState::TakeFish(const UObject* WorldContext, int32 C, float Grams)
+{
 	ULyudInventory* Inv = ULyudInventory::Get(WorldContext);
+	const FName Item = FishItem(C);
 	const int32 Held = Inv ? Inv->Count(Item) : 0;
 	if (Held <= 0)
 	{
 		return 0.f;
 	}
-	float Grams = 0.f;
-	for (int32 C = 0; C < LyudF::NumCatchable(); C++)
+	const FName Species = FishSpeciesName(C);
+	// which entry: the one of these grams, the biggest (-2), or none listed (-1: an unlisted one at the rest's share)
+	int32 Pick = INDEX_NONE;
+	for (int32 I = 0; Grams != -1.f && I < BagFish.Num(); I++)
 	{
-		if (FishItem(C) != Item) continue;
-		const FName Species = FishSpeciesName(C);
-		const float Usual = FishNames().Usual[C];
-		if (float* G = BagGrams.Find(Species); G && *G > 0.f)
+		if (BagFish[I].Species != Species) continue;
+		if (Grams >= 0.f ? FMath::IsNearlyEqual(BagFish[I].Grams, Grams, 0.01f) : (Pick == INDEX_NONE || BagFish[I].Grams > BagFish[Pick].Grams))
 		{
-			Grams = *G / Held;
-			*G -= Grams;
-			if (Held == 1) BagGrams.Remove(Species);
+			Pick = I;
+			if (Grams >= 0.f) break;
 		}
-		else
-		{
-			Grams = Usual;
-		}
-		break;
+	}
+	float Took = 0.f;
+	if (Pick != INDEX_NONE)
+	{
+		Took = BagFish[Pick].Grams;
+		BagFish.RemoveAt(Pick);
+	}
+	else
+	{
+		float Listed = 0.f;
+		int32 NListed = 0;
+		for (const FLyudBagFish& B : BagFish) if (B.Species == Species) { Listed += B.Grams; NListed++; }
+		const float* G = BagGrams.Find(Species);
+		const float Rest = G ? FMath::Max(*G - Listed, 0.f) : 0.f;
+		Took = Rest > 0.f && Held > NListed ? Rest / (Held - NListed) : FishNames().Usual[C];
+	}
+	if (float* G = BagGrams.Find(Species))
+	{
+		*G = FMath::Max(*G - Took, 0.f);
+		if (Held == 1) BagGrams.Remove(Species);
 	}
 	Inv->Remove(Item, 1);
-	return Grams;
+	return Took;
+}
+
+void ULyudFishingState::Pocket(FName Species, float Grams)
+{
+	BagGrams.FindOrAdd(Species) += Grams;
+	BagFish.Add({ Species, Grams });
+}
+
+void ULyudFishingState::OnGameSaving_Implementation()
+{
+	const UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+	if (const ALyudRowBoat* Boat = ALyudRowBoat::Get(World))
+	{
+		Boat->Store(*this);
+	}
+}
+
+void ULyudFishingState::OnGameLoaded_Implementation()
+{
+	const UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+	if (ALyudRowBoat* Boat = ALyudRowBoat::Get(World))
+	{
+		Boat->Restore(*this);
+	}
 }
 
 bool ULyudFishingState::Cook(const UObject* WorldContext, FName Item, int32 Fee)
@@ -795,28 +863,46 @@ void ULyudFishing::PutAway()
 
 void ULyudFishing::LaunchBoat()
 {
-	bBoatTried = true;
 	const LyudFishPlaces::FBoatDef& D = LyudFishPlaces::Get().Boat;
 	const ALyudSea* Sea = ALyudSea::Get(this);
-	if (!D.bValid || !Sea || ALyudRowBoat::Get(this))
+	// the sea's depth map first (until it is read every point says open sea)
+	if (!Sea || !Sea->IsDepthReady())
 	{
 		return;
 	}
-	// at its mooring by the pier; if the water there is too shallow on this map, out along the pier until it floats
+	bBoatTried = true;
+	if (!D.bValid || ALyudRowBoat::Get(this))
+	{
+		return;
+	}
+	// tied up by the pier where it floats even at spring low water: out along the pier from the planned point until it does
+	const float Low = Sea->LowWaterZ();
 	FVector At(D.Mooring, 0.f);
-	for (int32 Step = 0; Step < 50 && Sea->DepthAt(At) < D.MinDepth + 20.f; Step++)
+	for (int32 Step = 0; Step < 100 && Sea->DepthAtLevel(At, Low) < D.MinDepth + 20.f; Step++)
 	{
 		At.X += 200.f;
 	}
-	if (Sea->DepthAt(At) < D.MinDepth)
+	if (Sea->DepthAtLevel(At, Low) < D.MinDepth)
 	{
-		UE_LOG(LogTemp, Display, TEXT("FISHING no water for the boat at %s"), *At.ToCompactString());
+		UE_LOG(LogTemp, Display, TEXT("FISHING no water for the boat at low tide near %s"), *At.ToCompactString());
 		return;
 	}
 	At.Z = Sea->SurfaceZ(At);
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	Params.bDeferConstruction = true;
 	ALyudRowBoat* Boat = GetWorld()->SpawnActor<ALyudRowBoat>(At, FRotator(0.f, D.Yaw, 0.f), Params);
+	if (Boat)
+	{
+		// the landing moves with the mooring (both along the pier)
+		Boat->SetMooring(FVector2D(At), D.Landing + (FVector2D(At) - D.Mooring));
+		Boat->FinishSpawning(FTransform(FRotator(0.f, D.Yaw, 0.f), At));
+		// a save loaded before the sea was ready: where it was left
+		if (const ULyudFishingState* State = ULyudFishingState::Get(this))
+		{
+			Boat->Restore(*State);
+		}
+	}
 	UE_LOG(LogTemp, Display, TEXT("FISHING boat moored at %s (%s)"), *At.ToCompactString(), Boat ? TEXT("ok") : TEXT("failed"));
 }
 
@@ -1162,7 +1248,7 @@ void ULyudFishing::Caught()
 	}
 	if (State)
 	{
-		State->BagGrams.FindOrAdd(Species) += F.Grams;
+		State->Pocket(Species, F.Grams);
 	}
 	// out of the web and its spot where it was hooked (EndPos is at the rod's tip by now), and the one the diver would see there
 	if (ULyudEcosystem* Eco = ULyudEcosystem::Get(this))
@@ -1485,7 +1571,7 @@ void ULyudFishing::Tick(float DeltaTime)
 		return;
 	}
 	// a bait taken in the hand goes on the rig (the rod comes back into the hand); a rod in the hand comes out
-	if (!bBoatTried && ALyudSea::Get(World))
+	if (!bBoatTried)
 	{
 		LaunchBoat();
 	}
