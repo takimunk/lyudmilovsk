@@ -455,7 +455,13 @@ void ALyudRestaurant::UpdateFishing()
 {
 	// fish sold to the kitchen today: the Baltic plate is the catch of the day (fresher, cheaper)
 	int32 Taken = 0, Day = 0;
-	if (LyudRest::FishTaken(this, TEXT("yantar"), Taken, Day))
+	if (FishSettle > 0)
+	{
+		// just started or loaded: the next settled read is only the baseline, never a sale
+		--FishSettle;
+		FishSeenDay = -2;
+	}
+	else if (LyudRest::FishTaken(this, TEXT("yantar"), Taken, Day))
 	{
 		// a new counting day starts from nothing; a load can bring a smaller count back: take it as the new baseline
 		if (Day != FishSeenDay || Taken < FishSeenTaken)
@@ -473,7 +479,11 @@ void ALyudRestaurant::UpdateFishing()
 	}
 	// the hero at the back door while open: the cook comes to it
 	const AHeroCharacter* H = LyudRest::Hero(GetWorld());
-	bCookAtDoor = bOpen && H && FVector::Dist2D(H->GetActorLocation(), ToWorld(BackDoorOut)) < 300.f;
+	const FDateTime T = UGameCalendar::NowIn(GetWorld());
+	const float Hour = T.GetHour() + T.GetMinute() / 60.f;
+	const bool bKitchenOpen = Hour >= KitchenHours.X && Hour < KitchenHours.Y;
+	bCookAtDoor = bKitchenOpen && H && FVector::Dist2D(H->GetActorLocation(), KitchenPoint) < KitchenRadius
+		&& FMath::Abs(H->GetActorLocation().Z - KitchenPoint.Z) < 400.f;
 }
 
 bool ALyudRestaurant::IsInSectionToday(const UObject* WorldContext, const FLyudRestDishDef& D, FName Section)
@@ -795,7 +805,22 @@ void ALyudRestaurant::BeginPlay()
 	WaiterStandinMesh = WaiterStandinMesh.IsEmpty() ? TEXT("Guy_b") : WaiterStandinMesh;
 	CookStandinMesh = CookStandinMesh.IsEmpty() ? TEXT("Crowd_11") : CookStandinMesh;
 	PreloadMeshes();
+	// the fishing's kitchen point: cm from the plot's ue (the actor stands `podium` over it), unrotated, as fishing.json has it
+	const TSharedPtr<FJsonObject>* KD = nullptr;
+	if (C.IsValid() && C->TryGetObjectField(TEXT("kitchen_door"), KD))
+	{
+		const FVector Ground = GetActorLocation() - FVector(0.f, 0.f, 100.f * (float)LyudRest::Number(C, TEXT("podium"), 0.6));
+		KitchenPoint = Ground + LyudRest::Vec(*KD, TEXT("offset_cm"));
+		KitchenRadius = (float)LyudRest::Number(*KD, TEXT("radius_cm"), 220.0);
+		const FVector Hrs = LyudRest::Vec(*KD, TEXT("hours"));
+		KitchenHours = FVector2D(Hrs.X, Hrs.Y);
+	}
+
 	LoadLayout();
+	if (KitchenPoint.IsZero())
+	{
+		KitchenPoint = ToWorld(BackDoorOut);
+	}
 	FindParts();
 	SpawnMenuCards();
 	UpdateState();
@@ -1674,6 +1699,9 @@ void ALyudRestaurant::OnGameLoaded_Implementation()
 	ReleaseWaiter();
 	// the save's objects (the pocket's roubles, this actor's SavedRefund) are read after this call: refund on the next tick
 	RefundNextTick();
+	// the fishing's counts come back a tick later too: don't take them for new sales
+	FishSettle = 2;
+	FishSeenDay = -2;
 }
 
 void ALyudRestaurant::RefundNextTick()

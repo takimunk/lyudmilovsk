@@ -177,7 +177,7 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 
 	// the cook: the town life's on shift, else the stand-in while open
 	const int32 Person = StaffCook;
-	if ((Person < 0 && !bOpen && !bCooking) || !bNear)
+	if ((Person < 0 && !bOpen && !bCooking && !bCookAtDoor) || !bNear)
 	{
 		// nobody at the range, or nobody near to see them
 		ReleaseCook();

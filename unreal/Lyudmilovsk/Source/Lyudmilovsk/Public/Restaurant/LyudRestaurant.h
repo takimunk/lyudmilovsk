@@ -268,8 +268,14 @@ private:
 	/** Fish sold at the kitchen door (the fishing's ULyudFishingState KitchenSold, read by name), the game day it last happened. */
 	int32 FishSeenTaken = -1;
 	int32 FishSeenDay = -2;
+	/** Updates to wait after play start or a load (the fishing's state is restored a tick later) before counting sales. */
+	int32 FishSettle = 2;
 	/** The hero at the back door with fish (the fishing's kitchen point): the cook comes to the door. */
 	bool bCookAtDoor = false;
+	/** The fishing's kitchen point (world cm), its radius and hours (restaurant.json kitchen_door, the same as fishing.json's). */
+	FVector KitchenPoint = FVector::ZeroVector;
+	float KitchenRadius = 220.f;
+	FVector2D KitchenHours = FVector2D(11.f, 23.f);
 	void UpdateFishing();
 	/** The game time since which everything for locking up has held (nobody left inside, staff gone). */
 	FDateTime LockReadySince;
