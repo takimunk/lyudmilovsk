@@ -266,11 +266,12 @@ def choose_outfit(rnd, sex, age, occupation, temper):
         out.append(rnd.choice(suits))
     # coat over it: the town is on the Baltic and the game begins in late October
     p_coat = {"elder": 0.45, "smart": 0.3, "casual": 0.22, "work": 0.12, "kid": 0.08, "sport": 0.03}.get(style, 0.0)
-    if any(g in BARE_ARMS for g in out):                      # straps or no sleeves: a coat over it, mostly
-        p_coat = max(p_coat, 0.85)
+    bare = any(g in BARE_ARMS for g in out)
+    if bare:                                                  # straps or no sleeves in October: always a coat over it,
+        p_coat = 1.0                                          # children's sundresses too
     if extras.get("coat"):
         out.append("punkduck_coat")
-    elif age >= 14 and rnd.random() < p_coat:
+    elif (age >= 14 or bare) and rnd.random() < p_coat:
         out.append("punkduck_coat")
     # shoes
     boots = extras.get("boots", 0.15 if style in ("elder", "work") else 0.05)

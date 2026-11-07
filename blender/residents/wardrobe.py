@@ -56,7 +56,7 @@ GARMENTS = {
                                  slots=[("*", "top")], palettes={"top": "dress"}, patterns=True),
     "mindfront_f_beach_dress_01": dict(kind="dress", sex="f", ages=[12, 70], styles=["summer"],
                                        slots=[("*", "top")], palettes={"top": "dress"}),
-    "punkduck_coat": dict(kind="outer", sex="u", ages=[16, 90], styles=["casual", "smart", "elder", "work"],
+    "punkduck_coat": dict(kind="outer", sex="u", ages=[5, 90], styles=["casual", "smart", "elder", "work"],
                           slots=[("*", "outer")], palettes={"outer": "coat"}),
     "punkduck_jeans_skirt": dict(kind="bottom", sex="f", ages=[12, 45], styles=["casual", "summer"],
                                  slots=[("*", "bottom")], palettes={"bottom": "jeans"}),

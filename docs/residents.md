@@ -27,7 +27,9 @@ cores. Builds are incremental: a model is rebuilt only when its look's hash or `
 ## Looks (`looks.py`, plain Python)
 
 A look is fixed by the generator seed and the person's key: as long as townsfolk.json keeps a person's key, age and
-sex, they keep their face. Regenerating the town with new people only adds models.
+sex, they keep their face. Regenerating the town with new people only adds models. But town_life.py's keys come from
+its seed and its inputs, so a change to the plan, the buildings or the public spaces gives everybody new names: then
+`looks.py` and a build again (the old models stay in `export/` until deleted, unlisted and never imported).
 
 - **Body**: MakeHuman macros from sex and the real age (`mh_age`: 0 = 1 year, 0.1875 = 11, 0.5 = 25, 1 = 90), weight
   and muscle by age band and temper, height (bodies over 1.88 m are shrunk: `CharacterStandard.h` MaxNpcHeight),
@@ -46,8 +48,8 @@ sex, they keep their face. Regenerating the town with new people only adds model
   greying from 35, dyed now and then; men may go bald from 30, grow a moustache or a beard.
 - **Clothes** (`wardrobe.py`): style from the job (cook, waiter, doctor's white coat, worker's overalls...), age (kid,
   elder) and temper (sporty, smart); a dress, a suit or a top with a bottom, a coat for some (the game begins in late
-  October on the Baltic; 85 % of those in straps or a sleeveless dress get one, a third of the town in all), shoes or
-  winter boots. Every tinted part of a garment gets a colour from a palette (elders quieter, kids brighter).
+  October on the Baltic; everybody in straps or a sleeveless dress gets one, children too, a third of the town in all),
+  shoes or winter boots. Every tinted part of a garment gets a colour from a palette (elders quieter, kids brighter).
 - **Accessories** (`accessories.py`, our own meshes): flat caps, knit beanies, baseball caps, sun hats, headscarves,
   chef's toques, backpacks, shoulder bags, string bags (avoska), shopping bags, scarves, aprons, round/rectangular
   glasses and sunglasses, a cane, moustaches and beards; one thing on the head at most, no glasses under a fringe
@@ -144,12 +146,12 @@ unreal/scripts/import_residents.sh                       # the whole town; stop 
 Not tried in a real editor yet (the cloud has none): check with `--limit 3` that the static switches link (the prepare
 run prints `MISSING` lines otherwise), that LOD1-3 keep UV1-2 (people would turn grey at a distance), that the meshes
 have the six morphs (`--report`) and that the sections come in as Skin/Cloth/Hair/Eyes. The faces only move if
-`SK_Human_Skeleton` has the six face curves (the cast's import adds them; the prepare run warns). The game finds a
-person's mesh through `town_looks.json`: town_life.py copies `Town/R_<key>` into the person's townsfolk.json `body`,
-and PeopleLife loads it asynchronously near the camera, keeping the pool model in `mesh` until the package exists
-(branch town-life). The package is `/Game/Characters/Humans/Town/R_<key>/SK_R_<key>`: `PeopleModelPath` and
-`ANpcBody::Setup` take the model's last segment for the `SK_` name and `PeopleModelOf` gives `Town/R_<key>` back
-(town-life 4c32ae3).
+`SK_Human_Skeleton` has the six face curves (the cast's import adds them; the prepare run warns). Every
+townsperson's `body` in townsfolk.json is `Town/R_<key>` (the key without `t_`, the name `looks.py` gives the model;
+a model listed in `town_looks.json` wins: town-life 4f94ff4), and PeopleLife loads it asynchronously near the camera,
+showing the pool model in `mesh` until the package exists. The package is
+`/Game/Characters/Humans/Town/R_<key>/SK_R_<key>`: `PeopleModelPath` and `ANpcBody::Setup` take the model's last
+segment for the `SK_` name and `PeopleModelOf` gives `Town/R_<key>` back (town-life 4c32ae3).
 
 ## Limits and next steps
 
