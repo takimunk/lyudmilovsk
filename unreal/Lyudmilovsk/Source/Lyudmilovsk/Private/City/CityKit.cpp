@@ -5,6 +5,47 @@
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "StaticMeshAttributes.h"
+#include "HAL/FileManager.h"
+#include "HAL/IConsoleManager.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+
+static TAutoConsoleVariable<FString> CVarCityExportKit(TEXT("lyud.City.ExportKit"), TEXT(""),
+	TEXT("A folder: every public-spaces mesh built from now on is also written there as <name>.obj (metres, Blender's axes, vertex "
+		 "colours; faces grouped by the material's pattern: usemtl pat<kind>_<tile>, glow) for looking at them outside the game."));
+
+namespace CityKit
+{
+	/** The mesh as Wavefront OBJ with vertex colours (linear RGB) in Blender's frame (x, -y, z; metres). */
+	static void WriteObj(const FMesh& M, const FString& Path)
+	{
+		TStringBuilder<1 << 16> S;
+		S << TEXT("# Lyudmilovsk public spaces kit mesh (CityKit), metres, Blender axes\n");
+		for (int32 I = 0; I < M.Pos.Num(); I++)
+		{
+			const FVector3f P = M.Pos[I] / 100.f;
+			S.Appendf(TEXT("v %.4f %.4f %.4f %.4f %.4f %.4f\n"), P.X, -P.Y, P.Z, M.Col[I].X, M.Col[I].Y, M.Col[I].Z);
+		}
+		for (int32 I = 0; I < M.Pos.Num(); I++) S.Appendf(TEXT("vt %.4f %.4f\n"), M.UV0[I].X, M.UV0[I].Y);
+		for (int32 I = 0; I < M.Pos.Num(); I++) S.Appendf(TEXT("vn %.4f %.4f %.4f\n"), M.Nrm[I].X, -M.Nrm[I].Y, M.Nrm[I].Z);
+		FString Cur;
+		for (int32 I = 0; I + 2 < M.Idx.Num(); I += 3)
+		{
+			const int32 A = M.Idx[I];
+			const FString Mat = M.UV2[A].X > 0.5f ? FString(TEXT("glow")) : FString::Printf(TEXT("pat%d_%.2f_r%.2f"), FMath::RoundToInt(M.UV1[A].X), M.UV1[A].Y, M.Col[A].W);
+			if (Mat != Cur)
+			{
+				S << TEXT("usemtl ") << *Mat << TEXT("\n");
+				Cur = Mat;
+			}
+			// y mirrored: the winding flips with it
+			const int32 B = M.Idx[I + 2] + 1, C = M.Idx[I + 1] + 1, Aa = A + 1;
+			S.Appendf(TEXT("f %d/%d/%d %d/%d/%d %d/%d/%d\n"), Aa, Aa, Aa, B, B, B, C, C, C);
+		}
+		FFileHelper::SaveStringToFile(FStringView(S.ToString(), S.Len()), *Path);
+	}
+}
+
 
 namespace CityKit
 {
@@ -203,6 +244,12 @@ namespace CityKit
 
 	UStaticMesh* FMesh::Build(UObject* Outer, FName Name, bool bCollision) const
 	{
+		const FString Dir = CVarCityExportKit.GetValueOnGameThread();
+		if (!Dir.IsEmpty())
+		{
+			IFileManager::Get().MakeDirectory(*Dir, true);
+			WriteObj(*this, Dir / Name.ToString() + TEXT(".obj"));
+		}
 		FMeshDescription MD;
 		FStaticMeshAttributes Attr(MD);
 		Attr.Register();

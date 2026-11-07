@@ -12,7 +12,8 @@ OUT="$ROOT/unreal/Lyudmilovsk/Saved/CityShots"
 mkdir -p "$(dirname "$LOG")" "$OUT"
 if [ -n "$CITY_EXTRA" ]; then "$ROOT/tools/wait_ue_queue.sh" 7200 --exclusive; else "$ROOT/tools/wait_ue_queue.sh" 7200; fi
 rm -f "$SHOTS"/HighresScreenshot*.png "$OUT"/*.png
-nice -n 19 taskpolicy -b "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game -RenderOffscreen \
+RHI=-RenderOffscreen; [ -n "$CITY_NULLRHI" ] && RHI=-nullrhi    # CITY_NULLRHI=1: checks only, no shots
+nice -n 19 taskpolicy -b "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 -game $RHI \
     -windowed -ResX=1600 -ResY=900 -unattended -nosplash -NoMouseCapture -nosound -dpcvars=lyud.MainMenuOnStart=0${DPCVARS:+,$DPCVARS} \
     -abslog="$LOG" $CITY_EXTRA "-ExecCmds=py $ROOT/unreal/scripts/test_public_spaces.py" > "$LOG.stdout" 2>&1 || true
 grep -E "CITY|LyudPublicSpaces|LyudFountain|Error:" "$LOG" | grep -v "LogInit" | head -150

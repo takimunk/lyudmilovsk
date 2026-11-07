@@ -59,6 +59,10 @@ SHOTS = [
     ("fair_night", p(135, 1140, T1 + 1.7), p(135, 1260, T1 + 1.5), NIGHT, [], "night"),
     ("club_stair", (21.0, 308.0, T1 + 1.7), (13.0, 215.0, -20.0), DAY, [], ""),
     ("club_stair_top", (9.0, 172.0, 1.7), (14.0, 215.0, -25.0), DAY, [], ""),
+    ("cascade", (-268.28, 739.29, -34.5), (-280.41, 756.28, -32.7), JULY, ["lyud.Fountain.Force 1"], ""),
+    ("cascade_close", (-273.87, 747.95, -34.6), (-279.12, 752.5, -35.4), JULY, [], ""),
+    ("cascade_air", (-577.82, 719.01, 8.0), (-606.86, 760.93, -22.0), JULY, [], ""),
+    ("cascade_night", (-268.28, 739.29, -34.5), (-280.41, 756.28, -32.7), D(2027, 7, 14, 23, 30, 0, 0), [], "night"),
     # close-ups of the kit (the 3D glitch rule: seams, z-fighting, inside-out faces, stretched patterns)
     ("kit_bench_square", p(FS + 15.2, FY + 2.0, T1 + 1.3), p(FS + 17.0, FY + 0.6, T1 + 0.4), DAY, [], ""),
     ("kit_bench_promenade", p(58.0, 418.0, T0 + 1.2), p(62.0, 420.0, T0 + 0.5), DAY, [], ""),
@@ -217,7 +221,8 @@ def tick(dt):
             running = [f.is_running() for f in fs.get_fountains()] if fs else []
             check(len(running) >= 2 and all(running), "%s: fountains running %s" % (name, running))
         st["frames"] = []
-        cmd(w, "HighResShot " + RES)
+        if not os.environ.get("CITY_NULLRHI"):
+            cmd(w, "HighResShot " + RES)
         st["phase"] = 2
         st["t0"] = st["t"]
     elif st["phase"] == 2 and st["t"] - st["t0"] > 1.5:
