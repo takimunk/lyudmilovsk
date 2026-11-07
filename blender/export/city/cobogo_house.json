@@ -181,7 +181,7 @@
    ],
    "lumens": 700,
    "colour": "#FFD9A8",
-   "kind": "public",
+   "kind": "lobby",
    "radius": 7.0
   },
   {
@@ -646,9 +646,9 @@
   },
   {
    "slot": 6,
-   "id": "pub/w1",
+   "id": "stair/w1",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     4.15,
     13.34,
@@ -667,9 +667,9 @@
   },
   {
    "slot": 7,
-   "id": "pub/w2",
+   "id": "stair/w2",
    "flat": null,
-   "kind": "public",
+   "kind": "stair",
    "centre": [
     -0.15,
     13.34,
@@ -1738,7 +1738,7 @@
   },
   {
    "slot": 58,
-   "id": "stair/w1",
+   "id": "stair/w3",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1759,7 +1759,7 @@
   },
   {
    "slot": 59,
-   "id": "stair/w2",
+   "id": "stair/w4",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1780,7 +1780,7 @@
   },
   {
    "slot": 60,
-   "id": "stair/w3",
+   "id": "stair/w5",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1801,7 +1801,7 @@
   },
   {
    "slot": 61,
-   "id": "stair/w4",
+   "id": "stair/w6",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1822,7 +1822,7 @@
   },
   {
    "slot": 62,
-   "id": "stair/w5",
+   "id": "stair/w7",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1843,7 +1843,7 @@
   },
   {
    "slot": 63,
-   "id": "stair/w6",
+   "id": "stair/w8",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1864,7 +1864,7 @@
   },
   {
    "slot": 64,
-   "id": "stair/w7",
+   "id": "stair/w9",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1885,7 +1885,7 @@
   },
   {
    "slot": 65,
-   "id": "stair/w8",
+   "id": "stair/w10",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1906,7 +1906,7 @@
   },
   {
    "slot": 66,
-   "id": "stair/w9",
+   "id": "stair/w11",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1927,7 +1927,7 @@
   },
   {
    "slot": 67,
-   "id": "stair/w10",
+   "id": "stair/w12",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1948,7 +1948,7 @@
   },
   {
    "slot": 68,
-   "id": "stair/w11",
+   "id": "stair/w13",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1969,7 +1969,7 @@
   },
   {
    "slot": 69,
-   "id": "stair/w12",
+   "id": "stair/w14",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -1990,7 +1990,7 @@
   },
   {
    "slot": 70,
-   "id": "stair/w13",
+   "id": "stair/w15",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2011,7 +2011,7 @@
   },
   {
    "slot": 71,
-   "id": "stair/w14",
+   "id": "stair/w16",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2032,7 +2032,7 @@
   },
   {
    "slot": 72,
-   "id": "stair/w15",
+   "id": "stair/w17",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2053,7 +2053,7 @@
   },
   {
    "slot": 73,
-   "id": "stair/w16",
+   "id": "stair/w18",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2074,7 +2074,7 @@
   },
   {
    "slot": 74,
-   "id": "stair/w17",
+   "id": "stair/w19",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2095,7 +2095,7 @@
   },
   {
    "slot": 75,
-   "id": "stair/w18",
+   "id": "stair/w20",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2116,7 +2116,7 @@
   },
   {
    "slot": 76,
-   "id": "stair/w19",
+   "id": "stair/w21",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2137,7 +2137,7 @@
   },
   {
    "slot": 77,
-   "id": "stair/w20",
+   "id": "stair/w22",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2158,7 +2158,7 @@
   },
   {
    "slot": 78,
-   "id": "stair/w21",
+   "id": "stair/w23",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2179,7 +2179,7 @@
   },
   {
    "slot": 79,
-   "id": "stair/w22",
+   "id": "stair/w24",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2200,7 +2200,7 @@
   },
   {
    "slot": 80,
-   "id": "stair/w23",
+   "id": "stair/w25",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2221,7 +2221,7 @@
   },
   {
    "slot": 81,
-   "id": "stair/w24",
+   "id": "stair/w26",
    "flat": null,
    "kind": "stair",
    "centre": [
@@ -2246,8 +2246,8 @@
   "16 flats, 1034 cobogo blocks"
  ],
  "tris": {
-  "shell": 5690,
-  "detail": 20036,
+  "shell": 8826,
+  "detail": 16900,
   "windows": 164
  }
 }

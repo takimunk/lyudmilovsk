@@ -301,7 +301,7 @@ def _ground_rooms(B):
     f.pendant(-4.0, 3.8, 2.8, lumens=700, colour="#FFE2B5", radius=6.0, drop=0.5)
     # ---- bike room and red corner: bare rooms with a bench each
     f.bench(12.0, 4.0, yaw=0.0, w=1.8)
-    B.spot("redcorner_bench", "bench", (12.0, 4.0, 0.0), 180.0)
+    B.spot("lobby_redcorner", "bench", (12.0, 4.0, 0.0), 180.0)
     f.panel(16.9, 4.0, 1.7, 2.4, 1.2, yaw=270.0, mat="CT_PlasterRed", frame="CT_Frame")
     for x in (3.0, 6.0):
         for k in range(4):
@@ -309,9 +309,8 @@ def _ground_rooms(B):
         B.spot("bike_%d" % int(x), "stand", (x, 3.8, 0.0), 0.0)
     # lamps in the ground corridor
     B.lamp((-9.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
-    B.lamp((0.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
     B.lamp((9.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
-    for s in range(1, 5):
+    for s in (2, 4):                                                  # every other corridor
         z = ZF[s]
         B.lamp((-1.0, YCC, z + 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=9.0)
 
@@ -401,7 +400,7 @@ def _drum(B):
     for k_, a in enumerate((247.5, 22.5)):
         x, y = DP(a, 3.3)
         B.lamp((x, y, 2.5), lumens=700, colour="#FFD9A8", kind="lobby", radius=7.0)
-    for fl in range(1, 6):
+    for fl in (1, 3, 5):                                              # one lamp per two landings
         x, y = DP(60.0 + 120 * (fl % 3), 3.3)
         B.lamp((x, y, min(zs[fl] + 2.5, 17.2)), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
     B.spot("lobby_stand", "stand", (XD - 1.0, YD - 3.0, 0.0), 180.0)
@@ -450,7 +449,7 @@ def _tower(B):
         # a rail along the open edge of each lane
         B.railing([(xl, iy0 + 1.15), (xw, iy0 + 1.15)], zh - 0.3 + 0.0, h=0.0001) if False else None
     B.entrance("stair_w", (-19.9, TY0, 0.0), 0.0, width=1.2, height=2.4, kind="street", leaves=1)
-    for z in (0.0, 3.1, 6.2, 9.3, 12.4):
+    for z in (0.0, 6.2, 12.4):
         B.lamp((-22.0, 7.2, z + 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
 
 
