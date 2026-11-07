@@ -181,6 +181,9 @@ void ALyudTrain::BuildCar(int32 C)
 		S->SetCastShadow(bShadow);
 		S->LightingChannels.bChannel0 = true;
 		S->LightingChannels.bChannel1 = true;
+		// the train moves every frame: out of Lumen's cards and the distance fields (perf checklist: movers out of Lumen)
+		S->bAffectDynamicIndirectLighting = false;
+		S->bAffectDistanceFieldLighting = false;
 		S->SetupAttachment(Root);
 		S->RegisterComponent();
 		S->SetRelativeLocationAndRotation(At, R);
@@ -195,6 +198,8 @@ void ALyudTrain::BuildCar(int32 C)
 		B->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
 		B->SetupAttachment(Root);
 		B->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		B->bAffectDynamicIndirectLighting = false;
+		B->bAffectDistanceFieldLighting = false;
 		B->RegisterComponent();
 		B->SetRelativeLocation(FVector(0, 0, 250.0));
 		B->SetRelativeScale3D(FVector(CarLength, 2.8, 2.9));
@@ -374,6 +379,7 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 	Info = InInfo;
 	const bool bAboard = Rider.IsValid();
 	const bool bShow = Info.bVisible || bAboard;
+	const bool bJustShown = bShow && !bWasVisible;
 	if (bShow != bWasVisible)
 	{
 		SetActorHiddenInGame(!bShow);
@@ -383,15 +389,21 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 		}
 		bWasVisible = bShow;
 	}
-	// the cars along the line (car 0 leads outbound)
-	TArray<FTransform> Old;
+	// the cars along the line (car 0 leads outbound); hidden (nobody aboard), only where they are along it: moving ~35
+	// components a car for nothing is skipped, they're placed again on the frame the train shows
+	TArray<FTransform>& Old = OldCars;
+	Old.Reset();
 	for (int32 C = 0; C < Cars.Num(); C++)
 	{
-		Old.Add(Cars[C].Root->GetComponentTransform());
 		const double Off = (double(Cars.Num() - 1) * 0.5 - C) * (CarLength + CarGap);
 		Cars[C].S = Info.S + Off;
-		const FTransform T = CarFrame(Cars[C].S);
-		Cars[C].Root->SetWorldTransform(T);
+		if (bShow)
+		{
+			const FTransform T = CarFrame(Cars[C].S);
+			// just shown: the roots are where the train was hidden, nothing to carry the player by
+			Old.Add(bJustShown ? T : Cars[C].Root->GetComponentTransform());
+			Cars[C].Root->SetWorldTransform(T, false, nullptr, bJustShown ? ETeleportType::TeleportPhysics : ETeleportType::None);
+		}
 	}
 	if (!bShow)
 	{
@@ -414,7 +426,8 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 	// the wheels in the water (wake and spray)
 	if (Wake)
 	{
-		TArray<FVector> Pts;
+		TArray<FVector>& Pts = WakeWheels;
+		Pts.Reset();
 		const int32 Lead = Info.Dir >= 0 ? 0 : Cars.Num() - 1;
 		for (int32 K = 0; K < Cars.Num(); K++)
 		{
@@ -742,12 +755,21 @@ void ALyudTrain::UpdateGulls(float DeltaSeconds)
 		if (G.NextCall <= 0.f && GullAway <= 0.f)
 		{
 			G.NextCall = FMath::FRandRange(4.f, 14.f);
-			const FString Sp = B->Species.ToString();
-			const TCHAR* Call = Sp == TEXT("HerringGull") ? TEXT("kyow") : (Sp == TEXT("BlackHeadedGull") ? TEXT("kree") : TEXT("kee_ya"));
-			const FString Path = FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Sp, *Sp, Call, *Sp, Call);
-			if (USoundBase* Snd = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+			TObjectPtr<USoundBase>* Known = GullCalls.Find(B->Species);
+			if (!Known)
 			{
-				GullSounds.AddUnique(Snd);
+				const FString Sp = B->Species.ToString();
+				const TCHAR* Call = Sp == TEXT("HerringGull") ? TEXT("kyow") : (Sp == TEXT("BlackHeadedGull") ? TEXT("kree") : TEXT("kee_ya"));
+				const FString Path = FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Sp, *Sp, Call, *Sp, Call);
+				USoundBase* Loaded = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet);
+				if (Loaded)
+				{
+					GullSounds.AddUnique(Loaded);
+				}
+				Known = &GullCalls.Add(B->Species, Loaded);
+			}
+			if (USoundBase* Snd = Known->Get())
+			{
 				UGameplayStatics::PlaySoundAtLocation(this, Snd, NewP, 1.f, FMath::FRandRange(0.92f, 1.08f), 0.f, JointAtten);
 			}
 		}

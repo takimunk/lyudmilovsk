@@ -35,7 +35,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Sky|Sun") float GetFlareLight() const { return FlareLight; }
 	UFUNCTION(BlueprintPure, Category = "Sky|Sun") int32 GetLimbProminences() const { return LimbProms; }
-	UFUNCTION(BlueprintPure, Category = "Sky|Sun") FString GetDebugLine() const { return DebugLine; }
+	UFUNCTION(BlueprintPure, Category = "Sky|Sun") FString GetDebugLine() const;
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override { return true; }
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -49,5 +49,4 @@ private:
 	float RequestedPeak = 0.f;
 	float FlareLight = 0.f;
 	int32 LimbProms = 0;
-	FString DebugLine;
 };

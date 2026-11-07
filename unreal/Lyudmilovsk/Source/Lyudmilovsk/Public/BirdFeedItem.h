@@ -72,6 +72,9 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Millet;
 	int32 SeedCount = 0;
 	int32 MilletCount = 0;
+	/** Per component, the grains shown (the rest hidden at the top of the heap). */
+	int32 SeedsShown = 0;
+	int32 MilletShown = 0;
 	bool bFalling = false;
 	float FallTime = 0.f;
 	FVector FallVelocity = FVector::ZeroVector;

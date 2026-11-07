@@ -122,7 +122,8 @@ public:
 	};
 	struct FCell
 	{
-		TArray<FCellItem> Items;
+		/** The pieces laid here, per kind (index = kind), so committing a kind touches only its own. */
+		TArray<TArray<FCellItem>> ByKind;
 		/** Bands laid out so far (bit per band: near, mid, far). */
 		uint8 Bands = 0;
 		float Ground[9 * 9];
@@ -188,6 +189,14 @@ private:
 	/** The litter field's window: centre and the day it was computed for. */
 	FVector2D LitterCentre = FVector2D(1e12, 1e12);
 	float LitterDay = -1000.f;
+	/** A field being worked out a few rows a frame (the camera moved on a step): its rows so far, window and day. */
+	TArray<FFloat16> LitterBack;
+	int32 LitterRow = -1;
+	FVector2D LitterBuildCentre = FVector2D::ZeroVector;
+	float LitterBuildDay = 0.f;
+	bool bLitterBuildGuard = false;
+	void LitterRows(int32 J0, int32 J1);
+	void FinishLitterField();
 	/** Smoothed weather the materials see: wet, rime, dry, rain, snow, leaf fall. */
 	float Weather[6] = {};
 

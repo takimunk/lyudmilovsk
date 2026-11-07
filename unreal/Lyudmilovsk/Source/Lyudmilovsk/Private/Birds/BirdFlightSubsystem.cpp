@@ -885,6 +885,8 @@ void UBirdFlightSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 void UBirdFlightSubsystem::Deinitialize()
 {
+	// the hint sits on the persistent game viewport: take it off with the world, or it stays (and piles up) over the next one
+	SetHeroHint(FText::GetEmpty());
 	if (ULyudSaveSubsystem* Save = GetWorld() ? ULyudSaveSubsystem::Get(GetWorld()) : nullptr)
 	{
 		Save->OnBeforeSave.Remove(SaveHandle);
@@ -1277,8 +1279,9 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	{
 		if (Row && !Row->Calls.IsEmpty())
 		{
-			const FString Id = Meet.Species.ToString(), Call = Row->Calls[0].ToString();
-			if (USoundBase* Snd = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Id, *Id, *Call, *Id, *Call), nullptr, LOAD_NoWarn | LOAD_Quiet))
+			// cached in BirdLife: not a LoadObject per call
+			UBirdLifeSubsystem* Life = GetWorld() ? GetWorld()->GetSubsystem<UBirdLifeSubsystem>() : nullptr;
+			if (USoundBase* Snd = Life ? Life->CallSound(Meet.Species, Row->Calls[0]) : nullptr)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, Snd, Where);
 			}
@@ -1286,7 +1289,7 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 	};
 	if (FMath::Fmod(Meet.T, 0.5f) < Dt)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
+		UE_LOG(LogTemp, Verbose, TEXT("BIRD meet t=%.1f kind %d dist %.0f cm pecks %d"), Meet.T, (int32)Meet.Kind, D, Meet.Pecks);
 	}
 	switch (Meet.Kind)
 	{
@@ -1295,12 +1298,19 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (D > 100.f)
 		{
 			Vel = To.GetSafeNormal2D() * 260.f;
-			A->SetState(EBirdState::Fly);
+			// only on a change: SetState restarts the clip (at a random frame for loops) every time it is called
+			if (A->GetState() != EBirdState::Fly)
+			{
+				A->SetState(EBirdState::Fly);
+			}
 		}
 		else if (D > Len * 1.1f)
 		{
 			Vel = To.GetSafeNormal2D() * 90.f;
-			A->SetState(EBirdState::Hop);
+			if (A->GetState() != EBirdState::Hop)
+			{
+				A->SetState(EBirdState::Hop);
+			}
 		}
 		else if (Meet.T >= Meet.NextPeck && Meet.Pecks < 3)
 		{
@@ -1326,7 +1336,11 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (D > Len * 1.8f && Meet.T > 1.2f)
 		{
 			Vel = To.GetSafeNormal2D() * 40.f;
-			A->SetState(Row && Row->Gait == EBirdGait::Walk ? EBirdState::Walk : EBirdState::Hop);
+			const EBirdState Gait = Row && Row->Gait == EBirdGait::Walk ? EBirdState::Walk : EBirdState::Hop;
+			if (A->GetState() != Gait)
+			{
+				A->SetState(Gait);
+			}
 		}
 		break;
 	case EAnswer::CallBack:
@@ -1338,7 +1352,10 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		}
 		break;
 	default:
-		A->SetState(EBirdState::Look);
+		if (A->GetState() != EBirdState::Look)
+		{
+			A->SetState(EBirdState::Look);
+		}
 		break;
 	}
 	if (!Vel.IsNearlyZero())

@@ -220,6 +220,8 @@ public:
 	/** Runs the simulation headless over game hours (no frames), writing a day CSV like tools/birdsim (for render_birds.py). */
 	void DumpDay(float StartHour, float Hours, const FString& OutCsv);
 	LyudBirds::FWorld* GetSim() const { return Sim.Get(); }
+	/** One call of a species (species.json id, call name): loaded on first use and kept; null if the asset is missing. */
+	USoundBase* CallSound(FName Species, FName Call);
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
@@ -241,6 +243,8 @@ private:
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;
 	TWeakObjectPtr<class ALyudSea> Sea;
+	/** Seconds to the next search for the sea (maps without one: not every frame). */
+	float SeaSearch = 0.f;
 	bool bClockSeen = false;
 	FVector TestRunFeet = FVector::ZeroVector, TestRunTarget = FVector::ZeroVector;
 	float TestRunSpeed = 0.f;
@@ -258,6 +262,8 @@ private:
 	/** Per species, its calls (raw pointers, kept alive by SoundRefs: a TMap of arrays can't be a UPROPERTY). */
 	TMap<FName, TArray<USoundBase*>> Sounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
+	/** CallSound's cache (missing assets too, as null, so they are not looked up again); kept alive by SoundRefs. */
+	TMap<TPair<FName, FName>, USoundBase*> CallCache;
 	UPROPERTY(Transient) TObjectPtr<class USoundAttenuation> Attenuation;
 	int32 SoundsThisSecond = 0;
 	int32 CallsPlayed = 0;
@@ -284,6 +290,7 @@ class LYUDMILOVSK_API ABirdLifeRenderer : public AActor
 
 public:
 	ABirdLifeRenderer();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Builds the components for the species of the simulation. */
 	void Setup(const LyudBirds::FWorld& World);
@@ -294,6 +301,8 @@ public:
 	FString Describe() const;
 	/** Promotes a bird to a body actor now (approach, claim). */
 	AActor* EnsureBody(const LyudBirds::FWorld& World, int32 Id);
+	/** Whether a body for this bird can be made now without loading on the spot (its species' assets are in). */
+	bool BodyLoaded(const LyudBirds::FWorld& World, int32 Id) const;
 	void ReleaseBody(int32 Id);
 
 	int32 DrawnLastFrame = 0;
@@ -310,8 +319,9 @@ public:
 private:
 	struct FSpeciesDraw
 	{
-		/** NumPoses components for males, then (species with a female plumage) NumPoses for females. */
-		TArray<TObjectPtr<UInstancedStaticMeshComponent>> Poses;
+		/** NumPoses components for males, then (species with a female plumage) NumPoses for females.
+		 *  Weak: this struct is not reflected, so the GC would not null a destroyed component here. */
+		TArray<TWeakObjectPtr<UInstancedStaticMeshComponent>> Poses;
 		TArray<TArray<FTransform>> Xf;
 		/** Per pose, the instances shown at the last sync (0: all already hidden, nothing to send). */
 		TArray<int32> Shown;
@@ -322,6 +332,8 @@ private:
 		bool bOwnMeshes = false;
 		bool bHasBody = false;
 		float FemaleScale = 1.f;
+		/** /Game/Birds/<Id>, for the body prefetch check (not formatted per candidate per frame). */
+		FString Folder;
 	};
 	TArray<FSpeciesDraw> Species;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> PlaceholderMeshes;
@@ -339,6 +351,13 @@ private:
 	/** Per bird this frame: why it wasn't drawn (0 drawn, 1 gone, 2 tier, 3 claimed, 4 out of range, 5 under water). */
 	TArray<uint8> Why;
 	TArray<uint8> LastWhy;
+	/** Draw's per-frame scratch, kept so their capacity survives from frame to frame. */
+	struct FItem { int32 Id; int32 Species; int32 Slot; FTransform Xf; float Px; };
+	TArray<TPair<float, int32>> Near;
+	TArray<FItem> Items;
+	TArray<int32> Keep;
+	TArray<float> NowPx;
+	TArray<int32> PopIds;
 
 	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);

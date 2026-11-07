@@ -54,6 +54,11 @@ bool ULyudBiteSubsystem::BeginMeal(const FLyudMeal& InMeal)
 		Hand->PutAway();
 	}
 	Meal = InMeal;
+	MealAssets.Reset();
+	for (UObject* O : { (UObject*)Meal.LoadMesh, (UObject*)Meal.LoadMeshBig, (UObject*)Meal.LoadMaterial, (UObject*)Meal.UtensilMesh })
+	{
+		if (O) MealAssets.Add(O);
+	}
 	bActive = true;
 	bPressed = bQueued = false;
 	PressT = ChewLeft = 0.f;
@@ -477,6 +482,7 @@ void ULyudBiteSubsystem::Finish(bool bEaten)
 	TFunction<void(float)> Done = MoveTemp(Meal.OnEnd);
 	const float Left = bEaten ? 0.f : Meal.Amount;
 	Meal = FLyudMeal();
+	MealAssets.Reset();
 	if (Done)
 	{
 		Done(Left);

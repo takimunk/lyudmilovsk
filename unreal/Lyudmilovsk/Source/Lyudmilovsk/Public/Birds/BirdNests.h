@@ -75,7 +75,8 @@ private:
 	/** One mesh: its component, the transforms it shows (sorted by nest) and whether they changed. */
 	struct FDrawSet
 	{
-		TObjectPtr<UInstancedStaticMeshComponent> ISM;
+		// weak: FDrawSet is not reflected; the actor's OwnedComponents keeps it, a destroyed one reads null
+		TWeakObjectPtr<UInstancedStaticMeshComponent> ISM;
 		TArray<FTransform> Xf;
 		uint32 Hash = 0;
 		bool bMover = false;

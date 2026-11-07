@@ -254,6 +254,8 @@ private:
 	/** Water a hollow on the flat keeps at low tide, m, per depth cell. */
 	TArray<float> PoolW;
 	int32 DepthW = 0, DepthH = 0, DepthRow = 0;
+	/** The next cell of DepthRow to read (a slice may stop inside a row). */
+	int32 DepthCol = 0;
 	FVector2D DepthMin = FVector2D::ZeroVector;
 	FVector2D DepthSize = FVector2D(1.0, 1.0);
 	bool bDepthUploaded = false;

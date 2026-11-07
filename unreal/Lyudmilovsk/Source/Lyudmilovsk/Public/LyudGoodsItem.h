@@ -5,7 +5,10 @@
 #include "HeroReachComponent.h"
 #include "LyudGoodsItem.generated.h"
 
+class UMaterialInstanceDynamic;
+class UMaterialInterface;
 class UStaticMeshComponent;
+class UTexture;
 
 /**
  * Any item from the item table that has a Look (ULyudInventory FLyudItemDef: a packet of chips, a coffee cup, a magazine, a
@@ -31,6 +34,15 @@ public:
 	float HalfDepth() const { return Half.X; }
 	/** Lying on its back (the picture up), its top toward Along. */
 	void LieDown(const FVector& Pos, const FVector& Along);
+
+	/**
+	 * A material instance of Base with "Color" (and "Label" when given), shared by every item of that look: goods and bottles that
+	 * look alike draw with one material instead of one each. Kept for the run (rooted); never change it per item.
+	 */
+	static UMaterialInstanceDynamic* SharedMaterial(UMaterialInterface* Base, const FLinearColor& Color, UTexture* Label = nullptr);
+
+	/** Shelf stock: a draw distance for tiny goods and no distance-field shadowing (not for what the hand holds). */
+	static void SetShelfStock(AActor* Item);
 
 private:
 	UStaticMeshComponent* Part(UStaticMesh* Mesh, const FVector& Loc, const FVector& Size, const FLinearColor& Color);

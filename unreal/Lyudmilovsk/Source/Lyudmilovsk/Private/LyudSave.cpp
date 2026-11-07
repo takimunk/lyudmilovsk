@@ -101,7 +101,12 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 	FString Slot = InSlot;
 	if (Slot.IsEmpty())
 	{
-		Slot = FString::Printf(TEXT("lyud_save_%03d"), Index->NextId++);
+		// a lost or unreadable index restarts NextId at 1: never overwrite a slot that is already on disk
+		do
+		{
+			Slot = FString::Printf(TEXT("lyud_save_%03d"), Index->NextId++);
+		}
+		while (UGameplayStatics::DoesSaveGameExist(Slot, 0));
 	}
 
 	ULyudSaveGame* Save = Cast<ULyudSaveGame>(UGameplayStatics::CreateSaveGameObject(ULyudSaveGame::StaticClass()));
@@ -126,6 +131,8 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 			ULyudSaveGame::Store(*It, Save->Actors.FindOrAdd(It->GetFName()));
 		}
 	}
+	// before the objects are written: listeners copy their live state into SaveGame fields here
+	OnBeforeSave.Broadcast(Save);
 	for (const TPair<FName, TWeakObjectPtr<UObject>>& Pair : SaveObjects)
 	{
 		if (UObject* Object = Pair.Value.Get())
@@ -137,7 +144,6 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 			Save->WriteObject(Pair.Key, Object);
 		}
 	}
-	OnBeforeSave.Broadcast(Save);
 
 	if (!UGameplayStatics::SaveGameToSlot(Save, Slot, 0))
 	{
@@ -232,12 +238,20 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	{
 		return;
 	}
+	// a corrupt or hand-edited slot must not feed NaN into the clock or the player
+	if (!FMath::IsFinite(Save->GameTimeSeconds) || Save->GameTimeSeconds < 0.0)
+	{
+		Save->GameTimeSeconds = 0.0;
+	}
 	ClockBase = Save->GameTimeSeconds - World->GetTimeSeconds();
 
 	if (APlayerController* PC = World->GetFirstPlayerController())
 	{
-		PC->SetControlRotation(Save->ControlRotation);
-		if (APawn* Pawn = PC->GetPawn(); Pawn && Save->bHasPlayer)
+		if (!Save->ControlRotation.ContainsNaN())
+		{
+			PC->SetControlRotation(Save->ControlRotation);
+		}
+		if (APawn* Pawn = PC->GetPawn(); Pawn && Save->bHasPlayer && !Save->PlayerTransform.ContainsNaN())
 		{
 			Pawn->SetActorTransform(Save->PlayerTransform, false, nullptr, ETeleportType::TeleportPhysics);
 		}

@@ -1,6 +1,7 @@
 #include "Plants/PlantHerb.h"
 
 #include "Engine/StaticMesh.h"
+#include "Engine/World.h"
 #include "Engine/Texture2D.h"
 #include "MeshDescription.h"
 #include "PhysicsEngine/BodySetup.h"
@@ -839,6 +840,13 @@ UStaticMesh* PlantHerbs::BuildMesh(UObject* Outer, UStaticMesh* Mesh, FName Name
 	{
 		for (const FIntVector3& T : G.Tris[K]) MD.CreateTriangle(Groups[K], { Inst[T.X], Inst[T.Y], Inst[T.Z] });
 		if (G.Tris[K].IsEmpty()) MD.CreateTriangle(Groups[K], { Inst[Pad], Inst[Pad + 1], Inst[Pad + 2] });
+	}
+	// in play a re-shape builds a new mesh rather than over the one drawn (as PlantMeshes::BuildMesh): rebuilding a
+	// mesh with render resources flushes the render thread and waits for the GPU; the old one is collected once unused
+	const UWorld* World = Outer ? Outer->GetWorld() : nullptr;
+	if (Mesh && Mesh->AreRenderingResourcesInitialized() && World && World->IsGameWorld())
+	{
+		Mesh = nullptr;
 	}
 	if (!Mesh)
 	{

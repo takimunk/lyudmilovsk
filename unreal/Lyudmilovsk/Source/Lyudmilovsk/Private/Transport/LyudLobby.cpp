@@ -5,6 +5,7 @@
 // what moves. docs/transport.md "Lobbies".
 
 #include "Transport/LyudCableway.h"
+#include "Misc/ScopeExit.h"
 
 #include "Components/PointLightComponent.h"
 #include "Components/SpotLightComponent.h"
@@ -81,6 +82,37 @@ namespace
 	int32 SlotIndex(const UStaticMeshComponent* C, const TCHAR* Name)
 	{
 		return C ? C->GetMaterialSlotNames().IndexOfByKey(FName(Name)) : INDEX_NONE;
+	}
+
+	/** The lobby props that move every frame (and whatever hangs on them) out of Lumen's cards and the distance fields
+	 * (perf checklist: movers out of Lumen); once, at build. */
+	void MoversOutOfLumen(TArray<ALyudCableway::FLobbyAnim>& Anims)
+	{
+		TArray<USceneComponent*> Parts;
+		for (ALyudCableway::FLobbyAnim& A : Anims)
+		{
+			using EAnim = ALyudCableway::ELobbyAnim;
+			const bool bMoves = A.Kind == EAnim::Spin || A.Kind == EAnim::Pendulum || A.Kind == EAnim::Steam
+				|| A.Kind == EAnim::Fish || A.Kind == EAnim::Bubble;
+			USceneComponent* C = A.A.Get();
+			if (!bMoves || !C)
+			{
+				continue;
+			}
+			Parts.Reset();
+			C->GetChildrenComponents(true, Parts);
+			Parts.Add(C);
+			for (USceneComponent* Sc : Parts)
+			{
+				UPrimitiveComponent* P = Cast<UPrimitiveComponent>(Sc);
+				if (P && (P->bAffectDynamicIndirectLighting || P->bAffectDistanceFieldLighting))
+				{
+					P->bAffectDynamicIndirectLighting = false;
+					P->bAffectDistanceFieldLighting = false;
+					P->MarkRenderStateDirty();
+				}
+			}
+		}
 	}
 }
 
@@ -159,7 +191,13 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 	auto Steam = [this, World, &Anim, &At](const FVector& Local, int32 N, float Rise)
 	{
 		UStaticMesh* Ball = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+		// Mat("glass") is itself a MID, and a MID can't parent another one (LogMaterial "not a valid parent", the puff lost its
+		// material): each puff's own MID is made from the glass MID's parent
 		UMaterialInterface* Glass = Mat(TEXT("glass"));
+		if (const UMaterialInstanceDynamic* GlassMid = Cast<UMaterialInstanceDynamic>(Glass))
+		{
+			Glass = GlassMid->Parent;
+		}
 		for (int32 I = 0; I < N; I++)
 		{
 			UStaticMeshComponent* P = NewObject<UStaticMeshComponent>(this);
@@ -313,6 +351,8 @@ bool ALyudCableway::LobbyItem(int32 S, const FString& Item, const TSharedPtr<FJs
 
 void ALyudCableway::LobbyCentre(int32 S, const TSharedPtr<FJsonObject>& V, const FTransform& C)
 {
+	// the hall's items (LobbyItem) are all built by now, the centre's own movers below: all out of Lumen on the way out
+	ON_SCOPE_EXIT { MoversOutOfLumen(LobbyAnims); };
 	const TSharedPtr<FJsonObject>* Lobby = nullptr;
 	FString Kind;
 	if (!V.IsValid() || !V->TryGetObjectField(TEXT("lobby"), Lobby) || !(*Lobby)->TryGetStringField(TEXT("centre"), Kind))

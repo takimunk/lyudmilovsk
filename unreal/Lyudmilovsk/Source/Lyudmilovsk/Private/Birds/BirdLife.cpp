@@ -161,6 +161,13 @@ void UBirdLifeSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	const bool bMap = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarBirdsAnyMap.GetValueOnGameThread() != 0;
 	bWantStart = bMap;
 	StartDelay = 0.5f;      // the forests scatter their trees in their own BeginPlay
+	// registered now, once per world, so the load (next tick) reaches SavedTrust before Start() reads it
+	if (ULyudSaveSubsystem* Save = bMap ? ULyudSaveSubsystem::Get(&InWorld) : nullptr)
+	{
+		Save->RegisterSaveObject(TEXT("BirdLife"), this);
+		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(false); });
+		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(true); });
+	}
 }
 
 void UBirdLifeSubsystem::Deinitialize()
@@ -237,12 +244,6 @@ bool UBirdLifeSubsystem::Start()
 	if (S.Nesting())
 	{
 		NestRenderer = World->SpawnActor<ABirdNestRenderer>(P);
-	}
-	if (ULyudSaveSubsystem* Save = ULyudSaveSubsystem::Get(World))
-	{
-		Save->RegisterSaveObject(TEXT("BirdLife"), this);
-		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(false); });
-		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncTrust(true); });
 	}
 	UE_LOG(LogTemp, Display, TEXT("BirdLife: %d birds of %d species in %d groups on %d sites; sun %.2f..%.2f"), (int32)S.Birds.size(),
 		(int32)SpeciesTable().size(), (int32)S.Groups.size(), (int32)S.Sites.size(), S.Sunrise, S.Sunset);
@@ -367,6 +368,7 @@ void UBirdLifeSubsystem::Stop()
 		NestRenderer->Destroy();
 		NestRenderer = nullptr;
 	}
+	SyncTrust(true);       // a restart keeps the trust earned since the last save
 	Sim.Reset();
 	bStarted = false;
 	bClockSeen = false;
@@ -601,8 +603,10 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	UpdateClock();
 	UpdatePlayer(DeltaTime);
 	// the sea's level now (the tide): swimmers float on it, gulls and waders follow it over the sand
-	if (!Sea.IsValid())
+	SeaSearch -= DeltaTime;
+	if (!Sea.IsValid() && SeaSearch <= 0.f)
 	{
+		SeaSearch = 1.f;     // the hall and test maps have none: look again once a second, not every frame
 		TActorIterator<ALyudSea> It(GetWorld());
 		Sea = It ? *It : nullptr;
 	}
@@ -677,7 +681,8 @@ void UBirdLifeSubsystem::DispatchEvents()
 			OnBirdCall.Broadcast(E.Bird);
 			break;
 		case EEvent::Approach:
-			if (Renderer)
+			// not before its species is loaded in the background (Draw makes it then): made now it would load on the spot
+			if (Renderer && Renderer->BodyLoaded(S, E.Bird))
 			{
 				Renderer->EnsureBody(S, E.Bird);
 			}
@@ -772,6 +777,23 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 	CallsPlayed++;
 }
 
+USoundBase* UBirdLifeSubsystem::CallSound(FName InSpecies, FName Call)
+{
+	const TPair<FName, FName> Key(InSpecies, Call);
+	if (USoundBase** Found = CallCache.Find(Key))
+	{
+		return *Found;
+	}
+	const FString Id = InSpecies.ToString(), C = Call.ToString();
+	USoundBase* Sound = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/Sounds/S_%s_%s.S_%s_%s"), *Id, *Id, *C, *Id, *C), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (Sound)
+	{
+		SoundRefs.Add(Sound);      // or the garbage collector unloads it between calls
+	}
+	CallCache.Add(Key, Sound);
+	return Sound;
+}
+
 void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 {
 	if (!Sim)
@@ -793,9 +815,9 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	}
 	for (const TPair<int32, float>& T : SavedTrust)
 	{
-		if (T.Key >= 0 && T.Key < (int32)S.Birds.size())
+		if (T.Key >= 0 && T.Key < (int32)S.Birds.size() && FMath::IsFinite(T.Value))
 		{
-			S.Birds[T.Key].Trust = T.Value;
+			S.Birds[T.Key].Trust = FMath::Clamp(T.Value, 0.f, 1.f);
 		}
 	}
 }
@@ -1120,6 +1142,26 @@ ABirdLifeRenderer::ABirdLifeRenderer()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
 
+void ABirdLifeRenderer::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// the bodies are actors of their own: destroyed with the renderer (lyud.Birds off and on, the nests toggle),
+	// or they stay behind ticking and drawn as frozen birds (a world going away takes them with it anyway)
+	if (EndPlayReason == EEndPlayReason::Destroyed)
+	{
+		for (const TPair<int32, TObjectPtr<AActor>>& Body : Bodies)
+		{
+			if (IsValid(Body.Value))
+			{
+				Body.Value->Destroy();
+			}
+		}
+	}
+	Bodies.Reset();
+	BodyActs.Reset();
+	BodyBorn.Reset();
+	Super::EndPlay(EndPlayReason);
+}
+
 void ABirdLifeRenderer::Setup(const FWorld& World)
 {
 	static const TCHAR* const PoseNames[NumPoses] = { TEXT("Perch"), TEXT("Peck"), TEXT("Sleep"), TEXT("Flap0"), TEXT("Flap1"), TEXT("Flap2"), TEXT("Glide") };
@@ -1150,6 +1192,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		D.bHasBody = UBirdSpeciesLibrary::HasSkeletalMesh(Id);
 		D.Scale = D.bOwnMeshes ? 1.f : Length / 0.215f;
 		D.FemaleScale = R ? R->FemaleScale : 1.f;
+		D.Folder = FString::Printf(TEXT("/Game/Birds/%s"), *Id.ToString());
 		const bool bWinter = R && R->InWinterPlumage(UGameCalendar::NowIn(GetWorld()).GetMonth());
 		// females get their own components where the species' female plumage differs (same poses, female materials)
 		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
@@ -1233,6 +1276,7 @@ void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransfo
 	// no bird in this pose now nor at the last sync: its instances are hidden already, and rewriting them
 	// every frame would make the renderer update the component for nothing
 	const bool bNothing = Want == 0 && Shown == 0;
+	const int32 Prev = Shown;
 	Shown = Want;
 	if ((Have == 0 && Want == 0) || bNothing)
 	{
@@ -1244,7 +1288,9 @@ void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransfo
 		Extra.Init(Hidden, Want - Have + FMath::Max(8, Want / 4));
 		ISM->AddInstances(Extra, false);
 	}
-	Arr.SetNum(ISM->GetInstanceCount(), EAllowShrinking::No);
+	// only up to the last sync's count: the instances past it are hidden already (the count only grows, so after one
+	// murmuration a single starling would otherwise resend ~1500 hidden instances per pose every frame)
+	Arr.SetNum(FMath::Min(FMath::Max(Want, Prev), ISM->GetInstanceCount()), EAllowShrinking::No);
 	for (int32 J = Want; J < Arr.Num(); J++)
 	{
 		Arr[J] = Hidden;
@@ -1277,9 +1323,9 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	// bodies: the nearest birds within 25 m (and the one coming to the hand, and the claimed one); a bird that has a
 	// body keeps it out to 30 m and against newcomers up to 5 m nearer, so the set doesn't churn in a flock
 	const float BodyIn = 25.f, BodyOut = bSteady ? 30.f : BodyIn, BodyHold = bSteady ? 5.f : 0.f;
-	TArray<TPair<float, int32>> Near;
-	struct FItem { int32 Id; int32 Species; int32 Slot; FTransform Xf; float Px; };
-	TArray<FItem> Items;
+	Near.Reset();
+	Items.Reset();
+	Items.Reserve(NumBirds);
 	Why.SetNumZeroed(NumBirds);
 	DrawnLastFrame = 0;
 	for (const FBird& B : World.Birds)
@@ -1388,7 +1434,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	}
 	// bodies
 	Near.Sort([](const TPair<float, int32>& A, const TPair<float, int32>& B) { return A.Key < B.Key; });
-	TSet<int32> Keep;
+	Keep.Reset();
 	for (int32 K = 0; K < Near.Num() && Keep.Num() < MaxBodies; K++)
 	{
 		const int32 Id = Near[K].Value;
@@ -1398,7 +1444,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		}
 		// a new body waits (drawn instanced meanwhile) until its species' mesh, clips, plumage and calls are loaded in the
 		// background: made on the spot it stalls the frame
-		if (!BodyOf(Id) && !ULyudPrefetch::FolderReady(this, FString::Printf(TEXT("/Game/Birds/%s"), UTF8_TO_TCHAR(SpeciesTable()[World.Birds[Id].Species].Id.c_str())), TEXT("_Hero")))
+		if (!BodyOf(Id) && !ULyudPrefetch::FolderReady(this, Species[World.Birds[Id].Species].Folder, TEXT("_Hero")))
 		{
 			continue;
 		}
@@ -1425,9 +1471,6 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	}
 	BodiesLastFrame = Bodies.Num();
 	// a bird with a body is not drawn instanced as well, except the frame or two its new body needs to show posed
-	TArray<uint8> Shown;
-	Shown.Init(0, NumBirds);
-	TArray<float> NowPx;
 	NowPx.Init(0.f, NumBirds);
 	for (const FItem& I : Items)
 	{
@@ -1448,21 +1491,31 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		}
 	}
 	// popping: a bird seen at half a pixel or more that wasn't drawn the frame before, or the other way round
+	PopIds.Reset();
 	for (int32 Id = 0; Id < NumBirds; Id++)
 	{
 		if ((NowPx[Id] > 0.f) != (LastPx[Id] > 0.f) && FMath::Max(NowPx[Id], LastPx[Id]) >= 0.5f)
 		{
-			Pops++;
-			static const TCHAR* const Whys[] = { TEXT("drawn"), TEXT("gone"), TEXT("tier"), TEXT("claimed"), TEXT("range"), TEXT("underwater") };
-			const FBird& B = World.Birds[Id];
-			PopLog.Add(FString::Printf(TEXT("%s#%d %s->%s act%d tier%d %.0fm %.1fpx->%.1fpx"), UTF8_TO_TCHAR(SpeciesTable()[B.Species].Id.c_str()), Id,
-				Whys[FMath::Min<int32>(LastWhy[Id], 5)], Whys[FMath::Min<int32>(Why[Id], 5)], (int32)B.Act, B.Tier,
-				(float)FVector::Dist(ToUE(World.RenderPos(B)), Camera) * 0.01f, LastPx[Id], NowPx[Id]));
-			if (PopLog.Num() > 12)
-			{
-				PopLog.RemoveAt(0);
-			}
+			PopIds.Add(Id);
 		}
+	}
+	Pops += PopIds.Num();
+	// only the last 12 are kept, so only those are written out (a murmuration easing its reach pops hundreds at once)
+	for (int32 K = FMath::Max(0, PopIds.Num() - 12); K < PopIds.Num(); K++)
+	{
+		const int32 Id = PopIds[K];
+		static const TCHAR* const Whys[] = { TEXT("drawn"), TEXT("gone"), TEXT("tier"), TEXT("claimed"), TEXT("range"), TEXT("underwater") };
+		const FBird& B = World.Birds[Id];
+		PopLog.Add(FString::Printf(TEXT("%s#%d %s->%s act%d tier%d %.0fm %.1fpx->%.1fpx"), UTF8_TO_TCHAR(SpeciesTable()[B.Species].Id.c_str()), Id,
+			Whys[FMath::Min<int32>(LastWhy[Id], 5)], Whys[FMath::Min<int32>(Why[Id], 5)], (int32)B.Act, B.Tier,
+			(float)FVector::Dist(ToUE(World.RenderPos(B)), Camera) * 0.01f, LastPx[Id], NowPx[Id]));
+		if (PopLog.Num() > 12)
+		{
+			PopLog.RemoveAt(0);
+		}
+	}
+	for (int32 Id = 0; Id < NumBirds; Id++)
+	{
 		LastPx[Id] = NowPx[Id];
 		LastWhy[Id] = Why[Id];
 	}
@@ -1470,7 +1523,10 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 	{
 		for (int32 P = 0; P < D.Poses.Num(); P++)
 		{
-			Sync(D.Poses[P], D.Xf[P], D.Shown[P]);
+			if (UInstancedStaticMeshComponent* ISM = D.Poses[P].Get())
+			{
+				Sync(ISM, D.Xf[P], D.Shown[P]);
+			}
 		}
 	}
 }
@@ -1483,9 +1539,9 @@ FString ABirdLifeRenderer::Describe() const
 	{
 		for (int32 P = 0; P < Species[I].Poses.Num(); P++)
 		{
-			const UInstancedStaticMeshComponent* ISM = Species[I].Poses[P];
+			const UInstancedStaticMeshComponent* ISM = Species[I].Poses[P].Get();
 			const TArray<FTransform>& X = Species[I].Xf[P];
-			if (X.Num() && X[0].GetScale3D().X > 0.0)
+			if (ISM && X.Num() && X[0].GetScale3D().X > 0.0)
 			{
 				Out += FString::Printf(TEXT("%s/%d n%d vis%d [%.0f %.0f %.0f s%.2f] "), UTF8_TO_TCHAR(SpeciesTable()[I].Id.c_str()), P, ISM->GetInstanceCount(),
 					ISM->IsVisible() ? 1 : 0, X[0].GetLocation().X, X[0].GetLocation().Y, X[0].GetLocation().Z, X[0].GetScale3D().X);
@@ -1534,6 +1590,16 @@ AActor* ABirdLifeRenderer::EnsureBody(const FWorld& World, int32 Id)
 		BodySpawns++;
 	}
 	return Body;
+}
+
+bool ABirdLifeRenderer::BodyLoaded(const FWorld& World, int32 Id) const
+{
+	if (Id < 0 || Id >= (int32)World.Birds.size() || !Species.IsValidIndex(World.Birds[Id].Species))
+	{
+		return true;
+	}
+	const FSpeciesDraw& D = Species[World.Birds[Id].Species];
+	return BodyOf(Id) || !D.bHasBody || ULyudPrefetch::FolderReady(this, D.Folder, TEXT("_Hero"));
 }
 
 void ABirdLifeRenderer::ReleaseBody(int32 Id)

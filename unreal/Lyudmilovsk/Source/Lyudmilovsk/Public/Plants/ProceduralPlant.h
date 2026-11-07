@@ -206,6 +206,8 @@ private:
 	double LastFruitTime = -1.0;
 	void DrawHangingFruit();
 	void DropFruit(const FPendingFruit& P);
+	/** Ticks every frame only while something moves (leaves or fruit falling, fruit near the player); else once per UpdateInterval. */
+	void UpdateTickRate();
 
 	struct FFallingLeaf
 	{

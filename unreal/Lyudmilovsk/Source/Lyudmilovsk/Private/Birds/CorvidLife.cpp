@@ -178,16 +178,16 @@ void UCorvidLifeSubsystem::SyncFeelings(bool bToSave)
 	}
 	for (const TPair<int32, float>& It : SavedBond)
 	{
-		if (FCorvid* M = C->Mind(It.Key))
+		if (FCorvid* M = C->Mind(It.Key); M && FMath::IsFinite(It.Value))
 		{
-			M->Bond = It.Value;
+			M->Bond = FMath::Clamp(It.Value, 0.f, 1.f);     // a hand-edited slot stays in range
 		}
 	}
 	for (const TPair<int32, float>& It : SavedGrudge)
 	{
-		if (FCorvid* M = C->Mind(It.Key))
+		if (FCorvid* M = C->Mind(It.Key); M && FMath::IsFinite(It.Value))
 		{
-			M->Grudge = It.Value;
+			M->Grudge = FMath::Clamp(It.Value, 0.f, 1.f);     // a hand-edited slot stays in range
 		}
 	}
 }

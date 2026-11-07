@@ -22,7 +22,10 @@ namespace LyudSettings
 	/** The sound volumes 0..1 (ULyudSoundscapeSubsystem::SetVolumes), stored and handed to every new world's soundscape. */
 	enum class EVolume : uint8 { Master, Ambience, Music, Effects, Count };
 	float Volume(EVolume Which);
+	/** Sets and applies a volume; it reaches the ini on disk with the next FlushStored (or any other setting's change). */
 	void SetVolume(UWorld* World, EVolume Which, float Value);
+	/** Writes the stored settings to GameUserSettings.ini now. */
+	void FlushStored();
 	/** Gives World's soundscape the stored volumes (every level start). */
 	void ApplyVolumes(UWorld* World);
 }

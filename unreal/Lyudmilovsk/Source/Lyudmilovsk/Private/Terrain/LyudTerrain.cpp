@@ -1,6 +1,7 @@
 #include "Terrain/LyudTerrain.h"
 
 #include "TerrainGen.h"
+#include "HAL/PlatformTime.h"
 
 #if WITH_EDITOR
 #include "Engine/World.h"
@@ -27,9 +28,28 @@ namespace
 ULyudTerrainMask* ULyudTerrainMask::Get()
 {
 	static TWeakObjectPtr<ULyudTerrainMask> Cached;
+	static double TriedAt = -1.0;
 	if (!Cached.IsValid())
 	{
-		Cached = LoadObject<ULyudTerrainMask>(nullptr, MaskPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+		// in memory already (or just made by the editor build): no package search
+		Cached = FindObject<ULyudTerrainMask>(nullptr, MaskPath);
+	}
+	if (!Cached.IsValid())
+	{
+		// a missing mask (unbuilt map) is looked for again only once a minute, not on every call
+		const double Now = FPlatformTime::Seconds();
+		if (TriedAt >= 0.0 && Now - TriedAt < 60.0)
+		{
+			return nullptr;
+		}
+		TriedAt = Now;
+		ULyudTerrainMask* Loaded = LoadObject<ULyudTerrainMask>(nullptr, MaskPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+		if (Loaded && !GIsEditor)
+		{
+			// in a game nothing else holds it: a GC would drop it and the next call would load it again on the spot
+			Loaded->AddToRoot();
+		}
+		Cached = Loaded;
 	}
 	return Cached.Get();
 }

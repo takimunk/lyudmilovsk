@@ -63,7 +63,7 @@ int32 AProceduralForest::NumBaked() const
 FString AProceduralForest::DescribeState() const
 {
 	int32 Drawn = 0;
-	for (const FGroup& G : Groups) Drawn += G.Comp ? G.Comp->GetInstanceCount() : 0;
+	for (const FGroup& G : Groups) Drawn += G.Comp.IsValid() ? G.Comp->GetInstanceCount() : 0;
 	const UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
 	return FString::Printf(TEXT("%d trees in %d kinds, %d drawn as instances, %d live; %s"), Trees.Num(), Groups.Num(), Drawn, LiveCount, Cache ? *Cache->DescribeStats() : TEXT("no bake cache"));
 }
@@ -78,7 +78,8 @@ int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
 	G.Species = Species;
 	G.BakeSeed = BakeSeed;
 	G.Age = Age;
-	G.Comp = NewObject<UInstancedStaticMeshComponent>(this, NAME_None, RF_Transient);
+	UInstancedStaticMeshComponent* NewComp = NewObject<UInstancedStaticMeshComponent>(this, NAME_None, RF_Transient);
+	G.Comp = NewComp;
 	G.Comp->SetMobility(EComponentMobility::Movable);
 	G.Comp->SetupAttachment(RootComponent);
 	G.Comp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -119,7 +120,7 @@ void AProceduralForest::Clear()
 	LiveCount = 0;
 	for (FGroup& G : Groups)
 	{
-		if (G.Comp) G.Comp->DestroyComponent();
+		if (UInstancedStaticMeshComponent* C = G.Comp.Get()) C->DestroyComponent();
 	}
 	Groups.Reset();
 	Trees.Reset();
@@ -217,7 +218,7 @@ void AProceduralForest::SyncBakes(float Day)
 	for (FGroup& G : Groups)
 	{
 		const FTreeBaked* B = Cache->Request(G.Species, G.BakeSeed, G.Age, Day, RebakeDays, LodDistances * 0.01);
-		if (!B || B->Version == G.Version || !B->Mesh) continue;
+		if (!B || B->Version == G.Version || !B->Mesh || !G.Comp.IsValid()) continue;
 		G.Comp->SetStaticMesh(B->Mesh);
 		G.Comp->SetMaterial(0, B->Wood);
 		G.Comp->SetMaterial(1, B->Leaf);
@@ -249,7 +250,7 @@ void AProceduralForest::BakeAll()
 
 void AProceduralForest::SetHidden(FTree& T, bool bHidden)
 {
-	if (T.Group == INDEX_NONE || T.Instance == INDEX_NONE || !Groups[T.Group].Comp) return;
+	if (T.Group == INDEX_NONE || T.Instance == INDEX_NONE || !Groups[T.Group].Comp.IsValid()) return;
 	FTransform Xf = T.Xf;
 	if (bHidden) Xf.SetScale3D(FVector(0.0001));
 	Groups[T.Group].Comp->UpdateInstanceTransform(T.Instance, Xf, true, false, true);

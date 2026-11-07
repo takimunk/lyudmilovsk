@@ -125,6 +125,25 @@ void UAnimalLifeSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	// the town's animals live in Lvl_Scene01 (or anywhere with AnyMap 2); AnyMap 1 starts empty on the first SpawnAnimal
 	bWantStart = InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")) || CVarAnimalsAnyMap.GetValueOnGameThread() >= 2;
 	StartDelay = 0.6f;     // after the forests have scattered their trees
+	// registered now, once per world, so the load (next tick) reaches Saved before Start() reads it
+	if (bWantStart)
+	{
+		HookSave();
+	}
+}
+
+void UAnimalLifeSubsystem::HookSave()
+{
+	// once per world: from OnWorldBeginPlay where the animals start with the map, else when they start (AnyMap 1)
+	ULyudSaveSubsystem* Save = !bSaveHooked ? ULyudSaveSubsystem::Get(GetWorld()) : nullptr;
+	if (!Save)
+	{
+		return;
+	}
+	bSaveHooked = true;
+	Save->RegisterSaveObject(TEXT("AnimalLife"), this);
+	Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(false); });
+	Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(true); });
 }
 
 void UAnimalLifeSubsystem::Deinitialize()
@@ -193,12 +212,6 @@ bool UAnimalLifeSubsystem::Start()
 	P.ObjectFlags |= RF_Transient;
 	Renderer = World->SpawnActor<AAnimalLifeRenderer>(P);
 	NameTags = World->SpawnActor<AAnimalNameTags>(P);
-	if (ULyudSaveSubsystem* Save = ULyudSaveSubsystem::Get(World))
-	{
-		Save->RegisterSaveObject(TEXT("AnimalLife"), this);
-		Save->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(false); });
-		Save->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { SyncMemory(true); });
-	}
 	int32 Cats = 0, Dogs = 0;
 	for (const FAnimal& A : S.Animals)
 	{
@@ -243,6 +256,7 @@ void UAnimalLifeSubsystem::Stop()
 	{
 		Birds->SetBeasts(TArray<FBirdBeast>());
 	}
+	SyncMemory(true);      // a restart keeps the trust and names earned since the last save
 	Sim.Reset();
 	bStarted = false;
 }
@@ -480,6 +494,7 @@ void UAnimalLifeSubsystem::Tick(float DeltaTime)
 			return;
 		}
 		bWantStart = false;
+		HookSave();
 		bStarted = Start();
 		if (!bStarted)
 		{
@@ -529,6 +544,10 @@ void UAnimalLifeSubsystem::SyncMemory(bool bToSave)
 	{
 		return;
 	}
+	if (bToSave)
+	{
+		Saved.Reset();      // an animal whose trust fell back to 0 must not keep its old values
+	}
 	for (FAnimal& A : Sim->Animals)
 	{
 		if (bToSave)
@@ -543,8 +562,9 @@ void UAnimalLifeSubsystem::SyncMemory(bool bToSave)
 		}
 		else if (const FAnimalMemory* M = Saved.Find(A.Id))
 		{
-			A.Trust = M->Trust;
-			A.Bond = M->Bond;
+			// a corrupt or hand-edited slot must not feed NaN into the sim
+			A.Trust = FMath::IsFinite(M->Trust) ? FMath::Clamp(M->Trust, 0.f, 1.f) : 0.f;
+			A.Bond = FMath::IsFinite(M->Bond) ? FMath::Max(M->Bond, 0.f) : 0.f;
 			A.Name = TCHAR_TO_UTF8(*M->Name);
 		}
 	}

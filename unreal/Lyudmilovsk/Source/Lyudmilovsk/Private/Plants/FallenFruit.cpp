@@ -68,9 +68,19 @@ void AFallenFruit::Init(UStaticMesh* FruitMesh, UMaterialInterface* Material, fl
 	{
 		M->CopyParameterOverrides(const_cast<UMaterialInstance*>(From));
 	}
+	// parameter names made once, not an FString and an FName per fruit per value
+	static const TArray<FName> Names = []()
+	{
+		TArray<FName> Out;
+		for (int32 I = 0; I < 32; I++)
+		{
+			Out.Add(FName(*FString::Printf(TEXT("Fruit%d"), I)));
+		}
+		return Out;
+	}();
 	for (int32 I = 0; I < NumData; I++)
 	{
-		M->SetScalarParameterValue(*FString::Printf(TEXT("Fruit%d"), I), Data[I]);
+		M->SetScalarParameterValue(Names.IsValidIndex(I) ? Names[I] : FName(*FString::Printf(TEXT("Fruit%d"), I)), Data[I]);
 	}
 	Mesh->SetMaterial(0, M);
 	Body->SetSimulatePhysics(true);

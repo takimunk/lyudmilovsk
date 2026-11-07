@@ -10,6 +10,7 @@
 #include "HAL/IConsoleManager.h"
 #include "UObject/UObjectGlobals.h"
 #include "Containers/Ticker.h"
+#include "HAL/PlatformTime.h"
 #include "Components/LightComponent.h"
 #include "Sky/LyudSky.h"
 #include "GameFramework/PlayerController.h"
@@ -21,6 +22,9 @@
 namespace
 {
 	const FName AcademTag(TEXT("Academ"));
+
+	// Academ actors that were ticking when lyud.Academ 0 hid them
+	TSet<TWeakObjectPtr<AActor>> TickingBeforeHide;
 
 	void ApplyToWorld(UWorld* World, bool bOn)
 	{
@@ -34,7 +38,30 @@ namespace
 			{
 				It->SetActorHiddenInGame(!bOn);
 				It->SetActorEnableCollision(bOn);
-				It->SetActorTickEnabled(bOn);
+				if (!bOn)
+				{
+					// remember who was ticking, so showing again does not wake actors that keep their tick off
+					if (It->IsActorTickEnabled())
+					{
+						TickingBeforeHide.Add(TWeakObjectPtr<AActor>(*It));
+					}
+					It->SetActorTickEnabled(false);
+				}
+				else if (TickingBeforeHide.Remove(TWeakObjectPtr<AActor>(*It)) > 0)
+				{
+					It->SetActorTickEnabled(true);
+				}
+			}
+		}
+		if (bOn)
+		{
+			// drop entries of actors gone or of other worlds no longer loaded
+			for (auto It = TickingBeforeHide.CreateIterator(); It; ++It)
+			{
+				if (!It->IsValid())
+				{
+					It.RemoveCurrent();
+				}
 			}
 		}
 	}
@@ -112,6 +139,66 @@ namespace
 		}
 	}
 
+	// the lamps and the sky of a world, found once rather than walking every actor twice a second
+	struct FLamp
+	{
+		TWeakObjectPtr<AActor> Actor;
+		TArray<TWeakObjectPtr<ULightComponent>> Lights;
+		bool bLit = false;
+	};
+
+	struct FLampCache
+	{
+		TWeakObjectPtr<UWorld> World;
+		TWeakObjectPtr<ALyudSky> Sky;
+		TArray<FLamp> Lamps;
+		double BuiltAt = -1.0;
+	};
+
+	TArray<FLampCache> LampCaches;
+
+	FLampCache& LampCacheFor(UWorld* World)
+	{
+		LampCaches.RemoveAll([](const FLampCache& C) { return !C.World.IsValid(); });
+		FLampCache* Cache = LampCaches.FindByPredicate([World](const FLampCache& C) { return C.World.Get() == World; });
+		if (!Cache)
+		{
+			Cache = &LampCaches.AddDefaulted_GetRef();
+			Cache->World = World;
+		}
+		// rebuilt once a minute too, in case lamps or the sky come later (streamed in or spawned)
+		const double Now = FPlatformTime::Seconds();
+		if (Cache->BuiltAt < 0.0 || Now - Cache->BuiltAt > 60.0 || (!Cache->Sky.IsValid() && Now - Cache->BuiltAt > 5.0))
+		{
+			Cache->BuiltAt = Now;
+			Cache->Lamps.Reset();
+			Cache->Sky.Reset();
+			for (TActorIterator<AActor> It(World); It; ++It)
+			{
+				if (!Cache->Sky.IsValid())
+				{
+					if (ALyudSky* Sky = Cast<ALyudSky>(*It))
+					{
+						Cache->Sky = Sky;
+					}
+				}
+				if (!It->ActorHasTag(LampTag))
+				{
+					continue;
+				}
+				FLamp& Lamp = Cache->Lamps.AddDefaulted_GetRef();
+				Lamp.Actor = *It;
+				Lamp.bLit = It->ActorHasTag(LitTag);
+				TInlineComponentArray<ULightComponent*> Lights(*It);
+				for (ULightComponent* L : Lights)
+				{
+					Lamp.Lights.Add(L);
+				}
+			}
+		}
+		return *Cache;
+	}
+
 	bool LampTick(float)
 	{
 		if (!GEngine)
@@ -130,8 +217,8 @@ namespace
 				SignLanguage = LyudText::Language();
 				ApplySigns(World);
 			}
-			TActorIterator<ALyudSky> Sky(World);
-			if (Sky)
+			FLampCache& Cache = LampCacheFor(World);
+			if (ALyudSky* Sky = Cache.Sky.Get())
 			{
 				const float Alt = Sky->SunAltitude();
 				bNight = bNight ? Alt < 3.f : Alt < 0.5f;     // a little hysteresis round sunset
@@ -139,18 +226,19 @@ namespace
 			const APlayerController* PC = World->GetFirstPlayerController();
 			const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 			const FVector Eye = Pawn ? Pawn->GetActorLocation() : FVector(1e12);
-			for (TActorIterator<AActor> It(World); It; ++It)
+			for (const FLamp& Lamp : Cache.Lamps)
 			{
-				if (!It->ActorHasTag(LampTag))
+				const AActor* A = Lamp.Actor.Get();
+				if (!A)
 				{
 					continue;
 				}
-				const bool bWant = IsOn() && ((bNight && It->ActorHasTag(LitTag)) ||
-					FVector::DistSquared(It->GetActorLocation(), Eye) < NearLampCm * NearLampCm);
-				TInlineComponentArray<ULightComponent*> Lights(*It);
-				for (ULightComponent* L : Lights)
+				const bool bWant = IsOn() && ((bNight && Lamp.bLit) ||
+					FVector::DistSquared(A->GetActorLocation(), Eye) < NearLampCm * NearLampCm);
+				for (const TWeakObjectPtr<ULightComponent>& Weak : Lamp.Lights)
 				{
-					if (L->IsVisible() != bWant)
+					ULightComponent* L = Weak.Get();
+					if (L && L->IsVisible() != bWant)
 					{
 						L->SetVisibility(bWant);
 					}
@@ -169,6 +257,7 @@ namespace
 			FCoreUObjectDelegates::PostLoadMapWithWorld.AddLambda([](UWorld* World)
 			{
 				SignLanguage.Reset();                    // the new map's signs get their language on the next tick
+				LampCaches.Reset();                      // and its lamps are found again
 				if (!IsOn())
 				{
 					ApplyToWorld(World, false);

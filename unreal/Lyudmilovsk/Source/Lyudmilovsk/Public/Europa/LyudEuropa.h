@@ -90,8 +90,9 @@ public:
 	 *  False (and why, as a string key) if it can't now. */
 	bool PressButton(FString& OutRefusal);
 
-	FLyudHatchLid SeaLid;
-	FLyudHatchLid InnerLid;
+	// UPROPERTY so the GC sees the lids' Pivot/Mesh (nulled if a component goes)
+	UPROPERTY(Transient) FLyudHatchLid SeaLid;
+	UPROPERTY(Transient) FLyudHatchLid InnerLid;
 	/** The planet has been seen from Europa (the line is said once). */
 	UPROPERTY(SaveGame) bool bPlanetSeen = false;
 	void SetSeaLidOpen(bool bOpen);
@@ -151,7 +152,7 @@ class LYUDMILOVSK_API ALyudEuropaSite : public AActor
 public:
 	ALyudEuropaSite();
 
-	FLyudHatchLid Lid;
+	UPROPERTY(Transient) FLyudHatchLid Lid;
 
 	/** Unit vector to the planet's centre (from the sky's frame, UpdateSky) and its angular diameter, degrees. */
 	FVector PlanetDir = FVector(0.3, 0.45, 0.84).GetSafeNormal();

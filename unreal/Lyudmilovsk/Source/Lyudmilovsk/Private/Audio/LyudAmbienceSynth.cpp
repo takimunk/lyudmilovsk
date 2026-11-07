@@ -50,6 +50,7 @@ bool ULyudAmbienceSynth::Init(int32& SampleRate)
 	NumChannels = 2;
 	Bed = MakePimpl<LyudAudio::FAmbience>();
 	Bed->Init(float(SampleRate), 7);
+	Rate = SampleRate;
 	return true;
 }
 
@@ -65,7 +66,33 @@ int32 ULyudAmbienceSynth::OnGenerateAudio(float* OutAudio, int32 NumSamples)
 		FScopeLock Guard(&Lock);
 		P = Params;
 	}
-	if (Bed)
+	// muted (lyud.Sound 0, vacuum, volume 0): the mix multiplies everything by Master, so after a second of
+	// silence stop rendering at all; on unmute start a fresh bed, as at world start, so nothing stale (grains,
+	// strikes, filter state frozen mid-way) plays out
+	if (P.Master <= 0.f)
+	{
+		MutedFrames = FMath::Min(MutedFrames + Frames, 1 << 30);
+	}
+	else
+	{
+		if (bAsleep && Bed)
+		{
+			Bed = MakePimpl<LyudAudio::FAmbience>();
+			Bed->Init(float(Rate), 7);
+		}
+		MutedFrames = 0;
+		bAsleep = false;
+	}
+	if (Bed && MutedFrames > Rate)
+	{
+		if (!bAsleep)
+		{
+			bAsleep = true;
+			FScopeLock Guard(&Lock);
+			FMemory::Memzero(Rms, sizeof(Rms));
+		}
+	}
+	else if (Bed)
 	{
 		Bed->Render(Left.GetData(), Right.GetData(), Frames, P);
 		FScopeLock Guard(&Lock);

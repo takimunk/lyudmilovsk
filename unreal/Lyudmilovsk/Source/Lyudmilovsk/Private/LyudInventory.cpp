@@ -643,7 +643,7 @@ bool ULyudInventoryUI::CanOpen(bool bNeedHero) const
 	{
 		return false;
 	}
-	const UHeroReachComponent* Reach = Hero ? Hero->FindComponentByClass<UHeroReachComponent>() : nullptr;
+	const UHeroReachComponent* Reach = Hero ? Hero->FindReach() : nullptr;
 	return !(Reach && Reach->IsBusy());
 }
 
@@ -668,7 +668,7 @@ void ULyudInventoryUI::Tick(float)
 	if (bUsing)
 	{
 		const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
-		const UHeroReachComponent* Reach = Hero ? Hero->FindComponentByClass<UHeroReachComponent>() : nullptr;
+		const UHeroReachComponent* Reach = Hero ? Hero->FindReach() : nullptr;
 		bUsing = Reach && Reach->IsBusy();
 	}
 }
@@ -861,6 +861,10 @@ AActor* ULyudInventoryUI::SpawnHeld(FName Id, const FVector& Pos)
 		C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere")));
 		C->SetWorldScale3D(FVector(Def->Radius * 2.f / 100.f));
 		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// carried in the hand, it moves every frame: out of Lumen and distance-field lighting
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
+		C->MarkRenderStateDirty();
 		if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial")))
 		{
 			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, Ball);
@@ -948,13 +952,14 @@ void ULyudInventoryUI::Use(FName Id)
 	const FName Leaves = Def->Leaves;
 	TWeakObjectPtr<AActor> WeakHeld = Held;
 	TWeakObjectPtr<UHeroReachComponent> WeakReach = Reach;
-	auto Consumed = [this, Id, Leaves, WeakReach]()
+	TWeakObjectPtr<ULyudInventoryUI> Self = this;
+	auto Consumed = [Self, Id, Leaves, WeakReach]()
 	{
 		if (UHeroReachComponent* R = WeakReach.Get())
 		{
-			R->Stow([this, Id, Leaves]()
+			R->Stow([Self, Id, Leaves]()
 			{
-				if (ULyudInventory* I = ULyudInventory::Get(this))
+				if (ULyudInventory* I = Self.IsValid() ? ULyudInventory::Get(Self.Get()) : nullptr)
 				{
 					I->Remove(Id);
 					if (!Leaves.IsNone())

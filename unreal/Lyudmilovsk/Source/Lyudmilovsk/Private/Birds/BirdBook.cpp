@@ -14,7 +14,8 @@
 #include "Plants/GameCalendar.h"
 #include "Styling/SlateBrush.h"
 #include "UI/LyudQuests.h"
-#include "UObject/StrongObjectPtr.h"
+#include "Misc/PackageName.h"
+#include "World/LyudPrefetch.h"
 
 ULyudBirdBook* ULyudBirdBook::Get(const UObject* WorldContext)
 {
@@ -95,6 +96,15 @@ bool ULyudBirdBook::NoteSeen(const UObject* WorldContext, FName Species, bool bF
 	S.How = How;
 	S.Sexes = Sex;
 	UE_LOG(LogTemp, Log, TEXT("BirdBook: met %s (%s)"), *Species.ToString(), *How.ToString());
+	// its drawing starts loading in the background now, so the Birds page later does not stop the game to read it
+	for (const FString& Name : { Species.ToString(), Species.ToString() + TEXT("_f") })
+	{
+		const FString Package = TEXT("/Game/UI/Diary/Birds/T_Bird_") + Name;
+		if (FPackageName::DoesPackageExist(Package))
+		{
+			ULyudPrefetch::Ready(WorldContext, FString::Printf(TEXT("%s.T_Bird_%s"), *Package, *Name));
+		}
+	}
 	const FString NameKey = FString(TEXT("@bird.")) + Snake(Species.ToString()) + TEXT(".name");
 	if (ULyudQuests* Q = ULyudQuests::Get(WorldContext))
 	{
@@ -188,7 +198,9 @@ FText ULyudBirdBook::SpeciesName(FName Species)
 const FSlateBrush* ULyudBirdBook::Drawing(FName Species, bool bFemale)
 {
 	// the female's own drawing where the species has one, else the species' (the male's)
-	struct FDrawing { TSharedPtr<FSlateBrush> Brush; TStrongObjectPtr<UTexture2D> Tex; };
+	// textures rooted with raw pointers, not TStrongObjectPtr: a static strong pointer is released after the UObject
+	// system has shut down at exit (the same fix as LyudDiaryStyle's Keep()); bounded, ~35 species x 2
+	struct FDrawing { TSharedPtr<FSlateBrush> Brush; UTexture2D* Tex = nullptr; };
 	static TMap<FString, FDrawing> Cache;
 	const FString Base = Species.IsNone() ? FString(TEXT("Unknown")) : Species.ToString();
 	for (const FString& Name : { bFemale ? Base + TEXT("_f") : Base, Base })
@@ -205,7 +217,8 @@ const FSlateBrush* ULyudBirdBook::Drawing(FName Species, bool bFemale)
 		const FString Asset = TEXT("T_Bird_") + Name;
 		if (UTexture2D* T = LoadObject<UTexture2D>(nullptr, *FString::Printf(TEXT("/Game/UI/Diary/Birds/%s.%s"), *Asset, *Asset), nullptr, LOAD_NoWarn | LOAD_Quiet))
 		{
-			D.Tex.Reset(T);
+			T->AddToRoot();
+			D.Tex = T;
 			D.Brush = MakeShared<FSlateBrush>();
 			D.Brush->SetResourceObject(T);
 			D.Brush->ImageSize = FVector2D(T->GetSizeX(), T->GetSizeY());

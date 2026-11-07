@@ -55,5 +55,11 @@ private:
 	float EmitDebt = 0.f, FoamDebt = 0.f;
 	double TrailAt = 0.0;     // distance run (cm) when the trail last laid a streak
 	FRandomStream Rnd;
+	// per-frame scratch kept between frames (Reset, not reallocated)
+	TArray<TPair<FVector, float>> WetWheels;
+	TArray<FTransform> DropTs, FoamTs, TrailTs;
+	/** How many instances of each ISM were shown last frame: the pool only grows, the slots past the live ones are
+	 * hidden with a zero scale instead of being removed (adding/removing rebuilds the instance buffers). */
+	int32 DropUsed = 0, FoamUsed = 0, TrailUsed = 0;
 	void EnsureParts();
 };

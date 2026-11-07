@@ -311,16 +311,18 @@ bool ALyudDoorBase::SomeoneInSweep() const
 	{
 		return false;
 	}
-	TArray<TPair<FVector, float>> Bodies;
-	Doors->GetBodies(Bodies);
-	for (const TPair<FVector, float>& B : Bodies)
+	// every tick while closing or waiting to close: the bodies are visited in place (no list), and a sphere round the
+	// sweep box (grown by the body's radius) drops the far ones before the exact test
+	const FTransform& T = GetActorTransform();
+	const FBox Box = GetSweepLocalBox();
+	const FVector Centre = T.TransformPosition(Box.GetCenter());
+	const FVector Ext = Box.GetExtent();
+	const FVector Scale = T.GetScale3D().GetAbs();
+	return Doors->AnyBody([this, &Centre, &Ext, &Scale](const FVector& At, float Radius)
 	{
-		if (IsInSweep(B.Key, B.Value))
-		{
-			return true;
-		}
-	}
-	return false;
+		const float Reach = ((Ext + FVector(Radius, Radius, 120.f)) * Scale).Size();
+		return FVector::DistSquared(At, Centre) <= FMath::Square(Reach) && IsInSweep(At, Radius);
+	});
 }
 
 void ALyudDoorBase::Play(USoundBase* Sound) const
@@ -784,6 +786,28 @@ void ULyudDoorSubsystem::GetBodies(TArray<TPair<FVector, float>>& Out) const
 	}
 }
 
+bool ULyudDoorSubsystem::AnyBody(TFunctionRef<bool(const FVector& At, float Radius)> Visit) const
+{
+	if (const APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0))
+	{
+		if (Visit(Player->GetActorLocation(), BodyRadius(Player)))
+		{
+			return true;
+		}
+	}
+	for (const FAgent& A : Agents)
+	{
+		if (const AActor* Actor = A.Actor.Get())
+		{
+			if (Visit(Actor->GetActorLocation(), A.Radius))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void ULyudDoorSubsystem::Tick(float DeltaTime)
 {
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
@@ -810,17 +834,50 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 		return;
 	}
 	// pawns nobody plays are agents by themselves; others must register
+	TSet<const AActor*> Known;
+	Known.Reserve(Agents.Num());
+	for (const FAgent& A : Agents)
+	{
+		Known.Add(A.Actor.Get());
+	}
 	for (TActorIterator<APawn> It(World); It; ++It)
 	{
 		APawn* Pawn = *It;
-		if (Pawn->IsPlayerControlled() || Agents.ContainsByPredicate([Pawn](const FAgent& A) { return A.Actor == Pawn; }))
+		if (Pawn->IsPlayerControlled() || Known.Contains(Pawn))
 		{
 			continue;
 		}
+		Known.Add(Pawn);
 		FAgent& A = Agents.AddDefaulted_GetRef();
 		A.Actor = Pawn;
 		A.Radius = BodyRadius(Pawn);
 		A.LastPos = Pawn->GetActorLocation();
+	}
+	// each door once: whether people pass it and a sphere (world) round its approach box; an agent outside the sphere
+	// can't be in the box, so the transforms and the virtual box are skipped for it (the same answers, far cheaper)
+	struct FDoorReach { ALyudDoorBase* Door; bool bPass; FVector Centre; float Reach2; };
+	TArray<FDoorReach> Reach;
+	Reach.Reserve(Doors.Num());
+	for (const TWeakObjectPtr<ALyudDoorBase>& DoorPtr : Doors)
+	{
+		ALyudDoorBase* Door = DoorPtr.Get();
+		if (!Door)
+		{
+			continue;
+		}
+		FDoorReach& R = Reach.AddDefaulted_GetRef();
+		R.Door = Door;
+		R.bPass = Door->CanNpcsPass();
+		R.Centre = FVector::ZeroVector;
+		R.Reach2 = -1.f;
+		if (R.bPass)
+		{
+			const FTransform& T = Door->GetActorTransform();
+			const FBox Way = Door->GetDoorwayLocalBox();
+			const FBox Approach(Way.Min - FVector(160.f, 25.f, 150.f), Way.Max + FVector(160.f, 25.f, 50.f));
+			R.Centre = T.TransformPosition(Approach.GetCenter());
+			R.Reach2 = FMath::Square((Approach.GetExtent() * T.GetScale3D().GetAbs()).Size() + 1.f);
+		}
 	}
 	for (int32 i = Agents.Num() - 1; i >= 0; --i)
 	{
@@ -842,16 +899,25 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 		const FVector Pos = Actor->GetActorLocation();
 		A.Velocity = (Pos - A.LastPos) / FMath::Max(DeltaTime, 1e-3f);
 		A.LastPos = Pos;
-		for (const TWeakObjectPtr<ALyudDoorBase>& DoorPtr : Doors)
+		// a hidden body (a pooled townsperson gone indoors, a parked one) passes no door: it lets go of what it held
+		const bool bHidden = Actor->IsHidden();
+		if (bHidden && A.Holding.IsEmpty())
 		{
-			ALyudDoorBase* Door = DoorPtr.Get();
-			if (!Door)
+			continue;
+		}
+		for (const FDoorReach& R : Reach)
+		{
+			ALyudDoorBase* Door = R.Door;
+			const bool bNear = !bHidden && R.bPass && FVector::DistSquared(Pos, R.Centre) <= R.Reach2;
+			if (!bNear && A.Holding.IsEmpty())
 			{
 				continue;
 			}
 			const bool bHolding = A.Holding.Contains(Door);
-			bool bWants = false;
-			if (Door->CanNpcsPass())
+			// a body hidden while still in the leaf's sweep keeps its door until it is out of it (released earlier the door
+			// would wait to close every frame with the body in the way)
+			bool bWants = bHidden && bHolding && Door->IsInSweep(Pos, A.Radius);
+			if (bNear)
 			{
 				const FTransform& T = Door->GetActorTransform();
 				const FVector Local = T.InverseTransformPosition(Pos);

@@ -128,7 +128,8 @@ private:
 		FName Species;
 		uint32 BakeSeed = 0;
 		float Age = 0.f;
-		TObjectPtr<UInstancedStaticMeshComponent> Comp;
+		// weak: FGroup is not reflected; the actor's OwnedComponents keeps it, a destroyed one reads null
+		TWeakObjectPtr<UInstancedStaticMeshComponent> Comp;
 		TArray<int32> TreeIds;
 		/** The version of the shared bake the component shows now (-1: none yet). */
 		int32 Version = -1;

@@ -350,11 +350,16 @@ void ULyudWinterSubsystem::ReadWeather(float DeltaTime)
 		const FDateTime WNow = Weather->WeatherTime();
 		const int32 Year = WNow.GetMonth() >= 9 ? WNow.GetYear() : WNow.GetYear() - 1;
 		const double Start = (FDateTime(Year, 9, 1) - FDateTime(2000, 1, 1)).GetTotalHours();
-		LyudWeather::FChain& Chain = LyudWeather::SharedChain();
-		LyudWeather::FSeason Season;
-		for (double H = Start; H < Hours; H += 3.0)
+		// no snow lying now (summer, a thaw): the rose is zero, as the next Drift of this very state would make it, so
+		// the season's replay (thousands of weather steps in one frame) cannot matter
+		if (W.SnowDepthCm > 0.5f)
 		{
-			Drift(LyudWeather::Full(H, Chain, Season), 3.f);
+			LyudWeather::FChain& Chain = LyudWeather::SharedChain();
+			LyudWeather::FSeason Season;
+			for (double H = Start; H < Hours; H += 3.0)
+			{
+				Drift(LyudWeather::Full(H, Chain, Season), 3.f);
+			}
 		}
 		S.LastWeatherHours = Hours;
 	}
@@ -482,7 +487,9 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 	StepNear(DeltaTime);
 	StepFlakes(DeltaTime);
 	SweepTimer -= DeltaTime;
-	if (SweepTimer <= 0.f && S.Phase == LyudWinter::EPhase::Ready)
+	// only while the snow decal shows (it is what the sweep keeps off the movers): not all spring and summer after a
+	// winter; the timer keeps running down, so the first sweep comes the frame the snow is back
+	if (SweepTimer <= 0.f && S.Phase == LyudWinter::EPhase::Ready && S.In.LevelCm > 0.2f)
 	{
 		SweepTimer = 2.f;
 		KeepOffDecals();
@@ -1639,13 +1646,20 @@ void ALyudSeaIce::Drive(float SurfaceZ, float ThicknessCm, const FVector& Around
 	{
 		SetActorLocation(Snap);
 	}
-	const bool bMoved = FVector::DistSquared2D(Around, LaidAt) > FMath::Square(TileCm * 0.5f) || FMath::Abs(SurfaceZ - LaidZ) > 2.f;
+	// the layout depends only on the snapped centre, the level and the thickness: re-lay only when one of them moves
+	// (it used to re-lay every half tile walked, half the time to the very same boxes)
+	const double CX = FMath::RoundToDouble(Around.X / TileCm) * TileCm, CY = FMath::RoundToDouble(Around.Y / TileCm) * TileCm;
+	const float HalfT = FMath::Max(ThicknessCm * 0.5f, 4.f);
+	const bool bMoved = CX != LaidCX || CY != LaidCY || FMath::Abs(SurfaceZ - LaidZ) > 2.f || FMath::Abs(HalfT - LaidHalfT) > 1.f;
 	if (!bMoved && !bForce)
 	{
 		return;
 	}
 	LaidAt = Around;
 	LaidZ = SurfaceZ;
+	LaidCX = CX;
+	LaidCY = CY;
+	LaidHalfT = HalfT;
 	const int32 R = FMath::CeilToInt(ReachCm / TileCm);
 	const int32 Need = (2 * R + 1) * (2 * R + 1);
 	while (Tiles.Num() < Need)
@@ -1658,8 +1672,6 @@ void ALyudSeaIce::Drive(float SurfaceZ, float ThicknessCm, const FVector& Around
 		B->RegisterComponent();
 		Tiles.Add(B);
 	}
-	const double CX = FMath::RoundToDouble(Around.X / TileCm) * TileCm, CY = FMath::RoundToDouble(Around.Y / TileCm) * TileCm;
-	const float HalfT = FMath::Max(ThicknessCm * 0.5f, 4.f);
 	Solid = 0;
 	int32 K = 0;
 	for (int32 DY = -R; DY <= R; DY++)
@@ -1673,7 +1685,12 @@ void ALyudSeaIce::Drive(float SurfaceZ, float ThicknessCm, const FVector& Around
 			                   Walkable(X, Y) && Walkable(X - H, Y - H) && Walkable(X + H, Y - H) && Walkable(X - H, Y + H) && Walkable(X + H, Y + H);
 			if (bHold)
 			{
-				B->SetBoxExtent(FVector(TileCm * 0.5f, TileCm * 0.5f, HalfT), false);
+				// SetBoxExtent dirties the render state and rebuilds the body: only when it really changes
+				const FVector Ext(TileCm * 0.5f, TileCm * 0.5f, HalfT);
+				if (!B->GetUnscaledBoxExtent().Equals(Ext))
+				{
+					B->SetBoxExtent(Ext, false);
+				}
 				B->SetWorldLocation(FVector(X, Y, SurfaceZ - HalfT));
 				B->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 				Solid++;

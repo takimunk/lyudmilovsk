@@ -54,6 +54,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
 	float MaxDeadFraction = 0.92f;
 
+	/** The blinking pauses (lights left steady, clock held) while the view is further than this from the lights' box, cm. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flicker")
+	float ActiveRange = 6000.f;
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -69,4 +73,7 @@ private:
 	};
 	TArray<FFlickeringLight> Lights;
 	float Clock = 0.f;
+	/** Where the live lights stand (BeginPlay), for the far pause. */
+	FBox LightBox = FBox(ForceInit);
+	bool bPaused = false;
 };

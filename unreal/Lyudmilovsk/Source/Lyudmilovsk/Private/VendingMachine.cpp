@@ -4,6 +4,7 @@
 #include "BottleItem.h"
 #include "LyudGoodsItem.h"
 #include "Dom/JsonObject.h"
+#include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonReader.h"
@@ -47,13 +48,22 @@ namespace
 	TArray<FVendingSlot> LoadPreset(FName Preset)
 	{
 		TArray<FVendingSlot> Out;
-		FString Text;
-		if (!FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("Transport/lobby.json"))))
+		// every lobby's machine asks: parse the file once, again only when it changes on disk (an edit shows on the next Play)
+		static TSharedPtr<FJsonObject> Root;
+		static FDateTime Stamp;
+		const FString File = FPaths::ProjectContentDir() / TEXT("Transport/lobby.json");
+		const FDateTime Now = IFileManager::Get().GetTimeStamp(*File);
+		if (!Root.IsValid() || Now != Stamp)
 		{
-			return Out;
+			Root.Reset();
+			Stamp = Now;
+			FString Text;
+			if (FFileHelper::LoadFileToString(Text, *File))
+			{
+				FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root);
+			}
 		}
-		TSharedPtr<FJsonObject> Root;
-		if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root.IsValid())
+		if (!Root.IsValid())
 		{
 			return Out;
 		}
@@ -199,6 +209,7 @@ void AVendingMachine::StockShelvesUniversal()
 			if (G)
 			{
 				G->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+				ALyudGoodsItem::SetShelfStock(G);
 				Stock.Add(G);
 			}
 		}
@@ -230,6 +241,7 @@ void AVendingMachine::StockShelves()
 				if (Bag)
 				{
 					Bag->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+					ALyudGoodsItem::SetShelfStock(Bag);
 					Stock.Add(Bag);
 				}
 			}
@@ -251,6 +263,7 @@ void AVendingMachine::StockShelves()
 				B->SetActorRotation(FRotationMatrix::MakeFromZX(Neck, GetActorForwardVector()).Rotator());
 				B->SetActorScale3D(FVector(Scale));
 				B->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+				ALyudGoodsItem::SetShelfStock(B);
 				Stock.Add(B);
 			}
 		}
@@ -379,6 +392,12 @@ void AVendingMachine::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	UWorld* World = GetWorld();
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	// idle and the player far off (most machines, most of the time): nothing to show or hide, skip the rest
+	if (Hero && State == EState::Idle && !bPromptShown
+		&& FVector::DistSquared2D(Hero->GetActorLocation(), GetActorTransform().TransformPosition(FlapLocal)) > FMath::Square(UseDistance + 100.f))
+	{
+		return;
+	}
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	if (!Hero || !PC || !UI)
@@ -419,13 +438,19 @@ void AVendingMachine::Tick(float DeltaSeconds)
 			{
 				Reachable = Bag->MakeReachItem();
 			}
-			if (!Goods || !Reach || !Reach->Take(Reachable, [this, ItemId, Count]()
+			// the hand's steps outlive a machine torn down mid-reach (level end): hold it weakly
+			TWeakObjectPtr<AVendingMachine> Self(this);
+			if (!Goods || !Reach || !Reach->Take(Reachable, [Self, ItemId, Count]()
 			{
-				if (ULyudInventory* Inv = ULyudInventory::Get(this))
+				AVendingMachine* Me = Self.Get();
+				if (ULyudInventory* Inv = Me ? ULyudInventory::Get(Me) : nullptr)
 				{
 					Inv->Add(ItemId, Count);
 				}
-				State = EState::Idle;
+				if (Me)
+				{
+					Me->State = EState::Idle;
+				}
 			}))
 			{
 				// the hand is busy: the player gets it anyway
@@ -459,7 +484,7 @@ void AVendingMachine::Tick(float DeltaSeconds)
 	const bool bFront = FVector::DotProduct(GetActorForwardVector(), (Hero->GetActorLocation() - GetActorLocation()).GetSafeNormal2D()) > 0.3f;
 	const bool bLooking = FVector::DotProduct(PC->GetControlRotation().Vector(), ToMachine) > 0.55f;
 	const bool bNear = Flat < UseDistance && Flat > 35.f && FMath::Abs((Hero->GetActorLocation() - Flap).Z) < 130.f;
-	UHeroReachComponent* Reach = Hero->FindComponentByClass<UHeroReachComponent>();
+	UHeroReachComponent* Reach = Hero->FindReach();
 	const bool bFree = !UI->IsOpen() && !(Reach && Reach->IsBusy()) && !Hero->IsHidden();
 	if (bNear && bFront && bLooking && bFree)
 	{
@@ -472,9 +497,18 @@ void AVendingMachine::Tick(float DeltaSeconds)
 				Flavor = I;
 			}
 		}
-		UI->SetPrompt(this, PromptFor(Flavor));
-		bPromptShown = true;
 		const ULyudInventory* Inv = ULyudInventory::Get(this);
+		// the prompt's words change only with the choice, the money or the language: format them only then
+		const int32 Rubles = Inv ? Inv->Rubles : -1;
+		if (!bPromptShown || Flavor != PromptSel || Rubles != PromptRubles || PromptLanguage != LyudText::Language())
+		{
+			PromptCache = PromptFor(Flavor);
+			PromptSel = Flavor;
+			PromptRubles = Rubles;
+			PromptLanguage = LyudText::Language();
+		}
+		UI->SetPrompt(this, PromptCache);
+		bPromptShown = true;
 		if (PC->WasInputKeyJustPressed(EKeys::E) && Inv && Inv->Rubles >= PriceOf(Flavor))
 		{
 			Buy();

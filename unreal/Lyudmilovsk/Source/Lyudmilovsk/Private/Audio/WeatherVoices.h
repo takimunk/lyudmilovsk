@@ -39,7 +39,7 @@ namespace LyudAudio
 	private:
 		struct FPing
 		{
-			float Amp = 0.f, Decay = 0.f, Freq = 0.f, Glide = 1.f, Phase = 0.f, Pan = 0.f;
+			float Amp = 0.f, Decay = 0.f, Freq = 0.f, Glide = 1.f, Phase = 0.f, Pan = 0.f, GainL = 0.f, GainR = 0.f;
 			FSvf F;
 			int Kind = 0;      // 0 a sine (a bubble when Glide > 1, a ping of glass or ice), 1 a resonant click of noise
 			int Wait = 0;

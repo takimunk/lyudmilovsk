@@ -128,10 +128,22 @@ void FAnimalAnimProxy::PreUpdate(UAnimInstance* InAnimInstance, float DeltaSecon
 
 namespace
 {
-	FCompactPoseBoneIndex FindBone(const FBoneContainer& Bones, const TCHAR* Name)
+	FCompactPoseBoneIndex FindBone(const FBoneContainer& Bones, const FName& Name)
 	{
 		const int32 M = Bones.GetPoseBoneIndexForBoneName(Name);
 		return M == INDEX_NONE ? FCompactPoseBoneIndex(INDEX_NONE) : Bones.MakeCompactPoseIndex(FMeshPoseBoneIndex(M));
+	}
+
+	// FAnimalAnimProxy::BoneIdx's order
+	enum EAnimalBone { AB_Head, AB_Neck1, AB_Neck2, AB_Jaw, AB_Tail1, AB_EarL = AB_Tail1 + 9, AB_EarR, AB_Num };
+	static_assert(AB_Num == FAnimalAnimProxy::NumBones, "FAnimalAnimProxy::NumBones");
+
+	const FName& AnimalBoneName(int32 I)
+	{
+		static const FName Names[AB_Num] = { TEXT("head"), TEXT("neck_01"), TEXT("neck_02"), TEXT("jaw"),
+			TEXT("tail_01"), TEXT("tail_02"), TEXT("tail_03"), TEXT("tail_04"), TEXT("tail_05"), TEXT("tail_06"), TEXT("tail_07"),
+			TEXT("tail_08"), TEXT("tail_09"), TEXT("ear_l"), TEXT("ear_r") };
+		return Names[I];
 	}
 
 	FQuat RefCS(const FBoneContainer& Bones, FCompactPoseBoneIndex B)
@@ -152,9 +164,9 @@ namespace
 		}
 		FTransform T = CS.GetComponentSpaceTransform(B);
 		T.SetRotation((Delta * T.GetRotation()).GetNormalized());
-		TArray<FBoneTransform> Out;
-		Out.Add(FBoneTransform(B, T));
-		CS.SafeSetCSBoneTransforms(Out);
+		// one bone: from the stack, no array allocated per call
+		const FBoneTransform Out(B, T);
+		CS.SafeSetCSBoneTransforms(TConstArrayView<FBoneTransform>(&Out, 1));
 	}
 }
 
@@ -202,8 +214,16 @@ bool FAnimalAnimProxy::Evaluate(FPoseContext& Output)
 	}
 
 	const FBoneContainer& Bones = Output.Pose.GetBoneContainer();
-	const FCompactPoseBoneIndex Head = FindBone(Bones, TEXT("head")), Neck1 = FindBone(Bones, TEXT("neck_01")),
-		Neck2 = FindBone(Bones, TEXT("neck_02")), Jaw = FindBone(Bones, TEXT("jaw"));
+	if (BonesFor != &Bones || BonesSerial != Bones.GetSerialNumber() || BonesSerial == 0)
+	{
+		BonesFor = &Bones;
+		BonesSerial = Bones.GetSerialNumber();
+		for (int32 I = 0; I < AB_Num; I++)
+		{
+			BoneIdx[I] = FindBone(Bones, AnimalBoneName(I)).GetInt();
+		}
+	}
+	const FCompactPoseBoneIndex Head(BoneIdx[AB_Head]), Neck1(BoneIdx[AB_Neck1]), Neck2(BoneIdx[AB_Neck2]), Jaw(BoneIdx[AB_Jaw]);
 	if (!Head.IsValid())
 	{
 		return true;
@@ -215,7 +235,7 @@ bool FAnimalAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		for (int32 K = 1; K <= 9; K++)
 		{
-			const FCompactPoseBoneIndex T = FindBone(Bones, *FString::Printf(TEXT("tail_%02d"), K));
+			const FCompactPoseBoneIndex T(BoneIdx[AB_Tail1 + K - 1]);
 			if (!T.IsValid())
 			{
 				break;
@@ -255,14 +275,14 @@ bool FAnimalAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		const FQuat HeadQ = CS.GetComponentSpaceTransform(Head).GetRotation();
 		const FQuat HeadRef = RefCS(Bones, Head);
-		for (const TCHAR* Ear : { TEXT("ear_l"), TEXT("ear_r") })
+		for (int32 Ear = AB_EarL; Ear <= AB_EarR; Ear++)
 		{
-			const FCompactPoseBoneIndex E = FindBone(Bones, Ear);
+			const FCompactPoseBoneIndex E(BoneIdx[Ear]);
 			if (!E.IsValid())
 			{
 				continue;
 			}
-			const bool bLeft = Ear[4] == 'l';
+			const bool bLeft = Ear == AB_EarL;
 			const FVector Side = HeadQ.RotateVector(HeadRef.Inverse().RotateVector(FVector::YAxisVector));
 			const FVector Up = HeadQ.RotateVector(HeadRef.Inverse().RotateVector(FVector::ZAxisVector));
 			RotateCS(CS, E, FQuat(Up, FMath::DegreesToRadians(Over.EarsBackDeg * 0.4f * (bLeft ? -1.f : 1.f))) * FQuat(Side, FMath::DegreesToRadians(-Over.EarsBackDeg)));

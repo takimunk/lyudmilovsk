@@ -228,6 +228,9 @@ public:
 private:
 	TWeakObjectPtr<ULyudGameScreen> Screen;
 	TSharedPtr<SVerticalBox> Legend;
+	/** What the legend shows now (language and rows), to rebuild it only when that changes. */
+	FString LegendShown;
+	bool bLegendBuilt = false;
 
 	void RebuildLegend()
 	{
@@ -247,6 +250,18 @@ private:
 			Row->Flying += B.bFlying ? 1 : 0;
 		}
 		Rows.Sort([](const FRow& A, const FRow& B) { return A.N != B.N ? A.N > B.N : A.Species.LexicalLess(B.Species); });
+		// the same rows as last time (the usual case): keep the widgets, don't rebuild them every half second
+		FString Shown = LyudText::Language();
+		for (const FRow& Row : Rows)
+		{
+			Shown += FString::Printf(TEXT("|%s %d %d %s"), *Row.Species.ToString(), Row.N, Row.Flying, *Row.Color.ToString());
+		}
+		if (bLegendBuilt && Shown == LegendShown)
+		{
+			return;
+		}
+		bLegendBuilt = true;
+		LegendShown = MoveTemp(Shown);
 		Legend->ClearChildren();
 		if (Rows.Num() == 0)
 		{

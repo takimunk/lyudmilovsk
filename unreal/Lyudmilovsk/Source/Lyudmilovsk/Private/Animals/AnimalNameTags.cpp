@@ -144,9 +144,19 @@ bool AAnimalNameTags::PlayerBusy() const
 	{
 		return true;
 	}
-	for (TActorIterator<AHeroSeat> It(GetWorld()); It; ++It)
+	const double Now = GetWorld()->GetTimeSeconds();
+	if (Now - SeatsAt > 2.0 || Now < SeatsAt)
 	{
-		if (It->IsPlayerInRange())     // E there means "sit down"
+		SeatsAt = Now;
+		Seats.Reset();
+		for (TActorIterator<AHeroSeat> It(GetWorld()); It; ++It)
+		{
+			Seats.Add(*It);
+		}
+	}
+	for (const TWeakObjectPtr<AHeroSeat>& Seat : Seats)
+	{
+		if (Seat.IsValid() && Seat->IsPlayerInRange())     // E there means "sit down"
 		{
 			return true;
 		}

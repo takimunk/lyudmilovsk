@@ -58,7 +58,7 @@ void SLyudHud::Construct(const FArguments& InArgs)
 					SNew(SBorder).BorderImage(HudBrush()).Padding(FMargin(12, 5))
 					[
 						SNew(STextBlock).Font(Font(16)).ColorAndOpacity(Bright).ShadowOffset(FVector2D(1, 1)).ShadowColorAndOpacity(FLinearColor(0, 0, 0, 0.6f))
-						.Text_Lambda([WeakOwner]() { return LyudUIText::DateTime(UGameCalendar::NowIn(WeakOwner.IsValid() ? WeakOwner->GetWorld() : nullptr)); })
+						.Text(this, &SLyudHud::ClockText)
 					]
 				]
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Right).Padding(0, 8, 0, 0)[SAssignNew(QuestBox, SVerticalBox)]
@@ -70,6 +70,22 @@ void SLyudHud::Construct(const FArguments& InArgs)
 		]
 	];
 	RefreshQuest();
+}
+
+FText SLyudHud::ClockText() const
+{
+	// the text changes once a game minute (or with the language): build it only then, not every paint
+	const ULyudGameScreen* O = Owner.Get();
+	const FDateTime Now = UGameCalendar::NowIn(O ? O->GetWorld() : nullptr);
+	const int64 Minute = Now.GetTicks() / ETimespan::TicksPerMinute;
+	const FString& Lang = LyudText::Language();
+	if (Minute != ClockMinute || Lang != ClockLanguage)
+	{
+		ClockMinute = Minute;
+		ClockLanguage = Lang;
+		ClockCache = LyudUIText::DateTime(Now);
+	}
+	return ClockCache;
 }
 
 void SLyudHud::RefreshQuest()

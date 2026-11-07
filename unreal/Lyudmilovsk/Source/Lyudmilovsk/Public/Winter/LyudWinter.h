@@ -187,6 +187,8 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UBoxComponent>> Tiles;
 	FVector LaidAt = FVector(1e12);
 	float LaidZ = -1e9f;
+	double LaidCX = 1e12, LaidCY = 1e12;
+	float LaidHalfT = -1.f;
 	int32 Solid = 0;
 };
 
@@ -224,6 +226,9 @@ public:
 private:
 	UPROPERTY(Transient) TObjectPtr<UTextureRenderTarget2D> GroundRT;
 	UPROPERTY(Transient) TObjectPtr<UTextureRenderTarget2D> TrailRT;
+	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> NearCollection;
+	FVector2D LandOrigin = FVector2D::ZeroVector;
+	bool bHaveLandOrigin = false;
 	TArray<uint8> Trail;
 	TArray<float> Ground;
 	/** Per landscape vertex round the camera: how far the ground's own snow is sunk there (under the prints within 60 cm),

@@ -14,7 +14,8 @@ class USoundBase;
  */
 namespace LyudText
 {
-	FString Language();
+	/** The current lyud.Language (never empty; cached, refreshed when the cvar changes). */
+	const FString& Language();
 
 	/** The text for Key; {0} {1} ... in it are filled from Args. */
 	FText Get(const FString& Key, const TArray<FStringFormatArg>& Args = TArray<FStringFormatArg>());

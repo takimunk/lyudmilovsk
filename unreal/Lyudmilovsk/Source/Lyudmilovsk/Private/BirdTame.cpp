@@ -55,6 +55,9 @@ namespace
 	TAutoConsoleVariable<int32> CVarTame(TEXT("lyud.Tame"), 1,
 		TEXT("Befriending birds with feed (hold out the hand, crouch). 0 switches it off: no hand, no offer to the birds."));
 
+	TAutoConsoleVariable<int32> CVarTameLog(TEXT("lyud.Tame.Log"), 0,
+		TEXT("1 logs every notice/turn/watch/call/approach/eat/flee/focus of birds near the hero (LogTemp Log). Off: only at LogTemp Verbose."));
+
 	/** The open palm held out with the seeds: an arm's length in front, a little right, below the eyes, toward the bird;
 	 *  it dips a little with a look down (not much: a palm pulled in toward the shoes offers nothing). */
 	FHeroHoldPose OfferPose()
@@ -362,16 +365,21 @@ void UBirdTameSubsystem::TellBirds(bool bOn)
 #endif
 	if (bOn != bTold)
 	{
+		Murmurations.Reset();
 		for (TActorIterator<AStarlingMurmuration> It(World); It; ++It)
 		{
 			It->SetFeeding(bOn);
+			Murmurations.Add(*It);
 		}
 	}
 	if (bOn)
 	{
-		for (TActorIterator<AStarlingMurmuration> It(World); It; ++It)
+		for (const TWeakObjectPtr<AStarlingMurmuration>& M : Murmurations)
 		{
-			It->SetFeedHand(OfferAt);
+			if (AStarlingMurmuration* Flock = M.Get())
+			{
+				Flock->SetFeedHand(OfferAt);
+			}
 		}
 	}
 	bTold = bOn;
@@ -380,14 +388,30 @@ void UBirdTameSubsystem::TellBirds(bool bOn)
 void UBirdTameSubsystem::LogEvent(const TCHAR* What, int32 BirdId) const
 {
 #if LYUD_HAS_BIRDLIFE
+	// flocks make dozens of these a second: build nothing unless someone reads it
+	const bool bLogOn = CVarTameLog.GetValueOnGameThread() != 0;
+	if (!bLogOn && !UE_LOG_ACTIVE(LogTemp, Verbose))
+	{
+		return;
+	}
 	// only the birds near the hero (the log is for checking a befriending, not the whole coast)
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
 	const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
 	FBirdLifeInfo Info;
 	if (Pawn && Life && Life->GetBird(BirdId, Info) && FVector::Dist2D(Info.Location, Pawn->GetActorLocation()) < 3000.f)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Tame: bird %d %s at %.0f cm, alarm %.2f trust %.2f, offering %d"), BirdId, What,
-			FVector::Dist2D(Info.Location, Pawn->GetActorLocation()), Info.Alertness, Info.Trust, IsOffering() ? 1 : 0);
+		const float Dist = FVector::Dist2D(Info.Location, Pawn->GetActorLocation());
+		const int32 Offering = IsOffering() ? 1 : 0;
+		if (bLogOn)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Tame: bird %d %s at %.0f cm, alarm %.2f trust %.2f, offering %d"), BirdId, What,
+				Dist, Info.Alertness, Info.Trust, Offering);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Verbose, TEXT("Tame: bird %d %s at %.0f cm, alarm %.2f trust %.2f, offering %d"), BirdId, What,
+				Dist, Info.Alertness, Info.Trust, Offering);
+		}
 	}
 #endif
 }
@@ -758,6 +782,13 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 		const FQuat Rot = bAcross ? FRotationMatrix::MakeFromXY(PalmXf.GetUnitAxis(EAxis::Z), PalmXf.GetUnitAxis(EAxis::X)).ToQuat() : PalmXf.GetRotation();
 		Item->SetActorTransform(FTransform(Rot, PalmXf.TransformPosition(Offset)));
 		Item->AttachToComponent(Body, FAttachmentTransformRules::KeepWorldTransform, TEXT("hand_r"));
+		// lit as the hand is (the sky switches the hero's channels only when he goes in or out, so an item attached
+		// outdoors would otherwise stay on channel 0 and miss the sun)
+		TInlineComponentArray<UPrimitiveComponent*> Prims(Item);
+		for (UPrimitiveComponent* P : Prims)
+		{
+			P->SetLightingChannels(Body->LightingChannels.bChannel0, Body->LightingChannels.bChannel1, Body->LightingChannels.bChannel2);
+		}
 	};
 	if (Bag)
 	{
@@ -854,12 +885,25 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 	{
 		Hud = SNew(SLyudHeldItem);
 		Viewport->AddViewportWidgetContent(Hud.ToSharedRef(), 55);
+		HudItem = NAME_None;     // a new widget: filled below
 	}
 	const FName Id = Inv->EquippedItem();
-	const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Inv->Count(Id)) });
+	const int32 Count = Inv->Count(Id);
 	// calling a friend holds the empty palm out too (F lowers it)
-	const TCHAR* HintKey = bWantOffer || IsCalling() ? TEXT("ui.held.hint_out") : Hero->bIsCrouched ? TEXT("ui.held.hint_crouched") : TEXT("ui.held.hint");
-	Hud->Set(UI->IconBrush(Id), Title, LyudText::Get(HintKey));
+	static const TCHAR* const HintKeys[] = { TEXT("ui.held.hint_out"), TEXT("ui.held.hint_crouched"), TEXT("ui.held.hint") };
+	const int32 Hint = bWantOffer || IsCalling() ? 0 : Hero->bIsCrouched ? 1 : 2;
+	const FSlateBrush* Brush = UI->IconBrush(Id);
+	// the texts are formatted only when something in them changes (the item, its count, the hint, the language)
+	if (Id != HudItem || Count != HudCount || Hint != HudHint || Brush != HudBrush || LyudText::Language() != HudLanguage)
+	{
+		HudItem = Id;
+		HudCount = Count;
+		HudHint = Hint;
+		HudBrush = Brush;
+		HudLanguage = LyudText::Language();
+		const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Count) });
+		Hud->Set(Brush, Title, LyudText::Get(HintKeys[Hint]));
+	}
 	// the bird the palm is held out to: how it feels about the hero, so creeping can be judged
 	FText Bird;
 	float Alert = 0.f, Trust = 0.f;

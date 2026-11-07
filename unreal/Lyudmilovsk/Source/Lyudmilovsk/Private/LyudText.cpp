@@ -5,6 +5,9 @@
 #include "HAL/IConsoleManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Misc/ScopeLock.h"
+
+#include <atomic>
 
 static TAutoConsoleVariable<FString> CVarLanguage(
 	TEXT("lyud.Language"), TEXT("ru"),
@@ -83,17 +86,91 @@ namespace
 	}
 }
 
+namespace
+{
+	/**
+	 * The current language as an immutable, never-freed string: Language() is called every frame by the HUD and screens and may be
+	 * read off the game thread, so a cvar change swaps an atomic pointer to an interned copy instead of rewriting a shared string.
+	 */
+	std::atomic<const FString*> GLanguage{ nullptr };
+
+	const FString* InternLanguage(const FString& Raw)
+	{
+		static FCriticalSection Lock;
+		static TArray<const FString*> Interned;   // leaked on purpose: readers may hold a reference
+		const FString L = Raw.IsEmpty() ? FString(TEXT("ru")) : Raw;
+		FScopeLock Guard(&Lock);
+		for (const FString* S : Interned)
+		{
+			if (S->Equals(L, ESearchCase::CaseSensitive))
+			{
+				return S;
+			}
+		}
+		const FString* S = new FString(L);
+		Interned.Add(S);
+		return S;
+	}
+
+	void RefreshLanguage(IConsoleVariable* Var)
+	{
+		GLanguage.store(InternLanguage(Var ? Var->GetString() : FString()));
+	}
+
+	/** Paths LoadObject already failed for: a missing label or voice is not looked up on disk again (cleared by Reload). */
+	TSet<FString>& Missing()
+	{
+		static TSet<FString> M;
+		return M;
+	}
+
+	/** PathOf(lang) in the current language, else in Russian (tried once: not again when the language is Russian). */
+	template <typename T, typename FPathOf>
+	T* LoadLocalized(FPathOf PathOf)
+	{
+		const FString Lang = LyudText::Language();
+		const bool bGameThread = IsInGameThread();
+		const FString Langs[2] = { Lang, FString(TEXT("ru")) };
+		const int32 Tries = Lang == TEXT("ru") ? 1 : 2;
+		for (int32 I = 0; I < Tries; ++I)
+		{
+			const FString Path = PathOf(Langs[I]);
+			if (bGameThread && Missing().Contains(Path))
+			{
+				continue;
+			}
+			if (T* Obj = LoadObject<T>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
+			{
+				return Obj;
+			}
+			if (bGameThread)
+			{
+				Missing().Add(Path);
+			}
+		}
+		return nullptr;
+	}
+}
+
 namespace LyudText
 {
-	FString Language()
+	const FString& Language()
 	{
-		const FString L = CVarLanguage.GetValueOnAnyThread();
-		return L.IsEmpty() ? TEXT("ru") : L;
+		static const bool bBound = []
+		{
+			IConsoleVariable* Var = CVarLanguage.AsVariable();
+			RefreshLanguage(Var);
+			Var->OnChangedDelegate().AddStatic(&RefreshLanguage);
+			return true;
+		}();
+		(void)bBound;
+		return *GLanguage.load();
 	}
 
 	void Reload()
 	{
 		Tables().Reset();
+		Missing().Reset();
 	}
 
 	FText Get(const FString& Key, const TArray<FStringFormatArg>& Args)
@@ -112,28 +189,12 @@ namespace LyudText
 
 	UTexture2D* LoadTexture(const FString& Folder, const FString& Name)
 	{
-		for (const FString& Lang : { Language(), FString(TEXT("ru")) })
-		{
-			const FString Path = FString::Printf(TEXT("/Game/%s/Localized/%s/%s.%s"), *Folder, *Lang, *Name, *Name);
-			if (UTexture2D* T = LoadObject<UTexture2D>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
-			{
-				return T;
-			}
-		}
-		return nullptr;
+		return LoadLocalized<UTexture2D>([&](const FString& Lang) { return FString::Printf(TEXT("/Game/%s/Localized/%s/%s.%s"), *Folder, *Lang, *Name, *Name); });
 	}
 
 	USoundBase* LoadVoice(const FString& Key)
 	{
 		const FString Name = Key.Replace(TEXT("."), TEXT("_"));
-		for (const FString& Lang : { Language(), FString(TEXT("ru")) })
-		{
-			const FString Path = FString::Printf(TEXT("/Game/Voice/%s/V_%s.V_%s"), *Lang, *Name, *Name);
-			if (USoundBase* S = LoadObject<USoundBase>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet))
-			{
-				return S;
-			}
-		}
-		return nullptr;
+		return LoadLocalized<USoundBase>([&](const FString& Lang) { return FString::Printf(TEXT("/Game/Voice/%s/V_%s.V_%s"), *Lang, *Name, *Name); });
 	}
 }

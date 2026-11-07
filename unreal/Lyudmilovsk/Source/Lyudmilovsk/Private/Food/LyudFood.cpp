@@ -182,21 +182,23 @@ ULyudFoodSubsystem* ULyudFoodSubsystem::Get(const UObject* WorldContext)
 const FLyudFoodDef& ULyudFoodSubsystem::FindFood(FName Id)
 {
 	static const TMap<FName, FLyudFoodDef> Foods = LoadFoods();
-	static TMap<FName, FLyudFoodDef> Plain;
+	// each def on its own heap block: callers keep the returned reference while other ids are added (a map that grows
+	// moves its values)
+	static TMap<FName, TUniquePtr<FLyudFoodDef>> Plain;
 	if (const FLyudFoodDef* F = Foods.Find(Id); F && F->bHasMouth)
 	{
 		return *F;
 	}
-	if (const FLyudFoodDef* F = Plain.Find(Id))
+	if (const TUniquePtr<FLyudFoodDef>* F = Plain.Find(Id))
 	{
-		return *F;
+		return **F;
 	}
 	// any other food: its table look's size, held across the palm, bitten from its top
 	FLyudFoodDef F = Foods.Contains(Id) ? Foods[Id] : FLyudFoodDef();
 	const FLyudItemDef* Def = ULyudInventory::FindDef(Id);
 	const FVector Half = Def && Def->Look != ELyudItemLook::Auto ? Def->Size * 0.5f : FVector(Def ? Def->Radius : 4.f);
 	PlainGrip(F, Half);
-	return Plain.Add(Id, F);
+	return *Plain.Add(Id, MakeUnique<FLyudFoodDef>(F));
 }
 
 void ULyudFoodSubsystem::OnWorldBeginPlay(UWorld& InWorld)

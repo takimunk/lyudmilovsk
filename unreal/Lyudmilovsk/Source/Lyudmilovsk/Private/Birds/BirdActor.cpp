@@ -27,6 +27,10 @@ ABirdActor::ABirdActor()
 	Body->SetAnimInstanceClass(UBirdAnimInstance::StaticClass());
 	Body->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 	Body->bCastDynamicShadow = true;
+	// the outdoor sun and moon light channel 1 only (as the instanced birds have it): without it a bird changes
+	// brightness when it switches between instance and body
+	Body->LightingChannels.bChannel0 = true;
+	Body->LightingChannels.bChannel1 = true;
 }
 
 void ABirdActor::BeginPlay()
@@ -377,16 +381,18 @@ void ABirdActor::TickFlight(float DeltaSeconds)
 	{
 		return;
 	}
-	UAnimSequence* Flap = Clip(TEXT("Flap"));
-	UAnimSequence* Glide = Clip(TEXT("Glide"));
-	UAnimSequence* Bound = Clip(TEXT("Bound"));
+	// made once: an FName from a string per flying body per frame is a name-table lookup each
+	static const FName FlapName(TEXT("Flap")), GlideName(TEXT("Glide")), BoundName(TEXT("Bound"));
+	UAnimSequence* Flap = Clip(FlapName);
+	UAnimSequence* Glide = Clip(GlideName);
+	UAnimSequence* Bound = Clip(BoundName);
 	const float Climb = FMath::Clamp(Velocity.Z / 300.f, -1.f, 1.f);
 	if (bPlayer)
 	{
 		const float Beat = Data.WingbeatHz * (0.7f + 0.5f * InFlap + 0.15f * Climb);
-		A->Mix(TEXT("Flap"), Flap, InFlap * (1.f - InFold), Beat, 0.12f);
-		A->Mix(TEXT("Glide"), Glide, (1.f - InFlap) * (1.f - InFold), 1.f, 0.2f);
-		A->Mix(TEXT("Bound"), Bound, InFold, 1.f, 0.15f);
+		A->Mix(FlapName, Flap, InFlap * (1.f - InFold), Beat, 0.12f);
+		A->Mix(GlideName, Glide, (1.f - InFlap) * (1.f - InFold), 1.f, 0.2f);
+		A->Mix(BoundName, Bound, InFold, 1.f, 0.15f);
 		A->BankDeg = InBank * 30.f;
 		A->TailPitchDeg = -InPitch * 20.f;
 		return;
@@ -417,9 +423,9 @@ void ABirdActor::TickFlight(float DeltaSeconds)
 	}
 	const bool bFold = Data.Flight == EBirdFlightStyle::Bounding;
 	const float Beat = Data.WingbeatHz * (1.f + 0.2f * Climb);
-	A->Mix(TEXT("Flap"), Flap, bFlightBurst ? 1.f : 0.f, Beat, 0.08f);
-	A->Mix(TEXT("Glide"), Glide, !bFlightBurst && !bFold ? 1.f : 0.f, 1.f, 0.12f);
-	A->Mix(TEXT("Bound"), Bound, !bFlightBurst && bFold ? 1.f : 0.f, 1.f, 0.06f);
+	A->Mix(FlapName, Flap, bFlightBurst ? 1.f : 0.f, Beat, 0.08f);
+	A->Mix(GlideName, Glide, !bFlightBurst && !bFold ? 1.f : 0.f, 1.f, 0.12f);
+	A->Mix(BoundName, Bound, !bFlightBurst && bFold ? 1.f : 0.f, 1.f, 0.06f);
 }
 
 void ABirdActor::Tick(float DeltaSeconds)

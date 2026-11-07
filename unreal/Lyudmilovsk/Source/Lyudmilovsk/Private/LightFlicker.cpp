@@ -1,7 +1,9 @@
 #include "LightFlicker.h"
 
 #include "Components/LightComponent.h"
+#include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
 
 ALightFlicker::ALightFlicker()
 {
@@ -37,6 +39,7 @@ void ALightFlicker::BeginPlay()
 				Light->SetIntensity(0.f);
 				continue;
 			}
+			LightBox += Light->GetComponentLocation();
 			F.BaseIntensity = Light->Intensity * FMath::Lerp(1.f, FarGlow, Curve);
 			F.NextBlink = FMath::FRandRange(0.5f, FMath::Lerp(Interval.Y, FarInterval.Y, Curve));
 		}
@@ -46,6 +49,38 @@ void ALightFlicker::BeginPlay()
 void ALightFlicker::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	// far from the corridor nobody sees the blinks: leave the bulbs steady and hold the clock (the times are random anyway)
+	if (LightBox.IsValid)
+	{
+		const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC && PC->PlayerCameraManager)
+		{
+			FVector ViewLoc;
+			FRotator ViewRot;
+			PC->GetPlayerViewPoint(ViewLoc, ViewRot);
+			const bool bFar = LightBox.ComputeSquaredDistanceToPoint(ViewLoc) > FMath::Square(ActiveRange);
+			if (bFar)
+			{
+				if (!bPaused)
+				{
+					bPaused = true;
+					for (FFlickeringLight& F : Lights)
+					{
+						ULightComponent* Light = F.Light.Get();
+						if (Light && !F.bDead)
+						{
+							F.Dips.Reset();
+							F.NextBlink = FMath::Max(F.NextBlink, Clock);
+							Light->SetIntensity(F.BaseIntensity);
+						}
+					}
+				}
+				return;
+			}
+			bPaused = false;
+		}
+	}
 	Clock += DeltaSeconds;
 
 	for (FFlickeringLight& F : Lights)

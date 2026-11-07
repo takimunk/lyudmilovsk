@@ -101,25 +101,35 @@ namespace LyudBirdFeeds
 
 	void LikeTable(FName Feed, float Out[64], float Unknown)
 	{
-		static FName Cached;
-		static float Values[64];
-		static bool bCached = false;
 		const std::vector<LyudBirds::FSpecies>& Species = LyudBirds::SpeciesTable();
-		if (!bCached || Cached != Feed || Unknown != Values[63])
+		const int32 NumSpecies = FMath::Min<int32>((int32)Species.size(), 64);
+		// the species' names made once (63 FNames from UTF-8 per table was the cost)
+		static TArray<FName> Names;
+		// a table per feed and unknown value: the hand (unknown 1) and the feeders (unknown 0) ask in turn every frame,
+		// which kept missing a one-entry cache (the feeds' file is read once, so a table never goes stale)
+		struct FRow { float V[64]; };
+		static TMap<TPair<FName, float>, FRow> Cache;
+		if (Names.Num() != NumSpecies)
 		{
-			for (int32 I = 0; I < 63; ++I)
+			Names.Reset(NumSpecies);
+			for (int32 I = 0; I < NumSpecies; ++I)
 			{
-				Values[I] = I < (int32)Species.size() ? Like(Feed, FName(UTF8_TO_TCHAR(Species[I].Id.c_str())), Unknown) : Unknown;
+				Names.Add(FName(UTF8_TO_TCHAR(Species[I].Id.c_str())));
 			}
-			Values[63] = Unknown;           // (the last slot remembers what an unknown feed was given)
-			Cached = Feed;
-			bCached = true;
+			Cache.Reset();
 		}
-		FMemory::Memcpy(Out, Values, sizeof(Values));
-		if ((int32)Species.size() > 63)
+		const TPair<FName, float> Key(Feed, Unknown);
+		const FRow* Row = Cache.Find(Key);
+		if (!Row)
 		{
-			Out[63] = Like(Feed, FName(UTF8_TO_TCHAR(Species[63].Id.c_str())), Unknown);
+			FRow New;
+			for (int32 I = 0; I < 64; ++I)
+			{
+				New.V[I] = I < NumSpecies ? Like(Feed, Names[I], Unknown) : Unknown;
+			}
+			Row = &Cache.Add(Key, New);
 		}
+		FMemory::Memcpy(Out, Row->V, sizeof(Row->V));
 	}
 }
 
@@ -307,8 +317,20 @@ void ABirdFeeder::ShowFeed(FName Feed, float Handfuls)
 	{
 		return;
 	}
-	Paint(Heap, this, GrainColor(Feed, 1));
+	if (!HeapMat)
+	{
+		HeapMat = Paint(Heap, this, GrainColor(Feed, 1));
+		HeapFeed = Feed;
+	}
+	else if (HeapFeed != Feed)
+	{
+		HeapMat->SetVectorParameterValue(TEXT("Color"), GrainColor(Feed, 1));
+		HeapFeed = Feed;
+	}
 	FRandomStream Rand(2026);
+	// all at once (one add for the heap, not one per grain)
+	TArray<FTransform> Xf;
+	Xf.Reserve(Grains);
 	const float Radius = FMath::Min(TrayHalf - 4.f, 6.f + 2.2f * FMath::Sqrt((float)Grains));
 	for (int32 I = 0; I < Grains; ++I)
 	{
@@ -317,8 +339,9 @@ void ABirdFeeder::ShowFeed(FName Feed, float Handfuls)
 		const float Top = 0.04f * Radius * (1.f - FMath::Square(R / Radius)) * FMath::Min(Handfuls, 3.f);
 		const FVector P(R * FMath::Cos(A), R * FMath::Sin(A), Top * FMath::Sqrt(Rand.FRand()) + Size.Z * 0.5f);
 		const FRotator Rot(Rand.FRandRange(-20.f, 20.f), Rand.FRand() * 360.f, Rand.FRandRange(-20.f, 20.f));
-		Heap->AddInstance(FTransform(Rot, P, Size * 0.01f * Rand.FRandRange(0.85f, 1.15f)));
+		Xf.Add(FTransform(Rot, P, Size * 0.01f * Rand.FRandRange(0.85f, 1.15f)));
 	}
+	Heap->AddInstances(Xf, false);
 }
 
 // ------------------------------------------------------------------ the feeders
@@ -510,20 +533,32 @@ void UBirdFeederSubsystem::UpdatePrompt(APlayerController* PC)
 	const FLyudItemDef* Def = ULyudInventory::FindDef(Held);
 	const bool bFeed = Def && Def->Kind == ELyudItemKind::Feed;
 	const bool bHas = !S.Feed.IsNone() && S.Handfuls > 0.01f;
-	const FStringFormatArg In(bHas ? ULyudInventory::ItemName(S.Feed).ToString() : FString());
-	const FStringFormatArg Left(FMath::CeilToInt(S.Handfuls));
-	FText Text;
-	if (bFeed)
+	const bool bFull = S.Handfuls >= Capacity - 0.01f && S.Feed == Held;
+	const int32 Handfuls = FMath::CeilToInt(S.Handfuls);
+	const int32 Case = (bFeed ? 1 : 0) | (bHas ? 2 : 0) | (bFull ? 4 : 0);
+	// formatted only when what it says changes (standing at a feeder it was every frame)
+	if (Held != PromptHeld || S.Feed != PromptFeed || Handfuls != PromptLeft || Case != PromptCase || LyudText::Language() != PromptLanguage)
 	{
-		const FStringFormatArg What(ULyudInventory::ItemName(Held).ToString());
-		Text = S.Handfuls >= Capacity - 0.01f && S.Feed == Held ? LyudText::Get(TEXT("ui.feeder.full"), { In, Left })
-			: bHas ? LyudText::Get(TEXT("ui.feeder.fill"), { In, Left, What }) : LyudText::Get(TEXT("ui.feeder.fill_empty"), { What });
+		PromptHeld = Held;
+		PromptFeed = S.Feed;
+		PromptLeft = Handfuls;
+		PromptCase = Case;
+		PromptLanguage = LyudText::Language();
+		const FStringFormatArg In(bHas ? ULyudInventory::ItemName(S.Feed).ToString() : FString());
+		const FStringFormatArg Left(Handfuls);
+		if (bFeed)
+		{
+			const FStringFormatArg What(ULyudInventory::ItemName(Held).ToString());
+			PromptText = bFull ? LyudText::Get(TEXT("ui.feeder.full"), { In, Left })
+				: bHas ? LyudText::Get(TEXT("ui.feeder.fill"), { In, Left, What }) : LyudText::Get(TEXT("ui.feeder.fill_empty"), { What });
+		}
+		else
+		{
+			PromptText = bHas ? LyudText::Get(TEXT("ui.feeder.take"), { In, Left }) : LyudText::Get(TEXT("ui.feeder.take_empty"));
+		}
 	}
-	else
-	{
-		Text = bHas ? LyudText::Get(TEXT("ui.feeder.take"), { In, Left }) : LyudText::Get(TEXT("ui.feeder.take_empty"));
-	}
-	UI->SetPrompt(this, Text);
+	// set every frame all the same: another prompt (a door, the vending machine) may have taken the line meanwhile
+	UI->SetPrompt(this, PromptText);
 	bPrompt = true;
 	if (PC->WasInputKeyJustPressed(EKeys::E))
 	{

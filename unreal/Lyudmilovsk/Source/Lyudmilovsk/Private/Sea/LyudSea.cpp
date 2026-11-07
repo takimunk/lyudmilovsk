@@ -35,6 +35,8 @@
 
 namespace
 {
+	TAutoConsoleVariable<float> CVarSeaDepthMapMs(TEXT("lyud.Sea.DepthMapMs"), 12.f,
+		TEXT("In play, read the sea's depth map for at most this many ms a frame (0: only the cell budget)."));
 	TAutoConsoleVariable<int32> CVarSea(TEXT("lyud.Sea"), 1, TEXT("0: hide the sea (surface, seabed, underwater), for A/B benchmarks."));
 	TAutoConsoleVariable<int32> CVarSeaQuality(TEXT("lyud.Sea.Quality"), -1,
 		TEXT("Sea detail: 0 phone (64 x ~100 mesh, 20 + 16 wave trains), 1 medium, 2 desktop (128 x ~200, 64 + 48); -1 by platform."));
@@ -346,17 +348,12 @@ void ALyudSea::StepDepthMap(int32 Budget)
 	{
 		return;
 	}
-	TArray<ALandscapeProxy*> Proxies;
-	for (TActorIterator<ALandscapeProxy> It(World); It; ++It)
-	{
-		Proxies.Add(*It);
-	}
 	if (!bDepthStarted)
 	{
 		FBox Box(ForceInit);
-		for (ALandscapeProxy* P : Proxies)
+		for (TActorIterator<ALandscapeProxy> It(World); It; ++It)
 		{
-			Box += P->GetComponentsBoundingBox(true);
+			Box += It->GetComponentsBoundingBox(true);
 		}
 		// other ground the sea stands on (the railway's bank near the coast, its island: components tagged LyudSeaBed)
 		if (Box.IsValid)
@@ -381,22 +378,35 @@ void ALyudSea::StepDepthMap(int32 Budget)
 		DepthSize = Size;
 		Depth.Init(OpenSeaDepthM, DepthW * DepthH);
 		DepthRow = 0;
+		DepthCol = 0;
 	}
 	const float SeaZ = GetActorLocation().Z;
 	const double StartTime = FPlatformTime::Seconds();
+	// in play also a time budget (a complex trace is ~5-12 us: 8000 of them were a 50-100 ms frame); the cells
+	// and their values are the same, only spread over more frames
+	const float MaxMs = World->IsGameWorld() ? CVarSeaDepthMapMs.GetValueOnGameThread() : 0.f;
+	const double EndTime = MaxMs > 0.f ? StartTime + MaxMs * 0.001 : 0.0;
 	int32 Done = 0;
 	while (DepthRow < DepthH && Done < Budget)
 	{
 		const double Y = DepthMin.Y + (DepthRow + 0.5) * DepthSize.Y / DepthH;
-		for (int32 X = 0; X < DepthW; X++)
+		for (; DepthCol < DepthW && Done < Budget; DepthCol++, Done++)
 		{
+			const int32 X = DepthCol;
 			const FVector P((DepthMin.X + (X + 0.5) * DepthSize.X / DepthW) * 100.0, Y * 100.0, 0.0);
 			bool bOk;
 			const float Ground = GroundZ(P.X, P.Y, bOk);
 			Depth[DepthRow * DepthW + X] = bOk ? (SeaZ - Ground) * 0.01f : OpenSeaDepthM;
+			if (EndTime > 0.0 && (Done & 31) == 31 && FPlatformTime::Seconds() > EndTime)
+			{
+				Done = Budget;   // out of time: go on from the next cell next frame
+			}
 		}
-		Done += DepthW;
-		DepthRow++;
+		if (DepthCol >= DepthW)
+		{
+			DepthCol = 0;
+			DepthRow++;
+		}
 	}
 	if (IsDepthReady())
 	{
@@ -820,7 +830,14 @@ void ALyudSea::KeepSwimmerHeadUp(float DeltaSeconds)
 		return;
 	}
 	// a dry room under the bed (the water volume reaches down past it) or a scripted move: not the sea's to hold
-	ScriptHolders.Remove(nullptr);
+	// a holder that died while scripted: its weak key is stale, not null, so Remove(nullptr) never found it
+	for (auto It = ScriptHolders.CreateIterator(); It; ++It)
+	{
+		if (!It->IsValid())
+		{
+			It.RemoveCurrent();
+		}
+	}
 	if (ScriptHolders.Num() > 0 || IsInDryZone(C->GetActorLocation()))
 	{
 		bHoldingSwimmer = false;

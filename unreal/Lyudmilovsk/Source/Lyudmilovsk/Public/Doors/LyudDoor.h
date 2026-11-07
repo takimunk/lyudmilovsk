@@ -392,6 +392,8 @@ public:
 
 	/** Bodies that doors must not close on: the player and the agents (pawns and registered), with radii. */
 	void GetBodies(TArray<TPair<FVector, float>>& Out) const;
+	/** The same bodies one by one, without a list (true from Visit stops it); true if a visit returned true. */
+	bool AnyBody(TFunctionRef<bool(const FVector& At, float Radius)> Visit) const;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(ULyudDoorSubsystem, STATGROUP_Tickables); }

@@ -1,8 +1,9 @@
 #include "CurtainPusher.h"
 
+#include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
-#include "Kismet/KismetMaterialLibrary.h"
+#include "Materials/MaterialParameterCollectionInstance.h"
 
 ACurtainPusher::ACurtainPusher()
 {
@@ -38,6 +39,25 @@ void ACurtainPusher::Tick(float DeltaSeconds)
 			BestDist[1] = D;
 		}
 	}
-	UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Pusher0"), FLinearColor(Best[0]));
-	UKismetMaterialLibrary::SetVectorParameterValue(this, Collection, TEXT("Pusher1"), FLinearColor(Best[1]));
+	// nobody in range: the far value goes in once, then the collection is left alone
+	const bool bFar = BestDist[0] >= Range;
+	if (bFar && bWroteFar)
+	{
+		return;
+	}
+	UMaterialParameterCollectionInstance* Instance = CollectionInstance.Get();
+	if (!Instance || Instance->GetCollection() != Collection)
+	{
+		Instance = GetWorld()->GetParameterCollectionInstance(Collection);
+		CollectionInstance = Instance;
+	}
+	if (!Instance)
+	{
+		return;
+	}
+	static const FName Pusher0(TEXT("Pusher0"));
+	static const FName Pusher1(TEXT("Pusher1"));
+	Instance->SetVectorParameterValue(Pusher0, FLinearColor(Best[0]));
+	Instance->SetVectorParameterValue(Pusher1, FLinearColor(Best[1]));
+	bWroteFar = bFar;
 }
