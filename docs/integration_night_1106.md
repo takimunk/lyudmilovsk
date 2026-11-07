@@ -184,19 +184,19 @@ fallback (above). Nothing was lost in the resolutions.
 
 ## Offline suites
 
-Every `tools/*/run.sh` test target, on main `bb083dd0` and on the merge: round 1 `9be09292`, round 2 `947c7191`
-(`peoplesim` also on `9c3d9f4a`, after town-life's last commit), round 3 `f589d679`, and round 4 `e756a240` (`animalsim`
-and `winter` also on `b8d79afa`, after perfhunt's last commit). Round 4 ran every suite except birdsim, because it
-changes none of the bird sim's sources or data. Round 5 ran every suite on `559683ce`. After it, fishing's last commit
-got `fishing` and both `underwater` targets again (on `b8fae5b7`), and `loc/night-1106` changes only the string tables,
-which no suite reads. All five rounds gave the same results; the bird sim's output is the same line for line apart
-from timings.
+Every `tools/*/run.sh` test target, run in the cloud (Linux; birdsim below says why the platform matters), on main
+`bb083dd0` and on the merge: round 1 `9be09292`, round 2 `947c7191` (`peoplesim` also on `9c3d9f4a`, after town-life's
+last commit), round 3 `f589d679`, and round 4 `e756a240` (`animalsim` and `winter` also on `b8d79afa`, after perfhunt's
+last commit). Round 4 ran every suite except birdsim, because it changes none of the bird sim's sources or data. Round 5
+ran every suite on `559683ce`. After it, fishing's last commit got `fishing` and both `underwater` targets again (on
+`b8fae5b7`), and `loc/night-1106` changes only the string tables, which no suite reads. All five rounds gave the same
+results; the bird sim's output is the same line for line apart from timings.
 
 | Suite | main | merge |
 |---|---|---|
 | `animalsim test` | all passed | all passed |
 | `audiosim test` | 2 failed (thunderstorm peak, far-storm rumble) | the same 2 failed |
-| `birdsim test` | 121 passed, 1 failed (albatross) | 117 passed, 5 failed (see below) |
+| `birdsim test` | 121 passed, 1 failed (albatross); on the UE Mac 120 / 2 | 117 passed, 5 failed (see below); on the UE Mac 119 / 3 |
 | `peoplesim test` | all ok without `railway_built.json`; 1 failed with it ("a bike goes back home into its entrance") | all ok both ways |
 | `peoplesim town` (town-life) | n/a | all ok (both ways) |
 | `railsim test` | ok | ok |
@@ -209,9 +209,18 @@ from timings.
 | `fishing/run.sh` (fishing) | n/a | ALL OK |
 | `festivalsim test` (festivals) | n/a | all festival checks pass |
 
-**birdsim** is the one suite that gets worse. The bird world is deterministic (two runs of main gave the same result),
-but it is very sensitive to both tonight's changes to it, so each tree fails a different set of checks. Each branch was
-also run alone:
+**birdsim** is the one suite that gets worse. Its counts depend on the platform. All the numbers on this page are from
+the cloud: Linux x86_64, Ubuntu clang 18.1.3, libstdc++ 13, glibc 2.39. On one platform the bird world is
+deterministic: clean `git archive` exports of main `bb083dd0` and of the tip `775473a3`, with the LFS bird data
+checked against its pointers, give the same output line for line as the worktree runs (121 / 1 and 117 / 5). Across
+platforms it isn't. The perf thread gets 120 / 2 on main and 119 / 3 on the tip on the UE Mac (Apple clang, libc++).
+Turning on fused multiply-adds alone (arm64 compilers use them by default) changes 52 lines of main's output here
+(the feeder's food left 0.89 -> 0.00, the murmuration's distance offshore), though not which checks pass. So a check
+near its threshold can pass on one platform and fail on the other. Compare counts only between runs on the same
+platform. The tip is worse than main on both: by four checks here and by one on the Mac.
+
+It is very sensitive to both tonight's changes to it, so each tree fails a different set of checks. Each branch was
+also run alone (here, on Linux):
 
 | Tree | Failed checks |
 |---|---|
@@ -241,9 +250,11 @@ None of the eleven conflicts needs its owner: each is resolved here by keeping b
 to do:
 
 1. **city-terrain and perfhunt: birdsim.** Decide whether the new bird behaviour is right on the terraced town and
-   fix it or retune the checks (above). The blackbird nest checks are city-terrain's (bird habitats on the new ground);
-   the feeder, peregrine and gale checks show up only with perfhunt's hawk and sight change on that ground; perfhunt
-   alone also fails the low-tide gull check.
+   fix it or retune the checks (above). On Linux the blackbird nest checks are city-terrain's (bird habitats on the
+   new ground); the feeder, peregrine and gale checks show up only with perfhunt's hawk and sight change on that
+   ground; perfhunt alone also fails the low-tide gull check. On the UE Mac, the perf thread finds one failure more
+   than main (119 / 3 against 120 / 2), and that one is city-terrain's. The Mac is the platform the game is tested
+   on, so its list is the one to fix against.
 2. **public-spaces:** rerun `tools/public_spaces.py --strict` on the Mac with the built terrain after city-terrain is in
    main. The layout is unchanged on the merged plan, but heights from the built ground couldn't be checked here.
 3. **fishing:** the 37 icon pictures (`tools/fishing_icons.py` on the Mac), already known.
@@ -267,8 +278,10 @@ to do:
    uncooked `-game` run on its own: `ULyudPrefetch` scans a folder it has nothing for (perfhunt `0838303e`),
    `PeopleLife.cpp` scans `/Game/Characters/Humans/Town`, and `LyudRestaurant.cpp` scans `/Game/Restaurant/Meshes`.
    They don't clash; they could share perfhunt's one.
-8. **main, not tonight's branches:** `audiosim` has 2 failures; `birdsim` fails the albatross check; `peoplesim test`
-   fails the bike check when `railway_built.json` exists; `tools/sea/seatest.cpp` lacks `#include <algorithm>`.
+8. **main, not tonight's branches:** `audiosim` has 2 failures; `birdsim` fails the albatross check (on Linux; 2
+   checks fail on the Mac); `peoplesim test` fails the bike check when `railway_built.json` exists;
+   `tools/sea/seatest.cpp` lacks `#include <algorithm>`. The bird checks that sit near their thresholds flip
+   between platforms (above), so they need more margin, or every report should name the platform it ran on.
 
 Done since round 1: wt/city-buildings built the eight types of main's "buildings round 3" plan (`cobogo_house`,
 `capsule_cluster`, `origami_row`, `pilotis_curve_slab`, `ribbon_corner_block`, `cog_club`, `capsule_library`,
