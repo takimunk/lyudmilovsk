@@ -78,7 +78,7 @@ the terrace) x `d` (inland) metres, `height_max`, `staff` (hints for the life th
 | P-RESTAURANT | restaurant | amber_pavilion: the restaurant thread's «Янтарь» | T1 (at W1, over the promenade) |
 | P-CAFE | cafe | saucer_pavilion: Kyiv's «flying saucer» | T1 |
 | P-MARKET | market | shell_market: Candela's hypar umbrellas; the town's grocery | T1 |
-| P-STORE | shop | plain_block: department store | T1 |
+| P-STORE | shop | department_store: glazed floors, mosaic facade | T1 |
 | P-FAIR | fair | wave_canopy: Niemeyer's Ibirapuera marquise | T1 |
 | P-PARK | park | open: lawns, pond, playground | T1 |
 | P-CLUB2 | club | workers_club: Melnikov's Rusakov club; cinema, dances | T1 |
