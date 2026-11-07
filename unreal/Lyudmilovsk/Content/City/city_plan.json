@@ -2531,6 +2531,46 @@
    "name_en": "Clinic",
    "after": "A small two-storey modernist clinic"
   },
+  "cobogo_house": {
+   "name_ru": "Дом с кобогó",
+   "name_en": "Cobogó house",
+   "after": "Brazilian modernism: a low block behind a screen of cobogó breeze blocks (after Lucio Costa's Parque Guinle, Rio, 1948-54)"
+  },
+  "capsule_cluster": {
+   "name_ru": "Капсульный куст",
+   "name_en": "Capsule cluster",
+   "after": "Japanese metabolism: capsule flats plugged onto three short cores (after Kurokawa's Nakagin and Takara Beautilion, 1970-72)"
+  },
+  "origami_row": {
+   "name_ru": "Дома-оригами",
+   "name_en": "Origami row",
+   "after": "Terrace houses under folded concrete roof plates (after the folded-plate modernism of the 1950s-60s)"
+  },
+  "pilotis_curve_slab": {
+   "name_ru": "Изогнутый дом на ножках",
+   "name_en": "Curved pilotis slab",
+   "after": "Brazilian modernism: a curved slab on V-shaped pilotis with brise-soleil (after Niemeyer's Interbau block, Berlin, 1957, and his Rio housing)"
+  },
+  "ribbon_corner_block": {
+   "name_ru": "Угловой дом",
+   "name_en": "Ribbon corner block",
+   "after": "Constructivism: ribbon windows wrapping a corner and a glazed stair drum (after the 1920s-30s workers' housing of Moscow and Leningrad)"
+  },
+  "cog_club": {
+   "name_ru": "Клуб-шестерня",
+   "name_en": "Cog club",
+   "after": "Constructivism: a workers' club with a glazed drum and cantilevered halls in a gear-like plan (after Golosov's Zuev Club, Moscow, 1928, and Melnikov's clubs)"
+  },
+  "capsule_library": {
+   "name_ru": "Библиотека-капсула",
+   "name_en": "Capsule library",
+   "after": "Japanese metabolism: reading-room capsules plugged round a concrete core (after Kurokawa's capsules and Kikutake's Miyakonojo Civic Hall, 1966)"
+  },
+  "shell_chapel_hall": {
+   "name_ru": "Дом собраний под сводами",
+   "name_en": "Shell vault hall",
+   "after": "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"
+  },
   "plain_block": {
    "name_ru": "Дом",
    "name_en": "Plain block",
@@ -3367,7 +3407,7 @@
     449.48,
     -36.2
    ],
-   "building": "plain_block",
+   "building": "cobogo_house",
    "terrace": "T1",
    "s": 220.0,
    "y_along": 450.0,
@@ -3429,7 +3469,7 @@
     679.21,
     -36.2
    ],
-   "building": "plain_block",
+   "building": "capsule_cluster",
    "terrace": "T1",
    "s": 130.0,
    "y_along": 680.0,
@@ -3460,7 +3500,7 @@
     1377.81,
     -36.2
    ],
-   "building": "plain_block",
+   "building": "origami_row",
    "terrace": "T1",
    "s": 230.0,
    "y_along": 1380.0,
@@ -3685,6 +3725,65 @@
    ]
   },
   {
+   "id": "P-CLUB3",
+   "kind": "club",
+   "staff": [
+    [
+     "projectionist",
+     1,
+     [
+      15,
+      23
+     ],
+     "mon-sun"
+    ],
+    [
+     "dance_teacher",
+     1,
+     [
+      17,
+      21
+     ],
+     "tue-sat"
+    ],
+    [
+     "clerk",
+     1,
+     [
+      12,
+      21
+     ],
+     "mon-sun"
+    ]
+   ],
+   "front": [
+    -158.16,
+    1219.87,
+    -29.0
+   ],
+   "building": "cog_club",
+   "terrace": "T2",
+   "s": 375.0,
+   "y_along": 1222.0,
+   "map": [
+    -178.04,
+    1222.0,
+    -29.0
+   ],
+   "w": 40,
+   "d": 40,
+   "yaw": -6.1,
+   "height_max": 18,
+   "name_ru": "Клуб «Шестерня»",
+   "name_en": "Cog workers' club",
+   "notes": "the upper town's club between the cube houses and the school: hobby circles, a small hall for meetings and dances",
+   "ue": [
+    -17804.0,
+    122990.0,
+    -2900.0
+   ]
+  },
+  {
    "id": "P-WAVE",
    "kind": "residential",
    "staff": null,
@@ -3868,6 +3967,56 @@
    ]
   },
   {
+   "id": "P-LIBRARY",
+   "kind": "library",
+   "staff": [
+    [
+     "librarian",
+     2,
+     [
+      10,
+      20
+     ],
+     "tue-sun"
+    ],
+    [
+     "cleaner",
+     1,
+     [
+      7,
+      10
+     ],
+     "mon-sat"
+    ]
+   ],
+   "front": [
+    -411.06,
+    988.54,
+    -22.0
+   ],
+   "building": "capsule_library",
+   "terrace": "T3",
+   "s": 600.0,
+   "y_along": 990.0,
+   "map": [
+    -425.99,
+    990.0,
+    -22.0
+   ],
+   "w": 30,
+   "d": 30,
+   "yaw": -5.6,
+   "height_max": 20,
+   "name_ru": "Библиотека",
+   "name_en": "Capsule library",
+   "notes": "the town library and reading room, a short walk north of the zenit station",
+   "ue": [
+    -42599.0,
+    99790.0,
+    -2200.0
+   ]
+  },
+  {
    "id": "P-CAPSULE",
    "kind": "residential",
    "staff": null,
@@ -3938,7 +4087,7 @@
     559.58,
     -15.0
    ],
-   "building": "plain_block",
+   "building": "pilotis_curve_slab",
    "terrace": "T4",
    "s": 930.0,
    "y_along": 560.0,
@@ -3969,7 +4118,7 @@
     1378.54,
     -15.0
    ],
-   "building": "plain_block",
+   "building": "ribbon_corner_block",
    "terrace": "T4",
    "s": 750.0,
    "y_along": 1380.0,
@@ -3988,6 +4137,56 @@
    "ue": [
     -53322.0,
     138790.0,
+    -1500.0
+   ]
+  },
+  {
+   "id": "P-HALL",
+   "kind": "hall",
+   "staff": [
+    [
+     "caretaker",
+     1,
+     [
+      9,
+      22
+     ],
+     "mon-sun"
+    ],
+    [
+     "choir_leader",
+     1,
+     [
+      17,
+      21
+     ],
+     "wed-sun"
+    ]
+   ],
+   "front": [
+    -540.4,
+    1288.2,
+    -15.0
+   ],
+   "building": "shell_chapel_hall",
+   "terrace": "T4",
+   "s": 760.0,
+   "y_along": 1290.0,
+   "map": [
+    -555.29,
+    1290.0,
+    -15.0
+   ],
+   "w": 40,
+   "d": 30,
+   "yaw": -6.9,
+   "height_max": 14,
+   "name_ru": "Дом собраний «Своды»",
+   "name_en": "Vaults community hall",
+   "notes": "weddings, the choir, concerts and the residents' meetings; open to the sea view",
+   "ue": [
+    -55529.0,
+    129790.0,
     -1500.0
    ]
   },
