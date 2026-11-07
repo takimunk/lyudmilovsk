@@ -612,34 +612,111 @@ namespace CityKit
 		}
 
 		/** A small roundabout carousel: a striped cone roof on a pole, eight seats round a platform. */
+		/** The carousel's fixed part: a low ring step round it and the hub's foot (the rest turns: CarouselRotor). */
 		void Carousel(FMesh& M)
 		{
-			const FSkin Red = Paint(190, 40, 40), Wh = White(), Gold = Paint(210, 170, 70, 0.35f);
-			TArray<FVector2D> Base = { { 4.0, 0.0 }, { 4.0, 0.35 }, { 0.0, 0.35 } };
-			M.Lathe(FVector::ZeroVector, Base, 32, [&](int32 K, int32) { return K == 0 ? Red : Paint(150, 110, 70, 0.7f); });
-			M.Tube(FVector(0, 0, 0.35f), FVector(0, 0, 4.0f), 0.25f, 0.25f, 12, Gold, false, false);
-			TArray<FVector2D> Roof = { { 4.4, 3.6 }, { 4.4, 3.9 }, { 0.0, 5.4 } };
-			M.Lathe(FVector::ZeroVector, Roof, 16, [&](int32, int32 S) { return S % 2 ? Red : Wh; });
-			TArray<FVector2D> Under = { { 0.0, 5.3 }, { 4.35, 3.85 } };
-			M.Lathe(FVector::ZeroVector, Under, 16, [&](int32, int32 S) { FSkin K = S % 2 ? Red : Wh; K.Color *= 0.6f; return K; });
-			for (int32 I = 0; I < 8; I++)
-			{
-				const float A = 2.f * PI * I / 8;
-				const FVector P(FMath::Cos(A) * 3.2f, FMath::Sin(A) * 3.2f, 0.f);
-				M.Tube(P + FVector(0, 0, 0.35f), P + FVector(0, 0, 3.8f), 0.025f, 0.025f, 6, Gold, false, false);
-				const FRotator R(0.f, FMath::RadiansToDegrees(A) + 90.f, 0.f);
-				M.Box(P + FVector(0, 0, 1.0f), FVector(0.45f, 0.14f, 0.18f), Variant4(I), R, true);
-				M.Box(P + R.RotateVector(FVector(0.4f, 0, 1.35f)), FVector(0.1f, 0.08f, 0.22f), Variant4(I), R, true);
-			}
-			for (int32 I = 0; I < 16; I++)
-			{
-				const float A = 2.f * PI * I / 16;
-				M.Sphere(FVector(FMath::Cos(A) * 4.42f, FMath::Sin(A) * 4.42f, 3.62f), 0.06f, 6, Glass());
-			}
+			const FSkin Red = Paint(190, 40, 40), Gold = Paint(210, 170, 70, 0.35f), Step = Paint(150, 110, 70, 0.7f);
+			TArray<FVector2D> Ring = { { 4.75, 0.0 }, { 4.75, 0.18 }, { 4.2, 0.18 }, { 4.2, 0.05 } };
+			M.Lathe(FVector::ZeroVector, Ring, 40, [&](int32 K, int32) { return K == 0 ? Red : Step; });
+			TArray<FVector2D> Hub = { { 0.45, 0.0 }, { 0.45, 0.3 }, { 0.3, 0.38 } };
+			M.Lathe(FVector::ZeroVector, Hub, 16, [&](int32, int32) { return Gold; });
 			M.Collide(FVector(0, 0, 0.18f), FVector(4.f, 4.f, 0.18f));
 			M.Collide(FVector(0, 0, 2.f), FVector(0.3f, 0.3f, 2.f));
 		}
 
+		/** A small Ferris wheel's fixed frame: two A-frame legs either side of the wheel (its plane is XZ), the axle. */
+		void WheelFrame(FMesh& M)
+		{
+			const FSkin Fe = Paint(232, 228, 216, 0.5f), Base = Concrete(), Hub = Paint(196, 48, 40);
+			const float H = 9.2f;
+			for (float Y : { -1.1f, 1.1f })
+			{
+				M.Bar(FVector(-3.6f, Y * 1.6f, 0.4f), FVector(0, Y, H), 0.22f, 0.22f, Fe);
+				M.Bar(FVector(3.6f, Y * 1.6f, 0.4f), FVector(0, Y, H), 0.22f, 0.22f, Fe);
+				M.Bar(FVector(-2.4f, Y * 1.45f, 3.4f), FVector(2.4f, Y * 1.45f, 3.4f), 0.12f, 0.12f, Fe);
+				for (float X : { -3.6f, 3.6f }) M.Box(FVector(X, Y * 1.6f, 0.2f), FVector(0.5f, 0.5f, 0.2f), Base);
+			}
+			M.Tube(FVector(0, -1.35f, H), FVector(0, 1.35f, H), 0.18f, 0.18f, 12, Hub, true, true);
+			// the boarding platform under the lowest gondola
+			M.Box(FVector(0, 0, 0.22f), FVector(1.6f, 1.6f, 0.22f), Paint(120, 90, 60, 0.7f));
+			M.Collide(FVector(-3.6f, 0, 0.6f), FVector(0.6f, 2.0f, 0.6f));
+			M.Collide(FVector(3.6f, 0, 0.6f), FVector(0.6f, 2.0f, 0.6f));
+			M.Collide(FVector(0, 0, 0.22f), FVector(1.6f, 1.6f, 0.22f));
+		}
+	}
+
+	void BuildCarouselRotor(FMesh& M)
+	{
+		const FSkin Red = Paint(190, 40, 40), Wh = Paint(232, 228, 216, 0.6f), Gold = Paint(210, 170, 70, 0.35f);
+		TArray<FVector2D> Deck = { { 4.0, 0.05 }, { 4.0, 0.35 }, { 0.3, 0.35 } };
+		M.Lathe(FVector::ZeroVector, Deck, 32, [&](int32 K, int32) { return K == 0 ? Red : Paint(150, 110, 70, 0.7f); });
+		M.Tube(FVector(0, 0, 0.35f), FVector(0, 0, 4.0f), 0.25f, 0.25f, 12, Gold, false, false);
+		TArray<FVector2D> Roof = { { 4.4, 3.6 }, { 4.4, 3.9 }, { 0.0, 5.4 } };
+		M.Lathe(FVector::ZeroVector, Roof, 16, [&](int32, int32 S) { return S % 2 ? Red : Wh; });
+		TArray<FVector2D> Under = { { 0.0, 5.3 }, { 4.35, 3.85 } };
+		M.Lathe(FVector::ZeroVector, Under, 16, [&](int32, int32 S) { FSkin K = S % 2 ? Red : Wh; K.Color *= 0.6f; return K; });
+		for (int32 I = 0; I < 8; I++)
+		{
+			const float A = 2.f * PI * I / 8;
+			const FVector P(FMath::Cos(A) * 3.2f, FMath::Sin(A) * 3.2f, 0.f);
+			M.Tube(P + FVector(0, 0, 0.35f), P + FVector(0, 0, 3.8f), 0.025f, 0.025f, 6, Gold, false, false);
+			const FRotator R(0.f, FMath::RadiansToDegrees(A) + 90.f, 0.f);
+			M.Box(P + FVector(0, 0, 1.0f), FVector(0.45f, 0.14f, 0.18f), Variant4(I), R, true);
+			M.Box(P + R.RotateVector(FVector(0.4f, 0, 1.35f)), FVector(0.1f, 0.08f, 0.22f), Variant4(I), R, true);
+		}
+		for (int32 I = 0; I < 16; I++)
+		{
+			const float A = 2.f * PI * I / 16;
+			M.Sphere(FVector(FMath::Cos(A) * 4.42f, FMath::Sin(A) * 4.42f, 3.62f), 0.06f, 6, Glass());
+		}
+	}
+
+	void BuildWheelRotor(FMesh& M, float R, int32 Gondolas)
+	{
+		// in the wheel's own frame: the axle along Y at the origin, the rim in the XZ plane
+		const FSkin Fe = Paint(232, 228, 216, 0.5f), Blue = Paint(40, 92, 160, 0.55f);
+		const int32 N = 48;
+		for (float Y : { -0.55f, 0.55f })
+		{
+			for (int32 I = 0; I < N; I++)
+			{
+				const float A0 = 2.f * PI * I / N, A1 = 2.f * PI * (I + 1) / N;
+				M.Bar(FVector(FMath::Cos(A0) * R, Y, FMath::Sin(A0) * R), FVector(FMath::Cos(A1) * R, Y, FMath::Sin(A1) * R), 0.12f, 0.12f, Blue);
+				M.Bar(FVector(FMath::Cos(A0) * R * 0.55f, Y, FMath::Sin(A0) * R * 0.55f), FVector(FMath::Cos(A1) * R * 0.55f, Y, FMath::Sin(A1) * R * 0.55f), 0.07f, 0.07f, Fe);
+			}
+			for (int32 I = 0; I < Gondolas * 2; I++)
+			{
+				const float A = 2.f * PI * I / (Gondolas * 2);
+				M.Bar(FVector(0, Y, 0), FVector(FMath::Cos(A) * R, Y, FMath::Sin(A) * R), 0.05f, 0.05f, Fe);
+			}
+		}
+		for (int32 I = 0; I < Gondolas; I++)
+		{
+			const float A = 2.f * PI * I / Gondolas;
+			M.Bar(FVector(FMath::Cos(A) * R, -0.6f, FMath::Sin(A) * R), FVector(FMath::Cos(A) * R, 0.6f, FMath::Sin(A) * R), 0.06f, 0.06f, Fe);
+		}
+		for (int32 I = 0; I < Gondolas * 3; I++)
+		{
+			const float A = 2.f * PI * (I + 0.5f) / (Gondolas * 3);
+			for (float Y : { -0.62f, 0.62f }) M.Sphere(FVector(FMath::Cos(A) * R, Y, FMath::Sin(A) * R), 0.07f, 6, Glass());
+		}
+	}
+
+	void BuildGondola(FMesh& M, int32 Variant)
+	{
+		// hangs from its pivot at the origin: a hanger and an open car below
+		const FSkin Fe = Paint(232, 228, 216, 0.5f), Car = Variant4(Variant), Seat = Paint(120, 90, 60, 0.7f);
+		for (float Y : { -0.5f, 0.5f }) M.Bar(FVector(0, Y, 0), FVector(0, Y * 0.9f, -1.0f), 0.04f, 0.04f, Fe);
+		M.Box(FVector(0, 0, -1.25f), FVector(0.65f, 0.55f, 0.04f), Car, FRotator::ZeroRotator, true);
+		for (float X : { -0.62f, 0.62f }) M.Box(FVector(X, 0, -1.05f), FVector(0.03f, 0.55f, 0.2f), Car, FRotator::ZeroRotator, true);
+		for (float Y : { -0.52f, 0.52f }) M.Box(FVector(0, Y, -1.05f), FVector(0.65f, 0.03f, 0.2f), Car, FRotator::ZeroRotator, true);
+		for (float X : { -0.4f, 0.4f }) M.Box(FVector(X, 0, -1.08f), FVector(0.15f, 0.5f, 0.06f), Seat, FRotator::ZeroRotator, true);
+		TArray<FVector2D> Canopy = { { 0.75, -0.25 }, { 0.0, -0.05 } };
+		M.Lathe(FVector::ZeroVector, Canopy, 8, [&](int32, int32 S) { return S % 2 ? Car : Fe; });
+	}
+
+	namespace
+	{
 		void Swings(FMesh& M)
 		{
 			const FSkin Fe = Paint(40, 92, 160), Ch = Paint(160, 160, 160, 0.4f), Seat = Paint(214, 150, 34);
@@ -767,6 +844,7 @@ namespace CityKit
 		else if (K == TEXT("stage")) Stage(M);
 		else if (K == TEXT("stall")) Stall(M, V);
 		else if (K == TEXT("carousel")) Carousel(M);
+		else if (K == TEXT("wheel")) WheelFrame(M);
 		else if (K == TEXT("swings")) Swings(M);
 		else if (K == TEXT("slide")) Slide(M);
 		else if (K == TEXT("climber")) Climber(M);

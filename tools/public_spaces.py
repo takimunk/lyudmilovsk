@@ -233,6 +233,13 @@ def promenade(L):
             x, yy, _ = s["map"]
             L.bench(sid, x, yy, z, s["yaw"], style="promenade", terrace="T0", area="promenade",
                     name_ru=s.get("name_ru"), name_en=s.get("name_en"))
+    # more by W1, halfway between the plan's (the grannies fill these first: backs to the shops, the sea in front)
+    for sid, sp_ in sorted(P.spots.items()):
+        if sid.startswith("S-BENCH-P") and sid[9:].isdigit():
+            bx0, by0, _ = sp_["map"]
+            yy = by0 + 20.0
+            if yy < y1 - 6.0 and L.free(62.0, yy, 1.5) and abs(yy - 905.0) > 36.0:
+                L.bench(L.uid("S-BENCH-PM"), *at(62.0, yy), z, sea_yaw(yy), style="promenade", terrace="T0", area="promenade")
     y = y0 + 40.0
     while y < y1 - 10.0:
         sy = y + 20.0
@@ -257,6 +264,14 @@ def promenade(L):
             L.tree("Maple", x, yy, z, L.rnd.uniform(18, 32))
             L.prop("tree_grate", x, yy, z, sea_yaw(y))
         y += 20.0
+    # small round beds in the granite band, every 120 m halfway between two maples
+    y = y0 + 70.0
+    k = 0
+    while y < y1 - 20.0:
+        if L.free(45.5, y, 2.0) and abs(y - 905.0) > 16.0:
+            flowerbed(L, *at(45.5, y), z, 1.25, 20 + k, outer=5, inner=0)
+            k += 1
+        y += 120.0
     for k, (sid, s) in enumerate(sorted((i, s) for i, s in P.spots.items() if i.startswith("S-BENCH-P"))):
         if k % 2 == 0:
             x, yy, _ = s["map"]
@@ -335,6 +350,35 @@ def beach(L):
             x, py = at(21.5, y)
             L.prop("changing_booth", x, py, ground(x, py), sea_yaw(y))
     L.d["areas"].append({"id": "beach", "name": "place.beach.name", "at": L.ue(*at(12.0, 1000.0), W.SEA_Z + 1.2), "r": 450.0})
+
+
+# --- planters along the top of W1 (the lower town's edge over the promenade) ---------------------------------------
+def w1_planters(L):
+    """Long low planters on T1 just behind W1's parapet, every 45 m where no stair, grand flight or plot is: spiraea and
+    day lilies over the promenade. Clear of the plan lead's street-tree strips (those stand in front of W2..W5)."""
+    P = L.P
+    z = P.tz["T1"]
+    y = C.CITY_Y0 + 20.0
+    k = 0
+    rects = []
+    for pid, p in P.plots.items():
+        yy = p["map"][1]
+        sp = W.inland(p["map"][0], yy)
+        rects.append((yy - p["w"] / 2 - 3, yy + p["w"] / 2 + 3, sp - p["d"] / 2 - 3, sp + p["d"] / 2 + 3))
+    near_stair = [b["mid"][1] for b in P.bays.get("W1", []) if b["kind"] in ("stair", "grand")]
+    while y < C.CITY_Y1 - 20.0:
+        s = C.wall_s(0, y) + 2.4
+        if not any(abs(y - sy) < 12.0 for sy in near_stair) and not any(a < y < b and c < s < d for a, b, c, d in rects):
+            x, yy = at(s, y)
+            yaw = sea_yaw(y) + 90.0
+            L.box("planter", x, yy, yaw, 6.0, 1.1, z - 0.2, z + 0.45, "granite")
+            a = math.radians(yaw)
+            for j in range(3):
+                o = (j - 1) * 1.9
+                L.plant("Spiraea" if j != 1 else ("DayLily" if k % 2 else "Aster"), x + math.cos(a) * o, yy + math.sin(a) * o, z + 0.45,
+                        4.0 if j != 1 else 2.0)
+            k += 1
+        y += 45.0
 
 
 # --- Sun Square --------------------------------------------------------------------------------------------------
@@ -462,18 +506,28 @@ def square(L):
         L.spot("S-SQUARE-AUDIENCE", "square", gx + 20.0, gy, z, 180.0, seats=len(aud), slots=aud, sub="audience")
 
 
-def flowerbed(L, x, y, z, r, seed):
+# flowerbed mixes (outer ring, inner ring, middle): each bed takes one by its seed, so the town's beds differ
+BED_MIXES = [
+    (("Marigold", "Aster"), ("Cosmos",), "DayLily"),
+    (("Cosmos", "Marigold"), ("Aster",), "Spiraea"),
+    (("Aster", "Cosmos"), ("DayLily",), "DayLily"),
+    (("Heather", "Marigold"), ("Cosmos",), "Spiraea"),
+]
+
+
+def flowerbed(L, x, y, z, r, seed, outer=10, inner=5):
     """A round raised bed: a granite kerb (prop), flowers inside (procedural plants of the season)."""
     L.prop("flowerbed", x, y, z, 0.0, r=r)
     rnd = random.Random(seed * 7 + 3)
     zz = z + 0.32
-    for j in range(10):
-        a = 2 * math.pi * j / 10 + rnd.uniform(-0.1, 0.1)
-        L.plant("Marigold" if j % 2 else "Aster", x + math.cos(a) * r * 0.74, y + math.sin(a) * r * 0.74, zz, 1.0)
-    for j in range(5):
-        a = 2 * math.pi * j / 5 + 0.4
-        L.plant("Cosmos", x + math.cos(a) * r * 0.4, y + math.sin(a) * r * 0.4, zz, 1.0)
-    L.plant("DayLily", x, y, zz, 2.0)
+    o, i, mid = BED_MIXES[seed % len(BED_MIXES)]
+    for j in range(outer):
+        a = 2 * math.pi * j / outer + rnd.uniform(-0.1, 0.1)
+        L.plant(o[j % len(o)], x + math.cos(a) * r * 0.74, y + math.sin(a) * r * 0.74, zz, 1.0)
+    for j in range(inner):
+        a = 2 * math.pi * j / max(inner, 1) + 0.4
+        L.plant(i[j % len(i)], x + math.cos(a) * r * 0.4, y + math.sin(a) * r * 0.4, zz, 1.0)
+    L.plant(mid, x, y, zz, 2.0 if mid != "Spiraea" else 4.0)
 
 
 # --- the seaside park ----------------------------------------------------------------------------------------------
@@ -554,9 +608,9 @@ def park(L):
             ((-4.0, -3.5), (-2.0, -6.0), (2.0, -4.0), (6.0, -6.0), (2.0, 5.0), (-2.0, 3.0), (0.0, 1.5), (-6.0, 5.0))]
     L.spot("S-PLAYGROUND", "playground", qx, qy, z, sea_yaw(gy), seats=len(kids), slots=kids, name_ru=plp.get("name_ru"),
            name_en=plp.get("name_en"))
-    for k, (ds, dy) in enumerate(((-11.0, -6.0), (-11.0, 0.0), (-11.0, 6.0))):
+    for k, (ds, dy) in enumerate(((-11.0, -6.0), (-11.0, 0.0), (-11.0, 6.0), (11.0, -6.0), (11.0, 0.0), (11.0, 6.0))):
         bx, by = at(gs + ds, gy + dy)
-        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(gy) + 180.0, area="playground", terrace="T1",
+        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(gy) + (180.0 if ds < 0 else 0.0), area="playground", terrace="T1",
                 sub="parents")
     # benches and lamps along the loop and the avenue
     for a, b in zip(loop, loop[1:]):
@@ -581,6 +635,10 @@ def park(L):
         if math.hypot(sm - ps, y - py_) < ry + 4:
             continue
         L.lamp(*at(sm + (3.4 if k % 2 else -3.4), y), z, kind="lamp_park", area="park")
+    # the south entrance: a pair facing each other across the avenue's mouth (the grannies' first stop)
+    for side in (-1, 1):
+        bx, by = at(sm + side * 4.6, y0 + 3.0)
+        L.bench(L.uid("S-BENCH-PK"), bx, by, z, sea_yaw(y0) + (180.0 if side > 0 else 0.0), area="park_entrance", terrace="T1")
     for sid in ("S-BENCH-03", "S-BENCH-04"):
         s = P.spots.get(sid)
         if s:
@@ -617,8 +675,8 @@ def park(L):
             if blocked(s, y) or math.hypot(s - ps, y - py_) < ry + 4 or math.hypot(s - gs, y - gy) < 15:
                 continue
             L.tree(sp, *at(s, y), z, L.rnd.uniform(12, 30))
-    for k in range(int((y1 - y0) / 4.0)):
-        y = y0 + 2.0 + k * 4.0
+    for k in range(int((y1 - y0) / 5.0)):
+        y = y0 + 2.5 + k * 5.0
         if abs(y - (y0 + 75.0)) < 4 or abs(y - (y0 + 225.0)) < 4 or blocked(s0 + 2.0, y):
             continue
         L.plant("Privet", *at(s0 + 2.0, y), z, 6.0)
@@ -627,6 +685,49 @@ def park(L):
             L.plant("Spiraea", *at(gs_ + k * 1.6, gy_ + (k % 2) * 1.4), z, 5.0)
     for side in (-1, 1):
         flowerbed(L, *at(sm + side * 14.0, y0 + 75.0), z, 2.6, 10 + side)
+        flowerbed(L, *at(sm + side * 14.0, y0 + 225.0), z, 2.2, 12 + side)
+    # a conifer corner (pines and spruce over lingonberry and bilberry), an aspen copse, ferns under the birches,
+    # heather and juniper on the pond's inland side
+    for k, (sp, n) in enumerate((("ScotsPine", 4), ("NorwaySpruce", 3))):
+        for j in range(n):
+            a = L.rnd.uniform(0, 2 * math.pi)
+            ss, yy = s1 - 22 + math.cos(a) * L.rnd.uniform(2, 9), y1 - 70 + math.sin(a) * L.rnd.uniform(2, 9)
+            if not blocked(ss, yy) and math.hypot(ss - ps, yy - py_) > ry + 6:
+                L.tree(sp, *at(ss, yy), z, L.rnd.uniform(25, 45))
+    for j in range(8):
+        ss, yy = s1 - 22 + L.rnd.uniform(-8, 8), y1 - 70 + L.rnd.uniform(-8, 8)
+        if not blocked(ss, yy) and math.hypot(ss - ps, yy - py_) > ry + 4:
+            L.plant("Lingonberry" if j % 2 else "Bilberry", *at(ss, yy), z, 3.0)
+    for j in range(5):
+        a = L.rnd.uniform(0, 2 * math.pi)
+        ss, yy = s0 + 26 + math.cos(a) * L.rnd.uniform(2, 7), y0 + 110 + math.sin(a) * L.rnd.uniform(2, 7)
+        if not blocked(ss, yy) and math.hypot(ss - gs, yy - gy) > 16:
+            L.tree("Aspen", *at(ss, yy), z, L.rnd.uniform(14, 28))
+    for (gs_, gy_) in ((s1 - 25, y0 + 45), (s1 - 26, y0 + 150), (s1 - 28, y1 - 30)):
+        for j in range(4):
+            L.plant("Bracken" if j % 2 else "BucklerFern", *at(gs_ + L.rnd.uniform(-5, 5), gy_ + L.rnd.uniform(-5, 5)), z, 3.0)
+    for j in range(7):
+        a = math.pi * 0.15 + math.pi * 0.7 * j / 6
+        L.plant("Heather" if j % 3 else "Juniper", px - math.cos(a) * (rx + 2.0), py + math.sin(a) * (ry + 2.0) * 0.0 + (j - 3) * 3.2, z,
+                4.0 if j % 3 else 8.0)
+
+
+# the fair's stall themes and their goods (items of LyudInventory.cpp: icons and names exist): item, price, count
+FAIR_THEMES = {
+    "pastry": [("pie", 15, 6), ("cookies", 18, 4), ("bread_loaf", 11, 3)],
+    "sweets": [("candy", 7, 10), ("chocolate", 22, 4), ("ice_cream", 28, 6)],
+    "cheese": [("cheese_braid", 24, 4), ("cheese_round_small", 38, 2), ("cheese_round_big", 100, 1)],
+    "dairy": [("kefir", 13, 6), ("bread_loaf", 12, 3)],
+    "corn": [("corn_cob", 14, 8), ("seeds", 9, 6)],
+    "tea": [("tea", 12, 8), ("coffee", 25, 6)],
+    "amber": [("amber_charm", 85, 3), ("postcard", 4, 10), ("badge", 11, 5)],
+    "fruit": [("apple", 6, 12)],
+    "drinks": [("drink_baikal", 18, 6), ("drink_buratino", 18, 6), ("drink_dyushes", 18, 6), ("drink_tarkhun", 18, 6),
+               ("water", 15, 6)],
+    "news": [("daily_paper", 5, 8), ("magazine_science", 38, 3), ("magazine_travel", 38, 3)],
+    "birds": [("bird_feed", 9, 6), ("feed_grain", 14, 4), ("feed_peanuts", 28, 4)],
+    "snacks": [("chips", 32, 6), ("seeds", 9, 6)],
+}
 
 
 # --- the fair ------------------------------------------------------------------------------------------------------
@@ -637,32 +738,61 @@ def fair(L):
     L.pave("fair", s0, s1, y0, y1, z - PAVE, "square", tile=8.0)
     yc = (y0 + y1) / 2
     L.d["areas"].append({"id": "fair", "name": "place.fair.name", "at": L.ue(*at((s0 + s1) / 2, yc), z), "r": 80.0})
-    goods = ["honey", "smoked_fish", "pastry", "toys", "pickles", "flowers", "amber", "tea", "berries", "knits",
-             "pottery", "corn"]
+    goods = list(FAIR_THEMES)
     n = 0
+    n_staffed = 0
     lane = s0 + 30.0
     for (s, face) in ((lane - 5.5, 1), (lane + 5.5, -1), (s1 - 6.0, -1)):
         y = y0 + 8.0
         while y < y1 - 8.0:
-            if s == s1 - 6.0 and abs(y - yc) < 22.0:
+            if s == s1 - 6.0 and (abs(y - yc) < 22.0 or y > y1 - 34.0):
                 y += 7.0
                 continue
             x, py = at(s, y)
             yaw = sea_yaw(y) + (180.0 if face > 0 else 0.0)    # the lane's rows face it, the far row the promenade
             sid = "S-FAIR-STALL%02d" % (n + 1)
-            g = goods[n % len(goods)]
+            staffed = s != s1 - 6.0 and abs(y - yc) < 22.0          # the twelve stalls in the lane's middle have sellers
+            if staffed:
+                g = goods[n_staffed % len(goods)]                   # one of each theme among the staffed
+                n_staffed += 1
+            else:
+                g = goods[(n * 5 + 3) % len(goods)]
             L.prop("stall", x, py, z, yaw, variant=n % 4, goods=g, id=sid)
+            L.d.setdefault("fair_goods", {})[sid] = {"theme": g, "title_key": "ui.shop.title_fair_" + g, "staffed": staffed,
+                                                     "goods": [{"item": i, "price": pr, "count": c} for i, pr, c in FAIR_THEMES[g]]}
             a = math.radians(yaw)
             fx, fy = math.cos(a), math.sin(a)
             cust = [stand(L, x + fx * 1.5 - fy * o, py + fy * 1.5 + fx * o, z, yaw + 180.0) for o in (-0.8, 0.0, 0.8)]
-            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, slots=cust, sub="customers",
+            L.spot(sid, "fair", x + fx * 1.5, py + fy * 1.5, z, yaw + 180.0, seats=3, slots=cust, sub="customers", staffed=staffed,
                    seller={"pos": L.ue(x - fx * 0.7, py - fy * 0.7, z), "yaw": round(yaw, 2)}, goods=g)
             n += 1
             y += 7.0
     # a carousel in the open middle of the far row, lamps along the lane, benches at its ends
     cx, cy = at(s1 - 12.0, yc)
     L.prop("carousel", cx, cy, z, 0.0)
+    L.d.setdefault("rides", []).append({"kind": "carousel", "at": L.ue(cx, cy, z), "yaw": 0.0})
     L.d["lights"].append({"at": L.ue(cx, cy, z + 5.5), "area": "fair", "kind": "carousel"})
+    seats = []
+    for k in range(8):
+        a = 2 * math.pi * k / 8
+        seats.append({"pos": L.ue(cx + math.cos(a) * 3.2, cy + math.sin(a) * 3.2, z + 1.18), "yaw": round(math.degrees(a) + 90.0, 2),
+                      "height": 0.83, "kind": "ride"})
+    L.spot("S-FAIR-CAROUSEL", "fair", cx, cy, z, 0.0, seats=8, slots=seats, sub="ride",
+           queue=[stand(L, *at(s1 - 12.0 - 5.6, yc + dy), z, sea_yaw(yc) + 180.0) for dy in (-1.5, -0.5, 0.5, 1.5)],
+           notes="the seats at the rest angle: the carousel stands still for boarding 90 s of every 240 s (ALyudFairRides)")
+    # the Ferris wheel at the far corner, its plane along the coast
+    wx, wy = at(s1 - 14.0, y1 - 24.0)
+    wyaw = sea_yaw(y1 - 24.0) + 90.0
+    L.prop("wheel", wx, wy, z, wyaw)
+    L.d["rides"].append({"kind": "wheel", "at": L.ue(wx, wy, z), "yaw": wyaw})
+    L.d["lights"].append({"at": L.ue(wx, wy, z + 9.2), "area": "fair", "kind": "carousel"})
+    a = math.radians(sea_yaw(y1 - 24.0))
+    L.spot("S-FAIR-WHEEL", "fair", wx, wy, z, sea_yaw(y1 - 24.0), seats=4, sub="ride",
+           slots=[{"pos": L.ue(wx + math.cos(a) * 0.6 * sd, wy + math.sin(a) * 0.6 * sd, z + 0.44 + 0.37), "yaw": wyaw + (0 if sd > 0 else 180),
+                   "height": 0.37, "kind": "ride"} for sd in (-1, -1, 1, 1)],
+           queue=[stand(L, wx + math.cos(a) * (2.4 + k * 0.8), wy + math.sin(a) * (2.4 + k * 0.8), z, sea_yaw(y1 - 24.0) + 180.0)
+                  for k in range(4)],
+           notes="the lowest gondola at the platform while the wheel stands (90 s of every 240 s)")
     for k in range(7):
         L.lamp(*at(lane, y0 + 10.0 + k * 22.0), z, area="fair")
     for yy, sgn in ((y0 + 3.0, 1), (y1 - 3.0, -1)):
@@ -968,6 +1098,7 @@ def build():
     square(L)
     park(L)
     fair(L)
+    w1_planters(L)
     pier(L)
     cascade(L)
     club_stair(L)
@@ -1009,6 +1140,14 @@ def write(doc):
                           "points (height = seat over the ground); path = a stroll polyline; furnished false = only "
                           "passed on from city_plan.json.")
     plan["spots"] = doc["spots"]
+    fg = {"_doc": "The fair's stalls (tools/public_spaces.py, docs/city/public_spaces.md): theme, shop title key, goods "
+                  "[{item, price, count}] (LyudInventory items). staffed: town_life.py gives it a seller (place "
+                  "S-FAIR-STALLnn-SELLER at the spot's seller pos, activity work_fair, Sat-Sun 10-19) and the counters.json "
+                  "entry (ULyudCounterTradeSubsystem: T to trade).",
+          "stalls": doc.get("fair_goods", {})}
+    with open(os.path.join(os.path.dirname(OUT), "fair_goods.json"), "w") as f:
+        json.dump(fg, f, ensure_ascii=False, indent=1)
+        f.write("\n")
     with open(TOWN_PLAN, "w") as f:
         json.dump(plan, f, ensure_ascii=False, indent=1)
         f.write("\n")

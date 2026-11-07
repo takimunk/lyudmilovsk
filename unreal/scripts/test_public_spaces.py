@@ -84,9 +84,9 @@ if os.environ.get("CITY_AB"):
               ("abn_on2", p(40, 840, T0 + 1.7), p(40, 960, T0 + 1.2), NIGHT, ["lyud.City.Show 1"], ""),
               ("abn_off2", p(40, 840, T0 + 1.7), p(40, 960, T0 + 1.2), NIGHT, ["lyud.City.Show 0"], ""),
               # the street lights alone at night (the pool against glow only), on the square and the promenade
-              ("abl_on", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.Show 1", "lyud.City.StreetLights 14"], ""),
+              ("abl_on", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.Show 1", "lyud.City.StreetLights 12"], ""),
               ("abl_off", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 0"], ""),
-              ("abl_on2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 14"], ""),
+              ("abl_on2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 12"], ""),
               ("abl_off2", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 0"], ""),
               ("abl8", p(110, 880, T1 + 1.7), p(FS, FY, T1 + 1.5), NIGHT, ["lyud.City.StreetLights 8"], "")]
 if os.environ.get("CITY_SHOTS"):
@@ -131,12 +131,15 @@ def api_test(w):
     sp = sub.get_spaces()
     check(sp is not None, "public spaces built")
     if sp:
-        for kind in ("bench_park", "bench_promenade", "lamp", "railing", "stall"):
+        tags = [str(t) for t in sp.tags]
+        check("PlanStage" in tags and "PlanStalls" in tags, "the festivals' tags PlanStage/PlanStalls set (%s)" % tags)
+        for kind in ("bench_park", "bench_promenade", "lamp", "railing", "stall", "wheel", "carousel"):
             check(sp.count_props(kind) > 0, "%s: %d" % (kind, sp.count_props(kind)))
     near = ue(p(FS + 17.0, FY, T1))
     bench = sub.find_nearest_free("bench", unreal.Vector(*near), 3000.0, "None")
     check(str(bench) != "None", "a free bench by the fountain: %s" % bench)
-    who = [unreal.Object(), unreal.Object(), unreal.Object(), unreal.Object()]
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    who = [pc, pc.get_controlled_pawn(), sub, w]          # any four objects stand for four people
     seats = [sub.reserve(bench, x) for x in who]
     check(seats[:3] == [0, 1, 2] and seats[3] == -1, "three seats then full: %s" % seats)
     check(sub.reserve(bench, who[1]) == 1, "the same sitter keeps its seat")
@@ -166,7 +169,10 @@ def tick(dt):
     pawn = pc.get_controlled_pawn()
     if not st["api"]:
         st["api"] = True
-        api_test(w)
+        try:
+            api_test(w)
+        except Exception as e:  # noqa: BLE001
+            check(False, "the spots API test raised %s" % e)
     if st["phase"] == 0:
         st["i"] += 1
         if st["i"] >= len(SHOTS):

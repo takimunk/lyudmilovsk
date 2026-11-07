@@ -85,6 +85,11 @@ namespace CityKit
 	 *  full size (along, across, up); the top's UV0 runs in metres from the block's corner (slab joints meet its edges), the
 	 *  sides' along the face and in world height (masonry courses line up between blocks). WorldZ0 = the centre's world z, m. */
 	void AddBlock(FMesh& M, const FVector& C, float Yaw, const FVector& Size, const FString& Skin, float WorldZ0);
+	/** The fair's rides, their turning parts (ALyudFairRides spins them): the carousel's deck, poles, seats and roof about +Z; a
+	 *  Ferris wheel's rim, spokes and bulbs about +Y (radius R m, Gondolas pivots); one gondola hanging from its pivot. */
+	void BuildCarouselRotor(FMesh& M);
+	void BuildWheelRotor(FMesh& M, float R, int32 Gondolas);
+	void BuildGondola(FMesh& M, int32 Variant);
 	/** The square fountain's stone from its profile (fountain.json-like "stone" levels, metres). */
 	void BuildFountainStone(FMesh& M, const TSharedPtr<FJsonObject>& Stone);
 }

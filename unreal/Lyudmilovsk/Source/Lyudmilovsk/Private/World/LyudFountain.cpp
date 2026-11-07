@@ -317,7 +317,7 @@ bool ALyudFountain::Build(TSharedPtr<FJsonObject> Doc, bool bAcadem)
 	const float VeilLandR = LipR + VeilVr * VeilT;
 
 	FPartMesh Lower, Upper, Flow, Spray, Dry;
-	Disc(Lower, LowZ, StemR - 0.01f, LowR, FMath::Max(14, FMath::RoundToInt(LowR * 10.f)), FMath::Max(72, FMath::RoundToInt(LowR * 40.f)));
+	Disc(Lower, LowZ, StemR - 0.01f, LowR, FMath::Clamp(FMath::RoundToInt(LowR * 3.f), 14, 26), FMath::Clamp(FMath::RoundToInt(LowR * 18.f), 72, 160));   // ~8k triangles at most
 	Disc(Upper, UpZ, NeckR - 0.01f, UpR, 6, 40);
 	Column(Flow, NozzleZ - 0.01f, JetV, 0.009f, 8, 10);
 	Sheet(Flow, 0.012f, TopZ, BellVr, 0.f, UpZ - 0.005f, JetV / G, 48, 14, 22.f, 1.f);
@@ -368,7 +368,7 @@ bool ALyudFountain::Build(TSharedPtr<FJsonObject> Doc, bool bAcadem)
 		Drop(Spray, P, Rd * Vh + FVector(0.f, 0.f, Vz), Life, Life * Rng.FRandRange(1.3f, 2.5f), Rng.FRand(), Rng.FRandRange(0.0015f, 0.0028f) * DS);
 	}
 	// drained: the autumn's leaves on both floors
-	Disc(Dry, LowFloor + 0.004f, StemR + 0.005f, FMath::Max(0.6f, LowR - 0.25f), 4, FMath::Max(48, FMath::RoundToInt(LowR * 40.f)));
+	Disc(Dry, LowFloor + 0.004f, StemR + 0.005f, FMath::Max(0.6f, LowR - 0.25f), 4, FMath::Clamp(FMath::RoundToInt(LowR * 18.f), 48, 160));
 	Disc(Dry, UpFloor + 0.004f, NeckR + 0.004f, FMath::Max(0.22f, UpR - 0.07f), 2, 24);
 
 	const float Yaw = Doc->HasField(TEXT("yaw")) ? (float)Doc->GetNumberField(TEXT("yaw")) : 0.f;

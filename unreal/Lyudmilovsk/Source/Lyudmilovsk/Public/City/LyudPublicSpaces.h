@@ -71,7 +71,11 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<class ALyudFountain>> Fountains;
 	TArray<TPair<float, int32>> NearLamps;
 	TWeakObjectPtr<AProceduralForest> Forest;
+	TWeakObjectPtr<ALyudFairRides> Rides;
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
+	struct FPendingPlant { FName Species; int32 Seed = 0; float Age = 1.f; FTransform Xf; };
+	TArray<FPendingPlant> PendingPlants;
+	void SpawnPendingPlants();
 
 	TArray<FVector> LampHeads;
 	TArray<FName> LampKinds;
@@ -84,6 +88,48 @@ private:
 	void UpdateNight(bool bForce);
 	void UpdateSeason(bool bForce);
 	void UpdatePool();
+};
+
+/**
+ * The fair's rides (docs/city/public_spaces.md): the carousel's rotor and a small Ferris wheel whose gondolas hang upright.
+ * They run on the fair's hours (every day 10-21 in June-August, Sat-Sun 10-19 otherwise; lyud.City.Rides -1 by the clock,
+ * 0 stopped, 1 running): a ride of ~2.5 min, ~1.5 min standing for boarding. Only the transforms move (no mesh rebuilds);
+ * the turning parts are out of Lumen's GI and distance fields and cast no shadow; the actor ticks every frame only while
+ * something moves.
+ */
+UCLASS(NotPlaceable, Transient)
+class LYUDMILOVSK_API ALyudFairRides : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALyudFairRides();
+	/** Kind "carousel" or "wheel" at a place (cm) and yaw; Mat for the bulbs (the street lamps' MID, glowing at night). */
+	void AddRide(const FString& Kind, const FVector& At, float Yaw, UMaterialInterface* Mat, UMaterialInterface* GlowMat);
+	UFUNCTION(BlueprintCallable, Category = "City") bool IsRunning() const { return Speed > 0.01f; }
+	UFUNCTION(BlueprintCallable, Category = "City") FString DebugReport() const;
+	virtual void Tick(float DeltaSeconds) override;
+
+private:
+	struct FRide
+	{
+		bool bWheel = false;
+		FVector Hub = FVector::ZeroVector;     // the carousel's foot / the wheel's axle, world cm
+		float Yaw = 0.f, Angle = 0.f, Radius = 0.f;
+		TWeakObjectPtr<UStaticMeshComponent> Rotor;
+		TWeakObjectPtr<UInstancedStaticMeshComponent> Gondolas;
+		int32 NumGondolas = 0;
+	};
+	TArray<FRide> Rides;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> Meshes;
+	UPROPERTY(Transient) TArray<TObjectPtr<USceneComponent>> Parts;
+	float Speed = 0.f;          // 0..1 of full speed
+	float Cycle = 0.f;          // seconds into the run/board cycle
+	bool bOpenKnown = false, bOpen = false;
+	float OpenCheck = 0.f;
+
+	bool OpenNow() const;
+	void Pose(FRide& R);
 };
 
 /** One public place people use: a bench, the fountain's rim, a railing, a stall's counter, a crowd's square. */

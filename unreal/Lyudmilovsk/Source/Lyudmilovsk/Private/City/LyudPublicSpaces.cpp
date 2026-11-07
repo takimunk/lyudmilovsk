@@ -24,7 +24,7 @@
 
 static TAutoConsoleVariable<int32> CVarPublicSpaces(TEXT("lyud.City.PublicSpaces"), 1,
 	TEXT("The town's public spaces (ALyudPublicSpaces: promenade, square, park, fair, beach furniture): 1 built when the outdoor map starts, 0 not."));
-static TAutoConsoleVariable<int32> CVarCityStreetLights(TEXT("lyud.City.StreetLights"), 14,
+static TAutoConsoleVariable<int32> CVarCityStreetLights(TEXT("lyud.City.StreetLights"), 12,
 	TEXT("How many real (shadowless point) lights follow the camera from street lamp to street lamp at night; 0 = the lamps only glow."));
 static TAutoConsoleVariable<int32> CVarCityNight(TEXT("lyud.City.Night"), -1,
 	TEXT("Street lamps: -1 lit by the sun (under ~1 degree), 0 off, 1 on."));
@@ -32,6 +32,8 @@ static TAutoConsoleVariable<int32> CVarCitySummer(TEXT("lyud.City.Summer"), -1,
 	TEXT("Beach umbrellas and loungers: -1 out from June to August, 0 never, 1 always."));
 static TAutoConsoleVariable<int32> CVarCityShow(TEXT("lyud.City.Show"), 1,
 	TEXT("1 the public spaces drawn, 0 all hidden (props, paving, their trees and flowers, the lamps' lights): for A/B frame times in one process."));
+static TAutoConsoleVariable<int32> CVarCityRides(TEXT("lyud.City.Rides"), -1,
+	TEXT("The fair's carousel and Ferris wheel: -1 by the fair's hours, 0 standing, 1 running."));
 static TAutoConsoleVariable<int32> CVarCityIce(TEXT("lyud.City.Ice"), -1,
 	TEXT("The park pond: -1 frozen from mid December to mid March, 0 water, 1 ice."));
 
@@ -149,6 +151,14 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	GlowMid = PropMaterial ? UMaterialInstanceDynamic::Create(PropMaterial, this) : nullptr;
 	if (GlowMid) GlowMid->SetScalarParameterValue(TEXT("Glow"), 0.f);
 	int32 NumBlocks = 0, NumProps = 0, Tris = 0;
+	double Stamp = FPlatformTime::Seconds();
+	TStringBuilder<512> Times;
+	auto Lap = [&Stamp, &Times](const TCHAR* What)
+	{
+		const double Now = FPlatformTime::Seconds();
+		Times.Appendf(TEXT(" %s %.0f"), What, (Now - Stamp) * 1000.0);
+		Stamp = Now;
+	};
 
 	// the blocks: paving, steps, the stair. Drawn as merged meshes per skin and 100 m cell (true sizes, so the slab joints
 	// meet the edges); their collision is a hidden instanced unit cube per block
@@ -195,6 +205,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("blocks"));
 	// the props: one mesh per kind (and variant / size), instanced; summer-only ones in their own sets
 	{
 		TMap<FString, int32> GroupOf;
@@ -250,6 +261,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("props"));
 	// fountain stones built from their profiles (the water is ALyudFountain's, from the same numbers)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
@@ -270,6 +282,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("stones"));
 	// the town fountains' water, drops and sound (ALyudFountain, the same as the Academgorodok's, from the same levels):
 	// ours, so lyud.City.PublicSpaces 0 builds none and lyud.City.Show 0 hides them
 	{
@@ -299,6 +312,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("fountains"));
 	// still water: the pond (the fountains' water material, no landing ring) and its winter ice
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ws = nullptr;
@@ -368,6 +382,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	Lap(TEXT("waters"));
 	// the Cascade: water sheets down the stepped channels and along the rills (one mesh, the stream material), the
 	// basins' still water above (with the pond); runs with the town's fountain
 	{
@@ -457,6 +472,26 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		}
 	}
 
+	// the fair's rides (their fixed parts are props above)
+	{
+		const TArray<TSharedPtr<FJsonValue>>* Rs = nullptr;
+		if (Doc->TryGetArrayField(TEXT("rides"), Rs) && Rs->Num() > 0)
+		{
+			FActorSpawnParameters SP;
+			SP.ObjectFlags |= RF_Transient;
+			if (ALyudFairRides* A = GetWorld()->SpawnActor<ALyudFairRides>(SP))
+			{
+				for (const TSharedPtr<FJsonValue>& V : *Rs)
+				{
+					const TSharedPtr<FJsonObject> R = V->AsObject();
+					A->AddRide(R->GetStringField(TEXT("kind")), VecField(R, TEXT("at")), R->GetNumberField(TEXT("yaw")), PropMaterial,
+						GlowMid ? static_cast<UMaterialInterface*>(GlowMid.Get()) : PropMaterial.Get());
+				}
+				Rides = A;
+			}
+		}
+	}
+	Lap(TEXT("cascade"));
 	// lamp heads for the light pool
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ls = nullptr;
@@ -489,6 +524,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 		Pool.Add(L);
 	}
 
+	Lap(TEXT("lights"));
 	// trees: one forest of hand-placed trees (shared bakes, live plants only up close)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ts = nullptr;
@@ -514,40 +550,36 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			}
 		}
 	}
-	// flowers, shrubs and hedges: single procedural plants
+	Lap(TEXT("trees"));
+	// flowers, shrubs and hedges: single procedural plants, queued and spawned a few per tick nearest the camera first
+	// (each builds its mesh as it starts: ~100 ms apiece, all at once was a ~19 s hitch at the map's start)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Ps = nullptr;
 		if (Doc->TryGetArrayField(TEXT("plants"), Ps))
 		{
+			FRandomStream R(1958);
 			for (const TSharedPtr<FJsonValue>& V : *Ps)
 			{
 				const TSharedPtr<FJsonObject> P = V->AsObject();
-				const FTransform Xf(FRotator(0.f, FMath::FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
-				if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Xf, nullptr, nullptr,
-					ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
-				{
-					Pl->Species = FName(*P->GetStringField(TEXT("species")));
-					Pl->Seed = (int32)P->GetNumberField(TEXT("seed"));
-					Pl->AgeAtStart = P->GetNumberField(TEXT("age"));
-					Pl->bDemoGrowth = false;
-					Pl->bSnapToGround = false;
-					Pl->Pot = EPlantPot::None;
-					Pl->SummaryDistance = 3500.f;
-					Pl->Tags.Add(TEXT("City"));
-					Pl->FinishSpawning(Xf);
-					Plants.Add(Pl);
-				}
+				FPendingPlant Q;
+				Q.Species = FName(*P->GetStringField(TEXT("species")));
+				Q.Seed = (int32)P->GetNumberField(TEXT("seed"));
+				Q.Age = P->GetNumberField(TEXT("age"));
+				Q.Xf = FTransform(FRotator(0.f, R.FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
+				PendingPlants.Add(Q);
 			}
 		}
 	}
+	Lap(TEXT("plants"));
 
 	// the festivals' contract: they build no stage / stalls of their own when the plan's are up (any actor with these tags)
 	if (CountProps(TEXT("stage")) > 0) Tags.AddUnique(TEXT("PlanStage"));
 	if (CountProps(TEXT("stall")) > 0) Tags.AddUnique(TEXT("PlanStalls"));
 	UpdateSeason(true);
 	UpdateNight(true);
+	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: ms per part:%s"), Times.ToString());
 	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: %d blocks, %d props in %d sets (%d kit triangles), %d lamps, %d trees, %d plants, built in %.0f ms"),
-		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, Plants.Num(),
+		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, PendingPlants.Num(),
 		(FPlatformTime::Seconds() - T0) * 1000.0);
 	return true;
 }
@@ -557,6 +589,7 @@ void ALyudPublicSpaces::EndPlay(const EEndPlayReason::Type Reason)
 	if (AProceduralForest* F = Forest.Get()) F->Destroy();
 	for (const TObjectPtr<ALyudFountain>& F : Fountains) if (F) F->Destroy();
 	Fountains.Reset();
+	if (ALyudFairRides* R = Rides.Get()) R->Destroy();
 	for (const TWeakObjectPtr<AProceduralPlant>& P : Plants) if (P.IsValid()) P->Destroy();
 	Plants.Reset();
 	Super::EndPlay(Reason);
@@ -686,12 +719,14 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 			SetActorHiddenInGame(!bShow);
 			if (AProceduralForest* F = Forest.Get()) F->SetActorHiddenInGame(!bShow);
 			for (const TObjectPtr<ALyudFountain>& F : Fountains) if (F) F->SetActorHiddenInGame(!bShow);
+			if (ALyudFairRides* R = Rides.Get()) R->SetActorHiddenInGame(!bShow);
 			for (const TWeakObjectPtr<AProceduralPlant>& P : Plants) if (P.IsValid()) P->SetActorHiddenInGame(!bShow);
 			if (!bShow) for (UPointLightComponent* L : Pool) L->SetVisibility(false);
 			LastPoolCam = FVector(1e9);
 			UpdateSeason(true);
 		}
 	}
+	SpawnPendingPlants();
 	if (!bShown) return;
 	// the glass fades up over ~4 s (a lamp warming), the pooled lights with it
 	const float Target = bNight ? 1.f : 0.f;
@@ -703,6 +738,44 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 		if (Glow <= 0.001f) for (UPointLightComponent* L : Pool) L->SetVisibility(false);
 	}
 	UpdatePool();
+}
+
+void ALyudPublicSpaces::SpawnPendingPlants()
+{
+	if (PendingPlants.Num() == 0) return;
+	FVector Cam = FVector::ZeroVector;
+	if (const APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		if (PC->PlayerCameraManager) Cam = PC->PlayerCameraManager->GetCameraLocation();
+	}
+	const double Until = FPlatformTime::Seconds() + 0.004;      // ~4 ms a tick (the actor ticks 4 times a second)
+	do
+	{
+		int32 Best = 0;
+		double BestD = 1e30;
+		for (int32 I = 0; I < PendingPlants.Num(); I++)
+		{
+			const double D = FVector::DistSquared(PendingPlants[I].Xf.GetLocation(), Cam);
+			if (D < BestD) { BestD = D; Best = I; }
+		}
+		const FPendingPlant Q = PendingPlants[Best];
+		PendingPlants.RemoveAtSwap(Best);
+		if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, nullptr, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Pl->Species = Q.Species;
+			Pl->Seed = Q.Seed;
+			Pl->AgeAtStart = Q.Age;
+			Pl->bDemoGrowth = false;
+			Pl->bSnapToGround = false;
+			Pl->Pot = EPlantPot::None;
+			Pl->SummaryDistance = 3500.f;
+			Pl->Tags.Add(TEXT("City"));
+			Pl->FinishSpawning(Q.Xf);
+			Pl->SetActorHiddenInGame(!bShown);
+			Plants.Add(Pl);
+		}
+	} while (PendingPlants.Num() > 0 && FPlatformTime::Seconds() < Until);
 }
 
 int32 ALyudPublicSpaces::CountProps(const FString& Kind) const
@@ -718,9 +791,159 @@ FString ALyudPublicSpaces::DebugReport() const
 	for (const UPointLightComponent* L : Pool) Lit += L->IsVisible() ? 1 : 0;
 	int32 Props = 0;
 	for (const FGroup& G : Groups) Props += G.Comp.IsValid() ? G.Comp->GetInstanceCount() : 0;
-	return FString::Printf(TEXT("night %d glow %.2f, %d pooled lights lit of %d, summer %d, ice %d, %d props, %d trees (%d baked), %d plants"),
+	return FString::Printf(TEXT("night %d glow %.2f, %d pooled lights lit of %d, summer %d, ice %d, %d props, %d trees (%d baked), %d plants (%d to come)"),
 		bNight ? 1 : 0, Glow, Lit, Pool.Num(), bSummer ? 1 : 0, bIce ? 1 : 0, Props, Forest.IsValid() ? Forest->NumTrees() : 0,
-		Forest.IsValid() ? Forest->NumBaked() : 0, Plants.Num());
+		Forest.IsValid() ? Forest->NumBaked() : 0, Plants.Num(), PendingPlants.Num());
+}
+
+// --- the fair's rides -------------------------------------------------------------------------------------------
+
+ALyudFairRides::ALyudFairRides()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickInterval = 0.5f;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Tags.Add(TEXT("City"));
+}
+
+void ALyudFairRides::AddRide(const FString& Kind, const FVector& At, float Yaw, UMaterialInterface* Mat, UMaterialInterface* GlowMat)
+{
+	auto Moving = [this](UStaticMeshComponent* C)
+	{
+		C->SetMobility(EComponentMobility::Movable);
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetCanEverAffectNavigation(false);
+		C->SetCastShadow(false);                      // a turning shadow would invalidate the shadow map's pages every frame
+		C->bAffectDynamicIndirectLighting = false;    // movers out of Lumen (docs/benchmark.md)
+		C->bAffectDistanceFieldLighting = false;
+		C->SetCachedMaxDrawDistance(30000.f);
+		C->LightingChannels.bChannel1 = true;
+		C->SetupAttachment(RootComponent);
+		C->RegisterComponent();
+		AddInstanceComponent(C);
+		Parts.Add(C);
+	};
+	FRide R;
+	R.Yaw = Yaw;
+	if (Kind == TEXT("carousel"))
+	{
+		CityKit::FMesh M;
+		CityKit::BuildCarouselRotor(M);
+		UStaticMesh* Mesh = M.Build(this, TEXT("SM_CarouselRotor"), false);
+		Meshes.Add(Mesh);
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this, *FString::Printf(TEXT("CarouselRotor%d"), Rides.Num()));
+		C->SetStaticMesh(Mesh);
+		C->SetMaterial(0, GlowMat);
+		C->SetWorldLocationAndRotation(At, FRotator(0.f, Yaw, 0.f));
+		Moving(C);
+		R.Hub = At;
+		R.Rotor = C;
+	}
+	else if (Kind == TEXT("wheel"))
+	{
+		R.bWheel = true;
+		R.Radius = 7.5f;
+		R.NumGondolas = 12;
+		R.Hub = At + FVector(0, 0, 920.f);
+		CityKit::FMesh M;
+		CityKit::BuildWheelRotor(M, R.Radius, R.NumGondolas);
+		UStaticMesh* Mesh = M.Build(this, TEXT("SM_WheelRotor"), false);
+		Meshes.Add(Mesh);
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this, *FString::Printf(TEXT("WheelRotor%d"), Rides.Num()));
+		C->SetStaticMesh(Mesh);
+		C->SetMaterial(0, GlowMat);
+		C->SetWorldLocationAndRotation(R.Hub, FRotator(0.f, Yaw, 0.f));
+		Moving(C);
+		R.Rotor = C;
+		CityKit::FMesh G;
+		CityKit::BuildGondola(G, Rides.Num());
+		UStaticMesh* GMesh = G.Build(this, TEXT("SM_Gondola"), false);
+		Meshes.Add(GMesh);
+		UInstancedStaticMeshComponent* I = NewObject<UInstancedStaticMeshComponent>(this, *FString::Printf(TEXT("Gondolas%d"), Rides.Num()));
+		I->SetStaticMesh(GMesh);
+		I->SetMaterial(0, Mat);
+		Moving(I);
+		for (int32 K = 0; K < R.NumGondolas; K++) I->AddInstance(FTransform(R.Hub), true);
+		R.Gondolas = I;
+	}
+	else
+	{
+		return;
+	}
+	Pose(R);
+	Rides.Add(R);
+}
+
+bool ALyudFairRides::OpenNow() const
+{
+	const int32 Force = CVarCityRides.GetValueOnGameThread();
+	if (Force >= 0) return Force > 0;
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	const int32 M = Now.GetMonth(), H = Now.GetHour();
+	const EDayOfWeek D = Now.GetDayOfWeek();
+	const bool bWeekend = D == EDayOfWeek::Saturday || D == EDayOfWeek::Sunday;
+	if (M >= 6 && M <= 8) return H >= 10 && H < 21;
+	return bWeekend && H >= 10 && H < 19;
+}
+
+void ALyudFairRides::Pose(FRide& R)
+{
+	if (UStaticMeshComponent* C = R.Rotor.Get())
+	{
+		// the carousel turns about +Z; the wheel about its axle (its local Y)
+		const FRotator Rot = R.bWheel ? (FRotator(0.f, R.Yaw, 0.f).Quaternion() * FQuat(FVector::YAxisVector, FMath::DegreesToRadians(R.Angle))).Rotator()
+			: FRotator(0.f, R.Yaw + R.Angle, 0.f);
+		C->SetWorldRotation(Rot);
+	}
+	if (UInstancedStaticMeshComponent* I = R.Gondolas.Get())
+	{
+		const FRotator Up(0.f, R.Yaw, 0.f);
+		for (int32 K = 0; K < R.NumGondolas; K++)
+		{
+			// the rim's pivot K sits at angle 2 pi K / N in the rotor's XZ plane; turning the rotor by Angle about its Y moves it to
+			// (cos(a - Angle), sin(a - Angle)) (FQuat about +Y)
+			const float A = 2.f * PI * K / R.NumGondolas - FMath::DegreesToRadians(R.Angle);
+			const FVector Local(FMath::Cos(A) * R.Radius * 100.f, 0.f, FMath::Sin(A) * R.Radius * 100.f);
+			// incremental update, no render-state rebuild (docs/benchmark.md "Live systems and Lumen")
+			I->UpdateInstanceTransform(K, FTransform(Up, R.Hub + Up.RotateVector(Local)), true, false, true);
+		}
+	}
+}
+
+void ALyudFairRides::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	OpenCheck -= DeltaSeconds;
+	if (OpenCheck <= 0.f || !bOpenKnown)
+	{
+		OpenCheck = 2.f;
+		bOpen = OpenNow();
+		bOpenKnown = true;
+	}
+	// a run of 150 s, 90 s standing for boarding; ramps of ~6 s
+	Cycle = FMath::Fmod(Cycle + DeltaSeconds, 240.f);
+	const bool bRun = bOpen && Cycle < 150.f && !IsHidden();
+	Speed = FMath::FInterpConstantTo(Speed, bRun ? 1.f : 0.f, DeltaSeconds, 1.f / 6.f);
+	if (Speed > 0.001f)
+	{
+		for (FRide& R : Rides)
+		{
+			// the carousel a turn in 14 s; the wheel a turn in 100 s
+			R.Angle = FMath::Fmod(R.Angle + DeltaSeconds * Speed * (R.bWheel ? 3.6f : 360.f / 14.f), 360.f);
+			Pose(R);
+		}
+		SetActorTickInterval(0.f);          // every frame while it moves
+	}
+	else
+	{
+		SetActorTickInterval(0.5f);
+	}
+}
+
+FString ALyudFairRides::DebugReport() const
+{
+	return FString::Printf(TEXT("rides %d, open %d, speed %.2f, cycle %.0f s, angles %s"), Rides.Num(), bOpen ? 1 : 0, Speed, Cycle,
+		Rides.Num() ? *FString::Printf(TEXT("%.0f/%.0f"), Rides[0].Angle, Rides.Last().Angle) : TEXT("-"));
 }
 
 // --- the spots --------------------------------------------------------------------------------------------------
