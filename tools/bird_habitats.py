@@ -127,6 +127,45 @@ def slope(x, y):
     return math.hypot(hx, hy)
 
 
+def city_gardens(add):
+    """The terraced town's gardens (docs/city_plan.md): the street trees along the terraces, the seaside park, the yards
+    round the houses on the plots. The town's forest strips are too thin for the tile sampling above (one site per
+    60 m), and the old valley town's garden tiles are gone, so without these the blackbirds, tits and sparrows lose
+    their town. Heights from the plan's level terraces (city_plan.terrace_z), so the result doesn't depend on the
+    built ground; its own random stream keeps the sites above unchanged."""
+    import city_plan as C
+    rnd = random.Random(1106)
+    h = CANOPY["town"]
+
+    def tree(x, y):
+        z = C.terrace_z(x, y)
+        if z is not None:
+            add("Garden", (x, y, z + h * rnd.uniform(0.8, 1.1) * 0.7), radius=2.5, cap=6, flags=FLAG_GUESSED_TREE)
+
+    for x, y, hx, hy, z0, z1 in C.tree_strips():            # the street trees: one every ~15 m
+        n = int(2 * hy / 15.0)
+        for j in range(n):
+            yy = y - hy + (j + 0.5) * 2 * hy / n + rnd.uniform(-3, 3)
+            xx = x + rnd.uniform(-hx, hx)
+            if not C.tree_free(xx, yy):
+                tree(xx, yy)
+    for p in C.plots():
+        if p["id"] == "P-PARK":                              # the park: a loose grid of crowns
+            for i in range(-2, 3):
+                for j in range(-4, 5):
+                    s = p["s"] + i * p["d"] / 5 + rnd.uniform(-5, 5)
+                    yy = p["y_along"] + j * p["w"] / 9 + rnd.uniform(-5, 5)
+                    tree(*C.to_map(s, yy))
+        elif p["kind"] == "residential" and p["terrace"] in ("T1", "T2", "T3", "T4", "T5"):
+            # the yard: a few trees and shrubs round the house, off its footprint
+            ds, dw = p["d"] / 2 + 5.0, p["w"] / 2 + 5.0
+            for s_off, y_off in ((-ds, -dw), (-ds, dw), (ds, -dw), (ds, dw), (0.0, -dw), (0.0, dw)):
+                s, yy = p["s"] + s_off, p["y_along"] + y_off
+                x, yy2 = C.to_map(s, yy)
+                if C.terrace_at(x, yy2) == int(p["terrace"][1:]):
+                    tree(x, yy2)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--face-y", type=float, default=None, help="portal face, Unreal Y cm")
@@ -274,6 +313,7 @@ def main():
     for p in W.path_points(15.0):
         x, y = p[0] + 2.2, p[1]
         add("Meadow", (x, y, T.ground_z(x, y) + 0.02), radius=2.0, cap=6)
+    city_gardens(add)
 
     # the ground and the tallest thing on it (roofs, crowns) on an 8 m grid, for flight clearance
     gx0, gy0 = W.X_MIN - MARGIN, W.Y_MIN - MARGIN
