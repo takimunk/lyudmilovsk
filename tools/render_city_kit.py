@@ -150,11 +150,15 @@ def sheet(paths):
 
 
 allshots = []
+seen_skins = set()
 for f in sorted(os.listdir(SRC)):
-    if not f.endswith(".obj") or (FILTER and FILTER not in f):
+    if not f.endswith(".obj") or (FILTER and FILTER not in f) or f.startswith("SM_CityBlockCollision"):
         continue
-    if f.startswith("SM_CityBlocks_") and not f.startswith("SM_CityBlocks_square_0_"):
-        continue                                   # the paving cells: one sample is enough
+    if f.startswith("SM_CityBlocks_"):
+        skin = f[len("SM_CityBlocks_"):].split("_")[0]
+        if skin in seen_skins:
+            continue                               # the paving cells: one sample per skin
+        seen_skins.add(skin)
     allshots += render_one(os.path.join(SRC, f), f[:-4])
 sheet(allshots)
 print("RENDERED %d images to %s" % (len(allshots), OUT))

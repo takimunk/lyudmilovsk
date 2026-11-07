@@ -907,13 +907,18 @@ namespace CityKit
 		M.Lathe(FVector::ZeroVector, Rim, Sides, [&](int32 K, int32) { return K >= 4 ? Inner : Stone; });
 		M.Disc(FVector(0, 0, LowFloor), StemR, RimR - RimW + 0.01f, Sides, Inner);
 		// the centrepiece: a drum, the stem, the upper bowl, the sun
-		TArray<FVector2D> Mid = { { 1.15, LowFloor }, { 1.15, 0.62 }, { 1.05, 0.7 }, { 0.6, 0.78 }, { StemR + 0.06, 0.9 }, { StemR, 1.1 }, { StemR * 0.85, 1.6 },
-			{ NeckR + 0.06, 1.95 }, { NeckR, 2.05 }, { 0.5, 2.12 }, { LipR - 0.05, 2.3 }, { LipR, LipZ }, { LipR - 0.07, LipZ + 0.02 }, { LipR - 0.1, UpFloor + 0.1 }, { 0.3, UpFloor } };
+		// a drum in the basin (inside where the veil lands), a fluted stem, the upper bowl's cup and lip
+		const float DrumR = FMath::Max(1.15f, LipR * 1.1f), DrumZ = FMath::Max(0.62f, UpZ * 0.27f);
+		const float BowlZ = UpZ - 0.32f;
+		TArray<FVector2D> Mid = { { DrumR, LowFloor }, { DrumR, DrumZ }, { DrumR - 0.1, DrumZ + 0.08 }, { DrumR * 0.55, DrumZ + 0.16 },
+			{ StemR + 0.08, DrumZ + 0.3 }, { StemR, DrumZ + 0.48 }, { StemR * 0.85, (DrumZ + BowlZ) * 0.5 + 0.3 }, { NeckR + 0.06, BowlZ - 0.1 },
+			{ NeckR, BowlZ }, { LipR * 0.35, BowlZ + 0.07 }, { LipR - 0.05, UpZ - 0.12 }, { LipR, LipZ }, { LipR - 0.07, LipZ + 0.02 },
+			{ LipR - 0.1, UpFloor + 0.1 }, { 0.3, UpFloor } };
 		M.Lathe(FVector::ZeroVector, Mid, 48, [&](int32 K, int32) { return K >= 12 ? Inner : Stone; });
 		M.Disc(FVector(0, 0, UpFloor), 0.f, 0.32f, 24, Inner);
 		M.Tube(FVector(0, 0, UpFloor), FVector(0, 0, UpZ + 0.25f), 0.1f, 0.08f, 12, Bronze, false, false);
 		// the sun: a gilded ball with sixteen short rays, the nozzle on its crown
-		const float SunZ = (UpZ + NozZ) * 0.5f + 0.05f, SunR = FMath::Max(0.2f, (NozZ - UpZ) * 0.3f);
+		const float SunZ = (UpZ + NozZ) * 0.5f + 0.05f, SunR = FMath::Max(0.2f, (NozZ - UpZ) * 0.38f);
 		M.Sphere(FVector(0, 0, SunZ), SunR, 20, Bronze);
 		for (int32 I = 0; I < 16; I++)
 		{
@@ -930,7 +935,7 @@ namespace CityKit
 			M.Collide(FVector(FMath::Cos(A) * (RimR - RimW * 0.5f + 0.05f), FMath::Sin(A) * (RimR - RimW * 0.5f + 0.05f), RimZ * 0.5f),
 				FVector(RimW * 0.5f + 0.05f, RimR * PI / 32 + 0.1f, RimZ * 0.5f), FMath::RadiansToDegrees(A));
 		}
-		M.Collide(FVector(0, 0, 1.2f), FVector(1.1f, 1.1f, 1.2f));
+		M.Collide(FVector(0, 0, 1.2f), FVector(DrumR * 0.95f, DrumR * 0.95f, 1.2f));
 		(void)LowR;
 	}
 }
