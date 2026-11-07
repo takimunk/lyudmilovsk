@@ -1,0 +1,21 @@
+{
+ "name": "rest_glass_03",
+ "asset": "/Game/Audio/Restaurant/S_rest_glass_03",
+ "pool": "rest_glass",
+ "file": "audio/sfx/restaurant/rest_glass_03.wav",
+ "generator": "tools/restaurant/sounds.py:glass",
+ "seed": 1169879851,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 3,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.262,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -18.83,
+ "dc": 3.3e-06,
+ "params": {
+  "ring_hz": 2377.003
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "name": "rest_pour_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_pour_01",
+ "pool": "rest_pour",
+ "file": "audio/sfx/restaurant/rest_pour_01.wav",
+ "generator": "tools/restaurant/sounds.py:pour",
+ "seed": 581344030,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.5,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -20.27,
+ "dc": 0.0,
+ "params": {
+  "f_start": 450,
+  "f_end": 1700
+ }
+}

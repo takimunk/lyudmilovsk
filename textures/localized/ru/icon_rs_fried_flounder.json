@@ -1,0 +1,10 @@
+{
+ "id": "icon_rs_fried_flounder",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/restaurant/icons_grid2.png",
+ "cell": [
+  3,
+  0
+ ]
+}

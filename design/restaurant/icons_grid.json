@@ -1,0 +1,32 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "2k",
+ "quality": "medium",
+ "job_id": "0e74357f-515d-4ae0-8640-9b6f66fac6fb",
+ "date": "2026-11-06",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_214427_0e74357f-515d-4ae0-8640-9b6f66fac6fb.png",
+ "prompt": "Sixteen menu icons for a moody adventure game, arranged as a 4 by 4 grid of equal square cells on one picture: in every cell one dish centred and filling most of the cell, seen from a three-quarter view above, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text or lettering anywhere. The china is a 1960s Baltic seaside restaurant set: white porcelain with one thin amber band near the rim. Row 1: (1) Olivier salad as a neat moulded dome on a white plate with green peas and a parsley leaf; (2) a Baltic smoked fish plate: sprats on dark rye bread, a fan of smoked salmon, a slice of smoked eel, a lemon wedge and red onion rings; (3) a deep plate of red borscht with a spoon of sour cream and fresh dill; (4) a dark glazed bowl of ramen: noodles in broth, chashu pork slices, a halved soft egg, a sheet of nori, spring onion, chopsticks resting on the rim. Row 2: (5) a dozen Russian pelmeni dumplings in a wide plate with sour cream and dill; (6) tagliatelle in a creamy sauce with grated parmesan in a wide rimmed bowl; (7) an Adjarian khachapuri cheese boat on an oval wooden board with melted cheese, an egg yolk and a knob of butter; (8) a grilled beef steak with grill marks, roast potatoes, green beans and a little sauce on a white plate. Row 3: (9) three golden syrniki curd pancakes with sour cream and berry jam on a plate; (10) a slice of layered medovik honey cake on a small plate; (11) three scoops of white plombir ice cream with a wafer and berry sauce in a stainless steel coupe on a stem; (12) a small white coffee cup of black coffee on a saucer. Row 4: (13) deep red cranberry mors in a plain tall glass tumbler; (14) a glass carafe of water beside a filled glass tumbler; (15) a wicker bread basket with slices of dark rye and white bread on a linen napkin; (16) a closed amber leather restaurant menu folder with a small gold amber-drop emblem and no letters.",
+ "ids": [
+  "rs_olivier",
+  "rs_baltic_fish",
+  "rs_borscht",
+  "rs_ramen",
+  "rs_pelmeni",
+  "rs_pasta",
+  "rs_khachapuri",
+  "rs_steak",
+  "rs_syrniki",
+  "rs_medovik",
+  "rs_plombir",
+  "rs_coffee",
+  "rs_mors",
+  "rs_water",
+  "rs_bread",
+  ""
+ ],
+ "note": "4x4 grid of the restaurant's menu icons (no words: one picture for every language); cut by tools/restaurant/icons.py into textures/localized/ru/icon_<id>.jpg. rs_menu (the menu folder) is not an item.",
+ "credits": 1
+}

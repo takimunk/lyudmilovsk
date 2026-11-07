@@ -28,6 +28,22 @@ namespace LyudBite
 	{
 		return Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	}
+
+	/** A utensil (or the fingers) brings a load from the dish to the mouth; Hand and Cup bring the dish itself. */
+	bool HasLoad(ELyudUtensil U)
+	{
+		return U == ELyudUtensil::Fork || U == ELyudUtensil::Spoon || U == ELyudUtensil::Chopsticks || U == ELyudUtensil::Fingers;
+	}
+}
+
+float ULyudBiteSubsystem::ScoopPhase() const
+{
+	if (!bActive || Phase != EPhase::Scoop)
+	{
+		return -1.f;
+	}
+	const float Dur = PhaseSeconds(Phase);
+	return Dur > 0.f ? FMath::Clamp(PhaseT / Dur, 0.f, 1.f) : 1.f;
 }
 
 ULyudBiteSubsystem* ULyudBiteSubsystem::Get(const UObject* WorldContext)
@@ -161,7 +177,7 @@ float ULyudBiteSubsystem::PhaseSeconds(EPhase P) const
 	switch (P)
 	{
 	case EPhase::Down: return Meal.Utensil == ELyudUtensil::Cup ? 0.2f : 0.45f;
-	case EPhase::Scoop: return Meal.Utensil == ELyudUtensil::Fork || Meal.Utensil == ELyudUtensil::Spoon ? (bBig ? 0.55f : 0.3f) : 0.05f;
+	case EPhase::Scoop: return LyudBite::HasLoad(Meal.Utensil) ? (bBig ? 0.55f : 0.3f) : 0.05f;
 	case EPhase::Up: return 0.5f;
 	case EPhase::Mouth: return Meal.Utensil == ELyudUtensil::Cup ? (bBig ? 1.3f : 0.7f) : 0.18f;
 	case EPhase::Back: return 0.45f;
@@ -230,7 +246,7 @@ void ULyudBiteSubsystem::Tick(float DeltaTime)
 		{
 			StartPhase(EPhase::Scoop, 0.f);
 			To = KeyFor(EPhase::Scoop);
-			if (Meal.Utensil == ELyudUtensil::Fork || Meal.Utensil == ELyudUtensil::Spoon)
+			if (LyudBite::HasLoad(Meal.Utensil) && Meal.Utensil != ELyudUtensil::Fingers)
 			{
 				Play(TEXT("scoop"), 0.35f);
 			}
@@ -361,6 +377,26 @@ void ULyudBiteSubsystem::PoseHand(float)
 		Palm = ItemPos + Side * (Meal.DishRadius + 1.f);
 		Shape.AddCapsule(ItemPos, Axis, Meal.DishHalfHeight * 0.7f, Meal.DishRadius);
 	}
+	else if (Utensil && Meal.Utensil == ELyudUtensil::Fingers)
+	{
+		// a piece between the thumb and the fingers: the palm behind it, the fingers along the way the "tip" points
+		Utensil->SetActorLocationAndRotation(ItemPos, ItemRot);
+		const FVector Up = ItemRot.GetAxisZ();
+		Normal = -FVector::CrossProduct(Up, Axis).GetSafeNormal();
+		Finger = Axis;
+		Palm = ItemPos - Axis * 6.f - Normal * 2.5f;
+		Shape.AddCapsule(ItemPos + Meal.LoadOffset.X * Axis, Up, 1.5f, 2.2f);
+	}
+	else if (Utensil && Meal.Utensil == ELyudUtensil::Chopsticks)
+	{
+		// held like a pen a third of the way down: the fingers wrap the pair, the palm on their right
+		Utensil->SetActorLocationAndRotation(ItemPos, ItemRot);
+		const FVector Up = ItemRot.GetAxisZ();
+		Normal = -FVector::CrossProduct(Up, Axis).GetSafeNormal();
+		Finger = (Up * 0.6f + Axis * 0.4f).GetSafeNormal();
+		Palm = ItemPos - Axis * 3.f - Normal * 1.6f;
+		Shape.AddCapsule(ItemPos - Axis * 2.f, Axis, 6.f, 0.9f);
+	}
 	else if (Utensil)
 	{
 		Utensil->SetActorLocationAndRotation(ItemPos, ItemRot);
@@ -390,22 +426,23 @@ void ULyudBiteSubsystem::PoseHand(float)
 
 void ULyudBiteSubsystem::SpawnUtensil()
 {
-	if (Meal.Utensil != ELyudUtensil::Fork && Meal.Utensil != ELyudUtensil::Spoon)
+	if (!LyudBite::HasLoad(Meal.Utensil))
 	{
 		return;
 	}
+	const bool bFingers = Meal.Utensil == ELyudUtensil::Fingers;
 	UWorld* World = GetWorld();
 	FActorSpawnParameters P;
 	P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AStaticMeshActor* A = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), Meal.Dish->GetActorTransform(), P);
 	A->SetMobility(EComponentMobility::Movable);
 	UStaticMesh* M = Meal.UtensilMesh;
-	if (!M)
+	if (!M && !bFingers)
 	{
 		M = LoadObject<UStaticMesh>(nullptr, Meal.Utensil == ELyudUtensil::Spoon ? TEXT("/Game/Food/Meshes/SM_Spoon.SM_Spoon") : TEXT("/Game/Food/Meshes/SM_Fork.SM_Fork"));
 	}
 	UStaticMeshComponent* C = A->GetStaticMeshComponent();
-	if (!M)
+	if (!M && !bFingers)
 	{
 		// no utensil mesh yet: a thin steel rod
 		M = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
@@ -432,8 +469,8 @@ void ULyudBiteSubsystem::SpawnUtensil()
 	{
 		MID->SetVectorParameterValue(TEXT("Color"), Meal.LoadTint);
 	}
-	// the load rides on the tines, 12 cm out from the grip
-	L->SetRelativeLocation(FVector(11.5f, 0.f, 0.6f));
+	// the load rides on the tines (12 cm out from the grip), under the chopsticks' tips, between the fingers
+	L->SetRelativeLocation(Meal.LoadOffset);
 	L->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	L->SetCastShadow(false);
 	L->bAffectDynamicIndirectLighting = false;

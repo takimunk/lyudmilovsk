@@ -1,0 +1,21 @@
+{
+ "name": "rest_bell_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_bell_01",
+ "pool": "rest_bell",
+ "file": "audio/sfx/restaurant/rest_bell_01.wav",
+ "generator": "tools/restaurant/sounds.py:bell",
+ "seed": 776659136,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.13,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -18.97,
+ "dc": -2.2e-06,
+ "params": {
+  "f0_hz": 2328.85
+ }
+}

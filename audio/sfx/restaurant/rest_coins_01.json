@@ -1,0 +1,19 @@
+{
+ "name": "rest_coins_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_coins_01",
+ "pool": "rest_coins",
+ "file": "audio/sfx/restaurant/rest_coins_01.wav",
+ "generator": "tools/restaurant/sounds.py:coins",
+ "seed": 1781880638,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.239,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -20.08,
+ "dc": 1.8e-06,
+ "params": {}
+}

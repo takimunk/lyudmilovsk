@@ -1,0 +1,23 @@
+{
+ "name": "rest_sizzle_01",
+ "asset": "/Game/Audio/Restaurant/S_rest_sizzle_01",
+ "pool": "rest_sizzle",
+ "file": "audio/sfx/restaurant/rest_sizzle_01.wav",
+ "generator": "tools/restaurant/sounds.py:sizzle_loop",
+ "seed": 1094709161,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.0.2",
+ "take": 1,
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -27.17,
+ "dc": -0.0,
+ "params": {
+  "seconds": 8,
+  "crackles_per_s": 110
+ },
+ "seam_click_ratio": 0.029
+}

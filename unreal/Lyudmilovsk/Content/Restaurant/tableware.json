@@ -1,0 +1,929 @@
+{
+  "DINNER_PLATE_R": 0.135,
+  "DINNER_PLATE_TOP": 0.0145,
+  "DINNER_PLATE_FLAT_R": 0.0945,
+  "DESSERT_PLATE_R": 0.1,
+  "DESSERT_PLATE_TOP": 0.012325000000000001,
+  "SOUP_PLATE_R": 0.12,
+  "SOUP_PLATE_H": 0.0446,
+  "SOUP_PLATE_IN_Z": 0.008,
+  "SOUP_PLATE_WELL_R": 0.0885,
+  "RAMEN_BOWL_R": 0.095,
+  "RAMEN_BOWL_H": 0.085,
+  "RAMEN_BOWL_IN_Z": 0.012,
+  "RAMEN_BOWL_IN_R": 0.0905,
+  "PASTA_PLATE_R": 0.14,
+  "PASTA_PLATE_H": 0.0458,
+  "PASTA_PLATE_IN_Z": 0.01,
+  "PASTA_PLATE_WELL_R": 0.093,
+  "BOARD_LX": 0.36,
+  "BOARD_LY": 0.22,
+  "BOARD_H": 0.018,
+  "COUPE_R": 0.056,
+  "COUPE_H": 0.0988,
+  "COUPE_IN_Z": 0.061,
+  "COUPE_IN_R": 0.0535,
+  "CUP_R": 0.0395,
+  "CUP_H": 0.0608,
+  "CUP_HALF_H": 0.0304,
+  "CUP_IN_Z": 0.009,
+  "CUP_IN_R": 0.0365,
+  "CUP_FILL_H": 0.041,
+  "CUP_HANDLE_Y": 0.0545,
+  "SAUCER_R": 0.072,
+  "SAUCER_TOP": 0.006,
+  "TUMBLER_R": 0.035500000000000004,
+  "TUMBLER_H": 0.105,
+  "TUMBLER_HALF_H": 0.0525,
+  "TUMBLER_IN_Z": 0.01,
+  "TUMBLER_IN_R": 0.0333,
+  "TUMBLER_FILL_H": 0.08,
+  "CARAFE_R": 0.045,
+  "CARAFE_H": 0.2268,
+  "CARAFE_HALF_H": 0.1134,
+  "CARAFE_IN_Z": 0.01,
+  "CARAFE_FILL_H": 0.125,
+  "CARAFE_NECK_R": 0.017,
+  "BASKET_LX": 0.2556,
+  "BASKET_LY": 0.1756,
+  "BASKET_H": 0.0718,
+  "BASKET_IN_Z": 0.01,
+  "TRAY_R": 0.2005,
+  "TRAY_H": 0.0182,
+  "TRAY_TOP": 0.0026,
+  "TINE_X": 0.115,
+  "LOAD_Z": 0.006,
+  "FORK_LEN": 0.19,
+  "GRIP_FROM_END": 0.06,
+  "SPOON_X": 0.115,
+  "SPOON_LOAD_Z": 0.006,
+  "SPOON_LEN": 0.181,
+  "TEASPOON_SCALE": 0.72,
+  "TEASPOON_X": 0.0828,
+  "TEASPOON_LOAD_Z": 0.00432,
+  "TEASPOON_LEN": 0.13032,
+  "KNIFE_LEN": 0.21399999999999997,
+  "KNIFE_GRIP_FROM_END": 0.072,
+  "KNIFE_BLADE_X0": 0.03,
+  "KNIFE_TIP_X": 0.142,
+  "CHOP_LEN": 0.22999999999999998,
+  "CHOP_GRIP_FROM_END": 0.085,
+  "CHOP_TIP_X": 0.145,
+  "CHOP_TIP_Z": 0.0012,
+  "CHOP_TIP_GAP": 0.0056,
+  "NAPKIN_LX": 0.2,
+  "NAPKIN_LY": 0.11,
+  "NAPKIN_H": 0.0081,
+  "MENU_LX": 0.24,
+  "MENU_LY": 0.32,
+  "MENU_H": 0.012,
+  "SALT_PEPPER_R": 0.0165,
+  "SALT_PEPPER_H": 0.0662,
+  "SALT_PEPPER_GAP": 0.044,
+  "FINGER_LOAD": "origin = the pinch between thumb and index tips, food along +x, +z up",
+  "GETA_LX": 0.36,
+  "GETA_LY": 0.15,
+  "GETA_H": 0.024,
+  "GETA_TOP": 0.024,
+  "CLAY_BOWL_R": 0.079,
+  "CLAY_BOWL_H": 0.065,
+  "CLAY_BOWL_IN_Z": 0.01,
+  "CLAY_BOWL_IN_R": 0.0735,
+  "GLASS_MUG_R": 0.039,
+  "GLASS_MUG_H": 0.095,
+  "GLASS_MUG_HALF_H": 0.0475,
+  "GLASS_MUG_IN_Z": 0.012,
+  "GLASS_MUG_IN_R": 0.0355,
+  "GLASS_MUG_FILL_H": 0.07,
+  "GLASS_MUG_HANDLE_Y": 0.059,
+  "TEA_HOLDER_R": 0.0346,
+  "TEA_HOLDER_H": 0.0628,
+  "TEA_HOLDER_GLASS_H": 0.07200000000000001,
+  "TEA_HOLDER_IN_Z": 0.013,
+  "TEA_HOLDER_FILL_H": 0.047,
+  "TEA_HOLDER_HANDLE_Y": 0.0545,
+  "PAN_FOOD_Z": 0.005,
+  "FRY_PAN_R": 0.1285,
+  "FRY_PAN_H": 0.0455,
+  "FRY_PAN_HANDLE_LEN": 0.322,
+  "FRY_PAN_IN_R": 0.1255,
+  "STOCK_POT_R": 0.153,
+  "STOCK_POT_H": 0.235,
+  "STOCK_POT_LID_TOP": 0.2855,
+  "LADLE_LEN": 0.32,
+  "LADLE_BOWL_R": 0.05,
+  "LADLE_ORIGIN": "bowl's bottom centre, handle rising along +x",
+  "SERVICE_BELL_R": 0.043,
+  "SERVICE_BELL_H": 0.0305,
+  "SERVICE_BELL_PLUNGER_Z": 0.0305,
+  "SERVICE_BELL_PLUNGER_TRAVEL": 0.004,
+  "PLATE_STACK_N": 8,
+  "PLATE_STACK_PITCH": 0.016307846677884024,
+  "PLATE_STACK_R": 0.135,
+  "PLATE_STACK_H": 0.13815492674518817,
+  "TICKET_RAIL_LEN": 0.6,
+  "TICKET_RAIL_BAR_Y": 0.02,
+  "TICKET_RAIL_BAR_Z": 0.05,
+  "TICKET_RAIL_DEPTH": 0.04,
+  "TICKET_RAIL_ORIGIN": "centre of the back plate's back face (y = 0), z = 0 at its lower edge; tickets hang below",
+  "CLOCHE_R": 0.125,
+  "CLOCHE_H": 0.1235,
+  "CLOCHE_ORIGIN": "rim centre (z = 0 at the rim's lower edge)",
+  "dishes": {
+    "borscht": {
+      "vessel": "SM_RT_SoupPlate",
+      "fill_z": 0.008,
+      "fill": "SM_RF_borscht_Fill",
+      "fill_h": 0.02,
+      "utensil": "spoon",
+      "load_s": "SM_RF_Load_borscht_S",
+      "load_b": "SM_RF_Load_borscht_B",
+      "stages": 5,
+      "radius": 0.12,
+      "fill_xy": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.1,
+          0.7208
+        ],
+        [
+          0.2,
+          0.7953
+        ],
+        [
+          0.3,
+          0.8439
+        ],
+        [
+          0.4,
+          0.8687
+        ],
+        [
+          0.5,
+          0.8936
+        ],
+        [
+          0.6,
+          0.9184
+        ],
+        [
+          0.7,
+          0.9432
+        ],
+        [
+          0.8,
+          0.968
+        ],
+        [
+          0.9,
+          0.9928
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ],
+      "stage_fill": [
+        1.0,
+        0.76,
+        0.54,
+        0.33,
+        0.14
+      ]
+    },
+    "pelmeni": {
+      "vessel": "SM_RT_PastaPlate",
+      "fill_z": 0.01,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_pelmeni_S",
+      "load_b": "SM_RF_Load_pelmeni_B",
+      "stages": 5,
+      "radius": 0.14
+    },
+    "baltic_fish": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_baltic_fish_S",
+      "load_b": "SM_RF_Load_baltic_fish_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "ramen": {
+      "vessel": "SM_RT_RamenBowl",
+      "fill_z": 0.012,
+      "fill": "SM_RF_ramen_Fill",
+      "fill_h": 0.054,
+      "utensil": "chopsticks",
+      "load_s": "SM_RF_Load_ramen_S",
+      "load_b": "SM_RF_Load_ramen_B",
+      "stages": 5,
+      "radius": 0.095,
+      "fill_xy": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.1,
+          0.5776
+        ],
+        [
+          0.2,
+          0.6668
+        ],
+        [
+          0.3,
+          0.737
+        ],
+        [
+          0.4,
+          0.7962
+        ],
+        [
+          0.5,
+          0.832
+        ],
+        [
+          0.6,
+          0.8678
+        ],
+        [
+          0.7,
+          0.9037
+        ],
+        [
+          0.8,
+          0.9395
+        ],
+        [
+          0.9,
+          0.9754
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ],
+      "stage_fill": [
+        1.0,
+        0.86,
+        0.7,
+        0.54,
+        0.38
+      ]
+    },
+    "pasta": {
+      "vessel": "SM_RT_PastaPlate",
+      "fill_z": 0.01,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_pasta_S",
+      "load_b": "SM_RF_Load_pasta_B",
+      "stages": 5,
+      "radius": 0.14
+    },
+    "steak": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "knife_fork",
+      "load_s": "SM_RF_Load_steak_S",
+      "load_b": "SM_RF_Load_steak_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "khachapuri": {
+      "vessel": "SM_RT_Board",
+      "fill_z": 0.018,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fingers",
+      "load_s": "SM_RF_Load_khachapuri_S",
+      "load_b": "SM_RF_Load_khachapuri_B",
+      "stages": 5,
+      "radius": 0.18,
+      "load_frame": "fingers"
+    },
+    "olivier": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_olivier_S",
+      "load_b": "SM_RF_Load_olivier_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "medovik": {
+      "vessel": "SM_RT_DessertPlate",
+      "fill_z": 0.01233,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_medovik_S",
+      "load_b": "SM_RF_Load_medovik_B",
+      "stages": 5,
+      "radius": 0.1
+    },
+    "plombir": {
+      "vessel": "SM_RT_Coupe",
+      "fill_z": 0.061,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "teaspoon",
+      "load_s": "SM_RF_Load_plombir_S",
+      "load_b": "SM_RF_Load_plombir_B",
+      "stages": 5,
+      "radius": 0.056
+    },
+    "syrniki": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_syrniki_S",
+      "load_b": "SM_RF_Load_syrniki_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "coffee": {
+      "vessel": "SM_RT_CoffeeCup",
+      "fill_z": 0.009,
+      "fill": "SM_RF_coffee_Fill",
+      "fill_h": 0.041,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.0395,
+      "half_height": 0.0304,
+      "fill_xy": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.1,
+          0.7565
+        ],
+        [
+          0.2,
+          0.8105
+        ],
+        [
+          0.3,
+          0.8365
+        ],
+        [
+          0.4,
+          0.8616
+        ],
+        [
+          0.5,
+          0.8868
+        ],
+        [
+          0.6,
+          0.9119
+        ],
+        [
+          0.7,
+          0.9371
+        ],
+        [
+          0.8,
+          0.9623
+        ],
+        [
+          0.9,
+          0.9857
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ],
+      "saucer": "SM_RT_Saucer",
+      "saucer_z": 0.006
+    },
+    "mors": {
+      "vessel": "SM_RT_Tumbler",
+      "fill_z": 0.01,
+      "fill": "SM_RF_mors_Fill",
+      "fill_h": 0.08,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.0355,
+      "half_height": 0.0525,
+      "fill_xy": [
+        [
+          0.0,
+          0.9932
+        ],
+        [
+          0.1,
+          0.9193
+        ],
+        [
+          0.2,
+          0.9275
+        ],
+        [
+          0.3,
+          0.9358
+        ],
+        [
+          0.4,
+          0.9441
+        ],
+        [
+          0.5,
+          0.9524
+        ],
+        [
+          0.6,
+          0.9607
+        ],
+        [
+          0.7,
+          0.9689
+        ],
+        [
+          0.8,
+          0.9772
+        ],
+        [
+          0.9,
+          0.9855
+        ],
+        [
+          1.0,
+          0.9932
+        ]
+      ]
+    },
+    "water": {
+      "vessel": "SM_RT_Tumbler",
+      "fill_z": 0.01,
+      "fill": "SM_RF_water_Fill",
+      "fill_h": 0.08,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.0355,
+      "half_height": 0.0525,
+      "fill_xy": [
+        [
+          0.0,
+          0.9932
+        ],
+        [
+          0.1,
+          0.9193
+        ],
+        [
+          0.2,
+          0.9275
+        ],
+        [
+          0.3,
+          0.9358
+        ],
+        [
+          0.4,
+          0.9441
+        ],
+        [
+          0.5,
+          0.9524
+        ],
+        [
+          0.6,
+          0.9607
+        ],
+        [
+          0.7,
+          0.9689
+        ],
+        [
+          0.8,
+          0.9772
+        ],
+        [
+          0.9,
+          0.9855
+        ],
+        [
+          1.0,
+          0.9932
+        ]
+      ]
+    },
+    "carafe_water": {
+      "vessel": "SM_RT_Carafe",
+      "fill_z": 0.01,
+      "fill": "SM_RF_carafe_Fill",
+      "fill_h": 0.125,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.045,
+      "half_height": 0.1134,
+      "fill_xy": [
+        [
+          0.0,
+          0.9976
+        ],
+        [
+          0.1,
+          0.9976
+        ],
+        [
+          0.2,
+          0.9976
+        ],
+        [
+          0.3,
+          0.9976
+        ],
+        [
+          0.4,
+          0.9976
+        ],
+        [
+          0.5,
+          0.9976
+        ],
+        [
+          0.6,
+          0.9976
+        ],
+        [
+          0.7,
+          0.9976
+        ],
+        [
+          0.8,
+          0.9976
+        ],
+        [
+          0.9,
+          0.9976
+        ],
+        [
+          1.0,
+          0.9976
+        ]
+      ]
+    },
+    "bread": {
+      "vessel": "SM_RT_BreadBasket",
+      "fill_z": 0.01,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fingers",
+      "load_s": "SM_RF_Load_bread_S",
+      "load_b": "SM_RF_Load_bread_B",
+      "stages": 5,
+      "radius": 0.1278,
+      "load_frame": "fingers"
+    },
+    "solyanka": {
+      "vessel": "SM_RT_SoupPlate",
+      "fill_z": 0.008,
+      "fill": "SM_RF_solyanka_Fill",
+      "fill_h": 0.02,
+      "utensil": "spoon",
+      "load_s": "SM_RF_Load_solyanka_S",
+      "load_b": "SM_RF_Load_solyanka_B",
+      "stages": 5,
+      "radius": 0.12,
+      "fill_xy": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.1,
+          0.7208
+        ],
+        [
+          0.2,
+          0.7953
+        ],
+        [
+          0.3,
+          0.8439
+        ],
+        [
+          0.4,
+          0.8687
+        ],
+        [
+          0.5,
+          0.8936
+        ],
+        [
+          0.6,
+          0.9184
+        ],
+        [
+          0.7,
+          0.9432
+        ],
+        [
+          0.8,
+          0.968
+        ],
+        [
+          0.9,
+          0.9928
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ],
+      "stage_fill": [
+        1.0,
+        0.78,
+        0.56,
+        0.36,
+        0.17
+      ]
+    },
+    "golubtsy": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_golubtsy_S",
+      "load_b": "SM_RF_Load_golubtsy_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "draniki": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_draniki_S",
+      "load_b": "SM_RF_Load_draniki_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "fried_flounder": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_fried_flounder_S",
+      "load_b": "SM_RF_Load_fried_flounder_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "shashlik": {
+      "vessel": "SM_RT_Board",
+      "fill_z": 0.018,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_shashlik_S",
+      "load_b": "SM_RF_Load_shashlik_B",
+      "stages": 5,
+      "radius": 0.18
+    },
+    "sushi_set": {
+      "vessel": "SM_RT_Geta",
+      "fill_z": 0.024,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "chopsticks",
+      "load_s": "SM_RF_Load_sushi_set_S",
+      "load_b": "SM_RF_Load_sushi_set_B",
+      "stages": 5,
+      "radius": 0.18
+    },
+    "blini_caviar": {
+      "vessel": "SM_RT_DinnerPlate",
+      "fill_z": 0.0145,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_blini_caviar_S",
+      "load_b": "SM_RF_Load_blini_caviar_B",
+      "stages": 5,
+      "radius": 0.135
+    },
+    "fest_ukha": {
+      "vessel": "SM_RT_ClayBowl",
+      "fill_z": 0.01,
+      "fill": "SM_RF_fest_ukha_Fill",
+      "fill_h": 0.04,
+      "utensil": "spoon",
+      "load_s": "SM_RF_Load_fest_ukha_S",
+      "load_b": "SM_RF_Load_fest_ukha_B",
+      "stages": 5,
+      "radius": 0.079,
+      "fill_xy": [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.1,
+          0.5886
+        ],
+        [
+          0.2,
+          0.6903
+        ],
+        [
+          0.3,
+          0.7473
+        ],
+        [
+          0.4,
+          0.7917
+        ],
+        [
+          0.5,
+          0.8167
+        ],
+        [
+          0.6,
+          0.8417
+        ],
+        [
+          0.7,
+          0.8667
+        ],
+        [
+          0.8,
+          0.8917
+        ],
+        [
+          0.9,
+          0.9167
+        ],
+        [
+          1.0,
+          0.9417
+        ]
+      ],
+      "stage_fill": [
+        1.0,
+        0.82,
+        0.62,
+        0.42,
+        0.24
+      ]
+    },
+    "fest_kulebyaka": {
+      "vessel": "SM_RT_DessertPlate",
+      "fill_z": 0.01233,
+      "fill": null,
+      "fill_h": null,
+      "utensil": "fork",
+      "load_s": "SM_RF_Load_fest_kulebyaka_S",
+      "load_b": "SM_RF_Load_fest_kulebyaka_B",
+      "stages": 5,
+      "radius": 0.1
+    },
+    "fest_sbiten": {
+      "vessel": "SM_RT_GlassMug",
+      "fill_z": 0.012,
+      "fill": "SM_RF_fest_sbiten_Fill",
+      "fill_h": 0.07,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.039,
+      "half_height": 0.0475,
+      "fill_xy": [
+        [
+          0.0,
+          0.994
+        ],
+        [
+          0.1,
+          0.9656
+        ],
+        [
+          0.2,
+          0.9687
+        ],
+        [
+          0.3,
+          0.9719
+        ],
+        [
+          0.4,
+          0.9751
+        ],
+        [
+          0.5,
+          0.9783
+        ],
+        [
+          0.6,
+          0.9815
+        ],
+        [
+          0.7,
+          0.9847
+        ],
+        [
+          0.8,
+          0.9879
+        ],
+        [
+          0.9,
+          0.991
+        ],
+        [
+          1.0,
+          0.994
+        ]
+      ]
+    },
+    "tea": {
+      "vessel": "SM_RT_TeaHolder",
+      "fill_z": 0.013,
+      "fill": "SM_RF_tea_Fill",
+      "fill_h": 0.047,
+      "utensil": "cup",
+      "load_s": null,
+      "load_b": null,
+      "stages": 0,
+      "radius": 0.0346,
+      "half_height": 0.0314,
+      "fill_xy": [
+        [
+          0.0,
+          0.9923
+        ],
+        [
+          0.1,
+          0.9472
+        ],
+        [
+          0.2,
+          0.9522
+        ],
+        [
+          0.3,
+          0.9573
+        ],
+        [
+          0.4,
+          0.9624
+        ],
+        [
+          0.5,
+          0.9674
+        ],
+        [
+          0.6,
+          0.9725
+        ],
+        [
+          0.7,
+          0.9775
+        ],
+        [
+          0.8,
+          0.9826
+        ],
+        [
+          0.9,
+          0.9876
+        ],
+        [
+          1.0,
+          0.9923
+        ]
+      ]
+    }
+  }
+}
