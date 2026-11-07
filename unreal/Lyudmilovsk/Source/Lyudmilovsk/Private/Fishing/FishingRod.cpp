@@ -299,6 +299,12 @@ void ALyudFishingRod::BuildStandIns()
 	UStaticMeshComponent* Hook = Part(TEXT("SpoonHook"), RodLathe(this, TEXT("SM_Hook"), RodRing(0.6f, 0.07f), 10), Spoon, FLinearColor(0.3f, 0.3f, 0.32f));
 	Hook->SetRelativeLocationAndRotation(FVector(-4.2f, 0.f, 0.f), FRotator(0.f, 90.f, 0.f));
 	Spoon->SetVisibility(false, true);
+	// the sea rod's bottom rig: a pear-shaped lead sinker (no float), its swivel on top
+	Sinker = Part(TEXT("Sinker"), RodLathe(this, TEXT("SM_Sinker"), { { -2.6f, 0.f }, { -2.3f, 0.6f }, { -1.f, 1.15f }, { 0.6f, 1.05f }, { 2.f, 0.5f }, { 2.6f, 0.f } }, 12),
+		Root, FLinearColor(0.32f, 0.33f, 0.35f));
+	Sinker->SetUsingAbsoluteLocation(true);
+	Sinker->SetUsingAbsoluteRotation(true);
+	Sinker->SetVisibility(false);
 	// the fish on the hook: one instance of its species' swimming mesh
 	Fish = NewObject<UInstancedStaticMeshComponent>(this, TEXT("HookedFish"), RF_Transient);
 	Fish->SetupAttachment(Root);
@@ -395,6 +401,37 @@ void ALyudFishingRod::SetFloat(bool bShow, const FVector& Where, float Lean)
 	{
 		// lying on its side when the line pulls it flat (or before the cast, hanging), upright riding the water
 		Float->SetWorldLocationAndRotation(Where, FRotator(-90.f * FMath::Clamp(Lean, 0.f, 1.f), GetActorRotation().Yaw, 0.f));
+	}
+}
+
+void ALyudFishingRod::SetSinker(bool bShow, const FVector& Where)
+{
+	if (!Sinker) return;
+	if (Sinker->IsVisible() != bShow) Sinker->SetVisibility(bShow);
+	if (bShow)
+	{
+		Sinker->SetWorldLocationAndRotation(Where, FRotator(90.f, 0.f, 0.f));
+	}
+}
+
+void ALyudFishingRod::SetTier(int32 Tackle)
+{
+	if (Tackle == Tier || Blank.Num() != Segments)
+	{
+		return;
+	}
+	Tier = Tackle;
+	// the basic rod: dark green glass; the spinning rod: a slim grey-blue carbon blank; the sea rod: a thick yellowish glass one
+	static const FLinearColor Cols[] = { FLinearColor(0.05f, 0.11f, 0.07f), FLinearColor(0.07f, 0.09f, 0.13f), FLinearColor(0.62f, 0.55f, 0.32f) };
+	static const float Thick[] = { 1.f, 0.85f, 1.6f };
+	const int32 T = FMath::Clamp(Tackle, 0, 2);
+	UMaterialInstanceDynamic* M = Paint(Cols[T]);
+	for (int32 I = 0; I < Blank.Num(); I++)
+	{
+		if (!Blank[I]) continue;
+		const float R0 = BlankR(ButtFront + I * SegLen()) * Thick[T];
+		Blank[I]->SetRelativeScale3D(FVector(SegLen() / 100.f, R0, R0));
+		if (M) Blank[I]->SetMaterial(0, M);
 	}
 }
 
@@ -554,6 +591,7 @@ void ALyudFishingRod::Park()
 	HideLine();
 	SetFloat(false);
 	SetSpoon(false);
+	SetSinker(false);
 	if (Fish && Fish->IsVisible()) Fish->SetVisibility(false);
 	PendingLook = NAME_None;
 	SetBend(0.f, FVector::DownVector);

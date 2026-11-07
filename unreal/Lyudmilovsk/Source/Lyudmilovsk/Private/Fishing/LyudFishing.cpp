@@ -1,11 +1,15 @@
 #include "Fishing/LyudFishing.h"
 
+#include "../Sea/EcoModel.h"
 #include "../Sea/FishModel.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "FishingModel.h"
+#include "FishingPlaces.h"
+#include "Fishing/LyudRowBoat.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -20,6 +24,8 @@
 #include "Sea/LyudSea.h"
 #include "Sea/LyudSwim.h"
 #include "Sea/LyudUnderwater.h"
+#include "Sky/LyudSky.h"
+#include "Weather/LyudWeather.h"
 #include "UI/LyudGameScreen.h"
 
 namespace LyudF = LyudFishing;
@@ -144,6 +150,68 @@ namespace
 	{
 		return LyudText::Get(FString::Printf(TEXT("fish.%s.name"), *Species.ToString().ToLower()));
 	}
+
+	/** The light and weather at the water now (the sky's sun, the weather's wind, rain, pressure; the web's bloom). */
+	LyudF::FConditions FishConditions(const UObject* WorldContext)
+	{
+		LyudF::FConditions C;
+		UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+		if (!World)
+		{
+			return C;
+		}
+		if (TActorIterator<ALyudSky> It(World); It)
+		{
+			C.SunAltitude = It->SunAltitude();
+		}
+		if (const ULyudWeatherSubsystem* Wx = ULyudWeatherSubsystem::Get(World))
+		{
+			const FLyudWeatherState St = Wx->GetState();
+			C.Wind = St.WindSpeed;
+			C.PressureTendency = St.PressureTendency;
+			C.Cloud = St.CloudCover;
+			const FLyudSkyWeather Sky = Wx->GetSky();
+			C.Rain = Sky.Rain;
+			C.Thunder = Sky.Thunder;
+		}
+		if (const ULyudEcosystem* Eco = ULyudEcosystem::Get(World))
+		{
+			C.Murk = Eco->GetBloom();
+		}
+		return C;
+	}
+
+	/** Each catchable's food in reach against the usual, from its group's diet in the web (its prey's numbers now). */
+	void FishHunger(const ULyudEcosystem* Eco, TArray<float>& Out)
+	{
+		Out.SetNum(LyudF::NumCatchable());
+		for (int32 C = 0; C < LyudF::NumCatchable(); C++)
+		{
+			Out[C] = 1.f;
+			const int32 N = Eco ? LyudEco::Find(LyudF::Catchable(C).Id) : -1;
+			if (N < 0) continue;
+			float Food = 0.f, Share = 0.f;
+			for (const LyudEco::FDietItem& D : LyudEco::Node(N).Diet)
+			{
+				Food += D.Share * Eco->GetAbundance(FName(ANSI_TO_TCHAR(D.Prey)));
+				Share += D.Share;
+			}
+			if (Share > 0.f) Out[C] = LyudF::Hunger(Food / Share);
+		}
+	}
+
+	/** A fish's length from its weight (Fulton's K), m. */
+	float FishLengthOf(int32 C, float Grams)
+	{
+		const LyudF::FCatchable& F = LyudF::Catchable(C);
+		return F.K > 0.f ? FMath::Pow(FMath::Max(Grams, 0.f) * 100.f / F.K, 1.f / 3.f) * 0.01f : F.Length;
+	}
+
+	int32 FishDay(const UObject* WorldContext)
+	{
+		const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
+		return int32(UGameCalendar::NowIn(World).GetTicks() / ETimespan::TicksPerDay);
+	}
 }
 
 // ------------------------------------------------------------------ the saved state
@@ -173,6 +241,85 @@ void ULyudFishingState::Reset()
 	BagGrams.Reset();
 	Total = 0;
 	Cooked = 0;
+	Journal.Reset();
+	Rod = NAME_None;
+	KitchenDay = -1;
+	KitchenTaken.Reset();
+	KitchenRoubles = 0;
+	KitchenSold = 0;
+}
+
+void ULyudFishingState::Note(const FLyudCatchEntry& Entry)
+{
+	Journal.Add(Entry);
+	if (Journal.Num() > JournalMax)
+	{
+		Journal.RemoveAt(0, Journal.Num() - JournalMax);
+	}
+}
+
+namespace
+{
+	/** One fish a kitchen would take: its catchable, its price there. */
+	struct FKitchenPick { int32 Fish; int32 Price; };
+	using FKitchenPicks = TArray<FKitchenPick, TInlineAllocator<32>>;
+
+	/** The fish in the pocket a kitchen wants, dearest first, at most Left of them. */
+	void KitchenPicks(const ULyudFishingState& State, const ULyudInventory* Inv, int32 Left, FKitchenPicks& Out)
+	{
+		Out.Reset();
+		for (int32 C = 0; Inv && Left > 0 && C < LyudF::NumCatchable(); C++)
+		{
+			const int32 Held = Inv->Count(FishItem(C));
+			if (Held <= 0) continue;
+			const float* G = State.BagGrams.Find(FishSpeciesName(C));
+			const float Each = G && *G > 0.f ? *G / Held : FishNames().Usual[C];
+			const int32 Price = LyudF::RestaurantPrice(C, Each, FishLengthOf(C, Each));
+			for (int32 K = 0; Price > 0 && K < Held; K++) Out.Add({ C, Price });
+		}
+		Out.Sort([](const FKitchenPick& A, const FKitchenPick& B) { return A.Price > B.Price; });
+		if (Out.Num() > Left) Out.SetNum(FMath::Max(Left, 0));
+	}
+}
+
+int32 ULyudFishingState::KitchenOffer(const UObject* WorldContext, FName Kitchen, int32 PerDay, int32* OutRoubles) const
+{
+	const int32* Taken = KitchenDay == FishDay(WorldContext) ? KitchenTaken.Find(Kitchen) : nullptr;
+	FKitchenPicks Picks;
+	KitchenPicks(*this, ULyudInventory::Get(WorldContext), PerDay - (Taken ? *Taken : 0), Picks);
+	int32 Roubles = 0;
+	for (const FKitchenPick& P : Picks) Roubles += P.Price;
+	if (OutRoubles) *OutRoubles = Roubles;
+	return Picks.Num();
+}
+
+int32 ULyudFishingState::SellToKitchen(const UObject* WorldContext, FName Kitchen, int32 PerDay)
+{
+	ULyudInventory* Inv = ULyudInventory::Get(WorldContext);
+	const int32 Day = FishDay(WorldContext);
+	if (KitchenDay != Day)
+	{
+		KitchenDay = Day;
+		KitchenTaken.Reset();
+	}
+	int32& Taken = KitchenTaken.FindOrAdd(Kitchen);
+	FKitchenPicks Picks;
+	KitchenPicks(*this, Inv, PerDay - Taken, Picks);
+	int32 Roubles = 0;
+	for (const FKitchenPick& P : Picks)
+	{
+		TakeOne(WorldContext, FishItem(P.Fish));
+		Roubles += P.Price;
+	}
+	if (Inv && Roubles > 0)
+	{
+		Inv->Earn(Roubles);
+	}
+	Taken += Picks.Num();
+	KitchenRoubles += Roubles;
+	KitchenSold += Picks.Num();
+	UE_LOG(LogTemp, Display, TEXT("FISHING kitchen %s bought %d fish for %d roubles"), *Kitchen.ToString(), Picks.Num(), Roubles);
+	return Roubles;
 }
 
 int32 ULyudFishingState::FishHeld(const UObject* WorldContext, int32* OutRoubles) const
@@ -328,6 +475,46 @@ ULyudFishing* ULyudFishing::Get(const UObject* WorldContext)
 {
 	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
 	return World ? World->GetSubsystem<ULyudFishing>() : nullptr;
+}
+
+bool ULyudFishing::IsRod(FName Item)
+{
+	// the rods' names made once (asked every frame)
+	static const TArray<FName> Rods = []
+	{
+		TArray<FName> R;
+		for (int32 T = 0; T < LyudF::NumTackle(); T++) R.Add(FName(ANSI_TO_TCHAR(LyudF::Tackle(T).Item)));
+		return R;
+	}();
+	return !Item.IsNone() && Rods.Contains(Item);
+}
+
+FName ULyudFishing::RodToUse() const
+{
+	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	const ULyudFishingState* State = ULyudFishingState::Get(this);
+	if (!Inv)
+	{
+		return NAME_None;
+	}
+	if (State && IsRod(State->Rod) && Inv->Count(State->Rod) > 0)
+	{
+		return State->Rod;
+	}
+	for (int32 T = LyudF::NumTackle() - 1; T >= 0; T--)
+	{
+		const FName Item(ANSI_TO_TCHAR(LyudF::Tackle(T).Item));
+		if (Inv->Count(Item) > 0) return Item;
+	}
+	return NAME_None;
+}
+
+FText ULyudFishing::Forecast(const UObject* WorldContext)
+{
+	static const TCHAR* Why[] = { TEXT("plain"), TEXT("twilight"), TEXT("falling"), TEXT("rising"), TEXT("bright"), TEXT("gale"), TEXT("rain"), TEXT("storm"),
+		TEXT("night"), TEXT("murky") };
+	const LyudF::EMoodWhy W = LyudF::MoodWhy(FishConditions(WorldContext));
+	return LyudText::Get(*FString::Printf(TEXT("ui.fish.forecast.%s"), Why[FMath::Clamp(int32(W), 0, int32(UE_ARRAY_COUNT(Why)) - 1)]));
 }
 
 bool ULyudFishing::HasHand(const UObject* WorldContext)
@@ -498,6 +685,14 @@ void ULyudFishing::UpdateWeights()
 		}
 	}
 	Session->SetBiteWeights(W);
+	// how keen they are now: the light, the weather, and how much food the web leaves them (that slowly: every half minute)
+	HungerIn -= 3.f;
+	if (HungerOf.Num() != LyudF::NumCatchable() || HungerIn <= 0.f)
+	{
+		FishHunger(Eco, HungerOf);
+		HungerIn = 30.f;
+	}
+	Session->SetConditions(FishConditions(this), std::vector<float>(HungerOf.GetData(), HungerOf.GetData() + HungerOf.Num()));
 }
 
 bool ULyudFishing::IsWater(const FVector& Where) const
@@ -537,6 +732,18 @@ void ULyudFishing::TakeOut()
 	}
 	R->SetActorHiddenInGame(true);
 	Rod = R;
+	// which rod: its reach, strength and reel, its look
+	if (const ULyudInventory* Inv = ULyudInventory::Get(this))
+	{
+		RodItem = IsRod(Inv->EquippedItem()) ? Inv->EquippedItem() : RodId;
+	}
+	const int32 Tackle = FMath::Max(0, LyudF::FindTackle(TCHAR_TO_ANSI(*RodItem.ToString())));
+	Session->SetTackle(Tackle);
+	R->SetTier(Tackle);
+	if (ULyudFishingState* State = ULyudFishingState::Get(this))
+	{
+		State->Rod = RodItem;
+	}
 	bAttached = false;
 	bHidden = true;
 	HoldTime = 0.f;
@@ -550,7 +757,7 @@ void ULyudFishing::TakeOut()
 	PosePos = FVector(30.f, 22.f, -50.f);
 	PoseElev = 20.f;
 	PoseYaw = -4.f;
-	UE_LOG(LogTemp, Display, TEXT("FISHING rod out"));
+	UE_LOG(LogTemp, Display, TEXT("FISHING rod out %s"), *RodItem.ToString());
 }
 
 void ULyudFishing::PutAway()
@@ -584,6 +791,93 @@ void ULyudFishing::PutAway()
 	}
 	LastPrompt = FText::GetEmpty();
 	UE_LOG(LogTemp, Display, TEXT("FISHING rod away"));
+}
+
+void ULyudFishing::LaunchBoat()
+{
+	bBoatTried = true;
+	const LyudFishPlaces::FBoatDef& D = LyudFishPlaces::Get().Boat;
+	const ALyudSea* Sea = ALyudSea::Get(this);
+	if (!D.bValid || !Sea || ALyudRowBoat::Get(this))
+	{
+		return;
+	}
+	// at its mooring by the pier; if the water there is too shallow on this map, out along the pier until it floats
+	FVector At(D.Mooring, 0.f);
+	for (int32 Step = 0; Step < 50 && Sea->DepthAt(At) < D.MinDepth + 20.f; Step++)
+	{
+		At.X += 200.f;
+	}
+	if (Sea->DepthAt(At) < D.MinDepth)
+	{
+		UE_LOG(LogTemp, Display, TEXT("FISHING no water for the boat at %s"), *At.ToCompactString());
+		return;
+	}
+	At.Z = Sea->SurfaceZ(At);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ALyudRowBoat* Boat = GetWorld()->SpawnActor<ALyudRowBoat>(At, FRotator(0.f, D.Yaw, 0.f), Params);
+	UE_LOG(LogTemp, Display, TEXT("FISHING boat moored at %s (%s)"), *At.ToCompactString(), Boat ? TEXT("ok") : TEXT("failed"));
+}
+
+void ULyudFishing::Kitchens(float DeltaTime, APawn* Hero, APlayerController* PC)
+{
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	ULyudFishingState* State = ULyudFishingState::Get(this);
+	const TArray<LyudFishPlaces::FKitchen>& All = LyudFishPlaces::Get().Kitchens;
+	if (!UI || !State || All.Num() == 0)
+	{
+		return;
+	}
+	// which kitchen door the hero stands at (looked for four times a second)
+	KitchenIn -= DeltaTime;
+	if (KitchenIn <= 0.f)
+	{
+		KitchenIn = 0.25f;
+		KitchenNear = -1;
+		for (int32 K = 0; K < All.Num(); K++)
+		{
+			if (FVector::Dist2D(Hero->GetActorLocation(), All[K].At) < All[K].Radius && FMath::Abs(Hero->GetActorLocation().Z - All[K].At.Z) < 400.f)
+			{
+				KitchenNear = K;
+			}
+		}
+	}
+	if (KitchenNear < 0)
+	{
+		if (KitchenKey != 0)
+		{
+			UI->SetPrompt(State, FText::GetEmpty());
+			KitchenKey = 0;
+		}
+		return;
+	}
+	const LyudFishPlaces::FKitchen& K = All[KitchenNear];
+	const int32 Hour = UGameCalendar::NowIn(GetWorld()).GetHour();
+	const bool bOpen = Hour >= K.Open && Hour < K.Close;
+	int32 Roubles = 0;
+	const int32 N = bOpen ? State->KitchenOffer(this, K.Id, K.PerDay, &Roubles) : 0;
+	const int32 Held = State->FishHeld(this);
+	if (bOpen && N > 0 && PC->WasInputKeyJustPressed(EKeys::Y) && !PC->IsMoveInputIgnored())
+	{
+		const int32 Got = State->SellToKitchen(this, K.Id, K.PerDay);
+		UI->SetPrompt(State, LyudText::Get(TEXT("ui.fish.kitchen_sold"), { FStringFormatArg(N), FStringFormatArg(Got) }));
+		KitchenKey = 1;
+		return;
+	}
+	// rebuilt only when what it says changes
+	const uint64 Key = 2 | (uint64(bOpen) << 2) | (uint64(N) << 3) | (uint64(FMath::Min(Held, 255)) << 11) | (uint64(Roubles) << 20);
+	if (Key == KitchenKey || KitchenKey == 1)
+	{
+		// the "sold" line stays until the hero steps away and back
+		return;
+	}
+	KitchenKey = Key;
+	FText Text;
+	if (!bOpen) Text = LyudText::Get(TEXT("ui.fish.kitchen_closed"), { FStringFormatArg(K.Open), FStringFormatArg(K.Close) });
+	else if (N > 0) Text = LyudText::Get(TEXT("ui.fish.kitchen_offer"), { FStringFormatArg(N), FStringFormatArg(Roubles) });
+	else Text = LyudText::Get(Held > 0 ? TEXT("ui.fish.kitchen_none") : TEXT("ui.fish.kitchen_bring"));
+	UI->SetPrompt(State, Text);
 }
 
 FString ULyudFishing::DebugState() const
@@ -879,7 +1173,21 @@ void ULyudFishing::Caught()
 	{
 		Under->TakeFish(Species, HookPos, 1500.f);
 	}
-	const bool bNew = State && State->Record(Species, F.Grams, ShowCm, UGameCalendar::NowIn(GetWorld()));
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	const bool bNew = State && State->Record(Species, F.Grams, ShowCm, Now);
+	if (State)
+	{
+		// the journal's line: where (the boat, a spot of the town's shore, or the open shore) and with what
+		FLyudCatchEntry E;
+		E.When = Now;
+		E.Species = Species;
+		E.Grams = F.Grams;
+		E.Cm = ShowCm;
+		E.Spot = ALyudRowBoat::IsHeroAboard(this) ? FName(TEXT("boat")) : LyudFishPlaces::SpotAt(Origin);
+		E.Bait = State->Bait;
+		E.Rod = RodItem;
+		State->Note(E);
+	}
 	const bool bFirst = State && State->Find(Species) && State->Find(Species)->Count == 1;
 	const TArray<FStringFormatArg> Args = { FStringFormatArg(FishName(Species).ToString()), FStringFormatArg(FMath::RoundToInt(F.Grams)), FStringFormatArg(FMath::RoundToInt(ShowCm)) };
 	Say(LyudText::Get(bFirst ? TEXT("ui.fish.caught_first") : (bNew ? TEXT("ui.fish.caught_record") : TEXT("ui.fish.caught")), Args), 4.f);
@@ -991,7 +1299,9 @@ void ULyudFishing::Prompt()
 		case LyudF::EState::Idle: Text = LyudText::Get(TEXT("ui.fish.hint_idle"), { FStringFormatArg(BaitName.ToString()) }); break;
 		case LyudF::EState::Charging: Text = LyudText::Get(TEXT("ui.fish.hint_charge")); break;
 		case LyudF::EState::Waiting:
-		case LyudF::EState::Nibbling: Text = LyudText::Get(bLure ? TEXT("ui.fish.hint_lure") : TEXT("ui.fish.hint_wait")); break;
+		case LyudF::EState::Nibbling:
+			Text = LyudText::Get(bLure ? TEXT("ui.fish.hint_lure") : (Session->Gear().bBottom ? TEXT("ui.fish.hint_wait_tip") : TEXT("ui.fish.hint_wait")));
+			break;
 		case LyudF::EState::Taking: Text = LyudText::Get(TEXT("ui.fish.hint_take")); break;
 		case LyudF::EState::Fighting:
 			Text = Session->IsRunning() && Session->Tension() > 0.55f ? LyudText::Get(TEXT("ui.fish.hint_run"))
@@ -1127,15 +1437,27 @@ void ULyudFishing::Draw(float DeltaTime)
 		break;
 	}
 	}
+	// the sea rod's bottom rig: a lead instead of a float, out of sight once it is down; the bite shows on the rod's tip
+	const bool bBottom = !bLure && Session->Gear().bBottom;
+	bool bSinker = false;
+	const bool bOnWater = S == LyudF::EState::Waiting || S == LyudF::EState::Nibbling || S == LyudF::EState::Taking;
+	if (bBottom && bFloat)
+	{
+		bFloat = false;
+		bSinker = !bOnWater && !(S == LyudF::EState::Winding && IsWater(EndPos));
+		if (bOnWater) EndPos = OnWater(FVector2D(EndPos), 0.f);
+	}
 	const float WaterZ = Sea ? Sea->SurfaceZ(EndPos) : -1e6f;
-	// the rod bends toward the line with its tension
-	const float Bend = 0.04f + 1.2f * Session->Tension() + (bFish && S != LyudF::EState::Fighting ? 0.18f : 0.f);
+	// the rod bends toward the line with its tension (and, on the bottom rig, knocks and pulls round with a bite)
+	const float Bend = 0.04f + 1.2f * Session->Tension() + (bFish && S != LyudF::EState::Fighting ? 0.18f : 0.f)
+		+ (bBottom && bOnWater ? 0.1f + 0.35f * Session->FloatDip() : 0.f);
 	R->SetBend(Bend, EndPos - Tip);
 	{
-		const float Slack = (S == LyudF::EState::Waiting || S == LyudF::EState::Nibbling || S == LyudF::EState::Taking) && !bLure ? 0.35f : FMath::Clamp(1.f - Session->Tension() * 2.5f, 0.f, 1.f) * 0.5f;
+		const float Slack = bOnWater && !bLure ? (bBottom ? 0.08f : 0.35f) : FMath::Clamp(1.f - Session->Tension() * 2.5f, 0.f, 1.f) * 0.5f;
 		R->SetLine(EndPos + (bFloat ? FVector(0.f, 0.f, 7.5f) : FVector::ZeroVector), Slack, WaterZ);
 	}
 	R->SetFloat(bFloat, EndPos, Lean);
+	R->SetSinker(bSinker, EndPos);
 	R->SetSpoon(bSpoon, EndPos, Tip - EndPos, Now * 18.f);
 	R->PlaceFish(bFish, EndPos, FishRot, Wriggle, DeltaTime);
 	// the reel: wound in, or the clutch giving line
@@ -1163,13 +1485,19 @@ void ULyudFishing::Tick(float DeltaTime)
 		return;
 	}
 	// a bait taken in the hand goes on the rig (the rod comes back into the hand); a rod in the hand comes out
+	if (!bBoatTried && ALyudSea::Get(World))
+	{
+		LaunchBoat();
+	}
+	Kitchens(DeltaTime, Hero, PC);
 	const FName Equipped = Inv->EquippedItem();
 	if (!Equipped.IsNone() && FishBaitOf(Equipped) >= 0)
 	{
-		if (Inv->Count(RodId) > 0)
+		const FName UseRod = Rod.IsValid() ? RodItem : RodToUse();
+		if (!UseRod.IsNone())
 		{
 			SetBait(Equipped);
-			Inv->Equip(RodId);
+			Inv->Equip(UseRod);
 		}
 		else
 		{
@@ -1187,11 +1515,18 @@ void ULyudFishing::Tick(float DeltaTime)
 			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World)) UI->SetPrompt(this, FText::GetEmpty());
 		}
 	}
-	if (Inv->EquippedItem() == RodId && !Rod.IsValid())
+	const FName Hand = Inv->EquippedItem();
+	if (IsRod(Hand) && !Rod.IsValid())
 	{
 		TakeOut();
 	}
-	else if (Inv->EquippedItem() != RodId && Rod.IsValid())
+	else if (IsRod(Hand) && Hand != RodItem)
+	{
+		// another rod taken: this one away (wound in), that one out
+		PutAway();
+		TakeOut();
+	}
+	else if (!IsRod(Hand) && Rod.IsValid())
 	{
 		PutAway();
 	}
@@ -1341,16 +1676,20 @@ void ULyudFishing::Tick(float DeltaTime)
 
 // ------------------------------------------------------------------ console
 
-static FAutoConsoleCommandWithWorld GFishGive(TEXT("lyud.Fish.Give"), TEXT("lyud.Fish.Give: a rod, worms, maggots and a spoon in the pocket, the rod in the hand"),
-	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+static FAutoConsoleCommandWithWorldAndArgs GFishGive(TEXT("lyud.Fish.Give"),
+	TEXT("lyud.Fish.Give [fishing_rod|rod_spinning|rod_sea]: that rod (the float rod), every bait and lure in the pocket, the rod in the hand"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		if (ULyudInventory* Inv = ULyudInventory::Get(World))
 		{
-			if (Inv->Count(ULyudFishing::RodId) < 1) Inv->Add(ULyudFishing::RodId);
-			Inv->Add(TEXT("bait_worm"), 10);
-			Inv->Add(TEXT("bait_maggot"), 10);
-			Inv->Add(TEXT("lure_spoon"), 1);
-			Inv->Equip(ULyudFishing::RodId);
+			const FName Rod = Args.Num() > 0 && ULyudFishing::IsRod(FName(*Args[0])) ? FName(*Args[0]) : ULyudFishing::RodId;
+			if (Inv->Count(Rod) < 1) Inv->Add(Rod);
+			for (int32 B = 0; B < LyudF::NumBaits(); B++)
+			{
+				const FName Item(ANSI_TO_TCHAR(LyudF::Bait(B).Item));
+				Inv->Add(Item, LyudF::Bait(B).bLure ? 1 : 10);
+			}
+			Inv->Equip(Rod);
 		}
 	}));
 
@@ -1418,5 +1757,54 @@ static FAutoConsoleCommandWithWorld GFishLog(TEXT("lyud.Fish.Log"), TEXT("lyud.F
 			{
 				UE_LOG(LogTemp, Display, TEXT("FISHING log %s x%d biggest %.0f g %.1f cm first %s"), *R.Species.ToString(), R.Count, R.BiggestGrams, R.BiggestCm, *R.First.ToString());
 			}
+		}
+	}));
+
+static FAutoConsoleCommandWithWorld GFishJournal(TEXT("lyud.Fish.Journal"), TEXT("lyud.Fish.Journal: the angler's journal, the last catches (FISHING journal ...)"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		if (const ULyudFishingState* S = ULyudFishingState::Get(World))
+		{
+			for (const FLyudCatchEntry& E : S->Journal)
+			{
+				UE_LOG(LogTemp, Display, TEXT("FISHING journal %s %s %.0f g %.1f cm at %s bait %s rod %s"), *E.When.ToString(), *E.Species.ToString(), E.Grams, E.Cm,
+					E.Spot.IsNone() ? TEXT("shore") : *E.Spot.ToString(), *E.Bait.ToString(), *E.Rod.ToString());
+			}
+			UE_LOG(LogTemp, Display, TEXT("FISHING journal %d lines, kitchens bought %d for %d roubles"), S->Journal.Num(), S->KitchenSold, S->KitchenRoubles);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorld GFishMood(TEXT("lyud.Fish.Mood"), TEXT("lyud.Fish.Mood: the light and weather the fish feel now, each one's keenness, the forecast (FISHING mood ...)"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		const LyudF::FConditions C = FishConditions(World);
+		UE_LOG(LogTemp, Display, TEXT("FISHING mood sun %.1f deg wind %.1f m/s rain %.1f mm/h thunder %.2f cloud %.2f pressure %+.1f hPa/3h murk %.2f: %s"),
+			C.SunAltitude, C.Wind, C.Rain, C.Thunder, C.Cloud, C.PressureTendency, C.Murk, *ULyudFishing::Forecast(World).ToString());
+		TArray<float> Hunger;
+		FishHunger(ULyudEcosystem::Get(World), Hunger);
+		for (int32 F = 0; F < LyudF::NumCatchable(); F++)
+		{
+			UE_LOG(LogTemp, Display, TEXT("FISHING mood %-20s bait %.2f lure %.2f hunger %.2f"), ANSI_TO_TCHAR(LyudF::Catchable(F).Id),
+				LyudF::BiteMood(C, F, false), LyudF::BiteMood(C, F, true), Hunger[F]);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GFishKitchen(TEXT("lyud.Fish.Kitchen"),
+	TEXT("lyud.Fish.Kitchen [sell]: what the first kitchen (the restaurant) would buy from the pocket now, or sells it (wherever the hero is)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudFishingState* S = ULyudFishingState::Get(World);
+		const TArray<LyudFishPlaces::FKitchen>& All = LyudFishPlaces::Get().Kitchens;
+		if (!S || All.Num() == 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("FISHING kitchen: none"));
+			return;
+		}
+		int32 Roubles = 0;
+		const int32 N = S->KitchenOffer(World, All[0].Id, All[0].PerDay, &Roubles);
+		UE_LOG(LogTemp, Display, TEXT("FISHING kitchen %s at %s would take %d fish for %d roubles"), *All[0].Id.ToString(), *All[0].At.ToCompactString(), N, Roubles);
+		if (Args.Num() > 0 && Args[0] == TEXT("sell"))
+		{
+			S->SellToKitchen(World, All[0].Id, All[0].PerDay);
 		}
 	}));

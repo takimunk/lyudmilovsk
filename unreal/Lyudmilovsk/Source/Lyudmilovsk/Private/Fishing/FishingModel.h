@@ -49,7 +49,7 @@ namespace LyudFishing
 	/** The inventory item of a caught fish: "fish_" + the id in lower case ("fish_roundgoby"). */
 	std::string ItemOf(const char* Id);
 
-	/** A bait or a lure. Baits go on the hook and are used up (stolen, eaten, the fish caught); the spoon stays (lost with the line). */
+	/** A bait or a lure. Baits go on the hook and are used up (stolen, eaten, the fish caught); a lure stays (lost with the line). */
 	struct FBait
 	{
 		const char* Item;
@@ -57,12 +57,59 @@ namespace LyudFishing
 		bool bLure;
 		/** Liking per diet (Plankton, Bottom, Mixed, Hunter). */
 		float Like[4];
+		/** How far it flies against the spoon (a wobbler is light, a worm on a sinker as the rig). */
+		float Cast = 1.f;
 	};
 	int NumBaits();
 	const FBait& Bait(int Index);
 	int FindBait(const char* Item);
 	/** How much species Catchable index takes this bait (0 never). */
 	float BaitLiking(int Fish, int BaitIndex);
+
+	/** A rod and its reel and line: the shop's three. */
+	struct FTackle
+	{
+		const char* Item;
+		/** Full-swing cast with a float (or the bottom rig's sinker) and with a lure, m. */
+		float FloatCast, LureCast;
+		/** The line's and the blank's strength: the tension a fish makes is divided by it. */
+		float Strength;
+		/** How fast the reel brings line in, against the basic rod's. */
+		float Reel;
+		/** A bottom rig: a heavy sinker and no float, the bite shows on the rod's tip; bottom fish and cod come to it, the small ones high in the water do not. */
+		bool bBottom;
+	};
+	int NumTackle();
+	const FTackle& Tackle(int Index);
+	int FindTackle(const char* Item);
+	/** What a rig does to a species' liking of a bait (the bottom rig: bottom fish and cod more, plankton eaters hardly). */
+	float RigLiking(int Fish, int TackleIndex, int BaitIndex);
+
+	/** The weather and the light at the water, for the fish's mood (ULyudWeatherSubsystem, ALyudSky, ULyudEcosystem::GetBloom). */
+	struct FConditions
+	{
+		/** The sun's altitude, degrees (dawn and dusk: about 0). */
+		float SunAltitude = 30.f;
+		/** Wind m/s, rain mm/h, thunder 0..1, cloud 0..1. */
+		float Wind = 4.f;
+		float Rain = 0.f;
+		float Thunder = 0.f;
+		float Cloud = 0.5f;
+		/** The air pressure's change, hPa in 3 hours (falling before a front: the hunters feed). */
+		float PressureTendency = 0.f;
+		/** The water's plankton against its mean (the bloom makes it murky: a lure is seen less). */
+		float Murk = 1.f;
+	};
+	/** How keen a species is now in this weather and light, about 0.2..2.5 (1: an ordinary grey day). */
+	float BiteMood(const FConditions& C, int Fish, bool bLure);
+	/** The food in a fish's reach against the usual (from the food web) -> how readily it takes a bait (a full fish less). */
+	float Hunger(float Food);
+	/** A short reason for the angler (the book's forecast): the strongest of the mood's parts now. */
+	enum class EMoodWhy : uint8_t { Plain, Twilight, Falling, Rising, Bright, Gale, Rain, Storm, Night, Murky };
+	EMoodWhy MoodWhy(const FConditions& C);
+
+	/** What the restaurant's kitchen pays for a fish: the prized kinds (a kilo at 200 roubles and up) of a good size, 1.6 of the Gastronom's; 0 when it does not want it. */
+	int RestaurantPrice(int Species, float Grams, float Length);
 
 	/** A small seeded random (the same seed, the same session: tests). */
 	struct FRand
@@ -155,6 +202,14 @@ namespace LyudFishing
 		void Unbait() { bBaited = false; }
 
 		void SetBiteWeights(const std::vector<float>& W) { Weights = W; }
+		/** The rod (FindTackle index; -1: the basic one). */
+		void SetTackle(int TackleIndex) { Rig = TackleIndex; }
+		int GetTackle() const { return Rig; }
+		const FTackle& Gear() const;
+		/** The weather and light now (refresh with the weights), and each fish's hunger from the food web (Catchable index -> 0.6..1.7; empty: 1). */
+		void SetConditions(const FConditions& C, const std::vector<float>& HungerOf);
+		/** A species' keenness now (mood x hunger) with the bait on (for the forecast and tests). */
+		float Keenness(int Fish) const;
 		/** The cast reached Water (or land) at Distance m from the rod tip. */
 		void SetLanded(bool bWater, float Distance);
 
@@ -220,7 +275,10 @@ namespace LyudFishing
 	private:
 		void Go(EState S);
 		void Emit(EEvent E) { Ev.push_back(E); }
-		float RichNow(bool bLure) const;
+		/** Bites a second now while waiting (a lure: while wound). */
+		float BiteRate(bool bLure) const;
+		/** How strongly fish Fish comes to bait B here now: weight x liking x rig x keenness. */
+		float Draw(int Fish, int B) const;
 		int PickFish();
 		void StartBite();
 		void Hooked();
@@ -231,7 +289,10 @@ namespace LyudFishing
 		float T = 0.f;
 		std::vector<EEvent> Ev;
 		std::vector<float> Weights;
+		/** Mood x hunger per Catchable, with a float bait and with a lure. */
+		std::vector<float> MoodBait, MoodLure;
 		int Bait = -1;
+		int Rig = -1;
 		bool bBaited = false;
 		bool bWasDown = false;
 		float ChargeT = 0.f, Throw = 0.f, Dist = 0.f, Dip = 0.f, Tens = 0.f, SideNow = 0.f;

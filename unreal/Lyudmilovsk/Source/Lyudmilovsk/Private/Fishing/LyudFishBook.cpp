@@ -84,7 +84,8 @@ public:
 	{
 		using namespace LyudFishBook;
 		UI = InArgs._UI;
-		Selected = FMath::Clamp(InArgs._Selected, 0, LyudFishing::NumCatchable() - 1);
+		// -1: the hero's own journal (the first row), else a fish's page
+		Selected = FMath::Clamp(InArgs._Selected, -1, LyudFishing::NumCatchable() - 1);
 		OnSelected = InArgs._OnSelected;
 		static const FSlateRoundedBoxBrush Paper(BookPaper, 8.f, FLinearColor(0.28f, 0.32f, 0.4f), 2.f);
 		static const FSlateColorBrush Fold(FLinearColor(0.f, 0.f, 0.f, 0.12f));
@@ -178,6 +179,20 @@ private:
 	{
 		using namespace LyudFishBook;
 		List->ClearChildren();
+		// the journal first: what was caught where, the records, how they bite today
+		List->AddSlot().AutoHeight().Padding(0, 0, 8, 8)
+		[
+			SNew(SButton).ButtonStyle(&FCoreStyle::Get().GetWidgetStyle<FButtonStyle>("NoBorder")).ContentPadding(FMargin(6.f, 3.f))
+			.OnClicked_Lambda([this]() { Select(-1); return FReply::Handled(); })
+			[
+				SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+				.BorderBackgroundColor(Selected < 0 ? FLinearColor(0.2f, 0.3f, 0.5f, 0.14f) : FLinearColor::Transparent).Padding(FMargin(4.f, 6.f))
+				[
+					SNew(STextBlock).Font(LyudUI::Font(18, Selected < 0 ? "Bold" : "Italic")).ColorAndOpacity(BookPencil)
+					.Text(LyudText::Get(TEXT("ui.fishbook.journal")))
+				]
+			]
+		];
 		for (int32 C = 0; C < LyudFishing::NumCatchable(); C++)
 		{
 			const FLyudCatchRecord* R = Record(C);
@@ -224,9 +239,58 @@ private:
 		];
 	}
 
+	/** The journal's page: today's forecast, the records, the last catches with where and what with, the kitchens' sales. */
+	void RebuildJournal()
+	{
+		using namespace LyudFishBook;
+		const ULyudFishingState* State = ULyudFishingState::Get(UI.Get());
+		TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+		Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.journal")), 28, BookInk, "Bold", 0.f)];
+		Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.forecast"), { FStringFormatArg(ULyudFishing::Forecast(UI.Get()).ToString()) }), 17, BookPencil, "Italic", 8.f)];
+		if (!State || State->Journal.Num() == 0)
+		{
+			Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.journal_empty")), 17, BookInkFaint, "Italic", 18.f)];
+			Right->SetContent(SNew(SScrollBox) + SScrollBox::Slot()[Box]);
+			return;
+		}
+		// the records: the five heaviest kinds' biggest
+		TArray<const FLyudCatchRecord*> Best;
+		for (const FLyudCatchRecord& R : State->Log) Best.Add(&R);
+		Best.Sort([](const FLyudCatchRecord& A, const FLyudCatchRecord& B) { return A.BiggestGrams > B.BiggestGrams; });
+		Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.records")), 19, BookInk, "Bold", 16.f)];
+		for (int32 I = 0; I < FMath::Min(5, Best.Num()); I++)
+		{
+			const FName Item(ANSI_TO_TCHAR(LyudFishing::ItemOf(TCHAR_TO_ANSI(*Best[I]->Species.ToString())).c_str()));
+			Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.record_line"), { FStringFormatArg(ULyudInventory::ItemName(Item).ToString()),
+				FStringFormatArg(FMath::RoundToInt(Best[I]->BiggestGrams)), FStringFormatArg(FMath::RoundToInt(Best[I]->BiggestCm)) }), 16, BookPencil, "Italic", 3.f)];
+		}
+		// the last catches, newest first
+		Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.recent")), 19, BookInk, "Bold", 16.f)];
+		for (int32 I = State->Journal.Num() - 1, Shown = 0; I >= 0 && Shown < 30; I--, Shown++)
+		{
+			const FLyudCatchEntry& E = State->Journal[I];
+			const FName Item(ANSI_TO_TCHAR(LyudFishing::ItemOf(TCHAR_TO_ANSI(*E.Species.ToString())).c_str()));
+			const FText Spot = LyudText::Get(*FString::Printf(TEXT("ui.fish.spot.%s"), E.Spot.IsNone() ? TEXT("shore") : *E.Spot.ToString()));
+			Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.entry"), { FStringFormatArg(LyudUIText::DateTime(E.When).ToString()),
+				FStringFormatArg(ULyudInventory::ItemName(Item).ToString()), FStringFormatArg(FMath::RoundToInt(E.Grams)), FStringFormatArg(FMath::RoundToInt(E.Cm)),
+				FStringFormatArg(Spot.ToString()), FStringFormatArg(E.Bait.IsNone() ? FString() : ULyudInventory::ItemName(E.Bait).ToString()) }), 15, BookPencil, "Italic", 3.f)];
+		}
+		if (State->KitchenSold > 0)
+		{
+			Box->AddSlot().AutoHeight()[Line(LyudText::Get(TEXT("ui.fishbook.kitchen"), { FStringFormatArg(State->KitchenSold), FStringFormatArg(State->KitchenRoubles) }),
+				16, BookPencil, "Italic", 16.f)];
+		}
+		Right->SetContent(SNew(SScrollBox) + SScrollBox::Slot()[Box]);
+	}
+
 	void RebuildRight()
 	{
 		using namespace LyudFishBook;
+		if (Selected < 0)
+		{
+			RebuildJournal();
+			return;
+		}
 		const int32 C = Selected;
 		const LyudFishing::FCatchable& F = LyudFishing::Catchable(C);
 		const FName Item = ItemOfFish(C);
@@ -321,7 +385,7 @@ void ULyudFishBookScreen::Open(FName Species)
 	if (!Species.IsNone())
 	{
 		const int32 C = LyudFishing::FindCatchable(TCHAR_TO_ANSI(*Species.ToString()));
-		LastRead = C >= 0 ? C : LastRead;
+		LastRead = C >= 0 ? C : (Species == FName(TEXT("journal")) ? -1 : LastRead);
 	}
 	TWeakObjectPtr<ULyudFishBookScreen> WeakThis(this);
 	Page = SNew(SLyudFishBookPage).UI(UI).Selected(LastRead)
@@ -398,7 +462,7 @@ void ULyudFishBookScreen::Tick(float DeltaTime)
 }
 
 static FAutoConsoleCommandWithWorldAndArgs GFishBookOpen(TEXT("lyud.Fish.Book"),
-	TEXT("lyud.Fish.Book [close|<Species>]: opens the angler's book (gives it first if the hero has none; checks), or shuts it"),
+	TEXT("lyud.Fish.Book [close|journal|<Species>]: opens the angler's book (gives it first if the hero has none; checks), or shuts it"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		ULyudFishBookScreen* S = ULyudFishBookScreen::Get(World);

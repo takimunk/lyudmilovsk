@@ -1,9 +1,30 @@
 # Fishing
 
-A telescopic float rod with a spinning reel, worms, maggots and a spoon, bought at the Gastronom No. 7 counter (Orlova Tanya:
-rod 90 roubles, worms 15 for ten, maggots 10 for ten, a spoon 45, the angler's book 40). The fish caught go into the pocket as
+Rods, baits and lures bought at the Gastronom No. 7 counter (Orlova Tanya): the telescopic float rod 90 roubles, the spinning
+rod 220, the sea bottom rod 380; worms 15 for ten, maggots 10 for ten, shrimp 30 for ten, dough 8 for ten; a spoon 45, a
+wobbler 70; the angler's book 40. The fish caught go into the pocket as
 `fish_<species>`; they are sold back at the same counter (Y: «продать улов»), priced by weight, or fried at the diner (Y there:
-the cook takes the biggest fish in the pocket for 15 roubles and a plate of fried fish with potatoes comes to the counter).
+the cook takes the biggest fish in the pocket for 15 roubles and a plate of fried fish with potatoes comes to the counter), or
+sold to the restaurant's kitchen (below).
+
+## The rods
+
+| rod | float / bottom cast | lure cast | strength | reel | |
+|---|---|---|---|---|---|
+| `fishing_rod` | 18 m float | 30 m | 1 | 1 | the basic one |
+| `rod_spinning` | 20 m float | 42 m | 1.7 | 1.35 | a big fish breaks it far less; the one for sea trout and salmon |
+| `rod_sea` | 45 m, a 100 g lead, no float | 32 m | 2 | 0.9 | a bottom rig: the bite shows on the tip (it knocks, then bends round; 1.5 x the time to strike); bottom fish x1.4, cod, turbot and eel x1.5, the small fish high in the water x0.25 |
+
+Strength divides the tension a fish makes (the clutch's brake is a force, so a stronger rod's clutch holds more); the reel scales
+every winding speed. `tools/fishing/run.sh` fights each with a "slow angler" (who looks at the rod every 0.25 s): a sea trout is
+landed 21 % of the time on the float rod, 77 % on the spinning rod; a salmon 0 % / 21 % / 33 %. Any rod taken in the hand comes
+out (`ULyudFishing::IsRod`); a bait taken in the hand brings out the rod last used (`ULyudFishingState::Rod`), or the best owned.
+
+## Baits
+
+worms (bottom fish, cod), maggots (small fish, roach, perch), shrimp (`bait_shrimp`: cod, eelpout, flounder, turbot, sea trout),
+dough (`bait_dough`: roach and vimba, whitefish now and then), the spoon (the hunters), the wobbler (`lure_wobbler`: sea trout and
+salmon 1.3, garfish, perch; 0.85 of the spoon's cast). The likings are `GBaits` and `Override()` in `FishingModel.cpp`.
 
 ## Playing
 
@@ -29,6 +50,45 @@ Things page. On the left every fish one can catch here, its icon faded until the
 right the chosen fish's page: its picture and description, its usual length, the baits it takes (from the bait likings), what the
 Gastronom pays a kilo, and in pencil the hero's own record of it from the angler's log (how many, the record grams and cm, the
 day of the first). At the foot: fish caught, kinds of the 26, fish fried at the diner. N or Esc shuts it; the game goes on.
+
+## The journal, the forecast
+
+The book's first page is «Мой журнал»: today's forecast (`ULyudFishing::Forecast`, the strongest reason now: the dusk, a falling
+glass, a gale...), the records (the five heaviest kinds' biggest), the last 30 catches of the saved journal
+(`ULyudFishingState::Journal`, the last 60: when, the fish, grams, cm, the spot, the bait, the rod) and the kitchen's sales. The
+spot is the boat, or the first of `Content/Fishing/fishing.json`'s spots that holds the cast's start (pier head, pier, promenade,
+beach; else "the shore"). Console: `lyud.Fish.Journal`, `lyud.Fish.Mood`.
+
+## The pier and the boat
+
+The spots take their places from `Content/City/city_plan.json` (S-PIER-HEAD, P-PIER, S-PROMENADE, S-BEACH) by plan id, so they
+follow the city plan; the pier head is deep water (more cod, flounder, turbot, garfish by the food web's suitability). A wooden
+rowing boat (`ALyudRowBoat`, built in code: a lofted hull, thwarts, oars) lies moored on the pier's south side, 155 m from its
+head (if the water there is too shallow, it is moved out along the pier until it floats). E close by hires it (30 roubles a day,
+paid when taken from the mooring), the hero sits on the middle thwart facing the bow (`AHeroCharacter::SitOn` on the hull, the
+seat's `SeatMove` / `SeatLeave` hooks); W/S row (2.2 m/s at most), A/D turn (one oar pulls), the hull rides the waves (the sea's
+surface under its ends and sides). It goes only over 70 cm of water and within 600 m of the mooring. Space gets out at the pier
+(onto the deck, the boat tied up again) or where the water is under 1.1 m deep; out at sea it says to row back. The rod works
+from it; its catches are written "from the boat". Console: `lyud.Fish.Boat [board|leave|home]`.
+
+## Time of day, weather, hunger
+
+`GetBiteWeights` already holds who is about (the month, day or night activity). On top, every 3 s the rod reads the sky and the
+weather (`FConditions`: the sun's altitude, wind, rain, thunder, cloud, the pressure's tendency; the web's bloom as the water's
+murk) and `BiteMood` gives each fish's keenness: the dawn and dusk rise (hunters x1.8, bottom fish x1.2), a bright still noon
+puts shy fish off, a falling glass before a front makes the hunters feed (to x1.4), a gale (from 10 m/s) and thunder put them
+down, a soft rain helps, a lure is seen less at night and in the bloom's murky water. Each fish's hunger comes from the web:
+its prey's numbers now against the usual (`ULyudEcosystem::GetAbundance` over its diet), `Hunger` = 1/sqrt(food), 0.6..1.7
+(every 30 s). Keenness scales the bite rate even at a rich spot (the numbers saturate, the keenness does not).
+
+## The restaurant's kitchen
+
+`fishing.json` "kitchens": the «Янтарь»'s service door at the back of P-RESTAURANT (20 m landward of its middle). Open 11-23,
+close by: «Y — сдать рыбу повару (N шт., X ₽)». It takes only the prized kinds (200 roubles a kilo and up at the Gastronom) of a
+good size (0.85 of the usual length), dearest first, 8 a day, at 1.6 x the Gastronom's price (`LyudFishing::RestaurantPrice`;
+`ULyudFishingState::KitchenOffer / SellToKitchen`, the day's count saved). The restaurant's own building and cooks are another
+branch's: when it lands, its kitchen can call `SellToKitchen` itself, or the door's place in `fishing.json` moves to its pass.
+Console: `lyud.Fish.Kitchen [sell]`.
 
 ## Cooking the catch
 
@@ -78,7 +138,7 @@ plate).
   which adds the sell prompt (`ui.shop.prompt_sell_fish`) and Y.
 - **Items** (`LyudInventory.cpp`): `fishing_rod`, `bait_worm`, `bait_maggot`, `lure_spoon` (hand items), and one `fish_<id>` per
   species. Names and descriptions in all three string tables (`item.*`, `ui.fish.*`).
-- **Icons**: five Higgsfield pictures (four grid sheets and the fried fish) (`design/fishing/icons_grid_*.json`, prompts and job ids pinned), cut by
+- **Icons**: six Higgsfield pictures (five grid sheets and the fried fish; grid 6 is 3x2: the two rods, shrimp, dough, wobbler) (`design/fishing/icons_grid_*.json`, prompts and job ids pinned), cut by
   `tools/fishing_icons.py` into `textures/localized/ru/icon_<id>.jpg` (no words on them: one picture for every language), listed
   in `localization/assets.json`.
 - **Sounds** (`audio/sounds.json`, group `fishing`): rod swish, float plop, reel click, the clutch's drag, the line snapping,
@@ -88,8 +148,9 @@ plate).
 
 - `tools/fishing/run.sh`: the model outside the engine. Bot anglers (good, greedy, lazy, jumpy) at spots weighted like
   `GetBiteWeights`: bite rates, baits matching diets, sizes and prices, a good angler landing ~25-35 fish an hour, greedy reeling
-  snapping the line on big fish, a salmon landed about 3 times in 5 with good play, the cost of a step.
-- Console: `lyud.Fish.Give` (rod and baits), `lyud.Fish.State`, `lyud.Fish.Press 1|0`, `lyud.Fish.Click`, `lyud.Fish.Bite`
+  snapping the line on big fish, the rods (casts, a slow angler's landings, the bottom rig's catch), the new baits, the weather's
+  and the dusk's moods, the restaurant's prices, the cost of a step.
+- Console: `lyud.Fish.Give [rod]` (a rod and every bait), `lyud.Fish.State`, `lyud.Fish.Press 1|0`, `lyud.Fish.Click`, `lyud.Fish.Bite`
   (a take now), `lyud.Fish.Hook <Species>` (one on the line now), `lyud.Fish.Bait <item>`, `lyud.Fish.Log`, `lyud.Fish.Book [close|<Species>]`
   (gives the book and opens it); the fried fish: `lyud.Diner.Serve diner_fish`. Log lines begin
   `FISHING`.

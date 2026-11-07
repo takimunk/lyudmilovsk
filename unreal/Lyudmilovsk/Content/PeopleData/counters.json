@@ -6,6 +6,8 @@
   {"person": "orlova_tanya", "activity": "work_shop", "title": "ui.shop.title_grocery", "reach_cm": 320, "buys_fish": true,
    "goods": [{"item": "fishing_rod", "price": 90, "count": 1}, {"item": "bait_worm", "price": 15, "count": 10},
              {"item": "bait_maggot", "price": 10, "count": 10}, {"item": "lure_spoon", "price": 45, "count": 1}, {"item": "fish_book", "price": 40, "count": 1},
+             {"item": "rod_spinning", "price": 220, "count": 1}, {"item": "rod_sea", "price": 380, "count": 1},
+             {"item": "bait_shrimp", "price": 30, "count": 10}, {"item": "bait_dough", "price": 8, "count": 10}, {"item": "lure_wobbler", "price": 70, "count": 1},
              {"item": "feed_suet", "price": 25, "count": 5}, {"item": "feed_niger", "price": 30, "count": 5},
              {"item": "feed_rowan", "price": 25, "count": 5}, {"item": "feed_mealworm", "price": 35, "count": 5},
              {"item": "feed_grain", "price": 15, "count": 5}, {"item": "feed_peanuts", "price": 30, "count": 5},
