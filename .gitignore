@@ -66,3 +66,10 @@ design/europa/game/moon_terrain.glb
 
 # town buildings: built by blender/city/build_city.py
 blender/export/city/*.glb
+
+# the resident generator (blender/residents): vendored MakeHuman data, atlases and models are rebuilt by its scripts
+blender/residents/_vendor/
+blender/residents/export/
+blender/residents/atlases/
+blender/residents/cache/
+renders/residents/
