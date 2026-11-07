@@ -33,35 +33,53 @@ sex, they keep their face. Regenerating the town with new people only adds model
   proportions, a belly for some heavier men, double chins, eye bags and an aged head after 45.
 - **Ancestry**: MakeHuman's african/asian/caucasian mix, loosely after the origin of the surname (55 %) or the given
   name (20 %), otherwise anyone; a quarter have a grandparent from elsewhere. Skin texture by age band, ancestry and
-  sex, then a personal tone.
+  sex, then a personal tone: a caucasian or asian skin darker on a mixed body, an african one lighter (up to 1.7x).
+  `atlases.py` matches the colour balance of MakeHuman's old african female and old asian male skins to their
+  middle-aged siblings (the first was lobster red).
 - **Face**: 30 "genes" (nose width/length/hump/tip, lips, mouth corners, chin, jaw, cheekbones, eyes, ears, forehead,
   brows...) mapped to MakeHuman modelling targets, plus one of seven head shapes. Children's genes are their parents'
   mean plus a little of their own (parents = same household, same surname, 16+ years older), so do their ancestry,
-  hair and iris colour: families look alike.
+  hair and iris colour (brown wins over light eyes; light eyes get rarer the less european the mix): families look
+  alike.
 - **Hair**: style by sex and age (afro mostly with african ancestry, older women bobs), natural colour by ancestry,
   greying from 35, dyed now and then; men may go bald from 30, grow a moustache or a beard.
 - **Clothes** (`wardrobe.py`): style from the job (cook, waiter, doctor's white coat, worker's overalls...), age (kid,
   elder) and temper (sporty, smart); a dress, a suit or a top with a bottom, a coat for some (the game begins in late
-  October on the Baltic), shoes or winter boots. Every tinted part of a garment gets a colour from a palette (elders
-  quieter, kids brighter).
+  October on the Baltic; 85 % of those in straps or a sleeveless dress get one, a third of the town in all), shoes or
+  winter boots. Every tinted part of a garment gets a colour from a palette (elders quieter, kids brighter).
 - **Accessories** (`accessories.py`, our own meshes): flat caps, knit beanies, baseball caps, sun hats, headscarves,
   chef's toques, backpacks, shoulder bags, string bags (avoska), shopping bags, scarves, aprons, round/rectangular
-  glasses and sunglasses, a cane, moustaches and beards; one thing on the head at most.
+  glasses and sunglasses, a cane, moustaches and beards; one thing on the head at most, no glasses under a fringe
+  over one eye (bob01/bob02: the frame showed over the hair). Facial hair is strand shells with the `acc/beard` tile:
+  a solid root band, strands thinning out downwards; the shells map it sparse at their top edge, solid a third of the
+  way down and ragged at the bottom, and moustaches taper and droop towards the corners.
 
 ## A model (`build_residents.py`)
 
 1. MPFB human with the look's macros and targets, the game rig (`blender/humans/mpfb_pipeline.add_ue_rig`: the 56
    bones of `SK_Human_Skeleton`, A-pose rest, origin on the floor), eyes, brows, lashes, teeth, tongue, hair, garments
    fitted by MPFB, accessories fitted over the clothes.
-2. Shape keys folded in, the body under the clothes and MakeHuman's helper geometry deleted; garments under other
-   garments lose their hidden faces and sink 4 mm under the cover (a shirt showed through the coat everywhere).
-3. Budget 24k triangles (the cast's standard; MakeHuman's head alone is ~9k and is never decimated): teeth to 12 %,
+2. Shape keys folded in, the body under the clothes (MakeHuman's delete groups, then every body face that five rays
+   around its normal find under a garment) and MakeHuman's helper geometry deleted. Dresses and tops are
+   smoothed (Taubin, so nothing shrinks) away from their edges: MakeHuman fits a garment vertex by vertex, so it showed
+   nipples and navels. A dress also hangs below the hips as a convex skirt with its hem heights smoothed: on a girl
+   it went into the crotch with a spike at the hem. Nothing comes closer than 6 mm to the body that is left.
+3. Layers: shoes 0.5 (under the trousers), bottoms, suits and dresses 1, tall boots 1.5 (trousers tucked in), tops 2,
+   coats 3. MakeHuman's clothes are each fitted to the body, so a bulky shirt pokes out of a slim coat and a sock out
+   of a trouser leg. For each vertex of the inner garment `hide_under_layers` takes its nearest point on the whole
+   body and casts a ray from there along the body's normal to the cover's lowest layer: a vertex higher than 5 mm
+   under that goes down to it (rays from the inner garment itself got lost in folded lapels and pockets on top of the
+   coat). Faces go whose vertices all see the cover in five directions around their normal (one ray straight out hid
+   the trousers just under a flared hem), and faces with the cover right above them take its tint, so what still
+   shows through a seam of the cover (the coat's armpits) reads as the coat. The push runs again after the budget:
+   decimation flattens the coat's shoulders.
+4. Budget 24k triangles (the cast's standard; MakeHuman's head alone is ~9k and is never decimated): teeth to 12 %,
    garment caps (suit 5.5k, shoes 1.6k...), then the body away from the face down to at most 55 % (arms and fingers
    collapse below that), then clothes and hair by their share.
-4. Six face morphs for `ULyudBodyAnimInstance` (blink, lip-sync, chatter): `eyeBlinkLeft`, `eyeBlinkRight`,
+5. Six face morphs for `ULyudBodyAnimInstance` (blink, lip-sync, chatter): `eyeBlinkLeft`, `eyeBlinkRight`,
    `jawOpen`, `mouthFunnel`, `mouthSmile`, `browUp`, from MakeHuman's expression units in the person's ancestry mix;
    brows, lashes and beards take the nearest skin's motion, the lower teeth and the tongue ride the jaw rigidly.
-5. One skinned mesh with four material sections and the tint in UV channels, exported as glb (no images) with a
+6. One skinned mesh with four material sections and the tint in UV channels, exported as glb (no images) with a
    sidecar JSON (triangles, height, morphs, hash).
 
 ### Materials: four for everybody
@@ -92,11 +110,40 @@ alpha 0. The skin's tint is half its tone multiplier; hair, brows and beards are
 
 ## Unreal
 
-Assets: `/Game/Characters/Humans/Town/<Model>/SK_<Model>` on `SK_Human_Skeleton` with the people's LODs
-(`lod_people.py`), atlases in `Town/Textures`, the masters and four `MI_Resident_*` in `Town/Materials`. The game finds
-them through `town_looks.json`: town_life.py copies each model into the person's townsfolk.json `body` (the pool
-model stays in `mesh` until the model is imported), PeopleLife shows a townsperson's own model when the package exists
-and loads it asynchronously near the camera (branch town-life).
+`unreal/scripts/import_residents.sh` imports the built residents into `/Game/Characters/Humans/Town`, with the editor
+closed on this checkout; it waits in the UE queue (`tools/wait_ue_queue.sh`), runs under `nice -n 19 taskpolicy -b`
+(`PRIO=` for full speed, `JOBS=2` for two editors) and backs up `SK_Human_Skeleton` around every run. The first editor
+run makes the shared assets: the atlases `Textures/T_Resident_{Skin,Cloth,Hair,Eyes}` (sRGB, BC7 with alpha, Hair
+with alpha-coverage mips), the masters `Materials/M_Resident_Opaque` (subsurface, two-sided; black scatter on Cloth and
+Eyes) and `M_Resident_Masked` (Hair, clip 0.5), and one instance per section, `MI_Resident_*` (roughness Skin 0.55,
+Cloth 0.85, Hair 0.5, Eyes 0.2). Each following run imports up to 60 people as `Town/R_<key>/SK_R_<key>` on
+`SK_Human_Skeleton` (never a new skeleton): Nanite off, the six face morphs, UV0-2, the four LODs of `lod_people.py`
+and a physics asset. The runs go on until nothing is left; a person who fails twice, or takes the editor down twice, is
+left out and listed. The masters compute `lerp(T, T * 2 * tint, amount)` with tint = (UV1.x, 1 - UV1.y, UV2.x) and
+amount = 1 - UV2.y, times T.a on Cloth (static switch `AlphaIsTintMask`). The `1 - y` undoes the V flip of Blender's
+glTF exporter and sits behind the static switch `TintFlipV`: if people come out grey or green, flip it in the two
+masters; no mesh needs re-importing.
+
+The import is incremental: each mesh carries its sidecar's `hash/build` as the metadata tag `ResidentLook`, and
+`Saved/ImportResidents/models/<Model>.json` records every import, so a rerun only imports new or rebuilt people.
+`--force` re-imports, `--retry-failed` retries failures, `--only key,key` and `--limit N` select people, `--prune`
+deletes folders no longer in `town_looks.json`. `python3 unreal/scripts/import_residents.py --report` gives the tally
+without the engine; the log is `Saved/ImportResidents/import.log`.
+
+```sh
+python3 unreal/scripts/import_residents.py --report      # no engine: 898 to import
+unreal/scripts/import_residents.sh --limit 3             # shared assets + 3 people: look at them in the editor first
+unreal/scripts/import_residents.sh                       # the whole town; stop and restart any time, it resumes
+```
+
+Not tried in a real editor yet (the cloud has none): check with `--limit 3` that the static switches link (the prepare
+run prints `MISSING` lines otherwise), that LOD1-3 keep UV1-2 (people would turn grey at a distance), that the meshes
+have the six morphs (`--report`) and that the sections come in as Skin/Cloth/Hair/Eyes. The faces only move if
+`SK_Human_Skeleton` has the six face curves (the cast's import adds them; the prepare run warns). The game finds a
+person's mesh through `town_looks.json`: town_life.py copies `Town/R_<key>` into the person's townsfolk.json `body`,
+and PeopleLife loads it asynchronously near the camera, keeping the pool model in `mesh` until the package exists
+(branch town-life). The package is `/Game/Characters/Humans/Town/R_<key>/SK_R_<key>`: the `SK_` name is the model's
+last segment (town-life's `PeopleModelPath` at dca19e8 still built `SK_Town/R_<key>`; asked to fix).
 
 ## Limits and next steps
 

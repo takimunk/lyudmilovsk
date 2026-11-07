@@ -262,22 +262,23 @@ def _t_avoska():
 
 
 def _t_beard():
-    """RGBA: vertical hair strands (greyscale detail, mean ~0.5 over opaque texels) with alpha."""
+    """RGBA: vertical hair strands (greyscale detail, mean ~0.5 over opaque texels) with alpha: a solid root band
+    along the top, strands thinning out downwards and thinner towards their tips (the lower half ragged: a solid
+    tile made every moustache a bar)."""
     from PIL import Image, ImageDraw
     S = N * 2
     col = Image.new("L", (S, S), 0)
     alp = Image.new("L", (S, S), 0)
     dc, da = ImageDraw.Draw(col), ImageDraw.Draw(alp)
     r = np.random.default_rng(61)
-    # dense root layer (skin shadow / stubble) over the top third
-    da.rectangle([0, 0, S, int(S * 0.34)], fill=255)
-    dc.rectangle([0, 0, S, int(S * 0.34)], fill=96)
-    for _ in range(1900):
+    da.rectangle([0, 0, S, int(S * 0.16)], fill=255)          # roots: skin shadow / stubble
+    dc.rectangle([0, 0, S, int(S * 0.16)], fill=90)
+    for _ in range(1300):
         x0 = r.random() * S
-        y0 = r.random() * S * 0.45
-        ln = S * (0.30 + 0.62 * r.random() ** 0.8)
+        y0 = r.random() * S * 0.20
+        ln = S * (0.16 + 0.62 * r.random() ** 1.25)
         y1 = min(S - 2, y0 + ln)
-        wav = (r.random() - 0.5) * 38
+        wav = (r.random() - 0.5) * 34
         ph = r.random() * 6
         wd = int(r.integers(3, 7))
         g = int(np.clip(r.normal(128, 30), 40, 230))
@@ -287,12 +288,12 @@ def _t_beard():
             pts.append((x0 + wav * math.sin(ph + t * 3.2) * t, y0 + (y1 - y0) * t))
         for ox in (-S, 0, S):
             pp = [(px + ox, py) for px, py in pts]
-            dc.line(pp, fill=g, width=wd)
-            da.line(pp, fill=255, width=wd)
+            for seg, w in ((pp[:10], wd), (pp[9:], max(1, wd - 2))):
+                dc.line(seg, fill=g, width=w)
+                da.line(seg, fill=255, width=w)
     col = np.asarray(col.resize((N, N), Image.LANCZOS), dtype=np.float64) / 255.0
     alp = np.asarray(alp.resize((N, N), Image.LANCZOS), dtype=np.float64) / 255.0
     col = col * (0.9 + 0.1 * _fnoise(0.5, 62))
-    # alpha: soften the cut-off so tips become ragged but keep strands crisp
     m = alp > 0.5
     col = _fin(col, mask=m, lo=0.05, hi=0.95)
     rgba = np.stack([col, col, col, alp], -1)
@@ -1391,8 +1392,17 @@ def _beard_weights(F):
     return w
 
 
+def _vmap_fuzzy(t, shift=0.0):
+    """v in the beard tile for a row at t (0 top .. 1 bottom of a shell): sparse strands at the top edge, the solid
+    roots a third of the way down, ragged tips at the bottom (a shell mapped straight down had a hard top edge)."""
+    t = np.asarray(t, dtype=np.float64)
+    up = 0.42 + 0.36 * _smooth01(t / 0.3)
+    down = 0.78 - 0.66 * np.clip((t - 0.3) / 0.7, 0, 1) ** 1.2
+    return np.clip(np.where(t < 0.3, up, down) - shift, 0.01, 0.99)
+
+
 def _face_shell(F, mb, top_fn, bot_fn, az_max, na, ns, thick, z_hi_ref, z_lo_ref, hang=None, uv_off=(0, 0),
-                uv_scale=(1, 1), weights=None):
+                uv_scale=(1, 1), weights=None, vmap=None):
     """Strand shell between bottom_fn(|az|) and top_fn(|az|) following the face (outside-in rays from the head axis)."""
     azs = -az_max + 2 * az_max * np.arange(na + 1) / na
     Z = np.zeros((ns + 1, na + 1))
@@ -1416,8 +1426,11 @@ def _face_shell(F, mb, top_fn, bot_fn, az_max, na, ns, thick, z_hi_ref, z_lo_ref
     P[..., 2] = Z
     uv = np.zeros((ns + 1, na + 1, 2))
     uv[..., 0] = np.clip(uv_off[0] + (np.arange(na + 1) / na)[None, :] * uv_scale[0], 0.01, 0.99)
-    vv = np.clip((z_hi_ref - Z) / (z_hi_ref - z_lo_ref), 0, 1)
-    uv[..., 1] = np.clip(uv_off[1] + (1 - vv) * uv_scale[1], 0.01, 0.99)
+    if vmap is not None:
+        uv[..., 1] = vmap((np.arange(ns + 1) / ns)[:, None] * np.ones((1, na + 1)))
+    else:
+        vv = np.clip((z_hi_ref - Z) / (z_hi_ref - z_lo_ref), 0, 1)
+        uv[..., 1] = np.clip(uv_off[1] + (1 - vv) * uv_scale[1], 0.01, 0.99)
     mb.grid(P, uv, weights or _beard_weights(F), out=lambda cen: np.array([cen[0] - F.c[0], cen[1] - F.c[1], 0]))
 
 
@@ -1446,30 +1459,41 @@ def _beard(F, p, kind, full):
     mb = MB()
     mb.tile = "beard"
     top, bottom = _beard_regions(F, full)
-    hang = (0.050 if full else 0.0) * hs
+    hang = (0.028 if full else 0.0) * hs
     az_max = D(100 if full else 90)
     for li, th in enumerate([0.0035, 0.0105] if full else [0.0030]):
         hg = hang * (1.0 if li == 0 else 1.5)
         z_ref_hi = (F.c[2] - 0.010) if full else (F.lip_top + 0.010)
         z_ref_lo = F.chin[2] - hg
         _face_shell(F, mb, top, lambda a, hg=hg: bottom(a, hg), az_max, 28 if full else 24, 8 if full else 6, th,
-                    z_ref_hi, z_ref_lo, hang=(0.55 if full else None), uv_off=(0.07 * li + 0.12, 0.02), uv_scale=(0.8, 0.95))
+                    z_ref_hi, z_ref_lo, hang=(0.55 if full else None), uv_off=(0.07 * li + 0.12, 0.02), uv_scale=(0.8, 0.95),
+                    vmap=lambda t, li=li: _vmap_fuzzy(t, 0.05 * li))
     if full:
         _mustache_into(F, mb, p, layers=2)
     return _finish(mb, F, kind, kind, "beard", True, "Hair", p, 0.55, uv_fit=False)
 
 
 def _mustache_into(F, mb, p, layers=2):
+    """Two shells over the upper lip, tapering and drooping towards the corners; roots (the tile's solid band) under
+    the nose, strand tips (its ragged half) over the lip."""
     hs = F.hs
     lt = F.lip_top
-    amax = D(27)
+    amax = D(26)
     z_hi = lt + 0.0095 * hs
-    z_lo = lt - 0.005
+    z_lo = lt - 0.004
+
+    def top(a):
+        t = a / amax
+        return z_hi - 0.004 * t ** 1.2 - 0.012 * t ** 2.2
+
+    def bot(a):
+        return z_lo - 0.0055 * (a / amax) ** 2
+
     for li in range(layers):
-        th = [0.0035, 0.0085][li]
-        _face_shell(F, mb, lambda a: z_hi - 0.011 * (a / amax) ** 1.5, lambda a: z_lo - 0.011 * (a / amax) ** 2, amax, 12, 3, th,
-                    z_hi, z_lo - 0.004, hang=None, uv_off=(0.1 + 0.4 * li, 0.36), uv_scale=(0.4, 0.5),
-                    weights=lambda P: [W1("head")] * len(P))
+        th = [0.0030, 0.0060][li]
+        _face_shell(F, mb, top, bot, amax, 16, 5, th, z_hi, z_lo - 0.006, hang=None,
+                    uv_off=(0.1 + 0.4 * li, 0.18), uv_scale=(0.4, 0.57),
+                    weights=lambda P: [W1("head")] * len(P), vmap=lambda t, li=li: _vmap_fuzzy(t, 0.06 * li))
 
 
 def b_mustache(F, p):

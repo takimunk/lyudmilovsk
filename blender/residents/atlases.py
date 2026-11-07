@@ -284,6 +284,22 @@ def pack(tiles, size, pad):
     return atlas, rects
 
 
+# skins whose colour balance is off next to the rest of their family: their chromaticity (mean linear colour at
+# their own luminance) is matched to a sibling. MakeHuman's old african female is far redder than the other african
+# skins (mean R/G 4.9 against 3.1): a lobster-red face in the previews.
+SKIN_BALANCE = {"old_african_female": "middleage_african_female", "old_asian_male": "middleage_asian_male"}
+
+
+def balance_to(tile, ref):
+    """tile's linear colour scaled per channel so that its mean has ref's chromaticity at tile's own luminance."""
+    lin, rl = to_linear(tile[..., :3]), to_linear(ref[..., :3])
+    m, mr = lin.reshape(-1, 3).mean(0), rl.reshape(-1, 3).mean(0)
+    gain = mr / np.maximum(m, 1e-6) * (float(luminance(m)) / max(float(luminance(mr)), 1e-6))
+    out = tile.copy()
+    out[..., :3] = to_srgb(np.clip(lin * gain, 0.0, 1.0))
+    return out
+
+
 def scans(subdir):
     out = {}
     for p in sorted(glob.glob(os.path.join(SCAN, "%s__*.json" % subdir))):
@@ -297,8 +313,12 @@ def build(size, pad, out_dir):
     os.makedirs(out_dir, exist_ok=True)
     sections = {s: [] for s in SECTIONS}
     meta = {}
-    for name, info in scans("skins").items():
-        sections["Skin"].append(("skins/" + name, plain_tile(info["texture_abs"], size)))
+    skins = {name: plain_tile(info["texture_abs"], size) for name, info in scans("skins").items()}
+    for name, ref in SKIN_BALANCE.items():
+        if name in skins and ref in skins:
+            skins[name] = balance_to(skins[name], skins[ref])
+    for name, tile in skins.items():
+        sections["Skin"].append(("skins/" + name, tile))
     for name, info in scans("clothes").items():
         if name not in W.GARMENTS:
             continue

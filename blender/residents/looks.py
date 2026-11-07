@@ -189,8 +189,9 @@ def natural_iris(rnd, mix):
     af, asn, ca = mix
     if af + asn > 0.6:
         return pick(rnd, [("brown", 8), ("brownlight", 2)])
-    return pick(rnd, [("brown", 3), ("brownlight", 2), ("blue", 2), ("lightblue", 1), ("deepblue", 0.6),
-                      ("green", 1), ("bluegreen", 1), ("grey", 1.2), ("ice", 0.3)])
+    k = ca ** 2                                               # light eyes: rarer the less european the mix
+    return pick(rnd, [("brown", 3), ("brownlight", 2), ("blue", 2 * k), ("lightblue", 1 * k), ("deepblue", 0.6 * k),
+                      ("green", 1 * k), ("bluegreen", 1 * k), ("grey", 1.2 * k), ("ice", 0.3 * k)])
 
 
 # ----------------------------------------------------------------------------------------------- outfits
@@ -265,6 +266,8 @@ def choose_outfit(rnd, sex, age, occupation, temper):
         out.append(rnd.choice(suits))
     # coat over it: the town is on the Baltic and the game begins in late October
     p_coat = {"elder": 0.45, "smart": 0.3, "casual": 0.22, "work": 0.12, "kid": 0.08, "sport": 0.03}.get(style, 0.0)
+    if any(g in BARE_ARMS for g in out):                      # straps or no sleeves: a coat over it, mostly
+        p_coat = max(p_coat, 0.85)
     if extras.get("coat"):
         out.append("punkduck_coat")
     elif age >= 14 and rnd.random() < p_coat:
@@ -277,6 +280,11 @@ def choose_outfit(rnd, sex, age, occupation, temper):
         shoes = garments_of("shoes", sex, age, styles) or garments_of("shoes", sex, age, ["casual"])
         out.append(rnd.choice(shoes))
     return out, style, extras
+
+
+FRINGE_OVER_EYE = {"bob01", "bob02"}    # glasses would show through the hair over one eye
+BARE_ARMS = {"punkduck_sleeveless", "punkduck_vneck_top", "wolgade_female_top_01", "mindfront_tank_top_01",
+             "mindfront_f_dress_02", "mindfront_f_beach_dress_01"}
 
 
 def tint_for(rnd, garment, slot, style, extras, age):
@@ -312,7 +320,14 @@ def make_look(person, seed, names, parents_looks=None):
         tone = round(sum(p["tone"] for p in parents_looks) / len(parents_looks) * rnd.uniform(0.98, 1.02), 3)
         genes = child_genes(rnd, [p["genes"] for p in parents_looks])
         hair_nat = rnd.choice(parents_looks)["hair_natural"] if rnd.random() < 0.8 else natural_hair(rnd, mix)
-        iris = rnd.choice(parents_looks)["iris"] if rnd.random() < 0.75 else natural_iris(rnd, mix)
+        r_iris = rnd.random()
+        if r_iris < 0.75:
+            iris = rnd.choice(parents_looks)["iris"]
+            dark = [p["iris"] for p in parents_looks if p["iris"] in ("brown", "brownlight")]
+            if dark and r_iris < 0.7:                         # brown is dominant
+                iris = dark[0]
+        else:
+            iris = natural_iris(rnd, mix)
     else:
         mix, tone = ancestry(rnd, sur_o, given_o)
         genes = fresh_genes(rnd)
@@ -364,9 +379,9 @@ def make_look(person, seed, names, parents_looks=None):
     band = "young" if age < 33 else ("middleage" if age < 58 else "old")
     anc = pick(rnd, [("african", mix[0] ** 2 + 1e-6), ("asian", mix[1] ** 2 + 1e-6), ("caucasian", mix[2] ** 2 + 1e-6)])
     skin = rnd.choice(W.SKINS[(band, anc, sex)])
-    # darker for a caucasian skin on a mixed body, a little personal variation for everyone
-    shade = tone * (1.0 - 0.45 * mix[0] if anc != "african" else 1.0) * rnd.uniform(0.94, 1.06)
-    skin_tint = round(clamp(shade, 0.5, 1.12), 3)
+    # darker for a caucasian or asian skin on a mixed body, lighter for an african one
+    shade = tone * (1.0 - 0.45 * mix[0] if anc != "african" else 1.0 + 0.9 * (mix[1] + mix[2])) * rnd.uniform(0.94, 1.06)
+    skin_tint = round(clamp(shade, 0.5, 1.7 if anc == "african" else 1.12), 3)
 
     # hair
     grey_p = 0.0 if age < 35 else clamp((age - 35) / 40, 0, 0.92)
@@ -436,6 +451,8 @@ def make_look(person, seed, names, parents_looks=None):
         acc.append("glasses:" + pick(rnd, [("round", 1.2), ("rect", 1.5)]))
     elif 16 <= age < 60 and rnd.random() < 0.04:
         acc.append("glasses:sun")
+    if hair in FRINGE_OVER_EYE:
+        acc = [a for a in acc if not a.startswith("glasses")]
     if sex == "m" and age >= 17:
         fh = pick(rnd, [(None, 6.5), ("mustache", 1.0 + (age > 50)), ("short_beard", 1.3), ("full_beard", 0.8)])
         if fh:

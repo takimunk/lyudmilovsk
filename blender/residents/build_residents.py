@@ -39,7 +39,7 @@ LOOKS = os.path.join(HERE, "cache", "looks.json")
 SCAN = os.path.join(HERE, "cache", "wardrobe")
 ATLASES = os.path.join(HERE, "atlases")
 EXPORT = os.path.join(HERE, "export")
-BUILD_VERSION = 2          # bump when the build itself changes (forces every model to rebuild)
+BUILD_VERSION = 4          # bump when the build itself changes (forces every model to rebuild)
 
 MAX_BODY_M = 1.88          # CharacterStandard.h MaxNpcHeight 195 cm with hair, shoes and headroom
 BUDGET = 24000             # docs/characters.md: 24k triangles for an adult (18k for a hi3d child; MakeHuman children
@@ -467,6 +467,9 @@ def build_one(look, data, mats, out_dir):
     src_idx = np.nonzero(in_body)[0]
     src_co = full_co[src_idx]
     src_morphs = {m: world_delta(bm, d)[src_idx] for m, d in morph_src.items()}
+    from mathutils.bvhtree import BVHTree
+    body_tree = BVHTree.FromPolygons(full_co.tolist(), [tuple(pp.vertices) for pp in bm.data.polygons
+                                                        if all(in_body[v] for v in pp.vertices)])
 
     # fold everything, delete the hidden body and the helpers
     for o in [bm] + [p for p, _ in parts]:
@@ -477,6 +480,13 @@ def build_one(look, data, mats, out_dir):
     if len(bm.data.vertices) and not hasattr(bm.data.attributes.get("oidx"), "data"):
         raise RuntimeError("lost the vertex index attribute")
     remove_loose(bm)
+    hide_body_under(bm, [p for p, k in parts if k == "clothes"])
+    kept = np.empty(len(bm.data.vertices) * 3)
+    bm.data.vertices.foreach_get("co", kept)
+    kept_tree = BVHTree.FromPolygons(world(bm, kept.reshape(-1, 3)).tolist(), [tuple(pp.vertices) for pp in bm.data.polygons])
+    for p, k in parts:
+        if k == "clothes" and W.GARMENTS.get(p["res_name"], {}).get("kind") in ("dress", "top"):
+            relax_garment(p, arm, W.GARMENTS[p["res_name"]]["kind"], kept_tree)
 
     # UVs, tints, materials (before the budget: the decimation carries UVs and tints along, island by island)
     skin_t = float(look["skin_tint"]) * 0.5
@@ -502,10 +512,10 @@ def build_one(look, data, mats, out_dir):
         assign(p, mats, sec)
 
     # garments under garments (after the tints: the slot scan counts the faces of the whole garment)
-    hide_under_layers(parts)
+    hide_under_layers(parts, body_tree, height)
 
     # budget: teeth always, then caps per part, then the body away from the face and hands
-    budget = KID_BUDGET if look["age"] < 13 else BUDGET
+    budget = int(os.environ.get("RES_BUDGET", KID_BUDGET if look["age"] < 13 else BUDGET))
     for p, k in parts:
         if k == "teeth":
             decimate(p, 0.12)
@@ -537,6 +547,7 @@ def build_one(look, data, mats, out_dir):
             decimate(p, target / t)
     if os.environ.get("RES_DEBUG"):
         print("budget %s: %d -> %d (budget %d)" % (name, total, tris(bm) + sum(tris(p) for p, _ in parts), budget))
+    hide_under_layers(parts, body_tree, height, delete=False)   # decimation flattened the covers: again
 
     # face morphs: the body from its own (kept) vertices, the rest from the nearest body vertices
     bco = np.empty(len(bm.data.vertices) * 3)
@@ -569,19 +580,33 @@ def build_one(look, data, mats, out_dir):
     return stats
 
 
-LAYER = {"bottom": 1, "suit": 1, "dress": 1, "top": 2, "outer": 3}
+LAYER = {"shoes": 0.5, "bottom": 1, "suit": 1, "dress": 1, "top": 2, "outer": 3}
+LAYER_BY_NAME = {"punkduck_winter_boots": 1.5}    # tall boots go over the trousers (tucked in), shoes under them
 
 
-def hide_under_layers(parts):
-    """Garments under other garments: faces wholly covered go, covered vertices left over sink 4 mm under the cover
-    (a coat over a shirt showed the shirt's stripes through every fold)."""
+def garment_layer(name):
+    return LAYER_BY_NAME.get(name, LAYER.get(W.GARMENTS.get(name, {}).get("kind"), 0))
+
+
+def hide_under_layers(parts, body, height, delete=True):
+    """Garments under other garments (shoes under trousers, trousers under tall boots, a shirt under a coat).
+
+    MakeHuman's clothes are each fitted to the body, so a bulky shirt pokes out of a slim coat and a sock out of a
+    trouser leg. Measured from the body: for each vertex of the inner garment, its nearest point on the (whole) body
+    and a ray from there along the body's normal to the cover's lowest layer; a vertex higher than 5 mm under that
+    layer goes down to it (rays from the inner garment itself got lost in folded lapels and pockets). With delete,
+    faces go whose vertices all see the cover in five directions around their normal (a ray straight out alone hid
+    the trousers just under a flared hem). Called again without delete after the budget: decimation flattens the
+    cover's shoulders."""
     from mathutils import Vector
     from mathutils.bvhtree import BVHTree
-    cl = [(p, LAYER.get(W.GARMENTS.get(p["res_name"], {}).get("kind"), 0)) for p, k in parts if k == "clothes"]
+    import bmesh
+    cl = [(p, garment_layer(p["res_name"])) for p, k in parts if k == "clothes"]
     cl = [(p, l) for p, l in cl if l > 0]
+    sink = 0.005
     for inner, li in cl:
         outers = [p for p, l in cl if l > li]
-        if not outers:
+        if not outers or not len(inner.data.vertices):
             continue
         trees = []
         for o in outers:
@@ -601,42 +626,320 @@ def hide_under_layers(parts):
         wco = world(inner, co)
         wn = nr.reshape(-1, 3) @ mw[:3, :3].T
         wn /= np.maximum(np.linalg.norm(wn, axis=1, keepdims=True), 1e-9)
-        covered = np.zeros(n, bool)
+        shoes = W.GARMENTS.get(inner["res_name"], {}).get("kind") == "shoes"
+        reach = 0.04 if shoes else 0.08
+        z_min = 0.055 * height if shoes else -1.0      # shoes: only the sock above the ankle, never the shoe itself
         new = wco.copy()
+        hidden = np.zeros(n, bool)
+        under = np.full((n, 2), -1)          # (cover, cover polygon) right above the vertex
+        pushed = 0
         for i in range(n):
-            c, d = Vector(wco[i]), Vector(wn[i])
-            for t in trees:
-                hit = t.ray_cast(c, d, 0.07)
-                if hit[0] is not None:
-                    covered[i] = True
-                    if hit[3] < 0.004:
-                        new[i] = wco[i] - wn[i] * (0.004 - hit[3])
+            v = wco[i]
+            if v[2] < z_min:
+                continue
+            q, nq, _f, _d = body.find_nearest(Vector(v), 0.3)
+            if q is None:
+                continue
+            q, nq = np.array(q), np.array(nq)
+            h = float((v - q) @ nq)
+            H = None
+            for ti, t in enumerate(trees):
+                hit = t.ray_cast(Vector(q + nq * 0.0005), Vector(nq), 0.25)
+                if hit[0] is not None and (H is None or hit[3] < H):
+                    H = hit[3]
+                    under[i] = (ti, hit[2])
+            if H is None:
+                continue
+            target = max(min(h, H - sink), min(h, 0.5 * H))
+            if target < h - 1e-5:
+                new[i] = v - nq * (h - target)
+                pushed += 1
+            if not delete:
+                continue
+            d = wn[i]
+            t1 = np.cross(d, (0.0, 0.0, 1.0) if abs(d[2]) < 0.9 else (1.0, 0.0, 0.0))
+            t1 /= np.linalg.norm(t1)
+            t2 = np.cross(d, t1)
+            c = Vector(new[i])
+            ok = True
+            for r in (d, d + 0.84 * t1, d - 0.84 * t1, d + 0.84 * t2, d - 0.84 * t2):   # straight out and 40 deg off
+                r = Vector(r / np.linalg.norm(r))
+                if not any(t.ray_cast(c, r, reach)[0] is not None for t in trees):
+                    ok = False
                     break
-                back = t.ray_cast(c, -d, 0.02)
-                if back[0] is not None:                       # the cover is under this vertex: it pokes through
-                    covered[i] = True
-                    new[i] = np.array(back[0]) - wn[i] * 0.004
-                    break
-        if not covered.any():
-            continue
+            hidden[i] = ok
         inv = np.linalg.inv(mw)
         loc = new @ inv[:3, :3].T + inv[:3, 3]
         me.vertices.foreach_set("co", loc.reshape(-1))
-        import bmesh
-        b = bmesh.new()
-        b.from_mesh(me)
-        b.verts.ensure_lookup_table()
-        gone = [f for f in b.faces if all(covered[v.index] for v in f.verts)]
-        if gone:
-            bmesh.ops.delete(b, geom=gone, context="FACES")
+        if delete:
+            recolour_under(inner, outers, under)
+        gone = []
+        if delete and hidden.any():
+            b = bmesh.new()
+            b.from_mesh(me)
+            b.verts.ensure_lookup_table()
+            gone = [f for f in b.faces if all(hidden[v.index] for v in f.verts)]
+            if gone:
+                bmesh.ops.delete(b, geom=gone, context="FACES")
+            loose = [v for v in b.verts if not v.link_faces]
+            if loose:
+                bmesh.ops.delete(b, geom=loose, context="VERTS")
+            b.to_mesh(me)
+            b.free()
+        me.update()
+        if os.environ.get("RES_DEBUG"):
+            print("layers%s: %s under %s: %d faces hidden, %d vertices pushed under" % (
+                "" if delete else " (after budget)", inner["res_name"], [o["res_name"] for o in outers], len(gone),
+                pushed))
+
+
+def _hull2d(P):
+    """Convex hull (counter-clockwise) of 2D points: Andrew's monotone chain."""
+    P = sorted(set(map(tuple, np.round(P, 6))))
+    if len(P) < 3:
+        return np.array(P)
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    lo, up = [], []
+    for q in P:
+        while len(lo) >= 2 and cross(lo[-2], lo[-1], q) <= 0:
+            lo.pop()
+        lo.append(q)
+    for q in reversed(P):
+        while len(up) >= 2 and cross(up[-2], up[-1], q) <= 0:
+            up.pop()
+        up.append(q)
+    return np.array(lo[:-1] + up[:-1])
+
+
+def _to_hull(xy, c, hull):
+    """xy pushed out from c along c->xy to the hull's boundary (if inside it)."""
+    d = xy - c
+    r = np.linalg.norm(d)
+    if r < 1e-6 or len(hull) < 3:
+        return xy
+    d = d / r
+    best = None
+    for k in range(len(hull)):
+        a, b = hull[k], hull[(k + 1) % len(hull)]
+        e = b - a
+        den = d[0] * (-e[1]) + d[1] * e[0]
+        if abs(den) < 1e-12:
+            continue
+        w = a - c
+        t = (w[0] * (-e[1]) + w[1] * e[0]) / den
+        u = (d[0] * w[1] - d[1] * w[0]) / den
+        if t > 0 and -1e-6 <= u <= 1 + 1e-6 and (best is None or t < best):
+            best = t
+    if best is None or best <= r:
+        return xy
+    return c + d * best
+
+
+NO_SKIRT_RELAX = {"mindfront_f_beach_dress_01"}     # a two-layer skirt: one convex slice would merge the layers
+
+
+def relax_garment(obj, arm, kind, body):
+    """MakeHuman fits a garment to the body vertex by vertex, so a dress shows the nipples, the navel and the crotch
+    (on a girl's body the hem went down between the legs in a spike). Dresses and tops: a light Taubin smoothing
+    (no shrinking) away from the garment's edges; dresses also hang below the hips as a convex skirt (each horizontal
+    slice pushed out to its convex hull) with heights smoothed along the hem. body: the body that is left (not under
+    the clothes), which nothing comes closer to than it was or than 6 mm."""
+    from mathutils import Vector
+    import bmesh
+    me = obj.data
+    n = len(me.vertices)
+    if n < 20:
+        return
+    mw = np.array(obj.matrix_world)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    P = world(obj, co.reshape(-1, 3))
+    b = bmesh.new()
+    b.from_mesh(me)
+    b.verts.ensure_lookup_table()
+    nb = [[e.other_vert(v).index for e in v.link_edges] for v in b.verts]
+    edge = np.array([v.is_boundary for v in b.verts])
+    b.free()
+    ring = np.where(edge, 0, 99)
+    for r in range(1, 3):
+        for i in np.nonzero(ring == 99)[0]:
+            if any(ring[j] == r - 1 for j in nb[i]):
+                ring[i] = r
+    zt = None
+    if kind == "dress" and "thigh_l" in arm.data.bones and obj["res_name"] not in NO_SKIRT_RELAX:
+        am = np.array(arm.matrix_world)
+        hip = np.array(arm.data.bones["thigh_l"].head_local)
+        zt = float((am[:3, :3] @ hip + am[:3, 3])[2]) + 0.02
+
+    def lap(P, mask, f, axes=slice(0, 3)):
+        Q = P.copy()
+        for i in np.nonzero(mask)[0]:
+            if nb[i]:
+                Q[i, axes] = P[i, axes] + f * (P[nb[i]].mean(0)[axes] - P[i, axes])
+        return Q
+
+    def taubin(P, mask, it):
+        for _ in range(it):
+            P = lap(lap(P, mask, 0.5), mask, -0.53)
+        return P
+
+    def convex_skirt(P):
+        sk = np.nonzero(P[:, 2] < zt)[0]
+        if not len(sk):
+            return P
+        Q = P.copy()
+        for zc in np.arange(P[sk, 2].min(), zt + 0.01, 0.01):
+            sl = sk[np.abs(P[sk, 2] - zc) <= 0.0075]
+            if len(sl) < 6:
+                continue
+            xy = P[sl, :2]
+            hull = _hull2d(xy)
+            c = xy.mean(0)
+            for i in sl:
+                Q[i, :2] = _to_hull(P[i, :2], c, hull)
+        return Q
+
+    Q = taubin(P, ring >= 2, 20)                                # the body's bumps, away from the edges
+    if zt is not None:
+        skirt = (P[:, 2] < zt) & ~edge
+        hem = edge & (P[:, 2] < zt - 0.05)
+        for _ in range(2):
+            Q = convex_skirt(Q)
+            for _ in range(3):
+                Q = lap(Q, skirt, 0.5, axes=slice(2, 3))       # heights only: a hem pulled down between the legs
+            for _ in range(4):
+                R = Q.copy()
+                for i in np.nonzero(hem)[0]:
+                    e = [j for j in nb[i] if edge[j]]
+                    if e:
+                        R[i, 2] = Q[i, 2] + 0.5 * (Q[e, 2].mean() - Q[i, 2])
+                Q = R
+        Q = convex_skirt(Q)
+        w = np.clip((zt - P[:, 2]) / 0.06, 0.0, 1.0)[:, None]    # fade in below the hips
+        sm = taubin(P, ring >= 2, 20)
+        Q = sm + w * (Q - sm)
+    # where the body is still there (MakeHuman deletes it only well under the garment): never closer to it than
+    # before or than 6 mm
+    for i in range(n):
+        q, nq, _f, _d = body.find_nearest(Vector(Q[i]), 0.03)
+        if q is None:
+            continue
+        q, nq = np.array(q), np.array(nq)
+        h = float((Q[i] - q) @ nq)
+        q0, nq0, _f0, _d0 = body.find_nearest(Vector(P[i]), 0.2)
+        h0 = float((P[i] - np.array(q0)) @ np.array(nq0)) if q0 is not None else 0.006
+        want = max(0.002, min(h0, 0.006))
+        if h < want:
+            Q[i] = Q[i] + nq * (want - h)
+    inv = np.linalg.inv(mw)
+    loc = Q @ inv[:3, :3].T + inv[:3, 3]
+    me.vertices.foreach_set("co", loc.reshape(-1))
+    me.update()
+
+
+def hide_body_under(bm, garments):
+    """Body faces that every one of five rays around their normal (straight out and 40 degrees off) finds under a
+    garment within 5 cm go: MakeHuman's delete groups keep the body under some tight clothes (a dress's bodice), and
+    that body pushed the smoothed dress back out over the nipples."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+    import bmesh
+    trees = []
+    for o in garments:
+        n = len(o.data.vertices)
+        if not n:
+            continue
+        co = np.empty(n * 3)
+        o.data.vertices.foreach_get("co", co)
+        trees.append(BVHTree.FromPolygons(world(o, co.reshape(-1, 3)).tolist(), [tuple(pp.vertices) for pp in o.data.polygons]))
+    if not trees:
+        return
+    me = bm.data
+    n = len(me.vertices)
+    co = np.empty(n * 3)
+    me.vertices.foreach_get("co", co)
+    wco = world(bm, co.reshape(-1, 3))
+    nr = np.empty(n * 3)
+    me.vertices.foreach_get("normal", nr)
+    wn = nr.reshape(-1, 3) @ np.array(bm.matrix_world)[:3, :3].T
+    wn /= np.maximum(np.linalg.norm(wn, axis=1, keepdims=True), 1e-9)
+    hidden = np.zeros(n, bool)
+    for i in range(n):
+        d = wn[i]
+        t1 = np.cross(d, (0.0, 0.0, 1.0) if abs(d[2]) < 0.9 else (1.0, 0.0, 0.0))
+        t1 /= np.linalg.norm(t1)
+        t2 = np.cross(d, t1)
+        c = Vector(wco[i] + d * 0.0005)
+        ok = True
+        for r in (d, d + 0.84 * t1, d - 0.84 * t1, d + 0.84 * t2, d - 0.84 * t2):
+            r = Vector(r / np.linalg.norm(r))
+            if not any(t.ray_cast(c, r, 0.05)[0] is not None for t in trees):
+                ok = False
+                break
+        hidden[i] = ok
+    b = bmesh.new()
+    b.from_mesh(me)
+    b.verts.ensure_lookup_table()
+    gone = [f for f in b.faces if all(hidden[v.index] for v in f.verts)]
+    if gone:
+        bmesh.ops.delete(b, geom=gone, context="FACES")
         loose = [v for v in b.verts if not v.link_faces]
         if loose:
             bmesh.ops.delete(b, geom=loose, context="VERTS")
         b.to_mesh(me)
-        b.free()
         me.update()
-        if os.environ.get("RES_DEBUG"):
-            print("layers: %s under %s: %d faces hidden" % (inner["res_name"], [o["res_name"] for o in outers], len(gone)))
+    b.free()
+    if os.environ.get("RES_DEBUG"):
+        print("body: %d faces under the clothes go" % len(gone))
+
+
+def recolour_under(inner, outers, under):
+    """Faces of the inner garment with the cover right above every vertex take the cover's tint: what still shows
+    through a seam of the cover (a coat's armpit) reads as the coat, not as a white shirt."""
+    me = inner.data
+    rg_i, ba_i = me.uv_layers.get("TintRG"), me.uv_layers.get("TintBA")
+    if rg_i is None or ba_i is None:
+        return
+    tints = []
+    for o in outers:
+        rg, ba = o.data.uv_layers.get("TintRG"), o.data.uv_layers.get("TintBA")
+        if rg is None or ba is None:
+            tints.append(None)
+            continue
+        nl = len(o.data.loops)
+        a = np.empty(nl * 2)
+        b = np.empty(nl * 2)
+        rg.data.foreach_get("uv", a)
+        ba.data.foreach_get("uv", b)
+        ls = np.empty(len(o.data.polygons), int)
+        o.data.polygons.foreach_get("loop_start", ls)
+        tints.append(np.concatenate([a.reshape(-1, 2)[ls], b.reshape(-1, 2)[ls]], axis=1))   # per polygon rgba
+    nl = len(me.loops)
+    a = np.empty(nl * 2)
+    b = np.empty(nl * 2)
+    rg_i.data.foreach_get("uv", a)
+    ba_i.data.foreach_get("uv", b)
+    a = a.reshape(-1, 2)
+    b = b.reshape(-1, 2)
+    n_done = 0
+    for p in me.polygons:
+        vs = p.vertices
+        if any(under[v][0] < 0 for v in vs):
+            continue
+        ti, pi = under[vs[0]]
+        if tints[ti] is None:
+            continue
+        t = tints[ti][pi]
+        for li in range(p.loop_start, p.loop_start + p.loop_total):
+            a[li] = t[:2]
+            b[li] = t[2:]
+        n_done += 1
+    rg_i.data.foreach_set("uv", a.reshape(-1))
+    ba_i.data.foreach_set("uv", b.reshape(-1))
+    if os.environ.get("RES_DEBUG"):
+        print("layers: %s: %d faces under the cover take its colour" % (inner["res_name"], n_done))
 
 
 def body_group_mask(bm):
