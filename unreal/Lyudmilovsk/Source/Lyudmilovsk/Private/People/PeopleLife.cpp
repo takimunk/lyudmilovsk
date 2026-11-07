@@ -1189,9 +1189,9 @@ void UPeopleLifeSubsystem::PickTownBodies(const FVector& Cam, float Draw)
 		// a townsperson borrows a look from the pool, never next to the one whose own look it is
 		if (ShownModels.IsValidIndex(P.Id))
 		{
-			if (const int32* Owner = ModelOwners.Find(ShownModels[P.Id]))
+			if (const int32* LookOwner = ModelOwners.Find(ShownModels[P.Id]))
 			{
-				const ANpcBody* OB = *Owner < Bodies.Num() ? Bodies[*Owner].Get() : nullptr;
+				const ANpcBody* OB = *LookOwner < Bodies.Num() ? Bodies[*LookOwner].Get() : nullptr;
 				if (OB && !OB->IsHidden() && FVector::Dist(OB->GetActorLocation(), At) < 6000.f)
 				{
 					continue;
