@@ -3,6 +3,7 @@
 #   tools/underwater/run.sh bed    -> writes fresh terrain inputs to Saved/Underwater/bed (tools/terrain.py), runs the
 #                                     terrain generator on them and draws the sea bed: bed_depth.png, bed_stone.png
 #   tools/underwater/run.sh test   -> the current, fish and weed models' checks (underwatertest.cpp)
+#   tools/underwater/run.sh eco    -> the coastal food web's checks (ecotest.cpp; -v prints the web year by year)
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
@@ -20,8 +21,13 @@ for n in ('bed_depth', 'bed_stone'):
 print('$OUT/bed/bed_depth.png')"
     ;;
 test)
-    clang++ -std=c++17 -O2 -Wall -I"$SRC/Sea" -o "$OUT/underwatertest" "$ROOT/tools/underwater/underwatertest.cpp" "$SRC/Sea/SeaCurrent.cpp" "$SRC/Sea/FishModel.cpp"
-    exec "$OUT/underwatertest" "${@:2}"
+    clang++ -std=c++17 -O2 -Wall -I"$SRC/Sea" -o "$OUT/underwatertest" "$ROOT/tools/underwater/underwatertest.cpp" "$SRC/Sea/SeaCurrent.cpp" "$SRC/Sea/FishModel.cpp" "$SRC/Sea/EcoModel.cpp"
+    shift; exec "$OUT/underwatertest" "$@"
     ;;
-*) echo "usage: $0 bed|test"; exit 2 ;;
+eco)
+    clang++ -std=c++17 -O2 -Wall -I"$SRC/Sea" -o "$OUT/ecotest" "$ROOT/tools/underwater/ecotest.cpp" "$SRC/Sea/EcoModel.cpp"
+    shift
+    exec "$OUT/ecotest" "$@"
+    ;;
+*) echo "usage: $0 bed|test|eco [-v]"; exit 2 ;;
 esac
