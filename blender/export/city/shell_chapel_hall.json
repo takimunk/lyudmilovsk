@@ -1,0 +1,1831 @@
+{
+ "type": "shell_chapel_hall",
+ "info": {
+  "name_ru": "Дом собраний «Своды»",
+  "name_en": "Shell Chapel Hall",
+  "style": "brazilian modernism",
+  "use": "public",
+  "kind": "hall",
+  "hours": [
+   10,
+   23
+  ],
+  "inspired_by": "Niemeyer's 1940s Pampulha pavilions: parabolic concrete vaults, azulejo murals, a free-form canopy on slim columns; original massing, here a row of four vaults of different spans as a community hall"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -16.9,
+   0.4
+  ],
+  [
+   16.9,
+   0.4
+  ],
+  [
+   16.9,
+   24.5
+  ],
+  [
+   -16.9,
+   24.5
+  ]
+ ],
+ "height": 12.6,
+ "entrances": [
+  {
+   "id": "staff",
+   "pos": [
+    16.9,
+    12.65,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 1.3000000000000007,
+   "height": 2.4,
+   "kind": "service",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "main",
+   "pos": [
+    -3.75,
+    3.1,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.2,
+   "height": 2.8,
+   "kind": "street",
+   "leaves": 2,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "seat_1",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_4",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_5",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_6",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_7",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_8",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_9",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_10",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    7.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_11",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_12",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_13",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_14",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_15",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_16",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_17",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_18",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_19",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_20",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    8.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_21",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_22",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_23",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_24",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_25",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_26",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_27",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_28",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_29",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_30",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_31",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_32",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_33",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_34",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_35",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_36",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_37",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_38",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_39",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_40",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_41",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_42",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_43",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_44",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_45",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_46",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_47",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_48",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_49",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_50",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    11.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_51",
+   "kind": "seat",
+   "pos": [
+    -4.7,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_52",
+   "kind": "seat",
+   "pos": [
+    -5.28,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_53",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_54",
+   "kind": "seat",
+   "pos": [
+    -6.44,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_55",
+   "kind": "seat",
+   "pos": [
+    -7.02,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_56",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_57",
+   "kind": "seat",
+   "pos": [
+    -2.22,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_58",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_59",
+   "kind": "seat",
+   "pos": [
+    -1.06,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_60",
+   "kind": "seat",
+   "pos": [
+    -0.48,
+    12.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stage_a",
+   "kind": "work",
+   "pos": [
+    -5.55,
+    21.2,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stage_b",
+   "kind": "work",
+   "pos": [
+    -3.55,
+    20.6,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stage_piano",
+   "kind": "work",
+   "pos": [
+    -1.15,
+    20.25,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stage_mic",
+   "kind": "stand",
+   "pos": [
+    -4.35,
+    19.8,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_bench_1",
+   "kind": "bench",
+   "pos": [
+    -7.15,
+    4.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lobby_bench_2",
+   "kind": "bench",
+   "pos": [
+    -0.35,
+    4.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lobby_stand_1",
+   "kind": "stand",
+   "pos": [
+    -5.35,
+    5.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_stand_2",
+   "kind": "stand",
+   "pos": [
+    -2.15,
+    5.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cloak_clerk",
+   "kind": "work",
+   "pos": [
+    -16.2,
+    9.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "cloak_counter",
+   "kind": "counter",
+   "pos": [
+    -15.2,
+    9.8,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "foyer_bench_1",
+   "kind": "bench",
+   "pos": [
+    -10.45,
+    11.2,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "foyer_bench_2",
+   "kind": "bench",
+   "pos": [
+    -15.0,
+    16.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "foyer_stand_1",
+   "kind": "stand",
+   "pos": [
+    -13.2,
+    12.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "foyer_stand_2",
+   "kind": "stand",
+   "pos": [
+    -12.2,
+    9.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "bar_barman",
+   "kind": "work",
+   "pos": [
+    10.0,
+    7.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "bar_barman2",
+   "kind": "work",
+   "pos": [
+    10.0,
+    9.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "bar_stool_1",
+   "kind": "seat",
+   "pos": [
+    8.35,
+    6.3,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bar_stool_2",
+   "kind": "seat",
+   "pos": [
+    8.35,
+    7.15,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bar_stool_3",
+   "kind": "seat",
+   "pos": [
+    8.35,
+    8.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bar_stool_4",
+   "kind": "seat",
+   "pos": [
+    8.35,
+    8.85,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bar_stool_5",
+   "kind": "seat",
+   "pos": [
+    8.35,
+    9.7,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bar_counter",
+   "kind": "counter",
+   "pos": [
+    8.5,
+    10.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "c_table_1",
+   "kind": "table",
+   "pos": [
+    4.2,
+    6.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "c_seat_1_1",
+   "kind": "seat",
+   "pos": [
+    3.2,
+    6.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "c_seat_1_2",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    6.2,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "c_seat_1_3",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    7.15,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "c_table_2",
+   "kind": "table",
+   "pos": [
+    4.2,
+    8.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "c_seat_2_1",
+   "kind": "seat",
+   "pos": [
+    3.2,
+    8.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "c_seat_2_2",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    8.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "c_seat_2_3",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    8.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "c_table_3",
+   "kind": "table",
+   "pos": [
+    4.2,
+    13.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "c_seat_3_1",
+   "kind": "seat",
+   "pos": [
+    3.2,
+    13.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "c_seat_3_2",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    13.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "c_seat_3_3",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    12.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "c_table_4",
+   "kind": "table",
+   "pos": [
+    4.2,
+    15.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "c_seat_4_1",
+   "kind": "seat",
+   "pos": [
+    3.2,
+    15.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "c_seat_4_2",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    15.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "c_seat_4_3",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    14.45,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "dance_1",
+   "kind": "stand",
+   "pos": [
+    6.0,
+    14.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "dance_2",
+   "kind": "stand",
+   "pos": [
+    7.0,
+    15.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dance_3",
+   "kind": "stand",
+   "pos": [
+    8.0,
+    13.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_4",
+   "kind": "stand",
+   "pos": [
+    5.6,
+    16.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "cook_1",
+   "kind": "work",
+   "pos": [
+    13.5,
+    14.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cook_2",
+   "kind": "work",
+   "pos": [
+    13.5,
+    10.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_break",
+   "kind": "stand",
+   "pos": [
+    15.4,
+    9.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "sbench_main_105",
+   "kind": "bench",
+   "pos": [
+    -0.15,
+    2.35,
+    0.0
+   ],
+   "yaw": 0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -6.45,
+    8.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.05,
+    8.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.45,
+    12.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.05,
+    12.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.45,
+    16.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.05,
+    16.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -6.45,
+    21.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -1.05,
+    21.0,
+    7.845
+   ],
+   "lumens": 1500,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -14.2,
+    12.0,
+    5.255
+   ],
+   "lumens": 700,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -12.4,
+    12.0,
+    5.329
+   ],
+   "lumens": 700,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    6.0,
+    7.5,
+    6.734
+   ],
+   "lumens": 1000,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    6.0,
+    12.5,
+    6.734
+   ],
+   "lumens": 1000,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    6.0,
+    17.0,
+    6.734
+   ],
+   "lumens": 1000,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    13.7,
+    12.0,
+    5.529
+   ],
+   "lumens": 800,
+   "colour": "#FFD6A0",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -7.35,
+    1.75,
+    4.3
+   ],
+   "lumens": 1100,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 10
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.9,
+    8.75,
+    1.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.9,
+    11.75,
+    1.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 2,
+   "id": "pub/w3",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.9,
+    14.75,
+    1.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 3,
+   "id": "pub/w4",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.9,
+    17.0,
+    1.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 4,
+   "id": "pub/w5",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -9.9,
+    20.55,
+    1.95
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 5,
+   "id": "pub/w6",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -9.9,
+    23.05,
+    1.95
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 6,
+   "id": "pub/w7",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    2.4,
+    20.95,
+    1.95
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 7,
+   "id": "pub/w8",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    2.4,
+    23.25,
+    1.95
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    1.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 8,
+   "id": "pub/w9",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    16.9,
+    9.7,
+    1.65
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 9,
+   "id": "pub/w10",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    16.9,
+    15.0,
+    1.65
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    1.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 10,
+   "id": "pub/w11",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.845,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 11,
+   "id": "pub/w12",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -6.675,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 12,
+   "id": "pub/w13",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.505,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 13,
+   "id": "pub/w14",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.995,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 14,
+   "id": "pub/w15",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.825,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 15,
+   "id": "pub/w16",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.345,
+    3.1,
+    1.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 16,
+   "id": "pub/w17",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.75,
+    3.1,
+    3.05
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    2.2,
+    0.4
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 17,
+   "id": "pub/w18",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.845,
+    3.1,
+    5.494
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    2.368
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 18,
+   "id": "pub/w19",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -6.675,
+    3.1,
+    6.689
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    5.095
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 19,
+   "id": "pub/w20",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.505,
+    3.1,
+    7.499
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    7.056
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 20,
+   "id": "pub/w21",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -4.335,
+    3.1,
+    7.912
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    8.239
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 21,
+   "id": "pub/w22",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.165,
+    3.1,
+    7.912
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    8.608
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.995,
+    3.1,
+    7.499
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    8.139
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.825,
+    3.1,
+    6.689
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    6.862
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.345,
+    3.1,
+    5.494
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.03,
+    4.809
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [
+  "4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen"
+ ],
+ "tris": {
+  "shell": 4546,
+  "detail": 10422,
+  "windows": 50
+ }
+}
