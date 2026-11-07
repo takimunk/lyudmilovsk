@@ -109,8 +109,17 @@ private:
 	};
 	TArray<FRun> Runs;
 	int32 RunIdx = 0;
-	/** Console variables a pass changed, with the values to put back. */
-	TArray<TPair<FString, FString>> Restore;
+	/**
+	 * A console variable a pass changed and how to give it back: its old value, or (bUnset) the console's priority taken
+	 * off again, so the next run's levels (and the graphics settings' values by code) reach it as before the pass.
+	 */
+	struct FRestore
+	{
+		FString Name;
+		FString Value;
+		bool bUnset = false;
+	};
+	TArray<FRestore> Restore;
 	bool bLiveHidden = false;
 	int32 SegIdx = 0;
 	double PhaseStart = 0.0;

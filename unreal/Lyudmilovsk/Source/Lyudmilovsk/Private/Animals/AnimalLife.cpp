@@ -35,9 +35,9 @@ static TAutoConsoleVariable<float> CVarAnimalsPopulation(TEXT("lyud.Animals.Popu
 static TAutoConsoleVariable<int32> CVarAnimalsAnyMap(TEXT("lyud.Animals.AnyMap"), 0,
 	TEXT("1: allow the animal life in any game map, empty until lyud.Animals.SpawnNear; 2: the town's whole population in any map."));
 static TAutoConsoleVariable<int32> CVarAnimalsBodies(TEXT("lyud.Animals.Bodies"), 20,
-	TEXT("Most cats and dogs drawn as furred bodies (AAnimalActor) at once, the nearest first."));
+	TEXT("Most cats and dogs drawn as furred bodies (AAnimalActor) at once, the nearest first (graphics levels: View distance)."), ECVF_Scalability);
 static TAutoConsoleVariable<float> CVarAnimalsDrawCat(TEXT("lyud.Animals.DrawDistance"), 110.f,
-	TEXT("Cats are drawn within this many metres of the camera (dogs within 1.6 times it)."));
+	TEXT("Cats are drawn within this many metres of the camera (dogs within 1.6 times it; graphics levels: View distance)."), ECVF_Scalability);
 static TAutoConsoleVariable<int32> CVarAnimalsIgnorePlayer(TEXT("lyud.Animals.IgnorePlayer"), 0,
 	TEXT("1: the animals don't perceive the player (close-up screenshots, debugging)."));
 static TAutoConsoleVariable<int32> CVarAnimalsBirds(TEXT("lyud.Animals.Birds"), 1,

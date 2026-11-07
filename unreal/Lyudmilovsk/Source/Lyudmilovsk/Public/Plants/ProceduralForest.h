@@ -104,6 +104,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumBaked() const;
 	UFUNCTION(BlueprintCallable, Category = "Forest") int32 NumLive() const { return LiveCount; }
 	UFUNCTION(BlueprintCallable, Category = "Forest") FString DescribeState() const;
+	/**
+	 * The draw distance, shadows and wind of the graphics level (lyud.Forest.DistanceScale, .Shadows, .WindDistance, set per
+	 * level by Config/DefaultScalability.ini; the benchmark's lyud.Bench.Forest* knobs win when set) onto every kind's
+	 * instances. Checked every tick; it touches the components only when a value changes (or bForce), one forest a frame.
+	 * Returns true while this forest waits for its frame (its tick does nothing else then).
+	 */
+	bool ApplyQuality(bool bForce = false);
+	/** Trees farther than this are not drawn now, cm (CullDistance x lyud.Forest.DistanceScale). */
+	float GetDrawDistance() const;
+	bool QualityShadows() const;
+	/** Trees farther than this stand still (no wind), cm; 0 wind everywhere. */
+	int32 QualityWindDistance() const;
 	UFUNCTION() TArray<FName> GetSpeciesNames() const;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -151,4 +163,8 @@ private:
 	TArray<FGroup> Groups;
 	int32 LiveCount = 0;
 	int32 Applied = 0;
+	/** What ApplyQuality last put on the components. */
+	float AppliedDraw = -1.f;
+	int32 AppliedShadows = -1;
+	int32 AppliedWind = -1;
 };

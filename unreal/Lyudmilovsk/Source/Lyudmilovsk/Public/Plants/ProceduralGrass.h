@@ -91,6 +91,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> Material;
 
 	FName BuiltSpecies;
+	/** lyud.GrassDensity the tufts were laid out with (-1: not yet); the graphics level's Foliage changes it. */
+	float BuiltDensity = -1.f;
 	int32 Tufts = 0;
 	int32 TuftTriangles = 0;
 	float ShownDay = -1000.f;

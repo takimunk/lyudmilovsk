@@ -51,6 +51,11 @@ static TAutoConsoleVariable<int32> CVarForestMinLod(TEXT("lyud.Bench.ForestMinLo
 namespace
 {
 	const float SettleSeconds = 1.0f;
+	/**
+	 * A run's first segment settles longer: its preset or pass just changed (the graphics settings resend the instanced
+	 * meshes when the view distance changes, Lumen captures their cards again, a new level's shaders come in).
+	 */
+	const float RunSettleSeconds = 3.0f;
 	const float WarmupSpeed = 3.f;
 	const double BakeTimeout = 300.0;
 
@@ -307,14 +312,13 @@ void ULyudBenchmark::ApplyForestKnobs()
 		{
 			Comps++;
 			Instances += C->GetInstanceCount();
-			C->SetCastShadow(Shadows != 0);
 			C->SetLightingChannels(CVarForestChannel0.GetValueOnGameThread() != 0, true, false);
-			C->SetCullDistances(0, CullM >= 0.f ? (int32)(CullM * 100.f) : (int32)It->CullDistance);
-			C->SetWorldPositionOffsetDisableDistance(WpoM >= 0 ? WpoM * 100 : 0);
 			C->bOverrideMinLOD = MinLod >= 0;
 			C->MinLOD = FMath::Max(0, MinLod);
 			C->MarkRenderStateDirty();
 		}
+		// shadows, draw distance and wind: the forest's own graphics level unless the knobs above are set (they win there)
+		It->ApplyQuality(true);
 	}
 	for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It) It->SetActorTickEnabled(CVarSkyFreeze.GetValueOnGameThread() == 0);
 	UE_LOG(LogTemp, Warning, TEXT("BENCH forests: %d components, %d instances, shadows %d cull %.0f m wpo %d m minlod %d hide %d live hidden %d"),
@@ -330,14 +334,37 @@ void ULyudBenchmark::ApplyPass(const FString& Cmds)
 		C.TrimStartAndEndInline();
 		FString Name, Arg;
 		if (!C.Split(TEXT(" "), &Name, &Arg)) Name = C;
-		if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(*Name)) Restore.Emplace(Name, V->GetString());
+		if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(*Name))
+		{
+			// held below the console's priority before (a scalability level, an ini, the game's code): given back by Unset
+			// after the pass, not set again from the console, which would freeze it for every later run
+			const uint32 By = static_cast<uint32>(V->GetFlags()) & ECVF_SetByMask;
+			FRestore& R = Restore.AddDefaulted_GetRef();
+			R.Name = Name;
+			R.Value = V->GetString();
+			R.bUnset = By < static_cast<uint32>(ECVF_SetByConsole);
+		}
 		Exec(C);
 	}
 }
 
 void ULyudBenchmark::RestorePass()
 {
-	for (int32 I = Restore.Num() - 1; I >= 0; I--) Exec(Restore[I].Key + TEXT(" ") + Restore[I].Value);
+	for (int32 I = Restore.Num() - 1; I >= 0; I--)
+	{
+		const FRestore& R = Restore[I];
+		IConsoleVariable* V = R.bUnset ? IConsoleManager::Get().FindConsoleVariable(*R.Name) : nullptr;
+		if (V)
+		{
+			// the variable falls back to the highest priority still set, with its latest value (also one set while the
+			// pass held it: the engine records every set)
+			V->Unset(ECVF_SetByConsole);
+		}
+		else
+		{
+			Exec(R.Name + TEXT(" ") + R.Value);
+		}
+	}
 	Restore.Reset();
 }
 
@@ -450,7 +477,11 @@ void ULyudBenchmark::FinishRun()
 	P.Str(TEXT("preset_name"), Names[FMath::Clamp(Level, 0, 4)]);
 	P.Str(TEXT("pass"), Passes[Runs[RunIdx].Pass].Name);
 	P.Str(TEXT("pass_setup"), Passes[Runs[RunIdx].Pass].Cmds);
-	P.Num(TEXT("screen_percentage"), Scalability::GetQualityLevels().ResolutionQuality);
+	// what the frame really rendered at (the graphics settings' auto resolution, a pass's r.ScreenPercentage), and TSR's history
+	const IConsoleVariable* Sp = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"));
+	const IConsoleVariable* History = IConsoleManager::Get().FindConsoleVariable(TEXT("r.TSR.History.ScreenPercentage"));
+	P.Num(TEXT("screen_percentage"), Sp ? Sp->GetFloat() : Scalability::GetQualityLevels().ResolutionQuality);
+	P.Num(TEXT("tsr_history_percentage"), History ? History->GetFloat() : 100.f);
 	TArray<FFrame> All;
 	double AllSeconds = 0.0;
 	FJson Segs;
@@ -591,7 +622,7 @@ void ULyudBenchmark::Tick(float DeltaTime)
 	case EPhase::Settle:
 	{
 		PlaceCamera(Route[SegIdx], 0.f);
-		if (Now - PhaseStart >= SettleSeconds)
+		if (Now - PhaseStart >= (SegIdx == 0 ? RunSettleSeconds : SettleSeconds))
 		{
 			Phase = EPhase::Record;
 			CSV_EVENT_GLOBAL(TEXT("%s"), *Route[SegIdx].Name);

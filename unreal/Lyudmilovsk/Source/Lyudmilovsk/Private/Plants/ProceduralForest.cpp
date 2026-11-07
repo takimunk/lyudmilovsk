@@ -2,6 +2,7 @@
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "CoreGlobals.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
@@ -22,17 +23,33 @@
 static TAutoConsoleVariable<float> CVarForestLiveMaxSpeed(TEXT("lyud.Forest.LiveMaxSpeed"), -2.f,
 	TEXT("No live plant is swapped in while the camera is faster than this, cm/s (below -1: the actor's LiveMaxSpeed; -1 or 0 from the console: no limit)."), ECVF_Default);
 static TAutoConsoleVariable<int32> CVarForestMaxLive(TEXT("lyud.Forest.MaxLive"), -1,
-	TEXT("Live plants a forest swaps in near the camera at most (below 0: the actor's MaxLive). 0 draws baked trees only."), ECVF_Default);
+	TEXT("Live plants a forest swaps in near the camera at most (below 0: the actor's MaxLive). 0 draws baked trees only."), ECVF_Scalability);
+// the graphics levels (Config/DefaultScalability.ini, FoliageQuality) set these; the benchmark's lyud.Bench.Forest* knobs win when set
+static TAutoConsoleVariable<float> CVarForestDistanceScale(TEXT("lyud.Forest.DistanceScale"), 1.f,
+	TEXT("Forest trees are drawn out to the forest's CullDistance x this (graphics levels: Foliage)."), ECVF_Scalability);
+static TAutoConsoleVariable<int32> CVarForestCastShadows(TEXT("lyud.Forest.Shadows"), 1,
+	TEXT("Forest trees cast shadows (1) or not (0) (graphics levels: Foliage)."), ECVF_Scalability);
+static TAutoConsoleVariable<float> CVarForestWindDistance(TEXT("lyud.Forest.WindDistance"), 0.f,
+	TEXT("Forest trees farther than this many metres stand still: no wind in their vertices, and the virtual shadow map keeps their shadows cached (0: wind everywhere; graphics levels: Foliage)."), ECVF_Scalability);
 
 namespace
 {
 	using PlantModel::Hash01;
+
+	/** A forest looks at the camera, its bakes and its graphics level this often, seconds. */
+	constexpr float ForestTickSeconds = 0.25f;
+
+	/** A benchmark knob (Bench/LyudBenchmark.cpp, registered with the module): -1 when unset or absent. */
+	float ForestBenchKnob(IConsoleVariable* const& Var)
+	{
+		return Var ? Var->GetFloat() : -1.f;
+	}
 }
 
 AProceduralForest::AProceduralForest()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 0.25f;
+	PrimaryActorTick.TickInterval = ForestTickSeconds;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Mix = { FForestMix() };
 }
@@ -92,9 +109,86 @@ int32 AProceduralForest::GroupFor(FName Species, uint32 BakeSeed, float Age)
 	// the outdoor sun lights channel 1 only; channel 0 is the club's lights, whose shadow work the forests' huge bounds would join
 	G.Comp->LightingChannels.bChannel0 = false;
 	G.Comp->LightingChannels.bChannel1 = true;
-	G.Comp->SetCullDistances(0, (int32)CullDistance);
+	// the graphics level's draw distance, shadows and wind (ApplyQuality keeps them up to date)
+	const float Draw = GetDrawDistance();
+	const int32 Shadows = QualityShadows() ? 1 : 0;
+	const int32 Wind = QualityWindDistance();
+	G.Comp->SetCullDistances(0, (int32)Draw);
+	G.Comp->CastShadow = Shadows != 0;
+	G.Comp->WorldPositionOffsetDisableDistance = Wind;
 	G.Comp->RegisterComponent();
+	if (Groups.IsEmpty())
+	{
+		// the first kind is built with the level as it is: nothing for ApplyQuality to wait its turn for at the start
+		AppliedDraw = Draw;
+		AppliedShadows = Shadows;
+		AppliedWind = Wind;
+	}
 	return Groups.Add(MoveTemp(G));
+}
+
+float AProceduralForest::GetDrawDistance() const
+{
+	// looked up once, at the first call (FindConsoleVariable builds a string: never every tick)
+	static IConsoleVariable* const Knob = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bench.ForestCullM"));
+	const float BenchM = ForestBenchKnob(Knob);
+	return BenchM >= 0.f ? BenchM * 100.f : CullDistance * FMath::Max(0.05f, CVarForestDistanceScale.GetValueOnGameThread());
+}
+
+bool AProceduralForest::QualityShadows() const
+{
+	static IConsoleVariable* const Knob = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bench.ForestShadows"));
+	const float Bench = ForestBenchKnob(Knob);
+	return Bench >= 0.f ? Bench != 0.f : CVarForestCastShadows.GetValueOnGameThread() != 0;
+}
+
+int32 AProceduralForest::QualityWindDistance() const
+{
+	static IConsoleVariable* const Knob = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Bench.ForestWPODisableM"));
+	const float BenchM = ForestBenchKnob(Knob);
+	return FMath::Max(0, FMath::RoundToInt((BenchM >= 0.f ? BenchM : CVarForestWindDistance.GetValueOnGameThread()) * 100.f));
+}
+
+bool AProceduralForest::ApplyQuality(bool bForce)
+{
+	const float Draw = GetDrawDistance();
+	const int32 Shadows = QualityShadows() ? 1 : 0;
+	const int32 Wind = QualityWindDistance();
+	const bool bChanged = Draw != AppliedDraw || Shadows != AppliedShadows || Wind != AppliedWind;
+	// a change of level: one forest a frame across the world (each resends its kinds' components, all of them in one frame
+	// would stall it); a forest waiting for its frame ticks every frame until then, and does nothing else in those ticks.
+	// Forced (the benchmark's knobs), or nothing built yet: now.
+	static uint64 ForestQualityFrame = 0;
+	const bool bNow = bForce || Groups.IsEmpty() || (bChanged && ForestQualityFrame != GFrameCounter);
+	const bool bWaiting = bChanged && !bNow;
+	const float Interval = bWaiting ? 0.f : ForestTickSeconds;
+	if (GetActorTickInterval() != Interval)
+	{
+		SetActorTickInterval(Interval);
+	}
+	if (!bNow || (!bChanged && !bForce))
+	{
+		return bWaiting;
+	}
+	if (!bForce && !Groups.IsEmpty())
+	{
+		ForestQualityFrame = GFrameCounter;
+	}
+	AppliedDraw = Draw;
+	AppliedShadows = Shadows;
+	AppliedWind = Wind;
+	// each setter marks the render state dirty only when its value changes: once per change of level, never per frame
+	for (FGroup& G : Groups)
+	{
+		if (!G.Comp)
+		{
+			continue;
+		}
+		G.Comp->SetCullDistances(0, (int32)Draw);
+		G.Comp->SetCastShadow(Shadows != 0);
+		G.Comp->SetWorldPositionOffsetDisableDistance(Wind);
+	}
+	return false;
 }
 
 void AProceduralForest::AddTree(FName Species, FVector Location, float Age, int32 Variant, float Yaw, float Scale)
@@ -223,7 +317,7 @@ void AProceduralForest::SyncBakes(float Day)
 		G.Comp->SetMaterial(1, B->Leaf);
 		G.Comp->SetMaterial(2, B->Card);
 		G.Comp->SetMaterial(3, B->Bloom);
-		G.Comp->SetCullDistances(0, (int32)CullDistance);
+		G.Comp->SetCullDistances(0, (int32)GetDrawDistance());
 		if (!G.bInstancesAdded)
 		{
 			TArray<FTransform> Xfs;
@@ -286,6 +380,28 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 		}
 	}
 	Wanted.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key < B.Key; });
+	const int32 MaxNow = CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive;
+	if (LiveCount > MaxNow)
+	{
+		// a lighter graphics level allows fewer live plants: the farthest go back to their bakes now (once per change)
+		TArray<TPair<double, int32>> LiveTrees;
+		for (int32 I = 0; I < Trees.Num(); I++)
+		{
+			if (Trees[I].Live.IsValid())
+			{
+				LiveTrees.Emplace(FVector::DistSquared(Camera, Trees[I].Xf.GetLocation()), I);
+			}
+		}
+		LiveTrees.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key > B.Key; });
+		for (int32 K = 0; K < LiveTrees.Num() && LiveCount > MaxNow; K++)
+		{
+			FTree& T = Trees[LiveTrees[K].Value];
+			T.Live->Destroy();
+			T.Live.Reset();
+			LiveCount--;
+			SetHidden(T, false);
+		}
+	}
 	// a camera that is flying or running past does not need a plant built under it
 	const double Now = GetWorld()->GetTimeSeconds();
 	double Speed = 0.0;
@@ -306,7 +422,7 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 	{
 		// a live plant builds its skeleton, wood and leaves in this tick: a few at most per tick, the nearest first
 		if (Built >= LivePerTick) break;
-		if (LiveCount >= (CVarForestMaxLive.GetValueOnGameThread() >= 0 ? CVarForestMaxLive.GetValueOnGameThread() : MaxLive)) break;
+		if (LiveCount >= MaxNow) break;
 		FTree& T = Trees[W.Value];
 		FActorSpawnParameters Params;
 		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -337,6 +453,8 @@ void AProceduralForest::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	const UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld()) return;
+	// waiting for its frame to take a new graphics level: only that, every frame, until its turn
+	if (ApplyQuality(false)) return;
 	SyncBakes(CurrentDay());
 	const APlayerController* PC = World->GetFirstPlayerController();
 	if (PC && PC->PlayerCameraManager && !Trees.IsEmpty())

@@ -43,7 +43,8 @@ def report(path):
     print("### %s (%s)\n" % (os.path.basename(path), r["label"]))
     print(machine_line(r) + "\n")
     for p in r["presets"]:
-        print("**%s%s** (screen %d%%)\n" % (p["preset_name"], " " + p["pass"] if p.get("pass") else "", p["screen_percentage"]))
+        history = ", TSR history %d%%" % p["tsr_history_percentage"] if p.get("tsr_history_percentage") else ""
+        print("**%s%s** (screen %d%%%s)\n" % (p["preset_name"], " " + p["pass"] if p.get("pass") else "", p["screen_percentage"], history))
         print(HEAD % "segment")
         for name, s in p["segments"].items():
             print(row(name, s))

@@ -30,10 +30,10 @@ namespace
 {
 	TAutoConsoleVariable<int32> CVarSeaLife(TEXT("lyud.SeaLife"), 1, TEXT("0: no underwater life (fish, motes, the current's materials)."));
 	TAutoConsoleVariable<int32> CVarSeaLifeFish(TEXT("lyud.SeaLife.Fish"), 1, TEXT("0: no fish."));
-	TAutoConsoleVariable<float> CVarSeaLifeDensity(TEXT("lyud.SeaLife.Density"), 1.f, TEXT("Multiplies the fish's numbers."));
+	TAutoConsoleVariable<float> CVarSeaLifeDensity(TEXT("lyud.SeaLife.Density"), 1.f, TEXT("Multiplies the fish's numbers (graphics levels: Effects)."), ECVF_Scalability);
 	TAutoConsoleVariable<int32> CVarSeaLifeDebug(TEXT("lyud.SeaLife.Debug"), 0, TEXT("1: print the underwater life's state every second."));
 	TAutoConsoleVariable<float> CVarCurrentSpeed(TEXT("lyud.Current.Speed"), -99.f, TEXT("Forces the current along the coast, m/s (+ north); -99 = the tide's and the wind's."));
-	TAutoConsoleVariable<int32> CVarMotes(TEXT("lyud.SeaLife.Motes"), 1, TEXT("0: no motes drifting in the water."));
+	TAutoConsoleVariable<int32> CVarMotes(TEXT("lyud.SeaLife.Motes"), 1, TEXT("0: no motes drifting in the water (graphics levels: Effects)."), ECVF_Scalability);
 
 	/** How each species' mesh swims in M_LyudFish (the generator's species are blender/fish/species/<Id>.py). */
 	struct FLook

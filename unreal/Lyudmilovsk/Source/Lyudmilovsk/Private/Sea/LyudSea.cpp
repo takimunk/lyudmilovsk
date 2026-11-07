@@ -37,7 +37,7 @@ namespace
 {
 	TAutoConsoleVariable<int32> CVarSea(TEXT("lyud.Sea"), 1, TEXT("0: hide the sea (surface, seabed, underwater), for A/B benchmarks."));
 	TAutoConsoleVariable<int32> CVarSeaQuality(TEXT("lyud.Sea.Quality"), -1,
-		TEXT("Sea detail: 0 phone (64 x ~100 mesh, 20 + 16 wave trains), 1 medium, 2 desktop (128 x ~200, 64 + 48); -1 by platform."));
+		TEXT("Sea detail: 0 phone (64 x ~100 mesh, 20 + 16 wave trains), 1 medium, 2 desktop (128 x ~200, 64 + 48); -1 by platform (graphics levels: Effects)."), ECVF_Scalability);
 	TAutoConsoleVariable<int32> CVarSeaReplacePlane(TEXT("lyud.Sea.ReplacePlane"), 1, TEXT("1: in play, swap an old flat sea plane (M_BalticSea) for an ALyudSea."));
 	TAutoConsoleVariable<float> CVarSeaDebugFoam(TEXT("lyud.Sea.DebugFoam"), 0.f, TEXT("Make the foam glow by this much, to see where it is."));
 	TAutoConsoleVariable<float> CVarSeaCapillary(TEXT("lyud.Sea.Capillary"), -1.f,
