@@ -50,13 +50,15 @@ namespace
 	TAutoConsoleVariable<int32> CVarCityLights(TEXT("lyud.City.Lights"), 0,
 		TEXT("Town windows: 0 = auto (the life simulation or the seeded evening), 1 = every window lit, 2 = all dark."), ECVF_Default);
 
-	TAutoConsoleVariable<int32> CVarCityLampBudget(TEXT("lyud.City.LampBudget"), 32,
+	TAutoConsoleVariable<int32> CVarCityLampBudget(TEXT("lyud.City.LampBudget"), 48,
 		TEXT("Town room lamps: at most this many point lights (no shadows), given to the lit lamps nearest the camera. 0 = none."),
 		ECVF_Default);
 
 	/** Lamps farther than this from the camera get no light (the pool fades them out over the last LampFade cm). */
 	constexpr float LampReach = 4500.f;
 	constexpr float LampFade = 600.f;
+	/** A lamp that already has a pool light keeps it unless another is this much nearer (no blinking at the edge). */
+	constexpr float LampKeep = 400.f;
 
 	FAutoConsoleCommandWithWorld CmdCityReport(TEXT("lyud.City.Report"), TEXT("Town buildings and their lit windows."),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
@@ -472,8 +474,16 @@ void ULyudWindowLights::UpdateLamps()
 		}
 	}
 	// the lit lamps in reach, nearest first (buildings out of reach are skipped by their bounds)
-	struct FCand { float D2; ALyudCityBuilding* B; int32 Lamp; };
+	struct FCand { float D; ALyudCityBuilding* B; int32 Lamp; };   // D: distance, cm (held lamps less LampKeep)
 	TArray<FCand, TInlineAllocator<128>> Cands;
+	TSet<TPair<const ALyudCityBuilding*, int32>> Held;
+	for (const FLampRef& R : PoolLamp)
+	{
+		if (R.Lamp >= 0 && R.B.IsValid())
+		{
+			Held.Add({R.B.Get(), R.Lamp});
+		}
+	}
 	if (bCam && Budget > 0)
 	{
 		for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
@@ -495,16 +505,20 @@ void ULyudWindowLights::UpdateLamps()
 				{
 					continue;
 				}
-				const float D2 = FVector::DistSquared(X.TransformPosition(B->LampPositions[i]), Cam);
-				if (D2 < LampReach * LampReach)
+				float D = FVector::Dist(X.TransformPosition(B->LampPositions[i]), Cam);
+				if (D < LampReach)
 				{
-					Cands.Add({D2, B, i});
+					if (Held.Contains({B, i}))
+					{
+						D = FMath::Max(0.f, D - LampKeep);   // hysteresis: held lamps rank as if nearer
+					}
+					Cands.Add({D, B, i});
 				}
 			}
 		}
 	}
 	LampCandidates = Cands.Num();
-	Cands.Sort([](const FCand& A, const FCand& C) { return A.D2 < C.D2; });
+	Cands.Sort([](const FCand& A, const FCand& C) { return A.D < C.D; });
 	Cands.SetNum(FMath::Min(Cands.Num(), Budget), EAllowShrinking::No);
 
 	// grow the pool lazily, up to what is needed now (never more than the budget)
@@ -544,6 +558,17 @@ void ULyudWindowLights::UpdateLamps()
 		}
 	}
 
+	// lights given a lamp last update come up to full (one intensity change each, then left alone)
+	for (int32 p = 0; p < LampPool.Num(); ++p)
+	{
+		FLampRef& R = PoolLamp[p];
+		const ALyudCityBuilding* RB = R.B.Get();
+		if (R.Ramp > 0 && RB && LampPool[p])
+		{
+			LampPool[p]->SetIntensity(RB->LampLumens.IsValidIndex(R.Lamp) ? RB->LampLumens[R.Lamp] : 900.f);
+			R.Ramp = 0;
+		}
+	}
 	// keep the pool lights whose lamp is still chosen (no render update for them), give the free ones the rest
 	TArray<bool, TInlineAllocator<128>> Taken;
 	Taken.Init(false, Cands.Num());
@@ -589,11 +614,11 @@ void ULyudWindowLights::UpdateLamps()
 			continue;
 		}
 		P->SetWorldLocation(B->GetActorTransform().TransformPosition(B->LampPositions[i]));
-		P->SetIntensity(B->LampLumens.IsValidIndex(i) ? B->LampLumens[i] : 900.f);
+		P->SetIntensity(0.4f * (B->LampLumens.IsValidIndex(i) ? B->LampLumens[i] : 900.f));   // ramps up next update
 		P->SetLightColor(B->LampColors.IsValidIndex(i) ? B->LampColors[i] : FLinearColor(1.f, 0.85f, 0.66f));
 		P->SetAttenuationRadius(B->LampRadii.IsValidIndex(i) ? B->LampRadii[i] : 700.f);
 		P->SetVisibility(true);
-		PoolLamp[p] = FLampRef{B, i};
+		PoolLamp[p] = FLampRef{B, i, 1};
 	}
 	for (; f < Free.Num(); ++f)
 	{
@@ -656,6 +681,10 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			{
 				L = 0.f;
 			}
+			else if (bDriven && B->IsOwned(S))
+			{
+				continue;                                    // the life sim set this window: leave it as it is
+			}
 			else if (K == ELyudWindowKind::Stair)
 			{
 				L = bNight ? 0.8f : 0.f;
@@ -663,10 +692,6 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			else if (K == ELyudWindowKind::Public)
 			{
 				L = bOpen ? (bNight ? 1.f : 0.35f) : 0.f;    // by day a shop's lamps still show a little
-			}
-			else if (bDriven && B->IsOwned(S))
-			{
-				continue;                                    // the life sim set this window: leave it as it is
 			}
 			else if (B->Seeds.IsValidIndex(S))
 			{

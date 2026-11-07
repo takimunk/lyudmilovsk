@@ -106,8 +106,9 @@ private:
  * Stair windows burn from dusk to dawn, public rooms in their open hours. Window textures are uploaded in batches
  * (at most four times a second, only buildings with a changed window), never once per call.
  *
- * Room lamps: a pool of at most lyud.City.LampBudget point lights (default 32, no shadows) is handed every half
- * second to the lit lamps nearest the camera within 45 m; a building owns no light components.
+ * Room lamps: a pool of at most lyud.City.LampBudget point lights (default 48, no shadows) is handed every half
+ * second to the lit lamps nearest the camera within 45 m (a held lamp keeps its light unless another is 4 m nearer;
+ * a new one comes up over two updates); a building owns no light components.
  *
  * Console: lyud.City 0|1 (hide/show every town building), lyud.City.Lights auto|on|off, lyud.City.LampBudget N,
  * lyud.City.Report.
@@ -143,7 +144,7 @@ public:
 
 private:
 	struct FSlotRef { TWeakObjectPtr<ALyudCityBuilding> B; int32 Slot = 0; };
-	struct FLampRef { TWeakObjectPtr<ALyudCityBuilding> B; int32 Lamp = -1; };
+	struct FLampRef { TWeakObjectPtr<ALyudCityBuilding> B; int32 Lamp = -1; int32 Ramp = 0; };
 	void Rebuild();
 	void UpdateLamps();
 	void FlushPending();
