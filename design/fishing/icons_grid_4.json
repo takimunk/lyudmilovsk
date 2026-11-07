@@ -1,0 +1,28 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-06",
+ "credits": 1,
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_224447_f25674b8-b575-43f9-9ba7-04c3e497ce57.png",
+ "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters anywhere. Fish lie on their side, head to the left, the whole body inside the cell. Row 1, left: a fourhorn sculpin, flattened grey-brown bottom fish with four bony knobs on its head and a broad spiny head. Row 1, right: a black goby, small dark brown to black goby with a big head and fused pelvic fins. Row 2, left: a ninespine stickleback, tiny slim olive fish with a row of nine small spines along the back, small in its cell. Row 2, right: a small worn cloth-bound field guide to fishes, dark blue-grey cover with a simple embossed silver fish outline and no lettering, closed, lying slightly turned, a pencil beside it.",
+ "grid": 2,
+ "ids": [
+  "fish_fourhornsculpin",
+  "fish_blackgoby",
+  "fish_ninespinestickleback",
+  "fish_book"
+ ],
+ "ship": [
+  "fish_fourhornsculpin",
+  "fish_blackgoby",
+  "fish_ninespinestickleback",
+  "fish_book"
+ ],
+ "note": "2x2 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language).",
+ "failed_job_id": "be5690bb-e6ca-472c-821b-3e86b92fb67f",
+ "job_id": "f25674b8-b575-43f9-9ba7-04c3e497ce57"
+}

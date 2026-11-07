@@ -10,7 +10,7 @@ Frames (metres, x forward, y left, z up):
   CoffeeFill, GlassFill, SoupFill  origin at the vessel's inner bottom (BOWL_IN_Z / MUG_IN_Z / GLASS_IN_Z up), z 0..FILL_H: the
                               game scales Z 0..1
   Fork, Spoon                 origin at the grip point (0.06 m from the handle end), tines / bowl at +x, flat face up
-  Pancakes EggsBacon Spaghetti ApplePie Burger SoupFill  food: origin at the plate's top surface centre (put it at the plate's
+  Pancakes EggsBacon Spaghetti ApplePie Burger SoupFill FriedFish  food: origin at the plate's top surface centre (put it at the plate's
                               origin + PLATE_TOP); Burger at its bottom centre
   Load_*                      origin = the fork's load point (TINE_X ahead of the grip, attach at (TINE_X, 0, 0.006))
 """
@@ -57,7 +57,8 @@ BURGER_Z0, BURGER_Z1 = 0.002, 0.080
 
 FOOD_MATS = ["DN_Pancake", "DN_Syrup", "DN_SourCream", "DN_Jam", "DN_EggWhite", "DN_Yolk", "DN_Bacon", "DN_Toast",
              "DN_Noodle", "DN_Sauce", "DN_Meatball", "DN_Crust", "DN_PieFilling", "DN_Bun", "DN_Patty", "DN_Cheese",
-             "DN_Lettuce", "DN_Soup", "DN_Fish", "DN_Herb", "DN_Tea", "DN_Kompot", "DN_Berry", "DN_Coffee"]
+             "DN_Lettuce", "DN_Soup", "DN_Fish", "DN_Herb", "DN_Tea", "DN_Kompot", "DN_Berry", "DN_Coffee",
+             "DN_FishSkin", "DN_Potato", "DN_Lemon"]
 CHINA = ["DN_China", "DN_ChinaRim"]
 
 
@@ -528,6 +529,50 @@ def eggs_bacon():
     return bm
 
 
+def fried_fish():
+    """The hero's own catch fried by the diner's cook (docs/fishing.md): a whole fish floured and browned, lying on its side
+    along the plate (head to +x), three boiled potatoes with dill, a lemon wedge."""
+    bm = bmesh.new()
+    SK, PO, LE, HE, EY = M("DN_FishSkin"), M("DN_Potato"), M("DN_Lemon"), M("DN_Herb"), M("DN_Patty")
+    z0, y0 = 0.002, -0.014
+    x_head, x_tail = 0.074, -0.046
+    # the body: elliptic sections along x (bottom on the plate), deepest a third back from the snout, thin at the tail's root
+    n, seg = 14, 16
+    rings = []
+    for k in range(n + 1):
+        t = k / n
+        x = x_head + (x_tail - x_head) * t
+        w = 0.0215 * (math.sin(PI * min(1.0, t / 0.34) / 2) ** 0.7 if t < 0.34 else 1 - 0.80 * smoothstep((t - 0.34) / 0.66))
+        h = 0.0165 * (math.sin(PI * min(1.0, t / 0.34) / 2) ** 0.8 if t < 0.34 else 1 - 0.62 * smoothstep((t - 0.34) / 0.66))
+        if k == 0:
+            rings.append([(x + 0.002, y0, z0 + 0.0060)])
+            continue
+        rings.append([(x, y0 + w * math.cos(2 * PI * i / seg), z0 + h / 2 + h / 2 * math.sin(2 * PI * i / seg)) for i in range(seg)])
+    rings.append([(x_tail - 0.002, y0, z0 + rings[-1][seg // 4][2] * 0.5)])
+    loop_stack(bm, rings, SK)
+    # the tail: two lobes fanning out from the root
+    for sgn in (1, -1):
+        lobe = [(x_tail + 0.004, y0 + sgn * 0.0015), (x_tail - 0.040, y0 + sgn * 0.027), (x_tail - 0.030, y0 + sgn * 0.003)]
+        pillow(bm, lobe if area(lobe) > 0 else lobe[::-1], z0 + 0.0012, 0.0030, SK, prof=((1, 0), (1, .5), (.75, .95), (0, 1.0)))
+    # a pectoral fin behind the head, lying on the side, and the eye
+    pec = [(0.044, y0 + 0.004), (0.016, y0 + 0.006), (0.024, y0 + 0.019)]
+    pillow(bm, pec if area(pec) > 0 else pec[::-1], z0 + 0.0160, 0.0018, SK, prof=((1, 0), (1, .5), (.7, .95), (0, 1.0)))
+    cap(bm, (0.060, y0 + 0.0065, z0 + 0.0118), 0.0036, EY, alpha=90, n=3, seg=10, sz=0.7)
+    # three potatoes along the far rim, dill on them
+    for k, (px, py, rx, ry, rz, a) in enumerate([(-0.040, 0.058, 0.020, 0.016, 0.0135, 0.3), (-0.002, 0.071, 0.019, 0.015, 0.0130, -0.2),
+                                                  (0.037, 0.060, 0.021, 0.016, 0.0140, 0.5)]):
+        ellipsoid(bm, (px, py, z0 + rz * 0.92), rx, ry, rz, PO, rot=a, seg=14, rings=7)
+        for j in range(3):
+            b = a + 0.9 * j + k
+            p0 = (px - 0.005 * math.cos(b), py - 0.005 * math.sin(b), z0 + rz * 1.9 + 0.0004)
+            p1 = (px + 0.005 * math.cos(b), py + 0.005 * math.sin(b), z0 + rz * 1.9 + 0.0004 + 0.0004 * j)
+            C.tube(bm, p0, p1, 0.0007, HE, 4)
+    # a lemon wedge by the head
+    pillow(bm, sector(0.032, -0.75, 0.75, 8, apex=(0, 0), rot=-1.15, off=(0.050, -0.042)), z0, 0.009, LE,
+           prof=((1, 0), (1, .55), (.9, .92), (0, 1.0)))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return bm
+
 def spaghetti():
     bm = bmesh.new()
     NO, SA, MB = M("DN_Noodle"), M("DN_Sauce"), M("DN_Meatball")
@@ -798,6 +843,18 @@ def load_egg():
     return bm
 
 
+def load_fish():
+    """A piece of the fried fish on the fork: the white flesh, a strip of the browned skin on it."""
+    bm = bmesh.new()
+    FI, SK = M("DN_Fish"), M("DN_FishSkin")
+    zb = lambda x, y: tine_z(x) + 0.0003
+    dome(bm, -0.002, 0.0, 0.0, blob_r(0.0140, 33), [(1, 0), (1, .45), (.9, .85), (.65, 1), (.3, 1.03), (0, 1.05)], 0.0068, FI, 16, zb=zb,
+         aspect=0.75)
+    cx = -0.003
+    cap(bm, (cx, 0.0025, tine_z(cx) + 0.0068 * 1.05 + 0.0001), 0.0105, SK, alpha=70, n=3, seg=12, sz=0.22, aspect=0.55, rot=0.2)
+    return bm
+
+
 def load_pie():
     bm = bmesh.new()
     FI, CR = M("DN_PieFilling"), M("DN_Crust")
@@ -842,6 +899,7 @@ BUILD = {
     "ApplePie": (apple_pie, FOOD_MATS), "Burger": (burger, FOOD_MATS), "SoupFill": (soup_fill, FOOD_MATS),
     "Load_Noodles": (load_noodles, FOOD_MATS), "Load_Twirl": (load_twirl, FOOD_MATS), "Load_Pancake": (load_pancake, FOOD_MATS),
     "Load_Egg": (load_egg, FOOD_MATS), "Load_Pie": (load_pie, FOOD_MATS), "Load_Soup": (load_soup, FOOD_MATS),
+    "FriedFish": (fried_fish, FOOD_MATS), "Load_Fish": (load_fish, FOOD_MATS),
 }
 ORDER = list(BUILD)
 BITE_EXPORT = "SM_Food_diner_burger_%d"
@@ -855,6 +913,8 @@ COMPANION = {
     "Spaghetti": [("Plate", (0, 0, -PLATE_TOP)), ("Spaghetti", (0, 0, 0))],
     "ApplePie": [("Plate", (0, 0, -PLATE_TOP)), ("ApplePie", (0, 0, 0))],
     "Burger": [("Plate", (0, 0, -PLATE_TOP)), ("Burger", (0, 0, 0))],
+    "FriedFish": [("Plate", (0, 0, -PLATE_TOP)), ("FriedFish", (0, 0, 0))],
+    "Load_Fish": [("Fork", (-TINE_X, 0, -LOAD_Z)), ("Load_Fish", (0, 0, 0))],
     "Load_Noodles": [("Fork", (-TINE_X, 0, -LOAD_Z)), ("Load_Noodles", (0, 0, 0))],
     "Load_Twirl": [("Fork", (-TINE_X, 0, -LOAD_Z)), ("Load_Twirl", (0, 0, 0))],
     "Load_Pancake": [("Fork", (-TINE_X, 0, -LOAD_Z)), ("Load_Pancake", (0, 0, 0))],

@@ -5,6 +5,7 @@
 #include "Brushes/SlateRoundedBoxBrush.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
+#include "Fishing/LyudFishBook.h"
 #include "Framework/Application/SlateApplication.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
@@ -353,7 +354,10 @@ void ULyudBirdGuideScreen::Open()
 	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
 	const ULyudGameScreen* GameScreen = ULyudGameScreen::Get(World);
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
-	if (IsOpen() || !Viewport || !ULyudBirdGuide::IsOwned(World) || (GameScreen && GameScreen->IsOpen()) || (UI && UI->IsOpen()))
+	// one book open at a time: not over the angler's book
+	const ULyudFishBookScreen* FishBook = ULyudFishBookScreen::Get(World);
+	if (IsOpen() || !Viewport || !ULyudBirdGuide::IsOwned(World) || (GameScreen && GameScreen->IsOpen()) || (UI && UI->IsOpen())
+		|| (FishBook && FishBook->IsOpen()))
 	{
 		return;
 	}

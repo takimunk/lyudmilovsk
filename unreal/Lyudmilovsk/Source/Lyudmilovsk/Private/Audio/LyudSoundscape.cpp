@@ -289,6 +289,10 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// cigarettes (ULyudSmoking: the pack, the lighter, a drag, a breath out, a butt)
 		{ TEXT("Smoking"), TEXT("pack_open") }, { TEXT("Smoking"), TEXT("lighter_flick") }, { TEXT("Smoking"), TEXT("cig_drag") },
 		{ TEXT("Smoking"), TEXT("smoke_exhale") }, { TEXT("Smoking"), TEXT("cig_putout") },
+		// fishing (ULyudFishing: the cast, the float, the reel, the line, the fish)
+		{ TEXT("Fishing"), TEXT("rod_swish") }, { TEXT("Fishing"), TEXT("float_plop") }, { TEXT("Fishing"), TEXT("reel_click") },
+		{ TEXT("Fishing"), TEXT("reel_drag") }, { TEXT("Fishing"), TEXT("line_snap") }, { TEXT("Fishing"), TEXT("fish_splash") },
+		{ TEXT("Fishing"), TEXT("fish_flap") }, { TEXT("Fishing"), TEXT("fish_bag") },
 	};
 	for (const auto& G : Groups)
 	{

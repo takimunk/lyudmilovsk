@@ -1,0 +1,21 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-06",
+ "credits": 1,
+ "job_id": "491e7a3a-c56e-44b4-a475-c8844c11d9f2",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_225237_491e7a3a-c56e-44b4-a475-c8844c11d9f2.png",
+ "prompt": "One inventory icon for a moody adventure game: one object centred and filling most of the square picture, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, nothing crossing the edge, no text, no letters anywhere. The object: a white diner plate with a thin dark red rim band, seen from above at a slight angle, on it a whole small fish floured and pan-fried golden brown lying on its side head to the right, three boiled potatoes sprinkled with chopped dill, and a lemon wedge.",
+ "grid": 1,
+ "ids": [
+  "diner_fish"
+ ],
+ "ship": [
+  "diner_fish"
+ ],
+ "note": "The fried catch the diner serves (docs/fishing.md); one cell, cut by tools/fishing_icons.py into textures/localized/ru/icon_diner_fish.jpg (no words: one language)."
+}

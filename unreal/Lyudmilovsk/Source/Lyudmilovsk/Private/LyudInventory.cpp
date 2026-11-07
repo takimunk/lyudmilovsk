@@ -1,6 +1,7 @@
 #include "LyudInventory.h"
 
 #include "BoothOwner.h"
+#include "Fishing/FishingModel.h"
 #include "BottleItem.h"
 #include "LyudGoodsItem.h"
 #include "EngineUtils.h"
@@ -108,6 +109,8 @@ namespace
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
 		// the ornithological guide from the Academgorodok library's desk (docs/bird_guide.md): a cloth-bound book with a map of the live birds
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
+		// the angler's book from the Gastronom (docs/fishing.md): every fish one can catch, and the hero's own catches and records in it
+		Good(TEXT("fish_book"), K::Misc, L::Flat, FVector(1.6f, 12.f, 18.f), FLinearColor(0.2f, 0.26f, 0.33f), 40, 4.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
@@ -160,6 +163,8 @@ namespace
 		Good(TEXT("diner_soup"), K::Food, L::Pack, FVector(7.f, 16.f, 16.f), FLinearColor(0.78f, 0.54f, 0.27f), 40, 8.f);
 		Good(TEXT("diner_pie"), K::Food, L::Pack, FVector(5.f, 9.f, 11.f), FLinearColor(0.81f, 0.58f, 0.31f), 30, 4.f);
 		Good(TEXT("diner_burger"), K::Food, L::Pack, FVector(8.f, 10.f, 10.f), FLinearColor(0.77f, 0.45f, 0.19f), 50, 5.f);
+		// the hero's own catch fried by the diner's cook (docs/fishing.md: "cooks_fish" in counters.json), served on a plate
+		Good(TEXT("diner_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.72f, 0.47f, 0.18f), 15, 8.f);
 		Good(TEXT("diner_tea"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.5f, 0.24f, 0.05f), 10, 3.6f);
 		Good(TEXT("diner_kompot"), K::Drink, L::Glass, FVector(7.f, 7.f, 10.5f), FLinearColor(0.43f, 0.1f, 0.16f), 12, 3.6f);
 		Good(TEXT("diner_coffee"), K::Drink, L::Cup, FVector(8.5f, 8.5f, 9.5f), FLinearColor(0.95f, 0.94f, 0.9f), 8, 4.25f);
@@ -184,6 +189,41 @@ namespace
 		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
 		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
 		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
+		// fishing (docs/fishing.md): the float rod (taken in the hand), its baits (a bait taken in the hand goes on the rig; each unit is
+		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
+		FLyudItemDef Rod;
+		Rod.Id = TEXT("fishing_rod");
+		Rod.Slot = ELyudEquipSlot::Hand;
+		Rod.Look = ELyudItemLook::Pack;
+		Rod.Size = FVector(3.f, 3.f, 40.f);
+		Rod.Tint = FLinearColor(0.05f, 0.11f, 0.07f);
+		Rod.Price = 90;
+		Rod.Radius = 1.3f;
+		D.Add(Rod);
+		auto Bait = [&D](const TCHAR* Id, FVector Size, FLinearColor Tint, int32 Price)
+		{
+			FLyudItemDef I;
+			I.Id = Id;
+			I.Slot = ELyudEquipSlot::Hand;
+			I.Look = ELyudItemLook::Pack;
+			I.Size = Size;
+			I.Tint = Tint;
+			I.Price = Price;
+			I.Radius = 3.f;
+			D.Add(I);
+		};
+		Bait(TEXT("bait_worm"), FVector(7.f, 7.f, 4.f), FLinearColor(0.45f, 0.3f, 0.2f), 2);
+		Bait(TEXT("bait_maggot"), FVector(6.f, 6.f, 4.f), FLinearColor(0.85f, 0.8f, 0.65f), 1);
+		Bait(TEXT("lure_spoon"), FVector(0.4f, 2.5f, 7.f), FLinearColor(0.8f, 0.8f, 0.82f), 45);
+		for (int32 F = 0; F < LyudFishing::NumCatchable(); F++)
+		{
+			const LyudFishing::FCatchable& C = LyudFishing::Catchable(F);
+			FLyudItemDef I;
+			I.Id = FName(ANSI_TO_TCHAR(LyudFishing::ItemOf(C.Id).c_str()));
+			I.Radius = FMath::Max(1.f, C.Length * 100.f / 6.f);
+			I.Price = LyudFishing::PriceOf(F, C.K * FMath::Cube(C.Length * 100.f) / 100.f);
+			D.Add(I);
+		}
 		// finds: what the crows, jackdaws and jays drop, hide or bring the player (UCorvidLifeSubsystem, docs/corvids.md)
 		for (const TCHAR* Find : { TEXT("find_acorn"), TEXT("find_hazelnut"), TEXT("find_walnut"), TEXT("find_pinecone"), TEXT("find_mussel"),
 			TEXT("find_bottlecap"), TEXT("find_foil"), TEXT("find_ring"), TEXT("find_button"), TEXT("find_coin"), TEXT("find_key"), TEXT("find_seaglass") })

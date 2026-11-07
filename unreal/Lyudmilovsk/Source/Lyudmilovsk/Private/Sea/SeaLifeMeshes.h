@@ -25,4 +25,6 @@ namespace LyudSeaLife
 	UStaticMesh* Flounder();
 	UStaticMesh* Jellyfish();
 	UStaticMesh* Fish();
+	/** The length Fish() is built at, m (scale it by length / this). */
+	constexpr float FishLength = 0.1f;
 }

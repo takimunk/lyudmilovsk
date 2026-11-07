@@ -1,0 +1,37 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-06",
+ "credits": 1,
+ "job_id": "d78869e4-1026-4d07-a821-45b9be2faff4",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261106_223301_d78869e4-1026-4d07-a821-45b9be2faff4.png",
+ "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters anywhere. Every cell holds one freshly caught Baltic fish lying on its side, head to the left, the whole body inside the cell. Row 1, left: a turbot, almost round flatfish, eyed side up, sandy brown speckled with bony tubercles. Row 1, middle: a European smelt, slender translucent silver fish with a greenish back and a large mouth. Row 1, right: a twaite shad, deep-bodied silver herring-like fish with a row of dark spots behind the gill cover. Row 2, left: a Baltic whitefish, silver fish with a small mouth, small head and a small adipose fin, grey-blue back. Row 2, middle: an Atlantic salmon, large silver fish with a few black x-shaped spots, powerful tail, lying diagonally to fit. Row 2, right: a roach, silver fish with red eyes and reddish fins. Row 3, left: a vimba bream, slim silvery fish with a dark back and a fleshy projecting snout. Row 3, middle: a European eel, long snake-like fish, dark olive back, yellowish belly, coiled into an S curve. Row 3, right: a rock gunnel (butterfish), small slender ribbon-like brown fish with a row of black white-ringed spots along the back.",
+ "grid": 3,
+ "ids": [
+  "fish_turbot",
+  "fish_smelt",
+  "fish_twaiteshad",
+  "fish_whitefish",
+  "fish_salmon",
+  "fish_roach",
+  "fish_vimba",
+  "fish_eel",
+  "fish_rockgunnel"
+ ],
+ "ship": [
+  "fish_turbot",
+  "fish_smelt",
+  "fish_twaiteshad",
+  "fish_whitefish",
+  "fish_salmon",
+  "fish_roach",
+  "fish_vimba",
+  "fish_eel",
+  "fish_rockgunnel"
+ ],
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+}
