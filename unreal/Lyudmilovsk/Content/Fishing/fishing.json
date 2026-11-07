@@ -1,0 +1,18 @@
+{
+  "about": "Fishing places (docs/fishing.md): the spots the angler's journal names, the rowing boat at the pier, the kitchens that buy fish. Each takes its place from Content/City/city_plan.json by its plan id when the plan has it (ue, cm), else from its own ue. A spot is a stretch: within radius of the segment from a to b (offsets from the plan point, cm); the first that holds the hero's feet names the catch.",
+  "spots": [
+    { "id": "pier_head", "plan": "S-PIER-HEAD", "ue": [31134, 91290, -3950], "a": [-1500, 0], "b": [700, 0], "radius": 1100 },
+    { "id": "pier", "plan": "P-PIER", "ue": [31734, 91290, -3950], "a": [-17500, 0], "b": [-2000, 0], "radius": 900 },
+    { "id": "promenade", "plan": "S-PROMENADE", "ue": [12134, 91290, -3950], "a": [0, -53000], "b": [0, 54000], "radius": 1600 },
+    { "id": "beach", "plan": "S-BEACH", "ue": [16700, 100790, -4200], "a": [0, -40000], "b": [0, 40000], "radius": 3500 }
+  ],
+  "boat": {
+    "plan": "P-PIER", "ue": [31734, 91290, -3950],
+    "mooring": [-15500, -1050], "yaw": 0, "landing": [-15500, -450],
+    "fee": 30, "range": 60000, "min_depth": 70
+  },
+  "kitchens": [
+    { "id": "yantar", "plan": "P-RESTAURANT", "ue": [5158, 77790, -3620], "at": [-1571, 349, 0], "radius": 220,
+      "open": 11, "close": 23, "per_day": 8 }
+  ]
+}

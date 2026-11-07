@@ -63,6 +63,9 @@ MAT_SPEC = {
     "DN_Soup": ("#C68A45", 0.12, 0.0, 0.0),
     "DN_Fish": ("#E9DCC6", 0.5, 0.0, 0.0),
     "DN_Herb": ("#4E7B2E", 0.6, 0.0, 0.0),
+    "DN_FishSkin": ("#B8782E", 0.45, 0.0, 0.0),       # the fried fish's floured, browned skin (the hero's catch, docs/fishing.md)
+    "DN_Potato": ("#E7CF86", 0.5, 0.0, 0.0),
+    "DN_Lemon": ("#EED54A", 0.3, 0.0, 0.0),
     "DN_Tea": ("#7F3E0E", 0.06, 0.0, 0.0),
     "DN_Kompot": ("#6E1A2A", 0.06, 0.0, 0.0),
     "DN_Berry": ("#5A1424", 0.3, 0.0, 0.0),

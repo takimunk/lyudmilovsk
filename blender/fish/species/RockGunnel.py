@@ -1,0 +1,45 @@
+"""Rock gunnel (butterfish), Pholis gunnellus: ribbon-like laterally compressed eel-shaped body, long low spiny dorsal along almost the whole back
+with a row of 11 black, white-ringed spots at its base, tiny pectorals, brown-red mottled, 20 cm."""
+SPEC = dict(
+    id="RockGunnel", latin="Pholis gunnellus", length=0.20, seed=83, tris=2600,
+    body_end=0.90, nose_len=0.020, nose_len_bot=0.018,
+    profile=dict(
+        top=[(0, 0), (0.02, 0.016), (0.06, 0.028), (0.12, 0.036), (0.22, 0.040), (0.4, 0.039), (0.6, 0.034), (0.8, 0.024), (0.9, 0.016)],
+        bot=[(0, 0), (0.02, 0.014), (0.06, 0.024), (0.12, 0.030), (0.22, 0.033), (0.4, 0.032), (0.6, 0.028), (0.8, 0.020), (0.9, 0.014)],
+        wid=[(0, 0), (0.02, 0.012), (0.06, 0.018), (0.12, 0.021), (0.22, 0.020), (0.4, 0.017), (0.6, 0.014), (0.8, 0.010), (0.9, 0.006)],
+        n=2.3),
+    head=dict(gill_t=0.14, gill_ridge=0.012, mouth_len=0.045, mouth_depth=0.1, mouth_p=0.6),
+    eyes=[dict(t=0.050, q=0.26, r=0.0085, sunk=0.2)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.11, t1=0.886, h=0.034, shape="spiny", peak=0.3, rake=0, rays=90, segs=26, ends=(0.0, 0.5),
+             col=(150, 100, 64), ray=(100, 62, 38), alpha=0.6, edge=(70, 40, 26), edge_a=0.4, rag=0.03, scallop=0.04),
+        dict(name="A", kind="median", side="anal", t0=0.40, t1=0.886, h=0.020, shape="rounded", peak=0.4, ends=(0.0, 0.5), rays=30, segs=14,
+             col=(176, 130, 90), ray=(120, 80, 50), alpha=0.55, edge=(90, 60, 38), edge_a=0.3),
+        dict(name="C", kind="caudal", span_top=0.020, span_bot=0.018, base_h=0.016, shape="rounded", rays=14, segs=8,
+             col=(150, 100, 64), ray=(100, 62, 38), alpha=0.6, edge=(70, 40, 26), edge_a=0.45, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.15, q0=0.42, q1=0.56, len=0.032, shape="rounded", ang0=-15, ang1=45, splay=26, rays=10, segs=4,
+             col=(190, 140, 96), ray=(130, 86, 54), alpha=0.5, edge=(100, 64, 40), edge_a=0.3),
+        dict(name="Pel", kind="paired", t=0.14, dt=0.01, q0=0.93, q1=0.96, len=0.014, shape="pointed", ang0=25, ang1=60, splay=20, rays=2, segs=2,
+             col=(215, 180, 140), ray=(160, 120, 80), alpha=0.5),
+    ],
+    paint=dict(
+        ramp=[(0.0, (92, 56, 34)), (0.2, (122, 78, 46)), (0.45, (150, 104, 62)), (0.7, (190, 146, 98)), (1.0, (214, 180, 134))],
+        grain=0.08,
+        layers=[
+            dict(type="mottle", scale=0.04, thr=0.5, soft=0.1, col=(70, 40, 24), q=(0.0, 0.7), a=0.5, seed=1),
+            dict(type="mottle", scale=0.02, thr=0.6, soft=0.07, col=(190, 128, 70), q=(0.1, 0.8), a=0.4, seed=2),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0036, 0.0036), prob=1.0, col=(236, 226, 206), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.9, seed=3),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0023, 0.0023), prob=1.0, col=(12, 8, 6), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.97, seed=3),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0036, 0.0036), prob=1.0, col=(236, 226, 206), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.9, seed=4),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0023, 0.0023), prob=1.0, col=(12, 8, 6), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.97, seed=4),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0036, 0.0036), prob=1.0, col=(236, 226, 206), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.9, seed=5),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0023, 0.0023), prob=1.0, col=(12, 8, 6), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.97, seed=5),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0036, 0.0036), prob=1.0, col=(236, 226, 206), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.9, seed=6),
+            dict(type="spots", cell=0.020, aspect=0.68, r=(0.0023, 0.0023), prob=1.0, col=(12, 8, 6), q=(0.0, 0.16), qsoft=0.04, t=(0.15, 0.9), a=0.97, seed=6),
+            dict(type="scales", size=0.0020, edge=0.02, sheen=0.01, q=(0.0, 0.8)),
+        ],
+        head=dict(tint=(130, 84, 50), amount=0.2, curve=0.012, line=(60, 36, 22), line_a=0.45),
+        mouth=dict(col=(50, 30, 22), w=0.0010),
+        eye=dict(iris=(200, 160, 80), iris2=(110, 76, 36), rim=(40, 28, 20), pupil=(3, 3, 3), pupil_r=0.5),
+    ),
+)

@@ -30,6 +30,8 @@
                  "bites": [0.07, 0.12, 0.06], "texture": "soft", "chew_seconds": 12},
   "diner_pie": {"plated": true, "utensil": "fork", "dish": "plate", "food": "ApplePie", "load": ["Load_Pie"],
                 "bites": [0.12, 0.25, 0.09], "texture": "soft", "chew_seconds": 20},
+  "diner_fish": {"plated": true, "utensil": "fork", "dish": "plate", "food": "FriedFish", "load": ["Load_Fish"],
+   "bites": [0.07, 0.15, 0.06], "texture": "soft", "chew_seconds": 34},
   "diner_burger": {"plated": true, "utensil": "hand", "dish": "plate", "food": "Burger", "stages": 6, "mouth_full": [2.0, 0.0, 10.8],
                    "mouth_empty": [2.0, 0.0, 3.4], "bites": [0.08, 0.17, 0.06], "steady_every": 0.9, "texture": "soft", "chew_seconds": 40},
   "diner_tea": {"plated": true, "utensil": "cup", "dish": "tea_glass", "fill": "GlassFill", "fill_tint": "#7F3E0E", "bites": [0.1, 0.22, 0.08]},

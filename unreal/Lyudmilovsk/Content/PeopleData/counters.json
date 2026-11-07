@@ -1,10 +1,14 @@
 {
- "_doc": "People who sell over a counter while at work (ULyudCounterTradeSubsystem, docs/bird_guide.md). person: people.json key; activity: activities.json id (sells only while doing it at its place); title: string key ({0} = their name); goods: item ids of LyudInventory.cpp.",
+ "_doc": "People who sell over a counter while at work (ULyudCounterTradeSubsystem, docs/bird_guide.md). person: people.json key; activity: activities.json id (sells only while doing it at its place); title: string key ({0} = their name); goods: item ids of LyudInventory.cpp; buys_fish: true buys the hero's catch (Y, docs/fishing.md); cooks_fish: N fries the biggest fish in the pocket for N roubles (Y, served on a plate at the diner).",
  "counters": [
   {"person": "girl_b", "activity": "work_library", "title": "ui.shop.title_library", "reach_cm": 320,
    "goods": [{"item": "bird_guide", "price": 60, "count": 1}]},
-  {"person": "orlova_tanya", "activity": "work_shop", "title": "ui.shop.title_grocery", "reach_cm": 320,
-   "goods": [{"item": "feed_suet", "price": 25, "count": 5}, {"item": "feed_niger", "price": 30, "count": 5},
+  {"person": "orlova_tanya", "activity": "work_shop", "title": "ui.shop.title_grocery", "reach_cm": 320, "buys_fish": true,
+   "goods": [{"item": "fishing_rod", "price": 90, "count": 1}, {"item": "bait_worm", "price": 15, "count": 10},
+             {"item": "bait_maggot", "price": 10, "count": 10}, {"item": "lure_spoon", "price": 45, "count": 1}, {"item": "fish_book", "price": 40, "count": 1},
+             {"item": "rod_spinning", "price": 220, "count": 1}, {"item": "rod_sea", "price": 380, "count": 1},
+             {"item": "bait_shrimp", "price": 30, "count": 10}, {"item": "bait_dough", "price": 8, "count": 10}, {"item": "lure_wobbler", "price": 70, "count": 1},
+             {"item": "feed_suet", "price": 25, "count": 5}, {"item": "feed_niger", "price": 30, "count": 5},
              {"item": "feed_rowan", "price": 25, "count": 5}, {"item": "feed_mealworm", "price": 35, "count": 5},
              {"item": "feed_grain", "price": 15, "count": 5}, {"item": "feed_peanuts", "price": 30, "count": 5},
              {"item": "bird_feed", "price": 10, "count": 5}, {"item": "feeder", "price": 80, "count": 1},
@@ -14,11 +18,11 @@
              {"item": "cheese_round_big", "price": 110, "count": 1}]},
   {"person": "guseva_valentina", "activity": "work_corn", "title": "ui.shop.title_corn", "reach_cm": 280,
    "goods": [{"item": "corn_cob", "price": 15, "count": 1}]},
-  {"person": "zhukova_lena", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+  {"person": "zhukova_lena", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300, "cooks_fish": 15,
    "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
-  {"person": "frolova_masha", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+  {"person": "frolova_masha", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300, "cooks_fish": 15,
    "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]},
-  {"person": "hayashi_rina", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300,
+  {"person": "hayashi_rina", "activity": "work_diner", "title": "ui.shop.title_diner", "reach_cm": 300, "cooks_fish": 15,
    "goods": [{"item": "diner_pancakes", "price": 35, "count": 1}, {"item": "diner_eggs", "price": 40, "count": 1}, {"item": "diner_spaghetti", "price": 45, "count": 1}, {"item": "diner_soup", "price": 40, "count": 1}, {"item": "diner_burger", "price": 50, "count": 1}, {"item": "diner_pie", "price": 30, "count": 1}, {"item": "diner_tea", "price": 10, "count": 1}, {"item": "diner_kompot", "price": 12, "count": 1}]}
  ]
 }

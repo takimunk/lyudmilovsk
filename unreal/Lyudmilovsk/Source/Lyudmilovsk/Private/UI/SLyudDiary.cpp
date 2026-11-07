@@ -7,6 +7,7 @@
 #include "BirdTame.h"
 #include "Birds/BirdBook.h"
 #include "Birds/BirdSpecies.h"
+#include "Fishing/LyudFishBook.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
@@ -432,6 +433,19 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
 			{
 				Screen->CloseThen([WeakWorld] { if (ULyudBirdGuideScreen* Guide = ULyudBirdGuideScreen::Get(WeakWorld.Get())) { Guide->Open(); } });
+			}
+		});
+	}
+	else if (Id == ULyudFishBookScreen::ItemId)
+	{
+		// the angler's book, a book of its own like the bird guide (docs/fishing.md)
+		AddAction(TEXT("ui.use.open_fishbook"), [WeakUI]
+		{
+			UWorld* World = WeakUI.IsValid() ? WeakUI->GetWorld() : nullptr;
+			TWeakObjectPtr<UWorld> WeakWorld = World;
+			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
+			{
+				Screen->CloseThen([WeakWorld] { if (ULyudFishBookScreen* Book = ULyudFishBookScreen::Get(WeakWorld.Get())) { Book->Open(); } });
 			}
 		});
 	}

@@ -17,6 +17,11 @@ struct FLyudCounter
 	/** How close the hero must be (cm) and look at them. */
 	float Reach = 320.f;
 	TArray<FLyudShopGood> Goods;
+	/** Buys the hero's catch ("buys_fish": Y sells every fish in the pocket, docs/fishing.md). */
+	bool bBuysFish = false;
+	/** Fries the hero's catch for this many roubles ("cooks_fish": Y gives the cook the biggest fish in the pocket, served on a
+	 *  plate at the diner's counter; 0: no). */
+	int32 CookFee = 0;
 };
 
 /**
@@ -48,6 +53,24 @@ public:
 private:
 	TArray<FLyudCounter> Counters;
 	int32 Prompted = -1;
+	/** What Y does at the counter in view now. */
+	enum class EFishDeal : uint8 { None, Sell, Cook };
+	EFishDeal Deal = EFishDeal::None;
+	/** What the prompt line was built from: rewritten only when one of these changes (not every frame). */
+	struct FPromptKey
+	{
+		int32 Counter = -1;
+		EFishDeal Deal = EFishDeal::None;
+		int32 Fish = 0, Roubles = 0, Fee = 0;
+		FName Biggest;
+		bool operator==(const FPromptKey& O) const
+		{
+			return Counter == O.Counter && Deal == O.Deal && Fish == O.Fish && Roubles == O.Roubles && Fee == O.Fee && Biggest == O.Biggest;
+		}
+	};
+	FPromptKey PromptedKey;
+	/** "Sold for N roubles" (or "the cook took it") stays on the line until then (world seconds). */
+	double SoldUntil = 0.0;
 
 	void Load();
 	void SetPrompted(int32 Counter);

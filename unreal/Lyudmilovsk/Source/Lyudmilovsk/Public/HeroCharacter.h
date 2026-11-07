@@ -75,6 +75,10 @@ public:
 	/** Gets up and steps off the seat, forward. */
 	void StandUp();
 	bool IsSeated() const { return SeatBase.IsValid(); }
+	/** While seated, the seat's own use of the move keys (a rowing boat's oars: W/S row, A/D turn) instead of a step getting up,
+	 *  and its say on Space getting up (false: not here, the hero stays seated). Cleared when the hero gets up. */
+	TFunction<void(const FVector2D&)> SeatMove;
+	TFunction<bool()> SeatLeave;
 	/** On a bicycle (getting on, riding, getting off: UHeroBikeComponent moves the body), or leading one by the bars. */
 	bool IsOnBike() const;
 	bool IsLeadingBike() const;

@@ -1,0 +1,41 @@
+"""Twaite shad, Alosa fallax: herring-like but deeper laterally compressed body, row of 4-8 dark spots behind the gill cover along the upper flank,
+keeled belly, deeply forked tail, 38 cm."""
+SPEC = dict(
+    id="TwaiteShad", latin="Alosa fallax", length=0.38, seed=91, tris=2300,
+    body_end=0.865, nose_len=0.04,
+    profile=dict(
+        top=[(0, 0), (0.04, 0.030), (0.10, 0.058), (0.22, 0.090), (0.36, 0.102), (0.5, 0.098), (0.65, 0.076), (0.78, 0.046), (0.865, 0.028)],
+        bot=[(0, 0), (0.04, 0.032), (0.10, 0.064), (0.22, 0.108), (0.36, 0.126), (0.5, 0.122), (0.65, 0.090), (0.78, 0.050), (0.865, 0.028)],
+        wid=[(0, 0), (0.04, 0.018), (0.10, 0.034), (0.22, 0.048), (0.36, 0.054), (0.5, 0.048), (0.65, 0.036), (0.78, 0.020), (0.865, 0.012)],
+        n=2.2),
+    lod0=dict(nose_rings=2),
+    head=dict(gill_t=0.235, gill_ridge=0.03, mouth_len=0.06, mouth_depth=0.14, mouth_p=0.62),
+    eyes=[dict(t=0.07, q=0.38, r=0.0185)],
+    fins=[
+        dict(name="D", kind="median", side="dorsal", t0=0.42, t1=0.52, h=0.075, shape="pointed", peak=0.2, rake=18, rays=17, segs=8,
+             col=(115, 128, 130), ray=(70, 88, 95), alpha=0.5, edge=(40, 58, 68), edge_a=0.55),
+        dict(name="A", kind="median", side="anal", t0=0.70, t1=0.82, h=0.030, shape="pointed", peak=0.15, rake=20, rays=18, segs=8,
+             col=(200, 208, 204), ray=(150, 162, 160), alpha=0.45),
+        dict(name="C", kind="caudal", span_top=0.100, span_bot=0.100, shape="forked", fork=0.55, rays=19, segs=12,
+             col=(100, 115, 122), ray=(55, 72, 84), alpha=0.6, edge=(35, 52, 64), edge_a=0.6, rag=0.03),
+        dict(name="Pec", kind="paired", t=0.24, q0=0.80, q1=0.90, len=0.050, shape="pointed", ang0=10, ang1=45, splay=28, rays=15, segs=6,
+             col=(205, 212, 208), ray=(155, 168, 166), alpha=0.42),
+        dict(name="Pel", kind="paired", t=0.50, q0=0.94, q1=0.96, len=0.034, shape="pointed", ang0=35, ang1=60, splay=35, rays=8, segs=4,
+             col=(220, 225, 220), ray=(165, 175, 172), alpha=0.42),
+    ],
+    paint=dict(
+        ramp=[(0.0, (30, 66, 80)), (0.16, (46, 96, 106)), (0.30, (100, 140, 140)), (0.44, (178, 196, 196)), (0.58, (212, 220, 218)),
+              (0.78, (232, 234, 228)), (1.0, (240, 240, 232))],
+        grain=0.05,
+        layers=[
+            dict(type="sheen", at=0.5, w=0.14, col=(238, 234, 200), a=0.5),
+            dict(type="bars", t0=0.27, t1=0.50, period=0.040, w=0.0060, col=(25, 30, 36), a=0.95, soft=0.004, q=(0.27, 0.34), qsoft=0.03),
+            dict(type="scales", size=0.0070, edge=0.07, sheen=0.05, q=(0.0, 0.9)),
+            dict(type="bars", t0=0.30, t1=0.80, period=0.012, w=0.0035, col=(165, 170, 160), a=0.5, soft=0.002, q=(0.93, 1.0), qsoft=0.02),
+            dict(type="flush", col=(30, 48, 54), q=(0.0, 0.36), t=(0.0, 0.05), a=0.5, qsoft=0.05, tsoft=0.012),
+        ],
+        head=dict(tint=(205, 190, 130), amount=0.22, curve=0.012, line=(70, 75, 70), line_a=0.55),
+        mouth=dict(col=(70, 62, 55), w=0.0008),
+        eye=dict(iris=(210, 195, 130), iris2=(120, 105, 70), rim=(170, 178, 175), pupil=(4, 5, 7), pupil_r=0.4),
+    ),
+)
