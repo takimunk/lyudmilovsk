@@ -886,8 +886,10 @@ void ULyudInventoryUI::Tick(float)
 		{
 			CloseShop();
 		}
-		else if (Shop)
+		else if (const TSharedPtr<SLyudShop> ShopNow = Shop)
 		{
+			// held here: a purchase by key tells the pocket's and the shop's listeners, and one closing the screen from
+			// there would free it under Buy()
 			// the screen leaves keyboard focus with the game (GameAndUI), so the keys are read here
 			auto Pressed = [PC](std::initializer_list<FKey> Keys)
 			{
@@ -905,17 +907,17 @@ void ULyudInventoryUI::Tick(float)
 				+ (Pressed({ EKeys::PageDown }) ? 5 : 0) - (Pressed({ EKeys::PageUp }) ? 5 : 0);
 			if (Step != 0)
 			{
-				Shop->Select(Step);
+				ShopNow->Select(Step);
 			}
 			// the wheel outside the window reaches the game, not Slate
 			const float Wheel = (PC->WasInputKeyJustPressed(EKeys::MouseScrollUp) ? 1.f : 0.f) - (PC->WasInputKeyJustPressed(EKeys::MouseScrollDown) ? 1.f : 0.f);
 			if (Wheel != 0.f)
 			{
-				Shop->ScrollBy(Wheel);
+				ShopNow->ScrollBy(Wheel);
 			}
 			if (Pressed({ EKeys::Enter, EKeys::Gamepad_FaceButton_Bottom }))
 			{
-				Shop->Buy();
+				ShopNow->Buy();
 			}
 		}
 	}
