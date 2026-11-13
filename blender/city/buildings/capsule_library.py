@@ -144,8 +144,8 @@ def _core(B, pods_by_level, reserved):
             yb = ye - GOING * j
             box(B.m, "CT_Concrete", CX - 1.1, CX + 0.1, yb - GOING, yb, z + (nf + j + 1) * r - 0.3, z + (nf + j + 1) * r)
     # lamps in the core
-    for z in (3.9, 7.9, 11.9, 14.6):
-        B.lamp((CX - 0.8, CY - 2.35, z), lumens=420, colour="#FFE4B8", kind="stair", radius=5.0)
+    for z, lm, rad in ((3.9, 420, 5.0), (7.9, 420, 5.0), (13.2, 520, 6.0)):      # the two upper flights share one lamp
+        B.lamp((CX - 0.8, CY - 2.35, z), lumens=lm, colour="#FFE4B8", kind="stair", radius=rad)
     return edges, s_door, w_door
 
 
@@ -456,8 +456,9 @@ def _hall(B, rnd):
     # ---- furniture
     _furnish(B, rnd)
     # lamps in the hall
-    for (lx, ly) in ((-9.0, 8.0), (9.0, 8.0), (-9.0, 22.0), (9.0, 22.0), (0.0, 6.0), (-9.0, 15.0), (9.0, 15.0)):
-        B.lamp((lx, ly, HALL_H - 0.3), lumens=720, colour="#FFD8A0", kind="public", radius=8.5)
+    for (lx, ly, lm, rad) in ((-6.0, 7.0, 960, 9.5), (6.0, 7.0, 960, 9.5), (-9.0, 22.0, 720, 8.5), (9.0, 22.0, 720, 8.5),
+                              (-9.0, 15.0, 720, 8.5), (9.0, 15.0, 720, 8.5)):      # the front hall's three lamps merged into two
+        B.lamp((lx, ly, HALL_H - 0.3), lumens=lm, colour="#FFD8A0", kind="public", radius=rad)
     return y_bot
 
 

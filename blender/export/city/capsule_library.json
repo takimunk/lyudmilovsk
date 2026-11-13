@@ -911,23 +911,12 @@
    "pos": [
     -0.8,
     12.65,
-    11.9
+    13.2
    ],
-   "lumens": 420,
+   "lumens": 520,
    "colour": "#FFE4B8",
    "kind": "stair",
-   "radius": 5.0
-  },
-  {
-   "pos": [
-    -0.8,
-    12.65,
-    14.6
-   ],
-   "lumens": 420,
-   "colour": "#FFE4B8",
-   "kind": "stair",
-   "radius": 5.0
+   "radius": 6.0
   },
   {
    "pos": [
@@ -1129,52 +1118,41 @@
   },
   {
    "pos": [
-    -9.0,
-    8.0,
+    -6.0,
+    7.0,
     3.3
    ],
-   "lumens": 720,
+   "lumens": 960,
    "colour": "#FFD8A0",
    "kind": "public",
-   "radius": 8.5
+   "radius": 9.5
   },
   {
    "pos": [
-    9.0,
-    8.0,
-    3.3
-   ],
-   "lumens": 720,
-   "colour": "#FFD8A0",
-   "kind": "public",
-   "radius": 8.5
-  },
-  {
-   "pos": [
-    -9.0,
-    22.0,
-    3.3
-   ],
-   "lumens": 720,
-   "colour": "#FFD8A0",
-   "kind": "public",
-   "radius": 8.5
-  },
-  {
-   "pos": [
-    9.0,
-    22.0,
-    3.3
-   ],
-   "lumens": 720,
-   "colour": "#FFD8A0",
-   "kind": "public",
-   "radius": 8.5
-  },
-  {
-   "pos": [
-    0.0,
     6.0,
+    7.0,
+    3.3
+   ],
+   "lumens": 960,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 9.5
+  },
+  {
+   "pos": [
+    -9.0,
+    22.0,
+    3.3
+   ],
+   "lumens": 720,
+   "colour": "#FFD8A0",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    9.0,
+    22.0,
     3.3
    ],
    "lumens": 720,
@@ -3616,7 +3594,7 @@
  ],
  "tris": {
   "shell": 7124,
-  "detail": 42949,
+  "detail": 42725,
   "windows": 228
  }
 }
