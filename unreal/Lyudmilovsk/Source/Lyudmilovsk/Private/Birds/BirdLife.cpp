@@ -24,6 +24,7 @@
 #include "LyudSave.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
+#include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantModel.h"
@@ -37,6 +38,12 @@
 #include "../Murmuration/StarlingMesh.h"
 
 using namespace LyudBirds;
+
+namespace
+{
+	/** The instanced poses, as their meshes are named (SM_<Species>_<Pose>). */
+	const TCHAR* const BirdPoseNames[ABirdLifeRenderer::NumPoses] = { TEXT("Perch"), TEXT("Peck"), TEXT("Sleep"), TEXT("Flap0"), TEXT("Flap1"), TEXT("Flap2"), TEXT("Glide") };
+}
 
 static TAutoConsoleVariable<int32> CVarBirds(TEXT("lyud.Birds"), 1,
 	TEXT("The wild birds of the outdoor map (UBirdLifeSubsystem): 1 on, 0 off (removes them at once)."));
@@ -279,6 +286,80 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 	}
 }
 
+/**
+ * Asks ULyudPrefetch for what ABirdLifeRenderer::Setup loads: every species' pose meshes, then the winter and female
+ * materials where a species has them this month. True once all of it is in memory (or doesn't exist): Setup's
+ * LoadObjects then only find them, instead of reading ~250 packages in the frame the birds start.
+ */
+bool UBirdLifeSubsystem::PrefetchPoses()
+{
+	bool bAll = true;
+	const int32 Month = UGameCalendar::NowIn(GetWorld()).GetMonth();
+	for (const FSpecies& Sp : SpeciesTable())
+	{
+		const FName Id(Sp.Id.c_str());
+		if (!UBirdSpeciesLibrary::HasPose(Id, TEXT("Perch")))
+		{
+			continue;   // drawn with the placeholder
+		}
+		const FString N = Id.ToString();
+		bool bMeshes = true;
+		for (const TCHAR* Pose : BirdPoseNames)
+		{
+			bMeshes &= ULyudPrefetch::Ready(this, FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s.SM_%s_%s"), *N, *N, Pose, *N, Pose));
+		}
+		bAll &= bMeshes;
+		const FBirdSpecies* R = UBirdSpeciesLibrary::Find(Id);
+		const bool bWinter = R && R->InWinterPlumage(Month);
+		const bool bFemale = R && R->bFemalePlumage;
+		if (!bMeshes || (!bWinter && !bFemale))
+		{
+			continue;
+		}
+		// the plumages are named after the meshes' own materials: only known once the meshes are in
+		const TCHAR* const Suffixes[3] = { bWinter && bFemale ? TEXT("_FemaleWinter") : nullptr, bFemale ? TEXT("_Female") : nullptr, bWinter ? TEXT("_Winter") : nullptr };
+		for (const TCHAR* Pose : BirdPoseNames)
+		{
+			const UStaticMesh* Mesh = FindObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s.SM_%s_%s"), *N, *N, Pose, *N, Pose));
+			if (!Mesh)
+			{
+				continue;
+			}
+			for (const FStaticMaterial& Slot : Mesh->GetStaticMaterials())
+			{
+				if (!Slot.MaterialInterface)
+				{
+					continue;
+				}
+				for (const TCHAR* Sfx : Suffixes)
+				{
+					if (!Sfx)
+					{
+						continue;
+					}
+					const FString Name = Slot.MaterialInterface->GetName() + Sfx;
+					const FString Package = FString::Printf(TEXT("/Game/Birds/%s/%s"), *N, *Name);
+					if (PlumageMissing.Contains(Package))
+					{
+						continue;
+					}
+					if (!PlumageThere.Contains(Package))
+					{
+						if (!FPackageName::DoesPackageExist(Package))
+						{
+							PlumageMissing.Add(Package);
+							continue;
+						}
+						PlumageThere.Add(Package);
+					}
+					bAll &= ULyudPrefetch::Ready(this, Package + TEXT(".") + Name);
+				}
+			}
+		}
+	}
+	return bAll;
+}
+
 /** Town pigeons that always feed on the terrace a few steps out of the club's door (to try the feed on). */
 void UBirdLifeSubsystem::AddDoorFlock()
 {
@@ -370,6 +451,8 @@ void UBirdLifeSubsystem::Stop()
 	}
 	SyncTrust(true);       // a restart keeps the trust earned since the last save
 	Sim.Reset();
+	bPosesReady = false;   // asked again before the next start (a month on, another plumage)
+	PosePoll = 0.f;
 	bStarted = false;
 	bClockSeen = false;
 }
@@ -577,7 +660,19 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	if (!bStarted)
 	{
 		StartDelay -= DeltaTime;
-		if (!bWantStart || StartDelay > 0.f)
+		if (!bWantStart)
+		{
+			return;
+		}
+		// the species' pose meshes load in the background meanwhile; the birds start once they are in (or after 8 s
+		// anyway: Setup then loads what is still missing on the spot, as it always did)
+		PosePoll -= DeltaTime;
+		if (!bPosesReady && PosePoll <= 0.f)
+		{
+			PosePoll = 0.2f;
+			bPosesReady = PrefetchPoses();
+		}
+		if (StartDelay > 0.f || (!bPosesReady && StartDelay > -8.f))
 		{
 			return;
 		}
@@ -1171,7 +1266,7 @@ void ABirdLifeRenderer::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ABirdLifeRenderer::Setup(const FWorld& World)
 {
-	static const TCHAR* const PoseNames[NumPoses] = { TEXT("Perch"), TEXT("Peck"), TEXT("Sleep"), TEXT("Flap0"), TEXT("Flap1"), TEXT("Flap2"), TEXT("Glide") };
+	const TCHAR* const* PoseNames = BirdPoseNames;
 	UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	// placeholders: Murmuration's starling, perched and in four wing positions
 	PlaceholderMeshes.Reset();
@@ -1205,6 +1300,9 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
 		D.Xf.SetNum(NumPoses * Sets);
 		D.Shown.Init(0, NumPoses * Sets);
+		// a plumage material asked for once per species, not once per pose (most do not exist: each miss is a package
+		// lookup)
+		TMap<FString, UMaterialInterface*> Plumages;
 		for (int32 Set = 0; Set < Sets; Set++)
 		{
 			TArray<FString> Suffixes;
@@ -1260,7 +1358,12 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 								break;
 							}
 							const FString Name = BaseMat->GetName() + Sfx;
-							if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/%s.%s"), *Id.ToString(), *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet))
+							UMaterialInterface** Known = Plumages.Find(Name);
+							if (!Known)
+							{
+								Known = &Plumages.Add(Name, LoadObject<UMaterialInterface>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/%s.%s"), *Id.ToString(), *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet));
+							}
+							if (UMaterialInterface* M = *Known)
 							{
 								ISM->SetMaterial(Slot, M);
 								break;

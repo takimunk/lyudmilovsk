@@ -243,6 +243,12 @@ private:
 	/** The food in the hand (SetOffer) and how much each species wants it. */
 	FName OfferFood;
 	float StartDelay = 0.f;
+	/** The instanced poses' meshes and plumages are asked from ULyudPrefetch before the start (PrefetchPoses). */
+	bool bPosesReady = false;
+	float PosePoll = 0.f;
+	TSet<FString> PlumageThere;
+	TSet<FString> PlumageMissing;
+	bool PrefetchPoses();
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;
 	TWeakObjectPtr<class ALyudSea> Sea;
