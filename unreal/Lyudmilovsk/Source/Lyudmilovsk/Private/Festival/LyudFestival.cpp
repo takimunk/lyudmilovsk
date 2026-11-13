@@ -40,6 +40,7 @@
 
 /** The plan files' spots by file (PlanSpots), emptied at each play's start. */
 static TMap<FString, TArray<TSharedPtr<FJsonObject>>> GPlanSpotsCache;
+static const TArray<TSharedPtr<FJsonObject>>& PlanSpots(const FString& File);
 
 static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
 	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
@@ -333,6 +334,8 @@ void ULyudFestivalSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	}
 	bRunning = true;
 	Timer = 1.5f;       // after the people's life has started
+	// the city plan is about 1 MB of JSON: parsed now, behind the loading screen, not when the first festival's hour comes
+	PlanSpots(TEXT("City/city_plan.json"));
 	UE_LOG(LogTemp, Display, TEXT("Festivals: %d in the calendar"), (int32)Calendar->Festivals.size());
 }
 
@@ -1535,14 +1538,18 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 		// the plan's own stage and the fair's own stalls (public_spaces.py: S-STAGE, S-FAIR-STALLnn) count only once
 		// something has built them in the level and says so with an actor tag "PlanStage" / "PlanStalls" (the public
 		// spaces' actor). Until then the festival builds its own.
-		bool bStageBuilt = false, bStallsBuilt = false;
-		for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+		// (looked for once: every actor of the level is walked)
+		if (!bPlanTagsLooked)
 		{
-			bStageBuilt |= It->Tags.Contains(TEXT("PlanStage"));
-			bStallsBuilt |= It->Tags.Contains(TEXT("PlanStalls"));
+			bPlanTagsLooked = true;
+			for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+			{
+				bPlanStageBuilt |= It->Tags.Contains(TEXT("PlanStage"));
+				bPlanStallsBuilt |= It->Tags.Contains(TEXT("PlanStalls"));
+			}
 		}
-		V.bPlanStage = V.bPlanStage && bStageBuilt;
-		V.bPlanStalls = bStallsBuilt && (Want == TEXT("fair") || V.SpotId.StartsWith(TEXT("S-FAIR")));
+		V.bPlanStage = V.bPlanStage && bPlanStageBuilt;
+		V.bPlanStalls = bPlanStallsBuilt && (Want == TEXT("fair") || V.SpotId.StartsWith(TEXT("S-FAIR")));
 		V.Center = Ground(V.Center);
 		V.SeaDir = SeaDirAt(V.Center);
 		// a place with no yaw of its own faces the sea (the stage's back to it on the square: watchers look inland

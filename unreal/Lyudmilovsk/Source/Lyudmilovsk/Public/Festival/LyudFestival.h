@@ -148,6 +148,8 @@ private:
 	TMap<FName, FLyudVenue> Venues;
 	/** Venues not found, and when (real seconds): looked for again only after a while, not every update. */
 	TMap<FName, double> VenueMissedAt;
+	/** Whether the level has the plan's own stage / stalls (an actor tagged PlanStage / PlanStalls), looked for once. */
+	bool bPlanTagsLooked = false, bPlanStageBuilt = false, bPlanStallsBuilt = false;
 	/** The festival tunes (looked for once). */
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> MusicSounds;
 	bool bMusicLooked = false;
