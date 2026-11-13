@@ -27,6 +27,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import north_land as L  # noqa: E402
+import north_river as R  # noqa: E402
 import world_map as W  # noqa: E402  (world_map imports this module lazily)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -34,15 +35,19 @@ CONTENT = os.path.join(HERE, "..", "unreal", "Lyudmilovsk", "Content")
 OUT = os.path.join(CONTENT, "North", "north.json")
 OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "north.json")
 
-Y0 = 2200.0                     # the old map's north edge: nothing south of it changes
+Y0 = 2200.0                     # where volcano country's own ground (snow, cinder, lava) may begin
+HILLS_Y = 1450.0                # the town's north edge: from here north the land is this module's
+WOODS_Y = (1450.0, 2700.0)      # the woods between the town and the meadows are drawn by wood() (a cover mask)
 BLEND = (2180.0, 2520.0)        # the north hills' own height gives way to the North's over this band
 FOREST_END = 2330.0             # the old forest's tiles stop here; park woodland and shrubs beyond
 MAX_Z = 215.0                   # the landscape holds +-256 m (LyudTerrain.cpp LandscapeZScale 100)
 
 # --- places (map metres). The land is real (tools/north_land.py: Tolbachik's Northern Breakthrough cones at half
 # size); these are spots chosen on it -----------------------------------------------------------------------------
-GATE = (-20.0, 2400.0)          # the barrier across the track, with the reserve's board
-HUT = (10.0, 2446.0)            # the ranger's hut (сторожка), its door facing the track
+GATE = (100.0, 2445.0)          # the barrier across the track, with the reserve's board: the brow over the river
+HUT = (130.0, 2500.0)           # the ranger's hut (сторожка) on a level shelf of the brow, its door facing the track
+CROSSING_X = -150.0             # where the trail crosses the river's plain (north_river.crossing)
+POLAR = (-360.0, 1660.0)        # the cable car's Polar station on the ridge over the river: the trail starts there
 HUT_YAW = 180.0                 # Unreal yaw of the hut's front (map -X, east: toward the track)
 CAMP = (140.0, 3100.0)          # the campsite's fire ring: a level meadow under a low terrace, the cones behind it
 CAMP_R = 24.0
@@ -56,6 +61,8 @@ CONE_BASE_R = 330.0
 FUMAROLES_C = (-440.0, 3503.0)  # the Fumarole Valley: the trough that runs out of the Cone's breach to the meadow
 FUMAROLES_R = (125.0, 34.0)     # its half sizes east-west, north-south
 SPRING = (-296.0, 3502.0)       # the hot spring's pool at the valley's mouth
+SPRING_R = 2.6                  # the pool's radius
+SPRING_DEPTH = 1.05             # its bed under the ground round it (the water stands 0.15 m under the rim)
 SMALL_CONE = (-650.0, 3900.0)   # the Small Cone (Малая сопка), the northernmost
 LAVA_VENT = (-405.0, 3600.0)    # where the lava left the Cone's flank
 LAVA_HEAD_X = -400.0            # the lava field: from here west to the sea,
@@ -154,11 +161,6 @@ def snowfields():
     return out
 
 
-@functools.lru_cache(maxsize=None)
-def _pad_z(px, py):
-    return _raw(px, py)
-
-
 def _raw(x, y):
     z = L.z(x, y)
     sn = L.snow(SNOW_MIN_Z, SNOW_SHARE).at(x, y) if y > 2900.0 else 0.0
@@ -170,28 +172,62 @@ def _raw(x, y):
 PADS = [(HUT, 10.0, 8.0), (CAMP, CAMP_R, 14.0), (SPRING, 5.0, 6.0)]     # level ground: centre, radius, fade
 
 
+def hills(x, y):
+    """The hills between the town and the river (world_map.plateau raises the valley to this from HILLS_Y): a broad
+    rolling ridge, higher inland, a lower headland toward the sea."""
+    z = 14.0 + 9.0 * L.fbm(x, y, 420.0, 3, 61) + 3.5 * L.fbm(x, y, 140.0, 2, 62)
+    return z + 8.0 * _smooth((-x - 200.0) / 700.0) - 7.0 * _smooth((x - 50.0) / 250.0)
+
+
+def _shape(x, y, natural):
+    """The land without the pads: the hills, giving way to the real volcano land across BLEND, the river's valley cut
+    into both."""
+    z = natural
+    if y > BLEND[0]:
+        z = natural + (_raw(x, y) - natural) * _smooth((y - BLEND[0]) / (BLEND[1] - BLEND[0]))
+    return R.apply(x, y, z)
+
+
+@functools.lru_cache(maxsize=None)
+def _pad_z(px, py):
+    return _shape(px, py, W.plateau_south(px, py))
+
+
 def plateau(x, y, natural):
-    """world_map.plateau's hook: the land before the sea cuts it. natural = the map's own height there (the north
-    hills); the North takes over across BLEND."""
-    if y <= BLEND[0]:
-        return natural
-    z = _raw(x, y)
+    """world_map.plateau's hook: the land before the sea cuts it. natural = the map's own height there (the hills,
+    hills()); the river cuts its valley, the North takes over across BLEND."""
+    z = _shape(x, y, natural)
     for (px, py), r, soft in PADS:
         d = math.hypot(x - px, y - py)
         if d < r + soft:
             z += (_pad_z(px, py) - z) * _ramp(d, r, soft)
-    k = _smooth((y - BLEND[0]) / (BLEND[1] - BLEND[0]))
-    return natural + (z - natural) * k
+    d = math.hypot(x - SPRING[0], y - SPRING[1])
+    if d < SPRING_R + 0.5:                               # the hot spring's basin: a ledge to sit on, deeper in the middle
+        z -= SPRING_DEPTH * (0.62 * _ramp(d, SPRING_R - 0.9, 0.7) + 0.38 * _ramp(d, 0.5, 0.9))
+    return z
 
 
 def keep_flat(x, y):
-    """0..1: where the exact macro height must stay (the hut's and the camp's ground, the spring's pool)."""
-    if y < Y0:
-        return 0.0
-    k = 0.0
+    """0..1: where the exact macro height must stay (the hut's and the camp's ground, the spring's pool, the river's
+    gravel plain with its channels and bars)."""
+    k = R.protect(x, y)
     for (px, py), r, soft in PADS:
         k = max(k, _ramp(math.hypot(x - px, y - py), r * 0.7, soft))
     return k
+
+
+def shore_shift(y):
+    """Metres the water line stands west of world_map.SHORE's smooth curve (world_map.shore_x adds it north of the
+    town): the coast wanders in coves and points, gives way in a bay at the river's mouth between two headlands, and
+    the Cone's lava stands out into the sea as a cape."""
+    f = _smooth((y - 1500.0) / 150.0)
+    if f <= 0.0:
+        return 0.0
+    d = 42.0 * L.fbm(y, 0.0, 330.0, 2, 81) + 15.0 * L.fbm(y, 7.0, 110.0, 2, 82)
+    d += -45.0 * math.exp(-((y - 1885.0) / 130.0) ** 2)
+    d += 26.0 * math.exp(-((y - 1700.0) / 90.0) ** 2) + 32.0 * math.exp(-((y - 2240.0) / 110.0) ** 2)
+    d += 60.0 * _smooth((y - LAVA_Y[0]) / 90.0) * _smooth((LAVA_Y[1] - y) / 90.0) * (0.75 + 0.25 * math.sin(y / 37.0))
+    return f * d
 
 
 def scoria(x, y):
@@ -270,7 +306,7 @@ def sulfur(x, y):
 def tree_free(x, y):
     """True where nothing woody grows: the Cone, the lava, the steaming ground, snow, the camp's and the hut's pads."""
     if y < Y0:
-        return False
+        return any(math.hypot(x - px, y - py) < r + 4.0 for (px, py), r, _ in PADS)
     if scoria(x, y) > 0.3 or lava(x, y) > 0.8 or sulfur(x, y) > 0.2 or snow(x, y) > 0.0:
         return True
     return any(math.hypot(x - px, y - py) < r + 4.0 for (px, py), r, _ in PADS)
@@ -345,20 +381,86 @@ def _majority(x, y, w, h, test):
     return sum(1 for px, py in pts if test(px, py)) >= 3
 
 
+GLADES = [(POLAR, 34.0, 40.0), ((POLAR[0] - 10.0, POLAR[1] + 95.0), 45.0, 50.0)]   # open ground: centre, radius, fade
+
+
+@functools.lru_cache(maxsize=1)
+def _crossing():
+    return R.crossing(CROSSING_X)
+
+
+@functools.lru_cache(maxsize=1)
+def _glades():
+    return GLADES + [(p, 14.0, 22.0) for p in _crossing()[:2]] + [((HUT[0], HUT[1] + 6.0), 14.0, 16.0), (GATE, 8.0, 14.0)]
+
+
+@functools.lru_cache(maxsize=65536)
+def wood(x, y):
+    """(mix, cover 0..1) of the woods between the town and the meadows (WOODS_Y): how much of a forest tile's trees
+    stand here. No squares: old pine and spruce forest on the ridge between the town and the river, in broad masses
+    with glades, frayed at its edges; alder, aspen and birch galleries on the river's terraces and islands; stone birch
+    groves over grass on the sunny north side, thinning into the meadows. The game reads it as a mask
+    (tools/forest_cover.py -> Content/World/forest_cover.fcv), world_map lays the tiles the mask thins."""
+    if not (WOODS_Y[0] < y < WOODS_Y[1]):
+        return ("", 1.0)
+    i = R.info(x, y)
+    north = y > 2040.0 if i is None else i["v"] > 0.0
+    wave = L.fbm(x, y, 300.0, 3, 72)
+    if north:
+        mix = "stonebirch"
+        c = _smooth((L.fbm(x, y, 210.0, 3, 73) + 0.04) / 0.26)
+        c *= 1.0 - 0.75 * _smooth((y - 2520.0) / 180.0)                  # groves get rarer toward the meadows
+    else:
+        mix = "old"
+        edge = 1505.0 + 45.0 * L.fbm(x, 3.0, 260.0, 2, 74)               # the wood's wavering foot over the town
+        c = _smooth((wave + 0.2) / 0.26) * _smooth((y - edge) / 60.0)
+    if i is not None:
+        e = i["e"]
+        if e <= 0.0:
+            mix, c = "wet", 0.9 * _smooth((i["island"] - 0.3) / 0.4)
+        elif e < 100.0:
+            g = _smooth(e / 9.0) * _smooth((L.fbm(x, y, 110.0, 2, 71) + 0.22) / 0.3) * (1.0 - _smooth((e - 55.0) / 45.0))
+            if g > c:
+                mix, c = "wet", g
+            else:
+                c *= _smooth(e / 20.0)
+    c *= 1.0 - _smooth((-1100.0 - x) / 100.0)                            # the Topi's dune: no trees by X -1200
+    c *= _smooth((W.shore_x(y) - 70.0 - x) / 150.0)                      # open grass on the headlands over the sea
+    for (gx, gy), r, soft in _glades():
+        d = math.hypot(x - gx, y - gy)
+        if d < r + soft:
+            c *= 1.0 - _ramp(d, r, soft)
+    return (mix, c)
+
+
+def cover(x, y):
+    """world_map.forest_cover's hook: 0..1, the share of a forest tile's trees that stand at (x, y)."""
+    return wood(x, y)[1]
+
+
+WOOD_DENSITY = {"old": 1.0, "wet": 0.5, "stonebirch": 0.2}
+
+
 def forests(tiles):
     """Forest tiles of the North: (x, y, half x, half y, mix, density, min z, max z). tiles = world_map._tiles.
-    Park woodland at the tree line; above it the shrub belt: dwarf alder in the hollows and gullies, dwarf pine on the
-    rises, thinning over the meadows; alder thickets on the Ridge's north slope; rhododendron round the snowfields.
-    world_map carves out the snow, cinder, lava and steaming ground (tree_free)."""
+    From the town to the meadows the tiles only say which wood grows where (wood()): the cover mask shapes it. Above:
+    the shrub belt: dwarf alder in the hollows and gullies, dwarf pine on the rises, thinning over the meadows; alder
+    thickets on the Ridge's north slope; rhododendron round the snowfields. world_map carves out the snow, cinder,
+    lava and steaming ground (tree_free)."""
     out = []
     x1 = W.cliff_top(2500.0) - 10.0
-    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END, BELT[0]):
-        out.append((x, y, hx, hy, "stonebirch", 0.085, 5.0, 200.0))
-    # the old forest does not stop at a line: it thins out among the birches
-    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END, FOREST_END + 130.0):
-        out.append((x, y, hx, hy, "old", 0.3, 5.0, 200.0))
-    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END + 130.0, FOREST_END + 260.0):
-        out.append((x, y, hx, hy, "old", 0.1, 5.0, 200.0))
+
+    def woods(x, y, w, h):
+        votes = {}
+        for u in (-0.4, 0.0, 0.4):
+            for v in (-0.4, 0.0, 0.4):
+                mix, c = wood(x + u * w, y + v * h)
+                if c > 0.08:
+                    votes[mix] = votes.get(mix, 0.0) + c
+        return max(votes, key=votes.get) if votes else None
+
+    for x, y, hx, hy, mix in _runs(W.X_MIN + 60.0, x1, WOODS_Y[0] + 20.0, WOODS_Y[1], (130.0, 125.0), woods):
+        out.append((x, y, hx, hy, mix, WOOD_DENSITY[mix], -42.0, 200.0))
 
     def belt(x, y, w, h):
         if scoria(x, y) > 0.6 and scoria(x - w / 3, y) > 0.6 and scoria(x + w / 3, y) > 0.6:
@@ -483,6 +585,9 @@ def grass_patches(seed0=1200):
 
 # the dirt track's anchors (tools/terrain.py routes between them over the land)
 ANCHORS = {
+    "polar": (POLAR[0] + 14.0, POLAR[1] + 22.0),
+    "river_south": None,            # the crossing's ends (filled in below)
+    "river_north": None,
     "north_gate": GATE,
     "north_meadow": (40.0, 2760.0),
     "north_camp": (CAMP[0] - 30.0, CAMP[1] - 8.0),
@@ -493,9 +598,51 @@ ANCHORS = {
     "north_high_rim": HIGH_RIM,
     "north_lava": (-190.0, 3610.0),
 }
-TRACKS = [("woods_north", "north_gate"), ("north_gate", "north_meadow"), ("north_meadow", "north_camp"),
+TRACKS = [("town", "polar"), ("polar", "river_south"), ("river_north", "north_gate"), ("north_gate", "north_meadow"), ("north_meadow", "north_camp"),
           ("north_camp", "north_spring"), ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_crater"),
           ("north_spring", "north_saddle"), ("north_saddle", "north_high_rim"), ("north_spring", "north_lava")]
+
+
+ANCHORS["river_south"], ANCHORS["river_north"] = _crossing()[0], _crossing()[1]
+
+
+def fixed_tracks():
+    """Tracks that are not routed over the land: the straight way across the river's plain, bridge to bridge."""
+    a, b, _ = _crossing()
+    n = int(math.hypot(b[0] - a[0], b[1] - a[1]) / 6.0)
+    return [[(a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n) for k in range(n + 1)]]
+
+
+BRIDGES = [(11.0, 0), (16.0, 1), (26.0, 2)]     # log footbridges: the longest water each variant spans, m
+
+
+def things():
+    """Loose things the importer stands on the map (north.json things): {id, kind, x, y, yaw, variant, z (the mesh
+    origin's map height, when it must not follow the ground)}. The log footbridges over the river's channels: the
+    origin is the deck's middle at walking height."""
+    out = []
+    for n, (x, y, yaw, span, z) in enumerate(b for b in _crossing()[2] if b[3] >= 4.0):    # narrower: a stride
+        variant = next((v for reach, v in BRIDGES if span <= reach), BRIDGES[-1][1])
+        out.append({"id": "river_bridge_%d" % (n + 1), "kind": "log_bridge", "x": round(x, 2), "y": round(y, 2),
+                    "yaw": round(yaw, 1), "variant": variant, "z": round(z, 2), "span": round(span, 1)})
+    return out
+
+
+def river():
+    """The river for the game (north.json river): the water sheet's ribbon [x, y, z, half width], the channels' middle
+    lines, the mouth."""
+    m = R.mouth()
+    return {"water": R.water(), "threads": R.threads(), "mouth": [round(m[0], 1), round(m[1], 1)]}
+
+
+def spring_seats():
+    """Where one sits in the hot spring: on the pool's underwater ledge, back to the rim, facing the middle."""
+    out = []
+    for a in (200.0, 290.0, 20.0, 110.0):
+        r = math.radians(a)
+        out.append({"x": round(SPRING[0] + 1.75 * math.cos(r), 2), "y": round(SPRING[1] + 1.75 * math.sin(r), 2),
+                    "yaw": round((a + 180.0) % 360.0, 1)})
+    return out
 
 
 def trail_points(step):
@@ -573,6 +720,8 @@ def places():
     sf = snowfields()
     snow_at = (sf[0]["x"], sf[0]["y"] - sf[0]["r"] - 6.0) if sf else HIGH_CONE
     return [
+        {"id": "north_river", "name": "place.north.river", "x": round(_crossing()[0][0], 1), "y": round(_crossing()[0][1] - 4.0, 1), "yaw": 90.0},
+        {"id": "north_mouth", "name": "place.north.mouth", "x": round(R.mouth()[0] - 70.0, 1), "y": round(R.mouth()[1] + 40.0, 1), "yaw": 180.0},
         {"id": "north_gate", "name": "place.north.gate", "x": GATE[0] + 3.0, "y": GATE[1] - 8.0, "yaw": 90.0},
         {"id": "north_hut", "name": "place.north.hut", "x": HUT[0] - 9.0, "y": HUT[1], "yaw": 0.0},
         {"id": "north_meadows", "name": "place.north.meadows", "x": 40.0, "y": 2760.0, "yaw": 100.0},
@@ -596,7 +745,10 @@ def build():
         "camp": camp(),
         "signs": signs(),
         "fumaroles": fumaroles(),
-        "spring": {"x": SPRING[0], "y": SPRING[1], "r": 2.6},
+        "spring": {"x": SPRING[0], "y": SPRING[1], "r": SPRING_R, "seats": spring_seats(),
+                   "surface_z": round(_pad_z(*SPRING) - 0.15, 2)},
+        "river": river(),
+        "things": things(),
         "cones": [{"id": "cone", "x": CONE[0], "y": CONE[1]}, {"id": "high", "x": HIGH_CONE[0], "y": HIGH_CONE[1]},
                   {"id": "old", "x": OLD_CONE[0], "y": OLD_CONE[1]}, {"id": "small", "x": SMALL_CONE[0], "y": SMALL_CONE[1]}],
         "snowfields": snowfields(),

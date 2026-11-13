@@ -1,19 +1,35 @@
 {
  "teleports": [
   {
+   "id": "north_river",
+   "group": "north",
+   "name": "dev.tp.north_river",
+   "x": -149.4,
+   "y": 1898.6,
+   "yaw": 90.0
+  },
+  {
+   "id": "north_mouth",
+   "group": "north",
+   "name": "dev.tp.north_mouth",
+   "x": 260.2,
+   "y": 1915.2,
+   "yaw": 180.0
+  },
+  {
    "id": "north_gate",
    "group": "north",
    "name": "dev.tp.north_gate",
-   "x": -17.0,
-   "y": 2392.0,
+   "x": 103.0,
+   "y": 2437.0,
    "yaw": 90.0
   },
   {
    "id": "north_hut",
    "group": "north",
    "name": "dev.tp.north_hut",
-   "x": 1.0,
-   "y": 2446.0,
+   "x": 121.0,
+   "y": 2500.0,
    "yaw": 0.0
   },
   {

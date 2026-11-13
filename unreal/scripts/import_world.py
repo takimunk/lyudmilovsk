@@ -132,6 +132,9 @@ def build(face_y, textures_dir=None, plants=True, report=False):
                 g.set_editor_property(k, getattr(unreal.GrassHabitat, v.upper()) if k == "herb_habitat" else v)
             g.set_folder_path("Outside/Grass")
         _log("grass: %d patches" % len(W.grass_patches()))
+        # the woods' cover mask (the drawn woods' outlines; AProceduralForest reads it when it bakes its trees)
+        import forest_cover
+        _log("forest cover: %s, %d x %d, %.0f%% kept" % forest_cover.write())
         forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
         total = 0
         for i, (x, y, hx, hy, mix, count, spacing, zmin, zmax, seed) in enumerate(W.forests() if FORESTS else ()):

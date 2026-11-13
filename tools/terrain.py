@@ -100,14 +100,13 @@ def _anchors():
         cc = W.cable_car()
         if "upper" in cc:
             pts.append(("cable_top", cc["upper"]))
-    pts += [("woods_inland", (-1000.0, 150.0)), ("woods_south", (-350.0, -700.0)),
-            ("woods_north", (-500.0, 1950.0)), ("club_back", (-40.0, -120.0))]
+    pts += [("woods_inland", (-1000.0, 150.0)), ("woods_south", (-350.0, -700.0)), ("club_back", (-40.0, -120.0))]
     pts += list(W._north().ANCHORS.items())           # the North's trail (tools/north.py)
     return dict(pts)
 
 
 TRACKS = [("alley_end", "town"), ("alley_end", "woods_inland"), ("club_back", "woods_south"),
-          ("town", "woods_north"), ("alley_end", "cable_top")] + list(W._north().TRACKS)
+          ("alley_end", "cable_top")] + list(W._north().TRACKS)
 
 
 def _route(a, b, step=8.0):
@@ -201,7 +200,7 @@ def tracks():
             r = _route(an[a], an[b])
             if r:
                 out.append(r)
-    return out
+    return out + [list(t) for t in W._north().fixed_tracks()]
 
 
 # --- inputs for the C++ build ----------------------------------------------------------------
@@ -212,7 +211,23 @@ def _woods():
         return [(-1050.0, 600.0, 250.0, 900.0, -100.0, 100.0), (-450.0, 2000.0, 600.0, 200.0, -100.0, 100.0),
                 (-450.0, -720.0, 600.0, 160.0, -100.0, 100.0)]
     # (not the North's thinning fringe of old forest among the birches: no needle floor under a tree here and there)
-    return [(f[0], f[1], f[2], f[3], f[7], f[8]) for f in W.forests() if f[4] in ("pine", "old") and f[1] < 2330.0]
+    return [(f[0], f[1], f[2], f[3], f[7], f[8]) for f in W.forests() if f[4] in ("pine", "old") and f[1] < 1450.0]
+
+
+def _north_floor():
+    """The forest floor under the North's woods (W.forest_cover draws them): a north_land.Grid of 0..1 over
+    Y 1450..2700, every 8 m. Needles and moss under the old forest, leaf litter (fainter) under the river's galleries;
+    none under the stone birches (grass grows there)."""
+    N = W._north()
+    L = sys.modules["north_land"]
+    st, y0, y1 = 8.0, N.WOODS_Y[0], N.WOODS_Y[1]
+    nx, ny = int((W.X_MAX - W.X_MIN) / st) + 2, int((y1 - y0) / st) + 2
+    v = []
+    for j in range(ny):
+        for i in range(nx):
+            mix, c = N.wood(W.X_MIN + i * st, y0 + j * st)
+            v.append({"old": 1.0, "wet": 0.55}.get(mix, 0.0) * min(1.0, max(0.0, (c - 0.3) / 0.35)))
+    return L.Grid(W.X_MIN, y0, st, nx, ny, v)
 
 
 EDGE = 30.0                           # metres over which the forest floor gives way to the meadow
@@ -317,8 +332,10 @@ def _write_inputs(out_dir, log):
     cliff = bytearray()
     raise_ = bytearray()
     keep = bytearray()
-    snow, scoria, lava, sulfur = bytearray(), bytearray(), bytearray(), bytearray()
+    snow, scoria, lava, sulfur, gravel = bytearray(), bytearray(), bytearray(), bytearray(), bytearray()
     N = W._north()
+    R = W._river()
+    north_floor = _north_floor()
     rail_y = _railway_line_y()
     has_cliff = hasattr(W, "cliff")
     hpack = struct.Struct("<f")
@@ -357,7 +374,14 @@ def _write_inputs(out_dir, log):
                 prot.append(255)
             else:
                 prot.append(int(round(255 * protect(x, y, path))))
-            forest.append(int(255 * _forest(x, y, z, row_woods)) if near_woods else 0)
+            if N.WOODS_Y[0] < y < N.WOODS_Y[1]:
+                forest.append(int(255 * north_floor.at(x, y)) if s > W.BEACH_W else 0)
+            else:
+                f = _forest(x, y, z, row_woods) if near_woods else 0.0
+                if f > 0.0:                           # a drawn wood's glades keep no needle floor
+                    f *= min(1.0, max(0.0, (W.forest_cover(x, y) - 0.2) / 0.25))
+                forest.append(int(255 * f))
+            gravel.append(int(round(255 * R.gravel(x, y) * (0.55 + 0.45 * R.wet(x, y)))) if s > 0 else 0)
             cliff.append(int(255 * min(1.0, max(0.0, W.cliff(x, y)))) if has_cliff and 0 < s < 250 else 0)
             raise_.append(int(round(255 * raise_only(x, y))) if abs(x) < 25 and y < -25 else 0)
             keep.append(int(round(255 * sea_keep(x, y, rail_y))) if s <= 0 else 0)
@@ -387,13 +411,13 @@ def _write_inputs(out_dir, log):
         for t in tr:
             f.write(struct.pack("<i", len(t)))
             f.write(struct.pack("<%df" % (2 * len(t)), *[c for p in t for c in p]))
-        for blob in (height, prot, kind, forest, hole, cliff, raise_, keep, snow, scoria, lava, sulfur):
+        for blob in (height, prot, kind, forest, hole, cliff, raise_, keep, snow, scoria, lava, sulfur, gravel):
             f.write(blob)
     meta = {"nx": GRID_NX, "ny": GRID_NY, "x0": GRID_X0, "y0": GRID_Y0, "cell": 1.0, "seed": SEED,
             "sea_z": W.SEA_Z, "beach_w": W.BEACH_W, "tracks": [[list(p) for p in t] for t in tr],
             "components": list(COMPONENTS), "component_quads": COMPONENT_QUADS,
             "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8", "sea_keep:u8",
-                       "snow:u8", "scoria:u8", "lava:u8", "sulfur:u8"]}
+                       "snow:u8", "scoria:u8", "lava:u8", "sulfur:u8", "gravel:u8"]}
     with open(os.path.join(out_dir, "terrain_in.json"), "w") as f:
         json.dump(meta, f)
     return meta

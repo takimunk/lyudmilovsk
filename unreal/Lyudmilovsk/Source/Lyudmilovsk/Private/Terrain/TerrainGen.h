@@ -37,6 +37,7 @@ namespace LyudTerrain
 		std::vector<uint8_t> Scoria;             // 255 = loose cinder (the cone and its ash apron)
 		std::vector<uint8_t> Lava;               // 255 = on the blocky lava flow
 		std::vector<uint8_t> Sulfur;             // 255 = ground altered by the fumaroles' steam
+		std::vector<uint8_t> Gravel;             // the river's gravel plain: ~140 = dry bars, 255 = the channels' beds
 		std::vector<std::vector<std::pair<float, float>>> Tracks;   // dirt tracks, map metres
 	};
 

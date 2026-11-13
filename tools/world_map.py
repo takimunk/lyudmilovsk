@@ -53,7 +53,8 @@ def _catmull(pts, y):
 
 def shore_x(y):
     """Water line X at Y."""
-    return _catmull(SHORE, y)
+    x = _catmull(SHORE, y)
+    return x + _north().shore_shift(y) if y > 1500.0 else x      # the North's coves, river mouth and lava cape
 
 
 # The coast is a Sambian one: a forested upland ~60 m over the sea ends at the sea in a steep clay
@@ -157,16 +158,24 @@ def forecourt_level(x, d):
     return (1.0 - _smooth((d - FORECOURT_LEN) / 4.0)) * (1.0 - _smooth((abs(x) - end) / 3.0))
 
 
-def plateau(x, y):
-    """The land before the sea cuts it: the valley, raised to the spur, the north hills and the upland."""
+def plateau_south(x, y):
+    """The land before the sea cuts it, without the North's own shapes: the valley, raised to the spur, the north
+    hills (tools/north.py hills() gives them their height) and the upland."""
     low = valley(x, y)
-    z = max(low, low + (0.0 - low) * spur(x, y), low + (NORTH_Z - low) * north_hills(x, y))
+    top = _north().hills(x, y) if y > 1450.0 else NORTH_Z
+    z = max(low, low + (0.0 - low) * spur(x, y), low + (top - low) * north_hills(x, y))
     # the upland's north slope ends just past the door: its tail must not lift the forecourt over the
     # club's floor (it stood 0.7 m over the threshold and the player had to jump out)
     z = z + (TOP_Z - z) * upland(x, y) * (1.0 - forecourt_level(x, y)) if TOP_Z > z else z
     if abs(x) <= 37.0 and -60.0 <= y <= 12.0:        # the hillside right round the portal
         z = max(z, mound(x, y))
-    if y > 2100.0:                                   # the North: volcano country beyond the hills (tools/north.py)
+    return z
+
+
+def plateau(x, y):
+    """The land before the sea cuts it."""
+    z = plateau_south(x, y)
+    if y > 1450.0:                                   # the North: the river's valley, volcano country (tools/north.py)
         z = _north().plateau(x, y, z)
     return z
 
@@ -201,6 +210,11 @@ def _north():
     return north
 
 
+def _river():
+    import north_river
+    return north_river
+
+
 def height(x, y):
     """Ground height at (X, Y): smooth (the natural detail is tools/terrain.py's); the town's terraces along the
     beach (city_plan); level under the Academgorodok."""
@@ -216,7 +230,8 @@ def height(x, y):
 # the flat, and shallow hollows that keep their water at low tide (ALyudSea finds them).
 FLAT_W = 350.0
 FLAT_SLOPE = 1.0 / 80.0
-TIDE_CHANNELS = (-620.0, -180.0, 260.0, 720.0, 1180.0, 1700.0)    # map Y where the channels leave the beach
+TIDE_CHANNELS = (-620.0, -180.0, 260.0, 720.0, 1180.0, 1700.0, 1897.0)    # map Y where the channels leave the beach
+# (the last is the river's: tools/north_river.py mouth(), less the channel's own first swing)
 # The Europa hatch's spot on the bed (another thread builds the hatch): 11 m under the datum (6.5 m at the lowest
 # spring water), on plain sand ~110 m out from the spring-low waterline off the club's beach, between the railway's bank
 # and the next channel north; the bed is kept plain round it (tools/terrain.py sea_keep, no reef or stones)
@@ -267,7 +282,7 @@ def tidal_flat(d, y):
     return base + on * (bar - 1.1 * ch - pool)
 
 
-def _height(x, y):
+def _height0(x, y):
     s = inland(x, y)
     if s <= 0.0:                                     # sea bed: the tidal flat, then shallow like the Baltic
         return SEA_Z + tidal_flat(-s, y)
@@ -280,6 +295,13 @@ def _height(x, y):
     t = (s - BEACH_W) / w
     f = 0.5 * t + 0.5 * t * t * (3 - 2 * t)          # talus at the foot, a rounded brow
     return BEACH_TOP + (top - BEACH_TOP) * f
+
+
+def _height(x, y):
+    z = _height0(x, y)
+    if 1700.0 < y < 2150.0 and inland(x, y) > -40.0:     # the river breaks through the beach (tools/north_river.py)
+        z = min(z, _river().outlet(x, y))
+    return z
 
 
 def cliff(x, y):
@@ -561,7 +583,7 @@ FOREST_CELL = 40.0                # carving grid for keeping trees out of places
 def _tree_free(x, y):
     """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
     free = globals().get("academ_tree_free")
-    return bool(free and free(x, y)) or _city().tree_free(x, y) or (y > 2100.0 and _north().tree_free(x, y))
+    return bool(free and free(x, y)) or _city().tree_free(x, y) or (y > 1450.0 and _north().tree_free(x, y))
 
 
 def _carve(x, y, hx, hy):
@@ -594,6 +616,25 @@ def _carve(x, y, hx, hy):
     return rects
 
 
+def forest_cover(x, y):
+    """0..1: the share of a forest tile's trees that stand at (x, y); 1 where the tiles' own rectangles are the wood.
+    The woods with natural outlines are drawn here: the tiles there only say which wood grows where. The game reads
+    it as Content/World/forest_cover.fcv (tools/forest_cover.py; AProceduralForest drops the trees it leaves out)."""
+    east = _east()
+    if east is not None and east.claims(x, y):
+        return east.wood(x, y)
+    return _north().cover(x, y) if y > 1450.0 else 1.0
+
+
+@functools.lru_cache(maxsize=1)
+def _east():
+    try:
+        import east                                  # the east and south-east (the Topi thread's tools/east.py)
+    except ImportError:
+        return None
+    return east
+
+
 def forests():
     """(x, y, half_x, half_y, mix, count, spacing, min_z, max_z, seed) in metres. The trees are traced
     onto the ground, skip steep ground, anything outside min_z..max_z and actors tagged NoTree, so the
@@ -622,11 +663,10 @@ def forests():
         add(x, y, hx, hy, "old", TOP_Z - 14.0, 100.0)
     for x, y, hx, hy in _tiles(X_MIN, -560.0, -40.0, 400.0):     # its north slope swings north inland
         add(x, y, hx, hy, "old", LOW_Z + 8.0, 100.0)
-    # the hills beyond the town
+    # the North (tools/north.py): from the town's edge the woods are drawn by a cover mask (forest_cover), not by
+    # the tiles' rectangles: old forest on the ridge, galleries along the river, stone birch groves; then the shrubs
+    # over the meadows
     N = _north()
-    for x, y, hx, hy in _tiles(X_MIN, cliff_top(1800) - 5, 1480.0, N.FOREST_END):
-        add(x, y, hx, hy, "old", LOW_Z + 6.0, 100.0)
-    # the North: stone birch park woodland at the tree line, shrubs over the meadows (tools/north.py)
     FOREST_MIX.update(N.FOREST_MIX)
     for x, y, hx, hy, mix, density, z0, z1 in N.forests(_tiles):
         add(x, y, hx, hy, mix, z0, z1, density)
@@ -755,7 +795,7 @@ def keep_flat(x, y):
         s_top = C.wall_s(len(C.WALLS) - 1, y) + C.WALL_DEPTH + C.TOP_KEEP
         k = max(k, C.city_mask(y) * _ramp(max(0.0, s - s_top), 0.0, 60.0))
     k = max(k, academ_flat(x, y))
-    if y > 2100.0:
+    if y > 1450.0:
         k = max(k, _north().keep_flat(x, y))
     return k
 

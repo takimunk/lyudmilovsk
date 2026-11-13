@@ -1375,11 +1375,12 @@ def build_north(grid):
                            {"kind": "sofa", "tag": "tent", "pos": mat, "yaw": ang(t["yaw"]), "height": 0.1, "capacity": 1,
                             "approach": mat, "path": [d, mat]}]})
 
-    # the trail: from the valley's walk grid up the dirt track (tools/terrain.py routes it: the town -> the woods' north
-    # edge -> the gate) to the gate, as a way in 3D every ~6 m; its pos is the last point of it on the grid
+    # the trail: from the valley's walk grid up the dirt track (tools/terrain.py routes it: the town -> the Polar station
+    # -> the river's footbridges -> the gate) to the gate, as a way in 3D every ~6 m; its pos is the last point of it on the grid
     an = T._anchors()
-    lower = T._route(an["town"], an["woods_north"])
-    upper = T._route(an["woods_north"], an["north_gate"])
+    lower = T._route(an["town"], an["polar"])
+    upper = (T._route(an["polar"], an["river_south"]) + list(N.fixed_tracks()[0])[1:]      # over the footbridges
+             + T._route(an["river_north"], an["north_gate"])[1:])
     head = None
     top = grid.y0 + (grid.ny - 1) * grid.cell - 10.0          # 10 m short of the grid's north edge
     for i in range(len(lower) - 1, -1, -1):

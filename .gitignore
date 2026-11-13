@@ -78,3 +78,5 @@ tools/north_dem/.tiles/
 unreal/Lyudmilovsk/Content/Characters/Humans/Town/
 # the far volcanoes and far land: tools/north_far.py makes them again (import_north.py runs it)
 blender/export/north/far*
+# the woods' cover mask: tools/forest_cover.py makes it again (import_world.py runs it)
+unreal/Lyudmilovsk/Content/World/forest_cover.fcv

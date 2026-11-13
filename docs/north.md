@@ -28,9 +28,12 @@ Map metres (docs/world_map.md's frame: X west toward the sea, Y north). Chosen o
 
 | Place | Where (X, Y) | What |
 |---|---|---|
-| Gate | -20, 2400 | a barrier across the track from the town, the reserve's board |
-| Ranger's hut (сторожка) | 10, 2446 | a small log hut with a stove, a bunk, a table and a radio; the ranger lives here; the Old Cone rises behind it |
-| Tree line | Y 2330..2700 | the old forest thins out among stone birch, rowan and dwarf birch |
+| Ridge and its wood | Y 1450..1850 | the hills between the town and the river: old pine and spruce forest in broad masses with glades; the cable car's Polar station (-360, 1660) on its crest, where the trail starts |
+| River (река) | Y ~1900..2160, from X -1185 to the sea | a braided gravel river (the Avacha above its mouth): a plain 50..370 m wide of bars, channels and alder islands in a valley 50 m deep, a steep undercut bluff on the south, terraces on the north; born as seeps under the Topi's dune, reaches the sea through a spit |
+| Footbridges | X -150 | the trail's way across the plain: three log footbridges over the deeper channels, the braids are waded |
+| Gate | 100, 2445 | a barrier across the track on the valley's north brow, the reserve's board |
+| Ranger's hut (сторожка) | 130, 2500 | a small log hut with a stove, a bunk, a table and a radio; the ranger lives here; the Old Cone rises behind it |
+| Birch groves | Y 2160..2700 | stone birch groves over grass on the valley's sunny side, rarer toward the meadows |
 | Old Cone (Старая сопка) | -385, 2720 | the southernmost cone, 115 m, grassed over, stone birches on it: the landmark over the hut, a lookout |
 | Meadows (луга) | west of the cones | the old lava plain under grass, 20..50 m up, low terraces and swales; dwarf pine and alder; ends at the sea in a cliff |
 | Campsite (кемпинг) | 140, 3100 | six tents close round a fire ring, a table under a tarp, log benches, a food pole, an outhouse; under a low terrace |
@@ -50,6 +53,30 @@ The trail (a dirt track, `north.TRACKS`, routed by `tools/terrain.py`): the town
 High Cone's rim, and out onto the lava field.
 
 East of the map lie the Topi (their thread's own ground, `tools/topi.py`): keep things that must be seen west of X -1130.
+
+## The river, the woods, the coast (from the town's edge, Y 1450)
+
+Everything north of Y 1450 is the North's (the east and south-east south of it are `tools/east.py`'s, the Topi thread).
+
+- **Hills**: `north.hills(x, y)` is the height `world_map.plateau_south` raises the valley to; `north.plateau` blends
+  it into the real volcano land (BLEND) and cuts the river's valley (`north_river.apply`).
+- **River**: `tools/north_river.py`. A middle line (COURSE, running west all the way: a point belongs to the line's
+  point of its own X), the gravel plain's half width and floor along it, two named streams (THREADS) and the braids
+  (zero lines of a noise drawn out along the flow). `gravel`/`wet` feed TerrainGen's `gravel` mask (stone and sand
+  mixed, silt on the beds; no layer of its own), `protect` keeps the plain's exact shape, `outlet` breaks the beach's
+  berm, a tide channel continues it (world_map.TIDE_CHANNELS). It must not meet the Topi's river Ural: it starts as
+  seeps west of X -1190.
+- **For the game** (`north.json`): `river` {water [[x, y, z, half]] downstream, threads, mouth}; `things` (the
+  footbridges: kind `log_bridge`, variant 0/1/2 = spans to 11/16/26 m, `z` = the deck's map height, yaw 90 = along
+  map Y); `spring` {x, y, r, seats [{x, y, yaw}], surface_z}: the pool is a basin in the ground 1.05 m deep.
+- **Woods**: `north.wood(x, y)` -> (mix, cover) draws them between Y 1450 and 2700; `world_map.forest_cover(x, y)`
+  dispatches (east.py's part, the North's, 1 elsewhere); `tools/forest_cover.py` writes
+  `Content/World/forest_cover.fcv` (import_world.py runs it; not in git) and AProceduralForest drops the trees the
+  mask leaves out. The tiles there (`north.forests`) only say which mix grows where. The forest-floor layer follows
+  the same cover (`terrain._north_floor`).
+- **Coast**: `north.shore_shift(y)` moves world_map's water line north of Y 1500: coves and points, a bay at the
+  river's mouth between two headlands, the lava field's cape.
+- A look without Unreal: `bash tools/north_sim/run.sh ground -1000` (the whole map's ground).
 
 ## Who owns what
 
@@ -241,7 +268,7 @@ them.
 
 **Getting there.** The walk grid (`tools/animal_map.py`, `Y1 = 1900`) ends south of the North. People walk the grid to
 `north_trail` (a place of kind `trail` on the valley's grid, near its north edge), then the trail's way (a fixed 3D line up
-the dirt track, `terrain._route` woods_north → north_gate, ~630 m) to the gate, and inside the North straight over the
+the dirt track, `terrain._route` town → polar → river_south, the footbridges, river_north → north_gate) to the gate, and inside the North straight over the
 `north` ground patch (10 m cells round every North place, z from the built terrain). PeopleSim: island 3, hop kind 5
 (trail on foot). From the hut to the Gastronom is ~2 km (~30 min each way): the way costs ~1 h of score, so only a
 strong like (`supplies_town`, Saturday) takes the ranger down; the townsfolk keep off the North's pastimes

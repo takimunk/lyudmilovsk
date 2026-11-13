@@ -331,6 +331,9 @@ std::string ReadInputs(const std::string& Dir, FInputs& Out)
 			A->resize(N);
 			if (!Ok || std::fread(A->data(), 1, N, F) != N) A->assign(N, 0);
 		}
+		// written since the North's river (older inputs have none: no gravel plain)
+		Out.Gravel.resize(N);
+		if (!Ok || std::fread(Out.Gravel.data(), 1, N, F) != N) Out.Gravel.assign(N, 0);
 	}
 	std::fclose(F);
 	return Ok ? std::string() : "bad or short " + Path;
@@ -776,6 +779,12 @@ void Generate(const FInputs& In, FOutputs& Out)
 			const float CinderV = Smooth(0.24f, 0.66f, Mask(In.Scoria, I) + 0.42f * Noise3.Fbm(WX - 90.0, WY + 40.0, 55.f, 3) + 0.16f * Patch);
 			const float SteamV = Smooth(0.2f, 0.7f, Mask(In.Sulfur, I) + 0.3f * Patch + 0.1f * Fine);
 
+			// the river's gravel plain: pebbles and cobbles in sand (stone and sand mixed, no layer of its own), darker
+			// silt on the channels' beds; nothing grows on it but what the islands keep
+			const float GravelM = In.Kind[I] == Land ? Mask(In.Gravel, I) : 0.f;
+			const float GravelV = Smooth(0.05f, 0.45f, GravelM), BedV = Smooth(0.7f, 0.95f, GravelM);
+			SandV = std::max(SandV, GravelV * (0.38f - 0.22f * Fine - 0.2f * BedV));
+
 			float W[NumLayers] = {};
 			float Rem = 1.f;
 			auto Take = [&](ELayer L, float V) { W[L] = Rem * Clamp01(V); Rem -= W[L]; };
@@ -787,11 +796,12 @@ void Generate(const FInputs& In, FOutputs& Out)
 			}
 			Take(ELayer::Sand, SandV);
 			Take(ELayer::Snow, SnowV[I]);
-			Take(ELayer::Rock, In.Kind[I] == Land ? std::max(RockV * (1.f - 0.8f * CinderV), LavaV * (0.62f + 0.2f * Fine)) : 0.f);
+			Take(ELayer::Rock, In.Kind[I] == Land ? std::max({RockV * (1.f - 0.8f * CinderV), LavaV * (0.62f + 0.2f * Fine),
+			                                                 GravelV * (0.72f + 0.2f * Patch) * (1.f - 0.45f * BedV)}) : 0.f);
 			Take(ELayer::Scoria, In.Kind[I] == Land ? std::max(CinderV, LavaV) : 0.f);
-			Take(ELayer::Mud, In.Kind[I] == Land ? std::max(MudV, SteamV * Smooth(0.75f, 0.97f, Wet[I]) * 0.8f) : 0.f);
+			Take(ELayer::Mud, In.Kind[I] == Land ? std::max({MudV, SteamV * Smooth(0.75f, 0.97f, Wet[I]) * 0.8f, BedV * 0.7f}) : 0.f);
 			Take(ELayer::Sulfur, In.Kind[I] == Land ? SteamV : 0.f);
-			Take(ELayer::Dirt, In.Kind[I] == Land ? DirtV : 0.f);
+			Take(ELayer::Dirt, In.Kind[I] == Land ? std::max(DirtV, GravelV) : 0.f);
 			Take(ELayer::Forest, ForestV);
 			Take(ELayer::Meadow, MeadowV);
 			W[Grass] += Rem;

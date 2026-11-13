@@ -153,3 +153,32 @@ def rough():
     h = heights()
     b = h.blurred(40.0)
     return h.like([abs(p - q) for p, q in zip(h.v, b.v)]).blurred(25.0)
+
+
+# --- plain noise (for what the heights do not hold: the hills by the river, the woods' patchwork) -----------------
+
+def _h01(i, j, seed):
+    h = (i * 73856093) ^ (j * 19349663) ^ (seed * 83492791)
+    h = (h ^ (h >> 13)) * 0x5bd1e995 & 0xffffffff
+    return ((h ^ (h >> 15)) & 0xffffff) / float(0xffffff)
+
+
+def vnoise(x, y, seed=0):
+    """Smooth value noise, -1..1, one feature per unit."""
+    i, j = math.floor(x), math.floor(y)
+    tx, ty = x - i, y - j
+    tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+    a, b = _h01(i, j, seed), _h01(i + 1, j, seed)
+    c, d = _h01(i, j + 1, seed), _h01(i + 1, j + 1, seed)
+    return 2.0 * ((a * (1 - tx) + b * tx) * (1 - ty) + (c * (1 - tx) + d * tx) * ty) - 1.0
+
+
+def fbm(x, y, scale, octaves=3, seed=0):
+    """-1..1 (roughly): octaves of vnoise, the first with features scale metres across."""
+    v, amp, total = 0.0, 1.0, 0.0
+    for o in range(octaves):
+        v += amp * vnoise(x / scale + 17.3 * o, y / scale - 9.1 * o, seed + o)
+        total += amp
+        amp *= 0.5
+        scale *= 0.5
+    return v / total
