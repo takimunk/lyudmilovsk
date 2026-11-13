@@ -474,6 +474,7 @@ void ULyudFestivalSubsystem::Update()
 		HeroWatched.Reset();
 		Watched.Reset();
 		HeroWished = false;
+		HeroLanternsTonight = 0;       // three a night, also while a market or a fair of many days keeps a festival on
 		QuestStarted.Reset();
 	}
 
