@@ -106,8 +106,9 @@ stand by the door, too far from the stalls, until its slots are laid out at them
   the birds; a table at the cafe or the restaurant for those without small children. From half an hour before the hour
   to an hour and a quarter after (`FWorld::OutingNow`) it scores 0.7 more, people leave what they chose for it
   (`Interrupt`), take a slot at that place and stay till the others have been there a while. Those at work miss it.
-  In mannersim 142 of the 262 households have two and more of theirs there together (120 whole); strollers and the
-  fair's visitors wander apart within a couple of hundred metres (nobody walks side by side yet). Town talk:
+  In mannersim 142 of the 262 households have two and more of theirs there together (123 whole). Those who walk (a
+  stroll, the fair) keep together: `FWorld::Wander` sends everybody after the first of the household at it (the lowest
+  id), to the free spot nearest theirs, a few seconds behind (83% of the time within 40 m). Town talk:
   `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
 
 ## The gestures

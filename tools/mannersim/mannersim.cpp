@@ -324,7 +324,8 @@ static void Outings(bool bPrint)
 	W.TempC = 12.f;
 	W.Resettle();
 	std::map<std::string, int> Size, Best, Now;
-	std::map<std::string, int> ByAct, Half;
+	std::map<std::string, int> ByAct, Half, Lead;
+	long WalkPairs = 0, WalkNear = 0;
 	for (const FPerson& P : W.People)
 	{
 		if (P.OutingAct >= 0)
@@ -368,6 +369,7 @@ static void Outings(bool bPrint)
 			}
 		}
 		Now.clear();
+		Lead.clear();
 		for (const FPerson& P : W.People)
 		{
 			if (AtOuting(W, P))
@@ -375,6 +377,20 @@ static void Outings(bool bPrint)
 				const int N = ++Now[P.Household];
 				int& B = Best[P.Household];
 				B = std::max(B, N);
+				// those of them who walk (a stroll, the fair): how far from the first of the household at it
+				if (W.Activities[(size_t)P.Activity].bWander)
+				{
+					const auto First = Lead.find(P.Household);
+					if (First == Lead.end())
+					{
+						Lead[P.Household] = P.Id;
+					}
+					else
+					{
+						WalkPairs++;
+						WalkNear += (W.People[(size_t)First->second].Pos - P.Pos).Len2D() < 40.f ? 1 : 0;
+					}
+				}
 			}
 		}
 	}
@@ -402,6 +418,8 @@ static void Outings(bool bPrint)
 	CHECK((int)Best.size() > 150 && Kept * 2 > (int)Best.size(),
 		"households keep their weekend outing (%d of %d with two and more of them there together, %d of those whole; %d with one alone)",
 		Kept, (int)Best.size(), Whole, Lone);
+	CHECK(WalkPairs > 500 && WalkNear * 10 > WalkPairs * 7, "a household out walking keeps together (%ld of %ld person-minutes within 40 m of the first of them)",
+		WalkNear, WalkPairs);
 }
 
 static void Personas()

@@ -2886,6 +2886,33 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const int Island = P.Island;
+		// on the household's outing they walk together: everybody goes where the first of them (the lowest id at it) goes,
+		// to the free spot nearest theirs, setting off a few seconds after
+		const FSlot* Toward = nullptr;
+		float TowardBest = 25.f;
+		if (P.OutingAct == P.Activity && Weekday == P.OutingDay && P.Home >= 0)
+		{
+			const FPerson* Lead = nullptr;
+			for (const int R : Places[P.Home].Residents)
+			{
+				const FPerson& Q = People[R];
+				if (R < P.Id && (!Lead || R < Lead->Id) && Q.Activity == P.Activity && Q.State == EState::Doing && Q.Slot >= 0
+					&& Q.Island == Island && (Q.Pos - P.Pos).Len2D() < 400.f)
+				{
+					Lead = &Q;
+				}
+			}
+			if (Lead)
+			{
+				Toward = &Slots[Lead->Slot];
+				if (P.Slot >= 0 && (Slots[P.Slot].Approach - Toward->Approach).Len2D() < TowardBest)
+				{
+					// with them already (or on the way to where they stand): a look every few seconds for their going on
+					P.WanderAt = Time + 3.0 + 2.0 * Rand(P.Rng);
+					return;
+				}
+			}
+		}
 		// only the places of the activity's kinds (or the gatherings' places); one picked at random as they come, no list
 		int S = -1, Seen = 0;
 		auto Look = [&](int PlI)
@@ -2900,6 +2927,16 @@ namespace LyudPeople
 				const FSlot& Sl = Slots[SI];
 				if (SI == P.Slot || !Sl.Free(P.Id) || (Pl.Kind == "snow" && Sl.SnowJob < 0))
 				{
+					continue;
+				}
+				if (Toward)
+				{
+					const float ToThem = (Sl.Approach - Toward->Approach).Len2D();
+					if (&Sl != Toward && ToThem < TowardBest)
+					{
+						TowardBest = ToThem;
+						S = SI;
+					}
 					continue;
 				}
 				const float D = (Sl.Approach - P.Pos).Len2D();
@@ -2943,6 +2980,11 @@ namespace LyudPeople
 			}
 		}
 		P.WanderAt = Time + 1e9;
+		if (S < 0 && Toward)
+		{
+			P.WanderAt = Time + 10.0;   // no room by them just now
+			return;
+		}
 		if (S < 0)
 		{
 			if (A.bSnow)
