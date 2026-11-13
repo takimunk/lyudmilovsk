@@ -105,7 +105,7 @@ seen one here. The hero brings him one: himself.
 
 | Stage | Objective (event) | Where |
 |---|---|---|
-| `find` | talk to Sorokin (`talk Sorokin_oleg`) | home in the Academgorodok mornings and evenings, the island by day |
+| `find` | talk to Sorokin (`talk Sorokin_oleg`) | on a bench of the Academgorodok's square, watching the birds, 8:00–12:30 and 14:30–18:30 every day (his `birdwatch_yard` duty in `people.json`) |
 | `prepare` | the bird guide, dried rowan, a feeder in the pocket (`have`) | the guide lies on the librarian's desk (a pickup, free; Olya also sells it); the Gastronom sells the rest |
 | `journey` | reach the old forest beyond the north hills (`reach rowan_grove`) | map -420, 1780: 1.2 km north of the Academgorodok |
 | `lure` | fill a feeder with rowan there (`feeder_fill_at feed_rowan@rowan_grove`) | |

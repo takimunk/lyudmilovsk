@@ -78,7 +78,7 @@ names, ages, jobs, households, hours and their two lines each. Vera (girl_a) wor
 | li_vika | Вика Ли | 27 | lab assistant, Laboratory No. 2 | with Даша | the Laboratory 9–17:30 on weekdays | Crowd_12 |
 | valiev_rustam | Рустам Валиев | 45 | engineer, Laboratory No. 2 | alone | the Laboratory 8:30–17:30 on weekdays | Guy_a |
 | nishimura_aya | Ая Нисимура | 39 | painter | alone | paints on the island (`paint_island`), by the morning train | Girl_a |
-| sorokin_oleg | Олег Сорокин | 63 | retired ornithologist | alone | up at 5:30, watches birds on the island (`birdwatch`) | Owner |
+| sorokin_oleg | Олег Сорокин | 63 | retired ornithologist | alone | up at 5:30, watches birds from a bench of the Academgorodok's square 8–12:30 and 14:30–18:30 (`birdwatch_yard`, where the waxwing quest finds him) | Owner |
 
 **Bodies.** No new models are made for them here (people are moving to MetaHuman in their own branch). Each names its
 own body in `people.json` `body` (`Zotov_lev`, ...; the club's people have none: theirs is `mesh`), and `mesh` is an

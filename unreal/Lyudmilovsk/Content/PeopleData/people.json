@@ -130,7 +130,7 @@
      "friends": ["sorokin_oleg", "girl_b"], "likes": {"play_club": -0.6, "paint_island": 1.5, "island_walk": 0.2}},
     {"key": "sorokin_oleg", "body": "Sorokin_oleg", "mesh": "Owner", "age": 63, "occupation": "ornithologist", "household": "sorokin",
      "temper": {"social": 0.35, "active": 0.6, "studious": 0.8, "gamer": 0.0, "nature": 1.0, "sun": 0.8},
-     "wake": 5.5, "bed": 22.0, "duties": [],
+     "wake": 5.5, "bed": 22.0, "duties": [{"activity": "birdwatch_yard", "place": "academ_bench_4", "hours": [8, 12.5]}, {"activity": "birdwatch_yard", "place": "academ_bench_4", "hours": [14.5, 18.5]}],
      "friends": ["nishimura_aya", "lange_pyotr"], "likes": {"play_club": -0.7, "birdwatch": 1.4, "island_walk": 0.2}}
   ]
 }
