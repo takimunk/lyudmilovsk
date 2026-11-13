@@ -93,6 +93,26 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "sink",
+   "kind": "stand",
+   "pos": [
+    -3.6,
+    5.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "radio",
+   "kind": "stand",
+   "pos": [
+    0.1,
+    5.5,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -175,6 +195,71 @@
    "props": {
     "topic": "prices"
    }
+  },
+  {
+   "id": "barber_radio",
+   "kind": "machine",
+   "pos": [
+    0.1,
+    6.2,
+    1.65
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "barber_strop",
+   "kind": "craft",
+   "pos": [
+    -4.75,
+    3.25,
+    1.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "strop"
+   }
+  },
+  {
+   "id": "barber_bottles",
+   "kind": "board",
+   "pos": [
+    -4.7,
+    2.2,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "barber_newspapers",
+   "kind": "shelf",
+   "pos": [
+    1.4,
+    5.05,
+    0.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "barber_sink",
+   "kind": "machine",
+   "pos": [
+    -3.6,
+    6.1,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "sink"
+   }
   }
  ],
  "flats": [],
@@ -185,7 +270,7 @@
  ],
  "tris": {
   "shell": 166,
-  "detail": 1808,
+  "detail": 2020,
   "windows": 0
  }
 }
