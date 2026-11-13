@@ -257,9 +257,9 @@ void ALyudCityWindows::Refresh(bool bForceRebuild)
 void ALyudCityWindows::ApplyChanges()
 {
 	// every window owns one instance for good (in its tint's mesh); unlit = scaled to nothing. Only the windows that
-	// changed are touched, and each touched mesh's render state is marked dirty once.
+	// changed are touched. No MarkRenderStateDirty after: the instance update reaches the renderer by itself, and a
+	// dirty render state would re-create the whole mesh's proxy on every change.
 	bDirty = false;
-	uint32 Touched = 0;
 	for (FWindow& W : Windows)
 	{
 		if (!W.bChanged || !Panes.IsValidIndex(W.Tint) || W.Instance < 0)
@@ -269,14 +269,6 @@ void ALyudCityWindows::ApplyChanges()
 		}
 		W.bChanged = false;
 		Panes[W.Tint]->UpdateInstanceTransform(W.Instance, W.bLit ? W.Pane : Hidden(W.Pane), true, false, true);
-		Touched |= 1u << W.Tint;
-	}
-	for (int32 T = 0; T < Panes.Num(); T++)
-	{
-		if (Touched & (1u << T))
-		{
-			Panes[T]->MarkRenderStateDirty();
-		}
 	}
 }
 
