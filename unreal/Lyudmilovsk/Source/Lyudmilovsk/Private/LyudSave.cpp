@@ -249,6 +249,12 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	{
 		return;
 	}
+	// the save's level is gone or renamed and the engine opened another one: nothing of the save belongs here
+	if (MapOf(World) != Save->Map)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save: \"%s\" is for %s, not for %s: not applied"), *Save->Title, *Save->Map, *MapOf(World));
+		return;
+	}
 	// a corrupt or hand-edited slot must not feed NaN into the clock or the player
 	if (!FMath::IsFinite(Save->GameTimeSeconds) || Save->GameTimeSeconds < 0.0)
 	{
