@@ -43,6 +43,14 @@ namespace LyudRestGuests
 
 void ALyudRestaurant::GuestLeft(FProp& P, bool bPaid)
 {
+	// the hands go back to the body's own clips (TickGuests posed them on the card or the fork; nothing else clears that)
+	if (const ANpcBody* GuestBody = P.Body.Get())
+	{
+		if (ULyudBodyAnimInstance* GuestAnim = GuestBody->Mesh ? Cast<ULyudBodyAnimInstance>(GuestBody->Mesh->GetAnimInstance()) : nullptr)
+		{
+			GuestAnim->SetBikeRider(FBikeRiderPose());
+		}
+	}
 	if (ALyudRestDish* D = P.Dish.Get())
 	{
 		if (bPaid)
@@ -247,8 +255,14 @@ void ALyudRestaurant::TickGuests(float DeltaTime)
 	{
 		ANpcBody* Body = Pr.Body.Get();
 		ULyudBodyAnimInstance* Anim = Body ? Cast<ULyudBodyAnimInstance>(Body->Mesh->GetAnimInstance()) : nullptr;
-		if (!Anim || FVector::Dist(Body->GetActorLocation(), Cam) > LyudRestGuests::DrawCm)
+		if (!Anim)
 		{
+			continue;
+		}
+		if (FVector::Dist(Body->GetActorLocation(), Cam) > LyudRestGuests::DrawCm)
+		{
+			// too far for the hands: let go of the pose (not left frozen mid-bite)
+			Anim->SetBikeRider(FBikeRiderPose());
 			continue;
 		}
 		const FSeat& S = Seats[Pr.Seat];
