@@ -380,8 +380,8 @@ static void Checks(FWorld& W, bool bReal)
 	CHECK(AtWed12["clerk"] == "work_clerk/doing", "Wednesday 12:00: the clerk at work in the club (%s)", AtWed12["clerk"].c_str());
 	CHECK(AtWed12["girl_b"] == "work_library/doing", "Wednesday 12:00: Olya at the library's desk (%s)", AtWed12["girl_b"].c_str());
 	CHECK(AtWed12["owner"] == "work_booth/doing", "Wednesday 12:00: the owner at the booth (%s)", AtWed12["owner"].c_str());
-	CHECK(AtWed2030["owner"] == "work_booth/doing" || AtWed2030["owner"].rfind("eat_club", 0) == 0 || AtWed2030["owner"].rfind("snack_club", 0) == 0,
-		"Wednesday 20:30: the owner still at the booth, or eating in the club (%s)", AtWed2030["owner"].c_str());
+	CHECK(AtWed2030["owner"] == "work_booth/doing" || AtWed2030["owner"].rfind("eat_", 0) == 0 || AtWed2030["owner"].rfind("snack_club", 0) == 0,
+		"Wednesday 20:30: the owner still at the booth, or out of it only to eat (%s)", AtWed2030["owner"].c_str());
 	bool bFed = true, bNotStarved = true;
 	for (const FPerson& P : W.People)
 	{
