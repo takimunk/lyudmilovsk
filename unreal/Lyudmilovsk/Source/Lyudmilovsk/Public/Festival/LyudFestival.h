@@ -143,11 +143,15 @@ private:
 	bool bStayUpSent = false;
 	/** Gatherings told to the people (id -> still on this update). */
 	TSet<FName> Gatherings;
+	/** The people's simulation those were told to (compared only, never read through): a new one is told again. */
+	const void* LastSim = nullptr;
 	/** Phases running (festival.phase) for the start/end events and the shows. */
 	TSet<FName> RunningPhases;
 	TMap<FName, FLyudVenue> Venues;
 	/** Venues not found, and when (real seconds): looked for again only after a while, not every update. */
 	TMap<FName, double> VenueMissedAt;
+	/** Whether the level has the plan's own stage / stalls (an actor tagged PlanStage / PlanStalls), looked for once. */
+	bool bPlanTagsLooked = false, bPlanStageBuilt = false, bPlanStallsBuilt = false;
 	/** The festival tunes (looked for once). */
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> MusicSounds;
 	bool bMusicLooked = false;
@@ -156,6 +160,8 @@ private:
 	/** Shows running, by festival.phase.show. */
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<AActor>> Shows;
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UAudioComponent>> Music;
+	/** The calendar's seconds at the last update (0 before the first): a jump of the clock takes the old shows away. */
+	double LastCal = 0.0;
 
 	void Update();
 	void LoadFired();
@@ -180,6 +186,8 @@ private:
 	FString HeroDay;
 	TSet<TPair<FName, FName>> HeroVisited;
 	TSet<FName> HeroWatched;
+	/** Festivals whose quest was told to start today (the "festival" event, sent once when its day begins). */
+	TSet<FName> QuestStarted;
 	int32 PromptKind = 0;
 	TWeakObjectPtr<class ANpcTalkDirector> TalkDirector;
 	bool HeroWished = false;
@@ -240,6 +248,8 @@ public:
 	ALyudFireworks();
 	/** From Launch (cm, on the water out to sea) till EndsAt (game seconds of the calendar). */
 	void Setup(const FVector& Launch, const FVector& SeaDir, double InEndsAt);
+	/** No more shells: the ones in the air burst and fade, then the actor goes. */
+	void StopShow() { EndsAt = 0.0; }
 	virtual void Tick(float DeltaTime) override;
 
 private:
@@ -284,6 +294,8 @@ public:
 	bool Release(const FVector& At, bool bHero);
 	/** Whether a lantern is left to let go. */
 	bool HasFree() const;
+	/** No more lanterns let go by the town: the ones in the air fly on. */
+	void StopShow() { EndsAt = 0.0; }
 	FVector GetBeach() const { return Beach; }
 	virtual void Tick(float DeltaTime) override;
 

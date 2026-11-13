@@ -188,7 +188,7 @@ void UPeopleLifeSubsystem::Deinitialize()
 bool UPeopleLifeSubsystem::Start()
 {
 	TPimplPtr<LP::FWorld> W = MakePimpl<LP::FWorld>();
-	W->Opt.SettleBatch = 120;      // the townsfolk placed over a few frames after a load or a clock jump
+	W->Opt.SettleBatch = 24;       // the townsfolk placed over some forty frames after a load or a clock jump (a decision each: 120 a frame was a 24 ms frame)
 	const FString Dir = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("PeopleData"));
 	const FString Animals = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("AnimalsData"));
 	if (!W->Load(TCHAR_TO_UTF8(*Dir), TCHAR_TO_UTF8(*Animals)))
@@ -215,6 +215,7 @@ bool UPeopleLifeSubsystem::Start()
 	bLightSinksBound = false;
 	LightSinks.Reset();
 	LightTimer = 0.f;
+	bLightsAll = false;
 	UpdateClock(true);
 	ResolveModels();
 	BindClub();
@@ -270,6 +271,7 @@ void UPeopleLifeSubsystem::Stop()
 	}
 	TownBodies.Reset();
 	TownPool.Reset();
+	OwnParked.Reset();
 	TownNear.Reset();
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
@@ -297,6 +299,14 @@ void UPeopleLifeSubsystem::Stop()
 	Talkable.Reset();
 	TrainSeats.Reset();
 	bRailSynced = false;
+	if (Sim)
+	{
+		// whoever was clearing snow gives the stretch back to the winter (it outlives this life: lyud.People 0)
+		for (LP::FPerson& P : Sim->People)
+		{
+			Sim->DropSweep(P);
+		}
+	}
 	Sim.Reset();
 	bStarted = false;
 }
@@ -515,7 +525,12 @@ void UPeopleLifeSubsystem::SyncMemory(bool bToSave)
 		{
 			for (int32 N = 0; N < LP::NumNeeds && N < M->Needs.Num(); N++)
 			{
-				P.N[N] = M->Needs[N];
+				// a damaged save: a need that isn't a number keeps Resettle's guess, one out of range is brought back in
+				const float Need = M->Needs[N];
+				if (FMath::IsFinite(Need))
+				{
+					P.N[N] = FMath::Clamp(Need, 0.f, 1.f);
+				}
 			}
 		}
 	}
@@ -1167,26 +1182,41 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	}
 	if (bJumped)
 	{
-		UpdateLights(true);
+		// every flat is told again, but only once the townsfolk are placed: till then every flat of theirs reads dark
+		bLightsAll = true;
+		LightTimer = 0.f;
 		Present(DeltaTime);
 		return;
 	}
 	LightTimer -= DeltaTime;
-	if (LightTimer <= 0.f)
+	// (no waiting for the placing past a few seconds: with the game's clock stopped it doesn't go on)
+	if (LightTimer <= 0.f && (!S.Settling() || LightTimer < -5.f))
 	{
 		LightTimer = 2.f;
-		UpdateLights(false);
+		UpdateLights(bLightsAll);
+		bLightsAll = false;
 	}
-	// the life runs on the game's calendar (its time scale), in steps of at most a second
-	double Dt = S.Time - Was;
+	// the life runs on the game's calendar (its time scale), in steps of at most a second; at a high time scale (the
+	// developer's slider) in at most eight longer steps a frame, and no more than a few milliseconds of them: what isn't
+	// stepped stays behind in the life's own clock (Was) and is taken up in the next frames
+	const double Target = S.Time;
+	double Dt = Target - Was;
 	S.Time = Was;
 	Dt = FMath::Clamp(Dt, 0.0, 900.0);
+	const double StepLen = FMath::Max(1.0, Dt / 8.0);
+	const double Deadline = FPlatformTime::Seconds() + 0.004;
 	while (Dt > 0.0)
 	{
-		const float Step = (float)FMath::Min(Dt, 1.0);
+		const float Step = (float)FMath::Min(Dt, StepLen);
 		S.Step(Step);
 		Dt -= Step;
+		if (FPlatformTime::Seconds() > Deadline)
+		{
+			break;
+		}
 	}
+	// never more than the quarter of an hour a clock jump is counted from behind the calendar
+	S.Time = FMath::Max(S.Time, Target - 900.0);
 	DispatchEvents();
 	Present(DeltaTime);
 	SaveTimer -= DeltaTime;
@@ -1263,15 +1293,38 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 		return;
 	}
 	Bodies[Id] = nullptr;
-	// a look of their own nobody else wears: no pool, the body goes (it's loaded again, async, when they come near)
-	if (ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str()))
-	{
-		TownBodies.RemoveSwap(Body, EAllowShrinking::No);
-		Body->Destroy();
-		return;
-	}
+	const bool bOwnLook = ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str());
 	Body->SetActorHiddenInGame(true);
 	TownPool.FindOrAdd(Body->MeshName).Add(Body);
+	if (!bOwnLook)
+	{
+		return;
+	}
+	// a look of their own nobody else wears: only they can take the body back, so just the last few of these are kept
+	// (in a crowd the nearest ones change all the time: no spawning and destroying a body on each change), the oldest goes
+	const int32 MaxOwnParked = 32;
+	OwnParked.Remove(TWeakObjectPtr<ANpcBody>(Body));
+	OwnParked.Add(TWeakObjectPtr<ANpcBody>(Body));
+	while (OwnParked.Num() > MaxOwnParked)
+	{
+		ANpcBody* Old = OwnParked[0].Get();
+		OwnParked.RemoveAt(0);
+		if (!Old)
+		{
+			continue;
+		}
+		const FString OldModel = Old->MeshName;
+		TArray<TObjectPtr<ANpcBody>>* Free = TownPool.Find(OldModel);
+		if (Free && Free->Remove(Old) > 0)      // still parked: not taken back since
+		{
+			if (Free->Num() == 0)
+			{
+				TownPool.Remove(OldModel);
+			}
+			TownBodies.RemoveSwap(Old, EAllowShrinking::No);
+			Old->Destroy();
+		}
+	}
 }
 
 void UPeopleLifeSubsystem::BindLights()

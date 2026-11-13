@@ -14,6 +14,7 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MovieSceneSequencePlaybackSettings.h"
+#include "World/LyudPrefetch.h"
 
 AHeroSeat::AHeroSeat()
 {
@@ -58,6 +59,11 @@ void AHeroSeat::NotifyActorEndOverlap(AActor* OtherActor)
 void AHeroSeat::BeginPlay()
 {
 	Super::BeginPlay();
+	// the sit-down cutscene loads in the background now, so sitting down does not stop the game for a disk read
+	if (!SitSequence.IsNull())
+	{
+		ULyudPrefetch::Ready(this, SitSequence.ToSoftObjectPath().ToString());
+	}
 	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 	{
 		// A key event (not polling) so a short tap is never missed, even at a low frame rate.

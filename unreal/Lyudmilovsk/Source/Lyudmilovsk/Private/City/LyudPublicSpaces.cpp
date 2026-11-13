@@ -566,6 +566,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				Q.Seed = (int32)P->GetNumberField(TEXT("seed"));
 				Q.Age = P->GetNumberField(TEXT("age"));
 				Q.Xf = FTransform(FRotator(0.f, R.FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
+				Q.Index = PendingPlants.Num();
 				PendingPlants.Add(Q);
 			}
 		}
@@ -581,6 +582,39 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: %d blocks, %d props in %d sets (%d kit triangles), %d lamps, %d trees, %d plants, built in %.0f ms"),
 		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, PendingPlants.Num(),
 		(FPlatformTime::Seconds() - T0) * 1000.0);
+	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(this))
+	{
+		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame* Save)
+		{
+			PlantRecords.Reset();
+			TSet<FName> Grown;
+			for (const TWeakObjectPtr<AProceduralPlant>& Pw : Plants)
+			{
+				if (const AProceduralPlant* Pl = Pw.Get())
+				{
+					Grown.Add(Pl->GetFName());   // spawned already: the load restored it
+				}
+			}
+			for (const TPair<FName, FLyudSaveRecord>& R : Save->Actors)
+			{
+				if (!Grown.Contains(R.Key) && R.Key.ToString().StartsWith(TEXT("LyudCityPlant_")))
+				{
+					PlantRecords.Add(R.Key, R.Value);
+				}
+			}
+		});
+		Saves->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame* Save)
+		{
+			// after the actors were written: only the plants that are still waiting to spawn
+			for (const TPair<FName, FLyudSaveRecord>& R : PlantRecords)
+			{
+				if (!Save->Actors.Contains(R.Key))
+				{
+					Save->Actors.Add(R.Key, R.Value);
+				}
+			}
+		});
+	}
 	return true;
 }
 
@@ -758,10 +792,21 @@ void ALyudPublicSpaces::SpawnPendingPlants()
 			const double D = FVector::DistSquared(PendingPlants[I].Xf.GetLocation(), Cam);
 			if (D < BestD) { BestD = D; Best = I; }
 		}
+		// none within 300 m of the camera: they wait in the queue (a bed is culled at 90 m), so a start far from the
+		// town has no plant builds and no far plants ticking
+		if (BestD > FMath::Square(30000.0))
+		{
+			return;
+		}
 		const FPendingPlant Q = PendingPlants[Best];
 		PendingPlants.RemoveAtSwap(Best);
-		if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, nullptr, nullptr,
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		// the save keys actors by name, and these spawn nearest the camera first: a name from the plan's order, not from the spawn order
+		FActorSpawnParameters PlantSP;
+		PlantSP.Name = FName(*FString::Printf(TEXT("LyudCityPlant_%d"), Q.Index));
+		PlantSP.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
+		PlantSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		PlantSP.bDeferConstruction = true;
+		if (AProceduralPlant* Pl = GetWorld()->SpawnActor<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, PlantSP))
 		{
 			Pl->Species = Q.Species;
 			Pl->Seed = Q.Seed;
@@ -774,6 +819,13 @@ void ALyudPublicSpaces::SpawnPendingPlants()
 			Pl->FinishSpawning(Q.Xf);
 			Pl->SetActorHiddenInGame(!bShown);
 			Plants.Add(Pl);
+			// a loaded game's record for this plant (it spawned after the load was applied)
+			FLyudSaveRecord Rec;
+			if (PlantRecords.RemoveAndCopyValue(Pl->GetFName(), Rec))
+			{
+				ULyudSaveGame::Restore(Pl, Rec);
+				ILyudSaveable::Execute_OnGameLoaded(Pl);
+			}
 		}
 	} while (PendingPlants.Num() > 0 && FPlatformTime::Seconds() < Until);
 }
@@ -920,6 +972,10 @@ void ALyudFairRides::Tick(float DeltaSeconds)
 		OpenCheck = 2.f;
 		bOpen = OpenNow();
 		bOpenKnown = true;
+		// the turning parts are drawn to 300 m: farther off the rides keep their time but move nothing
+		const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		bNear = !PC || !PC->PlayerCameraManager || Rides.Num() == 0
+			|| FVector::DistSquared(PC->PlayerCameraManager->GetCameraLocation(), Rides[0].Hub) < FMath::Square(35000.0);
 	}
 	// a run of 150 s, 90 s standing for boarding; ~6 s to speed up, and on the way down each ride brakes onto the next
 	// multiple of its step (the carousel's 45 degrees, the wheel's 30) so the seats meet their spots and a gondola the platform
@@ -962,11 +1018,14 @@ void ALyudFairRides::Tick(float DeltaSeconds)
 			R.Angle -= 36000.0;
 			R.Target -= 36000.0;
 		}
-		Pose(R);
+		if (bNear || R.V <= 0.0)               // out of sight only the pose it comes to rest in is set
+		{
+			Pose(R);
+		}
 		Fastest = FMath::Max(Fastest, float(R.V / Full));
 	}
 	Speed = Fastest;
-	SetActorTickInterval(Speed > 0.f ? 0.f : 0.5f);     // every frame only while something moves
+	SetActorTickInterval(Speed > 0.f && bNear ? 0.f : 0.5f);     // every frame only while something moves in sight
 }
 
 FString ALyudFairRides::DebugReport() const
@@ -1035,7 +1094,10 @@ void ULyudPublicSpotsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void ULyudPublicSpotsSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	if (!Doc || CVarPublicSpaces.GetValueOnGameThread() == 0 || !InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")))
+	// the parsed layout (several MB of json values) is only needed here: not kept for the session
+	const TSharedPtr<FJsonObject> Layout = Doc;
+	Doc.Reset();
+	if (!Layout || CVarPublicSpaces.GetValueOnGameThread() == 0 || !InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")))
 	{
 		return;
 	}
@@ -1043,7 +1105,7 @@ void ULyudPublicSpotsSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	SP.ObjectFlags |= RF_Transient;
 	if (ALyudPublicSpaces* A = InWorld.SpawnActor<ALyudPublicSpaces>(SP))
 	{
-		if (A->Build(Doc)) Spaces = A;
+		if (A->Build(Layout)) Spaces = A;
 		else A->Destroy();
 	}
 }
