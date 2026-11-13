@@ -5,6 +5,8 @@
              plume, ALyudNorthPlume: unlit translucent, Color from the game), M_North_Mud (a mud pot's surface: the
              Academgorodok's flat master), M_North_Water (the hot spring: its clear-glass master), MI_NO_<slot> for every
              MAT_SPEC slot in blender/north/*.py (flat, like the restaurant's).
+  atlas:     the props' shared atlas: T_North_Atlas(_N) from blender/north/gen, M_North_Atlas, and M_North_Text_<id> for the
+             boards' and signs' words (the GLBs carry material names only, no images); import assigns them by slot name.
   import <file.glb>: one file of blender/export/north (Interchange imports only the first glb of a process; import_north.sh
              runs one process per file) -> /Game/North/Meshes/SM_North_<Kind>[_V<n>] by blender/export/north/manifest.json,
              manifest_hut.json and far.json (far meshes: SM_North_Far_<Id>). Nanite off (glTF import turns it on by itself
@@ -218,6 +220,46 @@ def build_plume(path):
     return m
 
 
+def build_atlas_materials():
+    """The props' shared atlas (blender/north/gen, blender/north/northtex.py) imported once as /Game/North/Textures/T_North_Atlas
+    (sRGB) and T_North_Atlas_N (normal map), one material M_North_Atlas from them; and M_North_Text_<id> for every board and
+    sign text (textures/localized/ru/north_<id>.png: the Russian ones; LyudText::LoadTexture("North", "north_<id>") swaps the
+    language). The GLBs carry only these material names, no images; import_file() assigns them by slot name."""
+    import academ_materials as A
+    gen = os.path.join(REPO, "blender", "north", "gen")
+    out = {}
+    try:
+        d = A.import_image(os.path.join(gen, "north_atlas.png"), DEST, "T_North_Atlas")
+        n = A.import_image(os.path.join(gen, "north_atlas_n.png"), DEST, "T_North_Atlas_N")
+        n.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+        n.set_editor_property("srgb", False)
+        eal.save_loaded_asset(d, False)
+        eal.save_loaded_asset(n, False)
+        m = A.master(MATS + "/M_North_Atlas")
+        td = A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, -200, parameter_name="BaseColor", texture=d,
+                    sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
+        tn = A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, 200, parameter_name="Normal", texture=n,
+                    sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+        mel.connect_material_property(td, "RGB", MP.MP_BASE_COLOR)
+        mel.connect_material_property(tn, "RGB", MP.MP_NORMAL)
+        mel.connect_material_property(A.scalar(m, "Roughness", -400, 450, 0.85), "", MP.MP_ROUGHNESS)
+        A.finish(m)
+        out["M_North_Atlas"] = m
+    except Exception:       # noqa: BLE001
+        log("atlas material failed:\n" + traceback.format_exc())
+    texdir = os.path.join(REPO, "textures", "localized", "ru")
+    for path in sorted(glob.glob(os.path.join(texdir, "north_*.png"))):
+        tid = os.path.splitext(os.path.basename(path))[0][len("north_"):]
+        try:
+            tex = A.import_image(path, DEST, "T_North_Text_" + tid)
+            eal.save_loaded_asset(tex, False)
+            out["M_North_Text_" + tid] = A.build_picture("%s/M_North_Text_%s" % (MATS, tid), tex)
+        except Exception:   # noqa: BLE001
+            log("text material %s failed:\n%s" % (tid, traceback.format_exc()))
+    log("atlas + %d text materials" % max(0, len(out) - 1))
+    return out
+
+
 def make_materials():
     import academ_materials as A
     if not eal.does_asset_exist("/Game/Smoking/Textures/T_SmokePuff"):
@@ -242,6 +284,8 @@ def make_materials():
             mel.update_material_instance(mi)
             eal.save_loaded_asset(mi, False)
             out[slot] = mi
+    build_atlas_materials()
+    eal.save_directory(DEST)
     eal.save_directory(MATS)
     log("materials: steam, plume, mud, water, %d slot instances" % len(out))
     return out
@@ -254,6 +298,11 @@ def slot_materials():
         p = "%s/MI_NO_%s" % (MATS, slot)
         if eal.does_asset_exist(p):
             out[slot] = unreal.load_asset(p)
+    # the props' atlas and the boards' text materials (the GLBs carry names only)
+    for p in eal.list_assets(MATS, False):
+        nm = p.split(".")[0].rsplit("/", 1)[-1]
+        if nm == "M_North_Atlas" or nm.startswith("M_North_Text_"):
+            out[nm] = unreal.load_asset(p)
     return out
 
 

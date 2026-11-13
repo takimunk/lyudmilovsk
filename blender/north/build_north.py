@@ -68,7 +68,7 @@ def main():
     out = {"frame": "metres, origin on the ground under the middle, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw "
                     "= degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); "
                     "size and bounds are in Blender axes (x, y, z)",
-           "front_yaw": 90.0, "asset_names": "SM_North_<Kind>[_V<n>] (_V only for kinds with several variants)", "atlas": "M_North_Atlas (blender/north/gen/north_atlas.png + _n.png, 2048)",
+           "front_yaw": 90.0, "asset_names": "SM_North_<Kind>[_V<n>] (_V only for kinds with several variants)", "atlas": "M_North_Atlas: no image in the GLB; the engine builds it from blender/north/gen/north_atlas.png + _n.png (2048); text slots M_North_Text_<id> from textures/localized/<lang>/north_<id>.png",
            "meshes": meshes}
     os.makedirs(K.EXPORT, exist_ok=True)
     with open(MANIFEST, "w") as f:

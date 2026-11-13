@@ -79,9 +79,21 @@ def human(x, y):
 
 
 def import_glb(path):
+    """Imports a GLB (materials come without images) and gives the atlas / text slots their textures, as the engine does."""
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=path)
-    return [o for o in bpy.data.objects if o not in before]
+    new = [o for o in bpy.data.objects if o not in before]
+    for o in new:
+        if o.type != "MESH":
+            continue
+        for i, s in enumerate(o.material_slots):
+            nm = s.material.name.split(".")[0] if s.material else ""
+            if nm == "M_North_Atlas":
+                o.material_slots[i].material = K.atlas_material("PV_Atlas", plain=False)
+            elif nm.startswith("M_North_Text_"):
+                tid = nm[len("M_North_Text_"):]
+                o.material_slots[i].material = K.text_material("PV_" + nm, os.path.join(K.ROOT, "textures", "localized", "ru", "north_%s.png" % tid), plain=False)
+    return new
 
 
 def bounds(objs):
