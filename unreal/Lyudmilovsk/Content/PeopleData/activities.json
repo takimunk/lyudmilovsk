@@ -30,7 +30,7 @@
     {"id": "work_cheese", "places": ["cheese_tent"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "sun": 0.2}, "free": 0},
     {"id": "work_corn", "places": ["corn_stall"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "sun": 0.2}, "free": 0},
     {"id": "sketch_yard", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.3, "sun": 0.3, "mind": 0.3}, "free": 0},
-    {"id": "mend_nets", "places": ["promenade_bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.3, "sun": 0.4}, "free": 0},
+    {"id": "mend_nets", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.3, "sun": 0.4}, "free": 0},
     {"id": "yard_evening", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"social": 0.4, "nature": 0.2, "sun": 0.2}, "free": 0},
     {"id": "birdwatch_yard", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.3, "mind": 0.1}, "free": 0},
     {"id": "work_sea", "places": ["beach"], "pose": "hidden", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.4, "hunger": 0.2}, "free": 0, "away": 1},

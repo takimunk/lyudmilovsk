@@ -110,7 +110,7 @@
      "friends": ["frolova_masha", "nishimura_aya"], "likes": {"lookout_view": 0.2}},
     {"key": "lange_pyotr", "body": "Lange_pyotr", "mesh": "Crowd_11", "age": 47, "occupation": "fisherman", "household": "lange",
      "temper": {"social": 0.3, "active": 0.8, "studious": 0.2, "gamer": 0.1, "nature": 0.95, "sun": 0.7},
-     "wake": 4.0, "bed": 21.0, "duties": [{"activity": "work_sea", "hours": [4.5, 11], "days": [1, 2, 3, 4, 5, 6]}, {"activity": "mend_nets", "place": "promenade_bench_6", "hours": [12.5, 17]}],
+     "wake": 4.0, "bed": 21.0, "duties": [{"activity": "work_sea", "hours": [4.5, 11], "days": [1, 2, 3, 4, 5, 6]}, {"activity": "mend_nets", "place": "S-BENCH-P12", "hours": [12.5, 17]}],
      "friends": ["korneev_ivan", "crowd_11"], "likes": {"fish_shore": 0.75}},
     {"key": "kimura_dasha", "body": "Kimura_dasha", "mesh": "Girl_b", "age": 20, "occupation": "student", "household": "kimura_li", "female": 1,
      "temper": {"social": 0.7, "active": 0.7, "studious": 0.7, "gamer": 0.5, "nature": 0.7, "sun": 0.9},
