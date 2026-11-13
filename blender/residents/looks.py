@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Looks for the town's residents: one seeded appearance per townsperson (no bpy; build_residents.py builds them).
 
-    python3 blender/residents/looks.py [--townsfolk PATH] [--names PATH] [--seed N] [--out PATH] [--summary]
+    python3 blender/residents/looks.py [--townsfolk PATH] [--names PATH] [--people [PATH]] [--seed N] [--out PATH] [--summary]
 
 Input: Content/PeopleData/townsfolk.json (tools/town/town_life.py: key, age, female, household, occupation, temper) and
 tools/town/names.json (the origin of every given name and surname). Output: blender/residents/cache/looks.json (every
@@ -18,10 +18,12 @@ they keep their key, age and sex. What it decides:
 - clothes by job, age and style (blender/residents/wardrobe.py) with colours from palettes, a coat now and then;
 - accessories (blender/residents/accessories.py: caps, headscarves, bags, string bags, aprons, a cane).
 
-The named people of Content/PeopleData/people.json listed in CAST get their model from the generator too (nobody made one
-by hand): drawn the same way from their key, with what their story fixes (origin, hair, clothes, accessories) set by CAST.
-Their model takes the name of their people.json "body" (Khuazhev_aslan: /Game/Characters/Humans/Khuazhev_aslan), so the
-game, their lines and their quests find them as before.
+Named people of Content/PeopleData/people.json get models from the generator too, drawn the same way from their key:
+- those listed in CAST (nobody made one by hand), with what their story fixes (origin, hair, clothes, accessories); the
+  model takes the name of their "body" (Khuazhev_aslan: /Game/Characters/Humans/Khuazhev_aslan), so the game, their lines
+  and their quests find them as before;
+- those whose "mesh" is Town/R_<key>: a free stand-in until their own "body" is made (the North's people, docs/north.md).
+Both go into town_looks.json under their key (no t_), so the build, check_export and the import take them.
 """
 import argparse
 import hashlib
@@ -573,9 +575,13 @@ def handmade(body):
 
 
 def make_cast(people, seed, names):
-    """The CAST's looks, from their people.json entries; the model is named after their "body"."""
+    """Looks for people.json's named people: the CAST (the model is named after their "body") and those whose stand-in
+    "mesh" is Town/R_<key> (the model is that stand-in)."""
     by_key = {p["key"]: p for p in people}
     looks = {}
+    for p in people:
+        if p["key"] not in CAST and p.get("mesh") == "Town/" + model_name(p["key"]):
+            looks[p["key"]] = make_look(p, seed, names)
     for key, fixed in sorted(CAST.items()):
         p = by_key.get(key)
         if p is None or not p.get("body"):
@@ -589,7 +595,7 @@ def make_cast(people, seed, names):
 
 
 def game_model(look):
-    """The model as the game names it: Town/R_<key> for a townsperson, the people.json body for the CAST."""
+    """The model as the game names it: Town/R_<key> for a townsperson or a stand-in, the people.json body for the CAST."""
     return look["model"] if look["key"] in CAST else "Town/" + look["model"]
 
 
@@ -612,7 +618,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--townsfolk", default=os.path.join(PEOPLE, "townsfolk.json"))
     ap.add_argument("--names", default=os.path.join(ROOT, "tools", "town", "names.json"))
-    ap.add_argument("--people", default=os.path.join(PEOPLE, "people.json"), help="the named people (CAST)")
+    ap.add_argument("--people", nargs="?", default=os.path.join(PEOPLE, "people.json"), const=os.path.join(PEOPLE, "people.json"),
+                    help="people.json (read always): its CAST and the people whose mesh is Town/R_<key> get looks too")
     ap.add_argument("--ref", help="read townsfolk.json and names.json from this git ref (e.g. origin/town-life)")
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--out", default=os.path.join(HERE, "cache", "looks.json"))

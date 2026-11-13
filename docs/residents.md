@@ -73,6 +73,11 @@ SK_<Body>`, local only like `Town/` (it uses Town's atlases and materials; `.git
 leaves out anybody whose body is a hand-made model in git, so the import never replaces one. Until the model is
 imported the person lives unseen when their stand-in (`mesh`) is somebody else's face (docs/people.md).
 
+A named person whose `mesh` is `Town/R_<key>` (the North's people, docs/north.md) gets that model as a free stand-in
+until their own `body` is made: `looks.py` draws it from their key like a townsperson's, lists it in `town_looks.json`
+and the import puts it in `Town/` (no `CAST` entry needed). `looks.py` always reads `people.json` (`--people PATH`
+for another).
+
 ```sh
 Blender -b -P blender/residents/build_residents.py -- --only khuazhev_aslan
 unreal/scripts/import_residents.sh --only khuazhev_aslan
