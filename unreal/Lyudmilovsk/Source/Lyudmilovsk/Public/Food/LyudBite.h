@@ -128,6 +128,8 @@ private:
 
 	FLyudMeal Meal;
 	bool bActive = false;
+	/** The hero who eats (BeginMeal): Finish takes the hand's hold off him even when he is not the player's pawn any more. */
+	TWeakObjectPtr<class AHeroCharacter> MealHero;
 	EPhase Phase = EPhase::Rest;
 	float PhaseT = 0.f;
 	/** Seconds the button has been down in this bite (the size is decided by it), and a bite queued by TakeBite. */
