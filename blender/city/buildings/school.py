@@ -148,6 +148,7 @@ def _furnish(B, IY0, IY1):
     for i, (cx, mat) in enumerate(((-5.5, "CT_PlasterBlue"), (5.5, "CT_PlasterRed"))):
         f.panel(cx, 15.7, 1.9, 1.7, 1.1, 0.0, mat=mat, frame="CT_Frame")                # murals above the back benches
         f.panel(cx + (1.3 if cx > 0 else -1.3) * 0.0, 15.7, 2.8, 0.7, 0.45, 0.0, mat="CT_PlasterYellow", frame=None)
+    kit.rug(B, 0.0, 11.0, 0.02, 0.0, w=2.6, d=6.0, seed=3)                          # QA: the hall floor was bare
     f.plant(-4.4, 7.0, h=1.5)
     f.plant(4.4, 7.0, h=1.5)
     f.plant(-6.7, 14.7, h=1.1, pot="CT_TileWhite")
@@ -412,7 +413,7 @@ def _canteen(B, x0, x1):
     K.menu_board(B, 27.6, Y1, 0.0, 0.0, name="menu_0", w=0.9, zc=2.0)
     K.menu_board(B, 28.7, Y1, 0.0, 0.0, name="menu_1", w=0.8, zc=2.0)
     B.thing("canteen_menu", "board", (27.6, Y1 - 0.05, 2.0), 0.0, topic="prices")
-    K.mosaic_panel(B, 29.7, 24.0, 0.0, 270.0, name="tile_3", w=2.0, h=1.2, zc=1.7)
+    K.mosaic_panel(B, 24.0, Y0, 0.0, 180.0, name="tile_3", w=2.0, h=1.2, zc=1.7)       # QA: was over a window
     K.wall_clock(B, 29.7, 28.0, 0.0, 270.0, zc=2.6, r=0.2)
     K.plant(B, 21.0, 38.9, 0.0, 0.0, kind="ficus", pot="CT_PlasterYellow", h=1.2)
     K.plant(B, 29.0, 17.0, 0.0, 0.0, kind="palm", pot="CT_PlasterBlue", h=1.0)

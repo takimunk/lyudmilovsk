@@ -767,6 +767,25 @@ def _lobby(B, rnd, a, b, name):
     kit.floor_lamp(B, xr - 0.5, yy + 5.2, 0.0, 0.0)
     B.lamp((xm, yy + 0.8, 2.9), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0, fixture=False)
     kit.pendant(B, xm, yy + 0.8, Z_CEIL, drop=0.3, kind="cone")
+    # QA: the back half of the lobby was dark and its back wall bare: a second lamp, a picture and a poster
+    B.lamp((xm, yy + 4.4, 2.9), lumens=420, colour="#FFE0B0", kind="lobby", radius=6.0, fixture=False)
+    kit.pendant(B, xm, yy + 4.4, Z_CEIL, drop=0.3, kind="cone")
+    yback = yb(xm) - 0.3 / math.cos(th) + 0.025
+    kit.picture(B, xm - 0.9, yback, 0.0, yw, name=("painting_sea_calm", "painting_dunes", "painting_lighthouse")[(int(n) - 1) % 3],
+                w=1.0, zc=1.8)
+    kit.poster(B, xm + 0.9, yback, 0.0, yw, name=("poster_sun_1", "poster_health", "poster_cons_2")[(int(n) - 1) % 3], w=0.6, zc=1.8)
+
+
+def _passage(B, a, b):
+    """QA: the blue-tiled through passage had no light at all: two lamps with pendants and a poster on each wall."""
+    xm = (XS[a] + XS[b]) / 2
+    for k, off in enumerate((2.8, 7.6)):
+        y = yf(xm) + off
+        B.lamp((xm, y, 2.9), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0, fixture=False)
+        kit.pendant(B, xm, y, Z_CEIL, drop=0.3, kind="cone")
+    y = yf(xm) + 5.0
+    kit.poster(B, XS[a] + 0.16, y, 0.0, 90.0, name="poster_birds_1", w=0.7, zc=1.7)
+    kit.poster(B, XS[b] - 0.16, y + 0.6, 0.0, 270.0, name="poster_sun_2", w=0.7, zc=1.7)
 
 
 def furnish(B, rnd):
@@ -780,6 +799,8 @@ def furnish(B, rnd):
             done.append(S)
         elif name.startswith("core"):
             _lobby(B, rnd, a, b, name)
+        elif name == "passage":
+            _passage(B, a, b)
     if os.environ.get("KITCHECK"):
         for S in done:
             print("SHOP", S.name, S.trade, "tris", S.tris)

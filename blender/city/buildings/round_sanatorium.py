@@ -360,8 +360,8 @@ def _furnish_hall(B, hall, t):
     gbn = kit.bench(B, *_at(17.0, g, 0.6), yaw=_yin(g), w=1.5, kind="park")
     B.thing("garden_bench", "seat", gbn["seats"][0][:3], _yin(g), height=0.45)
     # the plants: palms in the corners, ficus and monstera, ferns on the sill, cacti by the arch
-    plan = [("palm", 12.9, th_g0 + 2.2, 2.5, "CT_PlasterRed"), ("palm", 17.0, th_g0 + 1.4, 2.6, "CT_PlasterGreen"),
-            ("palm", 17.1, th_g1 - 1.5, 2.4, "CT_PlasterYellow"), ("palm", 12.95, th_g1 - 1.7, 2.3, "CT_PlasterBlue"),
+    plan = [("palm", 12.9, th_g0 + 4.0, 2.5, "CT_PlasterRed"), ("palm", 17.0, th_g0 + 3.4, 2.6, "CT_PlasterGreen"),
+            ("palm", 17.1, th_g1 - 3.8, 2.4, "CT_PlasterYellow"), ("palm", 12.95, th_g1 - 4.8, 2.3, "CT_PlasterBlue"),   # QA: leaves went through the walls
             ("ficus", 13.4, th_g0 + 0.9, 2.0, "CT_TileWhite"), ("ficus", 16.4, th_g0 + 2.5, 1.9, "CT_PlasterRed"),
             ("monstera", 12.9, g + 0.2, 1.4, "CT_PlasterGreen"), ("monstera", 17.1, g - 0.4, 1.5, "CT_TileWhite"),
             ("fern", 13.0, g + 2.6, 0.9, "CT_PlasterYellow"), ("fern", 13.0, g - 2.6, 0.9, "CT_PlasterBlue"),
@@ -411,7 +411,7 @@ def _furnish_hall(B, hall, t):
     for e, nm in ((5, "painting_sea_storm"), (6, "map_town")):
         pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
         (kit.picture if e == 5 else kit.poster)(B, pt[0], pt[1], yaw=yw, name=nm, w=0.9, zc=4.12)
-    kit.plant(B, *pol(17.15, pc + 0.4), kind="palm", pot="CT_TileWhite", h=1.9, seed=11)
+    kit.plant(B, *pol(17.15, pc + 0.4), kind="cactus", pot="CT_TileWhite", h=1.0, seed=11)      # QA: the palm leaves cut the back bar
     kit.plant(B, *pol(12.9, pc + 3.3), kind="fern", pot="CT_PlasterGreen", h=0.9, seed=12)
     kit.pendant(B, *pol(14.8, pc - 1.5), CEIL, drop=1.1, kind="opal", light=True, lumens=900, radius=7)
 
