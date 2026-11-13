@@ -73,6 +73,26 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "wait",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    2.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "weigh",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    1.9,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -86,6 +106,17 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 4.5
+  },
+  {
+   "pos": [
+    -1.5,
+    2.6,
+    2.75
+   ],
+   "lumens": 420,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 4.0
   }
  ],
  "things": [
@@ -181,6 +212,58 @@
    "props": {
     "item": "daily_paper"
    }
+  },
+  {
+   "id": "stop_bin",
+   "kind": "board",
+   "pos": [
+    -0.42,
+    2.5,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bin"
+   }
+  },
+  {
+   "id": "k3_pipes",
+   "kind": "board",
+   "pos": [
+    2.84,
+    2.7,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pipes"
+   }
+  },
+  {
+   "id": "k3_jar",
+   "kind": "board",
+   "pos": [
+    0.93,
+    2.06,
+    1.12
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "matches"
+   }
+  },
+  {
+   "id": "k3_scales",
+   "kind": "machine",
+   "pos": [
+    -1.9,
+    2.45,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
   }
  ],
  "flats": [],
@@ -232,7 +315,7 @@
  "notes": [],
  "tris": {
   "shell": 636,
-  "detail": 1264,
+  "detail": 1984,
   "windows": 8
  }
 }
