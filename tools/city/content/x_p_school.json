@@ -1,0 +1,607 @@
+{
+ "_doc": "School No. 1, second pass (depth): the buffet, the timetable by weekday, the bell, the wall newspaper's running story, the lost bag and the concert. Rules by thing id; words in strings/x_p_school.json.",
+ "shops": {
+  "school_canteen": {
+   "role": "teacher",
+   "goods": [
+    {
+     "item": "tea",
+     "price": 10,
+     "count": 12
+    },
+    {
+     "item": "pie",
+     "price": 14,
+     "count": 8
+    },
+    {
+     "item": "bread_loaf",
+     "price": 11,
+     "count": 4
+    },
+    {
+     "item": "kefir",
+     "price": 13,
+     "count": 6
+    },
+    {
+     "item": "apple",
+     "price": 5,
+     "count": 8
+    },
+    {
+     "item": "cookies",
+     "price": 16,
+     "count": 6
+    },
+    {
+     "item": "candy",
+     "price": 6,
+     "count": 8
+    }
+   ]
+  }
+ },
+ "acts": {
+  "school_lesson_day": {
+   "like": "school_desk",
+   "target": "school_desk",
+   "lines": [
+    {
+     "d": "mon",
+     "k": "city.sch.lesson.1"
+    },
+    {
+     "d": "tue",
+     "k": "city.sch.lesson.2"
+    },
+    {
+     "d": "wed",
+     "k": "city.sch.lesson.3"
+    },
+    {
+     "d": "thu",
+     "k": "city.sch.lesson.4"
+    },
+    {
+     "d": "fri",
+     "k": "city.sch.lesson.5"
+    },
+    {
+     "h": [
+      8,
+      10
+     ],
+     "k": "city.sch.lesson.6"
+    },
+    {
+     "h": [
+      13,
+      15
+     ],
+     "k": "city.sch.lesson.7"
+    },
+    "city.sch.lesson.8"
+   ]
+  },
+  "school_timetable": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "d": "mon",
+     "k": "city.sch.tt.1"
+    },
+    {
+     "d": "tue",
+     "k": "city.sch.tt.2"
+    },
+    {
+     "d": "wed",
+     "k": "city.sch.tt.3"
+    },
+    {
+     "d": "thu",
+     "k": "city.sch.tt.4"
+    },
+    {
+     "d": "fri",
+     "k": "city.sch.tt.5"
+    },
+    {
+     "d": "sat-sun",
+     "k": "city.sch.tt.6"
+    }
+   ]
+  },
+  "school_menu_day": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "d": "mon",
+     "k": "city.sch.menu.1"
+    },
+    {
+     "d": "tue",
+     "k": "city.sch.menu.2"
+    },
+    {
+     "d": "wed",
+     "k": "city.sch.menu.3"
+    },
+    {
+     "d": "thu",
+     "k": "city.sch.menu.4"
+    },
+    {
+     "d": "fri",
+     "k": "city.sch.menu.5"
+    },
+    {
+     "d": "sat-sun",
+     "k": "city.sch.menu.6"
+    }
+   ]
+  },
+  "school_tea": {
+   "prompt": "city.sch.p.tea",
+   "minutes": 3,
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "cup_clink",
+   "lines": [
+    {
+     "h": [
+      10,
+      12
+     ],
+     "k": "city.sch.tea.1"
+    },
+    {
+     "h": [
+      12,
+      14
+     ],
+     "k": "city.sch.tea.2"
+    },
+    {
+     "h": [
+      14,
+      10
+     ],
+     "k": "city.sch.tea.3"
+    }
+   ]
+  },
+  "school_return_tray": {
+   "prompt": "city.sch.p.tray",
+   "minutes": 2,
+   "sound": "plate_clink",
+   "lines": [
+    "city.sch.tray.1",
+    "city.sch.tray.2",
+    "city.sch.tray.3"
+   ]
+  },
+  "school_handbell": {
+   "prompt": "city.sch.p.bell",
+   "minutes": 1,
+   "sound": "school_bell",
+   "any_hour": true,
+   "lines": [
+    {
+     "h": [
+      8,
+      9
+     ],
+     "k": "city.sch.bell.1"
+    },
+    {
+     "h": [
+      9,
+      14
+     ],
+     "k": "city.sch.bell.2"
+    },
+    {
+     "h": [
+      14,
+      18
+     ],
+     "k": "city.sch.bell.3"
+    },
+    {
+     "h": [
+      18,
+      8
+     ],
+     "k": "city.sch.bell.4"
+    }
+   ]
+  },
+  "school_duty_log": {
+   "prompt": "city.sch.p.duty",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    "city.sch.duty.1",
+    "city.sch.duty.2",
+    "city.sch.duty.3",
+    "city.sch.duty.4"
+   ]
+  },
+  "school_lostbox": {
+   "prompt": "city.sch.p.lost",
+   "minutes": 4,
+   "lines": [
+    "city.sch.lost.1",
+    "city.sch.lost.2",
+    "city.sch.lost.3",
+    "city.sch.lost.4"
+   ]
+  },
+  "school_concert_poster": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    "city.sch.concert.1",
+    "city.sch.concert.2"
+   ]
+  },
+  "school_coats": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "h": [
+      8,
+      15
+     ],
+     "k": "city.sch.coats.1"
+    },
+    {
+     "h": [
+      15,
+      20
+     ],
+     "k": "city.sch.coats.2"
+    },
+    {
+     "h": [
+      20,
+      8
+     ],
+     "k": "city.sch.coats.3"
+    }
+   ]
+  },
+  "school_globe": {
+   "prompt": "city.sch.p.globe",
+   "minutes": 1,
+   "lines": [
+    "city.sch.globe.1",
+    "city.sch.globe.2",
+    "city.sch.globe.3",
+    "city.sch.globe.4"
+   ]
+  },
+  "school_microscope": {
+   "prompt": "city.sch.p.scope",
+   "minutes": 5,
+   "lines": [
+    {
+     "h": [
+      9,
+      17
+     ],
+     "k": "city.sch.scope.1"
+    },
+    {
+     "h": [
+      9,
+      17
+     ],
+     "k": "city.sch.scope.2"
+    },
+    {
+     "h": [
+      17,
+      9
+     ],
+     "k": "city.sch.scope.3"
+    }
+   ]
+  },
+  "school_herbarium": {
+   "like": "look_misc",
+   "minutes": 4,
+   "lines": [
+    "city.sch.herb.1",
+    "city.sch.herb.2",
+    "city.sch.herb.3",
+    "city.sch.herb.4"
+   ]
+  },
+  "school_bio_board": {
+   "prompt": "city.sch.p.board",
+   "minutes": 3,
+   "target": "blackboard",
+   "sound": "chalk",
+   "lines": [
+    {
+     "d": "tue",
+     "k": "city.sch.bbio.1"
+    },
+    {
+     "d": "fri",
+     "k": "city.sch.bbio.2"
+    },
+    {
+     "d": "mon,wed,thu",
+     "k": "city.sch.bbio.3"
+    },
+    {
+     "d": "sat-sun",
+     "k": "city.sch.bbio.4"
+    }
+   ]
+  },
+  "school_music_board": {
+   "prompt": "city.sch.p.board",
+   "minutes": 3,
+   "target": "blackboard",
+   "sound": "chalk",
+   "lines": [
+    "city.sch.mboard.1",
+    "city.sch.mboard.2",
+    "city.sch.mboard.3"
+   ]
+  },
+  "school_metronome": {
+   "prompt": "city.sch.p.metro",
+   "minutes": 3,
+   "sound": "clock_tick",
+   "lines": [
+    "city.sch.metro.1",
+    "city.sch.metro.2",
+    "city.sch.metro.3"
+   ]
+  },
+  "school_scoreboard": {
+   "prompt": "city.sch.p.score",
+   "minutes": 1,
+   "lines": [
+    {
+     "d": "mon-fri",
+     "h": [
+      8,
+      15
+     ],
+     "k": "city.sch.score.1"
+    },
+    {
+     "d": "mon-fri",
+     "h": [
+      15,
+      20
+     ],
+     "k": "city.sch.score.2"
+    },
+    {
+     "d": "sat-sun",
+     "k": "city.sch.score.3"
+    },
+    {
+     "h": [
+      20,
+      8
+     ],
+     "k": "city.sch.score.4"
+    }
+   ]
+  },
+  "gym_bag_search": {
+   "prompt": "city.sch.p.bag",
+   "minutes": 5,
+   "lines": [
+    "city.sch.bag.1",
+    "city.sch.bag.2",
+    "city.sch.bag.3"
+   ]
+  },
+  "school_gym_run": {
+   "like": "track",
+   "target": "track",
+   "lines": [
+    {
+     "d": "mon-fri",
+     "h": [
+      8,
+      15
+     ],
+     "k": "city.sch.run.1"
+    },
+    {
+     "d": "mon-fri",
+     "h": [
+      15,
+      19
+     ],
+     "k": "city.sch.run.2"
+    },
+    {
+     "d": "sat-sun",
+     "k": "city.sch.run.3"
+    },
+    {
+     "h": [
+      19,
+      8
+     ],
+     "k": "city.sch.run.4"
+    }
+   ]
+  },
+  "school_recital": {
+   "prompt": "city.sch.p.stage",
+   "minutes": 10,
+   "sound": "stage_curtain",
+   "lines": [
+    "city.sch.recital.1",
+    "city.sch.recital.2",
+    "city.sch.recital.3"
+   ]
+  },
+  "school_gazette": {
+   "like": "look_wallpaper",
+   "rotate": "daily",
+   "minutes": 5,
+   "target": "school_gazette",
+   "lines": [
+    "city.look.wallpaper.*",
+    {
+     "after": 0,
+     "k": "city.sch.reg.1"
+    },
+    {
+     "after": 0,
+     "k": "city.sch.reg.2"
+    },
+    {
+     "after": 1,
+     "k": "city.sch.reg.3"
+    },
+    {
+     "after": 2,
+     "k": "city.sch.reg.4"
+    },
+    {
+     "after": 2,
+     "k": "city.sch.reg.5"
+    },
+    {
+     "after": 3,
+     "k": "city.sch.reg.6"
+    },
+    {
+     "after": 4,
+     "k": "city.sch.reg.7"
+    },
+    {
+     "after": 5,
+     "k": "city.sch.reg.8"
+    },
+    {
+     "after": 6,
+     "k": "city.sch.reg.9"
+    },
+    {
+     "after": 7,
+     "k": "city.sch.reg.10"
+    },
+    {
+     "after": 7,
+     "k": "city.sch.reg.11"
+    }
+   ]
+  }
+ },
+ "rules": {
+  "school/seat_0_0": {
+   "act": "school_lesson_day"
+  },
+  "school/seat_0_4": {
+   "act": "school_lesson_day"
+  },
+  "school/seat_1_0": {
+   "act": "school_lesson_day"
+  },
+  "school/seat_1_4": {
+   "act": "school_lesson_day"
+  },
+  "school/seat_2_0": {
+   "act": "school_lesson_day"
+  },
+  "school/seat_2_4": {
+   "act": "school_lesson_day"
+  },
+  "school/class_timetable": {
+   "act": "school_timetable"
+  },
+  "school/canteen_dayboard": {
+   "act": "school_menu_day"
+  },
+  "school/canteen_tea": {
+   "act": "school_tea",
+   "hours": [
+    10,
+    14
+   ],
+   "days": "mon-fri"
+  },
+  "school/canteen_counter": {
+   "hours": [
+    10,
+    14
+   ],
+   "days": "mon-fri"
+  },
+  "school/canteen_return": {
+   "act": "school_return_tray"
+  },
+  "school/hall_handbell": {
+   "act": "school_handbell"
+  },
+  "school/hall_duty_desk": {
+   "act": "school_duty_log"
+  },
+  "school/hall_lost_box": {
+   "act": "school_lostbox"
+  },
+  "school/hall_concert_poster": {
+   "act": "school_concert_poster"
+  },
+  "school/hall_coats": {
+   "act": "school_coats"
+  },
+  "school/class_globe": {
+   "act": "school_globe"
+  },
+  "school/bio_microscope": {
+   "act": "school_microscope"
+  },
+  "school/bio_herbarium": {
+   "act": "school_herbarium"
+  },
+  "school/bio_blackboard": {
+   "act": "school_bio_board"
+  },
+  "school/music_blackboard": {
+   "act": "school_music_board"
+  },
+  "school/music_metronome": {
+   "act": "school_metronome"
+  },
+  "school/gym_scoreboard": {
+   "act": "school_scoreboard"
+  },
+  "school/gym_bag": {
+   "act": "gym_bag_search"
+  },
+  "school/gym_court": {
+   "act": "school_gym_run"
+  },
+  "school/gym_stage": {
+   "act": "school_recital"
+  },
+  "school/wall_newspaper": {
+   "act": "school_gazette"
+  }
+ }
+}

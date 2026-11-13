@@ -525,6 +525,116 @@
    "yaw": 90.0
   },
   {
+   "id": "canteen_duty",
+   "kind": "work",
+   "pos": [
+    25.0,
+    37.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_queue_0",
+   "kind": "stand",
+   "pos": [
+    23.6,
+    35.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_queue_1",
+   "kind": "stand",
+   "pos": [
+    25.4,
+    35.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_tea_stand",
+   "kind": "stand",
+   "pos": [
+    21.8,
+    35.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_return_stand",
+   "kind": "stand",
+   "pos": [
+    28.4,
+    23.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_duty",
+   "kind": "work",
+   "pos": [
+    2.9,
+    8.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_lost_stand",
+   "kind": "stand",
+   "pos": [
+    -3.0,
+    14.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bio_scope_stand",
+   "kind": "stand",
+   "pos": [
+    -24.3,
+    18.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "music_stand_spot",
+   "kind": "stand",
+   "pos": [
+    -26.55,
+    38.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gym_whistle",
+   "kind": "work",
+   "pos": [
+    0.0,
+    41.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_bag_stand",
+   "kind": "stand",
+   "pos": [
+    -12.2,
+    53.9,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
    "id": "court_bench_0",
    "kind": "bench",
    "pos": [
@@ -732,13 +842,13 @@
   {
    "pos": [
     -25.0,
-    21.5,
+    19.0,
     3.0
    ],
-   "lumens": 900,
+   "lumens": 1400,
    "colour": "#FFF0DC",
    "kind": "public",
-   "radius": 9.0
+   "radius": 11.0
   },
   {
    "pos": [
@@ -794,6 +904,50 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 16.0
+  },
+  {
+   "pos": [
+    25.0,
+    35.2,
+    3.0
+   ],
+   "lumens": 900,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    3.4,
+    7.42,
+    1.08
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    -25.0,
+    24.6,
+    3.0
+   ],
+   "lumens": 1400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 11.0
+  },
+  {
+   "pos": [
+    -25.5,
+    39.7,
+    1.58
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
   }
  ],
  "things": [
@@ -1318,6 +1472,20 @@
    }
   },
   {
+   "id": "canteen_counter",
+   "kind": "counter",
+   "pos": [
+    25.0,
+    36.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "school_canteen",
+    "role": "teacher"
+   }
+  },
+  {
    "id": "canteen_menu",
    "kind": "board",
    "pos": [
@@ -1458,6 +1626,214 @@
    "yaw": 90.0,
    "props": {
     "what": "exercise_bike"
+   }
+  },
+  {
+   "id": "canteen_tea",
+   "kind": "take",
+   "pos": [
+    21.8,
+    36.2,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "tea"
+   }
+  },
+  {
+   "id": "canteen_return",
+   "kind": "machine",
+   "pos": [
+    29.1,
+    23.0,
+    0.95
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "trolley"
+   }
+  },
+  {
+   "id": "canteen_dayboard",
+   "kind": "board",
+   "pos": [
+    27.6,
+    15.9,
+    1.4
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "menu_day"
+   }
+  },
+  {
+   "id": "hall_handbell",
+   "kind": "machine",
+   "pos": [
+    2.55,
+    7.5,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "handbell"
+   }
+  },
+  {
+   "id": "hall_duty_desk",
+   "kind": "board",
+   "pos": [
+    3.15,
+    7.5,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "duty"
+   }
+  },
+  {
+   "id": "hall_lost_box",
+   "kind": "board",
+   "pos": [
+    -3.0,
+    15.4,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lostbox"
+   }
+  },
+  {
+   "id": "hall_concert_poster",
+   "kind": "board",
+   "pos": [
+    7.3,
+    14.5,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "concert"
+   }
+  },
+  {
+   "id": "hall_coats",
+   "kind": "board",
+   "pos": [
+    -7.3,
+    9.1,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "coats"
+   }
+  },
+  {
+   "id": "class_timetable",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    7.1,
+    1.55
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "lessons"
+   }
+  },
+  {
+   "id": "class_globe",
+   "kind": "machine",
+   "pos": [
+    -12.8,
+    12.9,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "globe"
+   }
+  },
+  {
+   "id": "bio_microscope",
+   "kind": "machine",
+   "pos": [
+    -24.3,
+    17.15,
+    1.15
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "microscope"
+   }
+  },
+  {
+   "id": "bio_herbarium",
+   "kind": "board",
+   "pos": [
+    -26.7,
+    27.78,
+    2.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "herbarium"
+   }
+  },
+  {
+   "id": "music_metronome",
+   "kind": "machine",
+   "pos": [
+    -26.55,
+    39.7,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "metronome"
+   }
+  },
+  {
+   "id": "music_blackboard",
+   "kind": "craft",
+   "pos": [
+    -22.8,
+    39.85,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "gym_scoreboard",
+   "kind": "machine",
+   "pos": [
+    -13.5,
+    44.5,
+    4.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "scoreboard"
+   }
+  },
+  {
+   "id": "gym_bag",
+   "kind": "craft",
+   "pos": [
+    -13.0,
+    55.2,
+    0.2
+   ],
+   "yaw": 20.0,
+   "props": {
+    "what": "bag"
    }
   }
  ],
@@ -5121,8 +5497,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 6522,
-  "detail": 25955,
-  "windows": 348
+  "shell": 6558,
+  "detail": 30369,
+  "windows": 696
  }
 }
