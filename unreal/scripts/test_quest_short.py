@@ -1,5 +1,6 @@
-"""Offscreen check of the two short quests (docs/quests.md): "The evening paper" (evening_paper: a 'bring' objective) and
-"The crows' gift" (crow_gift), first by the quests' own events, then the paper once more through a real talk (Npc.Talk in
+"""Offscreen check of the four short quests (docs/quests.md): "The evening paper" (evening_paper: a 'bring' objective) and
+"The crows' gift" (crow_gift), "The fisherman's cheese" (fisherman_cheese: bring) and
+"The window feeder" (window_feeder: feeder_fill / feeder_visit with target *), first by the quests' own events, then the paper once more through a real talk (Npc.Talk in
 front of Nina Korneeva) so the dialogue's quest lines and the <stage>_empty talk show in the log. QUESTSHORT lines with
 Quest.Dump's QUESTTEST state between the steps.
 
@@ -33,23 +34,47 @@ PLAN = [
     (21.0, "Quest.Dump", "crow_gift"),
     (21.5, "Quest.Event talk Sato_yuki", None),
     (22.5, "Quest.Dump", "crow_told"),
+    # the fisherman's cheese by events: talk, the cheese in the pocket, the talk that brings it (the cheese is taken)
+    (23.0, "Quest.Start fisherman_cheese", None),
+    (23.3, "Quest.Event talk Lange_pyotr", None),
+    (23.8, "Quest.Dump", "cheese_talked"),
+    (24.0, "Quest.Event talk Lange_pyotr", None),
+    (24.5, "Quest.Dump", "cheese_talked_again_empty"),
+    (25.0, "Inventory.Give cheese_braid 1", None),
+    (25.5, "Quest.Dump", "cheese_bought"),
+    (26.0, "Quest.Event talk Lange_pyotr", None),
+    (26.8, "Quest.Dump", "cheese_brought"),
+    # the window feeder by events: any feed, any five birds (targets "*")
+    (27.2, "Quest.Start window_feeder", None),
+    (27.5, "Quest.Event talk Kimura_dasha", None),
+    (28.0, "Quest.Dump", "feeder_talked"),
+    (28.3, "Quest.Event feeder_fill feed_sunflower", None),
+    (28.8, "Quest.Dump", "feeder_filled"),
+    (29.0, "Quest.Event feeder_visit GreatTit", None),
+    (29.2, "Quest.Event feeder_visit BlueTit", None),
+    (29.4, "Quest.Event feeder_visit Greenfinch 2", None),
+    (29.8, "Quest.Dump", "feeder_4_visits"),
+    (30.0, "Quest.Event feeder_visit HouseSparrow", None),
+    (30.5, "Quest.Dump", "feeder_5_visits"),
+    (31.0, "Quest.Event talk Kimura_dasha", None),
+    (32.0, "Quest.Dump", "feeder_told"),
     # the paper again through a real conversation with Nina (her lines are logged by the talk director)
-    (23.0, "Quest.Reset", None),
-    (23.5, "lyud.Birds.Time 15", None),
-    (26.0, "Quest.GoToPerson korneeva_nina 1.3", None),
-    (29.0, "Npc.Where", None),
-    (29.5, "Npc.Talk", None),
-    (30.0, "Quest.Dump", "talk_real_1"),
-    (30.5, "shot showui", "nina_speaks"),
-    (31.0, "Npc.Talk", None), (32.0, "Npc.Talk", None), (33.0, "Npc.Talk", None), (34.0, "Npc.Talk", None),
-    (35.0, "Npc.Talk", None), (36.0, "Npc.Talk", None), (37.0, "Npc.Talk", None),
-    (38.0, "Quest.Dump", "talk_real_1_end"),
-    (39.0, "Npc.Talk", None), (40.0, "Npc.Talk", None), (41.0, "Npc.Talk", None), (42.0, "Npc.Talk", None),
-    (43.0, "Quest.Dump", "talk_real_2_empty"),
-    (44.0, "Inventory.Give daily_paper 1", None),
-    (45.0, "Npc.Talk", None), (46.0, "Npc.Talk", None), (47.0, "Npc.Talk", None), (48.0, "Npc.Talk", None),
-    (49.0, "Npc.Talk", None), (50.0, "Npc.Talk", None),
-    (51.0, "Quest.Dump", "talk_real_3_brought"),
+    (35.0, "Quest.Reset", None),
+    (35.5, "lyud.Birds.Time 15", None),
+    (38.0, "Quest.GoToPerson korneeva_nina 1.3", None),
+    (41.0, "Npc.Where", None),
+    (41.5, "Npc.Talk", None),
+    (42.0, "Quest.Dump", "talk_real_1"),
+    (42.5, "shot showui", "nina_speaks"),
+    (43.0, "Npc.Talk", None), (44.0, "Npc.Talk", None), (45.0, "Npc.Talk", None), (46.0, "Npc.Talk", None),
+    (47.0, "Npc.Talk", None), (48.0, "Npc.Talk", None), (49.0, "Npc.Talk", None),
+    (50.0, "Quest.Dump", "talk_real_1_end"),
+    (51.0, "Npc.Talk", None), (52.0, "Npc.Talk", None), (53.0, "Npc.Talk", None), (54.0, "Npc.Talk", None),
+    (55.0, "Quest.Dump", "talk_real_2_empty"),
+    (56.0, "Inventory.Give daily_paper 1", None),
+    (57.0, "Npc.Talk", None), (58.0, "Npc.Talk", None), (59.0, "Npc.Talk", None), (60.0, "Npc.Talk", None),
+    (61.0, "Npc.Talk", None), (62.0, "Npc.Talk", None),
+    (63.0, "Quest.Dump", "talk_real_3_brought"),
 ]
 
 

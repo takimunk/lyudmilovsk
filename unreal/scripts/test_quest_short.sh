@@ -1,5 +1,5 @@
 #!/bin/sh
-# Offscreen check of the quests evening_paper and crow_gift in Lvl_Scene01 (test_quest_short.py, docs/quests.md): prints the QUESTSHORT and QUESTTEST lines and copies the
+# Offscreen check of the short quests (evening_paper, crow_gift, fisherman_cheese, window_feeder) in Lvl_Scene01 (test_quest_short.py, docs/quests.md): prints the QUESTSHORT and QUESTTEST lines and copies the
 # screenshots to Saved/QuestShortTest/<n>_<name>.png. Needs Content/Scene01 and Characters copied from the main checkout (cp -c).
 # Waits for other offscreen UE runs first.
 set -e
