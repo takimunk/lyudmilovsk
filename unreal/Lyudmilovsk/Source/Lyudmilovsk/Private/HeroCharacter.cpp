@@ -296,6 +296,11 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	ReadInput(DeltaSeconds);
 	UHeroBikeComponent* Bike = FindBike();
+	if (bSeatHeld && !IsSeated())
+	{
+		// the seat went from under him (its actor was destroyed): on his feet again where he is
+		LeaveLostSeat();
+	}
 	if (IsSeated())
 	{
 		KeepSeated();
@@ -461,7 +466,8 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 
 void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal, float InSeatZ)
 {
-	if (!Base)
+	// a body on a bicycle is the bicycle's (it moves the body and holds its collision off): no seat takes it
+	if (!Base || IsOnBike())
 	{
 		return;
 	}
@@ -470,6 +476,9 @@ void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal,
 		UnCrouch();
 	}
 	bCrouchToggled = false;
+	// from one seat straight onto another: the first seat's keys do not follow him
+	SeatMove = nullptr;
+	SeatLeave = nullptr;
 	SeatBase = Base;
 	StandOffset = FVector(38.f, 0.f, 0.f);
 	SeatLocal = InSeatLocal;
@@ -478,9 +487,28 @@ void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal,
 	Move->StopMovementImmediately();
 	// no walking, no falling: the seat holds the body (KeepSeated each frame, after the seat has moved)
 	Move->SetMovementMode(MOVE_None);
-	SeatedCollision = GetCapsuleComponent()->GetCollisionEnabled();
+	if (!bSeatHeld)
+	{
+		// what StandUp gives back: remembered once (seated already, the capsule's collision is off and would be "given back" off)
+		SeatedCollision = GetCapsuleComponent()->GetCollisionEnabled();
+	}
+	bSeatHeld = true;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	KeepSeated();
+}
+
+void AHeroCharacter::LeaveLostSeat()
+{
+	bSeatHeld = false;
+	SeatBase.Reset();
+	SeatMove = nullptr;
+	SeatLeave = nullptr;
+	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Move->MovementMode == MOVE_None)
+	{
+		Move->SetMovementMode(MOVE_Falling);
+	}
 }
 
 void AHeroCharacter::StandUp()
@@ -491,6 +519,7 @@ void AHeroCharacter::StandUp()
 	}
 	const FTransform W = SeatWorld();
 	SeatBase.Reset();
+	bSeatHeld = false;
 	SeatMove = nullptr;
 	SeatLeave = nullptr;
 	// a step forward off the cushion, standing on the floor
