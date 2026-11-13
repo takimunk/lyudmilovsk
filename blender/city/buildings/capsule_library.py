@@ -722,6 +722,8 @@ def _trolley(B, x, y, yaw, seed=0):
             fu.lbox(B.detail, "CT_Steel", fr, sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.0, 0.18)
             fu.lbox(B.detail, "CT_Steel", fr, sx - 0.012, sx + 0.012, sy - 0.012, sy + 0.012, 0.22, 0.6)
     fu.lbox(B.detail, "CT_Steel", fr, 0.36, 0.4, -0.2, 0.2, 0.9, 0.94)
+    for sy in (-0.18, 0.18):                              # the push bar's two uprights (QA r8: the bar floated)
+        fu.lbox(B.detail, "CT_Steel", fr, 0.365, 0.395, sy - 0.012, sy + 0.012, 0.6, 0.91)
     fu.lbox(B.m, "CT_WoodLight", fr, -0.38, 0.38, -0.18, 0.18, 0.3, 0.6)
     p = fr.p(-0.1, 0.0)
     kit.books_stack(B, p[0], p[1], 0.22, yaw + 100, n=4, seed=seed)

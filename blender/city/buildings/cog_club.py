@@ -222,6 +222,7 @@ def build(B):
     _studio(B)
     _front_room(B)
     _lamps_misc(B)
+    _backboards(B)
     import os
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", kit.check(B))
@@ -566,6 +567,53 @@ def _ring_pt(a, r):
     return x, y, yaw_at((x, y), (CX, CY))
 
 
+WALL_HUNG = ("poster", "picture", "notice_board", "wall_map", "menu_board", "sign_plate", "banner", "blackboard", "wall_clock")
+
+
+def _backboards(B):
+    """QA r8: the wings are mostly ribbon glazing, so wall pieces hung by their axis position often land on a window
+    and float in front of the glass. Every wall-hung piece with glass right behind it gets a thin wooden backing board
+    (the piece's width + 4 cm, 3 cm thick) so it hangs on something."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+    if not B.win.faces:
+        return
+    tris = []
+    for f in B.win.faces:
+        for j in range(1, len(f[1]) - 1):
+            tris.append((f[1][0], f[1][j], f[1][j + 1]))
+    tree = BVHTree.FromPolygons([tuple(v) for v in B.win.verts], tris)
+    for it in B.kit_items:
+        if it["name"] not in WALL_HUNG or it["z0"] < 0.3:
+            continue
+        f = it["foot"]
+        ed = [math.dist(f[i], f[(i + 1) % 4]) for i in range(4)]
+        if min(ed[0], ed[1]) > 0.2:
+            continue
+        i0 = 0 if ed[0] >= ed[1] else 1
+        a, b = f[i0], f[i0 + 1]
+        L, t = max(ed[0], ed[1]), min(ed[0], ed[1])
+        e = ((b[0] - a[0]) / L, (b[1] - a[1]) / L)
+        cx, cy = sum(q[0] for q in f) / 4, sum(q[1] for q in f) / 4
+        n = (-e[1], e[0])
+        side = 0
+        for sg in (1, -1):
+            for z in (it["z0"] + 0.02, (it["z0"] + it["z1"]) / 2, it["z1"] - 0.02):
+                if tree.ray_cast(Vector((cx, cy, z)), Vector((n[0] * sg, n[1] * sg, 0.0)), 0.35)[0] is not None:
+                    side = sg
+        if not side:
+            continue
+        h = L / 2 + 0.02
+        d0, d1 = t / 2 - 0.004, t / 2 + 0.03
+        poly = [(cx - e[0] * h + n[0] * side * d0, cy - e[1] * h + n[1] * side * d0),
+                (cx + e[0] * h + n[0] * side * d0, cy + e[1] * h + n[1] * side * d0),
+                (cx + e[0] * h + n[0] * side * d1, cy + e[1] * h + n[1] * side * d1),
+                (cx - e[0] * h + n[0] * side * d1, cy - e[1] * h + n[1] * side * d1)]
+        if sum(poly[i][0] * poly[(i + 1) % 4][1] - poly[(i + 1) % 4][0] * poly[i][1] for i in range(4)) < 0:
+            poly.reverse()
+        prism(B.detail, "CT_WoodLight", poly, it["z0"] - 0.02, it["z1"] + 0.02, top=True, bottom=True)
+
+
 def _foyer(B):
     det = B.detail
     band(det, "CT_PlasterRed", ringpts(3.5), ringpts(3.2), 0.012)
@@ -871,7 +919,7 @@ def _stack(B):
     _cswitch(c, 6.3, -1, "light_switch_workshop", "room")
     for k, a in enumerate((8.4, 11.6)):
         c.along(kit.table, a, 0.0, w=2.4, d=0.9, h=0.8, mat="CT_WoodLight", kind="wood")
-        c.put(kit.tools, a - 0.5, 0.15, z=z + 0.8)
+        c.put(kit.tools, a - 0.5, 0.05, z=z + 0.8)
         c.put(kit.paint_jars, a + 0.5, -0.2, z=z + 0.8, n=5, seed=k)
         c.put(kit.books_stack, a + 0.1, 0.25, z=z + 0.8, n=2, seed=k + 2)
         c.put(kit.table_lamp, a - 0.9, -0.2, z=z + 0.8)
@@ -935,7 +983,7 @@ def _stack(B):
     B.thing("photo_booth", "machine", (x, y, z + 1.0), c.fy(-1, 0), what="photo_booth")
     c.along(kit.table, 9.0, -1.2, w=1.8, d=0.8, h=0.8, mat="CT_WoodLight")
     c.put(kit.slide_projector, 9.0, -1.2, z=z + 0.8)
-    c.put(kit.cardboard_box, 9.9, -1.1, z=z + 0.8, w=0.35, d=0.3, h=0.12, seed=1)
+    c.put(kit.cardboard_box, 9.5, -1.1, z=z + 0.8, w=0.35, d=0.3, h=0.12, seed=1)
     for sgn in (-1, 1):
         kit.stool(B, *c.W(9.0 + 0.5 * sgn, -0.55), z, 0.0)
     c.put(kit.screen_divider, 12.5, -0.4, face=(0, 1))

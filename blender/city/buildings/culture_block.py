@@ -345,7 +345,7 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
         kit.bench(B, bx, fy0 + 0.35, yaw=180, w=2.0, kind="gym")
         T("sideline_bench_%d" % (k + 1), "seat", (bx, fy0 + 0.35, 0.45), 180, height=0.45)
     kit.plant(B, -17.7, 12.0, kind="monstera", pot="CT_PlasterGreen", h=1.6)
-    kit.fire_extinguisher(B, -2.4, fy1, yaw=0)
+    kit.fire_extinguisher(B, -7.55, fy1, yaw=0)         # QA r8: at -2.4 it stood across the window's lower corner
     kit.sack(B, -16.6, 11.6, yaw=20)
     kit.sack(B, -16.0, 12.0, yaw=75)
     kit.sack(B, -16.9, 10.9, yaw=140)

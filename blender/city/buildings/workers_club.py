@@ -423,11 +423,11 @@ def _foyer(B):
         kit.chair(B, cx, 6.85, 0.0, 0.0, kind="wood")
         B.thing("chess_%d" % (k + 1), "play", (cx, 6.2, 0.72), 0.0, what="chess")
         B.spot("chess_seat_%d" % (k + 1), "seat", (cx, 5.55, 0.0), 180.0)
-    kit.table(B, -8.6, 5.4, 0.0, 0.0, w=2.2, d=0.8, mat="CT_WoodLight")
-    for k, rx in enumerate((-9.3, -8.6, -7.9)):
+    kit.table(B, -8.45, 5.4, 0.0, 0.0, w=2.7, d=0.8, mat="CT_WoodLight")      # QA r8: 2.2 m left the lamp and the typewriter half in the air
+    for k, rx in enumerate((-9.2, -8.55, -7.9)):
         kit.radio(B, rx, 5.45, 0.75, 0.0)
     kit.table_lamp(B, -9.6, 5.4, 0.75, 0.0)
-    kit.typewriter(B, -7.5, 5.25, 0.75, 0.0)
+    kit.typewriter(B, -7.4, 5.25, 0.75, 0.0)
     kit.chair(B, -9.0, 6.1, 0.0, 0.0, kind="school")
     kit.chair(B, -8.0, 6.1, 0.0, 0.0, kind="school")
     B.thing("radio_club_table", "craft", (-8.6, 5.4, 0.78), 180.0, what="workbench")

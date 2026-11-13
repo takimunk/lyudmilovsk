@@ -503,8 +503,9 @@ def _ground(B, rnd):
     # ---- east front: HOUSEHOLD (hardware bays, a kitchen row, tables of crockery)
     _wall_run(B, 22.1, 3.6, 1.65, 270.0, zf, [("hardware", 4), ("hardware", 4), ("boxes", 3)], h=2.1)
     r = kit.kitchen_unit(B, 18.0, 10.2, zf, 0.0, modules="cupboard,stove,sink,fridge")
-    kit.samovar(B, 18.9, 10.0, zf + 0.9, 0.0)
-    kit.kitchen_scales(B, 17.6, 10.1, zf + 0.9, 180.0)
+    _back(B, 16.8, 19.2, 10.2, zf, 2.18)               # the display run stands free: close its back like the shelves
+    kit.samovar(B, 17.1, 9.88, zf + 0.9, 0.0)           # on the cupboard (QA r8: it stood inside the fridge)
+    kit.kitchen_scales(B, 18.9, 9.9, zf + 1.7, 180.0)  # on top of the fridge, not sunk in the stove hob
     kit.teapot(B, 17.9, 10.1, zf + 0.9, 0.0)
     tb = kit.table(B, 17.4, 6.4, zf, 0.0, w=1.6, d=0.9, h=0.8)
     kit.plates(B, 16.9, 6.4, tb["top"], 0.0, n=5)
