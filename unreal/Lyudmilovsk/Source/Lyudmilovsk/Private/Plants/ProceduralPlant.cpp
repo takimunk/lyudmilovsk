@@ -1,4 +1,5 @@
 #include "Plants/ProceduralPlant.h"
+#include "NpcDialogue.h"
 #include "Winter/LyudWinter.h"
 
 #include "Camera/PlayerCameraManager.h"
@@ -1117,6 +1118,11 @@ AFallenFruit* AProceduralPlant::AimedFruit() const
 
 void AProceduralPlant::OnInteract()
 {
+	// the press is a talk's (or a bird's peck): not a hand for the fruit
+	if (!ANpcTalkDirector::UsePressed(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+	{
+		return;
+	}
 	const FName Item = GetSpecies().FruitItem;
 	AFallenFruit* Fruit = Item.IsNone() ? nullptr : AimedFruit();
 	UHeroReachComponent* Reach = UHeroReachComponent::GetForPlayer(this);

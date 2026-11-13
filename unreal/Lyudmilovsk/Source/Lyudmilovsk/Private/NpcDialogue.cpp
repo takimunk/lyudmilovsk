@@ -667,7 +667,7 @@ void ANpcTalkDirector::Interact()
 	}
 }
 
-bool ANpcTalkDirector::UsePressed(const APlayerController* PC)
+bool ANpcTalkDirector::UsePressed(const APlayerController* PC, bool bOverTarget)
 {
 	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
 	{
@@ -681,7 +681,7 @@ bool ANpcTalkDirector::UsePressed(const APlayerController* PC)
 	// only on the frame of a press: the level has one director
 	for (TActorIterator<ANpcTalkDirector> It(PC->GetWorld()); It; ++It)
 	{
-		if (It->IsEngaged())
+		if (bOverTarget ? It->IsTalking() : It->IsEngaged())
 		{
 			return false;
 		}

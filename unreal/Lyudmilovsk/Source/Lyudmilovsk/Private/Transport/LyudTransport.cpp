@@ -1086,7 +1086,7 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		UI->SetPrompt(this, PromptText);
 		PromptRefresh = 0.25f;
 	}
-	const bool bE = PromptCooldown <= 0.f && ANpcTalkDirector::UsePressed(PC) && !UI->IsOpen();
+	const bool bE = PromptCooldown <= 0.f && ANpcTalkDirector::UsePressed(PC, true) && !UI->IsOpen();
 	if (bE && DoorCabin >= 0)
 	{
 		LT::FCabin& C = Net->Cabins[DoorCabin];

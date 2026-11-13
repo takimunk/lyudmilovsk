@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CoreGlobals.h"
 #include "GameFramework/Actor.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Subsystems/WorldSubsystem.h"
@@ -118,8 +119,15 @@ public:
 	 * "Was E pressed for me?" for everything in the world that polls the key: true on the frame E went down unless the
 	 * dialogue has the press (IsEngaged). Use it instead of PC->WasInputKeyJustPressed(EKeys::E), so one press never both
 	 * moves a talk on and opens a door, buys a drink or sits the hero down. Nothing is consumed: everyone may ask.
+	 *
+	 * bOverTarget: for what the hero does where he sits or rides (get up, the cabin's door, get off the bicycle). A person
+	 * who merely is in front of him does not hold the press there, or a neighbour in the cabin would keep him in his seat:
+	 * only a talk that is going on does.
 	 */
-	static bool UsePressed(const APlayerController* PC);
+	static bool UsePressed(const APlayerController* PC, bool bOverTarget = false);
+
+	/** A talk is going on, or its last press was just taken (narrower than IsEngaged: nobody merely in front of him). */
+	bool IsTalking() const { return TalkingIndex != INDEX_NONE || (bTookPress && GFrameCounter - TookPressAt <= 1); }
 
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;

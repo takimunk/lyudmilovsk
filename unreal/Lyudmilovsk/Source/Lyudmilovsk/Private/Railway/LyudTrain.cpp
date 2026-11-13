@@ -1,5 +1,6 @@
 #include "Railway/LyudTrain.h"
 
+#include "NpcDialogue.h"
 #include "Birds/BirdActor.h"
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
@@ -921,6 +922,11 @@ bool ALyudTrain::SitPlayer(int32 Seat)
 
 void ALyudTrain::OnUse()
 {
+	// a press that moves a talk on does not also sit him down or stand him up
+	if (!ANpcTalkDirector::UsePressed(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr, true))
+	{
+		return;
+	}
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (!Hero)
 	{

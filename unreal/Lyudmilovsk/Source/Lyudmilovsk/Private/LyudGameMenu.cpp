@@ -203,6 +203,7 @@ void ULyudGameMenuSubsystem::RestoreGameInput()
 	{
 		if (It->IsActive())
 		{
+			bCursorBefore = false;
 			It->Activate(PC);
 			return;
 		}

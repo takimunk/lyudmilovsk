@@ -284,7 +284,7 @@ void UHeroBikeComponent::UpdateKeys()
 	const bool bFree = !PC->IsMoveInputIgnored() && !(UI && UI->IsOpen());
 	const UHeroReachComponent* Reach = UHeroReachComponent::Get(H);
 	const bool bBusy = (Reach && Reach->IsBusy()) || H->IsSeated() || H->IsHidden();
-	const bool bE = bFree && ANpcTalkDirector::UsePressed(PC);
+	const bool bE = bFree && ANpcTalkDirector::UsePressed(PC, true);
 	const bool bR = bFree && PC->WasInputKeyJustPressed(EKeys::R);
 	FText Prompt;
 	switch (Act)
