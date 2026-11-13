@@ -143,6 +143,8 @@ private:
 	bool bStayUpSent = false;
 	/** Gatherings told to the people (id -> still on this update). */
 	TSet<FName> Gatherings;
+	/** The people's simulation those were told to (compared only, never read through): a new one is told again. */
+	const void* LastSim = nullptr;
 	/** Phases running (festival.phase) for the start/end events and the shows. */
 	TSet<FName> RunningPhases;
 	TMap<FName, FLyudVenue> Venues;

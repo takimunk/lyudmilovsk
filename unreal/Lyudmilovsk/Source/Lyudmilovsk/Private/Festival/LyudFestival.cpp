@@ -452,6 +452,20 @@ void ULyudFestivalSubsystem::Update()
 	const LyudFest::FDate Today = ToDate(Now);
 	const float Hour = (float)Now.GetTimeOfDay().GetTotalHours();
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+	// what was told to a people's life that has since been stopped or started again (lyud.People 0 / 1) is gone with it:
+	// the new one is told again; while it is off nothing can be told
+	const LyudPeople::FWorld* SimNow = People ? People->GetSim() : nullptr;
+	if (!SimNow)
+	{
+		People = nullptr;
+	}
+	if (SimNow != LastSim || (SimNow && SimNow->Gatherings.size() < (size_t)Gatherings.Num()))
+	{
+		LastSim = SimNow;
+		Gatherings.Reset();
+		bDayOffSent = false;
+		bStayUpSent = false;
+	}
 	const FString DayKeyNow = DateKey(Today);
 	if (DayKeyNow != HeroDay)
 	{
