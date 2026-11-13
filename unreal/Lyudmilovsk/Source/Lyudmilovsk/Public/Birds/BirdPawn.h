@@ -252,6 +252,8 @@ private:
 	bool bOwnOutsideBody = false;
 	bool bInsideView = true;
 	bool bFirstPersonBody = false;
+	/** The species has a body made to be worn from its own eye (UBirdSpeciesLibrary::HasFirstPersonBody, asked in Setup). */
+	bool bHasFirstPersonMesh = false;
 	/** 0..1 eased: the view widened by lyud.Bird.TurnFov; the neck lifted for a look down and a look round (first person). */
 	float LookWiden = 0.f;
 	float NeckDown = 0.f, NeckSide = 0.f;
