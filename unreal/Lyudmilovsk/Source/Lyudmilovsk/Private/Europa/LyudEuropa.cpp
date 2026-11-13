@@ -1273,6 +1273,16 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	ACharacter* Hero = PlayerHero(GetWorld(), &PC);
 	if (!Airlock || !Site || !Hero || !PC)
 	{
+		// not the hero any more (a bird's flight): the hatch's prompt does not stay on the screen
+		if (!ShownPrompt.IsEmpty())
+		{
+			Action.Reset();
+			ShownPrompt.Reset();
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			{
+				UI->SetPrompt(this, FText::GetEmpty());
+			}
+		}
 		return;
 	}
 	if (Climb.Num() > 0)
