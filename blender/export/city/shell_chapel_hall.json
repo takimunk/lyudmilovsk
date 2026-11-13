@@ -1114,7 +1114,117 @@
    "yaw": 270.0
   },
   {
-   "id": "sbench_main_105",
+   "id": "sound_seat",
+   "kind": "seat",
+   "pos": [
+    -0.85,
+    14.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "sound_operator",
+   "kind": "stand",
+   "pos": [
+    0.7,
+    14.7,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "quartet_1",
+   "kind": "seat",
+   "pos": [
+    -8.427,
+    16.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "quartet_2",
+   "kind": "seat",
+   "pos": [
+    -7.38,
+    16.767,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "quartet_3",
+   "kind": "seat",
+   "pos": [
+    -5.95,
+    16.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "quartet_4",
+   "kind": "seat",
+   "pos": [
+    -4.52,
+    16.767,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "quartet_5",
+   "kind": "seat",
+   "pos": [
+    -3.473,
+    16.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "backstage_stand",
+   "kind": "stand",
+   "pos": [
+    0.9,
+    21.0,
+    1.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "backstage_prop",
+   "kind": "stand",
+   "pos": [
+    -8.2,
+    22.6,
+    1.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "barre_1",
+   "kind": "stand",
+   "pos": [
+    3.4,
+    13.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "barre_2",
+   "kind": "stand",
+   "pos": [
+    3.4,
+    14.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "sbench_main_116",
    "kind": "bench",
    "pos": [
     -0.15,
@@ -1278,6 +1388,39 @@
    "colour": "#FFD6A0",
    "kind": "public",
    "radius": 6.0
+  },
+  {
+   "pos": [
+    -1.35,
+    15.6,
+    1.11
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    -3.05,
+    19.15,
+    2.4
+   ],
+   "lumens": 350,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    1.8,
+    22.4,
+    2.08
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
   },
   {
    "pos": [
@@ -1931,6 +2074,201 @@
    "props": {
     "height": 0.45
    }
+  },
+  {
+   "id": "sound_desk",
+   "kind": "machine",
+   "pos": [
+    -0.65,
+    15.3,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "mixer"
+   }
+  },
+  {
+   "id": "light_panel",
+   "kind": "machine",
+   "pos": [
+    1.95,
+    19.3,
+    2.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "stage_lights"
+   }
+  },
+  {
+   "id": "premiere_seat",
+   "kind": "screen",
+   "pos": [
+    -6.45,
+    18.5,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "premiere"
+   }
+  },
+  {
+   "id": "foyer_postcards",
+   "kind": "take",
+   "pos": [
+    -14.9,
+    11.0,
+    1.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "item": "postcard"
+   }
+  },
+  {
+   "id": "ghost_light",
+   "kind": "board",
+   "pos": [
+    -3.05,
+    19.15,
+    2.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "ghost_light"
+   }
+  },
+  {
+   "id": "costume_rail",
+   "kind": "board",
+   "pos": [
+    -9.2,
+    19.15,
+    2.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "costumes"
+   }
+  },
+  {
+   "id": "prop_table",
+   "kind": "board",
+   "pos": [
+    -9.22,
+    23.1,
+    1.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "props"
+   }
+  },
+  {
+   "id": "makeup_mirror",
+   "kind": "machine",
+   "pos": [
+    1.9,
+    22.1,
+    2.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "makeup"
+   }
+  },
+  {
+   "id": "programme_wall",
+   "kind": "board",
+   "pos": [
+    -1.65,
+    4.95,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "programme"
+   }
+  },
+  {
+   "id": "rehearsal_board",
+   "kind": "board",
+   "pos": [
+    1.9,
+    6.45,
+    1.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rehearsal"
+   }
+  },
+  {
+   "id": "exhibit_case",
+   "kind": "board",
+   "pos": [
+    -11.9,
+    14.5,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "case"
+   }
+  },
+  {
+   "id": "guest_book",
+   "kind": "board",
+   "pos": [
+    -12.2,
+    8.8,
+    1.1
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "dance_mirror",
+   "kind": "board",
+   "pos": [
+    2.65,
+    14.0,
+    1.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "dance_mirror"
+   }
+  },
+  {
+   "id": "dance_floor_centre",
+   "kind": "sport",
+   "pos": [
+    6.9,
+    13.9,
+    0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dance_night"
+   }
+  },
+  {
+   "id": "bar_chalk",
+   "kind": "board",
+   "pos": [
+    10.4,
+    5.9,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "bar_chalk"
+   }
   }
  ],
  "flats": [],
@@ -2466,8 +2804,8 @@
   "4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen"
  ],
  "tris": {
-  "shell": 3938,
-  "detail": 22439,
+  "shell": 3998,
+  "detail": 25954,
   "windows": 100
  }
 }
