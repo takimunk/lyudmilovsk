@@ -234,6 +234,22 @@ namespace
 					Stale.bStale = true;
 				}
 			});
+			// a value set before the level loads (-dpcvars) applies once the map is there
+			FCoreUObjectDelegates::PostLoadMapWithWorld.AddLambda([](UWorld* World)
+			{
+				SignLanguage.Reset();                    // the new map's signs get their language on the next tick
+				LampCaches.Reset();                      // and its lamps are found again
+				ShadowLamps.Reset();
+				if (!IsOn())
+				{
+					ApplyToWorld(World, false);
+				}
+			});
+			// the first map may have loaded before this first tick: the same for it (hiding twice does no harm)
+			if (!IsOn())
+			{
+				ApplyAll();
+			}
 		}
 		for (const FWorldContext& Context : GEngine->GetWorldContexts())
 		{
@@ -289,22 +305,13 @@ namespace
 		return true;
 	}
 
-	// a value set before the level loads (-dpcvars) applies once the map is there
+	// Only the ticker here (the core ticker is made on first use, so it is there whatever the order of the static
+	// initialisers); the engine's delegates are hooked on its first tick (LampTick).
 	struct FAcademOnLoad
 	{
 		FAcademOnLoad()
 		{
 			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateStatic(&LampTick), 0.5f);
-			FCoreUObjectDelegates::PostLoadMapWithWorld.AddLambda([](UWorld* World)
-			{
-				SignLanguage.Reset();                    // the new map's signs get their language on the next tick
-				LampCaches.Reset();                      // and its lamps are found again
-				ShadowLamps.Reset();
-				if (!IsOn())
-				{
-					ApplyToWorld(World, false);
-				}
-			});
 		}
 	} AcademOnLoad;
 }
