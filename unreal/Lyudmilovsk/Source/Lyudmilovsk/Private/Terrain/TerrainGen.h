@@ -12,7 +12,10 @@ namespace LyudTerrain
 	enum EKind : uint8_t { Land = 0, Beach = 1, Seabed = 2 };
 
 	/** Surface layers, in the landscape material's order. */
-	enum ELayer : int { Grass = 0, Meadow, Dirt, Mud, Sand, Rock, Forest, NumLayers };
+	// Snow, Scoria and Sulfur are the North's (docs/north.md): firn of the summer snowfields, loose volcanic cinder,
+	// ground bleached and crusted by the fumaroles' steam. They have no photos of their own: the landscape material
+	// draws them from the Sand, Dirt and Mud photos (import_terrain.py ALIAS).
+	enum ELayer : int { Grass = 0, Meadow, Dirt, Mud, Sand, Rock, Forest, Snow, Scoria, Sulfur, NumLayers };
 	extern const char* const LayerNames[NumLayers];
 
 	struct FInputs
@@ -29,6 +32,11 @@ namespace LyudTerrain
 		std::vector<uint8_t> Cliff;              // 255 = on the face of the coastal bluff (the map's own hint; slope adds to it)
 		std::vector<uint8_t> RaiseOnly;          // 255 = the detail may raise the ground here, never lower it (over the corridor)
 		std::vector<uint8_t> SeaKeep;            // 255 = plain sand bed here, no reef or stones (the railway's bank, the hatch); may be empty
+		// the North (tools/north.py); all four empty in inputs written before it
+		std::vector<uint8_t> Snow;               // 255 = a summer snowfield lies here
+		std::vector<uint8_t> Scoria;             // 255 = loose cinder (the cone and its ash apron)
+		std::vector<uint8_t> Lava;               // 255 = on the blocky lava flow
+		std::vector<uint8_t> Sulfur;             // 255 = ground altered by the fumaroles' steam
 		std::vector<std::vector<std::pair<float, float>>> Tracks;   // dirt tracks, map metres
 	};
 

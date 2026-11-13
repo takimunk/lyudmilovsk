@@ -10,7 +10,7 @@ C++ (ULyudTerrainLibrary, Source/Lyudmilovsk/Private/Terrain) on the inputs this
 Everyone who places things on the ground uses ground_z(x, y) (or a line trace in Unreal).
 
 Grid: one vertex per metre in map metres, from (GRID_X0, GRID_Y0), GRID_NX x GRID_NY vertices: that
-is the Unreal Landscape's grid (126-quad components, 21 x 25 of them).
+is the Unreal Landscape's grid (126-quad components, 21 x 41 of them: the last 16 rows are the North, docs/north.md).
 """
 import heapq
 import json
@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import world_map as W  # noqa: E402
 
 COMPONENT_QUADS = 126                 # 2 x 2 sections of 63 quads
-COMPONENTS = (21, 25)
+COMPONENTS = (21, 41)
 GRID_X0, GRID_Y0 = int(W.X_MIN), int(W.Y_MIN)
 GRID_NX = COMPONENTS[0] * COMPONENT_QUADS + 1
 GRID_NY = COMPONENTS[1] * COMPONENT_QUADS + 1
@@ -102,11 +102,12 @@ def _anchors():
             pts.append(("cable_top", cc["upper"]))
     pts += [("woods_inland", (-1000.0, 150.0)), ("woods_south", (-350.0, -700.0)),
             ("woods_north", (-500.0, 1950.0)), ("club_back", (-40.0, -120.0))]
+    pts += list(W._north().ANCHORS.items())           # the North's trail (tools/north.py)
     return dict(pts)
 
 
 TRACKS = [("alley_end", "town"), ("alley_end", "woods_inland"), ("club_back", "woods_south"),
-          ("town", "woods_north"), ("alley_end", "cable_top")]
+          ("town", "woods_north"), ("alley_end", "cable_top")] + list(W._north().TRACKS)
 
 
 def _route(a, b, step=8.0):
@@ -313,6 +314,8 @@ def _write_inputs(out_dir, log):
     cliff = bytearray()
     raise_ = bytearray()
     keep = bytearray()
+    snow, scoria, lava, sulfur = bytearray(), bytearray(), bytearray(), bytearray()
+    N = W._north()
     rail_y = _railway_line_y()
     has_cliff = hasattr(W, "cliff")
     hpack = struct.Struct("<f")
@@ -355,6 +358,16 @@ def _write_inputs(out_dir, log):
             cliff.append(int(255 * min(1.0, max(0.0, W.cliff(x, y)))) if has_cliff and 0 < s < 250 else 0)
             raise_.append(int(round(255 * raise_only(x, y))) if abs(x) < 25 and y < -25 else 0)
             keep.append(int(round(255 * sea_keep(x, y, rail_y))) if s <= 0 else 0)
+            if y > N.Y0 and s > 0:                    # the North's ground (tools/north.py)
+                snow.append(int(round(255 * N.snow(x, y))))
+                scoria.append(int(round(255 * N.scoria(x, y))))
+                lava.append(int(round(255 * N.lava(x, y))))
+                sulfur.append(int(round(255 * N.sulfur(x, y))))
+            else:
+                snow.append(0)
+                scoria.append(0)
+                lava.append(0)
+                sulfur.append(0)
     low = [(x, y) for y in range(int(W.CORRIDOR_END_Y), 1, 10) for x in (-8, 0, 8) if W.height(x, y) < CORRIDOR_FLOOR]
     if low:
         log("terrain: WARNING the map's ground is under %.0f m over the corridor at %s" % (CORRIDOR_FLOOR, low[:6]))
@@ -371,12 +384,13 @@ def _write_inputs(out_dir, log):
         for t in tr:
             f.write(struct.pack("<i", len(t)))
             f.write(struct.pack("<%df" % (2 * len(t)), *[c for p in t for c in p]))
-        for blob in (height, prot, kind, forest, hole, cliff, raise_, keep):
+        for blob in (height, prot, kind, forest, hole, cliff, raise_, keep, snow, scoria, lava, sulfur):
             f.write(blob)
     meta = {"nx": GRID_NX, "ny": GRID_NY, "x0": GRID_X0, "y0": GRID_Y0, "cell": 1.0, "seed": SEED,
             "sea_z": W.SEA_Z, "beach_w": W.BEACH_W, "tracks": [[list(p) for p in t] for t in tr],
             "components": list(COMPONENTS), "component_quads": COMPONENT_QUADS,
-            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8", "sea_keep:u8"]}
+            "layout": ["height:f32", "protect:u8", "kind:u8", "forest:u8", "hole:u8", "cliff:u8", "raise_only:u8", "sea_keep:u8",
+                       "snow:u8", "scoria:u8", "lava:u8", "sulfur:u8"]}
     with open(os.path.join(out_dir, "terrain_in.json"), "w") as f:
         json.dump(meta, f)
     return meta

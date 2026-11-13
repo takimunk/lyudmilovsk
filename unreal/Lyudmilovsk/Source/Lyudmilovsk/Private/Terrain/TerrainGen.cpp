@@ -8,7 +8,7 @@
 
 namespace LyudTerrain
 {
-const char* const LayerNames[NumLayers] = {"Grass", "Meadow", "Dirt", "Mud", "Sand", "Rock", "Forest"};
+const char* const LayerNames[NumLayers] = {"Grass", "Meadow", "Dirt", "Mud", "Sand", "Rock", "Forest", "Snow", "Scoria", "Sulfur"};
 
 namespace
 {
@@ -325,6 +325,12 @@ std::string ReadInputs(const std::string& Dir, FInputs& Out)
 		// written since the underwater relief (older inputs have none: no bed is kept plain)
 		Out.SeaKeep.resize(N);
 		if (!Ok || std::fread(Out.SeaKeep.data(), 1, N, F) != N) Out.SeaKeep.assign(N, 0);
+		// written since the North (older inputs have none: no snow, cinder, lava or steaming ground anywhere)
+		for (std::vector<uint8_t>* A : {&Out.Snow, &Out.Scoria, &Out.Lava, &Out.Sulfur})
+		{
+			A->resize(N);
+			if (!Ok || std::fread(A->data(), 1, N, F) != N) A->assign(N, 0);
+		}
 	}
 	std::fclose(F);
 	return Ok ? std::string() : "bad or short " + Path;
@@ -485,6 +491,9 @@ void Generate(const FInputs& In, FOutputs& Out)
 			MacroSlope[I] = std::sqrt(GX * GX + GY * GY);
 		}
 
+	// the North's masks (0 everywhere on inputs older than it)
+	auto Mask = [N](const std::vector<uint8_t>& A, size_t I) { return A.size() == N ? A[I] / 255.f : 0.f; };
+
 	// --- natural detail: rolling land, small rises and dips, hummocks, dunes ---
 	std::vector<float> Free(N);
 	std::vector<float> SeaStone(N, 0.f), SeaMud(N, 0.f);
@@ -508,7 +517,23 @@ void Generate(const FInputs& In, FOutputs& Out)
 				const float Ridge = 1.f - std::fabs(Noise3.Fbm(WX, WY, 70.f, 3));
 				const float Gully = (Ridge * Ridge * Ridge - 0.35f) * 1.2f * Smooth(0.08f, 0.35f, MacroSlope[I]);
 				const float Hummock = Noise3.Fbm(WX * 1.7, WY * 1.7, 9.f, 2) * 0.3f * Rough;
-				H += ((Rolling + Mid + Knoll + Small) * Rough * Calm - Gully * Calm + Hummock) * (1.f - P);
+				// the North: the cinder cone keeps its clean shape (loose cinder lies at its angle of repose, no knolls);
+				// the lava flow is a sea of clinker: ridged blocks a few metres across, pressure ridges along it
+				const float Cinder = Mask(In.Scoria, I), LavaV = Mask(In.Lava, I), Steam = Mask(In.Sulfur, I);
+				const float Soil = 1.f - 0.85f * std::max(Cinder, LavaV);
+				H += ((Rolling + Mid + Knoll + Small) * Rough * Calm * Soil - Gully * Calm * (1.f - 0.6f * Cinder) + Hummock * Soil) * (1.f - P);
+				if (LavaV > 0.f)
+				{
+					const float Block = 1.f - std::fabs(Noise3.Fbm(WX + 5000.0, WY - 3000.0, 11.f, 3));
+					const float Press = 1.f - std::fabs(Noise.Fbm(WX * 0.45 - 800.0, WY * 1.6 + 600.0, 38.f, 2));
+					const float Clinker = Noise2.Fbm(WX + 1200.0, WY + 900.0, 3.2f, 2);
+					H += ((Block * Block - 0.42f) * 1.5f + (Press * Press * Press - 0.3f) * 1.1f + Clinker * 0.3f) * LavaV * (1.f - P);
+				}
+				if (Steam > 0.f)
+				{
+					// the steaming ground: low crusted mounds and slumped hollows a few metres across
+					H += Noise2.Fbm(WX - 2100.0, WY + 1700.0, 6.f, 2) * 0.32f * Steam * (1.f - P);
+				}
 			}
 			else if (In.Kind[I] == Beach)
 			{
@@ -527,7 +552,8 @@ void Generate(const FInputs& In, FOutputs& Out)
 				SeaMud[I] = Mud;
 			}
 			Out.Height[I] = H;
-			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) : 0.f;
+			// rain cuts rills in the cinder but not in fresh lava
+			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) * (1.f - Mask(In.Lava, I)) : 0.f;
 		}
 
 	// --- the coastal bluff: gullies cut down its face, slump benches, landslide scars with their debris,
@@ -639,6 +665,40 @@ void Generate(const FInputs& In, FOutputs& Out)
 	// --- the forest floor's micro-relief: mossy hummocks and old windthrow pits with their root mounds ---
 	ForestFloorRelief(In, TrackD, Out);
 
+	// --- the North's snowfields: firn fills its hollow, smooth and a little domed, with a frayed melting edge ---
+	std::vector<float> SnowV(N, 0.f);
+	if (In.Snow.size() == N)
+	{
+		size_t Any = 0;
+		for (size_t I = 0; I < N; ++I) Any += In.Snow[I] > 0;
+		if (Any)
+		{
+			const std::vector<float> Bed = Blur(Out.Height, NX, NY, 5, 2);
+			double Area = 0.0;
+			for (int Y = 0; Y < NY; ++Y)
+				for (int X = 0; X < NX; ++X)
+				{
+					const size_t I = size_t(Y) * NX + X;
+					if (!In.Snow[I] || In.Kind[I] != Land) continue;
+					const double WX = MX(X), WY = MY(Y);
+					// the edge melts back unevenly: scallops a few metres across, tongues down the runnels
+					const float Fray = 0.3f + 0.42f * Noise2.Fbm(WX + 640.0, WY - 410.0, 34.f, 3) + 0.14f * Noise3.Fbm(WX, WY, 7.f, 2)
+						+ 0.05f * Noise.Fbm(WX, WY, 2.2f, 2);
+					const float S = Smooth(Fray - 0.03f, Fray + 0.05f, In.Snow[I] / 255.f) * (1.f - In.Protect[I] / 255.f);
+					if (S <= 0.f) continue;
+					SnowV[I] = S;
+					Area += S;
+					// sun cups on the firn: shallow dimples half a metre across
+					const float Cups = Noise3.Fbm(WX * 2.3, WY * 2.3, 1.7f, 2) * 0.06f;
+					const float Thick = 0.2f + 1.2f * Smooth(Fray, 1.f, In.Snow[I] / 255.f);
+					Out.Height[I] = Lerp(Out.Height[I], std::max(Out.Height[I], Bed[I]) + Thick + Cups, S);
+				}
+			char Buf[160];
+			std::snprintf(Buf, sizeof(Buf), "snowfields: %.0f m2 of firn\n", Area);
+			Out.Report += Buf;
+		}
+	}
+
 	// the portal hole and every protected vertex keep the macro height exactly; over the corridor the
 	// ground may rise but not sink
 	for (size_t I = 0; I < N; ++I)
@@ -694,6 +754,11 @@ void Generate(const FInputs& In, FOutputs& Out)
 			const float MudV = std::max(TrackCore * (0.55f + 0.45f * Wet[I]), Hollow * 0.8f) * (1.f - P);
 			const float ForestV = In.Forest[I] / 255.f;
 			const float MeadowV = Smooth(0.0f, 0.42f, Noise.Fbm(WX - 700.0, WY + 200.0, 70.f, 3) + 0.25f * (1.f - Wet[I]) - 0.1f) * 0.85f;
+			// the North: cinder (thinning into the meadow through a patchy apron), lava (bare rock with cinder in its
+			// cracks), the steamed ground (crusts in patches, grey mud where it is wettest)
+			const float LavaV = Mask(In.Lava, I);
+			const float CinderV = Smooth(0.18f, 0.62f, Mask(In.Scoria, I) + 0.22f * Patch);
+			const float SteamV = Smooth(0.2f, 0.7f, Mask(In.Sulfur, I) + 0.3f * Patch + 0.1f * Fine);
 
 			float W[NumLayers] = {};
 			float Rem = 1.f;
@@ -705,8 +770,11 @@ void Generate(const FInputs& In, FOutputs& Out)
 				Take(ELayer::Mud, SeaMud[I] * 0.8f);
 			}
 			Take(ELayer::Sand, SandV);
-			Take(ELayer::Rock, In.Kind[I] == Land ? RockV : 0.f);
-			Take(ELayer::Mud, In.Kind[I] == Land ? MudV : 0.f);
+			Take(ELayer::Snow, SnowV[I]);
+			Take(ELayer::Rock, In.Kind[I] == Land ? std::max(RockV * (1.f - 0.8f * CinderV), LavaV * (0.62f + 0.2f * Fine)) : 0.f);
+			Take(ELayer::Scoria, In.Kind[I] == Land ? std::max(CinderV, LavaV) : 0.f);
+			Take(ELayer::Mud, In.Kind[I] == Land ? std::max(MudV, SteamV * Smooth(0.75f, 0.97f, Wet[I]) * 0.8f) : 0.f);
+			Take(ELayer::Sulfur, In.Kind[I] == Land ? SteamV : 0.f);
 			Take(ELayer::Dirt, In.Kind[I] == Land ? DirtV : 0.f);
 			Take(ELayer::Forest, ForestV);
 			Take(ELayer::Meadow, MeadowV);

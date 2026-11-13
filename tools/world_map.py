@@ -30,13 +30,13 @@ DOOR_X = -1.93                # the blast door's centre (layout exit_door.center
 
 # Map extents (the sky dome is 2800 m around the portal).
 X_MIN, X_MAX = -1300.0, 1300.0
-Y_MIN, Y_MAX = -900.0, 2200.0
+Y_MIN, Y_MAX = -900.0, 4200.0     # north of Y 2200 lies the North (tools/north.py, docs/north.md)
 
 # Water line X along the coast, (Y, X) control points: the shore runs north past the club and bends
 # out to sea in the north, so the walk out of the door sees the coast run out to a cape ahead on the
 # left; the beach right below the club shows from the brow, a few steps left of the path.
 SHORE = [(-1400, 460), (-900, 330), (-400, 190), (0, 135), (400, 140), (1000, 175), (1600, 260),
-         (2200, 480), (2800, 780)]
+         (2200, 480), (2800, 780), (3300, 905), (3800, 880), (4300, 790), (4900, 690)]
 
 
 def _catmull(pts, y):
@@ -165,6 +165,8 @@ def plateau(x, y):
     z = z + (TOP_Z - z) * upland(x, y) * (1.0 - forecourt_level(x, y)) if TOP_Z > z else z
     if abs(x) <= 37.0 and -60.0 <= y <= 12.0:        # the hillside right round the portal
         z = max(z, mound(x, y))
+    if y > 2100.0:                                   # the North: volcano country beyond the hills (tools/north.py)
+        z = _north().plateau(x, y, z)
     return z
 
 
@@ -191,6 +193,11 @@ def _edge_top(y):
 def _city():
     import city_plan                                 # imports this module: load it lazily
     return city_plan
+
+
+def _north():
+    import north                                     # imports this module: load it lazily
+    return north
 
 
 def height(x, y):
@@ -553,7 +560,7 @@ FOREST_CELL = 40.0                # carving grid for keeping trees out of places
 def _tree_free(x, y):
     """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
     free = globals().get("academ_tree_free")
-    return bool(free and free(x, y)) or _city().tree_free(x, y)
+    return bool(free and free(x, y)) or _city().tree_free(x, y) or (y > 2100.0 and _north().tree_free(x, y))
 
 
 def _carve(x, y, hx, hy):
@@ -615,8 +622,13 @@ def forests():
     for x, y, hx, hy in _tiles(X_MIN, -560.0, -40.0, 400.0):     # its north slope swings north inland
         add(x, y, hx, hy, "old", LOW_Z + 8.0, 100.0)
     # the hills beyond the town
-    for x, y, hx, hy in _tiles(X_MIN, cliff_top(1800) - 5, 1480.0, Y_MAX):
+    N = _north()
+    for x, y, hx, hy in _tiles(X_MIN, cliff_top(1800) - 5, 1480.0, N.FOREST_END):
         add(x, y, hx, hy, "old", LOW_Z + 6.0, 100.0)
+    # the North: stone birch park woodland at the tree line, shrubs over the meadows (tools/north.py)
+    FOREST_MIX.update(N.FOREST_MIX)
+    for x, y, hx, hy, mix, density, z0, z1 in N.forests(_tiles):
+        add(x, y, hx, hy, mix, z0, z1, density)
     # the inland ridge closing the valley
     for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
         add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
@@ -687,6 +699,7 @@ def grass_patches():
     # (the reed grows in clumps along them); the starlings' and swallows' roost (docs/bird_life.md)
     x, y, hx, hy = REEDBED
     out.append((x, y, hx, hy, "CommonReed", 731, 2.5, -100.0, LOW_Z + 2.0))
+    out += _north().grass_patches()                   # the North's meadows round its places and along its trail
     return out
 
 
@@ -729,6 +742,8 @@ def keep_flat(x, y):
         s_top = C.wall_s(len(C.WALLS) - 1, y) + C.WALL_DEPTH + C.TOP_KEEP
         k = max(k, C.city_mask(y) * _ramp(max(0.0, s - s_top), 0.0, 60.0))
     k = max(k, academ_flat(x, y))
+    if y > 2100.0:
+        k = max(k, _north().keep_flat(x, y))
     return k
 
 
