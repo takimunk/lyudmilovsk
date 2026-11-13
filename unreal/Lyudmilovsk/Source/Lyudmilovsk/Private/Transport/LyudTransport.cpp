@@ -736,7 +736,8 @@ void ULyudTransportSubsystem::SitDown(int32 Cabin, int32 K)
 	// the hero's own seat (AHeroCharacter::SitOn, as on the train): carried with the cabin, its swing included
 	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
-	if (!Hero || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
+	// not from a bike's saddle: the seat would keep the collision the bike took off (none) and hand it back on standing up
+	if (!Hero || Hero->IsOnBike() || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
 	{
 		return;
 	}

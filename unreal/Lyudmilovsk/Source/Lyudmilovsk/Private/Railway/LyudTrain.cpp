@@ -868,7 +868,7 @@ int32 ALyudTrain::SeatInView() const
 	// any free seat of the car the player stands in, within reach (1.4 m) and where they look
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	const APlayerCameraManager* Cam = UGameplayStatics::GetPlayerCameraManager(this, 0);
-	if (!Hero || !Cam || Hero->IsSeated() || !Rider.IsValid())
+	if (!Hero || !Cam || Hero->IsSeated() || Hero->IsOnBike() || !Rider.IsValid())
 	{
 		return -1;
 	}
@@ -909,7 +909,8 @@ int32 ALyudTrain::SeatInView() const
 bool ALyudTrain::SitPlayer(int32 Seat)
 {
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (!Hero || !Seats.IsValidIndex(Seat) || !CarRoots.IsValidIndex(Seats[Seat].Car))
+	// not from a bike's saddle: the seat would keep the collision the bike took off (none) and hand it back on standing up
+	if (!Hero || Hero->IsOnBike() || !Seats.IsValidIndex(Seat) || !CarRoots.IsValidIndex(Seats[Seat].Car))
 	{
 		return false;
 	}
