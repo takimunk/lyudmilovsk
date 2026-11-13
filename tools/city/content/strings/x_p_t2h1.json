@@ -1,0 +1,372 @@
+{
+ "city.t2.p.slate": {
+  "ru": "E — прочесть дощечку у лифта",
+  "en": "E — read the slate by the lift",
+  "ja": "E：エレベーター脇の黒板を読む"
+ },
+ "city.t2.slate.work": {
+  "ru": "Дощечка: «Тибо и Ананья на работе, Метте в школе. Ключ у соседей. Рыбу не кормить — она нарисована».",
+  "en": "The slate: \"Thibault and Ananya at work, Mette at school. Key with the neighbours. Do not feed the fish: it is drawn.\"",
+  "ja": "黒板。「ティボーとアナニャは仕事、メッテは学校。鍵はお隣に。魚にえさはあげないで、絵だから」。"
+ },
+ "city.t2.slate.eve": {
+  "ru": "Дощечка: «Мы дома! Метте просит гостей не наступать на звёзды в коридоре. Они нарисованы мелом, но очень настоящие».",
+  "en": "The slate: \"We are home! Mette asks guests not to step on the stars in the corridor. They are chalk, but very real.\"",
+  "ja": "黒板。「在宅中！メッテからお願い、廊下の星を踏まないで。チョークだけど、とても本物だから」。"
+ },
+ "city.t2.slate.night": {
+  "ru": "Дощечка: «Тихо. Метте спит. Ананья не спит, но тоже тихо. Тибо ушёл на рассвете ловить рыбу — это не шутка».",
+  "en": "The slate: \"Quiet. Mette is asleep. Ananya is not, but also quiet. Thibault left at dawn to fish; that is not a joke.\"",
+  "ja": "黒板。「静かに。メッテは寝ています。アナニャは起きているけど、やっぱり静かに。ティボーは夜明けに釣りへ出ました、冗談ではなく」。"
+ },
+ "city.t2.slate.week": {
+  "ru": "Дощечка: «Выходной. Тибо — на озере, Ананья спит до обеда, Метте ведёт экскурсии по теплице. Билет — одна конфета».",
+  "en": "The slate: \"Weekend. Thibault at the lake, Ananya asleep till noon, Mette gives tours of the greenhouse. Ticket: one sweet.\"",
+  "ja": "黒板。「週末。ティボーは湖、アナニャはお昼まで寝ています、メッテは温室のガイド中。入場料はあめ一個」。"
+ },
+ "city.t2.slate.map": {
+  "ru": "Внизу детским почерком: «Если найдёте сундук на верхушке — он мой. Карта на холодильнике. М.»",
+  "en": "Below, in a child's hand: \"If you find the chest in the tip, it is mine. The map is on the fridge. M.\"",
+  "ja": "下に子どもの字で。「てっぺんで宝箱を見つけたら、それはわたしの。地図は冷蔵庫に。M」。"
+ },
+ "city.t2.p.shoes": {
+  "ru": "E — глянуть на обувь",
+  "en": "E — look at the shoes",
+  "ja": "E：靴を見る"
+ },
+ "city.t2.shoes.1": {
+  "ru": "Три пары: рыбацкие сапоги Тибо до колен, туфли Ананьи на каблуке и крошечные жёлтые калоши. В калошах лежит мелок.",
+  "en": "Three pairs: Thibault's knee-high fishing boots, Ananya's heeled shoes and tiny yellow wellies. A piece of chalk lies in a welly.",
+  "ja": "三足。ティボーの膝丈の釣り用長靴、アナニャのヒールの靴、小さな黄色い長靴。長靴の中にチョークが一本入っている。"
+ },
+ "city.t2.shoes.wet": {
+  "ru": "Сапоги Тибо стоят в луже: он, похоже, всё-таки вышел на озеро. Калоши аккуратно поставлены носками к стене.",
+  "en": "Thibault's boots stand in a puddle: he did go to the lake after all. The wellies are neatly turned toes to the wall.",
+  "ja": "ティボーの長靴は水たまりの中。やはり湖へ行ったらしい。小さな長靴はつま先を壁に向けてきちんと並んでいる。"
+ },
+ "city.t2.p.hooks": {
+  "ru": "E — глянуть на вешалку",
+  "en": "E — look at the coat stand",
+  "ja": "E：コート掛けを見る"
+ },
+ "city.t2.hooks.day": {
+  "ru": "Низкий крючок с жёлтым дождевиком и высокий с плащом Ананьи. Рыбацкого жилета нет: ушёл на работу вместе с хозяином.",
+  "en": "A low hook with a yellow raincoat and a high one with Ananya's coat. The fishing vest is missing: it went to work with its owner.",
+  "ja": "低い掛け金に黄色いレインコート、高いほうにはアナニャのコート。釣りのベストはない。持ち主と一緒に出かけた。"
+ },
+ "city.t2.hooks.eve": {
+  "ru": "Все крючки заняты. С жилета Тибо свисает блесна в виде серебряной рыбки; Метте велела не трогать.",
+  "en": "Every hook is taken. A silver fish-shaped lure dangles from Thibault's vest; Mette said not to touch.",
+  "ja": "掛け金はどれも埋まっている。ティボーのベストから銀色の魚形のルアーがぶら下がっている。メッテが「さわらないで」と言っていた。"
+ },
+ "city.t2.fridge.0": {
+  "ru": "На холодильнике карта, нарисованная фломастером: прихожая — «вход», лифт — «пещера», верхушка — «вершина мира». Крестик стоит возле верхушки.",
+  "en": "On the fridge a felt-tip map: the hall is \"entrance\", the lift is \"the cave\", the tip is \"top of the world\". An X is marked near the tip.",
+  "ja": "冷蔵庫にフェルトペンの地図。玄関は「入口」、エレベーターは「洞窟」、てっぺんは「世界の頂上」。その近くに×印がある。"
+ },
+ "city.t2.fridge.1": {
+  "ru": "Список Ананьи: «молоко, кофе (много), красные нитки, лампочка». Приписка Тибо: «наживка». Приписка Метте: «конфеты».",
+  "en": "Ananya's list: \"milk, coffee (lots), red thread, lightbulb.\" Thibault added: \"bait.\" Mette added: \"sweets.\"",
+  "ja": "アナニャのリスト。「牛乳、コーヒー（たっぷり）、赤い糸、電球」。ティボーが「えさ」と書き足し、メッテが「あめ」と書き足した。"
+ },
+ "city.t2.fridge.2": {
+  "ru": "Расписание: «Понедельник — Тибо готовит. Вторник — Ананья готовит. Среда — заказываем». Остальные дни зачёркнуты и заменены словом «заказываем».",
+  "en": "A timetable: \"Monday, Thibault cooks. Tuesday, Ananya cooks. Wednesday, we order in.\" The other days are crossed out and replaced with \"we order in\".",
+  "ja": "当番表。「月曜はティボーが作る。火曜はアナニャが作る。水曜は出前」。残りの日は消されて「出前」に書き換えられている。"
+ },
+ "city.t2.fridge.3": {
+  "ru": "Школьная записка: «Метте принесла из школы улитку. Просим родителей отнестись с пониманием». Под ней: «Мы отнеслись». И ещё: «Улитка — в теплице».",
+  "en": "A school note: \"Mette brought a snail home from school. Parents, please be understanding.\" Under it: \"We were.\" And: \"The snail is in the greenhouse.\"",
+  "ja": "学校からのメモ。「メッテさんがカタツムリを持ち帰りました。保護者の方はご理解を」。その下に「理解しました」。さらに「カタツムリは温室にいます」。"
+ },
+ "city.t2.fridge.4": {
+  "ru": "Рисунок Метте: три человечка в кубе, один на самом верху — с удочкой. Подпись: «Папа ловит облака».",
+  "en": "A drawing by Mette: three little people in a cube, one at the very top with a fishing rod. Caption: \"Dad is fishing for clouds.\"",
+  "ja": "メッテの絵。キューブの中に三人の人、いちばん上の一人は釣りざおを持っている。「パパは雲を釣ってる」。"
+ },
+ "city.t2.fridge.5": {
+  "ru": "Лист от Ананьи: «Ночью лифт не вызывать без нужды. Он скрипит, а Метте после этого полчаса пересказывает сны». Сбоку: «Сны были хорошие».",
+  "en": "A sheet from Ananya: \"Do not call the lift at night without need. It creaks, and Mette then spends half an hour retelling dreams.\" At the side: \"The dreams were good.\"",
+  "ja": "アナニャのメモ。「夜は用もなくエレベーターを呼ばないこと。きしむと、メッテが夢の話を三十分する」。脇に「いい夢だった」。"
+ },
+ "city.t2.fridge.f": {
+  "ru": "Магнит-рыбка держит талон на ремонт лампочки в лифте. Лампочка, судя по всему, всё ещё горит назло.",
+  "en": "A fish magnet holds a repair slip for the lift's lightbulb. The bulb, apparently, still burns out of spite.",
+  "ja": "魚のマグネットがエレベーターの電球の修理票を押さえている。電球はどうやら意地でまだ点いている。"
+ },
+ "city.t2.p.toys": {
+  "ru": "E — порыться в ящике с игрушками",
+  "en": "E — rummage in the toy bin",
+  "ja": "E：おもちゃ箱をあさる"
+ },
+ "city.t2.toys.1": {
+  "ru": "В ящике: деревянный кит, три динозавра разной степени сохранности и лифт из спичечных коробков — на нём ездит один киндер.",
+  "en": "In the bin: a wooden whale, three dinosaurs in varying states of repair and a lift made of matchboxes, which carries a single plastic toy.",
+  "ja": "箱の中。木のクジラ、傷み具合の違う恐竜が三匹、マッチ箱でできたエレベーター。乗っているのはおもちゃ一個だけ。"
+ },
+ "city.t2.toys.2": {
+  "ru": "На дне — коробка с надписью «Секретное. Не открывать до дня рождения». Коробка открывалась, но очень осторожно.",
+  "en": "At the bottom a box marked \"Secret. Do not open till my birthday.\" The box has been opened, but very carefully.",
+  "ja": "底には「ひみつ。誕生日まで開けないこと」と書かれた箱。開けた跡はあるが、とても慎重に。"
+ },
+ "city.t2.p.photos": {
+  "ru": "E — рассмотреть фотографии на полке",
+  "en": "E — look at the photos on the shelf",
+  "ja": "E：棚の写真を見る"
+ },
+ "city.t2.photos.1": {
+  "ru": "Фото: Тибо с огромным щуком и смущённым лицом; Ананья ночью в обсерватории; Метте с беззубой улыбкой держит улитку.",
+  "en": "Photos: Thibault with an enormous pike and a sheepish face; Ananya at night in an observatory; Mette with a gap-toothed smile holding a snail.",
+  "ja": "写真。巨大なカワカマスを抱えて照れた顔のティボー、夜の天文台にいるアナニャ、歯の抜けた笑顔でカタツムリを持つメッテ。"
+ },
+ "city.t2.photos.2": {
+  "ru": "Снимок кубов с палубы в снегу. Подпись рукой Ананьи: «Наш дом стоит на углу. Мы тоже иногда».",
+  "en": "A snapshot of the cubes from the deck in the snow. In Ananya's hand: \"Our home stands on a corner. So do we, sometimes.\"",
+  "ja": "雪のデッキから撮ったキューブの写真。アナニャの字で「うちは角の上に立っている。私たちも、ときどき」。"
+ },
+ "city.t2.p.ledger": {
+  "ru": "E — полистать тетради на полке",
+  "en": "E — leaf through the notebooks on the shelf",
+  "ja": "E：棚のノートをめくる"
+ },
+ "city.t2.ledger.title": {
+  "ru": "Тетрадь рыбака",
+  "en": "The fisherman's ledger",
+  "ja": "釣り人のノート"
+ },
+ "city.t2.ledger.1": {
+  "ru": "Озеро у третьей опоры. Пять утра, туман. Поймал двух окуней и большую тишину. Тишину отпустил.",
+  "en": "The lake by the third pylon. Five in the morning, fog. Caught two perch and a great silence. Let the silence go.",
+  "ja": "三番目の支柱のそばの湖。朝五時、霧。ペルカを二匹と大きな静けさを一つ釣った。静けさは逃がした。"
+ },
+ "city.t2.ledger.2": {
+  "ru": "Метте пошла со мной. Сидела три минуты, потом спросила, о чём думает рыба. Ответил: о том же, о чём ты. Она задумалась.",
+  "en": "Mette came with me. She sat for three minutes, then asked what the fish think about. I said: the same as you. She went quiet.",
+  "ja": "メッテが一緒に来た。三分座っていて、それから魚は何を考えているのかと聞いた。君と同じことだと答えたら、黙りこんだ。"
+ },
+ "city.t2.ledger.3": {
+  "ru": "Щука! Длиной с руку Ананьи. Фото сделал, отпустил. Дома сказал, что был метр. Ананья сказала: «Покажи руками». Показал. Она засмеялась.",
+  "en": "A pike! As long as Ananya's arm. Took a photo, let it go. At home I said it was a metre. Ananya said: \"Show me with your hands.\" I did. She laughed.",
+  "ja": "カワカマス！アナニャの腕ほどの長さ。写真を撮って逃がした。家では一メートルあったと言ったら、アナニャが「手で見せて」と言う。見せたら笑われた。"
+ },
+ "city.t2.ledger.4": {
+  "ru": "Принёс домой полведра ряски для теплицы на верхушке. Ананья не возражала, Метте возражала: «Там улитка живёт». Договорились поделить.",
+  "en": "Brought half a bucket of duckweed home for the greenhouse in the tip. Ananya did not object; Mette did: \"The snail lives there.\" We agreed to share.",
+  "ja": "てっぺんの温室のために、バケツ半分のウキクサを持ち帰った。アナニャは反対しなかったが、メッテは「そこにカタツムリが住んでる」と反対した。分けることで決着した。"
+ },
+ "city.t2.night.title": {
+  "ru": "Тетрадь наблюдений",
+  "en": "The observation notebook",
+  "ja": "観察ノート"
+ },
+ "city.t2.night.1": {
+  "ru": "Ночь 1. Ясно. Юпитер и четыре точки рядом: спутники. Показала Метте: она сказала «ой, соседи».",
+  "en": "Night 1. Clear. Jupiter and four dots beside it: moons. Showed Mette; she said \"oh, neighbours\".",
+  "ja": "一夜目。快晴。木星とそのそばの四つの点、衛星。メッテに見せたら「あ、お隣さん」と言った。"
+ },
+ "city.t2.night.2": {
+  "ru": "Ночь 6. Стекло над кроватью оказалось лучшим окном в доме: куб на ребре смотрит почти в зенит. Почему мы раньше не лежали здесь?",
+  "en": "Night 6. The glass over the bed turned out to be the best window in the house: a cube on its edge looks almost at the zenith. Why did we not lie here before?",
+  "ja": "六夜目。ベッドの上のガラスは家で一番の窓だった。角で立つキューブはほぼ天頂を向いている。どうして今まで寝転ばなかったのだろう。"
+ },
+ "city.t2.night.3": {
+  "ru": "Ночь 9. Облачно. Сидела и слушала дождь по стеклу. Тоже наблюдение: дождь тоже имеет созвездия.",
+  "en": "Night 9. Cloudy. Sat and listened to rain on the glass. Also an observation: rain has constellations too.",
+  "ja": "九夜目。曇り。ガラスを打つ雨の音を聞いていた。これも観察だ。雨にも星座がある。"
+ },
+ "city.t2.night.4": {
+  "ru": "Ночь 14. Метте уснула на подушке под стеклом, не дождавшись Ориона. Накрыла пледом. Орион никуда не денется.",
+  "en": "Night 14. Mette fell asleep on the cushion under the glass before Orion rose. Covered her with a blanket. Orion is not going anywhere.",
+  "ja": "十四夜目。メッテはオリオンが昇る前にガラスの下のクッションで眠ってしまった。毛布をかけた。オリオンは逃げない。"
+ },
+ "city.t2.p.garden": {
+  "ru": "E — открыть тетрадь Метте",
+  "en": "E — open Mette's notebook",
+  "ja": "E：メッテのノートを開く"
+ },
+ "city.t2.mette.title": {
+  "ru": "Тетрадь Метте",
+  "en": "Mette's notebook",
+  "ja": "メッテのノート"
+ },
+ "city.t2.mette.1": {
+  "ru": "МОЯ ТЕПЛИЦА. Правила: 1. Не топать. 2. Улитку не трогать. 3. Если пришли гости — показывать всё. 4. Гостям — по конфете.",
+  "en": "MY GREENHOUSE. Rules: 1. No stamping. 2. Do not touch the snail. 3. If guests come, show them everything. 4. Guests get a sweet.",
+  "ja": "わたしの温室。きまり。1 ドタドタしない。2 カタツムリにさわらない。3 お客さんが来たら全部見せる。4 お客さんにはあめを一個。"
+ },
+ "city.t2.mette.2": {
+  "ru": "Посадила горох. Он вылез за ночь, вот честное слово. Папа сказал, что так не бывает. Я сказала, что бывает, если сильно хотеть.",
+  "en": "Planted peas. They came up overnight, honest. Dad said that does not happen. I said it does if you want it hard enough.",
+  "ja": "エンドウを植えた。一晩で出てきた、ほんとう。パパはそんなことはないと言った。わたしは、すごく願えばあると言った。"
+ },
+ "city.t2.mette.3": {
+  "ru": "Улитку зовут Лифт, потому что она ползёт вверх. Лифт любит огурцы, не любит соль и очень любит тишину. Я тоже.",
+  "en": "The snail's name is Lift, because it climbs. Lift likes cucumbers, dislikes salt and loves quiet. Me too.",
+  "ja": "カタツムリの名前はエレベーター。上へのぼるから。キュウリが好きで、塩がきらいで、静けさが大好き。わたしも。"
+ },
+ "city.t2.mette.4": {
+  "ru": "Если ты это читаешь, то ты уже видел мою теплицу. Значит, ты свой. Посмотри в сундук рядом: там конфеты. Не все! М.",
+  "en": "If you are reading this you have seen my greenhouse. So you are one of us. Look in the chest nearby: sweets. Not all of them! M.",
+  "ja": "これを読んでいるなら、わたしの温室を見たということ。だったら仲間。そばの箱を見て、あめが入ってる。ぜんぶはだめ！M"
+ },
+ "city.t2.p.sky": {
+  "ru": "E — посмотреть в стекло над подушкой",
+  "en": "E — look up through the glass over the cushion",
+  "ja": "E：クッションの上のガラスを見上げる"
+ },
+ "city.t2.sky.1": {
+  "ru": "На подушке под стеклом оставлен атлас с закладкой и детский рисунок: Луна с лицом, очень довольным.",
+  "en": "On the cushion under the glass lie an atlas with a bookmark and a child's drawing: the Moon with a very pleased face.",
+  "ja": "ガラスの下のクッションには、しおりを挟んだ星の本と子どもの絵。とても満足そうな顔の月。"
+ },
+ "city.t2.p.trays": {
+  "ru": "E — заглянуть в лотки с рассадой",
+  "en": "E — look at the seed trays",
+  "ja": "E：苗の箱をのぞく"
+ },
+ "city.t2.trays.0": {
+  "ru": "В лотках горох, огурцы и один подозрительный росток с табличкой «не знаю что». Метте считает, что это дерево.",
+  "en": "The trays hold peas, cucumbers and one suspicious sprout labelled \"don't know what\". Mette believes it is a tree.",
+  "ja": "箱にはエンドウ、キュウリ、そして「なにか不明」の札つきの怪しい芽が一つ。メッテはそれを木だと信じている。"
+ },
+ "city.t2.trays.1": {
+  "ru": "Горох уже вьётся по палочкам, огурцы раскинули листья. «Не знаю что» стал выше всех и больше похож на сорняк, но Метте не сдаётся.",
+  "en": "The peas already wind up their sticks, the cucumbers spread their leaves. \"Don't know what\" is tallest of all and looks rather like a weed, but Mette will not give up.",
+  "ja": "エンドウはもう支柱に巻きつき、キュウリは葉を広げた。「なにか不明」はいちばん背が高く、雑草に見えるが、メッテはあきらめない。"
+ },
+ "city.t2.p.water": {
+  "ru": "E — полить теплицу",
+  "en": "E — water the greenhouse",
+  "ja": "E：温室に水をやる"
+ },
+ "city.t2.water.1": {
+  "ru": "Лейка с наклейкой «Метте». Поливаешь горох, огурцы и угол, где живёт Лифт-улитка: ему — только брызги.",
+  "en": "A watering can with a sticker \"Mette\". You water the peas, the cucumbers and the corner where Lift the snail lives: just a spray for him.",
+  "ja": "「メッテ」のシールが貼られたじょうろ。エンドウとキュウリと、カタツムリのエレベーターが住む隅に水をやる。隅には霧吹き程度。"
+ },
+ "city.t2.p.tipshelf": {
+  "ru": "E — просмотреть полочку",
+  "en": "E — look over the little shelf",
+  "ja": "E：小さな棚を見る"
+ },
+ "city.t2.tipshelf.1": {
+  "ru": "Полочка: определитель рыб, определитель звёзд и определитель «всего остального» — тетрадка в клеточку с рисунками.",
+  "en": "The little shelf: a fish guide, a star guide and a guide to \"everything else\", a squared notebook of drawings.",
+  "ja": "小さな棚。魚図鑑、星図鑑、そして「それ以外ぜんぶ」の図鑑、絵の入った方眼ノート。"
+ },
+ "city.t2.tipshelf.2": {
+  "ru": "Между книг — оловянная блесна и открытка с телескопом. Это уже непонятно чья коллекция.",
+  "en": "Between the books: a tin lure and a postcard with a telescope. Whose collection it is has long been unclear.",
+  "ja": "本のあいだにスズのルアーと望遠鏡の絵はがき。誰のコレクションなのか、もうよく分からない。"
+ },
+ "city.t2.p.bed": {
+  "ru": "E — глянуть на лежанку под стеклом",
+  "en": "E — look at the bunk under the glass",
+  "ja": "E：ガラスの下の寝床を見る"
+ },
+ "city.t2.bed.1": {
+  "ru": "Лежанка застелена клетчатым пледом. На подушке записка: «Лежать можно, спать — только Метте». Приписка: «Это шутка. Но не совсем».",
+  "en": "The bunk is made with a checked blanket. A note on the pillow: \"Lying down allowed, sleeping only for Mette.\" Added: \"A joke. But not quite.\"",
+  "ja": "寝床には格子柄の毛布。枕にメモ。「横になるのはいいけど、寝ていいのはメッテだけ」。「冗談。でも半分だけ」と書き足してある。"
+ },
+ "city.t2.p.treasure": {
+  "ru": "E — открыть сундучок Метте",
+  "en": "E — open Mette's little chest",
+  "ja": "E：メッテの宝箱を開ける"
+ },
+ "city.t2.treasure.1": {
+  "ru": "Сундучок из-под печенья. Внутри: ракушка, пять конфет, зуб (молочный, не акулий) и записка «Гостям — по две».",
+  "en": "A biscuit tin chest. Inside: a shell, five sweets, a tooth (a milk tooth, not a shark's) and a note \"Two for guests\".",
+  "ja": "クッキー缶の宝箱。中には貝殻、あめが五個、歯（乳歯で、サメではない）、そして「お客さんには二個」のメモ。"
+ },
+ "city.t2.treasure.2": {
+  "ru": "В сундучке остались ракушка, зуб и список «что подарить гостям на день рождения». Ты в списке пока не значишься, но пометка карандашом: «подумать».",
+  "en": "The chest still holds the shell, the tooth and a list \"what to give guests for their birthdays\". You are not on the list yet, but in pencil: \"think about\".",
+  "ja": "宝箱には貝殻と歯と「お客さんへの誕生日プレゼント」のリストが残っている。まだ君の名前はないが、鉛筆で「考える」とある。"
+ },
+ "city.t2.p.deckboard": {
+  "ru": "E — прочесть объявления на стенде",
+  "en": "E — read the notices on the stand",
+  "ja": "E：掲示スタンドを読む"
+ },
+ "city.t2.deckboard.0": {
+  "ru": "Объявление от руки: «Третий куб (дом 0-03) показывает экскурсию по теплице. Вход — конфета. Гид — Метте, 7 лет».",
+  "en": "A handwritten notice: \"The third cube (house 0-03) gives tours of its greenhouse. Entry: one sweet. Guide: Mette, aged 7.\"",
+  "ja": "手書きのお知らせ。「三番目のキューブ（0-03号）で温室ツアー。入場料はあめ一個。ガイドはメッテ、七歳」。"
+ },
+ "city.t2.deckboard.1": {
+  "ru": "Листок: «Продаю рыболовные снасти в хорошем состоянии. Не вещи — истории. Тибо, куб третий».",
+  "en": "A slip: \"Selling fishing gear in good condition. Not things, stories. Thibault, third cube.\"",
+  "ja": "紙片。「釣り道具、状態良好、お売りします。道具ではなく物語を。ティボー、三番目のキューブ」。"
+ },
+ "city.t2.deckboard.2": {
+  "ru": "Объявление: «Ищу компанию для наблюдения за Персеидами с палубы. Термос — мой, плед — ваш. Ананья».",
+  "en": "Notice: \"Seeking company to watch the Perseids from the deck. Thermos mine, blanket yours. Ananya.\"",
+  "ja": "お知らせ。「デッキでペルセウス座流星群を見る仲間を募集。魔法瓶は私が、毛布はあなたが。アナニャ」。"
+ },
+ "city.t2.deckboard.3": {
+  "ru": "Записка: «Улитка вернулась в теплицу. Просьба не волноваться. Метте».",
+  "en": "A note: \"The snail is back in the greenhouse. Please do not worry. Mette.\"",
+  "ja": "メモ。「カタツムリは温室にもどりました。心配しないでください。メッテ」。"
+ },
+ "city.t2.deckboard.4": {
+  "ru": "Листок с рисунком: рыба с удочкой ловит человека. Подпись: «Справедливо». Автор неизвестен, но подозрение падает на третий куб.",
+  "en": "A sheet with a drawing: a fish with a rod catching a man. Caption: \"Fair.\" The author is unknown, but suspicion falls on the third cube.",
+  "ja": "絵の描かれた紙。釣りざおを持った魚が人間を釣っている。「公平」。作者は不明だが、疑いは三番目のキューブに向けられている。"
+ },
+ "quest.home_cube_b.title": {
+  "ru": "Сундучок на верхушке",
+  "en": "The chest in the tip",
+  "ja": "てっぺんの宝箱"
+ },
+ "quest.home_cube_b.desc": {
+  "ru": "На холодильнике в третьем кубе висит карта Метте. Крестик возле верхушки. Лифт — в нише у ножки куба.",
+  "en": "Mette's map hangs on the fridge of the third cube. An X sits near the tip. The lift is in the niche at the cube's foot.",
+  "ja": "三番目のキューブの冷蔵庫にメッテの地図が貼ってある。てっぺんの近くに×印。エレベーターはキューブの足元のくぼみにある。"
+ },
+ "quest.home_cube_b.done": {
+  "ru": "Метте торжественно вручила тебе две конфеты и печенье. «Теперь ты в команде, — сказала она. — Лифт тебя уже знает».",
+  "en": "Mette solemnly handed you two sweets and a cookie. \"Now you are on the team,\" she said. \"The lift already knows you.\"",
+  "ja": "メッテはおごそかにあめを二個とクッキーを一枚くれた。「これでチームの一員。エレベーターはもう君のことを知ってる」。"
+ },
+ "quest.home_cube_b.map.log": {
+  "ru": "Карту Метте нарисовала на холодильнике. Сначала надо её прочесть.",
+  "en": "Mette drew the map on the fridge. First read it.",
+  "ja": "メッテは冷蔵庫に地図を描いた。まずそれを読むこと。"
+ },
+ "quest.home_cube_b.map.obj": {
+  "ru": "Прочесть карту на холодильнике",
+  "en": "Read the map on the fridge",
+  "ja": "冷蔵庫の地図を読む"
+ },
+ "quest.home_cube_b.stars.log": {
+  "ru": "По карте надо найти три приметы: обувь у входа, ящик с игрушками и рассаду на верхушке.",
+  "en": "The map names three landmarks: the shoes at the entrance, the toy bin and the seed trays in the tip.",
+  "ja": "地図によれば目印は三つ。玄関の靴、おもちゃ箱、てっぺんの苗の箱。"
+ },
+ "quest.home_cube_b.shoes.obj": {
+  "ru": "Заглянуть на обувь в прихожей",
+  "en": "Look at the shoes in the hall",
+  "ja": "玄関の靴を見る"
+ },
+ "quest.home_cube_b.toys.obj": {
+  "ru": "Порыться в ящике с игрушками",
+  "en": "Rummage in the toy bin",
+  "ja": "おもちゃ箱をあさる"
+ },
+ "quest.home_cube_b.trays.obj": {
+  "ru": "Заглянуть в лотки на верхушке",
+  "en": "Look at the seed trays in the tip",
+  "ja": "てっぺんの苗の箱をのぞく"
+ },
+ "quest.home_cube_b.box.log": {
+  "ru": "Крестик — сундучок в углу у теплицы. Открыть можно: Метте разрешила.",
+  "en": "The X is the chest in the greenhouse corner. You may open it: Mette allowed it.",
+  "ja": "×印は温室の隅の宝箱。開けてもいい、メッテが許した。"
+ },
+ "quest.home_cube_b.box.obj": {
+  "ru": "Открыть сундучок Метте",
+  "en": "Open Mette's chest",
+  "ja": "メッテの宝箱を開ける"
+ }
+}
