@@ -23,6 +23,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace LyudPeople
@@ -555,6 +556,11 @@ namespace LyudPeople
 		/** Their duty's own workplace for an activity (-1 none) and role. */
 		const FDuty* DutyFor(const FPerson& P, const FActivity& A) const;
 		size_t Indexed = 0;
+		/** FindPlace's map: the first PlaceByIdN places by id (filled as it is asked). */
+		mutable std::unordered_map<std::string, int> PlaceById;
+		mutable size_t PlaceByIdN = 0;
+		/** Load is reading its parts: they leave the Index to it. */
+		bool bLoading = false;
 		std::vector<std::string> KindNames;     // interned kinds: 0 bed, 1 sofa, 2 flat, 3 snow
 		int KindId(const std::string& Kind);        // the places Index saw (a place added after it: the slow look over all)
 		V3 Where(const FPerson& P) const;

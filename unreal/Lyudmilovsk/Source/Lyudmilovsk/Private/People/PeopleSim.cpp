@@ -140,11 +140,11 @@ namespace LyudPeople
 		// the town (tools/town/town_life.py): its buildings and spots, and the people who live in them
 		const std::string TownPlaces = bLoadTown ? ReadFile(Dir + "/town_places.json") : std::string();
 		const std::string Townsfolk = bLoadTown ? ReadFile(Dir + "/townsfolk.json") : std::string();
-		if (!TownPlaces.empty() && !LoadTownPlaces(TownPlaces))
-		{
-			return false;
-		}
-		if (!Townsfolk.empty() && !LoadTownsfolk(Townsfolk))
+		// (one Index for all of it, here, not one after each part)
+		bLoading = true;
+		const bool bTownOk = (TownPlaces.empty() || LoadTownPlaces(TownPlaces)) && (Townsfolk.empty() || LoadTownsfolk(Townsfolk));
+		bLoading = false;
+		if (!bTownOk)
 		{
 			return false;
 		}
@@ -267,7 +267,10 @@ namespace LyudPeople
 			return false;
 		}
 		const bool bOk = AddPeople(J, true);
-		Index();
+		if (!bLoading)
+		{
+			Index();
+		}
 		return bOk;
 	}
 
@@ -358,6 +361,8 @@ namespace LyudPeople
 			return false;
 		}
 		Places.clear();
+		PlaceById.clear();
+		PlaceByIdN = 0;
 		Slots.clear();
 		// a slot (or one per sitter of a sofa or a bench: "spots"); indoors its way in is the place's prefix (stairs,
 		// the flat's door; the library's door; the club's entry) and its own path from there (tools/people_map.py)
@@ -1001,14 +1006,19 @@ namespace LyudPeople
 
 	int FWorld::FindPlace(const std::string& Id) const
 	{
-		for (int I = 0; I < (int)Places.size(); I++)
+		// the places by id, kept up as they are added (they are only ever added, or all cleared: LoadPlaces);
+		// the first of two with one id wins, as a search from the start would have it
+		if (PlaceByIdN > Places.size())
 		{
-			if (Places[I].Id == Id)
-			{
-				return I;
-			}
+			PlaceById.clear();
+			PlaceByIdN = 0;
 		}
-		return -1;
+		for (; PlaceByIdN < Places.size(); PlaceByIdN++)
+		{
+			PlaceById.emplace(Places[PlaceByIdN].Id, (int)PlaceByIdN);
+		}
+		const auto It = PlaceById.find(Id);
+		return It == PlaceById.end() ? -1 : It->second;
 	}
 
 	int FWorld::FindActivity(const std::string& Id) const
@@ -1128,7 +1138,10 @@ namespace LyudPeople
 			}
 			Places.push_back(Pl);
 		}
-		Index();
+		if (!bLoading)
+		{
+			Index();
+		}
 		return true;
 	}
 
