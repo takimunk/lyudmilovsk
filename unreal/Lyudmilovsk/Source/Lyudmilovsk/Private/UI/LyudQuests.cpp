@@ -483,8 +483,8 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 		OnNews.Broadcast(ELyudQuestNews::Done, Quest);
 		if (Tracked == Quest)
 		{
+			// the next one is chosen after the quests this stage starts: a main quest begun here is the one to show
 			Tracked = NAME_None;
-			Tracked = ShownQuest();
 		}
 	}
 	// P may move if StartQuests adds progress records: copy the list first
@@ -492,6 +492,10 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	for (const FName& Q : Starts)
 	{
 		Start(Q);
+	}
+	if (Tracked.IsNone())
+	{
+		Tracked = ShownQuest();
 	}
 	if (bOutsideEvent)
 	{

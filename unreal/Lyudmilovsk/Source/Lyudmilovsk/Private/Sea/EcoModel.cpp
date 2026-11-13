@@ -426,13 +426,24 @@ void FModel::SubStep(float D, float DtDays)
 void FModel::Step(float DayOfYear, float Days)
 {
 	// quarter-day steps (the plankton turn over in days)
-	float D = DayOfYear;
-	while (Days > 1e-6f)
+	// a span that is not a number, or one so long that a quarter day no longer changes it, would never end: none, or a
+	// century at most, in counted steps
+	if (!(Days > 1e-6f) || !std::isfinite(Days) || !std::isfinite(DayOfYear))
 	{
-		const float H = std::min(Days, 0.25f);
-		SubStep(Wrap(D), H);
-		D += H;
-		Days -= H;
+		return;
+	}
+	Days = std::min(Days, 36500.f);
+	const int Quarters = static_cast<int>(Days / 0.25f);
+	float D = DayOfYear;
+	for (int Q = 0; Q < Quarters; ++Q)
+	{
+		SubStep(Wrap(D), 0.25f);
+		D = Wrap(D + 0.25f);
+	}
+	const float Rest = Days - 0.25f * static_cast<float>(Quarters);
+	if (Rest > 1e-6f)
+	{
+		SubStep(Wrap(D), Rest);
 	}
 }
 
