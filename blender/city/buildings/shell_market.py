@@ -662,7 +662,7 @@ def _grinder(B, x, y):
     fu.rod(d, "CT_Steel", fr.p(0.1, 0.16, 0.98), fr.p(0.32, 0.16, 0.14), 0.012)            # the pedal rod
     lbox(d, "CT_Wood", fr, 0.22, 0.46, -0.16, 0.16, 0.1, 0.14)
     kit.stool(B, *fr.p(0.0, -0.78)[:2], 0.0, 180.0, h=0.45)
-    _figure(B, Fr(*fr.p(0.0, -0.78)[:2], 0.0))
+    # no modelled person here: people are the life sim's own characters (the grinder_work spot is where one would sit)
     for k in range(3):                                                                     # knives waiting on the bench
         lbox(d, "CT_Steel", fr.sub(-0.35 + 0.06 * k, 0.0, 18 * k - 20), -0.12, 0.12, -0.012, 0.012, 0.82, 0.835, faces="xXyYZ")
         lbox(d, "CT_Wood", fr.sub(-0.35 + 0.06 * k, 0.0, 18 * k - 20), 0.12, 0.2, -0.015, 0.015, 0.82, 0.84, faces="xXyYZ")
