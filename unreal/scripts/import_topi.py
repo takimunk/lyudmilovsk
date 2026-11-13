@@ -26,7 +26,11 @@ PROPS = DEST + "/Props"
 EXPORT = os.path.join(REPO, "blender", "topi", "out")
 NEUTRAL = os.path.join(REPO, "textures", "topi")
 LOCALIZED = os.path.join(REPO, "textures", "localized")
-MESHES = ("SM_Topi_WarnSign", "SM_Topi_UralSign", "SM_Topi_Towel_A", "SM_Topi_Towel_B", "SM_Topi_Towel_C", "SM_Topi_Stake")
+MESHES = ("SM_Topi_WarnSign", "SM_Topi_UralSign", "SM_Topi_Towel_A", "SM_Topi_Towel_B", "SM_Topi_Towel_C", "SM_Topi_Stake",
+          "SM_Topi_Stake_A", "SM_Topi_Stake_B", "SM_Topi_Stake_C", "SM_Topi_Stake_D")
+# baked texture sets from blender/topi/props.py: textures/topi/baked/<mesh>_<slot>_{A,N,ORM} (sign fronts: _{Wear,N,ORM})
+BAKED = os.path.join(REPO, "textures", "topi", "baked")
+BAKED_DEST = PROPS + "/Baked"
 SIGNS = ("warn", "ural")
 NO_COLLISION = ("SM_Topi_Towel_A", "SM_Topi_Towel_B", "SM_Topi_Towel_C")
 # neutral picture file -> texture asset
@@ -93,6 +97,118 @@ def import_textures():
     eal.save_directory(DEST)
 
 
+def import_baked():
+    """The baked sets: albedo sRGB (cloth keeps its alpha), normal maps, ORM masks (AO, roughness, metal), the signs' wear (sRGB + coverage)."""
+    if not os.path.isdir(BAKED):
+        log("no %s (blender/topi/props.py)" % BAKED)
+        return 0
+    n = 0
+    for f in sorted(os.listdir(BAKED)):
+        if not f.endswith(".png"):
+            continue
+        name = "T_" + f[:-4].replace("SM_Topi_", "Topi_")
+        tex = A.import_image(os.path.join(BAKED, f), BAKED_DEST, name, sub="")
+        kind = f[:-4].rsplit("_", 1)[1]
+        if kind == "N":
+            tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+            tex.set_editor_property("srgb", False)
+        elif kind == "ORM":
+            tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_MASKS)
+            tex.set_editor_property("srgb", False)
+        else:
+            tex.set_editor_property("srgb", True)
+        eal.save_loaded_asset(tex, False)
+        n += 1
+    return n
+
+
+def _tex(m, name, x, y, sampler):
+    return A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, x, y, parameter_name=name, sampler_type=sampler)
+
+
+def build_baked(path, cloth):
+    """Albedo + Normal + ORM. cloth: two-sided, masked by the albedo's alpha (frayed rags, towel edges)."""
+    m = A.master(path)
+    S = unreal.MaterialSamplerType
+    alb = _tex(m, "Albedo", -700, -200, S.SAMPLERTYPE_COLOR)
+    nrm = _tex(m, "Normal", -700, 100, S.SAMPLERTYPE_NORMAL)
+    orm = _tex(m, "ORM", -700, 400, S.SAMPLERTYPE_MASKS)
+    mel.connect_material_property(alb, "RGB", MP.MP_BASE_COLOR)
+    mel.connect_material_property(nrm, "RGB", MP.MP_NORMAL)
+    mel.connect_material_property(orm, "R", MP.MP_AMBIENT_OCCLUSION)
+    mel.connect_material_property(orm, "G", MP.MP_ROUGHNESS)
+    mel.connect_material_property(orm, "B", MP.MP_METALLIC)
+    if cloth:
+        mel.connect_material_property(alb, "A", MP.MP_OPACITY_MASK)
+    A.finish(m)
+    if cloth:
+        m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+        m.set_editor_property("two_sided", True)
+        mel.recompile_material(m)
+        eal.save_loaded_asset(m, False)
+    return m
+
+
+def build_sign_worn(path):
+    """A sign's front: the localized picture (Image, ULyudTopiProps sets the player's language) under the wear layer
+    (Wear: rgb colour, a coverage), with the wear's normal and ORM."""
+    m = A.master(path)
+    S = unreal.MaterialSamplerType
+    pic = _tex(m, "Image", -900, -300, S.SAMPLERTYPE_COLOR)
+    wear = _tex(m, "Wear", -900, -50, S.SAMPLERTYPE_COLOR)
+    nrm = _tex(m, "Normal", -700, 200, S.SAMPLERTYPE_NORMAL)
+    orm = _tex(m, "ORM", -700, 450, S.SAMPLERTYPE_MASKS)
+    lerp = A.node(m, unreal.MaterialExpressionLinearInterpolate, -400, -200)
+    A.link(pic, "RGB", lerp, "A")
+    A.link(wear, "RGB", lerp, "B")
+    A.link(wear, "A", lerp, "Alpha")
+    mel.connect_material_property(lerp, "", MP.MP_BASE_COLOR)
+    mel.connect_material_property(nrm, "RGB", MP.MP_NORMAL)
+    mel.connect_material_property(orm, "R", MP.MP_AMBIENT_OCCLUSION)
+    mel.connect_material_property(orm, "G", MP.MP_ROUGHNESS)
+    mel.connect_material_property(orm, "B", MP.MP_METALLIC)
+    A.finish(m)
+    return m
+
+
+def baked_tex(name):
+    path = "%s/%s" % (BAKED_DEST, name)
+    return eal.load_asset(path) if eal.does_asset_exist(path) else None
+
+
+def make_baked_instances():
+    """One instance per mesh slot that has a baked set: MI_<mesh>_<slot> (mesh without SM_)."""
+    baked = build_baked(PROPS + "/M_TP_Baked", False)
+    cloth = build_baked(PROPS + "/M_TP_BakedCloth", True)
+    worn = build_sign_worn(PROPS + "/M_TP_SignWorn")
+    sign_ru = {n: eal.load_asset("%s/Localized/ru/T_Sign_%s" % (DEST, n)) if eal.does_asset_exist("%s/Localized/ru/T_Sign_%s" % (DEST, n)) else None
+               for n in SIGNS}
+    n = 0
+    for mesh in MESHES:
+        short = mesh.replace("SM_Topi_", "Topi_")
+        for slot in ("TP_Metal", "TP_SignWarn", "TP_Wood", "TP_SignUral", "TP_Rag", "TP_Towel_A", "TP_Towel_B", "TP_Towel_C"):
+            nrm = baked_tex("T_%s_%s_N" % (short, slot))
+            if nrm is None:
+                continue
+            front = slot.startswith("TP_Sign")
+            parent = worn if front else (cloth if slot.startswith("TP_Towel") or slot == "TP_Rag" else baked)
+            mi = A.instance("%s/MI_%s_%s" % (PROPS, short, slot), parent)
+            A._set(mi, "t", "Normal", nrm)
+            A._set(mi, "t", "ORM", baked_tex("T_%s_%s_ORM" % (short, slot)))
+            if front:
+                A._set(mi, "t", "Wear", baked_tex("T_%s_%s_Wear" % (short, slot)))
+                pic = sign_ru["warn" if slot == "TP_SignWarn" else "ural"]
+                if pic is not None:
+                    A._set(mi, "t", "Image", pic)
+            else:
+                A._set(mi, "t", "Albedo", baked_tex("T_%s_%s_A" % (short, slot)))
+            mel.update_material_instance(mi)
+            eal.save_loaded_asset(mi, False)
+            n += 1
+    log("baked materials: M_TP_Baked, M_TP_BakedCloth, M_TP_SignWorn and %d instances" % n)
+    return n
+
+
 def make_materials():
     wood = build_textured(PROPS + "/M_TP_Wood", tex_asset("T_Wood"), 0.92, 0.0, False)
     metal = build_metal(PROPS + "/M_TP_Metal")
@@ -134,8 +250,13 @@ def import_mesh(name):
         log("nothing imported from %s" % glb)
         return
     sm = eal.load_asset(found[0])
+    short = name.replace("SM_Topi_", "Topi_")
     for i, sl in enumerate(sm.get_editor_property("static_materials")):
         key = str(sl.material_slot_name)
+        baked_mi = "%s/MI_%s_%s" % (PROPS, short, key)
+        if eal.does_asset_exist(baked_mi):
+            sm.set_material(i, eal.load_asset(baked_mi))
+            continue
         slot = next((k for k in list(SLOT_MI) + ["TP_Towel"] if key == k or key.startswith(k)), None)
         mi_name = None
         if slot == "TP_Towel":
@@ -169,6 +290,10 @@ STEP = os.environ.get("TOPI_STEP", "textures")
 if STEP == "textures":
     import_textures()
     make_materials()
+    log("baked textures: %d" % import_baked())
+    eal.save_directory(PROPS)
+    make_baked_instances()
+    eal.save_directory(PROPS)
 elif STEP in MESHES:
     import_mesh(STEP)
 else:

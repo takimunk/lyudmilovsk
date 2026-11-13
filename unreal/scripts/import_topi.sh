@@ -9,7 +9,7 @@ ROOT="$HERE/../.."
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 CMD="$UE/Engine/Binaries/Mac/UnrealEditor-Cmd"
 QUIET="-unattended -nosplash -nosound"
-for STEP in textures SM_Topi_WarnSign SM_Topi_UralSign SM_Topi_Towel_A SM_Topi_Towel_B SM_Topi_Towel_C SM_Topi_Stake; do
+for STEP in textures SM_Topi_WarnSign SM_Topi_UralSign SM_Topi_Towel_A SM_Topi_Towel_B SM_Topi_Towel_C SM_Topi_Stake SM_Topi_Stake_A SM_Topi_Stake_B SM_Topi_Stake_C SM_Topi_Stake_D; do
 	"${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 	TOPI_STEP=$STEP "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_topi.py" $QUIET -stdout | grep -E "TOPI|Error" | grep -v LogInit || true
 done

@@ -275,8 +275,155 @@ def rag():
     return to_img(col)
 
 
+# ------------------------------------------------------------------------------------------------ wear layers (over every language)
+#
+# blender/topi/props.py bakes the signs' bodies; the fronts keep the localized picture and get these layers over it, the same
+# for every language (Unreal's M_TP_SignWorn: colour = lerp(picture, wear.rgb, wear.a), normal and roughness/metal from here):
+#   <name>_wear.png     RGBA: the wear's colour and how much it covers the picture
+#   <name>_wear_n.png   tangent-space normal, DirectX green (Unreal)
+#   <name>_wear_rm.png  R roughness, G metallic (B unused)
+# Pixel rows run top-down with v = 1 at the top (Blender's UVs as props.py lays the fronts out).
+
+class Wear:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+        self.rgb = np.zeros((h, w, 3), np.float32)
+        self.a = np.zeros((h, w), np.float32)
+        self.height = np.zeros((h, w), np.float32)
+        self.rough = np.zeros((h, w), np.float32)
+        self.metal = np.zeros((h, w), np.float32)
+        self.u, self.v = np.meshgrid((np.arange(w) + 0.5) / w, 1.0 - (np.arange(h) + 0.5) / h)
+
+    def over(self, colour, mask, rough, metal, height=0.0):
+        """A layer over what is there: colour (3,) or (h, w, 3), coverage mask 0..1."""
+        m = np.clip(mask, 0, 1).astype(np.float32)
+        col = np.broadcast_to(np.asarray(colour, np.float32), self.rgb.shape)
+        a_new = m + self.a * (1 - m)
+        self.rgb = np.where(a_new[..., None] > 1e-6, (col * m[..., None] + self.rgb * (self.a * (1 - m))[..., None]) / np.maximum(a_new, 1e-6)[..., None], 0)
+        self.a = a_new
+        self.rough = self.rough * (1 - m) + np.asarray(rough, np.float32) * m
+        self.metal = self.metal * (1 - m) + np.asarray(metal, np.float32) * m
+        self.height += m * height
+
+    def save(self, name, base_rough, base_metal, strength):
+        a = self.a
+        rgba = np.dstack([self.rgb * 255, a[..., None] * 255])
+        Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), "RGBA").save(os.path.join(OUT_NEUTRAL, name + "_wear.png"))
+        # roughness/metal where nothing covers the picture: the picture's own surface (enamel, paint)
+        rough = base_rough * (1 - a) + self.rough
+        metal = base_metal * (1 - a) + self.metal
+        rm = np.dstack([rough, metal, np.zeros_like(rough)])
+        Image.fromarray(np.clip(rm * 255, 0, 255).astype(np.uint8), "RGB").save(os.path.join(OUT_NEUTRAL, name + "_wear_rm.png"))
+        h = self.height
+        for _ in range(2):                        # soften the steps a little (two 3-tap box passes)
+            h = (np.roll(h, 1, 0) + h + np.roll(h, -1, 0)) / 3
+            h = (np.roll(h, 1, 1) + h + np.roll(h, -1, 1)) / 3
+        gy, gx = np.gradient(h)
+        # rows run down (v falls): d/dv = -d/drow
+        nx, ny = -gx * strength, gy * strength
+        n = np.dstack([nx, ny, np.ones_like(nx)])
+        n /= np.linalg.norm(n, axis=2, keepdims=True)
+        n[..., 1] = -n[..., 1]                    # DirectX green
+        Image.fromarray(np.clip((n * 0.5 + 0.5) * 255, 0, 255).astype(np.uint8), "RGB").save(os.path.join(OUT_NEUTRAL, name + "_wear_n.png"))
+
+
+def _streak(u, v, x0, v0, length, width0, spread, seed, w):
+    """Rust run down from a point (u, v in 0..1): widens and fades downward, broken into drips."""
+    r = np.random.RandomState(seed)
+    below = np.clip((v0 - v) / length, 0, 1)
+    on = (v < v0) & (v > v0 - length)
+    width = width0 + spread * below
+    drips = fbm(w.w, w.h, 3, seed, 3, ax=14.0)
+    lat = (u - x0 - 0.01 * np.sin(v * 40 + r.rand() * 6)) / width
+    return np.exp(-lat * lat) * (1 - below) ** 1.4 * on * (0.45 + 0.75 * drips) + np.exp(-((u - x0) ** 2 + (v - v0) ** 2) / (width0 * 0.8) ** 2) * 0.9
+
+
+def warn_wear():
+    """The enamel plate: paint chipped to primer and bare steel at the edges and the bent corner, rust run from the bolts and
+    the top edge, the lower part sand-blasted dull with pits."""
+    w = Wear(2048, 1464)
+    u, v = w.u, w.v
+    ex = np.minimum(u, 1 - u) * 0.70
+    ey = np.minimum(v, 1 - v) * 0.50
+    e = np.minimum(ex, ey)
+    corner = np.clip(1 - np.hypot(1 - u, 1 - v) / 0.32, 0, 1)
+    n1 = fbm(w.w, w.h, 9, 101, 5)
+    n2 = fbm(w.w, w.h, 30, 102, 3)
+    blast = np.clip((0.38 - v) / 0.38, 0, 1) ** 1.3
+    # sand-blasted: the enamel goes dull and pale, unevenly
+    w.over((0.80, 0.77, 0.68), 0.55 * blast * (0.55 + 0.45 * fbm(w.w, w.h, 6, 103, 4, ax=3.0)), 0.8, 0.0, -0.05)
+    # chips: mostly round the edges and the bent corner, a few where stones hit the face
+    score = n1 * 0.55 + 0.2 * n2 + 0.5 * np.exp(-e / 0.014) + 0.32 * corner + 0.12 * blast
+    rs = np.random.RandomState(108)
+    for _ in range(14):
+        cu, cv, rad = rs.uniform(0.08, 0.92), rs.uniform(0.05, 0.95), rs.uniform(0.004, 0.012)
+        d = np.hypot((u - cu) * 0.70, (v - cv) * 0.50) / rad
+        score = np.maximum(score, 0.84 - 0.25 * d + 0.12 * n2)
+    primer = np.clip((score - 0.70) / 0.010, 0, 1)
+    bare = np.clip((score - 0.77) / 0.010, 0, 1)
+    w.over((0.47, 0.30, 0.24), primer, 0.75, 0.0, -0.6)
+    steel = np.dstack([0.36 + 0.06 * n2, 0.35 + 0.05 * n2, 0.33 + 0.04 * n2])
+    w.over(steel, bare, 0.45, 0.85, -0.4)
+    rust_on_bare = bare * np.clip((fbm(w.w, w.h, 14, 104, 4) - 0.35) / 0.25, 0, 1)
+    w.over((0.36, 0.15, 0.06), rust_on_bare, 0.92, 0.15, 0.2)
+    # rust run from the four bolts and down from the top edge
+    rust = np.zeros_like(u)
+    for k, (bu, bv) in enumerate(((0.07, 0.10), (0.07, 0.90), (0.93, 0.10), (0.93, 0.90))):
+        rust = np.maximum(rust, _streak(u, v, bu, bv, 0.42 if bv > 0.5 else 0.10, 0.008, 0.025, 200 + k, w))
+    top = np.exp(-np.maximum(1 - v, 0) / 0.02) * (0.35 + 0.65 * fbm(w.w, w.h, 4, 105, 3, ax=10.0))
+    top_run = np.clip(1 - (1 - v) / 0.25, 0, 1) ** 3 * (fbm(w.w, w.h, 2, 106, 3, ax=18.0) > 0.58)
+    rust = np.maximum(rust, np.maximum(top, top_run * 0.6))
+    rust *= 0.55 + 0.45 * n2
+    col = np.dstack([0.42 + 0.12 * n2, 0.17 + 0.05 * n2, 0.06 + 0.02 * n2])
+    w.over(col, np.clip(rust, 0, 0.9), 0.9, 0.1, 0.1)
+    # pits in the blasted part: specks of bare, rusting steel
+    pits = (np.random.RandomState(107).rand(w.h, w.w) > 0.996 - 0.01 * blast) * blast
+    pits = np.asarray(Image.fromarray((pits * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)), np.float32) / 255
+    w.over((0.30, 0.15, 0.07), pits, 0.9, 0.3, -0.5)
+    w.save("warn", 0.30, 0.0, 6.0)
+
+
+def ural_wear():
+    """The painted board: the paint flaking to grey wood, cracks along the grain, grain showing through, rust run from the nails."""
+    w = Wear(2048, 652)
+    u, v = w.u, w.v
+    grain = fbm(w.w, w.h, 8, 301, 5, ax=0.08)
+    flake_n = fbm(w.w, w.h, 10, 302, 5, ax=0.35)
+    edge = np.exp(-np.minimum(u, 1 - u) / 0.03) + np.exp(-np.minimum(np.abs(v - 0.488), np.minimum(v, 1 - v)) / 0.05)
+    # bleached by the weather all over, more where the grain is open
+    w.over((0.46, 0.44, 0.40), 0.06 + 0.16 * grain, 0.9, 0.0, 0.0)
+    flake_n = 0.6 * flake_n + 0.4 * fbm(w.w, w.h, 40, 304, 3, ax=0.3)
+    flakes = np.clip((flake_n + 0.22 * edge - 0.66) / 0.012, 0, 1)
+    w.over((0.47, 0.45, 0.40), flakes * 0.92, 0.92, 0.0, -0.5)
+    # cracks along the grain (u), a few, wavy, over part of the length
+    r = np.random.RandomState(303)
+    cracks = np.zeros_like(u)
+    for k in range(9):
+        c_v = r.uniform(0.03, 0.97)
+        u0, u1 = sorted(r.uniform(0, 1, 2))
+        if u1 - u0 < 0.2:
+            u1 = min(1.0, u0 + 0.35)
+        cv = c_v + 0.006 * np.sin(u * r.uniform(8, 20) + r.rand() * 6)
+        width = 0.0018 + 0.0012 * np.sin(u * 30)
+        along = np.clip((u - u0) / 0.06, 0, 1) * np.clip((u1 - u) / 0.06, 0, 1)
+        cracks = np.maximum(cracks, np.exp(-((v - cv) / width) ** 2) * along)
+    w.over((0.05, 0.045, 0.04), cracks * 0.95, 0.95, 0.0, -1.2)
+    # nails: the board centres are v 0.244 and 0.756; two nails at each end, the lower board's left ones gone
+    rust = np.zeros_like(u)
+    for k, (nu, nv) in enumerate(((0.035, 0.80), (0.035, 0.71), (0.965, 0.80), (0.965, 0.71), (0.965, 0.29), (0.965, 0.20))):
+        rust = np.maximum(rust, _streak(u, v, nu, nv, 0.17, 0.004, 0.01, 400 + k, w))
+    holes = np.zeros_like(u)
+    for nu, nv in ((0.035, 0.29), (0.035, 0.20)):
+        holes = np.maximum(holes, np.exp(-((u - nu) ** 2 * 9 + (v - nv) ** 2) / 0.0035 ** 2 / 9))
+    w.over((0.30, 0.13, 0.05), np.clip(rust * 0.85, 0, 1), 0.9, 0.05, 0.1)
+    w.over((0.04, 0.03, 0.02), np.clip(holes * 1.5, 0, 1), 0.95, 0.0, -1.0)
+    w.save("ural", 0.82, 0.0, 4.0)
+
+
 def make_neutral():
     os.makedirs(OUT_NEUTRAL, exist_ok=True)
+    warn_wear()
+    ural_wear()
     for n in TOWELS:
         towel(n).save(os.path.join(OUT_NEUTRAL, "towel_%s.png" % n))
     wood().save(os.path.join(OUT_NEUTRAL, "wood.png"))

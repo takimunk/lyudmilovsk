@@ -199,13 +199,27 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 {
 	WarnMesh = LoadMesh(TEXT("SM_Topi_WarnSign"));
 	UralMesh = LoadMesh(TEXT("SM_Topi_UralSign"));
-	StakeMesh = LoadMesh(TEXT("SM_Topi_Stake"));
+	StakeMeshes.Reset();
+	for (const TCHAR* Letter : { TEXT("A"), TEXT("B"), TEXT("C"), TEXT("D") })
+	{
+		if (UStaticMesh* Variant = LoadMesh(FString(TEXT("SM_Topi_Stake_")) + Letter))
+		{
+			StakeMeshes.Add(Variant);
+		}
+	}
+	if (StakeMeshes.IsEmpty())
+	{
+		if (UStaticMesh* Single = LoadMesh(TEXT("SM_Topi_Stake")))
+		{
+			StakeMeshes.Add(Single);
+		}
+	}
 	TowelMeshes.Reset();
 	for (const TCHAR* Letter : { TEXT("A"), TEXT("B"), TEXT("C") })
 	{
 		TowelMeshes.Add(LoadMesh(FString(TEXT("SM_Topi_Towel_")) + Letter));
 	}
-	if (!WarnMesh || !UralMesh || !StakeMesh || TowelMeshes.ContainsByPredicate([](const TObjectPtr<UStaticMesh>& Towel) { return !Towel; }))
+	if (!WarnMesh || !UralMesh || StakeMeshes.IsEmpty() || TowelMeshes.ContainsByPredicate([](const TObjectPtr<UStaticMesh>& Towel) { return !Towel; }))
 	{
 		if (!bMissingLogged)
 		{
@@ -269,7 +283,7 @@ void ULyudTopiProps::PlaceSign(ALyudTopi* Topi, const FPendingSign& Sign, float 
 
 void ULyudTopiProps::PlaceStakes(ALyudTopi* Topi)
 {
-	if (!StakeMesh)
+	if (StakeMeshes.IsEmpty())
 	{
 		return;
 	}
@@ -292,7 +306,8 @@ void ULyudTopiProps::PlaceStakes(ALyudTopi* Topi)
 		FVector At = Topi->ToWorld(P.X + Dy * StakeSideM, P.Y - Dx * StakeSideM, 0.0);   // to the right of the way down
 		At.Z = Topi->SandZ(At);
 		const FQuat Rotation = Stand(Rand.FRandRange(-20.f, 20.f), Rand.FRandRange(2.f, 7.f), Rand.FRandRange(0.f, 360.f));
-		if (Spawn(StakeMesh, At, Rotation, false))
+		UStaticMesh* const Mesh = StakeMeshes[Rand.RandRange(0, StakeMeshes.Num() - 1)];
+		if (Spawn(Mesh, At, Rotation, false))
 		{
 			NumStakes++;
 		}

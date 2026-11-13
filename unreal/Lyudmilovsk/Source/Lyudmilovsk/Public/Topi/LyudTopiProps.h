@@ -62,7 +62,8 @@ private:
 
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> WarnMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> UralMesh;
-	UPROPERTY(Transient) TObjectPtr<UStaticMesh> StakeMesh;
+	/** The stake variants SM_Topi_Stake_A..D (or the single SM_Topi_Stake of older imports). */
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> StakeMeshes;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> TowelMeshes;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PlacedParts;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> SignMIDs;

@@ -170,7 +170,7 @@ for (int layer = 0; layer < 3; ++layer)
     col = lerp(col, float3(0.80, 0.60, 1.00), smoothstep(0.6, 0.85, hue));
     col = lerp(col, float3(1.00, 0.90, 0.55), smoothstep(0.92, 1.0, hue));
     float fade = layer == 2 ? saturate(1.0 - Foot / 0.25) : (layer == 1 ? saturate(1.0 - Foot / 0.8) : 1.0);
-    light += col * spark * (layer == 0 ? 3.0 : (layer == 1 ? 4.5 : 6.0)) * fade;
+    light += col * spark * (layer == 0 ? 2.0 : (layer == 1 ? 3.0 : 4.0)) * fade;
     cover += spark * fade;
 }
 float k = night * VC.a * edge;
@@ -182,13 +182,16 @@ return float4(light, saturate(cover * k * (0.75 + dissolve)));
 GLOW = r"""
 float night = Look.x, dissolve = Look.y;
 float up = UV.y;
-float rays = 0.55 + 0.45 * Topi.Noise(float2(UV.x / 70.0 - T * 0.012, up * 2.0 + T * 0.02), 41u);
-float shimmer = 0.8 + 0.2 * Topi.Noise(float2(UV.x / 9.0 + T * 0.05, up * 9.0 - T * 0.11), 42u);
-float fall = pow(1.0 - up, 2.6) * smoothstep(0.0, 0.03, up);
+// a calm curtain: broad, slow, low-contrast folds rather than streaks
+float rays = 0.78 + 0.22 * Topi.Noise(float2(UV.x / 240.0 - T * 0.006, up * 1.2 + T * 0.008), 41u);
+float shimmer = 0.9 + 0.1 * Topi.Noise(float2(UV.x / 45.0 + T * 0.03, up * 3.0 - T * 0.05), 42u);
+float fall = pow(1.0 - up, 2.6) * smoothstep(0.0, 0.03, up) * lerp(1.0, 0.5, up);
+// strongest where the path comes out (UV.x = 0): ~30 degrees of the horizon seen from the town, fainter along the rest
+float focus = 0.3 + 0.7 * exp(-(UV.x * UV.x) / (520.0 * 520.0));
 // near the river the curtain goes: there the river itself is the light
 float nearK = smoothstep(120.0, 700.0, Dist * 0.01);
 float3 col = lerp(float3(0.10, 0.85, 0.70), float3(0.30, 0.55, 1.00), up * 1.4);
-return col * fall * rays * shimmer * nearK * night * VC.a * Bright * (1.0 + 2.0 * dissolve);
+return col * fall * rays * shimmer * focus * nearK * night * VC.a * Bright * (1.0 + 2.0 * dissolve);
 """
 
 # A mote of light: the quad's corner offset. Pos: the mote's place (world cm, all four corners); UV: its corner
@@ -201,14 +204,18 @@ float2 w = normalize(Wind.xy + float2(1e-4, 0.0));
 float3 drift = lerp(float3(w * (life - 0.5) * (500.0 + 90.0 * Wind.z), 35.0 * sin(life * 6.2831853 + VC.b * 20.0)),
                     float3(260.0 * (life - 0.5) + 30.0 * sin(life * 9.0 + VC.g * 30.0), 25.0 * sin(life * 7.0 + VC.r * 40.0), 170.0 * life),
                     VC.a);
-float size = (1.6 + 2.6 * VC.b) * sin(3.14159 * life) * night * (1.0 + 2.5 * dissolve);
+// mostly sparks of 3..6 cm, one in ten a larger soft one
+float big = step(0.9, VC.b);
+float size = lerp(1.5 + 1.5 * VC.b / 0.9, 6.0, big) * sin(3.14159 * life) * night * (1.0 + 2.5 * dissolve);
 return drift + (UV.x * Right + UV.y * Up) * size;
 """
 
 MOTE_LIGHT = r"""
 float night = Look.x, dissolve = Look.y;
 float d = saturate(1.0 - dot(UV, UV));
+float big = step(0.9, VC.b);
+d = lerp(d * d * d, d * d * 0.35, big);       // sparks: a sharp point; the big ones soft and dim
 float tw = 0.6 + 0.4 * sin(T * (2.0 + 5.0 * VC.r) + VC.g * 40.0);
 float3 col = lerp(float3(0.15, 1.0, 0.85), float3(0.85, 0.95, 1.0), VC.b * VC.b);
-return col * d * d * tw * night * Bright * (1.0 + 3.0 * dissolve);
+return col * d * tw * night * Bright * (1.0 + 3.0 * dissolve);
 """
