@@ -31,6 +31,8 @@ void ULyudBirdBook::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		Saves->RegisterSaveObject(TEXT("BirdBook"), this);
 		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { OnChanged.Broadcast(); });
+		// this subsystem outlives the level: a new game starts with an empty book, not the last game's birds and friends
+		Saves->OnNewGame.AddWeakLambda(this, [this]() { Reset(); });
 	}
 }
 
