@@ -2919,10 +2919,29 @@ namespace LyudPeople
 			{
 				FSlot Sl;
 				Sl.Kind = "shovel";
+				Sl.K = KindId(Sl.Kind);
 				Sl.Place = Pi;
 				Sl.Pos = Sl.Approach = Sl.SnowTo = Near;
 				Places[Pi].Slots.push_back((int)Slots.size());
 				Slots.push_back(Sl);
+			}
+			// the index stays whole (Index ran before this place was there): its kind, the activities that go to it.
+			// Without this every choice of every person looked over all the places by name from here on
+			Places[Pi].K = KindId(Places[Pi].Kind);
+			for (FActivity& A : Activities)
+			{
+				if (Has(A.Places, Places[Pi].Kind))
+				{
+					A.PlaceIdx.push_back(Pi);
+				}
+			}
+			if (FlatLit.size() == Indexed)
+			{
+				FlatLit.resize(Places.size(), -1);
+			}
+			if (Indexed + 1 == Places.size())
+			{
+				Indexed = Places.size();
 			}
 		}
 		FPlace& Pl = Places[Pi];
