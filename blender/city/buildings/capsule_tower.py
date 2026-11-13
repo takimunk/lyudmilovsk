@@ -358,7 +358,7 @@ def _capsule(B):
         f(kit.poster, ix1, 4.1, 270.0, name="map_world", w=1.1, zc=1.6)
         f(kit.poster, ix1, 5.0, 270.0, name="label_12", w=0.22, zc=1.5)
         f(kit.poster, ix1, 5.25, 270.0, name="label_31", w=0.22, zc=1.5)
-        f(kit.poster, ix1, 3.5, 270.0, name="paper_letter", w=0.3, zc=1.7)
+        f(kit.poster, ix1, 3.3, 270.0, name="paper_letter", w=0.3, zc=1.7)
     else:
         f(kit.poster, ix1, 4.1, 270.0, name="chart_periodic", w=0.8, zc=1.65)
         f(kit.poster, ix1, 5.0, 270.0, name="poster_cons_3", w=0.45, zc=1.6)

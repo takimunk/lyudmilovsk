@@ -584,8 +584,8 @@ def _maisonette(B):
     f(kit.globe, 7.9, yi1 - 0.5, 0.0, z=z + 0.75)
     sh1 = f(kit.bookshelf, 5.6, yi1, 0.0, z=z, w=1.0, h=1.9, levels=5, topic="art" if seam else "sun", seed=21)
     sh2 = f(kit.bookshelf, 4.5, yi1, 0.0, z=z, w=1.0, h=1.9, levels=5, topic="science", seed=22)
-    f(kit.poster, 8.2, yi0, 180.0, z=z, name="poster_sun_1" if not seam else "fabric_2", w=0.6, zc=1.6)
-    f(kit.poster, 3.7, yi0, 180.0, z=z, name="chart_calendar" if not seam else "fabric_4", w=0.6, zc=1.6)
+    f(kit.poster, 9.5, yi0, 180.0, z=z, name="poster_sun_1" if not seam else "fabric_2", w=0.42, zc=1.6)   # on the pier between two windows
+    f(kit.poster, 5.97, yi0, 180.0, z=z, name="chart_calendar" if not seam else "fabric_4", w=0.42, zc=1.6)
     # ---- the bed at the west end, behind a wardrobe and a screen
     bd = f(kit.bed, xi0 + 1.1, 15.7, 90.0, z=z, size="double", blanket="CT_PlasterBlue")
     f(kit.bedside_table, xi0 + 0.3, 14.55, 90.0, z=z, lamp=True)
@@ -606,8 +606,8 @@ def _maisonette(B):
     B.thing("home_record_player", "machine", rp["pos"][:2] + (z + 0.7,), 0.0, what="record_player")
     B.thing("home_shelf_main", "shelf", sh1["pos"][:2] + (z + 1.3,), 180.0, topic="art" if seam else "sun")
     B.thing("home_shelf_science", "shelf", sh2["pos"][:2] + (z + 1.3,), 180.0, topic="science")
-    B.thing("home_board_chart", "board", (8.2, yi0, z + 1.6), 180.0, topic="view")
-    B.thing("home_board_calendar", "board", (3.7, yi0, z + 1.6), 180.0, topic="club")
+    B.thing("home_board_chart", "board", (9.5, yi0, z + 1.6), 180.0, topic="view")
+    B.thing("home_board_calendar", "board", (5.97, yi0, z + 1.6), 180.0, topic="club")
     B.thing("home_picture", "board", (xi1, 15.2, z + 1.5), 270.0, topic="painting")
     B.thing("home_paper", "take", (11.1, 15.6, z + 0.45), 10.0, item="daily_paper")
     H.check("riser-maisonette", overlaps=False)

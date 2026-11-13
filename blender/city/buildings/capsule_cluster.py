@@ -322,7 +322,7 @@ def _hall(B, core):
         _bike(B, cx - 1.5, ys + 0.34, 90.0, mat="CT_SteelRed" if cid == "A" else "CT_PlasterBlue")
         P(kit.plant, xe - 0.2, ys + 0.25, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.1, seed=1)
         P(kit.rug, cx + 1.1, cy + 0.0, 0.0, w=1.0, d=1.5, name="rug_%d" % (3 if cid == "A" else 5))
-        P(kit.floor_lamp, cx + 0.55, cy + 1.7, 0.0)
+        P(kit.floor_lamp, cx + 0.3, cy + 1.7, 0.0)
         _seat_thing(B, "hall_%s_bench" % tag, bn)
         B.thing("hall_%s_board_lost" % tag, "board", (xe - 0.03, cy + 1.5, 1.55), 270.0, topic="lost")
         B.thing("hall_%s_board_club" % tag, "board", (cx + 1.5, ys + 0.03, 1.8), 180.0, topic="club")
@@ -667,7 +667,7 @@ def build(B):
         cx, cy = core["c"]
         # lobby: doormat, lamps, the furniture of the hall
         fu.doormat(B, fu.Fr(x, y, 0.0), 0.0, -0.7, size=(1.0, 0.6))
-        B.lamp((cx - 0.5, cy - 1.95, 2.7), lumens=420, colour="#FFE0B0", kind="lobby", radius=5.5)
+        B.lamp((cx + 1.2, cy + 0.2, 2.7), lumens=420, colour="#FFE0B0", kind="lobby", radius=5.5)   # over the free lane beside the stair
         for lv in range(1, core["n"]):
             B.lamp((cx - 0.5, cy - 1.95, lv * STOREY + 2.7), lumens=380, colour="#FFE8C0", kind="stair", radius=5.0)
         _hall(B, core)

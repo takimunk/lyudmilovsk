@@ -401,7 +401,7 @@ def _family(B, i):
         mt = f(kit.mats, -4.5, 10.6, 0.0, z=z, w=1.5, d=1.3, n=1, mat="CT_PlasterGreen")
         f(kit.crate, -3.6, 11.5, 15.0, z=z, w=0.55, d=0.38, h=0.3, fill="CT_PlasterYellow", seed=3)
         f(kit.crate, -5.0, 11.7, 80.0, z=z, w=0.5, d=0.35, h=0.3, fill="CT_PlasterRed", seed=4)
-        f(kit.wall_map, -4.3, RW, 0.0, z=z, w=1.4, h=1.0, zc=1.8, name="map_world")
+        f(kit.wall_map, -4.3, RW, 0.0, z=z, w=1.4, h=1.0, zc=2.2, name="map_world")   # clear of the rear window
         f(kit.poster, EW, 10.4, 270.0, z=z, name="poster_birds_1", w=0.6, zc=1.7)
         f(kit.floor_lamp, -3.2, 4.0, 0.0, z=z, shade="CT_PlasterYellow")
         kit.pendant(B, -4.4, 5.6, roof_z(-4.4) - 0.3, drop=1.6, light=True, lumens=900, colour="#FFE2B8")

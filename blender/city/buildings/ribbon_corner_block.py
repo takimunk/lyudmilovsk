@@ -388,6 +388,19 @@ def _ground_rooms(B):
     f.panel(16.9, 4.0, 1.7, 2.4, 1.2, yaw=270.0, mat="CT_PlasterRed", frame="CT_Frame")
     for x in (3.0, 6.0):
         B.spot("bike_%d" % int(x), "stand", (x, 3.8, 0.0), 0.0)
+    # dressing of the two bare rooms (x -0.9..7.9 bike room, x 8.1..16.7 red corner): one lamp each, bikes and a shelf
+    # of tools in the first; a long table with chairs, banner, shelf and a plant in the second
+    f.pendant(3.5, 4.4, 2.8, lumens=500, colour="#FFE2B5", radius=6.0, drop=0.5)
+    for x_, m_ in ((0.45, "CT_SteelRed"), (1.35, "CT_PlasterBlue"), (4.7, "CT_PlasterYellow")):
+        kit.bicycle(B, x_, 4.6, 0.0, 0.0, kind="stand", mat=m_)
+    kit.shop_shelf(B, 2.9, YBK, 0.0, 0.0, w=1.0, goods="hardware", h=2.0, levels=4, seed=21)
+    kit.poster(B, -0.9 + 0.005, 3.2, 0.0, 90.0, name="poster_cons_1", w=0.6, zc=1.6)
+    f.pendant(12.6, 4.4, 2.8, lumens=500, colour="#FFE2B5", radius=6.0, drop=0.5)
+    kit.table(B, 14.6, 4.8, 0.0, 0.0, w=1.8, d=0.9)
+    kit.around_table(B, 14.6, 4.8, 1.8, 0.9, 0.0, per_side=(2, 2, 0, 0), kind="wood")
+    kit.banner(B, 12.6, YBK, 0.0, 0.0, name="poster_cons_3", w=1.4, zc=2.1)
+    kit.bookshelf(B, 15.6, YBK, 0.0, 0.0, w=1.0, h=1.9, levels=5, topic="local", seed=23)
+    kit.plant(B, 8.7, 5.7, kind="ficus", pot="CT_PlasterRed", h=1.4)
     # lamps in the ground corridor
     B.lamp((-9.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
     B.lamp((9.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
