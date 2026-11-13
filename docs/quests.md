@@ -88,6 +88,9 @@ the voice of a line is found by its key.
   `flag:<flag>` (`ULyudQuests::Flags`, a remark said: `remark.<id>`, a pickup taken: `pickup.<id>`). A variant is counted
   apart from the plain talk (its own first time, its own `.again`). It needs a plain line of the same stage to stand in for,
   and it must carry whatever the plain talk tells the player to do.
+- `quest.<quest>.done` (what they say after the quest, once) steps aside once it is said: several quests' `done` lines can
+  stand in one section, and a `done.if.<cond>` variant is one more after-talk for when its conditions hold. A `done` line
+  with `.again` lines is said for ever, in front of the everyday talks: do not write one.
 - `quest.<quest>.<stages>.again` may be written several times: later talks go through them in turn, round and round
   (a waiting stage: a hint, then an aside).
 - `python3 tools/check_quest_talk.py` checks all of it offline (quests, stages, conditions, line keys in three languages,
