@@ -1290,8 +1290,17 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 		// (the season has moved on: blossom, leaves) is ready, take it over at once instead of at the next re-shape
 		UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
 		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FVector(15.0, 55.0, 150.0)) : nullptr;
-		bNewBake = bShownSummary && Far && Far->Mesh && Far->Version != FarVersion;
-		if (!bShownSummary) bSummary = Far && Far->Mesh;
+		const bool bBakeReady = Far && Far->Mesh;
+		if (bShownSummary && !bBakeReady)
+		{
+			// drawn as its bake, and the kind asked for now is not made yet (its age has rounded to the next year: a new kind,
+			// queued by the call above): it keeps the bake it shows. Before, the next re-shape built the whole tree in full
+			// detail, far away, to show until the new bake came: every far tree of the world at the same moment of the calendar.
+			return;
+		}
+		// (a new kind's version can equal the old kind's: the mesh tells them apart)
+		bNewBake = bShownSummary && (Far->Version != FarVersion || FarTree->GetStaticMesh() != Far->Mesh);
+		if (!bShownSummary) bSummary = bBakeReady;
 	}
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
 	// far with no bake yet (a time-lapse asks for a new one at every year): keep the shape it has, unseen at this distance
