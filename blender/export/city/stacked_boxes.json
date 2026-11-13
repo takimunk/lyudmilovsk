@@ -151,6 +151,176 @@
     6.07
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "agata_desk",
+   "kind": "seat",
+   "pos": [
+    -23.0,
+    29.05,
+    9.12
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "agata_table",
+   "kind": "seat",
+   "pos": [
+    -21.8,
+    28.05,
+    9.12
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "agata_window",
+   "kind": "view",
+   "pos": [
+    -19.4,
+    28.0,
+    9.12
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "agata_roof_table",
+   "kind": "seat",
+   "pos": [
+    -24.15,
+    29.05,
+    12.07
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "agata_roof_beds",
+   "kind": "stand",
+   "pos": [
+    -24.0,
+    27.2,
+    12.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "agata_roof_rail",
+   "kind": "view",
+   "pos": [
+    -29.3,
+    27.7,
+    12.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "agata_roof_apple",
+   "kind": "stand",
+   "pos": [
+    -28.2,
+    28.6,
+    12.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canyon0_view",
+   "kind": "view",
+   "pos": [
+    -17.95,
+    14.8,
+    12.12
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canyon0_bench_l3",
+   "kind": "bench",
+   "pos": [
+    -18.05,
+    27.55,
+    9.12
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canyon0_tap",
+   "kind": "stand",
+   "pos": [
+    -14.45,
+    15.85,
+    6.12
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "canyon0_cat",
+   "kind": "stand",
+   "pos": [
+    -17.95,
+    23.4,
+    9.12
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canyon1_hopscotch",
+   "kind": "stand",
+   "pos": [
+    -1.85,
+    9.1,
+    6.12
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canyon1_bench",
+   "kind": "bench",
+   "pos": [
+    1.75,
+    17.55,
+    6.12
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "canyon2_swap",
+   "kind": "stand",
+   "pos": [
+    17.75,
+    15.85,
+    6.12
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "agata_armchair",
+   "kind": "seat",
+   "pos": [
+    -20.25,
+    28.6,
+    9.12
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "agata_kitchen",
+   "kind": "work",
+   "pos": [
+    -24.0,
+    25.95,
+    9.12
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "agata_sofa",
+   "kind": "seat",
+   "pos": [
+    -28.0,
+    26.1,
+    9.12
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -186,6 +356,72 @@
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 4.5
+  },
+  {
+   "pos": [
+    -20.9,
+    27.0,
+    11.6
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 6.2
+  },
+  {
+   "pos": [
+    -26.6,
+    27.7,
+    11.6
+   ],
+   "lumens": 380,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.2
+  },
+  {
+   "pos": [
+    -24.3,
+    27.5,
+    14.5
+   ],
+   "lumens": 360,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -18.0,
+    22.7,
+    11.57
+   ],
+   "lumens": 260,
+   "colour": "#FFE0B0",
+   "kind": "stair",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -18.0,
+    27.1,
+    11.57
+   ],
+   "lumens": 260,
+   "colour": "#FFE0B0",
+   "kind": "stair",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -17.75,
+    16.6,
+    14.2
+   ],
+   "lumens": 240,
+   "colour": "#FFE0B0",
+   "kind": "stair",
+   "radius": 5.0
   }
  ],
  "things": [
@@ -473,6 +709,700 @@
    "yaw": 0.0,
    "props": {
     "what": "chess"
+   }
+  },
+  {
+   "id": "ag_door",
+   "kind": "door",
+   "pos": [
+    -18.95,
+    26.05,
+    10.22
+   ],
+   "yaw": 270.0,
+   "props": {
+    "to": "flat"
+   }
+  },
+  {
+   "id": "ag_switch",
+   "kind": "machine",
+   "pos": [
+    -18.9,
+    26.85,
+    10.42
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "ag_note",
+   "kind": "board",
+   "pos": [
+    -18.9,
+    26.85,
+    10.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "note"
+   }
+  },
+  {
+   "id": "ag_armchair",
+   "kind": "seat",
+   "pos": [
+    -20.25,
+    28.6,
+    9.57
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ag_table",
+   "kind": "play",
+   "pos": [
+    -21.8,
+    27.25,
+    9.92
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
+   "id": "ag_chair_s",
+   "kind": "seat",
+   "pos": [
+    -21.8,
+    26.45,
+    9.57
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ag_chair_n",
+   "kind": "seat",
+   "pos": [
+    -21.8,
+    28.05,
+    9.57
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ag_desk_chair",
+   "kind": "seat",
+   "pos": [
+    -23.0,
+    29.05,
+    9.57
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ag_notebook",
+   "kind": "shelf",
+   "pos": [
+    -23.2,
+    29.85,
+    9.92
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "diary"
+   }
+  },
+  {
+   "id": "ag_packets",
+   "kind": "board",
+   "pos": [
+    -23.0,
+    30.1,
+    10.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "packets"
+   }
+  },
+  {
+   "id": "ag_letters",
+   "kind": "shelf",
+   "pos": [
+    -22.5,
+    29.8,
+    9.97
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "letters"
+   }
+  },
+  {
+   "id": "ag_shelf_garden",
+   "kind": "shelf",
+   "pos": [
+    -26.4,
+    30.0,
+    10.42
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "ag_clock",
+   "kind": "board",
+   "pos": [
+    -24.0,
+    25.4,
+    11.27
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "ag_kettle",
+   "kind": "machine",
+   "pos": [
+    -24.3,
+    25.7,
+    10.12
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "ag_sink",
+   "kind": "machine",
+   "pos": [
+    -23.7,
+    25.7,
+    10.12
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "ag_radio",
+   "kind": "machine",
+   "pos": [
+    -20.45,
+    29.95,
+    10.57
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "ag_jar",
+   "kind": "board",
+   "pos": [
+    -20.8,
+    29.95,
+    10.57
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "jar"
+   }
+  },
+  {
+   "id": "ag_sill_east",
+   "kind": "board",
+   "pos": [
+    -19.03,
+    28.35,
+    9.92
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "seedlings"
+   }
+  },
+  {
+   "id": "ag_sill_west",
+   "kind": "board",
+   "pos": [
+    -29.46,
+    27.8,
+    9.92
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pots"
+   }
+  },
+  {
+   "id": "ag_view_east",
+   "kind": "board",
+   "pos": [
+    -18.95,
+    28.6,
+    10.52
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "ag_photo_station",
+   "kind": "board",
+   "pos": [
+    -29.6,
+    25.72,
+    10.77
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "photo"
+   }
+  },
+  {
+   "id": "ag_photo_ruben",
+   "kind": "board",
+   "pos": [
+    -29.6,
+    29.8,
+    10.77
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "photo"
+   }
+  },
+  {
+   "id": "ag_bed",
+   "kind": "bed",
+   "pos": [
+    -28.55,
+    29.55,
+    9.62
+   ],
+   "yaw": 90.0,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "ag_sofa",
+   "kind": "bed",
+   "pos": [
+    -28.0,
+    25.85,
+    9.57
+   ],
+   "yaw": 180.0,
+   "props": {
+    "rest": "night",
+    "height": 0.45
+   }
+  },
+  {
+   "id": "rg_tomatoes",
+   "kind": "board",
+   "pos": [
+    -27.2,
+    26.35,
+    13.25
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "tomatoes"
+   }
+  },
+  {
+   "id": "rg_herbs",
+   "kind": "board",
+   "pos": [
+    -23.6,
+    26.35,
+    12.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "herbs"
+   }
+  },
+  {
+   "id": "rg_sunflowers",
+   "kind": "board",
+   "pos": [
+    -20.7,
+    26.35,
+    13.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sunflowers"
+   }
+  },
+  {
+   "id": "rg_table",
+   "kind": "play",
+   "pos": [
+    -25.05,
+    29.05,
+    12.84
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
+   "id": "rg_chair_w",
+   "kind": "seat",
+   "pos": [
+    -25.95,
+    29.05,
+    12.52
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "rg_chair_e",
+   "kind": "seat",
+   "pos": [
+    -24.15,
+    29.05,
+    12.52
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "rg_barrel",
+   "kind": "machine",
+   "pos": [
+    -19.75,
+    29.95,
+    12.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "rg_frame",
+   "kind": "board",
+   "pos": [
+    -22.3,
+    29.8,
+    12.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "frame"
+   }
+  },
+  {
+   "id": "rg_apple",
+   "kind": "take",
+   "pos": [
+    -28.85,
+    29.35,
+    13.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "apple"
+   }
+  },
+  {
+   "id": "rg_feeder",
+   "kind": "board",
+   "pos": [
+    -22.6,
+    27.5,
+    13.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "feeder"
+   }
+  },
+  {
+   "id": "rg_sign",
+   "kind": "board",
+   "pos": [
+    -19.25,
+    28.9,
+    13.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "rg_switch",
+   "kind": "machine",
+   "pos": [
+    -24.3,
+    27.46,
+    13.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "rg_view",
+   "kind": "board",
+   "pos": [
+    -29.9,
+    27.7,
+    13.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "c0_tap",
+   "kind": "machine",
+   "pos": [
+    -14.1,
+    15.85,
+    6.92
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "c0_postbox",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    13.75,
+    7.52
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "post"
+   }
+  },
+  {
+   "id": "c0_board",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    21.33,
+    10.72
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "stairnews"
+   }
+  },
+  {
+   "id": "c0_switch",
+   "kind": "machine",
+   "pos": [
+    -18.48,
+    25.25,
+    10.44
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "c0_bench_l3",
+   "kind": "seat",
+   "pos": [
+    -18.25,
+    27.45,
+    9.57
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c0_pots",
+   "kind": "board",
+   "pos": [
+    -18.3,
+    28.9,
+    9.67
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pots"
+   }
+  },
+  {
+   "id": "c0_cat",
+   "kind": "board",
+   "pos": [
+    -18.22,
+    23.25,
+    9.37
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "cat"
+   }
+  },
+  {
+   "id": "c0_laundry",
+   "kind": "board",
+   "pos": [
+    -16.2,
+    19.95,
+    11.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "laundry"
+   }
+  },
+  {
+   "id": "c0_view",
+   "kind": "board",
+   "pos": [
+    -17.5,
+    14.5,
+    13.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "canyonview"
+   }
+  },
+  {
+   "id": "c0_bench_view",
+   "kind": "seat",
+   "pos": [
+    -18.25,
+    17.7,
+    12.57
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c1_hopscotch",
+   "kind": "board",
+   "pos": [
+    -1.85,
+    11.5,
+    6.17
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "hopscotch"
+   }
+  },
+  {
+   "id": "c1_pigeons",
+   "kind": "board",
+   "pos": [
+    -1.85,
+    22.9,
+    9.24
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pigeons"
+   }
+  },
+  {
+   "id": "c1_laundry",
+   "kind": "board",
+   "pos": [
+    -0.1,
+    14.5,
+    8.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "laundry"
+   }
+  },
+  {
+   "id": "c1_bench",
+   "kind": "seat",
+   "pos": [
+    1.95,
+    17.85,
+    6.57
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c2_swap",
+   "kind": "take",
+   "pos": [
+    18.1,
+    15.85,
+    7.02
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "magazine_travel"
+   }
+  },
+  {
+   "id": "c2_bike",
+   "kind": "board",
+   "pos": [
+    17.85,
+    22.1,
+    6.82
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "bike"
    }
   }
  ],
@@ -12905,8 +13835,8 @@
   "104 flats (boxes; 9 duplexes), 3 canyons with stairs, 3 lift towers, 5 bridges"
  ],
  "tris": {
-  "shell": 18556,
-  "detail": 37501,
+  "shell": 18876,
+  "detail": 47415,
   "windows": 2032
  }
 }
