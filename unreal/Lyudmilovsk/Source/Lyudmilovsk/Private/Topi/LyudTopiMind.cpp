@@ -1,4 +1,7 @@
 #include "Topi/LyudTopiMind.h"
+#include "Dev/LyudDev.h"
+#include "Engine/Engine.h"
+#include "HAL/IConsoleManager.h"
 
 #include "Audio/LyudSoundscape.h"
 #include "Camera/PlayerCameraManager.h"
@@ -65,6 +68,30 @@ namespace
 		ALyudTopi* T = World ? ALyudTopi::Get(World) : nullptr;
 		return T ? T->Mind.Get() : nullptr;
 	}
+
+	// developer mode (docs/dev_mode.md): the Actions tab's "topi" group and Dev.Do topi.*
+	bool TopiDevFlag(const TCHAR* Name)
+	{
+		const IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(Name);
+		return Var && Var->GetFloat() > 0.5f;
+	}
+	void TopiDevSet(const TCHAR* Name, float Value)
+	{
+		if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(Name))
+		{
+			Var->Set(Value, ECVF_SetByConsole);
+		}
+	}
+	LyudDev::FAutoAction GTopiDevNight(TEXT("topi.night"), TEXT("topi"), TEXT("dev.action.topi.night"),
+		[](UWorld*) { TopiDevSet(TEXT("lyud.Topi.Night"), TopiDevFlag(TEXT("lyud.Topi.Night")) ? -1.f : 1.f); },
+		[](UWorld*) { return TopiDevFlag(TEXT("lyud.Topi.Night")); });
+	LyudDev::FAutoAction GTopiDevCalm(TEXT("topi.calm"), TEXT("topi"), TEXT("dev.action.topi.calm"),
+		[](UWorld*) { TopiDevSet(TEXT("lyud.Topi.Calm"), TopiDevFlag(TEXT("lyud.Topi.Calm")) ? 0.f : 1.f); },
+		[](UWorld*) { return TopiDevFlag(TEXT("lyud.Topi.Calm")); });
+	LyudDev::FAutoAction GTopiDevTurn(TEXT("topi.turn"), TEXT("topi"), TEXT("dev.action.topi.turn"),
+		[](UWorld* W) { if (GEngine && W) { GEngine->Exec(W, TEXT("lyud.Topi.TurnBack")); } });
+	LyudDev::FAutoAction GTopiDevDissolve(TEXT("topi.dissolve"), TEXT("topi"), TEXT("dev.action.topi.dissolve"),
+		[](UWorld* W) { if (GEngine && W) { GEngine->Exec(W, TEXT("lyud.Topi.Dissolve")); } });
 
 	FAutoConsoleCommandWithWorld CmdTopiTurnBack(TEXT("lyud.Topi.TurnBack"), TEXT("The hero turns back from Topi now."),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
