@@ -1605,6 +1605,17 @@ void ULyudFishing::Tick(float DeltaTime)
 		{
 			PutAway();
 		}
+		// a kitchen door's line does not stay on the screen either (Kitchens is not reached from here)
+		if (KitchenKey != 0)
+		{
+			KitchenKey = 0;
+			KitchenIn = 0.f;
+			ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+			if (ULyudFishingState* State = ULyudFishingState::Get(this); UI && State)
+			{
+				UI->SetPrompt(State, FText::GetEmpty());
+			}
+		}
 		return;
 	}
 	// a bait taken in the hand goes on the rig (the rod comes back into the hand); a rod in the hand comes out
