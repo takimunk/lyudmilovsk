@@ -2,6 +2,7 @@
 // player's calls, rides and announcements.
 #include "Transport/LyudTransport.h"
 
+#include "NpcDialogue.h"
 #include "HeroCharacter.h"
 
 #include "Audio/LyudSoundscape.h"
@@ -1085,7 +1086,7 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		UI->SetPrompt(this, PromptText);
 		PromptRefresh = 0.25f;
 	}
-	const bool bE = PromptCooldown <= 0.f && PC->WasInputKeyJustPressed(EKeys::E) && !UI->IsOpen();
+	const bool bE = PromptCooldown <= 0.f && ANpcTalkDirector::UsePressed(PC) && !UI->IsOpen();
 	if (bE && DoorCabin >= 0)
 	{
 		LT::FCabin& C = Net->Cabins[DoorCabin];

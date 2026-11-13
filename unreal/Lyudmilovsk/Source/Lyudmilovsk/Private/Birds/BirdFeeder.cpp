@@ -1,5 +1,6 @@
 #include "Birds/BirdFeeder.h"
 
+#include "NpcDialogue.h"
 #include "BirdSim.h"
 #include "Birds/BirdLife.h"
 #include "Camera/CameraActor.h"
@@ -574,7 +575,7 @@ void UBirdFeederSubsystem::UpdatePrompt(APlayerController* PC)
 	// set every frame all the same: another prompt (a door, the vending machine) may have taken the line meanwhile
 	UI->SetPrompt(this, PromptText);
 	bPrompt = true;
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC))
 	{
 		if (bFeed)
 		{

@@ -1,5 +1,6 @@
 #include "Diner/LyudDiner.h"
 
+#include "NpcDialogue.h"
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Doors/LyudDoor.h"
@@ -985,7 +986,7 @@ void ALyudDiner::TickCoffee(float DeltaTime)
 			UI->SetPrompt(this, bAt ? LyudText::Get(TEXT("ui.diner.coffee_prompt"), { FStringFormatArg(CoffeePrice) }) : FText::GetEmpty());
 		}
 		bCoffeePrompt = bAt;
-		if (bAt && PC->WasInputKeyJustPressed(EKeys::E))
+		if (bAt && ANpcTalkDirector::UsePressed(PC))
 		{
 			if (UI)
 			{

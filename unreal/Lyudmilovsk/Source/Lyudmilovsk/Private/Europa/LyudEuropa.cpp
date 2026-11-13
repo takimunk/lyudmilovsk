@@ -1,5 +1,6 @@
 #include "Europa/LyudEuropa.h"
 
+#include "NpcDialogue.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -1319,7 +1320,7 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	}
 	UpdateAction(*Hero, *PC);
 	const ULyudInventoryUI* ScreenUI = ULyudInventoryUI::Get(this);
-	if (PC->WasInputKeyJustPressed(EKeys::E) && !Action.IsEmpty() && !(ScreenUI && ScreenUI->IsOpen()))
+	if (ANpcTalkDirector::UsePressed(PC) && !Action.IsEmpty() && !(ScreenUI && ScreenUI->IsOpen()))
 	{
 		// polled, never consumed: E belongs to several things at once
 		Use();

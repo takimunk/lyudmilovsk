@@ -1,5 +1,6 @@
 #include "World/LyudLadder.h"
 
+#include "NpcDialogue.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -622,7 +623,7 @@ void ULyudLadderSubsystem::Tick(float DeltaTime)
 			UI->SetPrompt(this, bShow ? LyudText::Get(TEXT("ui.ladder.climb")) : FText::GetEmpty());
 		}
 	}
-	if (Best && PC->WasInputKeyJustPressed(EKeys::E))
+	if (Best && ANpcTalkDirector::UsePressed(PC))
 	{
 		ULyudLadderClimber::Get(Hero)->GrabByPlayer(Best);
 	}

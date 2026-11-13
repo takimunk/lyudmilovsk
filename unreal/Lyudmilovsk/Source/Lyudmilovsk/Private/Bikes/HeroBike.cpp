@@ -1,5 +1,6 @@
 #include "Bikes/HeroBike.h"
 
+#include "NpcDialogue.h"
 #include "Bikes/LyudBikeSubsystem.h"
 #include "CollisionQueryParams.h"
 #include "Components/CapsuleComponent.h"
@@ -283,7 +284,7 @@ void UHeroBikeComponent::UpdateKeys()
 	const bool bFree = !PC->IsMoveInputIgnored() && !(UI && UI->IsOpen());
 	const UHeroReachComponent* Reach = UHeroReachComponent::Get(H);
 	const bool bBusy = (Reach && Reach->IsBusy()) || H->IsSeated() || H->IsHidden();
-	const bool bE = bFree && PC->WasInputKeyJustPressed(EKeys::E);
+	const bool bE = bFree && ANpcTalkDirector::UsePressed(PC);
 	const bool bR = bFree && PC->WasInputKeyJustPressed(EKeys::R);
 	FText Prompt;
 	switch (Act)

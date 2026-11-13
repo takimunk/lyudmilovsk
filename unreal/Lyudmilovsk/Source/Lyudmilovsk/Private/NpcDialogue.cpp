@@ -1,6 +1,7 @@
 #include "NpcDialogue.h"
 #include "UI/LyudQuests.h"
 
+#include "Birds/BirdPawn.h"
 #include "BoothOwner.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
@@ -506,7 +507,8 @@ bool ANpcTalkDirector::CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const F
 bool ANpcTalkDirector::PlayerBusy() const
 {
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (!Pawn || Pawn->IsHidden())   // hidden while the sit-down cutscene and ATON OS have him
+	// hidden while the sit-down cutscene and ATON OS have him; a bird does not talk to people
+	if (!Pawn || Pawn->IsHidden() || Pawn->IsA(ABirdPawn::StaticClass()))
 	{
 		return true;
 	}
@@ -668,6 +670,11 @@ void ANpcTalkDirector::Interact()
 bool ANpcTalkDirector::UsePressed(const APlayerController* PC)
 {
 	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		return false;
+	}
+	// as a bird E is the peck: nothing made for the hero's hand answers it
+	if (const APawn* Pawn = PC->GetPawn(); Pawn && Pawn->IsA(ABirdPawn::StaticClass()))
 	{
 		return false;
 	}

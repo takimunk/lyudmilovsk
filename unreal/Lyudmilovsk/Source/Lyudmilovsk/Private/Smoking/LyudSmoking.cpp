@@ -1,5 +1,6 @@
 #include "Smoking/LyudSmoking.h"
 
+#include "NpcDialogue.h"
 #include "Audio/LyudSoundscape.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
@@ -850,7 +851,7 @@ void ULyudSmoking::TickTerrace()
 		bNear = To.Size() < 190.f && FVector::DotProduct(To.GetSafeNormal(), PC->GetControlRotation().Vector()) > 0.88f;
 		const bool bPick = bForcePick;
 		bForcePick = false;
-		if ((bNear || bPick) && (PC->WasInputKeyJustPressed(EKeys::E) || bPick) && !UHeroReachComponent::Get(Hero)->IsBusy())
+		if ((bNear || bPick) && (ANpcTalkDirector::UsePressed(PC) || bPick) && !UHeroReachComponent::Get(Hero)->IsBusy())
 		{
 			FReachItem Item;
 			Item.Actor = P;
