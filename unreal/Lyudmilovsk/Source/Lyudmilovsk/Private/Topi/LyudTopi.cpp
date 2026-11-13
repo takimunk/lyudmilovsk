@@ -38,6 +38,12 @@ namespace
 	TAutoConsoleVariable<int32> CVarTopiWorkers(TEXT("lyud.Topi.Workers"), 3, TEXT("How many chunks of Topi's ground are built at once on worker threads."));
 	TAutoConsoleVariable<float> CVarTopiHeave(TEXT("lyud.Topi.Heave"), 1.f, TEXT("Scale of the far dunes' slow heave (0: still)."));
 	TAutoConsoleVariable<int32> CVarTopiGrass(TEXT("lyud.Topi.Grass"), 1, TEXT("0: no marram grass on Topi's dunes."));
+	FAutoConsoleCommandWithWorld CmdTopiReport(TEXT("lyud.Topi.Report"), TEXT("Logs Topi's state (the lyud.Topi.Debug line) once: TOPIREPORT ..."),
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+		{
+			const ALyudTopi* Topi = ALyudTopi::Get(World);
+			UE_LOG(LogTemp, Display, TEXT("TOPIREPORT %s"), Topi ? *Topi->DebugReport() : TEXT("no Topi in this world"));
+		}));
 
 	const int32 TopiChunkCells = 64;
 	const int32 TopiTopLevel = 8;          // 128 m * 2^8 = 32.8 km roots
