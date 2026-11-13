@@ -440,7 +440,7 @@ void ALyudAirlock::OnGameLoaded_Implementation()
 	InnerLid.Snap(false);
 	if (CycleLoop)
 	{
-		CycleLoop->Stop();
+		ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop);
 		CycleLoop = nullptr;
 	}
 	ShownLevel = -1.f;
@@ -577,7 +577,7 @@ void ALyudAirlock::Tick(float DeltaSeconds)
 			State = bDrain ? ELyudAirlockState::Dry : ELyudAirlockState::Flooded;
 			if (CycleLoop)
 			{
-				CycleLoop->FadeOut(0.8f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop, 0.8f);
 				CycleLoop = nullptr;
 			}
 			Sound(TEXT("airlock_beep"), ScreenLocation(), 1.f);
@@ -1812,7 +1812,7 @@ void ULyudEuropaSubsystem::SetOnEuropa(bool bOn)
 			}
 			else if (!bOn && Breath)
 			{
-				Breath->FadeOut(1.f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(Breath, 1.f);
 				Breath = nullptr;
 			}
 		}

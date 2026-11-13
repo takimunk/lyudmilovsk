@@ -388,6 +388,25 @@ UAudioComponent* ULyudSoundscapeSubsystem::AttachLoop(FName Pool, USceneComponen
 	return A;
 }
 
+void ULyudSoundscapeSubsystem::ReleaseLoop(UAudioComponent* Loop, float FadeSeconds)
+{
+	if (!IsValid(Loop))
+	{
+		return;
+	}
+	if (FadeSeconds > 0.f && Loop->IsPlaying())
+	{
+		// AttachLoop spawns without auto-destroy: turned on here, the component goes when the fade ends
+		Loop->bAutoDestroy = true;
+		Loop->FadeOut(FadeSeconds, 0.f);
+	}
+	else
+	{
+		Loop->Stop();
+		Loop->DestroyComponent();
+	}
+}
+
 void ULyudSoundscapeSubsystem::PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume)
 {
 	if (Voice)
