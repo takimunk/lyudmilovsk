@@ -2273,6 +2273,1118 @@
    "variant": 0,
    "z": -35.32,
    "span": 8.6
+  },
+  {
+   "id": "river_boulder_1",
+   "kind": "river_boulder",
+   "x": -287.5,
+   "y": 2000.8,
+   "yaw": 138.9,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_1",
+   "kind": "driftwood",
+   "x": -190.0,
+   "y": 1977.9,
+   "yaw": 69.9,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_2",
+   "kind": "driftwood",
+   "x": 238.3,
+   "y": 1892.9,
+   "yaw": 255.3,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_2",
+   "kind": "river_boulder",
+   "x": -578.2,
+   "y": 1978.0,
+   "yaw": 99.1,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_3",
+   "kind": "driftwood",
+   "x": -561.3,
+   "y": 2049.2,
+   "yaw": 329.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_3",
+   "kind": "river_boulder",
+   "x": 149.9,
+   "y": 1898.3,
+   "yaw": 321.4,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_4",
+   "kind": "driftwood",
+   "x": -32.9,
+   "y": 2095.2,
+   "yaw": 133.6,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_4",
+   "kind": "river_boulder",
+   "x": -748.8,
+   "y": 2001.0,
+   "yaw": 167.0,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_5",
+   "kind": "driftwood",
+   "x": 270.6,
+   "y": 1857.2,
+   "yaw": 123.0,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_5",
+   "kind": "river_boulder",
+   "x": 12.9,
+   "y": 1886.2,
+   "yaw": 51.7,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_6",
+   "kind": "river_boulder",
+   "x": -824.4,
+   "y": 1997.8,
+   "yaw": 12.3,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_6",
+   "kind": "driftwood",
+   "x": -654.2,
+   "y": 1948.8,
+   "yaw": 308.1,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_7",
+   "kind": "river_boulder",
+   "x": -504.2,
+   "y": 1915.1,
+   "yaw": 185.5,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_7",
+   "kind": "driftwood",
+   "x": 130.9,
+   "y": 2066.6,
+   "yaw": 204.2,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_8",
+   "kind": "driftwood",
+   "x": -630.1,
+   "y": 1948.5,
+   "yaw": 236.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_8",
+   "kind": "river_boulder",
+   "x": -279.3,
+   "y": 2164.8,
+   "yaw": 267.6,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_9",
+   "kind": "river_boulder",
+   "x": -290.6,
+   "y": 1997.5,
+   "yaw": 95.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_10",
+   "kind": "river_boulder",
+   "x": -541.1,
+   "y": 1924.4,
+   "yaw": 129.9,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_11",
+   "kind": "river_boulder",
+   "x": -1002.2,
+   "y": 2125.8,
+   "yaw": 280.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_12",
+   "kind": "river_boulder",
+   "x": -428.4,
+   "y": 2027.5,
+   "yaw": 31.0,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_13",
+   "kind": "river_boulder",
+   "x": -538.4,
+   "y": 2067.1,
+   "yaw": 317.5,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_9",
+   "kind": "driftwood",
+   "x": -554.0,
+   "y": 1988.1,
+   "yaw": 318.0,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_10",
+   "kind": "driftwood",
+   "x": -340.9,
+   "y": 2031.7,
+   "yaw": 89.5,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_11",
+   "kind": "driftwood",
+   "x": -51.7,
+   "y": 2060.0,
+   "yaw": 146.8,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_14",
+   "kind": "river_boulder",
+   "x": -259.8,
+   "y": 2142.4,
+   "yaw": 170.9,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_12",
+   "kind": "driftwood",
+   "x": -702.3,
+   "y": 2070.5,
+   "yaw": 72.7,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_13",
+   "kind": "driftwood",
+   "x": -771.9,
+   "y": 2024.9,
+   "yaw": 57.0,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_14",
+   "kind": "driftwood",
+   "x": 154.8,
+   "y": 1832.7,
+   "yaw": 105.6,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_15",
+   "kind": "river_boulder",
+   "x": -226.3,
+   "y": 2112.6,
+   "yaw": 67.5,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_15",
+   "kind": "driftwood",
+   "x": -444.3,
+   "y": 2003.4,
+   "yaw": 318.8,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_16",
+   "kind": "river_boulder",
+   "x": -595.0,
+   "y": 1892.9,
+   "yaw": 183.9,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_17",
+   "kind": "river_boulder",
+   "x": -39.1,
+   "y": 2127.4,
+   "yaw": 170.1,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_18",
+   "kind": "river_boulder",
+   "x": -261.8,
+   "y": 2103.2,
+   "yaw": 267.4,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_19",
+   "kind": "river_boulder",
+   "x": -73.6,
+   "y": 2042.0,
+   "yaw": 86.7,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_20",
+   "kind": "river_boulder",
+   "x": -264.8,
+   "y": 2048.0,
+   "yaw": 157.0,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_16",
+   "kind": "driftwood",
+   "x": -57.6,
+   "y": 1919.5,
+   "yaw": 57.8,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_21",
+   "kind": "river_boulder",
+   "x": -717.5,
+   "y": 1971.1,
+   "yaw": 266.8,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_17",
+   "kind": "driftwood",
+   "x": -979.0,
+   "y": 2049.1,
+   "yaw": 348.8,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_18",
+   "kind": "driftwood",
+   "x": 199.8,
+   "y": 1879.8,
+   "yaw": 312.0,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_22",
+   "kind": "river_boulder",
+   "x": -312.4,
+   "y": 1939.2,
+   "yaw": 305.6,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_19",
+   "kind": "driftwood",
+   "x": -620.6,
+   "y": 1984.2,
+   "yaw": 216.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_23",
+   "kind": "river_boulder",
+   "x": -856.1,
+   "y": 2000.6,
+   "yaw": 48.3,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_20",
+   "kind": "driftwood",
+   "x": -163.8,
+   "y": 2116.4,
+   "yaw": 238.1,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_24",
+   "kind": "river_boulder",
+   "x": -722.1,
+   "y": 1944.3,
+   "yaw": 105.9,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_25",
+   "kind": "river_boulder",
+   "x": 293.1,
+   "y": 1920.0,
+   "yaw": 59.7,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_21",
+   "kind": "driftwood",
+   "x": -84.6,
+   "y": 1937.1,
+   "yaw": 9.3,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_26",
+   "kind": "river_boulder",
+   "x": -847.6,
+   "y": 2070.8,
+   "yaw": 267.6,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_27",
+   "kind": "river_boulder",
+   "x": -477.1,
+   "y": 2091.0,
+   "yaw": 6.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_28",
+   "kind": "river_boulder",
+   "x": -1076.9,
+   "y": 2043.4,
+   "yaw": 215.8,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_22",
+   "kind": "driftwood",
+   "x": -381.1,
+   "y": 2002.4,
+   "yaw": 101.8,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_29",
+   "kind": "river_boulder",
+   "x": -555.3,
+   "y": 1899.2,
+   "yaw": 253.4,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_30",
+   "kind": "river_boulder",
+   "x": -310.3,
+   "y": 2158.5,
+   "yaw": 61.8,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_23",
+   "kind": "driftwood",
+   "x": 41.3,
+   "y": 2007.0,
+   "yaw": 46.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_31",
+   "kind": "river_boulder",
+   "x": -87.5,
+   "y": 2130.0,
+   "yaw": 21.0,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_32",
+   "kind": "river_boulder",
+   "x": -964.6,
+   "y": 2102.1,
+   "yaw": 355.2,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_33",
+   "kind": "river_boulder",
+   "x": -360.9,
+   "y": 2137.2,
+   "yaw": 248.6,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_34",
+   "kind": "river_boulder",
+   "x": -340.4,
+   "y": 2132.8,
+   "yaw": 50.9,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_35",
+   "kind": "river_boulder",
+   "x": -964.2,
+   "y": 2065.0,
+   "yaw": 221.3,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_36",
+   "kind": "river_boulder",
+   "x": -264.2,
+   "y": 1935.8,
+   "yaw": 124.8,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_37",
+   "kind": "river_boulder",
+   "x": -459.9,
+   "y": 2064.6,
+   "yaw": 180.8,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_38",
+   "kind": "river_boulder",
+   "x": -384.9,
+   "y": 2081.1,
+   "yaw": 19.6,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_39",
+   "kind": "river_boulder",
+   "x": 20.5,
+   "y": 1987.0,
+   "yaw": 297.0,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_40",
+   "kind": "river_boulder",
+   "x": -761.7,
+   "y": 2023.7,
+   "yaw": 60.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_41",
+   "kind": "river_boulder",
+   "x": -178.9,
+   "y": 2065.8,
+   "yaw": 271.3,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_42",
+   "kind": "river_boulder",
+   "x": -570.0,
+   "y": 1978.8,
+   "yaw": 327.4,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_43",
+   "kind": "river_boulder",
+   "x": -636.2,
+   "y": 1905.0,
+   "yaw": 11.6,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_24",
+   "kind": "driftwood",
+   "x": 294.5,
+   "y": 1956.6,
+   "yaw": 151.9,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_44",
+   "kind": "river_boulder",
+   "x": -605.4,
+   "y": 2001.5,
+   "yaw": 75.8,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_45",
+   "kind": "river_boulder",
+   "x": 216.5,
+   "y": 1804.7,
+   "yaw": 174.4,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_46",
+   "kind": "river_boulder",
+   "x": 71.0,
+   "y": 2045.8,
+   "yaw": 266.5,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_25",
+   "kind": "driftwood",
+   "x": -435.6,
+   "y": 1926.6,
+   "yaw": 146.2,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_47",
+   "kind": "river_boulder",
+   "x": -569.9,
+   "y": 1888.6,
+   "yaw": 269.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_48",
+   "kind": "river_boulder",
+   "x": -516.9,
+   "y": 1961.3,
+   "yaw": 335.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_49",
+   "kind": "river_boulder",
+   "x": 288.7,
+   "y": 1806.8,
+   "yaw": 330.5,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_50",
+   "kind": "river_boulder",
+   "x": -419.1,
+   "y": 2064.8,
+   "yaw": 330.6,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_26",
+   "kind": "driftwood",
+   "x": -973.2,
+   "y": 2123.1,
+   "yaw": 213.4,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_51",
+   "kind": "river_boulder",
+   "x": -25.6,
+   "y": 1938.3,
+   "yaw": 4.9,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_27",
+   "kind": "driftwood",
+   "x": -391.8,
+   "y": 2130.2,
+   "yaw": 175.9,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_52",
+   "kind": "river_boulder",
+   "x": -38.2,
+   "y": 1903.6,
+   "yaw": 306.1,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_28",
+   "kind": "driftwood",
+   "x": 178.1,
+   "y": 1833.7,
+   "yaw": 11.6,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_53",
+   "kind": "river_boulder",
+   "x": -828.2,
+   "y": 1998.4,
+   "yaw": 93.8,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_29",
+   "kind": "driftwood",
+   "x": 286.9,
+   "y": 2112.7,
+   "yaw": 334.9,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_30",
+   "kind": "driftwood",
+   "x": -123.8,
+   "y": 2076.2,
+   "yaw": 230.1,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_31",
+   "kind": "driftwood",
+   "x": -683.7,
+   "y": 2057.2,
+   "yaw": 271.9,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_32",
+   "kind": "driftwood",
+   "x": -1035.2,
+   "y": 2109.7,
+   "yaw": 150.2,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_33",
+   "kind": "driftwood",
+   "x": 61.0,
+   "y": 1991.7,
+   "yaw": 84.3,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_54",
+   "kind": "river_boulder",
+   "x": 180.5,
+   "y": 2084.4,
+   "yaw": 64.1,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_34",
+   "kind": "driftwood",
+   "x": -27.0,
+   "y": 2059.9,
+   "yaw": 124.4,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_55",
+   "kind": "river_boulder",
+   "x": -1083.4,
+   "y": 2039.9,
+   "yaw": 198.4,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_56",
+   "kind": "river_boulder",
+   "x": 11.5,
+   "y": 2110.1,
+   "yaw": 268.0,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_35",
+   "kind": "driftwood",
+   "x": -418.4,
+   "y": 2115.3,
+   "yaw": 79.4,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_36",
+   "kind": "driftwood",
+   "x": 7.4,
+   "y": 2092.6,
+   "yaw": 326.6,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_57",
+   "kind": "river_boulder",
+   "x": -739.4,
+   "y": 1984.1,
+   "yaw": 228.8,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_58",
+   "kind": "river_boulder",
+   "x": -250.6,
+   "y": 2078.8,
+   "yaw": 186.0,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_59",
+   "kind": "river_boulder",
+   "x": -1097.3,
+   "y": 2040.9,
+   "yaw": 233.5,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_60",
+   "kind": "river_boulder",
+   "x": 0.3,
+   "y": 2112.2,
+   "yaw": 263.8,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_61",
+   "kind": "river_boulder",
+   "x": -236.0,
+   "y": 2051.7,
+   "yaw": 122.4,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_62",
+   "kind": "river_boulder",
+   "x": 242.8,
+   "y": 2082.5,
+   "yaw": 10.8,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_63",
+   "kind": "river_boulder",
+   "x": -695.6,
+   "y": 1958.3,
+   "yaw": 140.2,
+   "variant": 1
+  },
+  {
+   "id": "driftwood_37",
+   "kind": "driftwood",
+   "x": -387.6,
+   "y": 2066.7,
+   "yaw": 136.0,
+   "variant": 0
+  },
+  {
+   "id": "river_boulder_64",
+   "kind": "river_boulder",
+   "x": -43.3,
+   "y": 1948.4,
+   "yaw": 67.9,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_38",
+   "kind": "driftwood",
+   "x": 183.3,
+   "y": 1879.2,
+   "yaw": 160.3,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_65",
+   "kind": "river_boulder",
+   "x": 81.8,
+   "y": 2046.3,
+   "yaw": 36.3,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_66",
+   "kind": "river_boulder",
+   "x": -192.2,
+   "y": 2109.2,
+   "yaw": 22.9,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_67",
+   "kind": "river_boulder",
+   "x": 48.5,
+   "y": 1984.8,
+   "yaw": 0.2,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_68",
+   "kind": "river_boulder",
+   "x": -60.9,
+   "y": 1960.3,
+   "yaw": 227.7,
+   "variant": 2
+  },
+  {
+   "id": "river_boulder_69",
+   "kind": "river_boulder",
+   "x": 58.0,
+   "y": 1927.4,
+   "yaw": 272.7,
+   "variant": 1
+  },
+  {
+   "id": "river_boulder_70",
+   "kind": "river_boulder",
+   "x": -281.4,
+   "y": 2163.5,
+   "yaw": 329.3,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_39",
+   "kind": "driftwood",
+   "x": -4.3,
+   "y": 1968.2,
+   "yaw": 93.2,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_40",
+   "kind": "driftwood",
+   "x": 243.1,
+   "y": 1813.6,
+   "yaw": 274.7,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_41",
+   "kind": "driftwood",
+   "x": -360.7,
+   "y": 2038.6,
+   "yaw": 329.8,
+   "variant": 2
+  },
+  {
+   "id": "driftwood_42",
+   "kind": "driftwood",
+   "x": -374.4,
+   "y": 2002.2,
+   "yaw": 106.4,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_43",
+   "kind": "driftwood",
+   "x": -480.8,
+   "y": 1997.0,
+   "yaw": 79.5,
+   "variant": 0
+  },
+  {
+   "id": "driftwood_44",
+   "kind": "driftwood",
+   "x": -307.1,
+   "y": 2033.3,
+   "yaw": 17.3,
+   "variant": 2
+  },
+  {
+   "id": "gauge_post_1",
+   "kind": "gauge_post",
+   "x": -143.91,
+   "y": 2010.65,
+   "yaw": 90.0,
+   "variant": 0
+  },
+  {
+   "id": "rowboat_1",
+   "kind": "rowboat",
+   "x": 270.16,
+   "y": 2125.26,
+   "yaw": 100.0,
+   "variant": 0
+  },
+  {
+   "id": "brow_bench_1",
+   "kind": "brow_bench",
+   "x": -370.0,
+   "y": 1772.0,
+   "yaw": 90.0,
+   "variant": 0
+  },
+  {
+   "id": "brow_bench_2",
+   "kind": "brow_bench",
+   "x": 132.0,
+   "y": 2491.4,
+   "yaw": 255.0,
+   "variant": 0
+  },
+  {
+   "id": "brow_bench_3",
+   "kind": "brow_bench",
+   "x": 93.0,
+   "y": 2439.0,
+   "yaw": 270.0,
+   "variant": 0
+  },
+  {
+   "id": "spring_steps_1",
+   "kind": "spring_steps",
+   "x": -293.51,
+   "y": 3500.84,
+   "yaw": 155.0,
+   "variant": 0
+  },
+  {
+   "id": "spring_bench_1",
+   "kind": "spring_bench",
+   "x": -297.65,
+   "y": 3497.92,
+   "yaw": 68.0,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_1",
+   "kind": "trail_marker",
+   "x": -110.16,
+   "y": 2235.0,
+   "yaw": 317.3,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_2",
+   "kind": "trail_marker",
+   "x": 18.23,
+   "y": 2332.2,
+   "yaw": 223.9,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_3",
+   "kind": "trail_marker",
+   "x": 96.29,
+   "y": 2525.18,
+   "yaw": 320.4,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_4",
+   "kind": "trail_marker",
+   "x": 85.23,
+   "y": 2687.56,
+   "yaw": 205.4,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_5",
+   "kind": "trail_marker",
+   "x": 56.68,
+   "y": 2841.72,
+   "yaw": 139.0,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_6",
+   "kind": "trail_marker",
+   "x": 72.99,
+   "y": 3000.86,
+   "yaw": 262.4,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_7",
+   "kind": "trail_marker",
+   "x": 46.66,
+   "y": 3148.63,
+   "yaw": 192.1,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_8",
+   "kind": "trail_marker",
+   "x": -75.37,
+   "y": 3261.79,
+   "yaw": 84.7,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_9",
+   "kind": "trail_marker",
+   "x": -191.15,
+   "y": 3379.39,
+   "yaw": 199.8,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_10",
+   "kind": "trail_marker",
+   "x": -331.47,
+   "y": 3455.41,
+   "yaw": 344.6,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_11",
+   "kind": "trail_marker",
+   "x": -422.87,
+   "y": 3384.02,
+   "yaw": 167.1,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_12",
+   "kind": "trail_marker",
+   "x": -434.48,
+   "y": 3277.48,
+   "yaw": 18.4,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_13",
+   "kind": "trail_marker",
+   "x": -271.27,
+   "y": 3553.08,
+   "yaw": 327.8,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_14",
+   "kind": "trail_marker",
+   "x": 189.73,
+   "y": 3102.69,
+   "yaw": 310.9,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_15",
+   "kind": "trail_marker",
+   "x": 357.63,
+   "y": 3103.91,
+   "yaw": 272.3,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_16",
+   "kind": "trail_marker",
+   "x": 519.98,
+   "y": 3116.56,
+   "yaw": 168.0,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_17",
+   "kind": "trail_marker",
+   "x": 673.61,
+   "y": 3084.33,
+   "yaw": 129.1,
+   "variant": 0
+  },
+  {
+   "id": "trail_marker_18",
+   "kind": "trail_marker",
+   "x": 788.74,
+   "y": 3061.44,
+   "yaw": 155.4,
+   "variant": 0
   }
  ],
  "cones": [

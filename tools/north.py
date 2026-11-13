@@ -692,6 +692,95 @@ def things():
         variant = next((v for reach, v in BRIDGES if span <= reach), BRIDGES[-1][1])
         out.append({"id": "river_bridge_%d" % (n + 1), "kind": "log_bridge", "x": round(x, 2), "y": round(y, 2),
                     "yaw": round(yaw, 1), "variant": variant, "z": round(z, 2), "span": round(span, 1)})
+    return out + _dressing()
+
+
+def _trail_marks(step=170.0):
+    """Points every step metres along the routed trail north of the river, 1.8 m to its side: [(x, y)]."""
+    import terrain as T
+    out = []
+    for a, b in TRACKS:
+        if a not in ANCHORS or b not in ANCHORS or a == "polar":
+            continue
+        r = T._route(ANCHORS[a], ANCHORS[b]) or []
+        d, due = 0.0, step * 0.5
+        for p, q in zip(r, r[1:]):
+            seg = math.hypot(q[0] - p[0], q[1] - p[1])
+            d += seg
+            if d >= due and seg > 0.0:
+                due += step
+                side = 1.8 if len(out) % 2 else -1.8
+                x, y = q[0] - (q[1] - p[1]) / seg * side, q[1] + (q[0] - p[0]) / seg * side
+                if all(math.hypot(x - c[0], y - c[1]) > 40.0 for c in (HUT, CAMP, SPRING, GATE)) and sulfur(x, y) < 0.5:
+                    out.append((x, y))
+    return out
+
+
+def _dressing():
+    """The river's, the spring's and the trail's small things (blender/north/props_river.py). Yaw is the front's
+    (the mesh's -Y) heading in map axes, as the camp's."""
+    rnd = random.Random(1885)
+    out = []
+
+    def put(kind, x, y, yaw=0.0, variant=0):
+        n = sum(1 for o in out if o["kind"] == kind) + 1
+        out.append({"id": "%s_%d" % (kind, n), "kind": kind, "x": round(x, 2), "y": round(y, 2),
+                    "yaw": round(yaw % 360.0, 1), "variant": variant})
+
+    # driftwood: stranded on the dry bars (the big trunks at the bars' heads, in the lower river); boulders: on the
+    # gravel and in the shallows, most under the south bluff that sheds them
+    xs = R.line()[0]
+    tries = 0
+    drift = stones = 0
+    while tries < 6000 and (drift < 44 or stones < 70):
+        tries += 1
+        x = round(rnd.uniform(R.SOURCE_X + 60.0, R.MOUTH_X - 20.0), 1)
+        y = round(rnd.uniform(1700.0, 2300.0), 1)
+        i = R.info(x, y)
+        if i is None or i["e"] > -5.0 or any(math.hypot(x - b[0], y - b[1]) < 14.0 for b in _crossing()[2]):
+            continue
+        if abs(x - CROSSING_X) < 5.0:
+            continue                                         # the way across stays clear
+        dry = i["wet"] < 0.05 and i["relief"] > 0.25
+        if drift < 44 and dry and i["island"] < 0.5 and i["e"] < -10.0 and rnd.random() < 0.5:
+            big = x > -500.0 and rnd.random() < 0.4
+            # trunks lie along the flood (the river runs to +X), roots upstream, a few slewed across
+            put("driftwood", x, y, 90.0 + rnd.gauss(0.0, 28.0) if big else rnd.uniform(0.0, 360.0),
+                0 if big else rnd.choice((1, 2, 2)))
+            drift += 1
+        elif stones < 70 and i["island"] < 0.3 and i["wet"] < 0.7:
+            south = i["v"] < 0.0 and i["e"] > -22.0
+            if south or rnd.random() < 0.3:
+                put("river_boulder", x, y, rnd.uniform(0.0, 360.0), 0 if south and rnd.random() < 0.5 else rnd.choice((1, 2, 2)))
+                stones += 1
+    # the water gauge in the main channel's edge, just below the longest footbridge, its board to the water
+    spans = [b for b in _crossing()[2] if b[3] >= 4.0]
+    if spans:
+        bx, by, _, span, _ = max(spans, key=lambda b: b[3])
+        put("gauge_post", bx + 5.5, by - span / 2.0 + 0.4, 90.0)
+    # a rowboat keel up on the north bank's gravel above the mouth, out of the flood's way
+    m = R.mouth()
+    for dx in range(60, 260, 10):
+        x = m[0] - dx
+        s, _ = R.locate(x, 2000.0)
+        px, py, _, ny = R.at(s)
+        y = py + ny * (R.half(s) - 5.0)
+        i = R.info(round(x, 1), round(y, 1))
+        if i is not None and i["wet"] < 0.05:
+            put("rowboat", x, y, 100.0)
+            break
+    # benches: on the Polar brow over the valley, by the hut looking down the river, on the beach trail's end
+    put("brow_bench", POLAR[0] - 10.0, POLAR[1] + 112.0, 90.0)
+    put("brow_bench", HUT[0] + 2.0, HUT[1] - 8.6, 255.0)
+    put("brow_bench", GATE[0] - 7.0, GATE[1] - 6.0, 270.0)
+    # the hot spring: steps down into the pool on the trail's side, between two seats; a bench with pegs for clothes
+    a = math.radians(335.0)
+    put("spring_steps", SPRING[0] + (SPRING_R + 0.15) * math.cos(a), SPRING[1] + (SPRING_R + 0.15) * math.sin(a), 155.0)
+    a = math.radians(248.0)
+    put("spring_bench", SPRING[0] + 4.4 * math.cos(a), SPRING[1] + 4.4 * math.sin(a), 68.0)
+    # the trail's marks: a peeled post with a red ring in a cairn, every couple of hundred metres
+    for x, y in _trail_marks():
+        put("trail_marker", x, y, rnd.uniform(0.0, 360.0))
     return out
 
 
