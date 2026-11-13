@@ -1,7 +1,7 @@
 """Interior preview shots of a town building (no Unreal needed): what the hero sees inside.
 
     python3 blender/city/shoot_interior.py -- <type>[:<plot>] [--cam x,y,z,yaw[,pitch]]... [--auto N] [--samples N]
-                                              [--res WxH] [--lens MM] [--out DIR] [--top Z0,Z1]
+                                              [--res WxH] [--lens MM] [--out DIR] [--top Z0,Z1] [--gpu]
 
 Building frame (docs/city_buildings.md): x along the street front, y into the plot, z up; yaw in the kit's convention
 (0 = looking toward -y, the street; 90 = +x; 180 = +y, into the plot). z of --cam is the eye (floor + 1.6).
@@ -111,7 +111,7 @@ def shoot(B, out_id, cams, samples=32, res="1120x700", lens=20.0, out=None, expo
 
     scn = bpy.context.scene
     scn.render.engine = "CYCLES"
-    scn.cycles.device = "CPU"
+    bc.cycles_device(scn)          # --gpu: Metal
     scn.cycles.samples = int(samples)
     scn.cycles.use_denoising = True
     scn.cycles.max_bounces = 6

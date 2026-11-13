@@ -1,6 +1,6 @@
 """Builds the town buildings of Lyudmilovsk (blender/city/buildings/<type>.py) into game meshes.
 
-    blender -b -P blender/city/build_city.py -- [types,comma,separated | all] [--no-render] [--samples N] [--res WxH]
+    blender -b -P blender/city/build_city.py -- [types,comma,separated | all] [--no-render] [--samples N] [--res WxH] [--gpu]
     (or with pip's bpy:  python3 blender/city/build_city.py -- capsule_tower)
 
 Writes per type:
@@ -307,10 +307,33 @@ def export(type_id, obs):
 
 
 # ------------------------------------------------------------------------------------------------ render
+def cycles_device(scn):
+    """CPU by default; with --gpu on the command line (read at call time, so shoot_interior.py passes it too) Cycles
+    renders on the GPU (Metal on the Mac), falling back to the CPU when no GPU device is found."""
+    scn.cycles.device = "CPU"
+    if "--gpu" not in sys.argv:
+        return
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for kind in ("METAL", "OPTIX", "CUDA", "HIP", "ONEAPI"):
+        try:
+            prefs.compute_device_type = kind
+        except TypeError:
+            continue
+        prefs.get_devices()
+        gpus = [d for d in prefs.devices if d.type == kind]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == kind
+            scn.cycles.device = "GPU"
+            print("CYCLES GPU %s: %s" % (kind, ", ".join(d.name for d in gpus)))
+            return
+    print("CYCLES --gpu: no GPU device, rendering on the CPU")
+
+
 def render(type_id, B, night):
     scn = bpy.context.scene
     scn.render.engine = "CYCLES"
-    scn.cycles.device = "CPU"
+    cycles_device(scn)
     scn.cycles.samples = SAMPLES
     scn.cycles.use_denoising = True
     scn.render.resolution_x, scn.render.resolution_y = RES
