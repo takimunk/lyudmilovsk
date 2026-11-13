@@ -6,7 +6,7 @@
  "city.t3.t3_coach.3": {"ru": "«Слышал, ты бросал в кольцо с дальней отметки. Мимо, но с таким лицом, будто попал. В баскетболе это половина дела. Вторая половина — попадать».", "en": "\"I hear you were shooting from the far line. Missed, but with a face like you'd scored. In basketball that's half the job. The other half is scoring.\"", "ja": "「遠いラインからシュートしてたそうだな。外れたけど、入ったような顔だった。バスケじゃそれが半分だ。あとの半分は、ちゃんと入れること」"},
  "city.t3.t3_coach.4": {"ru": "«Сейчас не до разговоров, у меня мальчишки на разминке. Подойди, когда я свистну в последний раз».", "en": "\"Not now, the boys are warming up. Come over when I blow the last whistle.\"", "ja": "「今は話せない、ウォーミングアップ中だ。最後の笛を吹いたら来い」"},
  "city.t3.t3_coach.5": {"ru": "«Тише, у девочек счёт прыжков. Если кто-то собьётся, они начнут сначала, а мне потом слушать».", "en": "\"Quiet, the girls are counting their jumps. If anyone loses count they start over, and I'm the one who has to listen.\"", "ja": "「静かに、女の子たちが跳躍を数えてる。誰かが数え間違えると最初からやり直しで、聞かされるのは私なんだ」"},
- "city.t3.t3_coach.6": {"ru": "«Слушай, у «Прибоя-мл.» турнир дворов, а нас четверо. Вова с родителями уехал, мячик его остался. Хочешь пятым? Бегать не обязательно. Стоять рядом и не мешать — обязательно».", "en": "\"Listen, \"Surf Juniors\" have a courtyard tournament and there are only four of us. Vova moved away with his parents, his ball stayed behind. Want to be the fifth? Running is optional. Standing there and not getting in the way is a must.\"", "ja": "「なあ、『プリボイ・ジュニア』は中庭大会があるのに、四人しかいないんだ。ヴォヴァは親と引っ越して、ボールだけ残った。五人目、やらないか？走るのは任意だ。立ってて邪魔しないのは必須だけど」"},
+ "city.t3.t3_coach.6": {"ru": "«Слушай, у «Прибоя-мл.» турнир дворов, а нас четверо. Вова с родителями уехал, мячик его остался. Хочешь пятым? Бегать не обязательно. Стоять рядом и не мешать — обязательно».", "en": "\"Listen, 'Surf Juniors' have a courtyard tournament and there are only four of us. Vova moved away with his parents, his ball stayed behind. Want to be the fifth? Running is optional. Standing there and not getting in the way is a must.\"", "ja": "「なあ、『プリボイ・ジュニア』は中庭大会があるのに、四人しかいないんだ。ヴォヴァは親と引っ越して、ボールだけ残った。五人目、やらないか？走るのは任意だ。立ってて邪魔しないのは必須だけど」"},
  "city.t3.t3_coach.7": {"ru": "«Приходи на тренировки в пять. Кольцо у задней стенки — для тех, кто собирается играть, а не фотографироваться».", "en": "\"Come to practice at five. The hoop on the back wall is for people who mean to play, not pose for photos.\"", "ja": "「五時の練習に来い。奥の壁のリングは、写真を撮るためじゃなくて、試合をするつもりのやつのためだ」"},
  "city.t3.t3_coach.8": {"ru": "«Молодец, что ходишь. Майка с пятёркой у кассы, шкафчик №5 свободен. Только не вытирай лицо майкой: она одна, а лиц у нас много».", "en": "\"Good that you keep coming. The number-five jersey is at the till, locker five is free. Just don't wipe your face on it: there's one jersey and a lot of faces.\"", "ja": "「通ってるのは偉い。五番のユニフォームは受付にあるし、五番のロッカーも空いてる。ただし顔は拭くなよ。ユニフォームは一枚で、顔はたくさんあるんだから」"},
  "city.t3.t3_coach.9": {"ru": "«Сегодня игра. Держись Таи: она читает площадку лучше, чем я читаю газету. Остальное само получится».", "en": "\"Game day. Stick close to Taya: she reads the court better than I read the paper. The rest will sort itself out.\"", "ja": "「今日は試合だ。ターヤについていけ。あの子はコートを、私が新聞を読むよりよく読む。あとはなんとかなる」"},
@@ -37,9 +37,9 @@
  "city.t3.t3_results.4": {"ru": "Турнир дворов, итоги. 1. «Чайки» — 3 победы. 2. «Прибой-мл.» — 2. 3. «Маяк». Лучший новичок: №5 — 4 очка, 3 подбора, 1 мяч в своё кольцо. Мяч в своё кольцо вычеркнут «из педагогических соображений».", "en": "Courtyard tournament, results. 1. Seagulls: 3 wins. 2. Surf Juniors: 2. 3. Lighthouse. Best newcomer: No. 5 with 4 points, 3 rebounds, 1 ball into his own hoop. The own-hoop ball has been crossed out \"for educational reasons.\"", "ja": "中庭大会の結果。1位「チャイキ」3勝。2位「プリボイ・ジュニア」2勝。3位「マヤーク」。最優秀新人：5番、4得点、3リバウンド、自分のリングへ1本。自分のリングへの1本は「教育的配慮により」消されている。"},
  "city.t3.t3_results.5": {"ru": "Под таблицей мелом: «Спасибо, пятый». В протоколе напротив пятого номера вписано имя. То самое, которое я и так знаю.", "en": "Under the table, in chalk: \"Thanks, number five.\" In the match record, a name is written against number five. The one I know already.", "ja": "表の下にチョークで「ありがとう、五番」。記録の五番の横に名前が書き込まれている。僕がもともとよく知っている名前だ。"},
  "city.t3.t3_pool.1": {"ru": "«БАССЕЙН (башня, верхний мост, налево) ЗАКРЫТ. Идёт замена плитки. Плитка прибыла, плиточник прибыл. Не прибыл клей».", "en": "\"POOL (tower, upper bridge, turn left) CLOSED. Tiles being replaced. The tiles have arrived, the tiler has arrived. The glue has not.\"", "ja": "「プール（塔、上の橋を渡って左）閉鎖中。タイル張り替え工事。タイルは届き、タイル職人も来ました。届かないのは接着剤です」"},
- "city.t3.t3_pool.2": {"ru": "«Клей прибыл. Плиточник уехал за кафелем другого цвета. Бассейн будет «морским», а не «белым». Спасибо за терпение».", "en": "\"The glue has arrived. The tiler has gone to fetch tiles of another colour. The pool will be \"sea\" rather than \"white.\" Thank you for your patience.\"", "ja": "「接着剤が届きました。タイル職人は別の色のタイルを取りに行きました。プールは『白』ではなく『海色』になります。ご辛抱ありがとうございます」"},
+ "city.t3.t3_pool.2": {"ru": "«Клей прибыл. Плиточник уехал за кафелем другого цвета. Бассейн будет «морским», а не «белым». Спасибо за терпение».", "en": "\"The glue has arrived. The tiler has gone to fetch tiles of another colour. The pool will be 'sea' rather than 'white'. Thank you for your patience.\"", "ja": "「接着剤が届きました。タイル職人は別の色のタイルを取りに行きました。プールは『白』ではなく『海色』になります。ご辛抱ありがとうございます」"},
  "city.t3.t3_pool.3": {"ru": "«Плитку кладут. На дне нарисуют шесть дорожек по 25 метров. Дорожки обещаны ровные, но кривизна остаётся на усмотрение плиточника».", "en": "\"Tiling in progress. Six 25-metre lanes will be painted on the bottom. Lanes are promised straight, though straightness remains at the tiler's discretion.\"", "ja": "「タイル張り中。底に25メートルのコースを六本描きます。コースはまっすぐの予定ですが、まっすぐさはタイル職人の裁量です」"},
- "city.t3.t3_pool.4": {"ru": "«Воду начали наливать. Бассейн наполняется, как чашка в очереди за кефиром: медленно и с достоинством». Спасатели повесили круг на положенное место. Круг теперь смотрит на воду.", "en": "\"Filling has begun. The pool fills like a cup in the kefir queue: slowly and with dignity.\" The lifeguards have hung the ring in its proper place. The ring now looks at the water.", "ja": "「水を入れ始めました。プールは、ケフィールの行列の中のカップのように、ゆっくり、堂々と満ちていきます」ライフガードたちは浮き輪を所定の位置に掛けた。浮き輪は今、水を見つめている。"},
+ "city.t3.t3_pool.4": {"ru": "«Воду начали наливать. Бассейн наполняется, как чашка в очереди за кефиром: медленно и с достоинством». Спасатели повесили круг на положенное место. Круг теперь смотрит на воду.", "en": "\"Filling has begun. The pool fills like a cup in the kefir queue: slowly and with dignity.\" The lifeguards have hung the ring in its proper place. The ring now looks at the water.", "ja": "「水を入れ始めました。プールは、ケフィアの行列の中のカップのように、ゆっくり、堂々と満ちていきます」ライフガードたちは浮き輪を所定の位置に掛けた。浮き輪は今、水を見つめている。"},
  "city.t3.t3_pool.5": {"ru": "«Открытие бассейна — в понедельник. Пробный заплыв для тех, кто придёт со справкой и шапочкой». Шапочку можно найти в коробке «Потерянные шапочки», у кассы.", "en": "\"The pool opens on Monday. A trial swim for those who bring a doctor's note and a cap.\" A cap can be found in the \"Lost caps\" box at the till.", "ja": "「プールは月曜日にオープンします。診断書と帽子をお持ちの方は試泳できます」帽子は受付の「忘れ物の帽子」箱の中にあるかもしれない。"},
  "city.t3.stove.prompt": {"ru": "E — поддать пару", "en": "E — throw water on the stones", "ja": "E：石に水をかける"},
  "city.t3.shower.prompt": {"ru": "E — встать под душ", "en": "E — take a shower", "ja": "E：シャワーを浴びる"},
@@ -50,24 +50,24 @@
  "city.t3.t3_sauna_sit.4": {"ru": "В воскресенье в сауне двое, и оба спят сидя. Я сидел тише воды, чтобы не нарушить воскресенье.", "en": "On Sunday there are two people in the sauna, both asleep sitting up. I sat quieter than water so as not to disturb the Sunday.", "ja": "日曜日のサウナには二人いて、二人とも座ったまま寝ている。日曜日を邪魔しないように、水より静かに座っていた。"},
  "city.t3.t3_sauna_water.1": {"ru": "Плеснул ковшик на камни. Они зашипели, пар лёг на плечи, как тёплое одеяло.", "en": "I splashed a ladle onto the stones. They hissed and the steam settled on my shoulders like a warm blanket.", "ja": "ひしゃく一杯を石にかけた。ジュッと音がして、蒸気が温かい毛布みたいに肩に降りてきた。"},
  "city.t3.t3_sauna_water.2": {"ru": "Ковшик, ведро, камни: всё очень просто. Только пар не слушается и идёт, куда хочет, — обычно мне в лицо.", "en": "A ladle, a bucket, the stones: very simple. Only the steam doesn't listen and goes where it likes, usually into my face.", "ja": "ひしゃく、バケツ、石。とても簡単だ。ただ蒸気は言うことを聞かず、好きなほうへ行く。たいてい僕の顔のほうへ。"},
- "city.t3.t3_sauna_water.3": {"ru": "На печке табличка: «Воду лить умеренно». Я лил умеренно. Умеренность, оказывается, пахнет берёзовым веником.", "en": "A sign on the stove: \"Pour water in moderation.\" I poured in moderation. Moderation, it turns out, smells of a birch whisk.", "ja": "ストーブに札がある。「水は控えめに」。控えめにかけた。控えめさは、白樺のヴェニクの匂いがするらしい。"},
+ "city.t3.t3_sauna_water.3": {"ru": "На печке табличка: «Воду лить умеренно». Я лил умеренно. Умеренность, оказывается, пахнет берёзовым веником.", "en": "A sign on the stove: \"Pour water in moderation.\" I poured in moderation. Moderation, it turns out, smells of a birch whisk.", "ja": "ストーブに札がある。「水は控えめに」。控えめにかけた。控えめさは、白樺の枝束の匂いがするらしい。"},
  "city.t3.t3_shower.1": {"ru": "Горячая вода шла рывками, как мысли после тренировки. Потом выровнялась, и я стоял, пока не вспомнил про очередь.", "en": "The hot water came in fits, like thoughts after practice. Then it steadied, and I stood there until I remembered the queue.", "ja": "お湯は、練習のあとの考えごとみたいに途切れ途切れに出た。それから安定して、順番待ちのことを思い出すまで立っていた。"},
  "city.t3.t3_shower.2": {"ru": "Мыло упало, я за ним, оно от меня. Поймал с третьего раза. Спорт, в общем.", "en": "The soap fell, I went after it, it went away from me. Caught it on the third try. Sport, basically.", "ja": "石けんが落ちて、追いかけたら逃げた。三回目でつかまえた。まあ、スポーツだ。"},
  "city.t3.t3_shower.3": {"ru": "Вода смыла пыль, усталость и половину промахов. Остальные высохнут сами.", "en": "The water washed off the dust, the tiredness and half of my misses. The rest will dry by themselves.", "ja": "水がほこりと疲れと、外したシュートの半分を洗い流した。残りは自然に乾く。"},
  "city.t3.t3_shower.4": {"ru": "Пар, шум воды, эхо. Пою без слуха, но зато громко. Душ — единственное место, где я точно чемпион.", "en": "Steam, the noise of water, an echo. I sing without an ear but loudly. The shower is the one place where I'm surely the champion.", "ja": "湯気、水の音、こだま。音痴だけど大声で歌う。シャワーは、僕が確実にチャンピオンになれる唯一の場所だ。"},
  "city.t3.t3_changing.1": {"ru": "За ширмой тесно, но уютно: крючок, зеркальце с отбитым уголком и чьи-то носки с котятами. Носки не мои, но мне нравятся.", "en": "Behind the screen it's cramped but cosy: a hook, a mirror with a chipped corner and somebody's socks with kittens. The socks aren't mine, but I like them.", "ja": "衝立の裏は狭いけど居心地がいい。フック、角の欠けた小さな鏡、誰かの子猫柄の靴下。靴下は僕のじゃないけど、気に入った。"},
- "city.t3.t3_changing.2": {"ru": "Переоделся за три движения, а шнурки завязывал ещё три. Шнурки победили вничью.", "en": "Changed in three moves and spent three more on the laces. The laces won on a draw.", "ja": "三回の動きで着替えて、靴ひもにさらに三回かかった。靴ひもとは引き分けだった。"},
+ "city.t3.t3_changing.2": {"ru": "Переоделся за три движения, а шнурки завязывал ещё три. Шнурки победили вничью.", "en": "Changed in three moves and spent three more on the laces. The laces held me to a draw.", "ja": "三回の動きで着替えて、靴ひもにさらに三回かかった。靴ひもとは引き分けだった。"},
  "city.t3.t3_changing.3": {"ru": "Ширма из ткани с узором, как на бабушкином диване. Переодеваешься, а чувствуешь себя в гостях.", "en": "The screen is a fabric with a pattern like grandma's sofa. You change and feel like a guest.", "ja": "衝立は、おばあちゃんのソファみたいな柄の布でできている。着替えているのに、お客さんになった気分だ。"},
  "city.t3.t3_lockers.1": {"ru": "Шкафчики по номерам. На №7 нацарапано: «Не открывать до победы». Дверца открывается, значит, победа была.", "en": "Lockers by number. On No. 7 someone scratched: \"Do not open until victory.\" The door opens, so there must have been one.", "ja": "番号付きのロッカー。7番には「勝つまで開けるな」と彫ってある。扉は開く。つまり勝ったことがあるのだ。"},
  "city.t3.t3_lockers.2": {"ru": "На дверце №3 наклейка с рыбкой и надпись: «Здесь живут тапки. Не кормить».", "en": "On door No. 3 there's a fish sticker and a note: \"Slippers live here. Do not feed.\"", "ja": "3番の扉には魚のシールと「ここにはスリッパが住んでいます。餌をやらないでください」の貼り紙。"},
  "city.t3.t3_lockers.3": {"ru": "На шкафчике №5 новая бумажка: «Свободен. Для пятого». Написано тренерской рукой, с нажимом.", "en": "A new paper on locker No. 5: \"Free. For the fifth.\" In the coach's handwriting, pressed hard.", "ja": "5番のロッカーに新しい紙。「空き。五人目用」。コーチの字で、強く押して書いてある。"},
  "city.t3.t3_lockers.4": {"ru": "Шкафчик №5 открыт. Внутри майка с пятёркой и записка на крючке: «Размер растущий. Не потеряй».", "en": "Locker No. 5 stands open. Inside, a jersey with a five and a note on the hook: \"Size: still growing. Don't lose it.\"", "ja": "5番のロッカーが開いている。中には五番のユニフォームと、フックにメモ。「サイズは成長中。なくすな」。"},
  "city.t3.t3_lockers.5": {"ru": "На шкафчике №5 мелом приписано моё имя. Мел, чтобы легче стереть. Но не стирается: я проверил рукавом.", "en": "On locker No. 5 my name has been added in chalk. Chalk, so it's easy to wipe off. It doesn't come off: I tried with my sleeve.", "ja": "5番のロッカーに、僕の名前がチョークで書き足されている。消しやすいようにチョークだ。でも消えない。袖でこすって確かめた。"},
- "city.t3.t3_reception.1": {"ru": "«Бассейн — по справке от врача, зал — по абонементу, теннис — по настроению. У тебя что из этого есть?»", "en": "\"The pool needs a doctor's note, the gym a season ticket, table tennis a good mood. Which of those have you got?\"", "ja": "「プールは医者の診断書、ジムは定期券、卓球は気分しだい。君はどれを持ってる？」"},
+ "city.t3.t3_reception.1": {"ru": "«Бассейн — по справке от врача, зал — по абонементу, теннис — по настроению. У тебя что из этого есть?»", "en": "\"The pool needs a doctor's note, the gym a season ticket, table tennis a good mood. Which of those have you got?\"", "ja": "「プールは医者の診断書、体育館は会員証、卓球は気分しだい。君はどれを持ってる？」"},
  "city.t3.t3_reception.2": {"ru": "Над стойкой кубки, а под ними коробка «Потерянные шапочки для плавания». Шапочек больше, чем кубков.", "en": "Cups above the desk, and under them a box marked \"Lost swimming caps.\" There are more caps than cups.", "ja": "カウンターの上にはトロフィー、その下に「忘れ物の水泳帽」の箱。トロフィーより帽子のほうが多い。"},
  "city.t3.t3_reception.3": {"ru": "Кассирша выдаёт ключ от шкафчика на резинке: «Номер семь, счастливый. Не путай с восьмым, там тренер».", "en": "The cashier hands out a locker key on an elastic band: \"Number seven, a lucky one. Don't mix it up with eight, that's the coach's.\"", "ja": "受付の人がゴムひも付きのロッカーの鍵を渡してくれる。「七番、ラッキーナンバー。八番と間違えないでね、あれはコーチのだから」"},
  "city.t3.t3_reception.4": {"ru": "Расписание секций: гимнастика, плавание, «Здоровье после шестидесяти» и «Здоровье до шестнадцати». Второе для меня.", "en": "Timetable of sections: gymnastics, swimming, \"Health after sixty\" and \"Health before sixteen.\" The second one is for me.", "ja": "教室の時間割：体操、水泳、「六十歳からの健康」、「十六歳までの健康」。二つ目は僕向けだ。"},
- "city.t3.t3_reception.5": {"ru": "«Майку с пятёркой я держу, но выдаю только тем, кто пообещает не вытирать ею лицо. Тренер так и сказал: «На майке номер, а не полотенце»».", "en": "\"I'm keeping the number-five jersey, but I hand it only to those who promise not to wipe their face on it. The coach said: \"A jersey has a number, not a towel.\"\"", "ja": "「五番のユニフォームは預かってるけど、顔を拭かないって約束した子にしか渡さないの。コーチも言ってた。『ユニフォームには番号があるんであって、タオルじゃない』って」"},
+ "city.t3.t3_reception.5": {"ru": "«Майку с пятёркой я держу, но выдаю только тем, кто пообещает не вытирать ею лицо. Тренер так и сказал: «На майке номер, а не полотенце»».", "en": "\"I'm keeping the number-five jersey, but I hand it only to those who promise not to wipe their face on it. The coach said: 'A jersey has a number, not a towel.'\"", "ja": "「五番のユニフォームは預かってるけど、顔を拭かないって約束した子にしか渡さないの。コーチも言ってた。『ユニフォームには番号があるんであって、タオルじゃない』って」"},
  "city.t3.t3_reception.6": {"ru": "«Тренер пошёл красить мячи в жёлтый. Чтобы с трибуны было видно, где мяч, а где мы. Хотя мы и так видны».", "en": "\"The coach has gone to paint the balls yellow. So that from the stands you can tell which is the ball and which is us. We're visible anyway.\"", "ja": "「コーチはボールを黄色く塗りに行ったわ。観客席から、どれがボールでどれが私たちか分かるようにって。私たちはどのみち目立つけどね」"},
  "city.t3.t3_hoop_main.1": {"ru": "У задней стенки идёт тренировка: пять мальчишек, три мяча, один свисток. Меня поставили на подбор. Подбирал честно, даже вернул мяч тому, кто его бросил.", "en": "A practice is under way at the back wall: five boys, three balls, one whistle. They put me on rebounds. I rebounded honestly and even returned a ball to whoever threw it.", "ja": "奥の壁では練習の真っ最中だ。少年五人、ボール三つ、笛一つ。僕はリバウンド係になった。ちゃんと拾って、投げた本人にボールを返しさえした。"},
  "city.t3.t3_hoop_main.2": {"ru": "У задней стенки девочки отрабатывают броски из-под кольца и считают вслух. Я встал рядом и бросал в такт: попал на «семнадцать».", "en": "At the back wall the girls practise shots from under the hoop and count aloud. I stood beside them and shot in time: scored on \"seventeen.\"", "ja": "奥の壁では女の子たちがリングの真下からのシュートを練習して、声に出して数えている。隣に立って、拍子に合わせて投げた。「十七」で入った。"},
@@ -141,7 +141,7 @@
  "city.t3.t3_scoreboard.3": {"ru": "Табло показывает 00:00. Карточки с цифрами чуть выцвели, будто им за все матчи тоже хотелось выиграть.", "en": "The scoreboard says 00:00. The number cards have faded a little, as if they too wanted to win all those matches.", "ja": "スコアボードは00：00を示している。数字のカードは少し色あせていて、これまでの試合のどれも、カードたちも勝ちたかったみたいだ。"},
  "city.t3.t3_scoreboard.4": {"ru": "Табло показывает 00:00. В воскресенье у него выходной, и цифры спят лицом вниз.", "en": "The scoreboard says 00:00. On Sunday it has the day off and the numbers sleep face down.", "ja": "スコアボードは00：00。日曜日はお休みで、数字は伏せて眠っている。"},
  "city.t3.t3_ballcart.1": {"ru": "Тележка с мячами: восемь штук. Один спущенный, его зовут «Ленивец», и его никто не берёт. Я взял. Ленивец оказался тяжелее, чем выглядел.", "en": "The ball cart: eight balls. One is flat, they call it \"the Sloth,\" and nobody takes it. I took it. The Sloth turned out heavier than it looked.", "ja": "ボールのカート。八個ある。一つはしぼんでいて、「ナマケモノ」と呼ばれていて、誰も取らない。僕が取った。ナマケモノは見た目より重かった。"},
- "city.t3.t3_ballcart.2": {"ru": "Мячи пахнут резиной и кожей, и у каждого свой характер. Рыжий скачет выше всех, но в кольцо не идёт принципиально.", "en": "The balls smell of rubber and leather and each has its own character. The ginger one bounces highest but on principle won't go in the hoop.", "ja": "ボールはゴムと革の匂いがして、どれも性格が違う。茶色いのはいちばん高く弾むのに、リングには意地でも入らない。"},
+ "city.t3.t3_ballcart.2": {"ru": "Мячи пахнут резиной и кожей, и у каждого свой характер. Рыжий скачет выше всех, но в кольцо не идёт принципиально.", "en": "The balls smell of rubber and leather and each has its own character. The ginger one bounces highest but on principle won't go in the hoop.", "ja": "ボールはゴムと革の匂いがして、どれも性格が違う。オレンジのはいちばん高く弾むのに、リングには意地でも入らない。"},
  "city.t3.t3_ballcart.3": {"ru": "На тележке мелом: «Мячи вернуть. Себя тоже». Я вернул оба.", "en": "On the cart in chalk: \"Return the balls. Yourself too.\" I returned both.", "ja": "カートにチョークで「ボールを返すこと。自分もね」。両方とも返した。"},
  "quest.t3_fifth.title": {"ru": "Пятый номер", "en": "Number five", "ja": "五番目の選手"},
  "quest.t3_fifth.desc": {"ru": "В спорткомплексе у «Прибоя-мл.» не хватает пятого игрока на турнир дворов. Тренер смотрит на меня так, будто я как раз подхожу. Это опасно.", "en": "At the sports centre the \"Surf Juniors\" are one player short for the courtyard tournament. The coach is looking at me as if I'd do. That's dangerous.", "ja": "スポーツセンターでは、「プリボイ・ジュニア」が中庭大会の五人目を探している。コーチは僕がちょうどいいみたいな目で見ている。これは危ない。"},
@@ -171,7 +171,7 @@
  "city.xtx.t3_timetable.1": {
   "ru": "РАСПИСАНИЕ НА НЕДЕЛЮ. Понедельник, среда, пятница, с 15:00 до 19:00: баскетбол, мальчики («Прибой-мл.»). Вторник и четверг, в те же часы: гимнастика, девочки, группа Лидии Павловны. Суббота: до обеда штанга, после обеда игры. Воскресенье: зал на ваше усмотрение, тренера нет, мяч под ответственность того, кто его взял. С 7 до 15 зал свободный, в 11:00 урок физкультуры у 6-го «Б». Зал закрывается в 21:00.",
   "en": "TIMETABLE FOR THE WEEK. Monday, Wednesday, Friday, 15:00 to 19:00: basketball, boys (\"Surf Juniors\"). Tuesday and Thursday, same hours: gymnastics, girls, Lidia Pavlovna's group. Saturday: weights before lunch, games after. Sunday: the hall is at your discretion, no coach, the ball is the responsibility of whoever took it. From 7 to 15 the hall is free; at 11:00 there is a PE lesson for class 6-B. The hall closes at 21:00.",
-  "ja": "週間時間割。月・水・金、十五時から十九時：バスケットボール、男子（「プリボイ・ジュニア」）。火・木、同じ時間：体操、女子、リディア・パヴロヴナのグループ。土曜：午前はウェイト、午後は試合。日曜：ホールはご自由に、コーチはおらず、ボールは持ち出した人の責任。七時から十五時まではホールは空いていて、十一時に六年B組の体育の授業がある。ホールは二十一時に閉まる。"
+  "ja": "週間時間割。月・水・金、十五時から十九時：バスケットボール、男子（「プリボイ・ジュニア」）。火・木、同じ時間：体操、女子、リディア・パヴロヴナのグループ。土曜：午前はウエイト、午後は試合。日曜：体育館はご自由に、コーチはおらず、ボールは持ち出した人の責任。七時から十五時までは体育館は空いていて、十一時に六年B組の体育の授業がある。体育館は二十一時に閉まる。"
  },
  "city.xtx.t3_timetable.2": {
   "ru": "ЗАПИСКИ ТРЕНЕРА. Для новичков: приходите не на тренировку, а на привычку. Первую неделю можете просто смотреть. Вторую неделю смотрите и бегите по лёгкой дорожке вдоль стены. Третью неделю вы уже тренируетесь, и я делаю вид, что давно знал. Спорт не любит рывков, он любит тех, кто приходит скучным вторником. Звёзды рождаются в среду, но только потому, что во вторник кто-то пришёл.",
@@ -231,7 +231,7 @@
  "city.xtx.t3_tournament_rules.title": {
   "ru": "Правила турнира дворов «Золотой мяч»",
   "en": "Rules of the Courtyards' Tournament \"Golden Ball\"",
-  "ja": "中庭対抗大会「ゴールデン・ボール」の規則"
+  "ja": "中庭対抗大会「黄金のボール」の規則"
  },
  "city.xtx.t3_tournament_rules.1": {
   "ru": "1. Команда: пять игроков. Пятый может быть новичком, если стоит на площадке и не мешает, это обязательно. Запасные сидят на скамейке и болеют вполголоса. 2. Игра: два тайма по десять минут, между ними чай (чай платный). 3. Судья один, его решение окончательное, но разговор о нём допустим после игры. 4. Мячи на площадку приносят только капитаны, остальные смотрят.",
@@ -241,7 +241,7 @@
  "city.xtx.t3_tournament_rules.2": {
   "ru": "5. Очки: за бросок из-под кольца два, с дальней отметки три. Бросок в своё кольцо идёт в протокол, но не в счёт и не в укор: ошибки на площадке случаются у всех, а у новичков с особым усердием. 6. Победитель получает «Золотой мяч»: он, по правде, дерево, окрашенное в золото, зато очень красивый. Второе место получает грамоту и право рассказывать об этом всему двору. Третье получает чай и аплодисменты.",
   "en": "5. Points: two for a shot from under the basket, three from the far mark. A shot into your own basket goes in the record but not in the score and not as a reproach: errors on court happen to everybody, and to newcomers with special zeal. 6. The winner receives the \"Golden Ball\": it is, truth be told, wood painted gold, but very beautiful. Second place receives a certificate and the right to tell the whole yard about it. Third receives tea and applause.",
-  "ja": "五、得点。ゴール下からのシュートは二点、遠い印からは三点。自分のゴールへのシュートは記録には残るが、得点にも、責めにも数えない。コートでの間違いはだれにでも起こり、新人にはとくに熱心に起こる。六、優勝者は「ゴールデン・ボール」を受ける。実は金色に塗った木だが、とても美しい。二位は賞状と、それを中庭じゅうに語る権利。三位はお茶と拍手。"
+  "ja": "五、得点。ゴール下からのシュートは二点、遠い印からは三点。自分のゴールへのシュートは記録には残るが、得点にも、責めにも数えない。コートでの間違いはだれにでも起こり、新人にはとくに熱心に起こる。六、優勝者は「黄金のボール」を受ける。実は金色に塗った木だが、とても美しい。二位は賞状と、それを中庭じゅうに語る権利。三位はお茶と拍手。"
  },
  "city.xtx.t3_tournament_rules.3": {
   "ru": "7. Болельщики: места на скамейках, мячи не ловить, ловить настроение. Шуметь можно, но только в пользу, а не против. 8. Если команда проигрывает, но играет красиво, ей полагается дополнительный аплодисмент. 9. Если команда выигрывает, но играет некрасиво, ей полагается тоже, но тише. 10. Последнее правило: турнир нужен для того, чтобы после него двор стал немного ближе. Всё остальное дополнительно.",
@@ -286,11 +286,11 @@
  "city.ask.t3.rc.locker": {
   "ru": "Какой у меня шкафчик?",
   "en": "Which locker is mine?",
-  "ja": "ぼくのロッカーはどれ？"
+  "ja": "僕のロッカーはどれ？"
  },
  "city.ask.t3.rc.locker.1": {
   "ru": "— Номер семь, счастливый. Не путай с восьмым: там тренер. На семёрке нацарапано «Не открывать до победы». Раз открывается, значит, победа была.",
-  "en": "\"Number seven, the lucky one. Don't mix it up with eight: that's the coach's. Seven has scratched on it: \"Don't open until victory.\" If it opens, victory has come.\"",
+  "en": "\"Number seven, the lucky one. Don't mix it up with eight: that's the coach's. Seven has scratched on it: 'Don't open until victory.' If it opens, victory has come.\"",
   "ja": "「七番、縁起がいいわ。八番とまちがえないでね。そっちはコーチの。七番には『勝つまで開けるな』って彫ってあるの。開くなら、もう勝ったってことよ。」"
  },
  "city.ask.t3.rc.locker.2": {
@@ -305,7 +305,7 @@
  },
  "city.ask.t3.rc.after.1": {
   "ru": "— После зала дойти до «Рассвета» на вечерний, в семь: сидишь, ноги гудят, и никто не требует отжиматься. Или в библиотеку: там даже штамп «за тихие часы» ставят.",
-  "en": "\"After the gym walk to the Rassvet for the seven o'clock show: you sit, your legs hum, and nobody demands push-ups. Or to the library: they even stamp you \"for quiet hours\".\"",
+  "en": "\"After the gym walk to the Rassvet for the seven o'clock show: you sit, your legs hum, and nobody demands push-ups. Or to the library: they even stamp you 'for quiet hours'.\"",
   "ja": "「体育館のあとは『ラスヴェート』の七時の上映へ。座っていれば足はじんじんしても、誰も腕立て伏せを求めない。でなければ図書館ね。『静かな時間』のスタンプまで押してくれるわ。」"
  },
  "city.ask.t3.rc.after.2": {
@@ -325,8 +325,8 @@
  },
  "city.ask.t3.cf.kefir.2": {
   "ru": "— Баскетболисты выходят в семь красные, как раки, и сметают кефир. К половине восьмого остаются яблоки.",
-  "en": "\"The basketball players come out at seven red as crabs and sweep up the kefir. By half past seven only apples are left.\"",
-  "ja": "「バスケの子たちは七時に、ゆでたカニみたいに真っ赤になって出てきて、ケフィアを飲み尽くすの。七時半には、リンゴしか残ってないわ。」"
+  "en": "\"The basketball players come out at seven red as crayfish and sweep up the kefir. By half past seven only apples are left.\"",
+  "ja": "「バスケの子たちは七時に、ゆでたザリガニみたいに真っ赤になって出てきて、ケフィアを飲み尽くすの。七時半には、リンゴしか残ってないわ。」"
  },
  "city.ask.t3.cf.kefir.3": {
   "ru": "— В холод просят чай. Пью вместе с ними: греемся по очереди.",
@@ -336,16 +336,16 @@
  "city.ask.t3.cf.cups": {
   "ru": "Чьи это кубки над стойкой?",
   "en": "Whose are the cups over the counter?",
-  "ja": "カウンターの上の杯は誰の？"
+  "ja": "カウンターの上のトロフィーは誰の？"
  },
  "city.ask.t3.cf.cups.1": {
   "ru": "— Спортивного общества «Прибой». На самом маленьком гравировка: «За волю к победе. Почти победил». Его все хотят. Я тоже.",
-  "en": "\"The Surf sports society's. The smallest is engraved: \"For the will to win. Nearly won.\" Everybody wants that one. So do I.\"",
+  "en": "\"The Surf sports society's. The smallest is engraved: 'For the will to win. Nearly won.' Everybody wants that one. So do I.\"",
   "ja": "「スポーツ協会『寄せ波』のよ。いちばん小さいのには『勝利への意志に。ほぼ勝った』って彫ってあるの。みんなあれがほしがってる。わたしもよ。」"
  },
  "city.ask.t3.cf.cups.2": {
   "ru": "— Таблица лиги дворов у входа: «Прибой-мл.» на третьем месте. Карандашом приписано «будет больше». Приписал тренер, но я подозреваю уборщицу.",
-  "en": "\"The courtyard league table by the entrance: Surf Juniors in third place. In pencil: \"there will be more.\" The coach wrote it, but I suspect the cleaner.\"",
+  "en": "\"The courtyard league table by the entrance: Surf Juniors in third place. In pencil: 'there will be more.' The coach wrote it, but I suspect the cleaner.\"",
   "ja": "「入口の中庭リーグの順位表では、『プリボイ・ジュニア』は三位。鉛筆で『もっと増える』って書き足してあるの。コーチが書いたんだけど、掃除の人じゃないかってわたしは疑ってる。」"
  },
  "city.ask.t3.co.windows": {
@@ -360,7 +360,7 @@
  },
  "city.ask.t3.co.windows.2": {
   "ru": "— Ты после игры не разбил ни одного окна, я заметил. Кто не разбил, выбирает мяч. Рыжий не бери: он принципиальный.",
-  "en": "\"After the game you didn't break a single window, I noticed. Whoever doesn't gets to pick the ball. Don't take the orange one: he's a man of principle.\"",
+  "en": "\"After the game you didn't break a single window, I noticed. Whoever doesn't gets to pick the ball. Don't take the ginger one: he's a man of principle.\"",
   "ja": "「試合のあと、窓を一枚も割らなかったな、気づいてたぞ。割らなかったやつは、ボールを選べる。オレンジのは選ぶなよ。あれは頑固者だ。」"
  },
  "city.ask.t3.co.drill": {
@@ -391,7 +391,7 @@
  "city.ask.t3.co.yellow.1": {
   "ru": "— Чтобы с трибуны отличить мяч от нас. Хотя мы и так заметны: мяч пока лучше прыгает.",
   "en": "\"So the stands can tell the ball from us. Though we're plenty visible: the ball still jumps better.\"",
-  "ja": "「客席から、ボールと私たちを見分けられるようにだ。まあ私たちも十分目立つが。ボールのほうがまだよく跳ねるがな。」"
+  "ja": "「客席から、ボールと私たちを見分けられるようにだ。まあ私たちも十分目立つ。ただ、跳ねるのはまだボールのほうが上だな。」"
  },
  "city.ask.t3.co.yellow.2": {
   "ru": "— В субботу штанга с утра, мячи не нужны. Можно красить без помех, краска сохнет как раз к игре.",
@@ -410,7 +410,7 @@
  },
  "city.ask.t3.co.league.1": {
   "ru": "— «Чайки» первые, «Маяк» вторые, мы третьи. Карандашом на таблице приписано «будет больше». Это я приписал. Тае не говори.",
-  "en": "\"The Seagulls are first, the Lighthouse second, we're third. In pencil on the table: \"there will be more.\" I wrote it. Don't tell Taya.\"",
+  "en": "\"The Seagulls are first, the Lighthouse second, we're third. In pencil on the table: 'there will be more.' I wrote it. Don't tell Taya.\"",
   "ja": "「『チャイキ』が一位、『マヤーク』が二位、うちが三位だ。順位表に鉛筆で『もっと増える』と書いたのは私だ。ターヤには言うなよ。」"
  },
  "city.ask.t3.co.league.2": {
@@ -440,7 +440,7 @@
  },
  "quest.t3_left_eye.title": {
   "ru": "Левый глаз, правая рука",
-  "en": "Left Eye, Right Hand",
+  "en": "Left eye, right hand",
   "ja": "左を見て右で打つ"
  },
  "quest.t3_left_eye.desc": {
@@ -471,6 +471,6 @@
  "quest.t3_left_eye.done": {
   "ru": "Буфетчица выслушала и сказала: «Левый глаз у тебя уже есть. Правая рука придёт». Я посмотрел налево, ударил направо и промахнулся только на вид.",
   "en": "The buffet clerk listened and said: \"You've got the left eye already. The right hand will come.\" I looked left, hit right, and missed only in appearance.",
-  "ja": "売店の人は話を聞いて言った。「左の目はもうあるわね。右の手はそのうち来るわ」。ぼくは左を見て、右に打って、外したのは見た目だけだった。"
+  "ja": "売店の人は話を聞いて言った。「左の目はもうあるわね。右の手はそのうち来るわ」。僕は左を見て、右に打って、外したのは見た目だけだった。"
  }
 }
