@@ -244,11 +244,16 @@ private:
 	/** The kept cells still to be read again after a recentre (a few a frame), and where that reading is. */
 	int32 RefreshLeft = 0;
 	int32 RefreshCursor = 0;
+	/** Which 75 x 75 tiles of the trail may hold prints (fresh snow fades and sends only those). */
+	static constexpr int32 TrailTiles = 16;
+	static constexpr int32 TrailTileN = TrailN / TrailTiles;
+	TArray<uint8> TrailUsed;
 	void TraceCell(int32 Index, double Z);
 	void ComposeGround(double Z);
 	void RefreshGround();
 	void ClearTrailStrip(bool bColumns, int64 First, int64 Num);
 	uint8 LoweredByteAt(int32 VX, int32 VY) const;
+	void FillPrints(int32 Dec);
 	void UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1);
 	void UploadGround();
 	FVector2D Centre = FVector2D(1e12, 1e12);

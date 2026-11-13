@@ -107,6 +107,7 @@ ALyudSnowNear::ALyudSnowNear()
 	RawGround.SetNumZeroed(GroundN * GroundN);
 	RawTop.SetNumZeroed(GroundN * GroundN);
 	RawOk.SetNumZeroed(GroundN * GroundN);
+	TrailUsed.SetNumZeroed(TrailTiles * TrailTiles);
 }
 
 int32 ALyudSnowNear::Wrap(double V) const
@@ -325,6 +326,7 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	if (bFar)
 	{
 		FMemory::Memzero(Trail.GetData(), Trail.Num());
+		FMemory::Memzero(TrailUsed.GetData(), TrailUsed.Num());
 		bFullUpload = true;
 	}
 	else
@@ -471,6 +473,78 @@ void ALyudSnowNear::UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1)
 	}
 }
 
+void ALyudSnowNear::FillPrints(int32 Dec)
+{
+	// only the tiles that hold prints are faded and sent, not all 1.44 M cells
+	int32 NumChanged = 0;
+	TArray<int32, TInlineAllocator<64>> Changed;
+	for (int32 Tile = 0; Tile < TrailTiles * TrailTiles; Tile++)
+	{
+		if (!TrailUsed[Tile])
+		{
+			continue;
+		}
+		const int32 X0 = (Tile % TrailTiles) * TrailTileN, Y0 = (Tile / TrailTiles) * TrailTileN;
+		bool bWas = false, bStays = false;
+		for (int32 Y = Y0; Y < Y0 + TrailTileN; Y++)
+		{
+			uint8* Cells = Trail.GetData() + Y * TrailN + X0;
+			for (int32 X = 0; X < TrailTileN; X++)
+			{
+				const uint8 Old = Cells[X];
+				const uint8 New = uint8(FMath::Max(0, int32(Old) - Dec));
+				Cells[X] = New;
+				bWas |= Old != 0;
+				bStays |= New != 0;
+			}
+		}
+		TrailUsed[Tile] = bStays ? 1 : 0;
+		if (bWas)
+		{
+			NumChanged++;
+			Changed.Add(Tile);
+		}
+	}
+	if (NumChanged > 96)
+	{
+		bFullUpload = true;
+	}
+	else if (!bFullUpload)
+	{
+		for (const int32 Tile : Changed)
+		{
+			const int32 X0 = (Tile % TrailTiles) * TrailTileN, Y0 = (Tile / TrailTiles) * TrailTileN;
+			TArray<uint8> Bytes;
+			Bytes.SetNumUninitialized(TrailTileN * TrailTileN);
+			for (int32 Y = 0; Y < TrailTileN; Y++)
+			{
+				FMemory::Memcpy(Bytes.GetData() + Y * TrailTileN, Trail.GetData() + (Y0 + Y) * TrailN + X0, TrailTileN);
+			}
+			SnowNearUpload(TrailRT, X0, Y0, TrailTileN, TrailTileN, 1, MoveTemp(Bytes));
+		}
+	}
+	// the vertices' sinks: every cell a vertex reads fell by the same amount, so its deepest did too; the ones at the
+	// window's edge read round its seam and are read again
+	const int32 Reach = FMath::CeilToInt(60.f / TrailCm);
+	const int64 WX0 = int64(FMath::FloorToDouble((Centre.X - HalfCm) / TrailCm)), WY0 = int64(FMath::FloorToDouble((Centre.Y - HalfCm) / TrailCm));
+	for (int32 VY = 0; VY < GroundN; VY++)
+	{
+		for (int32 VX = 0; VX < GroundN; VX++)
+		{
+			const int32 I = VY * GroundN + VX;
+			const int64 GX = int64(FMath::FloorToDouble((GroundOrigin.X + VX * GroundCm) / TrailCm)), GY = int64(FMath::FloorToDouble((GroundOrigin.Y + VY * GroundCm) / TrailCm));
+			const bool bInner = GX - Reach >= WX0 && GX + Reach < WX0 + TrailN && GY - Reach >= WY0 && GY + Reach < WY0 + TrailN;
+			const uint8 M = bInner ? uint8(FMath::Max(0, FMath::RoundToInt(Lowered[I] * 255.f) - Dec)) : LoweredByteAt(VX, VY);
+			const float L = M / 255.f;
+			if (Lowered[I] != L)
+			{
+				Lowered[I] = L;
+				bGroundDirty = true;
+			}
+		}
+	}
+}
+
 void ALyudSnowNear::UploadGround()
 {
 	TArray<uint8> Bytes;
@@ -507,6 +581,7 @@ void ALyudSnowNear::Press(const FVector2D& At, const FVector2D& Dir, float A, fl
 			const int32 Col = int32(((GX % TrailN) + TrailN) % TrailN), Row = int32(((GY % TrailN) + TrailN) % TrailN);
 			uint8& T = Trail[Row * TrailN + Col];
 			T = uint8(FMath::Max<int32>(T, FMath::RoundToInt(K * 255.f)));
+			TrailUsed[(Row / TrailTileN) * TrailTiles + Col / TrailTileN] = 1;
 		}
 	}
 	UpdateLowered(FMath::FloorToInt((At.X - R - 60.f - GroundOrigin.X) / GroundCm), FMath::FloorToInt((At.Y - R - 60.f - GroundOrigin.Y) / GroundCm),
@@ -627,13 +702,8 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 	{
 		const float GameHours = FillTimer / 3600.f * FMath::Max(1.f, World->GetWorldSettings() ? World->GetWorldSettings()->TimeDilation : 1.f);
 		const int32 Dec = FMath::Clamp(FMath::RoundToInt(Fall * GameHours / 5.f * 255.f), 1, 255);
-		for (uint8& T : Trail)
-		{
-			T = uint8(FMath::Max(0, int32(T) - Dec));
-		}
-		bFullUpload = true;
+		FillPrints(Dec);
 		FillTimer = 0.f;
-		UpdateLowered(0, 0, GroundN - 1, GroundN - 1);
 	}
 	else if (Fall <= 0.05f)
 	{
