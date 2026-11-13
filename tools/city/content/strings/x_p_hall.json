@@ -837,7 +837,7 @@
  "city.xh.sheet.dance.2": {
   "ru": "Ноты польки «Весёлые ноги». Над третьей строчкой нарисованы туфли с крылышками. Подпись: «Играть быстрее, чем кажется разумным».",
   "en": "The music of the polka «Merry Feet». Over the third line, a drawing of shoes with little wings. Written: \"Play faster than seems sensible.\"",
-  "ja": "ポルカ「陽気な足」の楽譜。三段目の上に羽の生えた靴の絵。書き込み：「理屈より速く弾くこと」"
+  "ja": "ポルカ「陽気な足」の楽譜。三段目の上に羽の生えた靴の絵。書き込み：「常識で考えるより速く弾くこと」"
  },
  "city.xh.exh.east.1": {
   "ru": "«Море, которое мы знаем». Сегодня на стене работы любителей: рыбацкие лодки, маяк в тумане, песчаная коса. К табличке пришпилен лист: «Голосуем карандашом: какое море лучшее». Лидирует то, которое с чайкой.",
@@ -870,7 +870,7 @@
   "ja": "「三つの岸辺」。灯台、凪の海、砂丘。凪の海には波が一つもない。画家が描き忘れたのだ。それでも並びの中でいちばん暖かい絵だ。"
  },
  "city.xh.exh.north.2": {
-  "ru": "Табличка подменена: «Те же три берега, но взгляд с воды». Картины висят по-прежнему, но смотритель повесил их на два пальца ниже, чтобы смотреть как с лодки.",
+  "ru": "Табличка заменена: «Те же три берега, но взгляд с воды». Картины висят по-прежнему, но смотритель повесил их на два пальца ниже, чтобы смотреть как с лодки.",
   "en": "The label has been changed: \"The same three shores, seen from the water.\" The pictures hang as before, but the caretaker lowered them two fingers so you look as if from a boat.",
   "ja": "札が替わった。「同じ三つの岸辺を、水の上から」。絵は前と同じに掛かっているが、管理人が指二本ぶん低く掛け直した。ボートから見るように。"
  },
@@ -1126,12 +1126,12 @@
  },
  "city.player.isla.win": {
   "ru": "Ну вот. Слух у вас есть, только его ещё никто не звал в гости.",
-  "en": "There. You have an ear, nobody has just invited it round yet.",
+  "en": "There. You have an ear; it's just that nobody has invited it round yet.",
   "ja": "ほら。耳はあるのよ。ただ、まだ誰もその耳を呼んでいなかっただけ。"
  },
  "city.player.isla.lose": {
   "ru": "Ничего, до среды всё вернётся на место. Голос, как кошка: сам знает, когда прийти.",
-  "en": "Never mind, by Wednesday it all settles. A voice is like a cat: it knows when to come.",
+  "en": "Never mind, by Wednesday it will all fall back into place. A voice is like a cat: it knows when to come.",
   "ja": "いいのよ、水曜までには元に戻る。声は猫と同じで、いつ来るかは自分で決めるものだから。"
  },
  "city.xh.clock.foyer.morning": {
@@ -1161,7 +1161,7 @@
  },
  "city.xh.clock.hall.1": {
   "ru": "{time}. Часы в зале повешены у самой двери, чтобы опоздавшие видели, насколько. Подпись под ними мелом: «Тише едешь, но вовремя».",
-  "en": "{time}. The hall clock hangs right by the door so latecomers can see by how much. Under it in chalk: \"More haste, but on time.\"",
+  "en": "{time}. The hall clock hangs right by the door so latecomers can see by how much. Under it in chalk: \"Slow and steady, but on time.\"",
   "ja": "{time}。ホールの時計は入口のすぐそばにあり、遅れてきた人が自分の遅れを確かめられる。その下にチョークで：「急がば回れ、ただし時間どおりに」"
  },
  "city.xh.clock.hall.sat": {
@@ -1322,7 +1322,7 @@
  "city.xh.choirtalk.hello.2": {
   "ru": "— Альтам на тон выше, басам на ступеньку ниже, мне стакан воды, — говорит Айла, не оборачиваясь. И уже потом поворачивается: — Да? Слушаю.",
   "en": "\"Altos a tone higher, basses a step lower, me a glass of water,\" says Isla without turning. And only then turns: \"Yes? I am listening.\"",
-  "ja": "「アルトは一音高く、バスは半音低く、わたしには水を一杯」とアイラは振り向かずに言う。そのあとで振り返る。「はい？ 聞いているわ」"
+  "ja": "「アルトは一音高く、バスは一段低く、わたしには水を一杯」とアイラは振り向かずに言う。そのあとで振り返る。「はい？ 聞いているわ」"
  },
  "city.xh.choirtalk.t1": {
   "ru": "Про хор «Прибой»",
@@ -1372,7 +1372,7 @@
  "city.xh.cooktalk.hello.1": {
   "ru": "У плиты кто-то в фартуке, на плите что-то уже булькает. — Чего хотел? — спрашивают, не оборачиваясь. — Хлеб в печи, руками не трогать.",
   "en": "Somebody in an apron stands at the stove, something already bubbling on it. \"What did you want?\" comes without a turn. \"Bread is in the oven, no hands.\"",
-  "ja": "コンロの前にエプロン姿の人がいて、鍋では何かがもうぐつぐついっている。「何の用だい」と振り返らずに聞かれる。「パンはオーブンの中、手は触れないで」"
+  "ja": "コンロの前にエプロン姿の人がいて、鍋では何かがもうぐつぐついっている。「何の用だい」と振り返らずに聞かれる。「パンはオーブンの中だ。手で触るなよ」"
  },
  "city.xh.cooktalk.hello.2": {
   "ru": "— Суп будет в час, — сообщает повар, помешивая. — А пока можно просто посидеть и принюхаться. Это бесплатно и тоже считается ужином.",
@@ -1406,7 +1406,7 @@
  },
  "city.xh.cook.t2.1": {
   "ru": "— Слышите, как по вытяжке доносится хор? — повар поднимает палец. — Третий год готовлю под «Прибой». Борщ у меня от этого стал ровнее.",
-  "en": "\"Hear how the choir comes through the vent?\" the cook raises a finger. \"Third year I cook to «Surf». My borscht has come out steadier for it.\"",
+  "en": "\"Hear how the choir comes through the vent?\" the cook raises a finger. \"This is my third year cooking to «Surf». My borscht has come out steadier for it.\"",
   "ja": "「換気口から合唱が聞こえるだろう？」料理人は指を立てる。「三年めだよ、『プリボイ』を聴きながら料理しているのは。おかげでボルシチが安定した」"
  },
  "city.xh.cook.t2.2": {
@@ -1457,7 +1457,7 @@
  "city.xh.closed.counter.1": {
   "ru": "Стойка закрыта решёткой, на решётке записка: «Ушёл греть чайник. Вернусь с чаем или не вернусь». Под запиской нарисована чашка и очень грустный человечек.",
   "en": "The counter is shut behind a grille with a note: \"Gone to heat the kettle. Back with tea or not back.\" Under it a drawing of a cup and a very sad little man.",
-  "ja": "カウンターには格子がおりていて、書き置きがある。「やかんを温めに行きました。紅茶とともに戻るか、戻りません」。下にカップと、とても悲しそうな小さな人の絵。"
+  "ja": "カウンターには格子がおりていて、書き置きがある。「お湯を沸かしに行きました。紅茶とともに戻るか、戻りません」。下にカップと、とても悲しそうな小さな人の絵。"
  },
  "city.xh.closed.counter.2": {
   "ru": "На закрытой стойке мерцает отражение дежурной лампы со сцены. Она горит, значит, ключ у сторожа, а сторож где-то в зале.",
@@ -1485,9 +1485,9 @@
   "ja": "今日は祝日。ポスターには鉛筆で「全員にお茶、最後のワルツまでダンス」と書き足してある。管理人が下にこうも書いた。「今日に限り、履き替えの靴は不要」"
  },
  "city.xh.prog.lantern": {
-  "ru": "Ночь фонарей: на афише нарисован фонарь с лицом. Подпись: «После вечера зал не гасим, лампа ждёт, пока все выйдут с фонариками. Вход с огоньком свободный».",
+  "ru": "Ночь фонариков: на афише нарисован фонарик с лицом. Подпись: «После вечера зал не гасим, лампа ждёт, пока все выйдут с фонариками. Вход с огоньком свободный».",
   "en": "Lantern Night: the poster has a lantern with a face drawn on it. A caption: \"After the evening we do not put the hall lights out, the lamp waits until everyone has gone out with lanterns. Entry with a light is free.\"",
-  "ja": "灯籠の夜。ポスターには顔のついた灯籠が描かれている。添え書き。「夜のあとも灯りは消しません。みなさんが灯りを手に出ていくまでランプは待っています。灯りを持つ方は入場無料」"
+  "ja": "天灯の夜。ポスターには顔のついた天灯が描かれている。添え書き。「夜のあとも灯りは消しません。みなさんが灯りを手に出ていくまでランプは待っています。灯りを持つ方は入場無料」"
  },
  "city.xh.prog.sea": {
   "ru": "Праздник моря: афиша в голубых разводах. «Хор поёт про воду, лекция про эхо над водой, танцы под волны. Мокрая обувь не помеха, но ковёр не любит».",
@@ -1521,8 +1521,8 @@
  },
  "city.xh.chalk.warm": {
   "ru": "Мелом: «Жарко. Дюшес из холодильника, три рубля сверху за охлаждение». Три рубля зачёркнуты, потому что смотритель сам запыхался.",
-  "en": "In chalk: \"Hot. Dyushes from the fridge, three roubles extra for the chill.\" The three roubles are crossed out, because the caretaker is out of breath himself.",
-  "ja": "チョークで：「暑いです。ジュシェスは冷蔵庫から、冷やし代三ルーブル追加」。三ルーブルは消されている。管理人本人も息を切らしているからだ。"
+  "en": "In chalk: \"Hot. Duchesse from the fridge, three roubles extra for the chill.\" The three roubles are crossed out, because the caretaker is out of breath himself.",
+  "ja": "チョークで：「暑いです。ドゥシェスは冷蔵庫から、冷やし代三ルーブル追加」。三ルーブルは消されている。管理人本人も息を切らしているからだ。"
  },
  "city.xh.dance.fest": {
   "ru": "Праздник, и пластинки ставит смотритель сам: «Все танцуют со всеми, без разбору». Мимо проплывает пара: он в пальто, она с чайником. Никого это не смущает.",
@@ -1531,7 +1531,7 @@
  },
  "quest.hall_audition.title": {
   "ru": "Проба голоса",
-  "en": "A Voice Trial",
+  "en": "A voice trial",
   "ja": "声を試す"
  },
  "quest.hall_audition.desc": {
@@ -1572,7 +1572,7 @@
  "quest.hall_audition.board.log": {
   "ru": "Смотритель говорил, что корешки вечеров вешают на доску в фойе. Пора повесить свой: посмотрю на гвоздь с надписью «Хор».",
   "en": "The caretaker said that the stubs of the evenings are hung on the board in the foyer. Time to hang mine: I will look at the nail marked \"Choir\".",
-  "ja": "管理人は、各夜の半券はロビーのボードに掛けると言っていた。自分のも掛けるとき。「合唱」と書かれた釘を見に行こう。"
+  "ja": "管理人は、各夜の半券はロビーのボードに掛けると言っていた。今度は自分のを掛ける番だ。「合唱」と書かれた釘を見に行こう。"
  },
  "quest.hall_audition.board.obj": {
   "ru": "Посмотреть доску корешков в фойе",
@@ -1581,7 +1581,7 @@
  },
  "quest.hall_audition.done": {
   "ru": "Корешок «Хор» повис на гвозде, красный, чуть мятый. Эхо в зале подхватило последнюю ноту и вернуло её мне, чуть ниже. Значит, договорились.",
-  "en": "The «Choir» stub hangs on its nail, red and a little crumpled. The echo in the hall caught my last note and gave it back to me, a little lower. So we have an understanding.",
+  "en": "The \"Choir\" stub hangs on its nail, red and a little crumpled. The echo in the hall caught my last note and gave it back to me, a little lower. So we have an understanding.",
   "ja": "「合唱」の半券が釘に掛かった。赤くて、少ししわがある。ホールのエコーは最後の音を拾い、少し低くして返してくれた。つまり、話はついたということだ。"
  }
 }

@@ -13,7 +13,7 @@
  "city.t3.t3_coach.10": {"ru": "«Второе место — это когда и рад, и злишься, и обе половины правы. Тая теперь на весь двор рассказывает про твой бросок. Ещё разок?»", "en": "\"Second place is when you're glad and cross at once, and both halves are right. Taya is telling the whole courtyard about your shot. One more time?\"", "ja": "「二位っていうのは、嬉しいのと悔しいのが同時に来て、どっちも正しいってことだ。ターヤは中庭じゅうに君のシュートの話をしてる。もう一回やるか？」"},
  "city.t3.t3_sections.1": {"ru": "«Расписание. Пн, ср, пт — баскетбол (мальчики). Вт, чт — гимнастика (девочки). Сб — штанга с утра, игры после обеда. Воскресенье — зал на ваше усмотрение, тренера нет».", "en": "\"Timetable. Mon, Wed, Fri: basketball (boys). Tue, Thu: gymnastics (girls). Sat: weights in the morning, games after lunch. Sunday: the hall is yours, there is no coach.\"", "ja": "「時間割。月・水・金：バスケットボール（男子）。火・木：体操（女子）。土：午前はウエイト、午後は試合。日曜：体育館はご自由に、コーチはいません」"},
  "city.t3.t3_sections.2": {"ru": "Сегодня баскетбол: «Прибой-мл.», 15:00–19:00. Просим не выходить на площадку в уличной обуви. Просим вежливо. Тренер просит невежливо.", "en": "Today: basketball, \"Surf Juniors\", 15:00–19:00. Please don't step on the court in street shoes. We ask politely. The coach asks impolitely.", "ja": "今日はバスケットボール、「プリボイ・ジュニア」、15時から19時。コートに外履きで入らないでください。私たちは丁寧にお願いしています。コーチは丁寧じゃなくお願いしています。"},
- "city.t3.t3_sections.3": {"ru": "Сегодня гимнастика, группа Лидии Павловны. Козёл на разминке, шведская стенка занята до шести. Зрителям — скамейка.", "en": "Today: gymnastics, Lidia Pavlovna's group. The vaulting horse is warming up, the wall bars are taken until six. Spectators: the bench.", "ja": "今日は体操、リディア・パヴロヴナのグループ。跳馬はウォーミングアップ中、肋木は六時まで使用中。見学の人はベンチへ。"},
+ "city.t3.t3_sections.3": {"ru": "Сегодня гимнастика, группа Лидии Павловны. Козёл на разминке, шведская стенка занята до шести. Зрителям — скамейка.", "en": "Today: gymnastics, Lidiya Pavlovna's group. The vaulting horse is warming up, the wall bars are taken until six. Spectators: the bench.", "ja": "今日は体操、リディヤ・パヴロヴナのグループ。跳馬はウォーミングアップ中、肋木は六時まで使用中。見学の人はベンチへ。"},
  "city.t3.t3_sections.4": {"ru": "С 7 до 15 зал свободный, в 11:00 урок физкультуры у 6-го «Б». Просьба не путать мячи с головами.", "en": "From 7 to 15 the hall is free; at 11:00 there's a PE lesson for class 6B. Please don't mistake the balls for heads.", "ja": "七時から十五時までは自由利用、十一時は六年Ｂ組の体育の授業。ボールと頭を間違えないでください。"},
  "city.t3.t3_sections.5": {"ru": "Суббота: до обеда — штанга, после — игры. Вход зрителям свободный, игрокам — с водой и без нервов.", "en": "Saturday: weights until lunch, games after. Spectators free, players: bring water, leave the nerves.", "ja": "土曜日：昼まではウエイト、午後は試合。観客は入場自由、選手は水を持って、緊張は置いてくること。"},
  "city.t3.t3_sections.6": {"ru": "Воскресенье: сокращённый день, тренера нет. Мяч — под ответственность того, кто его взял.", "en": "Sunday: short day, no coach. The ball is the responsibility of whoever picked it up.", "ja": "日曜日：短縮営業、コーチはお休み。ボールは、持ち出した人の責任です。"},
@@ -88,9 +88,9 @@
  "city.t3.t3_bars.1": {"ru": "У шведской стенки выстроились девочки: «ноги выше, носки тянем». Я висел сбоку, носок не тянул, но старался.", "en": "The girls lined up at the wall bars: \"legs higher, point your toes.\" I hung to one side, didn't point my toes, but tried.", "ja": "肋木の前に女の子たちが並んでいる。「脚をもっと高く、つま先を伸ばして」。僕は端にぶら下がって、つま先は伸ばさなかったけど、がんばった。"},
  "city.t3.t3_bars.2": {"ru": "Перекладины тёплые от чьих-то рук. Подтянул ноги к животу и держал, пока не задрожали. Тренер называет это «уголком», живот — другим словом.", "en": "The rungs are warm from somebody's hands. I pulled my legs up to my stomach and held until they shook. The coach calls it an \"L-sit,\" my stomach has another word.", "ja": "横木は誰かの手でほんのり温かい。脚をおなかに引き寄せて、震えるまで止めていた。コーチはこれを「Ｌ字」と呼ぶけど、僕のおなかは別の言葉で呼んでいる。"},
  "city.t3.t3_bars.3": {"ru": "Висел на самом верху и пересчитывал окна. В зале их столько, что сбился дважды. Мне понравилось сбиваться.", "en": "I hung at the very top and counted the windows. There are so many in the hall that I lost count twice. I liked losing count.", "ja": "いちばん上にぶら下がって、窓を数えた。体育館には窓が多すぎて、二回数え間違えた。数え間違えるのが気に入った。"},
- "city.t3.t3_vault.1": {"ru": "Группа Лидии Павловны: каждому по два прыжка через козла. Мне засчитали один: второй был уже падением.", "en": "Lidia Pavlovna's group: two vaults each over the horse. I got one counted: the second was more of a fall.", "ja": "リディア・パヴロヴナのグループは、一人二回ずつ跳馬を跳ぶ。僕は一回だけ認められた。二回目はもう転落だったから。"},
+ "city.t3.t3_vault.1": {"ru": "Группа Лидии Павловны: каждому по два прыжка через козла. Мне засчитали один: второй был уже падением.", "en": "Lidiya Pavlovna's group: two vaults each over the horse. I got one counted: the second was more of a fall.", "ja": "リディヤ・パヴロヴナのグループは、一人二回ずつ跳馬を跳ぶ。僕は一回だけ認められた。二回目はもう転落だったから。"},
  "city.t3.t3_vault.2": {"ru": "Разбежался, оттолкнулся от мостика, перелетел, на этот раз с запасом. Козёл кивнул, или мне показалось.", "en": "Ran up, pushed off the springboard, cleared it, this time with room to spare. The horse nodded, or I imagined it.", "ja": "助走をつけて、踏み切り板を蹴って、跳び越えた。今回は余裕で。跳馬はうなずいた、気がした。"},
- "city.t3.t3_mats.1": {"ru": "На матах девочки делают «мостик» и «берёзку». У меня вышел скорее «пенёк». Лидия Павловна сказала: «Пенёк — тоже дерево».", "en": "On the mats the girls do the \"bridge\" and the \"birch.\" Mine came out more of a \"stump.\" Lidia Pavlovna said: \"A stump is a tree too.\"", "ja": "マットの上で女の子たちが「ブリッジ」と「白樺」をやっている。僕のは「切り株」に近かった。リディア・パヴロヴナは言った。「切り株も木のうちよ」。"},
+ "city.t3.t3_mats.1": {"ru": "На матах девочки делают «мостик» и «берёзку». У меня вышел скорее «пенёк». Лидия Павловна сказала: «Пенёк — тоже дерево».", "en": "On the mats the girls do the \"bridge\" and the \"birch.\" Mine came out more of a \"stump.\" Lidiya Pavlovna said: \"A stump is a tree too.\"", "ja": "マットの上で女の子たちが「ブリッジ」と「白樺」をやっている。僕のは「切り株」に近かった。リディヤ・パヴロヴナは言った。「切り株も木のうちよ」。"},
  "city.t3.t3_mats.2": {"ru": "Маты после гимнастов тёплые. Лёг, посмотрел на потолок: там паутина в форме созвездия. Назвал его созвездием Козла.", "en": "The mats are warm after the gymnasts. I lay down and looked at the ceiling: a cobweb shaped like a constellation. I named it the Vaulting Horse.", "ja": "体操の子たちが使ったあとのマットは温かい。寝転んで天井を見たら、星座みたいな形のクモの巣があった。「跳馬座」と名付けた。"},
  "city.t3.t3_weights.1": {"ru": "В углу гремит секция штанги: двое здоровенных дядей поднимают блины и шёпотом ругают блины. Я встал в очередь за грифом: она двигалась медленно, но уважительно.", "en": "The weightlifting section clatters in the corner: two huge men lift plates and whisper curses at them. I joined the queue for the bar: it moved slowly but respectfully.", "ja": "隅ではウエイトの教室ががちゃがちゃ鳴っている。大柄な男の人が二人、プレートを持ち上げて、小声でプレートを罵っている。バーの順番待ちに並んだ。列はゆっくりだったけど、敬意があった。"},
  "city.t3.t3_weights.2": {"ru": "Баскетболисты качают ноги. «Приседай, пока не станешь ниже кольца, — командует тренер. — Потом встань, и будешь выше». Я присел пять раз. Встал выше.", "en": "The basketball boys are working their legs. \"Squat until you're lower than the hoop,\" the coach orders. \"Then stand up and you'll be taller.\" I squatted five times. Stood up taller.", "ja": "バスケの子たちが脚を鍛えている。コーチが号令をかける。「リングより低くなるまでしゃがめ。それから立てば、前より高くなる」。僕は五回しゃがんだ。たしかに前より高くなった。"},
@@ -170,8 +170,8 @@
  },
  "city.xtx.t3_timetable.1": {
   "ru": "РАСПИСАНИЕ НА НЕДЕЛЮ. Понедельник, среда, пятница, с 15:00 до 19:00: баскетбол, мальчики («Прибой-мл.»). Вторник и четверг, в те же часы: гимнастика, девочки, группа Лидии Павловны. Суббота: до обеда штанга, после обеда игры. Воскресенье: зал на ваше усмотрение, тренера нет, мяч под ответственность того, кто его взял. С 7 до 15 зал свободный, в 11:00 урок физкультуры у 6-го «Б». Зал закрывается в 21:00.",
-  "en": "TIMETABLE FOR THE WEEK. Monday, Wednesday, Friday, 15:00 to 19:00: basketball, boys (\"Surf Juniors\"). Tuesday and Thursday, same hours: gymnastics, girls, Lidia Pavlovna's group. Saturday: weights before lunch, games after. Sunday: the hall is at your discretion, no coach, the ball is the responsibility of whoever took it. From 7 to 15 the hall is free; at 11:00 there is a PE lesson for class 6-B. The hall closes at 21:00.",
-  "ja": "週間時間割。月・水・金、十五時から十九時：バスケットボール、男子（「プリボイ・ジュニア」）。火・木、同じ時間：体操、女子、リディア・パヴロヴナのグループ。土曜：午前はウエイト、午後は試合。日曜：体育館はご自由に、コーチはおらず、ボールは持ち出した人の責任。七時から十五時までは体育館は空いていて、十一時に六年B組の体育の授業がある。体育館は二十一時に閉まる。"
+  "en": "TIMETABLE FOR THE WEEK. Monday, Wednesday, Friday, 15:00 to 19:00: basketball, boys (\"Surf Juniors\"). Tuesday and Thursday, same hours: gymnastics, girls, Lidiya Pavlovna's group. Saturday: weights before lunch, games after. Sunday: the hall is at your discretion, no coach, the ball is the responsibility of whoever took it. From 7 to 15 the hall is free; at 11:00 there is a PE lesson for class 6-B. The hall closes at 21:00.",
+  "ja": "週間時間割。月・水・金、十五時から十九時：バスケットボール、男子（「プリボイ・ジュニア」）。火・木、同じ時間：体操、女子、リディヤ・パヴロヴナのグループ。土曜：午前はウエイト、午後は試合。日曜：体育館はご自由に、コーチはおらず、ボールは持ち出した人の責任。七時から十五時までは体育館は空いていて、十一時に六年B組の体育の授業がある。体育館は二十一時に閉まる。"
  },
  "city.xtx.t3_timetable.2": {
   "ru": "ЗАПИСКИ ТРЕНЕРА. Для новичков: приходите не на тренировку, а на привычку. Первую неделю можете просто смотреть. Вторую неделю смотрите и бегите по лёгкой дорожке вдоль стены. Третью неделю вы уже тренируетесь, и я делаю вид, что давно знал. Спорт не любит рывков, он любит тех, кто приходит скучным вторником. Звёзды рождаются в среду, но только потому, что во вторник кто-то пришёл.",
@@ -265,8 +265,8 @@
  },
  "city.ask.t3.rc.sections.3": {
   "ru": "— Сегодня гимнастика у девочек, Лидия Павловна. Не мешайте счёту прыжков: собьются, начнут сначала.",
-  "en": "\"Today it's girls' gymnastics, Lidia Pavlovna. Don't disturb the jump count: if they lose it they start over.\"",
-  "ja": "「今日は女の子の体操、リディア・パヴロヴナの教室。跳躍の数をじゃましないでね。数えそこなったら、最初からやり直しだから。」"
+  "en": "\"Today it's girls' gymnastics, Lidiya Pavlovna. Don't disturb the jump count: if they lose it they start over.\"",
+  "ja": "「今日は女の子の体操、リディヤ・パヴロヴナの教室。跳躍の数をじゃましないでね。数えそこなったら、最初からやり直しだから。」"
  },
  "city.ask.t3.rc.pool": {
   "ru": "Как попасть в бассейн?",
@@ -375,8 +375,8 @@
  },
  "city.ask.t3.co.drill.2": {
   "ru": "— Сегодня гимнастика у девочек: тихо. Лидия Павловна считает прыжки. Собьёшь, начнут сначала, а мне потом слушать.",
-  "en": "\"Today it's girls' gymnastics: quiet. Lidia Pavlovna is counting jumps. Throw her off and they start again, and I have to listen.\"",
-  "ja": "「今日は女の子の体操だから静かにな。リディア・パヴロヴナが跳躍を数えてる。数をくるわせたら最初からやり直しで、あとで聞かされるのは私だ。」"
+  "en": "\"Today it's girls' gymnastics: quiet. Lidiya Pavlovna is counting jumps. Throw her off and they start again, and I have to listen.\"",
+  "ja": "「今日は女の子の体操だから静かにな。リディヤ・パヴロヴナが跳躍を数えてる。数をくるわせたら最初からやり直しで、あとで聞かされるのは私だ。」"
  },
  "city.ask.t3.co.drill.3": {
   "ru": "— Подбирал честно, мне говорили. Теперь бросай с дальней отметки. Лицо такое, будто попал. Остальное само.",

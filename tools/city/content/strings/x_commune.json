@@ -81,8 +81,8 @@
  },
  "city.cm.duty.mon": {
   "ru": "График дежурств по залу. Понедельник, кв. 1-03: подмести, протереть столы, проверить кипятильник. Роспись: «Лидия Аркадьевна. Уже подмела, уже проверила».",
-  "en": "The hall duty rota. Monday, flat 1-03: sweep, wipe the tables, check the water heater. Signed: \"Lidia Arkadyevna. Already swept, already checked.\"",
-  "ja": "ホール当番表。月曜日、1-03号室。掃く、テーブルを拭く、湯沸かしを確かめる。署名。「リディア・アルカージエヴナ。もう掃きました、もう確かめました」。"
+  "en": "The hall duty rota. Monday, flat 1-03: sweep, wipe the tables, check the water heater. Signed: \"Lidiya Arkadyevna. Already swept, already checked.\"",
+  "ja": "ホール当番表。月曜日、1-03号室。掃く、テーブルを拭く、湯沸かしを確かめる。署名。「リディヤ・アルカージエヴナ。もう掃きました、もう確かめました」。"
  },
  "city.cm.duty.tue": {
   "ru": "Вторник, кв. 3-06: зал, окна, цветы. Цветы поливать из чайника, но не из того, из которого пьют. Роспись детская, с хвостиком у буквы «Д».",
@@ -116,8 +116,8 @@
  },
  "city.cm.duty.extra": {
   "ru": "Приписка красным карандашом: «К субботнику готовим генеральную уборку. Окна зала мыть только изнутри. Снаружи их моют те, кто не боится высоты: Лидия Аркадьевна и ветер».",
-  "en": "A note in red pencil: \"We are preparing a general clean for the clean-up day. Wash the hall windows only from the inside. Outside, they are washed by those not afraid of heights: Lidia Arkadyevna and the wind.\"",
-  "ja": "赤鉛筆の書き足し。「大掃除にむけて総ざらいをします。ホールの窓は内側からだけ拭くこと。外側は高いところが平気な人、リディア・アルカージエヴナと風が拭きます」。"
+  "en": "A note in red pencil: \"We are preparing a general clean for the clean-up day. Wash the hall windows only from the inside. Outside, they are washed by those not afraid of heights: Lidiya Arkadyevna and the wind.\"",
+  "ja": "赤鉛筆の書き足し。「大掃除にむけて総ざらいをします。ホールの窓は内側からだけ拭くこと。外側は高いところが平気な人、リディヤ・アルカージエヴナと風が拭きます」。"
  },
  "city.cm.news.1": {
   "ru": "Стенгазета «Наш дом». «Итоги месяца: в доме 16 квартир, 41 жилец, 1 шахматная секция и 0 тихих вечеров. Редколлегия считает это успехом».",
@@ -131,8 +131,8 @@
  },
  "city.cm.news.3": {
   "ru": "Рубрика «Спорт»: подтягивания в зале. Лидия Аркадьевна, 14 раз, на спор с внуком. Внук считал вслух, но сбился от уважения.",
-  "en": "The sports column: pull-ups in the hall. Lidia Arkadyevna, 14 times, on a bet with her grandson. The grandson counted aloud but lost count out of respect.",
-  "ja": "スポーツ欄。ホールで懸垂。リディア・アルカージエヴナ、十四回、孫との賭けで。孫は声に出して数えていたが、感心して数えそこなった。"
+  "en": "The sports column: pull-ups in the hall. Lidiya Arkadyevna, 14 times, on a bet with her grandson. The grandson counted aloud but lost count out of respect.",
+  "ja": "スポーツ欄。ホールで懸垂。リディヤ・アルカージエヴナ、十四回、孫との賭けで。孫は声に出して数えていたが、感心して数えそこなった。"
  },
  "city.cm.news.4": {
   "ru": "Стихи жильцов. «Дом наш длинный, как вокзал, / в нём и суп, и шахматы, / и стиральных машин зал, / и вода на чай». Кв. 1-04, поэт-любитель.",
@@ -191,8 +191,8 @@
  },
  "city.cm.fold.1": {
   "ru": "Складываю чужие простыни: два угла в одну руку, два в другую, как показывала Лидия Аркадьевна. Выходит ровно, как в магазине.",
-  "en": "I fold somebody's sheets: two corners in one hand, two in the other, as Lidia Arkadyevna showed me. It comes out as neat as in a shop.",
-  "ja": "人のシーツをたたむ。二隅を片手に、二隅をもう片手に、リディア・アルカージエヴナに教わったとおり。お店のようにきれいに仕上がる。"
+  "en": "I fold somebody's sheets: two corners in one hand, two in the other, as Lidiya Arkadyevna showed me. It comes out as neat as in a shop.",
+  "ja": "人のシーツをたたむ。二隅を片手に、二隅をもう片手に、リディヤ・アルカージエヴナに教わったとおり。お店のようにきれいに仕上がる。"
  },
  "city.cm.fold.2": {
   "ru": "Из корзины торчит полосатый рукав. Достал: тельняшка, большая, пахнет морем и хозяйственным мылом. Положил обратно, сверху накинул наволочку, как одеяло.",
@@ -241,8 +241,8 @@
  },
  "city.cm.tv.8": {
   "ru": "Суббота, вечер у телевизора. Зал полон: стулья принесены из квартир, опоздавшие стоят у стены. Лидия Аркадьевна комментирует чуть слышно, Пётр Семёнович «не спит, а думает». Когда герои обнимаются, кто-то громко вздыхает. Вот ради этого телевизор и ставили в зале.",
-  "en": "Saturday, the television evening. The hall is full: chairs carried down from the flats, latecomers standing along the wall. Lidia Arkadyevna comments under her breath, Pyotr Semyonovich \"is not asleep, he is thinking\". When the heroes embrace, somebody sighs loudly. This is what the television in the hall is for.",
-  "ja": "土曜日、テレビの夜。ホールは満員で、椅子は各部屋から運ばれ、遅れた人は壁ぎわに立つ。リディア・アルカージエヴナは小声で解説し、ピョートル・セミョーノヴィチは「寝ているのではなく、考えている」。主人公たちが抱き合うと、誰かが大きくため息をつく。ホールにテレビを置いたのは、このためだ。"
+  "en": "Saturday, the television evening. The hall is full: chairs carried down from the flats, latecomers standing along the wall. Lidiya Arkadyevna comments under her breath, Pyotr Semyonovich \"is not asleep, he is thinking\". When the heroes embrace, somebody sighs loudly. This is what the television in the hall is for.",
+  "ja": "土曜日、テレビの夜。ホールは満員で、椅子は各部屋から運ばれ、遅れた人は壁ぎわに立つ。リディヤ・アルカージエヴナは小声で解説し、ピョートル・セミョーノヴィチは「寝ているのではなく、考えている」。主人公たちが抱き合うと、誰かが大きくため息をつく。ホールにテレビを置いたのは、このためだ。"
  },
  "city.cm.tv.9": {
   "ru": "Экран серый, шипит, в центре таблица. Диктор пожелал спокойной ночи ещё в одиннадцать. Телевизор не спит, а зал должен, и кто-то выключил его щелчком.",
@@ -296,8 +296,8 @@
  },
  "city.cm.sew.3": {
   "ru": "Рядом коробка из-под печенья: пуговицы всех размеров, одна золотая с якорем. На крышке: «Бери, что подойдёт. Лидия Аркадьевна».",
-  "en": "Beside it a biscuit tin: buttons of every size, one golden with an anchor. On the lid: \"Take what fits. Lidia Arkadyevna.\"",
-  "ja": "そばにクッキーの缶。あらゆる大きさのボタンが入っていて、一つは錨のついた金色。ふたに。「合うものを持っていきなさい。リディア・アルカージエヴナ」。"
+  "en": "Beside it a biscuit tin: buttons of every size, one golden with an anchor. On the lid: \"Take what fits. Lidiya Arkadyevna.\"",
+  "ja": "そばにクッキーの缶。あらゆる大きさのボタンが入っていて、一つは錨のついた金色。ふたに。「合うものを持っていきなさい。リディヤ・アルカージエヴナ」。"
  },
  "city.cm.sam.prompt": {
   "ru": "E — налить кипятка",
@@ -431,8 +431,8 @@
  },
  "city.cm.boardB.2": {
   "ru": "Маркиза видели: 1) в подвале, уверена Лидия; 2) на крыше, мальчик из 3-07 не уверен; 3) в столовой, у кастрюли с ухой, повар огорчён. Вариантов три, кот один.",
-  "en": "Markiz has been seen: 1) in the cellar, Lidia is sure; 2) on the roof, the boy from 3-07 is not sure; 3) in the canteen by the fish-soup pot, the cook is upset. Three versions, one cat.",
-  "ja": "マルキの目撃情報。1) 地下室、リディアは確信している、2) 屋根、3-07号室の男の子は自信がない、3) 食堂の魚スープの鍋のそば、料理人は気を落としている。説は三つ、猫は一匹。"
+  "en": "Markiz has been seen: 1) in the cellar, Lidiya is sure; 2) on the roof, the boy from 3-07 is not sure; 3) in the canteen by the fish-soup pot, the cook is upset. Three versions, one cat.",
+  "ja": "マルキの目撃情報。1) 地下室、リディヤは確信している、2) 屋根、3-07号室の男の子は自信がない、3) 食堂の魚スープの鍋のそば、料理人は気を落としている。説は三つ、猫は一匹。"
  },
  "city.cm.boardB.3": {
   "ru": "Дописано: «Если Маркиз не вернётся к четвергу, значит, он ушёл к рыбакам. Не обижайтесь на кота: у него вкус».",
@@ -506,8 +506,8 @@
  },
  "quest.commune_cloud.done": {
   "ru": "После передачи Лидия Аркадьевна повела всех смотреть тучку на потолке в 1-05, с чайником вместо указки. Мне налили чаю: сказали, что зрителям положено.",
-  "en": "After the programme Lidia Arkadyevna led everyone to see the little cloud on the ceiling in 1-05, with a kettle instead of a pointer. They poured me tea: viewers are entitled to it, they said.",
-  "ja": "番組のあと、リディア・アルカージエヴナがやかんを指し棒がわりに、1-05号室の天井の小さな雲を見にみんなを連れていった。お茶をもらった。見る人にはその権利があるそうだ。"
+  "en": "After the programme Lidiya Arkadyevna led everyone to see the little cloud on the ceiling in 1-05, with a kettle instead of a pointer. They poured me tea: viewers are entitled to it, they said.",
+  "ja": "番組のあと、リディヤ・アルカージエヴナがやかんを指し棒がわりに、1-05号室の天井の小さな雲を見にみんなを連れていった。お茶をもらった。見る人にはその権利があるそうだ。"
  },
  "quest.commune_cat.title": {
   "ru": "Кот в тельняшке",
