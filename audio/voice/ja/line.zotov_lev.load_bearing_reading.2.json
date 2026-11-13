@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.load_bearing_reading.2",
+ "lang": "ja",
+ "text": "十四ページの間違いは、結局編集部に手紙で知らせたよ。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 十四ページの間違いは、結局編集部に手紙で知らせたよ。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-37ea-7180-8eca-96c746ca41a0",
+ "hash": "de1d483e4498"
+}

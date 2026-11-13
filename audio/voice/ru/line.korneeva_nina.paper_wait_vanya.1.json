@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_wait_vanya.1",
+ "lang": "ru",
+ "text": "Ваня уже третий раз спросил, где газета. Я сказала, что ты в пути, у моря, так что не подведи меня.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Ваня уже третий раз спросил, где газета. Я сказала, что ты в пути, у моря, так что не подведи меня.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6d5-c291-78b2-8992-95a814ebcda0",
+ "hash": "1993473929e9"
+}

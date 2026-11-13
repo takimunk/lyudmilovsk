@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_two_counts.1",
+ "lang": "en",
+ "text": "Sorokin says you counted six landings for him. Five for me, six for him: our yard has a scientific school of its own now.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Sorokin says you counted six landings for him. Five for me, six for him: our yard has a scientific school of its own now.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e5-25b9-72d0-827d-fc3f9af431dc",
+ "hash": "83b09f49aa7d"
+}

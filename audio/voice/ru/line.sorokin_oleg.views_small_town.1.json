@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.views_small_town.1",
+ "lang": "ru",
+ "text": "Ая рассказала, что вы смотрели на город из рябинового леса. Маленький и тихий, говорит.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Ая рассказала, что вы смотрели на город из рябинового леса. Маленький и тихий, говорит.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-0fec-7d51-9650-ad805f0cc510",
+ "hash": "5b2d5d3ced72"
+}

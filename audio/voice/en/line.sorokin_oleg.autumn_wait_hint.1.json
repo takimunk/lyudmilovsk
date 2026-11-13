@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_wait_hint.1",
+ "lang": "en",
+ "text": "Peanuts in the feeder here in the yard, then twenty paces back. The tits will come first, and the boldest one you feed from the palm.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Peanuts in the feeder here in the yard, then twenty paces back. The tits will come first, and the boldest one you feed from the palm.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6de-6535-7513-a5f5-c0e3ef105f29",
+ "hash": "67b23543ce91"
+}

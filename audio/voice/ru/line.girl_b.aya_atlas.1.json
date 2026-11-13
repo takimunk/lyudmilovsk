@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.aya_atlas.1",
+ "lang": "ru",
+ "text": "Ая заходила, взяла атлас окрестностей. Говорит, хочет найти, где ты стоял, когда смотрел на город.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Ая заходила, взяла атлас окрестностей. Говорит, хочет найти, где ты стоял, когда смотрел на город.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e2-7755-7e61-b61d-736c328b19e8",
+ "hash": "7e9c338bf437"
+}

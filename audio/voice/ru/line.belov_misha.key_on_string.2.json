@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_on_string.2",
+ "lang": "ru",
+ "text": "А сорока каждый вечер садится на подоконник. Проверяет, не передумал ли я извиняться.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] А сорока каждый вечер садится на подоконник. Проверяет, не передумал ли я извиняться.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e1-cf0a-7ec0-b16c-cb05f7755d49",
+ "hash": "e676257ab037"
+}

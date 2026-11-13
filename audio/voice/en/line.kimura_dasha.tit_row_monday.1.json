@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tit_row_monday.1",
+ "lang": "en",
+ "text": "A great tit! Go on, sit down. You've been in my table since Monday.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] A great tit! Go on, sit down. You've been in my table since Monday.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e5-7a77-7611-8998-86d0998702f6",
+ "hash": "0e880d3b6496"
+}

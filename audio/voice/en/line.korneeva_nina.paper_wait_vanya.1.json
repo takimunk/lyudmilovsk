@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_wait_vanya.1",
+ "lang": "en",
+ "text": "Vanya's asked three times where the paper is. I told him you're on your way, down by the sea, so don't let me down.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Vanya's asked three times where the paper is. I told him you're on your way, down by the sea, so don't let me down.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6db-8663-7573-aa54-b31eb07a6178",
+ "hash": "2d61661f5f88"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_borscht_debate.1",
+ "lang": "en",
+ "text": "Kei and Misha were at it again from first thing this morning. I need a verdict before they move on to borscht.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Kei and Misha were at it again from first thing this morning. I need a verdict before they move on to borscht.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e7-9792-7760-852e-49aa02d1938f",
+ "hash": "e9286e1727b1"
+}

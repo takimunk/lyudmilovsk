@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.namesake_magpie.1",
+ "lang": "ru",
+ "text": "Здравствуй, тёзка. Фамилию я у вашего брата одолжил, а вернуть так и не собрался.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Здравствуй, тёзка. Фамилию я у вашего брата одолжил, а вернуть так и не собрался.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ea-22f6-7981-93e4-0be7db414cdf",
+ "hash": "79d47292e82e"
+}

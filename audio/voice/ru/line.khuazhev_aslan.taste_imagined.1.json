@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_imagined.1",
+ "lang": "ru",
+ "text": "Я сегодня трижды представил себе эти блины. Ешь скорее, пока я не придумал их сам.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Я сегодня трижды представил себе эти блины. Ешь скорее, пока я не придумал их сам.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e4-3d3f-7360-a467-52c7b67aaabf",
+ "hash": "efd9a7784e18"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_slow_time.1",
+ "lang": "ja",
+ "text": "夕ごはんがないと、時間がゆっくり進む。急がんでいいが、忘れるな。チーズと「バイカル」だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 夕ごはんがないと、時間がゆっくり進む。急がんでいいが、忘れるな。チーズと「バイカル」だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e9-1a42-7742-aae9-da5566208806",
+ "hash": "a4878e16b626"
+}

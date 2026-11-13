@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.approach_no_landing.1",
+ "lang": "ja",
+ "text": "いい進入だな。ただ、着陸が見えないけど。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] いい進入だな。ただ、着陸が見えないけど。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e1-53c6-76f0-8dd1-e45399d06438",
+ "hash": "cd9f42e1d7a8"
+}

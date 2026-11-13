@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.flypast_void.1",
+ "lang": "ru",
+ "text": "Пролёт не засчитывается. Сядь, тогда поговорим.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Пролёт не засчитывается. Сядь, тогда поговорим.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-51b4-7f11-be07-fe58acdf6eda",
+ "hash": "efe14e43ed53"
+}

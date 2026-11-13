@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_mixed_up.1",
+ "lang": "ru",
+ "text": "«Байкал» от «Тархуна» я отличил, как обещал. А «Дюшес» с «Буратино» перепутал. Галина записала это в протокол.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] «Байкал» от «Тархуна» я отличил, как обещал. А «Дюшес» с «Буратино» перепутал. Галина записала это в протокол.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-6083-7402-91d6-501129ce08cb",
+ "hash": "31ba3e83f810"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tally_stump.1",
+ "lang": "en",
+ "text": "Sitting like a stump and moving your lips, so you're counting for Sorokin. Respect, I can't do that even in an exam.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Sitting like a stump and moving your lips, so you're counting for Sorokin. Respect, I can't do that even in an exam.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6da-cea3-7bc0-8bcb-27ba53b3bc30",
+ "hash": "e034a81fe59a"
+}

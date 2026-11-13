@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.letter_to_brother.2",
+ "lang": "ja",
+ "text": "答えてやった。正直で、腹いっぱいの男だとな。ほかの相談相手は置いていない。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 答えてやった。正直で、腹いっぱいの男だとな。ほかの相談相手は置いていない。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e3-e61b-7003-b27b-575559579c4c",
+ "hash": "abf30d07fb19"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait_hint.1",
+ "lang": "ru",
+ "text": "Налобный фонарик продаёт Огава, в клубе, а верхняя станция рядом с клубом. Надень его там, когда стемнеет.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Налобный фонарик продаёт Огава, в клубе, а верхняя станция рядом с клубом. Надень его там, когда стемнеет.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-8d35-79c2-9d83-f1422941b982",
+ "hash": "c98f4309e2a4"
+}

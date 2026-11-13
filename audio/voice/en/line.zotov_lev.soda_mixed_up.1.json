@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_mixed_up.1",
+ "lang": "en",
+ "text": "I told Baikal from Tarragon, as promised. But I mixed up Duchesse and Buratino. Galina put it in the record.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] I told Baikal from Tarragon, as promised. But I mixed up Duchesse and Buratino. Galina put it in the record.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6eb-02e2-7c10-bd1b-94fbc46e5481",
+ "hash": "f76abea929c3"
+}

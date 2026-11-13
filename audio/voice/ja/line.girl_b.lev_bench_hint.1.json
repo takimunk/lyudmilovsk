@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_bench_hint.1",
+ "lang": "ja",
+ "text": "レフさんは夕方、中庭のベンチにいるよ。五時半から七時まで。週末もね。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] レフさんは夕方、中庭のベンチにいるよ。五時半から七時まで。週末もね。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-cf9a-7841-9e8e-34210993f2bf",
+ "hash": "5be5b02b5f58"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_paper_boy.1",
+ "lang": "en",
+ "text": "Ah, the paper boy. I solved that evening's problem, mate in three. Nina still says you saved her from me.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Ah, the paper boy. I solved that evening's problem, mate in three. Nina still says you saved her from me.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6da-f69f-7d90-b837-7dc4c9313bdf",
+ "hash": "b4b250b66711"
+}

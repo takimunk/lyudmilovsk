@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.see_my_guest.1",
+ "lang": "ja",
+ "text": "下のロープウェイのほうへ行くのか？俺の客がブリヌイを最後まで食べてるか、見てきてくれ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 下のロープウェイのほうへ行くのか？俺の客がブリヌイを最後まで食べてるか、見てきてくれ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e3-fbd1-7953-a3b0-047fd51558f6",
+ "hash": "ef8497cdf81a"
+}

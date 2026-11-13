@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.braid_for_fisher.1",
+ "lang": "ja",
+ "text": "漁師のための三つ編みかい？当たりだろう。漁師はいつも燻製を買っていく。人生に一つくらい、魚じゃないものがほしいんだな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 漁師のための三つ編みかい？当たりだろう。漁師はいつも燻製を買っていく。人生に一つくらい、魚じゃないものがほしいんだな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d4-8318-7dd0-8e50-6359ca871987",
+ "hash": "c2a5441e5a12"
+}

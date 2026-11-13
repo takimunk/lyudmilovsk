@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_eyes_shut.1",
+ "lang": "ja",
+ "text": "ガリーナに試飲を頼まれたんだね。バイカルとタルフンなら、目をつぶっても区別できるよ。ただ、彼女には言わないでくれ。検証されてしまう。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] ガリーナに試飲を頼まれたんだね。バイカルとタルフンなら、目をつぶっても区別できるよ。ただ、彼女には言わないでくれ。検証されてしまう。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-c81d-71c1-9770-182541069363",
+ "hash": "85b6295f77e6"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_lamp_ready.1",
+ "lang": "ja",
+ "text": "ランプはもう持っているね。暗くなったら山上駅へ行って、そこでつけてくれ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] ランプはもう持っているね。暗くなったら山上駅へ行って、そこでつけてくれ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-7150-7b23-af01-80794aa9850b",
+ "hash": "71699f2a4281"
+}

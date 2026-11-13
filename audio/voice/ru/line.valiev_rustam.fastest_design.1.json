@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.fastest_design.1",
+ "lang": "ru",
+ "text": "Сапсан. Самая быстрая конструкция в городе, и сидит рядом со мной.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Сапсан. Самая быстрая конструкция в городе, и сидит рядом со мной.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ea-75d2-70b0-8e27-3d860c60415a",
+ "hash": "cf61dea3ea28"
+}

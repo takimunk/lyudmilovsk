@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.nutcracker_respect.1",
+ "lang": "en",
+ "text": "A nutcracker, and this close. I have no nuts on me, but a pocketful of respect.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] A nutcracker, and this close. I have no nuts on me, but a pocketful of respect.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e9-eeda-7db1-9c95-5f55739e79d9",
+ "hash": "8299c18636b9"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.dishes_traitors.1",
+ "lang": "en",
+ "text": "Day after day of dishes. And the pigeons still won't come to your feeder. Traitors.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Day after day of dishes. And the pigeons still won't come to your feeder. Traitors.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e7-820e-71c1-84a3-5f26a5db3dfa",
+ "hash": "b328a67937a2"
+}

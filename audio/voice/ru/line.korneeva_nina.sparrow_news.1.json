@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.sparrow_news.1",
+ "lang": "ru",
+ "text": "Воробей. Ну, рассказывай, что нового у Тани в Гастрономе. Я сегодня ещё не заходила.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Воробей. Ну, рассказывай, что нового у Тани в Гастрономе. Я сегодня ещё не заходила.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-8dd2-7870-99e9-e428a8d6ccf2",
+ "hash": "b6be7089dc51"
+}

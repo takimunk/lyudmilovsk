@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.albatross_pencil.1",
+ "lang": "ru",
+ "text": "Чернобровый альбатрос. Во дворе Академгородка. Это я запишу карандашом, чтобы потом можно было стереть.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Чернобровый альбатрос. Во дворе Академгородка. Это я запишу карандашом, чтобы потом можно было стереть.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e9-c9f1-7fb0-8133-e4d0b6d1ad30",
+ "hash": "348f8b9b816b"
+}

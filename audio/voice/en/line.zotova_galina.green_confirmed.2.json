@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.green_confirmed.2",
+ "lang": "en",
+ "text": "I tested Lev as well. The results are classified, at his request.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] I tested Lev as well. The results are classified, at his request.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6eb-8598-7d23-8234-1bfcd6a5e1c5",
+ "hash": "3d7f83a8e32f"
+}

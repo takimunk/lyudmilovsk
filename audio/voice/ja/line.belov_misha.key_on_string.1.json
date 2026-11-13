@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_on_string.1",
+ "lang": "ja",
+ "text": "鍵は今、ひもで首から下げてる。小学一年生みたいにな。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 鍵は今、ひもで首から下げてる。小学一年生みたいにな。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e1-ba6c-7640-a110-f11e41e0b0e2",
+ "hash": "ee310b4a3e3a"
+}

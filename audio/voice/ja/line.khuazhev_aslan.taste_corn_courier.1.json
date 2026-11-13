@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_corn_courier.1",
+ "lang": "ja",
+ "text": "ワレンチナに頼まれて、イワンにトウモロコシを届けたのは君だろう。半日ずっと君を褒めていたぞ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] ワレンチナに頼まれて、イワンにトウモロコシを届けたのは君だろう。半日ずっと君を褒めていたぞ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d4-a1f4-7891-a1c2-24710ea2a1cf",
+ "hash": "7bae84187ece"
+}

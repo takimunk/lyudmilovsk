@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_soon_fed.1",
+ "lang": "ru",
+ "text": "Ой, ворона. Я не боюсь, я просто сижу. А тебя скоро покормят, я знаю кто.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Ой, ворона. Я не боюсь, я просто сижу. А тебя скоро покормят, я знаю кто.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e9-7126-73f3-9e83-c802e761f6c4",
+ "hash": "6dafc8628446"
+}

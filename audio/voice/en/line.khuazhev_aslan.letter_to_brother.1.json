@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.letter_to_brother.1",
+ "lang": "en",
+ "text": "I've already written to my brother: we're bringing a soft cheese for the pancakes. He asks who gave the advice.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] I've already written to my brother: we're bringing a soft cheese for the pancakes. He asks who gave the advice.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e3-9c3f-76e2-ba40-2324797051b4",
+ "hash": "9be774e167ba"
+}

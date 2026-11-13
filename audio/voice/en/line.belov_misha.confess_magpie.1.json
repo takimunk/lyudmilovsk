@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.confess_magpie.1",
+ "lang": "en",
+ "text": "Well then, magpie, confess: where's the key? Fine, say nothing. I've got an investigator.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Well then, magpie, confess: where's the key? Fine, say nothing. I've got an investigator.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e1-5de0-7f80-8eea-bc08b240747e",
+ "hash": "529262834f0d"
+}

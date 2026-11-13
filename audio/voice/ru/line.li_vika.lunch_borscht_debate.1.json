@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_borscht_debate.1",
+ "lang": "ru",
+ "text": "Кэй с Мишей сегодня спорили с самого утра. Мне нужен вывод, пока они не перешли на борщ.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Кэй с Мишей сегодня спорили с самого утра. Мне нужен вывод, пока они не перешли на борщ.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-ec6f-76a3-ba9e-1846f48fcaae",
+ "hash": "aaf4d8c040bb"
+}

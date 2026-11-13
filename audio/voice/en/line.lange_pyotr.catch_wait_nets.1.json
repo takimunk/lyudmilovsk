@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_wait_nets.1",
+ "lang": "en",
+ "text": "I'd come along, but nets don't mend themselves. Pier, worm, and don't leave till it bites.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] I'd come along, but nets don't mend themselves. Pier, worm, and don't leave till it bites.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6db-be63-7bb3-b003-e8ff215c1443",
+ "hash": "4ff03be5721a"
+}

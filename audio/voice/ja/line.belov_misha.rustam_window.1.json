@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.rustam_window.1",
+ "lang": "ja",
+ "text": "ルスタムは今夜、窓のそばで夕飯を食うんだと。合図を待ってるらしい。もしかして、君がその合図か？",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] ルスタムは今夜、窓のそばで夕飯を食うんだと。合図を待ってるらしい。もしかして、君がその合図か？",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d3-d88d-74f0-923e-3dee4fdf304e",
+ "hash": "e4e16d42d182"
+}

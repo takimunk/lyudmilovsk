@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_pocket.1",
+ "lang": "ja",
+ "text": "バイカルはあなたのポケットの中で、記録の中にはありません。試料は飲んで初めて数えます。四本とも、最後まで。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] バイカルはあなたのポケットの中で、記録の中にはありません。試料は飲んで初めて数えます。四本とも、最後まで。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-faca-79c0-bc22-34814cbaba41",
+ "hash": "ef800b2840da"
+}

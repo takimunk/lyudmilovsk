@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.feathered_guest.1",
+ "lang": "ru",
+ "text": "Садись, садись. У моей палатки гостей не гонят, даже пернатых.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Садись, садись. У моей палатки гостей не гонят, даже пернатых.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e3-b18f-75d2-a67a-827c9cdf8875",
+ "hash": "4eff7239923a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_doorway.1",
+ "lang": "ja",
+ "text": "いらっしゃい。ソローキンさんがキレンジャクのことを考えてるときと、同じ顔してるわよ。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] いらっしゃい。ソローキンさんがキレンジャクのことを考えてるときと、同じ顔してるわよ。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d7-54ea-70b0-9e57-410ae0befb3e",
+ "hash": "aff5da816617"
+}

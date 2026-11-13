@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_guide_left.2",
+ "lang": "ja",
+ "text": "ソローキンさんに言わせると、図鑑がなければ森の鳥はみんな灰色なんですって。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] ソローキンさんに言わせると、図鑑がなければ森の鳥はみんな灰色なんですって。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d7-7a4a-7923-a50e-a1f537598354",
+ "hash": "a53e2a44a69f"
+}

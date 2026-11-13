@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_no_data_night.1",
+ "lang": "ja",
+ "text": "夜はデータが取れないよ。鳥は寝てるの、投票なんかしない。餌台に餌を入れて、朝になったら数えに来て。飛来五回ね。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 夜はデータが取れないよ。鳥は寝てるの、投票なんかしない。餌台に餌を入れて、朝になったら数えに来て。飛来五回ね。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d4-fda4-7860-9152-590a7df67f4b",
+ "hash": "d945055066aa"
+}

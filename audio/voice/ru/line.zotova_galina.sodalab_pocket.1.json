@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_pocket.1",
+ "lang": "ru",
+ "text": "«Байкал» у вас в кармане, а не в протоколе. Образец засчитывается выпитым: все четыре, до дна.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] «Байкал» у вас в кармане, а не в протоколе. Образец засчитывается выпитым: все четыре, до дна.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-e92b-7460-868b-0f86031d85d4",
+ "hash": "971c1b158feb"
+}

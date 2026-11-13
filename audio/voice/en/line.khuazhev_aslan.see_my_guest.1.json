@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.see_my_guest.1",
+ "lang": "en",
+ "text": "Flying down to the cable car? Have a look whether my guest is finishing his pancakes.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Flying down to the cable car? Have a look whether my guest is finishing his pancakes.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e3-cc6f-7773-b4b4-5341fbe25893",
+ "hash": "f9534ad0d777"
+}

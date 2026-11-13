@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.count_by_lantern.2",
+ "lang": "ja",
+ "text": "私も君の歳には懐中電灯で数えたものだ。数えられたのは、フクロウ一羽と濡れた靴だけだった。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 私も君の歳には懐中電灯で数えたものだ。数えられたのは、フクロウ一羽と濡れた靴だけだった。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d8-5535-77a3-b7dc-1f33417bd610",
+ "hash": "b6bd36b56716"
+}

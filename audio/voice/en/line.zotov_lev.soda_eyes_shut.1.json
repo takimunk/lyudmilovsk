@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_eyes_shut.1",
+ "lang": "en",
+ "text": "Galina sent you tasting? I can tell Baikal from Tarragon with my eyes shut. Just don't tell her, she'll test it.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Galina sent you tasting? I can tell Baikal from Tarragon with my eyes shut. Just don't tell her, she'll test it.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e0-134a-7552-9b23-b4c549cbbd29",
+ "hash": "d8c526c9b4c5"
+}

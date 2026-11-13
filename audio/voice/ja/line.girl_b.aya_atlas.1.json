@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.aya_atlas.1",
+ "lang": "ja",
+ "text": "アヤさんが来て、近郊の地図帳を借りていったよ。あなたがどこから町を見たのか、探したいんだって。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] アヤさんが来て、近郊の地図帳を借りていったよ。あなたがどこから町を見たのか、探したいんだって。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-7651-7423-a814-e2eaaeee7999",
+ "hash": "74eb68f89415"
+}

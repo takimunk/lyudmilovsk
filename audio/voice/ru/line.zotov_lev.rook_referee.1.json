@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.rook_referee.1",
+ "lang": "ru",
+ "text": "Грач. Вид у вас как у рецензента. Письмо в редакцию я уже отправил, можете не смотреть.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Грач. Вид у вас как у рецензента. Письмо в редакцию я уже отправил, можете не смотреть.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-2e13-7af2-9681-a19f91ca09e3",
+ "hash": "51203f4c59c9"
+}

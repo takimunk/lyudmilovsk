@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.not_the_signal.1",
+ "lang": "ja",
+ "text": "何か動いたな。いや、鳥か。合図とは認めない。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 何か動いたな。いや、鳥か。合図とは認めない。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ea-c9a8-7922-bdab-c4d226350523",
+ "hash": "da68b2363c31"
+}

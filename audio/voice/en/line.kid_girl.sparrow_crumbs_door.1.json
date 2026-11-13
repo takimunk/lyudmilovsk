@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_girl.sparrow_crumbs_door.1",
+ "lang": "en",
+ "text": "You've got bird feed? Scatter a little by the door for my sparrow. Mum won't give me money for the machine.",
+ "speaker": "kid_girl",
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "You've got bird feed? Scatter a little by the door for my sparrow. Mum won't give me money for the machine.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e4-8e97-73b0-89e4-156483d35c9d",
+ "hash": "84baaac71794"
+}

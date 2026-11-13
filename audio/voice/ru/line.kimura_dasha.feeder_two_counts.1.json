@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_two_counts.1",
+ "lang": "ru",
+ "text": "Сорокин говорит, ты ему шесть прилётов насчитал. У меня пять, у него шесть: у нашего двора теперь своя научная школа.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Сорокин говорит, ты ему шесть прилётов насчитал. У меня пять, у него шесть: у нашего двора теперь своя научная школа.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-39f8-7bb0-991b-04905b5caffb",
+ "hash": "e7ee7d7a8ebc"
+}

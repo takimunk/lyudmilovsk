@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.cob_for_vanya.2",
+ "lang": "en",
+ "text": "After three he's usually on the bench, if he's not by the sea. Tell him to share with me.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "After three he's usually on the bench, if he's not by the sea. Tell him to share with me.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6db-3f06-75f0-9e7c-8c44a93c02c8",
+ "hash": "7ef9cab7aa53"
+}

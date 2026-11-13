@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_under_shirt.1",
+ "lang": "en",
+ "text": "A magpie. The key's on a string, under my shirt. You can stop looking at me like that.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] A magpie. The key's on a string, under my shirt. You can stop looking at me like that.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e1-c87f-71f3-a13e-2c557f219e53",
+ "hash": "91c6986a73e1"
+}

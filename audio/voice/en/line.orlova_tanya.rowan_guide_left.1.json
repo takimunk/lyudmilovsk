@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_guide_left.1",
+ "lang": "en",
+ "text": "Rowan, yes. Feeder, yes. That leaves the guide: Olya has it at the library, right on her desk.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Rowan, yes. Feeder, yes. That leaves the guide: Olya has it at the library, right on her desk.",
+  "voice": "Aria",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dd-0e3b-7352-a561-1b26aeb05fde",
+ "hash": "a79b2a52cb7e"
+}

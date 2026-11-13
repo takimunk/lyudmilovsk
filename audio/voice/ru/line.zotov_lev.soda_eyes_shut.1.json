@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_eyes_shut.1",
+ "lang": "ru",
+ "text": "Галина отправила вас дегустировать? «Байкал» от «Тархуна» я отличу с закрытыми глазами. Только ей не говорите, она проверит.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Галина отправила вас дегустировать? «Байкал» от «Тархуна» я отличу с закрытыми глазами. Только ей не говорите, она проверит.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-bbac-7811-9083-b2c4874c4b8d",
+ "hash": "4ff235944b62"
+}

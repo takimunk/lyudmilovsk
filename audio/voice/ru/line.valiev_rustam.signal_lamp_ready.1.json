@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_lamp_ready.1",
+ "lang": "ru",
+ "text": "Фонарик у тебя уже есть, вижу. Как стемнеет, иди к верхней станции и надень его там.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Фонарик у тебя уже есть, вижу. Как стемнеет, иди к верхней станции и надень его там.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-6884-79f1-9114-586ae2a775be",
+ "hash": "95ad9e010e76"
+}

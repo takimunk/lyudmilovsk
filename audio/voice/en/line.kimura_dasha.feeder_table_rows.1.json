@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.1",
+ "lang": "en",
+ "text": "Your feeder is still standing in the yard. Mornings I keep a table: tits, sparrows, and one magpie that only looked.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Your feeder is still standing in the yard. Mornings I keep a table: tits, sparrows, and one magpie that only looked.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e4-f8b4-7dc1-b7bc-73d00d11dff8",
+ "hash": "5d9871510d9f"
+}

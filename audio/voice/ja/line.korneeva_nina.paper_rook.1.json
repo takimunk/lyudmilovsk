@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_rook.1",
+ "lang": "ja",
+ "text": "ワーニャったら、夕ごはんの前に問題を解いちゃったの。それから得意になって、見せる相手を探して歩き回ってるのよ。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ワーニャったら、夕ごはんの前に問題を解いちゃったの。それから得意になって、見せる相手を探して歩き回ってるのよ。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-800f-7e80-a4a5-55038bd1024d",
+ "hash": "dd9b1a3f34a0"
+}

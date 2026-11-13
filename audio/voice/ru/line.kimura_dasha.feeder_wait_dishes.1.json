@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_wait_dishes.1",
+ "lang": "ru",
+ "text": "Вика уже моет посуду в уме, я по лицу вижу. Мне нужно всего пять прилётов.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Вика уже моет посуду в уме, я по лицу вижу. Мне нужно всего пять прилётов.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d5-0b2a-7763-a296-9d6197af6106",
+ "hash": "43b8975f0517"
+}

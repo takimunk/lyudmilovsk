@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.nothing_shiny.1",
+ "lang": "ja",
+ "text": "よう。光り物は持ってないぞ、ほんとに。自分で確かめた。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] よう。光り物は持ってないぞ、ほんとに。自分で確かめた。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-1904-7b83-931a-0f779b9dfe3b",
+ "hash": "8509e0f99294"
+}

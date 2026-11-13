@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.not_earthed.1",
+ "lang": "ja",
+ "text": "ニシコクマルガラスか。電線にとまってもいいぞ、お前は平気だ。アースされてないからな。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] ニシコクマルガラスか。電線にとまってもいいぞ、お前は平気だ。アースされてないからな。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-00d2-7352-bb9b-7e4ac6c2c819",
+ "hash": "62596f41c4b0"
+}

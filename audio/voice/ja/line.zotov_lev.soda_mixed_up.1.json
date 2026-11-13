@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.soda_mixed_up.1",
+ "lang": "ja",
+ "text": "バイカルとタルフンは、約束どおり区別できたよ。だがドゥシェスとブラチーノを取り違えた。ガリーナはそれを記録に残した。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] バイカルとタルフンは、約束どおり区別できたよ。だがドゥシェスとブラチーノを取り違えた。ガリーナはそれを記録に残した。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-947b-7db1-9547-2ecd7d02347d",
+ "hash": "f465ab1074e2"
+}

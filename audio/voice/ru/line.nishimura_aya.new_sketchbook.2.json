@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.new_sketchbook.2",
+ "lang": "ru",
+ "text": "Вышло криво, зато честно. Остров пусть пока подождёт, он терпеливый.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Вышло криво, зато честно. Остров пусть пока подождёт, он терпеливый.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e8-8cfa-7360-a8c6-bdaa6671d26e",
+ "hash": "ea0b19b47dda"
+}

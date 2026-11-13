@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_slow_time.1",
+ "lang": "en",
+ "text": "Without supper time goes slower. Don't hurry, but don't forget: cheese and a Baikal.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Without supper time goes slower. Don't hurry, but don't forget: cheese and a Baikal.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-a53b-7a83-9419-e185d99c3c9a",
+ "hash": "4bd0cff946aa"
+}

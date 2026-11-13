@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.see_the_fish.1",
+ "lang": "ja",
+ "text": "高いところを行くな。そこからなら、魚のいる場所も見えるんだろう。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] 高いところを行くな。そこからなら、魚のいる場所も見えるんだろう。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e6-4009-7b53-b109-38c3d30d5279",
+ "hash": "0b3e1271006d"
+}

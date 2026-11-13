@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.angler_spoon_dawn.1",
+ "lang": "en",
+ "text": "Well then, angler. The spoon is for hunters: cast it off the end of the pier at dawn or dusk, the garfish run there.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Well then, angler. The spoon is for hunters: cast it off the end of the pier at dawn or dusk, the garfish run there.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e6-d6e5-7140-b176-00189a2c42d5",
+ "hash": "dbe718241ed3"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.starling_messenger.1",
+ "lang": "en",
+ "text": "A starling. Your lot are over the sea in the evenings, aren't they? Then you will see the town before my messenger does.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] A starling. Your lot are over the sea in the evenings, aren't they? Then you will see the town before my messenger does.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-4676-71c0-a3c0-1b4b93f4d8d2",
+ "hash": "644b8e7b2f6c"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_wait_hint.1",
+ "lang": "ru",
+ "text": "Рябину в кормушку прямо в роще, и оставайтесь неподалёку. Свиристель сначала смотрит, кто сидит рядом, а уж потом на угощение.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Рябину в кормушку прямо в роще, и оставайтесь неподалёку. Свиристель сначала смотрит, кто сидит рядом, а уж потом на угощение.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-380f-7290-9775-bbdb7888b42b",
+ "hash": "5ad2a8a1e891"
+}

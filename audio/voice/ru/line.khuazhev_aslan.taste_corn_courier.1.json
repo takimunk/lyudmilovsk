@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_corn_courier.1",
+ "lang": "ru",
+ "text": "Это ты для Валентины початок Ивану носил? Она мне рассказала, полдня тебя хвалила.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Это ты для Валентины початок Ивану носил? Она мне рассказала, полдня тебя хвалила.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d4-9300-7ad3-a48e-15f7b4a9576a",
+ "hash": "734d02f40749"
+}

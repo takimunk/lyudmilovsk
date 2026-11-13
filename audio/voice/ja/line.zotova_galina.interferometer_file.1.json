@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.interferometer_file.1",
+ "lang": "ja",
+ "text": "オーリャさんの新しい雑誌ですね。レフから聞きました。干渉計の脚なんて、削ればよかったんですよ。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] オーリャさんの新しい雑誌ですね。レフから聞きました。干渉計の脚なんて、削ればよかったんですよ。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-e3bf-7b00-b26c-4e6d8fbaf236",
+ "hash": "d47ffd9aacfe"
+}

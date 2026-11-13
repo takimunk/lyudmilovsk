@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_again.1",
+ "lang": "en",
+ "text": "Sorokin bought dried rowan again. He says if one came, the others may find the way too.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Sorokin bought dried rowan again. He says if one came, the others may find the way too.",
+  "voice": "Aria",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-808f-7bd1-87d4-be05d976bcef",
+ "hash": "a17033bf978a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sits_level.1",
+ "lang": "en",
+ "text": "You sit level, true as a spirit level. Good bird.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] You sit level, true as a spirit level. Good bird.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-85ac-7ae0-8c37-90d577fd4891",
+ "hash": "d1c25747db87"
+}

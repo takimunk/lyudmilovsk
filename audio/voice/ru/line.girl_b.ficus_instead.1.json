@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.ficus_instead.1",
+ "lang": "ru",
+ "text": "Я опять собиралась сама. Дошла до двери и вспомнила, что надо полить фикус.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Я опять собиралась сама. Дошла до двери и вспомнила, что надо полить фикус.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e2-8cc6-7d03-9353-09076b9ec9b9",
+ "hash": "48c79f010b92"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_on_string.2",
+ "lang": "ja",
+ "text": "で、カササギは毎晩窓枠に来る。俺が謝ったのを取り消してないか、確かめに。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] で、カササギは毎晩窓枠に来る。俺が謝ったのを取り消してないか、確かめに。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e1-cf34-73a1-8436-c858d5710e65",
+ "hash": "c67974af82de"
+}

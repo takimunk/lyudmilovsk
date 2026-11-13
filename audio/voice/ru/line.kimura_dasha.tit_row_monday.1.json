@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tit_row_monday.1",
+ "lang": "ru",
+ "text": "Большая синица! Садись, садись. Ты у меня в таблице с понедельника.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Большая синица! Садись, садись. Ты у меня в таблице с понедельника.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-742f-7bb1-83ef-9204f6c6c32d",
+ "hash": "2f016571136e"
+}

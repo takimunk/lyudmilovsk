@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.1",
+ "lang": "ru",
+ "text": "Твоя кормушка так и стоит во дворе. Я по утрам веду таблицу: синицы, воробьи и одна сорока, которая только посмотрела.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Твоя кормушка так и стоит во дворе. Я по утрам веду таблицу: синицы, воробьи и одна сорока, которая только посмотрела.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-102a-74d3-9290-1fe681c78827",
+ "hash": "c773664a4351"
+}

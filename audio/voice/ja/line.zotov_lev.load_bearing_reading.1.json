@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.load_bearing_reading.1",
+ "lang": "ja",
+ "text": "干渉計はまっすぐ立っている。雑誌が支えているからね。ガリーナに言わせると、今年いちばん役に立った読書だそうだ。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 干渉計はまっすぐ立っている。雑誌が支えているからね。ガリーナに言わせると、今年いちばん役に立った読書だそうだ。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-213e-71f2-a1ad-82b07af337cc",
+ "hash": "33f6d59c3229"
+}

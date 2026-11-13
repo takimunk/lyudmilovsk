@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.came_first.1",
+ "lang": "ja",
+ "text": "一緒に座っていきなさい。ガリーナは、私がいつも遅れると言う。今日は私が先に来たのに、誰も見ていない。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 一緒に座っていきなさい。ガリーナは、私がいつも遅れると言う。今日は私が先に来たのに、誰も見ていない。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-0a36-7381-9b00-c6f530b59c5e",
+ "hash": "056fbc08cfee"
+}

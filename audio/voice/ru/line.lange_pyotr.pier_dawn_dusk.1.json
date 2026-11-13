@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.pier_dawn_dusk.1",
+ "lang": "ru",
+ "text": "Ночью ловят те, кто знает воду. Тебе бы на зорьке: на рассвете и на закате рыба смелее.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Ночью ловят те, кто знает воду. Тебе бы на зорьке: на рассвете и на закате рыба смелее.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d6-4267-7371-b306-1a1ff7e25ecb",
+ "hash": "2c8f65d7354f"
+}

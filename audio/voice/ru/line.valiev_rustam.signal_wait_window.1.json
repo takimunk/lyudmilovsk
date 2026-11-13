@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait_window.1",
+ "lang": "ru",
+ "text": "Вчера весь вечер смотрел в окно. Видел три звезды, один спутник и соседа с сигаретой, а тебя не видел.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Вчера весь вечер смотрел в окно. Видел три звезды, один спутник и соседа с сигаретой, а тебя не видел.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-a30d-72d3-8c80-82c5573d70c2",
+ "hash": "82df27517947"
+}

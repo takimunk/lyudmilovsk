@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.new_sketchbook.1",
+ "lang": "ja",
+ "text": "新しいスケッチブックを始めたの。一ページ目は、遠くから見た町。あなたの言葉どおりに。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 新しいスケッチブックを始めたの。一ページ目は、遠くから見た町。あなたの言葉どおりに。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e8-8530-75f2-b39a-de1cb2880736",
+ "hash": "ef53a37715f7"
+}

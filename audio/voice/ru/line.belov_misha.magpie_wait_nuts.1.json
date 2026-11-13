@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_wait_nuts.1",
+ "lang": "ru",
+ "text": "Я на всякий случай пересчитал гайки на верстаке. Все на месте, и это подозрительно. Мне хватит трёх находок.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Я на всякий случай пересчитал гайки на верстаке. Все на месте, и это подозрительно. Мне хватит трёх находок.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d3-8459-7b02-8fb5-2ca5d52572e4",
+ "hash": "35d1d17f31d6"
+}

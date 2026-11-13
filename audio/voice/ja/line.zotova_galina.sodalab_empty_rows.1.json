@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_empty_rows.1",
+ "lang": "ja",
+ "text": "記録用紙はもう用意してあります。四行、まだ全部空欄です。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 記録用紙はもう用意してあります。四行、まだ全部空欄です。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ec-3b6c-7420-a4ff-53a44216cd7e",
+ "hash": "ab3a5d6d598a"
+}

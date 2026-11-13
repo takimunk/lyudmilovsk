@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_wait_hint.1",
+ "lang": "ja",
+ "text": "遊歩道は下の海沿い、ムクドリは夕方の海の上。ナナカマドの森は遠いの、北の丘の向こう。日がたっぷり残っているうちに行って。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 遊歩道は下の海沿い、ムクドリは夕方の海の上。ナナカマドの森は遠いの、北の丘の向こう。日がたっぷり残っているうちに行って。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d7-39f7-7b73-ac9c-c5071899a855",
+ "hash": "35c40462a289"
+}

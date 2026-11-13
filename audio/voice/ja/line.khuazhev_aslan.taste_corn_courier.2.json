@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_corn_courier.2",
+ "lang": "ja",
+ "text": "なら道はわかるな。トウモロコシは広場、ピロシキは駅、ブリヌイはロープウェイの下だ。どれも最後までな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] なら道はわかるな。トウモロコシは広場、ピロシキは駅、ブリヌイはロープウェイの下だ。どれも最後までな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d4-b9fa-7c20-b45a-972518e2b124",
+ "hash": "0a9a2620ac8b"
+}
