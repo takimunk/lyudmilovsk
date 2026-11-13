@@ -228,6 +228,11 @@ void AHeroCharacter::OnJumpPressed()
 	{
 		return;
 	}
+	// held still by a screen or by a reach of the hand (the move input is ignored): Space typed then neither jumps nor gets him up
+	if (const APlayerController* PC = Cast<APlayerController>(GetController()); PC && PC->IsMoveInputIgnored())
+	{
+		return;
+	}
 	if (IsSeated())
 	{
 		if (!SeatLeave || SeatLeave())
@@ -267,8 +272,9 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 	}
 	if (IsSeated())
 	{
-		// a step gets you up
-		if (V.Size() > 0.5f)
+		// a step gets you up (not a key typed into a screen, nor while a reach holds the hero still)
+		const APlayerController* PC = Cast<APlayerController>(GetController());
+		if (V.Size() > 0.5f && !(PC && PC->IsMoveInputIgnored()))
 		{
 			StandUp();
 		}
