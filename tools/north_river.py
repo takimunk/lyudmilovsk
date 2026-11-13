@@ -327,7 +327,7 @@ def crossing(x_at):
             start = v
         if (not wet or v + 0.5 > h) and start is not None:
             mid, span = (start + v) / 2, v - start
-            out.append((x, y + ny * mid, 90.0, span * ny, floor(s) + 0.95))
+            out.append((x, y + ny * mid, 0.0, span * ny, floor(s) + 0.95))   # yaw 0: the deck (the mesh's X) along map Y
             start = None
         v += 0.5
     return ends[0], ends[1], out

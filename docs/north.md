@@ -67,8 +67,8 @@ Everything north of Y 1450 is the North's (the east and south-east south of it a
   berm, a tide channel continues it (world_map.TIDE_CHANNELS). It must not meet the Topi's river Ural: it starts as
   seeps west of X -1190.
 - **For the game** (`north.json`): `river` {water [[x, y, z, half]] downstream, threads, mouth}; `things` (the
-  footbridges: kind `log_bridge`, variant 0/1/2 = spans to 11/16/26 m, `z` = the deck's map height, yaw 90 = along
-  map Y); `spring` {x, y, r, seats [{x, y, yaw}], surface_z}: the pool is a basin in the ground 1.05 m deep.
+  footbridges: kind `log_bridge`, variant 0/1/2 = spans to 11/16/26 m, `z` = the deck's map height, yaw 0 = the deck, the mesh's X,
+  along map Y); `spring` {x, y, r, seats [{x, y, yaw}], surface_z}: the pool is a basin in the ground 1.05 m deep.
 - **Woods**: `north.wood(x, y)` -> (mix, cover) draws them between Y 1450 and 2700; `world_map.forest_cover(x, y)`
   dispatches (east.py's part, the North's, 1 elsewhere); `tools/forest_cover.py` writes
   `Content/World/forest_cover.fcv` (import_world.py runs it; not in git) and AProceduralForest drops the trees the
