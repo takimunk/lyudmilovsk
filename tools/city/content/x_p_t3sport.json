@@ -8,11 +8,13 @@
     "city.t3.t3_coach.1",
     {
      "k": "city.t3.t3_coach.2",
-     "after": 1
+     "after": 1,
+     "before": 3
     },
     {
      "k": "city.t3.t3_coach.3",
-     "after": 3
+     "after": 3,
+     "before": 5
     },
     {
      "k": "city.t3.t3_coach.4",
@@ -32,7 +34,8 @@
     },
     {
      "k": "city.t3.t3_coach.6",
-     "after": 5
+     "after": 5,
+     "before": 8
     },
     {
      "k": "city.t3.t3_coach.7",
@@ -40,7 +43,8 @@
     },
     {
      "k": "city.t3.t3_coach.8",
-     "after": 10
+     "after": 10,
+     "before": 14
     },
     {
      "k": "city.t3.t3_coach.9",
@@ -107,18 +111,24 @@
    "minutes": 3,
    "rotate": "daily",
    "lines": [
-    "city.t3.t3_tactics.1",
+    {
+     "k": "city.t3.t3_tactics.1",
+     "before": 4
+    },
     {
      "k": "city.t3.t3_tactics.2",
-     "after": 4
+     "after": 4,
+     "before": 8
     },
     {
      "k": "city.t3.t3_tactics.3",
-     "after": 8
+     "after": 8,
+     "before": 11
     },
     {
      "k": "city.t3.t3_tactics.4",
-     "after": 11
+     "after": 11,
+     "before": 14
     },
     {
      "k": "city.t3.t3_tactics.5",
@@ -136,23 +146,28 @@
     "city.t3.t3_club_board.2",
     {
      "k": "city.t3.t3_club_board.3",
-     "after": 2
+     "after": 2,
+     "before": 4
     },
     {
      "k": "city.t3.t3_club_board.4",
-     "after": 4
+     "after": 4,
+     "before": 6
     },
     {
      "k": "city.t3.t3_club_board.5",
-     "after": 6
+     "after": 6,
+     "before": 9
     },
     {
      "k": "city.t3.t3_club_board.6",
-     "after": 9
+     "after": 9,
+     "before": 11
     },
     {
      "k": "city.t3.t3_club_board.7",
-     "after": 11
+     "after": 11,
+     "before": 14
     },
     {
      "k": "city.t3.t3_club_board.8",
@@ -165,11 +180,15 @@
    "minutes": 3,
    "rotate": "daily",
    "lines": [
-    "city.t3.t3_results.1",
+    {
+     "k": "city.t3.t3_results.1",
+     "before": 13
+    },
     "city.t3.t3_results.2",
     {
      "k": "city.t3.t3_results.3",
-     "after": 3
+     "after": 3,
+     "before": 13
     },
     {
      "k": "city.t3.t3_results.4",
@@ -186,18 +205,24 @@
    "minutes": 3,
    "rotate": "daily",
    "lines": [
-    "city.t3.t3_pool.1",
+    {
+     "k": "city.t3.t3_pool.1",
+     "before": 4
+    },
     {
      "k": "city.t3.t3_pool.2",
-     "after": 4
+     "after": 4,
+     "before": 8
     },
     {
      "k": "city.t3.t3_pool.3",
-     "after": 8
+     "after": 8,
+     "before": 12
     },
     {
      "k": "city.t3.t3_pool.4",
-     "after": 12
+     "after": 12,
+     "before": 16
     },
     {
      "k": "city.t3.t3_pool.5",
@@ -280,11 +305,13 @@
     "city.t3.t3_lockers.2",
     {
      "k": "city.t3.t3_lockers.3",
-     "after": 5
+     "after": 5,
+     "before": 10
     },
     {
      "k": "city.t3.t3_lockers.4",
-     "after": 10
+     "after": 10,
+     "before": 14
     },
     {
      "k": "city.t3.t3_lockers.5",
@@ -301,7 +328,8 @@
     "city.t3.t3_reception.4",
     {
      "k": "city.t3.t3_reception.5",
-     "after": 5
+     "after": 5,
+     "before": 9
     },
     {
      "k": "city.t3.t3_reception.6",
@@ -686,14 +714,19 @@
    "rotate": "daily",
    "target": "easel",
    "lines": [
-    "city.t3.t3_easel_teacher.1",
+    {
+     "k": "city.t3.t3_easel_teacher.1",
+     "before": 4
+    },
     {
      "k": "city.t3.t3_easel_teacher.2",
-     "after": 4
+     "after": 4,
+     "before": 9
     },
     {
      "k": "city.t3.t3_easel_teacher.3",
-     "after": 9
+     "after": 9,
+     "before": 13
     },
     {
      "k": "city.t3.t3_easel_teacher.4",
@@ -811,6 +844,45 @@
      "d": "sun"
     }
    ]
+  },
+  "t3_scoreboard": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t3.t3_scoreboard.1",
+     "d": "sat",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_scoreboard.2",
+     "d": "sat",
+     "h": [
+      19,
+      13
+     ]
+    },
+    {
+     "k": "city.t3.t3_scoreboard.3",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t3.t3_scoreboard.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_ballcart": {
+   "like": "basketball",
+   "minutes": 5,
+   "lines": [
+    "city.t3.t3_ballcart.1",
+    "city.t3.t3_ballcart.2",
+    "city.t3.t3_ballcart.3"
+   ]
   }
  },
  "rules": {
@@ -915,6 +987,115 @@
   },
   "P-T3SPORT/clay_shelf": {
    "act": "t3_ware"
+  },
+  "P-T3SPORT/scoreboard": {
+   "act": "t3_scoreboard"
+  },
+  "P-T3SPORT/ball_cart": {
+   "act": "t3_ballcart"
+  },
+  "P-T3SPORT/drying_shelf": {
+   "act": "t3_ware"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "t3_fifth",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T3SPORT"
+   },
+   "stages": [
+    {
+     "id": "ask",
+     "objectives": [
+      {
+       "id": "ask",
+       "event": "do",
+       "target": "t3_coach"
+      }
+     ]
+    },
+    {
+     "id": "train",
+     "objectives": [
+      {
+       "id": "train",
+       "event": "do",
+       "target": "t3_hoop_main"
+      }
+     ]
+    },
+    {
+     "id": "play",
+     "objectives": [
+      {
+       "id": "play",
+       "event": "do",
+       "target": "t3_court"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "t3_bowl",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T3SPORT"
+   },
+   "stages": [
+    {
+     "id": "throw",
+     "objectives": [
+      {
+       "id": "throw",
+       "event": "do",
+       "target": "t3_wheel"
+      }
+     ]
+    },
+    {
+     "id": "fire",
+     "objectives": [
+      {
+       "id": "fire",
+       "event": "do",
+       "target": "t3_kiln"
+      }
+     ]
+    },
+    {
+     "id": "glaze",
+     "objectives": [
+      {
+       "id": "glaze",
+       "event": "do",
+       "target": "t3_glaze"
+      }
+     ]
+    },
+    {
+     "id": "take",
+     "objectives": [
+      {
+       "id": "take",
+       "event": "do",
+       "target": "t3_ware"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }
