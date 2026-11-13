@@ -357,8 +357,8 @@ def _capsule(B):
     # east wall above the bed: a map / chart and cards
     if radio_man:
         f(kit.poster, ix1, 4.1, 270.0, name="map_world", w=1.1, zc=1.6)
-        f(kit.poster, ix1, 5.0, 270.0, name="label_12", w=0.22, zc=1.5)
-        f(kit.poster, ix1, 5.25, 270.0, name="label_31", w=0.22, zc=1.5)
+        f(kit.poster, ix1, 5.0, 270.0, name="paper_drawing", w=0.22, zc=1.5)
+        f(kit.poster, ix1, 5.25, 270.0, name="paper_typed", w=0.2, zc=1.5)
         f(kit.poster, ix1, 3.3, 270.0, name="paper_letter", w=0.3, zc=1.7)
     else:
         f(kit.poster, ix1, 4.1, 270.0, name="chart_periodic", w=0.8, zc=1.65)
@@ -572,11 +572,11 @@ def _reel_box(B, x, y, z, yaw, reel=True):
     if reel:
         p.box("CT_Paper", -0.1, 0.1, -0.1, 0.1, 0.0, 0.04)
         p.box("CT_PlasterRed", -0.1, 0.1, -0.1, -0.0995, 0.0, 0.04, f="yxX")
-        p.card_top("label_12", -0.05, 0.05, -0.05, 0.05, 0.041)
+        p.card_top("paper_typed", -0.05, 0.05, -0.05, 0.05, 0.041)
         p.rod("CT_Leather", (-0.1, 0.0, 0.043), (0.1, 0.0, 0.043), 0.006, 4)
     else:
         p.box("CT_Glass", -0.055, 0.055, -0.035, 0.035, 0.0, 0.016)
-        p.card_top("label_31", -0.04, 0.04, -0.02, 0.02, 0.0165)
+        p.card_top("paper_typed", -0.04, 0.04, -0.02, 0.02, 0.0165)
     return p.done()
 
 
