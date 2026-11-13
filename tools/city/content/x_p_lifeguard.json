@@ -1,0 +1,1378 @@
+{
+ "_doc": "Lifeguard towers, second pass (blender/city/buildings/lifeguard_tower.py): the water log by season and game day, the flag of the day by weekday and hour, the lost-and-found story, the two towers' own notes (P-LIFEGUARD1 a navy man, P-LIFEGUARD2 a correspondence student). Words: strings/x_p_lifeguard.json.",
+ "acts": {
+  "lg_water_log": {
+   "prompt": "city.lg.water_log.prompt",
+   "lines": [
+    {
+     "k": "city.lg.water1.1",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water1.2",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water1.3",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water1.4",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water1.5",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water1.6",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water1.7",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water1.8",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water1.9",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water1.10",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water1.11",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water1.12",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water1.13",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water1.14",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water1.15",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water1.16",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water1.17",
+     "date": [
+      "12-01",
+      "03-01"
+     ]
+    },
+    {
+     "k": "city.lg.water1.18",
+     "date": [
+      "03-02",
+      "05-31"
+     ]
+    },
+    {
+     "k": "city.lg.water1.19",
+     "date": [
+      "06-01",
+      "08-31"
+     ]
+    },
+    {
+     "k": "city.lg.water1.20",
+     "date": [
+      "09-01",
+      "11-30"
+     ]
+    }
+   ],
+   "minutes": 4,
+   "sound": "pencil_scratch",
+   "any_hour": true
+  },
+  "lg1_first_aid": {
+   "prompt": "city.lg.first_aid1.prompt",
+   "lines": [
+    "city.lg.aid1.1",
+    "city.lg.aid1.2",
+    "city.lg.aid1.3",
+    "city.lg.aid1.4",
+    "city.lg.aid1.5",
+    "city.lg.aid1.6"
+   ],
+   "minutes": 2,
+   "rotate": "use"
+  },
+  "lg_binoculars": {
+   "prompt": "city.do.binoculars_post.prompt",
+   "lines": [
+    {
+     "k": "city.do.binoculars_post.*",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.night.binoculars.*",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.lg.bino1.1",
+     "after": 3,
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.bino1.2",
+     "after": 5,
+     "h": [
+      10,
+      19
+     ]
+    }
+   ],
+   "minutes": 5
+  },
+  "lg_lost_board": {
+   "prompt": "city.lg.lost_board.prompt",
+   "lines": [
+    "city.lg.lost1.1",
+    {
+     "k": "city.lg.lost1.2",
+     "after": 1
+    },
+    {
+     "k": "city.lg.lost1.3",
+     "after": 2
+    },
+    {
+     "k": "city.lg.lost1.4",
+     "after": 3
+    },
+    {
+     "k": "city.lg.lost1.5",
+     "after": 4
+    },
+    {
+     "k": "city.lg.lost1.6",
+     "after": 5
+    },
+    {
+     "k": "city.lg.lost1.7",
+     "after": 6
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg_megaphone": {
+   "prompt": "city.lg.megaphone.prompt",
+   "lines": [
+    {
+     "k": "city.lg.mega1.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.lg.mega1.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.lg.mega1.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.mega1.4",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "mic_feedback"
+  },
+  "lg1_tide": {
+   "prompt": "city.lg.tide.prompt",
+   "lines": [
+    "city.lg.tide1.1",
+    "city.lg.tide1.2",
+    "city.lg.tide1.3",
+    "city.lg.tide1.4",
+    "city.lg.tide1.5"
+   ],
+   "rotate": "daily",
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg1_radio": {
+   "prompt": "city.lg.radio.prompt",
+   "lines": [
+    {
+     "k": "city.lg.radio1.1",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.lg.radio1.2",
+     "h": [
+      9,
+      14
+     ]
+    },
+    {
+     "k": "city.lg.radio1.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.radio1.4",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.lg.radio1.5",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "sound": "radio_tune",
+   "any_hour": true
+  },
+  "lg1_tea": {
+   "prompt": "city.lg.tea.prompt",
+   "lines": [
+    {
+     "k": "city.lg.tea1.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.tea1.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.tea1.3",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "needs_staff": "lifeguard"
+  },
+  "lg1_rowboat": {
+   "prompt": "city.lg.rowboat.prompt",
+   "lines": [
+    "city.lg.boat1.1",
+    "city.lg.boat1.2",
+    "city.lg.boat1.3",
+    {
+     "k": "city.lg.boat1.4",
+     "date": [
+      "12-01",
+      "03-01"
+     ]
+    }
+   ],
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg2_water_log": {
+   "prompt": "city.lg.water_log.prompt",
+   "lines": [
+    {
+     "k": "city.lg.water2.1",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water2.2",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water2.3",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water2.4",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water2.5",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water2.6",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water2.7",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water2.8",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water2.9",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water2.10",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water2.11",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water2.12",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water2.13",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.water2.14",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.water2.15",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.water2.16",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.water2.17",
+     "date": [
+      "12-01",
+      "03-01"
+     ]
+    },
+    {
+     "k": "city.lg.water2.18",
+     "date": [
+      "03-02",
+      "05-31"
+     ]
+    },
+    {
+     "k": "city.lg.water2.19",
+     "date": [
+      "06-01",
+      "08-31"
+     ]
+    },
+    {
+     "k": "city.lg.water2.20",
+     "date": [
+      "09-01",
+      "11-30"
+     ]
+    }
+   ],
+   "minutes": 4,
+   "sound": "pencil_scratch",
+   "target": "lg_water_log",
+   "any_hour": true
+  },
+  "lg2_first_aid": {
+   "prompt": "city.lg.first_aid1.prompt",
+   "lines": [
+    "city.lg.aid2.1",
+    "city.lg.aid2.2",
+    "city.lg.aid2.3",
+    "city.lg.aid2.4",
+    "city.lg.aid2.5",
+    "city.lg.aid2.6"
+   ],
+   "minutes": 2,
+   "rotate": "use"
+  },
+  "lg2_binoculars": {
+   "prompt": "city.do.binoculars_post.prompt",
+   "lines": [
+    {
+     "k": "city.do.binoculars_post.*",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.night.binoculars.*",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.lg.bino2.1",
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.bino2.2",
+     "h": [
+      10,
+      19
+     ]
+    }
+   ],
+   "minutes": 5,
+   "target": "lg_binoculars"
+  },
+  "lg2_lost_board": {
+   "prompt": "city.lg.lost_board.prompt",
+   "lines": [
+    {
+     "k": "city.lg.lost2.1",
+     "every": [
+      5,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.lost2.2",
+     "every": [
+      5,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.lost2.3",
+     "every": [
+      5,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.lost2.4",
+     "every": [
+      5,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.lost2.5",
+     "every": [
+      5,
+      4
+     ]
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 3,
+   "target": "lg_lost_board",
+   "any_hour": true
+  },
+  "lg2_megaphone": {
+   "prompt": "city.lg.megaphone.prompt",
+   "lines": [
+    {
+     "k": "city.lg.mega2.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.lg.mega2.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.lg.mega2.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.mega2.4",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "mic_feedback",
+   "target": "lg_megaphone"
+  },
+  "lg2_tide": {
+   "prompt": "city.lg.tide.prompt",
+   "lines": [
+    "city.lg.tide2.1",
+    "city.lg.tide2.2",
+    "city.lg.tide2.3",
+    "city.lg.tide2.4",
+    "city.lg.tide2.5"
+   ],
+   "rotate": "daily",
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg2_radio": {
+   "prompt": "city.lg.radio.prompt",
+   "lines": [
+    {
+     "k": "city.lg.radio2.1",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.lg.radio2.2",
+     "h": [
+      9,
+      14
+     ]
+    },
+    {
+     "k": "city.lg.radio2.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.radio2.4",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.lg.radio2.5",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "sound": "radio_tune",
+   "any_hour": true
+  },
+  "lg2_tea": {
+   "prompt": "city.lg.tea.prompt",
+   "lines": [
+    {
+     "k": "city.lg.tea2.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.tea2.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.tea2.3",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "needs_staff": "lifeguard"
+  },
+  "lg2_rowboat": {
+   "prompt": "city.lg.rowboat.prompt",
+   "lines": [
+    "city.lg.boat2.1",
+    "city.lg.boat2.2",
+    "city.lg.boat2.3",
+    {
+     "k": "city.lg.boat2.4",
+     "date": [
+      "12-01",
+      "03-01"
+     ]
+    }
+   ],
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg_flags_board": {
+   "prompt": "city.lg.flags.prompt",
+   "lines": [
+    "city.lg.flags.1",
+    "city.lg.flags.2",
+    "city.lg.flags.3",
+    {
+     "k": "city.lg.flags.4",
+     "d": "mon-wed",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.flags.5",
+     "d": "mon-wed",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.flags.6",
+     "d": "mon-wed",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.lg.flags.7",
+     "d": "thu-fri",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.flags.8",
+     "d": "thu-fri",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.flags.9",
+     "d": "thu-fri",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.lg.flags.10",
+     "d": "sat-sun",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.flags.11",
+     "d": "sat-sun",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.flags.12",
+     "d": "sat-sun",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "any_hour": true
+  },
+  "lg_temp_board": {
+   "prompt": "city.lg.temp_board.prompt",
+   "lines": [
+    {
+     "k": "city.lg.temp_board.1",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.2",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.3",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.4",
+     "date": [
+      "12-01",
+      "03-01"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.5",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.6",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.7",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.8",
+     "date": [
+      "03-02",
+      "05-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.9",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.10",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.11",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.12",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.13",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.14",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.15",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.lg.temp_board.16",
+     "date": [
+      "09-01",
+      "11-30"
+     ],
+     "every": [
+      4,
+      3
+     ]
+    }
+   ],
+   "minutes": 1,
+   "any_hour": true
+  },
+  "lg_halyard": {
+   "prompt": "city.lg.halyard.prompt",
+   "lines": [
+    {
+     "k": "city.lg.halyard.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.lg.halyard.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.lg.halyard.3",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "any_hour": true,
+   "sound": "wind_soft"
+  },
+  "lg_deck_chair": {
+   "prompt": "city.lg.deck_chair.prompt",
+   "lines": [
+    {
+     "k": "city.lg.chair.1",
+     "d": "mon-fri",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.chair.2",
+     "d": "mon-fri",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.chair.3",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.chair.4",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.chair.5",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.lg.chair.6",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 12,
+   "pose": "sit",
+   "any_hour": true,
+   "sound": "wind_soft"
+  },
+  "lg_deck_ring": {
+   "prompt": "city.lg.deck_ring.prompt",
+   "lines": [
+    "city.lg.ring.1",
+    "city.lg.ring.2",
+    "city.lg.ring.3"
+   ],
+   "minutes": 2,
+   "any_hour": true
+  },
+  "lg_rope": {
+   "prompt": "city.lg.rope.prompt",
+   "lines": [
+    "city.lg.rope.1",
+    "city.lg.rope.2",
+    "city.lg.rope.3"
+   ],
+   "minutes": 2,
+   "any_hour": true
+  },
+  "lg_oars": {
+   "prompt": "city.lg.oars.prompt",
+   "lines": [
+    "city.lg.oars.1",
+    "city.lg.oars.2",
+    "city.lg.oars.3"
+   ],
+   "minutes": 2,
+   "any_hour": true
+  },
+  "lg_whistle": {
+   "prompt": "city.lg.whistle.prompt",
+   "lines": [
+    {
+     "k": "city.lg.whistle.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.whistle.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lg.whistle.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "whistle_short"
+  },
+  "lg_lost_box": {
+   "prompt": "city.lg.lost_box.prompt",
+   "lines": [
+    "city.lg.box.1",
+    "city.lg.box.2",
+    {
+     "k": "city.lg.box.3",
+     "after": 6
+    }
+   ],
+   "minutes": 2
+  }
+ },
+ "rules": {
+  "P-LIFEGUARD1/log_book": {
+   "act": "lg_water_log"
+  },
+  "P-LIFEGUARD1/first_aid": {
+   "act": "lg1_first_aid"
+  },
+  "P-LIFEGUARD1/binoculars": {
+   "act": "lg_binoculars"
+  },
+  "P-LIFEGUARD1/lost_board": {
+   "act": "lg_lost_board"
+  },
+  "P-LIFEGUARD1/megaphone": {
+   "act": "lg_megaphone"
+  },
+  "P-LIFEGUARD1/tide_table": {
+   "act": "lg1_tide"
+  },
+  "P-LIFEGUARD1/cabin_radio": {
+   "act": "lg1_radio"
+  },
+  "P-LIFEGUARD1/flask_tea": {
+   "act": "lg1_tea"
+  },
+  "P-LIFEGUARD1/rowboat": {
+   "act": "lg1_rowboat"
+  },
+  "P-LIFEGUARD2/log_book": {
+   "act": "lg2_water_log"
+  },
+  "P-LIFEGUARD2/first_aid": {
+   "act": "lg2_first_aid"
+  },
+  "P-LIFEGUARD2/binoculars": {
+   "act": "lg2_binoculars"
+  },
+  "P-LIFEGUARD2/lost_board": {
+   "act": "lg2_lost_board"
+  },
+  "P-LIFEGUARD2/megaphone": {
+   "act": "lg2_megaphone"
+  },
+  "P-LIFEGUARD2/tide_table": {
+   "act": "lg2_tide"
+  },
+  "P-LIFEGUARD2/cabin_radio": {
+   "act": "lg2_radio"
+  },
+  "P-LIFEGUARD2/flask_tea": {
+   "act": "lg2_tea"
+  },
+  "P-LIFEGUARD2/rowboat": {
+   "act": "lg2_rowboat"
+  },
+  "lifeguard_tower/flags_board": {
+   "act": "lg_flags_board"
+  },
+  "lifeguard_tower/temp_board": {
+   "act": "lg_temp_board"
+  },
+  "lifeguard_tower/flag_halyard": {
+   "act": "lg_halyard"
+  },
+  "lifeguard_tower/deck_chair": {
+   "act": "lg_deck_chair"
+  },
+  "lifeguard_tower/deck_ring": {
+   "act": "lg_deck_ring"
+  },
+  "lifeguard_tower/rope_coil": {
+   "act": "lg_rope"
+  },
+  "lifeguard_tower/oars": {
+   "act": "lg_oars"
+  },
+  "lifeguard_tower/whistle": {
+   "act": "lg_whistle"
+  },
+  "lifeguard_tower/lost_box": {
+   "act": "lg_lost_box"
+  }
+ }
+}
