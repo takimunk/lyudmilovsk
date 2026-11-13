@@ -224,6 +224,8 @@ namespace LyudPeople
 		std::vector<FDuty> Duties;
 		std::string ClubSeat;       // their usual station in the club ("4"); "" none
 		std::vector<std::string> Friends;
+		mutable std::vector<int> FriendIds;     // Friends as person ids, looked up when first needed (PickSlot's company)
+		mutable bool bFriendIds = false;
 		std::vector<std::pair<std::string, float>> Likes;   // activity id -> how much more they like it (a painter and the island)
 		// their daily ritual (PeopleManners' ApplyLikes, docs/town_manners.md): this activity draws them round this hour
 		int RitualAct = -1;

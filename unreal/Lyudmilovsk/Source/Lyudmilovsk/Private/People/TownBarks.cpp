@@ -191,6 +191,7 @@ namespace LyudBarks
 		Gather.clear();
 		Chrono.clear();
 		Manner.clear();
+		Met.clear();
 		Needs.clear();
 		bHeroNear = false;
 	}
@@ -376,6 +377,7 @@ namespace LyudBarks
 		else if (!bSecond && Key == "gather") { SplitValues(Value, S.A.Gather); }
 		else if (!bSecond && Key == "chrono") { SplitValues(Value, S.A.Chrono); }
 		else if (!bSecond && Key == "manner") { SplitValues(Value, S.A.Manner); }
+		else if (!bSecond && Key == "met") { SplitValues(Value, S.A.Met); }
 		else if (!bSecond && Key == "need") { SplitValues(Value, S.A.Need); }
 		else if (Key == "hours" || Key == "months")
 		{
@@ -541,6 +543,7 @@ namespace LyudBarks
 			&& C.Gather.Match(W.Gather)
 			&& C.Chrono.Match(W.Chrono)
 			&& C.Manner.Match(W.Manner)
+			&& C.Met.Match(W.Met)
 			&& C.Need.Match(W.Needs);
 	}
 

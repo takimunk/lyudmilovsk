@@ -473,9 +473,37 @@ static void Noticing()
 		Got = M.TakeEvent(Who);
 	}
 	CHECK(Got == ENoticeEvent::HeroLamp, "a head lamp in the eyes at night is noticed (%s)", NoticeEventName(Got));
+	// creeping up behind their back, crouched
+	Got = ENoticeEvent::None;
+	Now.SunAlt = 25.f;
+	Hero.bLamp = false;
+	Hero.bCrouch = true;
+	for (int I = 0; I < 40 && Got == ENoticeEvent::None; I++)
+	{
+		Now.Clock = 800.f + I * 0.25f;
+		Hero.Pos = P.Pos - Fwd * (8.f - I * 0.25f * 1.f);
+		Hero.Vel = Fwd * 1.f;
+		M.Notice(W, Who, Now, Hero);
+		Got = M.TakeEvent(Who);
+	}
+	CHECK(Got == ENoticeEvent::HeroSneaks, "creeping up behind somebody is felt (%s)", NoticeEventName(Got));
+	// tearing past on a bicycle
+	Got = ENoticeEvent::None;
+	Hero.bCrouch = false;
+	Hero.bBike = true;
+	for (int I = 0; I < 40 && Got == ENoticeEvent::None; I++)
+	{
+		Now.Clock = 1000.f + I * 0.25f;
+		Hero.Pos = P.Pos + Fwd * (14.f - I * 0.25f * 6.f) + V3(-Fwd.Y, Fwd.X, 0.f) * 0.8f;
+		Hero.Vel = Fwd * -6.f;
+		M.Notice(W, Who, Now, Hero);
+		Got = M.TakeEvent(Who);
+	}
+	CHECK(Got == ENoticeEvent::HeroRides, "a bicycle tearing past is noticed (%s)", NoticeEventName(Got));
+	Hero.bBike = false;
 	// a wave on demand, and none over a newspaper
-	CHECK(M.React(Who, EManner::Wave, 600.f, 2.f) && M.StateOf(Who)->Cur == EManner::Wave, "a wave can be asked for");
-	Now.Clock = 603.f;
+	CHECK(M.React(Who, EManner::Wave, 1300.f, 2.f) && M.StateOf(Who)->Cur == EManner::Wave, "a wave can be asked for");
+	Now.Clock = 1303.f;
 	M.Update(W, Who, Now);
 	CHECK(M.StateOf(Who)->Cur != EManner::Wave, "... and runs out by itself");
 }

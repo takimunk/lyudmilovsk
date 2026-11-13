@@ -211,6 +211,8 @@ public:
 	/** Household -> flat id. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Homes;
 	UPROPERTY(SaveGame) TMap<FString, FPersonMemory> Memory;
+	/** Person key -> on how many days they have greeted the player. */
+	UPROPERTY(SaveGame) TMap<FString, int32> MetHero;
 
 	LyudPeople::FWorld* GetSim() const { return Sim.Get(); }
 	LyudPeople::FManners* GetManners() const { return Manners.Get(); }
@@ -226,6 +228,12 @@ public:
 	 *  their hands are busy. */
 	UFUNCTION(BlueprintCallable, Category = "People|Manners")
 	bool ReactManner(int32 Id, FName Manner, float Seconds = 2.5f);
+	/** On how many days somebody has greeted the player (kept with the save): they come to know him (docs/town_manners.md). */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	int32 GetMet(int32 Id) const;
+	/** They greeted him today (counts once a game day). */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void NoteMet(int32 Id);
 	/** Everybody drawn does this one (the console and developer mode; None: as they like). */
 	UFUNCTION(BlueprintCallable, Category = "People|Manners")
 	void ForceManner(FName Manner);
@@ -248,6 +256,8 @@ private:
 	TArray<int32> ShownIds;
 	float NoticeTimer = 0.f, PassingTimer = 0.f;
 	float MannerClock = 0.f;
+	/** Person -> the game day they last met the player on (NoteMet counts a day once). */
+	TMap<int32, int32> MetDay;
 	void LoadManners();
 	void UpdateManners(float DeltaTime);
 

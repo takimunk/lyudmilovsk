@@ -9,6 +9,7 @@
 #include "PeopleManners.h"
 #include "BodyGestures.h"
 #include "UI/LyudGameScreen.h"
+#include "Bikes/HeroBike.h"
 #include "Engine/AssetManager.h"
 #include "Engine/StreamableManager.h"
 #include "GameFramework/Character.h"
@@ -1798,6 +1799,8 @@ void UPeopleLifeSubsystem::UpdateManners(float DeltaTime)
 			Hero.Vel = PeopleFromUE(Pawn->GetVelocity());
 			const ULyudGameScreen* Screen = ULyudGameScreen::Get(World);
 			Hero.bLamp = Screen && Screen->IsHeadLampOn();
+			const UHeroBikeComponent* HeroBike = Pawn->FindComponentByClass<UHeroBikeComponent>();
+			Hero.bBike = HeroBike && HeroBike->IsOnBike();
 		}
 		for (const int32 Id : ShownIds)
 		{
@@ -1838,6 +1841,31 @@ bool UPeopleLifeSubsystem::ReactManner(int32 Id, FName Manner, float Seconds)
 	}
 	const LP::EManner M = LP::MannerFromName(TCHAR_TO_UTF8(*Manner.ToString()));
 	return M != LP::EManner::Num && Manners->React(Id, M, MannerClock, Seconds);
+}
+
+int32 UPeopleLifeSubsystem::GetMet(int32 Id) const
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return 0;
+	}
+	const int32* N = MetHero.Find(UTF8_TO_TCHAR(Sim->People[Id].Key.c_str()));
+	return N ? *N : 0;
+}
+
+void UPeopleLifeSubsystem::NoteMet(int32 Id)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return;
+	}
+	const int32 Day = (int32)FMath::FloorToDouble(Sim->Time / 86400.0);
+	int32& Last = MetDay.FindOrAdd(Id, MIN_int32);
+	if (Last != Day)
+	{
+		Last = Day;
+		MetHero.FindOrAdd(UTF8_TO_TCHAR(Sim->People[Id].Key.c_str()))++;
+	}
 }
 
 void UPeopleLifeSubsystem::ForceManner(FName Manner)

@@ -17,7 +17,7 @@ namespace LyudPeople
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));
-		const char* NoticeNames[(int)ENoticeEvent::Num] = { "", "hero_runs", "hero_close", "hero_lamp" };
+		const char* NoticeNames[(int)ENoticeEvent::Num] = { "", "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides" };
 
 		float Clamp01(float V) { return V < 0.f ? 0.f : (V > 1.f ? 1.f : V); }
 
@@ -852,10 +852,18 @@ namespace LyudPeople
 		{
 			return;
 		}
-		if (bRun && bComing && D < 4.5f && bFront)
+		if (bRun && bComing && D < (Hero.bBike ? 6.f : 4.5f) && bFront)
 		{
-			S.Event = ENoticeEvent::HeroRuns;
+			// tearing past on foot, or on a bicycle
+			S.Event = Hero.bBike ? ENoticeEvent::HeroRides : ENoticeEvent::HeroRuns;
 			S.EventCool = Now.Clock + 45.f;
+		}
+		else if (Hero.bCrouch && !Hero.bBike && bComing && Speed > 0.2f && Speed < 2.4f && D < 2.4f && Off > 100.f && !IsSeated(P.Pose))
+		{
+			// creeping up behind their back: they feel it, start and turn round
+			S.Event = ENoticeEvent::HeroSneaks;
+			S.EventCool = Now.Clock + 90.f;
+			S.bTurn = P.Pose == EPose::Stand || P.Pose == EPose::Look;
 		}
 		else if (S.NearSince >= 0.f && Now.Clock - S.NearSince > 3.5f + 3.f * Who.Warmth)
 		{

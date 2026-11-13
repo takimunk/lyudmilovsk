@@ -49,6 +49,11 @@ Only people who have a body now are updated (a few dozen); between picks an upda
   within arm's reach for a few seconds), `hero_lamp` (the head lamp in their eyes at night). The events go out through
   `UPeopleLifeSubsystem::OnPersonEvent`; `ULyudTownTalkSubsystem` says a line for them now and then
   (`on = hero_runs` sets in `tools/barks/lines/10_manners.txt`).
+  Also `hero_sneaks` (crouched, creeping up behind somebody's back: they start and turn round) and `hero_rides` (a
+  bicycle tearing past).
+- **they come to know him**: `UPeopleLifeSubsystem::NoteMet` counts the days somebody has greeted the player (kept
+  with the save, `MetHero`); town talk's `met = new | seen | known` (1-4 days: seen; 5 and more: known) picks other
+  greetings ("there you are, I hadn't seen you about"), and those who know him greet more readily and wave.
 - **each other** (`FManners::Passing`, twice a second): a glance at somebody passing, a wave or a nod between
   people who know each other (friends, a household).
 - **greetings** (town talk): the warm greet the player nearly always, the reserved hardly ever; a greeting comes with a
@@ -67,6 +72,8 @@ the rain and the frost, the water gains on a warm day, and a free outdoor activi
   stretches of the promenade everybody has a few (about one in eight, by a hash of person and place: the same every
   game) they go out of their way for. So the same old man is on the same bench every morning, and a cafe has its
   regulars. Not at home, at work, at a holiday's gathering or in the club (its stations are people's own already).
+- **Company** (`PickSlot`): a bench, a table or a spot out of doors where somebody they know already is draws them
+  (worth up to ~100 m of walking for the sociable), so friends end up on the same bench.
 - **A ritual** (`FManners::ApplyLikes` sets `FPerson::RitualAct/RitualHour/RitualMore`): one thing each grown-up does at
   their own hour every day, by who they are: a feeder's crumbs for the birds between half past eight and half past
   ten, the morning constitutional of those who walk with their hands behind the back, a reader's bench with the paper

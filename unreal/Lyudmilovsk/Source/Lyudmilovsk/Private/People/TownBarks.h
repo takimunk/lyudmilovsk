@@ -54,6 +54,7 @@ namespace LyudBarks
 	struct FWhoCond
 	{
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
+		FValues Met;                // how well they know the player: new, seen, known
 		FValues Manner;             // what their hands are doing (manners.json: smoke, phone_call, umbrella, ...)
 		FValues AgeGroup;           // kid, teen, adult, elder
 		FRanges AgeYears;           // 50-120
@@ -71,6 +72,7 @@ namespace LyudBarks
 		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
+		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
 		std::string Manner;                 // their manner now (PeopleManners.h), "" none or not drawn; the caller sets it after FillWho
 		std::vector<std::string> Needs;     // the needs over 0.75: hunger, tired, social, fun, nature, mind, sun
 		bool bHeroNear = false;             // the player is within 10 m

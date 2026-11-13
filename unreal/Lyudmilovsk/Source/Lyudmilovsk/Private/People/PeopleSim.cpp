@@ -1820,9 +1820,37 @@ namespace LyudPeople
 				}
 			}
 		}
+		const bool bCompany = !P.Friends.empty() && !A.bGather && !A.bStaff && A.Id != "sleep";
+		if (bCompany && !P.bFriendIds)
+		{
+			P.bFriendIds = true;
+			P.FriendIds.clear();
+			for (const FPerson& Q : People)
+			{
+				if (Q.Id != P.Id && Has(P.Friends, Q.Key))
+				{
+					P.FriendIds.push_back(Q.Id);
+				}
+			}
+		}
 		for (const int Pi : Cand)
 		{
 			const FPlace& Pl = Places[Pi];
+			// somebody they know already there (a friend on the bench, at the cafe's table): they'd rather sit with them
+			float Company = 0.f;
+			if (bCompany && !P.FriendIds.empty() && Pi != P.Home && !Pl.bIndoor)
+			{
+				for (const int S : Pl.Slots)
+				{
+					for (const int U : Slots[S].Users)
+					{
+						if (U != P.Id && std::find(P.FriendIds.begin(), P.FriendIds.end(), U) != P.FriendIds.end())
+						{
+							Company = 70.f * (0.4f + P.Social);
+						}
+					}
+				}
+			}
 			for (const int S : Pl.Slots)
 			{
 				if (!SlotFits(P, A, S))
@@ -1830,7 +1858,7 @@ namespace LyudPeople
 					continue;
 				}
 				const FSlot& Sl = Slots[S];
-				float Score = (Sl.Approach - From).Len2D();
+				float Score = (Sl.Approach - From).Len2D() - Company;
 				if (Pl.Island != Island)
 				{
 					Score += 600.f;     // the cable car

@@ -275,11 +275,13 @@ static int Run(bool bDay, const std::string& Lang)
 				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
 					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];
+					Who.Met = S.A.Met.Yes.empty() ? std::string("new") : S.A.Met.Yes[0];
 					if (Book.MatchWho(S.A, Who))
 					{
 						FitA[I] = 1;
 					}
 					Who.Manner.clear();
+					Who.Met = "new";
 				}
 			}
 			// what they would say now, under one of the skies; on the holiday evening, the holiday's

@@ -427,6 +427,9 @@ namespace TownTalkLocal
 		{
 			W.Manner.clear();
 		}
+		// and how well they know the player by now
+		const int32 Met = Life ? Life->GetMet(Id) : 0;
+		W.Met = Met >= 5 ? "known" : (Met >= 1 ? "seen" : "new");
 	}
 }
 
@@ -771,7 +774,9 @@ void ULyudTownTalkSubsystem::Scan()
 			// the warm greet nearly everybody, the reserved hardly anyone (their persona: docs/town_manners.md); of those who
 			// say nothing, some still nod
 			const float Warmth = Life->GetTrait(Id, TEXT("warmth"));
-			if (FMath::FRand() > 0.3f + 0.7f * Warmth)
+			// (and whoever has come to know him greets him more readily)
+			const int32 Met = Life->GetMet(Id);
+			if (FMath::FRand() > 0.3f + 0.7f * Warmth + (Met >= 5 ? 0.3f : (Met >= 1 ? 0.1f : 0.f)))
 			{
 				if (FMath::FRand() < Warmth)
 				{
@@ -792,7 +797,9 @@ void ULyudTownTalkSubsystem::Scan()
 			if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
 			{
 				// with a wave from the warm, a nod from the rest (if their hands are free)
-				Life->ReactManner(Id, Warmth > 0.62f ? TEXT("wave") : TEXT("nod"), Warmth > 0.62f ? 2.4f : 1.6f);
+				const bool bWave = Warmth > 0.62f || Met >= 5;
+				Life->ReactManner(Id, bWave ? TEXT("wave") : TEXT("nod"), bWave ? 2.4f : 1.6f);
+				Life->NoteMet(Id);
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
 				break;

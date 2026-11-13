@@ -153,3 +153,63 @@ say town.notice_lamp.1 | Эй, фонарь! Прямо в глаза свети
 say town.notice_lamp.2 | Опусти фонарик, будь добр. | Lower the torch, would you. | ライトを下げてくれないかな。
 say town.notice_lamp.3 | Ой! Я подумал, канатка на меня едет. | Oh! I thought the cable car was coming at me. | うわっ！ロープウェイがこっちに来たのかと思った。
 say town.notice_lamp.4 | Ну и прожектор. С маяком не перепутают? | That's some searchlight. Won't they take you for the lighthouse? | すごいライトだね。灯台と間違えられない？
+
+[notice_sneaks]
+on = hero_sneaks
+age = adult elder
+say town.notice_sneaks.1 | Ой! Ты что подкрадываешься? | Oh! What are you creeping up on me for? | わっ！なんで忍び寄ってくるの？
+say town.notice_sneaks.2 | Я всё слышу, между прочим. | I can hear everything, you know. | 言っとくけど、全部聞こえてるからね。
+say town.notice_sneaks.3 | Господи! Так и до инфаркта недалеко. | Good heavens! You'll give someone a heart attack. | ああ驚いた！心臓が止まるかと思った。
+say town.notice_sneaks.4 | В разведчиков играешь? Меня ты уже нашёл. | Playing scouts? Well, you've found me. | 偵察ごっこ？もう見つかったよ、わたしは。
+
+[notice_sneaks_kid]
+on = hero_sneaks
+age = kid teen
+say town.notice_sneaks_kid.1 | Я тебя видел! Не считается! | I saw you! Doesn't count! | 見えてたよ！いまのはなし！
+say town.notice_sneaks_kid.2 | Ты за птицами так ходишь? Научи! | Is that how you stalk birds? Teach me! | 鳥にもそうやって近づくの？教えて！
+
+[notice_rides]
+on = hero_rides
+age = adult elder
+say town.notice_rides.1 | Эй, велосипедист! Тут люди ходят! | Hey, cyclist! People walk here! | おい、自転車！ここは人が歩いてるんだよ！
+say town.notice_rides.2 | Звонок тебе на что? | What's your bell for? | ベルは何のためについてるの？
+say town.notice_rides.3 | Потише на спуске, тормоза побереги. | Slow down on the slope, spare your brakes. | 坂ではゆっくり。ブレーキを大事にね。
+say town.notice_rides.4 | Хороший велосипед. Только не убейся. | Nice bike. Just don't break your neck. | いい自転車だ。首だけは折らないように。
+
+[notice_rides_kid]
+on = hero_rides
+age = kid teen
+say town.notice_rides_kid.1 | Ого! Дашь прокатиться? | Wow! Can I have a go? | わあ！ちょっと乗せてくれない？
+say town.notice_rides_kid.2 | А без рук умеешь? | Can you do it with no hands? | 手放しはできる？
+
+## --- people who have come to know the player (met = seen: greeted him on a few days; known: on five and more) ---
+
+[greet_seen]
+to = hero
+met = seen
+age = adult elder
+say town.greet_seen.1 | А, это снова ты. Здравствуй. | Ah, it's you again. Hello. | ああ、また君か。こんにちは。
+say town.greet_seen.2 | Мы, кажется, уже виделись. Добрый день! | I think we've met before. Good day! | 前にも会ったよね。こんにちは！
+say town.greet_seen.3 | Опять гуляешь? Правильно, погода зовёт. | Out walking again? Quite right, the weather calls for it. | また散歩？いいね、そういう天気だもの。
+say town.greet_seen.4 | Здравствуй-здравствуй. Осваиваешься у нас? | Hello, hello. Settling in here? | やあやあ。この町には慣れてきた？
+
+[greet_known]
+to = hero
+met = known
+age = adult elder
+weight = 2
+say town.greet_known.1 | О, мой знакомый! Как дела? | Oh, my young friend! How are things? | おや、顔なじみだ！元気にしてる？
+say town.greet_known.2 | Привет! Без тебя набережная уже не та. | Hi! The promenade isn't the same without you. | やあ！君がいないと遊歩道も物足りないよ。
+say town.greet_known.3 | Здравствуй, здравствуй. Птиц сегодня много видел? | Hello, hello. Seen many birds today? | やあ、こんにちは。今日は鳥をたくさん見た？
+say town.greet_known.4 | А вот и ты. Я уж думаю: что-то его не видно. | There you are. I was just thinking I hadn't seen you about. | 来た来た。最近見かけないなと思ってたところだよ。
+say town.greet_known.5 | Привет, сосед! Ты уже почти местный. | Hi, neighbour! You're nearly a local by now. | やあ、ご近所さん！もうすっかり地元の子だね。
+say town.greet_known.6 | Здравствуй! Заходи как-нибудь на чай. | Hello! Drop in for tea some time. | こんにちは！そのうちお茶でも飲みにおいで。
+
+[greet_known_kid]
+to = hero
+met = seen known
+age = kid teen
+weight = 2
+say town.greet_known_kid.1 | О, привет! Ты сегодня куда? | Oh, hi! Where are you off to today? | あ、やっほー！今日はどこ行くの？
+say town.greet_known_kid.2 | Привет! Пойдём на площадку? | Hi! Coming to the playground? | やあ！公園に行かない？
+say town.greet_known_kid.3 | Это опять ты! А я тебя вчера видел у моря. | It's you again! I saw you by the sea yesterday. | また会ったね！昨日、海のそばで見かけたよ。
