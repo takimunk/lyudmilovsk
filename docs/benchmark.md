@@ -159,7 +159,9 @@ off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noa
   runs (two builds next to a ~22 GB game swap). Priority `nice -n 19`; background QoS (`taskpolicy -b`, ~2x slower)
   when Dima is playing: `touch /tmp/lyud_dima_playing` (rm when done), `UBT_QUEUE_BG=1`, or detected (a non-offscreen
   -game of the main checkout, or PIE open in his editor's latest log). The flag also holds new runs in
-  `tools/wait_ue_queue.sh`. Already running builds keep the priority they started with.
+  `tools/wait_ue_queue.sh`. Already running builds keep the priority they started with. Reorder with `--prio <ticket> <n>` (or
+  `UBT_QUEUE_PRIO=<n>` when queueing): lower numbers start first, default 100; waiters started by an older copy of the
+  script ignore priorities and start when they hold the lowest ticket number.
 - Each live system alone (birds, people, animals, transport, sea, forest floor) moves the frame under 5%.
 - Lumen was ~250 surface-cache card captures a frame, 95% of them the cableway's rope cylinders: anything that updates
   instances every frame with `bMarkRenderStateDirty` (or calls `MarkRenderStateDirty()` after the loop) rebuilds its

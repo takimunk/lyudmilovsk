@@ -8,7 +8,8 @@
 #
 #   tools/wait_ubt_queue.sh                        LyudmilovskEditor Mac Development of this checkout, -NoHotReloadFromIDE
 #   tools/wait_ubt_queue.sh <Build.sh args...>     those args instead (-MaxParallelActions=4 -NoMutex are added)
-#   tools/wait_ubt_queue.sh --list                 the queue now (ticket, pid, checkout)
+#   tools/wait_ubt_queue.sh --list                 the queue in start order (ticket, priority, pid, checkout)
+#   tools/wait_ubt_queue.sh --prio <ticket> <n>    reorder: lower priority numbers start first (default 100)
 #   UBT_QUEUE_MAX=<s> (default 14400) gives up waiting after that long (exit 1); UBT_QUEUE_DIR overrides the queue folder
 #   UBT_QUEUE_SLOTS=<n> (default 2) builds at once; UBT_QUEUE_BG=1 always background QoS
 #   touch /tmp/lyud_dima_playing                   Dima is playing: new builds start in background QoS (rm when done);
@@ -38,6 +39,15 @@ live() {
             rm -f "$F"
         fi
     done | sort
+}
+
+# the live tickets in start order: priority (file prio.<ticket> holding a number, default 100, lower goes first), then
+# ticket number. Waiters of older copies of this script ignore priorities: they start when they hold the lowest number
+ordered() {
+    for T in $(live); do
+        PR=$(cat "$Q/prio.$T" 2>/dev/null | tr -cd '0-9-')
+        printf '%s %s\n' "${PR:-100}" "$T"
+    done | sort -k1,1n -k2,2 | cut -d' ' -f2
 }
 
 # an offscreen -game or a benchmark of any checkout is running (it holds ~22 GB: one build at a time then)
@@ -70,8 +80,20 @@ dima_playing() {
 }
 
 if [ "$1" = "--list" ]; then
-    for T in $(live); do echo "$T $(head -2 "$Q/$T" | tr '\n' ' ')"; done
+    for T in $(ordered); do
+        PR=$(cat "$Q/prio.$T" 2>/dev/null | tr -cd '0-9-')
+        echo "$T prio ${PR:-100} $(head -2 "$Q/$T" | tr '\n' ' ')"
+    done
+    for F in "$Q"/prio.t.*; do [ -e "$F" ] && [ ! -e "$Q/${F#"$Q"/prio.}" ] && rm -f "$F"; done   # of gone tickets
     exit 0
+fi
+# --prio <ticket number or t.NNNNNNNNN> <priority>: reorder the queue (lower starts first, default 100)
+if [ "$1" = "--prio" ]; then
+    T="$2"; case "$T" in t.*) ;; *) T="t.$(printf %09d "$T")" ;; esac
+    [ -e "$Q/$T" ] || { echo "no ticket $T"; exit 2; }
+    echo "$3" | grep -qE '^-?[0-9]+$' || { echo "priority must be a number"; exit 2; }
+    echo "$3" > "$Q/prio.$T"
+    exec "$0" --list
 fi
 
 # a ticket: the next number, taken under a lock (mkdir is atomic)
@@ -85,17 +107,19 @@ echo "$N" > "$Q/next"
 TICKET="$Q/t.$(printf %09d "$N")"
 printf '%s\n%s\n%s\n' "$$" "$ROOT" "$(ps -o lstart= -p $$)" > "$TICKET"
 rmdir "$Q/lock"
-trap 'rm -f "$TICKET"' EXIT
-trap 'rm -f "$TICKET"; exit 130' INT TERM
+# UBT_QUEUE_PRIO=<n>: this build's priority from the start (see --prio)
+[ -n "${UBT_QUEUE_PRIO:-}" ] && echo "$UBT_QUEUE_PRIO" > "$Q/prio.$(basename "$TICKET")"
+trap 'rm -f "$TICKET" "$Q/prio.$(basename "$TICKET")"' EXIT
+trap 'rm -f "$TICKET" "$Q/prio.$(basename "$TICKET")"; exit 130' INT TERM
 
 T=0
 while :; do
     K=$SLOTS
     game_running && K=1
     [ "$K" -lt 1 ] && K=1
-    live | head -n "$K" | grep -qx "$(basename "$TICKET")" && break
+    ordered | head -n "$K" | grep -qx "$(basename "$TICKET")" && break
     [ "$T" -ge "$MAX" ] && { echo "wait_ubt_queue: still not started after $T s"; exit 1; }
-    [ $((T % 300)) -eq 0 ] && echo "wait_ubt_queue: ticket $N waiting ($(live | wc -l | tr -d ' ') in the queue, $K slot(s), first $(live | head -1))"
+    [ $((T % 300)) -eq 0 ] && echo "wait_ubt_queue: ticket $N waiting ($(live | wc -l | tr -d ' ') in the queue, $K slot(s), first $(ordered | head -1))"
     sleep 5; T=$((T + 5))
 done
 
