@@ -1220,7 +1220,7 @@ def carousel(B, s=118.0, t=0.1):
     B.spot("carousel_view", "stand", (*F.p(0.0, 1.0)[:2], 0.0), face)
 
 
-def pingpong(B, s=53.5, t=0.25):
+def pingpong(B, s=54.75, t=0.05):
     gf, yaw = _gframe(s, t, 1)
     cx, cy = gf.p(0, 0)[:2]
     kit.pingpong_table(B, cx, cy, 0.0, yaw)
