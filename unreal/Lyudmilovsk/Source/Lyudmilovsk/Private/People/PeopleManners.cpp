@@ -451,6 +451,52 @@ namespace LyudPeople
 				}
 			}
 		}
+		// a ritual each: one thing they do at their own hour every day, by who they are (the first that fits; the hour
+		// is theirs, the same every game). People at work at that hour simply miss it; days off they keep it.
+		struct FRitual { uint32_t Habit; const char* Trait; float Over; const char* Activity; float From, To; int MinAge, MaxAge; };
+		static const FRitual Rituals[] = {
+			{ HabitFeeder, "", 0.f, "feed_birds", 8.5f, 10.5f, 0, 200 },
+			{ HabitHandsBack, "", 0.f, "stroll", 7.f, 9.f, 50, 200 },
+			{ HabitReader, "", 0.f, "read_bench", 15.f, 17.5f, 12, 200 },
+			{ HabitDozer, "", 0.f, "sit_bench", 13.5f, 15.f, 40, 200 },
+			{ HabitSweet, "", 0.f, "coffee", 15.5f, 17.5f, 10, 200 },
+			{ HabitPhotographer, "", 0.f, "walk", 17.f, 19.f, 14, 200 },
+			{ 0, "nerve", 0.68f, "jog", 6.5f, 8.f, 16, 58 },
+			{ 0, "warmth", 0.7f, "chat", 18.f, 20.f, 12, 200 },
+			{ 0, "curiosity", 0.7f, "town", 11.f, 13.f, 14, 200 },
+			{ 0, "tidy", 0.72f, "shop_town", 9.5f, 11.f, 18, 200 },
+			{ 0, "", 0.f, "stroll", 19.f, 21.f, 14, 200 },
+		};
+		for (size_t I = 0; I < W.People.size() && I < Personas.size(); I++)
+		{
+			FPerson& P = W.People[I];
+			const FPersona& Who = Personas[I];
+			P.RitualAct = -1;
+			if (P.bChild)
+			{
+				continue;
+			}
+			for (const FRitual& R : Rituals)
+			{
+				const int Act = W.FindActivity(R.Activity);
+				if (Act < 0 || P.Age < R.MinAge || P.Age > R.MaxAge || (R.Habit && !Who.Has(R.Habit))
+					|| (R.Trait[0] && PersonaTrait(Who, R.Trait) < R.Over))
+				{
+					continue;
+				}
+				uint32_t H = 2166136261u;
+				for (const char C : P.Key)
+				{
+					H = (H ^ (uint8_t)C) * 16777619u;
+				}
+				H ^= 0x51ed270bu;
+				H |= 1u;
+				P.RitualAct = Act;
+				P.RitualHour = R.From + (R.To - R.From) * Rand(H);
+				P.RitualMore = 0.45f;
+				break;
+			}
+		}
 	}
 
 	float FManners::Fits(const FWorld& W, const FPerson& P, const FPersona& Who, const FMannerState& S, const FMannerDef& D, const FMannerNow& Now) const
@@ -920,6 +966,13 @@ namespace LyudPeople
 				Out += " ";
 				Out += HabitNames[I];
 			}
+		}
+		const FPerson& P = W.People[Person];
+		if (P.RitualAct >= 0 && P.RitualAct < (int)W.Activities.size())
+		{
+			std::snprintf(Buf, sizeof Buf, "; ritual %s at %d:%02d", W.Activities[(size_t)P.RitualAct].Id.c_str(), (int)P.RitualHour,
+				(int)((P.RitualHour - (int)P.RitualHour) * 60.f));
+			Out += Buf;
 		}
 		Out += "; now ";
 		Out += MannerName(S.Cur);

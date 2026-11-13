@@ -217,9 +217,9 @@ static void Run(FWorld& W, FClock& C, float Hours, float Dt, FWatch& Watch, cons
 					Watch.TrainBy[P.Key]++;
 				}
 			}
-			// a meal: at home, in the club or at the diner's booths (snacks and the staff's bites at work aren't meals)
+			// a meal: at home, in the club at the diner or at a cafe in town (snacks and the staff's bites at work aren't meals)
 			const std::string& Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string();
-			if (E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_club" || Act == "eat_diner"))
+			if (E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_club" || Act == "eat_diner" || Act == "eat_out"))
 			{
 				Watch.Meals[P.Key]++;
 			}

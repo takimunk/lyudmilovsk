@@ -95,6 +95,7 @@ struct FDay
 	double UpdateNs = 0.0;
 	long Updates = 0;
 	int BenchNoon = 0;
+	int Ritualists = 0, RitualKept = 0;
 };
 
 static void RunDay(FDay& D)
@@ -117,6 +118,7 @@ static void RunDay(FDay& D)
 	const float Dt = 1.f;
 	std::map<std::string, int> HourCount;
 	int LastHour = -1;
+	std::vector<char> RitualKept;
 	for (double T = 0.0; T < 19.0 * 3600.0; T += Dt)        // till midnight
 	{
 		C.Seconds += Dt;
@@ -126,6 +128,18 @@ static void RunDay(FDay& D)
 		W.Rain = bRain ? 0.7f : 0.f;
 		W.Step(Dt);
 		W.Events.clear();
+		if ((long)std::lround(T) % 60 == 0)
+		{
+			// who is at their ritual within the hour of it
+			RitualKept.resize(W.People.size(), 0);
+			for (const FPerson& P : W.People)
+			{
+				if (P.RitualAct >= 0 && P.Activity == P.RitualAct && P.State == EState::Doing && std::fabs(W.Hour - P.RitualHour) < 1.f)
+				{
+					RitualKept[(size_t)P.Id] = 1;
+				}
+			}
+		}
 		Now.Clock = (float)T;
 		Now.Rain = W.Rain;
 		Now.SunAlt = C.SunAlt(W);
@@ -265,6 +279,11 @@ static void RunDay(FDay& D)
 			}
 			LastHour = H;
 		}
+	}
+	for (const FPerson& P : W.People)
+	{
+		D.Ritualists += P.RitualAct >= 0 ? 1 : 0;
+		D.RitualKept += P.RitualAct >= 0 && (size_t)P.Id < RitualKept.size() && RitualKept[(size_t)P.Id] ? 1 : 0;
 	}
 }
 
@@ -549,6 +568,8 @@ int main(int Argc, char** Argv)
 	}
 	// claps and sways need a holiday (tools/festivalsim sets the gatherings); everything else is seen in these four days
 	CHECK(Never.empty() || Never == " clap sway" || Never == " clap" || Never == " sway", "every manner is seen in some weather%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	CHECK(Mild.Ritualists > 300 && Mild.RitualKept > Mild.Ritualists / 4, "people keep their rituals (%d of the %d who have one were at it at their hour; the rest at work)",
+		Mild.RitualKept, Mild.Ritualists);
 	CHECK(Mild.UmbrellasDry == 0 && Frost.UmbrellasDry == 0, "no umbrellas on a dry day");
 	CHECK(Shower.UmbrellasInRain > 20 && Shower.CoverInRain > 3, "in the shower some open umbrellas, the others run for it (%d umbrella-minutes, %d running with an arm over the head)",
 		Shower.UmbrellasInRain, Shower.CoverInRain);

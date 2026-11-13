@@ -1856,6 +1856,18 @@ namespace LyudPeople
 				// a little variety among equal spots
 				uint32_t H = (uint32_t)(S * 2654435761u) ^ (uint32_t)(P.Id * 40503u) ^ (uint32_t)(Time / 1800.0);
 				Score += Rand(H) * 25.f;
+				// and spots of their own: everybody has a few places out of the many (their bench, their cafe, their stretch of
+				// the promenade) they go a little out of their way for, the same ones every day
+				if (Opt.OwnSpots > 0.f && Pi != P.Home && !A.bGather && !A.bStaff && Pl.Kind != "club")
+				{
+					uint32_t Own = ((uint32_t)Pi * 2246822519u) ^ ((uint32_t)P.Id * 3266489917u) ^ 0x9e3779b9u;
+					Own |= 1u;
+					const float Fond = Rand(Own);
+					if (Fond > 0.88f)
+					{
+						Score -= Opt.OwnSpots * (Fond - 0.88f) / 0.12f;
+					}
+				}
 				if (Score < BestScore)
 				{
 					BestScore = Score;
@@ -1922,6 +1934,16 @@ namespace LyudPeople
 			if (L.first == A.Id)
 			{
 				Score += L.second;
+			}
+		}
+		// their ritual: the same thing at the same hour every day (crumbs for the birds at nine, the paper at four)
+		if (P.RitualAct >= 0 && &A == &Activities[(size_t)P.RitualAct])
+		{
+			float Off = std::fabs(Hour - P.RitualHour);
+			Off = std::min(Off, 24.f - Off);
+			if (Off < 0.75f)
+			{
+				Score += P.RitualMore * (1.f - Off / 0.75f * 0.5f);
 			}
 		}
 		Score -= TravelH * Opt.WalkCostPerHour;

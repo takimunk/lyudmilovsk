@@ -61,6 +61,20 @@ the rain and the frost, the water gains on a warm day, and a free outdoor activi
 (activities with `"rain": "ok"` are not). New activities: `jog`, `play_run` (children), `feed_birds`, `read_bench`;
 `"pace"` makes an activity's walk a run.
 
+## Routines
+
+- **Spots of their own** (`FWorld::PickSlot`, `FOptions::OwnSpots`, 110 m): out of the many benches, cafes and
+  stretches of the promenade everybody has a few (about one in eight, by a hash of person and place: the same every
+  game) they go out of their way for. So the same old man is on the same bench every morning, and a cafe has its
+  regulars. Not at home, at work, at a holiday's gathering or in the club (its stations are people's own already).
+- **A ritual** (`FManners::ApplyLikes` sets `FPerson::RitualAct/RitualHour/RitualMore`): one thing each grown-up does at
+  their own hour every day, by who they are: a feeder's crumbs for the birds between half past eight and half past
+  ten, the morning constitutional of those who walk with their hands behind the back, a reader's bench with the paper
+  in the afternoon, a dozer's bench after lunch, the sweet tooth's coffee, a photographer's evening walk; the nervy jog
+  at seven, the warm chat in the evening, the curious go into town before lunch, the tidy shop in the morning; everybody
+  else takes an evening stroll. Within 45 minutes of the hour the activity scores up to 0.45 more; people at work then
+  simply miss it. `lyud.People.Who <key>` prints it.
+
 ## The gestures
 
 No new clips. A manner's gesture is a few goals for the hands, the head and the back worked out from the time since it

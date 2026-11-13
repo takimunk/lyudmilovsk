@@ -225,6 +225,10 @@ namespace LyudPeople
 		std::string ClubSeat;       // their usual station in the club ("4"); "" none
 		std::vector<std::string> Friends;
 		std::vector<std::pair<std::string, float>> Likes;   // activity id -> how much more they like it (a painter and the island)
+		// their daily ritual (PeopleManners' ApplyLikes, docs/town_manners.md): this activity draws them round this hour
+		int RitualAct = -1;
+		float RitualHour = 0.f;
+		float RitualMore = 0.f;
 		std::string OwnSlot;        // "club:9": a slot only they use
 		std::string StartActivity;  // what they do when a new game begins
 		float StartMinutes[2] = { 60.f, 120.f };
@@ -299,6 +303,7 @@ namespace LyudPeople
 		float TrainSeconds = 280.f;     // the train between the halts when there is no timetable (TrainNext unset or -1): hidden
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
 		float Jitter = 0.15f;
+		float OwnSpots = 110.f;         // m: how far out of their way people go for a spot of their own (their bench, their cafe); 0 none
 	};
 
 	class FWorld
