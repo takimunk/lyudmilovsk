@@ -13,7 +13,7 @@
  "city.cog.sh.poetry.2": {
   "ru": "Между страниц закладка: прошлогодний талон в буфет. Стихотворение на этой странице про зиму, так что талон, наверное, лежит тут не случайно.",
   "en": "A bookmark between the pages: last year's buffet coupon. The poem on this page is about winter, so the coupon is probably not there by accident.",
-  "ja": "ページの間に栞がわりの、去年のビュッフェ券。このページの詩は冬のことだから、券がここにあるのはたぶん偶然じゃない。"
+  "ja": "ページの間に栞がわりの、去年の売店の券。このページの詩は冬のことだから、券がここにあるのはたぶん偶然じゃない。"
  },
  "city.cog.sh.art.1": {
   "ru": "Альбом «Живопись Балтики». Под дюнами кто-то подписал: «Были вчера. Один в один, только комаров нет». Видно, что картину сверяли с берегом.",
@@ -28,7 +28,7 @@
  "city.cog.sh.chess.1": {
   "ru": "На полях учебника чья-то рука отмечает ходы и пишет: «Тут зевнул ферзя, больше не играю. До четверга». Судя по числу таких пометок, четверг наступал не раз.",
   "en": "In the margins of a textbook a hand marks the moves and writes: \"Blundered the queen here, never playing again. See you Thursday.\" Judging by the number of such notes, Thursday has come round more than once.",
-  "ja": "教本の余白に、誰かが手を書き込みながら「ここでクイーンを取られた。もう指さない。では木曜に」。同じ書き込みが何度もあるから、木曜は何度も来たらしい。"
+  "ja": "教本の余白に、誰かが指し手を書き込み、「ここでクイーンを取られた。もう指さない。では木曜に」。同じ書き込みが何度もあるから、木曜は何度も来たらしい。"
  },
  "city.cog.sh.chess.2": {
   "ru": "Из книги выглядывает листок: расписание блица на четверг. Последняя строка: «Часы клубные, берегите». Ниже другим почерком: «(если найдутся)».",
@@ -143,7 +143,7 @@
  "city.cog.bil.2": {
   "ru": "По пятницам вечером играет лига: люди с судоверфи с закатанными рукавами. Проигравший угощает чаем из буфета. Мне налили чаю просто так: свидетелей, говорят, поят всегда.",
   "en": "Friday evenings the league plays: men from the shipyard with their sleeves rolled up. The loser buys tea from the buffet. They poured me one for nothing: witnesses, they say, always get tea.",
-  "ja": "金曜の夜はリーグ戦。造船所の人たちが袖をまくっている。負けた側がビュッフェのお茶をおごる。僕にも理由なく注いでくれた。立会人にはいつもお茶を出すのだという。"
+  "ja": "金曜の夜はリーグ戦。造船所の人たちが袖をまくっている。負けた側が売店のお茶をおごる。僕にも理由なく注いでくれた。立会人にはいつもお茶を出すのだという。"
  },
  "city.cog.bil.3": {
   "ru": "В субботу играют парами, двое на двое, и все четверо спорят, чей был шар. Я стоял с кием в стороне и чувствовал себя судьёй. Меня ни разу не спросили.",
@@ -203,7 +203,7 @@
  "city.cog.league.5": {
   "ru": "Финал сыгран. Кубок, согнутая шестерёнка на подставке, стоит у буфета. Победитель про него забыл и вернулся через час.",
   "en": "The final has been played. The cup, a bent cog on a stand, sits by the buffet. The winner forgot about it and came back an hour later.",
-  "ja": "決勝は終わった。優勝杯は台座に載った曲がった歯車で、ビュッフェのそばに置いてある。優勝者はそれを忘れて、一時間後に取りに戻ってきた。"
+  "ja": "決勝は終わった。優勝杯は台座に載った曲がった歯車で、売店のそばに置いてある。優勝者はそれを忘れて、一時間後に取りに戻ってきた。"
  },
  "city.cog.cues.prompt": {
   "ru": "E — выбрать кий",
@@ -283,12 +283,12 @@
  "city.cog.draft.2": {
   "ru": "На полях приписка: «Идея Серёжи из фотокружка: в кабину зеркало, чтобы пассажиры видели море с двух сторон». Лев Аркадьевич не согласился и согласился.",
   "en": "A note in the margin: \"Seryozha from the photo circle's idea: a mirror in the cabin so passengers see the sea from both sides.\" Lev Arkadyevich disagreed and agreed.",
-  "ja": "余白に書き込み。「写真サークルのセリョージャの案。キャビンに鏡を付けて、乗客が海を両側から見られるように」。レフ・アルカージエヴィチは反対し、そして賛成した。"
+  "ja": "余白に書き込み。「写真サークルのセリョージャの案。ゴンドラに鏡を付けて、乗客が海を両側から見られるように」。レフ・アルカージエヴィチは反対し、そして賛成した。"
  },
  "city.cog.draft.3": {
   "ru": "Новый лист: «Кабина, модель 1:20». Окно вырезано круглым, как иллюминатор. Спорили, нужно ли ей колесо. Победили те, кто за колесо.",
   "en": "A new sheet: \"Cabin, model 1:20.\" The window is cut round, like a porthole. They argued whether it needs a wheel. Those for the wheel won.",
-  "ja": "新しい一枚。「キャビン、模型二十分の一」。窓は舷窓みたいに丸く描かれている。車輪をつけるかで揉めて、つける派が勝った。"
+  "ja": "新しい一枚。「ゴンドラ、模型二十分の一」。窓は舷窓みたいに丸く描かれている。車輪をつけるかで揉めて、つける派が勝った。"
  },
  "city.cog.models.1": {
   "ru": "На подставке вчерашний катер: покрашен, блестит, сохнет. Рядом табличка карандашом: «Не трогать, липкий».",
@@ -371,9 +371,9 @@
   "ja": "今日は焼き付け。引き伸ばし機の下に印画紙、赤い光。露光は二つ目の机の時計で数える。左のボタンをカチッ、右をカチッ。十二で枠を上げる。"
  },
  "city.cog.dark.4": {
-  "ru": "Сегодня сушим. Отпечатки висят на леске и каплют, пахнет уксусом. Уже кто-то спорит, что лучше, глянец или матовая.",
+  "ru": "Сегодня сушим. Отпечатки висят на леске и капают, пахнет уксусом. Уже кто-то спорит, что лучше, глянец или матовая.",
   "en": "Today, drying. The prints hang on the line and drip, and it smells of vinegar. Someone is already arguing whether gloss or matt is better.",
-  "ja": "今日は乾燥。印画紙がひもにぶら下がって水を垂らし、酢の匂いがする。もう誰かが、光沢と半光沢のどちらがいいかで言い争っている。"
+  "ja": "今日は乾燥。印画紙がひもにぶら下がって水を垂らし、酢の匂いがする。もう誰かが、光沢とつや消しのどちらがいいかで言い争っている。"
  },
  "city.cog.tray.prompt": {
   "ru": "E — заглянуть в ванночку",
@@ -633,7 +633,7 @@
  "quest.cog_clock.done": {
   "ru": "Буфетчица принесла чай и печенье «за возвращение». Сказала, что часы вернулись самым правильным путём: сами. Я не стал спорить.",
   "en": "The buffet lady brought tea and a biscuit \"for the return\". She said the clock came back the most proper way: by itself. I didn't argue.",
-  "ja": "ビュッフェのおばさんが「お帰りなさい」とお茶とクッキーを持ってきた。時計はいちばん正しい形で、つまり自分から帰ってきたのだそうだ。僕は反論しなかった。"
+  "ja": "売店のおばさんが「お帰りなさい」とお茶とクッキーを持ってきた。時計はいちばん正しい形で、つまり自分から帰ってきたのだそうだ。僕は反論しなかった。"
  },
  "quest.cog_reader.title": {
   "ru": "Читатель клуба",
@@ -733,7 +733,7 @@
  "city.xtx.cog_photo_guide.4": {
   "ru": "День четвёртый — сушка. Отпечатки висят на леске и капают, и в лаборатории пахнет уксусом. Глянец или матовая бумага, вопрос вечный и неразрешимый; клуб поделён поровну, и обе стороны пьют чай вместе. Высохший снимок светлее, чем казался в красном свете: учитывайте при печати, а то на третий день пересолите. Подписывайте на обороте мягким карандашом: место, час и кто был рядом. Через год это окажется главным в снимке.",
   "en": "Day four: drying. The prints hang on the line and drip, and the lab smells of vinegar. Gloss or matt paper, an eternal and unresolvable question; the club is split evenly, and both sides drink tea together. A dried print is lighter than it looked in the red light: allow for it when printing, or on day three you will overdo it. Sign on the back in soft pencil: the place, the hour and who was beside you. In a year this will turn out to be the main thing in the picture.",
-  "ja": "四日目、乾燥。印画紙がひもにぶら下がって水を垂らし、暗室には酢のにおいがする。光沢紙か半光沢紙か。永遠に解けない問いで、クラブはきれいに二つに割れ、両派は一緒にお茶を飲む。乾いた写真は、赤い光の下で見たより明るい。焼くときにそれを見込まないと、三日目にやりすぎることになる。裏には柔らかい鉛筆で、場所、時刻、そばにいた人を書く。一年後には、それが写真のいちばん大事なところになる。"
+  "ja": "四日目、乾燥。印画紙がひもにぶら下がって水を垂らし、暗室には酢のにおいがする。光沢紙かつや消しか。永遠に解けない問いで、クラブはきれいに二つに割れ、両派は一緒にお茶を飲む。乾いた写真は、赤い光の下で見たより明るい。焼くときにそれを見込まないと、三日目にやりすぎることになる。裏には柔らかい鉛筆で、場所、時刻、そばにいた人を書く。一年後には、それが写真のいちばん大事なところになる。"
  },
  "city.xtx.cog_photo_guide.p5_1": {
   "ru": "Сегодня в лаборатории: негативы. Новичкам: сначала посмотреть, потом браться. Свет не включать, пока на двери горит красная лампочка, а когда не горит, на всякий случай спросить. Плёнку мотать на ощупь и шёпотом. Серёжа Гусев дежурит и объяснит всё, если вы не стесняетесь спрашивать, а стесняться тут нечего.",
@@ -753,7 +753,7 @@
  "city.xtx.cog_photo_guide.p5_4": {
   "ru": "Сегодня в лаборатории: сушка. Отпечатки не трогать мокрыми пальцами, как бы ни хотелось. Висят на леске прищепками за уголок, не за лицо. Уксусом пахнет до вечера, и это нормально: так лаборатория сообщает, что работа идёт. Кто спорит про глянец и матовую, спорит, пожалуйста, шёпотом.",
   "en": "Today in the lab: drying. Don't touch the prints with wet fingers, however much you want to. They hang on the line by a corner, not by the face. It smells of vinegar until evening, and that is normal: it is how the lab lets you know work is going on. Those arguing about gloss and matt, please argue in whispers.",
-  "ja": "今日の暗室：乾燥。どんなに触りたくても、濡れた指で写真に触れないこと。写真は顔ではなく角を洗濯ばさみで留めて、ひもに下げる。酢のにおいは夕方まで残るが、それは普通のこと。暗室が、作業が進んでいると知らせる方法だ。光沢か半光沢かで言い争う人は、どうぞ小声で。"
+  "ja": "今日の暗室：乾燥。どんなに触りたくても、濡れた指で写真に触れないこと。写真は顔ではなく角を洗濯ばさみで留めて、ひもに下げる。酢のにおいは夕方まで残るが、それは普通のこと。暗室が、作業が進んでいると知らせる方法だ。光沢かつや消しかで言い争う人は、どうぞ小声で。"
  },
  "city.xtx.cog_chess_ladder.title": {
   "ru": "Лесенка шахматного клуба. Тетрадь партий",
@@ -768,7 +768,7 @@
  "city.xtx.cog_chess_ladder.2": {
   "ru": "№ 212. Гонсалес — Каск. Итальянская партия, ничья на сороковом ходу. Оба довольны. Каск записал: «Он мне предложил ничью, я хотел отказаться, но он так посмотрел, что отказываться было бы грубо». Гонсалес приписал ниже: «Я хотел выиграть. Но чай вкуснее победы». Чай поставили оба, и никто не возражал. Лесенка осталась как была, что в таком случае считается лучшим результатом.",
   "en": "No. 212. González vs Kask. Italian Game, drawn on move forty. Both pleased. Kask wrote: \"He offered me a draw, I wanted to decline, but he looked at me in such a way that declining would have been rude.\" González added below: \"I wanted to win. But tea is tastier than victory.\" Both stood the tea and nobody objected. The ladder stayed as it was, which in such cases counts as the best result.",
-  "ja": "第二百十二局。ゴンサレス対カスク。イタリアンゲーム、四十手で引き分け。二人とも満足。カスクの書き込み。「引き分けを申し出られ、断りたかったが、あまりにもあの目で見られたので、断ったら失礼になるところだった」。ゴンサレスがその下に書き足した。「勝ちたかった。でも、お茶は勝利よりおいしい」。お茶は二人ともおごり、誰も異議を唱えなかった。階段表は元のまま。こういう場合は、それが最良の結果とされる。"
+  "ja": "第二百十二局。ゴンサレス対カスク。イタリアンゲーム、四十手で引き分け。二人とも満足。カスクの書き込み。「引き分けを申し出られ、断りたかったが、あんな目で見られては、断るのは失礼だった」。ゴンサレスがその下に書き足した。「勝ちたかった。でも、お茶は勝利よりおいしい」。お茶は二人ともおごり、誰も異議を唱えなかった。階段表は元のまま。こういう場合は、それが最良の結果とされる。"
  },
  "city.xtx.cog_chess_ladder.3": {
   "ru": "№ 213. Новак — неизвестный игрок. Неизвестный был в клубной куртке не по размеру и играл чёрными. Новак записал просто: «Проиграл в двадцать восемь ходов. Было красиво. Он ушёл, не назвав имени, но оставил на столе ферзя, чтобы убрали». Под записью чужой почерк: «Это я. Приду в четверг». Тамара Ильинична поставила в конце тетради карандашом пустую строчку и подписала: «Для него».",
@@ -807,7 +807,7 @@
  },
  "city.ask.cog.lh.swap.1": {
   "ru": "— «Принёс — возьми, взял — принеси». Работает без меня. Я только слежу, чтобы не уносили пустые обложки.",
-  "en": "\"\"Bring one, take one; take one, bring one.\" It works without me. I only make sure nobody walks off with empty covers.\"",
+  "en": "\"'Bring one, take one; take one, bring one.' It works without me. I only make sure nobody walks off with empty covers.\"",
   "ja": "「『持ってきたら取っていい、取ったら持ってきて』。わたしがいなくても回るの。空っぽの表紙だけ持ち去られないよう、見てるだけ。」"
  },
  "city.ask.cog.lh.swap.2": {
@@ -827,7 +827,7 @@
  },
  "city.ask.cog.lh.clock.1": {
   "ru": "— Про часы лучше спросить фотокружок: Серёжа брал «на время, вернём в четверг». Четверг у нас не кончается.",
-  "en": "\"About the clock you'd better ask the photo circle: Seryozha took it \"for a while, back on Thursday\". Our Thursday never ends.\"",
+  "en": "\"About the clock you'd better ask the photo circle: Seryozha took it 'for a while, back on Thursday'. Our Thursday never ends.\"",
   "ja": "「時計のことは写真サークルに聞いたほうがいいわ。セリョージャが『ちょっとだけ、木曜に返す』って持っていったの。うちの木曜は終わらないのよ。」"
  },
  "city.ask.cog.lh.clock.2": {
@@ -867,7 +867,7 @@
  },
  "city.ask.cog.ld.ladder.3": {
   "ru": "— Тебя вписали в тетрадь партий, коротко: «Выиграл. Без оправданий». Это комплимент: оправданий у нас обычно больше, чем ходов.",
-  "en": "\"You've been entered in the game book, briefly: \"Won. No excuses.\" That's a compliment: here there are usually more excuses than moves.\"",
+  "en": "\"You've been entered in the game book, briefly: 'Won. No excuses.' That's a compliment: here there are usually more excuses than moves.\"",
   "ja": "「棋譜帳にあなたの名前が入ったわ、短く。『勝ち。言い訳なし』。ほめ言葉よ。うちでは、たいてい手数より言い訳のほうが多いんだから。」"
  },
  "city.ask.cog.ld.cat": {
@@ -932,7 +932,7 @@
  },
  "city.ask.cog.cl.glider.1": {
   "ru": "— Влетел ко мне через барьер и сел на пальто. Поставила ему «четыре с плюсом»: два раза задел шляпу.",
-  "en": "\"It flew over my counter and landed on a coat. I gave it \"four plus\": it clipped a hat twice.\"",
+  "en": "\"It flew over my counter and landed on a coat. I gave it 'four plus': it clipped a hat twice.\"",
   "ja": "「カウンターを越えて飛んできて、コートに着陸したの。『四プラス』をつけたわ。帽子に二回ぶつかったから。」"
  },
  "city.ask.cog.cl.glider.2": {

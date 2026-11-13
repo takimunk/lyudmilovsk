@@ -12,7 +12,7 @@
  },
  "city.sp.board_0.c": {
   "ru": "Богдан Калниньш, 2-й этаж: Колетт из 17-й ищет морское стёклышко для аквариума. Своё не отдам, оно у жены «на счастье». Ищите на пляже после шторма.",
-  "en": "Bohdan Kalnins, 2nd floor: Colette in no. 17 wants a piece of sea glass for her aquarium. I won't give mine, my wife keeps it for luck. Try the beach after a storm.",
+  "en": "Bohdan Kalniņš, 2nd floor: Colette in no. 17 wants a piece of sea glass for her aquarium. I won't give mine, my wife keeps it for luck. Try the beach after a storm.",
   "ja": "二階のボフダン・カルニンシュより。十七号室のコレットが水槽に入れる海のガラス片を探しています。うちのは妻が「お守り」にしているので渡せません。嵐のあとの浜辺をどうぞ。"
  },
  "city.sp.board_0.d": {
@@ -172,13 +172,13 @@
  },
  "city.sp.dom.prompt": {
   "ru": "E — подсесть к костяшкам",
-  "en": "E — join the tiles",
-  "ja": "E：牌の席につく"
+  "en": "E — join the domino players",
+  "ja": "E：ドミノの席につく"
  },
  "city.sp.dom.1": {
   "ru": "Стол у входа занят каждый день после обеда: костяшки стучат так, что слышно на втором этаже.",
   "en": "The table by the door is taken every afternoon: the tiles clack so loud it carries to the second floor.",
-  "ja": "入口のテーブルは毎日昼すぎに埋まる。牌を打つ音が二階まで届く。"
+  "ja": "入口のテーブルは毎日昼すぎに埋まる。ドミノを打つ音が二階まで届く。"
  },
  "city.sp.dom.2": {
   "ru": "Карандаш на нитке привязан к столу: счёт ведут на салфетке, салфетки хранят с прошлой весны.",
@@ -503,7 +503,7 @@
  "city.sp.bradio.1": {
   "ru": "Радио на полке бубнит о погоде для рыбаков: ветер северный, три балла, у берега туман.",
   "en": "The radio on the shelf mutters the fishermen's forecast: north wind, force three, fog near the shore.",
-  "ja": "棚のラジオが漁師向けの予報をつぶやく。北風三メートル、岸のあたりは霧。"
+  "ja": "棚のラジオが漁師向けの予報をつぶやく。北の風、風力三、岸のあたりは霧。"
  },
  "city.sp.bradio.2": {
   "ru": "Играет старая песня про корабли. Колетт вполголоса поправляет певца в третьем куплете.",
@@ -551,7 +551,7 @@
   "ja": "E：写真を見る"
  },
  "city.sp.bphotos.1": {
-  "ru": "Траулер у причала. На палубе молодой моряк в бескозырке, рядом девушка с сетью в руках. На обороте: «Ласточка», 1968».",
+  "ru": "Траулер у причала. На палубе молодой моряк в бескозырке, рядом девушка с сетью в руках. На обороте: «Ласточка», 1968.",
   "en": "A trawler at the quay. On deck a young sailor in a cap, beside him a girl holding a net. On the back: \"Swallow\", 1968.",
   "ja": "岸壁につないだトロール船。甲板には帽子をかぶった若い水兵と、網を抱えた少女。裏には「ツバメ号 1968」。"
  },
@@ -662,7 +662,7 @@
  },
  "quest.home_bauer.title": {
   "ru": "Стёклышко для Лоцмана",
-  "en": "A pane for the Pilot",
+  "en": "A piece of glass for the Pilot",
   "ja": "水先案内人にガラス片を"
  },
  "quest.home_bauer.desc": {
@@ -713,7 +713,7 @@
  "quest.serp_dominoes.desc": {
   "ru": "В западном холле у входа каждый день после обеда стучат костяшки. Говорят, играют на чай, а чай ставит проигравший.",
   "en": "In the west hall by the door the tiles clack every afternoon. They say it's played for tea, and the loser pays.",
-  "ja": "西のホールの入口では、毎日昼すぎに牌の音がする。お茶を賭けていて、負けた人がおごるのだという。"
+  "ja": "西のホールの入口では、毎日昼すぎにドミノの音がする。お茶を賭けていて、負けた人がおごるのだという。"
  },
  "quest.serp_dominoes.win.log": {
   "ru": "Стол у входа, четыре стула, одна неудобная скамья. Сесть и выиграть хотя бы одну партию.",

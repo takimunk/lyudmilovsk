@@ -13,7 +13,7 @@
  "city.san.regime.3": {
   "ru": "«Режим дня. 13:00 — обед. 14:00 — тихий час». Слово «тихий» подчёркнуто дважды, а рядом нарисован чайник и написано: «Шшш».",
   "en": "\"Daily regime. 13:00 lunch. 14:00 quiet hour.\" The word \"quiet\" is underlined twice, and beside it someone has drawn a kettle and written: \"Shhh.\"",
-  "ja": "「日課。13時 昼食、14時 静かな時間」。「静かな」には二重線が引かれ、横にやかんの絵と「しーっ」の文字。"
+  "ja": "「日課。13時 昼食、14時 静かな時間」。「静かな」には下線が二本引かれ、横にやかんの絵と「しーっ」の文字。"
  },
  "city.san.regime.4": {
   "ru": "«Режим дня. 15:30 — второй стакан в бювете, 16:00 — полдник, 17:00 — шахматы, книги, письма домой, 18:00 — свободное время: море, скамейка или облака на выбор».",
@@ -47,7 +47,7 @@
  },
  "city.san.book.3": {
   "ru": "«Часы над дверью бювета стоят на 4:10. Спросил, с каких пор. Ответили: «С тех пор, как мы здесь работаем». Прошу разрешения посмотреть. — Г. Алиев». Ниже печать: «Разрешаем. Только не разбирайте до конца».",
-  "en": "\"The clock over the pump-room door has stood at 4:10. I asked since when. They said: 'Since we started working here.' I request permission to look at it. — G. Aliyev.\" Below, a stamp: \"Permitted. Just don't take it all the way apart.\"",
+  "en": "\"The clock over the pump-room door is stuck at 4:10. I asked since when. They said: 'Since we started working here.' I request permission to look at it. — G. Aliyev.\" Below, a stamp: \"Permitted. Just don't take it all the way apart.\"",
   "ja": "「鉱泉の間の扉の上の時計は4時10分で止まっている。いつからかと聞くと『私たちが勤めはじめたときから』との答え。拝見する許可をお願いしたい。― G.アリエフ」。下に判子「許可します。ただし、最後まで分解しないこと」。"
  },
  "city.san.book.4": {
@@ -82,7 +82,7 @@
  },
  "city.san.book.10": {
   "ru": "На последней странице чистое поле и приписка карандашом: «Тетрадь лежит на пианино. Если умеете — сыграйте. Если не умеете — просто откройте и посмотрите, как это записано. Часы в бювете идут».",
-  "en": "On the last page there is an empty field and a pencil note: \"The notebook is on the piano. If you can, play it. If you cannot, just open it and see how it is written down. The clock in the pump room is running.\"",
+  "en": "On the last page there is a blank space and a pencil note: \"The notebook is on the piano. If you can, play it. If you cannot, just open it and see how it is written down. The clock in the pump room is running.\"",
   "ja": "最後のページは空白で、鉛筆の書き込みがある。「楽譜帳はピアノの上にあります。弾ける方は弾いてください。弾けない方は、ただ開いて、どう書いてあるか見てください。鉱泉の間の時計は動いています」。"
  },
  "city.san.reg.1": {
@@ -133,7 +133,7 @@
  "city.san.menu.wed": {
   "ru": "Меню, среда — рыбный день. Уха, судак с картофелем, клюквенный кисель. Кто не любит рыбу, получает яблоко и сочувствие.",
   "en": "Menu, Wednesday: fish day. Fish soup, pike-perch with potatoes, cranberry kissel. Whoever dislikes fish gets an apple and sympathy.",
-  "ja": "水曜のメニュー、魚の日。魚のスープ、スズキ類とじゃがいも、クランベリーのキセーリ。魚が苦手な人にはりんごと同情を。"
+  "ja": "水曜のメニュー、魚の日。魚のスープ、パイクパーチとじゃがいも、クランベリーのキセーリ。魚が苦手な人にはりんごと同情を。"
  },
  "city.san.menu.thu": {
   "ru": "Меню, четверг. Щи, плов с курицей, салат из свёклы, компот. Плов варит повар, который до санатория ходил коком на сухогрузе.",
@@ -152,7 +152,7 @@
  },
  "city.san.menu.sun": {
   "ru": "Меню, воскресенье. Блины со сметаной и вареньем с утра, куриный бульон, запеканка, чай с лимоном. Добавки дают без вопросов.",
-  "en": "Menu, Sunday. Pancakes with sour cream and jam in the morning, chicken broth, a bake, tea with lemon. Second helpings come without questions.",
+  "en": "Menu, Sunday. Pancakes with sour cream and jam in the morning, chicken broth, a casserole, tea with lemon. Second helpings come without questions.",
   "ja": "日曜のメニュー。朝はサワークリームとジャムのブリヌイ、鶏のブイヨン、キャセロール、レモンティー。おかわりは何も聞かずにくれる。"
  },
  "city.san.oxygen.prompt": {
@@ -163,7 +163,7 @@
  "city.san.oxygen.1": {
   "ru": "Белый баллон зашипел, и стакан наполнился розовой пеной до краёв. На вкус как облако с малиной. В голове стало светло и немного смешно.",
   "en": "The white cylinder hissed and the glass filled with pink foam to the brim. It tastes like a cloud with raspberry. My head went light and a little giddy.",
-  "ja": "白いボンベがしゅっと鳴り、グラスがピンクの泡でふちまで満ちた。ラズベリー味の雲みたいな味。頭が軽くなって、少しおかしくなる。"
+  "ja": "白いボンベがしゅっと鳴り、グラスがピンクの泡でふちまで満ちた。ラズベリー味の雲みたいな味。頭が軽くなって、なんだか少し愉快な気分になる。"
  },
  "city.san.oxygen.2": {
   "ru": "Коктейль подали в высоком стакане: сверху пена, снизу малиновый сироп. Табличка: «Не более двух в день: после третьего начинаешь разговаривать с цветами».",
@@ -223,7 +223,7 @@
  "city.san.labels.2": {
   "ru": "Табличка: «Монстера. Имя: Борис. Выросла из черенка, подаренного отдыхающим при выписке. На открытке было написано: «Пусть растёт, раз я не могу»».",
   "en": "A plate: \"Monstera. Name: Boris. Grown from a cutting a guest gave on leaving. The card said: 'Let it grow, since I cannot.'\"",
-  "ja": "札。「モンステラ。名前はボリス。退所する利用者がくれた挿し穂から育ちました。カードには『僕の代わりに育ちますように』」。"
+  "ja": "札。「モンステラ。名前はボリス。退所する利用者がくれた挿し穂から育ちました。カードには『私の代わりに育ちますように』」。"
  },
  "city.san.labels.3": {
   "ru": "Табличка у арки: «Фикус Семён. Старейший житель сада. Листья протирают по пятницам влажной тряпкой, он ни разу не пожаловался».",
@@ -302,7 +302,7 @@
  },
  "city.san.court.1": {
   "ru": "Из окна виден двор-кольцо: фонтан с белой чашей, круглая лужайка и окна напротив. В одном кто-то поливает герань, в другом сушится полотенце с вышитым солнцем.",
-  "en": "The window looks onto the ring courtyard: a fountain with a white bowl, a round lawn and the windows opposite. In one a person waters geraniums, in another a towel with an embroidered sun is drying.",
+  "en": "The window looks onto the ring courtyard: a fountain with a white bowl, a round lawn and the windows opposite. In one someone is watering geraniums, in another a towel with an embroidered sun is drying.",
   "ja": "窓から輪の形の中庭が見える。白い水盤の噴水、丸い芝生、向かいの窓。一つの窓ではゼラニウムに水をやり、別の窓では太陽の刺繍のタオルが干してある。"
  },
  "city.san.court.2": {
@@ -317,8 +317,8 @@
  },
  "city.san.clock.2": {
   "ru": "Под часами стоит стремянка, на ступеньке лежат отвёртка-«звёздочка» и записка: «Прошу не убирать. Г. А.».",
-  "en": "A stepladder stands under the clock, and on a step lie a tiny screwdriver and a note: \"Please do not move. G. A.\"",
-  "ja": "時計の下に脚立が立ち、段の上に小さなドライバーとメモ。「片づけないでください。G.A.」"
+  "en": "A stepladder stands under the clock, and on a step lie a Phillips screwdriver and a note: \"Please do not move. G. A.\"",
+  "ja": "時計の下に脚立が立ち、段の上にプラスドライバーとメモ。「片づけないでください。G.A.」"
  },
  "city.san.clock.3": {
   "ru": "Часы сняты. На подоконнике, на чистой салфетке, по порядку лежат колёсики, как кусочки пазла. Пожилой отдыхающий шепчет им что-то и пинцетом переставляет самое маленькое.",
@@ -327,7 +327,7 @@
  },
  "city.san.clock.4": {
   "ru": "Часы идут! Тикают тихо и уверенно. Табличка: «Ходят. Точно. Проверено по радио». Ниже кто-то приписал: «Теперь нельзя опаздывать ни на воду, ни на обед».",
-  "en": "The clock is running! It ticks quietly and surely. A plate: \"Running. Accurate. Checked by radio.\" Below someone added: \"Now you can be late neither for the water nor for lunch.\"",
+  "en": "The clock is running! It ticks quietly and surely. A plate: \"Running. Accurate. Checked by radio.\" Below someone added: \"Now there is no being late, either for the water or for lunch.\"",
   "ja": "時計が動いている！静かに、確かに時を刻む。札「稼働中。正確。ラジオで確認済み」。その下に誰かが「これで水にも昼食にも遅れられません」。"
  },
  "city.san.evening.prompt": {
@@ -423,7 +423,7 @@
  "quest.sanatorium_guests.done": {
   "ru": "Я играл медленно, по тетради, где каждый такт подписан, как шестерёнка. Пианино на полтона фальшивило, и мне показалось, что так и задумано. Где-то в бювете громко тикали часы.",
   "en": "I played slowly from the notebook, where every bar is labelled like a gear. The piano was half a tone off, and it seemed to me that was intended. Somewhere in the pump room the clock ticked loudly.",
-  "ja": "歯車のように小節ごとに注記のある楽譜帳を見ながら、ゆっくり弾いた。ピアノは半音狂っていたが、わざとのように思えた。どこか鉱泉の間で、時計が大きく時を刻んでいた。"
+  "ja": "歯車のように小節ごとに注記のある楽譜帳を見ながら、ゆっくり弾いた。ピアノは半音狂っていたが、わざとのように思えた。鉱泉の間のどこかで、時計が大きく時を刻んでいた。"
  },
  "quest.sanatorium_regime.title": {
   "ru": "Режим отдыхающего",

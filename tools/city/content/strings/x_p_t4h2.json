@@ -2,12 +2,12 @@
  "city.rcb.scale.prompt": {
   "ru": "E — встать на весы",
   "en": "E — step on the scales",
-  "ja": "E — 秤に乗る"
+  "ja": "E：秤に乗る"
  },
  "city.rcb.scale.1": {
   "ru": "Напольные весы с гирьками на коромысле. Стрелка дрогнула и встала: ровно два килограмма картошки, ни граммом больше. Нина Павловна всегда кладёт гирьку для верности, и все делают вид, что не замечают.",
-  "en": "Floor scales with little weights on the beam. The needle shivered and settled: exactly two kilos of potatoes, not a gram more. Nina Pavlovna always lays on one extra weight for luck, and everybody pretends not to notice.",
-  "ja": "分銅つきの床秤。針が震えてぴたりと止まった。ジャガイモちょうど二キロ、一グラムも多くない。ニーナ・パヴロヴナはいつも運試しに分銅をもう一つ載せるけれど、みんな気づかないふりをしている。"
+  "en": "Floor scales with little weights on the beam. The needle shivered and settled: exactly two kilos of potatoes, not a gram more. Nina Pavlovna always lays on one extra weight for good measure, and everybody pretends not to notice.",
+  "ja": "分銅つきの床秤。針が震えてぴたりと止まった。ジャガイモちょうど二キロ、一グラムも多くない。ニーナ・パヴロヴナはいつも念のため分銅をもう一つ載せるけれど、みんな気づかないふりをしている。"
  },
  "city.rcb.scale.2": {
   "ru": "На платформе жестяная бирка: «Поверено в марте». Под ней гвоздём нацарапано: «Недовес — не здесь».",
@@ -16,13 +16,13 @@
  },
  "city.rcb.scale.3": {
   "ru": "Встал на платформу сам. Стрелка качнулась и показала сорок восемь. Выходит, мешок картошки тяжелее меня, по крайней мере в моих мыслях.",
-  "en": "I stepped on myself. The needle swung and showed forty-eight. So a sack of potatoes weighs more than I thought, or I weigh less.",
-  "ja": "自分で乗ってみた。針が揺れて四十八を指した。ジャガイモの袋は思っていたより重いのか、僕が軽いのか。"
+  "en": "I stepped on myself. The needle swung and showed forty-eight. So a sack of potatoes is heavier than me, at least in my head.",
+  "ja": "自分で乗ってみた。針が揺れて四十八を指した。ということは、ジャガイモ一袋のほうが僕より重い。少なくとも僕の頭の中では。"
  },
  "city.rcb.abacus.prompt": {
   "ru": "E — щёлкнуть костяшками",
   "en": "E — click the beads",
-  "ja": "E — そろばんをはじく"
+  "ja": "E：そろばんをはじく"
  },
  "city.rcb.abacus.1": {
   "ru": "Утром счёты щёлкают звонко: выручка за вчерашний день сходится только со второго круга.",
@@ -47,7 +47,7 @@
  "city.rcb.goods_day.prompt": {
   "ru": "E — прочесть «Товары дня»",
   "en": "E — read \"Goods of the day\"",
-  "ja": "E — 「本日の品」を読む"
+  "ja": "E：「本日の品」を読む"
  },
  "city.rcb.goods_day.1": {
   "ru": "Понедельник: завоз хлеба с хлебозавода, чёрный и батон. Кефир привезут к обеду.",
@@ -56,8 +56,8 @@
  },
  "city.rcb.goods_day.2": {
   "ru": "Вторник: яблоки из садов за городом, по шесть рублей. Мягкие бочка не считаются.",
-  "en": "Tuesday: apples from the orchards outside town, six roubles. Soft ones on the side don't count.",
-  "ja": "火曜日：郊外の果樹園のりんご、一つ六ルーブル。やわらかいのは数に入れません。"
+  "en": "Tuesday: apples from the orchards outside town, six roubles. Soft spots don't count.",
+  "ja": "火曜日：郊外の果樹園のりんご、一つ六ルーブル。やわらかいところは数に入りません。"
  },
  "city.rcb.goods_day.3": {
   "ru": "Среда: сыр круглый, маленький, привезли всего два. Кто первый, тот и с сыром.",
@@ -66,13 +66,13 @@
  },
  "city.rcb.goods_day.4": {
   "ru": "Четверг: печенье рассыпное, берите в бумажный кулёк. Кулёк просят вернуть, но никто не возвращает.",
-  "en": "Thursday: loose cookies, take them in a paper cone. Please bring the cone back, though nobody does.",
+  "en": "Thursday: loose biscuits, take them in a paper cone. Please bring the cone back, though nobody does.",
   "ja": "木曜日：量り売りのクッキー、紙の袋にどうぞ。袋は返してほしいが、誰も返さない。"
  },
  "city.rcb.goods_day.5": {
   "ru": "Пятница: семечки, жареные ещё утром. Скорлупу — в карман, а не на пол!",
   "en": "Friday: sunflower seeds roasted this morning. Husks in your pocket, not on the floor!",
-  "ja": "金曜日：今朝焼いたひまわりの種。殻は床でなくポケットへ！"
+  "ja": "金曜日：今朝炒ったひまわりの種。殻は床でなくポケットへ！"
  },
  "city.rcb.goods_day.6": {
   "ru": "Суббота: воду и кефир берите впрок, завтра магазин закрыт. Хлеб будет только до обеда.",
@@ -87,7 +87,7 @@
  "city.rcb.bread.prompt": {
   "ru": "E — посмотреть хлебную полку",
   "en": "E — look at the bread rack",
-  "ja": "E — パン棚を見る"
+  "ja": "E：パン棚を見る"
  },
  "city.rcb.bread.1": {
   "ru": "Хлеб ещё тёплый: утром его несли на подносах, и корка потрескивает от одного взгляда.",
@@ -112,7 +112,7 @@
  "city.rcb.deposit.prompt": {
   "ru": "E — сдать бутылку",
   "en": "E — return a bottle",
-  "ja": "E — 空き瓶を返す"
+  "ja": "E：空き瓶を返す"
  },
  "city.rcb.deposit.1": {
   "ru": "Приём стеклотары. Бутылки звякают в ящиках, пахнет прошлогодним лимонадом. Принимают без отбитого горлышка и без чужих этикеток.",
@@ -132,7 +132,7 @@
  "city.rcb.radio.prompt": {
   "ru": "E — покрутить ручку приёмника",
   "en": "E — turn the radio dial",
-  "ja": "E — ラジオのつまみを回す"
+  "ja": "E：ラジオのつまみを回す"
  },
  "city.rcb.radio.1": {
   "ru": "Утренняя гимнастика по радио: «Руки в стороны... и раз!» Нина Павловна приседает между полок и не роняет ни одной банки.",
@@ -161,8 +161,8 @@
  },
  "city.rcb.wash.prompt": {
   "ru": "E — запустить стирку (3 руб.)",
-  "en": "E — run a wash (3 roubles)",
-  "ja": "E — 洗濯をはじめる（3ルーブル）"
+  "en": "E — run a wash (3 rub.)",
+  "ja": "E：洗濯をはじめる（3ルーブル）"
  },
  "city.rcb.wash.1": {
   "ru": "Бросил в барабан рубашки и полотенце, насыпал порошка. Машина покряхтела, набрала воды и закружила бельё. Сорок минут: как раз хватит на журналы у лавки.",
@@ -187,7 +187,7 @@
  "city.rcb.fold.prompt": {
   "ru": "E — сложить бельё",
   "en": "E — fold the laundry",
-  "ja": "E — 洗濯物をたたむ"
+  "ja": "E：洗濯物をたたむ"
  },
  "city.rcb.fold.1": {
   "ru": "Простыню складывают вдвоём. Сегодня второй уголок держала незнакомая тётя, и мы разошлись без слова, но очень довольные собой.",
@@ -207,7 +207,7 @@
  "city.rcb.mangle.prompt": {
   "ru": "E — покрутить каток",
   "en": "E — turn the mangle",
-  "ja": "E — 絞り機のハンドルを回す"
+  "ja": "E：絞り機のハンドルを回す"
  },
  "city.rcb.mangle.1": {
   "ru": "Каток тугой, как несмазанная дверь. Мокрая наволочка прошла между валами и вышла плоской, как блин.",
@@ -215,7 +215,7 @@
   "ja": "絞り機は油の切れた扉みたいに固い。濡れた枕カバーがローラーの間を通ると、ホットケーキみたいにぺたんこになって出てきた。"
  },
  "city.rcb.mangle.2": {
-  "ru": "На раме выбито: «Мастерская Шмидта, 1927». Этому катку старше всех в доме. Он выжил, потому что его никто не умеет чинить.",
+  "ru": "На раме выбито: «Мастерская Шмидта, 1927». Этот каток старше всех в доме. Он выжил, потому что его никто не умеет чинить.",
   "en": "Stamped on the frame: \"Schmidt's workshop, 1927.\" This mangle is older than anyone in the house. It survives because nobody knows how to repair it.",
   "ja": "フレームに刻印「シュミット工房、一九二七年」。この絞り機は家のだれより年上だ。直せる人がいないから生き延びている。"
  },
@@ -227,7 +227,7 @@
  "city.rcb.mags.prompt": {
   "ru": "E — полистать журналы",
   "en": "E — leaf through the magazines",
-  "ja": "E — 雑誌をめくる"
+  "ja": "E：雑誌をめくる"
  },
  "city.rcb.mags.1": {
   "ru": "«Работница» с выкройками: сарафан за один вечер. Выкройка перечёркнута чужим карандашом: «В плечах мала».",
@@ -257,7 +257,7 @@
  "city.rcb.cork.prompt": {
   "ru": "E — прочесть объявления",
   "en": "E — read the notices",
-  "ja": "E — 掲示を読む"
+  "ja": "E：掲示を読む"
  },
  "city.rcb.cork.1": {
   "ru": "Пробковая доска. Объявление карандашом на тетрадном листе: «Потерян красный шерстяной носок, левый. Связала бабушка, второго такого нет. Кв. 3-07, спросить Витю».",
@@ -277,7 +277,7 @@
  "city.rcb.cork.4": {
   "ru": "График стирки обновили: «Понедельник — 1-й этаж, вторник — 2-й...» Внизу красной ручкой: «Кто занял вторую машину в воскресенье — имейте совесть!»",
   "en": "The wash schedule was renewed: \"Monday, first floor; Tuesday, second...\" At the bottom in red pen: \"Whoever took the second machine on Sunday, have a conscience!\"",
-  "ja": "洗濯当番表が新しくなった。「月曜日は一階、火曜日は二階……」下に赤ペンで。「日曜に二号機を使った人、良心をもって！」"
+  "ja": "洗濯当番表が新しくなった。「月曜日は一階、火曜日は二階……」下に赤ペンで。「日曜に二号機を使った人、少しは遠慮してください！」"
  },
  "city.rcb.cork.5": {
   "ru": "Свежее объявление: «Нашёлся носок со штопкой на пятке! Лежит в ящике „Потеряшки“. Правый из пары хранит Нина Павловна, но отдаст только Вите в руки».",
@@ -292,7 +292,7 @@
  "city.rcb.socks.prompt": {
   "ru": "E — осмотреть верёвку забытых вещей",
   "en": "E — look at the line of forgotten things",
-  "ja": "E — 忘れものの紐を見る"
+  "ja": "E：忘れものの紐を見る"
  },
  "city.rcb.socks.1": {
   "ru": "На верёвке над столом висит забытое: полосатый носок, варежка, половина пары ползунков. К каждой прищепке приколота бумажка с датой.",
@@ -317,7 +317,7 @@
  "city.rcb.lost_box.prompt": {
   "ru": "E — заглянуть в ящик «Потеряшки»",
   "en": "E — look in the Lost Property box",
-  "ja": "E — 『忘れもの』箱をのぞく"
+  "ja": "E：『忘れもの』箱をのぞく"
  },
  "city.rcb.lost_box.1": {
   "ru": "В коробке: пуговицы в спичечном коробке, одна перчатка, чей-то ключ на верёвочке. Сверху бирка: «Хранить месяц, потом в добрые руки».",
@@ -337,7 +337,7 @@
  "city.rcb.lie.prompt": {
   "ru": "E — лечь в шезлонг",
   "en": "E — lie down on the lounger",
-  "ja": "E — デッキチェアに寝ころぶ"
+  "ja": "E：デッキチェアに寝ころぶ"
  },
  "city.rcb.lie.1": {
   "ru": "Утреннее солнце ещё не жжёт, а только греет щёку. Холст прохладный, внизу кричат чайки, и ничего не хочется.",
@@ -362,12 +362,12 @@
  "city.rcb.feed.prompt": {
   "ru": "E — покормить голубей",
   "en": "E — feed the pigeons",
-  "ja": "E — 鳩にえさをやる"
+  "ja": "E：鳩にえさをやる"
  },
  "city.rcb.feed.1": {
   "ru": "Бросил горсть семечек на ржавое железо. Голуби слетелись раньше, чем я сосчитал до трёх, и поделили добычу с руганью и воркованием.",
   "en": "I tossed a handful of seeds on the rusty tin. The pigeons arrived before I counted to three and shared the spoils with quarrels and cooing.",
-  "ja": "さびたトタンにひとつかみの種をまいた。三つ数える前に鳩が集まり、けんかとくるくるの声で分けあった。"
+  "ja": "さびたトタンにひとつかみの種をまいた。三つ数える前に鳩が集まり、けんかしたりクークー鳴いたりしながら分けあった。"
  },
  "city.rcb.feed.2": {
   "ru": "Белый турман сел мне на руку и деловито склевал семечки с ладони. Остальные ждали, как очередь в магазине.",
@@ -377,12 +377,12 @@
  "city.rcb.feed.3": {
   "ru": "К вечеру голуби усаживаются по краю голубятни рядком. Каждому по семечку на ночь, и всё: разговоры стихают.",
   "en": "By evening the pigeons settle in a row along the loft's edge. One seed each for the night, and the chatter dies down.",
-  "ja": "夕方、鳩は小屋のふちに一列に並ぶ。ひとりひと粒、夜のぶんをあげると、おしゃべりが静かになる。"
+  "ja": "夕方、鳩は小屋のふちに一列に並ぶ。一羽にひと粒、夜のぶんをあげると、おしゃべりが静かになる。"
  },
  "city.rcb.feeder.prompt": {
   "ru": "E — понаблюдать за кормушкой",
   "en": "E — watch the bird feeder",
-  "ja": "E — えさ台を眺める"
+  "ja": "E：えさ台を眺める"
  },
  "city.rcb.feeder.1": {
   "ru": "Синицы первыми: хватают семечко и улетают на трубу разгрызать. Прилетают по одной и ссорятся за каждое зёрнышко.",
@@ -401,13 +401,13 @@
  },
  "city.rcb.feeder.4": {
   "ru": "Кормушка пуста. На ней снежинки пыли и одно забытое зёрнышко.",
-  "en": "The feeder is empty. A dusting of dust and one forgotten grain.",
+  "en": "The feeder is empty. A film of dust and one forgotten grain.",
   "ja": "えさ台は空。ほこりが薄くかかり、忘れられた粒が一つだけ。"
  },
  "city.rcb.tub1.prompt": {
   "ru": "E — прочесть табличку",
   "en": "E — read the sign",
-  "ja": "E — 札を読む"
+  "ja": "E：札を読む"
  },
  "city.rcb.tub1.1": {
   "ru": "Табличка: «Помидоры „Бычье сердце“. Не рвать! З. И.» Стебли привязаны тряпочками к палкам, как руки в бинтах.",
@@ -422,7 +422,7 @@
  "city.rcb.tub2.prompt": {
   "ru": "E — прочесть табличку",
   "en": "E — read the sign",
-  "ja": "E — 札を読む"
+  "ja": "E：札を読む"
  },
  "city.rcb.tub2.1": {
   "ru": "Табличка: «Георгины. Клубни прошлогодние, не выкапывать!» Бутоны плотные, как кулаки.",
@@ -437,7 +437,7 @@
  "city.rcb.tub3.prompt": {
   "ru": "E — прочесть табличку",
   "en": "E — read the sign",
-  "ja": "E — 札を読む"
+  "ja": "E：札を読む"
  },
  "city.rcb.tub3.1": {
   "ru": "Табличка: «Мята для чая. Отщипывать по листику!» Кто-то нарисовал рядом чашку с паром.",
@@ -447,12 +447,12 @@
  "city.rcb.tub3.2": {
   "ru": "Растёр листик в пальцах: пахнет так, что хочется срочно поставить самовар на столе под навесом.",
   "en": "I rubbed a leaf between my fingers: it smells so good I want to put the samovar on at once.",
-  "ja": "葉を指でこすると、すぐにでも棚の下のサモワールに火を入れたくなる香りがした。"
+  "ja": "葉を指でこすると、すぐにでも日よけの下のサモワールに火を入れたくなる香りがした。"
  },
  "city.rcb.tub4.prompt": {
   "ru": "E — прочесть табличку",
   "en": "E — read the sign",
-  "ja": "E — 札を読む"
+  "ja": "E：札を読む"
  },
  "city.rcb.tub4.1": {
   "ru": "Табличка: «Укроп. Огурцы обещали, но передумали». Укроп вымахал выше таблички.",
@@ -467,7 +467,7 @@
  "city.rcb.shower.prompt": {
   "ru": "E — встать под душ",
   "en": "E — take a shower",
-  "ja": "E — シャワーを浴びる"
+  "ja": "E：シャワーを浴びる"
  },
  "city.rcb.shower.1": {
   "ru": "Вода в баке за день нагрелась на солнце: сверху тёплая, а на дне ещё помнит колодец. Ахнул, засмеялся и вытерся полотенцем с гвоздя.",
@@ -482,7 +482,7 @@
  "city.rcb.telescope.prompt": {
   "ru": "E — посмотреть в трубу",
   "en": "E — look through the telescope",
-  "ja": "E — 望遠鏡をのぞく"
+  "ja": "E：望遠鏡をのぞく"
  },
  "city.rcb.telescope.1": {
   "ru": "Труба на треноге смотрит на море. Рыбацкий катер, на мачте сушится рубашка, по стёклам бегут блики. На тубусе записка: «Не крутить резко».",
@@ -507,7 +507,7 @@
  "city.rcb.washline.prompt": {
   "ru": "E — посмотреть на бельё",
   "en": "E — look at the linen",
-  "ja": "E — 洗濯物を眺める"
+  "ja": "E：洗濯物を眺める"
  },
  "city.rcb.washline.1": {
   "ru": "Начало недели: на верёвках синие простыни первого этажа. Белые рубашки висят рядком, как ученики на линейке.",
@@ -532,7 +532,7 @@
  "city.rcb.roofnote.prompt": {
   "ru": "E — прочесть объявление на крыше",
   "en": "E — read the roof notice",
-  "ja": "E — 屋上の掲示を読む"
+  "ja": "E：屋上の掲示を読む"
  },
  "city.rcb.roofnote.1": {
   "ru": "«Крыша — для всех. Правила солярия: окурки в банку, голубей не гонять, бельё снимать до заката. Совет дома».",
@@ -562,7 +562,7 @@
  "city.rcb.tea.prompt": {
   "ru": "E — налить чаю из самовара",
   "en": "E — pour tea from the samovar",
-  "ja": "E — サモワールからお茶をそそぐ"
+  "ja": "E：サモワールからお茶をそそぐ"
  },
  "city.rcb.tea.1": {
   "ru": "Самовар пыхтит, как маленький паровоз. Чай крепкий, цвета янтаря, с мятой из кадки. К чашке прилагается кусок сахара и вид на море.",
@@ -581,13 +581,13 @@
  },
  "quest.rcb_socks.title": {
   "ru": "Одинокий носок",
-  "en": "The Lone Sock",
+  "en": "The lone sock",
   "ja": "片方だけの靴下"
  },
  "quest.rcb_socks.desc": {
   "ru": "В прачечной на пробковой доске столько объявлений про один красный носок, что даже стиральные машины, кажется, прислушиваются.",
   "en": "The laundry's cork board has so many notices about one red sock that even the washing machines seem to be listening.",
-  "ja": "洗濯室のコルクボードには赤い靴下一足分の掲示がたくさん。洗濯機まで耳をすませているようだ。"
+  "ja": "洗濯室のコルクボードには赤い靴下一枚をめぐる掲示がたくさん。洗濯機まで耳をすませているようだ。"
  },
  "quest.rcb_socks.board.log": {
   "ru": "Для начала прочту объявления: что за носок и чей он.",
@@ -626,7 +626,7 @@
  },
  "quest.rcb_roof.title": {
   "ru": "Чай на крыше",
-  "en": "Tea on the Roof",
+  "en": "Tea on the roof",
   "ja": "屋上のお茶"
  },
  "quest.rcb_roof.desc": {
@@ -657,7 +657,7 @@
  "quest.rcb_roof.tea.log": {
   "ru": "Самовар на столе под навесом. Вечером там чай для всех, кто пришёл.",
   "en": "The samovar is on the table under the pergola. In the evening there's tea for everyone who comes.",
-  "ja": "サモワールは棚の下のテーブルにある。夕方には来た人みんなにお茶が出る。"
+  "ja": "サモワールは日よけの下のテーブルにある。夕方には来た人みんなにお茶が出る。"
  },
  "quest.rcb_roof.tea.obj": {
   "ru": "Налить чаю из самовара",

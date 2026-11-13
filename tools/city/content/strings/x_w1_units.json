@@ -8,12 +8,12 @@
  "city.pu.pu_bakery_chat.2": {
   "ru": "— Ржаной брала Люба, не я. Закваске уже семнадцать лет, она старше нас обоих и умнее.",
   "en": "\"The rye is Lyuba's doing, not mine. The starter is seventeen years old, older than the two of us and cleverer.\"",
-  "ja": "「ライ麦パンは私じゃなくて、酵母のおかげさ。種は十七歳、私たち二人より年上で、賢いんだ」"
+  "ja": "「ライ麦パンはリューバの仕事で、私じゃないよ。種は十七歳、私たち二人より年上で、賢いんだ」"
  },
  "city.pu.pu_bakery_chat.3": {
   "ru": "— К вечеру остаются булки. Берите: утром они лучше, чем выглядели вечером, а вечером — лучше, чем думали.",
-  "en": "\"By evening it's buns that are left. Take some: in the morning they're better than they looked in the evening.\"",
-  "ja": "「夕方に残るのは丸パンだね。持っていきな、翌朝には見た目よりずっといい味になってる」"
+  "en": "\"By evening it's buns that are left. Take some: in the morning they're better than they looked in the evening, and in the evening they're better than you'd think.\"",
+  "ja": "「夕方に残るのは丸パンだね。持っていきな、翌朝には夕方の見た目よりいい味になってるし、夕方だって思ったよりうまいよ」"
  },
  "city.pu.pu_bakery_chat.4": {
   "ru": "— В воскресенье пекарь выходной, хлеб вчерашний. Но вчерашний хлеб — тоже хлеб. И тосты из него лучше.",
@@ -58,7 +58,7 @@
  "city.pu.pu_bakery_today.1": {
   "ru": "На щите у двери: «Закваска проснулась в 4:10. Первый противень в 5:00, ржаной в 7:00. Булочки с маком к девяти — если мак не слетит».",
   "en": "On the sandwich board by the door: \"The starter woke at 4:10. First tray at 5:00, rye at 7:00. Poppy buns by nine, if the poppy seeds don't fly off.\"",
-  "ja": "入口の立て看板：「種は四時十分に目覚めました。最初の天板は五時、ライ麦は七時。ケシの実パンは九時まで、ケシの実が飛ばなければ」"
+  "ja": "入口の立て看板：「種は四時十分に目覚めました。最初の天板は五時、ライ麦は七時。ケシの実パンは九時までに、ケシの実が飛ばなければ」"
  },
  "city.pu.pu_bakery_today.2": {
   "ru": "Мелом: «Вчера закваска капризничала. Пекарь с ней разговаривал полчаса. Помогло. Хлеб сегодня весёлый».",
@@ -137,7 +137,7 @@
  },
  "city.pu.pu_barber_strop.2": {
   "ru": "Парикмахер показывает, как править: от себя, плавно, лезвием назад. «Не торопись. Бритва любит, когда её не торопят». Я провёл пустым пальцем, ничего не почувствовал, но стало приятно.",
-  "en": "The barber shows how to strop: away from you, smoothly, blade trailing. \"Don't hurry. A razor likes not to be rushed.\" I drew an empty finger along it, felt nothing, but it felt good.",
+  "en": "The barber shows how to strop: away from you, smoothly, blade trailing. \"Don't hurry. A razor likes not to be rushed.\" I ran a bare finger along it, felt nothing, but it felt good.",
   "ja": "理容師が研ぎ方を見せてくれる。手前から向こうへ、なめらかに、刃を後ろにして。「急ぐな。かみそりは急かされるのが嫌いなんだ」。指でなぞってみた。何も感じないけれど、気持ちよかった。"
  },
  "city.pu.pu_barber_strop.prompt": {
@@ -188,7 +188,7 @@
  "city.pu.pu_beer_league.4": {
   "ru": "Мелом, крупно: «Финал сыгран. Победила дружба и один бросок рыбака в яблочко. Мальчикам мячик подавать можно: в углу есть настольный футбол, играйте!»",
   "en": "In big chalk letters: \"The final is played. Friendship won, and one fisherman's bullseye. Lads may fetch the ball: there's table football in the corner, go on!\"",
-  "ja": "大きなチョーク文字：「決勝終了。勝ったのは友情と、漁師の一投のど真ん中。坊やたちはダーツを拾ってもいいぞ。隅にテーブルサッカーがある、遊んでいけ！」"
+  "ja": "大きなチョーク文字：「決勝終了。勝ったのは友情と、漁師の一投のど真ん中。坊やたちはボール拾いならしていいぞ。隅にテーブルサッカーがある、遊んでいけ！」"
  },
  "city.pu.pu_beer_radio.1": {
   "ru": "Приёмник тихо передаёт пятичасовые новости: «Погода у моря без изменений. Ветер юго-западный». Бармен кивает, как будто это его заслуга.",
@@ -213,7 +213,7 @@
  "city.pu.pu_beer_taps.1": {
   "ru": "На табличках над кранами мелом: «Жигулёвское, Рижское, Мартовское, Квас». Квас подчёркнут дважды: «Для тех, кто за рулём лодки».",
   "en": "Chalk labels over the taps: Zhigulevskoye, Rizhskoye, Martovskoye, Kvass. Kvass is underlined twice: \"For those at the helm of a boat.\"",
-  "ja": "タップの上にチョークの札：「ジグリョーフスコエ、リガ、三月、クワス」。クワスには二重線：「ボートの舵を握る人向け」"
+  "ja": "タップの上にチョークの札：「ジグリョーフスコエ、リーシスコエ、マルトフスコエ、クワス」。クワスには二重線：「ボートの舵を握る人向け」"
  },
  "city.pu.pu_beer_taps.2": {
   "ru": "На пятничной табличке приписка: «Свежая бочка! Налито ровно с пенкой в два пальца». Пенка измеряется пальцем бармена, а не клиента.",
@@ -232,7 +232,7 @@
  },
  "city.pu.pu_books_board.1": {
   "ru": "Объявление: «Ищу «Таинственный остров». Синий, без обложки, с карандашной пометкой «всё получится» на форзаце. Вернувшему — чай и благодарность».",
-  "en": "A notice: \"Looking for The Mysterious Island. Blue, no cover, with a pencilled 'it will all work out' on the endpaper. A tea and gratitude for whoever returns it.\"",
+  "en": "A notice: \"Looking for The Mysterious Island. Blue, no cover, with a pencilled 'it will all work out' on the endpaper. Tea and thanks for whoever returns it.\"",
   "ja": "掲示：「『神秘の島』を探しています。青い表紙、カバーなし、見返しに鉛筆で『きっとうまくいく』。返してくれた方にお茶と感謝を」"
  },
  "city.pu.pu_books_board.2": {
@@ -298,7 +298,7 @@
  "city.pu.pu_books_mags.1": {
   "ru": "Журналы на полке: «Наука и жизнь», «Вокруг света», «Юный натуралист». Один раскрыт на статье «Как устроена чайка» — страница замусолена.",
   "en": "Magazines on the shelf: Science and Life, Around the World, Young Naturalist. One is open at an article \"How a Gull Is Built\"; the page is thumbed to softness.",
-  "ja": "棚の雑誌：『科学と生活』『世界一周』『若き博物学者』。一冊は「かもめの作り」という記事で開かれていて、ページが触られすぎて柔らかい。"
+  "ja": "棚の雑誌：『科学と生活』『世界一周』『若き博物学者』。一冊は「カモメの作り」という記事で開かれていて、ページが触られすぎて柔らかい。"
  },
  "city.pu.pu_books_mags.2": {
   "ru": "В «Вокруг света» вложена закладка — марка с далёким островом. Я рассматриваю остров дольше, чем статью.",
@@ -328,7 +328,7 @@
  "city.pu.pu_cafe_chat.5": {
   "ru": "— Понедельник. Чайки отдыхают, и я тоже. Почти.",
   "en": "\"Monday. The gulls are resting, and so am I. Nearly.\"",
-  "ja": "「月曜日。かもめも休んでるし、私も休んでるわ。ほとんどね」"
+  "ja": "「月曜日。カモメも休んでるし、私も休んでるわ。ほとんどね」"
  },
  "city.pu.pu_cafe_chat.6": {
   "ru": "— Пенка — это когда терпишь. Не торопите кофе, и он вам всё расскажет.",
@@ -338,12 +338,12 @@
  "city.pu.pu_cafe_papers.1": {
   "ru": "Подшивка «Вечернего Людмиловска»: в рубрике «Рыбный вторник» опять победила камбала.",
   "en": "A binder of the Lyudmilovsk Evening News: in the \"Fish Tuesday\" column the flounder won again.",
-  "ja": "『夕刊リュドミロフスク』の綴じ込み：「魚の火曜日」欄では、またヒラメが勝った。"
+  "ja": "『夕刊リュドミロフスク』の綴じ込み：「魚の火曜日」欄では、またカレイが勝った。"
  },
  "city.pu.pu_cafe_papers.2": {
   "ru": "Воскресная газета: кроссворд. Восемь по вертикали — «Морская птица, пять букв». Вписано карандашом: «чайка». Всё верно.",
-  "en": "The Sunday paper: a crossword. Eight down, \"Sea bird, five letters.\" Pencilled in: \"gull.\" Correct.",
-  "ja": "日曜の新聞：クロスワード。縦の八、「海鳥、三文字」。鉛筆で「かもめ」と書いてある。正解だ。"
+  "en": "The Sunday paper: a crossword. Eight down, \"Sea bird, four letters.\" Pencilled in: \"gull.\" Correct.",
+  "ja": "日曜の新聞：クロスワード。縦の八、「海鳥、三文字」。鉛筆で「カモメ」と書いてある。正解だ。"
  },
  "city.pu.pu_cafe_papers.3": {
   "ru": "Подшивка местных газет. Погода на обороте, объявления в середине, гороскоп внизу: «Сегодня вас ждёт чашка чего-то горячего».",
@@ -398,7 +398,7 @@
  "city.pu.pu_cafe_window.1": {
   "ru": "Волны катят к самой стене. На них качается одна чайка и делает вид, что так и задумано.",
   "en": "Waves roll right up to the wall. One gull bobs on them and acts as if it were all planned.",
-  "ja": "波が壁のすぐそばまで来ている。かもめが一羽、ぷかぷか浮かんで、計画どおりという顔をしている。"
+  "ja": "波が壁のすぐそばまで来ている。カモメが一羽、ぷかぷか浮かんで、計画どおりという顔をしている。"
  },
  "city.pu.pu_cafe_window.2": {
   "ru": "Днём с окна видно купальщиков и лодки. Кто-то машет рукой — не мне, наверное.",
@@ -478,7 +478,7 @@
  "city.pu.pu_dumpling_rules.1": {
   "ru": "Правила самообслуживания на картоне: «1. Поднос берите сами. 2. Хлеб бесплатно, но не вся буханка. 3. Подносы возвращать. 4. Тарелки не уносить — они одни на всех».",
   "en": "Self-service rules on cardboard: \"1. Take your own tray. 2. Bread is free, but not the whole loaf. 3. Return the trays. 4. Don't take the plates home; there's one set for everyone.\"",
-  "ja": "段ボールのセルフサービス規則：「一、トレーは自分で取る。二、パンは無料、ただし一本まるごとはだめ。三、トレーは返す。四、皿は持ち帰らない、みんなで一組だから」"
+  "ja": "段ボールのセルフサービス規則：「一、トレーは自分で取る。二、パンは無料、ただし一斤まるごとはだめ。三、トレーは返す。四、皿は持ち帰らない、みんなで一組だから」"
  },
  "city.pu.pu_dumpling_rules.2": {
   "ru": "Снизу другим почерком: «5. Спасибо — это тоже оплата. 6. Улыбаться не обязательно, но желательно».",
@@ -506,7 +506,7 @@
   "ja": "チョーク：「交換は成立。チェブレキはおいしかった。ペリメニもそうらしい。双方満足。お茶は店のおごり」"
  },
  "city.pu.pu_fish_chat.1": {
-  "ru": "— Утренняя рыба самая честная: ещё не успела соврать. Берите, пока ночью пахла морем.",
+  "ru": "— Утренняя рыба самая честная: ещё не успела соврать. Берите, пока ещё пахнет ночным морем.",
   "en": "\"Morning fish is the most honest: it hasn't had time to lie yet. Take it while it still smells of the sea.\"",
   "ja": "「朝の魚がいちばん正直だ。まだ嘘をつく時間がなかったからな。海の匂いがするうちに持っていきな」"
  },
@@ -518,12 +518,12 @@
  "city.pu.pu_fish_chat.3": {
   "ru": "— Суббота — день ухи. Хотите уху? Берите ершей и не спрашивайте, чьи они.",
   "en": "\"Saturday is fish-soup day. Want soup? Take some ruffe and don't ask whose they are.\"",
-  "ja": "「土曜は魚のスープの日だ。作るならヨーロッパヨシノボリを持っていきな。誰のかは聞くなよ」"
+  "ja": "「土曜は魚のスープの日だ。作るならラフを持っていきな。誰のかは聞くなよ」"
  },
  "city.pu.pu_fish_chat.4": {
   "ru": "— Приманка? Червь для камбалы, креветка для всего остального. Дёшево, а пользы в сто раз.",
   "en": "\"Bait? Worm for flounder, shrimp for everything else. Cheap, and worth a hundred times the price.\"",
-  "ja": "「餌かい？ ヒラメにはミミズ、ほかの魚にはエビだ。安いが、値段の百倍は役に立つ」"
+  "ja": "「餌かい？ ヌマガレイにはゴカイ、ほかの魚にはエビだ。安いが、値段の百倍は役に立つ」"
  },
  "city.pu.pu_fish_chat.5": {
   "ru": "— На мол с удочкой? Тогда запомните: рыба клюёт не на приманку, а на тишину. Приманка — это так, для приличия.",
@@ -546,7 +546,7 @@
   "ja": "ラベルのない結び目がひとつ、びくともしないほど固く締まっている。誰かが魚と言い争って、負けたのだろう。"
  },
  "city.pu.pu_fish_rods.1": {
-  "ru": "Удилища в стойке: бамбук, стеклопластик и одно морское, толстое, как мне по запястье. У морского бирка: «Не для начинающих. И не для скромных».",
+  "ru": "Удилища в стойке: бамбук, стеклопластик и одно морское, толстое, с моё запястье. У морского бирка: «Не для начинающих. И не для скромных».",
   "en": "Rods in the rack: bamboo, fibreglass, and one sea rod as thick as my wrist. The tag on the sea rod: \"Not for beginners. Nor for the modest.\"",
   "ja": "立てかけの竿：竹、グラスファイバー、そして僕の手首ほど太い一本の海釣り竿。タグには「初心者には向きません。控えめな人にも」"
  },
@@ -563,7 +563,7 @@
  "city.pu.pu_fish_scale.2": {
   "ru": "Я положил на чашу ладонь. Стрелка не шелохнулась: рука, видимо, ничего не весит.",
   "en": "I put my palm on the pan. The needle didn't stir: a hand apparently weighs nothing.",
-  "ja": "皿に手のひらを乗せてみた。針は動かない。手というのは、どうやら何も量らないらしい。"
+  "ja": "皿に手のひらを乗せてみた。針は動かない。手には、どうやら重さがないらしい。"
  },
  "city.pu.pu_fish_tides.1": {
   "ru": "Таблица приливов в рамке. Ниже мелом: «Сельди не было. Ждём». Три «ждём» зачёркнуты и вписаны заново.",
@@ -578,7 +578,7 @@
  "city.pu.pu_fish_tides.3": {
   "ru": "Мелом: «Чайки низко над водой. Сельдь у Серого камня, к вечеру будет у мола. Приготовьте вёдра».",
   "en": "In chalk: \"Gulls flying low over the water. Herring at Grey Rock, at the pier by evening. Get your buckets ready.\"",
-  "ja": "チョークで：「かもめが水面すれすれを飛んでいる。ニシンは灰色岩のあたり、夕方には桟橋に来る。バケツの用意を」"
+  "ja": "チョークで：「カモメが水面すれすれを飛んでいる。ニシンは灰色岩のあたり、夕方には桟橋に来る。バケツの用意を」"
  },
  "city.pu.pu_fish_tides.4": {
   "ru": "Мелом, дрожащей рукой: «СЕЛЬДЬ! Три ящика. Свежая — до обеда!»",
@@ -621,7 +621,7 @@
   "ja": "鍋で油が煮えている。チェブレキがゆっくり縁に寄って、ひっくり返り、泡をつけて金色になる。小さな噴火みたいにきれいだ。"
  },
  "city.pu.pu_pasty_fryer.2": {
-  "ru": "Повар вынул чебурек шумовкой, встряхнул и положил на салфетку. Салфетка сразу стала прозрачной. «Не трогай, обожжёшься», — сказал он. Я трогал ровно взглядом.",
+  "ru": "Повар вынул чебурек шумовкой, встряхнул и положил на салфетку. Салфетка сразу стала прозрачной. «Не трогай, обожжёшься», — сказал он. Я трогал только взглядом.",
   "en": "The cook lifts out a cheburek with a skimmer, shakes it and lays it on a napkin. The napkin turns see-through at once. \"Don't touch, you'll burn,\" he says. I touched only with my eyes.",
   "ja": "料理人がチェブレキを網じゃくしで取り出し、振って、ナプキンに置く。ナプキンはすぐ透けた。「さわるな、やけどするぞ」と言う。僕は目だけでさわった。"
  },
@@ -681,7 +681,7 @@
   "ja": "ネガを光にかざした。白が黒、黒が白、でも写っている人の笑顔は変わらない。笑いは反転しない。"
  },
  "city.pu.pu_photo_negatives.3": {
-  "ru": "В конверте «Нераспознанное» последний кадр: пустая набережная на рассвете. Подпись: «Снято, чтобы запомнить, что здесь никого и было хорошо».",
+  "ru": "В конверте «Нераспознанное» последний кадр: пустая набережная на рассвете. Подпись: «Снято, чтобы запомнить, что здесь никого не было и было хорошо».",
   "en": "In the \"Unidentified\" envelope the last frame: an empty promenade at dawn. Caption: \"Taken to remember that nobody was here and it was good.\"",
   "ja": "「未確認」の封筒の最後の一枚：夜明けの誰もいない遊歩道。添え書き：「誰もいなくて、よかったことを覚えておくために撮った」"
  },
@@ -793,7 +793,7 @@
  "city.pu.pu_rental_keys.2": {
   "ru": "Рядом приколота квитанция: «Оставлено на хранение: один зонтик, один левый ботинок, одна записная книжка. Забирайте».",
   "en": "A receipt is pinned nearby: \"Left in storage: one umbrella, one left shoe, one notebook. Come and collect.\"",
-  "ja": "そばに預かり票が留めてある：「お預かり中：傘一本、左の靴一足、手帳一冊。取りに来てください」"
+  "ja": "そばに預かり票が留めてある：「お預かり中：傘一本、左の靴が片方、手帳一冊。取りに来てください」"
  },
  "city.pu.pu_rental_tariff.1": {
   "ru": "На щите: «Велосипед — 1 руб./час. Лодка — 2 руб./час, двое. Лежак — 30 коп./час, зонтик в подарок, если не уносит ветер».",
@@ -818,7 +818,7 @@
  "city.pu.pu_souvenir_boxes.1": {
   "ru": "Коробки на полке: шкатулки с ракушками на крышке, расписные ложки, деревянные рыбки на верёвочках, свистульки в форме чайки. Свистулька свистит всё равно как чайник.",
   "en": "Boxes on the shelf: caskets with shells on the lids, painted spoons, wooden fish on strings, gull-shaped whistles. The whistle sounds like a kettle regardless.",
-  "ja": "棚の箱：貝殻をのせた小箱、絵つきのスプーン、紐つきの木の魚、かもめ形の笛。笛はどう吹いてもやかんの音がする。"
+  "ja": "棚の箱：貝殻をのせた小箱、絵つきのスプーン、紐つきの木の魚、カモメ形の笛。笛はどう吹いてもやかんの音がする。"
  },
  "city.pu.pu_souvenir_boxes.2": {
   "ru": "На крышке одной шкатулки приклеена бумажка: «Если откроете — купите». Я не открыл.",

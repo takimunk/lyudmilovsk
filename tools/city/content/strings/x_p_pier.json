@@ -58,7 +58,7 @@
  "city.px.oilskins.3": {
   "ru": "Зюйдвестка висит на крючке носом к двери. Примета: чтобы не забыть, когда выходишь. Арам говорит, что без неё шторм вообще не начинается.",
   "en": "The sou'wester hangs on its hook with its brim toward the door. A habit, so you don't forget it going out. Aram says no storm ever starts without it.",
-  "ja": "南西帽はつばをドアに向けてフックにかかっている。出がけに忘れないための習慣だ。これがないと嵐は始まらない、とアラムは言う。"
+  "ja": "防水帽はつばをドアに向けてフックにかかっている。出がけに忘れないための習慣だ。これがないと嵐は始まらない、とアラムは言う。"
  },
  "city.px.keeper_oilskins.prompt": {
   "ru": "E — осмотреть плащи",
@@ -66,7 +66,7 @@
   "ja": "E：雨具を見る"
  },
  "city.px.weather.1": {
-  "ru": "Барометр: 1018, стрелка стоит как вкопанная. Термометр показывает девять. Влажность средняя. Всё предвещает хороший день и скучную вахту. Рядом карандашом: «Мария» вышла».",
+  "ru": "Барометр: 1018, стрелка стоит как вкопанная. Термометр показывает девять. Влажность средняя. Всё предвещает хороший день и скучную вахту. Рядом карандашом: «„Мария“ вышла».",
   "en": "Barometer: 1018, the needle planted. Thermometer: nine. Humidity middling. Everything promises a fine day and a dull watch. Pencilled beside it: \"Maria sailed.\"",
   "ja": "気圧計は1018、針は根が生えたように動かない。温度計は九度。湿度はふつう。穏やかな一日と退屈な当番を約束している。横に鉛筆で「マリヤ出航」。"
  },
@@ -77,8 +77,8 @@
  },
  "city.px.weather.3": {
   "ru": "Барометр: 1006, и стрелка ползёт на глазах. Приписка Арама: «Сдать вахту с бутербродами. Ночью будет шумно». Под ней приписка Аркадия: «Будет шумно и долго».",
-  "en": "Barometer: 1006, and the needle is crawling as I watch. Aram's note: \"Take sandwiches to the watch. It will be noisy tonight.\" Under it, Arkady's: \"Noisy and long.\"",
-  "ja": "気圧計は1006、針は見ている間にも下がっていく。アラムの書き込み「当番にサンドイッチを。今夜はうるさくなる」。その下にアルカージーの字。「うるさくて、長い」。"
+  "en": "Barometer: 1006, and the needle is crawling as I watch. Aram's note: \"Hand the watch over with sandwiches. It will be noisy tonight.\" Under it, Arkady's: \"Noisy and long.\"",
+  "ja": "気圧計は1006、針は見ている間にも下がっていく。アラムの書き込み「サンドイッチをつけて当番を引き継ぐこと。今夜はうるさくなる」。その下にアルカージーの字。「うるさくて、長い」。"
  },
  "city.px.weather.4": {
   "ru": "Барометр: 998. Стрелка прижалась к слову «Буря» и дрожит. Стекло в трещинках от старых постукиваний. Кто-то приклеил рядом бумажку: «Не стучать. Она и так всё знает».",
@@ -102,8 +102,8 @@
  },
  "city.px.weather.8": {
   "ru": "Барометр: 1021. Над ним кто-то нарисовал маленькое солнце и подписал: «Это Аркадий. Не верит, но рисует». Солнце получилось кривое и очень тёплое.",
-  "en": "Barometer: 1021. Someone has drawn a small sun above it and signed: \"This is Arkady. Doesn't believe it, draws it anyway.\" The sun came out crooked and very warm.",
-  "ja": "気圧計は1021。上に誰かが小さな太陽を描き、署名した。「これはアルカージー。信じていないが描く」。太陽は歪んでいて、とても暖かそうだ。"
+  "en": "Barometer: 1021. Someone has drawn a small sun above it and captioned it: \"This is Arkady. Doesn't believe it, draws it anyway.\" The sun came out crooked and very warm.",
+  "ja": "気圧計は1021。上に誰かが小さな太陽を描き、書き添えた。「これはアルカージー。信じていないが描く」。太陽は歪んでいて、とても暖かそうだ。"
  },
  "city.px.keeper_weather.prompt": {
   "ru": "E — постучать по барометру",
@@ -157,8 +157,8 @@
  },
  "city.px.flags.2": {
   "ru": "Красно-жёлтый по диагонали: «Человек за бортом». Флаг потёрт на сгибах. Ни разу не пришлось поднимать, а проверяют каждую весну. Сначала проверяют, потом молчат.",
-  "en": "Red and yellow on the diagonal: \"Man overboard.\" The flag is worn at the folds. Never once had to be raised, and checked every spring. First they check it, then they say nothing.",
-  "ja": "赤と黄の斜め分割は「人が落ちた」。畳み目がすり切れている。一度も揚げずにすんだが、毎春点検する。点検して、あとは黙る。"
+  "en": "Red and yellow on the diagonal: \"Man overboard.\" The flag is worn at the folds. It has never once had to be raised, but it is checked every spring. First they check it, then they say nothing.",
+  "ja": "赤と黄の斜め分割は「人が海に落ちた」。畳み目がすり切れている。一度も揚げずにすんだが、毎春点検する。点検して、あとは黙る。"
  },
  "city.px.flags.3": {
   "ru": "Бело-синий флаг: «Под водой водолазы, держитесь подальше». Его вывешивают, когда у пирса чистят сваи. Рядом в ячейке лежит маленькая свистулька: водолазам.",
@@ -217,7 +217,7 @@
  },
  "city.px.clockwork.1": {
   "ru": "Механизм вращения линзы: гиря в шахте, шестерёнки в латунных щеках. Днём свет не нужен, линза зашторена льном, но завод подкручивают заранее, чтобы вечером не ждать. Я сделал десять оборотов.",
-  "en": "The lens's turning gear: a weight in the shaft, wheels in brass cheeks. Daylight needs no beam and the lens is under a linen cover, but they wind it ahead so there's no waiting at dusk. I gave it ten turns.",
+  "en": "The lens's turning gear: a weight in the shaft, wheels in brass cheeks. By day no beam is needed and the lens is under a linen cover, but they wind it ahead so there's no waiting at dusk. I gave it ten turns.",
   "ja": "レンズを回す仕掛け。竪穴の錘と、真鍮の頬板に挟まれた歯車。昼は光がいらず、レンズは麻布で覆われているが、夕方に慌てないよう前もって巻いておく。僕は十回まわした。"
  },
  "city.px.clockwork.2": {
@@ -227,12 +227,12 @@
  },
  "city.px.clockwork.3": {
   "ru": "Ночью механизм слышно по всему дому: тик, тик, тик, и каждые двадцать секунд наверху ложится луч. Подкрутил завод: гирю нельзя оставлять на самом дне.",
-  "en": "At night you can hear the gear all through the house: tick, tick, tick, and every twenty seconds a beam lays down upstairs. I wound it: the weight must never be left at the bottom.",
+  "en": "At night you can hear the gear all through the house: tick, tick, tick, and every twenty seconds the beam comes round upstairs. I wound it: the weight must never be left at the bottom.",
   "ja": "夜、仕掛けの音は家じゅうに響く。カチ、カチ、カチ。二十秒ごとに上で光の筋が横たわる。巻いておいた。錘を底まで下ろしきってはいけない。"
  },
  "city.px.keeper_clockwork.prompt": {
   "ru": "E — подкрутить завод маяка",
-  "en": "E — wind up the lantern's clockwork",
+  "en": "E — wind up the lighthouse clockwork",
   "ja": "E：灯台の時計仕掛けを巻く"
  },
  "city.px.watch.1": {
@@ -273,7 +273,7 @@
  "city.px.watch.8": {
   "ru": "«Тихо. Выходной по приказу обоих. Писали стихи: Арам предложил рифму «вернулся — улыбнулся», Аркадий отверг, но записал на всякий случай».",
   "en": "\"Quiet. A day off by order of both of us. Wrote verses: Aram offered the rhyme 'came back, grinned back', Arkady rejected it, but wrote it down just in case.\"",
-  "ja": "「静か。二人の命令で休み。詩を書いた。アラムが「戻った、笑った」の韻を提案し、アルカージーは却下したが念のため書き留めた」。"
+  "ja": "「静か。二人の命令で休み。詩を書いた。アラムが『戻った、笑った』の韻を提案し、アルカージーは却下したが念のため書き留めた」。"
  },
  "city.px.keeper_watch.prompt": {
   "ru": "E — открыть вахтенную книгу механизма",
@@ -416,7 +416,7 @@
   "ja": "階下で仕掛けの当直帳を読む"
  },
  "quest.px_maria.bell.log": {
-  "ru": "Колокол на галерее виден из любой точки порта. Если в тумане кто-то ищет вход, он пойдёт на звук. Поднимусь по винтовой лестнице.",
+  "ru": "Колокол на галерее слышен из любой точки порта. Если в тумане кто-то ищет вход, он пойдёт на звук. Поднимусь по винтовой лестнице.",
   "en": "The bell on the gallery can be heard from anywhere in the harbour. Anyone feeling for the entrance in fog will steer by its sound. I'll climb the spiral stair.",
   "ja": "回廊の鐘は港のどこからでも聞こえる。霧の中で入口を探す人は、音を頼りに進む。螺旋階段をのぼろう。"
  },
