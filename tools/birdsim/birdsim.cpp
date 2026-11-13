@@ -512,9 +512,20 @@ namespace
 			std::set<int> Left;
 			float First = -1.f, Last = -1.f;
 			int InTown = 0, Feeding = 0;
+			long FeedSum = 0, FeedSteps = 0;
 			std::map<std::string, int> Where;
+			const float MorningEnd = W.Hour + 3.5f;
 			Advance(W, 3.5f, 0.2f, [&]()
 			{
+				// feeding, over the last hour (flocks feed and rest in turns: at one moment 350 to 800 of the 1200 are at it)
+				if (W.Hour > MorningEnd - 1.f)
+				{
+					FeedSteps++;
+					for (const FBird& B : W.Birds)
+					{
+						FeedSum += B.Species == Star && (B.Act == EAct::Peck || B.Act == EAct::Forage);
+					}
+				}
 				for (const FBird& B : W.Birds)
 				{
 					if (B.Species == Star && !Left.count(B.Group) && IsAirborne(B.Act) && W.Hour < W.Sunrise + 1.f)
@@ -533,7 +544,6 @@ namespace
 				}
 				const EHabitat K = W.Sites[B.Site].Kind;
 				Where[HabitatName(K)]++;
-				Feeding += B.Act == EAct::Peck || B.Act == EAct::Forage;
 				InTown += K == EHabitat::Street;
 			}
 			std::printf("starlings' morning: %zu groups left the reed from %+.0f to %+.0f min of sunrise; at %.1f h on:", Left.size(), (First - W.Sunrise) * 60.f,
@@ -542,7 +552,8 @@ namespace
 			{
 				std::printf(" %s %d", K.c_str(), N);
 			}
-			std::printf("; %d feeding\n", Feeding);
+			Feeding = (int)(FeedSum / std::max(FeedSteps, 1L));
+			std::printf("; %d feeding on average over the last hour\n", Feeding);
 			Check(R, First < W.Sunrise && Last - First > 0.15f, "they leave the roost before sunrise, group after group");
 			Check(R, Where["Reed"] < Total / 10 && Feeding > Total / 4, "by late morning they are out feeding");
 			Check(R, Where["Meadow"] > 0 && InTown > 0, "on the fields and in the town's lawns and streets");
@@ -661,24 +672,34 @@ namespace
 			FWorld W;
 			Setup(W, 12.f);
 			W.Camera = Door;
-			const int Gull = FindSpecies("BlackHeadedGull"), Rook = FindSpecies("Rook"), Swift = FindSpecies("CommonSwift");
+			const int Rook = FindSpecies("Rook"), Swift = FindSpecies("CommonSwift");
+			// (the mean over the hour: one look at half past twelve found anything from 0 to 55 black-headed gulls on the sand
+			// at low water, a flock is there or it has just left, and the check then hung on which)
+			std::vector<char> bGull;
+			for (const FSpecies& S : SpeciesTable())
+			{
+				bGull.push_back(IsGullName(S.Id));
+			}
 			auto OnBeach = [&](float Tide)
 			{
 				W.SeaZ = W.MeanSeaZ + Tide;
 				W.Hour = 12.f;
 				W.Resettle();
-				int N = 0;
-				Advance(W, 0.5f, 0.25f, [] {});
-				for (const FBird& B : W.Birds)
+				long Sum = 0, Steps = 0;
+				Advance(W, 1.f, 0.25f, [&]
 				{
-					N += B.Species == Gull && !IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Beach;
-				}
-				return N;
+					Steps++;
+					for (const FBird& B : W.Birds)
+					{
+						Sum += bGull[B.Species] && !B.bGone && !IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Beach;
+					}
+				});
+				return (float)Sum / (float)Steps;
 			};
-			const int Low = OnBeach(-0.8f), High = OnBeach(0.8f);
+			const float Low = OnBeach(-0.8f), High = OnBeach(0.8f);
 			W.SeaZ = W.MeanSeaZ;
-			std::printf("black-headed gulls on the beach at noon: %d at low tide, %d at high tide\n", Low, High);
-			Check(R, Low > High, "gulls go down to the sand the low tide lays bare");
+			std::printf("gulls on the beach from noon to one, on average: %.1f at low tide, %.1f at high tide\n", Low, High);
+			Check(R, Low > 2.f * High, "gulls go down to the sand the low tide lays bare");
 			W.Hour = W.Sunset - 1.3f;
 			W.Resettle();
 			int Gathering = 0, Rooks = 0;
