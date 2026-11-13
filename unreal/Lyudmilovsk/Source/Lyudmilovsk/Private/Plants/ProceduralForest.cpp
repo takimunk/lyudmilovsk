@@ -202,6 +202,7 @@ void AProceduralForest::AddTree(FName Species, FVector Location, float Age, int3
 	T.Group = GroupFor(Species, T.BakeSeed, Age);
 	Groups[T.Group].TreeIds.Add(Trees.Num());
 	Groups[T.Group].bInstancesAdded = false;
+	TreeBounds += Location;
 	Trees.Add(MoveTemp(T));
 }
 
@@ -218,6 +219,7 @@ void AProceduralForest::Clear()
 	}
 	Groups.Reset();
 	Trees.Reset();
+	TreeBounds = FBox(ForceInit);
 }
 
 void AProceduralForest::Scatter()
@@ -359,6 +361,14 @@ bool AProceduralForest::Interactive(FName Species) const
 void AProceduralForest::UpdateLive(const FVector& Camera)
 {
 	const double Near2 = FMath::Square((double)LiveDistance), Far2 = FMath::Square((double)LiveDistance * 1.3);
+	if (LiveCount == 0 && TreeBounds.IsValid && TreeBounds.ComputeSquaredDistanceToPoint(Camera) > Near2)
+	{
+		// no live plant to take back and the camera is farther than LiveDistance from every tree: nothing to look for.
+		// (All the forests tick on the same beat, and each walked all its trees: ~100 000 distance tests in one frame, four times a second.)
+		LastCamera = Camera;
+		LastCameraTime = GetWorld()->GetTimeSeconds();
+		return;
+	}
 	TArray<TPair<double, int32>> Wanted;
 	for (int32 I = 0; I < Trees.Num(); I++)
 	{
