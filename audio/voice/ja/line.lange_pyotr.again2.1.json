@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.again2.1",
+ "lang": "ja",
+ "text": "引き潮になると砂がずいぶん出てくる。カモメが主人みたいな顔で歩いてる。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 引き潮になると砂がずいぶん出てくる。カモメが主人みたいな顔で歩いてる。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d745-8105-7641-a585-2caaade5df39",
+ "hash": "9280fc3f12d1"
+}

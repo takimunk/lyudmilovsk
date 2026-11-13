@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_low.1",
+ "lang": "ru",
+ "text": "Вечером свет идёт почти горизонтально и показывает каждую неровность на стене. Ни один уровень так не умеет.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Вечером свет идёт почти горизонтально и показывает каждую неровность на стене. Ни один уровень так не умеет.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-f76b-70d0-9660-53fac6ddd1e3",
+ "hash": "4f640334312b"
+}

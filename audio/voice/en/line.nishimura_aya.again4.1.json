@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again4.1",
+ "lang": "en",
+ "text": "I draw people in the yard while they aren't looking. Only Sorokin always notices, and sits still.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] I draw people in the yard while they aren't looking. Only Sorokin always notices, and sits still.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-5829-7db3-8d60-a92d44820c70",
+ "hash": "7501136208f9"
+}

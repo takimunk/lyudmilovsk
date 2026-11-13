@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.sun_night.1",
+ "lang": "ja",
+ "text": "夜に物理を勉強してると、いま太陽がどこにあるか式でわかる。なのに、なぜか全然楽にならない。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 夜に物理を勉強してると、いま太陽がどこにあるか式でわかる。なのに、なぜか全然楽にならない。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d744-0cdc-7bd1-9dbe-e0087c2f1eaa",
+ "hash": "877cff2f3a28"
+}

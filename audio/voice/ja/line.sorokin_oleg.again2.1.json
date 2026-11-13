@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again2.1",
+ "lang": "ja",
+ "text": "ツバメは九月のうちに旅立った。毎年日付を書きとめて、毎年少しばかり腹を立てている。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] ツバメは九月のうちに旅立った。毎年日付を書きとめて、毎年少しばかり腹を立てている。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d749-5b31-7711-b9bb-524a8a13273d",
+ "hash": "fdd8b8479cb9"
+}

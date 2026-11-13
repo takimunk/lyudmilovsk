@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.sun_day.1",
+ "lang": "ru",
+ "text": "Сегодня солнечно, и в поликлинике тихо. Даже очередь не торопит, все сидят у окна.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] Сегодня солнечно, и в поликлинике тихо. Даже очередь не торопит, все сидят у окна.",
+  "voice": "Lily",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d747-b152-73c1-bced-809775a62746",
+ "hash": "83219a7e0586"
+}

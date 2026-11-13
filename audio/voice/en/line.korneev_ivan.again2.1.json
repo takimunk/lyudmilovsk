@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.again2.1",
+ "lang": "en",
+ "text": "Nina says I'm all thumbs. Fifty years she's been saying it. And who fixed the kitchen tap yesterday?",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Nina says I'm all thumbs. Fifty years she's been saying it. And who fixed the kitchen tap yesterday?",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d744-0cbc-7931-a7e2-75c463555b97",
+ "hash": "6f93b7f856a4"
+}

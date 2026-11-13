@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again2.1",
+ "lang": "en",
+ "text": "I've run out of ultramarine, and they don't sell it in town. I'm painting the sea in ochre. It seems almost glad.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] I've run out of ultramarine, and they don't sell it in town. I'm painting the sea in ochre. It seems almost glad.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-2ae8-7423-ab3f-5fcadd2d8c53",
+ "hash": "62aee45c178e"
+}

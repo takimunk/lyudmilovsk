@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.sun_low.1",
+ "lang": "ru",
+ "text": "Смотри, какая у меня тень длинная. Как у взрослой. Это солнце так делает.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Смотри, какая у меня тень длинная. Как у взрослой. Это солнце так делает.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d749-207b-7702-9459-303c1c7827b8",
+ "hash": "b4412da7d91e"
+}

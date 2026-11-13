@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.sun_day.1",
+ "lang": "ru",
+ "text": "Солнце дошло до скамейки. Птицы замечают его раньше меня, а я замечаю птиц.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Солнце дошло до скамейки. Птицы замечают его раньше меня, а я замечаю птиц.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-930a-7702-85e4-bea221c9ec45",
+ "hash": "70c99f8a30cf"
+}

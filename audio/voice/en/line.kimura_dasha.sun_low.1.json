@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.sun_low.1",
+ "lang": "en",
+ "text": "At sunset I count the seconds while it slips below the horizon. No idea why. I just don't want to miss it.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] At sunset I count the seconds while it slips below the horizon. No idea why. I just don't want to miss it.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-da36-7c22-882d-a6b84a1ab15b",
+ "hash": "14f9ea2f19a2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again2.1",
+ "lang": "ja",
+ "text": "階段の電球を替えた。誰にも頼まれていないが、気に入らない周波数で点滅していたんでね。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 階段の電球を替えた。誰にも頼まれていないが、気に入らない周波数で点滅していたんでね。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d749-e621-7660-85dc-a61c9247bed0",
+ "hash": "50585bd29140"
+}

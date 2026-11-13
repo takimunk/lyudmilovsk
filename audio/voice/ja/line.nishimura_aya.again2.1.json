@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again2.1",
+ "lang": "ja",
+ "text": "ウルトラマリンが切れたの。町では売ってない。海を黄土色で描いてる。海はむしろ喜んでるみたい。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] ウルトラマリンが切れたの。町では売ってない。海を黄土色で描いてる。海はむしろ喜んでるみたい。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-76b8-7502-aeff-b15393541e5f",
+ "hash": "a7729ad08f3b"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again4.1",
+ "lang": "ru",
+ "text": "Вика опять оставила записку на холодильнике: «Купи хлеб, не покупай печенье». Вторую половину я всегда читаю неправильно.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Вика опять оставила записку на холодильнике: «Купи хлеб, не покупай печенье». Вторую половину я всегда читаю неправильно.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-661a-7410-831c-8e7836b033aa",
+ "hash": "d50fbe85b2cc"
+}

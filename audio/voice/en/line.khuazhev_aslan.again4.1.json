@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again4.1",
+ "lang": "en",
+ "text": "Evenings the young folk gather by the club. They don't buy cheese, but they laugh well. That gladdens me too.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Evenings the young folk gather by the club. They don't buy cheese, but they laugh well. That gladdens me too.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-39c2-71a3-925b-65620402b1e2",
+ "hash": "5217737147e8"
+}

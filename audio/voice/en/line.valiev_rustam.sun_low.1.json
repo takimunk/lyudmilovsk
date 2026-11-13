@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_low.1",
+ "lang": "en",
+ "text": "In the evening the light comes in almost level and shows every bump in the wall. No spirit level can do that.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] In the evening the light comes in almost level and shows every bump in the wall. No spirit level can do that.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-0186-7051-b0be-715ab05f6ca8",
+ "hash": "a2f93ded5cf9"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again3.2",
+ "lang": "ru",
+ "text": "Над шумом. Все хотят от него избавиться, а я хочу понять, откуда он берётся.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Над шумом. Все хотят от него избавиться, а я хочу понять, откуда он берётся.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-42a8-7510-a8c1-bc8721116231",
+ "hash": "702b53e5ddb3"
+}

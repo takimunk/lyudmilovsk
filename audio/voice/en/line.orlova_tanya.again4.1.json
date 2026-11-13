@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again4.1",
+ "lang": "en",
+ "text": "I take fish by weight, but I remember every one by its face. Especially the gobies: they look offended.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] I take fish by weight, but I remember every one by its face. Especially the gobies: they look offended.",
+  "voice": "Aria",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-c9fa-7301-8b15-bc8eaa353917",
+ "hash": "07d0d889287e"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again4.1",
+ "lang": "en",
+ "text": "Nina Korneeva taught me to salt cabbage. It turns out that is chemistry too, only with feeling.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Nina Korneeva taught me to salt cabbage. It turns out that is chemistry too, only with feeling.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-ccc2-7942-b345-14843184ce95",
+ "hash": "34190a5f87bd"
+}

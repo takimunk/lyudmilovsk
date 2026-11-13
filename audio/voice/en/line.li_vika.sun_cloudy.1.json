@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.sun_cloudy.1",
+ "lang": "en",
+ "text": "Overcast. The flasks don't shine in the light, and washing them feels like it's for nobody.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Overcast. The flasks don't shine in the light, and washing them feels like it's for nobody.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-02a7-7fc2-94a1-09e6c7e2a7e2",
+ "hash": "117ec54f7a6d"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again3.1",
+ "lang": "ru",
+ "text": "Сегодня заходило человек двадцать. Покупали пятеро, остальные грелись.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Сегодня заходило человек двадцать. Покупали пятеро, остальные грелись.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-7277-7121-8ddc-9058ecacb9be",
+ "hash": "d2a6b341fef5"
+}

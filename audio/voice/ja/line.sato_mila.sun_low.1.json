@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.sun_low.1",
+ "lang": "ja",
+ "text": "日が沈みかけると、ユキはすぐ私を窓のほうへ引っぱるの。二人ともそうなのよ、だれに似たのかしら。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] 日が沈みかけると、ユキはすぐ私を窓のほうへ引っぱるの。二人ともそうなのよ、だれに似たのかしら。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d748-7d7b-78e0-8dfb-f6a29d5729d3",
+ "hash": "8b07342492d4"
+}

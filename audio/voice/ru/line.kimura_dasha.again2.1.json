@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again2.1",
+ "lang": "ru",
+ "text": "Завтра коллоквиум по оптике. Я выучила всё, кроме того, что спросят.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Завтра коллоквиум по оптике. Я выучила всё, кроме того, что спросят.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-3513-72b0-9067-cdecec1a0204",
+ "hash": "4cfee09dd8b0"
+}

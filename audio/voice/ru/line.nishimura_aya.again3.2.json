@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again3.2",
+ "lang": "ru",
+ "text": "Смотри. Только не говори «похоже». Похоже умеет фотоаппарат.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Смотри. Только не говори «похоже». Похоже умеет фотоаппарат.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d745-f86f-7e21-abf9-4cc8d92459b3",
+ "hash": "f100b48bda1a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again3.2",
+ "lang": "ru",
+ "text": "Пробирки целы, Лев тоже. У нас в Лаборатории это называется спокойный день.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Пробирки целы, Лев тоже. У нас в Лаборатории это называется спокойный день.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-b9a4-7303-8bf6-22628a81a1f2",
+ "hash": "ebc2ceddf994"
+}

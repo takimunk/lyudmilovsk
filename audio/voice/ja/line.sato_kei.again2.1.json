@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again2.1",
+ "lang": "ja",
+ "text": "ユキが浜で拾ったガラスを窓辺に並べた。自分の分光器だって。たぶん、ちゃんと動いてる。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] ユキが浜で拾ったガラスを窓辺に並べた。自分の分光器だって。たぶん、ちゃんと動いてる。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-7c8d-77b1-b808-4bf85229e521",
+ "hash": "0960014323f9"
+}

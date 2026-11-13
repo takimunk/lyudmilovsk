@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.sun_low.1",
+ "lang": "ru",
+ "text": "Перед закатом я всегда выхожу на пять минут. Галина думает, курить. Я не курю.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Перед закатом я всегда выхожу на пять минут. Галина думает, курить. Я не курю.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-6bba-7142-919c-590b5245058b",
+ "hash": "e7f98b7cf5b0"
+}

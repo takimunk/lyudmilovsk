@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.sun_cloudy.1",
+ "lang": "ja",
+ "text": "曇りだね。フラスコが光らないから、洗ってもだれのためでもない気がする。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] 曇りだね。フラスコが光らないから、洗ってもだれのためでもない気がする。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-486d-75f3-8ae7-ec104798f548",
+ "hash": "2750ea37d08f"
+}

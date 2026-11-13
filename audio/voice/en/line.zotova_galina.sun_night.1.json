@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sun_night.1",
+ "lang": "en",
+ "text": "It is dark already. By day I do not notice the sun, and in the evening I miss it. Illogical, I know.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] It is dark already. By day I do not notice the sun, and in the evening I miss it. Illogical, I know.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-fc1a-7d70-aaaa-7f1ed9082711",
+ "hash": "e3f3a88ac975"
+}

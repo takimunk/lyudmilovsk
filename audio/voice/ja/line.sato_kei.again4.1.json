@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again4.1",
+ "lang": "ja",
+ "text": "夜はミーシャと古いラジオを直してる。今のところ入る局はひとつだけ、それも天気予報。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] 夜はミーシャと古いラジオを直してる。今のところ入る局はひとつだけ、それも天気予報。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-a7ed-79f2-a906-a98a5cca30bb",
+ "hash": "0c2376a037ae"
+}

@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.sun_day.1",
+ "lang": "ru",
+ "text": "Пар над кастрюлей на солнце весь светится. Люди на него и идут, а думают, что на кукурузу.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Пар над кастрюлей на солнце весь светится. Люди на него и идут, а думают, что на кукурузу.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d741-b816-7d41-8b88-e09bcaa15424",
+ "hash": "e29fda47a45c"
+}

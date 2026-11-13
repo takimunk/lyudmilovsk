@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.sun_low.1",
+ "lang": "ja",
+ "text": "夕焼けは測らないことにしてる。一度やってみたら、覗き見してるみたいで気まずくて。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] 夕焼けは測らないことにしてる。一度やってみたら、覗き見してるみたいで気まずくて。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-c39c-7ae3-9188-71a5d8664bfd",
+ "hash": "a1e76a11a25a"
+}

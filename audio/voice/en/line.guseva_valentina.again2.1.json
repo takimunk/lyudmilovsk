@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.again2.1",
+ "lang": "en",
+ "text": "I'm closing up the dacha any day now. These are the last cobs, and after that it's just pickles till spring.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "I'm closing up the dacha any day now. These are the last cobs, and after that it's just pickles till spring.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d740-4f4e-7782-b0b3-a3e0ae779dae",
+ "hash": "4e004dc0f7eb"
+}

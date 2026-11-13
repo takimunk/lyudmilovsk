@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again4.1",
+ "lang": "ja",
+ "text": "中庭の人たちを、気づかれないうちに描いてるの。いつも気づいて、じっと座っていてくれるのはソローキンさんだけ。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 中庭の人たちを、気づかれないうちに描いてるの。いつも気づいて、じっと座っていてくれるのはソローキンさんだけ。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-a644-7fd3-b3db-6b92b0f05e83",
+ "hash": "626788cce037"
+}

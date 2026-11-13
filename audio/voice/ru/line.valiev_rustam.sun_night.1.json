@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_night.1",
+ "lang": "ru",
+ "text": "Стемнело. Окно стало зеркалом, и в нём один я. Днём там было больше мира.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Стемнело. Окно стало зеркалом, и в нём один я. Днём там было больше мира.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-13d6-7cf0-858b-6ce7f4a563a0",
+ "hash": "ebc43f56b4b6"
+}

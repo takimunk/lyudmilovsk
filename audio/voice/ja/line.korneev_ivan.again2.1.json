@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.again2.1",
+ "lang": "ja",
+ "text": "ニーナは、わしが不器用だと言う。五十年言い続けとる。で、昨日台所の蛇口を直したのは誰だ？",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] ニーナは、わしが不器用だと言う。五十年言い続けとる。で、昨日台所の蛇口を直したのは誰だ？",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d744-2780-7012-8ae3-2916adf46572",
+ "hash": "7735061202c4"
+}

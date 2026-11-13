@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again2.1",
+ "lang": "en",
+ "text": "Tomorrow's the optics colloquium. I've learned everything except what they'll ask.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Tomorrow's the optics colloquium. I've learned everything except what they'll ask.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-9900-7ee1-a0fc-df62f8bfb1c2",
+ "hash": "8cd1af1db504"
+}

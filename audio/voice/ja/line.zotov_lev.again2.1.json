@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again2.1",
+ "lang": "ja",
+ "text": "イワン・コルネーエフは昔、うちの最初のレーザーを直した。ペンチと、ひと言でね。そのひと言は繰り返さないでおこう。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] イワン・コルネーエフは昔、うちの最初のレーザーを直した。ペンチと、ひと言でね。そのひと言は繰り返さないでおこう。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-687f-74a2-ae49-403d8093c362",
+ "hash": "59f39ce2e8a7"
+}

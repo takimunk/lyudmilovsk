@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sun_night.1",
+ "lang": "ja",
+ "text": "もう暗いですね。昼間は太陽を気にもしないのに、夜になると恋しくなる。非論理的なのはわかっています。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] もう暗いですね。昼間は太陽を気にもしないのに、夜になると恋しくなる。非論理的なのはわかっています。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74b-45c9-7932-884d-9ae1402cf1d7",
+ "hash": "60a315c15566"
+}

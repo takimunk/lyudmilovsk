@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again3.2",
+ "lang": "ja",
+ "text": "ノイズだ。みんな消したがるが、私はそれがどこから来るのか知りたい。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] ノイズだ。みんな消したがるが、私はそれがどこから来るのか知りたい。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-80f0-7213-94d8-194b84056dd0",
+ "hash": "a4a586d5ae20"
+}

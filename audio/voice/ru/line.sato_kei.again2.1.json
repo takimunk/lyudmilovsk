@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again2.1",
+ "lang": "ru",
+ "text": "Юки разложила на подоконнике стёклышки с пляжа. Говорит, это её спектрометр. По-моему, работает.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Юки разложила на подоконнике стёклышки с пляжа. Говорит, это её спектрометр. По-моему, работает.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-c9fc-7410-836e-89ae0b49ec59",
+ "hash": "0238b01022bd"
+}

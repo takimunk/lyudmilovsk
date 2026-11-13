@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.again2.1",
+ "lang": "ja",
+ "text": "今日の診療所はみんな同じ。十月、鼻かぜ、寝不足。処方も同じよ。お茶と睡眠。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] 今日の診療所はみんな同じ。十月、鼻かぜ、寝不足。処方も同じよ。お茶と睡眠。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-f3a9-7451-ac50-26c9a3da1d17",
+ "hash": "56f1c8ab6a53"
+}

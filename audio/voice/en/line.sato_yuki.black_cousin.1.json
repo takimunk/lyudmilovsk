@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.black_cousin.1",
  "lang": "en",
- "text": "Your feathers are dark as night all over. Are you the grey crow's cousin? You look just like her, only without the grey.",
+ "text": "Your feathers are dark as night all over. Are you the hooded crow's cousin? You look just like her, only without the grey.",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "Your feathers are dark as night all over. Are you the grey crow's cousin? You look just like her, only without the grey.",
+  "prompt": "Your feathers are dark as night all over. Are you the hooded crow's cousin? You look just like her, only without the grey.",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d73d-a880-7b61-acfe-415e5538e19e",
- "hash": "f2fbe507a8e9"
+ "fal_request_id": "01a1d749-04f8-75c2-a22e-466cceadd699",
+ "hash": "ccf64ef2596c"
 }

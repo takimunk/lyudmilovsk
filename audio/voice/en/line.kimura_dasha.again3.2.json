@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again3.2",
+ "lang": "en",
+ "text": "Rocks, gulls and quiet. I read my notes aloud there, and nobody tells me off.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Rocks, gulls and quiet. I read my notes aloud there, and nobody tells me off.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-ad26-7423-88ae-2f604ed3d904",
+ "hash": "f15d19f5f31f"
+}

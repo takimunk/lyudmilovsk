@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.again4.1",
+ "lang": "ja",
+ "text": "ユキは医者になりたいんですって。きのうはぬいぐるみのうさぎを治して、私にはアイスクリームを処方してくれたわ。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] ユキは医者になりたいんですって。きのうはぬいぐるみのうさぎを治して、私にはアイスクリームを処方してくれたわ。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d748-2ab0-7ab3-8f5d-94b043c7a9cd",
+ "hash": "ffe394793069"
+}

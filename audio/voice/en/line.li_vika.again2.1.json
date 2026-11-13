@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.again2.1",
+ "lang": "en",
+ "text": "Washing flasks today I found a note in one: \"Vika, you're the best.\" Zotov's handwriting. Or Galina's. I'm not going to ask.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Washing flasks today I found a note in one: \"Vika, you're the best.\" Zotov's handwriting. Or Galina's. I'm not going to ask.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d745-b94c-7ab0-804f-b87968d7260c",
+ "hash": "a98631be1238"
+}
