@@ -349,6 +349,8 @@ void ALyudRowBoat::Restore(const ULyudFishingState& State)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (State.bBoatAboard && Hero && !bAboard)
 	{
+		// the hire stands (saved in it by the mooring after midnight, boarding would ask the rent again, or refuse without money)
+		PaidDay = BoatDay(GetWorld());
 		Board(Hero, false);
 	}
 	else if (!State.bBoatAboard && bAboard && Hero && Hero->IsSeated())
