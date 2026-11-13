@@ -1,7 +1,6 @@
 #!/bin/sh
 # Builds and runs the cable-car metro outside the engine (tools/transportsim/transportsim.cpp). Run from anywhere.
 #   tools/transportsim/run.sh test        behaviour checks on Content/Transport/network_built.json
-#   tools/transportsim/run.sh day [hours] a busy day of random trips -> Saved/TransportSim/day.txt
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
