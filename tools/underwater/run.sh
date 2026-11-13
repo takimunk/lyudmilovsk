@@ -4,6 +4,8 @@
 #                                     terrain generator on them and draws the sea bed: bed_depth.png, bed_stone.png
 #   tools/underwater/run.sh test   -> the current, fish and weed models' checks (underwatertest.cpp)
 #   tools/underwater/run.sh eco    -> the coastal food web's checks (ecotest.cpp; -v prints the web year by year)
+#   tools/underwater/run.sh ecosys -> the web under stress with the fish and the fishing on it (ecosystest.cpp): extreme
+#                                     steps, heavy fishing, save/load, bite weights, a year of the fish crowd
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
@@ -29,5 +31,11 @@ eco)
     shift
     exec "$OUT/ecotest" "$@"
     ;;
-*) echo "usage: $0 bed|test|eco [-v]"; exit 2 ;;
+ecosys)
+    clang++ -std=c++17 -O2 -Wall -Wextra -Wshadow -Wunreachable-code-loop-increment -Wno-unused-parameter -I"$SRC/Sea" -I"$SRC/Fishing" -o "$OUT/ecosystest" \
+        "$ROOT/tools/underwater/ecosystest.cpp" "$SRC/Sea/EcoModel.cpp" "$SRC/Sea/FishModel.cpp" "$SRC/Sea/SeaCurrent.cpp" "$SRC/Fishing/FishingModel.cpp"
+    shift
+    exec "$OUT/ecosystest" "$@"
+    ;;
+*) echo "usage: $0 bed|test|eco|ecosys [-v]"; exit 2 ;;
 esac
