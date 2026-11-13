@@ -166,6 +166,7 @@ def build(B):
     B.footprint = [(x0 - CAP_D, y0 - CAP_D), (x0 + W + CAP_D, y0 - CAP_D), (x0 + W + CAP_D, y1 + CAP_D), (x0 - CAP_D, y1 + CAP_D)]
     B.height = top + 2.4
     _lobby(B, lob, cores)
+    _deepen(B, lob, cores)
     B.note("%d capsule flats on %d storeys; capsules jut %.1f m over the street line at the front" % (n_flat, STOREYS, CAP_D - y0 if CAP_D > y0 else 0))
     add_surrounds(B, seed=6)
 
@@ -389,3 +390,299 @@ def _tri_faces(tri, out):
     v = [tri[2][i] - tri[0][i] for i in range(3)]
     n = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
     return n[0] * out[0] + n[1] * out[1] + n[2] * out[2] > 0
+
+
+# ================================================================================================ round 2: depth pass
+LIFT_S7 = 7                                  # the bridge storey with the first lift stop (the top stop is STOREYS)
+
+
+def _lift_door(B, x, y, z, yaw):
+    """[wall] A lift door set in a core's wall plane through (x, y): steel frame, two leaves, a call plate with a red
+    button, a floor lamp over the door. yaw = the way the wall's face looks (0 = -y, 90 = +x, 270 = -x)."""
+    p = kit._P(B, x, y, z, yaw, "lift_door")
+    p.kind = "wall"
+    p.box("CT_Steel", -0.58, 0.58, -0.05, 0.0, 0.0, 2.2, f="xXyZ")
+    p.box("CT_SteelWhite", -0.48, -0.005, -0.075, -0.05, 0.0, 2.1, f="xXyZ")
+    p.box("CT_SteelWhite", 0.005, 0.48, -0.075, -0.05, 0.0, 2.1, f="xXyZ")
+    p.box("CT_Steel", -0.04, 0.04, -0.09, -0.075, 0.0, 2.1, f="xXyZ")
+    p.box("CT_ConcreteWhite", 0.66, 0.74, -0.03, 0.0, 1.0, 1.2, f="xXyZz")
+    p.box("CT_SteelRed", 0.685, 0.715, -0.045, -0.03, 1.07, 1.13, f="xXyZz")
+    p.box("CT_Opal", -0.12, 0.12, -0.035, 0.0, 2.28, 2.38, f="xXyZz")
+    return p.done()
+
+
+def _switch_plate(B, x, y, z, yaw, zc=1.3):
+    """[wall] A two-key light switch on a bakelite plate."""
+    p = kit._P(B, x, y, z, yaw, "switch_plate")
+    p.kind = "wall"
+    p.box("CT_ConcreteWhite", -0.06, 0.06, -0.015, 0.0, zc - 0.06, zc + 0.06, f="xXyZz")
+    for u in (-0.022, 0.022):
+        p.box("CT_Steel", u - 0.012, u + 0.012, -0.03, -0.015, zc - 0.03, zc + 0.03, f="xXyZz")
+    return p.done()
+
+
+def _key_board(B, x, y, z, yaw, zc=1.35):
+    """[wall] A wooden key board: two rows of brass hooks with keys on brass tags."""
+    p = kit._P(B, x, y, z, yaw, "key_board")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.25, 0.25, -0.03, 0.0, zc - 0.2, zc + 0.2, f="xXyZz")
+    p.box("CT_PlasterGreen", -0.22, 0.22, -0.034, -0.03, zc + 0.12, zc + 0.17, f="xXyZz")
+    for r_, zz in enumerate((zc + 0.02, zc - 0.12)):
+        for k in range(5):
+            u = -0.18 + k * 0.09
+            p.rod("CT_Brass", (u, -0.03, zz), (u, -0.06, zz), 0.012, 4)
+            if (k + r_) % 4 != 3:
+                p.box("CT_Brass", u - 0.012, u + 0.012, -0.066, -0.058, zz - 0.07, zz - 0.012, f="xXyZz")
+    return p.done()
+
+
+def _umbrella_stand(B, x, y, z=0.0):
+    p = kit._P(B, x, y, z, 0.0, "umbrella_stand")
+    p.kind = "prop"
+    p.cyl("CT_SteelRed", 0, 0, 0.0, 0.5, 0.17, 8, r1=0.2)
+    for k, (a, b, c) in enumerate(((0.05, 0.02, 0.15), (-0.06, 0.0, -0.1), (0.0, -0.06, 0.05))):
+        p.rod("CT_ConcreteDark" if k != 1 else "CT_PlasterBlue", (0.0, 0.0, 0.3), (a, b, 0.95 + c * 0.3), 0.03, 4)
+    p.rod("CT_Wood", (0.05, 0.02, 0.95), (0.05, 0.02, 1.0), 0.045, 5)
+    return p.done(footprint=(-0.2, 0.2, -0.2, 0.2))
+
+
+def _desk_bell(B, x, y, z, yaw=0.0):
+    p = kit._P(B, x, y, z, yaw, "desk_bell")
+    p.kind = "prop"
+    p.cyl("CT_Brass", 0, 0, 0.0, 0.015, 0.06, 10)
+    p.lathe("CT_Brass", 0, 0, [(0.05, 0.015), (0.045, 0.04), (0.02, 0.055), (0.004, 0.06)], 10)
+    p.rod("CT_Steel", (0, 0, 0.058), (0, 0, 0.075), 0.012, 4)
+    return p.done()
+
+
+def _ledger(B, x, y, z, yaw=0.0):
+    """[prop] A big house ledger lying open on a desk."""
+    p = kit._P(B, x, y, z, yaw, "ledger")
+    p.kind = "prop"
+    p.box("CT_Leather", -0.22, 0.22, -0.16, 0.16, 0.0, 0.02)
+    p.box("CT_Paper", -0.2, -0.004, -0.14, 0.14, 0.02, 0.04)
+    p.box("CT_Paper", 0.004, 0.2, -0.14, 0.14, 0.02, 0.04)
+    p.card_top("paper_typed", -0.19, -0.01, -0.13, 0.13, 0.041)
+    p.card_top("paper_typed", 0.01, 0.19, -0.13, 0.13, 0.041)
+    p.rod("CT_PlasterRed", (0.15, -0.1, 0.045), (0.28, -0.06, 0.047), 0.01, 4)
+    return p.done()
+
+
+def _tape_recorder(B, x, y, z, yaw, reel=True):
+    """[prop] A reel-to-reel tape recorder (reel=True, 0.4 x 0.28 x 0.16) or a cassette recorder with a handle."""
+    p = kit._P(B, x, y, z, yaw, "tape_recorder")
+    p.kind = "prop"
+    if reel:
+        p.bev("CT_Lacquer", -0.2, 0.2, -0.14, 0.14, 0.0, 0.1, 0.012)
+        p.box("CT_Aluminium", -0.19, 0.19, -0.13, 0.13, 0.1, 0.108, f="xXyYZ")
+        for sx in (-0.09, 0.09):
+            p.cyl("CT_Aluminium", sx, 0.03, 0.108, 0.118, 0.092, 10)
+            p.cyl("CT_Rubber", sx, 0.03, 0.118, 0.14, 0.066, 10)
+            p.cyl("CT_Steel", sx, 0.03, 0.14, 0.15, 0.014, 6)
+        p.box("CT_Steel", -0.06, 0.06, -0.1, -0.06, 0.108, 0.14)
+        p.tube("CT_Rubber", [(-0.09, -0.03, 0.125), (-0.075, -0.08, 0.125), (0.075, -0.08, 0.125), (0.09, -0.03, 0.125)], 0.006, 3)
+        for sx in (-0.12, -0.04, 0.04, 0.12):
+            p.rod("CT_Steel", (sx, -0.14, 0.05), (sx, -0.17, 0.05), 0.032, 6)
+        p.box("CT_Brass", -0.18, -0.06, -0.141, -0.14, 0.075, 0.09, f="xXyZz")
+    else:
+        p.bev("CT_SteelWhite", -0.17, 0.17, -0.08, 0.08, 0.0, 0.1, 0.01)
+        p.box("CT_Glass", -0.07, 0.07, -0.05, 0.03, 0.1, 0.106, f="xXyYZ")
+        p.card_front("grille", -0.15, -0.075, 0.015, 0.075, -0.082)
+        for k in range(5):
+            p.box("CT_Steel", -0.06 + k * 0.03, -0.04 + k * 0.03, -0.075, -0.045, 0.1, 0.112, f="xXyYZ")
+        p.box("CT_SteelRed", 0.04, 0.056, -0.075, -0.045, 0.1, 0.113, f="xXyYZ")
+        p.tube("CT_Steel", [(-0.12, 0.0, 0.1), (-0.12, 0.0, 0.17), (0.12, 0.0, 0.17), (0.12, 0.0, 0.1)], 0.014, 4)
+    return p.done(footprint=(-0.2, 0.2, -0.14, 0.14))
+
+
+def _tape_boxes(B, x, y, z, yaw, n=5, cols=None):
+    """[prop] A row of tape boxes standing on their spines (0.04 apart)."""
+    p = kit._P(B, x, y, z, yaw, "tape_boxes")
+    p.kind = "prop"
+    cols = cols or ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_Paper", "CT_PlasterRed")
+    for k in range(n):
+        p.box(cols[k % len(cols)], k * 0.04, k * 0.04 + 0.036, -0.08, 0.08, 0.0, 0.17 - (k % 3) * 0.01, f="xXyYZ")
+    return p.done(footprint=(0.0, n * 0.04, -0.08, 0.08))
+
+
+def _alarm_clock(B, x, y, z, yaw=0.0):
+    p = kit._P(B, x, y, z, yaw, "alarm_clock")
+    p.kind = "prop"
+    p.cyl("CT_SteelRed", 0, 0, 0.012, 0.11, 0.055, 10)
+    p.card_front("clock_2", -0.045, 0.045, 0.03, 0.12, -0.056)
+    for sx in (-0.03, 0.03):
+        p.cyl("CT_Brass", sx, 0.0, 0.11, 0.135, 0.022, 6)
+    p.rod("CT_Steel", (-0.035, 0, 0.012), (-0.045, 0, 0.0), 0.012, 4)
+    p.rod("CT_Steel", (0.035, 0, 0.012), (0.045, 0, 0.0), 0.012, 4)
+    return p.done()
+
+
+def _fold_table(B, x, y, z, yaw):
+    """[wall] A fold-down table flap on a hinge board, held by two arms (0.7 x 0.42, top 0.75 m)."""
+    p = kit._P(B, x, y, z, yaw, "fold_table")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.4, 0.4, -0.025, 0.0, 0.66, 0.84, f="xXyZz")
+    p.bev("CT_WoodLight", -0.35, 0.35, -0.43, -0.025, 0.72, 0.75, 0.008)
+    for sx in (-0.3, 0.3):
+        p.rod("CT_Steel", (sx, -0.03, 0.34), (sx, -0.38, 0.71), 0.022, 4)
+    p.box("CT_Brass", -0.36, 0.36, -0.03, -0.015, 0.74, 0.76, f="xXyZz")
+    p.core(-0.33, 0.33, -0.41, -0.03, 0.722, 0.742)
+    return p.done(solid=True, top=0.75)
+
+
+def _hooks(B, x, y, z, yaw, radio=True):
+    """[wall] A coat board with three brass hooks: a coat and headphones (radio) / a scarf and a rucksack (student)."""
+    p = kit._P(B, x, y, z, yaw, "hooks")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.15, 0.15, -0.025, 0.0, 1.6, 1.8, f="xXyZz")
+    for u in (-0.08, 0.0, 0.08):
+        p.rod("CT_Brass", (u, -0.025, 1.7), (u, -0.07, 1.7), 0.014, 4)
+    if radio:
+        p.cushion("CT_PlasterGreen", -0.14, 0.04, -0.065, -0.03, 1.05, 1.66, 0.012)
+        p.tube("CT_Steel", [(0.09, -0.07, 1.69), (0.08, -0.09, 1.58), (0.14, -0.09, 1.58), (0.13, -0.07, 1.69)], 0.012, 4)
+        p.cyl("CT_Leather", 0.08, -0.09, 1.55, 1.6, 0.03, 6)
+        p.cyl("CT_Leather", 0.14, -0.09, 1.55, 1.6, 0.03, 6)
+    else:
+        p.cushion("CT_PlasterRed", -0.03, 0.03, -0.065, -0.03, 1.15, 1.68, 0.008)
+        p.cushion("CT_PlasterBlue", -0.13, -0.06, -0.065, -0.03, 1.3, 1.67, 0.008)
+        p.cushion("CT_Leather", 0.04, 0.14, -0.1, -0.03, 1.2, 1.68, 0.015)
+    return p.done()
+
+
+def _sill_things(B, x, y, z, radio=True):
+    """Little things on the round window's sill: radio valves in a row (radio) / a jar of sea water and a pebble (student)."""
+    p = kit._P(B, x, y, z, 0.0, "sill_things")
+    p.kind = "prop"
+    if radio:
+        for k in range(3):
+            p.lathe("CT_Glass", k * 0.07, 0, [(0.022, 0.0), (0.022, 0.07), (0.012, 0.11), (0.004, 0.115)], 6)
+            p.cyl("CT_Brass", k * 0.07, 0, 0.0, 0.015, 0.024, 6)
+    else:
+        p.lathe("CT_Glass", 0, 0, [(0.04, 0.0), (0.045, 0.02), (0.045, 0.1), (0.035, 0.11)], 8)
+        p.lathe("CT_PlasterBlue", 0, 0, [(0.038, 0.012), (0.042, 0.04), (0.042, 0.075), (0.0, 0.075)], 8)
+        p.cyl("CT_Aluminium", 0, 0, 0.11, 0.125, 0.036, 8)
+        p.lathe("CT_ConcreteDark", 0.1, 0.0, [(0.028, 0.0), (0.03, 0.015), (0.015, 0.025), (0.0, 0.026)], 6)
+    return p.done(footprint=(-0.05, 0.25, -0.05, 0.05))
+
+
+def _reel_box(B, x, y, z, yaw, reel=True):
+    """[prop] A flat tape box with a string, left on a bench (reel box) / a cassette in its case."""
+    p = kit._P(B, x, y, z, yaw, "reel_box")
+    p.kind = "prop"
+    if reel:
+        p.box("CT_Paper", -0.1, 0.1, -0.1, 0.1, 0.0, 0.04)
+        p.box("CT_PlasterRed", -0.1, 0.1, -0.1, -0.0995, 0.0, 0.04, f="yxX")
+        p.card_top("label_12", -0.05, 0.05, -0.05, 0.05, 0.041)
+        p.rod("CT_Leather", (-0.1, 0.0, 0.043), (0.1, 0.0, 0.043), 0.006, 4)
+    else:
+        p.box("CT_Glass", -0.055, 0.055, -0.035, 0.035, 0.0, 0.016)
+        p.card_top("label_31", -0.04, 0.04, -0.02, 0.02, 0.0165)
+    return p.done()
+
+
+def _lobby_more(B, lob, cores):
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    # lift door in the passage between the cores (east core's west face x 1.2, the passage's far end)
+    _lift_door(B, 1.2, 10.0, 0.0, 270)
+    B.thing("lift_g", "door", (1.16, 10.0, 1.1), 270.0, to="lift")
+    B.spot("lobby_lift", "stand", (0.6, 10.0, 0.0), 270.0)
+    # lamp for the passage (it had none) and a switch on the west column
+    B.lamp((0.0, 8.4, 3.3), lumens=420, colour="#FFE0B0", kind="lobby", radius=5.0)
+    box(B.detail, "CT_Steel", -0.01, 0.01, 8.39, 8.41, 3.38, 3.6, faces="xXyY")
+    _switch_plate(B, lob[0] + 0.15, lob[2] + 0.3, 0.0, 180.0, zc=1.3)
+    B.thing("lobby_switch", "machine", (lob[0] + 0.15, lob[2] + 0.33, 1.3), 180.0, what="switch", switch=11)
+    # key board and an umbrella stand by the door, the desk's ledger and bell, a magazine on the coffee table
+    _key_board(B, 2.6, 5.6, 0.0, 0.0)
+    B.thing("lobby_keys", "board", (2.6, 5.55, 1.35), 0.0, topic="keys")
+    _umbrella_stand(B, 1.0, 2.5)
+    B.thing("lobby_umbrellas", "board", (1.0, 2.5, 0.7), 0.0, topic="umbrellas")
+    _ledger(B, 2.3, 3.88, 0.75, 8.0)
+    B.thing("lobby_logbook", "board", (2.3, 3.88, 0.8), 180.0, topic="log")
+    _desk_bell(B, 2.95, 4.2, 0.75)
+    B.thing("lobby_bell", "board", (2.95, 4.2, 0.82), 180.0, topic="bell")
+    f(kit.newspaper, -3.5, 4.1, 100.0, z=0.42, cellname="mag_3")
+    B.thing("lobby_magazine", "take", (-3.5, 4.1, 0.45), 0.0, item="magazine_travel")
+    # things on what is already there
+    B.thing("lobby_mail_w", "board", (-3.8, 5.55, 1.45), 0.0, topic="mail")
+    B.thing("lobby_mail_e", "board", (3.8, 5.55, 1.45), 0.0, topic="mail")
+    B.thing("lobby_bike", "board", (-6.9, 4.1, 0.7), 270.0, topic="bike")
+    B.thing("lobby_pram", "board", (-6.6, 4.9, 0.7), 90.0, topic="pram")
+    B.thing("lobby_ficus", "board", (-6.2, 3.3, 0.9), 0.0, topic="plant")
+    B.thing("lobby_fern", "board", (-2.5, 2.7, 0.6), 0.0, topic="plant")
+    B.thing("lobby_monstera", "board", (3.4, 3.0, 0.8), 0.0, topic="plant")
+    B.thing("lobby_palm", "board", (-0.8, 10.2, 0.9), 0.0, topic="plant")
+    B.thing("lobby_hats_w", "board", (-1.2, 2.75, 1.4), 0.0, topic="hats")
+    B.thing("lobby_hats_e", "board", (0.95, 5.2, 1.4), 0.0, topic="hats")
+    B.thing("lobby_extinguisher", "board", (-1.2, 9.3, 1.2), 90.0, topic="safety")
+    B.thing("lobby_street", "board", (-3.7, lob[2] + 0.15, 1.5), 180.0, topic="view")
+    B.thing("lobby_news", "board", (1.75, 5.55, 2.05), 0.0, topic="news")
+    # townsfolk: the waiting corner, the post boxes
+    B.spot("lobby_wait_w", "seat", (-4.95, 3.9, 0.0), 90.0)
+    B.spot("lobby_wait_e", "seat", (-2.45, 3.9, 0.0), 270.0)
+    B.spot("lobby_post", "stand", (3.8, 5.0, 0.0), 180.0 + 180.0)
+
+
+def _stop(B, z0, tag, top=False):
+    """A lift stop on the bridge between the cores at deck height z0: the door in the west core's wall, a bench at the
+    railing, a planter, two views, a lamp. Ids <tag>_*."""
+    bx0, bx1, by0, by1 = cores_x0 + CORE, cores_x0 + CORE + GAP, 5.6 + 1.5, 5.6 + CORE - 1.5
+    _lift_door(B, bx0, 8.1, z0, 90)
+    B.thing("lift_%s" % tag, "door", (bx0 + 0.04, 8.1, z0 + 1.1), 90.0, to="lift")
+    bn = kit.bench(B, 0.3, by0 + 0.35, z0, 0.0, w=1.2, kind="park")
+    s = bn["seats"][0]
+    B.thing("%s_bench" % tag, "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - z0, 2))
+    kit.planter(B, bx1 - 0.3, 8.6, z0, 90.0, w=0.7, d=0.4, h=0.45, plants=3, seed=3)
+    B.thing("%s_planter" % tag, "board", (bx1 - 0.3, 8.6, z0 + 0.8), 270.0, topic="plant")
+    B.thing("%s_view_street" % tag, "board", (0.0, by0 + 0.03, z0 + 1.2), 180.0, topic="view")
+    B.thing("%s_view_back" % tag, "board", (0.0, by1 - 0.03, z0 + 1.2), 0.0, topic="view")
+    if top:
+        box(B.detail, "CT_Steel", bx0, 0.02, 8.05, 8.15, z0 + 2.36, z0 + 2.4)
+        box(B.detail, "CT_Steel", -0.02, 0.02, 8.05, 8.15, z0 + 2.38, z0 + 2.52)
+    B.lamp((0.0, 8.1, z0 + 2.3), lumens=360, colour="#FFE0B0", kind="stair", radius=4.0)
+    return bn
+
+
+def _stops(B, cores):
+    global cores_x0, cores_x1
+    cores_x0, cores_x1 = cores[0][0], cores[1][1]
+    z7 = LIFT_S7 * STOREY
+    _stop(B, z7, "s7")
+    B.thing("s7_box", "board", (0.3, 7.6, z7 + 0.62), 180.0, topic="box")
+    _reel_box(B, 0.3, 7.6, z7 + 0.45, 12.0, reel=(RESIDENT == "radio"))
+    zt = STOREYS * STOREY
+    _stop(B, zt, "top", top=True)
+
+
+def _capsule_more(B):
+    """The capsule's second pass (ix0 4.80, ix1 6.92, iy0 2.49, iy1 5.41): tape recorder with tapes on a shelf over the bed
+    head, an alarm clock, a fold-down table, hooks, the sill things, a switch."""
+    radio = RESIDENT == "radio"
+    ix0, ix1, iy0, iy1 = 4.80, 6.92, 2.49, 5.41
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    ws = f(kit.wall_shelf, 6.435, iy1, 0.0, w=0.95, zt=1.15, props=False)
+    _tape_recorder(B, 6.64, iy1 - 0.16, 1.15, 0.0, reel=radio)
+    _tape_boxes(B, 6.25, iy1 - 0.12, 1.15, 0.0, n=4 if radio else 3)
+    _alarm_clock(B, 6.1, iy1 - 0.1, 1.15, 0.0)
+    B.thing("capsule_tapes", "shelf", (6.62, 5.3, 1.3), 0.0, topic="tapes")
+    B.thing("capsule_alarm", "board", (6.1, 5.3, 1.27), 0.0, topic="clock")
+    _switch_plate(B, 5.86, iy1, 0.0, 0.0, zc=1.45)
+    B.thing("capsule_switch", "machine", (5.86, 5.38, 1.45), 0.0, what="switch", switch=3)
+    _fold_table(B, 6.45, iy0, 0.0, 180.0)
+    f(kit.teapot, 6.3, 2.75, 0.75, 0.0)
+    f(kit.cup, 6.62, 2.8, 0.75, 0.0)
+    f(kit.cup, 6.5, 2.95, 0.75, 90.0, mat="CT_PlasterYellow")
+    B.thing("capsule_table", "board", (6.45, 2.75, 0.85), 180.0, topic="table")
+    _hooks(B, ix0, 5.2, 0.0, 90.0, radio=radio)
+    B.thing("capsule_hooks", "board", (ix0 + 0.03, 5.2, 1.5), 90.0, topic="hooks")
+    _sill_things(B, 5.04, 2.46, 0.93, radio=radio)
+    B.thing("capsule_sill", "board", (5.15, 2.5, 1.02), 180.0, topic="sill")
+    B.thing("capsule_phone", "board", (5.0, 2.95, 0.86), 200.0, topic="phone")
+    B.spot("capsule_table_stand", "stand", (6.45, 3.3, 0.0), 0.0)
+
+
+def _deepen(B, lob, cores):
+    _lobby_more(B, lob, cores)
+    _capsule_more(B)
+    _stops(B, cores)
+    for w in kit.check(B):
+        print("capsule_tower kit.check:", w)
