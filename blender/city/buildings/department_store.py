@@ -21,6 +21,7 @@ import random
 
 from citykit import box, prism, ring, Mesh, Facade, wall_with_holes, reveal
 from _furn1 import rbox, cyl, blob, mannequin
+import furn_int3 as fu
 import interior_kit as kit
 
 INFO = {
@@ -259,6 +260,9 @@ def build(B):
     B.footprint = [(-HW, -1.0), (HW, -1.0), (HW, D), (-HW, D)]
     B.height = 14.0
     B.note("2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east")
+    import os
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
 
 
 WARM = ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink", "CT_Plaster"]
@@ -269,6 +273,37 @@ WALL_GAPS = (5.4, 10.0, 14.6, 19.2, 23.8, 28.3)          # y of the wall between
 
 
 # ------------------------------------------------------------------------------------------------ helpers
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
+
+
 def _thing(B, tid, kind, pos, yaw, **props):
     B.thing(tid, kind, tuple(round(v, 3) for v in pos), yaw, **props)
 
@@ -683,8 +718,12 @@ def _first_east(B, zf, rnd):
     kit.sign_plate(B, 21.2, 5.4, zf, 270.0, name="sign_buffet", w=1.5, zc=3.6, hang=True)
     for k, (tx, ty) in enumerate(((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (13.3, 8.2), (19.0, 8.6))):
         t = kit.table_round(B, tx, ty, zf, 0.0, r=0.4, h=0.74)
-        kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
-        kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
+        if k == 3:                                       # a game of draughts instead of the crockery
+            _checkers(B, tx, ty, t["top"], 0.0)
+            _thing(B, "f1_cafe_checkers", "play", (tx, ty, t["top"] + 0.03), 0.0, what="checkers")
+        else:
+            kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
+            kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
         rs = []
         for a in (90.0, 270.0):
             ox = 0.62 if a == 270.0 else -0.62
@@ -881,6 +920,7 @@ def _extras(B, rnd):
     B.lamp((fx + 0.6, fy, zf + 1.95), lumens=400, colour="#FFD2A0", radius=2.4)
     _thing(B, "f1_fitting_room", "craft", (fx + 0.7, fy, zf + 1.1), 90.0, what="fitting_room")
     _thing(B, "f1_fitting_mirror", "board", (fx + 0.02, fy, zf + 1.25), 90.0, topic="mirror")
+    _switch(B, fx + 1.0, fy + 0.68, 0.0, zf + 1.2, "light_switch_fitting", 3)
     B.spot("f1_fitting_wait", "stand", (fx + 2.3, fy - 0.3, zf), 270.0)
     _thing(B, "f1_clothes_rail", "board", (-20.4, 14.1, zf + 1.1), 90.0, topic="clothes")
 
@@ -995,7 +1035,6 @@ def _third(B, rnd):
             kit.menu_board(B, cx + dx, cy - 0.22, z0 + 1.05, 0.0, name="price_%d" % ((k + int(cy)) % 2), w=0.26, zc=0.1, seed=int(cx + cy) + k)
     kit.sign_plate(B, -12.0, 12.5, zg, 0.0, name="sign_bread", w=1.3, zc=3.55, hang=True)
     kit.sign_plate(B, 15.8, 24.0, zg, 0.0, name="sign_toys", w=1.1, zc=3.2, hang=True)
-    kit.sign_plate(B, 6.2, 29.6, zf, 0.0, name="sign_photo", w=0.9, zc=2.75)
     kit.sign_plate(B, -17.95 + 0.75, 7.1, zf, 0.0, name="sign_quiet", w=0.7, zc=2.45, hang=True)
     # tills that look used: abacus, a paper roll on a spike, a queue lane
     for k, cx in enumerate((-4.6, 4.6)):
@@ -1018,6 +1057,7 @@ def _third(B, rnd):
     box(d, "CT_Steel", -8.04, -6.96, 29.55, 29.6, zg + 2.05, zg + 2.09)
     kit.sign_plate(B, -7.5, 29.6, zg, 0.0, name="sign_quiet", w=0.5, zc=2.35)
     _thing(B, "g_staff_door", "door", (-7.5, 29.5, zg + 1.0), 0.0, to="staff")
+    _switch(B, -8.55, 29.6, 0.0, zg + 1.2, "light_switch_staff", "room")
     kit.notice_board(B, -5.7, 29.6, zg, 0.0, w=0.8, zc=1.45, seed=91)
     _thing(B, "g_staff_board", "board", (-5.7, 29.5, zg + 1.45), 0.0, topic="staff")
     _hooks(B, 4.3, 8.6, 29.6, zg)

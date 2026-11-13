@@ -201,6 +201,8 @@ An act is what happens when the hero presses E at a thing:
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
+| `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
+| `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
 | `like` | content only: inherit every field of that act, then override |
 
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
@@ -256,9 +258,10 @@ id not in `Content/PeopleData/festivals.json`, a weather word not in the list, a
 | `have` | `"set/piece"`: the hero has that stamp |
 | `count` | `["set", n]`: the hero has at least n stamps of the set |
 | `collect` | no condition: the stamp the hero gets when the line is shown; `"set/*"` on a `"<prefix>.*"` entry gives each line the key's last part as its piece |
+| `read` | `"<text id>"`: the hero has read that text of the reading view to its end (`--check` fails on an unknown text) |
 
 Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
-`defaults_by_plot_kind`, `quests`, `collections`, `closed_by`; any other section is an error, and so is a key defined in two
+`defaults_by_plot_kind`, `quests`, `collections`, `closed_by`, `texts`; any other section is an error, and so is a key defined in two
 files; a building's own content goes in `x_<building>.json`, its words in `strings/x_<building>.json`): `acts.json` (defaults per kind, generic acts,
 shelves, boards), `activities.json` (machines, games, sport, crafts, screens), `counters.json` (shops, counter talk),
 `plots.json` (what the buildings' spots do while there are no declared things). An act may say `"like": "<act>"` to
@@ -327,6 +330,70 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
   over. `city.act.switch.on|off|none` on the prompt line.
 * No building declares either yet: the building modules add `B.thing(..., "board", topic="clock")` or
   `B.thing(..., "machine", what="switch", switch="room")` by a door.
+
+### Sitting and lying
+
+What is a real pose and what is a stand-in:
+
+* **Sitting is a real pose** (any `seat`, any thing with `height`, an act with `pose: sit`): `AHeroCharacter::SitOn` (the
+  restaurant's mechanism, `HandReach::ApplySit` in the hero's anim) on one pooled anchor. The seat's frame is the floor under
+  the cushion's front edge facing the thing's `yaw`; the floor is a trace down from the cushion checked by
+  `LyudCity::FModel::SeatFloor` (a hit up near the cushion is the seat's own box: the floor is `height` below it; a hit more
+  than 60 cm from where `height` puts the floor, a stairwell or a hole, is not believed): the feet stay on the floor. The
+  spot he stands up to is found as he sits (`StandOffsetFor`): in front, beside, behind (a bed: off its side), the first
+  where his capsule fits (`ECC_Pawn`) with floor under it within 40 cm of the seat's; in front when none does. Seated, the
+  view is held within a cone about the seat's facing (`APlayerCameraManager::ViewYawMin/Max`; half-angle the thing's
+  `cone` prop 30..170, default 110: `FModel::LookCone`), let go on every way up. Any step (or Space) stands him up.
+* **Lying is a camera stand-in** (the hero has no lying pose; the townsfolk's lying clips are on another skeleton): he sits
+  on the bed's edge, hidden, and the view settles over 1.6 s (ease in-out) onto a pooled camera at the pillow, looking toward
+  the nearest window view of the room (a thing of the plot with `topic=view` within 6 m, 1 m under to 2.5 m over the bed:
+  `FModel::WindowFrom`), else at the ceiling. Any step, Space or E gets him up.
+* **Sleep** (`"sleep": true` on a lie act: the hotel's and the sanatorium's night beds, `sleep_night` and its likes): once he
+  is on the pillow the page shows an hour chooser (`city.sleep.*`): A/D or the arrows change the hour (round the clock, never
+  the hour it is now: `FModel::SleepStep`), E sleeps, W/S/Esc/Space get him up. The first hour offered is the act's `until`,
+  else now plus its `minutes` to the next whole hour (`FModel::SleepDefaultHour`). E: the screen goes black, the clock jumps
+  to the hour (`UGameCalendar::SetNow`: the people's life resettles), the view comes back, a moment of the window, he gets
+  up and the bed's line shows on the page.
+* **Never stuck**: one seat at a time (a new sit stands him up first); the seat's anchor gone from under him (he is no longer
+  seated but was never stood up): walking and collision come back (`RecoverFromSeat`, logged); a load while seated or lying:
+  everything the hero was in the middle of here is let go (the text, the chooser, a game, a show, a fade, the pillow's view),
+  he stands up where he would from the seat when the save had him there, else stays where the save put him; a townsperson
+  can't claim the seat or bed he is on, and he can't take one somebody holds (`city.act.taken`). While a text or the chooser
+  is up the seat's keys are the view's (`AHeroCharacter::SeatMove/SeatLeave`); the hooks only ask, the tick acts.
+* Console: `lyud.City.Sit [thing id]`, `lyud.City.Lie [thing id]` (the nearest free one without an id, from anywhere),
+  `lyud.City.Sleep <hour>` (lying: sleep until then). Developer mode: `interiors.sit_nearest`, `interiors.lie_nearest`.
+
+### The reading page
+
+An act with `read` opens a text in the reading view (`Private/City/SLyudCityBook.*`, made once, collapsed between texts,
+hit-test invisible) instead of its page: what it is (`city.book.kind.<kind>`), the title, one page, `page 2 of 4` and the
+keys. E, D or right: next (E on the last page puts it down); A or left: back; Esc, W, S, up, down or Space: shut; walking
+2.5 m off, getting up from the seat it was read on, any screen or the game menu shut it too. Standing, his steps are held
+while it is up; seated (an act with `pose: sit`: the library's reading pods), the seat's keys shut it. Each page read
+(the opening and every page forward) passes the text's `minutes` (the usual smooth jump); leafing back costs nothing. The
+page each text was left on is remembered (`b:<text>`); a text read to its end opens at its first page again. Reaching the
+last page the first time reads it: the text's `collect` stamp, the HUD's `city.book.read`, the quest event
+`read`/<text id>, and the plot it was read in (`r:<text>`), shown in the Read list: under the collections on
+`lyud.City.Collections`' page, `city.read.list.*`, per place (`city.plot.<plot>.name`, else its teleport name).
+
+`texts` (any content file; `tools/city/content/reading.json`, words in `strings/reading.json`):
+
+```
+"texts": {"<id>": {"title": "<key>", "kind": "book|notice|ledger|newspaper", "minutes": 0..30 (2),
+                   "collect": "<set>/<piece>", "pages": ["<key>", {"k": "<key>", <line conditions>}, [<alternatives>], ...]}}
+"acts":  {"<act>": {..., "read": {"texts": ["<id>", ...], "rotate": "use|daily"}}}
+"acts":  {"sleep_night": {..., "pose": "lie", "sleep": true}}
+line condition: {"k": "<key>", "read": "<text id>"}
+```
+
+A page is a key, a line with conditions, or a list of alternatives: those whose conditions hold now, one of them by the
+days since the game began (the newspaper's second page changes daily; a page with none holding is left out). 1..12 pages,
+at least one with no conditions; a notice and a newspaper are drawn on paper. `--check` fails on an unknown text, a text
+without pages, a `read` act on another kind, `sleep` without `pose: lie`. Now: six texts (`birds_starlings`,
+`library_rules`, `cog_minutes`, `paper_today`, `kids_hedgehog`, `cookbook_soup`) on the library's pods, catalogue and
+children's wall, the store's, clinic's, hall's and club's shelves and every daily paper; the set `reading`. Console
+`lyud.City.Read <text id>|next|prev|close|list|all|clear`; developer mode `interiors.read_nearest`,
+`interiors.read_all` (toggle: every text read / none), `interiors.read_list`.
 
 ### How to add content (for the furnishing agents)
 
@@ -402,12 +469,15 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
     greeting over their head once a visit (`ULyudTownTalkSubsystem::SayEvent(.., "counter_hello")`, sets
     `counter_hello_*` in `Content/Dialogue/town_barks.txt`; only if their body is drawn within 6 m of the counter);
   * `pose` `sit`: `AHeroCharacter::SitOn` on one pooled anchor (an actor at the origin, made again if it went away; the
-    seat frame from the thing's point, yaw, `height` and a floor trace); stands up the usual way. A `height` outside
-    0.05..1.2 m is not believed (the usual 0.45, a warning): some exports gave the height over the building's base;
-  * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view goes to a pooled camera at the pillow
-    looking at the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark; once the time has passed
-    he gets up by himself after 2.5 s; any step, Space or E gets him up at once. The view and the hero's visibility come
-    back on every way out (standing up, the hero gone, the level ending). No lying animation: none to reuse safely;
+    seat frame from the thing's point, yaw, `height` and a checked floor trace), a free spot to stand up to, the look cone
+    (see "Sitting and lying"). A `height` outside 0.05..1.2 m is not believed (the usual 0.45, a warning): some exports gave
+    the height over the building's base;
+  * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view settles onto a pooled camera at the pillow
+    looking toward the room's window or the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark;
+    once the time has passed he gets up by himself after 2.5 s; any step, Space or E gets him up at once; a `sleep` act
+    opens the hour chooser. The view and the hero's visibility come back on every way out (standing up, the hero gone, a
+    load, the level ending). No lying animation: none to reuse safely;
+  * `read`: the reading view (see "The reading page");
   * `screen`: the show (see the act field), subtitles 2.8..7 s each by length, the minutes in equal shares as they come;
     over at E (`E — stop watching`), at getting up, walking off or any screen;
   * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing);
@@ -422,17 +492,19 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (178 checks, the mini-games included) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (224 checks, the mini-games, sitting, sleeping and reading included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
   when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m), `lyud.City.Weekday <mon..sun>` (the clock
-  on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`. Developer mode, group `interiors`:
+  on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`, `lyud.City.Sit|Lie [thing id]`, `lyud.City.Sleep <hour>`,
+  `lyud.City.Read <text id>|next|prev|close|list|all|clear`. Developer mode, group `interiors`:
   things nearby, use the nearest, reset today's limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff
   asked; no closed acts), `interiors.show_things` (toggle: the labels), `interiors.collections` (the collections' page),
   `interiors.collections_all` (toggle: every set complete / cleared), `interiors.game_aim|game_rally|game_duel` (the
   nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
-  regulars' page; the log lists each one's style, skill, games, plots). Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  regulars' page; the log lists each one's style, skill, games, plots), `interiors.sit_nearest`, `interiors.lie_nearest`,
+  `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.
@@ -498,3 +570,11 @@ For the people's life (a townsperson who sits down in the café, reads at a libr
     plain lines.
 26. A switch (once a building has one) at night in a lit room: E, the room lamps go out (`switch ...: N lamps off`), again:
     on; walk into another building: back to the hours. A clock: `E — посмотреть на часы`, the page says the time.
+24. Sitting (`Dev.Do interiors.sit_nearest`, or `lyud.City.Sit`): seated at the right height, feet on the floor; turn the
+    mouse: the view stops about 110° either side of the seat's facing; W: up, beside or behind the chair if a table is in
+    front, the view free again. Sit, save, load: standing, walking, not stuck.
+25. A hotel or sanatorium night bed: E, the view settles toward the window; the chooser `Проснуться в 07:00`; D twice:
+    09:00; E: dark, the clock at 9:00, the window, up, the bed's line. Again, and W in the chooser: up at once.
+26. The library's reading pod (`P-LIBRARY/pod_1_01`): E sits and opens «Скворцы»: `стр. 1 из 4`; D, D, A, D, D: the last
+    page, `Дочитано`, the stamp «Прочитанное: 1 из 6»; E puts it down; stand up, E again: page 1. A free newspaper: the second page
+    differs tomorrow (`Dev.Do time.plus_day`). `lyud.City.Collections`: the Read list says where each was read.

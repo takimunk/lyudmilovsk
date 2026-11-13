@@ -519,6 +519,158 @@ static void MoreChecks()
 	CHECK(Of && Of->size() == 10 && M.ThingsOfPlot("P-K1")->size() == 1 && !M.ThingsOfPlot("P-NONE"), "the things of a plot, built at load");
 }
 
+/** Sitting and lying (docs/city_interiors.md "Sitting and lying"): the floor under a seat, the look cone, the window from a bed,
+ *  the sleep chooser's hours. */
+static void SeatChecks()
+{
+	std::printf("sitting and lying\n");
+	// the floor under a cushion at z 145 that is 45 cm high: 100 expected
+	CHECK(FModel::SeatFloor(145.0, 45.0, false, 0.0) == 100.0, "no trace hit: the floor is the seat's height under the cushion");
+	CHECK(FModel::SeatFloor(145.0, 45.0, true, 98.0) == 98.0, "a chair (no blocking box): the traced floor 2 cm lower is believed");
+	CHECK(FModel::SeatFloor(145.0, 45.0, true, 141.0) == 96.0, "a bench's blocking box met near the cushion: the floor is its height below the box");
+	CHECK(FModel::SeatFloor(145.0, 45.0, true, -250.0) == 100.0 && FModel::SeatFloor(145.0, 45.0, true, 30.0) == 100.0,
+		"a stairwell or a hole under a gallery bench (3.5 m, 70 cm down): the data's floor, feet not through it");
+	FThing Chair;
+	CHECK(FModel::LookCone(Chair) == 110.f, "the look cone while seated: 110 degrees either way by default");
+	Chair.Props["cone"] = "10";
+	const float Narrow = FModel::LookCone(Chair);
+	Chair.Props["cone"] = "400";
+	CHECK(Narrow == 30.f && FModel::LookCone(Chair) == 170.f, "a thing's cone is kept to 30..170 (%.0f, %.0f)", Narrow, FModel::LookCone(Chair));
+	CHECK(FModel::InCone(170.f, -170.f, 30.f) && !FModel::InCone(0.f, 180.f, 110.f) && FModel::InCone(-60.f, 40.f, 110.f),
+		"in the cone across the 180 seam, not behind the back");
+	CHECK(std::fabs(FModel::ClampToCone(0.f, 180.f, 110.f) - 70.f) < 0.01f && std::fabs(FModel::ClampToCone(200.f, 180.f, 110.f) - 200.f) < 0.01f,
+		"a look behind the back comes to the cone's nearest edge (%.1f)", FModel::ClampToCone(0.f, 180.f, 110.f));
+
+	const std::string Text = R"({"things": [
+  {"id": "P-H/bed", "plot": "P-H", "kind": "bed", "ue": [0, 0, 50], "yaw": 0, "props": {"height": 0.5}, "act": "sleep_home"},
+  {"id": "P-H/window", "plot": "P-H", "kind": "board", "ue": [300, 100, 150], "yaw": 180, "props": {"topic": "view"}},
+  {"id": "P-H/window_far", "plot": "P-H", "kind": "board", "ue": [900, 0, 150], "yaw": 180, "props": {"topic": "view"}},
+  {"id": "P-H/window_up", "plot": "P-H", "kind": "board", "ue": [100, 0, 450], "yaw": 180, "props": {"topic": "view"}},
+  {"id": "P-N/window", "plot": "P-N", "kind": "board", "ue": [50, 0, 150], "yaw": 180, "props": {"topic": "view"}},
+  {"id": "P-H/cot", "plot": "P-H", "kind": "bed", "ue": [2000, 0, 50], "yaw": 0, "act": "nap"}],
+ "acts": {"sleep_home": {"prompt": "p", "minutes": 480, "until": 7, "pose": "lie", "fade": true, "sleep": true, "lines": ["slept"]},
+          "nap": {"prompt": "p", "minutes": 90, "pose": "lie", "fade": true}}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const int Bed = M.FindThing("P-H/bed"), Cot = M.FindThing("P-H/cot");
+	CHECK(M.WindowFrom(Bed, 600.0) == M.FindThing("P-H/window"), "lying, he looks toward the window of his room (not one far off, upstairs or next door)");
+	CHECK(M.WindowFrom(Cot, 600.0) == -1, "no window near: the ceiling");
+	FAsk Ask;
+	const FOutcome O = M.Run(Bed, At(2, 22.5f), Ask);
+	CHECK(O.Verdict == EVerdict::Ok && O.bSleep && O.Pose == "lie" && O.Line == "slept", "a sleep bed: he lies down and chooses the hour");
+	CHECK(!M.Run(Cot, At(2, 22.5f), Ask).bSleep, "a nap bed does not ask");
+	const FAct& Sleep = *M.ActOf(Bed);
+	const FAct& Nap = *M.ActOf(Cot);
+	CHECK(FModel::SleepDefaultHour(Sleep, 22.5f) == 7 && FModel::SleepDefaultHour(Nap, 13.2f) == 15 && FModel::SleepDefaultHour(Sleep, 7.2f) == 8,
+		"the hour offered: the act's until (7), else now and its minutes (13:12 + 1.5 h: 15), never the hour it is now");
+	CHECK(FModel::SleepStep(7, 1, 22.5f) == 8 && FModel::SleepStep(23, 1, 22.5f) == 0 && FModel::SleepStep(23, -1, 22.5f) == 21
+		&& FModel::SleepStep(0, -1, 0.5f) == 23, "the chooser goes round the clock and skips the hour it is now");
+	CHECK(FModel::MinutesUntil(22.5f, 7) == 510 && FModel::MinutesUntil(22.5f, 23) == 30, "sleeping till 7 from 22:30 is 510 minutes, till 23 half an hour");
+}
+
+/** The reading view (docs/city_interiors.md "The reading page"): texts, the page each is left on, read to the end, the "read" line
+ *  condition, a newspaper whose second page changes daily, the save. */
+static void ReadingChecks()
+{
+	std::printf("the reading view\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-L/shelf", "plot": "P-L", "kind": "shelf", "ue": [0, 0, 130], "yaw": 0, "props": {"topic": "birds"}, "act": "read_guide"},
+  {"id": "P-L/stand", "plot": "P-L", "kind": "take", "ue": [400, 0, 100], "yaw": 0, "props": {"item": "daily_paper"}, "act": "take_paper"},
+  {"id": "P-L/board", "plot": "P-L", "kind": "board", "ue": [800, 0, 150], "yaw": 0, "props": {}, "act": "notices"},
+  {"id": "P-K/shelf", "plot": "P-K", "kind": "shelf", "ue": [5000, 0, 130], "yaw": 0, "props": {}, "act": "two_books"}],
+ "texts": {
+  "guide": {"title": "t.guide", "kind": "book", "minutes": 3, "collect": "reading/guide", "pages": ["g.1", "g.2", "g.3"]},
+  "paper": {"title": "t.paper", "kind": "newspaper", "minutes": 2, "pages": [["p.1"], ["p.2a", "p.2b", "p.2c"], [{"k": "p.night", "h": [21, 6]}], "p.3"]},
+  "one": {"title": "t.one", "pages": ["o.1"]},
+  "empty": {"title": "t.empty", "pages": []}},
+ "acts": {"read_guide": {"prompt": "p", "minutes": 15, "lines": ["old.1"], "read": {"texts": ["guide", "nope"]}, "collect": "shelves/birds"},
+          "take_paper": {"prompt": "p", "daily": 1, "give": [["daily_paper", 1]], "lines": ["took"], "read": {"texts": ["paper"]}},
+          "two_books": {"prompt": "p", "read": {"texts": ["guide", "one"]}},
+          "daily_two": {"prompt": "p", "read": {"texts": ["guide", "one"], "rotate": "daily"}},
+          "notices": {"prompt": "p", "lines": ["n.always", {"k": "n.after", "read": "guide"}]}},
+ "collections": {"reading": {"title": "c", "pieces": ["guide"]}, "shelves": {"title": "s", "pieces": ["birds"]}}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	CHECK(M.Texts.size() == 3 && M.FindText("empty") < 0 && M.FindText("guide") >= 0, "texts read, one with no pages left out (%d)", (int)M.Texts.size());
+	const int Shelf = M.FindThing("P-L/shelf"), Stand = M.FindThing("P-L/stand"), Board = M.FindThing("P-L/board"), Two = M.FindThing("P-K/shelf");
+	const int Guide = M.FindText("guide"), Paper = M.FindText("paper"), One = M.FindText("one");
+	CHECK(M.ActOf(Shelf)->Texts.size() == 1 && M.TextAt(Guide)->Minutes == 3 && M.TextAt(One)->Minutes == 2 && M.TextAt(One)->Kind == "book",
+		"an act's unknown text is left out; minutes and kind default to 2 and book");
+	FAsk Ask;
+	Ask.ItemCount = [](const std::string&) { return 0; };
+	const FOutcome O = M.Run(Shelf, At(2, 12.f, 300), Ask);
+	CHECK(O.Verdict == EVerdict::Ok && O.Text == Guide && O.Line.empty() && O.Minutes == 0 && O.Target == "read_guide",
+		"a reading act opens its text: no line, no act minutes (the pages take theirs)");
+	CHECK(O.NewStamps.size() == 1 && O.NewStamps[0] == "shelves/birds", "the act's own stamp still comes (the shelf topics)");
+	CHECK(M.LineIndex("P-L/shelf") == 0, "the old lines' page does not turn");
+
+	std::vector<std::string> Pages;
+	M.TextPages(Guide, At(2, 12.f, 300), Pages);
+	CHECK(Pages.size() == 3 && Pages[0] == "g.1" && Pages[2] == "g.3", "three pages of keys");
+	CHECK(M.OpenPage(Guide, 3) == 0, "opened the first time: the first page");
+	FPageTurn T0 = M.TurnPage(Guide, 0, 0, 3, "P-L");
+	FPageTurn T1 = M.TurnPage(Guide, 0, 1, 3, "P-L");
+	CHECK(!T0.bMoved && !T0.bFinished && T1.bMoved && T1.Page == 1 && !T1.bFinished, "a turn on: page 2, not finished");
+	FPageTurn TBack = M.TurnPage(Guide, 0, -1, 3, "P-L");
+	CHECK(!TBack.bMoved && TBack.Page == 0, "back from the first page: nothing");
+	M.TurnPage(Guide, 0, 1, 3, "P-L");
+	CHECK(M.OpenPage(Guide, 3) == 1, "closed on page 2: opened again on page 2");
+	CHECK(M.Run(Board, At(2, 12.f, 300), Ask).NumLines == 1, "a line with read: guide does not show before it is read");
+	FPageTurn T2 = M.TurnPage(Guide, 1, 1, 3, "P-L");
+	CHECK(T2.bFinished && T2.Page == 2 && M.IsRead("guide") && M.GetReadAt().at("guide") == "P-L" && T2.NewStamps.size() == 1
+		&& T2.NewStamps[0] == "reading/guide", "the last page: read, in P-L, the stamp reading/guide");
+	CHECK(!M.TurnPage(Guide, 1, 1, 3, "P-K").bFinished && M.GetReadAt().at("guide") == "P-L", "read once: the second time no stamp, the place stays");
+	CHECK(M.OpenPage(Guide, 3) == 0, "a text read and left on its last page opens at the start again");
+	CHECK(M.Run(Board, At(2, 12.f, 300), Ask).NumLines == 2, "the read: guide line shows now");
+	CHECK(M.CountRead() == 1 && !M.AllRead(), "1 of 3 read");
+
+	// the newspaper: the second page changes every day, a page that holds only at night
+	std::string Day0, Day1, Day3;
+	M.TextPages(Paper, At(2, 12.f, 300), Pages);
+	CHECK(Pages.size() == 3, "by day the paper has 3 pages (the night page left out): %d", (int)Pages.size());
+	Day0 = Pages[1];
+	FWhen W1 = At(3, 12.f, 301);
+	W1.Since = 1;
+	M.TextPages(Paper, W1, Pages);
+	Day1 = Pages[1];
+	FWhen W3 = At(5, 12.f, 303);
+	W3.Since = 3;
+	M.TextPages(Paper, W3, Pages);
+	Day3 = Pages[1];
+	CHECK(Day0 == "p.2a" && Day1 == "p.2b" && Day3 == "p.2a", "page two by the day: %s, %s, then round again: %s", Day0.c_str(), Day1.c_str(), Day3.c_str());
+	M.TextPages(Paper, At(2, 23.f, 300), Pages);
+	CHECK(Pages.size() == 4 && Pages[2] == "p.night", "at night the night page is there too");
+	const FOutcome P1 = M.Run(Stand, At(2, 12.f, 300), Ask);
+	CHECK(P1.Text == Paper && P1.Give.size() == 1, "taking the paper gives it and opens today's issue");
+	CHECK(M.Run(Stand, At(2, 13.f, 300), Ask).Verdict == EVerdict::DailyDone, "one paper a day");
+
+	// two texts in turn per use; one a day
+	CHECK(M.Run(Two, At(2, 12.f, 300), Ask).Text == Guide && M.Run(Two, At(2, 12.f, 300), Ask).Text == One && M.Run(Two, At(2, 12.f, 300), Ask).Text == Guide,
+		"two texts on a shelf: one, the other, the first again");
+	FAct Daily = M.Acts[(size_t)M.FindAct("daily_two")];
+	CHECK(Daily.bReadDaily && Daily.Texts.size() == 2, "rotate daily read");
+	CHECK(M.OpenPage(One, 1) == 0 && M.TurnPage(One, 0, 0, 1, "P-K").bFinished, "a one-page text is read as soon as it is opened");
+
+	// the save
+	std::map<std::string, std::string> Saved;
+	M.TurnPage(Paper, 0, 1, 3, "P-L");
+	M.SaveState(Saved);
+	CHECK(Saved.count("r:guide") && Saved["r:guide"] == "P-L" && Saved.count("b:paper") && Saved["b:paper"] == "1" && Saved.count("l:P-K/shelf#text"),
+		"saved: read (with the place), the page left on, the turn of the texts");
+	FModel M2;
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(M2.IsRead("guide") && M2.IsRead("one") && M2.OpenPage(M2.FindText("paper"), 3) == 1 && M2.HasStamp("reading/guide"), "loaded: the same");
+	M2.MarkAllRead(true, "");
+	CHECK(M2.AllRead() && M2.GetReadAt().at("paper").empty(), "developer: every text read");
+	M2.MarkAllRead(false, "");
+	CHECK(M2.CountRead() == 0 && M2.OpenPage(M2.FindText("paper"), 3) == 0, "and cleared (the pages too)");
+	M2.ResetState();
+	CHECK(M2.CountRead() == 0, "a new game forgets what was read");
+}
+
 static void RealGameChecks(const FModel& M);
 
 static void RealChecks(const std::string& Path)
@@ -994,6 +1146,8 @@ int main(int Argc, char** Argv)
 	WhenChecks();
 	MoreChecks();
 	GameChecks();
+	SeatChecks();
+	ReadingChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

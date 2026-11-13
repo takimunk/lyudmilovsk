@@ -12,11 +12,12 @@ class ACameraActor;
 class AHeroCharacter;
 class ANpcTalkDirector;
 class APlayerController;
+class SLyudCityBook;
 class SLyudCityGame;
 class SLyudCityPage;
 class USceneComponent;
 struct FLyudCityLoad;
-namespace LyudCity { class FModel; struct FGameState; }
+namespace LyudCity { class FModel; struct FGameState; struct FPageTurn; }
 
 /** A thing of the town's buildings as the townsfolk see it (ULyudCityThings::FindFreeThing, GetThingsOfPlot). */
 USTRUCT(BlueprintType)
@@ -69,8 +70,20 @@ struct LYUDMILOVSK_API FCityThingRef
  * beaten), a prize and the act's minutes come at the end. Clock lines show the game's time ({time}); a thing with "switch" turns
  * the room's lamps on and off for the hero's visit (ULyudWindowLights::SwitchLampsNear).
  *
+ * Sitting and lying (docs/city_interiors.md "Sitting and lying"): a seat is a real pose (AHeroCharacter::SitOn, the floor
+ * traced and checked against the data, a free spot found to stand up to, the view held in a cone round the seat's facing); a
+ * bed is the view from the pillow (the hero has no lying pose): a slow settle toward the room's window, and on a "sleep" bed an
+ * hour chooser (A/D, E) that sleeps the clock on to it. Never stuck: a seat whose anchor went, a load while seated, a page
+ * or the chooser open when he gets up: all let go.
+ *
+ * The reading view (docs/city_interiors.md "The reading page"): an act with "read" opens a text of the data's "texts" in
+ * SLyudCityBook (made once, kept collapsed): E/D/right next, A/left back, Esc/W/S/Space close; the page each text was left on,
+ * the texts read to the end and where are saved; game minutes pass per page; the last page gives the text's stamp.
+ *
  * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
- * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars.
+ * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars,
+ * lyud.City.Sit [thing id], lyud.City.Lie [thing id], lyud.City.Sleep <hour>, lyud.City.Read <text id> | next | prev | close |
+ * list | all | clear.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudCityThings : public UTickableWorldSubsystem, public ILyudSaveable
@@ -133,6 +146,33 @@ public:
 	bool IsPlayingGame() const;
 	/** Logs the regulars (name, style, games, where); with bPage also on the page. */
 	void ShowRegulars(bool bPage);
+
+	// --- sitting, lying, sleeping
+
+	/** Seats the hero on a thing (bLie: lies on it; a "sleep" bed's act opens the hour chooser), wherever he is; empty Id: the
+	 *  nearest free seat (bed) to him. Stands him up first when seated. False: no such thing, not a seat (bed), or held. */
+	bool SitOnThing(const FString& Id, bool bLie);
+	/** Lying on a bed: sleeps until Hour (0..23) at once (the chooser's E); false when not lying on a bed of ours. */
+	bool SleepUntil(int32 Hour);
+	bool IsSittingOnThing() const { return SeatedOn >= 0; }
+	bool IsLyingOnThing() const { return LyingOn >= 0; }
+	bool IsChoosingSleep() const { return SleepHour >= 0; }
+
+	// --- the reading view
+
+	/** Opens a text of the data by id wherever the hero is (developer mode, console); false: no such text. */
+	bool OpenText(const FString& TextId);
+	/** Runs the nearest thing whose act reads (developer mode). */
+	bool OpenNearestText();
+	/** Turns the open text's page (+1 next, -1 back; past the last page: closed). */
+	void TurnBook(int32 Delta);
+	void CloseBook();
+	bool IsReading() const { return BookText >= 0; }
+	/** Logs the texts read (with where); with bPage also shows them on the page. */
+	void ShowReadList(bool bPage);
+	/** Developer mode: every text read (their stamps given) or none (and the pages left on forgotten). */
+	void SetAllRead(bool bRead);
+	bool AreAllRead() const;
 
 	// --- API for townsfolk (docs/city_interiors.md): the people's life asks for seats and things to use
 
@@ -209,6 +249,41 @@ private:
 	void FinishGame();
 	/** The panel away and the state cleared (bFinished false: walked off, no result). */
 	void EndGame(bool bFinished);
+
+	// --- sitting and lying
+	/** Where the hero stands up to from a seat, in its frame (cm): in front, beside, behind, the first spot his capsule fits on
+	 *  about the seat's floor; in front when none does. */
+	FVector StandOffsetFor(const FTransform& Frame, double FloorZ, const AHeroCharacter* Hero, bool bLie) const;
+	/** The seated hero's view kept within Half degrees of Yaw (APlayerCameraManager's yaw limits), and let go. */
+	void SetLookCone(APlayerController* PC, float Yaw, float Half);
+	void ClearLookCone();
+	/** He is off the seat but the seat never let him go (its anchor went): walking and colliding again. */
+	void RecoverFromSeat(AHeroCharacter* Hero);
+	/** The seat's own keys while a text or the chooser is up (moves and Space are the view's; they stand him up otherwise). */
+	void HookSeatKeys(AHeroCharacter* Hero);
+	void UnhookSeatKeys();
+	/** The nearest seat (bLie: bed) to the hero that nobody holds; -1 none. Developer mode: one pass over the things. */
+	int32 NearestSeat(bool bLie) const;
+	/** Everything the hero was in the middle of (a text, the chooser, a game, a show, lying, a seat of ours) let go: a load. */
+	void ResetHeroState();
+
+	// --- sleep: the hour chooser on the page while he lies on a "sleep" bed
+	void BeginSleepChoice(int32 Thing, int32 Act, const FString& LineKey, const FText& Title);
+	void ShowSleepChoice();
+	void TickSleepChoice(AHeroCharacter* Hero, APlayerController* PC, bool bTalk);
+	/** bSleep: the fade and the clock on to the hour, then up; else he gets up at once. */
+	void EndSleepChoice(bool bSleep);
+
+	// --- the reading view
+	void OpenBook(int32 Text, int32 Thing, bool bSeated);
+	void ShowBookPage();
+	/** After a turn (or the opening): the stamps, and "read to the end" with the quest event "read"/<text id>. */
+	void BookTurned(const LyudCity::FPageTurn& Turn);
+	void TickBook(AHeroCharacter* Hero, APlayerController* PC, bool bTalk);
+	/** "Read — 2 of 6" and per place the titles read there (Read list); empty when there are no texts. */
+	FString ReadListBody() const;
+	/** A plot's name for the player (its city.plot.<id>.name, else its teleport name, else the id). */
+	FString PlotName(const FString& Plot) const;
 
 	TPimplPtr<LyudCity::FModel> Model;
 	/** The worker's parse while it is under way. */
@@ -302,4 +377,35 @@ private:
 	FText GameOpponent;
 	/** Plots whose lamps the hero switched (cleared when he walks into another plot). */
 	FName SwitchedPlot;
+
+	/** The seated view's yaw limits are ours (set by this controller) until let go. */
+	TWeakObjectPtr<APlayerController> ConeBy;
+	/** The seat's keys are ours (HookSeatKeys) on this hero. They never change the hero's hooks from inside a hook: they ask,
+	 *  and the tick stands him up (bStandAsked) or shuts the text (bCloseBookAsked). */
+	TWeakObjectPtr<AHeroCharacter> HookedHero;
+	bool bStandAsked = false;
+	bool bCloseBookAsked = false;
+
+	/** The sleep chooser: the hour chosen (-1: no chooser), the bed, the line shown on waking, the act's title; bSleeping: E
+	 *  was pressed and the fade, the clock and getting up are under way. */
+	int32 SleepHour = -1;
+	int32 SleepThing = -1;
+	FString SleepLine;
+	FText SleepTitle;
+	bool bSleeping = false;
+
+	/** The reading view (made once, collapsed while no text is open): the text (-1 none), its thing (-1: the console), the
+	 *  pages now (line keys), the page shown, where the hero stood, the frame it opened (its own E must not turn it), the plot it
+	 *  is read in, whether he sits for it, whether the moves are held for it (by this controller). */
+	TSharedPtr<SLyudCityBook> Book;
+	bool bBookAdded = false;
+	int32 BookText = -1;
+	int32 BookThing = -1;
+	TArray<FString> BookPages;
+	int32 BookPage = 0;
+	FVector BookFrom = FVector::ZeroVector;
+	uint64 BookFrame = 0;
+	FString BookPlot;
+	bool bBookSeated = false;
+	TWeakObjectPtr<APlayerController> BookBlockedBy;
 };

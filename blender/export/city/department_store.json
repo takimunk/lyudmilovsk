@@ -1659,6 +1659,19 @@
    }
   },
   {
+   "id": "f1_cafe_checkers",
+   "kind": "play",
+   "pos": [
+    13.3,
+    8.2,
+    5.67
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "checkers"
+   }
+  },
+  {
    "id": "f1_cafe_seat_7",
    "kind": "seat",
    "pos": [
@@ -1998,6 +2011,20 @@
    }
   },
   {
+   "id": "light_switch_fitting",
+   "kind": "machine",
+   "pos": [
+    -15.74,
+    18.15,
+    6.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 3
+   }
+  },
+  {
    "id": "f1_clothes_rail",
    "kind": "board",
    "pos": [
@@ -2204,6 +2231,20 @@
    "yaw": 0.0,
    "props": {
     "to": "staff"
+   }
+  },
+  {
+   "id": "light_switch_staff",
+   "kind": "machine",
+   "pos": [
+    -8.55,
+    29.57,
+    1.23
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -3363,7 +3404,7 @@
  ],
  "tris": {
   "shell": 4246,
-  "detail": 73245,
+  "detail": 73764,
   "windows": 216
  }
 }

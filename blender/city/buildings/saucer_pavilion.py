@@ -24,6 +24,7 @@ import random
 
 from citykit import box, prism, ring, ribbon_wall, Mesh
 from _furn1 import rbox, cyl, blob, goods_row
+import furn_int3 as fu
 import interior_kit as kit
 
 INFO = {
@@ -44,6 +45,37 @@ CORE_R = 2.3
 def P(r, a_deg, z=0.0):
     a = math.radians(a_deg)
     return (CX + r * math.cos(a), CY + r * math.sin(a), z)
+
+
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
 
 
 def yaw_to(a, b):
@@ -202,6 +234,7 @@ def build(B):
           top=True, bottom=True)
     m.face("CT_Floor", [(xl, y0, 0.03), (xr, y0, 0.03), (xr, yj, 0.03), (xl, yj, 0.03)])
     B.entrance("main", (0.0, y0, 0.0), 0.0, width=1.8, height=2.3, kind="street", leaves=2)
+    _switch(B, xr - 0.22, y0 + 3.3, 270.0, 1.2, "light_switch_lobby", "room")      # on the pier between the tunnel's windows
 
     # -------------------------------------------------------------- the hall: bar, kitchen, tables
     zf = Z_FLOOR
@@ -282,7 +315,7 @@ def _bar_and_kitchen(B, rnd, zf):
                     mat = ("CT_PlasterGreen", "CT_Door", "CT_PlasterBlue", "CT_PlasterYellow", "CT_SteelRed")[(k + j + lv) % 5]
                     cyl(d, mat, q[0], q[1], zf + zl + 0.03, zf + zl + 0.03 + rnd.uniform(0.2, 0.3), 0.032, 5)
     # counter equipment
-    em = P(6.2, 90, top)
+    em = P(6.2, 101, top)                         # beside the serving hatch (r 7.95, angle 90), not in front of it
     rbox(m, "CT_Steel", em[0], em[1], top, top + 0.42, 0.38, 0.22, 0.0)
     rbox(d, "CT_Aluminium", em[0], em[1] - 0.2, top + 0.30, top + 0.4, 0.34, 0.03, 0.0)
     for dx in (-0.2, 0.2):
@@ -308,7 +341,7 @@ def _bar_and_kitchen(B, rnd, zf):
     tl = P(6.2, 112, top)
     rbox(d, "CT_Steel", tl[0], tl[1], top, top + 0.14, 0.2, 0.17, math.radians(112 + 90))
     rbox(d, "CT_Frame", tl[0], tl[1] + 0.05, top + 0.14, top + 0.34, 0.1, 0.02, math.radians(112 + 90))
-    for a_ in (78, 84, 96, 102, 120, 124):
+    for a_ in (78, 84, 87, 120, 124):
         c = P(6.2, a_, top)
         cyl(d, "CT_TileWhite", c[0], c[1], top, top + 0.07, 0.04, 6)
     # kitchen: fridge, sink with tap, worktops along the kitchen walls, hood over the stove
@@ -429,6 +462,9 @@ def _hall(B, rnd, zf):
     cof = kit.coffee_table(B, lc[0], lc[1], zf, yaw_to(lc, (CX, CY)))
     kit.newspaper(B, lc[0], lc[1], cof["top"], 20, seed=1)
     kit.cup(B, lc[0] + 0.2, lc[1] + 0.1, cof["top"], 0.0)
+    dq = fu.Fr(lc[0], lc[1], yaw_to(lc, (CX, CY))).p(0.27, -0.12)
+    _dominoes(B, dq[0], dq[1], cof["top"], yaw_to(lc, (CX, CY)))
+    B.thing("lounge_dominoes", "play", (dq[0], dq[1], cof["top"] + 0.03), 0.0, what="dominoes")
     sf_c = P(6.9, 225, zf)
     sofa = kit.sofa(B, sf_c[0], sf_c[1], zf, yaw_to(sf_c, (CX, CY)), seats=3, mat="CT_PlasterBlue")
     _seat_thing(B, "lounge_sofa", sofa, 0.45)
@@ -578,7 +614,7 @@ def _extras(B, zf):
 
     # ------------------------------------------------------------------ the bar: cakes and espresso as things; a free paper
     B.thing("cake_vitrine", "board", P(6.2, 70, top + 0.3), 0.0, topic="cakes")
-    B.thing("espresso", "machine", P(6.2, 97, top + 0.3), 0.0, what="espresso")
+    B.thing("espresso", "machine", P(6.2, 101, top + 0.3), 0.0, what="espresso")
     lc2 = P(5.7, 225, zf)
     B.thing("lounge_paper", "take", (lc2[0] + 0.1, lc2[1] - 0.1, zf + 0.5), 20, item="daily_paper")
 
@@ -652,6 +688,16 @@ def _third_layer(B, zf):
     kit.plates(B, h[0] - 0.25, h[1], zf + 1.06, 0.0, n=3)
     cyl(d, "CT_Brass", h[0] + 0.3, h[1] - 0.05, zf + 1.06, zf + 1.09, 0.045, 7, r1=0.01)
     cyl(d, "CT_Brass", h[0] + 0.3, h[1] - 0.05, zf + 1.09, zf + 1.1, 0.01, 4)
+    arc_band(B.m, "CT_Interior", 7.9, 8.2, 86, 94, zf + 2.25, zf + 2.9)       # closed above the hatch
+    for a_ in (85.6, 94.4):                                  # a red frame round the gap so that the hatch reads from the hall
+        fp_ = P(8.05, a_)
+        rbox(d, "CT_PlasterRed", fp_[0], fp_[1], zf, zf + 2.15, 0.035, 0.17, math.radians(a_ + 90))
+    rbox(d, "CT_PlasterRed", h[0], h[1] + 0.08, zf + 2.15, zf + 2.25, 0.6, 0.17, 0.0)
+    rbox(d, "CT_PlasterRed", h[0], h[1] - 0.1, zf + 0.98, zf + 1.02, 0.6, 0.12, 0.0)
+    B.lamp((h[0], h[1] - 0.4, zf + 2.3), lumens=260, colour="#FFE2B0", radius=3.0, fixture=False)
+    ang_k = math.radians(83)                                  # the kitchen's light switch, on the kitchen face by the gap
+    kp_ = P(8.22, 83, zf)
+    _switch(B, kp_[0], kp_[1], math.degrees(math.atan2(math.cos(ang_k), -math.sin(ang_k))), zf + 1.2, "light_switch_kitchen", "room")
     B.thing("kitchen_hatch", "counter", (h[0] + 0.1, h[1], zf + 1.15), 0.0, role="cook", service="talk")
     hs = P(7.3, 90, zf)
     B.spot("hatch", "stand", (hs[0], hs[1], zf), yaw_to(hs, (CX, CY + 9.0)))

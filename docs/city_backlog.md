@@ -26,8 +26,15 @@ Unreal on the Mac. Whoever takes an item writes their mark and the date here.
 - [~] `ULyudCityThings` + `CityThingsModel.h` + `tools/citysim`
 - [~] Data compiler `tools/city/interiors.py`, default acts, first content layer, developer-mode teleports
 - [ ] First Mac build and import; fix what the compiler and the editor say
-- [ ] Sitting and lying poses for the hero on any seat or bed of a building
-- [ ] The reading page (title, text, next) and the "screen" (film stills, exhibits)
+- [~] Sitting and lying poses for the hero on any seat or bed of a building (2026-11-13, not compiled yet): sitting is the
+  real seated pose (`SitOn`: checked floor, a free spot to stand up to, a look cone, never stuck: anchor gone, load while
+  seated, re-sit, held seats); lying is still the pillow camera (no lying pose for the hero): a slow settle toward the
+  window, the sleep-until-hour chooser on `sleep` beds. Open: a real lying pose (needs an animation for the hero's skeleton),
+  a `cone` prop per seat where 110° is wrong
+- [~] The reading page (2026-11-13, not compiled yet): `SLyudCityBook`, `texts` with pages and alternatives, E/A/D and
+  arrows, the page remembered, minutes per page, a stamp per text, the `read` line condition, the Read list, six texts on
+  shelves, boards and the daily paper. The "screen" (subtitles) was done earlier; film stills and exhibit pictures are not
+  (no pictures in the view yet)
 
 ## P1: public buildings, first pass (the places a new player walks into)
 

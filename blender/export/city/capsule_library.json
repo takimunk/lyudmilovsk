@@ -1078,7 +1078,7 @@
     15.0,
     14.95
    ],
-   "lumens": 170,
+   "lumens": 260,
    "colour": "#FFE2B0",
    "kind": "public",
    "radius": 4.0
@@ -1111,7 +1111,7 @@
     15.0,
     14.95
    ],
-   "lumens": 170,
+   "lumens": 260,
    "colour": "#FFE2B0",
    "kind": "public",
    "radius": 4.0
@@ -1231,6 +1231,20 @@
    }
   },
   {
+   "id": "light_switch_pod_1",
+   "kind": "machine",
+   "pos": [
+    2.319,
+    10.814,
+    5.7
+   ],
+   "yaw": 135.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "pod_1_01",
    "kind": "seat",
    "pos": [
@@ -1309,6 +1323,19 @@
    }
   },
   {
+   "id": "pod_1_05_chess",
+   "kind": "play",
+   "pos": [
+    0.0,
+    22.2,
+    5.24
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
    "id": "pod_1_05",
    "kind": "seat",
    "pos": [
@@ -1345,6 +1372,20 @@
    "yaw": 180.0,
    "props": {
     "what": "clock"
+   }
+  },
+  {
+   "id": "light_switch_pod_2",
+   "kind": "machine",
+   "pos": [
+    -1.32,
+    10.4,
+    9.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -1449,6 +1490,20 @@
    "yaw": 405.0,
    "props": {
     "what": "clock"
+   }
+  },
+  {
+   "id": "light_switch_pod_3",
+   "kind": "machine",
+   "pos": [
+    -2.319,
+    19.186,
+    13.7
+   ],
+   "yaw": 315.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -1674,6 +1729,19 @@
    "yaw": 0.0,
    "props": {
     "item": "daily_paper"
+   }
+  },
+  {
+   "id": "lounge_dominoes",
+   "kind": "play",
+   "pos": [
+    4.0,
+    9.1,
+    0.44
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dominoes"
    }
   },
   {
@@ -2168,6 +2236,20 @@
    "yaw": 180.0,
    "props": {
     "what": "clock"
+   }
+  },
+  {
+   "id": "light_switch_office",
+   "kind": "machine",
+   "pos": [
+    11.25,
+    21.03,
+    1.2
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -3534,7 +3616,7 @@
  ],
  "tris": {
   "shell": 7124,
-  "detail": 42685,
+  "detail": 42949,
   "windows": 228
  }
 }

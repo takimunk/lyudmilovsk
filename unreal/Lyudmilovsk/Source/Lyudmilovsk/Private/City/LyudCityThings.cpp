@@ -1,6 +1,7 @@
 #include "City/LyudCityThings.h"
 
 #include "CityThingsModel.h"
+#include "City/SLyudCityBook.h"
 #include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
@@ -8,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "CollisionQueryParams.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Doors/LyudDoor.h"
 #include "DrawDebugHelpers.h"
@@ -18,12 +20,14 @@
 #include "EngineUtils.h"
 #include "Festival/LyudFestival.h"
 #include "Food/LyudHandUse.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
 #include "LyudText.h"
@@ -173,17 +177,29 @@ namespace LyudCityThingsImpl
 	}
 
 	/** The floor under a seat or bed at At whose surface is HeightCm over it: chairs never block, so a trace from the cushion
-	 *  down meets the floor; a bed or a bench with a blocking box is met on its top, and the floor is its height below. */
+	 *  down meets the floor; a bed or a bench with a blocking box is met on its top, and the floor is its height below; a hit
+	 *  far from where the data puts the floor is not believed (LyudCity::FModel::SeatFloor: the feet never go through it). */
 	double FloorUnder(UWorld* World, const AActor* Hero, const FVector& At, double HeightCm)
 	{
-		double FloorZ = At.Z - HeightCm;
 		FHitResult Hit;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(CitySeatFloor), false, Hero);
-		if (World->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 30.0), At - FVector(0.0, 0.0, 300.0), ECC_Visibility, Q))
-		{
-			FloorZ = Hit.ImpactPoint.Z > At.Z - 0.5 * HeightCm ? Hit.ImpactPoint.Z - HeightCm : Hit.ImpactPoint.Z;
-		}
-		return FloorZ;
+		const bool bHit = World->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 30.0), At - FVector(0.0, 0.0, 300.0), ECC_Visibility, Q);
+		return LyudCity::FModel::SeatFloor(At.Z, HeightCm, bHit, bHit ? (double)Hit.ImpactPoint.Z : 0.0);
+	}
+
+	/** The camera manager's own yaw limits (APlayerCameraManager's defaults): no cone. */
+	constexpr float FreeYawMin = 0.f;
+	constexpr float FreeYawMax = 359.999f;
+	/** A bed's window is looked toward when it is this near (cm). */
+	constexpr double WindowRadius = 600.0;
+	/** Lying down: how long the view settles from the eyes to the pillow (s). */
+	constexpr float LieSettle = 1.6f;
+	/** A load put the hero this far from where he would stand up from his seat: he is put back where the save had him (cm). */
+	constexpr double LoadedFar = 200.0;
+
+	FString HourText(int32 Hour)
+	{
+		return FString::Printf(TEXT("%02d:00"), ((Hour % 24) + 24) % 24);
 	}
 }
 
@@ -226,8 +242,23 @@ void ULyudCityThings::Deinitialize()
 	}
 	GamePanel.Reset();
 	bGamePanelAdded = false;
+	CloseBook();
+	if (Book.IsValid() && bBookAdded)
+	{
+		UWorld* World = GetWorld();
+		if (UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr)
+		{
+			Viewport->RemoveViewportWidgetContent(Book.ToSharedRef());
+		}
+	}
+	Book.Reset();
+	bBookAdded = false;
+	SleepHour = -1;
+	bSleeping = false;
 	EndShow();
 	EndLie(false);
+	UnhookSeatKeys();
+	ClearLookCone();
 	UnblockMove();
 	SetPrompted(-1);
 	ClosePage();
@@ -335,7 +366,7 @@ void ULyudCityThings::StartOver()
 	Saved.Reset();
 	GreetedPlot = NAME_None;
 	PlotThing = -1;
-	EndGame(false);
+	ResetHeroState();
 	if (ULyudWindowLights* Lights = ULyudWindowLights::Get(this))
 	{
 		Lights->ClearSwitched();
@@ -361,6 +392,8 @@ void ULyudCityThings::OnGameSaving_Implementation()
 
 void ULyudCityThings::OnGameLoaded_Implementation()
 {
+	// the pawn is where the save had him by now: whatever he was in the middle of here is let go (never stuck on a seat)
+	ResetHeroState();
 	// while the file is still being parsed, Saved waits for AdoptLoaded
 	if (!Loading.IsValid())
 	{
@@ -623,15 +656,23 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 	// the seat's frame: the floor under the cushion's front edge, X the way the sitter faces (the way the thing faces)
 	const FRotator Facing(0.0, (double)T.Yaw, 0.0);
 	const FVector Front = FVector(At.X, At.Y, FloorZ) + Facing.Vector() * (bLie ? 40.0 : 20.0);
-	Hero->SitOn(SeatRoot, FTransform(Facing, Front), (float)Height);
-	Hero->SetStandUpOffset(FVector(45.f, 0.f, 0.f));
+	const FTransform Frame(Facing, Front);
+	// where he will stand up to: found now, while his capsule still collides (SitOn turns it off)
+	const FVector StandOffset = StandOffsetFor(Frame, FloorZ, Hero, bLie);
+	Hero->SitOn(SeatRoot, Frame, (float)Height);
+	Hero->SetStandUpOffset(StandOffset);
 	if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
 	{
 		PC->SetControlRotation(FRotator(-8.0, (double)T.Yaw, 0.0));
+		// seated he looks round within a cone about the seat's facing (lying, the pillow's camera has the view)
+		if (!bLie)
+		{
+			SetLookCone(PC, T.Yaw, LyudCity::FModel::LookCone(T));
+		}
 	}
 	SeatedOn = Thing;
-	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %s on %s (floor z %.0f, seat %.0f cm): seated=%d"), bLie ? TEXT("lies") : TEXT("sits"),
-		*LyudCityThingsImpl::Str(T.Id), FloorZ, Height, Hero->IsSeated() ? 1 : 0);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %s on %s (floor z %.0f, seat %.0f cm, stands up to %s): seated=%d"), bLie ? TEXT("lies") : TEXT("sits"),
+		*LyudCityThingsImpl::Str(T.Id), FloorZ, Height, *StandOffset.ToCompactString(), Hero->IsSeated() ? 1 : 0);
 	SeatScreen = bLie ? -1 : Model->ScreenFrom(Thing, LyudCityThingsImpl::ScreenRadius);
 	if (bLie)
 	{
@@ -690,8 +731,22 @@ void ULyudCityThings::ShowLieView(bool bCut)
 		LieCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
 		LieCamera->GetCameraComponent()->SetFieldOfView(80.f);
 	}
-	LieCamera->SetActorLocationAndRotation(LieEye, FRotator(85.0, (double)LieYaw, 0.0));
-	PC->SetViewTargetWithBlend(LieCamera.Get(), bCut ? 0.f : 0.6f);
+	// toward the room's window when one is near (a little up: the sky over the sill), else the ceiling
+	FRotator Look(85.0, (double)LieYaw, 0.0);
+	const int32 Window = Model && LyingOn >= 0 ? Model->WindowFrom(LyingOn, LyudCityThingsImpl::WindowRadius) : -1;
+	if (Window >= 0)
+	{
+		const FVector To = ThingLocation(Window) - LieEye;
+		if (To.SizeSquared2D() > 400.0)
+		{
+			Look = To.Rotation();
+			Look.Pitch = FMath::Clamp(Look.Pitch + 8.0, 4.0, 40.0);
+			Look.Roll = 0.0;
+		}
+	}
+	LieCamera->SetActorLocationAndRotation(LieEye, Look);
+	// a slow settle from the eyes down onto the pillow
+	PC->SetViewTargetWithBlend(LieCamera.Get(), bCut ? 0.f : LyudCityThingsImpl::LieSettle, VTBlend_EaseInOut, 2.f);
 	if (!Hero->IsHidden())
 	{
 		Hero->SetActorHiddenInGame(true);
@@ -726,6 +781,17 @@ void ULyudCityThings::EndLie(bool bStandUp)
 	}
 	LyingOn = -1;
 	LieUntil = 0.0;
+	bLieAutoStand = false;
+	if (SleepHour >= 0 || bSleeping)
+	{
+		SleepHour = -1;
+		SleepThing = -1;
+		bSleeping = false;
+		if (Page && PageThing < 0)
+		{
+			ClosePage();
+		}
+	}
 }
 
 void ULyudCityThings::TickLie(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
@@ -736,6 +802,10 @@ void ULyudCityThings::TickLie(AHeroCharacter* Hero, APlayerController* PC, bool 
 		EndLie(false);     // he got up (a step, Space) or is not the hero any more
 		return;
 	}
+	if (SleepHour >= 0)
+	{
+		return;     // the chooser has the keys (TickSleepChoice)
+	}
 	const bool bSettled = FadeMinutes == 0 && !bFadingIn && JumpLeft <= 0.0;
 	if (bSettled && !Page && !bTalk && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::E))
 	{
@@ -743,7 +813,21 @@ void ULyudCityThings::TickLie(AHeroCharacter* Hero, APlayerController* PC, bool 
 	}
 	else if (bSettled && LieUntil > 0.0 && World->GetTimeSeconds() >= LieUntil)
 	{
+		// woken (a sleep: the bed's line on the page once he is up)
+		const bool bWoke = bSleeping;
+		const FString Line = SleepLine;
+		const FText Title = SleepTitle;
 		EndLie(true);
+		if (bWoke && !Line.IsEmpty())
+		{
+			PageThing = -1;
+			PageLeft = 0;
+			PageTitle = Title;
+			PageFrom = Hero->GetActorLocation();
+			PageFrame = GFrameCounter;
+			ShowPage(PageTitle, LineText(Line), false);
+			SetPrompted(-1);
+		}
 	}
 }
 
@@ -1020,10 +1104,27 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		StartShow(Thing, Title, O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line)), O.Minutes, bSeated);
 		return;
 	}
+	if (O.Text >= 0)
+	{
+		// the reading view instead of the page: seated for it when the act sits (a library's reading pod) and he is at it
+		if (bNear && O.Pose == "sit" && !Hero->IsSeated())
+		{
+			Sit(Thing, Hero, false);
+		}
+		OpenBook(O.Text, Thing, Hero && Hero->IsSeated() && SeatedOn == Thing);
+		return;
+	}
 	const bool bLie = bNear && O.Pose == "lie" && Sit(Thing, Hero, true);
 	if (bNear && O.Pose == "sit")
 	{
 		Sit(Thing, Hero, false);
+	}
+	if (bLie && O.bSleep)
+	{
+		// a "sleep" bed: down onto the pillow, then the hour he wakes at is chosen (its line comes when he is up)
+		BeginLie(Thing, false, false);
+		BeginSleepChoice(Thing, O.Act, O.Line.empty() ? FString() : LyudCityThingsImpl::Str(O.Line), Title);
+		return;
 	}
 	const bool bFade = O.Minutes > 0 && O.bFade && PC && PC->PlayerCameraManager;
 	if (bLie)
@@ -1192,10 +1293,30 @@ void ULyudCityThings::Tick(float DeltaTime)
 
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
+	// a step on a seat whose keys are ours asked to get up (done here, never inside the hero's own hook)
+	if (bStandAsked)
+	{
+		bStandAsked = false;
+		if (Hero && Hero->IsSeated() && SeatedOn >= 0)
+		{
+			if (LyingOn >= 0)
+			{
+				EndLie(true);
+			}
+			else
+			{
+				Hero->StandUp();
+			}
+		}
+	}
 	if (SeatedOn >= 0 && (!Hero || !Hero->IsSeated()))
 	{
+		// up (a step, Space, StandUp) or the seat went from under him: the cone and the seat's keys go, and he walks again
 		SeatedOn = -1;
 		SeatScreen = -1;
+		RecoverFromSeat(Hero);
+		ClearLookCone();
+		UnhookSeatKeys();
 	}
 	// the thing in view, the plot round the hero and the talk, a few times a second; nothing at all outside the town's box
 	PickClock -= DeltaTime;
@@ -1220,6 +1341,18 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (LyingOn >= 0)
 	{
 		TickLie(Hero, PC, bTalk);
+	}
+	if (SleepHour >= 0)
+	{
+		SetPrompted(-1);
+		TickSleepChoice(Hero, PC, bTalk);
+		return;
+	}
+	if (BookText >= 0)
+	{
+		SetPrompted(-1);
+		TickBook(Hero, PC, bTalk);
+		return;
 	}
 	if (IsPlayingGame())
 	{
@@ -1353,10 +1486,16 @@ void ULyudCityThings::ShowCollections(bool bPage)
 		Body += LyudText::Get(TEXT("city.coll.line"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(C.Title)).ToString()),
 			FStringFormatArg(Got), FStringFormatArg(All) }).ToString();
 	}
+	// what was read and where (the Read list), under the collections
+	const FString Read = ReadListBody();
+	if (!Read.IsEmpty())
+	{
+		Body += Body.IsEmpty() ? Read : FString(TEXT("\n\n")) + Read;
+	}
 	UWorld* World = GetWorld();
 	const APawn* Pawn = World ? UGameplayStatics::GetPlayerPawn(World, 0) : nullptr;
 	// the page needs the tick (it closes on E or walking off), and the tick runs only while there are things
-	if (!bPage || !Pawn || NumThings() == 0 || ShowAt >= 0)
+	if (!bPage || !Pawn || NumThings() == 0 || ShowAt >= 0 || BookText >= 0 || SleepHour >= 0)
 	{
 		return;
 	}
@@ -1948,6 +2087,750 @@ void ULyudCityThings::ShowRegulars(bool bPage)
 	SetPrompted(-1);
 }
 
+// --- sitting and lying (docs/city_interiors.md "Sitting and lying"): the spot to stand up to, the look cone, never stuck
+
+FVector ULyudCityThings::StandOffsetFor(const FTransform& Frame, double FloorZ, const AHeroCharacter* Hero, bool bLie) const
+{
+	// in front (a bench, a sofa), beside (a chair pushed under a table), behind (a pew, a desk's chair); a bed: off its side
+	static constexpr double SeatSpots[][2] = { { 45.0, 0.0 }, { 10.0, 65.0 }, { 10.0, -65.0 }, { -30.0, 78.0 }, { -30.0, -78.0 }, { -85.0, 0.0 } };
+	static constexpr double BedSpots[][2] = { { 50.0, 0.0 }, { 50.0, 60.0 }, { 50.0, -60.0 }, { 20.0, 110.0 }, { 20.0, -110.0 } };
+	const FVector Fallback(bLie ? 50.0 : 45.0, 0.0, 0.0);
+	UWorld* World = GetWorld();
+	const UCapsuleComponent* Capsule = Hero ? Hero->GetCapsuleComponent() : nullptr;
+	if (!World || !Capsule)
+	{
+		return Fallback;
+	}
+	const float Radius = Capsule->GetScaledCapsuleRadius();
+	const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+	const FCollisionShape Shape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(CityStandUp), false, Hero);
+	const int32 NumSpots = bLie ? (int32)UE_ARRAY_COUNT(BedSpots) : (int32)UE_ARRAY_COUNT(SeatSpots);
+	for (int32 I = 0; I < NumSpots; ++I)
+	{
+		const FVector Spot(bLie ? BedSpots[I][0] : SeatSpots[I][0], bLie ? BedSpots[I][1] : SeatSpots[I][1], 0.0);
+		const FVector Feet = Frame.TransformPosition(Spot);
+		const FVector Middle(Feet.X, Feet.Y, FloorZ + HalfHeight + 2.0);
+		// his capsule fits there (a table, a wall, the next chair's back block it)...
+		if (World->OverlapBlockingTestByChannel(Middle, FQuat::Identity, ECC_Pawn, Shape, Q))
+		{
+			continue;
+		}
+		// ...and there is floor under it about the seat's (not the stairwell beside a gallery's bench)
+		FHitResult Hit;
+		if (!World->LineTraceSingleByChannel(Hit, Middle, Middle - FVector(0.0, 0.0, HalfHeight + 60.0), ECC_Visibility, Q)
+			|| FMath::Abs(Hit.ImpactPoint.Z - FloorZ) > 40.0)
+		{
+			continue;
+		}
+		return Spot;
+	}
+	return Fallback;
+}
+
+void ULyudCityThings::SetLookCone(APlayerController* PC, float Yaw, float Half)
+{
+	APlayerCameraManager* Cam = PC ? PC->PlayerCameraManager.Get() : nullptr;
+	if (!Cam)
+	{
+		return;
+	}
+	// APlayerCameraManager::LimitViewYaw clamps round the middle of the two (FMath::ClampAngle): any turns of 360 are fine
+	Cam->ViewYawMin = Yaw - Half;
+	Cam->ViewYawMax = Yaw + Half;
+	ConeBy = PC;
+}
+
+void ULyudCityThings::ClearLookCone()
+{
+	APlayerController* PC = ConeBy.Get();
+	if (APlayerCameraManager* Cam = PC ? PC->PlayerCameraManager.Get() : nullptr)
+	{
+		Cam->ViewYawMin = LyudCityThingsImpl::FreeYawMin;
+		Cam->ViewYawMax = LyudCityThingsImpl::FreeYawMax;
+	}
+	ConeBy.Reset();
+}
+
+void ULyudCityThings::RecoverFromSeat(AHeroCharacter* Hero)
+{
+	if (!Hero || Hero->IsSeated())
+	{
+		return;
+	}
+	if (HookedHero.Get() == Hero)
+	{
+		// not seated: the hooks are nobody's (StandUp clears them; a seat whose anchor went does not)
+		Hero->SeatMove = nullptr;
+		Hero->SeatLeave = nullptr;
+	}
+	HookedHero.Reset();
+	// StandUp walks him again; a seat that went from under him (its anchor destroyed) left him with no movement and no collision
+	UCharacterMovementComponent* Move = Hero->GetCharacterMovement();
+	if (!Move || Move->MovementMode != MOVE_None)
+	{
+		return;
+	}
+	UE_LOG(LogLyudCity, Warning, TEXT("CityThings: the seat went from under the hero: walking again"));
+	if (UCapsuleComponent* Capsule = Hero->GetCapsuleComponent(); Capsule && Capsule->GetCollisionEnabled() == ECollisionEnabled::NoCollision)
+	{
+		Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
+	Move->SetMovementMode(MOVE_Walking);
+}
+
+void ULyudCityThings::HookSeatKeys(AHeroCharacter* Hero)
+{
+	if (!Hero || !Hero->IsSeated() || (SeatedOn < 0 && LyingOn < 0))
+	{
+		return;
+	}
+	HookedHero = Hero;
+	TWeakObjectPtr<ULyudCityThings> Self(this);
+	// a step: shuts the text (the next one stands him up), nothing while the chooser is up or he sleeps (the chooser polls
+	// A/D and W/S), else up (as without hooks). Only asks: the tick does it (a hook must not clear the hooks it runs in)
+	Hero->SeatMove = [Self](const FVector2D& Step)
+	{
+		ULyudCityThings* Things = Self.Get();
+		if (!Things || Step.Size() <= 0.5f)
+		{
+			return;
+		}
+		if (Things->BookText >= 0)
+		{
+			Things->bCloseBookAsked = true;
+		}
+		else if (Things->SleepHour < 0 && !Things->bSleeping)
+		{
+			Things->bStandAsked = true;
+		}
+	};
+	// Space: shuts the text and he stays seated; the chooser: up (AHeroCharacter stands him up on true); asleep: nothing
+	Hero->SeatLeave = [Self]() -> bool
+	{
+		ULyudCityThings* Things = Self.Get();
+		if (!Things)
+		{
+			return true;
+		}
+		if (Things->BookText >= 0)
+		{
+			Things->bCloseBookAsked = true;
+			return false;
+		}
+		return !Things->bSleeping;
+	};
+}
+
+void ULyudCityThings::UnhookSeatKeys()
+{
+	AHeroCharacter* Hero = HookedHero.Get();
+	HookedHero.Reset();
+	// only while he is still on a seat or bed of ours (the hooks of another's seat, a restaurant's, are not ours to clear)
+	if (Hero && Hero->IsSeated() && (SeatedOn >= 0 || LyingOn >= 0))
+	{
+		Hero->SeatMove = nullptr;
+		Hero->SeatLeave = nullptr;
+	}
+}
+
+int32 ULyudCityThings::NearestSeat(bool bLie) const
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return -1;
+	}
+	const FVector From = Pawn->GetActorLocation();
+	int32 Best = -1;
+	double BestD = 0.0;
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const LyudCity::FThing& T = Model->Things[(size_t)I];
+		const bool bBed = T.Kind == "bed";
+		if (bBed != bLie || !LyudCity::FModel::IsSeatThing(T) || Model->Holder(I) != 0)
+		{
+			continue;
+		}
+		const double D = FVector::DistSquared(ThingLocation(I), From);
+		if (Best < 0 || D < BestD)
+		{
+			Best = I;
+			BestD = D;
+		}
+	}
+	return Best;
+}
+
+bool ULyudCityThings::SitOnThing(const FString& Id, bool bLie)
+{
+	UWorld* World = GetWorld();
+	AHeroCharacter* Hero = World ? Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0)) : nullptr;
+	if (!Model || !Hero)
+	{
+		return false;
+	}
+	const int32 Thing = Id.IsEmpty() ? NearestSeat(bLie) : Model->FindThing(std::string(TCHAR_TO_UTF8(*Id)));
+	if (Thing < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s: no such %s"), Id.IsEmpty() ? TEXT("nearest") : *Id, bLie ? TEXT("bed") : TEXT("seat"));
+		return false;
+	}
+	const LyudCity::FThing& T = Model->Things[(size_t)Thing];
+	if (!LyudCity::FModel::IsSeatThing(T) || (bLie && T.Kind != "bed") || Model->Holder(Thing) != 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s is not a free %s"), *LyudCityThingsImpl::Str(T.Id), bLie ? TEXT("bed") : TEXT("seat"));
+		return false;
+	}
+	CloseBook();
+	EndShow();
+	EndGame(false);
+	ClosePage();
+	EndLie(false);
+	if (Hero->IsSeated())
+	{
+		Hero->StandUp();
+		SeatedOn = -1;
+		SeatScreen = -1;
+		ClearLookCone();
+	}
+	if (!Sit(Thing, Hero, bLie))
+	{
+		return false;
+	}
+	if (bLie)
+	{
+		BeginLie(Thing, false, false);
+		const LyudCity::FAct* A = Model->ActOf(Thing);
+		if (A && A->bSleep)
+		{
+			BeginSleepChoice(Thing, T.Act, FString(), FText::GetEmpty());
+		}
+	}
+	return true;
+}
+
+void ULyudCityThings::ResetHeroState()
+{
+	UWorld* World = GetWorld();
+	APlayerController* PC = World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr;
+	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	CloseBook();
+	SleepHour = -1;
+	SleepThing = -1;
+	bSleeping = false;
+	EndGame(false);
+	EndShow();
+	ClosePage();
+	if (FadeMinutes > 0 || bFadingIn)
+	{
+		if (PC && PC->PlayerCameraManager)
+		{
+			PC->PlayerCameraManager->StopCameraFade();
+		}
+	}
+	FadeMinutes = 0;
+	bFadingIn = false;
+	JumpLeft = 0.0;
+	JumpRate = 0.0;
+	UnblockMove();
+	EndLie(false);
+	if (Hero && Hero->IsSeated() && SeatedOn >= 0)
+	{
+		// a load while seated: up, where he would stand up to when the save had him on the seat, else where the save had him
+		const FVector Loaded = Hero->GetActorLocation();
+		Hero->StandUp();
+		if (FVector::Dist(Hero->GetActorLocation(), Loaded) > LyudCityThingsImpl::LoadedFar)
+		{
+			Hero->SetActorLocation(Loaded, false, nullptr, ETeleportType::TeleportPhysics);
+		}
+	}
+	SeatedOn = -1;
+	SeatScreen = -1;
+	RecoverFromSeat(Hero);
+	ClearLookCone();
+	bStandAsked = false;
+	bCloseBookAsked = false;
+}
+
+// --- sleep: the hour chooser on the page while he lies on a "sleep" bed, then the fade and the clock on to it
+
+void ULyudCityThings::BeginSleepChoice(int32 Thing, int32 Act, const FString& LineKey, const FText& Title)
+{
+	UWorld* World = GetWorld();
+	const LyudCity::FAct* A = Model && Act >= 0 && Act < (int32)Model->Acts.size() ? &Model->Acts[(size_t)Act] : nullptr;
+	if (!World || !A || LyingOn != Thing)
+	{
+		return;
+	}
+	SleepHour = LyudCity::FModel::SleepDefaultHour(*A, LyudCityThingsImpl::When(World, false).Hour);
+	SleepThing = Thing;
+	SleepLine = LineKey;
+	SleepTitle = Title;
+	bSleeping = false;
+	PageFrame = GFrameCounter;
+	HookSeatKeys(Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0)));
+	SetPrompted(-1);
+	ShowSleepChoice();
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: sleep on %s: chooser at %02d:00"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id), SleepHour);
+}
+
+void ULyudCityThings::ShowSleepChoice()
+{
+	UWorld* World = GetWorld();
+	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+	if (!Viewport || SleepHour < 0)
+	{
+		return;
+	}
+	if (!Page)
+	{
+		Page = SNew(SLyudCityPage);
+		Viewport->AddViewportWidgetContent(Page.ToSharedRef(), 61);
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	const int32 Minutes = LyudCity::FModel::MinutesUntil(LyudCityThingsImpl::When(World, false).Hour, SleepHour);
+	const FString Hours = Minutes % 60 == 0 ? FString::FromInt(Minutes / 60) : FString::Printf(TEXT("%.1f"), (double)Minutes / 60.0);
+	Page->SetScreen(false);
+	Page->SetPage(LyudText::Get(TEXT("city.sleep.title")),
+		LyudText::Get(TEXT("city.sleep.body"), { FStringFormatArg(LyudCityThingsImpl::HourText(SleepHour)), FStringFormatArg(Hours) }),
+		LyudText::Get(TEXT("city.sleep.keys")));
+}
+
+void ULyudCityThings::TickSleepChoice(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Hero || !PC || !Hero->IsSeated() || LyingOn < 0 || LyingOn != SleepThing)
+	{
+		EndSleepChoice(false);
+		return;
+	}
+	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
+	if ((UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || bTalk || GFrameCounter == PageFrame)
+	{
+		return;     // the keys are another screen's now; the chooser waits
+	}
+	if (PC->WasInputKeyJustPressed(EKeys::E) || PC->WasInputKeyJustPressed(EKeys::Enter))
+	{
+		EndSleepChoice(true);
+		return;
+	}
+	if (PC->WasInputKeyJustPressed(EKeys::W) || PC->WasInputKeyJustPressed(EKeys::S) || PC->WasInputKeyJustPressed(EKeys::Escape)
+		|| PC->WasInputKeyJustPressed(EKeys::Up) || PC->WasInputKeyJustPressed(EKeys::Down))
+	{
+		EndSleepChoice(false);
+		return;
+	}
+	const int32 Delta = (PC->WasInputKeyJustPressed(EKeys::D) || PC->WasInputKeyJustPressed(EKeys::Right)) ? 1
+		: ((PC->WasInputKeyJustPressed(EKeys::A) || PC->WasInputKeyJustPressed(EKeys::Left)) ? -1 : 0);
+	if (Delta != 0)
+	{
+		SleepHour = LyudCity::FModel::SleepStep(SleepHour, Delta, LyudCityThingsImpl::When(World, false).Hour);
+		ShowSleepChoice();
+	}
+}
+
+void ULyudCityThings::EndSleepChoice(bool bSleep)
+{
+	if (SleepHour < 0)
+	{
+		return;
+	}
+	const int32 Hour = SleepHour;
+	SleepHour = -1;
+	if (Page && PageThing < 0)
+	{
+		ClosePage();
+	}
+	UWorld* World = GetWorld();
+	if (!bSleep || !World || LyingOn < 0)
+	{
+		SleepThing = -1;
+		bSleeping = false;
+		EndLie(true);
+		return;
+	}
+	int32 Minutes = LyudCity::FModel::MinutesUntil(LyudCityThingsImpl::When(World, false).Hour, Hour);
+	if (Minutes >= 24 * 60 - 1)
+	{
+		Minutes = 1;     // the clock reached the hour while he chose: he only closes his eyes
+	}
+	bSleeping = true;
+	bLieAutoStand = true;
+	LieUntil = 0.0;
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: sleeps until %02d:00 (%d min)"), Hour, Minutes);
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (PC && PC->PlayerCameraManager)
+	{
+		// the screen goes black, the clock jumps (Tick: the people's life resettles), back, a moment, up
+		PC->PlayerCameraManager->StartCameraFade(0.f, 1.f, 0.9f, FLinearColor::Black, false, true);
+		FadeMinutes = Minutes;
+		FadeAt = World->GetTimeSeconds() + 1.0;
+		bFadingIn = false;
+	}
+	else
+	{
+		JumpMinutes(Minutes, false);
+		LieUntil = World->GetTimeSeconds() + LyudCityThingsImpl::JumpSeconds + 2.5;
+	}
+}
+
+bool ULyudCityThings::SleepUntil(int32 Hour)
+{
+	if (LyingOn < 0 || Hour < 0 || Hour > 23 || bSleeping)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: sleep %d: not lying on a bed (or already asleep, or no such hour)"), Hour);
+		return false;
+	}
+	if (SleepHour < 0)
+	{
+		SleepThing = LyingOn;
+		SleepLine.Reset();
+		SleepTitle = FText::GetEmpty();
+		HookSeatKeys(Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)));
+	}
+	SleepHour = Hour;
+	EndSleepChoice(true);
+	return true;
+}
+
+// --- the reading view (docs/city_interiors.md "The reading page")
+
+void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
+{
+	UWorld* World = GetWorld();
+	const LyudCity::FReadText* T = Model ? Model->TextAt(Text) : nullptr;
+	if (!World || !T)
+	{
+		return;
+	}
+	CloseBook();
+	EndShow();
+	ClosePage();
+	std::vector<std::string> Pages;
+	Model->TextPages(Text, LyudCityThingsImpl::When(World), Pages);
+	if (Pages.empty())
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: text %s has no page to show now"), *LyudCityThingsImpl::Str(T->Id));
+		return;
+	}
+	BookPages.Reset((int32)Pages.size());
+	for (const std::string& Key : Pages)
+	{
+		BookPages.Add(LyudCityThingsImpl::Str(Key));
+	}
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	BookText = Text;
+	BookThing = Thing;
+	bBookSeated = bSeated && Hero && Hero->IsSeated();
+	bCloseBookAsked = false;
+	BookFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
+	BookFrame = GFrameCounter;
+	const int32 Where = Thing >= 0 ? Thing : PlotThing;
+	BookPlot = Where >= 0 && Where < NumThings() ? LyudCityThingsImpl::Str(Model->Things[(size_t)Where].Plot) : FString();
+	// the view: made once, kept in the viewport (collapsed while no text is open)
+	if (!Book.IsValid())
+	{
+		Book = SNew(SLyudCityBook);
+	}
+	if (UGameViewportClient* Viewport = World->GetGameViewport(); Viewport && !bBookAdded)
+	{
+		Viewport->AddViewportWidgetContent(Book.ToSharedRef(), 62);
+		bBookAdded = true;
+	}
+	const FString Kind = LyudCityThingsImpl::Str(T->Kind);
+	Book->SetKind(Kind, LyudText::Get(FString(TEXT("city.book.kind.")) + Kind));
+	Book->SetVisibility(EVisibility::HitTestInvisible);
+	// seated, the seat's keys are the view's (a step must not stand him up mid-page); standing, his steps are held
+	if (bBookSeated)
+	{
+		HookSeatKeys(Hero);
+	}
+	else if (PC && !BookBlockedBy.IsValid())
+	{
+		PC->SetIgnoreMoveInput(true);
+		BookBlockedBy = PC;
+	}
+	SetPrompted(-1);
+	// where it was left (a turn of 0: remembered; a one-page text is read at once)
+	const int32 Num = BookPages.Num();
+	const LyudCity::FPageTurn Turn = Model->TurnPage(Text, Model->OpenPage(Text, Num), 0, Num, std::string(TCHAR_TO_UTF8(*BookPlot)));
+	BookPage = Turn.Page;
+	ShowBookPage();
+	JumpMinutes(T->Minutes, false);
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->PlayEffect(TEXT("page_turn"), Thing >= 0 ? ThingLocation(Thing) : BookFrom);
+	}
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: reads %s (%s, %d pages) at page %d"), *LyudCityThingsImpl::Str(T->Id), *Kind, Num, BookPage + 1);
+	BookTurned(Turn);
+}
+
+void ULyudCityThings::ShowBookPage()
+{
+	const LyudCity::FReadText* T = Model ? Model->TextAt(BookText) : nullptr;
+	const int32 Num = BookPages.Num();
+	if (!Book.IsValid() || !T || Num == 0)
+	{
+		return;
+	}
+	BookPage = FMath::Clamp(BookPage, 0, Num - 1);
+	const bool bLast = BookPage >= Num - 1;
+	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), LineText(BookPages[BookPage]),
+		LyudText::Get(TEXT("city.book.page"), { FStringFormatArg(BookPage + 1), FStringFormatArg(Num) }),
+		LyudText::Get(bLast ? TEXT("city.book.keys_last") : TEXT("city.book.keys")));
+}
+
+void ULyudCityThings::BookTurned(const LyudCity::FPageTurn& Turn)
+{
+	if (!Turn.NewStamps.empty())
+	{
+		TArray<FString> Fresh;
+		for (const std::string& Stamp : Turn.NewStamps)
+		{
+			Fresh.Add(LyudCityThingsImpl::Str(Stamp));
+		}
+		AnnounceStamps(Fresh);
+	}
+	const LyudCity::FReadText* T = Model ? Model->TextAt(BookText) : nullptr;
+	if (!Turn.bFinished || !T)
+	{
+		return;
+	}
+	const FText Title = LyudText::Get(LyudCityThingsImpl::Str(T->Title));
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: read %s to the end (at %s)"), *LyudCityThingsImpl::Str(T->Id), BookPlot.IsEmpty() ? TEXT("-") : *BookPlot);
+	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
+	{
+		Screen->Toast(LyudText::Get(TEXT("city.book.read"), { FStringFormatArg(Title.ToString()) }));
+	}
+	ULyudQuests::Notify(this, TEXT("read"), LyudCityThingsImpl::Str(T->Id));
+}
+
+void ULyudCityThings::TurnBook(int32 Delta)
+{
+	const LyudCity::FReadText* T = Model ? Model->TextAt(BookText) : nullptr;
+	const int32 Num = BookPages.Num();
+	if (!T || Num == 0)
+	{
+		return;
+	}
+	if (Delta > 0 && BookPage >= Num - 1)
+	{
+		CloseBook();     // E on the last page puts it down
+		return;
+	}
+	const LyudCity::FPageTurn Turn = Model->TurnPage(BookText, BookPage, Delta > 0 ? 1 : -1, Num, std::string(TCHAR_TO_UTF8(*BookPlot)));
+	if (!Turn.bMoved)
+	{
+		return;
+	}
+	BookPage = Turn.Page;
+	ShowBookPage();
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->PlayEffect(TEXT("page_turn"), BookThing >= 0 ? ThingLocation(BookThing) : BookFrom);
+	}
+	if (Delta > 0)
+	{
+		JumpMinutes(T->Minutes, false);     // a page read; leafing back costs nothing
+	}
+	BookTurned(Turn);
+}
+
+void ULyudCityThings::CloseBook()
+{
+	if (APlayerController* PC = BookBlockedBy.Get())
+	{
+		PC->SetIgnoreMoveInput(false);
+	}
+	BookBlockedBy.Reset();
+	bCloseBookAsked = false;
+	if (BookText < 0)
+	{
+		return;
+	}
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: text put down at page %d"), BookPage + 1);
+	BookText = -1;
+	BookThing = -1;
+	BookPages.Reset();
+	bBookSeated = false;
+	if (Book.IsValid())
+	{
+		Book->SetVisibility(EVisibility::Collapsed);
+	}
+}
+
+void ULyudCityThings::TickBook(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+	const ULyudGameMenuSubsystem* Menu = World ? World->GetSubsystem<ULyudGameMenuSubsystem>() : nullptr;
+	// shut by a step or Space on the seat, getting up, walking off, another screen, not being the hero
+	if (!World || !Hero || !PC || !UI || UI->IsOpen() || (Menu && Menu->IsOpen()) || bCloseBookAsked
+		|| (bBookSeated && !Hero->IsSeated())
+		|| (!bBookSeated && FVector::Dist(Hero->GetActorLocation(), BookFrom) > LyudCityThingsImpl::PageWalkAway))
+	{
+		CloseBook();
+		return;
+	}
+	if (bTalk || GFrameCounter == BookFrame)
+	{
+		return;
+	}
+	if (PC->WasInputKeyJustPressed(EKeys::Escape) || PC->WasInputKeyJustPressed(EKeys::W) || PC->WasInputKeyJustPressed(EKeys::S)
+		|| PC->WasInputKeyJustPressed(EKeys::Up) || PC->WasInputKeyJustPressed(EKeys::Down) || PC->WasInputKeyJustPressed(EKeys::SpaceBar))
+	{
+		CloseBook();
+	}
+	else if (PC->WasInputKeyJustPressed(EKeys::E) || PC->WasInputKeyJustPressed(EKeys::D) || PC->WasInputKeyJustPressed(EKeys::Right))
+	{
+		TurnBook(1);
+	}
+	else if (PC->WasInputKeyJustPressed(EKeys::A) || PC->WasInputKeyJustPressed(EKeys::Left))
+	{
+		TurnBook(-1);
+	}
+}
+
+bool ULyudCityThings::OpenText(const FString& TextId)
+{
+	const int32 Text = Model ? Model->FindText(std::string(TCHAR_TO_UTF8(*TextId))) : -1;
+	if (Text < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no text %s%s"), *TextId, Loading.IsValid() ? TEXT(" (City/interiors.json is still being read)") : TEXT(""));
+		return false;
+	}
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	EndGame(false);
+	OpenBook(Text, -1, Hero && Hero->IsSeated() && SeatedOn >= 0);
+	return IsReading();
+}
+
+bool ULyudCityThings::OpenNearestText()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	const FVector From = Pawn->GetActorLocation();
+	int32 Best = -1;
+	double BestD = 0.0;
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const LyudCity::FAct* A = Model->ActOf(I);
+		const double D = A && !A->Texts.empty() ? FVector::DistSquared(ThingLocation(I), From) : -1.0;
+		if (D >= 0.0 && (Best < 0 || D < BestD))
+		{
+			Best = I;
+			BestD = D;
+		}
+	}
+	if (Best < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no thing to read anywhere"));
+		return false;
+	}
+	Run(Best, true);
+	return true;
+}
+
+FString ULyudCityThings::PlotName(const FString& Plot) const
+{
+	if (Plot.IsEmpty())
+	{
+		return LyudText::Get(TEXT("city.read.list.somewhere")).ToString();
+	}
+	const FString Key = Plot.ToLower().Replace(TEXT("-"), TEXT("_"));
+	// LyudText::Get gives the key back when it has no words for it
+	const FString NameKey = FString(TEXT("city.plot.")) + Key + TEXT(".name");
+	FString Words = LyudText::Get(NameKey).ToString();
+	if (!Words.IsEmpty() && Words != NameKey)
+	{
+		return Words;
+	}
+	const FString TpKey = FString(TEXT("dev.tp.city.")) + Key;
+	Words = LyudText::Get(TpKey).ToString();
+	return !Words.IsEmpty() && Words != TpKey ? Words : Plot;
+}
+
+FString ULyudCityThings::ReadListBody() const
+{
+	if (!Model || Model->Texts.empty())
+	{
+		return FString();
+	}
+	const int32 Got = Model->CountRead();
+	FString Body = LyudText::Get(TEXT("city.read.list.head"), { FStringFormatArg(Got), FStringFormatArg((int32)Model->Texts.size()) }).ToString();
+	if (Got == 0)
+	{
+		return Body + TEXT("\n") + LyudText::Get(TEXT("city.read.list.none")).ToString();
+	}
+	// per place, the places and titles in the order the texts are declared
+	const FString Sep = LyudText::Get(TEXT("city.read.list.sep")).ToString();
+	const std::map<std::string, std::string>& ReadAt = Model->GetReadAt();
+	TArray<FString> Plots;
+	TArray<FString> Titles;
+	for (const LyudCity::FReadText& T : Model->Texts)
+	{
+		const std::map<std::string, std::string>::const_iterator It = ReadAt.find(T.Id);
+		if (It == ReadAt.end())
+		{
+			continue;
+		}
+		const FString Plot = LyudCityThingsImpl::Str(It->second);
+		int32 Row = Plots.Find(Plot);
+		if (Row == INDEX_NONE)
+		{
+			Row = Plots.Add(Plot);
+			Titles.AddDefaulted();
+		}
+		Titles[Row] += (Titles[Row].IsEmpty() ? FString() : Sep) + LyudText::Get(LyudCityThingsImpl::Str(T.Title)).ToString();
+	}
+	for (int32 Row = 0; Row < Plots.Num(); ++Row)
+	{
+		Body += TEXT("\n") + LyudText::Get(TEXT("city.read.list.line"), { FStringFormatArg(PlotName(Plots[Row])), FStringFormatArg(Titles[Row]) }).ToString();
+	}
+	return Body;
+}
+
+void ULyudCityThings::ShowReadList(bool bPage)
+{
+	const FString Body = ReadListBody();
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: read list:\n%s"), Body.IsEmpty() ? TEXT("(no texts)") : *Body);
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!bPage || Body.IsEmpty() || !Pawn || NumThings() == 0 || ShowAt >= 0 || BookText >= 0 || SleepHour >= 0 || IsPlayingGame())
+	{
+		return;
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	PageTitle = LyudText::Get(TEXT("city.coll.reading.title"));
+	PageFrom = Pawn->GetActorLocation();
+	PageFrame = GFrameCounter;
+	ShowPage(PageTitle, FText::FromString(Body), false);
+	SetPrompted(-1);
+}
+
+void ULyudCityThings::SetAllRead(bool bRead)
+{
+	if (!Model)
+	{
+		return;
+	}
+	const std::string Plot = PlotThing >= 0 && PlotThing < NumThings() ? Model->Things[(size_t)PlotThing].Plot : std::string();
+	Model->MarkAllRead(bRead, Plot);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: every text %s (%d of %d read)"), bRead ? TEXT("read") : TEXT("unread"), Model->CountRead(), (int32)Model->Texts.size());
+}
+
+bool ULyudCityThings::AreAllRead() const
+{
+	return Model && Model->AllRead();
+}
+
 // --- console
 
 static FAutoConsoleCommandWithWorldAndArgs GCityThingsList(TEXT("lyud.City.Things"),
@@ -2057,6 +2940,74 @@ static FAutoConsoleCommandWithWorldAndArgs GCityGame(TEXT("lyud.City.Game"),
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCitySit(TEXT("lyud.City.Sit"),
+	TEXT("lyud.City.Sit [thing id]: seats the hero on a seat (the nearest free one without an id), wherever he is: the seated pose, the look cone"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudCityThings* Things = ULyudCityThings::Get(World))
+		{
+			Things->SitOnThing(Args.Num() > 0 ? Args[0] : FString(), false);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GCityLie(TEXT("lyud.City.Lie"),
+	TEXT("lyud.City.Lie [thing id]: lays the hero on a bed (the nearest free one without an id): the pillow's view; a \"sleep\" bed opens the hour chooser"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudCityThings* Things = ULyudCityThings::Get(World))
+		{
+			Things->SitOnThing(Args.Num() > 0 ? Args[0] : FString(), true);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GCitySleep(TEXT("lyud.City.Sleep"),
+	TEXT("lyud.City.Sleep <hour 0..23>: lying on a bed, sleeps until that hour (the fade, the clock on, then up)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (Things && Args.Num() > 0 && Args[0].IsNumeric())
+		{
+			Things->SleepUntil(FCString::Atoi(*Args[0]));
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GCityRead(TEXT("lyud.City.Read"),
+	TEXT("lyud.City.Read <text id> | next | prev | close | list | all | clear: opens a text of the reading view wherever the hero is (birds_starlings), turns or shuts it, lists the texts read, marks every text read or none"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (!Things)
+		{
+			return;
+		}
+		const FString Verb = Args.Num() > 0 ? Args[0] : FString(TEXT("list"));
+		if (Verb == TEXT("next"))
+		{
+			Things->TurnBook(1);
+		}
+		else if (Verb == TEXT("prev"))
+		{
+			Things->TurnBook(-1);
+		}
+		else if (Verb == TEXT("close"))
+		{
+			Things->CloseBook();
+		}
+		else if (Verb == TEXT("list"))
+		{
+			Things->ShowReadList(true);
+		}
+		else if (Verb == TEXT("all") || Verb == TEXT("clear"))
+		{
+			Things->SetAllRead(Verb == TEXT("all"));
+			Things->ShowReadList(false);
+		}
+		else
+		{
+			Things->OpenText(Verb);
+		}
+	}));
+
 // --- developer mode (docs/dev_mode.md), when it is in the tree
 
 #if LYUD_CITY_THINGS_DEV
@@ -2158,6 +3109,48 @@ static LyudDev::FAutoAction GCityDevRegulars(TEXT("interiors.regulars"), TEXT("i
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->ShowRegulars(true);
+	}
+});
+static LyudDev::FAutoAction GCityDevSit(TEXT("interiors.sit_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.sit_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->SitOnThing(FString(), false);
+	}
+});
+static LyudDev::FAutoAction GCityDevLie(TEXT("interiors.lie_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.lie_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->SitOnThing(FString(), true);
+	}
+});
+static LyudDev::FAutoAction GCityDevReadNear(TEXT("interiors.read_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.read_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->OpenNearestText();
+	}
+});
+static LyudDev::FAutoAction GCityDevReadAll(TEXT("interiors.read_all"), TEXT("interiors"), TEXT("dev.action.interiors.read_all"),
+	[](UWorld* W)
+	{
+		if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+		{
+			Things->SetAllRead(!Things->AreAllRead());
+			Things->ShowReadList(false);
+		}
+	},
+	[](UWorld* W)
+	{
+		const ULyudCityThings* Things = ULyudCityThings::Get(W);
+		return Things && Things->AreAllRead();
+	});
+static LyudDev::FAutoAction GCityDevReadList(TEXT("interiors.read_list"), TEXT("interiors"), TEXT("dev.action.interiors.read_list"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ShowReadList(true);
 	}
 });
 #endif

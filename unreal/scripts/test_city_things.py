@@ -1,7 +1,8 @@
 """Offscreen check of the things to do inside the town's buildings (docs/city_interiors.md, ULyudCityThings) in Lvl_Scene01:
 lists them (lyud.City.Things), then runs a few of each kind with lyud.City.Do from wherever the hero stands (a shelf, a board,
 a counter, something to take twice, a seat, a bed), puts the hero in front of a shelf and takes a screenshot of the prompt
-and of the page, saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
+and of the page, sits and lies on the nearest seat and bed (a save and a load while seated, a sleep to 7:00), reads a text of
+the reading view to its end and lists what was read, saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
 unreal/scripts/test_city_things.sh checks them.
 """
 import json
@@ -142,6 +143,36 @@ def plan():
             add(2.5, lambda w: cmd(w, "lyud.City.Game win"))
             add(1.0, lambda w, g=gtype: shot(w, "game_%s_over" % g))
     add(1.0, lambda w: cmd(w, "lyud.City.Game regulars"))
+    # fifth pass (docs "Sitting and lying", "The reading page"): the nearest seat (twice: the second stands him up first), a
+    # save and a load while seated (he must stand, never stuck), the nearest bed and a sleep to 7:00, a text opened by id and
+    # leafed to its end (the stamp, "read ... to the end"), the read list, every text read and cleared again
+    add(2.0, lambda w: cmd(w, "lyud.City.Sit"))
+    add(1.0, lambda w: shot(w, "sit_nearest"))
+    add(1.5, lambda w: cmd(w, "lyud.City.Sit"))
+    add(2.0, lambda w: cmd(w, "lyud.Save citytest_seated"))
+    add(3.0, lambda w: cmd(w, "lyud.Load 0"))
+    add(1.0, lambda w: shot(w, "after_load_seated"))
+    add(2.5, lambda w: cmd(w, "lyud.City.Lie"))
+    add(1.0, lambda w: shot(w, "lie_nearest"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Sleep 7"))
+    add(6.0, lambda w: shot(w, "after_sleep"))
+    add(1.5, lambda w: cmd(w, "lyud.City.Read birds_starlings"))
+    add(1.0, lambda w: shot(w, "book_page1"))
+    for _ in range(4):
+        add(1.0, lambda w: cmd(w, "lyud.City.Read next"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read paper_today"))
+    add(1.0, lambda w: shot(w, "newspaper"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read prev"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read close"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read list"))
+    add(1.0, lambda w: shot(w, "read_list"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read all"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read clear"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Read no_such_text"))
+    readers = [t for t in things if acts.get(t.get("act"), {}).get("read")][:1]
+    for th in readers:
+        add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: cmd(w, "lyud.City.Read close"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))

@@ -184,12 +184,19 @@ namespace LyudCity
 		int CountMin = 0;
 		/** The stamp shown lines give ("set/piece", empty: none). */
 		std::string Collect;
+		/** "read": the id of a text (FReadText) the hero must have read to the end (empty: no condition). */
+		std::string ReadText;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
 
-		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail). */
-		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr) const
+		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail); ReadMap: the
+		 *  texts read to the end (text id -> plot; null: none read, so "read" fails). */
+		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr, const std::map<std::string, std::string>* ReadMap = nullptr) const
 		{
+			if (!ReadText.empty() && (!ReadMap || ReadMap->count(ReadText) == 0))
+			{
+				return false;
+			}
 			if (HourFrom >= 0.f && !InHours(W.Hour, HourFrom, HourTo))
 			{
 				return false;
@@ -298,6 +305,39 @@ namespace LyudCity
 		std::string Collect;
 		/** Index into FModel::Games: the act plays a mini-game instead of showing its lines (-1: none). */
 		int Game = -1;
+		/** "read": the texts (indices into FModel::Texts) the reading view opens instead of the lines: one per use in turn, or
+		 *  (bReadDaily) one a game day. Empty: the act shows its lines. */
+		std::vector<int> Texts;
+		bool bReadDaily = false;
+		/** "sleep": lying down, the hero chooses the hour he wakes at (a home's or a hotel's bed) instead of the act's minutes. */
+		bool bSleep = false;
+	};
+
+	/**
+	 * A text the reading view shows ("texts" of interiors.json; docs/city_interiors.md "The reading page"): a title, pages
+	 * (each a list of alternatives: the lines whose conditions hold now, one of them by the days since the game began: a
+	 * newspaper's second page changes every day), what it is (book, notice, ledger, newspaper: the view's look), the game
+	 * minutes a page takes, the stamp reading it to the end gives.
+	 */
+	struct FReadText
+	{
+		std::string Id;
+		std::string Title;
+		std::string Kind = "book";
+		int Minutes = 2;
+		std::string Collect;
+		std::vector<std::vector<FLine>> Pages;
+	};
+
+	/** A page turned in the reading view (FModel::TurnPage). */
+	struct FPageTurn
+	{
+		int Page = 0;
+		/** The page changed (a turn past the first or last page does nothing). */
+		bool bMoved = false;
+		/** The last page was reached for the first time: the text is read (stamp, plot remembered). */
+		bool bFinished = false;
+		std::vector<std::string> NewStamps;
 	};
 
 	// --- mini-games (docs/city_interiors.md "Mini-games"): every rule and every die here, the game only draws and polls keys
@@ -646,6 +686,10 @@ namespace LyudCity
 		std::vector<std::string> NewStamps;
 		/** The act's mini-game starts (index into FModel::Games; -1: none, the line shows as usual). */
 		int Game = -1;
+		/** The reading view opens on this text (index into FModel::Texts; -1: none): no line, no act minutes (each page has its own). */
+		int Text = -1;
+		/** A bed of a "sleep" act: the hero chooses the hour he wakes at (FModel::SleepDefaultHour, SleepStep). */
+		bool bSleep = false;
 		std::string Plot;
 		/** For the refusal line: the price or the item needed. */
 		int NeedMoney = 0;
@@ -844,6 +888,8 @@ namespace LyudCity
 		/** The acts' mini-games (FAct::Game) and the regulars who play them ("regulars" of interiors.json, in id order). */
 		std::vector<FGameDef> Games;
 		std::vector<FRegular> Regulars;
+		/** The texts of the reading view ("texts" of interiors.json), in the file's order. */
+		std::vector<FReadText> Texts;
 
 		/** Grid cell size (cm): reach is a few metres, so a pick reads 3x3 cells. */
 		static constexpr double CellCm = 400.0;
@@ -857,6 +903,8 @@ namespace LyudCity
 			Collections.clear();
 			Games.clear();
 			Regulars.clear();
+			Texts.clear();
+			TextIndex.clear();
 			ActIndex.clear();
 			ThingIndex.clear();
 			Grid.clear();
@@ -872,9 +920,29 @@ namespace LyudCity
 				Error = "interiors: the root is not an object";
 				return false;
 			}
+			for (const auto& Field : Root["texts"].Fields)
+			{
+				FReadText T = ReadTextDef(Field.first, Field.second);
+				if (!T.Pages.empty() && TextIndex.count(T.Id) == 0)
+				{
+					TextIndex[T.Id] = (int)Texts.size();
+					Texts.push_back(std::move(T));
+				}
+			}
 			for (const auto& Field : Root["acts"].Fields)
 			{
 				FAct A = ReadAct(Field.first, Field.second);
+				// "read": {"texts": [ids], "rotate": "use" | "daily"}: an id the file does not have is left out
+				const LyudJson::FValue& Read = Field.second["read"];
+				for (const LyudJson::FValue& Id : Read["texts"].Items)
+				{
+					const int Found = FindText(Id.S());
+					if (Found >= 0)
+					{
+						A.Texts.push_back(Found);
+					}
+				}
+				A.bReadDaily = Read["rotate"].S() == "daily";
 				const LyudJson::FValue& GameField = Field.second["game"];
 				if (GameField.Type == LyudJson::FValue::Object)
 				{
@@ -1198,7 +1266,12 @@ namespace LyudCity
 				Today[GameCountKey(A->Id)] += 1;
 				O.Game = A->Game;
 			}
-			const int Holding = O.Game >= 0 ? 0 : CountUsable(PageIdOf(Thing, Index), *A, When);
+			// the reading view instead of the lines: a text of the act's (in turn per use, or one a day)
+			if (!O.bClosed && O.Game < 0 && !A->Texts.empty())
+			{
+				O.Text = PickText(PageIdOf(Thing, Index), *A, When);
+			}
+			const int Holding = O.Game >= 0 || O.Text >= 0 ? 0 : CountUsable(PageIdOf(Thing, Index), *A, When);
 			// a daily board shows today's one; a shelf the pages that may be read now, one after another
 			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
 			if (Holding > 0)
@@ -1214,6 +1287,11 @@ namespace LyudCity
 				GiveStamp(T.Collect, &O.NewStamps);
 			}
 			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
+			if (O.Text >= 0)
+			{
+				O.Minutes = 0;     // the pages take their own minutes as they are read
+			}
+			O.bSleep = A->bSleep && !O.bClosed;
 			O.Price = A->Price;
 			O.bFade = A->bFade;
 			O.Give = A->Give;
@@ -1259,7 +1337,7 @@ namespace LyudCity
 		/** May this line be shown at this page now: its conditions hold and, a "once" line, it was not shown there yet. */
 		bool Usable(const std::string& PageId, const FLine& L, const FWhen& When) const
 		{
-			return L.Holds(When, &Stamps) && !(L.bOnce && OnceShown.count(PageId + "|" + L.Key));
+			return L.Holds(When, &Stamps, &ReadAt) && !(L.bOnce && OnceShown.count(PageId + "|" + L.Key));
 		}
 		/** How many of an act's lines may be shown at this page now. */
 		int CountUsable(const std::string& PageId, const FAct& A, const FWhen& When) const
@@ -1548,6 +1626,216 @@ namespace LyudCity
 				}
 			}
 			return false;
+		}
+
+		// --- sitting and lying (docs/city_interiors.md "Sitting and lying"): what the game decides from the data and its traces
+
+		/**
+		 * The floor under a seat or bed whose surface is HeightCm over it, its cushion at AtZ: a trace down from just over the
+		 * cushion met something at HitZ (bHit). A hit up near the cushion is the seat's own blocking box (a bench, a bed): the floor
+		 * is its height below. A hit far from where the floor should be (a stairwell under a gallery bench, a hole in the mesh, a
+		 * table's top) is not believed: the height from the data then. No hit: the height from the data.
+		 */
+		static double SeatFloor(double AtZ, double HeightCm, bool bHit, double HitZ)
+		{
+			const double Expected = AtZ - HeightCm;
+			if (!bHit)
+			{
+				return Expected;
+			}
+			const double Floor = HitZ > AtZ - 0.5 * HeightCm ? HitZ - HeightCm : HitZ;
+			return std::fabs(Floor - Expected) > SeatFloorSlack ? Expected : Floor;
+		}
+		/** How far (cm) a traced floor may be from the data's (the seat's height under its cushion) and still be believed. */
+		static constexpr double SeatFloorSlack = 60.0;
+
+		/** Half the cone (deg) the seated hero may look round within, about the seat's yaw: the thing's "cone" prop (30..170), else
+		 *  110 (he turns his head and shoulders, not his back to the table). */
+		static float LookCone(const FThing& T)
+		{
+			const float C = T.PropF("cone", 110.f);
+			return C < 30.f ? 30.f : (C > 170.f ? 170.f : C);
+		}
+		/** Is Yaw within Half degrees of Center (any turns of 360)? */
+		static bool InCone(float Yaw, float Center, float Half)
+		{
+			float D = std::fmod(Yaw - Center, 360.f);
+			D = D > 180.f ? D - 360.f : (D < -180.f ? D + 360.f : D);
+			return std::fabs(D) <= Half + 0.001f;
+		}
+		/** Yaw brought into the cone of Half degrees about Center (the nearest edge when outside). */
+		static float ClampToCone(float Yaw, float Center, float Half)
+		{
+			float D = std::fmod(Yaw - Center, 360.f);
+			D = D > 180.f ? D - 360.f : (D < -180.f ? D + 360.f : D);
+			D = D > Half ? Half : (D < -Half ? -Half : D);
+			return Center + D;
+		}
+
+		/**
+		 * The window a hero lying on Bed looks toward: the nearest thing of its plot with "topic": "view" (the window views of the
+		 * data) within Radius (cm) of it, on about its floor (it may be up to 2.5 m over the bed's surface: a view board's point is
+		 * at eye height); -1 none (he looks at the ceiling). A pass over the plot's things only (the table built at load).
+		 */
+		int WindowFrom(int Bed, double Radius) const
+		{
+			if (Bed < 0 || Bed >= (int)Things.size())
+			{
+				return -1;
+			}
+			const FThing& B = Things[(size_t)Bed];
+			const std::vector<int>* Of = ThingsOfPlot(B.Plot);
+			int Best = -1;
+			double BestD = Radius;
+			for (size_t K = 0; Of && K < Of->size(); ++K)
+			{
+				const int I = (*Of)[K];
+				const FThing& T = Things[(size_t)I];
+				if (I == Bed || T.Prop("topic") != "view" || T.At.Z < B.At.Z - 100.0 || T.At.Z > B.At.Z + 250.0)
+				{
+					continue;
+				}
+				const double D = std::sqrt((T.At.X - B.At.X) * (T.At.X - B.At.X) + (T.At.Y - B.At.Y) * (T.At.Y - B.At.Y));
+				if (D <= BestD)
+				{
+					BestD = D;
+					Best = I;
+				}
+			}
+			return Best;
+		}
+
+		/** The hour a "sleep" bed offers first: its act's "until" (sleep till 7), else now plus its minutes, to the next whole hour;
+		 *  never the hour it is now (that would be a whole day). */
+		static int SleepDefaultHour(const FAct& A, float Hour)
+		{
+			int H = A.Until >= 0 ? A.Until : (int)std::ceil(Hour + (float)(A.Minutes > 0 ? A.Minutes : 60) / 60.f - 0.001f);
+			H = ((H % 24) + 24) % 24;
+			return H == (int)std::floor(Hour) % 24 ? (H + 1) % 24 : H;
+		}
+		/** The hour chooser one step on (Delta +1 later, -1 earlier), going round the clock past the hour it is now. */
+		static int SleepStep(int Chosen, int Delta, float Hour)
+		{
+			const int Now = ((int)std::floor(Hour) % 24 + 24) % 24;
+			int H = (((Chosen + Delta) % 24) + 24) % 24;
+			if (H == Now)
+			{
+				H = (((H + (Delta >= 0 ? 1 : -1)) % 24) + 24) % 24;
+			}
+			return H;
+		}
+
+		// --- the reading view (docs/city_interiors.md "The reading page"): a text's pages, the page each text was left on, the texts
+		// read to the end (and where), saved with the rest
+
+		int FindText(const std::string& Id) const
+		{
+			const auto It = TextIndex.find(Id);
+			return It == TextIndex.end() ? -1 : It->second;
+		}
+		const FReadText* TextAt(int Text) const { return Text >= 0 && Text < (int)Texts.size() ? &Texts[(size_t)Text] : nullptr; }
+
+		/** The pages of Text that may be shown now, each as its line key: of a page's alternatives those whose conditions hold, one
+		 *  of them by the days since the game began; a page with none holding is left out. Allocates (asked when the view opens). */
+		void TextPages(int Text, const FWhen& When, std::vector<std::string>& Out) const
+		{
+			Out.clear();
+			const FReadText* T = TextAt(Text);
+			if (!T)
+			{
+				return;
+			}
+			int Holding[16];
+			for (const std::vector<FLine>& Page : T->Pages)
+			{
+				int N = 0;
+				for (int I = 0; I < (int)Page.size() && N < 16; ++I)
+				{
+					if (Page[(size_t)I].Holds(When, &Stamps, &ReadAt))
+					{
+						Holding[N] = I;
+						++N;
+					}
+				}
+				if (N > 0)
+				{
+					const long long Pick = ((When.Since % N) + N) % N;
+					Out.push_back(Page[(size_t)Holding[(size_t)Pick]].Key);
+				}
+			}
+		}
+
+		/** The page the view opens Text on (NumPages of them now): where it was left; the last one of a text read to the end starts
+		 *  it over. */
+		int OpenPage(int Text, int NumPages) const
+		{
+			const FReadText* T = TextAt(Text);
+			if (!T || NumPages <= 0)
+			{
+				return 0;
+			}
+			const auto It = BookAt.find(T->Id);
+			const int Left = It == BookAt.end() ? 0 : It->second;
+			if (Left >= NumPages - 1 && ReadAt.count(T->Id) && NumPages > 1)
+			{
+				return 0;
+			}
+			return Left < 0 ? 0 : (Left > NumPages - 1 ? NumPages - 1 : Left);
+		}
+
+		/** The view turns from Page by Delta (-1, 0 at opening, +1) of NumPages: the page is remembered; reaching the last one the
+		 *  first time reads the text (its stamp, the plot it was read in). */
+		FPageTurn TurnPage(int Text, int Page, int Delta, int NumPages, const std::string& Plot)
+		{
+			FPageTurn Out;
+			const FReadText* T = TextAt(Text);
+			if (!T || NumPages <= 0)
+			{
+				return Out;
+			}
+			int To = Page + Delta;
+			To = To < 0 ? 0 : (To > NumPages - 1 ? NumPages - 1 : To);
+			Out.Page = To;
+			Out.bMoved = To != Page;
+			BookAt[T->Id] = To;
+			if (To == NumPages - 1 && ReadAt.count(T->Id) == 0)
+			{
+				ReadAt[T->Id] = Plot;
+				Out.bFinished = true;
+				GiveStamp(T->Collect, &Out.NewStamps);
+			}
+			return Out;
+		}
+
+		bool IsRead(const std::string& TextId) const { return ReadAt.count(TextId) > 0; }
+		/** The texts read to the end: text id -> the plot (where). */
+		const std::map<std::string, std::string>& GetReadAt() const { return ReadAt; }
+		int CountRead() const
+		{
+			int N = 0;
+			for (const FReadText& T : Texts)
+			{
+				N += ReadAt.count(T.Id) ? 1 : 0;
+			}
+			return N;
+		}
+		bool AllRead() const { return !Texts.empty() && CountRead() == (int)Texts.size(); }
+		/** Developer mode: every text read (at Plot, its stamps given) or none (the pages left on forgotten too). */
+		void MarkAllRead(bool bRead, const std::string& Plot)
+		{
+			if (!bRead)
+			{
+				ReadAt.clear();
+				BookAt.clear();
+				return;
+			}
+			for (const FReadText& T : Texts)
+			{
+				if (ReadAt.emplace(T.Id, Plot).second)
+				{
+					GiveStamp(T.Collect);
+				}
+			}
 		}
 
 		// --- mini-games (docs/city_interiors.md "Mini-games"): the game calls StartGame, then TickGame every frame and PressGame
@@ -1912,11 +2200,14 @@ namespace LyudCity
 			Visited.clear();
 			Stamps.clear();
 			OnceShown.clear();
+			BookAt.clear();
+			ReadAt.clear();
 			CountDay = 0;
 		}
 
 		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>",
-		 *  "c:<set>/<piece>" (a stamp). */
+		 *  "c:<set>/<piece>" (a stamp), "o:<page>|<line>" (a once line shown), "b:<text>" (the page it was left on), "r:<text>"
+		 *  (read to the end; the value is the plot). */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -1955,6 +2246,14 @@ namespace LyudCity
 			{
 				Out["o:" + Shown] = "1";
 			}
+			for (const auto& P : BookAt)
+			{
+				Out["b:" + P.first] = std::to_string(P.second);
+			}
+			for (const auto& P : ReadAt)
+			{
+				Out["r:" + P.first] = P.second;
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -1977,6 +2276,8 @@ namespace LyudCity
 					case 'd': ReadDay[Name] = V; break;
 					case 'v': Visited[Name] = V; break;
 					case 'o': OnceShown.insert(Name); break;
+					case 'b': BookAt[Name] = (int)V; break;
+					case 'r': ReadAt[Name] = P.second; break;
 					case 'c':
 					{
 						// kept even when the data no longer declares it (a piece may come back with the content)
@@ -1996,6 +2297,7 @@ namespace LyudCity
 	private:
 		std::unordered_map<std::string, int> ActIndex;
 		std::unordered_map<std::string, int> ThingIndex;
+		std::unordered_map<std::string, int> TextIndex;
 		std::unordered_map<long long, std::vector<int>> Grid;
 		std::unordered_map<std::string, std::vector<int>> PlotThings;
 		/** Who holds each thing (0 nobody): a townsperson sitting on it (not saved). */
@@ -2012,6 +2314,9 @@ namespace LyudCity
 		FStamps Stamps;
 		/** "once" lines shown: "<page id>|<line key>". */
 		std::set<std::string> OnceShown;
+		/** The reading view: the page each text was left on, and the texts read to the end (text id -> the plot). */
+		std::map<std::string, int> BookAt;
+		std::map<std::string, std::string> ReadAt;
 
 		static double Dist(const FVec& A, const FVec& B)
 		{
@@ -2059,6 +2364,73 @@ namespace LyudCity
 				}
 			}
 			return -1;
+		}
+
+		/** Which of an act's texts the view opens: one a game day (bReadDaily: by the days since the game began), else the next in
+		 *  turn at every use (kept per thing as "<page id>#text" with the pages). */
+		int PickText(const std::string& PageId, const FAct& A, const FWhen& When)
+		{
+			const int N = (int)A.Texts.size();
+			if (N == 0)
+			{
+				return -1;
+			}
+			if (A.bReadDaily)
+			{
+				return A.Texts[(size_t)(((When.Since % N) + N) % N)];
+			}
+			int& Turn = LineOf[PageId + "#text"];
+			const int Pick = ((Turn % N) + N) % N;
+			Turn = (Pick + 1) % N;
+			return A.Texts[(size_t)Pick];
+		}
+
+		/** A text of "texts": {"title", "kind", "minutes", "collect", "pages": [page]}, a page a key, a line {"k", conditions} or a
+		 *  list of them (the alternatives). */
+		static FReadText ReadTextDef(const std::string& Id, const LyudJson::FValue& V)
+		{
+			FReadText T;
+			T.Id = Id;
+			T.Title = V["title"].S();
+			T.Kind = V["kind"].S("book");
+			T.Minutes = std::max(0, std::min(30, V["minutes"].I(2)));
+			T.Collect = V["collect"].S();
+			auto One = [](const LyudJson::FValue& E, std::vector<FLine>& Into)
+			{
+				FLine Line;
+				if (E.Type == LyudJson::FValue::String)
+				{
+					Line.Key = E.Str;
+				}
+				else if (E.Type == LyudJson::FValue::Object)
+				{
+					ReadLine(E, Line);
+				}
+				if (!Line.Key.empty())
+				{
+					Into.push_back(Line);
+				}
+			};
+			for (const LyudJson::FValue& P : V["pages"].Items)
+			{
+				std::vector<FLine> Page;
+				if (P.Type == LyudJson::FValue::Array)
+				{
+					for (const LyudJson::FValue& E : P.Items)
+					{
+						One(E, Page);
+					}
+				}
+				else
+				{
+					One(P, Page);
+				}
+				if (!Page.empty())
+				{
+					T.Pages.push_back(std::move(Page));
+				}
+			}
+			return T;
 		}
 
 		/** An act's stamp "set/{line}": every line it shows gives a piece of its own (the line's key). */
@@ -2510,6 +2882,7 @@ namespace LyudCity
 				Line.CountMin = Count[1].I(0);
 			}
 			Line.Collect = L["collect"].S();
+			Line.ReadText = L["read"].S();
 		}
 
 		static FAct ReadAct(const std::string& Id, const LyudJson::FValue& V)
@@ -2582,6 +2955,7 @@ namespace LyudCity
 			A.bFade = V["fade"].Type == LyudJson::FValue::Bool ? V["fade"].B : V["fade"].I(0) != 0;
 			A.bAnyHour = V["any_hour"].Type == LyudJson::FValue::Bool ? V["any_hour"].B : (A.Pose == "sit" || A.Pose == "lie");
 			A.Collect = V["collect"].S();
+			A.bSleep = V["sleep"].Type == LyudJson::FValue::Bool ? V["sleep"].B : V["sleep"].I(0) != 0;
 			return A;
 		}
 

@@ -57,15 +57,21 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
-              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game")
+              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
+              "sleep")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
 # them), have ("set/piece"), count (["set", n]); "collect" ("set/piece") is no condition: the stamp the line gives when shown
-LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect")
+LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
-SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars")
+SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
+            "texts")
+# the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
+TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
+TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect")
+READ_THING_KINDS = ("shelf", "board", "seat", "take")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
 SEAT_HEIGHT = (0.05, 1.2)
@@ -243,7 +249,7 @@ def load_strings():
     return table
 
 
-CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}}
+CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}}
 
 
 def content_files():
@@ -281,7 +287,7 @@ def load_content():
             CONTENT_EXTRA["quests"].append(q)
         for section, into in (("acts", acts), ("shops", shops), ("rules", rules), ("defaults", defaults),
                               ("collections", CONTENT_EXTRA["collections"]), ("closed_by", CONTENT_EXTRA["closed_by"]),
-                              ("regulars", CONTENT_EXTRA["regulars"])):
+                              ("regulars", CONTENT_EXTRA["regulars"]), ("texts", CONTENT_EXTRA["texts"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -447,6 +453,8 @@ def check_line_conds(where, cond):
             STAMPS_USED.append((where + " (have)", v))
         elif k == "count":
             STAMPS_USED.append((where + " (count)", v[0] + "/*"))
+        elif k == "read" and not (isinstance(v, str) and v in CONTENT_EXTRA["texts"]):
+            err("%s: read %r is not a text of any \"texts\" section" % (where, v))
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -677,6 +685,28 @@ def build_acts(acts_src, shops, strings, items):
             g = build_game("act " + aid, a["game"], strings, items)
             if g:
                 act["game"] = g
+        if a.get("read"):
+            r = a["read"]
+            texts = r.get("texts") if isinstance(r, dict) else None
+            if not isinstance(texts, list) or not texts or not all(isinstance(t, str) for t in texts):
+                err("act %s: read must be {\"texts\": [text ids], \"rotate\": \"use\" | \"daily\"}" % aid)
+            else:
+                for t in texts:
+                    if t not in CONTENT_EXTRA["texts"]:
+                        err("act %s: read: no text %s in any \"texts\" section" % (aid, t))
+                for k in r:
+                    if k not in ("texts", "rotate"):
+                        err("act %s: read: unknown field %s" % (aid, k))
+                if r.get("rotate", "use") not in ROTATE:
+                    err("act %s: read rotate must be one of %s" % (aid, ", ".join(ROTATE)))
+                act["read"] = {"texts": list(texts), "rotate": r.get("rotate", "use")}
+        if "sleep" in a:
+            if not isinstance(a["sleep"], bool):
+                err("act %s: sleep must be true or false" % aid)
+            elif a["sleep"]:
+                if act["pose"] != "lie":
+                    err("act %s: sleep needs pose lie (the hero lies down and chooses the hour)" % aid)
+                act["sleep"] = True
         for l in act["lines"]:
             if isinstance(l, dict) and l.get("collect"):
                 STAMPS_USED.append(("act %s line %s" % (aid, l["k"]), l["collect"]))
@@ -696,6 +726,70 @@ def build_acts(acts_src, shops, strings, items):
         if act["shop"] and act["shop"] not in shops:
             err("act %s opens unknown shop %s" % (aid, act["shop"]))
         out[aid] = act
+    return out
+
+
+def build_texts(src, strings):
+    """The texts of the reading view: {"<id>": {"title": key, "kind": book|notice|ledger|newspaper, "minutes": n per page,
+    "collect": "set/piece" (reading it to the end), "pages": [page]}}, a page a key, {"k": key, <conditions>} or a list of them
+    (the alternatives: of those whose conditions hold, one by the days since the game began). Written with every field, each page
+    as a list of lines."""
+    out = collections.OrderedDict()
+    for tid in sorted(src):
+        if tid.startswith("_"):
+            continue
+        t = src[tid]
+        where = "text " + tid
+        if not re.match(r"^[\w.-]+$", tid):
+            err("%s: the id is letters, digits, _ . - only" % where)
+        if not isinstance(t, dict):
+            err("%s must be an object" % where)
+            continue
+        for k in t:
+            if k not in TEXT_FIELDS:
+                err("%s: unknown field %s (%s)" % (where, k, ", ".join(TEXT_FIELDS)))
+        title = t.get("title", "")
+        if not title or not has_string(title, strings):
+            err("%s: title string %s is missing" % (where, title))
+        kind = t.get("kind", "book")
+        if kind not in TEXT_KINDS:
+            err("%s: kind must be one of %s" % (where, ", ".join(TEXT_KINDS)))
+        minutes = t.get("minutes", 2)
+        if not isinstance(minutes, int) or isinstance(minutes, bool) or not 0 <= minutes <= 30:
+            err("%s: minutes (a page) must be 0..30" % where)
+            minutes = 2
+        pages = []
+        for n, p in enumerate(t.get("pages") or [], 1):
+            alts = p if isinstance(p, list) else [p]
+            if not alts:
+                err("%s: page %d is empty" % (where, n))
+                continue
+            page = []
+            for e in alts:
+                if isinstance(e, dict):
+                    cond = {k: v for k, v in e.items() if k != "k"}
+                    check_line_conds("%s page %d" % (where, n), cond)
+                    if cond.get("collect"):
+                        STAMPS_USED.append(("%s page %d" % (where, n), cond["collect"]))
+                    page.append(dict({"k": e.get("k", "")}, **cond) if cond else e.get("k", ""))
+                elif isinstance(e, str):
+                    page.append(e)
+                else:
+                    err("%s: page %d: a page is a key, {\"k\": key, <conditions>} or a list of them" % (where, n))
+                    continue
+                if not has_string(line_key(page[-1]), strings):
+                    err("%s: page %d: string %s is missing" % (where, n, line_key(page[-1])))
+            pages.append(page)
+        if not 1 <= len(pages) <= 12:
+            err("%s: a text has 1..12 pages (%d)" % (where, len(pages)))
+        if not any(all(isinstance(e, str) for e in p) for p in pages):
+            err("%s: no page always shows (every page has conditions): the view could open on nothing" % where)
+        rec = {"title": title, "kind": kind, "minutes": minutes, "pages": pages}
+        if t.get("collect"):
+            check_line_conds(where, {"collect": t["collect"]})
+            STAMPS_USED.append((where, t["collect"]))
+            rec["collect"] = t["collect"]
+        out[tid] = rec
     return out
 
 
@@ -878,6 +972,8 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             if "switch" in props and not (props["switch"] in ("room", "hall") or re.match(r"^\d+(\.\d+)?$", str(props["switch"]))
                                           and 1 <= float(props["switch"]) <= 30):
                 err("%s: switch must be room, hall or metres 1..30 (the lamps it turns on and off)" % tid)
+            if a.get("read") and kind not in READ_THING_KINDS:
+                err("%s: act %s opens the reading view, which is for %s (not %s)" % (tid, act, ", ".join(READ_THING_KINDS), kind))
             if kind == "counter" and a["shop"] and a["needs_staff"] and props.get("role") != a["needs_staff"]:
                 props["role"] = a["needs_staff"]
             w = local_to_world(pl["front"], pl["yaw"], t["pos"])
@@ -911,7 +1007,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
 
 # ------------------------------------------------------------------ collections
 
-def build_collections(src, things, acts, strings, regs=None):
+def build_collections(src, things, acts, strings, regs=None, texts=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete)."""
@@ -936,6 +1032,15 @@ def build_collections(src, things, acts, strings, regs=None):
             continue
         seen_acts.add(t["act"])
         a = acts[t["act"]]
+        for tx in (a.get("read") or {}).get("texts", []):
+            # a text read to the end gives its stamp (only a text some thing in town opens counts)
+            txt = (texts or {}).get(tx) or {}
+            if txt.get("collect"):
+                given[txt["collect"].partition("/")[0]].add(txt["collect"].partition("/")[2])
+            for page in txt.get("pages", []):
+                for l in page:
+                    if isinstance(l, dict) and l.get("collect"):
+                        given[l["collect"].partition("/")[0]].add(l["collect"].partition("/")[2])
         for c in [a.get("collect", "")] + [l.get("collect", "") for l in a["lines"] if isinstance(l, dict)]:
             if c.endswith("/{line}"):
                 # every line it shows is a piece of its own (the films of a programme, the records of a jukebox)
@@ -1271,6 +1376,7 @@ def main():
         if k not in defaults:
             err("no default act for kind %s" % k)
     shops = build_shops(shops_src, strings, items)
+    texts = build_texts(CONTENT_EXTRA["texts"], strings)
     acts = build_acts(acts_src, shops_src, strings, items)
     for k, a in list(defaults.items()) + [(k, a) for d in by_plot_kind.values() for k, a in d.items()]:
         if a not in acts:
@@ -1287,7 +1393,7 @@ def main():
         g = a.get("game")
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs)
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts)
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}
@@ -1336,11 +1442,12 @@ def main():
     n_auto = sum(1 for t in things if t.get("auto"))
     line_keys = {line_key(k) for a in acts.values() for k in a["lines"]}
     print("things %d (auto %d, declared %d; derived spots skipped: %s), acts %d (%d used), shops %d, teleports %d, strings %d "
-          "(%d act lines), quests %d, collections %s, closed %d, games %d (things %d), regulars %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
+          "(%d act lines), quests %d, collections %s, closed %d, games %d (things %d), regulars %d, texts %d (read on %d things)" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
                                          len(shops), len(teleports), len(all_strings), len(line_keys), len(quests),
                                          " ".join("%s:%d" % (k, len(v["pieces"])) for k, v in colls.items()) or "none",
                                          sum(1 for t in things if t.get("closed")), sum(1 for a in acts.values() if a.get("game")),
-                                         sum(1 for t in things if acts[t["act"]].get("game")), len(regs)))
+                                         sum(1 for t in things if acts[t["act"]].get("game")), len(regs), len(texts),
+                                         sum(1 for t in things if acts[t["act"]].get("read"))))
     for w in warnings:
         print("warning:", w)
     for e in errors:
@@ -1359,6 +1466,7 @@ def main():
     data["shops"] = collections.OrderedDict(sorted(shops.items()))
     data["collections"] = colls
     data["regulars"] = regs
+    data["texts"] = texts
     write(OUT_THINGS, dump_things(data))
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])

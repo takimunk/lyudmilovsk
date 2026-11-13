@@ -852,6 +852,17 @@
   },
   {
    "pos": [
+    0.0,
+    20.55,
+    6.6
+   ],
+   "lumens": 260,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
     6.568,
     14.76,
     6.35
@@ -1072,6 +1083,20 @@
   }
  ],
  "things": [
+  {
+   "id": "light_switch_lobby",
+   "kind": "machine",
+   "pos": [
+    1.376,
+    4.5,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
   {
    "id": "table_seat_1",
    "kind": "seat",
@@ -1308,6 +1333,19 @@
     "role": "barista",
     "service": "bar",
     "shop": "cafe_tarelka"
+   }
+  },
+  {
+   "id": "lounge_dominoes",
+   "kind": "play",
+   "pos": [
+    -4.306,
+    9.076,
+    4.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dominoes"
    }
   },
   {
@@ -1613,8 +1651,8 @@
    "id": "espresso",
    "kind": "machine",
    "pos": [
-    -0.756,
-    19.154,
+    -1.183,
+    19.086,
     5.65
    ],
    "yaw": 0.0,
@@ -1633,6 +1671,20 @@
    "yaw": 20,
    "props": {
     "item": "daily_paper"
+   }
+  },
+  {
+   "id": "light_switch_kitchen",
+   "kind": "machine",
+   "pos": [
+    1.005,
+    21.189,
+    5.5
+   ],
+   "yaw": 173.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -3212,8 +3264,8 @@
   "saucer hall at z 4.3; entrance tunnel -> glazed spiral core; closed underside"
  ],
  "tris": {
-  "shell": 2960,
-  "detail": 17011,
+  "shell": 2976,
+  "detail": 17251,
   "windows": 296
  }
 }

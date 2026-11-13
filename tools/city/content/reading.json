@@ -1,0 +1,35 @@
+{
+ "_doc": "The reading view (docs/city_interiors.md \"The reading page\"): texts read page by page (title, pages of line keys, kind book|notice|ledger|newspaper, minutes a page, the stamp for reading to the end), the acts that open them (\"read\") and the things they are on. Any content file may have a \"texts\" section; words in strings/reading.json. Each reading act keeps the target of the act it is like, so the quests and the shelves' stamps see it as before.",
+ "texts": {
+  "birds_starlings": {"title": "city.text.birds_starlings.title", "kind": "book", "minutes": 3, "collect": "reading/birds_starlings",
+                      "pages": ["city.text.birds_starlings.1", "city.text.birds_starlings.2", "city.text.birds_starlings.3", "city.text.birds_starlings.4"]},
+  "library_rules": {"title": "city.text.library_rules.title", "kind": "notice", "minutes": 1, "collect": "reading/library_rules",
+                    "pages": ["city.text.library_rules.1", "city.text.library_rules.2", "city.text.library_rules.3", "city.text.library_rules.4"]},
+  "cog_minutes": {"title": "city.text.cog_minutes.title", "kind": "ledger", "minutes": 2, "collect": "reading/cog_minutes",
+                  "pages": ["city.text.cog_minutes.1", "city.text.cog_minutes.2", "city.text.cog_minutes.3", "city.text.cog_minutes.4", "city.text.cog_minutes.5"]},
+  "paper_today": {"title": "city.text.paper_today.title", "kind": "newspaper", "minutes": 2, "collect": "reading/paper_today",
+                  "pages": ["city.text.paper_today.1",
+                            ["city.text.paper_today.p2_1", "city.text.paper_today.p2_2", "city.text.paper_today.p2_3", "city.text.paper_today.p2_4"],
+                            "city.text.paper_today.3"]},
+  "kids_hedgehog": {"title": "city.text.kids_hedgehog.title", "kind": "book", "minutes": 2, "collect": "reading/kids_hedgehog",
+                    "pages": ["city.text.kids_hedgehog.1", "city.text.kids_hedgehog.2", "city.text.kids_hedgehog.3", "city.text.kids_hedgehog.4"]},
+  "cookbook_soup": {"title": "city.text.cookbook_soup.title", "kind": "book", "minutes": 3, "collect": "reading/cookbook_soup",
+                    "pages": ["city.text.cookbook_soup.1", "city.text.cookbook_soup.2", "city.text.cookbook_soup.3"]}
+ },
+ "acts": {
+  "read_birds_guide": {"like": "read_birds", "target": "read_birds", "read": {"texts": ["birds_starlings"]}},
+  "read_kids_tale": {"like": "read_kids", "target": "read_kids", "read": {"texts": ["kids_hedgehog"]}},
+  "read_cooking_soup": {"like": "read_cooking", "target": "read_cooking", "read": {"texts": ["cookbook_soup"]}},
+  "read_cog_minutes": {"like": "read_local", "target": "read_local", "read": {"texts": ["cog_minutes"]}, "sound": "page_turn"},
+  "library_rules_card": {"like": "look_catalogue", "prompt": "city.act.read.prompt", "target": "look_catalogue", "read": {"texts": ["library_rules"]}}
+ },
+ "rules": {
+  "P-STORE/f1_books_birds": {"act": "read_birds_guide"},
+  "P-CLINIC/kids_books": {"act": "read_kids_tale"},
+  "P-HALL/pantry_shelf": {"act": "read_cooking_soup"},
+  "P-CLUB3/meeting_shelf": {"act": "read_cog_minutes"}
+ },
+ "collections": {
+  "reading": {"title": "city.coll.reading.title"}
+ }
+}

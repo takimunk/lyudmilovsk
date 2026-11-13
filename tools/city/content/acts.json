@@ -14,7 +14,7 @@
  "acts": {
   "sit": {"prompt": "city.act.sit.prompt", "pose": "sit", "any_hour": true},
   "bed_private": {"prompt": "city.act.bed.prompt", "lines": "city.bed.private", "any_hour": true},
-  "sleep_night": {"prompt": "city.act.sleep.prompt", "lines": "city.bed.night", "pose": "lie", "fade": true, "minutes": 480, "until": 7, "any_hour": true, "sound": "sheets_rustle"},
+  "sleep_night": {"prompt": "city.act.sleep.prompt", "lines": "city.bed.night", "pose": "lie", "fade": true, "minutes": 480, "until": 7, "any_hour": true, "sound": "sheets_rustle", "sleep": true},
   "nap": {"prompt": "city.act.nap.prompt", "lines": "city.bed.nap", "pose": "lie", "fade": true, "minutes": 60, "sound": "sheets_rustle"},
   "read_misc": {"prompt": "city.act.read.prompt", "minutes": 10, "lines": "city.read.misc", "sound": "page_turn"},
   "look_misc": {"prompt": "city.act.look.prompt", "minutes": 2, "lines": "city.look.misc"},
@@ -24,7 +24,7 @@
   "use_misc": {"prompt": "city.act.use.prompt", "minutes": 5, "lines": "city.do.misc"},
   "watch_misc": {"prompt": "city.act.watch.prompt", "minutes": 15, "lines": "city.do.watch"},
   "take_any": {"prompt": "city.act.take.prompt", "lines": "city.take.any"},
-  "take_daily_paper": {"prompt": "city.act.take_paper.prompt", "lines": "city.take.daily_paper", "give": [["daily_paper", 1]], "daily": 1, "sound": "paper_rustle"},
+  "take_daily_paper": {"prompt": "city.act.take_paper.prompt", "lines": "city.take.daily_paper", "give": [["daily_paper", 1]], "daily": 1, "sound": "paper_rustle", "read": {"texts": ["paper_today"]}},
   "take_postcard": {"prompt": "city.act.take_postcard.prompt", "lines": "city.take.postcard", "give": [["postcard", 1]], "daily": 1, "sound": "paper_rustle"},
   "door_any": {"prompt": "city.act.door.prompt", "lines": "city.door.any", "any_hour": true},
   "door_roof": {"like": "door_any", "lines": "city.door.roof"},

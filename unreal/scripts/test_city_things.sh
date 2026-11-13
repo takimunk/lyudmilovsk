@@ -46,6 +46,14 @@ grep -qE "CityThings: do .* -> ok .* closed" "$LOG" && echo "PASS closed act" ||
 for G in aim rally duel; do check "game $G" "CityThings: game $G on "; done
 check "game won" "CityThings: game over on .*: win "
 check "regulars" "CityThings: regular [a-z]+ "
+check "sat nearest" "CityThings: sits on .*stands up to"
+check "lay down" "CityThings: lies on "
+check "slept" "CityThings: sleeps until 07:00"
+check "read open" "CityThings: reads birds_starlings \\(book, [0-9]+ pages\\)"
+check "read to the end" "CityThings: read birds_starlings to the end"
+check "read list" "CityThings: read list:"
+check "unknown text" "CityThings: no text no_such_text"
+grep -q "the seat went from under the hero" "$LOG" && echo "WARN the seat went from under the hero (recovered)" || echo "PASS never lost a seat"
 check "finished" "CITYTEST done"
 # Epic's experimental Toolset plugins fail their own init_unreal.py on every run: only errors of this test's script count
 if grep -qE "LogScript.*Error|Python: Error.*test_city_things\.py" "$LOG"; then echo "FAIL script errors"; FAIL=1; fi

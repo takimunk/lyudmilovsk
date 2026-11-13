@@ -199,7 +199,7 @@ def _pod(B, rnd, e, lv, k, skin, accent, shape, lamp_on):
     B.spot("pod_%d_%02d" % (lv, k), "seat", (seat[0], seat[1], zf), seat[3])
     B.thing("pod_%d_%02d" % (lv, k), "seat", (seat[0], seat[1], seat[2]), seat[3], height=round(seat[2] - zf, 2))
     if lamp_on:
-        B.lamp(fr.p(0.0, D / 2 + 0.2)[:2] + (zf + POD_IN - 0.25,), lumens=(170 if (lv, k) in DIM_LIT else 300), colour="#FFE2B0", kind="public", radius=4.0)
+        B.lamp(fr.p(0.0, D / 2 + 0.2)[:2] + (zf + POD_IN - 0.25,), lumens=(260 if (lv, k) in DIM_LIT else 300), colour="#FFE2B0", kind="public", radius=4.0)
     return P
 
 
@@ -251,6 +251,8 @@ class _PodRoom:
         s = {1: self.l1, 2: self.l2, 3: self.l3}[self.lv]()
         if self.k == 1:                                  # a clock per level, on the window wall beside the round window
             self.bw(kit.wall_clock, -1.02, zc=2.05)
+            p = self.fr.p(-1.35, 0.6)                    # and a light switch inside the right wall by the door
+            _switch(self.B, p[0], p[1], self.Y + 90.0, self.zf + 1.2, "light_switch_pod_%d" % self.lv, "room")
         return s
 
     # ------------------------------------------------------------ level 1
@@ -294,6 +296,8 @@ class _PodRoom:
             self.rw(kit.bookshelf, 1.5, w=0.9, h=1.2, levels=3, topic="collected", seed=3)
         elif t == "chess":
             self.put(kit.chess_table, 0.0, 3.2, 0.0)
+            q = self.fr.p(0.0, 3.2)
+            self.B.thing("pod_1_05_chess", "play", (q[0], q[1], self.zf + 0.74), self.Y, what="chess")
             self.put(kit.chair, -0.7, 3.2, 90.0, kind="wood", mat="CT_PlasterYellow")
             c = self.put(kit.chair, 0.7, 3.2, 270.0, kind="wood", mat="CT_PlasterRed")
             s = self.seat_of(c)
@@ -572,6 +576,8 @@ def _furnish(B, rnd):
     K.books_stack(B, 3.7, 9.1, ct["top"], 10.0, n=4, seed=5)
     K.vase(B, 4.4, 9.1, ct["top"], 0.0)
     K.floor_lamp(B, 1.95, 10.15, 0.0, 0.0)
+    _dominoes(B, 3.85, 8.95, ct["top"], 0.0)
+    thing("lounge_dominoes", "play", (4.0, 9.1, ct["top"] + 0.02), 0.0, what="dominoes")
     thing("lounge_sofa", "seat", (4.0, 10.25, 0.45), 0.0, height=0.45)
     thing("lounge_armchair_1", "seat", (a1["seats"][0][0], a1["seats"][0][1], a1["seats"][0][2]), 90.0, height=0.45)
     thing("lounge_armchair_2", "seat", (a2["seats"][0][0], a2["seats"][0][1], a2["seats"][0][2]), 270.0, height=0.45)
@@ -687,6 +693,24 @@ def _furnish(B, rnd):
     K.globe(B, 0.3, 21.4, 0.0, 0.0, floor=True)
 
 
+def _dominoes(B, x, y, z, yaw):
+    """A short snake of dominoes laid out on a low table (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    spots = [(-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)]
+    for u, w, rot in spots:
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
+
+
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
 def _trolley(B, x, y, yaw, seed=0):
     """A book trolley: two shelves of books on four casters and a push bar (0.8 x 0.4 x 0.95), detail only plus a core."""
     fr = fu.Fr(x, y, yaw)
@@ -739,7 +763,7 @@ def _extras(B, R):
                              (7.2, 17.0, 180.0, "chart_periodic"), (10.4, 7.0, 0.0, "painting_sea_calm"), (10.4, 11.0, 180.0, "sleeve_2"),
                              (10.4, 14.0, 0.0, "travel_1"), (10.4, 17.0, 180.0, "painting_abstract")):
         K.poster(B, sx, ey, 0.0, yw, name=nm, w=0.42, zc=1.7)
-    _trolley(B, 8.8, 12.5, 90.0, seed=61)
+    _trolley(B, 8.8, 12.5, 0.0, seed=61)
     _trolley(B, -11.6, 9.7, 0.0, seed=63)
     fr = fu.Fr(5.3, 6.275, 0.0)                       # the fourth catalogue's second drawer pulled out
     fu.lbox(B.detail, "CT_WoodLight", fr, -0.17, 0.17, -0.3, 0.0, 0.88, 0.98)
@@ -823,6 +847,7 @@ def _office(B, R):
     K.picture(B, 12.1, y0, 0.0, 180.0, name="painting_pines", w=0.6, zc=1.6)
     K.poster(B, 11.55, y0, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5)
     _trolley(B, 10.05, 24.15, 90.0, seed=51)
+    _switch(B, 11.25, y0 + 0.0, 180.0, 1.2, "light_switch_office")
     K.radio(B, 9.85, 25.5, 1.32, 90.0)
     B.thing("office_radio", "machine", (9.9, 25.5, 1.45), 90.0, what="radio")
     B.thing("office_ledger", "board", (11.0, 24.35, 0.82), 0.0, topic="ledger")
