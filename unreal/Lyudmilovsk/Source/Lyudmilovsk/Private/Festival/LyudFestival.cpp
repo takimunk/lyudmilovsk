@@ -474,6 +474,7 @@ void ULyudFestivalSubsystem::Update()
 		HeroWatched.Reset();
 		Watched.Reset();
 		HeroWished = false;
+		QuestStarted.Reset();
 	}
 
 	// public holiday
@@ -663,6 +664,13 @@ void ULyudFestivalSubsystem::Update()
 		if (bAny)
 		{
 			NewActive.Add(Entry);
+			// its quest is on from its day's morning (07:00, like the "today" note), not from its first phase: the wish bamboo
+			// is up hours before Tanabata's first phase, and a wish tied then must count
+			if (A.Rel >= 7.f && !QuestStarted.Contains(Entry.Id))
+			{
+				QuestStarted.Add(Entry.Id);
+				ULyudQuests::Notify(this, TEXT("festival"), FId);
+			}
 			if (Hour >= 7.f && Hour < 22.f && A.Rel >= 0.f)
 			{
 				Announce(DateKey(Today), FId);

@@ -186,6 +186,8 @@ private:
 	FString HeroDay;
 	TSet<TPair<FName, FName>> HeroVisited;
 	TSet<FName> HeroWatched;
+	/** Festivals whose quest was told to start today (the "festival" event, sent once when its day begins). */
+	TSet<FName> QuestStarted;
 	int32 PromptKind = 0;
 	TWeakObjectPtr<class ANpcTalkDirector> TalkDirector;
 	bool HeroWished = false;
