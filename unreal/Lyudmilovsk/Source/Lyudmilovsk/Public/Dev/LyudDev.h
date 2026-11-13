@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Misc/Optional.h"
+#include "Templates/Function.h"
 
 class UWorld;
 

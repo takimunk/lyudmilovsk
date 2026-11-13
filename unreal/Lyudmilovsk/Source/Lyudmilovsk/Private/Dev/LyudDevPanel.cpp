@@ -13,10 +13,11 @@
 #include "Widgets/Input/SEditableTextBox.h"
 #include "Widgets/Layout/SWrapBox.h"
 
-using namespace PlantDevUI;
-
-namespace
+// a named namespace, not an anonymous one: unity builds put this file next to others with their own helpers
+namespace LyudDevTabs
 {
+	using namespace PlantDevUI;
+
 	enum : int32
 	{
 		TabWorld = 0,
@@ -390,6 +391,8 @@ namespace
 
 namespace LyudDevPanel
 {
+	using namespace LyudDevTabs;
+
 	TSharedRef<SWidget> TabBar(APlantDevTool* InTool)
 	{
 		const FToolPtr Tool(InTool);

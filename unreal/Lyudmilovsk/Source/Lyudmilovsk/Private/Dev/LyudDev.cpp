@@ -664,7 +664,8 @@ namespace LyudDev
 // ---------------------------------------------------------------------------------------------------------------------
 // Built-in actions: movement, time, the pocket, birds, the quests and the map. Features add their own the same way.
 
-namespace
+// a named namespace, not an anonymous one: unity builds put this file next to others with their own HeroOf, Exec...
+namespace LyudDevBuiltins
 {
 	using namespace LyudDev;
 
