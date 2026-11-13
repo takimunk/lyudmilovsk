@@ -396,11 +396,70 @@ int RenderMain(int Argc, char** Argv)
 {
 	if (Argc < 3)
 	{
-		std::printf("usage: run.sh render <out.png> <Name>:<age>:<day>[:<seed>] ...\n");
+		std::printf("usage: run.sh render <out.png> <Name>:<age>:<day>[:<seed>] ...\n"
+		            "       run.sh render <out.png> stand <metres> <Name>:<age>:<day>:<per m2> ...\n");
 		return 2;
 	}
 	std::vector<FScene> Scenes;
-	for (int I = 2; I < Argc; I++)
+	// a stand: each species scattered over a square at its density, as an AProceduralGrass herb patch plants it (two
+	// seeds, of the age and twice that, turned at random), in one panel
+	const bool bStand = Argc > 4 && std::strcmp(Argv[2], "stand") == 0;
+	const float StandSize = bStand ? (float)std::atof(Argv[3]) : 0.f;
+	if (bStand)
+	{
+		FScene Stand;
+		int32 Plants = 0;
+		for (int I = 4; I < Argc; I++)
+		{
+			std::string A = Argv[I];
+			float Age = 4.f, Day = 200.f, Density = 0.5f;
+			const size_t C1 = A.find(':');
+			if (C1 != std::string::npos)
+			{
+				std::sscanf(A.c_str() + C1 + 1, "%f:%f:%f", &Age, &Day, &Density);
+				A = A.substr(0, C1);
+			}
+			const FPlantSpecies* S = PlantSpeciesLibrary::Find(FName(A.c_str()));
+			if (!S)
+			{
+				std::printf("no species %s\n", A.c_str());
+				return 1;
+			}
+			FScene Seeds[2];
+			for (int32 V = 0; V < 2; V++)
+			{
+				if (S->Herb.Form == EPlantHerbForm::None) BuildTree(Seeds[V], *S, 1 + V, Age * (1 + V), Day);
+				else BuildHerb(Seeds[V], *S, 1 + V, Age * (1 + V), Day);
+			}
+			// as AProceduralGrass scatters a herb: one plant somewhere in each cell of a 1 / sqrt(density) grid, about a fifth
+			// of them thinned out (its clumps and thin places, here as an even chance), turned, a little wider or taller
+			const float Cell = 1.f / FMath::Sqrt(FMath::Max(Density, 0.01f));
+			const int32 Cells = FMath::Max(1, FMath::FloorToInt(StandSize / Cell));
+			int32 Count = 0;
+			size_t Tris = 0;
+			for (int32 Cy0 = 0; Cy0 < Cells; Cy0++)
+				for (int32 Cx0 = 0; Cx0 < Cells; Cx0++)
+				{
+					const uint32 Key = (uint32)(I * 65536 + Cy0 * 256 + Cx0);
+					if (PlantModel::Hash01(91, Key, 3) > 0.78f) continue;
+					const FScene& Src = Seeds[PlantModel::Hash01(91, Key, 9) < 0.5f ? 0 : 1];
+					const FVector3f At((Cx0 + PlantModel::Hash01(91, Key, 1)) * Cell - 0.5f * Cells * Cell, (Cy0 + PlantModel::Hash01(91, Key, 2)) * Cell - 0.5f * Cells * Cell, 0.f);
+					const float Yaw = PlantModel::Hash01(91, Key, 4) * 2.f * PI, Cy = FMath::Cos(Yaw), Sy = FMath::Sin(Yaw);
+					const float Girth = 0.85f + 0.3f * PlantModel::Hash01(91, Key, 5), Tall = 1.f + 0.15f * (PlantModel::Hash01(91, Key, 6) * 2.f - 1.f);
+					auto Place = [&](const FVector3f& P) { return FVector3f((P.X * Cy - P.Y * Sy) * Girth, (P.X * Sy + P.Y * Cy) * Girth, P.Z * Tall) + At; };
+					for (const FTri& T : Src.Tris) Stand.Add(Place(T.A), Place(T.B), Place(T.C), T.Col, T.bThin);
+					Tris += Src.Tris.size();
+					Count++;
+					Plants++;
+				}
+			std::printf("%s age %.0f day %.0f: %d plants on %.0f x %.0f m (%.2f per m2), %d triangles (%.0f per m2: %.0fk on a 40 x 40 m patch)\n",
+			            A.c_str(), Age, Day, Count, StandSize, StandSize, Density, (int)Tris, Tris / (StandSize * StandSize), Tris / (StandSize * StandSize) * 1.6f);
+		}
+		Stand.Reach = 0.5f * StandSize;
+		Scenes.push_back(std::move(Stand));
+		std::printf("stand: %d plants\n", Plants);
+	}
+	for (int I = 2; !bStand && I < Argc; I++)
 	{
 		std::string A = Argv[I];
 		float Age = 20.f, Day = 200.f, SeedF = 1.f;
@@ -426,7 +485,9 @@ int RenderMain(int Argc, char** Argv)
 	float Top = 2.f, Wide = 0.5f;
 	for (const FScene& Sc : Scenes) { Top = FMath::Max(Top, Sc.Height); Wide = FMath::Max(Wide, Sc.Reach); }
 	constexpr int32 SS = 2, PanelH = 720;
-	const int32 PanelW = FMath::Clamp((int32)(PanelH * (2.f * Wide + 1.2f) / (1.25f * Top)), 260, 900);
+	const int32 PanelW = bStand ? 1280 : FMath::Clamp((int32)(PanelH * (2.f * Wide + 1.2f) / (1.25f * Top)), 260, 900);
+	// a stand is framed by its square, seen from higher up
+	const float Frame = bStand ? FMath::Max(Top, 0.8f * StandSize) : Top;
 	FImage Im;
 	Im.Init(PanelW * (int32)Scenes.size() * SS, PanelH * SS);
 	const FVector3f Sun = FVector3f(-0.45f, -0.6f, 0.66f).GetSafeNormal();
@@ -443,9 +504,9 @@ int RenderMain(int Argc, char** Argv)
 			}
 		FCamera Cam;
 		const float Fov = FMath::DegreesToRadians(28.f);
-		const float Dist = 0.62f * Top / FMath::Sin(0.5f * Fov) + Wide;
-		const FVector3f Target(0.f, 0.f, 0.47f * Top);
-		Cam.Fwd = FVector3f(0.25f, 1.f, -0.38f).GetSafeNormal();
+		const float Dist = 0.62f * Frame / FMath::Sin(0.5f * Fov) + Wide;
+		const FVector3f Target(0.f, 0.f, bStand ? 0.25f * Top : 0.47f * Top);
+		Cam.Fwd = (bStand ? FVector3f(0.25f, 1.f, -0.55f) : FVector3f(0.25f, 1.f, -0.38f)).GetSafeNormal();
 		Cam.Eye = Target - Cam.Fwd * Dist;
 		Cam.Right = FVector3f::CrossProduct(Cam.Fwd, FVector3f(0.f, 0.f, 1.f)).GetSafeNormal() * -1.f;
 		Cam.Upv = FVector3f::CrossProduct(Cam.Right, Cam.Fwd) * -1.f;
@@ -453,7 +514,7 @@ int RenderMain(int Argc, char** Argv)
 		Cam.Cx = X0 + 0.5f * PanelW * SS;
 		Cam.Cy = 0.5f * Im.H;
 		FScene Ground;
-		const float Gr = 1.2f * Wide + 1.6f + 0.3f * Top;
+		const float Gr = bStand ? 0.62f * StandSize : 1.2f * Wide + 1.6f + 0.3f * Top;
 		for (int32 S = 0; S < 48; S++)
 		{
 			const float A0 = 2.f * PI * S / 48.f, A1 = 2.f * PI * (S + 1) / 48.f;

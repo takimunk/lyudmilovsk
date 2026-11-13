@@ -612,9 +612,11 @@ namespace
 
 	/**
 	 * Filipendula camtschatica, Kamchatka meadowsweet (шеломайник, лабазник камчатский): the giant of the tall-herb
-	 * meadows on the river terraces, 2-3 m by late July. A few stout stems with huge palmate, lobed leaves on long stalks,
-	 * largest low down, and at the top loose plumes of tiny cream flowers in July and early August. It shoots up within a
-	 * month of the snow going and is flattened brown by the first snow.
+	 * meadows on the river terraces, a wall of green 2-3 m high by late July. A clump of stout stems, each with huge
+	 * palmate, lobed leaves held flat from knee height to the top, the lower ones the biggest; at the top of each stem a
+	 * dense fluffy plume of tiny cream flowers in July and early August. It shoots up within a month of the snow going and
+	 * is flattened brown by the first snow. Built cheap, as it stands by the thousand: stalkless leaf discs and a plume of
+	 * crossed cards.
 	 */
 	FPlantSpecies KamchatkaMeadowsweet()
 	{
@@ -622,33 +624,33 @@ namespace
 		S.Name = TEXT("KamchatkaMeadowsweet");
 		FPlantHerb& H = S.Herb;
 		H.Form = EPlantHerbForm::Bush;
-		H.Height = 2.3f;
-		H.Spread = 0.9f;
+		H.Height = 2.4f;
+		H.Spread = 1.2f;
 		H.MatureYears = 3.f;
-		H.Stems = 3;
+		H.Stems = 4;
 		H.Branches = 0;
-		H.Lean = 7.f;
-		H.StemRadius = 0.009f;
-		H.BareStem = 0.12f;
-		H.Leaves = 5;
-		H.Rise = FVector2D(55.0, 78.0);
-		H.Arch = 25.f;
+		H.Lean = 15.f;
+		// thin enough for the four-sided tube (the far LOD's budget)
+		H.StemRadius = 0.0064f;
+		H.BareStem = 0.18f;
+		H.Leaves = 8;
+		H.Rise = FVector2D(72.0, 86.0);
+		H.Arch = 15.f;
 		H.StemColour = C(0.08f, 0.1f, 0.03f);
-		// the plume: heads of tiny cream florets at the tip and on short stalks round the top
-		H.Flower = EPlantFlowerForm::Umbel;
-		H.FlowerSize = 0.13f;
-		H.Flowers = 4;
-		H.SprayFrom = 0.86f;
-		H.FlowerColours = { C(0.82f, 0.75f, 0.48f), C(0.78f, 0.72f, 0.46f) };
-		H.CentreColour = C(0.7f, 0.6f, 0.3f);
+		H.Flower = EPlantFlowerForm::Plume;
+		H.FlowerSize = 0.2f;
+		H.Flowers = 1;
+		H.FlowerColours = { C(0.8f, 0.74f, 0.5f), C(0.76f, 0.7f, 0.46f) };
+		H.CentreColour = C(0.7f, 0.62f, 0.35f);
 		H.BloomStart = 192.f;
 		H.BloomEnd = 228.f;
+		// a disc on the stem (no stalk drawn: the leaf's own stalk is short against its size)
 		S.Leaf.Form = EPlantLeafForm::Palmate;
-		S.Leaf.Length = 0.55f;
+		S.Leaf.Length = 0.62f;
 		S.Leaf.Width = 1.f;
 		S.Leaf.Lobes = 5;
-		S.Leaf.LobeDepth = 0.35f;
-		S.Leaf.Petiole = 0.7f;
+		S.Leaf.LobeDepth = 0.3f;
+		S.Leaf.Petiole = 0.f;
 		S.Leaf.Fold = 0.2f;
 		NorthPerennial(S, 145.f, 262.f);
 		S.SpringLeafColour = C(0.11f, 0.2f, 0.05f);
@@ -661,44 +663,39 @@ namespace
 	}
 
 	/**
-	 * Heracleum lanatum (H. dulce), cow parsnip (борщевик сладкий, шеломайник's companion): 1.5-2 m hollow stems,
-	 * huge three-lobed leaves, and broad flat white umbels on the stem's top and its side branches in July. The stems
-	 * stand dry and pale into the autumn.
+	 * Heracleum lanatum (H. dulce), cow parsnip (борщевик сладкий, шеломайник's companion): a waist-high mass of huge,
+	 * broad three-lobed leaves on long stalks from the base, and in July one to three thick hollow stalks 1.5-2 m with
+	 * broad flat white umbels on their tops (drawn while it flowers).
 	 */
 	FPlantSpecies CowParsnip()
 	{
 		FPlantSpecies S;
 		S.Name = TEXT("CowParsnip");
 		FPlantHerb& H = S.Herb;
-		H.Form = EPlantHerbForm::Bush;
-		H.Height = 1.75f;
-		H.Spread = 0.8f;
+		H.Form = EPlantHerbForm::Rosette;
+		H.Height = 0.85f;
+		H.Spread = 1.f;
 		H.MatureYears = 3.f;
-		H.Stems = 2;
-		H.Branches = 1;
-		H.Lean = 6.f;
-		H.StemRadius = 0.012f;
-		H.BareStem = 0.1f;
-		H.Leaves = 3;
-		H.Rise = FVector2D(68.0, 80.0);
-		H.Arch = 30.f;
+		H.Leaves = 14;
+		H.Rise = FVector2D(8.0, 38.0);
+		H.Arch = 40.f;
 		H.StemColour = C(0.12f, 0.13f, 0.05f);
-		H.Flower = EPlantFlowerForm::Umbel;
-		H.FlowerSize = 0.135f;
-		H.Flowers = 2;
+		H.Flower = EPlantFlowerForm::Disc;
+		H.FlowerSize = 0.24f;
+		H.Flowers = 3;
+		H.ScapeHeight = 0.95f;
+		H.ScapeRadius = 0.012f;
 		H.FlowerColours = { C(0.85f, 0.85f, 0.8f), C(0.8f, 0.8f, 0.74f) };
-		H.CentreColour = C(0.6f, 0.6f, 0.4f);
+		H.CentreColour = C(0.7f, 0.72f, 0.6f);
 		H.BloomStart = 180.f;
 		H.BloomEnd = 218.f;
-		// three broad lobes, toothed
-		S.Leaf.Length = 0.45f;
-		S.Leaf.Width = 1.f;
-		S.Leaf.WidestAt = 0.45f;
-		S.Leaf.Lobes = 2;
-		S.Leaf.LobeDepth = 0.5f;
-		S.Leaf.Teeth = 6;
-		S.Leaf.TeethDepth = 0.12f;
-		S.Leaf.Petiole = 0.6f;
+		// three broad lobes, on stalks longer than the blade
+		S.Leaf.Form = EPlantLeafForm::Palmate;
+		S.Leaf.Length = 0.55f;
+		S.Leaf.Width = 1.2f;
+		S.Leaf.Lobes = 3;
+		S.Leaf.LobeDepth = 0.3f;
+		S.Leaf.Petiole = 1.3f;
 		S.Leaf.Fold = 0.15f;
 		NorthPerennial(S, 140.f, 255.f);
 		S.SpringLeafColour = C(0.12f, 0.21f, 0.05f);
