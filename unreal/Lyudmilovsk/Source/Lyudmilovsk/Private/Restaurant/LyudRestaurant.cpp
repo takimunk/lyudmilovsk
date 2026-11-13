@@ -1387,6 +1387,9 @@ void ALyudRestaurant::SetPrompt(const FString& Key, const TArray<FStringFormatAr
 		return;
 	}
 	Prompted = Full;
+	// another line is up now: what TickHero remembered of the last one no longer holds
+	PromptDish = nullptr;
+	PromptTab = -1;
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
 		UI->SetPrompt(this, Key.IsEmpty() ? FText::GetEmpty() : LyudText::Get(Key, Args));
@@ -1650,7 +1653,7 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 		for (int32 K = 0; K < I.Value; ++K)
 		{
 			// a second of the same dish comes a little after the first
-			AddOrder(I.Key, HeroSeatIx, Now + D->Cook * WaitScale + K * 4.f * WaitScale, false);
+			AddOrder(I.Key, HeroSeatIx, Now + D->Cook * WaitScale + K * 4.f * WaitScale, false).Paid = PriceToday(*D);
 		}
 		Log += FString::Printf(TEXT(" %s x%d (%.0f s)"), *I.Key.ToString(), I.Value, D->Cook * WaitScale);
 	}
@@ -1670,10 +1673,10 @@ void ALyudRestaurant::OnGameSaving_Implementation()
 	SavedRefund = 0;
 	for (const FOrder& O : Orders)
 	{
-		const FLyudRestDishDef* D = FindDish(O.Item);
-		if (!O.bGuest && D && O.State != FOrder::EState::Served)
+		// what was paid for it (the catch of the day is cheaper than its list price), nothing for the free bread and water
+		if (!O.bGuest && O.State != FOrder::EState::Served)
 		{
-			SavedRefund += D->Price;
+			SavedRefund += O.Paid;
 		}
 	}
 }
@@ -1948,8 +1951,13 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 	const bool bBill = !Dish && !bCard && BillFolder && Looked(BillFolder->GetActorLocation(), 0.94f);
 	if (Dish)
 	{
-		const FLyudRestDishDef& D = Dish->GetDef();
-		SetPrompt(D.IsCup() ? TEXT("ui.rest.drink_prompt") : TEXT("ui.rest.eat_prompt"), { FStringFormatArg(ULyudInventory::ItemName(D.Id).ToString()) });
+		// the line is built only when another dish comes under the look (not its name and arguments every frame)
+		if (PromptDish.Get() != Dish)
+		{
+			const FLyudRestDishDef& D = Dish->GetDef();
+			SetPrompt(D.IsCup() ? TEXT("ui.rest.drink_prompt") : TEXT("ui.rest.eat_prompt"), { FStringFormatArg(ULyudInventory::ItemName(D.Id).ToString()) });
+			PromptDish = Dish;
+		}
 		if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
 		{
 			SetPrompt(FString());
@@ -1966,7 +1974,11 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 	}
 	else if (bBill)
 	{
-		SetPrompt(TEXT("ui.rest.bill_prompt"), { FStringFormatArg(Tab) });
+		if (PromptTab != Tab)
+		{
+			SetPrompt(TEXT("ui.rest.bill_prompt"), { FStringFormatArg(Tab) });
+			PromptTab = Tab;
+		}
 	}
 	else
 	{
@@ -2064,6 +2076,15 @@ void ALyudRestaurant::Tick(float DeltaTime)
 		PC0->GetPlayerViewPoint(Cam, R);
 	}
 	bNear = FVector::Dist(Cam, GetActorLocation()) < 8000.f;
+	// far and nothing in hand (no visit, no order, the waiter at rest): the hours, the lights and the locks need no more than
+	// twice a second. Everything below goes by DeltaTime or the world's seconds, so a long step is safe.
+	const bool bQuiet = !bNear && HeroSeatIx < 0 && HeroTableIx < 0 && !Menu_.IsValid() && !Knife && Job == EJob::None
+		&& (Waiter == EWaiter::Off || Waiter == EWaiter::Idle) && PendingCount(false) == 0;
+	const float WantInterval = bQuiet ? 0.5f : 0.f;
+	if (GetActorTickInterval() != WantInterval)
+	{
+		SetActorTickInterval(WantInterval);
+	}
 	PropsEvery -= DeltaTime;
 	if (PropsEvery <= 0.f && bNear)
 	{

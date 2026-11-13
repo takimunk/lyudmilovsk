@@ -31,6 +31,7 @@
 #include "Audio/LyudSoundscape.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
+#include "World/LyudPrefetch.h"
 
 namespace
 {
@@ -680,7 +681,17 @@ void ALyudTrain::UpdateGulls(float DeltaSeconds)
 	{
 		GullAway = 0.f;
 	}
-	if (bWant && Gulls.Num() == 0)
+	// the three gulls' bodies, clips and calls load in the background first (the same folders the bird life asks for):
+	// the flock is made once they are in memory, not with LoadObjects on the spot at the train's first pass
+	bool bGullsLoaded = bWant && Gulls.Num() == 0;
+	if (bGullsLoaded)
+	{
+		for (const TCHAR* Folder : { TEXT("/Game/Birds/HerringGull"), TEXT("/Game/Birds/BlackHeadedGull"), TEXT("/Game/Birds/CommonGull") })
+		{
+			bGullsLoaded &= ULyudPrefetch::FolderReady(this, Folder, TEXT("_Hero"));
+		}
+	}
+	if (bGullsLoaded)
 	{
 		static const FName Species[] = { TEXT("HerringGull"), TEXT("BlackHeadedGull"), TEXT("HerringGull"), TEXT("CommonGull"), TEXT("BlackHeadedGull") };
 		for (int32 I = 0; I < 5; I++)

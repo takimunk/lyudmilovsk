@@ -210,6 +210,13 @@ away from the danger, or from the player wherever they are, for one to two minut
   no closer than 10 cm, asleep in the reed, gone by 6 November), gulls on the beach at low tide, rooks' pre-roost
   gathering, swifts asleep on the wing. `BIRD_ONLY=routines` (or `murm`) runs only those; the murmuration's cost
   is printed (~0.1 ms a frame for 1200 birds).
+  The bird world is deterministic on one platform only: rounding differs between Linux x86-64 and the Mac (which
+  fuses multiply-adds), and after a few thousand steps the flocks are elsewhere. A check must hold in every such
+  world, so it measures what the behaviour does over time (the mean number of gulls on the sand over an hour, not
+  the number at one moment). To see a second and a third world on Linux, build with
+  `-march=haswell -ffp-contract=on` and `-ffp-contract=fast` added to run.sh's clang line; a check that passes in
+  one and fails in another is either a knife-edge or, more often, a real fault that needs the right moment (a hawk
+  still attacking at its bedtime, the last starling in the air with no neighbour to follow down).
 - `tools/birdsim/run.sh day && python3 tools/birdsim/render_birds.py`: `Saved/BirdSim/birds_day_map.png`
   (the map at eight hours, a dot per bird in its species' colour) and `birds_day_acts.png` (what they do
   over the day).
