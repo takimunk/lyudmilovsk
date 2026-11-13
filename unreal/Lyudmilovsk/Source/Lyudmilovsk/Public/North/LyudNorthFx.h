@@ -26,7 +26,7 @@ class LYUDMILOVSK_API ALyudNorthSteam : public AActor
 public:
 	ALyudNorthSteam();
 
-	static constexpr int32 Pool = 448;
+	static constexpr int32 Pool = 1024;
 
 	/** One puff. Where (world cm), Velocity (cm/s) slowed by Drag (1/s), growing Size0 -> Size1 cm over Life s at Alpha,
 	 *  rising Rise cm/s^2, Grey 0 white steam .. 1 grey smoke; Drift 0..1 how much the wind takes it once it is old. */

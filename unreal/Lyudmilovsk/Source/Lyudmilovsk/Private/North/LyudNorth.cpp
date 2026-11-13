@@ -169,6 +169,11 @@ bool ULyudNorthSubsystem::IsInNorth(const FVector& WorldLocation)
 void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
+	// only where the level has the North (import_north.py's fumaroles): a dev level gets no river, plume or spring
+	if (!TActorIterator<ALyudFumarole>(&InWorld))
+	{
+		return;         // bLoaded stays false: Tick does nothing
+	}
 	LoadData();
 	bShown = CVarNorth.GetValueOnGameThread() != 0;
 	bWakeAll = CVarNorthWakeAll.GetValueOnGameThread() != 0;
@@ -633,6 +638,13 @@ void ULyudNorthSubsystem::SetShown(UWorld* World, bool bOn)
 		{
 			It->SetActorHiddenInGame(!bOn);
 			It->SetActorEnableCollision(bOn);
+		}
+	}
+	for (ALyudNorthPlume* P : N->Plumes)
+	{
+		if (P)
+		{
+			P->SetActorTickEnabled(bOn);        // a hidden plume does not tick
 		}
 	}
 	N->UpdateRanges();

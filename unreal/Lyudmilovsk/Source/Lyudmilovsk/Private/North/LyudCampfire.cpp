@@ -198,6 +198,8 @@ void ALyudCampfire::SetAwake(bool bInAwake, bool bInNear)
 {
 	const bool bWasAwake = bAwake;
 	Super::SetAwake(bInAwake, bInNear);
+	// near: every frame (E is polled); else the flames' 20 Hz is enough
+	SetActorTickInterval(bNear ? 0.f : 0.05f);
 	if (bAwake && !bWasAwake)
 	{
 		// arriving at night finds it burning already: the schedule now, the fire at its level

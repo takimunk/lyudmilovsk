@@ -2186,6 +2186,7 @@ namespace LyudPeople
 				{
 					Push(Way[bUp ? I : Way.size() - 1 - I], 4);
 				}
+				Out.back().ToIsland = (int8_t)Hop.To;      // the trail's far end: on the other island from here on
 				Cur = bUp ? Way.back() : Way.front();
 				continue;
 			}
@@ -2625,6 +2626,10 @@ namespace LyudPeople
 					return;
 				}
 				P.PathI++;
+				if (W.Kind == 4 && W.ToIsland >= 0)
+				{
+					P.Island = W.ToIsland;                 // walked a trail to its end (rides set it in FinishRide)
+				}
 				if (W.BikeAct != EBikeAct::None && P.Bike >= 0)
 				{
 					BikeStop(P, W.BikeAct);
