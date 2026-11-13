@@ -1,6 +1,7 @@
 {
  "ui.quest.take": "E:{0}を取る",
  "place.rowan_grove.name": "ナナカマドの森",
+ "dev.group.ornithologist": "鳥類学者のクエスト",
  "dev.tp.orni_library": "鳥類学者:図書館の前",
  "dev.tp.orni_gastronom": "鳥類学者:食料品店の前",
  "dev.tp.orni_grove": "鳥類学者:ナナカマドの森",

@@ -1,6 +1,7 @@
 {
  "ui.quest.take": "E: take the {0}",
  "place.rowan_grove.name": "the rowan wood",
+ "dev.group.ornithologist": "The ornithologist's quest",
  "dev.tp.orni_library": "Ornithologist: at the library",
  "dev.tp.orni_gastronom": "Ornithologist: at the Gastronom",
  "dev.tp.orni_grove": "Ornithologist: the rowan wood",

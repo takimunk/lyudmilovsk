@@ -1,6 +1,7 @@
 {
  "ui.quest.take": "E — взять: {0}",
  "place.rowan_grove.name": "рябиновый лес",
+ "dev.group.ornithologist": "Квест орнитолога",
  "dev.tp.orni_library": "Орнитолог: у библиотеки",
  "dev.tp.orni_gastronom": "Орнитолог: у Гастронома",
  "dev.tp.orni_grove": "Орнитолог: рябиновый лес",
