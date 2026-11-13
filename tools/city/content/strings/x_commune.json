@@ -17,7 +17,7 @@
  "city.cm.menu.thu": {
   "ru": "Четверг — рыбный день. Уха, хек с картошкой, кисель. Приписка: «Окна открыть заранее! Это не шутка».",
   "en": "Thursday is fish day. Fish soup, hake with potatoes, fruit jelly. Added by hand: \"Open the windows early! This is not a joke.\"",
-  "ja": "木曜日は魚の日。魚のスープ、タラ科の魚とじゃがいも、フルーツゼリー。書き足し。「窓は早めに開けること！冗談ではありません」。"
+  "ja": "木曜日は魚の日。魚のスープ、メルルーサとじゃがいも、フルーツゼリー。書き足し。「窓は早めに開けること！冗談ではありません」。"
  },
  "city.cm.menu.fri": {
   "ru": "Пятница. Гороховый суп, сосиски с капустой, компот. «В пятницу повар обещает пирожки. Если не забудет».",
@@ -67,7 +67,7 @@
  "city.cm.book.2": {
   "ru": "«Котлеты хорошие. Но повар слишком громко поёт на раздаче, а голос у него, простите, лучше котлет. Кв. 1-06». Ответ: «Спасибо. Петь буду тише. Котлеты не обещаю, они и так молчат».",
   "en": "\"The cutlets are good. But the cook sings too loudly at the serving line, and his voice, forgive me, is better than the cutlets. Flat 1-06.\" Reply: \"Thank you. I'll sing quieter. I make no promise for the cutlets, they are quiet enough.\"",
-  "ja": "「カツレツはおいしい。でも料理人が配膳で歌いすぎです。失礼ながら声のほうがカツレツよりおいしい。1-06号室」。返事。「ありがとう。小さな声で歌います。カツレツは約束できません、もう十分静かなので」。"
+  "ja": "「カツレツはおいしい。でも料理人が配膳で歌いすぎです。失礼ながら声のほうがカツレツより上等です。1-06号室」。返事。「ありがとう。小さな声で歌います。カツレツは約束できません、もう十分静かなので」。"
  },
  "city.cm.book.3": {
   "ru": "«Предлагаю по субботам блины. Лёва, кв. 3-07, 11 лет». Рядом синей ручкой: «Поддерживаем! Вся третья лестница». Повар: «Блины будут, когда подарят сковородку побольше».",
@@ -127,7 +127,7 @@
  "city.cm.news.2": {
   "ru": "Рубрика «Наши таланты»: Лёва из 3-07 нарисовал дом на ножках, совсем как наш, только с лапами. Рисунок висит в зале у окна.",
   "en": "The column \"Our Talents\": Lyova from 3-07 drew a house on legs, just like ours, only with paws. The drawing hangs in the hall by the window.",
-  "ja": "「わが家の才能」欄。3-07号室のリョーワが、うちとそっくりの、でも足が生き物みたいな脚付きの家を描きました。絵はホールの窓ぎわに。"
+  "ja": "「わが家の才能」欄。3-07号室のリョーワが、うちとそっくりの脚付きの家を描きました。ただし脚は動物の足です。絵はホールの窓ぎわに。"
  },
  "city.cm.news.3": {
   "ru": "Рубрика «Спорт»: подтягивания в зале. Лидия Аркадьевна, 14 раз, на спор с внуком. Внук считал вслух, но сбился от уважения.",
@@ -172,7 +172,7 @@
  "city.cm.wash.2": {
   "ru": "Пока стирается, смотрю в окошко барабана: полосатая футболка, моя майка, снова полоска. Странная машина: возвращает ровно то, что взяла, и немного мыльного воздуха.",
   "en": "While it washes I watch the little window: a striped shirt, my vest, a stripe again. A strange machine: it gives back exactly what it took, and a bit of soapy air.",
-  "ja": "回っているあいだ、ドラムの小窓をのぞく。しま模様のシャツ、ぼくのシャツ、またしま。不思議な機械だ。取り込んだものをそのまま返し、ほんの少し石けんの空気も添えてくれる。"
+  "ja": "回っているあいだ、ドラムの小窓をのぞく。しま模様のシャツ、僕のシャツ、またしま。不思議な機械だ。取り込んだものをそのまま返し、ほんの少し石けんの空気も添えてくれる。"
  },
  "city.cm.wash.3": {
   "ru": "Вечерняя стирка. В зале пахнет порошком и супом сразу. Кто-то у соседней машины тихо считает носки и, кажется, проигрывает.",
@@ -315,7 +315,7 @@
   "ja": "ホールのお湯は一日じゅう熱い。当番の人が見ている。茶葉は「みんなのため」の缶に。ありがとう、缶。"
  },
  "city.cm.sam.3": {
-  "ru": "Самовар остыл. На краснике записка: «Будить дежурного не обязательно, но можно».",
+  "ru": "Самовар остыл. На кранике записка: «Будить дежурного не обязательно, но можно».",
   "en": "The samovar has cooled. On the tap, a note: \"It is not necessary to wake the person on duty, but you may.\"",
   "ja": "サモワールは冷めている。蛇口にメモ。「当番の人を起こす必要はありませんが、起こしてもかまいません」。"
  },
@@ -331,7 +331,7 @@
  },
  "city.cm.kids.3": {
   "ru": "Совсем маленький листок: кот в ушанке. Подпись «Маркис», с буквой «и» не в ту сторону.",
-  "en": "A very small sheet: a cat in a fur hat. The caption \"Markiz\", with one letter turned the wrong way.",
+  "en": "A very small sheet: a cat in a fur hat. The caption \"Markis\", with one letter turned the wrong way.",
   "ja": "とても小さな紙。毛皮の帽子をかぶった猫。題は「マルキス」、一文字が逆向き。"
  },
  "city.cm.kids.4": {
@@ -346,8 +346,8 @@
  },
  "city.cm.gymtt.2": {
   "ru": "Вторник и четверг, 18:00: брусья и подтягивания для школьников. Ниже карандашом: «Кто не подтянется, тот потом расскажет почему».",
-  "en": "Tuesday and Thursday, 18:00: wall bars and pull-ups for schoolchildren. Pencilled underneath: \"Whoever can't pull up will explain why afterwards.\"",
-  "ja": "火曜と木曜の十八時、小中学生の肋木と懸垂。下に鉛筆で。「懸垂できなかった人は、あとで理由を説明すること」。"
+  "en": "Tuesday and Thursday, 18:00: parallel bars and pull-ups for schoolchildren. Pencilled underneath: \"Whoever can't pull up will explain why afterwards.\"",
+  "ja": "火曜と木曜の十八時、小中学生の平行棒と懸垂。下に鉛筆で。「懸垂できなかった人は、あとで理由を説明すること」。"
  },
  "city.cm.gymtt.3": {
   "ru": "Пятница и воскресенье: зал свободный. Мат один, стенка одна, совесть общая.",
@@ -361,8 +361,8 @@
  },
  "city.cm.lostA.1": {
   "ru": "Ящик потеряшек. Сверху: одна варежка в красную полоску, шарф без хозяина, детская галоша на правую ногу и бирка «Лёва, 3-07». Пусть заберёт. Вторую варежку подождём.",
-  "en": "The lost-property box. On top: one red-striped mitten, a scarf with no owner, a child's boot for the right foot and a tag \"Lyova, 3-07\". Let him collect it. We'll wait for the second mitten.",
-  "ja": "落とし物箱。いちばん上に、赤じまの手袋が片方、持ち主不明のマフラー、右足の子ども用長靴、「リョーワ、3-07号室」のタグ。取りにきてください。もう片方の手袋は待ちます。"
+  "en": "The lost-property box. On top: one red-striped mitten, a scarf with no owner, a child's galosh for the right foot and a tag \"Lyova, 3-07\". Let him collect it. We'll wait for the second mitten.",
+  "ja": "落とし物箱。いちばん上に、赤じまの手袋が片方、持ち主不明のマフラー、右足用の子どものオーバーシューズ、「リョーワ、3-07号室」のタグ。取りにきてください。もう片方の手袋は待ちます。"
  },
  "city.cm.lostA.2": {
   "ru": "В ящике появился синий таз с биркой «из 3-05». Приписано: «Таз ходил по этажам, пока не нашёл дорогу вниз. Хозяйка просит прощения и ждёт обратно».",
@@ -406,7 +406,7 @@
  },
  "city.cm.boardA.4": {
   "ru": "Протокол заседания: комиссия поднималась в 3-05 с тазом. Установлено: кран в ванной закрыт, но не до конца, а слив в раковине закрыт до конца, но не туда. Стороны помирились на чае.",
-  "en": "Minutes of the meeting: the commission went up to 3-05 with a basin. Established: the bath tap was shut, but not quite, and the sink drain was shut quite, but not where it should. The parties made peace over tea.",
+  "en": "Minutes of the meeting: the commission went up to 3-05 with a basin. Established: the bath tap was shut, but not all the way, and the sink drain was shut all the way, but not where it should be. The parties made peace over tea.",
   "ja": "会合の議事録。委員はたらいを持って3-05号室へ上がった。判明したこと。浴室の蛇口は閉まっていたが完全ではなく、洗面台の排水は完全に閉まっていたが、閉まる場所が違った。両者はお茶で仲直りした。"
  },
  "city.cm.boardA.5": {
@@ -427,7 +427,7 @@
  "city.cm.boardB.1": {
   "ru": "Пропал кот. Серый, с белой манишкой, откликается на «Маркиз» и на звук консервной банки. Последний раз видели в зале у кухни. Если найдёте, не кормите, а зовите кв. 3-07: он у нас на диете.",
   "en": "A cat is missing. Grey, with a white shirt-front, answers to \"Markiz\" and to the sound of a tin being opened. Last seen in the hall near the kitchen. If you find him, don't feed him, call flat 3-07: he is on a diet.",
-  "ja": "猫がいなくなりました。灰色で胸の白い、「マルキ」と缶詰を開ける音に反応します。最後に見たのはホールの台所のそば。見つけたら、えさはやらずに3-07号室へ。ダイエット中です。"
+  "ja": "猫がいなくなりました。灰色で胸元が白く、「マルキ」という名前と缶詰を開ける音に反応します。最後に見たのはホールの台所のそば。見つけたら、えさはやらずに3-07号室へ。ダイエット中です。"
  },
  "city.cm.boardB.2": {
   "ru": "Маркиза видели: 1) в подвале, уверена Лидия; 2) на крыше, мальчик из 3-07 не уверен; 3) в столовой, у кастрюли с ухой, повар огорчён. Вариантов три, кот один.",
@@ -461,13 +461,13 @@
  },
  "quest.commune_cloud.title": {
   "ru": "Тучка на потолке",
-  "en": "A Cloud on the Ceiling",
+  "en": "A cloud on the ceiling",
   "ja": "天井の小さな雲"
  },
  "quest.commune_cloud.desc": {
   "ru": "В зале дома-коммуны у двери висит протокол домкома про протечку. Хочется узнать, чем всё кончилось.",
-  "en": "By the door of the commune's hall hangs the house committee's report about a leak. I'd like to know how it all ended.",
-  "ja": "コミューンハウスのホールの入口に、水漏れについての委員会の議事録が貼ってある。結末が気になる。"
+  "en": "By the door of the commune house hall hangs the house committee's report about a leak. I'd like to know how it all ended.",
+  "ja": "共同住宅のホールの入口に、水漏れについての委員会の議事録が貼ってある。結末が気になる。"
  },
  "quest.commune_cloud.board.log": {
   "ru": "Доска домкома у входа: листок на каждый день. Прочту, что на ней сегодня написано.",
@@ -511,7 +511,7 @@
  },
  "quest.commune_cat.title": {
   "ru": "Кот в тельняшке",
-  "en": "The Cat in the Sailor Vest",
+  "en": "The cat in the sailor vest",
   "ja": "水兵シャツの猫"
  },
  "quest.commune_cat.desc": {
@@ -557,6 +557,6 @@
  "quest.commune_cat.done": {
   "ru": "Маркиз пришёл на фильм, сел на скамью домкома и досмотрел до конца. Мне досталось место рядом. Домком налил чаю нам обоим, ему в блюдце.",
   "en": "Markiz came to the film, sat on the committee's bench and watched to the end. I got the place beside him. The committee poured tea for us both, his in a saucer.",
-  "ja": "マルキは映画に来て、委員会のベンチに座り、最後まで見た。ぼくはその隣の席。委員会はふたりにお茶をついでくれた。彼のぶんは受け皿に。"
+  "ja": "マルキは映画に来て、委員会のベンチに座り、最後まで見た。僕はその隣の席。委員会はふたりにお茶をついでくれた。彼のぶんは受け皿に。"
  }
 }
