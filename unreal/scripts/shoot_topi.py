@@ -28,11 +28,13 @@ DAY_SPOTS = [
     ("air_east", -1150.0, 900.0, -15.09, 150.0, -15, 180),        # from 150 m: across the ridges, the join with the map
     ("air_north", -1500.0, 650.0, -10.0, 150.0, -15, 90),         # from 150 m: along the ridges
 ]
-DAYS = [("nov", "11-13 14:00"), ("jun10", "06-21 10:00"), ("jun18", "06-21 18:00")]
+DAYS = [("jun10", "06-21 10:00"), ("jun18", "06-21 18:00")]
 SPOTS = [("%s_%s" % (n, dn), x, y, z, up, p, yaw, when, 0, []) for dn, when in DAYS for n, x, y, z, up, p, yaw in DAY_SPOTS]
 SPOTS += [
-    ("air_east_nov_5s", -1150.0, 900.0, -15.09, 150.0, -15, 180, "11-13 14:00", 0, ["@5"]),   # 5 s after air_east_nov: the heave
-    ("edge_air_nov", -1150.0, 650.0, -11.2, 40.0, -30, 135, "11-13 14:00", 0, []),           # the join with the map's ground
+    ("air_east_jun18_5s", -1150.0, 900.0, -15.09, 150.0, -15, 180, "06-21 18:00", 0, ["@5"]),  # 5 s after air_east_jun18: the heave
+    ("edge_air_jun18", -1150.0, 650.0, -11.2, 40.0, -30, 135, "06-21 18:00", 0, []),          # the join with the map's ground
+    ("signs_jun18", -1120.0, 905.0, -15.09, EYE, -2, 180, "06-21 18:00", 0, []),             # the warning plates seen from the town side
+    ("bank_props_jun18", -2135.0, 1030.0, -29.71, EYE, -12, 160, "06-21 18:00", 0, []),      # the Ural sign and the towels by day (no river)
     ("town_night", -330.0, 900.0, -18.09, EYE, 2, 180, "11-13 23:30", 1, []),                 # the glow over the ridge from the town centre
     ("town_night_high", -330.0, 900.0, -18.09, 30.0, 0, 180, "11-13 23:30", 1, []),
     ("path_night", -1312.0, 888.0, 13.28, EYE, -4, 180, "11-13 23:30", 1, []),               # topi_path: motes and stakes
