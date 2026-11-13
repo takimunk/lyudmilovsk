@@ -4,13 +4,15 @@
   audio/sfx/north/north_mudpot_01.wav    a mud pot: thick bubbles swelling and plopping now and then over a faint simmer
   audio/sfx/north/north_spring_01.wav    a hot spring: fine bubbles ticking up through still water
   audio/sfx/north/north_campfire_01.wav  the camp's fire: a soft roar and the crackle and pop of small logs
+  audio/sfx/north/north_river_01.wav     the river: a shallow stream's rush over gravel, babbling gurgles and small splashes
 
 Every loop is mono, 48 kHz, 4..6 s and seamless by construction: the noise is filtered round the loop (FFT, circular),
 slow wobbles have whole periods in it, and events near the end wrap round to the start.
 
     python3 tools/north_sounds.py
 then unreal/scripts/import_audio.py (IMPORT_ONLY=sfx/north) imports them as /Game/Audio/North/S_<id>_<nn>, looping (the
-sidecars say loop); ULyudSoundscapeSubsystem loads the pools north_vent, north_mudpot, north_spring, north_campfire.
+sidecars say loop); ULyudSoundscapeSubsystem loads the pools north_vent, north_mudpot, north_spring, north_campfire;
+ALyudNorthRiver loads /Game/Audio/North/S_north_river_01 itself.
 Each wav gets a .json sidecar (generator, seed, sha256, loop). Released under CC BY 4.0 with the project's assets.
 """
 import hashlib
@@ -129,6 +131,35 @@ def campfire(rng):
     return loudness(x, -24.0)
 
 
+def river(rng):
+    n = int(6.0 * RATE)
+    # the rush: water over gravel, broadband leaning low, breathing slowly (whole cycles: filtered round the loop)
+    rush = tilt(band(rng.standard_normal(n), 90, 9000), -2.0, 600.0)
+    rush *= np.clip(1.0 + 0.16 * slow(rng, n, 0.7) + 0.1 * slow(rng, n, 3.0), 0.5, 1.6)
+    # the babble: many small gurgles (a bubble's tone rising fast) where the water breaks over stones
+    gur = np.zeros(n)
+    t = 0.0
+    while t < 6.0:
+        ln = int(rng.uniform(0.015, 0.06) * RATE)
+        tt = np.arange(ln) / RATE
+        f0 = rng.uniform(220, 1400)
+        rise = rng.uniform(0.5, 2.5)
+        ev = np.sin(2 * np.pi * np.cumsum(f0 * (1 + rise * tt / tt[-1])) / RATE)
+        ev *= np.minimum(1.0, tt / 0.002) * np.exp(-tt / (ln / RATE * 0.35))
+        place(gur, int(t * RATE), ev * rng.uniform(0.1, 0.8) ** 2)
+        t += rng.exponential(0.012)
+    # small splashes: short bright bursts now and then
+    spl = np.zeros(n)
+    for _ in range(int(6.0 * 6)):
+        ln = int(rng.uniform(0.01, 0.05) * RATE)
+        ev = rng.standard_normal(ln) * np.exp(-np.arange(ln) / (ln * 0.3)) * rng.uniform(0.2, 0.8)
+        place(spl, int(rng.integers(0, n)), ev)
+    gur = band(gur, 150, 3000)
+    spl = band(spl, 1500, 10000)
+    x = rush / np.std(rush) * 0.6 + gur / (np.std(gur) + 1e-9) * 0.35 + spl / (np.std(spl) + 1e-9) * 0.12
+    return loudness(x, -23.0)
+
+
 def seam_error(x):
     """How much the loop jumps where it wraps, relative to its usual sample-to-sample step."""
     d = np.abs(np.diff(x))
@@ -161,6 +192,7 @@ def main():
     write("north_mudpot_01", mudpot(np.random.default_rng(7201)), 7201)
     write("north_spring_01", spring(np.random.default_rng(7301)), 7301)
     write("north_campfire_01", campfire(np.random.default_rng(7401)), 7401)
+    write("north_river_01", river(np.random.default_rng(7501)), 7501)
 
 
 if __name__ == "__main__":

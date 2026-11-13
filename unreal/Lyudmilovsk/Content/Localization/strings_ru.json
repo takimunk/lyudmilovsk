@@ -1156,6 +1156,8 @@
  "ui.ladder.climb": "[E] Взяться за лестницу (W/S — вверх/вниз, пробел — отпустить)",
  "ui.north.fire_light": "[E] Разжечь костёр",
  "ui.north.fire_out": "[E] Погасить костёр",
+ "ui.north.spring_sit": "[E] Сесть в горячий источник",
+ "ui.north.spring_out": "[E] Выйти из воды",
  "ui.europa.console": "[E] Шлюз: нажать кнопку",
  "ui.europa.open_europa": "[E] Открыть люк",
  "ui.europa.enter_europa": "[E] Спуститься обратно",

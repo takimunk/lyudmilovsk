@@ -16,6 +16,8 @@
 #include "North/LyudCampfire.h"
 #include "North/LyudFumarole.h"
 #include "North/LyudNorthFx.h"
+#include "North/LyudNorthRiver.h"
+#include "North/LyudNorthSpring.h"
 #include "North/NorthModel.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -171,6 +173,7 @@ void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	bShown = CVarNorth.GetValueOnGameThread() != 0;
 	bWakeAll = CVarNorthWakeAll.GetValueOnGameThread() != 0;
 	SpawnPlumes();
+	SpawnRiver();
 	UpdateAir();
 }
 
@@ -179,6 +182,7 @@ void ULyudNorthSubsystem::Deinitialize()
 	Things.Reset();
 	SteamFx = nullptr;
 	Plumes.Reset();
+	River = nullptr;
 	Super::Deinitialize();
 }
 
@@ -187,6 +191,9 @@ void ULyudNorthSubsystem::LoadData()
 	Fumaroles.Reset();
 	Places.Reset();
 	FarVolcanoes.Reset();
+	RiverWater.Reset();
+	RiverThreads = 0;
+	RiverMouth = FVector::ZeroVector;
 	FString Text;
 	TSharedPtr<FJsonObject> Root;
 	const FString Path = FPaths::ProjectContentDir() / TEXT("North/north.json");
@@ -245,8 +252,65 @@ void ULyudNorthSubsystem::LoadData()
 			F.Plume = (float)O->GetNumberField(TEXT("plume"));
 		}
 	}
+	// the hot spring one sits in (ALyudNorthSpring, docs/north.md "Hot spring (game side)"): {x, y, r, seats [{x, y, yaw}], surface_z?}
+	const TSharedPtr<FJsonObject>* SpringJ = nullptr;
+	if (Root->TryGetObjectField(TEXT("spring"), SpringJ) && SpringJ && SpringJ->IsValid())
+	{
+		const TSharedPtr<FJsonObject>& SO = *SpringJ;
+		FLyudNorthSpringData SD;
+		SD.Center = NorthMapToWorld(SO->GetNumberField(TEXT("x")), SO->GetNumberField(TEXT("y")), 0.0);
+		double SNum = 0.0;
+		SD.RadiusCm = SO->TryGetNumberField(TEXT("r"), SNum) ? float(SNum * 100.0) : 260.f;
+		if (SO->TryGetNumberField(TEXT("surface_z"), SNum))
+		{
+			SD.bHasSurfaceZ = true;
+			SD.SurfaceZ = SNum * 100.0;
+		}
+		if (SO->TryGetArrayField(TEXT("seats"), Arr))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *Arr)
+			{
+				const TSharedPtr<FJsonObject> O = V->AsObject();
+				if (!O.IsValid()) continue;
+				const FVector SAt = NorthMapToWorld(O->GetNumberField(TEXT("x")), O->GetNumberField(TEXT("y")), 0.0);
+				FLyudNorthSpringSeatData& Seat = SD.Seats.AddDefaulted_GetRef();
+				Seat.At = FVector2D(SAt.X, SAt.Y);
+				Seat.Yaw = (float)O->GetNumberField(TEXT("yaw"));
+			}
+		}
+		ALyudNorthSpring::SpawnFor(GetWorld(), SD);
+	}
+	// the river's water (docs/north.md "River water (game side)"): [x, y, z, half] map metres downstream, threads, mouth
+	const TSharedPtr<FJsonObject>* RiverObj = nullptr;
+	if (Root->TryGetObjectField(TEXT("river"), RiverObj) && RiverObj && RiverObj->IsValid())
+	{
+		const TArray<TSharedPtr<FJsonValue>>* WaterArr = nullptr;
+		if ((*RiverObj)->TryGetArrayField(TEXT("water"), WaterArr))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *WaterArr)
+			{
+				const TArray<TSharedPtr<FJsonValue>>* Sample = nullptr;
+				if (V.IsValid() && V->TryGetArray(Sample) && Sample->Num() >= 4)
+				{
+					const FVector W = NorthMapToWorld((*Sample)[0]->AsNumber(), (*Sample)[1]->AsNumber(), (*Sample)[2]->AsNumber());
+					RiverWater.Add(FVector4(W, 100.0 * (*Sample)[3]->AsNumber()));
+				}
+			}
+		}
+		const TArray<TSharedPtr<FJsonValue>>* ThreadArr = nullptr;
+		if ((*RiverObj)->TryGetArrayField(TEXT("threads"), ThreadArr))
+		{
+			RiverThreads = ThreadArr->Num();
+		}
+		const TArray<TSharedPtr<FJsonValue>>* MouthArr = nullptr;
+		if ((*RiverObj)->TryGetArrayField(TEXT("mouth"), MouthArr) && MouthArr->Num() >= 2)
+		{
+			RiverMouth = NorthMapToWorld((*MouthArr)[0]->AsNumber(), (*MouthArr)[1]->AsNumber(), 0.0);
+		}
+	}
 	bLoaded = true;
-	UE_LOG(LogTemp, Display, TEXT("NORTH data: %d places, %d fumaroles, %d far volcanoes"), Places.Num(), Fumaroles.Num(), FarVolcanoes.Num());
+	UE_LOG(LogTemp, Display, TEXT("NORTH data: %d places, %d fumaroles, %d far volcanoes, %d river samples"), Places.Num(), Fumaroles.Num(),
+		FarVolcanoes.Num(), RiverWater.Num());
 }
 
 void ULyudNorthSubsystem::SpawnPlumes()
@@ -271,6 +335,24 @@ void ULyudNorthSubsystem::SpawnPlumes()
 			P->SetActorHiddenInGame(!bShown);
 			Plumes.Add(P);
 		}
+	}
+}
+
+void ULyudNorthSubsystem::SpawnRiver()
+{
+	UWorld* World = GetWorld();
+	if (!World || RiverWater.Num() < 2)
+	{
+		return;
+	}
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	const FVector First(RiverWater[0]);
+	if (ALyudNorthRiver* NewRiver = World->SpawnActor<ALyudNorthRiver>(First, FRotator::ZeroRotator, Params))
+	{
+		NewRiver->Setup(RiverWater);
+		NewRiver->SetActorHiddenInGame(!bShown);
+		River = NewRiver;
 	}
 }
 
@@ -374,7 +456,7 @@ void ULyudNorthSubsystem::UpdateRanges()
 			Things.RemoveAtSwap(I);
 			continue;
 		}
-		const float DistM = bHave ? float(FVector::Dist(P, T->GetActorLocation()) / 100.0) : 1e9f;
+		const float DistM = bHave ? T->RangeDistanceCm(P) / 100.f : 1e9f;
 		const bool bA = bShown && (bWakeAll || LyudNorthModel::NextAwake(T->IsAwake(), DistM, R));
 		const bool bN = bA && bHave && LyudNorthModel::NextNear(T->IsNear(), DistM, R);
 		if (bA != T->IsAwake() || bN != T->IsNear())
@@ -503,7 +585,11 @@ FString ULyudNorthSubsystem::DebugReport() const
 	return FString::Printf(TEXT("fumaroles %d awake %d near %d fires %d lit %d puffs %d inside %d reached %d/%d shown %d wakeall %d wind %.1f m/s density %.2f player map (%.0f, %.0f)"),
 		Fum, FumAwake, Near, Fires, Lit, SteamFx ? SteamFx->Alive() : 0, bPlayerInside ? 1 : 0, Reached.Num(), Places.Num(),
 		bShown ? 1 : 0, bWakeAll ? 1 : 0, WindCm.Size() / 100.0, Density,
-		bHave ? P.X / 100.0 : 0.0, bHave ? (P.Y - NorthFaceY) / 100.0 : 0.0);
+		bHave ? P.X / 100.0 : 0.0, bHave ? (P.Y - NorthFaceY) / 100.0 : 0.0)
+		+ FString::Printf(TEXT(" river samples %d length %.0f m parts %d threads %d mouth (%.0f, %.0f) awake %d near %d sound %d"),
+			RiverWater.Num(), River ? River->LengthM() : 0.f, River ? River->NumParts() : 0, RiverThreads, RiverMouth.X / 100.0,
+			(RiverMouth.Y - NorthFaceY) / 100.0, River && River->IsAwake() ? 1 : 0, River && River->IsNear() ? 1 : 0,
+			River && River->IsSounding() ? 1 : 0);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

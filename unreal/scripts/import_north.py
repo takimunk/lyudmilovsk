@@ -4,7 +4,8 @@
              smoke's T_SmokePuff card, opacity = per-instance custom data 0, grey = data 2), M_North_Plume (the far volcano's
              plume, ALyudNorthPlume: unlit translucent, Color from the game), M_North_Mud (a mud pot's surface: the
              Academgorodok's flat master), M_North_Water (the hot spring: its clear-glass master), MI_NO_<slot> for every
-             MAT_SPEC slot in blender/north/*.py (flat, like the restaurant's).
+             MAT_SPEC slot in blender/north/*.py (flat, like the restaurant's), M_North_River (the river's sheet,
+             ALyudNorthRiver: lit translucent, flowing along V, clear over the gravel at the banks; build_river()).
   atlas:     the props' shared atlas: T_North_Atlas(_N) from blender/north/gen, M_North_Atlas, and M_North_Text_<id> for the
              boards' and signs' words (the GLBs carry material names only, no images); import assigns them by slot name.
   import <file.glb>: one file of blender/export/north (Interchange imports only the first glb of a process; import_north.sh
@@ -260,6 +261,119 @@ def build_atlas_materials():
     return out
 
 
+# ------------------------------------------------------------------------------------------------ the river's water
+# ALyudNorthRiver's sheet (docs/north.md "River water (game side)"): UV0 = (U across 0..1, V along: metres over the local
+# flow speed factor, restarting at multiples of RIVER_REPEAT in every mesh part), vertex colour R = how fast 0..1,
+# G = 1 at the sheet's two ends. Every noise below repeats along V every RIVER_REPEAT units (its cells per V unit are
+# whole numbers of a 64th), so the parts join without a seam; the pattern rides downstream at Flow V units a second.
+RIVER_REPEAT = 64.0
+RIVER_LIB = r"""
+const float R = %(rep).1f;
+struct FRiverNoise
+{
+    float H(float2 c) { return frac(sin(dot(c, float2(127.1, 311.7))) * 43758.5453); }
+    // value noise repeating every Py cells along y
+    float N(float2 p, float Py)
+    {
+        float2 i = floor(p), f = frac(p);
+        f = f * f * (3.0 - 2.0 * f);
+        float y0 = i.y - Py * floor(i.y / Py);
+        float y1 = y0 + 1.0 >= Py ? 0.0 : y0 + 1.0;
+        return lerp(lerp(H(float2(i.x, y0)), H(float2(i.x + 1.0, y0)), f.x),
+                    lerp(H(float2(i.x, y1)), H(float2(i.x + 1.0, y1)), f.x), f.y);
+    }
+    // the surface: slow lumps, a cross-running layer and fine ripples (more of them where it is fast), all downstream
+    float Hgt(float2 uv, float T, float Flow, float Fast, float Rep)
+    {
+        float v1 = uv.y - fmod(T * Flow, Rep);
+        float v2 = uv.y - fmod(T * Flow * 0.75, Rep);
+        float v3 = uv.y - fmod(T * Flow * 1.25, Rep);
+        return 0.55 * N(float2(uv.x * 5.0, v1 * 0.5), Rep * 0.5)
+             + 0.30 * N(float2(uv.x * 11.0 + 7.0, v2 * 1.5), Rep * 1.5)
+             + (0.15 + 0.3 * Fast) * N(float2(uv.x * 26.0 + 3.0, v3 * 4.0), Rep * 4.0);
+    }
+};
+FRiverNoise Rv;
+""" % {"rep": RIVER_REPEAT}
+
+RIVER_NORMAL = RIVER_LIB + r"""
+float e = 0.02;
+float hu = Rv.Hgt(UV + float2(e, 0.0), T, Flow, Fast, R) - Rv.Hgt(UV - float2(e, 0.0), T, Flow, Fast, R);
+float hv = Rv.Hgt(UV + float2(0.0, 0.08), T, Flow, Fast, R) - Rv.Hgt(UV - float2(0.0, 0.08), T, Flow, Fast, R);
+// fast water is rougher (the glints break up and sparkle), slow reaches nearly glassy
+float s = 0.3 + 0.9 * Fast;
+return normalize(float3(-hu * 5.0 * s, -hv * 2.0 * s, 1.0));
+"""
+
+RIVER_FOAM = RIVER_LIB + r"""
+float v = UV.y - fmod(T * Flow * 1.1, R);
+float n = 0.65 * Rv.N(float2(UV.x * 18.0, v * 3.0), R * 3.0) + 0.35 * Rv.N(float2(UV.x * 40.0 + 5.0, v * 8.0), R * 8.0);
+// a broken line of foam along the banks and streaks in mid-stream, only where the water is fast
+float edge = 1.0 - smoothstep(0.0, 0.12, min(UV.x, 1.0 - UV.x));
+return saturate(smoothstep(0.62, 0.9, n + Fast * 0.3 + edge * 0.25) * Fast);
+"""
+
+RIVER_OPACITY = r"""
+// Thick: centimetres of water along the view (the scene behind minus this pixel)
+float th = max(Thick, 0.0);
+float op = lerp(0.1, 0.72, saturate(th / 150.0));      // clear over the gravel, darker where deep
+op = max(op, Foam * 0.9);
+op *= saturate(th / 12.0);                             // soft where it meets the bank
+op *= smoothstep(0.0, 0.03, UV.x) * smoothstep(0.0, 0.03, 1.0 - UV.x);
+op *= 1.0 - Ends;                                      // the first point and the mouth fade
+return saturate(op);
+"""
+
+RIVER_COLOR = r"""
+float m = saturate(max(Thick, 0.0) / 150.0);
+float3 c = lerp(Shallow.rgb, Deep.rgb, m);
+return lerp(c, float3(0.82, 0.85, 0.85), Foam);
+"""
+
+
+def build_river(path=None):
+    """M_North_River: lit translucent (forward shaded for real glints), two-sided (seen from under it too)."""
+    import make_sea_materials as S
+    F1, F3 = unreal.CustomMaterialOutputType.CMOT_FLOAT1, unreal.CustomMaterialOutputType.CMOT_FLOAT3
+    if not eal.does_directory_exist(MATS):
+        eal.make_directory(MATS)
+    g = S.Graph((path or MATS + "/M_North_River").rsplit("/", 1)[1], dest=MATS)
+    m = g.m
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_DEFAULT_LIT)
+    m.set_editor_property("two_sided", True)
+    try:
+        m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_SURFACE)
+    except Exception as e:  # noqa: BLE001
+        log("river: forward-shaded translucency unavailable (%s), per-pixel lighting" % e)
+        m.set_editor_property("translucency_lighting_mode", unreal.TranslucencyLightingMode.TLM_SURFACE_PER_PIXEL_LIGHTING)
+    uv = g.node(unreal.MaterialExpressionTextureCoordinate, coordinate_index=0)
+    t = g.node(unreal.MaterialExpressionTime)
+    vc = g.node(unreal.MaterialExpressionVertexColor)
+    flow = g.param("Flow", 0.9)
+    thick = g.op(unreal.MaterialExpressionSubtract, g.node(unreal.MaterialExpressionSceneDepth),
+                 g.node(unreal.MaterialExpressionPixelDepth))
+    moving = [("UV", uv), ("T", t), ("Flow", flow), ("Fast", (vc, "R"))]
+    foam = g.custom(RIVER_FOAM, moving, desc="RiverFoam")
+    g.out(g.custom(RIVER_NORMAL, moving, out=F3, desc="RiverNormal"), MP.MP_NORMAL)
+    g.out(g.custom(RIVER_OPACITY, [("UV", uv), ("Thick", thick), ("Foam", foam), ("Ends", (vc, "G"))], desc="RiverOpacity"),
+          MP.MP_OPACITY)
+    g.out(g.custom(RIVER_COLOR, [("Thick", thick), ("Foam", foam), ("Shallow", g.vparam("Shallow", (0.16, 0.21, 0.18, 1.0))),
+                                 ("Deep", g.vparam("Deep", (0.02, 0.06, 0.07, 1.0)))], out=F3, desc="RiverColor"), MP.MP_BASE_COLOR)
+    g.out(g.add(g.const(0.03), g.mul(foam, g.const(0.6))), MP.MP_ROUGHNESS)
+    g.out(g.const(0.6), MP.MP_SPECULAR)
+    mel.layout_material_expressions(m)
+    return g.finish()
+
+
+def build_river_safe():
+    """The river's material never stops the other North materials."""
+    try:
+        build_river()
+    except Exception:       # noqa: BLE001
+        log("river material failed:\n" + traceback.format_exc())
+
+
 def make_materials():
     import academ_materials as A
     if not eal.does_asset_exist("/Game/Smoking/Textures/T_SmokePuff"):
@@ -269,6 +383,7 @@ def make_materials():
         build_plume(MATS + "/M_North_Plume")
     A.build_flat(MATS + "/M_North_Mud")
     A.build_glass_clear(MATS + "/M_North_Water")
+    build_river_safe()
     out = {}
     specs = _specs()
     if specs:
@@ -287,7 +402,7 @@ def make_materials():
     build_atlas_materials()
     eal.save_directory(DEST)
     eal.save_directory(MATS)
-    log("materials: steam, plume, mud, water, %d slot instances" % len(out))
+    log("materials: steam, plume, mud, water, river, %d slot instances" % len(out))
     return out
 
 
@@ -603,6 +718,8 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if "materials" in args:
         make_materials()
+    elif "river" in args:
+        build_river()
     if "import" in args:
         rest = [a for a in args if a.endswith(".glb")]
         import_all(rest or None)

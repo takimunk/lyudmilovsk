@@ -7,6 +7,7 @@
 
 class ALyudNorthSteam;
 class ALyudNorthPlume;
+class ALyudNorthRiver;
 class ULyudNorthSubsystem;
 
 /** What a fumarole of north.json is (docs/north.md). */
@@ -74,6 +75,8 @@ public:
 	virtual void SetAwake(bool bInAwake, bool bInNear);
 	bool IsAwake() const { return bAwake; }
 	bool IsNear() const { return bNear; }
+	/** How far the player is from it for the wake / near ranges, cm (the actor's place; the river measures from its water). */
+	virtual float RangeDistanceCm(const FVector& From) const { return float(FVector::Dist(From, GetActorLocation())); }
 
 protected:
 	virtual void BeginPlay() override;
@@ -119,6 +122,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "North") int32 NumAwake() const;
 	UFUNCTION(BlueprintCallable, Category = "North") int32 NumThings() const { return Things.Num(); }
 	UFUNCTION(BlueprintCallable, Category = "North") FString DebugReport() const;
+	/** The river's water (north.json "river"; null without it). */
+	UFUNCTION(BlueprintPure, Category = "North") ALyudNorthRiver* GetRiver() const { return River; }
 
 	/** The player entered (true) or left (false) the North. */
 	UPROPERTY(BlueprintAssignable, Category = "North") FLyudNorthRegionEvent OnRegionChanged;
@@ -164,6 +169,7 @@ private:
 	void UpdateRanges();
 	void UpdateAir();
 	void SpawnPlumes();
+	void SpawnRiver();
 	bool PlayerLocation(FVector& Out) const;
 
 	TArray<FLyudFumaroleInfo> Fumaroles;
@@ -173,6 +179,11 @@ private:
 	TSet<FName> Reached;
 	UPROPERTY(Transient) TObjectPtr<ALyudNorthSteam> SteamFx;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudNorthPlume>> Plumes;
+	UPROPERTY(Transient) TObjectPtr<ALyudNorthRiver> River;
+	/** north.json river.water: world cm (X, Y, water Z), W half width cm; its threads (count) and mouth (world cm). */
+	TArray<FVector4> RiverWater;
+	int32 RiverThreads = 0;
+	FVector RiverMouth = FVector::ZeroVector;
 	FVector Valley = FVector::ZeroVector;
 	FVector WindCm = FVector::ZeroVector;
 	float Density = 1.f;

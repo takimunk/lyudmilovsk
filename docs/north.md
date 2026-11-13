@@ -172,9 +172,30 @@ frame; nothing is allocated per frame.
 mono loops, 48 kHz, numpy) -> `import_audio.py` (`IMPORT_ONLY=sfx/north`) -> `/Game/Audio/North/S_*`, pools of
 `ULyudSoundscapeSubsystem` (`AttachLoop`, released with `bAutoDestroy` before `FadeOut`). Only things *near* (70 m) play.
 
+**River water (game side).** `north.json` `"river": {"water": [[x, y, z, half], ...], "threads": [[[x, y], ...], ...],
+"mouth": [x, y]}` (map metres; `water` is the centre line every ~15 m from the east edge to the mouth with the water's
+surface z and the sheet's half width; `threads` are the channels, informational; all optional: no `river`, no water).
+`ULyudNorthSubsystem` reads it in `LoadData` and spawns one `ALyudNorthRiver` (tagged North, `GetRiver()`): a flat sheet
+along the centre line, flat across at each sample's z, the plan smoothed by Catmull-Rom (3 steps a sample, z and width
+linear; an edge on the inside of a tight bend waits instead of folding back), built once as transient static meshes of
+64 points (~320 m) each so parts off screen are culled, drawn to 1.5 km, no collision, no shadow, out of Lumen, the
+distance fields and ray tracing. UV0: U across 0..1, V along = metres / the local speed factor (0.6..1.8 from the fall
+over the neighbours and the narrowness), restarting at a multiple of 64 in every part (full-precision UVs); vertex
+colour R = fast 0..1, G = 1 at the two ends (fade). Material `/Game/North/Materials/M_North_River`
+(`import_north.py` `build_river()`, in the `materials` step or alone with `river`: lit translucent, forward shaded,
+two-sided; the flow runs on the GPU clock at `Flow` V/s with noise repeating every 64 V; opacity from the water's
+thickness along the view, so gravel shows through at the banks; foam and rougher glints where fast; `Shallow`/`Deep`
+colours), else `M_North_Water`, else the engine's basic shape material. It sleeps like any North thing but is measured
+from its water's edge (`ALyudNorthThing::RangeDistanceCm`): near (70 m) it plays `/Game/Audio/North/S_north_river_01`
+(`tools/north_sounds.py` `north_river_01`: rush over gravel, gurgles, splashes; 6 s loop) from one audio component put on
+the centre line's point nearest the camera four times a second (its tick while awake), full within 6 m and falling off
+over 70 m, louder where fast and wide; asleep: no tick, no sound. Missing sound or material: a log line, no failure.
+`IsInWater(location)` for quests and swimming. `lyud.North.Report` / `DebugReport()` end with
+`river samples N length L m parts P threads T awake A near N sound S`; `test_north.py` logs it at the end.
+
 **Console** (each a plain static of `ULyudNorthSubsystem` a dev panel can call): `lyud.North 0|1` hides / shows everything
 tagged North (asleep while hidden), `lyud.North.Goto <place id>` (onto the ground by a trace), `lyud.North.Fire -1|0|1`
-(schedule / out / burning), `lyud.North.WakeAll 0|1`, `lyud.North.Range <m>`, `lyud.North.Report` (a `NORTH` line).
+(schedule / out / burning), `lyud.North.SitSpring 1|0` (the hot spring, below), `lyud.North.WakeAll 0|1`, `lyud.North.Range <m>`, `lyud.North.Report` (a `NORTH` line).
 
 **Import and placing.** `unreal/scripts/import_north.sh` (closed editor; `STEPS="sounds materials import place"`,
 `FILES=...` limits the import): sounds; materials (`M_North_Steam`, `M_North_Plume`, `M_North_Mud`, `M_North_Water`,
@@ -195,6 +216,29 @@ its own frame), default 90 (Blender -Y front -> Unreal +Y, as `import_city.py` f
 rule (nothing awake at the gate, the valley awake in the valley, everything with WakeAll, nothing while hidden), the camp and
 the valley at night (the fire by its schedule, then forced), screenshots in `Saved/Screenshots/MacEditor`, `NORTHTEST` lines
 in `Saved/Logs/test_north.log`.
+
+### Hot spring (game side)
+
+`ALyudNorthSpring` (`Public/North/LyudNorthSpring.h`): the spring one sits in. `ULyudNorthSubsystem` spawns it (tagged North,
+a sleeper like every `ALyudNorthThing`) when `north.json` has `"spring": {x, y, r, seats: [{x, y, yaw}], surface_z?}`; seats are
+in the pool, `yaw` Unreal degrees of where the sitter faces; no `seats` yet: four guessed at 0.6 r facing the middle. It draws
+nothing (the pool and its steam are the Spring `ALyudFumarole`'s, the deck is `spring_deck`). The water's surface: `surface_z`
+(map metres) when given, else the Spring fumarole's water (its actor on the built ground + its pool height), else a trace at
+the middle - 5 cm.
+
+While the hero is near, **E** within `r + 1.5 m` (polled, never consumed; prompt `ui.north.spring_sit`) takes the nearest free
+seat: he wades in (the seat's frame rides a carrier component gliding from his feet to the seat and down, 2 s) and sits on
+`AHeroCharacter::SitOn`'s bench pose, the cushion `WaterOverSeat` (55 cm) under the surface so the water is about his chest;
+the look turns calmly across the pool, soft steam rises round his shoulders. **E** again (`ui.north.spring_out`), a step or
+Space gets him out onto the ground `r + 0.9 m` behind his seat. The legs go into the terrain under the pool (no basin is cut
+yet): the water hides them. The game has no rest / time-skip mechanic yet, so sitting passes no extra time.
+
+NPC hook: `FindFreeSeat(Near)`, `Occupy(Seat, Who)`, `Release(Who)`, `IsSeatFree`, `GetSeatWorld(Seat)` (origin on the pool's
+floor under the cushion, X the sitter's facing; cushion `SeatHeight` 40 cm over it), `GetWaterZ()`, static `FindSpring(World)`.
+The hero takes his seat through the same `Occupy`.
+
+Console: `lyud.North.SitSpring 1|0` (sit from anywhere in the nearest free seat / get out; a `NORTH spring ...` line).
+Test: `test_north.py` steps `spring_sit` (seated, eyes 5..90 cm over the water) and `spring_out` (standing again).
 
 ## Plants
 

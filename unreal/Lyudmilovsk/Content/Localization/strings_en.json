@@ -1156,6 +1156,8 @@
  "ui.ladder.climb": "[E] Take hold of the ladder (W/S up/down, Space to let go)",
  "ui.north.fire_light": "[E] Light the campfire",
  "ui.north.fire_out": "[E] Put out the campfire",
+ "ui.north.spring_sit": "[E] Sit in the hot spring",
+ "ui.north.spring_out": "[E] Get out of the water",
  "ui.europa.console": "[E] Airlock: press the button",
  "ui.europa.open_europa": "[E] Open the hatch",
  "ui.europa.enter_europa": "[E] Climb back down",

@@ -1156,6 +1156,8 @@
  "ui.ladder.climb": "[E] はしごにつかまる（W/Sで上下、スペースで離す）",
  "ui.north.fire_light": "[E] 焚き火をつける",
  "ui.north.fire_out": "[E] 焚き火を消す",
+ "ui.north.spring_sit": "[E] 温泉に浸かる",
+ "ui.north.spring_out": "[E] 湯から上がる",
  "ui.europa.console": "[E] エアロック：ボタンを押す",
  "ui.europa.open_europa": "[E] ハッチを開ける",
  "ui.europa.enter_europa": "[E] 下へ戻る",

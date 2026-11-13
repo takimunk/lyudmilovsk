@@ -1,7 +1,8 @@
 """Offscreen play test of the North (docs/north.md "Game side"): puts the hero at every place of Content/North/north.json by
 day (lyud.North.Goto), then at the camp and in the Fumarole Valley at night (the fire by its schedule, then forced on),
 logs the North's state each time (ULyudNorthSubsystem.debug_report: fumaroles awake and near, the fire, the steam puffs),
-checks the sleep rule (nothing awake at the gate, the valley's fumaroles awake in the valley) and screenshots each step.
+checks the sleep rule (nothing awake at the gate, the valley's fumaroles awake in the valley), sits the hero in the hot spring
+(lyud.North.SitSpring 1: seated, eyes over the water, cushion under it) and gets him out again, and screenshots each step.
 Leaves the desktop alone (no PIE, no input); run it with test_north.sh (NORTHTEST_ONLY=name,name picks steps).
 
 Prints NORTHTEST lines; screenshots land in Saved/Screenshots/MacEditor in the order of the steps.
@@ -30,6 +31,9 @@ STEPS += [
     ("wakeall_gate", "north_gate", DAY, ["lyud.North.Fire -1", "lyud.North.WakeAll 1"], "all"),
     ("hidden", "north_camp", DAY, ["lyud.North.WakeAll 0", "lyud.North 0"], "asleep"),
     ("shown_again", "north_camp", DAY, ["lyud.North 1"], None),
+    # the hot spring: lyud.North.SitSpring 1 a few seconds after arriving (he wades in), then out again
+    ("spring_sit", "north_spring", DAY, [], "spring_sit"),
+    ("spring_out", "north_spring", DAY, [], "spring_out"),
 ]
 if os.environ.get("NORTHTEST_ONLY"):
     STEPS = [s for s in STEPS if s[0] in os.environ["NORTHTEST_ONLY"].split(",")]
@@ -70,7 +74,34 @@ def set_hour(w, hour):
     cmd(w, "lyud.SkyHourOffset %f" % (cur + d))
 
 
+def spring(w):
+    a = unreal.GameplayStatics.get_all_actors_of_class(w, unreal.LyudNorthSpring)
+    return a[0] if a else None
+
+
+def check_spring(w, name, kind):
+    """The hero in the hot spring: seated, his eyes over the water, the seat's cushion under it (or out and standing)."""
+    s = spring(w)
+    if not s:
+        log("%s FAIL no spring actor (north.json has no spring?)" % name)
+        st["fails"] += 1
+        return
+    log("%s %s" % (name, s.debug_report()))
+    seated = s.is_hero_seated()
+    eye = s.hero_eye_above_water()
+    if kind == "spring_sit":
+        ok = seated and 5.0 <= eye <= 90.0
+    else:
+        ok = not seated and eye > 100.0
+    log("%s %s (seated %d, eyes %+.0f cm over the water at z %.0f, cushion %.0f cm under)"
+        % (name, "PASS" if ok else "FAIL", 1 if seated else 0, eye, s.get_water_z(), s.water_over_seat))
+    st["fails"] += 0 if ok else 1
+
+
 def check(w, name, kind):
+    if kind in ("spring_sit", "spring_out"):
+        check_spring(w, name, kind)
+        return
     n = unreal.LyudNorthSubsystem.get_north(w)
     if not n:
         log("%s FAIL no North subsystem" % name)
@@ -101,6 +132,10 @@ def tick(dt):
     if st["phase"] == 0:
         st["i"] += 1
         if st["i"] >= len(STEPS):
+            n = unreal.LyudNorthSubsystem.get_north(w)
+            if n:
+                # the river's water (north.json "river"): samples, length, parts, awake / near / sounding now
+                log("river:%s" % n.debug_report().partition(" river")[2])
             log("done: %d steps, %d failed" % (len(STEPS), st["fails"]))
             cmd(w, "quit")
             st["phase"] = 9
@@ -109,11 +144,19 @@ def tick(dt):
         set_hour(w, hour)
         for c in extra:
             cmd(w, c)
-        cmd(w, "lyud.North.Goto " + place)
+        if STEPS[st["i"]][4] != "spring_out":
+            # getting out happens where he sits (no teleport out of the seat)
+            cmd(w, "lyud.North.SitSpring 0")
+            cmd(w, "lyud.North.Goto " + place)
         st["t0"] = st["t"]
+        st["sat"] = False
         st["phase"] = 1
     elif st["phase"] == 1:
         name, place, hour, extra, kind = STEPS[st["i"]]
+        if kind in ("spring_sit", "spring_out") and not st["sat"] and st["t"] - st["t0"] > 3.0:
+            # after the range check has woken the spring (it wades only while near)
+            st["sat"] = True
+            cmd(w, "lyud.North.SitSpring %d" % (1 if kind == "spring_sit" else 0))
         if st["t"] - st["t0"] > WAIT:
             check(w, name, kind)
             cmd(w, "HighResShot 1600x900")

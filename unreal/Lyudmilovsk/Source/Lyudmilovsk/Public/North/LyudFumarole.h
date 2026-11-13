@@ -37,6 +37,8 @@ public:
 
 	/** The pool's radius (mud pot, spring), cm; a vent's mound, a patch's spread. */
 	float PoolRadius() const;
+	/** The pool's surface (the spring's water, the mud) over the actor's origin, cm (built at BeginPlay). */
+	float GetSurfaceZ() const { return SurfaceZ; }
 	/** Puffs emitted since play began (tests). */
 	int32 NumEmitted() const { return Emitted; }
 
