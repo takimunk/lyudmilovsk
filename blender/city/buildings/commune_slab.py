@@ -310,6 +310,67 @@ def _washer(B, x, y, z=0.0, yaw=0.0, solid=True):
     return p.done(solid=solid, top=h, front=0.8)
 
 
+def _tv_wall(B, x, y, z=0.0, yaw=0.0, zc=2.3, screen="screen_tv_news", solid=False):
+    """[wall] A canteen television on a steel bracket high on the wall (screen = atlas cell, looks -y locally)."""
+    p = kit._P(B, x, y, z, yaw, "tv_wall")
+    p.kind = "wall"
+    p.box("CT_Steel", -0.05, 0.05, -0.30, -0.02, zc - 0.30, zc - 0.26)          # bracket arm
+    p.box("CT_Steel", -0.14, 0.14, -0.03, -0.01, zc - 0.34, zc + 0.12)          # wall plate
+    p.bev("CT_Wood", -0.36, 0.36, -0.62, -0.28, zc - 0.26, zc + 0.26, 0.03, 0.03)
+    p.box("CT_Lacquer", -0.30, 0.30, -0.63, -0.62, zc - 0.21, zc + 0.21, f="y")
+    p.card_front(screen, -0.27, 0.27, zc - 0.19, zc + 0.19, -0.632)
+    p.box("CT_Aluminium", 0.30, 0.34, -0.636, -0.62, zc - 0.17, zc - 0.10, f="xXyZz")
+    return p.done(top=zc + 0.26, screen=(0.0, -0.632, zc))
+
+
+def _depth(B, H):
+    """Round 4: depth. A pensioners' corner under a bracket television on the east wall, a sewing and mending corner on
+    the west wall, the wall newspaper, the duty rota, the complaint book, kids' drawings, the lost-property box, the
+    laundry's queue list, the gym timetable. Ids of things: hall_*, laundry_queue, canteen_menu_2."""
+    d = B.detail
+    # ---- pensioners' corner: a chess table with two stools, a television above it, a low lamp
+    H.p(kit.chess_table, -23.7, 4.5, 0.0, seed=4)
+    H.p(kit.stool, -24.55, 4.5, 90.0)
+    H.p(kit.stool, -22.85, 4.5, 270.0)
+    H.thing("hall_chess", "play", -23.7, 4.5, 0.75, 0.0, what="chess")
+    H.thing("hall_chess_seat_1", "seat", -24.55, 4.5, 0.45, 90.0, height=0.45)
+    H.thing("hall_chess_seat_2", "seat", -22.85, 4.5, 0.45, 270.0, height=0.45)
+    H.spot("chess1", "seat", -24.55, 4.5, 90.0)
+    H.spot("chess2", "seat", -22.85, 4.5, 270.0)
+    H.p(_tv_wall, -22.4, 4.5, 270.0, zc=2.4)
+    H.thing("hall_tv", "screen", -22.75, 4.5, 2.4, 270.0, what="tv")
+    H.lamp(-23.7, 4.5, 3.0, lumens=450, colour="#FFE0B0")
+    # ---- the wall newspaper "Our house" beside the door, the lost-property box on the committee's bench
+    H.p(kit.poster, -26.55, 1.4, 180.0, name="paper_typed", w=0.62, zc=1.75)
+    H.thing("hall_wallnews", "board", -26.55, 1.5, 1.75, 180.0, topic="wallpaper")
+    H.p(kit.crate, -25.75, 2.15, 0.0, z=0.45, w=0.5, d=0.34, h=0.24, fill="CT_PlasterRed", seed=7)
+    H.thing("hall_lost_box", "board", -25.75, 2.15, 0.6, 0.0, topic="lost")
+    # ---- canteen: the second menu board, the complaint book on the counter, hot water at the samovar
+    H.thing("canteen_menu_2", "board", -25.4, 12.5, 2.6, 0.0, topic="prices")
+    H.p(kit.books_stack, -27.9, 10.55, 0.0, z=1.05, n=1, seed=9)
+    H.thing("hall_complaint_book", "board", -27.9, 10.55, 1.1, 0.0, topic="rules")
+    H.thing("hall_samovar", "machine", -30.6, 10.7, 1.3, 0.0, what="fountain")
+    # ---- duty rota and subbotnik notice at the back wall
+    H.p(kit.notice_board, -24.0, 12.6, 0.0, w=0.7, zc=1.9, seed=11)
+    H.thing("hall_duty_board", "board", -24.0, 12.5, 1.9, 0.0, topic="rules")
+    # ---- laundry: the queue list on the west wall
+    H.thing("laundry_queue", "board", -34.5, 3.6, 1.8, 90.0, topic="timetable")
+    # ---- kids' drawings on the west wall above the armchair
+    H.p(kit.poster, -34.6, 2.0, 90.0, name="kids", w=0.62, zc=1.85, seed=1)
+    H.p(kit.poster, -34.6, 2.65, 90.0, name="kids", w=0.62, zc=1.75, seed=2)
+    H.thing("hall_kids_wall", "board", -34.5, 2.35, 1.8, 90.0, topic="kids")
+    # ---- sewing and mending corner (west wall, back)
+    H.p(kit.sewing_table, -34.2, 10.95, 90.0)
+    H.p(kit.stool, -33.55, 10.95, 270.0)
+    H.p(kit.poster, -34.6, 10.95, 90.0, name="fabric", w=0.7, zc=1.6, seed=3)
+    H.thing("hall_sewing", "craft", -34.2, 10.95, 0.8, 90.0, what="sewing_machine")
+    H.spot("sewing1", "work", -33.6, 10.95, 270.0)
+    H.lamp(-33.6, 10.95, 2.6, lumens=400, colour="#FFD8A8")
+    # ---- gym: the section's timetable above the mats
+    H.p(kit.sign_plate, -22.4, 8.6, 270.0, name="sign_gym", w=0.7, zc=2.2)
+    H.thing("hall_gym_timetable", "board", -22.55, 8.6, 2.2, 270.0, topic="timetable")
+
+
 def _furnish_hall(B, mirror=False):
     """Round 3 (interior kit): the communal hall (x -34.6..-22.4, y 1.4..12.6, ceiling 6.4; coordinates below are the
     west variant, H mirrors them): canteen with a serving line, laundry on the end wall, a reading nook, the house
@@ -349,7 +410,7 @@ def _furnish_hall(B, mirror=False):
     H.p(kit.kitchen_unit, -27.0, 12.58, 0.0, modules="cupboard,stove,sink,cupboard", wall_cupboards=False)
     H.p(kit.sign_plate, -29.2, 12.6, 0.0, name="sign_canteen", w=3.2, zc=4.3)
     H.p(kit.menu_board, -33.0, 12.6, 0.0, name="menu_0", w=0.9, zc=2.6)
-    H.p(kit.menu_board, -25.4, 12.6, 0.0, name="menu_1", w=0.9, zc=2.6)
+    H.p(kit.notice_board, -25.4, 12.6, 0.0, w=0.95, zc=2.6, seed=13)
     H.p(kit.wall_clock, -29.2, 12.6, 0.0, zc=3.2, r=0.28)
     H.thing("canteen_menu", "board", -33.0, 12.5, 2.6, 0.0, topic="prices")
     # ---- laundry on the west wall: five machines, a folding table with baskets
@@ -403,7 +464,8 @@ def _furnish_hall(B, mirror=False):
     H.spot("gym_bar", "work", -23.35, 2.6, 180.0)
     H.p(kit.banner, -22.4, 10.5, 270.0, name="poster_sun_1", w=1.4, zc=3.4)
     # ---- plants in the corners, a mat at the door, the lamps (4 besides the pendants)
-    H.p(kit.plant, -34.0, 12.0, kind="palm", pot="CT_PlasterYellow", h=1.9)
+    _depth(B, H)
+    H.p(kit.plant, -34.1, 12.35, kind="palm", pot="CT_PlasterYellow", h=1.9)
     H.p(kit.plant, -23.0, 12.0, kind="ficus", pot="CT_TileWhite", h=1.9)
     H.p(kit.plant, -30.2, 2.1, kind="fern", pot="CT_PlasterRed", h=1.1)
     H.p(kit.fire_extinguisher, -22.4, 2.0, 270.0)
