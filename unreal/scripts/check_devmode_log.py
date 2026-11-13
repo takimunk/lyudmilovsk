@@ -22,6 +22,9 @@ if len(landed) < 5:
     bad.append("%d of 5 jumps landed" % len(landed))
 if not any("DEV play awakening done" in l for l in lines):
     bad.append("awakening did not play to its end: %s" % [l.strip() for l in lines if "DEV play" in l][-3:])
+for q in ["waxwing", "waxwing_after", "evening_paper", "crow_gift", "fisherman_cheese", "window_feeder"]:
+    if not any("DEV play %s done" % q in l for l in lines):
+        bad.append("%s did not play to its end: %s" % (q, [l.strip() for l in lines if "DEV play %s" % q in l or "STUCK" in l][-3:]))
 fly = [l for l in lines if "DEVACTION move.fly" in l]
 # listed at the start (off), after switching it on, and after switching it off again
 if len(fly) < 3 or not fly[1].rstrip().endswith(" on") or not fly[2].rstrip().endswith(" off"):

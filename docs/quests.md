@@ -131,3 +131,13 @@ Not checked in the engine yet when this page was written: see the pull request f
   `bring cheese_braid@Lange_pyotr`): worms and a herring.
 - `window_feeder`: Dasha Kimura's bet that the yard has more than pigeons: fill any feeder (`feeder_fill *`), five
   birds come down on it (`feeder_visit *`, `need` 5), back to tell her.
+- `magpie_key`: Misha Belov's lost key: any three of the corvids' finds (`corvid_find|corvid_store_dug|corvid_gift_taken`,
+  target `*`, `need` 3), back to tell him.
+- `painter_views`: Aya Nishimura asks the hero to look at the town for her: three `reach` objectives in one stage, any order.
+- `first_catch`: begun by `fisherman_cheese`'s reward (`"start"`), so its first stage is not a talk: a rod (`have`), Lange's
+  advice (`talk`), any fish (`have fish_*`), back to tell.
+- `sparrow_hello`: Sonya (Kid_girl) does not believe birds make friends: tame a house sparrow, call beside her as the sparrow
+  (a second `listeners` entry in `quest_scenes.json`), tell her as a person.
+
+People a quest needs must be findable: Sorokin, Aya and Lange have a daily duty on a bench (`birdwatch_yard`, `sketch_yard`,
+`mend_nets` in `PeopleData/activities.json`, duties in `people.json`), and the journal says when.

@@ -57,6 +57,9 @@ again = kid_girl.again3.1
 again = kid_girl.again4.1
 sun.day = kid_girl.sun_day.1
 sun.night = kid_girl.sun_night.1
+quest.sparrow_hello.ask = kid_girl.sparrow_ask.1 | hero.sparrow_ask.2 | kid_girl.sparrow_ask.3 | kid_girl.sparrow_ask.4 | hero.sparrow_ask.5
+quest.sparrow_hello.tame,call = kid_girl.sparrow_wait.1
+quest.sparrow_hello.tell = kid_girl.sparrow_tell.1 | hero.sparrow_tell.2 | kid_girl.sparrow_tell.3 | kid_girl.sparrow_tell.4
 
 [Guy_a]
 first = guy_a.first.1 | hero.guy_a_first.2 | guy_a.first.3 | guy_a.first.4
@@ -141,6 +144,9 @@ quest.evening_paper.bring = korneeva_nina.paper_thanks.1 | korneeva_nina.paper_t
 [Belov_misha]
 first = belov_misha.first.1
 again = belov_misha.again1.1
+quest.magpie_key.ask = belov_misha.magpie_ask.1 | hero.magpie_ask.2 | belov_misha.magpie_ask.3 | belov_misha.magpie_ask.4
+quest.magpie_key.search = belov_misha.magpie_wait.1
+quest.magpie_key.tell = belov_misha.magpie_tell.1 | hero.magpie_tell.2 | belov_misha.magpie_tell.3 | belov_misha.magpie_tell.4 | hero.magpie_tell.5 | belov_misha.magpie_tell.6
 
 [Orlova_tanya]
 first = orlova_tanya.first.1
@@ -153,6 +159,10 @@ again = lange_pyotr.again1.1
 quest.fisherman_cheese.ask = lange_pyotr.cheese_ask.1 | lange_pyotr.cheese_ask.2 | hero.cheese_ask.3 | lange_pyotr.cheese_ask.4
 quest.fisherman_cheese.buy,bring_empty = lange_pyotr.cheese_wait.1
 quest.fisherman_cheese.bring = lange_pyotr.cheese_thanks.1 | lange_pyotr.cheese_thanks.2
+quest.first_catch.rod = lange_pyotr.catch_norod.1
+quest.first_catch.learn = lange_pyotr.catch_learn.1 | lange_pyotr.catch_learn.2 | hero.catch_learn.3 | lange_pyotr.catch_learn.4 | lange_pyotr.catch_learn.5
+quest.first_catch.catch = lange_pyotr.catch_wait.1
+quest.first_catch.tell = hero.catch_tell.1 | lange_pyotr.catch_tell.2 | lange_pyotr.catch_tell.3 | lange_pyotr.catch_tell.4
 
 [Kimura_dasha]
 first = kimura_dasha.first.1
@@ -172,6 +182,9 @@ again = valiev_rustam.again1.1
 [Nishimura_aya]
 first = nishimura_aya.first.1
 again = nishimura_aya.again1.1
+quest.painter_views.ask = nishimura_aya.views_ask.1 | nishimura_aya.views_ask.2 | hero.views_ask.3 | nishimura_aya.views_ask.4
+quest.painter_views.look = nishimura_aya.views_wait.1
+quest.painter_views.tell = nishimura_aya.views_tell.1 | hero.views_tell.2 | nishimura_aya.views_tell.3 | nishimura_aya.views_tell.4 | nishimura_aya.views_tell.5
 
 [Sorokin_oleg]
 first = sorokin_oleg.first.1
