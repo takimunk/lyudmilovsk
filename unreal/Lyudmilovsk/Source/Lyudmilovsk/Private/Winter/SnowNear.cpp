@@ -384,8 +384,9 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 		const TArray<float> OldGround = RawGround, OldTop = RawTop, OldLowered = Lowered;
 		const TArray<uint8> OldOk = RawOk;
 		// a vertex keeps its sink if every trail cell it reads (60 cm round it) lies in the old window and the new one:
-		// those cells were not cleared and it read the same ones before
-		const int32 Reach = FMath::CeilToInt(60.f / TrailCm);
+		// those cells were not cleared and it read the same ones before (40 cm more: a print at the window's very edge
+		// spills round the seam to the far side)
+		const int32 Reach = FMath::CeilToInt(100.f / TrailCm);
 		const int64 LoX = FMath::Max(OX, NX) + Reach, HiX = FMath::Min(OX, NX) + TrailN - Reach;
 		const int64 LoY = FMath::Max(OY, NY) + Reach, HiY = FMath::Min(OY, NY) + TrailN - Reach;
 		for (int32 Y = 0; Y < GroundN; Y++)
@@ -524,8 +525,8 @@ void ALyudSnowNear::FillPrints(int32 Dec)
 		}
 	}
 	// the vertices' sinks: every cell a vertex reads fell by the same amount, so its deepest did too; the ones at the
-	// window's edge read round its seam and are read again
-	const int32 Reach = FMath::CeilToInt(60.f / TrailCm);
+	// window's edge read round its seam (or a print spilt round it) and are read again
+	const int32 Reach = FMath::CeilToInt(100.f / TrailCm);
 	const int64 WX0 = int64(FMath::FloorToDouble((Centre.X - HalfCm) / TrailCm)), WY0 = int64(FMath::FloorToDouble((Centre.Y - HalfCm) / TrailCm));
 	for (int32 VY = 0; VY < GroundN; VY++)
 	{
